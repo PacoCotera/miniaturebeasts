@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths: ['website/**', 'prototypes/**', 'art/companion-48/terrain/**', 'art/places/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
   pull_request:
-    # The gates hold before a merge, not after it, on every pull request into main, whatever it touches: the Sandbox `build` check is one main will require.
+    # The release check holds before a merge, not after it, on every pull request into main, whatever it touches: the Sandbox `build` check is one main requires, and so is `browser`.
     # The release and the gh-pages steps below run on main only.
     branches: [main]
   workflow_dispatch:
@@ -18,21 +18,25 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# THE RELEASE CHECK (owner 2026-11-11 11:00): a pull request into main runs the small check only, about five minutes, and nothing else:
+#   `build`    the Station's face, the site assembly, the pages parse and every page opens in a browser (.github/smoke.mjs); the public guard is its own workflow (public-guard.yml)
+#   `browser`  one play-through per page, one after the other (.github/release-check.sh): the Companion's first expedition, the Station (a crate carried home, Pods, Create, Grow, the hatch) with its layer checks, the play page's dock round trip, the test page's switch and dock
+# Every other test stays in the repository: a builder runs the ones for what they changed (design/proposals/station-build.md §5); no full suite runs here and no nightly run exists.
+
 jobs:
   build:
-    # The project's own dev server (owner 2026-11-10: the tests run there, not on GitHub's machines). Its system tools (ninja, bc, Caddy at the web server's version,
-    # Chromium's libraries) are installed once on the server, so the install lines below run only on a GitHub machine. Never for a pull request from a fork.
+    # The project's own dev server (owner 2026-11-10: the tests run there, not on GitHub's machines). Its system tools (ninja, bc, Chromium's libraries) are installed once on the server, so the install lines below run only on a GitHub machine. Never for a pull request from a fork.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 60   # measured 29 minutes with the browser checks (2026-10-28); the node tests are the `rules` job now, beside this one; a manual run runs all the browser checks
+    timeout-minutes: 30   # the limit only catches a hung run
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
           persist-credentials: false
           # Only what the build reads (13.5 minutes for the whole tree on 2026-10-28, most of it art/ and v1/): the build's own folders, and the
-          # folders the build and the tests read outside them (.github/build-reads.txt, and the palettes the tests read); root files come with cone mode.
-          # Left out: the concept art (about 600 MB) and v1/ beyond the vendored LVGL and the generator workbench. A new folder the build or a test reads is added here.
+          # folders the build and the journeys read outside them (.github/build-reads.txt, and the palettes the layer checks read); root files come with cone mode.
+          # Left out: the concept art (about 600 MB) and v1/ beyond the vendored LVGL and the generator workbench. A new folder the build or a journey reads is added here and in `browser`.
           sparse-checkout: |
             .github
             website
@@ -49,34 +53,18 @@ jobs:
       - name: Scope (a pull request that changes only documents skips the build)
         # .github/docs-only.sh takes the pull request's changed files and applies the three conditions (a .md, outside the build's own folders, not read by the build). A push to main and a manual run never skip.
         # The job still ends green under the same name, so the required check passes. Every step below carries the condition.
-        # The same step writes which checks the pull request needs (tests, station, testpage), from .github/ci-filter.sh over the changed paths: a pull request runs only what its paths need, a manual run runs all of them,
-        # and a push to main runs none (main only receives pull requests that passed them): it assembles and deploys.
         id: scope
         run: |
           set -u
           result=docs=false
-          filter='tests=true
-          station=true
-          testpage=true'
-          case $GITHUB_EVENT_NAME in
-            push) filter='tests=false
-          station=false
-          testpage=false' ;;
-            pull_request)
-              if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
-                result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
-              fi
-              if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
-                filter=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || filter='tests=true
-          station=true
-          testpage=true'
-              fi
-              # The browser checks are the `browser` job below (owner, 2026-11-10: the one full run on the release pull request includes them).
-              : ;;
-          esac
+          list=
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
+              result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
+            fi
+          fi
           echo "$result" >> "$GITHUB_OUTPUT"
-          echo "$filter" >> "$GITHUB_OUTPUT"
-          { echo "Checks: docs-only $result; $(echo $filter)"; } >> "$GITHUB_STEP_SUMMARY"
+          { echo "Docs-only: $result"; } >> "$GITHUB_STEP_SUMMARY"
           if [ "$result" = docs=true ]; then
             { echo "Documents only: the build was skipped. Changed files:"; printf '%s\n' "$list" | cut -f2 | sed 's/^/- /'; } >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -87,7 +75,7 @@ jobs:
         id: emsdk
         run: echo "version=$(cat prototypes/face/emsdk.version)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
-        # On the dev server ~/emsdk stays between runs and is shared by the runners, and the `rules` shards compile with it while this job does: a cache restore would write over files in use. So the cache is for GitHub's machines only.
+        # On the dev server ~/emsdk stays between runs and is shared by the runners (the `browser` job compiles with it too): a cache restore would write over files in use. So the cache is for GitHub's machines only.
         if: steps.scope.outputs.docs != 'true' && runner.environment != 'self-hosted'
         with:
           path: ~/emsdk
@@ -96,7 +84,7 @@ jobs:
         if: steps.scope.outputs.docs != 'true'
         # Build time and sizes are printed in the log. The face is built before the site is assembled so that
         # prototypes/face/dist travels with the sandbox bundle.
-        # FACE_BUILD_DIR: the build's own folder in this job's temp, as the `rules` job has, so jobs on the same machine never share /tmp/mb-face-build.
+        # FACE_BUILD_DIR: the build's own folder in this job's temp, as the `browser` job has, so jobs on the same machine never share /tmp/mb-face-build.
         run: |
           set -euo pipefail
           if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
@@ -129,7 +117,7 @@ jobs:
         if: steps.scope.outputs.docs != 'true'
         # prototypes/vite.config.mjs bundles the Station, play and exploration pages into content-hashed chunks with modulepreload (the spec JSON and p-queue inside, the pictures and metrics hashed) and
         # lays them over _site/sandbox: the three pages are replaced, /sandbox/assets/ is added (ops/sandbox/Caddyfile keeps it immutable), every source file stays where it was. npm ci installs the
-        # pinned vite and p-queue (prototypes/package-lock.json); the node tests and the browser checks below import the sources and use the same install. Measured: about 3 s for the build.
+        # pinned vite and p-queue (prototypes/package-lock.json); the journeys import the sources and use the same install. Measured: about 3 s for the build.
         run: sh ops/sandbox/bundle-pages.sh _site
       - name: Check the pages parse
         if: steps.scope.outputs.docs != 'true'
@@ -146,73 +134,17 @@ jobs:
         with:
           path: ${{ runner.temp }}/pw
           key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
-      - name: Smoke-test in a browser
+      - name: Every page opens in a browser (the home page, the roadmap, the Companion, the Station, the play page, the test page)
         if: steps.scope.outputs.docs != 'true'
+        # .github/smoke.mjs loads each page of the assembled site headless and fails on a page error or a console error, a missing build stamp or the face missing from the bundle.
         run: |
           set -euo pipefail
           (cd _site && python3 -m http.server 8000 >/dev/null 2>&1 &)
           sleep 1
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
-          # split and timed, so a slow run says which part was slow
           if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null; fi
           time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
-      - name: Import guard (the JavaScript drawing layer is removed)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # prototypes/face/removed.json lists every removed drawing module (lvgl-switch.md §5.1); the guard fails when one exists again or anything imports one, when the canvas is touched outside the face's
-        # present and the named decoders, when JavaScript outside face/tests names an export of the node path, when a screen is registered with draw, nodes or faceNodes, or when an lv_*_create call
-        # appears outside face/src/prim/. No exemptions. It reads the tree only, so it needs no base.
-        run: node prototypes/face/tools/guard.mjs
-      - name: Roadmap data test
-        if: steps.scope.outputs.docs != 'true'
-        timeout-minutes: 3   # measured a few seconds
-        # .github/roadmap.test.mjs reads website/roadmap.json, the roadmap and home pages and the build's read list, so it runs whenever the build does, whatever the filter says (and so on a push to main too).
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --test .github/roadmap.test.mjs
-      - name: Places toolchain (pinned flatc, npm ci) and the bake check
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 5
-        # prototypes/places/VERSIONS.md pins flatc (the release zip's sha256 is checked by tools/get-flatc.sh) and the lockfile pins the JavaScript tools.
-        # `bake.mjs --check` rebakes in memory and byte-compares prototypes/places/baked and golden (a no-op until the LDtk project lands, C5).
-        # The baked blobs travel to the site with the rest of prototypes/places in "Assemble the site".
-        run: |
-          set -euo pipefail
-          sh prototypes/places/tools/get-flatc.sh "$RUNNER_TEMP/flatc"
-          echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
-          npm ci --prefix prototypes/places --no-audit --no-fund
-          npm ci --prefix prototypes/exploration --no-audit --no-fund
-          node prototypes/places/tools/bake.mjs --check
-      # The Station's rules (the node tests) are the `rules` job below, in four shards beside this job.
-      - name: Site server (the studio login, deploy.sh, the Caddyfile)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 5
-        # ops/sandbox/tests: the login's unit tests (lockouts and their doubling, the global brake, Origin, cookie flags, next= open redirects, the password never in the journal, sessions across a restart,
-        # a password change ends sessions), deploy.sh against a local release server (a good, a bad and a missing Caddyfile, a failed reload, the pin, pruning) and, with the real Caddy from Caddy's own
-        # apt repository (the version the web server runs), the shipped Caddyfile validated and a broken one refused. The Caddy service is stopped after the install: nothing here needs port 80.
-        run: |
-          set -euo pipefail
-          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then
-            sudo apt-get install -y -q debian-keyring debian-archive-keyring apt-transport-https gpg >/dev/null
-            curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-            curl -fsSL https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt | sudo tee /etc/apt/sources.list.d/caddy-stable.list >/dev/null
-            sudo apt-get update -q >/dev/null
-            sudo apt-get install -y -q caddy >/dev/null
-            sudo systemctl stop caddy || true
-          fi
-          caddy version
-          python3 -m unittest discover -s ops/sandbox/tests -v
-      - name: Placed masters match their index
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.
-        run: node prototypes/ui/tools/place-masters.mjs --check
-      - name: Station face fonts re-baked and compared
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # The face's Inter fonts are generated C (prototypes/face/src/fonts) from the committed TrueType files by lv_font_conv,
-        # pinned here to the version the sources were baked with; the bake is reproducible, so a diff means the sources or the
-        # script changed without the fonts being re-baked.
-        run: |
-          npm install --prefix "$RUNNER_TEMP/lvfc" lv_font_conv@1.5.3
-          sh prototypes/face/tools/bake-fonts.sh "$RUNNER_TEMP/lvfc/node_modules/.bin/lv_font_conv"
-          git diff --exit-code -- prototypes/face/src/fonts
       - name: Publish the tested bundle as a release
         if: github.ref == 'refs/heads/main' && steps.scope.outputs.docs != 'true'
         env:
@@ -254,137 +186,20 @@ jobs:
           git commit -qm "Sandbox mirror of ${GITHUB_SHA:0:7}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
 
-  rules:
-    # The Station's rules and the Caddy service in Node, and the other prototypes' tests, in four shards on the four dev runners, side by side with `build` (it does not wait for them).
-    # One step of `build` ran them all in one `node --test`: 29 minutes on release 2026-11-10a (PR #287; the limit is 60). Measured per file on the dev server (2026-11-10, four files at a time):
-    # the 236 files add up to about 50 minutes of one core, and the machine has 12; gen7-world (19 minutes, all of it generating 200 realms before the first test), views-agree (9) and gen7-place (9) were split
-    # into files of 3 to 5 minutes (gen7-world-s*, views-agree-seed*, gen7-place-decor). Measured with the four shards at once on the dev server (2026-11-10): 9.7 to 11.5 minutes each, the face build included.
-    # The check names are `rules (1/4)` to `rules (4/4)`; the merge rule requires them with `build`.
-    # Scope: the same rule as `build`'s scope step (copied: the build's thirty steps read steps.scope.outputs, and a shared job would make `build` wait for it). Documents only: every step is skipped and the job still ends green;
-    # a push to main runs no tests (main only receives pull requests that passed them); a pull request runs these when .github/ci-filter.sh says tests=true; a manual run runs them.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 30   # the limit only catches a hung run; MB_CI_FAST: the full set runs locally before every merge
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
-    name: rules (${{ matrix.shard }}/4)
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-          persist-credentials: false
-          # The same list as `build` (the tests read the same folders). A new folder a test reads is added in both.
-          sparse-checkout: |
-            .github
-            website
-            prototypes
-            ops
-            design
-            hardware
-            v1/native/vendor
-            art/companion-48
-            art/places
-            art/device-buttons
-            art/station-masters
-            art/retro-diffusion-trial
-      - name: Scope (documents only, or no tests needed, skips the shard)
-        id: scope
-        run: |
-          set -u
-          result=docs=false
-          filter='tests=true'
-          case $GITHUB_EVENT_NAME in
-            push) filter='tests=false' ;;
-            pull_request)
-              if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
-                result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
-              fi
-              if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
-                filter=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || filter='tests=true'
-              fi ;;
-          esac
-          echo "$result" >> "$GITHUB_OUTPUT"
-          echo "$filter" | grep '^tests=' >> "$GITHUB_OUTPUT"
-          echo "Shard ${{ matrix.shard }}/4: docs-only $result; $(echo "$filter" | grep '^tests=')" >> "$GITHUB_STEP_SUMMARY"
-      - name: Emscripten SDK (pinned in prototypes/face/emsdk.version)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        id: emsdk
-        run: echo "version=$(cat prototypes/face/emsdk.version)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
-        # GitHub's machines only, as in `build`: ~/emsdk stays on the dev server and is shared by the runners.
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true' && runner.environment != 'self-hosted'
-        with:
-          path: ~/emsdk
-          key: emsdk-${{ steps.emsdk.outputs.version }}-ubuntu-24.04
-      - name: Build the Station's face (the tests read its dist folder, the fonts' metrics and the node build)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # The same commands as in `build`. Measured 90 s on the dev server (2026-11-10): the one cost of a shard that the single step did not have.
-        run: |
-          set -euo pipefail
-          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
-          exec 9>"$HOME/.emsdk.lock"; flock 9   # the dev server shares ~/emsdk between jobs: one setup at a time (two activates at once lost .emscripten)
-          if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
-          (cd "$HOME/emsdk" && ./emsdk install "${{ steps.emsdk.outputs.version }}" >/dev/null && ./emsdk activate "${{ steps.emsdk.outputs.version }}" >/dev/null)
-          flock -u 9
-          FACE_BUILD_DIR="$RUNNER_TEMP/face-build" EMSDK="$HOME/emsdk" prototypes/face/build.sh all
-      - name: Install the pages' packages (vite, p-queue)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # The same install as in ops/sandbox/bundle-pages.sh, whose packages the tests import.
-        run: npm ci --prefix prototypes --no-audit --no-fund --silent
-      - name: Places toolchain (pinned flatc, npm ci)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        timeout-minutes: 5
-        # The same commands as `build`'s Places toolchain step, without the bake check (that stays in `build`).
-        run: |
-          set -euo pipefail
-          sh prototypes/places/tools/get-flatc.sh "$RUNNER_TEMP/flatc"
-          echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
-          npm ci --prefix prototypes/places --no-audit --no-fund
-          npm ci --prefix prototypes/exploration --no-audit --no-fund
-      - name: Playwright's Chromium (cached by the Playwright version)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/pw
-          key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
-      - name: Install Playwright and its Chromium
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # As in the smoke step of `build` (the key above moves with playwright@1.56.1).
-        run: |
-          set -euo pipefail
-          npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
-          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null; fi
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
-      - name: Station rules (node tests, shard ${{ matrix.shard }} of 4)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.tests == 'true'
-        # Today's file list, unchanged, split by node over four. The tests have the browser too: the specimen generator's oracle (prototypes/station/tests/specimen.test.mjs) runs the original in Chromium and compares the port to it.
-        # A file that takes long is split by its tests into several files, as exploration/tests/views-agree (one file a seed) and gen7-place (the decor test apart), so no one file holds a shard up.
-        run: |
-          set -euo pipefail
-          MB_CI_FAST=1 PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node --import ./.github/ci-load.mjs --test --test-shard=${{ matrix.shard }}/4 prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/places/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs prototypes/test/tests/*.test.mjs prototypes/play/tests/footer.test.mjs
-
   browser:
-    # The browser checks, in four parallel shards on the dev runners beside `build` and `rules` (owner 2026-11-10: the one full run on the release pull request includes the Station, play page and face checks; no nightly run).
-    # They moved here out of `build`, where they ran in one line (about 15 minutes of the 29 measured on 2026-10-28). The check names are `browser (station)`, `browser (face)`, `browser (testpage)` and `browser (play)`; the merge rule requires them with `build` and `rules (1/4)` to `rules (4/4)`.
-    # Scope: as `rules`: documents only, or no browser check needed (.github/ci-filter.sh), skips every step and the job still ends green; a push to main runs none; a manual run runs all.
-    # The tools are set up as the `rules` shards do, in places the runner's user can read: the Emscripten SDK in the runner's own ~/emsdk (cloned and installed on first use, shared by its runs), Playwright 1.56.1 and its Chromium under $RUNNER_TEMP/pw. Nothing is read from /home/mb.
-    # A browser that cannot start fails the step: every step runs with set -e and the checks throw when chromium.launch fails; no step here turns that into a skip.
+    # One play-through per page, in one job, one after the other (.github/release-check.sh; measured about 4 minutes of journeys on the dev server). Beside `build`, it does not wait for it.
+    # Scope: documents only, or a change no journey reads (.github/ci-filter.sh says all three false: a change under website/ only), skips every step and the job still ends green; a push to main runs none; a manual run runs it.
+    # The tools are set up in places the runner's user can read: the Emscripten SDK in the runner's own ~/emsdk (cloned and installed on first use, shared by its runs), Playwright 1.56.1 and its Chromium under $RUNNER_TEMP/pw. Nothing is read from /home/mb.
+    # A browser that cannot start fails the step: every step runs with set -e and the journeys throw when chromium.launch fails; no step here turns that into a skip.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 45   # measured: with eight jobs on one machine the face shard was still in the long-names pass when 30 minutes ran out; the limit only catches a hung run
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [station, face, testpage, play]
-    name: browser (${{ matrix.shard }})
+    timeout-minutes: 20   # the limit only catches a hung run
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
           persist-credentials: false
-          # The same list as `build` and `rules` (the checks read the same folders).
+          # The same list as `build` (the journeys read the same folders).
           sparse-checkout: |
             .github
             website
@@ -398,36 +213,42 @@ jobs:
             art/device-buttons
             art/station-masters
             art/retro-diffusion-trial
-      - name: Scope (documents only, or this shard not needed, skips it)
+      - name: Scope (documents only, or a change no journey reads, skips the job)
         id: scope
         run: |
           set -u
           result=docs=false
-          filter='run=true'
+          filter=run=true
           case $GITHUB_EVENT_NAME in
-            push) filter='run=false' ;;
+            push) filter=run=false ;;
             pull_request)
               if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
                 result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
               fi
               if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
-                all=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || all='station=true
-          testpage=true'
-                case ${{ matrix.shard }} in
-                  station|face) filter=run=$(echo "$all" | sed -n 's/^station=//p') ;;
-                  testpage) filter=run=$(echo "$all" | sed -n 's/^testpage=//p') ;;
-                  play) filter=run=$(echo "$all" | sed -n 's/^tests=//p') ;;
-                esac
+                all=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || all=
+                if [ -n "$all" ] && ! printf '%s\n' "$all" | grep -q '=true'; then filter=run=false; fi
               fi ;;
           esac
           echo "$result" >> "$GITHUB_OUTPUT"
           echo "$filter" >> "$GITHUB_OUTPUT"
-          echo "Shard ${{ matrix.shard }}: docs-only $result; $filter" >> "$GITHUB_STEP_SUMMARY"
-      - name: Build the Station's face (the checks read its dist folder)
+          echo "Browser: docs-only $result; $filter" >> "$GITHUB_STEP_SUMMARY"
+      - name: Emscripten SDK (pinned in prototypes/face/emsdk.version)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
-        # The same commands as in `rules`.
+        id: emsdk
+        run: echo "version=$(cat prototypes/face/emsdk.version)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        # GitHub's machines only, as in `build`: ~/emsdk stays on the dev server and is shared by the runners.
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && runner.environment != 'self-hosted'
+        with:
+          path: ~/emsdk
+          key: emsdk-${{ steps.emsdk.outputs.version }}-ubuntu-24.04
+      - name: Build the Station's face (the journeys read its dist folder)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        # The same commands as in `build`.
         run: |
           set -euo pipefail
+          if [ "$RUNNER_ENVIRONMENT" != self-hosted ]; then sudo apt-get install -y -q ninja-build bc >/dev/null; fi
           exec 9>"$HOME/.emsdk.lock"; flock 9   # the dev server shares ~/emsdk between jobs: one setup at a time (two activates at once lost .emscripten)
           if [ ! -f "$HOME/emsdk/emsdk" ]; then git clone --depth 1 --branch "$(cat prototypes/face/emsdk.version)" https://github.com/emscripten-core/emsdk.git "$HOME/emsdk"; fi
           (cd "$HOME/emsdk" && ./emsdk install "$(cat "$GITHUB_WORKSPACE/prototypes/face/emsdk.version")" >/dev/null && ./emsdk activate "$(cat "$GITHUB_WORKSPACE/prototypes/face/emsdk.version")" >/dev/null)
@@ -444,7 +265,7 @@ jobs:
           key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
       - name: Install Playwright and its Chromium
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
-        # As in `rules`; the checks find it through PW_DIR and PLAYWRIGHT_BROWSERS_PATH, set for the steps after this one.
+        # The journeys find it through PW_DIR and PLAYWRIGHT_BROWSERS_PATH, set for the steps after this one.
         run: |
           set -euo pipefail
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.56.1
@@ -461,54 +282,8 @@ jobs:
           echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
           npm ci --prefix prototypes/places --no-audit --no-fund
           npm ci --prefix prototypes/exploration --no-audit --no-fund
-      - name: Station journey
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'station'
+      - name: The play-throughs (one per page, one after the other)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
         timeout-minutes: 10   # measured about 4 minutes
-        # The Station's browser journey on the face with the service in mock mode beside it; station-build.md §5.
-        run: node prototypes/station/tools/journey.mjs
-      - name: Station layer checks
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'station'
-        # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6).
-        run: node prototypes/station/tools/checks.mjs
-      - name: Station face in a browser (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        # The Station page boots the WebAssembly face and draws nothing else: load time, size on the wire and the cost of a full-frame copy are printed.
-        run: node prototypes/face/tools/face-check.mjs
-      - name: Station layer table in a browser (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        # Pods and Home at each state: the pixels outside the palette on pass 1 and pass 2 read 0, Home's regions and budgets.
-        run: node prototypes/face/tools/layer-check.mjs
-      - name: Pods and Home goldens (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        # The framebuffer hash of each state against prototypes/face/golden; with --logs the face's log and props facts are written for the layout check (outside the tree).
-        run: node prototypes/face/tools/goldens.mjs --check --logs "$RUNNER_TEMP/layout-logs"
-      - name: Layout check (report mode)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        # Rules L0 to L11 (ui/specs/layout.mjs) over every golden's log; fails only on a finding of a rule frame.json layout.enforced lists, an unused exception, a malformed layout block, or L0 on an enforced screen.
-        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs" --out "$RUNNER_TEMP/layout-check" --overlays review
-      - name: Goldens' states with the longest names (LVGL)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        # Every golden state drawn again with the widest names of the live list; nothing is written into the tree and no hash is compared.
-        run: node prototypes/face/tools/goldens.mjs --long-names --logs "$RUNNER_TEMP/layout-logs-long"
-      - name: Layout check (long names)
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        # The text fit over those logs: a name that outruns the plate it is drawn on fails the run.
-        run: node prototypes/face/tools/layout-check.mjs "$RUNNER_TEMP/layout-logs-long" --long-names --out "$RUNNER_TEMP/layout-check/long-names"
-      - name: Layout check output
-        if: always() && steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'face'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: layout-check
-          path: ${{ runner.temp }}/layout-check
-          if-no-files-found: ignore
-          retention-days: 14
-      - name: Test page journey
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'testpage'
-        timeout-minutes: 12   # measured about 5 minutes
-        # The test page's journey: every region at the proof sizes against the signed numbers, the menu, the switch, the dock, F and the full-screen view, the pixel rule and the safe-area override.
-        run: node prototypes/test/tools/journey.mjs
-      - name: Play page journey
-        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true' && matrix.shard == 'play'
-        timeout-minutes: 20   # not yet measured in this job
-        # The play page's journey (prototypes/play/tools/journey.mjs), phone test included.
-        run: node prototypes/play/tools/journey.mjs
+        # .github/release-check.sh: the Companion's first expedition, the Station's journey and layer checks, the play page's dock round trip, the test page's switch and dock. It prints the seconds each took.
+        run: sh .github/release-check.sh

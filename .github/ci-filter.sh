@@ -1,11 +1,12 @@
 #!/bin/sh
 # Which checks does a pull request need? Reads `git diff --name-only` on stdin (one path per line) and prints
-#   tests=   the node tests, the import guard, the placed-masters check and the font re-bake
-#   station= the Station journey and the face checks that use the Station page (face-check, layer-check, goldens, layout check, layer checks)
-#   testpage= the test page's journey
-# each true or false. When in doubt for a path, the checks run: a path that is not under website/ or prototypes/ and is not a changed
+#   tests=   a change to code the journeys run on
+#   station= a change to the Station, its face or what they draw from
+#   testpage= a change to the test page or the Station's page
+# each true or false. The release check's `browser` job (the play-throughs, .github/release-check.sh) runs when any of the three is true; it skips when all are false.
+# When in doubt for a path, the checks run: a path that is not under website/ or prototypes/ and is not a changed
 # document runs all of them, and so does the workflow or this script. A change under website/ only runs none (the site assembly and the
-# smoke check always run). An empty list runs all of them.
+# page-open check always run). An empty list runs all of them.
 set -eu
 tests=false station=false testpage=false
 input=$(cat)

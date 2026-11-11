@@ -37,6 +37,7 @@ const rec = JSON.parse(readFileSync(file, "utf8")), home = JSON.parse(readFileSy
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.join(ui, "palettes/station.json"), "utf8")).colours);
 const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
+const owed = (m) => { if (!rec.small) fail(m); };   // a screenshot point the small run (JOURNEY_SMALL) does not reach is owed by the full journey only
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [14, 15, 16, 1016, 18, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
@@ -125,13 +126,13 @@ for (const s of rec.shots) {
 }
 // every Pods state is recorded, with the regions it must draw
 { const need = { inventory: [["painted", "card.pod"], ["type", "card.words"]], room: [["painted", "read.ground"], ["painted", "read.rail"], ["type", "read.name"], ["chrome", "read.bracket"]], compare: [["chrome", "cmp.0"], ["chrome", "cmp.1"], ["chrome", "cmp.0.take"], ["chrome", "cmp.1.take"]] };
-  for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.screen === "pods" && x.check.mode === mode); if (!shots.length) { fail(`no screenshot point records Pods in its ${mode} state`); continue; }
+  for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.screen === "pods" && x.check.mode === mode); if (!shots.length) { owed(`no screenshot point records Pods in its ${mode} state`); continue; }
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }
-for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
-for (const [name, state] of [["cross-screen-overview", "overview"], ["cross-screen-chapter", "chapter"]]) if (!rec.shots.some((x) => x.name === name && x.check.screen === "cross" && x.check.props?.state === state)) fail(`no screenshot point records the Cross screen as ${state}: ${name}`);
-if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
-for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "all"], ["page-library-spread", "all"], ["page-vivarium", "wall"], ["page-vivarium-away", "wall"], ["page-vivarium-empty", "none"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
+for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) owed(`no screenshot point records Home as ${pt}`);
+for (const [name, state] of [["cross-screen-overview", "overview"], ["cross-screen-chapter", "chapter"]]) if (!rec.shots.some((x) => x.name === name && x.check.screen === "cross" && x.check.props?.state === state)) owed(`no screenshot point records the Cross screen as ${state}: ${name}`);
+if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) owed("no screenshot point records Idle");
+for (const [pt, state] of [["page-bench", "docked"], ["page-bench-panel-upgrade", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "all"], ["page-library-spread", "all"], ["page-vivarium", "wall"], ["page-vivarium-away", "wall"], ["page-vivarium-empty", "none"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) owed(`no screenshot point records ${pt} in state ${state}`);
 // the moving sets (vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole and Idle; up close and in the hatch
 // the up-close hop scales down to fit when the rect leaves less above the figure, so it never clips (the animator's closeHop note)
 { const MV = path.join(ui, "specs/station/moving"), ix = JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")), sets = Object.fromEntries(ix.sets.map((id) => [id, JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"))]));

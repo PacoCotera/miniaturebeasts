@@ -26,6 +26,8 @@ const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
+// JOURNEY_SMALL=1 (the release check): one play-through of the Station: the fixture, a crate carried home and opened (Dock), Pods' reading room (identify, read, Compare), Create, Grow and the Incubator's hatch; then the face, text and request checks at the end. The full journey (the other sections) is run by a builder for what they changed.
+const SMALL = !!process.env.JOURNEY_SMALL;
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".wasm": "application/wasm" };
 // The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the sandbox server's web server does.
 loadCaddyFrames();
@@ -58,7 +60,7 @@ page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resourc
 const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http://127.0.0.1:`)) external.push(r.url()); });
 mkdirSync(path.join(here, "../img"), { recursive: true });
 // Every screenshot point records what the layer checks read (tools/checks.mjs): the face's log, its palette readings on passes 1 and 2, and for the points that name it the frame's pixels (for the ink).
-const checks = { shots: [], textApiCalls: 0 };
+const checks = { shots: [], textApiCalls: 0, small: SMALL };
 const record = async (name, ink) => {
   const check = await page.evaluate(() => window.__st.check()), snap = await page.evaluate(() => window.__st.snapshot({ capture: false }));
   if (check.log) { const order = (list) => (list ?? []).map((r) => [JSON.stringify(r), r]).sort((x, y) => x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0).map((e) => e[1]); check.log.type = order(check.log.type); check.log.regions = order(check.log.regions); }
@@ -343,6 +345,7 @@ await page.evaluate((id) => window.__st.skipRead(id), coatSix.id); await podsAt(
 await letGoAll(untuva.id);
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id) && s.readingPod !== untuva.id, "the Untuva let go: it leaves the bench");
 expect(s.tray.length === 4, "four pods: " + s.tray.length);
+if (!SMALL) {
 // P2. Compare with one, two, four and five traits (no chapter of version 8 has six); each pair a fresh crate of two pods, read whole by the developer, compared from the inventory, and let go after
 const compareShot = async (species, seed, ci, name, grid) => {
   await page.evaluate(([sp, sd]) => { window.__st.seedCrate(sp, 2, sd); window.__st.openBay(); }, [species, seed]); await page.waitForTimeout(300);
@@ -378,6 +381,7 @@ const s0 = s.s;
 if (tuikis) { await letGoAll(tuikis.id);
   s = await st(); expect(s.s === s0 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "let go, paying nothing"); }
 else fail("no Tuikis pod to let go");
+}   // end of the sections JOURNEY_SMALL leaves out (P2, 6)
 // R1. Create (slot R, journey-create.json): Grow it on the read Loika opens Create on the face; ◀ ▶ walk the read traits, ▲ ▼ roll a look (+1 Data), the line reads the price and the leaves; a room key drops the unpaid choices; ✓ Grows: the stamp prints, the
 // code appears, the pod travels, input held 1080 ms, then the Incubator (a jump: ← there reads Home)
 await press("research", 300);
@@ -429,7 +433,7 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on t
 // Create's journey on the face, held to prototypes/face/golden/journey-create.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-create.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("create-"))), json = JSON.stringify({ _note: "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
-  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-create.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
+  else if (SMALL) { /* the full journey holds this golden */ } else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-create.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`create steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 // Grow paints nothing (decisions 10-11 14:17): the mibi is drawn from its layers, nothing joins the outbox and no job reaches the Caddy service
 s = await st(); expect(s.outbox.length === 0, "Grow leaves the outbox empty: " + JSON.stringify(s.outbox));
@@ -499,8 +503,9 @@ await hpressI("back", 400);
 // The Incubator's journey on the face, held to prototypes/face/golden/journey-incubator.json (gate check 5): the keys and what the face said, the screen and the choices after each
 { const file = path.resolve(here, "../../face/golden/journey-incubator.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("incubator-"))), json = JSON.stringify({ _note: "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
-  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-incubator.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
+  else if (SMALL) { /* the full journey holds this golden */ } else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-incubator.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
   console.log(`incubator steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
+if (!SMALL) {
 // fill the room: Grow is refused before payment; return a mibi frees a place (no Essence)
 await page.evaluate(() => window.__st.seedAdults("S01", 77, 6));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 8, "eight places taken");
@@ -912,6 +917,7 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-library.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
   console.log(`library steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
+}   // end of the sections JOURNEY_SMALL leaves out (the full room, 13, M4, 7, 8, the Library)
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text API " + checks.textApiCalls + " times"); console.error("FAIL text API calls " + checks.textApiCalls); }
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
@@ -921,7 +927,7 @@ await assertFace("the fresh world");
 // or the player would wait for it (the page loads a screen's group before it draws the screen, and fetches a miss on demand). A screen the journey never showed is not checked.
 { const used = await page.evaluate(() => window.__st.used()), mroot = path.join(root, "ui/assets/masters"), index = readIndex(mroot), groups = readGroups(mroot);
   if (process.env.STATION_WRITE_GROUPS) { const g = mergeGroups(groups, used, index); writeGroups(mroot, g); console.log("wrote groups.json: " + Object.entries(g.screens).map(([k, v]) => `${k} ${v.length} (${(groupBytes(v, index) / 1e6).toFixed(1)} MB)`).join(" · ")); }
-  else { const miss = missingFrom(groups, used, index); for (const m of miss) fail("a master a screen used is not in groups.json: " + m); console.log(`masters used per screen: ${Object.entries(used).map(([k, v]) => k + " " + v.length).join(" · ")}; ${miss.length} not in groups.json`); } }
+  else if (!SMALL) { const miss = missingFrom(groups, used, index); for (const m of miss) fail("a master a screen used is not in groups.json: " + m); console.log(`masters used per screen: ${Object.entries(used).map(([k, v]) => k + " " + v.length).join(" · ")}; ${miss.length} not in groups.json`); } }
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);
