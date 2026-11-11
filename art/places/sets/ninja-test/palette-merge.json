@@ -1,0 +1,25 @@
+{
+  "source": "mibi-art art/desk 58b259f4a, art-jobs/2026-11-11-art-snap-palette-room/out/manifest.json, the `merged` list (signed by the art director 2026-11-11): each `from` colour is replaced by its `to` colour, the nearest in OKLab (every pair within 0.012), in every picture the set writes. prepare-set reads this file (recipe `paletteMerge`); it draws nothing.",
+  "merged": [
+    { "from": "#34552c", "to": "#36582d" },
+    { "from": "#54623f", "to": "#54603e" },
+    { "from": "#4c6f37", "to": "#486e36" },
+    { "from": "#5c6944", "to": "#616b44" },
+    { "from": "#7e7640", "to": "#7a743e" },
+    { "from": "#827c74", "to": "#807c74" },
+    { "from": "#6ea05a", "to": "#65a05d" },
+    { "from": "#978e4e", "to": "#948d4d" },
+    { "from": "#66a55d", "to": "#69a55d" },
+    { "from": "#69a75d", "to": "#69a55d" },
+    { "from": "#8a937d", "to": "#8a937e" },
+    { "from": "#8b937e", "to": "#8a937e" },
+    { "from": "#969287", "to": "#9a9083" },
+    { "from": "#a09656", "to": "#a09853" },
+    { "from": "#aea55b", "to": "#aea55c" },
+    { "from": "#9fce71", "to": "#9fce78" },
+    { "from": "#a1cd78", "to": "#9fce78" },
+    { "from": "#aad479", "to": "#a3d276" },
+    { "from": "#d2e78d", "to": "#cee78c" },
+    { "from": "#d6e98a", "to": "#d3e887" }
+  ]
+}
