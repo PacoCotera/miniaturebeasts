@@ -29,7 +29,6 @@ export async function openStation({ motion = true, clock = false, longNames = pr
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   const port = server.address().port, fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
   const browser = await chromium.launch(), page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1, reducedMotion: motion ? "no-preference" : "reduce" });
-  if (process.env.MB_CI_FAST === "1") page.setDefaultTimeout(90000);   // CI runs several jobs on one machine: the page open and its waits get 90 s, not the default 30
   page.on("pageerror", (e) => fail("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) fail("console: " + m.text().split("\n")[0]); });
   if (clock) await page.addInitScript(VIRTUAL_CLOCK);
   for (const script of init) await page.addInitScript(script);

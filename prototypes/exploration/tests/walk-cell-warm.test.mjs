@@ -9,13 +9,14 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { headroom } from "../../../.github/ci-load.mjs";
 
 const require = createRequire(import.meta.url);
 let chromium; try { ({ chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright")); } catch { chromium = null; }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const skip = !chromium && "playwright is not installed (set PW_DIR)";
-const WARM_BAR = 100, COLD_BAR = 250;   // ms at 4x: the first frame of a warm step, and of a cold one (the brief's 150 ms with room for a loaded machine)
+const WARM_BAR = 100 * headroom, COLD_BAR = 250 * headroom;   // ms at 4x: the first frame of a warm step, and of a cold one (the brief's 150 ms with room for a loaded machine); a pull request (MB_CI_FAST=1) gets 1.5x more, from .github/ci-load.mjs
 
 async function serve() {
   const server = createServer((req, res) => {
@@ -32,7 +33,6 @@ async function serve() {
 async function onMap(browser, url, seed, rate = 4) {
   const ctx = await browser.newContext({ viewport: { width: 412, height: 915 } }), page = await ctx.newPage(), errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  if (process.env.MB_CI_FAST === "1") page.setDefaultTimeout(90000);   // CI runs several jobs on one machine: the page open gets 90 s, not the default 30
   await page.goto(`${url}?seed=${seed}`); await page.waitForTimeout(800);
   await (await ctx.newCDPSession(page)).send("Emulation.setCPUThrottlingRate", { rate });
   await page.evaluate(() => { window.__mb.TEST.calm = true; });
