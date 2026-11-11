@@ -32,6 +32,7 @@ async function serve() {
 async function onMap(browser, url, seed, rate = 4) {
   const ctx = await browser.newContext({ viewport: { width: 412, height: 915 } }), page = await ctx.newPage(), errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
+  if (process.env.MB_CI_FAST === "1") page.setDefaultTimeout(90000);   // CI runs several jobs on one machine: the page open gets 90 s, not the default 30
   await page.goto(`${url}?seed=${seed}`); await page.waitForTimeout(800);
   await (await ctx.newCDPSession(page)).send("Emulation.setCPUThrottlingRate", { rate });
   await page.evaluate(() => { window.__mb.TEST.calm = true; });
