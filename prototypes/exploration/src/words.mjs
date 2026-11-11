@@ -18,11 +18,14 @@ export const WORDS = {
   full: (supply, cap, keeps) => supply + ' ' + cap + ' of ' + cap + ' · ' + (keeps || 'the Probe holds no more'),
   // pressing fruit (✓ labels and the bump line)
   press: { stone: 'Press fruit on the stone', tree: 'Press fruit on the tree', dim: 'Press on a stone or tree', bump: 'Press fruit on a stone or tree · or put it down' },
-  // strike marks: the press, what it adds, and the trip's count against its cap (m: the yield of the highest tier entered this trip)
+  // [copy] the Data hold is the only limit on a trip; the copywriter writes the words behind these slots (placeholders say the meaning only)
+  hold: { data: (n, cap) => '/' + cap },   // [copy] the Data count's cap, shown beside the count of Data held
+  creature: { holdFull: 'hold full' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
+  // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line
   strike: {
     read: 'Read the strike mark', ctx: g => 'strike mark · +' + g + ' Data', ctxShort: g => '+' + g + ' Data',
-    capCtx: m => 'Data from strikes ' + m + ' of ' + m, capShort: m => m + ' of ' + m + ' this trip',
-    full: m => 'Data from strikes ' + m + ' of ' + m + ' this trip · the mark stays unread', after: (n, m) => 'Data from strikes ' + n + ' of ' + m,
+    press: n => '+' + n + ' Data',   // [copy] said once a strike mark is read
+    holdFull: 'hold full · Data keeps',   // [copy] facing an unread mark with the hold full: no Read is offered
     sign: 'Lightning struck here · noted as Data', tile: 'Strike mark · Data', tileShort: 'Strike mark', left: ['a strike mark', 'strike marks'], take: 'strike mark',
   },
   // storm glass lies in a few marks on sand; no supply holds it yet, so these wait for the Station to use it
@@ -34,7 +37,7 @@ export const WORDS = {
     veil: 'On high ground you see further: it lifts 6 tiles around you.',
     dots: 'The dots top left are your reach, one per cell: a dot fills once you have walked most of that place; your cell is framed.',
     call: 'Go down into a place and walk it. Call lifts the veil around you and shows what is there; once you have walked most of a place, its dot fills.',
-    data: 'Data also comes from strike marks, dark glassy streaks where lightning went into the ground: face one and ✓ Read the strike mark. Strikes bring up to 2 / 4 / 6 / 8 Data a trip, by the highest tier you entered (meadow and pond edge 2, wood and rock field 6, the cave 8); one reading in a place of that tier is enough. A few marks on sand hold storm glass.',
+    data: 'Data also comes from strike marks, dark glassy streaks where lightning went into the ground: face one and ✓ Read the strike mark. A mark brings 2 / 3 / 4 / 5 Data by the tier of the place it lies in (meadow and pond edge 2, wood and rock field 4, the cave 5); only your hold of 20 limits a trip. A few marks on sand hold storm glass.',
   },
   // the world turn's rule, said at End expedition when no place was entered
   waits: 'Nothing explored · the world waits',

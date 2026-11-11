@@ -209,7 +209,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and walk it. Call lifts the veil around you and shows what is there; once you have walked most of a place, its dot fills.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act, up to 8 a trip (sometimes a pod too). Data also comes from strike marks, dark glassy streaks where lightning went into the ground: face one and ✓ Read the strike mark. Strikes bring up to 2 / 4 / 6 / 8 Data a trip, by the highest tier you entered (meadow and pond edge 2, wood and rock field 6, the cave 8); one reading in a place of that tier is enough.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it: each creature pays 1 Data for feeding it and 1 for a settle, once a trip, shown on its line before you act (sometimes a pod too). Data also comes from strike marks, dark glassy streaks where lightning went into the ground: face one and ✓ Read the strike mark. A mark brings 2 / 3 / 4 / 5 Data by the tier of the place it lies in (meadow and pond edge 2, wood and rock field 4, the cave 5); only your hold of 20 limits a trip.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -238,7 +238,6 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
           <dt>Data yield</dt><dd id="oYield">–</dd>
           <dt>Seed</dt><dd id="oSeed">–</dd>
         </dl>
-        <div class="dev-row"><label for="devStep">Developer · Data per tier step</label><input id="devStep" type="number" min="0.5" max="20" step="0.5" inputmode="decimal"><span id="devLadder" role="status"></span><button class="btn" id="devStepReset" type="button">Decided (2)</button></div>
         <div class="dev-row"><label for="devCareDay">Developer · care</label><button class="btn" id="devCareDay" type="button">New care day</button></div>
         <h2>Events</h2>
         <ol class="log" id="oLog"></ol>
@@ -246,7 +245,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <div class="pal" id="oPal" role="img" aria-label="The screen palette"></div>
         <div class="copy-row"><button class="btn" id="copyNotes" type="button">Copy playtest notes</button><span id="copyMsg" role="status"></span></div>
         <textarea id="notesFallback" hidden readonly aria-label="Playtest notes"></textarea>
-        <p class="obs-note"><code>?seed=</code> in the address sets the seed of the <b>next New world</b>; a saved world keeps playing until you choose New world. <code>?dev=1</code> opens this panel. The Data step is a developer setting, kept outside the save: an expedition yields step × the tier of the place (1 starter, 2 early, 3 mid, 4 late), 2 / 4 / 6 / 8 as decided.</p>
+        <p class="obs-note"><code>?seed=</code> in the address sets the seed of the <b>next New world</b>; a saved world keeps playing until you choose New world. <code>?dev=1</code> opens this panel. A strike mark pays 2 / 3 / 4 / 5 Data by the tier of its place (starter, early, mid, late); the hold of 20 is the only limit on a trip.</p>
       </div>
     </div>
   </aside>
@@ -345,20 +344,15 @@ const BAY = 3;   // the sealed bay holds three consignments, one per expedition
 // Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
 const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
 const CAP = 20;                                   // each material caps at 20 carried
-// Data per expedition, by the tier of the place explored (design/proposals/research-economy.md §2): 2 / 4 / 6 / 8, which is
-// DATA_STEP × tier. A place's tier follows its land as the proposal's table lays it out: meadow and pond edge are
-// starter places (1), wood and rock field mid places (3), the cave behind the burrow a late place (4, behind a gate);
-// no land in this prototype is an early place (2) yet. An expedition over several places takes the highest tier it entered.
-// The Walk brings no Data. The step (the tier
-// multiplier) is a developer setting in the Observer, kept outside the save under its own key.
-const DATA_STEP = 2, PLACE_TIER = [1, 1, 3, 3, 0, 0], CAVE_TIER = 4, TIER_NAME = ['', 'starter', 'early', 'mid', 'late'], DEV_STEP_KEY = 'mb-dev-datastep';
-let dataStep = DATA_STEP; try { const v = +localStorage.getItem(DEV_STEP_KEY); if (v > 0 && v <= 20) dataStep = v; } catch (e) { }
-function setDataStep(v) { v = +v; dataStep = v > 0 && v <= 20 ? v : DATA_STEP; try { if (dataStep === DATA_STEP) localStorage.removeItem(DEV_STEP_KEY); else localStorage.setItem(DEV_STEP_KEY, String(dataStep)); } catch (e) { } if (typeof onStateChanged === 'function' && typeof S !== 'undefined' && S) onStateChanged(); return dataStep; }
+// Data from a strike mark is fixed by the tier of the place it lies in: 2 / 3 / 4 / 5 (starter / early / mid / late); the hold (CAP) is the
+// only limit on a trip. A place's tier follows its land: meadow and pond edge are starter places (1), wood and rock field mid places (3),
+// the cave behind the burrow a late place (4, behind a gate); no land in this prototype is an early place (2) yet.
+const STRIKE_DATA = [0, 2, 3, 4, 5], PLACE_TIER = [1, 1, 3, 3, 0, 0], CAVE_TIER = 4, TIER_NAME = ['', 'starter', 'early', 'mid', 'late'];
 function placeTier(lay) { return lay.cave ? CAVE_TIER : PLACE_TIER[lay.land] || 1; }
-function noteTier(ex, lay) { ex.placeTier = Math.max(ex.placeTier || 0, placeTier(lay)); }   // the expedition's tier: the highest place it entered
+function noteTier(ex, lay) { ex.placeTier = Math.max(ex.placeTier || 0, placeTier(lay)); }   // the expedition's highest tier entered: reported, limits nothing
 const walkTier = ex => ex.placeTier || 0;
-const walkYield = ex => Math.round(walkTier(ex) * dataStep);                                 // the Data this expedition earns
-const dataLadder = () => [1, 2, 3, 4].map(t => Math.round(t * dataStep)).join(' / ');
+const walkYield = ex => STRIKE_DATA[walkTier(ex)] || 0;                                     // reporting only: what a mark pays at the highest tier entered
+const dataLadder = () => STRIKE_DATA.slice(1).join(' / ');
 // Station stand-in prices.
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
@@ -1460,8 +1454,8 @@ function featPos(key, f) { if (f.kind === 's') { const st = fs(key, f.id); if (s
 function cupFull(key, f) { const s = fs(key, f.id); return s.full != null ? s.full : !!f.full; }
 // ---------- Strike marks (scheme 4.7): the land's record of lightning, read for Data ----------
 // A strike mark is a dark glassy streak where lightning went into bare ground (nothing burns). The generator places them (lay.strikes, with an age in world turns) and each world turn's storm
-// adds fresh ones (S.cells[key]['sf...'], kept with the cell). A mark fades STRIKE_FADE turns after the strike. Reading one is a press: it tops the trip's field Data up to the yield of the
-// highest tier entered (walkYield), once a mark, and takes nothing from the land. Words: src/words.mjs.
+// adds fresh ones (S.cells[key]['sf...'], kept with the cell). A mark fades STRIKE_FADE turns after the strike. Reading one is a press: it adds the Data of the
+//place's tier (STRIKE_DATA), once a mark, and takes nothing from the land; only the hold limits it. Words: src/words.mjs.
 const STRIKE_FADE = 12;   // [tune] world turns a mark stays on the land
 const strikeFaded = f => S.turn - f.born >= STRIKE_FADE;
 const strikeIsRead = (key, f) => fs(key, f.id).read != null;
@@ -1469,14 +1463,14 @@ function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the 
   for (const m of lay.strikes || []) lay.feats.push({ id: m.id, kind: 'q', x: m.x, y: m.y, born: -m.age, glass: m.glass });
   const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
 }
-// What a press on a strike mark would add to the hold now: the trip's yield less the Data from strikes so far, and the hold's room. 0: a press is refused.
-function strikeGain(ex) { return Math.max(0, Math.min(walkYield(ex) - (ex.dField || 0), CAP - ex.cargo.d)); }
+// What a press on a strike mark would add now: the tier of the place it lies in (2 / 3 / 4 / 5), less what the hold cannot take. 0: the hold is full and a press is not offered.
+function strikeGain(ex) { return Math.max(0, Math.min(STRIKE_DATA[placeTier(curLay())] || STRIKE_DATA[1], CAP - ex.cargo.d)); }
 function readStrike(f) {
-  const ex = S.exp, key = ex.patch.key, want = walkYield(ex), put = strikeGain(ex);
-  if (!put) { FX.bumpAt = NOW; fxMsg(want - (ex.dField || 0) <= 0 ? WORDS.strike.full(want) : MAT.d + ' ' + ex.cargo.d + ' of ' + CAP + ' · ' + WORDS.holdsNoMore, 2); return; }   // a refused press spends nothing and the mark stays unread
-  const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;
+  const ex = S.exp, key = ex.patch.key, put = strikeGain(ex);
+  if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
+  const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
   setFS(key, f.id, { read: S.turn });
-  fxSign('strike'); fxMsg(WORDS.strike.after(ex.dField, want), 2); logEv('Read a strike mark · +' + got + ' Data (' + ex.dField + ' of ' + want + ' from strikes)');
+  fxSign('strike'); fxMsg(WORDS.strike.press(got), 2); logEv('Read a strike mark · +' + got + ' Data (' + ex.cargo.d + ' of ' + CAP + ' in the hold)');
   advance('patch', { noise: 'act' });
 }
 // Fresh marks from the turn's storm: one in each cell the storm struck on the map, on a bare tile if the place has one.
@@ -1706,7 +1700,7 @@ function leftItemsAll(c) {
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of lay0.feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
-    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the trip's strikes are full
+    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && S.exp.cargo.d < CAP) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once the hold is full
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
@@ -2389,8 +2383,8 @@ function patchAction() {
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : WORDS.takeDew, run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
-      case 'q': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex), m = walkYield(ex);   // the press says what it adds, or that the trip's strikes are full, before it is made
-          return { label: WORDS.strike.read, ctx: g ? [WORDS.strike.ctx(g), WORDS.strike.ctxShort(g)] : [WORDS.strike.capCtx(m), WORDS.strike.capShort(m)], run: () => readStrike(ft) }; } break;
+      case 'q': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex);   // the press says what it adds before it is made; with the hold full no press is offered, the line says so
+          return g ? { label: WORDS.strike.read, ctx: [WORDS.strike.ctx(g), WORDS.strike.ctxShort(g)], run: () => readStrike(ft) } : { label: WORDS.strike.holdFull, run: null }; } break;
       case 'h': { const st = fs(key, ft.id), left = outpostLeft(key, ft), relight = !!st.lightT;
         if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: light, 1 Energy' : 'Relight · 1 Energy') : 'Light ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'end here, mend and shelter';
           return ex.cargo.e >= PRICE.depot ? { label: lbl, ctx, run: () => lightDepot(ft, relight) }
@@ -2591,26 +2585,21 @@ function takePod(p, leave) {
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
 function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
 function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? spOf(ex.pt.sp).ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
-// Data is a record of creatures doing things: every act on a
-// creature pays 1 Data, for certain, once per creature per act per expedition, and the player sees it before doing it (the
-// facing line). Acts built today: feeding (eat) and settling (settle). Watch, follow and play are not built. No act pays by
-// chance and there is no first-time bonus. Creature Data is capped per expedition (CREATURE_CEIL, shown as it fills); it is
-// counted apart from the field yield, which still arrives when the expedition ends.
+// Data is a record of creatures doing things: every act on a creature pays +1 Data, for certain, once per creature per act per
+// expedition, and the player sees it before doing it (the facing line). Acts built today: feeding (eat) and settling (settle).
+// Watch, follow and play are not built. No act pays by chance, there is no first-time bonus and no ceiling: only the hold (CAP)
+// limits it. With the hold full the act still works (the creature eats) and its line says the hold is full.
 const ACT_DATA = 1;
-const CREATURE_CEIL = 8;
 const actDone = (ex, c, kind) => !!(ex.momented && ex.momented[c.id + ':' + kind]);
-const creatureRoom = ex => Math.max(0, CREATURE_CEIL - (ex.dAct || 0));
-const actOpen = (ex, c, kind) => !actDone(ex, c, kind) && creatureRoom(ex) > 0;
 function awardMoment(c, kind, X) {
   const ex = S.exp; if (actDone(ex, c, kind)) return; ex.momented[c.id + ':' + kind] = 1;
-  const room = creatureRoom(ex), got = room ? addMat('d', Math.min(ACT_DATA, room), c.x, c.y) : 0;
-  ex.dAct = (ex.dAct || 0) + got;
-  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (creatureRoom(ex) ? '' : ' (Data for this trip: full)'));
+  const got = ex.cargo.d < CAP ? addMat('d', ACT_DATA, c.x, c.y) : 0;   // a full hold takes nothing; the line below says so
+  ex.dAct = (ex.dAct || 0) + got;   // counts, for the end report
+  ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + spName(c.sp) + ' ' + kind + ' · +' + got + ' Data' + (got ? '' : ' (hold full)'));
   if (kind === 'eat' && c.grab) {   // the grab line says what happened (pri 1, pushed first); the Data note follows it and does not repeat "ate your fruit"
-    fxMsg(got ? '+' + got + ' Data' + (creatureRoom(ex) ? '' : ' · Data for this trip: full') : 'Data for this trip: full', 1); return; }
+    fxMsg(got ? '+' + got + ' Data' : WORDS.creature.holdFull, 1); return; }
   const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
-  if (!got) { fxMsg(cap(what) + ' · Data for this trip: full', 2); return; }
-  fxMsg('+' + got + ' Data · ' + what + (creatureRoom(ex) ? '' : ' · Data for this trip: full'), 2);
+  fxMsg(got ? '+' + got + ' Data · ' + what : cap(what) + ' · ' + WORDS.creature.holdFull, 2);
 }
 function offer(c) {
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
@@ -6188,11 +6177,12 @@ function probeMove(k) {
   const n = metTiles().length, f = probeFocus(), to = f + ({ left: -1, right: 1, up: -9, down: 9 })[k];
   if (to < 0 || to >= n) { FX.bumpAt = NOW; return; } S.ui.pf = to;
 }
-// The hold as pictures: an icon and its count at 3×; the cap (CAP) shows only once it is close, from 16 up.
+// The hold as pictures: an icon and its count at 3×; the cap (CAP) shows only once it is close, from 16 up; for Data, the one material whose hold is the limit of a trip, it always shows.
 function drawMats(c, y) {
   [['energy', c.e], ['data', c.d], ['essence', c.s]].forEach(([ic, v], i) => { const x = 24 + i * 144;
     panel(x, y, 114, 40, C.ink, C.slate); blit(ICON[ic](), x + 8, y + 13); text(String(v), x + 28, y + 10, C.bone, 3);
-    if (v >= 16) text('/' + CAP, x + 28 + textW(String(v), 3) + 4, y + 16, C.amber); });
+    if (ic === 'data') text(WORDS.hold.data(v, CAP), x + 28 + textW(String(v), 3) + 4, y + 16, v >= CAP ? C.amber : C.slate);
+    else if (v >= 16) text('/' + CAP, x + 28 + textW(String(v), 3) + 4, y + 16, C.amber); });
 }
 // The pods held: each a pod at 2× in a 122×52 slot, with its species beside it when known; an empty slot is a dashed outline.
 function drawPods(pods, n, y) {
@@ -6642,12 +6632,12 @@ function noteSigns() {
   if (fogActive()) { const p = cxy(S.exp.pos); let near = false; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && inFog(y * MW + x)) near = true; }
     if (near) fxSign('fog'); }
 }
-// The Data an act on this creature will pay, said before it is done: "+1 Data" while its act is open, "Data for this trip: full"
-// once the ceiling is reached, nothing once the act is paid. An unidentified creature says nothing (no act leaks).
+// The Data an act on this creature will pay, said before it is done: "+1 Data" while its act is open and the hold has room, the hold-full line
+// when it is full, nothing once the act is paid. An unidentified creature says nothing (no act leaks).
 function actTag(c) {
   const ex = S.exp, sp = c.sp, kind = !S.known.includes(sp) || !ex ? null : spOf(sp).eats ? 'eat' : spOf(sp).settle ? 'settle' : null;
   if (!kind || actDone(ex, c, kind)) return '';
-  return actOpen(ex, c, kind) ? ' · +' + ACT_DATA + ' Data' : ' · Data for this trip: full';
+  return ex.cargo.d < CAP ? ' · +' + ACT_DATA + ' Data' : ' · ' + WORDS.creature.holdFull;
 }
 function dietLine(sp, long) {
   if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
@@ -7065,20 +7055,13 @@ import('../play/src/footer.mjs').then(m => m.mountFooter(footEl, { buildUrl: '..
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
 function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
-// Developer: the Data step (the tier multiplier). Typing in the field keeps the keys; Enter or leaving it applies.
-const devStepEl = document.getElementById('devStep'), devLadderEl = document.getElementById('devLadder');
-function showDevStep() { devStepEl.value = String(dataStep); devLadderEl.textContent = '= ' + dataLadder() + ' Data an expedition by tier' + (dataStep === DATA_STEP ? '' : ' (decided: 2 / 4 / 6 / 8)'); }
-devStepEl.addEventListener('change', () => { setDataStep(devStepEl.value); showDevStep(); });
-devStepEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') devStepEl.blur(); e.stopPropagation(); });
-document.getElementById('devStepReset').addEventListener('click', e => { setDataStep(DATA_STEP); showDevStep(); if (e.detail) e.currentTarget.blur(); });
 // Developer: a new care day for the mibis with you (tendDay cleared), logged; never on the device.
 function newCareDay() { const c = carriedMibis(); for (const m of c) m.tendDay = null; logEv('Developer · new care day' + (c.length ? ' for ' + listWords(c.map(m => m.name)) : '')); save(); }
 document.getElementById('devCareDay').addEventListener('click', e => { if (S) newCareDay(); if (e.detail) e.currentTarget.blur(); });
-showDevStep();
 // What this expedition yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
-  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data at the expedition\'s end · ' + (ex.dAct || 0) + ' of ' + CREATURE_CEIL + ' in from ' + ex.moments.length + ' creature act' + (ex.moments.length === 1 ? '' : 's') : 'no place entered yet') + ' | ladder ' + dataLadder(); }
+  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data a strike mark here · ' + (ex.dField || 0) + ' in from strike marks, ' + (ex.dAct || 0) + ' in from ' + ex.moments.length + ' creature act' + (ex.moments.length === 1 ? '' : 's') : 'no place entered yet') + ' | ladder ' + dataLadder(); }
   if (S.phase === 'sealed' && r && r.yield) return 'last expedition: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' creature act' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' from strike marks | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
@@ -7279,7 +7262,7 @@ requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, WARM, WHOLE, ARR, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
-  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
+  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)

@@ -247,7 +247,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 | Material | What it is | Gathered from (**Decided**) | Amounts (**Built**) |
 | --- | --- | --- | --- |
 | **Energy** | Charge; in the field, the Probe's own | Storm-struck stones; warm stones | +2 (+3 at the peak); warm +1 |
-| **Data** | Records of something that happened | Creature moments the player causes (+1); strike marks the player reads (up to 2 / 4 / 6 / 8 a trip, by the highest tier entered) | +1 an act; a reading tops the trip up to its tier's yield |
+| **Data** | Records of something that happened | Creature moments the player causes (+1); strike marks the player reads (2 / 3 / 4 / 5 each, by the tier of the place; the hold of 20 is the only limit) | +1 an act; a reading adds its place tier's amount |
 | **Essence** | Living matter | Dew, pressed fruit, shed tufts | dew +1, fruit +2, tuft +1 |
 
 - **Warm stones.** At each world turn an unstruck stone can hold a warm charge of
