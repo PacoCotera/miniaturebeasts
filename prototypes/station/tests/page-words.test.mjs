@@ -23,5 +23,8 @@ for (const file of ["station/index.html", "play/index.html"]) {
 test("the Keys help and the dock controls use the player's words", () => {
   const st = readFileSync(path.join(root, "station/index.html"), "utf8"), pl = readFileSync(path.join(root, "play/index.html"), "utf8");
   assert.ok(st.includes("The Dock control, or <kbd>D</kbd>: <b>Dock</b> or <b>Lift</b> the Companion."));
-  assert.ok(pl.includes('aria-label="Lift the Companion"') && pl.includes('title="Dock the Companion"') && pl.includes('aria-label="The dock\'s screen"'));
+  // the play page has one Dock / Lift key: its page words say "Dock the Companion", the shell says "Lift the Companion" in the same label and title once docked
+  const shell = readFileSync(path.join(root, "play/src/shell.mjs"), "utf8");
+  assert.ok(pl.includes('id="dockKey"') && pl.includes('aria-label="Dock the Companion"') && pl.includes('title="Dock the Companion"') && pl.includes('aria-label="The dock\'s screen"'));
+  assert.ok(shell.includes('"Lift the Companion"'));
 });

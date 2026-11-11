@@ -265,7 +265,7 @@ test("the Vivarium's readout: each part only when non-zero, 'all on a trip' when
 test("the needs hold in the spec's order and clear when acted on: crates, the bud, a portrait, a new mibi to meet, new or glinting pods, pods waiting for a well, a pod that could be incubated", { skip }, async () => {
   const b = scene({ adults: 3, crates: 2, bud: 1e8 / 60000, portrait: true, unseen: true, waiting: true, ui: { meet: 1 } });
   const keys = (x) => homeNeeds(x.st, x.sv, settings, x.ui ?? { meet: 1 }, Date.now() + 1000).map((n) => n.key); assert.deepEqual(keys(b), ["crates", "budReady", "portrait", "meet", "newPods", "waitingPods"]);
-  assert.deepEqual(homeSpec.strings.line.order, ["crates", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"]);
+  assert.deepEqual(homeSpec.strings.line.order, ["crates", "readHome", "full", "budReady", "drying", "portrait", "meet", "pair", "newPods", "glints", "waitingPods", "couldGrow"]);
   assert.deepEqual(b.props.regions.line, { needs: ["Open the Bay", "The bud is ready"] }, "at most two");
   b.sv.bay = []; assert.deepEqual(keys(b).slice(0, 2), ["budReady", "portrait"], "the crates are gone once opened");
 });
@@ -377,9 +377,10 @@ import { createHash } from "node:crypto";
 const StateRules = S;
 const mastersDir = path.resolve(here, "../../ui/assets/masters"), mastersIndex = readIndex(mastersDir).masters;
 const SIGNED_H3 = { "companion-upright-docked-28x46": [28, 46], "companion-upright-away-28x46": [28, 46], "berth-shut-26x24": [26, 24], "berth-crate-26x24": [26, 24], "berth-portrait-18x24": [18, 24] };
-test("the five signed masters are placed unchanged in masters/home, at their own sizes, with their hashes in the index", () => {
+const MASTERS_DIR_OF = { "berth-crate-26x24": "pods" };   // the berth crate is the crate set's master, in masters/pods (the art director's palette snap); Home draws it from there
+test("the five signed masters are placed unchanged in masters/home (the berth crate in masters/pods, the crate set's master), at their own sizes, with their hashes in the index", () => {
   for (const [id, [w, h]] of Object.entries(SIGNED_H3)) {
-    const e = mastersIndex[id]; assert.ok(e, `${id} is in the index`); assert.deepEqual([e.file, e.w, e.h], [`home/${id}.png`, w, h]);
+    const e = mastersIndex[id]; assert.ok(e, `${id} is in the index`); assert.deepEqual([e.file, e.w, e.h], [`${MASTERS_DIR_OF[id] ?? "home"}/${id}.png`, w, h]);
     const buf = readFileSync(path.join(mastersDir, e.file)); assert.equal(createHash("sha256").update(buf).digest("hex"), e.sha256, `${id}: the file is its hash`); assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [w, h]);
   }
 });
