@@ -15,6 +15,8 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(here, "../..");
+// JOURNEY_SMALL=1 (the release check): the play-through only (C the switch, D the dock); the measuring of every region at every proof size (A), the menu (B), the full-screen, pixel-rule, safe-area and hardware-view sections are left to the full journey, which a builder runs for what they changed.
+const SMALL = !!process.env.JOURNEY_SMALL;
 const SHOTS = process.env.TP_SHOTS || null; if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown", ".wasm": "application/wasm", ".ttf": "font/ttf", ".svg": "image/svg+xml", ".webmanifest": "application/manifest+json" };
 const server = createServer((req, res) => {
@@ -94,10 +96,10 @@ async function measure(c, tag = "") {
   if (SHOTS) await page.screenshot({ path: path.join(SHOTS, `${c.name === "desktop" ? "desktop" : c.name}${c.dev === "companion" ? "-companion" : ""}-${c.w}x${c.h}.png`) });
   await ctx.close();
 }
-for (const c of CASES) await measure(c);
+if (!SMALL) for (const c of CASES) await measure(c);
 
 // ---- B. the menu ----
-for (const m of MENU) {
+if (!SMALL) for (const m of MENU) {
   const { ctx, page, st } = await open(m.w, m.h, { query: m.q, touch: true });
   if (m.dev === "companion") { await page.keyboard.press("2"); await page.waitForTimeout(300); }
   eq(await page.evaluate(() => window.__tp.rect("menuPanel")), null, `B: ${m.name} ${m.dev}: the menu starts closed`);
@@ -196,7 +198,7 @@ for (const m of MENU) {
 }
 
 // ---- E. F and the full-screen view ----
-{
+if (!SMALL) {
   const { ctx, page } = await open(1440, 900, { query: "?test" });
   const view = () => page.evaluate(() => [document.documentElement.dataset.view, !!document.fullscreenElement]);
   eq((await view())[0], "hardware", "E: a desktop opens in the hardware view");
@@ -215,7 +217,7 @@ for (const m of MENU) {
 }
 
 // ---- F. the pixel rule per face ----
-{
+if (!SMALL) {
   const rule = async (w, h, dsf, dev, want, what) => {
     const { ctx, page } = await open(w, h, { dsf, query: "?test", touch: w < 900 });
     if (w >= 900) { await page.evaluate(() => localStorage.setItem("mb-test-view", "full")); await page.reload({ waitUntil: "load" }); await page.waitForTimeout(1200); }
@@ -231,7 +233,7 @@ for (const m of MENU) {
   await rule(915, 412, 1, "station", "auto", "915 x 412 at dpr 1: smooth (0.667)");
 }
 // ---- G. the safe-area override ----
-{
+if (!SMALL) {
   const { ctx, page } = await open(844, 390, { query: "?safe=0,47,21,47", touch: true });   // no ?dev
   eq(await page.evaluate(() => window.__tp.rect("switch")), [8, 8, 88, 44], "G: ?safe is dev-only: without ?dev the switch stays at 8 8 88 44");
   await ctx.close();
@@ -240,7 +242,7 @@ for (const m of MENU) {
   await dv.ctx.close();
 }
 // ---- the hardware view's keys: the Station's at 1280 x 720, the Companion's at 1280 x 800 (every box at least 44 x 44); the Companion at 1280 x 720 is forced to full ----
-for (const [dev, h] of [["station", 720], ["companion", 800]]) {
+if (!SMALL) for (const [dev, h] of [["station", 720], ["companion", 800]]) {
   const { ctx, page } = await open(1280, h, { query: "" });
   if (dev === "companion") { await page.keyboard.press("2"); await page.waitForTimeout(400); }
   const R = await rects(page), ks = Object.entries(R).filter(([k]) => k.startsWith("hk-" + dev + "-"));
@@ -248,7 +250,7 @@ for (const [dev, h] of [["station", 720], ["companion", 800]]) {
   for (const [k, r] of ks) expect(r[2] >= 44 - 0.5 && r[3] >= 44 - 0.5, `H: hardware ${dev} 1280x${h} ${k} is at least 44 x 44: ${f1(r)}`);
   await ctx.close();
 }
-{
+if (!SMALL) {
   const { ctx, page } = await open(1280, 720, { query: "" });
   await page.keyboard.press("2"); await page.waitForTimeout(400);
   eq(await page.evaluate(() => document.documentElement.dataset.view), "full", "H: the Companion at 1280x720 is forced to the full-screen view");
@@ -258,7 +260,7 @@ for (const [dev, h] of [["station", 720], ["companion", 800]]) {
   await ctx.close();
 }
 // ---- the turn-the-phone line: stored only when shown ----
-{
+if (!SMALL) {
   const { ctx, page } = await open(1440, 900, { query: "", touch: true });
   await page.setViewportSize({ width: 390, height: 664 }); await page.waitForTimeout(400);
   eq(await page.evaluate(() => window.__tp.rect("hint") !== null), true, "I: a fresh browser opened at 1440x900, then resized to 390x664, shows the line");
