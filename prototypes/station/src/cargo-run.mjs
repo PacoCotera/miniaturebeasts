@@ -11,6 +11,9 @@ export const MATS = [{ key: "e", name: "energy" }, { key: "d", name: "data" }, {
 export const FIND_KINDS = ["crystal", "pearl", "shard"];
 export const HOLD_MAX = 30000;   // lvgl-switch.md §2.7
 
+// The Station has never stored a pod: nothing in the tray or on the mat, no mibi, no bud, no species known (the same facts as the goal's firstPod, state.mjs). The first crate's inside view then holds for ✓ Take the pod.
+export const neverStoredPod = (st) => !st.tray.length && !st.waiting.length && !st.mibis.length && !st.bud && !(st.knownIds || []).length;
+
 // The crates that ✓ opens, in the order they open: the walk crates while docked, then the portrait crate, one at a time (build spec 8.5: the oldest ready, by start).
 export function readyList(st, sv, settings, now) {
   const walk = S.docked(st) ? S.bayCrates(st, sv).map((c) => ({ kind: "walk", id: c.id, c })) : [];
@@ -22,11 +25,19 @@ export function readyList(st, sv, settings, now) {
 export const findsOf = (c) => (Array.isArray(c.finds) ? c.finds.filter((k) => FIND_KINDS.includes(k)) : []);
 
 // One crate's length in ms (build spec 4): with a pod or a find, the first goes at `pods` and 300 apart, each travelling 600 and swapping 180, then 300; with neither, the materials go 150 apart from 700, then 300; the portrait crate 700 + 600 + 300.
+// The order of an ordinary crate (cargo.json events.opening.order): inside for I = it.inside ms, then the pods, then the supplies, then the finds. The face has the same three starts (screens/cargo.c).
+export const insideOf = (it) => it.inside || 0;
+export const podAt = (steps, it, j) => insideOf(it) + steps.pods + steps.podEach * j;
+export const matAt = (steps, it, q) => insideOf(it) + steps.pods + steps.podEach * it.pods.length + steps.materialEach * q;
+export const findAt = (steps, it, f) => insideOf(it) + steps.pods + steps.podEach * it.pods.length + steps.materialEach * it.mats.length + steps.podEach * f;
 export function lengthOf(steps, it) {
   if (it.kind === "sitting") return steps.portrait + steps.travel + steps.tail;
-  const n = it.pods.length + it.finds.length;
-  if (n > 0) return steps.pods + steps.podEach * (n - 1) + steps.travel + steps.swap + steps.tail;
-  return steps.materials + steps.materialEach * Math.max(0, Math.max(1, it.mats.length) - 1) + steps.travel + steps.tail;   // a crate holding nothing is read as holding one material
+  const np = it.pods.length, nm = it.mats.length, nf = it.finds.length;
+  let end = insideOf(it) + steps.pods + steps.travel;   // a crate holding nothing is read as holding one supply
+  if (np) end = Math.max(end, podAt(steps, it, np - 1) + steps.travel + steps.swap);
+  if (nm) end = Math.max(end, matAt(steps, it, nm - 1) + steps.travel);
+  if (nf) end = Math.max(end, findAt(steps, it, nf - 1) + steps.travel + steps.swap);
+  return end + steps.tail;
 }
 // The starts, lengths, event ms and hold of the items from `from` on (the first start is 0): the event's ms is the last start plus the last length, the hold 20 longer.
 export function timesOf(steps, items, from = 0) {
@@ -39,10 +50,12 @@ export function fitCount(steps, items) { let n = items.length; while (n > 1 && t
 
 // The step times at which reduced motion stages `at` for one item (build spec 8.3): 0, 200, 500, each material's go time, 1500, each pod's and find's start, the last + 300.
 export function stepTimes(steps, it) {
-  const out = new Set([0, steps.display, steps.flash]);
-  it.mats.forEach((_, i) => out.add(steps.materials + steps.materialEach * i));
-  if (it.kind === "sitting") out.add(steps.portrait);
-  else { if (it.pods.length + it.finds.length) out.add(steps.hatch); for (let j = 0; j < it.pods.length + it.finds.length; j++) out.add(steps.pods + steps.podEach * j); }
+  const out = new Set([0]);
+  if (it.kind === "sitting") { out.add(steps.display); out.add(steps.portrait); }
+  else {
+    out.add(insideOf(it) + steps.hatch);
+    it.pods.forEach((_, j) => out.add(podAt(steps, it, j))); it.mats.forEach((_, q) => out.add(matAt(steps, it, q))); it.finds.forEach((_, f) => out.add(findAt(steps, it, f)));
+  }
   out.add(lengthOf(steps, it));
   return [...out].sort((a, b) => a - b);
 }

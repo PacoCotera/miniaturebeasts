@@ -14,7 +14,7 @@
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "b4f05ada",
+   "hash": "24a1eb66",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
@@ -42,7 +42,7 @@
    "png": "home-focus-companion-away.png"
   },
   "home-focus-bay": {
-   "hash": "8514372b",
+   "hash": "cf2d11df",
    "png": "home-focus-bay.png"
   },
   "home-focus-companion-nosleep": {
@@ -110,11 +110,11 @@
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {
-   "hash": "d1341ded",
+   "hash": "88a853c9",
    "png": "home-bay-waiting.png"
   },
   "home-bay-portrait": {
-   "hash": "125f494a",
+   "hash": "31084966",
    "png": "home-bay-portrait.png"
   },
   "home-companion-docked": {

@@ -250,11 +250,8 @@ export function familyBody() {
 // ---- Cargo ----
 // The bay, the crate opening and the end: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
-  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame, SPECS.sitting), pn = UI.panel, a = UI.cargo.arrival;
-  if (pn && pn.screen === "cargo" && UI.cargo.state === "arrival" && a && a.phase === "choice") {   // the dock arrival's choice: the strip's props ride on Cargo's (an overlay) and its bottom line is built from the focused card
-    const pb = panelBuild({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, jump: G.settings.jump }, SPECS.panel, SPECS.frame, SPECS.pods);
-    pn.focus = pb.overlay.focus.cur; body.props.overlay = pb.overlay; body.line = pb.line; body.requests = [...body.requests, ...pb.requests];
-  } else if (pn && pn.screen === "cargo") UI.panel = null;
+  const body = cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, light: lightNow(), now: Date.now() }, SPECS.cargo, SPECS.home, SPECS.frame, SPECS.sitting), pn = UI.panel;
+  if (pn && pn.screen === "cargo") UI.panel = null;   // the arrival's choice has no card: its bottom line is cargoBuild's
   return body;
 }
 

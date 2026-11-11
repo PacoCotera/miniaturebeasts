@@ -5,10 +5,10 @@
 // The rules are applied one crate at a time, at its start (S.openCrates, T.openSittingCrate), so the crates not yet opened stay sealed when the player leaves (build spec 8.4). The timeline is the spec's (events.opening.steps).
 import * as S from "../state.mjs";
 import * as T from "../sitting.mjs";
-import { readyList, planRun, timesOf, fitCount, stepTimes } from "../cargo-run.mjs";
+import { readyList, planRun, timesOf, fitCount, stepTimes, podAt, matAt, neverStoredPod } from "../cargo-run.mjs";
 import { toPods, toPodsWaiting } from "./home.mjs";
 import { endPortrait } from "../views/cargo-props.mjs";
-import { skipShow } from "./arrival.mjs";
+import { arrivalKey } from "./arrival.mjs";
 
 // The crates ready to open: the walk crates while docked and the portrait crate (docked or away).
 export const readyCount = (h) => readyList(h.st, h.sv, h.settings, h.now()).length;
@@ -17,7 +17,10 @@ export const readyCount = (h) => readyList(h.st, h.sv, h.settings, h.now()).leng
 export function openBay(h) {
   const c = h.ui.cargo, spec = h.specs.cargo, steps = spec.events.opening.steps, now = h.now();
   const list = readyList(h.st, h.sv, h.settings, now); if (!list.length) return { ok: false, plays: [] };
-  const maxN = spec.events.opening.crates.max, first = list.slice(0, maxN), plan = planRun(h.st, h.sv, h.settings, now, first), n = fitCount(steps, plan.items);
+  const maxN = spec.events.opening.crates.max, first = list.slice(0, maxN), plan = planRun(h.st, h.sv, h.settings, now, first);
+  const heldFirst = neverStoredPod(h.st);   // the first pod the Station has ever stored: the run's first crate, when it holds one, keeps its inside view until ✓ Take the pod
+  plan.items.forEach((it, i) => { it.inside = it.kind === "walk" ? steps.inside : 0; it.hold = heldFirst && i === 0 && it.kind === "walk" && it.pods.length > 0; });
+  const n = fitCount(steps, plan.items);
   const run = { items: plan.items.slice(0, n), plan, pre: plan.pre, rest: [...first.slice(n), ...list.slice(maxN)], base: 0, starts: [], lens: [], gen: 0, newest: null };
   for (const it of run.items) it.st = { applied: false, given: [], mat: new Set(), done: false };
   c.run = run; c.state = "opening"; c.shown = { e: h.st.e, d: h.st.d, s: h.st.s, turn: h.st.turn };
@@ -33,16 +36,15 @@ function startEvent(h, run, base) {
   const gen = ++run.gen, tm = timesOf(steps, run.items, base); run.base = base; run.starts = tm.starts; run.lens = tm.lens;
   const at = (ms, fn) => h.at(ms, () => { if (c.run === run && run.gen === gen) fn(); });
   c.crate = base; c.at = 0; if (h.skip) h.skip();
+  const held = !!run.items[base].hold;   // the first pod: the inside view stands with no clock and no hold until ✓ (skipCrate releases it); the rule is applied now, as at any crate's start
+  if (held) { begin(h, run, base); return; }
   h.play({ kind: "arrival", target: "crate", ms: tm.ms, hold: tm.hold, skip: true });
   run.items.slice(base).forEach((it, i) => {
     const k = base + i, t0 = tm.starts[i], L = tm.lens[i];
     if (i === 0) begin(h, run, k); else at(t0, () => begin(h, run, k));
-    it.mats.forEach((m, q) => {
-      const go = steps.materials + steps.materialEach * q;
-      at(t0 + go + (motion ? steps.travel : 0), () => give(h, run, k, q));   // the object arrives (or with reduced motion is gone at its step) and the counter ticks
-    });
-    if (motion && it.mats.length) at(t0 + steps.flash, () => { for (const m of it.mats) h.play({ kind: "flash", target: m.key, ms: steps.flashMs }); });   // the materials answer: each present material's top-bar figure flashes (frame.json materials.flashMs)
-    it.pods.forEach((p, j) => { if (p.mat >= 0) at(t0 + steps.pods + steps.podEach * j + (motion ? steps.travel : 0), () => it.st.mat.add(j)); });   // a pod has gone to the mat: the middle slot says so
+    it.mats.forEach((m, q) => at(t0 + matAt(steps, it, q) + (motion ? steps.travel : 0), () => give(h, run, k, q)));   // the object arrives (or with reduced motion is gone at its step) and the counter ticks
+    if (motion && it.mats.length) at(t0 + matAt(steps, it, 0), () => { for (const m of it.mats) h.play({ kind: "flash", target: m.key, ms: steps.flashMs }); });   // the supplies answer: each present material's top-bar figure flashes (frame.json materials.flashMs)
+    it.pods.forEach((p, j) => { if (p.mat >= 0) at(t0 + podAt(steps, it, j) + (motion ? steps.travel : 0), () => it.st.mat.add(j)); });   // a pod has gone to the mat: the middle slot says so
     if (!motion) for (const s of stepTimes(steps, it)) { if (s === 0) continue; at(t0 + s, () => { c.crate = k; c.at = s; }); }
     at(t0 + L, () => { finish(h, run, k); c.at = L; });
   });
@@ -77,7 +79,9 @@ const openedOf = (run) => ({ crates: run.items.filter((it) => it.st.done).length
 // ✓ Skip (build spec 8.4): the current crate's end state at once, then the next crate starts with the times rebased to 0; on the last crate, the end.
 export function skipCrate(h) {
   const c = h.ui.cargo, run = c.run; if (c.state !== "opening" || !run) return false;
-  const k = c.crate; finish(h, run, k);
+  const k = c.crate, it = run.items[k];
+  if (it && it.hold) { it.hold = false; it.inside = 0; startEvent(h, run, k); return true; }   // ✓ Take the pod: the held inside view ends and the crate goes on from there (the pod first)
+  finish(h, run, k);
   if (k >= run.items.length - 1) { endRun(h); return true; }
   startEvent(h, run, k + 1); return true;
 }
@@ -111,7 +115,7 @@ export function held(h, verb, roomKey) {
 // `target`: "room" (Cargo has no other); `verb`: confirm | back | pad (any of the four directions, in the end only) | room:<key> (the frame's).
 export function intent(h, target, verb) {
   const c = h.ui.cargo;
-  if (c.state === "arrival") { skipShow(h); return; }   // a key in the show (reduced motion, or after the face's hold): the show cuts to its choice
+  if (c.state === "arrival") { arrivalKey(h, verb); return; }   // a key in the show (reduced motion, or after the face's hold): the show cuts to its choice; at the choice ✓ opens the crates and ← is Later
   if (c.state === "opening") { if (verb === "confirm") skipCrate(h); else if (verb === "back") { abortRun(h); h.ui.home.f = "bay"; h.goto("home"); } return; }   // the face says ✓ and ← on the room while the opening holds; the pad does nothing
   if (c.state === "end") {   // any key does what it does, and then the bay shows again: ✓ follows the bottom line, ← is Home, the pad only closes it
     const run = c.run, newest = run?.newest ?? null, came = run ? run.items.some((it) => it.pods.some((p) => p.well >= 0)) : false, waiting = run?.plan?.sim?.waiting?.length ?? 0;   // waiting: the pods on the mat at the end (the Pods rack is full), as the props count them

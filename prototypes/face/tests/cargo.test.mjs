@@ -305,7 +305,6 @@ for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates and a por
 
 // ---- the dock arrival (T-20261016-58; cargo.json regions.arrival, events.show; specs/station-dock-arrival-spec.md amended T-67, T-112) ----
 import { arrivalOf } from "../../station/src/arrival.mjs";
-import { panelBuild } from "../../station/src/views/panel-props.mjs";
 const panelSpec = J("panel"), AR = R.arrival;
 function arrivalScene(o = {}) {
   const st = world(); st.knownIds = ["S01"]; S.seedAdults(st, "S01", 5, 3, settings); st.probe = { shield: 2, smax: 3, tier: 1, seq: 1 };
@@ -313,12 +312,11 @@ function arrivalScene(o = {}) {
   const back = (o.back ?? 2), reqs = [...st.mibis.slice(0, back).map((m, i) => ({ seq: i + 1, op: "home", id: m.id })), ...(o.leaving ? [{ seq: back + 1, op: "add", id: st.mibis[2].id }] : [])]; st.carryReqs = reqs; st.carrySeq = reqs.length;
   const a = { ...arrivalOf(st, sv, { home: [], mend: o.mend ?? { free: 1, paid: 0, broke: false } }), from: "home", phase: o.phase ?? "show", choice: (o.crates ?? 2) > 0 };
   const ui = { ...cargoUI({ state: "arrival", arrival: a, at: o.at ?? (o.phase === "choice" ? 3500 : 3000) }), skip: null };
-  const b = buildOf(st, sv, ui), pb = o.phase === "choice" ? panelBuild({ st, sv, settings, ui: { ...ui, panel: { screen: "cargo", id: "dock", focus: o.focus ?? "" }, pods: { cur: null } }, jump: "arrival" }, panelSpec, frameSpec, J("pods")) : null;
-  if (pb) { b.props.overlay = pb.overlay; b.line = pb.line; b.requests = [...b.requests, ...pb.requests]; }
+  const b = buildOf(st, sv, ui);   // the choice has no card: the rack and the bottom line
   return { ...b, st, sv, ui, a };
 }
 const SHOW = { kind: "arrival", target: "show", skip: true };
-for (const [name, o] of Object.entries({ "the show, two arrivals": { back: 2, leaving: true }, "the show, three arrivals": { back: 3 }, "the show, one arrival": { back: 1 }, "the choice (the strip over the rack)": { phase: "choice", back: 2 }, "an empty trip": { crates: 0, back: 0 }, "a broken Probe": { crates: 0, back: 0, mend: { free: 3, paid: 0, broke: true } } })) {
+for (const [name, o] of Object.entries({ "the show, two arrivals": { back: 2, leaving: true }, "the show, three arrivals": { back: 3 }, "the show, one arrival": { back: 1 }, "the choice (the rack, no card)": { phase: "choice", back: 2 }, "an empty trip": { crates: 0, back: 0 }, "a broken Probe": { crates: 0, back: 0, mend: { free: 3, paid: 0, broke: true } } })) {
   test(`the arrival, ${name}: draws without an error or a refusal inside the budgets, every region where cargo.json puts it`, { skip }, async () => {
     const b = arrivalScene(o), f = await start(b, { motion: false, t0: 1000 }); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
     const st = f.stats(); assert.ok(st.pictures <= 200 && f.objects() <= 400, `${st.pictures} pictures, ${f.objects()} objects`);
@@ -367,13 +365,11 @@ test("with reduced motion each beat is a cut on the host's stage (regions.arriva
   { const f = await stage(1000); assert.ok(f.nodeBox("crates.0").box[2] > 0 && f.nodeBox("light").box[2] > 0); assert.equal(f.nodeBox("mibi.0")?.box[2], 0, "no mibi yet at 1000"); }
   { const f = await stage(2000); assert.deepEqual(f.nodeBox("mibi.0").box.slice(2), [304, 312], "the first mibi in"); assert.equal(f.nodeBox("mibi.0.d")?.box[2] ?? 0, 0, "no dither: a cut"); assert.equal(f.nodeBox("mibi.0").box[1], AR.mibis.byCount["2"][0][1], "and no hop"); }
 });
-test("the choice: the strip's two cards in a plate under the bay, the ring on Open the bay, ◀ ▶ between the cards, ✓ says an intent of the panel on the focused card, ← is back, the rack stands under it, and the bay above stays visible", { skip }, async () => {
-  const b = arrivalScene({ phase: "choice", back: 2 }), f = await start(b, { t0: 1000, node: true }); logOf(f); const S0 = frameSpec.regions.panel.strip;
-  assert.equal(b.props.overlay.form, "strip"); const lg = logOf(f) ?? (f.frame(f.t + 16), logOf(f)); frames(f);
-  const rect = (id) => f.nodeBox(id)?.box; const C0 = listPitch(S0.cards, 2, 0); assert.deepEqual(rect("card.0.well"), C0); assert.deepEqual(rect("card.1.well"), listPitch(S0.cards, 2, 1));
-  assert.deepEqual(rect("card.0.picture").slice(0, 2), [C0[0] + S0.picture.at[0], C0[1] + S0.picture.at[1]]); assert.deepEqual(rect("card.0.picture").slice(2), [96, 96]);
+test("the choice: no card; the rack stands under the bay, a landed crate that holds a pod has the beat ring, ✓ and ← are said on the room, the pad closes nothing", { skip }, async () => {
+  const b = arrivalScene({ phase: "choice", back: 2 }), f = await start(b, { t0: 1000, node: true }); logOf(f);
+  assert.equal(b.props.overlay, undefined, "no overlay: no card"); assert.deepEqual(b.props.regions.arrival.beats, [true, true], "both crates hold a pod");
+  assert.ok(f.nodeBox("crates.0.beat")?.box[2] > 0 && f.nodeBox("crates.1.beat")?.box[2] > 0, "the ring stands round each landed crate that holds a pod");
   assert.equal(f.nodeBox("apron"), null, "the apron has given way"); assert.equal(f.nodeBox("mibi.0"), null);
-  let [m] = key(f, "right"); assert.deepEqual([m.t, m.screen, m.target], ["focus", "panel", "card.later"]); [m] = key(f, "left"); assert.equal(m.target, "card.open");
-  [m] = key(f, "confirm"); assert.deepEqual([m.t, m.screen, m.target, m.verb], ["intent", "panel", "card.open", "confirm"]); [m] = key(f, "back"); assert.deepEqual([m.screen, m.verb], ["panel", "back"]);
+  let [m] = key(f, "confirm"); assert.deepEqual([m.t, m.screen, m.target, m.verb], ["intent", "cargo", "room", "confirm"]); [m] = key(f, "back"); assert.deepEqual([m.screen, m.target, m.verb], ["cargo", "room", "back"]);
   assert.deepEqual(f.errors(), []);
 });

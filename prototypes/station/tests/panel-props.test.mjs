@@ -11,7 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { panelBuild as panelBuildUnchecked, initialFocus, growNowCards, dockCards } from "../src/views/panel-props.mjs";
+import { panelBuild as panelBuildUnchecked, initialFocus, growNowCards } from "../src/views/panel-props.mjs";
 const panelBuild = lineCased(panelBuildUnchecked, "panel");   // every body it builds goes through assertLineCase (report mode)
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openPanel } from "../src/intents/panel.mjs";
@@ -136,10 +136,6 @@ for (const kind of ["mibi", "pod"]) {
   });
 }
 
-test("the dock strip's Open now line: the crates in words to twelve, many from thirteen (capLine cases it where the panel is built)", () => {
-  const line = (n) => dockCards({ ui: { cargo: { arrival: { crates: n } } } }, panelSpec, frameSpec, []).find((c) => c.id === "open").line;
-  assert.equal(line(1), panelSpec.strings.dock.oneCrate); assert.equal(line(1), "A crate to open"); assert.equal(line(12), "twelve crates to open"); assert.equal(line(13), "many crates to open");
-});
 
 // ---- the Fit the upgrade? panel (T-20261016-53; spec §1.6): ⚡ 12 ◆ 4 from the rules, dimmed with what is short, Not now spends nothing ----
 function fitHost(o = {}) {

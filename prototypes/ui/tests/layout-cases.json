@@ -143,7 +143,6 @@
     "pending": [] },
   { "state": "cargo/cargo-arrival-choice", "from": "the UX audit: Cargo's arrival",
     "expect": [
-     { "rule": "L1", "container": "cards", "node": "cardPictures", "other": "right", "measured": 284, "mark": "✓e", "why": "the cards' pictures stand at the left of the cards and leave 284 on the right" },
      { "rule": "L11", "container": "bay", "node": "band.leaving", "mark": "✓e", "why": "unlabelled marks: the arrival's exit glyph and mibi face with no word" }
     ],
     "clear": [],
@@ -252,21 +251,9 @@
     ],
     "clear": [],
     "pending": [] },
-  { "state": "cargo/cargo-opening-find", "card": "cargo-L2-1", "verdict": "fault", "from": "owner card cargo-L2-1, marked fault: across the edge, -12 → 16",
-    "expect": [
-     { "rule": "L2", "container": "opening", "node": "travel", "other": "left", "mark": "owner", "why": "marked a fault by the owner: across the edge, -12 → 16 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
   { "state": "cargo/cargo-arrival-2200", "card": "cargo-L3-1", "verdict": "fault", "from": "owner card cargo-L3-1, marked fault: crowding, 0 → 16",
     "expect": [
      { "rule": "L3", "part": "a", "container": "opening", "node": "bay", "other": "apron", "mark": "owner", "why": "marked a fault by the owner: crowding, 0 → 16 in the reviewed run" }
-    ],
-    "clear": [],
-    "pending": [] },
-  { "state": "cargo/cargo-opening-mat", "card": "cargo-L3-11", "verdict": "fault", "from": "owner card cargo-L3-11, marked fault: unequal gutters in a row: 237, 14, 237 → 14",
-    "expect": [
-     { "rule": "L3", "part": "b", "container": "bay", "node": "travel", "other": "berth#2", "mark": "owner", "why": "marked a fault by the owner: unequal gutters in a row: 237, 14, 237 → 14 in the reviewed run" }
     ],
     "clear": [],
     "pending": [] },

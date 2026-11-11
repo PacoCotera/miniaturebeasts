@@ -67,11 +67,6 @@
    "opens": "incubator, create and cross (dead ends B2)",
    "by": "✓ on a refusal for want of a place: the Incubator's Choose a pod, Open and Open now, Create's Incubate, Cross's Cross them. The two-card form of addRoom: Add the room (the next room's preview, its price ⚡, dimmed when short; settles for turns) and Make room (✓ goes to the Vivarium's whole, the ring on the first resident that can be returned; the picture is Not now's pedestal). When no room can be added the cards are Make room and Not now. ← and Not now close it, nothing changed. A room that is settling is not this panel: the plate says when it is ready."
   },
-  "dock": {
-   "opens": "cargo",
-   "by": "the Companion's dock: at the show's end (form strip)",
-   "form": "strip"
-  },
   "reset": {
    "opens": "home",
    "by": "the first open after the release's reset (the save says resetFrom, the Station part has not shown it): one card, ✓ Begin closes it; shown once on this device"
@@ -180,20 +175,6 @@
      "name": "Not now"
     }
    }
-  },
-  "dock": {
-   "title": "",
-   "cards": {
-    "open": {
-     "name": "Open now",
-     "line": "{N} crates to open"
-    },
-    "later": {
-     "name": "Later",
-     "line": "They wait while docked"
-    }
-   },
-   "oneCrate": "A crate to open"
   },
   "growNow": {
    "title": "Open the {Species} pod now?",

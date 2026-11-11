@@ -59,17 +59,21 @@ test("the props of the show: validate against cargo.props.json, name no rectangl
 });
 test("the show's bottom line: ✓ Skip while the hold runs, the crates counted in words, an empty trip says the bay is empty; the choice's line is the strip's", () => {
   const w = world({ reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), phase: "show", from: "home", choice: true };
-  let l = build(w, a, {}).line; assert.deepEqual([l.ok, l.back, l.subject], [null, null, "two crates · expeditions 1 to 2"]);
+  let l = build(w, a, {}).line; assert.deepEqual([l.ok, l.back, l.subject], [null, null, "two sealed crates"]);
   l = cargoBuild({ st: w.st, sv: w.sv, settings, docked: true, light: "day", ui: { ...ui(a), skip: { kind: "arrival", target: "show" } } }, cargo, home, frame).line; assert.equal(l.ok, "Skip");
   const e = world({ crates: 0, reqs: [] }); l = build(e, { ...arrivalOf(e.st, e.sv, e.r), phase: "show", from: "home", choice: false }).line; assert.equal(l.subject, "the bay is empty");
 });
-test("the choice strip: Open now (free, the crates to open) and Later (they wait while docked), the ring on Open now, no veil, housing or title; ← is Later", () => {
+test("the choice has no card: ✓ Open the crate, ← Later in the bottom line, the middle names the first pod only while the Station has never stored one; the beat ring marks a crate that holds a pod", () => {
   const w = world({ crates: 3, reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), phase: "choice", from: "home", choice: true };
-  const u = { ...ui(a), panel: { screen: "cargo", id: "dock", focus: "" }, pods: { cur: null } }, v = panelBuild({ st: w.st, sv: w.sv, settings, ui: u, jump: "arrival" }, panel, frame, pods);
-  assert.equal(v.overlay.form, "strip"); assert.equal(v.overlay.regions.title, ""); assert.deepEqual(v.cards.map((c) => c.id), ["open", "later"]); assert.deepEqual(v.cards.map((c) => c.cost), ["", ""], "both free");
-  assert.deepEqual(v.cards.map((c) => c.line), ["three crates to open", "They wait while docked"]); assert.deepEqual(v.overlay.regions.cards.map((c) => c.line), ["Three crates to open", "They wait while docked"], "the card lines as drawn: sentence case"); assert.equal(v.overlay.focus.cur, "card.open"); assert.deepEqual(v.cards.map((c) => c.picture), ["crate-open-crop-96x96", "crate-sealed-crop-96x96"]);
-  assert.equal(v.line.ok, "Open now"); assert.equal(v.line.subject, "Three crates to open"); assert.equal(v.overlay.regions.art.housing, "");
-  const one = world({ crates: 1, reqs: [] }), o = panelBuild({ st: one.st, sv: one.sv, settings, ui: { ...u, cargo: { ...u.cargo, arrival: { ...a, crates: 1 } } }, jump: "arrival" }, panel, frame, pods); assert.equal(o.cards[0].line, "A crate to open");
+  assert.deepEqual(a.podCrates, [true, true, true], "every crate of the fixture holds a pod");
+  let b = build(w, a); assert.equal(b.props.overlay, undefined, "no overlay: no card");
+  assert.deepEqual([b.line.ok, b.line.back, b.line.subject], ["Open the crate", "Later", ""], "this Station has stored pods: no first-pod middle");
+  assert.deepEqual(b.props.regions.arrival.beats, [true, true, true]);
+  const f = world({ crates: 1, reqs: [] }); f.st.mibis = []; f.st.knownIds = []; f.st.tray = []; f.st.waiting = []; f.st.bud = null;
+  const fa = { ...arrivalOf(f.st, f.sv, f.r), phase: "choice", from: "home", choice: true }; assert.equal(fa.firstPod, true);
+  b = build(f, fa); assert.deepEqual([b.line.ok, b.line.back, b.line.subject], ["Open the crate", "Later", "Your first pod is inside"]);
+  assert.deepEqual(validate(b.props, schema, schema), [], "the props validate");
+  const e = world({ crates: 1, reqs: [] }); e.sv.bay[0].pods = []; assert.deepEqual(arrivalOf(e.st, e.sv, e.r).podCrates, [false], "a crate with no pod does not beat");
 });
 test("the beats' times come from the spec: the link light, the crates' stagger, the mibis' dither and hop, the mend, the end at 3500 (an empty trip closes at 2500)", () => {
   const w = world({ reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), back: [1, 2, 3] }, T = timesOf(cargo, a);
@@ -79,11 +83,9 @@ test("the beats' times come from the spec: the link light, the crates' stagger, 
   assert.equal(A.mibis.hop.ms, 175); assert.equal(A.end.at, 3500); assert.equal(A.mibis.at + A.mibis.each * 2 + A.mibis.dither.ms + A.mibis.hop.ms <= 3500, true, "the third mibi's hop ends before the show's end");
 });
 test("every string of the show at its longest, measured: the ribbon (words + 32 ≤ 608), the band's words (≤ 160), the strip's names and lines (≤ 252), the plates (≤ 608), at the spec's sizes and words", () => {
-  const Sg = cargo.strings.arrival, R = cargo.regions.dockRibbon, D = panel.strings.dock, P = frame.navigation.dock.plates, strip = frame.regions.panel.strip;
+  const Sg = cargo.strings.arrival, R = cargo.regions.dockRibbon, P = frame.navigation.dock.plates;
   assert.ok(measure(Sg.ribbon, R.px) + 32 <= 608, "ribbon"); assert.ok(measure(Sg.broken, R.px) <= 576, "the broken ribbon: " + measure(Sg.broken, R.px)); assert.ok(measure(Sg.mended.replace("{n in words}", "three"), 16) <= 160, "three mended, free");
-  for (const t of [D.cards.open.name, D.cards.later.name]) assert.ok(words(t) <= 3 && byRole(strip.name.role)(t) <= strip.name.max, t);
-  for (const t of [D.cards.open.line.replace("{n in words}", "three"), D.cards.open.line.replace("{n in words}", "twelve"), D.oneCrate, D.cards.later.line]) assert.ok(words(t) <= 6 && byRole(strip.line.role)(t) <= strip.line.max, `${t} (${byRole(strip.line.role)(t)} px)`);
   assert.ok(measure(P.crates, 16) <= 608, "the crates plate"); assert.ok(measure(P.goes.replace("{Name}", "Wwwwwwwwww"), 16) <= 608, "the name plate at ten of the widest letters"); assert.equal(Sg.ribbon, panel.strings.arrival.text === undefined ? Sg.ribbon : Sg.ribbon);
-  const SC = [0, 1].map((i) => listPitch(frame.regions.panel.strip.cards, 2, i)); assert.equal(SC[1][0] + SC[1][2] - SC[0][0] + 2 * 16, 840, "two cards fill the strip's 840");
+  for (const t of [Sg.open, Sg.later, Sg.firstPod]) assert.ok(measure(t, 16) <= 608, "the choice line: " + t);
   assert.ok(words(Sg.ribbon) <= 6 && words(Sg.broken) <= 12); void SPELL;
 });
