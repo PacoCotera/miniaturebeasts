@@ -7,13 +7,15 @@
 
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX, ARM, CROSS_ROW, ROWH } from "./fit.mjs";   // the size: z device px per lp and its tier
-import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, PHONE_BAR, PHONE_PAD } from "./phone.mjs";   // the phone: one device whole, its keys in the viewport
+import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, dockReserve, DOCK_KEY_H, DOCK_KEY_GAP, PHONE_BAR, PHONE_PAD } from "./phone.mjs";   // the phone: one device whole, its keys in the viewport
 import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
-import { readOptions, writeOptions } from "./options.mjs";
+import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
 import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
 import { mountOptions } from "../vendor/options.js";   // the Options panel: React + Radix, built from play/options (npm run build there)
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), SEED = params.get("seed");   // test-harness flags only: every option a person sets is in the Options panel (play/src/options.mjs)
+// The play page is the playtest build: Playtest waits is ON until a person sets the options themselves (the stored options are written once, before any frame reads them). Test pages keep the options as they are.
+try { if (!TEST && localStorage.getItem(OPTIONS_KEY) == null) writeOptions({ playtest: true }); } catch { /* no storage: the options stay the defaults */ }
 const OPT = readOptions(), DEV = OPT.dev;   // the options are one stored setting both devices read themselves (no URL carries them); its block is "the Options panel" below the keys
 let cslot = OPT.companion === "B" ? "B" : "A";   // the Companion in the frame: A, or the second Companion B
 const $ = (id) => document.getElementById(id);
@@ -57,7 +59,14 @@ const placeC = (el, x, y, w, h, tf) => { const s = el.style;
   if (w != null) s.width = Zc(w) + "px"; if (h != null) s.height = Zc(h) + "px"; };
 
 // ---- state ----
-const START_OWNER = isPhone(window.matchMedia("(pointer: coarse)").matches, innerWidth, innerHeight) && isPortrait(innerWidth, innerHeight) ? "companion" : "station";   // a portrait phone opens on the Companion, the handheld
+// "First pod home" (first-ten-front D3): the Station holds a pod, a crate, a bud or a mibi. The Station's word (`podHome` in `mb-caddy`) is the truth and comes from its save; this marker is that word as last
+// heard, kept so the first paint after a reload already knows it (cleared with Start fresh). Until a pod is home the page opens on the Companion on every device and the Station sleeps.
+const HOME_KEY = "mb-play-podhome";
+const loadHome = () => { try { return localStorage.getItem(HOME_KEY) === "1"; } catch { return false; } };
+const saveHome = (v) => { try { if (v) localStorage.setItem(HOME_KEY, "1"); else localStorage.removeItem(HOME_KEY); } catch { /* no storage: the Station's word is heard again at every load */ } };
+const NEWBIE = !TEST || params.has("new");   // test pages keep today's page (the Station awake) unless a test asks for the new player's (`?test&new`: test-harness flag only)
+let podHome = NEWBIE ? loadHome() : true;
+const START_OWNER = !podHome || (isPhone(window.matchMedia("(pointer: coarse)").matches, innerWidth, innerHeight) && isPortrait(innerWidth, innerHeight)) ? "companion" : "station";   // a new player starts on the Companion; later a portrait phone still opens on it, the handheld
 let owner = START_OWNER, seatOff = 0, devOpen = false, keysOpen = false;
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false, seatBusy = false;
@@ -149,7 +158,7 @@ function trayPlan(dev, T) {
 // ---- layout ----
 const bar = $("bar"), stage = $("stage"), shS = $("shStation"), shC = $("shCompanion"), ring = $("ring"), cradle = $("cradle"), slot = $("slot"), lamp = $("lamp"), dev = $("dev"), keysPanel = $("keysPanel");
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
-const tabs = { station: $("tabStation"), companion: $("tabCompanion") }, dockCtl = $("dockCtl"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), note = $("note");
+const tabs = { station: $("tabStation"), companion: $("tabCompanion") }, dockKey = $("dockKey"), asleepStrip = $("asleepStrip"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), note = $("note");
 const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp"), turnHint = $("turnHint");
 const GAPV = 24, TOP = 16, BOT = 16;   // CSS px: between blocks, from the bar, below the last block
 const geom = { station: null, companion: null, caddy: null, height: 0, rows: { station: 1, companion: 1 } };   // block boxes in stage CSS px, for the scroll and the checks
@@ -161,16 +170,16 @@ function layout() {
   for (const dv of ["station", "companion"]) { trayEl[dv].classList.remove("side"); }
   const narrow = tier === "narrow", row = tier === "row";
   // the bar: 40 CSS px, controls 40 tall
-  const tabW = narrow ? 104 : 124, tw = narrow ? [12, 124] : [12, 144];
-  ["station", "companion"].forEach((d, i) => { placeC(tabs[d], tw[i], 0, tabW, 40); tabs[d].classList.toggle("on", owner === d); tabs[d].setAttribute("aria-pressed", String(owner === d)); });
-  // from the right: the developer tools' place, the size control (not under ?test), Keys ?, the Dock
-  const zw = TEST ? 0 : 152 + 8, dockX = (narrow ? CW - 232 : CW - 436) - zw, dockW = narrow ? 40 : 168;
-  placeC(dockCtl, dockX, 0, dockW, 40);
-  placeC(keysBtn, (narrow ? CW - 184 : CW - 260) - zw, 0, narrow ? 64 : 92, 40);
+  // until the first pod is home the Companion's tab comes first and the Station's says it sleeps
+  const tabsEnd = layoutTabs(narrow ? 104 : 124, narrow ? 140 : 152);
+  // from the right: the developer tools' place, the size control (not under ?test), Keys ?
+  const zw = TEST ? 0 : 152 + 8, keysX = (narrow ? CW - 184 : CW - 260) - zw;
+  placeC(keysBtn, keysX, 0, narrow ? 64 : 92, 40);
   placeC(devBtn, narrow ? CW - 112 : CW - 160, 0, narrow ? 100 : 148, 40);
   if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
-  layoutDock(narrow); layoutCompanionCtl(narrow); layoutOptions(narrow, dockX);
+  const ctlX = layoutCompanionCtl(narrow, tabsEnd + 16); layoutOptions(narrow, keysX, ctlX + (narrow ? 72 : 148) + 8);
+  layoutDock();
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
   note.classList.toggle("hidden", !narrow);
@@ -183,30 +192,31 @@ function layout() {
   const y0 = narrow ? 28 : TOP;
   let xS, xC, yS = y0, yC, caddyX, caddyY, h;
   const centre = (w) => (w <= cwid ? Math.floor((cwid - w) / 2) : 12);   // centred, or 12 in from the left when a chosen z is wider than the window (the page scrolls sideways)
+  // The Station asleep (no pod home yet) while the Companion has the keys: the Companion on top, the Station one strip beside it (first-ten-front D2); the Station's block and keys wait out of sight
+  const sleeping = !narrow && !podHome && owner === "companion", STRIP_W = 300, STRIP_H = 56;
   if (narrow) { xS = 12; xC = Math.max(12, Math.floor((cwid - cw) / 2)); yC = y0; }
+  else if (sleeping) { const x0 = centre(cw + GAPV + STRIP_W); xC = x0; xS = x0; yC = y0; }
   else if (row) { const tot = sw + GAPV + cw, x0 = centre(tot); xS = x0; xC = x0 + sw + GAPV; yC = y0; }
   else { xS = centre(sw); xC = centre(cw); yC = yS + shH + trS + GAPV; }
   const cradleY = yC + shH + trC;
-  if (row) { caddyX = xS + sw - caddyW; caddyY = yS + shH + trS + GAPV; } else { caddyX = centre(caddyW); caddyY = cradleY + cradleH + GAPV; }
+  // the Dock key (first-ten-front A2): beside the Companion's tray (under the asleep strip while the Station sleeps), else under its cradle
+  const DKW = sleeping ? STRIP_W : 196, dockBeside = sleeping || xC + cw + 12 + DKW <= cwid - 8, dockExtra = dockBeside ? 0 : DOCK_KEY_H + 12;
+  if (row && !sleeping) { caddyX = xS + sw - caddyW; caddyY = yS + shH + trS + GAPV; } else { caddyX = centre(caddyW); caddyY = cradleY + cradleH + dockExtra + GAPV; }
   const printH = print.id && print.h && !narrow ? print.h * f + 24 : 0, printGap = printH ? 12 : 0;   // the recovery print's strip under the Caddy's block, while a print waits
-  h = narrow ? Math.max(yS + shH + trS, yC + shH + trC + cradleH) + BOT : Math.max(row ? caddyY + caddyH + printGap + printH : 0, cradleY + cradleH, row ? 0 : caddyY + caddyH + printGap + printH) + BOT;
-  geom.station = { x: xS, y: yS, w: sw, h: shH + trS }; geom.companion = { x: xC, y: yC, w: cw, h: shH + trC }; geom.height = h;
+  const wide = row && !sleeping;
+  h = narrow ? Math.max(yS + shH + trS, yC + shH + trC + cradleH + dockExtra) + BOT : Math.max(wide ? caddyY + caddyH + printGap + printH : 0, cradleY + cradleH + dockExtra, wide ? 0 : caddyY + caddyH + printGap + printH) + BOT;
+  geom.station = sleeping ? { x: xC + cw + GAPV, y: y0, w: STRIP_W, h: STRIP_H } : { x: xS, y: yS, w: sw, h: shH + trS }; geom.companion = { x: xC, y: yC, w: cw, h: shH + trC }; geom.height = h;
   const seatPx = seatOff * f;
   placeC(shS, xS, yS, sw, shH, true); place(frames.station, 8, 8, 1024, 600);
   placeC(shC, xC, yC + seatPx, cw, shH, true); place(frames.companion, 8, 8, 450, 600);
   placeC(trayEl.station, xS, yS + shH, sw, trS, true); placeC(trayEl.companion, xC, yC + shH, cw, trC, true);
   for (const dv of ["station", "companion"]) { const pl = dv === "station" ? planS : planC; trayEl[dv].style.setProperty("--pk", ARM + "px"); placeC(hubEl[dv], pl.hub[0], pl.hub[1], ARM, ARM); for (const { def, el } of keyEls[dv]) { const [kx, ky] = pl.pos[def.id]; placeC(el, kx, ky, def.s, def.s); } }
-  // the Undock button: while the Companion is seated, beside its D-pad in its tray, as tall as a key; the same dockPress as the bar's control
-  { const ub = $("undockBtn"), show = caddy.docked && caddy.canDock;
-    const row0 = KEYS.companion.map((d) => [planC.pos[d.id][0], planC.pos[d.id][0] + d.s, planC.pos[d.id][1]]).filter((q) => q[2] < CROSS_ROW).sort((a, b) => a[0] - b[0]);   // the keys of the tray's first row, left to right
-    let gap = { x: 0, w: 0 }, at = 8; for (const [x0, x1] of row0.concat([[cw - 8, cw - 8]])) { if (x0 - at > gap.w) gap = { x: at, w: x0 - at }; at = Math.max(at, x1); }
-    // beside the tray: 12 px off its right edge when the page has the room, else off its left edge (a stack's Companion stands clear of the Station), else in the widest free stretch of its first row
-    const UW = 104; let x = null, w = UW;
-    if (xC + cw + 12 + UW <= cwid - 8) x = cw + 12; else if (!row && !narrow && xC - 12 - UW >= 8) x = -12 - UW;
-    else { w = Math.min(UW, gap.w - 16); if (w >= 64) x = gap.x + Math.floor((gap.w - w) / 2); }
-    ub.classList.toggle("hidden", !show || x == null); if (show && x != null) placeC(ub, x, Math.floor((CROSS_ROW - 56) / 2), w, 56); ub.classList.toggle("pressed", pressed || caddy.pending); }
+  { const x = dockBeside ? xC + cw + (sleeping ? GAPV : 12) : xC, y = dockBeside ? yC + shH + Math.floor((trC - DOCK_KEY_H) / 2) : cradleY + cradleH + 12;
+    placeC(dockKey, x, y,dockBeside ? DKW : cw, DOCK_KEY_H);
+    dockKey.classList.toggle("hidden", narrow && owner !== "companion"); }
+  asleepStrip.classList.toggle("hidden", !sleeping); if (sleeping) placeC(asleepStrip, xC + cw + GAPV, y0, STRIP_W, STRIP_H);
   const vis = (el, on) => { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; };
-  vis(shS, !narrow || owner === "station"); vis(trayEl.station, !narrow || owner === "station"); vis(shC, !narrow || owner === "companion"); vis(trayEl.companion, !narrow || owner === "companion");
+  vis(shS, (!narrow && !sleeping) || owner === "station"); vis(trayEl.station, (!narrow && !sleeping) || owner === "station"); vis(shC, !narrow || owner === "companion"); vis(trayEl.companion, !narrow || owner === "companion");
   // the cradle and the seat
   const showCradle = !narrow || owner === "companion";
   cradle.classList.toggle("hidden", !showCradle);
@@ -226,7 +236,7 @@ function layout() {
   const g = owner === "station" ? geom.station : geom.companion, top = owner === "station" ? g.y : g.y + seatPx;
   ring.classList.remove("hidden"); placeC(ring, g.x - 3 * f, top - 3 * f, g.w + 6 * f, g.y + g.h - top + 6 * f, true);
   spacer.style.top = Math.max(0, Math.ceil(h) - 1) + "px";
-  const right = narrow ? (owner === "station" ? xS + sw : xC + cw) : Math.max(xS + sw, xC + cw, caddyX + caddyW);
+  const right = narrow ? (owner === "station" ? xS + sw : xC + cw) : Math.max(sleeping ? xC + cw + GAPV + STRIP_W : xS + sw, xC + cw, caddyX + caddyW);
   spacer.style.left = !TEST && right + 12 > cwid ? Math.ceil(right + 12) - 1 + "px" : "";   // a chosen z wider than the window: the page scrolls sideways to the right margin
   // the build stamp: page chrome in the page's bottom margin, under every block, right-aligned to the content (not under ?test)
   if (!TEST) placeC(stamp, 0, h - BOT + 2, right, 12, true);
@@ -248,12 +258,13 @@ function placeFrameC(el, xc, yc, w, h) {   // a frame inside its shell at CSS px
   s.width = Math.ceil(Math.round(w * k0) / dpr * 64) / 64 + "px"; s.height = Math.ceil(Math.round(h * k0) / dpr * 64) / 64 + "px";
 }
 function layoutPhone() {
-  const portrait = isPortrait(CW, CH), P = PHONE_PAD, bh = PHONE_BAR, d = owner, areaW = CW - 2 * P, areaH = areaHeight(portrait, CH);
+  const portrait = isPortrait(CW, CH), P = PHONE_PAD, bh = PHONE_BAR, d = owner, areaW = CW - 2 * P, areaH = areaHeight(portrait, CH), reserve = dockReserve(d, portrait);
   document.body.classList.add("phone"); bar.style.height = bh + "px"; stage.style.top = bh + "px"; stage.style.overflow = "clip";   // nothing scrolls, not even by a focus or a script
   // the bar: the two-button device switch at the left (44 tall), Options at the right
-  const ow = 92, tw = Math.min(132, Math.floor((CW - 2 * P - ow - 12) / 2));
-  placeC(tabs.station, P, 4, tw, 44); placeC(tabs.companion, P + tw + 2, 4, tw, 44);
-  for (const dv of ["station", "companion"]) { tabs[dv].classList.toggle("on", owner === dv); tabs[dv].setAttribute("aria-pressed", String(owner === dv)); }
+  const ow = 92, avail = CW - 2 * P - ow - 12, first = podHome ? ["station", "companion"] : ["companion", "station"];   // until the first pod is home: Companion | Station · asleep
+  const w1 = podHome ? Math.min(132, Math.floor(avail / 2)) : Math.floor(avail * 0.4), w2 = podHome ? w1 : Math.min(160, avail - w1 - 2);
+  placeC(tabs[first[0]], P, 4, w1, 44); placeC(tabs[first[1]], P + w1 + 2, 4, w2, 44);
+  setTabWords();
   placeC(optionsBtn, CW - P - ow, 4, ow, 44); optionsBtn.classList.remove("corner"); optionsBtn.style.bottom = "";
   // the devices
   const hSh = 616 * f, geomOf = {};
@@ -261,7 +272,7 @@ function layoutPhone() {
     const st = dv === "station", shell = st ? shS : shC, tray = trayEl[dv], fw = st ? 1024 : 450, shLp = st ? 1040 : 466;
     let sx, sy = P, sw, T, plan, box;
     if (portrait) {
-      T = Math.max(0, Math.min(trayMax(dv), Math.floor(areaH - hSh))); sx = P; sw = areaW; plan = planPortrait(dv, areaW, T);
+      T = Math.max(0, Math.min(trayMax(dv), Math.floor(areaHeight(portrait, CH, dockReserve(dv, portrait)) - hSh))); sx = P; sw = areaW; plan = planPortrait(dv, areaW, T);
       box = { x: P, y: P + Math.ceil(hSh), w: areaW, h: T }; tray.classList.remove("side");
     } else {
       const sd = sides(dv, areaH), shW = shLp * f; sw = shW; sx = P + sd.LW + 8 + Math.max(0, Math.floor((areaW - sd.LW - sd.RW - 16 - shW) / 2)); plan = planLandscape(dv, areaW, areaH);
@@ -276,15 +287,19 @@ function layoutPhone() {
   }
   geom.station = geomOf.station; geom.companion = geomOf.companion; geom.rows = { station: 1, companion: 1 };
   const g = geomOf[d]; geom.height = portrait ? P + g.h + P : CH - bh;
-  for (const el of [ring, cradle, caddyBlock, lampsEl, printBox, dev, $("undockBtn")]) el.classList.add("hidden");
+  for (const el of [ring, cradle, caddyBlock, lampsEl, printBox, dev, asleepStrip]) el.classList.add("hidden");
+  // the Dock key: under the tray (portrait), or the right column's foot (landscape); on both devices, so a docked Companion can be lifted from the Station
+  dockKey.classList.remove("hidden"); layoutDock();
+  if (portrait) placeC(dockKey, P, P + g.h + DOCK_KEY_GAP, areaW, DOCK_KEY_H);
+  else placeC(dockKey, P + areaW - 76, P + areaH - DOCK_KEY_H - 2, 72, DOCK_KEY_H);
   spacer.style.top = "0px"; spacer.style.left = "";
   // the build stamp: in the free strip under a portrait tray when there is one
-  const free = CH - bh - (P + g.h + P); stamp.classList.toggle("hidden", !portrait || free < 20); if (portrait && free >= 20) placeC(stamp, 0, CH - bh - 18, CW - P, 12, true);
+  const free = CH - bh - (P + g.h + P) - reserve; stamp.classList.toggle("hidden", !portrait || free < 20); if (portrait && free >= 20) placeC(stamp, 0, CH - bh - 18, CW - P, 12, true);
   // the turn hint: once, a quiet line under the portrait Station when turning the phone gives a bigger one
   const want = portrait && d === "station" && biggerTurned(CW, CH, dpr);
   if (want && turnState === "idle") { turnState = "shown"; try { localStorage.setItem(TURN_KEY, "1"); } catch { /* no storage: shown again next visit */ } }
   else if (!want && turnState === "shown") turnState = "done";
-  turnHint.classList.toggle("hidden", !(want && turnState === "shown")); if (want && turnState === "shown") placeC(turnHint, P, P + g.h + 10, areaW, 16);
+  turnHint.classList.toggle("hidden", !(want && turnState === "shown")); if (want && turnState === "shown") placeC(turnHint, P, P + g.h + DOCK_KEY_GAP + DOCK_KEY_H + 8, areaW, 16);
   keysPanel.classList.toggle("hidden", !keysOpen); if (keysOpen) placeC(keysPanel, 0, 48, CW, Math.min(CH - 56, 760));
   window.__playRects = rects;
 }
@@ -302,20 +317,32 @@ function setZ(v) {   // v: a z, or null for fit; the choice is kept per browser,
   zSet = v == null ? null : clampZ(v); saveZ(zSet); layout(); reveal(owner, true);
 }
 const zStep = (d) => { if (TEST) return; const n = clampZ(k + d); if (n !== k) setZ(n); };
-function layoutDock(iconOnly) {
-  const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, word = d ? "Lift" : "Dock";
-  const mark = $("dockMark"), wordEl = $("dockWord"), hint = $("dockHint"), dot = $("dockDot");
+// The Dock / Lift key (first-ten-front A2): quiet until the walk ends with a sealed crate, then lit; docked, it says how to go out. One press asks for the same dock or lift as Shift+D.
+function layoutDock() {
+  const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, short = phone && !isPortrait(CW, CH);
+  const mark = $("dockMark"), wordEl = $("dockWord"), hint = $("dockHint");
   mark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png";
-  placeC(mark, 11, 8, 16, 24); placeC(wordEl, 35, 12); wordEl.textContent = word; hint.style.right = "11px"; hint.style.top = "14px"; hint.textContent = "⇧D";
-  placeC(dot, 25, 5, 6, 6); dot.hidden = !crates;
-  wordEl.classList.toggle("hidden", iconOnly); hint.classList.toggle("hidden", iconOnly);
-  dockCtl.setAttribute("aria-disabled", String(!c.canDock));
+  // [copy] placeholders: the scheme's section 7 item 4
+  wordEl.textContent = d ? (short ? "Lift" : "Docked · Lift to go out") : crates ? (short ? "Dock" : "Dock the Companion") : (short ? "Dock" : "Dock · after the walk");
+  hint.classList.toggle("hidden", short);
+  dockKey.classList.toggle("docked", d); dockKey.classList.toggle("lit", crates); dockKey.classList.toggle("quiet", !d && !crates);
+  dockKey.setAttribute("aria-disabled", String(!c.canDock));
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
-  dockCtl.setAttribute("aria-label", label); dockCtl.title = title;
-  if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
-  dockCtl.classList.toggle("pressed", pressed || c.pending);
+  dockKey.setAttribute("aria-label", label); dockKey.title = title;
+  if (!c.canDock) dockKey.setAttribute("aria-description", title); else dockKey.removeAttribute("aria-description");
+  dockKey.classList.toggle("pressed", pressed || c.pending);
 }
-const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockCtl, cradle, lamp, caddy: caddyBlock, print: printBox, lamps: lampsEl, dev, ring })) { const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
+// The two device tabs: until a pod is home the Companion's comes first and the Station's says it sleeps ([copy] "Station · asleep").
+function setTabWords() {
+  tabs.station.textContent = podHome ? "Station" : "Station · asleep";
+  for (const dv of ["station", "companion"]) { tabs[dv].classList.toggle("on", owner === dv); tabs[dv].setAttribute("aria-pressed", String(owner === dv)); }
+}
+function layoutTabs(w, wAsleep) {   // the bar's tabs on a laptop; returns where the last ends
+  const first = podHome ? ["station", "companion"] : ["companion", "station"], wid = (dv) => (dv === "station" && !podHome ? wAsleep : w);
+  let x = 12; for (const dv of first) { placeC(tabs[dv], x, 0, wid(dv), 40); x += wid(dv) + 8; }
+  setTabWords(); return x - 8;
+}
+const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockKey, cradle, lamp, caddy: caddyBlock, print: printBox, lamps: lampsEl, dev, ring })) { const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
 
 // ---- animation (the seat and the scroll: one curve, whole physical pixels) ----
 const bez = (t) => { const [x1, y1, x2, y2] = EASE; let u = t; for (let i = 0; i < 8; i++) { const x = 3 * (1 - u) ** 2 * u * x1 + 3 * (1 - u) * u * u * x2 + u ** 3 - t, d = 3 * (1 - u) ** 2 * x1 + 6 * (1 - u) * u * (x2 - x1) + 3 * u * u * (1 - x2); if (Math.abs(d) < 1e-6) break; u -= x / d; } return 3 * (1 - u) ** 2 * u * y1 + 3 * (1 - u) * u * u * y2 + u ** 3; };
@@ -388,6 +415,7 @@ const now = () => Date.now();
 const sensed = { companion: { state: "lifted", seats: 0, seq: 0, at: now() }, station: { state: "lifted", seats: 0, seq: 0, at: now() } };   // the cradles as this page senses them
 const svc = { up: null, snap: null, es: null, esWorld: null, retry: 0, timer: 0, heardAt: 0, stationWorld: null };   // up: null until the service answers or fails once
 let handedPub = null;   // the Companion's public key as last handed to the Station in `mb-dock`
+let homeHeard = false;   // the Station has spoken once on this page
 let comp = null, hold = null, heard = null, heardAt = 0, fault = false, inflight = 0, pressOwner = null, lastSeen = null, beat = false;
 const cradles = () => (svc.up && svc.snap && !fault ? svc.snap.cradles : sensed);
 const seatedNow = () => cradles().companion.state === "seated";
@@ -430,7 +458,7 @@ function cradleChanged(mine) {
     if (mine === undefined && !pressed && !seatBusy) seatOff = seated ? 8 : 0;   // an external change: cut, nothing animates and the keys do not move
   }
   if (mine !== undefined) {
-    if (seated === mine && mine) { setOwner("station"); say("Companion docked"); seatOff = 8; }   // contact: the lamp, the control and the keys cut together
+    if (seated === mine && mine) { const brings = podHome || derive().crates > 0; setOwner(brings ? "station" : "companion"); say("Companion docked"); seatOff = 8; }   // the first dock that brings a pod turns the page to the Station; an empty one stays on the Companion   // contact: the lamp, the control and the keys cut together
     else if (seated === mine) { setOwner("companion"); say("Companion lifted"); setSeat(0, true); }
     else if (!seatBusy) setSeat(seated ? 8 : 0, true);   // the seat did not take: back as it is
   }
@@ -458,10 +486,9 @@ function reconcile() {
   inflight = now() + 1500; handedPub = comp && comp.pub ? comp.pub : null;
   try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name, pub: comp.pub || null } : null }, location.origin); } catch { inflight = 0; }
 }
-dockCtl.addEventListener("click", () => { dockPress(); giveKeysBack(); });
+dockKey.addEventListener("click", () => { dockPress(); giveKeysBack(); });
 cradle.addEventListener("click", () => dockPress());
-$("undockBtn").addEventListener("click", () => { dockPress(); if (document.activeElement === $("undockBtn")) $("undockBtn").blur(); });   // "Lift": the same lift as the bar's control, the keys go to the Companion on its answer
-const giveKeysBack = () => { if (document.activeElement === dockCtl) dockCtl.blur(); };
+const giveKeysBack = () => { if (document.activeElement === dockKey) dockKey.blur(); };
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin) return; const m = e.data || {};
   if (e.source === frames.companion.contentWindow && m.t === "mb-companion") {   // the Companion's word: who it is, its world, its crates, the seat it answers
@@ -478,6 +505,11 @@ window.addEventListener("message", (e) => {
   if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
   if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
   heard = m; heardAt = now(); inflight = 0;
+  if (NEWBIE && typeof m.podHome === "boolean" && m.podHome !== podHome) {   // the Station's word on "first pod home" (its save): the page wakes the Station, or lets it sleep again
+    const known = podHome; podHome = m.podHome; saveHome(podHome);
+    if (podHome && owner === "companion" && (!known && (!homeHeard || seatedNow()))) setOwner("station", { focus: false }); else layout();
+  }
+  homeHeard = true;
   if (m.world && m.world !== svc.stationWorld) { svc.stationWorld = m.world; seatStation(m.world); if (!seatedNow()) connect(m.world); }
   if (svc.up === false && lastSeen === null) { sensed.companion.state = m.docked ? "seated" : "lifted"; if (m.docked) sensed.companion.seats = 1; cradleChanged(); return; }   // no service: the cradle as the Station last saw it
   caddy = derive(); reconcile(); layout(); faceTick();
@@ -513,12 +545,13 @@ function switchCompanion() {
   cslot = cslot === "A" ? "B" : "A"; writeOptions({ companion: cslot }); comp = null; hold = null; frames.companion.src = companionSrc(); caddy = derive(); layout();
 }
 companionCtl.addEventListener("click", () => { switchCompanion(); if (document.activeElement === companionCtl) companionCtl.blur(); giveKeys(owner); });
-function layoutCompanionCtl(narrow) {
-  placeC(companionCtl, narrow ? 236 : 284, 0, narrow ? 72 : 148, 40);
+function layoutCompanionCtl(narrow, x) {
+  placeC(companionCtl, x, 0, narrow ? 72 : 148, 40);
   const other = cslot === "A" ? "B" : "A", off = seatedNow();
   companionCtl.innerHTML = (narrow ? "" : "Companion ") + '<b>' + cslot + '</b> / ' + other;
   companionCtl.setAttribute("aria-label", "Companion " + cslot + "; switch to Companion " + other); companionCtl.setAttribute("aria-disabled", String(off));
   companionCtl.title = off ? "Lift the Companion first" : "Switch to Companion " + other;
+  return x;
 }
 // The drawer's three problems: "Companion silent" (the Companion frame holds back its word), "Station quiet" (the page stops hearing the Station and the Station hears
 // nothing of the dock), "Caddy fault" (the service refuses writes).
@@ -621,13 +654,12 @@ try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_K
 function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); }
 mountOptions($("optionsRoot"), {
   trigger: optionsBtn, read: readOptions, names: Object.keys(NAME_LISTS), places: PLACES,
-  phone: () => phone, dock: () => ({ docked: caddy.docked, enabled: caddy.canDock && !pressed && !seatBusy, title: dockTitle() }), onDock: () => dockPress(),   // on a phone the bar holds only the device switch and Options: the Dock control lives in the panel
   onChange: (patch) => { writeOptions(patch); if ("dev" in patch) applyDev(patch.dev); },
   onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
-  onStartFresh: () => { try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
+  onStartFresh: () => { saveHome(false); try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
 });
-function layoutOptions(narrow, rightEdge) {   // in the bar after the Companion control when it fits before the Dock; else the window's bottom-left corner
-  const x = narrow ? 316 : 440, w = 88, fits = x + w + 8 <= rightEdge, s = optionsBtn.style;
+function layoutOptions(narrow, rightEdge, x) {   // in the bar after the Companion control when it fits before Keys ?; else the window's bottom-left corner
+  const w = 88, fits = x + w + 8 <= rightEdge, s = optionsBtn.style;
   optionsBtn.classList.toggle("corner", !fits);
   if (fits) { placeC(optionsBtn, x, 0, w, 40); s.bottom = ""; } else { s.left = "8px"; s.top = "auto"; s.bottom = "8px"; s.width = w + "px"; s.height = "28px"; }
 }

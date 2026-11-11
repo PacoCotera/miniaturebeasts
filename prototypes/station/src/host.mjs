@@ -12,6 +12,7 @@ import { podsProps, podPic } from "./views/pods-props.mjs";
 import { req as reqOf } from "./views/requests.mjs";
 import { cuesOf, originWord, answerOf, setMetrics as setCarryMetrics } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
+import { goalWords } from "./views/goal-words.mjs";
 import { homeBuild, mibiPictureOf, mibiReq, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
@@ -348,10 +349,16 @@ export function screenProps(plate) {
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
   if (UI.keep && holdOn()) { line.subject = SPECS.frame.strings.keep; const kc = SPECS.frame.regions.marks.roomCue?.confirm; if (kc && assetEntry(kc)) ids.add(kc); }   // F5b: ✓ was let go early: "Keep holding [✓ cap]" in the middle slot for hold.keepMs
   { const cues = cuesOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (cues.length) { line.keys = cues; for (const c of cues) { const id = SPECS.frame.regions.marks.roomCue?.[c.room]; if (id && assetEntry(id)) ids.add(id); } } if (UI.teach && cues.some((c) => c.key === UI.teach.key)) line.subject = SPECS.frame.strings.teach[UI.teach.key]; }   // the first time a key has a cue its line stands in the middle slot (intents/frame.mjs teachTick)   // the colour keys that would carry what the ring is on (carry.mjs): the key's icon and a word, left of ←   // the frame's notice on every screen unless the screen has its own
+  { const gl = goalNow(); if (gl && (!line.subject || (screen === "cargo" && gl.step === "openBay"))) line.subject = gl.text; }   // the goal on every room: the middle slot, where the screen has no line of its own there; the Bay's crate line gives way to "open the crate" while a crate waits
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
   return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...(fl ? { flight: { pic: fl.id, room: UI.flight.room } } : {}), ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
+}
+// The goal now (first-ten-front A3): goalKey's aim and step in words, for the header's middle slot on every room and for the dock state the Companion reads. null when the ladder is empty.
+export function goalNow() {
+  const g = S.goalKey(G.st, G.sv, G.settings), w = g && goalWords(g, docked(), SPECS.frame);
+  return w ? { aim: g.key, step: g.step.key, text: w.text, icons: w.icons || "" } : null;
 }
 let homeCapsUp = false;   // Home's key caps are on the face (they are dropped when another screen's props go out)
 let shownLight = null;  // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read

@@ -20,7 +20,7 @@ import { injectPortraitSource } from "./portrait-source.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { onFaceMessage, frameIds as frameMarkIds, picture } from "./host.mjs";
+import { onFaceMessage, frameIds as frameMarkIds, picture, goalNow } from "./host.mjs";
 import { listOf } from "./views/pods-props.mjs";
 import { warmLibraryNext, libraryWaiting } from "./pictures.mjs";
 import { probe, MasterPending, manifest as manifestOf, assetEntry, NOT_FINAL, NOT_IN_GOLDENS, BUILT_NOT_IN_GOLDENS } from "../../ui/assets.mjs";
@@ -92,8 +92,10 @@ const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(
 const partnerName = () => { const p = S.partnerOf(G.st, G.sv, G.settings); return p ? p.name : null; };
 // world, companion: the world shown and whose Companion it is (the last one docked); ledger: the supplies for the face's ledger; along: the mibi asked to go along on the next trip, for its line 3
 const alongName = () => { const r = S.pendingCarry(G.st, G.sv).find((q) => q.op === "add"); return r ? mibiById(r.id)?.name ?? null : null; };
+// podHome: the first pod is home (first-ten-front D3): the Station holds a pod, a crate, a bud or a mibi; the play page reads it to wake the Station. goal: the Station's goal in words, for the Companion to show.
+const podHome = () => G.st.tray.length > 0 || G.st.waiting.length > 0 || !!G.st.bud || G.st.mibis.length > 0 || bayCrates().length > 0;
 const caddyState = () => { const c = activeCompanion();
-  return { canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(CORE.host && CORE.host.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName(),
+  return { podHome: podHome(), goal: goalNow(), canDock: hasWorld() || G.st.devBay.length > 0, docked: docked(), crates: bayCrates().length, pending: !!(CORE.host && CORE.host.pendingDock), opened: UI.caddyOpened ?? null, partner: partnerName(),
     world: G.st.wid || null, companion: c ? { id: c.id, name: c.name } : null, ledger: { e: G.st.e | 0, d: G.st.d | 0, s: G.st.s | 0 }, along: alongName() }; };
 let lastPosted = "";
 function postCaddy(force = false) {
@@ -101,7 +103,7 @@ function postCaddy(force = false) {
   if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
 }
 function updateCaddy() {
-  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]); if (key === caddyKey) return; caddyKey = key;
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]) + ":" + c.podHome + ":" + JSON.stringify(c.goal); if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";

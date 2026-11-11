@@ -1,7 +1,7 @@
 // The play page on a phone (src/phone.mjs): the fit and the key plans, pure.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, PHONE_BAR, PHONE_PAD } from "../src/phone.mjs";
+import { dockReserve, areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, PHONE_BAR, PHONE_PAD } from "../src/phone.mjs";
 
 const overlap = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
 
@@ -13,7 +13,7 @@ test("a phone is a touch device with a short side under 600", () => {
 test("z: a whole number when one fits, a smooth step below 1, and the device is never wider or taller than the area", () => {
   for (const [W, H, dpr] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625], [844, 390, 3], [360, 640, 2], [320, 568, 2], [640, 360, 2], [412, 915, 1], [360, 640, 1], [568, 320, 1]]) {
     for (const dev of ["station", "companion"]) {
-      const { z, portrait } = phoneFit(dev, W, H, dpr), f = z / dpr, lpW = dev === "station" ? 1040 : 466, areaW = W - 2 * PHONE_PAD, areaH = areaHeight(portrait, H);
+      const { z, portrait } = phoneFit(dev, W, H, dpr), f = z / dpr, lpW = dev === "station" ? 1040 : 466, areaW = W - 2 * PHONE_PAD, areaH = areaHeight(portrait, H, dockReserve(dev, portrait));
       const tag = `${dev} ${W}×${H} @${dpr}`;
       if (z >= 1) assert.equal(z, Math.floor(z), tag + ": whole"); else assert.ok(z > 0 && z < 1, tag + ": smooth below 1");
       if (portrait) { assert.ok(lpW * f <= areaW + 1e-6, tag + ": fits the width"); assert.ok(616 * f + trayMin(dev) <= areaH + 1e-6 || z <= 1 / 16, tag + ": fits the height with the keys"); }

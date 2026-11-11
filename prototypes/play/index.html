@@ -29,17 +29,23 @@ iframe{border:0; display:block; background:var(--void)}
 .ctl:active>*,.ctl.pressed>*{transform:translateY(calc(var(--f) * 1px))}
 .ctl:focus-visible{outline:calc(var(--f) * 2px) solid var(--focus); outline-offset:calc(var(--f) * 2px)}
 .ctl.on{background:var(--hairline); border-color:var(--bevel); color:var(--bone)}
-#dockCtl{text-align:left}
-#dockCtl .mark{position:absolute; image-rendering:pixelated}
-#dockCtl .word{position:absolute}
-#dockCtl .hint{position:absolute; color:var(--mist); font-size:12px}
-#dockCtl .dot{position:absolute; border-radius:50%; background:var(--amber)}
-#dockCtl .dot[hidden]{display:none}
-#dockCtl[aria-disabled="true"]{cursor:default}
-#dockCtl[aria-disabled="true"] .word,#dockCtl[aria-disabled="true"] .hint{color:var(--stone)}
-#dockCtl[aria-disabled="true"]:hover{border-color:var(--hairline)}
-#dockCtl[aria-disabled="true"]:active{background:var(--ground)}
-#dockCtl[aria-disabled="true"]:active>*{transform:none}
+#dockKey{text-align:left; display:flex; align-items:center; gap:8px; padding:0 12px; font-size:14px}
+#dockKey .mark{flex:none; width:16px; height:24px; image-rendering:pixelated}
+#dockKey .word{flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis}
+#dockKey .hint{flex:none; color:var(--mist); font-size:12px}
+#dockKey.quiet{color:var(--mist)}
+#dockKey.lit{background:var(--amber); border-color:var(--amber); color:var(--void); animation:dockpulse 1.6s ease-in-out infinite}
+#dockKey.lit .hint{color:var(--void)}
+#dockKey.docked{background:var(--amber); border-color:var(--amber); color:var(--void)}
+#dockKey.docked .hint{color:var(--void)}
+@keyframes dockpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,168,63,.55)}50%{box-shadow:0 0 0 6px rgba(255,168,63,0)}}
+@media (prefers-reduced-motion:reduce){#dockKey.lit{animation:none}}
+#dockKey[aria-disabled="true"]{cursor:default; color:var(--stone)}
+#dockKey[aria-disabled="true"] .hint{color:var(--stone)}
+#dockKey[aria-disabled="true"]:hover{border-color:var(--hairline)}
+#asleepStrip{position:absolute; display:flex; align-items:center; gap:10px; padding:0 12px; background:var(--bar); border:calc(var(--f) * 1px) solid var(--hairline); border-radius:8px; color:var(--mist); font-size:12px; line-height:16px; z-index:3}
+#asleepStrip b{font-weight:500; color:var(--fog)}
+#asleepStrip .art-slot{flex:none; width:24px; height:24px}
 #note{position:absolute; color:var(--mist); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; z-index:21}
 #live{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .hidden{display:none !important}
@@ -92,7 +98,7 @@ body.phone .row .k.arm svg{width:20px; height:20px}
 .row .k.arm.right{border-radius:0 calc(var(--f) * 10px) calc(var(--f) * 10px) 0; background-position:calc(var(--pk) * -2) calc(var(--pk) * -1)}
 .row .k.arm:not(.up)::before{display:none}
 /* the phone (shell.mjs layoutPhone): one device at a time; the bar holds only the device switch and Options; the landscape tray is the whole area, transparent, only its keys take a touch */
-body.phone #dockCtl,body.phone #companionCtl,body.phone #keysBtn,body.phone #devBtn,body.phone #zDown,body.phone #zFit,body.phone #zUp,body.phone #note,body.phone #tabBench{display:none !important}
+body.phone #companionCtl,body.phone #keysBtn,body.phone #devBtn,body.phone #zDown,body.phone #zFit,body.phone #zUp,body.phone #note,body.phone #tabBench{display:none !important}
 body.phone iframe{image-rendering:pixelated}
 .row.side{background:none; box-shadow:none; border-radius:0; pointer-events:none}
 .row.side .k,.row.side .hub{pointer-events:auto}
@@ -182,7 +188,11 @@ body.phone iframe{image-rendering:pixelated}
   <div class="shell" id="shStation"><iframe id="fStation" title="Station screen" allow="" loading="eager"></iframe></div>
   <div class="row" id="rowStation"></div>
   <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
-  <div class="row" id="rowCompanion"><button type="button" class="ctl hidden" id="undockBtn" aria-label="Lift the Companion" title="Lift the Companion">Lift</button></div>
+  <div class="row" id="rowCompanion"></div>
+  <!-- the Dock / Lift key (first-ten-front A2): in the Companion's tray area; quiet, lit or docked. [art] its mark: today's frame-companion-outline-16x24 until the art director rules -->
+  <button type="button" class="ctl" id="dockKey" aria-label="Dock the Companion" title="Dock the Companion"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="word" id="dockWord">Dock · after the walk</span><span class="hint" id="dockHint">⇧D</span></button>
+  <!-- the asleep Station (A1): until the first pod is home the Station is this one strip beside the Companion. [art] slot station-asleep-24 (the mark; empty until the art director rules) -->
+  <div id="asleepStrip" class="hidden" role="status"><span class="art-slot" data-art="station-asleep-24"></span><span class="aw"><b>Station · asleep</b><br>It wakes when your first pod comes home.</span></div>
   <div id="caddySheet" aria-label="The dock's screen" role="img"><canvas id="caddyView" width="792" height="272"></canvas></div>
   <div id="caddyLamps" aria-label="The dock's cradle lamps"><div class="cl"><span>Companion cradle</span><i id="lampCompanion"></i></div><div class="cl"><span>Station cradle</span><i id="lampStation"></i></div></div>
   <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the dock printed it"><div id="printText"><p id="printHead">The dock printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The dock prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
@@ -199,7 +209,6 @@ body.phone iframe{image-rendering:pixelated}
   <button type="button" class="ctl" id="tabCompanion">Companion</button>
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
   <button type="button" class="ctl" id="companionCtl" aria-label="Companion A; switch to Companion B">Companion <b>A</b> / B</button>
-  <button type="button" class="ctl" id="dockCtl" aria-label="Dock the Companion" title="Dock the Companion"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
   <button type="button" class="ctl" id="optionsBtn" aria-haspopup="dialog" title="Playtest waits, developer tools, Start fresh and more">Options</button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
   <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>
