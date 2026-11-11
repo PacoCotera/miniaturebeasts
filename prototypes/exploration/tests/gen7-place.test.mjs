@@ -4,9 +4,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { RULES } from '../src/gen7/rules.mjs';
+import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
+import { slotBiomes } from '../src/gen7/world.mjs';
+import { genRegion7 } from '../src/gen7/region.mjs';
+import { ATLAS } from '../src/regions.mjs';
+import { MW, MH, L } from '../src/world.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.
 const FAST = process.env.MB_CI_FAST === '1';
@@ -39,7 +44,7 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     assert.ok(s.unreachedTiles * 100 < 2 * s.walkableTiles, 'reach: ' + s.unreachedTiles + ' of ' + s.walkableTiles + ' walkable tiles not reached');
     assert.equal(s.pathUnreached + s.piecesUnreached, 0, 'trails, ports and set pieces never sit on unreached land: ' + JSON.stringify(s.needAt));
     assert.equal(s.bakeFails, 0, s.bakeMessages.join('\n'));
-    assert.ok(s.bandWalkable * 100 < s.bandTiles, 'the map\'s end is shut: ' + s.bandWalkable + ' of ' + s.bandTiles + ' end tiles walk (a river\'s mouth)');
+    assert.ok(s.bandWalkable * 100 < 1.5 * s.bandTiles, 'the map\'s end is shut: ' + s.bandWalkable + ' of ' + s.bandTiles + ' end tiles walk (a river\'s mouth, a gate shaft that ends in the band)');
   });
 }
 
@@ -155,4 +160,50 @@ test('a 2 x 2 block holds at most three terrains and every two are a pair of the
 test('the pair table is the set\'s: raised land meets only grass', () => {
   for (const [a, b] of [[TV.CLIFF, TV.WATER], [TV.CLIFF, TV.PATH], [TV.CLIFF, TV.THICKET], [TV.CLIFF, TV.SCRUB], [TV.CLIFF, TV.EARTH], [TV.THICKET, TV.SCRUB], [TV.PATH, TV.SAND], [TV.PATH, TV.WATER]]) assert.ok(!pairOk(a, b), a + '|' + b);
   for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB]]) assert.ok(pairOk(a, b), a + '|' + b);
+});
+
+// V2, the biome ground (src/gen7/ground.mjs): a biome's recipe is the same on both sides of every cell edge; it changes only over the BLEND tiles either side of a slot's edge, and by no more in a tile
+// than the whole difference between two recipes spread over those 2 x BLEND tiles.
+test('the biome recipe never changes on a cell edge: it blends over a few tiles at a slot edge and is one value inside a slot', () => {
+  const nearEdge = (g, len) => { const f = g % len; return f < BLEND || len - f <= BLEND; }, STEP = 3 / (2 * BLEND) + 1e-9;   // 3: the widest difference between two recipes' numbers
+  const diff = (r0, r1) => { let d = 0; for (const k of Object.keys(r0)) d = Math.max(d, Math.abs(r0[k] - r1[k])); return d; };
+  for (const seed of [7, 13, 42]) {
+    const sb = slotBiomes(seed), slotAt = (a, b) => sb[b * ATLAS + a], SW = MW * CW, SH = MH * CH;
+    let cellEdges = 0, blended = 0;
+    for (let gy = 0; gy < RH * CH; gy += 7) for (let gx = 1; gx < RW * CW; gx++) {
+      const d = diff(recipeAt(slotAt, ATLAS, SW, SH, gx - 1, gy), recipeAt(slotAt, ATLAS, SW, SH, gx, gy));
+      if (gx % CW === 0) cellEdges++;
+      if (!nearEdge(gx, SW) && !nearEdge(gx - 1, SW)) assert.equal(d, 0, `seed ${seed}: the recipe changes at tile ${gx},${gy}, inside a slot`); else if (d > 0) blended++;
+      assert.ok(d <= STEP, `seed ${seed}: the recipe jumps ${d} at tile ${gx},${gy}`);
+    }
+    for (let gx = 0; gx < RW * CW; gx += 7) for (let gy = 1; gy < RH * CH; gy++) {
+      const d = diff(recipeAt(slotAt, ATLAS, SW, SH, gx, gy - 1), recipeAt(slotAt, ATLAS, SW, SH, gx, gy));
+      if (!nearEdge(gy, SH) && !nearEdge(gy - 1, SH)) assert.equal(d, 0, `seed ${seed}: the recipe changes at tile ${gx},${gy}, inside a slot`);
+      assert.ok(d <= STEP, `seed ${seed}: the recipe jumps ${d} at tile ${gx},${gy}`);
+    }
+    assert.ok(cellEdges > 1000 && blended > 100, `seed ${seed}: ${cellEdges} cell edges read, ${blended} blended tiles`);
+  }
+});
+
+// The map's land kind and the walk's ground agree (owner note 20: "expecting a stony biome, it was the same grassland again"). For every land cell of seeds 7, 13 and 42 whose middle 8 x 8 tiles are low
+// ground (raised land's top is the meadow ground until the layered edges, amendment L): a water cell's middle is water (a ford is shallows: any), a pond cell's holds a fifth of water, a rock cell's is stony (sand), a wood cell's is wood
+// ground (floor, scrub or thicket), a meadow cell's is open ground you can walk (grass or the wood floor). Water and pond hold in every cell; the others in all but 2 in 100 (a rock cell whose middle is a path or a stair's foot).
+test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000 }, () => {
+  for (const seed of [7, 13, 42]) {
+    const seen = { WATER: [0, 0], POND: [0, 0], ROCK: [0, 0], WOOD: [0, 0], MEADOW: [0, 0] }, bad = [];
+    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) {
+      const G = genRegion7(seed, ax, ay);
+      for (let c = 0; c < MW * MH; c++) {
+        const lab = Object.keys(L).find(k => L[k] === G.land[c]); if (!seen[lab]) continue;
+        const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), t = cellTerrain(seed, X, Y), n = {}; let low = 0, raised = 0;
+        for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = t.terrain[(y + 1) * t.w + x + 1]; if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
+        if (raised) continue;
+        const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SAND') >= 0.1 : lab === 'WOOD' ? f('EARTH') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('EARTH') >= 0.2;
+        seen[lab][0]++; if (!ok) { seen[lab][1]++; if (bad.length < 8) bad.push(`${lab} ${X},${Y}`); }
+      }
+    }
+    console.log(`# seed ${seed}: map and walk disagree (cells read / disagree): ${JSON.stringify(seen)}`);
+    for (const lab of ['WATER', 'POND']) assert.equal(seen[lab][1], 0, `seed ${seed}: ${lab} cells whose middle is not that ground: ${bad}`);
+    for (const lab of ['ROCK', 'WOOD', 'MEADOW']) assert.ok(seen[lab][0] > 50 && seen[lab][1] * 50 <= seen[lab][0], `seed ${seed}: ${lab} cells whose middle is not that ground: ${seen[lab]} ${bad}`);
+  }
 });

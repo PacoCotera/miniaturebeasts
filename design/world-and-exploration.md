@@ -37,6 +37,14 @@ the Station the pod is identified and hatches; then the world turns once.
 - **Free browsing.** The pawn browses freely, cell to adjacent cell, wherever
   the terrain lets it through: cliffs, rivers and gates decide, and no light
   rule holds it back.
+- **Each land kind looks like itself when you walk in.** A rock place is stony, a wood place has a
+  floor of leaves and dark thicket, a pond place holds its pond, a water place is water: the map's
+  colour and the ground underfoot say the same thing. The region's biome sets the look of the
+  low ground: Meadows are open grass; Hills carry scrub; Woods and Tallwood have a wood floor under
+  the groves, Tallwood nearly closed over; Thickets are dark masses with winding clearings; Marsh is
+  a net of wide channels and pools; Lakes and Highpools have a sand shore all round every body of
+  water; Cliffs are scree flats between the shelves. One biome thins into the next over a dozen
+  tiles, never on a place's edge. Raised land keeps its meadow top for now.
 - **Height and edges.** The land has three height levels, and neighbouring
   cells differ by at most one. Where two cells meet at different
   heights the edge between them is a cliff, which blocks, or a stair, which is

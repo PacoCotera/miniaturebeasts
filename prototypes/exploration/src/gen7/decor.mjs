@@ -23,7 +23,7 @@ const spriteRect = (s, ax, ay) => (s ? [ax - s.anchor[0], ay - s.anchor[1], s.re
 const overlaps = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
 
 export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10 };
-const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB } = TERR;
+const { DEEP, WATER, SAND, PATH, GRASS, EARTH, CLIFF, THICKET, SCRUB } = TERR;
 
 // ---- the table (variety scheme section 2; where it gives no number, the pick is marked and listed in the report) ----
 // trees/rocks/bushes: { B: block size in tiles, used: share of blocks that hold a cluster, size: [min, max] trees, keep: smallest size kept }, stumps: { B, used }, sweeps: as trees (tall grass).
@@ -105,7 +105,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
 
   // ---- the Hollow Tree: a site in each region of Woods or Tallwood, on a clearing of plain grass (nothing is drawn on the terrain here: the clearing is the absence of props) ----
   let sites = presetSites;   // the Hollow Tree sites may be given (made off the page by src/realm-worker.mjs): a list of { x, y, slot }
-  const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { if (T(x + dx, y + dy) !== GRASS || flags(x + dx, y + dy) !== 0) return false; } return true; };
+  const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { { const tt = T(x + dx, y + dy); if ((tt !== GRASS && tt !== EARTH) || flags(x + dx, y + dy) !== 0) return false; } } return true; };
   const hollowSites = () => {
     if (sites) return sites;
     sites = [];
@@ -178,7 +178,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     if (!inMap(x, y)) return false;
     const t = T(x, y);
     if (fi === 4) return (t === GRASS || t === CLIFF) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
-    if (!(t === GRASS || t === CLIFF || (fi === 1 && t === SAND))) return false;
+    if (!(t === GRASS || t === EARTH || t === CLIFF || (fi === 1 && t === SAND))) return false;
     return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap

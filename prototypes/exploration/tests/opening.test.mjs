@@ -244,7 +244,7 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
     await page.evaluate(() => { const m = window.__mb, s0 = m.G.spawns[0]; m.S.report.news = { cells: [s0 + 1, s0 - 1, s0 + m.MW] }; });
     golden("opening-pip.png", await shot(700));
     await page.evaluate(() => { window.__mb.S.report.news = null; });
-    // the marks: the mark's own pixels stand on the land (a sign may cover a few); found in colour, been the slate silhouette
+    // the marks: the mark's own pixels stand on the land (a sign or a charged stone's bolt may cover a few; the stones lie where the land puts them, so the share is a quarter); found in colour, been the slate silhouette
     const marks = await page.evaluate(() => { const m = window.__mb, o = m.openFrame(), out = {};
       for (let c = 0; c < m.MW * m.MH; c++) { if (!m.S.revealed[c]) continue; const a = o.at(c), mk = m.cellMark(c, a.x, a.y, o.cs, 18, true); if (!mk) continue;
         const kind = m.S.called[c] ? "found" : m.S.veil[String(c)] ? "been" : null; if (!kind || out[kind]) continue;
@@ -253,7 +253,7 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
       return out; });
     for (const kind of ["found", "been"]) { const r = marks[kind]; assert.ok(r, "a " + kind + " cell with a mark"); assert.ok(r.same, "the " + kind + " mark");
       let bad = 0; for (const [x, y, rgb] of r.px) { const o = (y * ret.w + x) * 4; if (ret.data[o] !== rgb[0] || ret.data[o + 1] !== rgb[1] || ret.data[o + 2] !== rgb[2]) bad++; }
-      assert.ok(r.px.length > 20 && bad <= r.px.length * 0.15, kind + " mark drawn on the land: " + bad + " of " + r.px.length + " differ"); }
+      assert.ok(r.px.length > 20 && bad <= r.px.length * 0.25, kind + " mark drawn on the land: " + bad + " of " + r.px.length + " differ"); }
     assert.ok(marks.been.slate > marks.been.px.length * 0.5, "been: the slate silhouette"); assert.ok(marks.found.slate < marks.found.px.length * 0.5, "found: in colour");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
