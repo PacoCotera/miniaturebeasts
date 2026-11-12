@@ -58,7 +58,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
   // the IR names the ground the cell's finds lie on (src/gen7/hold.mjs `ground`): a walk that comes from no side starts there, on a way in that leads to it
   if (ir.ground && walks(ir.ground.x - 1, ir.ground.y - 1) && compId[I(ir.ground.x - 1, ir.ground.y - 1)]) {
     mainComp = compId[I(ir.ground.x - 1, ir.ground.y - 1)];
-    const into = [...openings.map(arrive), ...openings.flatMap(runPts)].find(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp); if (into) spawnPt = into;
+    const nearMid = op => { const m = arrive(op); return runPts(op).sort((a, b) => Math.abs(a.x - m.x) + Math.abs(a.y - m.y) - Math.abs(b.x - m.x) - Math.abs(b.y - m.y)); };   // from the way in's middle outwards, so a wall in the middle never puts the start in a corner of the run
+    const into = [...openings.map(arrive), ...openings.flatMap(nearMid)].find(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp); if (into) spawnPt = into;
   }
   // a side leads to the main ground when any tile of its ways in touches it; else to the ground its first way in's middle leads to
   const touches = {}; openings.forEach(op => { if (runPts(op).some(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp)) touches[op.side] = 1; });
