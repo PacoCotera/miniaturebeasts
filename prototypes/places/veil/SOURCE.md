@@ -9,4 +9,4 @@ Slots (base orientation: a west side, the dense edge at the left, rows run along
 - edge-veil-inner-{day,night}.png 144 x 144 an inner corner (the veiled land lies up and left)
 - map-edge-veil-{day,night}.png   78 x 130  the map's veil, 3 cells at 26 px a cell, static
 
-PLACEHOLDERS: outer, inner and end were computed outlines (veil2.py, veil3.py); the art desk is repainting them (art-paint-veil-corners). Replace with the signed files when they exist; the file names and sizes stay.
+Outer, inner and end (day, night) are the art desk's painted pieces from mibi-art art/desk, art-jobs/2026-11-12-art-paint-veil-corners/out/ (merge eefb9cd28): edge-veil-{outer,inner}-{day,night}-144x144.png and edge-veil-end-{day,night}-288x288.png, copied byte for byte under the names above. Nothing here is computed.

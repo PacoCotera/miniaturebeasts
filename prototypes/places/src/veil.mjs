@@ -52,16 +52,50 @@ export function paintMapVeil(g, img, ox, oy, W, H, sides, band = 78, period = 13
   g.restore();
 }
 
+// Where a run of straight veil meets a painted corner or band end, the run's rows are laid so the cross-section there is the one of the strip that matches the piece's join edge best (the art desk laid
+// its signs the same way: the strip slides along its edge to the row whose cross-section meets the piece). Read from the pictures themselves, once per kit: for every one of the 240 rows of the two
+// drift layers stacked (step 0), the mean alpha difference to the piece's edge; the row with the least. { outerV, outerH, end }: the outer corner's bottom edge (a west or east run), its right edge (a north
+// or south run), the band end's bottom edge; each null when a picture cannot be read (no run is shifted then).
+function alphaOf(img) {
+  try { const g = img.getContext('2d'); return { a: g.getImageData(0, 0, img.width, img.height).data, w: img.width, h: img.height }; } catch (e) { return null; }
+}
+export function veilJoins(kit) {
+  if (kit.joins !== undefined) return kit.joins;
+  const A = alphaOf(kit['drift-a']), B = alphaOf(kit['drift-b']), O = alphaOf(kit.outer), E = alphaOf(kit.end);
+  let out = null;
+  if (A && B && O && E && A.w === VEIL_BAND && A.h === VEIL_PERIOD && O.w === VEIL_BAND && O.h === VEIL_BAND && E.w === 2 * VEIL_BAND && E.h === 2 * VEIL_BAND) {
+    const stack = (r, u) => { const i = (r * VEIL_BAND + u) * 4 + 3, a = A.a[i] / 255, b = B.a[i] / 255; return 1 - (1 - a) * (1 - b); };
+    const best = (edge) => { let br = 0, bd = Infinity; for (let r = 0; r < VEIL_PERIOD; r++) { let d = 0; for (let u = 0; u < VEIL_BAND; u++) d += Math.abs(edge(u) - stack(r, u)); if (d < bd) { bd = d; br = r; } } return br; };
+    out = {
+      outerV: best((u) => O.a[((VEIL_BAND - 1) * VEIL_BAND + u) * 4 + 3] / 255),
+      outerH: best((u) => O.a[(u * VEIL_BAND + VEIL_BAND - 1) * 4 + 3] / 255),
+      end: best((u) => E.a[((2 * VEIL_BAND - 1) * 2 * VEIL_BAND + VEIL_BAND + u) * 4 + 3] / 255),
+    };
+  }
+  kit.joins = out; return out;
+}
+
+// The shift of a run's rows (the row shown at place px `a` is a + shift, before the drift): anchored at the end that meets a piece, the start first.
+function runShift(plan, joins, side, a0, a1) {
+  if (!joins) return 0;
+  const meets = (corner) => plan.pieces.find((p) => p.corner === corner && (p.kind === 'outer' || (p.kind === 'end' && p.side === side)));
+  const row = (p) => (p.kind === 'end' ? joins.end : side === 'W' || side === 'E' ? joins.outerV : joins.outerH);
+  const [first, last] = ENDS[side], s = meets(first[0]), f = meets(last[0]);
+  if (s) return row(s) - a0;
+  if (f) return row(f) - (a1 - 1);
+  return 0;
+}
+
 // Paints the veil of `plan` at drift step `step` onto g (a 2D context of W x H place pixels). kit: { strip, 'drift-a', 'drift-b', end, outer, inner } canvases/images of one time of day.
 export function paintVeil(g, kit, plan, W, H, step) {
   g.save(); g.imageSmoothingEnabled = false; g.beginPath(); g.rect(0, 0, W, H); g.clip();
   const put = (m, img, ...a) => { g.setTransform(...m); g.drawImage(img, ...a); };
-  const sh = step * VEIL_STEP_PX;
+  const sh = step * VEIL_STEP_PX, joins = veilJoins(kit);
   for (const { side, a0, a1 } of plan.runs) {
-    const L = (side === 'W' || side === 'E' ? H : W), m = sideMatrix(side, W, H, L, false, 0);
+    const L = (side === 'W' || side === 'E' ? H : W), m = sideMatrix(side, W, H, L, false, 0), shift = runShift(plan, joins, side, a0, a1);
     for (const [img, dir] of [[kit['drift-a'], 1], [kit['drift-b'], -1]]) {
       for (let a = a0; a < a1;) {
-        const r = (((a - dir * sh) % VEIL_PERIOD) + VEIL_PERIOD) % VEIL_PERIOD, len = Math.min(VEIL_PERIOD - r, a1 - a);
+        const r = ((((a + shift - dir * sh) % VEIL_PERIOD) + VEIL_PERIOD) % VEIL_PERIOD), len = Math.min(VEIL_PERIOD - r, a1 - a);
         put(m, img, 0, r, VEIL_BAND, len, 0, a, VEIL_BAND, len); a += len;
       }
     }
