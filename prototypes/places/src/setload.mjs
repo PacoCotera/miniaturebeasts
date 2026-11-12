@@ -18,11 +18,22 @@ export function validateSetJson(set) {
   return validate.errors.map((e) => `${e.instancePath || '/'} ${e.message}`);
 }
 
+// A still tool may set artHooks.swap (a Map of "<set id>/<file>" or "<file>" -> a file path to read instead) and artHooks.seen (a Map it fills with slot -> { file, swapped } for every sheet read).
+// Nothing is set by default, so the bake reads the shipped files exactly as before.
+export const artHooks = { swap: null, seen: null };
+
 export function loadSet(dir) {
   const set = JSON.parse(readFileSync(path.join(dir, 'set.json'), 'utf8'));
   const palette = JSON.parse(readFileSync(path.join(dir, set.palette), 'utf8'));
   const png = new Map();
-  const get = (name) => { if (!png.has(name)) png.set(name, readPng(path.join(dir, name))); return png.get(name); };
+  const get = (name) => {
+    if (!png.has(name)) {
+      const slot = path.basename(dir) + '/' + name, swap = artHooks.swap && (artHooks.swap.get(slot) || artHooks.swap.get(name)), file = swap || path.join(dir, name);
+      if (artHooks.seen) artHooks.seen.set(slot, { file, swapped: !!swap, shipped: path.join(dir, name) });
+      png.set(name, readPng(file));
+    }
+    return png.get(name);
+  };
   return { dir, set, palette, png: get };
 }
 

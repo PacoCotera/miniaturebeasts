@@ -1,7 +1,8 @@
 // Generator 7, the biome ground (V2): the stills for the art director. For each biome the grounds swap skinned (Woods, Tallwood, Thickets, Hills, Cliffs, Highpools): one walking-size frame (48 px a tile, 450 x 532) on low
 // ground (a window with the least raised land that has the most of its signature ground) and one at a border where the biome blends into the next, each by day, at night and in a storm (the walk's own light levels,
 // through the set's light tables). Baked and rendered by the places bake and renderer, the code the page draws a place with.
-//   node tools/biome-stills.mjs <outDir>
+//   node tools/biome-stills.mjs <outDir> [biomes] [lights] [places] [--swap slot=file]... [--both]
+//   --swap draws that file in the art slot instead of the shipped one (not copied into the game tree); --both makes day and night; each still gets a <still>.json sidecar (sha256 of every sheet drawn, slots, zoom, light, time)
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { windowIR, cellTerrain, biomeAtTile, TV, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { slotBiomes } from '../src/gen7/world.mjs';
@@ -9,6 +10,8 @@ import { ATLAS } from '../src/regions.mjs';
 import { MW, MH } from '../src/world.mjs';
 import { renderIR } from './gen7-render.mjs';
 import { encodePng } from '../../places/src/png.mjs';
+import { artHooks } from '../../places/src/setload.mjs';
+import { takeFlags, fileList, writeSidecar } from './still-art.mjs';
 
 const FW = 450, FH = 532, TW = Math.ceil(FW / 48), TH = Math.ceil(FH / 48);   // a frame is about 10 x 12 tiles
 // what each biome should show, as [terrains, wanted share of the frame]
@@ -65,20 +68,30 @@ function pickBorder(seeds, biome) {
   return best;
 }
 
-if (process.argv[2]) {
-  mkdirSync(process.argv[2], { recursive: true });
+// flags first: --swap slot=file (repeatable; slot is "<set id>/<file>" or the bare file name in the set, e.g. ninja-test/fill-cliff.png) and --both (day and night only)
+const FLAGS = takeFlags(process.argv.slice(2)), ARGV = [null, null, ...FLAGS.rest];
+if (FLAGS.swaps.size) artHooks.swap = FLAGS.swaps;
+artHooks.seen = new Map();
+
+if (ARGV[2]) {
+  mkdirSync(ARGV[2], { recursive: true });
   // each biome of the grounds swap, as the player names it: a place on low ground and one at a border with the next biome, each by day, at night and in a storm (the walk's own light levels 0, 2 and 1)
   // optional narrowing: argv[3] biomes (woods,thickets,...), argv[4] lights (day,night,storm), argv[5] places (low,border); with none, every biome in both places and all three lights
   const seeds = [7, 13, 42], report = [], NAMES = { woods: 'woods', tallwood: 'tallwood', thickets: 'thickets', downs: 'hills', fells: 'cliffs', tarns: 'highpools' }, LIGHTS = [['day', 0], ['night', 2], ['storm', 1]];
-  const only = (i) => (process.argv[i] ? process.argv[i].split(',') : null), pickB = only(3), pickL = only(4), pickW = only(5);
+  const only = (i) => (ARGV[i] ? ARGV[i].split(',') : null), pickB = only(3), pickL = only(4) || (FLAGS.both ? ['day', 'night'] : null), pickW = only(5);
   for (const biome of Object.keys(NAMES).filter((b) => !pickB || pickB.includes(b))) for (const [where, p] of [['low', pick(biome, seeds)], ['border', pickBorder(seeds, biome)]].filter(([w]) => !pickW || pickW.includes(w))) {
     if (!p) { report.push(`${biome} ${where}: none on seeds ${seeds}`); continue; }
     for (const [light, level] of LIGHTS.filter(([l]) => !pickL || pickL.includes(l))) {
       const name = `${NAMES[biome]}-${where}-${light}-seed${p.seed}-cells${p.X}-${p.Y}-48px.png`;
-      writeFileSync(process.argv[2] + '/' + name, encodePng(renderIR(p.ir, 48, frameAt(p.ir, p.tx, p.ty), { level }).img));
+      const png = ARGV[2] + '/' + name;
+      writeFileSync(png, encodePng(renderIR(p.ir, 48, frameAt(p.ir, p.tx, p.ty), { level }).img));
+      // every sheet the bake read (the whole set loads before the first still, so the list is the set's art in this still's place)
+      writeSidecar(png, { tool: 'biome-stills', zoom: 48, light, level, biome, place: where, seed: p.seed, cells: [p.X, p.Y], files: fileList([...artHooks.seen].map(([slot, v]) => ({ slot, ...v }))), swaps: [...FLAGS.swaps].map(([slot, file]) => ({ slot, file })) });
       report.push(name + (where === 'border' ? `  ${p.a} / ${p.b}` : `  raised ${p.raised}  signature ${p.sig}`));
     }
   }
+  // a swap that no sheet read is a typo, not a quiet no-op
+  for (const slot of FLAGS.swaps.keys()) if (![...artHooks.seen.keys()].some((k) => k === slot || k.endsWith('/' + slot))) throw new Error(`--swap ${slot}: no art slot of that name was read (slots look like ninja-test/fill-cliff.png)`);
   console.log(report.join('\n'));
 }
 void biomeAtTile; void RW; void RH;

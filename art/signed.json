@@ -1,0 +1,2336 @@
+{
+ "formatVersion": 1,
+ "signed": [
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "27385836a1",
+   "path": "art/places/sets/ninja-test/bush-round-grown-m.png",
+   "sha256": "4ff606cd7758b0402f1542d9dfc07b7b73fa21ebd9dc95cefbd1ed88cd4d344c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b1c97060f0",
+   "path": "art/places/sets/ninja-test/bush-round-grown.png",
+   "sha256": "39ff353d55fd09675040710a6e67f32dcc85f24813877ade67648bea8942d99b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1878113f83",
+   "path": "art/places/sets/ninja-test/bush-round-m.png",
+   "sha256": "7530a8ebecc2984911410c7ccc033f783e25a093b6b232f6b78e4885913d6af3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b6716cf556",
+   "path": "art/places/sets/ninja-test/bush-round-young-m.png",
+   "sha256": "35d452ea0cef75c31dda0bb9a0f4c9836b713bc5ace4ef911f6df5007f37d766"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "52e75ce9e1",
+   "path": "art/places/sets/ninja-test/bush-round-young.png",
+   "sha256": "b738c9f2acec327c8907258a5f54aa4f744de4696fa10a63f2a3abc8d10b9733"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fae0e93f6f",
+   "path": "art/places/sets/ninja-test/bush-round.png",
+   "sha256": "a04a6a02de56e4f1cdaf9f579f6b901edd6163a08a6ff9e02dbe779807daa732"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f46d0add77",
+   "path": "art/places/sets/ninja-test/clump-tall-grown-m.png",
+   "sha256": "9b6373c9aa159d31bdca593cd31c37d52ebc195f1164abef1dbe2de7b61f6bc4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f12ac5616b",
+   "path": "art/places/sets/ninja-test/clump-tall-grown.png",
+   "sha256": "1ef8fac2480e8a0d8355c5b0328ce87cc6d984f37e67bbd04f48c4f899afeaf2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5fa48c974a",
+   "path": "art/places/sets/ninja-test/clump-tall-m.png",
+   "sha256": "cf5410d15bc90e2ff8065f1967ed00b98922c3cce80f59e44adbc625e8233f19"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "981e812930",
+   "path": "art/places/sets/ninja-test/clump-tall-s-grown-m.png",
+   "sha256": "15e262cb3847c33a99876eb3ead9b9f92cbd82cf8665464508f395bc581b1205"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "39a11bdff0",
+   "path": "art/places/sets/ninja-test/clump-tall-s-grown.png",
+   "sha256": "cb9fd758c0b09fb672a82c2b0155d67c80f8eed105f607e0da21e141a244022e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f4e31cce8e",
+   "path": "art/places/sets/ninja-test/clump-tall-s-m.png",
+   "sha256": "a02080e739a0e6f46e723aba6a3cb4cf6cc852f6d543fe9711c2f11fbf36ffae"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "664421fb9c",
+   "path": "art/places/sets/ninja-test/clump-tall-s-young-m.png",
+   "sha256": "d468d1a5649a2043dc4aee963d57801e416c19093897f0bf14e1546560b3a02f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a7deed6994",
+   "path": "art/places/sets/ninja-test/clump-tall-s-young.png",
+   "sha256": "dfdbb75de695377f972969958d54923947e2040387a6b776bd04ea924054e632"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3d72870a59",
+   "path": "art/places/sets/ninja-test/clump-tall-s.png",
+   "sha256": "3c3928e4d1b7a98024b5b9a52d89dccfd2fabbb30f0ecbe000464a00869f5e3f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "67b1d29a24",
+   "path": "art/places/sets/ninja-test/clump-tall-young-m.png",
+   "sha256": "33ad8e564dcaf3df7c33e356ba1041e41b8d810ab581fca4a36a8ddd5e8ed9a3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5a4574be26",
+   "path": "art/places/sets/ninja-test/clump-tall-young.png",
+   "sha256": "94bbe24d4ca6c67e14f61a12c3f23d3b9bdd92ffc77fa86d212c3fc1c37c1b8f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c7fe64a932",
+   "path": "art/places/sets/ninja-test/clump-tall.png",
+   "sha256": "7d0917c6b5b82df6f956039519a43194f28cc938b852108c3e283d7170fd5a21"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e34979f70e",
+   "path": "art/places/sets/ninja-test/dry-tufts-1-m.png",
+   "sha256": "e44d37a60405aed3d67d3380739ee3f1403e5cabc2b0100321e6a576f8034dd8"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "44f463aacd",
+   "path": "art/places/sets/ninja-test/dry-tufts-1.png",
+   "sha256": "f3ff33c6667d6a8552ecb0c390420a7ad2821622d84a55f8bc501b4d296619dd"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5013eb9a49",
+   "path": "art/places/sets/ninja-test/dry-tufts-2-m.png",
+   "sha256": "bbd37a8977c70002a88fed230676799c96552743404bc10daea5863b67b34b69"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "dad12a1522",
+   "path": "art/places/sets/ninja-test/dry-tufts-2.png",
+   "sha256": "e44b2d038389c37585f2465fd5c8867a60f50d30a607be357cfdfe70f5529f47"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b9fca9c122",
+   "path": "art/places/sets/ninja-test/dry-tufts-3-m.png",
+   "sha256": "bbad0b0af04d7a385c56b126727db81ab46fc5b3b6e07f39be67e45118a0222b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6669d79f14",
+   "path": "art/places/sets/ninja-test/dry-tufts-3.png",
+   "sha256": "6d95b84ebda7c8da3b8aceeeb255bfe0d7cdc442b0461b68c738e6c49067e2e3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6439da0f52",
+   "path": "art/places/sets/ninja-test/fill-deep.png",
+   "sha256": "2ad2dfafc802f0720764f569f1def08ed4fd6160f7ca59ad3010c91addd05593"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8784319197",
+   "path": "art/places/sets/ninja-test/fill-drygrass.png",
+   "sha256": "31a1bd810dae3e5eaaf0b4cafc15fc129775d5a5edbd365f4a677b7920f801ba"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f1df05eb2a",
+   "path": "art/places/sets/ninja-test/fill-earth.png",
+   "sha256": "be2c485195730a43c9b0ce7f0f41ea42ae9add924d8d179ea63f3356b1bcbca9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c1c8a1d7b1",
+   "path": "art/places/sets/ninja-test/fill-grass.png",
+   "sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f19efc03b0",
+   "path": "art/places/sets/ninja-test/fill-litter.png",
+   "sha256": "78eba4d94d178d5da4fbbdbfe2d350cc9e719dfd851ddb52ffe93bf921c75c16"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c6554ce702",
+   "path": "art/places/sets/ninja-test/fill-mud.png",
+   "sha256": "bd5414120408ed4fee7c38c6577ba0e0a96d0a722023c731d2972fffbd43c45f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5234cbb92f",
+   "path": "art/places/sets/ninja-test/fill-path.png",
+   "sha256": "479b63abb505348b0934dacd0f5cb19de53f46f46fadcd6ddc652e82476d9a7f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7018622a40",
+   "path": "art/places/sets/ninja-test/fill-sand.png",
+   "sha256": "da7cb39f1d0fe58b5dcec10a7e062201ecf3a3d6f10f5a298064adbb0be1c686"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b59a0c6425",
+   "path": "art/places/sets/ninja-test/fill-scree.png",
+   "sha256": "ea87b0cab5f25a143dfc3189362afc0947d196e1f5252ee8d1bd9eccc59a088b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b97b97690d",
+   "path": "art/places/sets/ninja-test/fill-thicket.png",
+   "sha256": "4684282fa0f92169b6ed34640d40064b564a4408a120a02b83ca2e597ad861e6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "70264513fe",
+   "path": "art/places/sets/ninja-test/fill-turf.png",
+   "sha256": "6aad23a81baff71e5d76647d3a911b832c161b4c3568d1e8db8abe7e567f9bd7"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "502ed0e05c",
+   "path": "art/places/sets/ninja-test/fill-water.png",
+   "sha256": "a22ee0f33fdf83be797156f51a7d8c6a1fa0d32fa1e3f89c820350e015249404"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "22867936f4",
+   "path": "art/places/sets/ninja-test/fill-water@1.png",
+   "sha256": "43664c765b9859d1f52476240a9b4f3724bde066f90591252e6e986f39018465"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "4e42bb3e6e",
+   "path": "art/places/sets/ninja-test/fill-water@2.png",
+   "sha256": "8cb59ac3aa558aa56f5e2f318b843400d385705e79326e76249fc259eb729372"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e18bb14490",
+   "path": "art/places/sets/ninja-test/fill-water@3.png",
+   "sha256": "b964108b5853d2f19ba17d147611e7e2cc24067de22ffb1a532f52f336083a90"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8e5a1f853b",
+   "path": "art/places/sets/ninja-test/fleck-0-m.png",
+   "sha256": "fc2a9eb67add91cccfa43942788a6a10be3a033943dc39eaed5815b77f7cf87e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "708ae85a43",
+   "path": "art/places/sets/ninja-test/fleck-0.png",
+   "sha256": "aad4d8ac113a15ecc31330afcf96cb33fb1256f29d0d59d4e96bbf21f238b3a9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ca7723bc50",
+   "path": "art/places/sets/ninja-test/fleck-1-m.png",
+   "sha256": "b8d10775a2f4275ec781a262cdf71b89e2647fe612dac10a2e5096624bfeb079"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c7578a6ba0",
+   "path": "art/places/sets/ninja-test/fleck-1.png",
+   "sha256": "870e8b15959dcd496222f0de2b40ece701ffb906cf723b6237826dc195df111f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1287ff189b",
+   "path": "art/places/sets/ninja-test/fleck-2-m.png",
+   "sha256": "6d3e4336a98322f7dc7e569b961c350d26547ebefa83278e3cbfbc487bc92b79"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6e01ddad32",
+   "path": "art/places/sets/ninja-test/fleck-2.png",
+   "sha256": "926cfd960e77bd9fa04c2392fd5483e0923d1c098c7b6d50e6f613829f142efb"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8050182442",
+   "path": "art/places/sets/ninja-test/fleck-3-m.png",
+   "sha256": "bd4c36a25e17dbb0c4b22faa488c60b578829a629db39defc54dc54f0a16b5db"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6a7da5204a",
+   "path": "art/places/sets/ninja-test/fleck-3.png",
+   "sha256": "b69350faab11313b30ac7badc0b67a852b08bdaf9f25268f6baa9cd478412dbe"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8d39e5e548",
+   "path": "art/places/sets/ninja-test/fleck-4-m.png",
+   "sha256": "88a561007bb2f67a1d3e457830f36e0e258d2e2f97e7e6bd1f25de132d7ff52f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1837ddd993",
+   "path": "art/places/sets/ninja-test/fleck-4.png",
+   "sha256": "95621ec1de9fd02b96fc3da7925f5a3f332b6ce3e10ddb58875b212a509f8539"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "bd5d25b2e3",
+   "path": "art/places/sets/ninja-test/fleck-5-m.png",
+   "sha256": "2b99557b038fbba2ef91c020293050c70ddb324209f0cefa5dbb078f6a3267f9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2ba086720d",
+   "path": "art/places/sets/ninja-test/fleck-5.png",
+   "sha256": "175820503c17c28b6bcb46af247c8db6e8918ec831068294e989abcd1ec960bd"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "37bdfded88",
+   "path": "art/places/sets/ninja-test/flowers-1-grown-m.png",
+   "sha256": "db26baf9cc7a34ee2611668aac1176ba75a3a72feb4fa598a0c03f8bfde78009"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5b219059c9",
+   "path": "art/places/sets/ninja-test/flowers-1-grown.png",
+   "sha256": "8f81dbd435c7f636c5cefe201fcf393a8b950c4fa3cc0181eacd1d7649fbb294"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "74e4959e99",
+   "path": "art/places/sets/ninja-test/flowers-1-m.png",
+   "sha256": "340e2f1912c166cec7f2d63ab844ab55ddfe7838146a6b31f94933ebd3939ddf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a37dfe8bb3",
+   "path": "art/places/sets/ninja-test/flowers-1-young-m.png",
+   "sha256": "727409ec502e27e358274d92d926cc9f8bacbd545df12956b03c31775cf6cfb5"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "4d1f5f730b",
+   "path": "art/places/sets/ninja-test/flowers-1-young.png",
+   "sha256": "785ca4b92388db91f26d7bf9ed32a8eb57b7c1b80570f99f6c259568b8a29fcd"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6a1e0529b8",
+   "path": "art/places/sets/ninja-test/flowers-1.png",
+   "sha256": "7cdf58728ccd51050c74bc68621d82dbbc692d4a33d41edc8dfe1b4f7fa92c14"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1e38840339",
+   "path": "art/places/sets/ninja-test/flowers-2-grown-m.png",
+   "sha256": "3b2ecefc0106bdfc8de44b24c1047943516795e5ec035ca3523286b33c866d94"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "378dac9cd3",
+   "path": "art/places/sets/ninja-test/flowers-2-grown.png",
+   "sha256": "f4bda0ec61a6a25ebf48d3ed995e32309c32ebf516bd55bfe6406cd47c072794"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "032e296df7",
+   "path": "art/places/sets/ninja-test/flowers-2-m.png",
+   "sha256": "b75e512aa6cbc670ca0c9fc6cb212c63cff2b66f1b9d2767cc6bb29c56d0ff4f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "19fe415a68",
+   "path": "art/places/sets/ninja-test/flowers-2-young-m.png",
+   "sha256": "4e6e1025c71dcf28398537cd91b33d75925b7c7f8d55cdf28655a2803d8536ed"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "381652eef1",
+   "path": "art/places/sets/ninja-test/flowers-2-young.png",
+   "sha256": "4efd1f9083798040b20bd019cb980dca00dd92f87db183b963b4466dea6e3aaf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "38b3c92569",
+   "path": "art/places/sets/ninja-test/flowers-2.png",
+   "sha256": "073667257600ef53b0ffb5e7ea01c1d01afef483f4b59dd636a9c3c38a589152"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "373b5ca770",
+   "path": "art/places/sets/ninja-test/flowers-3-grown-m.png",
+   "sha256": "212338952939ce8af1e391688f6332fee8a87c224c2a344cbcdd547ac7a42d32"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fc968229dc",
+   "path": "art/places/sets/ninja-test/flowers-3-grown.png",
+   "sha256": "e33ccc452fb5f43219f74845b750f4d4843bb2ca6f1c58be792efa28592e78ea"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "45cedfe614",
+   "path": "art/places/sets/ninja-test/flowers-3-m.png",
+   "sha256": "a51bbdbb99ed6b5b7be66bc8ec9076b97d7537d479afdce4c6541ec9193b169c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ac0be7763d",
+   "path": "art/places/sets/ninja-test/flowers-3-young-m.png",
+   "sha256": "7dcdaba6837b6edea0407958c06cf5c637e08a9a73f87d7d3f61dfe4cea36ee9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7db456bc4f",
+   "path": "art/places/sets/ninja-test/flowers-3-young.png",
+   "sha256": "ca90c2ce6c391954eaf85bd58446056235855c4bdc220a4da1bed30a567db26b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a8cc4bf743",
+   "path": "art/places/sets/ninja-test/flowers-3.png",
+   "sha256": "3dfe9c5f0b540453cdb9cb7fe9f14c3f343c9cd0be5fa90b36d31856f570326c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6669a471ea",
+   "path": "art/places/sets/ninja-test/flowers-blue-pair-grown-m.png",
+   "sha256": "aee60c13f55b6afa09e05502e3883011260c05e3971c25029b611866cde2a10a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "882fb41ff7",
+   "path": "art/places/sets/ninja-test/flowers-blue-pair-grown.png",
+   "sha256": "4dcd8b1861cf5d73bfaaaacb4bb06240e47bced567802789eb66fa26f130e923"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "becc1d5996",
+   "path": "art/places/sets/ninja-test/flowers-blue-pair-m.png",
+   "sha256": "1806263c01cf0fc6e26a2d078fe3060dc70d5a9d0fe3338d5e39e94549cc8396"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "60267d06a3",
+   "path": "art/places/sets/ninja-test/flowers-blue-pair-young-m.png",
+   "sha256": "4b5c242853bd78d42130b8aa1829f6519ec71541b6916ab5c93895cc06e8c222"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f12b701a04",
+   "path": "art/places/sets/ninja-test/flowers-blue-pair-young.png",
+   "sha256": "41e1cfc7d86c4cf17f2cb2931069882d12e05a4cc6206a1288772c948ccb7cf9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "cd2bec828c",
+   "path": "art/places/sets/ninja-test/flowers-blue-pair.png",
+   "sha256": "ced517a3f8c9661ca74537352be89051478501dbd465229c44826a099f7c424d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1c6573941f",
+   "path": "art/places/sets/ninja-test/hollow-tree.png",
+   "sha256": "c74d01bd8f6c2895743f3417df37fd6cf1dd69920de220e611b345dbf844b2f3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d17ef6f851",
+   "path": "art/places/sets/ninja-test/leaf-loose-0.png",
+   "sha256": "85e91fc0cb1352ce02e0dc2e168e365706eb3d76268c2729129fb7ee73636b7a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6149377950",
+   "path": "art/places/sets/ninja-test/leaf-loose-1.png",
+   "sha256": "f9b98cc0ba755894385f87697cebc02225c14b1bb2362a560b07411ed60ea7a8"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9d327fca92",
+   "path": "art/places/sets/ninja-test/leaf-loose-2.png",
+   "sha256": "1b115a11bc4f785ba48d7746fc051f61651c72cebe453c6677de5211eedb66a3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "470c1d751e",
+   "path": "art/places/sets/ninja-test/leaf-loose-3.png",
+   "sha256": "1f09b4312f71379288400fa5e250ee24cdc0c73182efdc0da6e3897344f493ec"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3ef3a1f227",
+   "path": "art/places/sets/ninja-test/leaf-loose-4.png",
+   "sha256": "d206d6a0f616eb3db4247f1bc0ce4975c906ccbf41b8f1676748d3e412898dec"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fc06b99c7c",
+   "path": "art/places/sets/ninja-test/leaf-loose-5.png",
+   "sha256": "b8ab1facaff7f4c75c07b1da3ee076134b705a7a171a11a9e1ec4bb64d6e997b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c2ba2d6833",
+   "path": "art/places/sets/ninja-test/lily-pad-flower.png",
+   "sha256": "1f5bf7f4d6952a7ae3ad4eb7499adb7665a22570072fe1fdaf8d366b41cf06cc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "150bb9635b",
+   "path": "art/places/sets/ninja-test/lily-pad.png",
+   "sha256": "dbcdf60d2e080fd3963d3d2b9e63cb4db97a286e6dd5e992af021cf0709ca158"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f8d4b8346a",
+   "path": "art/places/sets/ninja-test/over-drygrass.png",
+   "sha256": "316b564e3fda06496eb37e5b4b2d41589b6bc48a52d71638db3c9b9ddd4cccd3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "52c88b45af",
+   "path": "art/places/sets/ninja-test/over-earth.png",
+   "sha256": "42626e650f202cbbb50db237512f8888e7588fc037ebf8b90b124006403fedbf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "028d8e204b",
+   "path": "art/places/sets/ninja-test/over-grass-bank.png",
+   "sha256": "837306db3d923bde3e9adb2dd550188b295a479e1c50902c804038f560fa2073"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6c7ece4447",
+   "path": "art/places/sets/ninja-test/over-grass-flat.png",
+   "sha256": "185a7e7f130c5a36b32406969be915c804f2a23f1a53cc26d12057c8c1d70b55"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2ae530fea9",
+   "path": "art/places/sets/ninja-test/over-litter.png",
+   "sha256": "513eadc9552cc1bfd85842877fbb6ba3e92aa59023318b2699edbc110bc5b270"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "68c8a5411c",
+   "path": "art/places/sets/ninja-test/over-mud.png",
+   "sha256": "e92afe18120e68b7997e59e646baf0d3849972fc8a4072ae1e228f53a36977c3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "26ac9bf3ee",
+   "path": "art/places/sets/ninja-test/over-path.png",
+   "sha256": "c5eb0852205f6b1917a682d9b24cd8289e053941aca5000762c5de1c4ffd7717"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e70a1bcd93",
+   "path": "art/places/sets/ninja-test/over-sand-beach.png",
+   "sha256": "ec03a5c415814afc912c74846eb0bb5913ec4ee8dc1d02feab161812a9a77515"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "714a906884",
+   "path": "art/places/sets/ninja-test/over-sand-flat.png",
+   "sha256": "b400fd83d0ceb5905f4ec58fb6a8bb8a587c6052d4fc244233f807bca923dc37"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8745d99519",
+   "path": "art/places/sets/ninja-test/over-scree.png",
+   "sha256": "3c20301ab029728f48b4ce3dc878ea1f8f20c8fc78ceb528274f963e1e2517d3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1ec5f00ab5",
+   "path": "art/places/sets/ninja-test/over-scrub-full.png",
+   "sha256": "b277ac4240dee25b05d2f22bb8a2e72555dd14f549acd4e11742193c3d19d17c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "878f32f988",
+   "path": "art/places/sets/ninja-test/over-scrub.png",
+   "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b8a29065be",
+   "path": "art/places/sets/ninja-test/over-scrub~v1.png",
+   "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d9aeeab8cb",
+   "path": "art/places/sets/ninja-test/over-scrub~v2.png",
+   "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a9e8d23791",
+   "path": "art/places/sets/ninja-test/over-scrub~v3.png",
+   "sha256": "edb3912e4a67b8c4077aa89fa6176e64cd5020af03ac4a9e5c8128ade550a620"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "47935d8bdc",
+   "path": "art/places/sets/ninja-test/over-thicket.png",
+   "sha256": "96221b8d08309033487891ed69c3efb6504dcb7a0ed66052fd3374548dec516b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "efbb18933b",
+   "path": "art/places/sets/ninja-test/over-turf.png",
+   "sha256": "61fef102c67961dff610c01517862b794ac78c88179ebc21fa5d9bd9751b1580"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b776e72805",
+   "path": "art/places/sets/ninja-test/over-water.png",
+   "sha256": "4a0b26c3dafaaa9050cca1c8521e01e4b8cdf684db8683c59a7c169464c0a113"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2daa31f546",
+   "path": "art/places/sets/ninja-test/pebbles-a.png",
+   "sha256": "53139e0b2e6be7d38e5ab87f69567c4483e90c2bf5b1bca7469ec321aac166fa"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f315de8836",
+   "path": "art/places/sets/ninja-test/pebbles-b.png",
+   "sha256": "8b365cad3334f2c79d153a8d62f77a786280ef93640215b473de8921f747a0bb"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9436104063",
+   "path": "art/places/sets/ninja-test/pebbles-c.png",
+   "sha256": "262c7f4f9ebed71fba2528b1c303cb0d65ef7064c06845b77bd219955b4011d9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "46f67c9d76",
+   "path": "art/places/sets/ninja-test/reed-shore-1-m.png",
+   "sha256": "8ab3ccc4c0ed134dd2fea6a662025f7ab5fb9694338b4a56016690ff47ef0c56"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3b3972052e",
+   "path": "art/places/sets/ninja-test/reed-shore-1.png",
+   "sha256": "5805f2b95105ee25db3f5e636ab6f78adaa072bc10628653e498ff9806189a7e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "31acc7f7fa",
+   "path": "art/places/sets/ninja-test/reed-shore-2-m.png",
+   "sha256": "6515ccc2f36ed52ed2f540602854c90b32ccb86c60b7a9af3aab015061c5fd7d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "83165a0e2e",
+   "path": "art/places/sets/ninja-test/reed-shore-2.png",
+   "sha256": "cbc72a28929f52ff755c976cb189ed05cd5f7bb7fb08adf37c72a80617d09459"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "60ce0080a2",
+   "path": "art/places/sets/ninja-test/reed-shore-3-m.png",
+   "sha256": "790ef44d81983ec26a3ac16671f9c9b17b79b3398eb141b2d2c5c9392c2118f4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "da8343286c",
+   "path": "art/places/sets/ninja-test/reed-shore-3.png",
+   "sha256": "d7f3c12bcb721aeef842c9aadd828859246b339d2e21ae272c61ec555af5ed65"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2dfb204ef7",
+   "path": "art/places/sets/ninja-test/reed-shore-4-m.png",
+   "sha256": "685973d92e6292edb24f02c624cf245667fdc64fc4b3ff42975d4c5dc4badff3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "98d909db73",
+   "path": "art/places/sets/ninja-test/reed-shore-4.png",
+   "sha256": "b6535e6de49e859551e2fdb5576ea0cd4251848140f11aa57d1e93d999f11fb4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "08a02757e0",
+   "path": "art/places/sets/ninja-test/reed-water-1-m.png",
+   "sha256": "6b2cfd805b1fc47a2b996b80165b3c85cd56cf8ebab4166a9429a3cbcee342ed"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "82882761a7",
+   "path": "art/places/sets/ninja-test/reed-water-1.png",
+   "sha256": "5a48906291395c8be5f4242f4ab8ebd5738e00beb248d0934b721c6c8f020f04"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "159a07a4dc",
+   "path": "art/places/sets/ninja-test/reed-water-2-m.png",
+   "sha256": "abb69e86e9b1438874a7ffe965b9da445ff996ec618284d5be8f7c9dc2a25dd3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "001c6fd59c",
+   "path": "art/places/sets/ninja-test/reed-water-2.png",
+   "sha256": "ee34db55e6639c7281826235ebfad3be35ec2f0c10a8669b7b8ed5e8d57821a5"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "284282d6cf",
+   "path": "art/places/sets/ninja-test/rock-a-m.png",
+   "sha256": "f2afc6e5a8f689ae56b1e15404a165dde2d916c782de15d93f278adf5d1a038a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "73f97a193f",
+   "path": "art/places/sets/ninja-test/rock-a.png",
+   "sha256": "0b4e6f691505d6f738b746af9520b571151fba9ab5c74b6cc1eb73b5ebeecbef"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a09f9bfa92",
+   "path": "art/places/sets/ninja-test/rock-b-m.png",
+   "sha256": "5f3870b793645169a840e8531c0b91fc0c0373d85ba651b05f7914c10f9585cc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "10cd0618b8",
+   "path": "art/places/sets/ninja-test/rock-b.png",
+   "sha256": "7f4fc66b687f702ea49b970af43014c6145535df74f68072742e6725520152fd"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b1547d4bf2",
+   "path": "art/places/sets/ninja-test/rock-big-m.png",
+   "sha256": "40bed5fa49565666d283bf344014cba953333cdff2a179a904a8e8fbe5e43670"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f98c677354",
+   "path": "art/places/sets/ninja-test/rock-big.png",
+   "sha256": "7580aa5c6dd21dcc431bdc847a62cae663332f0a5c7c75f302390692dd49d7af"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3686442246",
+   "path": "art/places/sets/ninja-test/rock-turf-m.png",
+   "sha256": "f2afc6e5a8f689ae56b1e15404a165dde2d916c782de15d93f278adf5d1a038a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "604a5b01e9",
+   "path": "art/places/sets/ninja-test/rock-turf.png",
+   "sha256": "0b4e6f691505d6f738b746af9520b571151fba9ab5c74b6cc1eb73b5ebeecbef"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "0013813a9e",
+   "path": "art/places/sets/ninja-test/shrub-1-grown-m.png",
+   "sha256": "5d23fec9a6b0d63c62049e4984e7da20e16ffb34d602df7ea7b264a5647fa4c0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b57925b1bf",
+   "path": "art/places/sets/ninja-test/shrub-1-grown.png",
+   "sha256": "a65830bc5240b52191ccf8fe0fe5ba20ab988e7b48f70b89d9a6f42c8b67b834"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "43bb7d7bdd",
+   "path": "art/places/sets/ninja-test/shrub-1-m.png",
+   "sha256": "97dae82f833f286ff6451751ffafcfd18f874c935de2c6f8863848246b1be211"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "62b96cf83d",
+   "path": "art/places/sets/ninja-test/shrub-1-young-m.png",
+   "sha256": "e4b2b28d1d0150d4e7336c6185214f4205555a9ddce521244d0a8e214b53e1fc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "426df017d2",
+   "path": "art/places/sets/ninja-test/shrub-1-young.png",
+   "sha256": "58d75a02006ca65a6f2d59fa90770a9c7c1074959fd265a2f82baae7e0760ae0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "35e340a7a4",
+   "path": "art/places/sets/ninja-test/shrub-1.png",
+   "sha256": "703674b6a21480166320bf9d292f3d138ac9c05049c75626e73330763c249609"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a5bf6a1fed",
+   "path": "art/places/sets/ninja-test/shrub-2-grown-m.png",
+   "sha256": "7dbeb783e097e32f1f3904cec0fddbda1986290a99a7eff0427f03e5b3d46692"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "97755dc973",
+   "path": "art/places/sets/ninja-test/shrub-2-grown.png",
+   "sha256": "42c3fb3644391a91e8b8c06b6223c36c0c1f7e8cf4b7a0eb4c8ec0cf6cc50470"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9d37e7af5a",
+   "path": "art/places/sets/ninja-test/shrub-2-m.png",
+   "sha256": "2bd6ad4fafc76e40b49ec043ea34b5bd0fe71abe08284ca4a1c7946dd30e9987"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c68c040543",
+   "path": "art/places/sets/ninja-test/shrub-2-young-m.png",
+   "sha256": "637a592cc14370714269afa4145e1dd3e6610fddf84c524788412402709b0027"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "75c6c77a27",
+   "path": "art/places/sets/ninja-test/shrub-2-young.png",
+   "sha256": "a3d2787805a556208d3a18eec7762ace781d37baaab3d6ca9fd3bef6e52a6bb6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9622bc05bc",
+   "path": "art/places/sets/ninja-test/shrub-2.png",
+   "sha256": "e6b16395d14b2ed2adcbcc667f67ca43217ec0fcd36a8e020fad0b71921bceb0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a4a64d90cb",
+   "path": "art/places/sets/ninja-test/shrub-3-grown-m.png",
+   "sha256": "7b372b08e170e426bb2185ebfb2ed34aa79d93376a38fd33b63617cb8170d4ed"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "57108bf432",
+   "path": "art/places/sets/ninja-test/shrub-3-grown.png",
+   "sha256": "39a2e1d2ccf204c2f0c36ed689eb268a2ef837c028e1b3c32808addbd9f24e11"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "0c7c66ad67",
+   "path": "art/places/sets/ninja-test/shrub-3-m.png",
+   "sha256": "4e8ff891c4a4c2dd99af3e0114a4e2979f5cf2fca8a96547482c8e2f1973c62f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "50848e46bb",
+   "path": "art/places/sets/ninja-test/shrub-3-young-m.png",
+   "sha256": "63aded01e5850f67b04de77bb4714843906f4894765e91c99415cd7a4b24250c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1f881e1af9",
+   "path": "art/places/sets/ninja-test/shrub-3-young.png",
+   "sha256": "cbacea567e0a03d7fb8c9ec7d9ab885ab599201320274fa09d77ac813acd745c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1d51df421b",
+   "path": "art/places/sets/ninja-test/shrub-3.png",
+   "sha256": "dc9d0e21879023f12fd64e8bafac10f33009193729951197dd27cdf943c27abf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5d114d525d",
+   "path": "art/places/sets/ninja-test/shrub-4-grown-m.png",
+   "sha256": "e7f3e020c466d06133f70006a3514f6c8a28a57b8a0b7505bd8af11654f5fc88"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6269e0f02f",
+   "path": "art/places/sets/ninja-test/shrub-4-grown.png",
+   "sha256": "e015fb93a8947710239c3465ec8b7e6242046ed83c1076f4587440840e6b46d4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2f5883efda",
+   "path": "art/places/sets/ninja-test/shrub-4-m.png",
+   "sha256": "9d0cfe6a6c52de98bf2abc93d1689118f7fdb6c67ce94885f43aca1e2db2c26f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "57b9e9ea1f",
+   "path": "art/places/sets/ninja-test/shrub-4-young-m.png",
+   "sha256": "1a70aad8fbbfa9e4b1f78f35f42ce7c8f0fb94db7ff8cf47bb65b3cc951635d2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b11738f7fe",
+   "path": "art/places/sets/ninja-test/shrub-4-young.png",
+   "sha256": "e135e1f847b1d8cc4d0b728e62fc965070ef095adf666c3f9395643e817b1bd2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "dd1568ade0",
+   "path": "art/places/sets/ninja-test/shrub-4.png",
+   "sha256": "2f94a0e16acc8648393ae6e156a519b7438767cd4af0e103a4d98b0c64ee0859"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "487aacc81b",
+   "path": "art/places/sets/ninja-test/shrub-heather-m.png",
+   "sha256": "0f4fffcc23e56fa7cfc49ff6f8deff638e339780fe505cf457dd7691de2d6559"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3646c92e72",
+   "path": "art/places/sets/ninja-test/shrub-heather.png",
+   "sha256": "dcecc38f04f34728d60cb1b292defc67fa900eedf34561074d943b9cea4224af"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "cb6efc8c34",
+   "path": "art/places/sets/ninja-test/shrub-thorn-a-m.png",
+   "sha256": "a9607a710159284dddd89f72e7c406f9aa97bc3dc2241303afc59665899579e2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "815c7e8e6f",
+   "path": "art/places/sets/ninja-test/shrub-thorn-a.png",
+   "sha256": "a6fb9db197d24db36d4d3209fe9b1d8e1777be22c892760222c9e28fad18503b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "18cb64bde6",
+   "path": "art/places/sets/ninja-test/split-stone.png",
+   "sha256": "95357317bd476f31381c0c4e96e3a48e477ad5d1f375aacf0383f4f3c44cf2d6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f6c8688513",
+   "path": "art/places/sets/ninja-test/stump.png",
+   "sha256": "94d02af02077168eeb02e9ecb811c3523428f0fc86af0ccbdd90ff44356d4c1c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "dc265c7614",
+   "path": "art/places/sets/ninja-test/tone-grass.png",
+   "sha256": "136b20625e5fc6abc727b24cbcbd1c71425ed37a604a9a5c0f286b356d6d77fc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "46da220c64",
+   "path": "art/places/sets/ninja-test/tree-crown.png",
+   "sha256": "69b21c2ec671e5e6f5efb4633a402933fd608787f1c13e131c2d94c440a986a7"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "493c2d4b13",
+   "path": "art/places/sets/ninja-test/tree-trunk.png",
+   "sha256": "ffd4f155328d43688f1eeb433d0b297a76239b9db44a9717fc67c35fac6a712a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ad4fddebfb",
+   "path": "art/places/sets/ninja-test/tuft-wind-m.png",
+   "sha256": "0136fee6055793c2f748467bf73e9e8a35f974e6554205be2f43d2d24183dfc2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7400954bf9",
+   "path": "art/places/sets/ninja-test/tuft-wind.png",
+   "sha256": "1219f1188d26a23d1e8908756383521784aea1df0fa15f8565f035c006b320bb"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1915cc691c",
+   "path": "art/places/sets/ninja-test/tufts-1-grown-m.png",
+   "sha256": "58cb155c80489e569466a16d331f0c513686de3c63a7be53ff8680effee3e1eb"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "41bd072a0d",
+   "path": "art/places/sets/ninja-test/tufts-1-grown.png",
+   "sha256": "866fee6e5ecfdbfd31eb9a3f23f9a0cf1889e6533aa9749f0162133dd592d495"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "4740ac261b",
+   "path": "art/places/sets/ninja-test/tufts-1-m.png",
+   "sha256": "cfc05fa77f9dc0450ec83f3fb08020c5884ceb7fcddeb2bcc67a0a56d966c32c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "abb86a861a",
+   "path": "art/places/sets/ninja-test/tufts-1-young-m.png",
+   "sha256": "a7df7bd2168bbb9d0db3e8e945dd926ab2f42fba2bd4ed084908807de3a5265d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "14d9dabe1b",
+   "path": "art/places/sets/ninja-test/tufts-1-young.png",
+   "sha256": "f746f8c10d446e3ff0540a99bcf0cd646a40617c558141cb28988236b30366a9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "962256b561",
+   "path": "art/places/sets/ninja-test/tufts-1.png",
+   "sha256": "5ae7d02ee3e213d4144cd3fdc363130d6affe7c148d970602a541c6d80ae283a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5eb34e31cb",
+   "path": "art/places/sets/ninja-test/tufts-2-grown-m.png",
+   "sha256": "107f85d6de26fe8734acbfb60cf20cb4e43caf8cefee6f9bb79b43bd30737ba6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "125c535090",
+   "path": "art/places/sets/ninja-test/tufts-2-grown.png",
+   "sha256": "52712e52549812e3e42cb01735d5cfd8b6b62913ca8b7447b5a906eb814d0372"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e24919b3f0",
+   "path": "art/places/sets/ninja-test/tufts-2-m.png",
+   "sha256": "24db962e352d330db225031bd3865e7a4c9d47b49dd92f1bc01e19734b23402c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "caa9992246",
+   "path": "art/places/sets/ninja-test/tufts-2-young-m.png",
+   "sha256": "2ac2795c1152bc28ee33f5085d10aec946de6b390a596fdac0b088a74f66921b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e6599f57b0",
+   "path": "art/places/sets/ninja-test/tufts-2-young.png",
+   "sha256": "b6dc08309454c84ac873070fbacc9b9965566f5304942424d5bb7c6f532256e2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c6820b674c",
+   "path": "art/places/sets/ninja-test/tufts-2.png",
+   "sha256": "a803617a54970038c9a30f0636866e36bf6b55b8a3ede7583adbec6b08db4560"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "114231d38a",
+   "path": "art/places/sets/ninja-test/tufts-3-grown-m.png",
+   "sha256": "77bc115b1472c7cf9c0d5d9b2a80dd7987a695ded053c0b1ae2b6afbf71e48db"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f8042b3c02",
+   "path": "art/places/sets/ninja-test/tufts-3-grown.png",
+   "sha256": "070b99c0e2d1f62c8f1eed86578f97a5d6b76e949d147c35fdbe004979e0fbfd"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "454d29c1c2",
+   "path": "art/places/sets/ninja-test/tufts-3-m.png",
+   "sha256": "0ad13bf6b44046890460ed41450cd786dc4bdd4671112efea3fc030c419bfb30"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "4876c256eb",
+   "path": "art/places/sets/ninja-test/tufts-3-young-m.png",
+   "sha256": "a410f22c16ac83493c2137fdb0f383634e54d1b561677d3afb0283be2d114d17"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6db2f3db1d",
+   "path": "art/places/sets/ninja-test/tufts-3-young.png",
+   "sha256": "f230a418ade3367c54e4f3b9c221fe4766bdf19c390da2a66ba3edbd3acb5511"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "28d9e2b021",
+   "path": "art/places/sets/ninja-test/tufts-3.png",
+   "sha256": "ebc0ecc0b282d8f3b3f37447a4b945538fb31f5571710dc17930fc4a392c55c8"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "891e1b7a47",
+   "path": "prototypes/exploration/art/look/look-partner-S01-juv.png",
+   "sha256": "f06965f1dd043714611684397599b4a79276b88b6f55831d021e7700341c9dc9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5a6a11fa0b",
+   "path": "prototypes/exploration/art/look/look-partner-S01.png",
+   "sha256": "43cce734874d21320e65be00ce060f9d792f855fc05bc0c2985a39aa7d4415ab"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c2651f23fd",
+   "path": "prototypes/exploration/art/look/look-partner-S02-juv.png",
+   "sha256": "6b3939824a959c274138b44496ba6d52c79b7c797523a227e79ad6b1c9713f5d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "99fb8c5c8c",
+   "path": "prototypes/exploration/art/look/look-partner-S02.png",
+   "sha256": "9e30e96e8fd6a030cc1b5da31c84d96bda8f83696f986fa8654a815518fef249"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f212fb3012",
+   "path": "prototypes/exploration/art/look/look-partner-S03-juv.png",
+   "sha256": "0b7c1edb47badb8f1d5a35d047f09e0a5ddc342ca51ba50fcd7669c71d143e8f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f0542a7138",
+   "path": "prototypes/exploration/art/look/look-partner-S03.png",
+   "sha256": "728e176515441042feb9199884a41659f2be31aa16b54b1410815d028ea05a2a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "325615b180",
+   "path": "prototypes/exploration/art/look/look-partner-S04-juv.png",
+   "sha256": "b5c1a4ac0edaca839819e11606b1d456ac88b672db6353c5a15a47e0d3caf867"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "34d75fdbc8",
+   "path": "prototypes/exploration/art/look/look-partner-S04.png",
+   "sha256": "9722b7bc6032d279eee6640be5c48ffac8118d49424c2a0180cea1b24cf04892"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "187afe2ada",
+   "path": "prototypes/exploration/art/look/look-partner-S05-juv.png",
+   "sha256": "75704a28fd540e6755bd549beabd25c0ad09dbcbb525b24833a2e78713eff6ef"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5fb43490c9",
+   "path": "prototypes/exploration/art/look/look-partner-S05.png",
+   "sha256": "307170a55a4ecea496e06c9b2352ba2ddb4f6cdb5e3bc8672860d6162e9f6064"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "379459876b",
+   "path": "prototypes/exploration/art/look/look-partner-S06-juv.png",
+   "sha256": "0e5b4f70bcbd85a919a6a72cd936c070fcce59b2fd869720ae9aa8b15a3888ad"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b125deb24c",
+   "path": "prototypes/exploration/art/look/look-partner-S06.png",
+   "sha256": "5098db004195c2d661266253afad7748d09d007ac256429197b0fb47bb24b5af"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d4b1cc85be",
+   "path": "prototypes/exploration/art/look/look-partner-S07-juv.png",
+   "sha256": "c6e518c5c1d1796d8cc1d77980d8dd716a978ff78f209acdb5d339b570619890"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "68a35e6f08",
+   "path": "prototypes/exploration/art/look/look-partner-S07.png",
+   "sha256": "b937432466a1c23838ef2e1a1fd49a9f8f293095cbe82efc48cd55879ff630f5"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "08650886ce",
+   "path": "prototypes/exploration/art/look/look-partner-S08-juv.png",
+   "sha256": "171c87d083ee05ad1d8451a6f8b195aa011057b8b5795262531acf49355f24e3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "39e1834477",
+   "path": "prototypes/exploration/art/look/look-partner-S08.png",
+   "sha256": "ba431a6665ca2f1260e0517bee2a77fb00c0ae1e9bb582f3384d48c8651b70f2"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3da11b2513",
+   "path": "prototypes/exploration/art/look/look-partner-S09-juv.png",
+   "sha256": "8e579eb74214a5b8e419b06e27a823f3e3dfe08001b790a0e14579b41cc69a72"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2775e37c53",
+   "path": "prototypes/exploration/art/look/look-partner-S09.png",
+   "sha256": "0706d6eb6e4fee10cf7c73ab80ddfc61382d306a59137feb2e5e75f838ea3ef7"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b358b405a8",
+   "path": "prototypes/exploration/art/look/look-partner-S10-juv.png",
+   "sha256": "88ed9f5cd5eab4c187b47bd39321dea79096036bec8eb4b18b2e44019ec2e2e4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a3da9b6d1f",
+   "path": "prototypes/exploration/art/look/look-partner-S10.png",
+   "sha256": "6be6dd556be775edc45a3980179892a8e727c35968dfc739cec7b01ceff83166"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fce0443e72",
+   "path": "prototypes/exploration/art/look/look-partner-S11-juv.png",
+   "sha256": "6aac5f12dbe9057f4c7292203e56349a5d74f54e98b8c94947140289b44b0c21"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3576486e9a",
+   "path": "prototypes/exploration/art/look/look-partner-S11.png",
+   "sha256": "9de6f437ada0b0d9197ad66a8f6fd55aa8a35d03881bc56877f0812ccc483141"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f953dc0983",
+   "path": "prototypes/exploration/art/look/look-partner-S12-juv.png",
+   "sha256": "3d2acc81810674430abcc541a8aab5363f93b6ae4e7c922951e2d9b2b8b73472"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e7d54bf430",
+   "path": "prototypes/exploration/art/look/look-partner-S12.png",
+   "sha256": "7103ee44a04cf885d8490fb5467c59896b5f265a6ae66879064dcd2c83e6e558"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c8f9a8191d",
+   "path": "prototypes/exploration/art/look/look-partner-S13-juv.png",
+   "sha256": "da4fd019518e3bce9f316ebe4a5a1aba053e6675e51d0f1e201ec14b8c13ce61"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "0830eb1246",
+   "path": "prototypes/exploration/art/look/look-partner-S13.png",
+   "sha256": "880909514ea96ab75eb4762c5d1ba9aca5720d4355e819362f4c6673ac2b1bf3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "288b1df7a4",
+   "path": "prototypes/exploration/art/look/look-partner-S14-juv.png",
+   "sha256": "06401be400209e2f3888563d7f41e96e054d784b146ccf1b982f8a873f90d12c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2f1e0ca1ad",
+   "path": "prototypes/exploration/art/look/look-partner-S14.png",
+   "sha256": "32989d130004be704454ee6710eca3466a899e41e51a008219c5b6a6bdbb08af"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "35cc4354ea",
+   "path": "prototypes/exploration/art/look/look-partner-S15-juv.png",
+   "sha256": "3c681e773e7429c6122e7f3440e030551b44d060bebd28e3a7bfb21c3d071853"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "59abc6815a",
+   "path": "prototypes/exploration/art/look/look-partner-S15.png",
+   "sha256": "ea3dfef8ff4e36002063b08287704be3f0f67d5a76066e986b110d66772449c6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1190c4141c",
+   "path": "prototypes/exploration/art/look/look-partner-S16-juv.png",
+   "sha256": "61794ab52607cbd63711cc8e38b92f1467822285eafc58cde814974727ebb6b0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e67434d5ef",
+   "path": "prototypes/exploration/art/look/look-partner-S16.png",
+   "sha256": "8916c32269311a3887ce561b64479dfc4340d77f6c1a40d4ad6d16b233e3c2f3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7b92eb072f",
+   "path": "prototypes/exploration/art/look/look-partner-S17-juv.png",
+   "sha256": "306a8105e76f6d9f5ab880b9e48541270ada6f93cf71800469d481fad34e4589"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8d0fa9fbeb",
+   "path": "prototypes/exploration/art/look/look-partner-S17.png",
+   "sha256": "be9a80274473d1ccf6077eef003a4855dd041d6e9c95724e9f8ca490acba1297"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c33978d2b9",
+   "path": "prototypes/exploration/art/look/look-partner-S18-juv.png",
+   "sha256": "cfd4bfae8a01744a9bde28254489aeda03d0ef493e691b06bb26b53639f0ade3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "48d74921fe",
+   "path": "prototypes/exploration/art/look/look-partner-S18.png",
+   "sha256": "bc596b3f041b903d316d65f8a776c6b05f422849dcc1c237e69b055aa8c31daa"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "90acc2bda1",
+   "path": "prototypes/exploration/art/look/look-partner-S19-juv.png",
+   "sha256": "5862951788774a44cbbca857f38caab5cf7b429abdf0acd721b4776818549180"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c6971c5404",
+   "path": "prototypes/exploration/art/look/look-partner-S19.png",
+   "sha256": "4c9e52079220a1451283b0f2807c4d9189ee0cdda72b9bdc57223c48ad12a4a1"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c4b9cfcad3",
+   "path": "prototypes/exploration/art/look/look-partner-S20-juv.png",
+   "sha256": "5f4f258b2f5d9528546448b5c7b86633af1730d07b3af79dfae60aaabe4b784e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "17220a51f8",
+   "path": "prototypes/exploration/art/look/look-partner-S20.png",
+   "sha256": "6880d4773b163e5f2e7d243a6f89803718a43aa93833ed7ba9295a1207dd0785"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "37428827bb",
+   "path": "prototypes/exploration/art/look/look-take-charge-1.png",
+   "sha256": "3a293aa3ed7d7cd447dbe37c473df8b10a715f2337e0ee959ce8d5a92c86bc14"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f1808d0b7b",
+   "path": "prototypes/exploration/art/look/look-take-charge-2.png",
+   "sha256": "14281db0122e2428e0a88e3840c997237ad31ffaa79fade2bb84bf97036f6b1b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6721478b1e",
+   "path": "prototypes/exploration/art/look/look-take-charge-still.png",
+   "sha256": "75ea26f74b3c2ca5750dffc353f01b032a5c1473e4a79944dfe2fd6b6ad9a067"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e94b0a7933",
+   "path": "prototypes/exploration/art/look/look-take-warm-1.png",
+   "sha256": "46c3cbeba5afd4293137c2e9b0b5ecbd95a6e1c983fb3ec73d9088a6d4e5e79d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5d89d06d0f",
+   "path": "prototypes/exploration/art/look/look-take-warm-2.png",
+   "sha256": "840290e5374ea518fed17409321804c10db589cbb2135c6713ace7aba2d85e2a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ed2fb7e739",
+   "path": "prototypes/exploration/art/look/look-take-warm-still.png",
+   "sha256": "7a8307dafd4999a1eb28329430dde95d2ce1b098a86cdc2913006bf2b2f161d5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-12",
+   "id": "924abbe58a",
+   "path": "prototypes/exploration/art/look/you-here-pulse-1.png",
+   "sha256": "f5a093ec6a0423af8bfaf5e600a0cfbe134a9c133dcee3cf7df27358584baf31"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-12",
+   "id": "ccdc316f3b",
+   "path": "prototypes/exploration/art/look/you-here-pulse-2.png",
+   "sha256": "993418d9f2ea101fab20b243cf27bf6ceac54618d3a07695e5cc375631385bcb"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-12",
+   "id": "ccb6174009",
+   "path": "prototypes/exploration/art/look/you-here-still.png",
+   "sha256": "f5a093ec6a0423af8bfaf5e600a0cfbe134a9c133dcee3cf7df27358584baf31"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "aac06b08f9",
+   "path": "prototypes/exploration/art/moment/stand-S01-280x300.png",
+   "sha256": "d54ad0e465ff65f663bb38273d1dc24c478fde9602b05b5a98a5090e0c159749"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3ace85a158",
+   "path": "prototypes/exploration/art/moment/stand-S01j-280x300.png",
+   "sha256": "f21498f636a7d019cc132b6ab014328b744eb707584c93b2a9cdf3433174bd53"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f23337b1ce",
+   "path": "prototypes/exploration/art/moment/stand-S02-280x300.png",
+   "sha256": "dec667dfef1cb58f6a8ad9ee3d95adb52c996794763daab22474e34bcd68ebc6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d13de24c14",
+   "path": "prototypes/exploration/art/moment/stand-S02j-280x300.png",
+   "sha256": "87066560172c49c834524bc57aaa37a73a908db1b79058a98ecce21af38aa423"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "73d0fa12fc",
+   "path": "prototypes/exploration/art/moment/stand-S03-280x300.png",
+   "sha256": "500b6ad5eb297bcf0b0415567b5d8aa2c0efaac880529c83477aa7e2f5689e83"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "cfd70b35a0",
+   "path": "prototypes/exploration/art/moment/stand-S03j-280x300.png",
+   "sha256": "96435febb50d939fd6a8af6c6192853e7d8b3d2ce580fa8473f9a291d0ce03d9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7ed6826329",
+   "path": "prototypes/exploration/art/open/c-open-night-a-1.png",
+   "sha256": "7555cd975e4abc6d04060fe70f7f9f9cd9c5db56482c9568a7d66aa1e3b9255c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "66cf47daed",
+   "path": "prototypes/exploration/art/open/c-open-night-a-2.png",
+   "sha256": "f4529d665ae668166ecec7d5369f10912b21941973bb4d6e8b9eaa611f98c3ed"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "144a8f4f60",
+   "path": "prototypes/exploration/art/open/c-open-night-a-still.png",
+   "sha256": "7555cd975e4abc6d04060fe70f7f9f9cd9c5db56482c9568a7d66aa1e3b9255c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3fb840bb8c",
+   "path": "prototypes/exploration/art/open/c-open-pod-96-1.png",
+   "sha256": "0d704861752190366358da6590bef1600a73c48bf07e341b3c3bcecfda3de19a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e83c964e29",
+   "path": "prototypes/exploration/art/open/c-open-pod-96-2.png",
+   "sha256": "cacb7daa6aea360089104ada7b26ae44664b923d2fb6a7699f20fadd404bc241"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "efa8236bfc",
+   "path": "prototypes/exploration/art/open/c-open-pod-96-still.png",
+   "sha256": "0d704861752190366358da6590bef1600a73c48bf07e341b3c3bcecfda3de19a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fa7dfc1e06",
+   "path": "prototypes/exploration/art/props/burrow-closed-dark.png",
+   "sha256": "0e14a6f7722160664a1e8d4aed4652d01fae603d07b52cb274ae482b20d3b9ed"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "92cbe9a1f4",
+   "path": "prototypes/exploration/art/props/burrow-open-dark.png",
+   "sha256": "14715550dcd6f0729f55f238520be3bb75b2f87165df24e776b7c02f4e92fe38"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f481730842",
+   "path": "prototypes/exploration/art/props/bush-bare-m.png",
+   "sha256": "a4a7f003b5aeb38ffd26bc726de07a2b116254333ee9b643950f39912a451e49"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e2727f3125",
+   "path": "prototypes/exploration/art/props/bush-bare.png",
+   "sha256": "e4b5bceab0bf8a492aa05d2c250b059364bafcbcbf92930c0b55eecb6511a739"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "bdf1d8a642",
+   "path": "prototypes/exploration/art/props/bush-full-m.png",
+   "sha256": "f72cf3b773a2d28608e306cd742892ca23ed3f697ad4ad8da94424c2a5022379"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "27508d7fd4",
+   "path": "prototypes/exploration/art/props/bush-full.png",
+   "sha256": "335a5180a1336479a0f95d0b8e42766136e83cb64c10416e3d971e7a1b481aa5"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d03e56ab2f",
+   "path": "prototypes/exploration/art/props/canopy-legacy.png",
+   "sha256": "4d2fb93783e91499301133412c167463c8c7245932250eb7cdb525c6e19a5c27"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f968e3ed6c",
+   "path": "prototypes/exploration/art/props/crystals-dim.png",
+   "sha256": "937560a1e51b0acea6b1ce9f626bde38b4ea61651e9d4e5cc93b2f0894957431"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f10bd0287d",
+   "path": "prototypes/exploration/art/props/crystals-lit.png",
+   "sha256": "23bbbbe1b81df60f37a4622f7509058f136db11bcc1ad8033f373d777538e262"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c8065f8bbc",
+   "path": "prototypes/exploration/art/props/cup-cave-empty.png",
+   "sha256": "8a059beab423d82d3e28945f7c9ef7d911e88a450676af0fdb7ef694bde5a446"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5b2937004a",
+   "path": "prototypes/exploration/art/props/cup-cave-full.png",
+   "sha256": "5ed9e9985d37c1307011f159301d0753d2b454cf3fb47f04833a6992c3c431da"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "43e9c2ad5d",
+   "path": "prototypes/exploration/art/props/cup-surface-empty.png",
+   "sha256": "d09f611a8f116ebdaaead60c6a7547227c54487d8984b0abb7a39154ec18d201"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "6947b6513e",
+   "path": "prototypes/exploration/art/props/cup-surface-full.png",
+   "sha256": "8c62198608779f236fcde5385147ee0ca1a6068439bcfde64d05045d8594604f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "72d64d319e",
+   "path": "prototypes/exploration/art/props/icon-beacon-lit.png",
+   "sha256": "9bc0145cbd1aeb60a5cb3b3233cd63a5edd16d5ecea539dafdc1cb1e1def3b08"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3043b025b1",
+   "path": "prototypes/exploration/art/props/icon-beacon-unlit.png",
+   "sha256": "6287970c1ac6e1e4a9d822cf48ceb2fb1db64a1b4a030fdbdf68640cb8433d8b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e600fa3423",
+   "path": "prototypes/exploration/art/props/icon-depot-dark.png",
+   "sha256": "568be052cd26440d132fa449025ebafe3e191d3bc18641755dac08d930bd0a07"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "55211361fe",
+   "path": "prototypes/exploration/art/props/icon-depot-ember.png",
+   "sha256": "dc2a701cf60b1c3430e3597072fff8dafce91e9f5d9eef21018e63c2e33fa7a6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fb78f0bc3d",
+   "path": "prototypes/exploration/art/props/icon-depot-full.png",
+   "sha256": "bcc0f7374b29878a8aad2be243a41d1f116980cc61abb6ca2667576b5dac25d0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "58587a5d2b",
+   "path": "prototypes/exploration/art/props/icon-depot-half.png",
+   "sha256": "14f49d3d14b4cd429050cf99cd4ddcc5e86f0d06318945d01238cb713b01faf3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a0cb64d292",
+   "path": "prototypes/exploration/art/props/landmark-reedpool-island-stone.png",
+   "sha256": "65035701767e5179b6a79bfcc8e4b4b39a4f0da7d422687f899bb2b0752f7ba8"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d4e5acf3fe",
+   "path": "prototypes/exploration/art/props/landmark-windstep-tree.png",
+   "sha256": "6e0d52643d9fbc8e262d9ef9441e1124f90a7dded96cddc3da938c5499375ad1"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "15dc14d739",
+   "path": "prototypes/exploration/art/props/mushroom-ring.png",
+   "sha256": "b715126807af96996e691f0499a4278348a750b2b4bc64c0854581da3fdb3231"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c271ecfbc1",
+   "path": "prototypes/exploration/art/props/pawn-creep-down.png",
+   "sha256": "bebe584e95d3da04fe8bb942e8e74943ad4adae5e7128917bfc14d3beb4da1a9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "cb5de69665",
+   "path": "prototypes/exploration/art/props/pawn-creep-left.png",
+   "sha256": "ab1b06da95a783079668fd2a415066d573451d28b14c43a056179efe31146b88"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "630381de11",
+   "path": "prototypes/exploration/art/props/pawn-creep-up.png",
+   "sha256": "9c427b0e47d1841fdc6eed197b654da768dfa50be7825b4c679de2ac5b655b91"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e9275e425c",
+   "path": "prototypes/exploration/art/props/pawn-down-0.png",
+   "sha256": "3dafa819bd912e70b997931a0c63d742bf945f87c5cb7e5e5c41786f5c942bdf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "414bfb53d8",
+   "path": "prototypes/exploration/art/props/pawn-down-1.png",
+   "sha256": "0ab22545b4141fc654b59b9fbb7817b1d111b41140bbe087001d862e5ef5267e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "81ef837f9c",
+   "path": "prototypes/exploration/art/props/pawn-left-0.png",
+   "sha256": "2f264e1f86dde5a24f95f28c6234579bbd4b936bcc47e6f9e568b736127cc317"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "68d22ded05",
+   "path": "prototypes/exploration/art/props/pawn-left-1.png",
+   "sha256": "a1596cb97beb1f5fb1414040cd67287242048a42a1ed6e6595c8aa0df8aeb94d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "cd7e51047a",
+   "path": "prototypes/exploration/art/props/pawn-up-0.png",
+   "sha256": "b5dd0c474cb2e323eb90bfaa5cdefa8c43d9c65c2215e4dbe459f09621318224"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8f93e42b8e",
+   "path": "prototypes/exploration/art/props/pawn-up-1.png",
+   "sha256": "0f6c58a5857d7f3eac6e5d97398bf291ada17ee6a6115632960bb94583a78610"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "78ebdd1c9f",
+   "path": "prototypes/exploration/art/props/pearl-in-shallows.png",
+   "sha256": "0286d3796fd721ea66f1d64ade21fb9b9fcdf9143611c5cb625f5e8b67e74cec"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "f9301845e9",
+   "path": "prototypes/exploration/art/props/pod-walk-bone.png",
+   "sha256": "92adde005bc216952029c7a2b1664a50217e87ae86b5fa4af4a9049bc17de505"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f6c20304c8",
+   "path": "prototypes/exploration/art/props/pod-walk-bone.png",
+   "sha256": "c8be82ffd30a2b64fc5ccdd4ca1f510c641e7841f0a41fb28fe4f610af1bdc1e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "42a2cf5fb4",
+   "path": "prototypes/exploration/art/props/pod-walk-ice.png",
+   "sha256": "0a4648af65bb2fd825605678895c1ef1bf1c8ff19dd289a3c778bd3c3093b2b7"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "120629862c",
+   "path": "prototypes/exploration/art/props/pod-walk-lavender.png",
+   "sha256": "7d3507ca04c51fca0b5b6a6356a77fd59dd33f54d0be9fb3696464916694a3b9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "de7edb5a63",
+   "path": "prototypes/exploration/art/props/pod-walk-lime.png",
+   "sha256": "77eac5f4e4c2926080093acfcc1478610239042ec6313dff9b53dbb2212345bf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "4310b5af7b",
+   "path": "prototypes/exploration/art/props/pod-walk-sand.png",
+   "sha256": "e14217851d2010d90720608bccf873a39821028983a263bf9f29a4cb6fc9b4dc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a1c096bd16",
+   "path": "prototypes/exploration/art/props/pod-walk-sprout.png",
+   "sha256": "2077e27525f110a55515dc77b6c21e9965935e6bdd2d0a229c4fac61c154beee"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "bd822ac130",
+   "path": "prototypes/exploration/art/props/prop-crack.png",
+   "sha256": "3edf2f7153c7f2f88dcf6e4c4511a0a024fe1a5ccabb1df85e30570eda8a419e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9815cf28f7",
+   "path": "prototypes/exploration/art/props/prop-exit.png",
+   "sha256": "b1f4bac56e057fbe2fd0d16df08d0a333079190f5d6da06b67cf7ce827bcbc1b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a63c8189b6",
+   "path": "prototypes/exploration/art/props/prop-fruit.png",
+   "sha256": "deab1432bf1657de1dc48c9183ae75d8ab3dfe88c61e16afb70bb92a0c241253"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "357f61b400",
+   "path": "prototypes/exploration/art/props/prop-hole-fresh-bare.png",
+   "sha256": "036149f78f3d8cc3cc99170d217f48e50ddd00258049e21cbae654b87ec89125"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ccea5ea8e6",
+   "path": "prototypes/exploration/art/props/prop-hole-fresh-f2.png",
+   "sha256": "6b5574ca8128ff2c07d6eed815dfc95929e87b84c6fc7a59fa3dfc9a31d4f6e0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "0ac1581b57",
+   "path": "prototypes/exploration/art/props/prop-hole-fresh.png",
+   "sha256": "5d6814ab5764c4a854f6d78d752131d6feef8ccd1904d5827ad9db1ecd2290c6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "37dcc7a4e2",
+   "path": "prototypes/exploration/art/props/prop-hole0.png",
+   "sha256": "f90b1500242fe22a2f628aae69db7615e116820ec8d7cf787efe89c088dffeed"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "79b69510a5",
+   "path": "prototypes/exploration/art/props/prop-hole1.png",
+   "sha256": "641bfa7cf145928054612b8ba161e35269ebeb248424fe43f4ec5660a3f5622d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8c26135c64",
+   "path": "prototypes/exploration/art/props/prop-nest.png",
+   "sha256": "eeb12afc5f0dbe460ad8f8a0d97f0057a4e3638dc5912ab3c794046077343ca1"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5dc7a6493d",
+   "path": "prototypes/exploration/art/props/prop-slab.png",
+   "sha256": "806bf9a38169d89911c5284ac6a1a2d7adbecd392d1975b2b041a0555b85013a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "cec3a451f3",
+   "path": "prototypes/exploration/art/props/roof-legacy.png",
+   "sha256": "23e7b162c156719999490b57f8955eb4b4b217ffb17e54b063eab4d1647b3314"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "69761c57b9",
+   "path": "prototypes/exploration/art/props/storm-glass-shard.png",
+   "sha256": "d39c093761642541e0ef2181cdbfa52a19519ab52892cc87633a85a217392ccc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "14d7b8c6b1",
+   "path": "prototypes/exploration/art/props/strike-mark-read.png",
+   "sha256": "aeabaa5cd1bce627f1d06aff74826c2c33a8ede55be69d3cba2ab1e49592c4c4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5f7316f6f3",
+   "path": "prototypes/exploration/art/props/strike-mark-unread-1.png",
+   "sha256": "6af5290694d2cf82caf7cf8509be151289e16a9b149b8ee52b95e60796a218ae"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3a0dcd0b22",
+   "path": "prototypes/exploration/art/props/strike-mark-unread-2.png",
+   "sha256": "be2d1704e61d576f17ded5b9264b57106f483bc88d93a82c38447a6b1977dda7"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ca1c3f75a3",
+   "path": "prototypes/exploration/art/props/walk-beacon-lit.png",
+   "sha256": "8164cec0f0cafc761a8dab5a10fd97baaa0de3e70497f38a584fbe776ff0f22c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "f889a94544",
+   "path": "prototypes/exploration/art/props/walk-beacon-lit.png",
+   "sha256": "8a24a96133b612f21a741a4102f8f53479e7cbcce87f066c55fa192e1c6b9d2e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "ac63b1eb62",
+   "path": "prototypes/exploration/art/props/walk-beacon-unlit.png",
+   "sha256": "549bbb1722feeedb9eed2fbe87ec409fb5a5b31ec1d97a7cd6153b6f1628bdec"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "ab538e4867",
+   "path": "prototypes/exploration/art/props/walk-beacon-unlit.png",
+   "sha256": "a93482552d7b7e55d59c6fc752281f4d88db85cc09c78d59a045b1d3a8b6284c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "620d2fd24c",
+   "path": "prototypes/exploration/art/props/walk-depot-dark.png",
+   "sha256": "18f283a76c84408a1640286995c901f3c89792e1530609d6c2e45532b0b8453e"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "94e2f78449",
+   "path": "prototypes/exploration/art/props/walk-depot-dark.png",
+   "sha256": "791101b66c2575e4f0335fd26d2476292216ddf8aec6a3269eacf476f7867402"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "55217bb483",
+   "path": "prototypes/exploration/art/props/walk-depot-ember.png",
+   "sha256": "65a2740236cd9ef09fdbbce752ce8398f2d7c4da42d972cadec522ece0efa009"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "49d1c69ebf",
+   "path": "prototypes/exploration/art/props/walk-depot-ember.png",
+   "sha256": "87911560cb10ffa904758402c09a58640d24ba122ad7505ce5b9d7e0cf03f89c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "d59b7bbc22",
+   "path": "prototypes/exploration/art/props/walk-depot-full.png",
+   "sha256": "1418997330dda7ddc43be2dc313e6cf8e999985e9e99a15a3c7d6b6a2e7d5f3a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "953a618377",
+   "path": "prototypes/exploration/art/props/walk-depot-full.png",
+   "sha256": "828ac72acbe9cf4dfa7fc381e1620fbb8f099c7455c0246f78fc5f74fa7f6607"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "000a92f3b5",
+   "path": "prototypes/exploration/art/props/walk-depot-half.png",
+   "sha256": "ccd568c362d0f1a86feee80386890fa58bfba6cb0a0a9673a771ab8758e30887"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "05b5a35f1e",
+   "path": "prototypes/exploration/art/props/walk-depot-half.png",
+   "sha256": "d52135622dfcc65d3f0da6c3918c9c80a72669e71766b190ac9b11cc9e87f248"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "10de23b402",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-1@16.png",
+   "sha256": "dcecdec17cd513d725f96308085d567a73eb00db7cbf39b969ca5acbf8dc4351"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3980e868c7",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-1@48.png",
+   "sha256": "de46851d67d9118ce3e4a298a1700611fd7afc1f6752969014646e909712ad58"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "4ee8e8ba4e",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-2@16.png",
+   "sha256": "1c275dcd6dadb497278e78e435743a9388081533d6a503396d5a507c7cb2b642"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c5101e1510",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-2@48.png",
+   "sha256": "e60bfceef9b3b111fa1c085dd75ed67f572975c19a0cdc44e005b5694368c12f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "104149afee",
+   "path": "prototypes/exploration/art/stone/stone-small-plain@16.png",
+   "sha256": "b95e94efbd5f76e642b50a801f4eee5f798eb1cb94b2238b2d3942f2041dc4c6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "685738b6ea",
+   "path": "prototypes/exploration/art/stone/stone-small-plain@48.png",
+   "sha256": "3726789e55c9fdee65342e9afe4f5e19b3b2c6599fda2f1e916b802d717f2783"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f42210311c",
+   "path": "prototypes/exploration/art/stone/stone-small-spent@16.png",
+   "sha256": "b95e94efbd5f76e642b50a801f4eee5f798eb1cb94b2238b2d3942f2041dc4c6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7cd3a50be7",
+   "path": "prototypes/exploration/art/stone/stone-small-spent@48.png",
+   "sha256": "3726789e55c9fdee65342e9afe4f5e19b3b2c6599fda2f1e916b802d717f2783"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b7100608cc",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-1@16.png",
+   "sha256": "76a684a6d225f7f16332784943e9a6c5ea7a5b1559aedd3e28569bb238326c96"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "76fd266072",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-1@48.png",
+   "sha256": "ac81e9390d13b9b5257fcfea9cec79dccfb93b93c60b172d8d8c096f7db1572b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2a9cecf7b8",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-2@16.png",
+   "sha256": "57701ae1a3770a54abacdaf7d9fdce48b5b9579ddac8c2947c6f4d66e952a3bf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c621edd499",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-2@48.png",
+   "sha256": "6a44ae00fbf95b74316fa5a5c7eb66c7126666f58afc6c0930e24bb065cdc98d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "1f2f3ceb8c",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-still@16.png",
+   "sha256": "e4cb90e7dbd425bdf3ff62d9b0d2bc415cef8cafc8e375aeafa7e63bbb3f3e1d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "adb2685930",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-still@48.png",
+   "sha256": "918399c921db718c4f4de4a8185ba8aa4b513bec88fccf80ebf4e20aae4a03cd"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fc1b25e298",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-1@16.png",
+   "sha256": "0bc3280e6466dd55743d49e4cbcfa046ca3e3f85294733846ca47335457aacdb"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c93cdd8d79",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-1@48.png",
+   "sha256": "f3a92088562672342ed5209b0abadf53c77a6decf1088793482fde5f3c666db0"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f49604bd2b",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-2@16.png",
+   "sha256": "207c4b25959dd549bcc83ba8ef37c7ac1f5ee50b16a8be0ad9dd1ef46b791efe"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "671e8fd23c",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-2@48.png",
+   "sha256": "fea90b40776d629f88b57f2d4c98bd9a81becd37d7f26afcb1605d897190bdb7"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f0edb4aaa8",
+   "path": "prototypes/exploration/art/stone/stone-tall-plain@16.png",
+   "sha256": "1bf815ae86080cd416c5b376292093f6ac6e0da5badc0988a00209d5ada7e470"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "035b2def87",
+   "path": "prototypes/exploration/art/stone/stone-tall-plain@48.png",
+   "sha256": "cc1e8133214bea015a170abc6ce441274f2521992a2d1abc4f1363788c126688"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "51bc2892bb",
+   "path": "prototypes/exploration/art/stone/stone-tall-spent@16.png",
+   "sha256": "1bf815ae86080cd416c5b376292093f6ac6e0da5badc0988a00209d5ada7e470"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "8712ef528a",
+   "path": "prototypes/exploration/art/stone/stone-tall-spent@48.png",
+   "sha256": "cc1e8133214bea015a170abc6ce441274f2521992a2d1abc4f1363788c126688"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "59e571a9f4",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-1@16.png",
+   "sha256": "7ca7431fc5945b53c81e1902359bc2105225baa93166945ef00454399baca19b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "05e776b003",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-1@48.png",
+   "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "b2aa3c895c",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-2@16.png",
+   "sha256": "7ca7431fc5945b53c81e1902359bc2105225baa93166945ef00454399baca19b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "7916727018",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-2@48.png",
+   "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9234e974cb",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-still@16.png",
+   "sha256": "7ca7431fc5945b53c81e1902359bc2105225baa93166945ef00454399baca19b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "10a04d6036",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-still@48.png",
+   "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
+  }
+ ]
+}
