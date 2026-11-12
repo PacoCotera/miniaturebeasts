@@ -3,7 +3,6 @@ The generator-7 slot pieces (world generation G4a's named empty slots), signed b
 | file here | the desk's file | size | where the page draws it |
 |---|---|---|---|
 | strike-mark-unread-1.png, strike-mark-unread-2.png, strike-mark-read.png | strike-mark-fresh@16.png | 16 x 16 (centred on its cell) | the strike mark: one picture in all three slots, so the two unread frames no longer differ and a read mark is the same figure (the brackets are the read sign); a mark lies one way or its mirror, by its place; a ground decal drawn below every sprite |
-| map-sign-stairs-14.png, map-sign-stairs-28.png | map-sign-stairs-14.png, map-sign-stairs-28.png | 14 x 14 and 28 x 28 | the stairs sign of the map (1x and 2x), a named slot: the map has no stairs sign kind yet, nothing draws it |
 | storm-glass-shard.png | shard.png | 16 x 12 | on a strike mark that holds storm glass (sand only), sand base and all |
 | landmark-windstep-tree.png | tree-coral.png | 40 x 39 (anchor: foot of the trunk) | the Windstep's lone tree, at its landmark tile |
 | landmark-reedpool-island-stone.png | island-stone.png | 28 x 18 (centre) | the Reedpool's island stone, at its landmark tile |
