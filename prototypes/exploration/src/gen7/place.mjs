@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, inlandOf, WTW, WTH } from './levels.mjs';
+import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
 import { recipeAt, SAND_AT } from './ground.mjs';
@@ -134,6 +134,20 @@ function portTiles(S, t, p, q) {
   const e = edgeOfStep(p[2], q[2]), off = portOffset(S.seed, t.ax, t.ay, e);
   if (p[1] === q[1]) { const east = q[0] > p[0], bx = (east ? q[0] : p[0]) * CW, y = p[1] * CH + off; return east ? [[bx - 1, y], [bx, y]] : [[bx, y], [bx - 1, y]]; }
   const down = q[1] > p[1], by = (down ? q[1] : p[1]) * CH, x = p[0] * CW + off; return down ? [[x, by - 1], [x, by]] : [[x, by], [x, by - 1]];
+}
+
+// The three edges of the shore band at a world tile, in tiles from the border line: where deep water ends, where water ends (the waterline) and where the beach ends. Each is a function of the
+// tile's place ALONG the coast (the band's depth never enters), read in blocks of EDGE_RUN rows from slow noise (a third of the frequency the fields use), so an edge is a line that holds each
+// value for whole blocks and steps one tile (the beach end, with the waterline, two) between blocks: no tooth, notch or bay, and a strip of beach two tiles wide keeps a 2 x 2 block of sand in every
+// row pair, so the ground passes keep the edge as made. A tile near a corner of the realm reads the side it is nearest to.
+const EDGE_RUN = 3, EDGE_SLOW = 2;
+function coastEdges(S, gx, gy) {
+  const dW = gx - BORDER_X, dE = WTW - 1 - BORDER_X - gx, dN = gy - BORDER_Y, dS = WTH - 1 - BORDER_Y - gy, m = Math.min(dW, dE, dN, dS);
+  const side = m === dW ? 0 : m === dE ? 1 : m === dN ? 2 : 3, s = side < 2 ? gy : gx, blk = Math.floor(s / EDGE_RUN);
+  const cache = S.coastEdgeAt || (S.coastEdgeAt = [new Map(), new Map(), new Map(), new Map()]), hit = cache[side].get(blk); if (hit) return hit;
+  const u = (blk * EDGE_RUN + EDGE_RUN / 2) / EDGE_SLOW;
+  const wl = 4 + Math.floor(3 * clamp(0.5 + 0.5 * S.nC(u, 311 * side + 17), 0, 0.999)), deep = S.nM(u, 211 * side + 5) > 0 ? 2 : 1, beach = S.nD(u, 97 * side + 3) > 0 ? 3 : 2, out = [deep, wl, wl + beach];
+  cache[side].set(blk, out); return out;
 }
 
 // ---- the passes on a window ----
@@ -322,10 +336,10 @@ function windowOf(S, X, Y) {
       const wide = Math.max(1, Math.min(3, Math.round(shoreOf[i] * (0.45 + 0.55 * (0.5 + 0.5 * S.nS(gx0 + (i % W), gy0 + ((i / W) | 0)))))));
       if (dist[i] <= wide && (t[i] === TV.GRASS || t[i] === TV.LITTER || t[i] === TV.DRY || t[i] === TV.TURF || t[i] === TV.SCREE)) t[i] = TV.SAND; } }
   majority(t, W, H, 2); minFeature(t, W, H);
-  for (let i = 0; i < N; i++) {   // the coast band (see COAST_REACH): a function of the world tile alone, so a place and its neighbour lay the same shore
+  for (let i = 0; i < N; i++) {   // the coast band (see COAST_REACH): a function of the world tile alone, so a place and its neighbour lay the same shore; its edges are the smoothed lines of coastEdges
     const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), d = inlandOf(gx, gy); if (d >= COAST_REACH) continue;
-    const wl = 4 + Math.floor(3 * clamp(0.5 + 0.5 * S.nC(gx, gy), 0, 0.999)), deepEnd = S.nM(gx, gy) > 0 ? 2 : 1, beach = S.nD(gx, gy) > 0 ? 3 : 2;
-    t[i] = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < wl + beach ? TV.SAND : d < wl + beach + 4 ? TV.GRASS : t[i];
+    const [deepEnd, wl, sandEnd] = coastEdges(S, gx, gy);
+    t[i] = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < sandEnd ? TV.SAND : d < sandEnd + 4 ? TV.GRASS : t[i];
   }
   const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground

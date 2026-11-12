@@ -62,10 +62,20 @@ const inRealm = (X, Y) => X >= 0 && Y >= 0 && X < RW && Y < RH;
 // needs: by the amount the field's own height at that spot falls short of the cell's level (with a small margin), so where the field already agrees nothing is added.
 // the coast: the raised land fades out over the last RIM tiles to the border line (a straight cliff cut along the coast would be a long wall), so it tapers like any land
 const RIM = 22, RIM_PULL = 0.35;
-const rimBias = (px, py) => { const d = Math.min(px - BORDER_X, WTW - BORDER_X - px, py - BORDER_Y, WTH - BORDER_Y - py); return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF)); };
+// The ramp's distance wanders along the coast by RIM_WOBBLE tiles (value noise, one knot every RIM_KNOT tiles, per side), so the contour of the field that the ramp bends is no line parallel to the shore.
+const RIM_WOBBLE = 7, RIM_KNOT = 18, smooth01 = t => t * t * (3 - 2 * t);
+function rimWobble(seed, side, s) {
+  const i = Math.floor(s / RIM_KNOT), f = smooth01(s / RIM_KNOT - i), k = j => (hash(seed, 'gen7', 'rim-wobble', side, j) % 2048) / 1024 - 1;
+  return RIM_WOBBLE * (k(i) * (1 - f) + k(i + 1) * f);
+}
+const rimBias = (seed, px, py) => {
+  const dW = px - BORDER_X, dE = WTW - BORDER_X - px, dN = py - BORDER_Y, dS = WTH - BORDER_Y - py, m = Math.min(dW, dE, dN, dS); if (m >= RIM + RIM_WOBBLE) return 0;
+  const d = m + (m === dW ? rimWobble(seed, 0, py) : m === dE ? rimWobble(seed, 1, py) : m === dN ? rimWobble(seed, 2, px) : rimWobble(seed, 3, px));
+  return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF));
+};
 function anchorStrength(L, key, u, v, e0, sign, px, py) {
   let s = L.pull.get(key); if (s !== undefined) return s;
-  const S = seedCtx(L.seed), base = S.at(u, v).height - e0 + rimBias(px, py);
+  const S = seedCtx(L.seed), base = S.at(u, v).height - e0 + rimBias(L.seed, px, py);
   s = Math.max(0, MARGIN - sign * base);
   L.pull.set(key, s); return s;
 }
@@ -94,7 +104,7 @@ function qCell(L, X, Y) {
     const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
     const e = e0[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + e0[cellIdx(X0 + 1, Y0)] * a * (1 - b) + e0[cellIdx(X0, Y0 + 1)] * (1 - a) * b + e0[cellIdx(X0 + 1, Y0 + 1)] * a * b;
     const px = gx + 0.5, py = gy + 0.5;
-    let s = f.height[k] - e + DETAIL * f.detail[k] + rimBias(px, py);
+    let s = f.height[k] - e + DETAIL * f.detail[k] + rimBias(L.seed, px, py);
     for (const [ax, ay, sg] of anchors) {   // a round bump: full strength within FLAT tiles of the anchor, a Gaussian skirt beyond
       const dx = px - ax, dy = py - ay, d2 = dx * dx + dy * dy; if (d2 >= kill2) continue;
       if (d2 <= FLAT * FLAT) s += sg; else { const d = Math.sqrt(d2) - FLAT; s += sg * Math.exp(-d * d * k2); }

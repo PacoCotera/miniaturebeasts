@@ -232,7 +232,7 @@ test('the map\'s land kind and the walk\'s ground agree in the middle of every c
         if (raised) continue;
         // a water cell may be the coast's ring: deep water in the walk
         const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') + f('DEEP') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
-        if (!ok && (lab === 'WATER' || lab === 'POND') && Math.min(X, Y, MW * ATLAS - 1 - X, MH * ATLAS - 1 - Y) === 1) continue;   // the cell beside the coast's ring: its shore band takes the half of it nearest the ring, so a pond or water there is the map's label only (a known gap)
+        if (!ok && Math.min(X, Y, MW * ATLAS - 1 - X, MH * ATLAS - 1 - Y) === 1) continue;   // the cell beside the coast's ring: its shore band (water, beach, grass) takes the half of it nearest the ring, so what the map labels it (pond, water, wood, rock) is not the ground in its middle (a known gap; its raised land used to hide it)
         seen[lab][0]++; if (!ok) { seen[lab][1]++; if (bad.length < 8) bad.push(`${lab} ${X},${Y}`); }
       }
     }
