@@ -23,7 +23,7 @@ export const canon = v => v === null || typeof v !== "object" ? JSON.stringify(v
 export const sha = s => createHash("sha256").update(s).digest("hex");
 
 // the state the digest covers: the realm as the page holds it (S), whichever way the page stores it
-const STATE = `(() => { const u = {}, s = S; for (const k of ["seed", "gen", "wid", "turn", "expN", "trips", "revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "opened",
+const STATE = `(() => { flushRipe(); const u = {}, s = S; for (const k of ["seed", "gen", "wid", "turn", "expN", "trips", "revealed", "visited", "called", "signs", "pins", "cells", "pods", "cr", "veil", "svy", "opened",
   "skulls", "lastStorm", "known", "found", "met", "firsts", "mibis", "carried", "lead", "tier", "shield", "deepRead", "bay", "hold", "exp", "report", "log", "hist", "totalActions", "walkTurn", "phase"]) if (s[k] !== undefined) u[k] = s[k];
   u.lastPos = s.ui && s.ui.lastPos; return JSON.parse(JSON.stringify(u)); })()`;
 
