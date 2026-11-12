@@ -86,6 +86,34 @@
    "sha256": "a04a6a02de56e4f1cdaf9f579f6b901edd6163a08a6ff9e02dbe779807daa732"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "c55c2f5014",
+   "path": "art/places/sets/ninja-test/cliff-face-1-p1.png",
+   "sha256": "b6b38554ec2d84697771966cb51793764a36520fc6551550b638de6df0ed58e4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "d9d9d87449",
+   "path": "art/places/sets/ninja-test/cliff-face-1-p2.png",
+   "sha256": "8a93bab2e786b923cabd84deef71b050bbd5492f722f7d2ddbced92ff53c8c65"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "5f32af1a6a",
+   "path": "art/places/sets/ninja-test/cliff-face-1-p3.png",
+   "sha256": "d143b6607a879978299bf3148243964df86212ad16b6a77e349b39b6b1afc3ad"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "2a19d35a41",
+   "path": "art/places/sets/ninja-test/cliff-face-1.png",
+   "sha256": "9c067ea6d735889ac412d74c804025a6f57d072f9e90f15d44dc81ec6f6a3337"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "f46d0add77",
