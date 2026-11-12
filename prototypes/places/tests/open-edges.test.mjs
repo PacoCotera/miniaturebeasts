@@ -94,7 +94,7 @@ test('raised ground: a litter top draws litter, a lip tile draws the cliff layer
   assert.deepEqual(none.ground.map((l) => Array.from(l.tiles)), zeros.ground.map((l) => Array.from(l.tiles)), 'no top is a top of grass everywhere');
   assert.equal(none.top.length, 0, 'a place with no top writes none');
   assert.equal(withTop.top.length, W * H);
-  const litterFill = new Set(ts.pairs[d.layers.get(V.litter).fillRow].fullVariants), cliffTiles = new Set(Array.from(ts.pairs[d.layers.get(V.cliff).kinds[0].rows.over].tiles));
+  const litterFill = new Set(ts.pairs[d.layers.get(V.litter).fillRow].fullVariants), cliffTiles = new Set(Array.from(ts.pairs[d.layers.get(V.cliff).kinds[0].rows.over].tiles).filter((_, k) => k !== 15));   // slot 15 is the grass fill (the sheet's own all-cliff tile): the same pixels as a ground tile
   let inner = null, lip = null;
   for (let j = 1; j < H; j++) for (let i = 1; i < W; i++) {
     const c = [[i - 1, j - 1], [i, j - 1], [i - 1, j], [i, j]].map(([x, y]) => isCliff(x, y)), below = [[i - 1, j + 1], [i, j + 1]].map(([x, y]) => isCliff(x, y));

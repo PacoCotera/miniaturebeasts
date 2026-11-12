@@ -43,9 +43,6 @@ export const STONE_SET = {
 export const BOULDERS = ['boulder-a', 'boulder-d', 'boulder-e'];
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
 export const CLIFF3 = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles' };   // the cliff sheets are the re-cut ones (tools/recut); the commit and folder are the label of their source
-// the open-top cliff cut (art director signed, mibi-art art/desk d85bcb82c, art-jobs/2026-11-11-art-recut-cliff-open/out/, manifest.json there): the ten sheets byte for byte, no new colours. The fill below
-// (fill-cliff, the grass a raised tile stood on) stays the re-cut sheet's slot 15: the layer needs a fill, the bake blanks it on every raised tile that is no face
-export const CLIFF_OPEN = { commit: 'd85bcb82c', dir: 'art-jobs/2026-11-11-art-recut-cliff-open/out' };
 export const SCRUBJOB = applied('art-paint-terrain-thicket', 'tiles'), RIPPLE = applied('art-paint-water-ripple', 'tiles');
 // the biome grounds (art director, mibi-art art/desk 8c0ddc470, art-jobs/2026-11-10-art-biome-<family>/out/tiles/): leaf litter (Woods, Tallwood), dry grass (Thickets), short turf (Hills), scree (Cliffs, Highpools).
 // Each is a 64 x 64 corner sheet over the grass and three 16 x 16 fills (v0, v1 and the rare detail v2), the desk's files byte for byte; the over sheet's name is the manifest's (dry grass: the phase 2 sheet).
@@ -109,6 +106,7 @@ export function deskLayers() {
   const keyed = (c, src, as) => rec(c, as, `${c.dir}/${src} keyed`, Buffer.from(encodePng(keyShade(decodePng(show(c, src))))));
   // the cliff sheets re-cut from the desk's painted island (tools/recut/README.md), then the map palette's colour map, shade keyed as the desk's own are
   const recutImg = (src) => recolour(decodePng(readFileSync(path.join(here, 'recut', src))));
+  const recut = (src, as) => rec(CLIFF3, as, `${CLIFF3.dir}/${src} recut (prototypes/places/tools/recut) recoloured keyed`, Buffer.from(encodePng(keyShade(recutImg(src)))));
   const fillFrom = (c, src, as) => rec(c, as, `${c.dir}/${src}#15`, Buffer.from(encodePng(slot15(decodePng(show(c, src))))));
   // water: four frames, each a strip of the four fill variants v0..v3 (v0 and v2 blank, v1 and v3 glinted), laid side by side, no pixel changed
   const frameStrip = (c, f, as) => {
@@ -166,14 +164,10 @@ export function deskLayers() {
     },
     cliff: {
       fill: { sheets: [rec(CLIFF3, 'fill-cliff.png', `${CLIFF3.dir}/over-cliff.png#15 recut recoloured`, Buffer.from(encodePng(slot15(keyShade(recutImg('over-cliff.png'))))))] },
-      // the open-top cut: the lip and the face with the top transparent, so the ground under the raised tile (the place's `top`, grass where it has none) shows inside it
       over: [{
-        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [keyed(CLIFF_OPEN, 'tiles/over-cliff-open.png', 'over-cliff-open.png')],
-        tall: {
-          1: [keyed(CLIFF_OPEN, 'tiles/over-cliff-open~s1.png', 'over-cliff-open~s1.png')], 2: [keyed(CLIFF_OPEN, 'tiles/over-cliff-open~s2.png', 'over-cliff-open~s2.png')],
-          3: ['over-cliff-open~s3.png', 'over-cliff-open-face2~s3.png', 'over-cliff-open-face3~s3.png'].map((n) => keyed(CLIFF_OPEN, `tiles/${n}`, n)),
-        },
-        wayup: { grass: keyed(CLIFF_OPEN, 'wayup/wayup-cliff-open-grass.png', 'wayup-cliff-open-grass.png'), sand: keyed(CLIFF_OPEN, 'wayup/wayup-cliff-open-sand.png', 'wayup-cliff-open-sand.png') },
+        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass'], sheets: [recut('over-cliff.png', 'over-cliff.png')],
+        tall: { 1: [recut('over-cliff~s1.png', 'over-cliff~s1.png')], 2: [recut('over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => recut(n, n)) },
+        wayup: { grass: keyed(WAYUP, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: keyed(WAYUP, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },   // keyed as the cliff sheets are (the soft cast shade made transparent, art director ruling 2026-11-09)
       }],
     },
   };

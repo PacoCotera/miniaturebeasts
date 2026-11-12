@@ -132,9 +132,7 @@ test('layers: every kind has 16 slots in whole sheets, slot 0 empty, slot 15 equ
         const tiles = layerTiles(loaded, id, ki, f);
         assert.equal(tiles.length, 16);
         assert.ok(clearTile(tiles[0]), `${id}/${k.kind}: slot 0 is empty`);
-        // the cliff's sheets are cut with an open top (the ground under the raised tile shows through): its all-cliff tile has no top of its own, and the bake draws the top ground there
-        if (id === 'cliff') assert.ok(clearTile(tiles[15]), `${id}/${k.kind}: slot 15 is open`);
-        else assert.deepEqual(tiles[15].data, fills[Math.min(f, fills.length - 1)][0].data, `${id}/${k.kind}: slot 15 is fill variant 0`);
+        assert.deepEqual(tiles[15].data, fills[Math.min(f, fills.length - 1)][0].data, `${id}/${k.kind}: slot 15 is fill variant 0`);
         assert.ok(tiles.slice(1, 15).every((x) => !clearTile(x)), `${id}/${k.kind}: slots 1..14 draw something`);
       }
       for (const [n, v] of kindFullTiles(loaded, id, ki).entries()) assert.ok(!clearTile(v), `${id}/${k.kind} full variant ${n}`);
