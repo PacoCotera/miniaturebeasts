@@ -279,8 +279,8 @@ function fillPockets(t, W, H, gx0, gy0, island, gate) {
 // GATE_DEPTH tiles; what it crosses turns to grass (raised land and deep water are never cut). It is a function of the world edge and the tiles round it, so both cells cut the same gate.
 const GATE_DEPTH = 14;
 function openGates(S, t, W, H, gx0, gy0, X, Y) {
-  const at = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? -1 : t[y * W + x]; };
-  const walkAt = (gx, gy) => { const v = at(gx, gy); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v >= TV.LITTER || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy) === TV.CLIFF && at(gx + 1, gy) === TV.CLIFF && at(gx, gy - 1) === TV.CLIFF && at(gx, gy + 1) === TV.CLIFF); };
+  const at = (gx, gy, a = t) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? -1 : a[y * W + x]; };
+  const walkAt = (gx, gy, a = t) => { const v = at(gx, gy, a); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v >= TV.LITTER || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy, a) === TV.CLIFF && at(gx + 1, gy, a) === TV.CLIFF && at(gx, gy - 1, a) === TV.CLIFF && at(gx, gy + 1, a) === TV.CLIFF); };
   const gate = new Uint8Array(W * H);
   const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP || inlandOf(gx, gy) < COAST_REACH) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
   const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
@@ -295,30 +295,77 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
       if (!goes(sideKind(G, a, dx ? 'right' : 'down')) && !goes(sideKind(G, b, dx ? 'left' : 'up'))) continue;   // open from either cell's side (a ford is stepped into, not out of)
       const len = dx ? CH : CW, base = dx ? cy * CH : cx * CW, line = dx ? nx * CW : ny * CH;   // the edge runs along `len` tiles from `base`; the first tile across it is `line`
       const walkPair = k => dx ? walkAt(line - 1, base + k) && walkAt(line, base + k) : walkAt(base + k, line - 1) && walkAt(base + k, line);
-      let run = 0, has = false, runAt = 0; for (let k = 0; k < len && !has; k++) { run = walkPair(k) ? run + 1 : 0; has = run >= 2; if (has) runAt = k - 1; }   // runAt: where the first run of two begins
-      const ponds = [[a, cx, cy, -1], [b, nx, ny, 0]].filter(p => G.land[p[0]] === L.POND);   // the map walks a pond cell, so the water of the cell is crossed from this edge's port to the cell's hub
-      if (has && !ponds.length) continue;
+      let run = 0, has = false; for (let k = 0; k < len && !has; k++) { run = walkPair(k) ? run + 1 : 0; has = run >= 2; }
+      if (has) continue;
       const off = portOffset(S.seed, G.slot[0], G.slot[1], edgeOfStep(a, b));
-      if (!has) for (const side of [-1, 0]) for (let d = 0; d < GATE_DEPTH; d++) {   // side -1: back into the cell A; 0: on into the cell B
+      for (const side of [-1, 0]) for (let d = 0; d < GATE_DEPTH; d++) {   // side -1: back into the cell A; 0: on into the cell B
         const pos = side === -1 ? line - 1 - d : line + d, rows = [base + off, base + off + 1];
         if (rows.every(r => (dx ? walkAt(pos, r) : walkAt(r, pos)))) break;
         for (const r of rows) dx ? put(pos, r) : put(r, pos);
       }
-      for (const [pc, qx, qy, side] of ponds) {   // the causeway round the pond: from this edge's port a spur 4 tiles in, then a strip 2 wide along the cell's rim to the north-west corner; the cell's middle (the pond) is never cut
-        const opens = [['right', 'left', 1, 0], ['left', 'right', -1, 0], ['down', 'up', 0, 1], ['up', 'down', 0, -1]].filter(([d, o, ex, ey]) => {
-          const mx = qx + ex, my = qy + ey; if (cellRegion(mx, my) !== G) return false;
-          const m = (my % MH) * MW + (mx % MW); return goes(sideKind(G, pc, d)) || goes(sideKind(G, m, o)); }).length;
-        if (opens < 2) continue;
-        const ox = qx * CW, oy = qy * CH, p0 = base + (has ? runAt : off), cut = (x0, x1, y0, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (!walkAt(x, y)) put(x, y); };
-        cut(ox + 2, ox + CW - 3, oy + 2, oy + 3); cut(ox + 2, ox + 3, oy + 2, oy + CH - 3);   // the north and west strips: the spine every port joins
-        if (dx && side === -1) { cut(ox + CW - 4, ox + CW - 1, p0, p0 + 1); cut(ox + CW - 4, ox + CW - 3, oy + 2, p0 + 1); }   // the east edge
-        else if (dx) cut(ox, ox + 3, p0, p0 + 1);   // the west edge
-        else if (side === -1) { cut(p0, p0 + 1, oy + CH - 4, oy + CH - 1); cut(ox + 2, p0 + 1, oy + CH - 4, oy + CH - 3); }   // the south edge
-        else cut(p0, p0 + 1, oy, oy + 3);   // the north edge
-      }
     }
   }
+  pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion);
   return gate;
+}
+
+// The map walks a pond cell, but its water may leave a shore that the tile-level walk cannot reach (the one land link between two shores runs through the water). Only then is a causeway cut: the land of the window is
+// labelled by what walks on to what, and for each pond cell with two or more open edges every shore on its open edges (a body of 30 tiles or more) that is not joined to the largest one gets ONE path, 2 tiles wide, along the
+// shortest way across the water to a shore already joined. The pond's middle 8 x 8 (what the cell-kind test reads) is never cut, nor is anything `put` refuses.
+function pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion) {
+  const idx = (gx, gy) => (gy - gy0) * W + (gx - gx0), inWin = (gx, gy) => gx >= gx0 && gy >= gy0 && gx < gx0 + W && gy < gy0 + H;
+  let comp = null, size = null;
+  const snap = t.slice(), walk = (x, y) => walkAt(x, y, snap);   // every pond cell reads the land as the gates left it, never as another pond cell's causeway changed it, so the order of the cells does not matter
+  const label = (rx0, ry0, rx1, ry1) => {   // the land is labelled inside the pond cell and the ring of one cell round it only, so the cell and its neighbours' windows reach the same verdict
+    comp = new Int32Array(W * H).fill(-1); size = [];
+    const q = new Int32Array(W * H), inR = (x, y) => x >= rx0 && y >= ry0 && x < rx1 && y < ry1;
+    for (let gy = ry0; gy < ry1; gy++) for (let gx = rx0; gx < rx1; gx++) {
+      const s = idx(gx, gy);
+      if (comp[s] >= 0 || !walk(gx, gy)) continue;
+      const id = size.length; let n = 0; q[n++] = s; comp[s] = id;
+      for (let h = 0; h < n; h++) { const c = q[h], x = gx0 + c % W, y = gy0 + ((c / W) | 0);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x2 = x + dx, y2 = y + dy; if (!inR(x2, y2)) continue; const m = idx(x2, y2); if (comp[m] < 0 && walk(x2, y2)) { comp[m] = id; q[n++] = m; } } }
+      size.push(n);
+    }
+  };
+  for (let j = HY - 1; j <= HY + 1; j++) for (let i = HX - 1; i <= HX + 1; i++) {
+    const cx = X - HX + i, cy = Y - HY + j, G = cellRegion(cx, cy); if (!G) continue;
+    const c = (cy % MH) * MW + (cx % MW); if (G.land[c] !== L.POND) continue;
+    const sides = [];   // the cell's open edges: the neighbour's step
+    for (const [dir, opp, ex, ey] of [['right', 'left', 1, 0], ['left', 'right', -1, 0], ['down', 'up', 0, 1], ['up', 'down', 0, -1]]) {
+      const mx = cx + ex, my = cy + ey; if (cellRegion(mx, my) !== G) continue;
+      const m = (my % MH) * MW + (mx % MW), goes = k => k === 'open' || k === 'stair';
+      if (goes(sideKind(G, c, dir)) || goes(sideKind(G, m, opp))) sides.push([ex, ey]);
+    }
+    if (sides.length < 2) continue;
+    const ox = cx * CW, oy = cy * CH; if (!inWin(ox, oy) || !inWin(ox + CW - 1, oy + CH - 1)) continue;
+    label(ox - CW, oy - CH, ox + 2 * CW, oy + 2 * CH);
+    const inCell = (x, y) => x >= ox && y >= oy && x < ox + CW && y < oy + CH;
+    const middle = (x, y) => x >= ox + (CW >> 1) - 3 && x < ox + (CW >> 1) + 5 && y >= oy + (CH >> 1) - 3 && y < oy + (CH >> 1) + 5;
+    const cuttable = (x, y) => { if (!inCell(x, y) || middle(x, y) || x < ox + 2 || y < oy + 2 || x >= ox + CW - 2 || y >= oy + CH - 2) return false;   // the two outer rings are never cut: they are what the neighbours' aprons read, and the neighbours' windows may not hold this cell's verdict
+ const v = snap[idx(x, y)]; return v !== TV.CLIFF && v !== TV.DEEP && inlandOf(x, y) >= COAST_REACH; };
+    const shores = new Map();   // component -> its tiles on the cell's open edges
+    for (const [ex, ey] of sides) for (let y = oy; y < oy + CH; y++) for (let x = ox; x < ox + CW; x++) {
+      if (ex && x !== (ex > 0 ? ox + CW - 1 : ox)) continue; if (ey && y !== (ey > 0 ? oy + CH - 1 : oy)) continue;
+      const k = comp[idx(x, y)]; if (k < 0 || size[k] < 30) continue;
+      if (!shores.has(k)) shores.set(k, []); shores.get(k).push(idx(x, y));
+    }
+    if (shores.size < 2) continue;
+    const order = [...shores.keys()].sort((p, q) => size[q] - size[p] || p - q), joined = new Set([order[0]]);
+    for (const k of order.slice(1)) {
+      const prev = new Int32Array(W * H).fill(-2), queue = []; for (const s of shores.get(k)) { prev[s] = -1; queue.push(s); }
+      let hit = -1;
+      for (let h = 0; h < queue.length && hit < 0; h++) { const cc = queue[h], x = gx0 + cc % W, y = gy0 + ((cc / W) | 0);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x2 = x + dx, y2 = y + dy; if (!inCell(x2, y2)) continue; const m = idx(x2, y2); if (prev[m] !== -2) continue;
+          if (comp[m] >= 0 && comp[m] !== k) { if (joined.has(comp[m])) { prev[m] = cc; hit = m; break; } continue; }
+          if (comp[m] !== k && !cuttable(x2, y2)) continue;
+          prev[m] = cc; queue.push(m); } }
+      if (hit < 0) continue;
+      for (let m = prev[hit]; m >= 0 && prev[m] !== -1; m = prev[m]) { const x = gx0 + m % W, y = gy0 + ((m / W) | 0); if (comp[m] >= 0) continue;
+        put(x, y); if (cuttable(x + 1, y) && comp[idx(x + 1, y)] < 0) put(x + 1, y); else if (cuttable(x, y + 1) && comp[idx(x, y + 1)] < 0) put(x, y + 1); }
+      joined.add(k);
+    }
+  }
 }
 
 function windowOf(S, X, Y) {

@@ -1,5 +1,5 @@
 {
- "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world. Retaken for realm revision 2: the coast. Retaken after revisions 3 and 4 of the coast, the blocking boulders, the turf rock cluster and the scrub shrub ring rule. Retaken after the causeways round pond cells.",
+ "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world.",
  "seed": 7,
  "gen": 7,
  "expeditions": 20,
@@ -7,147 +7,147 @@
  "dock": 0,
  "stopMid": false,
  "presses": 4277,
- "digest": "749919f05089889a42f9857107b4b1a75df59836554c90521ecba507d57eaf4d",
+ "digest": "da9da441c5e0fd3cea02db2b434921cec5c9028e954389d31ba9c2f2669aab03",
  "steps": [
   {
    "n": 1,
    "presses": 242,
    "turn": 1,
    "bay": 0,
-   "d": "6d4476c8bb6b7813"
+   "d": "713d34c219a1aefb"
   },
   {
    "n": 2,
    "presses": 471,
    "turn": 2,
    "bay": 0,
-   "d": "0c9a6695c198b06f"
+   "d": "7340a752bbd2b5f9"
   },
   {
    "n": 3,
    "presses": 760,
    "turn": 3,
    "bay": 0,
-   "d": "162bad2b938e6299"
+   "d": "c05efe306130ce78"
   },
   {
    "n": 4,
    "presses": 793,
    "turn": 4,
    "bay": 0,
-   "d": "e404c302ac75f9d5"
+   "d": "49c0b3415080134b"
   },
   {
    "n": 5,
    "presses": 998,
    "turn": 5,
    "bay": 0,
-   "d": "e934ce25e8c3abaf"
+   "d": "1ec222e6ae3af16c"
   },
   {
    "n": 6,
    "presses": 1340,
    "turn": 6,
    "bay": 1,
-   "d": "73b16c7629a9222c"
+   "d": "9b1e26e4bc99c1a9"
   },
   {
    "n": 7,
    "presses": 1517,
    "turn": 7,
    "bay": 2,
-   "d": "06c83a426d1a06e1"
+   "d": "c33daa0dcf2d188f"
   },
   {
    "n": 8,
    "presses": 1742,
    "turn": 8,
    "bay": 3,
-   "d": "689431de0e70966f"
+   "d": "111fa8c58095f583"
   },
   {
    "n": 9,
    "presses": 2054,
    "turn": 9,
    "bay": 3,
-   "d": "7b262df29f9fe5d5"
+   "d": "859468482f221eaf"
   },
   {
    "n": 10,
    "presses": 2235,
    "turn": 10,
    "bay": 3,
-   "d": "baed58cccfb51c27"
+   "d": "dd1c72be0d7ffa3f"
   },
   {
    "n": 11,
    "presses": 2257,
    "turn": 11,
    "bay": 3,
-   "d": "aa0804cf51cc6b10"
+   "d": "cbbc84ab7bc98fb8"
   },
   {
    "n": 12,
    "presses": 2541,
    "turn": 12,
    "bay": 0,
-   "d": "2b13b405a25ef668"
+   "d": "7aa9afce3b0cd1ea"
   },
   {
    "n": 13,
    "presses": 2883,
    "turn": 13,
    "bay": 0,
-   "d": "efadcce1461839f6"
+   "d": "8f28bcf3dfacc69e"
   },
   {
    "n": 14,
    "presses": 3162,
    "turn": 14,
    "bay": 0,
-   "d": "7220e40d149b6313"
+   "d": "8a5cd782c440616f"
   },
   {
    "n": 15,
    "presses": 3211,
    "turn": 15,
    "bay": 0,
-   "d": "4b517d36a9bd7b74"
+   "d": "72730b1cd9d284e1"
   },
   {
    "n": 16,
    "presses": 3548,
    "turn": 16,
    "bay": 0,
-   "d": "3a851c9f94b85d9f"
+   "d": "99cdc924fc0f52b9"
   },
   {
    "n": 17,
    "presses": 3686,
    "turn": 17,
    "bay": 0,
-   "d": "50959537c2a5b2c6"
+   "d": "b3956020ffcd8b1a"
   },
   {
    "n": 18,
    "presses": 3933,
    "turn": 18,
    "bay": 0,
-   "d": "d7ab6f76e3523be0"
+   "d": "dad3c1a8ec85b5e4"
   },
   {
    "n": 19,
    "presses": 4218,
    "turn": 19,
    "bay": 1,
-   "d": "65c937c90da72d19"
+   "d": "b7d63c3ca32244d4"
   },
   {
    "n": 20,
    "presses": 4277,
    "turn": 20,
    "bay": 1,
-   "d": "749919f05089889a"
+   "d": "da9da441c5e0fd3c"
   }
  ],
  "summary": {
@@ -157,7 +157,7 @@
   "revealed": 156,
   "visited": 45,
   "called": 40,
-  "pods": 68,
+  "pods": 67,
   "creatures": 777,
   "bay": 1,
   "hold": null,
