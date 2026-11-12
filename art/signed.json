@@ -835,11 +835,25 @@
    "sha256": "0b4e6f691505d6f738b746af9520b571151fba9ab5c74b6cc1eb73b5ebeecbef"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "bb508769fc",
+   "path": "art/places/sets/ninja-test/rock-a.png",
+   "sha256": "0df75668d31dcb4c2677517e4233d2c95ab04d1966ded18273d637eb2b925cbe"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "a09f9bfa92",
    "path": "art/places/sets/ninja-test/rock-b-m.png",
    "sha256": "5f3870b793645169a840e8531c0b91fc0c0373d85ba651b05f7914c10f9585cc"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "526d82aeca",
+   "path": "art/places/sets/ninja-test/rock-b.png",
+   "sha256": "5ab6b057b4d4131203733a3573eb253199878fbd46f34ef661838ed013c063cd"
   },
   {
    "class": "legacy-paint",
@@ -1831,9 +1845,23 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "5b1618d4c6",
+   "path": "prototypes/exploration/art/props/pawn-creep-down.png",
+   "sha256": "9a6704f1ea80fb1264e5d0d60bf92dffd46f0516d6f4bd8d691ec58061188e3a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "c271ecfbc1",
    "path": "prototypes/exploration/art/props/pawn-creep-down.png",
    "sha256": "bebe584e95d3da04fe8bb942e8e74943ad4adae5e7128917bfc14d3beb4da1a9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e9855ee33d",
+   "path": "prototypes/exploration/art/props/pawn-creep-left.png",
+   "sha256": "9040bedfa43d0b98e23c1b05b9081dc3c92612a36c2fff4acff205a65e9473a1"
   },
   {
    "class": "legacy-paint",
@@ -1845,9 +1873,23 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "1eee46856d",
+   "path": "prototypes/exploration/art/props/pawn-creep-up.png",
+   "sha256": "31dc9e6f7642e4ac7569f54dcd1d97bb5f8f2a4acc0036a45bf67e0fb285a297"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "630381de11",
    "path": "prototypes/exploration/art/props/pawn-creep-up.png",
    "sha256": "9c427b0e47d1841fdc6eed197b654da768dfa50be7825b4c679de2ac5b655b91"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "75c0e01da8",
+   "path": "prototypes/exploration/art/props/pawn-down-0.png",
+   "sha256": "2d23969431a17e06cbb65f636e5d166e5ac161eedbcdafde4384ee3df4db9e0d"
   },
   {
    "class": "legacy-paint",
@@ -1866,6 +1908,13 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "1e3cf89189",
+   "path": "prototypes/exploration/art/props/pawn-down-1.png",
+   "sha256": "67a2691adc80c724ebbd4226436fd99f0ecb03acedd315ad84a85cde37b8a58c"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "81ef837f9c",
    "path": "prototypes/exploration/art/props/pawn-left-0.png",
    "sha256": "2f264e1f86dde5a24f95f28c6234579bbd4b936bcc47e6f9e568b736127cc317"
@@ -1873,9 +1922,30 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "6b7488de6e",
+   "path": "prototypes/exploration/art/props/pawn-left-0.png",
+   "sha256": "c94dc0b102ba7f9762db9fbb80a5d075ad17c172b29c1f90978a5336c2662691"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d392aa95c9",
+   "path": "prototypes/exploration/art/props/pawn-left-1.png",
+   "sha256": "010a81fe332de37f6016934159f5269b854aa253c29fe0f4c726881727188f25"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "68d22ded05",
    "path": "prototypes/exploration/art/props/pawn-left-1.png",
    "sha256": "a1596cb97beb1f5fb1414040cd67287242048a42a1ed6e6595c8aa0df8aeb94d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "30fefa4858",
+   "path": "prototypes/exploration/art/props/pawn-up-0.png",
+   "sha256": "35c801537841544edbcfa397ec30c330276e7b78714e44c19bc177899152cd8b"
   },
   {
    "class": "legacy-paint",
@@ -1890,6 +1960,13 @@
    "id": "8f93e42b8e",
    "path": "prototypes/exploration/art/props/pawn-up-1.png",
    "sha256": "0f6c58a5857d7f3eac6e5d97398bf291ada17ee6a6115632960bb94583a78610"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "67ce9d8b28",
+   "path": "prototypes/exploration/art/props/pawn-up-1.png",
+   "sha256": "ce6945c80c429994b231e41c25d36dcdb9fb485e82fa51576ecf411fd519de12"
   },
   {
    "class": "legacy-paint",
@@ -2034,6 +2111,13 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "bfc3c78c97",
+   "path": "prototypes/exploration/art/props/strike-mark-read.png",
+   "sha256": "9354f456bab288cbc29208b2e28838e0d241af535b47549e07b9c94f4c0214f4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "14d7b8c6b1",
    "path": "prototypes/exploration/art/props/strike-mark-read.png",
    "sha256": "aeabaa5cd1bce627f1d06aff74826c2c33a8ede55be69d3cba2ab1e49592c4c4"
@@ -2044,6 +2128,20 @@
    "id": "5f7316f6f3",
    "path": "prototypes/exploration/art/props/strike-mark-unread-1.png",
    "sha256": "6af5290694d2cf82caf7cf8509be151289e16a9b149b8ee52b95e60796a218ae"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "e53ad3ab57",
+   "path": "prototypes/exploration/art/props/strike-mark-unread-1.png",
+   "sha256": "9354f456bab288cbc29208b2e28838e0d241af535b47549e07b9c94f4c0214f4"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "755973f661",
+   "path": "prototypes/exploration/art/props/strike-mark-unread-2.png",
+   "sha256": "9354f456bab288cbc29208b2e28838e0d241af535b47549e07b9c94f4c0214f4"
   },
   {
    "class": "legacy-paint",
@@ -2139,9 +2237,128 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "f76d953dc0",
+   "path": "prototypes/exploration/art/props/way-through-mark-stake.png",
+   "sha256": "02d98a178c5fc4e765a34cbc9f4628491ca9e1de9ce75af3ce3d68e458b3208d"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "9f7abf53a9",
+   "path": "prototypes/exploration/art/props/way-through-path-end-meadow.png",
+   "sha256": "53d11ab6fe448ec036e4c011ff3c9daf41d87ce0b32d9e6397d8e9fb29581491"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d92635a632",
+   "path": "prototypes/exploration/art/props/way-through-path-end-scree.png",
+   "sha256": "429e2fe200bf010128388b8d8e06153cdd24d162b301f79f1b1b89bcfb71a583"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c223dd4f65",
+   "path": "prototypes/exploration/art/props/way-through-path-end-turf.png",
+   "sha256": "68b71110b11edcb782671783acad4e78a8b288caa43358eb668bb7bf5ea13130"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "faee8f65b9",
+   "path": "prototypes/exploration/art/props/way-through-path-end-wood.png",
+   "sha256": "1eed68c69843c77007214af2e80f4508fbf4845f8eafda10f5f7875927e12502"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "5825d50d9a",
+   "path": "prototypes/exploration/art/stone/stone-small-b-plain@16.png",
+   "sha256": "5ab6b057b4d4131203733a3573eb253199878fbd46f34ef661838ed013c063cd"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "bffa2d569c",
+   "path": "prototypes/exploration/art/stone/stone-small-b-plain@48.png",
+   "sha256": "2548e01966e023129f3bd27af6368c26b528ddc5bd1e4287ed8b56248ec23afb"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "0931864ba1",
+   "path": "prototypes/exploration/art/stone/stone-small-b-spent@16.png",
+   "sha256": "5ab6b057b4d4131203733a3573eb253199878fbd46f34ef661838ed013c063cd"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "21de38ef28",
+   "path": "prototypes/exploration/art/stone/stone-small-b-spent@48.png",
+   "sha256": "2548e01966e023129f3bd27af6368c26b528ddc5bd1e4287ed8b56248ec23afb"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "f94bdf2f7e",
+   "path": "prototypes/exploration/art/stone/stone-small-b-warm-1@16.png",
+   "sha256": "f33a1e1c74739268595a2751705cca99f95f394821bcaa27385ce3a5f9284a0e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "923240fb68",
+   "path": "prototypes/exploration/art/stone/stone-small-b-warm-1@48.png",
+   "sha256": "618fc4953c484f71ca2cc90109de8dd3e9a2f73f1f0404be79255bf8e23b87f9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c5a041078b",
+   "path": "prototypes/exploration/art/stone/stone-small-b-warm-2@16.png",
+   "sha256": "3b92ea44616ceeaea8147bf200362d0c23384ca64f31d3167538dada9b64152c"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "b9067ec9f8",
+   "path": "prototypes/exploration/art/stone/stone-small-b-warm-2@48.png",
+   "sha256": "783a3893df092a7fcdc7d0896e538ec44221c10bfbee163c8c27ea56753bc42d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "ef0134b6b9",
+   "path": "prototypes/exploration/art/stone/stone-small-b-warm-still@16.png",
+   "sha256": "f33a1e1c74739268595a2751705cca99f95f394821bcaa27385ce3a5f9284a0e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "e58ff6f1d1",
+   "path": "prototypes/exploration/art/stone/stone-small-b-warm-still@48.png",
+   "sha256": "618fc4953c484f71ca2cc90109de8dd3e9a2f73f1f0404be79255bf8e23b87f9"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "fe180069f2",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-1@16.png",
+   "sha256": "3bf3d27a99e0c7ba54066a15bd9f4519b9420e6cf9bd5bfec7332b1673ba4793"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "10de23b402",
    "path": "prototypes/exploration/art/stone/stone-small-charged-1@16.png",
    "sha256": "dcecdec17cd513d725f96308085d567a73eb00db7cbf39b969ca5acbf8dc4351"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "9752195473",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-1@48.png",
+   "sha256": "7cb29529edcc38b8b5d622f431fbf522ea76edab3f69d42dfb2f0043e1b4bc4c"
   },
   {
    "class": "legacy-paint",
@@ -2160,9 +2377,30 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "40259ffa71",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-2@16.png",
+   "sha256": "6025fa1607c8547e94938d9496a86f9fa3b2a66ade233c20619faf3c11090b81"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "8cee455d22",
+   "path": "prototypes/exploration/art/stone/stone-small-charged-2@48.png",
+   "sha256": "9da9fbf1481dcc2d96fcd6b7b9e3b5dc2942fd47d383fb81b30b6b8128819b52"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "c5101e1510",
    "path": "prototypes/exploration/art/stone/stone-small-charged-2@48.png",
    "sha256": "e60bfceef9b3b111fa1c085dd75ed67f572975c19a0cdc44e005b5694368c12f"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "bfa51c37fb",
+   "path": "prototypes/exploration/art/stone/stone-small-plain@16.png",
+   "sha256": "0df75668d31dcb4c2677517e4233d2c95ab04d1966ded18273d637eb2b925cbe"
   },
   {
    "class": "legacy-paint",
@@ -2172,6 +2410,13 @@
    "sha256": "b95e94efbd5f76e642b50a801f4eee5f798eb1cb94b2238b2d3942f2041dc4c6"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "f817040e9e",
+   "path": "prototypes/exploration/art/stone/stone-small-plain@48.png",
+   "sha256": "2a5b85c36280535c15ef9fb078bcff52f4304453d1dd479adcf6e0511eb01b58"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "685738b6ea",
@@ -2179,11 +2424,25 @@
    "sha256": "3726789e55c9fdee65342e9afe4f5e19b3b2c6599fda2f1e916b802d717f2783"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "dc78671f02",
+   "path": "prototypes/exploration/art/stone/stone-small-spent@16.png",
+   "sha256": "0df75668d31dcb4c2677517e4233d2c95ab04d1966ded18273d637eb2b925cbe"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "f42210311c",
    "path": "prototypes/exploration/art/stone/stone-small-spent@16.png",
    "sha256": "b95e94efbd5f76e642b50a801f4eee5f798eb1cb94b2238b2d3942f2041dc4c6"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "5eb6cdc023",
+   "path": "prototypes/exploration/art/stone/stone-small-spent@48.png",
+   "sha256": "2a5b85c36280535c15ef9fb078bcff52f4304453d1dd479adcf6e0511eb01b58"
   },
   {
    "class": "legacy-paint",
@@ -2195,9 +2454,23 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "5c2a4c9cb7",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-1@16.png",
+   "sha256": "4d93babde832e9d1e5a6a17ab13c853498e0c2c09f8621d1ea6aeee5fb601343"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "b7100608cc",
    "path": "prototypes/exploration/art/stone/stone-small-warm-1@16.png",
    "sha256": "76a684a6d225f7f16332784943e9a6c5ea7a5b1559aedd3e28569bb238326c96"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "a0b7b33f3b",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-1@48.png",
+   "sha256": "58618e9bde5923d7338642f414dbf73569ab24ce1d24670df8faeeacac535586"
   },
   {
    "class": "legacy-paint",
@@ -2205,6 +2478,13 @@
    "id": "76fd266072",
    "path": "prototypes/exploration/art/stone/stone-small-warm-1@48.png",
    "sha256": "ac81e9390d13b9b5257fcfea9cec79dccfb93b93c60b172d8d8c096f7db1572b"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "2cacbaf4be",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-2@16.png",
+   "sha256": "279f5a975e2ee60e419e5fe75e1c1782c52f5d525984a86b4a32bd85d9741b3b"
   },
   {
    "class": "legacy-paint",
@@ -2221,11 +2501,32 @@
    "sha256": "6a44ae00fbf95b74316fa5a5c7eb66c7126666f58afc6c0930e24bb065cdc98d"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "d56c4a5b8a",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-2@48.png",
+   "sha256": "c721b6be6200eef6e8ca686b279ec8c065b06d9d01c9a781e30fd8fb7d31c917"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "3dcb4dec71",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-still@16.png",
+   "sha256": "4d93babde832e9d1e5a6a17ab13c853498e0c2c09f8621d1ea6aeee5fb601343"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "1f2f3ceb8c",
    "path": "prototypes/exploration/art/stone/stone-small-warm-still@16.png",
    "sha256": "e4cb90e7dbd425bdf3ff62d9b0d2bc415cef8cafc8e375aeafa7e63bbb3f3e1d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "08888c1ed5",
+   "path": "prototypes/exploration/art/stone/stone-small-warm-still@48.png",
+   "sha256": "58618e9bde5923d7338642f414dbf73569ab24ce1d24670df8faeeacac535586"
   },
   {
    "class": "legacy-paint",
@@ -2244,6 +2545,20 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "e5f31cc90d",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-1@16.png",
+   "sha256": "3609d306f511f90c29aec9682c41e5ef195d376d163f67954ed1b350fad98692"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "671ad401a4",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-1@48.png",
+   "sha256": "84eb604a47f65bd15e0e85809c4a5c91e1803a83edc4137f48159e82ed17d1bf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "c93cdd8d79",
    "path": "prototypes/exploration/art/stone/stone-tall-charged-1@48.png",
    "sha256": "f3a92088562672342ed5209b0abadf53c77a6decf1088793482fde5f3c666db0"
@@ -2254,6 +2569,20 @@
    "id": "f49604bd2b",
    "path": "prototypes/exploration/art/stone/stone-tall-charged-2@16.png",
    "sha256": "207c4b25959dd549bcc83ba8ef37c7ac1f5ee50b16a8be0ad9dd1ef46b791efe"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "13f6d9c5a0",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-2@16.png",
+   "sha256": "4ef7d29f0e9d34a081847fac512ae1ab9b1f2123075987f662881f4d919db928"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "fba8bde1cb",
+   "path": "prototypes/exploration/art/stone/stone-tall-charged-2@48.png",
+   "sha256": "55294a1671227dd40809ce024aa52ee8ea779f98740910b0c4cadf936cb195e3"
   },
   {
    "class": "legacy-paint",
@@ -2272,6 +2601,20 @@
   {
    "class": "legacy-paint",
    "date": "2026-11-12",
+   "id": "acedf2a42b",
+   "path": "prototypes/exploration/art/stone/stone-tall-plain@16.png",
+   "sha256": "5e178b2fb3cc71ea83447a96e8cac31e35848dc6e5772112808df33353be5fe7"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "fcff0a1672",
+   "path": "prototypes/exploration/art/stone/stone-tall-plain@48.png",
+   "sha256": "c97a7fc2175382d2f41501fff6aa7b9010c9bcf286554c380d3ac371b68a3a1a"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
    "id": "035b2def87",
    "path": "prototypes/exploration/art/stone/stone-tall-plain@48.png",
    "sha256": "cc1e8133214bea015a170abc6ce441274f2521992a2d1abc4f1363788c126688"
@@ -2282,6 +2625,20 @@
    "id": "51bc2892bb",
    "path": "prototypes/exploration/art/stone/stone-tall-spent@16.png",
    "sha256": "1bf815ae86080cd416c5b376292093f6ac6e0da5badc0988a00209d5ada7e470"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "5086b4fa4d",
+   "path": "prototypes/exploration/art/stone/stone-tall-spent@16.png",
+   "sha256": "5e178b2fb3cc71ea83447a96e8cac31e35848dc6e5772112808df33353be5fe7"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "4ba7fcca1e",
+   "path": "prototypes/exploration/art/stone/stone-tall-spent@48.png",
+   "sha256": "c97a7fc2175382d2f41501fff6aa7b9010c9bcf286554c380d3ac371b68a3a1a"
   },
   {
    "class": "legacy-paint",
@@ -2331,6 +2688,48 @@
    "id": "10a04d6036",
    "path": "prototypes/exploration/art/stone/stone-tall-warm-still@48.png",
    "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "2260f915ae",
+   "path": "prototypes/places/veil/edge-veil-end-day.png",
+   "sha256": "c6d86e68e475a6c90fe40bceb97e773b948a9ecb5253a46671bd02329cffddb7"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "411164a8ca",
+   "path": "prototypes/places/veil/edge-veil-end-night.png",
+   "sha256": "582db27e6bf84efeffb7680a6a5f92e7733d2495a7493fd158a197d218eaa399"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "fe7a557496",
+   "path": "prototypes/places/veil/edge-veil-inner-day.png",
+   "sha256": "7de33b0fc6286d81a24c12592cefa259cd99cb6845b9a8748c16c07a96805056"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "eaa444cf12",
+   "path": "prototypes/places/veil/edge-veil-inner-night.png",
+   "sha256": "2050bcb1214ff60139097b7a45d23bb31c49c01cbde3c8ec0852d93c7cb06030"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "03c28fe815",
+   "path": "prototypes/places/veil/edge-veil-outer-day.png",
+   "sha256": "35c4a5725f7f73de478bc043d4081ca9e4ef5594b76a9efccc94fa21ca12c632"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "ac5a9cb79f",
+   "path": "prototypes/places/veil/edge-veil-outer-night.png",
+   "sha256": "90a7ea79a2f37f7bc1fd541172cc6033f6b395fafb39947b20685ebe4adad56e"
   }
  ]
 }
