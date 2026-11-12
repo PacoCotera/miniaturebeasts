@@ -1678,12 +1678,32 @@
 						"tileRect": null
 					},
 					{
-						"id": "rock-big",
+						"id": "boulder-a",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "rock-big-m",
+						"id": "boulder-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-d",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-d-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-e-m",
 						"color": 0,
 						"tileRect": null
 					},

@@ -40,73 +40,99 @@
     "sha256": "a04a6a02de56e4f1cdaf9f579f6b901edd6163a08a6ff9e02dbe779807daa732"
   },
   "rock-b.png": {
-    "commit": "ffa823829",
-    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-b.png",
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-b@16.png",
     "size": [
-      13,
-      14
+      16,
+      16
     ],
     "foot": [
-      6,
-      13
+      8,
+      15
     ],
-    "sha256": "7f4fc66b687f702ea49b970af43014c6145535df74f68072742e6725520152fd"
+    "sha256": "5ab6b057b4d4131203733a3573eb253199878fbd46f34ef661838ed013c063cd"
   },
   "rock-a.png": {
-    "commit": "ffa823829",
-    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-a.png",
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-plain@16.png",
     "size": [
-      15,
-      12
+      16,
+      16
     ],
     "foot": [
-      7,
-      11
+      8,
+      15
     ],
-    "sha256": "0b4e6f691505d6f738b746af9520b571151fba9ab5c74b6cc1eb73b5ebeecbef"
+    "sha256": "0df75668d31dcb4c2677517e4233d2c95ab04d1966ded18273d637eb2b925cbe"
   },
   "stump.png": {
-    "commit": "75f1ff195",
-    "from": "art-jobs/2026-11-10-art-fix-decor-edges/out/p2/stump.png",
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stump@16.png",
     "size": [
-      14,
-      13
-    ],
-    "foot": [
-      7,
-      12
-    ],
-    "sha256": "94d02af02077168eeb02e9ecb811c3523428f0fc86af0ccbdd90ff44356d4c1c"
-  },
-  "rock-a-m.png": {
-    "commit": "ffa823829",
-    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-a-m.png",
-    "size": [
-      15,
-      12
-    ],
-    "foot": [
-      7,
+      12,
       11
-    ],
-    "sha256": "f2afc6e5a8f689ae56b1e15404a165dde2d916c782de15d93f278adf5d1a038a"
-  },
-  "rock-b-m.png": {
-    "commit": "ffa823829",
-    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-b-m.png",
-    "size": [
-      13,
-      14
     ],
     "foot": [
       6,
+      10
+    ],
+    "sha256": "7a91dacc327317991601fa4fae08474dfbdbc5c1c15491823e761c4c2432380f"
+  },
+  "boulder-a.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/rock-big.png",
+    "size": [
+      23,
+      23
+    ],
+    "foot": [
+      11,
+      22
+    ],
+    "sha256": "c2b1972674203f219c2dad902b7ce41fa1d1bbf359413176ec58f19a0ef3e889"
+  },
+  "boulder-a-m.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/rock-big-m.png",
+    "size": [
+      23,
+      23
+    ],
+    "foot": [
+      11,
+      22
+    ],
+    "sha256": "9e62c7487f7382320cbb2481bed9dd5bdda804b77701d9789bfc4226abc15c87"
+  },
+  "boulder-d.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-d.png",
+    "size": [
+      24,
       13
     ],
-    "sha256": "5f3870b793645169a840e8531c0b91fc0c0373d85ba651b05f7914c10f9585cc"
+    "foot": [
+      12,
+      12
+    ],
+    "sha256": "76e276aa1780bac424872dd8047b18b2da89653c9b64eaaf4bf156cce7516f31"
   },
-  "rock-big.png": {
-    "commit": "ffa823829",
-    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-big.png",
+  "boulder-d-m.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-d-m.png",
+    "size": [
+      24,
+      13
+    ],
+    "foot": [
+      11,
+      12
+    ],
+    "sha256": "0be66f3dbca6993f3ecd58a1fd188d25a3e339c0d23144a8dd1f8e5175da47c6"
+  },
+  "boulder-e.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-e.png",
     "size": [
       24,
       18
@@ -115,11 +141,11 @@
       12,
       17
     ],
-    "sha256": "7580aa5c6dd21dcc431bdc847a62cae663332f0a5c7c75f302390692dd49d7af"
+    "sha256": "41ac27a3db5602574408215e1017cbf82fe505c055fb925e4a6c79a810260e8f"
   },
-  "rock-big-m.png": {
-    "commit": "ffa823829",
-    "from": "art-jobs/2026-11-10-art-paint-rock-family/out/boulders/rock-big-m.png",
+  "boulder-e-m.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-e-m.png",
     "size": [
       24,
       18
@@ -128,7 +154,33 @@
       11,
       17
     ],
-    "sha256": "40bed5fa49565666d283bf344014cba953333cdff2a179a904a8e8fbe5e43670"
+    "sha256": "52920298d6485ff94703e05fc6251f9e2d7c9f8ad6e5ad4ffdffb5aeb2f7ec9e"
+  },
+  "rock-a-m.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-plain@16.png flipped left to right (layout)",
+    "size": [
+      16,
+      16
+    ],
+    "foot": [
+      7,
+      15
+    ],
+    "sha256": "6619fadbf95aeb84da1264b6d1f4baa964a6a17d0b62bbcc3da35fa226400ead"
+  },
+  "rock-b-m.png": {
+    "commit": "9c902c7ec",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-b@16.png flipped left to right (layout)",
+    "size": [
+      16,
+      16
+    ],
+    "foot": [
+      7,
+      15
+    ],
+    "sha256": "86401beaa86a947eb501a37f1c45b9fc90be402fc28b7b9ef4584c129dd7b472"
   },
   "hollow-tree.png": {
     "commit": "75f1ff195",

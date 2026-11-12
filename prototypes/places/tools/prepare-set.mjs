@@ -183,14 +183,14 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   // the leaf ramp of the tree crowns, bushes and shrubs (the map palette's leaf_hi, leaf, leaf_dk, leaf_line): at night no lighter than the grass
   const crowns = ['leaf_hi', 'leaf', 'leaf_dk', 'leaf_line'].map((n) => sorted.indexOf(PALETTE.map[n][1].slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k);
   // the stone ramp (rock_hi, rock, rock_dk, rock_line and the cliff's three stone steps): at night all dark grey
-  // plus every colour the rock, boulder and split-stone pictures hold (rock-a, rock-b and rock-big are the boulders), outlines and base lines included, but not the moss and leaves (green) or the sand-yellow earth highlight the terrain shares
+  // plus every colour the rock, boulder and split-stone pictures hold (rock-a and rock-b are the small stones, boulder-a, boulder-d and boulder-e the boulders), outlines and base lines included, but not the moss and leaves (green) or the sand-yellow earth highlight the terrain shares
   const stoneHex = [...['rock_hi', 'rock', 'rock_dk', 'rock_line'].map((n) => PALETTE.map[n][1]), ...['cliff_stone_hi', 'cliff_stone', 'cliff_stone_dk'].map((n) => PALETTE.extra[n][1])];
   const shared = new Set(['earth_hi'].map((n) => PALETTE.map[n][1].slice(1)));
-  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'rock-big.png', 'split-stone.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) { if (!im.data[i + 3]) continue; const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]); if (!shared.has(h) && family(unhex(h)) !== 'green') stoneHex.push('#' + h); } }
+  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'boulder-a.png', 'boulder-d.png', 'boulder-e.png', 'split-stone.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) { if (!im.data[i + 3]) continue; const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]); if (!shared.has(h) && family(unhex(h)) !== 'green') stoneHex.push('#' + h); } }
   const stone = [...new Set(stoneHex.map((h) => sorted.indexOf(h.slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k))];
   // the signed grey body in three steps: the two lightest greys of the boulder pictures take the highlight step, the darkest (the outlines) the line step, the rest the body step
   const deskGrey = new Set();
-  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'rock-big.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) deskGrey.add(hex(im.data[i], im.data[i + 1], im.data[i + 2])); }
+  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'boulder-a.png', 'boulder-d.png', 'boulder-e.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) deskGrey.add(hex(im.data[i], im.data[i + 1], im.data[i + 2])); }
   const greyIdx = (pred) => [...deskGrey].filter((h) => stone.includes(CORE_COLOURS + sorted.indexOf(h)) && pred(lum(h))).map((h) => CORE_COLOURS + sorted.indexOf(h));
   const stoneHi = greyIdx((l) => l >= 160), stoneLine = greyIdx((l) => l < 70);
   // the bank earth: the thin earth band at the water's edge (the sand and earth sheets' edge tone, #d2b06f by day). At night the nearest-colour step sent it to #664330, which reads rust red (art director 2026-11-11):

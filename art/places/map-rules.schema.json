@@ -63,7 +63,7 @@
             "minD2": { "description": "Least squared distance between two members when the family names none", "type": "integer", "minimum": 1 },
             "bisector": { "description": "How many tiles a tile keeps from the border between two clusters' claims", "type": "number", "minimum": 0, "maximum": 3 },
             "otherKindShare": { "$ref": "#/definitions/chance" },
-            "rockShapes": { "description": "The share of an outcrop's rocks that take each boulder shape (they sum to 1); a mirror is by hash. Boulders only: the small stones are ground decals, stepped over", "type": "object", "additionalProperties": false, "required": ["rock-big"], "properties": { "rock-big": { "$ref": "#/definitions/chance" } } }
+            "rockShapes": { "description": "The share of an outcrop's rocks that take each boulder shape (they sum to 1); a mirror is by hash. Boulders only: the small stones are ground decals, stepped over", "type": "object", "additionalProperties": false, "required": ["boulder-a", "boulder-d", "boulder-e"], "properties": { "boulder-a": { "$ref": "#/definitions/chance" }, "boulder-d": { "$ref": "#/definitions/chance" }, "boulder-e": { "$ref": "#/definitions/chance" } } }
           }
         },
         "wayZone": { "description": "Cells kept clear of props round a way up, counted from its rectangle", "$ref": "#/definitions/box" },

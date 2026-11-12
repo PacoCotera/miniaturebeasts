@@ -21,7 +21,7 @@
       "minD2": 4,
       "bisector": 0.75,
       "otherKindShare": 0.14285714285714285,
-      "rockShapes": { "rock-big": 1 }
+      "rockShapes": { "boulder-a": 0.4, "boulder-d": 0.3, "boulder-e": 0.3 }
     },
     "wayZone": { "left": 1, "right": 1, "up": 3, "down": 4 },
     "hollow": {
@@ -62,7 +62,7 @@
       { "name": "rock", "kinds": ["rock-turf", "rock-turf-m"], "per100": 1, "scale": 3.0 }
     ] },
     "scree": { "drawScale": 2.0, "entries": [
-      { "name": "boulders", "kinds": ["rock-big", "rock-big-m"], "per100": 1, "prop": true },
+      { "name": "boulders", "kinds": ["boulder-a", "boulder-a-m", "boulder-d", "boulder-d-m", "boulder-e", "boulder-e-m"], "per100": 1, "prop": true },
       { "name": "small stones", "kinds": ["rock-a", "rock-a-m", "rock-b", "rock-b-m"], "per100": 1 }
     ] }
   },

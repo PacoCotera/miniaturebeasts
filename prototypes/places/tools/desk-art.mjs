@@ -26,11 +26,21 @@ export const P3 = { commit: 'cc712a83e', dir: 'art-jobs/2026-11-10-art-recut-flo
 export const P3_KEYS = ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-2-m', 'tufts-3', 'tufts-3-m'];
 // the young and grown steps of the plants (same commit, art-jobs/2026-11-10-art-quiet-ground/out/steps/, manifest.json there): <slot>-young and <slot>-grown, each with a -m mirror
 export const STEPS = { commit: 'cc712a83e', dir: 'art-jobs/2026-11-10-art-quiet-ground/out/steps' };
-// the signed rock family (art director, mibi-art art/desk ffa823829, art-jobs/2026-11-10-art-paint-rock-family/out/): the three boulder shapes (rock-a, rock-b, rock-big, each with a -m mirror), sizes and feet in out/manifest.json
-export const ROCKS = { commit: 'ffa823829', dir: 'art-jobs/2026-11-10-art-paint-rock-family/out' };
 // the plant slots the meadow scatter draws, by the manifest's slot names (each in three steps: young, the middle signed piece, grown)
 export const PLANTS = ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-3', 'clump-tall', 'clump-tall-s', 'shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-round'];
-export const BOULDERS = ['rock-a', 'rock-b', 'rock-big'];
+// the plain stone set (art director, mibi-art art/art-fix-map-pieces 9c902c7ec, art-jobs/2026-11-11-art-fix-map-pieces/out/a2 and a2b; reports runs/art-fix-map-pieces-a2 and -a2b): the two small stones and the stump (walk-over,
+// 11 px or less; they take the names rock-a, rock-b and stump), and the three boulders A, D and E with the desk's own mirrors. The files are the desk's bytes (the small stones and the stump are mirrored by a flip, layout only);
+// size and foot are set here from the files (the desk's manifests do not list them): the foot is the last opaque row, centred (a mirror's foot is across the picture).
+export const STONES = { commit: '9c902c7ec', dir: 'art-jobs/2026-11-11-art-fix-map-pieces/out' };
+export const STONE_SET = {
+  'rock-a': { path: 'a2/stone-small-plain@16.png', size: [16, 16], foot: [8, 15] },
+  'rock-b': { path: 'a2/stone-small-b@16.png', size: [16, 16], foot: [8, 15] },
+  stump: { path: 'a2/stump@16.png', size: [12, 11], foot: [6, 10] },
+  'boulder-a': { path: 'a2/rock-big.png', mirror: 'a2/rock-big-m.png', size: [23, 23], foot: [11, 22] },
+  'boulder-d': { path: 'a2b/boulder-d.png', mirror: 'a2b/boulder-d-m.png', size: [24, 13], foot: [12, 12] },
+  'boulder-e': { path: 'a2b/boulder-e.png', mirror: 'a2b/boulder-e-m.png', size: [24, 18], foot: [12, 17] },
+};
+export const BOULDERS = ['boulder-a', 'boulder-d', 'boulder-e'];
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
 export const CLIFF3 = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles' };   // the cliff sheets are the re-cut ones (tools/recut); the commit and folder are the label of their source
 // the open-top cliff cut (art director signed, mibi-art art/desk d85bcb82c, art-jobs/2026-11-11-art-recut-cliff-open/out/, manifest.json there): the ten sheets byte for byte, no new colours. The fill below
@@ -56,8 +66,8 @@ export const BIOME_DECALS = {
   turf: ['tuft-wind', 'tuft-wind-m', 'shrub-heather', 'shrub-heather-m'],
 };
 export const BIOME_ROCKS = { turf: ['rock-turf', 'rock-turf-m'] };
-// what blocks (owner notes 6 and 7): only stone and wood as high as the explorer's shoulder. The low stones and the stump are stepped over, the bushes and shrubs pushed through: no footprint. The boulder (rock-big), the split stone and the trunks stay.
-export const STEP_OVER = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-big', 'bush-round', 'bush-small', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'boulder-grey', 'boulder-brown', 'stump'];
+// what blocks (owner notes 6 and 7): only stone and wood as high as the explorer's shoulder. The low stones, the stump and the two low boulders (D 13 px, E 18 px) are stepped over, the bushes and shrubs pushed through: no footprint. The tall boulder (A, 23 px), the split stone and the trunks stay.
+export const STEP_OVER = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-big', 'bush-round', 'bush-small', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'boulder-grey', 'boulder-brown', 'stump', 'stump-m', 'boulder-d', 'boulder-d-m', 'boulder-e', 'boulder-e-m'];
 export const STONE_DECALS = ['rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-turf', 'rock-turf-m'];
 // Held back by the set's palette (208 colours, 171 pinned or in use, the pieces above take the last 37): shrub-thorn-b (+10 colours), clump-seed (+10), dry-rock (+5). Each is a signed piece with its own straw tones
 // outside the map palette; the art desk can snap them to it (or free colours) and they join by adding their names here.
@@ -184,7 +194,7 @@ export function deskLayers() {
 export const DECOR_SOURCES = {
   props: {
     'tree-broad': 'tree-trunk', 'tree-autumn': 'tree-trunk', 'bush-big': 'bush-round', 'bush-round': 'bush-round', 'bush-small': 'bush-round', 'boulder-brown': 'rock-b', 'boulder-grey': 'rock-a', stump: 'stump',
-    ...Object.fromEntries(BOULDERS.flatMap((b) => [[b, b], [`${b}-m`, `${b}-m`]])),   // the three signed boulder shapes and their mirrors: what the generator's rocks are; the hand-set places' two kit names draw the first two
+    ...Object.fromEntries([...BOULDERS, 'rock-a', 'rock-b'].flatMap((b) => [[b, b], [`${b}-m`, `${b}-m`]])),   // the three signed boulders and the two small stones, each with its mirror: the boulders are what the generator's rocks are; the hand-set places' two kit names draw the two small stones
     'tree-hollow': 'hollow-tree', 'split-stone': 'split-stone', 'shrub-1': 'shrub-1', 'shrub-2': 'shrub-2', 'shrub-3': 'shrub-3', 'shrub-4': 'shrub-4',
   },
   sweeps: { 'tall-grass': 'tufts-2', 'tall-grass-m': 'tufts-2-m', 'tall-grass-b': 'tufts-3', 'tall-grass-bm': 'tufts-3-m' },
@@ -201,9 +211,9 @@ export const DECOR_SOURCES = {
 };
 export function deskArt() {
   const files = new Map(), desk = {}, manifest = JSON.parse(show(P2, 'manifest.json')), seen = new Map();
-  const man = { p3: JSON.parse(show(P3, 'manifest.json')), steps: JSON.parse(show(STEPS, 'manifest.json')), rocks: JSON.parse(show(ROCKS, 'manifest.json')) };
+  const man = { p3: JSON.parse(show(P3, 'manifest.json')), steps: JSON.parse(show(STEPS, 'manifest.json')) };
   const sha = (b) => createHash('sha256').update(b).digest('hex');
-  // where a desk file lives: a step (young, grown) in the steps folder, the nine re-cut flowers and tufts in p3, the boulders in the rock family, every other piece in p2
+  // where a desk file lives: a step (young, grown) in the steps folder, the nine re-cut flowers and tufts in p3, the stones, stump and boulders in the plain stone set, every other piece in p2
   const bman = Object.fromEntries(Object.entries(BIOME_DECOR.jobs).map(([j, dir]) => [j, { S: { commit: BIOME_DECOR.commit, dir }, m: JSON.parse(show({ commit: BIOME_DECOR.commit, dir }, 'manifest.json')) }]));
   const biomeEntry = (key) => {   // a biome decor piece by name; a -m name is the manifest's own mirror file with the foot flipped across the picture
     const mir = key.endsWith('-m'), base = mir ? key.slice(0, -2) : key;
@@ -215,15 +225,17 @@ export function deskArt() {
     return null;
   };
   const entryOf = (key) => {
+    const se = STONE_SET[key.replace(/-m$/, '')];   // the plain stone set (rock-a, rock-b, stump, boulders A, D, E): a mirror is the desk's own file where it made one, else the flip below
+    if (se) {
+      const mir = key.endsWith('-m');
+      if (!mir) return { S: STONES, m: { size: se.size, foot: se.foot }, path: se.path };
+      if (se.mirror) return { S: STONES, m: { size: se.size, foot: [se.size[0] - 1 - se.foot[0], se.foot[1]] }, path: se.mirror };
+      return null;
+    }
     const be = biomeEntry(key); if (be) return be;
     if (man.steps[key]) return { S: STEPS, m: man.steps[key], path: path.posix.basename(man.steps[key].file) };
     if (P3_KEYS.includes(key)) return { S: P3, m: man.p3[key], path: path.posix.basename(man.p3[key].file) };
     if (manifest[key]) return { S: P2, m: manifest[key], path: path.posix.basename(manifest[key].file) };
-    const base = key.replace(/-m$/, ''), r = man.rocks[base];
-    if (BOULDERS.includes(base) && r) {   // a boulder: its file (out/boulders/...); its mirror is the desk's own -m file, the foot flipped across the picture
-      const mir = base !== key;
-      return { S: ROCKS, m: { size: r.size, foot: mir ? [r.size[0] - 1 - r.foot[0], r.foot[1]] : r.foot }, path: (mir ? r.mirror : r.file).replace(/^out\//, '') };
-    }
     return null;
   };
   const flipX = (im) => { const o = newImage(im.w, im.h); for (let y = 0; y < im.h; y++) for (let x = 0; x < im.w; x++) o.data.set(im.data.subarray((y * im.w + x) * 4, (y * im.w + x) * 4 + 4), (y * im.w + (im.w - 1 - x)) * 4); return o; };

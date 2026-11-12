@@ -19,10 +19,10 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
       const [lo, hi] = TABLE[b].trees.size, off = Object.keys(s.groveHistByBiome[b]).map(Number).filter(n => n < lo || n > hi);
       check(off.length === 0, `grove sizes in ${b} are ${lo}-${hi}: ` + JSON.stringify(s.groveHistByBiome[b]));
     }
-    // the boulders: an outcrop's rocks are rock-big alone (the low stones are stepped-over decals), each by hash a mirror or not; no other rock kind is left
+    // the boulders: an outcrop's rocks are boulders A, D and E by the rule's shares (the low stones are stepped-over decals), each by hash a mirror or not; no other rock kind is left
     { const k = s.rockKinds, n = Object.values(k).reduce((x, y) => x + y, 0), base = b => (k[b] || 0) + (k[b + '-m'] || 0);
       check(Object.keys(k).every(x => ROCK_KINDS.includes(x)), 'rock kinds: ' + JSON.stringify(k));
-      for (const [b, share] of [['rock-big', 1]]) { check(Math.abs(base(b) / n - share) < 0.05, `${b} share ${(base(b) / n).toFixed(3)} (rule ${share})`); check(Math.abs((k[b + '-m'] || 0) / base(b) - 0.5) < 0.05, `${b} mirrored share`); } }
+      for (const [b, share] of [['boulder-a', 0.4], ['boulder-d', 0.3], ['boulder-e', 0.3]]) { check(Math.abs(base(b) / n - share) < 0.05, `${b} share ${(base(b) / n).toFixed(3)} (rule ${share})`); check(Math.abs((k[b + '-m'] || 0) / base(b) - 0.5) < 0.05, `${b} mirrored share`); } }
     check(s.outcrops > 100, 'outcrops: ' + s.outcrops);
     // the places bake's grove-lattice rule, grove clause: in a cell of 12 or more trees and boulders at least 40% of them touch another (crowns within 2.3 tiles). It holds in all but a
     // few cells in a thousand (a meadow cell whose 12 are singles and pairs); its other two clauses (spacing varies by 0.35, two trees stand alone) are those of a hand-made place of a few
