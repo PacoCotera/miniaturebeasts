@@ -2,6 +2,48 @@
  "formatVersion": 1,
  "signed": [
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "a43a26a06a",
+   "path": "art/places/sets/ninja-test/boulder-a-m.png",
+   "sha256": "9e62c7487f7382320cbb2481bed9dd5bdda804b77701d9789bfc4226abc15c87"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "d4c9038d60",
+   "path": "art/places/sets/ninja-test/boulder-a.png",
+   "sha256": "c2b1972674203f219c2dad902b7ce41fa1d1bbf359413176ec58f19a0ef3e889"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "7d65754df6",
+   "path": "art/places/sets/ninja-test/boulder-d-m.png",
+   "sha256": "0be66f3dbca6993f3ecd58a1fd188d25a3e339c0d23144a8dd1f8e5175da47c6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "3d05d61649",
+   "path": "art/places/sets/ninja-test/boulder-d.png",
+   "sha256": "76e276aa1780bac424872dd8047b18b2da89653c9b64eaaf4bf156cce7516f31"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "79f24fe483",
+   "path": "art/places/sets/ninja-test/boulder-e-m.png",
+   "sha256": "52920298d6485ff94703e05fc6251f9e2d7c9f8ad6e5ad4ffdffb5aeb2f7ec9e"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a866bab6c8",
+   "path": "art/places/sets/ninja-test/boulder-e.png",
+   "sha256": "41ac27a3db5602574408215e1017cbf82fe505c055fb925e4a6c79a810260e8f"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "27385836a1",
@@ -821,6 +863,13 @@
    "sha256": "ee34db55e6639c7281826235ebfad3be35ec2f0c10a8669b7b8ed5e8d57821a5"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "56b87138a9",
+   "path": "art/places/sets/ninja-test/rock-a-m.png",
+   "sha256": "1602c058b33dfd253b93e88f4237c83b43d2ba93e16ac1c8ae71f08525d84e57"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "284282d6cf",
@@ -847,6 +896,13 @@
    "id": "a09f9bfa92",
    "path": "art/places/sets/ninja-test/rock-b-m.png",
    "sha256": "5f3870b793645169a840e8531c0b91fc0c0373d85ba651b05f7914c10f9585cc"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "0f66add912",
+   "path": "art/places/sets/ninja-test/rock-b-m.png",
+   "sha256": "b066203617225925fe4f8d08a386f6fdf835805e53c741d840b8c9edda106126"
   },
   {
    "class": "cut-of-signed",
@@ -1092,6 +1148,20 @@
    "id": "18cb64bde6",
    "path": "art/places/sets/ninja-test/split-stone.png",
    "sha256": "95357317bd476f31381c0c4e96e3a48e477ad5d1f375aacf0383f4f3c44cf2d6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "c49180308b",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "25d4a1cee8281bf1511c6f78392a293cb32038fae06d668b5bc47c19c5f45ca3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-12",
+   "id": "a02bb61525",
+   "path": "art/places/sets/ninja-test/stump.png",
+   "sha256": "7a91dacc327317991601fa4fae08474dfbdbc5c1c15491823e761c4c2432380f"
   },
   {
    "class": "legacy-paint",
@@ -2655,6 +2725,13 @@
    "sha256": "cc1e8133214bea015a170abc6ce441274f2521992a2d1abc4f1363788c126688"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "70ed033473",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-1@16.png",
+   "sha256": "24124c9fe019b629bfe0533d0142a1b19cb8123914cf9d2f42e979c1f0b9f214"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "59e571a9f4",
@@ -2667,6 +2744,20 @@
    "id": "05e776b003",
    "path": "prototypes/exploration/art/stone/stone-tall-warm-1@48.png",
    "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "3cc07e6b91",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-1@48.png",
+   "sha256": "888850aca7fe0e96faacd0e3c0150fd483adf79f725d94d4bcb94b62d5c31855"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "208deb488c",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-2@16.png",
+   "sha256": "599604986a134c0fc2c155c97f30348e81334ca41372a64c49a0cbea95f86058"
   },
   {
    "class": "legacy-paint",
@@ -2683,6 +2774,20 @@
    "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "0fa3eb849a",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-2@48.png",
+   "sha256": "79645eb96b8d9ced95bd5ce95aa757927f07549a0a9d9c600821ed00237885ac"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "70ed033473",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-still@16.png",
+   "sha256": "24124c9fe019b629bfe0533d0142a1b19cb8123914cf9d2f42e979c1f0b9f214"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "9234e974cb",
@@ -2695,6 +2800,13 @@
    "id": "10a04d6036",
    "path": "prototypes/exploration/art/stone/stone-tall-warm-still@48.png",
    "sha256": "6b71190021185fae492879552465683f2a5546eb4ab7489b737351fcf61282bc"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "3cc07e6b91",
+   "path": "prototypes/exploration/art/stone/stone-tall-warm-still@48.png",
+   "sha256": "888850aca7fe0e96faacd0e3c0150fd483adf79f725d94d4bcb94b62d5c31855"
   },
   {
    "class": "paint",
@@ -2751,6 +2863,20 @@
    "id": "ac5a9cb79f",
    "path": "prototypes/places/veil/edge-veil-outer-night.png",
    "sha256": "90a7ea79a2f37f7bc1fd541172cc6033f6b395fafb39947b20685ebe4adad56e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "f2c078890a",
+   "path": "prototypes/places/veil/map-edge-veil-day.png",
+   "sha256": "b6f5ce5cadf750149f7ac73713bd0fd9c759227e8dd8f42c29ede58a16821de5"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-12",
+   "id": "3428a1dc28",
+   "path": "prototypes/places/veil/map-edge-veil-night.png",
+   "sha256": "a97c14f90a5e785daaf9093c35e1ea062a22452efc462350c3c14032f0100038"
   }
  ]
 }
