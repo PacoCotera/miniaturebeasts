@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPng, decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
 import { computeTables, family, STONE_TONES, TABLE_NAMES } from '../src/lighttables.mjs';
-import { deskArt, deskLayers } from './desk-art.mjs';
+import { deskArt, deskLayers, STONE_TABLES } from './desk-art.mjs';
 import { PALETTE } from './recolour.mjs';
 
 export const SOURCE_ALLOW = ['ninja-adventure', 'puny-world', 'happyland-wang'];
@@ -231,6 +231,13 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo, noTarget: (recipe.paletteWiden || []).map((c) => palIdx(c.replace('#', ''))).filter((k) => k > 0) });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
+  if (desk) {   // the stone states' named colour tables (desk-art.mjs STONE_TABLES): every target is a colour of the set
+    palette.stoneTables = {};
+    for (const [n, t] of Object.entries(STONE_TABLES)) {
+      for (const [, to] of t.rows) if (!sorted.includes(to.slice(1))) throw new Error(`stone table ${n}: ${to} is not a colour of the set`);
+      palette.stoneTables[n] = t;
+    }
+  }
 
   for (const [name, img] of images) files.set(name, Buffer.from(encodePng(img)));
 

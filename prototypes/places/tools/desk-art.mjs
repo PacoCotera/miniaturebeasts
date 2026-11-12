@@ -66,6 +66,17 @@ export const BIOME_ROCKS = { turf: ['rock-turf', 'rock-turf-m'] };
 // what blocks (owner notes 6 and 7; lead call 11-11 20:4x): every boulder (A, D, E and their mirrors) blocks, whatever its height, because a boulder looks solid; the split stone and the trunks block too. The small stones, the stump and the plants are stepped over or pushed through: no footprint.
 export const STEP_OVER = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-big', 'bush-round', 'bush-small', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'boulder-grey', 'boulder-brown', 'stump', 'stump-m'];
 export const STONE_DECALS = ['rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-turf', 'rock-turf-m'];
+// the stone states' colour tables (art director's ruling 2026-11-12; the colour moves of the signed stone files, from the job scripts remapA2b, remapA3, remapA3b, remapA3c of
+// art-jobs/2026-11-11-art-fix-map-pieces): [from, to] rows, every target a colour of the set palette. They go to palette.json as `stoneTables`; no file's pixels change.
+export const STONE_TABLES = {
+  'stone-tall-grey': { note: 'the plain tall stone onto the small stone\'s grey (remapA2b)', rows: [['#baa48e', '#beb2a2'], ['#a29686', '#8a937e'], ['#82796f', '#56634d'], ['#584b46', '#584b46']] },
+  'stone-charged': { note: 'charged small and tall stone: one step darker and cooler, the painted cracks kept (remapA2b)', rows: [['#56634d', '#6c7682'], ['#5e6e60', '#6c7682'], ['#51574f', '#5a6470'], ['#3e422f', '#5a6470'], ['#2a3834', '#3e444e'], ['#242626', '#3e444e'], ['#141b1b', '#242626'], ['#9cc4f4', '#9cc4f4'], ['#cdeee6', '#cdeee6']] },
+  'stone-charged-b': { note: 'charged small stone b, from the plain b; the cracks of small a\'s charged frame are copied by position where b has body (remapA3)', rows: [['#beb2a2', '#6c7682'], ['#c9b28c', '#6c7682'], ['#a29686', '#5a6470'], ['#82796f', '#3e444e'], ['#584b46', '#242626']] },
+  'stone-warm-1': { note: 'warm small stones a and b, first frame: the lit tone only (remapA3b)', rows: [['#beb2a2', '#d2b37d'], ['#c9b28c', '#d2b37d']] },
+  'stone-warm-2': { note: 'warm small stones a and b, second frame: the lit tone only (remapA3b)', rows: [['#beb2a2', '#e7cd86'], ['#c9b28c', '#e7cd86']] },
+  'stone-tall-warm-1': { note: 'warm tall stone, first frame: the upper 8 of 24 rows only (remapA3c)', rows: [['#beb2a2', '#d2b37d'], ['#8a937e', '#b08a63']] },
+  'stone-tall-warm-2': { note: 'warm tall stone, second frame: the upper 8 of 24 rows only (remapA3c)', rows: [['#beb2a2', '#e7cd86'], ['#8a937e', '#bd9460']] },
+};
 // Held back by the set's palette (208 colours, 171 pinned or in use, the pieces above take the last 37): shrub-thorn-b (+10 colours), clump-seed (+10), dry-rock (+5). Each is a signed piece with its own straw tones
 // outside the map palette; the art desk can snap them to it (or free colours) and they join by adding their names here.
 export const SUNLIT ='#82b266';   // the map palette's `grass`, one sunlit step above the grass base #74a65d: the grass tone patches
