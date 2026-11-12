@@ -893,6 +893,7 @@ function headBack() { if (canSend()) return '← End expedition'; const w = send
 // FX holds presentation-only events the renderer reads; rules write to it but never read it.
 const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
 let NOW = 0;
+const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
 function fxMsg(text, pri) { FX.notes.push({ text, pri: pri == null ? 2 : pri }); composeMsg(); }
 function composeMsg() {
@@ -1389,7 +1390,8 @@ function openRegion(slot) {
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
-function save() {
+function save(keepRipe) {
+  if (!keepRipe) flushRipe();
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
@@ -1926,6 +1928,7 @@ function ensureCharge(ex) {
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
 function startExpedition(type, cell) {
+  flushRipe();
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
   const sr = shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
@@ -3312,10 +3315,12 @@ function endExpedition(reason) {
   if (S.hist.length > 40) S.hist.shift();
   if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
-    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
+    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); FX.sealedAnim = true; save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
-  const turned = worldTurn(pending), worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
+  RIPE_LATER = []; let turned, ripeLater; try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+  const worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
+  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(() => { if (flushRipe()) save(); }, 250);   // after the sealed screen's first frames; any other save, or the next set-out, flushes it first
   { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
@@ -3325,7 +3330,7 @@ function endExpedition(reason) {
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
-  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save();   // a line from the walk does not linger over the sealed screen
+  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); FX.sealedAnim = true; save(true);   // a line from the walk does not linger over the sealed screen
 }
 // Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
 // left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
@@ -3421,6 +3426,12 @@ function worldTurn(pending) {
 // What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
 // lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
 // realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked.
+function flushRipe() { if (!RIPE_PENDING.length) return false; for (const ctr of RIPE_PENDING.splice(0)) ripenBloom(ctr); return true; }
+let RIPE_LATER = null;   // while an expedition ends: the bloom centres whose fruit trees ripen after the first sealed frame
+function ripenBloom(ctr) {   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
+  if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);
+    for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
+}
 function regionTurn(R, t, pending, farFromPlayer) {
   if (R.id !== S.here) throw new Error('regionTurn: region ' + R.id + ' is not mounted');
   const rng = makeRng(hash(R.seed, 'turn', t));
@@ -3455,8 +3466,7 @@ function regionTurn(R, t, pending, farFromPlayer) {
   if (far.length) { const ctr = rng.pick(far); bloom = ctr;
     for (let c = 0; c < MW * MH; c++) { if (cdist(c, ctr) > 3) continue; const key = String(c), cs = S.cells[key]; if (!cs) continue;
       for (const id in cs) if (cs[id].bare) { delete cs[id].bare; bushes++; } }
-    if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
-      for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); } }
+    if (RIPE_LATER) RIPE_LATER.push(ctr); else ripenBloom(ctr); }   // the fruit trees' part builds every place in reach: at an expedition's end it waits until the sealed screen is up (ripenBloom)
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
   const nPods = 2 + rng.int(2);
@@ -5376,6 +5386,7 @@ function drawPatchBody(t) {
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
   const tileFor = (i, sl) => ts === 48 ? tile48(lay, i, fr, sl) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
   RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
+  RT.gridScr = { x: W(0), y: H(0) };   // where the page's tile (0, 0) corner sits on the screen, from the camera: edge props follow the ground, not the sliding pawn
   RT.softScr = []; for (let i = 0; i < lay.w * lay.h; i++) { const tt = lay.tiles[i]; if (tt === T.WADE || tt === T.SCREE || tt === T.BANK) RT.softScr.push({ x: W((i % lay.w) * ts), y: H(((i / lay.w) | 0) * ts), w: ts, h: ts }); }   // the crossing tiles: the message box keeps off them
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
@@ -5700,8 +5711,8 @@ function turnCanvas(cv, q) {   // a canvas turned a quarter clockwise (q 1) or c
   oc.putImageData(id, 0, 0); k[q] = out; TURNED.set(cv, k); return out;
 }
 function drawWayPaths() {
-  const ex = S.exp, P = ex && ex.patch, pl = RT.plScr; if (!P || !pl || !RT.ts) return;
-  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + (tx - P.x - .5) * ts, sy = ty => pl.y + (ty - P.y - .5) * ts;
+  const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
+  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + tx * ts, sy = ty => pl.y + ty * ts;
   clipView();
   for (const e of edgeSides(lay, P)) {
     if (e.k.kind !== 'open' || stepCell(lay.cell, SIDE_DIR[e.o.side]) < 0) continue;   // a way through only
@@ -5715,8 +5726,8 @@ function drawWayPaths() {
   g.restore();
 }
 function drawEdgeLook(t) {
-  const ex = S.exp, P = ex && ex.patch, pl = RT.plScr; if (!P || !pl || !RT.ts) return;
-  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + (tx - P.x - .5) * ts, sy = ty => pl.y + (ty - P.y - .5) * ts;   // a page tile edge on the screen (pl: the explorer's tile centre)
+  const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
+  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + tx * ts, sy = ty => pl.y + ty * ts;   // a page tile edge on the screen (pl: the page's tile-0 corner, from the camera)
   for (const e of edgeSides(lay, P)) {
     const dir = SIDE_DIR[e.o.side], vertical = e.o.side === 'W' || e.o.side === 'E';
     if (e.k.kind === 'range') {   // the dashed reach line: LINE_DEPTH tiles in from the edge, along the whole side
@@ -6817,6 +6828,7 @@ function drawSealed(t) {
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
+  if (FX.sealedAnim) { FX.sealedAnim = false; FX.transAt = NOW; }   // the beat counts from the first frame this screen is drawn, so a slow press cannot use it up unseen
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
   // an empty walk still ends with the beat: an empty crate slides into the next place in the bay (it is never added to the bay)
   const none = (r.empty || r.waited) && !r.sealed && S.bay.length < BAY ? { n: r.n, e: 0, d: 0, s: 0, pods: [], none: true } : null;
@@ -7007,7 +7019,7 @@ function renderFrame(t) {
   if (RT.making) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
-  trackDock(); RT.plScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
+  trackDock(); RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   teachFill();
   switch (S.phase) {
     case 'setup': drawSetup(t); break;

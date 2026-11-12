@@ -7,7 +7,7 @@
  "dock": 0,
  "stopMid": false,
  "presses": 4277,
- "digest": "da9da441c5e0fd3cea02db2b434921cec5c9028e954389d31ba9c2f2669aab03",
+ "digest": "de1a74406503edde9de2ec76a05c5688f41270bb6a52f624499225bfcf29cc40",
  "steps": [
   {
    "n": 1,
@@ -49,105 +49,105 @@
    "presses": 1340,
    "turn": 6,
    "bay": 1,
-   "d": "9b1e26e4bc99c1a9"
+   "d": "3af6a8d87592a6d2"
   },
   {
    "n": 7,
    "presses": 1517,
    "turn": 7,
    "bay": 2,
-   "d": "c33daa0dcf2d188f"
+   "d": "85a7a3e7923b56af"
   },
   {
    "n": 8,
    "presses": 1742,
    "turn": 8,
    "bay": 3,
-   "d": "111fa8c58095f583"
+   "d": "46c29d6f82a2584c"
   },
   {
    "n": 9,
    "presses": 2054,
    "turn": 9,
    "bay": 3,
-   "d": "859468482f221eaf"
+   "d": "d276b3a2d7c71db7"
   },
   {
    "n": 10,
    "presses": 2235,
    "turn": 10,
    "bay": 3,
-   "d": "dd1c72be0d7ffa3f"
+   "d": "0112bcb4882786b9"
   },
   {
    "n": 11,
    "presses": 2257,
    "turn": 11,
    "bay": 3,
-   "d": "cbbc84ab7bc98fb8"
+   "d": "cbfefa6631d37f65"
   },
   {
    "n": 12,
    "presses": 2541,
    "turn": 12,
    "bay": 0,
-   "d": "7aa9afce3b0cd1ea"
+   "d": "fc1c845b77f1b0c7"
   },
   {
    "n": 13,
    "presses": 2883,
    "turn": 13,
    "bay": 0,
-   "d": "8f28bcf3dfacc69e"
+   "d": "535baaab0e7921ce"
   },
   {
    "n": 14,
    "presses": 3162,
    "turn": 14,
    "bay": 0,
-   "d": "8a5cd782c440616f"
+   "d": "cca343b300f08095"
   },
   {
    "n": 15,
    "presses": 3211,
    "turn": 15,
    "bay": 0,
-   "d": "72730b1cd9d284e1"
+   "d": "b92dbc046b0d0824"
   },
   {
    "n": 16,
    "presses": 3548,
    "turn": 16,
    "bay": 0,
-   "d": "99cdc924fc0f52b9"
+   "d": "c306b6c231a4bb2c"
   },
   {
    "n": 17,
    "presses": 3686,
    "turn": 17,
    "bay": 0,
-   "d": "b3956020ffcd8b1a"
+   "d": "a1911415c9698097"
   },
   {
    "n": 18,
    "presses": 3933,
    "turn": 18,
    "bay": 0,
-   "d": "dad3c1a8ec85b5e4"
+   "d": "8463ba0de3d888cd"
   },
   {
    "n": 19,
    "presses": 4218,
    "turn": 19,
    "bay": 1,
-   "d": "b7d63c3ca32244d4"
+   "d": "24757d4a550aa69a"
   },
   {
    "n": 20,
    "presses": 4277,
    "turn": 20,
    "bay": 1,
-   "d": "da9da441c5e0fd3c"
+   "d": "de1a74406503edde"
   }
  ],
  "summary": {
