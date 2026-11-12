@@ -85,6 +85,24 @@ test("walking off a region side into an open neighbour goes on in the same exped
   assert.equal(snap(), mibis, "the place keeps its wild mibis at the same spots");
 });
 
+// The coast: from the beach or the shallows a step into the deep water is refused, row after row; the explorer never stands in water.
+test("on the coast a step from the beach or the shallows into the deep water is refused: every row ends on the shore, never in the water", () => {
+  const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13); TEST.calm = true; S.tier = 2;`);
+  const id = p.run(`openRegion([0, 2])`); p.run(`mountRegion(${JSON.stringify(id)})`);
+  p.run(`S.revealed.fill(1); startExpedition('weather', 1); S.exp.range = 12; S.exp.reach = reachCells(1, 12); S.exp.pos = 1; enterPatch(); if (RT.view) endView();`);
+  const r = p.run(`(() => { const lay = layout('1'), W = lay.w, P = S.exp.patch, wet = t => t === T.WATER || t === T.DEEP || t === T.ISLE, out = { rows: 0, wetStood: 0, refused: 0 };
+    for (let y = 2; y < lay.h - 2; y++) {
+      let x0 = -1; for (let x = 12; x >= 5; x--) if (!T_BLOCK[lay.tiles[y * W + x]] && !wet(lay.tiles[y * W + x]) && lay.tiles[y * W + x - 1] !== undefined && !wet(lay.tiles[y * W + x])) { x0 = x; break; }
+      if (x0 < 0) continue;
+      P.x = x0; P.y = y; P.dir = 'left'; out.rows++;
+      for (let i = 0; i < 20; i++) { FX.lockUntil = 0; const px = P.x; patchStep('left', 'creep'); if (wet(lay.tiles[S.exp.patch.y * W + S.exp.patch.x])) out.wetStood++; if (S.exp.patch.x === px && i > 0) { if (wet(lay.tiles[y * W + px - 1])) out.refused++; break; } }
+    }
+    return out; })()`);
+  assert.ok(r.rows > 10, "rows walked: " + r.rows);
+  assert.equal(r.wetStood, 0, "the explorer never stands in water");
+  assert.ok(r.refused > 5, "rows that ended against the water: " + r.refused);
+});
+
 // Owner 2026-11-11 note 18: every zoom is drawn from the same land. The map between expeditions (and so the band inset) is the overview raster shrunk, once the raster is there; the edge marks follow straight cell borders then.
 test("the map between expeditions is painted from the overview raster once it is there, the cell labels until then", async () => {
   const { presetOverview, overviewOf, OV, CW, CH } = await import("../src/gen7/place.mjs");
