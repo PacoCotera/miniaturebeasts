@@ -159,8 +159,11 @@ jobs:
           tar -C _site -czf "sandbox-${GITHUB_SHA:0:7}.tar.gz" .
           sha256sum "sandbox-${GITHUB_SHA:0:7}.tar.gz" > "sandbox-${GITHUB_SHA:0:7}.sha256"
           tag="sandbox-${GITHUB_SHA:0:7}"
-          gh release create "$tag" --target "$GITHUB_SHA" --title "Sandbox $tag" \
-            --notes "Tested site + prototypes at $GITHUB_SHA. The sandbox server installs the newest sandbox-* release." \
+          # The release list is the changelog: title and notes come from the merged release pull request behind this commit.
+          # A commit with no pull request is titled "Update <date>". The tag stays sandbox-<sha>; the sandbox server installs the newest sandbox-* tag.
+          python3 -I .github/scripts/release-notes.py "$GITHUB_SHA" "$RUNNER_TEMP/release-title.txt" "$RUNNER_TEMP/release-notes.md" --repo "$GITHUB_REPOSITORY"
+          gh release create "$tag" --target "$GITHUB_SHA" --title "$(cat "$RUNNER_TEMP/release-title.txt")" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
             "sandbox-${GITHUB_SHA:0:7}.tar.gz" "sandbox-${GITHUB_SHA:0:7}.sha256"
       - name: Keep only the five newest sandbox releases
         # Every push to main adds a bundle of 100+ MB; nothing ever removed them.
