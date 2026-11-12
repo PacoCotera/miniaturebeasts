@@ -208,7 +208,7 @@ test("7b. realm version 2: ring 1 is as in version 1; every kind turns up; a slo
   }
   assert.equal(R.biomeVersion({}), 1); assert.equal(R.biomeVersion({ biomeV: 2 }), 2); assert.equal(R.biomeVersion(null), 1);
   assert.deepEqual(R.BIOME_NAME, { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" });
-  assert.equal(R.realmStatus({ v: 10, biomeV: 3, regions: [{ map: {}, gen: 5 }] }), "newer");
+  assert.equal(R.realmStatus({ v: 10, biomeV: 4, regions: [{ map: {}, gen: 5 }] }), "newer");
 });
 
 test("7b2. version 2 draws the group first: over seeds 1-200, rings 2-4 are about half Green, Highlands and Waters each at least 20 %, no ring 60 % Green", () => {
@@ -384,13 +384,31 @@ test("13. the page imports regions.mjs (the page and the Station took v9 in one 
   assert.ok(/from "\.\/src\/regions\.mjs"/.test(readFileSync(new URL("../index.html", import.meta.url), "utf8")));
 });
 
-test("0. a new realm is written as version 2 (biomeV 2); a loaded old save stays without one", () => {
+test("0. a new realm is written as version 3 (biomeV 3); a loaded old save stays without one", () => {
   const p = makePage({ console: "silent", canvas: true, date: NOW });
   p.run("newRealm(5)");
-  assert.equal(p.run("S.biomeV"), 2, "newRealm writes biomeV 2");
-  assert.equal(R.REALM_BIOME_V, 2);
-  assert.equal(R.biomeVersion(p.S), 2);
-  assert.equal(JSON.parse(p.store[p.KEY]).biomeV, 2, "and it is on disk");
+  assert.equal(p.run("S.biomeV"), 3, "newRealm writes biomeV 3");
+  assert.equal(R.REALM_BIOME_V, 3);
+  assert.equal(R.biomeVersion(p.S), 3);
+  assert.equal(JSON.parse(p.store[p.KEY]).biomeV, 3, "and it is on disk");
   const q = loaded("played-g1");   // a played save of the fixtures: it has no biomeV
   assert.equal(q.run("S.biomeV"), undefined);
+});
+
+test("0b. a biomeV 2 realm's life is today's, byte for byte; version 3 adds the Loika last on its starter grounds and moves no other kind", () => {
+  for (const biome of R.BIOMES) {
+    const today = R.BIOME_KINDS_V2[biome].map(id => { const sp = R.SP_ORDER.indexOf(id), k = R.KIND_INFO[sp]; return { id, sp, hab: k.hab, ...(sp === 1 ? { nest: true } : {}) }; });
+    assert.deepEqual(R.regionKinds({ n: 2, biome }, 2), today, biome + ": version 2 reads the frozen lists, the Loika on the trotter's grounds");
+    assert.deepEqual(R.regionKinds({ n: 2, biome }), today, biome + ": no version reads the same");
+    const v3 = R.regionKinds({ n: 2, biome }, 3), loika = v3[v3.length - 1];
+    assert.equal(loika.id, "S01", biome + ": the Loika is last"); assert.equal(loika.hab, W.ROSTER[0].hab);
+    assert.deepEqual(v3.filter(k => k.id !== "S01"), today.filter(k => k.id !== "S01"), biome + ": every other kind as it was");
+    assert.deepEqual(R.regionKinds({ n: 1, biome }, 3), R.regionKinds({ n: 1, biome }, 2), "the home region is unchanged");
+  }
+  for (const biome of ["tarns", "mixed", "fells"]) for (const seed of [7, 1234]) {
+    const G = W.genWorld5(seed, biome), a = W.genLife5(G, seed, R.regionKinds({ n: 2, biome }, 2)), b = W.genLife5(G, seed, R.regionKinds({ n: 2, biome }, 3));
+    const noLoika = L => JSON.stringify(L.cr.filter(c => c.sp !== 0));
+    assert.equal(noLoika(a), noLoika(b), `${biome} ${seed}: the other kinds' creatures keep their bytes`);
+    assert.ok(b.cr.some(c => c.sp === 0), `${biome} ${seed}: Loikas live in it`);
+  }
 });
