@@ -86,7 +86,8 @@ def main():
     sha, title_out, notes_out = argv
     note = (
         f"Tested site + prototypes at {sha}. "
-        "The sandbox server installs the newest sandbox-* release."
+        "The sandbox server installs the newest sandbox-* release. "
+        f"Older releases: https://github.com/{repo}/blob/main/CHANGELOG.md"
     )
     if pr_json:
         pr = json.load(open(pr_json))
