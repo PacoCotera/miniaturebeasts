@@ -295,13 +295,26 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
       if (!goes(sideKind(G, a, dx ? 'right' : 'down')) && !goes(sideKind(G, b, dx ? 'left' : 'up'))) continue;   // open from either cell's side (a ford is stepped into, not out of)
       const len = dx ? CH : CW, base = dx ? cy * CH : cx * CW, line = dx ? nx * CW : ny * CH;   // the edge runs along `len` tiles from `base`; the first tile across it is `line`
       const walkPair = k => dx ? walkAt(line - 1, base + k) && walkAt(line, base + k) : walkAt(base + k, line - 1) && walkAt(base + k, line);
-      let run = 0, has = false; for (let k = 0; k < len && !has; k++) { run = walkPair(k) ? run + 1 : 0; has = run >= 2; }
-      if (has) continue;
+      let run = 0, has = false, runAt = 0; for (let k = 0; k < len && !has; k++) { run = walkPair(k) ? run + 1 : 0; has = run >= 2; if (has) runAt = k - 1; }   // runAt: where the first run of two begins
+      const ponds = [[a, cx, cy, -1], [b, nx, ny, 0]].filter(p => G.land[p[0]] === L.POND);   // the map walks a pond cell, so the water of the cell is crossed from this edge's port to the cell's hub
+      if (has && !ponds.length) continue;
       const off = portOffset(S.seed, G.slot[0], G.slot[1], edgeOfStep(a, b));
-      for (const side of [-1, 0]) for (let d = 0; d < GATE_DEPTH; d++) {   // side -1: back into the cell A; 0: on into the cell B
+      if (!has) for (const side of [-1, 0]) for (let d = 0; d < GATE_DEPTH; d++) {   // side -1: back into the cell A; 0: on into the cell B
         const pos = side === -1 ? line - 1 - d : line + d, rows = [base + off, base + off + 1];
         if (rows.every(r => (dx ? walkAt(pos, r) : walkAt(r, pos)))) break;
         for (const r of rows) dx ? put(pos, r) : put(r, pos);
+      }
+      for (const [pc, qx, qy, side] of ponds) {   // the causeway round the pond: from this edge's port a spur 4 tiles in, then a strip 2 wide along the cell's rim to the north-west corner; the cell's middle (the pond) is never cut
+        const opens = [['right', 'left', 1, 0], ['left', 'right', -1, 0], ['down', 'up', 0, 1], ['up', 'down', 0, -1]].filter(([d, o, ex, ey]) => {
+          const mx = qx + ex, my = qy + ey; if (cellRegion(mx, my) !== G) return false;
+          const m = (my % MH) * MW + (mx % MW); return goes(sideKind(G, pc, d)) || goes(sideKind(G, m, o)); }).length;
+        if (opens < 2) continue;
+        const ox = qx * CW, oy = qy * CH, p0 = base + (has ? runAt : off), cut = (x0, x1, y0, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (!walkAt(x, y)) put(x, y); };
+        cut(ox + 2, ox + CW - 3, oy + 2, oy + 3); cut(ox + 2, ox + 3, oy + 2, oy + CH - 3);   // the north and west strips: the spine every port joins
+        if (dx && side === -1) { cut(ox + CW - 4, ox + CW - 1, p0, p0 + 1); cut(ox + CW - 4, ox + CW - 3, oy + 2, p0 + 1); }   // the east edge
+        else if (dx) cut(ox, ox + 3, p0, p0 + 1);   // the west edge
+        else if (side === -1) { cut(p0, p0 + 1, oy + CH - 4, oy + CH - 1); cut(ox + 2, p0 + 1, oy + CH - 4, oy + CH - 3); }   // the south edge
+        else cut(p0, p0 + 1, oy, oy + 3);   // the north edge
       }
     }
   }
