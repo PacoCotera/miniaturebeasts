@@ -7,7 +7,7 @@ import { regionKinds, SP_ORDER, STARTERS, BIOMES, BIOME_KINDS } from "../src/reg
 
 const SEEDS = Array.from({ length: 50 }, (_, i) => 1000 + i * 7919);
 const worlds = new Map(), worldOf = (seed, biome) => { const k = seed + biome; if (!worlds.has(k)) worlds.set(k, genWorld5(seed, biome)); return worlds.get(k); };
-const lifeOf = (seed, biome, n) => { const kinds = regionKinds({ n, biome }), G = worldOf(seed, biome); return { kinds, G, life: genLife(G, seed, kinds) }; };
+const lifeOf = (seed, biome, n) => { const kinds = regionKinds({ n, biome }, 3), G = worldOf(seed, biome); return { kinds, G, life: genLife(G, seed, kinds) }; };
 
 test("generator 5's ground is generator 4's, tagged gen 5; genWorld(…, 5) gives it", () => {
   const a = genWorld(77, 5, "woods"), b = genWorld(77, 4, "woods");
@@ -18,7 +18,7 @@ test("generator 5's ground is generator 4's, tagged gen 5; genWorld(…, 5) give
 test("for 50 seeds and all nine lands: a region other than the home holds only its land's kinds, the home region holds only the three starters", () => {
   for (const biome of BIOMES) for (const seed of SEEDS) {
     const away = lifeOf(seed, biome, 2), land = new Set(BIOME_KINDS[biome].map((id) => SP_ORDER.indexOf(id)));
-    assert.ok(land.size >= 1 && land.size <= 3, `${biome} has one to three kinds`);
+    assert.ok(land.size >= 2 && land.size <= 4 && land.has(0), `${biome} has one to three kinds of its own and the Loika (every land)`);
     for (const w of away.life.cr) assert.ok(land.has(w.sp), `${biome} seed ${seed}: sp ${w.sp} is not a kind of the land`);
     for (const p of away.life.pods) assert.ok(land.has(p.sp), `${biome} seed ${seed}: a pod of sp ${p.sp}`);
     const home = lifeOf(seed, biome, 1);
@@ -42,7 +42,7 @@ test("the same seed, land and region number give the same life, byte for byte", 
   for (const [seed, biome, n] of [[11, "mixed", 1], [4242, "tarns", 3], [90210, "meres", 2]]) {
     const a = lifeOf(seed, biome, n).life, b = { ...lifeOf(seed, biome, n) }.life;
     assert.equal(JSON.stringify(a), JSON.stringify(b));
-    assert.equal(JSON.stringify(genLife(genWorld5(seed, biome), seed, regionKinds({ n, biome }))), JSON.stringify(a));
+    assert.equal(JSON.stringify(genLife(genWorld5(seed, biome), seed, regionKinds({ n, biome }, 3))), JSON.stringify(a));
   }
 });
 

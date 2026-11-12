@@ -18,28 +18,31 @@ export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", m
 // The kinds that spawn on each land, from the language registry (a land has one to three kinds; a kind lives on one land; the registry's land ids
 // are these biome ids). The realm's species draw reads this once the roster is the language's; the generators below still draw today's three species by tile land.
 export const BIOME_KINDS = Object.fromEntries(BIOMES.map(b => [b, LANGUAGE.kinds.filter(k => !k.template && kindLands(LANGUAGE, k).includes(b)).map(k => k.id)]));   // a kind in every land (the Loika) is in each list
-// Today's lists, frozen: what a realm of kind version 2 draws from (the Loika in the Woods only). regionKinds reads these until the walk side takes BIOME_KINDS.
+// Today's lists, frozen: what a realm of kind version 2 draws from (the Loika in the Woods only). regionKinds reads these for any realm below kind version 3.
 export const BIOME_KINDS_V2 = Object.freeze({ mixed: ["S08", "S12", "S17"], woods: ["S01", "S05"], fells: ["S03", "S07"], marsh: ["S14"], downs: ["S02", "S15", "S18"], thickets: ["S06", "S11"], tallwood: ["S04", "S09", "S20"], tarns: ["S13", "S16"], meres: ["S10", "S19"] });
 // The game's species list, by place (the `sp` of a creature, a pod and a mibi): the three starters keep 0 to 2, the other seventeen are appended (the Station's SP_INDEX is the same list).
 export const SP_ORDER = ["S01", "S03", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"];
 // What the Companion page makes its SPECIES rows from, one per place of SP_ORDER: the frame's name and plural (a plural is the name itself: the frames give no other), the family and its ground.
 export const KIND_INFO = SP_ORDER.map(id => { const k = LANGUAGE.kinds.find(x => x.id === id); return { id, name: k.name, plural: k.name, family: k.family, hab: FAMILY_GROUND[k.family] }; });
+// a land's kinds for a realm of kind version v (the Loika last from version 3)
+const landKinds = (biome, v) => v >= 3 ? [...(BIOME_KINDS[biome] ?? []).filter(id => id !== "S01"), ...((BIOME_KINDS[biome] ?? []).includes("S01") ? ["S01"] : [])] : BIOME_KINDS_V2[biome] ?? [];
 export const STARTERS =["S01", "S03", "S02"];   // the home region's kinds (Loika calms, Tuikis digs, Untuva sniffs out buried pods), whatever its land
 // The kinds a region spawns, as genLife5 reads them: the home region (region 1, the centre slot) keeps the three starters on their present grounds (ROSTER);
 // every other region spawns its land's kinds on their families' grounds (FAMILY_GROUND), the registry's order.
-export function regionKinds(region) {
-  const home = region.n === 1;
-  const ids = home ? STARTERS : BIOME_KINDS_V2[region.biome] ?? [];   // W2 makes this version-aware and reads BIOME_KINDS for the new realms
+// v is the realm's kind version: 3 and later read BIOME_KINDS with the Loika (a kind of every land) last, on its starter grounds, so every other
+// kind's herds, creatures and pods stay as they were; 2 or none reads the frozen BIOME_KINDS_V2 (the Loika in the Woods only).
+export function regionKinds(region, v) {
+  const home = region.n === 1, ids = home ? STARTERS : landKinds(region.biome, v);
   return ids.map(id => {
     const sp = SP_ORDER.indexOf(id);
-    if (home && sp < 3) { const r = ROSTER[sp]; return { id, sp, hab: r.hab, ...(r.nest ? { nest: true } : {}) }; }
+    if ((home && sp < 3) || (!home && sp === 0 && v >= 3)) { const r = ROSTER[sp]; return { id, sp, hab: r.hab, ...(r.nest ? { nest: true } : {}) }; }
     const k = LANGUAGE.kinds.find(x => x.id === id);
     return { id, sp, hab: FAMILY_GROUND[k.family], ...(sp === 1 ? { nest: true } : {}) };   // Tuikis (sp 1) keeps its nest wherever it spawns
   });
 }
-// A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity. It is written on a new realm; a save without
+// A realm's kind version: 1 draws its slots from the four older kinds, 2 from all nine by rarity, 3 adds the Loika to every land. It is written on a new realm; a save without
 // it is version 1 and never changes, so its unopened slots keep their words.
-export const REALM_BIOME_V = 2;
+export const REALM_BIOME_V = 3;
 export const biomeVersion = realm => realm && realm.biomeV != null ? realm.biomeV : 1;
 // Common 6: Meadows, Woods, Hills, Cliffs, Marsh. Uncommon 3: Thickets, Tallwood, Highpools, Lakes.
 export const BIOME_WEIGHT = { mixed: 6, woods: 6, downs: 6, fells: 6, marsh: 6, thickets: 3, tallwood: 3, tarns: 3, meres: 3 };

@@ -17,7 +17,7 @@ function realm3(turn, seen2, seen3 = turn) {
   const p = makePage({ console: "silent" });
   p.run(`newWorld(7); S.turn = ${turn}; S.expN = ${turn}; S.regions[0].turnSeen = ${turn}`);
   for (const [n, seen] of [[2, seen2], [3, seen3]]) {
-    const seed = R.regionSeed(p.run("S.seed"), n), G = W.genWorld(seed, 5, "mixed"), map = R.blankMap(), life = W.genLife(G, seed, R.regionKinds({ n, biome: "mixed" }));   // a Meadows region of generator 5: Rupar, Peplos, Wickle
+    const seed = R.regionSeed(p.run("S.seed"), n), G = W.genWorld(seed, 5, "mixed"), map = R.blankMap(), life = W.genLife(G, seed, R.regionKinds({ n, biome: "mixed" }, 3));   // a Meadows region of generator 5 in a version 3 realm: Rupar, Peplos, Wickle and the Loika
     map.cr = life.cr; map.pods = life.pods;
     p.run(`S.regions.push(${JSON.stringify(R.regionRecord({ n, kind: "home", biome: "mixed", slot: [2 + n, 1], seed, gen: 5, opened: 1, openedTurn: 0, turnSeen: seen, map }))})`);
   }
