@@ -492,7 +492,7 @@ const layoutCache = new Map();
 // Generator 7's tile set and pieces (loaded once at boot; the tests give them at once as window.__places).
 // PL.ctx is what a cell is baked with in the page (src/bake7.mjs: the tile set, the terrain table, the dual grid's layer descriptors); PL.View draws one baked cell (a page without it draws the layout's tiles).
 // A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
-const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), haze: null };
+const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), veil: null, veilMod: null };
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
 async function loadPlaces() {
   try {
@@ -505,21 +505,22 @@ async function loadPlaces() {
     PL.ctx = { ts: PL.ts, terrains: PL.terrains, desc: PL.desc };
     PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
-    await loadHazeKit(base, bytes);
+    await loadVeilKit(base);
     PL.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
 }
-// The art desk's range haze (places/haze/, signed in mibi-art 9fa531bba; SOURCE.md there): nine wash sheets, the 8-colour ramp and the 21 remap tables. The kit is built once and
-// handed to every place view (PL.haze); a view without it draws no haze.
-async function loadHazeKit(base, bytes) {
+// The art desk's edge veil (places/veil/, SOURCE.md there): the strip's two drift layers, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
+// a view without it draws no veil.
+async function loadVeilKit(base) {
   if (typeof Image === 'undefined') return;
   try {
-    const hm = await import(base + 'src/haze.mjs'), dir = base + 'haze/', files = {};
-    await Promise.all(hm.hazeFileNames().map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height), cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = dir + n + '.png'; })));
-    const json = async n => JSON.parse(new TextDecoder().decode(await bytes(dir + n)));
-    PL.haze = hm.hazeKit(files, await json('haze-remap.json'), await json('haze-ramp.json'), PL.ts.palette.length, PL.ts.palette);
-  } catch (e) { console.warn('the range haze did not load', e); }
+    const vm = await import(base + 'src/veil.mjs'), dir = base + 'veil/', kit = { day: {}, night: {} };
+    await Promise.all(['day', 'night'].flatMap(t => vm.VEIL_KINDS.map(k => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); kit[t][k] = c; res(); };
+      im.onerror = () => rej(new Error('missing ' + k)); im.src = dir + vm.veilFileName(k, t === 'night') + '.png'; }))));
+    PL.mapVeil = {}; await Promise.all(['day', 'night'].map(t => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); PL.mapVeil[t] = c; res(); };
+      im.onerror = () => rej(new Error('missing the map veil')); im.src = dir + 'map-edge-veil-' + t + '.png'; })));
+    PL.veil = kit; PL.veilMod = vm;
+  } catch (e) { console.warn('the edge veil did not load', e); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
@@ -652,7 +653,7 @@ function bakedView(lay) {
   if (!lay || !lay.baked) return null;
   let v = PL.views.get(lay.baked.id);
   if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
-  else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, haze: PL.haze }); PL.views.set(lay.baked.id, v);
+  else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, veil: PL.veil }); PL.views.set(lay.baked.id, v);
     while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
   return v || null;
 }
@@ -726,17 +727,16 @@ function warmLightLevel(lay) {   // the one clear-light level the whole place ta
   if (ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1); if (gap >= 0 && gap < 3) return null; }
   return overcast ? 1 : 0;
 }
-// The ground window of the walking view's first frame, drawn ahead (the window image with the range haze and the light is the biggest piece of that frame): the camera the entry gives, the veil walkLift
-// will leave there, the clear light, the same haze and patches as drawPatchBody; the view keeps the picture (drawGround's `last`), so a first frame under the same key only blits it. A guess that misses costs only this step.
+// The ground window of the walking view's first frame, drawn ahead (the window image with the light is the biggest piece of that frame): the camera the entry gives, the veil walkLift
+// will leave there, the clear light, the same patches as drawPatchBody; the view keeps the picture (drawGround's `last`), so a first frame under the same key only blits it. A guess that misses costs only this step.
 function primeWindow(lay, bk, key, dir) {
-  if (!lay.lines) applyLines(lay);   // the range lines (the haze and the blocks) as enterPatch will make them
+  if (!lay.lines) applyLines(lay);   // the range lines (the veil and the blocks) as enterPatch will make them
   const lvl = warmLightLevel(lay); if (lvl == null) return false;
   const e = entryPoint(lay, key, dir, true); if (!e) return false;
   const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); liftFlood(lay, rows, e.x, e.y);
   const vb = veilable(lay), un = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || ((rows[y] >>> x) & 1) === 1 || !vb[y * lay.w + x];
   const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
   bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
-  hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id);
   const g = PL.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
   bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
   return true;
@@ -2281,10 +2281,10 @@ const LINE_DEPTH = 3, SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' };
 function openingKind(lay, o) {
   const why = crossReason(lay.cell, SIDE_DIR[o.side]);
   if (!why) return { kind: 'open', text: '' };
-  if (why === RANGE_TEXT() || why === MORE_LAND || why.endsWith(' · start an expedition there')) return { kind: 'range', text: why };   // a region side wears the reach look: range haze and the dashed reach line
+  if (why === RANGE_TEXT() || why === MORE_LAND || why.endsWith(' · start an expedition there')) return { kind: 'range', text: why };   // a region side wears the reach look: the edge veil and the dashed reach line
   return why === WADE_BUMP || why === SCREE_BUMP || why === BANK_BUMP ? { kind: 'gate', text: why } : { kind: 'closed', text: why };
 }
-// The cells of an opening past the line: LINE_DEPTH deep along its side, across its gap (page cells); a range side is hazed and blocked along the whole side (whole).
+// The cells of an opening past the line: LINE_DEPTH deep along its side, across its gap (page cells); a range side is veiled and blocked along the whole side (whole).
 function lineCells(lay, o, whole) {
   const { w, h } = lay.baked, out = [], k0 = whole ? 0 : o.from, k1 = whole ? (o.side === 'N' || o.side === 'S' ? w : h) - 1 : o.to;
   for (let d = 0; d < LINE_DEPTH; d++) for (let k = k0; k <= k1; k++) {
@@ -2309,9 +2309,8 @@ function applyLines(lay) {
   if (held.length) { lay.lineFeats = held; lay.feats = lay.feats.filter(f => !held.includes(f)); }
 }
 const LINE_FEATS = 'kqujbs';   // the stones, strike marks, cups, bushes, beacon and slabs of a place: the things a press can act on
-// The range haze (the art desk's, places/haze/): past the Probe's range the land washes out into a pale mist along the whole side, LINE_DEPTH cells deep, densest at the edge (level 3 - d).
-// The place view takes the level grid (BakedView.setHaze) and draws it through the desk's remap tables. It stands still and never moves toward the player. When the reach grows it draws back
-// 3, 2, 1, gone at HAZE_STEP_MS a step before its cells open; when it shrinks it lays the same way; reduced motion is a cut.
+// The edge veil's depth on a range side (the art desk's veil, places/veil/): past the Probe's range the whole side, LINE_DEPTH cells deep, is veiled. It stands still and never moves toward the player.
+// When the reach grows the side counts as veiled while its depth is 3, 2, 1 (HAZE_STEP_MS a step) and is gone before its cells open; when it shrinks it lays the same way; reduced motion is a cut.
 const HAZE_STEP_MS = 200;
 function hazeDepth(lay, side) {
   const a = lay.hazeAnim && lay.hazeAnim[side]; if (!a) return LINE_DEPTH;
@@ -2330,15 +2329,27 @@ function hazeSync(lay) {
   }
   if (redo) applyLines(lay);
 }
-function hazeLevels(lay) {
-  const ops = lay.lines ? lay.lines.ops.filter(o => o.kind === 'range') : []; if (!ops.length) return null;
-  const { w, h } = lay.baked, depths = ops.map(o => hazeDepth(lay, o.side)), id = ops.map((o, i) => o.side + depths[i]).join('');
-  if (lay.hazeLv && lay.hazeLv.id === id) return lay.hazeLv;
-  const lv = new Uint8Array(w * h);
-  ops.forEach((o, i) => { const hz = o.side === 'N' || o.side === 'S';
-    for (let d = 0; d < depths[i]; d++) for (let k = 0; k < (hz ? w : h); k++) { const x = o.side === 'W' ? d : o.side === 'E' ? w - 1 - d : k, y = o.side === 'N' ? d : o.side === 'S' ? h - 1 - d : k;
-      lv[y * w + x] = Math.max(lv[y * w + x], LINE_DEPTH - d); } });
-  return (lay.hazeLv = { id, lv });
+// The edge veil (places/src/veil.mjs): over the coast's deep water and along each region side past the Probe's reach (drawn back the way the old wash was). The veiled land past a corner decides the
+// corner: both sides veiled, an outer corner; neither, but the land past it veiled, an inner corner; a band that meets open land ends in a taper. Off the map the band runs on.
+function diagVeiled(cell) {
+  const out = {}, p = cxy(cell);
+  for (const [k, dx, dy] of [['NW', -1, -1], ['NE', 1, -1], ['SW', -1, 1], ['SE', 1, 1]]) {
+    const X = p.x + dx, Y = p.y + dy;
+    out[k] = X < 0 || Y < 0 || X >= MW || Y >= MH ? null : !!(G.coast && G.coast[Y * MW + X]) || !inRange(Y * MW + X);
+  }
+  return out;
+}
+function veilPlanOf(lay) {
+  if (!lay.baked || lay.cave || !PL.veilMod) return null;
+  const cell = lay.cell, sides = { N: false, E: false, S: false, W: false };
+  if (!lay.veilCoast) lay.veilCoast = Object.fromEntries(['N', 'E', 'S', 'W'].map(side => [side, crossReason(cell, SIDE_DIR[side]) === SHORE_TEXT]));
+  const hz = lay.lines ? lay.lines.ops.filter(o => o.kind === 'range' && hazeDepth(lay, o.side) > 0).map(o => o.side) : [];
+  for (const side of ['N', 'E', 'S', 'W']) sides[side] = lay.veilCoast[side] || hz.includes(side);
+  const diag = diagVeiled(cell);
+  if (!Object.values(sides).includes(true) && !Object.values(diag).includes(true)) return null;
+  const id = ['N', 'E', 'S', 'W'].map(k => (sides[k] ? 1 : 0)).join('') + ['NW', 'NE', 'SW', 'SE'].map(k => String(diag[k])[0]).join('');
+  const plan = PL.veilMod.veilPlan(lay.baked.w, lay.baked.h, sides, diag);
+  return plan.runs.length || plan.pieces.length ? { id: lay.baked.id + id, plan } : null;
 }
 // Within 2 tiles of a range line the Probe's words show on the band, once per approach.
 function lineWords(lay, P) {
@@ -5148,6 +5159,8 @@ function drawMap(mode, t) {
     let m = 0; [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dx, dy], i) => { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < MW && Y < MH && !S.revealed[Y * MW + X]) m |= 1 << i; });
     if (m) blit(fogEdgeArt(m), px, py);
   }
+  // the map's edge veil (art desk, places/veil/): over the deep water of the coast and the sides that face land not opened yet; still
+  if (PL.mapVeil && PL.mapVeil.day && PL.mapVeil.night) PL.veilMod.paintMapVeil(g, PL.mapVeil[ex && ex.storm ? 'night' : 'day'], ox, oy, MW * CELL, MH * CELL, Object.fromEntries(['N', 'E', 'S', 'W'].map(side => [side, !seamRegion(SIDE_DIR[side])])));
   // signs: last seen this turn (bright) or last turn (faded); older ones are gone
   const signs = mapSigns();
   // no quarters and no per-item pips: the map marks only what is worth coming back for (pods left behind, found Energy)
@@ -5399,11 +5412,12 @@ function drawPatchBody(t) {
   const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
-  if (bk) { hazeSync(lay); const hz = hazeLevels(lay); bk.setHaze(hz && hz.lv, hz ? hz.id : '', lay.baked.id); }   // the range haze, past the Probe's reach
+  if (bk) { hazeSync(lay); const vp = veilPlanOf(lay); bk.setVeil(vp && vp.plan, vp ? vp.id : ''); }   // the edge veil: the coast and the sides past the Probe's reach
   if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
   if (bk && lay.rim && lay.rim.length && ART48.ready) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are; one blit of the cached picture
     const cv = rimCanvas(lay, fr, tileLight, uvAt), x0 = Math.max(0, r.tx0), y0 = Math.max(0, r.ty0), x1 = Math.min(lay.w - 1, r.tx1), y1 = Math.min(lay.h - 1, r.ty1);
     if (x1 >= x0 && y1 >= y0) g.drawImage(cv, x0 * 48, y0 * 48, (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48, W(x0 * 48), H(y0 * 48), (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48); }
+  if (bk) bk.drawVeil(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, overcast);
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * lay.w + tx, L = lvAt(tx, ty);
@@ -7503,7 +7517,7 @@ loadAtlas();   // the 48 px place art, in the background: places draw at 32 unti
 const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
 loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
 loadMomentArt();   // the art desk's painted stands for the care moments
-loadPlaces();   // the places kit: the tile set, the terrain layers and the range haze that generator 7's cells are drawn with
+loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave

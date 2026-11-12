@@ -7,8 +7,7 @@ import { BAYER4, SHADOW_KIND, contactShadow } from '../../exploration/src/view.m
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';
-import { applyHaze, layHaze } from './haze.mjs';
-import { extendTables } from './lighttables.mjs';
+import { paintVeil, veilStep } from './veil.mjs';
 
 export { FrameRing } from './ground.mjs';
 
@@ -25,9 +24,9 @@ const same = (a, b) => { if (!a || a.length !== b.length) return false; for (let
 
 // core: the page's core colours [[r, g, b]] for indices 0..47 (the set's own colours come from the tile set); night: the veil dots' colour index.
 export class BakedView {
-  constructor(ts, place, { core, night = 2, ox = 0, oy = 0, mkCanvas, ring = null, haze = null }) {   // ring: a FrameRing shared by the page's views (the ground's animation frames kept, across all of them, up to its bound); haze: the range haze kit
+  constructor(ts, place, { core, night = 2, ox = 0, oy = 0, mkCanvas, ring = null, veil = null }) {   // ring: a FrameRing shared by the page's views (the ground's animation frames kept, across all of them, up to its bound); veil: the edge veil kit { day, night }
     Object.assign(this, { ts, place, ox, oy, night, mkCanvas });
-    this.hazeKit = haze; this.hazeMaps = null; this.hazeLv = null; this.hazeId = '';
+    this.veilKit = veil; this.veilPlan = null; this.veilId = ''; this.veilCv = null; this.veilKey = '';
     this.size = 48;
     this.cache = new PlaceGroundCache(ts, place, 48, ring);
     this.half = new GroundCache(ts, place, wholeScale(place));   // the whole-place picture's ground (clock 0, no veil): made once for the place, whatever the veil, so each arrival look and Look pays only the light and the sprites
@@ -35,13 +34,7 @@ export class BakedView {
     const rgb = (r, g, b) => (255 << 24) | (b << 16) | (g << 8) | r;
     for (let i = 1; i < 48; i++) this.lut[i] = rgb(...core[i]);
     ts.palette.forEach((c, k) => { this.lut[48 + k] = rgb((c >> 16) & 255, (c >> 8) & 255, c & 255); });
-    if (haze) {   // the haze's extra colours (the open-edges 7 its tables can answer with, then the ramp colours) join the screen's palette, and the light tables learn them (shared, once per tile set)
-      haze.extra.rgb.forEach((c, k) => { this.lut[haze.extra.first + k] = rgb(...c); });
-      const T = tablesOf(ts);
-      if (!T.__haze) { extendTables(T, core, ts.palette.map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), haze.extra.first, haze.extra.rgb); Object.defineProperty(T, '__haze', { value: true }); }
-    }
     this.colours = [...new Set(this.lut.slice(1, 48 + ts.palette.length))].map((v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255]);
-    if (haze) haze.extra.rgb.forEach((c) => this.colours.push(c.slice()));
     this.state = null; this.states = new Map(); this.last = null; this.sprites = new Map(); this.scratch = null;
     this.landmarks = new Set(place.landmarks.map((l) => l.y * place.w + l.x));
   }
@@ -76,15 +69,25 @@ export class BakedView {
   // Ground patches: whole 48 px cells of the ground replaced by the ground of another cell of the same place (the set's own pixels), for a stop-gap look such as a
   // closed opening's path drawn as grass. list: [{ x, y, from: { x, y } }] in place cells; id names the list (the cache key).
   setPatches(list, id = '') { this.patches = list || []; this.patchId = this.patches.length ? id : ''; }
-  // The range haze: levels = Uint8Array(place.w * place.h) of 0..3 per place cell (3 = the edge row), or null for none; id names the grid (the cache key); pid seeds the lumps.
-  // Props and crowns whose anchor cell is hazed fade with the land (spriteCanvas); everything the page draws itself (explorer, creatures) never does.
-  setHaze(levels, id = '', pid = '') {
-    if (!this.hazeKit || !levels) { this.hazeMaps = null; this.hazeLv = null; this.hazeId = ''; return; }
-    if (id === this.hazeId && this.hazeMaps) return;
-    this.hazeId = id; this.hazeLv = levels; this.hazeMaps = layHaze(this.hazeKit, levels, this.place.w, this.place.h, pid);
+  // The edge veil: plan = veilPlan(...) of the place's veiled sides (or null for none); id names it (the cache key).
+  setVeil(plan, id = '') {
+    if (!this.veilKit || !plan) { this.veilPlan = null; this.veilId = ''; return; }
+    if (id !== this.veilId) { this.veilPlan = plan; this.veilId = id; this.veilKey = ''; }
+  }
+  // Draws the veil over the ground (one blit of a cached picture, made again only when the 3 a second drift step changes). night: the night copies. Call it before the creatures and the explorer.
+  drawVeil(g, sx, sy, win, clockMs, night = false) {
+    if (!this.veilPlan) return;
+    const W = this.place.w * 48, H = this.place.h * 48, step = veilStep(clockMs), key = `${this.veilId}|${night ? 1 : 0}|${step}`;
+    if (this.veilKey !== key) {
+      if (!this.veilCv || this.veilCv.width !== W || this.veilCv.height !== H) this.veilCv = this.mkCanvas(W, H);
+      const vg = this.veilCv.getContext('2d'); vg.setTransform(1, 0, 0, 1, 0, 0); vg.clearRect(0, 0, W, H);
+      paintVeil(vg, night ? this.veilKit.night : this.veilKit.day, this.veilPlan, W, H, step); this.veilKey = key;
+    }
+    const x0 = Math.max(0, win.x), y0 = Math.max(0, win.y), x1 = Math.min(W, win.x + win.w), y1 = Math.min(H, win.y + win.h);
+    if (x1 > x0 && y1 > y0) g.drawImage(this.veilCv, x0, y0, x1 - x0, y1 - y0, sx + x0 - win.x, sy + y0 - win.y, x1 - x0, y1 - y0);
   }
   drawGround(g, sx, sy, win, clockMs, light) {
-    const key = `${win.x},${win.y},${win.w},${win.h}|${this.cache.frameKey(clockMs)}|${light ? light.id ?? (light.id = (this.nextId = (this.nextId || 0) + 1)) : 0}|${this.patchId || ''}|${this.hazeId}`;
+    const key = `${win.x},${win.y},${win.w},${win.h}|${this.cache.frameKey(clockMs)}|${light ? light.id ?? (light.id = (this.nextId = (this.nextId || 0) + 1)) : 0}|${this.patchId || ''}`;
     if (!this.last || this.last.key !== key) {
       const buf = this.cache.get(win, clockMs);   // a fresh copy of the window, so the light can be applied in place
       for (const p of this.patches || []) {
@@ -94,7 +97,6 @@ export class BakedView {
           if (X >= 0 && Y >= 0 && X < win.w && Y < win.h) buf[Y * win.w + X] = donor[j * 48 + i];
         }
       }
-      if (this.hazeMaps) applyHaze(buf, win, 48, this.hazeKit, this.hazeMaps);   // the range haze, before the light so fog, storm and veil act on it too
       if (light) applyLight(buf, win, 48, this.ts, light, { nightIndex: this.night });
       const img = g.createImageData(win.w, win.h), u = new Uint32Array(img.data.buffer);
       for (let i = 0; i < buf.length; i++) u[i] = buf[i] ? this.lut[buf[i]] : 0;
@@ -133,14 +135,12 @@ export class BakedView {
     cg.putImageData(img, 0, 0); return cv;
   }
   // ---- sprites as cached canvases ----
-  // at: { left, top } the sprite's place pixel when its anchor cell is hazed (the haze is then washed into it)
-  spriteCanvas(kind, frame, level, cut, cutKey, at = null) {
-    const key = `${kind}|${frame}|${level}` + (at ? `|h${this.hazeId}@${at.left},${at.top}` : '');
+  spriteCanvas(kind, frame, level, cut, cutKey) {
+    const key = `${kind}|${frame}|${level}`;
     if (!cut && this.sprites.has(key)) return this.sprites.get(key);
     const s = this.ts.sprites[kind], T = tablesOf(this.ts), remap = level ? T[LEVELS[level]] : null;
     const buf = new Uint8Array(s.w48 * s.h48);
     blitRle(buf, s.w48, s.h48, 0, 0, this.ts.spriteAtlas48, s.frames48[s.frames48.length > 1 ? frame % s.frames48.length : 0], s.w48, s.h48, remap, cut);
-    if (at && this.hazeMaps) applyHaze(buf, { x: at.left, y: at.top, w: s.w48, h: s.h48 }, 48, this.hazeKit, this.hazeMaps);
     const cv = cut ? (this.scratch && this.scratch.width === s.w48 && this.scratch.height === s.h48 ? this.scratch : (this.scratch = this.mkCanvas(s.w48, s.h48))) : this.mkCanvas(s.w48, s.h48);
     const cg = cv.getContext('2d'), img = cg.createImageData(s.w48, s.h48), u = new Uint32Array(img.data.buffer);
     for (let i = 0; i < buf.length; i++) u[i] = buf[i] ? this.lut[buf[i]] : 0;
@@ -157,9 +157,8 @@ export class BakedView {
       const cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!this.landmarks.has(cy * w + cx) && !visible(px, py)) continue;
       const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), lv = level(px, py);
-      const at = this.hazeLv && this.hazeLv[cy * w + cx] ? { left: p.x - s.anchor48[0], top: p.y - s.anchor48[1] } : null;
       if (SHADOW_KIND.test(s.kind)) items.push({ y: this.oy * 48 + p.sortY - 43 - 0.5, d: () => contactShadow(g, org.x + p.x, org.y + p.y, s.w48) });   // the one shared contact shadow, drawn just before the stone or boulder
-      items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv, null, undefined, at), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
+      items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv, null, undefined), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
     }
     return items;
   }
@@ -187,8 +186,7 @@ export class BakedView {
       const left = x - s.anchor48[0], top = y - s.anchor48[1];
       let cut = null;
       if (cutAt && local.some((q) => q.x > left - 22 && q.x < left + s.w48 + 22 && q.y > top - 22 && q.y < top + s.h48 + 22)) cut = (dx, dy) => cutAt(dx + left, dy + top);
-      const at = this.hazeLv && this.hazeLv[cy * this.place.w + cx] ? { left, top } : null;
-      g.drawImage(this.spriteCanvas(kind, frame, lv, cut, undefined, at), org.x + left, org.y + top);
+      g.drawImage(this.spriteCanvas(kind, frame, lv, cut, undefined), org.x + left, org.y + top);
     };
     for (const p of cut ? cut.props : this.place.props) { const c = this.ts.sprites[p.kind].canopy; if (c >= 0) draw(c, p.x, p.y); }
     for (const c of cut ? cut.canopy : this.place.canopy) draw(c.kind, c.x, c.y);
