@@ -55,12 +55,6 @@ export function shadowPixels(w) {
   for (let dy = -ry; dy <= ry; dy++) for (let dx = -rx; dx <= rx; dx++) { const d = dx * dx * Q * Q + 4 * dy * dy * rx * rx; if (d <= all) out.push({ dx: dx + 1, dy: dy + 1, a: 2 * d < all ? 2 : 1 }); }
   return out;
 }
-// On a canvas context: `u` the size of an art pixel on the screen (1 for a place's sprite, 3 for a 48 px stone file), cx and cy the foot on the screen, w the body's width in art pixels.
-export function contactShadow(g, cx, cy, w, u = 1) {
-  const px = shadowPixels(w), save = g.fillStyle;
-  for (const a of [1, 2]) { g.fillStyle = `rgba(20,27,27,${SHADOW_ALPHA[a] / 100})`; for (const p of px) if (p.a >= a) g.fillRect(cx + p.dx * u, cy + p.dy * u, u, u); }
-  g.fillStyle = save;
-}
 
 // Fog and veil edges at 48 are drawn in eighths (12 px), opened by a disc (eighthGrid); the quarter look (24 px) is its fallback. The 8-neighbour mask `m8` holds the far-side state of a tile's neighbours, bit 0 N, 1 NE, 2 E,
 // 3 SE, 4 S, 5 SW, 6 W, 7 NW (NB9's order). `quarterFar(own, m8)` gives the tile's four quarters as bits (nw 1, ne 2, sw 4, se 8): all four when the tile

@@ -3,7 +3,7 @@
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
 import { PlaceGroundCache, GroundCache, applyLight, lightState, tablesOf, LEVELS, renderHalfView, renderViewSteps, wholeScale } from './ground.mjs';
-import { BAYER4, SHADOW_KIND, contactShadow } from '../../exploration/src/view.mjs';
+import { BAYER4 } from '../../exploration/src/view.mjs';
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';
@@ -157,7 +157,6 @@ export class BakedView {
       const cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!this.landmarks.has(cy * w + cx) && !visible(px, py)) continue;
       const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), lv = level(px, py);
-      if (SHADOW_KIND.test(s.kind)) items.push({ y: this.oy * 48 + p.sortY - 43 - 0.5, d: () => contactShadow(g, org.x + p.x, org.y + p.y, s.w48) });   // the one shared contact shadow, drawn just before the stone or boulder
       items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv, null, undefined), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
     }
     return items;

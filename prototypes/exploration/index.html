@@ -256,7 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, reviveLayers, overviewReady, CW as OCW, CH as OCH } from "./src/world7.mjs";
 import { readyRealm, readyOverview } from "./src/realm-store.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN, contactShadow } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
@@ -835,7 +835,7 @@ function warmLanding() {
   return true;
 }
 // The unready place: its paper sketch (the fog's hatch, the map's ink), with the Probe ring pulsing where the explorer stands. The land inks in from the explorer outward when it is ready.
-// The paper grain is the art director's signed hatch (art/props/paper-grain-64); the code hatch stands only until that file is in.
+// The paper grain is the art director's signed hatch (art/props/paper-grain-64); a flat paper fill stands only until that file is in.
 const INK_IN_MS = 300;
 let SKETCH = null;
 function sketchCanvas() {   // whole pixels only (the screen holds palette colours, nothing blended): paper, a diagonal hatch, the place's outline in ink
@@ -843,8 +843,7 @@ function sketchCanvas() {   // whole pixels only (the screen holds palette colou
   const cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H; const c = cv.getContext('2d');
   const grain = propPiece('paper-grain-64'), painted = grain.w > 1;   // the art director's signed paper hatch (broken, uneven strokes), tiled at 1x; the code hatch stands only until the file is in
   if (painted) { const tile = grain.canvas(0); for (let y = 0; y < VIEW_H; y += grain.h) for (let x = 0; x < SCR_W; x += grain.w) c.drawImage(tile, x, y); }
-  else { c.fillStyle = HEX[C.paper]; c.fillRect(0, 0, SCR_W, VIEW_H);
-    c.fillStyle = HEX[C.sand]; for (let y = 0; y < VIEW_H; y++) for (let x = (6 - (y % 6)) % 6; x < SCR_W; x += 6) c.fillRect(x, y, 1, 1); }
+  else { c.fillStyle = HEX[C.paper]; c.fillRect(0, 0, SCR_W, VIEW_H); }   // a flat paper fill while the grain loads (no hatch)
   c.fillStyle = HEX[C.bark]; for (let x = 10; x < SCR_W - 10; x += 10) { c.fillRect(x, 10, 6, 2); c.fillRect(x, VIEW_H - 12, 6, 2); } for (let y = 10; y < VIEW_H - 10; y += 10) { c.fillRect(10, y, 2, 6); c.fillRect(SCR_W - 12, y, 2, 6); }
   if (painted) SKETCH = cv;
   return cv;
@@ -5511,9 +5510,8 @@ function drawPatchBody(t) {
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
-    const sd = f.kind === 'k' && !lay.cave && a.dx !== undefined ? () => contactShadow(g, SX(x) + a.dx + (a.w >> 1), SY(y) + a.dy + a.h - 1, a.w / 3, 3) : () => {};   // the one shared contact shadow under a field stone (3 px to an art pixel in its 48 px file), drawn with it
-    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => { sd(); blit(a, SX(x), SY(y), rr); } });
-    else items.push({ y: y + 1, d: () => { sd(); blit(a, SX(x), SY(y), rr); } }); }
+    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) });
+    else items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
   // a landmark's own piece (art/props: the Windstep's lone tree, the Reedpool's island stone), drawn at its tile once the tile is seen; the tree stands on its foot, the stone in the middle of the tile
   { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
     if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }
