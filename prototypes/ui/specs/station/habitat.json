@@ -828,7 +828,7 @@
   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
   "partnersRule": "n counts only the partners that can be picked (not carried: a carried mibi is never picked as a partner, docked or away)",
-  "crossAway": "its partners are travelling",
+  "crossAway": "all its kind are with you",
   "allFamily": "its {Species} are all family",
   "allFamilyPlate": ["{name}'s {Species} are all family", "A {Species} from another pod can cross with {name}"],
   "allFamilyPod": "A {Species} pod at home can cross with {name}",

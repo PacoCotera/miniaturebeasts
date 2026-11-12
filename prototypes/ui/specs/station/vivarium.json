@@ -1384,9 +1384,9 @@
    "breedBusy": "the incubator is busy",
    "breedNoPlace": "No place free · return one, or add a room",
    "breedNoPlace4": "No place free · return one to make room",
-   "breedOne": "no partner at home yet",
-   "breedNone": "No partner of its kind at home",
-   "breedFamily": "only its family at home · try a walk",
+   "breedOne": "none of its kind at home yet",
+   "breedNone": "None of its kind can cross now",
+   "breedFamily": "only its family at home · find another out exploring",
    "partnerFamily": "family · find another out exploring",
    "returnBond": "A bond is for good",
    "return": "{name} goes back to the wild · asks first",
@@ -1403,7 +1403,7 @@
    "swapStays": "{name} is one of the picks · it stays in {Room}",
    "breather": "on a breather · can cross in {n} {turn|turns}",
    "breatherNext": "on a breather · can cross next turn",
-   "breedNoneFree": "no partner free now · {name} can cross in {n} {turn|turns}",
+   "breedNoneFree": "none of its kind free now · {name} can cross in {n} {turn|turns}",
    "pairCannot": "this pair cannot cross this turn",
    "turns": "{n} {turn|turns}",
    "turnsOne": "1 turn"
@@ -1473,10 +1473,11 @@
      "The incubator is busy"
     ],
     "one": [
-     "No partner at home yet"
+     "None of its kind at home yet",
+     "An expedition can find one to cross with"
     ],
     "none": [
-     "No partner of its kind at home"
+     "None of its kind can cross now"
     ],
     "family": [
      "Only {name}'s family is at home",

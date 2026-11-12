@@ -658,7 +658,7 @@ test("generator 2 play: the map refuses a steep edge (bump, message, no action) 
   const p = g2At(seed, cliff.a); p.run("FX.notes = []; FX.msg = '';"); const b0 = p.run("FX.bumpAt");
   p.run(`act(${JSON.stringify(cliff.dir)})`);
   assert.equal(p.run("S.exp.pos"), cliff.a); assert.equal(p.run("S.exp.actions"), 0, "0 actions spent");
-  assert.ok(p.run("FX.bumpAt") > b0); assert.match(p.run("FX.msg"), /^Cliff · too steep · (no stairs seen yet|stairs \d+ cells? (north|south|east|west)|stairs on the)/);
+  assert.ok(p.run("FX.bumpAt") > b0); assert.match(p.run("FX.msg"), /^Cliff · too steep · (no stairs seen yet|stairs \d+ cells? (north|south|east|west)|stairs here, to the)/);
   assert.equal(p.run(`crossReason(${cliff.a}, ${JSON.stringify(cliff.dir)})`), p.run(`cliffMapWords(${cliff.a}, ${JSON.stringify(cliff.dir)})`));
   // the reach follows canStep: the same set as a walk over canStepIn inside the range square, without the island
   for (const st of [cliff.a, cliff.b]) { const seen = new Set([st]), q0 = [st], s0 = { x: st % MW, y: (st / MW) | 0 };
@@ -687,7 +687,7 @@ test("fix F4 note 17: a cliff refusal says what stops you and names the nearest 
   const p = g2At(seed, cliff.a), d = JSON.stringify(cliff.dir);
   assert.equal(p.run(`cliffMapWords(${cliff.a}, ${d})`), "Cliff · too steep · no stairs seen yet", "nothing revealed round it yet");
   p.run("for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1;"); const s = p.run(`stairsNear(${cliff.a}, ${d})`), w = p.run(`cliffMapWords(${cliff.a}, ${d})`);
-  assert.match(w, s ? /^Cliff · too steep · (stairs \d+ cells? (north|south|east|west)|stairs on the (north|south|east|west) side)$/ : /no stairs seen yet$/);
+  assert.match(w, s ? /^Cliff · too steep · (stairs \d+ cells? (north|south|east|west)|stairs here, to the (north|south|east|west))$/ : /no stairs seen yet$/);
   if (s) assert.equal(p.run(`edgeKind(${s.cur}, ${JSON.stringify(s.d)})`), EDGE.RAMP, "the stairs it names are a stair edge");
   p.run("S.phase = 'map'"); assert.equal(p.run("lineBase().ok"), "Go in");
   const edge = p.run("(() => { for (let c = 0; c < MW * MH; c++) if (c % MW === 0) return c; })()");

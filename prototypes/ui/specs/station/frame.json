@@ -89,7 +89,7 @@
    "short": { "field": "Go out for more {icons}", "bench": "Watch your mibis for more {icons}", "fieldOrPod": "Go out or return pods for {icons}", "fieldAndBench": "Go out and watch for more {icons}" },
    "growUp": { "one": "One more expedition grows the pair", "more": "More expeditions grow the pair", "care": "{name} grows up in time", "careNoName": "The young mibi grows up in time" },
    "readNoName": "Read the new mibi's chapters" },
-  "aim": { "firstPod": "Find a first pod", "firstMibi": "Grow a first mibi", "pair": "A mibi to cross with {name}", "pairNoName": "A second mibi to cross", "growUp": "Expeditions grow {name} up", "cross": "Cross {name} next", "readChild": "Read {name}'s chapters", "guide": "Fill the {species} field guide",
+  "aim": { "firstPod": "Find a first pod", "firstMibi": "Grow a first mibi", "pair": "A mibi to cross with {name}", "pairNoName": "Two mibis of one kind to cross", "growUp": "Expeditions grow {name} up", "cross": "Cross {name} next", "readChild": "Read {name}'s chapters", "guide": "Fill the {species} field guide",
   "probe": "Save up for the Probe upgrade", "growUpNoName": "Expeditions grow the pair up", "readChildNoName": "Read the new mibi's chapters" },
   "companion": { "rule": "The Companion's own line (companionWords): only the steps the Companion acts on, away. Station steps give no line.", "short": "Bring back {icons}", "shortWords": "Bring back {words}" } },
  "goalWarn": { "rule": "The pre-spend warning (goalSpendWarn): one line in the notice zone, amber as needMore, before ✓ pays a price that would leave the goal's next price short. {icons} are what would then be short.", "identify": "Then the {species} pod needs {icons}", "grow": "Then the {species} pod needs {icons}", "cross": "Then the pair needs {icons}", "pair": "Leaves {left} · {name} and {name2} need {need}", "read": "Then the next read needs {icons}", "fit": "Then the upgrade needs {icons}" },
@@ -97,7 +97,7 @@
   "crates": { "notice": "{N} crates wait in the Bay", "noticeOne": "A crate waits in the Bay", "label": "Open the Bay", "withPortrait": { "notice": "Bay: {count} crates and a portrait", "noticeOne": "Bay: a crate and a portrait" } },
   "readHome": { "notice": "{N} {Species} chapters read while you were out", "noticeOne": "A {Species} chapter read while you were out", "label": "See them" },
   "full": { "notice": "The Vivarium is full", "labelAdd": "Add a room", "labelMake": "Make room" },
-  "budReady": { "notice": "A mibi can come out", "label": "Open the pod" },
+  "budReady": { "notice": "A mibi waits to come out", "label": "Open the pod" },
   "portrait": { "notice": "A portrait waits in the Bay", "label": "Open the Bay" },
   "meet": { "notice": "Meet {name}", "label": "Meet {name}" },
   "fresh": { "notice": "{N} new pods", "noticeOne": "A new pod", "label": "Look at the pods", "labelOne": "Look at the pod" },
@@ -136,7 +136,7 @@
   },
   "wake": { "to": "the screen under Idle, its focus as it was", "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): the dither to Idle and the wake are cuts, so the host sends hold 0 with them (enter.hold and wake.hold are 180 with motion on); the first press still only wakes; with reduced motion the rest holds 0 and Idle comes on the frame of the key, so any later key is on Idle and only wakes. Nothing on Idle cuts (habitat.json notes.cut)",
-  "strings": { "lineRule": "one sentence, six words or fewer, no digits", "order": ["crates", "budReady", "budGrowing", "out"], "fragments": [{ "path": "order.*", "reason": "the keys of Idle's lines in their order, not words" }], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags. `out` only while the Companion is away with mibis carried; docked, nothing about them", "crates": { "1": "A crate waits in the Bay", "2": "Two crates wait in the Bay", "3": "Three crates wait in the Bay", "many": "Crates wait in the Bay" }, "budReady": "A mibi can come out", "budGrowing": "A mibi is growing", "out": { "1": "{name} is out with the Companion", "2": "Two mibis are with the Companion", "3": "Three mibis are with the Companion" }, "none": "" }
+  "strings": { "lineRule": "one sentence, six words or fewer, no digits", "order": ["crates", "budReady", "budGrowing", "out"], "fragments": [{ "path": "order.*", "reason": "the keys of Idle's lines in their order, not words" }], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags. `out` only while the Companion is away with mibis carried; docked, nothing about them", "crates": { "1": "A crate waits in the Bay", "2": "Two crates wait in the Bay", "3": "Three crates wait in the Bay", "many": "Crates wait in the Bay" }, "budReady": "A mibi waits to come out", "budGrowing": "A mibi is growing", "out": { "1": "{name} is out with the Companion", "2": "Two mibis are with the Companion", "3": "Three mibis are with the Companion" }, "none": "" }
  },
  "notBuilt": {
   "doors": "no target in play opens a not-built screen: a door to one is shut in place, with no ✓ cap and its screen's shut line (habitat.json strings.shut). The composition stays for a screen reached any other way (a developer jump, the journey's not-built steps)",

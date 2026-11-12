@@ -1100,20 +1100,20 @@ const CARE_TEXT = {
   full: 'the Companion is full', fullRefused: n => n + ' stays home: the Companion is full · leave one at home first',
   leaveLabel: n => 'Leave ' + n + ' at home', leaveCtx: 'comes home now', left: n => n + ' stays home',
   visitLabel: n => 'Visit ' + n, visitCtx: 'with you', withYouThisExp: 'with you for this expedition',
-  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows with care',
-  stHome: 'at home', stHomeBonded: 'at home · grows on the Companion',
+  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows up in time',
+  stHome: 'at home', stHomeBonded: 'at home · grows up in time',
   noOneWith: 'no one with you', noOneGrown: 'no one grown yet',
   // the care screens (companion-screens.md: Mibis, the Lead card, the active mibi screen, the partner card)
   leadLabel: n => 'Let ' + n + ' lead', leads: n => n + ' leads the Probe', leadCtx: 'joins the Probe', onlyGrown: 'the only grown one', leadsThisExp: 'leads this expedition',
   partnerCap: 'Partner', noPartner: 'No partner', noOneWithT: 'No one with you', takeOne: 'dock to take one along',
-  youngCare: 'young · grows with care', youngTime: 'young · grows in time', leadsChip: 'leads',
+  youngCare: 'young · grows up in time', youngTime: 'young · grows up in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
   takeAlong: 'take mibis along', whenDocked: 'when docked',
   // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
   spOther: 'a Station species', abOther: 'no field ability yet', tendMomentOther: 'settles',
   walkedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' walks the ' + (mem || 'path'),
   // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
-  riderTime: 'grows in time in the Companion', riderCare: 'grows with care in the Companion',
+  riderTime: 'grows up in time, riding along', riderCare: 'grows up in time, riding along',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
   walkedYoung: (n, mem) => CARE_TEXT.walkedOther(n, mem), onceGrown: ' once grown',
 };
@@ -2218,7 +2218,7 @@ function stairsNear(a, dir) {
 }
 function cliffMapWords(a, dir) {
   const s = stairsNear(a, dir); if (!s) return CLIFF_TOO_STEEP + ' · no stairs seen yet';
-  if (s.cur === a) return CLIFF_TOO_STEEP + ' · stairs on the ' + COMPASS_OF[s.d] + ' side';
+  if (s.cur === a) return CLIFF_TOO_STEEP + ' · stairs here, to the ' + COMPASS_OF[s.d];
   const p = cxy(a), q = cxy(s.cur), dx = q.x - p.x, dy = q.y - p.y, way = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'east' : 'west') : (dy > 0 ? 'south' : 'north');
   return CLIFF_TOO_STEEP + ' · stairs ' + s.n + (s.n === 1 ? ' cell ' : ' cells ') + way;
 }
