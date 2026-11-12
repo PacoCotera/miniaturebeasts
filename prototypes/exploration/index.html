@@ -258,7 +258,7 @@ import { genWorld7, layout7 as layout7In, reviveLayers, overviewReady, CW as OCW
 import { readyRealm, readyOverview } from "./src/realm-store.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
+import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS } from "./src/words.mjs";
 document.getElementById('helpData').textContent = WORDS.help.data;   // the help page's Data item: one source, src/words.mjs
@@ -448,7 +448,7 @@ function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 // The world's creatures and buried pods: src/world.mjs, by the world's generator (the herd floor is generator 3's).
 const hereRegion = () => S.regions.find(r => r.id === S.here);   // the region mounted on S
-const hereKinds = (R = hereRegion()) => regionKinds(R);   // its kinds: the home region's three starters, any other region's land (src/regions.mjs)
+const hereKinds = (R = hereRegion()) => regionKinds(R, biomeVersion(S));   // its kinds: the home region's three starters, any other region's land by the realm's kind version (src/regions.mjs)
 function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKinds(region ?? hereRegion()) : ROSTER); }
 // The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
 // Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
@@ -694,7 +694,7 @@ function freshLayout(key) {
 }
 function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
-  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side])); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay); }
+  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side]), biomeVersion(S)); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }

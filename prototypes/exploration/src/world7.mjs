@@ -16,12 +16,12 @@ export const overviewReady = (seed, slot) => (hasOverview(seed, slot[0], slot[1]
 export const genWorld7 = (seed, slot) => genRegion7(seed, slot[0], slot[1]);
 export const cellWorldXY = (slot, cell) => [slot[0] * MW + (cell % MW), slot[1] * MH + ((cell / MW) | 0)];
 // the IR of a cell and the baked place it makes
-export function bakedCell(ctx, seed, slot, cell) {
-  const [X, Y] = cellWorldXY(slot, cell), ir = cellIR(seed, X, Y);
+export function bakedCell(ctx, seed, slot, cell, v) {   // v: the realm's kind version (biomeVersion), which lists its creatures come from
+  const [X, Y] = cellWorldXY(slot, cell), ir = cellIR(seed, X, Y, v);
   return { ir, place: bakeCell(ir, ctx) };
 }
-export function layout7(ctx, G, seed, slot, key, shut) {   // shut(side): the side is past the Probe's range or closed, so its band is not walked (the page's crossReason)
-  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell), lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed, shut });
+export function layout7(ctx, G, seed, slot, key, shut, v) {   // shut(side): the side is past the Probe's range or closed, so its band is not walked (the page's crossReason)
+  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell, v), lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed, shut });
   const [X, Y] = cellWorldXY(slot, cell);
   lay.coastWater = (x, y) => inlandOf(X * CW + x, Y * CH + y) < COAST_REACH;   // water within the coast band is the coast's: wide water, no way across
   lay.raisedFn =(x, y) => raisedAt(seed, X * CW + x, Y * CH + y);   // is this tile raised land (height lets you see further)
