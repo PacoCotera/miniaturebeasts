@@ -3,9 +3,9 @@
 # They ride a 20 px disc the build draws (`panel` fill, a 1 px `bevel` rim), and the card's state line uses the same masters with no disc. Told apart by silhouette: heart, stick, moon, handheld, cold mark
 # (and the lamp at 12, the placed home-lamp-sky-12x12 as it is). The Incubator capsule comes later, with breeding.
 #   mark-heart-16                 bonded: the enamel heart, re-cut at 16 from the signed heart-full-24 (the same shape and the same four colours: coral, peach light, red shade, wine edge)
-#   mark-elder-16                 elder: a walking stick, a 2 px shaft and a round crook (a ring, its hook curling 3 px down at the left), `clay` with a `bark` shadow side, its foot on row 15; no notches (they would read as the skill notch)
+#   mark-elder-16                 elder: a walking stick, a 2 px shaft and a 4 px hooked head at the top left, `sand` with a `bark` shadow side, its foot on row 15; no notches (they would read as the skill notch)
 #   mark-asleep-16                resting after a cross: the placed mark-asleep-24x16 cut at 16 (its moon whole, the trail of dots drawn closer)
-#   mark-cold-16                  tucked away: a six-arm snowflake, `ice` with a `white` hub
+#   mark-cold-16                  tucked away: the placed cold mark (mark-species-frost-24x24) cut at 16 (its rim and its speckle, point-sampled)
 #   mark-companion-outline-16     away with the Companion: the handheld's outline in `bone` (the top bar's frame-companion-outline-16x24, cut at 16)
 #   mark-breather-16              on a breather: a pause sign, two upright bars in `mint` over an `aqua` underside
 #   mark-companion-solid-16       on the Companion, docked: the handheld solid, `bone` with a `fog` shade, its screen `ground` (frame-companion-solid-16x24, cut at 16)
@@ -18,7 +18,7 @@ from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.normpath(os.path.join(HERE, "..")); REPO = os.path.normpath(os.path.join(ROOT, "../../.."))
 MASTERS = os.path.join(REPO, "prototypes/ui/assets/masters")
 P = dict(void='#0c0a12', bone='#f1ebdf', mist='#8d8aa6', fog='#c6c4d8', hairline='#3d434b', bevel='#565c63', panel='#2b3038', ground='#1d232b',
-         sand='#e6c98c', mint='#adf6e0', aqua='#45d8be', tealD='#0f4c50', clay='#bf9157', bark='#7d5435', coral='#ff5f57', peach='#ffa67c', red='#c93440', wine='#6b1e33', ice='#a9e6ff', white='#ffffff')
+         sand='#e6c98c', mint='#adf6e0', aqua='#45d8be', tealD='#0f4c50', clay='#bf9157', bark='#7d5435', coral='#ff5f57', peach='#ffa67c', red='#c93440', wine='#6b1e33')
 H = lambda n: tuple(int(P[n][i:i + 2], 16) for i in (1, 3, 5)) + (255,)
 def img(): return Image.new('RGBA', (16, 16), (0, 0, 0, 0))
 made = {}
@@ -39,12 +39,11 @@ made['mark-heart-16'] = im
 
 # the walking stick: the shaft 2 px wide (x 9 lit, x 10 its shadow side) from row 3 to its foot on row 15; the hooked head over rows 1 to 4 at the top left, curling down to its tip
 im = img()
-# round crook (owner/AD fix 2026-11-11): a 2 px shaft (x 9-10, rows 2-15) and a ring-shaped crook over rows 1-5 whose hook curls 3 px down at the left (x 5-6, rows 3-5);
-# the palette's nearest to the AD's wood #c9a46a is `clay`, to the dark edge #6b4a2a is `bark`; the shadow side (right and underneath, and the hook's inner face) is `bark`
-CANE = set([(8, 0), (9, 0)] + [(x, 1) for x in (7, 8, 9, 10)] + [(x, 2) for x in (6, 7, 10, 11)] +[(x, y) for y in (3, 4) for x in (5, 6, 10, 11)] + [(5, 5), (6, 5)] + [(x, y) for y in range(5, 16) for x in (10, 11)])
-for (x, y) in CANE:
-    shade = x == 11 or y == 15 or (x, y) in ((7, 2), (8, 1), (9, 1), (10, 1), (6, 5), (6, 4))   # the shaft's right side, its foot, the hole's rim and the hook's inner side
-    im.putpixel((x, y), H('bark' if shade else 'clay'))
+for y in range(3, 16): im.putpixel((9, y), H('sand')); im.putpixel((10, y), H('bark'))
+for x in range(5, 10): im.putpixel((x, 1), H('sand'))            # the crook's top
+im.putpixel((10, 1), H('bark')); im.putpixel((10, 2), H('bark')); im.putpixel((9, 2), H('sand'))
+for (x, y) in ((4, 2), (4, 3)): im.putpixel((x, y), H('sand'))   # the crook's fall
+for (x, y) in ((5, 2), (5, 3), (4, 4)): im.putpixel((x, y), H('bark'))   # its inner side and tip in shadow
 made['mark-elder-16'] = im
 
 # the asleep mark cut at 16: the moon whole (columns 0 to 12 of the 24 x 16), the trail of dots drawn closer
@@ -56,16 +55,13 @@ for (x, y) in ((12, 10), (13, 10), (12, 11), (13, 11), (14, 6), (15, 6), (14, 7)
 made['mark-asleep-16'] = im
 
 # the cold mark cut at 16: a disc with the 24's rim colour, its speckle point-sampled (x 1.5)
-im = img()   # a six-arm snowflake (AD fix 2026-11-11): `ice` arms, a `white` hub, centre (8, 8): one arm up, one down, four at 30 degrees, a barb on each arm
-ARM = [(0, -1), (0, -2), (0, -3), (0, -4), (0, -5), (0, -6), (-1, -4), (1, -4)]   # the up arm and its barb
-DIAG = [(1, 0), (2, 1), (3, 1), (4, 2), (5, 3), (4, 3), (4, 1)]   # the right-down arm (30 degrees below horizontal) and its barb
-flake = set()
-for (dx, dy) in ARM: flake.add((dx, dy)); flake.add((dx, -dy))
-for (dx, dy) in DIAG:
-    for sx in (1, -1):
-        for sy in (1, -1): flake.add((sx * dx, sy * dy))
-for (dx, dy) in sorted(flake): im.putpixel((8 + dx, 8 + dy), H('ice'))
-im.putpixel((8, 8), H('white'))
+src = Image.open(os.path.join(MASTERS, 'pods/mark-species-frost-24x24.png')).convert('RGBA'); im = img(); rim = src.getpixel((9, 1))
+for y in range(16):
+    for x in range(16):
+        r = math.hypot(x + .5 - 8, y + .5 - 8)
+        if r > 7.6: continue
+        s = src.getpixel((min(23, int((x + .5) * 1.5)), min(23, int((y + .5) * 1.5))))
+        im.putpixel((x, y), rim if r > 6.6 or s[3] == 0 else s)
 made['mark-cold-16'] = im
 
 # the Companion at 16: the handheld 10 x 15 (x 3 to 12, rows 1 to 15), its screen x 5 to 10, rows 3 to 8, two keys on row 11

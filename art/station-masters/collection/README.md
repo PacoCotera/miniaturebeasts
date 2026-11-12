@@ -33,9 +33,9 @@ node prototypes/ui/tools/place-masters.mjs --from art/station-masters/collection
 | Id | Size | What |
 | --- | --- | --- |
 | `mark-heart-16` | 16×16 | bonded: the enamel heart re-cut at 16 from the signed `heart-full-24` (its shape and its four colours) |
-| `mark-elder-16` | 16×16 | elder: a walking stick, a 2 px shaft and a round crook (a ring, its hook curling 3 px down at the left), `clay` with a `bark` shadow side, its foot on row 15, no notches |
+| `mark-elder-16` | 16×16 | elder: a walking stick, a 2 px shaft and a 4 px hooked head at the top left, `sand` with a `bark` shadow side, its foot on row 15, no notches |
 | `mark-asleep-16` | 16×16 | resting after a cross: the placed asleep mark cut at 16, the moon whole and its dots drawn closer |
-| `mark-cold-16` | 16×16 | tucked away: a six-arm snowflake, `ice` with a `white` hub |
+| `mark-cold-16` | 16×16 | tucked away: the placed cold mark (`mark-species-frost-24x24`) cut at 16, its rim and its speckle |
 | `mark-companion-outline-16` | 16×16 | away with the Companion: the handheld's outline in `bone` |
 | `mark-companion-solid-16` | 16×16 | on the Companion, docked: the handheld solid, `bone` with a `fog` shade, its screen `ground` |
 
