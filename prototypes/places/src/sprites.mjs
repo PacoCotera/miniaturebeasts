@@ -3,7 +3,7 @@
 // size) the buffer covers, so a camera view and the whole place use the same code.
 import { blitRle } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
-import { BAYER4 } from '../../exploration/src/view.mjs';
+import { BAYER4, SHADOW_KIND, SHADOW_DITHER, shadowPixels } from '../../exploration/src/view.mjs';
 
 export const CUT_RADIUS = 22;        // pixels at 48 px: the explorer's cut-out in a canopy
 export const CUT_THRESHOLD = 8;      // the 4 x 4 Bayer matrix below this drops the pixel: a 50% dither disc
@@ -20,6 +20,18 @@ export function blitPlaced(buf, win, ts, size, kind, x48, y48, frame = 0, remap,
   const f = frames.length > 1 ? frame % frames.length : 0;
   blitRle(buf, win.w, win.h, scaleTo(size, x48) - a[0] - win.x, scaleTo(size, y48) - a[1] - win.y, rle, frames[f], sw, sh, remap, cut);
   return s;
+}
+
+// The one shared contact shadow (view.mjs shadowPixels) in an indexed buffer: the ground under and beside a stone or boulder goes through the set's dark table on an ordered dither (a soft core and rim),
+// drawn just before the piece. Nothing for any other sprite. The foot is at (x48, y48) place pixels.
+export function shadeStone(buf, win, ts, size, kind, x48, y48) {
+  const s = ts.sprites[kind]; if (!s || !SHADOW_KIND.test(s.kind)) return;
+  const dark = ts._darkTable || (ts._darkTable = Uint8Array.from(ts.lightTables.find((r) => r.name === 'dark').map));
+  const fx = scaleTo(size, x48) - win.x, fy = scaleTo(size, y48) - win.y;
+  for (const p of shadowPixels(Math.max(3, scaleTo(size, s.w48)))) {
+    const x = fx + p.dx, y = fy + p.dy; if (x < 0 || y < 0 || x >= win.w || y >= win.h) continue;
+    if (BAYER4[(y & 3) * 4 + (x & 3)] < SHADOW_DITHER[p.a]) buf[y * win.w + x] = dark[buf[y * win.w + x]];
+  }
 }
 
 // Animation frame of a sprite on the shared clock.
@@ -41,7 +53,7 @@ export function propItems(ts, place, size, o = {}) {
     const { cx, cy } = cellOf(size, p.x, p.y);
     if (o.visible && !o.visible(cx, cy)) continue;
     const remap = o.remapAt ? o.remapAt(cx, cy) : null;
-    items.push({ sortY: p.sortY, x: p.x, draw: (buf, win) => blitPlaced(buf, win, ts, size, p.kind, p.x, p.y, walkFrame(ts.sprites[p.kind], o.clockMs || 0), remap) });
+    items.push({ sortY: p.sortY, x: p.x, draw: (buf, win) => { shadeStone(buf, win, ts, size, p.kind, p.x, p.y); blitPlaced(buf, win, ts, size, p.kind, p.x, p.y, walkFrame(ts.sprites[p.kind], o.clockMs || 0), remap); } });
   }
   return items;
 }

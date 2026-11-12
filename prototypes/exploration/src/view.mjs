@@ -43,6 +43,24 @@ export const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];   
 
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];   // N, NE, E, SE, S, SW, W, NW
 
+// The one shared soft contact shadow under every stone and boulder (art director 2026-11-11 16:0x: the stone bodies are painted with no shadow, the game draws it, as under the tree).
+// An ellipse a little wider than the body at its foot, centred one pixel to the lower right of the foot (the light is upper left), a strong core and a soft rim. Pixels are given in art
+// pixels from the foot (the body's centre x, its last row): { dx, dy, a } with a = 2 in the core and 1 in the rim. The walk's canvas draws it by alpha (SHADOW_ALPHA), the indexed place
+// buffers by an ordered dither of the dark table (SHADOW_DITHER, of 16); both read the same pixels, so a stone looks the same in the walk, the whole-place view and on the map.
+export const SHADOW_KIND = /^(rock-a|rock-b|boulder-[ade]|boulder-grey|boulder-brown)(-m)?$/;   // the places' stone and boulder pieces (not the stump, not the turf rock, not a tree)
+export const SHADOW_ALPHA = { 1: 0.14, 2: 0.18 }, SHADOW_DITHER = { 1: 5, 2: 10 };   // the core is drawn over the rim, so its total is the sum
+export function shadowPixels(w) {
+  const rx = Math.max(4, Math.round(w / 2) + 1), ry = Math.max(2, Math.round(w / 6)), out = [];
+  for (let dy = -ry; dy <= ry; dy++) for (let dx = -rx; dx <= rx; dx++) { const d = (dx * dx) / (rx * rx) + (dy * dy) / ((ry + 0.5) * (ry + 0.5)); if (d <= 1) out.push({ dx: dx + 1, dy: dy + 1, a: d < 0.5 ? 2 : 1 }); }
+  return out;
+}
+// On a canvas context: `u` the size of an art pixel on the screen (1 for a place's sprite, 3 for a 48 px stone file), cx and cy the foot on the screen, w the body's width in art pixels.
+export function contactShadow(g, cx, cy, w, u = 1) {
+  const px = shadowPixels(w), save = g.fillStyle;
+  for (const a of [1, 2]) { g.fillStyle = `rgba(20,27,27,${SHADOW_ALPHA[a]})`; for (const p of px) if (p.a >= a) g.fillRect(cx + p.dx * u, cy + p.dy * u, u, u); }
+  g.fillStyle = save;
+}
+
 // Fog and veil edges at 48 are drawn in eighths (12 px), opened by a disc (eighthGrid); the quarter look (24 px) is its fallback. The 8-neighbour mask `m8` holds the far-side state of a tile's neighbours, bit 0 N, 1 NE, 2 E,
 // 3 SE, 4 S, 5 SW, 6 W, 7 NW (NB9's order). `quarterFar(own, m8)` gives the tile's four quarters as bits (nw 1, ne 2, sw 4, se 8): all four when the tile
 // itself is far; otherwise a quarter is far when both sides meeting at its corner are far, unless all four orthogonal neighbours are far (a lone near tile

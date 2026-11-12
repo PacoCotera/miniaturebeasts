@@ -256,7 +256,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, reviveLayers, overviewReady, CW as OCW, CH as OCH } from "./src/world7.mjs";
 import { readyRealm, readyOverview } from "./src/realm-store.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN, contactShadow } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
@@ -5450,8 +5450,9 @@ function drawPatchBody(t) {
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
-    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) });
-    else items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
+    const sd = f.kind === 'k' && !lay.cave && a.dx !== undefined ? () => contactShadow(g, SX(x) + a.dx + (a.w >> 1), SY(y) + a.dy + a.h - 1, a.w / 3, 3) : () => {};   // the one shared contact shadow under a field stone (3 px to an art pixel in its 48 px file), drawn with it
+    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => { sd(); blit(a, SX(x), SY(y), rr); } });
+    else items.push({ y: y + 1, d: () => { sd(); blit(a, SX(x), SY(y), rr); } }); }
   // a landmark's own piece (art/props: the Windstep's lone tree, the Reedpool's island stone), drawn at its tile once the tile is seen; the tree stands on its foot, the stone in the middle of the tile
   { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
     if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }

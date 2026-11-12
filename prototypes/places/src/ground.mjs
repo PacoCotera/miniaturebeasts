@@ -3,7 +3,7 @@
 // A `win` is { x, y, w, h }: the place pixels, at the drawn size (48 or 24), that a buffer covers.
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
-import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
+import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame, shadeStone } from './sprites.mjs';
 import { BAYER4, eighthGrid, coverE, stormStep } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade.
@@ -37,7 +37,7 @@ export function renderGround(ts, place, size, win, clockMs = 0) {
       blitTile(buf, win.w, win.h, i * size - half - win.x, j * size - half - win.y, atlas, tileSlot(ts, id, clockMs), size);
     }
   }
-  for (const d of place.decals) blitPlaced(buf, win, ts, size, d.kind, d.x, d.y, walkFrame(ts.sprites[d.kind], clockMs));
+  for (const d of place.decals) { shadeStone(buf, win, ts, size, d.kind, d.x, d.y); blitPlaced(buf, win, ts, size, d.kind, d.x, d.y, walkFrame(ts.sprites[d.kind], clockMs)); }   // a stone decal takes the one shared contact shadow first
   return buf;
 }
 
