@@ -283,7 +283,18 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     if (patchMemo.size > 400000) patchMemo.clear();
     return patchMemo.get(k);
   };
-  const shrubAt = (x, y) => inMap(x, y) && G(x, y) === SCRUB && !near9(x, y, 4) && (bigShrub(x, y) || smallPatchShrub(x, y));
+  // Four shrubs at the sides of one open tile (they touch only at the corners, which the no-touching rule allows) would shut that tile in: of such a ring the shrub that comes last in the order is left out.
+  // Each of the four reads the same ring and the same loser, so the answer is still a function of the world alone.
+  const ringLoser = (x, y) => {
+    for (const [dx, dy] of SIDE4) {
+      const cx = x + dx, cy = y + dy; if (!inMap(cx, cy) || (flags(cx, cy) & 1)) continue;
+      let last = null;
+      for (const [ex, ey] of SIDE4) { const a = cx + ex, b = cy + ey; if (!bigShrub(a, b) || near9(a, b, 4)) { last = null; break; } if (!last || before(last[0], last[1], a, b)) last = [a, b]; }
+      if (last && last[0] === x && last[1] === y) return true;
+    }
+    return false;
+  };
+  const shrubAt = (x, y) => inMap(x, y) && G(x, y) === SCRUB && !near9(x, y, 4) && ((bigShrub(x, y) && !ringLoser(x, y)) || smallPatchShrub(x, y));
 
   // ---- the decor of the biome grounds (map-rules.json `ground`, the art director's per-100 values): leaf litter, dry grass, short turf and scree each take pieces on their plain tiles (a full cell clear of every edge) ----
   // One draw a tile picks at most one entry (by the entries' rates in order); of two candidates beside each other, corners too, the lower hash wins, so none ever touch (a greedy choice, a function of the world alone).

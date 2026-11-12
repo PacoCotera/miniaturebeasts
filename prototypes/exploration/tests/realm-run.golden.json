@@ -1,5 +1,5 @@
 {
- "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world. Retaken for realm revision 2: the coast.",
+ "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world. Retaken for realm revision 2: the coast. Retaken after revisions 3 and 4 of the coast, the blocking boulders, the turf rock cluster and the scrub shrub ring rule.",
  "seed": 7,
  "gen": 7,
  "expeditions": 20,
@@ -7,7 +7,7 @@
  "dock": 0,
  "stopMid": false,
  "presses": 4277,
- "digest": "97bd1e31d71c0e14f10023cc7580350cccc1fec5560a9ff8cd9450875d0d2c01",
+ "digest": "1078e8945f8c8a4bdeddce190dc86f96f0f598ab30a040d4c1bfbeae0dac2f9b",
  "steps": [
   {
    "n": 1,
@@ -70,91 +70,91 @@
    "presses": 2054,
    "turn": 9,
    "bay": 3,
-   "d": "aa21cbdb9208e35a"
+   "d": "22c99c70f523a4dc"
   },
   {
    "n": 10,
    "presses": 2235,
    "turn": 10,
    "bay": 3,
-   "d": "7edce4f6cf8f0b29"
+   "d": "516234172ec7694a"
   },
   {
    "n": 11,
    "presses": 2257,
    "turn": 11,
    "bay": 3,
-   "d": "49dae9ead683b94f"
+   "d": "07bd75c4bdc11d83"
   },
   {
    "n": 12,
    "presses": 2541,
    "turn": 12,
    "bay": 0,
-   "d": "015a5a8b3fb8cfe7"
+   "d": "95492b36cbf327fa"
   },
   {
    "n": 13,
    "presses": 2883,
    "turn": 13,
    "bay": 0,
-   "d": "73a9aea9cf55e2f6"
+   "d": "4e824bbb464f9e09"
   },
   {
    "n": 14,
    "presses": 3162,
    "turn": 14,
    "bay": 0,
-   "d": "4b44021429fb3681"
+   "d": "c6c91005e1a50bd4"
   },
   {
    "n": 15,
    "presses": 3211,
    "turn": 15,
    "bay": 0,
-   "d": "a79abea99071000c"
+   "d": "848d1ada72225f85"
   },
   {
    "n": 16,
    "presses": 3548,
    "turn": 16,
    "bay": 0,
-   "d": "fd40b0bc635e8463"
+   "d": "cebcc2813e7d00b4"
   },
   {
    "n": 17,
    "presses": 3686,
    "turn": 17,
    "bay": 0,
-   "d": "c761b5d9dcbd07cb"
+   "d": "b25c23c2795fd856"
   },
   {
    "n": 18,
    "presses": 3933,
    "turn": 18,
    "bay": 0,
-   "d": "a9bc6ef1b712b44b"
+   "d": "b88e6a249e652b8c"
   },
   {
    "n": 19,
    "presses": 4218,
    "turn": 19,
    "bay": 1,
-   "d": "1072f7c45f699b10"
+   "d": "6018e15c184f8c76"
   },
   {
    "n": 20,
    "presses": 4277,
    "turn": 20,
    "bay": 1,
-   "d": "97bd1e31d71c0e14"
+   "d": "1078e8945f8c8a4b"
   }
  ],
  "summary": {
   "turn": 20,
   "expN": 21,
   "gen": 7,
-  "revealed": 155,
+  "revealed": 156,
   "visited": 45,
   "called": 40,
   "pods": 67,

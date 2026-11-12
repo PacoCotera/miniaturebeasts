@@ -178,6 +178,9 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
       for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) if (at(src, x + ox, y + oy) === v && at(src, x + ox + 1, y + oy) === v && at(src, x + ox, y + oy + 1) === v && at(src, x + ox + 1, y + oy + 1) === v) ok = true;
       if (ok) continue;
       if (toGrass && v === TV.GRASS) {   // a bit of grass with no 2 x 2 block: it joins the terrain round it when that is legal and gives it a 2 x 2 block; else it gets a 2 x 2 block of grass of its own
+        let held = false;   // a tile an earlier one of this pass has just given a 2 x 2 block (src is the pass's start) stays grass: reading src alone made the two undo each other every pass, and an even count of passes left both lone
+        for (let oy = -1; oy <= 0 && !held; oy++) for (let ox = -1; ox <= 0 && !held; ox++) if (at(a, x + ox, y + oy) === v && at(a, x + ox + 1, y + oy) === v && at(a, x + ox, y + oy + 1) === v && at(a, x + ox + 1, y + oy + 1) === v) held = true;
+        if (held) continue;
         cnt.fill(0); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const u = at(a, x + dx, y + dy); if (u !== v && !never(u)) cnt[u]++; }
         let best = -1, bc = 0; for (let u = 1; u < 16; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
         if (best >= 0) {
