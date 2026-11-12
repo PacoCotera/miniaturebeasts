@@ -37,7 +37,7 @@ export function renderGround(ts, place, size, win, clockMs = 0) {
       blitTile(buf, win.w, win.h, i * size - half - win.x, j * size - half - win.y, atlas, tileSlot(ts, id, clockMs), size);
     }
   }
-  for (const d of place.decals) blitPlaced(buf, win, ts, size, d.kind, d.x, d.y, walkFrame(ts.sprites[d.kind], clockMs));
+  for (const d of place.decals) { blitPlaced(buf, win, ts, size, d.kind, d.x, d.y, walkFrame(ts.sprites[d.kind], clockMs)); }
   return buf;
 }
 

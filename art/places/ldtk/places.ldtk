@@ -1678,12 +1678,32 @@
 						"tileRect": null
 					},
 					{
-						"id": "rock-big",
+						"id": "boulder-a",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "rock-big-m",
+						"id": "boulder-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-d",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-d-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "boulder-e-m",
 						"color": 0,
 						"tileRect": null
 					},
@@ -2364,6 +2384,36 @@
 					},
 					{
 						"id": "shrub-heather-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf-m",
 						"color": 0,
 						"tileRect": null
 					}

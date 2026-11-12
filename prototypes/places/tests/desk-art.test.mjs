@@ -17,7 +17,7 @@ const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', '704373a58', '75f1ff195', '8c0ddc470', 'a6d2e0be4', 'cc712a83e', 'ffa823829']);
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', '704373a58', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e'].sort());
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
     assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
@@ -28,7 +28,7 @@ test('every map picture is in the new map palette: no pastel colour is left', ()
   // two files carry one colour the palette table does not list: the scrub ground (SCRUB_GROUND: the grass's value, drier and yellower, made for the map) and the sand way-up's one painted sand tone (signed as is)
   const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : n === 'wayup-cliff-sand.png' ? ['#dfd387'] : []);
   for (const n of Object.keys(desk)) {
-    if (['75f1ff195', '8c0ddc470', 'a6d2e0be4', 'cc712a83e', 'ffa823829'].includes(desk[n].commit)) continue;   // the biome grounds (8c0ddc470), the biome decor (a6d2e0be4) and the walk's sprites are the art director's signed bytes in their own colours (mb-74), never recoloured; the set's palette holds them (prepare-set checks the limit)
+    if (['75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e'].includes(desk[n].commit)) continue;   // the biome grounds (8c0ddc470), the biome decor (a6d2e0be4) and the walk's sprites are the art director's signed bytes in their own colours (mb-74), never recoloured; the set's palette holds them (prepare-set checks the limit)
     const im = img(n), r = recolour(im);
     assert.deepEqual(r.left.filter((c) => !ALLOWED(n).includes(c)), [], n + ' holds colours outside the map palette');
     // the reed sprites are painted in the new reed ramp; their cattail heads are mapped to the applied ramp (#664330, #7c5a3d): the desk's old browns are gone
@@ -118,24 +118,25 @@ test('the map decor: the kit names stay and draw the signed pieces, the tree is 
   assert.equal(set.canopy['tree-broad-crown'].rect[3], 107);
   assert.deepEqual(set.props['tree-broad'].anchor, [67, 24]);
   assert.deepEqual(set.canopy['tree-broad-crown'].anchor, [67, 131]);
-  for (const n of ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'stump']) assert.deepEqual(set.props[n].footprint, [[0, 0]], n);
+  for (const n of ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'stump']) assert.deepEqual(set.props[n].footprint, [], n + ' is stepped over or pushed through');
   assert.deepEqual(set.props['tree-hollow'].rect.slice(2), [171, 160], 'the signed hollow tree is 171 x 160');
   assert.deepEqual(set.props['split-stone'].rect.slice(2), [60, 46]);
   assert.deepEqual(set.props['tree-hollow'].footprint.length, 8, 'its footprint is as the kit\'s');
   for (const n of ['tall-grass', 'tall-grass-b', 'tall-grass-m', 'tall-grass-bm']) assert.deepEqual(set.props[n].footprint, [], n + ' blocks nothing');
-  for (const f of ['tree-trunk.png', 'tree-crown.png', 'bush-round.png', 'rock-a.png', 'rock-b.png', 'rock-big.png', 'rock-big-m.png', 'tufts-1.png', 'shrub-1.png', 'stump.png', 'flowers-1.png', 'flowers-blue-pair.png', 'hollow-tree.png', 'split-stone.png']) assert.ok(desk[f], f + ' is recorded');
+  for (const f of ['tree-trunk.png', 'tree-crown.png', 'bush-round.png', 'rock-a.png', 'rock-b.png', 'boulder-a.png', 'boulder-a-m.png', 'boulder-d.png', 'boulder-e.png', 'tufts-1.png', 'shrub-1.png', 'stump.png', 'flowers-1.png', 'flowers-blue-pair.png', 'hollow-tree.png', 'split-stone.png']) assert.ok(desk[f], f + ' is recorded');
   assert.equal(set.props.reeds, undefined, 'the kit\'s bamboo reeds are gone');
   assert.ok(!set.decals['flower-sun'] && !set.decals['flower-sun-small'], 'the kit\'s sunflowers are retired');
 });
 
 test('the signed boulders (three shapes, each mirrored) and the meadow plants in three sizes are in the set, at the manifest\'s sizes and feet', () => {
-  // mibi-art ffa823829: rock-a 15 x 12 (foot 7, 11), rock-b 13 x 14 (6, 13), rock-big 24 x 18 (12, 17); a mirror's foot is across the picture
-  for (const [n, size, foot, mfoot] of [['rock-a', [15, 12], [7, 11], [7, 11]], ['rock-b', [13, 14], [6, 13], [6, 13]], ['rock-big', [24, 18], [12, 17], [11, 17]]]) {
-    assert.deepEqual(set.props[n].rect.slice(2), size, n); assert.deepEqual(set.props[n].anchor, foot, n); assert.deepEqual(set.props[n].footprint, [[0, 0]], n);
+  // mibi-art 9c902c7ec (art/art-fix-map-pieces, out/a2 and a2b): the two small stones 16 x 16 (foot 8, 15; walk-over), boulder A 23 x 23 (11, 22; blocks), D 24 x 13 and E 24 x 18 (12, 12 and 12, 17; walk-over, under the shoulder); a mirror's foot is across the picture
+  for (const [n, size, foot, mfoot, block] of [['rock-a', [16, 16], [8, 15], [7, 15], 0], ['rock-b', [16, 16], [8, 15], [7, 15], 0], ['boulder-a', [23, 23], [11, 22], [11, 22], 1], ['boulder-d', [24, 13], [12, 12], [11, 12], 0], ['boulder-e', [24, 18], [12, 17], [11, 17], 0]]) {
+    assert.deepEqual(set.props[n].rect.slice(2), size, n); assert.deepEqual(set.props[n].anchor, foot, n); assert.deepEqual(set.props[n].footprint, block ? [[0, 0]] : [], n);
     assert.deepEqual(set.props[`${n}-m`].rect.slice(2), size, n + '-m'); assert.deepEqual(set.props[`${n}-m`].anchor, mfoot, n + '-m');
-    assert.equal(desk[`${n}.png`].commit, 'ffa823829');
+    assert.equal(desk[`${n}.png`].commit, '9c902c7ec');
   }
-  assert.deepEqual([set.props['boulder-grey'].rect.slice(2), set.props['boulder-brown'].rect.slice(2)], [[15, 12], [13, 14]], 'the hand-set places\' kit names draw the first two shapes');
+  assert.equal(set.props['rock-big'], undefined, 'the 18 px boulder is retired');
+  assert.deepEqual([set.props['boulder-grey'].rect.slice(2), set.props['boulder-brown'].rect.slice(2)], [[16, 16], [16, 16]], 'the hand-set places\' kit names draw the two small stones');
   // every plant in three sizes with a mirror: young and grown from the steps folder, the middle the signed piece; the grown is taller than the middle, the middle than the young
   for (const s of ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-3', 'clump-tall', 'clump-tall-s', 'shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-round']) {
     const h = (st) => set.decals[`sc-${s}${st}`].rect[3];

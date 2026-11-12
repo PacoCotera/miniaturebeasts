@@ -82,6 +82,7 @@ export function writePlace(pl) {
   const openings = tableVec(b, pl.openings, (bb, o) => G.Opening.createOpening(bb, num(G.Side, o.side, 'side'), o.from, o.to), (bb, v) => G.Place.createOpeningsVector(bb, v));
   const spawns = tableVec(b, pl.spawns, (bb, s) => G.Spawn.createSpawn(bb, s.x, s.y, s.w, s.h, strVec(bb, s.species, (b2, v) => G.Spawn.createSpeciesVector(b2, v)), s.count), (bb, v) => G.Place.createSpawnsVector(bb, v));
   const block = G.Place.createBlockMaskVector(b, pl.blockMask);
+  const top = pl.top && pl.top.length ? G.Place.createTopVector(b, pl.top) : 0;
   const id = b.createString(pl.id);
   const set = b.createString(pl.set);
   G.Place.startPlace(b);
@@ -105,6 +106,7 @@ export function writePlace(pl) {
   G.Place.addOpenings(b, openings);
   G.Place.addSpawns(b, spawns);
   G.Place.addBlockMask(b, block);
+  if (top) G.Place.addTop(b, top);
   b.finish(G.Place.endPlace(b), PLACE_ID);
   return b.asUint8Array().slice();
 }

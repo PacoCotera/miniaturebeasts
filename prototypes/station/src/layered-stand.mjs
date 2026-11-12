@@ -49,7 +49,7 @@ export function layeredStand(species, stage, place, view = "default", pose = "an
 }
 // The pose a habit shows a stage in: { pose, owed }. The pose the species' habits map the habit to, when that pose is cut for the stage; else the curl (owed is always null now). Pure: the index's data and the placed masters only.
 export const HABIT_POSE = { "sleep-curled": "curl", puff: "puff", sniff: "sniff", dig: "dig", glow: "glow", "shake-dry": "shake", calm: "calm",
-  ...Object.fromEntries(["knob-balance", "tiptoe", "warm-sit", "stone-sense", "spine-count", "slab-lift", "stand-broad", "break-through", "fan-tilt", "bank-dig", "crown-bow", "high-look", "crest-rise", "ride-current", "tip-tap", "pod-carry", "plume-bob", "dew-find", "arm-stilt", "find-hug", "stretch-long", "fog-lift", "light-lean", "root-down", "tumble", "catch-strike", "look-up", "beacon-sit", "settle-wide", "wind-stream", "tail-hold", "wave-hello", "coin-ruffle", "hop-down"].map((k) => [k, k])) };
+  ...Object.fromEntries(["knob-balance", "tiptoe", "warm-sit", "stone-sense", "spine-count", "slab-lift", "stand-broad", "break-through", "fan-tilt", "bank-dig", "crown-bow", "high-look", "crest-rise", "ride-current", "tip-tap", "pod-carry", "plume-bob", "dew-find", "arm-stilt", "find-hug", "stretch-long", "fog-lift", "light-lean", "fog-wait", "tumble", "catch-strike", "look-up", "beacon-sit", "settle-wide", "wind-stream", "tail-hold", "wave-hello", "coin-ruffle", "hop-down"].map((k) => [k, k])) };
 export function poseFor(species, stage, habit) {
   const pose = INDEX?.stands?.[species]?.habits?.[habit];
   if (pose && INDEX?.stands?.[species]?.[stageKey(stage)]?.poses?.[pose]) return { pose, owed: null };

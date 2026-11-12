@@ -455,7 +455,7 @@ test("no Companion line carries a skill count; the status line is exactly one li
   const ctx = vm.createContext({ console, S, JUVENILE_TURNS: 2, ELDER_TURNS: 16, isDocked: () => false });
   const names = ["mibiById", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "partnerMibi", "activeStatus"];
   const a = vm.runInContext(names.map(source).join("\n") + "\n;({ activeStatus })", ctx);
-  const LINES = ["with you · leads the Probe", "with you · can lead the Probe", "with you · too young for the Probe", "with you · grows with care", "at home", "at home · grows on the Companion"];
+  const LINES = ["with you · leads the Probe", "with you · can lead the Probe", "with you · too young for the Probe", "with you · grows up in time", "at home", "at home · grows up in time"];
   ctx.CARE_TEXT = { stLeads: LINES[0], stCanLead: LINES[1], stTooYoung: LINES[2], stGrowsWithCare: LINES[3], stHome: LINES[4], stHomeBonded: LINES[5] };
   const [dot, moss, fig, pip] = S.mibis; S.mibis.forEach(m => { m.notches = 3; });
   fig.born = 2; pip.born = 3; pip.bonded = true; pip.bondCare = 0;
@@ -543,10 +543,10 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 16, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs out narrow burrows" }],
     FX: {}, goalForms: () => "", shownMsg: () => "", viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
-    panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, drawOpenLand: () => {}, stormFor: () => ({ dir: 1 }), brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, OPEN_ART: { ready: false }, G: { gate: 0 }, STAGE_WORD: {},
+    panel: noop, card: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, firstPlacement: () => true, drawOpenLand: () => {}, stormFor: () => ({ dir: 1 }), stormAt: () => ({ dir: 1 }), teachStep: () => "", openWay: () => 0, brackets: noop, ringArt: noop, upArt: noop, silhouette: noop, podArt: noop, OPEN_ART: { ready: false }, G: { gate: 0 }, STAGE_WORD: {},
     OPEN_TEXT: { dark: "dark", stormEast: "e", stormWest: "w", chargeStones: "charge", digs: n => n + " digs", needsTuikis: "needs a Tuikis", firstWalk: "first", firstFind: "find", firstGrows: "grows", flat: "flat", docked: "docked" },
-    CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
-  const names = ["OPEN_FRAME", "deepShown", "openCreature", "drawSetup", "digger", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
+    CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows up in time", youngTime: "young · grows up in time" } });
+  const names = ["OPEN_FRAME_BASE", "openAlone", "openRect", "deepShown", "openCreature", "drawSetup", "digger", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   S.known = [2]; vm.runInContext(ACCESSOR() + names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
@@ -994,8 +994,8 @@ test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a r
   assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 116 && c[3] === 452 && c[5] === 3), "its name at (116, 452), 3×");
   assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 124 && c[3] === 491), "the young chip at (116, 488)");
   const lines = d.filter(c => c[0] === "text" && c[3] === 520 && c[2] === 116); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line, unbonded");
-  assert.equal(lines[0][4], p.run("C.fog"));
-  for (const no of ["No partner", "young · grows in time", "young · grows with care"]) assert.ok(!d.some(c => c[0] === "text" && c[1] === no), "no " + no);
+  assert.equal(lines[0][4], p.run("C.mist"));
+  for (const no of ["No partner", "young · grows up in time"]) assert.ok(!d.some(c => c[0] === "text" && c[1] === no), "no " + no);
   p = X26.world([dot({ bonded: true })], [1]); d = p.draw("setup");
   assert.ok(d.some(c => c[0] === "text" && c[1] === T.riderCare && c[3] === 520), "bonded: riderCare");
   p = X26.world([dot(), X26.mib(3, "Moss", 2)], [3, 1]); d = p.draw("setup");
@@ -1054,7 +1054,7 @@ test("X26 §5.8: activeStatus with you: an unbonded juvenile exactly stTooYoung,
   const p = X26.world([dot(), X26.mib(3, "Moss", 2, { bonded: true })], [1, 3]);
   assert.equal(p.run("activeStatus(mibiById(1))"), p.run("CARE_TEXT.stTooYoung")); assert.equal(p.run("activeStatus(mibiById(3))"), p.run("CARE_TEXT.stGrowsWithCare"));
   p.setOut();
-  assert.equal(p.run("activeStatus(mibiById(1))"), "with you · too young for the Probe"); assert.equal(p.run("activeStatus(mibiById(3))"), "with you · grows with care");
+  assert.equal(p.run("activeStatus(mibiById(1))"), "with you · too young for the Probe"); assert.equal(p.run("activeStatus(mibiById(3))"), "with you · grows up in time");
 });
 
 test("X26 §5.9: a save made before this change loads and plays; an expedition in progress without ex.rider shows the empty slot and does not throw", () => {
@@ -1077,7 +1077,7 @@ test("X26 bottom line: mid-expedition with a rider the menu's Mibis row reads ri
 
 test("X26 copy: the copywriter's signed strings, within their widths", () => {
   const p = X1.page(), T = p.run("CARE_TEXT"), N = "Abcdefghij";
-  assert.equal(T.riderTime, "grows in time in the Companion"); assert.equal(T.riderCare, "grows with care in the Companion");
+  assert.equal(T.riderTime, "grows up in time, riding along"); assert.equal(T.riderCare, "grows up in time, riding along");
   assert.equal(T.riderSetOut("Dot"), "Dot rides along until it’s grown"); assert.equal(T.riderMenu("Dot"), "Dot rides along");
   assert.equal(T.walkedYoung("Dot", "pond"), T.walkedOther("Dot", "pond"), "walkedYoung shares walkedOther's string");
   const w = (s, f = "textW") => p.run(`${f}(${JSON.stringify(s)}, 2)`), wide = "W".repeat(10), nm = w(wide) <= 118 ? wide : N;

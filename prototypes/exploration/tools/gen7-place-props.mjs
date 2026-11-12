@@ -78,7 +78,7 @@ export function placeProps(seed) {
       // the map's end closes itself
       for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) {
         const gx = X * CW + x, gy = Y * CH + y;
-        if (Math.min(gx, gy, RW * CW - 1 - gx, RH * CH - 1 - gy) < 4) { st.bandTiles++; const v = inner(x, y); if (v !== TV.WATER && v !== TV.THICKET) st.bandWalkable++; }
+        if (Math.min(gx, gy, RW * CW - 1 - gx, RH * CH - 1 - gy) < 4) { st.bandTiles++; const v = inner(x, y); if (v !== TV.WATER && v !== TV.DEEP && v !== TV.THICKET) st.bandWalkable++; }
       }
     }
     // cliff runs: maximal straight stretches of the raised land's edge, in the region's stitched tiles (a run that touches the stitched edge is cut by it and left out)

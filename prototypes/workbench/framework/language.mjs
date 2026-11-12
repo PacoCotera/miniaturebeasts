@@ -179,7 +179,7 @@ const EYE_RIM_KINDS = ["S05", "S06", "S10", "S11"];
 const K = (id, name, family, land, material, pile, sig, socket, count, curl, accent = "land", extra = {}) =>
   ({ id, name, family, land, coat: { material, pile }, signature: { type: sig, socket, count, curl, accent }, eyes: { count: 2 }, ...extra });
 export const KINDS = [
-  K("S01", "Loika", "trotter", "woods", "felt", null, "leaf crest", "head-top", [1, 5, 3], null, "own", { anchor: true }),   // one to five leaves, three the stand's own (art desk, chunk 5 rulings: the trial grew one to five)
+  K("S01", "Loika", "trotter", "all", "felt", null, "leaf crest", "head-top", [1, 5, 3], null, "own", { anchor: true }),   // one to five leaves, three the stand's own (art desk, chunk 5 rulings: the trial grew one to five)
   K("S02", "Untuva", "loaf", "downs", "fur", "fleece", "felt lobe fan", "head-top", [4, 7, 5], null),
   K("S03", "Tuikis", "hopper", "fells", "suede", null, "tail swelling into a glowing tip", "tail", null, [0, 0.15], "land", { coatNote: "speckled suede, short and close with a slight nap", coatPattern: { scale: "fine", spotMax: 1 / 12 } }),
   K("S04", "Hiljan", "climber", "tallwood", "velvet", null, "two blunt horn-knobs", "head-top", 2, null),
@@ -317,6 +317,10 @@ export const LANGUAGE = {
 export const landOf = (reg, id) => reg.lands.find((l) => l.id === id);
 export const familyOf = (reg, id) => reg.families.find((f) => f.id === id);
 export const kindOf = (reg, id) => reg.kinds.find((k) => k.id === id);
+// "all" is the one reserved land value (the Loika, owner 2026-11-11 01:23: everywhere); it is not a land in lands[].
+export const ALL_LANDS = "all";
+// The one reader of a kind's land: the nine land ids for "all", otherwise its own.
+export const kindLands = (reg, kind) => (kind.land === ALL_LANDS ? reg.lands.map((l) => l.id) : [kind.land]);
 export const exceptionsFor = (reg, kindId, check = null) => reg.exceptions.filter((e) => e.kind === kindId && (check === null || e.check === check));
 // A check is excepted for a kind only by a record naming both; never by an anchor flag.
 export const isExcepted = (reg, kindId, check) => exceptionsFor(reg, kindId, check).length > 0;
@@ -364,7 +368,7 @@ export function checkLands(reg) {
   const msgs = [];
   const ks = roster(reg);
   for (const land of reg.lands) {
-    const on = ks.filter((k) => k.land === land.id);
+    const on = ks.filter((k) => k.land !== ALL_LANDS && kindLands(reg, k).includes(land.id));   // the home kinds of the land; a kind in every land is none land's own
     if (on.length < 1 || on.length > 3) msgs.push(`${land.art} has ${on.length} kinds; one to three`);
     for (const [fam, same] of by(on, (k) => k.family)) if (same.length > 1) msgs.push(`${land.art}: ${same.map((k) => k.id).join(" and ")} share the family ${fam}`);
   }
@@ -375,7 +379,7 @@ export function checkComplete(reg) {
   const msgs = [];
   const landIds = new Set(reg.lands.map((l) => l.id)), famIds = new Set(reg.families.map((f) => f.id));
   for (const k of roster(reg)) {
-    if (!landIds.has(k.land)) msgs.push(`${k.id}: land ${JSON.stringify(k.land)} is not one of the nine`);
+    if (k.land !== ALL_LANDS && !landIds.has(k.land)) msgs.push(`${k.id}: land ${JSON.stringify(k.land)} is not one of the nine or "all"`);
     if (!famIds.has(k.family)) msgs.push(`${k.id}: unknown family ${JSON.stringify(k.family)}`);
     if (!COAT_MATERIALS.includes(k.coat?.material)) msgs.push(`${k.id}: coat material ${JSON.stringify(k.coat?.material)} is not in the list`);
     if (k.coat?.material === "fur" && !FUR_PILES.includes(k.coat.pile)) msgs.push(`${k.id}: fur needs a pile kind`);

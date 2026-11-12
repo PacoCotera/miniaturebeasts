@@ -45,7 +45,7 @@ the Station the pod is identified and hatches; then the world turns once.
   winding clearings of dry grass; Marsh is
   a net of wide channels and pools; Lakes and Highpools have a sand shore all round every body of
   water; Cliffs are scree flats between the shelves. One biome thins into the next over a dozen
-  tiles, never on a place's edge. Raised land keeps its meadow top for now.
+  tiles, never on a place's edge. Raised land stands on its biome's ground too: leaf litter on a raised wood, scree on a raised rock field.
 - **Height and edges.** The land has three height levels, and neighbouring
   cells differ by at most one. Where two cells meet at different
   heights the edge between them is a cliff, which blocks, or a stair, which is
@@ -247,7 +247,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 | Material | What it is | Gathered from (**Decided**) | Amounts (**Built**) |
 | --- | --- | --- | --- |
 | **Energy** | Charge; in the field, the Probe's own | Storm-struck stones; warm stones | +2 (+3 at the peak); warm +1 |
-| **Data** | Records of something that happened | Creature moments the player causes (+1); strike marks the player reads (up to 2 / 4 / 6 / 8 a trip, by the highest tier entered) | +1 an act; a reading tops the trip up to its tier's yield |
+| **Data** | Records of something that happened | Creature moments the player causes (+1); strike marks the player reads (2 / 3 / 4 / 5 each, by the tier of the place; the hold of 20 is the only limit) | +1 an act; a reading adds its place tier's amount |
 | **Essence** | Living matter | Dew, pressed fruit, shed tufts | dew +1, fruit +2, tuft +1 |
 
 - **Warm stones.** At each world turn an unstruck stone can hold a warm charge of

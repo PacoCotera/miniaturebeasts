@@ -1795,8 +1795,20 @@ var Place = class _Place {
     const offset = this.bb.__offset(this.bb_pos, 42);
     return offset ? new Uint8Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
   }
+  top(index) {
+    const offset = this.bb.__offset(this.bb_pos, 44);
+    return offset ? this.bb.readUint8(this.bb.__vector(this.bb_pos + offset) + index) : 0;
+  }
+  topLength() {
+    const offset = this.bb.__offset(this.bb_pos, 44);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  topArray() {
+    const offset = this.bb.__offset(this.bb_pos, 44);
+    return offset ? new Uint8Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+  }
   static startPlace(builder) {
-    builder.startObject(20);
+    builder.startObject(21);
   }
   static addId(builder, idOffset) {
     builder.addFieldOffset(0, idOffset, 0);
@@ -1976,6 +1988,19 @@ var Place = class _Place {
     return builder.endVector();
   }
   static startBlockMaskVector(builder, numElems) {
+    builder.startVector(1, numElems, 1);
+  }
+  static addTop(builder, topOffset) {
+    builder.addFieldOffset(20, topOffset, 0);
+  }
+  static createTopVector(builder, data) {
+    builder.startVector(1, data.length, 1);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addInt8(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startTopVector(builder, numElems) {
     builder.startVector(1, numElems, 1);
   }
   static endPlace(builder) {

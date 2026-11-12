@@ -33,8 +33,10 @@ test('terrain becomes the page tile of terrain.json, prop footprints become trun
   assert.ok(water > 20 && path_ > 20);
   const tree = place.props.find((p) => ts.sprites[p.kind].kind === 'tree-broad');
   assert.equal(at(lay, Math.floor(tree.x / 48), Math.floor(tree.y / 48)), T.TRUNK);
-  const rock = place.props.find((p) => ts.sprites[p.kind].kind === 'boulder-brown');
-  assert.equal(at(lay, Math.floor(rock.x / 48), Math.floor(rock.y / 48)), T.ROCK);
+  const rock = place.props.find((p) => ['boulder-a', 'split-stone'].includes(ts.sprites[p.kind].kind));
+  if (rock) assert.equal(at(lay, Math.floor(rock.x / 48), Math.floor(rock.y / 48)), T.ROCK);
+  const low = place.props.find((p) => ts.sprites[p.kind].kind === 'boulder-brown');   // a low stone is stepped over: no rock under it
+  if (low) assert.notEqual(at(lay, Math.floor(low.x / 48), Math.floor(low.y / 48)), T.ROCK);
   const tall = place.props.find((p) => ts.sprites[p.kind].kind === 'tall-grass');
   assert.equal(at(lay, Math.floor(tall.x / 48), Math.floor(tall.y / 48)), T.TALL);
   assert.equal(T_BLOCK[T.TALL], 0);
@@ -46,12 +48,14 @@ test('the openings and the find slots come from the place, shifted into the page
   assert.deepEqual(lay.findSlots[0], { x: place.finds[0].x + 5, y: place.finds[0].y + 5, kinds: place.finds[0].kinds, chance: place.finds[0].chance });
 });
 
-test('the press mask (lay.press) marks a boulder and a tree trunk, never a bush', () => {
+test('the press mask (lay.press) marks a boulder and a tree trunk, never a low stone or a bush; those do not block', () => {
   const tileOf = (p) => (Math.floor(p.y / 48) + lay.baked.oy) * PW + Math.floor(p.x / 48) + lay.baked.ox;
-  const rock = place.props.find((p) => ts.sprites[p.kind].kind === 'boulder-brown'), tree = place.props.find((p) => ts.sprites[p.kind].kind === 'tree-broad');
-  const bush = place.props.find((p) => String(ts.sprites[p.kind].kind).startsWith('bush'));
-  assert.equal(lay.press[tileOf(rock)], 1); assert.equal(lay.press[tileOf(tree)], 2);
-  if (bush) { assert.equal(T_BLOCK[lay.tiles[tileOf(bush)]], 1); assert.equal(lay.press[tileOf(bush)], 0, 'a bush blocks, but is not pressed on'); }
+  const kindOf = (p) => String(ts.sprites[p.kind].kind), tree = place.props.find((p) => kindOf(p) === 'tree-broad');
+  const rock = place.props.find((p) => kindOf(p) === 'boulder-a' || kindOf(p) === 'split-stone'), low = place.props.find((p) => kindOf(p) === 'boulder-brown' || kindOf(p) === 'rock-a');
+  const bush = place.props.find((p) => kindOf(p).startsWith('bush'));
+  if (rock) { assert.equal(T_BLOCK[lay.tiles[tileOf(rock)]], 1); assert.equal(lay.press[tileOf(rock)], 1); }
+  assert.equal(lay.press[tileOf(tree)], 2);
+  for (const p of [low, bush]) if (p) { assert.equal(lay.press[tileOf(p)], 0, kindOf(p) + ' is not pressed on'); }
   assert.equal(lay.press[0], 0, 'the padding rock all round is not stone either');
 });
 

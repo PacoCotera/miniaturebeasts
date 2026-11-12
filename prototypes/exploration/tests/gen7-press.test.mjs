@@ -43,10 +43,10 @@ test("a press on each takes what it should: the stone's charge, the cup's dew, t
   face(t, t.spots.stone); assert.equal(p.run("patchAction().label"), "Take the charge"); p.key("confirm"); assert.equal(hold(p).e, 2);
   face(t, t.spots.cup); assert.equal(p.run("patchAction().label"), "Take the dew"); p.key("confirm"); assert.equal(hold(p).s, 1);
   face(t, t.spots.tuft); assert.equal(p.run("patchAction().label"), "Pick up the tuft"); p.key("confirm"); assert.equal(hold(p).s, 2);
-  face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), "Read the strike mark"); const yieldNow = p.run("walkYield(S.exp)");
-  assert.deepEqual(JSON.parse(p.run("JSON.stringify(patchAction().ctx)")), ["strike mark · +" + yieldNow + " Data", "+" + yieldNow + " Data"]);
-  p.key("confirm"); assert.equal(hold(p).d, yieldNow, "a reading tops the trip's field Data up to its tier's yield");
-  assert.equal(p.run("S.exp.dField"), yieldNow); assert.equal(p.run("FX.msg"), "Data from strikes " + yieldNow + " of " + yieldNow);
+  face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), "Read the strike mark"); const yieldNow = p.run("STRIKE_DATA[placeTier(curLay())]");
+  assert.deepEqual(JSON.parse(p.run("JSON.stringify(patchAction().ctx)")), ["strike mark · +" + yieldNow + " Data", "+" + yieldNow + " Data"], "the facing line says the amount before the press");
+  p.key("confirm"); assert.equal(hold(p).d, yieldNow, "a reading adds its place tier's fixed Data");
+  assert.equal(p.run("S.exp.dField"), yieldNow); assert.equal(p.run("FX.msg"), p.run("WORDS.strike.press(" + yieldNow + ")"));
   assert.equal(p.run("strikeIsRead(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tq'))"), true);
 });
 
@@ -60,20 +60,32 @@ test("a full hold refuses: nothing is taken, no turn passes, the thing stays whe
   assert.equal(p.run("cupFull(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tu'))"), true);
   refused(t.spots.tuft, "Essence 20 of 20 · the tuft stays where it is");
   assert.equal(p.run("curLive().tf.length"), 1);
-  refused(t.spots.mark, "Data 20 of 20 · the Probe holds no more");
+  face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), p.run("WORDS.strike.holdFull"), "no Read is offered with the hold full");
+  assert.equal(p.run("patchAction().run"), null); const before = hold(p); p.key("confirm"); assert.deepEqual(hold(p), before, "the press does nothing");
   assert.equal(p.run("strikeIsRead(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tq'))"), false);
+  assert.equal(p.run("leftCounts(layout(S.exp.patch.key).cell).strike"), 0, "an unread mark is not counted to take while the hold is full");
 });
 
-test("a trip's strikes are capped at the tier's yield: a second mark is refused, stays unread, and is not counted to take", () => {
+test("no trip limit on strikes: a tier-3 mark pays 4, ten marks pay until the hold is full, then none is offered", () => {
   const t = setup(), { p } = t, m = t.spots.mark;
-  p.run(`(() => { const P = S.exp.patch, lay = layout(P.key); lay.feats.push({ id: 'tq2', kind: 'q', x: ${m.x + 4}, y: ${m.y}, born: S.turn, glass: false }); })()`);
-  face(t, m); p.key("confirm"); const y = p.run("walkYield(S.exp)");
-  assert.equal(p.run("leftCounts(layout(S.exp.patch.key).cell).strike"), 0, "none to take once the trip's strikes are full");
-  const spot2 = { x: m.x + 4, y: m.y }; t.w.walk(spot2.x, spot2.y + 1, true, 80); p.key("up");
-  assert.deepEqual(JSON.parse(p.run("JSON.stringify(patchAction().ctx)")), ["Data from strikes " + y + " of " + y, y + " of " + y + " this trip"]);
-  const a0 = hold(p).a; p.key("confirm");
-  assert.equal(p.run("FX.msg"), "Data from strikes " + y + " of " + y + " this trip · the mark stays unread"); assert.equal(hold(p).a, a0);
-  assert.equal(p.run("strikeIsRead(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tq2'))"), false);
+  const land = p.run("curLay().land"); p.run("curLay().land = 2");   // a wood: tier 3
+  assert.equal(p.run("placeTier(curLay())"), 3); assert.equal(p.run("strikeGain(S.exp)"), 4, "a tier-3 mark pays 4");
+  p.run(`(() => { const lay = layout(S.exp.patch.key); for (let i = 0; i < 10; i++) lay.feats.push({ id: 'tq' + (i + 10), kind: 'q', x: ${m.x} + 4 * (i % 3), y: ${m.y} + 2 * (1 + Math.floor(i / 3)), born: S.turn, glass: false }); })()`);
+  p.run("S.exp.cargo.d = 0; for (const f of layout(S.exp.patch.key).feats.filter(f => f.kind === 'q')) { if (S.exp.cargo.d < CAP) readStrike(f); }");
+  assert.equal(p.run("S.exp.cargo.d"), 20, "marks pay until the hold is full, with no trip ceiling");
+  assert.ok(p.run("S.exp.stats.readings") >= 5, "more than the old tier ceiling of 4 pays");
+  assert.equal(p.run("strikeGain(S.exp)"), 0, "the hold is full");
+  p.run("curLay().land = " + land);
+});
+
+test("a mark is read only whole: with 18 held a worth-5 mark is not offered, and it stays", () => {
+  const t = setup(), { p } = t;
+  const land = p.run("curLay().land"); p.run("curLay().land = 2");
+  p.run("S.exp.cargo.d = 16"); assert.equal(p.run("strikeGain(S.exp)"), 4, "4 fits in 4");
+  p.run("S.exp.cargo.d = 17"); assert.equal(p.run("strikeGain(S.exp)"), 0, "4 does not fit in 3: no partial read");
+  face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), p.run("WORDS.strike.holdFull"));
+  assert.equal(p.run("patchAction().run"), null);
+  p.run("curLay().land = " + land);
 });
 
 test("a mark fades twelve world turns after the strike", () => {

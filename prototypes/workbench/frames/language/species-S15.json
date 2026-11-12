@@ -12,11 +12,11 @@
  },
  "taxonomy": {
   "code": "S15",
-  "moves": "walks on its roots",
+  "moves": "walks slowly, stops in any gap of sun",
   "habitat": "Hills",
-  "gate": "sealed chapter",
+  "gate": null,
   "diet": "light and dew",
-  "ability": "roots for a turn; a bush grows where it stood",
+  "ability": "finds the gaps in the fog: the map keeps clearing",
   "character": "patient, faintly wise",
   "clanName": "Phyllaxa",
   "clanNumber": 15,
@@ -104,7 +104,7 @@
  ],
  "habits": [
   "light-lean",
-  "root-down",
+  "fog-wait",
   "sleep-curled"
  ],
  "pod": {

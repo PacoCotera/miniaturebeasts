@@ -174,7 +174,7 @@
   },
   "surprise": { "one": "{Chapter} unread", "more": "{n in words} chapters unread", "budget": "208 px at 16 px, the context zone" },
   "founder": "{a/an} {Species}, fully known",
-  "notices": { "busy": "a bud is already growing", "full": "the Vivarium is full", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)", "shortFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" } },
+  "notices": { "busy": "a mibi is already growing", "full": "the Vivarium is full", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)", "shortFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" } },
   "by": "copywriter, 2026-10-09 13:27"
  },
  "placeholders": {

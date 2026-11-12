@@ -10,11 +10,11 @@
    "png": "home-teach-call.png"
   },
   "home-rest-goal": {
-   "hash": "69f74072",
+   "hash": "08be13d0",
    "png": "home-rest-goal.png"
   },
   "home-rest-needs": {
-   "hash": "ff86cd1e",
+   "hash": "e8be6d55",
    "png": "home-rest-needs.png"
   },
   "home-focus-vivarium": {
@@ -30,7 +30,7 @@
    "png": "home-focus-pods.png"
   },
   "home-focus-incubator": {
-   "hash": "7c104e7a",
+   "hash": "30394e5e",
    "png": "home-focus-incubator.png"
   },
   "home-focus-companion": {
@@ -98,15 +98,15 @@
    "png": "home-incubator-can.png"
   },
   "home-incubator-growing": {
-   "hash": "f61c34da",
+   "hash": "b435f582",
    "png": "home-incubator-growing.png"
   },
   "home-incubator-half": {
-   "hash": "eb107ce9",
+   "hash": "3a7112d5",
    "png": "home-incubator-half.png"
   },
   "home-incubator-ready": {
-   "hash": "449f112b",
+   "hash": "5145349b",
    "png": "home-incubator-ready.png"
   },
   "home-bay-waiting": {

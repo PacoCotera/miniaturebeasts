@@ -6,7 +6,7 @@
 //   Region = { id, n, kind: "home" | "season", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
 import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
-import { LANGUAGE } from "../../workbench/framework/language.mjs";
+import { LANGUAGE, kindLands } from "../../workbench/framework/language.mjs";
 
 export const REALM_SAVE_V = 10;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.
@@ -17,7 +17,9 @@ export const BIOMES = [...BIOMES_V1, "downs", "thickets", "tallwood", "tarns", "
 export const BIOME_NAME = { mixed: "Meadows", woods: "Woods", fells: "Cliffs", marsh: "Marsh", downs: "Hills", thickets: "Thickets", tallwood: "Tallwood", tarns: "Highpools", meres: "Lakes" };   // the player's words (the copywriter owns them)
 // The kinds that spawn on each land, from the language registry (a land has one to three kinds; a kind lives on one land; the registry's land ids
 // are these biome ids). The realm's species draw reads this once the roster is the language's; the generators below still draw today's three species by tile land.
-export const BIOME_KINDS = Object.fromEntries(BIOMES.map(b => [b, LANGUAGE.kinds.filter(k => !k.template && k.land === b).map(k => k.id)]));
+export const BIOME_KINDS = Object.fromEntries(BIOMES.map(b => [b, LANGUAGE.kinds.filter(k => !k.template && kindLands(LANGUAGE, k).includes(b)).map(k => k.id)]));   // a kind in every land (the Loika) is in each list
+// Today's lists, frozen: what a realm of kind version 2 draws from (the Loika in the Woods only). regionKinds reads these until the walk side takes BIOME_KINDS.
+export const BIOME_KINDS_V2 = Object.freeze({ mixed: ["S08", "S12", "S17"], woods: ["S01", "S05"], fells: ["S03", "S07"], marsh: ["S14"], downs: ["S02", "S15", "S18"], thickets: ["S06", "S11"], tallwood: ["S04", "S09", "S20"], tarns: ["S13", "S16"], meres: ["S10", "S19"] });
 // The game's species list, by place (the `sp` of a creature, a pod and a mibi): the three starters keep 0 to 2, the other seventeen are appended (the Station's SP_INDEX is the same list).
 export const SP_ORDER = ["S01", "S03", "S02", "S04", "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20"];
 // What the Companion page makes its SPECIES rows from, one per place of SP_ORDER: the frame's name and plural (a plural is the name itself: the frames give no other), the family and its ground.
@@ -27,7 +29,7 @@ export const STARTERS =["S01", "S03", "S02"];   // the home region's kinds (Loik
 // every other region spawns its land's kinds on their families' grounds (FAMILY_GROUND), the registry's order.
 export function regionKinds(region) {
   const home = region.n === 1;
-  const ids = home ? STARTERS : BIOME_KINDS[region.biome] ?? [];
+  const ids = home ? STARTERS : BIOME_KINDS_V2[region.biome] ?? [];   // W2 makes this version-aware and reads BIOME_KINDS for the new realms
   return ids.map(id => {
     const sp = SP_ORDER.indexOf(id);
     if (home && sp < 3) { const r = ROSTER[sp]; return { id, sp, hab: r.hab, ...(r.nest ? { nest: true } : {}) }; }

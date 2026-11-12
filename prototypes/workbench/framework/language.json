@@ -1272,7 +1272,7 @@
       "id": "S01",
       "name": "Loika",
       "family": "trotter",
-      "land": "woods",
+      "land": "all",
       "coat": {
         "material": "felt",
         "pile": null

@@ -14,7 +14,7 @@
   "code": "S11",
   "moves": "plods, swims slowly",
   "habitat": "Thickets",
-  "gate": "beyond fast water",
+  "gate": null,
   "diet": "moss, fruit",
   "ability": "carries one more pod",
   "character": "an old soul, patient",

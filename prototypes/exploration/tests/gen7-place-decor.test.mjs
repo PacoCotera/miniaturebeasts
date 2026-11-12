@@ -19,10 +19,10 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
       const [lo, hi] = TABLE[b].trees.size, off = Object.keys(s.groveHistByBiome[b]).map(Number).filter(n => n < lo || n > hi);
       check(off.length === 0, `grove sizes in ${b} are ${lo}-${hi}: ` + JSON.stringify(s.groveHistByBiome[b]));
     }
-    // the signed boulders: each rock of an outcrop takes a shape by the rule's shares (rock-a .4, rock-b .35, rock-big .25) and a mirror by hash; no other rock kind is left
+    // the boulders: an outcrop's rocks are boulders A, D and E by the rule's shares (the low stones are stepped-over decals), each by hash a mirror or not; no other rock kind is left
     { const k = s.rockKinds, n = Object.values(k).reduce((x, y) => x + y, 0), base = b => (k[b] || 0) + (k[b + '-m'] || 0);
       check(Object.keys(k).every(x => ROCK_KINDS.includes(x)), 'rock kinds: ' + JSON.stringify(k));
-      for (const [b, share] of [['rock-a', 0.4], ['rock-b', 0.35], ['rock-big', 0.25]]) { check(Math.abs(base(b) / n - share) < 0.05, `${b} share ${(base(b) / n).toFixed(3)} (rule ${share})`); check(Math.abs((k[b + '-m'] || 0) / base(b) - 0.5) < 0.05, `${b} mirrored share`); } }
+      for (const [b, share] of [['boulder-a', 0.4], ['boulder-d', 0.3], ['boulder-e', 0.3]]) { check(Math.abs(base(b) / n - share) < 0.05, `${b} share ${(base(b) / n).toFixed(3)} (rule ${share})`); check(Math.abs((k[b + '-m'] || 0) / base(b) - 0.5) < 0.05, `${b} mirrored share`); } }
     check(s.outcrops > 100, 'outcrops: ' + s.outcrops);
     // the places bake's grove-lattice rule, grove clause: in a cell of 12 or more trees and boulders at least 40% of them touch another (crowns within 2.3 tiles). It holds in all but a
     // few cells in a thousand (a meadow cell whose 12 are singles and pairs); its other two clauses (spacing varies by 0.35, two trees stand alone) are those of a hand-made place of a few
@@ -44,7 +44,9 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     check(s.hollow >= 3, 'hollow trees: ' + s.hollow);
     check(s.hollowCrownNear === 0, 'no crown or prop within two tiles of the Hollow Tree: ' + JSON.stringify(s.hollowAt));
     check(s.seamProps > 100 && s.seamMismatch === 0, `a prop near a border is the same from both cells: ${s.seamMismatch} of ${s.seamProps} differ ${JSON.stringify(s.seamAt)}`);
-    check(s.stranded <= 1, 'props strand no walkable tile (the scrub shrubs\' greedy no-touching choice can leave one scrub tile with a shrub on each of its four sides: seed 7 cell 1,59, tile 18,17; at most 1 stands): ' + JSON.stringify(s.strandedAt));
+    check(s.stranded === 0, 'props strand no walkable tile (the scrub shrubs\' no-touching choice leaves out the last of four shrubs that would stand at the sides of one open tile, decor.mjs ringLoser): ' + JSON.stringify(s.strandedAt));
+    // raised scrub tops hold shrubs by the same greedy choice (amendment L), so the same lone tile ringed by four of them can occur there; about one in 400 cells of a seed (21 on seed 7), never a way blocked
+    check(s.strandedRaised <= 40, 'lone tiles ringed by shrubs on raised scrub tops: ' + s.strandedRaised);
     // per biome, props per 100 tiles where the kind may stand, within 20% of the table (a biome that has a region on this seed)
     for (const [b, o] of Object.entries(s.perBiome)) for (const [fam, v] of Object.entries(o)) {
       if (v.table * v.tiles / 100 < 300) continue;   // a kind with fewer than 300 expected props on this seed is noise: one in a hundred is 10%, and 20% is two of them

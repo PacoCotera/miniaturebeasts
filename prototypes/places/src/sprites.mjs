@@ -41,7 +41,7 @@ export function propItems(ts, place, size, o = {}) {
     const { cx, cy } = cellOf(size, p.x, p.y);
     if (o.visible && !o.visible(cx, cy)) continue;
     const remap = o.remapAt ? o.remapAt(cx, cy) : null;
-    items.push({ sortY: p.sortY, x: p.x, draw: (buf, win) => blitPlaced(buf, win, ts, size, p.kind, p.x, p.y, walkFrame(ts.sprites[p.kind], o.clockMs || 0), remap) });
+    items.push({ sortY: p.sortY, x: p.x, draw: (buf, win) => { blitPlaced(buf, win, ts, size, p.kind, p.x, p.y, walkFrame(ts.sprites[p.kind], o.clockMs || 0), remap); } });
   }
   return items;
 }

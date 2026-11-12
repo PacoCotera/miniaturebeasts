@@ -66,18 +66,23 @@ test("frames before the language keep the old marks (the stamp registry is appen
 
 test("each roster species takes its land and family from the registry; a land has one to three kinds", async () => {
   const { LANGUAGE, kindOf, landOf } = await import("../framework/language.mjs");
-  const { landAndFamily, kindsOnLand } = await import("../framework/roster.mjs");
+  const { landAndFamily, kindsOnLand, OWED } = await import("../framework/roster.mjs");
   for (const s of SPECIES) {
     const sp = specOf(s), k = kindOf(LANGUAGE, s.id);
     assert.equal(sp.land, k.land, `${s.id}: land`);
     assert.equal(sp.family, k.family, `${s.id}: family`);
-    assert.equal(sp.landName, landOf(LANGUAGE, k.land).word, `${s.id}: the land's player word`);
+    assert.equal(sp.landName, k.land === "all" ? OWED["land.all"] : landOf(LANGUAGE, k.land).word, `${s.id}: the land's player word`);
   }
+  assert.equal(kindOf(LANGUAGE, "S01").land, "all", "the Loika lives in every land (owner 2026-11-11 01:23)");
   assert.deepEqual(landAndFamily("S99"), { land: null, landName: null, family: null }, "a species the registry lacks has no land");
   const all = LANGUAGE.lands.flatMap((l) => kindsOnLand(l.id));
-  assert.equal(all.length, 20, "every kind is on exactly one land");
+  assert.equal(all.length, 19 + 9, "nineteen kinds on one land each, the Loika on all nine");
   assert.equal(new Set(all).size, 20);
-  for (const l of LANGUAGE.lands) assert.ok(kindsOnLand(l.id).length >= 1 && kindsOnLand(l.id).length <= 3, `${l.art} has one to three kinds`);
+  for (const l of LANGUAGE.lands) {
+    assert.ok(kindsOnLand(l.id).includes("S01"), `${l.art}: the Loika lives here`);
+    const own = kindsOnLand(l.id).filter((id) => id !== "S01");
+    assert.ok(own.length >= 1 && own.length <= 3, `${l.art} has one to three kinds of its own`);
+  }
 });
 
 test("the player's land words: Meadows, Hills, Cliffs, Lakes, Highpools; Woods, Tallwood, Thickets and Marsh keep their names", async () => {
@@ -89,9 +94,15 @@ test("the player's land words: Meadows, Hills, Cliffs, Lakes, Highpools; Woods, 
   for (const b of BIOMES) assert.equal(BIOME_NAME[b], word[b], `${b}: the realm names the land as the registry does`);
   // the realm's kind draw by land: each biome's kinds are the registry's
   assert.deepEqual(Object.keys(BIOME_KINDS), BIOMES);
-  assert.deepEqual(BIOME_KINDS.mixed, ["S08", "S12", "S17"]);
-  assert.deepEqual(BIOME_KINDS.downs, ["S02", "S15", "S18"]);
-  assert.equal(Object.values(BIOME_KINDS).flat().length, 20);
+  assert.deepEqual(BIOME_KINDS.mixed, ["S01", "S08", "S12", "S17"]);
+  assert.deepEqual(BIOME_KINDS.downs, ["S01", "S02", "S15", "S18"]);
+  assert.equal(Object.values(BIOME_KINDS).flat().length, 19 + 9);
+  // the frozen lists of a realm of kind version 2: the Loika in the Woods only
+  const { BIOME_KINDS_V2 } = await import("../../exploration/src/regions.mjs");
+  assert.deepEqual(Object.keys(BIOME_KINDS_V2), Object.keys(BIOME_KINDS).sort((a, b) => Object.keys(BIOME_KINDS_V2).indexOf(a) - Object.keys(BIOME_KINDS_V2).indexOf(b)));
+  assert.deepEqual(BIOME_KINDS_V2.woods, ["S01", "S05"]);
+  assert.equal(Object.values(BIOME_KINDS_V2).flat().length, 20);
+  for (const b of BIOMES) assert.deepEqual(BIOME_KINDS[b].filter((id) => id !== "S01"), BIOME_KINDS_V2[b].filter((id) => id !== "S01"), `${b}: the other kinds are today's`);
 });
 
 test("roster.read48: the twenty stands at 48 px each differ from every other by IoU under 0.85, and a copy that does not is red", async () => {
@@ -123,9 +134,9 @@ test("the frames of version 8 take their fields from the registry: no resembles,
   const { LANGUAGE, kindOf, landOf, familyOf } = await import("../framework/language.mjs");
   const { OWED, CLANS, featureOf } = await import("../framework/roster.mjs");
   for (const s of SPECIES) {
-    const k = kindOf(LANGUAGE, s.id), land = landOf(LANGUAGE, k.land), f = frameFile(`language/species-${s.id}.json`), old = frameFile(`species-${s.id}.json`);
+    const k = kindOf(LANGUAGE, s.id), land = k.land === "all" ? { word: OWED["land.all"] } : landOf(LANGUAGE, k.land), f = frameFile(`language/species-${s.id}.json`), old = frameFile(`species-${s.id}.json`);
     assert.equal(f.taxonomy.resembles, undefined, `${s.id}: v8 names no real animal`);
-    assert.equal(f.taxonomy.habitat, land.word, `${s.id}: the habitat is the land's player word`);
+    assert.equal(f.taxonomy.habitat, land.word, `${s.id}: the habitat is the land's player word (the every-land word is an empty slot owed to the copywriter)`);
     assert.equal(f.signature.feature, featureOf(familyOf(LANGUAGE, k.family), k), `${s.id}: the feature line`);
     assert.ok(f.signature.features["anatomy.exterior-eye-presence"] === "on", `${s.id}: the face`);
     if (!k.anchor) {
@@ -140,7 +151,7 @@ test("the frames of version 8 take their fields from the registry: no resembles,
 
 test("the OWED strings are listed, and describe.mjs names no real animal", async () => {
   const { OWED } = await import("../framework/roster.mjs");
-  assert.deepEqual(Object.keys(OWED).sort(), ["describe.type-line", "roster.feature"]);
+  assert.deepEqual(Object.keys(OWED).sort(), ["describe.type-line", "land.all", "roster.feature"]);
   const src = readFileSync(path.resolve(here, "../framework/describe.mjs"), "utf8");
   assert.ok(!src.includes("resembles"), "describe.mjs does not read resembles");
   assert.ok(src.includes('OWED["describe.type-line"]'));

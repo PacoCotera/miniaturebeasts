@@ -17,7 +17,7 @@ import { traitLooks } from "../../workbench/framework/describe.mjs";
 import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, wordsOf } from "../src/views/home-props.mjs";
 const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it builds goes through assertLineCase (report mode)
 import { idleBuild } from "../src/views/idle-props.mjs";
-import { goalWords, warnWords } from "../src/views/goal-words.mjs";
+import { goalWords, warnWords, companionWords } from "../src/views/goal-words.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -112,9 +112,9 @@ test("F7: while the Vivarium is full and the bud waits for a place, the line is 
 test("the line at rest: at most two needs, the first by its action and the second by its notice; with none, the goal; the verb of a target on a focus; the Companion away says it is on a trip", () => {
   const sc = scenes(), line = (x, over) => build(x.st, x.sv, over).props.regions.line;
   assert.deepEqual(line(sc.crates), { needs: ["Open the Bay"] }, "the pair waits behind a need that leads: it is only ever the first, alone"); assert.deepEqual(line(sc.portrait), { needs: ["Open the Bay", "A portrait waits in the Bay"] }, "walk crates and a portrait: the action, then the portrait's notice; no name");
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "The bud is ready"] }, "two at most, the example of the spec; each zone a line with its capital"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0({ bay: [crate(1), crate(2)] }) }), { needs: ["Open the Bay", "A mibi waits to come out"] }, "two at most, the example of the spec; each zone a line with its capital"); }
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 1, settings); portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay"] }, "a portrait alone: the Bay's action"); st.waiting.push({ id: "w1" }); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "then the next need's notice"); dock(st, false); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the Bay", "The Pods rack is full"] }, "away, a portrait still waits"); }
-  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the bud", "A portrait waits in the Bay"] }, "a ready bud takes the first slot, the portrait the second"); }
+  { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 2, settings); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; portrait(st); assert.deepEqual(line({ st, sv: sv0() }), { needs: ["Open the pod", "A portrait waits in the Bay"] }, "a ready bud takes the first slot, the portrait the second"); }
   { const { st, sv } = sc.docked; assert.deepEqual(line({ st, sv }).needs.length, 1, "four at home, two could cross: the pair is the need"); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.ok(line({ st, sv }).goal, "nothing needs the player (a bud is growing): the goal"); }
   for (const [id, verb] of Object.entries({ vivarium: "Go to the Vivarium", library: "Go to the Library", pods: "Go to Pods", incubator: "Go to the Incubator", companion: "Go to the Companion", bay: "Open the Bay" })) assert.deepEqual(line(sc.docked, { focus: id }), { verb }, id);
   assert.deepEqual(line(sc.away, { focus: "companion" }), { note: "The Companion is on a trip" }); assert.deepEqual(line(sc.away, { focus: "bay" }), { verb: "Open the Bay" });
@@ -125,7 +125,7 @@ test("the stations' words and lamps: Pods, the Incubator in each state, the Comp
   assert.deepEqual(W(R(sc.empty).pods), { line1: "empty", line2: "", lamp: "off", slots: 0 }); assert.deepEqual(W(R(sc.pods).pods), { line1: "2 in the case", line2: "", lamp: "needsYou", slots: 2 }, "a new pod unread: amber");
   assert.deepEqual([R(sc.empty).incubator.state, R(sc.empty).incubator.line1, R(sc.empty).incubator.lamp], ["empty", "empty", "off"]);
   { const st = world(); dock(st); S.seedAdults(st, "S01", 5, 1, settings); const p = pod(st, "S01"); p.read = [frameOf("S01").chapters[0].id]; p.seen = 1; const i = R({ st, sv: sv0() }).incubator; assert.deepEqual([i.line1, i.line2], ["empty", "a pod can incubate"]); }
-  { const st = world(); dock(st); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; const i = R({ st, sv: sv0() }).incubator; assert.deepEqual([i.state, i.line1, i.line2, i.lamp], ["growing", "a bud growing", "a Loika", "off"]); st.bud.start = Date.now() - 1e8; const r = R({ st, sv: sv0() }).incubator; assert.deepEqual([r.state, r.line1, r.line2, r.lamp], ["ready", "the bud is ready", "a Loika", "needsYou"]); }
+  { const st = world(); dock(st); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; const i = R({ st, sv: sv0() }).incubator; assert.deepEqual([i.state, i.line1, i.line2, i.lamp], ["growing", "a Loika growing", "ready in 5 min", "off"]); st.bud.start = Date.now() - 1e8; const r = R({ st, sv: sv0() }).incubator; assert.deepEqual([r.state, r.line1, r.line2, r.lamp], ["ready", "ready to come out", "a Loika", "needsYou"]); }
   { const c = R(sc.docked).companion; assert.equal(c.state, "docked"); assert.match(c.line1, /^\S+ at home$/); assert.equal(c.line2, ""); assert.equal(c.lamp, "off", "never amber: the dock lights the Bay"); }
   { const c = R(sc.away).companion; assert.equal(c.state, "away"); assert.match(c.line1, /^\S+ on a trip$/); assert.equal(c.line2, ""); }
   assert.deepEqual(W(R(sc.empty).companion), { state: "docked", line1: "at home", line2: "", lamp: "off" }, "no one carried: no name to say");
@@ -281,16 +281,16 @@ test("the goal away reads the aim, and growUp counts the walks in words", () => 
   const st = world(); dock(st, false); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
   assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).props.regions.line, { goal: { text: "Find a Loika pod", icons: "", plain: "" } }, "away, pair, findPod: only goOut reads the aim, so the step's own words show");
   const w = world(); dock(w, false); const [a, b2] = S.seedAdults(w, "S01", 5, 2, settings).mibis; a.name = "Dot"; b2.name = "Moss"; a.born = 1; b2.born = 2; w.turn = 2;
-  assert.equal(build(w, sv0()).props.regions.line.goal.text, "Walks grow Dot up"); assert.equal(build(w, sv0()).props.regions.line.goal.plain, "Walks grow the pair up");
-  dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).props.regions.line.goal.text, "More walks grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).props.regions.line.goal.text, "One more walk grows the pair");
+  assert.equal(build(w, sv0()).props.regions.line.goal.text, "Expeditions grow Dot up"); assert.equal(build(w, sv0()).props.regions.line.goal.plain, "Expeditions grow the pair up");
+  dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).props.regions.line.goal.text, "More expeditions grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).props.regions.line.goal.text, "One more expedition grows the pair");
 });
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
-  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "The young mibi grows with care" });
+  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows up in time", icons: "", plain: "The young mibi grows up in time" });
   assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "put", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: "Put Data in the Loika pod", icons: "", plain: "" }, "the guide's step puts Data in a pod and has no name, so no nameless sibling");
   assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "Find a Loika pod", "away, a findPod step reads its own words, not the aim");
   assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "Read Dot's chapters", icons: "", plain: "Read the new mibi's chapters" });
-  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "Walks grow the pair up");
+  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "Expeditions grow the pair up");
   assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "Read the new mibi's chapters");
   for (const goal of [{ key: "cross", names: ["Dot", "Moss"], step: { key: "cross" } }, { key: "firstPod", step: { key: "goOut" } }, { key: "pair", name: "Dot", species: "S01", step: { key: "identify", species: "S01" } }]) assert.equal(face(goal).plain, "", goal.key);
   assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆ ⚡", from: "fieldAndBench" } }).text, "Go out and watch for more"); assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆", from: "bench" } }).icons, "◆");
@@ -350,4 +350,15 @@ test("R4b freshOf: a mibi is fresh until the first settle of its group at least 
   assert.equal(freshOf(r, now - 3600e3 * 2, now, hhmm(21), RULES), false, "hatched 19:00: the first settle an hour on is 20:00 (>= 20:00): passed at 21:00");
   assert.equal(freshOf(r, now - 3600e3 * 2.5 + 0, Date.UTC(2026, 9, 28, 19, 30), hhmm(19, 30), RULES), true, "hatched 17:00, now 19:30: still before 20:00");
   assert.equal(freshOf(r, null, now, t, RULES), false); assert.equal(freshOf(r, now - 1000, null, t, RULES), false);
+});
+test("the growing pod names its kind and the minutes; the Companion's line is only for what the Companion does (notes 9 and 10)", () => {
+  const face = (goal, docked = true) => goalWords(goal, docked, frameSpec).text, bud = (o) => ({ key: "firstMibi", step: { key: "bud", ready: false, minutes: 6, species: "S01", cross: false, parents: [], ...o } });
+  assert.equal(face(bud({})), "A Loika is growing · ready in 6 min"); assert.equal(face(bud({ minutes: 0 })), "A Loika is almost ready"); assert.equal(face(bud({ ready: true })), "A Loika is ready to come out");
+  assert.equal(face(bud({ cross: true, parents: ["fig", "pip"] })), "Fig and Pip's child · ready in 6 min");
+  assert.equal(companionWords(bud({}), frameSpec), null, "a Station step gives the Companion no line");
+  assert.deepEqual(companionWords({ key: "firstPod", step: { key: "goOut" } }, frameSpec), { text: "Find a first pod", icons: "" });
+  assert.equal(companionWords({ key: "pair", name: "Dot", species: "S01", step: { key: "goOut" } }, frameSpec).text, "A mibi to cross with Dot");
+  assert.equal(companionWords({ key: "guide", species: "S01", step: { key: "short", from: "bench", icons: "◆" } }, frameSpec), null, "short from the bench is the Station's");
+  assert.equal(companionWords({ key: "guide", species: "S01", step: { key: "short", from: "field", icons: "⚡ ❀" } }, frameSpec).text, "Bring back Energy and Essence");
+  assert.equal(companionWords({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, frameSpec).text, "Expeditions grow Dot up", "away, the aim");
 });

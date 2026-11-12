@@ -648,7 +648,7 @@ test("generator 2 play: leaving a place by a stair crosses; beside it on the sha
   q.run(`S.exp.patch.x = ${x}; S.exp.patch.y = ${PH - 1}; FX.notes = []; FX.msg = '';`); const m = q.run("S.exp.actions"), b0 = q.run("FX.bumpAt");
   q.run("FX.lockUntil = 0; act('down')");
   assert.equal(q.run("S.exp.pos"), f.b, "still in the place's cell"); assert.equal(q.run("S.phase"), "patch"); assert.equal(q.run("S.exp.actions"), m, "no action");
-  assert.ok(q.run("FX.bumpAt") > b0, "the bump"); assert.match(q.run("FX.msg"), /Steep edge · look for stairs/);
+  assert.ok(q.run("FX.bumpAt") > b0, "the bump"); assert.match(q.run("FX.msg"), /^Cliff · too steep · stairs \d+ tiles? to your (left|right)/, "the words name where the stairs are along this edge");
   q.run(`S.exp.patch.x = ${t + 1}; S.exp.patch.y = ${PH - 1}; FX.lockUntil = 0; act('down')`);
   assert.equal(q.run("S.exp.pos"), f.a, "the stair's tile crosses");
 });
@@ -658,8 +658,8 @@ test("generator 2 play: the map refuses a steep edge (bump, message, no action) 
   const p = g2At(seed, cliff.a); p.run("FX.notes = []; FX.msg = '';"); const b0 = p.run("FX.bumpAt");
   p.run(`act(${JSON.stringify(cliff.dir)})`);
   assert.equal(p.run("S.exp.pos"), cliff.a); assert.equal(p.run("S.exp.actions"), 0, "0 actions spent");
-  assert.ok(p.run("FX.bumpAt") > b0); assert.match(p.run("FX.msg"), /^Steep edge · look for stairs/);
-  assert.equal(p.run(`crossReason(${cliff.a}, ${JSON.stringify(cliff.dir)})`), "Steep edge · look for stairs");
+  assert.ok(p.run("FX.bumpAt") > b0); assert.match(p.run("FX.msg"), /^Cliff · too steep · (no stairs seen yet|stairs \d+ cells? (north|south|east|west)|stairs here, to the)/);
+  assert.equal(p.run(`crossReason(${cliff.a}, ${JSON.stringify(cliff.dir)})`), p.run(`cliffMapWords(${cliff.a}, ${JSON.stringify(cliff.dir)})`));
   // the reach follows canStep: the same set as a walk over canStepIn inside the range square, without the island
   for (const st of [cliff.a, cliff.b]) { const seen = new Set([st]), q0 = [st], s0 = { x: st % MW, y: (st / MW) | 0 };
     while (q0.length) { const c = q0.shift(); for (const [dir, dx, dy] of SIDE4) { const x = c % MW + dx, y = ((c / MW) | 0) + dy, d = y * MW + x;
@@ -673,12 +673,25 @@ test("generator 2 play: Ahead names the edge, the edge word alone comes before h
   const seed = SEEDS[0], G = W.genWorld(seed, 2), es = edgesOf(G);
   const cliff = es.find(e => e.kind === EDGE.CLIFF && G.comp[e.a]), p = g2At(seed, cliff.a);
   p.run(`S.exp.face = ${JSON.stringify(cliff.dir)}`); let ctx = p.run("mapContext()");
-  assert.ok(ctx[0].includes("Ahead: steep edge"), ctx[0]); assert.equal(ctx[ctx.length - 2], "steep edge"); assert.ok(ctx.includes("Ahead: steep edge"));
+  assert.ok(ctx[0].includes("Ahead: cliff"), ctx[0]); assert.equal(ctx[ctx.length - 2], "cliff"); assert.ok(ctx.includes("Ahead: cliff"));
   for (const k of ["S up", "S down"]) { const r = CROSSINGS[k], q = g2At(r.seed, r.a); q.run(`S.exp.face = ${JSON.stringify(r.dir)}`); ctx = q.run("mapContext()");
     const w = r.up ? "stairs up" : "stairs down"; assert.ok(ctx[0].includes("Ahead: " + w), ctx[0]); assert.equal(ctx[ctx.length - 2], w); }
   const open = es.length && (() => { for (let c = 0; c < NC; c++) if (G.comp[c] && c % MW < MW - 1 && G.comp[c + 1] && G.edge[2 * c] === EDGE.OPEN) return c; })();
   const o = g2At(seed, open); o.run("S.exp.face = 'right'; S.revealed[S.exp.pos + 1] = 1;"); ctx = o.run("mapContext()");
   assert.ok(ctx[0].includes("Ahead: " + o.run("landWord(S.exp.pos + 1)")), ctx[0]); assert.equal(ctx.length, 5, "no edge word");
+});
+
+test("fix F4 note 17: a cliff refusal says what stops you and names the nearest stairs seen on your level, or none; the ✓ on the map is Go in; the border is shore or high cliffs", () => {
+  const seed = SEEDS[0], G = W.genWorld(seed, 2), es = edgesOf(G);
+  const cliff = es.find(e => e.kind === EDGE.CLIFF && G.comp[e.a] && G.comp[e.b] && !W.bankEdges(G, seed)[W.edgeIndex(e.a, e.dir)] && !W.softGround(G, seed).scree[W.edgeIndex(e.a, e.dir)]);
+  const p = g2At(seed, cliff.a), d = JSON.stringify(cliff.dir);
+  assert.equal(p.run(`cliffMapWords(${cliff.a}, ${d})`), "Cliff · too steep · no stairs seen yet", "nothing revealed round it yet");
+  p.run("for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1;"); const s = p.run(`stairsNear(${cliff.a}, ${d})`), w = p.run(`cliffMapWords(${cliff.a}, ${d})`);
+  assert.match(w, s ? /^Cliff · too steep · (stairs \d+ cells? (north|south|east|west)|stairs here, to the (north|south|east|west))$/ : /no stairs seen yet$/);
+  if (s) assert.equal(p.run(`edgeKind(${s.cur}, ${JSON.stringify(s.d)})`), EDGE.RAMP, "the stairs it names are a stair edge");
+  p.run("S.phase = 'map'"); assert.equal(p.run("lineBase().ok"), "Go in");
+  const edge = p.run("(() => { for (let c = 0; c < MW * MH; c++) if (c % MW === 0) return c; })()");
+  assert.match(p.run(`crossReason(${edge}, 'left')`), /^(Wide water · no way across|High cliffs · no way past|More land · opens as you explore)$/, "the shore says wide water, a region side says more land, never sea, ocean or edge of the map");
 });
 
 test("generator 2 play: a generator 1 realm (a test page that may open it) has canStep passable everywhere it reaches; new worlds take the newest generator whatever the address says", () => {
@@ -791,15 +804,15 @@ test("M3: generator 1's map and its burrow hole are unchanged, pixel for pixel a
 
 test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never on generator 2 or during an expedition", () => {
   const sandIn = (p, setup) => { p.run(`${setup}; ensureMap(); scr.px().fill(-1); drawSetup(0);`); const f = p.run("scr").px(), W_ = p.run("SCR_W"), sand = p.run("C.sand"); let n = 0, x1 = 0;
-    for (let y = 365; y < 385; y++) for (let x = 28; x < 438; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
+    const Y0 = p.run("openRect().y + openRect().h + 7"); for (let y = Y0; y < Y0 + 20; y++) for (let x = 28; x < 438; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
   const g1 = g1Page();
   assert.equal(g1.run("S.gen"), 1);
   const hint = "Flat world · New world has stairs", w = g1.run(`textW(${JSON.stringify(hint)}, 2)`);
   assert.ok(w <= 410, "fits 410 at 2×");
   const shown = sandIn(g1, "S.exp = null; S.phase = 'setup'; FX.msg = ''");
-  assert.ok(shown.n > 0 && shown.x1 < 28 + w, "the hint in sand at (28, 365)");
+  assert.ok(shown.n > 0 && shown.x1 < 28 + w, "the hint in sand at (28, under the land)");
   // the same pixels as the text alone
-  g1.run("scr.px().fill(-1); text(" + JSON.stringify(hint) + ", 28, 365, C.sand);"); const alone = g1.run("scr").px(), sand = g1.run("C.sand");
+  g1.run("S.exp = null; S.phase = 'setup'; scr.px().fill(-1); text(" + JSON.stringify(hint) + ", 28, openRect().y + openRect().h + 7, C.sand);"); const alone = g1.run("scr").px(), sand = g1.run("C.sand");
   assert.equal([...alone].filter(v => v === sand).length, shown.n, "exactly the hint's pixels");
   assert.equal(sandIn(g1, "S.gen = 1; S.exp = null; S.phase = 'setup'").n, shown.n, "gen 1 written out: still shown");
   assert.equal(sandIn(g1, "delete S.gen; S.phase = 'setup'; S.exp = { pos: 0, reach: [] }").n, 0, "during an expedition: none");
@@ -1012,8 +1025,9 @@ test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in
 // hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
 // The painted walk props (640a62182: crowns, bushes, pods, depot, beacon; off the core palette) are shown on these pages (paint): the place32, gen1 and corner frames re-hashed with the signed crown and bush in place of the code-drawn ones, looked at 1x; the cave, the reach view and the stair frame hold none and are unchanged.
 // Walk art wired (mibi-art ce97d1c19): the reach view (the cave frame is one too, phase map) wears the desk's terrain tiles, marks and edge pieces: re-hashed, looked at 1x against the desk's sheet-walk-art-map.png.
-const MAIN_FRAMES = { cave: 774528619, place32: 2552280051, map: 4252329497 };   // place32 re-hashed when the signed biome decor landed on the grounds (072bc124d: the set's palette and the decor rules); (cave, place32 and map re-hashed in first-ten B3/B2: the ✓ word is "Face the …" / "Keep still" for "Wait", and the removed "← opens the menu · Leave is first" hint no longer leads the map's middle)   // map re-hashed on the generator 7 branch (G4d): the reach view's dots fill by walking, not by a heart found   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
-const GOLDEN48 = { faceStair: 1027480584, gen1: 3853171050, corner: 4214454553 };   // re-hashed in first-ten B3 (the ✓ word "Wait" is now "Face the …" / "Keep still");   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
+const MAIN_FRAMES = { cave: 1214643150, place32: 440167316, map: 420499785 };   // art-swap-fix-art-2: re-hashed for the words of cw-fix-screens-2 (the cave and the map lines, the care strings) and the signed explorer and stones; the places' veil and boulder rule do not reach a 32 px frame. Before:   // fix-screens: cave and map re-hashed for the new words (the teaching line "Go to the glint", the map ✓ "Go in"); the place is unchanged. Was cave 774528619, map 1552973710.
+//   // map re-hashed when the painted wood kept its ground in the dark (WOOD_DARK: the ground under the trees no longer steps down to the ink the unseen land is drawn in); place32 re-hashed when the signed biome decor landed on the grounds (072bc124d: the set's palette and the decor rules); (cave, place32 and map re-hashed in first-ten B3/B2: the ✓ word is "Face the …" / "Keep still" for "Wait", and the removed "← opens the menu · Leave is first" hint no longer leads the map's middle)   // map re-hashed on the generator 7 branch (G4d): the reach view's dots fill by walking, not by a heart found   // C15 (and the lead 11-08: never been is the dark table, no dots): the cave frame is the reach view too (phase map) and the map the reach view: both re-captured when the fog dots came in (the pending outline went); place32 is main 92b58bf8 (unchanged), captured; map (the reach view) re-captured in L2c: the earth banks and scree edges now have their own marks, captured from its own page with this harness
+const GOLDEN48 = { faceStair: 3553862699, gen1: 2604115976, corner: 1491832536 };   // art-swap-fix-art-2: re-hashed for the cw-fix-screens-2 words, the signed explorer, stones and contact shadow. Before: faceStair 1027480584, gen1 3853171050, corner 4214454553.   // re-hashed in first-ten B3 (the ✓ word "Wait" is now "Face the …" / "Keep still");   // all three re-hashed 2026-11-07 when the core grew to 51 (the synthetic set moved from 48–53 to 51–56): the same pictures (checked: their RGB hashes equal those of the tree before the sage), new indices;   // faceStair re-captured in 21c on the twenty signed tokens (the place holds a wild creature; gen1 and corner hold none, so they are unchanged); re-captured on the merge: the top bar, the bottom line, the signed creature art and no brackets when facing nothing are main's
 function place48g1(seed, cell, x, y, paint = false) {
   const p = page48(seed, undefined, undefined, paint);
   p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
@@ -1023,9 +1037,9 @@ function place48g1(seed, cell, x, y, paint = false) {
 test("golden frames: 32 px stays byte-identical to main (the cave, a place with no atlas, the reach view)", () => {
   const frame = (p, setup) => { p.run(setup); for (let i = 0; i < 3; i++) { p.clock.t += 16; p.run(`scr.px().fill(-1); RT.key = null; render(${p.clock.t})`); } return fnv(p.run("scr").px()); };
   const p = page({}, undefined, { canvas: true, paint: true });
-  assert.equal(frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; S.exp.pos = G.gate; enterCave();"), MAIN_FRAMES.cave, "the cave"); assert.equal(p.run("RT.ts"), 32);
-  assert.equal(frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14;"), MAIN_FRAMES.place32, "a place with no atlas"); assert.equal(p.run("RT.ts"), 32);
-  assert.equal(frame(p, "S.exp.patch = null; S.phase = 'map';"), MAIN_FRAMES.map, "the reach view");
+  const got = {}; got.cave = frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; S.exp.pos = G.gate; enterCave();"); assert.equal(p.run("RT.ts"), 32);
+  got.place32 = frame(p, "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14;"); assert.equal(p.run("RT.ts"), 32);
+  got.map = frame(p, "S.exp.patch = null; S.phase = 'map';"); assert.deepEqual(got, MAIN_FRAMES, "the cave, a place with no atlas, the reach view");
 });
 test("golden frames at 48: a place with a south face and a stair, a generator 1 place, the pawn in a place corner", () => {
   const e = CROSSINGS["S down"], ent = entryFor(e.seed, e);

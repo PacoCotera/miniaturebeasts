@@ -71,6 +71,8 @@ test('an enum that drifts from the format or the sets is reported', () => {
   assert.match(out, /enum PropKind/);
 });
 
+// the fixture's low rocks are stepped over (no footprint); the footprint rules need a prop that blocks, so a boulder A stands in for them
+const rockify = (l) => { for (const e of ents(l, 'Prop')) if (field(e, 'kind').__value === 'boulder-brown') field(e, 'kind').__value = 'boulder-a'; return l; };
 // rule -> [how to break the fixture level, the cell the message must name (or null)]
 const RULES = {
   'size': [(l) => { l.pxWid = 17 * 16; }, null],
@@ -78,7 +80,7 @@ const RULES = {
   'names': [(l) => { l.fieldInstances.find((f) => f.__identifier === 'names').__value = []; }, null],
   'tileset': [(l) => { l.fieldInstances.find((f) => f.__identifier === 'tileset').__value = 'nope'; }, null],
   'kind-missing': [(l) => { field(ents(l, 'Prop')[0], 'kind').__value = 'no-such-prop'; }, { x: 3, y: 3 }],
-  'prop-footprint': [(l) => moveTo(ents(l, 'Prop').find((e) => field(e, 'kind').__value === 'boulder-brown'), 6, 9), { x: 6, y: 9 }],
+  'prop-footprint': [(l) => { rockify(l); moveTo(ents(l, 'Prop').find((e) => field(e, 'kind').__value === 'boulder-a'), 6, 9); }, { x: 6, y: 9 }],
   'heart-count': [(l) => remove(l, 'Heart'), null],
   'heart-kinds': [(l) => { field(ents(l, 'Heart')[0], 'kinds').__value = []; }, { x: 6, y: 13 }],
   'heart-reach': [(l) => { for (const [x, y] of [[6, 13], [5, 13], [7, 13], [6, 12], [6, 14]]) setCell(l, x, y, 'water'); }, { x: 6, y: 13 }],
@@ -86,7 +88,7 @@ const RULES = {
   'clue-end': [(l) => { field(ents(l, 'Clue')[0], 'path').__value = [{ cx: 9, cy: 18 }, { cx: 2, cy: 2 }]; }, { x: 2, y: 2 }],
   'clue-point': [(l) => { field(ents(l, 'Clue')[0], 'path').__value = [{ cx: 9, cy: 18 }, { cx: 6, cy: 9 }, { cx: 6, cy: 13 }]; }, { x: 6, y: 9 }],
   'find-count': [(l) => remove(l, 'Find', 1), null],
-  'find-footprint': [(l) => moveTo(ents(l, 'Find')[0], 10, 15), { x: 10, y: 15 }],
+  'find-footprint': [(l) => { rockify(l); moveTo(ents(l, 'Find')[0], 10, 15); }, { x: 10, y: 15 }],
   'find-reach': [(l) => moveTo(ents(l, 'Find')[0], 6, 9), { x: 6, y: 9 }],
   'landmark-count': [(l) => remove(l, 'Landmark'), null],
   'landmark-sprite': [(l) => { field(ents(l, 'Landmark')[0], 'prop').__value = 'no-such-prop'; }, { x: 2, y: 20 }],
@@ -116,7 +118,7 @@ for (const [rule, [mutate, cell]] of Object.entries(RULES)) {
 test('slot-clear also fails a Find in the edge band, a Find beside a prop footprint and a Heart under a crown, but lets a Heart stand at its landmark', () => {
   const rulesOf = (fn) => problems(edit(fn)).filter((e) => e.rule === 'slot-clear').map((e) => e.message);
   assert.match(rulesOf((l) => moveTo(ents(l, 'Find')[0], 17, 14)).join(), /edge band/);
-  assert.match(rulesOf((l) => moveTo(ents(l, 'Find')[0], 11, 15)).join(), /within 1 cell of a prop footprint/);
+  assert.match(rulesOf((l) => { rockify(l); moveTo(ents(l, 'Find')[0], 11, 15); }).join(), /within 1 cell of a prop footprint/);
   assert.match(rulesOf((l) => moveTo(ents(l, 'Find')[0], 3, 2)).join(), /Find lies under a crown/);
   assert.match(rulesOf((l) => moveTo(ents(l, 'Heart')[0], 3, 2)).join(), /Heart lies under a crown/);
   assert.deepEqual(rulesOf((l) => moveTo(ents(l, 'Heart')[0], 4, 10)), []);
