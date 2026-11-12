@@ -43,6 +43,7 @@ export function paintMapVeil(g, img, ox, oy, W, H, sides, band = 78, period = 13
   g.save(); g.imageSmoothingEnabled = false; g.beginPath(); g.rect(ox, oy, W, H); g.clip();
   for (const side of 'NESW') {
     if (!sides[side]) continue;
+    if (side === 'N' || side === 'S') continue; // no signed map-scale corner pieces: the north and south bands would end square, so the map shows the west and east bands only
     const horiz = side === 'N' || side === 'S', L = horiz ? W : H, m = sideMatrix(side, W, H, L, false, 0);
     const a0 = horiz && sides.W ? band : 0, a1 = L - (horiz && sides.E ? band : 0);
     g.setTransform(m[0], m[1], m[2], m[3], m[4] + ox, m[5] + oy);
