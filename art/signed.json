@@ -2312,6 +2312,13 @@
    "sha256": "02d98a178c5fc4e765a34cbc9f4628491ca9e1de9ce75af3ce3d68e458b3208d"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "2cd1884a52",
+   "path": "prototypes/exploration/art/props/way-through-mark-stone.png",
+   "sha256": "b04cfe1e3e38834f735d03a310e2755bae6c2f85b20fb01d6461e2d1ef515fb5"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "438e2e9d4b",
