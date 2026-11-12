@@ -14,7 +14,7 @@ import path from 'node:path';
 
 const IMAGE = /\.(png|jpe?g|webp|gif|svg|avif|ico)$/i;
 const SHIPPED = /^(website\/|prototypes\/|art\/companion-48\/terrain\/meadow\/|art\/places\/)/;
-const NOT_SHIPPED = /(^|\/)(tests?|fixtures|node_modules|dist)\//;
+const NOT_SHIPPED = /(^|\/)(tests?|fixtures|golden|node_modules|dist)\//;   // golden/ holds the tests' reference screenshots, not shipped art
 const RENDER = /^prototypes\/(?!workbench\/)[^/]+\/(index\.html|src\/.+\.(mjs|js))$/;
 const PRIMITIVES = ['fillRect', 'arc', 'ellipse', 'lineTo', 'bezierCurveTo', 'putImageData', 'createImageData'];
 const PRIM_RE = Object.fromEntries(PRIMITIVES.map((p) => [p, new RegExp(`\\b${p}\\s*\\(`, 'g')]));
@@ -63,7 +63,7 @@ export function check({ base, head, site, cwd }) {
   }
   // 3. the assembled site
   if (site) {
-    const files = [], walk = (d) => { for (const e of readdirSync(d)) { if (e === 'node_modules') continue; const f = path.join(d, e); statSync(f).isDirectory() ? walk(f) : IMAGE.test(f) && files.push(f); } };
+    const files = [], walk = (d) => { for (const e of readdirSync(d)) { if (e === 'node_modules') continue; const f = path.join(d, e); statSync(f).isDirectory() ? walk(f) : IMAGE.test(f) && !NOT_SHIPPED.test(path.relative(site, f)) && files.push(f); } };
     walk(site);
     for (const f of files) {
       const buf = readFileSync(f);
