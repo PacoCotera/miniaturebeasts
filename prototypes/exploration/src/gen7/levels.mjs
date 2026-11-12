@@ -134,6 +134,22 @@ function dilate(R, W, H, k) {
 function open(R, W, H, k) { return dilate(erode(R, W, H, k), W, H, k); }
 function close(R, W, H, k) { const inv = R.map(v => 1 - v); return open(inv, W, H, k).map(v => 1 - v); }
 
+// The coast's cliff is drawn in long straight runs that turn in corners, never in a diagonal of one-tile steps. Within COAST_DEPTH cells of the border line (3.5: the middle of a cell, where the land
+// seldom has a contour, so the change from bins to the plain field is no step) the field is read at the centre of a bin of BIN_X x BIN_Y tiles, so the contour can only lie on a bin's edge: every
+// face is a whole number of bins long (at least BIN_X tiles) and every side at least BIN_Y. The bins are centred on whole tiles at the cell's centre and its edges (BIN_X 6 and BIN_Y 7 divide the cell's
+// 24 x 28 so), so a cell's centre reads itself (the cell's level stays the land's level there), the pair of rows or columns either side of a cell edge reads one sample, and no bin's edge is a cell edge.
+// The bends along the coast come from the cells (region.mjs taperCoast); the bins make them corners.
+const COAST_DEPTH = 3.5, BIN_X = 6, BIN_Y = 7, BIN_OX = 3, BIN_OY = 3;
+function coastBins(q, W, H, x0, y0) {
+  const src = q.slice();
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const gx = x0 + x, gy = y0 + y;
+    if (Math.min((gx - BORDER_X) / CW, (WTW - 1 - BORDER_X - gx) / CW, (gy - BORDER_Y) / CH, (WTH - 1 - BORDER_Y - gy) / CH) >= COAST_DEPTH) continue;
+    const sx = Math.floor((gx + BIN_OX) / BIN_X) * BIN_X - x0, sy = Math.floor((gy + BIN_OY) / BIN_Y) * BIN_Y - y0;
+    if (sx >= 0 && sy >= 0 && sx < W && sy < H) q[y * W + x] = src[sy * W + sx];
+  }
+}
+
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 function windowLevels(L, X, Y) {
@@ -147,6 +163,7 @@ function windowLevels(L, X, Y) {
   // never run along one. A feature of 4 tiles in the reduced raster is 4 or 5 in the window, so nothing is narrower than 4.
   for (let j = 1; j < 3; j++) { const y = j * CH; for (let x = 0; x < W; x++) { const m = 0.5 * (q[(y - 1) * W + x] + q[y * W + x]); q[(y - 1) * W + x] = m; q[y * W + x] = m; } }
   for (let i = 1; i < 3; i++) { const x = i * CW; for (let y = 0; y < H; y++) { const m = 0.5 * (q[y * W + x - 1] + q[y * W + x]); q[y * W + x - 1] = m; q[y * W + x] = m; } }
+  coastBins(q, W, H, (X - 1) * CW, (Y - 1) * CH);
   const W2 = W - 2, H2 = H - 2, rr = y => y - (y >= CH ? 1 : 0) - (y >= 2 * CH ? 1 : 0), cc = x => x - (x >= CW ? 1 : 0) - (x >= 2 * CW ? 1 : 0);
   let cur = new Uint8Array(W2 * H2);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cur[rr(y) * W2 + cc(x)] = q[y * W + x] >= 0 ? 1 : 0;

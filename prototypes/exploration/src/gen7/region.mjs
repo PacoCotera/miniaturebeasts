@@ -254,13 +254,13 @@ const LAND_SHAPE = ['walk', 'ways', 'compShare', 'share'];
 // The raised land never ends in a straight cut along the shore: a plateau cell in the first TAPER cells inside the ring is lowered to the low ground, so the drop to the shore happens inland and
 // follows the shapes of cells. How many cells (1 to TAPER) varies along each side by value noise of the seed, three cells to a knot, so the plateau's edge wanders in broad steps and a strip
 // of raised land never stands alone between lowered cells. A cell's rank only ever falls, and the cells further in keep theirs, so no saddle is made by the taper itself (fixSaddles is the guard).
-export const TAPER = 3, TAPER_LIFT = 0.08;
+export const TAPER = 3, TAPER_LIFT = 0.08, TAPER_KNOT = 1;
 function taperCoast(realm) {
   const { seed, level } = realm, knot = (side, i) => (hash(seed, 'gen7', 'taper', side, i) % 1024) / 1024;
   for (let y = 1; y < RH - 1; y++) for (let x = 1; x < RW - 1; x++) {
     const c = y * RW + x; if (!level[c]) continue;
     const kx = Math.min(x, RW - 1 - x), ky = Math.min(y, RH - 1 - y), k = Math.min(kx, ky); if (k > TAPER) continue;
-    const alongX = ky < kx, s = alongX ? x : y, side = alongX ? (y < RH / 2 ? 0 : 1) : (x < RW / 2 ? 2 : 3), i = Math.floor(s / 3), f = (s % 3) / 3;
+    const alongX = ky < kx, s = alongX ? x : y, side = alongX ? (y < RH / 2 ? 0 : 1) : (x < RW / 2 ? 2 : 3), i = Math.floor(s / TAPER_KNOT), f = (s % TAPER_KNOT) / TAPER_KNOT;
     const v = knot(side, i) * (1 - f) + knot(side, i + 1) * f;
     if (k <= 1 + Math.floor(v * TAPER * 0.999)) { level[c] = 0; realm.e0[c] = Math.max(realm.e0[c], realm.E[c] + TAPER_LIFT); }   // the height that raises the cell is lifted over its own, so the land at tile scale (levels.mjs) stays low in it too and the contour of the plateau beyond wanders with the land
   }
@@ -286,7 +286,7 @@ export const ROUNDS = 64;   // was 24: with stairs only where a south-facing fac
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 3;   // 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
+export const REALM_REV = 4;   // 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
 export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
 export function realm7(seed) {
