@@ -6,5 +6,5 @@ c6d86e68e475a6c90fe40bceb97e773b948a9ecb5253a46671bd02329cffddb7  edge-veil-end-
 8cfff102b751450f7c8d48deedb8e60497858cb8924d4430cdb22249b9dc27d7  edge-veil-night.png
 35c4a5725f7f73de478bc043d4081ca9e4ef5594b76a9efccc94fa21ca12c632  edge-veil-outer-day.png
 90a7ea79a2f37f7bc1fd541172cc6033f6b395fafb39947b20685ebe4adad56e  edge-veil-outer-night.png
-fcffd1d5dd70650c68cd280a58fd029aca48da40eeec2e20cc387a58e292f5a8  map-edge-veil-day.png
-d8f4d308c16863d265481ad3c96c0fcd71b1ac579cd2550f665dfecdd3526ff1  map-edge-veil-night.png
+b6f5ce5cadf750149f7ac73713bd0fd9c759227e8dd8f42c29ede58a16821de5  map-edge-veil-day.png
+a97c14f90a5e785daaf9093c35e1ea062a22452efc462350c3c14032f0100038  map-edge-veil-night.png
