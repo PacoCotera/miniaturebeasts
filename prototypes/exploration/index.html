@@ -535,7 +535,7 @@ function placeTables() {
 }
 // The warm top of a warm stone goes to a dark warm in the storm and at night; the amber veins of a charged stone keep one lit step (the stone itself takes the places' grey-blue stone tones, lighttables STONE_TONES).
 const STONE_DIM = new Map([[0xfad58d, 0x9a7453], [0xdfb877, 0x82603f], [0xfff2d0, 0xb08a63], [0xfdf0dc, 0xb08a63], [0xf1ae41, 0xb36f3c], [0xffe166, 0xe9a73c], [0xfff4c2, 0xe9a73c]]);
-const STONE_FILES = ['tall', 'small'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
+const STONE_FILES = ['tall', 'small', 'small-b'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set([...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
   const mk = (w, h) => PL.mk ? PL.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
@@ -3887,10 +3887,12 @@ function cupArt(full, cave) { return propPiece('cup-' + (cave ? 'cave' : 'surfac
 // still) and spent (the plain picture: a collected stone keeps its size). The walk draws the 48 px files, a sign or card the 16 px small one doubled; a collected field stone stays small and spent.
 // Until the files are in, a named empty slot draws nothing (no stone is drawn in code). The cave's crystals are the painted crystals-dim and crystals-lit.
 // fr: 0 or 1 the frame, -1 the still (reduced motion).
-function stoneArt(lit, cave, fr, warm, small, tall) {
+// A field stone has one of two bodies (small a, small b), by its own hash (stoneBody): the body never changes when it is struck or warm; the heart's stone is the one tall body.
+const stoneBody = (key, f) => hash(key, f.id, 'stone-body') & 1;
+function stoneArt(lit, cave, fr, warm, small, tall, body) {
   if (!cave) {
-    const st = warm && !lit ? (fr < 0 ? 'warm-still' : 'warm-' + (fr ? 2 : 1)) : lit ? 'charged-' + (fr > 0 ? 2 : 1) : 'plain';
-    const p = small ? STONE_PIECES.get('stone-small-' + st + '@16x2') : STONE_PIECES.get('stone-' + (tall ? 'tall' : 'small') + '-' + st + '@48');
+    const st = warm && !lit ? (fr < 0 ? 'warm-still' : 'warm-' + (fr ? 2 : 1)) : lit ? 'charged-' + (fr > 0 ? 2 : 1) : 'plain', sb = body ? 'small-b' : 'small';
+    const p = small ? STONE_PIECES.get('stone-' + sb + '-' + st + '@16x2') : STONE_PIECES.get('stone-' + (tall ? 'tall' : sb) + '-' + st + '@48');
     return p || walkPB('stone-quartz-slot', 32, 32);
   }
   return propPiece(lit ? 'crystals-lit' : 'crystals-dim');   // the cave's crystals: the painted dim and lit pictures
@@ -5444,7 +5446,7 @@ function drawPatchBody(t) {
     if (f.kind === 'b') a = bushArt(bushFull(P.key, f), f); else if (f.kind === 's') a = SLAB(); else if (f.kind === 'j') a = beaconArt(fs(P.key, f.id).up ? 1 : 0, fr); else if (f.kind === 'h') a = depotArt(outpostLeft(P.key, f), fr);
     else if (f.kind === 'u') a = cupArt(cupFull(P.key, f), lay.cave);
     else { const wm = !lay.cave && stormCharge(P.key, f) <= 0 && stoneWarm(P.key, f), blinkFr = wm && fs(P.key, f.id).wseen !== S.turn && motion() ? Math.floor(t * 1.2) % 2 : 0;
-      a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, motion() ? blinkFr : -1, 1, 0, f.id === 'kh') : stoneArt(stormCharge(P.key, f) > 0, false, motion() ? Math.floor(NOW / 300) % 2 : 0, 0, 0, f.id === 'kh'); }   // the heart's stone is the tall one, a field stone the small one
+      a = lay.cave ? stoneArt(stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f), true, fr) : wm ? stoneArt(0, false, motion() ? blinkFr : -1, 1, 0, f.id === 'kh', stoneBody(P.key, f)) : stoneArt(stormCharge(P.key, f) > 0, false, motion() ? Math.floor(NOW / 300) % 2 : 0, 0, 0, f.id === 'kh', stoneBody(P.key, f)); }   // the heart's stone is the tall one, a field stone the small one
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
@@ -6017,7 +6019,7 @@ function warnPicPlace(x0, y0, a) {
     let art;
     if (f.kind === 'b') art = bushArt(bushFull(a.key, f), f); else if (f.kind === 's') art = SLAB(); else if (f.kind === 'j') art = beaconArt(fs(a.key, f.id).up ? 1 : 0, 0); else if (f.kind === 'h') art = depotArt(outpostLeft(a.key, f), 0);
     else if (f.kind === 'u') art = cupArt(cupFull(a.key, f), lay.cave);
-    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, -1, 1, 1) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1); }
+    else { const wm = !lay.cave && stormCharge(a.key, f) <= 0 && stoneWarm(a.key, f); art = wm ? stoneArt(0, false, -1, 1, 1, false, stoneBody(a.key, f)) : stoneArt(stormCharge(a.key, f) > 0, false, 0, 0, 1, false, stoneBody(a.key, f)); }
     blit(art, x0, y0); }
   for (const f of live.tf) if (here(f.x, f.y) && see(f.x, f.y)) blit(ICON.tuft(), x0 + 9, y0 + 16);
   for (const f of live.fr) if (here(f.x, f.y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) blit(FRUIT(), x0 + 10, y0 + 14);

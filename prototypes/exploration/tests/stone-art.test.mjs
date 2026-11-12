@@ -1,4 +1,4 @@
-// The painted stone family C (art/stone/, signed in mibi-art f0b1e8c19): every placed file is its recorded hash (the files are copied byte for byte from that commit; the test never reads the desk's repo),
+// The painted stone family (art/stone/, signed in mibi-art art/art-fix-map-pieces, out/a2, a2b, a3, a3b): every placed file is its recorded hash (the files are copied byte for byte from that commit; the test never reads the desk's repo),
 // the page keeps each as a picture, picks tall for the heart's stone and small for a field stone, draws a collected stone as spent (the plain picture, still small), has no ring round a warm stone
 // and no stone drawn in code.
 import test from "node:test";
@@ -12,8 +12,8 @@ const sha = (b) => createHash("sha256").update(b).digest("hex");
 const files = readdirSync(DIR).filter((f) => f.endsWith(".png")).sort();
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
 
-test("the 28 placed stone files are the recorded hashes", () => {
-  const want = ["tall", "small"].flatMap((k) => ["plain", "charged-1", "charged-2", "warm-1", "warm-2", "warm-still", "spent"].flatMap((s) => ["16", "48"].map((r) => `stone-${k}-${s}@${r}.png`))).sort();
+test("the 42 placed stone files are the recorded hashes", () => {
+  const want = ["tall", "small", "small-b"].flatMap((k) => ["plain", "charged-1", "charged-2", "warm-1", "warm-2", "warm-still", "spent"].flatMap((s) => ["16", "48"].map((r) => `stone-${k}-${s}@${r}.png`))).sort();
   assert.deepEqual(files, want);
   assert.deepEqual(Object.keys(HASHES).sort(), files);
   for (const f of files) assert.equal(sha(readFileSync(new URL(f, DIR))), HASHES[f], f);
@@ -39,6 +39,9 @@ test("the page picks tall for the heart's stone, small for a field stone, the fr
   const key = (args) => p.run(`(() => { const a = stoneArt(${args}); return [...STONE_PIECES].find(([, v]) => v === a)[0]; })()`);
   assert.equal(key("1, false, 0, 0, 0, true"), "stone-tall-charged-1@48"); assert.equal(key("1, false, 1, 0, 0, false"), "stone-small-charged-2@48");
   assert.equal(key("0, false, 1, 1, 0, false"), "stone-small-warm-2@48"); assert.equal(key("0, false, -1, 1, 1"), "stone-small-warm-still@16x2");
+  // a field stone's second body (small b) keeps its body in every state; the heart's stone is tall whatever the body says
+  assert.equal(key("1, false, 0, 0, 0, false, 1"), "stone-small-b-charged-1@48"); assert.equal(key("0, false, 1, 1, 0, false, 1"), "stone-small-b-warm-2@48");
+  assert.equal(key("0, false, 0, 0, 1, false, 1"), "stone-small-b-plain@16x2"); assert.equal(key("0, false, 0, 0, 0, true, 1"), "stone-tall-plain@48");
   // the doubled sign stone is the 16 px master, each pixel twice
   const d = p.run("STONE_PIECES.get('stone-small-plain@16x2')"), m = STONE_ART["stone-small-plain@16"];
   assert.equal(d.w, 32); assert.equal(d.h, 32);
