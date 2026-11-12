@@ -537,7 +537,8 @@ function placeTables() {
 }
 // The warm top of a warm stone goes to a dark warm in the storm and at night; the amber veins of a charged stone keep one lit step (the stone itself takes the places' grey-blue stone tones, lighttables STONE_TONES).
 const STONE_DIM = new Map([[0xfad58d, 0x9a7453], [0xdfb877, 0x82603f], [0xfff2d0, 0xb08a63], [0xfdf0dc, 0xb08a63], [0xf1ae41, 0xb36f3c], [0xffe166, 0xe9a73c], [0xfff4c2, 0xe9a73c]]);
-const STONE_FILES = ['tall', 'small', 'small-b'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
+// NAMED EMPTY SLOT stone-small-b-charged-1 and -2 (@16, @48; the art desk to paint): a charged small b stone shows the signed charged small a frames (stoneArt)
+const STONE_FILES = ['tall', 'small', 'small-b'].flatMap(k => ['plain', 'charged-1', 'charged-2', 'warm-1', 'warm-2', 'warm-still', 'spent'].filter(s => !(k === 'small-b' && s.startsWith('charged'))).flatMap(s => ['16', '48'].map(r => `stone-${k}-${s}@${r}`)));
 const STONE_LOOK = new Set([...['charge', 'warm'].flatMap(k => ['1', '2', 'still'].map(s => `look-take-${k}-${s}`))]);
 function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; look: kept at 1:1 with no offset (dy: a prop's foot-row offset)
   const mk = (w, h) => PL.mk ? PL.mk(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }), prop = dy !== undefined;
@@ -571,7 +572,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { ...Object.fromEntries(['meadow', 'wood', 'drygrass', 'turf', 'scree'].map(l => ['way-through-path-end-' + l, 0])), 'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'paper-grain-64': 0, 'paper-grain-32': 0, 'map-tex-deep-26': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { ...Object.fromEntries(['meadow', 'wood', 'drygrass', 'turf', 'scree'].map(l => ['way-through-path-end-' + l, 0])), 'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
@@ -835,17 +836,16 @@ function warmLanding() {
   return true;
 }
 // The unready place: its paper sketch (the fog's hatch, the map's ink), with the Probe ring pulsing where the explorer stands. The land inks in from the explorer outward when it is ready.
-// The paper grain is the art director's signed hatch (art/props/paper-grain-64); a flat paper fill stands only until that file is in.
+// The paper grain (paper-grain-64 and -32) is a named empty slot for the art desk's painted hatch; a flat paper fill stands until that file is in.
 const INK_IN_MS = 300;
 let SKETCH = null;
 function sketchCanvas() {   // whole pixels only (the screen holds palette colours, nothing blended): paper, a diagonal hatch, the place's outline in ink
   if (SKETCH) return SKETCH;
   const cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H; const c = cv.getContext('2d');
-  const grain = propPiece('paper-grain-64'), painted = grain.w > 1;   // the art director's signed paper hatch (broken, uneven strokes), tiled at 1x; the code hatch stands only until the file is in
-  if (painted) { const tile = grain.canvas(0); for (let y = 0; y < VIEW_H; y += grain.h) for (let x = 0; x < SCR_W; x += grain.w) c.drawImage(tile, x, y); }
-  else { c.fillStyle = HEX[C.paper]; c.fillRect(0, 0, SCR_W, VIEW_H); }   // a flat paper fill while the grain loads (no hatch)
+  // NAMED EMPTY SLOT paper-grain-64 (the paper hatch tile, art desk to paint): the area is one flat fill of the palette colour nearest #fff8e6 (bone) until the signed file is in
+  c.fillStyle = HEX[C.bone]; c.fillRect(0, 0, SCR_W, VIEW_H);
   c.fillStyle = HEX[C.bark]; for (let x = 10; x < SCR_W - 10; x += 10) { c.fillRect(x, 10, 6, 2); c.fillRect(x, VIEW_H - 12, 6, 2); } for (let y = 10; y < VIEW_H - 10; y += 10) { c.fillRect(10, y, 2, 6); c.fillRect(SCR_W - 12, y, 2, 6); }
-  if (painted) SKETCH = cv;
+  SKETCH = cv;
   return cv;
 }
 function drawSketch() {
@@ -3929,7 +3929,7 @@ function cupArt(full, cave) { return propPiece('cup-' + (cave ? 'cave' : 'surfac
 const stoneBody = (key, f) => hash(key, f.id, 'stone-body') & 1;
 function stoneArt(lit, cave, fr, warm, small, tall, body) {
   if (!cave) {
-    const st = warm && !lit ? (fr < 0 ? 'warm-still' : 'warm-' + (fr ? 2 : 1)) : lit ? 'charged-' + (fr > 0 ? 2 : 1) : 'plain', sb = body ? 'small-b' : 'small';
+    const st = warm && !lit ? (fr < 0 ? 'warm-still' : 'warm-' + (fr ? 2 : 1)) : lit ? 'charged-' + (fr > 0 ? 2 : 1) : 'plain', sb = body && !lit ? 'small-b' : 'small';   // the charged small b is a named empty slot: it shows the charged small a
     const p = small ? STONE_PIECES.get('stone-' + sb + '-' + st + '@16x2') : STONE_PIECES.get('stone-' + (tall ? 'tall' : sb) + '-' + st + '@48');
     return p || walkPB('stone-quartz-slot', 32, 32);
   }
@@ -4659,12 +4659,8 @@ function buildMapPBCells() {
   return pb;
 }
 // Fog: one continuous cloud layer for the whole map (dithered noise), shown only over unseen cells.
-function buildFogPB(seed) {   // the unknown: paper hatch (diagonal ink strokes on the paper) in place of the black dither
-  const pb = new PB(MW * CELL, MH * CELL), s1 = hash(seed, 'fogn');
-  for (let Y = 0; Y < MH * CELL; Y++) for (let X = 0; X < MW * CELL; X++) {
-    const k = (X + Y) % 6, grain = noise2(s1, X / 5, Y / 5, 1) > .7;
-    pb.p[Y * pb.w + X] = k === 0 ? C.clay : k === 1 ? C.sand : grain ? C.sand : C.paper; }
-  return pb;
+function buildFogPB(seed) {   // the unknown: NAMED EMPTY SLOT paper-grain-32 (the paper hatch, art desk to paint); one flat fill of the palette colour nearest #fff8e6 (bone), no hatch drawn in code
+  return new PB(MW * CELL, MH * CELL).rect(0, 0, MW * CELL, MH * CELL, C.bone);
 }
 function fogCellArt(v) { return art('fog' + v, () => { const pb = new PB(CELL, CELL), R = makeRng(hash('fog', v)); pb.rect(0, 0, CELL, CELL, C.night);
   for (let i = 0; i < 16; i++) pb.set(R.int(CELL), R.int(CELL), C.slate);
@@ -4764,13 +4760,8 @@ function viewBg(col) {
 
 // ===================== 12. World map =====================
 let mapCv = null, mapCvDark = null, mapCvFade = null, fogCv = null, fogCvDark = null, mapSeed = null, mapPB = null;
-// The map's fog: the art director's signed paper hatch (a 32 px tile, broken uneven strokes) over the whole map; the night copy is the same tile through the places night table. The code hatch (buildFogPB) stands only until the file is in.
-function fogGrainCanvas(fp, rm) {
-  const gr = propPiece('paper-grain-32'); if (gr.w <= 1) return fp.canvas(rm);
-  const cv = document.createElement('canvas'); cv.width = MW * CELL; cv.height = MH * CELL; const c = cv.getContext('2d'), tile = gr.canvas(rm === 1 ? 2 : 0);   // the night tile takes the places' night table
-  for (let y = 0; y < cv.height; y += gr.h) for (let x = 0; x < cv.width; x += gr.w) c.drawImage(tile, x, y);
-  return cv;
-}
+// The map's fog: NAMED EMPTY SLOT paper-grain-32 (the paper hatch, art desk to paint); until the signed file is in, the fog is the flat paper fill of buildFogPB (its night copy through the night table).
+function fogGrainCanvas(fp, rm) { return fp.canvas(rm); }
 function ensureMap() { const mk = G.seed + ':' + (S.gen || 1); if (!mapCv || mapSeed !== mk) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapPB = pb; mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); mapCvFade = pb.canvas(4); fogCv = fogGrainCanvas(fp, 0); fogCvDark = fogGrainCanvas(fp, 1); mapSeed = mk; } }   // keyed by generator too
 // What one start glint promises: a sign genuinely in its 3x3 (slow beat, tracks, rings). Where a glint has
 // more than one, it shows the one the other glints show least, so the starts read differently.
@@ -4910,14 +4901,6 @@ function landCellOf(cs) {
 const LAND_CACHE = { key: null, cv: null, more: new Map() };   // the last painting, and up to four more by key (the opening's mist frames flip between two without a repaint)
 const landReset = () => { LAND_CACHE.key = null; LAND_CACHE.more.clear(); };
 // The painting is a generator: it yields every 16 rows when `sliced`, so a screen can paint it across frames; landImage runs it whole.
-let DEEP_TILE = null;   // the signed deep-sea tile (art/props/map-tex-deep-26, full colour) as the map canvas's own pixels (ABGR), read once when the file is in
-function deepTile() {
-  if (DEEP_TILE) return DEEP_TILE;
-  const pc = STONE_PIECES.get('map-tex-deep-26'); if (!pc || pc.w !== 26 || pc.h !== 26) return null;
-  const d = pc.canvas(0).getContext('2d').getImageData(0, 0, 26, 26).data, t = new Uint32Array(676);
-  for (let i = 0; i < 676; i++) t[i] = (255 << 24) | (d[i * 4 + 2] << 16) | (d[i * 4 + 1] << 8) | d[i * 4];
-  return (DEEP_TILE = t);
-}
 function landImage(spec) { const it = landPaint(spec, false); let r; while (!(r = it.next()).done); return r.value; }
 function* landPaint(spec, sliced) {
   const { X0, Y0, w: N, h: NH, cs } = spec, k = cs / 72, ex = S.exp;
@@ -4940,8 +4923,7 @@ function* landPaint(spec, sliced) {
     if (lay) for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.WATER || lay.tiles[i] === T.ISLE) { sx += i % lay.w; sy += (i / lay.w) | 0; n++; }
     return pond[c] = n ? { x: (sx / n + .5) / lay.w, y: (sy / n + .5) / lay.h, r: Math.sqrt(n / (lay.w * lay.h)) * .62 } : { x: .5, y: .5, r: .3 }; };
   const put = (i, c) => { const q2 = RGB[c]; u[i] = (255 << 24) | (q2[2] << 16) | (q2[1] << 8) | q2[0]; };
-  // the deep sea: the art director's signed map-tex-deep (26 px, full colour: it keeps its own tones, so it is written as it is, not through the palette); the reach views (48, 72) keep the water's darker step
-  const DEEP = tcs === 26 ? deepTile() : null;
+  // the deep sea at 26 px: a named empty slot (map-tex-deep-26), a flat fill of the darkest palette blue; the reach views (48, 72) keep the water's darker step
   for (let y = 0; y < NH; y++) { if (sliced && (y & 15) === 0 && y) yield;
   for (let x = 0; x < N; x++) {
     const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
@@ -4956,7 +4938,7 @@ function* landPaint(spec, sliced) {
       const v = ovr[Math.min(MH * OCH - 1, Math.floor(wy * OCH / cs)) * (MW * OCW) + Math.min(MW * OCW - 1, Math.floor(wx * OCW / cs))], k8 = v & 7;
       col = k8 === 2 ? tile('water', wx, wy) : k8 === 3 ? DARK[tile('water', wx, wy)] : k8 === 1 ? tile('beach', wx, wy) : k8 === 4 || k8 === 5 ? tile('wood', wx, wy) : k8 === 6 ? tile('rock', wx, wy) : tile('meadow', wx, wy);
       wood = k8 === 4 || k8 === 5; if (v & 8) col = LIGHT[col];
-      if (k8 === 3 && DEEP) raw = DEEP[(((wy % 26) + 26) % 26) * 26 + (((wx % 26) + 26) % 26)];
+      if (k8 === 3 && tcs === 26) col = C.deep;   // NAMED EMPTY SLOT map-tex-deep-26 (the deep-sea tile, art desk to paint after a palette add): one flat fill of the darkest palette blue
     }
     if (!ovr && land === L.POND) { const p = pondOf(c), dx = (lx - p.x) / (p.r * 1.25), dy = (ly - p.y) / p.r, rr = dx * dx + dy * dy + (vnoise(wx / (6 * k), wy / (6 * k), 7) - .5) * .5;
       if (rr < 1) land = L.WATER; else if (rr < 1.35) col = tile('pondrim', wx, wy); }

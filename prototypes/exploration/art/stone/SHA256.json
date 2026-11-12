@@ -1,8 +1,4 @@
 {
-  "stone-small-b-charged-1@16.png": "100cf43b05a458c446cc3d303fcacc045c83df8141e90cc74ed4ee88fe541428",
-  "stone-small-b-charged-1@48.png": "a45f095b7536abb4921bd7422168ba1526bec7be6337b1e117e49b7b478d8861",
-  "stone-small-b-charged-2@16.png": "02912a2a3cce2b30aa6288acc665c35ac7daef4f16d3372f315b27261e8d5d81",
-  "stone-small-b-charged-2@48.png": "5fdd80b80d27d64848a8a6c8ef736f94b1d8b2910aae2054dad0b8efc839d361",
   "stone-small-b-plain@16.png": "5ab6b057b4d4131203733a3573eb253199878fbd46f34ef661838ed013c063cd",
   "stone-small-b-plain@48.png": "2548e01966e023129f3bd27af6368c26b528ddc5bd1e4287ed8b56248ec23afb",
   "stone-small-b-spent@16.png": "5ab6b057b4d4131203733a3573eb253199878fbd46f34ef661838ed013c063cd",
@@ -35,10 +31,10 @@
   "stone-tall-plain@48.png": "c97a7fc2175382d2f41501fff6aa7b9010c9bcf286554c380d3ac371b68a3a1a",
   "stone-tall-spent@16.png": "5e178b2fb3cc71ea83447a96e8cac31e35848dc6e5772112808df33353be5fe7",
   "stone-tall-spent@48.png": "c97a7fc2175382d2f41501fff6aa7b9010c9bcf286554c380d3ac371b68a3a1a",
-  "stone-tall-warm-1@16.png": "f5725f250caffc5dceed251ca1497eda46cf7f4fca9f4c77d5929f0b5921afee",
-  "stone-tall-warm-1@48.png": "5bfcd177ff4ab978ab9f84a435df1b481c6e47c7d5194a65216fbc31ba6ee0c8",
-  "stone-tall-warm-2@16.png": "2acd94adf37ff74d89a232434254bd02f42d2b05a89388612f862aee39e66579",
-  "stone-tall-warm-2@48.png": "d0a7b75e5bfd81bd3986133bf789fd8be2ffe5d7b29ecebfb99ce018beb02f92",
-  "stone-tall-warm-still@16.png": "f5725f250caffc5dceed251ca1497eda46cf7f4fca9f4c77d5929f0b5921afee",
-  "stone-tall-warm-still@48.png": "5bfcd177ff4ab978ab9f84a435df1b481c6e47c7d5194a65216fbc31ba6ee0c8"
+  "stone-tall-warm-1@16.png": "0a24d6d8bcceb481e185cbcd8d4c8488bc43142a384efc8efd9f554e86567296",
+  "stone-tall-warm-1@48.png": "f99dba753f3bddbc54e6aaae09caf4dea3cc08bdbc799f0597dbd907f5066089",
+  "stone-tall-warm-2@16.png": "ca56b027176032610c7f3289388df7a85b36ee60c67e7d48969db42438ad5fd0",
+  "stone-tall-warm-2@48.png": "e5f4066a0f60a6b3c0718175c886ac6fe4e1e29b2a993f6f5d5c7106ed36c2a6",
+  "stone-tall-warm-still@16.png": "0a24d6d8bcceb481e185cbcd8d4c8488bc43142a384efc8efd9f554e86567296",
+  "stone-tall-warm-still@48.png": "f99dba753f3bddbc54e6aaae09caf4dea3cc08bdbc799f0597dbd907f5066089"
 }
