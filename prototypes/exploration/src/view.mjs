@@ -50,7 +50,7 @@ const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1
 export const SHADOW_KIND = /^(rock-a|rock-b|boulder-[ade]|boulder-grey|boulder-brown)(-m)?$/;   // the places' stone and boulder pieces (not the stump, not the turf rock, not a tree)
 export const SHADOW_ALPHA = { 1: 0.14, 2: 0.18 }, SHADOW_DITHER = { 1: 5, 2: 10 };   // the core is drawn over the rim, so its total is the sum
 export function shadowPixels(w) {
-  const rx = Math.max(4, Math.round(w / 2) + 1), ry = Math.max(2, Math.round(w / 6)), out = [];
+  const rx = Math.max(4, ((w + 1) >> 1) + 1), ry = Math.max(2, ((w + 3) / 6) | 0), out = [];
   for (let dy = -ry; dy <= ry; dy++) for (let dx = -rx; dx <= rx; dx++) { const d = (dx * dx) / (rx * rx) + (dy * dy) / ((ry + 0.5) * (ry + 0.5)); if (d <= 1) out.push({ dx: dx + 1, dy: dy + 1, a: d < 0.5 ? 2 : 1 }); }
   return out;
 }

@@ -469,9 +469,33 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     for (const p of propsIn(x0 - 4, y0 - 4, x1 + 4, y1 + 5)) { for (const [a, b] of footprint(p)) occ.add(key(a, b)); const r = spriteRect(SPRITES.props[p.kind], p.x * 48 + 24, p.y * 48 + 47); if (r) walls.push(r); }
     const tileOk = (x, y) => inMap(x, y) && G(x, y) === GRASS && grassTile(x, y) && !occ.has(key(x, y));
     const out = scatterIn(x0, y0, x1, y1, tileOk, MD.noOverlap ? walls : []);
+    // the turf's rocks lie as a loose cluster, never three on one line (art director 11-11 23:48: on seed 13 three sat in a straight row): of any three rocks within 8 tiles whose feet lie on one line
+    // (the middle one's foot within 8 px of the line through the outer two) the one with the highest hash is left out. A rock's fate depends only on rocks within 8 tiles, so a cell and its neighbour agree.
+    const ROCK = /^rock-turf/, rockFoot = (x, y) => { const k = SPRITES.decals[groundAt(x, y).kinds[H(seed, TAG.GROUND + 2, x, y) % groundAt(x, y).kinds.length]]; return k ? [x * 48 + k.anchor[0] + 1 + H(seed, TAG.GROUND + 3, x, y) % Math.max(1, 46 - k.rect[2] + 1), y * 48 + k.anchor[1] + 1 + H(seed, TAG.GROUND + 4, x, y) % Math.max(1, 46 - k.rect[3] + 1)] : null; };
+    const rockCache = new Map(), rocksNear = (x, y) => {
+      const out = [];
+      for (let b = y - 8; b <= y + 8; b++) for (let a = x - 8; a <= x + 8; a++) { const e = groundAt(a, b); if (!e || e.prop || !ROCK.test(e.kinds[0])) continue; const f = rockFoot(a, b); if (f) out.push({ x: a, y: b, f, h: H(seed, TAG.GROUND + 5, a, b) }); }
+      return out;
+    };
+    const lineGap = (p, q, r) => { const dx = r[0] - p[0], dy = r[1] - p[1], L = Math.hypot(dx, dy) || 1; return Math.abs(dx * (q[1] - p[1]) - dy * (q[0] - p[0])) / L; };
+    const inRow = (x, y) => {
+      const key2 = key(x, y); if (rockCache.has(key2)) return rockCache.get(key2);
+      const me = { x, y, f: rockFoot(x, y), h: H(seed, TAG.GROUND + 5, x, y) }, near = rocksNear(x, y).filter(r => !(r.x === x && r.y === y));
+      let gone = false;
+      for (let i = 0; i < near.length && !gone; i++) for (let j = i + 1; j < near.length && !gone; j++) {
+        const a = me, b = near[i], c = near[j];
+        if (Math.max(Math.abs(b.x - c.x), Math.abs(b.y - c.y)) > 8) continue;
+        const d = (u, v) => Math.hypot(u.f[0] - v.f[0], u.f[1] - v.f[1]), ab = d(a, b), ac = d(a, c), bc = d(b, c);   // the two farthest apart are the ends, the third the middle
+        const gap = ab >= ac && ab >= bc ? lineGap(a.f, c.f, b.f) : ac >= bc ? lineGap(a.f, b.f, c.f) : lineGap(b.f, a.f, c.f);
+        if (gap < 8 && Math.max(a.h, b.h, c.h) === a.h) gone = true;
+      }
+      if (rockCache.size > 4000) rockCache.clear();
+      rockCache.set(key2, gone); return gone;
+    };
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {   // the ground decor: a flat piece in its tile, wholly inside it (a pixel's margin), never meeting a prop's picture
       const e = groundAt(x, y); if (!e || e.prop) continue;
       const kind = e.kinds[H(seed, TAG.GROUND + 2, x, y) % e.kinds.length], s = SPRITES.decals[kind]; if (!s) continue;
+      if (ROCK.test(kind) && inRow(x, y)) continue;
       const w = s.rect[2], h = s.rect[3], ax = s.anchor[0], ay = s.anchor[1];
       const mx = ax + 1 + H(seed, TAG.GROUND + 3, x, y) % Math.max(1, 46 - w + 1), my = ay + 1 + H(seed, TAG.GROUND + 4, x, y) % Math.max(1, 46 - h + 1);
       if (MD.noOverlap && walls.some(wl => overlaps([x * 48 + mx - ax, y * 48 + my - ay, w, h], wl))) continue;
