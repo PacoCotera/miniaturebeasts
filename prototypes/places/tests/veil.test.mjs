@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { veilPlan, paintVeil, paintMapVeil, veilStep, VEIL_STEPS, VEIL_BAND, VEIL_PERIOD } from '../src/veil.mjs';
+import { veilPlan, paintVeil, paintMapVeil, VEIL_BAND, VEIL_PERIOD } from '../src/veil.mjs';
 
 const none = { N: false, E: false, S: false, W: false };
 const T = 48, W = 24 * T, H = 28 * T;
@@ -32,18 +32,15 @@ function rec() {
   const calls = [], g = { save() {}, restore() {}, beginPath() {}, rect() {}, clip() {}, setTransform: (...m) => { cur = m; }, drawImage: (img, ...a) => calls.push([img, ...a, cur]), imageSmoothingEnabled: true };
   return { g, calls };
 }
-const kit = { strip: 'strip', 'drift-a': 'A', 'drift-b': 'B', end: 'end', outer: 'outer', inner: 'inner' };
+const kit = { strip: 'strip', end: 'end', outer: 'outer', inner: 'inner' };
 
-test('the two layers drift opposite ways along the edge, 3 px a step, wrapping at 240; every destination row is drawn once per layer', () => {
+test('the strip stands still: every destination row is drawn once, from row 0 at the run start, wrapping at 240', () => {
   const plan = veilPlan(24, 28, { ...none, W: true }, { NW: true, SW: true });
-  const rowsOf = (step, who) => { const { g, calls } = rec(); paintVeil(g, kit, plan, W, H, step); const row = new Int32Array(H).fill(-1);
-    for (const [img, , sy, , sh, , dy, , dh] of calls) if (img === who) for (let k = 0; k < dh; k++) { assert.equal(row[dy + k], -1); row[dy + k] = sy + k; } return row; };
-  const a0 = rowsOf(0, 'A'), a1 = rowsOf(1, 'A'), b0 = rowsOf(0, 'B'), b1 = rowsOf(1, 'B');
-  assert.equal(a0[100], 100); assert.equal(b0[100], 100);
-  assert.equal(a1[100], 97); assert.equal(b1[100], 103);   // A moves toward the far end, B toward the near end
-  assert.equal(a1[1], (1 - 3 + VEIL_PERIOD) % VEIL_PERIOD);
-  assert.ok(a0.every((v) => v >= 0) && b0.every((v) => v >= 0));
-  assert.equal(veilStep(0), 0); assert.equal(veilStep(333 * VEIL_STEPS), 0); assert.equal(veilStep(333 * 2 + 1), 2);
+  const { g, calls } = rec(); paintVeil(g, kit, plan, W, H);
+  const row = new Int32Array(H).fill(-1);
+  for (const [img, , sy, , , , dy, , dh] of calls) if (img === 'strip') for (let k = 0; k < dh; k++) { assert.equal(row[dy + k], -1); row[dy + k] = sy + k; }
+  assert.equal(row[100], 100); assert.equal(row[241], 1);
+  assert.ok(row.every((v) => v >= 0));
 });
 
 // a picture with an alpha channel the test chooses: alpha(x, y) in 0..255
@@ -51,9 +48,9 @@ const pic = (w, h, alpha) => { const data = new Uint8ClampedArray(w * h * 4); fo
 
 test('a run is laid so the strip row that best meets the corner piece, or the band end, lies beside it', () => {
   const row = (r) => (r * 7) % 256;   // every row of the layer its own alpha: one best row
-  const kit2 = { 'drift-a': pic(VEIL_BAND, VEIL_PERIOD, (x, y) => row(y)), 'drift-b': pic(VEIL_BAND, VEIL_PERIOD, () => 0),
+  const kit2 = { strip: pic(VEIL_BAND, VEIL_PERIOD, (x, y) => row(y)),
     outer: pic(VEIL_BAND, VEIL_BAND, (x, y) => (y === VEIL_BAND - 1 ? row(37) : x === VEIL_BAND - 1 ? row(90) : 0)), end: pic(2 * VEIL_BAND, 2 * VEIL_BAND, (x, y) => (y === 2 * VEIL_BAND - 1 ? row(150) : 0)), inner: 'inner' };
-  const firstRow = (plan, side, who = 'drift-a') => { const { g, calls } = rec(); paintVeil(g, kit2, plan, W, H, 0); const a0 = plan.runs.find((r) => r.side === side).a0; const vertical = side === 'W' || side === 'E', c = calls.find((q) => q[0] === kit2[who] && q[6] === a0 && (q[9][0] === 1) === vertical); return c[2]; };
+  const firstRow = (plan, side, who = 'strip') => { const { g, calls } = rec(); paintVeil(g, kit2, plan, W, H); const a0 = plan.runs.find((r) => r.side === side).a0; const vertical = side === 'W' || side === 'E', c = calls.find((q) => q[0] === kit2[who] && q[6] === a0 && (q[9][0] === 1) === vertical); return c[2]; };
   const corner = veilPlan(24, 28, { ...none, W: true, N: true }, {});
   assert.equal(firstRow(corner, 'W'), 37);    // the west run starts below the corner piece, at the row that meets its bottom edge
   assert.equal(firstRow(corner, 'N'), 90);    // the north run starts beside it, at the row that meets its right edge
@@ -61,9 +58,9 @@ test('a run is laid so the strip row that best meets the corner piece, or the ba
   assert.equal(firstRow(end, 'W'), 150);      // a run after a band end meets the end's bottom edge
   assert.equal(firstRow(veilPlan(24, 28, { ...none, W: true }, {}), 'W'), 0);   // no piece at either end: the rows lie as they are
   const far = veilPlan(24, 28, { ...none, W: true }, { NW: true, SW: false });   // a piece only at the far end: the run's last row is the one that meets it
-  { const { g, calls } = rec(); paintVeil(g, kit2, far, W, H, 0); const c = calls.filter((q) => q[0] === kit2['drift-a']).pop(); assert.equal((c[2] + c[4] - 1) % VEIL_PERIOD, 150); }
+  { const { g, calls } = rec(); paintVeil(g, kit2, far, W, H); const c = calls.filter((q) => q[0] === kit2.strip).pop(); assert.equal((c[2] + c[4] - 1) % VEIL_PERIOD, 150); }
   const noPix = { ...kit, joins: undefined };   // pictures that cannot be read leave the rows alone
-  { const { g, calls } = rec(); paintVeil(g, noPix, corner, W, H, 0); assert.equal(calls.find((q) => q[0] === 'A' && q[6] === VEIL_BAND)[2], VEIL_BAND); }
+  { const { g, calls } = rec(); paintVeil(g, noPix, corner, W, H); assert.equal(calls.find((q) => q[0] === 'strip' && q[6] === VEIL_BAND)[2], VEIL_BAND); }
 });
 
 test('the map veil runs west and east full height and north and south between them', () => {

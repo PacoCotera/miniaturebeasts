@@ -510,7 +510,7 @@ async function loadPlaces() {
     PL.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); }
 }
-// The art desk's edge veil (places/veil/, SOURCE.md there): the strip's two drift layers, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
+// The art desk's edge veil (places/veil/, SOURCE.md there): the straight strip, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
 // a view without it draws no veil.
 async function loadVeilKit(base) {
   if (typeof Image === 'undefined') return;

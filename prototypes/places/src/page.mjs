@@ -7,7 +7,7 @@ import { BAYER4, SHADOW_KIND, contactShadow } from '../../exploration/src/view.m
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
 import { stepCamera, newCam, TILE } from './camera.mjs';
-import { paintVeil, veilStep } from './veil.mjs';
+import { paintVeil } from './veil.mjs';
 
 export { FrameRing } from './ground.mjs';
 
@@ -74,14 +74,14 @@ export class BakedView {
     if (!this.veilKit || !plan) { this.veilPlan = null; this.veilId = ''; return; }
     if (id !== this.veilId) { this.veilPlan = plan; this.veilId = id; this.veilKey = ''; }
   }
-  // Draws the veil over the ground (one blit of a cached picture, made again only when the 3 a second drift step changes). night: the night copies. Call it before the creatures and the explorer.
+  // Draws the veil over the ground (one blit of a cached picture, made again only when the plan or the time of day changes). night: the night copies. Call it before the creatures and the explorer.
   drawVeil(g, sx, sy, win, clockMs, night = false) {
     if (!this.veilPlan) return;
-    const W = this.place.w * 48, H = this.place.h * 48, step = veilStep(clockMs), key = `${this.veilId}|${night ? 1 : 0}|${step}`;
+    const W = this.place.w * 48, H = this.place.h * 48, key = `${this.veilId}|${night ? 1 : 0}`;
     if (this.veilKey !== key) {
       if (!this.veilCv || this.veilCv.width !== W || this.veilCv.height !== H) this.veilCv = this.mkCanvas(W, H);
       const vg = this.veilCv.getContext('2d'); vg.setTransform(1, 0, 0, 1, 0, 0); vg.clearRect(0, 0, W, H);
-      paintVeil(vg, night ? this.veilKit.night : this.veilKit.day, this.veilPlan, W, H, step); this.veilKey = key;
+      paintVeil(vg, night ? this.veilKit.night : this.veilKit.day, this.veilPlan, W, H); this.veilKey = key;
     }
     const x0 = Math.max(0, win.x), y0 = Math.max(0, win.y), x1 = Math.min(W, win.x + win.w), y1 = Math.min(H, win.y + win.h);
     if (x1 > x0 && y1 > y0) g.drawImage(this.veilCv, x0, y0, x1 - x0, y1 - y0, sx + x0 - win.x, sy + y0 - win.y, x1 - x0, y1 - y0);

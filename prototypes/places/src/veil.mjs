@@ -1,11 +1,10 @@
 // The edge veil (art desk, mibi-art 39a625d1f, places/veil/): a cool blue-grey veil over the coast's deep water and along the region sides that face unopened land, 3 tiles deep, dense at the place's edge.
-// Pieces are baked pictures; nothing is drawn by code but their placement. The straight run is two seamless layers that drift past each other ALONG the edge line, 1 art px (3 px at 1x) a step
-// at 3 steps a second, by swapping which rows show (no blending between frames, no particles). Corners and band ends are single signed pictures that stand still.
+// Pieces are baked pictures; nothing is drawn by code but their placement. The straight run is the signed strip (240 rows, tiling along the edge line; its left VEIL_BAND columns show),
+// laid by rows with no blending. Corners and band ends are single signed pictures. Everything stands still.
 // A veil never lies inside a walkable place: the page gives only the sides that are blocked (a range side) or water (the coast).
-export const VEIL_T = 48, VEIL_BAND = 144, VEIL_PERIOD = 240, VEIL_STEP_MS = 333, VEIL_STEP_PX = 3, VEIL_STEPS = VEIL_PERIOD / VEIL_STEP_PX;
-export const VEIL_KINDS = ['strip', 'drift-a', 'drift-b', 'end', 'outer', 'inner'];
+export const VEIL_T = 48, VEIL_BAND = 144, VEIL_PERIOD = 240;
+export const VEIL_KINDS = ['strip', 'end', 'outer', 'inner'];
 export const veilFileName = (kind, night) => (kind === 'strip' ? 'edge-veil' : `edge-veil-${kind}`) + (night ? '-night' : '-day');
-export const veilStep = (clockMs) => (clockMs > 0 ? Math.floor(clockMs / VEIL_STEP_MS) % VEIL_STEPS : 0);
 
 // a side's two ends: the corner at each, and the side across it
 const ENDS = { W: [['NW', 'N'], ['SW', 'S']], E: [['NE', 'N'], ['SE', 'S']], N: [['NW', 'W'], ['NE', 'E']], S: [['SW', 'W'], ['SE', 'E']] };
@@ -53,18 +52,18 @@ export function paintMapVeil(g, img, ox, oy, W, H, sides, band = 78, period = 13
 }
 
 // Where a run of straight veil meets a painted corner or band end, the run's rows are laid so the cross-section there is the one of the strip that matches the piece's join edge best (the art desk laid
-// its signs the same way: the strip slides along its edge to the row whose cross-section meets the piece). Read from the pictures themselves, once per kit: for every one of the 240 rows of the two
-// drift layers stacked (step 0), the mean alpha difference to the piece's edge; the row with the least. { outerV, outerH, end }: the outer corner's bottom edge (a west or east run), its right edge (a north
+// its signs the same way: the strip slides along its edge to the row whose cross-section meets the piece). Read from the pictures themselves, once per kit: for every one of the 240 rows of the
+// strip, the mean alpha difference to the piece's edge; the row with the least. { outerV, outerH, end }: the outer corner's bottom edge (a west or east run), its right edge (a north
 // or south run), the band end's bottom edge; each null when a picture cannot be read (no run is shifted then).
 function alphaOf(img) {
   try { const g = img.getContext('2d'); return { a: g.getImageData(0, 0, img.width, img.height).data, w: img.width, h: img.height }; } catch (e) { return null; }
 }
 export function veilJoins(kit) {
   if (kit.joins !== undefined) return kit.joins;
-  const A = alphaOf(kit['drift-a']), B = alphaOf(kit['drift-b']), O = alphaOf(kit.outer), E = alphaOf(kit.end);
+  const S = alphaOf(kit.strip), O = alphaOf(kit.outer), E = alphaOf(kit.end);
   let out = null;
-  if (A && B && O && E && A.w === VEIL_BAND && A.h === VEIL_PERIOD && O.w === VEIL_BAND && O.h === VEIL_BAND && E.w === 2 * VEIL_BAND && E.h === 2 * VEIL_BAND) {
-    const stack = (r, u) => { const i = (r * VEIL_BAND + u) * 4 + 3, a = A.a[i] / 255, b = B.a[i] / 255; return 1 - (1 - a) * (1 - b); };
+  if (S && O && E && S.w >= VEIL_BAND && S.h === VEIL_PERIOD && O.w === VEIL_BAND && O.h === VEIL_BAND && E.w === 2 * VEIL_BAND && E.h === 2 * VEIL_BAND) {
+    const stack = (r, u) => S.a[(r * S.w + u) * 4 + 3] / 255;
     const best = (edge) => { let br = 0, bd = Infinity; for (let r = 0; r < VEIL_PERIOD; r++) { let d = 0; for (let u = 0; u < VEIL_BAND; u++) d += Math.abs(edge(u) - stack(r, u)); if (d < bd) { bd = d; br = r; } } return br; };
     out = {
       outerV: best((u) => O.a[((VEIL_BAND - 1) * VEIL_BAND + u) * 4 + 3] / 255),
@@ -86,18 +85,16 @@ function runShift(plan, joins, side, a0, a1) {
   return 0;
 }
 
-// Paints the veil of `plan` at drift step `step` onto g (a 2D context of W x H place pixels). kit: { strip, 'drift-a', 'drift-b', end, outer, inner } canvases/images of one time of day.
-export function paintVeil(g, kit, plan, W, H, step) {
+// Paints the veil of `plan` onto g (a 2D context of W x H place pixels). kit: { strip, end, outer, inner } canvases/images of one time of day.
+export function paintVeil(g, kit, plan, W, H) {
   g.save(); g.imageSmoothingEnabled = false; g.beginPath(); g.rect(0, 0, W, H); g.clip();
   const put = (m, img, ...a) => { g.setTransform(...m); g.drawImage(img, ...a); };
-  const sh = step * VEIL_STEP_PX, joins = veilJoins(kit);
+  const joins = veilJoins(kit);
   for (const { side, a0, a1 } of plan.runs) {
     const L = (side === 'W' || side === 'E' ? H : W), m = sideMatrix(side, W, H, L, false, 0), shift = runShift(plan, joins, side, a0, a1);
-    for (const [img, dir] of [[kit['drift-a'], 1], [kit['drift-b'], -1]]) {
-      for (let a = a0; a < a1;) {
-        const r = ((((a + shift - dir * sh) % VEIL_PERIOD) + VEIL_PERIOD) % VEIL_PERIOD), len = Math.min(VEIL_PERIOD - r, a1 - a);
-        put(m, img, 0, r, VEIL_BAND, len, 0, a, VEIL_BAND, len); a += len;
-      }
+    for (let a = a0; a < a1;) {
+      const r = (((a + shift) % VEIL_PERIOD) + VEIL_PERIOD) % VEIL_PERIOD, len = Math.min(VEIL_PERIOD - r, a1 - a);
+      put(m, kit.strip, 0, r, VEIL_BAND, len, 0, a, VEIL_BAND, len); a += len;
     }
   }
   for (const p of plan.pieces) {
