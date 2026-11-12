@@ -30,6 +30,14 @@ test('the night table keeps the rock ramp in order: a darker day grey never maps
   for (const h of ['#79875b', '#8b9561', '#667b59']) assert.ok(cols.includes(h), h + ' is on the set');
 });
 
+test('the olive meadow steps stay in the green family at night (dark and dark2), never brown-grey', () => {
+  const cols = palette.colours, green = (h) => { const c = [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)); return c[1] > c[0] && c[1] > c[2]; };
+  for (const table of ['dark', 'dark2']) for (const h of ['#79875b', '#8b9561', '#667b59']) {
+    const to = cols[palette.tables[table][48 + cols.indexOf(h)] - 48];
+    assert.ok(to && green(to), h + ' in ' + table + ' goes to ' + to + ', not a green');
+  }
+});
+
 test('the contract refuses what it should', () => {
   const bad = (f) => { const s = structuredClone(set); f(s); return validateSetJson(s).length > 0; };
   assert.ok(bad((s) => { s.licence.spdx = 'CC-BY-4.0'; }), 'a licence that is not CC0 or ours');

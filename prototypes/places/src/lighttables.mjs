@@ -47,6 +47,8 @@ export const STONE_TONES = {
 // The rock ramp at night (art director 2026-11-12): a darker day grey never maps lighter at night, and the rock keeps four or more separate values. Day colour -> night colour, both of the palette;
 // the dark end of the rock (the cracks, the outlines) goes to the darkest greys and the body steps climb from there, in the day order. Applied to the night table only, where the day colour is in the set.
 export const NIGHT_ROCK = [['242626', '141b1b'], ['2a3834', '141b1b'], ['343840', '242626'], ['3e444e', '242626'], ['474d55', '2a3834'], ['555c64', '333b47'], ['5a6470', '333b47'], ['6c7682', '333b47']];
+// The olive meadow ramp at night (art director 2026-11-12): day colour -> the dark olive green its two lighter steps already take (#54603e). Table entries only; applied only where the step's night colour is not green.
+export const NIGHT_OLIVE = [['667b59', '54603e'], ['79875b', '54603e'], ['8b9561', '54603e']];
 // opts.bank, opts.bankTo: the bank earth and the trunk brown it takes at night (below). opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks, boulders and cliff stone, outlines included; opts.stoneHi: of the rock's two lightest greys, which go one step lighter; opts.stoneLine: of its outlines, which go one step darker (all core-and-set indices).
 export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
@@ -113,6 +115,10 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
     if (night) {
       const at = (h) => { for (let i = 1; i < used; i++) { const c = rgbAt(i); if (c[0] === parseInt(h.slice(0, 2), 16) && c[1] === parseInt(h.slice(2, 4), 16) && c[2] === parseInt(h.slice(4, 6), 16)) return i; } return -1; };
       for (const [day, to] of NIGHT_ROCK) { const d = at(day), t = at(to); if (d > 0 && t > 0) map[d] = t; }
+    }
+    if (night || name === 'dark') {   // the olive meadow steps never go brown-grey at night (art director 2026-11-12): one whose night step left the green family takes the green its sibling steps take
+      const at = (h) => { for (let i = 1; i < used; i++) { const c = rgbAt(i); if (c[0] === parseInt(h.slice(0, 2), 16) && c[1] === parseInt(h.slice(2, 4), 16) && c[2] === parseInt(h.slice(4, 6), 16)) return i; } return -1; };
+      for (const [day, to] of NIGHT_OLIVE) { const d = at(day), t = at(to); if (d > 0 && t > 0 && family(rgbAt(map[d])) !== 'green') map[d] = t; }
     }
     tables[name] = map;
   }
