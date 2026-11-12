@@ -66,8 +66,8 @@ export const BIOME_DECALS = {
   turf: ['tuft-wind', 'tuft-wind-m', 'shrub-heather', 'shrub-heather-m'],
 };
 export const BIOME_ROCKS = { turf: ['rock-turf', 'rock-turf-m'] };
-// what blocks (owner notes 6 and 7): only stone and wood as high as the explorer's shoulder. The low stones, the stump and the two low boulders (D 13 px, E 18 px) are stepped over, the bushes and shrubs pushed through: no footprint. The tall boulder (A, 23 px), the split stone and the trunks stay.
-export const STEP_OVER = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-big', 'bush-round', 'bush-small', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'boulder-grey', 'boulder-brown', 'stump', 'stump-m', 'boulder-d', 'boulder-d-m', 'boulder-e', 'boulder-e-m'];
+// what blocks (owner notes 6 and 7; lead call 11-11 20:4x): every boulder (A, D, E and their mirrors) blocks, whatever its height, because a boulder looks solid; the split stone and the trunks block too. The small stones, the stump and the plants are stepped over or pushed through: no footprint.
+export const STEP_OVER = ['shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-big', 'bush-round', 'bush-small', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'boulder-grey', 'boulder-brown', 'stump', 'stump-m'];
 export const STONE_DECALS = ['rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-turf', 'rock-turf-m'];
 // Held back by the set's palette (208 colours, 171 pinned or in use, the pieces above take the last 37): shrub-thorn-b (+10 colours), clump-seed (+10), dry-rock (+5). Each is a signed piece with its own straw tones
 // outside the map palette; the art desk can snap them to it (or free colours) and they join by adding their names here.

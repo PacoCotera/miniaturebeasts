@@ -259,22 +259,22 @@
     "boulder-d": {
       "rect": [172, 506, 24, 13],
       "anchor": [12, 12],
-      "footprint": []
+      "footprint": [[0, 0]]
     },
     "boulder-d-m": {
       "rect": [197, 506, 24, 13],
       "anchor": [11, 12],
-      "footprint": []
+      "footprint": [[0, 0]]
     },
     "boulder-e": {
       "rect": [44, 454, 24, 18],
       "anchor": [12, 17],
-      "footprint": []
+      "footprint": [[0, 0]]
     },
     "boulder-e-m": {
       "rect": [69, 454, 24, 18],
       "anchor": [11, 17],
-      "footprint": []
+      "footprint": [[0, 0]]
     },
     "rock-a": {
       "rect": [177, 473, 16, 16],

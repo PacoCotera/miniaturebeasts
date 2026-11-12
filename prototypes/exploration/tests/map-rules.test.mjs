@@ -39,11 +39,13 @@ test('none of the moved numbers is left in gen7/', () => {
   }
 });
 
-// What blocks (owner notes 6 and 7): only stone and wood as high as the explorer's shoulder (20 px and up), trees and terrain stop the walk; low things are stepped over, plants pushed through.
+// What blocks (owner notes 6 and 7; lead call 11-11): boulders (by kind, whatever their height), trunks and terrain stop the walk; small stones and the stump are stepped over, plants pushed through.
 const SET = JSON.parse(readFileSync(new URL('sets/ninja-test/set.json', art), 'utf8'));
 const PLANT = /^(sc-|shrub|bush|tuft|flower|clump|heather|tall-grass|reed|dry-tufts|young)/;
-test('no prop with a footprint is under 20 px tall unless it is a tree or terrain', () => {
+test('every boulder blocks, whatever its height; no other prop under 20 px tall does unless it is a tree or terrain', () => {
   for (const [name, p] of Object.entries(SET.props)) {
+    const boulder = /^boulder-[ade](-m)?$/.test(name);
+    if (boulder) { assert.ok(p.footprint && p.footprint.length, `${name} is a boulder and does not block`); continue; }
     if (!p.footprint || !p.footprint.length || p.canopy || name.startsWith('tree-')) continue;
     assert.ok(p.rect[3] >= 20, `${name} blocks but is ${p.rect[3]} px tall`);
   }
@@ -52,7 +54,7 @@ test('no plant has a footprint', () => {
   for (const [name, p] of Object.entries({ ...SET.props, ...SET.decals })) if (PLANT.test(name)) assert.ok(!p.footprint || !p.footprint.length, `${name} is a plant and blocks`);
 });
 test('the grove rock shapes are boulders only; the small stones are decals', () => {
-  assert.deepEqual(Object.keys(RULES.props.groves.rockShapes), ['boulder-a', 'boulder-d', 'boulder-e']);   // A (23 px) blocks; D (13 px) and E (18 px) are under the explorer's shoulder and are stepped over
+  assert.deepEqual(Object.keys(RULES.props.groves.rockShapes), ['boulder-a', 'boulder-d', 'boulder-e']);   // all three block
   for (const n of ['rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-turf', 'rock-turf-m']) assert.ok(SET.decals[n] && !SET.props[n].footprint.length, `${n} is a walk-over decal`);
 });
 
