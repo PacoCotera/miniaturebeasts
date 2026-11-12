@@ -1899,6 +1899,13 @@
    "sha256": "0286d3796fd721ea66f1d64ade21fb9b9fcdf9143611c5cb625f5e8b67e74cec"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "f9301845e9",
+   "path": "prototypes/exploration/art/props/pod-walk-bone.png",
+   "sha256": "92adde005bc216952029c7a2b1664a50217e87ae86b5fa4af4a9049bc17de505"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "f6c20304c8",
@@ -2053,11 +2060,25 @@
    "sha256": "8164cec0f0cafc761a8dab5a10fd97baaa0de3e70497f38a584fbe776ff0f22c"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "f889a94544",
+   "path": "prototypes/exploration/art/props/walk-beacon-lit.png",
+   "sha256": "8a24a96133b612f21a741a4102f8f53479e7cbcce87f066c55fa192e1c6b9d2e"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "ac63b1eb62",
    "path": "prototypes/exploration/art/props/walk-beacon-unlit.png",
    "sha256": "549bbb1722feeedb9eed2fbe87ec409fb5a5b31ec1d97a7cd6153b6f1628bdec"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "ab538e4867",
+   "path": "prototypes/exploration/art/props/walk-beacon-unlit.png",
+   "sha256": "a93482552d7b7e55d59c6fc752281f4d88db85cc09c78d59a045b1d3a8b6284c"
   },
   {
    "class": "legacy-paint",
@@ -2067,6 +2088,20 @@
    "sha256": "18f283a76c84408a1640286995c901f3c89792e1530609d6c2e45532b0b8453e"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "94e2f78449",
+   "path": "prototypes/exploration/art/props/walk-depot-dark.png",
+   "sha256": "791101b66c2575e4f0335fd26d2476292216ddf8aec6a3269eacf476f7867402"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "55217bb483",
+   "path": "prototypes/exploration/art/props/walk-depot-ember.png",
+   "sha256": "65a2740236cd9ef09fdbbce752ce8398f2d7c4da42d972cadec522ece0efa009"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "49d1c69ebf",
@@ -2074,11 +2109,25 @@
    "sha256": "87911560cb10ffa904758402c09a58640d24ba122ad7505ce5b9d7e0cf03f89c"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "d59b7bbc22",
+   "path": "prototypes/exploration/art/props/walk-depot-full.png",
+   "sha256": "1418997330dda7ddc43be2dc313e6cf8e999985e9e99a15a3c7d6b6a2e7d5f3a"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "953a618377",
    "path": "prototypes/exploration/art/props/walk-depot-full.png",
    "sha256": "828ac72acbe9cf4dfa7fc381e1620fbb8f099c7455c0246f78fc5f74fa7f6607"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "000a92f3b5",
+   "path": "prototypes/exploration/art/props/walk-depot-half.png",
+   "sha256": "ccd568c362d0f1a86feee80386890fa58bfba6cb0a0a9673a771ab8758e30887"
   },
   {
    "class": "legacy-paint",

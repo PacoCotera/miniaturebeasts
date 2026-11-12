@@ -558,7 +558,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
         const rgb = pt.rgb[c]; im.data[p] = rgb[0]; im.data[p + 1] = rgb[1]; im.data[p + 2] = rgb[2]; im.data[p + 3] = 255; }
       tg.putImageData(im, 0, 0); tinted.set(tk, tc); return tc; } }); };
   for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] && !seen.has(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2])) { seen.add(f.data[o] + ',' + f.data[o + 1] + ',' + f.data[o + 2]); STONE_COLOURS.push([f.data[o], f.data[o + 1], f.data[o + 2]]); } }
-  const bush = look && name.startsWith('bush-');   // a bush's foot is its file's bottom centre (the manifest's anchor), set on the tile's bottom centre (16, 31): the file's own size decides, so a resize needs no code change
+  const bush = look && (name.startsWith('bush-') || name.startsWith('walk-depot-') || name.startsWith('walk-beacon-'));  // a bush's foot is its file's bottom centre (the manifest's anchor), set on the tile's bottom centre (16, 31): the file's own size decides, so a resize needs no code change
   const podBox = look && name.startsWith('pod-walk-'), pdx = podBox ? (16 - f.width) >> 1 : 0, pdy = podBox ? 20 - f.height : 0;   // a pod (signed 1x, 12 x 14) stands at the foot of the 16 x 20 box every pod slot and draw was laid out in: centred, its foot on the box's bottom row
   keep(f.width, f.height, f.data, bush ? 16 - (f.width >> 1) : look ? pdx : (32 - f.width) >> 1, bush ? 32 - f.height : look ? pdy + (dy || 0) : 32 - f.height, name);
   const ups = (name.startsWith('stone-small-') && name.endsWith('@16')) || name === 'prop-fruit' || name.startsWith('icon-') ? [2] : name.startsWith('pod-walk-') ? [2, 3] : [];   // doubled (and tripled), for a sign, a card or a tray: each pixel a whole block
@@ -580,7 +580,8 @@ const PROP_DY = { 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
 const PROP_SIZE = { 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
-  ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])) };
+  ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
+  ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
 const propPiece = name => STONE_PIECES.get(name) || walkPB(name, ...(PROP_SIZE[name] || [32, 32]));   // a named empty slot until the art is in: nothing is drawn
 async function loadPropArt() {
   try {
