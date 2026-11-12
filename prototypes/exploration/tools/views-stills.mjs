@@ -8,7 +8,7 @@ import { createServer } from "node:http";
 import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { takeFlags, fileList, writeSidecar } from "./still-art.mjs";
+import { takeFlags, fileList, writeSidecar, bakedPieces } from "./still-art.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
@@ -54,7 +54,8 @@ const save = async (name) => {
     const file = LIGHTS.length > 1 ? name.replace(/\.png$/, `-${light}.png`) : name, zoom = 48;
     if (LIGHTS.length > 1) { await setLight(light); await page.waitForTimeout(300); }
     const d = await page.evaluate(() => window.__mb.capture()); writeFileSync(path.join(out, file), Buffer.from(d.split(",")[1], "base64"));
-    writeSidecar(path.join(out, file), { tool: "views-stills", zoom, light, seed, cell, face, files: fileList([...drawn.values()]), swaps: [...FLAGS.swaps].map(([slot, f]) => ({ slot, file: f })) });   // the files the page had loaded when this still was taken
+    const baked = await bakedPieces(page, root, FLAGS.swaps);   // the set pieces the cell's baked place draws (the page loads the baked tiles, not their files)
+    writeSidecar(path.join(out, file), { tool: "views-stills", zoom, light, seed, cell, face, files: fileList([...drawn.values(), ...baked.files]), bakedPiecesWithoutFile: baked.noPieceFile, swaps: [...FLAGS.swaps].map(([slot, f]) => ({ slot, file: f })) });   // the files the page had loaded when this still was taken
   }
   if (LIGHTS.length > 1) await setLight("day");
 };

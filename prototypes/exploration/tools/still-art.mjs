@@ -25,9 +25,35 @@ export function takeFlags(argv) {
   return { rest, swaps, both };
 }
 
+// The page draws a cell's stones, boulders, stump and plants from the baked tile set (a .mbtiles), not from the set's piece files, so the page-load list never names those pieces. This reads which sprites
+// the cell's baked place uses (props, decals, canopy: kind numbers into the set's sprite list, canopy first, then props, then decals, as bakeset.mjs lays it out) and returns the set's piece file of each:
+// { files: [{ slot: '<set>/<name>.png', file, swapped: false, baked: true }], noPieceFile: [names with no piece file of their own] }. A swap of that slot is honoured (the baked tile set is not rebaked: a swap there
+// shows only in the list, and the sidecar says so with swapped: true and shippedSha256).
+export async function bakedPieces(page, repoRoot, swaps = new Map(), setId = 'ninja-test') {
+  const kinds = await page.evaluate(() => {
+    const m = window.__mb; if (!m.S.exp || !m.S.exp.patch) return [];   // the map view has no walking place
+    const lay = m.layout(m.S.exp.patch.key), pl = lay.baked.place, src = lay.cut || null, out = new Set();
+    for (const p of (src ? src.props : pl.props)) out.add(p.kind);
+    for (const p of pl.decals) out.add(p.kind);
+    for (const p of (src ? src.canopy : pl.canopy)) out.add(p.kind);
+    return [...out];
+  });
+  const dir = path.join(repoRoot, 'art/places/sets', setId), set = JSON.parse(readFileSync(path.join(dir, 'set.json'), 'utf8'));
+  const order = [...Object.keys(set.canopy || {}), ...Object.keys(set.props || {}), ...Object.keys(set.decals || {})];
+  const files = [], noPieceFile = [];
+  for (const k of kinds.sort((a, b) => a - b)) {
+    const name = order[k]; if (!name) continue;
+    const shipped = path.join(dir, name + '.png'), slot = `${setId}/${name}.png`;
+    if (!existsSync(shipped)) { noPieceFile.push(name); continue; }
+    const swap = swaps.get(slot) || swaps.get(name + '.png');
+    files.push({ slot, file: swap || shipped, shipped, swapped: !!swap, baked: true });
+  }
+  return { files, noPieceFile };
+}
+
 // files: [{ slot, file, swapped, shipped? }] -> the sidecar's file list, hashed now. A swapped slot also keeps the sha256 of the shipped piece it stands in for.
 export function fileList(files) {
-  return files.map((f) => ({ slot: f.slot, sha256: sha256File(f.file), swapped: !!f.swapped, ...(f.swapped && f.shipped && existsSync(f.shipped) ? { shippedSha256: sha256File(f.shipped) } : {}) }))
+  return files.map((f) => ({ slot: f.slot, sha256: sha256File(f.file), swapped: !!f.swapped, ...(f.baked ? { baked: true } : {}), ...(f.swapped && f.shipped && existsSync(f.shipped) ? { shippedSha256: sha256File(f.shipped) } : {}) }))
     .sort((a, b) => (a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0));
 }
 

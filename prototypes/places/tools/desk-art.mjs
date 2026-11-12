@@ -7,7 +7,8 @@
 //   so the hand-set places and the generator need no new names.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
@@ -29,16 +30,16 @@ export const STEPS = { commit: 'cc712a83e', dir: 'art-jobs/2026-11-10-art-quiet-
 // the plant slots the meadow scatter draws, by the manifest's slot names (each in three steps: young, the middle signed piece, grown)
 export const PLANTS = ['flowers-1', 'flowers-2', 'flowers-3', 'flowers-blue-pair', 'tufts-1', 'tufts-2', 'tufts-3', 'clump-tall', 'clump-tall-s', 'shrub-1', 'shrub-2', 'shrub-3', 'shrub-4', 'bush-round'];
 // the plain stone set (art director, mibi-art art/art-fix-map-pieces 9c902c7ec, art-jobs/2026-11-11-art-fix-map-pieces/out/a2 and a2b; reports runs/art-fix-map-pieces-a2 and -a2b): the two small stones and the stump (walk-over,
-// 11 px or less; they take the names rock-a, rock-b and stump), and the three boulders A, D and E with the desk's own mirrors. The files are the desk's bytes (the small stones and the stump are mirrored by a flip, layout only);
+// 11 px or less; they take the names rock-a, rock-b and stump), and the three boulders A, D and E. The files are the desk's bytes (every mirror is the file flipped left to right by the post-step tool, flip h);
 // size and foot are set here from the files (the desk's manifests do not list them): the foot is the last opaque row, centred (a mirror's foot is across the picture).
 export const STONES = { commit: '9c902c7ec', dir: 'art-jobs/2026-11-11-art-fix-map-pieces/out' };
 export const STONE_SET = {
   'rock-a': { path: 'a2/stone-small-plain@16.png', size: [16, 16], foot: [8, 15] },
   'rock-b': { path: 'a2/stone-small-b@16.png', size: [16, 16], foot: [8, 15] },
   stump: { path: 'a2/stump@16.png', size: [12, 11], foot: [6, 10] },
-  'boulder-a': { path: 'a2/rock-big.png', mirror: 'a2/rock-big-m.png', size: [23, 23], foot: [11, 22] },
-  'boulder-d': { path: 'a2b/boulder-d.png', mirror: 'a2b/boulder-d-m.png', size: [24, 13], foot: [12, 12] },
-  'boulder-e': { path: 'a2b/boulder-e.png', mirror: 'a2b/boulder-e-m.png', size: [24, 18], foot: [12, 17] },
+  'boulder-a': { path: 'a2/rock-big.png', size: [23, 23], foot: [11, 22] },
+  'boulder-d': { path: 'a2b/boulder-d.png', size: [24, 13], foot: [12, 12] },
+  'boulder-e': { path: 'a2b/boulder-e.png', size: [24, 18], foot: [12, 17] },
 };
 export const BOULDERS = ['boulder-a', 'boulder-d', 'boulder-e'];
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
@@ -230,7 +231,7 @@ export function deskArt() {
     return null;
   };
   const entryOf = (key) => {
-    const se = STONE_SET[key.replace(/-m$/, '')];   // the plain stone set (rock-a, rock-b, stump, boulders A, D, E): a mirror is the desk's own file where it made one, else the flip below
+    const se = STONE_SET[key.replace(/-m$/, '')];   // the plain stone set (rock-a, rock-b, stump, boulders A, D, E): a mirror is the flip below
     if (se) {
       const mir = key.endsWith('-m');
       if (!mir) return { S: STONES, m: { size: se.size, foot: se.foot }, path: se.path };
@@ -244,6 +245,16 @@ export function deskArt() {
     return null;
   };
   const flipX = (im) => { const o = newImage(im.w, im.h); for (let y = 0; y < im.h; y++) for (let x = 0; x < im.w; x++) o.data.set(im.data.subarray((y * im.w + x) * 4, (y * im.w + x) * 4 + 4), (y * im.w + (im.w - 1 - x)) * 4); return o; };
+  // the stones' mirrors are the signed picture flipped left to right by the art post-step tool (poststeps.py, step flip h; the one tool art pixels may pass through), never by code of this file
+  const POSTSTEPS = process.env.MB_POSTSTEPS || '/home/mb/mb/miniaturebeasts-internal/tools/art/poststeps.py';
+  const flipBytes = (bytes) => {
+    const tmp = mkdtempSync(path.join(tmpdir(), 'mb-flip-'));
+    try {
+      writeFileSync(path.join(tmp, 'in.png'), bytes); writeFileSync(path.join(tmp, 'steps.json'), JSON.stringify([['flip', 'h']]));
+      execFileSync('python3', [POSTSTEPS, 'replay', path.join(tmp, 'in.png'), path.join(tmp, 'steps.json'), '--out', path.join(tmp, 'out.png')], { stdio: ['ignore', 'pipe', 'inherit'] });
+      return readFileSync(path.join(tmp, 'out.png'));
+    } finally { rmSync(tmp, { recursive: true, force: true }); }
+  };
   const piece = (key) => {   // one signed piece: its bytes (written once, under the manifest key), the image and the foot
     const file = `${key}.png`;
     if (seen.has(key)) return seen.get(key);
@@ -253,9 +264,10 @@ export function deskArt() {
       if (im.w !== m.size[0] || im.h !== m.size[1]) throw new Error(`${key}: the file is ${im.w} x ${im.h}, the manifest says ${m.size.join(' x ')}`);
       files.set(file, b); desk[file] = { commit: e.S.commit, from: `${e.S.dir}/${e.path}`, size: m.size, foot: m.foot, sha256: sha(b) };
       seen.set(key, { image: im, anchor: [m.foot[0], m.foot[1]] });
-    } else if (key.endsWith('-m') && entryOf(key.slice(0, -2))) {   // a middle step the desk has no mirror file for: the signed picture flipped left to right (layout), the foot across the picture (the desk's manifests do the same for their -m pieces)
-      const base = piece(key.slice(0, -2)), d = desk[`${key.slice(0, -2)}.png`], im = flipX(base.image), b = Buffer.from(encodePng(im));
-      files.set(file, b); desk[file] = { commit: d.commit, from: `${d.from} flipped left to right (layout)`, size: d.size, foot: [im.w - 1 - base.anchor[0], base.anchor[1]], sha256: sha(b) };
+    } else if (key.endsWith('-m') && entryOf(key.slice(0, -2))) {   // a piece the desk has no mirror file for (the stones, stump and boulders): the signed picture flipped left to right by the post-step tool, the foot across the picture (the desk's manifests do the same for their -m pieces)
+      const base = piece(key.slice(0, -2)), d = desk[`${key.slice(0, -2)}.png`], viaTool = !!STONE_SET[key.slice(0, -2)];
+      const b = viaTool ? flipBytes(files.get(`${key.slice(0, -2)}.png`)) : Buffer.from(encodePng(flipX(base.image))), im = viaTool ? decodePng(b) : flipX(base.image);
+      files.set(file, b); desk[file] = { commit: d.commit, from: `${d.from} flipped left to right (${viaTool ? 'post-step flip h' : 'layout'})`, size: d.size, foot: [im.w - 1 - base.anchor[0], base.anchor[1]], sha256: sha(b) };
       seen.set(key, { image: im, anchor: [im.w - 1 - base.anchor[0], base.anchor[1]] });
     } else throw new Error(`the desk's manifests have no piece ${key}`);
     return seen.get(key);

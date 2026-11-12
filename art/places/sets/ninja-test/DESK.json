@@ -93,7 +93,7 @@
   },
   "boulder-a-m.png": {
     "commit": "9c902c7ec",
-    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/rock-big-m.png",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/rock-big.png flipped left to right (post-step flip h)",
     "size": [
       23,
       23
@@ -119,7 +119,7 @@
   },
   "boulder-d-m.png": {
     "commit": "9c902c7ec",
-    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-d-m.png",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-d.png flipped left to right (post-step flip h)",
     "size": [
       24,
       13
@@ -145,7 +145,7 @@
   },
   "boulder-e-m.png": {
     "commit": "9c902c7ec",
-    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-e-m.png",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2b/boulder-e.png flipped left to right (post-step flip h)",
     "size": [
       24,
       18
@@ -158,7 +158,7 @@
   },
   "rock-a-m.png": {
     "commit": "9c902c7ec",
-    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-plain@16.png flipped left to right (layout)",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-plain@16.png flipped left to right (post-step flip h)",
     "size": [
       16,
       16
@@ -167,11 +167,11 @@
       7,
       15
     ],
-    "sha256": "6619fadbf95aeb84da1264b6d1f4baa964a6a17d0b62bbcc3da35fa226400ead"
+    "sha256": "1602c058b33dfd253b93e88f4237c83b43d2ba93e16ac1c8ae71f08525d84e57"
   },
   "rock-b-m.png": {
     "commit": "9c902c7ec",
-    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-b@16.png flipped left to right (layout)",
+    "from": "art-jobs/2026-11-11-art-fix-map-pieces/out/a2/stone-small-b@16.png flipped left to right (post-step flip h)",
     "size": [
       16,
       16
@@ -180,7 +180,7 @@
       7,
       15
     ],
-    "sha256": "86401beaa86a947eb501a37f1c45b9fc90be402fc28b7b9ef4584c129dd7b472"
+    "sha256": "b066203617225925fe4f8d08a386f6fdf835805e53c741d840b8c9edda106126"
   },
   "hollow-tree.png": {
     "commit": "75f1ff195",
