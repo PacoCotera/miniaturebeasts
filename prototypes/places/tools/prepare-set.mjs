@@ -171,6 +171,10 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     const extra = recipe.paletteExtra.map((c) => c.replace('#', '')).filter((c) => !sorted.includes(c));
     sorted = [...sorted, ...extra];
   }
+  if (recipe.paletteWiden) {   // the meadow ramp's widening: more picks from the reference, after the extras, never the target of another colour's table row (lighttables noTarget)
+    const widen = recipe.paletteWiden.map((c) => c.replace('#', '')).filter((c) => !sorted.includes(c));
+    sorted = [...sorted, ...widen];
+  }
   if (sorted.length > PALETTE_MAX) {
     throw new Error(`the source has ${sorted.length} colours, over the ${PALETTE_MAX} the contract allows; add the pinned pngquant step to the recipe`);
   }
@@ -224,7 +228,7 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const litter = [];
   const litterImg = images.get('fill-litter.png');
   if (litterImg) { const im = litterImg; for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]), c = unhex(h), k = palIdx(h); if (k >= 0 && family(c) === 'warm' && !litter.includes(k)) litter.push(k); } }
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo });
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo, noTarget: (recipe.paletteWiden || []).map((c) => palIdx(c.replace('#', ''))).filter((k) => k > 0) });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
 
