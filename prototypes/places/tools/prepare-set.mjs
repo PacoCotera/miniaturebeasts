@@ -167,6 +167,10 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     const pin = recipe.palettePin.map((c) => c.replace('#', ''));
     sorted = [...pin, ...sorted.filter((c) => !pin.includes(c))];
   }
+  if (recipe.paletteExtra) {   // colours the map ground needs that no picture holds yet (a palette pick from the art director's reference, never a drawing): they follow every other colour, so no index moves
+    const extra = recipe.paletteExtra.map((c) => c.replace('#', '')).filter((c) => !sorted.includes(c));
+    sorted = [...sorted, ...extra];
+  }
   if (sorted.length > PALETTE_MAX) {
     throw new Error(`the source has ${sorted.length} colours, over the ${PALETTE_MAX} the contract allows; add the pinned pngquant step to the recipe`);
   }

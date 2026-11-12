@@ -44,6 +44,9 @@ export const STONE_TONES = {
   dark2: { line: [0x34, 0x38, 0x40], mid: [0x47, 0x4d, 0x55], hi: [0x55, 0x5c, 0x64] },
   storm: { line: [0x3e, 0x44, 0x4e], mid: [0x5a, 0x64, 0x70], hi: [0x6c, 0x76, 0x82] },
 };
+// The rock ramp at night (art director 2026-11-12): a darker day grey never maps lighter at night, and the rock keeps four or more separate values. Day colour -> night colour, both of the palette;
+// the dark end of the rock (the cracks, the outlines) goes to the darkest greys and the body steps climb from there, in the day order. Applied to the night table only, where the day colour is in the set.
+export const NIGHT_ROCK = [['242626', '141b1b'], ['2a3834', '141b1b'], ['343840', '242626'], ['3e444e', '242626'], ['474d55', '2a3834'], ['555c64', '333b47'], ['5a6470', '333b47'], ['6c7682', '333b47']];
 // opts.bank, opts.bankTo: the bank earth and the trunk brown it takes at night (below). opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks, boulders and cliff stone, outlines included; opts.stoneHi: of the rock's two lightest greys, which go one step lighter; opts.stoneLine: of its outlines, which go one step darker (all core-and-set indices).
 export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
@@ -106,6 +109,10 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       else if (crowns.has(i) && f === 'green') map[i] = nearest(t, pools.green.filter(([, c]) => lumOf(c) <= lim));
       else if (f === 'green' && ground.size && !ground.has(i)) { const pool = lumOf(rgb) < groundLum ? darkGreens : lightGreens; map[i] = nearest(t, pool.length ? pool : pools.green); }
       else map[i] = nearest(t, pools[f]);
+    }
+    if (night) {
+      const at = (h) => { for (let i = 1; i < used; i++) { const c = rgbAt(i); if (c[0] === parseInt(h.slice(0, 2), 16) && c[1] === parseInt(h.slice(2, 4), 16) && c[2] === parseInt(h.slice(4, 6), 16)) return i; } return -1; };
+      for (const [day, to] of NIGHT_ROCK) { const d = at(day), t = at(to); if (d > 0 && t > 0) map[d] = t; }
     }
     tables[name] = map;
   }

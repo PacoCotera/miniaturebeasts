@@ -20,6 +20,16 @@ test('set.json validates against the contract schema', () => {
   assert.deepEqual(validateSetJson(set), []);
 });
 
+test('the night table keeps the rock ramp in order: a darker day grey never maps lighter at night, four or more separate values; the olive meadow ramp is on the set', () => {
+  const cols = palette.colours, lum = (h) => { const c = [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)); return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]; };
+  const at = (h) => 48 + cols.indexOf(h), night = palette.tables.dark2;
+  const ramp = ['#242626', '#2a3834', '#343840', '#3e444e', '#474d55', '#555c64', '#5a6470', '#6c7682', '#807c74', '#8a937e', '#a5ac9c', '#adb5a6', '#b6beb0'];
+  const to = ramp.map((h) => cols[night[at(h)] - 48]);
+  for (let i = 1; i < ramp.length; i++) assert.ok(lum(to[i]) >= lum(to[i - 1]), ramp[i - 1] + ' to ' + to[i - 1] + ' is lighter than ' + ramp[i] + ' to ' + to[i]);
+  assert.ok(new Set(to.slice(0, 8)).size >= 4, 'the rock keeps four distinct night values');
+  for (const h of ['#79875b', '#8b9561', '#667b59']) assert.ok(cols.includes(h), h + ' is on the set');
+});
+
 test('the contract refuses what it should', () => {
   const bad = (f) => { const s = structuredClone(set); f(s); return validateSetJson(s).length > 0; };
   assert.ok(bad((s) => { s.licence.spdx = 'CC-BY-4.0'; }), 'a licence that is not CC0 or ours');

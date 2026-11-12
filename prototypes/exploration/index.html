@@ -494,12 +494,13 @@ const layoutCache = new Map();
 // A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
 const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), veil: null, veilMod: null };
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
+const setArrived = () => { if (WART.src) walkRead(WART.src); else extendWithSet(); };   // the set's palette is in: the page's colour arrays take its colours, and the walk art read before it is read again
 async function loadPlaces() {
   try {
-    if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; return; }
+    if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; setArrived(); return; }
     const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
     const pm = await import(base + 'src/page.mjs'), rd = await import(base + 'src/format/read.mjs');
-    PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles'));
+    PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles')); setArrived();
     PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
     PL.ctx = { ts: PL.ts, terrains: PL.terrains, desc: PL.desc };
@@ -609,18 +610,41 @@ const WALK_FILES = [
   ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
   'bubble-curious-11x13'];
 const ART_DONE = { walk: false, open: false };   // each art load has settled (loaded or failed): the opening paints its land once, after both, not once per arrival
-const WART = { pb: new Map(), empty: new Map(), ready: false };
+const WART = { pb: new Map(), empty: new Map(), ready: false, src: null };   // src: the files last read, to read again when the palette's entries move (the set arrives, the atlas installs)
 function walkPB(name, w = 1, h = 1) {
   const pb = WART.pb.get(name); if (pb) return pb;
   const key = w + 'x' + h; let e = WART.empty.get(key); if (!e) { e = new PB(w, h); WART.empty.set(key, e); } return e;   // a named empty slot until the art is in: nothing is drawn
 }
+// ONE palette source for the map and walk art: the game set palette (art/places/sets/ninja-test/palette.json, baked into the set the places load: PL.ts.palette; the core 48 first, then the set's colours),
+// the same colours the walk view and the bake use. The page's own colour arrays (RGB, DARK, LIGHT ...) take each set colour they do not already hold as one more entry, its tables read off the set's own
+// tables by index (dark, light, dark2, fog, fade, storm), so a set colour steps in the dark, the fog and the storm as the set says and a colour both hold keeps the page's own entry. Called again by atlasInstall,
+// which rebuilds the arrays and so the entries (the art is then read again from WART.src).
+function extendWithSet() {
+  const ts = PL.ts; if (!ts || !ts.palette) return;
+  const tab = n => { const t = ts.lightTables.find(r => r.name === n); return t ? t.map : null; };
+  const sets = ts.palette.map(c => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), key = c => c[0] << 16 | c[1] << 8 | c[2];
+  const has = new Map(); RGB.forEach((c, i) => { if (!has.has(key(c))) has.set(key(c), i); });
+  const pageOf = i => i < 48 ? i : pageAt[i - 48], pageAt = [], fresh = [];
+  sets.forEach((c, k) => { let p = has.get(key(c)); if (p == null) { p = RGB.length; RGB.push(c.slice()); HEX.push('#' + c.map(v => v.toString(16).padStart(2, '0')).join('')); has.set(key(c), p); fresh.push([p, 48 + k]);
+    for (const a of [DARK, LIGHT, DARK2, FOGLUT, FADE, TINT, LEVEL_LIGHT, LIGHT_GRASS, DARK_GRASS, PLACE_STORM, PLACE_FOG, PLACE_FADE]) a[p] = p; } pageAt.push(p); });
+  if (!fresh.length) return;
+  const dk = tab('dark'), lt = tab('light'), d2 = tab('dark2'), fg = tab('fog'), fd = tab('fade'), st = tab('storm');
+  for (const [p, s] of fresh) { const at = t => t ? (t[s] > 0 ? pageOf(t[s]) : p) : p;
+    DARK[p] = at(dk); LIGHT[p] = at(lt); DARK2[p] = at(d2); FOGLUT[p] = at(fg); FADE[p] = at(fd); PLACE_STORM[p] = at(st); PLACE_FOG[p] = FOGLUT[p]; PLACE_FADE[p] = FADE[p]; }
+  buildShadeWash(); SHADE_MOSS = null; DARK_RGB = null;
+}
+// The page's old core 51 is no art palette now. Its first 48 are the set's own core; its sage three (48-50) stay for the creatures' fog and wash (not art), and the one art exception is the split stone's found marks
+// (mark-splitstone-*) and the partner marks of the sage kinds (look-partner-*), which still hold the three sage tones: the art desk repaints those on the set, and the exception goes with them.
 function walkRead(files) {   // { name: { width, height, data (RGBA) } } to palette-index buffers
-  const at = new Map(); RGB.forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (!at.has(k)) at.set(k, i); });
+  WART.src = Object.assign(WART.src || {}, files); extendWithSet();   // every file read so far (the walk's, then the look's), for a later re-read
+  const setOk = !!PL.ts, inSet = new Set(setOk ? PL.ts.palette : []), at = new Map(), sage = new Map();   // read against the page's first 48 and the set's colours (the sage three and the atlas' own entries are not the set)
+  RGB.forEach((c, i) => { const k = c[0] << 16 | c[1] << 8 | c[2]; if (i < 48 || inSet.has(k)) { if (!at.has(k)) at.set(k, i); } else if (i < CORE_N) sage.set(k, i); });
   for (const [name, f] of Object.entries(files)) {
     if (STONE_LOOK.has(name)) { stonePut(name, f, true); continue; }   // the quartz stone marks are off the core palette: kept as pictures
-    const pb = new PB(f.width, f.height);
-    for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] < 128) continue; const v = at.get(f.data[o] << 16 | f.data[o + 1] << 8 | f.data[o + 2]); if (v == null) throw new Error('walk art off the palette: ' + name); pb.p[i] = v; }
-    WART.pb.set(name, pb);
+    const pb = new PB(f.width, f.height), sageOk = name.startsWith('mark-splitstone-') || name.startsWith('look-partner-'); let off = false;
+    for (let i = 0; i < f.width * f.height; i++) { const o = i * 4; if (f.data[o + 3] < 128) continue; const k = f.data[o] << 16 | f.data[o + 1] << 8 | f.data[o + 2], v = at.get(k) ?? (sageOk ? sage.get(k) : undefined);
+      if (v == null) { if (!setOk) { off = true; break; } throw new Error('walk art off the set palette: ' + name); } pb.p[i] = v; }
+    if (!off) WART.pb.set(name, pb);   // before the set is in, a piece with a colour the set holds waits (a named empty slot); walkRead runs again when the set arrives
   }
   WART.ready = true; ART.clear(); landReset();
 }
@@ -657,7 +681,7 @@ function bakedView(lay) {
     while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
   return v || null;
 }
-const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);
+const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(PL.ts && PL.ts.palette ? PL.ts.palette.map(c => [(c >> 16) & 255, (c >> 8) & 255, c & 255]) : [], STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);   // the game set palette is the map's and the walk's palette
 // The sides of a cell that are shut now (past the range or closed), as a string: the reachable-only placement of a layout was made against this.
 const shutSig = key => ['N', 'S', 'W', 'E'].map(side => (S.exp && crossReason(+key, SIDE_DIR[side]) ? side : '')).join('');
 // On entering a place, a cached layout made for other open sides (a Tuliko led the last visit and not this one: one ring less of reach) is made again, so nothing to act on lies in the haze.
@@ -4489,6 +4513,7 @@ function atlasInstall(list, table, levelTone) {
     LIGHT_GRASS[i] = table.lightGrass[i]; DARK_GRASS[i] = table.darkGrass[i]; }
   for (let i = 0; i < RGB.length; i++) { PLACE_STORM[i] = table && table.placeStorm ? table.placeStorm[i] : DARK[i]; PLACE_FOG[i] = table && table.placeFog ? table.placeFog[i] : FOGLUT[i]; PLACE_FADE[i] = table && table.placeFade ? table.placeFade[i] : FADE[i]; }
   PLACE_STORM.length = PLACE_FOG.length = PLACE_FADE.length = RGB.length;
+  extendWithSet(); if (WART.src) walkRead(WART.src);   // the set's colours go back on after the atlas' own, and the walk art is read again on the new entries
   buildShadeWash();   // the wash over every colour now in play
   ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
   for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
