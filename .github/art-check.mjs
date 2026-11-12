@@ -84,9 +84,12 @@ function listImages(ref) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2), take = (f, d) => { const i = args.indexOf(f); return i < 0 ? d : args[i + 1]; };
   const head = take('--head', 'HEAD'), base = take('--base', 'HEAD^1'), site = take('--site', null);
-  if (args.includes('--list')) { console.log(listImages(head).join('\n')); process.exit(0); }
-  const t = Date.now(), problems = check({ base, head, site });
-  for (const p of problems) console.error('art check: ' + p);
-  console.log(`art check: ${problems.length ? 'FAILED, ' + problems.length + ' problem(s)' : 'ok'} (${base.slice(0, 12)}..${head.slice(0, 12)}, ${((Date.now() - t) / 1000).toFixed(1)} s)`);
-  process.exit(problems.length ? 1 : 0);
+  // no process.exit() after output: it can cut a large write to a pipe short
+  if (args.includes('--list')) process.stdout.write(listImages(head).join('\n') + '\n');
+  else {
+    const t = Date.now(), problems = check({ base, head, site });
+    for (const p of problems) console.error('art check: ' + p);
+    console.log(`art check: ${problems.length ? 'FAILED, ' + problems.length + ' problem(s)' : 'ok'} (${base.slice(0, 12)}..${head.slice(0, 12)}, ${((Date.now() - t) / 1000).toFixed(1)} s)`);
+    process.exitCode = problems.length ? 1 : 0;
+  }
 }
