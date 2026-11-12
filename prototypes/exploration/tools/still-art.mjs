@@ -48,6 +48,7 @@ export async function bakedPieces(page, repoRoot, swaps = new Map(), setId = 'ni
     const swap = swaps.get(slot) || swaps.get(name + '.png');
     files.push({ slot, file: swap || shipped, shipped, swapped: !!swap, baked: true });
   }
+  if (kinds.length) { const sheet = path.join(dir, 'sprites.png'), slot = `${setId}/sprites.png`, swap = swaps.get(slot) || swaps.get('sprites.png'); files.push({ slot, file: swap || sheet, shipped: sheet, swapped: !!swap, baked: true }); }   // the baked sprites come from the set's sprite sheet
   return { files, noPieceFile };
 }
 
