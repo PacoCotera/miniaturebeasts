@@ -22,11 +22,23 @@ test("the page's slots and the placed files are the same set, and every pixel is
   const names = p.run("WALK_FILES"), want = files.map((f) => f.slice(0, -4)).sort();
   assert.deepEqual([...names].sort(), want, "WALK_FILES names exactly the placed files");
   assert.equal(p.run("WART.ready"), true, "the art read at boot");
-  const rgb = p.run("RGB"), core = new Set(rgb.slice(0, 51).map((c) => c.join()));
+  // one palette source: the page's first 48 and the game set palette (palette.json, as baked); the split stone's found marks alone still hold the three sage tones
+  const rgb = p.run("RGB"), setPal = JSON.parse(readFileSync(new URL("../../../art/places/sets/ninja-test/palette.json", import.meta.url), "utf8")).colours;
+  const ok = new Set([...rgb.slice(0, 48).map((c) => c.join()), ...setPal.map((h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)).join())]), sage = new Set(rgb.slice(48, 51).map((c) => c.join()));
   for (const [n, f] of Object.entries(WALK_ART)) for (let i = 0; i < f.width * f.height; i++) {
     const a = f.data[i * 4 + 3]; assert.ok(a === 0 || a === 255, n + ": partial alpha " + a);
-    if (a) assert.ok(core.has([f.data[i * 4], f.data[i * 4 + 1], f.data[i * 4 + 2]].join()), n + ": a pixel off the core palette at " + i);
+    const k = [f.data[i * 4], f.data[i * 4 + 1], f.data[i * 4 + 2]].join();
+    if (a) assert.ok(ok.has(k) || (n.startsWith("mark-splitstone-") && sage.has(k)), n + ": a pixel off the set palette at " + i);
   }
+  for (const n of want) assert.ok(p.run("WART.pb.has(" + JSON.stringify(n) + ") || STONE_LOOK.has(" + JSON.stringify(n) + ")"), n + ": not read against the set palette");
+});
+
+test("a colour only the set holds reads (the olive meadow ramp), steps by the set's own tables, and a colour off the set is refused", () => {
+  const p = makePage({ console: "silent", els: true, canvas: true, raf: 1 });
+  const r = JSON.parse(p.run("JSON.stringify((() => { walkRead({ 'olive-probe': { width: 2, height: 1, data: new Uint8ClampedArray([0x79, 0x87, 0x5b, 255, 0x8b, 0x95, 0x61, 255]) } }); const a = WART.pb.get('olive-probe'); return [a.p[0], a.p[1], RGB[a.p[0]], DARK2[a.p[0]], RGB[DARK2[a.p[0]]], RGB[a.p[1]]]; })())"));
+  assert.deepEqual(r[2], [0x79, 0x87, 0x5b]); assert.deepEqual(r[5], [0x8b, 0x95, 0x61]);
+  assert.notEqual(r[3], r[0], "the night table moves it"); assert.deepEqual(r[4], [0x24, 0x45, 0x23], "to the set's night green");
+  assert.throws(() => p.run("walkRead({ 'bad-probe': { width: 1, height: 1, data: new Uint8ClampedArray([1, 2, 3, 255]) } })"), /off the set palette/);
 });
 
 // a drawn buffer against the file: the same pixels

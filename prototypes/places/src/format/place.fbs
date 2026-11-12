@@ -165,6 +165,7 @@ table Place {
   openings: [Opening];
   spawns: [Spawn];
   block_mask: [ubyte];   // w * h bits, row by row, least significant bit first: terrain play class and prop footprints combined
+  top: [ubyte];          // w * h terrain values: the ground under each raised (cliff) tile, 0 = grass; empty on a place that has none (a hand-set place), which then draws its raised top as it always did
 }
 
 root_type Place;       // the schema has two kinds of blob; TileSet is read with getRootAsTileSet, and each blob carries its own identifier

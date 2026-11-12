@@ -16,7 +16,7 @@ export function decorProps(seed, { every = 1 } = {}) {
   const t0 = Date.now(), D = decorOf(seed);
   const st = { cells: 0, groveHist: {}, groveHistByBiome: {}, rockKinds: {}, outcrops: 0, latticeCells: 0, latticeFails: 0, latticeAt: [], latticeDense: 0, latticeWood: 0, latticeOpen: 0, latticeOpenFails: 0, latticeWhy: { touching: 0, cv: 0, lone: 0 }, latticeWhyDense: { cv: 0, lone: 0 },
     reedBanks: 0, reedOffShore: 0, reedProps: 0, tiles: { eligible: 0, bEligible: 0 }, scatter: { pieces: 0, flecks: 0, young: 0, mid: 0, grown: 0, bPieces: 0, perCell: [], kinds: {} },
-    hollow: 0, hollowCrownNear: 0, hollowAt: [], seamProps: 0, seamMismatch: 0, seamAt: [], stranded: 0, strandedCells: 0, strandedAt: [], onWall: 0, onPath: 0, onWay: 0, onLip: 0, noKind: 0, propOnEdge: 0, decalOnEdge: 0, edgeAt: [],
+    hollow: 0, hollowCrownNear: 0, hollowAt: [], seamProps: 0, seamMismatch: 0, seamAt: [], stranded: 0, strandedRaised: 0, strandedCells: 0, strandedAt: [], onWall: 0, onPath: 0, onWay: 0, onLip: 0, noKind: 0, propOnEdge: 0, decalOnEdge: 0, edgeAt: [],
     perBiome: {}, ms: 0 };
   const groups = new Map();   // cluster -> { fam, biome, n, kinds }
   const biomeOfK = k => BIOME_IDS[Math.floor(k / 1e9) % 16];
@@ -84,7 +84,7 @@ export function decorProps(seed, { every = 1 } = {}) {
         const flood = useProps => { const seen = new Uint8Array(w * h), q = []; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if ((x === 0 || y === 0 || x === w - 1 || y === h - 1) && pass(x, y, useProps)) { seen[y * w + x] = 1; q.push(y * w + x); }
           for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const a = (q[k] % w) + dx, b = ((q[k] / w) | 0) + dy; if (a < 0 || b < 0 || a >= w || b >= h || seen[b * w + a] || !pass(a, b, useProps)) continue; seen[b * w + a] = 1; q.push(b * w + a); } return seen; };
         const a = flood(false), b = flood(true); let n = 0;
-        for (let i = 0; i < w * h; i++) if (a[i] && !b[i] && !blocked[i]) n++;
+        for (let i = 0; i < w * h; i++) if (a[i] && !b[i] && !blocked[i]) { if (t.terrain[((i / w | 0) + 1) * t.w + (i % w) + 1] === TV.CLIFF) st.strandedRaised++; else n++; }   // a lone tile ringed by four shrubs on a raised scrub top is counted apart (the same greedy no-touching choice; the finds lie on ground the walk reaches)
         if (n) { st.strandedCells++; st.stranded += n; if (st.strandedAt.length < 5) st.strandedAt.push([X, Y, n]); }
       } }
     for (const p of props) own.set(p.x + ',' + p.y, p.kind);

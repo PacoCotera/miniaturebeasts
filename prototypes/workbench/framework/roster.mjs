@@ -11,10 +11,10 @@
 // The approved names (design/proposals/species-names.md): one per species, one per clan. The clan
 // name doubles as the genus on the tome's clan plate, so S01 is Lophessa loika.
 export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: "Hiljan", S05: "Tepor", S06: "Pesko", S07: "Azkon", S08: "Rupar", S09: "Belatz", S10: "Igara", S11: "Kilpo", S12: "Peplos", S13: "Oskol", S14: "Usvel", S15: "Lehten", S16: "Blikur", S17: "Wickle", S18: "Drapet", S19: "Curlop", S20: "Tuliko" }; // S17–S19 are working names (the owner, 2026-10-30); the copywriter names them, and the clans C17–C19
-export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
+export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas", C17: "Pyrsaga", C18: "Syrmena", C19: "Helikta", C21: "Obolura" };
 
 import { proportionPairs } from "./proportions.mjs";
-import { LANGUAGE, kindOf, landOf, familyOf, hexToOklch } from "./language.mjs";
+import { LANGUAGE, ALL_LANDS, kindLands, kindOf, landOf, familyOf, hexToOklch } from "./language.mjs";
 import { BODY_PIGMENTS, SECOND_PIGMENTS } from "./catalogue.mjs";
 
 const sw = (...ids) => Object.fromEntries(ids.map((id) => [id, "on"]));
@@ -154,7 +154,7 @@ export const HABITS = {
   S12: ["plume-bob", "dew-find", "sleep-curled"],      // Peplos
   S13: ["arm-stilt", "find-hug", "sleep-curled"],      // Oskol
   S14: ["stretch-long", "fog-lift", "sleep-curled"],   // Usvel
-  S15: ["light-lean", "root-down", "sleep-curled"],    // Lehten
+  S15: ["light-lean", "fog-wait", "sleep-curled"],    // Lehten
   S16: ["tumble", "catch-strike", "sleep-curled"],     // Blikur
   S17: ["look-up", "beacon-sit", "sleep-curled"],      // Wickle
   S18: ["settle-wide", "wind-stream", "sleep-curled"], // Drapet
@@ -182,8 +182,8 @@ export const SPECIES = [
     ],
     sealed: {},
     pending: [{ trait: "orange eyes", why: "eye rim and pupil are fixed inks" }], pod: { second: "russet" } },
-  { ...row("S02", "C02", "large", "early", "a puffball under a cap (frame puffcap)", "waddles", "wood, meadow, pond", "Character sealed (a crystal)", "fruit", "sniffs out buried pods; sheds after a full meal", "a sleepy glutton nothing startles"),
-    summary: "A radial, capped plan: a round furred body, a face, a cap on top, no legs. It waddles.",
+  { ...row("S02", "C02", "large", "early", "a puffball under a cap (frame puffcap)", "trundles from fruit to fruit", "wood, meadow, pond", null, "fruit", "sniffs out buried pods; sheds after a full meal", "a sleepy glutton nothing startles"),
+    summary: "A fleece loaf on four stub feet, with round ears and a fan of rose felt lobes on its head; no other kind wears one. It trundles from fruit to fruit and noses out what's buried.",
     fixed: S02_FIXED, openSwitches: ["appearance.marking-switch"],
     open: [
       { trait: "colour", pool: { "appearance.body-palette": ["coral", "raspberry", "marigold", "plum"] }, looks: ["coral", "raspberry", "marigold", "plum", "two side by side"] },
@@ -196,8 +196,8 @@ export const SPECIES = [
       { trait: "curiosity" }, { trait: "nerve" },
     ],
     sealed: { character: "a vybronic crystal, dug up where an Untuva partner sniffs out a buried pod" }, pod: { second: "marigold" } },
-  { ...row("S03", "C03", "small", "mid", "a lizard with a lantern tail (frame glowtail)", "scurries, digs", "wood, rock field", "narrow burrows", "dew", "digs out narrow burrows; lights up fog", "a brave little torchbearer"),
-    summary: "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow.",
+  { ...row("S03", "C03", "small", "mid", "a lizard with a lantern tail (frame glowtail)", "scurries, digs", "wood, rock field", "opens narrow burrows", "dew", "digs out narrow burrows; lights up fog", "a brave little torchbearer"),
+    summary: "A small burrower in spotted suede: a low body on four short legs and a tail whose tip glows gold. It digs burrows too narrow for any other kind.",
     fixed: S03_FIXED, openSwitches: ["appearance.marking-switch"],
     frameVersion: 5,   // the claws narrowed to the three digging forms (the game designer's call (A), T-20261016-194)
     legacy: { "anatomy.contact-terminal-form": ["hoof", "webbed", "root"] },   // a version-3 or -4 Tuikis may carry these: legal for inheritance, never drawn for a new pod, described plainly ("hooves", "webbed feet", "roots")
@@ -217,28 +217,28 @@ export const SPECIES = [
     sealed: {}, pod: { second: "marigold" } },
   { ...row("S04", "C04", "medium", "starter", "a climber with two blunt horn-knobs and a coiled tail", "climbs, grabs at falling leaves and rolling fruit","wood, meadow", null, "fruit", "walks so softly it startles nothing", "aloof at first, then devoted"), sealed: {}, alwaysOpen: ["ears", "tail"], pod: { second: "cream" } },
   { ...row("S05", "C05", "medium", "early", "a waddler with two ribbed crown flaps", "waddles, never the same way twice","meadow, wood edge", null, "fruit, seeds", "feels stones for warmth", "quick and clever"), sealed: {}, alwaysOpen: ["fur-reach", "snout"], parked: true, pod: { second: "coral" } },
-  { ...row("S06", "C06", "medium", "early", "a long low body with a ridge of tapered spines", "ambles, climbs", "Thickets", null, "fruit", null, "nosy and cheerful"), sealed: {}, alwaysOpen: ["mask", "rings"],pod: { second: "marigold" } },
+  { ...row("S06", "C06", "medium", "early", "a long low body with a ridge of tapered spines", "ambles, climbs", "Thickets", null, "fruit", "squeezes under a wedged slab for what's beneath", "nosy and cheerful"), sealed: {}, alwaysOpen: ["mask", "rings"],pod: { second: "marigold" } },
   { ...row("S07", "C07", "large", "mid", "a badger or small bear", "lumbers, digs", "rock field, cave", "Deep ground", "fruit, roots", "digs through to Deep ground", "slow, stubborn, protective"), sealed: {}, alwaysOpen: ["feet", "mask"], parked: true, pod: { second: "charcoal" } },
   { ...row("S08", "C08", "large", "mid", "a low, broad digger with spade forepaws and slats on its back", "pushes on ahead, digs", "meadow", null, "leaves, fruit", "digs a way up or down earth banks", "plucky and proud"), sealed: {}, alwaysOpen: ["horns", "legs"], pod: { second: "butter" } },
-  { ...row("S09", "C09", "large", "late", "a big bird", "strides, soars", "meadow, rock field", "Weather expeditions", "fruit, seeds", "scouts from above: reveals the cells around", "watchful, lordly"), sealed: { movement: "a tide pearl" }, alwaysOpen: ["flaps", "beak", "feathers", "feather-crest"], pod: { second: "butter" } },
+  { ...row("S09", "C09", "large", "late", "a big bird", "strides, soars", "meadow, rock field", null, "fruit, seeds", "scouts from above: reveals the cells around", "watchful, lordly"), sealed: { movement: "a tide pearl" }, alwaysOpen: ["flaps", "beak", "feathers", "feather-crest"], pod: { second: "butter" } },
   { ...row("S10", "C10", "medium", "mid", "an otter", "swims, slides", "pond, fast water", "opens fast water", "fruit", "swims fast water", "playful, never still"), sealed: {}, alwaysOpen: ["tail", "build"], frameVersion: 5, pod: { second: "peach" } },   // 5: the locked feet are pads, not webbed, and the second colour is peach (version 4 stays in the stamp snapshot with its webbed bytes)
-  { ...row("S11", "C11", "large", "late", "a turtle", "plods, swims slowly", "pond edge", "beyond fast water", "moss, fruit", "carries one more pod", "an old soul, patient"), sealed: { stamina: "a storm-glass shard" }, alwaysOpen: ["shell", "shell-plates", "scales"], pod: { second: "russet" } },
+  { ...row("S11", "C11", "large", "late", "a turtle", "plods, swims slowly", "pond edge", null, "moss, fruit", "carries one more pod", "an old soul, patient"), sealed: { stamina: "a storm-glass shard" }, alwaysOpen: ["shell", "shell-plates", "scales"], pod: { second: "russet" } },
   { ...row("S12", "C12", "small", "early", "a moth or butterfly", "flutters", "meadow", null, "dew", "finds dew (Essence)", "flighty and bright"), sealed: {}, alwaysOpen: ["flap-markings", "translucency", "flaps"],
     frameVersion: 5,   // the Peplos genome: the type shows spots and carries plain, sails its flaps at rest, curl antennae, a locked dew tongue, a smooth body
     reset: { "appearance.surface-texture": "smooth" }, typical: { "appearance.flap-marking": ["spots", "plain"] }, pod: { second: "ice" } },
   { ...row("S13", "C13", "small", "mid", "a beetle", "crawls", "rock field, cave", null, "moss", "burrows under stones for buried finds", "a sturdy little tank"), sealed: {}, alwaysOpen: ["wing-cases", "antennae"], pod: { second: "jade" } },
   { ...row("S14", "C14", "small", "early", "a slug", "slides", "pond edge, wood; out in fog banks", null, "moss", "leaves a sheen trail back to the start", "unhurried and sweet"), sealed: {}, alwaysOpen: ["skirt", "sheen"], pod: { second: "periwinkle" } },
-  { ...row("S15", "C15", "medium", "late", "a walking plant", "walks on its roots", "wood", "sealed chapter", "light and dew", "roots for a turn; a bush grows where it stood", "patient, faintly wise"), sealed: { stamina: "a storm-glass shard" }, alwaysOpen: ["leaves", "light-feeding", "rays"], pod: { second: "raspberry" } },
-  { ...row("S16", "C16", "medium", "late", "a wisp of lightning (spectral, energy)", "floats, ripples", "meadow, rock field, only in a storm", "Charge sealed (storm-glass shard)", "Energy from struck stones", "draws a stray strike to itself", "wild and electric, rarely still"), sealed: { charge: "a storm-glass shard" }, alwaysOpen: ["charge", "phase", "pull", "glow"], pod: { second: "ice" } },
+  { ...row("S15", "C15", "medium", "late", "a walking plant", "walks slowly, stops in any gap of sun", "wood", null, "light and dew", "finds the gaps in the fog: the map keeps clearing", "patient, faintly wise"), sealed: { stamina: "a storm-glass shard" }, alwaysOpen: ["leaves", "light-feeding", "rays"], pod: { second: "raspberry" } },
+  { ...row("S16", "C16", "medium", "late", "a wisp of lightning (spectral, energy)", "floats, ripples", "meadow, rock field, only in a storm", null, "Energy from struck stones", "draws a stray strike to itself", "wild and electric, rarely still"), sealed: { charge: "a storm-glass shard" }, alwaysOpen: ["charge", "phase", "pull", "glow"], pod: { second: "ice" } },
   // The fluffy species (owner, 2026-10-30; design/proposals/genome-fluffy.md): draft rows, working names. Moves, gate, diet, ability and character are the genome engineer's
   // placeholders for the game designer to set; nothing of them is read by the rig.
-  { ...row("S17", "C17", "medium", "early", "a tall teardrop of fur with a glowing plume", "sways, rocks along", "Reeds", null, "dew", null, "calm, a little dreamy"),
+  { ...row("S17", "C17", "medium", "early", "a tall teardrop of fur with a glowing plume", "sways, rocks along", "Reeds", null, "dew", "glows to light the way in fog", "calm, a little dreamy"),
     summary: "A tall teardrop of fur standing upright on two tiny feet, a cream face, one plume rising from the top and curling forward to a glowing tip (the plume is its tail, rooted on the crown); no arms.",
     frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["tail-curl-turn", "fur-reach"], neverOpen: ["fur-hang", "legs", "feet", "tail"] }, // the apron, the legs, the feet and the plume's size are fixed: the feet show under a short apron
-  { ...row("S18", "C18", "large", "mid", "a wide low dome under a floor-length skirt of fur", "glides low along the ground", "Boulders", null, "moss", "draft: to be set by the game designer", "draft: patient, shy"),
+  { ...row("S18", "C18", "large", "mid", "a wide low dome under a floor-length skirt of fur", "glides low along the ground", "Boulders", null, "moss", "in a storm, the Companion keeps in its lee", "patient, shy"),
     summary: "A wide low dome hidden under a floor-length skirt of long fur, a small flat face peeking out at the front, brow tassels; no ears, no snout, short legs under the skirt that never show.",
     frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["fur-hang", "brow-tufts"], neverOpen: ["legs", "feet"] }, // the skirt is floor length (the drop is fixed): Hang is the flare alone
-  { ...row("S19", "C19", "medium", "mid", "an upright crescent with a curled tail and small hands", "hops, walks", "Ferns", null, "fruit, leaves", "draft: to be set by the game designer", "draft: gentle, curious"),
+  { ...row("S19", "C19", "medium", "mid", "an upright crescent with a curled tail and small hands", "hops, walks", "Ferns", null, "fruit, leaves", "waves wild mibis over to settle beside it", "gentle, curious"),
     summary: "An upright crescent of dense fur: a round head end, a cream belly, two stout hind feet, a long curled tail, and two small three-fingered hands held together at the chest (a free front pair over a contact hind pair).",
     frameVersion: 6, draft: true, sealed: {}, alwaysOpen: ["tail-curl-turn"], neverOpen: ["feelers", "rays", "tail"], // the arms are not feelers: those traits name the free-chain plans; the tail's size is fixed, only its curl is open
     pools: { "growth.tail-curl-turn": ["curled", "tight"] } }, // the tight half of the curl: a straight tail on an upright biped with hands at the chest reads as a kangaroo or a small theropod
@@ -297,6 +297,7 @@ const withoutResembles = ({ resembles, ...rest }) => rest;
 // The copywriter's words (6 Nov 2026) for the frame's feature line and the describe line that used to name a real animal. A signature type that opens with "the" drops it after "its".
 export const OWED = {
   "roster.feature": "a {family} body, with its {signature}",
+  "land.all": "Every land",   // the habitat word of a kind in every land (the Loika)
   "describe.type-line": "It looks just as its species should: {feature}.",
 };
 export const featureOf = (fam, k) => OWED["roster.feature"].replace("{family}", fam.name).replace("{signature}", k.signature.type.replace(/^the /, ""));
@@ -313,7 +314,7 @@ const nearestPigment = (table, hex) => {
 export function languageFields(id, clan, species) {
   const k = kindOf(LANGUAGE, id);
   if (!k) return null;
-  const land = landOf(LANGUAGE, k.land), fam = familyOf(LANGUAGE, k.family);
+  const everyLand = k.land === ALL_LANDS, land = everyLand ? null : landOf(LANGUAGE, k.land), fam = familyOf(LANGUAGE, k.family);   // a kind in every land owns its colours (an anchor) and takes none from a land
   const feature = featureOf(fam, k);
   const owns = LANGUAGE.exceptions.some((e) => e.kind === id && e.check === "coat.land");   // an anchor keeps its own colours
   // features: the face (eyes), the parts the family says it has, the socket of the signature; an anchor keeps what its signed exceptions cover
@@ -330,16 +331,16 @@ export function languageFields(id, clan, species) {
   const anchor = owns ? clan.anchor : nearestPigment(BODY_PIGMENTS, land.body.hex);
   const second = owns ? clan.second : nearestPigment(SECOND_PIGMENTS, land.marking.hex);
   const podPair = owns ? null : [{ pigment: anchor, hex: land.body.hex }, { pigment: nearestPigment(SECOND_PIGMENTS, land.accent.hex), hex: land.accent.hex }];
-  return { feature, features, finish, anchor, second, podPair, habitat: land.word };
+  return { feature, features, finish, anchor, second, podPair, habitat: everyLand ? OWED["land.all"] : land.word };
 }
 
 // What the registry says of a roster species: its land (the game's biome id), the land's player word and its family. The
 // registry is the one source; `habitat` in the row above is the older text the frames before the language carry, never read for
 // where a kind lives. A species the registry has no kind for (none today) has no land.
 export function landAndFamily(id, reg = LANGUAGE) {
-  const k = kindOf(reg, id), land = k?.land ? landOf(reg, k.land) : null;
-  return { land: k?.land ?? null, landName: land?.word ?? null, family: k?.family ?? null };
+  const k = kindOf(reg, id), land = k?.land && k.land !== ALL_LANDS ? landOf(reg, k.land) : null;
+  return { land: k?.land ?? null, landName: k?.land === ALL_LANDS ? OWED["land.all"] : land?.word ?? null, family: k?.family ?? null };
 }
 
 // The kinds that live on each land, in species order: the realm's kind draw reads this (regions.mjs BIOME_KINDS).
-export const kindsOnLand = (landId, reg = LANGUAGE) => reg.kinds.filter((k) => !k.template && k.land === landId).map((k) => k.id);
+export const kindsOnLand = (landId, reg = LANGUAGE) => reg.kinds.filter((k) => !k.template && kindLands(reg, k).includes(landId)).map((k) => k.id);

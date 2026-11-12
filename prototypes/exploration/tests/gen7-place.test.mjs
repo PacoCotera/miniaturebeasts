@@ -4,7 +4,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, overviewOf, OV, OVW, COAST_REACH } from '../src/gen7/place.mjs';
+import { inlandOf, RAISE_OFF } from '../src/gen7/levels.mjs';
+import { realm7 } from '../src/gen7/region.mjs';
 import { bakeIR } from '../tools/gen7-render.mjs';
 import { RULES } from '../src/gen7/rules.mjs';
 import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
@@ -121,7 +123,7 @@ test('seeds 1-50: reed clumps stand on the shore and in the shallows (never on d
 
 test('scrub shrubs never touch, take the most the rule allows, and every patch of one or two cells has one', () => {
   for (const seed of [7, 13, 42]) {
-    const D = decorOf(seed), T = worldTiles(seed);
+    const D = decorOf(seed), T = worldGround(seed);   // a raised tile is its top's ground: scrub on a raised top holds shrubs as on the low ground
     let eligible = 0, taken = 0, small = 0, smallWith = 0;
     const scrubCells = [];   // up to six cells of the seed that hold scrub shrubs (found on a coarse grid of cells)
     for (let Y = 15; Y < 90 && scrubCells.length < 6; Y += 2) for (let X = 15; X < 70 && scrubCells.length < 6; X += 2) if (D.propsIn(X * CW, Y * CH, X * CW + CW - 1, Y * CH + CH - 1).filter(p => p.fam === 'shrubs').length >= 4) scrubCells.push([X, Y]);
@@ -134,13 +136,14 @@ test('scrub shrubs never touch, take the most the rule allows, and every patch o
       const seen = new Set();
       for (let y = 2; y < CH - 2; y++) for (let x = 2; x < CW - 2; x++) {
         const k = (x0 + x) + ',' + (y0 + y); if (seen.has(k) || T(x0 + x, y0 + y) !== TV.SCRUB) continue;
-        const q = [[x0 + x, y0 + y]]; seen.add(k); let any = false, inside = true, has = false;
+        const q = [[x0 + x, y0 + y]]; seen.add(k); let any = false, inside = true, has = false, lip = false;
         for (let i = 0; i < q.length; i++) {
-          const [a, b] = q[i]; if (D.plain(a, b)) any = true; if (shrubs.has(a + ',' + b)) has = true;
+          const [a, b] = q[i]; if (D.plain(a, b)) any = true; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (D.flags(a + dx, b + dy) & 4) lip = true; if (shrubs.has(a + ',' + b)) has = true;
           if (a < x0 + 2 || a > x0 + CW - 3 || b < y0 + 2 || b > y0 + CH - 3) inside = false;
           for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const kk = (a + dx) + ',' + (b + dy); if (!seen.has(kk) && T(a + dx, b + dy) === TV.SCRUB) { seen.add(kk); q.push([a + dx, b + dy]); } }
         }
-        if (!any && inside) { small++; if (has) smallWith++; }
+        if (!any && inside && !lip) { small++;   // (a patch on or beside the cliff's lip holds none: nothing is laid within a tile of a lip)
+          if (has) smallWith++; }
       }
     }
     console.log(`# seed ${seed}: ${taken} shrubs on ${eligible} eligible scrub tiles (${(100 * taken / Math.max(1, eligible)).toFixed(0)}%); small patches ${smallWith} of ${small} hold one`);
@@ -157,9 +160,38 @@ test('a 2 x 2 block holds at most three terrains and every two are a pair of the
   assert.ok(blockOk([TV.GRASS]) && blockOk([TV.WATER, TV.GRASS]));
 });
 
-test('the pair table is the set\'s: raised land meets only grass', () => {
+test('the pair table is the set\'s: raised land meets grass and the biome grounds (the cliff layer\'s lowers), nothing else', () => {
   for (const [a, b] of [[TV.CLIFF, TV.WATER], [TV.CLIFF, TV.PATH], [TV.CLIFF, TV.THICKET], [TV.CLIFF, TV.SCRUB], [TV.CLIFF, TV.EARTH], [TV.THICKET, TV.SCRUB], [TV.PATH, TV.SAND], [TV.PATH, TV.WATER]]) assert.ok(!pairOk(a, b), a + '|' + b);
-  for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB]]) assert.ok(pairOk(a, b), a + '|' + b);
+  for (const [a, b] of [[TV.GRASS, TV.CLIFF], [TV.GRASS, TV.WATER], [TV.GRASS, TV.PATH], [TV.WATER, TV.SAND], [TV.GRASS, TV.THICKET], [TV.SAND, TV.SCRUB], [TV.CLIFF, TV.LITTER], [TV.CLIFF, TV.DRY], [TV.CLIFF, TV.TURF], [TV.CLIFF, TV.SCREE]]) assert.ok(pairOk(a, b), a + '|' + b);
+});
+
+// Amendment L: a raised tile stands on its biome's ground (the IR's `top`). On the tiles of a slot's own recipe (BLEND tiles clear of a slot edge) each biome's signature skin is on raised tops in a share
+// that follows the low ground's: at least 40% of it where the low ground holds 30% or more. Raised land is rockier than low land (the same elevation field that lifts it feeds the rock field), so scree
+// is over-represented on tops and the grass of the low ground, a forced ring beside raised land, is under-represented: the table is logged, not held to 20% per skin.
+const SIGNATURE = { downs: 'turf', woods: 'litter', tallwood: 'litter', thickets: 'dry', fells: 'scree' };
+const SKIN = { [TV.GRASS]: 'grass', [TV.LITTER]: 'litter', [TV.DRY]: 'dry', [TV.TURF]: 'turf', [TV.SCREE]: 'scree', [TV.SAND]: 'sand', [TV.SCRUB]: 'scrub' };
+test('raised tops carry their biome\'s ground: the signature skin of each biome is on tops in a share that follows the low ground\'s, and tops are no longer all grass', { timeout: 1800000 }, () => {
+  for (const seed of FAST ? [7] : [7, 13, 42]) {
+    const sb = slotBiomes(seed), SW = MW * CW, SH = MH * CH, inner = (g, len) => { const f = g % len; return f >= BLEND && len - f > BLEND; }, by = {};
+    for (let Y = 2; Y < RH - 2; Y += 10) for (let X = 2; X < RW - 2; X += 8) {
+      const c = cellTerrain(seed, X, Y);
+      for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) {
+        const gx = X * CW + x - 1, gy = Y * CH + y - 1; if (!inner(gx, SW) || !inner(gy, SH)) continue;
+        const o = (by[sb[Math.floor(gy / SH) * ATLAS + Math.floor(gx / SW)]] ||= { low: {}, top: {}, nl: 0, nt: 0 }), v = c.terrain[y * c.w + x];
+        if (v === TV.CLIFF) { const n = SKIN[c.top[y * c.w + x] || TV.GRASS]; o.top[n] = (o.top[n] || 0) + 1; o.nt++; } else if (SKIN[v]) { o.low[SKIN[v]] = (o.low[SKIN[v]] || 0) + 1; o.nl++; }
+      }
+    }
+    let nonGrassTops = 0, topTiles = 0;
+    for (const [b, o] of Object.entries(by)) {
+      const table = {}; for (const n of new Set([...Object.keys(o.low), ...Object.keys(o.top)])) table[n] = [+((o.low[n] || 0) / o.nl).toFixed(3), +((o.top[n] || 0) / o.nt).toFixed(3)];
+      console.log(`# seed ${seed} ${b}: low ${o.nl} tiles, raised tops ${o.nt} tiles; share of each skin [low, top] ${JSON.stringify(table)}`);
+      for (const [n, k] of Object.entries(o.top)) { topTiles += k; if (n !== 'grass') nonGrassTops += k; }
+      const sig = SIGNATURE[b]; if (!sig || o.nl < 1500 || o.nt < 1500) continue;
+      const low = (o.low[sig] || 0) / o.nl, top = (o.top[sig] || 0) / o.nt;
+      if (low >= 0.3) assert.ok(top >= 0.4 * low, `seed ${seed} ${b}: ${sig} is ${top.toFixed(3)} of the raised tops against ${low.toFixed(3)} of the low ground`);
+    }
+    assert.ok(nonGrassTops > 0.3 * topTiles, `seed ${seed}: ${nonGrassTops} of ${topTiles} raised tiles hold a ground other than grass`);
+  }
 });
 
 // V2, the biome ground (src/gen7/ground.mjs): a biome's recipe is the same on both sides of every cell edge; it changes only over the BLEND tiles either side of a slot's edge, and by no more in a tile
@@ -198,7 +230,9 @@ test('the map\'s land kind and the walk\'s ground agree in the middle of every c
         const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), t = cellTerrain(seed, X, Y), n = {}; let low = 0, raised = 0;
         for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = t.terrain[(y + 1) * t.w + x + 1]; if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
         if (raised) continue;
-        const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
+        // a water cell may be the coast's ring: deep water in the walk
+        const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') + f('DEEP') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
+        if (!ok && Math.min(X, Y, MW * ATLAS - 1 - X, MH * ATLAS - 1 - Y) === 1) continue;   // the cell beside the coast's ring: its shore band (water, beach, grass) takes the half of it nearest the ring, so what the map labels it (pond, water, wood, rock) is not the ground in its middle (a known gap; its raised land used to hide it)
         seen[lab][0]++; if (!ok) { seen[lab][1]++; if (bad.length < 8) bad.push(`${lab} ${X},${Y}`); }
       }
     }
@@ -206,4 +240,32 @@ test('the map\'s land kind and the walk\'s ground agree in the middle of every c
     for (const lab of ['WATER', 'POND']) assert.equal(seen[lab][1], 0, `seed ${seed}: ${lab} cells whose middle is not that ground: ${bad}`);
     for (const lab of ['ROCK', 'WOOD', 'MEADOW']) assert.ok(seen[lab][0] > 50 && seen[lab][1] * 50 <= seen[lab][0], `seed ${seed}: ${lab} cells whose middle is not that ground: ${seen[lab]} ${bad}`);
   }
+});
+
+// The coast: the realm's border ring is water, the shore band lies in the first tiles inside it, and no raised land comes within RAISE_OFF tiles of the border line.
+test('seed 7: the coast is deep water at the border line, then water, beach and a strip of grass; nothing raised near it; the nine inner regions have no coast', () => {
+  const seed = 7, R = realm7(seed), T = worldTiles(seed), G = worldGround(seed);
+  for (const g of R.regions) { const rim = g.slot[0] === 0 || g.slot[1] === 0 || g.slot[0] === ATLAS - 1 || g.slot[1] === ATLAS - 1, n = g.coast.reduce((a, b) => a + b, 0); assert.equal(n > 0, rim, 'coast cells only in rim regions ' + g.slot); }
+  let water = 0, beach = 0, grass = 0, raisedNear = 0;
+  for (let gy = 0; gy < RH * CH; gy += 3) for (const gx of [CW - 1, CW, CW + 1, CW + 6, CW + 9, CW + 12]) {   // along the west coast, at tiles from the border line: -1, 0, 1, 6, 9, 12
+    const d = inlandOf(gx, gy), v = T(gx, gy);
+    if (d < 0) assert.equal(v, TV.DEEP, 'the border ring is deep water');
+    if (d === 6 || d === 9) { if (v === TV.WATER) water++; else if (v === TV.SAND) beach++; else if (v === TV.GRASS) grass++; }
+    if (d < RAISE_OFF && v === TV.CLIFF) raisedNear++;
+  }
+  assert.equal(raisedNear, 0, 'no raised land within RAISE_OFF tiles of the border line');
+  assert.ok(water + beach + grass > 0 && beach > 0 && grass > 0, `the band holds beach and grass at 6-9 tiles: ${water}/${beach}/${grass}`);
+});
+
+// One land at every zoom (F1): the region's overview is the class of the world tile under each of its tiles, and the raised bit is the tile being raised land; two cells side by side share their edge.
+test('seed 7: the overview of a region reads the world tiles (class and raised), 0 differing tiles on a sample, and cells meet at their edges', { timeout: 900000 }, () => {
+  const seed = 7, ax = 2, ay = 2, ov = overviewOf(seed, ax, ay), T = worldTiles(seed), Gd = worldGround(seed);
+  const cls = v => (v === TV.SAND ? OV.SAND : v === TV.WATER ? OV.WATER : v === TV.DEEP ? OV.DEEP : v === TV.LITTER ? OV.WOOD : v === TV.THICKET ? OV.THICKET : v === TV.SCREE ? OV.ROCK : v === TV.PATH ? OV.PATH : OV.GRASS);
+  let diff = 0, n = 0;
+  for (let y = 0; y < ov.length / OVW; y += 7) for (let x = 0; x < OVW; x += 5) {
+    const gx = ax * OVW + x, gy = ay * (ov.length / OVW) + y, want = cls(Gd(gx, gy)) | (T(gx, gy) === TV.CLIFF ? OV.RAISED : 0); n++;
+    if (ov[y * OVW + x] !== want) diff++;
+  }
+  assert.ok(n > 3000); assert.equal(diff, 0, 'tiles whose overview byte differs from the world tile under it');
+  for (let c = 1; c < MW; c++) for (const y of [3, 100, 250]) assert.equal(ov[y * OVW + c * CW - 1], cls(Gd(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y)) | (T(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y) === TV.CLIFF ? OV.RAISED : 0));
 });

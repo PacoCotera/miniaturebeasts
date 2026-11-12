@@ -444,7 +444,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
 // and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
 export const WATCH_MS = 60000;   // the default of settings.watchMs
 // A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
-export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "root-down", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
+export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "fog-wait", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
 // A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
@@ -859,7 +859,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   const living = st.mibis.filter((m) => !m.released).sort((a, b) => a.id - b.id), cs = bayCrates(st, sv), bud = st.bud;
   const short = (e, d, s) => ({ key: "short", icons: shortIcons(st, e, d, s), from: shortFrom(st, e, d, s) });
   const kn = (sp) => (sp && st.knownIds.includes(sp) ? sp : null);   // a goal fact names a species only once the player knows it (a pod of it identified, or adults of it arrived): never before the first Identify (game designer, 2026-10-15 07:56)
-  const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()) });
+  const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()), minutes: budMinutesLeft(st, settings, Date.now()), species: kn(speciesOf(bud)), cross: bud.kind === "cross" && bud.parents?.length === 2, parents: bud.parents?.map((p) => p.name) ?? [] });
   // the pod chain for one species (or, with none named, for the first pod there is)
   const chain = (species) => {
     if (docked(st) && cs.length) return { key: "openBay" };
@@ -1241,7 +1241,7 @@ export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).in
 export const isCarried = (st, sv, m) => !!m && carriedIds(st, sv).includes(m.id);
 // Direct kin (a parent, grandparent or great-grandparent, or two children of one pair) never cross; null, or { rel, by }. The pedigree is walked through the records of mibis let go too.
 export const directKinOf = (st, a, b) => directKin(a, b, genomeLookup(st));
-export const FAMILY = "family \u00b7 find a partner on walks";   // the one refusal line, wherever a family pair is refused (vivarium.json strings.why.partnerFamily says the same; a test holds them equal)
+export const FAMILY = "family \u00b7 find another out exploring";   // the one refusal line, wherever a family pair is refused (vivarium.json strings.why.partnerFamily says the same; a test holds them equal)
 // Refused before cost, on the pick itself, reasons that never change first: the same individual, another species, gone to the wild, family, then not adult, tucked away, carried (R4b, the owner: no breeding while a mibi is carried, docked or away), busy, full.
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";

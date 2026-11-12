@@ -19,25 +19,6 @@ export const TRANSFORMS = {
   veil: (c) => mix(c, [26, 23, 37], 0.62),
 };
 
-// Adds the entries of extra colours (the haze ramp, at palette indices first..) to tables already computed: each goes to the nearest colour of
-// the core, the set and the extras, as computeTables does. tables: { name: Uint8Array(256) | array }, changed in place.
-export function extendTables(tables, coreRgb, setRgb, first, extraRgb) {
-  const cand = [];
-  for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
-  setRgb.forEach((rgb, k) => cand.push([coreRgb.length + k, rgb]));
-  extraRgb.forEach((rgb, k) => cand.push([first + k, rgb]));
-  for (const name of TABLE_NAMES) {
-    if (!tables[name]) continue;
-    extraRgb.forEach((rgb, k) => {
-      const c = TRANSFORMS[name](rgb);
-      let best = -1, bd = Infinity;
-      for (const [i, r] of cand) { const d = (r[0] - c[0]) ** 2 + (r[1] - c[1]) ** 2 + (r[2] - c[2]) ** 2; if (d < bd) { bd = d; best = i; } }
-      tables[name][first + k] = best;
-    });
-  }
-  return tables;
-}
-
 // ---- the night table (dark2): every colour keeps its hue family (art director, 2026-11-09 20:4x) ----
 // green (grass, tone, reeds, shrubs, leaves) -> a dark green, never red-brown; water and teal -> a dark blue-teal, never purple; sand, earth, path, trunk -> a dark warm brown; stone -> a dark grey;
 // the tree crowns and bushes (the leaf ramp) go to no lighter a green than the night grass; the sunlit grass tone goes to the next green a touch lighter than the night grass. Anything else (pinks, whites,
@@ -63,11 +44,20 @@ export const STONE_TONES = {
   dark2: { line: [0x34, 0x38, 0x40], mid: [0x47, 0x4d, 0x55], hi: [0x55, 0x5c, 0x64] },
   storm: { line: [0x3e, 0x44, 0x4e], mid: [0x5a, 0x64, 0x70], hi: [0x6c, 0x76, 0x82] },
 };
+// The rock ramp at night (art director 2026-11-12): a darker day grey never maps lighter at night, and the rock keeps four or more separate values. Day colour -> night colour, both of the palette;
+// the dark end of the rock (the cracks, the outlines) goes to the darkest greys and the body steps climb from there, in the day order. Applied to the night table only, where the day colour is in the set.
+export const NIGHT_ROCK = [['242626', '141b1b'], ['2a3834', '141b1b'], ['343840', '242626'], ['3e444e', '242626'], ['474d55', '2a3834'], ['555c64', '333b47'], ['5a6470', '333b47'], ['6c7682', '333b47']];
+// The olive meadow ramp at night (art director 2026-11-12): day colour -> the dark olive green its two lighter steps already take (#54603e). Table entries only; applied only where the step's night colour is not green.
+export const NIGHT_OLIVE = [['667b59', '54603e'], ['79875b', '54603e'], ['8b9561', '54603e'], ['4f6a53', '244523']];   // #4f6a53, the dark tuft green of the widening, takes the night green of the olives below it
+// The sea-fog veil tone (art director 2026-11-12): day colour -> its night colour; both are set colours no other row points at.
+export const NIGHT_VEIL = [['4a5f78', '1e2a3e']];
 // opts.bank, opts.bankTo: the bank earth and the trunk brown it takes at night (below). opts.ground: palette indices of the plain grass fill's colours; opts.tone: of the sunlit tone patch; opts.crowns: of the tree, bush and shrub leaf ramp; opts.stone: of the rocks, boulders and cliff stone, outlines included; opts.stoneHi: of the rock's two lightest greys, which go one step lighter; opts.stoneLine: of its outlines, which go one step darker (all core-and-set indices).
 export function computeTables(coreRgb, setRgb, opts = {}) {
   const cand = [];
   for (let i = 1; i < coreRgb.length; i++) cand.push([i, coreRgb[i]]);
-  setRgb.forEach((rgb, k) => cand.push([coreRgb.length + k, rgb]));
+  // opts.noTarget: palette indices of colours added to widen the meadow ramp; they get their own rows but no other colour's row points at them, so every existing colour steps exactly as before
+  const noTarget = new Set(opts.noTarget || []);
+  setRgb.forEach((rgb, k) => { if (!noTarget.has(coreRgb.length + k)) cand.push([coreRgb.length + k, rgb]); });
   // the stone tones are pinned in the palette for the stone ramp alone: no other colour snaps to them
   const isTone = (rgb) => Object.values(STONE_TONES).some((t) => Object.values(t).some((v) => v[0] === rgb[0] && v[1] === rgb[1] && v[2] === rgb[2]));
   const candAll = cand.slice(); cand.splice(0, cand.length, ...candAll.filter(([, rgb]) => !isTone(rgb)));
@@ -84,6 +74,9 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
   for (const f of ['green', 'teal', 'blue', 'warm', 'grey']) pools[f] = cand.filter(([, rgb]) => family(rgb) === f);
   const ground = new Set(opts.ground || []), tone = new Set(opts.tone || []), crowns = new Set(opts.crowns || []), stone = new Set(opts.stone || []), stoneHi = new Set(opts.stoneHi || []), stoneLine = new Set(opts.stoneLine || []);
   const bank = new Set(opts.bank || []), bankTo = opts.bankTo ?? -1;   // opts.bank: palette indices of the bank earth (the earth sheets' colours no other sheet uses); opts.bankTo: the night colour they take
+  const trunkLit = new Set(opts.trunkLit || []), trunkShade = new Set(opts.trunkShade || []), trunkLitTo = opts.trunkLitTo ?? -1, trunkShadeTo = opts.trunkShadeTo ?? -1;   // opts.trunkShade / opts.trunkLit: palette indices of the tree trunk's two darker and two lighter browns; opts.trunkShadeTo / opts.trunkLitTo: the two low-saturation browns they take at night, so the trunk keeps its form steps
+  const litter = new Set(opts.litter || []), litterTo = opts.litterTo ?? -1;   // opts.litter: palette indices of the woods litter's orange specks; opts.litterTo: the dull brown they take at night
+  const glint = opts.glint || [], glintTo = opts.glintTo || [];   // opts.glint: the water ripple's glint colours, darker first; opts.glintTo: the cool pale grey-blues they take at night, in the same order
   const used = coreRgb.length + setRgb.length;
   const tables = {};
   for (const name of TABLE_NAMES) {
@@ -111,6 +104,10 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       else if (tones && stoneLine.has(i) && stoneLineTo > 0) map[i] = stoneLineTo;
       else if (tones && stone.has(i) && stoneTo > 0) map[i] = stoneTo;
       else if (night && bank.has(i) && bankTo > 0) map[i] = bankTo;   // the thin earth band at the water's edge: the darkest low-saturation trunk brown, never a rust red (art director 2026-11-11)
+      else if (night && trunkShade.has(i) && trunkShadeTo > 0) map[i] = trunkShadeTo;   // the tree trunk's shade side at night: a dark low-saturation brown, no red cast (art director 2026-11-11)
+      else if (night && trunkLit.has(i) && trunkLitTo > 0) map[i] = trunkLitTo;   // its lit side: a lighter low-saturation brown, so the trunk keeps its form steps (art director 2026-11-11)
+      else if (night && litter.has(i) && litterTo > 0) map[i] = litterTo;   // the woods litter's orange specks at night: a dull brown (art director 2026-11-11)
+      else if (night && glint.includes(i) && glintTo.length) map[i] = glintTo[Math.min(glint.indexOf(i), glintTo.length - 1)];   // the ripple's glints at night: a cool pale grey-blue, never pink or mauve (art director 2026-11-11)
       else if (!night || !f) map[i] = nearest(t);
       else if (f === 'warm' && khakiPool.length && khaki(rgb)) map[i] = nearest(muted(t), khakiPool);
       else if (f === 'grey' && rgb[0] > rgb[2] + 8 && warmGreyTo > 0) { const x = lumOf(rgb) * 0.55; map[i] = nearest([x, x + 2, x], warmGreyPool); }
@@ -118,6 +115,18 @@ export function computeTables(coreRgb, setRgb, opts = {}) {
       else if (crowns.has(i) && f === 'green') map[i] = nearest(t, pools.green.filter(([, c]) => lumOf(c) <= lim));
       else if (f === 'green' && ground.size && !ground.has(i)) { const pool = lumOf(rgb) < groundLum ? darkGreens : lightGreens; map[i] = nearest(t, pool.length ? pool : pools.green); }
       else map[i] = nearest(t, pools[f]);
+    }
+    if (night) {
+      const at = (h) => { for (let i = 1; i < used; i++) { const c = rgbAt(i); if (c[0] === parseInt(h.slice(0, 2), 16) && c[1] === parseInt(h.slice(2, 4), 16) && c[2] === parseInt(h.slice(4, 6), 16)) return i; } return -1; };
+      for (const [day, to] of NIGHT_ROCK) { const d = at(day), t = at(to); if (d > 0 && t > 0) map[d] = t; }
+    }
+    if (night || name === 'dark') {   // the olive meadow steps never go brown-grey at night (art director 2026-11-12): one whose night step left the green family takes the green its sibling steps take
+      const at = (h) => { for (let i = 1; i < used; i++) { const c = rgbAt(i); if (c[0] === parseInt(h.slice(0, 2), 16) && c[1] === parseInt(h.slice(2, 4), 16) && c[2] === parseInt(h.slice(4, 6), 16)) return i; } return -1; };
+      for (const [day, to] of NIGHT_OLIVE) { const d = at(day), t = at(to); if (d > 0 && t > 0 && family(rgbAt(map[d])) !== 'green') map[d] = t; }
+    }
+    if (night || name === 'dark') {   // the sea-fog veil tone has its own night entry (art director 2026-11-12), in the dark and dark2 tables
+      const at = (h) => { for (let i = 1; i < used; i++) { const c = rgbAt(i); if (c[0] === parseInt(h.slice(0, 2), 16) && c[1] === parseInt(h.slice(2, 4), 16) && c[2] === parseInt(h.slice(4, 6), 16)) return i; } return -1; };
+      for (const [day, to] of NIGHT_VEIL) { const d = at(day), t = at(to); if (d > 0 && t > 0) map[d] = t; }
     }
     tables[name] = map;
   }

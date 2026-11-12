@@ -324,7 +324,8 @@ export function homeBuild(m, spec, frame) {
   })();
   const incubator = (() => {
     const bud = st.bud, ready = S.budReady(st, settings), state = !bud ? "empty" : ready ? "ready" : "growing", name = bud ? S.spName(bud) : "", I = T.incubator, grow = !bud && couldIncubate(st, settings);
-    return { state, line1: state === "empty" ? I.empty : state === "growing" ? I.growing : S.vivFull(st, settings) ? I.waitsForRoom : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
+    const left = state === "growing" ? S.budMinutesLeft(st, settings, now) : 0;   // the same minutes as the goal line, in the place it points to (note 9)
+    return { state, line1: state === "empty" ? I.empty : state === "growing" ? fill(I.growing, { Species: name }) : S.vivFull(st, settings) ? I.waitsForRoom : I.ready, line2: state === "empty" ? (grow ? I.canIncubate : "") : state === "growing" ? (left < 1 ? I.readyUnderMinute : fill(I.readyIn, { n: left })) : fill(I.species, { a: S.aAn(name).split(" ")[0], Species: name }), lamp: ready ? "needsYou" : "off", capsule: capsuleOf(req, spec.regions.incubator.capsule, state, bud, ready ? 1 : S.budProgress(st, settings, now)) };
   })();
   const companion = (() => {
     const c = S.carriedIds(st, sv), id = c.includes(sv?.lead) ? sv.lead : c[0] ?? null, mb = id == null ? null : S.mibiById(st, id), C = T.companion, P = spec.regions.companion.plates, pr = docked ? S.probeNow(st, sv) : null;

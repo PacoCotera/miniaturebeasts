@@ -13,7 +13,10 @@ import { RW, RH, CW, CH, fieldsAt } from './world.mjs';
 
 export { CW, CH };
 export const WTW = RW * CW, WTH = RH * CH;                // the realm in tiles
-export const RAISE_OFF = 7;                                // the map's end: raised land keeps seven tiles of grass from the realm's rim (the closing band is four)
+export const RAISE_OFF = 12;                               // the coast: raised land begins at least twelve tiles in from the border line (the inner face of the realm's outer ring of cells, which is water)
+export const BORDER_X = CW, BORDER_Y = CH;                 // the border ring is one cell deep: its width in tiles on the west and east, its height on the north and south
+// the tiles from the border line to the tile (gx, gy): 0 on the first walkable tile, negative inside the border ring and beyond the realm
+export const inlandOf = (gx, gy) => Math.min(gx - BORDER_X, WTW - 1 - BORDER_X - gx, gy - BORDER_Y, WTH - 1 - BORDER_Y - gy);
 const SIGMA = 6, FLAT = 5, DETAIL = 0.02, MARGIN = 0.05, KILL = FLAT + 3.2 * SIGMA, MIN_FEATURE = 4;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const N = CW * CH;
@@ -51,17 +54,28 @@ export function levelsOf(realm) {
   L = { realm, seed: realm.seed, q: new Map(), cells: new Map(), wayups: new Map(), pull: new Map() };
   LEVELS.set(realm, L); return L;
 }
+export const forgetLevels = realm => LEVELS.delete(realm);   // the realm's cells changed (the coast): its tile levels are read again
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 const inRealm = (X, Y) => X >= 0 && Y >= 0 && X < RW && Y < RH;
 
 // The pull's anchors round a cell: the centre of each cell near it, and the middle of each edge between two of them that have one level. An anchor pulls only as much as the field
 // needs: by the amount the field's own height at that spot falls short of the cell's level (with a small margin), so where the field already agrees nothing is added.
-// the map's end: the raised land fades out over the last RIM tiles (a straight cliff cut along the realm's rim would be a long wall), so it tapers like any land
+// the coast: the raised land fades out over the last RIM tiles to the border line (a straight cliff cut along the coast would be a long wall), so it tapers like any land
 const RIM = 22, RIM_PULL = 0.35;
-const rimBias = (px, py) => { const d = Math.min(px, py, WTW - px, WTH - py); return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF)); };
+// The ramp's distance wanders along the coast by RIM_WOBBLE tiles (value noise, one knot every RIM_KNOT tiles, per side), so the contour of the field that the ramp bends is no line parallel to the shore.
+const RIM_WOBBLE = 7, RIM_KNOT = 18, smooth01 = t => t * t * (3 - 2 * t);
+function rimWobble(seed, side, s) {
+  const i = Math.floor(s / RIM_KNOT), f = smooth01(s / RIM_KNOT - i), k = j => (hash(seed, 'gen7', 'rim-wobble', side, j) % 2048) / 1024 - 1;
+  return RIM_WOBBLE * (k(i) * (1 - f) + k(i + 1) * f);
+}
+const rimBias = (seed, px, py) => {
+  const dW = px - BORDER_X, dE = WTW - BORDER_X - px, dN = py - BORDER_Y, dS = WTH - BORDER_Y - py, m = Math.min(dW, dE, dN, dS); if (m >= RIM + RIM_WOBBLE) return 0;
+  const d = m + (m === dW ? rimWobble(seed, 0, py) : m === dE ? rimWobble(seed, 1, py) : m === dN ? rimWobble(seed, 2, px) : rimWobble(seed, 3, px));
+  return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF));
+};
 function anchorStrength(L, key, u, v, e0, sign, px, py) {
   let s = L.pull.get(key); if (s !== undefined) return s;
-  const S = seedCtx(L.seed), base = S.at(u, v).height - e0 + rimBias(px, py);
+  const S = seedCtx(L.seed), base = S.at(u, v).height - e0 + rimBias(L.seed, px, py);
   s = Math.max(0, MARGIN - sign * base);
   L.pull.set(key, s); return s;
 }
@@ -90,7 +104,7 @@ function qCell(L, X, Y) {
     const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
     const e = e0[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + e0[cellIdx(X0 + 1, Y0)] * a * (1 - b) + e0[cellIdx(X0, Y0 + 1)] * (1 - a) * b + e0[cellIdx(X0 + 1, Y0 + 1)] * a * b;
     const px = gx + 0.5, py = gy + 0.5;
-    let s = f.height[k] - e + DETAIL * f.detail[k] + rimBias(px, py);
+    let s = f.height[k] - e + DETAIL * f.detail[k] + rimBias(L.seed, px, py);
     for (const [ax, ay, sg] of anchors) {   // a round bump: full strength within FLAT tiles of the anchor, a Gaussian skirt beyond
       const dx = px - ax, dy = py - ay, d2 = dx * dx + dy * dy; if (d2 >= kill2) continue;
       if (d2 <= FLAT * FLAT) s += sg; else { const d = Math.sqrt(d2) - FLAT; s += sg * Math.exp(-d * d * k2); }
@@ -120,6 +134,22 @@ function dilate(R, W, H, k) {
 function open(R, W, H, k) { return dilate(erode(R, W, H, k), W, H, k); }
 function close(R, W, H, k) { const inv = R.map(v => 1 - v); return open(inv, W, H, k).map(v => 1 - v); }
 
+// The coast's cliff is drawn in long straight runs that turn in corners, never in a diagonal of one-tile steps. Within COAST_DEPTH cells of the border line (3.5: the middle of a cell, where the land
+// seldom has a contour, so the change from bins to the plain field is no step) the field is read at the centre of a bin of BIN_X x BIN_Y tiles, so the contour can only lie on a bin's edge: every
+// face is a whole number of bins long (at least BIN_X tiles) and every side at least BIN_Y. The bins are centred on whole tiles at the cell's centre and its edges (BIN_X 6 and BIN_Y 7 divide the cell's
+// 24 x 28 so), so a cell's centre reads itself (the cell's level stays the land's level there), the pair of rows or columns either side of a cell edge reads one sample, and no bin's edge is a cell edge.
+// The bends along the coast come from the cells (region.mjs taperCoast); the bins make them corners.
+const COAST_DEPTH = 3.5, BIN_X = 6, BIN_Y = 7, BIN_OX = 3, BIN_OY = 3;
+function coastBins(q, W, H, x0, y0) {
+  const src = q.slice();
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const gx = x0 + x, gy = y0 + y;
+    if (Math.min((gx - BORDER_X) / CW, (WTW - 1 - BORDER_X - gx) / CW, (gy - BORDER_Y) / CH, (WTH - 1 - BORDER_Y - gy) / CH) >= COAST_DEPTH) continue;
+    const sx = Math.floor((gx + BIN_OX) / BIN_X) * BIN_X - x0, sy = Math.floor((gy + BIN_OY) / BIN_Y) * BIN_Y - y0;
+    if (sx >= 0 && sy >= 0 && sx < W && sy < H) q[y * W + x] = src[sy * W + sx];
+  }
+}
+
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 function windowLevels(L, X, Y) {
@@ -133,6 +163,7 @@ function windowLevels(L, X, Y) {
   // never run along one. A feature of 4 tiles in the reduced raster is 4 or 5 in the window, so nothing is narrower than 4.
   for (let j = 1; j < 3; j++) { const y = j * CH; for (let x = 0; x < W; x++) { const m = 0.5 * (q[(y - 1) * W + x] + q[y * W + x]); q[(y - 1) * W + x] = m; q[y * W + x] = m; } }
   for (let i = 1; i < 3; i++) { const x = i * CW; for (let y = 0; y < H; y++) { const m = 0.5 * (q[y * W + x - 1] + q[y * W + x]); q[y * W + x - 1] = m; q[y * W + x] = m; } }
+  coastBins(q, W, H, (X - 1) * CW, (Y - 1) * CH);
   const W2 = W - 2, H2 = H - 2, rr = y => y - (y >= CH ? 1 : 0) - (y >= 2 * CH ? 1 : 0), cc = x => x - (x >= CW ? 1 : 0) - (x >= 2 * CW ? 1 : 0);
   let cur = new Uint8Array(W2 * H2);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cur[rr(y) * W2 + cc(x)] = q[y * W + x] >= 0 ? 1 : 0;
@@ -179,8 +210,8 @@ export function tileLevel(L, gx, gy) {
   const X = Math.floor(gx / CW), Y = Math.floor(gy / CH);
   return levelCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW];
 }
-// raised land: level 1, and at least RAISE_OFF tiles from the realm's rim
-export const raised = (L, gx, gy) => Math.min(gx, gy, WTW - 1 - gx, WTH - 1 - gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
+// raised land: level 1, and at least RAISE_OFF tiles from the border line
+export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
 
 // ---- the way up: on a straight south-facing face, nearest the stair's port ----
 // The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher. A way up is 2 tiles wide with one tile each side; the face runs straight at

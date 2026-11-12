@@ -2,7 +2,7 @@
 // Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
 //   cliff   painted as the raised land, like any terrain. Each cliff tile is picked by its corners plus the two cells under its bottom corners: s = (SW is cliff and the cell below SW is not) * 2
 //           + (SE is cliff and the cell below SE is not); s = 0 the ordinary sheet, s = 1..3 the ~s sheets (a list of face variants is picked by hash). A tile of four cliff corners with s > 0 takes
-//           ~s<n> tile 15 (opaque) in place of the fill.
+//           ~s<n> tile 15 in place of the fill; with s = 0 the fill is blanked, the cliff sheets being cut open (the ground under the raised tile, the level's `top`, shows).
 //   walking: the top is ground; every cliff cell with a non-cliff 4-neighbour is the lip or the face and blocks, except the cells under a WayUp area.
 //   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
 //           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
@@ -64,6 +64,7 @@ export function applyOpenEdges(dg, ir, terrains, layers) {
         // the cells under the tile's bottom corners: SW is cell (i - 1, j), SE is (i, j); the cell below is one row down
         const sw = isCliff(i - 1, j) && !isCliff(i - 1, j + 1) ? 2 : 0, se = isCliff(i, j) && !isCliff(i, j + 1) ? 1 : 0, s = (corner & 2 ? sw : 0) + (corner & 1 ? se : 0);
         if (s > 0) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * pick(tall[s], i, j) + corner; continue; }
+        if (fill) { layer.tiles[j * w1 + i] = EMPTY; continue; }   // a raised tile that is no face: the top ground below shows alone
       }
       if (full) continue;
       const rows = d.kinds[s0.kind].rows;

@@ -289,7 +289,7 @@ test("Cross on the card: held on a breather with the spec's words, live otherwis
   const plates = (x) => build(st, { focus: "cell." + x.id, last: x.id }).props.regions.card.plates; assert.equal(plates(fen)[4].held, false);
   fen.restUntil = st.turn + 1; const nb = build(st, { focus: "plate.4", last: fen.id }); assert.equal(nb.props.regions.card.why, "on a breather · can cross next turn"); assert.equal(plates(fen)[4].held, true);
   fen.restUntil = 0; for (const x of [oak, elm, wren, moss, pip]) x.restUntil = st.turn + 3; sky.restUntil = st.turn + 2;
-  assert.equal(build(st, { focus: "plate.4", last: fen.id }).props.regions.card.why, "no partner free now · Sky can cross in 2 turns");
+  assert.equal(build(st, { focus: "plate.4", last: fen.id }).props.regions.card.why, "none of its kind free now · Sky can cross in 2 turns");
   for (const x of [oak, elm, wren, moss, pip, sky]) x.restUntil = 0; v.last = fen.id; v.f = "plate.4"; INTENTS.vivarium.intent(h, "plate.4", "confirm");
   assert.deepEqual([v.pair, v.f, v.last], [{ a: fen.id }, "cell." + moss.id, moss.id], "the pick opens on the first partner");
   press(h, "left"); assert.equal(v.nudge, "left", "the rail is held: ◀ at the wall's edge nudges"); press(h, "up"); assert.equal(v.nudge, "up", "and so is the toolbar");

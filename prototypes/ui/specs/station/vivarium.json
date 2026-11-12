@@ -742,7 +742,7 @@
    "vivariumKey": "from anywhere the same as homePanel",
    "backFromMibi": "← from one mibi up close: the ring on that mibi",
    "wake": "the screen under Idle, its focus as it was",
-   "full": "Home's ✓ Make room (Full · a bud waits): the room view, the ring on the first mibi"
+   "full": "Home's ✓ Make room (Full · a new mibi waits): the room view, the ring on the first mibi"
   },
   "graph": {
    "roomKey": "room",
@@ -1191,7 +1191,7 @@
    "action": "strings.newRoom.action with its price (⚡ and the figure, state.roomPrice); dimmed with the short icons while short",
    "context": "strings.newRoom.context; short of Energy the notice is pods.json strings.needMoreFrom (state.shortFrom)"
   },
-  "notice": "the frame's notice only, the need (Full · a bud waits)",
+  "notice": "the frame's notice only, the need (Full · a new mibi waits)",
   "back": "strings.back; strings.putBack while carrying; strings.dropPick in the pick of two"
  },
  "frameZones": {
@@ -1384,10 +1384,10 @@
    "breedBusy": "the incubator is busy",
    "breedNoPlace": "No place free · return one, or add a room",
    "breedNoPlace4": "No place free · return one to make room",
-   "breedOne": "no partner at home yet",
-   "breedNone": "No partner of its kind at home",
-   "breedFamily": "only its family at home · try a walk",
-   "partnerFamily": "family · find a partner on walks",
+   "breedOne": "none of its kind at home yet",
+   "breedNone": "None of its kind can cross now",
+   "breedFamily": "only its family at home · find another out exploring",
+   "partnerFamily": "family · find another out exploring",
    "returnBond": "A bond is for good",
    "return": "{name} goes back to the wild · asks first",
    "incubator": "Your first mibi grows there",
@@ -1403,7 +1403,7 @@
    "swapStays": "{name} is one of the picks · it stays in {Room}",
    "breather": "on a breather · can cross in {n} {turn|turns}",
    "breatherNext": "on a breather · can cross next turn",
-   "breedNoneFree": "no partner free now · {name} can cross in {n} {turn|turns}",
+   "breedNoneFree": "none of its kind free now · {name} can cross in {n} {turn|turns}",
    "pairCannot": "this pair cannot cross this turn",
    "turns": "{n} {turn|turns}",
    "turnsOne": "1 turn"
@@ -1473,14 +1473,15 @@
      "The incubator is busy"
     ],
     "one": [
-     "No partner at home yet"
+     "None of its kind at home yet",
+     "An expedition can find one to cross with"
     ],
     "none": [
-     "No partner of its kind at home"
+     "None of its kind can cross now"
     ],
     "family": [
      "Only {name}'s family is at home",
-     "A walk can find a partner"
+     "An expedition can find one to cross with"
     ],
     "move1": [
      "There is no other room yet",
@@ -1520,7 +1521,7 @@
    "swapChosen": "{name} is chosen"
   },
   "need": {
-   "bud": "Full · a bud waits"
+   "bud": "Full · a new mibi waits"
   },
   "newRoom": {
    "action": "Add a room",

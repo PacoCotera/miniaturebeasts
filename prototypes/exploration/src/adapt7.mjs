@@ -5,7 +5,7 @@
 import { T, T_BLOCK, L, hash } from './world.mjs';
 
 export const INNER = { w: 24, h: 28 };
-const PRESS_PROPS = ['boulder-grey', 'boulder-brown', 'rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-big', 'rock-big-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
+const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
 const SIDE_STEP = { N: 'up', S: 'down', W: 'left', E: 'right' };
@@ -58,7 +58,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
   // the IR names the ground the cell's finds lie on (src/gen7/hold.mjs `ground`): a walk that comes from no side starts there, on a way in that leads to it
   if (ir.ground && walks(ir.ground.x - 1, ir.ground.y - 1) && compId[I(ir.ground.x - 1, ir.ground.y - 1)]) {
     mainComp = compId[I(ir.ground.x - 1, ir.ground.y - 1)];
-    const into = [...openings.map(arrive), ...openings.flatMap(runPts)].find(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp); if (into) spawnPt = into;
+    const nearMid = op => { const m = arrive(op); return runPts(op).sort((a, b) => Math.abs(a.x - m.x) + Math.abs(a.y - m.y) - Math.abs(b.x - m.x) - Math.abs(b.y - m.y)); };   // from the way in's middle outwards, so a wall in the middle never puts the start in a corner of the run
+    const into = [...openings.map(arrive), ...openings.flatMap(nearMid)].find(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp); if (into) spawnPt = into;
   }
   // a side leads to the main ground when any tile of its ways in touches it; else to the ground its first way in's middle leads to
   const touches = {}; openings.forEach(op => { if (runPts(op).some(pt => walks(pt.x, pt.y) && compId[I(pt.x, pt.y)] === mainComp)) touches[op.side] = 1; });

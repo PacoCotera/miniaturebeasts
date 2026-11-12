@@ -20,6 +20,40 @@ test('set.json validates against the contract schema', () => {
   assert.deepEqual(validateSetJson(set), []);
 });
 
+test('the night table keeps the rock ramp in order: a darker day grey never maps lighter at night, four or more separate values; the olive meadow ramp is on the set', () => {
+  const cols = palette.colours, lum = (h) => { const c = [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)); return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]; };
+  const at = (h) => 48 + cols.indexOf(h), night = palette.tables.dark2;
+  const ramp = ['#242626', '#2a3834', '#343840', '#3e444e', '#474d55', '#555c64', '#5a6470', '#6c7682', '#807c74', '#8a937e', '#a5ac9c', '#adb5a6', '#b6beb0'];
+  const to = ramp.map((h) => cols[night[at(h)] - 48]);
+  for (let i = 1; i < ramp.length; i++) assert.ok(lum(to[i]) >= lum(to[i - 1]), ramp[i - 1] + ' to ' + to[i - 1] + ' is lighter than ' + ramp[i] + ' to ' + to[i]);
+  assert.ok(new Set(to.slice(0, 8)).size >= 4, 'the rock keeps four distinct night values');
+  for (const h of ['#79875b', '#8b9561', '#667b59']) assert.ok(cols.includes(h), h + ' is on the set');
+});
+
+test('the olive meadow steps stay in the green family at night (dark and dark2), never brown-grey', () => {
+  const cols = palette.colours, green = (h) => { const c = [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)); return c[1] > c[0] && c[1] > c[2]; };
+  for (const table of ['dark', 'dark2']) for (const h of ['#79875b', '#8b9561', '#667b59', '#8b9260', '#949b61', '#99a060', '#a2a462', '#4f6a53']) {
+    const to = cols[palette.tables[table][48 + cols.indexOf(h)] - 48];
+    assert.ok(to && green(to), h + ' in ' + table + ' goes to ' + to + ', not a green');
+  }
+});
+
+test('the widened meadow ramp (four sage, a dark tuft green, an orange fleck) is on the set, steps in order at night, and no existing colour points at it', () => {
+  const cols = palette.colours, lum = (h) => { const c = [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)); return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]; };
+  const added = ['#8b9260', '#949b61', '#99a060', '#a2a462', '#4f6a53', '#c3a56a', '#4a5f78', '#1e2a3e'];
+  for (const h of added) assert.ok(cols.includes(h), h + ' is on the set');
+  const sage = ['#4f6a53', '#667b59', '#79875b', '#8b9260', '#8b9561', '#949b61', '#99a060', '#a2a462'].sort((a, b) => lum(a) - lum(b));
+  for (const table of ['dark2']) for (let i = 1; i < sage.length; i++) assert.ok(lum(cols[palette.tables[table][48 + cols.indexOf(sage[i])] - 48]) >= lum(cols[palette.tables[table][48 + cols.indexOf(sage[i - 1])] - 48]), sage[i] + ' maps darker than ' + sage[i - 1] + ' in ' + table);
+  const idx = new Set(added.map((h) => 48 + cols.indexOf(h)));
+  for (const [name, t] of Object.entries(palette.tables)) for (let i = 1; i < 48 + cols.length; i++) if (!idx.has(i)) assert.ok(!idx.has(t[i]), name + ' row ' + i + ' points at an added colour');
+});
+
+test('the sea-fog veil tone #4a5f78 is on the set and takes #1e2a3e at night (dark and dark2)', () => {
+  const cols = palette.colours;
+  assert.ok(cols.includes('#4a5f78') && cols.includes('#1e2a3e'));
+  for (const table of ['dark', 'dark2']) assert.equal(cols[palette.tables[table][48 + cols.indexOf('#4a5f78')] - 48], '#1e2a3e', table);
+});
+
 test('the contract refuses what it should', () => {
   const bad = (f) => { const s = structuredClone(set); f(s); return validateSetJson(s).length > 0; };
   assert.ok(bad((s) => { s.licence.spdx = 'CC-BY-4.0'; }), 'a licence that is not CC0 or ours');

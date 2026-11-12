@@ -6,8 +6,8 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPng, decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
-import { computeTables, family, TABLE_NAMES } from '../src/lighttables.mjs';
-import { deskArt, deskLayers } from './desk-art.mjs';
+import { computeTables, family, STONE_TONES, TABLE_NAMES } from '../src/lighttables.mjs';
+import { deskArt, deskLayers, STONE_TABLES } from './desk-art.mjs';
 import { PALETTE } from './recolour.mjs';
 
 export const SOURCE_ALLOW = ['ninja-adventure', 'puny-world', 'happyland-wang'];
@@ -167,6 +167,14 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     const pin = recipe.palettePin.map((c) => c.replace('#', ''));
     sorted = [...pin, ...sorted.filter((c) => !pin.includes(c))];
   }
+  if (recipe.paletteExtra) {   // colours the map ground needs that no picture holds yet (a palette pick from the art director's reference, never a drawing): they follow every other colour, so no index moves
+    const extra = recipe.paletteExtra.map((c) => c.replace('#', '')).filter((c) => !sorted.includes(c));
+    sorted = [...sorted, ...extra];
+  }
+  if (recipe.paletteWiden) {   // the meadow ramp's widening: more picks from the reference, after the extras, never the target of another colour's table row (lighttables noTarget)
+    const widen = recipe.paletteWiden.map((c) => c.replace('#', '')).filter((c) => !sorted.includes(c));
+    sorted = [...sorted, ...widen];
+  }
   if (sorted.length > PALETTE_MAX) {
     throw new Error(`the source has ${sorted.length} colours, over the ${PALETTE_MAX} the contract allows; add the pinned pngquant step to the recipe`);
   }
@@ -183,14 +191,14 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   // the leaf ramp of the tree crowns, bushes and shrubs (the map palette's leaf_hi, leaf, leaf_dk, leaf_line): at night no lighter than the grass
   const crowns = ['leaf_hi', 'leaf', 'leaf_dk', 'leaf_line'].map((n) => sorted.indexOf(PALETTE.map[n][1].slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k);
   // the stone ramp (rock_hi, rock, rock_dk, rock_line and the cliff's three stone steps): at night all dark grey
-  // plus every colour the rock, boulder and split-stone pictures hold (rock-a, rock-b and rock-big are the boulders), outlines and base lines included, but not the moss and leaves (green) or the sand-yellow earth highlight the terrain shares
+  // plus every colour the rock, boulder and split-stone pictures hold (rock-a and rock-b are the small stones, boulder-a, boulder-d and boulder-e the boulders), outlines and base lines included, but not the moss and leaves (green) or the sand-yellow earth highlight the terrain shares
   const stoneHex = [...['rock_hi', 'rock', 'rock_dk', 'rock_line'].map((n) => PALETTE.map[n][1]), ...['cliff_stone_hi', 'cliff_stone', 'cliff_stone_dk'].map((n) => PALETTE.extra[n][1])];
   const shared = new Set(['earth_hi'].map((n) => PALETTE.map[n][1].slice(1)));
-  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'rock-big.png', 'split-stone.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) { if (!im.data[i + 3]) continue; const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]); if (!shared.has(h) && family(unhex(h)) !== 'green') stoneHex.push('#' + h); } }
+  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'boulder-a.png', 'boulder-d.png', 'boulder-e.png', 'split-stone.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) { if (!im.data[i + 3]) continue; const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]); if (!shared.has(h) && family(unhex(h)) !== 'green') stoneHex.push('#' + h); } }
   const stone = [...new Set(stoneHex.map((h) => sorted.indexOf(h.slice(1))).filter((k) => k >= 0).map((k) => CORE_COLOURS + k))];
   // the signed grey body in three steps: the two lightest greys of the boulder pictures take the highlight step, the darkest (the outlines) the line step, the rest the body step
   const deskGrey = new Set();
-  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'rock-big.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) deskGrey.add(hex(im.data[i], im.data[i + 1], im.data[i + 2])); }
+  if (desk) for (const f of ['rock-a.png', 'rock-b.png', 'boulder-a.png', 'boulder-d.png', 'boulder-e.png']) { const im = decodePng(desk.files.get(f)); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) deskGrey.add(hex(im.data[i], im.data[i + 1], im.data[i + 2])); }
   const greyIdx = (pred) => [...deskGrey].filter((h) => stone.includes(CORE_COLOURS + sorted.indexOf(h)) && pred(lum(h))).map((h) => CORE_COLOURS + sorted.indexOf(h));
   const stoneHi = greyIdx((l) => l >= 160), stoneLine = greyIdx((l) => l < 70);
   // the bank earth: the thin earth band at the water's edge (the sand and earth sheets' edge tone, #d2b06f by day). At night the nearest-colour step sent it to #664330, which reads rust red (art director 2026-11-11):
@@ -201,9 +209,35 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const trunkBrowns = sorted.filter((h) => hue(h) >= 25 && hue(h) <= 35 && satOf(h) <= 0.5).sort((a, b) => lum(a) - lum(b));
   const bank = sorted.indexOf(BANK_EARTH) >= 0 ? [CORE_COLOURS + sorted.indexOf(BANK_EARTH)] : [];
   const bankTo = trunkBrowns.length ? CORE_COLOURS + sorted.indexOf(trunkBrowns[0]) : -1;
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo });
+  // the tree trunk's browns (every colour of the signed trunk piece): at night they too take the bank's low-saturation brown, not the nearest colour (a rust red, art director 2026-11-11)
+  const trunk = [];
+  if (desk && desk.files.get('tree-trunk.png')) { const im = decodePng(desk.files.get('tree-trunk.png')); for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const k = sorted.indexOf(hex(im.data[i], im.data[i + 1], im.data[i + 2])); if (k >= 0 && !trunk.includes(CORE_COLOURS + k)) trunk.push(CORE_COLOURS + k); } }
+  // the water ripple's glints (the colours of the water fill that are not its base, darker first): at night a cool pale grey-blue of the set (blue over green over red, low saturation, mid-light), the two lightest steps of that run, never the pink or mauve the nearest-colour step gave
+  const waterImg = images.get('fill-water.png'), waterCount = new Map();
+  if (waterImg) for (let i = 0; i < waterImg.data.length; i += 4) if (waterImg.data[i + 3]) { const h = hex(waterImg.data[i], waterImg.data[i + 1], waterImg.data[i + 2]); waterCount.set(h, (waterCount.get(h) || 0) + 1); }
+  const waterBase = [...waterCount].sort((a, b) => b[1] - a[1])[0];
+  const glint = [...waterCount.keys()].filter((h) => h !== (waterBase && waterBase[0])).sort((a, b) => lum(a) - lum(b)).map((h) => CORE_COLOURS + sorted.indexOf(h));
+  const isStoneTone = (h) => Object.values(STONE_TONES).some((t) => Object.values(t).some((v) => hex(v[0], v[1], v[2]) === h));
+  const coolPale = sorted.filter((h) => { const [r, g, b] = unhex(h); return !isStoneTone(h) && b >= r + 12 && g >= r + 4 && g <= b && satOf(h) <= 0.27 && lum(h) >= 100 && lum(h) <= 160; }).sort((a, b) => lum(a) - lum(b));
+  const glintTo = coolPale.slice(0, 2).map((h) => CORE_COLOURS + sorted.indexOf(h));
+  // two low-saturation browns for the trunk at night (art director 2026-11-11, 1b): the shade side (the two darker trunk colours) takes the dull taupe-brown #584b46, the lit side (the two lighter) the bank's brown #6e5038; the litter's orange specks take #584b46 too
+  const NIGHT_SHADE = '584b46', NIGHT_LIT = '6e5038';
+  const palIdx = (h) => (sorted.indexOf(h) >= 0 ? CORE_COLOURS + sorted.indexOf(h) : -1);
+  const trunkByLum = [...trunk].sort((a, b) => lum(sorted[a - CORE_COLOURS]) - lum(sorted[b - CORE_COLOURS]));
+  const trunkShade = trunkByLum.slice(0, Math.ceil(trunkByLum.length / 2)), trunkLit = trunkByLum.slice(Math.ceil(trunkByLum.length / 2));
+  const litter = [];
+  const litterImg = images.get('fill-litter.png');
+  if (litterImg) { const im = litterImg; for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]), c = unhex(h), k = palIdx(h); if (k >= 0 && family(c) === 'warm' && !litter.includes(k)) litter.push(k); } }
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo, noTarget: (recipe.paletteWiden || []).map((c) => palIdx(c.replace('#', ''))).filter((k) => k > 0) });
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
+  if (desk) {   // the stone states' named colour tables (desk-art.mjs STONE_TABLES): every target is a colour of the set
+    palette.stoneTables = {};
+    for (const [n, t] of Object.entries(STONE_TABLES)) {
+      for (const [, to] of t.rows) if (!sorted.includes(to.slice(1))) throw new Error(`stone table ${n}: ${to} is not a colour of the set`);
+      palette.stoneTables[n] = t;
+    }
+  }
 
   for (const [name, img] of images) files.set(name, Buffer.from(encodePng(img)));
 

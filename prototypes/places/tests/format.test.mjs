@@ -62,6 +62,14 @@ test('a place written and read back is the same, field by field', () => {
   assert.deepEqual(back.clues[0].points[2], { x: 7, y: 13 });
 });
 
+test('the top ground of raised tiles is the last field: it reads back whole, and a place written with none reads back empty', () => {
+  const back = readPlace(writePlace(place));
+  assert.deepEqual(Array.from(back.top), Array.from(place.top));
+  const none = readPlace(writePlace({ ...place, top: undefined }));
+  assert.equal(none.top.length, 0, 'a hand-set place carries no top');
+  assert.deepEqual(Array.from(none.terrain), Array.from(place.terrain));
+});
+
 test('two runs write identical bytes, and a tile set baked twice is the same', () => {
   assert.deepEqual(writePlace(place), writePlace(place));
   assert.deepEqual(writeTileSet(tileset), writeTileSet(bakeTileSet(loadSet(path.join(repo, 'art', 'places', 'sets', 'ninja-test')), terrains)));

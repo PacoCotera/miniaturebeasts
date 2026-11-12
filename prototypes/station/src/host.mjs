@@ -12,7 +12,7 @@ import { podsProps, podPic } from "./views/pods-props.mjs";
 import { req as reqOf } from "./views/requests.mjs";
 import { cuesOf, originWord, answerOf, setMetrics as setCarryMetrics } from "./carry.mjs";
 import { capLine } from "./views/words.mjs";
-import { goalWords } from "./views/goal-words.mjs";
+import { goalWords, companionWords } from "./views/goal-words.mjs";
 import { homeBuild, mibiPictureOf, mibiReq, setLibrary, setLibrarySpecies } from "./views/home-props.mjs";
 import { libraryOf, specimenSpecies, STARTER } from "./views/specimen-props.mjs";
 setLibrary(libraryOf);   // Home's Library module: the specimen of the species with something found (build spec 4.2)
@@ -355,7 +355,7 @@ export function screenProps(plate) {
 // The goal now (first-ten-front A3): goalKey's aim and step in words, for the header's middle slot on every room and for the dock state the Companion reads. null when the ladder is empty.
 export function goalNow() {
   const g = S.goalKey(G.st, G.sv, G.settings), w = g && goalWords(g, docked(), SPECS.frame);
-  return w ? { aim: g.key, step: g.step.key, text: w.text, icons: w.icons || "" } : null;
+  return w ? { aim: g.key, step: g.step.key, text: w.text, icons: w.icons || "", companion: companionWords(g, SPECS.frame) } : null;   // companion: the Companion's own line, or null for a Station step (the Station decides, so the two devices never disagree)
 }
 let homeCapsUp = false;   // Home's key caps are on the face (they are dropped when another screen's props go out)
 let shownLight = null;  // the light of the props the face was last given (fix 7): the swap's from names the id of the light shown, not a fresh read

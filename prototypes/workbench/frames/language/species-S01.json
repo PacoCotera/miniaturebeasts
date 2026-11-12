@@ -2,7 +2,7 @@
  "frameVersion": 8,
  "schema": "mb-species-frame/4",
  "family": "trotter",
- "land": "woods",
+ "land": "all",
  "species": {
   "id": "S01",
   "name": "Loika",
@@ -13,7 +13,7 @@
  "taxonomy": {
   "code": "S01",
   "moves": "hops",
-  "habitat": "Woods",
+  "habitat": "Every land",
   "gate": null,
   "diet": "fruit",
   "ability": "calms wary creatures",

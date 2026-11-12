@@ -42,7 +42,7 @@ export function buildPlace(ir, ctx) {
   const tileset = ctx.sets.get(ir.tileset), desc = ctx.layersOf.get(ir.tileset);
   let dg;
   try {
-    dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone }, ctx.terrains, desc.layers, desc.tone);
+    dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone, top: ir.top }, ctx.terrains, desc.layers, desc.tone);
     applyOpenEdges(dg, ir, ctx.terrains, desc.layers);
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
@@ -68,7 +68,7 @@ export function buildPlace(ir, ctx) {
     landmarks: ir.landmarks.filter((l) => l.prop && spriteFor(tileset, 'prop', l.prop)).map((l) => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),   // a generated cell's landmark whose prop has no signed art yet is an empty slot (its IR entry names it), not a baked record
     openings: ir.openings.map((o) => ({ side: o.side, from: o.from, to: o.to })),
     spawns: ir.spawns.map((s) => ({ x: s.x, y: s.y, w: s.w, h: s.h, species: s.species, count: s.count })),
-    blockMask: block,
+    blockMask: block, top: ir.top || new Uint8Array(0),
   };
   return { place };
 }

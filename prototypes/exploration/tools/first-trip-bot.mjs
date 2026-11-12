@@ -2,7 +2,8 @@
 // It plays like a player who follows what the screen offers: pick the first glint, go into the place, Call, take what the Call shows (the pods, the stones, and a ✓ on each strike mark: the Data comes
 // by a reading), leave, step to the nearest cell it has not been into, and repeat. It stops when the Probe holds a pod and the Data the Station asks first.
 // What the Station asks first (station/src/state.mjs PRICE): to identify the pod 1 Data, to read its first trait 1 Data; the Probe's tier 2 (12 Energy + 4 Data) is a later goal.
-//   node prototypes/exploration/tools/first-trip-bot.mjs [--from 1] [--to 200] [--calm] [--verbose]
+//   node prototypes/exploration/tools/first-trip-bot.mjs [--from 1] [--to 200] [--calm] [--verbose] [--end]
+// --end: after the trip, walk home and End the expedition, and check the Companion shows the packing screen (packingScreen below); the release check runs one trip so.
 import { newPage, makeWalker } from "./walker.mjs";
 
 export const NEXT_DATA = 2;     // Data held at the end of the first walk: identify the pod (1) and read one trait (1)
@@ -69,14 +70,33 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
   const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = acts();
   out.ok = c.pods >= 1 && c.d >= NEXT_DATA;
   if (!out.ok && !out.why) out.why = c.pods < 1 ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : "only " + c.d + " Data";
-  out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false });
+  out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false }); Object.defineProperty(out, "walker", { value: w, enumerable: false });
   return out;
+}
+
+// The end of the trip, the release check's one assertion for it: from the held finds the bot walks home, opens the menu (End expedition is on top), confirms Cargo, and the Companion shows the packing
+// screen: the hold sealed into a crate that slides into the bay ("Sealed", the crate's expedition, its pod and supplies). Returns what is wrong, or "" when the screen is there.
+export function packingScreen(out) {
+  const p = out.page, w = out.walker;
+  w.leave();
+  if (p.S.phase === "map") { const way = w.wayHome(); if (!way) return "no way home to end the expedition"; for (const d of way) w.key(d); }
+  if (p.S.phase !== "map") return "not on the map at the flag: " + p.S.phase;
+  w.key("back"); w.key("confirm");   // the menu, then its first item: End expedition
+  if (p.S.phase !== "cargo") return "End expedition did not open Cargo: " + p.S.phase;
+  w.key("confirm");
+  if (p.S.phase !== "sealed") return "ending the expedition did not show the packing screen, the phase is " + p.S.phase;
+  const r = p.S.report, c = r && r.sealed;
+  if (!c || p.S.bay.length !== 1 || p.S.bay[0].id !== c.id) return "the hold was not sealed into a crate in the bay";
+  if (c.pods.length < 1 || c.d < NEXT_DATA) return "the crate lacks the finds: " + c.pods.length + " pods, " + c.d + " Data";
+  p.pass(800); p.run("drawSealed(" + p.clock.t / 1000 + ")");   // the screen draws, the crate in at its place (a throw fails the check)
+  return "";
 }
 
 if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const a = process.argv.slice(2), arg = (k, d) => { const i = a.indexOf("--" + k); return i < 0 ? d : +a[i + 1]; };
   const from = arg("from", 1), to = arg("to", 200), calm = a.includes("--calm"), verbose = a.includes("--verbose");
   const rows = []; for (let s = from; s <= to; s++) rows.push(firstTrip(s, { calm, verbose }));
+  if (a.includes("--end")) for (const r of rows.filter((x) => x.ok)) { const bad = packingScreen(r); if (bad) { r.ok = false; r.why = bad; } }   // the release check ends each trip and looks for the packing screen
   const ok = rows.filter((r) => r.ok), bad = rows.filter((r) => !r.ok);
   const med = (k) => { const v = ok.map((r) => r[k]).filter((x) => x != null).sort((x, y) => x - y); return v.length ? v[v.length >> 1] : null; };
   for (const r of bad) console.log(`seed ${r.seed}: ${r.why} (actions ${r.actions}, places ${r.places}, readings ${r.readings}, pods ${r.pods}, data ${r.data})`);

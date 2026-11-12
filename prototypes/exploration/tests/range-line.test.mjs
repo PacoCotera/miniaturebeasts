@@ -1,6 +1,6 @@
 // Walk content B3: an opening never promises a way that is closed. Set out from the start of seed 13, a cell a few steps off (found by the test) has its south opening past the Probe's range and another open; a side the map
 // calls a cliff or water has no opening at all (views agree). The range line: the tiles past it are not walked (the reason, nothing spent), the words come within 2 tiles of it,
-// and the Probe's reach (tier, a Tuliko along) moves it. The line is the desk's range haze (places/haze): a golden at 1x.
+// and the Probe's reach (tier, a Tuliko along) moves it. The line is the desk's edge veil (places/veil): a golden at 1x.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -55,8 +55,8 @@ test("each opening is classified at entry: the south one past the range, another
   for (const s of sides) assert.ok(!["cliff", "water"].includes(sideKind(G, Number(RC), dir[s])), "an opening on " + s + " names a side the map calls " + sideKind(G, Number(RC), dir[s]));
 });
 
-test("the haze: the whole side 3 cells deep (levels 3, 2, 1), drawn back 3, 2, 1, gone at 200 ms a step before its cells open; reduced motion is a cut; a side that closes lays it the same way", () => {
-  const lv = (p) => plain(p.run("(() => { const h = hazeLevels(layout(RC)); return h ? { id: h.id, rows: [0, 1, 2, 3].map(d => h.lv[(layout(RC).baked.h - 1 - d) * layout(RC).baked.w + 5]), left: h.lv[5 * layout(RC).baked.w] } : { id: '', rows: [0, 0, 0, 0], left: 0 }; })()"));
+test("the veil's depth: the whole side 3 cells deep (3, 2, 1), drawn back 3, 2, 1, gone at 200 ms a step before its cells open; reduced motion is a cut; a side that closes lays it the same way", () => {
+  const lv = (p) => plain(p.run("(() => { const l = layout(RC); const on = l.lines && l.lines.ops.some(o => o.kind === 'range' && o.side === 'S'); const n = on ? hazeDepth(l, 'S') : 0; return { rows: [0, 1, 2, 3].map(d => (d < n ? 3 - d : 0)) }; })()"));
   const p = down(1);
   assert.deepEqual(lv(p).rows, [3, 2, 1, 0], "the south side: the edge row 3, then 2, then 1");
   const blocked = (q) => plain(q.run("(() => { const l = layout(RC); return [...l.lines.cells.keys()].filter(i => (i / l.w | 0) >= l.baked.oy + l.baked.h - 3 && l.lines.cells.get(i).kind === 'range').length; })()"));
@@ -71,7 +71,7 @@ test("the haze: the whole side 3 cells deep (levels 3, 2, 1), drawn back 3, 2, 1
   assert.equal(p.run("layout(RC).hazeAnim.S"), undefined);
   // reduced motion: a cut
   const q = down(1); q.run(`RM.matches = true; S.exp.range = ${WIDE}; hazeSync(layout(RC));`);
-  assert.equal(q.run("layout(RC).lines.ops.some(o => o.side === 'S')"), false); assert.equal(q.run("hazeLevels(layout(RC))"), null);
+  assert.equal(q.run("layout(RC).lines.ops.some(o => o.side === 'S')"), false);
   // it lays again, growing 1, 2, 3
   p.run(`S.exp.range = ${R1}; NOW = 5000; hazeSync(layout(RC));`);
   assert.equal(p.run("layout(RC).hazeAnim.S.dir"), 1);
@@ -122,7 +122,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const skip = !chromium && "playwright is not installed (set PW_DIR)";
 
-test("the range haze at 1x: the wash past the Probe's reach, no dashes and no plum dots (golden range-edge.png), and a cell beside wide water shows its water band (golden closed-edge.png)", { skip }, async (t) => {
+test("the edge veil at 1x: the veil past the Probe's reach, no dashes and no plum dots (golden range-edge.png), and a cell beside wide water shows its water band (golden closed-edge.png)", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium: " + String(e.message).split("\n")[0]); return; }
   const server = createServer((req, res) => {
     let p = path.join(root, decodeURIComponent(req.url.split("?")[0]));
@@ -150,16 +150,13 @@ test("the range haze at 1x: the wash past the Probe's reach, no dashes and no pl
     await page.evaluate(() => { const m = window.__mb; m.TEST.calm = true; m.S.tier = 1; m.startExpedition("weather", m.G.spawns[0]); });
     const golden = (name, img) => { const r = compareGolden(path.join(path.dirname(fileURLToPath(import.meta.url)), "golden", name), img); assert.ok(r.ok, r.message); };
     await page.evaluate(() => { window.__mb.S.found.push("callintro"); window.__mb.FX.hintNote = null; });
-    const geo = plain(down(1).run("(() => { const l = layout(RC), o = l.openings.find(q => q.side === 'S'); return { x: (o.from + o.to) >> 1, y: l.h - 5 }; })()")), img = await shot(page, Number(RC), geo.x, geo.y, "down");   // stand near the south side so the haze band is in the view
+    const geo = plain(down(1).run("(() => { const l = layout(RC), o = l.openings.find(q => q.side === 'S'); return { x: (o.from + o.to) >> 1, y: l.h - 5 }; })()")), img = await shot(page, Number(RC), geo.x, geo.y, "down");   // stand near the south side so the veil is in the view
     await page.evaluate(() => window.__mb.act("down")); await page.waitForTimeout(500);   // 1 tile on, within 2 of the line: the words are up
     golden("range-edge.png", decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64")));
     assert.ok(img.w === 450);
-    // no dashes and no plum dots: the ice (#a9e6ff) and plumD (#3c1e6c) of the old line are in no pixel of the view; every pixel of the screen is a colour of the palette, the haze ramp included
+    // no dashes and no plum dots: the ice (#a9e6ff) and plumD (#3c1e6c) of the old line are in no pixel of the view. The veil is alpha over the land, so its blends are not palette colours: no palette check here.
     const has = (im, r, g, b) => { for (let y = 32; y < 564; y++) for (let x = 0; x < 450; x++) { const o = (y * im.w + x) * 4; if (im.data[o] === r && im.data[o + 1] === g && im.data[o + 2] === b) return true; } return false; };
     assert.equal(has(img, 0xa9, 0xe6, 0xff), false, "no ice dashes"); assert.equal(has(img, 0x3c, 0x1e, 0x6c), false, "no plum dots");
-    assert.deepEqual(await page.evaluate(() => window.__mb.offPalette().bad), [], "every pixel is a palette colour (the ramp is one)");
-    const ramp =JSON.parse(readFileSync(new URL("../../places/haze/haze-ramp.json", import.meta.url), "utf8")).colours.map((h) => [1, 3, 5].map((k) => parseInt(h.slice(k, k + 2), 16)));   // the ramp, whatever its length, from the desk's file
-    assert.ok(ramp.some(([r, g, b]) => has(img, r, g, b)), "the haze ramp is on the screen");
     golden("closed-edge.png", await shot(page, Number(WCELL), 8, 5, "up"));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }

@@ -8,13 +8,13 @@
   "name": "Tuikis",
   "plural": "Tuikis",
   "order": 3,
-  "summary": "A tailed, scaled burrower: a low two-part body, four short legs, a crest, a long tail that carries the glow."
+  "summary": "A small burrower in spotted suede: a low body on four short legs and a tail whose tip glows gold. It digs burrows too narrow for any other kind."
  },
  "taxonomy": {
   "code": "S03",
   "moves": "scurries, digs",
   "habitat": "Cliffs",
-  "gate": "narrow burrows",
+  "gate": "opens narrow burrows",
   "diet": "dew",
   "ability": "digs out narrow burrows; lights up fog",
   "character": "a brave little torchbearer",

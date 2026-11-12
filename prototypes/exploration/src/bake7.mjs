@@ -39,7 +39,7 @@ export const reviveLayers = j => ({ layers: new Map(j.layers.map(([v, l]) => [v,
 // ctx: { terrains, ts (the baked tile set), desc (reviveLayers' output) }. Returns the Place object the page reads (not serialised).
 export function bakeCell(ir, ctx) {
   const { terrains, ts, desc } = ctx;
-  const dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone }, terrains, desc.layers, desc.tone);
+  const dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone, top: ir.top }, terrains, desc.layers, desc.tone);
   applyOpenEdges(dg, ir, terrains, desc.layers);
   const ground = packDepth(layersToTileIds(dg, ts, desc), dg.w1, dg.h1).map(tiles => ({ tiles }));
   const index = (group, kind) => spriteFor(ts, group, kind).index;
@@ -57,6 +57,6 @@ export function bakeCell(ir, ctx) {
     landmarks: ir.landmarks.filter(l => l.prop && spriteFor(ts, 'prop', l.prop)).map(l => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),
     openings: ir.openings.map(o => ({ side: o.side, from: o.from, to: o.to })),
     spawns: ir.spawns.map(s => ({ x: s.x, y: s.y, w: s.w, h: s.h, species: s.species, count: s.count })),
-    blockMask: block,
+    blockMask: block, top: ir.top || new Uint8Array(0),
   };
 }

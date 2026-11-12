@@ -8,13 +8,13 @@
   "name": "Untuva",
   "plural": "Untuva",
   "order": 2,
-  "summary": "A radial, capped plan: a round furred body, a face, a cap on top, no legs. It waddles."
+  "summary": "A fleece loaf on four stub feet, with round ears and a fan of rose felt lobes on its head; no other kind wears one. It trundles from fruit to fruit and noses out what's buried."
  },
  "taxonomy": {
   "code": "S02",
-  "moves": "waddles",
+  "moves": "trundles from fruit to fruit",
   "habitat": "Hills",
-  "gate": "Character sealed (a crystal)",
+  "gate": null,
   "diet": "fruit",
   "ability": "sniffs out buried pods; sheds after a full meal",
   "character": "a sleepy glutton nothing startles",

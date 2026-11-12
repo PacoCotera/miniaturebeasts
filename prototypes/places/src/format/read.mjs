@@ -62,5 +62,6 @@ export function readPlace(bytes) {
     openings: list(pl.openingsLength(), (i) => { const o = pl.openings(i); return { side: name(G.Side, o.side()), from: o.from(), to: o.to() }; }),
     spawns: list(pl.spawnsLength(), (i) => { const s = pl.spawns(i); return { x: s.x(), y: s.y(), w: s.w(), h: s.h(), species: list(s.speciesLength(), (k) => s.species(k)), count: s.count() }; }),
     blockMask: u8(pl.blockMaskArray()),
+    top: u8(pl.topArray()),
   };
 }

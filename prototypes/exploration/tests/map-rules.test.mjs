@@ -39,6 +39,25 @@ test('none of the moved numbers is left in gen7/', () => {
   }
 });
 
+// What blocks (owner notes 6 and 7; lead call 11-11): boulders (by kind, whatever their height), trunks and terrain stop the walk; small stones and the stump are stepped over, plants pushed through.
+const SET = JSON.parse(readFileSync(new URL('sets/ninja-test/set.json', art), 'utf8'));
+const PLANT = /^(sc-|shrub|bush|tuft|flower|clump|heather|tall-grass|reed|dry-tufts|young)/;
+test('every boulder blocks, whatever its height; no other prop under 20 px tall does unless it is a tree or terrain', () => {
+  for (const [name, p] of Object.entries(SET.props)) {
+    const boulder = /^boulder-[ade](-m)?$/.test(name);
+    if (boulder) { assert.ok(p.footprint && p.footprint.length, `${name} is a boulder and does not block`); continue; }
+    if (!p.footprint || !p.footprint.length || p.canopy || name.startsWith('tree-')) continue;
+    assert.ok(p.rect[3] >= 20, `${name} blocks but is ${p.rect[3]} px tall`);
+  }
+});
+test('no plant has a footprint', () => {
+  for (const [name, p] of Object.entries({ ...SET.props, ...SET.decals })) if (PLANT.test(name)) assert.ok(!p.footprint || !p.footprint.length, `${name} is a plant and blocks`);
+});
+test('the grove rock shapes are boulders only; the small stones are decals', () => {
+  assert.deepEqual(Object.keys(RULES.props.groves.rockShapes), ['boulder-a', 'boulder-d', 'boulder-e']);   // all three block
+  for (const n of ['rock-a', 'rock-a-m', 'rock-b', 'rock-b-m', 'rock-turf', 'rock-turf-m']) assert.ok(SET.decals[n] && !SET.props[n].footprint.length, `${n} is a walk-over decal`);
+});
+
 // a land of grass with square ponds, 5 x 5 every 12 tiles: props stand a full cell off a shore; the map's end is a thicket
 const POND = 12, inPond = (x, y) => x % POND >= 3 && x % POND < 8 && y % POND >= 3 && y % POND < 8;
 function pondLand(biomeId) {

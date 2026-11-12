@@ -337,8 +337,10 @@
    "incubator": {
     "empty": "empty",
     "canIncubate": "a pod can incubate",
-    "growing": "a bud growing",
-    "ready": "the bud is ready",
+    "growing": "a {Species} growing",
+    "readyIn": "ready in {n} min",
+    "readyUnderMinute": "almost ready",
+    "ready": "ready to come out",
     "waitsForRoom": "waits for room",
     "species": "{a} {Species}"
    },
@@ -371,7 +373,7 @@
    },
    "readHome": {"module":"pods","notice":"{count} chapters read while away","noticeOne":"a chapter read while away","action":"See them","rule":"the chapters a pod read from its Data store while the Companion was out, shown at the dock (state.readHomeNeed): ✓ opens the bench's reveal (views/store-props.mjs)"},
    "full": {"module":"incubator","notice":"The Vivarium is full","actions":{"add":"Add a room","make":"Make room"},"rule":"every place is taken and something waits for one (a ready bud, or a pod that could be incubated): ahead of the bud and of couldGrow (state.need, the rooms words C9, C11). ✓ jumps to the Vivarium: with a room that can be bought and paid, ✓ Add a room, the ring on the new-room chip (room.new); otherwise ✓ Make room, the ring on the first resident of the room shown"},
-   "budReady": {"module":"incubator","notice":"the bud is ready","action":"Open the bud"},
+   "budReady": {"module":"incubator","notice":"a mibi waits to come out","action":"Open the pod"},
    "meet": {"module":null,"notice":"meet {name}","action":"Meet {name}"},
    "newPods": {
     "module": "pods",
@@ -401,7 +403,7 @@
     "action": "Look at the pods",
     "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure"
    },
-   "budGrowing": {"module":null,"notice":"a bud is growing","action":"Look at the Incubator"}
+   "budGrowing": {"module":null,"notice":"a mibi is growing","action":"Look at the Incubator"}
   },
   "line": {
    "rule": "the line at rest: at most two needs joined by a dot, amber, with the amber lamp before them; the first carries the confirm cap and says its action, the second its notice. With none, the goal (frame.json strings.goal), mist. With a target focused: the target's verb with the cap, then its subject, if it has one, in mist.",
@@ -410,7 +412,7 @@
     "crates": {"action":"Open the Bay","notice":"{count} crates wait in the Bay","noticeOne":"a crate waits in the Bay","withPortrait":{"notice":"Bay: {count} crates and a portrait","noticeOne":"Bay: a crate and a portrait"}},
     "readHome": {"action":"See what was read","notice":"{count} {species} chapters read while you were out","noticeOne":"a {species} chapter read while you were out"},
     "full": {"actions":{"add":"Add a room","make":"Make room"},"notice":"The Vivarium is full"},
-    "budReady": {"action":"Open the bud","notice":"the bud is ready"},
+    "budReady": {"action":"Open the pod","notice":"a mibi waits to come out"},
     "portrait": {"action":"Open the Bay","notice":"a portrait waits in the Bay"},
     "meet": {"action":"Meet {name}","notice":"meet {name}"},
     "newPods": {"action":"Look at the pods","notice":"{count} new pods in the case","noticeOne":"a new pod in the case"},

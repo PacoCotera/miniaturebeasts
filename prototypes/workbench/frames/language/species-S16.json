@@ -14,7 +14,7 @@
   "code": "S16",
   "moves": "floats, ripples",
   "habitat": "Highpools",
-  "gate": "Charge sealed (storm-glass shard)",
+  "gate": null,
   "diet": "Energy from struck stones",
   "ability": "draws a stray strike to itself",
   "character": "wild and electric, rarely still",

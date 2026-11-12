@@ -119,6 +119,11 @@ jobs:
         # lays them over _site/sandbox: the three pages are replaced, /sandbox/assets/ is added (ops/sandbox/Caddyfile keeps it immutable), every source file stays where it was. npm ci installs the
         # pinned vite and p-queue (prototypes/package-lock.json); the journeys import the sources and use the same install. Measured: about 3 s for the build.
         run: sh ops/sandbox/bundle-pages.sh _site
+      - name: Every new or changed image is signed art (ratchet), and no render module gains a drawing call
+        if: github.event_name == 'pull_request' && steps.scope.outputs.docs != 'true'
+        # .github/art-check.mjs reads git objects and the assembled site (measured 0.3 s for the diff, about 13 s with the site on the dev server): an image the pull request adds or changes must have its sha256 in art/signed.json
+        # (written by the art desk's export), and a render module may not gain a canvas drawing call beyond art/draws.json. What is already in the base is left alone.
+        run: node .github/art-check.mjs --base HEAD^1 --head HEAD --site _site
       - name: Check the pages parse
         if: steps.scope.outputs.docs != 'true'
         run: |

@@ -1,6 +1,6 @@
 # The explorer (nine frames)
 
-Painted by the art desk, signed by the art director, copied byte for byte from mibi-art art/desk 9c1bf9ece, `art-jobs/2026-11-10-art-paint-pawn/out/frames/pawn-<name>-32.png`. 32 x 32, feet on row 30, figure 27 px tall, drawn at 1x.
+Painted by the art desk, signed by the art director, copied byte for byte from mibi-art branch art/art-fix-explorer e2951f1dd (the signed frames, the game's orange ramp, specks gone), `art-jobs/2026-11-11-art-fix-explorer/out/frames/pawn-<name>-32.png`. 32 x 32, feet on row 30, figure 27 px tall (creep frames 23 px), drawn at 1x.
 
 | file here | desk file | what |
 |---|---|---|

@@ -114,7 +114,7 @@ test("the card (§2): the focused mibi's portrait at 144/304, its name, the look
     assert.deepEqual([C.state, C.name, C.looks], ["mibi", m.name, ["your only Loika"]]);
     assert.deepEqual(C.plates.map((p) => p.verb), ["Look", "Take along", "Tuck away", "Cross", "Return"]); assert.deepEqual(C.plates.map((p) => p.held), [false, false, true, true, true], "one mibi: Tuck away and Return held (the last at home), Breed held");
     assert.equal(C.plates[2].price, "⚡ 2"); assert.equal(C.plates[4].price, "", "Return has no price");
-    assert.equal(build(w, sv, { focus: "plate.2" }).props.regions.card.why, "Your last mibi at home stays"); assert.equal(build(w, sv, { focus: "plate.3" }).props.regions.card.why, "no partner at home yet"); }
+    assert.equal(build(w, sv, { focus: "plate.2" }).props.regions.card.why, "Your last mibi at home stays"); assert.equal(build(w, sv, { focus: "plate.3" }).props.regions.card.why, "none of its kind at home yet"); }
   { const w = roomsWorld(1), [a, b2] = inRoom(w, 0, 2); const looks = (m) => build(w, sv0(), { focus: "resident." + m.id }).props.regions.card.looks;
     const twin = Object.assign({}, b2); void twin; assert.ok(looks(a).length <= 3);
     assert.ok(looks(a).every((s) => typeof s === "string" && s.length > 0)); }

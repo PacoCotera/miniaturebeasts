@@ -5,6 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
+import { WORDS } from "../src/words.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 function source(name) {
@@ -30,13 +31,13 @@ const plain = x => JSON.parse(JSON.stringify(x));
 function trip(extra = {}) {
   const notes = [], log = [];
   const ctx = vm.createContext(Object.assign({
-    console, notes, log, Math,
+    console, notes, log, Math, WORDS,
     S: { exp: { cargo: { e: 0, d: 0, s: 0, pods: [] }, moments: [], momented: {} } },
     CAP: 20, MAT: { d: "Data" },
     addMat(k, n) { const ex = ctx.S.exp, got = Math.max(0, Math.min(n, 20 - ex.cargo[k])); ex.cargo[k] += got; return got; },
     fxMsg: t => notes.push(t), logEv: t => log.push(t), spName: sp => ["Loika", "Tuikis", "Untuva"][sp], cap: s => s[0].toUpperCase() + s.slice(1),
   }, extra));
-  const names = ["ACT_DATA", "CREATURE_CEIL", "actDone", "creatureRoom", "actOpen", "awardMoment"];
+  const names = ["ACT_DATA", "actDone", "awardMoment"];
   const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
   return { ctx, notes, log, ...out };
 }
@@ -59,15 +60,17 @@ test("once per creature per act per expedition: a repeat pays nothing, a differe
   assert.equal(t.ctx.S.exp.moments.length, 3);
 });
 
-test("the trip ceiling: creature Data stops at the ceiling and the line says so", () => {
+test("no trip ceiling: ten acts on a trip pay ten; with the hold full an act pays 0 and the line says so", () => {
   const t = trip();
-  for (let i = 1; i <= t.CREATURE_CEIL; i++) t.awardMoment(cr(i), "eat");
-  assert.equal(t.ctx.S.exp.dAct, t.CREATURE_CEIL);
-  assert.match(t.notes.at(-1), /Data for this trip: full$/);
-  assert.equal(t.actOpen(t.ctx.S.exp, cr(99), "eat"), false, "no act is open past the ceiling");
+  for (let i = 1; i <= 10; i++) t.awardMoment(cr(i), "eat");
+  assert.equal(t.ctx.S.exp.cargo.d, 10, "no ceiling of 8");
+  assert.equal(t.ctx.S.exp.dAct, 10);
+  for (let i = 11; i <= 20; i++) t.awardMoment(cr(i), "eat");
+  assert.equal(t.ctx.S.exp.cargo.d, 20, "the hold takes 20");
   t.awardMoment(cr(99), "eat");
-  assert.equal(t.ctx.S.exp.cargo.d, t.CREATURE_CEIL, "nothing paid past the ceiling");
-  assert.equal(t.notes.at(-1), "The Loika ate your fruit · Data for this trip: full");
+  assert.equal(t.ctx.S.exp.cargo.d, 20, "nothing paid with the hold full");
+  assert.equal(t.notes.at(-1), "The Loika ate your fruit · " + WORDS.creature.holdFull, "the act works; the line says the hold is full");
+  assert.ok(t.ctx.S.exp.momented["99:eat"], "the act counts as done");
 });
 
 test("nothing is left to chance: the act code reads no random source", () => {
@@ -81,6 +84,6 @@ test("the Data is shown in advance on the creature's line: open, full, paid, and
   assert.equal(tag(cr(2, 1)), " · +1 Data", "a Tuikis: the settle is open");
   assert.equal(tag(cr(3, 2)), "", "an unidentified species leaks nothing");
   t.awardMoment(cr(1, 0), "eat"); assert.equal(tag(cr(1, 0)), "", "paid: nothing more is promised");
-  t.ctx.S.exp.dAct = 8; assert.equal(tag(cr(4, 0)), " · Data for this trip: full");
+  t.ctx.S.exp.cargo.d = 20; assert.equal(tag(cr(4, 0)), " · " + WORDS.creature.holdFull, "the hold full: the line says so");
   assert.match(PAGE, /ctx = \[dietLine\(o\.c\.sp, true\) \+ actTag\(o\.c\)/, "the facing line carries it");
 });
