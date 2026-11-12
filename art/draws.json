@@ -1,5 +1,14 @@
 {
  "formatVersion": 1,
- "todo": "Seeded empty: the art director's list of run-time drawing sites (step 4, from the audit's 'code-drawn at runtime' section) is not ready. Until it is, .github/art-check.mjs holds the line by ratchet: a render module may not gain a drawing call against the base. Each site is {file, primitive, count, class: ui | light-table | retire-by <job>}.",
- "sites": []
+ "todo": "The art director's list of run-time drawing sites. The first five rows are the sites listed 2026-11-12 (class ui or layout, each with its reason); the rows marked base are the counts already in the base, kept as one row each until the art director lists them. .github/art-check.mjs holds the line by ratchet: a render module may not gain a drawing call against the base beyond this list. Each site is {file, primitive, count, class: ui | layout | light-table | retire-by <job>, reason}.",
+ "sites": [
+  { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 1, "class": "ui", "reason": "sketchCanvas: a flat paper fill while the signed paper grain loads" },
+  { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 4, "class": "ui", "reason": "sketchCanvas: the dashed frame of the unready place's sketch" },
+  { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 1, "class": "ui", "reason": "drawSlide: the slide band fill under the goal bar while one place slides out and the next in" },
+  { "file": "prototypes/exploration/index.html", "primitive": "createImageData", "count": 1, "class": "layout", "reason": "turnCanvas: a quarter turn of a signed path end, a pixel copy (no new pixel)" },
+  { "file": "prototypes/exploration/index.html", "primitive": "putImageData", "count": 1, "class": "layout", "reason": "turnCanvas: the same quarter turn, a pixel copy (no new pixel)" },
+  { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 8, "class": "base", "reason": "already in the base before this release; not yet listed by the art director" },
+  { "file": "prototypes/exploration/index.html", "primitive": "putImageData", "count": 12, "class": "base", "reason": "already in the base before this release; not yet listed by the art director" },
+  { "file": "prototypes/exploration/index.html", "primitive": "createImageData", "count": 11, "class": "base", "reason": "already in the base before this release; not yet listed by the art director" }
+ ]
 }
