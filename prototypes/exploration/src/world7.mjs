@@ -10,7 +10,7 @@ import { bakeCell, reviveLayers } from './bake7.mjs';
 export { reviveLayers };
 import { adaptCell } from './adapt7.mjs';
 
-export { realm7 };
+export { realm7, CW, CH };   // CW x CH: the tiles of a cell (the overview's one byte each); the page's PW x PH is the place with its apron
 // the region's overview (one byte a tile, place.mjs) when it has been made or fetched, else null: the maps then keep to the cell labels until it arrives
 export const overviewReady = (seed, slot) => (hasOverview(seed, slot[0], slot[1]) ? overviewOf(seed, slot[0], slot[1]) : null);
 export const genWorld7 = (seed, slot) => genRegion7(seed, slot[0], slot[1]);

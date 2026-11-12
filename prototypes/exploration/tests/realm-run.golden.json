@@ -1,165 +1,165 @@
 {
- "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world.",
+ "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world. Retaken for realm revision 2: the coast.",
  "seed": 7,
  "gen": 7,
  "expeditions": 20,
  "mibis": 0,
  "dock": 0,
  "stopMid": false,
- "presses": 4354,
- "digest": "1669eec7af16dab1f8e2106f462cabba3513cf0eac0e574e2329d483f933d8c9",
+ "presses": 4277,
+ "digest": "97bd1e31d71c0e14f10023cc7580350cccc1fec5560a9ff8cd9450875d0d2c01",
  "steps": [
   {
    "n": 1,
    "presses": 242,
    "turn": 1,
    "bay": 0,
-   "d": "7e485a8e89ade4dd"
+   "d": "713d34c219a1aefb"
   },
   {
    "n": 2,
    "presses": 471,
    "turn": 2,
    "bay": 0,
-   "d": "cace2fa87b174687"
+   "d": "7340a752bbd2b5f9"
   },
   {
    "n": 3,
    "presses": 760,
    "turn": 3,
    "bay": 0,
-   "d": "0249b0229470f692"
+   "d": "feece9bacdbd88b2"
   },
   {
    "n": 4,
    "presses": 793,
    "turn": 4,
    "bay": 0,
-   "d": "c60c7ebed27f7c3b"
+   "d": "cd3efe25afc61abf"
   },
   {
    "n": 5,
    "presses": 998,
    "turn": 5,
    "bay": 0,
-   "d": "f28d6f287ff240af"
+   "d": "052fb2b46ea91583"
   },
   {
    "n": 6,
    "presses": 1340,
    "turn": 6,
-   "bay": 0,
-   "d": "1f70dadc4f0a3835"
+   "bay": 1,
+   "d": "250af4ea87835fc2"
   },
   {
    "n": 7,
-   "presses": 1516,
+   "presses": 1517,
    "turn": 7,
-   "bay": 1,
-   "d": "0200b4338700fcfc"
+   "bay": 2,
+   "d": "94b0284cb0e7c333"
   },
   {
    "n": 8,
-   "presses": 1741,
+   "presses": 1742,
    "turn": 8,
-   "bay": 1,
-   "d": "526822e32db500ff"
+   "bay": 3,
+   "d": "7b26283adf9a87c7"
   },
   {
    "n": 9,
-   "presses": 2052,
+   "presses": 2054,
    "turn": 9,
-   "bay": 2,
-   "d": "e66797087c4ad31b"
+   "bay": 3,
+   "d": "aa21cbdb9208e35a"
   },
   {
    "n": 10,
-   "presses": 2233,
+   "presses": 2235,
    "turn": 10,
-   "bay": 2,
-   "d": "4c0e5adc47af1e0c"
+   "bay": 3,
+   "d": "7edce4f6cf8f0b29"
   },
   {
    "n": 11,
-   "presses": 2254,
+   "presses": 2257,
    "turn": 11,
-   "bay": 2,
-   "d": "68c1dc03256b85e2"
+   "bay": 3,
+   "d": "49dae9ead683b94f"
   },
   {
    "n": 12,
-   "presses": 2538,
+   "presses": 2541,
    "turn": 12,
    "bay": 0,
-   "d": "fe1df469dc3919df"
+   "d": "015a5a8b3fb8cfe7"
   },
   {
    "n": 13,
-   "presses": 2880,
+   "presses": 2883,
    "turn": 13,
    "bay": 0,
-   "d": "564be475002d2ce4"
+   "d": "73a9aea9cf55e2f6"
   },
   {
    "n": 14,
-   "presses": 3159,
+   "presses": 3162,
    "turn": 14,
    "bay": 0,
-   "d": "c0bc873f6b8aa963"
+   "d": "4b44021429fb3681"
   },
   {
    "n": 15,
-   "presses": 3208,
+   "presses": 3211,
    "turn": 15,
    "bay": 0,
-   "d": "67884935b9fb4c06"
+   "d": "a79abea99071000c"
   },
   {
    "n": 16,
-   "presses": 3545,
+   "presses": 3548,
    "turn": 16,
    "bay": 0,
-   "d": "eaeb983534166717"
+   "d": "fd40b0bc635e8463"
   },
   {
    "n": 17,
-   "presses": 3683,
+   "presses": 3686,
    "turn": 17,
    "bay": 0,
-   "d": "50474f738ca85c6f"
+   "d": "c761b5d9dcbd07cb"
   },
   {
    "n": 18,
-   "presses": 3912,
+   "presses": 3933,
    "turn": 18,
    "bay": 0,
-   "d": "716d9bda24b17357"
+   "d": "a9bc6ef1b712b44b"
   },
   {
    "n": 19,
-   "presses": 4193,
+   "presses": 4218,
    "turn": 19,
-   "bay": 0,
-   "d": "d7ca1565ccdd1882"
+   "bay": 1,
+   "d": "1072f7c45f699b10"
   },
   {
    "n": 20,
-   "presses": 4354,
+   "presses": 4277,
    "turn": 20,
-   "bay": 0,
-   "d": "1669eec7af16dab1"
+   "bay": 1,
+   "d": "97bd1e31d71c0e14"
   }
  ],
  "summary": {
   "turn": 20,
   "expN": 21,
   "gen": 7,
-  "revealed": 159,
+  "revealed": 155,
   "visited": 45,
   "called": 40,
   "pods": 67,
   "creatures": 777,
-  "bay": 0,
+  "bay": 1,
   "hold": null,
   "mibis": 0,
   "carried": 0,

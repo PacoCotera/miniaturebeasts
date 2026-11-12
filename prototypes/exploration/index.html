@@ -254,7 +254,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, reviveLayers, overviewReady } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, reviveLayers, overviewReady, CW as OCW, CH as OCH } from "./src/world7.mjs";
 import { readyRealm, readyOverview } from "./src/realm-store.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
@@ -2243,12 +2243,25 @@ const SHORE_TEXT = 'Wide water · no way across', MORE_LAND = 'More land · open
 function seamSlot(dir) { const R = hereRegion(); if (!R || !R.slot) return null; const x = R.slot[0] + DIRS[dir][0], y = R.slot[1] + DIRS[dir][1]; return x >= 0 && y >= 0 && x < ATLAS && y < ATLAS ? [x, y] : null; }
 // The words for a region side that cannot be crossed: a region already open beyond it is named, else the land that opens as you explore.
 function seamWords(dir) {
-  const sl = seamSlot(dir), R = sl && S.regions.find(r => r.slot && r.slot[0] === sl[0] && r.slot[1] === sl[1]), nm = R && regionName(R, S);
+  const R = seamRegion(dir), nm = R && regionName(R, S);
   return nm ? nm + ' · start an expedition there' : MORE_LAND;
+}
+const seamRegion = dir => { const sl = seamSlot(dir); return sl && S.regions.find(r => r.slot && r.slot[0] === sl[0] && r.slot[1] === sl[1]) || null; };   // the region already open beyond this side, or null
+// The world of a region other than the mounted one, to read a cell of it (kept for the realm; never changed).
+const PEEK = new Map();
+function peekWorld(R) { const k = S.regions[0].seed + ':' + R.id + ':' + R.gen; let g = PEEK.get(k); if (!g) { g = worldOfRegion(R); PEEK.set(k, g); } return g; }
+// Walking off a region side into a region already open: { id, cell } where you stand on the far side, or null where the way is shut (no region open there, wide water or a cliff
+// edge on the far side, the realm's coast). One expedition goes on across it.
+function seamCross(a, dir) {
+  if (stepCell(a, dir) >= 0 || G.gen !== 7) return null;
+  const R = seamRegion(dir); if (!R || R.gen !== 7) return null;
+  const p = cxy(a), [dx, dy] = DIRS[dir], c2 = ((p.y + dy + MH) % MH) * MW + (p.x + dx + MW) % MW, g = peekWorld(R);
+  if (!passableIn(g, c2) || g.island[c2] || (g.coast && g.coast[c2]) || (g.level && G.level && g.level[c2] !== G.level[a])) return null;
+  return { id: R.id, cell: c2 };
 }
 function crossReason(a, dir) {
   const c = stepCell(a, dir);
-  if (c < 0) return seamSlot(dir) ? seamWords(dir) : borderCliff(a) ? 'High cliffs · no way past' : SHORE_TEXT;
+  if (c < 0) return seamSlot(dir) ? (seamCross(a, dir) ? null : seamWords(dir)) : borderCliff(a) ? 'High cliffs · no way past' : SHORE_TEXT;
   if (G.coast && G.coast[c]) return SHORE_TEXT;   // the realm's border ring: wide water, nobody crosses
   if (!inRange(c)) return RANGE_TEXT();
   const sk = softKind(a, dir);
@@ -2379,8 +2392,30 @@ function softTileOpen(lay, t, x, y) {
 // Walking off a place's edge steps onto the next map cell that way (one map action), map in view and facing
 // that way; one Confirm goes down into it from the matching side. Otherwise you stay put with the reason.
 // Across a stair edge only the stair's two tiles cross; anywhere else along that side is the steep edge.
+// The fields of an expedition that name cells of the region it is in: they stay with that region while the expedition is in the next one, and come back with it.
+const RG_FIELDS = ['live', 'dug', 'stormCells', 'entered', 'trail', 'reach', 'start', 'warm', 'mstrike'];
+// Walking off a region side into an open region: the same expedition goes on there (the hold, the clock, the shield, the partner and the cargo stay), under the same slide as between places.
+function crossRegion(dir, sw) {
+  const ex = S.exp, from = S.here, snap = motion() ? (FX.edgeView && FX.edgeView.key === ex.patch.key ? FX.edgeView.snap : viewSnapshot()) : null;
+  ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
+  ex.stats.crossings = (ex.stats.crossings || 0) + 1; ex.stats.regions = (ex.stats.regions || 0) + 1;
+  const away = ex.away || (ex.away = {}), mine = {}; for (const k of RG_FIELDS) mine[k] = ex[k]; away[from] = mine;
+  mountRegion(sw.id); if (sw.id === 'g1') delete ex.rg; else ex.rg = sw.id;
+  const back = away[sw.id]; delete away[sw.id];
+  if (back) for (const k of RG_FIELDS) ex[k] = back[k];
+  else { Object.assign(ex, { live: {}, dug: [], stormCells: {}, entered: [], trail: [sw.cell], start: sw.cell, warm: [], mstrike: null }); ex.reach = reachCells(ex.start, ex.range); }   // a region new to this expedition: the reach is counted from where you came in
+  ex.pos = sw.cell; ex.lastDir = dir; ex.face = dir; S.visited[sw.cell] = 1; revealAround(sw.cell, 1);
+  if (ex.trail[ex.trail.length - 1] !== sw.cell) ex.trail.push(sw.cell);
+  RT.behind = null; RT.behindKey = null;
+  advance('map');   // the step costs the one map action it costs between places
+  if (ex.ending) return;
+  enterPatch();
+  FX.transAt = -1e9; FX.resume = true;   // no fade: the slide covers the change
+  if (snap) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], snap }; lockInput(SLIDE_MS); }
+}
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
+  { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
   let why = crossReason(ex.pos, dir);
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
   if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
@@ -4512,7 +4547,17 @@ function blit48(id, x, y, rm) { const pc = ART48.pieces.get(id); if (!pc) return
 
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
 const MAPK = mapHooks();
+// The map between expeditions, the start pick and the band inset: the region's overview raster shrunk to the map (a pixel takes the tile under it; raised land one step lighter), the same land as the walk.
+// Until the raster has come from the worker the map is drawn from the cell labels (buildMapPBCells).
+const OV_COLOR = [C.grass, C.sand, C.river, C.sea, C.leaf, C.forest, C.rock, C.grass];   // by class: grass, sand, water, deep, wood, thicket, rock, path
 function buildMapPB() {
+  const ovr = overviewNow(); if (!ovr) return buildMapPBCells();
+  const pb = new PB(MW * CELL, MH * CELL), TW = MW * OCW, TH = MH * OCH;   // the overview has the cell's own tiles, one byte each
+  for (let y = 0; y < MH * CELL; y++) { const ty = Math.min(TH - 1, Math.floor(y * OCH / CELL)) * TW;
+    for (let x = 0; x < MW * CELL; x++) { const v = ovr[ty + Math.min(TW - 1, Math.floor(x * OCW / CELL))], col = OV_COLOR[v & 7]; pb.set(x, y, v & 8 ? TINT[col] : col); } }
+  return pb;
+}
+function buildMapPBCells() {
   const pb = new PB(MW * CELL, MH * CELL);
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c], h = hash(G.seed, 'mc', c), R = makeRng(h);
@@ -4803,7 +4848,10 @@ const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0
 function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => vnLat(s, a, b), sm = t => t * t * (3 - 2 * t);
   const a = h(xi, yi), b = h(xi + 1, yi), c = h(xi, yi + 1), d = h(xi + 1, yi + 1), u = sm(xf), w = sm(yf); return a + (b - a) * u + (c - a) * w + (a - b - c + d) * u * w; }
 // The painting's cell borders: the cell under a world pixel after the soft displacement (-1 off the map). The edge marks find their borders with the same function.
+// The region's overview: one byte a world tile, the land every map is shrunk from (null until it is made: the cell labels draw the land meanwhile).
+const overviewNow = () => G.gen === 7 && hereRegion() ? overviewReady(S.regions[0].seed, hereRegion().slot) : null;
 function landCellOf(cs) {
+  if (overviewNow()) return (wx, wy) => { const X = Math.floor(wx / cs), Y = Math.floor(wy / cs); return (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X; };   // from the raster the cell borders are the straight lines the tiles fall on
   const k = cs / 72;
   const disp = (wx, wy) => [wx + (vnoise(wx / (13 * k), wy / (13 * k), 1) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 3) - .5) * 5 * k,
                             wy + (vnoise(wx / (13 * k), wy / (13 * k), 2) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 4) - .5) * 5 * k];
@@ -4822,12 +4870,12 @@ function* landPaint(spec, sliced) {
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
   for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
-  const ovr = G.gen === 7 && hereRegion() ? overviewReady(S.regions[0].seed, hereRegion().slot) : null;   // the region's overview: one byte a world tile, the land every map is shrunk from (null until it is made: the cell labels draw the land meanwhile)
+  const ovr = overviewNow();
   const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', ovr ? 'o' : ''].join('|');
   if (LAND_CACHE.key === key) return LAND_CACHE.cv;
   { const hit = LAND_CACHE.more.get(key); if (hit) { LAND_CACHE.key = key; LAND_CACHE.cv = hit; return hit; } }
   const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), id = cg.createImageData(N, NH), u = new Uint32Array(id.data.buffer);
-  const cellOf = ovr ? ((wx, wy) => { const X = Math.floor(wx / cs), Y = Math.floor(wy / cs); return (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X; }) : landCellOf(cs), tiles = {}, tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
+  const cellOf = landCellOf(cs), tiles = {}, tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
   for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`);
   const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : C.ink; };   // no art yet: a named empty slot (ink)
   const landOf = c => c < 0 ? -1 : G.land[c];
@@ -4847,7 +4895,7 @@ function* landPaint(spec, sliced) {
     // near water: a beach on the land side, foam on the water side
     const nearW = (d) => { for (const [ox, oy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const c3 = cellOf(wx + ox, wy + oy); if (c3 >= 0 && seen(c3) && (landOf(c3) === L.WATER) !== (land === L.WATER)) return true; } return false; };
     if (ovr) {   // the tile under the pixel: its ground class, lighter where the land is raised. [art] map-tex-deep and the raised tone are the desk's; the stand-ins are the water texture one step darker and the next palette step up
-      const v = ovr[Math.min(MH * PH - 1, Math.floor(wy * PH / cs)) * (MW * PW) + Math.min(MW * PW - 1, Math.floor(wx * PW / cs))], k8 = v & 7;
+      const v = ovr[Math.min(MH * OCH - 1, Math.floor(wy * OCH / cs)) * (MW * OCW) + Math.min(MW * OCW - 1, Math.floor(wx * OCW / cs))], k8 = v & 7;
       col = k8 === 2 ? tile('water', wx, wy) : k8 === 3 ? DARK[tile('water', wx, wy)] : k8 === 1 ? tile('beach', wx, wy) : k8 === 4 || k8 === 5 ? tile('wood', wx, wy) : k8 === 6 ? tile('rock', wx, wy) : tile('meadow', wx, wy);
       wood = k8 === 4 || k8 === 5; if (v & 8) col = LIGHT[col];
     }
@@ -4972,7 +5020,7 @@ function drawEdgeMarks(q) {
   }
   if (edges.length) {
     const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;
-    const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, ...edges.map(e => e.A + '>' + e.B + (e.ramp ? 'r' : 'c') + (e.hiA ? 1 : 0) + ':' + e.rm)].join('|'), slot = q.map ? 'map' : 'reach';
+    const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, overviewNow() ? 'o' : '', ...edges.map(e => e.A + '>' + e.B + (e.ramp ? 'r' : 'c') + (e.hiA ? 1 : 0) + ':' + e.rm)].join('|'), slot = q.map ? 'map' : 'reach';
     let cv = EDGE_CACHE[slot] && EDGE_CACHE[slot].key === key ? EDGE_CACHE[slot].cv : null;
     if (!cv) {
       const pix = new Int16Array(W * H).fill(-1), cellOf = landCellOf(cs), rad = Math.ceil(16 * cs / 72), R7 = EDGE_RAMP[cs];

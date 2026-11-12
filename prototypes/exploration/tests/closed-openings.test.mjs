@@ -44,6 +44,64 @@ test("leaving a place and coming back in the same turn gives the same mibis, the
   assert.equal(snap(), left, "and after a visit to another place");
 });
 
+// Owner 2026-11-11 16:2x: walking off a region side into a region already open carries straight on in the same expedition; the hold, the clock and the mibis kept per place stay.
+// Where the far side cannot be crossed the side says which region lies there; a side facing land not yet open says more land opens as you explore.
+test("walking off a region side into an open neighbour goes on in the same expedition and back again: the hold, the clock and the place's mibis stay", () => {
+  const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13); TEST.calm = true; S.tier = 2;`);
+  const id = p.run(`openRegion([3, 2])`);   // the region east of region 1
+  p.run(`startExpedition('weather', G.spawns[0]);`);
+  const cell = p.run(`(() => { for (let y = 0; y < MH; y++) { const c = y * MW + MW - 1; if (!G.comp[c] || G.land[c] === L.WATER || G.island[c] || !seamCross(c, 'right')) continue;
+    S.exp.pos = c; enterPatch(); if (RT.view) endView(); const ok = layout(String(c)).openings.some(o => o.side === 'E'); leavePatch(); if (ok) return c; } return -1; })()`);
+  assert.ok(cell >= 0, "an east-edge cell that can be crossed");
+  const eastReason = p.run(`crossReason(${cell}, 'right')`);
+  assert.equal(eastReason, null, "a crossable region side is no refusal");
+  const shut = p.run(`(() => { for (let y = 0; y < MH; y++) { const c = y * MW + MW - 1; if (!seamCross(c, 'right')) return crossReason(c, 'right'); } return null; })()`);
+  assert.match(shut ?? "", /start an expedition there$/, "where crossing is impossible the open neighbour is named: " + shut);
+  assert.equal(p.run(`crossReason(3, 'up')`), "More land · opens as you explore", "a side facing land not yet open");
+  p.run(`S.exp.pos = ${cell}; S.exp.cargo.e = 3; S.exp.cargo.d = 2; enterPatch(); if (RT.view) endView();`);
+  const key = String(cell), snap = () => p.run(`JSON.stringify(ensureLive('${key}').cr.map(c => [c.id, c.sp, c.x, c.y]))`);
+  p.run(`for (let i = 0; i < 3; i++) advance('patch', { noise: 'creep', moved: false });`);
+  const mibis = snap(), actions = p.run("S.exp.actions"), n = p.run("S.exp.n"), shield = p.run("S.exp.shield");
+  // stand on the east edge in the middle of the opening and step off it
+  p.run(`(() => { const lay = layout('${key}'), o = lay.openings.find(q => q.side === 'E'), P = S.exp.patch; P.x = lay.w - 1; P.y = (o.from + o.to) >> 1; P.dir = 'right'; patchStep('right', 'creep'); })()`);
+  assert.equal(p.run("S.here"), id, "the far region is mounted");
+  assert.equal(p.run("S.exp && S.exp.n"), n, "the same expedition");
+  assert.equal(p.run("S.phase"), "patch", "and you are walking in a place there");
+  assert.equal(p.run("S.exp.rg"), id);
+  assert.equal(p.run("S.exp.cargo.e + ':' + S.exp.cargo.d"), "3:2", "the hold goes with you");
+  assert.equal(p.run("S.exp.shield"), shield);
+  assert.equal(p.run("S.exp.actions"), actions + 1, "the clock goes on; the step is one map action");
+  assert.equal(p.run("S.exp.patch.x"), 0, "in at the far side's west edge");
+  assert.equal(p.run("S.exp.pos"), p.run(`((${cell} / MW | 0) * MW)`), "on the same row, in the west column");
+  assert.equal(p.run("S.exp.start"), p.run("S.exp.pos"), "the reach is counted from where you came in");
+  // and back again
+  p.run(`(() => { const P = S.exp.patch, lay = layout(P.key); P.x = 0; P.dir = 'left'; patchStep('left', 'creep'); })()`);
+  assert.equal(p.run("S.here"), "g1", "back in region 1");
+  assert.equal(p.run("S.exp.rg"), undefined, "region 1 names nothing");
+  assert.equal(p.run("S.exp.n"), n, "still the same expedition");
+  assert.equal(p.run("S.exp.pos"), cell, "in the cell you left");
+  assert.equal(p.run("S.exp.cargo.e + ':' + S.exp.cargo.d"), "3:2", "the hold stayed");
+  assert.equal(p.run("S.exp.actions"), actions + 2);
+  assert.equal(snap(), mibis, "the place keeps its wild mibis at the same spots");
+});
+
+// Owner 2026-11-11 note 18: every zoom is drawn from the same land. The map between expeditions (and so the band inset) is the overview raster shrunk, once the raster is there; the edge marks follow straight cell borders then.
+test("the map between expeditions is painted from the overview raster once it is there, the cell labels until then", async () => {
+  const { presetOverview, overviewOf, OV, CW, CH } = await import("../src/gen7/place.mjs");
+  const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13);`);
+  const colors = p.run(`(() => { const pb = buildMapPB(); return { ready: !!overviewNow() }; })()`);
+  assert.equal(colors.ready, false, "no raster yet: the cell labels draw the map");
+  const rows = p.run(`(() => { const R = hereRegion(); return [S.regions[0].seed, R.slot[0], R.slot[1]]; })()`);
+  const ov = overviewOf(rows[0], rows[1], rows[2]); presetOverview(rows[0], rows[1], rows[2], ov);
+  const q = p.run(`(() => { const ovr = overviewNow(), pb = buildMapPB(); const want = (x, y) => ovr[Math.floor(y * ${CH} / CELL) * (MW * ${CW}) + Math.floor(x * ${CW} / CELL)];   // the raster: the cell's 24 x 28 tiles a cell, row by row
+    let bad = 0, n = 0, water = 0, raised = 0; for (let y = 0; y < MH * CELL; y += 3) for (let x = 0; x < MW * CELL; x += 3) { const v = want(x, y), c = pb.get(x, y); n++; if ((v & 15) === 2) { water++; if (c !== C.river) bad++; } if (v & 8) raised++; }
+    const cellOf = landCellOf(72); return { ready: !!ovr, bad, n, water, raised, c0: cellOf(100, 100), c1: cellOf(71, 71), c2: cellOf(72, 72) }; })()`);
+  assert.equal(q.ready, true); assert.equal(q.bad, 0, "every water tile of the raster is water on the map (of " + q.water + ")");
+  assert.ok(q.n > 1000 && q.water + q.raised > 0, "the sample read the raster");
+  assert.deepEqual([q.c0, q.c1, q.c2], [1 + 1 * 16, 0, 1 + 1 * 16], "from the raster the cell borders are the straight lines");
+  assert.ok(OV.RAISED === 8);
+});
+
 // Walk fixes (owner's notes of 2026-11-10, 14-15 and 25-32): over 200 places at tier 1 (so range hazes stand) no thing the explorer can act on lies where the explorer cannot walk to it, a bush or a mark
 // is never under a crown or on a blocking tile, decor keeps its gap round every find, and the walk and the hold-Call (whole place) view read one uncovered set.
 const CHECK = `(() => {
