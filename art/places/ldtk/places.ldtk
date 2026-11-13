@@ -2508,32 +2508,12 @@
 						"tileRect": null
 					},
 					{
-						"id": "cliff-side-a-e",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-side-a-w",
-						"color": 0,
-						"tileRect": null
-					},
-					{
 						"id": "cliff-side-b-e",
 						"color": 0,
 						"tileRect": null
 					},
 					{
 						"id": "cliff-side-b-w",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-side-c-e",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-side-c-w",
 						"color": 0,
 						"tileRect": null
 					}

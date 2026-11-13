@@ -1,7 +1,7 @@
 // Stills of the straight south cliff faces (the walking zoom, 48 px a tile, 450 x 532), day and night, 1x and 4x, drawn by the game's own bake and renderer.
 //   node tools/cliff-south-stills.mjs find <spec.json>           scans seeds 7 and 13 for the longest straight south run (view 7a on seed 7, 13b on seed 13) and writes the views
 //   node tools/cliff-south-stills.mjs count <seed> [<seed> ...]  counts the straight south runs on each seed and the ones whose low ground under the lip is shorter than the face (the face needs 3 low rows)
-//   node tools/cliff-south-stills.mjs shoot <outDir> <spec.json> [a|b|c]  draws each view (with the side cell variant named, its name goes in each still's name)
+//   node tools/cliff-south-stills.mjs shoot <outDir> <spec.json>  draws each view
 // Each still gets a <still>.json sidecar (the art files drawn, zoom, light, time).
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { windowIR } from '../src/gen7/place.mjs';
@@ -10,14 +10,14 @@ import { MW, MH } from '../src/world.mjs';
 import { bakeCtx, bakeIR } from './gen7-render.mjs';
 import { paletteRgb } from '../../places/src/bake/build.mjs';
 import { cliffInfo } from '../../places/src/bake/openedges.mjs';
-import { SIDE, SIDE_VARIANTS, southRuns, shortRuns } from '../../places/src/bake/southruns.mjs';
+import { southRuns, shortRuns } from '../../places/src/bake/southruns.mjs';
 import { renderView, lightState } from '../../places/src/ground.mjs';
 import { indexedToRgba } from '../../places/src/indexed.mjs';
 import { encodePng, scaleNearest } from '../../places/src/png.mjs';
 import { artHooks } from '../../places/src/setload.mjs';
 import { fileList, writeSidecar } from './still-art.mjs';
 
-const [WHICH, A, B, C] = process.argv.slice(2);
+const [WHICH, A, B] = process.argv.slice(2);
 const FW = 450, FH = 532, LIGHTS = [['day', 0], ['night', 2]];
 const CORE = JSON.parse(readFileSync(new URL('../../../art/companion-48/terrain/meadow/meadow-palette.json', import.meta.url), 'utf8')).entries.slice(0, 48);
 const frameAt = (ir, tx, ty) => ({ x: Math.max(0, Math.min(ir.w * 48 - FW, tx * 48 + 24 - FW / 2)), y: Math.max(0, Math.min(ir.h * 48 - FH, ty * 48 + 24 - FH / 2)), w: FW, h: FH });
@@ -86,9 +86,7 @@ if (WHICH === 'find') {
 } else if (WHICH === 'shoot') {
   mkdirSync(A, { recursive: true });
   artHooks.seen = new Map();
-  if (C) { if (!(C in SIDE_VARIANTS)) throw new Error(`side variant ${C}: one of ${Object.keys(SIDE_VARIANTS).join(', ')}`); SIDE.variant = C; }   // the side cell variant drawn (southruns.mjs); the name of each still carries it
-  for (const v0 of JSON.parse(readFileSync(B, 'utf8'))) {
-    const v = C ? { ...v0, name: `${v0.name}-side-${C}` } : v0;
+  for (const v of JSON.parse(readFileSync(B, 'utf8'))) {
     const ir = windowIR(v.seed, v.X0, v.Y0, 2, 2), win = frameAt(ir, v.tx, v.ty);
     for (const [light, level] of LIGHTS) {
       const place = bakeIR(ir), ts = bakeCtx().sets.get(ir.tileset), lit = level ? lightState(place, { level: new Uint8Array(place.w * place.h).fill(level) }) : null, pal = paletteRgb(ts);
