@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, cornerKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, SIDE_VARIANTS, cornerKind, sideKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -316,6 +316,13 @@ export function deskArt() {
     if (im.w !== 48 || im.h !== 288) throw new Error(`${file}: a corner cell is 48 x 288, this is ${im.w} x ${im.h}`);
     files.set(file, b); decals[cornerKind(hand, k)] = { image: im, anchor: [0, 0] };
     desk[file] = { commit: 'local', from: `${CORNER_FROM} (the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
+  }
+  // the side cells (whole-cell crops of the signed corner cell cliff-corner-e-5; the west hand its flip; each file's .steps.json holds the cut and the whole list from the paid raw)
+  for (const [v, cells] of Object.entries(SIDE_VARIANTS)) for (const hand of CORNER_HANDS) {
+    const file = `${sideKind(v, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 48 || im.h !== 48 * cells) throw new Error(`${file}: a side cell of variant ${v} is 48 x ${48 * cells}, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[sideKind(v, hand)] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 48 * cells], foot: [0, 0], sha256: sha(b) };
   }
   return { files, props, canopy, decals, desk };
 }

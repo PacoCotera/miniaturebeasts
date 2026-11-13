@@ -1,0 +1,107 @@
+{
+ "source_sha256": "41eb698a36370b6eda18286b56f391f1235a6e42b6364acbdc48792db4cac6ba",
+ "parent": {
+  "ledger_id": "19ac2c99fe",
+  "file": "cliff-corner-e-5.png"
+ },
+ "steps": [
+  [
+   "crop",
+   [
+    0,
+    48,
+    48,
+    48
+   ],
+   "terrain"
+  ],
+  [
+   "flip",
+   "h"
+  ]
+ ],
+ "out_sha256": "47c67dc2ca6e205b9bf1e0b690576644081d41db96e21013ebe9836c1f503fb1",
+ "from_paid_call": {
+  "model": "fal-ai/nano-banana-pro/edit",
+  "job": "art-jobs/2026-11-13-cliff-corner-scaffold-2",
+  "call": "corner-1",
+  "raw": "work/raw/corner-1.png",
+  "raw_sha256": "1bb46b91b7230c0ace13aed654c70a2f37365960568ff71b66701f8c83339872",
+  "steps": [
+   [
+    "scale_nearest",
+    [
+     960,
+     960
+    ]
+   ],
+   [
+    "reduce_mode",
+    10
+   ],
+   [
+    "snap",
+    "walk",
+    "7e90b28e41f4",
+    [
+     "#1e2a3e",
+     "#4a5f78"
+    ]
+   ],
+   [
+    "key_edge_bg",
+    [
+     "#65a05d",
+     "#74a65d",
+     "#69a55d",
+     "#82b266"
+    ],
+    0,
+    8
+   ],
+   [
+    "crop",
+    [
+     80,
+     0,
+     16,
+     96
+    ],
+    "terrain"
+   ],
+   [
+    "scale_nearest",
+    [
+     48,
+     288
+    ]
+   ],
+   [
+    "key_edge_bg",
+    [
+     "#82b266",
+     "#7a9d5a",
+     "#99b562",
+     "#82a05a"
+    ],
+    0,
+    8
+   ],
+   [
+    "crop",
+    [
+     0,
+     48,
+     48,
+     48
+    ],
+    "terrain"
+   ],
+   [
+    "flip",
+    "h"
+   ]
+  ],
+  "note": "the whole list from the paid raw: the corner cell's own steps, then the cut; replays to the placed bytes"
+ }
+}

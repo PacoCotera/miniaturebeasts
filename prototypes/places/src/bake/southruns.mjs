@@ -16,6 +16,12 @@ export const innerKind = (hand, k) => `cliff-inner-${hand}-${k}`;
 // NAMED EMPTY SLOT (art): cliff-inner-{e,w}-{3,4,5}, 48 x 288 each. No signed inner cells exist yet; add a kind here when the art director signs it and its file is in the set.
 export const INNER_SIGNED = new Set();
 
+// The side cells: whole-cell crops of the signed outer corner cell cliff-corner-e-5 (class cut-of-signed; the west hand is the flip). Variant a = its rows 0-48 (48 x 48), b = rows 48-96 (48 x 48), c = rows 0-96 (two cells, 48 x 96).
+// SIDE.variant is the one drawn; the art director picks it by eye (stills tool: argument `variant`).
+export const SIDE_VARIANTS = { a: 1, b: 1, c: 2 };   // the cells each variant's file is tall
+export const SIDE = { variant: 'a' };
+export const sideKind = (v, hand) => `cliff-side-${v}-${hand}`;
+
 // cliffs: openedges.cliffInfo's result ({ isCliff, wayup }). Returns [{ y, x0, x1, col0 }]: the lip row, the first and last cell, the column of S the run starts at.
 export function southRuns(ir, cliffs) {
   const { w, h } = ir, runs = [];
@@ -61,6 +67,57 @@ export function southDecals(runs, cell = 48) {
     for (const x of [...kinds.keys()].sort((a, b) => a - b)) out.push({ kind: kinds.get(x), x: x * cell, y: (r.y - SOUTH_ABOVE) * cell });
   }
   return out;
+}
+
+// The side runs: a straight side is a raised cell with a low cell beside it (east: hand 'e', the decal on the low cell east of it; west: hand 'w', on the cell west of it), raised cells north and south of it
+// and low cells beside those two (no step, no diagonal). Cells under a placed outer corner's side cell (cliff-corner-{e,w}-5, six cells from its top) belong to the corner. Returns the runs as
+// [{ hand, x, y0, y1 }] (x = the raised column; y0..y1 the cells, north to south, every one straight and free); a run of one cell takes nothing (the old tile stays).
+// south: southDecals' result (the corner decals placed).
+export function sideRuns(ir, cliffs, south, cell = 48) {
+  const { w, h } = ir, out = [];
+  const raised = (x, y) => x >= 0 && y >= 0 && x < w && y < h && cliffs.isCliff(x, y) && !cliffs.wayup.has(y * w + x);
+  const low = (x, y) => x >= 0 && y >= 0 && x < w && y < h && !cliffs.isCliff(x, y);
+  const taken = new Set();   // x * h + y of a decal column cell the corner decals cover
+  for (const d of south) { const m = /^cliff-corner-([ew])-5$/.exec(d.kind); if (m) for (let k = 0; k < 6; k++) taken.add((d.x / cell) * h + d.y / cell + k); }
+  for (const [hand, dx] of [['e', 1], ['w', -1]]) {
+    for (let x = 0; x < w; x++) {
+      let y0 = -1;
+      const flush = (y) => { if (y0 >= 0 && y - y0 >= 2) out.push({ hand, x, y0, y1: y - 1, corner: taken.has((x + dx) * h + y) }); y0 = -1; };   // corner: the run ends on a placed corner's side cell
+      for (let y = 0; y < h; y++) {
+        const side = raised(x, y) && low(x + dx, y) && raised(x, y - 1) && raised(x, y + 1) && low(x + dx, y - 1) && low(x + dx, y + 1) && !taken.has((x + dx) * h + y);
+        if (side) { if (y0 < 0) y0 = y; } else flush(y);
+      }
+      flush(h);
+    }
+  }
+  return out;
+}
+
+// The side runs as decals: [{ kind, x, y }] in game px. The decal is on the low cell beside the run. A one-cell variant repeats on every cell; the two-cell variant is laid from the run's south end up, and a single
+// cell left at the north end takes the variant's top cell (variant a).
+export function sideDecals(runs, variant = SIDE.variant, cell = 48) {
+  const out = [], tall = SIDE_VARIANTS[variant];
+  for (const r of runs) {
+    const dx = r.hand === 'e' ? 1 : -1, px = (r.x + dx) * cell;
+    if (tall === 1) { for (let y = r.y0; y <= r.y1; y++) out.push({ kind: sideKind(variant, r.hand), x: px, y: y * cell }); continue; }
+    let y = r.y1;
+    for (; y - 1 >= r.y0; y -= 2) out.push({ kind: sideKind(variant, r.hand), x: px, y: (y - 1) * cell });
+    if (y >= r.y0) out.push({ kind: sideKind('a', r.hand), x: px, y: y * cell });
+  }
+  return out;
+}
+
+// Every cliff decal of a level in draw order: the side cells, then the south columns and corner cells. The one entry both bakes use.
+export function cliffDecals(ir, cliffs, cell = 48) {
+  const south = southDecals(southRuns(ir, cliffs), cell);
+  return sideDecals(sideRuns(ir, cliffs, south, cell), SIDE.variant, cell).concat(south);
+}
+
+// The dual tiles of a side run's interior (both cells of the tile are decal cells): east tiles at column x + 1, west tiles at column x, rows y0 + 1 .. y1 (and y1 + 1 where the run ends on a corner's side cell, a decal cell too). Returns the set of j * w1 + i.
+export function sideTiles(runs, w1) {
+  const tiles = new Set();
+  for (const r of runs) for (let j = r.y0 + 1; j <= r.y1 + (r.corner ? 1 : 0); j++) tiles.add(j * w1 + (r.hand === 'e' ? r.x + 1 : r.x));
+  return tiles;
 }
 
 // The dual tiles of a run's interior that the old face drew: the face tile on the lip row (the tile whose two south corners are lip cells of the run, corner 15) and the foot tile under it (the tile one row down, both north corners in the run, south corners low).

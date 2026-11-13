@@ -3,7 +3,7 @@
 // come from art/gen7/layers.json (tools/gen7-layers.mjs), the tile set from the baked .mbtiles. Pure: no page state.
 import { terrainLayers, packDepth, EMPTY, FILL_CODE, splitCode } from '../../places/src/dualgrid.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from '../../places/src/bake/openedges.mjs';
-import { southDecals, southRuns } from '../../places/src/bake/southruns.mjs';
+import { cliffDecals } from '../../places/src/bake/southruns.mjs';
 
 export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
 const FORMAT_VERSION = 1;
@@ -52,7 +52,7 @@ export function bakeCell(ir, ctx) {
   for (const cell of footprintCells(ir, ts).keys()) setBit(cell);
   return {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: '',
-    terrain: ir.terrain, ground, decals: southDecals(southRuns(ir, cliffInfo(ir, terrains))).map(d => ({ kind: index('decal', d.kind), x: d.x, y: d.y, sortY: d.y })).concat(ir.decals.map(placed('decal'))), props: ir.props.map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
+    terrain: ir.terrain, ground, decals: cliffDecals(ir, cliffInfo(ir, terrains)).map(d => ({ kind: index('decal', d.kind), x: d.x, y: d.y, sortY: d.y })).concat(ir.decals.map(placed('decal'))), props: ir.props.map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
     heart: { x: 0, y: 0, kinds: [], species: [], revealLine: '', reachBy: 'none' }, clues: [],
     finds: ir.finds.map(f => ({ x: f.x, y: f.y, kinds: f.kinds.map(k => FIND_KINDS.indexOf(k)), chance: f.chance })),
     landmarks: ir.landmarks.filter(l => l.prop && spriteFor(ts, 'prop', l.prop)).map(l => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),
