@@ -815,10 +815,10 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   assert.ok(d.some(x => x.startsWith("c-mini-other-12@")), "the HUD mini in a place");
   assert.doesNotThrow(() => p.run("ptCtx()")); assert.equal(p.run("ptCtx().ptAb"), null); assert.equal(p.run("ptCtx().ptSp"), 4, "never matches a wild species (the page is cut to three here)");
   assert.equal(p.run("canDig()"), false); assert.equal(p.run("digger()"), null);
-  assert.doesNotThrow(() => p.run("onStateChanged(); notesText();"));
+  assert.doesNotThrow(() => p.run("onStateChanged(); playNoteState();"));
   const lines = p.run("FX.notes.map(n => n.text).concat(S.log).join('\\n')");
   assert.ok(!/undefined|null/.test(lines), "no line reads undefined or null:\n" + lines);
-  assert.ok(!/undefined|null/.test(p.run("notesText()") || ""), "the debug lines");
+  assert.ok(!/undefined|null/.test(p.run("JSON.stringify(playNoteState())") || ""), "the note's details");
 });
 
 test("X1 3: the dock changes only the Companion's mibis, dockSeen and log; the Station's part is byte-identical", () => {

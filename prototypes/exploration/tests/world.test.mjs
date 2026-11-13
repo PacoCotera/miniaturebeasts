@@ -137,8 +137,8 @@ test("a save from a generator the page does not play (a newer one, or 1 to 4) is
   p.run("save0()");
   assert.equal(p.store[p.KEY], raw, "save() returns at once while read-only");
   assert.deepEqual(writes, [], "nothing was written");
-  assert.doesNotThrow(() => p.els.copyNotes.on.click(), "Copy notes is a no-op while read-only");
-  assert.deepEqual(writes, [], "Copy notes wrote nothing");
+  assert.doesNotThrow(() => p.run("playNoteState()"), "the note's details are a no-op while read-only");
+  assert.deepEqual(writes, [], "the note's details wrote nothing");
   for (const gen of [8, 0, "1", 1, 2, 3, 4]) { const o = JSON.parse(realm(Object.assign(FIXTURE(), { gen: 8 }))); o.regions[0].gen = gen; const q = page({ "mb-save-v8": JSON.stringify(o) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 

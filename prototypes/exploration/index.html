@@ -135,11 +135,8 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 .reset-ask{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; background:var(--chip); font: 500 14px/1.4 var(--font-ui); color:var(--ink)}
 .reset-ask[hidden]{display:none}
 .btn-danger{color:#a6420c; border-color:#a6420c}
-.copy-row{display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap}
 .btn{font: 500 14px/1 var(--font-ui); background:var(--chip); color:var(--ink); border:1px solid var(--line); border-bottom-width:2px; border-radius:8px; padding:9px 12px; cursor:pointer}
 .btn:hover{border-color:var(--muted)}
-#copyMsg{font-size:13px; color:var(--muted)}
-#notesFallback{width:100%; min-height:150px; margin-top:8px; font: 12.5px/1.4 ui-monospace, Menlo, Consolas, monospace; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:8px}
 .obs-note{font: 13px/1.4 var(--font-body); color:var(--muted); margin-top:8px}
 
 @media (max-width: 899px){
@@ -243,8 +240,6 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <ol class="log" id="oLog"></ol>
         <h2 id="palHead">Palette</h2>
         <div class="pal" id="oPal" role="img" aria-label="The screen palette"></div>
-        <div class="copy-row"><button class="btn" id="copyNotes" type="button">Copy playtest notes</button><span id="copyMsg" role="status"></span></div>
-        <textarea id="notesFallback" hidden readonly aria-label="Playtest notes"></textarea>
         <p class="obs-note"><code>?seed=</code> in the address sets the seed of the <b>next New world</b>; a saved world keeps playing until you choose New world. <code>?dev=1</code> opens this panel. A strike mark pays 2 / 3 / 4 / 5 Data by the tier of its place (starter, early, mid, late); the hold of 20 is the only limit on a trip.</p>
       </div>
     </div>
@@ -7333,6 +7328,7 @@ if (SHELL) {
     if (m.t === 'mb-seat' && !shellSilent) { shellSeat = m.seat | 0; SLEEP.seat(true); tellShell(true); }
     else if (m.t === 'mb-lift') SLEEP.seat(false);   // the cradle is empty: no request is answered (and an unsigned lock lets go)
     else if (m.t === 'mb-sleep' && !shellSilent) SLEEP.handle(m).then(a => { try { SHELL.postMessage({ t: 'mb-sleep-ack', nonce: m.nonce, op: m.op, ...a }, location.origin); } catch (e) { } });
+    else if (m.t === 'mb-note-ask') { try { SHELL.postMessage({ t: 'mb-note-state', id: m.id, state: playNoteState() }, location.origin); } catch (e) { } }   // a play note's details (see playNoteState)
     else if (m.t === 'mb-silent') { shellSilent = !!m.on; if (!shellSilent) tellShell(true); }
     else if (m.t === 'mb-caddy') RT.caddy = { podHome: typeof m.podHome === 'boolean' ? m.podHome : undefined, goal: m.goal || null };   // the Station's dock state, passed on by the play page (first-ten): "first pod home" and the Station's goal
   });
@@ -7433,35 +7429,15 @@ function onStateChanged() {
   const ol = document.getElementById('oLog'); ol.textContent = '';
   for (const s of S.log.slice(-8)) { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); }
 }
-function notesText() {
-  const ex = S.exp, L2 = [];
-  L2.push('Miniature Beasts · Companion Field Test · playtest notes');
-  L2.push(footEl.textContent + ' · seed ' + S.seed + ' · world turn ' + wTurn() + ' · ' + new Date().toISOString().slice(0, 16).replace('T', ' '));
-  L2.push('Expedition: ' + (ex ? ex.n + ' (' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') + '), ' + ex.actions + ' actions, shield ' + ex.shield + '/' + ex.smax : S.expN + ' not started') + ' · total actions ' + S.totalActions);
-  L2.push('Probe: tier ' + S.tier + ' · Carried: ' + (ex ? ex.cargo.e + ' energy, ' + ex.cargo.d + ' data, ' + ex.cargo.s + ' essence, ' + ex.cargo.pods.length + ' pods' : 'nothing'));
-  L2.push('Map: ' + mapCounts());
-  L2.push('Heart: ' + heartText());
-  L2.push('Energy: ' + energyText());
-  L2.push('Where: ' + whereText());
-  L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + mibiSpName(m) + ', ' + mibiStage(m) + ', ' + abTextOf(m.sp) + ')').join('; ') : 'none'));
-  L2.push('Known species: ' + (S.known.length ? S.known.map(s => spOf(s).name).join(', ') : 'none'));
-  L2.push('Pins: ' + (S.pins.length ? S.pins.map(p => { const q = cxy(p.c); return q.x + ',' + q.y + ' ' + PIN_TEXT[p.k]; }).join('; ') : 'none'));
-  L2.push('Burrow: ' + (burrowOpen() ? 'open' : 'closed') + ' · Bay: ' + S.bay.length + ' of ' + BAY + ' sealed · ' + (isDocked() ? 'docked' : 'away') + ' · Hold: ' + (S.hold ? S.hold.e + ' energy, ' + S.hold.d + ' data, ' + S.hold.s + ' essence, ' + S.hold.pods.length + ' pods' : 'empty'));
-  L2.push(''); L2.push('Recent events:'); for (const s of S.log.slice(-12)) L2.push('- ' + s);
-  L2.push(''); L2.push('Observations:'); L2.push('- ');
-  return L2.join('\n');
+// A play note's details from this device (the play page asks with `mb-note-ask`, play/src/notes.mjs): world, place, turn, expedition, carried, map counts and the last 12 events. Never a name or address.
+function playNoteState() {
+  if (!S || RT.readOnly) return { world: 'not loaded' };   // a newer page's save: no world was read
+  const ex = S.exp;
+  return { seed: S.seed, generator: S.gen || 1, place: whereText(), turn: wTurn(),
+    expedition: ex ? ex.n + ' (' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') + '), ' + ex.actions + ' actions, shield ' + ex.shield + '/' + ex.smax : S.expN + ' not started', totalActions: S.totalActions,
+    carried: ex ? ex.cargo.e + ' energy, ' + ex.cargo.d + ' data, ' + ex.cargo.s + ' essence, ' + ex.cargo.pods.length + ' pods' : 'nothing', map: mapCounts(), docked: isDocked(),
+    events: S.log.slice(-12) };
 }
-const copyBtn = document.getElementById('copyNotes'), copyMsg = document.getElementById('copyMsg'), notesTa = document.getElementById('notesFallback');
-copyBtn.addEventListener('click', () => {
-  copyBtn.blur();   // Enter goes back to the game, not to this button
-  if (RT.readOnly) return;   // a newer page's save: no world was read, so there are no notes
-  const t = notesText();
-  const fallback = () => { notesTa.hidden = false; notesTa.value = t; notesTa.focus(); notesTa.select(); copyMsg.textContent = 'Selected. Press Ctrl+C or ⌘C to copy.'; };
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(() => { notesTa.hidden = true; copyMsg.textContent = 'Copied to the clipboard.'; }, fallback);
-    else fallback();
-  } catch (e) { fallback(); }
-});
 
 // ===================== 18. Boot =====================
 // A save from a newer page stays as stored: the page reads nothing from it, writes nothing and ignores input.
