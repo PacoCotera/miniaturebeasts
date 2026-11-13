@@ -3979,8 +3979,9 @@ function bubbleArt(kind) { if (kind === '?') return walkPB('bubble-curious-11x13
   else { pb.set(2, 6, fg); pb.set(5, 6, fg); pb.set(8, 6, fg); }
   return pb; }); }
 const DROP = () => art('drop', () => { const pb = new PB(5, 7); pb.set(2, 0, C.ice); pb.rect(1, 1, 3, 2, C.ice); pb.rect(0, 3, 5, 3, C.ice); pb.rect(1, 6, 3, 1, C.sky); pb.set(1, 3, C.white); return pb; });
-function sparkArt(big) { if (STONE_PIECES.get('find-glint-1')) return STONE_PIECES.get('find-glint-1'); return art('spark' + big, () => { const r = big ? 6 : 4, pb = new PB(r * 2 + 1, r * 2 + 1);
-  pb.rect(r, 0, 1, r * 2 + 1, C.cream); pb.rect(0, r, r * 2 + 1, 1, C.cream); pb.rect(r - 1, r - 1, 3, 3, C.white); if (big) { pb.set(r - 2, r - 2, C.cream); pb.set(r + 2, r - 2, C.cream); pb.set(r - 2, r + 2, C.cream); pb.set(r + 2, r + 2, C.cream); } return pb; }); }
+// The find glint is the art desk's one signed still (art/props/find-glint-1, 12 x 13, Retro Diffusion; one picture for every ground and every frame). Until the file is in, a named empty slot: nothing is drawn in code.
+// [art] named empty slots: find-tuft (lilac tuft pickup, was 14 x 10) and find-pack (the explorer's dropped pack, was 14 x 16): the find shows the glint only.
+function sparkArt() { return STONE_PIECES.get('find-glint-1') || art('find-glint-1-empty', () => new PB(1, 1)); }
 
 // ---------- L2 terrain pieces (art desk, signed 2026-11-07): mud, earth banks, scree; the place wade, the map marks ----------
 const L2 = {};
@@ -4327,7 +4328,7 @@ const ICON = {
   pip: () => art('i-pip', () => { const pb = new PB(5, 5); pb.rect(1, 1, 3, 3, C.white); pb.outline(() => C.ink); return pb; }),
   call: (col) => art('i-call' + col, () => { const pb = new PB(14, 14), c = C[col]; pb.rect(0, 6, 2, 2, c);
     for (const r of [4, 8, 12]) for (let a = -.85; a <= .85; a += .05) pb.set(Math.round(1 + Math.cos(a) * r), Math.round(7 + Math.sin(a) * r * .9), c); return pb; }),
-  tuft: () => art('i-tuft', () => { const pb = new PB(14, 10); pb.ell(7, 6, 6, 3.6, C.lavender, { sh: [C.white, C.lilac] }); for (const x of [3, 6, 9, 11]) pb.line(x, 4, x - 1, 1, C.lavender); pb.outline(() => C.plum); return pb; }),
+  tuft: () => art('i-tuft-empty', () => new PB(14, 10)),   // named empty slot find-tuft (14 x 10, [art]): nothing is drawn in code until the painted piece is signed
   pawn: (dir) => art('i-pawn' + dir, () => { const pb = new PB(16, 17), side = dir === 'left' || dir === 'right', R = (x, y, w, h, c) => pb.rect(x, y, w, h, C[c]), SH = { sh: [C.amber, C.rust] };   // the pawn small: hood, face, round suit, belt, lantern
     R(5, 13, 2, 3, 'slate'); R(9, 13, 2, 3, 'slate'); pb.ell(8, 11, 3.2, 3.4, C.orange, SH); R(5, 11, 6, 1, 'soil'); R(side ? 9 : 10, 11, 2, 2, 'amber');
     pb.ell(8, 5.5, 4.4, 4.2, C.orange, SH);
