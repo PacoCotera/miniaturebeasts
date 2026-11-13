@@ -16,10 +16,10 @@ test("openGen: every realm opens its regions with generator 7", () => {
   assert.equal(R.openGen({ biomeV: 2 }), 7); assert.equal(R.openGen({}), 7); assert.equal(R.openGen({ biomeV: 1 }), 7);
 });
 
-test("a version 2 realm: region 1 is generator 7's home at its slot; every region opened is generator 7 in its slot's kind", () => {
+test("a new realm (kind version 3): region 1 is generator 7's home at its slot; every region opened is generator 7 in its slot's kind", () => {
   const p = makePage({ gen: 7, console: "silent" });
   p.run("newWorld(11)");
-  assert.equal(p.run("S.biomeV"), 2);
+  assert.equal(p.run("S.biomeV"), 3);
   assert.equal(p.run("S.regions[0].gen"), 7); assert.equal(p.run("S.regions[0].biome"), "mixed");
   assert.equal(digestOf(p), digest(genWorld7(11, [2, 2])), "region 1 is the home");
   const seen = new Set();

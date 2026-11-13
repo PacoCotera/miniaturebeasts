@@ -29,17 +29,18 @@ export const STRIKE_START_AGE = 3;                                       // mark
 
 // ---- life: genLife5 on each region, with a seed of the slot ----
 const LIFE = new Map();
-function lifeOf(seed) {
-  if (LIFE.has(seed)) return LIFE.get(seed);
+function lifeOf(seed, v) {   // v: the realm's kind version (biomeVersion); the lists a region's kinds come from
+  const key = seed + ':' + (v ?? '');
+  if (LIFE.has(key)) return LIFE.get(key);
   const R = realm7(seed), out = new Map();
   for (const G of R.regions) {
-    const [ax, ay] = G.slot, kinds = regionKinds({ n: ax === 2 && ay === 2 ? 1 : 2, biome: G.biome });
+    const [ax, ay] = G.slot, kinds = regionKinds({ n: ax === 2 && ay === 2 ? 1 : 2, biome: G.biome }, v);
     const cr = genLife5(G, hash(seed, 'gen7', 'life', ax, ay), kinds).cr, by = Array.from({ length: NC }, () => new Map());
     for (const x of cr) if (!x.cv) by[x.c].set(x.sp, (by[x.c].get(x.sp) || 0) + 1);
     out.set(ay * ATLAS + ax, { kinds, by });
   }
   if (LIFE.size > 3) LIFE.clear();
-  LIFE.set(seed, out); return out;
+  LIFE.set(key, out); return out;
 }
 
 // ---- starts and the strike mark within one cell of each ----
@@ -74,7 +75,7 @@ export const hostsStrike = (seed, X, Y, bareOf) => {
 export const isStartCell = (seed, X, Y) => startsOf(seed).has(X * 1000 + Y);
 
 // ---- the cell ----
-// a: { seed, X, Y, x0, y0, w, h, terrain, props, reedbanks, wayups, D (decor), hollow (the decor's sites), bareOf }
+// a: { seed, v (the realm's kind version), X, Y, x0, y0, w, h, terrain, props, reedbanks, wayups, D (decor), hollow (the decor's sites), bareOf }
 // The cell holds its finds on one ground (see mainGrounds): the biggest part a way in leads to; where that part is too bare to hold two finds (a plain meadow beside a bare ridge), the next part.
 export function holdOf(a) {
   let best = holdOn(a, 0);
@@ -148,7 +149,7 @@ function holdOn(a, pick) {
     if (lmTile) out.landmarks.push({ kind: lm.kind, name: lm.name, label: lm.name, prop: LM_PROP[lm.kind], slot: LM_SLOT[lm.kind], x: lmTile[0], y: lmTile[1] });
   }
   // ---- life ----
-  const slotLife = lifeOf(seed).get(ay * ATLAS + ax), counts = slotLife.by[c];
+  const slotLife = lifeOf(seed, a.v).get(ay * ATLAS + ax), counts = slotLife.by[c];
   const mine = slotLife.kinds.filter(k => k.hab.includes(land)), kinds = mine.length ? mine : slotLife.kinds;
   const herds = [];
   for (const k of kinds) {

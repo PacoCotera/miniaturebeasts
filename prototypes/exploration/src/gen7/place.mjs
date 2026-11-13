@@ -602,10 +602,10 @@ function decorIR(seed, x0, y0, w, h) {
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
-function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null) {
+function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
-  const hold = cell ? holdOf({ seed, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
+  const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   const props = d.props.concat(d.reedProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
   // `top`: the ground under each raised tile, only when some raised tile holds a ground other than grass (all grass draws as a place with none)
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
@@ -619,9 +619,9 @@ function bareTiles(seed, X, Y) {
   return n;
 }
 // One cell for the bake: terrain with its one-tile apron.
-export function cellIR(seed, X, Y) {
+export function cellIR(seed, X, Y, v) {
   const c = cellTerrain(seed, X, Y);
-  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top);
+  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v);
 }
 // A block of nx x ny cells as one picture (for the goldens): each cell's own tiles, side by side, with no apron. Equal to baking each cell with its apron.
 export function windowIR(seed, X0, Y0, nx, ny) {

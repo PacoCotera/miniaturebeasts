@@ -69,6 +69,21 @@ test('a cell with a landmark and its finds, spawns and openings bakes', { timeou
   }
 });
 
+test('kind version 3 puts Loikas in a non-home region of any land; version 2 and none keep today\'s kinds', { timeout: 600000 }, () => {
+  const seed = 7, G = realm7(seed).regions[0], [ax, ay] = G.slot;
+  const names = (v, X, Y) => cellIR(seed, X, Y, v).spawns.flatMap(s => s.species);
+  let loika3 = 0, loika2 = 0, loikaNone = 0, same = 0;
+  for (let c = 0; c < MW * MH && same < 25; c++) {
+    if (G.land[c] === L.WATER || G.island[c]) continue;
+    const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), n3 = names(3, X, Y), n2 = names(2, X, Y), n0 = names(undefined, X, Y);
+    assert.deepEqual(n2, n0, 'version 2 is the same as no version');
+    if (n3.includes('loika')) loika3++; if (n2.includes('loika')) loika2++; if (n0.includes('loika')) loikaNone++;
+    assert.deepEqual(n3.filter(x => x !== 'loika'), n0.filter(x => x !== 'loika'), 'every other kind in the cell is as it was'); same++;
+  }
+  assert.ok(loika3 > 0, 'Loikas in the cells of a version 3 region');
+  if (G.biome !== 'woods') assert.equal(loika2 + loikaNone, 0, G.biome + ' holds no Loika for version 2');
+});
+
 test('golden vectors: what the cells hold in seeds 7, 13 and 42', { timeout: 600000 }, () => {
   for (const seed of SEEDS) for (const [ax, ay] of SLOTS) {
     const key = seed + ':' + ax + ',' + ay;
