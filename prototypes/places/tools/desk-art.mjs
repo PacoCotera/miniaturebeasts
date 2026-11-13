@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, cornerKind, INNER_CELLS, innerKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, cornerKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -89,7 +89,6 @@ export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
 export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-plateau-raised-1/work' };
 // the south-face columns: the paid seam edit of cliff-fill-trial-2 (work/raw/step3-seam.png) -> six columns of the seamless strip, through the plain post-step chain; the files sit in the set folder with their sidecars
 export const CORNER_FROM = 'art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png';
-export const INNER_FROM = 'art-jobs/2026-11-13-cliff-inner-1/work/raw/inner-1.png';
 export const SOUTH_COLUMNS = 6,SOUTH_FROM = 'art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png';
 const SET_DIR = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
 const sha = (b) => createHash('sha256').update(b).digest('hex');
@@ -317,13 +316,6 @@ export function deskArt() {
     if (im.w !== 48 || im.h !== 288) throw new Error(`${file}: a corner cell is 48 x 288, this is ${im.w} x ${im.h}`);
     files.set(file, b); decals[cornerKind(hand, k)] = { image: im, anchor: [0, 0] };
     desk[file] = { commit: 'local', from: `${CORNER_FROM} (the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
-  }
-  // the inner-corner strip (cells 3..5, both hands; the east hand is the art director's cells, the west hand their mirror; each file's .steps.json replays it from the paid raw)
-  for (const hand of CORNER_HANDS) for (const k of INNER_CELLS) {
-    const file = `${innerKind(hand, k)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 48 || im.h !== 288) throw new Error(`${file}: an inner cell is 48 x 288, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[innerKind(hand, k)] = { image: im, anchor: [0, 0] };
-    desk[file] = { commit: 'local', from: `${INNER_FROM} (the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
   }
   return { files, props, canopy, decals, desk };
 }

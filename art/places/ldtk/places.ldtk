@@ -2506,36 +2506,6 @@
 						"id": "cliff-corner-w-5",
 						"color": 0,
 						"tileRect": null
-					},
-					{
-						"id": "cliff-inner-e-3",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-inner-e-4",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-inner-e-5",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-inner-w-3",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-inner-w-4",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "cliff-inner-w-5",
-						"color": 0,
-						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
