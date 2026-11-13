@@ -213,6 +213,48 @@
   },
   {
    "class": "paint",
+   "date": "2026-11-13",
+   "id": "f7f1e1c099",
+   "path": "art/places/sets/ninja-test/cliff-south-1.png",
+   "sha256": "4ec39a8910e2d03550b3b90c2c92a46f399cab0b430ff299b7a699216b23869f"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-13",
+   "id": "24fbe56069",
+   "path": "art/places/sets/ninja-test/cliff-south-2.png",
+   "sha256": "4af950b081ad765115c7afe47b78ed3adae222c4f2c70c1b08d80ea7feea6aa2"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-13",
+   "id": "3d535d3a0d",
+   "path": "art/places/sets/ninja-test/cliff-south-3.png",
+   "sha256": "ec78373e8691d1a80a8df1c85124e9d9dcf0ea710e7212ccf3586e2dc50f1008"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-13",
+   "id": "089ade712c",
+   "path": "art/places/sets/ninja-test/cliff-south-4.png",
+   "sha256": "c1c7493be424e7d7ddffadbecba3e983319ff554d82528ed405bb726cd05245c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-13",
+   "id": "d30ab8bf5f",
+   "path": "art/places/sets/ninja-test/cliff-south-5.png",
+   "sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-13",
+   "id": "e63b8ad41e",
+   "path": "art/places/sets/ninja-test/cliff-south-6.png",
+   "sha256": "763736c81c0356cec71afd713ab289fc3d85f6f25fe736c0aa087578e17fff39"
+  },
+  {
+   "class": "paint",
    "date": "2026-11-12",
    "id": "9459f12a24",
    "path": "art/places/sets/ninja-test/cliff-wayup.png",
@@ -343,6 +385,13 @@
    "id": "6669d79f14",
    "path": "art/places/sets/ninja-test/dry-tufts-3.png",
    "sha256": "6d95b84ebda7c8da3b8aceeeb255bfe0d7cdc442b0461b68c738e6c49067e2e3"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-13",
+   "id": "f9450e273e",
+   "path": "art/places/sets/ninja-test/fill-cliff.png",
+   "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002"
   },
   {
    "class": "legacy-paint",
@@ -1291,6 +1340,13 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-13",
+   "id": "f099ca0209",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "451cc081484a7fabaae568bb36582e7637f820ddac073ef64e6e0db452cbb669"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "a02bb61525",
    "path": "art/places/sets/ninja-test/stump.png",
@@ -1302,6 +1358,13 @@
    "id": "f6c8688513",
    "path": "art/places/sets/ninja-test/stump.png",
    "sha256": "94d02af02077168eeb02e9ecb811c3523428f0fc86af0ccbdd90ff44356d4c1c"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-13",
+   "id": "05a7efc3a0",
+   "path": "art/places/sets/ninja-test/tone-grass-raised.png",
+   "sha256": "c92b96e624f7333309d6e38e9e90f00a3613779d17b9b6ad6105e66fc30fe7b6"
   },
   {
    "class": "legacy-paint",
