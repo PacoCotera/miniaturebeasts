@@ -5,7 +5,7 @@
 
 export const PHONE_BAR = 52, PHONE_PAD = 6, TOUCH = 44, Z_MAX = 8, SHELL_H_LP = 616;
 export const SHELL_W_LP = { station: 1040, companion: 466 };
-const GAP = 10, EDGE = 12;
+const GAP = 10, EDGE = 12, FILL = 0.9;
 
 // a phone: a coarse pointer (touch) on a window whose short side is under 600 CSS px
 export const isPhone = (coarse, W, H) => !!coarse && Math.min(W, H) < 600;
@@ -37,6 +37,8 @@ export function phoneFit(dev, W, H, dpr) {
   if (portrait) { zw = (areaW * dpr) / lp; zh = ((areaH - trayMin(dev)) * dpr) / SHELL_H_LP; }
   else { const s = sides(dev, areaH); zw = ((areaW - s.LW - s.RW - 16) * dpr) / lp; zh = (areaH * dpr) / SHELL_H_LP; }
   const z = Math.min(zw, zh);
+  // the Companion fills the phone (owner 2026-11-13): a whole z when it uses at least FILL of the room, else the largest smooth step that still fits (nearest-neighbour, never cropped)
+  if (dev === "companion" && z >= 1 && Math.floor(z) < FILL * z) return { portrait, z: Math.min(Z_MAX, Math.floor(z * 64) / 64) };
   return { portrait, z: z >= 1 ? Math.min(Z_MAX, Math.floor(z)) : Math.max(1 / 16, Math.floor(z * 64) / 64) };
 }
 

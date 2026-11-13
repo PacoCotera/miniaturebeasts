@@ -567,7 +567,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'find-glint-1': 0, ...Object.fromEntries(['meadow', 'wood', 'drygrass', 'turf', 'scree'].map(l => ['way-through-path-end-' + l, 0])), 'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { 'find-glint-1': 0, 'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
@@ -5547,7 +5547,6 @@ function drawPatchBody(t) {
   if (ts === 48 && bk && lay.rim && ART48.ready) { const rs = lay.rimSet || (lay.rimSet = new Set(lay.rim)); for (const s2 of layers48(lay, fr).sprites) if (rs.has(s2.ty * lay.w + s2.tx) && vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) }); }   // the rim's reeds, as a generated place's
   if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; let heroDrawn = false;
-  if (!lay.cave) items.push({ y: -1e9, d: drawWayPaths });   // the worn path ends of the ways through lie on the ground, under every sprite
   items.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); if (it.hero) heroDrawn = true; } catch (e) { if (RT.err++ < 3) console.error(e); } });   // one sprite that throws costs that sprite, never the explorer or the rest of the frame
   if (!heroDrawn) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
   if (TEST.boom === 2) throw new Error('test: the place view throws after its sprites');   // test hook only
@@ -5696,7 +5695,7 @@ function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
 // The edge look on the walk (owner walk notes 4, 13, 14, 16, 26-28; one vocabulary with the map, in the map's ink):
 //   can't go yet (the Probe's reach): a dashed ink line on the haze, along the side's inner face;
 //   a way through: two threshold marks across the gap and, within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
-// The art desk's pieces: way-through-path-end-<land> (the worn path), way-through-mark-stone and -stake (the two threshold marks), drawn from art/props.
+// The art desk's pieces: way-through-mark-stone and -stake (the two threshold marks), drawn from art/props.
 // [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
 const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land', TAB_NEAR = 3;
 function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
@@ -5707,32 +5706,6 @@ function edgeSides(lay, P) {   // each opening of a baked place with its side in
     const ns = o.side === 'N' || o.side === 'S', a0 = a + (ns ? bk.ox : bk.oy), a1 = b + 1 + (ns ? bk.ox : bk.oy);   // along the side, in the place's tiles; the side itself is the place's own edge (the baked apron lies outside it)
     out.push({ o, k, x0: ns ? a0 : o.side === 'W' ? 0 : lay.w, x1: ns ? a1 : o.side === 'W' ? 0 : lay.w, y0: !ns ? a0 : o.side === 'N' ? 0 : lay.h, y1: !ns ? a1 : o.side === 'N' ? 0 : lay.h }); }
   return out;
-}
-// The worn path end of a way through (art/props way-through-path-end-<land>, signed in mibi-art art/art-paint-map-edges, 3 px to an art pixel): it runs in from the gap along the ground and frays out, a ground
-// piece drawn under every sprite. Its land is the ground of the first tile inside the gap (leaf litter, dry grass, short turf, scree; anything else the meadow's). The pieces run out to the right: turned a quarter for a
-// north or south side, mirrored for an east one (layout only).
-const PATH_LAND = { 11: 'wood', 12: 'drygrass', 13: 'turf', 14: 'scree' }, TURNED = new WeakMap();
-function turnCanvas(cv, q) {   // a canvas turned a quarter clockwise (q 1) or counter-clockwise (q 3)
-  const k = TURNED.get(cv) || {}; if (k[q]) return k[q];
-  const w = cv.width, h = cv.height, src = cv.getContext('2d').getImageData(0, 0, w, h), out = document.createElement('canvas'); out.width = h; out.height = w;
-  const oc = out.getContext('2d'), id = oc.createImageData(h, w);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const s = (y * w + x) * 4, nx = q === 1 ? h - 1 - y : y, ny = q === 1 ? x : w - 1 - x; id.data.set(src.data.subarray(s, s + 4), (ny * h + nx) * 4); }
-  oc.putImageData(id, 0, 0); k[q] = out; TURNED.set(cv, k); return out;
-}
-function drawWayPaths() {
-  const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
-  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + tx * ts, sy = ty => pl.y + ty * ts;
-  clipView();
-  for (const e of edgeSides(lay, P)) {
-    if (e.k.kind !== 'open' || stepCell(lay.cell, SIDE_DIR[e.o.side]) < 0) continue;   // a way through only
-    const side = e.o.side, vertical = side === 'W' || side === 'E', pt = lay.baked.place;
-    const tx = vertical ? (side === 'W' ? 0 : lay.w - 1) : (e.x0 + e.x1 - 1) >> 1, ty = vertical ? (e.y0 + e.y1 - 1) >> 1 : (side === 'N' ? 0 : lay.h - 1);   // the first tile inside the gap's middle, in page tiles
-    const pc = propPiece('way-through-path-end-' + (PATH_LAND[pt.terrain[(ty + 1) * pt.w + tx + 1]] || 'meadow') + 'x3'); if (pc.w <= 1) continue;
-    let cv = pc.canvas(0, side === 'E'), w = pc.w, h = pc.h;
-    if (!vertical) { cv = turnCanvas(cv, side === 'N' ? 1 : 3); [w, h] = [h, w]; }
-    const x = vertical ? (side === 'W' ? sx(e.x0) : sx(e.x0) - w) : (sx(e.x0) + sx(e.x1)) / 2 - w / 2, y = vertical ? (sy(e.y0) + sy(e.y1)) / 2 - h / 2 : (side === 'N' ? sy(e.y0) : sy(e.y0) - h);
-    g.drawImage(cv, Math.round(x), Math.round(y)); }
-  g.restore();
 }
 function drawEdgeLook(t) {
   const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;

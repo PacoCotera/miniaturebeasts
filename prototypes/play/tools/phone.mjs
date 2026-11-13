@@ -75,7 +75,7 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
     eq([m.shellVis, m.otherVis], ["visible", "hidden"], tag + ": one device at a time, the other is not shown (it is never to the right, off screen)");
     expect(inside(m.canvas, W, H) && inside(m.frame, W, H) && inside(m.shell, W, H), tag + `: the canvas, frame and shell are whole in the viewport (canvas ${JSON.stringify(m.canvas)})`);
     expect(m.keys.every((k) => inside(k, W, H)) && inside(m.tray, W, H), tag + ": the tray and every key are whole in the viewport");
-    expect(m.z >= 1 ? Number.isInteger(m.z) : m.z > 0, tag + ": z is a whole number when one fits (" + m.z + ")");
+    expect(m.z >= 1 && dev === "station" ? Number.isInteger(m.z) : m.z > 0, tag + ": z is a whole number when one fits (" + m.z + ")");
     expect(Math.abs(m.canvas.w * m.dpr - (dev === "station" ? 1024 : 450) * m.z) < 1.5, tag + `: the canvas is ${m.z} device px an lp (${m.canvas.w * m.dpr} wide)`);
     expect(m.keys.length === (dev === "station" ? 11 : 7) && m.keys.every((k) => k.w >= 44 - 1e-6 && k.h >= 44 - 1e-6), tag + ": every key is a 44 touch target " + JSON.stringify(m.keys.map((k) => [k.name, Math.round(k.w * 10) / 10, Math.round(k.h * 10) / 10]).filter((k) => k[1] < 44 || k[2] < 44)));
     for (let i = 0; i < m.keys.length; i++) for (let j = i + 1; j < m.keys.length; j++) expect(!overlaps(m.keys[i], m.keys[j]), `${tag}: ${m.keys[i].name} and ${m.keys[j].name} overlap`);
