@@ -1878,6 +1878,13 @@
    "sha256": "8c62198608779f236fcde5385147ee0ca1a6068439bcfde64d05045d8594604f"
   },
   {
+   "class": "paint",
+   "date": "2026-11-12",
+   "id": "67c6fad30e",
+   "path": "prototypes/exploration/art/props/find-glint-1.png",
+   "sha256": "826c20247312458306b6025ffc9c2cd53a0202c48f8e44f366a001a8b250c6a1"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "72d64d319e",

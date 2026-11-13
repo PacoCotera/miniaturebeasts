@@ -567,7 +567,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { ...Object.fromEntries(['meadow', 'wood', 'drygrass', 'turf', 'scree'].map(l => ['way-through-path-end-' + l, 0])), 'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { 'find-glint-1': 0, ...Object.fromEntries(['meadow', 'wood', 'drygrass', 'turf', 'scree'].map(l => ['way-through-path-end-' + l, 0])), 'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
@@ -3974,8 +3974,9 @@ function bubbleArt(kind) { if (kind === '?') return walkPB('bubble-curious-11x13
   else { pb.set(2, 6, fg); pb.set(5, 6, fg); pb.set(8, 6, fg); }
   return pb; }); }
 const DROP = () => art('drop', () => { const pb = new PB(5, 7); pb.set(2, 0, C.ice); pb.rect(1, 1, 3, 2, C.ice); pb.rect(0, 3, 5, 3, C.ice); pb.rect(1, 6, 3, 1, C.sky); pb.set(1, 3, C.white); return pb; });
-function sparkArt(big) { return art('spark' + big, () => { const r = big ? 6 : 4, pb = new PB(r * 2 + 1, r * 2 + 1);
-  pb.rect(r, 0, 1, r * 2 + 1, C.cream); pb.rect(0, r, r * 2 + 1, 1, C.cream); pb.rect(r - 1, r - 1, 3, 3, C.white); if (big) { pb.set(r - 2, r - 2, C.cream); pb.set(r + 2, r - 2, C.cream); pb.set(r - 2, r + 2, C.cream); pb.set(r + 2, r + 2, C.cream); } return pb; }); }
+// The find glint is the art desk's one signed still (art/props/find-glint-1, 12 x 13, Retro Diffusion; one picture for every ground and every frame). Until the file is in, a named empty slot: nothing is drawn in code.
+// [art] named empty slots: find-tuft (lilac tuft pickup, was 14 x 10) and find-pack (the explorer's dropped pack, was 14 x 16): the find shows the glint only.
+function sparkArt() { return STONE_PIECES.get('find-glint-1') || art('find-glint-1-empty', () => new PB(1, 1)); }
 
 // ---------- L2 terrain pieces (art desk, signed 2026-11-07): mud, earth banks, scree; the place wade, the map marks ----------
 const L2 = {};
@@ -4322,7 +4323,7 @@ const ICON = {
   pip: () => art('i-pip', () => { const pb = new PB(5, 5); pb.rect(1, 1, 3, 3, C.white); pb.outline(() => C.ink); return pb; }),
   call: (col) => art('i-call' + col, () => { const pb = new PB(14, 14), c = C[col]; pb.rect(0, 6, 2, 2, c);
     for (const r of [4, 8, 12]) for (let a = -.85; a <= .85; a += .05) pb.set(Math.round(1 + Math.cos(a) * r), Math.round(7 + Math.sin(a) * r * .9), c); return pb; }),
-  tuft: () => art('i-tuft', () => { const pb = new PB(14, 10); pb.ell(7, 6, 6, 3.6, C.lavender, { sh: [C.white, C.lilac] }); for (const x of [3, 6, 9, 11]) pb.line(x, 4, x - 1, 1, C.lavender); pb.outline(() => C.plum); return pb; }),
+  tuft: () => art('i-tuft-empty', () => new PB(14, 10)),   // named empty slot find-tuft (14 x 10, [art]): nothing is drawn in code until the painted piece is signed
   pawn: (dir) => art('i-pawn' + dir, () => { const pb = new PB(16, 17), side = dir === 'left' || dir === 'right', R = (x, y, w, h, c) => pb.rect(x, y, w, h, C[c]), SH = { sh: [C.amber, C.rust] };   // the pawn small: hood, face, round suit, belt, lantern
     R(5, 13, 2, 3, 'slate'); R(9, 13, 2, 3, 'slate'); pb.ell(8, 11, 3.2, 3.4, C.orange, SH); R(5, 11, 6, 1, 'soil'); R(side ? 9 : 10, 11, 2, 2, 'amber');
     pb.ell(8, 5.5, 4.4, 4.2, C.orange, SH);
