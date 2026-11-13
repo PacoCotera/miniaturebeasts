@@ -45,6 +45,7 @@ jobs:
             design
             hardware
             v1/native/vendor
+            v1/native/shared/fonts
             art/companion-48
             art/places
             art/device-buttons
@@ -208,6 +209,7 @@ jobs:
             design
             hardware
             v1/native/vendor
+            v1/native/shared/fonts
             art/companion-48
             art/places
             art/device-buttons

@@ -1,0 +1,167 @@
+{
+  "updated": "2026-11-13",
+  "pending": [
+    {
+      "files": ["prototypes/places/vendor/"],
+      "note": "The level editor's JSON schema file carries no licence text of its own; the upstream licence is being confirmed before it is listed."
+    }
+  ],
+  "entries": [
+    {
+      "kind": "code",
+      "what": "p-queue 10.0.0, a promise queue",
+      "source": "p-queue on npm",
+      "author": "Sindre Sorhus",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://github.com/sindresorhus/p-queue",
+      "where": "Runs the Station's queue of pictures; bundled into the play pages.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "FastNoise Lite 1.1.1, a noise generator",
+      "source": "fastnoise-lite on npm",
+      "author": "Jordan Peck and the FastNoise Lite contributors",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://github.com/Auburn/FastNoiseLite",
+      "where": "Shapes the land of the exploration page.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "flatqueue 3.1.0, a priority queue",
+      "source": "flatqueue on npm",
+      "author": "Vladimir Agafonkin",
+      "licence": { "name": "ISC", "url": "https://spdx.org/licenses/ISC.html" },
+      "url": "https://github.com/mourner/flatqueue",
+      "where": "Orders the steps of the exploration page's land-making.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "idb-keyval 6.3.0, simple browser storage",
+      "source": "idb-keyval on npm",
+      "author": "Jake Archibald",
+      "licence": { "name": "Apache-2.0", "url": "https://spdx.org/licenses/Apache-2.0.html" },
+      "url": "https://github.com/jakearchibald/idb-keyval",
+      "where": "Keeps a saved game in the browser.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "FlatBuffers 25.9.23 (JavaScript runtime)",
+      "source": "flatbuffers on npm",
+      "author": "Google",
+      "licence": { "name": "Apache-2.0", "url": "https://spdx.org/licenses/Apache-2.0.html" },
+      "url": "https://github.com/google/flatbuffers",
+      "where": "Reads the baked places in the game.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "React 19.3.1 and React DOM 19.3.1",
+      "source": "react and react-dom on npm",
+      "author": "Meta Platforms, Inc. and affiliates",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://react.dev",
+      "where": "Draws the Options panel on the play page.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "Radix UI 1.8.1, accessible interface parts",
+      "source": "radix-ui on npm",
+      "author": "WorkOS",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://www.radix-ui.com",
+      "where": "The switches and choices of the Options panel; bundled together with React into one file.",
+      "added": "2026-11-13",
+      "files": ["prototypes/play/vendor/"]
+    },
+    {
+      "kind": "code",
+      "what": "qrcode 1.5.4, a QR code maker",
+      "source": "qrcode on npm",
+      "author": "Ryan Day",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://github.com/soldair/node-qrcode",
+      "where": "Makes the QR codes of the first web prototype.",
+      "added": "2026-11-13"
+    },
+    {
+      "kind": "code",
+      "what": "LVGL 9.6.0, a small-screen graphics library",
+      "source": "LVGL on GitHub",
+      "author": "LVGL Kft",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://lvgl.io",
+      "where": "Draws the Station's screen, in the browser and on the device; kept unchanged.",
+      "added": "2026-11-13",
+      "files": ["v1/native/vendor/"]
+    },
+    {
+      "kind": "code",
+      "what": "jsmn, a one-header JSON reader",
+      "source": "jsmn on GitHub",
+      "author": "Serge Zaitsev",
+      "licence": { "name": "MIT", "url": "https://spdx.org/licenses/MIT.html" },
+      "url": "https://github.com/zserge/jsmn",
+      "where": "Reads the Station screen's description files; kept unchanged.",
+      "added": "2026-11-13",
+      "files": ["prototypes/face/src/vendor/"]
+    },
+    {
+      "kind": "font",
+      "what": "Inter 4.1, a typeface (Regular, Medium and SemiBold)",
+      "source": "Inter release 4.1",
+      "author": "The Inter Project Authors",
+      "licence": { "name": "SIL Open Font License 1.1", "url": "https://openfontlicense.org/open-font-license-official-text/" },
+      "url": "https://github.com/rsms/inter",
+      "where": "The Station's type, drawn from glyph sheets made from these files; tabular figures fixed in, which the licence allows.",
+      "added": "2026-11-13",
+      "files": ["prototypes/ui/fonts/", "prototypes/face/src/fonts/"]
+    },
+    {
+      "kind": "font",
+      "what": "Inter, variable font (Latin)",
+      "source": "Inter release",
+      "author": "The Inter Project Authors",
+      "licence": { "name": "SIL Open Font License 1.1", "url": "https://openfontlicense.org/open-font-license-official-text/" },
+      "url": "https://github.com/rsms/inter",
+      "where": "The type of the 3D body workbench, a tool for making creature bodies.",
+      "added": "2026-11-13",
+      "files": ["prototypes/workbench/body/wb/web/src/fonts/"]
+    },
+    {
+      "kind": "font",
+      "what": "Bitstream Vera Sans and Sans Bold, a typeface",
+      "source": "Bitstream Vera fonts",
+      "author": "Bitstream, Inc.",
+      "licence": { "name": "Bitstream Vera Fonts licence", "url": "https://www.gnome.org/fonts/" },
+      "url": "https://www.gnome.org/fonts/",
+      "where": "The type of the device's native screen; kept unchanged.",
+      "added": "2026-11-13",
+      "files": ["v1/native/shared/fonts/"]
+    },
+    {
+      "kind": "art",
+      "what": "Ninja Adventure Asset Pack, ground and plant tiles",
+      "source": "itch.io",
+      "author": "Pixel-boy and AAA",
+      "licence": { "name": "CC0 1.0 Universal", "url": "https://creativecommons.org/publicdomain/zero/1.0/" },
+      "url": "https://pixel-boy.itch.io/ninja-adventure-asset-pack",
+      "where": "A stand-in tile set for tests and the public sandbox's map. CC0 asks for no credit; we give it.",
+      "added": "2026-11-07"
+    },
+    {
+      "kind": "art",
+      "what": "2D Circle Graphic Desert Cliffs, a cliff tile set",
+      "source": "OpenGameArt",
+      "author": "Jetrel",
+      "licence": { "name": "CC0 1.0 Universal", "url": "https://creativecommons.org/publicdomain/zero/1.0/" },
+      "url": "https://opengameart.org/content/2d-circle-graphic-desert-cliffs",
+      "where": "Starting shapes for our cliff corners: redrawn and recoloured, never shown as it is. A related cliff set on the same site is credited to Dan Cook, and we thank him here too.",
+      "added": "2026-11-13"
+    }
+  ]
+}

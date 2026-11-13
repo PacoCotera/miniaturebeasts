@@ -3,9 +3,12 @@ import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 // the LVGL face the station boots must be in the assembled site
 for (const f of ['_site/sandbox/face/dist/face.mjs', '_site/sandbox/face/dist/face.wasm']) if (!existsSync(f)) { console.log('missing from the assembled site: ' + f); process.exit(1); }
+// every third-party file in a vendor or fonts folder has a credits.json entry
+import { check as creditsCheck } from './credits-check.mjs';
+if (!creditsCheck()) process.exit(1);
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + '/' : import.meta.url);
 const { chromium } = require('playwright');
-const pages = ['/', '/roadmap/', '/sandbox/exploration/', '/sandbox/station/', '/sandbox/play/', '/sandbox/test/'];
+const pages = ['/', '/roadmap/', '/credits.html', '/sandbox/exploration/', '/sandbox/station/', '/sandbox/play/', '/sandbox/test/'];
 const browser = await chromium.launch();
 let failed = false;
 for (const path of pages) {
@@ -28,6 +31,7 @@ for (const path of pages) {
   const foot = path === '/' ? '#build' : path === '/sandbox/test/' ? '#foot' : /\/sandbox\/(station|exploration)\/$/.test(path) ? '#buildFoot' : null;
   if (foot) await page.waitForFunction((s) => /^© 2026 Dirty Pawz Press · [0-9a-f]{7} · \d\d\/\d\d \d\d:\d\d( · save v\d+ · Caddy (online|offline))?$/.test(document.querySelector(s)?.textContent || ''), foot, { timeout: 5000 }).catch(() => errors.push(path + ': build footer missing or local'));
   if (path === '/roadmap/' && (await page.locator('#modules details').count()) === 0) errors.push('roadmap: no items rendered from /roadmap.json');
+  if (path === '/credits.html' && (await page.locator('#credits .item').count()) === 0) errors.push('credits: no entries rendered from /credits.json');
   console.log(path, errors.length ? 'ERRORS: ' + errors.join(' | ') : 'ok');
   if (errors.length) failed = true;
   await page.close();

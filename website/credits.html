@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172e25">
+<title>Credits · Miniature Beasts</title>
+<meta name="description" content="The libraries, typefaces and artwork Miniature Beasts is built on, with their authors and licences.">
+<link rel="canonical" href="https://miniaturebeasts.com/credits.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172e25'/%3E%3Cpath d='M16 6c-6 0-9 8-9 13a9 9 0 0 0 18 0c0-5-3-13-9-13z' fill='%23dcdf9b'/%3E%3Ccircle cx='12.5' cy='18' r='1.8' fill='%23ee9b58'/%3E%3Ccircle cx='19' cy='22' r='1.8' fill='%23ee9b58'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Miniature Beasts">
+<meta property="og:url" content="https://miniaturebeasts.com/credits.html">
+<meta property="og:title" content="Credits · Miniature Beasts">
+<meta property="og:description" content="The libraries, typefaces and artwork Miniature Beasts is built on, with their authors and licences.">
+<style>
+/* Tokens and type roles as the homepage and the roadmap. */
+:root {
+  color-scheme: light;
+  --forest: #172e25;
+  --paper: #f5f2e9;
+  --panel: #e6e8dd;
+  --ink: #222e26;
+  --muted: #61725f;
+  --on-dark: #e5eadd;
+  --lime: #dcdf9b;
+  --orange: #ee9b58;
+  --line: #c9cec2;
+  --fs-display: clamp(2.75rem, 5vw, 4.5rem);
+  --fs-section: clamp(2rem, 3.4vw, 3.25rem);
+  --fs-body: 1.0625rem;
+  --fs-caption: 0.8125rem;
+  --content: 1200px;
+  --gutter: 32px;
+  --pad: 112px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-size: var(--fs-body); line-height: 1.55; overflow-x: clip; }
+h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+.top a:focus-visible, .end a:focus-visible { outline-color: var(--orange); }
+h1 { font-size: var(--fs-display); font-weight: 800; line-height: .98; letter-spacing: -.03em; max-width: 20ch; }
+h1 span { color: var(--lime); }
+h2 { font-size: var(--fs-section); font-weight: 800; line-height: 1.02; letter-spacing: -.02em; max-width: 22ch; }
+.copy { max-width: 36em; }
+.eyebrow { font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1.55; margin-bottom: 12px; color: var(--muted); }
+.top .eyebrow { color: var(--lime); }
+.caption { font-size: var(--fs-caption); line-height: 1.55; color: var(--muted); max-width: 60ch; }
+.wrap { max-width: calc(var(--content) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+.skip { position: absolute; left: 16px; top: -100px; z-index: 5; background: var(--paper); color: var(--ink); padding: 12px; font-weight: 700; }
+.skip:focus { top: 16px; }
+
+.top { background: var(--forest); color: var(--on-dark); }
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 24px; padding-bottom: 24px; }
+.wordmark { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; }
+.masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
+.masthead nav a { text-decoration: none; }
+.masthead nav a:hover { text-decoration: underline; }
+.hero { padding-top: 48px; padding-bottom: 64px; }
+.hero .copy { margin-top: 24px; }
+
+main.wrap { padding-top: 64px; padding-bottom: var(--pad); }
+.group + .group { margin-top: 64px; }
+.group h2 { font-size: 1.5rem; letter-spacing: -.01em; line-height: 1.2; }
+.group .caption { margin-top: 8px; }
+.list { margin-top: 24px; border-top: 1px solid var(--line); }
+.item { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px 48px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.item h3 { font-size: var(--fs-body); font-weight: 700; line-height: 1.35; }
+.item .by { color: var(--muted); margin-top: 2px; }
+.item .where { max-width: 44em; }
+.item .meta { margin-top: 8px; font-size: var(--fs-caption); line-height: 1.55; color: var(--muted); }
+.item .meta a { font-weight: 700; color: var(--ink); }
+
+.end { background: var(--forest); color: var(--on-dark); }
+footer { padding-bottom: 32px; }
+.end .caption { color: rgb(229 234 221 / .75); }
+.foot { border-top: 1px solid rgb(229 234 221 / .2); padding-top: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px 32px; }
+.wordmark-lg { font-size: var(--fs-section); font-weight: 800; line-height: 1.02; letter-spacing: -.02em; text-transform: uppercase; text-decoration: none; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 700; }
+.foot nav a { text-decoration: none; }
+.foot nav a:hover { text-decoration: underline; }
+.foot-lines { margin-top: 24px; }
+.foot-lines .caption { max-width: none; }
+.end footer { padding-top: 64px; }
+
+@media (max-width: 760px) {
+  :root { --gutter: 16px; --pad: 64px; }
+  .masthead nav a:not(.home) { display: none; }
+  .hero { padding-top: 24px; padding-bottom: 48px; }
+  main.wrap { padding-top: 40px; }
+  .group + .group { margin-top: 48px; }
+  .item { grid-template-columns: 1fr; gap: 6px; padding: 16px 0; }
+  .end footer { padding-top: 48px; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#credits">Skip to the credits</a>
+
+<div class="top">
+  <header class="wrap masthead">
+    <a class="wordmark" href="./">Miniature Beasts</a>
+    <nav aria-label="Main">
+      <a class="home" href="./">Home</a>
+      <a href="roadmap/">Roadmap</a>
+      <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+    </nav>
+  </header>
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <p class="eyebrow">Credits</p>
+    <h1 id="hero-title">Built on<br><span>good work.</span></h1>
+    <p class="copy">The libraries, typefaces and artwork Miniature Beasts is made with, who made them and the licence each one comes under.</p>
+  </section>
+</div>
+
+<main id="credits" class="wrap">
+  <noscript><p class="copy">The credits did not load. <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/THIRD_PARTY_NOTICES.md">Read the notices on GitHub.</a></p></noscript>
+</main>
+
+<div class="end">
+  <footer class="wrap">
+    <div class="foot">
+      <a class="wordmark-lg" href="./">Miniature Beasts</a>
+      <nav aria-label="Footer">
+        <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+        <a href="roadmap/">Roadmap</a>
+        <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a>
+        <a href="credits.html" aria-current="page">Credits</a>
+      </nav>
+    </div>
+    <div class="foot-lines">
+      <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
+      <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
+    </div>
+  </footer>
+</div>
+<script>
+(() => {
+  // The page is built from credits.json and nothing else: one entry there, one entry here.
+  const GROUPS = [
+    { kind: 'code', title: 'Code', note: 'Libraries the site and the game run on.' },
+    { kind: 'font', title: 'Typefaces', note: 'Fonts used in the game and its tools.' },
+    { kind: 'art', title: 'Artwork', note: 'Pictures our own art is started from or stands in for.' },
+  ];
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    for (const k of kids) n.append(k);   // strings become text nodes, never HTML
+    return n;
+  };
+  const link = (text, href) => el('a', { href, rel: 'noopener' }, text);
+
+  function render(data) {
+    const root = document.getElementById('credits');
+    root.replaceChildren();
+    for (const g of GROUPS) {
+      const rows = data.entries.filter(e => e.kind === g.kind);
+      if (!rows.length) continue;
+      const list = el('ul', { class: 'list' });
+      for (const e of rows) {
+        list.append(el('li', { class: 'item' },
+          el('div', {}, el('h3', {}, e.what), el('p', { class: 'by' }, e.author)),
+          el('div', {},
+            el('p', { class: 'where' }, e.where),
+            el('p', { class: 'meta' }, 'From ', link(e.source, e.url), ' · ', link(e.licence.name, e.licence.url)))));
+      }
+      root.append(el('section', { class: 'group', 'aria-labelledby': 'g-' + g.kind },
+        el('h2', { id: 'g-' + g.kind }, g.title), el('p', { class: 'caption' }, g.note), list));
+    }
+  }
+
+  fetch('credits.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(e => {
+      console.warn('credits: did not load', e);
+      document.getElementById('credits').replaceChildren(el('p', { class: 'copy' }, 'The credits did not load. ',
+        link('Read the notices on GitHub.', 'https://github.com/PacoCotera/miniaturebeasts/blob/main/THIRD_PARTY_NOTICES.md')));
+    });
+})();
+</script>
+</body>
+</html>
