@@ -1,4 +1,4 @@
-// The play note's one state and its actions (design: play-notes-design-4 §2). The panel, the page's bar and the shell all read it: subscribe / getState.
+// The play note's one state and its actions. The panel, the page's bar and the shell all read it: subscribe / getState.
 // host (the shell): getCanvas() the played device's #screen, context() -> details to send, source() -> noteFrom, say(key, vars), flash() the brief outline round the screen.
 import * as idb from "idb-keyval";
 import { LIMITS, canAdd, isClip, isEmpty, createQueue } from "../../src/notes.mjs";

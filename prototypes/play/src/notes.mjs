@@ -1,4 +1,4 @@
-// Play notes, the logic (design: play-notes-design-4 §2, owner 2026-11-12 18:2x): one note is some pictures and clips, an optional line, and the details sent with it.
+// Play notes, the logic: one note is some pictures and clips, an optional line, and the details sent with it.
 // Pure and testable: no DOM, no React. The panel (play/options) draws it; the shell fills it with the played device's canvas.
 //   noteFrom   the stored setting that names the sender ("owner" unless the agent testers set their persona); never a name, address or user-agent string
 //   queue      unsent notes live in IndexedDB (idb-keyval) until the route has them; they go when the page is next online

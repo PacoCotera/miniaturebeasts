@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The play-note journey (play-notes-client): on the play page, headless, with the notes route stubbed (play-notes-service builds the real one):
+// The play-note journey: on the play page, headless, with the notes route stubbed (play-notes-service builds the real one):
 // Options -> New note (the screen from when Options opened is in), text, + Whole screen, + Section (drag), + Last 10 seconds, Keep playing, the bar's Note · n and + Whole screen / Shift+N, Record and Stop,
 // Send (the multipart body the route takes), then offline: a note is kept in IndexedDB, survives a reload and goes when the route answers. NOTES_SHOTS=<dir> also writes screenshots (laptop and phone).
 //   PW_DIR=/home/mb/pw156 PLAYWRIGHT_BROWSERS_PATH=/home/mb/pw156/browsers node prototypes/play/tools/notes-journey.mjs

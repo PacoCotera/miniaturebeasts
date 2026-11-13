@@ -1,4 +1,4 @@
-// Play notes, the pictures and clips taken from a device's own canvas (design: play-notes-design-4 §1, "Pick"). Built into the Options bundle (play/options), because it needs Mediabunny.
+// Play notes, the pictures and clips taken from a device's own canvas. Built into the Options bundle (play/options), because it needs Mediabunny.
 //   shot(canvas)           the canvas's exact pixels as a PNG (toBlob): the bar and the dialogs are page DOM and never in it
 //   createTap(getCanvas)   WebCodecs VideoEncoder fed each frame of the played device's canvas, a key frame every second; chunks kept in a 10 s ring (ClipRing);
 //                          last() packs the ring into an MP4, record()/stop() make a manual clip (up to 15 s). With no WebCodecs (Firefox on Android) only

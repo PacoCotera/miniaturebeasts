@@ -1,4 +1,4 @@
-// Play notes (design: play-notes-design-4 §3). A note is a multipart post from the play page: an optional line, the
+// Play notes. A note is a multipart post from the play page: an optional line, the
 // context the page sends along (build, world, place, light ...), a source ("owner" or a tester's persona), up to 8 shots
 // (PNG/JPEG/WebP) and 2 clips (MP4/WebM). Stored append only on the service's card as notes/<date>/<id>/note.json,
 // shot-N.<ext>, clip-N.<ext>; a note is written whole into a hidden folder and renamed into place, never changed after.
