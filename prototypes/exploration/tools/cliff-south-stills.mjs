@@ -59,6 +59,21 @@ if (WHICH === 'find') {
   if (!best) throw new Error('no run of 6-7 cells with a corner at each end in a window that bakes');
   best.name = `seed${best.seed}c-corners`; views.push(best);
   writeFileSync(A, JSON.stringify(views, null, 1) + '\n'); console.log(`${best.name}: cells (${best.X0},${best.Y0}) tile (${best.tx},${best.ty}) run ${best.n} cells`);
+} else if (WHICH === 'findinner') {
+  // a view showing an inner corner: a run of 4 to 8 cells with an inner corner at an end, the other end an inner or outer corner if possible, low ground under the lip of 3 rows or more
+  const views = JSON.parse(readFileSync(A, 'utf8')).filter((v) => !v.name.endsWith('-inner'));
+  const cands = [];
+  for (const seed of [7, 13]) for (const { ir, X, Y, cliffs, runs } of scan(seed)) for (const r of runs) {
+    const n = r.x1 - r.x0 + 1, mid = (r.x0 + r.x1) >> 1;
+    if (!((r.innerEast || r.innerWest) && n >= 4 && n <= 8 && mid >= 5 && mid < ir.w - 5 && r.y >= 6 && r.y < ir.h - 6 && r.x0 > 1 && r.x1 < ir.w - 2)) continue;
+    if (shortRuns(ir, cliffs, [r]).length) continue;
+    cands.push({ name: 'x-inner', seed, X0: X, Y0: Y, tx: mid, ty: r.y + 1, n, score: (r.innerEast && r.innerWest ? 3 : 0) + ((r.innerEast || r.innerWest) && (r.east || r.west) ? 2 : 0) });
+  }
+  cands.sort((p, q) => q.score - p.score);
+  const best = cands.find((v) => { try { bakeIR(windowIR(v.seed, v.X0, v.Y0, 2, 2)); return true; } catch (e) { return false; } });
+  if (!best) throw new Error('no run of 4-8 cells with an inner corner in a window that bakes');
+  delete best.score; best.name = `seed${best.seed}i-inner`; views.push(best);
+  writeFileSync(A, JSON.stringify(views, null, 1) + '\n'); console.log(`${best.name}: cells (${best.X0},${best.Y0}) tile (${best.tx},${best.ty}) run ${best.n} cells (${cands.length} candidates)`);
 } else if (WHICH === 'count') {
   for (const seed of process.argv.slice(3).map(Number)) {
     let runs = 0, cells = 0; const shortBy = { 0: [0, 0], 1: [0, 0], 2: [0, 0] };

@@ -1,0 +1,535 @@
+{
+ "source_sha256": "97007e2361f7763d658dae7401d12600e683f906f8d71fed0b5721a507c23aa5",
+ "steps": [
+  [
+   "crop",
+   [
+    32,
+    32,
+    960,
+    960
+   ],
+   "terrain"
+  ],
+  [
+   "reduce_mode",
+   10
+  ],
+  [
+   "snap",
+   "walk",
+   "7e90b28e41f4",
+   [
+    "#1e2a3e",
+    "#4a5f78"
+   ]
+  ],
+  [
+   "key_edge_bg",
+   [
+    "#82b266",
+    "#2e4f29",
+    "#b7d273",
+    "#aac46e"
+   ],
+   0,
+   8
+  ],
+  [
+   "crop",
+   [
+    80,
+    0,
+    16,
+    96
+   ],
+   "terrain"
+  ],
+  [
+   "scale_nearest",
+   [
+    48,
+    288
+   ]
+  ],
+  [
+   "key_edge_bg",
+   [
+    "#82b266",
+    "#7a9d5a",
+    "#99b562",
+    "#82a05a",
+    "#b7d273"
+   ],
+   0,
+   8
+  ],
+  [
+   "flip",
+   "h"
+  ]
+ ],
+ "out_sha256": "4bce299ff7288f9575bd40b473a9159dad145333dc9840da2fee513b2bb679e7",
+ "chain": [
+  {
+   "stage": "base (data only, never shipped)",
+   "base": "Shade, 16x16 Puny World Overworld Tileset",
+   "url": "https://opengameart.org/content/16x16-puny-world-tileset",
+   "licence": "CC0 (as stated on the page, OpenGameArt node/155014)",
+   "file": "work/download/puny/puny.png tile (48,64,16,16): masked grass parts mapped to the signed ground tones, rock by luminance-rank palette map, snapped, x2 across / x14 down, window cut (canvas.py)"
+  },
+  {
+   "stage": "canvas (layout): the SIGNED cliff-south-1..3 (reduce_mode 3, x10) at their own rows + the CC0 tile as matte + ground",
+   "source_sha256": null,
+   "steps": [
+    [
+     "layout",
+     [
+      1600,
+      1600
+     ],
+     [
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        0,
+        0
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        320,
+        0
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        640,
+        0
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        960,
+        0
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        0,
+        320
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        320,
+        320
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        640,
+        320
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        960,
+        320
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        0,
+        640
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        320,
+        640
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        640,
+        640
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        960,
+        640
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        0,
+        960
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        320,
+        960
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        640,
+        960
+       ]
+      },
+      {
+       "src": "0a0627f36b9dfbe163536a98867be74a53b2c2d1ef028c359832d5ae6cdd6d0b",
+       "steps": [],
+       "at": [
+        960,
+        960
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        0,
+        870
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        320,
+        870
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        640,
+        870
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        960,
+        870
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        0,
+        1190
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        320,
+        1190
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        640,
+        1190
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        960,
+        1190
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        832,
+        0
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        1152,
+        0
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        832,
+        320
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        1152,
+        320
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        832,
+        640
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        1152,
+        640
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        832,
+        960
+       ]
+      },
+      {
+       "src": "d172884ee83931d6e5f0e46672d28b8d0660f0c11382ecda78258fbedf98b5f3",
+       "steps": [],
+       "at": [
+        1152,
+        960
+       ]
+      },
+      {
+       "src": "4ec39a8910e2d03550b3b90c2c92a46f399cab0b430ff299b7a699216b23869f",
+       "steps": [
+        [
+         "reduce_mode",
+         3
+        ],
+        [
+         "scale_nearest",
+         [
+          160,
+          960
+         ]
+        ]
+       ],
+       "at": [
+        32,
+        32
+       ]
+      },
+      {
+       "src": "4af950b081ad765115c7afe47b78ed3adae222c4f2c70c1b08d80ea7feea6aa2",
+       "steps": [
+        [
+         "reduce_mode",
+         3
+        ],
+        [
+         "scale_nearest",
+         [
+          160,
+          960
+         ]
+        ]
+       ],
+       "at": [
+        192,
+        32
+       ]
+      },
+      {
+       "src": "ec78373e8691d1a80a8df1c85124e9d9dcf0ea710e7212ccf3586e2dc50f1008",
+       "steps": [
+        [
+         "reduce_mode",
+         3
+        ],
+        [
+         "scale_nearest",
+         [
+          160,
+          960
+         ]
+        ]
+       ],
+       "at": [
+        352,
+        32
+       ]
+      },
+      {
+       "src": "9c8ad3ac4574f54bf180224ad5ed3b17a73bf8195701b21142ca08e24696bdfd",
+       "steps": [],
+       "at": [
+        512,
+        32
+       ]
+      }
+     ]
+    ],
+    [
+     "crop",
+     [
+      0,
+      0,
+      1024,
+      1024
+     ],
+     "terrain"
+    ]
+   ],
+   "out_sha256": "d99f58e12b37a7b1215c4df0006f72a5ee5920eeffd9b4dc97f407ca9940a479",
+   "base": "Shade, 16x16 Puny World Overworld Tileset",
+   "url": "https://opengameart.org/content/16x16-puny-world-tileset",
+   "licence": "CC0 (as stated on the page, OpenGameArt node/155014)"
+  },
+  {
+   "stage": "paid call",
+   "name": "inner-1",
+   "model": "fal-ai/nano-banana-pro/edit",
+   "log": "log/calls.jsonl",
+   "raw": "work/raw/inner-1.png",
+   "raw_sha256": "97007e2361f7763d658dae7401d12600e683f906f8d71fed0b5721a507c23aa5",
+   "images": "1 = work/canvas.png, 2 = cliff-strip-angular-3/work/S-paint.png, 3 = cliff-target-2/work/raw/target-nbp-2.png"
+  },
+  {
+   "stage": "master: crop 960 at (32,32), reduce_mode 10, snap to the set palette (exclude #1e2a3e, #4a5f78), key edge colours #82b266,#2e4f29,#b7d273,#aac46e",
+   "source_sha256": "97007e2361f7763d658dae7401d12600e683f906f8d71fed0b5721a507c23aa5",
+   "steps": [
+    [
+     "crop",
+     [
+      32,
+      32,
+      960,
+      960
+     ],
+     "terrain"
+    ],
+    [
+     "reduce_mode",
+     10
+    ],
+    [
+     "snap",
+     "walk",
+     "7e90b28e41f4",
+     [
+      "#1e2a3e",
+      "#4a5f78"
+     ]
+    ],
+    [
+     "key_edge_bg",
+     [
+      "#82b266",
+      "#2e4f29",
+      "#b7d273",
+      "#aac46e"
+     ],
+     0,
+     8
+    ]
+   ],
+   "out_sha256": "c42591763cfaea7fdecb4696450f8288853c5418b665dcb7e250b33f2c100698"
+  },
+  {
+   "stage": "cell 5: crop 16 x 96 at x 80, scale to 48 x 288, key the ground greens",
+   "source_sha256": "c42591763cfaea7fdecb4696450f8288853c5418b665dcb7e250b33f2c100698",
+   "steps": [
+    [
+     "crop",
+     [
+      80,
+      0,
+      16,
+      96
+     ],
+     "terrain"
+    ],
+    [
+     "scale_nearest",
+     [
+      48,
+      288
+     ]
+    ],
+    [
+     "key_edge_bg",
+     [
+      "#82b266",
+      "#7a9d5a",
+      "#99b562",
+      "#82a05a",
+      "#b7d273"
+     ],
+     0,
+     8
+    ]
+   ],
+   "out_sha256": "9a0e22bec0d03e9ec196e09b5dd5f718fe3e9ec258e0e4595f716b1440b3bc1a"
+  },
+  {
+   "stage": "west hand: the east cell flipped left to right (poststeps flip h)",
+   "steps": [
+    [
+     "flip",
+     "h"
+    ]
+   ]
+  }
+ ],
+ "source": {
+  "base": "Shade, 16x16 Puny World Overworld Tileset",
+  "url": "https://opengameart.org/content/16x16-puny-world-tileset",
+  "licence": "CC0 (as stated on the page, OpenGameArt node/155014)"
+ }
+}

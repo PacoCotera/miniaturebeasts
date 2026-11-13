@@ -11,6 +11,8 @@ export const SOUTH_ROWS = 4;        // the face's height in rows, lip row includ
 export const southKind = (k) => `cliff-south-${k + 1}`;
 export const CORNER_HANDS = ['e', 'w'];   // the corner strip's cells 0..5 (48 x 288 each): the east hand as painted, the west hand its mirror
 export const cornerKind = (hand, k) => `cliff-corner-${hand}-${k}`;
+export const INNER_CELLS = [3, 4, 5];   // the inner-corner strip's cells 3..5 (48 x 288 each; cells 0..2 are the plain columns): the east hand as painted, the west hand its mirror
+export const innerKind = (hand, k) => `cliff-inner-${hand}-${k}`;
 
 // cliffs: openedges.cliffInfo's result ({ isCliff, wayup }). Returns [{ y, x0, x1, col0 }]: the lip row, the first and last cell, the column of S the run starts at.
 export function southRuns(ir, cliffs) {
@@ -21,11 +23,13 @@ export function southRuns(ir, cliffs) {
   const hs = (salt, x, y) => (ir.origin ? hash32(`${ir.seed}/${salt}`, ir.origin.x + x, ir.origin.y + y) : hash32(`${ir.id}/${salt}`, x, y));
   // an outer corner at the run's end: the cell beyond the end is low, and so are the cells north and south of it (the side turns back up the plateau, no gully or pinch)
   const outer = (x, y) => x >= 0 && x < w && low(x, y) && y - 1 >= 0 && low(x, y - 1) && y + 1 < h && low(x, y + 1);
+  // an inner corner at the run's end: the cell beyond the end is raised too and so is the cell south of it (a block stands in front, the face runs in behind it; no way up in either)
+  const inner = (x, y) => raised(x, y) && raised(x, y + 1);
   for (let y = 2; y < h - 1; y++) {
     for (let x = 0; x < w;) {
       if (!straight(x, y)) { x++; continue; }
       let x1 = x; while (x1 + 1 < w && straight(x1 + 1, y)) x1++;
-      runs.push({ y, x0: x, x1, col0: hs('south', x, y) % SOUTH_COLUMNS, west: outer(x - 1, y), east: outer(x1 + 1, y) });
+      runs.push({ y, x0: x, x1, col0: hs('south', x, y) % SOUTH_COLUMNS, west: outer(x - 1, y), east: outer(x1 + 1, y), innerWest: inner(x - 1, y), innerEast: inner(x1 + 1, y) });
       x = x1 + 1;
     }
   }
@@ -46,6 +50,10 @@ export function southDecals(runs, cell = 48) {
     if (west) for (const [p, x] of [[3, r.x0 + 1], [4, r.x0], [5, r.x0 - 1]]) put(x, cornerKind('w', p));
     if (east) for (const p of [2, 1, 0]) { const x = r.x1 - 4 + p; if (x >= r.x0) put(x, cornerKind('e', p)); }
     if (west) for (const p of [2, 1, 0]) { const x = r.x0 + 4 - p; if (x <= r.x1) put(x, cornerKind('w', p)); }
+    // an inner corner (the face runs in behind a block in front) takes the inner strip's cells 3, 4 at the run's last two cells and 5 on the cell beyond; the plain columns stay for cells 0..2. Runs under 2 cells (under 4 with a corner at each end) take plain columns.
+    const ib = (r.innerEast && r.innerWest) ? 4 : 2, ie = r.innerEast && n >= ib, iw = r.innerWest && n >= ib;
+    if (ie) for (const [p, x] of [[3, r.x1 - 1], [4, r.x1], [5, r.x1 + 1]]) put(x, innerKind('e', p));
+    if (iw) for (const [p, x] of [[3, r.x0 + 1], [4, r.x0], [5, r.x0 - 1]]) put(x, innerKind('w', p));
     for (const x of [...kinds.keys()].sort((a, b) => a - b)) out.push({ kind: kinds.get(x), x: x * cell, y: (r.y - SOUTH_ABOVE) * cell });
   }
   return out;
