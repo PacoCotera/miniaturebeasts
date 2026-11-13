@@ -3314,7 +3314,7 @@ function endExpedition(reason) {
   if (S.hist.length > 40) S.hist.shift();
   if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
-    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); FX.sealedAnim = true; save(); return; }
+    S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
   RIPE_LATER = []; let turned, ripeLater; try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
@@ -3329,7 +3329,7 @@ function endExpedition(reason) {
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
-  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); FX.sealedAnim = true; save(true);   // a line from the walk does not linger over the sealed screen
+  S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(true);   // a line from the walk does not linger over the sealed screen
 }
 // Where the next try lies, said at the end of a walk that found no pod, from the flag: the first walk names the pod the game knows; later walks the nearest cell with a pod found and
 // left or a slow beat; with none known, the nearest wood or rock (pods sleep in woods and rock, never in open meadow). { cell, land, dir, first, pod } or null.
@@ -6836,13 +6836,11 @@ function drawSealed(t) {
     y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
-  // the bay: three crates, the new one sliding in
-  if (FX.sealedAnim) { FX.sealedAnim = false; FX.transAt = NOW; }   // the beat counts from the first frame this screen is drawn, so a slow press cannot use it up unseen
-  const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
-  // an empty walk still ends with the beat: an empty crate slides into the next place in the bay (it is never added to the bay)
+  // the bay: three crates, all at their final place at once
+  // an empty walk still shows its empty crate in the next place in the bay (it is never added to the bay)
   const none = (r.empty || r.waited) && !r.sealed && S.bay.length < BAY ? { n: r.n, e: 0, d: 0, s: 0, pods: [], none: true } : null;
   if (S.bay.length || none) {   // an empty bay with nothing to show draws no row of empty dashed slots
-    for (let i = 0; i < BAY; i++) { const c = S.bay[i] || (i === S.bay.length ? none : null), isNew = (r.sealed && c && c.id === r.sealed.id) || (none && c === none); crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c || undefined, 130); }
+    for (let i = 0; i < BAY; i++) { const c = S.bay[i] || (i === S.bay.length ? none : null); crateIcon(24 + i * 140, y, c || undefined, 130); }
     y += 84; }
   const dk = isDocked();   // docked: the Companion is in the Caddy, and the crates are ready for the Station
   if (S.bay.length) {   // an empty bay says nothing ("The bay is empty" and "Nothing to transfer" are gone)
