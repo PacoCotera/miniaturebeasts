@@ -11,6 +11,10 @@ export const SOUTH_ROWS = 4;        // the face's height in rows, lip row includ
 export const southKind = (k) => `cliff-south-${k + 1}`;
 export const CORNER_HANDS = ['e', 'w'];   // the corner strip's cells 0..5 (48 x 288 each): the east hand as painted, the west hand its mirror
 export const cornerKind = (hand, k) => `cliff-corner-${hand}-${k}`;
+export const INNER_CELLS = [3, 4, 5];   // the inner-corner strip's cells 3..5 (cells 0..2 are the plain columns), both hands
+export const innerKind = (hand, k) => `cliff-inner-${hand}-${k}`;
+// NAMED EMPTY SLOT (art): cliff-inner-{e,w}-{3,4,5}, 48 x 288 each. No signed inner cells exist yet; add a kind here when the art director signs it and its file is in the set.
+export const INNER_SIGNED = new Set();
 
 // The side cell: a whole-cell crop of the signed outer corner cell cliff-corner-e-5 (rows 48-96, 48 x 48; class cut-of-signed; the west hand is the flip). Signed as side variant b (the art director's pick, 2026-11-13).
 export const sideKind = (hand) => `cliff-side-b-${hand}`;
@@ -51,12 +55,13 @@ export function southDecals(runs, cell = 48) {
     if (west) for (const [p, x] of [[3, r.x0 + 1], [4, r.x0], [5, r.x0 - 1]]) put(x, cornerKind('w', p));
     if (east) for (const p of [2, 1, 0]) { const x = r.x1 - 4 + p; if (x >= r.x0) put(x, cornerKind('e', p)); }
     if (west) for (const p of [2, 1, 0]) { const x = r.x0 + 4 - p; if (x <= r.x1) put(x, cornerKind('w', p)); }
+    // an inner corner (the face runs in behind a block in front) would take the inner strip's cells 3, 4 at the run's last two cells and 5 on the cell beyond; cells 0..2 stay the plain columns. Runs under 2 cells (under 4 with an inner at each end) take plain columns.
+    // A cell is drawn only once it is in INNER_SIGNED (the art director has signed it); until then the cell keeps what is there already (the plain column).
+    const ib = (r.innerEast && r.innerWest) ? 4 : 2, ie = r.innerEast && n >= ib, iw = r.innerWest && n >= ib;
+    const putInner = (x, kind) => { if (INNER_SIGNED.has(kind)) put(x, kind); };
+    if (ie) for (const [p, x] of [[3, r.x1 - 1], [4, r.x1], [5, r.x1 + 1]]) putInner(x, innerKind('e', p));
+    if (iw) for (const [p, x] of [[3, r.x0 + 1], [4, r.x0], [5, r.x0 - 1]]) putInner(x, innerKind('w', p));
     for (const x of [...kinds.keys()].sort((a, b) => a - b)) out.push({ kind: kinds.get(x), x: x * cell, y: (r.y - SOUTH_ABOVE) * cell });
-    // An inner corner (the face runs in behind a block in front): the block shows its own side face down to the foot, which is the signed outer corner's cell 5 whole, drawn over the run's last cell (the plain column
-    // behind it stays), at the block's edge: a block east of the run takes the west hand, a block west of it the east hand. No new file. Runs under 2 cells (under 4 with an inner at each end) take nothing.
-    const ib = (r.innerEast && r.innerWest) ? 4 : 2;
-    if (r.innerEast && n >= ib) out.push({ kind: cornerKind('w', 5), x: r.x1 * cell, y: (r.y - SOUTH_ABOVE) * cell });
-    if (r.innerWest && n >= ib) out.push({ kind: cornerKind('e', 5), x: r.x0 * cell, y: (r.y - SOUTH_ABOVE) * cell });
   }
   return out;
 }
