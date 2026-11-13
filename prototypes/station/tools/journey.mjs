@@ -444,16 +444,19 @@ await page.waitForTimeout(1600);
 const hpressI = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("incubator-states");
 await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
-{ const s0 = await st(); await hpressI("confirm", 300); expect((await props()).overlay?.id === "panel" && (await props()).overlay.form === "hatchnow" && (await props()).frame.line.ok === "Open now", "✓ Hatch now above ❀ 4 opens the Hatch now | Wait panel (the 180 ms dither): " + JSON.stringify((await props()).frame.line)); await hpressI("back", 300); expect(!(await props()).overlay, "← dithers back, nothing spent"); await hpressI("confirm", 300); await hpressI("confirm", 120);   // ✓ Hatch now (the panel, then its Hatch now card): the leaves still to fill turn whole over 400 ms, input held 400 ms, then the hatch
+{ const s0 = await st(); await hpressI("confirm", 300); expect((await props()).overlay?.id === "panel" && (await props()).overlay.form === "hatchnow" && (await props()).frame.line.ok === "Open now", "✓ Hatch now above ❀ 4 opens the Hatch now | Wait panel (the 180 ms dither): " + JSON.stringify((await props()).frame.line)); await hpressI("back", 300); expect(!(await props()).overlay, "← dithers back, nothing spent"); await hpressI("confirm", 300);
+  // ✓ Hatch now (the panel, then its Hatch now card): the leaves still to fill turn whole over 400 ms, input held 400 ms, then the hatch. From the card's press to the end of the hatch the page's clock is held and stepped, so a slow runner cannot let the 2.8 s hatch finish between two checks
+  await said(); await hold(); await page.evaluate(() => window.__st.act("confirm")); await stepClock(120);
+  { const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: "confirm", said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
   expect((await props()).state === "growing" && (await page.evaluate(() => window.__st.holding())), "✓ Hatch now holds input while the bar fills");
   await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);
   { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
-  await page.waitForTimeout(600); const p = await props(), s1 = await st(); cur.push({ hatch: p.state, ok: p.frame.line.ok });
+  await stepClock(600); const p = await props(), s1 = await st(); cur.push({ hatch: p.state, ok: p.frame.line.ok });
   expect(p.state === "hatch" && s1.s < s0.s && !s1.bud, "Hatch now paid Essence and the bud is hatching in the same press: " + JSON.stringify([p.state, s1.bud])); }
 { const p = await props(); expect(p.state === "hatch" && (await page.evaluate(() => window.__st.holding())), "✓ Hatch now: the hatch holds input: " + p.state); await frameShot("page-hatch", true); }
 await said(); for (const k of ["up", "left", "back"]) await press(k, 0);   // ✓ is left out: in the hatch's hold it skips (a skippable hold, lvgl-switch.md §2.1; tests/host-hold.test.mjs)
 { const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "back"], said: m, screen: u.screen }); expect(u.screen === "incubator" && m.length === 0, "the pad and ← do nothing during the hatch: " + JSON.stringify([u.screen, m])); }
-await page.waitForTimeout(2600);
+await stepClock(2800); await release();   // the hatch's 2780 ms in stepped frames, then real time again
 s = await st(); const fig = s.mibis.at(-1);
 expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.room === 0 && fig.slot === 1 && fig.read.length === 6, "Moss opened into place 2 of the Roots room, fully read (six chapters): " + JSON.stringify([fig.name, fig.room, fig.slot, fig.read]));
 { const u = await ui(), p = await props(); cur.push({ screen: u.screen, hab: u.hab, habId: u.habId }); expect(u.screen === "habitat" && u.habId === fig.id && u.hab === "resident", "after the hatch the mibi is met up close, the ring on the resident: " + JSON.stringify([u.screen, u.habId, u.hab, p.state])); }

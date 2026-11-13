@@ -17,6 +17,7 @@ import { createDock, WORLD_RE } from "./dock.mjs";
 import { randomBytes } from "node:crypto";
 import { recoveryPrint } from "./recovery-print.mjs";
 import { createRealms, MAX_BYTES } from "./realms.mjs";
+import { createNotes, sendFile } from "./notes.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const RETRY_S = [60, 300, 1800];   // a failed call retries at one, five and thirty minutes
@@ -42,6 +43,7 @@ export function createApp(opts = {}) {
   journal();
   const dock = createDock({ dataDir, now: state.now }); dock.sweep();
   const realms = createRealms({ dataDir, now: state.now, fs: cfg.realmsFs });
+  const notes = createNotes({ dataDir, now: state.now, limits: cfg.noteLimits });
   // --- the identity and the recovery print ---
   // state.identity: what identity.json holds. state.print: the print waiting (the seed, in memory only). A file that is there but unreadable is left alone: nothing is queued over it.
   const identityFile = path.join(dataDir, "identity.json");
@@ -76,6 +78,16 @@ export function createApp(opts = {}) {
   async function handle(req, res) {
     const url = new URL(req.url, "http://x"), p = url.pathname.startsWith(cfg.prefix) ? url.pathname.slice(cfg.prefix.length) : url.pathname;
     try {
+      // reading play notes: only at the studio's own path (never under the public prefix, which is stripped above) and only with the login's header
+      if (url.pathname === "/studio/notes" || url.pathname.startsWith("/studio/notes/")) {
+        if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
+        if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
+        const f = url.pathname.match(/^\/studio\/notes\/f\/([^/]+)\/([^/]+)\/([^/]+)$/);
+        if (f) return sendFile(req, res, notes.fileOf(f[1], f[2], f[3]));
+        if (url.pathname !== "/studio/notes" && url.pathname !== "/studio/notes/") { res.writeHead(404, { "content-type": "text/plain" }); res.end("no such page"); return; }
+        res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(notes.page(url.searchParams.get("from") || "")); return;
+      }
+      if (req.method === "POST" && p === "/notes") return json(res, ...await notes.post(req));
       if (req.method === "OPTIONS") { res.writeHead(204, { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, POST, PUT, DELETE", "access-control-allow-headers": "content-type" }); res.end(); return; }
       if (req.method === "GET" && p === "/status") return json(res, 200, status());
       if (req.method === "GET" && p === "/jobs") { const world = url.searchParams.get("world"); return json(res, 200, { jobs: state.jobs.filter((j) => !world || j.world === world).map(publicJob) }); }
@@ -201,5 +213,5 @@ export function createApp(opts = {}) {
   let timer = null, sweeper = null;
   const start = () => { if (!timer) timer = setInterval(() => { tick().catch(() => {}); }, cfg.tickMs); if (!sweeper) sweeper = setInterval(() => dock.sweep(), cfg.sweepMs); return timer; };
   const stop = () => { if (timer) clearInterval(timer); if (sweeper) clearInterval(sweeper); timer = sweeper = null; };
-  return { handle, tick, start, stop, status, state, cfg, dataDir, grow, setDir, dock, realms };
+  return { handle, tick, start, stop, status, state, cfg, dataDir, grow, setDir, dock, realms, notes };
 }

@@ -4,7 +4,8 @@
 #   every other /studio path           only with a session: the login's /check says yes (and names the user), then the studio
 #                                      on the private bridge answers; the studio sees X-Studio-User only from here, never the
 #                                      browser's cookies, and none of its answers may be kept by a shared cache
-#   /caddy-api/*                       the Caddy service; /sandbox/*, /play/* and the site: the release, static
+#   /studio/notes*                     the play notes page and files: the login's check first, then the Caddy service (not the studio)
+#   /caddy-api/*                       the Caddy service (POST /caddy-api/v1/notes takes a play note; nothing is read back from here); /sandbox/*, /play/* and the site: the release, static
 # Two values come from the web server's environment (install.sh writes them to a file the Caddy unit and deploy.sh both read): MB_ROOT, the
 # directory that holds releases/ and current, and MB_STUDIO, the studio's host:port on the private bridge.
 # `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
@@ -16,6 +17,23 @@
 	}
 	handle /studio/logout {
 		reverse_proxy 127.0.0.1:8791
+	}
+	# play notes: read only behind the same login, served by the Caddy service on this machine (the notes are on its card, not on the studio's machine);
+	# the service answers only with the login's X-Studio-User, and the public /caddy-api/ route below can post a note but never read one
+	handle /studio/notes* {
+		route {
+			request_header -X-Studio-User
+			forward_auth 127.0.0.1:8791 {
+				uri /check
+				copy_headers X-Studio-User
+			}
+			header X-Robots-Tag noindex
+			header Cache-Control "private, no-store"
+			reverse_proxy localhost:8787 {
+				header_up -Cookie
+				header_down -Set-Cookie
+			}
+		}
 	}
 	handle @studio {
 		route {
