@@ -4981,7 +4981,7 @@ function landTry(spec) {
     u = paintLand(landInputs(L0));   // no worker (or it failed): painted here
   }
   const { X0, Y0, w: N, h: NH, cs } = spec, cv = document.createElement('canvas'); cv.width = N; cv.height = NH;
-  { const cg = cv.getContext('2d'), id = cg.createImageData(N, NH); new Uint32Array(id.data.buffer).set(u); cg.putImageData(id, 0, 0); }
+  landPixels(cv, u);
   LAND_WAIT.delete(key); LAND_CACHE.key = key; LAND_CACHE.cv = cv; LAND_CACHE.more.set(key, cv); if (LAND_CACHE.more.size > 4) LAND_CACHE.more.delete(LAND_CACHE.more.keys().next().value);
   LAND_CACHE.last = { cv, X0, Y0, cs };
   return cv;
@@ -4990,10 +4990,11 @@ function landTry(spec) {
 function landStand(spec) {
   const { X0, Y0, w: N, h: NH, cs } = spec, last = LAND_CACHE.last, sig = [X0, Y0, N, NH, cs, last ? last.cv.width + ':' + last.X0 + ':' + last.Y0 : ''].join('|');
   if (LAND_CACHE.stand && LAND_CACHE.stand.sig === sig && LAND_CACHE.stand.last === (last && last.cv)) return LAND_CACHE.stand.cv;
-  const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), ink = RGB[C.ink], id = cg.createImageData(N, NH); new Uint32Array(id.data.buffer).fill((255 << 24) | (ink[2] << 16) | (ink[1] << 8) | ink[0]); cg.putImageData(id, 0, 0);
+  const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), ink = RGB[C.ink]; landPixels(cv, new Uint32Array(N * NH).fill((255 << 24) | (ink[2] << 16) | (ink[1] << 8) | ink[0]));
   if (last && last.cs === cs) cg.drawImage(last.cv, (last.X0 - X0) * cs, (last.Y0 - Y0) * cs);
   LAND_CACHE.stand = { sig, last: last && last.cv, cv }; return cv;
 }
+function landPixels(cv, u) { const cg = cv.getContext('2d'), id = cg.createImageData(cv.width, cv.height); new Uint32Array(id.data.buffer).set(u); cg.putImageData(id, 0, 0); }   // a painting's pixels onto its canvas
 function landImage(spec) { return landTry(spec) || landStand(spec); }
 // The opening's painting as a generator (a screen waits for it across frames): each next() is one frame of waiting; the last returns the canvas.
 function* landPaint(spec) { let cv; while (!(cv = landTry(spec))) yield; return cv; }
