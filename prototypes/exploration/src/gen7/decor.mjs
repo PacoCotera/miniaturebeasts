@@ -105,6 +105,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   };
   const near9 = (x, y, bit) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (flags(x + dx, y + dy) & bit) return true; return false; };
   const lip = (x, y) => (flags(x, y) & 4) !== 0;
+  const nearLip = (x, y, r) => { for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (lip(x + dx, y + dy)) return true; return false; };
 
   // ---- the Hollow Tree: a site in each region of Woods or Tallwood, on a clearing of plain grass (nothing is drawn on the terrain here: the clearing is the absence of props) ----
   let sites = presetSites;   // the Hollow Tree sites may be given (made off the page by src/realm-worker.mjs): a list of { x, y, slot }
@@ -182,6 +183,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     const t = G(x, y);
     if (fi === 4) return OPEN(t) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
     if (!(OPEN(t) || t === LITTER || (fi === 1 && (t === SAND || t === SCREE)))) return false;
+    if (fi === 0 && T(x, y) === CLIFF && nearLip(x, y, 2)) return false;   // a tree's trunk keeps the plateau's first two cells clear of the lip, so its crown never reaches the moss
     return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap
