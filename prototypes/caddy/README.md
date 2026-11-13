@@ -57,3 +57,9 @@ The card keeps every sleep file of a realm put to sleep (`realms.mjs`): `realms/
 | `POST /caddy-api/v1/realm/clear` `{ wid, sha }` | only when that sha is committed for that wid (409 otherwise): drops `dock/<wid>.json`, cancels the world's jobs, notes the clear; idempotent |
 
 `/status` gains `realms: { asleep, files }`. Tests: `caddy/tests/realms.test.mjs`.
+
+## Play notes
+
+A note from the play page (`notes.mjs`): `POST /caddy-api/v1/notes`, multipart: `text` (up to 4000 characters), `source` (a short plain name, default `owner`; a tester's persona), `context` (a JSON object up to 16 KB: build, place, world, turn, light ...), up to 8 `shot` parts (PNG, JPEG or WebP) and 2 `clip` parts (MP4 or WebM); the bytes must match the type; no other field. At most 20 MB a note, 200 notes and 600 MB a day. 201 `{ id }`; 400, 413, 415 or 429 with the reason; nothing is written for a refused note. It is stored append only as `notes/<date>/<id>/note.json`, `shot-N.<ext>`, `clip-N.<ext>` under the data directory (written into a hidden folder, then renamed in). No address, user agent or file name is kept. Nothing is read back from the public route.
+
+Reading is `GET /studio/notes[?from=<source>]` (newest first, filter by source, thumbnails, clips that play) and `/studio/notes/f/<date>/<id>/<file>`, at the studio's own path and never under `/caddy-api/`: the web server puts the login's check in front (`ops/sandbox/Caddyfile`) and the service answers only with the login's `X-Studio-User` header. Tests: `caddy/tests/notes.test.mjs`.
