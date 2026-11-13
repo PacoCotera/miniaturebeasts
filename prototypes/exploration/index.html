@@ -249,8 +249,10 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, reviveLayers, overviewReady, CW as OCW, CH as OCH } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, overviewReady, CW as OCW, CH as OCH } from "./src/world7.mjs";
 import { readyRealm, readyOverview } from "./src/realm-store.mjs";
+import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { landCellOf as landCellIn, paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
@@ -687,9 +689,29 @@ function freshLayout(key) {
   if (lay && lay.shutSig != null && !lay.cave && lay.shutSig !== shutSig(key)) layoutCache.delete(key);
   return layout(key);
 }
+// The places of the reach are made in a worker (src/place-store.mjs) at set-out, the nearest first, and kept in IndexedDB beside the realm: layout(key) below only looks one up and adapts it to the sides
+// shut now. A page without a worker (the test sandbox, a page served from the source tree) bakes the cell itself, on the spot, with the same function; `inline` counts the cells the page baked.
+const PLACES = { inline: 0, seed: null, sig: '', epoch: 0 };
+placesWatch(() => { PLACES.epoch++; });
+const placeHave = key => key[0] === 'c' || !G || G.gen !== 7 || !PL.ready || !placesWorker() || !!bakedGet(S.regions[0].seed, hereRegion().slot, biomeVersion(S), +key);   // nothing owed for this cell: its baked place is here (or the page makes it)
+function wantPlaces() {   // each frame: if the reach, the region or the walked cells changed, the places not yet made are asked of the worker, the nearest first
+  if (!PL.ready || !S || RT.readOnly || RT.making || !G || G.gen !== 7 || !placesWorker()) return;
+  const R = hereRegion(); if (!R) return;
+  const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = Object.keys(S.visited || {}).map(Number);
+  const sig = seed + '|' + R.id + '|' + v + '|' + (ex ? ex.pos + ':' + ex.reach.length : '-') + '|' + visited.length;
+  if (sig === PLACES.sig) return; PLACES.sig = sig;
+  if (PLACES.seed !== seed) { if (PLACES.seed != null) placesReset(); PLACES.seed = seed; }
+  const here = ex ? cxy(ex.pos) : null, near = c => here ? cheb(cxy(c), here) : 0;
+  const list = [...new Set([...(ex ? [ex.pos, ...ex.reach] : []), ...visited])].filter(c => passable(c)).sort((a, b) => near(a) - near(b));
+  readyPlaces(seed, R.slot, v, list, { ctx: PL.ctx });
+}
 function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
-  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) { lay = layout7In(PL.ctx, G, S.regions[0].seed, hereRegion().slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side]), biomeVersion(S)); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay); }
+  if (!lay && G.gen === 7 && key[0] !== 'c' && PL.ready) {
+    const seed = S.regions[0].seed, slot = hereRegion().slot, v = biomeVersion(S);
+    let b = bakedGet(seed, slot, v, +key);   // the cell as the places worker made it; only a page without a worker (or a cell asked for past the reach) bakes it here, with the same function
+    if (!b) { b = bakedCell7(PL.ctx, seed, slot, +key, v); bakedPut(seed, slot, v, +key, b); PLACES.inline++; }
+    lay = layout7In(PL.ctx, G, seed, slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side]), v, b); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay); }
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -771,6 +793,12 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
     const i0 = lay.rimAt || 0, end = performance.now() + RIM_STEP_MS; let n = i0;   // this cell's edges (the stair, lips, shore and crossings): their pieces composed ahead, about RIM_STEP_MS of tiles a step (at least one), so a cold landing's 8 ms frame is not carried past by twelve tiles at once
     while (n < lay.rim.length && (n === i0 || performance.now() < end)) { for (const f of WET48(lay.tiles[lay.rim[n]]) ? [0, 1] : [0]) rimTile(lay, lay.rim[n], f); n++; }
     lay.rimAt = n; if (n >= lay.rim.length) lay.rimWarm = 1; return true; }
+  if (w.st === 0 && placesWorker() && !w.gone) {   // the ground is rendered in the worker (every animation frame, and the whole-place picture's): it is put in the view when it comes
+    const g = groundTake(lay.baked.id);
+    if (g) { bk.installGround(g); w.gone = 1; w.st = 2; return true; }
+    if (!w.gfail && (groundPending(lay.baked.id) || groundAsk(lay.baked.id, lay.baked.place, { ctx: PL.ctx }))) return !!(WARM.cold && WARM.cold.key === key);   // asked: the queue is made again when it arrives; a landing waits for it
+    w.gfail = 1;   // no worker answer: this cell's ground is rendered here, below
+  }
   if (w.st === 0) {   // the 48 px ground, rendered whole for each animation frame it has (one when the views have no ring), the frame showing now last
     const cl = bk.cache.ring && motion() ? bk.cache.frameClocks() : [], now = motion() ? NOW : 0; if (w.fi == null) w.fi = 0;
     if (w.fi < cl.length) bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, cl[w.fi++]); else { bk.cache.get({ x: 0, y: 0, w: 1, h: 1 }, now); w.st = 1; }
@@ -796,7 +824,7 @@ function warmTargets() {
   const edge = d => !lay ? 0 : d === 'up' ? P.y : d === 'down' ? lay.h - 1 - P.y : d === 'left' ? P.x : lay.w - 1 - P.x, face = (P && P.dir) || ex.face || ex.lastDir;
   const way = d => !!lay && !!lay.openings && lay.openings.some(o => SIDE_DIR[o.side] === d && openingKind(lay, o).kind === 'open');   // a visible way through: its neighbour is warmed before the rest
   for (const d of Object.keys(DIRS).sort((a, b) => way(b) - way(a) || (b === face) - (a === face) || edge(a) - edge(b))) {
-    const c = stepCell(ex.pos, d); if (c < 0 || !inRange(c) || !canStep(ex.pos, d)) continue; out.push({ key: String(c), dir: d }); }
+    const c = stepCell(ex.pos, d); if (c < 0 || !inRange(c) || !canStep(ex.pos, d) || !placeHave(String(c))) continue; out.push({ key: String(c), dir: d }); }   // a cell the worker still owes is warmed when it arrives (PLACES.epoch)
   return out;
 }
 const warmIdle = f => typeof requestIdleCallback === 'function' ? requestIdleCallback(f, { timeout: 400 }) : setTimeout(() => f({ timeRemaining: () => 4, didTimeout: true }), 120);
@@ -810,7 +838,7 @@ function warmRun(dl) {   // an idle slot: steps while the slot has time, and exa
 }
 function warmTick() {   // each frame: if where the walk stands changed, the list of cells to warm is made again; the work itself runs in idle slots
   if (!S || !S.exp || RT.readOnly) return;
-  const ex = S.exp, P = ex.patch, sig = S.phase + '|' + ex.pos + '|' + (P ? P.key + P.dir : ex.face || '');
+  const ex = S.exp, P = ex.patch, sig = S.phase + '|' + ex.pos + '|' + (P ? P.key + P.dir : ex.face || '') + '|' + PLACES.epoch;
   if (sig !== WARM.sig) { WARM.sig = sig; WARM.queue = warmTargets(); WARM.first = S.phase === 'map' && WARM.queue.length ? WARM.queue[0].key : null; WARM.firstDir = WARM.first != null ? WARM.queue[0].dir : null; }   // first: the cell the next Confirm goes down into (the only one whose ground window is drawn ahead: a view keeps one window)
   if (S.phase === 'map' && WARM.first != null && !document.hidden) {   // the ground's animation frame moves on: the window drawn ahead is drawn again for the frame now showing, so the step finds the one it will ask for
     const lay = layout(WARM.first), bk = lay.baked && !lay.cave ? bakedView(lay) : null, w = bk && warmOf(bk);
@@ -858,7 +886,7 @@ function drawInkIn() {
 function beaconCells(seed) { return beaconCellsIn(G, seed); }
 function depotCells(seed) { return depotCellsIn(G, seed); }
 const everLit = c => { const cs = S.cells[String(c)]; if (!cs) return false; for (const id in cs) if (cs[id].lightT) return true; return false; };   // a depot lit once keeps its state in the cell; one never lit needs no place built to say so (a cold place takes a quarter second)
-function depotOf(c) { if (!passable(c)) return null; const key = String(c); return depotCells(S.seed).has(c) ? layout(key).feats.find(f => f.kind === 'h') || null : null; }
+function depotOf(c) { if (!passable(c) || G.gen === 7) return null; const key = String(c); return depotCells(S.seed).has(c) ? layout(key).feats.find(f => f.kind === 'h') || null : null; }   // generator 7's places hold no outpost feature (the region marks the cell: depotCells; traces are drawn on the place), so no place is made to say so; generator 4's place carries it
 // An outpost's light: lit for 3 world turns per lighting (this expedition and the next two); it changes only at the world turn.
 const OUTPOST_TURNS = 3;
 // World turns are shown counting from 1 (turn 1 = the first expedition's world); S.turn keeps counting from 0 inside,
@@ -1094,7 +1122,7 @@ function drawSlide() {
   g.restore();
 }
 // A cell the storm struck: the world turn at the expedition's end reads its place (stones, strike mark), and a cold layout takes a quarter second to build, so it is built now, a moment after the flash, in the walk's idle time and not all at once when End expedition is pressed.
-function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c))) layout(String(c)); }, 600); }
+function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
 function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
 
 let crById = new Map();
@@ -2151,10 +2179,17 @@ function placePartnerNear(key, P) {
     const x = P.x + dx, y = P.y + dy; if (!occupant(key, x, y)) { live.pt = { x, y, st: 'follow', face: 1 }; return; }
   }
 }
+function waitForPlace(key) {
+  const seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S);
+  RT.making = true; RT.makingAt = performance.now();
+  readyPlaces(seed, R.slot, v, [+key], { ctx: PL.ctx });
+  bakedWhen(seed, R.slot, v, +key).then(() => { RT.making = false; if (S && S.exp && String(S.exp.pos) === key && !S.exp.patch) enterPatch(); });
+}
 // A place that takes long to build freezes the page; key presses made meanwhile queue in the browser and would all run in a rush afterwards. They are dropped (STALL: the window they were made in).
 const STALL_MS = 120, STALL = { from: 0, to: 0 }, RESUME_GRACE_MS = 80;   // the grace: the key-ups the freeze held back arrive before a held direction walks on
 const nowMs = () => typeof performance !== 'undefined' ? performance.now() : Date.now();
 function enterPatch() {
+  if (G.gen === 7 && S.exp && !placeHave(String(S.exp.pos))) { waitForPlace(String(S.exp.pos)); return; }   // the worker has not sent this place yet: the page says the Probe is reading the land, and goes down when it is here
   const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; FX.resume = true; FX.resumeAt = t1 + RESUME_GRACE_MS; } }
 }
 function enterPatchBuilt() {
@@ -4898,31 +4933,19 @@ function signSprite(kind, s, fr, big) {
   return null;
 }
 // ---------- The painted land (reach view and full map in an expedition) ----------
-// One continuous painting: each pixel takes the land of the cell under it after a soft displacement (value noise, ±11 px at 72 px cells and ±2.5 px fine), so cell borders become
-// coastlines, wood edges and field edges and no grid lines are drawn. Fog keeps its three states on the same soft borders: never been in the dark table (plus FOGV.n night dots),
-// been in dots at FOGV.b, found clear; a cell not seen is night with a dithered fringe. The painting is made once per change of state (integer value noise, cached).
-const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
-const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0 || s > 15) return (hash(9, s, a, b) % 1000) / 1000; const k = ((s * 8192 + a) * 8192) + b; let v = VN_LAT.get(k); if (v === undefined) { v = (hash(9, s, a, b) % 1000) / 1000; VN_LAT.set(k, v); } return v; };
-function vnoise(x, y, s) { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, h = (a, b) => vnLat(s, a, b), sm = t => t * t * (3 - 2 * t);
-  const a = h(xi, yi), b = h(xi + 1, yi), c = h(xi, yi + 1), d = h(xi + 1, yi + 1), u = sm(xf), w = sm(yf); return a + (b - a) * u + (c - a) * w + (a - b - c + d) * u * w; }
-// The painting's cell borders: the cell under a world pixel after the soft displacement (-1 off the map). The edge marks find their borders with the same function.
+// One continuous painting (src/landpaint.mjs): each pixel takes the land of the cell under it, fog keeps its three states on the same soft borders, no grid lines are drawn. The painting is made once per change of
+// state, off the page's thread (the places worker, src/place-store.mjs landAsk): the page gathers what the painting is made from (landInputs), and draws the last painting, laid where the new one will stand, until the new one
+// arrives. A page without a worker paints it here, whole, with the same function.
 // The region's overview: one byte a world tile, the land every map is shrunk from (null until it is made: the cell labels draw the land meanwhile).
 const overviewNow = () => G.gen === 7 && hereRegion() ? overviewReady(S.regions[0].seed, hereRegion().slot) : null;
-function landCellOf(cs) {
-  if (overviewNow()) return (wx, wy) => { const X = Math.floor(wx / cs), Y = Math.floor(wy / cs); return (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X; };   // from the raster the cell borders are the straight lines the tiles fall on
-  const k = cs / 72;
-  const disp = (wx, wy) => [wx + (vnoise(wx / (13 * k), wy / (13 * k), 1) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 3) - .5) * 5 * k,
-                            wy + (vnoise(wx / (13 * k), wy / (13 * k), 2) - .5) * 22 * k + (vnoise(wx / (5 * k), wy / (5 * k), 4) - .5) * 5 * k];
-  return (wx, wy) => { const [a, b] = disp(wx, wy), X = Math.floor(a / cs), Y = Math.floor(b / cs); return (X < 0 || Y < 0 || X >= MW || Y >= MH) ? -1 : Y * MW + X; };
-}
+const landCellOf = cs => landCellIn(cs, !!overviewNow());   // the painting's cell borders: the edge marks find their borders with the same function
 // spec: { X0, Y0 (the top-left cell), w, h (pixels), cs (the cell's size) }
 // The ground is the art desk's seamless tiles (art/walk/, map-tex-*), each pixel taking its tile at (wx mod w, wy mod h) in world pixels, from the set for the cell size (72, 48, 26).
-const LAND_CACHE = { key: null, cv: null, more: new Map() };   // the last painting, and up to four more by key (the opening's mist frames flip between two without a repaint)
-const landReset = () => { LAND_CACHE.key = null; LAND_CACHE.more.clear(); };
-// The painting is a generator: it yields every 16 rows when `sliced`, so a screen can paint it across frames; landImage runs it whole.
-function landImage(spec) { const it = landPaint(spec, false); let r; while (!(r = it.next()).done); return r.value; }
-function* landPaint(spec, sliced) {
-  const { X0, Y0, w: N, h: NH, cs } = spec, k = cs / 72, ex = S.exp;
+const LAND_CACHE = { key: null, cv: null, more: new Map(), last: null, stand: null };   // the last painting, and up to four more by key (the opening's mist frames flip between two without a repaint); last: the newest one made, for the stand-in
+const landReset = () => { LAND_CACHE.key = null; LAND_CACHE.more.clear(); LAND_CACHE.last = null; LAND_CACHE.stand = null; };
+// What a painting is made from: the cells it shows (seen, in fog, under a storm) and its key (a change in any of them is a new painting).
+function landState(spec) {
+  const { X0, Y0, w: N, h: NH, cs } = spec, ex = S.exp;
   // spec.glimpse: cells drawn as seen and never been in (the opening's five lights before the first walk); drawn only, S.revealed is never touched
   const glimpse = spec.glimpse ? new Set(spec.glimpse) : null, seen = c => !!S.revealed[c] || (glimpse !== null && glimpse.has(c)), fogOf = c => S.revealed[c] ? fogState(c) : glimpse !== null && glimpse.has(c) && passable(c) && G.land[c] !== L.WATER ? 2 : 0;
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
@@ -4930,58 +4953,56 @@ function* landPaint(spec, sliced) {
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
   const ovr = overviewNow();
   const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', ovr ? 'o' : ''].join('|');
+  return { key, spec, seen, fogOf, mist, ovr };
+}
+function landInputs(L0) {   // plain data for paintLand
+  const { X0, Y0, w: N, h: NH, cs } = L0.spec, ex = S.exp, NC = MW * MH, seen = new Uint8Array(NC), fog = new Uint8Array(NC), stormCol = new Uint8Array(MW), tiles = {}, pond = {};
+  for (let c = 0; c < NC; c++) { if (L0.seen(c)) { seen[c] = 1; fog[c] = L0.fogOf(c); } }
+  for (let x = 0; x < MW; x++) stormCol[x] = ex && ex.storm && stormCovers(x) ? 1 : 0;
+  const tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
+  for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`) || null;
+  if (!L0.ovr) for (let c = 0; c < NC; c++) if (seen[c] && G.land[c] === L.POND) pond[c] = pondOf(c);   // a pond cell's water: the place's own water tiles, as an ellipse in the cell (so its mirror shows)
+  return { X0, Y0, N, NH, cs, ovr: L0.ovr, OCW, OCH, land: Uint8Array.from(G.land), seen, fog, stormCol, stormOn: !!(ex && ex.storm), mist: L0.mist ? L0.mist[0][L0.spec.mist] : null, mistTile: OPEN_TILE,
+    tiles: Object.fromEntries(Object.entries(tiles).map(([n, t]) => [n, t ? { p: t.p, w: t.w, h: t.h } : null])), tcs, pond, pal: Uint32Array.from(RGB, q => (255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]),
+    DARK, LIGHT, WOOD_DARK, K: { ink: C.ink, night: C.night, void: C.void, deep: C.deep, stone: C.stone, slate: C.slate }, FOGV: { n: FOGV.n, b: FOGV.b }, BAYER };
+}
+function pondOf(c) { let sx = 0, sy = 0, n = 0, lay = null; try { lay = layout(String(c)); } catch (e) { }
+  if (lay) for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.WATER || lay.tiles[i] === T.ISLE) { sx += i % lay.w; sy += (i / lay.w) | 0; n++; }
+  return n ? { x: (sx / n + .5) / lay.w, y: (sy / n + .5) / lay.h, r: Math.sqrt(n / (lay.w * lay.h)) * .62 } : { x: .5, y: .5, r: .3 }; }
+const LAND_WAIT = new Set();   // keys asked of the worker, not yet in
+// The painting for this state if it is here; else it is asked of the worker (once) and null comes back. Without a worker it is painted on the spot.
+function landTry(spec) {
+  const L0 = landState(spec), key = L0.key; for (const k of LAND_WAIT) if (!landPending(k)) LAND_WAIT.delete(k);
   if (LAND_CACHE.key === key) return LAND_CACHE.cv;
   { const hit = LAND_CACHE.more.get(key); if (hit) { LAND_CACHE.key = key; LAND_CACHE.cv = hit; return hit; } }
-  const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), id = cg.createImageData(N, NH), u = new Uint32Array(id.data.buffer);
-  const cellOf = landCellOf(cs), tiles = {}, tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
-  for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`);
-  const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : C.ink; };   // no art yet: a named empty slot (ink)
-  const landOf = c => c < 0 ? -1 : G.land[c];
-  const pond = {};   // a pond cell's water: the place's own water tiles, as an ellipse in the cell (so its mirror shows)
-  const pondOf = c => { if (pond[c] !== undefined) return pond[c]; let sx = 0, sy = 0, n = 0, lay = null; try { lay = layout(String(c)); } catch (e) { }
-    if (lay) for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.WATER || lay.tiles[i] === T.ISLE) { sx += i % lay.w; sy += (i / lay.w) | 0; n++; }
-    return pond[c] = n ? { x: (sx / n + .5) / lay.w, y: (sy / n + .5) / lay.h, r: Math.sqrt(n / (lay.w * lay.h)) * .62 } : { x: .5, y: .5, r: .3 }; };
-  const put = (i, c) => { const q2 = RGB[c]; u[i] = (255 << 24) | (q2[2] << 16) | (q2[1] << 8) | q2[0]; };
-  // the deep sea at 26 px: a named empty slot (map-tex-deep-26), a flat fill of the darkest palette blue; the reach views (48, 72) keep the water's darker step
-  for (let y = 0; y < NH; y++) { if (sliced && (y & 15) === 0 && y) yield;
-  for (let x = 0; x < N; x++) {
-    const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
-    if (c < 0) { put(y * N + x, C.void); continue; }
-    if (mist && !seen(c)) { u[y * N + x] = mist[0][spec.mist][(wy % OPEN_TILE) * OPEN_TILE + (wx % OPEN_TILE)]; continue; }
-    if (!seen(c)) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && seen(c2); put(y * N + x, edge ? (b < 8 ? C.night : C.ink) : (b < 3 ? C.night : C.ink)); continue; }
-    let land = landOf(c), col, wood = false, raw;
-    const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
-    // near water: a beach on the land side, foam on the water side
-    const nearW = (d) => { for (const [ox, oy] of [[d, 0], [-d, 0], [0, d], [0, -d]]) { const c3 = cellOf(wx + ox, wy + oy); if (c3 >= 0 && seen(c3) && (landOf(c3) === L.WATER) !== (land === L.WATER)) return true; } return false; };
-    if (ovr) {   // the tile under the pixel: its ground class, lighter where the land is raised. the deep sea is the desk's signed map-tex-deep (26 px); the raised tone is the signed layered-ground ruling (the next palette step up)
-      const v = ovr[Math.min(MH * OCH - 1, Math.floor(wy * OCH / cs)) * (MW * OCW) + Math.min(MW * OCW - 1, Math.floor(wx * OCW / cs))], k8 = v & 7;
-      col = k8 === 2 ? tile('water', wx, wy) : k8 === 3 ? DARK[tile('water', wx, wy)] : k8 === 1 ? tile('beach', wx, wy) : k8 === 4 || k8 === 5 ? tile('wood', wx, wy) : k8 === 6 ? tile('rock', wx, wy) : tile('meadow', wx, wy);
-      wood = k8 === 4 || k8 === 5; if (v & 8) col = LIGHT[col];
-      if (k8 === 3 && tcs === 26) col = C.deep;   // NAMED EMPTY SLOT map-tex-deep-26 (the deep-sea tile, art desk to paint after a palette add): one flat fill of the darkest palette blue
-    }
-    if (!ovr && land === L.POND) { const p = pondOf(c), dx = (lx - p.x) / (p.r * 1.25), dy = (ly - p.y) / p.r, rr = dx * dx + dy * dy + (vnoise(wx / (6 * k), wy / (6 * k), 7) - .5) * .5;
-      if (rr < 1) land = L.WATER; else if (rr < 1.35) col = tile('pondrim', wx, wy); }
-    if (col == null) {
-      if (land === L.WATER) col = nearW(3 * k) ? tile('foam', wx, wy) : tile('water', wx, wy);
-      else if (nearW(2 * k)) col = tile('beach', wx, wy);
-      else if (land === L.WOOD) { col = tile('wood', wx, wy); wood = true; }
-      else if (land === L.ROCK) col = tile('rock', wx, wy);
-      else if (land === L.CLIFF) col = (wy % 5 === 0) ? C.stone : C.slate;
-      else col = tile('meadow', wx, wy);
-    }
-    // the storm's dark over the cells it covers, then the fog states on the same soft borders
-    const fs = fogOf(c);
-    if (fs === 2 || (ex && ex.storm && stormCovers(c % MW))) { col = wood ? WOOD_DARK[col] : DARK[col]; raw = undefined; }   // the wood's ground stays the wood's ground in the dark (one step down on the crowns): never the ink the unseen land is drawn in
-    if (fs === 2) { if (b < FOGV.n) { col = C.night; raw = undefined; } } else if (fs === 1 && b < FOGV.b) { col = C.night; raw = undefined; }
-    if (raw !== undefined) u[y * N + x] = raw; else put(y * N + x, col);
-  } }
-  cg.putImageData(id, 0, 0); LAND_CACHE.key = key; LAND_CACHE.cv = cv; LAND_CACHE.more.set(key, cv); if (LAND_CACHE.more.size > 4) LAND_CACHE.more.delete(LAND_CACHE.more.keys().next().value); return cv;
+  let u = placesWorker() ? landTake(key) : null;
+  if (!u) {
+    if (placesWorker() && (landPending(key) || landAsk(key, landInputs(L0), { ctx: PL.ctx || null }))) { LAND_WAIT.add(key); return null; }
+    u = paintLand(landInputs(L0));   // no worker (or it failed): painted here
+  }
+  const { X0, Y0, w: N, h: NH, cs } = spec, cv = document.createElement('canvas'); cv.width = N; cv.height = NH;
+  { const cg = cv.getContext('2d'), id = cg.createImageData(N, NH); new Uint32Array(id.data.buffer).set(u); cg.putImageData(id, 0, 0); }
+  LAND_WAIT.delete(key); LAND_CACHE.key = key; LAND_CACHE.cv = cv; LAND_CACHE.more.set(key, cv); if (LAND_CACHE.more.size > 4) LAND_CACHE.more.delete(LAND_CACHE.more.keys().next().value);
+  LAND_CACHE.last = { cv, X0, Y0, cs };
+  return cv;
 }
+// While the new painting is made: the last one, laid where this one will stand (the same world pixels; fog changes and the strip the walk uncovered show when the new one comes), ink where there is none.
+function landStand(spec) {
+  const { X0, Y0, w: N, h: NH, cs } = spec, last = LAND_CACHE.last, sig = [X0, Y0, N, NH, cs, last ? last.cv.width + ':' + last.X0 + ':' + last.Y0 : ''].join('|');
+  if (LAND_CACHE.stand && LAND_CACHE.stand.sig === sig && LAND_CACHE.stand.last === (last && last.cv)) return LAND_CACHE.stand.cv;
+  const cv = document.createElement('canvas'); cv.width = N; cv.height = NH; const cg = cv.getContext('2d'), ink = RGB[C.ink]; cg.fillStyle = `rgb(${ink[0]},${ink[1]},${ink[2]})`; cg.fillRect(0, 0, N, NH);
+  if (last && last.cs === cs) cg.drawImage(last.cv, (last.X0 - X0) * cs, (last.Y0 - Y0) * cs);
+  LAND_CACHE.stand = { sig, last: last && last.cv, cv }; return cv;
+}
+function landImage(spec) { return landTry(spec) || landStand(spec); }
+// The opening's painting as a generator (a screen waits for it across frames): each next() is one frame of waiting; the last returns the canvas.
+function* landPaint(spec) { let cv; while (!(cv = landTry(spec))) yield; return cv; }
 // A place's mark on the land at its landmark's real spot in the cell (a mirrored place puts it on the other side); been in: the slate silhouette, found: full colour; never been in: none.
 // (fx, fy): the spot as fractions of the cell. Returns { mk, x, y } for a cell at (cx, cy) of size cs, or null.
 function cellMark(c, cx, cy, cs, size, open) {   // open: the opening screen draws them between expeditions
   if ((!S.exp && !open) || !S.revealed[c] || !passable(c) || G.land[c] === L.WATER) return null;
   const found = walkedCell(c), been = !!S.veil[String(c)]; if (!found && !been) return null;
+  if (!placeHave(String(c))) return null;   // its place is still being made: no mark yet
   const lay = layout(String(c)), bk = lay.baked; if (!bk || !lay.landmark) return null;   // a mark stands only at a landmark: the land holds few
   const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = walkPB(`mark-${LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;
   return { mk, x: Math.round(Math.max(cx + pad, Math.min(cx + cs - mk.w - pad, cx + (lm.x + .5) / bk.w * cs - mk.w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - mk.h - pad, cy + (lm.y + .5) / bk.h * cs - mk.h / 2))) };
@@ -6229,9 +6250,9 @@ function openFrame() {
 const OPEN_JOB = { sig: '', it: null };
 function openPainting(spec) {
   const sig = [spec.X0, spec.Y0, spec.w, spec.h, spec.cs, spec.mist, spec.glimpse ? spec.glimpse.join() : ''].join('|');
-  if (OPEN_JOB.sig !== sig || !OPEN_JOB.it) { OPEN_JOB.sig = sig; OPEN_JOB.it = landPaint(spec, true); }
+  if (OPEN_JOB.sig !== sig || !OPEN_JOB.it) { OPEN_JOB.sig = sig; OPEN_JOB.it = landPaint(spec); }
   const t0 = performance.now(); let r;
-  do { r = OPEN_JOB.it.next(); } while (!r.done && performance.now() - t0 < 8);
+  do { r = OPEN_JOB.it.next(); if (!r.done && LAND_WAIT.size) break; } while (!r.done && performance.now() - t0 < 8);   // waiting on the worker: one look a frame
   if (!r.done) return null; OPEN_JOB.it = null; return r.value;
 }
 // The tab the land shows: Weather (0) or Deep ground (1); while the partner is focused, the last tab left (S.ui.way).
@@ -7028,7 +7049,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { warmTick(); resumeHeld(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { wantPlaces(); warmTick(); resumeHeld(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
@@ -7452,6 +7473,7 @@ const randomSeed = () => Math.floor(Math.random() * 4294967295) >>> 0;
 // The worker runs in the bundled page (the build puts the packages inside it). The page served from the source tree (the dev checks, the goldens, the journeys) has an import map the worker cannot read, so it
 // makes the realm on its own thread as it always did.
 const OFF_PAGE = typeof Worker !== 'undefined' && !(document.querySelector && document.querySelector('script[type="importmap"]'));
+placesOn(OFF_PAGE);   // the same page that has the realm's worker has the places' workers
 function drawMaking() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
@@ -7536,7 +7558,7 @@ requestAnimationFrame(frame);
   if (!OFF_PAGE) boot(null);
   else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
