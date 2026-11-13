@@ -175,8 +175,45 @@ function windowLevels(L, X, Y) {
   cur = open(cur, W2, H2, MIN_FEATURE);   // where the two never settle, a closing can leave a patch of raised land under 4 wide: end on the opening, so raised land never is
   const R = new Uint8Array(W * H);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) R[y * W + x] = cur[rr(y) * W2 + cc(x)];
+  seamFaces(R, W, H, (X - 1) * CW);
   dropSmall(L, R, W, H, X - 1, Y - 1);
   return { R, W, H };
+}
+// Where the bins meet the plain field (west and east seams, COAST_DEPTH cells in) the contour can jog one row away from a bin's edge and leave a face of 3 tiles. A south face (raised tile whose
+// tile below is low) shorter than MIN_FACE inside the seam band is carried down (the row below it raised, again, up to RAISE_MAX rows) until it joins the face beside it; where that never joins
+// (a step with a wall at both ends) the step is cut instead (its rows lowered, up to LOWER_MAX rows) until it joins the face above. Neither joining: left as it is.
+const MIN_FACE = 4, SEAM_BAND = 12, RAISE_MAX = 3, LOWER_MAX = 6;
+function seamFaces(R, W, H, x0) {
+  const seam = COAST_DEPTH * CW, inX = gx => Math.min(gx - BORDER_X, WTW - 1 - BORDER_X - gx);
+  const faceAt = (y, x) => y >= 0 && y + 1 < H && R[y * W + x] && !R[(y + 1) * W + x];
+  const faceLen = (y, x) => { let a = x, b = x; while (a > 0 && faceAt(y, a - 1)) a--; while (b + 1 < W && faceAt(y, b + 1)) b++; return a === 0 || b === W - 1 ? MIN_FACE : b - a + 1; };
+  const joined = (y, x, e) => { for (let k = x; k < e; k++) if (!faceAt(y, k)) return false; return faceLen(y, x) >= MIN_FACE; };
+  for (let round = 0; round < 4; round++) {
+    let changed = false;
+    for (let y = 0; y + 1 < H; y++) {
+      let x = 0;
+      while (x < W) {
+        if (!faceAt(y, x)) { x++; continue; }
+        let e = x; while (e < W && faceAt(y, e)) e++;
+        // a run cut by the raster's rim is not judged
+        if (x > 0 && e < W && e - x < MIN_FACE && Math.abs(inX(x0 + x) - seam) <= SEAM_BAND && Math.abs(inX(x0 + e - 1) - seam) <= SEAM_BAND) {
+          const ya = Math.max(0, y - LOWER_MAX - 1), yb = Math.min(H - 1, y + RAISE_MAX + 1), save = [];
+          for (let r = ya; r <= yb; r++) for (let i = x; i < e; i++) save.push(R[r * W + i]);
+          const restore = () => { let n = 0; for (let r = ya; r <= yb; r++) for (let i = x; i < e; i++) R[r * W + i] = save[n++]; };
+          let ok = false;
+          for (let k = 1; k <= RAISE_MAX && y + k + 1 < H && !ok; k++) { for (let i = x; i < e; i++) R[(y + k) * W + i] = 1; ok = joined(y + k, x, e); }
+          if (!ok) {
+            restore();
+            for (let k = 0; k <= LOWER_MAX && y - k - 1 >= 0 && !ok; k++) { for (let i = x; i < e; i++) R[(y - k) * W + i] = 0; ok = joined(y - k - 1, x, e); }
+            if (!ok) restore();
+          }
+          if (ok) changed = true;
+        }
+        x = e;
+      }
+    }
+    if (!changed) break;
+  }
 }
 // A level region of under SMALL tiles that does not reach the raster's rim and holds no cell's centre of its own level (a hill, or a hollow, that the cells do not know of) joins what
 // rings it: nothing on it could be reached by a stair, and a hill of a handful of tiles is no cliff worth drawing.

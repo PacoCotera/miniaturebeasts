@@ -286,7 +286,7 @@ export const ROUNDS = 64;   // was 24: with stairs only where a south-facing fac
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 4;   // 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
+export const REALM_REV = 5;   // 5: no coast face under 4 tiles at the seam where the bins meet the plain field (levels.mjs seamFaces); 4:the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
 export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
 export function realm7(seed) {
