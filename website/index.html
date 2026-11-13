@@ -13,12 +13,12 @@
 <meta property="og:url" content="https://miniaturebeasts.com/">
 <meta property="og:title" content="Miniature Beasts: one for the field, one for home">
 <meta property="og:description" content="Find pods in the fog. Read them at home. Breed mibis no one has seen. A game you can hold, open source and made in public.">
-<meta property="og:image" content="https://miniaturebeasts.com/assets/hero-kit.png">
-<meta property="og:image:width" content="1680">
-<meta property="og:image:height" content="1162">
-<meta property="og:image:alt" content="A painting of the kit at home: the Station, and the Companion seated in the Caddy.">
+<meta property="og:image" content="https://miniaturebeasts.com/assets/site-top-felted-6-2400.webp">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1350">
+<meta property="og:image:alt" content="A felted Loika on bright moss at a misty lake, looking up at a clover leaf.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" as="image" href="assets/hero-kit.png" fetchpriority="high">
+<link rel="preload" as="image" href="assets/site-top-felted-6-2400.webp" fetchpriority="high">
 <style>
 :root {
   color-scheme: light;
@@ -94,14 +94,9 @@ figcaption .label, .caption .label { margin-right: .4em; color: var(--ink); }
 .masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
 .masthead nav a:not(.button) { text-decoration: none; }
 .masthead nav a:not(.button):hover { text-decoration: underline; }
-.hero { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px 48px; align-items: end; padding-top: 56px; padding-bottom: 48px; }
-.hero .eyebrow { color: var(--lime); }
-.hero .lede { margin-top: 0; font-size: 1.25rem; line-height: 1.4; }
-.hero .button { margin-top: 24px; }
-.hero-art { position: relative; margin-bottom: -160px; }
-.hero-art img { border-radius: var(--radius); box-shadow: 0 30px 60px -30px rgb(0 0 0 / .55); }
-.hero-art figcaption { color: var(--muted); }
-.after-hero { padding-top: 200px; }
+.top-art img { width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 78vh; object-fit: cover; object-position: 30% 50%; }
+.headline { min-height: 160px; }
+.after-hero { padding-top: var(--pad); }
 
 /* How it plays: the loop as pictures */
 .how { background: var(--sage); }
@@ -239,13 +234,9 @@ footer { padding-bottom: 32px; }
 @media (max-width: 760px) {
   :root { --gutter: 16px; --pad: 72px; --p: 76px; }
   .masthead nav a:not(.button) { display: none; }
-  .hero, .faq-grid, .play, .odds-stamp { grid-template-columns: 1fr; }
-  .hero { padding-top: 24px; padding-bottom: 32px; }
-  .hero .lede { font-size: var(--fs-body); }
-  .hero-art { margin-bottom: -64px; margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }
-  .hero-art img { border-radius: 0; }
-  .hero-art figcaption { padding-left: var(--gutter); }
-  .after-hero { padding-top: 104px; }
+  .faq-grid, .play, .odds-stamp { grid-template-columns: 1fr; }
+  .top-art img { aspect-ratio: 4 / 5; max-height: none; object-position: 20% 50%; }
+  .headline { min-height: 120px; }
   .loop { grid-template-columns: 1fr 1fr; gap: 28px 12px; margin-top: 40px; }
   .loop img { border-radius: 10px; }
   .loop .name { font-size: var(--fs-body); }
@@ -296,23 +287,11 @@ footer { padding-bottom: 32px; }
     </nav>
   </header>
 
-  <section class="wrap hero" aria-labelledby="hero-title">
-    <div>
-      <p class="eyebrow">A game you can hold</p>
-      <h1 id="hero-title">One for the field.<br><span>One for home.</span></h1>
-    </div>
-    <div>
-      <p class="lede">Find pods in the fog. Read them at home. Breed mibis no one has seen.</p>
-      <a class="button primary" href="sandbox/play/">Play it now</a>
-    </div>
-  </section>
-  <div class="wrap">
-    <figure class="hero-art">
-      <img src="assets/hero-kit.png" width="1680" height="1162" fetchpriority="high"
-        alt="A painting of the kit at home: the Station, and the Companion seated in the Caddy.">
-      <figcaption>The kit at home: the Station and the Companion, seated in the Caddy.</figcaption>
-    </figure>
-  </div>
+  <figure class="top-art">
+    <img src="assets/site-top-felted-6-2400.webp" width="2400" height="1350" fetchpriority="high"
+      alt="A felted Loika, dark plum with a cream chest and three leaves on its head, sits on bright moss at a misty lake and looks up at a clover leaf with a drop of dew.">
+  </figure>
+  <section class="wrap headline" id="headline" aria-label="Headline"></section>
 </div>
 
 <main id="main">
