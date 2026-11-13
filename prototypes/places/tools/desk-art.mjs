@@ -84,6 +84,12 @@ export const SUNLIT ='#82b266';   // the map palette's `grass`, one sunlit step 
 export const SUNLIT_FROM = '#5e9357';
 // the scrub ground (the desk's olive #589054, darker than the grass #74a65d, read as a hollow): the same value as the grass (luminance 143), drier and yellower (hue 80 degrees against the grass's 99)
 export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
+// the raised meadow ground (the art director's cliff-plateau-raised-1, mibi-art 2bc909714): the signed meadow fill and tone through the "raised" light table, day files, byte for byte
+export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-plateau-raised-1/work' };
+// the south-face columns: the paid seam edit of cliff-fill-trial-2 (work/raw/step3-seam.png) -> six columns of the seamless strip, through the plain post-step chain; the files sit in the set folder with their sidecars
+export const SOUTH_COLUMNS = 6, SOUTH_FROM = 'art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png';
+const SET_DIR = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
+const sha = (b) => createHash('sha256').update(b).digest('hex');
 const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c.dir}/${p}`], { maxBuffer: 1 << 26 });
 // the cliff re-cut sheets are the old-palette cut run again (tools/recut); the colour map brings them to the map palette
 const T = 16;
@@ -175,7 +181,7 @@ export function deskLayers() {
       over: [{ kind: 'rim', lowers: [...ON, ...ABOVE, 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
     },
     cliff: {
-      fill: { sheets: [rec(CLIFF3, 'fill-cliff.png', `${CLIFF3.dir}/over-cliff.png#15 recut recoloured`, Buffer.from(encodePng(slot15(keyShade(recutImg('over-cliff.png'))))))] },
+      fill: { sheets: [place(RAISED, 'fill-grass-raised-day.png', 'fill-cliff.png')] },   // the raised meadow ground: every raised cell that is no old face
       over: [{
         kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass'], sheets: [recut('over-cliff.png', 'over-cliff.png')],
         tall: { 1: [recut('over-cliff~s1.png', 'over-cliff~s1.png')], 2: [recut('over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => recut(n, n)) },
@@ -185,7 +191,7 @@ export function deskLayers() {
   };
   // the tone layer: the desk's signed lipless grass tone, one colour map (its dark #5e9357 to the sunlit #82b266: a patch is lighter than the grass, never a hollow)
   const toneImg = mapColour(decodePng(show(MEADOW1, 'layers/grass-tone.png')), SUNLIT_FROM, SUNLIT);
-  const tone = { of: 'grass', also: ['cliff'], sheets: [rec(MEADOW1, 'tone-grass.png', `${MEADOW1.dir}/layers/grass-tone.png sunlit (${SUNLIT_FROM} to ${SUNLIT})`, Buffer.from(encodePng(toneImg)))] };
+  const tone = { of: 'grass', also: ['cliff'], sheets: [rec(MEADOW1, 'tone-grass.png', `${MEADOW1.dir}/layers/grass-tone.png sunlit (${SUNLIT_FROM} to ${SUNLIT})`, Buffer.from(encodePng(toneImg)))], raised: place(RAISED, 'tone-grass-raised-day.png', 'tone-grass-raised.png') };
   const images = new Map([...files].map(([n, b]) => [n, decodePng(b)]));
   return { files, images, layers, tone, desk };
 }
@@ -295,5 +301,12 @@ export function deskArt() {
   for (const [n, key] of Object.entries(DECOR_SOURCES.sweeps)) props[n] = { ...piece(key), footprint: [] };   // sweeps of tall grass block nothing
   for (const [n, key] of Object.entries(DECOR_SOURCES.decals)) decals[n] = { ...piece(key) };
   for (const [n, key] of Object.entries(DECOR_SOURCES.reeds)) props[n] = { ...piece(key), footprint: [] };   // a prop with no footprint: it sorts with the walkers and blocks nothing
+  // the six south-face columns (the art director's seamless strip S; the files are the build job's regenerated plain-chain columns, read from the set folder as placed, with their sidecars beside them)
+  for (let k = 1; k <= SOUTH_COLUMNS; k++) {
+    const file = `cliff-south-${k}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 48 || im.h !== 288) throw new Error(`${file}: a south column is 48 x 288, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[`cliff-south-${k}`] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `${SOUTH_FROM} (the plain chain; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
+  }
   return { files, props, canopy, decals, desk };
 }

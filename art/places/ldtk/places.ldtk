@@ -1728,6 +1728,126 @@
 				"uid": 106,
 				"values": [
 					{
+						"id": "rock-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-b-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "rock-turf-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-0",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "leaf-loose-5",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-1-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-2-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "dry-tufts-3-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-thorn-a",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-thorn-a-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-wind",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "tuft-wind-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-heather",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "shrub-heather-m",
+						"color": 0,
+						"tileRect": null
+					},
+					{
 						"id": "tuft-fan",
 						"color": 0,
 						"tileRect": null
@@ -2298,122 +2418,32 @@
 						"tileRect": null
 					},
 					{
-						"id": "leaf-loose-0",
+						"id": "cliff-south-1",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "leaf-loose-1",
+						"id": "cliff-south-2",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "leaf-loose-2",
+						"id": "cliff-south-3",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "leaf-loose-3",
+						"id": "cliff-south-4",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "leaf-loose-4",
+						"id": "cliff-south-5",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "leaf-loose-5",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "dry-tufts-1",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "dry-tufts-1-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "dry-tufts-2",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "dry-tufts-2-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "dry-tufts-3",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "dry-tufts-3-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "shrub-thorn-a",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "shrub-thorn-a-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "tuft-wind",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "tuft-wind-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "shrub-heather",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "shrub-heather-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "rock-a",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "rock-a-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "rock-b",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "rock-b-m",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "rock-turf",
-						"color": 0,
-						"tileRect": null
-					},
-					{
-						"id": "rock-turf-m",
+						"id": "cliff-south-6",
 						"color": 0,
 						"tileRect": null
 					}

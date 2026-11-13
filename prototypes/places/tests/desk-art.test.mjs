@@ -17,7 +17,7 @@ const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['633e4d641', '704373a58', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e'].sort());
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['2bc909714', '633e4d641', '704373a58', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', 'local'].sort());
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
     assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
@@ -28,7 +28,7 @@ test('every map picture is in the new map palette: no pastel colour is left', ()
   // two files carry one colour the palette table does not list: the scrub ground (SCRUB_GROUND: the grass's value, drier and yellower, made for the map) and the sand way-up's one painted sand tone (signed as is)
   const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : n === 'wayup-cliff-sand.png' ? ['#dfd387'] : []);
   for (const n of Object.keys(desk)) {
-    if (['75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e'].includes(desk[n].commit)) continue;   // the biome grounds (8c0ddc470), the biome decor (a6d2e0be4) and the walk's sprites are the art director's signed bytes in their own colours (mb-74), never recoloured; the set's palette holds them (prepare-set checks the limit)
+    if (['75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', '2bc909714', 'local'].includes(desk[n].commit)) continue;   // 2bc909714: the raised ground (the raised table's colours); local: the south columns, snapped to the set palette by the post-step tool   // the biome grounds (8c0ddc470), the biome decor (a6d2e0be4) and the walk's sprites are the art director's signed bytes in their own colours (mb-74), never recoloured; the set's palette holds them (prepare-set checks the limit)
     const im = img(n), r = recolour(im);
     assert.deepEqual(r.left.filter((c) => !ALLOWED(n).includes(c)), [], n + ' holds colours outside the map palette');
     // the reed sprites are painted in the new reed ramp; their cattail heads are mapped to the applied ramp (#664330, #7c5a3d): the desk's old browns are gone
@@ -54,7 +54,10 @@ test('the terrain layers are signed pieces: every layer file is recorded, fills 
   assert.deepEqual(Object.keys(set.layers), ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'drygrass', 'turf', 'litter', 'scree', 'scrub', 'thicket', 'cliff']);
   assert.equal(set.layers.scrub.ground, 'grass');
   assert.deepEqual(set.layers.scrub.over[0].variants, ['over-scrub~v1.png', 'over-scrub~v2.png', 'over-scrub~v3.png']);
-  assert.match(from('fill-cliff.png'), /over-cliff\.png#15 recut recoloured$/);
+  assert.match(from('fill-cliff.png'), /cliff-plateau-raised-1\/work\/fill-grass-raised-day\.png$/);   // the raised meadow ground
+  assert.match(from('tone-grass-raised.png'), /cliff-plateau-raised-1\/work\/tone-grass-raised-day\.png$/);
+  assert.equal(set.tone.raised, 'tone-grass-raised.png');
+  for (let k = 1; k <= 6; k++) { assert.equal(desk[`cliff-south-${k}.png`].commit, 'local'); assert.deepEqual(set.decals[`cliff-south-${k}`].anchor, [0, 0]); assert.deepEqual(set.decals[`cliff-south-${k}`].rect.slice(2), [48, 288]); }
   assert.match(from('over-thicket.png'), / keyed$/);
   assert.deepEqual(set.layers.cliff.over[0].tall['3'].length, 3, 'the cliff face at s = 3 has three variants');
   assert.equal(set.layers.sand.over[0].looks, undefined, 'the reed look of the beach is gone: the reeds are sprites (reeds.mjs)');

@@ -97,6 +97,7 @@ export function layerRows(set) {
     }
   }
   if (set.tone) rows.push({ type: 'tone', terrain: 'tone', sheets: set.tone.sheets });
+  if (set.tone && set.tone.raised) rows.push({ type: 'toneraised', terrain: 'tone', sheets: [set.tone.raised] });   // the tone on the raised ground, a sheet of its own
   return rows;
 }
 
@@ -124,5 +125,5 @@ export function layerDescriptors(loaded, terrains) {
       ground: l.ground === undefined ? undefined : val(l.ground, `${id} ground`), drawAs: l.drawAs === undefined ? undefined : val(l.drawAs, `${id} drawAs`),
     });
   }
-  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone') } : null };
+  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone'), ...(set.tone.raised ? { rowRaised: at((x) => x.type === 'toneraised') } : {}) } : null };
 }

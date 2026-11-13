@@ -1936,6 +1936,84 @@
     ],
     "sha256": "abb69e86e9b1438874a7ffe965b9da445ff996ec618284d5be8f7c9dc2a25dd3"
   },
+  "cliff-south-1.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-1.steps.json)",
+    "size": [
+      48,
+      288
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "372502bda14d81483de3d38bff38028027a920474c0734ccdf5858a6ad814672"
+  },
+  "cliff-south-2.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-2.steps.json)",
+    "size": [
+      48,
+      288
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "656f9b093f6645482a6737e8c3eee5413ba440f0b0f8ccdfb2e29b8e5426d2a9"
+  },
+  "cliff-south-3.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-3.steps.json)",
+    "size": [
+      48,
+      288
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "044c80a7c1211e1b18d3f551a3eaac9ecabeec09d7f385494030e8cbf1c10358"
+  },
+  "cliff-south-4.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-4.steps.json)",
+    "size": [
+      48,
+      288
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "20ab13b4f0dfbb87f6ffbd04bff62d45c21a09111dde99f69e8461e68fba38b8"
+  },
+  "cliff-south-5.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-5.steps.json)",
+    "size": [
+      48,
+      288
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "f5db00e66192eb294a27be482e04e95a1823da5ece97bef7fc42a9232c77abc3"
+  },
+  "cliff-south-6.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-6.steps.json)",
+    "size": [
+      48,
+      288
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "5c18b1614295ee8ec309f83124b1bac332fe0c6fd951646f8ba3a39941e43559"
+  },
   "fill-deep.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/sets/pair-deep-water.png#15",
@@ -2108,9 +2186,9 @@
     "sha256": "96221b8d08309033487891ed69c3efb6504dcb7a0ed66052fd3374548dec516b"
   },
   "fill-cliff.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff.png#15 recut recoloured",
-    "sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479"
+    "commit": "2bc909714",
+    "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/fill-grass-raised-day.png",
+    "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002"
   },
   "over-cliff.png": {
     "commit": "633e4d641",
@@ -2156,5 +2234,10 @@
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-tone.png sunlit (#5e9357 to #82b266)",
     "sha256": "136b20625e5fc6abc727b24cbcbd1c71425ed37a604a9a5c0f286b356d6d77fc"
+  },
+  "tone-grass-raised.png": {
+    "commit": "2bc909714",
+    "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/tone-grass-raised-day.png",
+    "sha256": "c92b96e624f7333309d6e38e9e90f00a3613779d17b9b6ad6105e66fc30fe7b6"
   }
 }

@@ -9,6 +9,7 @@
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
+import { southRuns, southTiles } from './southruns.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
@@ -47,9 +48,13 @@ export function gullies(ir, terrains) {
 
 // Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
 // layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
-export function applyOpenEdges(dg, ir, terrains, layers) {
+// `tone` is setload.layerDescriptors' tone ({ of, row, rowRaised }): the raised ground's own tone row.
+// A straight south run (southruns.mjs) has its face drawn as painted columns, so its old face and foot tiles are not placed: the raised ground runs to the lip row and the low ground under the foot shows.
+// Every raised tile that is no old face keeps the cliff layer's fill, the raised meadow ground (fill-cliff.png), and takes the raised tone.
+export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
   const { isCliff } = cliffInfo(ir, terrains);
+  const south = cliff ? southTiles(southRuns(ir, cliffInfo(ir, terrains)), w1) : { face: new Set(), foot: new Set() };
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
   const pick = (list, i, j) => (list.length > 1 ? list[vh(i, j) % list.length] : list[0]);
   for (const layer of dg.layers) {
@@ -61,10 +66,12 @@ export function applyOpenEdges(dg, ir, terrains, layers) {
       const c = layer.tiles[j * w1 + i]; if (c === EMPTY) continue;
       const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
       if (tall) {
+        if (south.foot.has(j * w1 + i)) { layer.tiles[j * w1 + i] = EMPTY; continue; }   // under a straight south face: its column covers the foot
+        if (fill && south.face.has(j * w1 + i)) continue;                                 // the lip row of a straight south face: the raised ground, the column overhangs it
         // the cells under the tile's bottom corners: SW is cell (i - 1, j), SE is (i, j); the cell below is one row down
         const sw = isCliff(i - 1, j) && !isCliff(i - 1, j + 1) ? 2 : 0, se = isCliff(i, j) && !isCliff(i, j + 1) ? 1 : 0, s = (corner & 2 ? sw : 0) + (corner & 1 ? se : 0);
         if (s > 0) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * pick(tall[s], i, j) + corner; continue; }
-        if (fill) { layer.tiles[j * w1 + i] = EMPTY; continue; }   // a raised tile that is no face: the top ground below shows alone
+        if (fill) continue;   // a raised tile that is no face keeps the cliff's fill: the raised meadow ground
       }
       if (full) continue;
       const rows = d.kinds[s0.kind].rows;
@@ -72,6 +79,14 @@ export function applyOpenEdges(dg, ir, terrains, layers) {
         const n = vh(i, j) % (rows.variants.length + 1);
         if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * rows.variants[n - 1] + corner;
       }
+    }
+  }
+  // the tone on the raised ground: a tone tile whose four cells are all cliff takes the raised tone sheet (the sunlit patch lifted as the ground is), the rest keep the grass tone
+  const toneLayer = dg.layers.find((l) => l.tone);
+  if (cliff && toneLayer && tone && tone.rowRaised !== undefined) {
+    for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
+      const c = toneLayer.tiles[j * w1 + i];
+      if (c !== EMPTY && c < ALT_CODE && isCliff(i - 1, j - 1) && isCliff(i, j - 1) && isCliff(i - 1, j) && isCliff(i, j)) toneLayer.tiles[j * w1 + i] = ALT_CODE + 16 * tone.rowRaised + c;
     }
   }
   // the way up: the kit's piece for the terrain below the face replaces the cliff's own tiles on the tile above the face (row 0) and on the face (row 1)

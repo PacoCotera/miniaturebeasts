@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { loadSet, layerTiles, fillTiles, kindFullTiles, layerDescriptors, layerRows } from '../src/setload.mjs';
 import { paste } from '../src/png.mjs';
 import { cornerSheet } from '../src/sheets.mjs';
-import { applyOpenEdges, ALT_CODE } from '../src/bake/openedges.mjs';
+import { applyOpenEdges, cliffInfo, ALT_CODE } from '../src/bake/openedges.mjs';
+import { southRuns, southTiles } from '../src/bake/southruns.mjs';
 import { terrainLayers, FILL_CODE, FULL_BASE, EMPTY } from '../src/dualgrid.mjs';
 import { edgeSignatureFailures, coverage, legalAdjacencies, edgeLine } from '../src/seams.mjs';
 import { compareGolden } from '../src/golden.mjs';
@@ -77,12 +78,17 @@ test("the cliff layer: the bake picks each tile by its corners and the cells bel
       const PAD = 1, W = bw + 2 * PAD, H = bh + 2 * PAD, g = (x, y) => (x >= 0 && y >= 0 && x < bw && y < bh ? cell(x, y) : 0);
       const level = { id: 'block', w: W, h: H, terrain: Uint8Array.from({ length: W * H }, (_, i) => (g((i % W) - PAD, ((i / W) | 0) - PAD) ? valueOf.cliff : valueOf[ground])) };
       const dg = terrainLayers(level, TERRAINS, desc.layers, null);
-      applyOpenEdges(dg, { ...level, wayups: [], reedbanks: [] }, TERRAINS, desc.layers);
+      const lir = { ...level, wayups: [], reedbanks: [] };
+      applyOpenEdges(dg, lir, TERRAINS, desc.layers);
+      const south = southTiles(southRuns(lir, cliffInfo(lir, TERRAINS)), dg.w1);   // the interior of a straight south run: its face is a painted column, so the old face and foot tiles are not placed (southruns.mjs)
       const L = dg.layers.find((l) => l.terrain === valueOf.cliff);
       if (!L) continue;
       for (let j = 1; j <= bh - 2; j++) for (let i = 1; i < bw; i++) {   // the tiles the desk proves: i from 1, j from 1 to the height - 2 (block coordinates)
         const nw = g(i - 1, j - 1), ne = g(i, j - 1), sw = g(i - 1, j), se = g(i, j), want = nw * 8 + ne * 4 + sw * 2 + se;
         const s = (sw && !g(i - 1, j + 1) ? 2 : 0) | (se && !g(i, j + 1) ? 1 : 0), c = L.tiles[(j + PAD) * dg.w1 + i + PAD], at = `block ${m} ${bw}x${bh} ${ground} tile (${i},${j})`;
+        const idx = (j + PAD) * dg.w1 + i + PAD;
+        if (south.foot.has(idx)) { assert.equal(c, EMPTY, at + ': under a straight south face: no old foot tile'); continue; }
+        if (south.face.has(idx)) { assert.ok(c >= FILL_CODE, at + ': the lip row of a straight south face keeps the raised ground'); continue; }
         if (want === 0) { assert.equal(c, EMPTY, at + ': no cliff corner, no cliff tile'); continue; }
         if (s === 0) {
           assert.ok(c < ALT_CODE || c >= FILL_CODE, `${at}: the plain sheet`);

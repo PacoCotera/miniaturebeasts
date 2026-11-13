@@ -7,6 +7,7 @@ import { FORMAT_VERSION } from '../format/write.mjs';
 import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';
+import { southDecals, southRuns } from './southruns.mjs';
 
 // dg: terrainLayers' output after applyOpenEdges; tileset: the baked tile set; desc: setload.layerDescriptors' { layers, tone }. Returns [{ tiles: Uint16Array of tile ids }] in draw order (0xFFFF draws nothing).
 export function layersToTileIds(dg, tileset, desc) {
@@ -15,7 +16,7 @@ export function layersToTileIds(dg, tileset, desc) {
     return {
       tiles: Uint16Array.from(l.tiles, (c) => {
         if (c === EMPTY) return 0xFFFF;
-        if (l.tone) return tileset.pairs[desc.tone.row].tiles[c];                                   // the tone layer: the code is the corner mask
+        if (l.tone) return c >= ALT_CODE ? tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15] : tileset.pairs[desc.tone.row].tiles[c];   // the tone layer: the code is the corner mask (the raised tone is its own row)
         if (c >= FILL_CODE) return tileset.pairs[d.fillRow].fullVariants[c - FILL_CODE];             // the terrain's fill
         if (c >= ALT_CODE) return tileset.pairs[(c - ALT_CODE) >> 4].tiles[(c - ALT_CODE) & 15];   // the cliff's tall tiles, the way up or a variant
         const s = splitCode(c), row = tileset.pairs[d.kinds[s.kind].rows.over];
@@ -43,7 +44,7 @@ export function buildPlace(ir, ctx) {
   let dg;
   try {
     dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone, top: ir.top }, ctx.terrains, desc.layers, desc.tone);
-    applyOpenEdges(dg, ir, ctx.terrains, desc.layers);
+    applyOpenEdges(dg, ir, ctx.terrains, desc.layers, desc.tone);
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
     const cell = e.cell && e.cell.i !== undefined ? { x: Math.min(e.cell.i, ir.w - 1), y: Math.min(e.cell.j, ir.h - 1) } : e.cell || null;
@@ -62,7 +63,7 @@ export function buildPlace(ir, ctx) {
   const place = {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: ir.mirrorOf || '',
     terrain: ir.terrain, ground,
-    decals: ir.decals.map(placed('decal')), props: ir.props.concat(reedProps(ir)).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)).map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
+    decals: southDecals(southRuns(ir, cliffInfo(ir, ctx.terrains))).map((d) => ({ kind: index('decal', d.kind), x: d.x, y: d.y, sortY: d.y })).concat(ir.decals.map(placed('decal'))), props: ir.props.concat(reedProps(ir)).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)).map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
     heart: { x: heart.x, y: heart.y, kinds: heart.kinds, species: heart.species, revealLine: heart.revealLine, reachBy: heart.reachBy },
     clues: ir.clues, finds: ir.finds.map((f) => ({ x: f.x, y: f.y, kinds: f.kinds.map((k) => FIND_KINDS.indexOf(k)), chance: f.chance })),
     landmarks: ir.landmarks.filter((l) => l.prop && spriteFor(tileset, 'prop', l.prop)).map((l) => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),   // a generated cell's landmark whose prop has no signed art yet is an empty slot (its IR entry names it), not a baked record
