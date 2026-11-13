@@ -78,14 +78,30 @@ test("no trip limit on strikes: a tier-3 mark pays 4, ten marks pay until the ho
   p.run("curLay().land = " + land);
 });
 
-test("a mark is read only whole: with 18 held a worth-5 mark is not offered, and it stays", () => {
+test("a mark that does not fit whole is read in part: with 17 held a worth-4 mark gives 3 and keeps 1", () => {
   const t = setup(), { p } = t;
   const land = p.run("curLay().land"); p.run("curLay().land = 2");
   p.run("S.exp.cargo.d = 16"); assert.equal(p.run("strikeGain(S.exp)"), 4, "4 fits in 4");
-  p.run("S.exp.cargo.d = 17"); assert.equal(p.run("strikeGain(S.exp)"), 0, "4 does not fit in 3: no partial read");
-  face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), p.run("WORDS.strike.holdFull"));
+  p.run("S.exp.cargo.d = 17"); assert.equal(p.run("strikeGain(S.exp)"), 3, "3 of the 4 fit");
+  face(t, t.spots.mark); assert.notEqual(p.run("patchAction().run"), null, "a press is offered");
+  p.run("patchAction().run()");
+  assert.equal(p.run("S.exp.cargo.d"), 20);
+  assert.equal(p.run("strikeIsRead(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tq'))"), false, "the mark stays, with 1 left");
+  assert.equal(p.run("fs(S.exp.patch.key, 'tq').took"), 3);
+  p.run("S.exp.cargo.d = 19");
+  assert.equal(p.run("strikeGain(S.exp, curLay(), layout(S.exp.patch.key).feats.find(f => f.id === 'tq'))"), 1, "one is left on the mark");
+  p.run("S.exp.cargo.d = 20");
+  assert.equal(p.run("patchAction().label"), p.run("WORDS.strike.holdFull"));
   assert.equal(p.run("patchAction().run"), null);
   p.run("curLay().land = " + land);
+});
+
+test("End expedition builds no cold place for depots that were never lit: one press ends it at once", () => {
+  const { p } = setup();
+  p.run("globalThis.__built = 0; const o = layoutCache.set.bind(layoutCache); layoutCache.set = (k, v) => { globalThis.__built++; return o(k, v); }");
+  p.run("endExpedition('sent')");
+  assert.equal(p.run("S.phase"), "sealed");
+  assert.equal(p.run("globalThis.__built"), 0, "no place is built while the expedition ends");
 });
 
 test("a mark fades twelve world turns after the strike", () => {

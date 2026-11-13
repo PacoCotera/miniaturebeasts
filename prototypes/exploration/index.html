@@ -857,6 +857,7 @@ function drawInkIn() {
 
 function beaconCells(seed) { return beaconCellsIn(G, seed); }
 function depotCells(seed) { return depotCellsIn(G, seed); }
+const everLit = c => { const cs = S.cells[String(c)]; if (!cs) return false; for (const id in cs) if (cs[id].lightT) return true; return false; };   // a depot lit once keeps its state in the cell; one never lit needs no place built to say so (a cold place takes a quarter second)
 function depotOf(c) { if (!passable(c)) return null; const key = String(c); return depotCells(S.seed).has(c) ? layout(key).feats.find(f => f.kind === 'h') || null : null; }
 // An outpost's light: lit for 3 world turns per lighting (this expedition and the next two); it changes only at the world turn.
 const OUTPOST_TURNS = 3;
@@ -1092,6 +1093,8 @@ function drawSlide() {
   g.drawImage(nw, Math.round(sl.dx * (1 - p) * W), top + Math.round(sl.dy * (1 - p) * Hs));
   g.restore();
 }
+// A cell the storm struck: the world turn at the expedition's end reads its place (stones, strike mark), and a cold layout takes a quarter second to build, so it is built now, a moment after the flash, in the walk's idle time and not all at once when End expedition is pressed.
+function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c))) layout(String(c)); }, 600); }
 function transition() { FX.transAt = NOW; lockInput(160); if (typeof stopRepeat === 'function') stopRepeat(); } // a held direction never carries across scales
 
 let crById = new Map();
@@ -1386,7 +1389,6 @@ const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save(keepRipe) {
-  if (!keepRipe) flushRipe();
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
@@ -1531,12 +1533,14 @@ function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the 
   const c = S.cells[lay.key]; if (c) for (const id of Object.keys(c)) if (c[id].fresh) lay.feats.push({ id, kind: 'q', x: c[id].x, y: c[id].y, born: c[id].born, glass: false });
 }
 // What a press on a strike mark would add now: the worth of the place it lies in (2 / 3 / 4 / 5), whole. 0: the whole worth does not fit the hold and a press is not offered.
-function strikeGain(ex, lay = curLay()) { const worth = STRIKE_DATA[placeTier(lay)] || STRIKE_DATA[1]; return worth <= CAP - ex.cargo.d ? worth : 0; }   // the whole worth or nothing: a mark that does not fit stays unread
+function strikeWorth(lay = curLay()) { return STRIKE_DATA[placeTier(lay)] || STRIKE_DATA[1]; }
+function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay) - (f ? fs(lay.key, f.id).took || 0 : 0); return Math.max(0, Math.min(left, CAP - ex.cargo.d)); }   // what fits: a mark that does not fit whole is read in part, the rest stays on the mark (owner 11-13)
 function readStrike(f) {
-  const ex = S.exp, key = ex.patch.key, put = strikeGain(ex);
+  const ex = S.exp, key = ex.patch.key, put = strikeGain(ex, curLay(), f);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
   const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
-  setFS(key, f.id, { read: S.turn });
+  const took = (fs(key, f.id).took || 0) + got;
+  setFS(key, f.id, took >= strikeWorth() ? { took, read: S.turn } : { took });   // read only once all its worth is taken
   fxSign('strike'); fxMsg(WORDS.strike.press(got), 2); logEv('Read a strike mark · +' + got + ' Data (' + ex.cargo.d + ' of ' + CAP + ' in the hold)');
   advance('patch', { noise: 'act' });
 }
@@ -1765,7 +1769,7 @@ function leftItemsAll(c) {
   for (const p of S.pods) if (!p.h && p.x >= 0 && (p.k === key ? see(p.x, p.y) : c === G.gate && p.k === 'c' + c)) out.push({ k: 'pod', x: p.x, y: p.y, cave: p.k !== key });
   for (const f of lay0.feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
-    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp, lay0) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once its whole worth no longer fits the hold
+    if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp, lay0, f) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once its whole worth no longer fits the hold
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
@@ -1969,7 +1973,7 @@ function advance(scope, info) {
       const cols = []; for (let x = 0; x < MW; x++) if (stormCovers(x)) cols.push(x);
       if (cols.length && !stormLull()) { const x = cols[hash(S.seed, 'sm', ex.n, ex.actions) % cols.length], y = hash(S.seed, 'smy', ex.n, ex.actions) % MH, c = y * MW + x;
         FX.bolts.push({ c, at: NOW });
-        if (hash(S.seed, 'chg', ex.n, ex.actions) % 4 === 0) ex.stormCells[c] = 1;   // one flash in four charges stones there for the world turn
+        if (hash(S.seed, 'chg', ex.n, ex.actions) % 4 === 0) stormMark(ex, c);   // one flash in four charges stones there for the world turn
         if (hash(S.seed, 'lit', ex.n, ex.actions) % 7 === 0 && !S.revealed[c]) { revealCell(c); ex.stats.lit++; } }
     }
   }
@@ -2002,12 +2006,12 @@ function strayHit(scope) {
   const ex = S.exp;
   if (scope === 'patch' && ex.patch) FX.strikes.push({ space: 'patch', x: ex.patch.x, y: ex.patch.y, at: NOW });
   else FX.strikes.push({ space: 'map', c: ex.pos, at: NOW });
-  ex.stormCells[ex.pos] = 1; shieldHit(true);
+  stormMark(ex, ex.pos); shieldHit(true);
 }
 function mapStrikeTick() {
   const ex = S.exp;
   if (ex.mstrike && ex.mstrike.at <= ex.actions) {
-    const c = ex.mstrike.c; ex.mstrike = null; ex.stormCells[c] = 1; revealCell(c); ex.passWarned = 1;
+    const c = ex.mstrike.c; ex.mstrike = null; stormMark(ex, c); revealCell(c); ex.passWarned = 1;
     FX.strikes.push({ space: 'map', c, at: NOW });
   }
   const p = cxy(ex.pos);
@@ -2561,7 +2565,7 @@ function patchAction() {
       case 's': return { label: 'Push the slab', run: () => pushSlab(ft) };
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : WORDS.takeDew, run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
-      case 'q': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex);   // the press says what it adds before it is made; with the hold full no press is offered, the line says so
+      case 'q': if (!strikeFaded(ft) && !strikeIsRead(key, ft)) { const g = strikeGain(ex, lay, ft);   // the press says what it adds before it is made; with the hold full no press is offered, the line says so
           return g ? { label: WORDS.strike.read, ctx: [WORDS.strike.ctx(g), WORDS.strike.ctxShort(g)], run: () => readStrike(ft) } : { label: WORDS.strike.holdFull, run: null }; } break;
       case 'h': { const st = fs(key, ft.id), left = outpostLeft(key, ft), relight = !!st.lightT;
         if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: light, 1 Energy' : 'Relight · 1 Energy') : 'Light ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'end here, mend and shelter';
@@ -3315,7 +3319,7 @@ function endExpedition(reason) {
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
   RIPE_LATER = []; let turned, ripeLater; try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
   const worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
-  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(() => { if (flushRipe()) save(); }, 250);   // after the sealed screen's first frames; any other save, or the next set-out, flushes it first
+  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);   // after the sealed screen's first frames, a step at a time; the next set-out finishes what is left
   { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
@@ -3421,7 +3425,16 @@ function worldTurn(pending) {
 // What touches the map, for region R (the one mounted) at turn t: creatures roam, the storm leaves marks, a bloom, arrivals and young, and a species the region
 // lacks surfaces. It draws on hash(R.seed, 'turn', t), which for region 1 is the world's own hash, and writes no line and no log; it hands back what the
 // realm turn's lines are made of. farFromPlayer is the arrival guard for where the player last walked.
-function flushRipe() { if (!RIPE_PENDING.length) return false; for (const ctr of RIPE_PENDING.splice(0)) ripenBloom(ctr); return true; }
+function flushRipe() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return false; RIPE_CELLS.length = 0; for (const ctr of RIPE_PENDING.splice(0)) ripenBloom(ctr); return true; }   // the set-out finishes whatever the background steps have not
+// The background part: the bloom's cells ripen a step at a time (a place's layout can take a quarter second to build cold), so a press never waits on the whole bloom.
+const RIPE_CELLS = [];
+function ripeStep() {
+  if (!RIPE_CELLS.length && RIPE_PENDING.length) { const ctr = RIPE_PENDING.shift(); if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) if (G.comp[c] && cdist(c, ctr) <= 3) RIPE_CELLS.push(String(c)); }
+  const t0 = performance.now();
+  while (RIPE_CELLS.length && performance.now() - t0 < 8) { const key = RIPE_CELLS.shift(); for (const f of layout(key).feats) if (f.tree === 'fruit') setFS(key, f.id, { ripe: 1 }); }
+  return RIPE_CELLS.length > 0 || RIPE_PENDING.length > 0;
+}
+function ripeLoop() { if (!RIPE_PENDING.length && !RIPE_CELLS.length) return; if (ripeStep()) setTimeout(ripeLoop, 40); else save(true); }
 let RIPE_LATER = null;   // while an expedition ends: the bloom centres whose fruit trees ripen after the first sealed frame
 function ripenBloom(ctr) {   // fruit trees in the bloom's reach ripen too (silently: the line counts bushes)
   if ((G.gen || 1) >= 4) for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || cdist(c, ctr) > 3) continue; const key = String(c);
@@ -3501,7 +3514,7 @@ function realmTurn(turned, pending) {
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
   for (const m of grown) say((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name), ['grown', null, m.id, !isCarried(m) ? 0 : partnerMibi() === m ? 1 : 2]);
   for (const m of aged) say(m.name + ' is an elder now · slower, with keener senses.', ['elder', null, m.id, 0]);
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
+  for (const c of depotCells(S.seed)) { if (!everLit(c)) continue; const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // What the walk dug (a bank, or the burrow) shifts back with the turn: said as the world's, crediting the mibi that dug it (or not naming it, if it has left the Companion). One partner a walk, so one line.
   { const ex = S.exp, bankN = ex && ex.dug ? ex.dug.length : 0, burrow = !!(ex && ex.burrowDug), dm = ex && ex.pt && (bankN || burrow) ? carriedMibis().find(m => m.id === ex.pt.id) : null;
@@ -4803,7 +4816,7 @@ function mapSigns() {
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
+  for (const c of depotCells(S.seed)) { if (!S.visited[c]) continue; const f = depotOf(c); if (f && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
   for (let c = 0; c < MW * MH; c++) { if (!S.revealed[c] || !passable(c) || !(S.visited[c] || S.cells[c])) continue; const k = String(c), j = layout(k).feats.find(f => f.kind === 'j'); if (!j) continue; if (fs(k, j.id).up) add(c, 'beacon', 10, { lit: 1 }); else if (S.visited[c] && unveiled(k, j.x, j.y)) add(c, 'beacon', 9, { lit: 0 }); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, found place or not: solid bolt for storm charge, hollow for warm
   if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
@@ -5136,7 +5149,7 @@ function drawInset(x, y, t, u) {
   if (ex.storm) { const a = Math.round(x + ex.storm.x * u), b = Math.round(x + (ex.storm.x + ex.storm.w) * u);
     for (const sx of [a, b]) if (sx > x && sx < x + W) for (let yy = y; yy < y + H; yy += 3) R(sx, yy, 1, 2, C.mist); }
   for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
-  for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
+  for (const c of depotCells(S.seed)) { if (!S.visited[c]) continue; const f = depotOf(c); if (f && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
   for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
   const s0 = cxy(ex.start), r = ex.range, rx0 = x + Math.max(0, s0.x - r) * u, ry0 = y + Math.max(0, s0.y - r) * u, rx1 = x + Math.min(MW, s0.x + r + 1) * u, ry1 = y + Math.min(MH, s0.y + r + 1) * u;
   R(rx0, ry0, rx1 - rx0, 1, C.amber); R(rx0, ry1 - 1, rx1 - rx0, 1, C.amber); R(rx0, ry0, 1, ry1 - ry0, C.amber); R(rx1 - 1, ry0, 1, ry1 - ry0, C.amber);
@@ -6853,7 +6866,7 @@ function drawTurnLines(r, y) {
   text(clipText('Meanwhile, the world turned', 410, 2), 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
   for (const row of worldLineRows(r.lines, y, l => wrapText(l, 390, 2))) { R(26, row.y + 6, 4, 4, C.orange); row.parts.forEach((s2, i) => text(clipText(s2, 392, 2), 40, row.y + i * 20, C.bone)); }
 }
-function outpostLights() { const out = []; for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && fs(String(c), f.id).lightT) out.push(outpostLeft(String(c), f)); } return out; }
+function outpostLights() { const out = []; for (const c of depotCells(S.seed)) { if (!everLit(c)) continue; const f = depotOf(c); if (f && fs(String(c), f.id).lightT) out.push(outpostLeft(String(c), f)); } return out; }
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
 
 // ===================== 15. Screen dispatch =====================
