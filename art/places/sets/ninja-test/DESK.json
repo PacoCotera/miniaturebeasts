@@ -1938,7 +1938,7 @@
   },
   "cliff-south-1.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-1.steps.json)",
+    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-1.steps.json)",
     "size": [
       48,
       288
@@ -1947,11 +1947,11 @@
       0,
       0
     ],
-    "sha256": "372502bda14d81483de3d38bff38028027a920474c0734ccdf5858a6ad814672"
+    "sha256": "ba89ffd35fff7818b3f74c592f4586573f9ce1628fa6ec7742353605c1cdf941"
   },
   "cliff-south-2.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-2.steps.json)",
+    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-2.steps.json)",
     "size": [
       48,
       288
@@ -1960,11 +1960,11 @@
       0,
       0
     ],
-    "sha256": "656f9b093f6645482a6737e8c3eee5413ba440f0b0f8ccdfb2e29b8e5426d2a9"
+    "sha256": "e6d7612e7ad7baf45180c2bd88ccd243ae8b1fd6cf7c892b468daaaa06767a11"
   },
   "cliff-south-3.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-3.steps.json)",
+    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-3.steps.json)",
     "size": [
       48,
       288
@@ -1973,11 +1973,11 @@
       0,
       0
     ],
-    "sha256": "044c80a7c1211e1b18d3f551a3eaac9ecabeec09d7f385494030e8cbf1c10358"
+    "sha256": "ecc75bc3f8048c5f321634a13dc96875d4682309860581e33208e09022e3a9fd"
   },
   "cliff-south-4.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-4.steps.json)",
+    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-4.steps.json)",
     "size": [
       48,
       288
@@ -1986,11 +1986,11 @@
       0,
       0
     ],
-    "sha256": "20ab13b4f0dfbb87f6ffbd04bff62d45c21a09111dde99f69e8461e68fba38b8"
+    "sha256": "5ac27eb93af48d3a331feb8d4668b75b249c2df78016d495f24d9ca5fd23cc9d"
   },
   "cliff-south-5.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-5.steps.json)",
+    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-5.steps.json)",
     "size": [
       48,
       288
@@ -1999,11 +1999,11 @@
       0,
       0
     ],
-    "sha256": "f5db00e66192eb294a27be482e04e95a1823da5ece97bef7fc42a9232c77abc3"
+    "sha256": "f99cd6315be4a3c6899b8e63cde28c417606bf7a540df0d5085e18ee4c5d39ef"
   },
   "cliff-south-6.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png (the plain chain; the whole chain is in cliff-south-6.steps.json)",
+    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-6.steps.json)",
     "size": [
       48,
       288
@@ -2012,7 +2012,7 @@
       0,
       0
     ],
-    "sha256": "5c18b1614295ee8ec309f83124b1bac332fe0c6fd951646f8ba3a39941e43559"
+    "sha256": "74c1f4c4bbe4b3ce86813bca9ea39783ece6ce26f353f5df33be62aa1d53bcca"
   },
   "fill-deep.png": {
     "commit": "633e4d641",

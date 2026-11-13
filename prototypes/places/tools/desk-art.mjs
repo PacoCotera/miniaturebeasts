@@ -87,7 +87,7 @@ export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
 // the raised meadow ground (the art director's cliff-plateau-raised-1, mibi-art 2bc909714): the signed meadow fill and tone through the "raised" light table, day files, byte for byte
 export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-plateau-raised-1/work' };
 // the south-face columns: the paid seam edit of cliff-fill-trial-2 (work/raw/step3-seam.png) -> six columns of the seamless strip, through the plain post-step chain; the files sit in the set folder with their sidecars
-export const SOUTH_COLUMNS = 6, SOUTH_FROM = 'art-jobs/2026-11-13-cliff-fill-trial-2/work/raw/step3-seam.png';
+export const SOUTH_COLUMNS = 6, SOUTH_FROM = 'art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png';
 const SET_DIR = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c.dir}/${p}`], { maxBuffer: 1 << 26 });

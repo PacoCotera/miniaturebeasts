@@ -1,5 +1,5 @@
 {
- "source_sha256": "75c76574c49ebb8d0d5a258a43657c0c3c7d60dfa625754e6b222070699bb497",
+ "source_sha256": "310c18b0131cdd2242451c38a00d8a4ad98183a04d7ebe362348ebe8fc820265",
  "steps": [
   [
    "crop",
@@ -30,16 +30,16 @@
    8
   ]
  ],
- "out_sha256": "20ab13b4f0dfbb87f6ffbd04bff62d45c21a09111dde99f69e8461e68fba38b8",
+ "out_sha256": "5ac27eb93af48d3a331feb8d4668b75b249c2df78016d495f24d9ca5fd23cc9d",
  "chain": [
   {
    "stage": "paid call",
-   "name": "step3-seam",
+   "name": "step1-edit then step2-seam",
    "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
-   "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-fill-trial-2/log/calls.jsonl",
-   "parent": "work/raw/step2-strip.png sha256 5639189e1b71c1d926057c47acce47cd193a0fcd3b0f3d8b16aa4c57006afdc4 (the paid strip, the seam edit's input)",
-   "raw": "work/raw/step3-seam.png",
-   "raw_sha256": "64024781c3b2990f8cae43d0ee7ffcde3ddc5f0c565a2ab68d1b5c65e6036b29"
+   "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
+   "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
+   "raw": "work/raw/step2-seam.png",
+   "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
   },
   {
    "stage": "roll back by half (S-paint)",
@@ -53,7 +53,7 @@
      ],
      [
       {
-       "src": "64024781c3b2990f8cae43d0ee7ffcde3ddc5f0c565a2ab68d1b5c65e6036b29",
+       "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
        "steps": [
         [
          "crop",
@@ -72,7 +72,7 @@
        ]
       },
       {
-       "src": "64024781c3b2990f8cae43d0ee7ffcde3ddc5f0c565a2ab68d1b5c65e6036b29",
+       "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
        "steps": [
         [
          "crop",
@@ -93,11 +93,11 @@
      ]
     ]
    ],
-   "out_sha256": "ffcd2b901fb5d30531ff4eef77d5f98f842cceaf50f3b408ec8ca71b8d69a702"
+   "out_sha256": "f1cc45718c83f96e10b8a772e607079e836e9838113791c64ff94bd2d440e136"
   },
   {
    "stage": "master: scale, reduce, snap to the set palette, key (S-master)",
-   "source_sha256": "ffcd2b901fb5d30531ff4eef77d5f98f842cceaf50f3b408ec8ca71b8d69a702",
+   "source_sha256": "f1cc45718c83f96e10b8a772e607079e836e9838113791c64ff94bd2d440e136",
    "steps": [
     [
      "scale_nearest",
@@ -118,19 +118,20 @@
     [
      "key_edge_bg",
      [
-      "#62aa5c",
       "#69a55d",
-      "#386a42"
+      "#65a05d",
+      "#74a334",
+      "#36603a"
      ],
      0,
      8
     ]
    ],
-   "out_sha256": "75c76574c49ebb8d0d5a258a43657c0c3c7d60dfa625754e6b222070699bb497"
+   "out_sha256": "310c18b0131cdd2242451c38a00d8a4ad98183a04d7ebe362348ebe8fc820265"
   },
   {
    "stage": "column 4: crop 16 x 96 at x 48, scale to 48 x 288, key the grass greens",
-   "source_sha256": "75c76574c49ebb8d0d5a258a43657c0c3c7d60dfa625754e6b222070699bb497",
+   "source_sha256": "310c18b0131cdd2242451c38a00d8a4ad98183a04d7ebe362348ebe8fc820265",
    "steps": [
     [
      "crop",
@@ -161,7 +162,7 @@
      8
     ]
    ],
-   "out_sha256": "20ab13b4f0dfbb87f6ffbd04bff62d45c21a09111dde99f69e8461e68fba38b8"
+   "out_sha256": "5ac27eb93af48d3a331feb8d4668b75b249c2df78016d495f24d9ca5fd23cc9d"
   }
  ],
  "palette": "walk (the set palette, plain, no colour added)"
