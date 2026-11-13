@@ -45,6 +45,20 @@ if (WHICH === 'find') {
     views.push(best);
   }
   writeFileSync(A, JSON.stringify(views, null, 1) + '\n'); console.log(views.map((v) => `${v.name}: cells (${v.X0},${v.Y0}) tile (${v.tx},${v.ty}) run ${v.n} cells from column ${v.col0 + 1}`).join('\n'));
+} else if (WHICH === 'findcorner') {
+  // a view showing both corner hands: a run of 6 or 7 cells with an outer corner at each end (the strip's cells fit the frame), low ground under the lip of 3 rows or more
+  const views = JSON.parse(readFileSync(A, 'utf8')).filter((v) => !v.name.endsWith('-corners'));
+  const cands = [];
+  for (const seed of [7, 13]) for (const { ir, X, Y, cliffs, runs } of scan(seed)) for (const r of runs) {
+    const n = r.x1 - r.x0 + 1, mid = (r.x0 + r.x1) >> 1;
+    if (!(r.west && r.east && n >= 6 && n <= 7 && mid >= 5 && mid < ir.w - 5 && r.y >= 6 && r.y < ir.h - 6 && r.x0 > 1 && r.x1 < ir.w - 2)) continue;
+    if (shortRuns(ir, cliffs, [r]).length) continue;
+    cands.push({ name: 'seed7c-corners', seed, X0: X, Y0: Y, tx: mid, ty: r.y + 1, n });
+  }
+  const best = cands.find((v) => { try { bakeIR(windowIR(v.seed, v.X0, v.Y0, 2, 2)); return true; } catch (e) { return false; } });
+  if (!best) throw new Error('no run of 6-7 cells with a corner at each end in a window that bakes');
+  best.name = `seed${best.seed}c-corners`; views.push(best);
+  writeFileSync(A, JSON.stringify(views, null, 1) + '\n'); console.log(`${best.name}: cells (${best.X0},${best.Y0}) tile (${best.tx},${best.ty}) run ${best.n} cells`);
 } else if (WHICH === 'count') {
   for (const seed of process.argv.slice(3).map(Number)) {
     let runs = 0, cells = 0; const shortBy = { 0: [0, 0], 1: [0, 0], 2: [0, 0] };

@@ -2446,6 +2446,66 @@
 						"id": "cliff-south-6",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-e-0",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-e-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-e-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-e-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-e-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-e-5",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-w-0",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-w-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-w-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-w-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-w-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-corner-w-5",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,

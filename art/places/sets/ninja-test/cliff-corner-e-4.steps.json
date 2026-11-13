@@ -1,0 +1,1110 @@
+{
+ "source_sha256": "1bb46b91b7230c0ace13aed654c70a2f37365960568ff71b66701f8c83339872",
+ "steps": [
+  [
+   "scale_nearest",
+   [
+    960,
+    960
+   ]
+  ],
+  [
+   "reduce_mode",
+   10
+  ],
+  [
+   "snap",
+   "walk",
+   "7e90b28e41f4",
+   [
+    "#1e2a3e",
+    "#4a5f78"
+   ]
+  ],
+  [
+   "key_edge_bg",
+   [
+    "#65a05d",
+    "#74a65d",
+    "#69a55d",
+    "#82b266"
+   ],
+   0,
+   8
+  ],
+  [
+   "crop",
+   [
+    64,
+    0,
+    16,
+    96
+   ],
+   "terrain"
+  ],
+  [
+   "scale_nearest",
+   [
+    48,
+    288
+   ]
+  ],
+  [
+   "key_edge_bg",
+   [
+    "#82b266",
+    "#7a9d5a",
+    "#99b562",
+    "#82a05a"
+   ],
+   0,
+   8
+  ]
+ ],
+ "out_sha256": "e220bf54ff4b42cca136759df51ad84ea99604d1e2e4367e75b23009f210c808",
+ "chain": [
+  {
+   "stage": "base (data only, never shipped)",
+   "base": "Jetrel, 2D Circle Graphic Desert Cliffs",
+   "url": "https://opengameart.org/content/2d-circle-graphic-desert-cliffs",
+   "licence": "CC0 (as stated on the page; an old comment there names Dan Cook for a related set)",
+   "file": "work/download/desertcliffs/dc.png crop x 108..192, y 100..228, scaled x6, recoloured by luminance-rank palette map, snapped (canvas.py)"
+  },
+  {
+   "stage": "canvas (layout): S-paint x 512..1024 raw on the left half + the CC0 corner + S's own meadow and plateau strips",
+   "source_sha256": null,
+   "steps": [
+    [
+     "layout",
+     [
+      1400,
+      1100
+     ],
+     [
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        0
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        0
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        0
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        0
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        39
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        39
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        39
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        39
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        78
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        78
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        78
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        78
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        117
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        117
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        117
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        117
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        156
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        156
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        156
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        156
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        195
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        195
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        195
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        195
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        234
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        234
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        234
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        234
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        273
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        273
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        273
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        273
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        312
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        312
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        312
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        312
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        351
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        351
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        351
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        351
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        390
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        390
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        390
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        390
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        429
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        429
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        429
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        429
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        468
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        468
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        468
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        468
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        507
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        507
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        507
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        507
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        546
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        546
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        546
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        546
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        585
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        585
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        585
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        585
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        624
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        624
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        624
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        624
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        663
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        663
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        663
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        663
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        702
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        702
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        702
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        702
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        741
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        741
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        741
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        741
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        780
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        780
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        780
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        780
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        819
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        819
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        819
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        819
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        858
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        858
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        858
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        858
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        897
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        897
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        897
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        897
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        936
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        936
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        936
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        936
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        975
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        975
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        975
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        975
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        0,
+        1014
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        300,
+        1014
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        600,
+        1014
+       ]
+      },
+      {
+       "src": "efd1ed614a380af3e7392c1e2f4e38b3703dbc34ca41633d8444fafeb4631cc8",
+       "steps": [],
+       "at": [
+        900,
+        1014
+       ]
+      },
+      {
+       "src": "5f604d25b87add7a069138b702734aa22d19b06ef9cc2a211c23e1db924b8309",
+       "steps": [],
+       "at": [
+        512,
+        0
+       ]
+      },
+      {
+       "src": "5f604d25b87add7a069138b702734aa22d19b06ef9cc2a211c23e1db924b8309",
+       "steps": [],
+       "at": [
+        942,
+        0
+       ]
+      },
+      {
+       "src": "5f604d25b87add7a069138b702734aa22d19b06ef9cc2a211c23e1db924b8309",
+       "steps": [],
+       "at": [
+        512,
+        26
+       ]
+      },
+      {
+       "src": "5f604d25b87add7a069138b702734aa22d19b06ef9cc2a211c23e1db924b8309",
+       "steps": [],
+       "at": [
+        942,
+        26
+       ]
+      },
+      {
+       "src": "4a3ec6d2d1111cca4482f71bfd1cbe332ee26be0d4787e19816b8762f1fed587",
+       "steps": [],
+       "at": [
+        0,
+        0
+       ]
+      },
+      {
+       "src": "85ea2a5d9c11787349052b5d43c97ad46e4ce18cdbff9fcc6576a8cf6b3f79b7",
+       "steps": [],
+       "at": [
+        512,
+        52
+       ]
+      },
+      {
+       "src": "bf91d80ece87c47cc871cae0307edb0334825dba015ebaa9fd1cf4255a56534b",
+       "steps": [],
+       "at": [
+        512,
+        328
+       ]
+      }
+     ]
+    ],
+    [
+     "crop",
+     [
+      0,
+      0,
+      1024,
+      1024
+     ],
+     "terrain"
+    ]
+   ],
+   "out_sha256": "bf86eecdcf24e9ed9f434e7549f62f9b30f7c5b64cfec04da639e2003a53a903",
+   "base": "Jetrel, 2D Circle Graphic Desert Cliffs",
+   "url": "https://opengameart.org/content/2d-circle-graphic-desert-cliffs",
+   "licence": "CC0 (as stated on the page; an old comment there names Dan Cook for a related set)"
+  },
+  {
+   "stage": "paid call",
+   "name": "corner-1",
+   "model": "fal-ai/nano-banana-pro/edit",
+   "log": "log/calls.jsonl",
+   "raw": "work/raw/corner-1.png",
+   "raw_sha256": "1bb46b91b7230c0ace13aed654c70a2f37365960568ff71b66701f8c83339872",
+   "images": "1 = work/canvas.png, 2 = cliff-strip-angular-3/work/S-paint.png, 3 = cliff-target-2/work/raw/target-nbp-2.png"
+  },
+  {
+   "stage": "master: scale 960, reduce_mode 10, snap to the set palette (exclude #1e2a3e, #4a5f78), key bottom-row colours #65a05d,#74a65d,#69a55d,#82b266",
+   "source_sha256": "1bb46b91b7230c0ace13aed654c70a2f37365960568ff71b66701f8c83339872",
+   "steps": [
+    [
+     "scale_nearest",
+     [
+      960,
+      960
+     ]
+    ],
+    [
+     "reduce_mode",
+     10
+    ],
+    [
+     "snap",
+     "walk",
+     "7e90b28e41f4",
+     [
+      "#1e2a3e",
+      "#4a5f78"
+     ]
+    ],
+    [
+     "key_edge_bg",
+     [
+      "#65a05d",
+      "#74a65d",
+      "#69a55d",
+      "#82b266"
+     ],
+     0,
+     8
+    ]
+   ],
+   "out_sha256": "b3638e29592886c6209be04a121fdb59076999db0bfdf6244e4b1e508915d31f"
+  },
+  {
+   "stage": "cell 4: crop 16 x 96 at x 64, scale to 48 x 288, key the grass greens",
+   "source_sha256": "b3638e29592886c6209be04a121fdb59076999db0bfdf6244e4b1e508915d31f",
+   "steps": [
+    [
+     "crop",
+     [
+      64,
+      0,
+      16,
+      96
+     ],
+     "terrain"
+    ],
+    [
+     "scale_nearest",
+     [
+      48,
+      288
+     ]
+    ],
+    [
+     "key_edge_bg",
+     [
+      "#82b266",
+      "#7a9d5a",
+      "#99b562",
+      "#82a05a"
+     ],
+     0,
+     8
+    ]
+   ],
+   "out_sha256": "e220bf54ff4b42cca136759df51ad84ea99604d1e2e4367e75b23009f210c808"
+  }
+ ],
+ "source": {
+  "base": "Jetrel, 2D Circle Graphic Desert Cliffs",
+  "url": "https://opengameart.org/content/2d-circle-graphic-desert-cliffs",
+  "licence": "CC0 (as stated on the page; an old comment there names Dan Cook for a related set)"
+ }
+}

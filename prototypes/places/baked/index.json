@@ -4,8 +4,8 @@
     {
       "id": "ninja-test",
       "file": "ninja-test.mbtiles",
-      "bytes": 1060620,
-      "sha256": "8e10977321165049d81875bc1ce71d6ab6050e7abad886468ade32328cd8cb5b"
+      "bytes": 1218728,
+      "sha256": "47241d7fd234d6d46c70c27b39eddd0fa1e1961c6ef1d0eae9095a32e3c0b2c1"
     }
   ],
   "places": [
@@ -96,8 +96,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "",
-      "bytes": 7320,
-      "sha256": "82cabdf500377308bec40d9c6d0538222a688d24351a26cbcae5c31a2c0fb4e4"
+      "bytes": 7352,
+      "sha256": "54eb752a075ba68cc428834be6bb141491d75018dce27fee1d9d640fd5ca312c"
     },
     {
       "id": "Windstep~x",
@@ -106,8 +106,8 @@
       "h": 28,
       "set": "ninja-test",
       "mirrorOf": "Windstep",
-      "bytes": 7344,
-      "sha256": "c7c7109ce134af9c1b9b611d4e60bbce2ff275b6b986b710b76fb846ca8c12d6"
+      "bytes": 7376,
+      "sha256": "212f0ff2ce5ab4ea16ca8c5bcebcaba359e7d54435ca2378f3e2995f425053f1"
     }
   ]
 }
