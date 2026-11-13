@@ -1452,6 +1452,13 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-13",
+   "id": "41786fed75",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "8105d7dd29d5643753b501e16c8c5bba841783ee78c0568071adcba0b17583b3"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "a02bb61525",
    "path": "art/places/sets/ninja-test/stump.png",
