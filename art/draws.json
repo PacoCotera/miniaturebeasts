@@ -5,8 +5,6 @@
   { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 1, "class": "ui", "reason": "sketchCanvas: the flat paper fill of the palette colour nearest #fff8e6 (the named empty slot paper-grain-64 until the art desk paints it)" },
   { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 4, "class": "ui", "reason": "sketchCanvas: the dashed frame of the unready place's sketch" },
   { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 1, "class": "ui", "reason": "drawSlide: the slide band fill under the goal bar while one place slides out and the next in" },
-  { "file": "prototypes/exploration/index.html", "primitive": "createImageData", "count": 1, "class": "layout", "reason": "turnCanvas: a quarter turn of a signed path end, a pixel copy (no new pixel)" },
-  { "file": "prototypes/exploration/index.html", "primitive": "putImageData", "count": 1, "class": "layout", "reason": "turnCanvas: the same quarter turn, a pixel copy (no new pixel)" },
   { "file": "prototypes/exploration/index.html", "primitive": "fillRect", "count": 8, "class": "base", "reason": "already in the base before this release; not yet listed by the art director" },
   { "file": "prototypes/exploration/index.html", "primitive": "putImageData", "count": 12, "class": "base", "reason": "already in the base before this release; not yet listed by the art director" },
   { "file": "prototypes/exploration/index.html", "primitive": "createImageData", "count": 11, "class": "base", "reason": "already in the base before this release; not yet listed by the art director" }
