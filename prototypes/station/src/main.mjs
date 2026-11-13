@@ -122,6 +122,10 @@ if (EMBED) window.addEventListener("message", (e) => {   // the play page's shel
     postCaddy(true);
   }
   else if (m.t === "mb-dev") showDev(!!m.on);
+  else if (m.t === "mb-note-ask") {   // a play note's details from this device: its screen and its store (answered to the page; no name, no address)
+    const c = G.ready ? caddyState() : null;   // before the Station has loaded its save there is no state to read
+    parent.postMessage({ t: "mb-note-state", id: m.id, state: c ? { screen: UI.idle ? "idle" : UI.screen, store: c.ledger, crates: c.crates, podHome: c.podHome, docked: c.docked } : { screen: "boot" } }, location.origin);
+  }
 });
 window.addEventListener("storage", (e) => { if (e.key !== saveKey() && e.key !== null) return; if (!G.ready) return; storageChanged(); updateCaddy(); });   // updateCaddy here too: a hidden frame's animation frames may pause, and the shell still hears a Companion change
 const inShell = (() => { try { return EMBED && parent !== window && !!parent.document; } catch { return false; } })();   // the developer panel is built into the play page's drawer (nodes made here are adopted on append; their listeners run in this realm)

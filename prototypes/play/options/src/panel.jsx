@@ -3,6 +3,9 @@
 import { useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AlertDialog, Dialog, Select, Switch } from "radix-ui";
+import cropCss from "react-image-crop/dist/ReactCrop.css";
+import { createController } from "./controller.js";
+import { NoteDialog, SectionDialog, T } from "./note-ui.jsx";
 
 const NONE = "__none";   // Radix Select has no empty value: the setting's own default is this
 const toSel = (v) => (v === "" ? NONE : v), fromSel = (v) => (v === NONE ? "" : v);
@@ -48,6 +51,9 @@ function Panel({ api }) {
         <Dialog.Overlay className="op-overlay" />
         <Dialog.Content className="op-panel" data-options="" aria-describedby={undefined}>
           <Dialog.Title className="op-title">Options</Dialog.Title>
+          <Row label={T("options.note.label")} line={T("options.note.line")}>
+            <button type="button" className="op-btn" id="optionsNewNote" onClick={() => { setOpen(false); api.notes.newNote(); }}>{T("options.note.button")}</button>
+          </Row>
           <Toggle label="Playtest waits" line="Short waits, so the whole loop fits in about an hour." on={o.playtest} set={set("playtest")} />
           <Toggle label="Developer tools" line="Shows the tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
           <Pick label="Companion" line="Which Companion the page plays." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />
@@ -77,9 +83,13 @@ function Panel({ api }) {
   );
 }
 
-// mountOptions(root, { trigger, read, names, places, onChange(patch), onClose(changed), onStartFresh() }): the page's own bar button opens the panel.
+// mountOptions(root, { trigger, read, names, places, onChange(patch), onClose(changed), onStartFresh(), host }): the page's own bar button opens the panel.
+// host (the shell) is the note's: getCanvas(), context(), source(), say(key, vars), flash(). Returns the note controller (subscribe / getState / actions) for the page's bar and keys.
 export function mountOptions(root, cfg) {
-  const api = { ...cfg, open: () => {} };
-  createRoot(root).render(<Panel api={api} />);
-  cfg.trigger.addEventListener("click", () => api.open());
+  const notes = createController(cfg.host), api = { ...cfg, notes, open: () => {} };
+  const css = document.createElement("style"); css.textContent = cropCss; document.head.appendChild(css);
+  createRoot(root).render(<><Panel api={api} /><NoteDialog c={notes} /><SectionDialog c={notes} /></>);
+  cfg.trigger.addEventListener("click", () => { notes.hold(); api.open(); });   // the screen as it was when Options opened is held for the note
+  return notes;
 }
+export { T };

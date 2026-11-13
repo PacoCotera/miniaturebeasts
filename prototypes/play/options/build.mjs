@@ -6,5 +6,6 @@ const here = fileURLToPath(new URL(".", import.meta.url));
 await build({
   entryPoints: [here + "src/panel.jsx"], outfile: here + "../vendor/options.js",
   bundle: true, minify: true, format: "esm", target: "es2022", jsx: "automatic", legalComments: "none",
+  loader: { ".css": "text" }, nodePaths: [here + "node_modules"],   // play/src/clip.mjs imports Mediabunny: resolved from this folder
   define: { "process.env.NODE_ENV": '"production"' },
 });
