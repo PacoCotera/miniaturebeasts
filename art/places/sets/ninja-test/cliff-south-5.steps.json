@@ -1,6 +1,84 @@
 {
- "source_sha256": "660ecd909bd1108a230e05ceb32b03f06ce5dc82fff0790e2419eb3878426982",
+ "source_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
  "steps": [
+  [
+   "layout",
+   [
+    1024,
+    1024
+   ],
+   [
+    {
+     "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+     "steps": [
+      [
+       "crop",
+       [
+        512,
+        0,
+        512,
+        1024
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      0,
+      0
+     ]
+    },
+    {
+     "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+     "steps": [
+      [
+       "crop",
+       [
+        0,
+        0,
+        512,
+        1024
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      512,
+      0
+     ]
+    }
+   ]
+  ],
+  [
+   "scale_nearest",
+   [
+    960,
+    960
+   ]
+  ],
+  [
+   "reduce_mode",
+   10
+  ],
+  [
+   "snap",
+   "walk",
+   "7e90b28e41f4",
+   [
+    "#1e2a3e",
+    "#4a5f78"
+   ]
+  ],
+  [
+   "key_edge_bg",
+   [
+    "#69a55d",
+    "#65a05d",
+    "#74a334",
+    "#36603a"
+   ],
+   0,
+   8
+  ],
   [
    "crop",
    [
@@ -31,143 +109,12 @@
   ]
  ],
  "out_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
- "chain": [
-  {
-   "stage": "paid call",
-   "name": "step1-edit then step2-seam",
-   "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
-   "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
-   "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
-   "raw": "work/raw/step2-seam.png",
-   "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
-  },
-  {
-   "stage": "roll back by half (S-paint)",
-   "source_sha256": null,
-   "steps": [
-    [
-     "layout",
-     [
-      1024,
-      1024
-     ],
-     [
-      {
-       "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
-       "steps": [
-        [
-         "crop",
-         [
-          512,
-          0,
-          512,
-          1024
-         ],
-         "terrain"
-        ]
-       ],
-       "at": [
-        0,
-        0
-       ]
-      },
-      {
-       "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
-       "steps": [
-        [
-         "crop",
-         [
-          0,
-          0,
-          512,
-          1024
-         ],
-         "terrain"
-        ]
-       ],
-       "at": [
-        512,
-        0
-       ]
-      }
-     ]
-    ]
-   ],
-   "out_sha256": "f1cc45718c83f96e10b8a772e607079e836e9838113791c64ff94bd2d440e136"
-  },
-  {
-   "stage": "master: scale, reduce, snap to the set palette MINUS the two veil colours #1e2a3e and #4a5f78, key",
-   "source_sha256": "f1cc45718c83f96e10b8a772e607079e836e9838113791c64ff94bd2d440e136",
-   "steps": [
-    [
-     "scale_nearest",
-     [
-      960,
-      960
-     ]
-    ],
-    [
-     "reduce_mode",
-     10
-    ],
-    [
-     "snap",
-     "walk",
-     "7e90b28e41f4",
-     [
-      "#1e2a3e",
-      "#4a5f78"
-     ]
-    ],
-    [
-     "key_edge_bg",
-     [
-      "#69a55d",
-      "#65a05d",
-      "#74a334",
-      "#36603a"
-     ],
-     0,
-     8
-    ]
-   ],
-   "out_sha256": "660ecd909bd1108a230e05ceb32b03f06ce5dc82fff0790e2419eb3878426982"
-  },
-  {
-   "stage": "column 5: crop 16 x 96 at x 64, scale to 48 x 288, key the grass greens",
-   "source_sha256": "660ecd909bd1108a230e05ceb32b03f06ce5dc82fff0790e2419eb3878426982",
-   "steps": [
-    [
-     "crop",
-     [
-      64,
-      0,
-      16,
-      96
-     ],
-     "terrain"
-    ],
-    [
-     "scale_nearest",
-     [
-      48,
-      288
-     ]
-    ],
-    [
-     "key_edge_bg",
-     [
-      "#82b266",
-      "#7a9d5a",
-      "#99b562",
-      "#82a05a"
-     ],
-     0,
-     8
-    ]
-   ],
-   "out_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5"
-  }
- ],
- "palette": "walk (the set palette without #1e2a3e and #4a5f78, snap exclude list recorded in the step)"
+ "paid_call": {
+  "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
+  "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
+  "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
+  "raw": "work/raw/step2-seam.png",
+  "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
+ },
+ "note": "one replayable list from the paid raw step2-seam.png; the first step is the roll-back layout, whose sources are found by sha256 in the raw's folder"
 }
