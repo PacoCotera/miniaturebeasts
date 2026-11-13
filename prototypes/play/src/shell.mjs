@@ -11,7 +11,8 @@ import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, 
 import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
 import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
-import { mountOptions } from "../vendor/options.js";   // the Options panel: React + Radix, built from play/options (npm run build there)
+import { mountOptions, T } from "../vendor/options.js";   // the Options panel and the play note: React + Radix, built from play/options (npm run build there)
+import { sourceOf } from "./notes.mjs";   // the note's source: the stored setting noteFrom, "owner" by default
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), SEED = params.get("seed");   // test-harness flags only: every option a person sets is in the Options panel (play/src/options.mjs)
 // The play page is the playtest build: Playtest waits is ON until a person sets the options themselves (the stored options are written once, before any frame reads them). Test pages keep the options as they are.
@@ -178,7 +179,7 @@ function layout() {
   placeC(devBtn, narrow ? CW - 112 : CW - 160, 0, narrow ? 100 : 148, 40);
   if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
-  const ctlX = layoutCompanionCtl(narrow, tabsEnd + 16); layoutOptions(narrow, keysX, ctlX + (narrow ? 72 : 148) + 8);
+  const ctlX = layoutCompanionCtl(narrow, tabsEnd + 16); const noteX = layoutOptions(narrow, keysX, ctlX + (narrow ? 72 : 148) + 8); layoutNoteCtl(keysX, noteX, narrow);
   layoutDock();
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
@@ -265,7 +266,7 @@ function layoutPhone() {
   const w1 = podHome ? Math.min(132, Math.floor(avail / 2)) : Math.floor(avail * 0.4), w2 = podHome ? w1 : Math.min(160, avail - w1 - 2);
   placeC(tabs[first[0]], P, 4, w1, 44); placeC(tabs[first[1]], P + w1 + 2, 4, w2, 44);
   setTabWords();
-  placeC(optionsBtn, CW - P - ow, 4, ow, 44); optionsBtn.classList.remove("corner"); optionsBtn.style.bottom = "";
+  placeC(optionsBtn, CW - P - ow, 4, ow, 44); optionsBtn.classList.remove("corner"); optionsBtn.style.bottom = ""; layoutNoteCtl(CW, 0, true);
   // the devices
   const hSh = 616 * f, geomOf = {};
   for (const dv of ["station", "companion"]) {
@@ -385,6 +386,7 @@ function pageKey(e) {
   if (e.code === "Backquote") cycle(e.shiftKey ? -1 : 1);
   else if (e.shiftKey && e.code === "KeyD") dockPress();
   else if (e.shiftKey && e.code === "KeyT") toggleDev();
+  else if (e.shiftKey && e.code === "KeyN") { if (notes) notes.addWhole({ quiet: true }); }   // the whole screen into the note, at once
   else if (e.shiftKey && e.code === "Slash") toggleKeys();
   else if (e.code === "Escape" && keysOpen) toggleKeys(false);
   else if (!TEST && !e.shiftKey && (e.code === "Minus" || e.code === "NumpadSubtract")) zStep(-1);
@@ -655,16 +657,68 @@ printLook(); setInterval(printLook, 10000);
 const optionsBtn = $("optionsBtn"), FRESH_KEY = "mb-play-fresh", PLACES = [["HollowTree", "Hollow Tree"], ["Reedpool", "Reedpool"], ["SplitStone", "Split Stone"], ["Test_AllCases", "Test, all cases"], ["Windstep", "Windstep"]];   // [id, the place's name]
 try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_KEY); for (const key of Object.keys(localStorage)) if (key.startsWith("mb-save-v8") || key.startsWith("mb-exploration-v") || key === "mb-station-dev") localStorage.removeItem(key); } } catch { /* no storage: nothing to erase */ }
 function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); }
-mountOptions($("optionsRoot"), {
+// ---- play notes (owner 2026-11-12 18:2x; play/src/notes.mjs, play/options/src/controller.js): the note's screens come from the played device's own canvas, its details from both devices ----
+const noteBtn = $("noteBtn"), shotBtn = $("shotBtn"), recBox = $("recBox"), recStop = $("recStop"), toast = $("noteToast");
+let notes = null, buildInfo = null, toastTimer = 0, askId = 0;
+const asks = new Map();
+window.addEventListener("message", (e) => { if (e.origin !== location.origin) return; const m = e.data || {}; if (m.t === "mb-note-state" && asks.has(m.id)) { asks.get(m.id)(m.state ?? null); asks.delete(m.id); } });
+function askDevice(d) {   // the device's own details (mb-note-ask / mb-note-state); null if it does not answer in time
+  return new Promise((res) => {
+    const id = ++askId; asks.set(id, res);
+    try { frames[d].contentWindow.postMessage({ t: "mb-note-ask", id }, location.origin); } catch { asks.delete(id); res(null); return; }
+    setTimeout(() => { if (asks.delete(id)) res(null); }, 600);
+  });
+}
+async function noteContext() {
+  const [companion, station] = await Promise.all([askDevice("companion"), askDevice("station")]);
+  return { build: buildInfo && (buildInfo.short || String(buildInfo.commit || "").slice(0, 7)) || "local", builtAt: buildInfo && buildInfo.built || null, slot: cslot, device: owner,
+    layout: { phone, tier, w: CW, h: CH, z: k, dpr }, companion, station };
+}
+function noteSay(key, vars) {
+  const t = T(key, vars); toast.textContent = t; toast.classList.remove("hidden"); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.add("hidden"), 3000); say(t);
+}
+function noteFlash() { const el = owner === "station" ? shS : shC; el.classList.add("flashnote"); setTimeout(() => el.classList.remove("flashnote"), 450); }
+const noteHost = { getCanvas: () => { try { return frames[owner].contentDocument.getElementById("screen"); } catch { return null; } }, context: noteContext, source: () => sourceOf(readOptions()), say: noteSay, flash: noteFlash };
+function syncNote() {   // the bar's two controls (or the recording strip); layout() places them
+  if (!notes) return;
+  const s = notes.getState(), n = s.items.length, show = (n > 0 || s.text.trim() !== "") && !s.recording;
+  noteBtn.classList.toggle("hidden", !show); shotBtn.classList.toggle("hidden", !show); recBox.classList.toggle("hidden", !s.recording); recStop.classList.toggle("hidden", !s.recording);
+  noteBtn.textContent = T("bar.note", { n }); noteBtn.title = T("bar.note.title", { n });
+  $("shotWord").textContent = T("bar.whole"); $("shotHint").textContent = T("bar.whole.hint");
+  $("recWord").textContent = T("bar.recording", { m: s.recMs }); $("recCap").textContent = T("bar.recording.cap"); recStop.textContent = T("bar.stop");
+  layout();
+}
+noteBtn.addEventListener("click", () => { notes.open(); });
+shotBtn.addEventListener("click", () => { notes.addWhole({ quiet: true }); giveKeys(owner); });
+recStop.addEventListener("click", () => { notes.stopRecord(); giveKeys(owner); });
+function layoutNoteCtl(rightEdge, x, narrow) {   // after Options in the bar when they fit before Keys ?; else in the window's bottom-left corner beside Options
+  const els = [[noteBtn, 104], [shotBtn, 176], [recBox, 232], [recStop, 72]].filter(([el]) => !el.classList.contains("hidden"));
+  if (!els.length) return;
+  let cx = x; const fits = !optionsBtn.classList.contains("corner") && x + els.reduce((a, [, w]) => a + w + 8, 0) <= rightEdge;
+  for (const [el, w] of els) {
+    const s = el.style;
+    if (phone) { s.left = PHONE_PAD + (cx - x) + "px"; s.top = "auto"; s.bottom = "6px"; s.width = w + "px"; s.height = "36px"; s.transform = ""; el.classList.add("corner"); }
+    else if (fits) { placeC(el, cx, 0, w, 40); s.bottom = ""; el.classList.remove("corner"); }
+    else { s.left = (104 + (cx - x)) + "px"; s.top = "auto"; s.bottom = "8px"; s.width = w + "px"; s.height = "28px"; s.transform = ""; el.classList.add("corner"); }
+    cx += w + 8;
+  }
+}
+notes = mountOptions($("optionsRoot"), {
+  host: noteHost,
   trigger: optionsBtn, read: readOptions, names: Object.keys(NAME_LISTS), places: PLACES,
   onChange: (patch) => { writeOptions(patch); if ("dev" in patch) applyDev(patch.dev); },
   onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
   onStartFresh: () => { saveHome(false); try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
 });
+notes.subscribe(syncNote);
+notes.tapStart();   // the last 10 seconds: the played device's canvas, encoded as it plays
+addEventListener("online", () => notes.flush(true));
+setTimeout(() => notes.flush(true), 3000); setInterval(() => notes.flush(true), 60000);   // notes kept from an earlier visit go when the route answers
 function layoutOptions(narrow, rightEdge, x) {   // in the bar after the Companion control when it fits before Keys ?; else the window's bottom-left corner
   const w = 88, fits = x + w + 8 <= rightEdge, s = optionsBtn.style;
   optionsBtn.classList.toggle("corner", !fits);
   if (fits) { placeC(optionsBtn, x, 0, w, 40); s.bottom = ""; } else { s.left = "8px"; s.top = "auto"; s.bottom = "8px"; s.width = w + "px"; s.height = "28px"; }
+  return fits ? x + w + 8 : x;
 }
 // ---- boot ----
 buildKeys();
@@ -678,10 +732,11 @@ function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr);
 function onDpr() { layout(); armDpr(); }
 armDpr(); window.addEventListener("resize", layout);
 // the build stamp from the site's build.json: "build <short> · YYYY-MM-DD HH:MM Mexico City"; "build local" with no build.json
-fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { stamp.textContent = stampText(j); }).catch(() => { stamp.textContent = "build local"; });
+fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { buildInfo = j; stamp.textContent = stampText(j); }).catch(() => { stamp.textContent = "build local"; });
 layout(); reveal(owner, true);   // the page opens revealed for the device with the keys (the Station on a fresh load); no scroll position is restored
 // for the play-page journey: read-only views of the shell's state
 window.__play = { get phone() { return phone; }, get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get tier() { return tier; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get seatOff() { return seatOff; }, get pressed() { return pressed; },
   get caddySheet() { return { up: tier !== "narrow", id: drawn ? drawn.id : null, lines: drawn ? { ...drawn.lines } : null, crates: drawn ? drawn.crates : 0, ledger: drawn ? drawn.ledger : null, marks: drawn ? { ...drawn.marks } : null, next: faceNow ? faceNow.id : null, counts: sched.counts, log: drawnLog.slice(), ops: sched.state.log.map((o) => ({ kind: o.kind, id: o.id, at: o.at, regions: o.regions })), busy: now() < sched.state.busyUntil, note: noteCaddy,
     lamp: { companion: lampOf.c, station: faceNow ? faceNow.lamp.station : "off", dot: dotC.dataset.lamp, stationDot: dotS.dataset.lamp }, pixels: () => Array.from(vctx.getImageData(0, 0, 792, 272).data.filter((_, i) => i % 4 === 0)) }; },
+  get notes() { return notes; },
   get dock() { return { up: svc.up, world: svc.esWorld, snap: svc.snap, sensed: JSON.parse(JSON.stringify(sensed)), hold, comp, fault, heardAt, slot: cslot }; }, setSwitch, switchCompanion, rects, frames };
