@@ -182,6 +182,43 @@ body.phone iframe{image-rendering:pixelated}
 .op-actions{display:flex; justify-content:flex-end; gap:8px; padding-top:12px; border-top:1px solid var(--hairline)}
 .op-confirm .op-actions{border:0}
 @media (pointer:coarse){ .op-select,.op-btn{height:44px} .op-row{min-height:56px} }
+/* the play note (play/options note-ui.jsx): the note dialog, the section dialog, the bar's two controls and the strip */
+.op-note{width:min(600px,calc(100vw - 24px))}
+.op-notehead{display:flex; align-items:baseline; justify-content:space-between; gap:12px}
+.op-from{font-size:12px; color:var(--mist)}
+.op-thumbs{display:flex; gap:10px; flex-wrap:wrap; padding:8px 0 4px}
+.op-thumb-box{width:120px}
+.op-thumbpic{position:relative; width:120px; height:120px; background:var(--void); border:1px solid var(--hairline); border-radius:6px; overflow:hidden}
+.op-thumbpic img,.op-thumbpic video{display:block; width:100%; height:100%; object-fit:contain; image-rendering:pixelated}   /* the whole picture shows, never a cropped middle */
+.op-thumbbtn{display:block; width:100%; height:100%; padding:0; border:0; background:none}
+.op-x{position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; border:1px solid var(--bevel); background:rgba(12,10,18,.8); color:var(--bone); padding:0; font-size:16px; line-height:20px}
+.op-dur{position:absolute; right:6px; bottom:6px; font-size:12px; color:var(--bone); background:rgba(12,10,18,.8); border-radius:4px; padding:1px 5px; pointer-events:none}
+.op-cap{font-size:12px; line-height:16px; color:var(--fog); padding-top:4px}
+.op-adds{display:flex; gap:8px; flex-wrap:wrap; padding:8px 0}
+.op-adds .op-btn{min-width:0}
+.op-dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:#ff6a4d; margin-right:8px}
+.op-warn{color:var(--amber); padding-bottom:6px}
+.op-note-text{display:block; width:100%; box-sizing:border-box; resize:none; font:inherit; font-size:14px; line-height:20px; color:var(--bone); background:var(--ground); border:1px solid var(--hairline); border-radius:6px; padding:8px 10px}
+.op-note-text:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+.op-sent{margin:10px 0 0; padding:8px 10px; border:1px solid var(--hairline); border-radius:6px; background:var(--ground)}
+.op-sent-title{font-size:12px; line-height:16px; color:var(--bone)}
+.op-sent-line{font-size:12px; line-height:16px; color:var(--fog); padding:2px 0 4px}
+.op-noteactions{align-items:center}
+.op-grow{flex:1 1 auto}
+.op-quiet{color:var(--mist)}
+.op-btn[disabled]{color:var(--stone); cursor:default; border-color:var(--hairline)}
+.op-go[disabled]{background:var(--hairline); border-color:var(--hairline); color:var(--stone)}
+.op-section{width:min(900px,calc(100vw - 24px)); z-index:51}
+.op-cropbox{padding:10px 0; display:flex; justify-content:center; max-height:calc(100vh - 220px); overflow:auto}
+.op-cropimg{display:block; max-width:100%; max-height:calc(100vh - 240px); image-rendering:pixelated}
+.notectl .hint{margin-left:8px; color:var(--mist); font-size:12px}
+#recBox{color:var(--bone); display:flex; align-items:center; justify-content:center; gap:8px; cursor:default}
+#recBox .cap{color:var(--mist); font-size:12px}
+#recBox::before{content:""; width:9px; height:9px; border-radius:50%; background:#ff6a4d; flex:none}
+body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
+#noteToast{position:fixed; z-index:30; left:50%; top:48px; transform:translateX(-50%); background:var(--bar); border:1px solid var(--bevel); border-radius:6px; padding:8px 14px; font-size:14px; color:var(--bone); pointer-events:none; max-width:calc(100vw - 24px)}
+#ring.flashnote{border-color:var(--mint)}
+.shell.flashnote{box-shadow:0 0 0 3px var(--mint), inset 0 0 0 1px var(--hairline)}
 </style>
 </head>
 <body>
@@ -211,6 +248,10 @@ body.phone iframe{image-rendering:pixelated}
   <button type="button" class="ctl hidden" id="tabBench">Bench</button>
   <button type="button" class="ctl" id="companionCtl" aria-label="Companion A; switch to Companion B">Companion <b>A</b> / B</button>
   <button type="button" class="ctl" id="optionsBtn" aria-haspopup="dialog" title="Playtest waits, developer tools, Start fresh and more">Options</button>
+  <button type="button" class="ctl hidden notectl" id="noteBtn"></button>
+  <button type="button" class="ctl hidden notectl" id="shotBtn"><span id="shotWord"></span><span class="hint" id="shotHint"></span></button>
+  <span class="ctl hidden notectl" id="recBox" role="status"><span id="recWord"></span><span class="cap" id="recCap"></span></span>
+  <button type="button" class="ctl hidden notectl" id="recStop"></button>
   <button type="button" class="ctl" id="keysBtn">Keys ?</button>
   <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>
   <button type="button" class="ctl hidden" id="zFit" aria-pressed="true">fit</button>
@@ -220,11 +261,12 @@ body.phone iframe{image-rendering:pixelated}
   <div id="live" aria-live="polite"></div>
 </div>
 <div id="optionsRoot"></div>
+<div id="noteToast" class="hidden" role="status"></div>
 <div id="keysPanel" class="hidden" role="dialog" aria-label="Keys">
   <h2>Keys</h2>
   <p>Only the device with the keys hears them. Shift keys belong to the page.</p>
   <h3>Page (any device, not while typing)</h3>
-  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd><dt class="hidden" id="helpZK">− and = (+)</dt><dd class="hidden" id="helpZD">Smaller and larger (whole pixels); the size control's fit undoes them</dd></dl>
+  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt>Shift+N</dt><dd>Add the whole screen to the note</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd><dt class="hidden" id="helpZK">− and = (+)</dt><dd class="hidden" id="helpZD">Smaller and larger (whole pixels); the size control's fit undoes them</dd></dl>
   <h3>Station</h3>
   <dl><dt>← ↑ → ↓</dt><dd>Move the ring</dd><dt>Enter, Space</dt><dd>✓, what the bottom line names</dd><dt>Esc, Backspace</dt><dd>← Back one view</dd><dt>C</dt><dd>))) Call: what needs you, and what each key does</dd><dt>H</dt><dd>Home; Home again: rest</dd><dt>R</dt><dd>Pods</dd><dt>B</dt><dd>Vivarium</dd><dt>L</dt><dd>Library</dd></dl>
   <h3>Companion</h3>

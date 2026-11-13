@@ -75,6 +75,8 @@ Both ends use `targetOrigin = location.origin` and check `e.origin` and `e.sourc
 | Station → shell | `{ t: "mb-caddy", podHome, goal, canDock, docked, crates, pending, opened, partner, world, companion, ledger, along }` | at ready, after every `mb-dock`, whenever the state changes, and every 5 s (the Station's heartbeat for the Caddy's link) |
 | shell → Companion | `{ t: "mb-seat", seat }`, `{ t: "mb-silent", on }` | a seat to answer; the drawer's "Companion silent" |
 | Companion → shell | `{ t: "mb-companion", id, name, slot, wid, crates, seat }` | at load, whenever it changes, and as the answer to a seat |
+| shell → either device | `{ t: "mb-note-ask", id }` | a play note's details are wanted (when a note opens and when it is sent) |
+| either device → shell | `{ t: "mb-note-state", id, state }` | the answer: the Companion's world, place, turn, expedition, carried, map counts and last 12 events; the Station's screen and store. The shell waits 600 ms, then sends without it |
 
 ## Developer tools
 
@@ -83,6 +85,12 @@ The drawer or column holds the Caddy's three problems, each a switch: **Companio
 ## The Options panel
 
 No option hides in a URL. The bar's **Options** button (the bottom-left corner of the window when the bar has no room) opens one panel (`options/`, React + Radix, built to `vendor/options.js`; `npm run build` in `options/` rebuilds it) with a switch or a choice and one line for each: **Playtest waits** (on until a person sets the options: the play page stores it once), **Developer tools**, **Companion** (A or B), **Jump** (the game's own, arrival, fork), **Name list**, **Baked place**, and **Start fresh**. The settings are one stored value, `mb-options` in localStorage (`src/options.mjs`); the Station, the Companion and the compare page read it themselves, so nothing is handed through a URL. Developer tools applies at once; the rest apply when the panel closes (the page reloads). Tests set the same key before the page loads (`optionsInitScript`, or `addInitScript`). Only test-harness flags stay in URLs: `?test`, `?embed`, `?raw`, `?seed`, `?firstms` (with `?test`), and the cache-busting `v` of the masters.
+
+## Play notes
+
+Options' first row, **Send a note** (owner 2026-11-12 18:2x), opens a note: pictures in a row (the played device's screen as it was when Options opened is already in), **+ Whole screen**, **+ Section** (react-image-crop), **+ Last 10 seconds**, **Record a clip** (up to 15 s), a text box (react-textarea-autosize, 3 lines growing to 6), "Sent with it" in plain words, Delete (asked first), Keep playing, Send. The note's words are `src/note-strings.json` as the copywriter wrote them. Keep playing leaves the note open: the bar then holds **Note · n** and **+ Whole screen ⇧N** (Shift+N does the same; a strip at the foot of a phone), and while recording **Recording m:ss · up to 0:15** and **Stop**. Shots are the device's own `#screen` canvas (`toBlob`, PNG): the bar and the dialogs are never in them. The clip is WebCodecs `VideoEncoder` fed every frame of the played device's canvas, a key frame each second, the chunks kept in a 10 s ring that always starts at a key frame (`ClipRing`, `src/notes.mjs`); Mediabunny packs them into an MP4 (H.264 where the browser encodes it, else VP9 or AV1). Where WebCodecs is missing only Record works, through `captureStream()` + `MediaRecorder` (WebM).
+
+A note goes to the queue in IndexedDB (idb-keyval), then `POST /caddy-api/v1/notes` (multipart: `text`, `source`, `context` JSON, `shot` and `clip` parts; the route is the Caddy service's). A note the route does not take yet (offline, 404, 429, 5xx) stays queued and goes when the page is next online (every minute, and on `online`). Limits: 8 pictures, 2 clips, 20 MB. The source is the stored setting `noteFrom` ("owner" by default; the agent testers store their persona there; no Options row). The context: build, time, Companion slot, layout and size, which device was played, and the answers to `mb-note-ask`. Never a name, address, IP or user-agent string. The logic is `src/notes.mjs` (tested in `tests/notes.test.mjs`); the pictures and clips are `src/clip.mjs`; the screens are `options/src/note-ui.jsx` and the state `options/src/controller.js`. `tools/notes-journey.mjs` is the browser journey, with the route stubbed.
 
 ## The playtest preset
 
