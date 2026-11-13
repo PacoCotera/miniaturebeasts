@@ -1,5 +1,5 @@
 {
- "source_sha256": "310c18b0131cdd2242451c38a00d8a4ad98183a04d7ebe362348ebe8fc820265",
+ "source_sha256": "660ecd909bd1108a230e05ceb32b03f06ce5dc82fff0790e2419eb3878426982",
  "steps": [
   [
    "crop",
@@ -30,7 +30,7 @@
    8
   ]
  ],
- "out_sha256": "ba89ffd35fff7818b3f74c592f4586573f9ce1628fa6ec7742353605c1cdf941",
+ "out_sha256": "4ec39a8910e2d03550b3b90c2c92a46f399cab0b430ff299b7a699216b23869f",
  "chain": [
   {
    "stage": "paid call",
@@ -96,7 +96,7 @@
    "out_sha256": "f1cc45718c83f96e10b8a772e607079e836e9838113791c64ff94bd2d440e136"
   },
   {
-   "stage": "master: scale, reduce, snap to the set palette, key (S-master)",
+   "stage": "master: scale, reduce, snap to the set palette MINUS the two veil colours #1e2a3e and #4a5f78, key",
    "source_sha256": "f1cc45718c83f96e10b8a772e607079e836e9838113791c64ff94bd2d440e136",
    "steps": [
     [
@@ -113,7 +113,11 @@
     [
      "snap",
      "walk",
-     "7e90b28e41f4"
+     "7e90b28e41f4",
+     [
+      "#1e2a3e",
+      "#4a5f78"
+     ]
     ],
     [
      "key_edge_bg",
@@ -127,11 +131,11 @@
      8
     ]
    ],
-   "out_sha256": "310c18b0131cdd2242451c38a00d8a4ad98183a04d7ebe362348ebe8fc820265"
+   "out_sha256": "660ecd909bd1108a230e05ceb32b03f06ce5dc82fff0790e2419eb3878426982"
   },
   {
    "stage": "column 1: crop 16 x 96 at x 0, scale to 48 x 288, key the grass greens",
-   "source_sha256": "310c18b0131cdd2242451c38a00d8a4ad98183a04d7ebe362348ebe8fc820265",
+   "source_sha256": "660ecd909bd1108a230e05ceb32b03f06ce5dc82fff0790e2419eb3878426982",
    "steps": [
     [
      "crop",
@@ -162,8 +166,8 @@
      8
     ]
    ],
-   "out_sha256": "ba89ffd35fff7818b3f74c592f4586573f9ce1628fa6ec7742353605c1cdf941"
+   "out_sha256": "4ec39a8910e2d03550b3b90c2c92a46f399cab0b430ff299b7a699216b23869f"
   }
  ],
- "palette": "walk (the set palette, plain, no colour added)"
+ "palette": "walk (the set palette without #1e2a3e and #4a5f78, snap exclude list recorded in the step)"
 }
