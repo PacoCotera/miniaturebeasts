@@ -245,7 +245,7 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     formatVersion: 1, id: recipe.id, name: recipe.name, ship: recipe.ship,
     licence: { spdx: recipe.licence.spdx, author: recipe.licence.author, source: recipe.licence.source, fetched: recipe.licence.fetched, archiveSha256: recipe.licence.archiveSha256 },
     sourceTile: t, scale: recipe.scale, half: recipe.half, palette: 'palette.json', spriteSheet: 'sprites.png',
-    ...(deskTerrain ? { layers: deskTerrain.layers, tone: deskTerrain.tone } : {}), props: setSprites.props, decals: setSprites.decals, canopy: setSprites.canopy,
+    ...(deskTerrain ? { groundPairs: deskTerrain.pairs, layers: deskTerrain.layers, tone: deskTerrain.tone } : {}), props: setSprites.props, decals: setSprites.decals, canopy: setSprites.canopy,
   };
   if (desk) {
     for (const [n, b] of desk.files) files.set(n, b);

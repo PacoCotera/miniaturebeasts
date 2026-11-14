@@ -1,0 +1,8 @@
+# The cliff's piece choice, in the order it is applied (the working map and its layers: see make_cliff_rules.py in the notes, and rules/README in the tileset's tile classes).
+cliff-1-lip.json
+cliff-2-ends.json
+cliff-3-corners.json
+cliff-4-columns.json
+cliff-5-way.json
+cliff-6-sides.json
+cliff-7-rim.json

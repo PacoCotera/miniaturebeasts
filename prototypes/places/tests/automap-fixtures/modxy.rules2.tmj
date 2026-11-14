@@ -1,0 +1,67 @@
+{
+ "type": "map",
+ "version": "1.10",
+ "orientation": "orthogonal",
+ "renderorder": "right-down",
+ "infinite": false,
+ "width": 2,
+ "height": 2,
+ "tilewidth": 32,
+ "tileheight": 32,
+ "nextlayerid": 3,
+ "nextobjectid": 100,
+ "layers": [
+  {
+   "id": 1,
+   "name": "input_land",
+   "type": "tilelayer",
+   "width": 2,
+   "height": 2,
+   "x": 0,
+   "y": 0,
+   "opacity": 1,
+   "visible": true,
+   "data": [
+    1,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": 2,
+   "name": "output_d",
+   "type": "tilelayer",
+   "width": 2,
+   "height": 2,
+   "x": 0,
+   "y": 0,
+   "opacity": 1,
+   "visible": true,
+   "data": [
+    7,
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "tilesets": [
+  {
+   "firstgid": 1,
+   "source": "tiles.tsj"
+  }
+ ],
+ "properties": [
+  {
+   "name": "ModX",
+   "type": "int",
+   "value": 4
+  },
+  {
+   "name": "ModY",
+   "type": "int",
+   "value": 5
+  }
+ ]
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "pieces.schema.json",
+  "title": "Relief piece table (art/places/pieces.json): every piece of the cliff set with its four facts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "cell", "faceRows", "rowsAbove", "columns", "propExtents", "pieces"],
+  "definitions": {
+    "cells": { "type": "array", "items": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 } },
+    "extentCells": {
+      "type": "object", "additionalProperties": false, "required": ["left", "right", "up", "down"],
+      "properties": { "left": { "type": "integer", "minimum": 0 }, "right": { "type": "integer", "minimum": 0 }, "up": { "type": "integer", "minimum": 0 }, "down": { "type": "integer", "minimum": 0 } }
+    },
+    "piece": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "family", "state", "kinds", "anchor", "footprint", "extent", "margin", "pass", "footLine", "places"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "family": { "enum": ["top", "lip", "face", "flank", "foot", "wayup"] },
+        "state": { "enum": ["signed", "stand-in", "empty", "covered"], "description": "signed: the art is on the signed list; stand-in: signed but not the final look; empty: a named slot for the art desk, nothing is drawn; covered: the case is drawn inside another piece" },
+        "kinds": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true, "description": "the sprite names of the set (decals) that are this piece, or the slot names of an empty piece" },
+        "dualCase": { "type": "integer", "minimum": 0, "maximum": 15, "description": "a lip piece: the dual-grid corner case it is drawn for (bits NW 8, NE 4, SW 2, SE 1)" },
+        "anchor": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2, "description": "cells from the piece's own cell at row L (dx, dy) to the top left of its picture" },
+        "footprint": { "$ref": "#/definitions/cells", "description": "the cells it blocks, relative to its own cell at row L; none for a piece that blocks nothing" },
+        "extent": { "type": "array", "items": { "type": "integer" }, "minItems": 4, "maxItems": 4, "description": "the box it paints, in pixels: dx, dy from the anchor, width, height" },
+        "margin": { "type": "integer", "minimum": 0, "description": "pixels of its own paint over each neighbour (about a quarter of a cell: 12)" },
+        "pass": { "enum": ["ground", "relief", "lip", "overlay"], "description": "the draw pass (draw order, architecture-world-map.md 3.3)" },
+        "footLine": {
+          "type": "object", "additionalProperties": false, "required": ["from", "plus"],
+          "properties": { "from": { "enum": ["lip", "side-run-end", "ground"], "description": "the row the foot line is counted from: the run's lip row, the southmost row of the side run, or none" }, "plus": { "type": "integer", "minimum": 0, "description": "rows added: the face's rows" } }
+        },
+        "places": { "type": "string" }
+      }
+    }
+  },
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1 },
+    "description": { "type": "string" },
+    "cell": { "const": 48 },
+    "faceRows": { "type": "integer", "minimum": 1 },
+    "rowsAbove": { "type": "integer", "minimum": 0 },
+    "columns": { "type": "integer", "minimum": 1 },
+    "propExtents": {
+      "type": "object",
+      "properties": { "description": { "type": "string" } },
+      "additionalProperties": { "$ref": "#/definitions/extentCells" }
+    },
+    "pieces": { "type": "array", "items": { "$ref": "#/definitions/piece" }, "minItems": 1 }
+  }
+}

@@ -54,8 +54,20 @@ export async function bakedPieces(page, repoRoot, swaps = new Map(), setId = 'ni
 
 // files: [{ slot, file, swapped, shipped? }] -> the sidecar's file list, hashed now. A swapped slot also keeps the sha256 of the shipped piece it stands in for.
 export function fileList(files) {
-  return files.map((f) => ({ slot: f.slot, sha256: sha256File(f.file), swapped: !!f.swapped, ...(f.baked ? { baked: true } : {}), ...(f.swapped && f.shipped && existsSync(f.shipped) ? { shippedSha256: sha256File(f.shipped) } : {}) }))
-    .sort((a, b) => (a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0));
+  const list = files.map((f) => ({ slot: f.slot, sha256: sha256File(f.file), swapped: !!f.swapped, ...(f.baked ? { baked: true } : {}), ...(f.swapped && f.shipped && existsSync(f.shipped) ? { shippedSha256: sha256File(f.shipped) } : {}) }));
+  // The set's atlas (sprites.png) is a layout of the set's piece files: list each sprite's own piece file by its own sha256, with its source file and its atlas, so a sign can find the piece in the still.
+  const have = new Set(list.map((e) => e.slot));
+  for (const f of files) {
+    if (path.basename(f.file) !== 'sprites.png' || f.swapped) continue;
+    const dir = path.dirname(f.shipped || f.file), setJson = path.join(dir, 'set.json'); if (!existsSync(setJson)) continue;
+    const set = JSON.parse(readFileSync(setJson, 'utf8')), setId = path.basename(dir);
+    for (const g of ['props', 'decals', 'canopy']) for (const name of Object.keys(set[g] || {})) {
+      const piece = path.join(dir, name + '.png'), slot = `${setId}/${name}.png`;
+      if (have.has(slot) || !existsSync(piece)) continue;
+      have.add(slot); list.push({ slot, sha256: sha256File(piece), swapped: false, atlasSprite: `${g}/${name}`, source: name + '.png', atlas: f.slot });
+    }
+  }
+  return list.sort((a, b) => (a.slot < b.slot ? -1 : a.slot > b.slot ? 1 : 0));
 }
 
 // Writes `<still without .png>.json` beside the still; returns its path. info: { tool, zoom, light, files: [...], ...more }.

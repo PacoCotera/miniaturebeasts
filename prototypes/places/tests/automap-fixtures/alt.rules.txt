@@ -1,0 +1,2 @@
+# the rule maps of fixture alt, in order
+alt.rules1.tmj
