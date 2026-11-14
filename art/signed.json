@@ -457,6 +457,62 @@
    "sha256": "c4364b37cd56133dbf2332fdf5ab53befaca43e03ccda47f79d6509873f637b1"
   },
   {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "77d253ad4e",
+   "path": "art/places/sets/ninja-test/cliff-foot-1.png",
+   "sha256": "ee85d689cd6c5c52389427fcbac0ee637def3f0d3c9039a6fdc65e686e828d3c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "d49cee0be2",
+   "path": "art/places/sets/ninja-test/cliff-foot-2.png",
+   "sha256": "2499258cd003c54d2b82a80c1b1b124ac1c8dbdeae091ac7029a0ab19720dfc3"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "773e49ad5b",
+   "path": "art/places/sets/ninja-test/cliff-foot-3.png",
+   "sha256": "8ebcbd61264e0745cb28a27d2e65a23cbad3a672819aa32ad225c8bb2ddd5a4e"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "1ac16bb259",
+   "path": "art/places/sets/ninja-test/cliff-foot-4.png",
+   "sha256": "7418aa9185b1212e1f8e66c357377458bc9b8d914f7162adad49f0eb7df2d65a"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "1db69033d0",
+   "path": "art/places/sets/ninja-test/cliff-foot-5.png",
+   "sha256": "5d2f6fb3acc61cc16aac56d9ea84b84fd58a2e6da44bc7243a11b36ebab9da45"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "4712687b54",
+   "path": "art/places/sets/ninja-test/cliff-foot-6.png",
+   "sha256": "5b931c9adfa408277a1a4d7628227e5a5f91cb84224d724c970689d69dc22d6e"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "7965129dfe",
+   "path": "art/places/sets/ninja-test/cliff-foot-e.png",
+   "sha256": "e92ffe26c85c1e1a68c959998a99c1e9f81c6f75317bdc18b479250bbb6dc9ab"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "3d757198a5",
+   "path": "art/places/sets/ninja-test/cliff-foot-w.png",
+   "sha256": "094c692fdc34e3225de6b5d3e4181c48db75f3a76f1d0b393ce4d90611074278"
+  },
+  {
    "class": "cut-of-signed",
    "date": "2026-11-12",
    "id": "e47de3838f",
