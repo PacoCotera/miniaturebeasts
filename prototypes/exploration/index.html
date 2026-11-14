@@ -207,7 +207,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Go into a place and look around. Call lifts the veil around you and shows what is there; once you have been over most of a place, its dot fills.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it (sometimes a pod too). <span id="helpData"></span></li>
-        <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
+        <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not. Lightning finds what stands still in the open: it marks your tile one action ahead, so step off the mark and it misses. A strike costs one plate and is followed by a long quiet; on its last plate the Probe can still break.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
@@ -354,6 +354,7 @@ const dataLadder = () => STRIKE_DATA.slice(1).join(' / ');
 // Station stand-in prices.
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
+const SAFE_AFTER_HIT = 24;   // actions of quiet after a strike: more than a pass of rain lasts, so one hit a pass at most
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const PLAYTEST_ON = playtestOn(OPT);   // the Playtest waits option: the playtest preset (play/src/playtest.mjs), the one place of the shortened waits
 const JUVENILE_TURNS = PLAYTEST_ON ? PLAYTEST.settings.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON ? PLAYTEST.settings.elderTurns : 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18); the preset: 1 and 4
@@ -2021,12 +2022,17 @@ function advance(scope, info) {
   const ex = S.exp; ex.actions++; S.totalActions++;
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
-  if (ex.stray && ex.stray.at <= ex.actions) { ex.stray = null; if (stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope); }
+  // It was marked on the Probe's tile or cell: it hits only if the Probe still stands there, in the open, under rain; otherwise it lands on the empty tile.
+  if (ex.stray && ex.stray.at <= ex.actions) { const sk = ex.stray; ex.stray = null;
+    const there = sk.scope === scope && sk.cell === ex.pos && (scope !== 'patch' || (ex.patch && ex.patch.x === sk.x && ex.patch.y === sk.y));
+    if (there && stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope);
+    else strayMiss(sk); }
   if (!stormRain(col)) ex.passWarned = 0;   // a new pass over you starts with a warned strike before any stray
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
     const over = tripStormTick(ex);
-    ex.storm.x += (over ? .2 : ex.storm.v) * ex.storm.dir;   // overhead the band crawls: a pass of rain is about 15–20 actions ex.storm.t = (ex.storm.t || 0) + 1;
+    ex.storm.x += (over ? .2 : ex.storm.v) * ex.storm.dir;   // overhead the band crawls: a pass of rain is about 15–20 actions
+    ex.storm.t = (ex.storm.t || 0) + 1;   // the storm's own clock: rain comes in spells with quiet between (stormLull)
     if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) { ex.storm = null; }
     else { // a flash somewhere inside the band each tick; some of them light the land for good
       const cols = []; for (let x = 0; x < MW; x++) if (stormCovers(x)) cols.push(x);
@@ -2043,8 +2049,10 @@ function advance(scope, info) {
   const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
   if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
   // Roll the next action's stray strike now, so a keen partner can feel it coming. The first walk of a world takes one stray strike at most (the plates are met, the Probe never breaks before it has a pod: loop audit 3.18).
-  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= 6 && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
-    ex.stray = { at: ex.actions + 1 };
+  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= SAFE_AFTER_HIT && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+    const inPatch = scope === 'patch' && ex.patch;
+    ex.stray = { at: ex.actions + 1, scope: inPatch ? 'patch' : 'map', cell: ex.pos, x: inPatch ? ex.patch.x : 0, y: inPatch ? ex.patch.y : 0 };   // aimed at the Probe's own tile (place) or cell (map), shown one action ahead
+    fxSign('warn', inPatch ? { key: ex.patch.key, x: ex.patch.x, y: ex.patch.y } : { c: ex.pos });
     const pt = ex.pt, keen = pt && (pt.elder || spOf(pt.sp).ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
@@ -2052,7 +2060,7 @@ function advance(scope, info) {
   save();
 }
 function shieldHit(stray) {
-  const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // the lost plate's fill flashes in the top bar
+  const ex = S.exp; ex.shield--; ex.passWarned = 0; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // one plate a strike (the last one can go); the next stray this pass needs a fresh warned strike first; the lost plate's fill flashes in the top bar
   if (typeof stopRepeat === 'function') stopRepeat();   // a held walk stops on a hit, so the hit is seen
   lockInput(250);
   if (ex.shield <= 0) { logEv('Probe broke'); return; }
@@ -2066,6 +2074,13 @@ function strayHit(scope) {
   if (scope === 'patch' && ex.patch) FX.strikes.push({ space: 'patch', x: ex.patch.x, y: ex.patch.y, at: NOW });
   else FX.strikes.push({ space: 'map', c: ex.pos, at: NOW });
   stormMark(ex, ex.pos); shieldHit(true);
+}
+// A stray that found the tile empty (the Probe stepped off or took shelter): it leaves its mark there, like a warned strike.
+function strayMiss(sk) {
+  const ex = S.exp;
+  if (sk.scope === 'patch') FX.strikes.push({ space: 'patch', x: sk.x, y: sk.y, at: NOW });
+  else FX.strikes.push({ space: 'map', c: sk.cell, at: NOW });
+  stormMark(ex, sk.cell);
 }
 function mapStrikeTick() {
   const ex = S.exp;
@@ -5067,7 +5082,7 @@ function drawReachView(t) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
     const c = Y * MW + X; if (!S.revealed[c]) continue;
-    if (ex.mstrike && ex.mstrike.c === c) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
+    if ((ex.mstrike && ex.mstrike.c === c) || (ex.stray && ex.stray.scope === 'map' && ex.stray.cell === c)) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
   }
   // pass 3: the edge marks (they still run straight along the cell edges); the fog is already in the painting
   drawEdgeMarks(q);
@@ -5278,7 +5293,8 @@ function drawMap(mode, t) {
   }
   for (const b of FX.bolts) { const age = NOW - b.at; if (age > 300) continue; const p = cxy(b.c); const x = ox + p.x * CELL, y = oy + p.y * CELL;
     R(x, y, CELL, 1, C.cream); R(x, y + CELL - 1, CELL, 1, C.cream); R(x, y, 1, CELL, C.cream); R(x + CELL - 1, y, 1, CELL, C.cream); }
-  if (ex && ex.mstrike) { const p = cxy(ex.mstrike.c), x = ox + p.x * CELL, y = oy + p.y * CELL, col = fr ? C.cream : C.yellow;
+  const aimed = [ex && ex.mstrike && ex.mstrike.c, ex && ex.stray && ex.stray.scope === 'map' && ex.stray.cell].filter(c => typeof c === 'number');   // the warned strike and the stray, both marked a turn ahead
+  for (const ac of aimed) { const p = cxy(ac), x = ox + p.x * CELL, y = oy + p.y * CELL, col = fr ? C.cream : C.yellow;
     ditherFill(x, y, CELL, CELL, 'yellow', 6); R(x, y, CELL, 2, col); R(x, y + CELL - 2, CELL, 2, col); R(x, y, 2, CELL, col); R(x + CELL - 2, y, 2, CELL, col);
     blit(ICON.bolt('gold'), x + 7, y + 5); }
   for (const s2 of FX.strikes) { if (s2.space !== 'map') continue; const age = NOW - s2.at; if (age > 380) continue;
@@ -5649,7 +5665,8 @@ function drawPatchBody(t) {
   const act = patchAction();
   if (act.run && act !== NOTHING && !act.face) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
-  if (live.strike) { const x = W(live.strike.x * ts), y = H(live.strike.y * ts), col = fr ? C.cream : C.yellow;
+  const aimedAt = [live.strike, ex.stray && ex.stray.scope === 'patch' && ex.patch && ex.patch.key === P.key ? ex.stray : null].filter(Boolean);   // a warned strike and a stray, each outlined a turn ahead
+  for (const st of aimedAt) { const x = W(st.x * ts), y = H(st.y * ts), col = fr ? C.cream : C.yellow;
     R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); RT.litScr = { x, y, w: ts, h: ts }; }   // strike warned: the tile's outline only
   for (const s2 of FX.strikes) { if (s2.space !== 'patch') continue; const age = NOW - s2.at; if (age > 380) continue;
     const x = W(s2.x * ts + (ts >> 1)), y = H(s2.y * ts + (ts >> 1));
@@ -5848,6 +5865,7 @@ function tagSpot(tg, k) {
     if (f.kind === 'k' && k.see(q.x, q.y)) fz(q.x, q.y); else if (f.kind === 'd' && k.see(f.x, f.y)) fz(f.x, f.y, live.seen.d); else if (f.kind === 'i' && k.inS(f.x, f.y)) fz(f.x, f.y); }
   for (const f of live.fr) if (k.see(f.x, f.y) || (f.put && k.inS(f.x, f.y))) fz(f.x, f.y);
   if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
+  const sy = S.exp.stray; if (sy && sy.scope === 'patch' && S.exp.patch && S.exp.patch.key === P.key) block.push({ x: k.W(sy.x * ts), y: k.H(sy.y * ts), w: ts, h: ts });
   const m = msgGeom(); if (m) block.push(m);
   for (const t of edgeTabs()) block.push(tabRect(t));
   const V = TAG.view, inView = r => r.x >= V.x0 && r.y >= V.y0 && r.x + r.w - 1 <= V.x1 && r.y + r.h - 1 <= V.y1;
