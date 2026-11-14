@@ -98,5 +98,10 @@ export function rimOf(ir, A, isCliff) {
   for (let y = 1; y < H; y++) for (let x = 1; x < W; x++) if (out[y * W + x] === 2) {
     if ((high(x - 1, y - 1) && high(x - 1, y) && low(x, y - 1) && low(x, y)) || (high(x, y - 1) && high(x, y) && low(x - 1, y - 1) && low(x - 1, y))) out[y * W + x] = 1;
   }
+  // A long run's end tile (three raised cells, the low one south-east or south-west): its raised quarter above the end piece is covered by no piece and showed bare base grass; the signed raised-tone fill tile goes there (no new art)
+  for (let y = 1; y < H; y++) for (let x = 1; x < W; x++) if (out[y * W + x] === 1) {
+    const nw = high(x - 1, y - 1), ne = high(x, y - 1), sw = high(x - 1, y), se = high(x, y);
+    if (nw && ne && ((sw && !se) || (se && !sw))) out[y * W + x] = 2;
+  }
   return out;
 }

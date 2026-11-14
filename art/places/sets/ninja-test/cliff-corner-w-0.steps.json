@@ -25,11 +25,17 @@
     "#5e8443",
     "#79875b"
    ]
+  ],
+  [
+   "key",
+   "alpha",
+   1,
+   100
   ]
  ],
- "out_sha256": "922f26e1716ccedbb514325e7119f3d5305d4cb59bbf3b6fb9ea97d8ffb3eefe",
+ "out_sha256": "92a0e8e4256371840f27ad14f6f03e882a2d28c3267265de6459f5c87700289e",
  "from_paid_call": {
-  "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below",
+  "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below; then the floating leaf islands under 100 px are keyed out (key alpha, min part 100)",
   "parent_steps": {
    "source_sha256": "1bb46b91b7230c0ace13aed654c70a2f37365960568ff71b66701f8c83339872",
    "steps": [
