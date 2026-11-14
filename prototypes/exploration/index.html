@@ -207,7 +207,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Go into a place and look around. Call lifts the veil around you and shows what is there; once you have been over most of a place, its dot fills.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it (sometimes a pod too). <span id="helpData"></span></li>
-        <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
+        <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not. Lightning finds what stands still in the open: it marks your tile one action ahead, so step off the mark and it misses. A strike costs one plate and is followed by a long quiet; on its last plate the Probe can still break.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
@@ -354,6 +354,7 @@ const dataLadder = () => STRIKE_DATA.slice(1).join(' / ');
 // Station stand-in prices.
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
 const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatchS: 4, study: 2, tier2E: 12, tier2D: 4, patch: 3, pin: 1 };
+const SAFE_AFTER_HIT = 24;   // actions of quiet after a strike: more than a pass of rain lasts, so one hit a pass at most
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const PLAYTEST_ON = playtestOn(OPT);   // the Playtest waits option: the playtest preset (play/src/playtest.mjs), the one place of the shortened waits
 const JUVENILE_TURNS = PLAYTEST_ON ? PLAYTEST.settings.adultTurns : 2, ELDER_TURNS = PLAYTEST_ON ? PLAYTEST.settings.elderTurns : 16;     // young for 2 world turns; elder after 16 more as an adult (an elder at turn 18); the preset: 1 and 4
@@ -439,7 +440,37 @@ function canSure() { return abIs('sure'); }
 function canBank() { return abIs('bank'); }
 const abOpts = () => ({ sure: canSure(), bank: canBank() ? 'all' : undefined });
 function passable(c) { return passableIn(G, c); }
-function canStep(a, dir) { return canStepIn(G, a, dir, abOpts()); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair (or, for the partner that can, scree, an earth bank, a wade)
+function canStep(a, dir) { const ts = tileSide(a, dir); return ts ? ts.open : canStepIn(G, a, dir, abOpts()); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair (or, for the partner that can, scree, an earth bank, a wade); between two land cells the tiles decide (tileSide)
+// Land shape B1: a side between two land cells (summary open or a plain cliff; a stair, scree, a bank or a wade keep their own rules) is OPEN where its tiles hold a run of 2+ walkable pairs on the
+// same level, CLOSED otherwise. Worked out from both cells' layouts when asked, kept per world (G.tileSides), the same from either cell. `mask`: one byte a tile along the side (west to east, or north to south), 1 where open.
+function tileSideApplies(a, dir) {
+  if (G.gen !== 7 || !S.exp || !PL.ready) return false;
+  const n = stepCell(a, dir); if (n < 0) return false;
+  const k = edgeKind(a, dir); if (k === EDGE.RAMP || (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)))) return false;
+  return passable(a) && passable(n) && !G.island[a] && !G.island[n] && G.land[a] !== L.WATER && G.land[n] !== L.WATER;
+}
+const tileSideKey = (a, n) => Math.min(a, n) * 4096 + Math.max(a, n);
+function tileSideKnown(a, dir) { const n = stepCell(a, dir); return n < 0 || !G.tileSides ? null : G.tileSides.get(tileSideKey(a, n)) || null; }
+function tileSide(a, dir) {
+  if (!tileSideApplies(a, dir)) return null;
+  const n = stepCell(a, dir), key = tileSideKey(a, n), known = G.tileSides && G.tileSides.get(key); if (known) return known;
+  const lo = Math.min(a, n), hi = Math.max(a, n), la = layout(String(lo)), lb = layout(String(hi)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return null;
+  const east = hi - lo === 1, len = east ? la.h : la.w, mask = new Uint8Array(len), ok = new Uint8Array(len);
+  for (let k = 0; k < len; k++) {
+    const ax = east ? la.w - 1 : k, ay = east ? k : la.h - 1, bx = east ? 0 : k, by = east ? k : 0;
+    ok[k] = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !!la.raisedFn(ax, ay) === !!lb.raisedFn(bx, by) ? 1 : 0; }
+  for (let k = 0, s = 0; k <= len; k++) { if (k < len && ok[k]) continue; if (k - s >= 2) for (let j = s; j < k; j++) mask[j] = 1; s = k + 1; }
+  const st = { open: mask.some(v => v), mask, len, east };
+  (G.tileSides || (G.tileSides = new Map())).set(key, st); return st;
+}
+// A step out of a place over a side the tiles decide: the tile you stand on and the tile beyond (the same row or column, continued) both walk on the same level. Returns the landing tile or null.
+function crossLanding(dir) {
+  const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir)) return undefined;
+  const la = layout(P.key), lb = layout(String(c)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return undefined;
+  const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y;
+  if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || !!la.raisedFn(P.x, P.y) !== !!lb.raisedFn(x, y)) return null;
+  return { x, y };
+}
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
@@ -491,12 +522,20 @@ const layoutCache = new Map();
 // A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
 const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), veil: null, veilMod: null };
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
+// The release number (build.json, never cached) rides on every fetch of game data and every image, so a new release never reads an older release's files from the browser's cache. One helper, no player option.
+const REL = { v: '' };
+REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); } catch (e) { } })();
+const vurl = u => REL.v ? u + (u.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(REL.v) : u;
+// The first frame waits for the new art and the place (the Probe line shows meanwhile); a load that fails says so with a reload, and never draws old art.
+const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [];
+const artHeld = () => RT.artHold && !(ART_DONE.atlas && ART_DONE.places && ART_DONE.walk && ART_DONE.open && ART48.ready && PL.ready && !ART_FAIL.length);
+const artFailed = () => ART_FAIL.length > 0 || (ART_DONE.atlas && !ART48.ready) || (ART_DONE.places && !PL.ready);
 const setArrived = () => { if (WART.src) walkRead(WART.src); else extendWithSet(); };   // the set's palette is in: the page's colour arrays take its colours, and the walk art read before it is read again
 async function loadPlaces() {
   try {
     if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; setArrived(); return; }
-    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
-    const pm = await import(base + 'src/page.mjs'), rd = await import(base + 'src/format/read.mjs');
+    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(vurl(u))).arrayBuffer());
+    const pm = await import(vurl(base + 'src/page.mjs')), rd = await import(vurl(base + 'src/format/read.mjs'));
     PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles')); setArrived();
     PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
@@ -505,20 +544,20 @@ async function loadPlaces() {
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadVeilKit(base);
     PL.ready = true; layoutCache.clear(); RT.key = null;
-  } catch (e) { console.warn('the places did not load', e); }
+  } catch (e) { console.warn('the places did not load', e); ART_FAIL.push('places'); } finally { ART_DONE.places = true; }
 }
 // The art desk's edge veil (places/veil/, SOURCE.md there): the straight strip, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
 // a view without it draws no veil.
 async function loadVeilKit(base) {
   if (typeof Image === 'undefined') return;
   try {
-    const vm = await import(base + 'src/veil.mjs'), dir = base + 'veil/', kit = { day: {}, night: {} };
+    const vm = await import(vurl(base + 'src/veil.mjs')), dir = base + 'veil/', kit = { day: {}, night: {} };
     await Promise.all(['day', 'night'].flatMap(t => vm.VEIL_KINDS.map(k => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); kit[t][k] = c; res(); };
-      im.onerror = () => rej(new Error('missing ' + k)); im.src = dir + vm.veilFileName(k, t === 'night') + '.png'; }))));
+      im.onerror = () => rej(new Error('missing ' + k)); im.src = vurl(dir + vm.veilFileName(k, t === 'night') + '.png'); }))));
     PL.mapVeil = {}; await Promise.all(['day', 'night'].map(t => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); PL.mapVeil[t] = c; res(); };
-      im.onerror = () => rej(new Error('missing the map veil')); im.src = dir + 'map-edge-veil-' + t + '.png'; })));
+      im.onerror = () => rej(new Error('missing the map veil')); im.src = vurl(dir + 'map-edge-veil-' + t + '.png'); })));
     PL.veil = kit; PL.veilMod = vm;
-  } catch (e) { console.warn('the edge veil did not load', e); }
+  } catch (e) { console.warn('the edge veil did not load', e); ART_FAIL.push('veil'); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
@@ -574,11 +613,11 @@ const PROP_DY = { 'find-glint-1': 0, 'way-through-mark-stone': 0, 'way-through-m
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
-    'pod-walk-bone', 'pod-walk-lime', 'pod-walk-ice', 'pod-walk-sand', 'pod-walk-sprout', 'pod-walk-lavender', 'canopy-legacy', 'roof-legacy',
+    'pod-walk-bone', 'pod-walk-lime', 'pod-walk-ice', 'pod-walk-sand', 'pod-walk-sprout', 'pod-walk-lavender',
     // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
     ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
+const PROP_SIZE = { 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
@@ -588,16 +627,16 @@ async function loadPropArt() {
     if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     await Promise.all(PROP_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/props/', location.href).href + n + '.png'; })));
-  } catch (e) { console.warn('the props did not load', e); }
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/props/', location.href).href + n + '.png'); })));
+  } catch (e) { console.warn('the props did not load', e); ART_FAIL.push('props'); }
 }
 async function loadStoneArt() {
   try {
     if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     await Promise.all(STONE_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/stone/', location.href).href + n + '.png'; })));
-  } catch (e) { console.warn('the stones did not load', e); }
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/stone/', location.href).href + n + '.png'); })));
+  } catch (e) { console.warn('the stones did not load', e); ART_FAIL.push('stones'); }
 }
 // The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
 // the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
@@ -608,7 +647,6 @@ const WALK_FILES = [
   ...WALK_TEX.flatMap(t => WALK_CS.map(c => `map-tex-${t}-${c}`)),
   ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
   'bubble-curious-11x13'];
-const ART_DONE = { walk: false, open: false };   // each art load has settled (loaded or failed): the opening paints its land once, after both, not once per arrival
 const WART = { pb: new Map(), empty: new Map(), ready: false, src: null };   // src: the files last read, to read again when the palette's entries move (the set arrives, the atlas installs)
 function walkPB(name, w = 1, h = 1) {
   const pb = WART.pb.get(name); if (pb) return pb;
@@ -666,10 +704,10 @@ async function loadWalkArt() {
     if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png'); })));
     await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
     walkRead(files);
-  } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
+  } catch (e) { console.warn('the walk art did not load', e); ART_FAIL.push('walk'); } finally { ART_DONE.walk = true; }
 }
 // The view that draws a baked layout: the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
 function bakedView(lay) {
@@ -682,7 +720,7 @@ function bakedView(lay) {
 }
 const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(PL.ts && PL.ts.palette ? PL.ts.palette.map(c => [(c >> 16) & 255, (c >> 8) & 255, c & 255]) : [], STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);   // the game set palette is the map's and the walk's palette
 // The sides of a cell that are shut now (past the range or closed), as a string: the reachable-only placement of a layout was made against this.
-const shutSig = key => ['N', 'S', 'W', 'E'].map(side => (S.exp && crossReason(+key, SIDE_DIR[side]) ? side : '')).join('');
+const shutSig = key => ['N', 'S', 'W', 'E'].map(side => (S.exp && crossReason(+key, SIDE_DIR[side], true) ? side : '')).join('');
 // On entering a place, a cached layout made for other open sides (a Tuliko led the last visit and not this one: one ring less of reach) is made again, so nothing to act on lies in the haze.
 function freshLayout(key) {
   const lay = layoutCache.get(key);
@@ -711,7 +749,8 @@ function layout(key) {   // a land cell's layout from the generator (cached); a 
     const seed = S.regions[0].seed, slot = hereRegion().slot, v = biomeVersion(S);
     let b = bakedGet(seed, slot, v, +key);   // the cell as the places worker made it; only a page without a worker (or a cell asked for past the reach) bakes it here, with the same function
     if (!b) { b = bakedCell7(PL.ctx, seed, slot, +key, v); bakedPut(seed, slot, v, +key, b); PLACES.inline++; }
-    lay = layout7In(PL.ctx, G, seed, slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side]), v, b); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay); }
+    lay = layout7In(PL.ctx, G, seed, slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side], true), v, b); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay);
+    for (const dir of ['up', 'down', 'left', 'right']) { const n = stepCell(+key, dir); if (n >= 0 && layoutCache.has(String(n))) tileSide(+key, dir); } }   // a side is worked out when the second of its two cells has a layout
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;
 }
@@ -1990,12 +2029,17 @@ function advance(scope, info) {
   const ex = S.exp; ex.actions++; S.totalActions++;
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
-  if (ex.stray && ex.stray.at <= ex.actions) { ex.stray = null; if (stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope); }
+  // It was marked on the Probe's tile or cell: it hits only if the Probe still stands there, in the open, under rain; otherwise it lands on the empty tile.
+  if (ex.stray && ex.stray.at <= ex.actions) { const sk = ex.stray; ex.stray = null;
+    const there = sk.scope === scope && sk.cell === ex.pos && (scope !== 'patch' || (ex.patch && ex.patch.x === sk.x && ex.patch.y === sk.y));
+    if (there && stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope);
+    else strayMiss(sk); }
   if (!stormRain(col)) ex.passWarned = 0;   // a new pass over you starts with a warned strike before any stray
   if (ex.storm) {
     // The band crawls while it is over the place you are in (about 30 actions overhead); elsewhere it moves at map speed.
     const over = tripStormTick(ex);
-    ex.storm.x += (over ? .2 : ex.storm.v) * ex.storm.dir;   // overhead the band crawls: a pass of rain is about 15–20 actions ex.storm.t = (ex.storm.t || 0) + 1;
+    ex.storm.x += (over ? .2 : ex.storm.v) * ex.storm.dir;   // overhead the band crawls: a pass of rain is about 15–20 actions
+    ex.storm.t = (ex.storm.t || 0) + 1;   // the storm's own clock: rain comes in spells with quiet between (stormLull)
     if (ex.storm.x > MW + 1 || ex.storm.x + ex.storm.w < -1) { ex.storm = null; }
     else { // a flash somewhere inside the band each tick; some of them light the land for good
       const cols = []; for (let x = 0; x < MW; x++) if (stormCovers(x)) cols.push(x);
@@ -2012,8 +2056,10 @@ function advance(scope, info) {
   const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
   if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
   // Roll the next action's stray strike now, so a keen partner can feel it coming. The first walk of a world takes one stray strike at most (the plates are met, the Probe never breaks before it has a pod: loop audit 3.18).
-  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= 6 && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
-    ex.stray = { at: ex.actions + 1 };
+  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= SAFE_AFTER_HIT && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+    const inPatch = scope === 'patch' && ex.patch;
+    ex.stray = { at: ex.actions + 1, scope: inPatch ? 'patch' : 'map', cell: ex.pos, x: inPatch ? ex.patch.x : 0, y: inPatch ? ex.patch.y : 0 };   // aimed at the Probe's own tile (place) or cell (map), shown one action ahead
+    fxSign('warn', inPatch ? { key: ex.patch.key, x: ex.patch.x, y: ex.patch.y } : { c: ex.pos });
     const pt = ex.pt, keen = pt && (pt.elder || spOf(pt.sp).ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
@@ -2021,7 +2067,7 @@ function advance(scope, info) {
   save();
 }
 function shieldHit(stray) {
-  const ex = S.exp; ex.shield--; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // the lost plate's fill flashes in the top bar
+  const ex = S.exp; ex.shield--; ex.passWarned = 0; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // one plate a strike (the last one can go); the next stray this pass needs a fresh warned strike first; the lost plate's fill flashes in the top bar
   if (typeof stopRepeat === 'function') stopRepeat();   // a held walk stops on a hit, so the hit is seen
   lockInput(250);
   if (ex.shield <= 0) { logEv('Probe broke'); return; }
@@ -2035,6 +2081,13 @@ function strayHit(scope) {
   if (scope === 'patch' && ex.patch) FX.strikes.push({ space: 'patch', x: ex.patch.x, y: ex.patch.y, at: NOW });
   else FX.strikes.push({ space: 'map', c: ex.pos, at: NOW });
   stormMark(ex, ex.pos); shieldHit(true);
+}
+// A stray that found the tile empty (the Probe stepped off or took shelter): it leaves its mark there, like a warned strike.
+function strayMiss(sk) {
+  const ex = S.exp;
+  if (sk.scope === 'patch') FX.strikes.push({ space: 'patch', x: sk.x, y: sk.y, at: NOW });
+  else FX.strikes.push({ space: 'map', c: sk.cell, at: NOW });
+  stormMark(ex, sk.cell);
 }
 function mapStrikeTick() {
   const ex = S.exp;
@@ -2051,13 +2104,13 @@ function mapStrikeTick() {
   }
 }
 function nextToIsland(c) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH && G.island[y * MW + x]) return true; } return false; }
-function mapStep(dir) {
+function mapStep(dir, viaTiles) {   // viaTiles: a step out of a place that crossLanding allowed (the tiles decided, so the side's own state is not asked again)
   const ex = S.exp, [dx, dy] = DIRS[dir], p = cxy(ex.pos), x = p.x + dx, y = p.y + dy;
   ex.face = dir;
   if (x < 0 || y < 0 || x >= MW || y >= MH) { FX.bumpAt = NOW; return; }
   const c = y * MW + x;
   if (!inRange(c)) { FX.bumpAt = NOW; fxMsg(RANGE_TEXT()); return; }
-  if (!canStep(ex.pos, dir)) { revealCell(c); FX.bumpAt = NOW; const why = crossReason(ex.pos, dir); fxMsg(why + softPin(ex.pos, dir));
+  if (!viaTiles && !canStep(ex.pos, dir)) { revealCell(c); FX.bumpAt = NOW; const why = crossReason(ex.pos, dir); fxMsg(why + softPin(ex.pos, dir));
     if (why.startsWith(CLIFF_TOO_STEEP) && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const s = stairsNear(ex.pos, dir); FX.stairBlink = s ? { ei: s.ei, at: NOW } : null; }   // the stair mark the words name blinks twice
     save(); return; }   // land you can't stand on, or a steep edge between
   const ei = edgeIndex(ex.pos, dir);
@@ -2146,8 +2199,10 @@ function ensureLive(key) {
   return live;
 }
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
+let LAND = null;   // the tile a step out of a place lands on in the next one (crossEdge), used once by enterPatchBuilt
 function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
   const occ = (x, y) => !guess && occupant(key, x, y, 'player');
+  if (LAND && LAND.key === key && !occ(LAND.x, LAND.y)) return { x: LAND.x, y: LAND.y };
   // Up or down a stair (the edge just crossed is a ramp): its entry tile, or the nearest free tile that is not the stair itself.
   const from = lay.stairs && lay.stairs.length && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;
   if (from >= 0 && edgeKind(from, dir) === EDGE.RAMP) {
@@ -2197,7 +2252,7 @@ function enterPatchBuilt() {
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
-  const e = entryPoint(lay, key, ex.lastDir);
+  const e = entryPoint(lay, key, ex.lastDir); LAND = null;
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
@@ -2323,14 +2378,15 @@ function seamCross(a, dir) {
   if (!passableIn(g, c2) || g.island[c2] || (g.coast && g.coast[c2]) || (g.level && G.level && g.level[c2] !== G.level[a])) return null;
   return { id: R.id, cell: c2 };
 }
-function crossReason(a, dir) {
+function crossReason(a, dir, base) {   // base: the side's own kind only, never the tiles (a layout is made against this; the tiles need the layouts)
   const c = stepCell(a, dir);
   if (c < 0) return seamSlot(dir) ? (seamCross(a, dir) ? null : seamWords(dir)) : borderCliff(a) ? 'High cliffs · no way past' : SHORE_TEXT;
   if (G.coast && G.coast[c]) return SHORE_TEXT;   // the realm's border ring: wide water, nobody crosses
   if (!inRange(c)) return RANGE_TEXT();
   const sk = softKind(a, dir);
-  if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : cliffMapWords(a, dir);
+  if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : !tileSideApplies(a, dir) ? cliffMapWords(a, dir) : base ? null : (tileSide(a, dir) || {}).open ? null : cliffMapWords(a, dir);   // between two land cells the tiles decide
   if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : sk === 'wade' ? (canSure() ? null : WADE_BUMP) : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
+  if (!base) { const ts = tileSide(a, dir); if (ts && !ts.open) return cliffMapWords(a, dir); }
   return null;
 }
 // Walk B3: an opening never promises a way that is closed. At entry each opening of a baked place is one of four kinds, from crossReason for that side:
@@ -2340,7 +2396,7 @@ function crossReason(a, dir) {
 // tier and a Tuliko along move the line. The line stands LINE_DEPTH tiles in from the place's edge (the band's inner face); the tiles between it and the edge are blocked.
 const LINE_DEPTH = 3, SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' };
 function openingKind(lay, o) {
-  const why = crossReason(lay.cell, SIDE_DIR[o.side]);
+  const why = crossReason(lay.cell, SIDE_DIR[o.side], true);   // an opening is a run the tiles walk; whether the far side matches is the step's test
   if (!why) return { kind: 'open', text: '' };
   if (why === RANGE_TEXT() || why === MORE_LAND || why.endsWith(' · start an expedition there')) return { kind: 'range', text: why };   // a region side wears the reach look: the edge veil and the dashed reach line
   return why === WADE_BUMP || why === SCREE_BUMP || why === BANK_BUMP ? { kind: 'gate', text: why } : { kind: 'closed', text: why };
@@ -2491,17 +2547,20 @@ function crossRegion(dir, sw) {
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
   { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
-  let why = crossReason(ex.pos, dir);
+  let why = crossReason(ex.pos, dir, true);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
+  const land = why ? undefined : crossLanding(dir);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
+  if (land === null) why = cliffPlaceWords(dir);
   if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
-  if (edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
+  if (land === undefined && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   const snap = motion() ? (FX.edgeView && FX.edgeView.key === ex.patch.key ? FX.edgeView.snap : viewSnapshot()) : null, from = ex.pos;
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
-  mapStep(dir);
+  LAND = land ? { key: String(c), x: land.x, y: land.y } : null;
+  mapStep(dir, !!land);
   // The map is not shown on a crossing: the walk goes straight into the next place under a one-screen slide, and the explorer keeps walking.
   if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
     enterPatch();
@@ -4001,10 +4060,6 @@ const BADGE = () => art('badge', () => { const pb = new PB(18, 18); pb.ell(9, 9,
   GLYPHS['?'].split('|').forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') pb.set(7 + x, 5 + y, C.lavender); }); return pb; });
 const exitArt = fr => propPiece('prop-exit');
 function burrowArt(open) { return propPiece(open ? 'burrow-open-dark' : 'burrow-closed-dark'); }
-// The legacy path's crown and roof are the art desk's painted pieces (art/props/canopy-legacy 88 x 76 and roof-legacy 104 x 22, mibi-art 1158b9710); the thinned look (an explorer under it) is the same picture on a checkerboard.
-const thinnedPiece = (name, chk) => { const p = propPiece(name); return chk ? { w: p.w, h: p.h, canvas: (rm, flip, c, veil) => p.canvas(rm, flip, true, veil) } : p; };
-function canopyArt(chk) { return thinnedPiece('canopy-legacy', chk); }
-function roofArt(chk) { return thinnedPiece('roof-legacy', chk); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
 // The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
 const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2; lit = lit ?? C.aqua; dark = dark ?? C.tealD;
@@ -4533,15 +4588,15 @@ const coreTables = () => ({ names: PALETTE.slice(0, CORE_N).map(p => p[0]), dark
 async function loadAtlas() {
   try {
     const mans = [];
-    for (const url of ATLAS_URLS) { const man = await (await fetch(url)).json(), dir = url.slice(0, url.lastIndexOf('/') + 1);
-      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(dir + name + '-palette.json')).json();
+    for (const url of ATLAS_URLS) { const man = await (await fetch(vurl(url))).json(), dir = url.slice(0, url.lastIndexOf('/') + 1);
+      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(vurl(dir + name + '-palette.json'))).json();
       mans.push({ man, dir, sig: name + '|' + JSON.stringify(pal && pal.entries), pal }); }
     if (new Set(mans.map(m => m.sig)).size !== 1) throw new Error('the manifests name different palettes');
     const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
     if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
     const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = [];
     const image = async file => { if (!images.has(file)) images.set(file, (async () => {
-      const bm = await createImageBitmap(await (await fetch(file)).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+      const bm = await createImageBitmap(await (await fetch(vurl(file))).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
       const cv = document.createElement('canvas'); cv.width = bm.width; cv.height = bm.height; const cg = cv.getContext('2d'); cg.drawImage(bm, 0, 0);
       return { w: bm.width, h: bm.height, data: cg.getImageData(0, 0, bm.width, bm.height).data }; })()); return images.get(file); };
     const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
@@ -4554,7 +4609,7 @@ async function loadAtlas() {
       list.push(Object.assign({}, p, { w, h, px: d.px }));
     }
     atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
-  } catch (e) { console.warn('the 48 px place art did not load; places draw at 32 px', e); }
+  } catch (e) { console.warn('the 48 px place art did not load', e); ART_FAIL.push('atlas'); } finally { ART_DONE.atlas = true; }
 }
 // The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 51) and
 // the manifest's levelTone. The page's colour and lookup arrays grow from index 51 by the table; 0–50 never change.
@@ -5030,7 +5085,7 @@ function drawReachView(t) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
     const c = Y * MW + X; if (!S.revealed[c]) continue;
-    if (ex.mstrike && ex.mstrike.c === c) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
+    if ((ex.mstrike && ex.mstrike.c === c) || (ex.stray && ex.stray.scope === 'map' && ex.stray.cell === c)) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
   }
   // pass 3: the edge marks (they still run straight along the cell edges); the fog is already in the painting
   drawEdgeMarks(q);
@@ -5096,13 +5151,14 @@ function drawEdgeMarks(q) {
     if (kind === EDGE.CLIFF && softEdge(ei)) continue;   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
     if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
     const horiz = dir === 'up' || dir === 'down', A = dir === 'up' || dir === 'left' ? n : c, B = A === n ? c : n;   // A: the north or west cell, B: the south or east one
-    const e = { A, B, horiz, ramp: kind === EDGE.RAMP && !stairBlinkOff(ei), hiA: G.level[A] > G.level[B] };   // a blinking stair mark is shown or hidden, nothing drawn
+    const ts = kind === EDGE.CLIFF ? tileSideKnown(c, dir) : null;   // a cliff side the tiles are known for: the mark leaves a gap where the side is open
+    const e = { A, B, horiz, ramp: kind === EDGE.RAMP && !stairBlinkOff(ei), hiA: G.level[A] > G.level[B], mask: ts && ts.open ? ts.mask : null };   // a blinking stair mark is shown or hidden, nothing drawn
     e.rm = rmOf(!horiz && e.ramp && !e.hiA ? A : B);   // the cell the piece lies in (a stair going down west lies in A)
     edges.push(e);
   }
   if (edges.length) {
     const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;
-    const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, overviewNow() ? 'o' : '', ...edges.map(e => e.A + '>' + e.B + (e.ramp ? 'r' : 'c') + (e.hiA ? 1 : 0) + ':' + e.rm)].join('|'), slot = q.map ? 'map' : 'reach';
+    const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, overviewNow() ? 'o' : '', ...edges.map(e => e.A + '>' + e.B + (e.ramp ? 'r' : 'c') + (e.hiA ? 1 : 0) + ':' + e.rm + (e.mask ? ':' + e.mask.join('') : ''))].join('|'), slot = q.map ? 'map' : 'reach';
     let cv = EDGE_CACHE[slot] && EDGE_CACHE[slot].key === key ? EDGE_CACHE[slot].cv : null;
     if (!cv) {
       const pix = new Int16Array(W * H).fill(-1), cellOf = landCellOf(cs), rad = Math.ceil(16 * cs / 72), R7 = EDGE_RAMP[cs];
@@ -5119,9 +5175,11 @@ function drawEdgeMarks(q) {
       // sides first (east- and west-facing), then the faces and lips along the horizontal borders, then the stairs
       for (const e of edges) if (!e.horiz) { const P = pieces(e).side, ys = ((e.B / MW) | 0) * cs;
         for (let wy = ys; wy < ys + cs; wy++) { if (e.ramp && wy >= ys + R7.s0 && wy < ys + R7.s0 + R7.w) continue;
+          if (e.mask && e.mask[Math.min(e.mask.length - 1, ((wy - ys) * e.mask.length / cs) | 0)]) continue;   // open here: no cliff mark
           const xb = vBorder(e.B, wy), r = posMod(wy, P.h); for (let i = 0; i < P.w; i++) put(xb + i, wy, P.p[r * P.w + i], e.rm); } }
       for (const e of edges) if (e.horiz) { const P = pieces(e), xs = (e.B % MW) * cs, col = yb.get(e), F = P.face;
         for (let wx = xs; wx < xs + cs; wx++) { if (e.ramp && wx >= xs + R7.s0 && wx < xs + R7.s0 + P.ramp.w) continue;
+          if (e.mask && e.mask[Math.min(e.mask.length - 1, ((wx - xs) * e.mask.length / cs) | 0)]) continue;   // open here: no cliff mark
           const c = posMod(wx, F.w); for (let r = 0; r < F.h; r++) put(wx, col[wx - xs] + r, F.p[r * F.w + c], e.rm); } }
       for (const e of edges) if (e.ramp) { const P = pieces(e);
         if (e.horiz) { const xs = (e.B % MW) * cs, rx = xs + R7.s0, top = yb.get(e)[rx + (P.ramp.w >> 1) - xs];
@@ -5238,7 +5296,8 @@ function drawMap(mode, t) {
   }
   for (const b of FX.bolts) { const age = NOW - b.at; if (age > 300) continue; const p = cxy(b.c); const x = ox + p.x * CELL, y = oy + p.y * CELL;
     R(x, y, CELL, 1, C.cream); R(x, y + CELL - 1, CELL, 1, C.cream); R(x, y, 1, CELL, C.cream); R(x + CELL - 1, y, 1, CELL, C.cream); }
-  if (ex && ex.mstrike) { const p = cxy(ex.mstrike.c), x = ox + p.x * CELL, y = oy + p.y * CELL, col = fr ? C.cream : C.yellow;
+  const aimed = [ex && ex.mstrike && ex.mstrike.c, ex && ex.stray && ex.stray.scope === 'map' && ex.stray.cell].filter(c => typeof c === 'number');   // the warned strike and the stray, both marked a turn ahead
+  for (const ac of aimed) { const p = cxy(ac), x = ox + p.x * CELL, y = oy + p.y * CELL, col = fr ? C.cream : C.yellow;
     ditherFill(x, y, CELL, CELL, 'yellow', 6); R(x, y, CELL, 2, col); R(x, y + CELL - 2, CELL, 2, col); R(x, y, 2, CELL, col); R(x + CELL - 2, y, 2, CELL, col);
     blit(ICON.bolt('gold'), x + 7, y + 5); }
   for (const s2 of FX.strikes) { if (s2.space !== 'map') continue; const age = NOW - s2.at; if (age > 380) continue;
@@ -5579,11 +5638,8 @@ function drawPatchBody(t) {
   for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.TRUNK && !bk) {
     const x = i % lay.w, y = (i / lay.w) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);
-    overlay((ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3)) || canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
+    const crown = ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3); if (crown) overlay(crown, W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
   }
-  for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
-    const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
-    overlay(roofArt(under ? 1 : 0), W(f.x * ts + ((3 * ts - 104) >> 1)), H((f.y + 2) * ts - 10), f.x + 1, f.y); }
   aboveCrowns.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); } catch (e) { if (RT.err++ < 3) console.error(e); } });
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
@@ -5609,7 +5665,8 @@ function drawPatchBody(t) {
   const act = patchAction();
   if (act.run && act !== NOTHING && !act.face) { const f = ACT_AT || frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
-  if (live.strike) { const x = W(live.strike.x * ts), y = H(live.strike.y * ts), col = fr ? C.cream : C.yellow;
+  const aimedAt = [live.strike, ex.stray && ex.stray.scope === 'patch' && ex.patch && ex.patch.key === P.key ? ex.stray : null].filter(Boolean);   // a warned strike and a stray, each outlined a turn ahead
+  for (const st of aimedAt) { const x = W(st.x * ts), y = H(st.y * ts), col = fr ? C.cream : C.yellow;
     R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); RT.litScr = { x, y, w: ts, h: ts }; }   // strike warned: the tile's outline only
   for (const s2 of FX.strikes) { if (s2.space !== 'patch') continue; const age = NOW - s2.at; if (age > 380) continue;
     const x = W(s2.x * ts + (ts >> 1)), y = H(s2.y * ts + (ts >> 1));
@@ -5808,6 +5865,7 @@ function tagSpot(tg, k) {
     if (f.kind === 'k' && k.see(q.x, q.y)) fz(q.x, q.y); else if (f.kind === 'd' && k.see(f.x, f.y)) fz(f.x, f.y, live.seen.d); else if (f.kind === 'i' && k.inS(f.x, f.y)) fz(f.x, f.y); }
   for (const f of live.fr) if (k.see(f.x, f.y) || (f.put && k.inS(f.x, f.y))) fz(f.x, f.y);
   if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
+  const sy = S.exp.stray; if (sy && sy.scope === 'patch' && S.exp.patch && S.exp.patch.key === P.key) block.push({ x: k.W(sy.x * ts), y: k.H(sy.y * ts), w: ts, h: ts });
   const m = msgGeom(); if (m) block.push(m);
   for (const t of edgeTabs()) block.push(tabRect(t));
   const V = TAG.view, inView = r => r.x >= V.x0 && r.y >= V.y0 && r.x + r.w - 1 <= V.x1 && r.y + r.h - 1 <= V.y1;
@@ -6113,9 +6171,7 @@ function warnPicPlace(x0, y0, a) {
   const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
     g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < lay.w * lay.h; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % lay.w, ty = (k / lay.w) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
-    over((ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3)) || canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
-  for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
-    over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
+    const crown = ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3); if (crown) over(crown, tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
   RT.remap = keepRm;
   g.restore();
@@ -6198,9 +6254,9 @@ async function loadOpenArt(after) {
     await after;   // in a browser the opening art waits for the walk art: the first screen's other work is not disturbed
     const files = {};
     await Promise.all(OPEN_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/open/', location.href).href + n + '.png'; })));
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/open/', location.href).href + n + '.png'); })));
     openRead(files);
-  } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
+  } catch (e) { console.warn('the opening art did not load', e); ART_FAIL.push('open'); } finally { ART_DONE.open = true; }
 }
 // The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
 // moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
@@ -6219,7 +6275,7 @@ async function loadMomentArt() {
     if (typeof Image === 'undefined') return;
     const files = {};
     await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/moment/', location.href).href + n + '.png'; })));
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/moment/', location.href).href + n + '.png'); })));
     momentRead(files);
   } catch (e) { console.warn('the moment stands did not load; the tokens play', e); }
 }
@@ -7018,7 +7074,8 @@ function render(t) {
   finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
 }
 function renderFrame(t) {
-  if (RT.making) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page
+  if (RT.making || (RT.artHold && artHeld() && !artFailed())) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page, or the art and the place are still coming in
+  if (RT.artHold && artFailed()) { drawArtFailed(); vctx.drawImage(scr, 0, 0); return; }   // a load failed: say so, and offer the reload
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
@@ -7112,7 +7169,8 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
-  if (RT.making) return;   // a world is being made off the page: the page says so and waits
+  if (RT.artHold && artFailed()) { if (k === 'confirm') location.reload(); return; }   // the art did not load: ✓ reloads
+  if (RT.making || (RT.artHold && artHeld())) return;   // a world is being made off the page, or the art is coming in: the page says so and waits
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
   if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
@@ -7500,6 +7558,12 @@ function drawNewer() {
   if (RT.armNew) text('The mibis stay with the old save', 225 + bx, 311, C.amber, 2, 'center');
   drawLine({ ok: RT.broken ? (RT.armNew ? 'Confirm: new world' : 'Start a new world') : 'Reload', ctx: '', back: '' });
 }
+function drawArtFailed() {   // the art or the place did not load: said plainly, one way on (reload), nothing drawn in old art
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  text('The art can’t be shown · reload to try again', 225, 289, C.bone, 2, 'center');
+  drawLine({ ok: 'Reload', ctx: '', back: '' });
+}
 function actReadOnly(k) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
   if (k !== 'confirm') { RT.armNew = 0; FX.bumpAt = NOW; return; }
@@ -7515,11 +7579,15 @@ function actReadOnly(k) {
 function boot(seed) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
-loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
-const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
-loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
-loadMomentArt();   // the art desk's painted stands for the care moments
-loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
+RT.artHold = !window.__places;   // the first frame waits for the art and the place; the tests hand them over at once and are not held
+const startLoads = () => {
+  loadAtlas();   // the 48 px place art
+  const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
+  loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
+  loadMomentArt();   // the art desk's painted stands for the care moments
+  loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
+};
+if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page the release number is read first, so every fetch carries it
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
@@ -7561,7 +7629,7 @@ requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
-  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, TEST,
+  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
