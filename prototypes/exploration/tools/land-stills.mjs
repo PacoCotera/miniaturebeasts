@@ -9,7 +9,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const args = process.argv.slice(2), [TREE, OUT, TAG] = args, opt = (n, d) => { const i = args.indexOf('--' + n); return i < 0 ? d : args[i + 1]; };
-const D = Number(opt('d', 5200)), FACE = Number(opt('face', 3)), GRID = args.includes('--grid'), SEEDS = String(opt('seeds', '7,13,42')).split(',').map(Number);
+const D = Number(opt('d', 5200)), FACE = Number(opt('face', 3)), GRID = args.includes('--grid'), BOTH = args.includes('--both'), SEEDS = String(opt('seeds', '7,13,42')).split(',').map(Number);
 const ROOT = path.resolve(TREE), imp = (rel) => import(pathToFileURL(path.join(ROOT, rel)).href);
 const levels = await imp('prototypes/exploration/src/gen7/levels.mjs'), place = await imp('prototypes/exploration/src/gen7/place.mjs'), render = await imp('prototypes/exploration/tools/gen7-render.mjs');
 const ground = await imp('prototypes/places/src/ground.mjs'), idx = await imp('prototypes/places/src/indexed.mjs'), png = await imp('prototypes/places/src/png.mjs'), bakeBuild = await imp('prototypes/places/src/bake/build.mjs');
@@ -26,17 +26,21 @@ function shoot(seed, wx, wy, name) {
   const X0 = Math.floor((wx - 10) / CW), Y0 = Math.floor((wy - 8) / CH), ir = windowIR(seed, X0, Y0, 2, 2), tx = wx - ir.origin.x, ty = wy - ir.origin.y;
   const win = { x: Math.max(0, Math.min(ir.w * 48 - FW, tx * 48 + 24 - FW / 2)), y: Math.max(0, Math.min(ir.h * 48 - FH, ty * 48 + 24 - FH / 2)), w: FW, h: FH };
   let pl; try { pl = bakeIR(ir); } catch (e) { console.log('REFUSED', name, e.message); return null; }
-  const ts = bakeCtx().sets.get(ir.tileset), pal = paletteRgb(ts);
-  CORE.forEach((e) => { pal.rgb[e.i] = [parseInt(e.hex.slice(1, 3), 16), parseInt(e.hex.slice(3, 5), 16), parseInt(e.hex.slice(5, 7), 16)]; });
-  const img = indexedToRgba(renderView(ts, pl, 48, win, {}), win.w, win.h, pal);
-  if (GRID) {   // a 1 px darker line on every cell border (cells are 48 px; the frame's offset is win.x, win.y)
-    const dark = (x, y) => { const o = (y * img.w + x) * 4; for (let c = 0; c < 3; c++) img.data[o + c] = Math.floor(img.data[o + c] * 0.72); };
-    for (let x = ((48 - (win.x % 48)) % 48); x < img.w; x += 48) for (let y = 0; y < img.h; y++) dark(x, y);
-    for (let y = ((48 - (win.y % 48)) % 48); y < img.h; y += 48) for (let x = 0; x < img.w; x++) dark(x, y);
+  const ts = bakeCtx().sets.get(ir.tileset); let file = null;
+  for (const [light, level] of BOTH ? [['day', 0], ['night', 2]] : [['day', 0]]) {
+    const pal = paletteRgb(ts), lit = level ? lightState(pl, { level: new Uint8Array(pl.w * pl.h).fill(level) }) : null;
+    CORE.forEach((e) => { pal.rgb[e.i] = [parseInt(e.hex.slice(1, 3), 16), parseInt(e.hex.slice(3, 5), 16), parseInt(e.hex.slice(5, 7), 16)]; });
+    const img = indexedToRgba(renderView(ts, pl, 48, win, lit ? { light: lit } : {}), win.w, win.h, pal);
+    if (GRID) {   // a 1 px darker line on every cell border (cells are 48 px; the frame's offset is win.x, win.y)
+      const dark = (x, y) => { const o = (y * img.w + x) * 4; for (let c = 0; c < 3; c++) img.data[o + c] = Math.floor(img.data[o + c] * 0.72); };
+      for (let x = ((48 - (win.x % 48)) % 48); x < img.w; x += 48) for (let y = 0; y < img.h; y++) dark(x, y);
+      for (let y = ((48 - (win.y % 48)) % 48); y < img.h; y += 48) for (let x = 0; x < img.w; x++) dark(x, y);
+    }
+    file = path.join(OUT, `${TAG}-s${seed}-${name}-${light}-1x.png`); writeFileSync(file, encodePng(img));
+    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tag: TAG, seed, world: [wx, wy], d: D, faceRows: FACE, ...over, zoom: 48, light, greybox: GRID, tree: ROOT, madeAt: new Date().toISOString() }, null, 1) + '\n');
+    console.log(file);
   }
-  const file = path.join(OUT, `${TAG}-s${seed}-${name}-1x.png`); writeFileSync(file, encodePng(img));
-  writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tag: TAG, seed, world: [wx, wy], d: D, faceRows: FACE, ...over, zoom: 48, light: 'day', greybox: GRID, tree: ROOT, madeAt: new Date().toISOString() }, null, 1) + '\n');
-  console.log(file); return file;
+  return file;
 }
 
 // ---- finding the places ----

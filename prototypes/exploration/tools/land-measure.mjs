@@ -27,10 +27,12 @@ export function measure(w, h, bits, faceRows) {
     if (lip(x + dx, y) || !lip(x - dx, y)) continue;
     if (!R(x + dx, y) && !R(x + dx, y - 1) && !R(x + dx, y - 2)) square++;
   }
+  let loneBlk = 0;   // a tile with no 2 x 2 block of its own level (a sliver one tile wide, raised or low): the ground layers cannot draw it
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const v = R(x, y); let ok = false; for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) ok = R(x + ox, y + oy) === v && R(x + ox + 1, y + oy) === v && R(x + ox, y + oy + 1) === v && R(x + ox + 1, y + oy + 1) === v; if (!ok) loneBlk++; }
   let minBelow = 99; for (let y = 0; y < h - faceRows - 3; y++) for (let x = 0; x < w; x++) if (lip(x, y)) { let k = 0; while (k < faceRows + 1 && !R(x, y + 1 + k)) k++; if (k < minBelow) minBelow = k; }
   const straight = south.filter(n => n >= 2), mean = straight.reduce((a, b) => a + b, 0) / Math.max(1, straight.length);
   const mx = a => Math.max(0, ...a), big = a => a.filter(n => n >= 9).length;
-  return { faces: south.length, meanStraight: +mean.toFixed(2), bendShare: +(south.filter(n => n === 1).length / Math.max(1, south.length)).toFixed(2), maxSouth: mx(south), maxSide: mx(side), maxRim: mx(rim), long9: big(south) + big(side) + big(rim), minBelow, lone, saddle, square };
+  return { faces: south.length, meanStraight: +mean.toFixed(2), bendShare: +(south.filter(n => n === 1).length / Math.max(1, south.length)).toFixed(2), maxSouth: mx(south), maxSide: mx(side), maxRim: mx(rim), long9: big(south) + big(side) + big(rim), minBelow, lone, saddle, square, loneBlk };
 }
 
 export function rasterOf(seed, X, Y, w, h) {
@@ -58,9 +60,9 @@ const arg = (n, d) => { const i = process.argv.indexOf('--' + n); return i < 0 ?
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const only = arg('seeds', null), WIN = only ? WINDOWS.filter(w => only.split(',').map(Number).includes(w.seed)) : WINDOWS;
   const ds = arg('d', '5200').split(',').map(Number), faces = arg('face', '3').split(',').map(Number), min = +arg('min', 4), reach = +arg('reach', 6), wob = +arg('wobble', 3), win = +arg('window', 1), out = arg('out', null), seam = process.argv.includes('--seam');
-  const row = (name, m) => console.log(name.padEnd(22), String(m.meanStraight).padStart(5), String(m.bendShare).padStart(5), String(m.maxSouth).padStart(4), String(m.maxSide).padStart(4), String(m.maxRim).padStart(4), String(m.long9).padStart(4), String(m.minBelow).padStart(3), m.lone, m.saddle, m.square);
+  const row = (name, m) => console.log(name.padEnd(22), String(m.meanStraight).padStart(5), String(m.bendShare).padStart(5), String(m.maxSouth).padStart(4), String(m.maxSide).padStart(4), String(m.maxRim).padStart(4), String(m.long9).padStart(4), String(m.minBelow).padStart(3), m.lone, m.saddle, m.square, 'blk', m.loneBlk);
   console.log('setting / seed'.padEnd(22), 'mean  bend  S    side rim  9+   low lone pinch sq');
-  const sums = (name, ms) => { const a = f => ms.reduce((s, m) => s + f(m), 0), n = ms.length; return { meanStraight: +(a(m => m.meanStraight) / n).toFixed(2), bendShare: +(a(m => m.bendShare) / n).toFixed(2), maxSouth: Math.max(...ms.map(m => m.maxSouth)), maxSide: Math.max(...ms.map(m => m.maxSide)), maxRim: Math.max(...ms.map(m => m.maxRim)), long9: a(m => m.long9), minBelow: Math.min(...ms.map(m => m.minBelow)), lone: a(m => m.lone), saddle: a(m => m.saddle), square: a(m => m.square) }; };
+  const sums = (name, ms) => { const a = f => ms.reduce((s, m) => s + f(m), 0), n = ms.length; return { meanStraight: +(a(m => m.meanStraight) / n).toFixed(2), bendShare: +(a(m => m.bendShare) / n).toFixed(2), maxSouth: Math.max(...ms.map(m => m.maxSouth)), maxSide: Math.max(...ms.map(m => m.maxSide)), maxRim: Math.max(...ms.map(m => m.maxRim)), long9: a(m => m.long9), minBelow: Math.min(...ms.map(m => m.minBelow)), lone: a(m => m.lone), saddle: a(m => m.saddle), square: a(m => m.square), loneBlk: a(m => m.loneBlk) }; };
   const today = process.argv.indexOf('--today');
   if (today >= 0) { const ms = []; for (const f of process.argv.slice(today + 1).filter(a => !a.startsWith('--'))) for (const wv of JSON.parse(readFileSync(f, 'utf8'))) { const m = measure(wv.w, wv.h, wv.raised, 3); ms.push(m); row('today ' + wv.seed, m); } row('today ALL', sums('today', ms)); }
   for (const face of faces) for (const D of ds) {
