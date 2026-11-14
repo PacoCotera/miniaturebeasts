@@ -1,0 +1,104 @@
+{
+ "type": "tileset",
+ "version": "1.10",
+ "name": "tiles",
+ "tilewidth": 32,
+ "tileheight": 32,
+ "tilecount": 16,
+ "columns": 8,
+ "margin": 0,
+ "spacing": 0,
+ "tiles": [
+  {
+   "id": 0,
+   "type": "a"
+  },
+  {
+   "id": 1,
+   "type": "b"
+  },
+  {
+   "id": 2,
+   "type": "c"
+  },
+  {
+   "id": 3,
+   "type": "d"
+  },
+  {
+   "id": 4,
+   "type": "e"
+  },
+  {
+   "id": 5,
+   "type": "f"
+  },
+  {
+   "id": 6,
+   "type": "g"
+  },
+  {
+   "id": 7,
+   "type": "h"
+  },
+  {
+   "id": 8,
+   "type": "i"
+  },
+  {
+   "id": 9,
+   "type": "empty",
+   "properties": [
+    {
+     "name": "MatchType",
+     "type": "string",
+     "value": "Empty"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "ignore",
+   "properties": [
+    {
+     "name": "MatchType",
+     "type": "string",
+     "value": "Ignore"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "type": "nonempty",
+   "properties": [
+    {
+     "name": "MatchType",
+     "type": "string",
+     "value": "NonEmpty"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "type": "other",
+   "properties": [
+    {
+     "name": "MatchType",
+     "type": "string",
+     "value": "Other"
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "type": "negate",
+   "properties": [
+    {
+     "name": "MatchType",
+     "type": "string",
+     "value": "Negate"
+    }
+   ]
+  }
+ ]
+}

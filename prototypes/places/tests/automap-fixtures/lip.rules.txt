@@ -1,0 +1,2 @@
+# the rule maps of fixture lip, in order
+lip.rules1.tmj

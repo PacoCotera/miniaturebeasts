@@ -1,0 +1,2 @@
+# the rule maps of fixture special, in order
+special.rules1.tmj

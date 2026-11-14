@@ -1,0 +1,6 @@
+# the rule maps of fixture order, in order
+order.rules1.tmj
+order.rules2.tmj
+order.rules3.tmj
+order.rules4.tmj
+order.rules5.tmj

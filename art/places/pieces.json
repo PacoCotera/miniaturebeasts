@@ -85,32 +85,32 @@
     {
       "id": "lip-case-4", "family": "lip", "state": "empty", "kinds": ["lip-case-4"], "dualCase": 4,
       "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
-      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "south-east corner turn, over the end piece"
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "south-west corner turn, over the end piece"
     },
     {
       "id": "lip-case-5", "family": "lip", "state": "empty", "kinds": ["lip-case-5"], "dualCase": 5,
       "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
-      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight east side lip, over the flank"
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight west side lip, over the flank"
     },
     {
       "id": "lip-case-7", "family": "lip", "state": "empty", "kinds": ["lip-case-7"], "dualCase": 7,
       "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
-      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "inner back corner (west of a notch)"
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "inner back corner (east of a notch)"
     },
     {
       "id": "lip-case-8", "family": "lip", "state": "empty", "kinds": ["lip-case-8"], "dualCase": 8,
       "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
-      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "south-west corner turn, over the end piece"
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "south-east corner turn, over the end piece"
     },
     {
       "id": "lip-case-10", "family": "lip", "state": "empty", "kinds": ["lip-case-10"], "dualCase": 10,
       "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
-      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight west side lip, over the flank"
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight east side lip, over the flank"
     },
     {
       "id": "lip-case-11", "family": "lip", "state": "empty", "kinds": ["lip-case-11"], "dualCase": 11,
       "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
-      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "inner back corner (east of a notch)"
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "inner back corner (west of a notch)"
     },
     {
       "id": "lip-case-13", "family": "lip", "state": "empty", "kinds": ["lip-case-13"], "dualCase": 13,

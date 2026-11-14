@@ -1,0 +1,5 @@
+# the rule maps of fixture edges, in order
+edges.rules1.tmj
+edges.rules2.tmj
+edges.rules3.tmj
+edges.rules4.tmj

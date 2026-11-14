@@ -1,0 +1,2 @@
+# the rule maps of fixture erase, in order
+erase.rules1.tmj
