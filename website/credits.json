@@ -8,6 +8,16 @@
   ],
   "entries": [
     {
+      "kind": "tool",
+      "what": "Tiled map editor 1.12.2",
+      "source": "mapeditor.org",
+      "author": "Thorbjørn Lindeijer and contributors",
+      "licence": { "name": "GPL-2.0-or-later", "url": "https://spdx.org/licenses/GPL-2.0-or-later.html" },
+      "url": "https://www.mapeditor.org",
+      "where": "The cliff rules are drawn as Tiled rule maps; our own map engine follows Tiled's documented Automapping, checked against Tiled's output.",
+      "added": "2026-11-14"
+    },
+    {
       "kind": "code",
       "what": "p-queue 10.0.0, a promise queue",
       "source": "p-queue on npm",
