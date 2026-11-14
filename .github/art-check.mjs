@@ -1,6 +1,8 @@
 // The art check (art guardrails, ratchet mode). One step of the release CI's small check; the push hook runs the same file.
 //   node .github/art-check.mjs [--base REF] [--head REF] [--site DIR]      (defaults: HEAD^1 and HEAD, the pull request's merge commit)
 //   node .github/art-check.mjs --list [--head REF]                         every shipped image at REF as "<sha256> <path>"
+//   node .github/art-check.mjs --all [--base REF] [--head REF] [--site DIR]  whole-set: every shipped image must be signed, or on art/unsigned-shipped.csv (which may only shrink)
+//   node .github/art-check.mjs --unsigned [--head REF]                     every shipped image with no signed.json entry, one path a line
 // It fails when
 //   1. a shipped image is added or changed against the base and its sha256 is not in art/signed.json (written only by the art desk's export), or
 //   2. a render module gains a canvas drawing call (fillRect, arc, ellipse, lineTo, bezierCurveTo, putImageData, createImageData) beyond what art/draws.json allows, or
@@ -75,6 +77,38 @@ export function check({ base, head, site, cwd }) {
   return problems;
 }
 
+// --all: the whole-set check (owner 2026-11-14): every shipped image at head must have its sha256 on art/signed.json, whatever the base holds.
+// The grandfathered list (art/unsigned-shipped.csv, one path a line, '#' comments) names the unsigned images already on main when this check began; it is printed every run and may only shrink
+// (an entry that is not in the base's copy of the list is refused). With --site the assembled site's images are judged the same way, by hash.
+const GRANDFATHERED = 'art/unsigned-shipped.csv';
+const readList = (buf) => (buf ? buf.toString('utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')) : null);
+
+export function checkAll({ base, head, site, cwd }) {
+  if (cwd) CWD = cwd;
+  const signedRaw = show(head, 'art/signed.json');
+  if (!signedRaw) return { problems: [`art/signed.json is missing at ${head}: the signed list is exported by the art desk (sign.py export)`], unsigned: [], grandfathered: [] };
+  const signed = new Set(JSON.parse(signedRaw.toString()).signed.map((e) => e.sha256));
+  const grand = readList(show(head, GRANDFATHERED)) || [], grandSet = new Set(grand);
+  const was = base ? readList(show(base, GRANDFATHERED)) : null;
+  const problems = [], unsigned = [], grandShas = new Set();
+  if (was) for (const p of grand) if (!was.includes(p)) problems.push(`grandfathered list grew: ${p} is in ${GRANDFATHERED} but not in the base's copy; the list may only shrink (sign the image or delete it)`);
+  for (const [p, blob] of blobIds(head)) {
+    if (!inScope(p)) continue;
+    const s = sha256(git(['cat-file', 'blob', blob]));
+    if (signed.has(s)) continue;
+    unsigned.push(p);
+    if (grandSet.has(p)) grandShas.add(s);
+    else problems.push(`unsigned shipped image: ${p} (sha256 ${s.slice(0, 12)} is not in art/signed.json and the path is not grandfathered)`);
+  }
+  if (site) {
+    const walk = (d) => { for (const e of readdirSync(d)) { if (e === 'node_modules') continue; const f = path.join(d, e); if (statSync(f).isDirectory()) walk(f); else if (IMAGE.test(f) && !NOT_SHIPPED.test(path.relative(site, f))) {
+      const s = sha256(readFileSync(f)); if (!signed.has(s) && !grandShas.has(s)) problems.push(`unsigned image in the built site: ${path.relative(site, f)} (sha256 ${s.slice(0, 12)})`);
+    } } };
+    walk(site);
+  }
+  return { problems, unsigned, grandfathered: grand };
+}
+
 function listImages(ref) {
   const out = [];
   for (const [p, blob] of blobIds(ref)) if (inScope(p)) out.push(`${sha256(git(['cat-file', 'blob', blob]))} ${p}`);
@@ -86,7 +120,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const head = take('--head', 'HEAD'), base = take('--base', 'HEAD^1'), site = take('--site', null);
   // no process.exit() after output: it can cut a large write to a pipe short
   if (args.includes('--list')) process.stdout.write(listImages(head).join('\n') + '\n');
-  else {
+  else if (args.includes('--unsigned')) {             // every shipped image at head with no signed.json entry by hash: one path a line
+    const r = checkAll({ base: null, head });
+    process.stdout.write(r.unsigned.sort().join('\n') + (r.unsigned.length ? '\n' : ''));
+    if (!r.unsigned.length && r.problems.length) { console.error('art check: ' + r.problems[0]); process.exitCode = 1; }
+  } else if (args.includes('--all')) {
+    const t = Date.now(), r = checkAll({ base: take('--base', null), head, site });
+    console.log(`art check (all shipped images): ${r.unsigned.length} unsigned, ${r.grandfathered.length} grandfathered (list ${GRANDFATHERED}; it may only shrink; the art director signs or deletes each)`);
+    for (const p of r.grandfathered) console.log('  grandfathered: ' + p);
+    for (const p of r.problems) console.error('art check: ' + p);
+    console.log(`art check: ${r.problems.length ? 'FAILED, ' + r.problems.length + ' problem(s)' : 'ok'} (all images at ${head.slice(0, 12)}, ${((Date.now() - t) / 1000).toFixed(1)} s)`);
+    process.exitCode = r.problems.length ? 1 : 0;
+  } else {
     const t = Date.now(), problems = check({ base, head, site });
     for (const p of problems) console.error('art check: ' + p);
     console.log(`art check: ${problems.length ? 'FAILED, ' + problems.length + ' problem(s)' : 'ok'} (${base.slice(0, 12)}..${head.slice(0, 12)}, ${((Date.now() - t) / 1000).toFixed(1)} s)`);

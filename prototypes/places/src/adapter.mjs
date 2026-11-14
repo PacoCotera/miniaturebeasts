@@ -63,16 +63,15 @@ export function adaptPlace(place, ts, terrains, o = {}) {
     }
   }
   if (sh) for (const i of sh.rim) { if (sh.terr[i] !== TERR.SHADOW) tiles[i] = sh.tilesE[i]; }   // the bands, stairs and crossings stand over the ground and the trees
-  // The open style (a 24 x 28 place has no wall of trees): a side the world closes with no band of its own, a cliff or the map's end, is closed in the land. Its two outer rows block (a cliff's lip
-  // and face are the world's rim; the rows beyond it are the raised land nobody reaches) and the map's end is a dense thicket, the set's own thicket ground stamped over them (a patch, as the
-  // closed openings' path is). Never an open-looking edge that refuses a step.
+  // The open style (a 24 x 28 place has no wall of trees): a side at the map's end is closed in the land: its two outer rows block, a dense thicket, the set's own thicket ground stamped over them (a patch, as the
+  // closed openings' path is). A cliff side is not closed as a whole: it is closed only at its own blocking tiles (ring, face, flank), so a border is open wherever walkable meets walkable on the same level.
   let closure = null;
   // The world's own bands (water, cliff lip, the map's thicket) already close the sides it draws; the closed look serves a refused side that has no band of its own.
   const looks = closedLooks(place, terrains), closedSides = new Set([...(o.closed || [])].filter((s) => !sh || sh.kind[DIR_OF[s]] === 'open'));
   if ((sh || closedSides.size) && w === 24 && h === 28) {
     const donor = thicketDonor(place, terrains), patches = [];
     if (sh) for (const d of ['up', 'down', 'left', 'right']) {
-      const kind = sh.kind[d]; if (kind !== 'mapend' && kind !== 'cliff') continue;
+      const kind = sh.kind[d]; if (kind !== 'mapend') continue;
       const len = d === 'up' || d === 'down' ? w : h;
       for (let depth = 0; depth < 2; depth++) for (let k = 0; k < len; k++) { const p = sideXY(d, k, depth, w, h), i = I(p.x, p.y); if (!T_BLOCK[tiles[i]]) tiles[i] = T.ROCK; if (kind === 'mapend' && donor) patches.push({ x: p.x, y: p.y, from: donor }); }
     }
