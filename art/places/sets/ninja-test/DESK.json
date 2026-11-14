@@ -2477,9 +2477,9 @@
     "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002"
   },
   "over-cliff.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "8d0172b0780b4133a0afd6361dd5f4190196b0e34c91a13b8320bb01514892a7"
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (the back slots 1, 2, 3, 7, 11 from the paid raw, the other slots the earlier sheet's cells; the whole chain is in over-cliff.steps.json)",
+    "sha256": "92c8f6d7be3fd065008fe8b5a438919ca2c134019207e04b40df195d91e3d96e"
   },
   "over-cliff~s1.png": {
     "commit": "633e4d641",
