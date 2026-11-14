@@ -1,4 +1,4 @@
-// relief(land): the one function that names every cell's part of the raised land (architecture-world-map.md 3.1; cliff-spec.md). Walking, the decor rules, the ground pairs and the bake all read it and nowhere else.
+// relief(land): the one function that names every cell's part of the raised land. Walking, the decor rules, the ground pairs and the bake all read it and nowhere else.
 //   top    raised, no low cell beside it (4-neighbours)                                   walks
 //   ring   raised, with a low cell beside it (the lip cells)                                blocks
 //   face   the low cell under a south ring cell (row L + 1)                                 blocks
