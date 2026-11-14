@@ -98,15 +98,22 @@ export function qCell(L, X, Y) {
 
 // ---- passes on a binary raster ----
 const at = (r, W, H, x, y) => r[clamp(y, 0, H - 1) * W + clamp(x, 0, W - 1)];
-// the rounded element: an m x m square without its four corner tiles, anchored at its top-left
+// the rounded element: an m x m square without its four corner tiles, anchored at its top-left. It is two rectangles (m wide and m - 2 tall, m - 2 wide and m tall), so an erosion is the
+// intersection of the two rectangles' erosions and a dilation the union of their dilations, each rectangle done one axis at a time (the raster's rim is read as itself, replicated).
 const ELEMS = new Map();
 function elemOf(m) {
   let E = ELEMS.get(m); if (E) return E;
-  E = []; for (let j = 0; j < m; j++) for (let i = 0; i < m; i++) if (!((i === 0 || i === m - 1) && (j === 0 || j === m - 1))) E.push([i, j]);
+  E = [[0, 1, m, m - 2], [1, 0, m - 2, m]];   // x0, y0, w, h of each rectangle
   ELEMS.set(m, E); return E;
 }
-function erode(r, W, H, E) { const o = new Uint8Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 1; for (const [i, j] of E) if (!at(r, W, H, x + i, y + j)) { v = 0; break; } o[y * W + x] = v; } return o; }
-function dilate(r, W, H, E) { const o = new Uint8Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 0; for (const [i, j] of E) if (at(r, W, H, x - i, y - j)) { v = 1; break; } o[y * W + x] = v; } return o; }
+function rectPass(r, W, H, x0, y0, w, h, all, flip) {   // all: erosion (every tile of the rectangle is raised); else dilation (any is); flip: the rectangle seen from the other side (dilation)
+  const T = new Uint8Array(W * H), O = new Uint8Array(W * H), s = flip ? -1 : 1;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = all ? 1 : 0; for (let i = 0; i < w; i++) { const t = r[y * W + clamp(x + s * (x0 + i), 0, W - 1)]; if (all ? !t : t) { v = all ? 0 : 1; break; } } T[y * W + x] = v; }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = all ? 1 : 0; for (let j = 0; j < h; j++) { const t = T[clamp(y + s * (y0 + j), 0, H - 1) * W + x]; if (all ? !t : t) { v = all ? 0 : 1; break; } } O[y * W + x] = v; }
+  return O;
+}
+function erode(r, W, H, E) { const a = rectPass(r, W, H, ...E[0], true, false), b = rectPass(r, W, H, ...E[1], true, false); for (let i = 0; i < a.length; i++) a[i] &= b[i]; return a; }
+function dilate(r, W, H, E) { const a = rectPass(r, W, H, ...E[0], false, true), b = rectPass(r, W, H, ...E[1], false, true); for (let i = 0; i < a.length; i++) a[i] |= b[i]; return a; }
 const open = (r, W, H, E) => dilate(erode(r, W, H, E), W, H, E);
 const close = (r, W, H, E) => open(r.map(v => 1 - v), W, H, E).map(v => 1 - v);
 const same = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
@@ -155,11 +162,11 @@ function dropSmall(R, W, H) {
 // P1 to P6 on one boundary's raster
 function cleanup(r0, W, H, rule) {
   const E = elemOf(rule.minFeature); let r = r0;
-  for (let pass = 0; pass < 6; pass++) {
+  for (let pass = 0; pass < 12; pass++) {
     const n = fixPatterns(close(open(r, W, H, E), W, H, E), W, H, rule.faceRows), done = same(n, r);
     r = n; if (done) break;
   }
-  r = fixPatterns(open(r, W, H, E), W, H, rule.faceRows);
+  r = fixPatterns(close(open(r, W, H, E), W, H, E), W, H, rule.faceRows);   // end on the opening, then one closing: no raised land narrower than the feature, and nothing the closing leaves low is narrower either
   dropSmall(r, W, H);
   return fixPatterns(r, W, H, rule.faceRows);
 }

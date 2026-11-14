@@ -1,8 +1,8 @@
 {
   "note": "The land rule's numbers (levels.mjs). Content, not code: a rougher rock or a smoother sand is a change here, judged on stills.",
   "detail": 5200,
-  "warpReach": 12,
-  "wobbleReach": 36,
+  "warpReach": 4,
+  "wobbleReach": 64,
   "wobbleSpacing": 3,
   "wobbleOctaves": 2,
   "wobbleStretch": 1,

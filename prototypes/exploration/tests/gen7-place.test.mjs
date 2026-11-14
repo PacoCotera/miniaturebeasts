@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
 import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, overviewOf, OV, OVW, COAST_REACH } from '../src/gen7/place.mjs';
-import { inlandOf, RAISE_OFF } from '../src/gen7/levels.mjs';
+import { inlandOf, RAISE_OFF, levelsOf, tileLevel, setLandRule } from '../src/gen7/levels.mjs';
 import { realm7 } from '../src/gen7/region.mjs';
 import { readFileSync } from 'node:fs';
 import { bakeIR, bakeCtx } from '../tools/gen7-render.mjs';
@@ -261,6 +261,24 @@ test('seed 7: the coast is deep water at the border line, then water, beach and 
   }
   assert.equal(raisedNear, 0, 'no raised land within RAISE_OFF tiles of the border line');
   assert.ok(water + beach + grass > 0 && beach > 0 && grass > 0, `the band holds beach and grass at 6-9 tiles: ${water}/${beach}/${grass}`);
+});
+
+// The land rule takes more heights as data (land-rule.json `levels`): two thresholds make three levels, and every boundary between level k and k + 1 is cleaned on its own raster.
+test('seed 13: two thresholds in the rule give three levels, each boundary with no pinch and no lone face', { timeout: 900000 }, () => {
+  const seed = 13, realm = realm7(seed).realm;
+  setLandRule({ levels: [0, 3000] });
+  try {
+    const L = levelsOf(realm), X0 = 37, Y0 = 13, W = 4 * CW, H = 3 * CH, lv = new Uint8Array(W * H), seen = [0, 0, 0, 0];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { lv[y * W + x] = tileLevel(L, X0 * CW + x, Y0 * CH + y); seen[lv[y * W + x]]++; }
+    assert.ok(seen[0] > 0 && seen[1] > 0 && seen[2] > 0 && !seen[3], 'levels 0, 1 and 2 are all there, and no level 3: ' + seen);
+    for (const k of [0, 1]) {   // the raster of "above level k": no diagonal pinch, no lone one-tile face
+      const R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? 0 : lv[y * W + x] > k ? 1 : 0), lip = (x, y) => R(x, y) && !R(x, y + 1);
+      let pinch = 0, lone = 0;
+      for (let y = 0; y + 1 < H; y++) for (let x = 0; x + 1 < W; x++) { const c = R(x, y) * 8 + R(x + 1, y) * 4 + R(x, y + 1) * 2 + R(x + 1, y + 1); if (c === 6 || c === 9) pinch++; }
+      for (let y = 1; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (lip(x, y) && !lip(x - 1, y) && !lip(x + 1, y) && !(lip(x - 1, y - 1) || lip(x + 1, y - 1) || lip(x - 1, y + 1) || lip(x + 1, y + 1))) lone++;
+      assert.equal(pinch, 0, 'boundary ' + k + ': no pinch'); assert.equal(lone, 0, 'boundary ' + k + ': no lone face');
+    }
+  } finally { setLandRule({}); }
 });
 
 // One land at every zoom (F1): the region's overview is the class of the world tile under each of its tiles, and the raised bit is the tile being raised land; two cells side by side share their edge.
