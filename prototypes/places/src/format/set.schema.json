@@ -27,6 +27,11 @@
     "half": { "enum": ["derived", "painted"] },
     "palette": { "type": "string", "description": "file with the colours (indices 48..) and the light tables" },
     "spriteSheet": { "type": "string", "description": "PNG holding every prop, decal and canopy sprite" },
+    "groundPairs": {
+      "type": "array",
+      "description": "the one table of which grounds may meet: the pairs the generator may make; every pair must be drawable from the layers' `lowers` (checked where layers.json is made)",
+      "items": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 2 }
+    },
     "layers": {
       "type": "object",
       "description": "terrain layers (place design: terrain-layers-design): per terrain id, one fill and the transparent 16-slot layers (kinds) it draws over lower terrains, or `drawAs` another terrain until its own layers are signed.",

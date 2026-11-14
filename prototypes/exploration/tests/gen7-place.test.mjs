@@ -7,7 +7,9 @@ import { placeProps } from '../tools/gen7-place-props.mjs';
 import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, overviewOf, OV, OVW, COAST_REACH } from '../src/gen7/place.mjs';
 import { inlandOf, RAISE_OFF } from '../src/gen7/levels.mjs';
 import { realm7 } from '../src/gen7/region.mjs';
-import { bakeIR } from '../tools/gen7-render.mjs';
+import { readFileSync } from 'node:fs';
+import { bakeIR, bakeCtx } from '../tools/gen7-render.mjs';
+import SET from '../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
 import { RULES } from '../src/gen7/rules.mjs';
 import { recipeAt, GROUND, BLEND } from '../src/gen7/ground.mjs';
 import { slotBiomes } from '../src/gen7/world.mjs';
@@ -58,6 +60,10 @@ test('a cell is the same land whatever else was made before it, and its picture 
   assert.equal(a.w, CW + 2); assert.equal(a.h, CH + 2);
   const ir = cellIR(13, 36, 48), place = bakeIR(ir);
   assert.equal(place.w, CW + 2);
+  // the one table of ground pairs (set.json groundPairs): the page's layers.json is made from the same set (not stale), and the layers draw every pair the generator may make
+  const page = JSON.parse(readFileSync(new URL('../art/gen7/layers.json', import.meta.url), 'utf8')), live = bakeCtx().layersOf.get('ninja-test'), val = new Map(bakeCtx().terrains.map(t => [t.id, t.value]));
+  assert.deepEqual(page.layers, [...live.layers].map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: [...k.lowers] })) }]).map(([v, l]) => JSON.parse(JSON.stringify([v, l]))), 'art/gen7/layers.json is stale: run tools/gen7-layers.mjs');
+  assert.ok(SET.groundPairs.every(([a, b]) => [[a, b], [b, a]].some(([hi, lo]) => page.layers.find(([v]) => v === val.get(hi))[1].kinds.some(k => k.lowers.includes(val.get(lo))))), 'every pair of the table is drawable by the page\'s layers');
   // a window of cells is each cell's own tiles side by side: its bake is the cells' bakes, tile for tile
   const win = windowIR(13, 35, 47, 2, 2);
   assert.equal(win.w, 2 * CW);

@@ -15,6 +15,8 @@ import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
+import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
+import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' };
 import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
@@ -22,10 +24,13 @@ import { landmarksOf } from './landmarks.mjs';
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
 // and every two of them are such a pair
-const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2', '6|11', '3|11', '9|11', '6|12', '9|12', '10|12', '6|13', '9|13', '10|13', '6|14', '3|14', '9|14', '10|14', '2|14', '11|12', '11|13', '11|14', '10|11', '12|13', '12|14', '13|14', '8|11', '8|12', '8|13', '8|14']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
-// the low grounds the cliff's face meets with no grass between (the cliff layer's `lowers`, art/places/sets/ninja-test/set.json, besides grass): the biome grounds. Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
+// The table is the set's own: art/places/sets/ninja-test/set.json `groundPairs` (ids, through art/places/terrain.json's values), the one source; tools/gen7-layers.mjs refuses a pair the layers' `lowers` cannot draw and the
+// page's layers.json is made from the same file. (Sand-raised is not in the table: a raised region that meets both grass and sand is drawn two ways, which the bake refuses.)
+const VALUE_OF = Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
+const PAIRS = new Set(SET.groundPairs.map(([a, b]) => (VALUE_OF[a] < VALUE_OF[b] ? VALUE_OF[a] + '|' + VALUE_OF[b] : VALUE_OF[b] + '|' + VALUE_OF[a])));
+// the low grounds the cliff's face meets with no grass between: the cliff's pairs in the table besides grass (the biome grounds). Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
 // keeps one tile of grass between it and the rim, made on its side
-const CLIFF_LOWERS = new Set([TV.LITTER, TV.DRY, TV.TURF, TV.SCREE]);
+const CLIFF_LOWERS = new Set(SET.groundPairs.filter(p => p.includes('cliff')).map(p => VALUE_OF[p[0] === 'cliff' ? p[1] : p[0]]).filter(v => v !== TV.GRASS));
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
 const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);

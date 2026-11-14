@@ -15,6 +15,13 @@
   "half": "derived",
   "palette": "palette.json",
   "spriteSheet": "sprites.png",
+  "groundPairs": [
+    ["water", "grass"], ["water", "sand"], ["sand", "grass"], ["path", "grass"], ["water", "mud"], ["grass", "cliff"], ["grass", "thicket"], ["grass", "scrub"],
+    ["sand", "thicket"], ["sand", "scrub"], ["deep", "water"], ["grass", "litter"], ["sand", "litter"], ["thicket", "litter"], ["grass", "drygrass"], ["thicket", "drygrass"], ["scrub", "drygrass"],
+    ["grass", "turf"], ["thicket", "turf"], ["scrub", "turf"], ["grass", "scree"], ["sand", "scree"], ["thicket", "scree"], ["scrub", "scree"], ["water", "scree"],
+    ["litter", "drygrass"], ["litter", "turf"], ["litter", "scree"], ["scrub", "litter"], ["drygrass", "turf"], ["drygrass", "scree"], ["turf", "scree"],
+    ["cliff", "litter"], ["cliff", "drygrass"], ["cliff", "turf"], ["cliff", "scree"]
+  ],
   "layers": {
     "deep": {
       "fill": {
@@ -183,7 +190,7 @@
       "over": [
         {
           "kind": "bank",
-          "lowers": ["earth", "sand", "path", "grass"],
+          "lowers": ["earth", "sand", "path", "grass", "litter", "drygrass", "turf", "scree"],
           "sheets": ["over-cliff.png"],
           "tall": {
             "1": ["over-cliff~s1.png"],
