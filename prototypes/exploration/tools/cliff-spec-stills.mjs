@@ -23,14 +23,14 @@ const frameAt = (ir, tx, ty) => ({ x: Math.max(0, Math.min(ir.w * 48 - FW, tx * 
 const irOf = (v) => (v.cell ? cellIR(v.seed, v.cell[0], v.cell[1]) : windowIR(v.seed, v.X0, v.Y0, 2, 2));
 
 if (WHICH === 'find') {
-  const { southRuns, cliffDecals } = await imp('prototypes/places/src/bake/southruns.mjs');
+  const { cliffDecals } = await imp('prototypes/places/src/bake/southruns.mjs'), { southRuns, landOf } = await imp('prototypes/places/src/bake/relief.mjs');
   const views = [], ctx = bakeCtx(), CASES = ['e1', 'e2', 'e3', 'run4', 'litter', 'scree', 'side1', 'sidetop', 'border'];
   for (const seed of [7, 13, 42]) {
     const got = new Map();
     const take = (name, v) => { if (!got.has(name)) got.set(name, { name: `seed${seed}-${name}`, seed, ...v }); };
     scan: for (let Y = 20; Y + 2 <= 90; Y += 2) for (let X = 12; X + 2 <= 70; X += 2) {
       if (CASES.every((c) => got.has(c))) break scan;
-      const ir = windowIR(seed, X, Y, 2, 2), cliffs = cliffInfo(ir, ctx.terrains), runs = southRuns(ir, cliffs), L = ir.land, at = (x, y) => L.raised[(y + L.m) * L.w + x + L.m] === 1;
+      const ir = windowIR(seed, X, Y, 2, 2), cliffs = cliffInfo(ir, ctx.terrains), runs = southRuns(ir, landOf(ir, cliffs)), L = ir.land, at = (x, y) => L.raised[(y + L.m) * L.w + x + L.m] === 1;
       const inside = (tx, ty) => tx >= 7 && tx < ir.w - 8 && ty >= 7 && ty < ir.h - 8;
       const ok = () => { try { bakeIR(ir); return true; } catch (e) { return false; } };
       for (const r of runs) {
@@ -72,21 +72,25 @@ if (WHICH === 'find') {
     console.log(`seed ${seed}: found ${[...got.keys()].concat(border ? ['border'] : []).join(' ')}; missing ${CASES.filter((c) => !got.has(c) && !(c === 'border' && border)).join(' ') || 'none'}`);
   }
   writeFileSync(A, JSON.stringify(views, null, 1) + '\n');
-} else if (WHICH === 'shoot') {
+} else if (WHICH === 'shoot' || WHICH === 'proving') {
   mkdirSync(A, { recursive: true });
   artHooks.seen = new Map();
-  for (const v of JSON.parse(readFileSync(B, 'utf8'))) {
-    const ir = irOf(v), win = frameAt(ir, v.tx, v.ty), ts = bakeCtx().sets.get(ir.tileset);
-    let place1; try { place1 = bakeIR(ir); } catch (e) { const f = `${A}/${TAG}-${v.name}-REFUSED.txt`; writeFileSync(f, `the bake of this view is refused: ${e.message}\n`); console.log(f); continue; }   // today's branch refuses cells where the cliff meets leaf litter, scree, turf or dry grass (R1)
+  // `proving <outDir> <tag>`: the proving place (art/places/proving-place.json), one view per case and the whole place at 1x, labelled in the file names; `shoot <outDir> <views.json> <tag>`: the views of the file
+  const PV = WHICH === 'proving' ? await imp('prototypes/places/src/bake/proving.mjs') : null;
+  const views = WHICH === 'proving' ? [{ name: 'whole', proving: true, whole: true, tx: 0, ty: 0 }, ...PV.provingCases().map((c) => ({ name: c.id, proving: true, tx: c.at[0], ty: c.at[1], label: c.label }))] : JSON.parse(readFileSync(B, 'utf8'));
+  const TAGN = WHICH === 'proving' ? B : TAG;
+  for (const v of views) {
+    const ir = v.proving ? PV.provingIR(bakeCtx().terrains) : irOf(v), win = v.whole ? { x: 0, y: 0, w: ir.w * 48, h: ir.h * 48 } : frameAt(ir, v.tx, v.ty), ts = bakeCtx().sets.get(ir.tileset);
+    let place1; try { place1 = bakeIR(ir); } catch (e) { const f = `${A}/${TAGN}-${v.name}-REFUSED.txt`; writeFileSync(f, `the bake of this view is refused: ${e.message}\n`); console.log(f); continue; }   // today's branch refuses cells where the cliff meets leaf litter, scree, turf or dry grass (R1)
     for (const [light, level] of LIGHTS) {
       const lit = level ? lightState(place1, { level: new Uint8Array(place1.w * place1.h).fill(level) }) : null, pal = paletteRgb(ts);
       CORE.forEach((e) => { pal.rgb[e.i] = [parseInt(e.hex.slice(1, 3), 16), parseInt(e.hex.slice(3, 5), 16), parseInt(e.hex.slice(5, 7), 16)]; });
       const img = indexedToRgba(renderView(ts, place1, 48, win, { ...(lit ? { light: lit } : {}) }), win.w, win.h, pal);
-      for (const [suffix, im, scale] of [['1x', img, 1], ['4x', scaleNearest(img, 4), 4]]) {
-        const file = `${A}/${TAG}-${v.name}-${light}-${suffix}.png`; writeFileSync(file, encodePng(im));
-        writeSidecar(file, { tool: 'cliff-spec-stills', tag: TAG, files: fileList([...artHooks.seen].map(([slot, x]) => ({ slot, ...x }))), swaps: [], view: v.name, seed: v.seed, cells: v.cell || [v.X0, v.Y0], tile: [v.tx, v.ty], zoom: 48, light, level, scale, tree: ROOT });
+      for (const [suffix, im, scale] of v.whole ? [['1x', img, 1]] : [['1x', img, 1], ['4x', scaleNearest(img, 4), 4]]) {   // the whole proving place is a 1728 px picture at 1x; every case view also at 4x
+        const file = `${A}/${TAGN}-${v.name}-${light}-${suffix}.png`; writeFileSync(file, encodePng(im));
+        writeSidecar(file, { tool: 'cliff-spec-stills', tag: TAGN, label: v.label || v.name, files: fileList([...artHooks.seen].map(([slot, x]) => ({ slot, ...x }))), swaps: [], view: v.name, seed: v.seed, cells: v.cell || [v.X0, v.Y0], tile: [v.tx, v.ty], zoom: 48, light, level, scale, tree: ROOT });
         console.log(file);
       }
     }
   }
-} else throw new Error('usage: find <views.json> | shoot <outDir> <views.json> <tag> [tree]');
+} else throw new Error('usage: find <views.json> | shoot <outDir> <views.json> <tag> [tree] | proving <outDir> <tag>');

@@ -1,0 +1,29 @@
+{
+  "id": "proving-place",
+  "description": "The proving place: one fixed place holding every case of template 3 (the plateau) of architecture-world-map.md, baked by the real pipeline (buildPlace). Every cliff piece is judged on it, day and night, 1x and 4x. Terrain only: grass everywhere, with raised land (the cliff terrain) in the rectangles below, each [x0, y0, x1, y1] in cells, ends included. The left sample (cols 0 to 17) is panel A of the template; the three blocks on the right (cols 20 to 34) are panel C's steps of 1 and 3 rows beside the sample's step of 2.",
+  "tileset": "ninja-test",
+  "w": 36,
+  "h": 16,
+  "raised": [
+    [2, 2, 4, 3], [2, 4, 7, 6], [8, 2, 15, 8],
+    [20, 3, 24, 6], [25, 3, 29, 7], [30, 3, 34, 10]
+  ],
+  "wayups": [{ "x": 11, "y": 8, "w": 2, "h": 2 }],
+  "cases": [
+    { "id": "01-back-rim", "label": "1 back rim (template 3, callout 1)", "at": [9, 3], "pieces": ["lip-case-3", "lip-case-1", "lip-case-2"] },
+    { "id": "02-side-rim", "label": "2 side rim over the flank (callout 2)", "at": [15, 5], "pieces": ["lip-case-5", "lip-case-10"] },
+    { "id": "03-flank-head", "label": "3 flank head, back corner (callout 3)", "at": [1, 3], "pieces": ["flank-head"] },
+    { "id": "04-flank-band", "label": "4 flank band (callout 4)", "at": [16, 5], "pieces": ["flank-band", "side-cell"] },
+    { "id": "05-flank-tail-end", "label": "5 flank tail: face end E (callout 5)", "at": [16, 8], "pieces": ["end-3"] },
+    { "id": "06-south-face", "label": "6 south face: columns S and corner cells (callout 6)", "at": [4, 7], "pieces": ["south-column", "corner-cell-e", "corner-cell-w"] },
+    { "id": "07-south-lip", "label": "7 south lip, case 12 (callout 7)", "at": [4, 6], "pieces": ["lip-case-12"] },
+    { "id": "08-step-2", "label": "8 step in the face of 2 rows: E2 (callout 8, panel C k=2)", "at": [7, 8], "pieces": ["end-2", "lip-case-13", "lip-case-14"] },
+    { "id": "09-foot", "label": "9 foot overlay under the face (callout 9)", "at": [4, 10], "pieces": ["foot-overlay"] },
+    { "id": "10-way-up", "label": "10 way up U, six rows (callout 10)", "at": [12, 9], "pieces": ["way-up"] },
+    { "id": "11-top", "label": "11 the top, its own fill (callout 11)", "at": [12, 4], "pieces": ["raised-fill"] },
+    { "id": "12-notch", "label": "12 notch in the back: inner corners (callout 12)", "at": [6, 3], "pieces": ["lip-case-7", "lip-case-11", "flank-head"] },
+    { "id": "13-step-1", "label": "13 step of 1 row: E1 (panel C k=1)", "at": [24, 7], "pieces": ["end-1"] },
+    { "id": "14-step-3", "label": "14 step of 3 rows: E over the face behind (panel C k=3)", "at": [29, 9], "pieces": ["end-3", "lip-case-4", "lip-case-8"] },
+    { "id": "15-side-long", "label": "15 long side wall: head, band, tail (panel C k=6)", "at": [35, 6], "pieces": ["flank-head", "flank-band", "end-3", "lip-case-5"] }
+  ]
+}
