@@ -39,7 +39,11 @@ export function adaptPlace(place, ts, terrains, o = {}) {
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[y * w + x]) ?? T.GRASS;
   // what the bake blocks beyond the terrain's own play: the cliff's lip and face (the open edges); thicket, scrub, water and prop footprints already map to blocked tiles
   const cliffV = (terrains.find((t) => t.id === 'cliff') || {}).value;
-  if (cliffV && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const b = y * w + x; if (place.terrain[b] === cliffV && (place.blockMask[b >> 3] >> (b & 7)) & 1) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; } }
+  // (a set bit on a walkable tile that is no cliff is the cell under a south lip, which blocks too; a prop's footprint cell is overwritten below)
+  if (cliffV && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const b = y * w + x; if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
+    if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) tiles[I(x, y)] = T.ROCK;
+  }
   // the world's edges on this cell (o.G: the world; a place that fills the page's grid exactly, never the dev switch's padded one): the bands, stairs and crossings, the openings, the trees that stay
   let sh = null;
   if (o.G && o.G.edge && o.cell != null && pw === w && ph === h) {

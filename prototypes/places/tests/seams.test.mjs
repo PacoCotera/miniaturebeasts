@@ -8,7 +8,7 @@ import { loadSet, layerTiles, fillTiles, kindFullTiles, layerDescriptors, layerR
 import { paste } from '../src/png.mjs';
 import { cornerSheet } from '../src/sheets.mjs';
 import { applyOpenEdges, cliffInfo, ALT_CODE } from '../src/bake/openedges.mjs';
-import { sideRuns, sideTiles, southDecals, southRuns, southTiles } from '../src/bake/southruns.mjs';
+import { RIM_CASES } from '../src/bake/southruns.mjs';
 import { terrainLayers, FILL_CODE, FULL_BASE, EMPTY } from '../src/dualgrid.mjs';
 import { edgeSignatureFailures, coverage, legalAdjacencies, edgeLine } from '../src/seams.mjs';
 import { compareGolden } from '../src/golden.mjs';
@@ -80,27 +80,18 @@ test("the cliff layer: the bake picks each tile by its corners and the cells bel
       const dg = terrainLayers(level, TERRAINS, desc.layers, null);
       const lir = { ...level, wayups: [], reedbanks: [] };
       applyOpenEdges(dg, lir, TERRAINS, desc.layers);
-      const south = southTiles(southRuns(lir, cliffInfo(lir, TERRAINS)), dg.w1);   // the interior of a straight south run: its face is a painted column, so the old face and foot tiles are not placed (southruns.mjs)
-      const sides = sideTiles(sideRuns(lir, cliffInfo(lir, TERRAINS), southDecals(southRuns(lir, cliffInfo(lir, TERRAINS)))), dg.w1);   // the interior of a straight side: its cells are painted decals, the old side strip is not placed (the raised ground fill stands)
       const L = dg.layers.find((l) => l.terrain === valueOf.cliff);
       if (!L) continue;
       for (let j = 1; j <= bh - 2; j++) for (let i = 1; i < bw; i++) {   // the tiles the desk proves: i from 1, j from 1 to the height - 2 (block coordinates)
         const nw = g(i - 1, j - 1), ne = g(i, j - 1), sw = g(i - 1, j), se = g(i, j), want = nw * 8 + ne * 4 + sw * 2 + se;
-        const s = (sw && !g(i - 1, j + 1) ? 2 : 0) | (se && !g(i, j + 1) ? 1 : 0), c = L.tiles[(j + PAD) * dg.w1 + i + PAD], at = `block ${m} ${bw}x${bh} ${ground} tile (${i},${j})`;
-        const idx = (j + PAD) * dg.w1 + i + PAD;
-        if (south.foot.has(idx)) { assert.equal(c, EMPTY, at + ': under a straight south face: no old foot tile'); continue; }
-        if (south.face.has(idx)) { assert.ok(c >= FILL_CODE, at + ': the lip row of a straight south face keeps the raised ground'); continue; }
-        if (sides.has(idx)) { assert.ok(c >= FILL_CODE, at + ': inside a straight side the old side strip is gone, the raised ground stands'); continue; }
+        const c = L.tiles[(j + PAD) * dg.w1 + i + PAD], at = `block ${m} ${bw}x${bh} ${ground} tile (${i},${j})`;
+        // "rim and face" (southruns.mjs): the face, its corners and ends and the sides are painted pieces; the cliff layer keeps only the raised ground, the side's ground to the cell edge and the back rim's own tiles
         if (want === 0) { assert.equal(c, EMPTY, at + ': no cliff corner, no cliff tile'); continue; }
-        if (s === 0) {
-          assert.ok(c < ALT_CODE || c >= FILL_CODE, `${at}: the plain sheet`);
-          if (c < ALT_CODE) assert.equal(c % 64, want, at);   // a kind code: its slot is the corner index (a fill code is the all-cliff tile)
-          else assert.equal(want, 15, at + ': a fill is the all-cliff tile');
-          continue;
-        }
-        assert.ok(c >= ALT_CODE && c < FILL_CODE, `${at}: a tall sheet`);
-        const row = rows[(c - ALT_CODE) >> 4];
-        assert.deepEqual([row.type, row.terrain, row.s, (c - ALT_CODE) & 15], ['tall', 'cliff', s, want], at);
+        if (want === 15) { assert.ok(c >= FILL_CODE, at + ': a fill is the all-cliff tile'); continue; }
+        if (want === 5 || want === 10) { assert.ok(c >= FILL_CODE, at + ': a side: the raised ground to the cell edge'); continue; }
+        if (!RIM_CASES.has(want)) { assert.equal(c, EMPTY, at + ': the pieces draw it, not the rim sheet'); continue; }
+        assert.ok(c < ALT_CODE, `${at}: the plain rim sheet`);
+        assert.equal(c % 64, want, at);   // a kind code: its slot is the corner index
       }
     }
   }

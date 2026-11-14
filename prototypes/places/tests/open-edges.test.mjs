@@ -99,7 +99,7 @@ test('raised ground: a litter top draws litter, a lip tile draws the cliff layer
   for (let j = 1; j < H; j++) for (let i = 1; i < W; i++) {
     const c = [[i - 1, j - 1], [i, j - 1], [i - 1, j], [i, j]].map(([x, y]) => isCliff(x, y)), below = [[i - 1, j + 1], [i, j + 1]].map(([x, y]) => isCliff(x, y));
     if (c.every(Boolean) && below.every(Boolean) && !inner) inner = [i, j];
-    if (c.some(Boolean) && !c.every(Boolean) && !lip && j > 1 && c[2] === c[0] && c[3] === c[1]) lip = [i, j];   // a straight edge of the plateau
+    if (!c[0] && !c[1] && c[2] && c[3] && !lip && j > 1) lip = [i, j];   // the back rim of the plateau: the one edge the cliff layer still draws from its sheet (the face and the sides are painted pieces)
   }
   assert.ok(inner && lip, 'Windstep has a plateau with an inside and an edge');
   const inside = at(withTop, ...inner), plain = at(none, ...inner);

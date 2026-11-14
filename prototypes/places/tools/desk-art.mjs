@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, cornerKind, sideKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, END_ROWS, cornerKind, endKind, sideKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -116,7 +116,17 @@ export const mapColour = (img, fromHex, toHex) => mapColours(img, [[fromHex, toH
 // The pixels of slot 15 (the all-upper tile) of a 4 x 4 sheet, as a 16 x 16 image.
 export function slot15(img) { return crop(img, 3 * T, 3 * T, T, T); }
 
-// Returns { files: Map(name -> Buffer), images: Map(name -> image), layers: the set.json `layers` block, tone, desk: the DESK.json entries } for the terrain layers.
+// THE table of which grounds may meet (set.json `groundPairs`): the pairs the generator may make (exploration/src/gen7/place.mjs reads it from set.json), each drawn by the layers' `lowers` below
+// (tools/gen7-layers.mjs and the bake test refuse a pair the layers cannot draw). Sand under raised land is not in it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses.
+export const GROUND_PAIRS = [
+  ['water', 'grass'], ['water', 'sand'], ['sand', 'grass'], ['path', 'grass'], ['water', 'mud'], ['grass', 'cliff'], ['grass', 'thicket'], ['grass', 'scrub'],
+  ['sand', 'thicket'], ['sand', 'scrub'], ['deep', 'water'], ['grass', 'litter'], ['sand', 'litter'], ['thicket', 'litter'], ['grass', 'drygrass'], ['thicket', 'drygrass'], ['scrub', 'drygrass'],
+  ['grass', 'turf'], ['thicket', 'turf'], ['scrub', 'turf'], ['grass', 'scree'], ['sand', 'scree'], ['thicket', 'scree'], ['scrub', 'scree'], ['water', 'scree'],
+  ['litter', 'drygrass'], ['litter', 'turf'], ['litter', 'scree'], ['scrub', 'litter'], ['drygrass', 'turf'], ['drygrass', 'scree'], ['turf', 'scree'],
+  ['cliff', 'litter'], ['cliff', 'drygrass'], ['cliff', 'turf'], ['cliff', 'scree'],
+];
+
+// Returns { files: Map(name -> Buffer), images: Map(name -> image), layers: the set.json `layers` block, tone, pairs: GROUND_PAIRS, desk: the DESK.json entries } for the terrain layers.
 // Thicket and cliff come keyed (the soft shade pixels, alpha 70 and 90, which the set contract of alpha 0 or 255 does not allow, are made transparent).
 export function deskLayers() {
   const files = new Map(), desk = {};
@@ -185,7 +195,7 @@ export function deskLayers() {
     cliff: {
       fill: { sheets: [place(RAISED, 'fill-grass-raised-day.png', 'fill-cliff.png')] },   // the raised meadow ground: every raised cell that is no old face
       over: [{
-        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass'], sheets: [recut('over-cliff.png', 'over-cliff.png')],
+        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [recut('over-cliff.png', 'over-cliff.png')],
         tall: { 1: [recut('over-cliff~s1.png', 'over-cliff~s1.png')], 2: [recut('over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => recut(n, n)) },
         wayup: { grass: keyed(WAYUP, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: keyed(WAYUP, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },   // keyed as the cliff sheets are (the soft cast shade made transparent, art director ruling 2026-11-09)
       }],
@@ -195,7 +205,7 @@ export function deskLayers() {
   const toneImg = mapColour(decodePng(show(MEADOW1, 'layers/grass-tone.png')), SUNLIT_FROM, SUNLIT);
   const tone = { of: 'grass', also: ['cliff'], sheets: [rec(MEADOW1, 'tone-grass.png', `${MEADOW1.dir}/layers/grass-tone.png sunlit (${SUNLIT_FROM} to ${SUNLIT})`, Buffer.from(encodePng(toneImg)))], raised: place(RAISED, 'tone-grass-raised-day.png', 'tone-grass-raised.png') };
   const images = new Map([...files].map(([n, b]) => [n, decodePng(b)]));
-  return { files, images, layers, tone, desk };
+  return { files, images, layers, tone, pairs: GROUND_PAIRS, desk };
 }
 
 // The walk's sprites, each at its signed 1x size (one art pixel to one screen pixel) with the foot the manifest names (art director mb-74, mibi-art 75f1ff195; manifest.json beside the files). Files are the desk's bytes,
@@ -323,6 +333,14 @@ export function deskArt() {
     if (im.w !== 48 || im.h !== 48) throw new Error(`${file}: a side cell is 48 x 48, this is ${im.w} x ${im.h}`);
     files.set(file, b); decals[sideKind(hand)] = { image: im, anchor: [0, 0] };
     desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 48], foot: [0, 0], sha256: sha(b) };
+  }
+  // the face ends for a step of 2 rows (E2, 48 x 240) and of 1 row (E1, 48 x 192): whole-cell crops of the signed end cell cliff-corner-e-5 (rows 48..288 and 96..288; the west hand the crop flipped, step flip h); each file's .steps.json
+  // holds the cut and the whole list from the paid raw and replays to the placed bytes (tools/art/poststeps.py replay)
+  for (const rows of END_ROWS) for (const hand of CORNER_HANDS) {
+    const file = `${endKind(rows, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 48 || im.h !== 48 * (3 + rows)) throw new Error(`${file}: an end piece for a step of ${rows} is 48 x ${48 * (3 + rows)}, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[endKind(rows, hand)] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, im.h], foot: [0, 0], sha256: sha(b) };
   }
   return { files, props, canopy, decals, desk };
 }

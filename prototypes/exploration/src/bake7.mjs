@@ -48,7 +48,8 @@ export function bakeCell(ir, ctx) {
   const playOf = new Map(terrains.map(t => [t.value, t.play]));
   const block = new Uint8Array((ir.w * ir.h + 7) >> 3), setBit = i => { block[i >> 3] |= 1 << (i & 7); };
   for (let i = 0; i < ir.w * ir.h; i++) { const pl = playOf.get(ir.terrain[i]); if (pl === 'block' || pl === 'deep') setBit(i); }
-  for (const i of cliffInfo(ir, terrains).lipCells) setBit(i);
+  const cl = cliffInfo(ir, terrains);
+  for (const i of [...cl.lipCells, ...cl.footCells]) setBit(i);   // the lip and face, and the cell under every south lip cell
   for (const cell of footprintCells(ir, ts).keys()) setBit(cell);
   return {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: '',

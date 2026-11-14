@@ -2516,6 +2516,26 @@
 						"id": "cliff-side-b-w",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "cliff-end1-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-end1-w",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-end2-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-end2-w",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,

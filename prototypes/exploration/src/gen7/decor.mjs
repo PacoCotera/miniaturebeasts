@@ -84,7 +84,9 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   }
   // ---- tile classes: solid (water, thicket, the cliff's lip), path
   const cls = new Map();
-  const isLip = (x, y) => T(x, y) === CLIFF && !wayCell.has(key(x, y)) && (T(x + 1, y) !== CLIFF || T(x - 1, y) !== CLIFF || T(x, y + 1) !== CLIFF || T(x, y - 1) !== CLIFF);
+  // the cell under a south lip cell is part of the lip (cliff spec 4.3, 4.4: it blocks, and the "one clear tile beside a lip" rule keeps it and the row under it free of props and decals), except under a way up
+  const isLip = (x, y) => (T(x, y) === CLIFF && !wayCell.has(key(x, y)) && (T(x + 1, y) !== CLIFF || T(x - 1, y) !== CLIFF || T(x, y + 1) !== CLIFF || T(x, y - 1) !== CLIFF))
+    || (T(x, y) !== CLIFF && T(x, y - 1) === CLIFF && !wayCell.has(key(x, y - 1)));
   const flags = (x, y) => {
     if (!inMap(x, y)) return 1;
     const k = key(x, y), hit = cls.get(k); if (hit !== undefined) return hit;

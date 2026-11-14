@@ -2196,6 +2196,58 @@
     ],
     "sha256": "47c67dc2ca6e205b9bf1e0b690576644081d41db96e21013ebe9836c1f503fb1"
   },
+  "cliff-end1-e.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end1-e.steps.json)",
+    "size": [
+      48,
+      192
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "ec3a7e7531fb0c039cd9bdbf4239deb2c9236ba358b7e86f03ab3bfbac176f2d"
+  },
+  "cliff-end1-w.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end1-w.steps.json)",
+    "size": [
+      48,
+      192
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "60d35ab7c0411312dc643365758af627b8a2a124c7bffff2d148bd113c14d059"
+  },
+  "cliff-end2-e.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end2-e.steps.json)",
+    "size": [
+      48,
+      240
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "987c470fa1c76439d6de3559c917e32a47545fd3a68aed65ff37580fe1ee93c2"
+  },
+  "cliff-end2-w.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end2-w.steps.json)",
+    "size": [
+      48,
+      240
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "d409cbc419a891debc74d5212c7e3dfc751db801b11d13a540cba509e17ef670"
+  },
   "fill-deep.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/sets/pair-deep-water.png#15",

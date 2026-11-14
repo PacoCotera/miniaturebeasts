@@ -150,6 +150,21 @@ function coastBins(q, W, H, x0, y0) {
   }
 }
 
+// R3 (map-system-audit-1, cliff-spec-step0): inland, the field may be read at the centre column of a bin FACE_BIN tiles wide (the row is the tile's own), so the contour's vertical edges can only lie on a bin's edge:
+// every south face and every back rim is a whole number of bins long (at least FACE_BIN tiles); a side keeps any length. The bins are centred on the cell's edges (4 and 6 divide 24), so no bin's edge is a cell edge.
+// OFF unless the stills tool sets it (MB_FACE_BIN=4 or 6 in the environment): it changes the land of every seed, so it is not the default until the owner rules.
+const FACE_BIN = +((typeof process !== 'undefined' && process.env && process.env.MB_FACE_BIN) || 0), FACE_OX = FACE_BIN >> 1;
+function faceBins(q, W, H, x0, y0) {
+  if (!(FACE_BIN > 1)) return;
+  const src = q.slice();
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const gx = x0 + x, gy = y0 + y;
+    if (Math.min((gx - BORDER_X) / CW, (WTW - 1 - BORDER_X - gx) / CW, (gy - BORDER_Y) / CH, (WTH - 1 - BORDER_Y - gy) / CH) < COAST_DEPTH) continue;   // the coast keeps its own bins
+    const sx = Math.floor((gx + FACE_OX) / FACE_BIN) * FACE_BIN - x0;
+    if (sx >= 0 && sx < W) q[y * W + x] = src[y * W + sx];
+  }
+}
+
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 function windowLevels(L, X, Y) {
@@ -164,6 +179,7 @@ function windowLevels(L, X, Y) {
   for (let j = 1; j < 3; j++) { const y = j * CH; for (let x = 0; x < W; x++) { const m = 0.5 * (q[(y - 1) * W + x] + q[y * W + x]); q[(y - 1) * W + x] = m; q[y * W + x] = m; } }
   for (let i = 1; i < 3; i++) { const x = i * CW; for (let y = 0; y < H; y++) { const m = 0.5 * (q[y * W + x - 1] + q[y * W + x]); q[y * W + x - 1] = m; q[y * W + x] = m; } }
   coastBins(q, W, H, (X - 1) * CW, (Y - 1) * CH);
+  faceBins(q, W, H, (X - 1) * CW, (Y - 1) * CH);
   const W2 = W - 2, H2 = H - 2, rr = y => y - (y >= CH ? 1 : 0) - (y >= 2 * CH ? 1 : 0), cc = x => x - (x >= CW ? 1 : 0) - (x >= 2 * CW ? 1 : 0);
   let cur = new Uint8Array(W2 * H2);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cur[rr(y) * W2 + cc(x)] = q[y * W + x] >= 0 ? 1 : 0;
