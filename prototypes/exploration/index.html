@@ -491,12 +491,20 @@ const layoutCache = new Map();
 // A cell's view is made on first use and kept in a small LRU (PL_VIEWS_MAX), so memory stays flat however far the walk goes.
 const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View: null, mk: null, views: new Map(), veil: null, veilMod: null };
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
+// The release number (build.json, never cached) rides on every fetch of game data and every image, so a new release never reads an older release's files from the browser's cache. One helper, no player option.
+const REL = { v: '' };
+REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); } catch (e) { } })();
+const vurl = u => REL.v ? u + (u.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(REL.v) : u;
+// The first frame waits for the new art and the place (the Probe line shows meanwhile); a load that fails says so with a reload, and never draws old art.
+const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [];
+const artHeld = () => RT.artHold && !(ART_DONE.atlas && ART_DONE.places && ART_DONE.walk && ART_DONE.open && ART48.ready && PL.ready && !ART_FAIL.length);
+const artFailed = () => ART_FAIL.length > 0 || (ART_DONE.atlas && !ART48.ready) || (ART_DONE.places && !PL.ready);
 const setArrived = () => { if (WART.src) walkRead(WART.src); else extendWithSet(); };   // the set's palette is in: the page's colour arrays take its colours, and the walk art read before it is read again
 async function loadPlaces() {
   try {
     if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; setArrived(); return; }
-    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
-    const pm = await import(base + 'src/page.mjs'), rd = await import(base + 'src/format/read.mjs');
+    const base = new URL('../places/', location.href).href, bytes = async u => new Uint8Array(await (await fetch(vurl(u))).arrayBuffer());
+    const pm = await import(vurl(base + 'src/page.mjs')), rd = await import(vurl(base + 'src/format/read.mjs'));
     PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles')); setArrived();
     PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
     PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
@@ -505,20 +513,20 @@ async function loadPlaces() {
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadVeilKit(base);
     PL.ready = true; layoutCache.clear(); RT.key = null;
-  } catch (e) { console.warn('the places did not load', e); }
+  } catch (e) { console.warn('the places did not load', e); ART_FAIL.push('places'); } finally { ART_DONE.places = true; }
 }
 // The art desk's edge veil (places/veil/, SOURCE.md there): the straight strip, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
 // a view without it draws no veil.
 async function loadVeilKit(base) {
   if (typeof Image === 'undefined') return;
   try {
-    const vm = await import(base + 'src/veil.mjs'), dir = base + 'veil/', kit = { day: {}, night: {} };
+    const vm = await import(vurl(base + 'src/veil.mjs')), dir = base + 'veil/', kit = { day: {}, night: {} };
     await Promise.all(['day', 'night'].flatMap(t => vm.VEIL_KINDS.map(k => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); kit[t][k] = c; res(); };
-      im.onerror = () => rej(new Error('missing ' + k)); im.src = dir + vm.veilFileName(k, t === 'night') + '.png'; }))));
+      im.onerror = () => rej(new Error('missing ' + k)); im.src = vurl(dir + vm.veilFileName(k, t === 'night') + '.png'); }))));
     PL.mapVeil = {}; await Promise.all(['day', 'night'].map(t => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); PL.mapVeil[t] = c; res(); };
-      im.onerror = () => rej(new Error('missing the map veil')); im.src = dir + 'map-edge-veil-' + t + '.png'; })));
+      im.onerror = () => rej(new Error('missing the map veil')); im.src = vurl(dir + 'map-edge-veil-' + t + '.png'); })));
     PL.veil = kit; PL.veilMod = vm;
-  } catch (e) { console.warn('the edge veil did not load', e); }
+  } catch (e) { console.warn('the edge veil did not load', e); ART_FAIL.push('veil'); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
@@ -574,11 +582,11 @@ const PROP_DY = { 'find-glint-1': 0, 'way-through-mark-stone': 0, 'way-through-m
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
   ...Object.fromEntries(['walk-depot-dark', 'walk-depot-ember', 'walk-depot-half', 'walk-depot-full', 'walk-beacon-unlit', 'walk-beacon-lit', 'icon-depot-dark', 'icon-depot-ember', 'icon-depot-half', 'icon-depot-full', 'icon-beacon-unlit', 'icon-beacon-lit',
-    'pod-walk-bone', 'pod-walk-lime', 'pod-walk-ice', 'pod-walk-sand', 'pod-walk-sprout', 'pod-walk-lavender', 'canopy-legacy', 'roof-legacy',
+    'pod-walk-bone', 'pod-walk-lime', 'pod-walk-ice', 'pod-walk-sand', 'pod-walk-sprout', 'pod-walk-lavender',
     // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
     ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
+const PROP_SIZE = { 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
@@ -588,16 +596,16 @@ async function loadPropArt() {
     if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     await Promise.all(PROP_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/props/', location.href).href + n + '.png'; })));
-  } catch (e) { console.warn('the props did not load', e); }
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/props/', location.href).href + n + '.png'); })));
+  } catch (e) { console.warn('the props did not load', e); ART_FAIL.push('props'); }
 }
 async function loadStoneArt() {
   try {
     if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     await Promise.all(STONE_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/stone/', location.href).href + n + '.png'; })));
-  } catch (e) { console.warn('the stones did not load', e); }
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/stone/', location.href).href + n + '.png'); })));
+  } catch (e) { console.warn('the stones did not load', e); ART_FAIL.push('stones'); }
 }
 // The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
 // the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
@@ -608,7 +616,6 @@ const WALK_FILES = [
   ...WALK_TEX.flatMap(t => WALK_CS.map(c => `map-tex-${t}-${c}`)),
   ...['cliff-face', 'cliff-lip-h', 'cliff-lip-v', 'cliff-side', 'ramp', 'ramp-side'].flatMap(e => WALK_CS.map(c => `edge-${e}-${c}`)),
   'bubble-curious-11x13'];
-const ART_DONE = { walk: false, open: false };   // each art load has settled (loaded or failed): the opening paints its land once, after both, not once per arrival
 const WART = { pb: new Map(), empty: new Map(), ready: false, src: null };   // src: the files last read, to read again when the palette's entries move (the set arrives, the atlas installs)
 function walkPB(name, w = 1, h = 1) {
   const pb = WART.pb.get(name); if (pb) return pb;
@@ -666,10 +673,10 @@ async function loadWalkArt() {
     if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/' + dir + '/', location.href).href + n + '.png'; })));
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png'); })));
     await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
     walkRead(files);
-  } catch (e) { console.warn('the walk art did not load', e); } finally { ART_DONE.walk = true; }
+  } catch (e) { console.warn('the walk art did not load', e); ART_FAIL.push('walk'); } finally { ART_DONE.walk = true; }
 }
 // The view that draws a baked layout: the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
 function bakedView(lay) {
@@ -4001,10 +4008,6 @@ const BADGE = () => art('badge', () => { const pb = new PB(18, 18); pb.ell(9, 9,
   GLYPHS['?'].split('|').forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') pb.set(7 + x, 5 + y, C.lavender); }); return pb; });
 const exitArt = fr => propPiece('prop-exit');
 function burrowArt(open) { return propPiece(open ? 'burrow-open-dark' : 'burrow-closed-dark'); }
-// The legacy path's crown and roof are the art desk's painted pieces (art/props/canopy-legacy 88 x 76 and roof-legacy 104 x 22, mibi-art 1158b9710); the thinned look (an explorer under it) is the same picture on a checkerboard.
-const thinnedPiece = (name, chk) => { const p = propPiece(name); return chk ? { w: p.w, h: p.h, canvas: (rm, flip, c, veil) => p.canvas(rm, flip, true, veil) } : p; };
-function canopyArt(chk) { return thinnedPiece('canopy-legacy', chk); }
-function roofArt(chk) { return thinnedPiece('roof-legacy', chk); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
 // The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
 const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2; lit = lit ?? C.aqua; dark = dark ?? C.tealD;
@@ -4533,15 +4536,15 @@ const coreTables = () => ({ names: PALETTE.slice(0, CORE_N).map(p => p[0]), dark
 async function loadAtlas() {
   try {
     const mans = [];
-    for (const url of ATLAS_URLS) { const man = await (await fetch(url)).json(), dir = url.slice(0, url.lastIndexOf('/') + 1);
-      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(dir + name + '-palette.json')).json();
+    for (const url of ATLAS_URLS) { const man = await (await fetch(vurl(url))).json(), dir = url.slice(0, url.lastIndexOf('/') + 1);
+      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(vurl(dir + name + '-palette.json'))).json();
       mans.push({ man, dir, sig: name + '|' + JSON.stringify(pal && pal.entries), pal }); }
     if (new Set(mans.map(m => m.sig)).size !== 1) throw new Error('the manifests name different palettes');
     const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
     if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
     const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = [];
     const image = async file => { if (!images.has(file)) images.set(file, (async () => {
-      const bm = await createImageBitmap(await (await fetch(file)).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+      const bm = await createImageBitmap(await (await fetch(vurl(file))).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
       const cv = document.createElement('canvas'); cv.width = bm.width; cv.height = bm.height; const cg = cv.getContext('2d'); cg.drawImage(bm, 0, 0);
       return { w: bm.width, h: bm.height, data: cg.getImageData(0, 0, bm.width, bm.height).data }; })()); return images.get(file); };
     const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
@@ -4554,7 +4557,7 @@ async function loadAtlas() {
       list.push(Object.assign({}, p, { w, h, px: d.px }));
     }
     atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
-  } catch (e) { console.warn('the 48 px place art did not load; places draw at 32 px', e); }
+  } catch (e) { console.warn('the 48 px place art did not load', e); ART_FAIL.push('atlas'); } finally { ART_DONE.atlas = true; }
 }
 // The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 51) and
 // the manifest's levelTone. The page's colour and lookup arrays grow from index 51 by the table; 0–50 never change.
@@ -5579,11 +5582,8 @@ function drawPatchBody(t) {
   for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.TRUNK && !bk) {
     const x = i % lay.w, y = (i / lay.w) | 0; if (!vis2(x * ts, y * ts)) continue;
     const under = tokens.some(o => cheb(o, { x, y }) <= 1);
-    overlay((ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3)) || canopyArt(under ? 1 : 0), W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
+    const crown = ts === 48 && treeCanopy(lay, i, under ? 1 : 0, !lightAt && tileLight(x, y) === 3); if (crown) overlay(crown, W(x * ts + o.x + 16 - 44), H(y * ts + o.y + 16 - 58), x, y);
   }
-  for (const f of lay.feats) if (f.kind === 'o') { const x = f.x * ts, y = f.y * ts; if (!vis2(x, y)) continue;
-    const under = tokens.some(o => o.y === f.y + 2 && o.x >= f.x && o.x <= f.x + 2);
-    overlay(roofArt(under ? 1 : 0), W(f.x * ts + ((3 * ts - 104) >> 1)), H((f.y + 2) * ts - 10), f.x + 1, f.y); }
   aboveCrowns.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); } catch (e) { if (RT.err++ < 3) console.error(e); } });
   // pods sit above the canopy layer so they can't hide under a tree
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
@@ -6113,9 +6113,7 @@ function warnPicPlace(x0, y0, a) {
   const over = (pb, sx, sy, tx, ty) => { if (sx >= ox + ts || sx + pb.w <= ox || sy >= oy + ts || sy + pb.h <= oy) return; const rm = light(tx, ty);
     g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < lay.w * lay.h; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % lay.w, ty = (k / lay.w) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
-    over((ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3)) || canopyArt(under ? 1 : 0), tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
-  for (const f of lay.feats) if (f.kind === 'o') { const under = tokens.some(q => q.y === f.y + 2 && q.x >= f.x && q.x <= f.x + 2);
-    over(roofArt(under ? 1 : 0), f.x * ts + ((3 * ts - 104) >> 1), (f.y + 2) * ts - 10, f.x + 1, f.y); }
+    const crown = ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3); if (crown) over(crown, tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
   for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
   RT.remap = keepRm;
   g.restore();
@@ -6198,9 +6196,9 @@ async function loadOpenArt(after) {
     await after;   // in a browser the opening art waits for the walk art: the first screen's other work is not disturbed
     const files = {};
     await Promise.all(OPEN_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/open/', location.href).href + n + '.png'; })));
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/open/', location.href).href + n + '.png'); })));
     openRead(files);
-  } catch (e) { console.warn('the opening art did not load; the built night and pod play', e); } finally { ART_DONE.open = true; }
+  } catch (e) { console.warn('the opening art did not load', e); ART_FAIL.push('open'); } finally { ART_DONE.open = true; }
 }
 // The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
 // moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
@@ -6219,7 +6217,7 @@ async function loadMomentArt() {
     if (typeof Image === 'undefined') return;
     const files = {};
     await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = new URL('./art/moment/', location.href).href + n + '.png'; })));
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/moment/', location.href).href + n + '.png'); })));
     momentRead(files);
   } catch (e) { console.warn('the moment stands did not load; the tokens play', e); }
 }
@@ -7018,7 +7016,8 @@ function render(t) {
   finally { resetCanvas(); RT.remap = REMAP; vctx.drawImage(scr, 0, 0); }
 }
 function renderFrame(t) {
-  if (RT.making) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page
+  if (RT.making || (RT.artHold && artHeld() && !artFailed())) { drawMaking(); vctx.drawImage(scr, 0, 0); return; }   // a world is being made off the page, or the art and the place are still coming in
+  if (RT.artHold && artFailed()) { drawArtFailed(); vctx.drawImage(scr, 0, 0); return; }   // a load failed: say so, and offer the reload
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
   trackDock(); RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
@@ -7112,7 +7111,8 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
-  if (RT.making) return;   // a world is being made off the page: the page says so and waits
+  if (RT.artHold && artFailed()) { if (k === 'confirm') location.reload(); return; }   // the art did not load: ✓ reloads
+  if (RT.making || (RT.artHold && artHeld())) return;   // a world is being made off the page, or the art is coming in: the page says so and waits
   if (RT.readOnly) { actReadOnly(k); return; }   // a save that cannot be shown: the one way out is a new world, the old save kept
   if (RT.notice) { actNotice(k); return; }
   const refused = frozenRefuses(k);
@@ -7500,6 +7500,12 @@ function drawNewer() {
   if (RT.armNew) text('The mibis stay with the old save', 225 + bx, 311, C.amber, 2, 'center');
   drawLine({ ok: RT.broken ? (RT.armNew ? 'Confirm: new world' : 'Start a new world') : 'Reload', ctx: '', back: '' });
 }
+function drawArtFailed() {   // the art or the place did not load: said plainly, one way on (reload), nothing drawn in old art
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  text('The art can’t be shown · reload to try again', 225, 289, C.bone, 2, 'center');
+  drawLine({ ok: 'Reload', ctx: '', back: '' });
+}
 function actReadOnly(k) {
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
   if (k !== 'confirm') { RT.armNew = 0; FX.bumpAt = NOW; return; }
@@ -7515,11 +7521,15 @@ function actReadOnly(k) {
 function boot(seed) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
 if (!RT.readOnly && S && S.resetFrom != null && !S.resetSeen) RT.notice = true;   // the first open after the release's reset
-loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
-const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
-loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
-loadMomentArt();   // the art desk's painted stands for the care moments
-loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
+RT.artHold = !window.__places;   // the first frame waits for the art and the place; the tests hand them over at once and are not held
+const startLoads = () => {
+  loadAtlas();   // the 48 px place art
+  const walkArtLoaded = loadWalkArt();   // the art desk's walk art (marks, terrain, edges, puddles, signs)
+  loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
+  loadMomentArt();   // the art desk's painted stands for the care moments
+  loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
+};
+if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page the release number is read first, so every fetch carries it
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
