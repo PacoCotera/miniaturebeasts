@@ -18,7 +18,11 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const tiles = new Uint8Array(NP), press = new Uint8Array(NP);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[P(x, y)]) ?? T.GRASS;
   const cliffV = (terrains.find(t => t.id === 'cliff') || {}).value;
-  if (cliffV != null && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const b = P(x, y); if (place.terrain[b] === cliffV && (place.blockMask[b >> 3] >> (b & 7)) & 1) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; } }
+  // (a set bit on a walkable tile that is no cliff is the cell under a south lip, which blocks too; a prop's footprint cell is overwritten below)
+  if (cliffV != null && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const b = P(x, y); if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
+    if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) tiles[I(x, y)] = T.ROCK;
+  }
   for (const p of place.props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48) - 1, cy = Math.floor(p.y / 48) - 1;
     if (s.kind === 'tall-grass' && !s.footprint.length) { if (cx >= 0 && cy >= 0 && cx < w && cy < h && tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
