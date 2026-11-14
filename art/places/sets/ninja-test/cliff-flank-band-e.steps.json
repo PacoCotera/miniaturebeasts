@@ -1,57 +1,11 @@
 {
- "source_sha256": "3e7ef16d9624c34129afd4991606c83aa1772040576a59236b1e9138f363c3db",
+ "source_sha256": "29df491f6db71e9984873ad12c48f4438eb77a0c1e68944d2f8103c936ef39a5",
+ "parent": {
+  "ledger_id": "a7aff1d4e5",
+  "sha256": "29df491f6db71e9984873ad12c48f4438eb77a0c1e68944d2f8103c936ef39a5",
+  "file": "git show 95ca2cf61:art/places/sets/ninja-test/cliff-flank-band-e.png"
+ },
  "steps": [
-  [
-   "scale_nearest",
-   [
-    576,
-    704
-   ]
-  ],
-  [
-   "reduce_mode",
-   4
-  ],
-  [
-   "snap",
-   "walk",
-   "7e90b28e41f4",
-   [
-    "#1e2a3e",
-    "#4a5f78"
-   ]
-  ],
-  [
-   "key_edge_bg",
-   [
-    "#99b562",
-    "#74a65d",
-    "#69a55d",
-    "#7a9d5a",
-    "#82b266",
-    "#65a05d",
-    "#82a05a"
-   ],
-   0,
-   8
-  ],
-  [
-   "crop",
-   [
-    112,
-    62,
-    32,
-    16
-   ],
-   "terrain"
-  ],
-  [
-   "scale_nearest",
-   [
-    96,
-    48
-   ]
-  ],
   [
    "map",
    [
@@ -63,12 +17,78 @@
   ]
  ],
  "out_sha256": "c0b3da03cca6e6c8eaa797fdd855af3f0abdfa81c169e19c9215543cfa8a6414",
- "from_paid_call": {
-  "model": "fal-ai/nano-banana-pro/edit",
-  "job": "art-jobs/2026-11-14-cliff-lip-side-1",
-  "call": "nbp-edit try 1",
-  "raw": "work/raw/nbp-edit.png",
-  "raw_sha256": "3e7ef16d9624c34129afd4991606c83aa1772040576a59236b1e9138f363c3db",
-  "note": "steps replay the paid raw to the placed bytes (poststeps.py replay RAW this.steps.json)"
+ "note": "from the signed parent (the pre-map file, sha256 above) by one colour map; the earlier chain from the paid call is in earlier_record",
+ "earlier_record": {
+  "source_sha256": "3e7ef16d9624c34129afd4991606c83aa1772040576a59236b1e9138f363c3db",
+  "steps": [
+   [
+    "scale_nearest",
+    [
+     576,
+     704
+    ]
+   ],
+   [
+    "reduce_mode",
+    4
+   ],
+   [
+    "snap",
+    "walk",
+    "7e90b28e41f4",
+    [
+     "#1e2a3e",
+     "#4a5f78"
+    ]
+   ],
+   [
+    "key_edge_bg",
+    [
+     "#99b562",
+     "#74a65d",
+     "#69a55d",
+     "#7a9d5a",
+     "#82b266",
+     "#65a05d",
+     "#82a05a"
+    ],
+    0,
+    8
+   ],
+   [
+    "crop",
+    [
+     112,
+     62,
+     32,
+     16
+    ],
+    "terrain"
+   ],
+   [
+    "scale_nearest",
+    [
+     96,
+     48
+    ]
+   ],
+   [
+    "map",
+    [
+     [
+      "#99b562",
+      "#82b266"
+     ]
+    ]
+   ]
+  ],
+  "from_paid_call": {
+   "model": "fal-ai/nano-banana-pro/edit",
+   "job": "art-jobs/2026-11-14-cliff-lip-side-1",
+   "call": "nbp-edit try 1",
+   "raw": "work/raw/nbp-edit.png",
+   "raw_sha256": "3e7ef16d9624c34129afd4991606c83aa1772040576a59236b1e9138f363c3db",
+   "note": "steps replay the paid raw to the placed bytes (poststeps.py replay RAW this.steps.json)"
+  }
  }
 }
