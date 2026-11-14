@@ -275,3 +275,14 @@ test('seed 7: the overview of a region reads the world tiles (class and raised),
   assert.ok(n > 3000); assert.equal(diff, 0, 'tiles whose overview byte differs from the world tile under it');
   for (let c = 1; c < MW; c++) for (const y of [3, 100, 250]) assert.equal(ov[y * OVW + c * CW - 1], cls(Gd(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y)) | (T(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y) === TV.CLIFF ? OV.RAISED : 0));
 });
+
+// The region atlas tool (tools/atlas.mjs) runs on one place and writes its picture and its numbers.
+test("atlas: one place gives a PNG and a JSON of numbers", async () => {
+  const { atlas } = await import("../tools/atlas.mjs");
+  const { mkdtempSync, readFileSync: rf } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const r = await atlas({ seed: 7, at: [14, 30], size: [1, 1], overlays: null, out: mkdtempSync(tmpdir() + "/atlas-") });
+  assert.equal(rf(r.png).subarray(1, 4).toString(), "PNG");
+  const j = JSON.parse(rf(r.json, "utf8"));
+  assert.equal(j.places.length, 1); assert.ok(j.totals.buildMs >= 0 && j.overlays.shown.includes("faces"));
+});
