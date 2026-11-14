@@ -1,7 +1,7 @@
 // The art check (art guardrails, ratchet mode). One step of the release CI's small check; the push hook runs the same file.
 //   node .github/art-check.mjs [--base REF] [--head REF] [--site DIR]      (defaults: HEAD^1 and HEAD, the pull request's merge commit)
 //   node .github/art-check.mjs --list [--head REF]                         every shipped image at REF as "<sha256> <path>"
-//   node .github/art-check.mjs --all [--base REF] [--head REF] [--site DIR]  whole-set: every shipped image must be signed, or on art/unsigned-shipped.txt (which may only shrink)
+//   node .github/art-check.mjs --all [--base REF] [--head REF] [--site DIR]  whole-set: every shipped image must be signed, or on art/unsigned-shipped.csv (which may only shrink)
 //   node .github/art-check.mjs --unsigned [--head REF]                     every shipped image with no signed.json entry, one path a line
 // It fails when
 //   1. a shipped image is added or changed against the base and its sha256 is not in art/signed.json (written only by the art desk's export), or
@@ -78,9 +78,9 @@ export function check({ base, head, site, cwd }) {
 }
 
 // --all: the whole-set check (owner 2026-11-14): every shipped image at head must have its sha256 on art/signed.json, whatever the base holds.
-// The grandfathered list (art/unsigned-shipped.txt, one path a line, '#' comments) names the unsigned images already on main when this check began; it is printed every run and may only shrink
+// The grandfathered list (art/unsigned-shipped.csv, one path a line, '#' comments) names the unsigned images already on main when this check began; it is printed every run and may only shrink
 // (an entry that is not in the base's copy of the list is refused). With --site the assembled site's images are judged the same way, by hash.
-const GRANDFATHERED = 'art/unsigned-shipped.txt';
+const GRANDFATHERED = 'art/unsigned-shipped.csv';
 const readList = (buf) => (buf ? buf.toString('utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')) : null);
 
 export function checkAll({ base, head, site, cwd }) {

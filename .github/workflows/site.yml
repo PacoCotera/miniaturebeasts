@@ -127,7 +127,7 @@ jobs:
         run: node .github/art-check.mjs --base HEAD^1 --head HEAD --site _site
       - name: Every shipped image is signed art, not only the changed ones (owner 2026-11-14)
         if: github.event_name == 'pull_request' && steps.scope.outputs.docs != 'true'
-        # .github/art-check.mjs --all: every image the deploy ships (the tree and the assembled site) must have its sha256 in art/signed.json, or its path on art/unsigned-shipped.txt,
+        # .github/art-check.mjs --all: every image the deploy ships (the tree and the assembled site) must have its sha256 in art/signed.json, or its path on art/unsigned-shipped.csv,
         # the grandfathered list: printed on every run, it may only shrink (a path not in the base's copy is refused); the art desk signs or deletes each.
         run: node .github/art-check.mjs --all --base HEAD^1 --head HEAD --site _site
       - name: Check the pages parse
