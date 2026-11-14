@@ -31,6 +31,10 @@ export function adaptCell(place, ir, ts, terrains, o) {
       if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
+  // the set pieces drawn by the page (the slab of a sleepers' bed): their tile blocks like a rock; shelter tiles (under an overhang) keep strikes off whoever stands on them
+  const shelter = new Uint8Array(NP), pieces = [];
+  for (const p of ir.pieces || []) { const x = p.x - 1, y = p.y - 1; if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y }); } }
+  for (const [sx, sy] of ir.shelter || []) { const x = sx - 1, y = sy - 1; if (x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]]) shelter[I(x, y)] = 1; }
   // the tiles no crown hangs over: a crown's box at 48 px, a tile's pawn as its centre and a margin round it
   const clear = new Uint8Array(NP).fill(1), crowns = [];
   for (const p of place.props) { const c = ts.sprites[p.kind].canopy; if (c >= 0) crowns.push([c, p.x, p.y]); }
@@ -125,9 +129,14 @@ export function adaptCell(place, ir, ts, terrains, o) {
   place.decals = place.decals.filter(keepDecal);
   const decalNear = (x, y) => place.decals.some(d => Math.abs(Math.floor(d.x / 48) - 1 - x) <= 1 && Math.floor(d.y / 48) - 1 - y >= -1 && Math.floor(d.y / 48) - 1 - y <= 2);   // a tile (a fruit about to fall) whose picture some decor would cover
   const lm = ir.landmarks[0] || null;
+  // distance to the nearest shelter, for creatures heading for cover (as the older generators' layouts hold it)
+  const sdist = new Int16Array(NP).fill(999), sq = [];
+  for (let i = 0; i < NP; i++) if (shelter[i]) { sdist[i] = 0; sq.push(i); }
+  for (let q = 0; q < sq.length; q++) { const i = sq[q], x = i % w, y = (i / w) | 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (sdist[j] > sdist[i] + 1 && !T_BLOCK[tiles[j]]) { sdist[j] = sdist[i] + 1; sq.push(j); } } }
   const lay = {
-    key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter: new Uint8Array(NP), feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
-    sdist: new Int16Array(NP).fill(999), trees: {}, shade: false, w, h, openings, clear, compId, compOfSide, mainComp, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
+    key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter, pieces, stamps: ir.stamps || [], feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
+    sdist, trees: {}, shade: false, w, h, openings, clear, compId, compOfSide, mainComp, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
     baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
