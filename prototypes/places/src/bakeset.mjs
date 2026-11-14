@@ -86,6 +86,10 @@ export function bakeTileSet(loaded, terrains) {
       return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, set.tone.frameMs || 0), fullVariants: [], emptyVariants: [] };
     }
     if (r.type === 'wayup') return { lower: 0, upper: T, mode: 'over', tiles: sheetTiles(loaded, r.sheets[0], true).map((img) => tileId([slotFor(img)], 0)), fullVariants: [], emptyVariants: [] };
+    if (r.type === 'back') {   // one 16 px tile per listed slot, each its own file; every other slot of the row empty
+      const frames = [Array.from({ length: 16 }, (_, k) => (r.slots[k] ? slotFor(sheetTiles(loaded, r.slots[k], true)[0]) : null))];
+      return { lower: 0, upper: T, mode: 'over', tiles: Array.from({ length: 16 }, (_, k) => (frames[0][k] === null ? EMPTY_TILE : tileId([frames[0][k]], 0))), fullVariants: [], emptyVariants: [] };
+    }
     // tall, variant: 16-slot sheets sharing the kind's edge lines
     const frames = r.sheets.map((sh) => sheetTiles(loaded, sh, true).map(slotFor));
     return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, 0), fullVariants: [], emptyVariants: [] };

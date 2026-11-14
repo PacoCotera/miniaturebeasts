@@ -91,6 +91,7 @@
               "full": { "type": "string", "description": "a strip of slot-15 variants, for a terrain with a ground" },
               "variants": { "type": "array", "items": { "type": "string" }, "description": "further 16-slot sheets sharing every edge line, one picked per dual tile by hash" },
               "tall": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } }, "description": "a tall terrain (the cliff face): keys 1..3, the sheets used when the cell under the bottom left (1), right (2) or both (3) corners is not this terrain; several sheets are picked by hash" },
+              "back": { "type": "object", "additionalProperties": { "type": "string" }, "description": "per corner slot (1..14), a single 16 px tile of its own file: the back edge's cases, drawn in place of that slot of the sheet" },
               "wayup": { "type": "object", "additionalProperties": { "type": "string" }, "description": "per lower terrain id, a 3 x 2 sheet of 16 px tiles for the way up" }
             }
           }

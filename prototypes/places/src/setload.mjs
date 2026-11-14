@@ -94,6 +94,7 @@ export function layerRows(set) {
       for (const s of Object.keys(k.tall || {}).sort()) k.tall[s].forEach((sh, n) => rows.push({ type: 'tall', terrain: id, kind: k.kind, s: +s, n, sheets: [sh] }));
       (k.variants || []).forEach((sh, n) => rows.push({ type: 'variant', terrain: id, kind: k.kind, n: n + 1, sheets: [sh] }));
       for (const lower of Object.keys(k.wayup || {}).sort()) rows.push({ type: 'wayup', terrain: id, kind: k.kind, lower, sheets: [k.wayup[lower]] });
+      if (k.back) rows.push({ type: 'back', terrain: id, kind: k.kind, slots: k.back, sheets: Object.values(k.back) });
     }
   }
   if (set.tone) rows.push({ type: 'tone', terrain: 'tone', sheets: set.tone.sheets });
@@ -117,6 +118,7 @@ export function layerDescriptors(loaded, terrains) {
       const r = { over: at((x) => x.type === 'over' && x.terrain === id && x.kind === k.kind) };
       const tall = mine('tall'); if (tall.length) { r.tall = {}; for (const [row, i] of tall) (r.tall[row.s] ||= []).push(i); }
       const variants = mine('variant'); if (variants.length) r.variants = variants.map(([, i]) => i);
+      const back = mine('back'); if (back.length) r.back = { row: back[0][1], slots: Object.keys(back[0][0].slots).map(Number) };
       const wayup = mine('wayup'); if (wayup.length) r.wayup = Object.fromEntries(wayup.map(([row, i]) => [row.lower, i]));
       return { kind: k.kind, lowers: new Set(k.lowers.map((x) => val(x, `${id}/${k.kind} lowers`))), fullCount: k.full ? loaded.png(k.full).w / set.sourceTile : 0, rows: r };
     });

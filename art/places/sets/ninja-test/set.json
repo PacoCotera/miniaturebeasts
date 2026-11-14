@@ -228,6 +228,13 @@
             "2": ["over-cliff~s2.png"],
             "3": ["over-cliff~s3.png", "over-cliff-face2~s3.png", "over-cliff-face3~s3.png"]
           },
+          "back": {
+            "1": "cliff-back-1.png",
+            "2": "cliff-back-2.png",
+            "3": "cliff-back-3.png",
+            "7": "cliff-back-7.png",
+            "11": "cliff-back-11.png"
+          },
           "wayup": {
             "grass": "wayup-cliff-grass.png",
             "sand": "wayup-cliff-sand.png"

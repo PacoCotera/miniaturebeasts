@@ -139,6 +139,7 @@ export function deskLayers() {
   // the cliff sheets re-cut from the desk's painted island (tools/recut/README.md), then the map palette's colour map, shade keyed as the desk's own are
   const recutImg = (src) => recolour(decodePng(readFileSync(path.join(here, 'recut', src))));
   const backSheet = (name) => rec({ commit: 'local' }, name, `${BACK_FROM} (the back slots 1, 2, 3, 7, 11 from the paid raw, the other slots the earlier sheet's cells; the whole chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
+  const backTile = (name) => rec({ commit: 'local' }, name, `${BACK_FROM} (one whole 16 px cell of the paid raw, meadow keyed; the chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
   const recut = (src, as) => rec(CLIFF3, as, `${CLIFF3.dir}/${src} recut (prototypes/places/tools/recut) recoloured keyed`, Buffer.from(encodePng(keyShade(recutImg(src)))));
   const fillFrom = (c, src, as) => rec(c, as, `${c.dir}/${src}#15`, Buffer.from(encodePng(slot15(decodePng(show(c, src))))));
   // water: four frames, each a strip of the four fill variants v0..v3 (v0 and v2 blank, v1 and v3 glinted), laid side by side, no pixel changed
@@ -200,6 +201,7 @@ export function deskLayers() {
       over: [{
         kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [backSheet('over-cliff.png')],   // the back rim slots 1, 2, 3, 7, 11 are cut from the paid raw of cliff-lip-back-rd-1; the other slots are the old recut sheet's cells (over-cliff.steps.json)
         tall: { 1: [recut('over-cliff~s1.png', 'over-cliff~s1.png')], 2: [recut('over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => recut(n, n)) },
+        back: Object.fromEntries([1, 2, 3, 7, 11].map((n) => [n, backTile(`cliff-back-${n}.png`)])),   // the back edge's five cases, each its own file (the rim slots of the sheet no longer draw)
         wayup: { grass: keyed(WAYUP, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: keyed(WAYUP, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },   // keyed as the cliff sheets are (the soft cast shade made transparent, art director ruling 2026-11-09)
       }],
     },

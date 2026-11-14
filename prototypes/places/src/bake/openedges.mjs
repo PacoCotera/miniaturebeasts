@@ -65,6 +65,8 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
         const r = rim[j * w1 + i];   // the rule map cliff-7-rim: the tile of a rim case (back rim, its corners) stays 0; a side keeps the fill (2) unless the fill pieces cover its cells; every other edge tile is drawn by the pieces (1)
         if (r === 1) { layer.tiles[j * w1 + i] = EMPTY; continue; }
         if (r === 2) { layer.tiles[j * w1 + i] = FILL_CODE; continue; }
+        const back = !full && d.kinds[s0.kind].rows.back;   // a rim case of the back edge (slots 1, 2, 3, 7, 11): its own tile file, not the sheet's cell
+        if (back && back.slots.includes(corner)) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * back.row + corner; continue; }
       }
       if (full) continue;
       const rows = d.kinds[s0.kind].rows;

@@ -1,0 +1,28 @@
+{
+ "steps": [
+  [
+   "crop",
+   [
+    32,
+    64,
+    16,
+    16
+   ],
+   "terrain"
+  ],
+  [
+   "snap",
+   "walk",
+   "7e90b28e41f4"
+  ],
+  [
+   "key_edge_bg",
+   [
+    "#74a65d"
+   ],
+   0,
+   8
+  ]
+ ],
+ "out_sha256": "a53e6622b919948ee65b9cf2efb4344bb8ae6f7c5afacf18f4141cc1556bed4d"
+}

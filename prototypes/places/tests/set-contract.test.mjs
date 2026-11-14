@@ -166,7 +166,7 @@ test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.j
 
 test('layers: the baked rows list fills and kinds first, then the extras, then the tone row', () => {
   const rows = layerRows(set);
-  assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'tall', 'wayup', 'tone', 'toneraised']);
+  assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'tall', 'wayup', 'back', 'tone', 'toneraised']);
   assert.equal(rows.filter((r) => r.type === 'fill').length, Object.values(set.layers).filter((l) => l.fill).length);
   assert.equal(rows.filter((r) => r.type === 'over').length, Object.values(set.layers).flatMap((l) => l.over || []).length);
   assert.deepEqual(rows.slice(-2).map((r) => r.type), ['tone', 'toneraised']);
