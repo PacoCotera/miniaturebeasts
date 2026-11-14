@@ -5,11 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Miniature Beasts: play</title>
 <meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="../ui/tokens/out/tokens.css">
+<link rel="stylesheet" href="options/options.css">
 <style>
 /* The play page: the Station and the Companion as same-origin frames (stacked, or side by side when the window is wide), each with its key tray, the page's bar and the Dock control. Page chrome only; every device draws itself.
    The faces and their shells are in lp: one lp is --f CSS px (shell.mjs sets it), so every edge lands on a whole physical pixel. The chrome (bar, keys, trays, text) is in CSS px. Colours are the Station's 14 (frame.json colours). */
 @font-face{font-family:"Inter";font-weight:500;src:url("../ui/fonts/inter/src/Inter-Medium-tnum.ttf") format("truetype");font-display:block}
-:root{color-scheme:dark; --f:1; --void:#0c0a12; --bar:#23292f; --panel:#2b3038; --hairline:#3d434b; --bevel:#565c63; --ground:#1d232b; --bone:#f1ebdf; --fog:#c6c4d8; --mist:#8d8aa6; --stone:#5d5974; --focus:#ffe6ad; --mint:#adf6e0; --amber:#ffa83f}
+:root{color-scheme:dark; --f:1; --void:var(--mb-void); --bar:var(--mb-bar); --panel:var(--mb-panel); --hairline:var(--mb-hairline); --bevel:var(--mb-bevel); --ground:var(--mb-ground); --bone:var(--mb-bone); --fog:var(--mb-fog); --mist:var(--mb-mist); --stone:var(--mb-stone); --focus:var(--mb-focus); --mint:var(--mb-mint); --amber:var(--mb-amber)}   /* the page's short names read the tokens (../ui/tokens/out/tokens.css) */
 *{box-sizing:border-box}
 html,body{margin:0; height:100%; background:var(--void); color:var(--fog); font:500 16px/1 "Inter",system-ui,sans-serif; overflow:hidden}
 button{font:inherit; color:inherit; appearance:none; margin:0; cursor:pointer}
@@ -105,7 +107,7 @@ body.phone iframe{image-rendering:pixelated}
 .row.side .k,.row.side .hub{pointer-events:auto}
 .row.side .hub{pointer-events:none}
 #turnHint{position:absolute; color:var(--mist); font-size:12px; line-height:16px; text-align:center; z-index:21; pointer-events:none}
-.op-lede{padding:2px 0 8px}
+.op-lede{padding:2px 0 var(--mb-space-8)}
 .row .k.band::before,.row .k.room::before,.row .k.back::before,.row .k.confirm::before,.row .k.pad::before{content:""; position:absolute; left:5.5%; right:5.5%; top:3.3%; height:20%; border-radius:calc(var(--f) * 6px); background:rgba(255,255,255,.27); filter:blur(calc(var(--f) * 2px)); pointer-events:none}
 /* the Caddy's screen: the 792 × 272 lp view in an 8 lp bezel, 808 × 288 lp, always shown */
 #caddySheet{position:absolute; background:var(--bar); box-shadow:inset 0 calc(var(--f) * 1px) 0 var(--bevel); border-radius:calc(var(--f) * 8px); overflow:hidden; z-index:2}
@@ -157,60 +159,6 @@ body.phone iframe{image-rendering:pixelated}
 #stamp{position:absolute; color:var(--mist); font-size:12px; line-height:12px; text-align:right; white-space:nowrap; pointer-events:none}
 #zDown[aria-disabled="true"],#zUp[aria-disabled="true"]{color:var(--stone); cursor:default}
 #optionsBtn.corner{position:fixed; z-index:25}   /* no room in the bar: the bottom-left corner of the window (shell.mjs) */
-/* the Options panel (play/options, Radix): a dialog over the page in the page's palette */
-.op-overlay{position:fixed; inset:0; background:rgba(12,10,18,.7); z-index:40}
-.op-over2{z-index:50}
-.op-panel{position:fixed; z-index:41; left:50%; top:50%; transform:translate(-50%,-50%); width:min(520px,calc(100vw - 24px)); max-height:calc(100vh - 24px); overflow:auto; background:var(--bar); border:1px solid var(--hairline); border-radius:8px; padding:16px 20px; color:var(--fog)}
-.op-confirm{z-index:51; width:min(360px,calc(100vw - 24px))}
-.op-title{margin:0 0 8px; font-weight:500; font-size:16px; color:var(--bone)}
-.op-row{display:flex; align-items:center; gap:16px; padding:10px 0; border-top:1px solid var(--hairline)}
-.op-text{flex:1 1 auto; min-width:0}
-.op-label{font-size:14px; line-height:20px; color:var(--bone)}
-.op-line{font-size:12px; line-height:16px; color:var(--mist)}
-.op-switch{flex:none; width:44px; height:24px; border-radius:12px; border:1px solid var(--bevel); background:var(--ground); padding:0; position:relative}
-.op-switch[data-state=checked]{background:var(--mint)}
-.op-switch:focus-visible,.op-select:focus-visible,.op-btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
-.op-thumb{display:block; width:18px; height:18px; border-radius:50%; background:var(--bone); transform:translateX(3px); transition:transform .1s}
-.op-thumb[data-state=checked]{transform:translateX(23px); background:var(--void)}
-.op-select,.op-btn{flex:none; min-width:140px; height:32px; display:inline-flex; align-items:center; justify-content:space-between; gap:8px; padding:0 12px; background:var(--ground); border:1px solid var(--hairline); border-radius:6px; color:var(--fog); font-size:14px}
-.op-btn{min-width:88px; justify-content:center; color:var(--bone)}
-.op-select:hover,.op-btn:hover{border-color:var(--bevel)}
-.op-go{background:var(--amber); color:var(--void); border-color:var(--amber)}
-.op-menu{z-index:60; min-width:var(--radix-select-trigger-width); max-height:240px; overflow:auto; background:var(--bar); border:1px solid var(--bevel); border-radius:6px; padding:4px; color:var(--fog); font-size:14px}
-.op-item{padding:6px 10px; border-radius:4px; cursor:pointer; outline:none}
-.op-item[data-highlighted]{background:var(--hairline); color:var(--bone)}
-.op-actions{display:flex; justify-content:flex-end; gap:8px; padding-top:12px; border-top:1px solid var(--hairline)}
-.op-confirm .op-actions{border:0}
-@media (pointer:coarse){ .op-select,.op-btn{height:44px} .op-row{min-height:56px} }
-/* the play note (play/options note-ui.jsx): the note dialog, the section dialog, the bar's two controls and the strip */
-.op-note{width:min(600px,calc(100vw - 24px))}
-.op-notehead{display:flex; align-items:baseline; justify-content:space-between; gap:12px}
-.op-from{font-size:12px; color:var(--mist)}
-.op-thumbs{display:flex; gap:10px; flex-wrap:wrap; padding:8px 0 4px}
-.op-thumb-box{width:120px}
-.op-thumbpic{position:relative; width:120px; height:120px; background:var(--void); border:1px solid var(--hairline); border-radius:6px; overflow:hidden}
-.op-thumbpic img,.op-thumbpic video{display:block; width:100%; height:100%; object-fit:contain; image-rendering:pixelated}   /* the whole picture shows, never a cropped middle */
-.op-thumbbtn{display:block; width:100%; height:100%; padding:0; border:0; background:none}
-.op-x{position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; border:1px solid var(--bevel); background:rgba(12,10,18,.8); color:var(--bone); padding:0; font-size:16px; line-height:20px}
-.op-dur{position:absolute; right:6px; bottom:6px; font-size:12px; color:var(--bone); background:rgba(12,10,18,.8); border-radius:4px; padding:1px 5px; pointer-events:none}
-.op-cap{font-size:12px; line-height:16px; color:var(--fog); padding-top:4px}
-.op-adds{display:flex; gap:8px; flex-wrap:wrap; padding:8px 0}
-.op-adds .op-btn{min-width:0}
-.op-dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:#ff6a4d; margin-right:8px}
-.op-warn{color:var(--amber); padding-bottom:6px}
-.op-note-text{display:block; width:100%; box-sizing:border-box; resize:none; font:inherit; font-size:14px; line-height:20px; color:var(--bone); background:var(--ground); border:1px solid var(--hairline); border-radius:6px; padding:8px 10px}
-.op-note-text:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
-.op-sent{margin:10px 0 0; padding:8px 10px; border:1px solid var(--hairline); border-radius:6px; background:var(--ground)}
-.op-sent-title{font-size:12px; line-height:16px; color:var(--bone)}
-.op-sent-line{font-size:12px; line-height:16px; color:var(--fog); padding:2px 0 4px}
-.op-noteactions{align-items:center}
-.op-grow{flex:1 1 auto}
-.op-quiet{color:var(--mist)}
-.op-btn[disabled]{color:var(--stone); cursor:default; border-color:var(--hairline)}
-.op-go[disabled]{background:var(--hairline); border-color:var(--hairline); color:var(--stone)}
-.op-section{width:min(900px,calc(100vw - 24px)); z-index:51}
-.op-cropbox{padding:10px 0; display:flex; justify-content:center; max-height:calc(100vh - 220px); overflow:auto}
-.op-cropimg{display:block; max-width:100%; max-height:calc(100vh - 240px); image-rendering:pixelated}
 .notectl .hint{margin-left:8px; color:var(--mist); font-size:12px}
 #recBox{color:var(--bone); display:flex; align-items:center; justify-content:center; gap:8px; cursor:default}
 #recBox .cap{color:var(--mist); font-size:12px}
