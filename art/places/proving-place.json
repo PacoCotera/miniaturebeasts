@@ -8,7 +8,7 @@
     [2, 2, 4, 3], [2, 4, 7, 6], [8, 2, 15, 8],
     [20, 3, 24, 6], [25, 3, 29, 7], [30, 3, 34, 10]
   ],
-  "wayups": [{ "x": 11, "y": 8, "w": 2, "h": 2 }],
+  "wayups": [{ "x": 11, "y": 8, "w": 2, "h": 2, "u": true }],
   "cases": [
     { "id": "01-back-rim", "label": "1 back rim (template 3, callout 1)", "at": [9, 3], "pieces": ["lip-case-3", "lip-case-1", "lip-case-2"] },
     { "id": "02-side-rim", "label": "2 side rim over the flank (callout 2)", "at": [15, 5], "pieces": ["lip-case-5", "lip-case-10"] },

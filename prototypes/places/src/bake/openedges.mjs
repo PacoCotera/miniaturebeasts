@@ -20,6 +20,8 @@ export function cliffInfo(ir, terrains) {
   const wayup = new Set(); for (const a of ir.wayups || []) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayup.add(y * w + x);
   const info = { isCliff: at, wayup, blockCells: new Set(), ringCells: new Set() }, A = landOf(ir, info);   // ringCells: the lip alone, which the level rules treat as a prop-sized obstacle
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (BLOCKS.has(p)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
+  // the way up U (a WayUp area with `u`): no step between its cells and the cells beside it except on row L + 3 (architecture-world-map.md section 5), so the flanking columns block on the notch's rows L - 2, L - 1 and on L + 2 (rows L and L + 1 beside it are ring and face already)
+  for (const a of ir.wayups || []) if (a.u) for (const x of [a.x - 1, a.x + a.w]) for (const y of [a.y - 2, a.y - 1, a.y + 2]) if (x >= 0 && y >= 0 && x < w && y < h) info.blockCells.add(y * w + x);
   return info;
 }
 
@@ -89,7 +91,7 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
     const layer = dg.layers.find((l) => l.terrain === cliff.value), d = layer && layers.get(cliff.value), withUp = d && d.kinds.find((k) => k.rows.wayup);
     if (withUp) {
       const idOfValue = new Map(terrains.map((t) => [t.value, t.id]));
-      for (const a of ir.wayups) for (let c = 0; c <= a.w; c++) {
+      for (const a of ir.wayups) if (!a.u) for (let c = 0; c <= a.w; c++) {   // a `u` area is the new way up: no old tile, its extent is plain ground until the piece is painted
         const col = c === 0 ? 0 : c === a.w ? 2 : 1, i = a.x + c;
         const below = ir.terrain[Math.min(h - 1, a.y + 1) * w + Math.max(0, Math.min(w - 1, Math.max(a.x, Math.min(i, a.x + a.w - 1))))];   // the cell under the face, in the area's columns
         const row = withUp.rows.wayup[idOfValue.get(below)] ?? withUp.rows.wayup.grass;
