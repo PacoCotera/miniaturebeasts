@@ -380,6 +380,48 @@
    "sha256": "9c067ea6d735889ac412d74c804025a6f57d072f9e90f15d44dc81ec6f6a3337"
   },
   {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "a7aff1d4e5",
+   "path": "art/places/sets/ninja-test/cliff-flank-band-e.png",
+   "sha256": "29df491f6db71e9984873ad12c48f4438eb77a0c1e68944d2f8103c936ef39a5"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "ab78c51672",
+   "path": "art/places/sets/ninja-test/cliff-flank-band-w.png",
+   "sha256": "526cca5578660a2097ff3cba0261c4282092c34d5b3b17f040a379c056eb94fb"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "c6b21e311e",
+   "path": "art/places/sets/ninja-test/cliff-flank-head-e.png",
+   "sha256": "5af340df0ff3975c9af9146f02534b830ef976022a3e57d119beea0e728663e2"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "e6a59bf383",
+   "path": "art/places/sets/ninja-test/cliff-flank-head-w.png",
+   "sha256": "c7bd2bfdf63899f9aeb1847da2594921d17a929faea6c701d431943ecfecb44c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "9eeddffa79",
+   "path": "art/places/sets/ninja-test/cliff-flank-tail-e.png",
+   "sha256": "f043a1458df9571d7c7f875cb27e4e4897ad51592da059ea6d3aab290228e683"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "9d04ccd04e",
+   "path": "art/places/sets/ninja-test/cliff-flank-tail-w.png",
+   "sha256": "c4364b37cd56133dbf2332fdf5ab53befaca43e03ccda47f79d6509873f637b1"
+  },
+  {
    "class": "cut-of-signed",
    "date": "2026-11-12",
    "id": "e47de3838f",
@@ -1596,6 +1638,13 @@
    "id": "18cb64bde6",
    "path": "art/places/sets/ninja-test/split-stone.png",
    "sha256": "95357317bd476f31381c0c4e96e3a48e477ad5d1f375aacf0383f4f3c44cf2d6"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-14",
+   "id": "6d236af949",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "19f7c7d7cb5773927ccd3ad8795169e8e302abcf11e27c30d848985ba4a35390"
   },
   {
    "class": "legacy-paint",
