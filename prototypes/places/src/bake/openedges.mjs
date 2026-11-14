@@ -77,12 +77,12 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
       }
     }
   }
-  // the tone on the raised ground: a tone tile whose four cells are all cliff takes the raised tone sheet (the sunlit patch lifted as the ground is), the rest keep the grass tone
+  // the raised top is plain raised fill: no tone patch on a tile whose four cells are all cliff, until a painted tone exists (map-cut-1b; the sheet stays in the set, nothing draws it)
   const toneLayer = dg.layers.find((l) => l.tone);
-  if (cliff && toneLayer && tone && tone.rowRaised !== undefined) {
+  if (cliff && toneLayer) {
     for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
       const c = toneLayer.tiles[j * w1 + i];
-      if (c !== EMPTY && c < ALT_CODE && isCliff(i - 1, j - 1) && isCliff(i, j - 1) && isCliff(i - 1, j) && isCliff(i, j)) toneLayer.tiles[j * w1 + i] = ALT_CODE + 16 * tone.rowRaised + c;
+      if (c !== EMPTY && isCliff(i - 1, j - 1) && isCliff(i, j - 1) && isCliff(i - 1, j) && isCliff(i, j)) toneLayer.tiles[j * w1 + i] = EMPTY;
     }
   }
   // the way up: the kit's piece for the terrain below the face replaces the cliff's own tiles on the tile above the face (row 0) and on the face (row 1)
