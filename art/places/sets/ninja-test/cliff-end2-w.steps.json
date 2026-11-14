@@ -18,9 +18,30 @@
   [
    "flip",
    "h"
+  ],
+  [
+   "key_below",
+   [
+    "#6c7682",
+    "#3e444e",
+    "#343840",
+    "#242626",
+    "#333b47",
+    "#8497a5",
+    "#141b1b",
+    "#9eadb9",
+    "#555c64",
+    "#474d55",
+    "#5a6470",
+    "#6a7b8e",
+    "#acbfc5",
+    "#616b44",
+    "#5e8443",
+    "#79875b"
+   ]
   ]
  ],
- "out_sha256": "d409cbc419a891debc74d5212c7e3dfc751db801b11d13a540cba509e17ef670",
+ "out_sha256": "7bc7351c329a0c00fc04e3efad1769bfebaf3c4c445de39b85166893ebac5a8d",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-13-cliff-corner-scaffold-2",

@@ -1947,7 +1947,7 @@
       0,
       0
     ],
-    "sha256": "4ec39a8910e2d03550b3b90c2c92a46f399cab0b430ff299b7a699216b23869f"
+    "sha256": "77f26e05c07b892ca2560ce7cd35990709e16a9b29259a208207d5a58d46b8ae"
   },
   "cliff-south-2.png": {
     "commit": "local",
@@ -1960,7 +1960,7 @@
       0,
       0
     ],
-    "sha256": "4af950b081ad765115c7afe47b78ed3adae222c4f2c70c1b08d80ea7feea6aa2"
+    "sha256": "9e5c29cca061ce6cba8992df75f34a27b3b6455b3ba11cd973f816bbeb7ab53b"
   },
   "cliff-south-3.png": {
     "commit": "local",
@@ -1973,7 +1973,7 @@
       0,
       0
     ],
-    "sha256": "ec78373e8691d1a80a8df1c85124e9d9dcf0ea710e7212ccf3586e2dc50f1008"
+    "sha256": "0caa9efc34d3573b094afcb9a9502bf47ab02ac7007a03f39b970cbcf2bb6a57"
   },
   "cliff-south-4.png": {
     "commit": "local",
@@ -1986,7 +1986,7 @@
       0,
       0
     ],
-    "sha256": "c1c7493be424e7d7ddffadbecba3e983319ff554d82528ed405bb726cd05245c"
+    "sha256": "0c8d9f779d26b5ce168e01f71b7bc7322b3ca3d7df0b2cb43af838af36f5f6c4"
   },
   "cliff-south-5.png": {
     "commit": "local",
@@ -1999,7 +1999,7 @@
       0,
       0
     ],
-    "sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5"
+    "sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48"
   },
   "cliff-south-6.png": {
     "commit": "local",
@@ -2012,7 +2012,7 @@
       0,
       0
     ],
-    "sha256": "763736c81c0356cec71afd713ab289fc3d85f6f25fe736c0aa087578e17fff39"
+    "sha256": "97439f7bbaa9e5dad5ae336d5f5c134d5539b1ba3e93cca798345036fc31c874"
   },
   "cliff-corner-e-0.png": {
     "commit": "local",
@@ -2025,7 +2025,7 @@
       0,
       0
     ],
-    "sha256": "5e27864f9f13c1c2a1c48095fc49ecc323e41af5e03003109c3822eb99d9ef3c"
+    "sha256": "b3dc54d8f3bf86c0d345233bc5f3ae7b5d801bb14e764a32473f380a7b51590f"
   },
   "cliff-corner-e-1.png": {
     "commit": "local",
@@ -2038,7 +2038,7 @@
       0,
       0
     ],
-    "sha256": "47bc47e822bc7eff97429f455c988d70ea597aa55f9a6104cb569abdb0df096d"
+    "sha256": "5c1c33d5fab8dfd32bb1976617db240156a18495069c0cc0d7b62be5332d8d2c"
   },
   "cliff-corner-e-2.png": {
     "commit": "local",
@@ -2051,7 +2051,7 @@
       0,
       0
     ],
-    "sha256": "d0f2d629ceb3d7f1e1711e853522461a0203afcc9559888f6f489cbef346e985"
+    "sha256": "809d73705fc61dfff81bcaa7e5d66d195aab02dcb5b1b60e8656b8c716c0821a"
   },
   "cliff-corner-e-3.png": {
     "commit": "local",
@@ -2064,7 +2064,7 @@
       0,
       0
     ],
-    "sha256": "69f54346fea7dfc2ff1cb515489a9a13d2b5683db4c1ab811050c5f70b6b1299"
+    "sha256": "81e0e1921fd5ca3f58dffc1c2df314acc2bbb0563029ad5d14c5e675ab764f81"
   },
   "cliff-corner-e-4.png": {
     "commit": "local",
@@ -2077,7 +2077,7 @@
       0,
       0
     ],
-    "sha256": "e220bf54ff4b42cca136759df51ad84ea99604d1e2e4367e75b23009f210c808"
+    "sha256": "a8b31a99d21abde6e2ae4de3672cb2b0671d5c926c0075ed153dba7216cc1398"
   },
   "cliff-corner-e-5.png": {
     "commit": "local",
@@ -2103,7 +2103,7 @@
       0,
       0
     ],
-    "sha256": "50680be8c6b6988ee8c79f1665c802cf85457b70c2342af91f4319702fe31a03"
+    "sha256": "922f26e1716ccedbb514325e7119f3d5305d4cb59bbf3b6fb9ea97d8ffb3eefe"
   },
   "cliff-corner-w-1.png": {
     "commit": "local",
@@ -2116,7 +2116,7 @@
       0,
       0
     ],
-    "sha256": "6ddc344d87779bbd18a9cca8140d06f07f5b15128a824d54e2f8f8731cda660e"
+    "sha256": "5557f77784c2038125d04dd0e2630d83aab8c87c7c7ebf2dc5cbbd568d381800"
   },
   "cliff-corner-w-2.png": {
     "commit": "local",
@@ -2129,7 +2129,7 @@
       0,
       0
     ],
-    "sha256": "dd4425bbe130af3f630851a072ce115cc23334f414414059074ace2107ecb135"
+    "sha256": "8f42990cca32330dfd57910bb1a5cc0c1f636a7d6f957b9fabeb1f0bea91af1b"
   },
   "cliff-corner-w-3.png": {
     "commit": "local",
@@ -2142,7 +2142,7 @@
       0,
       0
     ],
-    "sha256": "df60fb99062279620c9961ce9bd23ea82e8906b8485914e881cb190a40f2b5b1"
+    "sha256": "221c05b2dfe30027a58e270c84b1ae026d1789bfa0f7804a6494e1881a788a3e"
   },
   "cliff-corner-w-4.png": {
     "commit": "local",
@@ -2155,7 +2155,7 @@
       0,
       0
     ],
-    "sha256": "2af492e76c5259156de86a23483429f750266c855a971b1116523599ff5d8dfd"
+    "sha256": "100305881f97f7a95d7ad13fee4ea327fb8b5f0cb9926c4caf6277110100b9e4"
   },
   "cliff-corner-w-5.png": {
     "commit": "local",
@@ -2207,7 +2207,7 @@
       0,
       0
     ],
-    "sha256": "ec3a7e7531fb0c039cd9bdbf4239deb2c9236ba358b7e86f03ab3bfbac176f2d"
+    "sha256": "703d437af2c7dc4d1795db603ee14ac081c9f74e7e34c2e20c36b13a31ed2e44"
   },
   "cliff-end1-w.png": {
     "commit": "local",
@@ -2220,7 +2220,7 @@
       0,
       0
     ],
-    "sha256": "60d35ab7c0411312dc643365758af627b8a2a124c7bffff2d148bd113c14d059"
+    "sha256": "5e41302789889305da2d931d7056ae0d5a47ef82e587f53101a79deede860400"
   },
   "cliff-end2-e.png": {
     "commit": "local",
@@ -2233,7 +2233,7 @@
       0,
       0
     ],
-    "sha256": "987c470fa1c76439d6de3559c917e32a47545fd3a68aed65ff37580fe1ee93c2"
+    "sha256": "c3cf72fe0a975cf212549ccf8f878d7a26c4fad483fadde5a1a14dc81e63a2ff"
   },
   "cliff-end2-w.png": {
     "commit": "local",
@@ -2246,7 +2246,7 @@
       0,
       0
     ],
-    "sha256": "d409cbc419a891debc74d5212c7e3dfc751db801b11d13a540cba509e17ef670"
+    "sha256": "7bc7351c329a0c00fc04e3efad1769bfebaf3c4c445de39b85166893ebac5a8d"
   },
   "fill-deep.png": {
     "commit": "633e4d641",

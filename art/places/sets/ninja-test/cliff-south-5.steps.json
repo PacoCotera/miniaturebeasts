@@ -1,120 +1,154 @@
 {
- "source_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+ "source_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
+ "parent": {
+  "ledger_id": "d30ab8bf5f",
+  "file": "../../signed-parents/cliff-south-5.png"
+ },
  "steps": [
   [
-   "layout",
+   "key_below",
    [
-    1024,
-    1024
-   ],
-   [
-    {
-     "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
-     "steps": [
-      [
-       "crop",
-       [
-        512,
-        0,
-        512,
-        1024
-       ],
-       "terrain"
-      ]
-     ],
-     "at": [
-      0,
-      0
-     ]
-    },
-    {
-     "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
-     "steps": [
-      [
-       "crop",
-       [
-        0,
-        0,
-        512,
-        1024
-       ],
-       "terrain"
-      ]
-     ],
-     "at": [
-      512,
-      0
-     ]
-    }
+    "#6c7682",
+    "#3e444e",
+    "#343840",
+    "#242626",
+    "#333b47",
+    "#8497a5",
+    "#141b1b",
+    "#9eadb9",
+    "#555c64",
+    "#474d55",
+    "#5a6470",
+    "#6a7b8e",
+    "#acbfc5",
+    "#616b44",
+    "#5e8443",
+    "#79875b"
    ]
-  ],
-  [
-   "scale_nearest",
-   [
-    960,
-    960
-   ]
-  ],
-  [
-   "reduce_mode",
-   10
-  ],
-  [
-   "snap",
-   "walk",
-   "7e90b28e41f4",
-   [
-    "#1e2a3e",
-    "#4a5f78"
-   ]
-  ],
-  [
-   "key_edge_bg",
-   [
-    "#69a55d",
-    "#65a05d",
-    "#74a334",
-    "#36603a"
-   ],
-   0,
-   8
-  ],
-  [
-   "crop",
-   [
-    64,
-    0,
-    16,
-    96
-   ],
-   "terrain"
-  ],
-  [
-   "scale_nearest",
-   [
-    48,
-    288
-   ]
-  ],
-  [
-   "key_edge_bg",
-   [
-    "#82b266",
-    "#7a9d5a",
-    "#99b562",
-    "#82a05a"
-   ],
-   0,
-   8
   ]
  ],
- "out_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
- "paid_call": {
-  "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
-  "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
-  "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
-  "raw": "work/raw/step2-seam.png",
-  "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
- },
- "note": "one replayable list from the paid raw step2-seam.png; the first step is the roll-back layout, whose sources are found by sha256 in the raw's folder"
+ "out_sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48",
+ "from_paid_call": {
+  "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below",
+  "parent_steps": {
+   "source_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+   "steps": [
+    [
+     "layout",
+     [
+      1024,
+      1024
+     ],
+     [
+      {
+       "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+       "steps": [
+        [
+         "crop",
+         [
+          512,
+          0,
+          512,
+          1024
+         ],
+         "terrain"
+        ]
+       ],
+       "at": [
+        0,
+        0
+       ]
+      },
+      {
+       "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+       "steps": [
+        [
+         "crop",
+         [
+          0,
+          0,
+          512,
+          1024
+         ],
+         "terrain"
+        ]
+       ],
+       "at": [
+        512,
+        0
+       ]
+      }
+     ]
+    ],
+    [
+     "scale_nearest",
+     [
+      960,
+      960
+     ]
+    ],
+    [
+     "reduce_mode",
+     10
+    ],
+    [
+     "snap",
+     "walk",
+     "7e90b28e41f4",
+     [
+      "#1e2a3e",
+      "#4a5f78"
+     ]
+    ],
+    [
+     "key_edge_bg",
+     [
+      "#69a55d",
+      "#65a05d",
+      "#74a334",
+      "#36603a"
+     ],
+     0,
+     8
+    ],
+    [
+     "crop",
+     [
+      64,
+      0,
+      16,
+      96
+     ],
+     "terrain"
+    ],
+    [
+     "scale_nearest",
+     [
+      48,
+      288
+     ]
+    ],
+    [
+     "key_edge_bg",
+     [
+      "#82b266",
+      "#7a9d5a",
+      "#99b562",
+      "#82a05a"
+     ],
+     0,
+     8
+    ]
+   ],
+   "out_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
+   "paid_call": {
+    "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
+    "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
+    "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
+    "raw": "work/raw/step2-seam.png",
+    "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
+   },
+   "note": "one replayable list from the paid raw step2-seam.png; the first step is the roll-back layout, whose sources are found by sha256 in the raw's folder"
+  }
+ }
 }
