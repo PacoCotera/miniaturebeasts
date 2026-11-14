@@ -9,6 +9,16 @@ export function div(a, b) {
   return Math.floor(a / b);
 }
 
+// floor(v / 2^bits) for any whole v (negative too), when v stays exact (below 2^53). A shift that does not stop at 32 bits.
+export function shr(v, bits) {
+  return Math.floor(v / 2 ** bits);
+}
+
+// The quotient of whole a by whole b > 0, rounded toward zero (C's division on ints).
+export function quot(a, b) {
+  return a < 0 ? -Math.floor(-a / b) : Math.floor(a / b);
+}
+
 // floor(a * n / 2^bits) for whole a, n >= 0, whole bits 1..32, when a * n stays exact (below 2^53).
 export function scale(a, n, bits) {
   const p = a * n;

@@ -4,6 +4,8 @@
 // Read-only. The same file runs in both, so the digests can be compared and the times read side by side.
 import { mulberry32, seeded24, seedFromText } from "../../core/base/random.mjs";
 import { genRegion7, realm7 } from "../src/gen7/region.mjs";
+import { detail } from "../../core/base/noise.mjs";
+import { NOISE_VECTORS } from "../tests/noise-vectors.mjs";
 
 const inQjs = typeof globalThis.scriptArgs !== "undefined";
 const args = inQjs ? globalThis.scriptArgs : process.argv;
@@ -52,5 +54,12 @@ for (const key of Object.keys(file)) {
 }
 const vectorsMs = now() - t1;
 
+// 4. The whole-number noise: its golden vectors (seed, tile, q), then 10,000 samples timed.
+const t4 = now();
+let noiseSame = 0;
+for (const [seed, x, y, q] of NOISE_VECTORS) if (detail(x, y, seed) === q) noiseSame++;
+let hn = 2166136261;
+for (let i = 0; i < 10000; i++) hn = mix(hn, detail((i % 100) - 50, ((i * 7) % 100) - 50, 7) + 65536);
+const noiseMs = now() - t4;
 
-console.log(JSON.stringify({ engine: inQjs ? "small engine" : "node " + process.version, seed: SEED, randomDigest: hr, randomMs, vectorFields: checked, vectorFieldsEqual: same, vectorsMs, realmMs, regions: realm && realm.regions ? realm.regions.length : null }));
+console.log(JSON.stringify({ engine: inQjs ? "small engine" : "node " + process.version, seed: SEED, noiseVectors: NOISE_VECTORS.length, noiseVectorsEqual: noiseSame, noiseDigest: hn, noiseMs10k: noiseMs, randomDigest: hr, randomMs,vectorFields: checked, vectorFieldsEqual: same, vectorsMs, realmMs, regions: realm && realm.regions ? realm.regions.length : null }));
