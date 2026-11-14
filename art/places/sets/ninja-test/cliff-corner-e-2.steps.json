@@ -25,9 +25,18 @@
     "#5e8443",
     "#79875b"
    ]
+  ],
+  [
+   "map",
+   [
+    [
+     "#99b562",
+     "#82b266"
+    ]
+   ]
   ]
  ],
- "out_sha256": "809d73705fc61dfff81bcaa7e5d66d195aab02dcb5b1b60e8656b8c716c0821a",
+ "out_sha256": "03de99905206fe15f071431e21b31cc1e91c98c248748e0d4a65a17ecc518428",
  "from_paid_call": {
   "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below",
   "parent_steps": {

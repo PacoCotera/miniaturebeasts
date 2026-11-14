@@ -55,9 +55,18 @@
   [
    "flip",
    "h"
+  ],
+  [
+   "map",
+   [
+    [
+     "#99b562",
+     "#82b266"
+    ]
+   ]
   ]
  ],
- "out_sha256": "526cca5578660a2097ff3cba0261c4282092c34d5b3b17f040a379c056eb94fb",
+ "out_sha256": "13f6e741b21072a9fcdec0b38518a69a66cf3a4c7e2c486ee4ea0730d3ce9b81",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-14-cliff-lip-side-1",

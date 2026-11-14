@@ -93,9 +93,18 @@
     213,
     348
    ]
+  ],
+  [
+   "map",
+   [
+    [
+     "#99b562",
+     "#82b266"
+    ]
+   ]
   ]
  ],
- "out_sha256": "f80a29bd96de6f28c298e397cc809862ce1c7192b9ab089fa2b090d366720074",
+ "out_sha256": "66bc1b9463de3266336d768f85408322d187c55286a5d2dbb5b75078023ed820",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-14-cliff-wayup-2",

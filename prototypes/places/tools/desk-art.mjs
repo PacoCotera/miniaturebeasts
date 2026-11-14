@@ -194,7 +194,7 @@ export function deskLayers() {
       over: [{ kind: 'rim', lowers: [...ON, ...ABOVE, 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
     },
     cliff: {
-      fill: { sheets: [place(RAISED, 'fill-grass-raised-day.png', 'fill-cliff.png')] },   // the raised meadow ground: every raised cell that is no old face
+      fill: { sheets: [rec({ commit: 'local' }, 'fill-cliff.png', `${RAISED.dir}/fill-grass-raised-day.png`, readFileSync(path.join(SET_DIR, 'fill-cliff.png')))] },   // the raised meadow ground: every raised cell that is no old face
       over: [{
         kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'],   // no sheet: the old over-cliff sheets were unsigned and drew nowhere (art director 2026-11-14 02:24); the kind's pieces are the back cells and the way-ups
         back: Object.fromEntries([1, 2, 3, 7, 11].map((n) => [n, backTile(`cliff-back-${n}.png`)])),   // the back edge's five cases, each its own file

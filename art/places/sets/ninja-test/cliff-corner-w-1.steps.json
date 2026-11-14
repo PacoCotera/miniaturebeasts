@@ -31,9 +31,18 @@
    "alpha",
    1,
    100
+  ],
+  [
+   "map",
+   [
+    [
+     "#99b562",
+     "#82b266"
+    ]
+   ]
   ]
  ],
- "out_sha256": "054046a736de01cfc0fff6c4dbbe867505248736156dfe3eda75c795f19e3f00",
+ "out_sha256": "cc27f2b0051cb00422e745c77e0addd63c0f2d792611f7693098b1c13fe74d94",
  "from_paid_call": {
   "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below; then the floating leaf islands under 100 px are keyed out (key alpha, min part 100)",
   "parent_steps": {

@@ -22,7 +22,16 @@
    ],
    0,
    8
+  ],
+  [
+   "map",
+   [
+    [
+     "#99b562",
+     "#82b266"
+    ]
+   ]
   ]
  ],
- "out_sha256": "a53e6622b919948ee65b9cf2efb4344bb8ae6f7c5afacf18f4141cc1556bed4d"
+ "out_sha256": "2bc209f0dc7a323cc53258fef8b243028d833c00299a75d43071ded5ec3d10af"
 }
