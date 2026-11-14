@@ -16,7 +16,7 @@ export const CORNER_HANDS = ['e', 'w'];   // the corner strip's cells 0..5 (48 x
 export const cornerKind = (hand, k) => `cliff-corner-${hand}-${k}`;
 export const endKind = (rows, hand) => `cliff-end${rows}-${hand}`;   // E2 (rows 2) and E1 (rows 1): whole-cell crops of the signed end cell
 export const END_ROWS = [1, 2];
-export const FLANK_PARTS = ['head', 'band', 'tail'];   // a side wall: its north cell (head), the repeating middle cell (band) and its south cell (tail); each 96 px wide: its own cell and 48 px of the raised cell beside it (its overlap); the west hand is the flip of the east
+export const FLANK_PARTS = ['head', 'band', 'bandb', 'tail'];   // a side wall: its north cell (head), the repeating middle cell (band) and its south cell (tail); each 96 px wide: its own cell and 48 px of the raised cell beside it (its overlap); the west hand is the flip of the east
 export const flankKind = (part, hand) => `cliff-flank-${part}-${hand}`;
 export const FILL_KIND = 'cliff-fill';   // the signed raised fill (fill-cliff.png) as one whole 48 x 48 cell
 

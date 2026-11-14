@@ -331,9 +331,9 @@ export function deskArt() {
   // the side wall (the paid paint of cliff-lip-side-1, cut on its own painted edge into head, band and tail, 96 px wide: the cell and 48 px of the raised cell beside it; the west hand the flip;
   // each file's .steps.json holds the whole list from the paid raw)
   for (const hand of CORNER_HANDS) for (const part of FLANK_PARTS) {
-    const file = `${flankKind(part, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b), h = part === 'head' ? 72 : 48;
+    const file = `${flankKind(part, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b), h = part === 'tail' ? 54 : 48;
     if (im.w !== 96 || im.h !== h) throw new Error(`${file}: a side wall ${part} is 96 x ${h}, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[flankKind(part, hand)] = { image: im, anchor: [hand === 'e' ? 48 : 0, part === 'head' ? 24 : 0] };   // the east hand hangs 48 px over the raised cell on its west; the head hangs 24 px over the row above
+    files.set(file, b); decals[flankKind(part, hand)] = { image: im, anchor: [hand === 'e' ? 48 : 0, 0] };   // the east hand hangs 48 px over the raised cell on its west; no part hangs over the row above
     desk[file] = { commit: 'local', from: `${FLANK_FROM} (the whole chain from the paid raw is in ${file.replace(/\.png$/, '.steps.json')})`, size: [96, h], foot: [0, 0], sha256: sha(b) };
   }
   // the raised fill as one whole cell decal (spec 3.3): the signed fill-cliff.png scaled to a cell, no file of its own (the sprite sheet carries it)

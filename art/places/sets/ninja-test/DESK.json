@@ -2175,17 +2175,30 @@
     "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-head-e.steps.json)",
     "size": [
       96,
-      72
+      48
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "21def66e510a18e991b9cc2527d3a288c13ef17925442e89ffb3b918908c9ad7"
+    "sha256": "29df491f6db71e9984873ad12c48f4438eb77a0c1e68944d2f8103c936ef39a5"
   },
   "cliff-flank-band-e.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-band-e.steps.json)",
+    "size": [
+      96,
+      48
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "7021b55d1b66e1a386ebdd0c544c3ed2ba18ed3b4e65baa0b76474cd12cbccc8"
+  },
+  "cliff-flank-bandb-e.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-bandb-e.steps.json)",
     "size": [
       96,
       48
@@ -2201,30 +2214,43 @@
     "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-tail-e.steps.json)",
     "size": [
       96,
-      48
+      54
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "6d4f6f65beb429e8b3c866c30d0eae379c7a316bfb472d19b92deacdba3e66ca"
+    "sha256": "eb5fa9564d518981ddbf745eb1d6fcb5846ea058478b2034cf509bb98677bc38"
   },
   "cliff-flank-head-w.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-head-w.steps.json)",
     "size": [
       96,
-      72
+      48
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "546bce7a4cf102e9c91e09b1e8f4a0d8c721f056f82f66e8ce19d4c04b34f648"
+    "sha256": "526cca5578660a2097ff3cba0261c4282092c34d5b3b17f040a379c056eb94fb"
   },
   "cliff-flank-band-w.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-band-w.steps.json)",
+    "size": [
+      96,
+      48
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "e08879d24a58b234eed216b7c5dc850627ad1c6edd19cb01d4663831a12b076e"
+  },
+  "cliff-flank-bandb-w.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-bandb-w.steps.json)",
     "size": [
       96,
       48
@@ -2240,13 +2266,13 @@
     "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-tail-w.steps.json)",
     "size": [
       96,
-      48
+      54
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "05b426236e2f3238923458fe7d4d1b999978dae9092259ef3025f9e26c2a17b0"
+    "sha256": "2db27fc069ff647c12bdc1c23ff83737f9815cb1694c1f2022b822ddafb590a8"
   },
   "cliff-end1-e.png": {
     "commit": "local",

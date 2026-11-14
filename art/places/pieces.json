@@ -122,19 +122,19 @@
     },
     {
       "id": "flank-head", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-head-e", "cliff-flank-head-w"],
-      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, -24, 96, 72], "margin": 12,
-      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
-      "places": "the north cell of a side wall: the moss cushion's back end over the raised cell beside it and 24 px up over the row above (east hand extent as listed, the west hand its flip); placed, not yet signed"
-    },
-    {
-      "id": "flank-band", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-band-e", "cliff-flank-band-w"],
       "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, 0, 96, 48], "margin": 12,
       "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
-      "places": "the repeating middle cells of a side wall: the moss cushion over the raised cell and the shadowed slate beside it; placed, not yet signed"
+      "places": "the north cell of a side wall: the top end of the side wall: the wall starts, the moss starts thin (no knob), over the raised cell beside it (east hand extent as listed, the west hand its flip); placed, not yet signed"
+    },
+    {
+      "id": "flank-band", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-band-e", "cliff-flank-band-w", "cliff-flank-bandb-e", "cliff-flank-bandb-w"],
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, 0, 96, 48], "margin": 12,
+      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
+      "places": "the repeating middle cells of a side wall, two variants picked by the world tile: the moss cushion over the raised cell and the shadowed slate beside it; placed, not yet signed"
     },
     {
       "id": "flank-tail", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-tail-e", "cliff-flank-tail-w"],
-      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, 0, 96, 48], "margin": 12,
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, 0, 96, 54], "margin": 12,
       "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
       "places": "the south cell of a side wall, where it meets the face end or the south lip; placed, not yet signed"
     },
