@@ -7,7 +7,7 @@
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
-import { RIM_CASES, southFoot, sideFillCells, rimCells } from './southruns.mjs';
+import { RIM_CASES, southFoot, sideFillCells } from './southruns.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
@@ -56,7 +56,6 @@ export function gullies(ir, terrains) {
 export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
   const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, fillCells = cliff ? sideFillCells(ir, cinfo) : new Map();
-  const rimSet = new Set(cliff ? rimCells(ir, cinfo).map((r) => r.x + ',' + r.y) : []);
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
   for (const layer of dg.layers) {
     if (layer.tone) continue;
@@ -72,7 +71,6 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
           const x = kase === 5 ? i : i - 1;
           layer.tiles[j * w1 + i] = fillCells.has(x + ',' + (j - 1)) && fillCells.has(x + ',' + j) ? EMPTY : FILL_CODE; continue;
         }
-        if (kase === 3 && rimSet.has((i - 1) + ',' + j) && rimSet.has(i + ',' + j)) { layer.tiles[j * w1 + i] = EMPTY; continue; }   // the straight back rim N (decals) covers both cells
         if (!RIM_CASES.has(kase)) { layer.tiles[j * w1 + i] = EMPTY; continue; }            // the pieces draw it
       }
       if (full) continue;
