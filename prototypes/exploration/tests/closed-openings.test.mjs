@@ -19,7 +19,7 @@ test("on every land cell of three worlds no opening stands on a side the land re
       cells++;
       for (const dir of ["up", "down", "left", "right"]) {
         const kind = sideKind(G, c, dir);
-        if (kind !== "cliff" && kind !== "water") continue;   // the map's end (and a region's border) is the atlas's: the views audit
+        if (kind !== "water") continue;   // a cliff side is not shut whole (the tiles decide, below); the map's end (and a region's border) is the atlas's: the views audit
         shut++;
         assert.ok(!lay.open.some((s) => DIR[s] === dir), `seed ${seed} cell ${c}: an opening on the ${kind} side ${dir}`);
         const { x, y } = lay.spawn, onIt = dir === "up" ? y === 0 : dir === "down" ? y === lay.h - 1 : dir === "left" ? x === 0 : x === lay.w - 1;
@@ -165,4 +165,39 @@ test("over 200 places nothing to act on lies where it cannot be walked to, no bu
   }
   assert.equal(places, 200, `${places} places checked`);
   assert.deepEqual(bad.slice(0, 12), [], `${bad.length} faults`);
+});
+
+// Land shape B1 (crossing-2): the tiles decide a side between two land cells, not the cell summary. A cliff side open on part of its length is crossable there and refused at its cliff part.
+test("a side open on part of its length is crossable there and refused at its cliff part, in a place and on the map; the cache answers the same from either cell", () => {
+  const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(7); TEST.calm = true; S.tier = 2; startExpedition('weather', G.spawns[0]);`);
+  const found = p.run(`(() => { let closed = null;
+    for (let c = 0; c < MW * MH; c++) for (const dir of ['right', 'down']) {
+      const n = stepCell(c, dir); if (n < 0 || !inRange(c) || !inRange(n) || edgeKind(c, dir) !== EDGE.CLIFF || !tileSideApplies(c, dir)) continue;
+      const ts = tileSide(c, dir); if (!ts) continue;
+      const back = tileSide(n, dir === 'right' ? 'left' : 'up');
+      if (!ts.open) { closed = closed || { c, dir }; continue; }
+      const k = ts.mask.indexOf(1), kc = ts.mask.indexOf(0); if (kc < 0) continue;
+      return { c, dir, n, k, kc, same: back === ts, closed: closed && closed.c, closedDir: closed && closed.dir }; }
+    return null; })()`);
+  assert.ok(found, "a cliff side whose tiles are open on part of it");
+  assert.equal(found.same, true, "the side's answer is one record from either cell");
+  assert.equal(p.run(`canStep(${found.c}, '${found.dir}')`), true, "on the map the open side is crossable");
+  assert.equal(p.run(`crossReason(${found.c}, '${found.dir}')`), null);
+  if (found.closed != null) assert.equal(p.run(`canStep(${found.closed}, '${found.closedDir}')`), false, "a side with no open run stays refused on the map");
+  const stand = (k) => `(() => { const lay = layout('${found.c}'), P = S.exp.patch; P.x = '${found.dir}' === 'right' ? lay.w - 1 : ${k}; P.y = '${found.dir}' === 'right' ? ${k} : lay.h - 1; P.dir = '${found.dir}'; return crossLanding('${found.dir}'); })()`;
+  const enter = `S.exp.pos = ${found.c}; enterPatch(); if (RT.view) endView();`;
+  p.run(enter);
+  const len = p.run(`tileSide(${found.c}, '${found.dir}').len`), ways = [], walls = [];
+  for (let k = 0; k < len; k++) (p.run(stand(k)) ? ways : walls).push(k);
+  assert.ok(ways.length > 0 && walls.length > 0, "along the side some tiles let you cross and some do not");
+  // the cliff part: refused in the place, the pawn stays
+  p.run(stand(walls[0]));
+  p.run(`patchStep('${found.dir}', 'creep')`);
+  assert.equal(p.run("S.exp.pos"), found.c, "at the cliff part the step is refused");
+  // the open part: crossed, landing on the far tile of the same row or column
+  const land = p.run(stand(ways[0]));
+  assert.ok(land && typeof land.x === "number", "the open part has a landing");
+  p.run(`patchStep('${found.dir}', 'creep')`);
+  assert.equal(p.run("S.exp.pos"), found.n, "across the open part the step crosses");
+  assert.deepEqual(p.run("({ x: S.exp.patch.x, y: S.exp.patch.y })"), land, "and the pawn lands on the far tile");
 });

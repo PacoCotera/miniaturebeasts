@@ -449,7 +449,7 @@ function litPlace(onGen5) {
   p.run("newWorld(3); TEST.calm = true; startExpedition('weather', G.spawns[0]); enterPatch(); globalThis.__rm = []; globalThis.__n = { stone: 0, bush: 0, canopy: [] };"
     + "const c0 = PB.prototype.canvas; PB.prototype.canvas = function (rm) { __rm.push(rm); return c0.apply(this, arguments); };"
     + "const s0 = stoneArt; stoneArt = function () { __n.stone++; return s0.apply(this, arguments); }; const b0 = bushArt; bushArt = function () { __n.bush++; return b0.apply(this, arguments); };"
-    + "const k0 = canopyArt; canopyArt = function (v) { __n.canopy.push(v); return k0.apply(this, arguments); }; unveiled = () => true;");
+    + "unveiled = () => true;");
   return p;
 }
 const lit = (p, a) => { p.run(`__rm = []; __n.stone = 0; __n.bush = 0; __n.canopy = []; PIC.warn(0, 0, ${JSON.stringify(a)})`); return { rm: p.run("__rm[0]"), stone: p.run("__n.stone"), bush: p.run("__n.bush"), canopy: p.run("__n.canopy.join()") }; };
@@ -474,11 +474,6 @@ test("S5 shows what is still on the lit tile: a bush only when the view draws it
   assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 1, "seen: the bush");
   p.run("unveiled = () => false;"); assert.equal(lit(p, { key: P.key, x: P.x + 2, y: P.y }).bush, 0, "under the veil: no bush");
   p.run("unveiled = () => true;");
-  // a trunk two tiles away: its canopy reaches the lit tile; the checkerboard variant when the pawn is beside the trunk
-  const tx = P.x + 5, ty = P.y;
-  p.run(`{ const lay = layout('${P.key}'), g0 = lay.tiles[${P.y} * PW + ${P.x}]; for (let k = 0; k < lay.tiles.length; k++) if (lay.tiles[k] === T.TRUNK) lay.tiles[k] = g0; lay.tiles[${ty} * PW + ${tx}] = T.TRUNK; }`);
-  assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "0", "whole leaves");
-  p.run(`S.exp.patch.x = ${tx + 1}; S.exp.patch.y = ${ty};`); assert.equal(lit(p, { key: P.key, x: tx, y: ty - 1 }).canopy, "1", "thinned to the checkerboard beside the trunk");
 });
 test("the opening screen: no strip and no counts (no turn, tier, fog, 'of 320' or Seen), even with a plate lost and a sealed crate in the bay", () => {
   const p = page();

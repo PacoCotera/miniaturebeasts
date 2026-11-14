@@ -34,3 +34,53 @@ test("the first pods lie in the find slot nearest where the pawn first comes in,
     for (const q of r) assert.ok(q.d <= q.nearest + 12 || q.d <= 12, `seed ${seed}: ${q.id} lies ${q.d.toFixed(1)} tiles from the way in (nearest slot ${q.nearest.toFixed(1)})`);
   }
 });
+
+// The storm nerf: a Probe standing still in the open is struck at most once a pass, a strike takes one plate, and the strikes are 24+ actions apart.
+// Seeds 1-8 vary the expedition number (the roll's key) on one world; the rain is forced over the Probe in spells of 20 actions with 5 quiet between,
+// and each spell opens with a warned strike (passWarned set on its first action), as a real pass does.
+function standStill(seed, plates, level) {
+  const p = makePage({ gen: 7, console: "silent" });
+  p.run(`newWorld(1); TEST.calm = true; startExpedition('weather', G.spawns[0]); S.exp.n = ${seed + 1}; S.exp.storm = null; S.exp.shield = ${plates};
+    stormLevel = () => ${level}; stormRain = () => S.exp.actions % 25 < 20; sheltered = () => false; inFog = () => false; depotShelter = () => false;`);
+  const hits = []; let brokeAt = null;
+  for (let a = 1; a <= 300 && brokeAt === null; a++) {
+    const before = p.run("S.exp.shield");
+    if ((a - 1) % 25 === 0) p.run("S.exp.passWarned = 1");
+    p.run("advance('map')");
+    const after = p.run("S.exp.shield");
+    if (after !== before) hits.push({ at: a, took: before - after, pass: Math.floor((a - 1) / 25) });
+    if (after <= 0) brokeAt = a;
+  }
+  return { hits, brokeAt };
+}
+
+test("storm nerf, seeds 1-8: standing still in the open, strikes are 24+ actions apart, one a pass at most, one plate each", () => {
+  let total = 0;
+  for (let seed = 1; seed <= 8; seed++) {
+    const { hits, brokeAt } = standStill(seed, 3, seed % 2 ? 2 : 3);
+    total += hits.length;
+    for (let i = 0; i < hits.length; i++) {
+      assert.equal(hits[i].took, 1, `seed ${seed}: a strike takes one plate`);
+      if (i) { assert.ok(hits[i].at - hits[i - 1].at >= 24, `seed ${seed}: strikes ${hits[i - 1].at} and ${hits[i].at} are under 24 apart`); assert.notEqual(hits[i].pass, hits[i - 1].pass, `seed ${seed}: two strikes in one pass`); }
+    }
+    if (brokeAt !== null) assert.ok(brokeAt >= (3 - 1) * 24, `seed ${seed}: a full Probe broke after only ${brokeAt} actions`);
+  }
+  assert.ok(total >= 4, `only ${total} strikes over 8 seeds: the test is not exercising the storm`);
+});
+
+test("storm nerf: a stray aimed at the Probe's cell misses after one step, and hits if it stays", () => {
+  for (const seed of [1, 2, 3]) {
+    const p = makePage({ gen: 7, console: "silent" });
+    p.run(`newWorld(1); TEST.calm = true; startExpedition('weather', G.spawns[0]); S.exp.n = ${seed + 1}; S.exp.storm = null; S.exp.shield = 3;
+      stormLevel = () => 2; stormRain = () => true; sheltered = () => false; inFog = () => false; depotShelter = () => false; rnd = () => 0; S.exp.passWarned = 1; S.exp.hitAt = -99;`);
+    p.run("advance('map')");
+    assert.ok(p.run("!!S.exp.stray && S.exp.stray.cell === S.exp.pos && S.exp.stray.scope === 'map'"), "the stray is aimed at the Probe's own cell");
+    const there = p.run("S.exp.pos"); p.run("rnd = () => 1; S.exp.pos = S.exp.pos + (cxy(S.exp.pos).x < MW - 1 ? 1 : -1);");
+    p.run("advance('map')");
+    assert.equal(p.run("S.exp.shield"), 3, "the Probe stepped off: the strike missed");
+    assert.ok(p.run("!!S.exp.stormCells[" + there + "]"), "it left its mark on the empty cell");
+    p.run("rnd = () => 0; S.exp.passWarned = 1; S.exp.hitAt = -99; advance('map'); rnd = () => 1;");
+    p.run("advance('map')");
+    assert.equal(p.run("S.exp.shield"), 2, "control: standing still, the strike hits for one plate");
+  }
+});
