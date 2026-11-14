@@ -23,7 +23,8 @@ const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, T
 export const FIND_MEAN = 5.5;                                            // finds a place, the realm's average (today's templates)
 const KIND_SHARE = { pod: 1.35, fruit: 0.9, dew: 1.1, stone: 1.1, material: 0.35 };   // today's template mix, with 0.7 cups a cell from the spring's budget added to dew below
 const SPRING_CUPS = 0.7;
-const POD_AFTER_HEART = 0.3;   // the pod draw share once a set piece has given the place its pod: the stamps fill most finds with other kinds, so the rest lean to pods to keep the mean pods a place holds (tools/gen7-places-check.mjs)
+const MIX_FIX = { pod: 1.1, fruit: 0.84, dew: 1.2, stone: 1.04, material: 1.15 };   // the last trim of each kind's mean to today's (tools/gen7-places-check.mjs)
+const SUPPLY_FULL = { pod: 4.5, fruit: 2.7, dew: 1.5, stone: 4.5, material: 2 };   // a kind's pool weight at which its draw is at full share (6 for all before the set pieces; the scenery they keep clear leaves less supply, this keeps each kind's mean what it was: tools/gen7-places-check.mjs)
 export const STRIKE_PER_CELL = 0.28;                                     // marks a land cell, on average
 const STRIKE_BIOME = { fells: 1.8, tarns: 1.8, woods: 0.45, tallwood: 0.35, thickets: 0.7, marsh: 0.6, meres: 0.7, mixed: 1, downs: 1.1 };
 export const STRIKE_GLASS_PCT = 12;                                      // of the marks on sand, a few hold storm glass
@@ -108,7 +109,7 @@ function holdOn(a, pick) {
   const content = contentOf(planOf(seed, X, Y), seed);
   for (const p of content.setProps) {
     if (p.kind === 'split-stone') { for (const [dx, dy] of [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]]) { const lx = p.x + dx, ly = p.y + dy; if (lx >= 0 && ly >= 0 && lx < w && ly < h) occ[ly * w + lx] = 1; } continue; }
-    if (p.x >= 0 && p.y >= 0 && p.x < w && p.y < h && p.fam === 'rocks') { occ[p.y * w + p.x] = 1; rocks.push({ x: p.x, y: p.y }); }
+    if (p.x >= 0 && p.y >= 0 && p.x < w && p.y < h && p.fam === 'rocks') { occ[p.y * w + p.x] = 1; }   // a wall takes its tile but adds no pod or stone supply: the set pieces give finds from the place's count, never more supply
   }
   for (const p of content.pieces) if (p.x >= 0 && p.y >= 0 && p.x < w && p.y < h) occ[p.y * w + p.x] = 1;
   out.setProps = content.setProps; out.pieces = content.pieces; out.shelter = content.shelter; out.stamps = content.spots;
@@ -172,17 +173,11 @@ function holdOn(a, pick) {
     const f = { x: t.x, y: t.y, kinds: [kind], chance: 1 }; chosen.push(f); out.finds.push(f);
     pools[kind] = pools[kind].filter(p => p.x !== t.x || p.y !== t.y); return f;
   };
-  // the set pieces' find slots, in the plan's order (the heart's pod, the other spots' pods and stones, the land's kind, the chance stones), within the count: the count of finds never changes
-  let stampPod = false;
+  // the set pieces' find slots take finds from the place's count and from its kind shares, never add: the tiles are kept for them (out of every pool), the herds' pods, the moss and the pearl are taken as before,
+  // then the rest of the count is planned as a list of kinds drawn by today's mix (`plan`); a slot takes its kind off that list, or stays bare when the list holds none of it. What is left of the list fills the rest.
   const SLOT_KIND = { p: 'pod', k: 'stone', c: 'stone', m: land === L.MEADOW ? 'fruit' : land === L.ROCK ? 'stone' : 'dew' };
-  for (const s of content.slots) {
-    if (out.finds.length >= count) break;
-    if (!free(s.x, s.y) || !apart(s.x, s.y, 1)) continue;
-    const kind = SLOT_KIND[s.k], f = { x: s.x, y: s.y, kinds: [kind], chance: 1, spot: s.spot };
-    chosen.push(f); out.finds.push(f);
-    for (const k of Object.keys(pools)) pools[k] = pools[k].filter(p => p.x !== s.x || p.y !== s.y);
-    if (kind === 'pod') stampPod = true;
-  }
+  const slotTiles = content.slots.filter(s => free(s.x, s.y));
+  if (slotTiles.length) for (const k of Object.keys(pools)) pools[k] = pools[k].filter(p => !slotTiles.some(s => s.x === p.x && s.y === p.y));
   // a pod near each herd (the awake creatures set pods by their herds), at most two a cell
   herds.slice(0, 2).forEach((hd, i) => { const f = take('pod', 'herd' + i, hd) || nearTile(hd, free, chosen, out, apart); if (f) f.herd = hd.sp; });
   // a moss hollow in damp shade, kept as two readings: full cups, and a pod asleep under the moss
@@ -204,10 +199,20 @@ function holdOn(a, pick) {
     out.signs.push({ kind: 'reedline', banks: reeds.map(r => ({ x: r.x, y: r.y, w: r.w, h: r.h })), pearl: p ? out.finds.length - 1 : -1 });
   }
   // the rest, by the mix of today's templates (the spring's cups added to dew)
+  // a kind's draw follows its supply: scarce ground (a sand strip, one bush) gets fewer of its kind than the mix says
+  const kindWts = () => Object.keys(pools).map(k => ({ k, wt: pools[k].length ? (KIND_SHARE[k] + (k === 'dew' ? SPRING_CUPS : 0)) * MIX_FIX[k] * Math.min(1, pools[k].reduce((s, p) => s + p.wt, 0) / SUPPLY_FULL[k]) : 0 }));
+  const plan = [], w0 = kindWts();
+  for (let i = 0; i < count - out.finds.length; i++) { const k = roulette(w0, U('kind', i))?.k; if (k) plan.push(k); }
+  for (const s of slotTiles) {
+    if (out.finds.length >= count) break;
+    const kind = SLOT_KIND[s.k], at = plan.indexOf(kind);
+    if (at < 0 || !apart(s.x, s.y, 1)) continue;   // over the place's share of the kind: left bare
+    plan.splice(at, 1);
+    const f = { x: s.x, y: s.y, kinds: [kind], chance: 1, spot: s.spot };
+    chosen.push(f); out.finds.push(f);
+  }
   for (let guard = 0; out.finds.length < count && guard < 40; guard++) {
-    // a kind's draw follows its supply: scarce ground (a sand strip, one bush) gets fewer of its kind than the mix says
-    const wts = Object.keys(pools).map(k => ({ k, wt: pools[k].length ? (KIND_SHARE[k] * (k === 'pod' && stampPod ? POD_AFTER_HEART : 1) + (k === 'dew' ? SPRING_CUPS : 0)) * Math.min(1, pools[k].reduce((s, p) => s + p.wt, 0) / 6) : 0 }));
-    const k = roulette(wts, U('kind', guard))?.k; if (!k) break;
+    const k = (plan.length ? plan.shift() : roulette(kindWts(), U('kind', 100 + guard))?.k); if (!k) break;
     take(k, 'f' + guard);
   }
   // a start's guarantees: a stone in reach and a pod (the page's ensureCharge and firstPods read them)
@@ -267,7 +272,7 @@ function findCount(seed, X, Y, land, biome, walkable, supply, H) {
   const v = FIND_MEAN + FIND_OFFSET + 3.6 * z + 1.3 * rich + lean + room;
   return Math.max(2, Math.min(9, Math.round(v), Math.floor(walkable / 8)));
 }
-export const FIND_OFFSET = -1.38;   // was -1.1 before the set pieces: with fewer props the supply and the free ground read higher, and this puts the mean count back to what it was (tools/gen7-places-check.mjs)
+export const FIND_OFFSET = -1.1;
 
 // Is this side of the cell shut by the world's own edge kind (a cliff, water that is not the cell's own, the map's end)? c: the cell's number in its region G; X, Y: its realm cell.
 const SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' }, SIDE_STEP = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };

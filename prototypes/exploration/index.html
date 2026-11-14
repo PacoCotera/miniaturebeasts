@@ -456,7 +456,9 @@ function firstPods(seed, cell, pods) {
   const R = makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
   const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
   const ok = c => podSite(c, buried());
-  const pick = (pools, id, sp) => { const pool = pools.find(a => a.length); if (pool) { const c = R.pick(pool); out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); } };
+  // a first pod lies in a place that holds a pod slot (the find mix gives most places one, not every place): a few picks are tried, one place's layout each
+  const hasSlot = c => !(PL.ready && G.gen === 7) || (layout(String(c)).podSlots || []).length > 0;
+  const pick = (pools, id, sp) => { let pool = pools.find(a => a.length); for (let n = 0; pool && n < 6; n++) { const c = R.pick(pool); if (!hasSlot(c) && pool.length > 1) { pool = pool.filter(q => q !== c); continue; } out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); break; } };
   const d1 = reach.filter(c => dist(c) === 1);
   // pod A lies in the start's own place when it holds a pod slot (the generator gives every start one: hold.mjs, "a start's guarantees"), so the first Call there can lift it; else at distance 1 as before
   const here = PL.ready && G.gen === 7 ? layout(String(cell)) : null;

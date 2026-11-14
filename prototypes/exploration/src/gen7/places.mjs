@@ -7,7 +7,7 @@
 import FlatQueue from 'flatqueue';
 import { hash, L, MW, MH, groundName } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
-import { realm7, route } from './region.mjs';
+import { realm7 } from './region.mjs';
 import { CW, CH } from './world.mjs';
 import { cellTerrain, decorOf } from './place.mjs';
 import { openingsOf } from './hold.mjs';
@@ -20,6 +20,7 @@ const TV = { SAND: 3, PATH: 5, GRASS: 6, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER
 const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, TV.CLIFF]) WALKT[t] = 1;
 export const ZM = 4;                         // the zone's margin round the frame, tiles
 export const QUIET = 3;                      // no tall scenery within this many tiles of a spot
+const EDGE = QUIET + 1;                      // a spot keeps this far in from the frame's edge (the frame's first and last tile are the apron), so its quiet ground stays inside its own cell and a tile's mask asks one plan only
 const SIGHT = 16, GAP = 2;                   // a heart is seen from a way in within SIGHT tiles; GAP clear tiles between two spots
 const SIDES8 = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.41], [1, -1, 1.41], [-1, 1, 1.41], [-1, -1, 1.41]];
 const unit = (seed, X, Y, ...k) => (hash(seed, 'gen7', 'places', X, Y, ...k) % 100000) / 100000;
@@ -31,17 +32,17 @@ const flipped = (s, f) => (f ? { ...s, rows: s.rows.map(r => [...r].reverse().jo
 export const LAND_WORD = land => groundName(land, false);
 
 // ---- the plan of a cell ----
-const PLANS = new Map();
+const PLANS = new Map();   // by seed, then by cell number: a plan is made once a cell (the decor asks for it for every tile)
 export function planOf(seed, X, Y) {
-  const key = seed + ':' + X + ',' + Y;
-  if (PLANS.has(key)) return PLANS.get(key);
+  let m = PLANS.get(seed); if (!m) { if (PLANS.size > 3) PLANS.clear(); m = new Map(); PLANS.set(seed, m); }
+  const key = Y * 4096 + X, hit = m.get(key);
+  if (hit !== undefined) return hit;
   const p = X < 0 || Y < 0 || X >= MW * ATLAS || Y >= MH * ATLAS ? null : build(seed, X, Y);
-  if (PLANS.size > 6000) PLANS.clear();
-  PLANS.set(key, p); return p;
+  if (m.size > 6000) m.clear();
+  m.set(key, p); return p;
 }
 
-function build(seed, X, Y) {
-  const R = realm7(seed), G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW), land = G.land[c];
+function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW), land = G.land[c];
   if (land === L.WATER || G.island[c]) return null;
   const ct = cellTerrain(seed, X, Y), { x0, y0, w, h, terrain } = ct, D = decorOf(seed), N = w * h, I = (x, y) => y * w + x;
   const word = LAND_WORD(land), U = (...k) => unit(seed, X, Y, ...k);
@@ -69,13 +70,24 @@ function build(seed, X, Y) {
   for (const a of wayups) { nodes.push([a.x, a.y + 1]); nodes.push([a.x, a.y]); }
   const nodeOk = nodes.filter(([x, y]) => walk[I(x, y)]);
   const stepCost = (n) => (terrain[n] === TV.PATH ? 0.5 : 1);
-  const paths = {}, dist = {};
-  for (let i = 0; i < nodeOk.length; i++) for (let j = i + 1; j < nodeOk.length; j++) {
-    const a = nodeOk[i], b = nodeOk[j];
-    const r = route(w, h, I(a[0], a[1]), I(b[0], b[1]), (cc, n) => { const x = n % w, y = (n / w) | 0, px = cc % w, py = (cc / w) | 0; return stepOk(px, py, x, y) ? stepCost(n) : null; });
-    if (!r) continue;
-    let d = 0; for (let k = 1; k < r.length; k++) d += stepCost(r[k]);
-    paths[i + ',' + j] = r; dist[i + ',' + j] = d;
+  // one distance map a way in (four ways of stepping, with the parent of every tile), each pair's path read off it: a flood a node, not a route search a pair
+  const paths = {}, dist = {}, SIDES4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  for (let i = 0; i < nodeOk.length; i++) {
+    const s = I(nodeOk[i][0], nodeOk[i][1]), Dm = new Float32Array(N).fill(Infinity), par = new Int32Array(N).fill(-1), q = new FlatQueue();
+    Dm[s] = 0; q.push(s, 0);
+    while (q.length) {
+      const d = q.peekValue(), cc = q.pop(); if (d > Dm[cc]) continue;
+      const x = cc % w, y = (cc / w) | 0;
+      for (const [dx, dy] of SIDES4) {
+        const X2 = x + dx, Y2 = y + dy; if (!stepOk(x, y, X2, Y2)) continue;
+        const n = I(X2, Y2), nd = d + stepCost(n); if (nd < Dm[n]) { Dm[n] = nd; par[n] = cc; q.push(n, nd); }
+      }
+    }
+    for (let j = i + 1; j < nodeOk.length; j++) {
+      const t = I(nodeOk[j][0], nodeOk[j][1]); if (Dm[t] === Infinity) continue;
+      const r = []; for (let n = t; n !== -1; n = par[n]) r.push(n);
+      r.reverse(); paths[i + ',' + j] = r; dist[i + ',' + j] = Dm[t];
+    }
   }
   // a minimum spanning forest over the nodes by path length (a place whose levels never meet has one tree a level), each edge drawn as its shortest path
   const parent = nodeOk.map((_, i) => i), find = (i) => { while (parent[i] !== i) { parent[i] = parent[parent[i]]; i = parent[i]; } return i; };
@@ -115,7 +127,7 @@ function build(seed, X, Y) {
     for (const [bx, by, bw, bh, gp] of blocks) if (sx < bx + bw + gp && bx < sx + fw + gp && sy < by + bh + gp && by < sy + fh + gp) return false;
     for (const [bx, by, bw, bh] of placed) if (sx < bx + bw + GAP && bx < sx + fw + GAP && sy < by + bh + GAP && by < sy + fh + GAP) return false;
     for (let y = sy; y < sy + fh; y++) for (let x = sx; x < sx + fw; x++) {
-      if (x < 2 || y < 2 || x > w - 3 || y > h - 3 || !walk[I(x, y)] || plan.spine[I(x, y)]) return false;
+      if (x < EDGE || y < EDGE || x > w - 1 - EDGE || y > h - 1 - EDGE || !walk[I(x, y)] || plan.spine[I(x, y)]) return false;
       if (!anyLevel && lvl[I(x, y)] !== level) return false;
     }
     return true;
@@ -149,7 +161,7 @@ function build(seed, X, Y) {
     const oh = stampById.overhang;
     if (oh) {
       const cand = [];
-      for (let sy = 2; sy <= h - 6; sy++) for (let sx = 2; sx <= w - 6; sx++) {
+      for (let sy = EDGE; sy <= h - 6; sy++) for (let sx = EDGE; sx <= w - 6; sx++) {
         if (!(raised(sx + 1, sy - 1) && raised(sx + 2, sy - 1) && (D.flags(x0 + sx + 1, y0 + sy) & 1) && (D.flags(x0 + sx + 2, y0 + sy) & 1))) continue;   // the roof on the face
         let ok = true;
         for (let i = 0; i < 4 && ok; i++) for (let j = 1; j < 4; j++) { const x = sx + i, y = sy + j; if (!walk[I(x, y)] || lvl[I(x, y)] || plan.spine[I(x, y)] || (D.flags(x0 + x, y0 + y) & 1)) ok = false; }
@@ -220,15 +232,15 @@ function build(seed, X, Y) {
 const MASKS = new Map();
 export function maskFn(seed) {
   let f = MASKS.get(seed); if (f) return f;
+  const memo = new Map();
   f = (gx, gy) => {
-    let m = 0;
-    for (let Y = Math.floor((gy - ZM) / CH); Y <= Math.floor((gy + ZM) / CH); Y++) for (let X = Math.floor((gx - ZM) / CW); X <= Math.floor((gx + ZM) / CW); X++) {
-      const p = planOf(seed, X, Y); if (!p) continue;
-      const lx = gx - p.x0, ly = gy - p.y0; if (lx < -ZM || ly < -ZM || lx >= p.w + ZM || ly >= p.h + ZM) continue;
-      // only a cell's own tiles and one tile of its apron carry its spine; spots reach three tiles out
-      const v = p.zone[(ly + ZM) * p.zw + lx + ZM]; if (v > m) m = v; if (m === 2) return 2;
-    }
-    return m;
+    const mk = gy * 65536 + gx, got = memo.get(mk); if (got !== undefined) return got;
+    const r = maskAtTile(gx, gy); if (memo.size > 400000) memo.clear(); memo.set(mk, r); return r;
+  };
+  // a plan marks only its own cell's tiles (spots keep EDGE in from the frame, the spine stays in the cell): a tile asks the plan of its own cell, and no neighbour's
+  const maskAtTile = (gx, gy) => {
+    const p = planOf(seed, Math.floor(gx / CW), Math.floor(gy / CH)); if (!p) return 0;
+    return p.zone[(gy - p.y0 + ZM) * p.zw + gx - p.x0 + ZM];
   };
   if (MASKS.size > 3) MASKS.clear();
   MASKS.set(seed, f); return f;
