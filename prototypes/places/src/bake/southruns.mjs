@@ -99,9 +99,28 @@ export function sideFillCells(ir, cliffs) {
   return out;
 }
 
+// The straight back rim N (cliff-rim-n-1..3, 48 x 48, the signed cells of art-jobs/2026-11-14-cliff-rim-1; drawn on the low cell above the rim cell, its lower part the moss over the raised cell): for every raised cell whose cell above is low and whose two neighbours along the row are raised with low above too
+// (so both dual tiles it touches are case 3). The look is by world position. Returns [{ kind, x, y }] in cells. The corners (NW, NE, iW, iE) keep the old sheet for now.
+export const RIM_N = 3;
+export const rimKind = (k) => `cliff-rim-n-${k + 1}`;
+export function rimCells(ir, cliffs) {
+  const A = landOf(ir, cliffs), m = A.m, out = [], x0w = ir.origin ? ir.origin.x : 0, y0w = ir.origin ? ir.origin.y : 0;
+  const top = (x, y) => A.raised(x, y) && A.low(x, y - 1);
+  for (let y = -m + 1; y < ir.h + m; y++) for (let x = -m + 1; x < ir.w + m - 1; x++) {
+    if (!A.inside(x - 1, y - 1) || !A.inside(x + 1, y)) continue;
+    if (top(x - 1, y) && top(x, y) && top(x + 1, y) && !A.way(x, y)) out.push({ kind: rimKind(hash32(ir.origin ? `${ir.seed}/rim` : `${ir.id}/rim`, x0w + x, y0w + y) % RIM_N), x, y });
+  }
+  return out;
+}
+
 export function cliffDecals(ir, cliffs, cell = 48) {
   const runs = southRuns(ir, cliffs), face = facePieces(ir, cliffs, runs, cell), sides = sideCells(ir, cliffs, face), items = [];
-  for (const f of sideFillCells(ir, cliffs).values()) items.push({ kind: FILL_KIND, x: f.x * cell, y: f.y * cell, line: -1e9, cls: 0 });
+  const fills = sideFillCells(ir, cliffs);
+  for (const f of fills.values()) items.push({ kind: FILL_KIND, x: f.x * cell, y: f.y * cell, line: -1e9, cls: 0 });
+  for (const r of rimCells(ir, cliffs)) {
+    if (!fills.has(r.x + ',' + r.y)) items.push({ kind: FILL_KIND, x: r.x * cell, y: r.y * cell, line: -1e9, cls: 0 });
+    items.push({ kind: r.kind, x: r.x * cell, y: (r.y - 1) * cell, line: r.y, cls: 4 });   // the cell is drawn on the low row above the rim: its upper part is clear, the moss band stands on the cell line
+  }
   // a side cell belongs to the southmost row of its side run (same hand and column, consecutive rows)
   const key = (s) => s.hand + s.x, byCol = new Map();
   for (const s of sides) { const k = key(s); if (!byCol.has(k)) byCol.set(k, []); byCol.get(k).push(s); }

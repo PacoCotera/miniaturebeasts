@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage, scaleNearest } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, END_ROWS, FILL_KIND, cornerKind, endKind, sideKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, END_ROWS, FILL_KIND, RIM_N, cornerKind, endKind, rimKind, sideKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -333,6 +333,13 @@ export function deskArt() {
     if (im.w !== 48 || im.h !== 48) throw new Error(`${file}: a side cell is 48 x 48, this is ${im.w} x ${im.h}`);
     files.set(file, b); decals[sideKind(hand)] = { image: im, anchor: [0, 0] };
     desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 48], foot: [0, 0], sha256: sha(b) };
+  }
+  // the straight back rim N: three whole-cell looks (the art director's cliff-rim-1 cells N-1..3, bytes unchanged; each file's .steps.json replays it from the paid raw)
+  for (let k = 0; k < RIM_N; k++) {
+    const file = `${rimKind(k)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 48 || im.h !== 48) throw new Error(`${file}: a back rim cell is 48 x 48, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[rimKind(k)] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `art-jobs/2026-11-14-cliff-rim-1/work/cells/rim-N-${k + 1}.png (the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 48], foot: [0, 0], sha256: sha(b) };
   }
   // the raised fill as one whole cell decal (spec 3.3): the signed fill-cliff.png scaled to a cell, no file of its own (the sprite sheet carries it)
   const fillSrc = decodePng(readFileSync(path.join(SET_DIR, 'fill-cliff.png')));

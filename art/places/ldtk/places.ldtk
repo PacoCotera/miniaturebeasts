@@ -2541,6 +2541,21 @@
 						"id": "cliff-fill",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "cliff-rim-n-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-rim-n-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-rim-n-3",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
