@@ -60,12 +60,21 @@ for (const [rule, fn] of Object.entries(fails)) test(`the bake refuses a level t
 test('the cliff: lip and face cells block, the top and the way up walk, found by the bake and by the adapter', () => {
   const ir = irOf(), info = cliffInfo(ir, terrains), at = (x, y) => y * W + x;
   assert.deepEqual(gullies(ir, terrains), []);
-  for (const [x, y] of [[3, 3], [10, 5], [4, 7], [9, 7], [5, 7], [8, 7]]) assert.ok(info.lipCells.has(at(x, y)), `(${x}, ${y}) is lip or face`);
-  for (const [x, y] of [[5, 5], [7, 4], [6, 7], [7, 7]]) assert.ok(!info.lipCells.has(at(x, y)), `(${x}, ${y}) walks`);
+  for (const [x, y] of [[3, 3], [10, 5], [4, 7], [9, 7], [5, 7], [8, 7]]) assert.ok(info.blockCells.has(at(x, y)), `(${x}, ${y}) is lip or face`);
+  for (const [x, y] of [[5, 5], [7, 4], [6, 7], [7, 7]]) assert.ok(!info.blockCells.has(at(x, y)), `(${x}, ${y}) walks`);
   const place = readPlace(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'Windstep.mbplace')))), ts = readTileSet(new Uint8Array(readFileSync(path.join(placesDir, 'baked', 'ninja-test.mbtiles'))));
   const lay = adaptPlace(place, ts, terrains, { key: 'x', cell: 0 }), ox = (28 - W) >> 1, oy = (32 - H) >> 1, tile = (x, y) => lay.tiles[(y + oy) * 28 + x + ox];
   for (const [x, y] of [[3, 3], [10, 5], [4, 7], [5, 7], [8, 7]]) assert.ok(T_BLOCK[tile(x, y)], `the adapter blocks the lip at (${x}, ${y})`);
   for (const [x, y] of [[5, 5], [7, 4], [6, 7], [7, 7], [6, 8]]) assert.ok(!T_BLOCK[tile(x, y)], `the adapter lets (${x}, ${y}) be walked`);
+});
+
+test('the relief piece table is valid against its published schema, and every non-empty kind is a decal of the set', async () => {
+  const { default: Ajv } = await import('ajv');
+  const table = JSON.parse(readFileSync(path.join(placesDir, '..', '..', 'art', 'places', 'pieces.json'), 'utf8')), schema = JSON.parse(readFileSync(path.join(placesDir, '..', '..', 'art', 'places', 'pieces.schema.json'), 'utf8'));
+  const ajv = new Ajv({ strict: false }), ok = ajv.validate(schema, table);
+  assert.ok(ok, JSON.stringify(ajv.errors));
+  const set = JSON.parse(readFileSync(path.join(placesDir, '..', '..', 'art', 'places', 'sets', 'ninja-test', 'set.json'), 'utf8'));
+  for (const p of table.pieces) if (p.state === 'signed' || p.state === 'stand-in') for (const k of p.kinds) assert.ok(k in set.decals, `${p.id}: ${k} is a decal of the set`);
 });
 
 test('the reed bank blocks nothing: the shore cells in the ReedBank area are as walkable as the grass beside them; low scrub walks; thicket, water and deep water block', () => {

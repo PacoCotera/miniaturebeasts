@@ -1,29 +1,25 @@
 // The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank (a list of areas the reed sprites go in) and the low scrub.
 // Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
 //   cliff   painted as the raised land, like any terrain, by case: the back rim from the rim sheet, the face, its corners and ends and the sides from signed pieces (southruns.mjs, applyOpenEdges below).
-//   walking: the top is ground; every cliff cell with a non-cliff 4-neighbour is the lip or the face and blocks, and so does the cell under every south lip cell (southruns.southFoot), except the cells of and under a WayUp area.
+//   walking: relief.mjs names every cell's part; the ring, the face and the flank cells block (cliffInfo.blockCells); the top, the foot rows and the cells of a WayUp area walk.
 //   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
 //           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
-import { RIM_CASES, southFoot, sideFillCells } from './southruns.mjs';
+import { RIM_CASES, sideFillCells } from './southruns.mjs';
+import { BLOCKS, PART, landOf, partAt } from './relief.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
-// the cells of a level the cliff terrain holds, and the cells under a WayUp area
+// the cells of a level the cliff terrain holds, the cells under a WayUp area, and the cells that block: relief.mjs's ring, face and flank cells (the lip, the cell under every south lip cell, the leaning sides and the end
+// pieces' rock rows); the top, the foot rows and the way up walk
 export function cliffInfo(ir, terrains) {
-  const cliff = terrains.find((t) => t.id === 'cliff'); if (!cliff) return { isCliff: () => false, wayup: new Set(), lipCells: new Set(), footCells: new Set() };
+  const cliff = terrains.find((t) => t.id === 'cliff'); if (!cliff) return { isCliff: () => false, wayup: new Set(), blockCells: new Set(), ringCells: new Set() };
   const { w, h } = ir, V = cliff.value, at = (x, y) => ir.terrain[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] === V;   // outside the place reads as the nearest edge cell
   const wayup = new Set(); for (const a of ir.wayups || []) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayup.add(y * w + x);
-  const lipCells = new Set();
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    if (!at(x, y) || ir.terrain[y * w + x] !== V) continue;
-    const edge = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < w && Y < h && ir.terrain[Y * w + X] !== V; });
-    if (edge && !wayup.has(y * w + x)) lipCells.add(y * w + x);
-  }
-  const info = { isCliff: at, wayup, lipCells, footCells: new Set() };
-  info.footCells = new Set(southFoot(ir, info));   // the cell under every south lip cell blocks too (spec 4.3)
+  const info = { isCliff: at, wayup, blockCells: new Set(), ringCells: new Set() }, A = landOf(ir, info);   // ringCells: the lip alone, which the level rules treat as a prop-sized obstacle
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (BLOCKS.has(p)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
   return info;
 }
 

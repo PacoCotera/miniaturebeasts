@@ -58,7 +58,7 @@ export function buildPlace(ir, ctx) {
   const setBit = (i) => { block[i >> 3] |= 1 << (i & 7); };
   for (let i = 0; i < ir.w * ir.h; i++) { const pl = playOf.get(ir.terrain[i]); if (pl === 'block' || pl === 'deep') setBit(i); }
   const cl = cliffInfo(ir, ctx.terrains);
-  for (const i of [...cl.lipCells, ...cl.footCells]) setBit(i);   // the cliff's lip and face block, and the cell under every south lip cell; its top and the way up walk
+  for (const i of cl.blockCells) setBit(i);   // relief: the cliff's ring, face and flank cells block; its top, its foot rows and the way up walk
   for (const cell of footprintCells(ir, tileset).keys()) setBit(cell);
   const heart = ir.hearts[0] || { x: 0, y: 0, kinds: [], species: [], revealLine: '', reachBy: 'none' };   // a generated place has no per-cell heart (scheme section 4)
   const place = {

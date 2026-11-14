@@ -97,7 +97,7 @@
       "set": "ninja-test",
       "mirrorOf": "",
       "bytes": 7480,
-      "sha256": "085627033fbc05b122e8e2c8ee98444dd78b6b12e8e3a2be3241fef343fd2931"
+      "sha256": "dc3c553c34921d21e3384cae1a7e5414c1bddc36597735eb3f941b2522d4b52a"
     },
     {
       "id": "Windstep~x",
@@ -107,7 +107,7 @@
       "set": "ninja-test",
       "mirrorOf": "Windstep",
       "bytes": 7504,
-      "sha256": "2f14db217402852aea78ed944ee722c2580d36486bb04e364ee748dde6139d29"
+      "sha256": "bac689bccebc73c848180f85bca8282798d485be25abb1ceadf49d60213fb8f5"
     }
   ]
 }

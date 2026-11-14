@@ -1,0 +1,156 @@
+{
+  "$schema": "./pieces.schema.json",
+  "version": 1,
+  "description": "The relief piece table: every piece of the cliff set with its four facts (footprint, extent, overlap margin, foot line), read by the bake (southruns.mjs), the walking mask, the decor rules and the proving place. A new kind of piece is a new row. Cells are 48 px; the lip row L is the southmost raised row of a south run; footprints and anchors are in cells relative to the piece's own cell at row L.",
+  "cell": 48,
+  "faceRows": 3,
+  "rowsAbove": 2,
+  "columns": 6,
+  "propExtents": {
+    "description": "The cells under a standing thing's painted extent, in cells from its trunk or foot: no cell of it may be a ring, face, flank or way-up cell (relief.mjs). A family that is not listed has the extent of its own cell.",
+    "trees": { "left": 2, "right": 2, "up": 3, "down": 2 }
+  },
+  "pieces": [
+    {
+      "id": "south-column", "family": "face", "state": "signed",
+      "kinds": ["cliff-south-1", "cliff-south-2", "cliff-south-3", "cliff-south-4", "cliff-south-5", "cliff-south-6"],
+      "anchor": [0, -2], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "every cell of a south run that holds no corner cell and no way up, column by world position"
+    },
+    {
+      "id": "corner-cell-e", "family": "face", "state": "signed",
+      "kinds": ["cliff-corner-e-0", "cliff-corner-e-1", "cliff-corner-e-2", "cliff-corner-e-3", "cliff-corner-e-4"],
+      "anchor": [0, -2], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "the last cells of a south run's east end: c4 on the end cell, c3 beside it, then c2 to c0"
+    },
+    {
+      "id": "corner-cell-w", "family": "face", "state": "signed",
+      "kinds": ["cliff-corner-w-0", "cliff-corner-w-1", "cliff-corner-w-2", "cliff-corner-w-3", "cliff-corner-w-4"],
+      "anchor": [0, -2], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "the last cells of a south run's west end, the mirror of the east hand"
+    },
+    {
+      "id": "end-3", "family": "flank", "state": "signed",
+      "kinds": ["cliff-corner-e-5", "cliff-corner-w-5"],
+      "anchor": [0, -2], "footprint": [[0, -2], [0, -1], [0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "the low cell beyond a south run's end when that cell is low for 3 rows or more upward from row L"
+    },
+    {
+      "id": "end-2", "family": "flank", "state": "signed",
+      "kinds": ["cliff-end2-e", "cliff-end2-w"],
+      "anchor": [0, -1], "footprint": [[0, -1], [0, 0], [0, 1]], "extent": [0, 0, 48, 240], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "the low cell beyond a south run's end when that cell is low for exactly 2 rows upward from row L"
+    },
+    {
+      "id": "end-1", "family": "flank", "state": "signed",
+      "kinds": ["cliff-end1-e", "cliff-end1-w"],
+      "anchor": [0, 0], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 192], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "the low cell beyond a south run's end when only row L of that cell is low"
+    },
+    {
+      "id": "side-cell", "family": "flank", "state": "stand-in",
+      "kinds": ["cliff-side-b-e", "cliff-side-b-w"],
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [0, 0, 48, 48], "margin": 0,
+      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
+      "places": "every low cell with a raised cell beside it that no end piece covers; stands in until the flank head and band are painted"
+    },
+    {
+      "id": "raised-fill", "family": "top", "state": "signed",
+      "kinds": ["cliff-fill"],
+      "anchor": [0, 0], "footprint": [], "extent": [0, 0, 48, 48], "margin": 0,
+      "pass": "ground", "footLine": { "from": "ground", "plus": 0 },
+      "places": "the raised cell beside every side cell whose cell above is raised too"
+    },
+    {
+      "id": "lip-case-1", "family": "lip", "state": "empty", "kinds": ["lip-case-1"], "dualCase": 1,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "outer back corner (north-west), over the flank head"
+    },
+    {
+      "id": "lip-case-2", "family": "lip", "state": "empty", "kinds": ["lip-case-2"], "dualCase": 2,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "outer back corner (north-east), over the flank head"
+    },
+    {
+      "id": "lip-case-3", "family": "lip", "state": "empty", "kinds": ["lip-case-3"], "dualCase": 3,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight back lip"
+    },
+    {
+      "id": "lip-case-4", "family": "lip", "state": "empty", "kinds": ["lip-case-4"], "dualCase": 4,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "south-east corner turn, over the end piece"
+    },
+    {
+      "id": "lip-case-5", "family": "lip", "state": "empty", "kinds": ["lip-case-5"], "dualCase": 5,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight east side lip, over the flank"
+    },
+    {
+      "id": "lip-case-7", "family": "lip", "state": "empty", "kinds": ["lip-case-7"], "dualCase": 7,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "inner back corner (west of a notch)"
+    },
+    {
+      "id": "lip-case-8", "family": "lip", "state": "empty", "kinds": ["lip-case-8"], "dualCase": 8,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "south-west corner turn, over the end piece"
+    },
+    {
+      "id": "lip-case-10", "family": "lip", "state": "empty", "kinds": ["lip-case-10"], "dualCase": 10,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "the straight west side lip, over the flank"
+    },
+    {
+      "id": "lip-case-11", "family": "lip", "state": "empty", "kinds": ["lip-case-11"], "dualCase": 11,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "inner back corner (east of a notch)"
+    },
+    {
+      "id": "lip-case-13", "family": "lip", "state": "empty", "kinds": ["lip-case-13"], "dualCase": 13,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "step in the face line, turn over the nearer block's end"
+    },
+    {
+      "id": "lip-case-14", "family": "lip", "state": "empty", "kinds": ["lip-case-14"], "dualCase": 14,
+      "anchor": [-1, -1], "footprint": [], "extent": [-12, -12, 72, 72], "margin": 12,
+      "pass": "lip", "footLine": { "from": "ground", "plus": 0 }, "places": "step in the face line, mirror of case 13"
+    },
+    {
+      "id": "lip-case-12", "family": "lip", "state": "covered", "kinds": ["lip-case-12"], "dualCase": 12,
+      "anchor": [0, 0], "footprint": [], "extent": [0, 0, 48, 48], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 }, "places": "the south lip: the cushions the signed columns already carry (no piece of its own)"
+    },
+    {
+      "id": "flank-head", "family": "flank", "state": "empty", "kinds": ["flank-head-e", "flank-head-w"],
+      "anchor": [0, -1], "footprint": [[0, 0]], "extent": [0, 0, 72, 192], "margin": 12,
+      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
+      "places": "the back end of a side wall: starts at nothing at the back corner and widens to half a cell over the face's height; painted with the lip"
+    },
+    {
+      "id": "flank-band", "family": "flank", "state": "empty", "kinds": ["flank-band-e", "flank-band-w"],
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [0, 0, 72, 48], "margin": 12,
+      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
+      "places": "the middle of a side wall, half a cell wide, on the low cell beside the top; painted with the lip"
+    },
+    {
+      "id": "foot-overlay", "family": "foot", "state": "empty", "kinds": ["foot-overlay"],
+      "anchor": [0, 2], "footprint": [], "extent": [0, 0, 48, 96], "margin": 12,
+      "pass": "overlay", "footLine": { "from": "lip", "plus": 3 },
+      "places": "keyed contact shade and tumbled stones on rows L+2 and L+3 under a south lip, over whatever ground is there"
+    },
+    {
+      "id": "way-up", "family": "wayup", "state": "empty", "kinds": ["way-up"],
+      "anchor": [0, -3], "footprint": [[0, -2], [1, -2], [0, -1], [1, -1], [0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2], [0, 3], [1, 3]],
+      "extent": [-12, -24, 120, 348], "margin": 12,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "two cells wide, six rows walked (L-2 to L+3) on a south run with one plain column each side; the old unsigned way-up tiles stand until it is painted"
+    }
+  ]
+}

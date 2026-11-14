@@ -96,7 +96,8 @@ export function checkRules(ir, ctx) {
   }
   const blocked = footprintCells(ir, tileset);
   const cliffs = cliffInfo(ir, ctx.terrains);
-  for (const c of cliffs.lipCells) if (!blocked.has(c)) blocked.set(c, { kind: 'the cliff' });   // the cliff's lip and face block
+  for (const c of cliffs.ringCells) if (!blocked.has(c)) blocked.set(c, { kind: 'the cliff' });   // the lip counts as a prop-sized obstacle for the slot rules
+  const walls = new Set([...blocked.keys(), ...cliffs.blockCells]);   // relief: every cell that cannot be walked: footprints, and the cliff's ring, face and flank cells
   const open = isOpenStyle(ir);
   for (const [cell, p] of blocked) {
     const x = cell % w, y = (cell / w) | 0;
@@ -120,7 +121,7 @@ export function checkRules(ir, ctx) {
     if (blocked.has(a.y * w + a.x)) { fail('opening-arrival', `the arrival cell of the ${o.side} Opening is under a prop footprint`, a); continue; }
     arrivals.push({ ...a, side: o.side });
   }
-  const floods = arrivals.map((a) => floodFrom(a, ir, playOf, blocked));
+  const floods = arrivals.map((a) => floodFrom(a, ir, playOf, walls));
 
   if (heart && heart.reachBy === 'none') {
     const near = (x, y, seen) => seen[y * w + x] || [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h && seen[(y + dy) * w + x + dx]);
@@ -143,7 +144,7 @@ export function checkRules(ir, ctx) {
   const maxFinds = open ? 8 : 6;
   if (ir.finds.length < 2 || ir.finds.length > maxFinds) fail('find-count', `a place has 2 to ${maxFinds} Finds, this one has ${ir.finds.length}`);
   for (const f of ir.finds) {
-    if (blocked.has(f.y * w + f.x)) fail('find-footprint', 'a Find lies under a prop footprint', f);
+    if (walls.has(f.y * w + f.x)) fail('find-footprint', 'a Find lies under a prop footprint', f);
     else if (!standable(play(f.x, f.y))) fail('find-reach', `a Find is on ${play(f.x, f.y)} terrain`, f);
     else if (heart && heart.reachBy === 'none' && floods.length && !floods.some((s) => s[f.y * w + f.x])) fail('find-reach', 'a Find cannot be reached on foot from any Opening', f);
   }
@@ -191,7 +192,7 @@ export function checkRules(ir, ctx) {
     const sides = { N: (k) => ({ x: k, y: 0 }), S: (k) => ({ x: k, y: h - 1 }), W: (k) => ({ x: 0, y: k }), E: (k) => ({ x: w - 1, y: k }) };
     for (const [side, at] of Object.entries(sides)) {
       const len = side === 'N' || side === 'S' ? w : h; let walk = 0;
-      for (let k = 0; k < len; k++) { const p = at(k); if (onFoot(play(p.x, p.y)) && !blocked.has(p.y * w + p.x)) walk++; }
+      for (let k = 0; k < len; k++) { const p = at(k); if (onFoot(play(p.x, p.y)) && !walls.has(p.y * w + p.x)) walk++; }
       if (walk * 3 < len * 2) fail('two-thirds-open', `the ${side} side is walkable on ${walk} of ${len} cells; an open place keeps at least two thirds of every side walkable`);
     }
     // seam-ground and path-short: the last 2 rows and columns are the land's grass, with no prop footprint, crown or decal on them, so any two open sides meet as one meadow
