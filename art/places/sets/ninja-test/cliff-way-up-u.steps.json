@@ -68,7 +68,7 @@
     "#69a55d"
    ],
    94,
-   126
+   136
   ],
   [
    "key_colours",
@@ -83,7 +83,7 @@
     17,
     20,
     71,
-    110
+    116
    ],
    "sprite"
   ],
@@ -91,11 +91,11 @@
    "scale_nearest",
    [
     213,
-    330
+    348
    ]
   ]
  ],
- "out_sha256": "c09bbb8572a1280782a5a73a832283ba1c57a0d0099b7e5fd6bdbe689d8bd3e0",
+ "out_sha256": "f80a29bd96de6f28c298e397cc809862ce1c7192b9ab089fa2b090d366720074",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-14-cliff-wayup-2",

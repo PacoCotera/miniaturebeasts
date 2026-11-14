@@ -2409,13 +2409,13 @@
     "from": "art-jobs/2026-11-14-cliff-wayup-2/work/raw/nbp-edit.png (the keyed piece, cut on its own bounding box; the whole chain is in cliff-way-up-u.steps.json)",
     "size": [
       213,
-      330
+      348
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "c09bbb8572a1280782a5a73a832283ba1c57a0d0099b7e5fd6bdbe689d8bd3e0"
+    "sha256": "f80a29bd96de6f28c298e397cc809862ce1c7192b9ab089fa2b090d366720074"
   },
   "fill-deep.png": {
     "commit": "633e4d641",

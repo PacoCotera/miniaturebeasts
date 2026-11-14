@@ -355,12 +355,12 @@ export function deskArt() {
     files.set(file, b); decals[kind] = { image: im, anchor: [12, 0] };
     desk[file] = { commit: 'local', from: `${FOOT_FROM} (the keyed foot band, cut on the cell; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [72, 192], foot: [0, 0], sha256: sha(b) };
   }
-  // the way up U (cliff-wayup-place-1: the paid paint of call 1 of cliff-wayup-2, keyed on its own edge): one 213 x 330 piece, anchored 93 px left and 126 px above the lip row cell of its area
+  // the way up U (cliff-wayup-place-1: the paid paint of call 1 of cliff-wayup-2, keyed on its own edge): one 213 x 348 piece, anchored 93 px left and 126 px above the lip row cell of its area
   {
     const file = `${WAYUP_U_KIND}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 213 || im.h !== 330) throw new Error(`${file}: the way up U is 213 x 330, this is ${im.w} x ${im.h}`);
+    if (im.w !== 213 || im.h !== 348) throw new Error(`${file}: the way up U is 213 x 348, this is ${im.w} x ${im.h}`);
     files.set(file, b); decals[WAYUP_U_KIND] = { image: im, anchor: [93, 126] };
-    desk[file] = { commit: 'local', from: `${WAYUP_U_FROM} (the keyed piece, cut on its own bounding box; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [213, 330], foot: [0, 0], sha256: sha(b) };
+    desk[file] = { commit: 'local', from: `${WAYUP_U_FROM} (the keyed piece, cut on its own bounding box; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [213, 348], foot: [0, 0], sha256: sha(b) };
   }
   return { files, props, canopy, decals, desk };
 }
