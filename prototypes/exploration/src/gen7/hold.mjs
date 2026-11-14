@@ -100,7 +100,7 @@ function holdOn(a, pick) {
       if (!ok && from >= 0) { if (k - from >= 2) out.openings.push({ side, from, to: k - 1, at: vert ? (side === 'W' ? 1 : CW) : (side === 'N' ? 1 : CH) }); from = -1; }
     }
   }
-  // The world's truth for a side rules (views agree): no way in on a side the map calls a cliff or water, or on the map's end. A side on a region's border is the realm's: the terrain decides there.
+  // The world's truth for a side rules (views agree): no way in on a side the map calls water, or on the map's end (a cliff side keeps the runs its tiles walk). A side on a region's border is the realm's: the terrain decides there.
   if (out.openings.length) out.openings = out.openings.filter(op => !shutSide(seed, G, c, X, Y, op.side));
   const lm = a.landmarks.at.get(X + ',' + Y);
   const isLand = land !== L.WATER && !G.island[c];
@@ -237,7 +237,7 @@ function findCount(seed, X, Y, land, biome, walkable, supply, H) {
 }
 export const FIND_OFFSET = -1.1;
 
-// Is this side of the cell shut by the world's own edge kind (a cliff, water that is not the cell's own, the map's end)? c: the cell's number in its region G; X, Y: its realm cell.
+// Is this side of the cell shut by the world's own edge kind (water that is not the cell's own, the map's end)? c: the cell's number in its region G; X, Y: its realm cell.
 const SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' }, SIDE_STEP = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
 function shutSide(seed, G, c, X, Y, side) {
   const [dx, dy] = SIDE_STEP[side], x = (c % MW) + dx, y = ((c / MW) | 0) + dy;
@@ -245,7 +245,7 @@ function shutSide(seed, G, c, X, Y, side) {
   if (x < 0 || y < 0 || x >= MW || y >= MH) return false;
   G.soft = G.soft || softGround(G, seed); G.banks = G.banks || bankEdges(G, seed);
   const k = sideKind(G, c, SIDE_DIR[side]);
-  return k === 'cliff' || (k === 'water' && G.land[c] !== L.WATER);
+  return k === 'water' && G.land[c] !== L.WATER;   // a cliff side is not shut whole: its ways in are the runs where the tiles walk on both sides
 }
 
 
