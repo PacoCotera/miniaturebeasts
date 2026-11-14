@@ -26,6 +26,10 @@ const WAYUP_U = 'cliff-way-up-u';   // the way up U's decal (southruns.mjs WAYUP
 // draw-order class of a piece, for ties on the foot line: sides and fill 0, columns 1, corner cells 2, end pieces 3
 const clsOf = (kind) => (/^cliff-south-/.test(kind) ? 1 : /^cliff-corner-[ew]-[0-4]$/.test(kind) ? 2 : /^cliff-(corner-[ew]-5|end\d-[ew])$/.test(kind) ? 3 : 0);
 
+// OPT-IN fallback (cliff-face-rotation-1; off by default, nothing ships): the south columns rotate over south-1, -4, -5 only (column = (world x + hash) mod 3), the foot pieces following the column
+export const FALLBACK = { southThree: false };
+const SOUTH_THREE = [0, 3, 4];
+
 // The working map of a place's land (relief.mjs's accessor A over the level IR): the window A reads, one tile a cell.
 function workOf(ir, A) {
   const m = A.m, W = ir.w + 2 * m, H = ir.h + 2 * m, hs = (wy) => (ir.origin ? hash32(`${ir.seed}/south`, 0, wy) : hash32(`${ir.id}/south`, 0, wy));
@@ -38,7 +42,7 @@ function workOf(ir, A) {
       const px = x - m, py = y - m, i = y * W + x;
       if (A.raised(px, py)) land[i] = raised;
       if (A.way(px, py)) way[i] = wayT;
-      phase[i] = cols[((h + x0w + px) % COLUMNS + COLUMNS) % COLUMNS];
+      phase[i] = FALLBACK.southThree ? cols[SOUTH_THREE[(((h + x0w + px) % 3) + 3) % 3]] : cols[((h + x0w + px) % COLUMNS + COLUMNS) % COLUMNS];
     }
   }
   work.layers.set('land', land); work.layers.set('way', way); work.layers.set('phase', phase);
