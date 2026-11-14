@@ -76,7 +76,8 @@ if (WHICH === 'find') {
   mkdirSync(A, { recursive: true });
   artHooks.seen = new Map();
   for (const v of JSON.parse(readFileSync(B, 'utf8'))) {
-    const ir = irOf(v), win = frameAt(ir, v.tx, v.ty), place1 = bakeIR(ir), ts = bakeCtx().sets.get(ir.tileset);
+    const ir = irOf(v), win = frameAt(ir, v.tx, v.ty), ts = bakeCtx().sets.get(ir.tileset);
+    let place1; try { place1 = bakeIR(ir); } catch (e) { const f = `${A}/${TAG}-${v.name}-REFUSED.txt`; writeFileSync(f, `the bake of this view is refused: ${e.message}\n`); console.log(f); continue; }   // today's branch refuses cells where the cliff meets leaf litter, scree, turf or dry grass (R1)
     for (const [light, level] of LIGHTS) {
       const lit = level ? lightState(place1, { level: new Uint8Array(place1.w * place1.h).fill(level) }) : null, pal = paletteRgb(ts);
       CORE.forEach((e) => { pal.rgb[e.i] = [parseInt(e.hex.slice(1, 3), 16), parseInt(e.hex.slice(3, 5), 16), parseInt(e.hex.slice(5, 7), 16)]; });
