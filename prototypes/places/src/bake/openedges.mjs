@@ -7,7 +7,7 @@
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
-import { RIM_CASES, southFoot } from './southruns.mjs';
+import { RIM_CASES, southFoot, sideFillCells } from './southruns.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
@@ -55,7 +55,7 @@ export function gullies(ir, terrains) {
 // Every raised tile that is no old rim keeps the cliff layer's fill, the raised meadow ground (fill-cliff.png), and takes the raised tone.
 export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
-  const { isCliff } = cliffInfo(ir, terrains);
+  const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, fillCells = cliff ? sideFillCells(ir, cinfo) : new Map();
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
   for (const layer of dg.layers) {
     if (layer.tone) continue;
@@ -67,7 +67,10 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
       if (isCliffLayer) {
         if (fill) continue;   // four raised cells: the raised meadow ground
         const kase = (isCliff(i - 1, j - 1) ? 8 : 0) | (isCliff(i, j - 1) ? 4 : 0) | (isCliff(i - 1, j) ? 2 : 0) | (isCliff(i, j) ? 1 : 0);
-        if (kase === 5 || kase === 10) { layer.tiles[j * w1 + i] = FILL_CODE; continue; }   // a side: the raised ground to the cell edge, the side cell over the low cell beside it
+        if (kase === 5 || kase === 10) {   // a side: the raised fill goes per cell (sideFillCells, southruns.mjs: decals), so it ends on the cell line; the tile keeps the fill only where a rim covers a cell's top
+          const x = kase === 5 ? i : i - 1;
+          layer.tiles[j * w1 + i] = fillCells.has(x + ',' + (j - 1)) && fillCells.has(x + ',' + j) ? EMPTY : FILL_CODE; continue;
+        }
         if (!RIM_CASES.has(kase)) { layer.tiles[j * w1 + i] = EMPTY; continue; }            // the pieces draw it
       }
       if (full) continue;

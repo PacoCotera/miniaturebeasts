@@ -11,9 +11,9 @@ import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { decodePng, encodePng, crop, paste, newImage } from '../src/png.mjs';
+import { decodePng, encodePng, crop, paste, newImage, scaleNearest } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, END_ROWS, cornerKind, endKind, sideKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, END_ROWS, FILL_KIND, cornerKind, endKind, sideKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -334,6 +334,9 @@ export function deskArt() {
     files.set(file, b); decals[sideKind(hand)] = { image: im, anchor: [0, 0] };
     desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 48], foot: [0, 0], sha256: sha(b) };
   }
+  // the raised fill as one whole cell decal (spec 3.3): the signed fill-cliff.png scaled to a cell, no file of its own (the sprite sheet carries it)
+  const fillSrc = decodePng(readFileSync(path.join(SET_DIR, 'fill-cliff.png')));
+  decals[FILL_KIND] = { image: scaleNearest(fillSrc, 48 / fillSrc.w), anchor: [0, 0] };
   // the face ends for a step of 2 rows (E2, 48 x 240) and of 1 row (E1, 48 x 192): whole-cell crops of the signed end cell cliff-corner-e-5 (rows 48..288 and 96..288; the west hand the crop flipped, step flip h); each file's .steps.json
   // holds the cut and the whole list from the paid raw and replays to the placed bytes (tools/art/poststeps.py replay)
   for (const rows of END_ROWS) for (const hand of CORNER_HANDS) {

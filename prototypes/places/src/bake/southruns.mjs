@@ -86,8 +86,22 @@ function sideCells(ir, cliffs, pieces) {
 }
 
 // Every cliff decal of a level in draw order: [{ kind, x, y }] in game px, keeping only those that reach the place's picture. The one entry both bakes use.
+export const FILL_KIND = 'cliff-fill';   // the signed raised fill (fill-cliff.png) as one whole 48 x 48 cell
+
+// Spec 3.3: the raised fill laid per raised cell, as whole cells at world positions, so it ends on the cell line. The raised cell beside every side cell, when its cell above is raised too (a cell with the back rim above it
+// keeps the dual tile's fill there: the rim sheet's tiles cover its top half). A side tile (case 5, 10) goes empty when every raised cell it touches is in this list. Returns [{ kind, x, y }] in game px, drawn before every other decal.
+export function sideFillCells(ir, cliffs) {
+  const A = landOf(ir, cliffs), out = new Map();
+  for (const s of sideCells(ir, cliffs, facePieces(ir, cliffs, southRuns(ir, cliffs), 48))) {
+    const x = s.hand === 'e' ? s.x - 1 : s.x + 1;
+    if (A.raised(x, s.y)) out.set(x + ',' + s.y, { x, y: s.y });
+  }
+  return out;
+}
+
 export function cliffDecals(ir, cliffs, cell = 48) {
   const runs = southRuns(ir, cliffs), face = facePieces(ir, cliffs, runs, cell), sides = sideCells(ir, cliffs, face), items = [];
+  for (const f of sideFillCells(ir, cliffs).values()) items.push({ kind: FILL_KIND, x: f.x * cell, y: f.y * cell, line: -1e9, cls: 0 });
   // a side cell belongs to the southmost row of its side run (same hand and column, consecutive rows)
   const key = (s) => s.hand + s.x, byCol = new Map();
   for (const s of sides) { const k = key(s); if (!byCol.has(k)) byCol.set(k, []); byCol.get(k).push(s); }

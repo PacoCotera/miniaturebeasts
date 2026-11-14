@@ -2536,6 +2536,11 @@
 						"id": "cliff-end2-w",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "cliff-fill",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,
