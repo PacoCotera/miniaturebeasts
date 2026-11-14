@@ -7561,7 +7561,7 @@ function drawNewer() {
 function drawArtFailed() {   // the art or the place did not load: said plainly, one way on (reload), nothing drawn in old art
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
-  text('The art can’t be shown · reload to try again', 225, 289, C.bone, 2, 'center');
+  text('The Probe can’t read the land · reload', 225, 289, C.bone, 2, 'center');
   drawLine({ ok: 'Reload', ctx: '', back: '' });
 }
 function actReadOnly(k) {
