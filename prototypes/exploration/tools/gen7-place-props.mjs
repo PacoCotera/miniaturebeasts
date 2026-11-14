@@ -74,7 +74,7 @@ export function placeProps(seed) {
       { let up = 0; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (inner(x, y) === TV.CLIFF) up++;
         const want = G.land[j * MW + i] === L.WATER ? 0 : lv;   // C1: the place's level (the realm's) is the level of most of its tiles
         if ((up * 2 > CW * CH ? 1 : 0) === want) st.c1Ok++; else if (st.c1Misses.length < 8) st.c1Misses.push([X, Y, want, up]);
-        if (G.land[j * MW + i] === L.WATER && !G.coast[j * MW + i]) st.waterRaisedTiles += up; }   // water held low: no raised tile in a water cell
+        if (G.land[j * MW + i] === L.WATER && !G.coast[j * MW + i] && !G.ford[j * MW + i]) st.waterRaisedTiles += up; }   // water held low: no raised tile in a water cell (a ford's shallows are walked water, its wet value lower, so a ford cell is left out)
       if ((X * 7 + Y * 13) % 211 === 0) { const sm = seamOf(seed, X, Y); st.seamCells++; st.seamBad += sm; }   // the seam: a sample of cells, each as its neighbours' windows see it
       for (const [dx, dy] of [[1, 0], [0, 1]]) {
         const X2 = X + dx, Y2 = Y + dy; if (X2 >= RW || Y2 >= RH) continue;
