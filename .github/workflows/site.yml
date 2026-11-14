@@ -104,6 +104,9 @@ jobs:
             mkdir -p "_site/sandbox/$n"
             cp -r "$p". "_site/sandbox/$n/"
           done
+          # what no page loads stays in the repository and out of the deploy (owner 2026-11-14): the body workbench, and every folder of golden files the tests read
+          rm -rf _site/sandbox/workbench/body
+          find _site/sandbox -type d \( -name golden -o -name goldens \) -prune -exec rm -rf {} +
           mkdir -p _site/ops && cp -r ops/ledger _site/ops/
           # the web server's Caddyfile and the studio login's code travel in the release: deploy.sh checks the Caddyfile before it goes live, the login unit runs from the release
           mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
