@@ -654,6 +654,13 @@
   },
   {
    "class": "paint",
+   "date": "2026-11-14",
+   "id": "f6b34144d7",
+   "path": "art/places/sets/ninja-test/cliff-way-up-u.png",
+   "sha256": "f80a29bd96de6f28c298e397cc809862ce1c7192b9ab089fa2b090d366720074"
+  },
+  {
+   "class": "paint",
    "date": "2026-11-12",
    "id": "9459f12a24",
    "path": "art/places/sets/ninja-test/cliff-wayup.png",
@@ -1778,6 +1785,13 @@
    "id": "22d0fd6dbb",
    "path": "art/places/sets/ninja-test/sprites.png",
    "sha256": "9b13bb7a16373fcfecf753b441e12cd3ab8d64a76c5714cf29f3f10dbea01565"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-14",
+   "id": "c7c69ee7de",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "b639765ae7f1f1300d58c39bdf65a215fc81e4ce345f11739f49ac1b60c49a86"
   },
   {
    "class": "legacy-paint",
