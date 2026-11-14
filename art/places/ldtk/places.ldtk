@@ -2508,12 +2508,37 @@
 						"tileRect": null
 					},
 					{
-						"id": "cliff-side-b-e",
+						"id": "cliff-flank-head-e",
 						"color": 0,
 						"tileRect": null
 					},
 					{
-						"id": "cliff-side-b-w",
+						"id": "cliff-flank-band-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-flank-tail-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-flank-head-w",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-flank-band-w",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-flank-tail-w",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-fill",
 						"color": 0,
 						"tileRect": null
 					},
@@ -2538,7 +2563,47 @@
 						"tileRect": null
 					},
 					{
-						"id": "cliff-fill",
+						"id": "cliff-foot-1",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-2",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-3",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-4",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-5",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-6",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-w",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-foot-e",
+						"color": 0,
+						"tileRect": null
+					},
+					{
+						"id": "cliff-way-up-u",
 						"color": 0,
 						"tileRect": null
 					}

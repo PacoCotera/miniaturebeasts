@@ -152,8 +152,8 @@ function coastBins(q, W, H, x0, y0) {
 
 // R3 (map-system-audit-1, cliff-spec-step0): inland, the field may be read at the centre column of a bin FACE_BIN tiles wide (the row is the tile's own), so the contour's vertical edges can only lie on a bin's edge:
 // every south face and every back rim is a whole number of bins long (at least FACE_BIN tiles); a side keeps any length. The bins are centred on the cell's edges (4 and 6 divide 24), so no bin's edge is a cell edge.
-// OFF unless the stills tool sets it (MB_FACE_BIN=4 or 6 in the environment): it changes the land of every seed, so it is not the default until the owner rules.
-const FACE_BIN = +((typeof process !== 'undefined' && process.env && process.env.MB_FACE_BIN) || 0), FACE_OX = FACE_BIN >> 1;
+// Owner ruled bins 6 (decisions 2026-11-14 08:3x): the one setting, no switch.
+const FACE_BIN = 6, FACE_OX = FACE_BIN >> 1;
 function faceBins(q, W, H, x0, y0) {
   if (!(FACE_BIN > 1)) return;
   const src = q.slice();
