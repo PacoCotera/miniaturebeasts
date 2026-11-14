@@ -87,16 +87,18 @@ export function layerRows(set) {
   const rows = [], layers = set.layers || {};
   for (const [id, l] of Object.entries(layers)) {
     if (l.fill) rows.push({ type: 'fill', terrain: id, sheets: l.fill.sheets });
-    (l.over || []).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets }));
+    (l.over || []).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));
   }
   for (const [id, l] of Object.entries(layers)) {
     for (const k of l.over || []) {
       for (const s of Object.keys(k.tall || {}).sort()) k.tall[s].forEach((sh, n) => rows.push({ type: 'tall', terrain: id, kind: k.kind, s: +s, n, sheets: [sh] }));
       (k.variants || []).forEach((sh, n) => rows.push({ type: 'variant', terrain: id, kind: k.kind, n: n + 1, sheets: [sh] }));
       for (const lower of Object.keys(k.wayup || {}).sort()) rows.push({ type: 'wayup', terrain: id, kind: k.kind, lower, sheets: [k.wayup[lower]] });
+      if (k.back) rows.push({ type: 'back', terrain: id, kind: k.kind, slots: k.back, sheets: Object.values(k.back) });
     }
   }
   if (set.tone) rows.push({ type: 'tone', terrain: 'tone', sheets: set.tone.sheets });
+  if (set.tone && set.tone.raised) rows.push({ type: 'toneraised', terrain: 'tone', sheets: [set.tone.raised] });   // the tone on the raised ground, a sheet of its own
   return rows;
 }
 
@@ -116,6 +118,7 @@ export function layerDescriptors(loaded, terrains) {
       const r = { over: at((x) => x.type === 'over' && x.terrain === id && x.kind === k.kind) };
       const tall = mine('tall'); if (tall.length) { r.tall = {}; for (const [row, i] of tall) (r.tall[row.s] ||= []).push(i); }
       const variants = mine('variant'); if (variants.length) r.variants = variants.map(([, i]) => i);
+      const back = mine('back'); if (back.length) r.back = { row: back[0][1], slots: Object.keys(back[0][0].slots).map(Number) };
       const wayup = mine('wayup'); if (wayup.length) r.wayup = Object.fromEntries(wayup.map(([row, i]) => [row.lower, i]));
       return { kind: k.kind, lowers: new Set(k.lowers.map((x) => val(x, `${id}/${k.kind} lowers`))), fullCount: k.full ? loaded.png(k.full).w / set.sourceTile : 0, rows: r };
     });
@@ -124,5 +127,5 @@ export function layerDescriptors(loaded, terrains) {
       ground: l.ground === undefined ? undefined : val(l.ground, `${id} ground`), drawAs: l.drawAs === undefined ? undefined : val(l.drawAs, `${id} drawAs`),
     });
   }
-  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone') } : null };
+  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone'), ...(set.tone.raised ? { rowRaised: at((x) => x.type === 'toneraised') } : {}) } : null };
 }

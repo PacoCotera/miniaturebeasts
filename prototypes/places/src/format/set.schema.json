@@ -27,6 +27,11 @@
     "half": { "enum": ["derived", "painted"] },
     "palette": { "type": "string", "description": "file with the colours (indices 48..) and the light tables" },
     "spriteSheet": { "type": "string", "description": "PNG holding every prop, decal and canopy sprite" },
+    "groundPairs": {
+      "type": "array",
+      "description": "the one table of which grounds may meet: the pairs the generator may make; every pair must be drawable from the layers' `lowers` (checked where layers.json is made)",
+      "items": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 2 }
+    },
     "layers": {
       "type": "object",
       "description": "terrain layers (place design: terrain-layers-design): per terrain id, one fill and the transparent 16-slot layers (kinds) it draws over lower terrains, or `drawAs` another terrain until its own layers are signed.",
@@ -40,7 +45,8 @@
       "properties": {
         "of": { "type": "string", "description": "terrain id" },
         "also": { "type": "array", "items": { "type": "string" }, "description": "further terrain ids that may carry tone: the raised top (cliff), where the generator also keeps the cell two rows below raised, so tone never lands on a face" },
-        "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid per animation frame" }
+        "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid per animation frame" },
+        "raised": { "type": "string", "description": "the tone sheet for the raised ground (the cliff terrain's fill): one 4x4 grid, drawn in place of `sheets` on a tile whose four cells are all raised" }
       }
     },
     "props": {
@@ -77,14 +83,15 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["kind", "lowers", "sheets"],
+            "required": ["kind", "lowers"],
             "properties": {
               "kind": { "type": "string", "description": "free name (step, flat, beach, bank, rim ...); the paint decides bank vs flat" },
               "lowers": { "type": "array", "items": { "type": "string" }, "description": "terrain ids this kind can meet; a lower in no kind's list is refused by the bake (no-edge). The first kind holding any lower of a tile wins" },
-              "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid of 16 slots in corner order NW*8+NE*4+SW*2+SE per animation frame; slot 0 empty, transparent where the lower shows" },
+              "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid of 16 slots in corner order NW*8+NE*4+SW*2+SE per animation frame; slot 0 empty, transparent where the lower shows. Optional only for a kind drawn wholly by its `back`, `tall` or `wayup` pieces: its sheet row is then empty" },
               "full": { "type": "string", "description": "a strip of slot-15 variants, for a terrain with a ground" },
               "variants": { "type": "array", "items": { "type": "string" }, "description": "further 16-slot sheets sharing every edge line, one picked per dual tile by hash" },
               "tall": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } }, "description": "a tall terrain (the cliff face): keys 1..3, the sheets used when the cell under the bottom left (1), right (2) or both (3) corners is not this terrain; several sheets are picked by hash" },
+              "back": { "type": "object", "additionalProperties": { "type": "string" }, "description": "per corner slot (1..14), a single 16 px tile of its own file: the back edge's cases, drawn in place of that slot of the sheet" },
               "wayup": { "type": "object", "additionalProperties": { "type": "string" }, "description": "per lower terrain id, a 3 x 2 sheet of 16 px tiles for the way up" }
             }
           }

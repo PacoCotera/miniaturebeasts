@@ -15,17 +15,23 @@ import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
+import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
+import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' };
 import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
+import { touchesRaised } from '../../../places/src/bake/relief.mjs';
 import { landmarksOf } from './landmarks.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
 // and every two of them are such a pair
-const PAIRS = new Set(['2|6', '2|3', '3|6', '5|6', '2|4', '6|8', '6|9', '6|10', '3|9', '3|10', '1|2', '6|11', '3|11', '9|11', '6|12', '9|12', '10|12', '6|13', '9|13', '10|13', '6|14', '3|14', '9|14', '10|14', '2|14', '11|12', '11|13', '11|14', '10|11', '12|13', '12|14', '13|14', '8|11', '8|12', '8|13', '8|14']);   // sand-raised ('3|8') is in the set but the generator never uses it: a raised region that meets both grass and sand is drawn two ways, which the bake refuses
-// the low grounds the cliff's face meets with no grass between (the cliff layer's `lowers`, art/places/sets/ninja-test/set.json, besides grass): the biome grounds. Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
+// The table is the set's own: art/places/sets/ninja-test/set.json `groundPairs` (ids, through art/places/terrain.json's values), the one source; tools/gen7-layers.mjs refuses a pair the layers' `lowers` cannot draw and the
+// page's layers.json is made from the same file. (Sand-raised is not in the table: a raised region that meets both grass and sand is drawn two ways, which the bake refuses.)
+const VALUE_OF = Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
+const PAIRS = new Set(SET.groundPairs.map(([a, b]) => (VALUE_OF[a] < VALUE_OF[b] ? VALUE_OF[a] + '|' + VALUE_OF[b] : VALUE_OF[b] + '|' + VALUE_OF[a])));
+// the low grounds the cliff's face meets with no grass between: the cliff's pairs in the table besides grass (the biome grounds). Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
 // keeps one tile of grass between it and the rim, made on its side
-const CLIFF_LOWERS = new Set([TV.LITTER, TV.DRY, TV.TURF, TV.SCREE]);
+const CLIFF_LOWERS = new Set(SET.groundPairs.filter(p => p.includes('cliff')).map(p => VALUE_OF[p[0] === 'cliff' ? p[1] : p[0]]).filter(v => v !== TV.GRASS));
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
 const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
@@ -410,9 +416,8 @@ function windowOf(S, X, Y) {
   const LVL = levelsOf(S.re);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raisedTile(LVL, gx0 + x, gy0 + y)) { raised[y * W + x] = 1; t[y * W + x] = TV.CLIFF; }
   // the cliff's outline is the blocks' outline and nothing else bites into it: terrain the cliff has no pair with keeps one tile of grass between it and the rim, made on its side
-  { const near = new Uint8Array(N);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raised[y * W + x]) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H) near[Y2 * W + X2] = 1; }
-    for (let i = 0; i < N; i++) if (near[i] && !raised[i] && t[i] !== TV.GRASS && !CLIFF_LOWERS.has(t[i])) t[i] = TV.GRASS; }   // sand too: a sand-grass edge reaching the rim would be a three-terrain corner, and the legal pass would eat the sand along the whole rim
+  { const isRaised = (x, y) => x >= 0 && y >= 0 && x < W && y < H && raised[y * W + x] === 1;   // relief.mjs's touchesRaised: the 3 x 3 round a tile holds raised land
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = y * W + x; if (!raised[i] && t[i] !== TV.GRASS && !CLIFF_LOWERS.has(t[i]) && touchesRaised(isRaised, x, y)) t[i] = TV.GRASS; } }   // sand too: a sand-grass edge reaching the rim would be a three-terrain corner, and the legal pass would eat the sand along the whole rim
   const isCliff = v => v === TV.CLIFF;
   minFeature(t, W, H, isCliff, isCliff);
   // ways up (Rule 1.5): the stairs' faces were found on the block land; nothing is carved. Kept when they touch the window
@@ -513,13 +518,17 @@ export function topsOf(t, recipe, W, H) {
 // ---- a cell with its apron ----
 // The terrain of cell (X, Y) and one tile round it: (24 + 2) x (28 + 2) values, the first at world tile (24 X - 1, 28 Y - 1). A border dual tile reads the true neighbour terrain.
 const CELLS = new Map();
+export const LAND_M = 6;   // tiles of raised/low land a place carries beyond its own window for the cliff rules (spec 4.1 rule 6)
 export function cellTerrain(seed, X, Y) {
   const key = seed + ':' + X + ',' + Y, hit = CELLS.get(key); if (hit) return hit;
   const S = ctxOf(seed), win = windowOf(S, X, Y), w = CW + 2, h = CH + 2, terrain = new Uint8Array(w * h), top = new Uint8Array(w * h), ox = HX * CW - 1, oy = HY * CH - 1;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { terrain[y * w + x] = win.t[(oy + y) * win.W + ox + x]; top[y * w + x] = win.top[(oy + y) * win.W + ox + x]; }
   const x0 = X * CW - 1, y0 = Y * CH - 1;
   const wayups = win.wayups.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 2 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles
-  const out = { x0, y0, w, h, terrain, top, wayups };
+  // the land the cliff rules read: raised or not for the cell, its apron and LAND_M tiles more each side, from the same window, so a run's end, its steps and the faces of the rows above are found on the land, not on the baked cell
+  const lw = w + 2 * LAND_M, lh = h + 2 * LAND_M, raised = new Uint8Array(lw * lh);
+  for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = win.t[(oy - LAND_M + y) * win.W + ox - LAND_M + x] === TV.CLIFF ? 1 : 0;
+  const out = { x0, y0, w, h, terrain, top, wayups, land: { m: LAND_M, w: lw, h: lh, raised } };
   if (CELLS.size > 4000) CELLS.clear();
   CELLS.set(key, out); return out;
 }
@@ -602,13 +611,13 @@ function decorIR(seed, x0, y0, w, h) {
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
-function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v) {   // v: the realm's kind version, for what the cell's creatures are
+function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   const props = d.props.concat(d.reedProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
   // `top`: the ground under each raised tile, only when some raised tile holds a ground other than grass (all grass draws as a place with none)
-  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
+  return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
 }
@@ -621,7 +630,7 @@ function bareTiles(seed, X, Y) {
 // One cell for the bake: terrain with its one-tile apron.
 export function cellIR(seed, X, Y, v) {
   const c = cellTerrain(seed, X, Y);
-  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v);
+  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v, c.land);
 }
 // A block of nx x ny cells as one picture (for the goldens): each cell's own tiles, side by side, with no apron. Equal to baking each cell with its apron.
 export function windowIR(seed, X0, Y0, nx, ny) {
@@ -631,7 +640,10 @@ export function windowIR(seed, X0, Y0, nx, ny) {
     for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) { terrain[(j * CH + y) * w + i * CW + x] = c.terrain[(y + 1) * c.w + x + 1]; top[(j * CH + y) * w + i * CW + x] = c.top[(y + 1) * c.w + x + 1]; }
     for (const a of c.wayups) { const k = a.x + ',' + a.y; if (!seen.has(k)) { seen.add(k); wayups.push({ x: a.x - x0, y: a.y - y0, w: a.w, h: a.h }); } }
   }
-  return irOf(seed, `g7-window-${X0}-${Y0}`, x0, y0, w, h, terrain, wayups.filter(a => a.x - 1 >= 0 && a.x + a.w + 1 <= w && a.y >= 0 && a.y + 2 <= h), null, top);
+  // the cliff rules' land: the world's tiles round the window (through the neighbouring cells' own passes)
+  const T = worldTiles(seed), lw = w + 2 * LAND_M, lh = h + 2 * LAND_M, raised = new Uint8Array(lw * lh);
+  for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = T(x0 - LAND_M + x, y0 - LAND_M + y) === TV.CLIFF ? 1 : 0;
+  return irOf(seed, `g7-window-${X0}-${Y0}`, x0, y0, w, h, terrain, wayups.filter(a => a.x - 1 >= 0 && a.x + a.w + 1 <= w && a.y >= 0 && a.y + 2 <= h), null, top, undefined, { m: LAND_M, w: lw, h: lh, raised });
 }
 // ---- the overview of a region: one byte a world tile, the one land every map view is shrunk from ----
 // The region's 16 x 20 cells as (16 * 24) x (20 * 28) tiles, row by row: the low three bits are the ground class (OV below), bit 3 says the tile is raised land. It reads the settled world tiles

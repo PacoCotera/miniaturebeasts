@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { loadSet, layerTiles, fillTiles, kindFullTiles, layerDescriptors, layerRows } from '../src/setload.mjs';
 import { paste } from '../src/png.mjs';
 import { cornerSheet } from '../src/sheets.mjs';
-import { applyOpenEdges, ALT_CODE } from '../src/bake/openedges.mjs';
+import { applyOpenEdges, cliffInfo, ALT_CODE } from '../src/bake/openedges.mjs';
+const RIM_CASES = new Set([1, 2, 3, 7, 11]);   // the dual-grid cases the old rim sheet still draws (back rim and its corners); every other cliff edge case is drawn by the pieces. Bits: NW 8, NE 4, SW 2, SE 1
 import { terrainLayers, FILL_CODE, FULL_BASE, EMPTY } from '../src/dualgrid.mjs';
 import { edgeSignatureFailures, coverage, legalAdjacencies, edgeLine } from '../src/seams.mjs';
 import { compareGolden } from '../src/golden.mjs';
@@ -38,11 +39,11 @@ function layerComposites(terrainId, ki, lowerId, scaled) {
   });
   return { tiles, own };
 }
-const layerCases = () => Object.entries(loaded.set.layers).flatMap(([id, l]) => (l.over || []).flatMap((k, ki) => k.lowers.filter((lower) => loaded.set.layers[lower].fill).map((lower) => ({ id, kind: k.kind, ki, lower }))));
+const layerCases = () => Object.entries(loaded.set.layers).flatMap(([id, l]) => (l.over || []).flatMap((k, ki) => (k.sheets ? k.lowers : []).filter((lower) => loaded.set.layers[lower].fill).map((lower) => ({ id, kind: k.kind, ki, lower }))));
 for (const sc of SCALES) {
   test(`terrain layers at ${sc.name} px: the composite of every (terrain, kind, lower) equals its golden`, () => {
     const cases = layerCases();
-    assert.equal(cases.length, 57);
+    assert.equal(cases.length, 49);   // the cliff bank has no sheet since the old over-cliff sheets were retired (57 - 8)
     for (const c of cases) {
       const { tiles } = layerComposites(c.id, c.ki, c.lower, sc.scaled);
       const r = compareGolden(path.join(places, 'golden', 'seams', `ninja-test-${c.id}-${c.kind}-over-${c.lower}-${sc.name}.png`), cornerSheet(tiles));
@@ -77,22 +78,20 @@ test("the cliff layer: the bake picks each tile by its corners and the cells bel
       const PAD = 1, W = bw + 2 * PAD, H = bh + 2 * PAD, g = (x, y) => (x >= 0 && y >= 0 && x < bw && y < bh ? cell(x, y) : 0);
       const level = { id: 'block', w: W, h: H, terrain: Uint8Array.from({ length: W * H }, (_, i) => (g((i % W) - PAD, ((i / W) | 0) - PAD) ? valueOf.cliff : valueOf[ground])) };
       const dg = terrainLayers(level, TERRAINS, desc.layers, null);
-      applyOpenEdges(dg, { ...level, wayups: [], reedbanks: [] }, TERRAINS, desc.layers);
+      const lir = { ...level, wayups: [], reedbanks: [] };
+      applyOpenEdges(dg, lir, TERRAINS, desc.layers);
       const L = dg.layers.find((l) => l.terrain === valueOf.cliff);
       if (!L) continue;
       for (let j = 1; j <= bh - 2; j++) for (let i = 1; i < bw; i++) {   // the tiles the desk proves: i from 1, j from 1 to the height - 2 (block coordinates)
         const nw = g(i - 1, j - 1), ne = g(i, j - 1), sw = g(i - 1, j), se = g(i, j), want = nw * 8 + ne * 4 + sw * 2 + se;
-        const s = (sw && !g(i - 1, j + 1) ? 2 : 0) | (se && !g(i, j + 1) ? 1 : 0), c = L.tiles[(j + PAD) * dg.w1 + i + PAD], at = `block ${m} ${bw}x${bh} ${ground} tile (${i},${j})`;
+        const c = L.tiles[(j + PAD) * dg.w1 + i + PAD], at = `block ${m} ${bw}x${bh} ${ground} tile (${i},${j})`;
+        // "rim and face" (southruns.mjs): the face, its corners and ends and the sides are painted pieces; the cliff layer keeps only the raised ground, the side's ground to the cell edge and the back rim's own tiles
         if (want === 0) { assert.equal(c, EMPTY, at + ': no cliff corner, no cliff tile'); continue; }
-        if (s === 0) {
-          assert.ok(c < ALT_CODE || c >= FILL_CODE, `${at}: the plain sheet`);
-          if (c < ALT_CODE) assert.equal(c % 64, want, at);   // a kind code: its slot is the corner index (a fill code is the all-cliff tile)
-          else assert.equal(want, 15, at + ': a fill is the all-cliff tile');
-          continue;
-        }
-        assert.ok(c >= ALT_CODE && c < FILL_CODE, `${at}: a tall sheet`);
-        const row = rows[(c - ALT_CODE) >> 4];
-        assert.deepEqual([row.type, row.terrain, row.s, (c - ALT_CODE) & 15], ['tall', 'cliff', s, want], at);
+        if (want === 15) { assert.ok(c >= FILL_CODE, at + ': a fill is the all-cliff tile'); continue; }
+        if (want === 5 || want === 10) { assert.ok(c >= FILL_CODE, at + ': a side: the raised ground to the cell edge'); continue; }
+        if (!RIM_CASES.has(want)) { assert.equal(c, EMPTY, at + ': the pieces draw it, not the rim sheet'); continue; }
+        assert.ok(c < ALT_CODE, `${at}: the plain rim sheet`);
+        assert.equal(c % 64, want, at);   // a kind code: its slot is the corner index
       }
     }
   }
