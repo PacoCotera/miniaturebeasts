@@ -51,7 +51,7 @@ export function cliffPieces(ir, A) {
   const { work, W, H, m } = workOf(ir, A), seed = ir.origin ? ir.seed : ir.id;
   for (const r of [R_LIP, R_ENDS, R_CORNERS, R_COLS, R_WAY, R_SIDES]) applyRules(r, work, { seed });
   const L = (n) => work.layers.get(n) || new Uint32Array(W * H), at = (l, x, y) => (x >= 0 && y >= 0 && x < W && y < H ? l[y * W + x] : 0);
-  const out = [], fill = new Set(), face = L('face'), endE = L('end_e'), endW = L('end_w'), sideE = L('side_e'), sideW = L('side_w'), fl = L('fill');
+  const out = [], fill = new Set(), face = L('face'), endE = L('end_e'), endW = L('end_w'), sideE = L('side_e'), sideW = L('side_w'), fl = L('fill'), phase = L('phase');
   const piece = (canon, x, y, row) => { const kind = tiles.clsOf(canon); return { kind, x: x * CELL, y: (row + topOf(kind)) * CELL, line: footLineOf(kind, row), cls: clsOf(kind) }; };
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const i = y * W + x, px = x - m, py = y - m;
@@ -64,6 +64,11 @@ export function cliffPieces(ir, A) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const i = y * W + x, px = x - m, py = y - m;
     for (const layer of [face, endE, endW]) if (layer[i]) out.push(piece(layer[i], px, py, py));
+    // the foot overlay under every face cell (a column or a corner cell: the cell's own column phase) and under every end piece (its hand), from the lip row L, before the face of its line
+    for (const [layer, hand] of [[face, null], [endE, 'e'], [endW, 'w']]) if (layer[i]) {
+      const kind = hand ? `cliff-foot-${hand}` : `cliff-foot-${tiles.clsOf(phase[i]).replace('col-', '') * 1 + 1}`;
+      out.push({ kind, x: px * CELL, y: py * CELL, line: footLineOf(kind, py), cls: -1 });
+    }
   }
   const res = { items: out, fill }; CACHE.set(ir, res); return res;
 }

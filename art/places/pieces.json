@@ -139,10 +139,10 @@
       "places": "the south cell of a side wall, where it meets the face end or the south lip; placed, not yet signed"
     },
     {
-      "id": "foot-overlay", "family": "foot", "state": "empty", "kinds": ["foot-overlay"],
-      "anchor": [0, 2], "footprint": [], "extent": [0, 0, 48, 96], "margin": 12,
-      "pass": "overlay", "footLine": { "from": "lip", "plus": 3 },
-      "places": "keyed contact shade and tumbled stones on rows L+2 and L+3 under a south lip, over whatever ground is there"
+      "id": "foot-overlay", "family": "foot", "state": "stand-in", "kinds": ["cliff-foot-1", "cliff-foot-2", "cliff-foot-3", "cliff-foot-4", "cliff-foot-5", "cliff-foot-6", "cliff-foot-w", "cliff-foot-e"],
+      "anchor": [0, 0], "footprint": [], "extent": [-12, 0, 72, 192], "margin": 12,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "keyed contact shade and tumbled stones under a south lip, over whatever ground is there: the cell's own column phase (cliff-foot-1..6) under every column and corner cell, cliff-foot-w / cliff-foot-e under the west / east end piece; drawn from the lip row L (rows L to L+3) before the face of its line, so the face covers its top rows; placed, not yet signed"
     },
     {
       "id": "way-up", "family": "wayup", "state": "empty", "kinds": ["way-up"],

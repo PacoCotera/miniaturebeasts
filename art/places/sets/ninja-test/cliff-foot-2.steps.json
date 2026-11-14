@@ -1,0 +1,52 @@
+{
+ "source_sha256": "a2b70fc2a13de69e8422f072befc74e15cec0f75bca5a6b735283d3f174efb07",
+ "steps": [
+  [
+   "crop",
+   [
+    44,
+    64,
+    24,
+    64
+   ],
+   "terrain"
+  ],
+  [
+   "scale_nearest",
+   [
+    72,
+    192
+   ]
+  ]
+ ],
+ "out_sha256": "82a9164cad8f17bf6ea3823797427c35e1400ef9deacd9f7c65e70dc1bdb343e",
+ "from_paid_call": {
+  "model": "fal-ai/nano-banana-pro/edit",
+  "job": "art-jobs/2026-11-14-cliff-foot-1",
+  "call": "nbp-edit",
+  "raw": "work/raw/nbp-edit.png",
+  "steps": [
+   [
+    "scale_nearest",
+    [
+     600,
+     704
+    ]
+   ],
+   [
+    "reduce_mode",
+    4
+   ],
+   [
+    "snap",
+    "walk",
+    "7e90b28e41f4",
+    [
+     "#1e2a3e",
+     "#4a5f78"
+    ]
+   ]
+  ],
+  "note": "the layer is the job's out/foot-layer-run.png: the raw scaled, reduced and snapped as listed, then keyed to the painted foot band by post.py; the steps above are the cut from that layer"
+ }
+}
