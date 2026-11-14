@@ -1,0 +1,4 @@
+.banner { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--r-2); background: color-mix(in srgb, var(--special) 14%, var(--raised)); font-size: var(--t-14); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--special); flex: none; }
+.take { margin-left: auto; font-weight: 500; }
+.take:disabled { opacity: .55; cursor: default; }

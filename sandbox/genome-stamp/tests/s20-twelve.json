@@ -1,0 +1,2906 @@
+{
+ "twelve": [
+  {
+   "seed": 1,
+   "copies": {
+    "appearance.body-hue": [
+     "between",
+     "between"
+    ],
+    "appearance.body-value": [
+     "between",
+     "between"
+    ],
+    "appearance.countershade": [
+     "between",
+     "between"
+    ],
+    "appearance.surface-grain": [
+     "between",
+     "between"
+    ],
+    "appearance.sheen": [
+     0.305085,
+     0.305085
+    ],
+    "appearance.fleck": [
+     "between",
+     "between"
+    ],
+    "appearance.cream-extent": [
+     "between",
+     "between"
+    ],
+    "appearance.pattern-scale": [
+     "between",
+     "between"
+    ],
+    "appearance.pattern-contrast": [
+     "between",
+     "between"
+    ],
+    "appearance.marking-rosette": [
+     "low",
+     "low"
+    ],
+    "appearance.band-count": [
+     "between",
+     "between"
+    ],
+    "appearance.emblem-size": [
+     "between",
+     "between"
+    ],
+    "appearance.freckle-density": [
+     "between",
+     "between"
+    ],
+    "appearance.freckle-glow": [
+     0.79661,
+     0.79661
+    ],
+    "appearance.emission-brightness": [
+     0.918644,
+     0.918644
+    ],
+    "appearance.emission-hue": [
+     "between",
+     "between"
+    ],
+    "appearance.lantern-bleed": [
+     "between",
+     "between"
+    ],
+    "form.eye-size": [
+     "between",
+     "between"
+    ],
+    "form.eye-height": [
+     "between",
+     "between"
+    ],
+    "form.eye-spacing": [
+     "between",
+     "between"
+    ],
+    "form.mouth-width": [
+     "between",
+     "between"
+    ],
+    "form.mouth-height": [
+     "between",
+     "between"
+    ],
+    "form.whisker-count": [
+     "between",
+     "between"
+    ],
+    "form.whisker-length": [
+     "between",
+     "between"
+    ],
+    "form.whisker-droop": [
+     "between",
+     "between"
+    ],
+    "form.whisker-curl": [
+     "between",
+     "between"
+    ],
+    "form.ear-length": [
+     "between",
+     "between"
+    ],
+    "form.ear-width": [
+     "between",
+     "between"
+    ],
+    "form.ear-splay": [
+     "between",
+     "between"
+    ],
+    "form.ear-droop": [
+     "between",
+     "between"
+    ],
+    "form.head": [
+     "between",
+     "between"
+    ],
+    "form.torso-girth": [
+     "between",
+     "between"
+    ],
+    "form.leg-length": [
+     "between",
+     "between"
+    ],
+    "form.leg-girth": [
+     "between",
+     "between"
+    ],
+    "form.tail-length": [
+     "between",
+     "between"
+    ],
+    "form.tail-girth": [
+     "between",
+     "between"
+    ],
+    "form.tail-curl": [
+     "between",
+     "between"
+    ],
+    "form.tail-carry": [
+     "between",
+     "between"
+    ],
+    "form.tail-tip-size": [
+     "between",
+     "between"
+    ],
+    "movement.cycle-rate": [
+     "low",
+     "high"
+    ],
+    "anatomy.whisker-presence": [
+     "off",
+     "off"
+    ],
+    "form.ear-kind": [
+     "prick",
+     "prick"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "lantern"
+    ],
+    "appearance.pattern-kind": [
+     "none",
+     "none"
+    ],
+    "appearance.emblem": [
+     "none",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "off"
+    ],
+    "appearance.marking-layout": [
+     "bands",
+     "bands"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61M0GC30R40861GC30R61GC30R6110G025Y",
+   "code": "S20v1-1F-40A00N40JQRA04000502000G02R8H801C482H111218GGGH084W44842E2241030RH0G1GC8G0202000101000G3000081G002NAM02NAM00000G0000GNN"
+  },
+  {
+   "seed": 2,
+   "copies": {
+    "appearance.body-hue": [
+     0.745763,
+     0.745763
+    ],
+    "appearance.body-value": [
+     0.745763,
+     0.745763
+    ],
+    "appearance.countershade": [
+     0.661017,
+     0.661017
+    ],
+    "appearance.surface-grain": [
+     "between",
+     "between"
+    ],
+    "appearance.sheen": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.fleck": [
+     0.033898,
+     0.033898
+    ],
+    "appearance.cream-extent": [
+     0.932203,
+     0.932203
+    ],
+    "appearance.pattern-scale": [
+     0.254237,
+     0.254237
+    ],
+    "appearance.pattern-contrast": [
+     0.474576,
+     0.474576
+    ],
+    "appearance.marking-rosette": [
+     0.457627,
+     0.457627
+    ],
+    "appearance.band-count": [
+     0.423729,
+     0.423729
+    ],
+    "appearance.emblem-size": [
+     0.932203,
+     0.932203
+    ],
+    "appearance.freckle-density": [
+     0.491525,
+     0.491525
+    ],
+    "appearance.freckle-glow": [
+     0.847458,
+     0.847458
+    ],
+    "appearance.emission-brightness": [
+     0.644068,
+     0.644068
+    ],
+    "appearance.emission-hue": [
+     0.559322,
+     0.559322
+    ],
+    "appearance.lantern-bleed": [
+     0.728814,
+     0.728814
+    ],
+    "form.eye-size": [
+     0.254237,
+     0.254237
+    ],
+    "form.eye-height": [
+     0.542373,
+     0.542373
+    ],
+    "form.eye-spacing": [
+     0.457627,
+     0.457627
+    ],
+    "form.mouth-width": [
+     0.152542,
+     0.152542
+    ],
+    "form.mouth-height": [
+     0.525424,
+     0.525424
+    ],
+    "form.whisker-count": [
+     0.40678,
+     0.40678
+    ],
+    "form.whisker-length": [
+     0.779661,
+     0.779661
+    ],
+    "form.whisker-droop": [
+     0.779661,
+     0.779661
+    ],
+    "form.whisker-curl": [
+     0.508475,
+     0.508475
+    ],
+    "form.ear-length": [
+     0.915254,
+     0.915254
+    ],
+    "form.ear-width": [
+     0.881356,
+     0.881356
+    ],
+    "form.ear-splay": [
+     0.288136,
+     0.288136
+    ],
+    "form.ear-droop": [
+     0.745763,
+     0.745763
+    ],
+    "form.head": [
+     0.338983,
+     0.338983
+    ],
+    "form.torso-girth": [
+     0.169492,
+     0.169492
+    ],
+    "form.leg-length": [
+     0.186441,
+     0.186441
+    ],
+    "form.leg-girth": [
+     0.59322,
+     0.59322
+    ],
+    "form.tail-length": [
+     0.169492,
+     0.169492
+    ],
+    "form.tail-girth": [
+     0.745763,
+     0.745763
+    ],
+    "form.tail-curl": [
+     0.525424,
+     0.525424
+    ],
+    "form.tail-carry": [
+     0.525424,
+     0.525424
+    ],
+    "form.tail-tip-size": [
+     0.694915,
+     0.694915
+    ],
+    "movement.cycle-rate": [
+     1.033898,
+     1.033898
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "lop",
+     "lop"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "labyrinth",
+     "none"
+    ],
+    "appearance.emblem": [
+     "star",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "belly"
+    ],
+    "appearance.glow-pattern": [
+     "belly-arcs",
+     "belly-arcs"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "bands",
+     "bands"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00XZFTM3B8QTR255FVTWGZB0XDNJDVMP7F9K2M3PZ3RW42Z7QN6ZBSPESMVQWB23PC8YJ",
+   "code": "S20v1-1F-40A00N0PX7T8YVVQH4FDXVRSKG0CGCSR0686GFZ3KB95ZHSNHCDA4GRP6N28F949CX7MP4PEH2CD92RH66MHCNZ8KMVAZM9TDKRY303RY30652Q0652N02QF802QF80V5"
+  },
+  {
+   "seed": 3,
+   "copies": {
+    "appearance.body-hue": [
+     0.79661,
+     0.79661
+    ],
+    "appearance.body-value": [
+     0.152542,
+     0.152542
+    ],
+    "appearance.countershade": [
+     0.559322,
+     0.559322
+    ],
+    "appearance.surface-grain": [
+     0.288136,
+     0.288136
+    ],
+    "appearance.sheen": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.fleck": [
+     0.20339,
+     0.20339
+    ],
+    "appearance.cream-extent": [
+     0.254237,
+     0.254237
+    ],
+    "appearance.pattern-scale": [
+     0.915254,
+     0.915254
+    ],
+    "appearance.pattern-contrast": [
+     0.20339,
+     0.20339
+    ],
+    "appearance.marking-rosette": [
+     0.559322,
+     0.559322
+    ],
+    "appearance.band-count": [
+     0.59322,
+     0.59322
+    ],
+    "appearance.emblem-size": [
+     0.779661,
+     0.779661
+    ],
+    "appearance.freckle-density": [
+     0.542373,
+     0.542373
+    ],
+    "appearance.freckle-glow": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.emission-brightness": [
+     0.867797,
+     0.867797
+    ],
+    "appearance.emission-hue": [
+     0.372881,
+     0.372881
+    ],
+    "appearance.lantern-bleed": [
+     0.050847,
+     0.050847
+    ],
+    "form.eye-size": [
+     0.610169,
+     0.610169
+    ],
+    "form.eye-height": [
+     0.627119,
+     0.627119
+    ],
+    "form.eye-spacing": [
+     0.237288,
+     0.237288
+    ],
+    "form.mouth-width": [
+     0.288136,
+     0.288136
+    ],
+    "form.mouth-height": [
+     0.576271,
+     0.576271
+    ],
+    "form.whisker-count": [
+     0.694915,
+     0.694915
+    ],
+    "form.whisker-length": [
+     0.779661,
+     0.779661
+    ],
+    "form.whisker-droop": [
+     0.169492,
+     0.169492
+    ],
+    "form.whisker-curl": [
+     0.305085,
+     0.305085
+    ],
+    "form.ear-length": [
+     0.966102,
+     0.966102
+    ],
+    "form.ear-width": [
+     0.847458,
+     0.847458
+    ],
+    "form.ear-splay": [
+     0.898305,
+     0.898305
+    ],
+    "form.ear-droop": [
+     0.677966,
+     0.677966
+    ],
+    "form.head": [
+     0.152542,
+     0.152542
+    ],
+    "form.torso-girth": [
+     0.59322,
+     0.59322
+    ],
+    "form.leg-length": [
+     0.305085,
+     0.305085
+    ],
+    "form.leg-girth": [
+     0.254237,
+     0.254237
+    ],
+    "form.tail-length": [
+     0.610169,
+     0.610169
+    ],
+    "form.tail-girth": [
+     0.711864,
+     0.711864
+    ],
+    "form.tail-curl": [
+     "straight",
+     "straight"
+    ],
+    "form.tail-carry": [
+     0.711864,
+     0.711864
+    ],
+    "form.tail-tip-size": [
+     0.271186,
+     0.271186
+    ],
+    "movement.cycle-rate": [
+     1.047458,
+     1.047458
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "nub",
+     "nub"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "none",
+     "labyrinth"
+    ],
+    "appearance.emblem": [
+     "star",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "belly",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "points",
+     "points"
+    ],
+    "anatomy.fang-presence": [
+     "on",
+     "on"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00YACS59B9YJVCQK7WK6HE73NZ1CRRSYH8TK5MFV736TM5FKNY6Q6CTNMPFPR3D39WC48",
+   "code": "S20v1-1F-40A00N1QZQRD6NQ3G6KAVHRDGGAK96R859MMVK613ACVK0HM0PQPN00BBVAG4D3GCX26NR6EKGRRJA9RCC954KZJ9FX9ZS4QYM4EC044EC00V82G0V80G3MYDG3MYDGVV"
+  },
+  {
+   "seed": 4,
+   "copies": {
+    "appearance.body-hue": [
+     "high",
+     "high"
+    ],
+    "appearance.body-value": [
+     0.525424,
+     0.525424
+    ],
+    "appearance.countershade": [
+     0.813559,
+     0.813559
+    ],
+    "appearance.surface-grain": [
+     0.508475,
+     0.508475
+    ],
+    "appearance.sheen": [
+     0.237288,
+     0.237288
+    ],
+    "appearance.fleck": [
+     0.762712,
+     0.762712
+    ],
+    "appearance.cream-extent": [
+     0.813559,
+     0.813559
+    ],
+    "appearance.pattern-scale": [
+     0.745763,
+     0.745763
+    ],
+    "appearance.pattern-contrast": [
+     0.745763,
+     0.745763
+    ],
+    "appearance.marking-rosette": [
+     0.59322,
+     0.59322
+    ],
+    "appearance.band-count": [
+     0.983051,
+     0.983051
+    ],
+    "appearance.emblem-size": [
+     0.966102,
+     0.966102
+    ],
+    "appearance.freckle-density": [
+     0.610169,
+     0.610169
+    ],
+    "appearance.freckle-glow": [
+     0.59322,
+     0.59322
+    ],
+    "appearance.emission-brightness": [
+     0.654237,
+     0.654237
+    ],
+    "appearance.emission-hue": [
+     0.423729,
+     0.423729
+    ],
+    "appearance.lantern-bleed": [
+     0.016949,
+     0.016949
+    ],
+    "form.eye-size": [
+     0.508475,
+     0.508475
+    ],
+    "form.eye-height": [
+     0.847458,
+     0.847458
+    ],
+    "form.eye-spacing": [
+     0.220339,
+     0.220339
+    ],
+    "form.mouth-width": [
+     0.186441,
+     0.186441
+    ],
+    "form.mouth-height": [
+     0.355932,
+     0.355932
+    ],
+    "form.whisker-count": [
+     "many",
+     "many"
+    ],
+    "form.whisker-length": [
+     0.525424,
+     0.525424
+    ],
+    "form.whisker-droop": [
+     0.508475,
+     0.508475
+    ],
+    "form.whisker-curl": [
+     0.677966,
+     0.677966
+    ],
+    "form.ear-length": [
+     0.898305,
+     0.898305
+    ],
+    "form.ear-width": [
+     0.457627,
+     0.457627
+    ],
+    "form.ear-splay": [
+     0.932203,
+     0.932203
+    ],
+    "form.ear-droop": [
+     0.610169,
+     0.610169
+    ],
+    "form.head": [
+     0.186441,
+     0.186441
+    ],
+    "form.torso-girth": [
+     0.813559,
+     0.813559
+    ],
+    "form.leg-length": [
+     0.79661,
+     0.79661
+    ],
+    "form.leg-girth": [
+     0.711864,
+     0.711864
+    ],
+    "form.tail-length": [
+     0.474576,
+     0.474576
+    ],
+    "form.tail-girth": [
+     0.864407,
+     0.864407
+    ],
+    "form.tail-curl": [
+     0.79661,
+     0.79661
+    ],
+    "form.tail-carry": [
+     0.474576,
+     0.474576
+    ],
+    "form.tail-tip-size": [
+     0.288136,
+     0.288136
+    ],
+    "movement.cycle-rate": [
+     0.911864,
+     0.911864
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "prick",
+     "prick"
+    ],
+    "anatomy.tail-tip-form": [
+     "tuft",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "none",
+     "rings"
+    ],
+    "appearance.emblem": [
+     "none",
+     "heart"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "open",
+     "open"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "spotted",
+     "points"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00RB2WY38E3KWCYZQWVX2FK7SNQE8GRFB89TRA3GP5GXC0F2YYPF7EFJVDZVEAZBAB4K5",
+   "code": "S20v1-1F-40A00N0C6FV36SV91HKCXMG8XG9494AR4J4NKTSAH2RXCN8GTZF1CGD77GP83Z2J0ZHXH90FR2ZG47C1ZR23P0BFD0Y05QPGF4KRD04KRD03WZY03WZY03BF503BF509C"
+  },
+  {
+   "seed": 5,
+   "copies": {
+    "appearance.body-hue": [
+     0.898305,
+     0.898305
+    ],
+    "appearance.body-value": [
+     0.847458,
+     0.847458
+    ],
+    "appearance.countershade": [
+     0.118644,
+     0.118644
+    ],
+    "appearance.surface-grain": [
+     0.694915,
+     0.694915
+    ],
+    "appearance.sheen": [
+     0.288136,
+     0.288136
+    ],
+    "appearance.fleck": [
+     0.847458,
+     0.847458
+    ],
+    "appearance.cream-extent": [
+     0.440678,
+     0.440678
+    ],
+    "appearance.pattern-scale": [
+     0.474576,
+     0.474576
+    ],
+    "appearance.pattern-contrast": [
+     0.949153,
+     0.949153
+    ],
+    "appearance.marking-rosette": [
+     0.169492,
+     0.169492
+    ],
+    "appearance.band-count": [
+     0.711864,
+     0.711864
+    ],
+    "appearance.emblem-size": [
+     0.355932,
+     0.355932
+    ],
+    "appearance.freckle-density": [
+     0.847458,
+     0.847458
+    ],
+    "appearance.freckle-glow": [
+     0.491525,
+     0.491525
+    ],
+    "appearance.emission-brightness": [
+     0.979661,
+     0.979661
+    ],
+    "appearance.emission-hue": [
+     0.271186,
+     0.271186
+    ],
+    "appearance.lantern-bleed": [
+     0.423729,
+     0.423729
+    ],
+    "form.eye-size": [
+     0.271186,
+     0.271186
+    ],
+    "form.eye-height": [
+     0.254237,
+     0.254237
+    ],
+    "form.eye-spacing": [
+     0.254237,
+     0.254237
+    ],
+    "form.mouth-width": [
+     0.271186,
+     0.271186
+    ],
+    "form.mouth-height": [
+     0.40678,
+     0.40678
+    ],
+    "form.whisker-count": [
+     "between",
+     "between"
+    ],
+    "form.whisker-length": [
+     "between",
+     "between"
+    ],
+    "form.whisker-droop": [
+     "between",
+     "between"
+    ],
+    "form.whisker-curl": [
+     "between",
+     "between"
+    ],
+    "form.ear-length": [
+     0.220339,
+     0.220339
+    ],
+    "form.ear-width": [
+     0.271186,
+     0.271186
+    ],
+    "form.ear-splay": [
+     0.864407,
+     0.864407
+    ],
+    "form.ear-droop": [
+     0.033898,
+     0.033898
+    ],
+    "form.head": [
+     0.220339,
+     0.220339
+    ],
+    "form.torso-girth": [
+     0.186441,
+     0.186441
+    ],
+    "form.leg-length": [
+     0.40678,
+     0.40678
+    ],
+    "form.leg-girth": [
+     0.186441,
+     0.186441
+    ],
+    "form.tail-length": [
+     0.932203,
+     0.932203
+    ],
+    "form.tail-girth": [
+     0.254237,
+     0.254237
+    ],
+    "form.tail-curl": [
+     0.033898,
+     0.033898
+    ],
+    "form.tail-carry": [
+     0.762712,
+     0.762712
+    ],
+    "form.tail-tip-size": [
+     0.898305,
+     0.898305
+    ],
+    "movement.cycle-rate": [
+     1.061017,
+     1.061017
+    ],
+    "anatomy.whisker-presence": [
+     "off",
+     "off"
+    ],
+    "form.ear-kind": [
+     "lop",
+     "lop"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "plain"
+    ],
+    "appearance.pattern-kind": [
+     "none",
+     "labyrinth"
+    ],
+    "appearance.emblem": [
+     "star",
+     "star"
+    ],
+    "appearance.emblem-place": [
+     "belly",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "belly-arcs",
+     "belly-arcs"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "capped",
+     "masked"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00Z3NJPS9YPXX8NZXSQDNB3NR7Q9VKMX59AEVM0GC30R42T2KXMB89TVKQN98QG5WCGE7",
+   "code": "S20v1-1F-40A00N0QB7TJYEG519F782G159B880JMNM43Q2J921TK94H03ED84J1Z6M29EZVSRK7DXWW9J4J362H2S1K18ZZD4GBFZPJ85HEGJ01EGJ04XY904XY900HGV00HGS0WW"
+  },
+  {
+   "seed": 6,
+   "copies": {
+    "appearance.body-hue": [
+     0.20339,
+     0.20339
+    ],
+    "appearance.body-value": [
+     0.135593,
+     0.135593
+    ],
+    "appearance.countershade": [
+     0.372881,
+     0.372881
+    ],
+    "appearance.surface-grain": [
+     0.355932,
+     0.355932
+    ],
+    "appearance.sheen": [
+     0.20339,
+     0.20339
+    ],
+    "appearance.fleck": [
+     0.40678,
+     0.40678
+    ],
+    "appearance.cream-extent": [
+     0.254237,
+     0.254237
+    ],
+    "appearance.pattern-scale": [
+     0.847458,
+     0.847458
+    ],
+    "appearance.pattern-contrast": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.marking-rosette": [
+     0.288136,
+     0.288136
+    ],
+    "appearance.band-count": [
+     0.050847,
+     0.050847
+    ],
+    "appearance.emblem-size": [
+     0.661017,
+     0.661017
+    ],
+    "appearance.freckle-density": [
+     0.983051,
+     0.983051
+    ],
+    "appearance.freckle-glow": [
+     0.525424,
+     0.525424
+    ],
+    "appearance.emission-brightness": [
+     0.908475,
+     0.908475
+    ],
+    "appearance.emission-hue": [
+     0.610169,
+     0.610169
+    ],
+    "appearance.lantern-bleed": [
+     0.881356,
+     0.881356
+    ],
+    "form.eye-size": [
+     0.457627,
+     0.457627
+    ],
+    "form.eye-height": [
+     0.79661,
+     0.79661
+    ],
+    "form.eye-spacing": [
+     0.779661,
+     0.779661
+    ],
+    "form.mouth-width": [
+     0.542373,
+     0.542373
+    ],
+    "form.mouth-height": [
+     0.677966,
+     0.677966
+    ],
+    "form.whisker-count": [
+     0.40678,
+     0.40678
+    ],
+    "form.whisker-length": [
+     0.254237,
+     0.254237
+    ],
+    "form.whisker-droop": [
+     0.525424,
+     0.525424
+    ],
+    "form.whisker-curl": [
+     0.338983,
+     0.338983
+    ],
+    "form.ear-length": [
+     0.983051,
+     0.983051
+    ],
+    "form.ear-width": [
+     0.474576,
+     0.474576
+    ],
+    "form.ear-splay": [
+     0.169492,
+     0.169492
+    ],
+    "form.ear-droop": [
+     0.847458,
+     0.847458
+    ],
+    "form.head": [
+     0.59322,
+     0.59322
+    ],
+    "form.torso-girth": [
+     0.372881,
+     0.372881
+    ],
+    "form.leg-length": [
+     0.389831,
+     0.389831
+    ],
+    "form.leg-girth": [
+     0.305085,
+     0.305085
+    ],
+    "form.tail-length": [
+     0.59322,
+     0.59322
+    ],
+    "form.tail-girth": [
+     0.389831,
+     0.389831
+    ],
+    "form.tail-curl": [
+     0.915254,
+     0.915254
+    ],
+    "form.tail-carry": [
+     0.423729,
+     0.423729
+    ],
+    "form.tail-tip-size": [
+     0.559322,
+     0.559322
+    ],
+    "movement.cycle-rate": [
+     0.966102,
+     0.966102
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "nub",
+     "nub"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "none",
+     "none"
+    ],
+    "appearance.emblem": [
+     "star",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "belly"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "points",
+     "capped"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "on",
+     "on"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "on",
+     "on"
+    ]
+   },
+   "string": "G1-S20v1-20A00SYBPDH7BEJVM7BBTJ6GXBXRQ9KYWQQ5RWFBM3PX5HAZXFPZKFBKB6TNEDDF6W3JBMN9",
+   "code": "S20v1-1F-40A00N09KFSXN5J00YTJS00PJVNFNB9DTQTP96EJB34H795HTMDYBTXA6Z5X8B74XXM7QJEYS18777MG43KKT5XYMNY2YZAAZ1S5V01S5V03EFA03EF8061S4061S4081"
+  },
+  {
+   "seed": 7,
+   "copies": {
+    "appearance.body-hue": [
+     0.610169,
+     0.610169
+    ],
+    "appearance.body-value": [
+     0.491525,
+     0.491525
+    ],
+    "appearance.countershade": [
+     0.305085,
+     0.305085
+    ],
+    "appearance.surface-grain": [
+     0.762712,
+     0.762712
+    ],
+    "appearance.sheen": [
+     0.322034,
+     0.322034
+    ],
+    "appearance.fleck": [
+     0.728814,
+     0.728814
+    ],
+    "appearance.cream-extent": [
+     0.694915,
+     0.694915
+    ],
+    "appearance.pattern-scale": [
+     0.389831,
+     0.389831
+    ],
+    "appearance.pattern-contrast": [
+     0.898305,
+     0.898305
+    ],
+    "appearance.marking-rosette": [
+     "low",
+     "low"
+    ],
+    "appearance.band-count": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.emblem-size": [
+     0.79661,
+     0.79661
+    ],
+    "appearance.freckle-density": [
+     0.542373,
+     0.542373
+    ],
+    "appearance.freckle-glow": [
+     0.457627,
+     0.457627
+    ],
+    "appearance.emission-brightness": [
+     0.766102,
+     0.766102
+    ],
+    "appearance.emission-hue": [
+     0.525424,
+     0.525424
+    ],
+    "appearance.lantern-bleed": [
+     0.423729,
+     0.423729
+    ],
+    "form.eye-size": [
+     0.237288,
+     0.237288
+    ],
+    "form.eye-height": [
+     0.457627,
+     0.457627
+    ],
+    "form.eye-spacing": [
+     0.423729,
+     0.423729
+    ],
+    "form.mouth-width": [
+     0.559322,
+     0.559322
+    ],
+    "form.mouth-height": [
+     0.288136,
+     0.288136
+    ],
+    "form.whisker-count": [
+     0.694915,
+     0.694915
+    ],
+    "form.whisker-length": [
+     0.813559,
+     0.813559
+    ],
+    "form.whisker-droop": [
+     0.525424,
+     0.525424
+    ],
+    "form.whisker-curl": [
+     0.542373,
+     0.542373
+    ],
+    "form.ear-length": [
+     0.745763,
+     0.745763
+    ],
+    "form.ear-width": [
+     0.491525,
+     0.491525
+    ],
+    "form.ear-splay": [
+     "between",
+     "between"
+    ],
+    "form.ear-droop": [
+     0.067797,
+     0.067797
+    ],
+    "form.head": [
+     0.152542,
+     0.152542
+    ],
+    "form.torso-girth": [
+     0.762712,
+     0.762712
+    ],
+    "form.leg-length": [
+     0.745763,
+     0.745763
+    ],
+    "form.leg-girth": [
+     0.542373,
+     0.542373
+    ],
+    "form.tail-length": [
+     "long",
+     "long"
+    ],
+    "form.tail-girth": [
+     0.254237,
+     0.254237
+    ],
+    "form.tail-curl": [
+     0.101695,
+     0.101695
+    ],
+    "form.tail-carry": [
+     0.237288,
+     0.237288
+    ],
+    "form.tail-tip-size": [
+     0.915254,
+     0.915254
+    ],
+    "movement.cycle-rate": [
+     1.061017,
+     1.061017
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "prick",
+     "prick"
+    ],
+    "anatomy.tail-tip-form": [
+     "plain",
+     "plain"
+    ],
+    "appearance.pattern-kind": [
+     "spots",
+     "labyrinth"
+    ],
+    "appearance.emblem": [
+     "heart",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "masked",
+     "capped"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "on",
+     "on"
+    ]
+   },
+   "string": "G1-S20v1-20A00WZ0NF1AXVCTNNNW82Q8EB3QPDHBGMDXECJMM3V77HCCRDZ0GCF6E3FRW5996HNWWGRH",
+   "code": "S20v1-1F-40A00NBF1QVCPRQ21PBCBH0N4Q84GAPBM285YB0SW2Y5GCY19R18SAMMGMCN0G7ADS0A3N6WGQJQR48B9BW24GEJ7CK8793P9MD1P04D1P015E9G15E9G3E0303E030MA"
+  },
+  {
+   "seed": 8,
+   "copies": {
+    "appearance.body-hue": [
+     0.423729,
+     0.423729
+    ],
+    "appearance.body-value": [
+     0.711864,
+     0.711864
+    ],
+    "appearance.countershade": [
+     0.20339,
+     0.20339
+    ],
+    "appearance.surface-grain": [
+     0.355932,
+     0.355932
+    ],
+    "appearance.sheen": [
+     0.220339,
+     0.220339
+    ],
+    "appearance.fleck": [
+     0.322034,
+     0.322034
+    ],
+    "appearance.cream-extent": [
+     0.016949,
+     0.016949
+    ],
+    "appearance.pattern-scale": [
+     0.966102,
+     0.966102
+    ],
+    "appearance.pattern-contrast": [
+     0.949153,
+     0.949153
+    ],
+    "appearance.marking-rosette": [
+     0.084746,
+     0.084746
+    ],
+    "appearance.band-count": [
+     0.457627,
+     0.457627
+    ],
+    "appearance.emblem-size": [
+     0.135593,
+     0.135593
+    ],
+    "appearance.freckle-density": [
+     0.474576,
+     0.474576
+    ],
+    "appearance.freckle-glow": [
+     0.101695,
+     0.101695
+    ],
+    "appearance.emission-brightness": [
+     0.786441,
+     0.786441
+    ],
+    "appearance.emission-hue": [
+     0.644068,
+     0.644068
+    ],
+    "appearance.lantern-bleed": [
+     0.830508,
+     0.830508
+    ],
+    "form.eye-size": [
+     0.813559,
+     0.813559
+    ],
+    "form.eye-height": [
+     0.40678,
+     0.40678
+    ],
+    "form.eye-spacing": [
+     "between",
+     "between"
+    ],
+    "form.mouth-width": [
+     0.372881,
+     0.372881
+    ],
+    "form.mouth-height": [
+     0.186441,
+     0.186441
+    ],
+    "form.whisker-count": [
+     "many",
+     "many"
+    ],
+    "form.whisker-length": [
+     0.305085,
+     0.305085
+    ],
+    "form.whisker-droop": [
+     0.220339,
+     0.220339
+    ],
+    "form.whisker-curl": [
+     0.762712,
+     0.762712
+    ],
+    "form.ear-length": [
+     0.338983,
+     0.338983
+    ],
+    "form.ear-width": [
+     0.677966,
+     0.677966
+    ],
+    "form.ear-splay": [
+     0.20339,
+     0.20339
+    ],
+    "form.ear-droop": [
+     0.728814,
+     0.728814
+    ],
+    "form.head": [
+     0.813559,
+     0.813559
+    ],
+    "form.torso-girth": [
+     0.40678,
+     0.40678
+    ],
+    "form.leg-length": [
+     0.474576,
+     0.474576
+    ],
+    "form.leg-girth": [
+     0.525424,
+     0.525424
+    ],
+    "form.tail-length": [
+     0.915254,
+     0.915254
+    ],
+    "form.tail-girth": [
+     0.830508,
+     0.830508
+    ],
+    "form.tail-curl": [
+     0.254237,
+     0.254237
+    ],
+    "form.tail-carry": [
+     0.338983,
+     0.338983
+    ],
+    "form.tail-tip-size": [
+     0.779661,
+     0.779661
+    ],
+    "movement.cycle-rate": [
+     0.952542,
+     0.952542
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "lop",
+     "lop"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "plain"
+    ],
+    "appearance.pattern-kind": [
+     "spots",
+     "spots"
+    ],
+    "appearance.emblem": [
+     "star",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "belly"
+    ],
+    "appearance.glow-pattern": [
+     "belly-arcs",
+     "belly-arcs"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "off"
+    ],
+    "appearance.marking-layout": [
+     "spotted",
+     "spotted"
+    ],
+    "anatomy.fang-presence": [
+     "on",
+     "on"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00VKDKXH7TT44HFSXS2YGSEZJEHMYKWXQ0V6EMFGNB8E02TZBKYXSVEZRQKTAAQ5RVGK7",
+   "code": "S20v1-1F-40A00NA5ZFTXX6EPHEYK7B87DCBJG3PP5S824CK3Q1249HVHA4KC1TN29P0XE370T2Q1QGD1BNGZG3XTRFR1Y56WWM62KEEA33WR603WR607XNWG7XNWG46P7046P50JJ"
+  },
+  {
+   "seed": 9,
+   "copies": {
+    "appearance.body-hue": [
+     "low",
+     "low"
+    ],
+    "appearance.body-value": [
+     0.050847,
+     0.050847
+    ],
+    "appearance.countershade": [
+     0.220339,
+     0.220339
+    ],
+    "appearance.surface-grain": [
+     0.508475,
+     0.508475
+    ],
+    "appearance.sheen": [
+     0.20339,
+     0.20339
+    ],
+    "appearance.fleck": [
+     0.474576,
+     0.474576
+    ],
+    "appearance.cream-extent": [
+     0.576271,
+     0.576271
+    ],
+    "appearance.pattern-scale": [
+     0.932203,
+     0.932203
+    ],
+    "appearance.pattern-contrast": [
+     0.220339,
+     0.220339
+    ],
+    "appearance.marking-rosette": [
+     0.949153,
+     0.949153
+    ],
+    "appearance.band-count": [
+     0.033898,
+     0.033898
+    ],
+    "appearance.emblem-size": [
+     0.457627,
+     0.457627
+    ],
+    "appearance.freckle-density": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.freckle-glow": [
+     0.847458,
+     0.847458
+    ],
+    "appearance.emission-brightness": [
+     0.938983,
+     0.938983
+    ],
+    "appearance.emission-hue": [
+     0.59322,
+     0.59322
+    ],
+    "appearance.lantern-bleed": [
+     0.491525,
+     0.491525
+    ],
+    "form.eye-size": [
+     0.525424,
+     0.525424
+    ],
+    "form.eye-height": [
+     0.694915,
+     0.694915
+    ],
+    "form.eye-spacing": [
+     0.40678,
+     0.40678
+    ],
+    "form.mouth-width": [
+     0.169492,
+     0.169492
+    ],
+    "form.mouth-height": [
+     0.389831,
+     0.389831
+    ],
+    "form.whisker-count": [
+     "between",
+     "between"
+    ],
+    "form.whisker-length": [
+     "between",
+     "between"
+    ],
+    "form.whisker-droop": [
+     "between",
+     "between"
+    ],
+    "form.whisker-curl": [
+     "between",
+     "between"
+    ],
+    "form.ear-length": [
+     0.881356,
+     0.881356
+    ],
+    "form.ear-width": [
+     0.79661,
+     0.79661
+    ],
+    "form.ear-splay": [
+     0.40678,
+     0.40678
+    ],
+    "form.ear-droop": [
+     0.542373,
+     0.542373
+    ],
+    "form.head": [
+     0.779661,
+     0.779661
+    ],
+    "form.torso-girth": [
+     0.745763,
+     0.745763
+    ],
+    "form.leg-length": [
+     0.220339,
+     0.220339
+    ],
+    "form.leg-girth": [
+     0.457627,
+     0.457627
+    ],
+    "form.tail-length": [
+     0.779661,
+     0.779661
+    ],
+    "form.tail-girth": [
+     0.491525,
+     0.491525
+    ],
+    "form.tail-curl": [
+     0.423729,
+     0.423729
+    ],
+    "form.tail-carry": [
+     0.830508,
+     0.830508
+    ],
+    "form.tail-tip-size": [
+     0.016949,
+     0.016949
+    ],
+    "movement.cycle-rate": [
+     1.033898,
+     1.033898
+    ],
+    "anatomy.whisker-presence": [
+     "off",
+     "off"
+    ],
+    "form.ear-kind": [
+     "nub",
+     "nub"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "spots",
+     "spots"
+    ],
+    "appearance.emblem": [
+     "none",
+     "heart"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "open",
+     "open"
+    ],
+    "appearance.marking-switch": [
+     "on",
+     "on"
+    ],
+    "appearance.marking-layout": [
+     "capped",
+     "masked"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00R26M637BZ5X9FN8FE52BTQXFFKC0RPSDSPTA0GC30R45EZJPY7RXYGQQ3GBKM32C8EP",
+   "code": "S20v1-1F-40A00N4HQQSFYSR30QZCW1G3AB19G1N5GMR1CHA958P8N4JMJ9C55R9C62JW54Q3GK2GBHR9G2QWG281VY8141WDVGX0Y6XREKJ9103J9104VHA04VH805HMW05HMW0SP"
+  },
+  {
+   "seed": 10,
+   "copies": {
+    "appearance.body-hue": [
+     0.067797,
+     0.067797
+    ],
+    "appearance.body-value": [
+     0.050847,
+     0.050847
+    ],
+    "appearance.countershade": [
+     0.661017,
+     0.661017
+    ],
+    "appearance.surface-grain": [
+     0.576271,
+     0.576271
+    ],
+    "appearance.sheen": [
+     0.237288,
+     0.237288
+    ],
+    "appearance.fleck": [
+     0.271186,
+     0.271186
+    ],
+    "appearance.cream-extent": [
+     0.966102,
+     0.966102
+    ],
+    "appearance.pattern-scale": [
+     0.610169,
+     0.610169
+    ],
+    "appearance.pattern-contrast": [
+     0.644068,
+     0.644068
+    ],
+    "appearance.marking-rosette": [
+     0.898305,
+     0.898305
+    ],
+    "appearance.band-count": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.emblem-size": [
+     0.457627,
+     0.457627
+    ],
+    "appearance.freckle-density": [
+     0.288136,
+     0.288136
+    ],
+    "appearance.freckle-glow": [
+     "high",
+     "high"
+    ],
+    "appearance.emission-brightness": [
+     0.644068,
+     0.644068
+    ],
+    "appearance.emission-hue": [
+     0.457627,
+     0.457627
+    ],
+    "appearance.lantern-bleed": [
+     0.559322,
+     0.559322
+    ],
+    "form.eye-size": [
+     0.830508,
+     0.830508
+    ],
+    "form.eye-height": [
+     0.237288,
+     0.237288
+    ],
+    "form.eye-spacing": [
+     0.288136,
+     0.288136
+    ],
+    "form.mouth-width": [
+     0.728814,
+     0.728814
+    ],
+    "form.mouth-height": [
+     0.271186,
+     0.271186
+    ],
+    "form.whisker-count": [
+     0.40678,
+     0.40678
+    ],
+    "form.whisker-length": [
+     0.813559,
+     0.813559
+    ],
+    "form.whisker-droop": [
+     0.610169,
+     0.610169
+    ],
+    "form.whisker-curl": [
+     0.491525,
+     0.491525
+    ],
+    "form.ear-length": [
+     0.220339,
+     0.220339
+    ],
+    "form.ear-width": [
+     0.728814,
+     0.728814
+    ],
+    "form.ear-splay": [
+     0.101695,
+     0.101695
+    ],
+    "form.ear-droop": [
+     0.101695,
+     0.101695
+    ],
+    "form.head": [
+     0.288136,
+     0.288136
+    ],
+    "form.torso-girth": [
+     0.20339,
+     0.20339
+    ],
+    "form.leg-length": [
+     0.20339,
+     0.20339
+    ],
+    "form.leg-girth": [
+     0.372881,
+     0.372881
+    ],
+    "form.tail-length": [
+     0.661017,
+     0.661017
+    ],
+    "form.tail-girth": [
+     0.423729,
+     0.423729
+    ],
+    "form.tail-curl": [
+     0.271186,
+     0.271186
+    ],
+    "form.tail-carry": [
+     0.440678,
+     0.440678
+    ],
+    "form.tail-tip-size": [
+     0.881356,
+     0.881356
+    ],
+    "movement.cycle-rate": [
+     1.061017,
+     1.061017
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "prick",
+     "prick"
+    ],
+    "anatomy.tail-tip-form": [
+     "tuft",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "spots",
+     "spots"
+    ],
+    "appearance.emblem": [
+     "star",
+     "star"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "belly"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "off"
+    ],
+    "appearance.marking-layout": [
+     "masked",
+     "masked"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00RY6TPB8AFW29EFMZ2QMVTMGNNFCGX53ADTKM3PZ7KW00A3EJCKA9YFPENEAEXBVWG2J",
+   "code": "S20v1-1F-40A00NEA8ZR5E8V2G2Q4DH8RE90C0C74G605NWSVG2TWCXR1KC7GCTSP3R6D7ECGD53Q686JG231FB011GQNG6JYXM539FET2HZMZ01ZMZ04PDTG4PDTG2MJ5G2MJ5GVX"
+  },
+  {
+   "seed": 11,
+   "copies": {
+    "appearance.body-hue": [
+     0.288136,
+     0.288136
+    ],
+    "appearance.body-value": [
+     0.101695,
+     0.101695
+    ],
+    "appearance.countershade": [
+     0.915254,
+     0.915254
+    ],
+    "appearance.surface-grain": [
+     0.322034,
+     0.322034
+    ],
+    "appearance.sheen": [
+     0.305085,
+     0.305085
+    ],
+    "appearance.fleck": [
+     0.305085,
+     0.305085
+    ],
+    "appearance.cream-extent": [
+     0.813559,
+     0.813559
+    ],
+    "appearance.pattern-scale": [
+     0.118644,
+     0.118644
+    ],
+    "appearance.pattern-contrast": [
+     0.237288,
+     0.237288
+    ],
+    "appearance.marking-rosette": [
+     0.254237,
+     0.254237
+    ],
+    "appearance.band-count": [
+     0.169492,
+     0.169492
+    ],
+    "appearance.emblem-size": [
+     0.491525,
+     0.491525
+    ],
+    "appearance.freckle-density": [
+     0.033898,
+     0.033898
+    ],
+    "appearance.freckle-glow": [
+     0.711864,
+     0.711864
+    ],
+    "appearance.emission-brightness": [
+     0.898305,
+     0.898305
+    ],
+    "appearance.emission-hue": [
+     0.661017,
+     0.661017
+    ],
+    "appearance.lantern-bleed": [
+     0.898305,
+     0.898305
+    ],
+    "form.eye-size": [
+     0.59322,
+     0.59322
+    ],
+    "form.eye-height": [
+     0.338983,
+     0.338983
+    ],
+    "form.eye-spacing": [
+     0.355932,
+     0.355932
+    ],
+    "form.mouth-width": [
+     0.762712,
+     0.762712
+    ],
+    "form.mouth-height": [
+     0.779661,
+     0.779661
+    ],
+    "form.whisker-count": [
+     0.694915,
+     0.694915
+    ],
+    "form.whisker-length": [
+     0.508475,
+     0.508475
+    ],
+    "form.whisker-droop": [
+     0.694915,
+     0.694915
+    ],
+    "form.whisker-curl": [
+     0.457627,
+     0.457627
+    ],
+    "form.ear-length": [
+     0.20339,
+     0.20339
+    ],
+    "form.ear-width": [
+     0.254237,
+     0.254237
+    ],
+    "form.ear-splay": [
+     0.186441,
+     0.186441
+    ],
+    "form.ear-droop": [
+     0.576271,
+     0.576271
+    ],
+    "form.head": [
+     0.491525,
+     0.491525
+    ],
+    "form.torso-girth": [
+     0.169492,
+     0.169492
+    ],
+    "form.leg-length": [
+     0.627119,
+     0.627119
+    ],
+    "form.leg-girth": [
+     0.372881,
+     0.372881
+    ],
+    "form.tail-length": [
+     0.525424,
+     0.525424
+    ],
+    "form.tail-girth": [
+     0.559322,
+     0.559322
+    ],
+    "form.tail-curl": [
+     0.830508,
+     0.830508
+    ],
+    "form.tail-carry": [
+     0.288136,
+     0.288136
+    ],
+    "form.tail-tip-size": [
+     0.440678,
+     0.440678
+    ],
+    "movement.cycle-rate": [
+     1.00678,
+     1.00678
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "lop",
+     "lop"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "plain"
+    ],
+    "appearance.pattern-kind": [
+     "spots",
+     "spots"
+    ],
+    "appearance.emblem": [
+     "none",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "forehead",
+     "belly"
+    ],
+    "appearance.glow-pattern": [
+     "belly-arcs",
+     "belly-arcs"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "off"
+    ],
+    "appearance.marking-layout": [
+     "spotted",
+     "spotted"
+    ],
+    "anatomy.fang-presence": [
+     "on",
+     "on"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00TJ9YDDAAQK4HCN8TAD0W25VF7NF3SNFCE3HMFV63PBR2SYJKPBG9Q8PE5JEJM5EW0E6",
+   "code": "S20v1-1F-40A00N2E3QSAMTKC0NAD9P0DVN2PG6XTHB82G43S51801WJHACETHGN67D8R083ACB041N65KBPE2CHNV71686G5YBF382Z5QHV0101V0100299G0299G4RQQ04RQN0B7"
+  },
+  {
+   "seed": 12,
+   "copies": {
+    "appearance.body-hue": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.body-value": [
+     0.661017,
+     0.661017
+    ],
+    "appearance.countershade": [
+     0.423729,
+     0.423729
+    ],
+    "appearance.surface-grain": [
+     0.644068,
+     0.644068
+    ],
+    "appearance.sheen": [
+     0.237288,
+     0.237288
+    ],
+    "appearance.fleck": [
+     0.389831,
+     0.389831
+    ],
+    "appearance.cream-extent": [
+     0.627119,
+     0.627119
+    ],
+    "appearance.pattern-scale": [
+     0.440678,
+     0.440678
+    ],
+    "appearance.pattern-contrast": [
+     0.915254,
+     0.915254
+    ],
+    "appearance.marking-rosette": [
+     0.389831,
+     0.389831
+    ],
+    "appearance.band-count": [
+     0.915254,
+     0.915254
+    ],
+    "appearance.emblem-size": [
+     0.881356,
+     0.881356
+    ],
+    "appearance.freckle-density": [
+     0.355932,
+     0.355932
+    ],
+    "appearance.freckle-glow": [
+     0.338983,
+     0.338983
+    ],
+    "appearance.emission-brightness": [
+     0.786441,
+     0.786441
+    ],
+    "appearance.emission-hue": [
+     0.491525,
+     0.491525
+    ],
+    "appearance.lantern-bleed": [
+     0.762712,
+     0.762712
+    ],
+    "form.eye-size": [
+     0.305085,
+     0.305085
+    ],
+    "form.eye-height": [
+     0.694915,
+     0.694915
+    ],
+    "form.eye-spacing": [
+     0.542373,
+     0.542373
+    ],
+    "form.mouth-width": [
+     0.372881,
+     0.372881
+    ],
+    "form.mouth-height": [
+     0.389831,
+     0.389831
+    ],
+    "form.whisker-count": [
+     "many",
+     "many"
+    ],
+    "form.whisker-length": [
+     0.254237,
+     0.254237
+    ],
+    "form.whisker-droop": [
+     0.338983,
+     0.338983
+    ],
+    "form.whisker-curl": [
+     0.627119,
+     0.627119
+    ],
+    "form.ear-length": [
+     0.932203,
+     0.932203
+    ],
+    "form.ear-width": [
+     0.457627,
+     0.457627
+    ],
+    "form.ear-splay": [
+     0.033898,
+     0.033898
+    ],
+    "form.ear-droop": [
+     0.762712,
+     0.762712
+    ],
+    "form.head": [
+     0.677966,
+     0.677966
+    ],
+    "form.torso-girth": [
+     0.457627,
+     0.457627
+    ],
+    "form.leg-length": [
+     0.559322,
+     0.559322
+    ],
+    "form.leg-girth": [
+     0.711864,
+     0.711864
+    ],
+    "form.tail-length": [
+     0.305085,
+     0.305085
+    ],
+    "form.tail-girth": [
+     0.322034,
+     0.322034
+    ],
+    "form.tail-curl": [
+     0.627119,
+     0.627119
+    ],
+    "form.tail-carry": [
+     0.237288,
+     0.237288
+    ],
+    "form.tail-tip-size": [
+     0.135593,
+     0.135593
+    ],
+    "movement.cycle-rate": [
+     0.979661,
+     0.979661
+    ],
+    "anatomy.whisker-presence": [
+     "on",
+     "on"
+    ],
+    "form.ear-kind": [
+     "nub",
+     "nub"
+    ],
+    "anatomy.tail-tip-form": [
+     "lantern",
+     "tuft"
+    ],
+    "appearance.pattern-kind": [
+     "none",
+     "none"
+    ],
+    "appearance.emblem": [
+     "none",
+     "none"
+    ],
+    "appearance.emblem-place": [
+     "belly",
+     "forehead"
+    ],
+    "appearance.glow-pattern": [
+     "none",
+     "none"
+    ],
+    "appearance.mouth-rest": [
+     "smile",
+     "smile"
+    ],
+    "appearance.marking-switch": [
+     "off",
+     "off"
+    ],
+    "appearance.marking-layout": [
+     "bands",
+     "bands"
+    ],
+    "anatomy.fang-presence": [
+     "off",
+     "off"
+    ],
+    "appearance.whisker-glow": [
+     "off",
+     "off"
+    ],
+    "appearance.blush": [
+     "off",
+     "off"
+    ],
+    "anatomy.brow-tuft-presence": [
+     "off",
+     "off"
+    ]
+   },
+   "string": "G1-S20v1-20A00TZAQ6K8BB8005VWVBS1EYRNYHGE0NESHV6TM3GN5BX05FAYHF1NVV4VDBBD2H35VRHK",
+   "code": "S20v1-1F-40A00N5Q27VMVHAR1TDRNC0G7RF1483W7GJ5S9GANAWPR5ANK6GMCTSK8A6D1253SCGH2HWPBJQFGBNSBQR5T462GMR2318AC73940739403GPBG3GP9G4ZB0G4ZB0GVV"
+  }
+ ],
+ "type": {
+  "ok": true,
+  "string": "G1-S20v1-20A00R61GC3A86100430R210861WQB0R4GC30R61M0GC30R40861GC30R61GC30R6110G025Y",
+  "length": 82,
+  "code": "S20v1-1F-40A00N40JQRA04000502000G02R8H801C482H111218GGGH084W44842E2241030RH0G1GC8G0202000101000G3000081G002NAM02NAM00000G0000GNN",
+  "species": 20,
+  "version": 1,
+  "copies": {
+   "appearance.body-hue": [
+    "between",
+    "between"
+   ],
+   "appearance.body-value": [
+    "between",
+    "between"
+   ],
+   "appearance.countershade": [
+    "between",
+    "between"
+   ],
+   "appearance.surface-grain": [
+    "between",
+    "between"
+   ],
+   "appearance.sheen": [
+    0.305085,
+    0.305085
+   ],
+   "appearance.fleck": [
+    "between",
+    "between"
+   ],
+   "appearance.cream-extent": [
+    "between",
+    "between"
+   ],
+   "appearance.pattern-scale": [
+    "between",
+    "between"
+   ],
+   "appearance.pattern-contrast": [
+    "between",
+    "between"
+   ],
+   "appearance.marking-rosette": [
+    "low",
+    "low"
+   ],
+   "appearance.band-count": [
+    "between",
+    "between"
+   ],
+   "appearance.emblem-size": [
+    "between",
+    "between"
+   ],
+   "appearance.freckle-density": [
+    "between",
+    "between"
+   ],
+   "appearance.freckle-glow": [
+    0.79661,
+    0.79661
+   ],
+   "appearance.emission-brightness": [
+    0.918644,
+    0.918644
+   ],
+   "appearance.emission-hue": [
+    "between",
+    "between"
+   ],
+   "appearance.lantern-bleed": [
+    "between",
+    "between"
+   ],
+   "form.eye-size": [
+    "between",
+    "between"
+   ],
+   "form.eye-height": [
+    "between",
+    "between"
+   ],
+   "form.eye-spacing": [
+    "between",
+    "between"
+   ],
+   "form.mouth-width": [
+    "between",
+    "between"
+   ],
+   "form.mouth-height": [
+    "between",
+    "between"
+   ],
+   "form.whisker-count": [
+    "between",
+    "between"
+   ],
+   "form.whisker-length": [
+    "between",
+    "between"
+   ],
+   "form.whisker-droop": [
+    "between",
+    "between"
+   ],
+   "form.whisker-curl": [
+    "between",
+    "between"
+   ],
+   "form.ear-length": [
+    "between",
+    "between"
+   ],
+   "form.ear-width": [
+    "between",
+    "between"
+   ],
+   "form.ear-splay": [
+    "between",
+    "between"
+   ],
+   "form.ear-droop": [
+    "between",
+    "between"
+   ],
+   "form.head": [
+    "between",
+    "between"
+   ],
+   "form.torso-girth": [
+    "between",
+    "between"
+   ],
+   "form.leg-length": [
+    "between",
+    "between"
+   ],
+   "form.leg-girth": [
+    "between",
+    "between"
+   ],
+   "form.tail-length": [
+    "between",
+    "between"
+   ],
+   "form.tail-girth": [
+    "between",
+    "between"
+   ],
+   "form.tail-curl": [
+    "between",
+    "between"
+   ],
+   "form.tail-carry": [
+    "between",
+    "between"
+   ],
+   "form.tail-tip-size": [
+    "between",
+    "between"
+   ],
+   "movement.cycle-rate": [
+    "low",
+    "high"
+   ],
+   "anatomy.whisker-presence": [
+    "off",
+    "off"
+   ],
+   "form.ear-kind": [
+    "prick",
+    "prick"
+   ],
+   "anatomy.tail-tip-form": [
+    "lantern",
+    "lantern"
+   ],
+   "appearance.pattern-kind": [
+    "none",
+    "none"
+   ],
+   "appearance.emblem": [
+    "none",
+    "none"
+   ],
+   "appearance.emblem-place": [
+    "forehead",
+    "forehead"
+   ],
+   "appearance.glow-pattern": [
+    "none",
+    "none"
+   ],
+   "appearance.mouth-rest": [
+    "smile",
+    "smile"
+   ],
+   "appearance.marking-switch": [
+    "off",
+    "off"
+   ],
+   "appearance.marking-layout": [
+    "bands",
+    "bands"
+   ],
+   "anatomy.fang-presence": [
+    "off",
+    "off"
+   ],
+   "appearance.whisker-glow": [
+    "off",
+    "off"
+   ],
+   "appearance.blush": [
+    "off",
+    "off"
+   ],
+   "anatomy.brow-tuft-presence": [
+    "off",
+    "off"
+   ]
+  }
+ }
+}

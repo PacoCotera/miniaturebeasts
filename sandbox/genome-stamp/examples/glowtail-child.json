@@ -1,0 +1,167 @@
+{
+ "species": 13,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Face",
+  "Shape",
+  "Legs & tail",
+  "Movement",
+  "Stamina",
+  "Character"
+ ],
+ "copies": {
+  "appearance.body-palette": [
+   "jade",
+   "jade"
+  ],
+  "appearance.underside-palette": [
+   "cream",
+   "cream"
+  ],
+  "appearance.marking-switch": [
+   "on",
+   "on"
+  ],
+  "appearance.marking-layout": [
+   "patches",
+   "bands"
+  ],
+  "appearance.marking-extent": [
+   "low",
+   "low"
+  ],
+  "appearance.marking-scale": [
+   "high",
+   "low"
+  ],
+  "appearance.marking-orientation": [
+   "low",
+   "low"
+  ],
+  "appearance.marking-contrast": [
+   "low",
+   "low"
+  ],
+  "appearance.anatomical-covering-extent": [
+   "short",
+   "long"
+  ],
+  "appearance.anatomical-scale-size": [
+   "coarse",
+   "fine"
+  ],
+  "growth.crown-height-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "growth.exterior-eye-spacing-ratio": [
+   "close",
+   "close"
+  ],
+  "growth.muzzle-projection-ratio": [
+   "short",
+   "long"
+  ],
+  "growth.muzzle-width-ratio": [
+   "high",
+   "low"
+  ],
+  "growth.core-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.core-depth-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.region-taper": [
+   "strong",
+   "gentle"
+  ],
+  "growth.region-bend": [
+   "down",
+   "down"
+  ],
+  "growth.support-drop-ratio": [
+   "medium",
+   "short"
+  ],
+  "growth.support-radius-ratio": [
+   "fine",
+   "fine"
+  ],
+  "anatomy.contact-terminal-form": [
+   "rounded",
+   "pad"
+  ],
+  "growth.terminal-length-ratio": [
+   "broad",
+   "narrow"
+  ],
+  "growth.terminal-depth-ratio": [
+   "small",
+   "low"
+  ],
+  "growth.axial-tail-length-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.axial-tail-width-ratio": [
+   "fine",
+   "broad"
+  ],
+  "growth.axial-tail-bend": [
+   "down",
+   "down"
+  ],
+  "movement.cycle-rate": [
+   "high",
+   "high"
+  ],
+  "movement.stride-preference": [
+   "low",
+   "low"
+  ],
+  "movement.contact-phase": [
+   "low",
+   "low"
+  ],
+  "movement.axial-amplitude": [
+   "low",
+   "high"
+  ],
+  "movement.axial-phase": [
+   "low",
+   "low"
+  ],
+  "movement.turn-control": [
+   "high",
+   "low"
+  ],
+  "energy.actuator-capacity": [
+   "high",
+   "high"
+  ],
+  "energy.reserve-capacity": [
+   "high",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "low"
+  ],
+  "cognition.exploration-tendency": [
+   "seeking",
+   "seeking"
+  ],
+  "cognition.arousal-threshold": [
+   "low",
+   "high"
+  ]
+ }
+}

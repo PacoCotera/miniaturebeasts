@@ -1,0 +1,420 @@
+{
+ "$comment": "The props of the sitting (the architect's ARCH-2): what views/sitting-props.mjs gives the face, beside the frame's. Props name what, never where: ids, strings, states and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the face reads those from sitting.json and the palette). Pictures are ids; a master not yet signed is an empty slot the host registers. A region not drawn in the state carries its empty form (\"\", [], 0 or null). The window's from-ids are not props: the host passes them in the dither event. Checked by prototypes/station/tests/sitting-props.test.mjs (a JSON-Schema subset).",
+ "$defs": {
+  "target": {
+   "type": "object",
+   "required": [
+    "id",
+    "group",
+    "enabled"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^card\\.[0-5]$"
+    },
+    "group": {
+     "enum": [
+      "card"
+     ]
+    },
+    "enabled": {
+     "type": "boolean"
+    }
+   }
+  },
+  "card": {
+   "type": "object",
+   "required": [
+    "picture",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "picture": {
+     "type": "string"
+    },
+    "well": {
+     "type": "string"
+    },
+    "pose": {
+     "type": "string",
+     "description": "the habit of a pose card (state pose)"
+    },
+    "place": {
+     "type": "string",
+     "description": "the place of a place card (state place)"
+    }
+   }
+  },
+  "chosen": {
+   "type": "object",
+   "required": [
+    "picture",
+    "well"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "picture": {
+     "type": "string"
+    },
+    "well": {
+     "type": "string"
+    }
+   }
+  },
+  "step": {
+   "type": "object",
+   "required": [
+    "state",
+    "word",
+    "picture",
+    "well",
+    "frame"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "state": {
+     "enum": [
+      "current",
+      "done",
+      "ahead"
+     ]
+    },
+    "word": {
+     "type": "string"
+    },
+    "picture": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "the chosen picture at 48 (Portray's: the portrait at 40 x 30), only when done; else null"
+    },
+    "well": {
+     "type": "string"
+    },
+    "frame": {
+     "type": "string",
+     "description": "Portray's frame (sitting-frame-portrait-48x40) in state portrait; else \"\""
+    }
+   }
+  }
+ },
+ "type": "object",
+ "required": [
+  "state",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "state": {
+   "enum": [
+    "pose",
+    "place",
+    "confirm",
+    "begin",
+    "portrait"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "stage",
+    "glass",
+    "resident",
+    "nameTag",
+    "portrait",
+    "gilt",
+    "deck",
+    "heading",
+    "cards",
+    "chosen",
+    "stamp",
+    "strip",
+    "steps"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "stage": {
+     "type": "object",
+     "required": [
+      "room"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "room": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       },
+       "minItems": 1,
+       "maxItems": 1
+      }
+     }
+    },
+    "glass": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string"
+      }
+     }
+    },
+    "resident": {
+     "type": "object",
+     "required": [
+      "id",
+      "name",
+      "stage",
+      "picture",
+      "figure",
+      "pose"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "stage": {
+       "enum": [
+        "juvenile",
+        "adult",
+        "elder"
+       ]
+      },
+      "picture": {
+       "type": "string",
+       "description": "\"\" in state portrait (the resident is a slot)"
+      },
+      "figure": {
+       "type": [
+        "array",
+        "null"
+       ],
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 4,
+       "maxItems": 4,
+       "description": "[dx, dy, W, H] of the drawn figure in its 304 x 312 picture (home-props figureOf, the 16.15 placement); null where the picture is no layered stand"
+      },
+      "pose": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "description": "the habit the resident is drawn in: the focused card's (pose) or the chosen pose's"
+      }
+     }
+    },
+    "nameTag": {
+     "type": "object",
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string",
+       "description": "the name; \"\" in state portrait (the tag's slot only)"
+      }
+     }
+    },
+    "portrait": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "type": "string",
+       "description": "portrait:<d16>:528x392 in state portrait, else \"\""
+      }
+     }
+    },
+    "gilt": {
+     "type": "object",
+     "required": [
+      "picture"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "picture": {
+       "enum": [
+        "sitting-gilt-560x424",
+        "sitting-gilt-lit-560x424",
+        ""
+       ]
+      }
+     }
+    },
+    "deck": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      }
+     }
+    },
+    "heading": {
+     "type": "object",
+     "required": [
+      "text"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "text": {
+       "type": "string"
+      }
+     }
+    },
+    "cards": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "card"
+       },
+       "maxItems": 6
+      }
+     }
+    },
+    "chosen": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "chosen"
+       },
+       "maxItems": 2
+      }
+     }
+    },
+    "stamp": {
+     "type": "object",
+     "required": [
+      "size",
+      "N",
+      "cell",
+      "plate",
+      "asset",
+      "corner"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "size": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 104
+      },
+      "N": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "cell": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "plate": {
+       "type": "string"
+      },
+      "asset": {
+       "type": "string"
+      },
+      "corner": {
+       "type": "string",
+       "description": "spread-gilt-corner-16x16 when portrayed (state portrait), else \"\""
+      }
+     }
+    },
+    "strip": {
+     "type": "object",
+     "required": [
+      "plate"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "plate": {
+       "type": "string"
+      }
+     }
+    },
+    "steps": {
+     "type": "object",
+     "required": [
+      "items"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "items": {
+       "type": "array",
+       "items": {
+        "$ref": "step"
+       },
+       "minItems": 3,
+       "maxItems": 3
+      }
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets",
+    "armed"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "type": "string",
+     "description": "card.<i> on the pose and place steps, else room"
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "$ref": "target"
+     },
+     "maxItems": 6
+    },
+    "armed": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "enum": [
+      "room",
+      null
+     ],
+     "description": "room after the first confirm on the confirm step (the gilt lit), else null"
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,68 @@
+"""The rig and the clips: the head is the same size while breathing, every part is weighted, the morph targets exist, the glb carries the four clips."""
+import os, sys, json, struct, tempfile, unittest
+import numpy as np
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import bpy
+from stop6 import *
+
+
+class T(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        here = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        cls.tex = os.path.join(here, "out", "mesh", "test-tex")           # scratch under the worktree's out/, never /tmp
+        cls.H, cls.sc, _ = build_full(2, cls.tex)
+        cls.sc.pose_stand(False)
+        cls.keys = shape_keys(cls.sc, cls.H)
+        make_clips(cls.sc, cls.H)
+
+    def test_head_still_while_breathing(self):
+        r = breath_head_test(self.sc)
+        self.assertLess(r["size_delta"], 1e-4)
+
+    def test_every_vertex_weighted_and_sums_to_one(self):
+        me = self.sc.final.data
+        tot = np.array([sum(g.weight for g in v.groups) for v in me.vertices])
+        self.assertTrue((tot > 0.999).all() and (tot < 1.001).all())
+
+    def test_morph_targets_and_clips(self):
+        self.assertEqual([k.name for k in self.keys.key_blocks], ["Basis", "breath"])
+        self.assertEqual([[k.name for k in lid.data.shape_keys.key_blocks] for lid in self.sc.lids], [["Basis", "blink.L"], ["Basis", "blink.R"]])
+        self.assertEqual(sorted(t.name for t in self.sc.rig.animation_data.nla_tracks), ["blink", "breathe", "stand", "walk"])
+
+    def test_lids_are_a_shell_on_the_eyeball(self):
+        """Round 4 (the blink): at the peak each lid lies over its eye disc, at most 0.02 H out of the disc's surface (the open eye's), and at rest it is folded under the skin over the hole's top rim."""
+        for lid, eye, disc in zip(self.sc.lids, self.H.eyes, self.sc.eyes):
+            kb = lid.data.shape_keys.key_blocks[1]
+            rest = np.array([v.co[:] for v in lid.data.vertices]); shut = np.array([d.co[:] for d in kb.data])
+            n, c = eye["n"], self.H.kc + eye["c"]
+            D = np.array([v.co[:] for v in disc.data.vertices])
+            dl, du = (D - c) @ eye["lat"], (D - c) @ eye["up"]
+            inside = np.hypot((shut - c) @ eye["lat"], (shut - c) @ eye["up"]) < eye["Reye"] * 1.0
+            # the disc's surface height at each lid point inside the iris + ring: the nearest disc vertex's
+            for p in shut[inside][::7]:
+                j = int(np.argmin(np.hypot(dl - (p - c) @ eye["lat"], du - (p - c) @ eye["up"])))
+                out = (p - D[j]) @ n
+                self.assertGreater(out, -0.006)    # the two height grids (21 and 15 points) differ by a few mm
+                self.assertLess(out, 0.02)
+            self.assertTrue((np.abs((rest - c) @ eye["up"] - 1.25 * eye["Reye"]) < 1e-6).all())      # folded to one line over the hole's top rim
+            self.assertEqual(lid.data.materials[0].node_tree.nodes["Image Texture"].image.size[0], 192)
+
+    def test_sockets_are_closed_and_wide_as_the_disc(self):
+        for f, eye in zip(self.sc.eye_fit, self.H.eyes):
+            self.assertGreater(f["rim_verts"], 30)
+        import bmesh
+        bm = bmesh.new(); bm.from_mesh(self.sc.final.data)
+        open_edges = sum(1 for e in bm.edges if e.is_boundary)
+        bm.free()
+        self.assertEqual(open_edges, sum(f["rim_verts"] for f in self.sc.eye_fit))      # only the two walls' feet, hidden under the discs
+
+    def test_no_bone_scale_anywhere(self):
+        for act in bpy.data.actions:
+            for fc in act.layers[0].strips[0].channelbags[0].fcurves if act.layers else []:
+                if fc.data_path.endswith("scale"):
+                    self.assertTrue(all(abs(k.co[1] - 1) < 1e-6 for k in fc.keyframe_points), fc.data_path)
+
+
+if __name__ == "__main__":
+    unittest.main()

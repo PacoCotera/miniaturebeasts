@@ -1,0 +1,241 @@
+{
+ "species": 7,
+ "version": 1,
+ "read": [
+  "Coat",
+  "Face",
+  "Shape",
+  "Movement",
+  "Stamina"
+ ],
+ "copies": {
+  "appearance.body-palette": [
+   "cobalt",
+   "lagoon"
+  ],
+  "appearance.underside-palette": [
+   "ice",
+   "ice"
+  ],
+  "appearance.marking-switch": [
+   "off",
+   "off"
+  ],
+  "appearance.marking-layout": [
+   "patches",
+   "patches"
+  ],
+  "appearance.marking-extent": [
+   "low",
+   "low"
+  ],
+  "appearance.marking-scale": [
+   "low",
+   "high"
+  ],
+  "appearance.marking-orientation": [
+   "low",
+   "low"
+  ],
+  "appearance.marking-contrast": [
+   "low",
+   "low"
+  ],
+  "appearance.surface-texture": [
+   "smooth",
+   "ridged"
+  ],
+  "appearance.fur-length": [
+   "long",
+   "short"
+  ],
+  "appearance.fur-flow": [
+   "axial",
+   "axial"
+  ],
+  "growth.head-length-ratio": [
+   "large",
+   "large"
+  ],
+  "growth.head-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.head-depth-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.head-lift-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.muzzle-projection-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.muzzle-width-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "growth.exterior-eye-spacing-ratio": [
+   "close",
+   "wide"
+  ],
+  "anatomy.crown-presence": [
+   "on",
+   "off"
+  ],
+  "anatomy.crown-form": [
+   "pointed",
+   "pointed"
+  ],
+  "growth.crown-height-ratio": [
+   "high",
+   "low"
+  ],
+  "anatomy.auricular-form": [
+   "rounded",
+   "pointed"
+  ],
+  "growth.auricular-length-ratio": [
+   "short",
+   "long"
+  ],
+  "growth.core-half-length": [
+   "large",
+   "small"
+  ],
+  "growth.core-width-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.core-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "anatomy.region-longitudinal-form": [
+   "tapered",
+   "tapered"
+  ],
+  "anatomy.region-cross-exponent": [
+   "rounded-square",
+   "round"
+  ],
+  "growth.region-taper": [
+   "gentle",
+   "gentle"
+  ],
+  "growth.region-bend": [
+   "up",
+   "up"
+  ],
+  "growth.join-throat-ratio": [
+   "broad",
+   "broad"
+  ],
+  "growth.branch-angle": [
+   "close",
+   "close"
+  ],
+  "growth.posterior-length-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.posterior-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.support-drop-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.support-splay-ratio": [
+   "low",
+   "high"
+  ],
+  "growth.support-radius-ratio": [
+   "fine",
+   "stout"
+  ],
+  "growth.free-proximal-ratio": [
+   "long",
+   "short"
+  ],
+  "anatomy.contact-terminal-form": [
+   "wedge",
+   "pad"
+  ],
+  "growth.terminal-length-ratio": [
+   "broad",
+   "small"
+  ],
+  "growth.axial-tail-length-ratio": [
+   "long",
+   "long"
+  ],
+  "growth.axial-tail-width-ratio": [
+   "fine",
+   "broad"
+  ],
+  "growth.axial-tail-bend": [
+   "up",
+   "up"
+  ],
+  "movement.contact-phase": [
+   "high",
+   "low"
+  ],
+  "movement.stride-preference": [
+   "high",
+   "high"
+  ],
+  "structure.joint-range": [
+   "low",
+   "low"
+  ],
+  "movement.cycle-rate": [
+   "low",
+   "low"
+  ],
+  "movement.axial-amplitude": [
+   "high",
+   "high"
+  ],
+  "movement.axial-phase": [
+   "high",
+   "low"
+  ],
+  "movement.turn-control": [
+   "low",
+   "low"
+  ],
+  "structure.contact-width": [
+   "high",
+   "high"
+  ],
+  "energy.actuator-capacity": [
+   "low",
+   "low"
+  ],
+  "energy.reserve-capacity": [
+   "high",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "high"
+  ],
+  "cognition.exploration-tendency": [
+   "seeking",
+   "reserved"
+  ],
+  "cognition.arousal-threshold": [
+   "high",
+   "low"
+  ]
+ }
+}

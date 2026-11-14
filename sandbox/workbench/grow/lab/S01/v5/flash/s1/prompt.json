@@ -1,0 +1,275 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "v5",
+  "name": "v5 baseline",
+  "change": "The v5 art direction, species notes and description template.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3.1-flash-image",
+ "sample": 1,
+ "changed": "The v5 art direction, species notes and description template.",
+ "step1": {
+  "callId": "85ba078e-d86d-4b95-a368-c362776aa851",
+  "status": "ok",
+  "seconds": 7.8,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.941,
+   "silhouetteIoUInPlace": 0.941,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.956
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "muzzle": {
+     "span": 0.983,
+     "coverage": 0.911
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.926
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.895
+    },
+    "leg-1": {
+     "span": 0.992,
+     "coverage": 0.999
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.64,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.431,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.27,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.382,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.557,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.311,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.504,
+     "median": "#3a4249",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.797,
+     "median": "#475156",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.913,
+     "median": "#deceae",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.874,
+     "median": "#cbb69e",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.984,
+     "median": "#5b935b",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.794,
+     "median": "#e1d1b0",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.848,
+     "median": "#e2d4b1",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.0,
+   "missing": 0.03,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.742,
+   "passed": true,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "2067f48a-52a0-4089-9b37-9376929f2428",
+  "status": "ok",
+  "seconds": 8.6,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.872,
+   "silhouetteIoUInPlace": 0.88,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.976
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.994
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.984
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.954
+    },
+    "crown": {
+     "span": 0.932,
+     "coverage": 0.878
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.979
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.907
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.65,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.438,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.278,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.372,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.588,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.322,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.395,
+     "median": "#3b4045",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.43,
+     "median": "#3b4045",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.54,
+     "median": "#aa9785",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.181,
+     "median": "#96968e",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.608,
+     "median": "#698559",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.607,
+     "median": "#b6a58e",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.644,
+     "median": "#b39680",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.002,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.48,
+   "passed": true,
+   "gated": false
+  }
+ }
+}

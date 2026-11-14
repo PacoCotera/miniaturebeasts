@@ -1,0 +1,20 @@
+{
+  "formatVersion": 1,
+  "note": "The single home of terrain semantics (place design A1.3). The LDtk IntGrid value list must equal this file; the bake checks it. z: draw order, low first, unique. T: the exploration tile the terrain becomes in lay.tiles. earth (the heart's clearing, the art desk's pairs grass-earth and sand-earth) is the lowest ground of both its pairs, so its z sits below sand's and grass's. The open edges (mibi-art abb33a65b, order low to high: deep, water, earth, sand, mud, path, grass, scrub, thicket, cliff): cliff is raised land, its top is ground you can walk, every cliff cell with a non-cliff cell next to it (4-neighbour) is the lip or the face and blocks except the cells under a WayUp area; thicket blocks; scrub is low and walks like grass. The biome grounds (the art director's signed skins, mibi-art art/desk 8c0ddc470) are patches of ground over grass that walk like grass: leaf litter (Woods, Tallwood), dry grass (Thickets), short turf (Hills); scree (the rock field, Cliffs and Highpools) walks like sand. They sit above grass and below scrub, thicket and cliff.",
+  "terrains": [
+    { "id": "deep", "name": "Deep water", "value": 1, "z": 0, "play": "block", "T": "DEEP", "editorColour": "#2c568e" },
+    { "id": "water", "name": "Water", "value": 2, "z": 1, "play": "block", "T": "WATER", "editorColour": "#4f86c6" },
+    { "id": "sand", "name": "Sand", "value": 3, "z": 3, "play": "walk", "T": "SAND", "editorColour": "#e0c98a" },
+    { "id": "mud", "name": "Mud", "value": 4, "z": 4, "play": "wade", "T": "WADE", "editorColour": "#6b5238" },
+    { "id": "path", "name": "Path", "value": 5, "z": 5, "play": "walk", "T": "GRASS", "editorColour": "#b58a55" },
+    { "id": "grass", "name": "Grass", "value": 6, "z": 6, "play": "walk", "T": "GRASS", "editorColour": "#6fa44a" },
+    { "id": "earth", "name": "Worn earth", "value": 7, "z": 2, "play": "walk", "T": "GRASS", "editorColour": "#9a7453" },
+    { "id": "cliff", "name": "Cliff (raised land)", "value": 8, "z": 13, "play": "cliff", "T": "GRASS", "editorColour": "#8d977f" },
+    { "id": "thicket", "name": "Dense thicket", "value": 9, "z": 12, "play": "block", "T": "ROCK", "editorColour": "#36603a" },
+    { "id": "scrub", "name": "Low scrub", "value": 10, "z": 11, "play": "walk", "T": "GRASS", "editorColour": "#93a332" },
+    { "id": "litter", "name": "Leaf litter", "value": 11, "z": 9, "play": "walk", "T": "GRASS", "editorColour": "#8a6a3c" },
+    { "id": "drygrass", "name": "Dry grass", "value": 12, "z": 7, "play": "walk", "T": "GRASS", "editorColour": "#b8a85a" },
+    { "id": "turf", "name": "Short turf", "value": 13, "z": 8, "play": "walk", "T": "GRASS", "editorColour": "#7fae5e" },
+    { "id": "scree", "name": "Scree", "value": 14, "z": 10, "play": "walk", "T": "SAND", "editorColour": "#a9a39a" }
+  ]
+}

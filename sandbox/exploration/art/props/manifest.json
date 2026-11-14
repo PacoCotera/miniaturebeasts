@@ -1,0 +1,23 @@
+{
+ "job": "art-paint-walk-props (phase 1 signed 9e2361893, phase 2)",
+ "palette": "work/palette.png (art-style-test-3 palette plus the confirmed coral tones)",
+ "slots": {
+  "bush full": {"file": "bush-full.png", "size": [25, 18], "anchor": [12, 17], "frames": 1, "model": "fal Nano Banana Pro edit (phase 1), signed by the art director", "calls": 2, "mxn": 6, "slot_in_game": "bushArt(true)"},
+  "bush full mirrored": {"file": "bush-full-m.png", "size": [25, 18], "anchor": [12, 17], "frames": 1, "model": "mirror of bush full", "calls": 0, "mxn": 0, "slot_in_game": "bushArt(true, mirrored)"},
+  "bush bare": {"file": "bush-bare.png", "size": [25, 18], "anchor": [12, 17], "frames": 1, "model": "palette remap of bush full", "calls": 0, "mxn": 0, "slot_in_game": "bushArt(false)"},
+  "bush bare mirrored": {"file": "bush-bare-m.png", "size": [25, 18], "anchor": [12, 17], "frames": 1, "model": "mirror of bush bare", "calls": 0, "mxn": 0, "slot_in_game": "bushArt(false, mirrored)"},
+  "slab": {"file": "out/prop-slab.png", "size": [32, 32], "content": [28, 17], "frames": 1, "model": "fal Nano Banana Pro edit of the signed test-3 grey rock on magenta (phase 2c), snapped to the rock tones only", "calls": 1, "mxn": 3, "slot_in_game": "SLAB()"},
+  "fresh hole bare": {"file": "out/prop-hole-fresh-bare.png", "size": [40, 32], "model": "fal Nano Banana Pro edit of the signed fresh hole, re-cut at the signed pit size (2c)", "mxn": 3, "slot_in_game": "freshHoleArt(fr, true)"},
+  "fresh hole frame 2": {"file": "out/prop-hole-fresh-f2.png", "size": [40, 32], "model": "fal Nano Banana Pro edit of the signed fresh hole, re-cut at the signed scale (2c)", "mxn": 3, "slot_in_game": "freshHoleArt(fr2)"},
+  "nest": {"file": "out/prop-nest.png", "size": [32, 32], "content": [30, 23], "frames": 1, "model": "same, sheet A", "slot_in_game": "NEST()"},
+  "crack": {"file": "out/prop-crack.png", "size": [32, 32], "content": [30, 25], "frames": 1, "model": "same, sheet A", "slot_in_game": "CRACK()"},
+  "exit": {"file": "out/prop-exit.png", "size": [32, 32], "content": [32, 24], "frames": 1, "note": "frame 2 (swayed tufts) not painted; waits for the AD's sign-off of this exit", "model": "fal Nano Banana Pro paint on magenta with a signed tuft as reference (phase 2c)", "calls": 1, "mxn": 3, "slot_in_game": "exitArt(fr)"},
+  "fruit": {"file": "out/prop-fruit.png", "size": [12, 12], "content": [11, 12], "frames": 1, "model": "Retro Diffusion rd_pro__topdown, sheet B (128x128) cut", "slot_in_game": "FRUIT()"},
+  "hole": {"file": "out/prop-hole0.png", "size": [32, 32], "content": [30, 25], "frames": 1, "model": "same, sheet B", "slot_in_game": "holeArt(0)"},
+  "hole with glint": {"file": "out/prop-hole1.png", "size": [32, 32], "content": [30, 25], "frames": 1, "model": "same, sheet B (two yellow eyes painted in)", "slot_in_game": "holeArt(1)"},
+  "Rupar fresh hole": {"file": "out/prop-hole-fresh.png", "size": [40, 32], "content": [38, 20], "frames": 1, "note": "the game has 2 frames and a bare variant (no loose earth); one painting only, the bare variant and frame 0 are NOT painted", "model": "same, sheet B", "slot_in_game": "freshHoleArt(fr, bare)"}
+ },
+ "calls": {"retro diffusion": 6, "fal": 1},
+ "mxn_total": 21.6,
+ "anchors": "each piece is centred in its cell; the game's draw offsets (HOLE_DX etc.) were not changed and the game was not touched"
+}

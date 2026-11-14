@@ -1,0 +1,148 @@
+{
+ "_note": "The Incubator's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "incubator-states": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Open now",
+    "price": null,
+    "subject": "Fit the Probe upgrade"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "back"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Open now",
+    "price": "❀ 11",
+    "subject": "A Loika"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Open now",
+    "price": null,
+    "subject": "Fit the Probe upgrade"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "panel",
+      "target": "card.grow",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "state": "growing",
+    "ok": "Open now",
+    "price": "❀ 11",
+    "subject": "A Loika"
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "confirm",
+     "back"
+    ],
+    "said": [],
+    "screen": "incubator"
+   },
+   {
+    "hatch": "hatch",
+    "ok": "Skip"
+   },
+   {
+    "held": [
+     "up",
+     "left",
+     "back"
+    ],
+    "said": [],
+    "screen": "incubator"
+   },
+   {
+    "screen": "habitat",
+    "hab": "resident",
+    "habId": 2
+   }
+  ],
+  "incubator-empty": [
+   {
+    "state": "empty",
+    "ok": "Choose a pod",
+    "subject": "Ready for a pod"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "pods",
+    "state": "inventory",
+    "ok": "Grow it",
+    "price": null,
+    "subject": "Fit the Probe upgrade"
+   },
+   {
+    "screen": "pods",
+    "view": "inventory",
+    "sort": "use",
+    "focus": "card.0",
+    "verb": "grow"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "card.0",
+      "verb": "back"
+     }
+    ],
+    "screen": "incubator",
+    "state": "empty",
+    "ok": "Choose a pod",
+    "price": null,
+    "subject": "Ready for a pod"
+   },
+   {
+    "back": "incubator"
+   }
+  ]
+ }
+}

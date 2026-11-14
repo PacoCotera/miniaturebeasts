@@ -1,0 +1,1442 @@
+// The Station's state: the save's Station part (`st` under mb-save-v8) and every rule as a pure
+// function over it. No drawing, no DOM: the tests run this in Node. Screens call these and read
+// the results; presentation events come back as return values, never as side effects on a renderer.
+// The Companion page owns every top-level field of the save and reads these fields of `st`:
+// accepted, dockN, known, probe, carryReqs, returned (with species, gs, and rg, the region it goes back to; none means region 1), and each mibi's id, name, sp, species, spName, born, since, sinceFloor, from, bonded.
+// The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
+// Those keep their shape (station-build.md §2.3).
+import { currentLooks } from "../../workbench/framework/describe.mjs";
+import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework/cross.mjs";
+import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
+import { fill, capLine } from "./views/words.mjs";
+import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
+import HABITAT from "../../ui/specs/station/habitat.json" with { type: "json" };
+import VIVARIUM from "../../ui/specs/station/vivarium.json" with { type: "json" };
+import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "json" };
+import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
+
+export const ST_SCHEMA = 4;
+// The save is v10 (a realm of regions, written by the Companion; the release's reset starts every older save over, game.mjs readStored). The Station writes only `st`, keeps every other byte, and never writes over a save whose v is above SAVE_V.
+export const SAVE_KEY = "mb-save-v8", SAVE_V = 10, SAVE_VS = [10], V7_KEY = "mb-exploration-v7";
+export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
+export const DEV_KEY = "mb-station-dev";
+// The decided prices (research-economy.md §2).
+export const PRICE = { identify: 1 /* Data: ◆1, always, no free first one (owner 2026-10-11 15:20) */, readTrait: 1, change: 1, growE: 2, growS: 4, crossE: 2, crossS: 2 /* the cross costs half of a grow's Essence (editorial 2026-11-09): both parents are paid for */, mend: 1, tier2E: 12, tier2D: 4, freshen: 1 /* Essence for FRESHEN_TURNS more turns of a pod's life, up to full */ };
+// Letting a pod go and releasing a mibi pay nothing (owner 2026-10-28 20:42 and 23:16): there is no price for them here.
+// Pods at home: no rack and no cap (owner 2026-10-28 20:26, 20:36). Every pod brought home is in st.tray, in the order it came; st.waiting stays in the save's shape, always empty.
+// A pod keeps POD_LIFE world turns after it comes home; world turns move only with expeditions; the pod on the reading-room bench does not dry; amber from DRYING_SOON turns left (the pod inventory's design; all tune).
+export const POD_LIFE = 12, FRESHEN_TURNS = 4, DRYING_SOON = 4, DRIED_KEEP = 30;
+export const ROOM = 8, ROOMS_MAX = ROOM_RULES.max;   // places in a room, rooms in the Vivarium at most (rooms-rules.json)
+export const ROOM_NAMES = ROOM_RULES.themes.map((t) => t.name), ROOM_THEMES = ROOM_RULES.themes.map((t) => t.id);
+export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
+// The plates the dock leaves whole when it does not mend every plate (the bench's switch off): two, free; the switch on mends all at the price.
+export const DOCK_MEND_FLOOR = 2;
+// What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
+export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
+export const JUVENILE_TURNS = 2, ELDER_TURNS = 16, CARRY_MAX = 3;   // young for 2 world turns, an adult for 16 more: an elder at turn 18 (game designer, option A)
+// A device clock before 2026 is unset: no `since` is written from it (normalize back-fills at the first good clock).
+export const GOOD_CLOCK = Date.UTC(2026, 0, 1);
+// The name lists live in ../../play/src/names.mjs (both devices read them): the current list es-pets-1 here, the archived en-short-1 (2026-10-27) for what pins today's English names.
+export { NAME_LISTS, MIBI_NAMES_ARCHIVED, longestNames } from "../../play/src/names.mjs";
+export const MIBI_NAMES = NAME_LIST_NOW;
+// The list births draw from when no pool is passed: the current one. Tests, fixtures, goldens and layout cards that show the archived English names pin it with useNameList("en-short-1")
+// (or the page's ?names=en-short-1); a game never calls it.
+let listInUse = MIBI_NAMES;
+export function useNameList(key) { const l = key == null ? MIBI_NAMES : Array.isArray(key) ? key : NAME_LISTS[key]; if (!l) throw new Error("no name list " + key); listInUse = l; return l; }
+// --- names (the game designer's brief): a name never carries a digit and is never reused among living mibis, released ones included -----------------------------------------------------------
+export const NAME_MAX = 10;
+// PLACEHOLDER heads and tails for the compound names (tiers 2 and 3): the naming board's lists replace them; the tests inject their own.
+export const NAME_HEADS = ["Ka", "Lo", "Mi", "Ne", "Pu", "Ro", "Su", "Te"], NAME_TAILS = ["ri", "sa", "mo", "vu", "li", "po"];
+const SEPARATORS = " -’";
+// How names compare: lowercase, accents removed, œ → oe, separators removed ("Mo-Mo" = "momo" = "Mómo"); the apostrophe folds to ’.
+export const nameKey = (s) => String(s).replace(/'/g, "’").toLowerCase().replace(/œ/g, "oe").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").split("").filter((c) => !SEPARATORS.includes(c)).join("");
+// The pool in its fixed order: the twelve names, then heads[k mod H] + tails[⌊k / H⌋] for k = 0 … H·T − 1, then head + tail + tail in the same order (tails[(⌊k/H⌋) mod T], tails[⌊k / (H·T)⌋]); then, only if all of
+// those are used (never reached in play: a safety net), capitalised letter names of two letters and up so a draw never fails. A candidate that is used (by nameKey), holds a digit or is longer than NAME_MAX is skipped.
+export function* namePool({ names = listInUse, heads = NAME_HEADS, tails = NAME_TAILS } = {}) {
+  for (const n of names) yield n;
+  const H = heads.length, T = tails.length;
+  for (let k = 0; k < H * T; k++) yield heads[k % H] + tails[Math.floor(k / H)];
+  for (let k = 0; k < H * T * T; k++) yield heads[k % H] + tails[Math.floor(k / H) % T] + tails[Math.floor(k / (H * T))];
+  for (let k = 0; ; k++) { let s = "", x = k; do { s = String.fromCharCode(97 + (x % 26)) + s; x = Math.floor(x / 26) - 1; } while (x >= 0); if (s.length < 2) s += "a"; yield s[0].toUpperCase() + s.slice(1); }
+}
+const usedKeys = (st) => st.namesUsed || (st.namesUsed = []);
+// The next name: the first in pool order whose key is not used, appended to st.namesUsed (never pruned).
+export function drawName(st, pool = {}) {
+  const used = new Set(usedKeys(st));
+  for (const c of namePool(pool)) { const k = nameKey(c); if (/\d/.test(c) || [...c].length > NAME_MAX || used.has(k)) continue; st.namesUsed.push(k); return c; }
+}
+export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock field", wood: "wood", cave: "cave" };
+// The origin line is one sentence: "Found <where>, <what happened>." Each half is at most 24 characters with its comma or full stop, so the sentence breaks after the comma (design/style-guide/station-layouts.md, Pods, Origin).
+export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
+export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", grab: "after a grab for fruit", warm: "as {who} warmed up", dig: "in a fresh hole", fog: "in a fog bank", still: "as {who} settled", air: "as {who} aired out", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
+// Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
+export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "loose", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, realmSleep: false };
+
+export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
+// The release's one-time notice: a save that came out of the reset (the save says `resetFrom`) and a Station part that has not shown it yet (`st.resetSeen`).
+export const resetNotice = (st, sv) => !!(sv && sv.resetFrom != null && st && !st.resetSeen);
+export const aAn =(w) => (/^[aeiou]/i.test(w) ? "an " : "a ") + w;
+export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
+
+// --- the record ------------------------------------------------------------------------------------
+export function freshSt(wid, turn, now = Date.now()) {
+  return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
+    tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
+    mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, rooms: 1, sheds: [], sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
+    dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [], readingPod: null, dried: [] };
+}
+export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
+
+// A pod's or mibi's frame: by species id, else by the Companion's index.
+export const speciesOf = (x) => x.species ?? speciesId(x.sp);
+export const frameFor = (x) => frameOf(speciesOf(x));
+export const spName = (x) => frameFor(x)?.species.name ?? "unknown";
+// A starting mibi's chapters read: every open one; a sealed chapter only once it is opened in play (readMibi), so its stamp carries no shut sealed chapter.
+const openChapterIds = (frame) => frame.chapters.filter((c) => !c.sealed).map((c) => c.id);
+const mibiFromGenome = (frame, genome) => {
+  const sha = genomeSha(genome);
+  return { genome, sha, code: nameCode(sha), read: openChapterIds(frame) };
+};
+// The migration steps, in order, each idempotent on its own output: forward only, logged. Step 2: a v8 `st` written by the stand-in (schema 1) becomes the research loop.
+// Pods keep their identity (the genome is sampled from the pod's seed); studies start again; an existing
+// mibi becomes a founder from its seed, fully read. The Companion-read fields keep their shape.
+function toResearch(st, now) {
+  const out = Object.assign(freshSt(st.wid, st.turn, now), st);
+  out.schema = 2;
+  const notes = [];
+  const podOf = (p) => {
+    const q = { id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, how: p.how, gs: p.gs >>> 0, k: p.k ?? null, n: p.n || 0, idd: p.idd ? 1 : 0, newSp: 0, read: [], fresh: p.fresh ? 1 : 0 };
+    const fr = frameOf(q.species); if (fr) q.genome = podGenome(fr, q.gs);
+    if (p.st && p.st.some(Boolean)) notes.push(`${q.species} pod ${q.id}: its studies start again as chapters`);
+    return q;
+  };
+  out.tray = (st.tray || []).map(podOf); out.waiting = (st.waiting || []).map(podOf);
+  out.knownIds = [...new Set((st.known || []).map(speciesId).filter(Boolean))]; out.metIds = [...new Set((st.met || []).map(speciesId).filter(Boolean))];
+  out.readOnce = {}; out.guide = {}; out.readEver = !!(st.studyPaid && Object.keys(st.studyPaid).length);
+  out.mibis = (st.mibis || []).map((m, i) => {
+    const q = { id: m.id, name: m.name, sp: m.sp, species: speciesOf(m), gs: m.gs >>> 0, born: m.born || 0, from: m.from || { n: 0, g: "", how: "" }, mem: m.mem || null, outings: m.outings || 0, notches: m.notches || 0, bonded: !!m.bonded, ...(m.places ? { places: m.places } : {}),
+      parents: null, bay: i, paint: null, released: false };
+    const fr = frameOf(q.species); if (fr) Object.assign(q, mibiFromGenome(fr, podGenome(fr, q.gs)));
+    return q;
+  });
+  out.bud = null;
+  if (st.inc && st.inc.m) { const m = st.inc.m, species = speciesOf(m), fr = frameOf(species);
+    if (fr) { const genome = podGenome(fr, m.gs >>> 0); out.bud = { kind: "founder", species, sp: m.sp, genome, sha: genomeSha(genome), start: st.inc.start, minutes: st.inc.mins || 5, firstEver: false, parents: null, from: m.from, read: openChapterIds(fr) }; } }
+  out.sitting = null; out.moments = {}; out.welcomeGiven = false; out.wish = {}; out.outbox = []; out.devBay = [];
+  delete out.seen; delete out.studiedW; delete out.studyPaid; delete out.inc;
+  rebuildGuide(out);
+  logEv(out, `Save migrated to the research loop (schema 2)` + (notes.length ? " · " + notes.join(" · ") : ""));
+  return out;
+}
+// Step 3, the carried set: the old single request ("swap") becomes an add in the queue when the Companion has not applied it (the Station never cleared withReq, so withSeen decides); the old mibi stays carried.
+function toCarry(st, now, sv) {
+  const r = st.withReq;
+  if (r && r.seq > ((sv && sv.withSeen) || 0) && !carriedIds(st, sv).includes(r.id)) { st.carryReqs = [{ seq: 1, op: "add", id: r.id }]; st.carrySeq = 1; } else { st.carryReqs = []; st.carrySeq = 0; }
+  delete st.withReq; st.carryRefusedSeen = st.carryRefusedSeen || 0;
+  return st;
+}
+// Step 4, the rooms: the housed, in (bay, id) order, take room floor(i / 8) and slot i mod 8; a save over eight housed gets the rooms it needs, free (game designer); a released mibi holds no place; no pod is owed for a release made before this step.
+// `bays` and each mibi's `bay` stay (room * 8 + slot) for one release, so a rolled-back Station reads a coherent save.
+function toRooms(st) {
+  const housedNow = st.mibis.filter((m) => !m.released).sort((a, b) => (a.bay ?? 0) - (b.bay ?? 0) || a.id - b.id);
+  housedNow.forEach((m, i) => { m.room = Math.floor(i / ROOM); m.slot = i % ROOM; m.bay = m.room * ROOM + m.slot; });
+  for (const m of st.mibis) if (m.released) { m.room = null; m.slot = null; }
+  st.rooms = clamp(Math.ceil(housedNow.length / ROOM), 1, ROOMS_MAX); st.sheds = [];
+  st.bays = Math.min(12, ROOM * st.rooms);
+  return st;
+}
+const STEPS = [[2, toResearch], [3, toCarry], [4, toRooms]];
+export function migrate(st, now = Date.now(), sv = null) {
+  if (!st || st.schema >= ST_SCHEMA) return st;
+  let out = st;
+  for (const [n, step] of STEPS) if (n > (out.schema || 0)) { out = step(out, now, sv); out.schema = n; }
+  return out;
+}
+// What a record may lack after an older write.
+export function normalize(st, now = Date.now()) {
+  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
+  if (st.waiting.length) { st.tray.push(...st.waiting); st.waiting = []; }   /* no rack: the pods that waited on the mat are at home with the rest, in the order they came (additive, no schema bump) */
+  if (st.readingPod === undefined || (st.readingPod != null && !st.tray.some((p) => p.id === st.readingPod))) st.readingPod = null;   /* the pod on the reading-room bench (additive) */
+  if (!Array.isArray(st.readHome)) st.readHome = [];   /* chapters read at the last docks, waiting for the Home notice and the reveal (additive, no schema bump) */
+  for (const p of st.tray) if (p.store && (st.readingPod !== p.id || !Number.isFinite(p.store.d) || p.store.d < 0)) { if (Number.isFinite(p.store.d) && p.store.d > 0) st.d += p.store.d | 0; delete p.store; } else if (p.store) p.store.ms = Math.max(0, +p.store.ms || 0);   /* a store only lives on the bench pod: any other (or a broken one) goes back to the pocket (additive, no schema bump) */
+  st.outbox = st.outbox.filter((o) => o.sitting);   /* the Caddy is called only for the sitting's portrait: an old Grow or Cross entry never goes (additive, no schema bump) */
+  if (st.welcomePending) { st.owed.unshift({ key: null, at: 0, source: "welcome" }); st.welcomeGiven = true; }   /* an older save kept the waiting welcome as a flag: it joins the queue, first as it was (additive, no schema bump) */
+  delete st.welcomePending;
+  for (const o of st.owed) if (!o.source) o.source = "moment";   /* an older queue held moments only */
+  if (st.doorAt === undefined) st.doorAt = null;   /* the sitting's door: null until it first opens on this save (sitting.mjs openSittingDoor); additive, no schema bump */
+  for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
+  if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = libSnapshot(st);   /* the looks the Library had shown when it was last opened full screen (build spec 4.2, "new"): a save from before it holds none, so what it knows now is not new; additive, no schema bump */
+  if (!st.taught || typeof st.taught !== "object") st.taught = {}; if (!st.taught.carry || typeof st.taught.carry !== "object") st.taught.carry = {}; if (!Number.isInteger(st.taught.carries)) st.taught.carries = 0;   /* the controls' teaching (taught.carry.{research,habitat,library}, taught.call, the carries made so far): additive, no schema bump */
+  st.dock = st.dock || { docked: false, at: now };
+  if (!(st.face.room >= 0 && st.face.room < ROOMS_MAX)) st.face.room = 0;   /* the room the whole last showed (additive, no schema bump) */
+  for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
+  for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); if (!Number.isInteger(p.dryAt)) p.dryAt = (st.turn | 0) + POD_LIFE;   /* a pod from before freshness keeps a full life from now (additive, no schema bump) */ if (p.id === st.readingPod && !Number.isInteger(p.keep)) p.keep = Math.max(1, p.dryAt - (st.turn | 0)); }
+  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
+    if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
+    m.care = m.care > 0 ? m.care | 0 : 0; m.tends = m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;
+    if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
+  if (!Array.isArray(st.roomMeta)) st.roomMeta = []; if (!Array.isArray(st.finds)) st.finds = [];   /* each room's theme and settling, and the themed finds held at home (rooms-rules.json; additive, no schema bump): a room with no entry is the i-th theme, settled */
+  if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
+  delete st.bench;   /* the bench's day ledger is gone (2026-11-03): an older save's copy is dropped, nothing else changes */
+  syncKnown(st);
+  claimExisting(st); renameDigits(st);
+  return st;
+}
+// Every name the save already holds is used: living and released mibis, the release records, the field-guide notes and the parents of a child or a bud.
+function claimExisting(st) {
+  const used = usedKeys(st), add = (n) => { if (typeof n === "string" && n) { const k = nameKey(n); if (!used.includes(k)) used.push(k); } };
+  for (const m of st.mibis) { add(m.name); for (const q of m.parents || []) add(q?.name); }
+  for (const r of st.releases) add(r?.name);
+  for (const list of Object.values(st.guideNotes)) for (const n of Array.isArray(list) ? list : []) add(n?.name);
+  if (st.bud) for (const q of st.bud.parents || []) add(q?.name);
+}
+// A name with a digit is renamed in id order from the pool, and what refers to it follows: the `of` of any mibi's origin, the parents of any child or the bud (by id), the release record (by id) and the field-guide
+// note (by code). Idempotent; the log says each once.
+function renameDigits(st) {
+  for (const m of [...st.mibis].sort((a, b) => a.id - b.id)) {
+    if (!/\d/.test(m.name)) continue;
+    const old = m.name, fresh = drawName(st); followName(st, m, old, fresh);
+    logEv(st, "Renamed " + old + " to " + fresh);
+  }
+}
+// A mibi takes a new name and what refers to the old one follows.
+function followName(st, m, old, fresh) {
+  m.name = fresh;
+  for (const x of st.mibis) { const of = x.from?.of; if (Array.isArray(of)) x.from.of = of.map((n) => (n === old ? fresh : n)); for (const q of x.parents || []) if (q && q.id === m.id) q.name = fresh; }
+  if (st.bud) { const of = st.bud.from?.of; if (Array.isArray(of)) st.bud.from.of = of.map((n) => (n === old ? fresh : n)); for (const q of st.bud.parents || []) if (q && q.id === m.id) q.name = fresh; }
+  for (const r of st.releases) if (r && r.id === m.id) r.name = fresh;
+  for (const list of Object.values(st.guideNotes)) for (const n of Array.isArray(list) ? list : []) if (n && n.code === m.code && n.name === old) n.name = fresh;
+}
+// --- naming one's mibi (namer.json; station-layouts.md, The namer) -------------------------------------------------------------------------------------------------------------------------
+// What stops a name from being saved, in the order the say line gives it: fewer than two letters; a character past NAME_MAX; a mark first, last or beside another mark (space, hyphen, ’); a species' name; a clan's name; a name another living
+// mibi holds (the holder's name says it). `atDone` adds the mark last, which is only refused at Done. Returns null when the name can be saved, else { key: short | full | first | last | twice | species | clan | taken, holder? }.
+export function nameProblem(st, m, text, atDone = true) {
+  const t = String(text ?? "").replace(/'/g, "’"), cs = [...t], marks = cs.map((c) => SEPARATORS.includes(c));
+  if (cs.filter((c, i) => !marks[i]).length < 2) return { key: "short" };
+  if (cs.length > NAME_MAX) return { key: "full" };
+  if (marks[0]) return { key: "first" };
+  if (marks.some((x, i) => x && marks[i + 1])) return { key: "twice" };
+  if (atDone && marks.at(-1)) return { key: "last" };
+  const k = nameKey(t);
+  for (const id of frameIds()) { const f = frameOf(id); if (nameKey(f.species.name) === k) return { key: "species" }; if (f.taxonomy?.clanName && nameKey(f.taxonomy.clanName) === k) return { key: "clan" }; }
+  const held = st.mibis.find((x) => x !== m && !x.released && nameKey(x.name) === k); if (held) return { key: "taken", holder: held.name };
+  return null;
+}
+// The next names of the pool, as births draw them, that this mibi could be given (not used, not held at home, not a species' or clan's name, not over the limit): n of them, nothing consumed.
+export function peekNames(st, m, n = 12, pool = {}) {
+  const used = new Set(usedKeys(st)), out = [];
+  for (const c of namePool(pool)) {
+    if (out.length >= n) break;
+    if (/\d/.test(c) || [...c].length > NAME_MAX || used.has(nameKey(c)) || nameProblem(st, m, c)) continue;
+    out.push(c);
+  }
+  return out;
+}
+// Saves a name: exactly the mibi's own is Keep (nothing written, nothing logged); a refused name changes nothing; otherwise the name is the mibi's (a change of case only is a rename too), what refers to the old one follows and its key is used.
+export function renameMibi(st, m, text) {
+  const t = String(text ?? "").replace(/'/g, "’");
+  if (t === m.name) return { ok: true, kept: true, name: m.name };
+  const why = nameProblem(st, m, t); if (why) return { ok: false, why };
+  const old = m.name; followName(st, m, old, t); const used = usedKeys(st), k = nameKey(t); if (!used.includes(k)) used.push(k);
+  logEv(st, "Renamed " + old + " to " + t);
+  return { ok: true, kept: false, name: t, old };
+}
+// known/met as Companion indexes (the Companion reads them) follow knownIds/metIds, the Station's truth.
+function syncKnown(st) {
+  for (const id of st.knownIds) if (!st.metIds.includes(id)) st.metIds.push(id);
+  st.known = st.knownIds.map(speciesIndex).filter((i) => i >= 0); st.met = st.metIds.map(speciesIndex).filter((i) => i >= 0);
+}
+export function rebuildGuide(st) {
+  st.guide = {};
+  for (const m of st.mibis) { const fr = frameFor(m); if (fr && m.genome) for (const ch of fr.chapters) for (const [t, looks] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, looks); }
+  for (const p of st.tray.concat(st.waiting)) { const fr = frameFor(p); if (fr && p.genome) for (const id of p.read) { const ch = chapterOf(fr, id); if (ch) for (const [t, looks] of chapterLooks(fr, ch, p.genome)) guideAdd(st, fr.species.id, t, looks); } }
+}
+export function guideAdd(st, species, traitId, looks) { const g = st.guide[species] || (st.guide[species] = {}), a = g[traitId] || (g[traitId] = []); for (const l of looks) if (!a.includes(l)) a.push(l); }
+export const guideLooks = (st, species, traitId) => st.guide[species]?.[traitId] ?? [];
+// A look is new in the Library (build spec 4.2) when it was found since the Library was last opened full screen: libSeen holds the guide as it stood at that open, and opening it again takes it up to date.
+export const libSnapshot = (st) => JSON.parse(JSON.stringify(st.guide || {}));
+// The Library's seen record is written when the player leaves the Library (game.mjs goScreen): `note` is { <species>: { <trait>: [looks] } } as taken on entry (library.mjs seenNote), added to st.libSeen look by look.
+export const libRecord = (st, note) => { if (!st.libSeen || typeof st.libSeen !== "object") st.libSeen = {}; for (const [sp, traits] of Object.entries(note || {})) { const g = st.libSeen[sp] || (st.libSeen[sp] = {}); for (const [t, looks] of Object.entries(traits)) { const a = g[t] || (g[t] = []); for (const l of looks) if (!a.includes(l)) a.push(l); } } };
+export const libNewLooks = (st, species, traitId) => { const seen = st.libSeen?.[species]?.[traitId] ?? []; return guideLooks(st, species, traitId).filter((l) => !seen.includes(l)); };
+
+// The band of a crate's reach (explored of the land, `of`): thirds of it, all of it, none for a crate with no map (cargo.json regions.report.reach.thresholds)
+export const reachBand = (c) => { const of = c.of | 0, x = c.explored | 0; return of <= 0 ? "" : x * 3 < of ? "underThird" : x * 3 < 2 * of ? "underTwoThirds" : x < of ? "underAll" : "all"; };
+
+// --- what the Station can know about the Companion (read-only) -----------------------------------
+export const hasWorld = (sv) => !!(sv && sv.wid && typeof sv.seed === "number");
+export const docked = (st) => !!(st.dock && st.dock.docked);
+export const bayCrates = (st, sv) => (sv && Array.isArray(sv.bay) ? sv.bay : []).concat(st.devBay).filter((c) => !st.accepted.includes(c.id));
+export const mibiById = (st, id) => st.mibis.find((m) => m.id === id) || null;
+export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
+// The carried set lives on the Companion (`sv.carried`); the Station reads it and asks for changes through the request queue `st.carryReqs`.
+// carriedIds is the one accessor: the Companion's carried list (or the old single `with` of a save the Companion has not migrated), as ids of the Station's mibis that are not released.
+export function carriedIds(st, sv) {
+  const raw = sv && Array.isArray(sv.carried) ? sv.carried : sv && sv.with != null ? [sv.with] : [];
+  return raw.filter((id) => { const m = mibiById(st, id); return m && !m.released; });
+}
+// The Companion's partner, as the Companion picks it: its lead if carried and grown, else the first grown mibi with it, else none (exploration partnerMibi). The Caddy's lifted line names it.
+export function partnerOf(st, sv, settings = DEFAULT_SETTINGS) {
+  const c = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean), grown = (m) => !!m && isAdult(st, m, settings), l = c.find((m) => m.id === (sv && sv.lead));
+  return grown(l) ? l : c.find(grown) || null;
+}
+// The requests the Companion has not applied yet, in seq order. The face shows them as pending, never as carried.
+export const pendingCarry = (st, sv) => (st.carryReqs || []).filter((r) => r.seq > ((sv && sv.carrySeen) || 0)).sort((a, b) => a.seq - b.seq);
+// The set as it will be once every request applies (the Companion's own rules: an add is refused when full, already carried or released; a home is a no-op when not carried).
+export function projectCarried(st, sv) {
+  const out = carriedIds(st, sv);
+  for (const r of pendingCarry(st, sv)) {
+    if (r.op === "home") { const i = out.indexOf(r.id); if (i >= 0) out.splice(i, 1); }
+    else { const m = mibiById(st, r.id); if (m && !m.released && !out.includes(r.id) && out.length < CARRY_MAX) out.push(r.id); }
+  }
+  return out;
+}
+// R4b: the travellers' return. `st.face.carriedSeen` holds the ids the Companion carried when this was last read; each id in it that the carried set no longer holds has come home (the Companion applied its "home" at a dock): it walks in as a fresh arrival,
+// its roomSince = now (the clock must be good), and the ids now carried are written back. Read on every save read while docked (sitting.mjs mergeHome) and at the dock. Returns the ids that came home.
+export function noteCarried(st, sv, now = Date.now()) {
+  const f = (st.face ??= {}), was = Array.isArray(f.carriedSeen) ? f.carriedSeen : [], held = carriedIds(st, sv), back = was.filter((id) => !held.includes(id));
+  for (const id of back) { const m = mibiById(st, id); if (m && !m.released && now >= GOOD_CLOCK) m.roomSince = now; }
+  f.carriedSeen = held.slice(); return back;
+}
+export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id) && !inStore(m) && !comingOut(st, m)); };   // tucked away or on its way back: not at home (the put-away rules)
+// A Station request to take a mibi with the Companion or bring it home: queued, applied by the Companion at the dock. why: "full" | "carried" | "not-carried" | "released" | "unknown".
+function carryOp(st, sv, m, op) {
+  if (!m || !mibiById(st, m.id)) return { ok: false, why: "unknown" };
+  const proj = projectCarried(st, sv);
+  if (op === "add") { if (m.released) return { ok: false, why: "released" }; if (inStore(m) || comingOut(st, m)) return { ok: false, why: "tucked" }; if (proj.includes(m.id)) return { ok: false, why: "carried" }; if (proj.length >= CARRY_MAX) return { ok: false, why: "full" }; }
+  else if (!proj.includes(m.id)) return { ok: false, why: "not-carried" };
+  st.carryReqs.push({ seq: ++st.carrySeq, op, id: m.id });
+  logEv(st, op === "add" ? m.name + " chosen to go with you" : m.name + " chosen to come home");
+  return { ok: true };
+}
+export const carryAdd = (st, sv, m) => carryOp(st, sv, m, "add");
+export const carryHome = (st, sv, m) => carryOp(st, sv, m, "home");
+// On save: the ops the Companion has applied or refused are gone (carrySeq is never reused).
+export function trimCarryReqs(st, sv) { const seen = (sv && sv.carrySeen) || 0; if (st.carryReqs.some((r) => r.seq <= seen)) st.carryReqs = st.carryReqs.filter((r) => r.seq > seen); }
+// The Companion's refusal to show once on Habitat: the newest refused add (why "full") that is a Station mibi and not yet seen. Other reasons show nothing.
+export function carryRefusal(st, sv) {
+  const seen = st.carryRefusedSeen || 0, list = sv && Array.isArray(sv.carryRefused) ? sv.carryRefused : [];
+  const r = list.filter((x) => x && x.seq > seen && x.why === "full" && mibiById(st, x.id)).sort((a, b) => b.seq - a.seq)[0];
+  return r ? { seq: r.seq, id: r.id, name: mibiById(st, r.id).name } : null;
+}
+export function seenCarryRefusal(st, sv) { const r = carryRefusal(st, sv); if (r) st.carryRefusedSeen = r.seq; return r; }
+// The stage, one definition on both pages (the Companion's index.html has the same text; the parity test proves they agree).
+export function stageAt(m, turn, j, e) {
+  if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
+  if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
+  const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
+}
+export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, stageTurn(st, m), settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);   // a tucked-away mibi's clocks are stopped (stageTurn)
+// Who walked with a trip record: its carried set, else (an older record) its partner.
+export const tripCarried = (rec) => (Array.isArray(rec.carried) ? rec.carried : rec.partner != null ? [rec.partner] : []);
+export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
+export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
+// The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.
+export function podOriginLines(p) {
+  const where = "Found " + (FOUND_WORD[p.g] || "out in the wild"), find = FIND_WORD[p.how];
+  return find ? [where + ",", find.replace("{who}", p.idd ? aAn(spName(p)) : "a wild mibi").replace("{name}", p.of || "a returned mibi") + "."] : [where + "."];
+}
+export const podOrigin = (p) => podOriginLines(p).join(" ");
+
+// --- prices ------------------------------------------------------------------------------------------
+export const price = (base, settings = DEFAULT_SETTINGS) => (settings.economy === "free" ? 0 : base);
+export const canPay = (st, e, d, s) => st.e >= (e || 0) && st.d >= (d || 0) && st.s >= (s || 0);
+// The materials a price is short of, as icons in the order of shortText, space-separated (the form of needKey's icons): "⚡ ◆", "◆"; "" when none is short.
+export const shortIcons = (st, e, d, s) => [e > st.e ? "⚡" : "", d > st.d ? "◆" : "", s > st.s ? "❀" : ""].filter(Boolean).join(" ");
+export function shortText(st, e, d, s) {
+  const p = []; if (e > st.e) p.push("⚡ " + (e - st.e)); if (d > st.d) p.push("◆ " + (d - st.d)); if (s > st.s) p.push("❀ " + (s - st.s));   // the icon before its figure
+  return "needs " + p.join(" ") + " more";
+}
+// The two forms of a log line or a button: what is gained and what is spent. One place, so the answer on the wording is a one-line change (forms PLACEHOLDER until the UI designer and copywriter answer).
+export const gainText = (s) => "❀ +" + s;
+export const spendText = (e, d, s) => [e ? "⚡ −" + e : "", s ? "❀ −" + s : "", d ? "◆ −" + d : ""].filter(Boolean).join(" ") || "free";
+// `w` the bud's wait in minutes, the last group (Create's Grow line, fix 6 N1a): "free" only when all four are 0
+export const priceText = (e, d, s, w = 0) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : "", w ? "⧗ " + w : ""].filter(Boolean).join(" ") || "free";
+
+// --- dock and the bay ------------------------------------------------------------------------------
+export function probeNow(st, sv) {
+  const c = sv || {}, tier = Math.max(c.tier || 1, st.probe ? st.probe.tier : 1), smax = TIER[tier].shield;
+  if (st.probe && st.probe.seq > (c.probeSeen || 0)) return { shield: st.probe.shield, smax, tier };
+  return { shield: c.shield == null ? smax : clamp(c.shield, 0, smax), smax, tier };
+}
+export function payMend(st, settings = DEFAULT_SETTINGS) {
+  let paid = 0; const cost = price(PRICE.mend, settings);
+  while (st.probe.shield < st.probe.smax && st.e >= cost) { st.e -= cost; st.probe.shield++; paid++; }
+  if (paid) { st.probe.seq++; logEv(st, "Mended " + plural(paid, "plate") + (cost ? " · " + spendText(paid * cost, 0, 0) : "")); }
+  return paid;
+}
+// The care the Companion earned, taken in at the dock and whenever the Station reads the save while docked. Max / OR only, so a repeated dock, a lift and redock and a reload change nothing; the Station never sets `bonded`
+// itself and never writes a care field the Companion has not sent. Returns the ids of the mibis whose outings went up (they came home from a walk).
+export function mergeCare(st, sv, seen = null) {   // seen: if given, each habit recorded for the first time is pushed to it as { id, habit } (the dock's plates)
+  const home = [];
+  for (const m of (sv && sv.mibis) || []) {
+    const q = mibiById(st, m.id); if (!q) continue;
+    const was = q.outings || 0;
+    if (m.mem) q.mem = m.mem; if (m.places) q.places = m.places;
+    q.outings = Math.max(was, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); q.care = Math.max(q.care || 0, m.care || 0); q.tends = Math.max(q.tends || 0, m.tends || 0);
+    if (m.bondCare != null) q.bondCare = q.bondCare == null ? m.bondCare : Math.max(q.bondCare, m.bondCare);
+    if (m.grownTurn != null) q.grownTurn = q.grownTurn == null ? m.grownTurn : Math.max(q.grownTurn, m.grownTurn);
+    q.bonded = !!q.bonded || !!m.bonded;
+    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) { const r = recordHabit(st, q, h); if (r.ok && seen) seen.push({ id: q.id, habit: h }); } }
+  }
+  for (const rec of (sv && Array.isArray(sv.trips)) ? sv.trips : []) for (const id of tripCarried(rec)) { const q = mibiById(st, id); if (q) for (const p of rec.places || []) recordWalk(st, q, p); }   // a set insert: the whole list every time is idempotent
+  return home;
+}
+// Dock or lift: docking always works; it brings the crates and the Probe (a break mended free, else up to two plates, then 1 Energy a plate while the switch is on).
+export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!hasWorld(sv) && !st.devBay.length && !st.devWorld) return { ok: false, msg: "The Companion has no world yet: set out with it first" };
+  if (docked(st)) { st.dock = { docked: false, at: now }; logEv(st, "Companion lifted"); return { ok: true, lifted: true, msg: "Lifted · the Companion can set out" }; }
+  const outMs = Math.max(0, now - (st.dock && Number.isFinite(st.dock.at) ? st.dock.at : now));   // the out-time of this outing: from the lift to the seat, a backwards clock counts as zero
+  st.dock = { docked: true, at: now }; st.dockN = (st.dockN || 0) + 1;
+  const reading = tickReading(st, outMs, settings);   // the bench pod reads for it: the chapters owed finish here, at the dock
+  if (reading.read.length) { st.readHome = st.readHome || []; st.readHome.push({ pod: reading.pod, species: speciesOf(benchPod(st)), chapters: reading.read.map((r) => ({ id: r.id, firsts: r.newLooks.length })) }); }
+  st.turn = Math.max(st.turn, (sv && sv.turn) || 0); const dried = dryPods(st);
+  const pr = probeNow(st, sv), broke = pr.shield <= 0, floor = Math.min(DOCK_MEND_FLOOR, pr.smax);
+  let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
+  st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
+  const paid = st.mendFull ? payMend(st, settings) : 0;
+  // what came home with the Companion: the care it earned (mergeCare), the habits it did and the places it entered on the way
+  const habits = [], home = mergeCare(st, sv, habits);
+  const n = bayCrates(st, sv).length;
+  logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
+  return { ok: true, docked: true, home, habits, dried, reading, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the shield is mended free" : "Docked · the bay is empty" };
+}
+// The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
+export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
+export function readWorldEv(c) {
+  const ev = c && c.world && Array.isArray(c.world.ev) ? c.world.ev : [];
+  return ev.filter((e) => Array.isArray(e) && e.length === 4 && WORLD_EV_KINDS.includes(e[0]) && (e[1] === null || typeof e[1] === "string") && (e[2] === null || Number.isInteger(e[2])) && Number.isInteger(e[3]))
+    .map(([kind, place, who, n]) => ({ kind, place, who, n }));
+}
+// Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
+export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
+// The same for the crates named (a run opens them one at a time, T-20261016-216: the crates not yet opened stay sealed in the bay when the player leaves).
+export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now(), cs = bayCrates(st, sv)) {
+  if (!docked(st) || !cs.length) return { ok: false, plays: [] };
+  const plays = [];
+  for (const c of cs) {
+    st.accepted.push(c.id); if (st.accepted.length > 60) st.accepted.splice(0, st.accepted.length - 60);
+    const top = settings.economy === "loose" && !c.dev ? settings.topUp || DEFAULT_SETTINGS.topUp : { e: 0, d: 0, s: 0 };
+    st.e += (c.e | 0) + top.e; st.d += (c.d | 0) + top.d; st.s += (c.s | 0) + top.s;
+    const ids = [], skipped = [], home = Math.max(st.turn, c.turn | 0);   // the turn the crate's pods come home at: each keeps POD_LIFE turns from it
+    for (const q of c.pods || []) {
+      const species = q.species ?? speciesId(q.sp), fr = frameOf(species);
+      if (!fr) { skipped.push(q.id); continue; }   // a malformed record never breaks the bay; it is named, never dropped silently
+      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, ...(c.rg ? { rg: c.rg } : {}), n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
+      if (q.shed != null) { const rec = (st.sheds || []).find((r) => r.id === q.shed); if (rec) rec.state = "found"; }   // a shed pod opened: its record is kept for the Library
+      st.tray.push(pod);   // no rack: every pod comes home
+      ids.push(pod.id);
+    }
+    for (const sp of c.met || []) { const id = typeof sp === "string" ? sp : speciesId(sp); if (id && !st.metIds.includes(id)) st.metIds.push(id); }
+    const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); const dried = dryPods(st);
+    const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
+    const gained = { e: (c.e | 0) + top.e, d: (c.d | 0) + top.d, s: (c.s | 0) + top.s };   // what the crate brought, the top-up with it; the plates it paid for cost `spent` Energy
+    plays.push({ c, ids, skipped, events: readWorldEv(c), dried, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
+    logEv(st, "Crate " + c.n + " opened · " + plural(ids.length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence" + (skipped.length ? " · not opened, no species: " + skipped.join(", ") : ""));
+  }
+  st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
+  syncKnown(st);
+  return { ok: true, plays };
+}
+
+// --- what a mibi has done: habits watched, places been (the-portrait.md §8) ----------------------------------------------------------
+// A habit is one of the species' routine acts (the frame's `habits`). It is recorded when a resident is kept in focus for a minute of its routine (`watchResident`, the bench),
+// and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
+export const WATCH_MS = 60000;   // the default of settings.watchMs
+// A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
+export const FIELD_ONLY_HABITS = ["calm", "tiptoe", "stone-sense", "slab-lift", "break-through", "bank-dig", "high-look", "ride-current", "pod-carry", "dew-find", "find-hug", "fog-lift", "fog-wait", "catch-strike", "beacon-sit", "wind-stream", "wave-hello", "hop-down"];
+export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
+// The places a mibi has been: where its pod came from, and every place it walked to.
+// A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
+export const placesOf = (m) => [...new Set([m.from?.how === "cross" ? null : m.from?.g, ...(m.walked || [])].filter(Boolean))];
+export function recordHabit(st, m, habit) {
+  if (!m || !habit) return { ok: false };
+  const fr = frameFor(m); if (!fr || !(fr.habits || []).includes(habit)) return { ok: false, msg: "not a habit of " + (fr ? fr.species.name : "that species") };
+  if (!Array.isArray(m.habits)) m.habits = []; if (m.habits.includes(habit)) return { ok: false, again: true };
+  m.habits.push(habit); logEv(st, fill(HABITAT.strings.watchPlate, { name: m.name, habit: HABITAT.strings.watchHabits[habit] ?? habit })); return { ok: true };
+}
+export function recordWalk(st, m, place) {
+  if (!m || !place) return { ok: false };
+  if (!Array.isArray(m.walked)) m.walked = []; if (m.walked.includes(place) || m.from?.g === place) return { ok: false, again: true };
+  m.walked.push(place); return { ok: true };
+}
+// The bench's watch: a resident kept in focus for a minute of its routine records the habit it was doing. Under a minute records nothing.
+export function watchResident(st, m, habit, focusedMs) {
+  if (!m || m.released) return { ok: false };
+  if (!(focusedMs >= WATCH_MS)) return { ok: false, short: true };
+  return seeAtHome(st, m, habit);
+}
+
+// --- Data for a habit seen (the owner's rule, 2026-11-03): Data comes only when something happens ----------------------------------------------------------------
+// The first time a habit is seen (recordHabit says ok) the Station pays HABIT_DATA; a habit already seen pays nothing again. There is no day, no cap and no ledger in the save.
+// The watch clock below is memory only: a resident shown up close for settings.watchMs (60 s) records its first unseen habit. Nothing here reads a screen: the page calls it each frame (trickle.mjs) and the Node host can too.
+export const HABIT_DATA = 1;
+// A habit seen at home: recordHabit says ok for a first sighting and that pays; a habit already seen pays nothing. (A habit the Companion's mibi did on a walk is recorded at the dock and is paid in the walk's yield, not here.)
+export function seeAtHome(st, m, habit) {
+  const r = recordHabit(st, m, habit); if (r.ok) { st.d += HABIT_DATA; }
+  return r;
+}
+const watchClocks = new WeakMap();   // st -> { id: ms }, never saved
+// The resident shown on Habitat, watched for dtMs (clamped to 250 ms a frame). At watchMs of awake time it records the first of the frame's habits it has not been seen doing (and so earns); the clock then starts over for the next one.
+export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS) {
+  const none = { ok: false, earned: 0 };
+  if (!m || m.released || carriedIds(st, sv).includes(m.id)) return none;
+  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !FIELD_ONLY_HABITS.includes(h) && !habitsOf(m).includes(h)); if (!habit) return { ok: true, earned: 0, habit: null };
+  let C = watchClocks.get(st); if (!C) watchClocks.set(st, C = {});
+  const need = settings.watchMs ?? WATCH_MS, dt = Math.max(0, Math.min(250, +dtMs || 0)); C[m.id] = (C[m.id] || 0) + dt;
+  if (C[m.id] < need) return { ok: true, earned: 0, habit: null };
+  C[m.id] = 0; const r = seeAtHome(st, m, habit);
+  return { ok: true, earned: r.ok ? HABIT_DATA : 0, habit: r.ok ? habit : null };
+}
+
+// --- pods: identify, read, glint, compare, return ----------------------------------------------------
+export function identifyCost(st, settings = DEFAULT_SETTINGS) { return price(PRICE.identify, settings); }   // Data, always: no pod is ever identified free (st.freeId stays in the save for its shape and nothing reads it)
+export function identify(st, p, settings = DEFAULT_SETTINGS) {
+  if (!p || p.idd) return { ok: false };
+  const fr = frameFor(p); if (!fr) return { ok: false, msg: "This pod's species has no frame in the registry" };
+  const cost = identifyCost(st, settings), known = st.knownIds.includes(fr.species.id);
+  if (st.d < cost) return { ok: false, msg: (known ? "Logging" : "Identifying") + " costs " + cost + " ◆ · " + shortText(st, 0, cost, 0) };
+  st.d -= cost;
+  if (!known) st.knownIds.push(fr.species.id); if (!st.metIds.includes(fr.species.id)) st.metIds.push(fr.species.id); syncKnown(st);
+  p.idd = 1; p.seen = 1; p.fresh = 0; p.newSp = known ? 0 : 1;
+  logEv(st, (known ? "Logged · " : "New species · ") + fr.species.name + (cost ? " · " + spendText(0, cost, 0) : " (free)"));
+  return { ok: true, free: !cost, newSp: !known, species: fr.species.id };
+}
+// A chapter's read price: 1 Data a trait; half, rounded up, once it was read on an earlier pod of the species;
+// the first read ever free; a read chapter is free to look at again; a sealed chapter has no price.
+export function readCost(st, p, chapterId, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(p), ch = fr && chapterOf(fr, chapterId); if (!ch) return null;
+  if (p.read.includes(chapterId)) return 0;
+  if (ch.sealed && !settings.sealedOpen) return null;
+  if (!st.readEver) return 0;
+  const n = ch.traits.length, half = (st.readOnce[fr.species.id] || []).includes(chapterId);
+  return price((half ? Math.ceil(n / 2) : n) * PRICE.readTrait, settings);
+}
+export function readBlock(st, p, chapterId, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(p), ch = fr && chapterOf(fr, chapterId); if (!ch) return "no such chapter";
+  if (!p.idd) return "identify it first";
+  if (p.read.includes(chapterId)) return null;                       // read: free to look at
+  if (ch.sealed && !settings.sealedOpen) return "sealed · opens with " + chapterSeal(fr, ch);
+  const cost = readCost(st, p, chapterId, settings); if (st.d < cost) return shortText(st, 0, cost, 0);
+  return "";
+}
+export function read(st, p, chapterId, settings = DEFAULT_SETTINGS) {
+  const b = readBlock(st, p, chapterId, settings); if (b) return { ok: false, msg: "Read " + chapterOf(frameFor(p), chapterId)?.name + " · " + b }; if (b === null) return { ok: false, again: true };
+  const cost = readCost(st, p, chapterId, settings); st.d -= cost;
+  return applyRead(st, p, chapterId, cost);
+}
+// The bookkeeping of a read, whoever pays for it (the pocket in read(), the pod's store in tickReading): the chapter turns read, the species' read-once and the guide take its looks, p.first marks the traits it showed first.
+function applyRead(st, p, chapterId, cost) {
+  const fr = frameFor(p), ch = chapterOf(fr, chapterId), first = !st.readEver;
+  st.readEver = true; p.read.push(chapterId);
+  const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(chapterId)) once.push(chapterId);
+  p.first = p.first || [];
+  const looks = chapterLooks(fr, ch, p.genome), newLooks = [];
+  for (const [t, ls] of looks) { const had = guideLooks(st, fr.species.id, t); let brought = false; for (const l of ls) if (!had.includes(l)) { newLooks.push(l); brought = true; } if (brought && !p.first.includes(t)) p.first.push(t); guideAdd(st, fr.species.id, t, ls); }   // p.first: the traits whose look this pod showed first, written at read time (the page's new mark stays)
+  logEv(st, "Read " + fr.species.name + " " + ch.name + " on " + p.id + (first ? " · free (the first read ever)" : cost ? " · −" + cost + " Data" : " · free") + (newLooks.length ? " · new: " + newLooks.join(", ") : ""));
+  return { ok: true, cost, first, chapter: ch, newLooks };
+}
+// --- the pod's store: Data put in, read while the Companion is out (the pods-reading scheme §2) -------------------------------------
+// The bench pod's data cartridge: p.store { d: the Data inside, ms: the out-time already spent on the chapter being read }. A chapter's price leaves the store only when that chapter is read.
+export const READ_MS = 10 * 60000;   // out-time one chapter takes, the same for every chapter; the developer timer (budScale) and the playtest preset scale it like the bud's wait
+export const readNeedMs = (settings = DEFAULT_SETTINGS) => (settings.budScale === "instant" ? 0 : Math.round(READ_MS / (settings.budScale || 1)));
+const unreadOpen = (p, settings) => { const fr = frameFor(p); return fr && p.idd ? fr.chapters.filter((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : []; };
+// The chapters still to read, in book order, with their price: [{ id, name, cost }].
+export function readQueue(st, p, settings = DEFAULT_SETTINGS) { return unreadOpen(p, settings).map((c) => ({ id: c.id, name: c.name, cost: readCost(st, p, c.id, settings) ?? 0 })); }
+// What a deposit can still add: the unread chapters' whole price less what the store holds. 0 for a pod that is not on the bench.
+export function storeLeft(st, p, settings = DEFAULT_SETTINGS) { if (!onBench(st, p)) return 0; return Math.max(0, readQueue(st, p, settings).reduce((a, c) => a + c.cost, 0) - ((p.store && p.store.d) | 0)); }
+// Put n Data into the bench pod's store: never more than the pocket holds, never more than is left to read.
+export function deposit(st, p, n, settings = DEFAULT_SETTINGS) {
+  if (!p || !p.idd || !onBench(st, p)) return { ok: false };
+  const put = Math.min(Math.max(0, Math.floor(+n) || 0), st.d, storeLeft(st, p, settings)); if (!put) return { ok: false, put: 0 };
+  p.store = p.store || { d: 0, ms: 0 }; p.store.d += put; st.d -= put;
+  logEv(st, "Put " + put + " Data in the " + spName(p) + " pod");
+  return { ok: true, put };
+}
+// Out-time reads the bench pod: outMs more milliseconds of the Companion being out. The next chapter starts when the store holds its whole price and takes READ_MS of out-time; whole chapters are read through the same bookkeeping as read(), the part-way time is kept in
+// p.store.ms, and time passing while the store is short is not banked. The first chapter ever is free and reads at once. A backwards clock (a negative or unusable outMs) counts as zero. Returns { pod, read: [{ id, cost, newLooks }] }.
+export function tickReading(st, outMs, settings = DEFAULT_SETTINGS) {
+  const p = benchPod(st), out = { pod: p ? p.id : null, read: [] };
+  if (!p || !p.idd) return out;
+  const add = outMs > 0 && Number.isFinite(outMs) ? outMs : 0, need = readNeedMs(settings);
+  if (!p.store) { if (st.readEver) return out; p.store = { d: 0, ms: 0 }; }
+  const s = p.store; s.ms += add;
+  for (;;) {
+    const c = readQueue(st, p, settings)[0]; if (!c) { s.ms = 0; break; }
+    const free = !st.readEver;
+    if (s.d < c.cost) { s.ms = 0; break; }
+    if (!free && s.ms < need) break;
+    if (!free) s.ms -= need;
+    s.d -= c.cost; const r = applyRead(st, p, c.id, c.cost); out.read.push({ id: c.id, cost: c.cost, newLooks: r.newLooks });
+  }
+  return out;
+}
+// The chapters read while the Companion was out, waiting for Home's notice and the reveal: [{ pod, species, chapters: [{ id, firsts }] }]. The teaser counts the firsts; takeReadHome empties the list once the reveal has played.
+export const readHomeFacts = (st) => (st.readHome || []).map((r) => ({ ...r, firsts: r.chapters.reduce((a, c) => a + c.firsts, 0) }));
+export const takeReadHome = (st) => { const out = readHomeFacts(st); st.readHome = []; return out; };
+// The Data in a pod's store goes back to the pocket whole (it leaves the bench by growing, letting go or a swap).
+function returnStore(st, p) { if (p && p.store) { st.d += p.store.d | 0; delete p.store; } }
+// A glint: this chapter of the species has been read on some pod, this pod's chapter is unread, and this pod
+// carries a look not yet seen in that species. It says "new here", never what.
+export function glint(st, p, chapterId) {
+  if (!p.idd || p.read.includes(chapterId)) return false;
+  const fr = frameFor(p), ch = fr && chapterOf(fr, chapterId); if (!ch || !p.genome) return false;
+  if (!(st.readOnce[fr.species.id] || []).includes(chapterId)) return false;
+  return chapterLooks(fr, ch, p.genome).some(([t, ls]) => { const seen = guideLooks(st, fr.species.id, t); return ls.some((l) => !seen.includes(l)); });
+}
+// The pod that most needs the player: a new one (unidentified), then one that glints, then the first.
+export const neediestPod = (st) => st.tray.find((p) => !p.idd) || st.tray.find((p) => podGlints(st, p)) || st.tray[0] || null;
+export const podGlints = (st, p) => { const fr = frameFor(p); return !!fr && fr.chapters.some((c) => glint(st, p, c.id)); };
+// Progress: traits read ÷ traits in chapters that are not sealed (shown only as the ring, no digits).
+export function progress(p, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(p); if (!fr || !p.idd) return 0;
+  const open = fr.chapters.filter((c) => !c.sealed || settings.sealedOpen), all = open.reduce((a, c) => a + c.traits.length, 0);
+  return all ? open.filter((c) => p.read.includes(c.id)).reduce((a, c) => a + c.traits.length, 0) / all : 1;
+}
+export const fullyRead = (p, settings) => p.idd && progress(p, settings) >= 1;
+// The reading dial (the pod picker's mark): chapters read ÷ open chapters (shut sealed ones left out), and how many are shut. null for an unidentified pod.
+export function readDial(p, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(p); if (!fr || !p.idd) return null;
+  const open = fr.chapters.filter((c) => !c.sealed || settings.sealedOpen || p.read.includes(c.id));
+  return { n: open.filter((c) => p.read.includes(c.id)).length, m: open.length, sealed: fr.chapters.length - open.length };
+}
+// Compare: two identified pods of one species; the traits read on both that differ.
+export function compareDiff(st, a, b) {
+  if (!a || !b || a === b || !a.idd || !b.idd || speciesOf(a) !== speciesOf(b)) return null;
+  const fr = frameFor(a), diff = [];
+  for (const ch of fr.chapters) if (a.read.includes(ch.id) && b.read.includes(ch.id)) for (const t of ch.traits) if (traitState(fr, t, a.genome).line !== traitState(fr, t, b.genome).line) diff.push(t.id);   // what each pod reads as: the mark never sits on two identical lines
+  return diff;
+}
+export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;
+// Letting a pod go (the pod inventory's design): it only tidies and pays nothing; a shed pod keeps its line (shed, of, genome) to be found again as itself; every read on it stays on the species (the field guide keeps what was read), and the Companion learns of it at the next dock.
+// The one guard: a pod that carries the goal, or the only pod of its species, asks once (letGoGuard); the screen asks, the rule does not.
+export function returnPod(st, p) {
+  if (!st.tray.includes(p)) return { ok: false };
+  leavePod(st, p);
+  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null, ...(p.rg ? { rg: p.rg } : {}), ...(p.shed != null ? { shed: p.shed, of: p.of ?? null, genome: structuredClone(p.genome) } : {}) }); if (st.returned.length > 30) st.returned.shift();
+  logEv(st, "Let " + aAn(podName(p)) + " pod go · its reads stay in the field guide");
+  return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · its reads stay in the field guide" };
+}
+// What letting this pod go asks first: "goal" (it carries the goal), "only" (the only pod of its species at home, an identified one), or null.
+export function letGoGuard(st, p) {
+  if (!p) return null;
+  if (podGoal(st, p)) return "goal";
+  if (p.idd && !st.tray.some((q) => q !== p && q.idd && speciesOf(q) === speciesOf(p))) return "only";
+  return null;
+}
+// A pod leaves home (grown, let go): off the bench if it was there.
+function leavePod(st, p) { st.tray = st.tray.filter((q) => q !== p); if (st.readingPod === p.id) st.readingPod = null; delete p.keep; returnStore(st, p); }
+
+// --- freshness: a pod dries POD_LIFE world turns after it comes home, gently -----------------------------------------
+// Turns left: the bench pod's are kept (p.keep) while it sits there; any other pod's run down with the world turn. 0 or less is dried.
+export const onBench = (st, p) => !!p && st.readingPod === p.id;
+export const turnsLeft = (st, p) => (onBench(st, p) ? p.keep ?? POD_LIFE : (p.dryAt ?? (st.turn | 0) + POD_LIFE) - (st.turn | 0));
+// What the card and the panel show: { left, full, amber, bench, words }: amber from DRYING_SOON turns left, never on the bench; words in the copy's placeholders.
+export function podFreshness(st, p) {
+  const left = Math.max(0, turnsLeft(st, p)), bench = onBench(st, p), amber = !bench && left <= DRYING_SOON;
+  const words = bench ? "kept fresh on the bench" : left <= 1 ? "dries out next turn" : amber ? "dries out in " + left + " turns" : "fresh for " + left + " turns";
+  return { left, life: POD_LIFE, full: left >= POD_LIFE, amber, bench, words };
+}
+export const dryingSoon = (st, p) => podFreshness(st, p).amber;
+// The pods that dry out at the next world turn (one turn left, not on the bench): Home's "dries out next turn" notice.
+export const dryingNext = (st) => st.tray.filter((p) => !onBench(st, p) && turnsLeft(st, p) <= 1);
+// Freshening: 1 Essence for each FRESHEN_TURNS turns the pod is down, rounded up, and the press brings it to full (a pod is never fresher than new): a pod 6 turns down costs 2.
+export function freshenCost(st, p, settings = DEFAULT_SETTINGS) { const down = POD_LIFE - Math.max(0, turnsLeft(st, p)); return down <= 0 ? 0 : price(Math.ceil(down / FRESHEN_TURNS) * PRICE.freshen, settings); }
+export function freshenBlock(st, p, settings = DEFAULT_SETTINGS) {
+  if (!p || !st.tray.includes(p)) return "no such pod";
+  const c = freshenCost(st, p, settings); if (!c) return "already fresh";
+  if (st.s < c) return "needs ❀ " + c + " · you have ❀ " + st.s;
+  return "";
+}
+export function freshen(st, p, settings = DEFAULT_SETTINGS) {
+  const b = freshenBlock(st, p, settings); if (b) return { ok: false, why: b };
+  const cost = freshenCost(st, p, settings); st.s -= cost;
+  if (onBench(st, p)) p.keep = POD_LIFE; else p.dryAt = (st.turn | 0) + POD_LIFE;
+  logEv(st, "Watered " + aAn(podName(p)) + " pod · " + spendText(0, 0, cost));
+  return { ok: true, cost };
+}
+// Freshen these (the filter tray): every pod named, to full, in the order given ("by use"), while the Essence lasts; { cost, n, of } before the press, and freshenAll spends it.
+export function freshenPlan(st, pods, settings = DEFAULT_SETTINGS) {
+  let left = st.s, cost = 0, n = 0, total = 0, of = 0;
+  for (const p of pods) { const c = freshenCost(st, p, settings); if (!c) continue; of++; total += c; if (c <= left) { left -= c; cost += c; n++; } }
+  return { cost, n, of, total };
+}
+export function freshenAll(st, pods, settings = DEFAULT_SETTINGS) {
+  const done = []; for (const p of pods) { if (freshenCost(st, p, settings) && freshenCost(st, p, settings) <= st.s) { const r = freshen(st, p, settings); if (r.ok) done.push(p.id); } }
+  return { ok: done.length > 0, ids: done };
+}
+// The reading room's bench holds one pod: taking one in sends the old one back to its niche with its clock running again from where it stopped. Nothing is spent.
+export function putOnBench(st, p) {
+  if (!p || !st.tray.includes(p)) return { ok: false };
+  if (st.readingPod === p.id) return { ok: true, again: true };
+  const old = st.tray.find((q) => q.id === st.readingPod);
+  if (old) { old.dryAt = (st.turn | 0) + (old.keep ?? POD_LIFE); delete old.keep; returnStore(st, old); }
+  p.keep = Math.max(1, turnsLeft(st, p)); st.readingPod = p.id;
+  return { ok: true, old: old ? old.id : null };
+}
+export const benchPod = (st) => st.tray.find((q) => q.id === st.readingPod) || null;
+// The world turn moved: every pod whose life ran out (not the bench pod) becomes a husk. It leaves home and pays nothing; its reads stay on the species and its origin is kept in
+// st.dried (the species' record for the Library, and the husk the inventory shows once: `shown` false until the screen has shown it). Returns the records made.
+export function dryPods(st) {
+  const out = [];
+  for (const p of [...st.tray]) {
+    if (onBench(st, p) || turnsLeft(st, p) > 0) continue;
+    leavePod(st, p);
+    const rec = { id: p.id, sp: p.sp, species: speciesOf(p), idd: p.idd ? 1 : 0, g: p.g ?? null, how: p.how ?? null, of: p.of ?? null, read: [...(p.read || [])], turn: st.turn | 0, shown: false };
+    st.dried.push(rec); out.push(rec);
+    logEv(st, (p.idd ? aAn(podName(p)) + " pod" : "A sealed pod") + " dried out · its reads stay in the field guide");
+  }
+  if (st.dried.length > DRIED_KEEP) st.dried.splice(0, st.dried.length - DRIED_KEEP);
+  return out;
+}
+// The husks the inventory shows on its next open (once), and marking them shown when the screen is left.
+export const unshownHusks = (st) => st.dried.filter((r) => !r.shown);
+export function husksShown(st) { for (const r of st.dried) r.shown = true; }
+
+// --- the goal on a pod: the looks pinned for a species (st.wish, the goal's one record in the save) -------------------------------------
+// A pod carries the goal when it glints on a chapter that holds a goal trait, or when a chapter read shows a goal look. Returns the goal's trait ids it touches ([] when none).
+export function podGoalTraits(st, p) {
+  if (!p || !p.idd) return [];
+  const fr = frameFor(p), want = (st.wish && st.wish[speciesOf(p)]) || {}; if (!fr || !Object.keys(want).length) return [];
+  const out = [];
+  for (const ch of fr.chapters) for (const t of ch.traits) {
+    if (!(t.id in want)) continue;
+    if (p.read.includes(ch.id)) { const looks = chapterLooks(fr, ch, p.genome).find(([id]) => id === t.id)?.[1] ?? []; if (looks.includes(want[t.id])) out.push(t.id); }
+    else if (glint(st, p, ch.id)) out.push(t.id);
+  }
+  return out;
+}
+export const podGoal = (st, p) => podGoalTraits(st, p).length > 0;
+
+// --- residents and the Probe (as built) --------------------------------------------------------------
+// The bench's switch: whether the dock mends every plate at its price (on) or only brings it to the floor, free (off). Nothing else sets it.
+export function setMendFull(st, on) { st.mendFull = !!on; logEv(st, st.mendFull ? "The dock mends every plate" : "The dock mends two plates, free"); }
+export function mendPlate(st, settings = DEFAULT_SETTINGS) {
+  const pr = st.probe; if (!docked(st) || !pr || pr.shield >= pr.smax) return { ok: false };
+  const cost = price(PRICE.mend, settings); if (st.e < cost) return { ok: false, msg: "Mend a plate · " + shortText(st, cost, 0, 0) };
+  st.e -= cost; pr.shield++; pr.seq++; logEv(st, "Mended a plate" + (cost ? " · " + spendText(cost, 0, 0) : "")); return { ok: true };
+}
+export const tier2Ready = (st, settings = DEFAULT_SETTINGS) => docked(st) && !!st.probe && st.probe.tier < 2 && canPay(st, price(PRICE.tier2E, settings), price(PRICE.tier2D, settings), 0);
+export function installTier2(st, settings = DEFAULT_SETTINGS) {
+  if (!tier2Ready(st, settings)) return { ok: false }; st.e -= price(PRICE.tier2E, settings); st.d -= price(PRICE.tier2D, settings);
+  st.probe = { shield: TIER[2].shield, smax: TIER[2].shield, tier: 2, seq: st.probe.seq + 1 };
+  logEv(st, "the Probe upgrade is fitted"); return { ok: true, msg: "the Probe upgrade is fitted · " + TIER2_GAINS.map((g) => g.text).join(", ") };
+}
+// The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
+export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
+// The wall-clock minutes a growing bud has left under the current settings (the preset's speed-up shortens the number shown), rounded up (the Incubator's "ready in about {n} min", owner ruling 3). At normal pace it is at least 1; with a speed-up, under a minute left is 0 ("ready in under a minute").
+export const budMinutesLeft = (st, settings, now) => {
+  const B = st.bud; if (!B) return 0;
+  const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1, left = (B.minutes / scale) * (1 - budProgress(st, settings, now));
+  return scale > 1 && left < 1 ? 0 : Math.max(1, Math.ceil(left - 1e-9));
+};
+export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
+// The leaves of the wait, one rule for the Incubator, its intents and Home's chamber: total the bud's minutes (at most max), full the whole minutes passed, rows 0 to rowsOf - 1 of the current leaf (rowsOf whole rows a minute: a row every 3 s at the real pace); rows is 0 once full reaches total.
+export function budLeaves(st, settings, now, max, rowsOf = 20) {
+  const B = st.bud; if (!B) return { total: 0, full: 0, rows: 0 };
+  const total = Math.min(B.minutes || 0, max), done = budProgress(st, settings, now) * total, full = budReady(st, settings, now) ? total : Math.min(total, Math.floor(done));
+  return { total, full, rows: full >= total ? 0 : Math.min(rowsOf - 1, Math.floor((done - full) * rowsOf)) };
+}
+
+// --- what most needs the player (the bottom line's right part; ✓ on the room does it) -----------------
+// The words are frame.json strings.needs (one table); need() keeps the order and the facts. A count in a sentence is spelled out (a, two to six); above what the picture holds the count is dropped, never digits, never "many".
+const COUNT_WORDS = ["", "a", "two", "three", "four", "five", "six"];
+const countWord = (n, max) => (n >= 1 && n <= max ? COUNT_WORDS[n] : "");
+const NEEDS = FRAME.strings.needs;
+// a line of the table filled and cased: a dropped count leaves no space behind
+const needLine = (t, values = {}) => capLine(fill(t, values).replace(/ {2,}/g, " ").trim());
+// the notice of a count: its one-form at one, else its many-form with the spelled count ({N}, dropped above max)
+const counted = (T, n, max) => (n === 1 ? needLine(T.noticeOne) : needLine(T.notice, { N: countWord(n, max) }));
+// The Vivarium is full and something waits for a place: a ready bud, or a pod that could be incubated now (read, the price in hand).
+export function waitsForPlace(st, settings) {
+  if (!vivFull(st, settings)) return false;
+  if (budReady(st, settings)) return true;
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length) return false;
+  const c = growCost(st, {}, settings); return canPay(st, c.e, 0, c.s);
+}
+// portraits: the ready portraits (sitting.mjs readyCrates), docked or away; counted apart from the walk crates, and with walk crates too the notice names both (strings.needs.crates.withPortrait).
+// The chapters read at the last docks and not yet shown (st.readHome): { n (the chapters), Species (the first pod's kind, cased), species } or null. The notice that opens the bench's reveal.
+export function readHomeNeed(st) {
+  const rows = readHomeFacts(st); if (!rows.length) return null;
+  const n = rows.reduce((a, r) => a + r.chapters.length, 0), sp = rows[0].species, fr = sp && frameOf(sp);
+  return n ? { n, species: sp, name: fr ? fr.species.name : "unknown", Species: cap(fr ? fr.species.name : "unknown") } : null;
+}
+export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0) {
+  const cs = bayCrates(st, sv), N = NEEDS;
+  if (docked(st) && cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
+  { const rh = readHomeNeed(st); if (rh) return { text: rh.n === 1 ? needLine(N.readHome.noticeOne, { Species: rh.Species }) : needLine(N.readHome.notice, { N: countWord(rh.n, 6), Species: rh.Species }), act: "store", label: needLine(N.readHome.label) }; }   // chapters read while the Companion was out: after the crates
+  if (waitsForPlace(st, settings)) { const add = !addRoomBlock(st, settings); return { text: needLine(N.full.notice), act: "vivarium", ring: add ? "room.new" : "resident", label: needLine(add ? N.full.labelAdd : N.full.labelMake) }; }
+  if (budReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
+  if (portraits) return { text: needLine(N.portrait.notice), act: "bay", label: needLine(N.portrait.label) };
+  if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: needLine(N.meet.notice, { name: m.name }), act: "meet", label: needLine(N.meet.label, { name: m.name }) }; }
+  // the pair need (two adults could cross) is Home's line alone, never this frame notice: the Cross screen and the namer would say it over their own words
+  // needKey's one order: the unseen new pods (news) above the full rack, the seen ones below it and below a pod that can be incubated now
+  const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen), pods = (T, n) => ({ text: counted(T, n, 6), act: "pods", label: needLine(n === 1 ? T.labelOne : T.label) });
+  if (unseen.length) return pods(N.fresh, unseen.length);
+  const glinting = st.tray.filter((p) => podGlints(st, p));
+  if (glinting.length) return pods(N.glints, glinting.length);
+  if (st.waiting.length) return { text: needLine(N.waiting.notice), act: "pods", label: needLine(N.waiting.label) };   // no count: the rack is full, whatever waits on the mat
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud), named = (p) => { const sp = cap(spName(p)); return { A: cap(aAn(sp).split(" ")[0]), Species: sp }; };
+  let short = null;
+  if (grown.length && !vivFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); if (canPay(st, c.e, 0, c.s)) return { text: needLine(N.couldGrow.notice, named(p)), act: "pods", label: needLine(N.couldGrow.label) };
+    short = { text: needLine(N.couldGrow.short, { ...named(p), icons: shortIcons(st, c.e, 0, c.s) }), act: "pods", label: needLine(N.couldGrow.label) }; }
+  if (fresh.length) return pods(N.fresh, fresh.length);
+  if (short) return short;
+  const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
+  if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
+    return { text: cost && st.d < cost ? needLine(N.toRead.short, { ...named(p), icons: "◆" }) : needLine(N.toRead.notice, named(p)), act: "pods", label: needLine(N.toRead.label) }; }
+  if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: needLine(N.firstOut.notice), act: null };
+  return { text: "", act: null };
+}
+
+// The room's one need, as facts (home.json strings.needs.order, the same order as need() above): the key of the first that holds, its count and the max the picture holds, the name or species and article it is about, the materials
+// short for it, and the screen its ✓ goes to. The Home view builds the words from home.json's strings; the room's ✓ goes where `act` says. null when nothing needs the player.
+export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrates = false) {
+  const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
+  if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  { const rh = readHomeNeed(st); if (rh) return { key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" }; }   // chapters read while the Companion was out: after the crates, before anything else (Home's line carries the kind's name: views/home-props.mjs homeNeeds)
+  if (waitsForPlace(st, settings)) return { key: "full", act: "vivarium", ring: addRoomBlock(st, settings) ? "resident" : "room.new" };   // no place is free and something waits for one: add a room (the ring on the new room) or make room (the ring on a resident)
+  if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
+  const drying = dryingNext(st); if (drying.length) return { key: "drying", n: drying.length, max: 6, act: "pods" };   // the only warning away from Pods before a pod is lost
+  const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
+  if (meet) return { key: "meet", name: meet.name, act: "meet" };
+  const fresh = st.tray.filter((p) => !p.idd), unseen = fresh.filter((p) => !p.seen);
+  if (unseen.length) return { key: "newPods", n: unseen.length, max: 6, act: "pods" };   // firm: an unidentified pod Pods has not drawn yet
+  const glint = st.tray.filter((p) => podGlints(st, p)); if (glint.length) return { key: "glints", n: glint.length, max: 6, act: "pods" };
+  if (st.waiting.length) return { key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" };
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
+  let couldGrow = null;
+  if (grown.length && !vivFull(st, settings)) {
+    const p = grown[0], c = growCost(st, {}, settings), short = [st.e < c.e ? "⚡" : "", st.s < c.s ? "❀" : ""].filter(Boolean).join(" ");
+    couldGrow = { key: "couldGrow", species: spName(p), a: art(spName(p)), short: short || null, act: "pods" };
+  }
+  if (couldGrow && !couldGrow.short) return couldGrow;
+  // the soft group: every unidentified pod has been seen (the goal takes the notice, the lamp is not amber)
+  if (fresh.length) return { key: "newPods", n: fresh.length, soft: true, max: 6, act: "pods" };
+  if (couldGrow) return couldGrow;
+  const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
+  if (unread.length) {
+    const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
+    return { key: "toRead", species: spName(p), a: art(spName(p)), short: cost && st.d < cost ? "◆" : null, act: "pods" };
+  }
+  return null;
+}
+// The one fact Idle's line says (frame.json idle.strings.order: crates, budReady, budGrowing, out; the first that holds), as a key for the view to put in words; null: none. Never a demand, and it is not needKey's order (which would hide a growing bud behind a new pod).
+export function idleKey(st, sv, settings = DEFAULT_SETTINGS) {
+  const cs = bayCrates(st, sv);
+  if (docked(st) && cs.length) return { key: "crates", n: cs.length };
+  if (budReady(st, settings)) return { key: "budReady" };
+  if (st.bud) return { key: "budGrowing" };
+  if (!docked(st)) { const ms = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean); if (ms.length) return { key: "out", n: ms.length, name: ms[0].name }; }
+  return null;
+}
+
+// A species' field guide is complete when no look is unseen and a chapter that is open has traits: the same rule as library.mjs fieldGuide(...).complete, kept here so state.mjs never imports library.mjs
+// (library.mjs imports state.mjs); tests/economy-x10.test.mjs holds the two equal.
+export function guideComplete(st, id, settings = DEFAULT_SETTINGS) {
+  const fr = frameOf(id); if (!fr) return false;
+  let unseen = 0, open = false;
+  for (const ch of fr.chapters) {
+    const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
+    if (!shut && ch.traits.length > 0) open = true;
+    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += currentLooks(fr, t).filter((l) => !seen.includes(l)).length; }
+  }
+  return unseen === 0 && open;
+}
+// --- the next goal (station-x10-economy.md ruling 4) ---------------------------------------------------
+// Where a short price has to come from: "field" (a walk brings ⚡ and ❀), "bench" (the Probe bench's trickle and the mibis' watching bring ◆), "fieldOrPod" (❀ alone, with a pod in a well to return) or
+// "fieldAndBench" (◆ and ⚡ or ❀); null when nothing is short. The one rule growBlockKey, needMore (Pods, Create) and goalKey's short step share.
+export function shortFrom(st, e, d, s) {
+  const eS = (e || 0) > st.e, dS = (d || 0) > st.d, sS = (s || 0) > st.s; if (!eS && !dS && !sS) return null;
+  if (dS && (eS || sS)) return "fieldAndBench"; if (dS) return "bench";
+  return sS && !eS && st.tray.length ? "fieldOrPod" : "field";
+}
+// What the player works toward, as facts only (no words, no rects): where needKey answers "what needs me now". The first rung that holds; `doors` is { cross: boolean } (state.mjs does not import nav.mjs): a missing
+// `doors`, or `doors.cross !== true`, is a shut Cross, and then the cross and readChild rungs are skipped and the ladder falls through to the guide. Returns
+// { key, ...facts, step, meanwhile, probe } or null.
+export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
+  const crossOpen = !!doors && doors.cross === true, aT = settings.adultTurns ?? JUVENILE_TURNS;
+  const living = st.mibis.filter((m) => !m.released).sort((a, b) => a.id - b.id), cs = bayCrates(st, sv), bud = st.bud;
+  const short = (e, d, s) => ({ key: "short", icons: shortIcons(st, e, d, s), from: shortFrom(st, e, d, s) });
+  const kn = (sp) => (sp && st.knownIds.includes(sp) ? sp : null);   // a goal fact names a species only once the player knows it (a pod of it identified, or adults of it arrived): never before the first Identify (game designer, 2026-10-15 07:56)
+  const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()), minutes: budMinutesLeft(st, settings, Date.now()), species: kn(speciesOf(bud)), cross: bud.kind === "cross" && bud.parents?.length === 2, parents: bud.parents?.map((p) => p.name) ?? [] });
+  // the pod chain for one species (or, with none named, for the first pod there is)
+  const chain = (species) => {
+    if (docked(st) && cs.length) return { key: "openBay" };
+    const mine = st.tray.filter((p) => !species || speciesOf(p) === species);
+    const idd = mine.find((p) => p.idd);
+    if (idd) { if (bud) return budStep(); if (vivFull(st, settings)) return { key: "full" };
+      const c = growCost(st, {}, settings); return canPay(st, c.e, c.d, c.s) ? { key: "grow", species: kn(speciesOf(idd)) } : short(c.e, c.d, c.s); }
+    const fresh = mine.find((p) => !p.idd);
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: kn(speciesOf(fresh)) } : short(0, c, 0); }
+    return { key: "findPod", species: kn(species) };
+  };
+  const speciesIn = (m) => speciesOf(m), members = (sp) => living.filter((m) => speciesIn(m) === sp);
+  const unreadOf = (m) => { const fr = frameFor(m); return fr ? fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : null; };
+  const readStep = (m) => { const ch = unreadOf(m), cost = mibiReadCost(st, m, ch.id, settings) || 0; return st.d >= cost ? { key: "read", name: m.name } : short(0, cost, 0); };
+  // the guide's step for one species: a read on a pod of it in a well (a glinting chapter first, else the cheapest unread), else identify one, else find one
+  const guideStep = (sp) => {
+    const cand = [];
+    for (const p of st.tray) { if (!p.idd || speciesOf(p) !== sp) continue; const fr = frameOf(sp); if (!fr) continue;
+      for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
+    cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost);
+    if (cand[0]) {   // a chapter is read from the pod's store: put Data in (the pocket), or go out while the store holds its price
+      const c = cand[0], held = c.pod.store ? c.pod.store.d | 0 : 0;
+      if (held >= c.cost && onBench(st, c.pod)) return { key: "goOut" };
+      return st.d > 0 || held ? { key: "put", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
+    if (docked(st) && cs.length) return { key: "openBay" };
+    const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
+    return { key: "findPod", species: sp };
+  };
+  let g = null;
+  if (!living.length && !bud && !st.tray.length && !st.waiting.length && !cs.length) g = { key: "firstPod", step: { key: "goOut" } };
+  else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(null) };   // no species named: the chain runs on the first pod there is
+  else {
+    const spOrder = [...new Set(living.map(speciesIn))], count = (sp) => members(sp).length + (bud && speciesOf(bud) === sp ? 1 : 0);
+    if (!spOrder.some((sp) => count(sp) >= 2)) { const m = living[0], sp = speciesIn(m); g = { key: "pair", name: m.name, species: sp, step: chain(sp) }; }
+    if (!g) for (const sp of spOrder.concat(bud ? [speciesOf(bud)] : [])) {
+      if (count(sp) < 2) continue;
+      const adults = members(sp).filter((m) => isAdult(st, m, settings)); if (adults.length >= 2) continue;
+      const two = members(sp).slice(0, 2), budIsSecond = two.length < 2 && !!bud && speciesOf(bud) === sp;
+      const walkOf = (m) => Math.max(0, (m.born || 0) + aT - st.turn);
+      const walks = Math.max(...two.map(walkOf), budIsSecond ? aT : 0);
+      const bondedWaits = two.some((m) => m.bonded && m.grownTurn == null && !isAdult(st, m, settings));
+      g = { key: "growUp", names: [two[0].name, budIsSecond ? null : two[1]?.name ?? null], walks, bondedWaits, step: budIsSecond ? budStep() : { key: "goOut" } }; break;
+    }
+    if (!g && crossOpen && !living.some((m) => m.from && m.from.how === "cross") && !(bud && bud.kind === "cross")) {
+      for (const sp of spOrder) { const ad = members(sp).filter((m) => isAdult(st, m, settings)); if (ad.length < 2) continue;
+        const [a, b] = ad, why = crossBlock(st, sv, a, b, settings), c = crossCost(settings);
+        g = { key: "cross", names: [a.name, b.name], step: why ? { key: "blocked", why } : canPay(st, c.e, c.d, c.s) ? { key: "cross" } : short(c.e, c.d, c.s) }; break; }
+    }
+    if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
+    // the guide rung: the living species in lowest-mibi-id order, then the species of the pods in the wells and waiting, in tray order; the first whose guide is not complete
+    if (!g) { const sp = [...new Set([...spOrder, ...st.tray.map(speciesOf), ...st.waiting.map(speciesOf)])].find((x) => x && st.knownIds.includes(x) && !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
+    // the rack rung: a pod in the rack and no rung above holds: the pod chain on the first pod there is (step lines only: the chain never goes out)
+    if (!g && st.tray.length) g = { key: "rack", step: chain(null) };
+  }
+  // the Probe stands in when no rung holds and it is below tier 2; null only when the ladder is empty and the Probe is at tier 2
+  if (!g && tierNow(st, sv) < 2) g = { key: "probe", step: st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "goOut" }, e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };   // the Probe stands in; a save with no Probe goes out, never fits
+  if (!g) return null;
+  // the second goal, from growUp onward while the Probe is below tier 2
+  g.probe = null; if (["growUp", "cross", "readChild", "guide", "rack"].includes(g.key) && tierNow(st, sv) < 2) g.probe = st.probe && tier2Ready(st, settings) ? { key: "fit" } : { key: "save", e: [st.e, PRICE.tier2E], d: [st.d, PRICE.tier2D] };
+  if (g.probe && g.probe.key === "fit" && (["goOut", "findPod", "bud"].includes(g.step.key) || (g.key === "guide" && g.step.key !== "openBay"))) g.step = { key: "fit" };
+  // the read to suggest while the step is a wait
+  g.meanwhile = null;
+  if (["goOut", "findPod", "bud", "short"].includes(g.step.key)) {
+    const cand = [];
+    for (const p of st.tray) { if (!p.idd) continue; const fr = frameFor(p); if (!fr) continue;
+      for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null || st.d < cost) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
+    cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost); g.meanwhile = cand[0] ? { pod: cand[0].pod, chapter: cand[0].chapter, glint: cand[0].glint, cost: cand[0].cost } : null;
+  }
+  return g;
+}
+
+// The one-line warning before a spend that would leave the goal's next price short: null, or { step, species | name, icons }. `price` is { e, d, s }, what the act pays; `act` is { key: "identify" | "read" | "grow" |
+// "growNow" | "mend" | "cross", pod?, mibi? } so that the act that IS the step never warns. Only identify, grow, cross, read and fit are priced; a step that is a wait, a short, a block or the guide is not. The Probe's `save` never
+// warns. Cross is never the priced step while its door is shut (goalKey is asked without doors, as every caller does today).
+export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, act = {}, doors) { return pairSpendWarn(st, sv, settings, price, act) ?? stepSpendWarn(st, sv, settings, price, act, doors); }
+// A pair at home could cross now and this spend would leave the cross short (the designer's scheme c3): { step: "pair", name, name2, left, need } with the figures of what is short ("❀1" left, "❀2" needed); null otherwise.
+function pairSpendWarn(st, sv, settings, price, act) {
+  if (act.key === "cross" || !((price.e || 0) || (price.s || 0))) return null;
+  const cn = crossNeed(st, sv, settings); if (!cn || cn.short) return null;   // no pair, or the cross cannot be paid even now: its own need says so
+  const c = crossCost(settings), after = { e: st.e - (price.e || 0), s: st.s - (price.s || 0) }; if (after.e >= c.e && after.s >= c.s) return null;
+  const left = [c.e > after.e ? "⚡" + Math.max(0, after.e) : "", c.s > after.s ? "❀" + Math.max(0, after.s) : ""].filter(Boolean).join(" "), need = [c.e > after.e ? "⚡" + c.e : "", c.s > after.s ? "❀" + c.s : ""].filter(Boolean).join(" ");
+  return { step: "pair", name: cn.a.name, name2: cn.b.name, left, need };
+}
+function stepSpendWarn(st, sv, settings, price, act, doors) {
+  const g = goalKey(st, sv, settings, doors); if (!g) return null;
+  const step = g.step, p = { e: price.e || 0, d: price.d || 0, s: price.s || 0 }, grow = growCost(st, {}, settings), ident = { e: 0, d: identifyCost(st, settings), s: 0 };
+  let next = null, who = {}, key = step.key;
+  if (step.key === "identify") { if (act.key === "identify" && act.pod && speciesOf(act.pod) === step.species) return null; if (step.species == null) return null;   // a goal that names no species has no nameless warning (ruling): silent, whether the act identifies another unknown pod or anything else
+     const both = { e: grow.e, d: ident.d + grow.d, s: grow.s }; next = canPay(st, both.e, both.d, both.s) ? both : ident; who = { species: step.species }; }
+  else if (step.key === "grow") { if (act.key === "grow" && act.pod && speciesOf(act.pod) === step.species) return null; next = grow; who = { species: step.species }; }
+  else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
+  else if (step.key === "put") { if (act.key === "put" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; key = "read"; }   // the guide's step: Data into the pod's store (the same warning as the price of its next chapter)
+  else if (step.key === "read") { const m = g.key === "readChild" || g.key === "guide" ? st.mibis.find((x) => x.name === step.name && !x.released) : null; if (!m) return null; if (act.key === "read" && act.mibi && act.mibi.id === m.id) return null;
+    const fr = frameFor(m), ch = fr && fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)); if (!ch) return null; next = { e: 0, d: mibiReadCost(st, m, ch.id, settings) || 0, s: 0 }; who = { name: m.name }; }
+  else if (step.key === "fit") { if (act.key === "fit") return null; next = { e: price_(PRICE.tier2E, settings), d: price_(PRICE.tier2D, settings), s: 0 }; who = {}; }
+  else return null;
+  if (!canPay(st, next.e, next.d, next.s)) return null;   // it cannot be paid now: the act's own short or the step's own short says so
+  const after = { e: st.e - p.e, d: st.d - p.d, s: st.s - p.s }; if (canPay(after, next.e, next.d, next.s)) return null;
+  return { step: key, ...who, icons: shortIcons(after, next.e, next.d, next.s) };
+}
+const price_ = price;
+// --- developer seeds and skips (dev.mjs calls these; they go through the same rules) ------------------
+// A crate of pods of one species in the Station's own dev bay: it arrives like any crate, at the dock.
+export function seedCrate(st, species, count, seed, now = Date.now()) {
+  const fr = frameOf(species); if (!fr) return { ok: false, msg: "no frame " + species };
+  const n = (st.devN = (st.devN || 0) + 1), id = "dev-" + n + "-" + (seed >>> 0).toString(36);
+  const places = ["meadow", "pond", "rock", "wood", "cave"], hows = ["calm", "shake", "ground", "slab", "meal"];
+  const pods = Array.from({ length: Math.min(6, Math.max(1, count | 0)) }, (_, i) => { const gs = (Math.imul((seed >>> 0) + i * 7919, 2654435761) ^ (i * 40503)) >>> 0; return { id: "p" + i, species, sp: speciesIndex(species), g: places[(seed + i) % 5], how: hows[(seed + 2 * i) % 5], gs, k: null }; });
+  const crate = { id, n, turn: st.turn, at: now, e: 3, d: 3, s: 4, pods, met: [species], explored: 0, of: 0, lines: [], dev: true };
+  st.devBay.push(crate); st.devWorld = true;
+  logEv(st, "Developer crate " + n + " · " + plural(pods.length, fr.species.name + " pod") + " · seed " + (seed >>> 0));
+  return { ok: true, crate };
+}
+// A pod from a pasted genome (validated whole against its frame), straight into a well.
+export function seedPodFromGenome(st, genome, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const fr = genome && frameOf(genome.species); if (!fr) return { ok: false, msg: "the genome names no species in the registry" };
+  const problems = checkGenome(fr, genome); if (problems.length) return { ok: false, msg: problems.slice(0, 3).join("; ") };
+  const n = (st.devN = (st.devN || 0) + 1), digest = genomeDigest(genome);
+  const pod = { id: "dev-" + n + ":" + digest, sp: speciesIndex(fr.species.id), species: fr.species.id, g: "meadow", how: "ground", gs: parseInt(digest.slice(-8), 16) >>> 0, k: null, n: 0, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: st.turn | 0, dryAt: (st.turn | 0) + POD_LIFE, genome: structuredClone(genome) };
+  st.tray.push(pod);
+  logEv(st, "Developer pod from a genome · " + digest);
+  return { ok: true, pod };
+}
+export function skipIdentify(st, p) { if (!p || p.idd) return; const fr = frameFor(p); p.idd = 1; p.seen = 1; p.fresh = 0; if (fr && !st.knownIds.includes(fr.species.id)) st.knownIds.push(fr.species.id); syncKnown(st); logEv(st, "Developer: identified " + p.id); }
+export function skipRead(st, p, settings = DEFAULT_SETTINGS) {
+  skipIdentify(st, p); const fr = frameFor(p); if (!fr) return;
+  for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; p.read.push(ch.id); const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(ch.id)) once.push(ch.id); for (const [t, ls] of chapterLooks(fr, ch, p.genome)) guideAdd(st, fr.species.id, t, ls); }
+  st.readEver = true; logEv(st, "Developer: read " + p.id + " whole");
+}
+export function addMaterials(st, e, d, s) { st.e += e | 0; st.d += d | 0; st.s += s | 0; logEv(st, "Developer: +" + (e | 0) + " Energy +" + (d | 0) + " Data +" + (s | 0) + " Essence"); }
+// Both copies of every locus of a genome, with the trait and chapter each belongs to (the inspect panel).
+export function inspectGenome(frame, genome) {
+  return frame.loci.map((l) => ({ id: l.id, kind: l.kind, chapter: l.chapter, trait: l.trait, copies: genome.loci[l.id] ?? null }));
+}
+export const stampCodeOf = (p) => { const fr = frameFor(p); return fr && p.genome ? stampCode(fr, p.genome, p.read || []) : null; };
+
+// --- Create: the founder from one pod (research-loop.md §5; station-build.md M2) -------------------------
+// choices: { traitId: 0 | 1 | 2 } — as the pod is, only the first copy, only the second. Only read, shapeable
+// look-traits roll; untouched and unread traits stay as the pod has them.
+export const shapeableTraits = (p) => { const fr = frameFor(p); return fr ? fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.filter((t) => t.shapeable && t.nature !== "doing")) : []; };
+export function rollOptions(p, traitId) {
+  const fr = frameFor(p), t = traitOf(fr, traitId); if (!t || t.nature === "doing" || !t.shapeable || !p.read.includes(fr.chapters.find((c) => c.traits.includes(t)).id)) return [];
+  const same = t.loci.every((id) => { const c = p.genome.loci[id]; return c && c[0] === c[1]; });
+  if (same) return [{ choice: 0, genome: p.genome, look: traitState(fr, t, p.genome).shows }];
+  return [0, 1, 2].map((choice) => { const genome = choice ? shapeTrait(fr, p.genome, t.id, choice) : p.genome; return { choice, genome, look: traitState(fr, t, genome).shows }; });
+}
+export function founderGenome(p, choices = {}) {
+  const fr = frameFor(p); let g = p.genome;
+  for (const [id, c] of Object.entries(choices)) if (c && traitOf(fr, id)) g = shapeTrait(fr, g, id, c);
+  return g;
+}
+export const changedTraits = (choices = {}) => Object.keys(choices).filter((id) => choices[id]);
+// Traits whose shape won't build: reverting one of them alone makes the body build; when none does, every changed trait.
+export function clashTraits(p, choices = {}, problemsOf = genomeProblems) {
+  const fr = frameFor(p), changed = changedTraits(choices); if (!changed.length) return [];
+  if (!problemsOf(fr, founderGenome(p, choices)).length) return [];
+  const fixers = changed.filter((id) => !problemsOf(fr, founderGenome(p, { ...choices, [id]: 0 })).length);
+  return fixers.length ? fixers : changed;
+}
+export function growCost(st, choices = {}, settings = DEFAULT_SETTINGS) {
+  return { e: price(PRICE.growE, settings), s: st.firstMibi ? 0 : price(PRICE.growS, settings), d: price(PRICE.change, settings) * changedTraits(choices).length };
+}
+// --- the rooms: up to four rooms of eight places; a housed mibi holds m.room (0-3) and m.slot (0-7); m.bay = room * 8 + slot is written for a rolled-back Station only ---
+export const housed = (st) => st.mibis.filter((m) => !m.released && !inStore(m));   // a tucked-away mibi holds no place (one on its way back holds its reserved one)
+export const roomCount = (st, settings = DEFAULT_SETTINGS) => clamp(settings.rooms || st.rooms || 1, 1, ROOMS_MAX);
+export const inRoom = (st, i) => housed(st).filter((m) => m.room === i).sort((a, b) => a.slot - b.slot);
+// The first free place: `prefer` first if it has a free slot, else the first room with one; the lowest free slot; null when every place is taken.
+export function freePlace(st, settings = DEFAULT_SETTINGS, prefer = null) {
+  const taken = new Set(housed(st).map((m) => m.room * ROOM + m.slot)), n = roomCount(st, settings);
+  const slotIn = (r) => { if (isSettling(st, r)) return -1; for (let s = 0; s < ROOM; s++) if (!taken.has(r * ROOM + s)) return s; return -1; };   // a settling room takes no mibi
+  const order = (prefer != null && prefer >= 0 && prefer < n ? [prefer] : []).concat(Array.from({ length: n }, (_, r) => r));
+  for (const r of order) { const s = slotIn(r); if (s >= 0) return { room: r, slot: s }; }
+  return null;
+}
+export const vivFull = (st, settings = DEFAULT_SETTINGS) => freePlace(st, settings) === null;
+// Why no place is free (dead ends B1): null when one is, "settling" when a new room still has a free place but is settling (it takes mibis after the next walk), else "full". The settling room's index: settlingRoom.
+export const settlingRoom = (st, settings = DEFAULT_SETTINGS) => { const n = roomCount(st, settings); for (let i = 0; i < n; i++) if (isSettling(st, i) && inRoom(st, i).length < ROOM) return i; return null; };
+export const placeBlock = (st, settings = DEFAULT_SETTINGS) => (!vivFull(st, settings) ? null : settlingRoom(st, settings) !== null ? "settling" : "full");
+// The room rules (rooms-rules.json): the ladder, the settling times, the ceiling, the themes and the finds. `settings.roomRules` overrides a key (a test, the developer's panel); `needFind` is off until the Companion's trips produce finds.
+export const roomRules = (settings = DEFAULT_SETTINGS) => ({ ...ROOM_RULES, ...(settings?.roomRules ?? {}) });
+// The Energy the next room costs on the ladder, for `built` rooms already there: 4, 8, 12, then 4 more each (the first three from the data, then one step more per room)
+export const ladderPrice = (built, rules = ROOM_RULES) => { const L = rules.ladder, k = Math.max(1, built | 0); return L.first[k - 1] ?? L.first[L.first.length - 1] + L.step * (k - L.first.length); };
+// What a room is: its theme (its place in the bought order is its index), its settling and the name it carries. A save of before this has none stored: the theme of room i is the i-th of the themes, settled.
+export const roomMeta = (st, i) => { const m = st.roomMeta?.[i]; return { theme: m?.theme ?? ROOM_THEMES[i] ?? null, settleUntil: m?.settleUntil | 0 }; };
+export const roomName = (st, i) => { const t = roomMeta(st, i).theme, k = ROOM_THEMES.indexOf(t); return k >= 0 ? ROOM_NAMES[k] : ROOM_RULES.standIn[i - ROOM_NAMES.length] ?? "Room " + (i + 1); };
+export const themeIndex = (st, i) => Math.max(0, ROOM_THEMES.indexOf(roomMeta(st, i).theme));   // the painting's index (rooms.json order) of room i
+// Settling: the world turns left before room i takes a mibi (0 when it is ready); a settling room takes no mibi, keeps its row and is no move target
+export const settlingLeft = (st, i) => Math.max(0, roomMeta(st, i).settleUntil - (st.turn | 0));
+export const isSettling = (st, i) => settlingLeft(st, i) > 0;
+// The settling time of the room that would be built as room number `n` (1-based, the starting room is 1) with this theme: room 2 one turn, rooms 3 on two, a water or air room three; nothing shortens it
+export function settleTurns(n, theme, rules = ROOM_RULES) { const T = rules.themes.find((t) => t.id === theme), S = rules.settle; return T?.lifeSupport ? S.lifeSupport : n <= 2 ? S.second : S.later; }
+// The finds at home: one per theme at most, held until its room is built (st.finds: the theme ids). A find of a theme whose room stands is no use and is not counted.
+export const unbuiltThemes = (st, settings = DEFAULT_SETTINGS) => { const have = new Set(Array.from({ length: st.rooms || 1 }, (_, i) => roomMeta(st, i).theme)); return roomRules(settings).themes.map((t) => t.id).filter((id) => !have.has(id)); };
+export const findsHome = (st, settings = DEFAULT_SETTINGS) => { const un = unbuiltThemes(st, settings); return (Array.isArray(st.finds) ? st.finds : []).filter((id, k, a) => un.includes(id) && a.indexOf(id) === k); };
+export function addFind(st, theme, settings = DEFAULT_SETTINGS) { if (!unbuiltThemes(st, settings).includes(theme) || (st.finds ??= []).includes(theme)) return false; st.finds.push(theme); return true; }
+// Whether a room can still be added: fewer than the ceiling and a theme left unbuilt (the Add a room row is gone otherwise)
+export const canAddRoom = (st, settings = DEFAULT_SETTINGS) => (st.rooms || 1) < roomRules(settings).max && unbuiltThemes(st, settings).length > 0;
+// The theme the next room takes: with finds required, the asked one (or the first find at home); else the first unbuilt theme in order
+export const nextTheme = (st, settings = DEFAULT_SETTINGS, want = null) => { const R = roomRules(settings), un = unbuiltThemes(st, settings), fs = findsHome(st, settings); if (R.needFind) return want && fs.includes(want) ? want : fs[0] ?? null; return want && un.includes(want) ? want : un[0] ?? null; };
+export const roomPrice = (st, settings = DEFAULT_SETTINGS) => (canAddRoom(st, settings) ? price(ladderPrice(st.rooms || 1, roomRules(settings)), settings) : null);
+export function addRoomBlock(st, settings = DEFAULT_SETTINGS) {
+  const p = roomPrice(st, settings); if (p === null) return { key: "all" };
+  if (roomRules(settings).needFind && !findsHome(st, settings).length) return { key: "find" };
+  return canPay(st, p, 0, 0) ? null : { key: "short", short: ["e"] };
+}
+export function addRoom(st, settings = DEFAULT_SETTINGS, want = null) {
+  const b = addRoomBlock(st, settings); if (b) return { ok: false, ...b };
+  const theme = nextTheme(st, settings, want), R = roomRules(settings), p = roomPrice(st, settings), n = st.rooms + 1, turns = settleTurns(n, theme, R);
+  st.e -= p; st.rooms++;
+  st.roomMeta = Array.from({ length: st.rooms }, (_, i) => (i === st.rooms - 1 ? { theme, settleUntil: (st.turn | 0) + turns } : { ...roomMeta(st, i) }));
+  if (R.needFind) st.finds = (st.finds ?? []).filter((id) => id !== theme);   // the find is spent with the room
+  logEv(st, "Added the " + roomName(st, st.rooms - 1) + " room · " + spendText(p, 0, 0) + " · settles in " + plural(turns, "turn"));
+  return { ok: true, room: st.rooms - 1, theme, turns };
+}
+// What stops a move to room i, as a key: null when nothing does.
+export function moveBlock(st, m, i, settings = DEFAULT_SETTINGS) {
+  if (!m || m.released) return { key: "released" };
+  if (m.room === i) return { key: "own" };
+  if (!(i >= 0 && i < roomCount(st, settings))) return { key: "noRoom" };
+  if (isSettling(st, i)) return { key: "settling", n: settlingLeft(st, i) };
+  const there = inRoom(st, i).length; if (there >= ROOM) return { key: "full" };
+  return null;
+}
+// The room the whole last showed follows what is seen: a mibi seen up close or met, or moved, sets st.face.room to its room (a released mibi has none). The way in reads only st.face.room.
+export function seeRoom(st, m) { if (m && !m.released && m.room != null) st.face.room = m.room; }
+// A move is free and instant: the room and its lowest free slot; a mibi with the Companion moves too and keeps its place in the carried set.
+export function moveMibi(st, m, i, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const b = moveBlock(st, m, i, settings); if (b) return { ok: false, ...b };
+  const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
+  m.room = i; m.slot = slot; m.bay = i * ROOM + slot; seeRoom(st, m);   // the room the whole shows is the one the mibi moved to
+  if (now >= GOOD_CLOCK) m.roomSince = now;   // R4b: when it moved in (ms UTC, additive, no schema bump): fresh in the room until the first settle an hour on (vivarium.json rules.show.freshMinS); an unset clock writes nothing
+  logEv(st, m.name + " moves to the " + roomName(st, i) + " room");
+  return { ok: true, room: i, slot };
+}
+// The integer-seeded generator the developer siblings and the shed pod draw from: the same seed, the same stream.
+export function seededRng(seed) { let x = seed >>> 0; return () => { x = (Math.imul(x ^ (x >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return (x >>> 8) / 16777216; }; }
+// The record fields of a place: room, slot and the rollback index.
+const placeOf = (p) => ({ room: p.room, slot: p.slot, bay: p.room * ROOM + p.slot });
+// The words state.mjs returns when no place is free (cw C10): the message, and the plate's lines (the third only while a room can still be added).
+export const fullWords = (st) => ({ msg: "The Vivarium is full", plate: ["The Vivarium is full", "Return a mibi to make room"].concat(canAddRoom(st) ? ["or add a room"] : []) });
+// Minutes a bud takes: the first ever five (the dev rule), else twenty plus one per shaped trait.
+export const budMinutes = (st, nChanged, settings = DEFAULT_SETTINGS) => (st.firstMibi && settings.firstBud ? 5 : 20 + nChanged);
+// What stops Grow, as a key, in the rules' order (unidentified, busy, full, clash, short): null when nothing does, else { key, short } where short is the icons of the materials the price is short of (key "short" only).
+export function growBlockKey(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
+  if (!p || !p.idd) return { key: "unidentified", short: null };
+  if (st.bud) return { key: "busy", short: null };
+  if (vivFull(st, settings)) return { key: "full", short: null };
+  if ((clash ?? clashTraits(p, choices)).length) return { key: "clash", short: null };
+  const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { key: "short", short: shortIcons(st, cost.e, cost.d, cost.s), from: shortFrom(st, cost.e, cost.d, cost.s) };
+  return null;
+}
+export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
+  const k = growBlockKey(st, p, choices, settings, clash); if (!k) return "";
+  if (k.key === "unidentified") return "identify it first";
+  if (k.key === "busy") return "the incubator is busy";
+  if (k.key === "full") return "the Vivarium is full";
+  if (k.key === "clash") { const c = clash ?? clashTraits(p, choices); return "this shape won't grow · " + c.map((id) => traitOf(frameFor(p), id)?.name ?? id).join(", "); }
+  const cost = growCost(st, choices, settings); return shortText(st, cost.e, cost.d, cost.s);
+}
+// Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the
+// Grow paints nothing: the mibi is drawn from its layers (decisions 10-11 14:17); the own painting is made only at the sitting. Validated whole before anything is spent.
+export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Incubate · " + b };
+  const fr = frameFor(p), cost = growCost(st, choices, settings), changed = changedTraits(choices), genome = founderGenome(p, choices), sha = genomeSha(genome);
+  st.e -= cost.e; st.s -= cost.s; st.d -= cost.d;
+  const first = !!st.firstMibi, minutes = budMinutes(st, changed.length, settings);
+  for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
+  const read = [...p.read]; for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch && !read.includes(ch.id)) read.push(ch.id); }
+  st.bud = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
+  st.firstMibi = false;
+  leavePod(st, p);
+  logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
+  return { ok: true, bud: st.bud, cost };
+}
+// A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
+export const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
+// The bud's chapters. A read chapter is known from the start. A bred bud (kind "cross") keeps every other chapter unread, always: while it grows, after Grow now and skipBud, at ready and after (what
+// the Station could be sure of is B.read, set from the parents). A founder (a missing kind counts as one) clears its unread chapters one by one across the wait: with U the unread chapters in frame order
+// (a shut sealed chapter is never among them) and n = |U|, U[k] is known when the bud is (k + 1) / (n + 1) grown.
+export function budChapterKnown(st, chapterId, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const B = st.bud; if (!B) return false; if (B.read.includes(chapterId)) return true;
+  if (B.kind === "cross") return false;
+  const fr = frameOf(B.species), unread = fr.chapters.filter((c) => !B.read.includes(c.id) && !shutSealed(c, settings)).map((c) => c.id), k = unread.indexOf(chapterId);
+  return k >= 0 && budProgress(st, settings, now) >= (k + 1) / (unread.length + 1);
+}
+// Grow now (research-economy.md §5, §9, decided 2026-10-09): 1 Essence for every 2 minutes left on the bud, rounded up; no Energy, no Data. The price falls as the bud grows; the
+// developer's "free" preset waives it. With no bud, or a ready one, there is nothing to pay.
+export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const B = st && st.bud; if (!B || settings.instantGrowPreset === "free") return { e: 0, d: 0, s: 0 };
+  const left = B.minutes * (1 - budProgress(st, settings, now));
+  return { e: 0, d: 0, s: left > 1e-9 ? price(Math.ceil(left / 2 - 1e-9), settings) : 0 };
+}
+// Hatch now: pays the price for the minutes left, ends the wait and opens the bud as Open does, in one press (game text 1). A place is checked before anything is spent: none free (only a developer
+// path reaches it) refuses with Open's words and spends nothing, then short of Essence refuses with "Hatch now · {short}". One log line, "Opened now · {name} · ...". Returns { ok, mibi, bud, cost }.
+export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!st.bud || budReady(st, settings, now)) return { ok: false };
+  if (vivFull(st, settings)) return { ok: false, ...fullWords(st) };
+  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Open now · " + shortText(st, c.e, c.d, c.s) };
+  st.e -= c.e; st.d -= c.d; st.s -= c.s; const bud = st.bud; bud.early = true;
+  const r = hatchBud(st, settings, now, (m, sp, room) => "Opened now · " + m.name + " · " + sp + " · juvenile · the " + room + " room · " + spendText(c.e, c.d, c.s));
+  return { ok: true, mibi: r.mibi, bud, cost: c };
+}
+// Open: a press; the juvenile steps out fully known, into a free place, wearing the placeholder until its painting lands (M3).
+export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!budReady(st, settings, now)) return { ok: false, msg: "The bud is still growing" };
+  if (vivFull(st, settings)) return { ok: false, ...fullWords(st) };
+  return hatchBud(st, settings, now, (m, sp, room) => "Opened · " + m.name + " · " + sp + " · juvenile · the " + room + " room");
+}
+// The hatch both presses share (a place is already known free; `now` is the Station's clock, the mibi's `since` in ms UTC, left out while the clock is unset): the bud's mibi, known as the rules say, the field guide, the chamber emptied, the one log line `line(mibi, species name, room name)`.
+function hatchBud(st, settings, now, line) {
+  const place = freePlace(st, settings, st.face?.room ?? 0), B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
+  const name = drawName(st);
+  // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
+  const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
+  for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
+  st.mibis.push(m); st.bud = null;
+  logEv(st, line(m, fr.species.name, roomName(st, place.room)));
+  return { ok: true, mibi: m };
+}
+// Return a mibi to the wild (research-economy.md §6): no Essence (owner 2026-10-28 23:16), a field-guide note, the release handed to the
+// Companion at the next dock. Never a bonded mibi, one carried by the Companion or waiting to be. A young mibi may go.
+export function returnMibiBlock(st, sv, m) {
+  if (!m || m.released) return "already released";
+  if (m.bonded) return "a bonded mibi stays";
+  if (carriedIds(st, sv).includes(m.id)) return "already with you";
+  if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return "goes at the next dock";
+  if (inStore(m)) return "tucked away · bring it out first";
+  if (comingOut(st, m)) return "back in " + plural(backIn(st, m), "turn");
+  if (lastAtHome(st, sv, m)) return "your last mibi at home stays";   // the same guard as Tuck away (the put-away rules, audit m10)
+  return "";
+}
+export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
+  const b = returnMibiBlock(st, sv, m); if (b) return { ok: false, why: b };   // the block is the Wild module's context, not a plate
+  m.released = true; m.releasedAt = st.turn; m.room = m.slot = null;   // pays nothing (owner 2026-10-28 23:16): the shed pod of its line is its only gift;   // its place is free at once
+  if (!Array.isArray(st.releases)) st.releases = [];
+  st.releases.push({ id: m.id, name: m.name, sp: m.sp, species: m.species, k: m.from?.k ?? null, g: m.from?.g ?? null, code: m.code, turn: st.turn }); if (st.releases.length > 30) st.releases.shift();
+  // the shed pod of its line (owner 2026-10-26 16:33): due no sooner than the later of its growing up and its release, plus two turns; its kinship no lower than the mibi's own
+  const aT = settings.adultTurns ?? JUVENILE_TURNS, grown = m.grownTurn ?? (m.born ?? 0) + aT, own = m.genome?.origin?.kinship ?? 0, k = Math.max(SELF_KINSHIP, own);
+  const genome = shedPod(frameFor(m), m, { rng: seededRng((m.id * 2654435761) >>> 0), kinship: k });
+  if (!Array.isArray(st.sheds)) st.sheds = [];
+  st.sheds.push({ id: m.id, name: m.name, sp: m.sp, species: m.species, g: m.from?.g ?? null, due: Math.max(grown, st.turn) + 2, kinship: k, genome, state: genome ? "due" : "none" });
+  const notes = st.guideNotes || (st.guideNotes = {}); (notes[m.species] || (notes[m.species] = [])).push({ name: m.name, code: m.code, g: m.from?.g ?? null, turn: st.turn });
+  logEv(st, "Returned " + m.name + " to the wild · its place remembers it");
+  return { ok: true, msg: m.name + " goes back to the " + (PLACE_WORD[m.from?.g] || "wild") + " · the Companion takes it at the next dock" };
+}
+// Developer skips for M2.
+export function skipBud(st, settings = DEFAULT_SETTINGS, how = "ready") { const B = st.bud; if (!B) return; if (how === "ready") B.early = true; else { B.early = false; B.start = Date.now() - (B.minutes * 60000) / 2; } logEv(st, "Developer: bud " + how); }
+export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS) {
+  const fr = frameOf(species); if (!fr) return { ok: false, msg: "no frame " + species };
+  const made = [];
+  for (let i = 0; i < n; i++) { if (vivFull(st, settings)) break; const gs = (Math.imul((seed >>> 0) + i * 104729, 2654435761) ^ (i * 7)) >>> 0, genome = podGenome(fr, gs), sha = genomeSha(genome), id = st.nextMibi++;
+    const name = drawName(st);
+    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, ...(Date.now() >= GOOD_CLOCK ? { since: Date.now() } : {}), from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: openChapterIds(fr), parents: null, ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
+    st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
+  if (made.length && !st.knownIds.includes(species)) { st.knownIds.push(species); syncKnown(st); }   // a species that arrives as adults is known (its Library frame and Book open)
+  st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
+  return { ok: !!made.length, mibis: made, msg: made.length ? made.map((m) => m.name).join(" and ") + " live in the vivarium" : "the Vivarium is full" };
+}
+
+// --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
+import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
+import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, directKin, identity as genomeIdentity } from "./genome.mjs";
+export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.crossE, settings), s: price(PRICE.crossS, settings), d: 0 });
+// The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
+// parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
+export function genomeLookup(st) {
+  const byId = new Map();
+  for (const m of st.mibis) for (const p of m.parents || []) if (p && p.id != null && !byId.has(p.id)) byId.set(p.id, p);
+  for (const m of st.mibis) if (m.id != null) byId.set(m.id, m);
+  return (id) => byId.get(id) ?? null;
+}
+// An elder crosses as an adult does (a juvenile does not): for the cross and for the partner list.
+export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, settings); return s === "adult" || s === "elder"; };
+// Out with the Companion while it is away: a mibi in the carried set cannot be crossed until the Companion docks.
+export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).includes(m.id);
+// R4b: a mibi in the carried set, docked or away: never drawn in a room, its place reserved, its tile and card say where it is and hold every action (isAway is only the Companion's being out)
+export const isCarried = (st, sv, m) => !!m && carriedIds(st, sv).includes(m.id);
+// Direct kin (a parent, grandparent or great-grandparent, or two children of one pair) never cross; null, or { rel, by }. The pedigree is walked through the records of mibis let go too.
+export const directKinOf = (st, a, b) => directKin(a, b, genomeLookup(st));
+export const FAMILY = "family \u00b7 find another out exploring";   // the one refusal line, wherever a family pair is refused (vivarium.json strings.why.partnerFamily says the same; a test holds them equal)
+// Refused before cost, on the pick itself, reasons that never change first: the same individual, another species, gone to the wild, family, then not adult, tucked away, carried (R4b, the owner: no breeding while a mibi is carried, docked or away), busy, full.
+export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
+  if (!a || !b) return "pick two";
+  if (a === b || a.id === b.id) return "one mibi is not a pair";
+  if (speciesOf(a) !== speciesOf(b)) return "another species";
+  if (a.genome && b.genome && versionRefusal(frameFor(a), a.genome, b.genome)) return "too different";   // a version-4 and a version-5 Loika carry different loci: never crossed, never a crash
+  if (a.released || b.released) return "gone to the wild";
+  if (directKinOf(st, a, b)) return FAMILY;
+  if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
+  if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (the put-away rules)
+  if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
+  if (st.bud) return "the incubator is busy";
+  if (vivFull(st, settings)) return "the Vivarium is full";
+  return "";
+}
+// The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => { const kin = directKinOf(st, a, m), away = isCarried(st, sv, m) || inStore(m) || comingOut(st, m); return kin || away ? { ...m, ...(away ? { away: true } : {}), ...(kin ? { family: kin.rel } : {}) } : m; });   // tucked away or on its way back: listed dimmed, never picked (the put-away rules); family: listed, marked with the relation, never picked
+// The first pair at home that could cross now (same species, adults, not family, both at home, a free place, the incubator idle: crossBlock holds nothing back), in mibi id order: { a, b } or null.
+export function crossPair(st, sv, settings = DEFAULT_SETTINGS) {
+  const living = st.mibis.filter((m) => !m.released).sort((x, y) => x.id - y.id);
+  for (const a of living) for (const b of living) if (b.id > a.id && !crossBlock(st, sv, a, b, settings)) return { a, b };
+  return null;
+}
+// The pair need's facts for Home (home.json strings.needs.pair): { a, b, short } where short is the materials the cross is short of as "⚡2 ❀2" (figures: what the cross costs) or null; null when no pair could cross.
+export function crossNeed(st, sv, settings = DEFAULT_SETTINGS) {
+  const p = crossPair(st, sv, settings); if (!p) return null;
+  const c = crossCost(settings), short = [c.e > st.e ? "⚡" + c.e : "", c.s > st.s ? "❀" + c.s : ""].filter(Boolean).join(" ");
+  return { a: p.a, b: p.b, short: short || null };
+}
+// A child of close kin or the same line: its parents' kinship is a quarter or more (the card says "from close kin"); a founder or a pod has no parents
+export const bredClose = (st, m) => Array.isArray(m?.parents) && m.parents.length === 2 && pedigreeKinship(m.parents[0], m.parents[1], genomeLookup(st)) >= 0.25;
+export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
+export const kinshipWord = (k) => (k <= 0 ? "no kin in common" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
+// The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
+// have read, and an indication of everything missing"): a trait whose chapter either parent has not read is marked `missing`, with no seeds, range or firmness, and names which parent
+// and which chapter to read; a sealed chapter's traits stay `sealed`. `missing` counts the readable traits still unknown, `sealedTraits` the sealed ones, `unknown` both; the genome-wide
+// likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
+export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(a); if (!fr || ["another species", "too different"].includes(crossBlock(st, null, a, b, settings)) || (a !== b && directKinOf(st, a, b))) return null;
+  const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a, b, opts);   // the mibi records: by id
+  const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
+  let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read
+  let missing = 0, sealedTraits = 0;
+  const traits = full.traits.map((t) => {
+    if (t.sealed) { sealedTraits++; return t; }
+    const need = [[a, "a"], [b, "b"]].filter(([m]) => !(m.read || []).includes(t.chapter)).map(([m, side]) => ({ parent: side, id: m.id, name: m.name, chapter: t.chapter, chapterName: chapterName(t.chapter) }));
+    if (need.length) {   // what the read parent shows of its own copies is known to the player; nothing of the pairing is
+      missing++; const tr = traitOf(t.trait), known = {};
+      for (const [m, side] of [[a, "a"], [b, "b"]]) if (!need.some((q) => q.parent === side)) known[side] = { words: copyWords(fr, tr, m.genome), hides: copyHides(tr, m.genome), loci: tr.loci.length };
+      return { chapter: t.chapter, trait: t.trait, name: t.name, sealed: false, locus: t.locus, kind: "missing", missing: need, known };
+    }
+    loci ??= lociOf(fr, a.genome, b.genome, opts);
+    const tr = traitOf(t.trait);
+    return { ...t, splice: { loci: tr.loci.map((id) => loci.get(id)).filter(Boolean), words: { a: copyWords(fr, tr, a.genome), b: copyWords(fr, tr, b.genome) }, hides: { a: copyHides(tr, a.genome), b: copyHides(tr, b.genome) }, ends: t.kind === "blend" ? rangeWords(fr, tr, a.genome, t.range) : null } };
+  });
+  // The chapters in ring order, as the splice draws them: open (both parents have read it), unread (either has not: which), or sealed (with what opens it).
+  const chapters = fr.chapters.map((c) => {
+    const sealed = !!c.sealed, lacking = sealed ? [] : [[a, "a"], [b, "b"]].filter(([m]) => !(m.read || []).includes(c.id)).map(([m, side]) => ({ parent: side, id: m.id, name: m.name }));
+    return { id: c.id, name: c.name, state: sealed ? "sealed" : lacking.length ? "unread" : "open", lacking, findKind: c.findKind ?? null, opensWith: sealed ? chapterSeal(fr, c) : null, traits: c.traits.map((t) => t.id) };
+  });
+  const first = chapters.find((c) => c.state === "unread"), unknown = missing + sealedTraits;
+  return { ...full, traits, chapters, firstMissing: first ? { chapter: first.id, chapterName: first.name, parents: first.lacking.map((l) => l.parent), names: first.lacking.map((l) => l.name) } : null, missing, sealedTraits, unknown, identity: unknown ? null : genomeIdentity(fr, a.genome, b.genome) };
+}
+// Chapters a child is known in before any read: every trait firm (switch parents match); a blend is never firm.
+export function childKnownChapters(fr, fc) { return fr.chapters.filter((c) => !c.sealed && c.traits.every((t) => fc.traits.find((x) => x.trait === t.id)?.firm)).map((c) => c.id); }
+// The cross: one draw, validated whole before anything is spent (not re-rolled: a child that cannot be built never exists and the clashing traits are named); then paid, the child in the bud with its real parents.
+export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now(), rng = Math.random) {
+  const block = crossBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Cross them · " + block };
+  const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Cross them · " + shortText(st, cost.e, cost.d, cost.s) };
+  const fr = frameFor(a), k = kinshipOf(st, a, b);
+  const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) });   // the mibi records: refused by id, the child records its parents' ids
+  const problems = genomeProblems(fr, genome);
+  if (problems.length) { const clash = fr.chapters.flatMap((c) => c.traits).filter((t) => problems.some((p) => t.loci.some((id) => p.includes(id)))).map((t) => t.id); return { ok: false, clash, msg: "This child would not build · " + (clash.length ? clash.join(", ") : problems[0]) + " · nothing spent" }; }
+  st.e -= cost.e; st.s -= cost.s;
+  const sha = genomeSha(genome), fc = crossForecast(fr, a, b, { kinship: k }), read = childKnownChapters(fr, fc);
+  const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+  const minutes = budMinutes(st, 0, settings);
+  st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
+  st.firstMibi = false;
+  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
+  return { ok: true, bud: st.bud, cost };
+}
+// Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.
+export function mibiReadCost(st, m, chapterId, settings = DEFAULT_SETTINGS) { return readCost(st, { ...m, idd: 1, read: m.read }, chapterId, settings); }
+export function readMibi(st, m, chapterId, settings = DEFAULT_SETTINGS) {
+  const fr = frameFor(m), ch = fr && chapterOf(fr, chapterId); if (!ch) return { ok: false };
+  if (m.read.includes(chapterId)) return { ok: false, again: true };
+  if (ch.sealed && !settings.sealedOpen) return { ok: false, msg: "Read " + ch.name + " · sealed · opens with " + chapterSeal(fr, ch) };
+  const cost = mibiReadCost(st, m, chapterId, settings); if (st.d < cost) return { ok: false, msg: "Read " + ch.name + " · " + shortText(st, 0, cost, 0) };
+  const first = !st.readEver; st.d -= cost; st.readEver = true; m.read.push(chapterId);
+  const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(chapterId)) once.push(chapterId);
+  const newLooks = []; for (const [t, ls] of chapterLooks(fr, ch, m.genome)) { const had = guideLooks(st, fr.species.id, t); for (const l of ls) if (!had.includes(l)) newLooks.push(l); guideAdd(st, fr.species.id, t, ls); }
+  logEv(st, "Read " + m.name + "'s " + ch.name + (first ? " · free (the first read ever)" : cost ? " · −" + cost + " Data" : " · free") + (newLooks.length ? " · new: " + newLooks.join(", ") : ""));
+  return { ok: true, cost, first, chapter: ch, newLooks };
+}
+export const mibiFullyRead = (m, settings = DEFAULT_SETTINGS) => { const fr = frameFor(m); return !fr || fr.chapters.every((c) => m.read.includes(c.id) || (c.sealed && !settings.sealedOpen)); };
+// Developer: two siblings of two unrelated adults, born adult.
+export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
+  const r = seedAdults(st, species, seed, 2, settings); if (!r.ok || r.mibis.length < 2) return { ok: false, msg: r.msg };
+  const [a, b] = r.mibis, fr = frameOf(species), made = [];
+  const rng = seededRng(seed);
+  for (let i = 0; i < 2 && !vivFull(st, settings); i++) {
+    let genome = null; for (let t = 0; t < 8 && !genome; t++) { const g = crossGenomes(fr, a.genome, b.genome, { rng, kinship: 0 }); if (!genomeProblems(fr, g).length) genome = g; }
+    if (!genome) break;
+    const sha = genomeSha(genome), id = st.nextMibi++, name = drawName(st), read = childKnownChapters(fr, crossForecast(fr, a.genome, b.genome, { kinship: 0 }));   // the rule doCross uses for B.read
+    const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+    const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, ...(Date.now() >= GOOD_CLOCK ? { since: Date.now() } : {}), from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read, parents: [snap(a), snap(b)], ...placeOf(freePlace(st, settings, st.face?.room ?? 0)), paint: null, released: false, shaped: [] };
+    st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls);
+  }
+  logEv(st, "Developer: siblings " + made.map((m) => m.name).join(" and ") + " of " + a.name + " and " + b.name);
+  return { ok: made.length === 2, parents: [a, b], mibis: made, msg: made.length === 2 ? made.map((m) => m.name).join(" and ") + ", siblings of " + a.name + " and " + b.name : "no place free for both siblings" };
+}
+
+// --- Tucked away (the put-away rules; the manager's design): a mibi kept outside time, its place freed --------------------------------------
+// A tucked-away mibi is still the player's and alive, but not at home: m.tucked = { turn, seq, at } while it is in the store (no room, no place: m.room and m.slot are null), and m.tucked.out, the world
+// turn it is back at, once Bring out is pressed (its place is reserved then: m.room and m.slot are set and the room counts it). Its clocks stop: its stage and its turns are read at m.tucked.turn while it is
+// in the store; at the press of Bring out its born (and grownTurn) move on by the turns it was away, so they restart where they stopped when it is back (stageTurn). The store has no limit (lead ruling
+// 10-28 23:11, M1). Nothing is migrated: an older save has no m.tucked, and nothing reads one it does not hold. The prices are Energy, the rooms' own currency (the put-away rules, all tune).
+export const TUCK = { floor: 2 /* Energy at least, to tuck away */, out: 2 /* Energy to bring out */, turns: 2 /* world turns until it is back */ };
+// The next room's price in Energy on the ladder: 4, 8, 12, then 4 more each (the put-away rules; it still stands for the put-away price below when no room can be added)
+export const nextRoomPrice = (st) => ladderPrice(st.rooms || 1);
+// Tuck away: the next room's price per place rounded up, never under TUCK.floor; so it never costs less than keeping a room (the put-away rules, the 19:35 ruling)
+export const tuckPrice = (st, settings = DEFAULT_SETTINGS) => price(Math.max(TUCK.floor, Math.ceil(nextRoomPrice(st) / ROOM)), settings);
+export const bringOutPrice = (st, settings = DEFAULT_SETTINGS) => price(TUCK.out, settings);
+export const inStore = (m) => !!m && !m.released && !!m.tucked && m.tucked.out == null;
+// on its way back: Bring out pressed, its place reserved, the world turn it is back at not reached yet
+export const comingOut = (st, m) => !!m && !m.released && !!m.tucked && m.tucked.out != null && (st.turn | 0) < m.tucked.out;
+export const backIn = (st, m) => (comingOut(st, m) ? m.tucked.out - (st.turn | 0) : 0);
+// the turn a mibi's clocks read: the turn it was tucked away at while it is in the store, the turn it is back at while it comes out (its born moved on at the press), else the world's
+export const stageTurn = (st, m) => (inStore(m) ? m.tucked.turn : comingOut(st, m) ? m.tucked.out : st.turn);
+// The store, in the order the mibis went in.
+export const tuckedAway = (st) => st.mibis.filter(inStore).sort((a, b) => (a.tucked.seq ?? 0) - (b.tucked.seq ?? 0) || a.id - b.id);
+// At home and present: in a room, not in the carried set as it will be (projectCarried: a request to go counts), not coming back. The last such mibi stays (the put-away rules; Return takes the same guard, audit m10).
+export const presentAtHome = (st, sv, m) => !!m && !m.released && !inStore(m) && !comingOut(st, m) && m.room != null && !projectCarried(st, sv).includes(m.id);
+export const lastAtHome = (st, sv, m) => presentAtHome(st, sv, m) && st.mibis.filter((x) => presentAtHome(st, sv, x)).length === 1;
+// What stops Tuck away, as a key, in the put-away rules's order: null when nothing does. { key: "released" | "tucked" | "coming" (n) | "carried" | "last" | "short" (price, have) }
+export function tuckBlock(st, sv, m, settings = DEFAULT_SETTINGS) {
+  if (!m || m.released || !mibiById(st, m.id)) return { key: "released" };
+  if (inStore(m)) return { key: "tucked" };
+  if (comingOut(st, m)) return { key: "coming", n: backIn(st, m) };
+  if (projectCarried(st, sv).includes(m.id)) return { key: "carried" };
+  if (lastAtHome(st, sv, m)) return { key: "last" };
+  const p = tuckPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  return null;
+}
+// Tuck away: paid at the press, instant; the place frees at once, the clocks stop. A bond, the stage, a breather owed and everything the mibi is stay.
+export function tuckAway(st, sv, m, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const b = tuckBlock(st, sv, m, settings); if (b) return { ok: false, ...b };
+  const p = tuckPrice(st, settings), room = m.room; st.e -= p;
+  st.tuckSeq = (st.tuckSeq | 0) + 1;
+  m.tucked = { turn: st.turn | 0, seq: st.tuckSeq, ...(now >= GOOD_CLOCK ? { at: now } : {}), from: room };
+  m.room = m.slot = null; m.bay = null;
+  logEv(st, "Tucked " + m.name + " away · " + spendText(p, 0, 0) + " · its place in the " + roomName(st, room) + " room is free");
+  return { ok: true, room, cost: p };
+}
+// What stops Bring out into room i (i null: any room), as a key: null when nothing does. { key: "notTucked" | "noPlace" | "short" (price, have) }
+export function bringOutBlock(st, sv, m, i = null, settings = DEFAULT_SETTINGS) {
+  if (!inStore(m)) return { key: "notTucked" };
+  const free = i == null ? freePlace(st, settings) : inRoomCount(st, i) < ROOM && i >= 0 && i < roomCount(st, settings) && !isSettling(st, i) ? i : null;
+  if (free == null) return { key: "noPlace" };
+  const p = bringOutPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  return null;
+}
+const inRoomCount = (st, i) => inRoom(st, i).length;
+// Bring out into room i: paid at the press, the place reserved then (the lowest free slot of the room); back in TUCK.turns world turns, never sooner, whatever the time at the Station. No cancel, no refund.
+export function bringOut(st, sv, m, i, settings = DEFAULT_SETTINGS) {
+  const b = bringOutBlock(st, sv, m, i, settings); if (b) return { ok: false, ...b };
+  const p = bringOutPrice(st, settings); st.e -= p;
+  const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
+  const out = (st.turn | 0) + TUCK.turns, shift = out - m.tucked.turn;
+  m.born = (m.born | 0) + shift; if (m.grownTurn != null) m.grownTurn += shift;   // the clocks restart where they stopped, at the turn it is back
+  m.tucked = { ...m.tucked, out, shift };
+  m.room = i; m.slot = slot; m.bay = i * ROOM + slot;
+  logEv(st, "Bringing " + m.name + " out · " + spendText(p, 0, 0) + " · a place kept in the " + roomName(st, i) + " room · back in " + plural(TUCK.turns, "turn"));
+  return { ok: true, room: i, slot, out, cost: p };
+}
+// The mibis whose way back is over (the world turn reached m.tucked.out): their record closes (m.tucked goes), they are fresh in their room. Read at the dock and when the manager opens; returns them.
+export function tuckArrivals(st, now = Date.now()) {
+  const back = st.mibis.filter((m) => !m.released && m.tucked && m.tucked.out != null && (st.turn | 0) >= m.tucked.out);
+  for (const m of back) { delete m.tucked; if (now >= GOOD_CLOCK) m.roomSince = now; logEv(st, m.name + " is back in the " + roomName(st, m.room) + " room"); }
+  return back;
+}
+// Two mibis in two rooms change places (the manager's lift on a mibi): free and instant, a full room is never a dead end; never a traveller, never one coming back. Both rooms keep their counts.
+export function swapBlock(st, sv, a, b) {
+  if (!a || !b || a.released || b.released || a === b) return { key: "none" };
+  if (inStore(a) || inStore(b)) return { key: "tucked" };
+  if (comingOut(st, a) || comingOut(st, b)) return { key: "coming" };
+  if (isCarried(st, sv, a) || isCarried(st, sv, b)) return { key: "carried" };
+  if (a.room === b.room) return { key: "own" };
+  return null;
+}
+export function swapMibis(st, sv, a, b, now = Date.now()) {
+  const k = swapBlock(st, sv, a, b); if (k) return { ok: false, ...k };
+  for (const f of ["room", "slot", "bay"]) [a[f], b[f]] = [b[f], a[f]];
+  if (now >= GOOD_CLOCK) a.roomSince = b.roomSince = now;
+  logEv(st, a.name + " and " + b.name + " swap places · the " + roomName(st, a.room) + " and " + roomName(st, b.room) + " rooms");
+  return { ok: true };
+}

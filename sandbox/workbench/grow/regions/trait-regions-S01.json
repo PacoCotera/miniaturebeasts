@@ -1,0 +1,111 @@
+{
+ "species": "S01",
+ "painting": {
+  "view": "portrait",
+  "size": [
+   600,
+   620
+  ],
+  "margin": 0.06,
+  "genome": "the frame's typeSpecimen"
+ },
+ "bodyBox": [
+  95,
+  37,
+  410,
+  546
+ ],
+ "note": "boxes are [x, y, w, h] in pixels of the painting; `whole` marks a trait with no part of its own (its box is null: use bodyBox)",
+ "parts": {
+  "region-0": [
+   162,
+   217,
+   302,
+   309
+  ],
+  "head": [
+   127,
+   145,
+   190,
+   194
+  ],
+  "muzzle": [
+   95,
+   266,
+   128,
+   79
+  ],
+  "eye": [
+   103,
+   213,
+   133,
+   102
+  ],
+  "crown": [
+   147,
+   37,
+   207,
+   162
+  ],
+  "leg-0": [
+   120,
+   397,
+   289,
+   186
+  ],
+  "leg-1": [
+   270,
+   339,
+   235,
+   172
+  ]
+ },
+ "traits": {
+  "markings": {
+   "chapter": "coat",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "crown": {
+   "chapter": "face",
+   "parts": [
+    "head",
+    "crown"
+   ],
+   "box": [
+    127,
+    37,
+    227,
+    302
+   ],
+   "whole": false
+  },
+  "eye-rings": {
+   "chapter": "face",
+   "parts": [
+    "head",
+    "eye"
+   ],
+   "box": [
+    103,
+    145,
+    214,
+    194
+   ],
+   "whole": false
+  },
+  "drive": {
+   "chapter": "movement",
+   "parts": [],
+   "box": null,
+   "whole": true
+  },
+  "efficiency": {
+   "chapter": "stamina",
+   "parts": [],
+   "box": null,
+   "whole": true
+  }
+ }
+}

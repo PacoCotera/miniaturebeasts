@@ -1,0 +1,163 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S01",
+ "name": "Loika",
+ "level": "individual",
+ "genomeDigest": "S01-f1e0907d",
+ "genomeSha256": "44f5ef73fa71c33bdb2d030a5de046d63f39cf5713f4290fe2987e54d65660a5",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head. Coat: markings pale patches. Face: crown bare head; eye rings thin rings. Proportions: a big head, the head carried high, a short muzzle, small eyes, a tall crest, short legs, stout legs, broad feet, a stout build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:13:59Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "abe7f637-7b31-47f0-af46-ec7803f06ed7",
+     "status": "ok",
+     "seconds": 8.0,
+     "checks": {
+      "silhouetteIoU": 0.991,
+      "silhouetteIoUInPlace": 0.992,
+      "parts": {
+       "region-0": 1.0,
+       "head": 0.999,
+       "muzzle": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.761,
+        "median": "#4a5558",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.999,
+        "median": "#4b5559",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 1.0,
+        "median": "#495355",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.993,
+        "median": "#d4c49f",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.941,
+        "median": "#c2af8d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.994,
+        "median": "#b9a382",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.905,
+      "passed": true
+     },
+     "responseId": "dwrHaoCZKebI-sAPktyliQs"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "f462f531-db9d-4cdb-8fd4-3f9e842bb483",
+     "status": "ok",
+     "seconds": 8.0,
+     "checks": {
+      "silhouetteIoU": 0.979,
+      "silhouetteIoUInPlace": 0.979,
+      "parts": {
+       "region-0": 1.0,
+       "head": 0.999,
+       "muzzle": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.711,
+        "median": "#5b6566",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.987,
+        "median": "#4e595a",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.989,
+        "median": "#c9b794",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 1.0,
+        "median": "#cbbb95",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.936,
+        "median": "#c5b08d",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.88,
+      "passed": true
+     },
+     "responseId": "gwrHaoRDrZ_-4w_gx5Ax"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "dccc553c6f0a4b8199daa49376dca27f9a22745a0deee49540ce357bf668845f",
+  "station-portrait-300x310.png": "518687048f2ec27f684b3f454d0ec33bbfef456383eb0cf2e39437e3363f035a",
+  "station-side-600x620.png": "3783383a52d6fd927d8edb411987e9db5ea73e559fbd87c0d4c8da3183280526",
+  "station-side-300x310.png": "d04a51278d0702b59bec91761c999a21ac0ed598de70b6acb18d5c546ffe17b4",
+  "companion-280x300.png": "7daccf194a69e1fa59174778d5b932d8924bdcd8f86315fe45c9c2fd931578cf",
+  "token-48.png": "0b4849bf2fdfa9befeda4c1ebeb774379472b028b869642ee1635a3a59366ac6"
+ },
+ "calls": 2,
+ "seconds": 16.0,
+ "finishedAt": "2026-10-08T03:14:20Z"
+}

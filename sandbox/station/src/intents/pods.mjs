@@ -1,0 +1,269 @@
+// Pods' intents: the rule call behind each ✓ and ← of the inventory and the reading room, the state it moves to and where the ring goes (the pod inventory's design, the read's design). The pad's moves are the
+// face's (the focus graph, run in C, over the host's selectors); the keys that reach the host are the intents: ✓ (confirm) on a focused target, ← (back), the room keys, and Compare's ◀ ▶ (step:left, step:right).
+//   h.ui.pods: { view: inventory | filter | find | room | trait, sort, chips, word, first, panelPod, from, choosing, ask, flash, spent, done, find, recent, findSeen, ci, trait, cmp, focus, lastCard, roomFrom, firstMove }
+import * as S from "../state.mjs";
+import { frameOf } from "../genome.mjs";
+import { listOf, trayOf, findOf, compareKin, podsBuild, verbsOf, takeOf } from "../views/pods-props.mjs";
+import { recommendedLane, sealedShut } from "../views/reading-props.mjs";
+import { fill } from "../views/words.mjs";
+import { openCreate } from "./create.mjs";
+import { openStore } from "./store.mjs";
+
+export const FLASH_MS = 3000, SCROLL_MS = 200;
+const SORTS = ["use", "species", "arrival", "drying"];
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const spec = (h) => h.specs.pods;
+const pods = (h) => h.ui.pods;
+const cardOf = (h, podId) => { const p = pods(h), ids = listOf(h.st, spec(h), p, h.settings).map((e) => e.p.id), k = ids.indexOf(podId); return k >= 0 ? "card." + k : null; };
+const podAt = (h, target) => { const k = +String(target).slice(5), e = listOf(h.st, spec(h), pods(h), h.settings)[k]; return e ? e.p : null; };
+const flash = (h, text) => { pods(h).flash = { text, until: h.now() + FLASH_MS }; };
+
+// ---- the ways in ----
+// The inventory (Where the ring starts): on the card it was on when the player last left, else the first; `opts.first` puts it on the first card (from Choose a pod, sorted by use).
+export function openInventory(h, opts = {}) {
+  const p = pods(h); p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
+  p.hold = null; p.waits = !!opts.waits;   // the verb is the caller's on every entry (the pods picker's design B): a verb never sticks from one visit to the next; the Incubator's Grow and the bench's Bring are the only one offered
+  p.verb = p.callerVerb = opts.verb ?? (p.choosing ? "bring" : p.from === "incubator" ? "grow" : "read"); p.fixed = p.choosing || p.from === "incubator";
+  p.peek = null; p.now = null;   // a preview and the "Now" line never outlive a visit
+  p.blocked = null;   // a fixed verb no pod can take (the incubator is busy): the picker opens as browse on Read, full colour, the reason in the foot; ← still goes to the caller
+  if (p.fixed && h.st.tray.length) { const m = mm(h), ts = h.st.tray.map((q) => takeOf(m, spec(h), p.verb, q)); if (ts.every((t) => !t.can)) { p.blocked = ts[0].why; p.verb = p.callerVerb = "read"; p.fixed = false; } }
+  if (opts.sort) p.sort = opts.sort;
+  if (p.carryFilter && !opts.chips) { p.chips = []; p.word = null; }   // the filter a carry set (blue on a mibi: its kind) lasts until the next way in
+  p.carryFilter = false;
+  if (opts.chips) { p.chips = [...opts.chips]; p.word = null; }
+  const n = listOf(h.st, spec(h), p, h.settings).length;
+  let at = opts.pod ? cardOf(h, opts.pod) : opts.last ? (n ? "card." + (n - 1) : null) : opts.first ? null : p.lastCard ? cardOf(h, p.lastCard) : null;
+  p.first = 0; p.focus.set(at ?? (h.st.tray.length ? "card.0" : "sort"));
+  if (!at && opts.first && n) p.focus.set(firstAble(h));   // from Choose a pod: the first pod that can take the verb, by use
+  h.goto("pods");
+}
+// The reading screen on the pod on the bench (§2.6, 1): a cut in, the bracket on the recommended lane (the key on an unidentified pod).
+export function openRoom(h, from = "home") {
+  const p = pods(h), q = S.benchPod(h.st); p.cmp = null; p.view = "room"; p.ask = null; p.roomFrom = from; p.from = from; p.choosing = false;
+  enterRead(h, q);
+  h.goto("pods");
+}
+// Home's Research key has two faces (the pods design): the first press opens the bench on its pod, a second turns to the inventory; with nothing on the bench it opens the inventory.
+export function researchKey(h) {
+  const p = pods(h), here = h.ui.screen === "pods";
+  if (here && (p.view === "room" || p.view === "trait")) return backToInventory(h);   // the second face, from anywhere on the reading screen (the detail too): the inventory, the ring on this pod's card
+  if (here) return openRoom(h, "home");
+  if (S.benchPod(h.st)) return openRoom(h, "home");
+  return openInventory(h, { from: "home" });
+}
+// A pod onto the bench and the room open on it (✓ on a card, "Take to the reading room", "Bring onto the bench"): the old one goes back to its niche, nothing spent.
+export function toRoom(h, q, from = "inventory") {
+  const p = pods(h); S.putOnBench(h.st, q); q.seen = 1; p.lastCard = q.id; h.save();
+  p.view = "room"; p.ask = null; p.choosing = false; p.from = "inventory"; p.roomFrom = "inventory"; void from;
+  enterRead(h, q);   // a cut in (§2.6, 1)
+}
+// Leaving the inventory: the husks shown once are gone; the ring's card is kept for the next visit.
+function leaveInventory(h) { const p = pods(h); if (S.unshownHusks(h.st).length) { S.husksShown(h.st); h.save(); } const q = p.panelPod; if (q) p.lastCard = q; }
+
+// ---- ✓ and ← ----
+export function intent(h, target, verb) {
+  const p = pods(h);
+  if (p.cmp) return compareIntent(h, target, verb);
+  if (p.view === "room" || p.view === "trait") return readIntent(h, target, verb);
+  if (p.view === "filter") return trayIntent(h, target, verb);
+  if (p.view === "find") return findIntent(h, target, verb);
+  return inventoryIntent(h, target, verb);
+}
+// Grow it from the inventory: refused with its reason, else Create on the pod (Create's ← returns to the inventory it came from).
+export function growFrom(h, q, from) {
+  const p = pods(h), b = S.growBlock(h.st, q, {}, h.settings, []); if (b) return h.say(b);
+  p.lastCard = q.id; h.ui.createFrom = from; return openCreate(h, q);
+}
+// The verb the picker is on: the one the caller set or the player chose, else Read when it is not on offer now.
+const mm = (h) => ({ st: h.st, settings: h.settings, ui: pods(h), now: h.now ? h.now() : 0 });
+export const verbNow = (h) => { const p = pods(h), vs = verbsOf(mm(h), spec(h)); return vs.includes(p.verb) ? p.verb : vs[0] ?? "read"; };
+// The ring's first landing under a verb: the first pod that can take it (from the top row on screen), else the first.
+function firstAble(h) { const p = pods(h), m = mm(h), vb = verbNow(h), list = listOf(h.st, spec(h), p, h.settings), i = list.findIndex((e, k) => k >= (p.first ?? 0) * 5 && takeOf(m, spec(h), vb, e.p).can), j = i >= 0 ? i : list.findIndex((e) => takeOf(m, spec(h), vb, e.p).can); return "card." + Math.max(0, j); }
+// ✓ or ▼ on a verb turns it on (dead ends B6: the ring on a verb only previews it). Another verb than the caller's says "Now: {Verb}" in the middle slot for NOW_MS.
+export const NOW_MS = 2500;
+function turnOn(h, v) {
+  const p = pods(h); p.peek = null; p.hold = null;
+  if (p.verb === v) return;
+  p.verb = v; if (v !== p.callerVerb) p.now = { text: fill(spec(h).strings.inv.picker.now, { Verb: spec(h).strings.inv.picker.verbs[v] }), until: h.now() + NOW_MS };
+}
+function inventoryIntent(h, target, verb) {
+  const p = pods(h), st = h.st;
+  if (verb === "back") {
+    if (p.hold) { p.hold = null; return; }   // ← puts the pod held for Compare back: the ring stays on it
+    leaveInventory(h); p.ask = null;
+    if (p.choosing) { p.choosing = false; p.view = "room"; enterRead(h, S.benchPod(st)); return; }   // ← back to the reading screen with the same pod, nothing changed
+    if (p.from === "create" && h.ui.create) return h.goto("create");
+    if (p.from === "incubator") return h.goto("incubator");   // Choose a pod's ← returns to the Incubator
+    return h.goto("home");
+  }
+  if (verb !== "confirm" || !target) return;
+  if (target === "sort") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToSort); const i = SORTS.indexOf(p.sort ?? "use"); p.sort = SORTS[(i + 1) % SORTS.length]; p.first = 0; return; }   // the list returns to its top and the ring stays on Sort
+  if (target === "filter") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToFilter); p.view = "filter"; p.focus.set("tchip.0.0"); return; }
+  if (target === "find") { if (!st.tray.length) return h.say(spec(h).strings.inv.nothingToFind); p.view = "find"; const f = findOf({ st, ui: p }, spec(h)); p.find = { letter: f.letter }; p.focus.set(f.letters.length ? "letter." + Math.max(0, f.letters.findIndex((l) => l.lit)) : "find"); return; }
+  if (target.startsWith("verb.")) { if (!p.fixed) turnOn(h, target.slice(5)); p.focus.set(firstAble(h)); return; }   // ✓ on the verb line turns the verb on: down to the pods, the ring on the first one that can take it
+  if (target.startsWith("card.")) return doVerb(h, target);
+}
+// ✓ on a pod does the verb in one press (the pods picker's design B): Read and Bring open the reading room, Grow opens Create, Freshen freshens at once, Compare holds the pod and then opens on a kin, Let go asks to be held.
+function doVerb(h, target) {
+  const p = pods(h), st = h.st, q = podAt(h, target); if (!q) return;
+  const vb = verbNow(h), t = takeOf(mm(h), spec(h), vb, q), PK = spec(h).strings.inv.picker; p.panelPod = q.id;
+  if (!t.can) { if (t.why) h.say(t.why); return; }   // a pod that cannot take the verb: the reason on the plate, nothing done
+  if (vb === "read" || vb === "bring") return toRoom(h, q, p.choosing ? "choosing" : "inventory");
+  if (vb === "grow") return growFrom(h, q, p.from === "incubator" ? "incubator" : "inventory");
+  if (vb === "freshen") { const r = S.freshen(st, q, h.settings); if (!r.ok) return h.say(r.why); h.play({ kind: "tick", target: "s", ms: 300 }); flash(h, fill(spec(h).strings.inv.freshened, { n: r.cost, turns: S.POD_LIFE })); h.save(); return; }
+  if (vb === "compare") {
+    if (!p.hold) { p.hold = q.id; return; }   // this pod is held: only its kin stay bright
+    if (p.hold === q.id) { p.hold = null; return; }
+    p.cmp = { a: p.hold, b: q.id, ci: 0, from: "inventory", card: p.hold }; p.hold = null; p.focus.set("takeA"); return;
+  }
+  if (vb === "letgo") return h.say(PK.hold);   // a short ✓ never lets go: the hold ring does (held), and the line says so
+}
+// Letting a pod go, once the ✓ has been held to its end (the face's hold ring says `confirm:held`): the pod goes back to the wild, the card closes up and the ring lands on the next one; the verb goes back to the caller's.
+function letGoPod(h, q) {
+  const p = pods(h), st = h.st, Sg = spec(h).strings.inv, list = listOf(st, spec(h), p, h.settings).map((e) => e.p.id), k = list.indexOf(q.id);
+  S.returnPod(st, q); h.save(); p.verb = p.callerVerb ?? "read"; p.hold = null;
+  flash(h, q.idd ? fill(Sg.letGone, { Species: S.cap(S.spName(q)) }) : Sg.letGoneSealed);
+  const after = listOf(st, spec(h), p, h.settings); if (!after.length) { p.panelPod = null; p.focus.set(st.tray.length ? "filter" : "sort"); return; }
+  const nk = Math.min(k, after.length - 1); p.panelPod = after[nk].p.id; p.focus.set("card." + nk);
+}
+// The hold ring is full (frame.json hold; host: confirm:held): what the held ✓ was asking for, on the screen the ring was on.
+export function held(h) {
+  const p = pods(h); if (h.ui.screen !== "pods" || p.cmp) return false;
+  if (p.view === "inventory" && verbNow(h) === "letgo" && /^card\.\d+$/.test(p.focus.cur ?? "")) { const q = podAt(h, p.focus.cur); if (q) letGoPod(h, q); return true; }
+  if (p.view === "filter" && p.focus.cur === "tchip.3.2") { letThese(h); return true; }
+  return false;
+}
+// The ring moved: a move puts a guard's question back, the verb line's move chooses the verb (the grid answers at once), the letter strip redraws on the letter the ring is on.
+export function focus(h, target) {
+  const p = pods(h), prev = p.focus.cur ?? ""; p.focus.set(target);
+  if (p.view === "inventory" && !p.fixed) {   // focus is not selection (dead ends B6): the ring on a verb previews it; ▼ from a previewed verb turns it on; a move sideways to a tool drops the preview, the verb stays
+    if (target.startsWith("verb.")) p.peek = target.slice(5) === verbNow(h) ? null : target.slice(5);
+    else if (target.startsWith("card.")) { if (prev.startsWith("verb.") && p.peek) turnOn(h, p.peek); }
+    else p.peek = null;
+  }
+  if (p.view === "inventory" && target.startsWith("card.")) {
+    const q = podAt(h, target); if (q) { p.panelPod = q.id; if (!q.seen && !h.ui.answer) { q.seen = 1; h.save(); } }
+    // the 200 ms scroll: when the ring's card moves the first row on screen, the rows slide there (a cut with reduced motion: the face ends the event at once)
+    const before = p.first ?? 0, v = podsBuild({ st: h.st, settings: h.settings, ui: p, focus: target, now: h.now ? h.now() : 0 }, spec(h));
+    if (v.first != null && v.first !== before) { p.first = v.first; if (h.play) h.play({ kind: "wipe", target: "cabinet", ms: SCROLL_MS, from: before, to: v.first, hold: 0 }); }
+  }
+  if (p.view === "find" && target.startsWith("letter.")) { const f = findOf({ st: h.st, ui: p }, spec(h)), l = f.letters[+target.slice(7)]; if (l) p.find = { letter: l.ch }; }
+  if (p.view === "room" && target.startsWith("plate.")) p.plate = +target.slice(6);   // the foot names the plate's trait
+}
+// Let these go (the filter tray's bulk): every pod the filter shows but the bench pod, once the ✓ has been held.
+function letThese(h) {
+  const p = pods(h), st = h.st, group = listOf(st, spec(h), p, h.settings).map((e) => e.p).filter((q) => !S.onBench(st, q)); if (!group.length) return;
+  for (const q of group) S.returnPod(st, q); p.ask = null; h.save(); p.view = "inventory"; p.chips = []; p.word = null; p.first = 0; p.verb = p.callerVerb ?? "read"; p.focus.set(st.tray.length ? "card.0" : "sort");
+}
+
+// ---- the filter tray ----
+function trayIntent(h, target, verb) {
+  const p = pods(h), st = h.st;
+  if (verb === "back") { p.view = "inventory"; p.ask = null; p.first = 0; const n = (p.chips?.length ?? 0) + (p.word ? 1 : 0); p.focus.set(!listOf(st, spec(h), p, h.settings).length && n ? "filter" : "filter"); return; }   // ← closes the tray in one press and keeps the filter; with no pod matching, the ring on the last chip (the one most likely undone)
+  if (verb !== "confirm") return;
+  const at = /^tchip\.(\d+)\.(\d+)$/.exec(target ?? ""); if (!at) return;
+  const rows = trayOf({ st, settings: h.settings, ui: p }, spec(h)), chip = rows[+at[1]]?.chips[+at[2]]; if (!chip) return;
+  if (chip.dim && chip.id !== "letThese") return h.say(spec(h).strings.inv.tray.none);
+  if (chip.id === "clear") { p.chips = []; p.word = null; p.first = 0; return; }
+  if (chip.id === "freshenThese") { const shown = listOf(st, spec(h), p, h.settings).map((e) => e.p).filter((q) => !S.onBench(st, q)); const r = S.freshenAll(st, shown, h.settings); if (r.ok) { h.play({ kind: "tick", target: "s", ms: 300 }); h.save(); } return; }
+  if (chip.id === "letThese") {
+    const group = listOf(st, spec(h), p, h.settings).map((e) => e.p).filter((q) => !S.onBench(st, q)); if (!group.length) return h.say(spec(h).strings.inv.tray.none);
+    return h.say(spec(h).strings.inv.picker.holdThese);   // a short ✓ lets nothing go: the ring does, once the ✓ is held (held)
+  }
+  const chips = p.chips ?? []; p.chips = chips.includes(chip.id) ? chips.filter((c) => c !== chip.id) : [...chips, chip.id]; p.first = 0;   // ✓ toggles a chip; the cards under the tray re-sort at once
+}
+// ---- Find ----
+function findIntent(h, target, verb) {
+  const p = pods(h), st = h.st;
+  if (verb === "back") { p.view = "inventory"; p.focus.set("find"); return; }   // ← closes the panel with nothing changed
+  if (verb !== "confirm" || !target) return;
+  const f = findOf({ st, ui: p }, spec(h));
+  const pick = (w) => { p.word = { word: w.word, kind: w.kind }; p.recent = [w, ...(p.recent ?? []).filter((r) => !(r.word === w.word && r.kind === w.kind))].slice(0, 4); p.findSeen = true; p.view = "inventory"; p.first = 0; p.focus.set("find"); };
+  if (target.startsWith("recent.")) { const r = f.recentKeys[+target.slice(7)]; if (r) pick(r); return; }
+  if (target.startsWith("letter.")) { const l = f.letters[+target.slice(7)]; if (l) { p.find = { letter: l.ch }; if (f.words.length) p.focus.set("word.0"); } return; }
+  if (target.startsWith("word.")) { const w = f.words[+target.slice(5)]; if (w) pick(w); }
+}
+
+// ---- the reading screen (the reading screen spec §2.6, §2.7) ----
+export const READ_MS = 800, PLACE_MS = 200, NUDGE_MS = 120, SHAKE_MS = 120, MOMENT_MS = 1150, FOLD_MS = 300, MOMENT_DELAY = 400;
+const motionOn = (h) => (h.motion ? h.motion() : true);
+// the chamber's picture as the screen shows it now (the 200 ms dither's source when the place moves)
+const chamberNow = (h) => { const v = podsBuild({ st: h.st, settings: h.settings, ui: pods(h), focus: pods(h).focus.cur, now: h.now() }, spec(h)); return v.read?.chamber ?? null; };
+function moveTo(h, change) {   // a change of the pod level that may move the specimen: the dither from the old picture to the new
+  const p = pods(h), before = chamberNow(h); change(); const after = chamberNow(h);
+  if (before && after && before !== after && motionOn(h)) { p.fromChamber = before; h.play({ kind: "dither", target: "chamber", from: before, ms: PLACE_MS, hold: 0 }); h.at(PLACE_MS, () => { if (p.fromChamber === before) p.fromChamber = null; }); }
+}
+function enterRead(h, q) { const p = pods(h); p.at = "rail"; p.trait = 0; p.plate = 0; p.reading = null; p.moment = null; p.fromChamber = null; p.nudge = null; p.lane = q && q.idd ? recommendedLane(h.st, q, h.settings) : 0; p.focus.set(q && !q.idd ? "key" : "rail"); }
+function backToInventory(h) {   // ← on the pod level, or the Research key's second face: the inventory, the ring on this pod's card (its mini rail shows what was just read)
+  const p = pods(h), q = S.benchPod(h.st); p.view = "inventory"; p.at = "rail"; p.reading = null; p.moment = null; p.choosing = false; p.from = "home"; p.first = 0;
+  const at = q ? cardOf(h, q.id) : null; p.focus.set(at ?? (h.st.tray.length ? "card.0" : "sort")); if (q) { p.panelPod = q.id; p.lastCard = q.id; }
+}
+function endRead(h) { const p = pods(h); if (!p.reading) return; const r = p.reading; p.reading = null; p.at = "right"; p.plate = 0; p.focus.set("plate.0"); if (r.moment) h.at(motionOn(h) ? MOMENT_DELAY : 0, () => startMoment(h, r.pod, r.chapter)); }
+function startMoment(h, podId, chapter) {   // the stamp's one-time moment, 400 ms after the first read ever ends: held until any key, the save marks it taught
+  const p = pods(h), q = S.benchPod(h.st); if (!q || q.id !== podId || h.st.stampTaught) return;
+  h.st.stampTaught = true; h.save(); p.moment = { pod: podId, chapter }; p.focus.set("hold"); h.play({ kind: "moment", target: "stamp", ms: MOMENT_MS, hold: 0 });
+}
+function foldStamp(h, target) {   // the moment or the view folds back (the moment in 300 ms, the view at double speed); the key that does it is used up
+  const p = pods(h); const was = p.moment ? "moment" : "view"; p.folding = { until: h.now() + (was === "moment" ? FOLD_MS : FOLD_MS / 2), was }; p.moment = null; p.at = was === "moment" ? "right" : "rail";
+  h.play({ kind: "moment", target: was === "moment" ? "fold" : "unview", ms: was === "moment" ? FOLD_MS : FOLD_MS / 2, hold: 0 }); h.at(was === "moment" ? FOLD_MS : FOLD_MS / 2, () => { p.folding = null; });
+  p.focus.set(was === "moment" ? "plate.0" : "rail"); void target;
+}
+function readIntent(h, target, verb) {
+  const p = pods(h), st = h.st, q = S.benchPod(st);
+  if (!q) { if (verb === "back") backToInventory(h); return; }
+  if (p.reading) { endRead(h); return; }   // any key during the read cuts to its end and does nothing else (the face cut the event)
+  if (p.moment) { foldStamp(h, target); return; }   // the moment holds until any key; that key is used up
+  if (!q.idd) {   // an unidentified pod: Identify on the key, then the pod's rail
+    if (verb === "back") return backToInventory(h);
+    if (verb === "confirm" && target === "key") { const r = S.identify(st, q, h.settings); if (!r.ok) { h.play({ kind: "wipe", target: "keyShake", ms: SHAKE_MS, hold: 0 }); return; } h.save(); enterRead(h, q); }
+    return;
+  }
+  const chs = frameOf(S.speciesOf(q)).chapters, k = clamp(p.lane ?? 0, 0, chs.length - 1), ch = chs[k], sealed = sealedShut(ch, h.settings) && !q.read.includes(ch.id), isRead = q.read.includes(ch.id);
+  const at = p.at ?? "rail";
+  if (at === "stamp") { if (verb === "back" || verb === "confirm" || verb === "step:down") foldStamp(h, target); return; }
+  if (at === "detail") {
+    if (verb === "back") return moveTo(h, () => { p.at = "right"; p.plate = p.trait ?? 0; p.focus.set("plate." + p.plate); });   // B up: the pod level, the ring on the trait's plate
+    if (verb === "step:up" || verb === "step:down") { p.trait = clamp((p.trait ?? 0) + (verb === "step:down" ? 1 : -1), 0, ch.traits.length - 1); }   // the chapter's next trait (both cut)
+    return;
+  }
+  if (at === "right") {
+    if (verb === "back") return backToInventory(h);
+    if (verb === "step:left") return moveTo(h, () => { p.at = "rail"; p.focus.set("rail"); });   // ◀ back to the rail, the specimen back to the overview
+    if (verb !== "confirm") return;
+    if (target && target.startsWith("plate.")) return moveTo(h, () => { p.trait = +target.slice(6); p.at = "detail"; p.focus.set("trait"); });   // the detail
+    return;
+  }
+  // the rail
+  if (verb === "back") return backToInventory(h);
+  if (verb === "step:left" || verb === "step:right") {   // the bracket moves one lane, no wrap; at an end it nudges 2 px (the stop)
+    const d = verb === "step:right" ? 1 : -1, n = k + d;
+    if (n < 0 || n >= chs.length) { p.nudge = { dir: d, until: h.now() + NUDGE_MS }; h.play({ kind: "wipe", target: "nudge", ms: NUDGE_MS, hold: 0 }); return; }
+    p.lane = n; p.trait = 0; return;   // the part, the right frame and the foot cut to the new chapter on the same frame
+  }
+  if (verb === "step:up") { if (!st.stampTaught) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
+  if (verb !== "confirm" || sealed) return;   // a sealed lane gives no ✓: nothing happens
+  if (!isRead) return openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)
+  moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });   // the chapter opens: the ring crosses to the right frame (Face dithers to the close place)
+}
+
+// ---- Compare ----
+function compareIntent(h, target, verb) {
+  const p = pods(h);
+  if (verb === "back") {   // ← closes it in one press, the ring back on what opened it
+    const c = p.cmp; p.cmp = null;
+    if (c.from === "room") { p.view = "room"; enterRead(h, S.benchPod(h.st)); return; }
+    p.view = "inventory"; p.focus.set(cardOf(h, c.card ?? c.a) ?? "card.0"); p.focus.set(p.focus.cur); p.panelPod = c.card ?? c.a; p.focus.set(cardOf(h, c.card ?? c.a) ?? "card.0"); return;
+  }
+  if (verb === "step:up" || verb === "step:down") {   // ▲▼: the chapter on both papers, never past the ends
+    const n = frameOf(S.speciesOf(S.podById(h.st, p.cmp.a))).chapters.length, d = verb === "step:down" ? 1 : -1, to = p.cmp.ci + d;
+    if (to < 0 || to >= n) { p.cmp.nudge = { dir: d, until: h.now() + NUDGE_MS }; h.play({ kind: "wipe", target: "nudge", ms: NUDGE_MS, hold: 0 }); return; }   // at the first or last chapter both brackets nudge 2 px with the stop tick (▲ left, ▼ right), as the reading rail's
+    p.cmp.ci = to; return;
+  }
+  if (verb === "step:right" && target === "takeB") {   // ▶ on the right-hand paper: the next kin of the species, round them
+    const a = S.podById(h.st, p.cmp.a), kin = compareKin(h.st, a); if (kin.length < 2) return;
+    p.cmp.b = kin[(kin.findIndex((q) => q.id === p.cmp.b) + 1) % kin.length].id; return;
+  }
+  if (verb === "confirm" && (target === "takeA" || target === "takeB")) {   // Take to the reading room: that pod onto the bench, the room open on it
+    const c = p.cmp, q = S.podById(h.st, target === "takeA" ? c.a : c.b); if (!q) return; p.cmp = null; toRoom(h, q, c.from === "room" ? "choosing" : "inventory");
+  }
+}

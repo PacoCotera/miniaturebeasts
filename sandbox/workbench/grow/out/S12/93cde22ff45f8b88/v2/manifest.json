@@ -1,0 +1,139 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-c164a339",
+ "genomeSha256": "93cde22ff45f8b88219814597fdd6189da7276e183fbbab4d1095d917e5740e9",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour marigold; translucency between; flap markings spots; second colour butter and cream. Shape: hind body full. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives) (this species' own type specimen painting is not made yet)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:15:51Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "4cd7ef23-aa85-4437-bd2c-b50925245e89",
+     "status": "ok",
+     "seconds": 9.6,
+     "checks": {
+      "silhouetteIoU": 0.963,
+      "silhouetteIoUInPlace": 0.961,
+      "parts": {
+       "region-0": 1.0,
+       "region-1": 1.0,
+       "head": 0.997,
+       "antenna": 1.0,
+       "leg-0": 0.994,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 0.981
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.865,
+        "median": "#e3ae35",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.92,
+        "median": "#e3af3c",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.508,
+        "median": "#e4dac2",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.639,
+      "passed": true
+     },
+     "responseId": "5wrHarTgLuGi_uMPpOS1wAg"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "3293adcc-adfa-4e32-8f19-e14ce973b943",
+     "status": "ok",
+     "seconds": 8.7,
+     "checks": {
+      "silhouetteIoU": 0.864,
+      "silhouetteIoUInPlace": 0.942,
+      "parts": {
+       "region-0": 0.965,
+       "region-1": 0.925,
+       "head": 0.975,
+       "antenna": 0.742,
+       "leg-0": 0.943,
+       "leg-1": 0.944,
+       "leg-2": 0.894,
+       "flap": 0.987
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.825,
+        "median": "#e7b13c",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.696,
+        "median": "#e1b045",
+        "nearest": "#e8b83f",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 1.0,
+        "median": "#e2cb9a",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.93,
+      "passed": true
+     },
+     "responseId": "9QrHauCxCsG-39IP3P314Ag"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "4701fd01a3e4f3732f7df266e00c8c36fdf2ec840b4c81de8cec016f020f555c",
+  "station-portrait-300x310.png": "0f6f378a948527805e05b04880ae61881ab5d23223dbb35f2424491f724316cc",
+  "station-side-600x620.png": "f50d4d89137f1be754a68287bf05750e66fdfe983e142b1225314b3864267898",
+  "station-side-300x310.png": "d98f9ffcfd186d2206bd9976583cc7da1bf894478280a80e1f53b42de8530bd5",
+  "companion-280x300.png": "674cb8ad7b9b105686a3a6b5a946fac811d21bc731898a6de765c92f747af40b",
+  "token-48.png": "8e1ed5bcdf98976255c54ab73d977736dbdd725973951a92f157e072d99ddce6"
+ },
+ "calls": 2,
+ "seconds": 18.3,
+ "finishedAt": "2026-10-08T03:16:16Z"
+}

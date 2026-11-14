@@ -1,0 +1,201 @@
+// The Station's loop, shared by the page (main.mjs) and the headless harness (prototypes/playtest): the boot of the spec files, the masters and the face, what the face says (pump),
+// the screen's props when they changed (syncProps), a frame (render, tick) and a key (act). Nothing here touches the DOM, a canvas or the network: the page passes what it owns
+// through `hooks` (the Caddy's wake and flush, the copy onto its canvas, the timer of the Library's warm, the Dock pressed elsewhere). Rules are in state.mjs, the key's rule call
+// in intents/*, the props in host.mjs.
+import { PALETTE, clock, motion } from "./pixels.mjs";
+import { ICON } from "./art.mjs";
+import { G, FX, UI, SPECS, IDLE_MS, readStored, stationSeconds, loadSettings, LAYER } from "./game.mjs";
+import { lightOf } from "./views/home-props.mjs";
+import { stepOfKey } from "./light-curve.mjs";
+import { useCurve } from "./light-grade.mjs";
+import { warmLibrary } from "./views/specimen-props.mjs";
+import { setMoving } from "./moving.mjs";
+import { setRooms } from "./views/room-props.mjs";
+import { sceneTick } from "./motion-scene.mjs";
+import { setFrames, frameOf } from "./genome.mjs";
+import { watch as watchHabitat } from "./intents/habitat.mjs";
+import { loadMasters, ensureRoom, ensureMasters, screenGroup, setRoomLight, mastersOnDemand } from "./masters.mjs";
+import { setStandSizes } from "./layered-stand.mjs";
+import { bootFace } from "./face-lvgl.mjs";
+import * as frameIntents from "./intents/frame.mjs";
+import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, lightIds, shownRoomNow, roomsPending, pinned, picture, setEnv, setMetrics, libraryAhead } from "./host.mjs";
+import { warmLibraryNext, wantLibrary, warmLibraryPaper } from "./pictures.mjs";
+import { registerAsset, probe, MasterPending } from "../../ui/assets.mjs";
+// The spec files are imported, not fetched: the Vite build bundles them into the page's chunks (no round trip each), the harness and the tests read them from disk. Each boot takes its own copy.
+import frameSpec from "../../ui/specs/station/frame.json" with { type: "json" };
+import podsSpec from "../../ui/specs/station/pods.json" with { type: "json" };
+import homeSpec from "../../ui/specs/station/home.json" with { type: "json" };
+import cargoSpec from "../../ui/specs/station/cargo.json" with { type: "json" };
+import createSpec from "../../ui/specs/station/create.json" with { type: "json" };
+import incubatorSpec from "../../ui/specs/station/incubator.json" with { type: "json" };
+import vivariumSpec from "../../ui/specs/station/vivarium.json" with { type: "json" };
+import habitatSpec from "../../ui/specs/station/habitat.json" with { type: "json" };
+import namerSpec from "../../ui/specs/station/namer.json" with { type: "json" };
+import panelSpec from "../../ui/specs/station/panel.json" with { type: "json" };
+import librarySpec from "../../ui/specs/station/library.json" with { type: "json" };
+import benchSpec from "../../ui/specs/station/bench.json" with { type: "json" };
+import crossSpec from "../../ui/specs/station/cross.json" with { type: "json" };
+import sittingSpec from "../../ui/specs/station/sitting.json" with { type: "json" };
+import settingsSpec from "../../ui/specs/station/settings.json" with { type: "json" };
+import storeSpec from "../../ui/specs/station/store.json" with { type: "json" };
+import roomsSpecJson from "../../ui/specs/station/rooms.json" with { type: "json" };
+import movingIndexJson from "../../ui/specs/station/moving/index.json" with { type: "json" };
+import standSizesJson from "../../ui/specs/station/stand-sizes.json" with { type: "json" };
+import { PROTOTYPES } from "../../ui/site-base.mjs";
+
+// What the page (or the harness) owns. wake: the Caddy's wake at a wake intent or a Dock on Idle; afterSave: after each save the host makes; present: the face's redrawn rectangles onto the screen;
+// defer: the Library's warm, a moment after the props that asked for it; log: the warm's timings; dockElsewhere: the play page's Dock pressed while another device had the keys (read once, then cleared).
+export const hooks = { wake: () => {}, afterSave: () => {}, present: () => {}, defer: (fn) => setTimeout(fn, 30), log: (s) => console.log(s), dockElsewhere: () => false };
+// The loop's state, read by the page's test hooks and the harness: the face, the host, the face's last log, the last props sent (JSON), and what the face and the frames said.
+export const CORE = { face: null, host: null, lastLog: null, lastProps: null, lastOwed: [], lastSent: [], open: new Map(), propsFrame: 0, renderErrors: [], said: [], faceErrors: [] };
+let lastRoom = null, msgSent = -1, lastLight = null, litHeld = new Set(), movingHeld = new Set(), movingPrev = new Set(), sitHeld = new Set();   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
+
+// --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
+export async function loadFrames() {
+  const base = new URL("workbench/frames/language/", PROTOTYPES);
+  const index = await (await fetch(new URL("index.json", base))).json();
+  const frames = await Promise.all(index.species.map((s) => fetch(new URL(s.file, base)).then((r) => r.json())));
+  setFrames(frames);
+  return { catalogue: index.catalogue, n: frames.length };
+}
+const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
+// The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer, library, bench, cross (the rack pod reads its pigment chips), sitting and settings), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
+// Every fetch starts at once and follows the server's headers (no-cache plus ETag: a revalidation, a 304 when nothing changed): the specs, the moving sets, the rooms, metrics, stand sizes, the pod sprites and (once the rooms spec says
+// which room is shown) the masters. What must keep an order keeps it in the code after the fetches: the specs are set in their list order (the face is sent them in that order), and the pod sprites register after the masters placed theirs.
+const SPEC_KEYS = ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "panel", "library", "bench", "cross", "sitting", "settings", "store"], SPEC_JSON = { frame: frameSpec, pods: podsSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, incubator: incubatorSpec, vivarium: vivariumSpec, habitat: habitatSpec, namer: namerSpec, panel: panelSpec, library: librarySpec, bench: benchSpec, cross: crossSpec, sitting: sittingSpec, settings: settingsSpec, store: storeSpec };
+const lightNow = (frame) => G.settings.light ?? lightOf(stationSeconds(), frame.light.curve).key;   // the light on: a painting name or a step key of the curve, as the host takes it (createHost's `light`)
+export async function bootAssets({ test = false, onProgress = null } = {}) {   // onProgress(done, total): the boot pictures' bytes placed, for the page's load bar
+  const getJSON = async (u) => (await fetch(u)).json();
+  const spec = (f) => getJSON(new URL("ui/specs/station/" + f, PROTOTYPES));   // only the moving sets (none today): their names are data
+  const rooms = Promise.resolve(structuredClone(roomsSpecJson));   // the four rooms (the rooms design), generated by place-masters --rooms and merged as `moving` is: one spec on the face, which checks it whole (room_load)
+  const groups = getJSON(new URL("ui/assets/masters/groups.json", PROTOTYPES)).catch(() => null);   // which masters each screen uses (the station journey records it): without it every master loads at boot
+  const specs = Promise.resolve(SPEC_KEYS.map((k) => structuredClone(SPEC_JSON[k])));
+  const paintingsOf = (frame) => { const k = lightNow(frame), s = stepOfKey(k, frame.light.curve); return s ? Object.keys(s.mix) : [k]; };   // the signed paintings the light now on is mixed from: what the loader fetches
+  // on demand the shown room needs only the light now on, so the boot waits for the frame spec and the settings before it picks the room's pictures (the settings are read again by the page's own loadSettings)
+  const bootLight = Promise.all([specs, groups]).then(([s, g]) => { if (!g || test) return null; loadSettings(); return paintingsOf(s[0]); });
+  const masters = Promise.all([rooms, groups, bootLight]).then(([r, g, light]) => loadMasters(new URL("ui/assets/masters/", PROTOTYPES), { all: test, order: r.order, room: readStored()?.st?.face?.room ?? 0, groups: g, light, onProgress }));   // the signed masters take their stand-ins' ids before any screen registers them
+  const moving = Promise.resolve(structuredClone(movingIndexJson)).then(async (ix) => Object.fromEntries(await Promise.all(ix.sets.map(async (id) => [id, await spec(`moving/${id}.json`)]))));   // the moving sets: one file a species, one spec on the face
+  const metrics = getJSON(new URL("../../face/dist/metrics.json", import.meta.url));   // the face's Inter metrics: Level 2 measures its bottom-line ladders with them (ui/specs/measure.mjs)
+  const sizes = Promise.resolve(structuredClone(standSizesJson));   // the views' figure boxes (no kind has a layered stand or a stand-looks table: each mibi is drawn from its painted stand)
+  const [specList, sets, roomsSpec] = await Promise.all([specs, moving, rooms, masters, metrics, sizes]);
+  SPEC_KEYS.forEach((k, i) => { SPECS[k] = specList[i]; });
+  SPECS.moving = sets; setMoving(sets);
+  SPECS.rooms = roomsSpec; setRooms(roomsSpec);
+  useCurve(SPECS.frame.light.curve); setRoomLight(() => paintingsOf(SPECS.frame));   // from here the loader asks the host's own light
+  setMetrics(await metrics); setStandSizes(await sizes);
+  setEnv({ rgb: rgbOfName });
+}
+// The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
+for (const name of ["energy", "data", "essence", "cross"]) for (const px of [14, 15, 16]) registerAsset({ id: `icon:${name}:${px}`, w: px, h: px, status: "placeholder", until: "the icon set", build: () => ICON[name](px) });   // 14 and 15: the mibi collection's card lines (vivarium.json)
+
+// --- the face ---
+// CORE.open: the events the face has begun and not yet said `done` for, by kind and target; the goldens wait for it to be empty (settled, main.mjs).
+const sendEvent = (m) => { if (CORE.face.send(m) < 0) CORE.faceErrors.push(...CORE.face.errors()); else if (m.t === "event") CORE.open.set(m.kind + ":" + m.target, true); };
+// The handshake's follow-up (lvgl-switch.md §2.1): the palette, then the spec files the page loaded, then the pictures the face never drops (the name plates and the rail tab grounds); then the host.
+// `face`: a face already booted (the harness's), else the page's WebAssembly face from face/dist.
+export async function startFace({ test = false, face = null } = {}) {
+  const f = face ?? await bootFace(undefined, { test });
+  f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) });
+  for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
+  await ensureMasters(pinned().map((p) => p.id));   // the pictures the face never drops are in before it takes them (a no-op when the masters load whole)
+  f.pin(pinned(), picture);
+  CORE.face = f;
+  CORE.host = createHost({ send: sendEvent, nowMs: () => performance.now(), light: () => lightNow(SPECS.frame), time: stationSeconds, motion, onDock: dockKey, key: (k, phase) => CORE.face.key(k, phase), afterSave: () => hooks.afterSave() });   // a Grow hands its genome to the Caddy at once
+  return f;
+}
+// What the face said since the last call: its intents and its focus become the rules (host.mjs), its errors are kept, its log is the checks'.
+export function pump() {
+  for (let m; (m = CORE.face.poll());) {
+    if (m.t === "done") CORE.open.delete(m.kind + ":" + m.target);
+    if (m.t === "error") { CORE.faceErrors.push(m.what); console.error("face: " + m.what); }
+    else if (m.t === "log") CORE.lastLog = m;
+    else { if (m.t === "intent" && m.verb === "wake") { FX.wake = clock.now; hooks.wake(); } if (m.t === "intent" || m.t === "focus") CORE.said.push({ t: m.t, screen: m.screen, target: m.target, ...(m.verb ? { verb: m.verb } : {}) }); onFaceMessage(CORE.host, m); }
+  }
+}
+// The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
+// The Library's specimen is rendered here, never on a sync (build spec 4.2: about a second, and the logic thread answers nothing during it). Home's props show the last specimen (or the starter's empty form) until it is made. It is asked for after the sync
+// that found the state wanting it, once the frame is out, and not while an event holds input (an opening's steps are sent first); the first frame at boot asks too.
+// The Library's own pictures are made the same way, one a tick (pictures.mjs warmLibraryNext): what the props asked for first (the lit chapter's variant and page, a sheet, the Level 1 cells), then the sheet finish's one-time paper
+// (the Library 3 gate's P5: at the boot idle), then a sheet ahead of the open (P2: the species Level 1's ring rests on, else the last species whose sheet changed). Each one's time and its wait since it was asked are printed.
+let warmAt = null, paperDone = false;
+const AHEAD_REST_MS = 500;   // the ring "rests" on a Level 1 cell once no key has been pressed for this long (a builder's number: the Library 3 gate's P2 names no time)
+export const LIB_ENV = { frameOf };
+function warmLibraryOne() {
+  const made = (w) => { if (w) hooks.log(`# library swap-in ${w.kind} ${w.id}: made in ${w.ms.toFixed(0)} ms, ${w.waited.toFixed(0)} ms after it was asked`); return !!w; };
+  if (made(warmLibraryNext(LIB_ENV))) return true;
+  if (!paperDone) { paperDone = true; const ms = warmLibraryPaper(); if (ms) hooks.log(`# library paper: made in ${ms.toFixed(0)} ms at the boot idle`); return true; }
+  if (performance.now() - (UI.lastInput ?? 0) >= AHEAD_REST_MS) { wantLibrary(libraryAhead()); return made(warmLibraryNext(LIB_ENV)); }
+  return false;
+}
+function queueWarm() {
+  if (warmAt != null || !G.ready || (mastersOnDemand() && CORE.lastProps == null)) return;   // on the page (masters on demand), not before the first screen's props are out: the warm is about a second of the main thread (four on a phone) and the first draw does not wait for it; test mode keeps its timing
+  warmAt = hooks.defer(() => { warmAt = null; const H = CORE.host; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { if (!holdOn(e)) CORE.renderErrors.push("specimen: " + e.message); } try { warmLibraryOne(); } catch (e) { if (!holdOn(e)) CORE.renderErrors.push("library: " + e.message); } }) ?? 0;
+}
+const roomAsked = new Set();
+// A picture the screen needs whose file has not arrived (MasterPending, ui/assets.mjs): the face keeps what it shows, the file goes to the front of the queue with the rest of the screen's group (one round of requests, not one a picture), and the next frame asks again.
+// Anything else thrown is not ours. Test mode loads every master at boot, so there a pending master never happens.
+const missed = new Set();
+function holdOn(e) {
+  if (!(e instanceof MasterPending)) return false;
+  const screen = UI.idle ? "idle" : UI.screen;
+  if (!missed.has(e.id)) { missed.add(e.id); hooks.log(`# master ${e.id} was asked for before it arrived (screen ${screen}${screenGroup(screen).includes(e.id) ? "" : ", not in its group"})`); }
+  ensureMasters([e.id, ...screenGroup(screen)], { family: true }).catch((err) => { CORE.renderErrors.push(String(err && err.message || err)); console.error(err); });
+  return true;
+}
+export function syncProps() { try { syncPropsNow(); } catch (e) { if (!holdOn(e)) throw e; } }
+function syncPropsNow() {
+  const H = CORE.host, FACE = CORE.face;
+  if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: FX.msgMs || 4000 }); }
+  for (const e of LAYER.presenter.events(topValues())) H.play(e);
+  const wait = roomsPending();   // a room that must draw before its pictures are in: ask for them (the front of the queue) and keep the face as it is until they are placed (no stand-in is drawn)
+  if (wait.length) { for (const r of wait) if (!roomAsked.has(r)) { roomAsked.add(r); ensureRoom(r).then(() => roomAsked.delete(r), (e) => { CORE.renderErrors.push(String(e && e.message || e)); console.error(e); }); } return; }
+  const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
+  CORE.lastOwed = p.owed ?? [];   // the current scene's requests that carry an owed habit key (snapshot): read on every sync, as the same props may be asked with or without it
+  queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
+  for (const id of p.dropped ?? []) FACE.drop(id);   // a picture a newer one superseded leaves the face (the Library 3 gate's P4)
+  if (key === CORE.lastProps && !p.dropped?.length) return;
+  if (probe.on) for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) probe.on(id);   // test mode: the scene's pictures, whether or not they were built before
+  { FACE.beginScene(); CORE.lastSent = []; for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) if (FACE.handleOf(id, picture) >= 0) CORE.lastSent.push(id); }   // Idle needs only its own pictures; lastSent: the pictures this scene gave the face (an empty slot gives none)
+  if (FACE.props({ ...p.msg, motion: motion() }) < 0) CORE.faceErrors.push(...FACE.errors());
+  else { const light = p.light ?? lastLight; const room = shownRoomNow(); if (lastLight && (lastLight !== light || (lastRoom != null && lastRoom !== room))) for (const id of lightIds(lastLight, lastRoom ?? room)) FACE.drop(id); lastRoom = room; if (lastLight && lastLight !== light) for (const id of litHeld) if (!p.ids.includes(id)) { FACE.drop(id); litHeld.delete(id); } for (const id of p.lit ?? []) litHeld.add(id); lastLight = light;   // fix 7: at a light change the graded residents the new props do not name go with the old light
+  // one light's pictures in memory, plus one frame of the next
+    const now = new Set(p.ids.filter((id) => id.startsWith("moving:"))); for (const id of movingHeld) if (!now.has(id) && !movingPrev.has(id)) { FACE.drop(id); movingHeld.delete(id); } for (const id of now) movingHeld.add(id); movingPrev = now;   // a moving atlas neither these props nor the previous screen's ask for is dropped (architecture.md §3: the main.mjs gap)
+    const loads = new Set(SPECS.sitting?.regions?.glass?.backdrops ?? []);   // sitting.json regions.glass.load: the place backdrops the place step loads are dropped on leaving the screen
+    if (p.msg.screen === "sitting") { for (const id of p.ids) if (loads.has(id)) sitHeld.add(id); } else { for (const id of sitHeld) if (!p.ids.includes(id)) FACE.drop(id); sitHeld.clear(); } }
+  CORE.propsFrame = FACE.frames?.() ?? 0;   // the face frame the props went out at (settled: two frames must follow)
+  CORE.lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
+}
+export function render() {
+  syncProps(); CORE.face.frame(clock.now); hooks.present(); pump();
+}
+let errN = 0;
+// One frame of the loop at time t (dt since the last): the bench trickle, the motion proof's scene, Idle's entry, then the props, the face's frame and the host's.
+export function tick(t, dt) {
+  const H = CORE.host;
+  watchHabitat(H, dt);   // the bench trickle (before the Idle check: Idle watches nothing): one mibi up close, rest or meet, not carried (habitat.json rules.watch)
+  sceneTick(t);   // the motion proof's scene, when one plays (motion-scene.mjs)
+  frameIntents.idleTick(H, t, IDLE_MS);   // frame.json idle.enter: a minute without a press, never in a hold, an arrival or Cargo's report card
+  try { render(); H.frame(); } catch (e) { if (holdOn(e)) return; CORE.renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
+}
+
+// --- the Station's keys: pad, Home/Research/Library/Vivarium, ← and ✓, plus the Caddy's Dock/Lift key ---
+// A key goes to the face, which moves the ring or says an intent; the intent is the rule call (intents/*). The Dock key is the Caddy's, a world event and not a Station key: the host calls the frame's dock.
+// The Caddy's Dock key, a world event and never a Station key: it wakes Idle (the dither back, held) and docks or lifts. A Dock pressed in a hold is kept by the host and acts when the hold ends (host.mjs).
+export function dockKey() { const H = CORE.host, dockElsewhere = hooks.dockElsewhere(); const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; hooks.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); } frameIntents.dock(H, wasIdle, dockElsewhere); }
+// Call (the controls scheme): things answer; free, never a screen change. On Idle it only wakes the screen, as any first key does.
+export function callKey() { const H = CORE.host; if (UI.idle) { UI.idle = false; FX.wake = clock.now; hooks.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); return; } frameIntents.call(H, clock.now); }
+export function act(k) { try { actNow(k); } catch (e) { if (!holdOn(e)) throw e; } }   // a key whose rule needs a picture that has not arrived is lost; the screen it was on stays, the file is on its way
+function actNow(k) {
+  const H = CORE.host, FACE = CORE.face;
+  if (!G.ready || !FACE) return;
+  clock.now = performance.now(); UI.lastInput = clock.now; if (UI.answer && k !== "call") UI.answerAt = clock.now;   // a press keeps Call's answer up for 8 s more
+  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } else H.pendingDock = !H.pendingDock; return; }   // an event holds input: the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs); a Dock key is kept too (two presses cancel) and acts when the hold ends
+  syncProps();
+  if (k === "dock") { dockKey(); return; }
+  if (k === "call") { callKey(); return; }
+  if (k !== "back" || UI.screen !== "home") FX.msg = "";
+  if (k !== "back") UI.arrival = null;   // the Incubator's ← returns to Pods only until another key (the arrival mode of the jump flag)
+  if (H.keyDown(k)) { pump(); return; }   // ✓ on a plate that holds: the face keeps it down until release
+  FACE.key(k); pump();
+}
+export function release(k) { const H = CORE.host; if (!H || !CORE.face) return; H.keyUp(k); pump(); }   // the page's key-up (a held ✓)

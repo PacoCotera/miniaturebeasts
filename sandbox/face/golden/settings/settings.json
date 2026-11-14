@@ -1,0 +1,61 @@
+{
+ "_note": "The hold ring (frame.json hold) on a calm screen, behind the developer setting realmSleep: at 0, 1000, 2000 and 3000 ms of ✓ held, 150 ms after letting go, and the reduced-motion quarters: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "hold-0ms": {
+   "hash": "24a8c4a0",
+   "png": "hold-0ms.png"
+  },
+  "hold-1000ms": {
+   "hash": "d95112c8",
+   "png": "hold-1000ms.png"
+  },
+  "hold-2000ms": {
+   "hash": "2e46685c",
+   "png": "hold-2000ms.png"
+  },
+  "hold-3000ms": {
+   "hash": "e8b52940",
+   "png": "hold-3000ms.png"
+  },
+  "hold-early": {
+   "hash": "78e52d06",
+   "png": "hold-early.png"
+  },
+  "hold-quarter-1": {
+   "hash": "cff6543c",
+   "png": "hold-quarter-1.png"
+  },
+  "hold-quarter-2": {
+   "hash": "1121c948",
+   "png": "hold-quarter-2.png"
+  },
+  "hold-quarter-3": {
+   "hash": "336eafb4",
+   "png": "hold-quarter-3.png"
+  },
+  "settings-realm": {
+   "hash": "b36e4130",
+   "png": "settings-realm.png"
+  },
+  "settings-companion": {
+   "hash": "3ebf184f",
+   "png": "settings-companion.png"
+  },
+  "settings-sleeping-none": {
+   "hash": "d6f66d0c",
+   "png": "settings-sleeping-none.png"
+  },
+  "settings-sleep-docked": {
+   "hash": "72bc0248",
+   "png": "settings-sleep-docked.png"
+  },
+  "settings-sleep-lifted": {
+   "hash": "14efbcc2",
+   "png": "settings-sleep-lifted.png"
+  },
+  "settings-cannot-sign": {
+   "hash": "e35a39eb",
+   "png": "settings-cannot-sign.png"
+  }
+ }
+}

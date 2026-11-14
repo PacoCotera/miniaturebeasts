@@ -1,0 +1,60 @@
+/* P3: the nest, the pods and the toys beside it. Shares the tokens of play.module.css (Station materials, Inter in 28, 20 and 16). */
+.body { flex: 1; min-height: 0; display: flex; gap: 26px; padding: 0 26px 22px; }
+.nest { position: relative; flex: 1; min-width: 0; display: grid; place-items: center; }
+.felt { position: absolute; inset: 4% 0 4% 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #a8763f, #8d5f31 70%); box-shadow: inset 0 -10px 0 #6e4725; }
+.grid { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: min(92%, 840px); }
+.card { background: #fff8e8; border-radius: 22px; box-shadow: 0 6px 0 #d8c39a; padding: 8px 8px 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; border: 3px solid transparent; }
+.card[data-on] { border-color: var(--amber); }
+.fig { position: relative; width: 100%; aspect-ratio: 304 / 290; display: grid; place-items: center; overflow: hidden; }
+.baby { position: absolute; left: 50%; top: 0; height: 100%; width: auto; transform: translateX(-50%); transform-origin: 50% 90%; animation: breathe 4.2s ease-in-out infinite; pointer-events: none; }
+.hatch { animation: hatch .6s cubic-bezier(.3, 1.5, .5, 1), breathe 4.2s ease-in-out .6s infinite; }
+@keyframes hatch { 0% { opacity: .2; transform: translateX(-50%) scale(.6); } 70% { opacity: 1; transform: translateX(-50%) scale(1.06); } 100% { transform: translateX(-50%) scale(1); } }
+@keyframes breathe { 50% { transform: translateX(-50%) scale(1.012, 1.02); } }
+
+
+.nestling { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.egg { width: 96px; height: 120px; animation: wobble 1.4s ease-in-out infinite; transform-origin: 50% 90%; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .12)); }
+@keyframes wobble { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-7deg); } 45% { transform: rotate(6deg); } 70% { transform: rotate(-3deg); } }
+.wob { font-size: 16px; color: var(--ink-2); }
+.btns { display: flex; gap: 12px; margin-top: 4px; }
+.btns button svg { width: 24px; height: 24px; }
+.btns button[data-kept] { background: #f7c6d6; color: #7a1d3f; opacity: 1; }
+.side { width: 400px; flex: none; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding: 0 2px 8px 0; }
+.side .toy { margin-bottom: 0; }
+.steps { display: flex; justify-content: space-between; font-size: 16px; color: var(--ink-2); padding: 0 2px; margin-top: 2px; }
+.steps span[data-on] { color: var(--ink); font-weight: 600; }
+.seg { display: flex; gap: 10px; margin-top: 8px; }
+.seg button { flex: 1; background: #fff; border-radius: 14px; padding: 10px 6px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 0 var(--clay-edge); }
+.seg button[data-on] { background: var(--amber); box-shadow: 0 4px 0 var(--amber-d); }
+.rows { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.rows li { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+.look { width: 44px; height: 44px; flex: none; border-radius: 50%; background-repeat: no-repeat; background-color: #f7f1e3; }
+.look[data-blank] { background: #efe3c8; display: grid; place-items: center; }
+.lab { flex: 1; font-size: 20px; }
+.rows b { font-weight: 600; color: var(--ink-2); }
+.eggmark { width: 22px; height: 26px; display: inline-block; vertical-align: -5px; margin-right: 8px; }
+.eggmark svg { width: 100%; height: 100%; display: block; }
+.toast { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 12px 22px; border-radius: 22px; font-size: 20px; font-weight: 500; z-index: 20; box-shadow: 0 6px 0 rgba(0, 0, 0, .2); }
+.veil { position: absolute; inset: 0; background: rgba(41, 37, 58, .55); display: grid; place-items: center; z-index: 10; }
+.sheet { background: var(--bone); border-radius: 26px; padding: 22px 26px; box-shadow: 0 8px 0 var(--clay-edge); min-width: 360px; max-width: 92%; }
+.sheet h2 { font-size: 28px; font-weight: 600; }
+.picks { display: flex; gap: 10px; align-items: center; margin: 16px 0; flex-wrap: wrap; }
+.name { background: #fff; border-radius: 16px; padding: 12px 18px; font-size: 20px; font-weight: 600; box-shadow: 0 4px 0 var(--clay-edge); }
+.name[data-on] { outline: 3px solid var(--amber); }
+.keepgo { width: 100%; background: var(--amber); border-radius: 22px; padding: 14px; font-size: 20px; font-weight: 600; box-shadow: 0 6px 0 var(--amber-d); }
+
+@media (max-width: 700px) {
+  .body { flex-direction: column; gap: 8px; padding: 0 10px 10px; overflow-y: auto; }
+  .nest { flex: none; display: block; padding: 10px; }
+  .felt { inset: 0; border-radius: 22px; background: #8d5f31; box-shadow: inset 0 -8px 0 #6e4725; }
+  .grid { grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+  .egg { width: 70px; height: 88px; }
+  .side { width: 100%; overflow: visible; flex: none; }
+}
+
+/* The walk of a baby: the strip of a clip (its frames side by side) stepped along, on the same footing as the still picture. */
+.stride { position: absolute; left: 50%; top: 0; height: 100%; aspect-ratio: 304 / 312; transform: translateX(-50%); background-repeat: no-repeat; background-size: calc(var(--frames) * 100%) 100%; animation: stride var(--loop) steps(var(--frames), jump-none) infinite; pointer-events: none; }
+@keyframes stride { from { background-position: 0 0; } to { background-position: 100% 0; } }
+.pill { position: absolute; left: 50%; top: 4px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 18px; padding: 6px 12px; font-size: 16px; font-weight: 500; white-space: nowrap; box-shadow: 0 4px 0 rgba(0, 0, 0, .08); z-index: 3; }
+.pill i { width: 20px; height: 20px; flex: none; }
+@media (prefers-reduced-motion: reduce) { .stride { animation-duration: calc(var(--loop) * 3); } }

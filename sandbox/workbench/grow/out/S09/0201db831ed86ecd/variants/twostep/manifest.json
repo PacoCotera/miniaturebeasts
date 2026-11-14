@@ -1,0 +1,404 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 4,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "d6e0444f-85bb-4c46-af5e-a96715514b33",
+     "step": 1,
+     "status": "ok",
+     "seconds": 18.1,
+     "checks": {
+      "silhouetteIoU": 0.934,
+      "silhouetteIoUInPlace": 0.927,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.966
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.967
+       },
+       "leg-0": {
+        "span": 0.909,
+        "coverage": 0.987
+       },
+       "flap": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "tail": {
+        "span": 0.984,
+        "coverage": 0.987
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.466,
+        "painted": 0.551,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.439,
+        "painted": 0.495,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.231,
+        "painted": 0.288,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.439,
+        "painted": 0.48,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.617,
+        "painted": 0.661,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.336,
+        "painted": 0.374,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.933,
+        "median": "#4c7ac7",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.999,
+        "median": "#4f7bc8",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.926,
+        "median": "#4c79c7",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@tail": {
+        "agreement": 0.0,
+        "median": "#fdecae",
+        "nearest": "#fff0b8",
+        "ok": false
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#fcecae",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.983,
+        "median": "#fdedb1",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "a pigment slot is painted in another slot's colour: the body slot on the tail (painted #fdecae, the colour of second)"
+      ],
+      "outside": 0.001,
+      "missing": 0.002,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.919,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "DibHavScIJzp-8YP6sC_qQ4"
+    },
+    {
+     "callId": "d58894c2-6d96-4272-b40f-c208a10d4676",
+     "step": 1,
+     "status": "ok",
+     "seconds": 24.2,
+     "checks": {
+      "silhouetteIoU": 0.931,
+      "silhouetteIoUInPlace": 0.932,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.974
+       },
+       "leg-0": {
+        "span": 0.881,
+        "coverage": 0.985
+       },
+       "flap": {
+        "span": 0.994,
+        "coverage": 0.998
+       },
+       "tail": {
+        "span": 0.978,
+        "coverage": 0.983
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.466,
+        "painted": 0.552,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.439,
+        "painted": 0.495,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.231,
+        "painted": 0.293,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.439,
+        "painted": 0.479,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.617,
+        "painted": 0.654,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.336,
+        "painted": 0.373,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.998,
+        "median": "#507ecc",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.999,
+        "median": "#517fcd",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.969,
+        "median": "#4f7ecc",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@tail": {
+        "agreement": 1.0,
+        "median": "#4e7dca",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#fceaad",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#fdecb4",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.017,
+      "missing": 0.002,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.996,
+      "passed": true,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "USbHapycB7qo_uMP7-iwkA4"
+    },
+    {
+     "callId": "d88f6d2b-df36-4d19-90c9-d15a7bc9330a",
+     "step": 2,
+     "status": "ok",
+     "seconds": 11.0,
+     "checks": {
+      "silhouetteIoU": 0.935,
+      "silhouetteIoUInPlace": 0.935,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.998
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.998
+       },
+       "leg-0": {
+        "span": 0.893,
+        "coverage": 0.991
+       },
+       "flap": {
+        "span": 0.988,
+        "coverage": 0.997
+       },
+       "tail": {
+        "span": 0.984,
+        "coverage": 0.987
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.466,
+        "painted": 0.552,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.439,
+        "painted": 0.494,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.231,
+        "painted": 0.287,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.439,
+        "painted": 0.481,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.617,
+        "painted": 0.651,
+        "ok": true
+       },
+       "tail": {
+        "drawn": 0.336,
+        "painted": 0.375,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.992,
+        "median": "#6182b3",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.996,
+        "median": "#6688b9",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.943,
+        "median": "#6686b3",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@tail": {
+        "agreement": 1.0,
+        "median": "#5778aa",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.997,
+        "median": "#d3ba7e",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.998,
+        "median": "#e9d38e",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.017,
+      "missing": 0.0,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.99,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "lybHaqXwEbi3jrEPvrDkqQ8"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-7e9f7df0",
+ "genomeSha256": "0201db831ed86ecdbf9eb30348f32dfa54fb936aefce2a9de0c83bb204208973",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head small; beak short; crest low; crown low; eyes small, close. Shape: waist thick; back line arched; hind body full; body pear; build wide. Legs & tail: tail curl curls up; tail long, thick. Proportions: a large body, a small head, the head carried low, a short beak, small eyes, a low crest, a low feather crest, long legs, broad feet, a thick waist, an arched back, a long tail, the tail curled up, wide flaps.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T05:11:38Z",
+ "outputs": {
+  "station-portrait-600x620.png": "b87cff5a9af9e18d2125e6f2742f05d19851bd08e71d526c60ffadaa47c7cdbb",
+  "station-portrait-300x310.png": "0b85f796b311098f54bf6cd9535e7ed8eb31db3b13f92ab62785e428b70baafa",
+  "companion-280x300.png": "b2645a1bc31703fba5910325c16f5bcb410389ce4be4d63010a9a7e554f325fb",
+  "token-48.png": "faae3dab304a0f27cd913ae9eec129ae7ca5210fb43f34476b1260d4f6b36de7"
+ },
+ "calls": 3,
+ "seconds": 53.3,
+ "finishedAt": "2026-10-08T05:14:48Z"
+}

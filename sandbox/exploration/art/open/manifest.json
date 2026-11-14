@@ -1,0 +1,34 @@
+{
+ "job": "2026-11-09-opening",
+ "status": "REPAINTED with an image model. The pod is a drop-in (same names, size, frames, anchor). The night mist CHANGED SIZE: one 192 px tile (a only); the 96 px b and c files are gone.",
+ "made": {
+  "model": "fal-ai/nano-banana-pro/edit",
+  "mxn": 39.0,
+  "calls": "13. Round 1 (21 MXN): pod-a1, pod-a2, mist-a1, mist-a2, mist-b1, mist-c1, mist-a3 (pod-a2 shipped). Round 2 (12 MXN, nothing shipped): mist192-a1, mist192-a1-seam, mist192-a2, mist192-a3. Round 3 (3 MXN): mist192-a1-fill (the left-right join; signed, kept in source/round3/). Round 4 (3 MXN): mist192-a1-vfill (the empty lane filled; shipped as the night tile).",
+  "log": "log/calls.jsonl, log/spend.json, work/side/*.json",
+  "code_did": "pod: cut from magenta, sampled the paint's own pixel grid, snapped to the palette. Night: round 3 slid the painting mist192-a1 half its width and cleared the middle quarter to its own plain night (gap.py) for the painter to fill; round 4 slid that result half its height and cleared its plain lane rows (gapv.py) for the painter to fill. Then scaled to 192, mapped the painting's five tones in order onto the four-colour night ramp (light body and crest share the crest colour), matched the outer 6 px to the round-3 tile slid half its height (62 pixels), slid frame 2 by 1 px. No shape or shade drawn in code."
+ },
+ "c-open-night": {
+  "files": "c-open-night-a-{1,2,still}.png (a only)",
+  "size": [192, 192],
+  "why_192": "the 96 px tiles' banks crossed every edge at the same heights, so the field showed rows every 48 px; one 192 px tile holds eight drifts at varied heights with no empty lane",
+  "variants": "one tile (a). It wraps onto itself left-right and top-bottom with no seam. Lay it on a 192 px grid anchored to world px, so it does not swim when the frame moves.",
+  "frames": "1 and 2, 900 ms each (frame 2 = the painted tile slid 1 px right, wrapping); reduced motion: still (= 1)",
+  "use": "unseen cells on the first-time Companion screen only, in place of the dark table and night dots; glimpses, chips and sparkles draw over it",
+  "palette_additions": {"#0d1322": "under-shadow / hollows", "#132036": "the night", "#1a2d46": "bank body", "#24465a": "bank crest"},
+  "not": "no dots, no dither, nothing round and lit (the five lights are the Companion's marks; the mist has no glows of its own)"
+ },
+ "c-open-pod-96": {
+  "files": "c-open-pod-96-{1,2,still}.png",
+  "size": [96, 96],
+  "master": "painted for this size: the pod is 74 x 76 px at 1x in the 96 px frame (no upscale)",
+  "anchor": [48, 92],
+  "anchor_note": "the foot: bottom centre of the outline (row 92); stand it on the partner ring where the 3x token's feet go",
+  "frames": "1 and 2, 1200 ms each (two painted frames of the same pod: the warm light in the rib grooves is faint low in 1, brighter and longer in 2); reduced motion: still (= 1)",
+  "palette": "game core only: void, ink, stone, mist, fog, white (shell); paper, sand, clay (lid); rust, orange, amber, gold, yellow (groove light)",
+  "what": "canon pod: a flat cream disc lid on a dark rim, a round ribbed bulb (five raised lobes, deep grooves) in the neutral unread shell (fog / mist / stone) since the first pod's kind is unknown; no crown, stalk, sprout or glyph; nothing past the outline",
+  "replaces": "the built field pod at 3x (the egg-looking stand-in in the scheme mock)"
+ },
+ "turf_strip": "not needed: the ring already grounds the pod and the partner; a turf strip would add a second ground line under the text block",
+ "sheet": "out/sheet-opening-painted.png (old vs new at 1x in the opening frame, plus 4x); out/sheet-opening.png is the superseded code-drawn sheet"
+}

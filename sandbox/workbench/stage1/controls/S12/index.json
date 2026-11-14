@@ -1,0 +1,57 @@
+{
+ "schema": "mb-reference-set/1",
+ "species": "S12",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "members": [
+  {
+   "id": "S12",
+   "level": "species",
+   "genomeDigest": "S12-94f298de",
+   "genomeSha256": "2af58fb73ac5cbbd45f397f78257f06ee8ebb6b61d774a875fa8c73a275d6e33",
+   "seed": null,
+   "dir": "type-specimen",
+   "sketch": "8d77331b0978ec01a52f3063811f5b08eddbeebf9ef1ba4f925c801e30ad5567",
+   "outputs": 49
+  },
+  {
+   "id": "S12-0b5843e8",
+   "level": "individual",
+   "genomeDigest": "S12-0b5843e8",
+   "genomeSha256": "9587cfdd7ad5944492853b31a51d4ecd1ed94a65a0e19a54949c559c6fdf91e8",
+   "seed": 1,
+   "dir": "S12-0b5843e8",
+   "sketch": "5a233fe2ed8d90f15a42a04d7a50c4098c2997255c0363bd5d219320541af72a",
+   "outputs": 61
+  },
+  {
+   "id": "S12-70f7ef63",
+   "level": "individual",
+   "genomeDigest": "S12-70f7ef63",
+   "genomeSha256": "898982cf4175a0cd546bd532a65072fbf2de94622a676681431be02b484b2b9c",
+   "seed": 2,
+   "dir": "S12-70f7ef63",
+   "sketch": "d2a06c938630bd0f35f30e3c170fc2429ad18e6be52a3a7e0a383597e8335e14",
+   "outputs": 61
+  },
+  {
+   "id": "S12-c164a339",
+   "level": "individual",
+   "genomeDigest": "S12-c164a339",
+   "genomeSha256": "93cde22ff45f8b88219814597fdd6189da7276e183fbbab4d1095d917e5740e9",
+   "seed": 3,
+   "dir": "S12-c164a339",
+   "sketch": "0f2c98451d48d3aedbd649184cdd5451806172192c91471f14f11bf418516a10",
+   "outputs": 61
+  }
+ ]
+}

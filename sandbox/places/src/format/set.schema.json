@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://miniaturebeasts.org/schemas/place-set-1.json",
+  "title": "Tile set contract (set.json), formatVersion 1; place design A3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "id", "name", "ship", "licence", "sourceTile", "scale", "half", "palette", "spriteSheet", "layers", "tone", "props", "decals", "canopy"],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "ship": { "enum": ["test", "yes"], "description": "test: a CC0 stand-in that may be on the public sandbox, credited; yes: ours, or CC0 accepted for release" },
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spdx", "author", "source", "fetched"],
+      "properties": {
+        "spdx": { "enum": ["CC0-1.0", "LicenseRef-MiniatureBeasts"] },
+        "author": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "fetched": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "archiveSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "sourceTile": { "type": "integer", "minimum": 8, "description": "pixel size of a tile in the committed sheets" },
+    "scale": { "type": "integer", "minimum": 1, "description": "integer nearest-neighbour factor the bake applies; sourceTile * scale = 48" },
+    "half": { "enum": ["derived", "painted"] },
+    "palette": { "type": "string", "description": "file with the colours (indices 48..) and the light tables" },
+    "spriteSheet": { "type": "string", "description": "PNG holding every prop, decal and canopy sprite" },
+    "layers": {
+      "type": "object",
+      "description": "terrain layers (place design: terrain-layers-design): per terrain id, one fill and the transparent 16-slot layers (kinds) it draws over lower terrains, or `drawAs` another terrain until its own layers are signed.",
+      "additionalProperties": { "$ref": "#/definitions/layer" }
+    },
+    "tone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["of", "sheets"],
+      "description": "the lipless tone layer of one terrain: 16 slots, drawn last over uniform tiles of `of`; it has no fill",
+      "properties": {
+        "of": { "type": "string", "description": "terrain id" },
+        "also": { "type": "array", "items": { "type": "string" }, "description": "further terrain ids that may carry tone: the raised top (cliff), where the generator also keeps the cell two rows below raised, so tone never lands on a face" },
+        "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid per animation frame" }
+      }
+    },
+    "props": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/sprite" }
+    },
+    "decals": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/sprite" }
+    },
+    "canopy": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/sprite" }
+    }
+  },
+  "definitions": {
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "drawAs": { "type": "string", "description": "terrain id: the terrain this one is drawn as while the set has no layers of its own for it" },
+        "ground": { "type": "string", "description": "terrain id drawn beneath this terrain's own corners (a layer whose paint has gaps)" },
+        "fill": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sheets"],
+          "properties": {
+            "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one strip per animation frame, each holding n opaque 16 px variants left to right" },
+            "frameMs": { "type": "integer", "minimum": 16 }
+          }
+        },
+        "over": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "lowers", "sheets"],
+            "properties": {
+              "kind": { "type": "string", "description": "free name (step, flat, beach, bank, rim ...); the paint decides bank vs flat" },
+              "lowers": { "type": "array", "items": { "type": "string" }, "description": "terrain ids this kind can meet; a lower in no kind's list is refused by the bake (no-edge). The first kind holding any lower of a tile wins" },
+              "sheets": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "one 4x4 grid of 16 slots in corner order NW*8+NE*4+SW*2+SE per animation frame; slot 0 empty, transparent where the lower shows" },
+              "full": { "type": "string", "description": "a strip of slot-15 variants, for a terrain with a ground" },
+              "variants": { "type": "array", "items": { "type": "string" }, "description": "further 16-slot sheets sharing every edge line, one picked per dual tile by hash" },
+              "tall": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } }, "description": "a tall terrain (the cliff face): keys 1..3, the sheets used when the cell under the bottom left (1), right (2) or both (3) corners is not this terrain; several sheets are picked by hash" },
+              "wayup": { "type": "object", "additionalProperties": { "type": "string" }, "description": "per lower terrain id, a 3 x 2 sheet of 16 px tiles for the way up" }
+            }
+          }
+        }
+      }
+    },
+    "int2": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2 },
+    "sprite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rect", "anchor"],
+      "properties": {
+        "rect": { "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 4, "maxItems": 4, "description": "x, y, w, h of the first frame in the sprite sheet; further frames follow to the right at stride w" },
+        "anchor": { "$ref": "#/definitions/int2", "description": "the foot pixel in rect-local source pixels; a canopy cut from a prop's sprite carries the same foot point in its own coordinates" },
+        "frames": { "type": "integer", "minimum": 1 },
+        "frameMs": { "type": "integer", "minimum": 16 },
+        "footprint": { "type": "array", "items": { "$ref": "#/definitions/int2" }, "description": "tile offsets from the entity's cell that block; empty or absent: never blocks" },
+        "canopy": { "type": "string", "description": "name in the set's canopy table, drawn over the explorer with the cut-out" }
+      }
+    }
+  }
+}

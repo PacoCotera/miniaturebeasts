@@ -1,0 +1,81 @@
+{
+ "species": "S01",
+ "loci": {
+  "growth.exterior-eye-size-ratio": {
+   "lo": "large",
+   "hi": "huge"
+  }
+ },
+ "cases": [
+  {
+   "name": "type-specimen",
+   "dir": "out/S01/extremes/type-specimen",
+   "set": {},
+   "status": "built"
+  },
+  {
+   "name": "exterior-eye-size-ratio=large",
+   "dir": "out/S01/extremes/exterior-eye-size-ratio=large",
+   "set": {
+    "growth.exterior-eye-size-ratio": "large"
+   },
+   "status": "built"
+  },
+  {
+   "name": "exterior-eye-size-ratio=huge",
+   "dir": "out/S01/extremes/exterior-eye-size-ratio=huge",
+   "set": {
+    "growth.exterior-eye-size-ratio": "huge"
+   },
+   "status": "built"
+  },
+  {
+   "name": "all-low",
+   "dir": "out/S01/extremes/all-low",
+   "set": {
+    "growth.exterior-eye-size-ratio": "large"
+   },
+   "status": "built"
+  },
+  {
+   "name": "all-high",
+   "dir": "out/S01/extremes/all-high",
+   "set": {
+    "growth.exterior-eye-size-ratio": "huge"
+   },
+   "status": "built"
+  },
+  {
+   "name": "alternate-a",
+   "dir": "out/S01/extremes/alternate-a",
+   "set": {
+    "growth.exterior-eye-size-ratio": "huge"
+   },
+   "status": "built"
+  },
+  {
+   "name": "alternate-b",
+   "dir": "out/S01/extremes/alternate-b",
+   "set": {
+    "growth.exterior-eye-size-ratio": "large"
+   },
+   "status": "built"
+  },
+  {
+   "name": "small-head-big-body",
+   "dir": "out/S01/extremes/small-head-big-body",
+   "set": {
+    "growth.exterior-eye-size-ratio": "large"
+   },
+   "status": "built"
+  },
+  {
+   "name": "big-head-small-body",
+   "dir": "out/S01/extremes/big-head-small-body",
+   "set": {
+    "growth.exterior-eye-size-ratio": "huge"
+   },
+   "status": "built"
+  }
+ ]
+}

@@ -1,0 +1,83 @@
+{
+ "_note": "fix 7 (the architect's ruling 2026-10-15 04:32, appendix): the oracle is light-grade.py at masters-pods 917a4801. lut: SHA-256 of LUT[light] (768 bytes, R0..R255 G0..G255 B0..B255). juvenile104x112: the SHA-256 of the placed source PNG and the SHA-256 of the graded RGBA at each light (straight alpha, rows top-down). The adult 144x152 rows (placed adult masters, sources 967e5ee0…, 1362c334…, 171ebe6d…) are regenerated with the oracle at the gate. Re-recorded for release 21c: the placed 144x152 adults and 104x112 juveniles are the art desk's game-art masters; every row (source and graded RGBA at each light) was regenerated with the same formula (light-grade.py's grade(), written again in Node and first proved against the earlier rows).",
+ "lut": {
+  "dawn": "902f8a8929846c403cb31802ebd6c92e9a16387a1522064358b84a3f6ea9affa",
+  "day": "f3a25aa93aa2fbba28d79260535bbd6a5eb0fc1c24a8b0f04e12b484c1dfe363",
+  "dusk": "bc20be6d8012f6efe22a589c09f357c3ee783dea2759a8e71587d9aec11e4c55",
+  "night": "f8316b761b66eef8729598e331f96230f1ee908549a4d375753197074a0961bb"
+ },
+ "ties": {
+  "dawn": {
+   "G5": 4
+  },
+  "night": {
+   "G1": 0,
+   "G5": 2,
+   "G9": 4
+  }
+ },
+ "juvenile104x112": {
+  "S01": {
+   "file": "pods/mibi-juvenile-S01-104x112.png",
+   "source": "d0670e7d22b77d6315afb2bd1f975ca8e4bf71a282338e263b87267b71d5d60e",
+   "rgba": {
+    "dawn": "922f0b3e5742140e43c2c67fec8229db387d990f78203b3441584ee04061b324",
+    "day": "910b70dcfe42c16edaaa4eb9f3d46d1aa24ecc127bf3ae52f83a8e7d6b438139",
+    "dusk": "132dc4ab1479f6082167006bd84d60a24704eb79f6f45e272fd548ef4bbfaf15",
+    "night": "4e99a5a0da0ab6ef83b437db1f333baa56886d9737582ef558c529ca1fe1252c"
+   }
+  },
+  "S02": {
+   "file": "pods/mibi-juvenile-S02-104x112.png",
+   "source": "f8b5cc88951d16ef1fea21f82bd28dd8dc1aebaa61546fc36413ab25fe7525f1",
+   "rgba": {
+    "dawn": "9ba20577b13e6eda57883d20fcd48e7512db40369f2c6ff0f7c9027c2be0640c",
+    "day": "cb3d656fe97799cdc9287a8b4c8995f89de6c6457092cbb8648d2c84c185e7f1",
+    "dusk": "8496cdc57d849c78fe47fc6ef922e6468c9f6cbccafd268150f9514eedb4e52d",
+    "night": "52145d07d02ec8dbbb9bc6edba00327276b0be3a6fe00c2012b8eec657867a3b"
+   }
+  },
+  "S03": {
+   "file": "pods/mibi-juvenile-S03-104x112.png",
+   "source": "b2610333e50193d41f7595916a935fd79e4e15149763341bf68a7ec484a2a911",
+   "rgba": {
+    "dawn": "cb03d2ccc41446a96a3b8a282e6d9d950e4bf2247a9891f748d911c22a0c66c0",
+    "day": "3411e1f2611e8ac2852c73404e1de0dc25f24c54452050d42cf5a9cb5483ea17",
+    "dusk": "c46d91463f8bb84723d145556dd21a4ae9743ad0a64bbe11ee67078fb8d2c5a2",
+    "night": "8a13c0f07a3248ad4e14c9faaf1a9e5617800be9f8f0f127529c86c49fe1339b"
+   }
+  }
+ },
+ "adult144x152": {
+  "S01": {
+   "file": "pods/mibi-adult-S01-144x152.png",
+   "source": "0944e0e5c4ce9a6a674522bdae67aee6347d9396fa9e5f246b4537cb1dc19d55",
+   "rgba": {
+    "dawn": "e39cb07840af26d16ac796ca50990bbd4a482b1df81c0e219eac440174f63aa4",
+    "day": "017584e087354d8da22cf62a85d2d53f4e196756a97e4dcf2548ca01a1e704b1",
+    "dusk": "1d3f1f8435d409b87a3073859e781845b27c7bf0eb7a365f31fbc5ce19f1de95",
+    "night": "3ef0e49e40c4891b1bc13d73a32c2a9dc95f4bc38d5b9b506813a084738e99ce"
+   }
+  },
+  "S02": {
+   "file": "pods/mibi-adult-S02-144x152.png",
+   "source": "31a5e7d8aeebc5941cd68a28f72bf3a2477248db4869ace1513c543e023d54af",
+   "rgba": {
+    "dawn": "6ac9e34fc21bb8094526f78f0a02b96b82bcc1050e76459b0b438b9e2d8e615b",
+    "day": "0db02855c5ada6b70269f7b057a1b5146a3dc6396def4a6a94c2ad8130323a4d",
+    "dusk": "be01aa3c1225885d7743f7f5bd244e98a7b2338e8af026aebb062afd5bb91bdb",
+    "night": "bbc2b1100726bbbec4f047014f2d20789f640ca69a90e87fc263ed543a2e9f6c"
+   }
+  },
+  "S03": {
+   "file": "pods/mibi-adult-S03-144x152.png",
+   "source": "4f650f7d118e6eefe0ca73cc93035bdc21172fe053ca3f7e812960643693851c",
+   "rgba": {
+    "dawn": "a8c7542b410f45bb27c25cd69f5ecde1c53fa38396de612e8842e1bb8d13bec5",
+    "day": "f3d7a02a19662f3529c8082fbab551969a155884f196589f6c0d1daa5ce6a248",
+    "dusk": "2040402e79b8d3548eec622915f2de9c1b5b8240e810d90378aad1e19f075273",
+    "night": "c348f090ef9f87c4b369929d5dd17c380bfe71f10b243bd87ccbc72a9630269b"
+   }
+  }
+ }
+}

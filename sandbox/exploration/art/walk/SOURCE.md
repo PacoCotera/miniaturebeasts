@@ -1,0 +1,4 @@
+The Companion's walk art: place marks (found and been, 26 / 18 / 12 px), map terrain tiles (72 / 48 / 26), cliff and ramp edge marks and the Curious bubble (the two paws). The spring's puddle frames, the shimmer sign and the "!" notice card went with the hearts.
+Signed by the art desk: mibi-art commit ce97d1c19, art-jobs/2026-11-09-walk-art/out/ (manifest.json there names every slot, size and frame; its `howToUse` block says how each is laid). Copied byte for byte; never edit here, re-sign at the desk.
+The page loads every file at boot (exploration/index.html, WALK_FILES, walkRead) and turns each into a palette-index buffer. SHA256.json records each file as placed; tests/walk-art.test.mjs checks each equals the desk's file byte for byte.
+fx-greet-heart-16x16.png (the Station's Greet heart) is placed in prototypes/ui/assets/masters/pods/, not here.

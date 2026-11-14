@@ -1,0 +1,523 @@
+{
+ "species": "S09",
+ "loci": {
+  "growth.head-length-ratio": {
+   "lo": "small",
+   "hi": "large"
+  },
+  "growth.head-width-ratio": {
+   "lo": "low",
+   "hi": "high"
+  },
+  "growth.head-depth-ratio": {
+   "lo": "low",
+   "hi": "high"
+  },
+  "growth.head-lift-ratio": {
+   "lo": "low",
+   "hi": "high"
+  },
+  "growth.beak-length-ratio": {
+   "lo": "short",
+   "hi": "long"
+  },
+  "growth.feather-crest": {
+   "lo": "low",
+   "hi": "tall"
+  },
+  "growth.crown-height-ratio": {
+   "lo": "low",
+   "hi": "high"
+  },
+  "growth.exterior-eye-size-ratio": {
+   "lo": "small",
+   "hi": "huge"
+  },
+  "growth.exterior-eye-spacing-ratio": {
+   "lo": "close",
+   "hi": "wide"
+  },
+  "growth.join-throat-ratio": {
+   "lo": "thin",
+   "hi": "broad"
+  },
+  "growth.region-bend": {
+   "lo": "down",
+   "hi": "up"
+  },
+  "growth.region-taper": {
+   "lo": "strong",
+   "hi": "gentle"
+  },
+  "anatomy.region-longitudinal-form": {
+   "lo": "ovoid",
+   "hi": "tapered"
+  },
+  "growth.core-width-ratio": {
+   "lo": "low",
+   "hi": "wide"
+  },
+  "growth.core-depth-ratio": {
+   "lo": "low",
+   "hi": "deep"
+  },
+  "growth.axial-tail-bend": {
+   "lo": "down",
+   "hi": "up"
+  },
+  "growth.axial-tail-length-ratio": {
+   "lo": "short",
+   "hi": "long"
+  },
+  "growth.axial-tail-width-ratio": {
+   "lo": "fine",
+   "hi": "broad"
+  }
+ },
+ "cases": [
+  {
+   "name": "type-specimen",
+   "dir": "out/S09/extremes/type-specimen",
+   "set": {},
+   "status": "built"
+  },
+  {
+   "name": "head-length-ratio=small",
+   "dir": "out/S09/extremes/head-length-ratio=small",
+   "set": {
+    "growth.head-length-ratio": "small"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-length-ratio=large",
+   "dir": "out/S09/extremes/head-length-ratio=large",
+   "set": {
+    "growth.head-length-ratio": "large"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-width-ratio=low",
+   "dir": "out/S09/extremes/head-width-ratio=low",
+   "set": {
+    "growth.head-width-ratio": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-width-ratio=high",
+   "dir": "out/S09/extremes/head-width-ratio=high",
+   "set": {
+    "growth.head-width-ratio": "high"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-depth-ratio=low",
+   "dir": "out/S09/extremes/head-depth-ratio=low",
+   "set": {
+    "growth.head-depth-ratio": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-depth-ratio=high",
+   "dir": "out/S09/extremes/head-depth-ratio=high",
+   "set": {
+    "growth.head-depth-ratio": "high"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-lift-ratio=low",
+   "dir": "out/S09/extremes/head-lift-ratio=low",
+   "set": {
+    "growth.head-lift-ratio": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "head-lift-ratio=high",
+   "dir": "out/S09/extremes/head-lift-ratio=high",
+   "set": {
+    "growth.head-lift-ratio": "high"
+   },
+   "status": "built"
+  },
+  {
+   "name": "beak-length-ratio=short",
+   "dir": "out/S09/extremes/beak-length-ratio=short",
+   "set": {
+    "growth.beak-length-ratio": "short"
+   },
+   "status": "built"
+  },
+  {
+   "name": "beak-length-ratio=long",
+   "dir": "out/S09/extremes/beak-length-ratio=long",
+   "set": {
+    "growth.beak-length-ratio": "long"
+   },
+   "status": "built"
+  },
+  {
+   "name": "feather-crest=low",
+   "dir": "out/S09/extremes/feather-crest=low",
+   "set": {
+    "growth.feather-crest": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "feather-crest=tall",
+   "dir": "out/S09/extremes/feather-crest=tall",
+   "set": {
+    "growth.feather-crest": "tall"
+   },
+   "status": "built"
+  },
+  {
+   "name": "crown-height-ratio=low",
+   "dir": "out/S09/extremes/crown-height-ratio=low",
+   "set": {
+    "growth.crown-height-ratio": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "crown-height-ratio=high",
+   "dir": "out/S09/extremes/crown-height-ratio=high",
+   "set": {
+    "growth.crown-height-ratio": "high"
+   },
+   "status": "built"
+  },
+  {
+   "name": "exterior-eye-size-ratio=small",
+   "dir": "out/S09/extremes/exterior-eye-size-ratio=small",
+   "set": {
+    "growth.exterior-eye-size-ratio": "small"
+   },
+   "status": "built"
+  },
+  {
+   "name": "exterior-eye-size-ratio=huge",
+   "dir": "out/S09/extremes/exterior-eye-size-ratio=huge",
+   "set": {
+    "growth.exterior-eye-size-ratio": "huge"
+   },
+   "status": "built"
+  },
+  {
+   "name": "exterior-eye-spacing-ratio=close",
+   "dir": "out/S09/extremes/exterior-eye-spacing-ratio=close",
+   "set": {
+    "growth.exterior-eye-spacing-ratio": "close"
+   },
+   "status": "built"
+  },
+  {
+   "name": "exterior-eye-spacing-ratio=wide",
+   "dir": "out/S09/extremes/exterior-eye-spacing-ratio=wide",
+   "set": {
+    "growth.exterior-eye-spacing-ratio": "wide"
+   },
+   "status": "built"
+  },
+  {
+   "name": "join-throat-ratio=thin",
+   "dir": "out/S09/extremes/join-throat-ratio=thin",
+   "set": {
+    "growth.join-throat-ratio": "thin"
+   },
+   "status": "built"
+  },
+  {
+   "name": "join-throat-ratio=broad",
+   "dir": "out/S09/extremes/join-throat-ratio=broad",
+   "set": {
+    "growth.join-throat-ratio": "broad"
+   },
+   "status": "built"
+  },
+  {
+   "name": "region-bend=down",
+   "dir": "out/S09/extremes/region-bend=down",
+   "set": {
+    "growth.region-bend": "down"
+   },
+   "status": "built"
+  },
+  {
+   "name": "region-bend=up",
+   "dir": "out/S09/extremes/region-bend=up",
+   "set": {
+    "growth.region-bend": "up"
+   },
+   "status": "built"
+  },
+  {
+   "name": "region-taper=strong",
+   "dir": "out/S09/extremes/region-taper=strong",
+   "set": {
+    "growth.region-taper": "strong"
+   },
+   "status": "built"
+  },
+  {
+   "name": "region-taper=gentle",
+   "dir": "out/S09/extremes/region-taper=gentle",
+   "set": {
+    "growth.region-taper": "gentle"
+   },
+   "status": "built"
+  },
+  {
+   "name": "region-longitudinal-form=ovoid",
+   "dir": "out/S09/extremes/region-longitudinal-form=ovoid",
+   "set": {
+    "anatomy.region-longitudinal-form": "ovoid"
+   },
+   "status": "built"
+  },
+  {
+   "name": "region-longitudinal-form=tapered",
+   "dir": "out/S09/extremes/region-longitudinal-form=tapered",
+   "set": {
+    "anatomy.region-longitudinal-form": "tapered"
+   },
+   "status": "built"
+  },
+  {
+   "name": "core-width-ratio=low",
+   "dir": "out/S09/extremes/core-width-ratio=low",
+   "set": {
+    "growth.core-width-ratio": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "core-width-ratio=wide",
+   "dir": "out/S09/extremes/core-width-ratio=wide",
+   "set": {
+    "growth.core-width-ratio": "wide"
+   },
+   "status": "built"
+  },
+  {
+   "name": "core-depth-ratio=low",
+   "dir": "out/S09/extremes/core-depth-ratio=low",
+   "set": {
+    "growth.core-depth-ratio": "low"
+   },
+   "status": "built"
+  },
+  {
+   "name": "core-depth-ratio=deep",
+   "dir": "out/S09/extremes/core-depth-ratio=deep",
+   "set": {
+    "growth.core-depth-ratio": "deep"
+   },
+   "status": "built"
+  },
+  {
+   "name": "axial-tail-bend=down",
+   "dir": "out/S09/extremes/axial-tail-bend=down",
+   "set": {
+    "growth.axial-tail-bend": "down"
+   },
+   "status": "built"
+  },
+  {
+   "name": "axial-tail-bend=up",
+   "dir": "out/S09/extremes/axial-tail-bend=up",
+   "set": {
+    "growth.axial-tail-bend": "up"
+   },
+   "status": "built"
+  },
+  {
+   "name": "axial-tail-length-ratio=short",
+   "dir": "out/S09/extremes/axial-tail-length-ratio=short",
+   "set": {
+    "growth.axial-tail-length-ratio": "short"
+   },
+   "status": "built"
+  },
+  {
+   "name": "axial-tail-length-ratio=long",
+   "dir": "out/S09/extremes/axial-tail-length-ratio=long",
+   "set": {
+    "growth.axial-tail-length-ratio": "long"
+   },
+   "status": "built"
+  },
+  {
+   "name": "axial-tail-width-ratio=fine",
+   "dir": "out/S09/extremes/axial-tail-width-ratio=fine",
+   "set": {
+    "growth.axial-tail-width-ratio": "fine"
+   },
+   "status": "built"
+  },
+  {
+   "name": "axial-tail-width-ratio=broad",
+   "dir": "out/S09/extremes/axial-tail-width-ratio=broad",
+   "set": {
+    "growth.axial-tail-width-ratio": "broad"
+   },
+   "status": "built"
+  },
+  {
+   "name": "all-low",
+   "dir": "out/S09/extremes/all-low",
+   "set": {
+    "growth.head-length-ratio": "small",
+    "growth.head-width-ratio": "low",
+    "growth.head-depth-ratio": "low",
+    "growth.head-lift-ratio": "low",
+    "growth.beak-length-ratio": "short",
+    "growth.feather-crest": "low",
+    "growth.crown-height-ratio": "low",
+    "growth.exterior-eye-size-ratio": "small",
+    "growth.exterior-eye-spacing-ratio": "close",
+    "growth.join-throat-ratio": "thin",
+    "growth.region-bend": "down",
+    "growth.region-taper": "strong",
+    "anatomy.region-longitudinal-form": "ovoid",
+    "growth.core-width-ratio": "low",
+    "growth.core-depth-ratio": "low",
+    "growth.axial-tail-bend": "down",
+    "growth.axial-tail-length-ratio": "short",
+    "growth.axial-tail-width-ratio": "fine"
+   },
+   "status": "built"
+  },
+  {
+   "name": "all-high",
+   "dir": "out/S09/extremes/all-high",
+   "set": {
+    "growth.head-length-ratio": "large",
+    "growth.head-width-ratio": "high",
+    "growth.head-depth-ratio": "high",
+    "growth.head-lift-ratio": "high",
+    "growth.beak-length-ratio": "long",
+    "growth.feather-crest": "tall",
+    "growth.crown-height-ratio": "high",
+    "growth.exterior-eye-size-ratio": "huge",
+    "growth.exterior-eye-spacing-ratio": "wide",
+    "growth.join-throat-ratio": "broad",
+    "growth.region-bend": "up",
+    "growth.region-taper": "gentle",
+    "anatomy.region-longitudinal-form": "tapered",
+    "growth.core-width-ratio": "wide",
+    "growth.core-depth-ratio": "deep",
+    "growth.axial-tail-bend": "up",
+    "growth.axial-tail-length-ratio": "long",
+    "growth.axial-tail-width-ratio": "broad"
+   },
+   "status": "built"
+  },
+  {
+   "name": "alternate-a",
+   "dir": "out/S09/extremes/alternate-a",
+   "set": {
+    "growth.head-length-ratio": "large",
+    "growth.head-width-ratio": "low",
+    "growth.head-depth-ratio": "high",
+    "growth.head-lift-ratio": "low",
+    "growth.beak-length-ratio": "long",
+    "growth.feather-crest": "low",
+    "growth.crown-height-ratio": "high",
+    "growth.exterior-eye-size-ratio": "small",
+    "growth.exterior-eye-spacing-ratio": "wide",
+    "growth.join-throat-ratio": "thin",
+    "growth.region-bend": "up",
+    "growth.region-taper": "strong",
+    "anatomy.region-longitudinal-form": "tapered",
+    "growth.core-width-ratio": "low",
+    "growth.core-depth-ratio": "deep",
+    "growth.axial-tail-bend": "down",
+    "growth.axial-tail-length-ratio": "long",
+    "growth.axial-tail-width-ratio": "fine"
+   },
+   "status": "built"
+  },
+  {
+   "name": "alternate-b",
+   "dir": "out/S09/extremes/alternate-b",
+   "set": {
+    "growth.head-length-ratio": "small",
+    "growth.head-width-ratio": "high",
+    "growth.head-depth-ratio": "low",
+    "growth.head-lift-ratio": "high",
+    "growth.beak-length-ratio": "short",
+    "growth.feather-crest": "tall",
+    "growth.crown-height-ratio": "low",
+    "growth.exterior-eye-size-ratio": "huge",
+    "growth.exterior-eye-spacing-ratio": "close",
+    "growth.join-throat-ratio": "broad",
+    "growth.region-bend": "down",
+    "growth.region-taper": "gentle",
+    "anatomy.region-longitudinal-form": "ovoid",
+    "growth.core-width-ratio": "wide",
+    "growth.core-depth-ratio": "low",
+    "growth.axial-tail-bend": "up",
+    "growth.axial-tail-length-ratio": "short",
+    "growth.axial-tail-width-ratio": "broad"
+   },
+   "status": "built"
+  },
+  {
+   "name": "small-head-big-body",
+   "dir": "out/S09/extremes/small-head-big-body",
+   "set": {
+    "growth.head-length-ratio": "small",
+    "growth.head-width-ratio": "low",
+    "growth.head-depth-ratio": "low",
+    "growth.head-lift-ratio": "low",
+    "growth.beak-length-ratio": "short",
+    "growth.feather-crest": "low",
+    "growth.crown-height-ratio": "low",
+    "growth.exterior-eye-size-ratio": "small",
+    "growth.exterior-eye-spacing-ratio": "close",
+    "growth.join-throat-ratio": "broad",
+    "growth.region-bend": "up",
+    "growth.region-taper": "gentle",
+    "anatomy.region-longitudinal-form": "tapered",
+    "growth.core-width-ratio": "wide",
+    "growth.core-depth-ratio": "deep",
+    "growth.axial-tail-bend": "up",
+    "growth.axial-tail-length-ratio": "long",
+    "growth.axial-tail-width-ratio": "broad"
+   },
+   "status": "built"
+  },
+  {
+   "name": "big-head-small-body",
+   "dir": "out/S09/extremes/big-head-small-body",
+   "set": {
+    "growth.head-length-ratio": "large",
+    "growth.head-width-ratio": "high",
+    "growth.head-depth-ratio": "high",
+    "growth.head-lift-ratio": "high",
+    "growth.beak-length-ratio": "long",
+    "growth.feather-crest": "tall",
+    "growth.crown-height-ratio": "high",
+    "growth.exterior-eye-size-ratio": "huge",
+    "growth.exterior-eye-spacing-ratio": "wide",
+    "growth.join-throat-ratio": "thin",
+    "growth.region-bend": "down",
+    "growth.region-taper": "strong",
+    "anatomy.region-longitudinal-form": "ovoid",
+    "growth.core-width-ratio": "low",
+    "growth.core-depth-ratio": "low",
+    "growth.axial-tail-bend": "down",
+    "growth.axial-tail-length-ratio": "short",
+    "growth.axial-tail-width-ratio": "fine"
+   },
+   "status": "built"
+  }
+ ]
+}

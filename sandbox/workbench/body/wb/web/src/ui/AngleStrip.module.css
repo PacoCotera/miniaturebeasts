@@ -1,0 +1,5 @@
+.strip { display: flex; gap: var(--s-3); }
+.fig { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: var(--t-14); color: var(--text-3); border-radius: var(--r-2); padding: 0; }
+.fig .p { border-radius: var(--r-2); }
+.on { color: var(--text); }
+.on .p { box-shadow: 0 0 0 2px var(--text); }

@@ -1,0 +1,88 @@
+/* The namer, an overlay over one mibi up close (namer.json; lvgl-switch.md §2.2): drawn after the screen beneath, before the frame's words, so the ring and the message plate stand over it. Its words are `panel` and `text` in two
+   compositions, `keyGrid` (the keys: each a panel with one label, a focus target at its rectangle) and `nameField` (the well, the name, the selection behind it and the caret after it). The characters of the keys, the field's name and state,
+   the say line and the dimmed keys are props (`overlay.regions`), never the spec. While it is open its graph (namer.json focus.graph over the targets the props list) is the only one: the screen beneath draws no ring and takes no key.
+   A key a page does not draw has no node and no target (the props label is null). Rectangles: the key i of the grid is [x + pitch (i mod columns), y + pitch (i div columns), 40, 40]; the others are the spec's. */
+#include "screens.h"
+#include "../vocab/vocab.h"
+#include "../vocab/words.h"
+#include "../prim/prim.h"
+#include "../spec/spec.h"
+#include "../bridge/wire.h"
+#include "../anim/anim.h"
+#include "../layout/layout.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define N "namer"
+#define KEYS 28
+static void key_rect(int i, int r[4]) { layout_list_pitch(N, "regions.keys", KEYS, i, r); }   /* the key i of the grid: the spec's form of 28 places */
+static void target_rect(const char *id, int r[4]) {
+  r[0] = r[1] = r[2] = r[3] = 0;
+  if (strncmp(id, "key.", 4) == 0) key_rect(atoi(id + 4), r);
+  else if (strcmp(id, "mod.shift") == 0) v_srect(N, "regions.shift.rect", r); else if (strcmp(id, "mod.space") == 0) v_srect(N, "regions.space.rect", r); else if (strcmp(id, "mod.page") == 0) v_srect(N, "regions.page.rect", r);
+  else if (strcmp(id, "act.done") == 0) v_srect(N, "regions.done.rect", r); else if (strcmp(id, "act.suggest") == 0) v_srect(N, "regions.suggest.rect", r);
+}
+static const char *cur(void) { return v_focus_cur_at("overlay.focus.cur"); }
+
+/* one key: a panel (fill, bevel top, hairline edge) as one composed picture (the same ops are the same picture: kept once, by size and colours), its label centred, lifted 2 px while the ring is on it. Twenty-eight keys of seven nodes each
+   would put the namer over the object budget; a key is two. */
+static void key_face(const char *id, const char *region, const int r[4], int focused, const char *fill, const char *label, const char *ink) {
+  int lift = focused ? v_si(N, "focus.targets.key.lift", 2) : 0, y = r[1] - lift, px = v_si(N, "regions.keys.label.px", 16), w = v_measure(label, px), kw = r[2], kh = r[3];
+  const char *edge = v_scol(N, "colours.key.edge"), *top = v_scol(N, "colours.key.top"); char *o = prim_ops(); int cap = prim_ops_size(), n = snprintf(o, (size_t)cap, "[");
+  for (int j = 0; j < kh; j++) n += snprintf(o + n, (size_t)(cap - n), "%s[\"h\",0,%d,%d,\"%s\"]", j ? "," : "", j, kw, fill);
+  snprintf(o + n, (size_t)(cap - n), ",[\"h\",0,0,%d,\"%s\"],[\"h\",0,%d,%d,\"%s\"],[\"v\",0,0,%d,\"%s\"],[\"v\",%d,0,%d,\"%s\"],[\"h\",1,1,%d,\"%s\"]]", kw, edge, kh - 1, kw, edge, kh, edge, kw - 1, kh, edge, kw - 2, top);
+  v_region(region, LAYER_CHROME); v_composed(id, r[0], y, kw, kh, o);
+  v_region(region, LAYER_TYPE); v_line_at(v_fmt("%s.label", id), label, r[0] + v_half(r[2] - w), y + v_si(N, "regions.keys.label.lineTop", 10), V_ANCHOR_LINE, px, ink, V_ALIGN_LEFT);
+}
+static void build_panel(void) {
+  int r[4]; v_srect(N, "regions.panel.rect", r);
+  const char *pl = v_pstr("overlay.regions.panel.plate"); v_region("panel", LAYER_PAINTED); if (*pl) v_sprite("panel", pl, r[0], r[1], r[2], r[3]);   /* fix 2 F1/F8: the namer's device plate, 1:1, no drop shadow; no picture, no plate (F6) */
+}
+/* the name well: a panel (`ground`, `hairline`), the name 28 px, a selection rect behind it while selected and a caret after it while typing or empty */
+static void build_field(void) {
+  int r[4]; v_srect(N, "regions.field.rect", r); const char *name = v_pstr("overlay.regions.field.name"), *state = v_pstr("overlay.regions.field.state"); int px = v_si(N, "regions.field.px", 28), tw = v_measure(name, px), x = v_sk(N, "regions.field.nameAt", 0);
+  int selected = strcmp(state, "selected") == 0 && *name, caret = strcmp(state, "selected") != 0, cx = *name ? x + tw + 2 : x;
+  { const char *pl = v_pstr("overlay.regions.field.plate"); v_region("field", LAYER_PAINTED); if (*pl) v_sprite("field", pl, r[0], r[1], r[2], r[3]); }   /* the name well (fix 2 F4): the well master, 1:1 */
+  v_region("field", LAYER_CHROME);
+  v_rect("field.selection", x - 4, v_sk(N, "regions.field.nameAt", 1), selected ? tw + 8 : 0, selected ? v_si(N, "regions.field.line", 36) : 0, v_scol(N, "colours.field.selection"));
+  v_rect("field.caret", cx, v_sk(N, "regions.field.nameAt", 1) + 4, caret ? 2 : 0, caret ? 28 : 0, v_scol(N, "colours.field.caret"));
+  v_region("field", LAYER_TYPE); v_line_at("field.name", name, x, v_si(N, "regions.field.lineTop", 70), V_ANCHOR_LINE, px, v_scol(N, "colours.field.name"), V_ALIGN_LEFT);
+}
+static void build_say(void) {
+  int r[4]; v_srect(N, "regions.say.rect", r); const char *t = v_pstr("overlay.regions.say.text"); int px = v_si(N, "regions.say.px", 16);
+  v_region("say", LAYER_TYPE); v_line_at("say.text", t, v_sk(N, "regions.say.at", 0), v_si(N, "regions.say.lineTop", 122), V_ANCHOR_LINE, px, v_scol(N, strcmp(v_pstr("overlay.regions.say.tone"), "refused") == 0 ? "colours.say.refused" : "colours.say.reason"), V_ALIGN_LEFT);
+}
+typedef struct { const char *cur; int dim; } keys_t;
+static void key_tile(int i, const int r[4], void *ctx) {
+  const keys_t *k = ctx; const char *label = v_pstr(v_fmt("overlay.regions.keys.labels.%d", i)); if (!*label) return;   /* not drawn on this page: no node, no target */
+  char id[24]; snprintf(id, sizeof id, "key.%d", i);
+  key_face(id, "keys", r, strcmp(k->cur, id) == 0, v_scol(N, "colours.key.fill"), label, v_scol(N, k->dim ? "colours.key.labelDim" : "colours.key.label"));
+}
+static void build_keys(void) { keys_t k = { cur(), v_pbool("overlay.regions.keys.dim", 0) }; kit_tiles(N, "regions.keys", KEYS, key_tile, &k, NULL); }
+static void build_mods(void) {
+  const char *c = cur(); int r[4], on = v_pbool("overlay.regions.shift.on", 0), full = v_pbool("overlay.regions.space.dim", 0), doneDim = v_pbool("overlay.regions.done.dim", 0); char s[40];
+  v_srect(N, "regions.shift.rect", r); spec_str(N, "strings.keys.shift", s, sizeof s); key_face("shift", "shift", r, strcmp(c, "mod.shift") == 0, v_scol(N, on ? "colours.key.on" : "colours.key.fill"), s, v_scol(N, "colours.key.label"));
+  v_srect(N, "regions.space.rect", r); spec_str(N, "strings.keys.space", s, sizeof s); key_face("space", "space", r, strcmp(c, "mod.space") == 0, v_scol(N, "colours.key.fill"), s, v_scol(N, full ? "colours.space.labelDim" : "colours.space.label"));
+  v_srect(N, "regions.page.rect", r); key_face("page", "page", r, strcmp(c, "mod.page") == 0, v_scol(N, "colours.key.fill"), v_pstr("overlay.regions.page.label"), v_scol(N, "colours.key.label"));
+  v_srect(N, "regions.suggest.rect", r); spec_str(N, "strings.keys.suggest", s, sizeof s); key_face("suggest", "suggest", r, strcmp(c, "act.suggest") == 0, v_scol(N, "colours.key.fill"), s, v_scol(N, "colours.key.label"));
+  v_srect(N, "regions.done.rect", r); spec_str(N, "strings.keys.done", s, sizeof s); key_face("done", "done", r, strcmp(c, "act.done") == 0, v_scol(N, "colours.key.fill"), s, v_scol(N, doneDim ? "colours.done.labelDim" : "colours.done.label"));
+}
+/* the ring over the focused target, lifted 2 px: 5 px outside its key as drawn (50 x 50 on a 48 pitch over 40 px keys) */
+static void build_ring(void) {
+  const char *c = cur(); int box[4]; if (!*c || anim_holding()) return; target_rect(c, box); if (box[2] <= 0) return; box[1] -= v_si(N, "focus.targets.key.lift", 2);
+  v_region("focus", LAYER_CHROME); word_focusRing("focus", N, "focus.targets.key", box);   /* every namer target wears the key's shape (the other targets' names hold a dot and no path reaches them) */
+}
+void namer_words(void) { build_panel(); build_field(); build_say(); build_keys(); build_mods(); build_ring(); }
+
+/* the targets the props list, in their order, with the boxes the words gave them */
+int namer_focus(focus_target_t *out, int cap) {
+  int n = v_plen("overlay.focus.targets"); if (n > cap) n = cap;
+  for (int i = 0; i < n; i++) {
+    focus_target_t *t = &out[i]; focus_fill(t, "overlay.focus.targets", i, NULL);
+    int r[4]; target_rect(t->id, r); focus_fill(t, "overlay.focus.targets", i, r);
+  }
+  return n;
+}
+/* a key while the namer is open: ✓ and ← and the room keys say an intent for the namer's target (screen "namer"); the pad moves the ring by namer.json focus.graph and says `focus` */
+void namer_key(int code) { screens_key_graph(code, N, "focus.graph", namer_focus, NULL, &(screens_keys_t){ .cur_path = "overlay.focus.cur" }); }
