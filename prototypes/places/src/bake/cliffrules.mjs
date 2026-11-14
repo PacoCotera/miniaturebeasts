@@ -82,5 +82,10 @@ export function rimOf(ir, A, isCliff) {
   applyRules(R_RIM, work, {});
   const rim = work.layers.get('rim'), out = new Uint8Array(W * H), empty = T('rim-empty'), fillT = T('rim-fill');
   if (rim) for (let i = 0; i < out.length; i++) out[i] = rim[i] === empty ? 1 : rim[i] === fillT ? 2 : 0;
+  // A straight side wall: the fill-only tile at the vertex between two raised cells and two low cells reaches half a cell (24 px) over the low ground, past the wall's outer edge where the wall's rock is narrower. The tile is not drawn there (the wall's pieces draw the edge; the low ground shows beyond it); the raised cells keep their own fill.
+  const low = (x, y) => !isCliff(x, y), high = (x, y) => isCliff(x, y);
+  for (let y = 1; y < H; y++) for (let x = 1; x < W; x++) if (out[y * W + x] === 2) {
+    if ((high(x - 1, y - 1) && high(x - 1, y) && low(x, y - 1) && low(x, y)) || (high(x, y - 1) && high(x, y) && low(x - 1, y - 1) && low(x - 1, y))) out[y * W + x] = 1;
+  }
   return out;
 }
