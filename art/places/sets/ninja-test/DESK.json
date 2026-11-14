@@ -2476,35 +2476,30 @@
     "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/fill-grass-raised-day.png",
     "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002"
   },
-  "over-cliff.png": {
+  "cliff-back-1.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (the back slots 1, 2, 3, 7, 11 from the paid raw, the other slots the earlier sheet's cells; the whole chain is in over-cliff.steps.json)",
-    "sha256": "92c8f6d7be3fd065008fe8b5a438919ca2c134019207e04b40df195d91e3d96e"
+    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-1.steps.json)",
+    "sha256": "cf33014bb92f6bfd5043ceab1557c2716fec79fcf7b3547e77e2bae3a43fe76a"
   },
-  "over-cliff~s1.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s1.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "d5083fc7bc6820d84c1e921bd9e28cd9508e9d315954fb704b760ce8f2e4fe81"
+  "cliff-back-2.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-2.steps.json)",
+    "sha256": "06630294206c52112bab97779212d7229e7b7f1f0f34fae3098f55b36d7560aa"
   },
-  "over-cliff~s2.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s2.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "0ff411645574f152ea3a0e310e104ab140638e9c99ab60e003ef0bca4cb1f00d"
+  "cliff-back-3.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-3.steps.json)",
+    "sha256": "da1b0555d543a72ee9b84d5adc4b3f5ff938b41dd9d4b8f71ac028d35f90426a"
   },
-  "over-cliff~s3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff~s3.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "b00c485fb7f12a0009e192a3fa206b94568b918addb991dc0d5fc1a9fde29116"
+  "cliff-back-7.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-7.steps.json)",
+    "sha256": "a53e6622b919948ee65b9cf2efb4344bb8ae6f7c5afacf18f4141cc1556bed4d"
   },
-  "over-cliff-face2~s3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff-face2~s3.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "a95b0a102fd5763901cecae2c16fab984d8cee039d41301931ea8e23e0a1c548"
-  },
-  "over-cliff-face3~s3.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles/over-cliff-face3~s3.png recut (prototypes/places/tools/recut) recoloured keyed",
-    "sha256": "e77303138b3884fe500cd20eb1cce0d967c313549e50df94c6fdd7dfa2eb336c"
+  "cliff-back-11.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-11.steps.json)",
+    "sha256": "9f482e1c46a6ffc07d6426ee2db2d223b03e93cc662d7f22bcaeb97c33948726"
   },
   "wayup-cliff-grass.png": {
     "commit": "704373a58",

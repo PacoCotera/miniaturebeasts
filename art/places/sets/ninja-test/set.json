@@ -222,12 +222,6 @@
         {
           "kind": "bank",
           "lowers": ["earth", "sand", "path", "grass", "litter", "drygrass", "turf", "scree"],
-          "sheets": ["over-cliff.png"],
-          "tall": {
-            "1": ["over-cliff~s1.png"],
-            "2": ["over-cliff~s2.png"],
-            "3": ["over-cliff~s3.png", "over-cliff-face2~s3.png", "over-cliff-face3~s3.png"]
-          },
           "back": {
             "1": "cliff-back-1.png",
             "2": "cliff-back-2.png",

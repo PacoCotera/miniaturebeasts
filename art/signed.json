@@ -87,6 +87,41 @@
   },
   {
    "class": "paint",
+   "date": "2026-11-14",
+   "id": "c55af555e4",
+   "path": "art/places/sets/ninja-test/cliff-back-1.png",
+   "sha256": "cf33014bb92f6bfd5043ceab1557c2716fec79fcf7b3547e77e2bae3a43fe76a"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "6414224da0",
+   "path": "art/places/sets/ninja-test/cliff-back-11.png",
+   "sha256": "9f482e1c46a6ffc07d6426ee2db2d223b03e93cc662d7f22bcaeb97c33948726"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "e080068bcf",
+   "path": "art/places/sets/ninja-test/cliff-back-2.png",
+   "sha256": "06630294206c52112bab97779212d7229e7b7f1f0f34fae3098f55b36d7560aa"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "6b2677605e",
+   "path": "art/places/sets/ninja-test/cliff-back-3.png",
+   "sha256": "da1b0555d543a72ee9b84d5adc4b3f5ff938b41dd9d4b8f71ac028d35f90426a"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-14",
+   "id": "8f7d66b8a3",
+   "path": "art/places/sets/ninja-test/cliff-back-7.png",
+   "sha256": "a53e6622b919948ee65b9cf2efb4344bb8ae6f7c5afacf18f4141cc1556bed4d"
+  },
+  {
+   "class": "paint",
    "date": "2026-11-13",
    "id": "af8f246d67",
    "path": "art/places/sets/ninja-test/cliff-corner-e-0.png",

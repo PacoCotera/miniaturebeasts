@@ -87,7 +87,7 @@ test('palette: at most 208 colours, light tables of 256 entries, every drawn col
     assert.ok(m.every((v) => Number.isInteger(v) && v >= 0 && v < 256));
   }
   const have = new Set(palette.colours);
-  const layerFiles = Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.full ? [k.full] : []), ...Object.values(k.looks || {}).flat(2)])]);
+  const layerFiles = Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...(k.sheets || []), ...(k.full ? [k.full] : []), ...Object.values(k.looks || {}).flat(2)])]);
   const names = [...layerFiles, ...Object.values(set.layers).flatMap((l) => (l.over || []).flatMap((k) => [...Object.values(k.tall || {}).flat(), ...Object.values(k.wayup || {})])), ...set.tone.sheets, set.tone.raised, set.spriteSheet];
   for (const f of names) {
     const img = loaded.png(f);
@@ -127,7 +127,7 @@ test('layers: every kind has 16 slots in whole sheets, slot 0 empty, slot 15 equ
     for (const f of l.fill ? l.fill.sheets : []) assert.equal(loaded.png(f).h, t, f);
     if (l.fill && l.fill.sheets.length > 1) assert.ok(l.fill.frameMs >= 16, id + ' fill animation has a frame time');
     for (const [ki, k] of (l.over || []).entries()) {
-      for (let f = 0; f < k.sheets.length; f++) {
+      for (let f = 0; f < (k.sheets || []).length; f++) {
         assert.deepEqual([loaded.png(k.sheets[f]).w, loaded.png(k.sheets[f]).h], [4 * t, 4 * t], k.sheets[f]);
         const tiles = layerTiles(loaded, id, ki, f);
         assert.equal(tiles.length, 16);
@@ -166,7 +166,7 @@ test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.j
 
 test('layers: the baked rows list fills and kinds first, then the extras, then the tone row', () => {
   const rows = layerRows(set);
-  assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'tall', 'wayup', 'back', 'tone', 'toneraised']);
+  assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'wayup', 'back', 'tone', 'toneraised']);
   assert.equal(rows.filter((r) => r.type === 'fill').length, Object.values(set.layers).filter((l) => l.fill).length);
   assert.equal(rows.filter((r) => r.type === 'over').length, Object.values(set.layers).flatMap((l) => l.over || []).length);
   assert.deepEqual(rows.slice(-2).map((r) => r.type), ['tone', 'toneraised']);

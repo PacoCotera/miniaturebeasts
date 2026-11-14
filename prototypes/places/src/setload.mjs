@@ -87,7 +87,7 @@ export function layerRows(set) {
   const rows = [], layers = set.layers || {};
   for (const [id, l] of Object.entries(layers)) {
     if (l.fill) rows.push({ type: 'fill', terrain: id, sheets: l.fill.sheets });
-    (l.over || []).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets }));
+    (l.over || []).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));
   }
   for (const [id, l] of Object.entries(layers)) {
     for (const k of l.over || []) {

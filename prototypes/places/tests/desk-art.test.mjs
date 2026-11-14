@@ -38,7 +38,7 @@ test('every map picture is in the new map palette: no pastel colour is left', ()
 });
 
 test('the terrain layers are signed pieces: every layer file is recorded, fills say which sheet they were cut from, thicket and cliff come keyed, the reed look is gone', () => {
-  const files = [...Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...k.sheets, ...(k.variants || []), ...(k.full ? [k.full] : [])])]), ...set.tone.sheets];
+  const files = [...Object.values(set.layers).flatMap((l) => [...(l.fill ? l.fill.sheets : []), ...(l.over || []).flatMap((k) => [...(k.sheets || []), ...(k.variants || []), ...(k.full ? [k.full] : [])])]), ...set.tone.sheets];
   assert.equal(new Set(files).size, files.length);
   for (const f of files) assert.ok(desk[f], f + ' is not recorded in DESK.json');
   const from = (f) => desk[f].from;
@@ -59,7 +59,9 @@ test('the terrain layers are signed pieces: every layer file is recorded, fills 
   assert.equal(set.tone.raised, 'tone-grass-raised.png');
   for (let k = 1; k <= 6; k++) { assert.equal(desk[`cliff-south-${k}.png`].commit, 'local'); assert.deepEqual(set.decals[`cliff-south-${k}`].anchor, [0, 0]); assert.deepEqual(set.decals[`cliff-south-${k}`].rect.slice(2), [48, 288]); }
   assert.match(from('over-thicket.png'), / keyed$/);
-  assert.deepEqual(set.layers.cliff.over[0].tall['3'].length, 3, 'the cliff face at s = 3 has three variants');
+  assert.equal(set.layers.cliff.over[0].sheets, undefined, 'the old unsigned over-cliff sheets are retired');
+  assert.equal(set.layers.cliff.over[0].tall, undefined);
+  assert.ok(!Object.keys(desk).some((n) => n.startsWith('over-cliff')));
   assert.equal(set.layers.sand.over[0].looks, undefined, 'the reed look of the beach is gone: the reeds are sprites (reeds.mjs)');
   assert.equal(set.layers.grass.over[0].looks, undefined);
   assert.ok(!Object.keys(desk).some((n) => n.startsWith('looks-reeds')));
@@ -76,17 +78,6 @@ test('the biome grounds are the art director\'s signed skins (8c0ddc470): the ov
     assert.deepEqual(tile(0), tile(2)); assert.deepEqual(tile(1), tile(3)); assert.notDeepEqual(tile(0), tile(1)); assert.notDeepEqual(tile(7), tile(0));
   }
   assert.deepEqual(set.layers.thicket.over[0].lowers.filter((x) => ['drygrass', 'turf', 'scree'].includes(x)), ['drygrass', 'turf', 'scree'], 'the thicket rim lies over the biome grounds it meets');
-});
-
-test('the cliff sheets are the re-cut ones in the map palette: the placed file is the recut sheet (tools/recut) recoloured with the soft shade keyed', () => {
-  const recutDir = path.join(here, '..', 'tools', 'recut');
-  let n = 0;
-  for (const [name, d] of Object.entries(desk)) {
-    if (!d.from.includes(' recut (')) continue;
-    n++;
-    assert.deepEqual(img(name).data, keyShade(recolour(decodePng(readFileSync(path.join(recutDir, name))))).data, name);
-  }
-  assert.ok(n >= 6);
 });
 
 test('the tone layer is the sunlit step: one colour, lighter than the grass fill, no dark patch', () => {

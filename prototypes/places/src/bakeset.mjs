@@ -79,6 +79,7 @@ export function bakeTileSet(loaded, terrains) {
     }
     if (r.type === 'over') {
       const frames = r.sheets.map((_, f) => layerTiles(loaded, r.terrain, r.kind, f, true).map(slotFor));
+      if (!frames.length) return { lower: 0, upper: T, mode: 'over', tiles: Array(16).fill(EMPTY_TILE), fullVariants: [], emptyVariants: [] };   // a kind with no sheet (the cliff bank: its pieces are the back, tall-free faces and way-ups): the row stays, empty
       return { lower: 0, upper: T, mode: 'over', tiles: sixteen(frames, kind.frameMs || 0), fullVariants: kindFullTiles(loaded, r.terrain, r.kind, true).map((img) => tileId([slotFor(img)], 0)), emptyVariants: [] };
     }
     if (r.type === 'tone') {

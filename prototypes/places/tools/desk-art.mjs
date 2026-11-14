@@ -44,7 +44,6 @@ export const STONE_SET = {
 };
 export const BOULDERS = ['boulder-a', 'boulder-d', 'boulder-e'];
 export const SAND = applied('art-paint-terrain-sand', ''), MEADOW1 = applied('art-paint-terrain-meadow', ''), MEADOW2 = MEADOW1, THICKET = applied('art-paint-terrain-thicket', 'tiles');
-export const CLIFF3 = { commit: DC, dir: 'art-jobs/2026-11-10-art-paint-terrain-cliff/out/tiles' };   // the cliff sheets are the re-cut ones (tools/recut); the commit and folder are the label of their source
 export const SCRUBJOB = applied('art-paint-terrain-thicket', 'tiles'), RIPPLE = applied('art-paint-water-ripple', 'tiles');
 // the biome grounds (art director, mibi-art art/desk 8c0ddc470, art-jobs/2026-11-10-art-biome-<family>/out/tiles/): leaf litter (Woods, Tallwood), dry grass (Thickets), short turf (Hills), scree (Cliffs, Highpools).
 // Each is a 64 x 64 corner sheet over the grass and three 16 x 16 fills (v0, v1 and the rare detail v2), the desk's files byte for byte; the over sheet's name is the manifest's (dry grass: the phase 2 sheet).
@@ -136,11 +135,7 @@ export function deskLayers() {
   const place = (c, src, as) => rec(c, as, `${c.dir}/${src}`, show(c, src));
   const scrubPlace = (src, as) => rec(SCRUBJOB, as, `${SCRUBJOB.dir}/${src} scrub ground (${SCRUB_FROM} to ${SCRUB_GROUND})`, Buffer.from(encodePng(mapColour(decodePng(show(SCRUBJOB, src)), SCRUB_FROM, SCRUB_GROUND))));
   const keyed = (c, src, as) => rec(c, as, `${c.dir}/${src} keyed`, Buffer.from(encodePng(keyShade(decodePng(show(c, src))))));
-  // the cliff sheets re-cut from the desk's painted island (tools/recut/README.md), then the map palette's colour map, shade keyed as the desk's own are
-  const recutImg = (src) => recolour(decodePng(readFileSync(path.join(here, 'recut', src))));
-  const backSheet = (name) => rec({ commit: 'local' }, name, `${BACK_FROM} (the back slots 1, 2, 3, 7, 11 from the paid raw, the other slots the earlier sheet's cells; the whole chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
   const backTile = (name) => rec({ commit: 'local' }, name, `${BACK_FROM} (one whole 16 px cell of the paid raw, meadow keyed; the chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
-  const recut = (src, as) => rec(CLIFF3, as, `${CLIFF3.dir}/${src} recut (prototypes/places/tools/recut) recoloured keyed`, Buffer.from(encodePng(keyShade(recutImg(src)))));
   const fillFrom = (c, src, as) => rec(c, as, `${c.dir}/${src}#15`, Buffer.from(encodePng(slot15(decodePng(show(c, src))))));
   // water: four frames, each a strip of the four fill variants v0..v3 (v0 and v2 blank, v1 and v3 glinted), laid side by side, no pixel changed
   const frameStrip = (c, f, as) => {
@@ -199,9 +194,8 @@ export function deskLayers() {
     cliff: {
       fill: { sheets: [place(RAISED, 'fill-grass-raised-day.png', 'fill-cliff.png')] },   // the raised meadow ground: every raised cell that is no old face
       over: [{
-        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [backSheet('over-cliff.png')],   // the back rim slots 1, 2, 3, 7, 11 are cut from the paid raw of cliff-lip-back-rd-1; the other slots are the old recut sheet's cells (over-cliff.steps.json)
-        tall: { 1: [recut('over-cliff~s1.png', 'over-cliff~s1.png')], 2: [recut('over-cliff~s2.png', 'over-cliff~s2.png')], 3: ['over-cliff~s3.png', 'over-cliff-face2~s3.png', 'over-cliff-face3~s3.png'].map((n) => recut(n, n)) },
-        back: Object.fromEntries([1, 2, 3, 7, 11].map((n) => [n, backTile(`cliff-back-${n}.png`)])),   // the back edge's five cases, each its own file (the rim slots of the sheet no longer draw)
+        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'],   // no sheet: the old over-cliff sheets were unsigned and drew nowhere (art director 2026-11-14 02:24); the kind's pieces are the back cells and the way-ups
+        back: Object.fromEntries([1, 2, 3, 7, 11].map((n) => [n, backTile(`cliff-back-${n}.png`)])),   // the back edge's five cases, each its own file
         wayup: { grass: keyed(WAYUP, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: keyed(WAYUP, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },   // keyed as the cliff sheets are (the soft cast shade made transparent, art director ruling 2026-11-09)
       }],
     },
