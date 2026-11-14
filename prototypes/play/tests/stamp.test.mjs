@@ -1,7 +1,7 @@
 // The play page's build stamp (src/stamp.mjs): build.json's UTC time shown in Mexico City time, whatever the viewer's zone.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mexicoCity, stampText } from "../src/stamp.mjs";
+import { mexicoCity, stampText, aboutText } from "../src/stamp.mjs";
 
 test("the built time in Mexico City, 24-hour: a winter and a summer date", () => {
   assert.equal(mexicoCity("2026-01-15T18:30:00Z"), "2026-01-15 12:30 Mexico City");
@@ -13,4 +13,11 @@ test("the stamp's line", () => {
   assert.equal(stampText({ commit: "a9d087f9aa", built: "2026-12-01T06:00:00Z" }), "build a9d087f · 2026-12-01 00:00 Mexico City");
   assert.equal(stampText({ short: "a9d087f" }), "build a9d087f");
   assert.equal(stampText(null), "build local");
+});
+
+test("the Options about line: number, milestone name, Mexico City time", () => {
+  assert.equal(aboutText({ version: "0.32.2", built: "2026-11-13T22:25:00Z" }), "0.32.2 · 2026-11-13 16:25 Mexico City");
+  assert.equal(aboutText({ version: "1.0.0", name: "First Light", built: "2026-12-01T06:00:00Z" }), '1.0.0 "First Light" · 2026-12-01 00:00 Mexico City');
+  assert.equal(aboutText({ short: "a9d087f" }), "");
+  assert.equal(aboutText(null), "");
 });

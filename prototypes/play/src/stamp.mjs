@@ -12,6 +12,13 @@ export function mexicoCity(iso) {
   return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute} Mexico City`;
 }
 
+// The Options panel's about line: `0.32.2 "Name" · 2026-11-13 16:25 Mexico City` (the name only on a milestone release); "" with no build.json or an older one with no number.
+export function aboutText(j) {
+  if (!j || !j.version) return "";
+  const t = mexicoCity(j.built);
+  return j.version + (j.name ? ` "${j.name}"` : "") + (t ? " · " + t : "");
+}
+
 export function stampText(j) {
   const short = j && (j.short || String(j.commit || "").slice(0, 7));
   if (!short) return "build local";

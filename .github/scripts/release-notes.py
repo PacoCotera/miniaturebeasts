@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Release title and notes from the merged pull request behind a commit.
 
-usage: release-notes.py <sha> <title-out> <notes-out> [--repo owner/name] [--pr-json file]
+usage: release-notes.py <sha> <title-out> <notes-out> [--repo owner/name] [--pr-json file] [--build-json file]
+
+With --build-json (the site's build.json) the title is the release number:
+X.Y.Z "Name" · YYYY-MM-DD HH:MM (Mexico City), and the pull request's title
+becomes the first line of the notes.
 
 Title: the pull request's title. Notes: its "## What changed" list (and
 "## Shown as stand-ins for now" when present); a body without those headings is
@@ -15,6 +19,7 @@ import re
 import subprocess
 import sys
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 KEEP_HEADINGS = ("what changed", "shown as stand-ins for now")
 # Words that never belong in public notes.
@@ -75,6 +80,11 @@ def main():
     argv = sys.argv[1:]
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     pr_json = None
+    build_json = None
+    if "--build-json" in argv:
+        i = argv.index("--build-json")
+        build_json = argv[i + 1]
+        del argv[i:i + 2]
     if "--repo" in argv:
         i = argv.index("--repo")
         repo = argv[i + 1]
@@ -107,6 +117,13 @@ def main():
     else:
         day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         title, notes = f"Update {day}", note
+    if build_json:
+        # the release is named by its number: X.Y.Z "Name" · date time (Mexico City); the pull request's title leads the notes
+        b = json.load(open(build_json))
+        when = datetime.fromisoformat(b["built"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Mexico_City"))
+        name = f' "{b["name"]}"' if b.get("name") else ""
+        notes = f"{title}\n\n{notes}"
+        title = f'{b["version"]}{name} · {when:%Y-%m-%d %H:%M}'
     open(title_out, "w").write(title + "\n")
     open(notes_out, "w").write(notes + "\n")
 
