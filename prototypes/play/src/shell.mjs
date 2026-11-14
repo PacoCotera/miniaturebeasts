@@ -8,7 +8,7 @@
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX, ARM, CROSS_ROW, ROWH } from "./fit.mjs";   // the size: z device px per lp and its tier
 import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, dockReserve, DOCK_KEY_H, DOCK_KEY_GAP, PHONE_BAR, PHONE_PAD } from "./phone.mjs";   // the phone: one device whole, its keys in the viewport
-import { stampText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
+import { stampText, aboutText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
 import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
 import { mountOptions, T } from "../vendor/options.js";   // the Options panel and the play note: React + Radix, built from play/options (npm run build there)
@@ -705,7 +705,7 @@ function layoutNoteCtl(rightEdge, x, narrow) {   // after Options in the bar whe
 }
 notes = mountOptions($("optionsRoot"), {
   host: noteHost,
-  trigger: optionsBtn, read: readOptions, names: Object.keys(NAME_LISTS), places: PLACES,
+  trigger: optionsBtn, read: readOptions, about: () => aboutText(buildInfo), names: Object.keys(NAME_LISTS), places: PLACES,
   onChange: (patch) => { writeOptions(patch); if ("dev" in patch) applyDev(patch.dev); },
   onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
   onStartFresh: () => { saveHome(false); try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
