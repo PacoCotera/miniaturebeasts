@@ -1947,7 +1947,7 @@
       0,
       0
     ],
-    "sha256": "77f26e05c07b892ca2560ce7cd35990709e16a9b29259a208207d5a58d46b8ae"
+    "sha256": "f262060b6a2cb6298abaab31f7da89fdb8aa5aecbe1b7cb86d33c1e136f1e189"
   },
   "cliff-south-2.png": {
     "commit": "local",
@@ -1960,7 +1960,7 @@
       0,
       0
     ],
-    "sha256": "9e5c29cca061ce6cba8992df75f34a27b3b6455b3ba11cd973f816bbeb7ab53b"
+    "sha256": "fd9c88cd48883f5340862d2e1a8b98d4d928cab37e55b055946d8536f0a28e5c"
   },
   "cliff-south-3.png": {
     "commit": "local",
@@ -1973,7 +1973,7 @@
       0,
       0
     ],
-    "sha256": "0caa9efc34d3573b094afcb9a9502bf47ab02ac7007a03f39b970cbcf2bb6a57"
+    "sha256": "be30177dc67fb6bd016ec1d0199c502bdb5759c9322c5403de326ed689be8c92"
   },
   "cliff-south-4.png": {
     "commit": "local",
@@ -1999,7 +1999,7 @@
       0,
       0
     ],
-    "sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48"
+    "sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd"
   },
   "cliff-south-6.png": {
     "commit": "local",
@@ -2038,7 +2038,7 @@
       0,
       0
     ],
-    "sha256": "a56fced2c4e6693ef3bcff0045cd625b028873f27fd6dadc0d0c0cefb4becffa"
+    "sha256": "bac50147b9d0dbc665f9c74a1db162068946c2837c244d5d13eb107d812b6c24"
   },
   "cliff-corner-e-2.png": {
     "commit": "local",
@@ -2051,7 +2051,7 @@
       0,
       0
     ],
-    "sha256": "809d73705fc61dfff81bcaa7e5d66d195aab02dcb5b1b60e8656b8c716c0821a"
+    "sha256": "03de99905206fe15f071431e21b31cc1e91c98c248748e0d4a65a17ecc518428"
   },
   "cliff-corner-e-3.png": {
     "commit": "local",
@@ -2064,7 +2064,7 @@
       0,
       0
     ],
-    "sha256": "5aaf5715a726813a220595cbd4ae50dc20de1358e1b0fe2a51b87c3eab730831"
+    "sha256": "25af1d6c8cfaa9d7d1170b07ac5a7e94aa595c6ce1509a5b5565005f1c21d423"
   },
   "cliff-corner-e-4.png": {
     "commit": "local",
@@ -2077,7 +2077,7 @@
       0,
       0
     ],
-    "sha256": "a8b31a99d21abde6e2ae4de3672cb2b0671d5c926c0075ed153dba7216cc1398"
+    "sha256": "831e72ed738427ca15f8e1bbca146f1994ee265186189ed947df44f0298eb957"
   },
   "cliff-corner-e-5.png": {
     "commit": "local",
@@ -2116,7 +2116,7 @@
       0,
       0
     ],
-    "sha256": "054046a736de01cfc0fff6c4dbbe867505248736156dfe3eda75c795f19e3f00"
+    "sha256": "cc27f2b0051cb00422e745c77e0addd63c0f2d792611f7693098b1c13fe74d94"
   },
   "cliff-corner-w-2.png": {
     "commit": "local",
@@ -2129,7 +2129,7 @@
       0,
       0
     ],
-    "sha256": "8f42990cca32330dfd57910bb1a5cc0c1f636a7d6f957b9fabeb1f0bea91af1b"
+    "sha256": "28a1b32dbbda28a2491f4ce6b002e05aad31374b43a64675893e83a9bfd36e5d"
   },
   "cliff-corner-w-3.png": {
     "commit": "local",
@@ -2142,7 +2142,7 @@
       0,
       0
     ],
-    "sha256": "a9ad4d5ff8ee8b73b0e9efd04cb0f63bed454df3c9a212844342395ee7cee45e"
+    "sha256": "14c2f879c8779123a3f70f894227f01f1db2c16e73931bb908964965b6ff1613"
   },
   "cliff-corner-w-4.png": {
     "commit": "local",
@@ -2155,7 +2155,7 @@
       0,
       0
     ],
-    "sha256": "100305881f97f7a95d7ad13fee4ea327fb8b5f0cb9926c4caf6277110100b9e4"
+    "sha256": "ba90b65ab491e30a8b182da88625a7106eb59dc2afbae69bd9ffbfef5e6928c1"
   },
   "cliff-corner-w-5.png": {
     "commit": "local",
@@ -2181,7 +2181,7 @@
       0,
       0
     ],
-    "sha256": "5af340df0ff3975c9af9146f02534b830ef976022a3e57d119beea0e728663e2"
+    "sha256": "2e8521467f0ad8d5a81aecb2863c6634abb581f8f4fb8c44aaa329f75b5a1871"
   },
   "cliff-flank-band-e.png": {
     "commit": "local",
@@ -2194,7 +2194,7 @@
       0,
       0
     ],
-    "sha256": "29df491f6db71e9984873ad12c48f4438eb77a0c1e68944d2f8103c936ef39a5"
+    "sha256": "c0b3da03cca6e6c8eaa797fdd855af3f0abdfa81c169e19c9215543cfa8a6414"
   },
   "cliff-flank-tail-e.png": {
     "commit": "local",
@@ -2207,7 +2207,7 @@
       0,
       0
     ],
-    "sha256": "f043a1458df9571d7c7f875cb27e4e4897ad51592da059ea6d3aab290228e683"
+    "sha256": "c7465441e48d359efcf5344fe3bfaf55d49c5f43285ebd7df671c901cae9cb79"
   },
   "cliff-flank-head-w.png": {
     "commit": "local",
@@ -2220,7 +2220,7 @@
       0,
       0
     ],
-    "sha256": "c7bd2bfdf63899f9aeb1847da2594921d17a929faea6c701d431943ecfecb44c"
+    "sha256": "8850157010b850c44c5c98e42cfa19049b0801221427afd7b58e2b4f9f675ad2"
   },
   "cliff-flank-band-w.png": {
     "commit": "local",
@@ -2233,7 +2233,7 @@
       0,
       0
     ],
-    "sha256": "526cca5578660a2097ff3cba0261c4282092c34d5b3b17f040a379c056eb94fb"
+    "sha256": "13f6e741b21072a9fcdec0b38518a69a66cf3a4c7e2c486ee4ea0730d3ce9b81"
   },
   "cliff-flank-tail-w.png": {
     "commit": "local",
@@ -2246,7 +2246,7 @@
       0,
       0
     ],
-    "sha256": "c4364b37cd56133dbf2332fdf5ab53befaca43e03ccda47f79d6509873f637b1"
+    "sha256": "8ddfeecc5677222761d978851b612c5ee1470d7e1bf94e60dbffd92b8b7a422b"
   },
   "cliff-end1-e.png": {
     "commit": "local",
@@ -2415,7 +2415,7 @@
       0,
       0
     ],
-    "sha256": "f80a29bd96de6f28c298e397cc809862ce1c7192b9ab089fa2b090d366720074"
+    "sha256": "66bc1b9463de3266336d768f85408322d187c55286a5d2dbb5b75078023ed820"
   },
   "fill-deep.png": {
     "commit": "633e4d641",
@@ -2589,34 +2589,34 @@
     "sha256": "96221b8d08309033487891ed69c3efb6504dcb7a0ed66052fd3374548dec516b"
   },
   "fill-cliff.png": {
-    "commit": "2bc909714",
+    "commit": "local",
     "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/fill-grass-raised-day.png",
-    "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002"
+    "sha256": "d4721a84412f1dac67b66d87c1a2879444daf5192d897de46b80e1b469d118f3"
   },
   "cliff-back-1.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-1.steps.json)",
-    "sha256": "cf33014bb92f6bfd5043ceab1557c2716fec79fcf7b3547e77e2bae3a43fe76a"
+    "sha256": "36ecf86f001302532e6d5b6590aa3e47abbf9a9467c7356b728dc187980fb8c2"
   },
   "cliff-back-2.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-2.steps.json)",
-    "sha256": "06630294206c52112bab97779212d7229e7b7f1f0f34fae3098f55b36d7560aa"
+    "sha256": "9361411cb5cc5bd9559cfda07811ef8048f3e8b5a85252098b54b477c21be438"
   },
   "cliff-back-3.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-3.steps.json)",
-    "sha256": "da1b0555d543a72ee9b84d5adc4b3f5ff938b41dd9d4b8f71ac028d35f90426a"
+    "sha256": "4338f549a887b7006719e56bb940d472502d78f7d9c615bc74f7d70e51798742"
   },
   "cliff-back-7.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-7.steps.json)",
-    "sha256": "a53e6622b919948ee65b9cf2efb4344bb8ae6f7c5afacf18f4141cc1556bed4d"
+    "sha256": "2bc209f0dc7a323cc53258fef8b243028d833c00299a75d43071ded5ec3d10af"
   },
   "cliff-back-11.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-11.steps.json)",
-    "sha256": "9f482e1c46a6ffc07d6426ee2db2d223b03e93cc662d7f22bcaeb97c33948726"
+    "sha256": "fe221ad77a164679446e23d5d1811035ebe7e48e680251331fdbe17320fd19e8"
   },
   "wayup-cliff-grass.png": {
     "commit": "704373a58",
