@@ -1,4 +1,4 @@
-// Stills of the cliff cases of the cliff spec (map-system-audit-1 cliff-spec.md section 5), walking zoom (48 px a tile, 450 x 532), day and night, 1x and 4x, drawn by the game's own bake and renderer.
+// Stills of the cliff cases of the cliff spec, walking zoom (48 px a tile, 450 x 532), day and night, 1x and 4x, drawn by the game's own bake and renderer.
 //   node tools/cliff-spec-stills.mjs find <views.json>                         scans seeds 7, 13 and 42 for one view of each case; MB_FACE_BIN=4 or 6 in the environment finds them on the land of that bin width
 //   node tools/cliff-spec-stills.mjs shoot <outDir> <views.json> <tag> [tree]  draws each view; `tree` is another checkout of the game (the "before"), default this one; <tag> is in every file name
 // Cases: e1 e2 e3 (a step of 1 row, of 2 rows, of 3 or more with the side cell above), run4 (a run of exactly 4 between two corners), litter and scree (a face standing on that ground), side1 (a one-cell side),

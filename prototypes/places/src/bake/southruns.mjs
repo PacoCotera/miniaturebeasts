@@ -1,4 +1,4 @@
-// The cliff's face and sides by "rim and face" (map-system-audit-1 cliff-spec.md, sections 3 and 4; architecture-world-map.md), placed from signed pieces only. The pieces, their sizes, anchors and foot lines are the rows of
+// The cliff's face and sides by "rim and face", placed from signed pieces only. The pieces, their sizes, anchors and foot lines are the rows of
 // art/places/pieces.json (relief.mjs reads it); the cell parts (what blocks, what is a flank or an end) are relief.mjs's one function; WHICH piece goes WHERE is the rule maps' (art/places/rules/, run by cliffrules.mjs):
 //   S1..S6   the south columns, top at row L - 2 (L = the run's lip row: the southmost raised row of its columns); the column is (world x + hash(seed, world y of the lip)) mod 6
 //   c0..c4   the corner strip cells (cliff-corner-{e,w}-0..4) on the run's last cells: c4 on the end cell, c3 beside it, then c2, c1, c0 where the run is long enough and no other corner has claimed them
