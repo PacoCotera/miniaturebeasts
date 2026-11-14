@@ -2404,6 +2404,19 @@
     ],
     "sha256": "e92ffe26c85c1e1a68c959998a99c1e9f81c6f75317bdc18b479250bbb6dc9ab"
   },
+  "cliff-way-up-u.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-14-cliff-wayup-2/work/raw/nbp-edit.png (the keyed piece, cut on its own bounding box; the whole chain is in cliff-way-up-u.steps.json)",
+    "size": [
+      213,
+      330
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "c09bbb8572a1280782a5a73a832283ba1c57a0d0099b7e5fd6bdbe689d8bd3e0"
+  },
   "fill-deep.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/sets/pair-deep-water.png#15",

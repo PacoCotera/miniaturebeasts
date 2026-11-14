@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage, scaleNearest } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, END_ROWS, FILL_KIND, FLANK_PARTS, FOOT_KINDS, cornerKind, endKind, flankKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, END_ROWS, FILL_KIND, FLANK_PARTS, FOOT_KINDS, WAYUP_U_KIND, cornerKind, endKind, flankKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -89,7 +89,8 @@ export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-pla
 // the south-face columns: the paid seam edit of cliff-fill-trial-2 (work/raw/step3-seam.png) -> six columns of the seamless strip, through the plain post-step chain; the files sit in the set folder with their sidecars
 export const FLANK_FROM = 'art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png';   // the side wall's paid raw (the art director's pick)
 export const BACK_FROM = 'art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png';   // the back rim's paid raw (Retro Diffusion tileset, task 1f35f995)
-export const FOOT_FROM = 'art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png';   // the foot overlay's paid raw (Nano Banana Pro edit)
+export const WAYUP_U_FROM = 'art-jobs/2026-11-14-cliff-wayup-2/work/raw/nbp-edit.png';   // the way up U's paid raw (call 1, Nano Banana Pro edit)
+export const FOOT_FROM ='art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png';   // the foot overlay's paid raw (Nano Banana Pro edit)
 export const CORNER_FROM ='art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png';
 export const SOUTH_COLUMNS = 6,SOUTH_FROM = 'art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png';
 const SET_DIR = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
@@ -353,6 +354,13 @@ export function deskArt() {
     if (im.w !== 72 || im.h !== 192) throw new Error(`${file}: a foot piece is 72 x 192, this is ${im.w} x ${im.h}`);
     files.set(file, b); decals[kind] = { image: im, anchor: [12, 0] };
     desk[file] = { commit: 'local', from: `${FOOT_FROM} (the keyed foot band, cut on the cell; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [72, 192], foot: [0, 0], sha256: sha(b) };
+  }
+  // the way up U (cliff-wayup-place-1: the paid paint of call 1 of cliff-wayup-2, keyed on its own edge): one 213 x 330 piece, anchored 93 px left and 126 px above the lip row cell of its area
+  {
+    const file = `${WAYUP_U_KIND}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 213 || im.h !== 330) throw new Error(`${file}: the way up U is 213 x 330, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[WAYUP_U_KIND] = { image: im, anchor: [93, 126] };
+    desk[file] = { commit: 'local', from: `${WAYUP_U_FROM} (the keyed piece, cut on its own bounding box; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [213, 330], foot: [0, 0], sha256: sha(b) };
   }
   return { files, props, canopy, decals, desk };
 }

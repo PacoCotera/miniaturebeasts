@@ -145,11 +145,11 @@
       "places": "keyed contact shade and tumbled stones under a south lip, over whatever ground is there: the cell's own column phase (cliff-foot-1..6) under every column and corner cell, cliff-foot-w / cliff-foot-e under the west / east end piece; drawn from the lip row L (rows L to L+3) before the face of its line, so the face covers its top rows; placed, not yet signed"
     },
     {
-      "id": "way-up", "family": "wayup", "state": "empty", "kinds": ["way-up"],
+      "id": "way-up", "family": "wayup", "state": "stand-in", "kinds": ["way-up", "cliff-way-up-u"],
       "anchor": [0, -3], "footprint": [[0, -2], [1, -2], [0, -1], [1, -1], [0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2], [0, 3], [1, 3]],
-      "extent": [-12, -24, 120, 348], "margin": 12,
+      "extent": [-93, -126, 213, 330], "margin": 12,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
-      "places": "two cells wide, six rows walked (L-2 to L+3) on a south run with one plain column each side; the old unsigned way-up tiles stand until it is painted"
+      "places": "two cells wide, six rows walked (L-2 to L+3) on a south run with one plain column each side; the old unsigned way-up tiles stand until it is painted. cliff-way-up-u (the way up U, 213 x 330 game px, placed with its top-left 93 px left of the area and 126 px above its lip row; the paint's own edge, alpha only; stand-in, not signed) is drawn at the foot line of the area's lip row plus 3, after the columns of its line"
     }
   ]
 }

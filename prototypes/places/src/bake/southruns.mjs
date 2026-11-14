@@ -19,6 +19,7 @@ export const END_ROWS = [1, 2];
 export const FLANK_PARTS = ['head', 'band', 'tail'];   // a side wall: its north cell (head), the repeating middle cell (band) and its south cell (tail); each 96 px wide: its own cell and 48 px of the raised cell beside it (its overlap); the west hand is the flip of the east
 export const flankKind = (part, hand) => `cliff-flank-${part}-${hand}`;
 export const FOOT_KINDS = [1, 2, 3, 4, 5, 6].map((k) => `cliff-foot-${k}`).concat(['cliff-foot-w', 'cliff-foot-e']);   // the foot overlay: one per column phase, and one under each hand's end piece; each 72 x 192 (the cell and 12 px of its paint each side), drawn from the lip row under the face
+export const WAYUP_U_KIND = 'cliff-way-up-u';   // the way up U: one 213 x 330 piece (alpha), anchored 93 px left and 126 px above the lip row cell of its area, drawn after the columns of its line
 export const FILL_KIND = 'cliff-fill';   // the signed raised fill (fill-cliff.png) as one whole 48 x 48 cell
 
 // Every cliff decal of a level in draw order: [{ kind, x, y }] in game px, keeping only those that reach the place's picture. The one entry both bakes use.

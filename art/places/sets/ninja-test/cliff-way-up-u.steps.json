@@ -1,0 +1,105 @@
+{
+ "source_sha256": "8302af6358cd85d2c82b8b03dfa1d031afb6026dc11fafd7213ae471fbb24c62",
+ "steps": [
+  [
+   "scale_nearest",
+   [
+    512,
+    576
+   ]
+  ],
+  [
+   "reduce_mode",
+   4
+  ],
+  [
+   "snap",
+   "walk",
+   "7e90b28e41f4",
+   [
+    "#1e2a3e",
+    "#4a5f78"
+   ]
+  ],
+  [
+   "key_foot",
+   {
+    "src": "3bb72671bbcb4575d11ce97860331d31e920419abff04f851fcf75b9b52779ab",
+    "steps": [],
+    "sha": "3bb72671bbcb4575d11ce97860331d31e920419abff04f851fcf75b9b52779ab"
+   },
+   {
+    "src": "6444f7ac98a6be6c9a2159a9c9634fe95b404f3f699f1c3ad0e95ad6d7cde397",
+    "steps": [],
+    "sha": "6444f7ac98a6be6c9a2159a9c9634fe95b404f3f699f1c3ad0e95ad6d7cde397"
+   },
+   "#030303",
+   [
+    "#040404"
+   ],
+   999
+  ],
+  [
+   "key_colours",
+   [
+    "#fff8e6",
+    "#ffffff"
+   ]
+  ],
+  [
+   "key_spill",
+   {
+    "src": "7b6dbddfb6d4babc860aeb9863d2900ee1314a53edf287d3408dadbbfe4bf3af",
+    "steps": [],
+    "sha": "7b6dbddfb6d4babc860aeb9863d2900ee1314a53edf287d3408dadbbfe4bf3af"
+   },
+   {
+    "src": "3bb72671bbcb4575d11ce97860331d31e920419abff04f851fcf75b9b52779ab",
+    "steps": [],
+    "sha": "3bb72671bbcb4575d11ce97860331d31e920419abff04f851fcf75b9b52779ab"
+   },
+   {
+    "src": "6444f7ac98a6be6c9a2159a9c9634fe95b404f3f699f1c3ad0e95ad6d7cde397",
+    "steps": [],
+    "sha": "6444f7ac98a6be6c9a2159a9c9634fe95b404f3f699f1c3ad0e95ad6d7cde397"
+   },
+   [
+    "#74a65d",
+    "#69a55d"
+   ],
+   94,
+   126
+  ],
+  [
+   "key_colours",
+   [
+    "#fff8e6",
+    "#ffffff"
+   ]
+  ],
+  [
+   "crop",
+   [
+    17,
+    20,
+    71,
+    110
+   ],
+   "sprite"
+  ],
+  [
+   "scale_nearest",
+   [
+    213,
+    330
+   ]
+  ]
+ ],
+ "out_sha256": "c09bbb8572a1280782a5a73a832283ba1c57a0d0099b7e5fd6bdbe689d8bd3e0",
+ "from_paid_call": {
+  "model": "fal-ai/nano-banana-pro/edit",
+  "job": "art-jobs/2026-11-14-cliff-wayup-2",
+  "call": "nbp-edit",
+  "raw": "work/raw/nbp-edit.png"
+ }
+}
