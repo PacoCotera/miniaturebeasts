@@ -1,13 +1,13 @@
 // The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank (a list of areas the reed sprites go in) and the low scrub.
 // Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
-//   cliff   painted as the raised land, like any terrain, by case: the back rim from the rim sheet, the face, its corners and ends and the sides from signed pieces (southruns.mjs, applyOpenEdges below).
+//   cliff   painted as the raised land, like any terrain, by case: the back rim from the rim sheet, the face, its corners and ends and the sides from signed pieces (the rule maps in art/places/rules, run by cliffrules.mjs; applyOpenEdges below).
 //   walking: relief.mjs names every cell's part; the ring, the face and the flank cells block (cliffInfo.blockCells); the top, the foot rows and the cells of a WayUp area walk.
 //   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
 //           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
-import { RIM_CASES, sideFillCells } from './southruns.mjs';
+import { rimOf } from './cliffrules.mjs';
 import { BLOCKS, PART, landOf, partAt } from './relief.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
@@ -45,13 +45,13 @@ export function gullies(ir, terrains) {
 // Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
 // layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
 // `tone` is setload.layerDescriptors' tone ({ of, row, rowRaised }): the raised ground's own tone row.
-// The cliff by "rim and face" (southruns.mjs): the south faces, the corner cells, the face ends and every side are painted pieces (decals), so the cliff layer draws only the raised ground and the back rim: a tile of a rim case
+// The cliff by "rim and face" (the rule maps, cliffrules.mjs): the south faces, the corner cells, the face ends and every side are painted pieces (decals), so the cliff layer draws only the raised ground and the back rim: a tile of a rim case
 // (3, 1, 2, 7, 11) keeps the old rim sheet's tile (no face variants: the face is not drawn from it), a tile of four raised cells is the raised ground, a side tile (5, 10) is the raised ground to the cell edge (the side cell
 // covers the low cell beside it), and every other edge tile (the south lip, the run ends, the inner corners) draws nothing: the pieces draw them.
 // Every raised tile that is no old rim keeps the cliff layer's fill, the raised meadow ground (fill-cliff.png), and takes the raised tone.
 export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
-  const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, fillCells = cliff ? sideFillCells(ir, cinfo) : new Map();
+  const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, rim = cliff ? rimOf(ir, landOf(ir, cinfo), isCliff) : null;
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
   for (const layer of dg.layers) {
     if (layer.tone) continue;
@@ -62,12 +62,9 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
       const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
       if (isCliffLayer) {
         if (fill) continue;   // four raised cells: the raised meadow ground
-        const kase = (isCliff(i - 1, j - 1) ? 8 : 0) | (isCliff(i, j - 1) ? 4 : 0) | (isCliff(i - 1, j) ? 2 : 0) | (isCliff(i, j) ? 1 : 0);
-        if (kase === 5 || kase === 10) {   // a side: the raised fill goes per cell (sideFillCells, southruns.mjs: decals), so it ends on the cell line; the tile keeps the fill only where a rim covers a cell's top
-          const x = kase === 5 ? i : i - 1;
-          layer.tiles[j * w1 + i] = fillCells.has(x + ',' + (j - 1)) && fillCells.has(x + ',' + j) ? EMPTY : FILL_CODE; continue;
-        }
-        if (!RIM_CASES.has(kase)) { layer.tiles[j * w1 + i] = EMPTY; continue; }            // the pieces draw it
+        const r = rim[j * w1 + i];   // the rule map cliff-7-rim: the tile of a rim case (back rim, its corners) stays 0; a side keeps the fill (2) unless the fill pieces cover its cells; every other edge tile is drawn by the pieces (1)
+        if (r === 1) { layer.tiles[j * w1 + i] = EMPTY; continue; }
+        if (r === 2) { layer.tiles[j * w1 + i] = FILL_CODE; continue; }
       }
       if (full) continue;
       const rows = d.kinds[s0.kind].rows;

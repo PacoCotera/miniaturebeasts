@@ -8,7 +8,7 @@ import { loadSet, layerTiles, fillTiles, kindFullTiles, layerDescriptors, layerR
 import { paste } from '../src/png.mjs';
 import { cornerSheet } from '../src/sheets.mjs';
 import { applyOpenEdges, cliffInfo, ALT_CODE } from '../src/bake/openedges.mjs';
-import { RIM_CASES } from '../src/bake/southruns.mjs';
+const RIM_CASES = new Set([1, 2, 3, 7, 11]);   // the dual-grid cases the old rim sheet still draws (back rim and its corners); every other cliff edge case is drawn by the pieces. Bits: NW 8, NE 4, SW 2, SE 1
 import { terrainLayers, FILL_CODE, FULL_BASE, EMPTY } from '../src/dualgrid.mjs';
 import { edgeSignatureFailures, coverage, legalAdjacencies, edgeLine } from '../src/seams.mjs';
 import { compareGolden } from '../src/golden.mjs';

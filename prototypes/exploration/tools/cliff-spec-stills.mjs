@@ -23,7 +23,23 @@ const frameAt = (ir, tx, ty) => ({ x: Math.max(0, Math.min(ir.w * 48 - FW, tx * 
 const irOf = (v) => (v.cell ? cellIR(v.seed, v.cell[0], v.cell[1]) : windowIR(v.seed, v.X0, v.Y0, 2, 2));
 
 if (WHICH === 'find') {
-  const { cliffDecals } = await imp('prototypes/places/src/bake/southruns.mjs'), { southRuns, landOf } = await imp('prototypes/places/src/bake/relief.mjs');
+  const { cliffDecals } = await imp('prototypes/places/src/bake/southruns.mjs'), { landOf, FACE_ROWS, ROWS_ABOVE } = await imp('prototypes/places/src/bake/relief.mjs');
+  // The south runs of a place, for finding views only (the pieces are placed by the rule maps, art/places/rules): maximal rows of lip cells. [{ y, x0, x1, west, east, kw, ke }]; kw / ke: how many rows (1, 2, 3 = 3 or more) the cell beyond that end is low upward from the lip row
+  const upLow = (A, x, y) => { let k = 0; while (k < 3 && A.low(x, y - k)) k++; return k; };
+  const southRuns = (ir, A) => {
+    const { w, h } = ir, m = A.m, runs = [], lip = (x, y) => A.raised(x, y) && A.low(x, y + 1);
+    for (let y = -ROWS_ABOVE - (FACE_ROWS + 1); y <= h + 1; y++) {
+      if (!A.inside(0, y) || !A.inside(0, y + 1)) continue;
+      for (let x = -m; x < w + m;) {
+        if (!lip(x, y)) { x++; continue; }
+        let x1 = x; while (x1 + 1 < w + m && lip(x1 + 1, y)) x1++;
+        const ew = x !== -m && A.low(x - 1, y), ee = x1 !== w + m - 1 && A.low(x1 + 1, y);
+        if (x1 >= -1 && x <= w) runs.push({ y, x0: x, x1, west: ew, east: ee, kw: ew ? upLow(A, x - 1, y) : 0, ke: ee ? upLow(A, x1 + 1, y) : 0 });
+        x = x1 + 1;
+      }
+    }
+    return runs;
+  };
   const views = [], ctx = bakeCtx(), CASES = ['e1', 'e2', 'e3', 'run4', 'litter', 'scree', 'side1', 'sidetop', 'border'];
   for (const seed of [7, 13, 42]) {
     const got = new Map();

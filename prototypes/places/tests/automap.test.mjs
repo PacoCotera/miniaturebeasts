@@ -48,6 +48,23 @@ test('ModX and ModY count world tiles: the same world columns are chosen whateve
   assert.deepEqual(cols(0), [0, 3, 6, 9]); assert.deepEqual(cols(7), [9, 12, 15, 18]); assert.deepEqual(cols(-5), [-3, 0, 3, 6]);
 });
 
+// ---- the cliff's piece choice runs as rule maps (art/places/rules): the proving place's pieces are those the code before them chose (the file was recorded from that code, piece for piece, with 27 generated places)
+const here = path.dirname(fileURLToPath(import.meta.url)), terrains = JSON.parse(readFileSync(path.join(here, '../../../art/places/terrain.json'), 'utf8')).terrains;
+
+test('the proving place: every cliff piece the rule maps place is the piece the earlier code placed, at the same spot and in the same order', async () => {
+  const { provingIR } = await import('../src/bake/proving.mjs'), { cliffInfo } = await import('../src/bake/openedges.mjs'), { cliffDecals } = await import('../src/bake/southruns.mjs');
+  const ir = provingIR(terrains), got = cliffDecals(ir, cliffInfo(ir, terrains)).map((d) => [d.kind, d.x, d.y]);
+  assert.deepEqual(got, io.json(path.join(dir, 'proving-pieces.json')));
+  assert.ok(got.length > 60 && new Set(got.map((d) => d[0])).size >= 14, 'columns, corner cells, end pieces, sides and the fill all occur');
+});
+
+test('the cliff rule maps: rules.txt lists the maps the core runs, in its order; every piece the maps name is a row of the piece table', async () => {
+  const { RULE_FILES } = await import('../src/bake/cliffrules.mjs'), { PIECES } = await import('../src/bake/relief.mjs'), rules = path.join(here, '../../../art/places/rules');
+  assert.deepEqual(readFileSync(path.join(rules, 'rules.txt'), 'utf8').split('\n').filter((l) => l && !l.startsWith('#')), RULE_FILES);
+  const kinds = new Set(PIECES.pieces.flatMap((p) => p.kinds)), ts = io.json(path.join(rules, 'cliff-tiles.json'));
+  for (const t of ts.tiles) if (t.class.startsWith('cliff-')) assert.ok(kinds.has(t.class), `${t.class} is a piece of the table`);
+});
+
 test('the rules list: comments, nested lists and [filter] lines by the working map\'s name; the old regions layers and AutoEmpty are refused', () => {
   const files = { 'rules.txt': '# first\n// second\none.tmj\n[town*]\ntwo.tmj\n[*]\nsub.txt\n', 'sub.txt': 'three.tmj\n' };
   const fake = { text: (p) => files[p.split('/').pop()], resolve: (_, r) => 'x/' + r };

@@ -9,7 +9,6 @@
 // The land is a small accessor { raised(x, y), low(x, y), way(x, y), inside(x, y) } over world or place tiles; nothing here draws.
 // The piece table (art/places/pieces.json, schema pieces.schema.json) holds every piece's footprint, extent, margin and foot line.
 import PIECES from '../../../../art/places/pieces.json' with { type: 'json' };
-import { hash32 } from '../dualgrid.mjs';
 
 export { PIECES };
 export const PART = { LOW: 0, TOP: 1, RING: 2, FACE: 3, FLANK: 4, FOOT: 5, WAY: 6 };
@@ -74,21 +73,6 @@ function partCompute(A, x, y) {
   return PART.LOW;
 }
 
-// A low cell's side hand: 'e' when a raised cell lies to its west, 'w' when one lies to its east (both: both). Only cells no end piece covers carry the side cell.
-export function sideHands(A, x, y) {
-  if (A.raised(x, y) || endAt(A, x, y, FACE_ROWS)) return [];
-  const out = [];
-  if (A.raised(x - 1, y)) out.push('e');
-  if (A.raised(x + 1, y)) out.push('w');
-  return out;
-}
-// The southmost row of the side run a side cell is in (same hand, consecutive rows): the row its foot line is counted from
-export function sideRunEnd(A, x, y, hand) {
-  let r = y;
-  while (sideHands(A, x, r + 1).includes(hand)) r++;
-  return r;
-}
-
 // The parts of a rectangle of the land: Uint8Array of w x h (cells x0 .. x0 + w - 1, y0 .. y0 + h - 1)
 export function partsOf(A, x0, y0, w, h) {
   const out = new Uint8Array(w * h);
@@ -109,23 +93,3 @@ export function extentClear(A, x, y, family) {
 // Does any cell of the 3 x 3 round (x, y) hold raised land: the tile the cliff's outline may touch (the generator keeps terrain the cliff has no ground pair with one tile off it)
 export const touchesRaised = (raised, x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (raised(x + dx, y + dy)) return true; return false; };
 
-// The south runs of a place: maximal rows of lip cells (raised, with low ground under them). Returns [{ y, x0, x1, west, east, kw, ke, cutW, cutE, col0 }]:
-// the lip row, the first and last cell; west / east: the cell beyond that end is low (an end piece, corner cells); kw / ke: how many rows that cell is low upward from row L (1, 2, 3 = 3 or more);
-// col0: the column of S under x0 (by world x, so every place that draws the cell draws that column). A run that reaches the edge of the land has no end there.
-export function southRuns(ir, A) {
-  const { w, h } = ir, m = A.m, runs = [];
-  const x0w = ir.origin ? ir.origin.x : 0, y0w = ir.origin ? ir.origin.y : 0;
-  const hs = (wy) => (ir.origin ? hash32(`${ir.seed}/south`, 0, wy) : hash32(`${ir.id}/south`, 0, wy));
-  const lip = (x, y) => A.raised(x, y) && A.low(x, y + 1);
-  for (let y = -ROWS_ABOVE - (FACE_ROWS + 1); y <= h + 1; y++) {
-    if (!A.inside(0, y) || !A.inside(0, y + 1)) continue;
-    for (let x = -m; x < w + m;) {
-      if (!lip(x, y)) { x++; continue; }
-      let x1 = x; while (x1 + 1 < w + m && lip(x1 + 1, y)) x1++;
-      const cutW = x === -m, cutE = x1 === w + m - 1, ew = !cutW && A.low(x - 1, y), ee = !cutE && A.low(x1 + 1, y);
-      if (x1 >= -1 && x <= w) runs.push({ y, x0: x, x1, west: ew, east: ee, kw: ew ? up(A, x - 1, y) : 0, ke: ee ? up(A, x1 + 1, y) : 0, cutW, cutE, col0: (hs(y0w + y) + x0w + x) % COLUMNS });
-      x = x1 + 1;
-    }
-  }
-  return runs;
-}

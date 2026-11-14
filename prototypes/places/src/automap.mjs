@@ -134,7 +134,9 @@ function buildRule(id, cellsRaw, W, inL, outL, rects, defaults, tiles) {
   // an output index with nothing in it for this rule is never chosen (the Ignore tile counts as something); the weight is the top-most layer's Probability
   const choices = []; for (const [index, recs] of outs) if (recs.some((r) => r.any)) choices.push({ index, recs, weight: recs[recs.length - 1].prob });
   if (ix0 > ix1) { ix0 = 0; iy0 = 0; ix1 = x1 - x0; iy1 = y1 - y0; }
-  return { id, w: x1 - x0 + 1, h: y1 - y0 + 1, ix0, iy0, ix1, iy1, sets, usedBy, usesEmpty, choices, always, opts, cells: cellsRaw.map(rel) };
+  // each index set as a flat list of [dx, dy, target, condition]
+  const flat = [...sets.values()].map((cellMap) => [...cellMap].flatMap(([k, byT]) => { const [dx, dy] = k.split(',').map(Number); return [...byT].map(([target, cond]) => [dx, dy, target, cond]); }));
+  return { id, w: x1 - x0 + 1, h: y1 - y0 + 1, ix0, iy0, ix1, iy1, sets: flat, usedBy, usesEmpty, choices, always, opts, cells: cellsRaw.map(rel) };
 }
 
 // ---- matching
@@ -151,14 +153,10 @@ function cellOk(cond, tile, rule, target) {
 
 // one rule at one place: does any of its index sets hold?
 function matchAt(rule, at, ox, oy) {
-  if (rule.sets.size === 0) return true;
-  for (const set of rule.sets.values()) {
+  if (rule.sets.length === 0) return true;
+  for (const set of rule.sets) {
     let ok = true;
-    for (const [k, byT] of set) {
-      const [dx, dy] = k.split(',').map(Number);
-      for (const [target, cond] of byT) if (!cellOk(cond, at(target, ox + dx, oy + dy), rule, target)) { ok = false; break; }
-      if (!ok) break;
-    }
+    for (const [dx, dy, target, cond] of set) if (!cellOk(cond, at(target, ox + dx, oy + dy), rule, target)) { ok = false; break; }
     if (ok) return true;
   }
   return false;
