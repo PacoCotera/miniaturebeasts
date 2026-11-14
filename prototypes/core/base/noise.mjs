@@ -63,12 +63,12 @@ export function fbm(px, py, s0, octaves, seed) {
   return quot(sum, wsum) | 0;
 }
 
-export function warp(px, py, seed) {
+export function warp(px, py, seed, reach = 6) {
   const wx = fbm(px, py, 5, 2, subSeed(seed, "warpx")), wy = fbm(px, py, 5, 2, subSeed(seed, "warpy"));
-  return { x: (wx * 6) >> 8, y: (wy * 6) >> 8 };
+  return { x: (wx * reach) >> 8, y: (wy * reach) >> 8 };
 }
 
-export function detail(gx, gy, seed) {
-  const px = 256 * gx + 128, py = 256 * gy + 128, w = warp(px, py, seed);
+export function detail(gx, gy, seed, reach = 6) {
+  const px = 256 * gx + 128, py = 256 * gy + 128, w = warp(px, py, seed, reach);
   return fbm(px + w.x, py + w.y, 5, 4, subSeed(seed, "detail"));
 }

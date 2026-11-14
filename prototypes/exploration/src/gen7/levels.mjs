@@ -1,14 +1,13 @@
 // Generator 7, the terrain levels at tile scale. Pure: no page state, DOM, storage, clock or Math.random.
-// One raised level (0 or 1). A tile's level is the world's elevation field read AT TILE SCALE and thresholded, so a cliff is the field's own contour line: it wanders, bends and
-// rounds like natural land (owner, 2026-11-09 14:57: no level blocks). What is added to the field, all of it smooth:
-//   - tile-scale detail: FBm noise, domain-warped (FastNoiseLite), at world tile coordinates;
-//   - a pull toward each cell's own level round its centre, and round the middle of an edge between two cells of one level (round Gaussian bumps, never squares), so the cell's
-//     level is a summary of the land and an open edge stays open. Where the field already agrees with the cells the pull changes nothing.
-// Then the passes: opening and closing by 4 x 4 (nothing narrower than four tiles stays, so a cliff never ends in a spike, a notch or a one-tile ridge), and a nudge so that no
-// cliff run lies along a cell edge (the rows and columns on either side of a cell edge are read from one sample, so a contour cannot run along it).
-// The same function serves the region (which chooses each stair where this land has a straight south-facing face) and the place (which puts the way up there).
-import FastNoiseLite from 'fastnoise-lite';
-import { hash } from '../world.mjs';
+// The land rule (spec land-shape-spec-1): the cliff is the contour of one whole-number noise field, never a bin, a pull or a ruler.
+//   q = macro + detail * D + coast   (macro: the realm's height minus its raising height read at tile scale; detail: warped gradient noise at 4 to 32 tiles; coast: the ramp to the border)
+// Terrace levels: a tile's level is the number of the rule's thresholds (land-rule.json `levels`, one entry now: [0]) that its q reaches. Every pass runs per boundary between level k and k+1,
+// on the raster "level above k", never on "raised vs low", so more heights are data (a longer list), not a rewrite. Level 0 is the low ground; `raised` means level 1 or more.
+// Then the passes P1 to P6: threshold; opening and closing by a rounded element; small hills and hollows; no diagonal pinch; no lone one-tile face; foot room under every lip.
+// The same function serves the region (which chooses each stair where this land has a way-up site) and the place (which puts the way up there).
+import { hash2, subSeed, fbm, warp } from '../../../core/base/noise.mjs';
+import { div, shr } from '../../../core/base/whole.mjs';
+import RULE from './land-rule.json' with { type: 'json' };
 import { RW, RH, CW, CH, fieldsAt } from './world.mjs';
 
 export { CW, CH };
@@ -17,32 +16,34 @@ export const RAISE_OFF = 12;                               // the coast: raised 
 export const BORDER_X = CW, BORDER_Y = CH;                 // the border ring is one cell deep: its width in tiles on the west and east, its height on the north and south
 // the tiles from the border line to the tile (gx, gy): 0 on the first walkable tile, negative inside the border ring and beyond the realm
 export const inlandOf = (gx, gy) => Math.min(gx - BORDER_X, WTW - 1 - BORDER_X - gx, gy - BORDER_Y, WTH - 1 - BORDER_Y - gy);
-const SIGMA = 6, FLAT = 5, DETAIL = 0.02, MARGIN = 0.05, KILL = FLAT + 3.2 * SIGMA, MIN_FEATURE = 4;
-const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const N = CW * CH;
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+
+// ---- the rule's numbers (data) ----
+// detail amplitude D (Q16 of the height), warp reach (tiles), minimum feature (4 or 5 tiles), face height (rows of the south face: 3, or 2), the thresholds of the levels (Q16 of q)
+let RULE_NOW = { ...RULE };
+export const landRule = () => RULE_NOW;
+// a changed rule (the measure tool and the stills): every realm's levels are read again
+export function setLandRule(over) { RULE_NOW = { ...RULE, ...over }; GEN++; }
+let GEN = 0;
 
 // ---- the fields at tile scale, per seed, per cell ----
 const SEEDS = new Map();
 function seedCtx(seed) {
   let S = SEEDS.get(seed); if (S) return S;
-  const warp = new FastNoiseLite(hash(seed, 'gen7', 'lv-warp') | 0);
-  warp.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2); warp.SetFrequency(1 / 22); warp.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2); warp.SetDomainWarpAmp(7);
-  const det = new FastNoiseLite(hash(seed, 'gen7', 'lv-detail') | 0);
-  det.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2); det.SetFrequency(1 / 9); det.SetFractalType(FastNoiseLite.FractalType.FBm); det.SetFractalOctaves(2); det.SetFractalGain(0.5);
-  S = { seed, at: fieldsAt(seed), warp, det, cells: new Map() };
+  S = { seed, at: fieldsAt(seed), cells: new Map() };
   if (SEEDS.size > 3) SEEDS.clear();
   SEEDS.set(seed, S); return S;
 }
-// the five-field sample of each tile of a cell (24 x 28), at the tile's centre in cell units (a cell's centre is its integer coordinate); `detail` is the warped FBm at the tile
+// the three-field sample of each tile of a cell (24 x 28), at the tile's centre in cell units (a cell's centre is its integer coordinate)
 export function tileFields(seed, X, Y) {
   const S = seedCtx(seed), key = (X + 8) * 1000 + (Y + 8), hit = S.cells.get(key); if (hit) return hit;
-  const height = new Float32Array(N), wild = new Float32Array(N), rock = new Float32Array(N), detail = new Float32Array(N), c = { x: 0, y: 0 };
+  const height = new Float32Array(N), wild = new Float32Array(N), rock = new Float32Array(N);
   for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
     const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, f = S.at((gx + 0.5) / CW - 0.5, (gy + 0.5) / CH - 0.5);
     height[k] = f.height; wild[k] = f.wildness; rock[k] = f.rockiness;
-    c.x = gx; c.y = gy; S.warp.DomainWrap(c); detail[k] = S.det.GetNoise(c.x, c.y);
   }
-  const out = { height, wild, rock, detail };
+  const out = { height, wild, rock };
   if (S.cells.size > 3000) S.cells.clear();
   S.cells.set(key, out); return out;
 }
@@ -50,158 +51,152 @@ export function tileFields(seed, X, Y) {
 // ---- the levels of one realm (a realm is the object buildRealm made) ----
 const LEVELS = new WeakMap();
 export function levelsOf(realm) {
-  let L = LEVELS.get(realm); if (L) return L;
-  L = { realm, seed: realm.seed, q: new Map(), cells: new Map(), wayups: new Map(), pull: new Map() };
+  let L = LEVELS.get(realm); if (L && L.gen === GEN) return L;
+  const e0q = new Int32Array(RW * RH); for (let i = 0; i < RW * RH; i++) e0q[i] = Math.round(realm.e0[i] * 65536);   // the realm's raising height, rounded once to Q16
+  L = { realm, seed: realm.seed, gen: GEN, rule: RULE_NOW, e0q, q: new Map(), cells: new Map(), wayups: new Map() };
   LEVELS.set(realm, L); return L;
 }
 export const forgetLevels = realm => LEVELS.delete(realm);   // the realm's cells changed (the coast): its tile levels are read again
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 const inRealm = (X, Y) => X >= 0 && Y >= 0 && X < RW && Y < RH;
 
-// The pull's anchors round a cell: the centre of each cell near it, and the middle of each edge between two of them that have one level. An anchor pulls only as much as the field
-// needs: by the amount the field's own height at that spot falls short of the cell's level (with a small margin), so where the field already agrees nothing is added.
-// the coast: the raised land fades out over the last RIM tiles to the border line (a straight cliff cut along the coast would be a long wall), so it tapers like any land
-const RIM = 22, RIM_PULL = 0.35;
-// The ramp's distance wanders along the coast by RIM_WOBBLE tiles (value noise, one knot every RIM_KNOT tiles, per side), so the contour of the field that the ramp bends is no line parallel to the shore.
-const RIM_WOBBLE = 7, RIM_KNOT = 18, smooth01 = t => t * t * (3 - 2 * t);
-function rimWobble(seed, side, s) {
-  const i = Math.floor(s / RIM_KNOT), f = smooth01(s / RIM_KNOT - i), k = j => (hash(seed, 'gen7', 'rim-wobble', side, j) % 2048) / 1024 - 1;
-  return RIM_WOBBLE * (k(i) * (1 - f) + k(i + 1) * f);
+// ---- the coast: the raised land fades out over the last RIM tiles to the border line (a cliff cut along the coast would be a long wall) ----
+// The ramp's distance wanders along the coast by up to RIM_WOBBLE tiles (a hash knot every RIM_KNOT tiles, per side, an integer smoothstep between), so no contour runs parallel to the shore.
+const RIM = 22, RIM_WOBBLE = 7, RIM_KNOT = 18, RAMP = 23000;   // RAMP: the pull at RAISE_OFF, Q16 (0.35)
+function rimWobbleQ8(seed, side, s) {   // Q8 tiles, -RIM_WOBBLE .. RIM_WOBBLE
+  const i = Math.floor(s / RIM_KNOT), f = div((s - i * RIM_KNOT) * 65536, RIM_KNOT), sm = shr(f * f * (196608 - 2 * f), 32);
+  const k = j => (hash2(j, side, seed) % 2049) - 1024;   // -1024 .. 1024
+  return shr((k(i) * (65536 - sm) + k(i + 1) * sm) * RIM_WOBBLE * 256, 26);   // k / 1024 of the wobble, Q8
 }
-const rimBias = (seed, px, py) => {
-  const dW = px - BORDER_X, dE = WTW - BORDER_X - px, dN = py - BORDER_Y, dS = WTH - BORDER_Y - py, m = Math.min(dW, dE, dN, dS); if (m >= RIM + RIM_WOBBLE) return 0;
-  const d = m + (m === dW ? rimWobble(seed, 0, py) : m === dE ? rimWobble(seed, 1, py) : m === dN ? rimWobble(seed, 2, px) : rimWobble(seed, 3, px));
-  return d >= RIM ? 0 : -RIM_PULL * Math.min(1, (RIM - d) / (RIM - RAISE_OFF));
-};
-function anchorStrength(L, key, u, v, e0, sign, px, py) {
-  let s = L.pull.get(key); if (s !== undefined) return s;
-  const S = seedCtx(L.seed), base = S.at(u, v).height - e0 + rimBias(L.seed, px, py);
-  s = Math.max(0, MARGIN - sign * base);
-  L.pull.set(key, s); return s;
+function coastQ16(seed, gx, gy) {
+  const dW = gx - BORDER_X, dE = WTW - 1 - BORDER_X - gx, dN = gy - BORDER_Y, dS = WTH - 1 - BORDER_Y - gy, m = Math.min(dW, dE, dN, dS);
+  if (m >= RIM + RIM_WOBBLE) return 0;
+  const sd = subSeed(seed, 'rim-wobble');
+  const w = m === dW ? rimWobbleQ8(sd, 0, gy) : m === dE ? rimWobbleQ8(sd, 1, gy) : m === dN ? rimWobbleQ8(sd, 2, gx) : rimWobbleQ8(sd, 3, gx);
+  const d = m * 256 + w; if (d >= RIM * 256) return 0;
+  return -div((RIM * 256 - Math.max(d, RAISE_OFF * 256)) * RAMP, (RIM - RAISE_OFF) * 256);
 }
-function anchorsAround(L, X, Y) {
-  const realm = L.realm, out = [], lv = (x, y) => realm.level[cellIdx(x, y)], e0 = realm.e0;
-  // each anchor sits up to 2.5 tiles off its spot (by a hash of the world position), so a line of cells the field disagrees with does not make a straight wall
-  const add = (px, py, u, v, ee, sg, key, kind) => {
-    const s = anchorStrength(L, key, u, v, ee, sg, px, py); if (!(s > 0)) return;
-    const h = hash(L.seed, 'gen7', 'anchor', Math.round(px), Math.round(py), kind);
-    out.push([px + ((h % 11) - 5) * 0.5, py + (((h >>> 8) % 11) - 5) * 0.5, sg * s]);
-  };
-  for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) {
-    const x = X + i, y = Y + j; if (!inRealm(x, y)) continue;
-    const sg = lv(x, y) ? 1 : -1;
-    add(x * CW + CW / 2, y * CH + CH / 2, x, y, e0[cellIdx(x, y)], sg, 'c' + x + ',' + y, 0);
-    if (i < 2 && inRealm(x + 1, y) && lv(x, y) === lv(x + 1, y)) add((x + 1) * CW, y * CH + CH / 2, x + 0.5, y, 0.5 * (e0[cellIdx(x, y)] + e0[cellIdx(x + 1, y)]), sg, 'e' + x + ',' + y, 1);
-    if (j < 2 && inRealm(x, y + 1) && lv(x, y) === lv(x, y + 1)) add(x * CW + CW / 2, (y + 1) * CH, x, y + 0.5, 0.5 * (e0[cellIdx(x, y)] + e0[cellIdx(x, y + 1)]), sg, 's' + x + ',' + y, 2);
-  }
-  return out;
-}
-// q of the tiles of a cell: height above the cell's raising height, plus detail and the pull; a tile is raised where q >= 0
-function qCell(L, X, Y) {
+
+// q of the tiles of a cell (Q16): the realm's height above its raising height (bilinear in the cells' centres, whole-number weights over 2 CW and 2 CH), the warped detail, the coast
+export function qCell(L, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = L.q.get(key); if (hit) return hit;
-  const realm = L.realm, f = tileFields(L.seed, X, Y), q = new Float32Array(N), anchors = anchorsAround(L, X, Y), e0 = realm.e0, k2 = 1 / (2 * SIGMA * SIGMA), kill2 = KILL * KILL;
+  const S = seedCtx(L.seed), q = new Int32Array(N), D = L.rule.detail, reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, wo = L.rule.wobbleOctaves, st = L.rule.wobbleStretch, e0q = L.e0q, sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'), W2 = 2 * CW, H2 = 2 * CH;
+  const sWx = subSeed(sW, 'x'), sWy = subSeed(sW, 'y'), sDet = subSeed(sD, 'detail');
   for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
-    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
-    const e = e0[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + e0[cellIdx(X0 + 1, Y0)] * a * (1 - b) + e0[cellIdx(X0, Y0 + 1)] * (1 - a) * b + e0[cellIdx(X0 + 1, Y0 + 1)] * a * b;
-    const px = gx + 0.5, py = gy + 0.5;
-    let s = f.height[k] - e + DETAIL * f.detail[k] + rimBias(L.seed, px, py);
-    for (const [ax, ay, sg] of anchors) {   // a round bump: full strength within FLAT tiles of the anchor, a Gaussian skirt beyond
-      const dx = px - ax, dy = py - ay, d2 = dx * dx + dy * dy; if (d2 >= kill2) continue;
-      if (d2 <= FLAT * FLAT) s += sg; else { const d = Math.sqrt(d2) - FLAT; s += sg * Math.exp(-d * d * k2); }
-    }
-    q[k] = s;
+    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, px = 256 * gx + 128, py = 256 * gy + 128;
+    // the position the land is read at: moved by the coarse warp (32 and 16 tile noise, up to `reach` tiles) and the fine wobble (8 and 4 tile noise, up to `wob` tiles), in Q8 tiles.
+    // The macro height and its raising height are read there too, so the contour itself bends and wobbles by that many tiles, however steep the land is.
+    const w = warp(px, py, sD, reach), wx = w.x + shr(fbm(px, st * py, ws, wo, sWx) * wob, 8), wy = w.y + shr(fbm(st * px, py, ws, wo, sWy) * wob, 8);
+    const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
+    const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
+    const h = S.at((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5).height, macro = Math.round(h * 65536) - e;
+    q[k] = macro + shr(fbm(px + wx, py + wy, 5, 4, sDet) * D, 16) + coastQ16(L.seed, gx, gy);
   }
   if (L.q.size > 3000) L.q.clear();
   L.q.set(key, q); return q;
 }
 
 // ---- passes on a binary raster ----
-// erosion by a k x k square, separable: a tile stays when the square whose top-left tile it is lies wholly inside; the raster's rim is read as itself (replicated)
-function erode(R, W, H, k) {
-  const T = new Uint8Array(W * H), O = new Uint8Array(W * H);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 1; for (let d = 0; d < k; d++) if (!R[y * W + Math.min(x + d, W - 1)]) { v = 0; break; } T[y * W + x] = v; }
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 1; for (let d = 0; d < k; d++) if (!T[Math.min(y + d, H - 1) * W + x]) { v = 0; break; } O[y * W + x] = v; }
-  return O;
+const at = (r, W, H, x, y) => r[clamp(y, 0, H - 1) * W + clamp(x, 0, W - 1)];
+// the rounded element: an m x m square without its four corner tiles, anchored at its top-left
+const ELEMS = new Map();
+function elemOf(m) {
+  let E = ELEMS.get(m); if (E) return E;
+  E = []; for (let j = 0; j < m; j++) for (let i = 0; i < m; i++) if (!((i === 0 || i === m - 1) && (j === 0 || j === m - 1))) E.push([i, j]);
+  ELEMS.set(m, E); return E;
 }
-// dilation by the same square: every tile the squares of the kept top-left tiles cover
-function dilate(R, W, H, k) {
-  const T = new Uint8Array(W * H), O = new Uint8Array(W * H);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 0; for (let d = 0; d < k; d++) if (R[y * W + Math.max(x - d, 0)]) { v = 1; break; } T[y * W + x] = v; }
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 0; for (let d = 0; d < k; d++) if (T[Math.max(y - d, 0) * W + x]) { v = 1; break; } O[y * W + x] = v; }
-  return O;
-}
-// opening leaves everything a k x k square fits in; closing is the opening of what is low
-function open(R, W, H, k) { return dilate(erode(R, W, H, k), W, H, k); }
-function close(R, W, H, k) { const inv = R.map(v => 1 - v); return open(inv, W, H, k).map(v => 1 - v); }
+function erode(r, W, H, E) { const o = new Uint8Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 1; for (const [i, j] of E) if (!at(r, W, H, x + i, y + j)) { v = 0; break; } o[y * W + x] = v; } return o; }
+function dilate(r, W, H, E) { const o = new Uint8Array(W * H); for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let v = 0; for (const [i, j] of E) if (at(r, W, H, x - i, y - j)) { v = 1; break; } o[y * W + x] = v; } return o; }
+const open = (r, W, H, E) => dilate(erode(r, W, H, E), W, H, E);
+const close = (r, W, H, E) => open(r.map(v => 1 - v), W, H, E).map(v => 1 - v);
+const same = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
+const hasLip = (r, W, H, x, y) => at(r, W, H, x, y) === 1 && at(r, W, H, x, y + 1) === 0;
 
-// The coast's cliff is drawn in long straight runs that turn in corners, never in a diagonal of one-tile steps. Within COAST_DEPTH cells of the border line (3.5: the middle of a cell, where the land
-// seldom has a contour, so the change from bins to the plain field is no step) the field is read at the centre of a bin of BIN_X x BIN_Y tiles, so the contour can only lie on a bin's edge: every
-// face is a whole number of bins long (at least BIN_X tiles) and every side at least BIN_Y. The bins are centred on whole tiles at the cell's centre and its edges (BIN_X 6 and BIN_Y 7 divide the cell's
-// 24 x 28 so), so a cell's centre reads itself (the cell's level stays the land's level there), the pair of rows or columns either side of a cell edge reads one sample, and no bin's edge is a cell edge.
-// The bends along the coast come from the cells (region.mjs taperCoast); the bins make them corners.
-const COAST_DEPTH = 3.5, BIN_X = 6, BIN_Y = 7, BIN_OX = 3, BIN_OY = 3;
-function coastBins(q, W, H, x0, y0) {
-  const src = q.slice();
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const gx = x0 + x, gy = y0 + y;
-    if (Math.min((gx - BORDER_X) / CW, (WTW - 1 - BORDER_X - gx) / CW, (gy - BORDER_Y) / CH, (WTH - 1 - BORDER_Y - gy) / CH) >= COAST_DEPTH) continue;
-    const sx = Math.floor((gx + BIN_OX) / BIN_X) * BIN_X - x0, sy = Math.floor((gy + BIN_OY) / BIN_Y) * BIN_Y - y0;
-    if (sx >= 0 && sy >= 0 && sx < W && sy < H) q[y * W + x] = src[sy * W + sx];
+// P4, P5, P6, repeated until nothing changes (at most 8 rounds)
+function fixPatterns(r0, W, H, faceRows) {
+  const r = r0.slice();
+  for (let round = 0; round < 8; round++) {
+    let changed = 0;
+    // P4: no diagonal pinch (2 x 2 cases 6 and 9): the two low tiles are raised
+    for (let y = 0; y + 1 < H; y++) for (let x = 0; x + 1 < W; x++) {
+      const a = r[y * W + x], b = r[y * W + x + 1], c = r[(y + 1) * W + x], d = r[(y + 1) * W + x + 1];
+      if (a === d && b === c && a !== b) { if (!a) { r[y * W + x] = 1; r[(y + 1) * W + x + 1] = 1; } else { r[y * W + x + 1] = 1; r[(y + 1) * W + x] = 1; } changed++; }
+    }
+    // P5: a south lip tile alone in its row's run, with no lip tile diagonally beside it (no bend, no jog), gets the tile below it raised
+    const lip = (x, y) => hasLip(r, W, H, x, y);
+    for (let y = 1; y + 2 < H; y++) for (let x = 1; x + 1 < W; x++) {
+      if (!lip(x, y) || lip(x - 1, y) || lip(x + 1, y)) continue;
+      if (lip(x - 1, y - 1) || lip(x + 1, y - 1) || lip(x - 1, y + 1) || lip(x + 1, y + 1)) continue;
+      r[(y + 1) * W + x] = 1; changed++;
+    }
+    // P6: foot room: under every south lip the first faceRows + 1 tiles down are low; a raised tile within them fills the gap up to it
+    for (let y = 0; y + faceRows + 1 < H; y++) for (let x = 0; x < W; x++) {
+      if (!lip(x, y)) continue;
+      for (let k = 2; k <= faceRows + 1; k++) if (r[(y + k) * W + x]) { for (let j = 1; j < k; j++) r[(y + j) * W + x] = 1; changed++; break; }
+    }
+    if (!changed) break;
   }
+  return r;
+}
+// P3: a hill or hollow under 100 tiles that does not reach the window's rim takes the level of what rings it
+function dropSmall(R, W, H) {
+  const seen = new Uint8Array(W * H), q = new Int32Array(W * H);
+  for (let s = 0; s < W * H; s++) {
+    if (seen[s]) continue;
+    const v = R[s]; let n = 0, edge = false; q[n++] = s; seen[s] = 1;
+    for (let k = 0; k < n; k++) {
+      const c = q[k], x = c % W, y = (c / W) | 0;
+      if (x === 0 || y === 0 || x === W - 1 || y === H - 1) edge = true;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const m = b * W + a; if (!seen[m] && R[m] === v) { seen[m] = 1; q[n++] = m; } }
+    }
+    if (n < 100 && !edge) for (let k = 0; k < n; k++) R[q[k]] = 1 - v;
+  }
+}
+// P1 to P6 on one boundary's raster
+function cleanup(r0, W, H, rule) {
+  const E = elemOf(rule.minFeature); let r = r0;
+  for (let pass = 0; pass < 6; pass++) {
+    const n = fixPatterns(close(open(r, W, H, E), W, H, E), W, H, rule.faceRows), done = same(n, r);
+    r = n; if (done) break;
+  }
+  r = fixPatterns(open(r, W, H, E), W, H, rule.faceRows);
+  dropSmall(r, W, H);
+  return fixPatterns(r, W, H, rule.faceRows);
 }
 
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
-function windowLevels(L, X, Y) {
-  const W = 3 * CW, H = 3 * CH, q = new Float32Array(W * H);
-  for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) {
-    const c = qCell(L, X - 1 + i, Y - 1 + j);
+export function windowLevels(L, X, Y) {
+  const WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, q = new Int32Array(W * H), th = L.rule.levels;
+  for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) {
+    const c = qCell(L, X - WR + i, Y - WR + j);
     for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) q[(j * CH + ty) * W + i * CW + tx] = c[ty * CW + tx];
   }
-  // The rows and columns on either side of a cell edge are read from one sample (their mean), and the passes below run on the raster with the second row of each such pair taken
-  // out (and the second column), then it is put back by repeating the first. So the two sides of a cell edge are the same level at every tile: a contour can cross a cell edge but
-  // never run along one. A feature of 4 tiles in the reduced raster is 4 or 5 in the window, so nothing is narrower than 4.
-  for (let j = 1; j < 3; j++) { const y = j * CH; for (let x = 0; x < W; x++) { const m = 0.5 * (q[(y - 1) * W + x] + q[y * W + x]); q[(y - 1) * W + x] = m; q[y * W + x] = m; } }
-  for (let i = 1; i < 3; i++) { const x = i * CW; for (let y = 0; y < H; y++) { const m = 0.5 * (q[y * W + x - 1] + q[y * W + x]); q[y * W + x - 1] = m; q[y * W + x] = m; } }
-  coastBins(q, W, H, (X - 1) * CW, (Y - 1) * CH);
-  const W2 = W - 2, H2 = H - 2, rr = y => y - (y >= CH ? 1 : 0) - (y >= 2 * CH ? 1 : 0), cc = x => x - (x >= CW ? 1 : 0) - (x >= 2 * CW ? 1 : 0);
-  let cur = new Uint8Array(W2 * H2);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) cur[rr(y) * W2 + cc(x)] = q[y * W + x] >= 0 ? 1 : 0;
-  for (let pass = 0; pass < 4; pass++) {   // nothing narrower than four tiles, raised or low; a few rounds, for the two operators can disturb each other
-    const next = close(open(cur, W2, H2, MIN_FEATURE), W2, H2, MIN_FEATURE);
-    let same = true; for (let k = 0; k < W2 * H2; k++) if (next[k] !== cur[k]) { same = false; break; }
-    cur = next; if (same) break;
+  // one raster per boundary (level above k), each cleaned on its own; a higher level lies inside the lower one
+  const out = new Uint8Array(W * H); let below = null;
+  for (let k = 0; k < th.length; k++) {
+    let r = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) r[i] = q[i] >= th[k] && (!below || below[i]) ? 1 : 0;
+    r = cleanup(r, W, H, L.rule);
+    if (below) for (let i = 0; i < W * H; i++) r[i] &= below[i];
+    for (let i = 0; i < W * H; i++) out[i] += r[i];
+    below = r;
   }
-  cur = open(cur, W2, H2, MIN_FEATURE);   // where the two never settle, a closing can leave a patch of raised land under 4 wide: end on the opening, so raised land never is
-  const R = new Uint8Array(W * H);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) R[y * W + x] = cur[rr(y) * W2 + cc(x)];
-  dropSmall(L, R, W, H, X - 1, Y - 1);
-  return { R, W, H };
-}
-// A level region of under SMALL tiles that does not reach the raster's rim and holds no cell's centre of its own level (a hill, or a hollow, that the cells do not know of) joins what
-// rings it: nothing on it could be reached by a stair, and a hill of a handful of tiles is no cliff worth drawing.
-const SMALL = 100;
-function dropSmall(L, R, W, H, cx0, cy0) {
-  const seen = new Uint8Array(W * H), q = new Int32Array(W * H), lab = (x, y) => { const X = cx0 + Math.floor(x / CW), Y = cy0 + Math.floor(y / CH); return inRealm(X, Y) ? L.realm.level[Y * RW + X] : -1; };
-  for (let s = 0; s < W * H; s++) {
-    if (seen[s]) continue;
-    const v = R[s]; let n = 0, edge = false, pinned = false; q[n++] = s; seen[s] = 1;
-    for (let h = 0; h < n; h++) {
-      const c = q[h], x = c % W, y = (c / W) | 0;
-      if (x === 0 || y === 0 || x === W - 1 || y === H - 1) edge = true;
-      if (x % CW === CW / 2 && y % CH === CH / 2 && lab(x, y) === v) pinned = true;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const m = b * W + a; if (!seen[m] && R[m] === v) { seen[m] = 1; q[n++] = m; } }
-    }
-    if (n < SMALL && !edge && !pinned) for (let h = 0; h < n; h++) R[q[h]] = 1 - v;
-  }
+  return { R: out, W, H };
 }
 // a cell's tile levels, 24 x 28 values (0 outside the realm)
 export function levelCell(L, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = L.cells.get(key); if (hit) return hit;
-  let out = new Uint8Array(N);
-  if (inRealm(X, Y)) { const w = windowLevels(L, X, Y); for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) out[ty * CW + tx] = w.R[(CH + ty) * w.W + CW + tx]; }
+  const out = new Uint8Array(N);
+  if (inRealm(X, Y)) { const w = windowLevels(L, X, Y), o = L.rule.window; for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) out[ty * CW + tx] = w.R[(o * CH + ty) * w.W + o * CW + tx]; }
   if (L.cells.size > 4000) L.cells.clear();
   L.cells.set(key, out); return out;
+}
+// the cell's level as the map and the region read it: the level of q at the cell's centre tile. One sample, no passes
+export function cellSummary(L, X, Y) {
+  if (!inRealm(X, Y)) return 0;
+  const q = qCell(L, X, Y)[(CH >> 1) * CW + (CW >> 1)]; let n = 0;
+  for (const t of L.rule.levels) if (q >= t) n++;
+  return n;
 }
 
 // a world tile's level (0 at and beyond the realm's rim)
@@ -210,20 +205,26 @@ export function tileLevel(L, gx, gy) {
   const X = Math.floor(gx / CW), Y = Math.floor(gy / CH);
   return levelCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW];
 }
-// raised land: level 1, and at least RAISE_OFF tiles from the border line
+// raised land: level 1 or more, and at least RAISE_OFF tiles from the border line
 export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
 
-// ---- the way up: on a straight south-facing face, nearest the stair's port ----
-// The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher. A way up is 2 tiles wide with one tile each side; the face runs straight at
-// its row, the raised land above is at least 3 tiles deep, and the 4 rows below stay open ground. Nothing is carved. Returns { x, y, w, h } in world tiles, or null.
-// This is the one face test: the region chooses a stair only where it finds a face, and the place puts the way up on it.
-export function findWayup(L, ax, ay, port) {
-  const key = ax * 1000 + ay, hit = L.wayups.get(key); if (hit !== undefined) return hit;
-  const R = (x, y) => raised(L, x, y), px = ax * CW + port, py = (ay + 1) * CH;
-  const face = (x, y) => R(x, y) && !R(x, y + 1) && !R(x, y + 2) && !R(x, y + 3) && R(x, y - 1) && R(x, y - 2);
+// ---- the way up: on a site of the land's own contour, nearest the stair's port ----
+// The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher. A way up is 2 tiles wide, and its site has: two south-lip tiles side by side on one row;
+// 3 raised rows above both (the landing); faceRows + 1 low rows below both (the foot); and on each side a lip tile on the same row (a straight flank) or one row off (a bend).
+// Nothing is carved. Returns { x, y, w, h } in world tiles, or null. `k` is the boundary (level k below, k + 1 above): 0 now.
+// This is the one site test: the region chooses a stair only where it finds a site, and the place puts the way up there.
+export function findWayup(L, ax, ay, port, k = 0) {
+  const key = ax * 1000 + ay + (k ? k * 1e7 : 0), hit = L.wayups.get(key); if (hit !== undefined) return hit;
+  const R = (x, y) => (inlandOf(x, y) >= RAISE_OFF && tileLevel(L, x, y) > k), foot = L.rule.faceRows + 1, px = ax * CW + port, py = (ay + 1) * CH;
+  const lip = (x, y) => R(x, y) && !R(x, y + 1);
+  const flank = (x, y) => lip(x, y) || lip(x, y - 1) || lip(x, y + 1);
   let best = null, bd = 61;
   for (let y = ay * CH + 10; y <= (ay + 1) * CH + 6; y++) for (let x = ax * CW + 2; x <= ax * CW + CW - 5; x++) {
-    if (![-1, 0, 1, 2].every(dx => face(x + dx, y))) continue;
+    if (!lip(x, y) || !lip(x + 1, y)) continue;
+    let ok = true;
+    for (let j = 1; j <= 3 && ok; j++) ok = R(x, y - j) && R(x + 1, y - j);
+    for (let j = 1; j <= foot && ok; j++) ok = !R(x, y + j) && !R(x + 1, y + j);
+    if (!ok || !flank(x - 1, y) || !flank(x + 2, y)) continue;
     const d = Math.abs(x - px) + Math.abs(y - py); if (d < bd) { bd = d; best = { x, y, w: 2, h: 1 }; }
   }
   L.wayups.set(key, best); return best;
