@@ -1,0 +1,30 @@
+name: Core lint
+
+# The core holds whole numbers only: no fraction, clock, screen, storage, network or device randomness, no import from outside it.
+# Runs only when prototypes/core/ changes (rules in prototypes/core/lint.mjs).
+on:
+  pull_request:
+    paths:
+      - "prototypes/core/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: core-lint-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    if: github.event.pull_request.head.repo.full_name == github.repository   # never a fork on the dev server
+    runs-on: [self-hosted, mb-dev]   # the dev server
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Core lint
+        run: node prototypes/core/lint.mjs

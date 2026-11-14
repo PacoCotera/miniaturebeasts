@@ -11,7 +11,7 @@ import path from "node:path";
 import * as W from "./sleep-world.mjs";
 import { JOURNAL_KEY, INDEX_KEY, STATES, makeShellAsk, copyKey } from "../src/sleep.mjs";
 import { verifySleepFile, readBody, fileHash } from "../../play/src/realm/sleepfile.mjs";
-import { canonical } from "../../play/src/realm/canonical.mjs";
+import { canonical } from "../../core/base/written.mjs";
 import { utf8 } from "../../play/src/realm/b64.mjs";
 
 const { OLD } = W;

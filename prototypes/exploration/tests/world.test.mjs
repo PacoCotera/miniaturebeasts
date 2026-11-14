@@ -72,7 +72,9 @@ test("determinism: the same world twice, and places in reverse order on a fresh 
 
 test("purity, by source: no page state, DOM, storage, clock, randomness, drawing or import", () => {
   const code = blank(MODULE_SRC);
-  for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
+  for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/]) assert.doesNotMatch(code, re);
+  const imports = MODULE_SRC.split("\n").filter((l) => /^\s*import\b/.test(l));
+  assert.deepEqual(imports, ['import { mulberry32 } from "../../core/base/random.mjs";'], "the one import is the core's random module");
 });
 
 test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 7 only, and new worlds take generator 7", () => {

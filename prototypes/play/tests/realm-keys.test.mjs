@@ -3,7 +3,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { b64uEncode, b64uDecode, hexEncode, hexDecode, utf8 } from "../src/realm/b64.mjs";
-import { canonical, canonicalBytes } from "../src/realm/canonical.mjs";
+import { canonical } from "../../core/base/written.mjs";
+import { canonicalBytes } from "../src/realm/canonical.mjs";
 import { sha256, ed25519Supported, generateKeyPair, pairFromSeed, pubFromSeed, sign, verify, memoryStore, idbStore, companionKey } from "../src/realm/keys.mjs";
 import { formatRecovery, recoveryLines, parseRecovery, recoveryPub, kid, base32 } from "../src/realm/recovery.mjs";
 

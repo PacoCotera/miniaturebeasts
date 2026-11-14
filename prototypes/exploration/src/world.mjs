@@ -1,7 +1,9 @@
 // The seeded world of the Companion: the map, the places and the RNG. Pure: it never reads the page's state, the DOM,
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
-export const NEW_GEN = 7;          // the generator newWorld gives a new world (src/gen7; generators 1 to 5 stay below, frozen: the generated stand-in place, the cave and the soft ground still read them)
+import { mulberry32 } from "../../core/base/random.mjs";
+
+export const NEW_GEN = 7;         // the generator newWorld gives a new world (src/gen7; generators 1 to 5 stay below, frozen: the generated stand-in place, the cave and the soft ground still read them)
 export const GENS = [7];  // the generators the page can play: since the generator 7 reset every save is generator 7 (a generator 6 save is copied to <key>.gen6 and a new world starts)
 
 export const MW = 16, MH = 20;                       // world map, cells
@@ -27,17 +29,9 @@ export function hash() {
   return h >>> 0;
 }
 export function rnd() { return hash.apply(null, arguments) / 4294967296; }
-export function mulberry32(a) {
-  return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-}
 export function makeRng(seed) {
-  const f = mulberry32(seed);
-  return {
-    f, int: n => Math.floor(f() * n), range: (a, b) => a + Math.floor(f() * (b - a + 1)),
-    pick: a => a[Math.floor(f() * a.length)], chance: p => f() < p,
-    shuffle: a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(f() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; },
-  };
+  const s = mulberry32(seed), f = () => s.next() / 4294967296;   // the core's one random module; f is the draw as a share, for the land maker's fractions
+  return { f, int: n => s.below(n), range: (a, b) => s.range(a, b), pick: a => s.pick(a), chance: p => f() < p, shuffle: a => s.shuffle(a) };
 }
 export function noise2(seed, x, y, sc) {
   const gx = x / sc, gy = y / sc, x0 = Math.floor(gx), y0 = Math.floor(gy);

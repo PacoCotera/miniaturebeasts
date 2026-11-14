@@ -19,6 +19,8 @@
 // (tx - ax, ty - ay) where buildMapPB today draws a wood tuft at (tx, ty).
 //
 // Palette entries each kind uses (all core names; asleep they go through the fog table, the Shade through SHADE_WASH):
+import { mulberry32 } from "../../core/base/random.mjs";
+
 export const PALETTE_USED = {
   fruit: ['ink', 'soil', 'bark', 'forest', 'leaf', 'grass', 'sprout', 'lime', 'cream', 'blush', 'pink', 'peach', 'coral', 'red', 'wine', 'pine', 'ink'],
   hollow: ['ink', 'soil', 'bark', 'clay', 'pine', 'forest', 'leaf', 'grass', 'sprout'],
@@ -33,8 +35,8 @@ const TW = 88, TH = 76, FX = 44, FY = 69;               // the whole tree's box 
 const BX = TRUNK.dx - CANOPY.dx, BY = TRUNK.dy - CANOPY.dy;   // the trunk box inside it: (28, 42) to (60, 74)
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
-function rng(seed) { let a = (seed >>> 0) || 1; const f = () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-  return { f, u: (a0, b0) => a0 + (b0 - a0) * f(), i: n => Math.floor(f() * n) }; }
+function rng(seed) { const s = mulberry32((seed >>> 0) || 1), f = () => s.next() / 4294967296;   // the core's one random module
+  return { f, u: (a0, b0) => a0 + (b0 - a0) * f(), i: n => s.below(n) }; }
 
 class Buf {   // the page's PB drawing rules (set, ell with its sh shading, line), so a builder can swap in PB itself
   constructor(w, h) { this.w = w; this.h = h; this.p = new Int16Array(w * h).fill(-1); }

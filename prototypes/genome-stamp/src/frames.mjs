@@ -8,18 +8,13 @@
 // catalogue 6), all kept so old prints decode; two synthetic future
 // species test growth.
 import { FRAME_DATA } from "./frames-data.mjs";
+import { mulberry32 } from "../../core/base/random.mjs";
 
 const bitsFor = (n) => (n <= 1 ? 0 : Math.ceil(Math.log2(n)));
 
 function rng(seed) {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+  const s = mulberry32(seed);   // the core's one random module; the draw as a share, for the tests that read it so
+  return () => s.next() / 4294967296;
 }
 
 function finish(f) {
@@ -53,8 +48,8 @@ export function synthetic(nOpen, species, name, glyph) {
       return { id: `future.${chName.toLowerCase().replace(/\W+/g, "-")}-${i + 1}`, trait: `t${i >> 1}`, alleles: Array.from({ length: n }, (_, a) => `a${a}`), copies: 2 };
     }),
   }));
-  const r = rng(species);
-  const locked = Array.from({ length: 240 - nOpen }, (_, i) => [`future.locked-${i}`, r() < 0.5 ? 1 : 0]);
+  const r = mulberry32(species);
+  const locked = Array.from({ length: 240 - nOpen }, (_, i) => [`future.locked-${i}`, r.chance(1, 2) ? 1 : 0]);
   return finish({ species, version: 1, id: `future${nOpen}`, name, glyph, chapters, locked, synthetic: true });
 }
 
