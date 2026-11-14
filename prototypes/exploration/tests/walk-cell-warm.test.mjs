@@ -1,7 +1,7 @@
 // The Companion walk at a cell boundary (owner, live 2026-11-08: "the pawn gets stuck until it's generated"): the next cells are warmed in idle time, a step into a warm cell
 // shows its first frame at once, a cold one is finished a step a frame with the controls live and a calm line past 150 ms, and what is kept stays bounded.
 // Real Chromium at 4x CPU throttle (a phone's stand-in); PW_DIR names the folder holding node_modules/playwright (without it the tests are skipped).
-// The bars are for a loaded gate machine: the measured medians are far under them (tools/measure-cell-step.mjs prints the numbers).
+// The bars are for a loaded gate machine: the measured medians are far under them (tools/speed-check.mjs prints the long tasks).
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";

@@ -109,7 +109,8 @@ jobs:
           mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
-          printf '{"commit":"%s","short":"%s","built":"%s"}\n' "$GITHUB_SHA" "${GITHUB_SHA:0:7}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > _site/build.json
+          # build.json carries the release number (and name) from prototypes/package.json
+          python3 -I .github/scripts/build-json.py "$GITHUB_SHA" _site/build.json
       - name: Install the exploration page's packages (the generator's noise and queue)
         if: steps.scope.outputs.docs != 'true'
         run: npm ci --prefix prototypes/exploration --no-audit --no-fund --silent
@@ -161,10 +162,18 @@ jobs:
           tag="sandbox-${GITHUB_SHA:0:7}"
           # The release list is the changelog: title and notes come from the merged release pull request behind this commit.
           # A commit with no pull request is titled "Update <date>". The tag stays sandbox-<sha>; the sandbox server installs the newest sandbox-* tag.
-          python3 -I .github/scripts/release-notes.py "$GITHUB_SHA" "$RUNNER_TEMP/release-title.txt" "$RUNNER_TEMP/release-notes.md" --repo "$GITHUB_REPOSITORY"
+          # The title is the release number from prototypes/package.json (X.Y.Z "Name" · date time); the pull request's title leads the notes.
+          python3 -I .github/scripts/release-notes.py "$GITHUB_SHA" "$RUNNER_TEMP/release-title.txt" "$RUNNER_TEMP/release-notes.md" --repo "$GITHUB_REPOSITORY" --build-json _site/build.json
           gh release create "$tag" --target "$GITHUB_SHA" --title "$(cat "$RUNNER_TEMP/release-title.txt")" \
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             "sandbox-${GITHUB_SHA:0:7}.tar.gz" "sandbox-${GITHUB_SHA:0:7}.sha256"
+          # the commit also carries its number as a lightweight tag vX.Y.Z (a number already tagged is left alone; bump the version in prototypes/package.json for each release)
+          version="v$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' _site/build.json)"
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${version}" >/dev/null 2>&1; then
+            echo "tag ${version} already exists; the version was not bumped for this release"
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/git/refs" -f ref="refs/tags/${version}" -f sha="$GITHUB_SHA" >/dev/null
+          fi
       - name: Keep every release entry, only the five newest keep their build files
         # Every push to main adds a bundle of 100+ MB. The release list is the changelog, so entries (title and notes) stay for good;
         # only the build files of releases older than the newest five are removed. The sandbox server keeps its last five installs

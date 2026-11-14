@@ -30645,6 +30645,7 @@ function Panel({ api }) {
         ] })
       ] }) }),
       /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "op-line", children: "Changes apply when you press Done; the page reloads. Developer tools applies at once." }),
+      api.about && api.about() ? /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "op-line", id: "optionsAbout", children: api.about() }) : null,
       /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("div", { className: "op-actions", children: /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(dist_exports.Close, { className: "op-btn", id: "optionsDone", children: "Done" }) })
     ] })
   ] }) });

@@ -20,8 +20,9 @@ export function bakedCell(ctx, seed, slot, cell, v) {   // v: the realm's kind v
   const [X, Y] = cellWorldXY(slot, cell), ir = cellIR(seed, X, Y, v);
   return { ir, place: bakeCell(ir, ctx) };
 }
-export function layout7(ctx, G, seed, slot, key, shut, v) {   // shut(side): the side is past the Probe's range or closed, so its band is not walked (the page's crossReason)
-  const cell = +key, { ir, place } = bakedCell(ctx, seed, slot, cell, v), lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed, shut });
+// baked: the cell's { ir, place } as the places worker made it (src/place-store.mjs); without it the cell is baked here. The sides that are shut are applied here, on the page, to the baked cell.
+export function layout7(ctx, G, seed, slot, key, shut, v, baked = null) {   // shut(side): the side is past the Probe's range or closed, so its band is not walked (the page's crossReason)
+  const cell = +key, { ir, place: stored } = baked || bakedCell(ctx, seed, slot, cell, v), place = { ...stored }, lay = adaptCell(place, ir, ctx.ts, ctx.terrains, { key, cell, land: G.land[cell], G, seed, shut });
   const [X, Y] = cellWorldXY(slot, cell);
   lay.coastWater = (x, y) => inlandOf(X * CW + x, Y * CH + y) < COAST_REACH;   // water within the coast band is the coast's: wide water, no way across
   lay.raisedFn =(x, y) => raisedAt(seed, X * CW + x, Y * CH + y);   // is this tile raised land (height lets you see further)

@@ -76,6 +76,7 @@ function Panel({ api }) {
             </AlertDialog.Root>
           </Row>
           <div className="op-line">Changes apply when you press Done; the page reloads. Developer tools applies at once.</div>
+          {api.about && api.about() ? <div className="op-line" id="optionsAbout">{api.about()}</div> : null}
           <div className="op-actions"><Dialog.Close className="op-btn" id="optionsDone">Done</Dialog.Close></div>
         </Dialog.Content>
       </Dialog.Portal>
@@ -83,7 +84,7 @@ function Panel({ api }) {
   );
 }
 
-// mountOptions(root, { trigger, read, names, places, onChange(patch), onClose(changed), onStartFresh(), host }): the page's own bar button opens the panel.
+// mountOptions(root, { trigger, read, about() (the release number line), names, places, onChange(patch), onClose(changed), onStartFresh(), host }): the page's own bar button opens the panel.
 // host (the shell) is the note's: getCanvas(), context(), source(), say(key, vars), flash(). Returns the note controller (subscribe / getState / actions) for the page's bar and keys.
 export function mountOptions(root, cfg) {
   const notes = createController(cfg.host), api = { ...cfg, notes, open: () => {} };

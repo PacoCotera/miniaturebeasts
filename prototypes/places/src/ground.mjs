@@ -25,7 +25,7 @@ export function tileSlot(ts, id, clockMs = 0) {
 }
 
 // Pass 1: the dual-grid layers, then the decals, into a fresh buffer covering win. Tile (i, j) of a layer sits at (i*size - size/2, j*size - size/2).
-export function renderGround(ts, place, size, win, clockMs = 0) {
+export function renderGround(ts, place, size, win, clockMs = 0, decals = true) {
   const buf = new Uint8Array(win.w * win.h), half = size >> 1, w1 = place.w + 1;
   const atlas = size === 48 ? ts.atlas48 : size === 24 ? ts.atlas24 : sixteenOf(ts).atlas16;
   const i0 = Math.max(0, Math.floor((win.x + half) / size)), i1 = Math.min(place.w, Math.floor((win.x + win.w - 1 + half) / size));
@@ -37,6 +37,11 @@ export function renderGround(ts, place, size, win, clockMs = 0) {
       blitTile(buf, win.w, win.h, i * size - half - win.x, j * size - half - win.y, atlas, tileSlot(ts, id, clockMs), size);
     }
   }
+  if (decals) addDecals(buf, ts, place, size, win, clockMs);
+  return buf;
+}
+// The place's decals over a ground buffer covering win. A ground made elsewhere without them (the page's worker: the page keeps only the decals its finds leave) takes them here.
+export function addDecals(buf, ts, place, size, win, clockMs = 0) {
   for (const d of place.decals) { blitPlaced(buf, win, ts, size, d.kind, d.x, d.y, walkFrame(ts.sprites[d.kind], clockMs)); }
   return buf;
 }
@@ -118,6 +123,8 @@ export class GroundCache {
     for (const t of this.ts.tiles) if (t.frames.length > 1) k = k * 31 + (Math.floor(clockMs / t.frameMs) % t.frames.length) + 1;
     return k;
   }
+  // A ground rendered elsewhere (the page's worker, without the decals) for the whole window at this clock: the place's decals go over it here, and get() then finds it made.
+  preset(win, clockMs, buf) { addDecals(buf, this.ts, this.place, this.size, win, clockMs); this.key = `${win.x},${win.y},${win.w},${win.h}|${this.frameKey(clockMs)}`; this.buf = buf; }
   get(win, clockMs = 0) {
     const key = `${win.x},${win.y},${win.w},${win.h}|${this.frameKey(clockMs)}`;
     if (key !== this.key) { this.buf = renderGround(this.ts, this.place, this.size, win, clockMs); this.key = key; this.redone = (this.redone || 0) + 1; }
@@ -153,6 +160,12 @@ export class PlaceGroundCache {
     const ms = this.ts.tiles.filter((t) => t.frames.length > 1).map((t) => t.frameMs), step = ms.length ? Math.min(...ms) : 1, seen = new Set(), out = [];
     for (let k = 0; k < 64; k++) { const key = this.frameKey(k * step); if (seen.has(key)) break; seen.add(key); out.push(k * step); }
     return (this.clocks = out);
+  }
+  // A frame of the whole ground rendered elsewhere (the page's worker, without the decals): the decals go over it here, and the frame is kept as one the cache made.
+  preset(clockMs, buf) {
+    const key = this.frameKey(clockMs); if (this.frames.has(key) || key === this.key) return;
+    addDecals(buf, this.ts, this.place, this.size, { x: 0, y: 0, w: this.place.w * this.size, h: this.place.h * this.size }, clockMs);
+    if (this.ring) { this.frames.set(key, buf); this.ring.touch(this, key); } else { this.full = buf; this.key = key; }
   }
   get(win, clockMs = 0) {
     const key = this.frameKey(clockMs), W = this.place.w * this.size, H = this.place.h * this.size;
