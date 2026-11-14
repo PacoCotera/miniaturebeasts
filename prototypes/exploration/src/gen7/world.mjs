@@ -212,6 +212,13 @@ const jit = (seed, s, t, tag) => t ? ((hash(seed, 'gen7', 'try', tag, s, t) / 21
 // ---- the realm: water, land, levels, closed over the whole realm ----
 // tries[s] (0 by default) is region s's attempt number: attempt t moves the slot's water and level pulls a little, so a region that fails its checks
 // can be re-drawn. Only the slot's own parameters change, and they blend into the neighbours' border cells by position, so borders keep agreeing.
+// The e0 pass (world-topdown-spec-1 2.1 step 3): every level the realm decides is written into its raising height. A cell whose level is not the sign of the height at its centre
+// (water, its ring, closures, joins, the coast's taper) gets e0 one EDIT past the height, so the tile land rule (levels.mjs) agrees with the realm by construction. Water is always low.
+export const EDIT = 0.16;
+export function editE0(realm) {
+  const { land, level, E, e0 } = realm;
+  for (let c = 0; c < e0.length; c++) { const want = land[c] === L.WATER ? 0 : level[c], have = E[c] >= e0[c] ? 1 : 0; if (have !== want) e0[c] = want ? E[c] - EDIT : E[c] + EDIT; }
+}
 export function buildRealm(seed, tries = null) {
   const R = rawRealm(seed), { E, M, F, K, Z, acc } = R, nS = ATLAS * ATLAS, sb = slotBiomes(seed), tg = sb.map(biomeTargets), tr = s => (tries ? tries[s] : 0);
   // water: pulled by the slot's rules
@@ -256,5 +263,7 @@ export function buildRealm(seed, tries = null) {
   closeLevels(level, RW, RH); fixSaddles(level, RW, RH);
   mergeSmallZones(c => land[c] !== L.WATER || ford[c] === 1, land, level, RW, RH, G2.ZONE_MIN);
   joinSouth(land, ford, level);
-  return { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c };   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
+  const realm = { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c };
+  editE0(realm);
+  return realm;   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
 }

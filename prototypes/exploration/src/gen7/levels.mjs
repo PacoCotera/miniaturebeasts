@@ -8,7 +8,8 @@
 import { hash2, subSeed, fbm, warp } from '../../../core/base/noise.mjs';
 import { div, shr } from '../../../core/base/whole.mjs';
 import RULE from './land-rule.json' with { type: 'json' };
-import { RW, RH, CW, CH, fieldsAt } from './world.mjs';
+import { RW, RH, CW, CH, fieldsAt, noiseField } from './world.mjs';
+import { L as LAND } from '../world.mjs';
 
 export { CW, CH };
 export const WTW = RW * CW, WTH = RH * CH;                // the realm in tiles
@@ -53,7 +54,7 @@ const LEVELS = new WeakMap();
 export function levelsOf(realm) {
   let L = LEVELS.get(realm); if (L && L.gen === GEN) return L;
   const e0q = new Int32Array(RW * RH); for (let i = 0; i < RW * RH; i++) e0q[i] = Math.round(realm.e0[i] * 65536);   // the realm's raising height, rounded once to Q16
-  L = { realm, seed: realm.seed, gen: GEN, rule: RULE_NOW, e0q, q: new Map(), cells: new Map(), wayups: new Map() };
+  L = { realm, seed: realm.seed, gen: GEN, rule: RULE_NOW, e0q, q: new Map(), wet: new Map(), cells: new Map(), wayups: new Map() };
   LEVELS.set(realm, L); return L;
 }
 export const forgetLevels = realm => LEVELS.delete(realm);   // the realm's cells changed (the coast): its tile levels are read again
@@ -94,6 +95,29 @@ export function qCell(L, X, Y) {
   }
   if (L.q.size > 3000) L.q.clear();
   L.q.set(key, q); return q;
+}
+
+// ---- water held low (world-topdown-spec-1 3.2) ----
+// The wet field place.mjs lays its water from (the realm's cell wetness, bilinear, plus its noise), read here without the place: a tile whose wet value is over WET_AT is water, and the field is
+// held under the threshold on it and one tile round it before the passes, so raised land never meets water. The coast band (COAST_REACH tiles from the border) is laid whole elsewhere.
+const WET_AT = 0.72, WET_NOISE = 0.22, WET_REACH = 14;
+function wetCells(L) {
+  if (L.wetC) return L.wetC;
+  const { land, ford, M } = L.realm, w = new Float32Array(RW * RH);
+  for (let c = 0; c < RW * RH; c++) w[c] = land[c] === LAND.WATER ? (ford[c] ? 0.8 : 1.05) : land[c] === LAND.POND ? 0.88 : 0.12 + 0.12 * M[c];
+  return (L.wetC = w);
+}
+function wetCell(L, X, Y) {   // one cell's 24 x 28 wet flags (1 = water)
+  const key = (X + 8) * 1000 + (Y + 8); let hit = L.wet.get(key); if (hit) return hit;
+  const S = seedCtx(L.seed), wc = wetCells(L), out = new Uint8Array(N); if (!S.nW) S.nW = noiseField(L.seed, 't-wet', 1 / 12, 'FBm', 2);
+  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
+    const gx = X * CW + tx, gy = Y * CH + ty; if (inlandOf(gx, gy) < WET_REACH) continue;
+    const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
+    const w = wc[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + wc[cellIdx(X0 + 1, Y0)] * a * (1 - b) + wc[cellIdx(X0, Y0 + 1)] * (1 - a) * b + wc[cellIdx(X0 + 1, Y0 + 1)] * a * b;
+    if (w + WET_NOISE * S.nW(gx, gy) > WET_AT) out[ty * CW + tx] = 1;
+  }
+  if (L.wet.size > 4000) L.wet.clear();
+  L.wet.set(key, out); return out;
 }
 
 // ---- passes on a binary raster ----
@@ -168,17 +192,46 @@ function cleanup(r0, W, H, rule) {
   }
   r = fixPatterns(close(open(r, W, H, E), W, H, E), W, H, rule.faceRows);   // end on the opening, then one closing: no raised land narrower than the feature, and nothing the closing leaves low is narrower either
   dropSmall(r, W, H);
-  return fixPatterns(r, W, H, rule.faceRows);
+  r = fixPatterns(r, W, H, rule.faceRows);
+  // what the foot-room and lone-lip passes can leave: a one-tile sliver (a tile with no 2 x 2 block of its own level) is flipped to what rings it, and a face of 2+ tiles ending square against a side wall
+  // 3 rows high loses its last lip tile (the end becomes a step); then the patterns are fixed again; at most 4 rounds
+  for (let round = 0; round < 4; round++) {
+    const lip = (x, y) => hasLip(r, W, H, x, y); let changed = 0; const flip = [];
+    for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+      const v = r[y * W + x]; let ok = false;
+      for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) ok = r[(y + oy) * W + x + ox] === v && r[(y + oy) * W + x + ox + 1] === v && r[(y + oy + 1) * W + x + ox] === v && r[(y + oy + 1) * W + x + ox + 1] === v;
+      if (!ok) flip.push(y * W + x);
+    }
+    for (let y = 3; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (lip(x, y)) for (const dx of [-1, 1]) {
+      if (lip(x + dx, y) || !lip(x - dx, y)) continue;
+      if (!r[y * W + x + dx] && !r[(y - 1) * W + x + dx] && !r[(y - 2) * W + x + dx]) flip.push(y * W + x);
+    }
+    for (const i of flip) { r[i] = 1 - r[i]; changed++; }
+    if (!changed) break;
+    r = fixPatterns(r, W, H, rule.faceRows);
+  }
+  return r;
 }
 
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 export function windowLevels(L, X, Y) {
-  const WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, q = new Int32Array(W * H), th = L.rule.levels;
+  const WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, q = new Int32Array(W * H), th = L.rule.levels, X0w = X - WR, Y0w = Y - WR;
   for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) {
     const c = qCell(L, X - WR + i, Y - WR + j);
     for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) q[(j * CH + ty) * W + i * CW + tx] = c[ty * CW + tx];
   }
+  // water held low: the field is forced under the threshold on the place's water tiles and one tile round them (the wet flags of the window and a tile beyond its rim)
+  if (L.rule.holdWater !== 0) { const wr = new Uint8Array(W * H);
+    for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) {
+      const c = wetCell(L, X0w + i, Y0w + j);
+      for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) wr[(j * CH + ty) * W + i * CW + tx] = c[ty * CW + tx];
+    }
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (q[y * W + x] < 0) continue;
+      let w = 0; for (let dy = -1; dy <= 1 && !w; dy++) { const yy = y + dy; if (yy < 0 || yy >= H) continue; for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx >= 0 && xx < W && wr[yy * W + xx]) { w = 1; break; } } }
+      if (w) q[y * W + x] = -1;
+    } }
   // one raster per boundary (level above k), each cleaned on its own; a higher level lies inside the lower one
   const out = new Uint8Array(W * H); let below = null;
   for (let k = 0; k < th.length; k++) {
@@ -217,14 +270,15 @@ export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(
 
 // ---- the way up: on a site of the land's own contour, nearest the stair's port ----
 // The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher. A way up is 2 tiles wide, and its site has: two south-lip tiles side by side on one row;
-// 3 raised rows above both (the landing); faceRows + 1 low rows below both (the foot); and on each side a lip tile on the same row (a straight flank) or one row off (a bend).
+// 3 raised rows above both (the landing); faceRows + 1 low rows below both (the foot); and on each side a lip tile on the same row (a straight flank), or with the old rule one row off (a bend).
 // Nothing is carved. Returns { x, y, w, h } in world tiles, or null. `k` is the boundary (level k below, k + 1 above): 0 now.
 // This is the one site test: the region chooses a stair only where it finds a site, and the place puts the way up there.
 export function findWayup(L, ax, ay, port, k = 0) {
   const key = ax * 1000 + ay + (k ? k * 1e7 : 0), hit = L.wayups.get(key); if (hit !== undefined) return hit;
   const R = (x, y) => (inlandOf(x, y) >= RAISE_OFF && tileLevel(L, x, y) > k), foot = L.rule.faceRows + 1, px = ax * CW + port, py = (ay + 1) * CH;
   const lip = (x, y) => R(x, y) && !R(x, y + 1);
-  const flank = (x, y) => lip(x, y) || lip(x, y - 1) || lip(x, y + 1);
+  // never beside a bend (art director 2026-11-14): a straight face tile on each side, so the run is 4 or more straight (rule `wayupStraight`; false = the old flank that allowed a bend)
+  const flank = L.rule.wayupStraight ? (x, y) => lip(x, y) : (x, y) => lip(x, y) || lip(x, y - 1) || lip(x, y + 1);
   let best = null, bd = 61;
   for (let y = ay * CH + 10; y <= (ay + 1) * CH + 6; y++) for (let x = ax * CW + 2; x <= ax * CW + CW - 5; x++) {
     if (!lip(x, y) || !lip(x + 1, y)) continue;

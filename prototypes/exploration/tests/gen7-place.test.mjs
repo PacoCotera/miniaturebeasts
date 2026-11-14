@@ -30,13 +30,16 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     assert.equal(s.loneTiles, 0, 'every tile sits in a 2 x 2 block of its own terrain');
     // G2b: a cliff is the field's contour at tile scale, so its straight runs are short and wandering (a diagonal is a staircase of one-tile steps). The old rule "no run under 4" was the
     // blocks' (a cliff turned at most once in 8 tiles); the rule now is that no cliff is a spike, a spur or a one-row ridge: every cliff tile sits in a 4 x 4 block of raised land.
-    assert.equal(s.cliffThin, 0, 'no cliff narrower than 4 tiles: ' + JSON.stringify(s.thinAt));
-    assert.equal(s.cliffRunsOnCellEdge, 0, 'no cliff run on a cell edge');
-    assert.ok(s.cliffRuns > 1000 && s.cliffShareOver8 < 0.4 && s.cliffRunMax < 300, 'cliffs wander: ' + s.cliffShareOver8 + ' of cliff tiles in runs over 8, longest ' + s.cliffRunMax);
+    // the land rule's own checks (land-shape-spec-1 P4-P6, world-topdown-spec-1 section 4 C1 and the seam), in place of the old block rule's (lone tiles above is the one-wide sliver check)
+    assert.equal(s.pinch, 0, 'P4: no diagonal pinch');
+    assert.equal(s.loneFace, 0, 'P5: no lone one-tile face');
+    assert.equal(s.footShort, 0, 'P6: foot room under every south lip');
+    assert.ok(s.runMax.south <= 10 && s.runMax.side <= 14 && s.runMax.rim <= 14, 'straight runs (south at most 10, a side wall or back rim at most 14): ' + JSON.stringify(s.runMax) + ' runs of 9+ ' + JSON.stringify(s.runs9));
+    assert.ok(s.cliffRuns > 1000, 'cliffs wander: ' + s.cliffRuns + ' runs');
     assert.equal(s.apronMismatch, 0, 'the apron of every cell equals its neighbours\' edge tiles');
-    assert.equal(s.centreWrong, 0, 'a cell\'s level is the land\'s level at its centre');
-    assert.equal(s.openNoRun, 0, 'an open edge meets the same level on both sides along at least 4 tiles');
-    assert.equal(s.changeNoCliff, 0, 'a level change between two cells is a level change in the land');
+    assert.ok(s.c1Ok * 100 >= 90 * s.cells, 'C1: a place\'s level is the level of most of its tiles in at least 90% of places: ' + s.c1Ok + ' of ' + s.cells + ' ' + JSON.stringify(s.c1Misses));
+    assert.equal(s.waterRaisedTiles, 0, 'C1w: no raised tile in a water place');
+    assert.ok(s.seamCells > 20 && s.seamBad === 0, 'seam: a cell is the same from every neighbour\'s window: ' + s.seamBad + ' tiles differ in ' + s.seamCells + ' cells');
     // every walkable tile of low ground is reached from the cell's sides. On a plateau, an inner-corner tile whose four neighbours are all lip (the rim wraps round a concave corner) is
     // enclosed by the lip by the tests' own definition of a lip (seed 7 has one in 8000 cells); no more than 4 of them a seed
     assert.equal(s.unreachedCells - s.unreachedRaisedOnly, 0, 'every walkable tile of low ground is reached from the cell\'s sides: ' + JSON.stringify(s.unreachedAt));

@@ -3,8 +3,9 @@
 // G2b: levels come from the field at tile scale (no blocks), one raised level, every stair has a way up. Added: the straight cliff runs (every length, the longest, the share of cliff
 // tiles in runs longer than 8), cliff chains (a stretch of the contour that may step one tile, so a diagonal counts as one), and whole-region reach through the ways up.
 import { cellTerrain, cellIR, TV, blockOk, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
-import { genRegion7 } from '../src/gen7/region.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { genRegion7, realm7 } from '../src/gen7/region.mjs';
+import { levelsOf, windowLevels, landRule } from '../src/gen7/levels.mjs';
+import { MW, MH, L } from '../src/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -12,8 +13,21 @@ const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, b
   centreWrong: 0, edges: 0, openNoRun: 0, changeNoCliff: 0, steps: 0, bandTiles: 0, bandWalkable: 0,
   cliffRuns: 0, cliffRunsUnder4: 0, cliffRunsUnder8: 0, cliffRunMin: 999, cliffRunMax: 0, cliffRunsOnCellEdge: 0, cliffTiles: 0, cliffTilesInRunsOver8: 0, runHist: {},
   cliffThin: 0, thinAt: [], loneAt: [], unreachedAt: [],
+  // the spec's checks (world-topdown-spec-1 section 4; land-shape-spec-1 P1-P6): C1, water held low, no pinch, no lone face, foot room, straight runs per edge kind, the seam
+  c1Ok: 0, c1Misses: [], waterRaisedTiles: 0, pinch: 0, loneFace: 0, footShort: 0, runMax: { south: 0, side: 0, rim: 0 }, runs9: { south: 0, side: 0, rim: 0 }, seamCells: 0, seamBad: 0,
   pathUnreached: 0, pieces: 0, piecesUnreached: 0, needAt: [],
   stairs: 0, stairsSouthWithWayUp: 0, stairsWithoutWayUp: 0, regions: 0, regionsWholeReach: 0, walkableTiles: 0, reachedTiles: 0, unreachedTiles: 0, unreachedInMain: 0, zonesNotJoined: 0, ms: 0 });
+
+// The seam: the cell's tiles as each of the eight neighbours' windows holds them against the cell's own window: the number of tiles that differ.
+function seamOf(seed, X, Y) {
+  const LV = levelsOf(realm7(seed).realm), o = landRule().window, own = windowLevels(LV, X, Y); let bad = 0;
+  for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1]]) {
+    if (X + dx < 0 || Y + dy < 0 || X + dx >= RW || Y + dy >= RH) continue;
+    const nb = windowLevels(LV, X + dx, Y + dy);
+    for (let y = o * CH; y < (o + 1) * CH; y++) for (let x = o * CW; x < (o + 1) * CW; x++) { const nx = x - dx * CW, ny = y - dy * CH; if (nx >= 0 && ny >= 0 && nx < nb.W && ny < nb.H && own.R[y * own.W + x] !== nb.R[ny * nb.W + nx]) bad++; }
+  }
+  return bad;
+}
 
 // Every cell of the seed. Returns the numbers; the test asserts them.
 export function placeProps(seed) {
@@ -57,6 +71,11 @@ export function placeProps(seed) {
       // the map's cell level is the land's level at its centre; edges agree with the land (Rule 5.2)
       const lv = lvOfCell(X, Y);
       if (levelAt(seed, X * CW + CW / 2, Y * CH + CH / 2) !== lv) st.centreWrong++;
+      { let up = 0; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (inner(x, y) === TV.CLIFF) up++;
+        const want = G.land[j * MW + i] === L.WATER ? 0 : lv;   // C1: the place's level (the realm's) is the level of most of its tiles
+        if ((up * 2 > CW * CH ? 1 : 0) === want) st.c1Ok++; else if (st.c1Misses.length < 8) st.c1Misses.push([X, Y, want, up]);
+        if (G.land[j * MW + i] === L.WATER && !G.coast[j * MW + i]) st.waterRaisedTiles += up; }   // water held low: no raised tile in a water cell
+      if ((X * 7 + Y * 13) % 211 === 0) { const sm = seamOf(seed, X, Y); st.seamCells++; st.seamBad += sm; }   // the seam: a sample of cells, each as its neighbours' windows see it
       for (const [dx, dy] of [[1, 0], [0, 1]]) {
         const X2 = X + dx, Y2 = Y + dy; if (X2 >= RW || Y2 >= RH) continue;
         st.edges++; const lv2 = lvOfCell(X2, Y2);
@@ -94,6 +113,7 @@ export function placeProps(seed) {
           if (!run) continue;
           if (start > 1 && k < len - 1 && l > 1 && l < lines - 2) {
             st.cliffRuns++; st.cliffTiles += run; st.runHist[run] = (st.runHist[run] || 0) + 1;
+            { const kind = dy > 0 ? 'south' : dy < 0 ? 'rim' : 'side'; if (run > st.runMax[kind]) st.runMax[kind] = run; if (run >= 9) st.runs9[kind]++; }
             if (run < st.cliffRunMin) st.cliffRunMin = run; if (run > st.cliffRunMax) st.cliffRunMax = run; if (run < 4) st.cliffRunsUnder4++; if (run < 8) st.cliffRunsUnder8++; if (run > 8) st.cliffTilesInRunsOver8 += run;
             const onEdge = horiz ? (dy > 0 ? (l + 1) % CH === 0 : l % CH === 0) : (dx > 0 ? (l + 1) % CW === 0 : l % CW === 0);
             if (onEdge && run >= 4) st.cliffRunsOnCellEdge++;
@@ -102,6 +122,13 @@ export function placeProps(seed) {
         }
       }
     }
+    // P4 no diagonal pinch, P5 no lone one-tile face, P6 foot room (faceRows + 1 low rows under every south lip), on the region's stitched raster (the stitched edge is left out)
+    { const FR = landRule().faceRows, lipAt = (x, y) => isC(x, y) && !isC(x, y + 1);
+      for (let y = 1; y < SH - 2; y++) for (let x = 1; x < SW - 1; x++) {
+        const a = isC(x, y), b = isC(x + 1, y), c2 = isC(x, y + 1), d = isC(x + 1, y + 1); if (a === d && b === c2 && a !== b) st.pinch++;
+        if (!lipAt(x, y)) continue;
+        if (!lipAt(x - 1, y) && !lipAt(x + 1, y) && !(lipAt(x - 1, y - 1) || lipAt(x + 1, y - 1) || lipAt(x - 1, y + 1) || lipAt(x + 1, y + 1))) st.loneFace++;
+        if (y + FR + 1 < SH) for (let k = 1; k <= FR + 1; k++) if (isC(x, y + k)) { st.footShort++; break; } } }
     // nothing narrow: a cliff tile that sits in no 4 x 4 block of raised land (a spike, a ridge, a spur); tiles within 4 of the stitched edge are left out
     for (let y = 4; y < SH - 4; y++) for (let x = 4; x < SW - 4; x++) {
       if (!isC(x, y)) continue; let ok = false;
