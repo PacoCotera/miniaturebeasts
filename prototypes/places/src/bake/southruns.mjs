@@ -4,8 +4,8 @@
 //   c0..c4   the corner strip cells (cliff-corner-{e,w}-0..4) on the run's last cells: c4 on the end cell, c3 beside it, then c2, c1, c0 where the run is long enough and no other corner has claimed them
 //   E        the face end (cliff-corner-{e,w}-5) on the low cell beyond a run's end, top at L - 2, when that cell is low for 3 rows or more upward from row L
 //   E2, E1   whole-cell crops of E (cliff-end2-{e,w}, cliff-end1-{e,w}) for a step of 2 rows and of 1 row
-//   b        the side cell (cliff-side-b-{e,w}) on every low cell that has a raised cell beside it, unless an end piece covers it (a stand-in until the flank head and band are painted)
-// NAMED EMPTY SLOTS for the art desk (rows of the table with state "empty": nothing is drawn, the old rim sheet and way-up tiles stand until they are painted): the lip cases, the flank head and band, the foot overlay, the way up.
+//   b        the side wall (cliff-flank-{head,band,tail}-{e,w}) on every low cell that has a raised cell beside it, unless an end piece covers it: head on the north cell of the run, tail on the south cell, band between
+// NAMED EMPTY SLOTS for the art desk (rows of the table with state "empty": nothing is drawn, the old rim sheet and way-up tiles stand until they are painted): the lip cases, the foot overlay, the way up.
 // The pieces are decals in draw order (architecture 3.3): relief pieces north to south by FOOT LINE (the lip row, or a side run's southmost row, plus the face's rows); ties: sides, then columns, corner cells, end pieces; west to east.
 // Every choice reads world tiles only: the land a place carries (ir.land, the cell and its apron and 6 tiles more each side, from the generator's own window), so two places that draw the same world cell place the same piece there.
 import { landOf, pieceOf, PIECES } from './relief.mjs';
@@ -16,7 +16,8 @@ export const CORNER_HANDS = ['e', 'w'];   // the corner strip's cells 0..5 (48 x
 export const cornerKind = (hand, k) => `cliff-corner-${hand}-${k}`;
 export const endKind = (rows, hand) => `cliff-end${rows}-${hand}`;   // E2 (rows 2) and E1 (rows 1): whole-cell crops of the signed end cell
 export const END_ROWS = [1, 2];
-export const sideKind = (hand) => `cliff-side-b-${hand}`;
+export const FLANK_PARTS = ['head', 'band', 'tail'];   // a side wall: its north cell (head), the repeating middle cell (band) and its south cell (tail); each 96 px wide: its own cell and 48 px of the raised cell beside it (its overlap); the west hand is the flip of the east
+export const flankKind = (part, hand) => `cliff-flank-${part}-${hand}`;
 export const FILL_KIND = 'cliff-fill';   // the signed raised fill (fill-cliff.png) as one whole 48 x 48 cell
 
 // Every cliff decal of a level in draw order: [{ kind, x, y }] in game px, keeping only those that reach the place's picture. The one entry both bakes use.

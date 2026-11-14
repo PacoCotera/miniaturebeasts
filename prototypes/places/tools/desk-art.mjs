@@ -13,7 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage, scaleNearest } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, END_ROWS, FILL_KIND, cornerKind, endKind, sideKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, END_ROWS, FILL_KIND, FLANK_PARTS, cornerKind, endKind, flankKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -88,7 +88,8 @@ export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
 // the raised meadow ground (the art director's cliff-plateau-raised-1, mibi-art 2bc909714): the signed meadow fill and tone through the "raised" light table, day files, byte for byte
 export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-plateau-raised-1/work' };
 // the south-face columns: the paid seam edit of cliff-fill-trial-2 (work/raw/step3-seam.png) -> six columns of the seamless strip, through the plain post-step chain; the files sit in the set folder with their sidecars
-export const CORNER_FROM = 'art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png';
+export const FLANK_FROM = 'art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png';   // the side wall's paid raw (the art director's pick)
+export const CORNER_FROM ='art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png';
 export const SOUTH_COLUMNS = 6,SOUTH_FROM = 'art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png';
 const SET_DIR = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
 const sha = (b) => createHash('sha256').update(b).digest('hex');
@@ -327,12 +328,13 @@ export function deskArt() {
     files.set(file, b); decals[cornerKind(hand, k)] = { image: im, anchor: [0, 0] };
     desk[file] = { commit: 'local', from: `${CORNER_FROM} (the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
   }
-  // the side cells (whole-cell crops of the signed corner cell cliff-corner-e-5; the west hand its flip; each file's .steps.json holds the cut and the whole list from the paid raw)
-  for (const hand of CORNER_HANDS) {
-    const file = `${sideKind(hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 48 || im.h !== 48) throw new Error(`${file}: a side cell is 48 x 48, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[sideKind(hand)] = { image: im, anchor: [0, 0] };
-    desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 48], foot: [0, 0], sha256: sha(b) };
+  // the side wall (the paid paint of cliff-lip-side-1, cut on its own painted edge into head, band and tail, 96 px wide: the cell and 48 px of the raised cell beside it; the west hand the flip;
+  // each file's .steps.json holds the whole list from the paid raw)
+  for (const hand of CORNER_HANDS) for (const part of FLANK_PARTS) {
+    const file = `${flankKind(part, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b), h = part === 'head' ? 72 : 48;
+    if (im.w !== 96 || im.h !== h) throw new Error(`${file}: a side wall ${part} is 96 x ${h}, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[flankKind(part, hand)] = { image: im, anchor: [hand === 'e' ? 48 : 0, part === 'head' ? 24 : 0] };   // the east hand hangs 48 px over the raised cell on its west; the head hangs 24 px over the row above
+    desk[file] = { commit: 'local', from: `${FLANK_FROM} (the whole chain from the paid raw is in ${file.replace(/\.png$/, '.steps.json')})`, size: [96, h], foot: [0, 0], sha256: sha(b) };
   }
   // the raised fill as one whole cell decal (spec 3.3): the signed fill-cliff.png scaled to a cell, no file of its own (the sprite sheet carries it)
   const fillSrc = decodePng(readFileSync(path.join(SET_DIR, 'fill-cliff.png')));

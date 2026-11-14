@@ -71,7 +71,7 @@ if (WHICH === 'find') {
       }
       // the side cells: group the decals by hand and column
       const sides = new Map();
-      for (const d of cliffDecals(ir, cliffs)) { const m = /^cliff-side-b-([ew])$/.exec(d.kind); if (m) { const k = m[1] + (d.x / 48); if (!sides.has(k)) sides.set(k, []); sides.get(k).push(d.y / 48); } }
+      for (const d of cliffDecals(ir, cliffs)) { const m = /^cliff-flank-band-([ew])$/.exec(d.kind); if (m) { const k = m[1] + (d.x / 48); if (!sides.has(k)) sides.set(k, []); sides.get(k).push(d.y / 48); } }
       for (const ys of sides.values()) {
         ys.sort((p, q) => p - q);
         for (let i = 0, j = 0; i < ys.length; i = j) { j = i + 1; while (j < ys.length && ys[j] === ys[j - 1] + 1) j++; }

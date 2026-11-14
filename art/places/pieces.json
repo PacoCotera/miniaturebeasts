@@ -54,13 +54,6 @@
       "places": "the low cell beyond a south run's end when only row L of that cell is low"
     },
     {
-      "id": "side-cell", "family": "flank", "state": "stand-in",
-      "kinds": ["cliff-side-b-e", "cliff-side-b-w"],
-      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [0, 0, 48, 48], "margin": 0,
-      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
-      "places": "every low cell with a raised cell beside it that no end piece covers; stands in until the flank head and band are painted"
-    },
-    {
       "id": "raised-fill", "family": "top", "state": "signed",
       "kinds": ["cliff-fill"],
       "anchor": [0, 0], "footprint": [], "extent": [0, 0, 48, 48], "margin": 0,
@@ -128,16 +121,22 @@
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 }, "places": "the south lip: the cushions the signed columns already carry (no piece of its own)"
     },
     {
-      "id": "flank-head", "family": "flank", "state": "empty", "kinds": ["flank-head-e", "flank-head-w"],
-      "anchor": [0, -1], "footprint": [[0, 0]], "extent": [0, 0, 72, 192], "margin": 12,
+      "id": "flank-head", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-head-e", "cliff-flank-head-w"],
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, -24, 96, 72], "margin": 12,
       "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
-      "places": "the back end of a side wall: starts at nothing at the back corner and widens to half a cell over the face's height; painted with the lip"
+      "places": "the north cell of a side wall: the moss cushion's back end over the raised cell beside it and 24 px up over the row above (east hand extent as listed, the west hand its flip); placed, not yet signed"
     },
     {
-      "id": "flank-band", "family": "flank", "state": "empty", "kinds": ["flank-band-e", "flank-band-w"],
-      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [0, 0, 72, 48], "margin": 12,
+      "id": "flank-band", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-band-e", "cliff-flank-band-w"],
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, 0, 96, 48], "margin": 12,
       "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
-      "places": "the middle of a side wall, half a cell wide, on the low cell beside the top; painted with the lip"
+      "places": "the repeating middle cells of a side wall: the moss cushion over the raised cell and the shadowed slate beside it; placed, not yet signed"
+    },
+    {
+      "id": "flank-tail", "family": "flank", "state": "stand-in", "kinds": ["cliff-flank-tail-e", "cliff-flank-tail-w"],
+      "anchor": [0, 0], "footprint": [[0, 0]], "extent": [-48, 0, 96, 48], "margin": 12,
+      "pass": "relief", "footLine": { "from": "side-run-end", "plus": 3 },
+      "places": "the south cell of a side wall, where it meets the face end or the south lip; placed, not yet signed"
     },
     {
       "id": "foot-overlay", "family": "foot", "state": "empty", "kinds": ["foot-overlay"],
