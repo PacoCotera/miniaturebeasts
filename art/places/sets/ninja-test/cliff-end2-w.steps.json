@@ -39,16 +39,22 @@
     "#5e8443",
     "#79875b"
    ]
+  ],
+  [
+   "key",
+   "alpha",
+   1,
+   100
   ]
  ],
- "out_sha256": "7bc7351c329a0c00fc04e3efad1769bfebaf3c4c445de39b85166893ebac5a8d",
+ "out_sha256": "f0ef9b802d30d874fab56b7cd182fb31dac1d49abe65b4aa86c8a3bfdd9c1810",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-13-cliff-corner-scaffold-2",
   "call": "corner-1",
   "raw": "work/raw/corner-1.png",
   "raw_sha256": "1bb46b91b7230c0ace13aed654c70a2f37365960568ff71b66701f8c83339872",
-  "note": "the whole list from the paid raw: the corner cell's own steps, then the cut; replays to the placed bytes",
+  "note": "the whole list from the paid raw: the corner cell's own steps, then the cut; replays to the placed bytes; then the floating rock islands under 100 px are keyed out (key alpha, min part 100)",
   "steps": [
    [
     "scale_nearest",
@@ -122,6 +128,33 @@
    [
     "flip",
     "h"
+   ],
+   [
+    "key_below",
+    [
+     "#6c7682",
+     "#3e444e",
+     "#343840",
+     "#242626",
+     "#333b47",
+     "#8497a5",
+     "#141b1b",
+     "#9eadb9",
+     "#555c64",
+     "#474d55",
+     "#5a6470",
+     "#6a7b8e",
+     "#acbfc5",
+     "#616b44",
+     "#5e8443",
+     "#79875b"
+    ]
+   ],
+   [
+    "key",
+    "alpha",
+    1,
+    100
    ]
   ]
  }
