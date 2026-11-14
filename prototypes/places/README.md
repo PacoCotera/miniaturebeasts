@@ -41,7 +41,7 @@ Closed looks (walk content B8): every opening of a place in the open style carri
 - Rules (open style only): `cliff-foot` (no 1-row gully), `wayup`, `two-thirds-open` (every side walkable on at least two thirds), `seam-ground` and `path-short` (the last 2 rows and columns are grass, nothing on them), `heart-far` (10 from every arrival), `heart-clear` (no prop within 2 of the heart), `closed-look` (a 3 x 3 block of thicket to stamp the openings' closed looks from), `grove-lattice` (groves, not an even lattice); up to 8 finds.
 - The palette keeps the slots the old range haze was keyed to (the kit's 43, then the open edges' 7); the decor's colours follow.
 - The palette merge (signed by the art director): `art/places/sets/ninja-test/palette-merge.json` lists 20 colours that are each replaced by the nearest other colour of the set (every pair within 0.012 in OKLab); `prepare-set` applies it to every picture the desk gives (recipe `paletteMerge`), so the set holds 188 colours and the 48 core and the set fit the 256 indices.
-- The adapter closes a side the world closes (the map's end: a thicket stamped over the two outer rows; a cliff: the rows behind its lip), blocked; `tools/views-audit.mjs` holds every open-style side to it.
+- The adapter closes the map's end whole (a thicket stamped over the two outer rows), blocked. A cliff side is not closed whole: a border is open wherever a walkable tile meets a walkable tile across it on the same level, and closed only at its own blocking tiles (ring, face, flank, water, thicket, props); `tools/views-audit.mjs` holds every open-style side to it.
 
 ## Generated places (world generation, G2)
 
