@@ -39,7 +39,7 @@
    "crop",
    [
     112,
-    49,
+    62,
     32,
     16
    ],
@@ -53,7 +53,7 @@
    ]
   ]
  ],
- "out_sha256": "7021b55d1b66e1a386ebdd0c544c3ed2ba18ed3b4e65baa0b76474cd12cbccc8",
+ "out_sha256": "29df491f6db71e9984873ad12c48f4438eb77a0c1e68944d2f8103c936ef39a5",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-14-cliff-lip-side-1",
