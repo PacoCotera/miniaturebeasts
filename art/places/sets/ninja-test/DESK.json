@@ -2311,7 +2311,7 @@
       0,
       0
     ],
-    "sha256": "b093c5bcbe39295b0d6eae6197558c5f4cff01e6b7c27c81d85df7c2003f22ea"
+    "sha256": "ee85d689cd6c5c52389427fcbac0ee637def3f0d3c9039a6fdc65e686e828d3c"
   },
   "cliff-foot-2.png": {
     "commit": "local",
@@ -2324,7 +2324,7 @@
       0,
       0
     ],
-    "sha256": "82a9164cad8f17bf6ea3823797427c35e1400ef9deacd9f7c65e70dc1bdb343e"
+    "sha256": "2499258cd003c54d2b82a80c1b1b124ac1c8dbdeae091ac7029a0ab19720dfc3"
   },
   "cliff-foot-3.png": {
     "commit": "local",
@@ -2337,7 +2337,7 @@
       0,
       0
     ],
-    "sha256": "7abe69b80e489250b18b3ff9998ba73956374e9433fcef58bc0ba8006d8eb0de"
+    "sha256": "8ebcbd61264e0745cb28a27d2e65a23cbad3a672819aa32ad225c8bb2ddd5a4e"
   },
   "cliff-foot-4.png": {
     "commit": "local",
@@ -2350,7 +2350,7 @@
       0,
       0
     ],
-    "sha256": "38bf02c23cfa7c68d73e688ea076a067164164b595473c93225d3bcbce212718"
+    "sha256": "7418aa9185b1212e1f8e66c357377458bc9b8d914f7162adad49f0eb7df2d65a"
   },
   "cliff-foot-5.png": {
     "commit": "local",
@@ -2363,7 +2363,7 @@
       0,
       0
     ],
-    "sha256": "71dab8f95bbcc302108f33c40d8cc901b5ffeb6857242bc2bee0cff117dfd0da"
+    "sha256": "5d2f6fb3acc61cc16aac56d9ea84b84fd58a2e6da44bc7243a11b36ebab9da45"
   },
   "cliff-foot-6.png": {
     "commit": "local",
@@ -2376,7 +2376,7 @@
       0,
       0
     ],
-    "sha256": "cec524b455670e1d66c343f59f36e132ececa7204a4e2801cbb751a6f8348633"
+    "sha256": "5b931c9adfa408277a1a4d7628227e5a5f91cb84224d724c970689d69dc22d6e"
   },
   "cliff-foot-w.png": {
     "commit": "local",
@@ -2389,7 +2389,7 @@
       0,
       0
     ],
-    "sha256": "e60b8cade35ce15cc31e6b25d148aee0499cd06b43109d85ba4d645bf10494b4"
+    "sha256": "094c692fdc34e3225de6b5d3e4181c48db75f3a76f1d0b393ce4d90611074278"
   },
   "cliff-foot-e.png": {
     "commit": "local",
@@ -2402,7 +2402,7 @@
       0,
       0
     ],
-    "sha256": "08111691bbaa3cbabf0e46dc3a54f33ca82d30f39fcdc2567bd4e44641283b47"
+    "sha256": "e92ffe26c85c1e1a68c959998a99c1e9f81c6f75317bdc18b479250bbb6dc9ab"
   },
   "fill-deep.png": {
     "commit": "633e4d641",

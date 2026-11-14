@@ -1,6 +1,68 @@
 {
- "source_sha256": "a2b70fc2a13de69e8422f072befc74e15cec0f75bca5a6b735283d3f174efb07",
+ "source_sha256": "baac9aa53239aea3f84ddeb6330db7832e5f2e4b74173214034e08f495cd62a4",
  "steps": [
+  [
+   "scale_nearest",
+   [
+    600,
+    704
+   ]
+  ],
+  [
+   "reduce_mode",
+   4
+  ],
+  [
+   "snap",
+   "walk",
+   "7e90b28e41f4",
+   [
+    "#1e2a3e",
+    "#4a5f78"
+   ]
+  ],
+  [
+   "key_foot",
+   {
+    "src": "10f0dd9ce867034db0f2401496eee564578204c06c3921a9b07c70a9fff9314e",
+    "steps": [
+     [
+      "snap",
+      "walk",
+      "7e90b28e41f4",
+      [
+       "#1e2a3e",
+       "#4a5f78"
+      ]
+     ]
+    ],
+    "sha": "1368134a12d440cdadb7ecf0ca929571ed172da97698bb89e3c3dcb708374401"
+   },
+   {
+    "src": "3f3f2fecdf0916c739580d21a88da6bcdc848b037f5744f20255030b5dd92c93",
+    "steps": [],
+    "sha": "5d57eb5ce36a62992eb6ad65f5b938e33d227221a739fb26162b53d3bd234365"
+   },
+   "#74a65d",
+   [
+    "#141b1b",
+    "#242626",
+    "#2c6c72",
+    "#333b47",
+    "#343840",
+    "#3a8785",
+    "#3e444e",
+    "#474d55",
+    "#555c64",
+    "#5a6470",
+    "#6a7b8e",
+    "#6c7682",
+    "#8497a5",
+    "#9eadb9",
+    "#acbfc5"
+   ],
+   5
+  ],
   [
    "crop",
    [
@@ -12,6 +74,11 @@
    "terrain"
   ],
   [
+   "keep_cell_parts",
+   4,
+   5
+  ],
+  [
    "scale_nearest",
    [
     72,
@@ -19,34 +86,11 @@
    ]
   ]
  ],
- "out_sha256": "cec524b455670e1d66c343f59f36e132ececa7204a4e2801cbb751a6f8348633",
+ "out_sha256": "5b931c9adfa408277a1a4d7628227e5a5f91cb84224d724c970689d69dc22d6e",
  "from_paid_call": {
   "model": "fal-ai/nano-banana-pro/edit",
   "job": "art-jobs/2026-11-14-cliff-foot-1",
   "call": "nbp-edit",
-  "raw": "work/raw/nbp-edit.png",
-  "steps": [
-   [
-    "scale_nearest",
-    [
-     600,
-     704
-    ]
-   ],
-   [
-    "reduce_mode",
-    4
-   ],
-   [
-    "snap",
-    "walk",
-    "7e90b28e41f4",
-    [
-     "#1e2a3e",
-     "#4a5f78"
-    ]
-   ]
-  ],
-  "note": "the layer is the job's out/foot-layer-run.png: the raw scaled, reduced and snapped as listed, then keyed to the painted foot band by post.py; the steps above are the cut from that layer"
+  "raw": "work/raw/nbp-edit.png"
  }
 }
