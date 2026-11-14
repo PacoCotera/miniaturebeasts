@@ -16,6 +16,7 @@
 import { noiseField } from './world.mjs';
 import { reedClumps } from './reeds.mjs';
 import { RULES } from './rules.mjs';
+import { PART, partAt, extentClear } from '../../../places/src/bake/relief.mjs';
 import SPRITES from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };   // the sprites' sizes and feet (every sprite is drawn at 1x), read by the no-overlap rule
 
 // a sprite's rectangle on the 48 px world frame, from the point its foot stands on: [left, top, width, height]; null for a kind the set does not hold
@@ -82,13 +83,17 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     const WZ = PR.wayZone;
     for (let y = a.y - WZ.up; y <= a.y + a.h - 1 + WZ.down; y++) for (let x = a.x - WZ.left; x <= a.x + a.w - 1 + WZ.right; x++) wayZone.add(key(x, y));
   }
-  // ---- tile classes: solid (water, thicket, the cliff's lip), path
+  // ---- tile classes: solid (water, thicket, the cliff's ring, face and flank), path
   const cls = new Map();
-  const isLip = (x, y) => T(x, y) === CLIFF && !wayCell.has(key(x, y)) && (T(x + 1, y) !== CLIFF || T(x - 1, y) !== CLIFF || T(x, y + 1) !== CLIFF || T(x, y - 1) !== CLIFF);
+  // the cliff's cells by relief.mjs, the one function that names them (cliff spec 4.3, 4.4): the ring and the face (the cell under a south lip cell) are the lip, which keeps the "one clear tile beside a lip" rule's
+  // rows free of props and decals; the flank (the leaning side and the end pieces' rock rows) is solid as well; a way up's cells are none of these
+  const land7 = { raised: (x, y) => T(x, y) === CLIFF, low: (x, y) => T(x, y) !== CLIFF, way: (x, y) => wayCell.has(key(x, y)), inside: inMap, memo: new Map() };
+  const isLip = (x, y) => { const p = partAt(land7, x, y); return p === PART.RING || p === PART.FACE; };
+  const isFlank = (x, y) => partAt(land7, x, y) === PART.FLANK;
   const flags = (x, y) => {
     if (!inMap(x, y)) return 1;
     const k = key(x, y), hit = cls.get(k); if (hit !== undefined) return hit;
-    const t = T(x, y), f = (t === WATER || t === DEEP || t === THICKET || isLip(x, y) ? 1 : 0) | (t === PATH ? 2 : 0) | (isLip(x, y) ? 4 : 0);
+    const t = T(x, y), f = (t === WATER || t === DEEP || t === THICKET || isLip(x, y) || isFlank(x, y) ? 1 : 0) | (t === PATH ? 2 : 0) | (isLip(x, y) ? 4 : 0);
     if (cls.size > 600000) cls.clear();
     cls.set(k, f); return f;
   };
@@ -182,6 +187,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     const t = G(x, y);
     if (fi === 4) return OPEN(t) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
     if (!(OPEN(t) || t === LITTER || (fi === 1 && (t === SAND || t === SCREE)))) return false;
+    if (!extentClear(land7, x, y, FAMS[fi])) return false;   // the extent test: no cell under what stands (a tree's crown, with a margin) is a ring, face, flank or way-up cell
     return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap

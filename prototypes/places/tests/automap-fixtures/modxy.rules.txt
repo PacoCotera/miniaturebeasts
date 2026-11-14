@@ -1,0 +1,3 @@
+# the rule maps of fixture modxy, in order
+modxy.rules1.tmj
+modxy.rules2.tmj
