@@ -31914,9 +31914,9 @@ var import_client3 = __toESM(require_client(), 1);
 var LAMP_SIZE = 8;
 var LAMP_CUT = 2;
 var HIGHLIGHT_AT = [2, 2];
-var TOKEN_HEX = { bevel: "#565c63", hairline: "#3d434b", glassQuiet: "#cdccc2", mint: "#adf6e0", aqua: "#45d8be", amber: "#ffa83f", gold: "#d89b14", cream: "#fff4a6", white: "#ffffff" };
+var TOKEN_HEX = { bevel: "#565c63", glassQuiet: "#cdccc2", mint: "#adf6e0", aqua: "#45d8be", amber: "#ffa83f", gold: "#d89b14", cream: "#fff4a6", white: "#ffffff" };
 var STATE_TOKEN = { off: "bevel", mint: "mint", warm: "mint", amber: "amber" };
-var RIM_TOKEN = { off: "hairline", mint: "aqua", warm: "aqua", amber: "gold" };
+var RIM_TOKEN = { off: null, mint: "aqua", warm: "aqua", amber: "gold" };
 var HIGHLIGHT_TOKEN = { off: "glassQuiet", mint: "white", warm: "white", amber: "cream" };
 var cut = (x, y, n2) => {
   const dx = Math.min(x, LAMP_SIZE - 1 - x), dy = Math.min(y, LAMP_SIZE - 1 - y);
@@ -31932,7 +31932,7 @@ function lampMap({ cutPx = LAMP_CUT, highlight = false } = {}) {
   return rows;
 }
 function lampPixels({ state = "off", cutPx = LAMP_CUT, highlight = false } = {}) {
-  const body = TOKEN_HEX[STATE_TOKEN[state] || "bevel"], rim = TOKEN_HEX[RIM_TOKEN[state] || "hairline"], hi = TOKEN_HEX[HIGHLIGHT_TOKEN[state] || "glassQuiet"], out = [];
+  const body = TOKEN_HEX[STATE_TOKEN[state] || "bevel"], rim = RIM_TOKEN[state] ? TOKEN_HEX[RIM_TOKEN[state]] : body, hi = TOKEN_HEX[HIGHLIGHT_TOKEN[state] || "glassQuiet"], out = [];
   const rows = lampMap({ cutPx, highlight });
   const solid = (x, y) => x >= 0 && y >= 0 && x < LAMP_SIZE && y < LAMP_SIZE && rows[y][x] !== ".";
   const edge = (x, y) => !(solid(x - 1, y) && solid(x + 1, y) && solid(x, y - 1) && solid(x, y + 1));
