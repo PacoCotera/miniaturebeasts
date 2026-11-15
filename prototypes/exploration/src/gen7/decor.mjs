@@ -33,6 +33,7 @@ const OPEN = t => t === GRASS || t === DRY || t === TURF;   // the open low grou
 export const FAMS = ['trees', 'rocks', 'stumps', 'bushes', 'sweeps'];
 export const TABLE = RULES.biomes;
 export const BIOME_IDS = Object.keys(TABLE);
+const DISP = 7;   // tiles beyond its reach a tree or bush may stand when a ring kept clear by a place took its place in the cluster
 // props per 100 tiles a table row asks for (on tiles where the kind may stand)
 export const expectedPer100 = (biome, fam) => { const P = TABLE[biome][fam]; if (!P) return 0; const m = P.size ? (P.size[0] + P.size[1]) / 2 : 1; return 100 * P.used * m / (P.B * P.B); };
 
@@ -156,7 +157,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
         const [lo, hi] = sizeRange(P), size = lo + (H(seed, TAG.SIZE + fi, bx, by, bi) % (hi - lo + 1)), rmax = GV.reach.base + GV.reach.perSize * size;
         let kind = null;
         if (fam === 'trees') kind = U(seed, TAG.KIND, bx, by, bi) < (TABLE[b].broad ?? 0.5) ? KINDS.broad : KINDS.autumn;
-        out.push({ fi, x: px, y: py, size, rmax, rmax2: rmax * rmax, kind, b, P, k: (fi * 16 + bi) * 1e9 + by * 40000 + bx, h });
+        out.push({ fi, x: px, y: py, size, rmax, rmax2: rmax * rmax, rmaxW2: (rmax + DISP) * (rmax + DISP), kind, b, P, k: (fi * 16 + bi) * 1e9 + by * 40000 + bx, h });
       }
     });
     memo.set(ck, out); if (memo.size > 40000) memo.clear();
@@ -164,13 +165,13 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   }
   // the seed whose claim the tile lies in (the nearest of its kind within its reach); `inner`: only when the tile is at least 0.75 tile from every other seed's claim (the bisector),
   // so two tiles beside each other, corners too, never belong to two clusters
-  function owner(fi, x, y, inner = false) {
+  function owner(fi, x, y, inner = false, wide = false) {
     const cx = Math.floor(x / CS), cy = Math.floor(y / CS); let best = null, bd = Infinity;
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) for (const s of seedsIn(fi, cx + dx, cy + dy)) {
       const d = (s.x - x) * (s.x - x) + (s.y - y) * (s.y - y);
       if (d < bd || (d === bd && s.k < best.k)) { best = s; bd = d; }
     }
-    if (!best || bd > best.rmax2) return null;
+    if (!best || bd > (wide ? best.rmaxW2 : best.rmax2)) return null;
     if (inner) {
       for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) for (const s of seedsIn(fi, cx + dx, cy + dy)) {
         if (s === best) continue;
@@ -184,15 +185,17 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // ---- where each kind may stand ----
   // what a place holds (places.mjs): the scenery keeps off the set pieces and the paths. maskAt: 0 free, 1 nothing tall (trees, bushes, tall grass), 2 nothing at all (a spot and the tile round it, the spine)
   const maskAt = land.mask || (() => 0);
-  const stands = (fi, x, y) => {
+  const stands = (fi, x, y, useMask = true) => {
     if (!inMap(x, y)) return false;
-    { const mk = maskAt(x, y); if (mk === 2 || (mk === 1 && (fi === 0 || fi === 3 || fi === 4))) return false; }
+    if (useMask) { const mk = maskAt(x, y); if (mk === 2 || (mk === 1 && (fi === 0 || fi === 3 || fi === 4))) return false; }
     const t = G(x, y);
     if (fi === 4) return OPEN(t) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
     if (!(OPEN(t) || t === LITTER || (fi === 1 && (t === SAND || t === SCREE)))) return false;
     if (!extentClear(land7, x, y, FAMS[fi])) return false;   // the extent test: no cell under what stands (a tree's crown, with a margin) is a ring, face, flank or way-up cell
     return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
   };
+  // does a ring the places keep clear lie within the reach of this seed's cluster (and the DISP tiles a displaced member may stand beyond it)?
+  const maskedNear = (fi, s) => { const R = Math.ceil(s.rmax + DISP); for (let y = s.y - R; y <= s.y + R; y++) for (let x = s.x - R; x <= s.x + R; x++) if (inMap(x, y) && maskAt(x, y) > 0) return true; return false; };
   // a tile an earlier kind holds, or (for a prop that blocks) one beside it: no two props that block ever touch, even at a corner, so a ring of them cannot close a gap
   const earlier = (fi, x, y) => {
     for (let f = 0; f < fi; f++) {
@@ -219,31 +222,49 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const clusterMemo = FAMS.map(() => new Map());
   function cluster(fi, s) {
     const memo = clusterMemo[fi], hit = memo.get(s.k); if (hit) return hit;
-    const members = [], set = new Map(), P = s.P, keep = fi === 4 ? Math.max(P.keep || 1, 3) : P.keep || 1, touch2 = GV.touchD2[FAMS[fi]], minD2 = P.minD2 || GV.minD2;
-    const ok = (x, y) => owner(fi, x, y, fi !== 4) === s && stands(fi, x, y) && !earlier(fi, x, y);
-    const add = (x, y) => { const j = members.length, m = { x, y, kind: memberKind(fi, s, x, y) }; members.push(m); set.set(key(x, y), m.kind); return j; };
-    // the first member is the seed's own tile (a seed on water, thicket or beside a wall holds no cluster: a grove thins toward a shore instead of crowding onto it)
-    const first = ok(s.x, s.y) ? [s.x, s.y] : null;
-    if (first && fi !== 2) {
-      add(first[0], first[1]);
-      while (members.length < s.size) {
-        let best = null, bh = Infinity;
-        for (const m of members) for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
-          const x = m.x + dx, y = m.y + dy; if (set.has(key(x, y))) continue;
-          if (fi === 4) { if (Math.abs(dx) > 1 || Math.abs(dy) > 1) continue; }
-          else if (dx * dx + dy * dy > touch2) continue;
-          if ((x - s.x) * (x - s.x) + (y - s.y) * (y - s.y) > s.rmax2) continue;
-          let apart = true, close = false;   // never beside another, not even at a corner (a wood's groves may touch at a corner, a closed canopy side by side)
-          if (fi !== 4) for (const q of members) { const d2 = (q.x - x) * (q.x - x) + (q.y - y) * (q.y - y); if (d2 < minD2) { apart = false; break; } if (d2 <= 2) close = true; }
-          if (!apart) continue;
-          const g = H(seed, TAG.GROW + fi, x, y, s.h); if (g >= bh) continue;
-          if (!ok(x, y) || (close && pocket(members, x, y))) continue;
-          best = [x, y]; bh = g;
+    const P = s.P, keep = fi === 4 ? Math.max(P.keep || 1, 3) : P.keep || 1, touch2 = GV.touchD2[FAMS[fi]], minD2 = P.minD2 || GV.minD2;
+    // grow one cluster: `okAt` says which tiles may hold a member, `target` how many members, `wide` the displaced kind of growth (see below)
+    const grow = (okAt, target, wide) => {
+      const members = [], set = new Map(), reach2 = wide ? s.rmaxW2 : s.rmax2, touchD2 = wide ? 18 : touch2;
+      const add = (x, y) => { members.push({ x, y, kind: memberKind(fi, s, x, y) }); set.set(key(x, y), members[members.length - 1].kind); };
+      // the first member is the seed's own tile (a seed on water, thicket or beside a wall holds no cluster: a grove thins toward a shore instead of crowding onto it); a displaced cluster
+      // starts on the nearest tile that may hold a member
+      let first = okAt(s.x, s.y) ? [s.x, s.y] : null;
+      if (!first && wide) { const R = Math.ceil(s.rmax + DISP); let bd = Infinity; for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) { const d = dx * dx + dy * dy; if (d > reach2 || d > bd) continue; if (okAt(s.x + dx, s.y + dy)) { bd = d; first = [s.x + dx, s.y + dy]; } } }
+      if (first && fi !== 2) {
+        add(first[0], first[1]);
+        while (members.length < target) {
+          let best = null, bh = Infinity;
+          for (const m of members) for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
+            const x = m.x + dx, y = m.y + dy; if (set.has(key(x, y))) continue;
+            if (fi === 4) { if (Math.abs(dx) > 1 || Math.abs(dy) > 1) continue; }
+            else if (dx * dx + dy * dy > touchD2) continue;
+            if ((x - s.x) * (x - s.x) + (y - s.y) * (y - s.y) > reach2) continue;
+            let apart = true, close = false;   // never beside another, not even at a corner (a wood's groves may touch at a corner, a closed canopy side by side)
+            if (fi !== 4) for (const q of members) { const d2 = (q.x - x) * (q.x - x) + (q.y - y) * (q.y - y); if (d2 < minD2) { apart = false; break; } if (d2 <= 2) close = true; }
+            if (!apart) continue;
+            const g = H(seed, TAG.GROW + fi, x, y, s.h); if (g >= bh) continue;
+            if (!okAt(x, y) || (close && pocket(members, x, y))) continue;
+            best = [x, y]; bh = g;
+          }
+          if (!best) break;
+          add(best[0], best[1]);
         }
-        if (!best) break;
-        add(best[0], best[1]);
+      } else if (first) add(first[0], first[1]);
+      return { members, set };
+    };
+    const ok = (x, y) => owner(fi, x, y, fi !== 4) === s && stands(fi, x, y) && !earlier(fi, x, y);
+    let { members, set } = grow(ok, s.size, false);
+    // A ring the places keep clear (places.mjs) takes trees and bushes from a cluster: the cluster is then made again with as many members as it would have had without the ring, on the nearest
+    // free ground (up to DISP tiles beyond its own reach), so the place keeps its count of trees. The count to match is that of the cluster as it stands with no ring (a function of the world alone).
+    if (fi === 0 && maskedNear(fi, s)) {
+      const free = grow((x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y, false) && !earlier(fi, x, y, false), s.size, false);
+      if (members.length < free.members.length) {
+        const wideOk = (x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y) && !earlier(fi, x, y);
+        const again = grow(wideOk, free.members.length, true);
+        if (again.members.length > members.length) ({ members, set } = again);
       }
-    } else if (first) add(first[0], first[1]);
+    }
     const c = members.length >= keep ? { members, set } : { members: [], set: new Map() };
     memo.set(s.k, c); if (memo.size > 40000) memo.clear();
     return c;
@@ -260,7 +281,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     if (fi === 3) return KINDS.bushes[H(seed, TAG.MEM, x, y, s.h) % 3];
     return SWEEPS[H(seed, TAG.MEM + 1, x, y, s.h) % SWEEPS.length];
   }
-  function memberOf(fi, x, y) { const s = owner(fi, x, y); if (!s) return null; return cluster(fi, s).set.get(key(x, y)) || null; }
+  function memberOf(fi, x, y) { const s = owner(fi, x, y, false, fi === 0); if (!s) return null; return cluster(fi, s).set.get(key(x, y)) || null; }
 
   // ---- scrub shrubs: a scrub tile whose 3 x 3 is all scrub (a full cell off every scrub edge) may hold one by hash; of two candidates on neighbouring tiles (side by side) the lower hash wins, so none ever touch ----
   // The most the no-touching rule allows (art director, final): every eligible scrub tile (plain: a full cell off the patch edge) takes a shrub unless a neighbour at its side holds one, the tiles taken in an order

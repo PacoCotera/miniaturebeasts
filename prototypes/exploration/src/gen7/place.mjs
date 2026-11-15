@@ -611,7 +611,6 @@ function decorIR(seed, x0, y0, w, h) {
   return { props: props.sort(byPos), decals: decals.sort(byPos), reedbanks, reedProps };
 }
 
-const PATCHABLE = new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCRUB, TV.SCREE]);   // the low ground a heart's patch may take (a way, sand, water, thicket and raised land keep theirs)
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
 function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
@@ -626,9 +625,9 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   let tone = toneField(seed, x0, y0, w, h);
   if (hold && hold.patches && hold.patches.length) {
     terrain = terrain.slice(); tone = tone.slice();
-    for (const { kind, rect: [rx, ry, rw, rh] } of hold.patches) {
-      for (let y = ry; y < ry + rh; y++) for (let x = rx; x < rx + rw; x++) { const i = y * w + x; if (x >= 0 && y >= 0 && x < w && y < h && PATCHABLE.has(terrain[i])) terrain[i] = VALUE_OF[kind]; }
-      for (let y = ry - 1; y <= ry + rh; y++) for (let x = rx - 1; x <= rx + rw; x++) if (x >= 0 && y >= 0 && x < w && y < h) tone[y * w + x] = 0;
+    for (const { kind, tiles } of hold.patches) {
+      for (const [x, y] of tiles) { const i = y * w + x; if (terrain[i] === TV.GRASS) terrain[i] = VALUE_OF[kind]; }
+      for (const [x, y] of tiles) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h) tone[(y + dy) * w + x + dx] = 0;
     }
   }
   // `top`: the ground under each raised tile, only when some raised tile holds a ground other than grass (all grass draws as a place with none)

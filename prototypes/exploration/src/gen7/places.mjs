@@ -14,13 +14,14 @@ import { openingsOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
 import { ROCK_KINDS } from './decor.mjs';
 import { RULES } from './rules.mjs';
+import { PART, partAt } from '../../../places/src/bake/relief.mjs';
 import STAMPS from './stamps.json' with { type: 'json' };
 
-const TV = { SAND: 3, PATH: 5, GRASS: 6, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
+const TV = { DEEP: 1, WATER: 2, SAND: 3, PATH: 5, GRASS: 6, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, TV.CLIFF]) WALKT[t] = 1;
 export const ZM = 4;                         // the zone's margin round the frame, tiles
 export const QUIET = 3;                      // no tall scenery within this many tiles of a spot
-const EDGE = QUIET + 1;                      // a spot keeps this far in from the frame's edge (the frame's first and last tile are the apron), so its quiet ground stays inside its own cell and a tile's mask asks one plan only
+const EDGE = QUIET + 2;                      // a spot keeps this far in from the frame's edge (the frame's first and last tile are the apron): its quiet ring (QUIET) stays inside its own cell, and the spot itself stays out of the band a neighbour's cell shows of this one (the apron and two tiles more), so a cell's decor never needs a neighbour's plan
 const SIGHT = 16, GAP = 2;                   // a heart is seen from a way in within SIGHT tiles; GAP clear tiles between two spots
 const SIDES8 = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.41], [1, -1, 1.41], [-1, 1, 1.41], [-1, -1, 1.41]];
 const unit = (seed, X, Y, ...k) => (hash(seed, 'gen7', 'places', X, Y, ...k) % 100000) / 100000;
@@ -30,6 +31,22 @@ export const stampById = Object.fromEntries(STAMPS.stamps.map(s => [s.id, s]));
 const stampsOfKind = (kind, land) => STAMPS.stamps.filter(s => s.kind === kind && s.lands.includes(land));
 const flipped = (s, f) => (f ? { ...s, rows: s.rows.map(r => [...r].reverse().join('')), anchor: [s.w - 1 - s.anchor[0], s.anchor[1]] } : s);
 export const LAND_WORD = land => groundName(land, false);
+
+// ---- the cell's own tile classes (the decor's `flags`, from the cell's own terrain and the raised land it carries beyond its apron), so a plan reads no neighbour cell ----
+// flags: 1 solid (water, thicket, cliff ring, face or flank), 2 trail, 4 lip, as decor.mjs; read for the tiles of the cell's frame only
+export function frameFlags(ct, wayups) {
+  const { x0, y0, w, h, terrain, land } = ct, M = land.m, lw = land.w, lh = land.h;
+  const rz = (x, y) => { const lx = x - x0 + M, ly = y - y0 + M; return lx >= 0 && ly >= 0 && lx < lw && ly < lh && land.raised[ly * lw + lx] === 1; };
+  const wayCell = new Set(); for (const a of wayups) for (let j = 0; j < a.h; j++) for (let i = 0; i < a.w; i++) wayCell.add((a.y + j) * 65536 + a.x + i);
+  const land7 = { raised: rz, low: (x, y) => !rz(x, y), way: (x, y) => wayCell.has(y * 65536 + x), inside: (x, y) => x >= 0 && y >= 0 && x < MW * ATLAS * CW && y < MH * ATLAS * CH, memo: new Map() };
+  const memo = new Int8Array(w * h).fill(-1);
+  const flags = (x, y) => {   // world tile of the frame
+    const i = (y - y0) * w + x - x0, hit = memo[i]; if (hit >= 0) return hit;
+    const t = terrain[i], p = partAt(land7, x, y), lip = p === PART.RING || p === PART.FACE, f = (t === TV.WATER || t === TV.DEEP || t === TV.THICKET || lip || p === PART.FLANK ? 1 : 0) | (t === TV.PATH ? 2 : 0) | (lip ? 4 : 0);
+    memo[i] = f; return f;
+  };
+  return { flags, isLip: (x, y) => (flags(x, y) & 4) !== 0 };
+}
 
 // ---- the plan of a cell ----
 const PLANS = new Map();   // by seed, then by cell number: a plan is made once a cell (the decor asks for it for every tile)
@@ -47,10 +64,12 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   const ct = cellTerrain(seed, X, Y), { x0, y0, w, h, terrain } = ct, D = decorOf(seed), N = w * h, I = (x, y) => y * w + x;
   const word = LAND_WORD(land), U = (...k) => unit(seed, X, Y, ...k);
   const plan = { seed, X, Y, x0, y0, w, h, land: word, entries: [], samples: [], spine: new Uint8Array(N), spots: [], sightLine: [], zone: null, dent: null, dsp: null };
-  const openings = openingsOf({ seed, X, Y, x0, y0, w, h, terrain, D });
+  const FF = frameFlags(ct, ct.wayups);   // the plan reads this cell's terrain alone, never a neighbour's
+  const openings = openingsOf({ seed, X, Y, x0, y0, w, h, terrain, D: FF });
   // ---- 1. structure ----
   const walk = new Uint8Array(N), lvl = new Uint8Array(N), way = new Set();
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const t = terrain[I(x, y)]; walk[I(x, y)] = WALKT[t] === 1 && !(D.flags(x0 + x, y0 + y) & 1) ? 1 : 0; lvl[I(x, y)] = t === TV.CLIFF ? 1 : 0; }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const t = terrain[I(x, y)]; walk[I(x, y)] = WALKT[t] === 1 && !(FF.flags(x0 + x, y0 + y) & 1) ? 1 : 0; lvl[I(x, y)] = t === TV.CLIFF ? 1 : 0; }
+  plan.grass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.grass[i] = terrain[i] === TV.GRASS ? 1 : 0;
   const wayups = ct.wayups.map(a => ({ x: a.x - x0, y: a.y - y0, w: a.w, h: a.h }));
   for (const a of wayups) for (let i = 0; i < a.w; i++) way.add(I(a.x + i, a.y));
   plan.wayups = wayups;
@@ -60,6 +79,9 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
     if (lvl[I(x, y)] === lvl[I(X2, Y2)]) return true;
     return x === X2 && way.has(I(x, Math.min(y, Y2)));
   };
+  // the four orthogonal steps each tile may take, once: bit d of sb[i] for the step (DX[d], DY[d])
+  const DX = [1, -1, 0, 0], DY = [0, 0, 1, -1], sb = new Uint8Array(N);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let b = 0; for (let d = 0; d < 4; d++) if (stepOk(x, y, x + DX[d], y + DY[d])) b |= 1 << d; sb[I(x, y)] = b; }
   const pt = (side, k) => (side === 'N' ? [k, 1] : side === 'S' ? [k, CH] : side === 'W' ? [1, k] : [CW, k]);
   for (const o of openings) {
     const m = (o.from + o.to) >> 1, e = pt(o.side, m);
@@ -77,10 +99,10 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
     Dm[s] = 0; q.push(s, 0);
     while (q.length) {
       const d = q.peekValue(), cc = q.pop(); if (d > Dm[cc]) continue;
-      const x = cc % w, y = (cc / w) | 0;
-      for (const [dx, dy] of SIDES4) {
-        const X2 = x + dx, Y2 = y + dy; if (!stepOk(x, y, X2, Y2)) continue;
-        const n = I(X2, Y2), nd = d + stepCost(n); if (nd < Dm[n]) { Dm[n] = nd; par[n] = cc; q.push(n, nd); }
+      const bits = sb[cc];
+      for (let k = 0; k < 4; k++) {
+        if (!(bits & (1 << k))) continue;
+        const n = cc + DY[k] * w + DX[k], nd = d + stepCost(n); if (nd < Dm[n]) { Dm[n] = nd; par[n] = cc; q.push(n, nd); }
       }
     }
     for (let j = i + 1; j < nodeOk.length; j++) {
@@ -101,11 +123,16 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
     for (const s of srcs) { Dm[s] = 0; q.push(s, 0); }
     while (q.length) {
       const d = q.peekValue(), cc = q.pop(); if (d > Dm[cc]) continue;
-      const x = cc % w, y = (cc / w) | 0;
-      for (const [dx, dy, k] of SIDES8) {
-        const X2 = x + dx, Y2 = y + dy; if (!stepOk(x, y, X2, Y2)) continue;
-        if (dx && dy && !(stepOk(x, y, x + dx, y) && stepOk(x, y, x, y + dy))) continue;
-        const nd = d + k, n = I(X2, Y2); if (nd < Dm[n]) { Dm[n] = nd; q.push(n, nd); }
+      const x = cc % w, y = (cc / w) | 0, bits = sb[cc];
+      for (let s = 0; s < 8; s++) {
+        const [dx, dy, k] = SIDES8[s];
+        let n;
+        if (!dx || !dy) { const d4 = dx === 1 ? 0 : dx === -1 ? 1 : dy === 1 ? 2 : 3; if (!(bits & (1 << d4))) continue; n = cc + dy * w + dx; }
+        else {   // a diagonal: the tile itself (inside, walkable, same level) and both steps round the corner
+          const X2 = x + dx, Y2 = y + dy; if (!incell(X2, Y2)) continue; n = I(X2, Y2);
+          if (!walk[n] || lvl[n] !== lvl[cc] || !(bits & (1 << (dx === 1 ? 0 : 1))) || !(bits & (1 << (dy === 1 ? 2 : 3)))) continue;
+        }
+        const nd = d + k; if (nd < Dm[n]) { Dm[n] = nd; q.push(n, nd); }
       }
     }
     return Dm;
@@ -162,9 +189,9 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
     if (oh) {
       const cand = [];
       for (let sy = EDGE; sy <= h - 6; sy++) for (let sx = EDGE; sx <= w - 6; sx++) {
-        if (!(raised(sx + 1, sy - 1) && raised(sx + 2, sy - 1) && (D.flags(x0 + sx + 1, y0 + sy) & 1) && (D.flags(x0 + sx + 2, y0 + sy) & 1))) continue;   // the roof on the face
+        if (!(raised(sx + 1, sy - 1) && raised(sx + 2, sy - 1) && (FF.flags(x0 + sx + 1, y0 + sy) & 1) && (FF.flags(x0 + sx + 2, y0 + sy) & 1))) continue;   // the roof on the face
         let ok = true;
-        for (let i = 0; i < 4 && ok; i++) for (let j = 1; j < 4; j++) { const x = sx + i, y = sy + j; if (!walk[I(x, y)] || lvl[I(x, y)] || plan.spine[I(x, y)] || (D.flags(x0 + x, y0 + y) & 1)) ok = false; }
+        for (let i = 0; i < 4 && ok; i++) for (let j = 1; j < 4; j++) { const x = sx + i, y = sy + j; if (!walk[I(x, y)] || lvl[I(x, y)] || plan.spine[I(x, y)] || (FF.flags(x0 + x, y0 + y) & 1)) ok = false; }
         if (!ok || !(dsp[I(sx + 1, sy + 1)] >= 3)) continue;
         // the roof row's own cells are the face (blocked); the rows below it keep the usual margins
         if (!rectOk(sx, sy + 1, 4, 3, 0)) continue;
@@ -246,6 +273,43 @@ export function maskFn(seed) {
   MASKS.set(seed, f); return f;
 }
 
+// ---- the heart's ground patch: the footprint of the stamp with a natural outline ----
+// The patch lies on grass only (every other ground stays out, and that edge is part of the outline). It keeps the stamp's slab, slots and stone and the tile round each, and takes or leaves the tiles at the
+// footprint's edge by a smooth noise of the place (a lattice of hashes 3 tiles apart, blended), so corners are cut and the edge wanders one or two tiles in or out; never on the spine or within 3 tiles of the frame's edge;
+// then no straight edge is left longer than 4 tiles (the middle tile of a longer run is cut).
+const PATCH_RUN = 4, PATCH_AMP = 3, PATCH_BIAS = 1;
+function patchOf(plan, seed, s) {
+  const { w, h, grass, spine, X, Y } = plan, I = (x, y) => y * w + x, [rx, ry, rw, rh] = [s.x, s.y, s.w, s.h];
+  const lat = (a, b) => (hash(seed, 'gen7', 'patch', X, Y, s.id, a, b) % 10007) / 10007;
+  const noise = (x, y) => { const a = Math.floor(x / 3), b = Math.floor(y / 3), fx = x / 3 - a, fy = y / 3 - b, sm = t => t * t * (3 - 2 * t); const top = lat(a, b) * (1 - sm(fx)) + lat(a + 1, b) * sm(fx), bot = lat(a, b + 1) * (1 - sm(fx)) + lat(a + 1, b + 1) * sm(fx); return top * (1 - sm(fy)) + bot * sm(fy); };
+  const forced = new Set();
+  for (const c of s.cells) if (c.k === 'S' || c.k === 'p' || c.k === 'L') for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) forced.add(I(c.x + dx, c.y + dy));
+  const lies = (x, y) => x >= 3 && y >= 3 && x <= w - 4 && y <= h - 4 && grass[I(x, y)] === 1 && !spine[I(x, y)];
+  const inp = new Set();
+  for (let y = ry - 2; y < ry + rh + 2; y++) for (let x = rx - 2; x < rx + rw + 2; x++) {
+    if (!lies(x, y)) continue;
+    const inset = Math.min(x - rx, rx + rw - 1 - x, y - ry, ry + rh - 1 - y);
+    if (forced.has(I(x, y)) || inset + PATCH_AMP * (noise(x, y) * 2 - 1) >= PATCH_BIAS) inp.add(I(x, y));
+  }
+  const has = (x, y) => inp.has(I(x, y));
+  for (let pass = 0; pass < 3; pass++) {   // cut the middle of any straight edge longer than PATCH_RUN
+    const cut = [];
+    for (const [ex, ey] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+      const along = ex === 0 ? [1, 0] : [0, 1];
+      for (let a = ry - 2; a < ry + rh + 2; a++) for (let b = rx - 2; b < rx + rw + 2; b++) {
+        // scan lines: for a horizontal edge (ex 0) a is a row and b a column; for a vertical edge a is a column and b a row
+        const [x, y] = ex === 0 ? [b, a] : [a, b]; if (!has(x, y) || has(x + ex, y + ey)) continue;
+        if (b > (ex === 0 ? rx - 2 : ry - 2) && has(x - along[0], y - along[1]) && !has(x - along[0] + ex, y - along[1] + ey)) continue;   // not the start of a run
+        let n = 0; while (has(x + along[0] * n, y + along[1] * n) && !has(x + along[0] * n + ex, y + along[1] * n + ey)) n++;
+        if (n > PATCH_RUN) { const m = (n >> 1); const cx = x + along[0] * m, cy = y + along[1] * m; if (!forced.has(I(cx, cy))) cut.push(I(cx, cy)); }
+      }
+    }
+    if (!cut.length) break;
+    for (const i of cut) inp.delete(i);
+  }
+  return [...inp].map(i => [i % w, (i / w) | 0]);
+}
+
 // ---- what a plan adds to a cell's IR: the wall props, pieces, shelter tiles and find slots (hold.mjs reads this) ----
 const WALL = { meadow: ROCK_KINDS, rock: ROCK_KINDS, pond: ROCK_KINDS.filter(k => /^boulder-d/.test(k)), wood: ['stump'] };
 export function contentOf(plan, seed) {
@@ -254,8 +318,8 @@ export function contentOf(plan, seed) {
   const word = plan.land, kinds = WALL[word] && WALL[word].length ? WALL[word] : ROCK_KINDS, rank = { p: 0, k: 1, m: 2, c: 3 };
   for (const s of plan.spots) {
     out.spots.push({ id: s.id, kind: s.kind, role: s.role, x: s.x, y: s.y, w: s.w, h: s.h, tier: s.tier, entryDist: s.entryDist, spineDist: s.spineDist, seenFrom: s.seenFrom || null, cells: s.cells.map(c => [c.x, c.y, c.k]) });
-    if (s.kind === 'sleepers-bed' || s.kind === 'sleepers-bed-cramped' || s.kind === 'sleepers-bed-nook') out.patches.push({ kind: 'bed-ground', rect: [s.x, s.y, s.w, s.h] });   // the heart's patch: a ground of its own over the stamp's footprint
-    else if (s.kind === 'split-stone-ground') out.patches.push({ kind: 'split-stone-ground', rect: [s.x, s.y, s.w, s.h] });
+    if (s.kind === 'sleepers-bed' || s.kind === 'sleepers-bed-cramped' || s.kind === 'sleepers-bed-nook') out.patches.push({ kind: 'bed-ground', rect: [s.x, s.y, s.w, s.h], tiles: patchOf(plan, seed, s) });   // the heart's patch: a ground of its own on grass, round the stamp's footprint
+    else if (s.kind === 'split-stone-ground') out.patches.push({ kind: 'split-stone-ground', rect: [s.x, s.y, s.w, s.h], tiles: patchOf(plan, seed, s) });
     for (const c of s.cells) {
       if (c.k === 'R') out.setProps.push({ kind: kinds[(hash(seed, 'gen7', 'wallkind', plan.X, plan.Y, c.x, c.y) >>> 0) % kinds.length], x: c.x, y: c.y, fam: word === 'wood' ? 'stumps' : 'rocks', spot: s.id });
       else if (c.k === 'S') { const lp = out.pieces.find(p => p.spot === s.id); if (lp) lp.w = Math.max(lp.w, c.x - lp.x + 1); else out.pieces.push({ piece: 'heart-slab', x: c.x, y: c.y, w: 1, spot: s.id }); }   // the 2 x 1 slab: one piece on its left tile, both tiles block
