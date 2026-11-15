@@ -17,3 +17,5 @@ export function mountOptions(root, cfg) {
 }
 export { T };
 export { mountKeyTray, mountDockKey } from "./keytray.jsx";
+export { mountSwitch } from "./switch.jsx";
+export { mountDockScreen } from "./docksheet.jsx";

@@ -289,17 +289,19 @@ const cache = new Map();
 export const REALM_REV = 4;   // 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
 export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
-export function realm7(seed) {
+// onStep(done, of): the real stages of the making, for the first-load wait's pips (the region passes, then the coast; a repeated round keeps the count at its last region): REALM_STEPS in all (the Hollow Tree sites make the last)
+export const REALM_STEPS = ATLAS * ATLAS + 2;
+export function realm7(seed, onStep) {
   if (cache.has(seed)) return cache.get(seed);
   const tries = new Uint8Array(ATLAS * ATLAS); let out = null;
   for (let round = 0; round < ROUNDS; round++) {
     const realm = buildRealm(seed, tries), regions = [];
-    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) regions.push(regionAt(realm, ax, ay));
+    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) { regions.push(regionAt(realm, ax, ay)); if (onStep) onStep(regions.length, REALM_STEPS); }
     out = { seed, realm, regions, rounds: round + 1 };
     const bad = regions.filter(r => r.fails.length); if (!bad.length) break;
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
   }
-  coastOf(out);
+  coastOf(out); if (onStep) onStep(REALM_STEPS - 1, REALM_STEPS);
   if (cache.size > 6) cache.clear();
   cache.set(seed, out); return out;
 }

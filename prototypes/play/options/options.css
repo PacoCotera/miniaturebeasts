@@ -23,6 +23,10 @@
 .op-item[data-highlighted]{background:var(--mb-hairline); color:var(--mb-bone)}
 .op-actions{display:flex; justify-content:flex-end; gap:var(--mb-space-8); padding-top:var(--mb-space-16); border-top:1px solid var(--mb-hairline)}
 .op-confirm .op-actions{border:0}
+/* the foot: the apply note on the Done row, left of Done; the build line the panel's last line under its own hairline */
+.op-foot{align-items:center; justify-content:space-between}
+.op-apply{flex:1 1 auto; min-width:0; font-size:var(--mb-size-web-14); line-height:20px; color:var(--mb-fog)}
+.op-about{margin-top:var(--mb-space-16); padding-top:var(--mb-space-16); border-top:1px solid var(--mb-hairline); font-size:var(--mb-size-web-12); line-height:16px; color:var(--mb-mist); font-variant-numeric:tabular-nums}
 @media (pointer:coarse){ .op-select,.op-btn{height:44px} .op-row{min-height:56px} }
 /* the play note (play/options note-ui.jsx): the note dialog, the section dialog, the bar's two controls and the strip */
 .op-note{width:min(600px,calc(100vw - 24px))}

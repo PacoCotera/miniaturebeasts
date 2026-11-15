@@ -11,7 +11,7 @@ const defs = (st) => [
   def("call", "KeyC", "Call", "call", "round call"), def("back", "Escape", "Back", "back", "round " + (st ? "back" : "cback")), def("confirm", "Enter", "Confirm", "confirm", "round confirm"),
 ];
 const label = { font: "500 12px/16px Inter, system-ui, sans-serif", color: "var(--mb-mist)", margin: "var(--mb-space-16) 0 var(--mb-space-8)" };
-const trayBox = (w, h) => ({ position: "relative", width: w, height: h, background: "var(--mb-panel)", boxShadow: "inset 0 0 0 1px var(--mb-hairline)", borderRadius: "0 0 12px 12px" });
+const trayBox = (w, h) => ({ position: "relative", width: w, height: h, background: "var(--mb-panel)", boxShadow: "inset 0 0 0 1px var(--mb-hairline)", borderRadius: "var(--mb-radius-12)" });
 const snap = (b) => b;
 
 function TrayStory({ dev, layout, W, H, held = {}, tips = false, title }) {
@@ -23,21 +23,21 @@ function TrayStory({ dev, layout, W, H, held = {}, tips = false, title }) {
   );
 }
 
-export const LaptopRest = () => (<div><TrayStory dev="station" layout="laptop" W={1040} title="Station, laptop (a = 44): rest" /><TrayStory dev="companion" layout="laptop" W={466} title="Companion, laptop: rest" /></div>);
-export const LaptopHeld = () => (<div><TrayStory dev="station" layout="laptop" W={1040} held={{ down: true, confirm: true, home: true }} title="Station: D-pad down, ✓ and Home held" /><TrayStory dev="companion" layout="laptop" W={466} held={{ up: true, call: true, back: true }} title="Companion: D-pad up, Call and ← held" /></div>);
-export const LaptopHint = () => (<TrayStory dev="companion" layout="laptop" W={466} tips title="Companion: hover a key for its keyboard name" />);
-export const PhoneUpright = () => (<div style={{ width: 378 }}><TrayStory dev="station" layout="portrait" W={378} H={0} title="Station, phone upright (a = 48)" /><TrayStory dev="companion" layout="portrait" W={378} H={0} title="Companion, phone upright" /></div>);
-export const PhoneSideways = () => (<div style={{ width: 832 }}><TrayStory dev="station" layout="landscape" W={832} H={332} title="Station, phone sideways (a = 48): the D-pad and rooms at the left, the actions and the Dock key at the right" /></div>);
+// the panel's key trays: a column each side of the screen (a phone on its side, a laptop): the panel is as wide as the screen and the two columns
+export const LaptopRest = () => (<div><TrayStory dev="station" layout="landscape" W={1040} H={446} title="Station, laptop (a = 44): rest" /><TrayStory dev="companion" layout="landscape" W={770} H={624} title="Companion, laptop: rest" /></div>);
+export const LaptopHeld = () => (<div><TrayStory dev="station" layout="landscape" W={1040} H={446} held={{ down: true, confirm: true, home: true }} title="Station: D-pad down, ✓ and Home held" /><TrayStory dev="companion" layout="landscape" W={770} H={624} held={{ up: true, call: true, back: true }} title="Companion: D-pad up, Call and ← held" /></div>);
+export const LaptopHint = () => (<TrayStory dev="companion" layout="landscape" W={770} H={624} tips title="Companion: hover a key for its keyboard name" />);
+export const PhoneUpright = () => (<div style={{ width: 342 }}><TrayStory dev="station" layout="portrait" W={342} H={0} title="Station, phone upright (a = 48): the rooms in a row above the D-pad row" /><TrayStory dev="companion" layout="portrait" W={342} H={0} title="Companion, phone upright" /></div>);
+export const PhoneSideways = () => (<div style={{ width: 796 }}><TrayStory dev="station" layout="landscape" W={796} H={316} title="Station, phone sideways (a = 48): the D-pad and rooms at the left, the actions, the Dock key and the dock's-screen button at the right" /></div>);
 
 // focus: a script focuses a key (they stay out of the tab order): the two-tone ring on the dark tray
 export const FocusRing = () => (
   <div><div style={label}>Focus: 2 px focus ring 4 px out, a 2 px void edge on both sides</div>
-    <div style={trayBox(466, 156)} ref={(el) => { if (el) setTimeout(() => el.querySelector(".fk.confirm")?.focus({ focusVisible: true }), 0); }}>
-      <Tray cfg={{ dev: "companion", label: "Companion keys", defs: defs(false), padDir, onKey: noop }} st={{ plan: plan("companion", "laptop", 466, 0), snap, held: {}, tips: false }} />
+    <div style={trayBox(770, 624)} ref={(el) => { if (el) setTimeout(() => el.querySelector(".fk.confirm")?.focus({ focusVisible: true }), 0); }}>
+      <Tray cfg={{ dev: "companion", label: "Companion keys", defs: defs(false), padDir, onKey: noop }} st={{ plan: plan("companion", "landscape", 770, 624), snap, held: {}, tips: false }} />
     </div>
   </div>
 );
-
 // the Dock key: a page button; its words by width
 const bar = `.ctl{position:relative; background:var(--mb-ground); border:1px solid var(--mb-hairline); border-radius:6px; color:var(--mb-fog); padding:0; white-space:nowrap; overflow:hidden; font:500 14px/1 Inter,system-ui,sans-serif; display:flex; align-items:center; gap:8px; padding:0 12px; height:44px}
 .ctl .mark{flex:none; width:16px; height:24px; image-rendering:pixelated} .ctl .word{flex:1 1 auto; min-width:0; white-space:nowrap} .ctl .hint{flex:none; color:var(--mb-mist); font-size:12px}

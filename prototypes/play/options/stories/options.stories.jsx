@@ -27,7 +27,7 @@ export const SelectStates = () => (
   <div style={stack}>
     <Box title="Select: a named value"><Pick label="Companion" line="Which Companion the page plays." value="A" set={noop} items={items} /></Box>
     <Box title="Select: the default value, named"><Pick label="Name list" line="Where new mibi names come from." value="" set={noop} items={[["", "The current list"], ["Tuliko", "Tuliko"]]} /></Box>
-    <Box title="Select: the choice with no value shows blank today (the audit's item 5)"><Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value="" set={noop} items={[["x", "Meadow glade"]]} /></Box>
+    <Box title="Select: the named empty value"><Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value="" set={noop} items={[["", "Off"], ["x", "Meadow glade"]]} /></Box>
     <div>
       <div style={label}>Select: the open menu, third row highlighted</div>
       <div className="op-menu" style={{ maxWidth: 240 }}>

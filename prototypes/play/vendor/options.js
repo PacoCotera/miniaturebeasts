@@ -28,9 +28,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/scheduler/cjs/scheduler.production.js
+// node_modules/scheduler/cjs/scheduler.production.js
 var require_scheduler_production = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/scheduler/cjs/scheduler.production.js"(exports) {
+  "node_modules/scheduler/cjs/scheduler.production.js"(exports) {
     "use strict";
     function push(heap, node) {
       var index4 = heap.length;
@@ -301,9 +301,9 @@ var require_scheduler_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/scheduler/index.js
+// node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/scheduler/index.js"(exports, module) {
+  "node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_scheduler_production();
@@ -313,9 +313,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/cjs/react.production.js
+// node_modules/react/cjs/react.production.js
 var require_react_production = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/cjs/react.production.js"(exports) {
+  "node_modules/react/cjs/react.production.js"(exports) {
     "use strict";
     var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
     var REACT_PORTAL_TYPE = Symbol.for("react.portal");
@@ -751,9 +751,9 @@ var require_react_production = __commonJS({
     exports.useState = function(initialState) {
       return ReactSharedInternals.H.useState(initialState);
     };
-    exports.useSyncExternalStore = function(subscribe, getSnapshot, getServerSnapshot) {
+    exports.useSyncExternalStore = function(subscribe2, getSnapshot, getServerSnapshot) {
       return ReactSharedInternals.H.useSyncExternalStore(
-        subscribe,
+        subscribe2,
         getSnapshot,
         getServerSnapshot
       );
@@ -765,9 +765,9 @@ var require_react_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/index.js
+// node_modules/react/index.js
 var require_react = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/index.js"(exports, module) {
+  "node_modules/react/index.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_react_production();
@@ -777,11 +777,11 @@ var require_react = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom.production.js
+// node_modules/react-dom/cjs/react-dom.production.js
 var require_react_dom_production = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom.production.js"(exports) {
+  "node_modules/react-dom/cjs/react-dom.production.js"(exports) {
     "use strict";
-    var React42 = require_react();
+    var React45 = require_react();
     function formatProdErrorMessage(code) {
       var url2 = "https://react.dev/errors/" + code;
       if (1 < arguments.length) {
@@ -823,7 +823,7 @@ var require_react_dom_production = __commonJS({
         implementation
       };
     }
-    var ReactSharedInternals = React42.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+    var ReactSharedInternals = React45.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
     function getCrossOriginStringAs(as, input) {
       if ("font" === as) return "";
       if ("string" === typeof input)
@@ -934,9 +934,9 @@ var require_react_dom_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/index.js
+// node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/index.js"(exports, module) {
+  "node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -960,12 +960,12 @@ var require_react_dom = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom-client.production.js
+// node_modules/react-dom/cjs/react-dom-client.production.js
 var require_react_dom_client_production = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom-client.production.js"(exports) {
+  "node_modules/react-dom/cjs/react-dom-client.production.js"(exports) {
     "use strict";
     var Scheduler = require_scheduler();
-    var React42 = require_react();
+    var React45 = require_react();
     var ReactDOM5 = require_react_dom();
     function formatProdErrorMessage(code) {
       var url2 = "https://react.dev/errors/" + code;
@@ -1258,7 +1258,7 @@ var require_react_dom_client_production = __commonJS({
       return null;
     }
     var isArrayImpl = Array.isArray;
-    var ReactSharedInternals = React42.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+    var ReactSharedInternals = React45.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
     var ReactDOMSharedInternals = ReactDOM5.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
     var sharedNotPendingObject = {
       pending: false,
@@ -4666,7 +4666,7 @@ var require_react_dom_client_production = __commonJS({
       }
       return [newState, dispatch];
     }
-    function updateSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
+    function updateSyncExternalStore(subscribe2, getSnapshot, getServerSnapshot) {
       var fiber = currentlyRenderingFiber, hook = updateWorkInProgressHook(), isHydrating$jscomp$0 = isHydrating;
       if (isHydrating$jscomp$0) {
         if (void 0 === getServerSnapshot) throw Error(formatProdErrorMessage(407));
@@ -4678,17 +4678,17 @@ var require_react_dom_client_production = __commonJS({
       );
       snapshotChanged && (hook.memoizedState = getServerSnapshot, didReceiveUpdate = true);
       hook = hook.queue;
-      updateEffect(subscribeToStore.bind(null, fiber, hook, subscribe), [
-        subscribe
+      updateEffect(subscribeToStore.bind(null, fiber, hook, subscribe2), [
+        subscribe2
       ]);
-      subscribe = hook.getSnapshot !== getSnapshot || snapshotChanged || null !== workInProgressHook && 0 !== (workInProgressHook.memoizedState.tag & 1);
+      subscribe2 = hook.getSnapshot !== getSnapshot || snapshotChanged || null !== workInProgressHook && 0 !== (workInProgressHook.memoizedState.tag & 1);
       pushSimpleEffect(
-        subscribe ? 9 : 8,
+        subscribe2 ? 9 : 8,
         { destroy: void 0 },
         updateStoreInstance.bind(null, fiber, hook, getServerSnapshot, getSnapshot),
         null
       );
-      if (subscribe) {
+      if (subscribe2) {
         fiber.flags |= 2048;
         if (null === workInProgressRoot) throw Error(formatProdErrorMessage(349));
         isHydrating$jscomp$0 || 0 !== (renderLanes & 127) || pushStoreConsistencyCheck(fiber, getSnapshot, getServerSnapshot);
@@ -4706,8 +4706,8 @@ var require_react_dom_client_production = __commonJS({
       inst.getSnapshot = getSnapshot;
       checkIfSnapshotChanged(inst) && forceStoreRerender(fiber);
     }
-    function subscribeToStore(fiber, inst, subscribe) {
-      return subscribe(function() {
+    function subscribeToStore(fiber, inst, subscribe2) {
+      return subscribe2(function() {
         checkIfSnapshotChanged(inst) && forceStoreRerender(fiber);
       });
     }
@@ -5428,7 +5428,7 @@ var require_react_dom_client_production = __commonJS({
         mountWorkInProgressHook().memoizedState = stateHook;
         return [false, stateHook];
       },
-      useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+      useSyncExternalStore: function(subscribe2, getSnapshot, getServerSnapshot) {
         var fiber = currentlyRenderingFiber, hook = mountWorkInProgressHook();
         if (isHydrating) {
           if (void 0 === getServerSnapshot)
@@ -5443,8 +5443,8 @@ var require_react_dom_client_production = __commonJS({
         hook.memoizedState = getServerSnapshot;
         var inst = { value: getServerSnapshot, getSnapshot };
         hook.queue = inst;
-        mountEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [
-          subscribe
+        mountEffect(subscribeToStore.bind(null, fiber, inst, subscribe2), [
+          subscribe2
         ]);
         fiber.flags |= 2048;
         pushSimpleEffect(
@@ -14407,7 +14407,7 @@ var require_react_dom_client_production = __commonJS({
         0 === i2 && attemptExplicitHydrationTarget(target);
       }
     };
-    var isomorphicReactPackageVersion$jscomp$inline_2043 = React42.version;
+    var isomorphicReactPackageVersion$jscomp$inline_2043 = React45.version;
     if ("19.3.1" !== isomorphicReactPackageVersion$jscomp$inline_2043)
       throw Error(
         formatProdErrorMessage(
@@ -14506,9 +14506,9 @@ var require_react_dom_client_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/client.js
+// node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-dom/client.js"(exports, module) {
+  "node_modules/react-dom/client.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -14532,9 +14532,9 @@ var require_client = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/cjs/react-jsx-runtime.production.js
+// node_modules/react/cjs/react-jsx-runtime.production.js
 var require_react_jsx_runtime_production = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/cjs/react-jsx-runtime.production.js"(exports) {
+  "node_modules/react/cjs/react-jsx-runtime.production.js"(exports) {
     "use strict";
     var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
     var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -14562,9 +14562,9 @@ var require_react_jsx_runtime_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/jsx-runtime.js
+// node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS({
-  "../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react/jsx-runtime.js"(exports, module) {
+  "node_modules/react/jsx-runtime.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_react_jsx_runtime_production();
@@ -14575,12 +14575,12 @@ var require_jsx_runtime = __commonJS({
 });
 
 // src/panel.jsx
-var import_client2 = __toESM(require_client(), 1);
+var import_client4 = __toESM(require_client(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-image-crop/dist/ReactCrop.css
+// node_modules/react-image-crop/dist/ReactCrop.css
 var ReactCrop_default = '@keyframes marching-ants{0%{background-position:0 0,0 100%,0 0,100% 0}to{background-position:20px 0,-20px 100%,0 -20px,100% 20px}}:root{--rc-drag-handle-size:12px;--rc-drag-handle-mobile-size:24px;--rc-drag-handle-bg-colour:#0003;--rc-drag-bar-size:6px;--rc-border-color:#ffffffb3;--rc-focus-color:#08f}.ReactCrop{cursor:crosshair;max-width:100%;display:inline-block;position:relative}.ReactCrop *,.ReactCrop :before,.ReactCrop :after{box-sizing:border-box}.ReactCrop--disabled,.ReactCrop--locked{cursor:inherit}.ReactCrop__child-wrapper{max-height:inherit;overflow:hidden}.ReactCrop__child-wrapper>img,.ReactCrop__child-wrapper>video{max-width:100%;max-height:inherit;display:block}.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>img,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>video,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__crop-selection{touch-action:none}.ReactCrop__crop-mask{pointer-events:none;width:calc(100% + .5px);height:calc(100% + .5px);position:absolute;inset:0}.ReactCrop__crop-selection{cursor:move;position:absolute;top:0;left:0;transform:translate(0,0)}.ReactCrop--disabled .ReactCrop__crop-selection{cursor:inherit}.ReactCrop--circular-crop .ReactCrop__crop-selection{border-radius:50%}.ReactCrop--circular-crop .ReactCrop__crop-selection:after{pointer-events:none;content:"";border:1px solid var(--rc-border-color);opacity:.3;position:absolute;inset:-1px}.ReactCrop--no-animate .ReactCrop__crop-selection{outline:1px dashed #fff}.ReactCrop__crop-selection:not(.ReactCrop--no-animate .ReactCrop__crop-selection){color:#fff;background-image:linear-gradient(90deg,#fff 50%,#444 50%),linear-gradient(90deg,#fff 50%,#444 50%),linear-gradient(#fff 50%,#444 50%),linear-gradient(#fff 50%,#444 50%);background-position:0 0,0 100%,0 0,100% 0;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;background-size:10px 1px,10px 1px,1px 10px,1px 10px;animation:1s linear infinite marching-ants}.ReactCrop__crop-selection:focus{outline:2px solid var(--rc-focus-color);outline-offset:-1px}.ReactCrop--invisible-crop .ReactCrop__crop-mask,.ReactCrop--invisible-crop .ReactCrop__crop-selection{display:none}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after,.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{content:"";background-color:#fff6;display:block;position:absolute}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after{width:1px;height:100%}.ReactCrop__rule-of-thirds-vt:before{left:33.3333%}.ReactCrop__rule-of-thirds-vt:after{left:66.6667%}.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{width:100%;height:1px}.ReactCrop__rule-of-thirds-hz:before{top:33.3333%}.ReactCrop__rule-of-thirds-hz:after{top:66.6667%}.ReactCrop__drag-handle{width:var(--rc-drag-handle-size);height:var(--rc-drag-handle-size);background-color:var(--rc-drag-handle-bg-colour);border:1px solid var(--rc-border-color);position:absolute}.ReactCrop__drag-handle:focus{background:var(--rc-focus-color)}.ReactCrop .ord-nw{cursor:nw-resize;top:0;left:0;transform:translate(-50%,-50%)}.ReactCrop .ord-n{cursor:n-resize;top:0;left:50%;transform:translate(-50%,-50%)}.ReactCrop .ord-ne{cursor:ne-resize;top:0;right:0;transform:translate(50%,-50%)}.ReactCrop .ord-e{cursor:e-resize;top:50%;right:0;transform:translate(50%,-50%)}.ReactCrop .ord-se{cursor:se-resize;bottom:0;right:0;transform:translate(50%,50%)}.ReactCrop .ord-s{cursor:s-resize;bottom:0;left:50%;transform:translate(-50%,50%)}.ReactCrop .ord-sw{cursor:sw-resize;bottom:0;left:0;transform:translate(-50%,50%)}.ReactCrop .ord-w{cursor:w-resize;top:50%;left:0;transform:translate(-50%,-50%)}.ReactCrop__disabled .ReactCrop__drag-handle{cursor:inherit}.ReactCrop__drag-bar{position:absolute}.ReactCrop__drag-bar.ord-n{width:100%;height:var(--rc-drag-bar-size);top:0;left:0;transform:translateY(-50%)}.ReactCrop__drag-bar.ord-e{width:var(--rc-drag-bar-size);height:100%;top:0;right:0;transform:translate(50%)}.ReactCrop__drag-bar.ord-s{width:100%;height:var(--rc-drag-bar-size);bottom:0;left:0;transform:translateY(50%)}.ReactCrop__drag-bar.ord-w{width:var(--rc-drag-bar-size);height:100%;top:0;left:0;transform:translate(-50%)}.ReactCrop--new-crop .ReactCrop__drag-bar,.ReactCrop--new-crop .ReactCrop__drag-handle,.ReactCrop--fixed-aspect .ReactCrop__drag-bar,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-n,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-e,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-s,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-w{display:none}@media (pointer:coarse){.ReactCrop .ord-n,.ReactCrop .ord-e,.ReactCrop .ord-s,.ReactCrop .ord-w{display:none}.ReactCrop__drag-handle{width:var(--rc-drag-handle-mobile-size);height:var(--rc-drag-handle-mobile-size)}}\n/*$vite$:1*/';
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/idb-keyval/dist/index.js
+// node_modules/idb-keyval/dist/index.js
 function promisifyRequest(request) {
   return new Promise((resolve, reject) => {
     request.oncomplete = request.onsuccess = () => resolve(request.result);
@@ -14769,7 +14769,7 @@ var ClipRing = class {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/misc.js
+// node_modules/mediabunny/dist/modules/src/misc.js
 function assert(x) {
   if (!x) {
     throw new Error("Assertion failed.");
@@ -15239,7 +15239,7 @@ var isRecordStringString = (value) => {
   return value !== null && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype && Object.values(value).every((x) => typeof x === "string");
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/logging.js
+// node_modules/mediabunny/dist/modules/src/logging.js
 var LogLevel;
 (function(LogLevel2) {
   LogLevel2[LogLevel2["Silent"] = 0] = "Silent";
@@ -15293,7 +15293,7 @@ var Logging = class _Logging {
 Logging._level = LogLevel.Info;
 Logging._emitterInstance = null;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/metadata.js
+// node_modules/mediabunny/dist/modules/src/metadata.js
 var RichImageData = class {
   /** Creates a new {@link RichImageData}. */
   constructor(data, mimeType) {
@@ -15434,7 +15434,7 @@ var validateTrackDisposition = (disposition) => {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/bitstream.js
+// node_modules/mediabunny/dist/modules/shared/bitstream.js
 var Bitstream = class _Bitstream {
   constructor(bytes2) {
     this.bytes = bytes2;
@@ -15506,7 +15506,7 @@ var Bitstream = class _Bitstream {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/aac-misc.js
+// node_modules/mediabunny/dist/modules/shared/aac-misc.js
 var aacFrequencyTable = [
   96e3,
   88200,
@@ -15578,18 +15578,18 @@ var findAacFrequencyIndex = (sampleRate) => {
   return index4 === -1 ? 15 : index4;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/ac3-misc.js
+// node_modules/mediabunny/dist/modules/shared/ac3-misc.js
 var AC3_SAMPLE_RATES = [48e3, 44100, 32e3];
 var EAC3_REDUCED_SAMPLE_RATES = [24e3, 22050, 16e3];
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/truehd-misc.js
+// node_modules/mediabunny/dist/modules/shared/truehd-misc.js
 var TRUEHD_MAJOR_SYNC_WORD = 4168249274;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/version.js
+// node_modules/mediabunny/dist/modules/src/version.js
 var VERSION = "1.65.2";
 var VERSIONED_NAME = `Mediabunny v${VERSION}`;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/codec-data.js
+// node_modules/mediabunny/dist/modules/src/codec-data.js
 var AvcNalUnitType;
 (function(AvcNalUnitType2) {
   AvcNalUnitType2[AvcNalUnitType2["NON_IDR_SLICE"] = 1] = "NON_IDR_SLICE";
@@ -17171,7 +17171,7 @@ var buildDtsSpecificBox = (frameInfo) => {
   return bytes2;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/subtitles.js
+// node_modules/mediabunny/dist/modules/src/subtitles.js
 var inlineTimestampRegex = /<(?:(\d{2}):)?(\d{2}):(\d{2}).(\d{3})>/g;
 var formatSubtitleTimestamp = (timestamp) => {
   const hours = Math.floor(timestamp / (60 * 60 * 1e3));
@@ -17181,7 +17181,7 @@ var formatSubtitleTimestamp = (timestamp) => {
   return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0") + "." + milliseconds.toString().padStart(3, "0");
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/packet.js
+// node_modules/mediabunny/dist/modules/src/packet.js
 var PLACEHOLDER_DATA = /* @__PURE__ */ new Uint8Array(0);
 var EncodedPacket = class _EncodedPacket {
   /** Creates a new {@link EncodedPacket} from raw bytes and timing information. */
@@ -17342,7 +17342,7 @@ var EncodedPacket = class _EncodedPacket {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-misc.js
+// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-misc.js
 var TIMESTAMP_OFFSET = 2082844800;
 var buildIsobmffMimeType = (info) => {
   const base = info.hasVideo ? "video/" : info.hasAudio ? "audio/" : "application/";
@@ -17354,7 +17354,7 @@ var buildIsobmffMimeType = (info) => {
   return string;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/adts/adts-reader.js
+// node_modules/mediabunny/dist/modules/src/adts/adts-reader.js
 var MIN_ADTS_FRAME_HEADER_SIZE = 7;
 var MAX_ADTS_FRAME_HEADER_SIZE = 9;
 var readAdtsFrameHeader = (slice) => {
@@ -17415,7 +17415,7 @@ var readAdtsFrameHeader = (slice) => {
   };
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/reader.js
+// node_modules/mediabunny/dist/modules/src/reader.js
 var FileSlice = class _FileSlice {
   constructor(bytes2, view2, offset4, start, end) {
     this.bytes = bytes2;
@@ -17470,11 +17470,11 @@ var readU16Be = (slice) => {
   return value;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-reader.js
+// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-reader.js
 var MIN_BOX_HEADER_SIZE = 8;
 var MAX_BOX_HEADER_SIZE = 16;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/media-source.js
+// node_modules/mediabunny/dist/modules/src/media-source.js
 var MediaSource = class {
   constructor() {
     this._connectedTrack = null;
@@ -17606,7 +17606,7 @@ var SubtitleSource = class extends MediaSource {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/codec.js
+// node_modules/mediabunny/dist/modules/src/codec.js
 var VIDEO_CODECS = [
   "avc",
   "hevc",
@@ -18017,7 +18017,7 @@ var validateSubtitleMetadata = (metadata) => {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/muxer.js
+// node_modules/mediabunny/dist/modules/src/muxer.js
 var Muxer = class {
   constructor(output) {
     this.mutex = new AsyncMutex();
@@ -18068,7 +18068,7 @@ var PacketOrderValidator = class {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-boxes.js
+// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-boxes.js
 var IsobmffBoxWriter = class {
   constructor(writer) {
     this.writer = writer;
@@ -19924,7 +19924,7 @@ var getLanguageCodeInt = (code) => {
   return language;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/writer.js
+// node_modules/mediabunny/dist/modules/src/writer.js
 var Writer = class {
   constructor(target, isMonotonic) {
     this.finalized = false;
@@ -20016,7 +20016,7 @@ var Writer = class {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/target.js
+// node_modules/mediabunny/dist/modules/src/target.js
 var Target = class extends EventEmitter {
   constructor() {
     super(...arguments);
@@ -20183,7 +20183,7 @@ var PathedTarget = class {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-muxer.js
+// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-muxer.js
 var GLOBAL_TIMESCALE = 57600;
 var MIN_CHUNK_DURATION = 0.5;
 var getTrackMetadata = (trackData) => {
@@ -21294,7 +21294,7 @@ var IsobmffMuxer = class extends Muxer {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/output-format.js
+// node_modules/mediabunny/dist/modules/src/output-format.js
 var OutputFormat = class {
   /**
    * Whether this output format supports video rotation metadata.
@@ -21497,7 +21497,7 @@ var MovOutputFormat = class extends IsobmffOutputFormat {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/output.js
+// node_modules/mediabunny/dist/modules/src/output.js
 var ALL_TRACK_TYPES = ["video", "audio", "subtitle"];
 var OutputTrack = class _OutputTrack {
   /** @internal */
@@ -22036,7 +22036,7 @@ var Output = class extends EventEmitter {
   }
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/index.js
+// node_modules/mediabunny/dist/modules/src/index.js
 var MEDIABUNNY_LOADED_SYMBOL = Symbol.for("mediabunny loaded");
 if (globalThis[MEDIABUNNY_LOADED_SYMBOL]) {
   Logging._error("[WARNING]\nMediabunny was loaded twice. This will likely cause Mediabunny not to work correctly. Check if multiple dependencies are importing different versions of Mediabunny, or if something is being bundled incorrectly.");
@@ -22449,7 +22449,7 @@ function createController(host) {
 // src/note-ui.jsx
 var import_react7 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
+// node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
 var dist_exports3 = {};
 __export(dist_exports3, {
   AccessibleIcon: () => AccessibleIcon,
@@ -22457,7 +22457,7 @@ __export(dist_exports3, {
 });
 var React5 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
+// node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var dist_exports2 = {};
 __export(dist_exports2, {
   Root: () => VisuallyHidden,
@@ -22466,14 +22466,14 @@ __export(dist_exports2, {
 });
 var React4 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
+// node_modules/@radix-ui/react-primitive/dist/index.mjs
 var React3 = __toESM(require_react(), 1);
 var ReactDOM = __toESM(require_react_dom(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
+// node_modules/@radix-ui/react-slot/dist/index.mjs
 var React2 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+// node_modules/@radix-ui/react-compose-refs/dist/index.mjs
 var React = __toESM(require_react(), 1);
 var __defProp2 = Object.defineProperty;
 var __name = (target, value) => __defProp2(target, "name", { value, configurable: true });
@@ -22515,7 +22515,7 @@ function useComposedRefs(...refs) {
 }
 __name(useComposedRefs, "useComposedRefs");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
+// node_modules/@radix-ui/react-slot/dist/index.mjs
 var __defProp3 = Object.defineProperty;
 var __name2 = (target, value) => __defProp3(target, "name", { value, configurable: true });
 // @__NO_SIDE_EFFECTS__
@@ -22668,7 +22668,7 @@ var createSlottableError = /* @__PURE__ */ __name2((ownerName) => {
 }, "createSlottableError");
 var use = React2[" use ".trim().toString()];
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
+// node_modules/@radix-ui/react-primitive/dist/index.mjs
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
 var __defProp4 = Object.defineProperty;
 var __name3 = (target, value) => __defProp4(target, "name", { value, configurable: true });
@@ -22709,7 +22709,7 @@ function dispatchDiscreteCustomEvent(target, event) {
 }
 __name3(dispatchDiscreteCustomEvent, "dispatchDiscreteCustomEvent");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
+// node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
 var __defProp5 = Object.defineProperty;
 var __name4 = (target, value) => __defProp5(target, "name", { value, configurable: true });
@@ -22739,7 +22739,7 @@ var VisuallyHidden = /* @__PURE__ */ React4.forwardRef(
   }, "VisuallyHidden")
 );
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
+// node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
 var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
 var __defProp6 = Object.defineProperty;
 var __name5 = (target, value) => __defProp6(target, "name", { value, configurable: true });
@@ -22756,7 +22756,7 @@ var AccessibleIcon = /* @__PURE__ */ __name5(({ children, label }) => {
   ] });
 }, "AccessibleIcon");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-context/dist/index.mjs
+// node_modules/@radix-ui/react-context/dist/index.mjs
 var React6 = __toESM(require_react(), 1);
 var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
 var __defProp7 = Object.defineProperty;
@@ -22849,24 +22849,24 @@ function composeContextScopes(...scopes) {
 }
 __name6(composeContextScopes, "composeContextScopes");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
+// node_modules/@radix-ui/react-collection/dist/index.mjs
 var React8 = __toESM(require_react(), 1);
 var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
 var React22 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
+// node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
 var React7 = __toESM(require_react(), 1);
 var useLayoutEffect2 = globalThis?.document ? React7.useLayoutEffect : () => {
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
+// node_modules/@radix-ui/react-collection/dist/index.mjs
 var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
 var __defProp8 = Object.defineProperty;
 var __name7 = (target, value) => __defProp8(target, "name", { value, configurable: true });
 // @__NO_SIDE_EFFECTS__
 function createCollection(name) {
   const PROVIDER_NAME2 = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME2);
+  const [createCollectionContext, createCollectionScope3] = createContextScope(PROVIDER_NAME2);
   const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
     PROVIDER_NAME2,
     { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
@@ -22906,7 +22906,7 @@ function createCollection(name) {
     }
   );
   CollectionItemSlot.displayName = ITEM_SLOT_NAME;
-  function useCollection2(scope) {
+  function useCollection3(scope) {
     const context = useCollectionContext(name + "CollectionConsumer", scope);
     const getItems = React8.useCallback(() => {
       const collectionNode = context.collectionRef.current;
@@ -22920,11 +22920,11 @@ function createCollection(name) {
     }, [context.collectionRef, context.itemMap]);
     return getItems;
   }
-  __name7(useCollection2, "useCollection");
+  __name7(useCollection3, "useCollection");
   return [
     { Provider: CollectionProvider, Slot: CollectionSlot, ItemSlot: CollectionItemSlot },
-    useCollection2,
-    createCollectionScope2
+    useCollection3,
+    createCollectionScope3
   ];
 }
 __name7(createCollection, "createCollection");
@@ -23252,7 +23252,7 @@ __name7(toSafeInteger, "toSafeInteger");
 // @__NO_SIDE_EFFECTS__
 function createCollection2(name) {
   const PROVIDER_NAME2 = name + "CollectionProvider";
-  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME2);
+  const [createCollectionContext, createCollectionScope3] = createContextScope(PROVIDER_NAME2);
   const [CollectionStableContextProvider, useStableCollectionContext] = createCollectionContext(PROVIDER_NAME2);
   CollectionStableContextProvider.displayName = name + "CollectionStableContextProvider";
   const [CollectionStatefulContextProvider, useStatefulCollectionContext] = createCollectionContext(PROVIDER_NAME2);
@@ -23416,19 +23416,19 @@ function createCollection2(name) {
     return React22.useState(new OrderedDict());
   }
   __name7(useInitCollection, "useInitCollection");
-  function useCollection2(scope) {
+  function useCollection3(scope) {
     const { collection } = useStatefulCollectionContext(name + "CollectionConsumer", scope);
     return collection;
   }
-  __name7(useCollection2, "useCollection");
+  __name7(useCollection3, "useCollection");
   function useGetCollection(scope) {
     const { getCollection } = useStableCollectionContext(name + "CollectionConsumer", scope);
     return getCollection;
   }
   __name7(useGetCollection, "useGetCollection");
   const functions = {
-    createCollectionScope: createCollectionScope2,
-    useCollection: useCollection2,
+    createCollectionScope: createCollectionScope3,
+    useCollection: useCollection3,
     useGetCollection,
     useInitCollection
   };
@@ -23487,7 +23487,7 @@ function getChildListObserver(callback) {
 }
 __name7(getChildListObserver, "getChildListObserver");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/primitive/dist/index.mjs
+// node_modules/@radix-ui/primitive/dist/index.mjs
 var __defProp9 = Object.defineProperty;
 var __name8 = (target, value) => __defProp9(target, "name", { value, configurable: true });
 var canUseDOM = !!(typeof window !== "undefined" && window.document && window.document.createElement);
@@ -23539,16 +23539,16 @@ function isFrame(element) {
 }
 __name8(isFrame, "isFrame");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var React10 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/primitive/dist/internal/is-development.false.mjs
+// node_modules/@radix-ui/primitive/dist/internal/is-development.false.mjs
 var IS_DEVELOPMENT = false;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var React23 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
+// node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
 var React9 = __toESM(require_react(), 1);
 var __defProp10 = Object.defineProperty;
 var __name9 = (target, value) => __defProp10(target, "name", { value, configurable: true });
@@ -23574,7 +23574,7 @@ function useEffectEvent(callback) {
 }
 __name9(useEffectEvent, "useEffectEvent");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var __defProp11 = Object.defineProperty;
 var __name10 = (target, value) => __defProp11(target, "name", { value, configurable: true });
 var useInsertionEffect = React10[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
@@ -23706,7 +23706,7 @@ function useControllableStateReducer(reducer, userArgs, initialArg, init) {
 }
 __name10(useControllableStateReducer, "useControllableStateReducer");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-presence/dist/index.mjs
+// node_modules/@radix-ui/react-presence/dist/index.mjs
 var React24 = __toESM(require_react(), 1);
 var React11 = __toESM(require_react(), 1);
 var __defProp12 = Object.defineProperty;
@@ -23885,7 +23885,7 @@ function getElementRef2(element) {
 }
 __name11(getElementRef2, "getElementRef");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-id/dist/index.mjs
+// node_modules/@radix-ui/react-id/dist/index.mjs
 var React12 = __toESM(require_react(), 1);
 var __defProp13 = Object.defineProperty;
 var __name12 = (target, value) => __defProp13(target, "name", { value, configurable: true });
@@ -23900,7 +23900,7 @@ function useId(deterministicId) {
 }
 __name12(useId, "useId");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-direction/dist/index.mjs
+// node_modules/@radix-ui/react-direction/dist/index.mjs
 var React13 = __toESM(require_react(), 1);
 var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
 var __defProp14 = Object.defineProperty;
@@ -23916,7 +23916,7 @@ function useDirection(localDir) {
 }
 __name13(useDirection, "useDirection");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+// node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var dist_exports5 = {};
 __export(dist_exports5, {
   Action: () => AlertDialogAction,
@@ -23941,7 +23941,7 @@ __export(dist_exports5, {
 });
 var React30 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
+// node_modules/@radix-ui/react-dialog/dist/index.mjs
 var dist_exports4 = {};
 __export(dist_exports4, {
   Close: () => DialogClose,
@@ -23965,10 +23965,10 @@ __export(dist_exports4, {
 });
 var React29 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+// node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
 var React15 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
+// node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
 var React14 = __toESM(require_react(), 1);
 var __defProp15 = Object.defineProperty;
 var __name14 = (target, value) => __defProp15(target, "name", { value, configurable: true });
@@ -23988,7 +23988,7 @@ function useCallbackRef(callback) {
 }
 __name14(useCallbackRef, "useCallbackRef");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+// node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
 var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
 var __defProp16 = Object.defineProperty;
 var __name15 = (target, value) => __defProp16(target, "name", { value, configurable: true });
@@ -24321,7 +24321,7 @@ function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
 }
 __name15(handleAndDispatchCustomEvent, "handleAndDispatchCustomEvent");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-focus-scope/dist/index.mjs
+// node_modules/@radix-ui/react-focus-scope/dist/index.mjs
 var React16 = __toESM(require_react(), 1);
 var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
 var __defProp17 = Object.defineProperty;
@@ -24594,7 +24594,7 @@ function removeLinks(items) {
 }
 __name16(removeLinks, "removeLinks");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-portal/dist/index.mjs
+// node_modules/@radix-ui/react-portal/dist/index.mjs
 var React17 = __toESM(require_react(), 1);
 var ReactDOM2 = __toESM(require_react_dom(), 1);
 var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
@@ -24610,7 +24610,7 @@ var Portal = /* @__PURE__ */ React17.forwardRef(
   }, "Portal")
 );
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-focus-guards/dist/index.mjs
+// node_modules/@radix-ui/react-focus-guards/dist/index.mjs
 var React18 = __toESM(require_react(), 1);
 var __defProp19 = Object.defineProperty;
 var __name18 = (target, value) => __defProp19(target, "name", { value, configurable: true });
@@ -24657,7 +24657,7 @@ function createFocusGuard() {
 }
 __name18(createFocusGuard, "createFocusGuard");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/tslib/tslib.es6.mjs
+// node_modules/tslib/tslib.es6.mjs
 var __assign = function() {
   __assign = Object.assign || function __assign2(t2) {
     for (var s2, i2 = 1, n2 = arguments.length; i2 < n2; i2++) {
@@ -24689,19 +24689,19 @@ function __spreadArray(to, from, pack) {
   return to.concat(ar || Array.prototype.slice.call(from));
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
+// node_modules/react-remove-scroll/dist/es2015/Combination.js
 var React28 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
+// node_modules/react-remove-scroll/dist/es2015/UI.js
 var React21 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/constants.js
+// node_modules/react-remove-scroll-bar/dist/es2015/constants.js
 var zeroRightClassName = "right-scroll-bar-position";
 var fullWidthClassName = "width-before-scroll-bar";
 var noScrollbarsClassName = "with-scroll-bars-hidden";
 var removedBarSizeVariable = "--removed-body-scroll-bar-size";
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/assignRef.js
+// node_modules/use-callback-ref/dist/es2015/assignRef.js
 function assignRef(ref, value) {
   if (typeof ref === "function") {
     ref(value);
@@ -24711,7 +24711,7 @@ function assignRef(ref, value) {
   return ref;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/useRef.js
+// node_modules/use-callback-ref/dist/es2015/useRef.js
 var import_react = __toESM(require_react());
 function useCallbackRef2(initialValue, callback) {
   var ref = (0, import_react.useState)(function() {
@@ -24739,7 +24739,7 @@ function useCallbackRef2(initialValue, callback) {
   return ref.facade;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/useMergeRef.js
+// node_modules/use-callback-ref/dist/es2015/useMergeRef.js
 var React19 = __toESM(require_react());
 var useIsomorphicLayoutEffect = typeof window !== "undefined" ? React19.useLayoutEffect : React19.useEffect;
 var currentValues = /* @__PURE__ */ new WeakMap();
@@ -24771,7 +24771,7 @@ function useMergeRefs(refs, defaultValue) {
   return callbackRef;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-sidecar/dist/es2015/medium.js
+// node_modules/use-sidecar/dist/es2015/medium.js
 function ItoI(a2) {
   return a2;
 }
@@ -24857,7 +24857,7 @@ function createSidecarMedium(options) {
   return medium;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-sidecar/dist/es2015/exports.js
+// node_modules/use-sidecar/dist/es2015/exports.js
 var React20 = __toESM(require_react());
 var SideCar = function(_a) {
   var sideCar = _a.sideCar, rest = __rest(_a, ["sideCar"]);
@@ -24876,10 +24876,10 @@ function exportSidecar(medium, exported) {
   return SideCar;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/medium.js
+// node_modules/react-remove-scroll/dist/es2015/medium.js
 var effectCar = createSidecarMedium();
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
+// node_modules/react-remove-scroll/dist/es2015/UI.js
 var nothing = function() {
   return;
 };
@@ -24911,16 +24911,16 @@ RemoveScroll.classNames = {
   zeroRight: zeroRightClassName
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
+// node_modules/react-remove-scroll/dist/es2015/SideEffect.js
 var React27 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
+// node_modules/react-remove-scroll-bar/dist/es2015/component.js
 var React26 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/hook.js
+// node_modules/react-style-singleton/dist/es2015/hook.js
 var React25 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/get-nonce/dist/es2015/index.js
+// node_modules/get-nonce/dist/es2015/index.js
 var currentNonce;
 var getNonce = function() {
   if (currentNonce) {
@@ -24932,7 +24932,7 @@ var getNonce = function() {
   return void 0;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/singleton.js
+// node_modules/react-style-singleton/dist/es2015/singleton.js
 function makeStyleTag() {
   if (!document)
     return null;
@@ -24978,7 +24978,7 @@ var stylesheetSingleton = function() {
   };
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/hook.js
+// node_modules/react-style-singleton/dist/es2015/hook.js
 var styleHookSingleton = function() {
   var sheet = stylesheetSingleton();
   return function(styles, isDynamic) {
@@ -24991,7 +24991,7 @@ var styleHookSingleton = function() {
   };
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/component.js
+// node_modules/react-style-singleton/dist/es2015/component.js
 var styleSingleton = function() {
   var useStyle = styleHookSingleton();
   var Sheet = function(_a) {
@@ -25002,7 +25002,7 @@ var styleSingleton = function() {
   return Sheet;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/utils.js
+// node_modules/react-remove-scroll-bar/dist/es2015/utils.js
 var zeroGap = {
   left: 0,
   top: 0,
@@ -25037,7 +25037,7 @@ var getGapWidth = function(gapMode) {
   };
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
+// node_modules/react-remove-scroll-bar/dist/es2015/component.js
 var Style = styleSingleton();
 var lockAttribute = "data-scroll-locked";
 var getStyles = function(_a, allowRelative, gapMode, important) {
@@ -25077,7 +25077,7 @@ var RemoveScrollBar = function(_a) {
   return React26.createElement(Style, { styles: getStyles(gap, !noRelative, gapMode, !noImportant ? "!important" : "") });
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js
+// node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js
 var passiveSupported = false;
 if (typeof window !== "undefined") {
   try {
@@ -25096,7 +25096,7 @@ if (typeof window !== "undefined") {
 var options;
 var nonPassive = passiveSupported ? { passive: false } : false;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/handleScroll.js
+// node_modules/react-remove-scroll/dist/es2015/handleScroll.js
 var alwaysContainsScroll = function(node) {
   return node.tagName === "TEXTAREA";
 };
@@ -25196,7 +25196,7 @@ var handleScroll = function(axis, endTarget, event, sourceDelta, noOverscroll) {
   return shouldCancelScroll;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
+// node_modules/react-remove-scroll/dist/es2015/SideEffect.js
 var getTouchXY = function(event) {
   return "changedTouches" in event ? [event.changedTouches[0].clientX, event.changedTouches[0].clientY] : [0, 0];
 };
@@ -25367,17 +25367,17 @@ function getOutermostShadowParent(node) {
   return shadowParent;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/sidecar.js
+// node_modules/react-remove-scroll/dist/es2015/sidecar.js
 var sidecar_default = exportSidecar(effectCar, RemoveScrollSideCar);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
+// node_modules/react-remove-scroll/dist/es2015/Combination.js
 var ReactRemoveScroll = React28.forwardRef(function(props, ref) {
   return React28.createElement(RemoveScroll, __assign({}, props, { ref, sideCar: sidecar_default }));
 });
 ReactRemoveScroll.classNames = RemoveScroll.classNames;
 var Combination_default = ReactRemoveScroll;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/aria-hidden/dist/es2015/index.js
+// node_modules/aria-hidden/dist/es2015/index.js
 var getDefaultParent = function(originalTarget) {
   if (typeof document === "undefined") {
     return null;
@@ -25498,7 +25498,7 @@ var hideOthers = function(originalTarget, parentNode, markerName) {
   return applyAttributeToOthers(targets, activeParentNode, markerName, "aria-hidden");
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
+// node_modules/@radix-ui/react-dialog/dist/index.mjs
 var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
 var __defProp20 = Object.defineProperty;
 var __name19 = (target, value) => __defProp20(target, "name", { value, configurable: true });
@@ -25810,7 +25810,7 @@ function getState(open) {
 }
 __name19(getState, "getState");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+// node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
 var __defProp21 = Object.defineProperty;
 var __name20 = (target, value) => __defProp21(target, "name", { value, configurable: true });
@@ -25900,7 +25900,7 @@ var AlertDialogCancel = React30.forwardRef(
   }, "AlertDialogCancel")
 );
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-use-size/dist/index.mjs
+// node_modules/@radix-ui/react-use-size/dist/index.mjs
 var React31 = __toESM(require_react(), 1);
 var __defProp22 = Object.defineProperty;
 var __name21 = (target, value) => __defProp22(target, "name", { value, configurable: true });
@@ -25947,10 +25947,10 @@ function useSize(element) {
 }
 __name21(useSize, "useSize");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
+// node_modules/@radix-ui/react-popper/dist/index.mjs
 var React34 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
+// node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
 var sides = ["top", "right", "bottom", "left"];
 var min = Math.min;
 var max = Math.max;
@@ -26079,7 +26079,7 @@ function rectToClientRect(rect) {
   };
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@floating-ui/core/dist/floating-ui.core.mjs
+// node_modules/@floating-ui/core/dist/floating-ui.core.mjs
 function computeCoordsFromPlacement(_ref, placement, rtl) {
   let {
     reference,
@@ -26777,7 +26777,7 @@ var size = function(options) {
   };
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
+// node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
 function hasWindow() {
   return typeof window !== "undefined";
 }
@@ -26933,7 +26933,7 @@ function getFrameElement(win) {
   return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
+// node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
 function getCssDimensions(element) {
   const css = getComputedStyle2(element);
   let width = parseFloat(css.width) || 0;
@@ -27542,7 +27542,7 @@ var computePosition2 = (reference, floating, options) => {
   });
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
+// node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
 var React32 = __toESM(require_react(), 1);
 var import_react2 = __toESM(require_react(), 1);
 var ReactDOM3 = __toESM(require_react_dom(), 1);
@@ -27853,7 +27853,7 @@ var arrow3 = (options, deps) => {
   };
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-arrow/dist/index.mjs
+// node_modules/@radix-ui/react-arrow/dist/index.mjs
 var React33 = __toESM(require_react(), 1);
 var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
 var __defProp23 = Object.defineProperty;
@@ -27876,7 +27876,7 @@ var Arrow = /* @__PURE__ */ React33.forwardRef(
   }, "Arrow")
 );
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
+// node_modules/@radix-ui/react-popper/dist/index.mjs
 var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
 var __defProp24 = Object.defineProperty;
 var __name23 = (target, value) => __defProp24(target, "name", { value, configurable: true });
@@ -28215,15 +28215,288 @@ function getSideAndAlignFromPlacement(placement) {
 }
 __name23(getSideAndAlignFromPlacement, "getSideAndAlignFromPlacement");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/number/dist/index.mjs
+// node_modules/@radix-ui/react-roving-focus/dist/index.mjs
+var React36 = __toESM(require_react(), 1);
+
+// node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
+var React210 = __toESM(require_react(), 1);
+var React35 = __toESM(require_react(), 1);
 var __defProp25 = Object.defineProperty;
 var __name24 = (target, value) => __defProp25(target, "name", { value, configurable: true });
+var _isHydrated = false;
+function useIsHydrated() {
+  const [isHydrated, setIsHydrated] = React35.useState(_isHydrated);
+  React35.useEffect(() => {
+    if (!_isHydrated) {
+      _isHydrated = true;
+      setIsHydrated(true);
+    }
+  }, []);
+  return isHydrated;
+}
+__name24(useIsHydrated, "useIsHydrated");
+var useReactSyncExternalStore = React210[" useSyncExternalStore ".trim().toString()];
+function subscribe() {
+  return () => {
+  };
+}
+__name24(subscribe, "subscribe");
+function useIsHydratedModern() {
+  return useReactSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  );
+}
+__name24(useIsHydratedModern, "useIsHydratedModern");
+var useIsHydrated2 = typeof useReactSyncExternalStore === "function" ? useIsHydratedModern : useIsHydrated;
+
+// node_modules/@radix-ui/react-roving-focus/dist/index.mjs
+var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
+var __defProp26 = Object.defineProperty;
+var __name25 = (target, value) => __defProp26(target, "name", { value, configurable: true });
+var ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";
+var EVENT_OPTIONS2 = { bubbles: false, cancelable: true };
+var GROUP_NAME = "RovingFocusGroup";
+var [Collection, useCollection, createCollectionScope] = createCollection(GROUP_NAME);
+var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope(
+  GROUP_NAME,
+  [createCollectionScope]
+);
+var Orientation = {
+  Vertical: "vertical",
+  Horizontal: "horizontal"
+};
+var Direction2 = {
+  LTR: "ltr",
+  RTL: "rtl"
+};
+var [RovingFocusProvider, useRovingFocusContext] = createRovingFocusGroupContext(GROUP_NAME);
+var RovingFocusGroup = /* @__PURE__ */ React36.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name25(function RovingFocusGroup2(props, forwardedRef) {
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Provider, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Slot, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(RovingFocusGroupImpl, { ...props, ref: forwardedRef }) }) });
+  }, "RovingFocusGroup")
+);
+var RovingFocusGroupImpl = /* @__PURE__ */ React36.forwardRef(/* @__PURE__ */ __name25(function RovingFocusGroupImpl2(props, forwardedRef) {
+  const {
+    __scopeRovingFocusGroup,
+    orientation,
+    loop = false,
+    dir,
+    currentTabStopId: currentTabStopIdProp,
+    defaultCurrentTabStopId,
+    onCurrentTabStopIdChange,
+    onEntryFocus,
+    preventScrollOnEntryFocus = false,
+    ...groupProps
+  } = props;
+  const ref = React36.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  const direction = useDirection(dir);
+  const [currentTabStopId, setCurrentTabStopId] = useControllableState({
+    prop: currentTabStopIdProp,
+    defaultProp: defaultCurrentTabStopId ?? null,
+    onChange: onCurrentTabStopIdChange,
+    caller: GROUP_NAME
+  });
+  const [isTabbingBackOut, setIsTabbingBackOut] = React36.useState(false);
+  const handleEntryFocus = useCallbackRef(onEntryFocus);
+  const getItems = useCollection(__scopeRovingFocusGroup);
+  const isClickFocusRef = React36.useRef(false);
+  const [focusableItemsCount, setFocusableItemsCount] = React36.useState(0);
+  React36.useEffect(() => {
+    const node = ref.current;
+    if (node) {
+      node.addEventListener(ENTRY_FOCUS, handleEntryFocus);
+      return () => node.removeEventListener(ENTRY_FOCUS, handleEntryFocus);
+    }
+  }, [handleEntryFocus]);
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    RovingFocusProvider,
+    {
+      scope: __scopeRovingFocusGroup,
+      orientation,
+      dir: direction,
+      loop,
+      currentTabStopId,
+      onItemFocus: React36.useCallback(
+        (tabStopId) => setCurrentTabStopId(tabStopId),
+        [setCurrentTabStopId]
+      ),
+      onItemShiftTab: React36.useCallback(() => setIsTabbingBackOut(true), []),
+      onFocusableItemAdd: React36.useCallback(
+        () => setFocusableItemsCount((prevCount) => prevCount + 1),
+        []
+      ),
+      onFocusableItemRemove: React36.useCallback(
+        () => setFocusableItemsCount((prevCount) => prevCount - 1),
+        []
+      ),
+      children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+        Primitive.div,
+        {
+          tabIndex: isTabbingBackOut || focusableItemsCount === 0 ? -1 : 0,
+          "data-orientation": orientation,
+          ...groupProps,
+          ref: composedRefs,
+          style: { outline: "none", ...props.style },
+          onMouseDown: composeEventHandlers(props.onMouseDown, () => {
+            isClickFocusRef.current = true;
+          }),
+          onFocus: composeEventHandlers(props.onFocus, (event) => {
+            const isKeyboardFocus = !isClickFocusRef.current;
+            if (event.target === event.currentTarget && isKeyboardFocus && !isTabbingBackOut) {
+              const entryFocusEvent = new CustomEvent(ENTRY_FOCUS, EVENT_OPTIONS2);
+              event.currentTarget.dispatchEvent(entryFocusEvent);
+              if (!entryFocusEvent.defaultPrevented) {
+                const items = getItems().filter((item) => item.focusable);
+                const activeItem = items.find((item) => item.active);
+                const currentItem = items.find((item) => item.id === currentTabStopId);
+                const candidateItems = [activeItem, currentItem, ...items].filter(
+                  Boolean
+                );
+                const candidateNodes = candidateItems.map((item) => item.ref.current);
+                focusFirst2(candidateNodes, preventScrollOnEntryFocus);
+              }
+            }
+            isClickFocusRef.current = false;
+          }),
+          onBlur: composeEventHandlers(props.onBlur, () => setIsTabbingBackOut(false))
+        }
+      )
+    }
+  );
+}, "RovingFocusGroupImpl"));
+var ITEM_NAME = "RovingFocusGroupItem";
+var RovingFocusGroupItem = /* @__PURE__ */ React36.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name25(function RovingFocusGroupItem2(props, forwardedRef) {
+    const {
+      __scopeRovingFocusGroup,
+      focusable = true,
+      active = false,
+      tabStopId,
+      children,
+      ...itemProps
+    } = props;
+    const autoId = useId();
+    const id = tabStopId || autoId;
+    const context = useRovingFocusContext(ITEM_NAME, __scopeRovingFocusGroup);
+    const isCurrentTabStop = context.currentTabStopId === id;
+    const getItems = useCollection(__scopeRovingFocusGroup);
+    const { onFocusableItemAdd, onFocusableItemRemove, currentTabStopId } = context;
+    const isHydrated = useIsHydrated2();
+    useLayoutEffect2(() => {
+      if (!isHydrated || !focusable) {
+        return;
+      }
+      onFocusableItemAdd();
+      return () => onFocusableItemRemove();
+    }, [isHydrated, focusable, onFocusableItemAdd, onFocusableItemRemove]);
+    React36.useEffect(() => {
+      if (isHydrated || !focusable) {
+        return;
+      }
+      onFocusableItemAdd();
+      return () => onFocusableItemRemove();
+    }, [isHydrated, focusable, onFocusableItemAdd, onFocusableItemRemove]);
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      Collection.ItemSlot,
+      {
+        scope: __scopeRovingFocusGroup,
+        id,
+        focusable,
+        active,
+        children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+          Primitive.span,
+          {
+            tabIndex: isCurrentTabStop ? 0 : -1,
+            "data-orientation": context.orientation,
+            ...itemProps,
+            ref: forwardedRef,
+            onMouseDown: composeEventHandlers(props.onMouseDown, (event) => {
+              if (!focusable) event.preventDefault();
+              else context.onItemFocus(id);
+            }),
+            onFocus: composeEventHandlers(props.onFocus, () => context.onItemFocus(id)),
+            onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+              if (event.key === "Tab" && event.shiftKey) {
+                context.onItemShiftTab();
+                return;
+              }
+              if (event.target !== event.currentTarget) return;
+              const focusIntent = getFocusIntent(event, context.orientation, context.dir);
+              if (focusIntent !== void 0) {
+                if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+                event.preventDefault();
+                const items = getItems().filter((item) => item.focusable);
+                let candidateNodes = items.map((item) => item.ref.current);
+                if (focusIntent === "last") candidateNodes.reverse();
+                else if (focusIntent === "prev" || focusIntent === "next") {
+                  if (focusIntent === "prev") candidateNodes.reverse();
+                  const currentIndex = candidateNodes.indexOf(event.currentTarget);
+                  candidateNodes = context.loop ? wrapArray(candidateNodes, currentIndex + 1) : candidateNodes.slice(currentIndex + 1);
+                }
+                setTimeout(() => focusFirst2(candidateNodes));
+              }
+            }),
+            children: typeof children === "function" ? children({ isCurrentTabStop, hasTabStop: currentTabStopId != null }) : children
+          }
+        )
+      }
+    );
+  }, "RovingFocusGroupItem")
+);
+var MAP_KEY_TO_FOCUS_INTENT = {
+  ArrowLeft: "prev",
+  ArrowUp: "prev",
+  ArrowRight: "next",
+  ArrowDown: "next",
+  PageUp: "first",
+  Home: "first",
+  PageDown: "last",
+  End: "last"
+};
+function getDirectionAwareKey(key, dir) {
+  if (dir !== Direction2.RTL) return key;
+  return key === "ArrowLeft" ? "ArrowRight" : key === "ArrowRight" ? "ArrowLeft" : key;
+}
+__name25(getDirectionAwareKey, "getDirectionAwareKey");
+function getFocusIntent(event, orientation, dir) {
+  const key = getDirectionAwareKey(event.key, dir);
+  if (orientation === Orientation.Vertical && ["ArrowLeft", "ArrowRight"].includes(key)) {
+    return void 0;
+  }
+  if (orientation === Orientation.Horizontal && ["ArrowUp", "ArrowDown"].includes(key)) {
+    return void 0;
+  }
+  return MAP_KEY_TO_FOCUS_INTENT[key];
+}
+__name25(getFocusIntent, "getFocusIntent");
+function focusFirst2(candidates, preventScroll = false) {
+  const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
+  for (const candidate of candidates) {
+    if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return;
+    candidate.focus({ preventScroll });
+    if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
+  }
+}
+__name25(focusFirst2, "focusFirst");
+function wrapArray(array, startIndex) {
+  return array.map((_, index4) => array[(startIndex + index4) % array.length]);
+}
+__name25(wrapArray, "wrapArray");
+
+// node_modules/@radix-ui/number/dist/index.mjs
+var __defProp27 = Object.defineProperty;
+var __name26 = (target, value) => __defProp27(target, "name", { value, configurable: true });
 function clamp3(value, [min2, max2]) {
   return Math.min(max2, Math.max(min2, value));
 }
-__name24(clamp3, "clamp");
+__name26(clamp3, "clamp");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-select/dist/index.mjs
+// node_modules/@radix-ui/react-select/dist/index.mjs
 var dist_exports7 = {};
 __export(dist_exports7, {
   Arrow: () => SelectArrow,
@@ -28264,25 +28537,25 @@ __export(dist_exports7, {
   unstable_SelectBubbleInput: () => SelectBubbleInput,
   unstable_SelectProvider: () => SelectProvider
 });
-var React35 = __toESM(require_react(), 1);
+var React37 = __toESM(require_react(), 1);
 var ReactDOM4 = __toESM(require_react_dom(), 1);
-var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
-var __defProp26 = Object.defineProperty;
-var __name25 = (target, value) => __defProp26(target, "name", { value, configurable: true });
+var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
+var __defProp28 = Object.defineProperty;
+var __name27 = (target, value) => __defProp28(target, "name", { value, configurable: true });
 var Position = {
   ItemAligned: "item-aligned",
   Popper: "popper"
 };
-var Direction2 = {
+var Direction3 = {
   LTR: "ltr",
   RTL: "rtl"
 };
 var OPEN_KEYS = [" ", "Enter", "ArrowUp", "ArrowDown"];
 var SELECTION_KEYS = [" ", "Enter"];
 var SELECT_NAME = "Select";
-var [Collection, useCollection, createCollectionScope] = createCollection(SELECT_NAME);
+var [Collection2, useCollection2, createCollectionScope2] = createCollection(SELECT_NAME);
 var [createSelectContext, createSelectScope] = createContextScope(SELECT_NAME, [
-  createCollectionScope,
+  createCollectionScope2,
   createPopperScope
 ]);
 var usePopperScope = createPopperScope();
@@ -28308,9 +28581,9 @@ function SelectProvider(props) {
     internal_do_not_use_render
   } = props;
   const popperScope = usePopperScope(__scopeSelect);
-  const [trigger, setTrigger] = React35.useState(null);
-  const [valueNode, setValueNode] = React35.useState(null);
-  const [valueNodeHasChildren, setValueNodeHasChildren] = React35.useState(false);
+  const [trigger, setTrigger] = React37.useState(null);
+  const [valueNode, setValueNode] = React37.useState(null);
+  const [valueNodeHasChildren, setValueNodeHasChildren] = React37.useState(false);
   const direction = useDirection(dir);
   const [open, setOpen] = useControllableState({
     prop: openProp,
@@ -28324,33 +28597,33 @@ function SelectProvider(props) {
     onChange: onValueChange,
     caller: SELECT_NAME
   });
-  const triggerPointerDownPosRef = React35.useRef(null);
-  const hasConsumerStoppedPropagationRef = React35.useRef(false);
-  const [userSelection, setUserSelection] = React35.useState(null);
-  const handleUserSelect = /* @__PURE__ */ __name25((nextValue) => {
+  const triggerPointerDownPosRef = React37.useRef(null);
+  const hasConsumerStoppedPropagationRef = React37.useRef(false);
+  const [userSelection, setUserSelection] = React37.useState(null);
+  const handleUserSelect = /* @__PURE__ */ __name27((nextValue) => {
     setUserSelection({
       value: nextValue,
       hasConsumerStoppedPropagation: hasConsumerStoppedPropagationRef.current
     });
     setValue(nextValue);
   }, "handleUserSelect");
-  const initialValueRef = React35.useRef(value);
-  React35.useEffect(() => {
+  const initialValueRef = React37.useRef(value);
+  React37.useEffect(() => {
     const associatedForm = form ? trigger?.ownerDocument.getElementById(form) : trigger?.form;
     if (associatedForm instanceof HTMLFormElement) {
-      const reset = /* @__PURE__ */ __name25(() => setValue(initialValueRef.current), "reset");
+      const reset = /* @__PURE__ */ __name27(() => setValue(initialValueRef.current), "reset");
       associatedForm.addEventListener("reset", reset);
       return () => associatedForm.removeEventListener("reset", reset);
     }
   }, [form, trigger, setValue]);
   const isFormControl = trigger ? !!form || !!trigger.closest("form") : true;
-  const [nativeOptionsSet, setNativeOptionsSet] = React35.useState(/* @__PURE__ */ new Set());
+  const [nativeOptionsSet, setNativeOptionsSet] = React37.useState(/* @__PURE__ */ new Set());
   const contentId = useId();
   const nativeSelectKey = Array.from(nativeOptionsSet).map((option) => option.props.value).join(";");
-  const handleNativeOptionAdd = React35.useCallback((option) => {
+  const handleNativeOptionAdd = React37.useCallback((option) => {
     setNativeOptionsSet((prev) => new Set(prev).add(option));
   }, []);
-  const handleNativeOptionRemove = React35.useCallback((option) => {
+  const handleNativeOptionRemove = React37.useCallback((option) => {
     setNativeOptionsSet((prev) => {
       const optionsSet = new Set(prev);
       optionsSet.delete(option);
@@ -28383,7 +28656,7 @@ function SelectProvider(props) {
     nativeSelectKey,
     isFormControl
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Popper, { ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SelectProviderImpl, { scope: __scopeSelect, ...context, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Provider, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Popper, { ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(SelectProviderImpl, { scope: __scopeSelect, ...context, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Collection2.Provider, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     SelectNativeOptionsProvider,
     {
       scope: __scopeSelect,
@@ -28393,17 +28666,17 @@ function SelectProvider(props) {
     }
   ) }) }) });
 }
-__name25(SelectProvider, "SelectProvider");
-var Select = /* @__PURE__ */ __name25((props) => {
+__name27(SelectProvider, "SelectProvider");
+var Select = /* @__PURE__ */ __name27((props) => {
   const { __scopeSelect, children, ...providerProps } = props;
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     SelectProvider,
     {
       __scopeSelect,
       ...providerProps,
-      internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
+      internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_jsx_runtime16.Fragment, { children: [
         children,
-        isFormControl ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+        isFormControl ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
           SelectBubbleInput,
           {
             __scopeSelect
@@ -28414,15 +28687,15 @@ var Select = /* @__PURE__ */ __name25((props) => {
   );
 }, "Select");
 var TRIGGER_NAME2 = "SelectTrigger";
-var SelectTrigger = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectTrigger2(props, forwardedRef) {
+var SelectTrigger = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectTrigger2(props, forwardedRef) {
     const { __scopeSelect, disabled = false, ...triggerProps } = props;
     const popperScope = usePopperScope(__scopeSelect);
     const context = useSelectContext(TRIGGER_NAME2, __scopeSelect);
     const isDisabled = context.disabled || disabled;
     const composedRefs = useComposedRefs(forwardedRef, context.onTriggerChange);
-    const getItems = useCollection(__scopeSelect);
-    const pointerTypeRef = React35.useRef("touch");
+    const getItems = useCollection2(__scopeSelect);
+    const pointerTypeRef = React37.useRef("touch");
     const [searchRef, handleTypeaheadSearch, resetTypeahead] = useTypeaheadSearch((search) => {
       const enabledItems = getItems().filter((item) => !item.disabled);
       const currentItem = enabledItems.find((item) => item.value === context.value);
@@ -28431,7 +28704,7 @@ var SelectTrigger = /* @__PURE__ */ React35.forwardRef(
         context.onUserSelect(nextItem.value);
       }
     });
-    const handleOpen = /* @__PURE__ */ __name25((pointerEvent) => {
+    const handleOpen = /* @__PURE__ */ __name27((pointerEvent) => {
       if (!isDisabled) {
         context.onOpenChange(true);
         resetTypeahead();
@@ -28443,7 +28716,7 @@ var SelectTrigger = /* @__PURE__ */ React35.forwardRef(
         };
       }
     }, "handleOpen");
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PopperAnchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(PopperAnchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
       Primitive.button,
       {
         type: "button",
@@ -28494,8 +28767,8 @@ var SelectTrigger = /* @__PURE__ */ React35.forwardRef(
   }, "SelectTrigger")
 );
 var VALUE_NAME = "SelectValue";
-var SelectValue = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectValue2(props, forwardedRef) {
+var SelectValue = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectValue2(props, forwardedRef) {
     const { __scopeSelect, className, style, children, placeholder = "", ...valueProps } = props;
     const context = useSelectContext(VALUE_NAME, __scopeSelect);
     const { onValueNodeHasChildrenChange } = context;
@@ -28505,59 +28778,59 @@ var SelectValue = /* @__PURE__ */ React35.forwardRef(
       onValueNodeHasChildrenChange(hasChildren);
     }, [onValueNodeHasChildrenChange, hasChildren]);
     const showPlaceholder = shouldShowPlaceholder(context.value);
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
       Primitive.span,
       {
         ...valueProps,
         asChild: showPlaceholder ? false : valueProps.asChild,
         ref: composedRefs,
         style: { pointerEvents: "none" },
-        children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(React35.Fragment, { children: showPlaceholder ? placeholder : children }, showPlaceholder ? "placeholder" : "value")
+        children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(React37.Fragment, { children: showPlaceholder ? placeholder : children }, showPlaceholder ? "placeholder" : "value")
       }
     );
   }, "SelectValue")
 );
-var SelectIcon = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectIcon2(props, forwardedRef) {
+var SelectIcon = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectIcon2(props, forwardedRef) {
     const { __scopeSelect, children, ...iconProps } = props;
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Primitive.span, { "aria-hidden": true, ...iconProps, ref: forwardedRef, children: children || "\u25BC" });
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Primitive.span, { "aria-hidden": true, ...iconProps, ref: forwardedRef, children: children || "\u25BC" });
   }, "SelectIcon")
 );
 var PORTAL_NAME2 = "SelectPortal";
 var [PortalProvider2, usePortalContext2] = createSelectContext(PORTAL_NAME2, {
   forceMount: void 0
 });
-var SelectPortal = /* @__PURE__ */ __name25((props) => {
+var SelectPortal = /* @__PURE__ */ __name27((props) => {
   const { __scopeSelect, forceMount, ...portalProps } = props;
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PortalProvider2, { scope: props.__scopeSelect, forceMount, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Portal, { asChild: true, ...portalProps }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(PortalProvider2, { scope: props.__scopeSelect, forceMount, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Portal, { asChild: true, ...portalProps }) });
 }, "SelectPortal");
 var CONTENT_NAME4 = "SelectContent";
-var SelectContent = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectContent2(props, forwardedRef) {
+var SelectContent = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectContent2(props, forwardedRef) {
     const portalContext = usePortalContext2(CONTENT_NAME4, props.__scopeSelect);
     const { forceMount = portalContext.forceMount, ...contentProps } = props;
     const context = useSelectContext(CONTENT_NAME4, props.__scopeSelect);
-    const [fragment, setFragment] = React35.useState();
+    const [fragment, setFragment] = React37.useState();
     useLayoutEffect2(() => {
       setFragment(new DocumentFragment());
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Presence, { present: forceMount || context.open, children: ({ present }) => present ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SelectContentImpl, { ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SelectContentFragment, { ...contentProps, fragment }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Presence, { present: forceMount || context.open, children: ({ present }) => present ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(SelectContentImpl, { ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(SelectContentFragment, { ...contentProps, fragment }) });
   }, "SelectContent")
 );
-var SelectContentFragment = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __name25(function SelectContentFragment2(props, forwardedRef) {
+var SelectContentFragment = /* @__PURE__ */ React37.forwardRef(/* @__PURE__ */ __name27(function SelectContentFragment2(props, forwardedRef) {
   const { __scopeSelect, children, fragment } = props;
   if (!fragment) return null;
   return ReactDOM4.createPortal(
-    /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SelectContentProvider, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Slot, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { ref: forwardedRef, children }) }) }),
+    /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(SelectContentProvider, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Collection2.Slot, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("div", { ref: forwardedRef, children }) }) }),
     fragment
   );
 }, "SelectContentFragment"));
 var CONTENT_MARGIN = 10;
 var [SelectContentProvider, useSelectContentContext] = createSelectContext(CONTENT_NAME4);
 var Slot2 = createSlot("SelectContent.RemoveScroll");
-var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
+var SelectContentImpl = /* @__PURE__ */ React37.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name25(function SelectContentImpl2(props, forwardedRef) {
+  /* @__PURE__ */ __name27(function SelectContentImpl2(props, forwardedRef) {
     const { __scopeSelect } = props;
     const {
       position = Position.ItemAligned,
@@ -28580,23 +28853,23 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
       ...contentProps
     } = props;
     const context = useSelectContext(CONTENT_NAME4, __scopeSelect);
-    const [content, setContent] = React35.useState(null);
-    const [viewport, setViewport] = React35.useState(null);
+    const [content, setContent] = React37.useState(null);
+    const [viewport, setViewport] = React37.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, setContent);
-    const [selectedItem, setSelectedItem] = React35.useState(null);
-    const [selectedItemText, setSelectedItemText] = React35.useState(
+    const [selectedItem, setSelectedItem] = React37.useState(null);
+    const [selectedItemText, setSelectedItemText] = React37.useState(
       null
     );
-    const getItems = useCollection(__scopeSelect);
-    const [isPositioned, setIsPositioned] = React35.useState(false);
-    const firstValidItemFoundRef = React35.useRef(false);
-    const firstItemFoundRef = React35.useRef(false);
-    const firstItemTextFoundRef = React35.useRef(false);
-    React35.useEffect(() => {
+    const getItems = useCollection2(__scopeSelect);
+    const [isPositioned, setIsPositioned] = React37.useState(false);
+    const firstValidItemFoundRef = React37.useRef(false);
+    const firstItemFoundRef = React37.useRef(false);
+    const firstItemTextFoundRef = React37.useRef(false);
+    React37.useEffect(() => {
       if (content) return hideOthers(content);
     }, [content]);
     useFocusGuards();
-    const focusFirst2 = React35.useCallback(
+    const focusFirst3 = React37.useCallback(
       (candidates) => {
         const [firstItem, ...restItems] = getItems().map((item) => item.ref.current);
         const [lastItem] = restItems.slice(-1);
@@ -28612,26 +28885,26 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
       },
       [getItems, viewport]
     );
-    const focusSelectedItem = React35.useCallback(
-      () => focusFirst2([selectedItem, content]),
-      [focusFirst2, selectedItem, content]
+    const focusSelectedItem = React37.useCallback(
+      () => focusFirst3([selectedItem, content]),
+      [focusFirst3, selectedItem, content]
     );
-    React35.useEffect(() => {
+    React37.useEffect(() => {
       if (isPositioned) {
         focusSelectedItem();
       }
     }, [isPositioned, focusSelectedItem]);
     const { onOpenChange, triggerPointerDownPosRef } = context;
-    React35.useEffect(() => {
+    React37.useEffect(() => {
       if (content) {
         let pointerMoveDelta = { x: 0, y: 0 };
-        const handlePointerMove = /* @__PURE__ */ __name25((event) => {
+        const handlePointerMove = /* @__PURE__ */ __name27((event) => {
           pointerMoveDelta = {
             x: Math.abs(Math.round(event.pageX) - (triggerPointerDownPosRef.current?.x ?? 0)),
             y: Math.abs(Math.round(event.pageY) - (triggerPointerDownPosRef.current?.y ?? 0))
           };
         }, "handlePointerMove");
-        const handlePointerUp = /* @__PURE__ */ __name25((event) => {
+        const handlePointerUp = /* @__PURE__ */ __name27((event) => {
           if (pointerMoveDelta.x <= 10 && pointerMoveDelta.y <= 10) {
             event.preventDefault();
           } else {
@@ -28652,8 +28925,8 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
         };
       }
     }, [content, onOpenChange, triggerPointerDownPosRef]);
-    React35.useEffect(() => {
-      const close = /* @__PURE__ */ __name25(() => onOpenChange(false), "close");
+    React37.useEffect(() => {
+      const close = /* @__PURE__ */ __name27(() => onOpenChange(false), "close");
       window.addEventListener("blur", close);
       window.addEventListener("resize", close);
       return () => {
@@ -28669,7 +28942,7 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
         setTimeout(() => nextItem.ref.current?.focus());
       }
     });
-    const itemRefCallback = React35.useCallback(
+    const itemRefCallback = React37.useCallback(
       (node, value, disabled) => {
         const isFirstItem = !firstItemFoundRef.current;
         if (isFirstItem) firstItemFoundRef.current = true;
@@ -28684,8 +28957,8 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
       },
       [context.value]
     );
-    const handleItemLeave = React35.useCallback(() => content?.focus(), [content]);
-    const itemTextRefCallback = React35.useCallback(
+    const handleItemLeave = React37.useCallback(() => content?.focus(), [content]);
+    const itemTextRefCallback = React37.useCallback(
       (node, value, disabled) => {
         if (!node) return;
         const isFirstItem = !firstItemTextFoundRef.current;
@@ -28713,7 +28986,7 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
       hideWhenDetached,
       avoidCollisions
     } : {};
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
       SelectContentProvider,
       {
         scope: __scopeSelect,
@@ -28729,7 +29002,7 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
         position,
         isPositioned,
         searchRef,
-        children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Combination_default, { as: Slot2, allowPinchZoom: true, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Combination_default, { as: Slot2, allowPinchZoom: true, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
           FocusScope,
           {
             asChild: true,
@@ -28741,7 +29014,7 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
               context.trigger?.focus({ preventScroll: true });
               event.preventDefault();
             }),
-            children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+            children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
               DismissableLayer,
               {
                 asChild: true,
@@ -28750,7 +29023,7 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
                 onPointerDownOutside,
                 onFocusOutside: (event) => event.preventDefault(),
                 onDismiss: () => context.onOpenChange(false),
-                children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+                children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
                   SelectPosition,
                   {
                     role: "listbox",
@@ -28785,7 +29058,7 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
                           const currentIndex = candidateNodes.indexOf(currentElement);
                           candidateNodes = candidateNodes.slice(currentIndex + 1);
                         }
-                        setTimeout(() => focusFirst2(candidateNodes));
+                        setTimeout(() => focusFirst3(candidateNodes));
                         event.preventDefault();
                       }
                     })
@@ -28799,24 +29072,24 @@ var SelectContentImpl = /* @__PURE__ */ React35.forwardRef(
     );
   }, "SelectContentImpl")
 );
-var SelectItemAlignedPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __name25(function SelectItemAlignedPosition2(props, forwardedRef) {
+var SelectItemAlignedPosition = /* @__PURE__ */ React37.forwardRef(/* @__PURE__ */ __name27(function SelectItemAlignedPosition2(props, forwardedRef) {
   const { __scopeSelect, onPlaced, ...popperProps } = props;
   const context = useSelectContext(CONTENT_NAME4, __scopeSelect);
   const contentContext = useSelectContentContext(CONTENT_NAME4, __scopeSelect);
-  const [contentWrapper, setContentWrapper] = React35.useState(null);
-  const [content, setContent] = React35.useState(null);
+  const [contentWrapper, setContentWrapper] = React37.useState(null);
+  const [content, setContent] = React37.useState(null);
   const composedRefs = useComposedRefs(forwardedRef, setContent);
-  const getItems = useCollection(__scopeSelect);
-  const shouldExpandOnScrollRef = React35.useRef(false);
-  const shouldRepositionRef = React35.useRef(true);
+  const getItems = useCollection2(__scopeSelect);
+  const shouldExpandOnScrollRef = React37.useRef(false);
+  const shouldRepositionRef = React37.useRef(true);
   const { viewport, selectedItem, selectedItemText, focusSelectedItem } = contentContext;
-  const position = React35.useCallback(() => {
+  const position = React37.useCallback(() => {
     if (context.trigger && context.valueNode && contentWrapper && content && viewport && selectedItem && selectedItemText) {
       const triggerRect = context.trigger.getBoundingClientRect();
       const contentRect = content.getBoundingClientRect();
       const valueNodeRect = context.valueNode.getBoundingClientRect();
       const itemTextRect = selectedItemText.getBoundingClientRect();
-      if (context.dir !== Direction2.RTL) {
+      if (context.dir !== Direction3.RTL) {
         const itemTextOffset = itemTextRect.left - contentRect.left;
         const left = valueNodeRect.left - itemTextOffset;
         const leftDelta = triggerRect.left - left;
@@ -28910,11 +29183,11 @@ var SelectItemAlignedPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ 
     onPlaced
   ]);
   useLayoutEffect2(() => position(), [position]);
-  const [contentZIndex, setContentZIndex] = React35.useState();
+  const [contentZIndex, setContentZIndex] = React37.useState();
   useLayoutEffect2(() => {
     if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
   }, [content]);
-  const handleScrollButtonChange = React35.useCallback(
+  const handleScrollButtonChange = React37.useCallback(
     (node) => {
       if (node && shouldRepositionRef.current === true) {
         position();
@@ -28924,14 +29197,14 @@ var SelectItemAlignedPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ 
     },
     [position, focusSelectedItem]
   );
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     SelectViewportProvider,
     {
       scope: __scopeSelect,
       contentWrapper,
       shouldExpandOnScrollRef,
       onScrollButtonChange: handleScrollButtonChange,
-      children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         "div",
         {
           ref: setContentWrapper,
@@ -28941,7 +29214,7 @@ var SelectItemAlignedPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ 
             position: "fixed",
             zIndex: contentZIndex
           },
-          children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+          children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
             Primitive.div,
             {
               ...popperProps,
@@ -28961,7 +29234,7 @@ var SelectItemAlignedPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ 
     }
   );
 }, "SelectItemAlignedPosition"));
-var SelectPopperPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __name25(function SelectPopperPosition2(props, forwardedRef) {
+var SelectPopperPosition = /* @__PURE__ */ React37.forwardRef(/* @__PURE__ */ __name27(function SelectPopperPosition2(props, forwardedRef) {
   const {
     __scopeSelect,
     align = "start",
@@ -28969,7 +29242,7 @@ var SelectPopperPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __
     ...popperProps
   } = props;
   const popperScope = usePopperScope(__scopeSelect);
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     PopperContent,
     {
       ...popperScope,
@@ -28995,15 +29268,15 @@ var SelectPopperPosition = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __
 }, "SelectPopperPosition"));
 var [SelectViewportProvider, useSelectViewportContext] = createSelectContext(CONTENT_NAME4, {});
 var VIEWPORT_NAME = "SelectViewport";
-var SelectViewport = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectViewport2(props, forwardedRef) {
+var SelectViewport = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectViewport2(props, forwardedRef) {
     const { __scopeSelect, nonce, ...viewportProps } = props;
     const contentContext = useSelectContentContext(VIEWPORT_NAME, __scopeSelect);
     const viewportContext = useSelectViewportContext(VIEWPORT_NAME, __scopeSelect);
     const composedRefs = useComposedRefs(forwardedRef, contentContext.onViewportChange);
-    const prevScrollTopRef = React35.useRef(0);
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    const prevScrollTopRef = React37.useRef(0);
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_jsx_runtime16.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         "style",
         {
           dangerouslySetInnerHTML: {
@@ -29012,7 +29285,7 @@ var SelectViewport = /* @__PURE__ */ React35.forwardRef(
           nonce
         }
       ),
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Collection.Slot, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Collection2.Slot, { scope: __scopeSelect, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
         Primitive.div,
         {
           "data-radix-select-viewport": "",
@@ -29061,27 +29334,27 @@ var SelectViewport = /* @__PURE__ */ React35.forwardRef(
     ] });
   }, "SelectViewport")
 );
-var GROUP_NAME = "SelectGroup";
-var [SelectGroupContextProvider, useSelectGroupContext] = createSelectContext(GROUP_NAME);
-var SelectGroup = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectGroup2(props, forwardedRef) {
+var GROUP_NAME2 = "SelectGroup";
+var [SelectGroupContextProvider, useSelectGroupContext] = createSelectContext(GROUP_NAME2);
+var SelectGroup = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectGroup2(props, forwardedRef) {
     const { __scopeSelect, ...groupProps } = props;
     const groupId = useId();
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(SelectGroupContextProvider, { scope: __scopeSelect, id: groupId, children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Primitive.div, { role: "group", "aria-labelledby": groupId, ...groupProps, ref: forwardedRef }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(SelectGroupContextProvider, { scope: __scopeSelect, id: groupId, children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Primitive.div, { role: "group", "aria-labelledby": groupId, ...groupProps, ref: forwardedRef }) });
   }, "SelectGroup")
 );
 var LABEL_NAME = "SelectLabel";
-var SelectLabel = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectLabel2(props, forwardedRef) {
+var SelectLabel = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectLabel2(props, forwardedRef) {
     const { __scopeSelect, ...labelProps } = props;
     const groupContext = useSelectGroupContext(LABEL_NAME, __scopeSelect);
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Primitive.div, { id: groupContext.id, ...labelProps, ref: forwardedRef });
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Primitive.div, { id: groupContext.id, ...labelProps, ref: forwardedRef });
   }, "SelectLabel")
 );
-var ITEM_NAME = "SelectItem";
-var [SelectItemContextProvider, useSelectItemContext] = createSelectContext(ITEM_NAME);
-var SelectItem = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectItem2(props, forwardedRef) {
+var ITEM_NAME2 = "SelectItem";
+var [SelectItemContextProvider, useSelectItemContext] = createSelectContext(ITEM_NAME2);
+var SelectItem = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectItem2(props, forwardedRef) {
     const {
       __scopeSelect,
       value,
@@ -29089,24 +29362,24 @@ var SelectItem = /* @__PURE__ */ React35.forwardRef(
       textValue: textValueProp,
       ...itemProps
     } = props;
-    const context = useSelectContext(ITEM_NAME, __scopeSelect);
-    const contentContext = useSelectContentContext(ITEM_NAME, __scopeSelect);
+    const context = useSelectContext(ITEM_NAME2, __scopeSelect);
+    const contentContext = useSelectContentContext(ITEM_NAME2, __scopeSelect);
     const isSelected = context.value === value;
-    const [textValue, setTextValue] = React35.useState(textValueProp ?? "");
-    const [isFocused, setIsFocused] = React35.useState(false);
+    const [textValue, setTextValue] = React37.useState(textValueProp ?? "");
+    const [isFocused, setIsFocused] = React37.useState(false);
     const handleItemRefCallback = useCallbackRef(
       (node) => contentContext.itemRefCallback?.(node, value, disabled)
     );
     const composedRefs = useComposedRefs(forwardedRef, handleItemRefCallback);
     const textId = useId();
-    const pointerTypeRef = React35.useRef("touch");
+    const pointerTypeRef = React37.useRef("touch");
     function handleSelect(event) {
       context.hasConsumerStoppedPropagationRef.current = event.isPropagationStopped();
       context.onUserSelect(value);
       context.onOpenChange(false);
     }
-    __name25(handleSelect, "handleSelect");
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+    __name27(handleSelect, "handleSelect");
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
       SelectItemContextProvider,
       {
         scope: __scopeSelect,
@@ -29114,17 +29387,17 @@ var SelectItem = /* @__PURE__ */ React35.forwardRef(
         disabled,
         textId,
         isSelected,
-        onItemTextChange: React35.useCallback((node) => {
+        onItemTextChange: React37.useCallback((node) => {
           setTextValue((prevTextValue) => prevTextValue || (node?.textContent ?? "").trim());
         }, []),
-        children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
-          Collection.ItemSlot,
+        children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+          Collection2.ItemSlot,
           {
             scope: __scopeSelect,
             value,
             disabled,
             textValue,
-            children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+            children: /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
               Primitive.div,
               {
                 role: "option",
@@ -29195,14 +29468,14 @@ var SelectItem = /* @__PURE__ */ React35.forwardRef(
   }, "SelectItem")
 );
 var ITEM_TEXT_NAME = "SelectItemText";
-var SelectItemText = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectItemText2(props, forwardedRef) {
+var SelectItemText = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectItemText2(props, forwardedRef) {
     const { __scopeSelect, className, style, ...itemTextProps } = props;
     const context = useSelectContext(ITEM_TEXT_NAME, __scopeSelect);
     const contentContext = useSelectContentContext(ITEM_TEXT_NAME, __scopeSelect);
     const itemContext = useSelectItemContext(ITEM_TEXT_NAME, __scopeSelect);
     const nativeOptionsContext = useSelectNativeOptionsContext(ITEM_TEXT_NAME, __scopeSelect);
-    const [itemTextNode, setItemTextNode] = React35.useState(null);
+    const [itemTextNode, setItemTextNode] = React37.useState(null);
     const handleItemTextRefCallback = useCallbackRef(
       (node) => contentContext.itemTextRefCallback?.(node, itemContext.value, itemContext.disabled)
     );
@@ -29213,8 +29486,8 @@ var SelectItemText = /* @__PURE__ */ React35.forwardRef(
       handleItemTextRefCallback
     );
     const textContent = itemTextNode?.textContent;
-    const nativeOption = React35.useMemo(
-      () => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("option", { value: itemContext.value, disabled: itemContext.disabled, children: textContent }, itemContext.value),
+    const nativeOption = React37.useMemo(
+      () => /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("option", { value: itemContext.value, disabled: itemContext.disabled, children: textContent }, itemContext.value),
       [itemContext.disabled, itemContext.value, textContent]
     );
     const { onNativeOptionAdd, onNativeOptionRemove } = nativeOptionsContext;
@@ -29222,26 +29495,26 @@ var SelectItemText = /* @__PURE__ */ React35.forwardRef(
       onNativeOptionAdd(nativeOption);
       return () => onNativeOptionRemove(nativeOption);
     }, [onNativeOptionAdd, onNativeOptionRemove, nativeOption]);
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Primitive.span, { id: itemContext.textId, ...itemTextProps, ref: composedRefs }),
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_jsx_runtime16.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Primitive.span, { id: itemContext.textId, ...itemTextProps, ref: composedRefs }),
       itemContext.isSelected && context.valueNode && !context.valueNodeHasChildren && !shouldShowPlaceholder(context.value) ? ReactDOM4.createPortal(itemTextProps.children, context.valueNode) : null
     ] });
   }, "SelectItemText")
 );
 var ITEM_INDICATOR_NAME = "SelectItemIndicator";
-var SelectItemIndicator = /* @__PURE__ */ React35.forwardRef(
+var SelectItemIndicator = /* @__PURE__ */ React37.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name25(function SelectItemIndicator2(props, forwardedRef) {
+  /* @__PURE__ */ __name27(function SelectItemIndicator2(props, forwardedRef) {
     const { __scopeSelect, ...itemIndicatorProps } = props;
     const itemContext = useSelectItemContext(ITEM_INDICATOR_NAME, __scopeSelect);
-    return itemContext.isSelected ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Primitive.span, { "aria-hidden": true, ...itemIndicatorProps, ref: forwardedRef }) : null;
+    return itemContext.isSelected ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Primitive.span, { "aria-hidden": true, ...itemIndicatorProps, ref: forwardedRef }) : null;
   }, "SelectItemIndicator")
 );
 var SCROLL_UP_BUTTON_NAME = "SelectScrollUpButton";
-var SelectScrollUpButton = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __name25(function SelectScrollUpButton2(props, forwardedRef) {
+var SelectScrollUpButton = /* @__PURE__ */ React37.forwardRef(/* @__PURE__ */ __name27(function SelectScrollUpButton2(props, forwardedRef) {
   const contentContext = useSelectContentContext(SCROLL_UP_BUTTON_NAME, props.__scopeSelect);
   const viewportContext = useSelectViewportContext(SCROLL_UP_BUTTON_NAME, props.__scopeSelect);
-  const [canScrollUp, setCanScrollUp] = React35.useState(false);
+  const [canScrollUp, setCanScrollUp] = React37.useState(false);
   const composedRefs = useComposedRefs(forwardedRef, viewportContext.onScrollButtonChange);
   useLayoutEffect2(() => {
     if (contentContext.viewport && contentContext.isPositioned) {
@@ -29250,14 +29523,14 @@ var SelectScrollUpButton = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __
         setCanScrollUp(canScrollUp2);
       };
       var handleScroll2 = handleScroll22;
-      __name25(handleScroll22, "handleScroll");
+      __name27(handleScroll22, "handleScroll");
       const viewport = contentContext.viewport;
       handleScroll22();
       viewport.addEventListener("scroll", handleScroll22);
       return () => viewport.removeEventListener("scroll", handleScroll22);
     }
   }, [contentContext.viewport, contentContext.isPositioned]);
-  return canScrollUp ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return canScrollUp ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     SelectScrollButtonImpl,
     {
       ...props,
@@ -29272,10 +29545,10 @@ var SelectScrollUpButton = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __
   ) : null;
 }, "SelectScrollUpButton"));
 var SCROLL_DOWN_BUTTON_NAME = "SelectScrollDownButton";
-var SelectScrollDownButton = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __name25(function SelectScrollDownButton2(props, forwardedRef) {
+var SelectScrollDownButton = /* @__PURE__ */ React37.forwardRef(/* @__PURE__ */ __name27(function SelectScrollDownButton2(props, forwardedRef) {
   const contentContext = useSelectContentContext(SCROLL_DOWN_BUTTON_NAME, props.__scopeSelect);
   const viewportContext = useSelectViewportContext(SCROLL_DOWN_BUTTON_NAME, props.__scopeSelect);
-  const [canScrollDown, setCanScrollDown] = React35.useState(false);
+  const [canScrollDown, setCanScrollDown] = React37.useState(false);
   const composedRefs = useComposedRefs(forwardedRef, viewportContext.onScrollButtonChange);
   useLayoutEffect2(() => {
     if (contentContext.viewport && contentContext.isPositioned) {
@@ -29285,14 +29558,14 @@ var SelectScrollDownButton = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ 
         setCanScrollDown(canScrollDown2);
       };
       var handleScroll2 = handleScroll22;
-      __name25(handleScroll22, "handleScroll");
+      __name27(handleScroll22, "handleScroll");
       const viewport = contentContext.viewport;
       handleScroll22();
       viewport.addEventListener("scroll", handleScroll22);
       return () => viewport.removeEventListener("scroll", handleScroll22);
     }
   }, [contentContext.viewport, contentContext.isPositioned]);
-  return canScrollDown ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return canScrollDown ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     SelectScrollButtonImpl,
     {
       ...props,
@@ -29306,25 +29579,25 @@ var SelectScrollDownButton = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ 
     }
   ) : null;
 }, "SelectScrollDownButton"));
-var SelectScrollButtonImpl = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ __name25(function SelectScrollButtonImpl2(props, forwardedRef) {
+var SelectScrollButtonImpl = /* @__PURE__ */ React37.forwardRef(/* @__PURE__ */ __name27(function SelectScrollButtonImpl2(props, forwardedRef) {
   const { __scopeSelect, onAutoScroll, ...scrollIndicatorProps } = props;
   const contentContext = useSelectContentContext("SelectScrollButton", __scopeSelect);
-  const autoScrollTimerRef = React35.useRef(null);
-  const getItems = useCollection(__scopeSelect);
-  const clearAutoScrollTimer = React35.useCallback(() => {
+  const autoScrollTimerRef = React37.useRef(null);
+  const getItems = useCollection2(__scopeSelect);
+  const clearAutoScrollTimer = React37.useCallback(() => {
     if (autoScrollTimerRef.current !== null) {
       window.clearInterval(autoScrollTimerRef.current);
       autoScrollTimerRef.current = null;
     }
   }, []);
-  React35.useEffect(() => {
+  React37.useEffect(() => {
     return () => clearAutoScrollTimer();
   }, [clearAutoScrollTimer]);
   useLayoutEffect2(() => {
     const activeItem = getItems().find((item) => item.ref.current === document.activeElement);
     activeItem?.ref.current?.scrollIntoView({ block: "nearest" });
   }, [getItems]);
-  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     Primitive.div,
     {
       "aria-hidden": true,
@@ -29348,39 +29621,39 @@ var SelectScrollButtonImpl = /* @__PURE__ */ React35.forwardRef(/* @__PURE__ */ 
     }
   );
 }, "SelectScrollButtonImpl"));
-var SelectSeparator = /* @__PURE__ */ React35.forwardRef(
+var SelectSeparator = /* @__PURE__ */ React37.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name25(function SelectSeparator2(props, forwardedRef) {
+  /* @__PURE__ */ __name27(function SelectSeparator2(props, forwardedRef) {
     const { __scopeSelect, ...separatorProps } = props;
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Primitive.div, { "aria-hidden": true, ...separatorProps, ref: forwardedRef });
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(Primitive.div, { "aria-hidden": true, ...separatorProps, ref: forwardedRef });
   }, "SelectSeparator")
 );
 var ARROW_NAME2 = "SelectArrow";
-var SelectArrow = /* @__PURE__ */ React35.forwardRef(
-  /* @__PURE__ */ __name25(function SelectArrow2(props, forwardedRef) {
+var SelectArrow = /* @__PURE__ */ React37.forwardRef(
+  /* @__PURE__ */ __name27(function SelectArrow2(props, forwardedRef) {
     const { __scopeSelect, ...arrowProps } = props;
     const popperScope = usePopperScope(__scopeSelect);
     const contentContext = useSelectContentContext(ARROW_NAME2, __scopeSelect);
-    return contentContext.position === Position.Popper ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(PopperArrow, { ...popperScope, ...arrowProps, ref: forwardedRef }) : null;
+    return contentContext.position === Position.Popper ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(PopperArrow, { ...popperScope, ...arrowProps, ref: forwardedRef }) : null;
   }, "SelectArrow")
 );
 var BUBBLE_INPUT_NAME = "SelectBubbleInput";
-var SelectBubbleInput = /* @__PURE__ */ React35.forwardRef(
+var SelectBubbleInput = /* @__PURE__ */ React37.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name25(function SelectBubbleInput2({ __scopeSelect, ...props }, forwardedRef) {
+  /* @__PURE__ */ __name27(function SelectBubbleInput2({ __scopeSelect, ...props }, forwardedRef) {
     const context = useSelectContext(BUBBLE_INPUT_NAME, __scopeSelect);
     const { value, onValueChange, required, disabled, name, autoComplete, form, userSelection } = context;
     const { nativeOptions, nativeSelectKey } = context;
-    const ref = React35.useRef(null);
+    const ref = React37.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
     const selectValue = value ?? "";
-    const prevValueRef = React35.useRef(selectValue);
-    const handledUserSelectionRef = React35.useRef(userSelection);
-    const isDispatchingUserSelectionRef = React35.useRef(false);
+    const prevValueRef = React37.useRef(selectValue);
+    const handledUserSelectionRef = React37.useRef(userSelection);
+    const isDispatchingUserSelectionRef = React37.useRef(false);
     const hasEmptyValueOption = Array.from(nativeOptions).some(
       (option) => (option.props.value ?? "") === ""
     );
-    React35.useEffect(() => {
+    React37.useEffect(() => {
       const select = ref.current;
       if (!select) return;
       const selectProto = window.HTMLSelectElement.prototype;
@@ -29412,7 +29685,7 @@ var SelectBubbleInput = /* @__PURE__ */ React35.forwardRef(
         select.dispatchEvent(event);
       }
     }, [selectValue, userSelection]);
-    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
+    return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
       Primitive.select,
       {
         "aria-hidden": true,
@@ -29432,7 +29705,7 @@ var SelectBubbleInput = /* @__PURE__ */ React35.forwardRef(
         ref: composedRefs,
         defaultValue: selectValue,
         children: [
-          shouldShowPlaceholder(value) && !hasEmptyValueOption ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("option", { value: "" }) : null,
+          shouldShowPlaceholder(value) && !hasEmptyValueOption ? /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("option", { value: "" }) : null,
           Array.from(nativeOptions)
         ]
       },
@@ -29443,16 +29716,16 @@ var SelectBubbleInput = /* @__PURE__ */ React35.forwardRef(
 function isFunction2(value) {
   return typeof value === "function";
 }
-__name25(isFunction2, "isFunction");
+__name27(isFunction2, "isFunction");
 function shouldShowPlaceholder(value) {
   return value === "" || value === void 0;
 }
-__name25(shouldShowPlaceholder, "shouldShowPlaceholder");
+__name27(shouldShowPlaceholder, "shouldShowPlaceholder");
 function useTypeaheadSearch(onSearchChange) {
   const handleSearchChange = useCallbackRef(onSearchChange);
-  const searchRef = React35.useRef("");
-  const timerRef = React35.useRef(0);
-  const handleTypeaheadSearch = React35.useCallback(
+  const searchRef = React37.useRef("");
+  const timerRef = React37.useRef(0);
+  const handleTypeaheadSearch = React37.useCallback(
     (key) => {
       const search = searchRef.current + key;
       handleSearchChange(search);
@@ -29461,26 +29734,26 @@ function useTypeaheadSearch(onSearchChange) {
         window.clearTimeout(timerRef.current);
         if (value !== "") timerRef.current = window.setTimeout(() => updateSearch(""), 1e3);
       }
-      __name25(updateSearch, "updateSearch");
+      __name27(updateSearch, "updateSearch");
       updateSearch(search);
     },
     [handleSearchChange]
   );
-  const resetTypeahead = React35.useCallback(() => {
+  const resetTypeahead = React37.useCallback(() => {
     searchRef.current = "";
     window.clearTimeout(timerRef.current);
   }, []);
-  React35.useEffect(() => {
+  React37.useEffect(() => {
     return () => window.clearTimeout(timerRef.current);
   }, []);
   return [searchRef, handleTypeaheadSearch, resetTypeahead];
 }
-__name25(useTypeaheadSearch, "useTypeaheadSearch");
+__name27(useTypeaheadSearch, "useTypeaheadSearch");
 function findNextItem(items, search, currentItem) {
   const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0]);
   const normalizedSearch = isRepeated ? search[0] : search;
   const currentItemIndex = currentItem ? items.indexOf(currentItem) : -1;
-  let wrappedItems = wrapArray(items, Math.max(currentItemIndex, 0));
+  let wrappedItems = wrapArray2(items, Math.max(currentItemIndex, 0));
   const excludeCurrentItem = normalizedSearch.length === 1;
   if (excludeCurrentItem) wrappedItems = wrappedItems.filter((v) => v !== currentItem);
   const nextItem = wrappedItems.find(
@@ -29488,13 +29761,13 @@ function findNextItem(items, search, currentItem) {
   );
   return nextItem !== currentItem ? nextItem : void 0;
 }
-__name25(findNextItem, "findNextItem");
-function wrapArray(array, startIndex) {
+__name27(findNextItem, "findNextItem");
+function wrapArray2(array, startIndex) {
   return array.map((_, index4) => array[(startIndex + index4) % array.length]);
 }
-__name25(wrapArray, "wrapArray");
+__name27(wrapArray2, "wrapArray");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-switch/dist/index.mjs
+// node_modules/@radix-ui/react-switch/dist/index.mjs
 var dist_exports9 = {};
 __export(dist_exports9, {
   Root: () => Switch,
@@ -29509,10 +29782,10 @@ __export(dist_exports9, {
   unstable_SwitchTrigger: () => SwitchTrigger,
   unstable_Trigger: () => SwitchTrigger
 });
-var React36 = __toESM(require_react(), 1);
-var import_jsx_runtime16 = __toESM(require_jsx_runtime(), 1);
-var __defProp27 = Object.defineProperty;
-var __name26 = (target, value) => __defProp27(target, "name", { value, configurable: true });
+var React38 = __toESM(require_react(), 1);
+var import_jsx_runtime17 = __toESM(require_jsx_runtime(), 1);
+var __defProp29 = Object.defineProperty;
+var __name28 = (target, value) => __defProp29(target, "name", { value, configurable: true });
 var SWITCH_NAME = "Switch";
 var [createSwitchContext, createSwitchScope] = createContextScope(SWITCH_NAME);
 var [SwitchProviderImpl, useSwitchContext] = createSwitchContext(SWITCH_NAME);
@@ -29537,9 +29810,9 @@ function SwitchProvider(props) {
     onChange: onCheckedChange,
     caller: SWITCH_NAME
   });
-  const [control, setControl] = React36.useState(null);
-  const [bubbleInput, setBubbleInput] = React36.useState(null);
-  const [userClick, setUserClick] = React36.useState(null);
+  const [control, setControl] = React38.useState(null);
+  const [bubbleInput, setBubbleInput] = React38.useState(null);
+  const [userClick, setUserClick] = React38.useState(null);
   const isFormControl = control ? !!form || !!control.closest("form") : (
     // We set this to true by default so that events bubble to forms without JS (SSR)
     true
@@ -29561,12 +29834,12 @@ function SwitchProvider(props) {
     bubbleInput,
     setBubbleInput
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(SwitchProviderImpl, { scope: __scopeSwitch, ...context, children: isFunction3(internal_do_not_use_render) ? internal_do_not_use_render(context) : children });
+  return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(SwitchProviderImpl, { scope: __scopeSwitch, ...context, children: isFunction3(internal_do_not_use_render) ? internal_do_not_use_render(context) : children });
 }
-__name26(SwitchProvider, "SwitchProvider");
+__name28(SwitchProvider, "SwitchProvider");
 var TRIGGER_NAME3 = "SwitchTrigger";
-var SwitchTrigger = /* @__PURE__ */ React36.forwardRef(
-  /* @__PURE__ */ __name26(function SwitchTrigger2({ __scopeSwitch, onClick, ...switchProps }, forwardedRef) {
+var SwitchTrigger = /* @__PURE__ */ React38.forwardRef(
+  /* @__PURE__ */ __name28(function SwitchTrigger2({ __scopeSwitch, onClick, ...switchProps }, forwardedRef) {
     const {
       control,
       form,
@@ -29581,16 +29854,16 @@ var SwitchTrigger = /* @__PURE__ */ React36.forwardRef(
       bubbleInput
     } = useSwitchContext(TRIGGER_NAME3, __scopeSwitch);
     const composedRefs = useComposedRefs(forwardedRef, setControl);
-    const initialCheckedStateRef = React36.useRef(checked);
-    React36.useEffect(() => {
+    const initialCheckedStateRef = React38.useRef(checked);
+    React38.useEffect(() => {
       const associatedForm = form ? control?.ownerDocument.getElementById(form) : control?.form;
       if (associatedForm instanceof HTMLFormElement) {
-        const reset = /* @__PURE__ */ __name26(() => setChecked(initialCheckedStateRef.current), "reset");
+        const reset = /* @__PURE__ */ __name28(() => setChecked(initialCheckedStateRef.current), "reset");
         associatedForm.addEventListener("reset", reset);
         return () => associatedForm.removeEventListener("reset", reset);
       }
     }, [control, form, setChecked]);
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       Primitive.button,
       {
         type: "button",
@@ -29617,9 +29890,9 @@ var SwitchTrigger = /* @__PURE__ */ React36.forwardRef(
     );
   }, "SwitchTrigger")
 );
-var Switch = /* @__PURE__ */ React36.forwardRef(
+var Switch = /* @__PURE__ */ React38.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name26(function Switch2(props, forwardedRef) {
+  /* @__PURE__ */ __name28(function Switch2(props, forwardedRef) {
     const {
       __scopeSwitch,
       name,
@@ -29632,7 +29905,7 @@ var Switch = /* @__PURE__ */ React36.forwardRef(
       form,
       ...switchProps
     } = props;
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       SwitchProvider,
       {
         __scopeSwitch,
@@ -29644,8 +29917,8 @@ var Switch = /* @__PURE__ */ React36.forwardRef(
         name,
         form,
         value,
-        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(import_jsx_runtime16.Fragment, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(import_jsx_runtime17.Fragment, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
             SwitchTrigger,
             {
               ...switchProps,
@@ -29653,7 +29926,7 @@ var Switch = /* @__PURE__ */ React36.forwardRef(
               __scopeSwitch
             }
           ),
-          isFormControl && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+          isFormControl && /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
             SwitchBubbleInput,
             {
               __scopeSwitch
@@ -29665,11 +29938,11 @@ var Switch = /* @__PURE__ */ React36.forwardRef(
   }, "Switch")
 );
 var THUMB_NAME = "SwitchThumb";
-var SwitchThumb = /* @__PURE__ */ React36.forwardRef(
-  /* @__PURE__ */ __name26(function SwitchThumb2(props, forwardedRef) {
+var SwitchThumb = /* @__PURE__ */ React38.forwardRef(
+  /* @__PURE__ */ __name28(function SwitchThumb2(props, forwardedRef) {
     const { __scopeSwitch, ...thumbProps } = props;
     const context = useSwitchContext(THUMB_NAME, __scopeSwitch);
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       Primitive.span,
       {
         "data-state": getState2(context.checked),
@@ -29681,9 +29954,9 @@ var SwitchThumb = /* @__PURE__ */ React36.forwardRef(
   }, "SwitchThumb")
 );
 var BUBBLE_INPUT_NAME2 = "SwitchBubbleInput";
-var SwitchBubbleInput = /* @__PURE__ */ React36.forwardRef(
+var SwitchBubbleInput = /* @__PURE__ */ React38.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name26(function SwitchBubbleInput2({ __scopeSwitch, onClick, ...props }, forwardedRef) {
+  /* @__PURE__ */ __name28(function SwitchBubbleInput2({ __scopeSwitch, onClick, ...props }, forwardedRef) {
     const {
       control,
       userClick,
@@ -29699,11 +29972,11 @@ var SwitchBubbleInput = /* @__PURE__ */ React36.forwardRef(
     } = useSwitchContext(BUBBLE_INPUT_NAME2, __scopeSwitch);
     const composedRefs = useComposedRefs(forwardedRef, setBubbleInput);
     const controlSize = useSize(control);
-    const shouldStopClickPropagationRef = React36.useRef(false);
-    const prevCheckedRef = React36.useRef(checked);
-    const handledUserClickRef = React36.useRef(userClick);
-    const pendingUserClickRef = React36.useRef(null);
-    React36.useEffect(() => {
+    const shouldStopClickPropagationRef = React38.useRef(false);
+    const prevCheckedRef = React38.useRef(checked);
+    const handledUserClickRef = React38.useRef(userClick);
+    const pendingUserClickRef = React38.useRef(null);
+    React38.useEffect(() => {
       const input = bubbleInput;
       if (!input) return;
       const inputProto = window.HTMLInputElement.prototype;
@@ -29741,8 +30014,8 @@ var SwitchBubbleInput = /* @__PURE__ */ React36.forwardRef(
         shouldStopClickPropagationRef.current = false;
       }
     }, [bubbleInput, checked, userClick]);
-    const defaultCheckedRef = React36.useRef(checked);
-    return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
+    const defaultCheckedRef = React38.useRef(checked);
+    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
       Primitive.input,
       {
         type: "checkbox",
@@ -29780,25 +30053,223 @@ var SwitchBubbleInput = /* @__PURE__ */ React36.forwardRef(
 function isFunction3(value) {
   return typeof value === "function";
 }
-__name26(isFunction3, "isFunction");
+__name28(isFunction3, "isFunction");
 function getState2(checked) {
   return checked ? "checked" : "unchecked";
 }
-__name26(getState2, "getState");
+__name28(getState2, "getState");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-toggle/dist/index.mjs
+// node_modules/@radix-ui/react-tabs/dist/index.mjs
 var dist_exports10 = {};
 __export(dist_exports10, {
+  Content: () => TabsContent,
+  List: () => TabsList,
+  Root: () => Tabs,
+  Tabs: () => Tabs,
+  TabsContent: () => TabsContent,
+  TabsList: () => TabsList,
+  TabsTrigger: () => TabsTrigger,
+  Trigger: () => TabsTrigger,
+  createTabsScope: () => createTabsScope
+});
+var React39 = __toESM(require_react(), 1);
+var import_jsx_runtime18 = __toESM(require_jsx_runtime(), 1);
+var __defProp30 = Object.defineProperty;
+var __name29 = (target, value) => __defProp30(target, "name", { value, configurable: true });
+var ActivationMode = {
+  Automatic: "automatic",
+  Manual: "manual"
+};
+var TABS_NAME = "Tabs";
+var [createTabsContext, createTabsScope] = createContextScope(TABS_NAME, [
+  createRovingFocusGroupScope
+]);
+var useRovingFocusGroupScope = createRovingFocusGroupScope();
+var [TabsProvider, useTabsContext] = createTabsContext(TABS_NAME);
+var Tabs = /* @__PURE__ */ React39.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name29(function Tabs2(props, forwardedRef) {
+    const {
+      __scopeTabs,
+      value: valueProp,
+      onValueChange,
+      defaultValue,
+      orientation = "horizontal",
+      dir,
+      activationMode = ActivationMode.Automatic,
+      ...tabsProps
+    } = props;
+    const direction = useDirection(dir);
+    const [value, setValue] = useControllableState({
+      prop: valueProp,
+      onChange: onValueChange,
+      defaultProp: defaultValue ?? "",
+      caller: TABS_NAME
+    });
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+      TabsProvider,
+      {
+        scope: __scopeTabs,
+        baseId: useId(),
+        value,
+        onValueChange: setValue,
+        orientation,
+        dir: direction,
+        activationMode,
+        children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+          Primitive.div,
+          {
+            dir: direction,
+            "data-orientation": orientation,
+            ...tabsProps,
+            ref: forwardedRef
+          }
+        )
+      }
+    );
+  }, "Tabs")
+);
+var TAB_LIST_NAME = "TabsList";
+var TabsList = /* @__PURE__ */ React39.forwardRef(
+  // blank line to reduce diff noise
+  /* @__PURE__ */ __name29(function TabsList2(props, forwardedRef) {
+    const { __scopeTabs, loop = true, ...listProps } = props;
+    const context = useTabsContext(TAB_LIST_NAME, __scopeTabs);
+    const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+      RovingFocusGroup,
+      {
+        asChild: true,
+        ...rovingFocusGroupScope,
+        orientation: context.orientation,
+        dir: context.dir,
+        loop,
+        children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+          Primitive.div,
+          {
+            role: "tablist",
+            "aria-orientation": context.orientation,
+            ...listProps,
+            ref: forwardedRef
+          }
+        )
+      }
+    );
+  }, "TabsList")
+);
+var TRIGGER_NAME4 = "TabsTrigger";
+var TabsTrigger = /* @__PURE__ */ React39.forwardRef(
+  /* @__PURE__ */ __name29(function TabsTrigger2(props, forwardedRef) {
+    const { __scopeTabs, value, disabled = false, ...triggerProps } = props;
+    const context = useTabsContext(TRIGGER_NAME4, __scopeTabs);
+    const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeTabs);
+    const triggerId = makeTriggerId(context.baseId, value);
+    const contentId = makeContentId(context.baseId, value);
+    const isSelected = value === context.value;
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+      RovingFocusGroupItem,
+      {
+        asChild: true,
+        ...rovingFocusGroupScope,
+        focusable: !disabled,
+        active: isSelected,
+        children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+          Primitive.button,
+          {
+            type: "button",
+            role: "tab",
+            "aria-selected": isSelected,
+            "aria-controls": contentId,
+            "data-state": isSelected ? "active" : "inactive",
+            "data-disabled": disabled ? "" : void 0,
+            disabled,
+            id: triggerId,
+            ...triggerProps,
+            ref: forwardedRef,
+            onMouseDown: composeEventHandlers(props.onMouseDown, (event) => {
+              if (!disabled && event.button === 0 && event.ctrlKey === false) {
+                event.currentTarget.focus();
+                context.onValueChange(value);
+              } else {
+                event.preventDefault();
+              }
+            }),
+            onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+              if (disabled || event.target !== event.currentTarget) {
+                return;
+              }
+              if ([" ", "Enter"].includes(event.key)) {
+                context.onValueChange(value);
+              }
+            }),
+            onFocus: composeEventHandlers(props.onFocus, () => {
+              const isAutomaticActivation = context.activationMode !== ActivationMode.Manual;
+              if (!isSelected && !disabled && isAutomaticActivation) {
+                context.onValueChange(value);
+              }
+            })
+          }
+        )
+      }
+    );
+  }, "TabsTrigger")
+);
+var CONTENT_NAME5 = "TabsContent";
+var TabsContent = /* @__PURE__ */ React39.forwardRef(
+  /* @__PURE__ */ __name29(function TabsContent2(props, forwardedRef) {
+    const { __scopeTabs, value, forceMount, children, ...contentProps } = props;
+    const context = useTabsContext(CONTENT_NAME5, __scopeTabs);
+    const triggerId = makeTriggerId(context.baseId, value);
+    const contentId = makeContentId(context.baseId, value);
+    const isSelected = value === context.value;
+    const isMountAnimationPreventedRef = React39.useRef(isSelected);
+    React39.useEffect(() => {
+      const rAF = requestAnimationFrame(() => isMountAnimationPreventedRef.current = false);
+      return () => cancelAnimationFrame(rAF);
+    }, []);
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Presence, { present: forceMount || isSelected, children: ({ present }) => /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+      Primitive.div,
+      {
+        "data-state": isSelected ? "active" : "inactive",
+        "data-orientation": context.orientation,
+        role: "tabpanel",
+        "aria-labelledby": triggerId,
+        hidden: !present,
+        id: contentId,
+        tabIndex: 0,
+        ...contentProps,
+        ref: forwardedRef,
+        style: {
+          ...props.style,
+          animationDuration: isMountAnimationPreventedRef.current ? "0s" : void 0
+        },
+        children: present && children
+      }
+    ) });
+  }, "TabsContent")
+);
+function makeTriggerId(baseId, value) {
+  return `${baseId}-trigger-${value}`;
+}
+__name29(makeTriggerId, "makeTriggerId");
+function makeContentId(baseId, value) {
+  return `${baseId}-content-${value}`;
+}
+__name29(makeContentId, "makeContentId");
+
+// node_modules/@radix-ui/react-toggle/dist/index.mjs
+var dist_exports12 = {};
+__export(dist_exports12, {
   Root: () => Toggle,
   Toggle: () => Toggle
 });
-var React37 = __toESM(require_react(), 1);
-var import_jsx_runtime17 = __toESM(require_jsx_runtime(), 1);
-var __defProp28 = Object.defineProperty;
-var __name27 = (target, value) => __defProp28(target, "name", { value, configurable: true });
+var React40 = __toESM(require_react(), 1);
+var import_jsx_runtime19 = __toESM(require_jsx_runtime(), 1);
+var __defProp31 = Object.defineProperty;
+var __name30 = (target, value) => __defProp31(target, "name", { value, configurable: true });
 var NAME = "Toggle";
-var Toggle = /* @__PURE__ */ React37.forwardRef(
-  /* @__PURE__ */ __name27(function Toggle2(props, forwardedRef) {
+var Toggle = /* @__PURE__ */ React40.forwardRef(
+  /* @__PURE__ */ __name30(function Toggle2(props, forwardedRef) {
     const { pressed: pressedProp, defaultPressed, onPressedChange, ...buttonProps } = props;
     const [pressed, setPressed] = useControllableState({
       prop: pressedProp,
@@ -29806,7 +30277,7 @@ var Toggle = /* @__PURE__ */ React37.forwardRef(
       defaultProp: defaultPressed ?? false,
       caller: NAME
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime17.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
       Primitive.button,
       {
         type: "button",
@@ -29825,9 +30296,9 @@ var Toggle = /* @__PURE__ */ React37.forwardRef(
   }, "Toggle")
 );
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@radix-ui/react-tooltip/dist/index.mjs
-var dist_exports11 = {};
-__export(dist_exports11, {
+// node_modules/@radix-ui/react-tooltip/dist/index.mjs
+var dist_exports13 = {};
+__export(dist_exports13, {
   Arrow: () => TooltipArrow,
   Content: () => TooltipContent,
   Portal: () => TooltipPortal,
@@ -29842,10 +30313,10 @@ __export(dist_exports11, {
   Trigger: () => TooltipTrigger,
   createTooltipScope: () => createTooltipScope
 });
-var React38 = __toESM(require_react(), 1);
-var import_jsx_runtime18 = __toESM(require_jsx_runtime(), 1);
-var __defProp29 = Object.defineProperty;
-var __name28 = (target, value) => __defProp29(target, "name", { value, configurable: true });
+var React41 = __toESM(require_react(), 1);
+var import_jsx_runtime20 = __toESM(require_jsx_runtime(), 1);
+var __defProp32 = Object.defineProperty;
+var __name31 = (target, value) => __defProp32(target, "name", { value, configurable: true });
 var [createTooltipContext, createTooltipScope] = createContextScope("Tooltip", [
   createPopperScope
 ]);
@@ -29854,7 +30325,7 @@ var PROVIDER_NAME = "TooltipProvider";
 var DEFAULT_DELAY_DURATION = 700;
 var TOOLTIP_OPEN = "tooltip.open";
 var [TooltipProviderContextProvider, useTooltipProviderContext] = createTooltipContext(PROVIDER_NAME);
-var TooltipProvider = /* @__PURE__ */ __name28((props) => {
+var TooltipProvider = /* @__PURE__ */ __name31((props) => {
   const {
     __scopeTooltip,
     delayDuration = DEFAULT_DELAY_DURATION,
@@ -29862,25 +30333,25 @@ var TooltipProvider = /* @__PURE__ */ __name28((props) => {
     disableHoverableContent = false,
     children
   } = props;
-  const isOpenDelayedRef = React38.useRef(true);
-  const isPointerInTransitRef = React38.useRef(false);
-  const skipDelayTimerRef = React38.useRef(0);
-  React38.useEffect(() => {
+  const isOpenDelayedRef = React41.useRef(true);
+  const isPointerInTransitRef = React41.useRef(false);
+  const skipDelayTimerRef = React41.useRef(0);
+  React41.useEffect(() => {
     const skipDelayTimer = skipDelayTimerRef.current;
     return () => window.clearTimeout(skipDelayTimer);
   }, []);
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
     TooltipProviderContextProvider,
     {
       scope: __scopeTooltip,
       isOpenDelayedRef,
       delayDuration,
-      onOpen: React38.useCallback(() => {
+      onOpen: React41.useCallback(() => {
         if (skipDelayDuration <= 0) return;
         window.clearTimeout(skipDelayTimerRef.current);
         isOpenDelayedRef.current = false;
       }, [skipDelayDuration]),
-      onClose: React38.useCallback(() => {
+      onClose: React41.useCallback(() => {
         if (skipDelayDuration <= 0) return;
         window.clearTimeout(skipDelayTimerRef.current);
         skipDelayTimerRef.current = window.setTimeout(
@@ -29889,7 +30360,7 @@ var TooltipProvider = /* @__PURE__ */ __name28((props) => {
         );
       }, [skipDelayDuration]),
       isPointerInTransitRef,
-      onPointerInTransitChange: React38.useCallback((inTransit) => {
+      onPointerInTransitChange: React41.useCallback((inTransit) => {
         isPointerInTransitRef.current = inTransit;
       }, []),
       disableHoverableContent,
@@ -29899,7 +30370,7 @@ var TooltipProvider = /* @__PURE__ */ __name28((props) => {
 }, "TooltipProvider");
 var TOOLTIP_NAME = "Tooltip";
 var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_NAME);
-var Tooltip = /* @__PURE__ */ __name28((props) => {
+var Tooltip = /* @__PURE__ */ __name31((props) => {
   const {
     __scopeTooltip,
     children,
@@ -29911,17 +30382,17 @@ var Tooltip = /* @__PURE__ */ __name28((props) => {
   } = props;
   const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
   const popperScope = usePopperScope2(__scopeTooltip);
-  const [trigger, setTrigger] = React38.useState(null);
-  const [contentIdState, setContentId] = React38.useState(void 0);
+  const [trigger, setTrigger] = React41.useState(null);
+  const [contentIdState, setContentId] = React41.useState(void 0);
   const generatedContentId = useId();
-  const openTimerRef = React38.useRef(0);
+  const openTimerRef = React41.useRef(0);
   const disableHoverableContent = disableHoverableContentProp ?? providerContext.disableHoverableContent;
   const delayDuration = delayDurationProp ?? providerContext.delayDuration;
-  const wasOpenDelayedRef = React38.useRef(false);
+  const wasOpenDelayedRef = React41.useRef(false);
   const [open, setOpen] = useControllableState({
     prop: openProp,
     defaultProp: defaultOpen ?? false,
-    onChange: /* @__PURE__ */ __name28((open2) => {
+    onChange: /* @__PURE__ */ __name31((open2) => {
       if (open2) {
         providerContext.onOpen();
         document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
@@ -29932,21 +30403,21 @@ var Tooltip = /* @__PURE__ */ __name28((props) => {
     }, "onChange"),
     caller: TOOLTIP_NAME
   });
-  const stateAttribute = React38.useMemo(() => {
+  const stateAttribute = React41.useMemo(() => {
     return open ? wasOpenDelayedRef.current ? "delayed-open" : "instant-open" : "closed";
   }, [open]);
-  const handleOpen = React38.useCallback(() => {
+  const handleOpen = React41.useCallback(() => {
     window.clearTimeout(openTimerRef.current);
     openTimerRef.current = 0;
     wasOpenDelayedRef.current = false;
     setOpen(true);
   }, [setOpen]);
-  const handleClose = React38.useCallback(() => {
+  const handleClose = React41.useCallback(() => {
     window.clearTimeout(openTimerRef.current);
     openTimerRef.current = 0;
     setOpen(false);
   }, [setOpen]);
-  const handleDelayedOpen = React38.useCallback(() => {
+  const handleDelayedOpen = React41.useCallback(() => {
     window.clearTimeout(openTimerRef.current);
     openTimerRef.current = window.setTimeout(() => {
       wasOpenDelayedRef.current = true;
@@ -29954,7 +30425,7 @@ var Tooltip = /* @__PURE__ */ __name28((props) => {
       openTimerRef.current = 0;
     }, delayDuration);
   }, [delayDuration, setOpen]);
-  React38.useEffect(() => {
+  React41.useEffect(() => {
     return () => {
       if (openTimerRef.current) {
         window.clearTimeout(openTimerRef.current);
@@ -29963,7 +30434,7 @@ var Tooltip = /* @__PURE__ */ __name28((props) => {
     };
   }, []);
   const contentId = contentIdState ?? generatedContentId;
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Popper, { ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Popper, { ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
     TooltipContextProvider,
     {
       scope: __scopeTooltip,
@@ -29973,11 +30444,11 @@ var Tooltip = /* @__PURE__ */ __name28((props) => {
       stateAttribute,
       trigger,
       onTriggerChange: setTrigger,
-      onTriggerEnter: React38.useCallback(() => {
+      onTriggerEnter: React41.useCallback(() => {
         if (providerContext.isOpenDelayedRef.current) handleDelayedOpen();
         else handleOpen();
       }, [providerContext.isOpenDelayedRef, handleDelayedOpen, handleOpen]),
-      onTriggerLeave: React38.useCallback(() => {
+      onTriggerLeave: React41.useCallback(() => {
         if (disableHoverableContent) {
           handleClose();
         } else {
@@ -29992,22 +30463,22 @@ var Tooltip = /* @__PURE__ */ __name28((props) => {
     }
   ) });
 }, "Tooltip");
-var TRIGGER_NAME4 = "TooltipTrigger";
-var TooltipTrigger = /* @__PURE__ */ React38.forwardRef(
-  /* @__PURE__ */ __name28(function TooltipTrigger2(props, forwardedRef) {
+var TRIGGER_NAME5 = "TooltipTrigger";
+var TooltipTrigger = /* @__PURE__ */ React41.forwardRef(
+  /* @__PURE__ */ __name31(function TooltipTrigger2(props, forwardedRef) {
     const { __scopeTooltip, "aria-describedby": ariaDescribedby, ...triggerProps } = props;
-    const context = useTooltipContext(TRIGGER_NAME4, __scopeTooltip);
-    const providerContext = useTooltipProviderContext(TRIGGER_NAME4, __scopeTooltip);
+    const context = useTooltipContext(TRIGGER_NAME5, __scopeTooltip);
+    const providerContext = useTooltipProviderContext(TRIGGER_NAME5, __scopeTooltip);
     const popperScope = usePopperScope2(__scopeTooltip);
-    const ref = React38.useRef(null);
+    const ref = React41.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
-    const isPointerDownRef = React38.useRef(false);
-    const hasPointerMoveOpenedRef = React38.useRef(false);
-    const handlePointerUp = React38.useCallback(() => isPointerDownRef.current = false, []);
-    React38.useEffect(() => {
+    const isPointerDownRef = React41.useRef(false);
+    const hasPointerMoveOpenedRef = React41.useRef(false);
+    const handlePointerUp = React41.useCallback(() => isPointerDownRef.current = false, []);
+    React41.useEffect(() => {
       return () => document.removeEventListener("pointerup", handlePointerUp);
     }, [handlePointerUp]);
-    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(PopperAnchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(PopperAnchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
       Primitive.button,
       {
         "aria-describedby": context.open ? concatAriaDescribedby3(ariaDescribedby, context.contentId) : ariaDescribedby,
@@ -30045,34 +30516,34 @@ var PORTAL_NAME3 = "TooltipPortal";
 var [PortalProvider3, usePortalContext3] = createTooltipContext(PORTAL_NAME3, {
   forceMount: void 0
 });
-var TooltipPortal = /* @__PURE__ */ __name28((props) => {
+var TooltipPortal = /* @__PURE__ */ __name31((props) => {
   const { __scopeTooltip, forceMount, children, container } = props;
   const context = useTooltipContext(PORTAL_NAME3, __scopeTooltip);
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(PortalProvider3, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Portal, { asChild: true, container, children }) }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(PortalProvider3, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Portal, { asChild: true, container, children }) }) });
 }, "TooltipPortal");
-var CONTENT_NAME5 = "TooltipContent";
-var TooltipContent = /* @__PURE__ */ React38.forwardRef(
-  /* @__PURE__ */ __name28(function TooltipContent2(props, forwardedRef) {
-    const portalContext = usePortalContext3(CONTENT_NAME5, props.__scopeTooltip);
+var CONTENT_NAME6 = "TooltipContent";
+var TooltipContent = /* @__PURE__ */ React41.forwardRef(
+  /* @__PURE__ */ __name31(function TooltipContent2(props, forwardedRef) {
+    const portalContext = usePortalContext3(CONTENT_NAME6, props.__scopeTooltip);
     const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
-    const context = useTooltipContext(CONTENT_NAME5, props.__scopeTooltip);
-    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+    const context = useTooltipContext(CONTENT_NAME6, props.__scopeTooltip);
+    return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
   }, "TooltipContent")
 );
-var TooltipContentHoverable = /* @__PURE__ */ React38.forwardRef(/* @__PURE__ */ __name28(function TooltipContentHoverable2(props, forwardedRef) {
-  const context = useTooltipContext(CONTENT_NAME5, props.__scopeTooltip);
-  const providerContext = useTooltipProviderContext(CONTENT_NAME5, props.__scopeTooltip);
-  const ref = React38.useRef(null);
+var TooltipContentHoverable = /* @__PURE__ */ React41.forwardRef(/* @__PURE__ */ __name31(function TooltipContentHoverable2(props, forwardedRef) {
+  const context = useTooltipContext(CONTENT_NAME6, props.__scopeTooltip);
+  const providerContext = useTooltipProviderContext(CONTENT_NAME6, props.__scopeTooltip);
+  const ref = React41.useRef(null);
   const composedRefs = useComposedRefs(forwardedRef, ref);
-  const [pointerGraceArea, setPointerGraceArea] = React38.useState(null);
+  const [pointerGraceArea, setPointerGraceArea] = React41.useState(null);
   const { trigger, onClose } = context;
   const content = ref.current;
   const { onPointerInTransitChange } = providerContext;
-  const handleRemoveGraceArea = React38.useCallback(() => {
+  const handleRemoveGraceArea = React41.useCallback(() => {
     setPointerGraceArea(null);
     onPointerInTransitChange(false);
   }, [onPointerInTransitChange]);
-  const handleCreateGraceArea = React38.useCallback(
+  const handleCreateGraceArea = React41.useCallback(
     (event, hoverTarget) => {
       const currentTarget = event.currentTarget;
       const exitPoint = { x: event.clientX, y: event.clientY };
@@ -30085,13 +30556,13 @@ var TooltipContentHoverable = /* @__PURE__ */ React38.forwardRef(/* @__PURE__ */
     },
     [onPointerInTransitChange]
   );
-  React38.useEffect(() => {
+  React41.useEffect(() => {
     return () => handleRemoveGraceArea();
   }, [handleRemoveGraceArea]);
-  React38.useEffect(() => {
+  React41.useEffect(() => {
     if (trigger && content) {
-      const handleTriggerLeave = /* @__PURE__ */ __name28((event) => handleCreateGraceArea(event, content), "handleTriggerLeave");
-      const handleContentLeave = /* @__PURE__ */ __name28((event) => handleCreateGraceArea(event, trigger), "handleContentLeave");
+      const handleTriggerLeave = /* @__PURE__ */ __name31((event) => handleCreateGraceArea(event, content), "handleTriggerLeave");
+      const handleContentLeave = /* @__PURE__ */ __name31((event) => handleCreateGraceArea(event, trigger), "handleContentLeave");
       trigger.addEventListener("pointerleave", handleTriggerLeave);
       content.addEventListener("pointerleave", handleContentLeave);
       return () => {
@@ -30100,9 +30571,9 @@ var TooltipContentHoverable = /* @__PURE__ */ React38.forwardRef(/* @__PURE__ */
       };
     }
   }, [trigger, content, handleCreateGraceArea, handleRemoveGraceArea]);
-  React38.useEffect(() => {
+  React41.useEffect(() => {
     if (pointerGraceArea) {
-      const handleTrackPointerGrace = /* @__PURE__ */ __name28((event) => {
+      const handleTrackPointerGrace = /* @__PURE__ */ __name31((event) => {
         const target = event.target;
         const pointerPosition = { x: event.clientX, y: event.clientY };
         const hasEnteredTarget = trigger?.contains(target) || content?.contains(target);
@@ -30118,12 +30589,12 @@ var TooltipContentHoverable = /* @__PURE__ */ React38.forwardRef(/* @__PURE__ */
       return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
     }
   }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(TooltipContentImpl, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(TooltipContentImpl, { ...props, ref: composedRefs });
 }, "TooltipContentHoverable"));
 var Slottable = createSlottable("TooltipContent");
-var TooltipContentImpl = /* @__PURE__ */ React38.forwardRef(
+var TooltipContentImpl = /* @__PURE__ */ React41.forwardRef(
   // blank line to reduce diff noise
-  /* @__PURE__ */ __name28(function TooltipContentImpl2(props, forwardedRef) {
+  /* @__PURE__ */ __name31(function TooltipContentImpl2(props, forwardedRef) {
     const {
       __scopeTooltip,
       children,
@@ -30133,19 +30604,19 @@ var TooltipContentImpl = /* @__PURE__ */ React38.forwardRef(
       onPointerDownOutside,
       ...contentProps
     } = props;
-    const context = useTooltipContext(CONTENT_NAME5, __scopeTooltip);
+    const context = useTooltipContext(CONTENT_NAME6, __scopeTooltip);
     const popperScope = usePopperScope2(__scopeTooltip);
     const { onClose } = context;
-    const [contentNode, setContentNode] = React38.useState(null);
+    const [contentNode, setContentNode] = React41.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, setContentNode);
     useFocusScopeBranch(contentNode);
-    React38.useEffect(() => {
+    React41.useEffect(() => {
       document.addEventListener(TOOLTIP_OPEN, onClose);
       return () => document.removeEventListener(TOOLTIP_OPEN, onClose);
     }, [onClose]);
-    React38.useEffect(() => {
+    React41.useEffect(() => {
       if (context.trigger) {
-        const handleScroll2 = /* @__PURE__ */ __name28((event) => {
+        const handleScroll2 = /* @__PURE__ */ __name31((event) => {
           if (event.target instanceof Node && event.target.contains(context.trigger)) {
             onClose();
           }
@@ -30161,7 +30632,7 @@ var TooltipContentImpl = /* @__PURE__ */ React38.forwardRef(
         setContentId(void 0);
       };
     }, [idProp, setContentId]);
-    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(
       DismissableLayer,
       {
         asChild: true,
@@ -30170,7 +30641,7 @@ var TooltipContentImpl = /* @__PURE__ */ React38.forwardRef(
         onPointerDownOutside,
         onFocusOutside: (event) => event.preventDefault(),
         onDismiss: onClose,
-        children: /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
+        children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(
           PopperContent,
           {
             "data-state": context.stateAttribute,
@@ -30191,8 +30662,8 @@ var TooltipContentImpl = /* @__PURE__ */ React38.forwardRef(
               }
             },
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(Slottable, { children }),
-              ariaLabel ? /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(VisuallyHidden, { id: context.contentId, role: "tooltip", children: ariaLabel }) : null
+              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Slottable, { children }),
+              ariaLabel ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(VisuallyHidden, { id: context.contentId, role: "tooltip", children: ariaLabel }) : null
             ]
           }
         )
@@ -30200,11 +30671,11 @@ var TooltipContentImpl = /* @__PURE__ */ React38.forwardRef(
     );
   }, "TooltipContentImpl")
 );
-var TooltipArrow = /* @__PURE__ */ React38.forwardRef(
-  /* @__PURE__ */ __name28(function TooltipArrow2(props, forwardedRef) {
+var TooltipArrow = /* @__PURE__ */ React41.forwardRef(
+  /* @__PURE__ */ __name31(function TooltipArrow2(props, forwardedRef) {
     const { __scopeTooltip, ...arrowProps } = props;
     const popperScope = usePopperScope2(__scopeTooltip);
-    return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(PopperArrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+    return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(PopperArrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
   }, "TooltipArrow")
 );
 function getExitSideFromRect(point, rect) {
@@ -30225,7 +30696,7 @@ function getExitSideFromRect(point, rect) {
       throw new Error("unreachable");
   }
 }
-__name28(getExitSideFromRect, "getExitSideFromRect");
+__name31(getExitSideFromRect, "getExitSideFromRect");
 function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
   const paddedExitPoints = [];
   switch (exitSide) {
@@ -30256,7 +30727,7 @@ function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
   }
   return paddedExitPoints;
 }
-__name28(getPaddedExitPoints, "getPaddedExitPoints");
+__name31(getPaddedExitPoints, "getPaddedExitPoints");
 function getPointsFromRect(rect) {
   const { top, right, bottom, left } = rect;
   return [
@@ -30266,7 +30737,7 @@ function getPointsFromRect(rect) {
     { x: left, y: bottom }
   ];
 }
-__name28(getPointsFromRect, "getPointsFromRect");
+__name31(getPointsFromRect, "getPointsFromRect");
 function isPointInPolygon(point, polygon) {
   const { x, y } = point;
   let inside = false;
@@ -30282,7 +30753,7 @@ function isPointInPolygon(point, polygon) {
   }
   return inside;
 }
-__name28(isPointInPolygon, "isPointInPolygon");
+__name31(isPointInPolygon, "isPointInPolygon");
 function getHull(points) {
   const newPoints = points.slice();
   newPoints.sort((a2, b) => {
@@ -30294,7 +30765,7 @@ function getHull(points) {
   });
   return getHullPresorted(newPoints);
 }
-__name28(getHull, "getHull");
+__name31(getHull, "getHull");
 function getHullPresorted(points) {
   if (points.length <= 1) return points.slice();
   const upperHull = [];
@@ -30327,7 +30798,7 @@ function getHullPresorted(points) {
     return upperHull.concat(lowerHull);
   }
 }
-__name28(getHullPresorted, "getHullPresorted");
+__name31(getHullPresorted, "getHullPresorted");
 function concatAriaDescribedby3(...values) {
   const ids = /* @__PURE__ */ new Set();
   for (const value of values) {
@@ -30338,9 +30809,9 @@ function concatAriaDescribedby3(...values) {
   }
   return ids.size > 0 ? Array.from(ids).join(" ") : void 0;
 }
-__name28(concatAriaDescribedby3, "concatAriaDescribedby");
+__name31(concatAriaDescribedby3, "concatAriaDescribedby");
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@babel/runtime/helpers/esm/extends.js
+// node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n2) {
     for (var e2 = 1; e2 < arguments.length; e2++) {
@@ -30351,7 +30822,7 @@ function _extends() {
   }, _extends.apply(null, arguments);
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+// node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
 function _objectWithoutPropertiesLoose(r2, e2) {
   if (null == r2) return {};
   var t2 = {};
@@ -30362,17 +30833,17 @@ function _objectWithoutPropertiesLoose(r2, e2) {
   return t2;
 }
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
-var React41 = __toESM(require_react());
+// node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
+var React44 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-latest/dist/use-latest.esm.js
+// node_modules/use-latest/dist/use-latest.esm.js
 var import_react4 = __toESM(require_react());
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-isomorphic-layout-effect/dist/use-isomorphic-layout-effect.browser.esm.js
+// node_modules/use-isomorphic-layout-effect/dist/use-isomorphic-layout-effect.browser.esm.js
 var import_react3 = __toESM(require_react());
 var index2 = import_react3.useLayoutEffect;
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-latest/dist/use-latest.esm.js
+// node_modules/use-latest/dist/use-latest.esm.js
 var useLatest = function useLatest2(value) {
   var ref = import_react4.default.useRef(value);
   index2(function() {
@@ -30381,7 +30852,7 @@ var useLatest = function useLatest2(value) {
   return ref;
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/use-composed-ref/dist/use-composed-ref.esm.js
+// node_modules/use-composed-ref/dist/use-composed-ref.esm.js
 var import_react5 = __toESM(require_react());
 var updateRef = function updateRef2(ref, value) {
   if (typeof ref === "function") {
@@ -30405,7 +30876,7 @@ var useComposedRef = function useComposedRef2(libRef, userRef) {
   }, [userRef]);
 };
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
+// node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
 var HIDDEN_TEXTAREA_STYLE = {
   "min-height": "0",
   "max-height": "none",
@@ -30533,7 +31004,7 @@ var getSizingData = function getSizingData2(node) {
 var getSizingData$1 = getSizingData;
 function useListener(target, type, listener) {
   var latestListener = useLatest(listener);
-  React41.useLayoutEffect(function() {
+  React44.useLayoutEffect(function() {
     var handler = function handler2(ev) {
       return latestListener.current(ev);
     };
@@ -30563,10 +31034,10 @@ var _excluded = ["cacheMeasurements", "maxRows", "minRows", "onChange", "onHeigh
 var TextareaAutosize = function TextareaAutosize2(_ref, userRef) {
   var cacheMeasurements = _ref.cacheMeasurements, maxRows = _ref.maxRows, minRows = _ref.minRows, _ref$onChange = _ref.onChange, onChange = _ref$onChange === void 0 ? noop3 : _ref$onChange, _ref$onHeightChange = _ref.onHeightChange, onHeightChange = _ref$onHeightChange === void 0 ? noop3 : _ref$onHeightChange, props = _objectWithoutPropertiesLoose(_ref, _excluded);
   var isControlled = props.value !== void 0;
-  var libRef = React41.useRef(null);
+  var libRef = React44.useRef(null);
   var ref = useComposedRef(libRef, userRef);
-  var heightRef = React41.useRef(0);
-  var measurementsCacheRef = React41.useRef();
+  var heightRef = React44.useRef(0);
+  var measurementsCacheRef = React44.useRef();
   var resizeTextarea = function resizeTextarea2() {
     var node = libRef.current;
     var nodeSizingData = cacheMeasurements && measurementsCacheRef.current ? measurementsCacheRef.current : getSizingData$1(node);
@@ -30590,7 +31061,7 @@ var TextareaAutosize = function TextareaAutosize2(_ref, userRef) {
     onChange(event);
   };
   {
-    React41.useLayoutEffect(resizeTextarea);
+    React44.useLayoutEffect(resizeTextarea);
     useFormResetListener(libRef, function() {
       if (!isControlled) {
         var currentValue = libRef.current.value;
@@ -30604,15 +31075,15 @@ var TextareaAutosize = function TextareaAutosize2(_ref, userRef) {
     });
     useWindowResizeListener(resizeTextarea);
     useFontsLoadedListener(resizeTextarea);
-    return /* @__PURE__ */ React41.createElement("textarea", _extends({}, props, {
+    return /* @__PURE__ */ React44.createElement("textarea", _extends({}, props, {
       onChange: handleChange,
       ref
     }));
   }
 };
-var index3 = /* @__PURE__ */ React41.forwardRef(TextareaAutosize);
+var index3 = /* @__PURE__ */ React44.forwardRef(TextareaAutosize);
 
-// ../../../../wt-ui-tokens-1/prototypes/play/options/node_modules/react-image-crop/dist/index.js
+// node_modules/react-image-crop/dist/index.js
 var import_react6 = __toESM(require_react(), 1);
 var r = {
   x: 0,
@@ -31067,18 +31538,18 @@ var note_strings_default = {
 };
 
 // src/note-ui.jsx
-var import_jsx_runtime19 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime21 = __toESM(require_jsx_runtime(), 1);
 var T = (key, vars) => fmt(note_strings_default[key] ?? key, vars);
 var useNote = (c) => (0, import_react7.useSyncExternalStore)(c.subscribe, c.getState);
 function Thumb({ it, c }) {
   const clip = it.kind === "last" || it.kind === "clip";
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-thumb-box", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-thumbpic", children: [
-      clip ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("video", { src: it.url + "#t=0.1", controls: true, preload: "metadata", "aria-label": T("note.thumb.play") }) : /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-thumbbtn", onClick: () => c.cutItem(it.id), "aria-label": T("note.thumb." + it.kind), children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("img", { src: it.url, alt: "" }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-x", "aria-label": T("note.thumb.remove"), onClick: () => c.remove(it.id), children: "\xD7" }),
-      clip && it.ms != null ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "op-dur", children: mss(it.ms) }) : null
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-thumb-box", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-thumbpic", children: [
+      clip ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("video", { src: it.url + "#t=0.1", controls: true, preload: "metadata", "aria-label": T("note.thumb.play") }) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-thumbbtn", onClick: () => c.cutItem(it.id), "aria-label": T("note.thumb." + it.kind), children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("img", { src: it.url, alt: "" }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-x", "aria-label": T("note.thumb.remove"), onClick: () => c.remove(it.id), children: "\xD7" }),
+      clip && it.ms != null ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "op-dur", children: mss(it.ms) }) : null
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-cap", children: T("note.thumb." + it.kind) })
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-cap", children: T("note.thumb." + it.kind) })
   ] });
 }
 function NoteDialog({ c }) {
@@ -31086,51 +31557,51 @@ function NoteDialog({ c }) {
   const empty = !s2.items.length && !s2.text.trim();
   const full = s2.full ? T(s2.full) : "";
   const recOk = c.canRecordAny();
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Root, { open: s2.open, onOpenChange: (o2) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Root, { open: s2.open, onOpenChange: (o2) => {
     if (!o2) c.keepPlaying();
-  }, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports4.Portal, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Overlay, { className: "op-overlay" }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports4.Content, { className: "op-panel op-note", "data-options": "", "data-note": "", "aria-describedby": void 0, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-notehead", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Title, { className: "op-title", children: T("note.title") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "op-from", children: T("note.from", { source: s2.from, time: clock(s2.at || Date.now()) }) })
+  }, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports4.Portal, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Overlay, { className: "op-overlay" }),
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports4.Content, { className: "op-panel op-note", "data-options": "", "data-note": "", "aria-describedby": void 0, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-notehead", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Title, { className: "op-title", children: T("note.title") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "op-from", children: T("note.from", { source: s2.from, time: clock(s2.at || Date.now()) }) })
       ] }),
-      s2.items.length ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-thumbs", children: s2.items.map((it) => /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(Thumb, { it, c }, it.id)) }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-adds", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-btn", id: "noteAddWhole", onClick: () => c.addWhole(), children: T("note.add.whole") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-btn", id: "noteAddSection", onClick: () => c.addSection(), children: T("note.add.section") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-btn", id: "noteAddLast", disabled: s2.busy === "last", onClick: () => c.addLast(), children: T("note.add.last") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("button", { type: "button", className: "op-btn", id: "noteRecord", disabled: !recOk, onClick: () => c.record(), children: [
-          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "op-dot", "aria-hidden": "true" }),
+      s2.items.length ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-thumbs", children: s2.items.map((it) => /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Thumb, { it, c }, it.id)) }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-adds", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn", id: "noteAddWhole", onClick: () => c.addWhole(), children: T("note.add.whole") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn", id: "noteAddSection", onClick: () => c.addSection(), children: T("note.add.section") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn", id: "noteAddLast", disabled: s2.busy === "last", onClick: () => c.addLast(), children: T("note.add.last") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("button", { type: "button", className: "op-btn", id: "noteRecord", disabled: !recOk, onClick: () => c.record(), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "op-dot", "aria-hidden": "true" }),
           T("note.record")
         ] })
       ] }),
-      full ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-line op-warn", role: "status", children: full }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(index3, { className: "op-note-text", id: "noteText", minRows: 3, maxRows: 6, maxLength: LIMITS.textChars, placeholder: T("note.text.placeholder"), value: s2.text, onChange: (e2) => c.setText(e2.target.value) }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-sent", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-sent-title", children: T("note.sentWith.title") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-sent-line", id: "noteSentWith", children: sentWithLine(s2.ctx) }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-line", children: T("note.privacy") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-line", children: T("note.limits") })
+      full ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-line op-warn", role: "status", children: full }) : null,
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(index3, { className: "op-note-text", id: "noteText", minRows: 3, maxRows: 6, maxLength: LIMITS.textChars, placeholder: T("note.text.placeholder"), value: s2.text, onChange: (e2) => c.setText(e2.target.value) }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-sent", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-sent-title", children: T("note.sentWith.title") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-sent-line", id: "noteSentWith", children: sentWithLine(s2.ctx) }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-line", children: T("note.privacy") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-line", children: T("note.limits") })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-actions op-noteactions", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports5.Root, { open: askDelete, onOpenChange: setAskDelete, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-btn op-quiet", id: "noteDelete", disabled: empty, onClick: () => setAskDelete(true), children: T("note.delete") }),
-          /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports5.Portal, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports5.Overlay, { className: "op-overlay op-over2" }),
-            /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports5.Content, { className: "op-panel op-confirm", "data-options": "", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports5.Title, { className: "op-title", children: T("note.delete.confirm.title") }),
-              /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports5.Description, { className: "op-line", children: T("note.delete.confirm.line") }),
-              /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-actions", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports5.Cancel, { className: "op-btn", children: T("note.delete.confirm.cancel") }),
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "noteDeleteYes", onClick: () => c.discard(), children: T("note.delete.confirm.yes") })
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-actions op-noteactions", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports5.Root, { open: askDelete, onOpenChange: setAskDelete, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn op-quiet", id: "noteDelete", disabled: empty, onClick: () => setAskDelete(true), children: T("note.delete") }),
+          /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports5.Portal, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Overlay, { className: "op-overlay op-over2" }),
+            /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports5.Content, { className: "op-panel op-confirm", "data-options": "", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Title, { className: "op-title", children: T("note.delete.confirm.title") }),
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Description, { className: "op-line", children: T("note.delete.confirm.line") }),
+              /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-actions", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Cancel, { className: "op-btn", children: T("note.delete.confirm.cancel") }),
+                /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "noteDeleteYes", onClick: () => c.discard(), children: T("note.delete.confirm.yes") })
               ] })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "op-grow" }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Close, { className: "op-btn", id: "noteKeep", children: T("note.keepPlaying") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-btn op-go", id: "noteSend", disabled: empty || s2.busy === "send", onClick: () => c.send(), children: T("note.send") })
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "op-grow" }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Close, { className: "op-btn", id: "noteKeep", children: T("note.keepPlaying") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn op-go", id: "noteSend", disabled: empty || s2.busy === "send", onClick: () => c.send(), children: T("note.send") })
       ] })
     ] })
   ] }) });
@@ -31154,20 +31625,20 @@ function SectionDialog({ c }) {
     reset();
     c.useSection(r2);
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Root, { open: !!cut, onOpenChange: (o2) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Root, { open: !!cut, onOpenChange: (o2) => {
     if (!o2) {
       reset();
       c.cancelCut();
     }
-  }, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports4.Portal, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Overlay, { className: "op-overlay op-over2" }),
-    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(dist_exports4.Content, { className: "op-panel op-section", "data-options": "", "data-note": "", "aria-describedby": void 0, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Title, { className: "op-title", children: T("section.title") }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-line", children: T("section.line", { i: i2, n: n2 }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "op-cropbox", children: cut ? /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(h, { crop, onChange: (p2) => setCrop(p2), onComplete: (p2) => setDone(p2), keepSelection: true, minWidth: 8, minHeight: 8, children: /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("img", { ref: img, src: cut.it.url, alt: "", className: "op-cropimg" }) }) : null }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "op-actions", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(dist_exports4.Close, { className: "op-btn", id: "sectionWhole", children: T("section.whole") }),
-        /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("button", { type: "button", className: "op-btn op-go", id: "sectionUse", disabled: !done || !done.width, onClick: use2, children: T("section.use") })
+  }, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports4.Portal, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Overlay, { className: "op-overlay op-over2" }),
+    /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports4.Content, { className: "op-panel op-section", "data-options": "", "data-note": "", "aria-describedby": void 0, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Title, { className: "op-title", children: T("section.title") }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-line", children: T("section.line", { i: i2, n: n2 }) }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-cropbox", children: cut ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(h, { crop, onChange: (p2) => setCrop(p2), onComplete: (p2) => setDone(p2), keepSelection: true, minWidth: 8, minHeight: 8, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("img", { ref: img, src: cut.it.url, alt: "", className: "op-cropimg" }) }) : null }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-actions", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Close, { className: "op-btn", id: "sectionWhole", children: T("section.whole") }),
+        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn op-go", id: "sectionUse", disabled: !done || !done.width, onClick: use2, children: T("section.use") })
       ] })
     ] })
   ] }) });
@@ -31175,29 +31646,29 @@ function SectionDialog({ c }) {
 
 // src/parts.jsx
 var import_react8 = __toESM(require_react(), 1);
-var import_jsx_runtime20 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime22 = __toESM(require_jsx_runtime(), 1);
 var NONE = "__none";
-var toSel = (v) => v === "" ? NONE : v;
+var toSel = (v) => v === "" || v == null ? NONE : v;
 var fromSel = (v) => v === NONE ? "" : v;
 function Row({ label, line, children }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "op-row", children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "op-text", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "op-label", children: label }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "op-line", children: line })
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "op-row", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "op-text", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "op-label", children: label }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "op-line", children: line })
     ] }),
     children
   ] });
 }
 function Toggle3({ label, line, on, set: set2 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Row, { label, line, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports9.Root, { className: "op-switch", checked: on, onCheckedChange: set2, "aria-label": label, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports9.Thumb, { className: "op-thumb" }) }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label, line, children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports9.Root, { className: "op-switch", checked: on, onCheckedChange: set2, "aria-label": label, children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports9.Thumb, { className: "op-thumb" }) }) });
 }
 function Pick({ label, line, value, set: set2, items }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Row, { label, line, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports7.Root, { value: toSel(value), onValueChange: (v) => set2(fromSel(v)), children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports7.Trigger, { className: "op-select", "aria-label": label, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.Value, {}),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.Icon, { className: "op-caret", children: "\u25BE" })
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label, line, children: /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports7.Root, { value: toSel(value), onValueChange: (v) => set2(fromSel(v)), children: [
+    /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports7.Trigger, { className: "op-select", "aria-label": label, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.Value, {}),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.Icon, { className: "op-caret", children: "\u25BE" })
     ] }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.Content, { className: "op-menu", "data-options": "", position: "popper", sideOffset: 4, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.Viewport, { children: items.map(([v, text]) => /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.Item, { value: toSel(v), className: "op-item", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports7.ItemText, { children: text }) }, v)) }) }) })
+    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.Content, { className: "op-menu", "data-options": "", position: "popper", sideOffset: 4, children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.Viewport, { children: items.map(([v, text]) => /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.Item, { value: toSel(v), className: "op-item", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports7.ItemText, { children: text }) }, v)) }) }) })
   ] }) });
 }
 function Panel({ api }) {
@@ -31216,36 +31687,38 @@ function Panel({ api }) {
     setOpen(next);
     if (!next) api.onClose(changed.current);
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports4.Root, { open, onOpenChange: close, children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports4.Portal, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports4.Overlay, { className: "op-overlay" }),
-    /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports4.Content, { className: "op-panel", "data-options": "", "aria-describedby": void 0, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports4.Title, { className: "op-title", children: "Options" }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Row, { label: T("options.note.label"), line: T("options.note.line"), children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("button", { type: "button", className: "op-btn", id: "optionsNewNote", onClick: () => {
+  return /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports4.Root, { open, onOpenChange: close, children: /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports4.Portal, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports4.Overlay, { className: "op-overlay" }),
+    /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports4.Content, { className: "op-panel", "data-options": "", "aria-describedby": void 0, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports4.Title, { className: "op-title", children: "Options" }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label: T("options.note.label"), line: T("options.note.line"), children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("button", { type: "button", className: "op-btn", id: "optionsNewNote", onClick: () => {
         setOpen(false);
         api.notes.newNote();
       }, children: T("options.note.button") }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Toggle3, { label: "Playtest waits", line: "Short waits, so the whole loop fits in about an hour.", on: o2.playtest, set: set2("playtest") }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Toggle3, { label: "Developer tools", line: "Shows the tools button, the Station's panel and the Companion's Observer.", on: o2.dev, set: set2("dev") }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Pick, { label: "Companion", line: "Which Companion the page plays.", value: o2.companion, set: set2("companion"), items: [["A", "Companion A"], ["B", "Companion B"]] }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Pick, { label: "Name list", line: "Where new mibi names come from.", value: o2.names, set: set2("names"), items: [["", "The current list"], ...api.names.map((n2) => [n2, n2])] }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Pick, { label: "One place everywhere", line: "Every land cell of the Companion's map plays this hand-made place.", value: o2.place, set: set2("place"), items: [["", "Off"], ...api.places] }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(Row, { label: "Start fresh", line: "Erases the save in this browser and starts again. The options stay.", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports5.Root, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports5.Trigger, { className: "op-btn", id: "optionsFresh", children: "Start fresh" }),
-        /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports5.Portal, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports5.Overlay, { className: "op-overlay op-over2" }),
-          /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)(dist_exports5.Content, { className: "op-panel op-confirm", "data-options": "", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports5.Title, { className: "op-title", children: "Start fresh?" }),
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports5.Description, { className: "op-line", children: "This erases the save in this browser. It cannot be undone." }),
-            /* @__PURE__ */ (0, import_jsx_runtime20.jsxs)("div", { className: "op-actions", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports5.Cancel, { className: "op-btn", children: "Cancel" }),
-              /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "optionsFreshYes", onClick: () => api.onStartFresh(), children: "Start fresh" })
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Playtest waits", line: "Short waits, so the whole loop fits in about an hour.", on: o2.playtest, set: set2("playtest") }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Developer tools", line: "Shows the tools button, the Station's panel and the Companion's Observer.", on: o2.dev, set: set2("dev") }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Companion", line: "Which Companion the page plays.", value: o2.companion, set: set2("companion"), items: [["A", "Companion A"], ["B", "Companion B"]] }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Name list", line: "Where new mibi names come from.", value: o2.names, set: set2("names"), items: [["", "The current list"], ...api.names.map((n2) => [n2, n2])] }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "One place everywhere", line: "Every land cell of the Companion's map plays this hand-made place.", value: o2.place, set: set2("place"), items: [["", "Off"], ...api.places] }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label: "Start fresh", line: "Erases the save in this browser and starts again. The options stay.", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports5.Root, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Trigger, { className: "op-btn", id: "optionsFresh", children: "Start fresh" }),
+        /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports5.Portal, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Overlay, { className: "op-overlay op-over2" }),
+          /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports5.Content, { className: "op-panel op-confirm", "data-options": "", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Title, { className: "op-title", children: "Start fresh?" }),
+            /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Description, { className: "op-line", children: "This erases the save in this browser. It cannot be undone." }),
+            /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "op-actions", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Cancel, { className: "op-btn", children: "Cancel" }),
+              /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "optionsFreshYes", onClick: () => api.onStartFresh(), children: "Start fresh" })
             ] })
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "op-line", children: "Changes apply when you press Done; the page reloads. Developer tools applies at once." }),
-      api.about && api.about() ? /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "op-line", id: "optionsAbout", children: api.about() }) : null,
-      /* @__PURE__ */ (0, import_jsx_runtime20.jsx)("div", { className: "op-actions", children: /* @__PURE__ */ (0, import_jsx_runtime20.jsx)(dist_exports4.Close, { className: "op-btn", id: "optionsDone", children: "Done" }) })
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "op-actions op-foot", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "op-apply", id: "optionsApply", children: "Changes apply when you press Done; the page reloads. Developer tools applies at once." }),
+        /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports4.Close, { className: "op-btn", id: "optionsDone", children: "Done" })
+      ] }),
+      api.about && api.about() ? /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("div", { className: "op-about", id: "optionsAbout", children: api.about() }) : null
     ] })
   ] }) });
 }
@@ -31254,24 +31727,24 @@ function Panel({ api }) {
 var import_react9 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 var import_client = __toESM(require_client(), 1);
-var import_jsx_runtime21 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime23 = __toESM(require_jsx_runtime(), 1);
 var px = (v) => v + "px";
 var ARROW = { left: "M3 8l7-5v10z", up: "M8 3l5 7H3z", down: "M8 13L3 6h10z", right: "M13 8L6 3v10z" };
 var CALL = "M7 8a7 7 0 0 1 0 10M11.5 5a11 11 0 0 1 0 16M16 2.5a14.5 14.5 0 0 1 0 21";
 var ARM_OF = ["up", "left", "right", "down"];
 function Glyph({ def, w }) {
-  if (def.kind === "arm") return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("svg", { viewBox: "0 0 16 16", style: { "--g": px(Math.round(w * 0.4)) }, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("path", { d: ARROW[def.id] }) });
-  if (def.kind === "call") return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("svg", { viewBox: "0 0 26 26", style: { "--g": px(Math.round(w * 0.46)) }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("path", { d: CALL }),
-    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("circle", { cx: "4", cy: "13", r: "1.6", fill: "var(--mb-white)", stroke: "none" })
+  if (def.kind === "arm") return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("svg", { viewBox: "0 0 16 16", style: { "--g": px(Math.round(w * 0.4)) }, children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("path", { d: ARROW[def.id] }) });
+  if (def.kind === "call") return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("svg", { viewBox: "0 0 26 26", style: { "--g": px(Math.round(w * 0.46)) }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("path", { d: CALL }),
+    /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("circle", { cx: "4", cy: "13", r: "1.6", fill: "var(--mb-white)", stroke: "none" })
   ] });
-  if (def.kind === "back") return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "cap b", style: { "--g": px(Math.round(w / 2)) } });
-  if (def.kind === "confirm") return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "cap c", style: { "--g": px(Math.round(w / 2)) } });
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("img", { src: def.mark, alt: "", style: { "--g": "var(--mark, 24px)" } });
+  if (def.kind === "back") return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "cap b", style: { "--g": px(Math.round(w / 2)) } });
+  if (def.kind === "confirm") return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "cap c", style: { "--g": px(Math.round(w / 2)) } });
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("img", { src: def.mark, alt: "", style: { "--g": "var(--mark, 24px)" } });
 }
 function KeyButton({ def, box: box2, held, extra }) {
   const [x, y, w, h2] = box2;
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", tabIndex: -1, "aria-label": def.name, className: "fk " + def.cls + (held ? " dn" : ""), "data-id": def.id, style: { left: px(x), top: px(y), width: px(w), height: px(h2), pointerEvents: "none", ...extra }, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports3.Root, { label: def.name, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Glyph, { def, w }) }) });
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("button", { type: "button", tabIndex: -1, "aria-label": def.name, className: "fk " + def.cls + (held ? " dn" : ""), "data-id": def.id, style: { left: px(x), top: px(y), width: px(w), height: px(h2), pointerEvents: "none", ...extra }, children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports3.Root, { label: def.name, children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Glyph, { def, w }) }) });
 }
 function Key({ def, plan, snap, held, press, tips }) {
   const box2 = snap(plan.keys[def.id]), zone = snap(plan.zones[def.id]), down = (0, import_react9.useRef)(false);
@@ -31280,7 +31753,7 @@ function Key({ def, plan, snap, held, press, tips }) {
     down.current = false;
     press(def, false);
   };
-  const el = /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+  const el = /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
     "div",
     {
       className: "fkz " + (def.kind === "room" ? "sq" : "rd"),
@@ -31299,15 +31772,15 @@ function Key({ def, plan, snap, held, press, tips }) {
       onPointerCancel: up,
       onLostPointerCapture: up,
       onClick: (e2) => e2.preventDefault(),
-      children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(KeyButton, { def, box: [box2[0] - zone[0], box2[1] - zone[1], box2[2], box2[3]], held })
+      children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(KeyButton, { def, box: [box2[0] - zone[0], box2[1] - zone[1], box2[2], box2[3]], held })
     }
   );
   if (!tips) return el;
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports11.Root, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports11.Trigger, { asChild: true, children: el }),
-    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports11.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports11.Content, { className: "fk-tip", side: "top", sideOffset: 10, children: [
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(dist_exports13.Root, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Trigger, { asChild: true, children: el }),
+    /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Portal, { children: /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(dist_exports13.Content, { className: "fk-tip", side: "top", sideOffset: 10, children: [
       def.tip,
-      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports11.Arrow, { className: "fk-tip-arrow" })
+      /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Arrow, { className: "fk-tip-arrow" })
     ] }) })
   ] });
 }
@@ -31324,7 +31797,7 @@ function Pad({ defs, plan, snap, held, press, dirAt }) {
     return dirAt(e2.clientX - r2.left, e2.clientY - r2.top, [0, 0, r2.width, r2.height], plan.a);
   };
   const end = () => set2(null);
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(
     "div",
     {
       className: "fkpad",
@@ -31355,19 +31828,19 @@ function Tray({ cfg, st }) {
   const arms = ARM_OF.map((id) => byId[id]), others = defs.filter((d2) => d2.kind !== "arm");
   const a2 = plan.a, hub = snap([plan.hub[0], plan.hub[1], a2, a2]);
   const press = (def, on) => cfg.onKey(def, on);
-  const body = /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { role: "group", "aria-label": cfg.label, className: "fktray " + (cfg.dev === "station" ? "st" : "co"), style: { "--pk": px(snap([0, 0, a2, a2])[2]) }, children: [
-    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "hub", style: { left: px(hub[0]), top: px(hub[1]), width: px(hub[2]), height: px(hub[3]) } }),
-    arms.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(KeyButton, { def: d2, box: snap(plan.keys[d2.id]), held: !!held[d2.id] }, d2.id)),
-    /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Pad, { defs: byId, plan, snap, held, press, dirAt: cfg.padDir }),
-    others.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Key, { def: d2, plan, snap, held: !!held[d2.id], press, tips }, d2.id))
+  const body = /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { role: "group", "aria-label": cfg.label, className: "fktray " + (cfg.dev === "station" ? "st" : "co"), style: { "--pk": px(snap([0, 0, a2, a2])[2]) }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "hub", style: { left: px(hub[0]), top: px(hub[1]), width: px(hub[2]), height: px(hub[3]) } }),
+    arms.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(KeyButton, { def: d2, box: snap(plan.keys[d2.id]), held: !!held[d2.id] }, d2.id)),
+    /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Pad, { defs: byId, plan, snap, held, press, dirAt: cfg.padDir }),
+    others.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Key, { def: d2, plan, snap, held: !!held[d2.id], press, tips }, d2.id))
   ] });
-  return tips ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports11.Provider, { delayDuration: 500, skipDelayDuration: 200, children: body }) : body;
+  return tips ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Provider, { delayDuration: 500, skipDelayDuration: 200, children: body }) : body;
 }
 function mountKeyTray(host, cfg) {
   const root = (0, import_client.createRoot)(host);
   let st = { plan: null, snap: (b) => b, tips: false, held: {} };
   const render = () => {
-    if (st.plan) (0, import_react_dom2.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Tray, { cfg: view2, st })));
+    if (st.plan) (0, import_react_dom2.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Tray, { cfg: view2, st })));
   };
   const view2 = { ...cfg, onKey(def, on) {
     st = { ...st, held: { ...st.held, [def.id]: on } };
@@ -31381,8 +31854,8 @@ function mountKeyTray(host, cfg) {
 }
 function Dock({ s: s2, onPress }) {
   const mode = s2.mode, style = s2.box ? { left: px(s2.box[0]), top: px(s2.box[1]), width: px(s2.box[2]), height: px(s2.box[3]) } : void 0;
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(
-    dist_exports10.Root,
+  return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(
+    dist_exports12.Root,
     {
       id: "dockKey",
       className: "ctl" + (s2.box ? "" : " hidden") + (s2.docked ? " docked" : "") + (s2.lit ? " lit" : "") + (s2.quiet ? " quiet" : "") + (s2.pressed ? " pressed" : "") + (mode === "mark" ? " markonly" : ""),
@@ -31394,9 +31867,9 @@ function Dock({ s: s2, onPress }) {
       "aria-description": s2.disabled ? s2.title : void 0,
       style,
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("img", { className: "mark", id: "dockMark", src: s2.mark, alt: "" }),
-        mode === "mark" ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports2.Root, { id: "dockWord", children: s2.full }) : /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "word", id: "dockWord", children: mode === "full" ? s2.full : s2.short }),
-        mode === "full" && s2.hint ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("span", { className: "hint", id: "dockHint", children: "\u21E7D" }) : null
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("img", { className: "mark", id: "dockMark", src: s2.mark, alt: "" }),
+        mode === "mark" ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports2.Root, { id: "dockWord", children: s2.full }) : /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "word", id: "dockWord", children: mode === "full" ? s2.full : s2.short }),
+        mode === "full" && s2.hint ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "hint", id: "dockHint", children: "\u21E7D" }) : null
       ]
     }
   );
@@ -31404,22 +31877,138 @@ function Dock({ s: s2, onPress }) {
 function mountDockKey(host, cfg) {
   const root = (0, import_client.createRoot)(host);
   return { update(s2) {
-    (0, import_react_dom2.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime21.jsx)(Dock, { s: s2, onPress: cfg.onPress })));
+    (0, import_react_dom2.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Dock, { s: s2, onPress: cfg.onPress })));
   } };
 }
 
+// src/switch.jsx
+var import_react_dom3 = __toESM(require_react_dom(), 1);
+var import_client2 = __toESM(require_client(), 1);
+var import_jsx_runtime24 = __toESM(require_jsx_runtime(), 1);
+var px2 = (v) => v + "px";
+var NEWS_WORDS = "has news";
+function Switch3({ s: s2, onPick }) {
+  const box2 = s2.box, style = box2 ? { left: px2(box2[0]), top: px2(box2[1]), width: px2(box2[2]), height: px2(box2[3]) } : void 0;
+  const label = (dev) => dev === "station" ? s2.asleep ? "Station \xB7 asleep" : "Station" : "Companion";
+  return /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(dist_exports10.Root, { value: s2.value, onValueChange: (v) => onPick(v), activationMode: "automatic", className: "swtabs" + (box2 ? "" : " hidden"), style, children: /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(dist_exports10.List, { className: "swlist", "aria-label": "Device", children: ["companion", "station"].map((dev) => /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)(dist_exports10.Trigger, { value: dev, id: dev === "station" ? "tabStation" : "tabCompanion", className: "swtab" + (s2.value === dev ? " on" : ""), children: [
+    /* @__PURE__ */ (0, import_jsx_runtime24.jsx)("span", { className: "swword", children: label(dev) }),
+    s2.news && s2.news[dev] && s2.value !== dev ? /* @__PURE__ */ (0, import_jsx_runtime24.jsxs)(import_jsx_runtime24.Fragment, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime24.jsx)("span", { className: "swdot", "aria-hidden": "true" }),
+      /* @__PURE__ */ (0, import_jsx_runtime24.jsx)(dist_exports2.Root, { children: NEWS_WORDS })
+    ] }) : null
+  ] }, dev)) }) });
+}
+function mountSwitch(host, cfg) {
+  const root = (0, import_client2.createRoot)(host);
+  return { update(s2) {
+    (0, import_react_dom3.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime24.jsx)(Switch3, { s: s2, onPick: cfg.onPick })));
+  } };
+}
+
+// src/docksheet.jsx
+var import_react10 = __toESM(require_react(), 1);
+var import_react_dom4 = __toESM(require_react_dom(), 1);
+var import_client3 = __toESM(require_client(), 1);
+var import_jsx_runtime25 = __toESM(require_jsx_runtime(), 1);
+var px3 = (v) => v + "px";
+var NAME2 = "The dock's screen";
+var EP_W = 808;
+var EP_H = 288;
+function Lamp({ l: l2 }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("img", { className: "dslamp", alt: "", width: 8, height: 8, src: l2.src, "data-lamp": l2.colour || "off", style: { opacity: l2.opacity || void 0, filter: l2.filter || void 0 } });
+}
+function DockScreen({ api }) {
+  const [open, setOpen] = (0, import_react10.useState)(false), [s2, setS] = (0, import_react10.useState)(api.state), mini = (0, import_react10.useRef)(null), big = (0, import_react10.useRef)(null);
+  api.setS = setS;
+  api.openIt = (on = true) => setOpen(on);
+  api.paintTo = (src) => {
+    for (const cv of [mini.current, big.current]) if (cv && src) {
+      const g2 = cv.getContext("2d");
+      g2.imageSmoothingEnabled = true;
+      g2.drawImage(src, 0, 0, cv.width, cv.height);
+    }
+  };
+  const box2 = s2.box, style = box2 ? { left: px3(box2[0]), top: px3(box2[1]), width: px3(box2[2]), height: px3(box2[3]) } : void 0, laptop = s2.laptop;
+  const ew = Math.min(s2.sheetW || 358, 464), eh = Math.round(ew * EP_H / EP_W);
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(dist_exports4.Root, { open, onOpenChange: (v) => {
+    setOpen(v);
+    api.onOpenChange && api.onOpenChange(v);
+  }, children: [
+    /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(dist_exports4.Trigger, { id: "dockScreenBtn", className: "ctl" + (box2 ? "" : " hidden"), style, "aria-label": NAME2, title: NAME2, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("canvas", { ref: mini, width: 184, height: 66, className: "dsmini" }),
+      s2.hand ? /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "swdot dsdot", "aria-hidden": "true" }) : null
+    ] }),
+    /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(dist_exports4.Portal, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(dist_exports4.Overlay, { className: "ds-overlay" }),
+      /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)(dist_exports4.Content, { className: "ds-sheet" + (laptop ? " ds-laptop" : ""), "data-options": "", "aria-describedby": void 0, id: "dockSheet", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(dist_exports2.Root, { children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(dist_exports4.Title, { children: NAME2 }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("div", { className: "ds-grab", "aria-hidden": "true" }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("canvas", { ref: (el) => {
+          big.current = el;
+          if (el && api.last) api.paintTo(api.last);
+        }, width: ew * 2, height: eh * 2, className: "dsbig", style: { width: px3(ew), height: px3(eh) } }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("div", { className: "ds-lamps", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("span", { className: "ds-lamp", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Lamp, { l: s2.lampC }),
+            "Companion cradle"
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime25.jsxs)("span", { className: "ds-lamp", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(Lamp, { l: s2.lampS }),
+            "Station cradle"
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime25.jsx)(dist_exports4.Close, { className: "op-btn ds-done", id: "dockSheetDone", children: "Done" })
+      ] })
+    ] })
+  ] });
+}
+function mountDockScreen(host, cfg) {
+  const root = (0, import_client3.createRoot)(host);
+  let state = { box: null, hand: false, laptop: false, sheetW: 358, lampC: {}, lampS: {} }, last2 = null;
+  const api = { state, onOpenChange: (v) => {
+    open = v;
+    if (v) setTimeout(() => api.paintTo && api.paintTo(last2), 0);
+    cfg.onOpenChange && cfg.onOpenChange(v);
+  } };
+  let open = false;
+  (0, import_react_dom4.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime25.jsx)(DockScreen, { api })));
+  return {
+    update(next) {
+      state = { ...state, ...next };
+      api.state = state;
+      if (api.setS) (0, import_react_dom4.flushSync)(() => api.setS(state));
+      else (0, import_react_dom4.flushSync)(() => root.render(/* @__PURE__ */ (0, import_jsx_runtime25.jsx)(DockScreen, { api })));
+      if (last2) api.paintTo && api.paintTo(last2);
+    },
+    paint(src) {
+      last2 = src;
+      api.last = src;
+      api.paintTo && api.paintTo(src);
+    },
+    open() {
+      api.openIt && api.openIt(true);
+    },
+    close() {
+      api.openIt && api.openIt(false);
+    },
+    get isOpen() {
+      return open;
+    }
+  };
+}
+
 // src/panel.jsx
-var import_jsx_runtime22 = __toESM(require_jsx_runtime(), 1);
+var import_jsx_runtime26 = __toESM(require_jsx_runtime(), 1);
 function mountOptions(root, cfg) {
   const notes = createController(cfg.host), api = { ...cfg, notes, open: () => {
   } };
   const css = document.createElement("style");
   css.textContent = ReactCrop_default;
   document.head.appendChild(css);
-  (0, import_client2.createRoot)(root).render(/* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(import_jsx_runtime22.Fragment, { children: [
-    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Panel, { api }),
-    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(NoteDialog, { c: notes }),
-    /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(SectionDialog, { c: notes })
+  (0, import_client4.createRoot)(root).render(/* @__PURE__ */ (0, import_jsx_runtime26.jsxs)(import_jsx_runtime26.Fragment, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(Panel, { api }),
+    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(NoteDialog, { c: notes }),
+    /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(SectionDialog, { c: notes })
   ] }));
   cfg.trigger.addEventListener("click", () => {
     notes.hold();
@@ -31430,6 +32019,8 @@ function mountOptions(root, cfg) {
 export {
   T,
   mountDockKey,
+  mountDockScreen,
   mountKeyTray,
-  mountOptions
+  mountOptions,
+  mountSwitch
 };

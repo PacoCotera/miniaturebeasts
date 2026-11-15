@@ -6,7 +6,7 @@ import { AlertDialog, Dialog, Select, Switch } from "radix-ui";
 import { T } from "./note-ui.jsx";
 
 const NONE = "__none";   // Radix Select has no empty value: the setting's own default is this
-const toSel = (v) => (v === "" ? NONE : v), fromSel = (v) => (v === NONE ? "" : v);
+const toSel = (v) => (v === "" || v == null ? NONE : v), fromSel = (v) => (v === NONE ? "" : v);
 
 export function Row({ label, line, children }) {
   return (
@@ -73,9 +73,8 @@ export function Panel({ api }) {
               </AlertDialog.Portal>
             </AlertDialog.Root>
           </Row>
-          <div className="op-line">Changes apply when you press Done; the page reloads. Developer tools applies at once.</div>
-          {api.about && api.about() ? <div className="op-line" id="optionsAbout">{api.about()}</div> : null}
-          <div className="op-actions"><Dialog.Close className="op-btn" id="optionsDone">Done</Dialog.Close></div>
+          <div className="op-actions op-foot"><div className="op-apply" id="optionsApply">Changes apply when you press Done; the page reloads. Developer tools applies at once.</div><Dialog.Close className="op-btn" id="optionsDone">Done</Dialog.Close></div>
+          {api.about && api.about() ? <div className="op-about" id="optionsAbout">{api.about()}</div> : null}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

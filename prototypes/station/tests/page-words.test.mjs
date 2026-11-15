@@ -26,6 +26,8 @@ test("the Keys help and the dock controls use the player's words", () => {
   // the play page has one Dock / Lift key: its page words say "Dock the Companion", the shell says "Lift the Companion" in the same label and title once docked
   const shell = readFileSync(path.join(root, "play/src/shell.mjs"), "utf8");
   // the key is a Radix Toggle mounted into #dockRoot (options/src/keytray.jsx): its label and title are set by the shell's layoutDock
-  assert.ok(pl.includes('id="dockRoot"') && pl.includes('aria-label="The dock\'s screen"'));
+  // the dock's screen is a button and a Radix Dialog mounted into #dockScreenRoot (options/src/docksheet.jsx): its name and the dialog's title are the hidden words "The dock's screen"
+  const sheet = readFileSync(path.join(root, "play/options/src/docksheet.jsx"), "utf8");
+  assert.ok(pl.includes('id="dockRoot"') && pl.includes('id="dockScreenRoot"') && sheet.includes('const NAME = "The dock\'s screen"'));
   assert.ok(shell.includes('"Dock the Companion"') && shell.includes('"Lift the Companion"') && shell.includes("dockTitle()"));
 });
