@@ -1,6 +1,6 @@
-// The dock's screen (ui-play-layout-2): a small live picture of the dock's e-paper in a button (92 × 33), and a Radix Dialog that shows it whole: a bottom sheet with a scrim on a phone, the same dialog centred on a laptop,
+// The dock's screen (ui-play-layout-2): a plain paper card in a button (92 × 33; the e-paper is never shrunk into it), and a Radix Dialog that shows it whole: a bottom sheet with a scrim on a phone, the same dialog centred on a laptop,
 // with the two cradle lamps and their words, and Done. No visible caption: the e-paper's own lines say what it is; the dialog's title and the button's name are hidden text for a screen reader, in today's words "The dock's screen".
-// The shell draws the e-paper into its own canvas as before (faceTick) and hands each picture here (paint); the miniature and the sheet copy it with drawImage.
+// The shell draws the e-paper into its own canvas as before (faceTick) and hands each picture here (paint); the sheet copies it with drawImage (fitted to the sheet's width, smoothed: the e-paper is a UI display of a high-resolution panel and stays readable that way).
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
@@ -14,15 +14,15 @@ const EP_W = 808, EP_H = 288;
 function Lamp({ l }) { return <img className="dslamp" alt="" width={8} height={8} src={l.src} data-lamp={l.colour || "off"} style={{ opacity: l.opacity || undefined, filter: l.filter || undefined }} />; }
 
 function DockScreen({ api }) {
-  const [open, setOpen] = useState(false), [s, setS] = useState(api.state), mini = useRef(null), big = useRef(null);
+  const [open, setOpen] = useState(false), [s, setS] = useState(api.state), big = useRef(null);
   api.setS = setS; api.openIt = (on = true) => setOpen(on);
-  api.paintTo = (src) => { for (const cv of [mini.current, big.current]) if (cv && src) { const g = cv.getContext("2d"); g.imageSmoothingEnabled = true; g.drawImage(src, 0, 0, cv.width, cv.height); } };
+  api.paintTo = (src) => { for (const cv of [big.current]) if (cv && src) { const g = cv.getContext("2d"); g.imageSmoothingEnabled = true; g.drawImage(src, 0, 0, cv.width, cv.height); } };
   const box = s.box, style = box ? { left: px(box[0]), top: px(box[1]), width: px(box[2]), height: px(box[3]) } : undefined, laptop = s.laptop;
   const ew = Math.min(s.sheetW || 358, 464), eh = Math.round((ew * EP_H) / EP_W);
   return (
     <Dialog.Root open={open} onOpenChange={(v) => { setOpen(v); api.onOpenChange && api.onOpenChange(v); }}>
       <Dialog.Trigger id="dockScreenBtn" className={"ctl" + (box ? "" : " hidden")} style={style} aria-label={NAME} title={NAME}>
-        <canvas ref={mini} width={184} height={66} className="dsmini" />
+        <span className="dsmini" aria-hidden="true" />
         {s.hand ? <span className="swdot dsdot" aria-hidden="true" /> : null}
       </Dialog.Trigger>
       <Dialog.Portal>
