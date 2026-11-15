@@ -14,7 +14,7 @@ for (let Y = Y0; Y < Math.min(Y1, RH); Y++) for (let X = 0; X < RW; X++) {
     const c = R(x, y) * 8 + R(x + 1, y) * 4 + R(x, y + 1) * 2 + R(x + 1, y + 1); if (c === 6 || c === 9) note('pinch', x, y);
     if (lip(x, y)) for (const dx of [-1, 1]) { if (lip(x + dx, y) || !lip(x - dx, y)) continue; if (!R(x + dx, y) && !R(x + dx, y - 1) && !R(x + dx, y - 2)) note('square', x, y); }
     const v = R(x, y); let ok = false; for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) ok = R(x + ox, y + oy) === v && R(x + ox + 1, y + oy) === v && R(x + ox, y + oy + 1) === v && R(x + ox + 1, y + oy + 1) === v; if (!ok) note('sliver', x, y);
-    if (lip(x, y)) for (let k = 2; k <= fr + 1; k++) if (R(x, y + k)) { note('foot', x, y); break; }
+    if (lip(x, y)) for (let k = 2; k <= fr + 2; k++) if (R(x, y + k)) { note('foot', x, y); break; }
   }
 }
 console.log(JSON.stringify({ seed, Y0, Y1, cells, counts, at }));

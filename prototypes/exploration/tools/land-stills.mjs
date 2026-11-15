@@ -15,6 +15,20 @@ const levels = await imp('prototypes/exploration/src/gen7/levels.mjs'), place = 
 const ground = await imp('prototypes/places/src/ground.mjs'), idx = await imp('prototypes/places/src/indexed.mjs'), png = await imp('prototypes/places/src/png.mjs'), bakeBuild = await imp('prototypes/places/src/bake/build.mjs');
 const { windowIR, raisedAt, stairsInfo } = place, { bakeCtx, bakeIR } = render, { renderView, lightState } = ground, { indexedToRgba } = idx, { encodePng } = png, { paletteRgb } = bakeBuild;
 const { CW, CH } = levels;
+// land-b3f-foot-1: --pawn puts the explorer's map sprite (the game's own file, its colours taken to the set's nearest) on the foot row of the face in frame, and a tree (the game's tree prop) on clear low grass: sprites, no drawing
+const PAWN = args.includes('--pawn'), relief = await imp('prototypes/places/src/bake/relief.mjs'), blit = await imp('prototypes/places/src/blit.mjs');
+function pawnActor(ts, x48, y48, remap) {
+  const im = png.decodePng(readFileSync(path.join(ROOT, 'prototypes/exploration/art/props/pawn-down-0.png')));
+  const rgb = ts.palette.map((c) => [(c >> 16) & 255, (c >> 8) & 255, c & 255]), px = new Uint8Array(im.w * im.h);
+  for (let p = 0; p < px.length; p++) {
+    if (im.data[p * 4 + 3] < 128) continue;
+    let best = 0, bd = 1e9; const r = im.data[p * 4], g = im.data[p * 4 + 1], b = im.data[p * 4 + 2];
+    rgb.forEach((c, k) => { const d = (c[0] - r) ** 2 + (c[1] - g) ** 2 + (c[2] - b) ** 2; if (d < bd) { bd = d; best = k; } });
+    px[p] = 48 + best;
+  }
+  const rle = blit.encodeRle(px, im.w, im.h);
+  return { sortY: y48, x: x48, draw: (buf, win) => blit.blitRle(buf, win.w, win.h, x48 - (im.w >> 1) - win.x, y48 - im.h + 2 - win.y, rle, 0, im.w, im.h, remap) };
+}
 const over = Object.fromEntries(String(opt('set', '')).split(',').filter(Boolean).map((p) => { const [k, v] = p.split('='); return [k, Number(v)]; }));
 levels.setLandRule({ detail: D, faceRows: FACE, ...over });
 mkdirSync(OUT, { recursive: true });
@@ -25,19 +39,29 @@ const FW = 450, FH = 532, CORE = JSON.parse(readFileSync(path.join(ROOT, 'art/co
 function shoot(seed, wx, wy, name) {
   const X0 = Math.floor((wx - 10) / CW), Y0 = Math.floor((wy - 8) / CH), ir = windowIR(seed, X0, Y0, 2, 2), tx = wx - ir.origin.x, ty = wy - ir.origin.y;
   const win = { x: Math.max(0, Math.min(ir.w * 48 - FW, tx * 48 + 24 - FW / 2)), y: Math.max(0, Math.min(ir.h * 48 - FH, ty * 48 + 24 - FH / 2)), w: FW, h: FH };
-  let pl; try { pl = bakeIR(ir); } catch (e) { console.log('REFUSED', name, e.message); return null; }
+  // the pawn on the first walkable row under the face nearest the frame's middle (relief.mjs FOOT), the tree on clear grass in frame two or more tiles from it
+  let pawn = null, treeAt = null, irB = ir;
+  if (PAWN) {
+    const A = relief.landOf(ir, null), fx0 = Math.floor(win.x / 48), fy0 = Math.floor(win.y / 48), fx1 = Math.floor((win.x + FW - 1) / 48), fy1 = Math.floor((win.y + FH - 1) / 48);
+    let bd = 1e9; for (let y = fy0 + 1; y <= fy1 - 1; y++) for (let x = fx0 + 1; x <= fx1 - 1; x++) if (relief.partAt(A, x, y) === relief.PART.FOOT) { const d = Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; pawn = [x, y]; } }
+    if (!pawn) for (let y = ty; y <= fy1 - 1 && !pawn; y++) if (relief.partAt(A, tx, y) === relief.PART.LOW) pawn = [tx, y];
+    if (pawn) for (let r = 3; r < 12 && !treeAt; r++) for (let y = fy0 + 3; y <= fy1 - 1 && !treeAt; y++) for (let x = fx0 + 2; x <= fx1 - 2; x++) if (Math.abs(x - pawn[0]) + Math.abs(y - pawn[1]) >= r && ir.terrain[y * ir.w + x] === place.TV.GRASS && relief.partAt(A, x, y) === relief.PART.LOW && relief.extentClear(A, x, y, 'trees')) { treeAt = [x, y]; break; }
+    if (treeAt) irB = { ...ir, props: ir.props.concat([{ kind: 'tree-broad', x: treeAt[0] * 48 + 24, y: treeAt[1] * 48 + 40, sortY: treeAt[1] * 48 + 40, cx: treeAt[0], cy: treeAt[1] }]).sort((a, b) => a.sortY - b.sortY || a.x - b.x) };
+  }
+  let pl; try { pl = bakeIR(irB); } catch (e) { console.log('REFUSED', name, e.message); return null; }
   const ts = bakeCtx().sets.get(ir.tileset); let file = null;
   for (const [light, level] of BOTH ? [['day', 0], ['night', 2]] : [['day', 0]]) {
     const pal = paletteRgb(ts), lit = level ? lightState(pl, { level: new Uint8Array(pl.w * pl.h).fill(level) }) : null;
     CORE.forEach((e) => { pal.rgb[e.i] = [parseInt(e.hex.slice(1, 3), 16), parseInt(e.hex.slice(3, 5), 16), parseInt(e.hex.slice(5, 7), 16)]; });
-    const img = indexedToRgba(renderView(ts, pl, 48, win, lit ? { light: lit } : {}), win.w, win.h, pal);
+    const actors = pawn ? [pawnActor(ts, pawn[0] * 48 + 24, pawn[1] * 48 + 40, level ? ground.tablesOf(ts).dark2 : null)] : [];
+    const img = indexedToRgba(renderView(ts, pl, 48, win, { ...(lit ? { light: lit } : {}), ...(pawn ? { actors, pawns: [{ x: pawn[0] * 48 + 24, y: pawn[1] * 48 + 24 }] } : {}) }), win.w, win.h, pal);
     if (GRID) {   // a 1 px darker line on every cell border (cells are 48 px; the frame's offset is win.x, win.y)
       const dark = (x, y) => { const o = (y * img.w + x) * 4; for (let c = 0; c < 3; c++) img.data[o + c] = Math.floor(img.data[o + c] * 0.72); };
       for (let x = ((48 - (win.x % 48)) % 48); x < img.w; x += 48) for (let y = 0; y < img.h; y++) dark(x, y);
       for (let y = ((48 - (win.y % 48)) % 48); y < img.h; y += 48) for (let x = 0; x < img.w; x++) dark(x, y);
     }
     file = path.join(OUT, `${TAG}-s${seed}-${name}-${light}-1x.png`); writeFileSync(file, encodePng(img));
-    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tag: TAG, seed, world: [wx, wy], d: D, faceRows: FACE, ...over, zoom: 48, light, greybox: GRID, tree: ROOT, madeAt: new Date().toISOString() }, null, 1) + '\n');
+    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tag: TAG, seed, world: [wx, wy], d: D, faceRows: FACE, ...over, zoom: 48, light, greybox: GRID, pawn: pawn ? [ir.origin.x + pawn[0], ir.origin.y + pawn[1]] : null, treeAt: treeAt ? [ir.origin.x + treeAt[0], ir.origin.y + treeAt[1]] : null, tree: ROOT, madeAt: new Date().toISOString() }, null, 1) + '\n');
     console.log(file);
   }
   return file;

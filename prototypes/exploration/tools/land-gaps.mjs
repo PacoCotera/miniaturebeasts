@@ -12,8 +12,8 @@ for (const seed of SEEDS) {
   for (let j = 0; j < h / CH; j++) for (let i = 0; i < w / CW; i++) { const win = windowLevels(L, wv.X + i, wv.Y + j); for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) R[(j * CH + ty) * w + i * CW + tx] = win.R[(o * CH + ty) * win.W + o * CW + tx] > 0 ? 1 : 0; }
   const rs = (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : R[y * w + x] === 1), lw = (x, y) => !rs(x, y);
   const up = (x, y) => { let k = 0; while (k < 3 && lw(x, y - k)) k++; return k; };
-  const endAt = (x, y) => { if (!lw(x, y)) return false; for (let Lr = y + 2; Lr >= y - 1; Lr--) { if (!lw(x, Lr)) continue; for (const xl of [x - 1, x + 1]) { if (!rs(xl, Lr) || !lw(xl, Lr + 1)) continue; const k = up(x, Lr), top = k >= 3 ? Lr - 2 : k === 2 ? Lr - 1 : Lr; if (y >= top && y <= Lr + 1) return true; } } return false; };
-  const blocked = (x, y) => { if (rs(x, y)) return lw(x + 1, y) || lw(x - 1, y) || lw(x, y + 1) || lw(x, y - 1); if (rs(x, y - 1)) return true; return endAt(x, y) || rs(x - 1, y) || rs(x + 1, y); };
+  const endAt = (x, y) => { if (!lw(x, y)) return false; for (let Lr = y + 2; Lr >= y - 3; Lr--) { if (!lw(x, Lr)) continue; for (const xl of [x - 1, x + 1]) { if (!rs(xl, Lr) || !lw(xl, Lr + 1)) continue; const k = up(x, Lr), top = k >= 3 ? Lr - 2 : k === 2 ? Lr - 1 : Lr; if (y >= top && y <= Lr + 3) return true; } } return false; };
+  const blocked = (x, y) => { if (rs(x, y)) return lw(x + 1, y) || lw(x - 1, y) || lw(x, y + 1) || lw(x, y - 1); if (rs(x, y - 1) || rs(x, y - 2) || rs(x, y - 3)) return true; return endAt(x, y) || rs(x - 1, y) || rs(x + 1, y); };
   const gaps = [];
   for (let y = 4; y < h - 4; y++) for (let x = 4; x < w - 4; x++) { if (blocked(x, y)) continue; if ((blocked(x - 1, y) && blocked(x + 1, y)) || (blocked(x, y - 1) && blocked(x, y + 1))) gaps.push(`${wv.X * CW + x},${wv.Y * CH + y}`); }
   all += gaps.length;

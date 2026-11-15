@@ -125,13 +125,13 @@ export function placeProps(seed) {
         }
       }
     }
-    // P4 no diagonal pinch, P5 no lone one-tile face, P6 foot room (faceRows + 1 low rows under every south lip), on the region's stitched raster (the stitched edge is left out)
+    // P4 no diagonal pinch, P5 no lone one-tile face, P6 foot room (faceRows + 2 low rows under every south lip: the rock rows, the foot row and one more), on the region's stitched raster (the stitched edge is left out)
     { const FR = landRule().faceRows, lipAt = (x, y) => isC(x, y) && !isC(x, y + 1);
       for (let y = 1; y < SH - 2; y++) for (let x = 1; x < SW - 1; x++) {
         const a = isC(x, y), b = isC(x + 1, y), c2 = isC(x, y + 1), d = isC(x + 1, y + 1); if (a === d && b === c2 && a !== b) st.pinch++;
         if (!lipAt(x, y)) continue;
         if (!lipAt(x - 1, y) && !lipAt(x + 1, y) && !(lipAt(x - 1, y - 1) || lipAt(x + 1, y - 1) || lipAt(x - 1, y + 1) || lipAt(x + 1, y + 1))) st.loneFace++;
-        if (y + FR + 1 < SH) for (let k = 1; k <= FR + 1; k++) if (isC(x, y + k)) { st.footShort++; (st.footAt || (st.footAt = [])).push([ax, ay, x, y, k]); break; } } }
+        if (y + FR + 2 < SH) for (let k = 1; k <= FR + 2; k++) if (isC(x, y + k)) { st.footShort++; (st.footAt || (st.footAt = [])).push([ax, ay, x, y, k]); break; } } }
     // nothing narrow: a cliff tile that sits in no 4 x 4 block of raised land (a spike, a ridge, a spur); tiles within 4 of the stitched edge are left out
     for (let y = 4; y < SH - 4; y++) for (let x = 4; x < SW - 4; x++) {
       if (!isC(x, y)) continue; let ok = false;
