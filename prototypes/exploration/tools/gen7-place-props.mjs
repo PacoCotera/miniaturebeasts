@@ -44,7 +44,7 @@ export function placeProps(seed) {
       for (const a of c.wayups) if (!wayups.some(b => b.x === a.x && b.y === a.y)) wayups.push({ x: a.x - cx0 * CW, y: a.y - cy0 * CH, w: a.w, h: a.h });
       // no 2 x 2 block breaks the pair table: at most three terrains, every two a pair of the set (over the cell and its apron)
       for (let y = 0; y + 1 < h; y++) for (let x = 0; x + 1 < w; x++) {
-        if (!blockOk([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]])) st.pairBreaks++;
+        if (!blockOk([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]]) && !c.wayups.some(a => c.x0 + x >= a.x - 1 && c.x0 + x <= a.x + a.w && c.y0 + y >= a.y - 1 && c.y0 + y <= a.y + a.h + 1)) st.pairBreaks++;   // the cut of a way up is drawn as path: the path meets it and the cliff beside it
       }
       // every tile of the cell sits in a 2 x 2 block of its own terrain
       for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
