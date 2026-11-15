@@ -33,7 +33,7 @@ function Top({ d, stale }) {
         ${lead && html`<span class=${"dot " + lead.status}></span>Lead is ${lead.status === "busy" ? "working" : lead.status === "idle" ? "waiting" : "off"}`}
         ${c && html` · ${Math.round(c.tokens / 1000)}k of ${Math.round(c.drain / 1000)}k memory used`}
       </div>
-      ${stale && html`<div class="stale">No update for ${dur(stale)}; showing the last one.</div>`}
+      ${stale > 0 && html`<div class="stale">No update for ${dur(stale)}; showing the last one.</div>`}
     </div>
     ${d.drain && html`<div class="banner"><b>Drain mode: no new jobs start.</b>${d.drain.reason}</div>`}`;
 }
@@ -47,7 +47,7 @@ function Accounts({ d }) {
         return html`<div class="card">
           <div class="row"><span class="name">${a.label}</span><span class="dim">${pct(a.used_pct)} of the week used</span></div>
           <${Bar} value=${a.used_pct} mark=${a.line_pct} kind=${kind} tall=${true} />
-          <div class="dim small">Today's line (white tick) is ${pct(a.line_pct)}. ${a.bar === "any job may start" ? "Any job may start." : a.bar}</div>
+          <div class="dim small">Today's line (the tick) is ${pct(a.line_pct)}. ${a.bar === "any job may start" ? "Any job may start." : a.bar}</div>
           <div class="dim small">${a.who}</div>
           <div class="dim small">Week resets ${a.resets}. Read ${a.reading_at}.</div>
         </div>`;
@@ -74,7 +74,7 @@ function Slots({ d }) {
           <div class="row"><span class="name">${DESK[s.desk] || s.desk} ${ROLE[s.role] || s.role}</span><span class="dim small">${dur(s.running_s)}</span></div>
           <div class="what">${s.what}</div>
           <${Bar} value=${(100 * s.running_s) / scale} mark=${s.typical_s ? (100 * s.typical_s) / scale : null} kind=${kind} />
-          <div class="dim small">${s.typical_s ? "Usually about " + dur(s.typical_s) + " (white tick)" : "No usual time yet for this kind of job"}</div>
+          <div class="dim small">${s.typical_s ? "Usually about " + dur(s.typical_s) + " (the tick)" : "No usual time yet for this kind of job"}</div>
           <div class="chips" style="margin-top:6px">
             ${s.model && html`<span class="chip a">${s.model}${s.effort ? " " + s.effort : ""}</span>`}
             <span class="chip">${s.account === "MB_A" ? "Jobs account" : "Lead account"}</span>
