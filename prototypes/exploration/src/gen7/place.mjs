@@ -438,7 +438,9 @@ function windowOf(S, X, Y) {
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let hard = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H, hardT = hard, soft = 0; for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.CLIFF) { hard = true; hardT = true; } else if (v === TV.THICKET) hard = true; if (v !== TV.GRASS) soft = 1; } blocked[y * W + x] = hard ? 1 : 0; blockedT[y * W + x] = hardT ? 1 : 0; rough[y * W + x] = soft;
     let hardB = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H; for (let dy = 0; dy <= 1; dy++) for (let dx = 0; dx <= 1; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.DEEP || v === TV.CLIFF) hardB = true; } blockedB[y * W + x] = hardB ? 1 : 0;
     let hardC = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H; for (let dy = 0; dy <= 1; dy++) for (let dx = 0; dx <= 1; dx++) if (t[(y + dy) * W + x + dx] === TV.CLIFF) hardC = true; blockedC[y * W + x] = hardC ? 1 : 0; }
-  const paint = (x, y, clear) => { const R0 = 3; /* a lane of grass 3 tiles each side */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
+  const fordMemo = new Map(), fordAt = (gx, gy) => { const cx = (gx / CW) | 0, cy = (gy / CH) | 0, key = cx * 1000 + cy; let r = fordMemo.get(key); if (r === undefined) { const G = S.R.regions[((cy / MH) | 0) * ATLAS + ((cx / MW) | 0)], c = (cy % MH) * MW + (cx % MW); r = !!(G && G.ford[c]); fordMemo.set(key, r); } return r; };
+  // a ford is walkable shallow ground: the brush laid on the water of a ford cell is grass (water meets grass), so the trail's two ends are joined across it
+  const paint = (x, y, clear) => { const R0 = 3; /* a lane of grass 3 tiles each side */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v === TV.WATER && fordAt(gx0 + X2, gy0 + Y2)) t[k] = TV.GRASS; else if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
   const stairBy = new Map(); for (const st of stairsOf(S)) stairBy.set(st.A[0] * 1000 + st.A[1] + (st.south ? 's' : 'e'), st);
   const blockedAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blockedT[y * W + x] === 1; };
   const walkOnlyAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = ground[y * W + x]; return v === TV.WATER || v === TV.DEEP || v === TV.CLIFF || v === TV.THICKET; };   // the ground as it was before any trail was laid, so the port is the same from every window
@@ -453,9 +455,13 @@ function windowOf(S, X, Y) {
         const base = portAt(S.seed, Math.min(cur[0], o[0]), Math.min(cur[1], o[1]), o[0] === cur[0]), pt0 = portTiles(S, cur, o, 0);
         // slide along the whole edge (+1, -1, +2, ...) to the first pair of tiles open on both sides (the same test from either place); else to the first pair that only walks (no water, thicket or raised land)
         // (the walking test holds the brush's whole 2 x 2 on both sides: the pair of the port and the pair one tile along the edge)
-        const free = (open, s) => !portTiles(S, cur, o, s).concat(open === walkOnlyAt ? [-1, 1, 2].flatMap(k => portTiles(S, cur, o, s + k)) : []).some(p => open(p[0], p[1]));
-        for (const open of [blockedAt, walkOnlyAt]) { if (free(open, 0)) return pt0[0];
-          for (let d = 1; d < len; d++) for (const s of [d, -d]) { if (base + s < 2 || base + s > len - 4) continue; if (free(open, s)) return portTiles(S, cur, o, s)[0]; } }
+        // the brush of a port reaches one tile into the south or east cell (it is laid from the north or west tile of the pair), so the tile beyond the pair counts too
+        const across = cur[0] === o[0] ? 1 : 0, pairAt = s => { const [p, q] = portTiles(S, cur, o, s), far = p[across] > q[across] ? p : q; return [p, q, far.map((v, i) => (i === across ? v + 1 : v))]; };
+        const tilesOf = (mode, s) => mode === 0 ? portTiles(S, cur, o, s) : mode === 1 ? [0, -1, 1, 2].flatMap(k => pairAt(s + k)) : mode === 2 ? [0, 1].flatMap(k => pairAt(s + k)) : portTiles(S, cur, o, s);
+        const free = (mode, s) => !tilesOf(mode, s).some(p => (mode === 0 ? blockedAt : walkOnlyAt)(p[0], p[1]));
+        // modes: 0 open on both sides; 1 walks, with the brush's margin; 2 walks under the brush alone (a narrow neck); 3 one row walks (a pinch: the trail is one tile wide there and only there)
+        for (let mode = 0; mode < 4; mode++) { if (free(mode, 0)) return pt0[0];
+          for (let d = 1; d < len; d++) for (const s of [d, -d]) { if (mode < 3 && (base + s < 2 || base + s > len - 4)) continue; if (base + s < 0 || base + s > len - 1) continue; if (free(mode, s)) return portTiles(S, cur, o, s)[0]; } }
         return pt0[0];
       }
       if (lc > lo) return null;   // a stair, and this is its high side
@@ -489,6 +495,19 @@ function windowOf(S, X, Y) {
     for (const a of anchors) paint(ox + lx(a), oy + ly(a), true);   // the port's own 2 x 2 of path is always laid, so a neighbour that cannot route past a pinch still meets the trail at the shared tile
     if (junction) for (const a of anchors) routeTo(a, junction);
     else if (!routeTo(anchors[0], anchors[1])) { const j = nearOpen(hub); for (const a of anchors) routeTo(a, j); }
+    // a way up's foot can lie in the higher cell's own rows (the lip is low in that cell): the trail runs from the cell's entry tile (the clamped anchor) up to the foot, over the window
+    const routeBox = (ax, ay, bx, by) => {   // window tiles
+      const x0 = clamp(Math.min(ax, bx) - 4, 1, W - 3), y0 = clamp(Math.min(ay, by) - 4, 1, H - 3), x1 = clamp(Math.max(ax, bx) + 5, 3, W - 1), y1 = clamp(Math.max(ay, by) + 5, 3, H - 1), bw = x1 - x0, bh = y1 - y0;
+      const from = (ay - y0) * bw + ax - x0, to = (by - y0) * bw + bx - x0;
+      for (const tier of [0, 1, 2]) {
+        const clear = tier > 0, bl = tier === 2 ? blockedB : clear ? blockedT : blocked;
+        const cost = (c, n) => { const w = (y0 + ((n / bw) | 0)) * W + x0 + n % bw; return bl[w] && n !== to ? null : 1 + 0.7 * (0.5 + 0.5 * S.nP(gx0 + w % W, gy0 + ((w / W) | 0))) + 3 * rough[w] + (clear && blocked[w] ? 4 : 0); };
+        const r = route(bw, bh, from, to, cost);
+        if (r) { for (const c of r) paint(x0 + c % bw, y0 + ((c / bw) | 0), clear); return true; }
+      }
+      return false;
+    };
+    for (const a of anchors) { const fx = a[0] - gx0, fy = a[1] - gy0; if (a[0] >= cx * CW && a[0] < cx * CW + CW && a[1] >= cy * CH && a[1] < cy * CH + CH) continue; if (fx < 1 || fy < 1 || fx >= W - 3 || fy >= H - 3) continue; paint(fx, fy, true); routeBox(fx, fy, ox + lx(a), oy + ly(a)); }
   }
   // the set's pairs are all opaque (Rule 1.2-1.3): every 2 x 2 block holds at most two terrains and they must be a pair; the lesser gives way to grass. The 2 x 2 rule alternates
   // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge. The gates (openGates) are cut once the land has settled, and it settles again round them.
