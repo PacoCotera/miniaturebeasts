@@ -7,7 +7,7 @@ import { realm7, featureInput } from '../src/gen7/region.mjs';
 import { realmFeatures, P } from '../src/gen7/features.mjs';
 
 const SEEDS = [1, 7, 13];
-const BAND = { river: [10, 25], lake: [2, 14], pond: [25, 50], stream: [50, 72], falls: [5, 17], ravine: [20, 36], 'through-ravine': [12, 20], range: [5, 15], pass: [5, 21], escarpment: [40, 62] };
+const BAND = { river: [10, 25], lake: [2, 14], pond: [25, 50], stream: [50, 80], falls: [5, 17], ravine: [20, 36], 'through-ravine': [12, 20], range: [5, 18], pass: [5, 36], escarpment: [40, 62] };
 
 test('cutting is off: the features are found and the land is not touched', () => { assert.equal(P.CUT, 0); });
 
