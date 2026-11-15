@@ -67,8 +67,16 @@ test('steep runs (rule 6): 3+ steps of 1 column over that average more than 1.25
   // the seed 7 k2 site: drops 1 1 2 1 (4 steps, 5 rows), going down to the east, the wall running on south
   const s = run(draw([2, 3, 4, 6, 7]));
   assert.deepEqual(s.missing, []);
-  assert.deepEqual([1, 2, 3, 4, 5].map((x) => at(s.items, x, [2, 3, 4, 6, 7][x - 1]).filter((id) => /^steep-/.test(id))[0]), ['steep-r-1', 'steep-r-1', 'steep-r-2', 'steep-r-1', 'steep-r-end']);
-  assert.ok(!s.items.some((it) => /^(end|convex|concave|dr|dl)-/.test(it.id) && it.x > 0 && it.x < 6 && it.y < 14), 'no cap, concave or diagonal piece inside the run');
+  assert.deepEqual([1, 2, 3, 4].map((x) => at(s.items, x, [2, 3, 4, 6][x - 1]).filter((id) => /^steep-/.test(id))[0]), ['steep-r-1', 'steep-r-1', 'steep-r-2', 'steep-r-1']);
+  // the run's last column meets the wall of the land running on south: it ends as a concave corner (GD fix-2 (3)), and the wall below it goes on as a band, never a new head (no lone end piece)
+  assert.deepEqual(at(s.items, 5, 7).filter((id) => /^(steep|concave)-/.test(id)), ['concave-e']);
+  assert.ok(!s.items.some((it) => it.id === 'steep-r-end'));
+  assert.ok(!s.items.some((it) => it.id === 'wall-w-head' && it.x === 5 && it.y > 7), 'the wall under the corner is a band');
+  // the last column meets the next face (a front run on its lip row, the land not running on): the steep wall's own end piece
+  const f = run(Array.from({ length: 16 }, (_, y) => '.' + [2, 3, 4, 6, 7].map((l) => (y <= l ? '1' : '.')).join('') + (y <= 7 ? '1111' : '....')));
+  assert.deepEqual(f.missing, []);
+  assert.deepEqual(at(f.items, 5, 7).filter((id) => /^steep-/.test(id)), ['steep-r-end']);
+  assert.ok(!s.items.some((it) => /^(end|convex|concave|dr|dl)-/.test(it.id) && it.x > 0 && it.x < 5 && it.y < 14), 'no cap, concave or diagonal piece inside the run');
   // down to the west, drops 2 3 1 2
   const w = run(draw([1, 3, 6, 7, 9], 15).map((r) => [...r].reverse().join('')));
   assert.deepEqual(w.missing, []);

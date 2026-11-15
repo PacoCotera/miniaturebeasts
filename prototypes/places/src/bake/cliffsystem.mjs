@@ -110,7 +110,9 @@ export function placeBoundary(A, o) {
     const westEnd = !lip(x - 1, y), eastEnd = !lip(x + 1, y);
     const concaveW = westEnd && R(x - 1, y) && R(x - 1, y + 1) && !lip(x - 1, y + 1), concaveE = eastEnd && R(x + 1, y) && R(x + 1, y + 1) && !lip(x + 1, y + 1);
     let id;
-    if (steep) id = `steep-${steep.hand}-${steep.i < steep.n ? Math.min(3, steep.ds[steep.i]) : 'end'}`;
+    // a steep run's last column that meets the wall of the land running on (a concave corner) ends as the concave corner does (GD 11-15 fix-2 (3)): no end piece of its own, the wall goes on down the land's flank
+    if (steep && steep.i >= steep.n && (steep.hand === 'r' ? concaveE : concaveW)) id = steep.hand === 'r' ? 'concave-e' : 'concave-w';
+    else if (steep) id = `steep-${steep.hand}-${steep.i < steep.n ? Math.min(3, steep.ds[steep.i]) : 'end'}`;
     else if (dr) id = `dr-${dr}`; else if (dl) id = `dl-${dl}`;
     else if (concaveE) id = 'concave-e'; else if (concaveW) id = 'concave-w';
     else id = pick ? pick(x, y) || middleOf(key, wx0 + x, wy0 + y, level).id : middleOf(key, wx0 + x, wy0 + y, level).id;
@@ -137,7 +139,9 @@ export function placeBoundary(A, o) {
   const wallHand = (x, y) => (drawn.has(ck(x, y)) || partAt(A, x, y) !== PART.FLANK ? null : R(x - 1, y) && !R(x + 1, y) ? 'e' : R(x + 1, y) && !R(x - 1, y) ? 'w' : null);
   for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) {
     const h = wallHand(x, y); if (!h) continue;
-    const north = wallHand(x, y - 1) === h, south = wallHand(x, y + 1) === h;
+    // the wall goes on from the cell above when that one is also a flank or face cell of the same wall (a concave corner's, or a steep run's end): it is a band, never a new head (GD 11-15 fix-2 (3): no lone end piece)
+    const sameWall = (xx, yy) => { const p = partAt(A, xx, yy); return (p === PART.FLANK || p === PART.FACE) && (h === 'e' ? R(xx - 1, yy) : R(xx + 1, yy)) && !R(xx, yy); };
+    const north = wallHand(x, y - 1) === h || sameWall(x, y - 1), south = wallHand(x, y + 1) === h;
     emit(`wall-${h}-${!north ? 'head' : !south ? 'tail' : 'band'}`, x, y);
   }
   if (tops) for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) if (R(x, y)) items.push({ id: 'top', x, y, box: [0, 0, ART, ART], line: -1e6, cls: 0, level });

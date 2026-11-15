@@ -1,5 +1,5 @@
 {
-  "legend": "Greybox only: the brick joints (the vertical cracks in the rock) are schematic: the paint must not inherit masonry. The foot line: the pawn stands on the foot row (L+4, the face's row 4) in front of the contact shade and is never drawn on rock; faces cover rows 0-4, draw line 3 (rows below the lip row) so the pawn at row 4 draws over them. Day top = the ground one ramp step up (the measured meadow ground #74a65d -> #82b266); the lit band (2-3 px, #a8d082, or #cde38a beside a low ground that #a8d082 would not clear by 25 luma) runs along fronts and backs only, never along a side wall; night by lighttables NIGHT_TOP (band #2f5233). Side walls fill 14 of the flank tile's 16 px (two planes and a 2 px drop shade), come down flush to the lip corner and never stand proud of the top. A steep run (3+ one-column steps averaging over 1.25 rows) is one wall at an angle: its crease runs the slope, its foot is the next column's foot row.",
+  "legend": "Greybox only: the brick joints (the vertical cracks in the rock) are schematic: the paint must not inherit masonry. The foot line: the pawn stands on the foot row (L+4, the face's row 4) in front of the contact shade and is never drawn on rock; faces cover rows 0-4, draw line 3 (rows below the lip row) so the pawn at row 4 draws over them. Day top = the ground one ramp step up (the measured meadow ground #74a65d -> #82b266); the lit band (2-3 px, its own meadow band #a9d082, or its own light-ground band #cee38a beside a low ground that #a9d082 would not clear by 25 luma) runs along fronts and backs only, never along a side wall, and never inside a side wall's lip; night by lighttables NIGHT_TOP (bands #2f5233 and #54773b). Side walls fill 14 of the flank tile's 16 px (two planes and a 2 px drop shade), come down flush to the lip corner and never stand proud of the top. A steep run (3+ one-column steps averaging over 1.25 rows) is one wall at an angle: its crease runs the slope, its foot is the next column's foot row.",
   "description": "The cliff system's piece table (pixel desk spec boards/pixel-spec/cliff-system.md; the game designer's rules boards/gdd/cliff-rules.md). One set for every level boundary. Each piece: its id, family, the case it serves (part, hand, k), its box in art px relative to the top-left of its anchor cell (x, y, w, h; 16 art px a cell, drawn at 3x), the cells it accounts for (relative to the anchor), its draw line (rows below the anchor row; the pieces sort by foot line, then class, then west to east) and the template zone it is painted in. Level 2 is level 1 through the one-step-paler map below (data, not paint). Picked by prototypes/places/src/bake/cliffsystem.mjs, which reads relief.mjs's parts.",
   "cell": 16,
   "scale": 3,
@@ -14,8 +14,8 @@
     "sand": { "terrain": "sand", "ground": "#e7cd86", "top": "#eecf9b", "night": null }
   },
   "band": {
-    "note": "The top's lit band runs along fronts and backs only, never along a side wall (AD). Its colour is the top's ramp's lightest, #a8d082, which clears the meadow ground by 44 luma; beside a low ground more than 162 luma (a8d082 is 187) the band would clear it by under 25, so those fronts and backs take the lighter band #cde38a (210). groundLuma: the day luma of the measured fill of each terrain value.",
-    "clear": 25, "own": "#a8d082", "hi": "#cde38a", "ownLuma": 187,
+    "note": "The top's lit band runs along fronts and backs only, never along a side wall (AD). It has two colours of its own, used by nothing else in the set (added to the set's palette through recipe.json paletteWiden; AD night ruling 2026-11-15): the meadow band #a9d082 (a day twin of the ramp's lightest #a8d082, 1 per channel), which clears the meadow ground by 44 luma, and the light-ground band #cee38a (a day twin of #cde38a), taken beside a low ground more than 162 luma (the band's 187 would clear it by under 25). By night lighttables NIGHT_TOP maps them: #a9d082 -> #2f5233, #cee38a -> #54773b; #a8d082 and #cde38a keep their own night entries (signed live art). groundLuma: the day luma of the measured fill of each terrain value.",
+    "clear": 25, "own": "#a9d082", "hi": "#cee38a", "ownLuma": 187,
     "groundLuma": { "3": 205, "4": 123, "5": 179, "6": 143, "7": 154, "10": 145, "11": 89, "12": 179, "13": 178, "14": 146 }
   },
   "pick": { "letters": "ABCDEF", "sets": 3, "rule": "s = hash(face world row, level) mod 6; t = world tile_x + s; letter = t mod 6; block = floor(t / 6); set = hash(block, face world row, level) mod 3" },
@@ -24,7 +24,7 @@
       "#474d55": "#6c7682", "#6c7682": "#8497a5", "#8497a5": "#9eadb9", "#9eadb9": "#acbfc5",
       "#52753a": "#5e9357", "#aac46e": "#cde38a",
       "#28432d": "#36603a", "#36603a": "#4a814e", "#4a814e": "#5e9357", "#5e9357": "#74a65d",
-      "#82b266": "#8cba68", "#a8d082": "#cde38a", "#74a65d": "#82b266"
+      "#82b266": "#8cba68", "#a9d082": "#cee38a", "#74a65d": "#82b266"
     }
   },
   "families": {
