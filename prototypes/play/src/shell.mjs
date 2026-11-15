@@ -102,7 +102,7 @@ const shells = { station: shS, companion: shC };
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
 const asleepStrip = $("asleepStrip"), asleepBar = $("asleepBar"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), optionsBtn = $("optionsBtn");
 // the Dock key: a Radix Toggle (options/src/keytray.jsx), its look and words set by layoutDock from this state
-const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: "../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true };
+const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: "../ui/assets/masters/pods/frame-companion-solid-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true };
 const dockUi = mountDockKey($("dockRoot"), { onPress: () => { dockPress(); giveKeysBack(); } }); dockUi.update(dockState);
 const dockKey = $("dockKey");
 // the device switch (Radix Tabs): Companion, then Station, in that order always
@@ -196,7 +196,7 @@ function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
   if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; if (dockNeed(full, false) > box[2]) mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis
-  Object.assign(dockState, { box: box ? snapBox(box) : null, docked: d, lit: crates, quiet: !d && !crates, pressed: pressed || c.pending, disabled: !c.canDock, label, title, mark: "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png", mode, full, short, hint });
+  Object.assign(dockState, { box: box ? snapBox(box) : null, docked: d, lit: crates, quiet: !d && !crates, pressed: pressed || c.pending, disabled: !c.canDock, label, title, mark: "../ui/assets/masters/pods/frame-companion-solid-16x24.png", mode, full, short, hint });
   dockUi.update(dockState);
 }
 // the width the Dock key's long words need (14 px Inter, its mark, the padding and the ⇧D hint)
