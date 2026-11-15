@@ -92,6 +92,8 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const land7 = { raised: (x, y) => T(x, y) === CLIFF, low: (x, y) => T(x, y) !== CLIFF, way: (x, y) => wayCell.has(key(x, y)), inside: inMap, memo: new Map() };
   const isLip = (x, y) => { const p = partAt(land7, x, y); return p === PART.RING || p === PART.FACE; };
   const isFlank = (x, y) => partAt(land7, x, y) === PART.FLANK;
+  // the foot rows under a face (two or three rows below the lip row): the face picture is drawn down over them, so nothing is laid there (vertical rock grows nothing). Not part of `flags`, which the Hollow Tree's clearing reads.
+  const isFoot = (x, y) => partAt(land7, x, y) === PART.FOOT;
   const flags = (x, y) => {
     if (!inMap(x, y)) return 1;
     const k = key(x, y), hit = cls.get(k); if (hit !== undefined) return hit;
@@ -187,7 +189,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // what a place holds (places.mjs): the scenery keeps off the set pieces and the paths. maskAt: 0 free, 1 nothing tall (trees, bushes, tall grass), 2 nothing at all (a spot and the tile round it, the spine)
   const maskAt = land.mask || (() => 0);
   const stands = (fi, x, y, useMask = true) => {
-    if (!inMap(x, y)) return false;
+    if (!inMap(x, y) || isFoot(x, y)) return false;
     if (useMask) { const mk = maskAt(x, y); if (mk === 2 || (mk === 1 && (fi === 0 || fi === 3 || fi === 4))) return false; }
     const t = G(x, y);
     if (fi === 4) return OPEN(t) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
@@ -291,7 +293,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   // of per-tile hashes (a greedy maximal choice, never an even lattice, a checkerboard at most), the answer a function of the world alone. A patch with no eligible tile (1 or 2 cells across) takes one shrub
   // on its lowest-hash tile.
   const SIDE4 = [[1, 0], [-1, 0], [0, 1], [0, -1]], shrubMemo = new Map(), patchMemo = new Map();
-  const shrubCand = (x, y) => inMap(x, y) && G(x, y) === SCRUB && plain(x, y) && maskAt(x, y) < 2;
+  const shrubCand = (x, y) => inMap(x, y) && G(x, y) === SCRUB && plain(x, y) && !isFoot(x, y) && maskAt(x, y) < 2;
   const prio = (x, y) => U(seed, TAG.SHRUB + 1, x, y);
   const before = (a, b, x, y) => { const v = prio(a, b), u = prio(x, y); return v < u || (v === u && (b < y || (b === y && a < x))); };
   const bigShrub = (x, y) => {   // an eligible tile: taken when no side neighbour that comes before it in the order is taken
@@ -338,7 +340,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     const k = key(x, y), hit = gCand.get(k); if (hit !== undefined) return hit;
     let r = null;
     const GR = inMap(x, y) ? GD[GROUND_OF[G(x, y)]] : null;
-    if (GR && GR.entries.length && plain(x, y) && !wayZone.has(k) && !hollowNear(x, y, false) && maskAt(x, y) < 2) {
+    if (GR && GR.entries.length && plain(x, y) && !isFoot(x, y) && !wayZone.has(k) && !hollowNear(x, y, false) && maskAt(x, y) < 2) {
       let u = U(seed, TAG.GROUND, x, y), c = 0;
       for (const e of GR.entries) { c += e.per100 / 100 * (e.scale || GR.drawScale); if (u < c) { r = e; break; } }
       if (r && r.prop && earlier(5, x, y)) r = null;   // a rock keeps off every other prop
@@ -378,7 +380,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
 
   // ---- decals: the desk's meadow density on every grass tile (and raised land's top), pebbles on sand, lily pads on open water ----
   // (the cliff's face is drawn over the tile below the lip and its rim over the tile above, so nothing is laid within a tile of a lip)
-  const grassTile = (x, y) => { const t = G(x, y); return inMap(x, y) && t === GRASS && plain(x, y) && !near9(x, y, 4) && maskAt(x, y) < 2; };
+  const grassTile = (x, y) => { const t = G(x, y); return inMap(x, y) && t === GRASS && plain(x, y) && !near9(x, y, 4) && !isFoot(x, y) && maskAt(x, y) < 2; };
   const openWater = (x, y) => { for (let dy = -WA.padClear; dy <= WA.padClear; dy++) for (let dx = -WA.padClear; dx <= WA.padClear; dx++) if (T(x + dx, y + dy) !== WATER) return false; return true; };
 
   // ---- the meadow scatter (the art director's quiet-ground rule, map-rules.json meadow.scatter) ----
@@ -548,7 +550,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!inMap(x, y)) continue;
       const t = G(x, y); let kind = null;
-      if ((t === SAND || t === SCREE) && !occ.has(key(x, y)) && !lip(x, y)) {
+      if ((t === SAND || t === SCREE) && !occ.has(key(x, y)) && !lip(x, y) && !isFoot(x, y)) {
         if (U(seed, TAG.PEB, x, y) < (TABLE[biome(x, y)] || TABLE.mixed).pebbles) kind = ['pebbles-a', 'pebbles-b', 'pebbles-c'][H(seed, TAG.PEB + 1, x, y) % 3];
       } else if (t === WATER) {
         const pr = (TABLE[biome(x, y)] || TABLE.mixed).pads;
