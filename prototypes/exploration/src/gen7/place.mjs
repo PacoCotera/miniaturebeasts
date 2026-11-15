@@ -292,7 +292,9 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
   const gate = new Uint8Array(W * H);
   const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP || inlandOf(gx, gy) < COAST_REACH) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
   const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
-  for (let j = HY - 1; j <= HY + 1; j++) for (let i = HX - 1; i <= HX + 1; i++) {
+  // every edge between two cells of the window is opened, not only the centre's: a gate runs up to GATE_DEPTH tiles into a cell, and the thicket gaps (cutThicketGaps) judge a part by the land one cell round the cells it touches,
+  // so a neighbour's window, whose centre is one cell over, must lay the same gates as this one or the two pick different targets for the same deer path (seed 42, cell 12,40 against 13,40)
+  for (let j = 0; j < WIN_Y - 1; j++) for (let i = 0; i < WIN_X - 1; i++) {
     const cx = X - HX + i, cy = Y - HY + j;
     for (const [dx, dy] of [[1, 0], [0, 1]]) {
       const nx = cx + dx, ny = cy + dy, G = cellRegion(cx, cy);
