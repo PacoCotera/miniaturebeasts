@@ -6,7 +6,7 @@
   "faceRows": 3,
   "tops": {
     "note": "AD 2026-11-15: a top is its land's own ground one step up its own ramp, measured from the game's real ground fills (runs/cliff-system-greybox-fix-1/ground-colours.mjs); no land's colour is ever shifted to beat its neighbour. Only the meadow top is drawn (the 'top' piece): the level's raised ground is the one cliff terrain, whose top the land lays as meadow, and the other grounds a top can carry are not laid on a plateau yet. 'night' is the existing night step over the ground's night colour; null = the night ramp has no step there (the art director decides).",
-    "meadow": { "terrain": "grass", "ground": "#74a65d", "top": "#82b266", "night": { "ground": "#28432d", "top": "#294a26" } },
+    "meadow": { "terrain": "grass", "ground": "#74a65d", "top": "#83b266", "dayLive": "#82b266", "night": { "ground": "#28432d", "top": "#2e4f29" } },
     "turf": { "terrain": "turf", "ground": "#aac46e", "top": "#cde38a", "night": { "ground": "#3f6130", "top": "#54603e" } },
     "drygrass": { "terrain": "drygrass", "ground": "#c3b86e", "top": "#cbc275", "night": null },
     "litter": { "terrain": "litter", "ground": "#54603e", "top": "#616b44", "night": null },
@@ -24,7 +24,7 @@
       "#474d55": "#6c7682", "#6c7682": "#8497a5", "#8497a5": "#9eadb9", "#9eadb9": "#acbfc5",
       "#52753a": "#5e9357", "#aac46e": "#cde38a",
       "#28432d": "#36603a", "#36603a": "#4a814e", "#4a814e": "#5e9357", "#5e9357": "#74a65d",
-      "#82b266": "#8cba68", "#a9d082": "#cee38a", "#74a65d": "#82b266"
+      "#82b266": "#8cba68", "#83b266": "#8cba68", "#a9d082": "#cee38a", "#74a65d": "#82b266"
     }
   },
   "families": {
