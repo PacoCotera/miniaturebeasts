@@ -16,6 +16,8 @@ const C = 16;
 
 // ---- the values (map-look.md, ramps.md rock rev 2; level 1) and the roles ----
 export const VALUES = {
+  // AD 11-15: the top is the ground one step up its own ramp, its edges a lit band at the ramp's lightest (#a8d082). The game's meadow ground measures #74a65d (143), so the top is #82b266 (155, +12) and the band +44;
+  // the ruling's example (#82b266 -> #8cba68) would be two steps over the measured ground (reported in final.md)
   meadow: '#74a65d', top: '#82b266', rimlit: '#a8d082', drop: '#5e9357',
   mosslight: '#cde38a', moss: '#aac46e', mossdark: '#52753a',
   edge: '#9eadb9', lit: '#8497a5', shade: '#6c7682', crack: '#474d55',
@@ -44,9 +46,11 @@ function rockValue(yy, x, cracks) {
   if (s === 1) return yy < first + 11 ? 'lit' : 'shade';
   return yy < first + 6 ? 'lit' : 'shade';   // the lowest stratum is darker: its lower two thirds in shade
 }
+// the lit band of a top's edge: 2-3 art px, uneven along the edge (3 px at about a third of the columns)
+const bandOf = (x) => 2 + (((x * 7 + 3) % 16) % 3 === 0 ? 1 : 0);
 function columnPixel(p, x, y, yt, cracks, opts = {}) {
   const yy = y - yt;
-  if (yy < 0) return put(p, x, y, 'top', 'top');
+  if (yy < 0) return put(p, x, y, -yy <= bandOf(x) ? 'rimlit' : 'top', 'top');
   if (yy === LIP.light) return put(p, x, y, 'mosslight', 'lip');
   if (yy <= LIP.moss[1]) return put(p, x, y, 'moss', 'lip');
   if (yy === LIP.dark) return put(p, x, y, 'mossdark', 'lip');
@@ -70,6 +74,10 @@ function middle(set, letter) {
   return p;
 }
 
+// A side wall's rock, edge-on: SIDE px wide (GD 11-15 b: at least 6-8), two planes of its own: the corner plane (3 px, the lighter) next to the run it belongs to, then the far plane. lit: the west-facing wall.
+const SIDE = 8;
+const wallPx = (c, lit) => (c < 3 ? (lit ? 'edge' : 'lit') : (lit ? 'lit' : 'shade'));
+
 // End cap, east hand (on the low cell east of a run; cols 0-3 overhang the run's last column): k rows of step, convex (the side wall continues above) or not.
 function cap(k, convex, lit = false) {
   const ly = (k - 1) * 16, p = P(20, 80 + ly), cracks = [-1, -1, -1];
@@ -84,21 +92,28 @@ function cap(k, convex, lit = false) {
   }
   // with a side above (k >= 2) the side lip's moss turns down the column's corner to meet the face's lip (look 3: the lip wraps onto the side)
   if (k >= 2) for (let y = ly; y < ly + 6; y++) for (let x = 0; x < 4; x++) put(p, x, y, x === 0 ? 'mosslight' : x === 3 ? 'mossdark' : 'moss', 'lip', FLAG.over);
-  // the rounded end on the cap's own cell (cols 4..): the lip wraps round, the rock rounds under it, a crease outline, the foot under it
-  const R = (yy) => (yy < 2 ? 1 + yy : yy < 52 ? 5 : yy < 56 ? 4 : 3);   // the rock's reach into the cell by rows below the lip top
+  // GD 11-15 (a): the run's end wraps round: its lip turns down the end (the moss follows the rock's edge, one row to a step), the end's side rock shows as a strip SIDE px wide with its own two planes
+  // (the corner plane and the far plane, no crease line), and the foot under it. The strip is the same as the wall pieces' (wallPx), so a wall runs into the cap with no step.
+  const sideRock = (yy, c, reach) => wallPx(c, lit);
   for (let y = ly; y < ly + 80; y++) {
     const yy = y - ly - 6;
     if (yy < 0) continue;
-    if (yy <= LIP.dark) { const reach = Math.min(5, 2 + yy); for (let c = 0; c < reach; c++) put(p, 4 + c, y, yy === 0 ? 'mosslight' : c === reach - 1 || yy === LIP.dark ? 'mossdark' : 'moss', 'lip'); continue; }
-    if (yy <= LIP.rock1) { const reach = R(yy - LIP.under); for (let c = 0; c < reach; c++) put(p, 4 + c, y, c === reach - 1 ? 'crack' : yy === LIP.s1 || yy === LIP.s2 ? 'crack' : 'shade', 'rock'); continue; }
-    if (yy <= LIP.foot[1]) for (let c = 0; c < 7; c++) put(p, 4 + c, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
+    if (yy <= LIP.dark) {   // the lip row wraps: moss across the strip, its light edge on top, its dark edge underneath
+      const reach = Math.min(SIDE, 3 + yy);
+      for (let c = 0; c < reach; c++) put(p, 4 + c, y, yy === 0 ? 'mosslight' : yy === LIP.dark ? 'mossdark' : 'moss', 'lip');
+      continue;
+    }
+    if (yy <= LIP.rock1) {
+      const reach = yy <= LIP.under + 3 ? SIDE - 1 : SIDE;   // the rock's edge rounds under the lip by a pixel
+      for (let c = 0; c < reach; c++) put(p, 4 + c, y, yy === LIP.under || yy === LIP.s1 || yy === LIP.s2 ? 'crack' : sideRock(yy, c, reach), 'side');
+      continue;
+    }
+    if (yy <= LIP.foot[1]) for (let c = 0; c < SIDE + 3; c++) put(p, 4 + c, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
   }
-  // above the lip row: the run's side seen edge-on (k >= 2); a step-down's wall ends under the back run's lip, a convex corner's wall runs on up
-  // the same reach, values and drop shade as the wall pieces (wall()), so a wall runs into the cap with no step
-  const sideV = lit ? 'lit' : 'shade';
+  // above the lip row: the run's side seen edge-on (k >= 2); the lip's moss turns down the strip's top edge into the cap (a step-down's wall ends under the back run's lip, a convex corner's runs on up)
   for (let y = 0; y < ly; y++) {
-    const reach = convex ? 5 : Math.min(5, 1 + y);
-    for (let c = 0; c < reach; c++) put(p, 4 + c, y, c === reach - 1 ? 'crack' : sideV, 'side');
+    const reach = convex ? SIDE : Math.min(SIDE, 2 + y);
+    for (let c = 0; c < reach; c++) put(p, 4 + c, y, wallPx(c, lit), 'side');
     for (let c = reach; c < reach + 3; c++) put(p, 4 + c, y, 'drop', 'side');
   }
   return p;
@@ -120,16 +135,17 @@ function concave() {
 // Side pieces. The wall of a block's east side (flank cell east of raised land) faces away from the light: shade; the west side faces it: lit.
 function lipSide() {   // east hand: the ring cell with low ground to its east
   const p = P(16, 16);
-  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, x < 10 ? 'top' : x === 10 ? 'mosslight' : x < 15 ? 'moss' : 'mossdark', x < 10 ? 'top' : 'lip');
+  // the lip seen from above is 3 px of moss (light, mid, dark) on the cell's far edge, the rock of the wall follows in the flank cell: no lime strip
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, x < 13 ? (13 - x <= bandOf(y) ? 'rimlit' : 'top') : x === 13 ? 'mosslight' : x === 14 ? 'moss' : 'mossdark', x < 13 ? 'top' : 'lip');
   return p;
 }
 // east hand: the flank cell east of raised land. head: the wall starts thin under the rounded back corner; band; tail: the last wall cell, over the corner cap or the land it meets (the greybox draws it as the band:
 // the cap carries the turn). lit: a west-facing wall (toward the light) is lit, an east-facing one in shade.
 function wall(part, lit) {
-  const p = P(16, 16), v = lit ? 'lit' : 'shade';
+  const p = P(16, 16);
   for (let y = 0; y < 16; y++) {
-    const reach = part === 'head' ? Math.min(5, 1 + y) : 5;
-    for (let x = 0; x < reach; x++) put(p, x, y, x === reach - 1 ? 'crack' : v, 'side');
+    const reach = part === 'head' ? Math.min(SIDE, 2 + y) : SIDE;
+    for (let x = 0; x < reach; x++) put(p, x, y, wallPx(x, lit), 'side');
     for (let x = reach; x < reach + 3; x++) put(p, x, y, 'drop', 'side');
   }
   return p;
@@ -138,7 +154,7 @@ function wall(part, lit) {
 function rim(corner) {
   const p = P(16, 32);
   for (let y = 12; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, y < 14 ? 'drop' : 'foot1', 'rim');
-  for (let y = 16; y < 32; y++) for (let x = 0; x < 16; x++) put(p, x, y, y === 16 ? 'rimlit' : 'top', y === 16 ? 'rim' : 'top');
+  for (let y = 16; y < 32; y++) for (let x = 0; x < 16; x++) put(p, x, y, y - 16 < bandOf(x) ? 'rimlit' : 'top', y - 16 < bandOf(x) ? 'rim' : 'top');
   if (corner) {   // east hand: round the north-east corner of the ring cell (radius 7)
     const cx = 8.5, cy = 24.5, r = 7.5;
     for (let y = 12; y < 32; y++) for (let x = 0; x < 16; x++) {

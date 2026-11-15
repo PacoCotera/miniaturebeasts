@@ -139,7 +139,7 @@ if (WHICH === 'find') {
       const fx0 = Math.floor(win.x / 48), fy0 = Math.floor(win.y / 48), fx1 = Math.floor((win.x + FW - 1) / 48), fy1 = Math.floor((win.y + FH - 1) / 48);
       // the pawn: on a foot row in front of a face in frame (GD 3), else on low ground near the frame's middle; a tree in frame (one is added on clear low ground when none stands there)
       let pawn = null;
-      for (let y = fy0 + 2; y <= fy1 - 1 && !pawn; y++) for (let x = fx0 + 2; x <= fx1 - 2; x++) if (partAt(A, x, y) === PART.FOOT && A.raised(x, y - 3) && Math.abs(x - s.tx) <= 3) { pawn = [x, y]; break; }
+      for (let y = fy0 + 2; y <= fy1 - 1 && !pawn; y++) for (let x = fx0 + 2; x <= fx1 - 2; x++) if (partAt(A, x, y) === PART.FOOT && A.raised(x, y - 4) && Math.abs(x - s.tx) <= 3) { pawn = [x, y]; break; }
       if (!pawn) for (let r = 0; r < 6 && !pawn; r++) for (let y = s.ty - r; y <= s.ty + r && !pawn; y++) for (let x = s.tx - r; x <= s.tx + r; x++) if (partAt(A, x, y) === PART.LOW && y > fy0 + 1 && y < fy1) { pawn = [x, y]; break; }
       const hasTree = ir.props.some((p) => /^tree-/.test(p.kind) && p.x >= win.x - 24 && p.x < win.x + FW + 24 && p.y >= win.y && p.y < win.y + FH + 96);
       let added = null;
@@ -165,10 +165,10 @@ if (WHICH === 'find') {
   const zones = JSON.parse(readFileSync(path.join(tplDir, 'zones.json'), 'utf8'));
   // which mocks: every case named on the command line after the tag (stacked always): run13 -> T1, rim -> T4, diag -> T6a
   const MOCKS = [
-    { case: 'stacked', zone: 'T7', name: 'mock-stacked', pad: [7, 9], pawn: [3, 7], tree: [1, 13], centre: 8 },
-    { case: 'run13', zone: 'T1', name: 'mock-run13', pad: [6, 9], pawn: [12, 6], tree: [8, 10], centre: 5, cx: 12 },
+    { case: 'stacked', zone: 'T7', name: 'mock-stacked', pad: [7, 9], pawn: [3, 12], tree: [1, 13], centre: 8 },
+    { case: 'run13', zone: 'T1', name: 'mock-run13', pad: [6, 9], pawn: [12, 7], tree: [8, 10], centre: 5, cx: 12 },
     // T4's land with the block 6 wide (8 wide and both walls is 480 px: wider than the frame)
-    { case: 'rim', zone: 'T4', name: 'mock-rim', pad: [6, 9], pawn: [5, 3], tree: [1, 11], centre: 6, cx: 5, rows: ['............', ...Array(6).fill('...111111...'), ...Array(5).fill('............')] },
+    { case: 'rim', zone: 'T4', name: 'mock-rim', pad: [6, 9], pawn: [5, 10], tree: [1, 11], centre: 6, cx: 5, rows: ['............', ...Array(6).fill('...111111...'), ...Array(5).fill('............')] },
     { case: 'diag', zone: 'T6a', name: 'mock-diag', pad: [6, 9], pawn: [2, 6], tree: [9, 13], centre: 7 },
   ].filter((m) => m.case === 'stacked' || process.argv.slice(7).includes(m.case));
   for (const m of MOCKS) {
