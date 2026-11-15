@@ -48,11 +48,10 @@ test("every link in roadmap.json is a path that exists in the repository (a trai
   assert.deepEqual(missing, []);
 });
 
-test("the page renders from ../roadmap.json and the homepage's roadmap links point to it", () => {
-  const page = readFileSync(at("website/roadmap/index.html"), "utf8"), home = readFileSync(at("website/index.html"), "utf8");
-  assert.match(page, /fetch\('\.\.\/roadmap\.json'\)/);
-  assert.ok(!/ROADMAP\.md">[Rr]oadmap</.test(home), "no homepage roadmap link left on ROADMAP.md");
-  assert.equal([...home.matchAll(/href="roadmap\/">[Rr]oadmap</g)].length, 2, "the FAQ and the footer");
+test("the roadmap page is retired: no page, and no homepage link to it", () => {
+  const home = readFileSync(at("website/index.html"), "utf8");
+  assert.ok(!existsSync(at("website/roadmap/index.html")), "the roadmap page is gone");
+  assert.ok(!/href="roadmap\//.test(home), "no homepage link to the roadmap page");
 });
 
 // ---- The Sandbox build's scope step: a pull request that changes only documents skips the build (.github/docs-only.sh) ----

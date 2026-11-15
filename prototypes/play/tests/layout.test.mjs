@@ -1,7 +1,7 @@
 // The play page's layout (src/layout.mjs): one device in view, the panel inside the window with its margins, no two blocks overlapping, the keys line at one height for both devices, every key at least 44, nothing scrolls.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { plan, barPlan, dockSheet, zCap, BAR, LAPTOP_MAX_W } from "../src/layout.mjs";
+import { plan, barPlan, dockSheet, zCap, form, BAR, LAPTOP_MAX_W } from "../src/layout.mjs";
 
 const WINDOWS = [["390×844@3", 390, 844, 3, true], ["360×780@3", 360, 780, 3, true], ["844×390@3", 844, 390, 3, true], ["932×430@3", 932, 430, 3, true], ["1440×900@1", 1440, 900, 1, false], ["1280×720@1", 1280, 720, 1, false], ["1280×720@1.5", 1280, 720, 1.5, false]];
 const STATES = [["companion", false], ["station", false], ["station", true]];
@@ -87,6 +87,12 @@ test("the bar: 52 tall, controls 44 and apart, inside the window; the laptop's s
     for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) assert.ok(!overlap(items[i][1], items[j][1]), `${W} ${f}: ${items[i][0]} and ${items[j][0]} overlap`);
   }
   assert.equal(barPlan({ W: 1440, form: "laptop", size: true }).switch[2], 320); assert.equal(barPlan({ W: 1440, form: "laptop", size: true }).switch[0], 560);
+});
+
+test("the form: a fine pointer gets the laptop form only where it fits at ×1; otherwise the phone form for the orientation; a coarse pointer keeps its rule", () => {
+  for (const [W, H, coarse, want] of [[390, 844, false, "up"], [844, 390, false, "side"], [1024, 600, false, "side"], [1440, 900, false, "laptop"], [1280, 720, false, "laptop"], [800, 900, false, "up"], [390, 844, true, "up"], [844, 390, true, "side"], [1024, 768, true, "laptop"], [1440, 900, true, "laptop"]]) assert.equal(form(W, H, coarse), want, `${W} × ${H} ${coarse ? "coarse" : "fine"}`);
+  // wherever the laptop form is chosen for a fine pointer, the fit is at least ×1 (and plan asserts it)
+  for (let W = 300; W <= 1800; W += 20) for (let H = 300; H <= 1300; H += 20) if (form(W, H, false) === "laptop") { const p = plan({ W, H, dpr: 1, coarse: false, dev: "companion" }); assert.ok(p.zFit >= 1 && p.scale >= 1, `${W} × ${H}: fit ×${p.zFit}`); const b = barPlan({ W, form: "laptop", size: true }); assert.ok(b.switch[0] + b.switch[2] <= Math.min(b.size[0][0], b.keys[0]), `${W}: the bar's controls are apart`); }
 });
 
 test("the dock's sheet: a bottom sheet on a phone, centred on a laptop, the e-paper across its width", () => {
