@@ -372,6 +372,11 @@ export function windowLevels(L, X, Y) {
       let w = 0; for (let dy = -1; dy <= 1 && !w; dy++) { const yy = y + dy; if (yy < 0 || yy >= H) continue; for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx >= 0 && xx < W && wr[yy * W + xx]) { w = 1; break; } } }
       if (w) { held[y * W + x] = 1; if (q[y * W + x] >= 0) q[y * W + x] = -1; }
     } }
+  // a water cell (not a ford) is water to its corners: the wet field falls under the threshold at the corners beside dry cells, so the whole cell is held low as well
+  if (L.rule.holdWater !== 0) for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) {
+    const cx = X0w + i, cy = Y0w + j; if (!inRealm(cx, cy)) continue; const c = cy * RW + cx; if (L.realm.land[c] !== LAND.WATER || L.realm.ford[c]) continue;
+    for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) { const k = (j * CH + ty) * W + i * CW + tx; held[k] = 1; if (q[k] >= 0) q[k] = -1; }
+  }
   const gx0 = X0w * CW, gy0 = Y0w * CH, fr = L.rule.faceRows;
   // tiles the land rule may not raise: water held low, and the coast's twelve tiles
   const noRaise = new Uint8Array(W * H), wblock = new Uint8Array(W * H), edge = new Uint8Array(W * H);
@@ -428,7 +433,6 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     const lk = new Uint8Array(W * H), all = sites.concat(extra);
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly - SITE_UP; y <= s.ly; y++) if (!noRaise[y * W + x]) lk[y * W + x] = 1;
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly + 1; y <= s.ly + foot; y++) lk[y * W + x] = 2;   // the low rows win where two sites meet
-    for (let i = 0; i < W * H; i++) if (noRaise[i] && !lk[i]) lk[i] = 2;   // water held low (and the coast) stays low through every pass: the closings may not fill a notch beside water
     const way = new Uint8Array(W * H); for (const s of all) { way[s.ly * W + s.lx + 2] = 1; way[s.ly * W + s.lx + 3] = 1; }
     r = cleanup(base, W, H, L.rule, lk);
     const seedJ = L.seed;
