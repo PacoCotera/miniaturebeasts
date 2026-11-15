@@ -33,7 +33,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
   }
   // the set pieces drawn by the page (the slab of a sleepers' bed): their tile blocks like a rock; shelter tiles (under an overhang) keep strikes off whoever stands on them
   const shelter = new Uint8Array(NP), pieces = [];
-  for (const p of ir.pieces || []) { const x = p.x - 1, y = p.y - 1; if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y }); } }
+  for (const p of ir.pieces || []) { const x = p.x - 1, y = p.y - 1, pw = p.w || 1; if (x >= 0 && y >= 0 && x < w && y < h) { for (let i = 0; i < pw && x + i < w; i++) tiles[I(x + i, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y, w: pw }); } }
   for (const [sx, sy] of ir.shelter || []) { const x = sx - 1, y = sy - 1; if (x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]]) shelter[I(x, y)] = 1; }
   // the tiles no crown hangs over: a crown's box at 48 px, a tile's pawn as its centre and a margin round it
   const clear = new Uint8Array(NP).fill(1), crowns = [];

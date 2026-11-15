@@ -65,9 +65,11 @@ for (const seed of seeds) {
       const P = m.S.exp.patch, lay = m.layout(P.key), RT = m.RT, pl = RT.gridScr, ts = RT.ts;
       const img = new Image(); img.src = d; await img.decode();
       const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height; const g = cv.getContext('2d'); g.drawImage(img, 0, 0);
-      const COL = { R: '#7a5a3a', r: '#7a5a3a', S: '#444a66', L: '#b0306a', O: '#5a3a1a', h: '#4a86c8', p: '#8a3fb0', m: '#2f9d5a', k: '#3a6fd0', c: '#3a6fd0', x: '#111111' }, NAME = { R: 'wall', S: 'slab', L: 'stone', O: 'roof', h: 'shelter', p: 'pod', m: 'find', k: 'stone', c: 'stone?', x: 'bare' };
+      const COL = { R: '#7a5a3a', r: '#7a5a3a', S: '#444a66', L: '#b0306a', O: '#5a3a1a', h: '#4a86c8', p: '#8a3fb0', m: '#2f9d5a', k: '#3a6fd0', c: '#3a6fd0', x: '#111111' }, NAME = { R: 'wall', S: 'heart-slab', L: 'stone', O: 'roof', h: 'shelter', p: 'pod', m: 'find', k: 'stone', c: 'stone?', x: 'bare' };
       g.font = '9px monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
       for (const s of lay.stamps || []) {
+        const slot = /bed/.test(s.kind) ? 'bed-ground' : s.kind === 'split-stone-ground' ? 'split-stone-ground' : null;   // the heart's ground patch: a named empty slot, shown as a labelled tint over the footprint
+        if (slot) { g.globalAlpha = 0.22; g.fillStyle = '#2f9d5a'; g.fillRect(pl.x + (s.x - 1) * ts, pl.y + (s.y - 1) * ts, s.w * ts, s.h * ts); g.globalAlpha = 1; g.fillStyle = '#fff'; g.fillText('[' + slot + ']', pl.x + (s.x - 1 + s.w / 2) * ts, pl.y + (s.y - 1 + s.h) * ts - 6); }
         g.strokeStyle = '#e0407a'; g.lineWidth = 2; g.strokeRect(pl.x + (s.x - 1) * ts, pl.y + (s.y - 1) * ts, s.w * ts, s.h * ts);
         for (const [cx, cy, k] of s.cells) { const x = pl.x + (cx - 1) * ts, y = pl.y + (cy - 1) * ts; g.globalAlpha = 0.55; g.fillStyle = COL[k] || '#888'; g.fillRect(x + 2, y + 2, ts - 4, ts - 4); g.globalAlpha = 1; g.fillStyle = '#fff'; g.fillText(NAME[k] || k, x + ts / 2, y + ts / 2); }
         g.fillStyle = '#e0407a'; g.textAlign = 'left'; g.fillText(s.id + (s.role === 'heart' ? ' (heart)' : ''), pl.x + (s.x - 1) * ts + 2, pl.y + (s.y - 1) * ts - 6); g.textAlign = 'center';

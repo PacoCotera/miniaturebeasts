@@ -316,6 +316,20 @@
 						"color": "#A9A39A",
 						"tile": null,
 						"groupUid": 0
+					},
+					{
+						"value": 15,
+						"identifier": "bed-ground",
+						"color": "#52753A",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 16,
+						"identifier": "split-stone-ground",
+						"color": "#7C8794",
+						"tile": null,
+						"groupUid": 0
 					}
 				],
 				"intGridValuesGroups": [],

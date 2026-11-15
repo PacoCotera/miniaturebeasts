@@ -611,6 +611,7 @@ function decorIR(seed, x0, y0, w, h) {
   return { props: props.sort(byPos), decals: decals.sort(byPos), reedbanks, reedProps };
 }
 
+const PATCHABLE = new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCRUB, TV.SCREE]);   // the low ground a heart's patch may take (a way, sand, water, thicket and raised land keep theirs)
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
 function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
@@ -620,9 +621,19 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   const placed2 = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
   const setProps = hold ? hold.setProps.map(p => ({ ...placed2(p.kind, { x: (p.x) * 48 + 24, y: (p.y) * 48 + 47 }), tx: x0 + p.x, ty: y0 + p.y, fam: p.fam, cluster: -5 })) : [];
   const props = d.props.concat(d.reedProps, setProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
+  // the heart's ground patch (places.mjs content.patches): a ground kind of its own on the stamp's footprint, on the grass-like low ground only (never a way, sand, water, thicket or raised land); the terrain array is the
+  // cell's cached one, so the patch is made on a copy, and tone stays off the patch and the tile round it (tone lies only on plain grass)
+  let tone = toneField(seed, x0, y0, w, h);
+  if (hold && hold.patches && hold.patches.length) {
+    terrain = terrain.slice(); tone = tone.slice();
+    for (const { kind, rect: [rx, ry, rw, rh] } of hold.patches) {
+      for (let y = ry; y < ry + rh; y++) for (let x = rx; x < rx + rw; x++) { const i = y * w + x; if (x >= 0 && y >= 0 && x < w && y < h && PATCHABLE.has(terrain[i])) terrain[i] = VALUE_OF[kind]; }
+      for (let y = ry - 1; y <= ry + rh; y++) for (let x = rx - 1; x <= rx + rw; x++) if (x >= 0 && y >= 0 && x < w && y < h) tone[y * w + x] = 0;
+    }
+  }
   // `top`: the ground under each raised tile, only when some raised tile holds a ground other than grass (all grass draws as a place with none)
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
-    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
+    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone,
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [],
     pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [] };
 }

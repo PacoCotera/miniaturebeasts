@@ -4,7 +4,7 @@
 //        node tools/gen7-stamps.mjs --check   fail if the baked json does not match the LDtk files
 // Cell kinds (IntGrid values; the key of the proposal's stamps.png):
 //   .  kept clear (no tall dressing)      r  wall piece, half the time        R  wall piece, always (the land's own: boulder, stump, reed clump)
-//   S  the slab (anchor of a bed)         L  the landmark (anchor of a landmark ground)      O  the overhang's roof, on the cliff face above
+//   S  the slab (anchor of a bed): two S side by side, a 2 x 1 footprint, the anchor the left one       L  the landmark (anchor of a landmark ground)      O  the overhang's roof, on the cliff face above
 //   h  shelter tile under the overhang    p  find slot: a pod (filled first)  m  find slot: the land's kind (dew, fruit, stone)
 //   k  find slot: a stone                 c  find slot: a stone (filled last)  x  bare tile, no mark
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -17,30 +17,30 @@ const LANDS = ['meadow', 'wood', 'rock', 'pond'];
 // A bed: a pod half-buried at a slab's edge, moss or dew cups beside, stones and roots lying loose about; no ring. 7 x 5, open to the south. Three layouts a land.
 const BED = {
   meadow: [
-    ['r....R.', '.m.....', '..RS..m', '...p...', '..c..k.'],
-    ['..R...r', '....m..', 'r..SR..', '.m..p..', '.......'],
-    ['.r.....', 'R..m..r', '....S..', '.k.p.m.', '.......'],
+    ['r....R.', '.m.....', '..RSS.m', '...p...', '..c..k.'],
+    ['..R...r', '....m..', 'r..SSR.', '.m..p..', '.......'],
+    ['.r.....', 'R..m..r', '....SS.', '.k.p.m.', '.......'],
   ],
   wood: [
-    ['Rr...rR', '.m.....', '.R.S.m.', '...pR..', '..c....'],
-    ['.R..r..', 'r..m..R', '..SR...', '.m..p.r', '.......'],
-    ['R....R.', '..m...r', '.r.S...', '..p.mR.', '.......'],
+    ['Rr...rR', '.m.....', '.R.SS.m', '...pR..', '..c....'],
+    ['.R..r..', 'r..m..R', '..SSR..', '.m..p.r', '.......'],
+    ['R....R.', '..m...r', '.r.SS..', '..p.mR.', '.......'],
   ],
   rock: [
-    ['R.r...R', '....m..', 'R..SR..', '..p...r', '.k...m.'],
-    ['.R...R.', '...m..R', 'r.S....', '..Rp...', '.m...k.'],
-    ['RR.....', '...S.mr', '.m..p..', '....R..', '.......'],
+    ['R.r...R', '....m..', 'R..SSR.', '..p...r', '.k...m.'],
+    ['.R...R.', '...m..R', 'r.SS...', '..Rp...', '.m...k.'],
+    ['RR.....', '...SSmr', '.m..p..', '....R..', '.......'],
   ],
   pond: [
-    ['...r...', '.m...R.', 'r..S..m', '..p....', '.......'],
-    ['.r....R', '....m..', '..SR...', '.m.p.r.', '.......'],
-    ['r......', '..m.R..', '.R.S..m', '....p..', '.......'],
+    ['...r...', '.m...R.', 'r..SS.m', '..p....', '.......'],
+    ['.r....R', '....m..', '..SSR..', '.m.p.r.', '.......'],
+    ['r......', '..m.R..', '.R.SS.m', '....p..', '.......'],
   ],
 };
 const STAMPS = [];
 for (const land of LANDS) BED[land].forEach((rows, i) => STAMPS.push({ id: `bed-${land}-${i + 1}`, kind: 'sleepers-bed', lands: [land], flip: 'ew', rows }));
-STAMPS.push({ id: 'bed-cramped', kind: 'sleepers-bed-cramped', lands: LANDS, flip: 'ew', rows: ['.RS.m', '..p..', '.....'] });   // the heart of a place too cramped for the full bed
-STAMPS.push({ id: 'bed-nook', kind: 'sleepers-bed-nook', lands: LANDS, flip: 'ew', rows: ['.RS.m', '..p..', '..c..'] });         // a smaller spot: slab, a pod, moss and a stone
+STAMPS.push({ id: 'bed-cramped', kind: 'sleepers-bed-cramped', lands: LANDS, flip: 'ew', rows: ['RSS.m', '..p..', '.....'] });   // the heart of a place too cramped for the full bed
+STAMPS.push({ id: 'bed-nook', kind: 'sleepers-bed-nook', lands: LANDS, flip: 'ew', rows: ['RSS.m', '..p..', '..c..'] });         // a smaller spot: slab, a pod, moss and a stone
 STAMPS.push({ id: 'overhang', kind: 'overhang', lands: LANDS, flip: 'ew', rows: ['OOOO', 'hhhh', 'Rk.c', '....'] });          // top row on the cliff's south face
 STAMPS.push({ id: 'split-stone-ground', kind: 'split-stone-ground', lands: ['rock'], flip: 'ew', rows: ['r.....r', '.k...c.', '.......', '.c.L.k.', '...x...'] });   // the stone's 3 x 2 foot is the two rows above and on L; no strike mark
 

@@ -249,14 +249,16 @@ export function maskFn(seed) {
 // ---- what a plan adds to a cell's IR: the wall props, pieces, shelter tiles and find slots (hold.mjs reads this) ----
 const WALL = { meadow: ROCK_KINDS, rock: ROCK_KINDS, pond: ROCK_KINDS.filter(k => /^boulder-d/.test(k)), wood: ['stump'] };
 export function contentOf(plan, seed) {
-  const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], landmark: null, spots: [] };
+  const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], patches: [], landmark: null, spots: [] };
   if (!plan) return out;
   const word = plan.land, kinds = WALL[word] && WALL[word].length ? WALL[word] : ROCK_KINDS, rank = { p: 0, k: 1, m: 2, c: 3 };
   for (const s of plan.spots) {
     out.spots.push({ id: s.id, kind: s.kind, role: s.role, x: s.x, y: s.y, w: s.w, h: s.h, tier: s.tier, entryDist: s.entryDist, spineDist: s.spineDist, seenFrom: s.seenFrom || null, cells: s.cells.map(c => [c.x, c.y, c.k]) });
+    if (s.kind === 'sleepers-bed' || s.kind === 'sleepers-bed-cramped' || s.kind === 'sleepers-bed-nook') out.patches.push({ kind: 'bed-ground', rect: [s.x, s.y, s.w, s.h] });   // the heart's patch: a ground of its own over the stamp's footprint
+    else if (s.kind === 'split-stone-ground') out.patches.push({ kind: 'split-stone-ground', rect: [s.x, s.y, s.w, s.h] });
     for (const c of s.cells) {
       if (c.k === 'R') out.setProps.push({ kind: kinds[(hash(seed, 'gen7', 'wallkind', plan.X, plan.Y, c.x, c.y) >>> 0) % kinds.length], x: c.x, y: c.y, fam: word === 'wood' ? 'stumps' : 'rocks', spot: s.id });
-      else if (c.k === 'S') out.pieces.push({ piece: 'prop-slab', x: c.x, y: c.y, spot: s.id });
+      else if (c.k === 'S') { const lp = out.pieces.find(p => p.spot === s.id); if (lp) lp.w = Math.max(lp.w, c.x - lp.x + 1); else out.pieces.push({ piece: 'heart-slab', x: c.x, y: c.y, w: 1, spot: s.id }); }   // the 2 x 1 slab: one piece on its left tile, both tiles block
       else if (c.k === 'L') { out.landmark = { x: c.x, y: c.y }; out.setProps.push({ kind: 'split-stone', x: c.x, y: c.y, fam: 'landmark', spot: s.id }); }
       else if (c.k === 'h') out.shelter.push([c.x, c.y]);
       else if (c.k === 'O') out.roof.push([c.x, c.y]);
