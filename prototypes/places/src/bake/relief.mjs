@@ -42,6 +42,15 @@ export function landOf(ir, cliffs) {
 // How many rows upward from row y a low column is low, to 3: the step of a run's end
 const up = (A, x, y) => { let k = 0; while (k < 3 && A.low(x, y - k)) k++; return k; };
 
+// A lean (cliff-contour-1, the land keeps it: levels.mjs leanAt): a side wall moving one column in toward the raised land going south leaves one south lip cell (x, y) alone in its row, with the wall above
+// running down its outer side and the next column in raised 4 or more rows further down (a wall, not a steep run's step). It has no face and no end: the cell under its lip is rock (FACE, it blocks), the cells
+// beyond it are open ground, and the set draws the wall leaning over by one column. Returns the hand ('w': the wall's outside is west) or null.
+export function leanAt(A, x, y) {
+  if (!A.raised(x, y) || !A.low(x, y + 1) || !A.raised(x, y - 1) || !A.low(x, y + 2)) return null;
+  for (const [h, d] of [['w', -1], ['e', 1]]) if (A.low(x + d, y) && A.low(x + d, y - 1) && A.raised(x - d, y) && A.raised(x - d, y + 1) && A.raised(x - d, y + 2) && A.raised(x - d, y + 3) && A.raised(x - d, y + 4)) return h;
+  return null;
+}
+
 // The end piece a low cell belongs to, or null: the cell beyond the end of a south run, rows top .. L + `bottom` ({ L, hand, k, top }; k = rows low upward from row L, 1, 2, 3 = 3 or more).
 // The rock rows (down to L + FACE_ROWS, the same 3 rows as the face under the lip) block; the foot row below is walkable.
 export function endAt(A, x, y, bottom = FACE_ROWS) {
@@ -50,6 +59,7 @@ export function endAt(A, x, y, bottom = FACE_ROWS) {
     if (!A.low(x, L)) continue;
     for (const [hand, xl] of [['e', x - 1], ['w', x + 1]]) {
       if (!A.raised(xl, L) || !A.low(xl, L + 1)) continue;   // the neighbour is no south lip cell of row L
+      if (leanAt(A, xl, L)) continue;   // a lean has no end piece
       const k = up(A, x, L), top = k >= 3 ? L - 2 : k === 2 ? L - 1 : L;
       if (y >= top && y <= L + bottom) return { L, hand, k, top };
     }

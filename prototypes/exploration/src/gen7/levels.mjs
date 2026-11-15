@@ -208,14 +208,16 @@ const hasLip = (r, W, H, x, y) => { const xx = x < 0 ? 0 : x >= W ? W - 1 : x, y
 
 // cliff-contour-1: a lean. A side wall that moves one column in toward the raised land going south leaves one south lip tile alone in its row (x, y): the wall above it runs down its outer side and the wall
 // below runs down the next column in. The set draws it as the wall leaning over by one column (the pieces lean-e, lean-w), not as a face one column wide, so the land keeps it. i = y * W + x, clear of the rim
-// (rows y - 1 .. y + 2, columns x - 1 .. x + 1 read). Raised on the east (the wall's outside is west): (x - 1, y - 1) and (x - 1, y) low, (x, y - 1) raised, (x + 1, y + 1) and (x + 1, y + 2) raised; or mirrored.
+// (rows y - 1 .. y + 4, columns x - 1 .. x + 1 read). Raised on the east (the wall's outside is west): (x - 1, y - 1) and (x - 1, y) low, (x, y - 1) raised, (x + 1, y .. y + 4) raised (the next column's
+// lip 4 or more rows lower: a wall, not a steep run's step of 1 to 3 rows), (x, y + 2) low; or mirrored.
 let LEAN_ON = true;
 export const setLeans = (on) => { LEAN_ON = !!on; GEN++; };
 function leanAt(r, W, i) {
-  if (r[i] !== 1 || r[i + W] !== 0 || r[i - W] !== 1) return false;
-  for (const d of [-1, 1]) if (!r[i + d] && !r[i + d - W] && r[i - d] && r[i - d + W] && r[i - d + 2 * W] && !r[i + 2 * W]) return true;
+  if (i < W || i + 4 * W + 1 >= r.length || r[i] !== 1 || r[i + W] !== 0 || r[i - W] !== 1 || r[i + 2 * W]) return false;
+  for (const d of [-1, 1]) if (!r[i + d] && !r[i + d - W] && r[i - d] && r[i - d + W] && r[i - d + 2 * W] && r[i - d + 3 * W] && r[i - d + 4 * W]) return true;
   return false;
 }
+export const leanAtRaster = leanAt;
 
 // Low rows kept under a south lip:the faceRows rock rows (they block), the foot row L + faceRows + 1 and one walkable row more (a channel under a face is at least 2 walkable tiles)
 const footRoom = fr => fr + 2;
@@ -509,6 +511,7 @@ function blockedAt(r, W, H, x, y) {
       const li = L * W + x; if (r[li]) continue;
       for (let d = -1; d <= 1; d += 2) {
         const xi = li + d; if (!r[xi] || r[xi + W]) continue;
+        if (LEAN_ON && leanAt(r, W, xi)) continue;   // a lean has no end piece (relief.mjs endAt)
         let k = 0; while (k < 3 && !r[li - k * W]) k++;
         if (y >= (k >= 3 ? L - 2 : k === 2 ? L - 1 : L) && y <= L + FACE3) return true;
       }
@@ -525,6 +528,7 @@ function blockedEdge(r, W, H, x, y) {
     if (R(x, L)) continue;
     for (const xl of [x - 1, x + 1]) {
       if (!R(xl, L) || R(xl, L + 1)) continue;
+      if (LEAN_ON && xl >= 1 && xl < W - 1 && L >= 1 && leanAt(r, W, L * W + xl)) continue;
       let k = 0; while (k < 3 && !R(x, L - k)) k++;
       if (y >= (k >= 3 ? L - 2 : k === 2 ? L - 1 : L) && y <= L + FACE3) return true;
     }
@@ -625,7 +629,7 @@ function walkParts(R, W, H, way, wblock) {
     if (R[i]) wk[i] = r(x + 1, y) && r(x - 1, y) && r(x, y + 1) && r(x, y - 1) ? 1 : 0;
     else wk[i] = wblock[i] || rockUnder(R, W, way, x, y) || r(x - 1, y) || r(x + 1, y) ? 0 : 1;
   }
-  for (let y = 0; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (R[y * W + x] && !R[(y + 1) * W + x])   // the cell beyond a south run's end: rows L - 2 .. L + 3 are the end piece's
+  for (let y = 0; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (R[y * W + x] && !R[(y + 1) * W + x] && !(LEAN_ON && y >= 1 && leanAt(R, W, y * W + x)))   // the cell beyond a south run's end: rows L - 2 .. L + 3 are the end piece's (a lean has none)
     for (const dx of [-1, 1]) if (!R[y * W + x + dx]) for (let j = -2; j <= FACE3; j++) if (y + j >= 0 && y + j < H && !R[(y + j) * W + x + dx] && !way[(y + j) * W + x + dx]) wk[(y + j) * W + x + dx] = 0;
   return wk;
 }

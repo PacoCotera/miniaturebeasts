@@ -187,6 +187,51 @@ function rim(corner) {
 }
 const topPiece = () => { const p = P(16, 16); for (let i = 0; i < 256; i++) { p.v[i] = 'top'; p.r[i] = 'top'; } return p; };
 
+// cliff-contour-1: the back rim on a slope (16 x 32 from the low cell north of the ring cell, as rim()): the rim line (the top's north edge) runs from the west edge at row 16 + 8 vL to the east edge at
+// 16 + 8 vR (vL, vR: -1 half a row up, +1 half a row down), the drop shade's 4 rows above it, the lit band under it, the top below; the ring cell's pixels above the line are the meadow (the low ground shows).
+function rimSlope(vL, vR) {
+  const p = P(16, 32);
+  for (let x = 0; x < 16; x++) {
+    const yb = Math.round(16 + 8 * vL + (vR - vL) * (x + 0.5) / 2);
+    for (let y = 0; y < 32; y++) {
+      if (y < yb - 4) { if (y >= 16) put(p, x, y, 'meadow', 'rim'); continue; }
+      if (y < yb) { put(p, x, y, y < yb - 2 ? 'drop' : 'foot1', 'rim'); continue; }
+      if (y - yb < bandOf(x)) put(p, x, y, 'rimlit', 'rim'); else put(p, x, y, 'top', 'top');
+    }
+  }
+  return p;
+}
+
+// cliff-contour-1: a lean, west hand (the wall's outside to the west, raised land to the east; 32 x 32 from the upper wall's last flank cell, rows: the lip row and the row under it). The wall's edge e(y) (the
+// raised land's west edge, px from the box's west side) moves from 16 (the upper wall: the flank is the west cell) to 32 (the lower wall: the flank is the lip's own column) at 45 degrees between rows 8 and 24:
+// east of e the top with the side lip's 3 px of moss on its edge (as lip-side), west of e the wall's SIDE px of rock in its two planes and the 2 px drop shade, as the wall pieces, so the upper wall runs into
+// the lean and the lean into the lower wall with no step. lit: the west-facing wall is lit.
+function leanIn(lit = true) {
+  const p = P(32, 32);
+  for (let y = 0; y < 32; y++) {
+    const e = 16 + Math.max(0, Math.min(16, y - 8));
+    for (let x = 0; x < 32; x++) {
+      if (x >= e) { const d = x - e; put(p, x, y, d === 0 ? 'mossdark' : d < 3 ? 'moss' : 'top', d < 3 ? 'lip' : 'top'); continue; }
+      const c = e - 1 - x;
+      if (c < SIDE) put(p, x, y, wallPx(c, lit), 'side'); else if (c < SIDE + 2) put(p, x, y, 'drop', 'side');
+    }
+  }
+  return p;
+}
+// an outward lean, west hand (32 x 32 from the row above the corner: the upper wall's last flank cell and the corner's row; columns: the lower wall's flank cell, the corner's column): the edge moves from 32 to 16
+function leanOut(lit = true) {
+  const p = P(32, 32);
+  for (let y = 0; y < 32; y++) {
+    const e = 32 - Math.max(0, Math.min(16, y - 8));
+    for (let x = 0; x < 32; x++) {
+      if (x >= e) { const d = x - e; put(p, x, y, d === 0 ? 'mossdark' : d < 3 ? 'moss' : 'top', d < 3 ? 'lip' : 'top'); continue; }
+      const c = e - 1 - x;
+      if (c < SIDE) put(p, x, y, wallPx(c, lit), 'side'); else if (c < SIDE + 2) put(p, x, y, 'drop', 'side');
+    }
+  }
+  return p;
+}
+
 // The way up, west half (16 x 96 from the landing row): the cheek (cols 0-2) is face rock with the lip, the stair cut through lip and rock, its cap on the lip line, its foot inside its footprint.
 function wayHalf() {
   const p = P(16, 96);
@@ -203,10 +248,13 @@ function wayHalf() {
   return p;
 }
 
-// Diagonal, down to the east (16 x 112 from the row above the lip): the lip's top on the 45 degree line, the strata and lip underside at the straight column's offsets from it.
+// Diagonal, down to the east (16 x 112 from the row above the lip): the lip's top on the slope, the strata and lip underside at the straight column's offsets from it.
+// cliff-contour-1, the slope rule: the lip line runs from the column's west edge to its east edge through the half rows between its lip and its neighbours': mid (-8 -> +8 px, the 45 degree line);
+// start (0 -> +8 px) and end (-8 -> 0 px) are the two halves of a 2:1 slope, one even line (a column's lip falls 1 px every 2 px), so a 2:1 stretch (end, start, end, start ...) is one straight line and
+// a 2:1 half beside a 45 degree column bends the line, never a right angle.
 function diagonal(role) {
   const p = P(16, 112);
-  const yt = (x) => 16 + (role === 'start' ? (x < 8 ? 6 : 6 + (x - 8)) : role === 'mid' ? -2 + x : x < 8 ? -2 + x : 6);
+  const yt = (x) => 16 + (role === 'start' ? 6 + Math.round(x / 2) : role === 'mid' ? -2 + x : -2 + Math.round(x / 2));
   for (let x = 0; x < 16; x++) for (let y = 0; y < 112; y++) {
     // GD 11-15 fix-3 (2): a start piece leaves the west 3 px of the row above its lip alone: that is the side lip of the wall above (lip-side), which runs on down to the start's own lip, never cut off by a plain top
     if (role === 'start' && x < 3 && y < 16) continue;
@@ -248,6 +296,9 @@ DRAW.set('way-l', wayHalf()); DRAW.set('way-r', swapLight(mirror(wayHalf())));
 DRAW.set('lip-side-e', lipSide()); DRAW.set('lip-side-w', mirror(lipSide()));
 for (const part of ['head', 'band', 'tail']) { DRAW.set(`wall-e-${part}`, wall(part, false)); DRAW.set(`wall-w-${part}`, mirror(wall(part, true))); }
 DRAW.set('rim-n', rim(false)); DRAW.set('rim-ne', rim(true)); DRAW.set('rim-nw', mirror(rim(true)));
+for (const [r, vl, vr] of [['start', 0, 1], ['mid', -1, 1], ['end', -1, 0]]) { DRAW.set(`rim-dr-${r}`, rimSlope(vl, vr)); DRAW.set(`rim-dl-${r}`, mirror(rimSlope(vl, vr))); }
+DRAW.set('lean-w', leanIn(true)); DRAW.set('lean-e', mirror(leanIn(false)));
+DRAW.set('lean-out-w', leanOut(true)); DRAW.set('lean-out-e', mirror(leanOut(false)));
 DRAW.set('top', topPiece());
 for (const p of TABLE.pieces) if (!DRAW.has(p.id)) throw new Error(`no greybox for ${p.id}`);
 for (const [id, d] of DRAW) { const b = BY_ID.get(id).box; if (b[2] !== d.w || b[3] !== d.h) throw new Error(`${id}: drawn ${d.w} x ${d.h}, table box ${b[2]} x ${b[3]}`); }
@@ -282,8 +333,14 @@ const ZONES = [
     rows: Array.from({ length: 14 }, (_, y) => Array.from({ length: 8 }, (_, x) => (y <= (x >= 5 ? 9 : [1, 3, 6, 7, 9][x]) ? '1' : '.')).join('')) },   // the last column meets the next face (a front run on the same lip row): the steep end ends in step-down form (GD fix-2 (3)); the case where the land's wall runs on south is the concave corner's (placeBoundary)
   { id: 'T8b', label: 'T8b steep run down to the west', at: [336, 848],
     rows: Array.from({ length: 14 }, (_, y) => Array.from({ length: 8 }, (_, x) => (y <= (x <= 2 ? 9 : [9, 7, 6, 3, 1][x - 3]) ? '1' : '.')).join('')) },
+  // cliff-contour-1: a hill whose back rim climbs and falls in one-row steps (rim slopes: 45 degree in the middle, 2:1 halves at the turns), its south face with a 2:1 stretch and a 45 degree stretch
+  { id: 'T9a', label: 'T9a slopes: back rim up and down in one-row steps; south face 2:1 and 45 degrees', at: [16, 1088],
+    rows: ['................', '.......11.......', '......1111......', '.....111111.....', '....11111111....', '1111111111111111', '1111111111111111', '1111111111111111', '1111111111111111', '1111111111111...', '111111111111....', '1111111111......', '11111111........', '................', '................', '................'] },
+  // a block whose west wall moves in going south (lean-w) and out again (lean-out-w), and whose east wall moves out (lean-out-e) and in (lean-e)
+  { id: 'T9b', label: 'T9b leans: side walls moving one column in and out', at: [304, 1088],
+    rows: ['...11111111...', '...11111111...', '...11111111...', '....11111111..', '....11111111..', '....11111111..', '....11111111..', '...11111111...', '...11111111...', '...11111111...', '...11111111...', '...11111111...', '...11111111...', '..............', '..............', '..............', '..............'] },
 ];
-const SHEET_W = 576, SHEET_H = 1088;
+const SHEET_W = 576, SHEET_H = 1360;
 
 // the land of a zone for the boundary below `level`: relief.mjs's accessor
 function landOfZone(z, level) {

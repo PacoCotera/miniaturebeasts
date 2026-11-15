@@ -14,7 +14,7 @@ import TABLE from '../../../../art/places/cliff-system.json' with { type: 'json'
 import { hash32 } from '../dualgrid.mjs';
 import { encodeRle } from '../blit.mjs';
 import { halve } from '../bakeset.mjs';
-import { PART, partAt, runAt } from './relief.mjs';
+import { PART, partAt, runAt, leanAt } from './relief.mjs';
 
 export { TABLE };
 export const ART = TABLE.cell, SCALE = TABLE.scale, CELL48 = ART * SCALE;
@@ -91,9 +91,20 @@ export function placeBoundary(A, o) {
   const up = (x, y) => { let k = 0; while (k < 3 && Lo(x, y - k)) k++; return k; };
   const stepDR = (x, y) => lip(x, y) && lip(x + 1, y + 1) && R(x + 1, y);   // the next column east has its lip one row lower
   const stepDL = (x, y) => lip(x, y) && lip(x - 1, y + 1) && R(x - 1, y);   // the next column west has its lip one row lower
-  const chain = (before, after) => { let b = 0, f = 0; while (b < 3 && before(b)) b++; while (f < 3 && after(f)) f++; return b + f >= 3 ? (b === 0 ? 'start' : f === 0 ? 'end' : 'mid') : null; };
-  const drRole = (x, y) => chain((b) => stepDR(x - 1 - b, y - 1 - b), (f) => stepDR(x + f, y + f));
-  const dlRole = (x, y) => chain((b) => stepDL(x + 1 + b, y - 1 - b), (f) => stepDL(x - f, y + f));
+  // cliff-contour-1, the slope rule: a face column's lip line runs from its west edge to its east edge through the half rows between its lip and its neighbours' when a neighbour's lip is one row off
+  // (vertex -1: half a row up, +1: half a row down, 0: on its own lip row). So every one-row step is drawn as a slope, never a right angle: (0, +1) and (-1, 0) are the two halves of a 2:1 slope going
+  // down to the east (dr-start, dr-end), (-1, +1) the 1:1 diagonal (dr-mid), and the mirror for down to the west (dl-start (+1, 0), dl-mid (+1, -1), dl-end (0, -1)). Any run of steps, from one step up.
+  const vertexL = (x, y) => (stepDR(x - 1, y - 1) ? -1 : stepDL(x, y) ? 1 : 0), vertexR = (x, y) => (stepDR(x, y) ? 1 : stepDL(x + 1, y - 1) ? -1 : 0);
+  const SLOPE = { '0,1': ['dr', 'start'], '-1,1': ['dr', 'mid'], '-1,0': ['dr', 'end'], '1,0': ['dl', 'start'], '1,-1': ['dl', 'mid'], '0,-1': ['dl', 'end'] };
+  const slopeOf = (x, y) => SLOPE[`${vertexL(x, y)},${vertexR(x, y)}`] || null;
+  const drRole = (x, y) => { const s = slopeOf(x, y); return s && s[0] === 'dr' ? s[1] : null; };
+  const dlRole = (x, y) => { const s = slopeOf(x, y); return s && s[0] === 'dl' ? s[1] : null; };
+  // a lean (cliff-contour-1): a side wall moving one column in toward the raised land going south leaves one south lip alone in its row: the wall leans over by a column (lean-w: the wall's outside is
+  // to the west, raised to the east; lean-e the mirror). The land keeps it (levels.mjs leanAt); the piece draws the upper wall's last cell, the lip cell and the cell under it.
+  const leanIn = (x, y) => leanAt(A, x, y);
+  // an outward lean: the wall moves one column out going south; the raised cell at the corner (low to the north and on the outside) is the lean-out piece, with the upper wall's last cell and the lower wall's first
+  // (the lower wall runs 3 rows or more before any face, so no end cap reaching up the wall meets the piece; else the rounded back corner stays)
+  const leanOut = (x, y) => { if (!R(x, y) || !Lo(x, y - 1)) return null; for (const [h, d] of [['w', -1], ['e', 1]]) if (Lo(x + d, y) && R(x - d, y - 1) && R(x - d, y - 2) && Lo(x, y - 2) && R(x - d, y) && [1, 2, 3].every((k) => R(x, y + k) && Lo(x + d, y + k))) return h; return null; };
   const items = [], covered = new Set(), ck = (x, y) => `${x},${y}`;
   const hiAt = o.hiBand || (() => false);   // hiBand(x, y): the low cell beside a lit band is so light that the band of the ground's own ramp would not clear it by 25 luma (AD 11-15): the piece takes the lighter band
   const emit = (id, x, y, hi = false) => {
@@ -105,6 +116,8 @@ export function placeBoundary(A, o) {
   for (let y = y0 - 5; y <= y1 + 2; y++) for (let x = x0 - 1; x <= x1 + 1; x++) {
     if (!lip(x, y)) continue;
     if (W(x, y)) { emit(W(x - 1, y) && lip(x - 1, y) ? 'way-r' : 'way-l', x, y, hiAt(x, y + 1)); continue; }
+    const lean = leanIn(x, y);
+    if (lean) { emit(`lean-${lean}`, x, y); continue; }   // no caps: the lean is the wall's own turn
     const run = runAt(A, x, y), steep = run && run.kind === 'steep' ? run : null;   // a steep run (rule 6): one side wall running down at an angle, no front slab per step
     const dr = steep ? null : drRole(x, y), dl = steep ? null : dlRole(x, y);
     const westEnd = !lip(x - 1, y), eastEnd = !lip(x + 1, y);
@@ -130,7 +143,17 @@ export function placeBoundary(A, o) {
     if (!R(x, y) || Lo(x, y + 1) || W(x, y)) continue;
     const n = Lo(x, y - 1), e = Lo(x + 1, y), w = Lo(x - 1, y);
     if (!n && !e && !w) continue;
-    if (n) { if (e && w) continue; emit(e ? 'rim-ne' : w ? 'rim-nw' : 'rim-n', x, y, hiAt(x, y - 1)); continue; }
+    const lo = n ? leanOut(x, y) : null;
+    if (lo) { emit(`lean-out-${lo}`, x, y); continue; }
+    if (n) {
+      // cliff-contour-1: the back rim's one-row steps are slopes too, by the same half-row vertices (the neighbour's rim one row lower: +1; one row higher: -1), drawn from above
+      const rl = Lo(x - 1, y) && R(x - 1, y + 1) ? 1 : R(x - 1, y) && R(x - 1, y - 1) && Lo(x - 1, y - 2) ? -1 : 0;
+      const rr = Lo(x + 1, y) && R(x + 1, y + 1) ? 1 : R(x + 1, y) && R(x + 1, y - 1) && Lo(x + 1, y - 2) ? -1 : 0;
+      // a side with a wall going down 2 rows or more keeps its rounded back corner (rim-ne, rim-nw): the slope's half on the other side gives way to it
+      const cornerW = rl === 0 && w && Lo(x - 1, y + 1), cornerE = rr === 0 && e && Lo(x + 1, y + 1), rs = cornerW || cornerE ? null : SLOPE[`${rl},${rr}`];
+      if (rs) { emit(`rim-${rs[0]}-${rs[1]}`, x, y, hiAt(x, y - 1)); continue; }
+      if (e && w) continue; emit(e ? 'rim-ne' : w ? 'rim-nw' : 'rim-n', x, y, hiAt(x, y - 1)); continue;
+    }
     if (e && w) continue;   // a ridge one cell wide: no piece (the check lists it)
     emit(e ? 'lip-side-e' : 'lip-side-w', x, y);
   }

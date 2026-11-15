@@ -130,6 +130,9 @@ export function placeProps(seed) {
       for (let y = 1; y < SH - 2; y++) for (let x = 1; x < SW - 1; x++) {
         const a = isC(x, y), b = isC(x + 1, y), c2 = isC(x, y + 1), d = isC(x + 1, y + 1); if (a === d && b === c2 && a !== b) st.pinch++;
         if (!lipAt(x, y)) continue;
+        // cliff-contour-1: a lean (a side wall moving one column in going south, levels.mjs leanAt) is no face: no lone face, no foot room
+        const lean = isC(x, y - 1) && !isC(x, y + 2) && [-1, 1].some((dd) => !isC(x + dd, y) && !isC(x + dd, y - 1) && [0, 1, 2, 3, 4].every((k) => isC(x - dd, y + k)));
+        if (lean) { st.leans = (st.leans || 0) + 1; continue; }
         if (!lipAt(x - 1, y) && !lipAt(x + 1, y) && !(lipAt(x - 1, y - 1) || lipAt(x + 1, y - 1) || lipAt(x - 1, y + 1) || lipAt(x + 1, y + 1))) st.loneFace++;
         if (y + FR + 2 < SH) for (let k = 1; k <= FR + 2; k++) if (isC(x, y + k)) { st.footShort++; (st.footAt || (st.footAt = [])).push([ax, ay, x, y, k]); break; } } }
     // nothing narrow: a cliff tile that sits in no 4 x 4 block of raised land (a spike, a ridge, a spur); tiles within 4 of the stitched edge are left out

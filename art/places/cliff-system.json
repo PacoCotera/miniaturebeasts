@@ -31,11 +31,12 @@
     "face": "south face column: lip (row 0), rock rows 1-3, foot strip (row 4)",
     "end": "cap on the low cell beyond a run's end: the rock rounds under the lip; overhangs the run's last column by 4 px",
     "corner": "convex: the end cap that turns into a side wall; concave: the run's last column tucking behind a wall",
-    "diagonal": "one column of a run of 3 or more 1-tile steps: the lip on the 45 degree line",
+    "diagonal": "the slope rule (cliff-contour-1): a face column whose neighbour's lip is one row off draws its lip line through the half row between them; start and end are the two halves of a 2:1 slope (8 px down over the column), mid the 45 degree line; any number of steps from one",
+    "lean": "a side wall moving one column over (cliff-contour-1): lean-{w,e} where it moves in toward the raised land going south (the upper wall's last cell, the lone lip, the cell under it), lean-out-{w,e} where it moves out (the upper wall's last cell, the corner, the lower wall's first cell); the lip and the rock lean over by a column at 45 degrees",
     "steep": "one column of a steep run (3+ steps of 1 column over that average more than 1.25 rows down): one side wall running down at an angle, edge-on rock in two planes with its crease on the slope, the lip stepping down along its top, the foot following; no strata, no cracks, no front slab per step",
     "way": "the way up: 2 columns, landing row above the lip, the stair cut through lip and rock",
     "side": "side walls: the lip seen from above on the ring cell, the rock edge-on on the flank cell",
-    "rim": "the back rim: a lit edge on the ring cell and a drop shade on the low cell north of it",
+    "rim": "the back rim: a lit edge on the ring cell and a drop shade on the low cell north of it; rim-{dr,dl}-{start,mid,end}: its one-row steps as slopes by the same half-row vertices as the faces' (cliff-contour-1)",
     "top": "the raised top, one level paler than the meadow"
   },
   "pieces": [
@@ -94,6 +95,16 @@
     { "id": "rim-n", "family": "rim", "zone": "T4", "part": "ring N (low to the north)", "box": [0, -16, 16, 32], "covers": [[0, 0]], "line": 0, "cls": 0 },
     { "id": "rim-nw", "family": "rim", "zone": "T4", "part": "ring N + W (rounded back corner)", "box": [0, -16, 16, 32], "covers": [[0, 0]], "line": 0, "cls": 0 },
     { "id": "rim-ne", "family": "rim", "zone": "T4", "part": "ring N + E (rounded back corner)", "box": [0, -16, 16, 32], "covers": [[0, 0]], "line": 0, "cls": 0 },
+    { "id": "rim-dr-start", "family": "rim", "zone": "T9a", "part": "ring N, the rim one row lower to the east (2:1 half: flat, then down 8 px)", "box": [0, -16, 16, 32], "covers": [[0, 0]], "line": 0, "cls": 0 },
+    { "id": "rim-dr-mid", "family": "rim", "zone": "T9a", "part": "ring N on a 45 degree rim going down to the east (and the one-row wall cell above it)", "box": [0, -16, 16, 32], "covers": [[0, 0], [0, -1]], "line": 0, "cls": 0 },
+    { "id": "rim-dr-end", "family": "rim", "zone": "T9a", "part": "ring N, the rim one row higher to the west (2:1 half; and the one-row wall cell above it)", "box": [0, -16, 16, 32], "covers": [[0, 0], [0, -1]], "line": 0, "cls": 0 },
+    { "id": "rim-dl-start", "family": "rim", "zone": "T9a", "part": "ring N, the rim one row lower to the west (2:1 half)", "box": [0, -16, 16, 32], "covers": [[0, 0]], "line": 0, "cls": 0 },
+    { "id": "rim-dl-mid", "family": "rim", "zone": "T9a", "part": "ring N on a 45 degree rim going down to the west (and the one-row wall cell above it)", "box": [0, -16, 16, 32], "covers": [[0, 0], [0, -1]], "line": 0, "cls": 0 },
+    { "id": "rim-dl-end", "family": "rim", "zone": "T9a", "part": "ring N, the rim one row higher to the east (2:1 half; and the one-row wall cell above it)", "box": [0, -16, 16, 32], "covers": [[0, 0], [0, -1]], "line": 0, "cls": 0 },
+    { "id": "lean-w", "family": "lean", "zone": "T9b", "part": "ring S alone (a west wall moving in going south) + the upper wall's last flank cell + the cell under the lip", "hand": "w", "box": [-16, 0, 32, 32], "covers": [[-1, 0], [0, 0], [0, 1]], "line": 1, "cls": 1 },
+    { "id": "lean-e", "family": "lean", "zone": "T9b", "part": "ring S alone (an east wall moving in going south) + the upper wall's last flank cell + the cell under the lip", "hand": "e", "box": [0, 0, 32, 32], "covers": [[1, 0], [0, 0], [0, 1]], "line": 1, "cls": 1 },
+    { "id": "lean-out-w", "family": "lean", "zone": "T9b", "part": "ring N + W (a west wall moving out going south) + the upper wall's last flank cell + the lower wall's first", "hand": "w", "box": [-16, -16, 32, 32], "covers": [[0, -1], [0, 0], [-1, 0]], "line": 0, "cls": 1 },
+    { "id": "lean-out-e", "family": "lean", "zone": "T9b", "part": "ring N + E (an east wall moving out going south) + the upper wall's last flank cell + the lower wall's first", "hand": "e", "box": [0, -16, 32, 32], "covers": [[0, -1], [0, 0], [1, 0]], "line": 0, "cls": 1 },
     { "id": "top", "family": "top", "zone": "T1", "part": "top", "box": [0, 0, 16, 16], "covers": [[0, 0]], "line": -1000000, "cls": 0 }
   ]
 }
