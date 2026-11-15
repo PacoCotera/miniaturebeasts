@@ -1,0 +1,1116 @@
+{
+	"__header__": {
+		"fileType": "LDtk Project JSON",
+		"app": "LDtk",
+		"doc": "https://ldtk.io/json",
+		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+		"appAuthor": "Sebastien 'deepnight' Benard",
+		"appVersion": "1.5.3",
+		"url": "https://ldtk.io"
+	},
+	"iid": "00000000-0000-4000-8000-000000009999",
+	"jsonVersion": "1.5.3",
+	"appBuildId": 0,
+	"nextUid": 200,
+	"identifierStyle": "Capitalize",
+	"toc": [],
+	"worldLayout": "Free",
+	"worldGridWidth": 256,
+	"worldGridHeight": 256,
+	"defaultLevelWidth": 256,
+	"defaultLevelHeight": 256,
+	"defaultPivotX": 0,
+	"defaultPivotY": 0,
+	"defaultGridSize": 16,
+	"defaultEntityWidth": 16,
+	"defaultEntityHeight": 16,
+	"bgColor": "#40465B",
+	"defaultLevelBgColor": "#696A79",
+	"minifyJson": false,
+	"externalLevels": true,
+	"exportTiled": false,
+	"simplifiedExport": false,
+	"imageExportMode": "None",
+	"exportLevelBg": true,
+	"pngFilePattern": null,
+	"backupOnSave": false,
+	"backupLimit": 10,
+	"levelNamePattern": "%world_%idx",
+	"tutorialDesc": "Set-piece stamps: plain blocks, read by src/gen7/places.mjs through src/gen7/stamps.json (tools/gen7-stamps.mjs).",
+	"customCommands": [],
+	"flags": [],
+	"defs": {
+		"layers": [
+			{
+				"__type": "IntGrid",
+				"identifier": "Kinds",
+				"type": "IntGrid",
+				"uid": 1,
+				"gridSize": 16,
+				"displayOpacity": 1,
+				"intGridValues": [
+					{
+						"value": 1,
+						"identifier": ".",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 2,
+						"identifier": "r",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 3,
+						"identifier": "R",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 4,
+						"identifier": "S",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 5,
+						"identifier": "L",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 6,
+						"identifier": "O",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 7,
+						"identifier": "h",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 8,
+						"identifier": "p",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 9,
+						"identifier": "m",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 10,
+						"identifier": "k",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 11,
+						"identifier": "c",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 12,
+						"identifier": "x",
+						"color": "#888888",
+						"tile": null,
+						"groupUid": 0
+					}
+				]
+			},
+			{
+				"__type": "Entities",
+				"identifier": "Anchor",
+				"type": "Entities",
+				"uid": 2,
+				"gridSize": 16,
+				"displayOpacity": 1,
+				"intGridValues": []
+			}
+		],
+		"entities": [
+			{
+				"identifier": "Anchor",
+				"uid": 3,
+				"width": 16,
+				"height": 16,
+				"color": "#CC3377",
+				"fieldDefs": []
+			}
+		],
+		"tilesets": [],
+		"enums": [],
+		"externalEnums": [],
+		"levelFields": [
+			{
+				"identifier": "kind",
+				"__type": "String",
+				"type": "F_String",
+				"uid": 4,
+				"isArray": false,
+				"canBeNull": false,
+				"defaultOverride": null
+			},
+			{
+				"identifier": "lands",
+				"__type": "Array<String>",
+				"type": "F_String",
+				"uid": 5,
+				"isArray": true,
+				"canBeNull": false,
+				"defaultOverride": null
+			},
+			{
+				"identifier": "flip",
+				"__type": "String",
+				"type": "F_String",
+				"uid": 6,
+				"isArray": false,
+				"canBeNull": false,
+				"defaultOverride": null
+			}
+		]
+	},
+	"levels": [
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-meadow-1",
+			"iid": "00000000-0000-4000-8000-000000000001",
+			"uid": 101,
+			"worldX": 160,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-meadow-1.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"meadow"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-meadow-2",
+			"iid": "00000000-0000-4000-8000-000000000002",
+			"uid": 102,
+			"worldX": 320,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-meadow-2.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"meadow"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-meadow-3",
+			"iid": "00000000-0000-4000-8000-000000000003",
+			"uid": 103,
+			"worldX": 480,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-meadow-3.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"meadow"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-wood-1",
+			"iid": "00000000-0000-4000-8000-000000000004",
+			"uid": 104,
+			"worldX": 640,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-wood-1.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"wood"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-wood-2",
+			"iid": "00000000-0000-4000-8000-000000000005",
+			"uid": 105,
+			"worldX": 800,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-wood-2.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"wood"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-wood-3",
+			"iid": "00000000-0000-4000-8000-000000000006",
+			"uid": 106,
+			"worldX": 960,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-wood-3.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"wood"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-rock-1",
+			"iid": "00000000-0000-4000-8000-000000000007",
+			"uid": 107,
+			"worldX": 1120,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-rock-1.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"rock"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-rock-2",
+			"iid": "00000000-0000-4000-8000-000000000008",
+			"uid": 108,
+			"worldX": 1280,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-rock-2.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"rock"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-rock-3",
+			"iid": "00000000-0000-4000-8000-000000000009",
+			"uid": 109,
+			"worldX": 1440,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-rock-3.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"rock"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-pond-1",
+			"iid": "00000000-0000-4000-8000-000000000010",
+			"uid": 110,
+			"worldX": 1600,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-pond-1.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"pond"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-pond-2",
+			"iid": "00000000-0000-4000-8000-000000000011",
+			"uid": 111,
+			"worldX": 1760,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-pond-2.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"pond"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-pond-3",
+			"iid": "00000000-0000-4000-8000-000000000012",
+			"uid": 112,
+			"worldX": 1920,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-pond-3.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"pond"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-cramped",
+			"iid": "00000000-0000-4000-8000-000000000013",
+			"uid": 113,
+			"worldX": 2080,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 80,
+			"pxHei": 48,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-cramped.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed-cramped",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"meadow",
+						"wood",
+						"rock",
+						"pond"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "bed-nook",
+			"iid": "00000000-0000-4000-8000-000000000014",
+			"uid": 114,
+			"worldX": 2240,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 80,
+			"pxHei": 48,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/bed-nook.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "sleepers-bed-nook",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"meadow",
+						"wood",
+						"rock",
+						"pond"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "overhang",
+			"iid": "00000000-0000-4000-8000-000000000015",
+			"uid": 115,
+			"worldX": 2400,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 64,
+			"pxHei": 64,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/overhang.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "overhang",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"meadow",
+						"wood",
+						"rock",
+						"pond"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		},
+		{
+			"__header__": {
+				"fileType": "LDtk Level JSON",
+				"app": "LDtk",
+				"doc": "https://ldtk.io/json",
+				"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+				"appAuthor": "Sebastien 'deepnight' Benard",
+				"appVersion": "1.5.3",
+				"url": "https://ldtk.io"
+			},
+			"identifier": "split-stone-ground",
+			"iid": "00000000-0000-4000-8000-000000000016",
+			"uid": 116,
+			"worldX": 2560,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 112,
+			"pxHei": 80,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": false,
+			"bgRelPath": null,
+			"bgPos": null,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "stamps/split-stone-ground.ldtkl",
+			"fieldInstances": [
+				{
+					"__identifier": "kind",
+					"__type": "String",
+					"__value": "split-stone-ground",
+					"__tile": null,
+					"defUid": 4,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "lands",
+					"__type": "Array<String>",
+					"__value": [
+						"rock"
+					],
+					"__tile": null,
+					"defUid": 5,
+					"realEditorValues": []
+				},
+				{
+					"__identifier": "flip",
+					"__type": "String",
+					"__value": "ew",
+					"__tile": null,
+					"defUid": 6,
+					"realEditorValues": []
+				}
+			],
+			"layerInstances": null,
+			"__neighbours": []
+		}
+	],
+	"worlds": [],
+	"dummyWorldIid": "00000000-0000-4000-8000-000000009998"
+}

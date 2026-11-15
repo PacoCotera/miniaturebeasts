@@ -15,6 +15,8 @@
     { "id": "litter", "name": "Leaf litter", "value": 11, "z": 9, "play": "walk", "T": "GRASS", "editorColour": "#8a6a3c" },
     { "id": "drygrass", "name": "Dry grass", "value": 12, "z": 7, "play": "walk", "T": "GRASS", "editorColour": "#b8a85a" },
     { "id": "turf", "name": "Short turf", "value": 13, "z": 8, "play": "walk", "T": "GRASS", "editorColour": "#7fae5e" },
-    { "id": "scree", "name": "Scree", "value": 14, "z": 10, "play": "walk", "T": "SAND", "editorColour": "#a9a39a" }
+    { "id": "scree", "name": "Scree", "value": 14, "z": 10, "play": "walk", "T": "SAND", "editorColour": "#a9a39a" },
+    { "id": "bed-ground", "name": "Bed ground (the heart's patch)", "value": 15, "z": 14, "play": "walk", "T": "GRASS", "editorColour": "#52753a" },
+    { "id": "split-stone-ground", "name": "Split Stone ground (the heart's patch)", "value": 16, "z": 15, "play": "walk", "T": "GRASS", "editorColour": "#7c8794" }
   ]
 }

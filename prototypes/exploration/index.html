@@ -487,7 +487,9 @@ function firstPods(seed, cell, pods) {
   const R = makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
   const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
   const ok = c => podSite(c, buried());
-  const pick = (pools, id, sp) => { const pool = pools.find(a => a.length); if (pool) { const c = R.pick(pool); out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); } };
+  // a first pod lies in a place that holds a pod slot (the find mix gives most places one, not every place): a few picks are tried, one place's layout each
+  const hasSlot = c => !(PL.ready && G.gen === 7) || (layout(String(c)).podSlots || []).length > 0;
+  const pick = (pools, id, sp) => { let pool = pools.find(a => a.length); for (let n = 0; pool && n < 6; n++) { const c = R.pick(pool); if (!hasSlot(c) && pool.length > 1) { pool = pool.filter(q => q !== c); continue; } out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); break; } };
   const d1 = reach.filter(c => dist(c) === 1);
   // pod A lies in the start's own place when it holds a pod slot (the generator gives every start one: hold.mjs, "a start's guarantees"), so the first Call there can lift it; else at distance 1 as before
   const here = PL.ready && G.gen === 7 ? layout(String(cell)) : null;
@@ -617,7 +619,7 @@ const PROP_DY = { 'find-glint-1': 0, 'way-through-mark-stone': 0, 'way-through-m
     // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
     ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
+const PROP_SIZE = { 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32], 'canopy-legacy': [88, 76], 'roof-legacy': [104, 22],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
@@ -5599,6 +5601,9 @@ function drawPatchBody(t) {
   { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
     if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }
 
+  // the set pieces the page draws (the slab of a sleepers' bed: art/props prop-slab), standing on their tile's foot
+  // (the 2 x 1 heart slab, sp.w tiles wide, sorted on its foot row: the named empty slot heart-slab draws nothing until its art is signed)
+  for (const sp of lay.pieces || []) { const pc = propPiece(sp.piece), sw = sp.w || 1; if (pc && pc.w > 1 && (see(sp.x, sp.y) || (sw > 1 && see(sp.x + 1, sp.y)))) { const x = sp.x * ts, y = sp.y * ts; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts * sw - pc.w) >> 1), SY(y) + ts - pc.h, spriteRm(sp.x, sp.y)) }); } }
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, findRm(f.x, f.y)) }); }
   for (const c of live.cr) {
@@ -5773,8 +5778,7 @@ function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
 // After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
 // The edge look on the walk (owner walk notes 4, 13, 14, 16, 26-28; one vocabulary with the map, in the map's ink):
 //   can't go yet (the Probe's reach): a dashed ink line on the haze, along the side's inner face;
-//   a way through: two threshold marks across the gap and, within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
-// The art desk's pieces: way-through-mark-stone and -stake (the two threshold marks), drawn from art/props.
+//   a way through: within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
 // [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
 const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land', TAB_NEAR = 3;
 function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
@@ -5798,16 +5802,9 @@ function drawEdgeLook(t) {
       for (let d = 0; d < len; d += 14) { if (vertical) R(x0 - 1, y0 + d, 2, Math.min(8, len - d), C.bark); else R(x0 + d, y0 - 1, Math.min(8, len - d), 2, C.bark); }   // whole pixels only: the screen holds palette colours, nothing blended
       g.restore();
       continue; }
-    // a way through: two threshold marks across the gap on the edge tiles, and the tab
+    // a way through: the land shows it; only the tab names the next place (the two threshold marks are gone)
     const c = stepCell(lay.cell, dir); if (c < 0) continue;
     const near = e.o.side === 'N' ? P.y - e.y0 : e.o.side === 'S' ? e.y0 - 1 - P.y : e.o.side === 'W' ? P.x - e.x0 : e.x0 - 1 - P.x;
-    const mx = vertical ? sx(e.x0) : null, my = vertical ? null : sy(e.y0);
-    clipView();
-    for (const end of [0, 1]) {   // the notched stone at the gap's first end, the ribbon stake at its second (the art director's signed pieces, 3 px to an art pixel), each standing on its foot just inside the place
-      const pc = propPiece(end ? 'way-through-mark-stakex3' : 'way-through-mark-stonex3'); if (pc.w <= 1) continue;
-      const fx = vertical ? Math.round(mx) + (e.o.side === 'W' ? 14 : -14) : Math.round(end ? sx(e.x1) + 14 : sx(e.x0) - 14), fy = vertical ? Math.round(end ? sy(e.y1) + 12 : sy(e.y0) - 2) : Math.round(my) + (e.o.side === 'N' ? 24 : -4);
-      g.drawImage(pc.canvas(0), fx - (pc.w >> 1), fy - pc.h); }
-    g.restore();
     if (near <= TAB_NEAR && warmReady(String(c)) && !FX.slide) {   // the hint: the Probe has read the neighbour, so its land is named; none in the new place while the old picture slides out with its own tab (one tab the whole slide)
       const name = groundName(G.land[c], false), word = (name ? name.charAt(0).toUpperCase() + name.slice(1) : '') + ' →', w = textW(word, 2) + 10;
       const cx = vertical ? sx(e.x0) : (sx(e.x0) + sx(e.x1)) / 2, cy = vertical ? (sy(e.y0) + sy(e.y1)) / 2 : sy(e.y0);

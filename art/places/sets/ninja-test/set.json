@@ -178,6 +178,12 @@
         }
       ]
     },
+    "bed-ground": {
+      "drawAs": "grass"
+    },
+    "split-stone-ground": {
+      "drawAs": "grass"
+    },
     "scree": {
       "fill": {
         "sheets": ["fill-scree.png"]
