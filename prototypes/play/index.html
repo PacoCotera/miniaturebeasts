@@ -79,7 +79,8 @@ body.phone iframe{image-rendering:pixelated}
 .dsbig{display:block; background:#fff; border-radius:var(--mb-radius-8)}
 .ds-lamps{display:flex; gap:24px; font-size:12px; line-height:16px; color:var(--mist)}
 .ds-lamp{display:flex; align-items:center; gap:8px}
-.dslamp{width:16px; height:16px; image-rendering:pixelated}
+.dslamp{position:relative; display:block; width:16px; height:16px}
+.dslamp>i{position:absolute; left:0; top:0; width:2px; height:2px; background:none}
 .ds-done{align-self:flex-end}
 /* the Caddy's own canvas: kept off screen, drawn as the dock's e-paper and copied into the miniature and the sheet */
 #caddyHold{position:absolute; width:0; height:0; overflow:hidden}

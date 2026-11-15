@@ -5,13 +5,15 @@ import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { Dialog, VisuallyHidden } from "radix-ui";
+import { lampShadow } from "../../src/lamp8.mjs";
 
 const px = (v) => v + "px";
 const NAME = "The dock's screen";   // today's words (the button's name and the dialog's title, hidden)
 const EP_W = 808, EP_H = 288;
 
-// a cradle lamp: the placed 8 px lamp picture (stone when off, mint seated, amber needs a hand), shown at 2×, nearest-neighbour; the breath dims it (opacity), the swell brightens it (filter)
-function Lamp({ l }) { return <img className="dslamp" alt="" width={8} height={8} src={l.src} data-lamp={l.colour || "off"} style={{ opacity: l.opacity || undefined, filter: l.filter || undefined }} />; }
+// a cradle lamp: the 8 × 8 pixel component (src/lamp8.mjs), shown at a whole 2× in token colours (stone off, mint docked, amber needs a hand); the breath dims it (opacity), the swell shows the highlight pixel
+const LAMP_PX = 2;
+function Lamp({ l }) { return <span className="dslamp" aria-hidden="true" data-lamp={l.colour || "off"} data-highlight={l.highlight ? "1" : undefined} style={{ opacity: l.opacity || undefined }}><i style={{ boxShadow: lampShadow({ state: l.colour || "off", highlight: !!l.highlight }, LAMP_PX) }} /></span>; }
 
 function DockScreen({ api }) {
   const [open, setOpen] = useState(false), [s, setS] = useState(api.state), mini = useRef(null), big = useRef(null);
