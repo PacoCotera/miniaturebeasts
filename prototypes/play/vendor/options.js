@@ -31731,8 +31731,7 @@ var import_client = __toESM(require_client(), 1);
 // wt-ui-dock-away-glyph-1/prototypes/play/src/dockglyph.mjs
 var GLYPH_W = 16;
 var GLYPH_H = 24;
-var GRID_Y0 = 3;
-var GRID = [
+var GRID_24 = [
   "..############..",
   ".##############.",
   "###..........###",
@@ -31741,30 +31740,64 @@ var GRID = [
   "###..........###",
   "###..........###",
   "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
   "################",
   "################",
   "####..##########",
-  "####..#####..###",
+  "####..####....##",
   "##......##....##",
   "##......##....##",
-  "####..#####..###",
+  "####..####....##",
   "####..##########",
   ".##############.",
   "..############.."
 ];
-var TOKEN_HEX = { fog: "#c6c4d8", ink: "#1a1725", night: "#29253a" };
-var STATE_TOKEN = { away: "fog", lit: "ink", docked: "ink" };
-function glyphMap() {
+var GRID_22 = [
+  "..############..",
+  ".##############.",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "################",
+  "################",
+  "####..##########",
+  "####..####....##",
+  "##......##....##",
+  "##......##....##",
+  "####..####....##",
+  "####..##########",
+  ".##############.",
+  "..############.."
+];
+var GRID_22_Y0 = 1;
+var SHIP = "24";
+var GRID = SHIP === "22" ? GRID_22 : GRID_24;
+var GRID_Y0 = SHIP === "22" ? GRID_22_Y0 : 0;
+var TOKEN_HEX = { mist: "#8d8aa6", ink: "#1a1725", night: "#29253a" };
+var STATE_TOKEN = { away: "mist", lit: "ink", docked: "ink" };
+function glyphMap(grid = GRID, y0 = GRID_Y0) {
   const blank = ".".repeat(GLYPH_W), rows = [];
   for (let y = 0; y < GLYPH_H; y++) {
-    const g2 = GRID[y - GRID_Y0];
+    const g2 = grid[y - y0];
     rows.push(g2 ? g2.replace(/#/g, "o") : blank);
   }
   return rows;
 }
-function glyphPixels({ state = "away", ink } = {}) {
-  const hex = ink || TOKEN_HEX[STATE_TOKEN[state] || "fog"], out = [];
-  glyphMap().forEach((row, y) => {
+function glyphPixels({ state = "away", ink, grid, y0 } = {}) {
+  const hex = ink || TOKEN_HEX[STATE_TOKEN[state] || "mist"], out = [];
+  glyphMap(grid || GRID, y0 === void 0 ? grid ? 0 : GRID_Y0 : y0).forEach((row, y) => {
     for (let x = 0; x < GLYPH_W; x++) if (row[x] === "o") out.push({ x, y, hex });
   });
   return out;
