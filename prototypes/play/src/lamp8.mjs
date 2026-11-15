@@ -6,7 +6,7 @@
 
 export const LAMP_SIZE = 8;
 export const LAMP_CUT = 2;                                  // 2 = a two-pixel step (UI desk 11-15: at 1x on the phone the one-pixel cut reads as a square); 1 = one pixel off each corner
-export const HIGHLIGHT_AT = [1, 1];                         // the one highlight pixel, shown only in the swell
+export const HIGHLIGHT_AT = [2, 2];                         // the one highlight pixel, shown only in the swell
 export const TOKEN_HEX = { stone: "#5d5974", mint: "#adf6e0", amber: "#ffa83f", fog: "#c6c4d8", white: "#ffffff" };   // the values of tokens.json (a test holds them to it)
 export const STATE_TOKEN = { off: "stone", mint: "mint", warm: "mint", amber: "amber" };
 // the highlight token depends on the lamp's colour: white on mint (fog vanishes on mint), fog on stone and amber

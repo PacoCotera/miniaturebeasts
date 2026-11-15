@@ -22,7 +22,7 @@ test("only the state's token, the highlight's fog, and transparency; no partial 
     const px = lampPixels({ state, cutPx, highlight }), body = TOKEN_HEX[STATE_TOKEN[state]], hi = TOKEN_HEX[HIGHLIGHT_TOKEN[state]], hexes = new Set(px.map((p) => p.hex));
     for (const h of hexes) assert.ok(h === body || (highlight && h === hi), state + " " + h);
     assert.equal(px.filter((p) => p.hex === hi).length, highlight ? 1 : 0);
-    if (highlight) { const p = px.find((q) => q.hex === hi); assert.deepEqual([p.x, p.y], [1, 1]); }
+    if (highlight) { const p = px.find((q) => q.hex === hi); assert.deepEqual([p.x, p.y], [2, 2]); }
     for (const p of px) { assert.ok(p.x >= 0 && p.x < LAMP_SIZE && p.y >= 0 && p.y < LAMP_SIZE); assert.match(p.hex, /^#[0-9a-f]{6}$/, "an opaque six-digit hex: no alpha"); }
     assert.equal(px.length, (cutPx === 1 ? 60 : 52), "the cut pixels are transparent");
   }
