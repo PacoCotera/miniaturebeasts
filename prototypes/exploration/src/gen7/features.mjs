@@ -204,9 +204,12 @@ export function realmFeatures(J) {
   const dest = [];
   const D = (kind, c, feature, heart) => dest.push({ kind, c, feature, index: Math.max(0, byId.get(feature).cells.indexOf(c)), heart });
   for (const k of passes) D('pass', k.c, k.id, 'post yard');
-  for (const g of gaps) D('ravine', g.mid, g.id, 'overhang');
+  // a ravine is a destination only where it reads as one (F4, designer on F3): raised land on both sides of most of its cut cells, across the stream's line or across the gap
+  const reads = (cells, along) => { const d = along === 1 ? RW : 1; let n = 0; for (const c of cells) if (c - d >= 0 && c + d < NR && level[c - d] && level[c + d] && !wet(c - d) && !wet(c + d)) n++; return n * 3 >= 2 * cells.length; };
+  stats.ravinesNotRead = 0;
+  for (const g of gaps) { if (reads(g.cells, g.axis === 'x' ? 1 : RW)) D('ravine', g.mid, g.id, 'overhang'); else stats.ravinesNotRead++; }
   for (const f of falls) D('falls', f.foot, 'stream-' + f.stream, 'overhang');
-  for (const r of ravines) D('ravine head', r.head, 'stream-' + r.stream, 'overhang');
+  for (const r of ravines) { const along = r.cells.length > 1 ? Math.abs(r.cells[1] - r.cells[0]) : Math.abs(r.mouth - r.cells[0]); if (reads(r.cells, along === 1 ? 1 : RW)) D('ravine head', r.head, 'stream-' + r.stream, 'overhang'); else stats.ravinesNotRead++; }
   for (const st of streams) { if (st.drop) continue; const s = st.cells[st.seen]; if (s !== undefined && nb4(s).some(n => level[n])) D('spring', s, 'stream-' + st.id, 'sleepers\' bed'); }
   for (const st of streams) if (st.mouth.kind === 'river' || st.mouth.kind === 'lake') D('stream mouth', st.cells[st.cells.length - 1], 'stream-' + st.id, 'herd ground');
   for (const b of bodies) if (b.kind === 'river') for (const f of b.fords) D('ford', f, 'river-' + b.id, 'herd ground');
