@@ -279,7 +279,7 @@ function violAt(r, W, H, x, y, fr) {
   }
   return n;
 }
-const violBox = (r, W, H, x0, y0, x1, y1, fr) => { let n = 0; for (let y = Math.max(1, y0 - 3); y <= Math.min(H - 2, y1 + 3); y++) for (let x = Math.max(1, x0 - 3); x <= Math.min(W - 2, x1 + 3); x++) n += violAt(r, W, H, x, y, fr); return n; };
+const violBox = (r, W, H, x0, y0, x1, y1, fr) => { let n = 0; for (let y = Math.max(1, y0 - footRoom(fr)); y <= Math.min(H - 2, y1 + 3); y++) for (let x = Math.max(1, x0 - 3); x <= Math.min(W - 2, x1 + 3); x++) n += violAt(r, W, H, x, y, fr); return n; };
 
 // ---- straight runs (land call 3): side walls at most 10 tiles, south faces 10, back rims 14; a longer run gets a one-tile jog, 6 to 10 tiles from its start (from the tile hash) ----
 const CAP = { south: 10, side: 10, rim: 14 };
@@ -315,20 +315,29 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
       const cut = []; for (let t = run.from + 3; t <= end - 3; t++) if ((alongW + t + hl) % P === 0) cut.push(t);
       const pieces = [], edges = [run.from, ...cut, end];
       for (let i = 0; i + 1 < edges.length; i++) pieces.push({ a: edges[i], b: edges[i + 1], j: i === 0 && edges.length > 2 ? jOf(edges[1] - 1) : jOf(edges[i]) });
-      for (const pc of pieces) {
-        if ((pc.j & 1) === 0 || pc.a < JOG_CLEAR || pc.b > len - JOG_CLEAR) continue;
-        let done = false;
+      // a run of 11 to 13 may hold no such column 3 tiles in from both ends: the column half a period on is used then, and the part after it moves (a single world-fixed jog, again not counted from the start)
+      if (!cut.length) { for (let t = run.from + 3; t <= end - 3; t++) if ((alongW + t + hl) % P === P / 2) { pieces.length = 0; pieces.push({ a: run.from, b: t, j: 0 }, { a: t, b: end, j: 1 }); break; } }
+      // one piece moved one tile, by the first of the two moves that leaves no shape check failing round it and fewer tiles over the cap on the lines near
+      const shift = pc => {
+        if (pc.a < JOG_CLEAR || pc.b > len - JOG_CLEAR) return false;
         for (const mv of K.moves) {
           const tiles = []; for (let t = pc.a; t < pc.b; t++) for (const [dx, dy, v] of mv) tiles.push([(K.alongX ? t : run.l) + dx, (K.alongX ? run.l : t) + dy, v]);
           if (tiles.some(([x, y, v]) => x < 1 || y < 1 || x >= W - 1 || y >= H - 1 || (lk && lk[y * W + x]) || (v === 1 && noRaise[y * W + x]))) continue;
           const xs = tiles.map(p => p[0]), ys = tiles.map(p => p[1]), b = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], old = tiles.map(([x, y]) => r[y * W + x]);
           for (const [x, y, v] of tiles) r[y * W + x] = v;
-          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) === 0 && (() => { const ex1 = excess(K, run.l - 2, run.l + 2); tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; }); const ex0 = excess(K, run.l - 2, run.l + 2); for (const [x, y, v] of tiles) r[y * W + x] = v; return ex1 < ex0; })()) { done = true; jogs++; break; }
+          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) === 0 && (() => { const ex1 = excess(K, run.l - 2, run.l + 2); tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; }); const ex0 = excess(K, run.l - 2, run.l + 2); for (const [x, y, v] of tiles) r[y * W + x] = v; return ex1 < ex0; })()) { jogs++; return true; }
           if (info.dbg) (info.why || (info.why = [])).push(`try ${K.k} ${pc.a}-${pc.b} ${tiles.length}t: ${[...new Set(DBGV)].join(',')}`);
           tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; });
         }
-        if (!done) { missed++; (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`); }
-      }
+        return false;
+      };
+      // the odd pieces move; where one cannot (a shape check fails round it), the even pieces either side of it move instead, so it stands alone between two jogs (both are world-fixed pieces, the same from every window)
+      pieces.forEach((pc, i) => {
+        if ((pc.j & 1) === 0) return;
+        if (shift(pc)) return;
+        missed++; (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`);
+        for (const nb of [pieces[i - 1], pieces[i + 1]]) if (nb && (nb.j & 1) === 0) shift(nb);
+      });
     }
   }
   return { jogs, missed };
@@ -443,7 +452,12 @@ function fixLeft(r, W, H, rule, lk, noRaise) {
         const cs = []; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 1 && b >= 1 && a < W - 1 && b < H - 1 && !(lk && lk[b * W + a]) && (r[b * W + a] || !noRaise[b * W + a])) cs.push(b * W + a); }
         const bx = [x - 3, y - 3, x + 3, y + 3]; DBGV.length = 0; const before = violBox(r, W, H, ...bx, rule.faceRows); let best = before, pick = null;
         const tryset = s => { for (const i of s) r[i] ^= 1; DBGV.length = 0; const v = violBox(r, W, H, ...bx, rule.faceRows); for (const i of s) r[i] ^= 1; if (v < best) { best = v; pick = s; } return v === 0; };
+        // a lip with a raised tile too near below it (a short foot) first has the low tiles between raised, whatever their number (what the foot-room pass P6 does), when none is held or kept low
+        // (or, where one of them may not be raised, the raised tile itself lowered)
+        const fill = []; let near = -1; if (r[y * W + x] && !r[(y + 1) * W + x]) for (let k = 2; k <= footRoom(rule.faceRows); k++) if (r[(y + k) * W + x]) { for (let j = 1; j < k; j++) fill.push((y + j) * W + x); near = (y + k) * W + x; break; }
         search: {
+          if (fill.length && fill.every(i => !(lk && lk[i]) && !noRaise[i]) && tryset(fill)) break search;
+          if (near >= 0 && !(lk && lk[near]) && tryset([near])) break search;
           for (let p = 0; p < cs.length; p++) for (let q = p + 1; q < cs.length; q++) if (tryset([cs[p], cs[q]])) break search;
           for (let p = 0; p < cs.length; p++) for (let q = p + 1; q < cs.length; q++) for (let t = q + 1; t < cs.length; t++) if (tryset([cs[p], cs[q], cs[t]])) break search;
         }
@@ -607,7 +621,14 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
           const low = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (r[m]) low.add(m); } }
           const T = [...low]; let ok = T.every(i => { const x = i % W, y = (i / W) | 0; return !lk[i] && x >= 3 && y >= 3 && x < W - 3 && y < H - 3; });
           if (ok) for (const i of T) { let touchesLow = false; const x = i % W, y = (i / W) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (!r[m] && !low.has(m)) touchesLow = true; } if (!touchesLow && !c.tiles.includes(i)) { ok = false; break; } }
-          if (ok) { for (const i of T) { r[i] = 0; lk[i] = 2; } (info.necks || (info.necks = [])).push(c.n); changed = true; continue; }
+          // (land-b3f-foot-1) a neck is made only where it leaves no shape check failing that did not fail before (a held low neck cannot be raised again: a lip over it with a raised tile within the foot room below would stay short); else the part is handled as a mesa below
+          if (ok) {
+            let nx0 = W, ny0 = H, nx1 = -1, ny1 = -1; for (const i of T) { const x = i % W, y = (i / W) | 0; if (x < nx0) nx0 = x; if (x > nx1) nx1 = x; if (y < ny0) ny0 = y; if (y > ny1) ny1 = y; }
+            DBGV.length = 0; const before = violBox(r, W, H, nx0, ny0, nx1, ny1, L.rule.faceRows);
+            for (const i of T) r[i] = 0;
+            DBGV.length = 0; if (violBox(r, W, H, nx0, ny0, nx1, ny1, L.rule.faceRows) > before) { for (const i of T) r[i] = 1; ok = false; }
+            else { for (const i of T) lk[i] = 2; (info.necks || (info.necks = [])).push(c.n); changed = true; continue; }
+          }
         }
         if (c.n < 60) {   // a pit is filled, a mesa lowered
           let blob = null;
