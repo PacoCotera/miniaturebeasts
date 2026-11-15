@@ -142,6 +142,8 @@ export function placeBoundary(A, o) {
     // the wall goes on from the cell above when that one is also a flank or face cell of the same wall (a concave corner's, or a steep run's end): it is a band, never a new head (GD 11-15 fix-2 (3): no lone end piece)
     const sameWall = (xx, yy) => { const p = partAt(A, xx, yy); return (p === PART.FLANK || p === PART.FACE) && (h === 'e' ? R(xx - 1, yy) : R(xx + 1, yy)) && !R(xx, yy); };
     const north = wallHand(x, y - 1) === h || sameWall(x, y - 1), south = wallHand(x, y + 1) === h;
+    // GD 11-15 (paint-1 step 0, cliff-rules section 7): a side wall shorter than 2 rows on a back-rim step draws no rock, only the rim's rounded corner and its lip (the same as the back rim): a lone head with low ground or the next step's rim below it
+    if (!north && !south && (partAt(A, x, y + 1) === PART.LOW || partAt(A, x, y + 1) === PART.RING) && Lo(x, y - 1)) { covered.add(ck(x, y)); continue; }
     emit(`wall-${h}-${!north ? 'head' : !south ? 'tail' : 'band'}`, x, y);
   }
   if (tops) for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) if (R(x, y)) items.push({ id: 'top', x, y, box: [0, 0, ART, ART], line: -1e6, cls: 0, level });
