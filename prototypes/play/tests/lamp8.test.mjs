@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { LAMP_SIZE, LAMP_CUT, TOKEN_HEX, STATE_TOKEN, HIGHLIGHT_TOKEN, lampMap, lampPixels, lampShadow } from "../src/lamp8.mjs";
+import { LAMP_SIZE, LAMP_CUT, TOKEN_HEX, STATE_TOKEN, RIM_TOKEN, HIGHLIGHT_TOKEN, lampMap, lampPixels, lampShadow } from "../src/lamp8.mjs";
 
 const tokens = JSON.parse(readFileSync(new URL("../../ui/tokens/tokens.json", import.meta.url), "utf8"));
 const find = (o, k) => { for (const [n, v] of Object.entries(o)) { if (n === k && v && v.$value) return v.$value; if (v && typeof v === "object") { const r = find(v, k); if (r) return r; } } };
@@ -17,17 +17,22 @@ test("8 x 8, the corner cuts as set", () => {
   assert.deepEqual(lampMap({ cutPx: 2 }), ["..oooo..", ".oooooo.", "oooooooo", "oooooooo", "oooooooo", "oooooooo", ".oooooo.", "..oooo.."]);
 });
 
-test("only the state's token, the highlight's fog, and transparency; no partial alpha", () => {
+test("only the state's body, rim and highlight tokens, and transparency; no partial alpha", () => {
   for (const state of ["off", "mint", "warm", "amber"]) for (const cutPx of [1, 2]) for (const highlight of [false, true]) {
-    const px = lampPixels({ state, cutPx, highlight }), body = TOKEN_HEX[STATE_TOKEN[state]], hi = TOKEN_HEX[HIGHLIGHT_TOKEN[state]], hexes = new Set(px.map((p) => p.hex));
-    for (const h of hexes) assert.ok(h === body || (highlight && h === hi), state + " " + h);
+    const px = lampPixels({ state, cutPx, highlight }), body = TOKEN_HEX[STATE_TOKEN[state]], rim = TOKEN_HEX[RIM_TOKEN[state]], hi = TOKEN_HEX[HIGHLIGHT_TOKEN[state]], hexes = new Set(px.map((p) => p.hex));
+    for (const h of hexes) assert.ok(h === body || h === rim || (highlight && h === hi), state + " " + h);
     assert.equal(px.filter((p) => p.hex === hi).length, highlight ? 1 : 0);
+    // the rim is exactly the pixels with an empty side (the outermost ring of the cut disc), one pixel wide
+    const solid = new Set(px.map((p) => p.x + "," + p.y)), isEdge = (p) => ![[-1, 0], [1, 0], [0, -1], [0, 1]].every(([dx, dy]) => solid.has((p.x + dx) + "," + (p.y + dy)));
+    for (const p of px) if (!(highlight && p.hex === hi)) assert.equal(p.hex, isEdge(p) ? rim : body, state + " " + p.x + "," + p.y);
+    assert.ok(px.some((p) => p.hex === rim) && px.some((p) => p.hex === body), "both a rim and a body");
     if (highlight) { const p = px.find((q) => q.hex === hi); assert.deepEqual([p.x, p.y], [2, 2]); }
     for (const p of px) { assert.ok(p.x >= 0 && p.x < LAMP_SIZE && p.y >= 0 && p.y < LAMP_SIZE); assert.match(p.hex, /^#[0-9a-f]{6}$/, "an opaque six-digit hex: no alpha"); }
     assert.equal(px.length, (cutPx === 1 ? 60 : 52), "the cut pixels are transparent");
   }
-  assert.deepEqual([HIGHLIGHT_TOKEN.mint, HIGHLIGHT_TOKEN.warm, HIGHLIGHT_TOKEN.off, HIGHLIGHT_TOKEN.amber], ["white", "white", "fog", "fog"], "white on mint, fog on stone and amber");
-  assert.equal(TOKEN_HEX[STATE_TOKEN.off], TOKEN_HEX.stone); assert.equal(TOKEN_HEX[STATE_TOKEN.mint], TOKEN_HEX.mint); assert.equal(TOKEN_HEX[STATE_TOKEN.amber], TOKEN_HEX.amber);
+  assert.deepEqual([HIGHLIGHT_TOKEN.mint, HIGHLIGHT_TOKEN.warm, HIGHLIGHT_TOKEN.off, HIGHLIGHT_TOKEN.amber], ["white", "white", "glassQuiet", "cream"], "white on mint, cream on amber, glassQuiet on off");
+  assert.deepEqual([RIM_TOKEN.mint, RIM_TOKEN.warm, RIM_TOKEN.amber, RIM_TOKEN.off], ["aqua", "aqua", "gold", "hairline"], "a darker step of each ramp");
+  assert.equal(TOKEN_HEX[STATE_TOKEN.off], "#565c63", "off is the neutral bevel grey"); assert.equal(TOKEN_HEX[STATE_TOKEN.mint], TOKEN_HEX.mint); assert.equal(TOKEN_HEX[STATE_TOKEN.amber], TOKEN_HEX.amber);
 });
 
 test("the shadow list is whole-pixel steps with no blur", () => {
