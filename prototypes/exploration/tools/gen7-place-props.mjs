@@ -32,6 +32,7 @@ function seamOf(seed, X, Y) {
 // Every cell of the seed. Returns the numbers; the test asserts them.
 export function placeProps(seed) {
   const t0 = Date.now(), st = stat();
+  const SW = MW * CW, SH = MH * CH, WW = RW * CW, WH = RH * CH, REALM = new Uint8Array(WW * WH), WUR = new Uint8Array(WW * WH), regs = [];   // the realm's tiles stitched: a region's land that only a neighbouring region reaches is not a pocket
   const lvOfCell = (X, Y) => genRegion7(seed, Math.floor(X / MW), Math.floor(Y / MH)).level[(Y % MH) * MW + (X % MW)];
   const ONLY = typeof process !== 'undefined' && process.env.B3C_ONLY ? process.env.B3C_ONLY.split(',').map(Number) : null;   // land-b3c: one region only, and a list of what it leaves unreached (B3C_DUMP=1)
   for (let ay = 0; ay < RH / MH; ay++) for (let ax = 0; ax < RW / MW; ax++) {
@@ -138,6 +139,9 @@ export function placeProps(seed) {
       if (!ok) { st.cliffThin++; if (st.thinAt.length < 4) st.thinAt.push([ax, ay, x, y]); }
     }
     // whole-region reach through the ways up: every walkable tile of the region, from the region's start (the first start glint's cell); water, thicket and a cliff's lip block, a way up joins
+    for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) REALM[(ay * SH + y) * WW + ax * SW + x] = R[y * SW + x];
+    for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) if (x >= 0 && y >= 0 && x < SW && y < SH) WUR[(ay * SH + y) * WW + ax * SW + x] = 1;
+    regs.push({ ax, ay, G });
     { const t = R, isLip = (x, y) => isC(x, y) && NB4.some(([dx, dy]) => !isC(x + dx, y + dy)), wu = new Set();
       for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wu.add(y * SW + x);
       // the water of a ford cell is the ford: shallow, walked
@@ -167,6 +171,26 @@ export function placeProps(seed) {
       st.regions++; st.walkableTiles += walk; st.unreachedTiles += un; st.reachedTiles += walk - un; st.unreachedInMain += unMain; if (!un) st.regionsWholeReach++;
       if (!G.zonesJoined) st.zonesNotJoined++;
     }
+  }
+  // whole-realm reach (place-walk-1): the same walk (water, thicket and a cliff's lip block, a way up walks, a ford's water is walked) on the realm's stitched tiles, so the lip across a region's border is the
+  // true one, from the start of every region: land that a neighbouring region's own start reaches is reached. What the realm flood leaves is walled in whole (a closed mesa or pit with no way up, a lake's islet, a
+  // part thicket alone closed). The per-region figures (each region on its own) are kept as region*.
+  if (!ONLY) {
+    st.regionUnreachedTiles = st.unreachedTiles; st.regionPathUnreached = st.pathUnreached; st.regionPiecesUnreached = st.piecesUnreached;
+    const at = (x, y) => (x < 0 || y < 0 || x >= WW || y >= WH ? TV.THICKET : REALM[y * WW + x]), regionAt = (x, y) => regs[Math.floor(y / SH) * (RW / MW) + Math.floor(x / SW)];
+    const fordAt = (x, y) => regionAt(x, y).G.ford[Math.floor((y % SH) / CH) * MW + Math.floor((x % SW) / CW)];
+    const pass = (x, y) => { const v = at(x, y); return !((v === TV.WATER && !fordAt(x, y)) || v === TV.THICKET || v === TV.DEEP || (v === TV.CLIFF && NB4.some(([dx, dy]) => at(x + dx, y + dy) !== TV.CLIFF) && !WUR[y * WW + x])); };
+    const seen = new Uint8Array(WW * WH), q = [];
+    for (const r of regs) {
+      const sp = r.G.spawns[0], sx = r.ax * SW + (sp % MW) * CW + CW / 2, sy = r.ay * SH + ((sp / MW) | 0) * CH + CH / 2; let start = -1;
+      for (let d = 0; d < 12 && start < 0; d++) for (let dy = -d; dy <= d && start < 0; dy++) for (let dx = -d; dx <= d; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === d && pass(sx + dx, sy + dy)) { start = (sy + dy) * WW + sx + dx; break; }
+      if (start >= 0 && !seen[start]) { seen[start] = 1; q.push(start); }
+    }
+    for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const x = (q[k] % WW) + dx, y = ((q[k] / WW) | 0) + dy; if (x < 0 || y < 0 || x >= WW || y >= WH || seen[y * WW + x] || !pass(x, y)) continue; seen[y * WW + x] = 1; q.push(y * WW + x); }
+    let walk = 0, un = 0, path = 0, pieces = 0, pieceAll = 0; st.needAt = [];
+    for (let y = 0; y < WH; y++) for (let x = 0; x < WW; x++) { if (pass(x, y)) { walk++; if (!seen[y * WW + x]) un++; } if (REALM[y * WW + x] === TV.PATH && !seen[y * WW + x]) { path++; if (st.needAt.length < 6) st.needAt.push(['path', x, y]); } }
+    for (const r of regs) for (const c of [...r.G.spawns, ...r.G.glow, r.G.gate, r.G.deep, r.G.swim, ...r.G.beacons.set, ...r.G.depots.set].filter(c => c >= 0)) { const x = r.ax * SW + (c % MW) * CW + (CW >> 1), y = r.ay * SH + ((c / MW) | 0) * CH + (CH >> 1); pieceAll++; if (pass(x, y) && !seen[y * WW + x]) { pieces++; if (st.needAt.length < 6) st.needAt.push(['piece', x, y]); } }
+    st.walkableTiles = walk; st.unreachedTiles = un; st.reachedTiles = walk - un; st.pathUnreached = path; st.piecesUnreached = pieces; st.pieces = pieceAll;
   }
   for (const s of stairsInfo(seed)) { st.stairs++; if (s.kind === 'south' && s.wayup) st.stairsSouthWithWayUp++; else st.stairsWithoutWayUp++; }
   st.cliffShareOver8 = +(st.cliffTilesInRunsOver8 / Math.max(1, st.cliffTiles)).toFixed(3);

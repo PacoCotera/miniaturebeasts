@@ -33,6 +33,7 @@ const OPEN = t => t === GRASS || t === DRY || t === TURF;   // the open low grou
 export const FAMS = ['trees', 'rocks', 'stumps', 'bushes', 'sweeps'];
 export const TABLE = RULES.biomes;
 export const BIOME_IDS = Object.keys(TABLE);
+const REGROW_DENSE = 5;   // trees a 100 tiles in the table from which a ring-cut cluster is grown again
 const DISP = 7;   // tiles beyond its reach a tree or bush may stand when a ring kept clear by a place took its place in the cluster
 // props per 100 tiles a table row asks for (on tiles where the kind may stand)
 export const expectedPer100 = (biome, fam) => { const P = TABLE[biome][fam]; if (!P) return 0; const m = P.size ? (P.size[0] + P.size[1]) / 2 : 1; return 100 * P.used * m / (P.B * P.B); };
@@ -257,7 +258,9 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     let { members, set } = grow(ok, s.size, false);
     // A ring the places keep clear (places.mjs) takes trees and bushes from a cluster: the cluster is then made again with as many members as it would have had without the ring, on the nearest
     // free ground (up to DISP tiles beyond its own reach), so the place keeps its count of trees. The count to match is that of the cluster as it stands with no ring (a function of the world alone).
-    if (fi === 0 && maskedNear(fi, s)) {
+    // (place-walk-1) Only in a biome of dense trees (table 5 or more a 100 tiles: Woods and Tallwood): where trees are sparse the density is read on the tiles that may hold a tree, which the rings already
+    // leave out, so the trees a ring took need no regrowth (mixed trees stood at 1.48 a 100 against the table's 0.92); the regrowth never exceeds what the ring removed, counted per biome by this rule
+    if (fi === 0 && expectedPer100(s.b, 'trees') >= REGROW_DENSE && maskedNear(fi, s)) {
       const free = grow((x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y, false) && !earlier(fi, x, y, false), s.size, false);
       if (members.length < free.members.length) {
         const wideOk = (x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y) && !earlier(fi, x, y);

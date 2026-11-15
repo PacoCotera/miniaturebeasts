@@ -19,7 +19,7 @@ import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: '
 import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' };
 import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
-import { touchesRaised } from '../../../places/src/bake/relief.mjs';
+import { touchesRaised, partAt, PART } from '../../../places/src/bake/relief.mjs';
 import { landmarksOf } from './landmarks.mjs';
 import { maskFn } from './places.mjs';
 
@@ -375,6 +375,61 @@ function pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion) {
   }
 }
 
+// Thicket never closes a way (place-walk-1): after the ground has settled, a walkable part of a window that thicket alone cuts off from the land beyond it (no water or cliff in the way) gets a gap 2 tiles wide through the
+// thinnest stretch of thicket, to the nearest other part that is not itself such a pocket. A part is judged only where every window that shows one of the cells it touches shows all of it with its gap's reach (its box and
+// GAP_MAX + 3 tiles round it lie within one cell round each cell it touches across, two cells up and down: the window is 7 x 9 cells), as the land rule's pockets are, so a cell is the same from every neighbour's window. The gap runs through thicket tiles only (a cliff, water,
+// deep water and the coast band are never cut) and is marked as a gate tile, which the settling passes keep. Returns the number of gaps cut.
+const GAP_MAX = 10, GAP_SMALL = 1500, GAP_ANCHOR = 200;
+function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate) {
+  const N = W * H, NB = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  const wu = new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const lx = x - gx0, ly = y - gy0; if (lx >= 0 && ly >= 0 && lx < W && ly < H) wu[ly * W + lx] = 1; }
+  const pass = new Uint8Array(N);
+  const L7 = { raised: (x, y) => x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF, low: (x, y) => !(x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF), way: (x, y) => x >= 0 && y >= 0 && x < W && y < H && wu[y * W + x] === 1, inside: () => true };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {   // the game's own walk (relief.mjs): water, deep water and thicket block, and so do a cliff's ring (lip), its face under it and its flank beside it; a way up walks
+    const i = y * W + x, v = t[i]; if (v === TV.WATER || v === TV.THICKET || v === TV.DEEP) continue;
+    const p = partAt(L7, x, y); if (p === PART.RING || p === PART.FACE || p === PART.FLANK) continue;
+    pass[i] = 1;
+  }
+  const lab = new Int32Array(N).fill(-1), comps = [];
+  for (let s = 0; s < N; s++) {
+    if (!pass[s] || lab[s] >= 0) continue;
+    const id = comps.length, q = [s]; lab[s] = id; let x0 = W, x1 = 0, y0 = H, y1 = 0;
+    for (let h = 0; h < q.length; h++) { const c = q[h], x = c % W, y = (c / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const m = b * W + a; if (pass[m] && lab[m] < 0) { lab[m] = id; q.push(m); } } }
+    comps.push({ id, tiles: q, n: q.length, x0, x1, y0, y1, edge: x0 === 0 || y0 === 0 || x1 === W - 1 || y1 === H - 1 });
+  }
+  const R = GAP_MAX + 3, cellsOk = c => {   // the part's box and its reach lie within one cell round each cell it touches
+    const fx0 = gx0 + c.x0 - R, fx1 = gx0 + c.x1 + R, fy0 = gy0 + c.y0 - R, fy1 = gy0 + c.y1 + R;
+    for (let cx = Math.floor(fx0 / CW); cx <= Math.floor(fx1 / CW); cx++) if (fx0 < (cx - 1) * CW || fx1 >= (cx + 2) * CW) return false;
+    for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH); cy++) if (fy0 < (cy - 2) * CH || fy1 >= (cy + 3) * CH) return false;   // the window is two cells taller each side than wide: two cells either way
+    return true; };
+  const anchor = c => c.edge || c.n >= GAP_ANCHOR && !(c.n <= GAP_SMALL && cellsOk(c));   // a part that goes on beyond what the window shows, or that is not a small pocket
+  const cuttable = i => t[i] === TV.THICKET && inlandOf(gx0 + (i % W), gy0 + ((i / W) | 0)) >= COAST_REACH;
+  let cuts = 0;
+  for (const c of comps.slice().sort((a, b) => a.n - b.n || a.y0 - b.y0 || a.x0 - b.x0)) {
+    if (c.edge || c.n > GAP_SMALL || !cellsOk(c) || anchor(c)) continue;
+    // thicket tiles beside the part, then outward through thicket, a step a ring; the first ring to touch a walkable tile of another part ends it
+    const prev = new Map(), q = []; let hit = -1, hitFrom = -1;
+    for (const s of c.tiles.slice().sort((a, b) => a - b)) for (const [dx, dy] of NB) { const x = (s % W) + dx, y = ((s / W) | 0) + dy; if (x < 0 || y < 0 || x >= W || y >= H) continue; const m = y * W + x; if (cuttable(m) && !prev.has(m)) { prev.set(m, -1); q.push(m); } }
+    for (let h = 0, ring = 1; h < q.length && hit < 0 && ring <= GAP_MAX; ) {
+      const end = q.length;
+      for (; h < end && hit < 0; h++) { const m = q[h], x = m % W, y = (m / W) | 0;
+        for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const k = b * W + a;
+          if (pass[k] && lab[k] !== c.id && comps[lab[k]] && (anchor(comps[lab[k]]) || comps[lab[k]].n > c.n || (comps[lab[k]].n === c.n && lab[k] > c.id))) { hit = m; hitFrom = k; break; }
+          if (cuttable(k) && !prev.has(k)) { prev.set(k, m); q.push(k); } } }
+      ring++;
+    }
+    if (hit < 0) continue;
+    const path = []; for (let m = hit; m >= 0; m = prev.get(m)) path.push(m);
+    // the gap is 2 tiles wide: each tile of the path and the one beside it across the way the path runs
+    let mx0 = W, mx1 = 0, my0 = H, my1 = 0; for (const m of path) { const x = m % W, y = (m / W) | 0; if (x < mx0) mx0 = x; if (x > mx1) mx1 = x; if (y < my0) my0 = y; if (y > my1) my1 = y; }
+    const horiz = path.length > 1 ? mx1 - mx0 >= my1 - my0 : ((hit / W) | 0) === ((hitFrom / W) | 0);
+    for (const m of path) { const x = m % W, y = (m / W) | 0, b = horiz ? (y + 1 < H ? m + W : -1) : (x + 1 < W ? m + 1 : -1); for (const k of [m, b]) if (k >= 0 && cuttable(k)) { t[k] = TV.GRASS; gate[k] = 1; } }
+    cuts++;
+  }
+  return cuts;
+}
+
 function windowOf(S, X, Y) {
   const W = WIN_X * CW, H = WIN_Y * CH, gx0 = (X - HX) * CW, gy0 = (Y - HY) * CH, N = W * H, seed = S.seed;
   const t = new Uint8Array(N).fill(TV.GRASS), forest = new Float32Array(N), rock = new Float32Array(N), wet = new Float32Array(N), scrub = new Float32Array(N), push = new Float32Array(N);
@@ -489,6 +544,7 @@ function windowOf(S, X, Y) {
   settle(null);
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   if (gate.some(v => v)) settle(gate);
+  for (let round = 0; round < 3; round++) { if (!cutThicketGaps(t, W, H, gx0, gy0, wayups, gate)) break; settle(gate); }   // thicket never closes a way (place-walk-1)
   return { t, W, H, gx0, gy0, wayups, top: topsOf(t, recipe, W, H) };
 }
 
@@ -628,9 +684,10 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   // cell's cached one, so the patch is made on a copy, and tone stays off the patch and the tile round it (tone lies only on plain grass)
   let tone = toneField(seed, x0, y0, w, h);
   if (hold && hold.patches && hold.patches.length) {
-    terrain = terrain.slice(); tone = tone.slice();
+    terrain = terrain.slice(); tone = tone.slice(); if (top) top = top.slice();
     for (const { kind, tiles } of hold.patches) {
-      for (const [x, y] of tiles) { const i = y * w + x; if (terrain[i] === TV.GRASS) terrain[i] = VALUE_OF[kind]; }
+      // a patch on a raised top is the top's own ground kind (`bed-ground-top`: drawn as the raised grass until its sheet is signed), set in the top layer under the raised tile
+      for (const [x, y] of tiles) { const i = y * w + x; if (/-top$/.test(kind)) { if (top && terrain[i] === TV.CLIFF && (!top[i] || top[i] === TV.GRASS)) top[i] = VALUE_OF[kind]; } else if (terrain[i] === TV.GRASS) terrain[i] = VALUE_OF[kind]; }
       for (const [x, y] of tiles) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h) tone[(y + dy) * w + x + dx] = 0;
     }
   }

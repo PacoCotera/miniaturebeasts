@@ -341,11 +341,14 @@ function components(wk, W, H, edge, way) {
   return { lab, comps };
 }
 // the 4-connected blob of tiles equal to `v` that holds the component's tiles (ignoring held tiles); null when it reaches the window's rim or holds a blocked tile
-function blobOf(r, W, H, tiles, v, limit, bad) {
+// place-walk-1: `box` ([x0, y0, x1, y1] in window tiles) is where the blob may lie (the caller gives the component's box and 10 tiles round it, kept within the cells it touches and one round them). A blob that reaches past it
+// is left, as one that reaches the rim was, so the answer does not depend on where the window's rim falls (a neighbour's window ended inside a plateau that this one saw to its end: the seam).
+function blobOf(r, W, H, tiles, v, limit, bad, box) {
   const seen = new Set(tiles.filter(i => r[i] === v)), q = [...seen];
   for (let h = 0; h < q.length; h++) {
     if (q.length > limit) return null;
     const i = q[h], x = i % W, y = (i / W) | 0; if (bad && bad[i]) return null; if (x < 3 || y < 3 || x >= W - 3 || y >= H - 3) return null;
+    if (box && (x < box[0] || y < box[1] || x > box[2] || y > box[3])) return null;
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (!seen.has(m) && r[m] === v) { seen.add(m); q.push(m); } }
   }
   return q;
@@ -453,9 +456,20 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
           let near = false; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -2; dy <= 2 && !near; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && r[b * W + a]) { near = true; break; } } if (near) break; }
           if (!near) { (info.islets || (info.islets = [])).push(c.n); continue; }
         }
+        if (isRaised && c.n < 6) {   // place-walk-1: a one-tile top where two plateaus meet at a corner (every neighbour of it is a lip, so no one can step on it, and a stair needs 6): it and the raised tiles beside it become low, held low,
+          // so the two plateaus part with a channel between them (the channel is low land beside both, never a pit)
+          const low = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (r[m]) low.add(m); } }
+          const T = [...low]; let ok = T.every(i => { const x = i % W, y = (i / W) | 0; return !lk[i] && x >= 3 && y >= 3 && x < W - 3 && y < H - 3; });
+          if (ok) for (const i of T) { let touchesLow = false; const x = i % W, y = (i / W) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (!r[m] && !low.has(m)) touchesLow = true; } if (!touchesLow && !c.tiles.includes(i)) { ok = false; break; } }
+          if (ok) { for (const i of T) { r[i] = 0; lk[i] = 2; } (info.necks || (info.necks = [])).push(c.n); changed = true; continue; }
+        }
         if (c.n < 60) {   // a pit is filled, a mesa lowered
           let blob = null;
-          if (isRaised) blob = blobOf(r, W, H, c.tiles, 1, 400, null);
+          if (isRaised) { let bx0 = 1e9, by0 = 1e9, bx1 = -1, by1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+            // the blob may lie within 10 tiles of the component, and that box must lie within the cells it touches and one round them, clear of every such window's rim (4 tiles): then every window that shows one
+            // of those cells shows the box whole and the answer is the same from each
+            const box = [bx0 - 10, by0 - 10, bx1 + 10, by1 + 10], lo = [(Math.floor((gx0 + bx0) / CW) - 1) * CW - gx0 + 4, (Math.floor((gy0 + by0) / CH) - 1) * CH - gy0 + 4], hi = [(Math.floor((gx0 + bx1) / CW) + 2) * CW - 1 - gx0 - 4, (Math.floor((gy0 + by1) / CH) + 2) * CH - 1 - gy0 - 4];
+            if (box[0] >= lo[0] && box[1] >= lo[1] && box[2] <= hi[0] && box[3] <= hi[1]) blob = blobOf(r, W, H, c.tiles, 1, 400, null, box); }
           else { const s = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const m = (y + dy) * W + x + dx; if (m >= 0 && m < W * H && !r[m]) s.add(m); } }
             blob = [...s]; if (blob.some(i => noRaise[i] || wblock[i] || edge[i])) { if (info.dbg) (info.why || (info.why = [])).push(`pit ${c.n}: nr ${blob.filter(i => noRaise[i]).length} wb ${blob.filter(i => wblock[i]).length} ed ${blob.filter(i => edge[i]).length}`); blob = null; } }
           if (blob && blob.every(i => !lk[i])) { for (const i of blob) r[i] = isRaised ? 0 : 1; info.filled.push(c.n); changed = true; continue; }

@@ -70,6 +70,10 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   const walk = new Uint8Array(N), lvl = new Uint8Array(N), way = new Set();
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const t = terrain[I(x, y)]; walk[I(x, y)] = WALKT[t] === 1 && !(FF.flags(x0 + x, y0 + y) & 1) ? 1 : 0; lvl[I(x, y)] = t === TV.CLIFF ? 1 : 0; }
   plan.grass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.grass[i] = terrain[i] === TV.GRASS ? 1 : 0;
+  // a raised top is the same ground, higher (place-walk-1): a raised tile whose top is grass is grass too, for the heart's site and its patch
+  plan.topGrass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.topGrass[i] = terrain[i] === TV.CLIFF && (!ct.top[i] || ct.top[i] === TV.GRASS) ? 1 : 0;
+  plan.cliff = new Uint8Array(N); for (let i = 0; i < N; i++) plan.cliff[i] = terrain[i] === TV.CLIFF ? 1 : 0;
+  plan.solid = new Uint8Array(N); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) plan.solid[I(x, y)] = FF.flags(x0 + x, y0 + y) & 5 ? 1 : 0;   // water, thicket, a cliff's ring, face or flank (flags 1), the lip (4)
   const wayups = ct.wayups.map(a => ({ x: a.x - x0, y: a.y - y0, w: a.w, h: a.h }));
   for (const a of wayups) for (let i = 0; i < a.w; i++) way.add(I(a.x + i, a.y));
   plan.wayups = wayups;
@@ -204,6 +208,17 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
     // Tier 3: the 5 x 3 bed, as tier 2. Among a tier's spots one is drawn by the cell's hash, weighted toward the far ones.
     const heartKind = lm && lm.kind === 'split-stone' && land === L.ROCK ? 'split-stone-ground' : 'sleepers-bed';
     const tiers = [[heartKind, 2, 6, 6, true], [heartKind, 1, 6, 4, false], ['sleepers-bed-cramped', 1, 6, 4, false], ['sleepers-bed-cramped', 0, 9, 2, false]];
+    let fallback = null;
+    const chooseHeart = (kind, needSight, s0, hc, tot) => {
+      let u = U('heart', hc.length) * tot, pick = hc[hc.length - 1];
+      for (const c1 of hc) { u -= c1.de; if (u <= 0) { pick = c1; break; } }
+      const s = instantiate(s0, pick.sx, pick.sy, { role: 'heart', tier: kind === 'sleepers-bed-cramped' ? 3 : (needSight ? 1 : 2), entryDist: +pick.de.toFixed(1), spineDist: +dsp[I(pick.cx, pick.cy)].toFixed(1), seenFrom: pick.seen, candidates: hc.length });
+      addSpot(s);
+      if (pick.seen) {   // the sight line from the way in to the heart's middle, for the quiet mask
+        const [ax, ay] = pick.seen, n = Math.max(Math.abs(pick.cx - ax), Math.abs(pick.cy - ay));
+        for (let k = 0; k <= n; k++) plan.sightLine.push([Math.round(ax + (pick.cx - ax) * k / n), Math.round(ay + (pick.cy - ay) * k / n)]);
+      }
+    };
     for (const [kind, dmin, dmax, demin, needSight] of tiers) {
       const s0 = kind === heartKind && kind !== 'sleepers-bed' ? stampById['split-stone-ground'] : kind === 'sleepers-bed-cramped' ? stampById['bed-cramped'] : pickStamp('sleepers-bed');
       if (!s0) continue;
@@ -218,16 +233,20 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
         hc.push({ sx, sy, cx, cy, de, seen: seen || null }); tot += de;
       }
       if (!hc.length) continue;
-      let u = U('heart', hc.length) * tot, pick = hc[hc.length - 1];
-      for (const c1 of hc) { u -= c1.de; if (u <= 0) { pick = c1; break; } }
-      const s = instantiate(s0, pick.sx, pick.sy, { role: 'heart', tier: kind === 'sleepers-bed-cramped' ? 3 : (needSight ? 1 : 2), entryDist: +pick.de.toFixed(1), spineDist: +dsp[I(pick.cx, pick.cy)].toFixed(1), seenFrom: pick.seen, candidates: hc.length });
-      addSpot(s);
-      if (pick.seen) {   // the sight line from the way in to the heart's middle, for the quiet mask
-        const [ax, ay] = pick.seen, n = Math.max(Math.abs(pick.cx - ax), Math.abs(pick.cy - ay));
-        for (let k = 0; k <= n; k++) plan.sightLine.push([Math.round(ax + (pick.cx - ax) * k / n), Math.round(ay + (pick.cy - ay) * k / n)]);
+      // a bed prefers grass (low, or a raised top): a footprint 70% grass wins over one that is not, so its patch has ground to lie on. A tier with no such footprint is kept as the fall-back and the
+      // later tiers are tried for one; the first tier that has one takes it, and when none does the first tier's spot stands.
+      let grassy = true;
+      if (kind !== 'split-stone-ground') {
+        const gs = c1 => { let g = 0; for (let y = c1.sy; y < c1.sy + s0.h; y++) for (let x = c1.sx; x < c1.sx + s0.w; x++) g += plan.grass[I(x, y)] || plan.topGrass[I(x, y)]; return g / (s0.w * s0.h); };
+        const gr = hc.filter(c1 => gs(c1) >= 0.7);
+        if (gr.length) { if (gr.length < hc.length) { hc.length = 0; hc.push(...gr); tot = 0; for (const c1 of hc) tot += c1.de; } } else grassy = false;
       }
+      if (!grassy && !fallback) { fallback = { kind, needSight, s0, hc, tot }; continue; }
+      if (!grassy) continue;
+      chooseHeart(kind, needSight, s0, hc, tot);
       break;
     }
+    if (!plan.spots.some(s => s.role === 'heart') && fallback) chooseHeart(fallback.kind, fallback.needSight, fallback.s0, fallback.hc, fallback.tot);
     // a smaller spot besides: the nook (slab, moss, a stone), 3+ tiles off the spine, 8+ from the other spots
     const nk = stampById['bed-nook'];
     if (plan.spots.length && nk) {
@@ -274,25 +293,31 @@ export function maskFn(seed) {
 }
 
 // ---- the heart's ground patch: the footprint of the stamp with a natural outline ----
-// The patch lies on grass only (every other ground stays out, and that edge is part of the outline). It keeps the stamp's slab, slots and stone and the tile round each, and takes or leaves the tiles at the
-// footprint's edge by a smooth noise of the place (a lattice of hashes 3 tiles apart, blended), so corners are cut and the edge wanders one or two tiles in or out; never on the spine or within 3 tiles of the frame's edge;
-// then no straight edge is left longer than 4 tiles (the middle tile of a longer run is cut).
-const PATCH_RUN = 4, PATCH_AMP = 3, PATCH_BIAS = 1;
+// The patch lies on the heart's own level: on low grass for a heart on low ground, on the grass top for a heart on raised land (a raised top is the same ground, higher; its patch is the kind
+// `<kind>-top`). It keeps the stamp's slab, slots and stone and the tile round each, and takes or leaves the tiles at the footprint's edge by a smooth noise of the place (a lattice of hashes 3 tiles apart,
+// blended), so corners are cut and the edge wanders one or two tiles in or out; never on the spine or within 3 tiles of the frame's edge; one tile off every cliff tile (low) or off the lip, face and flank
+// (raised). The noise's bias is the one of a short list that brings the patch's area nearest 70% of the footprint (55-85% is the aim); then no straight edge is left longer than 4 tiles (a tile of a longer
+// run is cut, the middle one first).
+const PATCH_RUN = 4, PATCH_AMP = 3, PATCH_BIASES = [1, 0.5, 1.5, 0, 2, -0.5, 2.5, -1, 3, -1.5];
 function patchOf(plan, seed, s) {
-  const { w, h, grass, spine, X, Y } = plan, I = (x, y) => y * w + x, [rx, ry, rw, rh] = [s.x, s.y, s.w, s.h];
+  const { w, h, grass, topGrass, cliff, solid, spine, X, Y } = plan, I = (x, y) => y * w + x, [rx, ry, rw, rh] = [s.x, s.y, s.w, s.h];
+  const raised = cliff[I(rx + (rw >> 1), ry + (rh >> 1))] === 1;
   const lat = (a, b) => (hash(seed, 'gen7', 'patch', X, Y, s.id, a, b) % 10007) / 10007;
   const noise = (x, y) => { const a = Math.floor(x / 3), b = Math.floor(y / 3), fx = x / 3 - a, fy = y / 3 - b, sm = t => t * t * (3 - 2 * t); const top = lat(a, b) * (1 - sm(fx)) + lat(a + 1, b) * sm(fx), bot = lat(a, b + 1) * (1 - sm(fx)) + lat(a + 1, b + 1) * sm(fx); return top * (1 - sm(fy)) + bot * sm(fy); };
   const forced = new Set();
   for (const c of s.cells) if (c.k === 'S' || c.k === 'p' || c.k === 'L') for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) forced.add(I(c.x + dx, c.y + dy));
-  const lies = (x, y) => x >= 3 && y >= 3 && x <= w - 4 && y <= h - 4 && grass[I(x, y)] === 1 && !spine[I(x, y)];
-  const inp = new Set();
-  for (let y = ry - 2; y < ry + rh + 2; y++) for (let x = rx - 2; x < rx + rw + 2; x++) {
-    if (!lies(x, y)) continue;
-    const inset = Math.min(x - rx, rx + rw - 1 - x, y - ry, ry + rh - 1 - y);
-    if (forced.has(I(x, y)) || inset + PATCH_AMP * (noise(x, y) * 2 - 1) >= PATCH_BIAS) inp.add(I(x, y));
-  }
+  const ring8 = (x, y, f) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (!f(I(x + dx, y + dy))) return false; return true; };
+  const lies = (x, y) => {
+    if (x < 3 || y < 3 || x > w - 4 || y > h - 4 || spine[I(x, y)]) return false;
+    return raised ? topGrass[I(x, y)] === 1 && ring8(x, y, i => cliff[i] === 1 && !solid[i]) : grass[I(x, y)] === 1 && ring8(x, y, i => cliff[i] === 0);
+  };
+  const cand = [];
+  for (let y = ry - 2; y < ry + rh + 2; y++) for (let x = rx - 2; x < rx + rw + 2; x++) if (lies(x, y)) cand.push([x, y, Math.min(x - rx, rx + rw - 1 - x, y - ry, ry + rh - 1 - y) + PATCH_AMP * (noise(x, y) * 2 - 1)]);
+  const made = bias => { const inp = new Set(); for (const [x, y, v] of cand) if (forced.has(I(x, y)) || v >= bias) inp.add(I(x, y)); return inp; };
+  let inp = null, bd = Infinity;
+  for (const b of PATCH_BIASES) { const t = made(b), d = Math.abs(t.size / (rw * rh) - 0.7); if (d < bd - 1e-9) { bd = d; inp = t; } if (d < 0.05) break; }
   const has = (x, y) => inp.has(I(x, y));
-  for (let pass = 0; pass < 3; pass++) {   // cut the middle of any straight edge longer than PATCH_RUN
+  for (let pass = 0; pass < 12; pass++) {   // cut a tile of any straight edge longer than PATCH_RUN (the middle, else the next one along that is not kept)
     const cut = [];
     for (const [ex, ey] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
       const along = ex === 0 ? [1, 0] : [0, 1];
@@ -301,14 +326,15 @@ function patchOf(plan, seed, s) {
         const [x, y] = ex === 0 ? [b, a] : [a, b]; if (!has(x, y) || has(x + ex, y + ey)) continue;
         if (b > (ex === 0 ? rx - 2 : ry - 2) && has(x - along[0], y - along[1]) && !has(x - along[0] + ex, y - along[1] + ey)) continue;   // not the start of a run
         let n = 0; while (has(x + along[0] * n, y + along[1] * n) && !has(x + along[0] * n + ex, y + along[1] * n + ey)) n++;
-        if (n > PATCH_RUN) { const m = (n >> 1); const cx = x + along[0] * m, cy = y + along[1] * m; if (!forced.has(I(cx, cy))) cut.push(I(cx, cy)); }
+        if (n > PATCH_RUN) { const m = n >> 1; for (const o of [0, -1, 1, -2, 2]) { const k = m + o; if (k < 0 || k >= n) continue; const i = I(x + along[0] * k, y + along[1] * k); if (!forced.has(i)) { cut.push(i); break; } } }
       }
     }
     if (!cut.length) break;
     for (const i of cut) inp.delete(i);
   }
-  return [...inp].map(i => [i % w, (i / w) | 0]);
+  return { tiles: [...inp].map(i => [i % w, (i / w) | 0]), raised };
 }
+
 
 // ---- what a plan adds to a cell's IR: the wall props, pieces, shelter tiles and find slots (hold.mjs reads this) ----
 const WALL = { meadow: ROCK_KINDS, rock: ROCK_KINDS, pond: ROCK_KINDS.filter(k => /^boulder-d/.test(k)), wood: ['stump'] };
@@ -318,8 +344,9 @@ export function contentOf(plan, seed) {
   const word = plan.land, kinds = WALL[word] && WALL[word].length ? WALL[word] : ROCK_KINDS, rank = { p: 0, k: 1, m: 2, c: 3 };
   for (const s of plan.spots) {
     out.spots.push({ id: s.id, kind: s.kind, role: s.role, x: s.x, y: s.y, w: s.w, h: s.h, tier: s.tier, entryDist: s.entryDist, spineDist: s.spineDist, seenFrom: s.seenFrom || null, cells: s.cells.map(c => [c.x, c.y, c.k]) });
-    if (s.kind === 'sleepers-bed' || s.kind === 'sleepers-bed-cramped' || s.kind === 'sleepers-bed-nook') out.patches.push({ kind: 'bed-ground', rect: [s.x, s.y, s.w, s.h], tiles: patchOf(plan, seed, s) });   // the heart's patch: a ground of its own on grass, round the stamp's footprint
-    else if (s.kind === 'split-stone-ground') out.patches.push({ kind: 'split-stone-ground', rect: [s.x, s.y, s.w, s.h], tiles: patchOf(plan, seed, s) });
+    // the heart's patch: a ground of its own on grass (a raised top's own kind on raised land), round the stamp's footprint
+    if (s.kind === 'sleepers-bed' || s.kind === 'sleepers-bed-cramped' || s.kind === 'sleepers-bed-nook') { const p = patchOf(plan, seed, s); out.patches.push({ kind: p.raised ? 'bed-ground-top' : 'bed-ground', rect: [s.x, s.y, s.w, s.h], tiles: p.tiles }); }
+    else if (s.kind === 'split-stone-ground') { const p = patchOf(plan, seed, s); out.patches.push({ kind: p.raised ? 'split-stone-ground-top' : 'split-stone-ground', rect: [s.x, s.y, s.w, s.h], tiles: p.tiles }); }
     for (const c of s.cells) {
       if (c.k === 'R') out.setProps.push({ kind: kinds[(hash(seed, 'gen7', 'wallkind', plan.X, plan.Y, c.x, c.y) >>> 0) % kinds.length], x: c.x, y: c.y, fam: word === 'wood' ? 'stumps' : 'rocks', spot: s.id });
       else if (c.k === 'S') { const lp = out.pieces.find(p => p.spot === s.id); if (lp) lp.w = Math.max(lp.w, c.x - lp.x + 1); else out.pieces.push({ piece: 'heart-slab', x: c.x, y: c.y, w: 1, spot: s.id }); }   // the 2 x 1 slab: one piece on its left tile, both tiles block
