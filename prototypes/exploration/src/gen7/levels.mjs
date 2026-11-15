@@ -216,6 +216,17 @@ function cleanup(r0, W, H, rule, lk) {
   return r;
 }
 
+// cleanup again after the pocket edits, but kept only within RECLEAN tiles of an edited tile: what a second cleanup does elsewhere (it is not a fixed point) would make a window that edited a pocket differ from one that did
+// not, tile by tile far from the edit (the seam); round the edit every window that shows the pocket makes the same edit and so the same second cleanup
+const RECLEAN = 16;
+function recleanNear(r, snap, W, H, rule, lk) {
+  const n = cleanup(r, W, H, rule, lk), D = RECLEAN, h = new Uint8Array(W * H), near = new Uint8Array(W * H), cnt = new Int32Array(Math.max(W, H) + 1);
+  for (let y = 0; y < H; y++) { cnt[0] = 0; for (let x = 0; x < W; x++) cnt[x + 1] = cnt[x] + (r[y * W + x] !== snap[y * W + x] ? 1 : 0); for (let x = 0; x < W; x++) if (cnt[Math.min(W, x + D + 1)] - cnt[Math.max(0, x - D)] > 0) h[y * W + x] = 1; }
+  for (let x = 0; x < W; x++) { cnt[0] = 0; for (let y = 0; y < H; y++) cnt[y + 1] = cnt[y] + h[y * W + x]; for (let y = 0; y < H; y++) if (cnt[Math.min(H, y + D + 1)] - cnt[Math.max(0, y - D)] > 0) near[y * W + x] = 1; }
+  const out = r.slice(); for (let i = 0; i < W * H; i++) if (near[i]) out[i] = n[i];
+  return out;
+}
+
 // ---- the local checks, for an edit: the same shapes land-measure counts (lone face, pinch, square corner, 1-tile sliver, foot room) at one tile ----
 const DBGV = []; export const dbgV = DBGV;
 function violAt(r, W, H, x, y, fr) {
@@ -270,11 +281,10 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
         for (const mv of K.moves) {
           const tiles = []; for (let t = head ? run.from : run.from + o; t < (head ? run.from + o : end); t++) for (const [dx, dy, v] of mv) tiles.push([(K.alongX ? t : run.l) + dx, (K.alongX ? run.l : t) + dy, v]);
           if (tiles.some(([x, y, v]) => x < 1 || y < 1 || x >= W - 1 || y >= H - 1 || (lk && lk[y * W + x]) || (v === 1 && noRaise[y * W + x]))) continue;
-          const ex0 = excess(K, run.l - 2, run.l + 2);
           const xs = tiles.map(p => p[0]), ys = tiles.map(p => p[1]), b = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], old = tiles.map(([x, y]) => r[y * W + x]);
           if (run.open) { if (K.alongX) b[2] = Math.min(b[2], W - 1 - JOG_CLEAR); else b[3] = Math.min(b[3], H - 1 - JOG_CLEAR); }
           for (const [x, y, v] of tiles) r[y * W + x] = v;
-          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) === 0 && excess(K, run.l - 2, run.l + 2) < ex0) { done = true; jogs++; break; }
+          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) === 0 && (() => { const ex1 = excess(K, run.l - 2, run.l + 2); tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; }); const ex0 = excess(K, run.l - 2, run.l + 2); for (const [x, y, v] of tiles) r[y * W + x] = v; return ex1 < ex0; })()) { done = true; jogs++; break; }
           if (info.dbg) (info.why || (info.why = [])).push(`try ${K.k} o${o}${head ? 'h' : 't'} ${tiles.length}t: ${[...new Set(DBGV)].join(',')}`);
           tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; });
         } } }
@@ -310,7 +320,7 @@ function fixSquares(r, W, H, rule, lk, noRaise) {
 // no one-wide gap between blocking tiles (land-b3e-seam-1): a tile that walks with a blocking tile on both sides (east and west, or north and south) is a gap a place border cannot cross (it needs two). The parts are
 // relief.mjs's: a raised tile with a low one beside it is the ring, the low tile under a raised one the face, a low tile beside a raised one or in an end piece's rows the flank; the rest walks.
 function blockedAt(r, W, H, x, y) {
-  const R = (a, b) => (a < 0 || b < 0 || a >= W || b >= H ? 0 : r[b * W + a]);
+  const R = x < 2 || y < 3 || x >= W - 2 || y >= H - 3 ? (a, b) => (a < 0 || b < 0 || a >= W || b >= H ? 0 : r[b * W + a]) : (a, b) => r[b * W + a];   // clear of the raster's edge no tile asked for lies outside it
   if (R(x, y)) return !(R(x + 1, y) && R(x - 1, y) && R(x, y + 1) && R(x, y - 1));
   if (R(x, y - 1) || R(x - 1, y) || R(x + 1, y)) return true;
   for (let L = y + 2; L >= y - 1; L--) {   // an end piece's rows: the cell beside a south lip cell of row L, from L - 2 (3 or more low above it) down to L + 1
@@ -328,9 +338,13 @@ const gapsBox = (r, W, H, x0, y0, x1, y1) => { let n = 0; for (let y = Math.max(
 // each gap is closed by the first edit, in a fixed order, that leaves fewer gaps round it and no more failing shape checks: one tile flipped (the nearest first, raised first), or the low run beside it (a bay's tip) raised
 function fixGaps(r, W, H, rule, lk, noRaise) {
   let fixed = 0;
+  const wr = rule.window, xa = Math.max(5, (wr - 1) * CW - 6), xb = Math.min(W - 5, (wr + 2) * CW + 6), ya = Math.max(5, (wr - 1) * CH - 6), yb = Math.min(H - 5, (wr + 2) * CH + 6);   // the centre cell and the ring of cells round it: what a neighbour's window shows of this cell lies in the same band of its own
   for (let round = 0; round < 16; round++) { let hit = false;
-    for (let y = 5; y < H - 5 && !hit; y++) for (let x = 5; x < W - 5 && !hit; x++) {
-      if (!gapAt(r, W, H, x, y)) continue;
+    const P = new Int32Array((W + 1) * (H + 1)); for (let y = 0; y < H; y++) { let s = 0; for (let x = 0; x < W; x++) { s += r[y * W + x]; P[(y + 1) * (W + 1) + x + 1] = P[y * (W + 1) + x + 1] + s; } }
+    const sum = (x0, y0, x1, y1) => P[(y1 + 1) * (W + 1) + x1 + 1] - P[y0 * (W + 1) + x1 + 1] - P[(y1 + 1) * (W + 1) + x0] + P[y0 * (W + 1) + x0];   // raised tiles in a rectangle: a tile with none near it, or all near it, is quickly told
+    const bl = new Uint8Array(W * H); for (let y = ya - 3; y < yb + 3; y++) for (let x = xa - 3; x < xb + 3; x++) { const i = y * W + x; if (r[i] ? sum(x - 1, y - 1, x + 1, y + 1) === 9 : sum(x - 1, y - 3, x + 1, y + 2) === 0) continue; bl[i] = blockedAt(r, W, H, x, y) ? 1 : 0; }   // the blocking tiles, once a round
+    for (let y = ya; y < yb && !hit; y++) for (let x = xa; x < xb && !hit; x++) {
+      const gi = y * W + x; if (bl[gi] || !((bl[gi - 1] && bl[gi + 1]) || (bl[gi - W] && bl[gi + W]))) continue;
       const sets = [];
       for (let d = 1; d <= 3; d++) for (const raise of [1, 0]) for (let dy = -d; dy <= d; dy++) for (let dx = -d; dx <= d; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === d && (r[(y + dy) * W + x + dx] === 1) !== !!raise) sets.push([[x + dx, y + dy]]);
       for (const dy of [-1, 0, 1]) { const yy = y + dy; let a = x, b = x; while (a > 1 && !r[yy * W + a - 1]) a--; while (b < W - 2 && !r[yy * W + b + 1]) b++; if (!r[yy * W + x] && b - a < 5) { const s = []; for (let t = a; t <= b; t++) s.push([t, yy]); sets.push(s); } }
@@ -360,6 +374,18 @@ function fixLeft(r, W, H, rule, lk, noRaise) {
         const a = x + dx, b = y + dy, i = b * W + a; if (a < 1 || b < 1 || a >= W - 1 || b >= H - 1 || (lk && lk[i]) || (!r[i] && noRaise[i])) continue;
         DBGV.length = 0; const before = violBox(r, W, H, a, b, a, b, rule.faceRows); r[i] = 1 - r[i];
         if (violBox(r, W, H, a, b, a, b, rule.faceRows) < before) { done = true; hit++; fixed++; break; } r[i] = 1 - r[i];
+      }
+      // none alone: two or three tiles flipped together within 2 tiles (a one-tile wall, a jog beside a held site): the set that leaves the fewest failing checks in the box round the tile, smallest and first in a fixed order
+      // on a tie, kept only when it is fewer than before
+      if (!done) {
+        const cs = []; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 1 && b >= 1 && a < W - 1 && b < H - 1 && !(lk && lk[b * W + a]) && (r[b * W + a] || !noRaise[b * W + a])) cs.push(b * W + a); }
+        const bx = [x - 3, y - 3, x + 3, y + 3]; DBGV.length = 0; const before = violBox(r, W, H, ...bx, rule.faceRows); let best = before, pick = null;
+        const tryset = s => { for (const i of s) r[i] ^= 1; DBGV.length = 0; const v = violBox(r, W, H, ...bx, rule.faceRows); for (const i of s) r[i] ^= 1; if (v < best) { best = v; pick = s; } return v === 0; };
+        search: {
+          for (let p = 0; p < cs.length; p++) for (let q = p + 1; q < cs.length; q++) if (tryset([cs[p], cs[q]])) break search;
+          for (let p = 0; p < cs.length; p++) for (let q = p + 1; q < cs.length; q++) for (let t = q + 1; t < cs.length; t++) if (tryset([cs[p], cs[q], cs[t]])) break search;
+        }
+        if (pick) { for (const i of pick) r[i] ^= 1; hit++; fixed++; }
       }
     }
     if (!hit) break;
@@ -487,14 +513,14 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly - SITE_UP; y <= s.ly; y++) if (!noRaise[y * W + x]) lk[y * W + x] = 1;
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly + 1; y <= s.ly + foot; y++) lk[y * W + x] = 2;   // the low rows win where two sites meet
     const way = new Uint8Array(W * H); for (const s of all) { way[s.ly * W + s.lx + 2] = 1; way[s.ly * W + s.lx + 3] = 1; }
-    const settle = q => { for (let k = 0; k < 6; k++) { const n = cleanup(q, W, H, L.rule, lk); if (same(n, q)) return q; q = n; } return q; };   // cleanup again until it changes nothing: a window that changed a pocket cleans again, one that did not must end on the same raster
-    r = settle(cleanup(base, W, H, L.rule, lk));
+    r = cleanup(base, W, H, L.rule, lk);
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
     const shape = () => { info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
+      const snap = r.slice();
       const { comps } = components(walkParts(r, W, H, way, wblock), W, H, edge, way), shut = comps.filter(c => !c.open && !c.way);
       info.pockets = shut.map(c => c.n); info.pk = shut.map(c => { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return `${c.n}${r[c.tiles[0]] ? 'R' : 'L'}[${x0 + gx0},${y0 + gy0}-${x1 + gx0},${y1 + gy0}]`; }); if (!shut.length) break;
       let changed = false;
@@ -538,7 +564,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
       }
       if (again) break;
       if (!changed) break;
-      r = settle(cleanup(r, W, H, L.rule, lk));
+      r = recleanNear(r, snap, W, H, L.rule, lk);
     }
     if (!again) { shape(); break; }
   }
