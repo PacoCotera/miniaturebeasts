@@ -6,7 +6,7 @@
 //   names      the name list births draw from: "" (the current one) or a list key of names.mjs (en-short-1 shows the archived English names)
 export const OPTIONS_KEY = "mb-options";
 //   noteFrom   who a play note says it is from: "owner" unless an agent tester stores its persona here (no Options row; never a name or address)
-export const OPTION_DEFAULTS = Object.freeze({ playtest: false, dev: false, companion: "A", names: "", noteFrom: "owner" });
+export const OPTION_DEFAULTS = Object.freeze({ playtest: false, dev: false, companion: "A", names: "", place: "", noteFrom: "owner" });
 export function readOptions(storage = globalThis.localStorage) {
   try { const o = JSON.parse(storage.getItem(OPTIONS_KEY) || "{}"); return { ...OPTION_DEFAULTS, ...(o && typeof o === "object" ? o : {}) }; } catch { return { ...OPTION_DEFAULTS }; }
 }
