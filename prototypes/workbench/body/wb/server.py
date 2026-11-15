@@ -29,6 +29,30 @@ from wb.store import ApiError
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
 CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
 PREFIX = "/studio"
+TEAM_STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "team")
+TEAM_COLLECTORS = [os.environ.get("MB_TEAM_STATE", ""),                    # where tools/team/state.py lives: the internal repo's main checkout (or its build tree until the merge)
+                   os.path.expanduser("~/mb/miniaturebeasts-internal/tools/team/state.py"),
+                   os.path.expanduser("~/mb/wt-team-live-1-internal/tools/team/state.py")]
+_TEAM = dict(at=0.0, data=None)
+_TEAM_LOCK = threading.Lock()
+
+
+def team_state():
+    """The collector's JSON, cached 10 s so any number of open pages cost one run. A failure is an answer too (the page shows it), never a stale silence."""
+    with _TEAM_LOCK:
+        if _TEAM["data"] is not None and time.time() - _TEAM["at"] < 10:
+            return _TEAM["data"]
+        script = next((c for c in TEAM_COLLECTORS if c and os.path.isfile(c)), None)
+        if script is None:
+            return dict(error="the team collector (tools/team/state.py) is not on this machine")
+        try:
+            r = subprocess.run(["/usr/bin/python3", "-I", script], capture_output=True, text=True, timeout=8)
+            data = json.loads(r.stdout)
+        except (OSError, ValueError, subprocess.SubprocessError) as e:
+            return dict(error="the team collector failed: " + type(e).__name__)
+        data["served_at"] = time.time()
+        _TEAM.update(at=time.time(), data=data)
+        return data
 IMMUTABLE = "private, max-age=31536000, immutable"                  # a picture fetched behind the login must never be kept by a shared cache
 KEEPALIVE_IDLE = 180
 
@@ -1937,9 +1961,35 @@ def make_handler(srv):
                 self.send_header("Cache-Control", IMMUTABLE)
                 self.end_headers()
                 return self.wfile.write(data)
+            if p == "/team.json":                                       # the live team page's data: tools/team/state.py of the internal repo, cached 10 s
+                return self.send_json(team_state())
+            if p == "/team/":                                           # the page's own links are relative to /team, so the slash form goes there
+                self.send_response(301)
+                self.send_header("Location", "../team")
+                self.send_header("Content-Length", "0")
+                return self.end_headers()
+            if p == "/team" or p.startswith("/team/"):
+                return self.team_file(p)
             if srv.static and not p.startswith(("/api", "/cas", "/events")):
                 return self.static(p)
             raise ApiError(404, "no such route", None)
+
+        def team_file(self, p):
+            """/team is the page, /team/<file> its own script and style (static/team). Same content policy as the app: no inline script, nothing from another site."""
+            name = os.path.normpath(p[len("/team"):].lstrip("/") or "index.html")
+            full = os.path.join(TEAM_STATIC, name)
+            if name.startswith("..") or not os.path.isfile(full):
+                raise ApiError(404, "not found", None)
+            with open(full, "rb") as fh:
+                data = fh.read()
+            self.send_response(200)
+            self.send_header("Content-Type", CT.get(full.rsplit(".", 1)[-1], "application/octet-stream"))
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-cache")
+            self.send_header("Content-Security-Policy", CSP)
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            self.wfile.write(data)
 
         def static(self, p):
             """/assets/* are content-hashed files: immutable for a year. Any other path that is not a file of the app is a page of the single-page app: index.html, never cached."""
