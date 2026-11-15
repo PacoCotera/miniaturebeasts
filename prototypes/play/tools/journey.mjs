@@ -87,7 +87,7 @@ async function frameBad(page, cdp, sel, capture) {
   return [bad, s, Math.abs(r[2] * dprv - cap.width * s) < 0.1];
 }
 const pixel = async (page, x, y) => { const p = rd(await page.screenshot({ clip: { x, y, width: 1, height: 1 } })); return [...p.data.slice(0, 3)]; };
-const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("src"), dot: document.getElementById("dockKey").classList.contains("lit"), live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
+const state = (page) => page.evaluate(() => ({ owner: __play.owner, caddy: __play.caddy, tier: __play.tier, seat: __play.seatOff, word: document.getElementById("dockWord").textContent, mark: document.getElementById("dockMark").getAttribute("data-glyph"), dot: document.getElementById("dockKey").classList.contains("lit"), live: document.getElementById("live").textContent, active: document.activeElement && document.activeElement.id }));
 const clip = (page, name, rect) => process.env.PLAY_CAPTURES ? (mkdirSync(img, { recursive: true }), page.screenshot({ path: path.join(img, name), clip: rect ?? { x: 0, y: 0, width: page.viewportSize().width, height: page.viewportSize().height } })) : null;
 
 // JOURNEY_ONLY=<section> runs one section alone (see the header); with none, the whole journey runs.
@@ -139,18 +139,18 @@ if (!ONLY || ONLY === "DR") {
   await st().evaluate(() => window.__st.seedCrate("S01", 2, 4101)); await page.waitForTimeout(700);
   await page.click("#tabCompanion"); await page.waitForTimeout(400);   // the Companion in view, a crate aboard
   let s = await state(page);
-  eq([s.owner, s.word, s.mark.includes("solid"), s.dot, s.caddy.docked, s.caddy.crates], ["companion", "Dock", true, true, false, 1], "DR1: away with a crate: Dock, the solid mark, the key lit");
+  eq([s.owner, s.word, s.mark, s.dot, s.caddy.docked, s.caddy.crates], ["companion", "Dock", "lit", true, false, 1], "DR1: away with a crate: Dock, the lit glyph (ink solid), the key lit");
   await page.click("#dockKey"); await page.waitForFunction(() => window.__play.owner === "station", null, { timeout: 5000 }).catch(() => {}); await page.waitForTimeout(500); s = await state(page);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "DR2: the Companion is seated: the Station took the dock");
   eq([s.owner, s.live], ["station", "Companion docked"], "DR2: a dock that brings a crate turns the page to the Station; the live region says so");
   eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "arrival"], "DR2: the Station wakes on Cargo's arrival");
-  eq([s.word, s.mark.includes("solid"), s.dot], ["Lift", true, false], "DR2: the key reads Lift (the short word at this width) with the solid mark, not lit");
+  eq([s.word, s.mark, s.dot], ["Lift", "docked", false], "DR2: the key reads Lift (the short word at this width) with the docked glyph, not lit");
   await later(page, st, "DR2", async () => {});   // the show, then the choice; ← is Later
   await page.click("#tabCompanion"); await page.waitForTimeout(400);   // the switch back to the Companion
   eq((await state(page)).owner, "companion", "DR3: the switch takes the Companion into view while it is seated");
   await page.click("#dockKey"); await page.waitForTimeout(800); s = await state(page);
   eq([await st().evaluate(() => window.__st.ST.dock.docked), s.owner, s.live], [false, "companion", "Companion lifted"], "DR3: Lift: the Station lets go, the Companion has the page");
-  eq([s.word, s.mark.includes("solid")], ["Dock", true], "DR3: the key reads Dock again (the crate is still aboard)");
+  eq([s.word, s.mark], ["Dock", "lit"], "DR3: the key reads Dock again (the crate is still aboard)");
   eq(await st().evaluate(() => [window.__st.renderErrors, window.__st.faceErrors]), [[], []], "DR4: the Station's render and face errors");
   await ctx.close();
 }

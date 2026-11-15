@@ -28,9 +28,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/cjs/scheduler.production.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/cjs/scheduler.production.js
 var require_scheduler_production = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/cjs/scheduler.production.js"(exports) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/cjs/scheduler.production.js"(exports) {
     "use strict";
     function push(heap, node) {
       var index4 = heap.length;
@@ -301,9 +301,9 @@ var require_scheduler_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/index.js"(exports, module) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_scheduler_production();
@@ -313,9 +313,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react.production.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react.production.js
 var require_react_production = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react.production.js"(exports) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react.production.js"(exports) {
     "use strict";
     var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
     var REACT_PORTAL_TYPE = Symbol.for("react.portal");
@@ -765,9 +765,9 @@ var require_react_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/index.js
 var require_react = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/index.js"(exports, module) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/index.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_react_production();
@@ -777,9 +777,9 @@ var require_react = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom.production.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom.production.js
 var require_react_dom_production = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom.production.js"(exports) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom.production.js"(exports) {
     "use strict";
     var React45 = require_react();
     function formatProdErrorMessage(code) {
@@ -934,9 +934,9 @@ var require_react_dom_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/index.js"(exports, module) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -960,9 +960,9 @@ var require_react_dom = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom-client.production.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom-client.production.js
 var require_react_dom_client_production = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom-client.production.js"(exports) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/cjs/react-dom-client.production.js"(exports) {
     "use strict";
     var Scheduler = require_scheduler();
     var React45 = require_react();
@@ -14506,9 +14506,9 @@ var require_react_dom_client_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/client.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/client.js"(exports, module) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-dom/client.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -14532,9 +14532,9 @@ var require_client = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react-jsx-runtime.production.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react-jsx-runtime.production.js
 var require_react_jsx_runtime_production = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react-jsx-runtime.production.js"(exports) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/cjs/react-jsx-runtime.production.js"(exports) {
     "use strict";
     var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
     var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -14562,9 +14562,9 @@ var require_react_jsx_runtime_production = __commonJS({
   }
 });
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/jsx-runtime.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS({
-  "../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/jsx-runtime.js"(exports, module) {
+  "wt-ui-lamp-component-1/prototypes/play/options/node_modules/react/jsx-runtime.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_react_jsx_runtime_production();
@@ -14574,13 +14574,13 @@ var require_jsx_runtime = __commonJS({
   }
 });
 
-// src/panel.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/panel.jsx
 var import_client4 = __toESM(require_client(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-image-crop/dist/ReactCrop.css
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-image-crop/dist/ReactCrop.css
 var ReactCrop_default = '@keyframes marching-ants{0%{background-position:0 0,0 100%,0 0,100% 0}to{background-position:20px 0,-20px 100%,0 -20px,100% 20px}}:root{--rc-drag-handle-size:12px;--rc-drag-handle-mobile-size:24px;--rc-drag-handle-bg-colour:#0003;--rc-drag-bar-size:6px;--rc-border-color:#ffffffb3;--rc-focus-color:#08f}.ReactCrop{cursor:crosshair;max-width:100%;display:inline-block;position:relative}.ReactCrop *,.ReactCrop :before,.ReactCrop :after{box-sizing:border-box}.ReactCrop--disabled,.ReactCrop--locked{cursor:inherit}.ReactCrop__child-wrapper{max-height:inherit;overflow:hidden}.ReactCrop__child-wrapper>img,.ReactCrop__child-wrapper>video{max-width:100%;max-height:inherit;display:block}.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>img,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>video,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__crop-selection{touch-action:none}.ReactCrop__crop-mask{pointer-events:none;width:calc(100% + .5px);height:calc(100% + .5px);position:absolute;inset:0}.ReactCrop__crop-selection{cursor:move;position:absolute;top:0;left:0;transform:translate(0,0)}.ReactCrop--disabled .ReactCrop__crop-selection{cursor:inherit}.ReactCrop--circular-crop .ReactCrop__crop-selection{border-radius:50%}.ReactCrop--circular-crop .ReactCrop__crop-selection:after{pointer-events:none;content:"";border:1px solid var(--rc-border-color);opacity:.3;position:absolute;inset:-1px}.ReactCrop--no-animate .ReactCrop__crop-selection{outline:1px dashed #fff}.ReactCrop__crop-selection:not(.ReactCrop--no-animate .ReactCrop__crop-selection){color:#fff;background-image:linear-gradient(90deg,#fff 50%,#444 50%),linear-gradient(90deg,#fff 50%,#444 50%),linear-gradient(#fff 50%,#444 50%),linear-gradient(#fff 50%,#444 50%);background-position:0 0,0 100%,0 0,100% 0;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;background-size:10px 1px,10px 1px,1px 10px,1px 10px;animation:1s linear infinite marching-ants}.ReactCrop__crop-selection:focus{outline:2px solid var(--rc-focus-color);outline-offset:-1px}.ReactCrop--invisible-crop .ReactCrop__crop-mask,.ReactCrop--invisible-crop .ReactCrop__crop-selection{display:none}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after,.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{content:"";background-color:#fff6;display:block;position:absolute}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after{width:1px;height:100%}.ReactCrop__rule-of-thirds-vt:before{left:33.3333%}.ReactCrop__rule-of-thirds-vt:after{left:66.6667%}.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{width:100%;height:1px}.ReactCrop__rule-of-thirds-hz:before{top:33.3333%}.ReactCrop__rule-of-thirds-hz:after{top:66.6667%}.ReactCrop__drag-handle{width:var(--rc-drag-handle-size);height:var(--rc-drag-handle-size);background-color:var(--rc-drag-handle-bg-colour);border:1px solid var(--rc-border-color);position:absolute}.ReactCrop__drag-handle:focus{background:var(--rc-focus-color)}.ReactCrop .ord-nw{cursor:nw-resize;top:0;left:0;transform:translate(-50%,-50%)}.ReactCrop .ord-n{cursor:n-resize;top:0;left:50%;transform:translate(-50%,-50%)}.ReactCrop .ord-ne{cursor:ne-resize;top:0;right:0;transform:translate(50%,-50%)}.ReactCrop .ord-e{cursor:e-resize;top:50%;right:0;transform:translate(50%,-50%)}.ReactCrop .ord-se{cursor:se-resize;bottom:0;right:0;transform:translate(50%,50%)}.ReactCrop .ord-s{cursor:s-resize;bottom:0;left:50%;transform:translate(-50%,50%)}.ReactCrop .ord-sw{cursor:sw-resize;bottom:0;left:0;transform:translate(-50%,50%)}.ReactCrop .ord-w{cursor:w-resize;top:50%;left:0;transform:translate(-50%,-50%)}.ReactCrop__disabled .ReactCrop__drag-handle{cursor:inherit}.ReactCrop__drag-bar{position:absolute}.ReactCrop__drag-bar.ord-n{width:100%;height:var(--rc-drag-bar-size);top:0;left:0;transform:translateY(-50%)}.ReactCrop__drag-bar.ord-e{width:var(--rc-drag-bar-size);height:100%;top:0;right:0;transform:translate(50%)}.ReactCrop__drag-bar.ord-s{width:100%;height:var(--rc-drag-bar-size);bottom:0;left:0;transform:translateY(50%)}.ReactCrop__drag-bar.ord-w{width:var(--rc-drag-bar-size);height:100%;top:0;left:0;transform:translate(-50%)}.ReactCrop--new-crop .ReactCrop__drag-bar,.ReactCrop--new-crop .ReactCrop__drag-handle,.ReactCrop--fixed-aspect .ReactCrop__drag-bar,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-n,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-e,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-s,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-w{display:none}@media (pointer:coarse){.ReactCrop .ord-n,.ReactCrop .ord-e,.ReactCrop .ord-s,.ReactCrop .ord-w{display:none}.ReactCrop__drag-handle{width:var(--rc-drag-handle-mobile-size);height:var(--rc-drag-handle-mobile-size)}}\n/*$vite$:1*/';
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/idb-keyval/dist/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/idb-keyval/dist/index.js
 function promisifyRequest(request) {
   return new Promise((resolve, reject) => {
     request.oncomplete = request.onsuccess = () => resolve(request.result);
@@ -14645,7 +14645,7 @@ function keys(customStore = defaultGetStore()) {
   });
 }
 
-// ../src/notes.mjs
+// wt-ui-dock-away-glyph-1/prototypes/play/src/notes.mjs
 var NOTE_ROUTE = "/caddy-api/v1/notes";
 var LIMITS = Object.freeze({ shots: 8, clips: 2, bytes: 20 * 1024 * 1024, textChars: 4e3, clipMs: 15e3, ringMs: 1e4 });
 var fmt = (s2, v = {}) => String(s2).replace(/\{(\w+)(?::ss)?\}/g, (m2, k) => m2.endsWith(":ss}") ? mss(v[k]) : v[k] ?? "");
@@ -14769,7 +14769,7 @@ var ClipRing = class {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/misc.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/misc.js
 function assert(x) {
   if (!x) {
     throw new Error("Assertion failed.");
@@ -15239,7 +15239,7 @@ var isRecordStringString = (value) => {
   return value !== null && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype && Object.values(value).every((x) => typeof x === "string");
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/logging.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/logging.js
 var LogLevel;
 (function(LogLevel2) {
   LogLevel2[LogLevel2["Silent"] = 0] = "Silent";
@@ -15293,7 +15293,7 @@ var Logging = class _Logging {
 Logging._level = LogLevel.Info;
 Logging._emitterInstance = null;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/metadata.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/metadata.js
 var RichImageData = class {
   /** Creates a new {@link RichImageData}. */
   constructor(data, mimeType) {
@@ -15434,7 +15434,7 @@ var validateTrackDisposition = (disposition) => {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/bitstream.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/bitstream.js
 var Bitstream = class _Bitstream {
   constructor(bytes2) {
     this.bytes = bytes2;
@@ -15506,7 +15506,7 @@ var Bitstream = class _Bitstream {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/aac-misc.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/aac-misc.js
 var aacFrequencyTable = [
   96e3,
   88200,
@@ -15578,18 +15578,18 @@ var findAacFrequencyIndex = (sampleRate) => {
   return index4 === -1 ? 15 : index4;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/ac3-misc.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/ac3-misc.js
 var AC3_SAMPLE_RATES = [48e3, 44100, 32e3];
 var EAC3_REDUCED_SAMPLE_RATES = [24e3, 22050, 16e3];
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/truehd-misc.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/shared/truehd-misc.js
 var TRUEHD_MAJOR_SYNC_WORD = 4168249274;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/version.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/version.js
 var VERSION = "1.65.2";
 var VERSIONED_NAME = `Mediabunny v${VERSION}`;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/codec-data.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/codec-data.js
 var AvcNalUnitType;
 (function(AvcNalUnitType2) {
   AvcNalUnitType2[AvcNalUnitType2["NON_IDR_SLICE"] = 1] = "NON_IDR_SLICE";
@@ -17171,7 +17171,7 @@ var buildDtsSpecificBox = (frameInfo) => {
   return bytes2;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/subtitles.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/subtitles.js
 var inlineTimestampRegex = /<(?:(\d{2}):)?(\d{2}):(\d{2}).(\d{3})>/g;
 var formatSubtitleTimestamp = (timestamp) => {
   const hours = Math.floor(timestamp / (60 * 60 * 1e3));
@@ -17181,7 +17181,7 @@ var formatSubtitleTimestamp = (timestamp) => {
   return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0") + "." + milliseconds.toString().padStart(3, "0");
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/packet.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/packet.js
 var PLACEHOLDER_DATA = /* @__PURE__ */ new Uint8Array(0);
 var EncodedPacket = class _EncodedPacket {
   /** Creates a new {@link EncodedPacket} from raw bytes and timing information. */
@@ -17342,7 +17342,7 @@ var EncodedPacket = class _EncodedPacket {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-misc.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-misc.js
 var TIMESTAMP_OFFSET = 2082844800;
 var buildIsobmffMimeType = (info) => {
   const base = info.hasVideo ? "video/" : info.hasAudio ? "audio/" : "application/";
@@ -17354,7 +17354,7 @@ var buildIsobmffMimeType = (info) => {
   return string;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/adts/adts-reader.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/adts/adts-reader.js
 var MIN_ADTS_FRAME_HEADER_SIZE = 7;
 var MAX_ADTS_FRAME_HEADER_SIZE = 9;
 var readAdtsFrameHeader = (slice) => {
@@ -17415,7 +17415,7 @@ var readAdtsFrameHeader = (slice) => {
   };
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/reader.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/reader.js
 var FileSlice = class _FileSlice {
   constructor(bytes2, view2, offset4, start, end) {
     this.bytes = bytes2;
@@ -17470,11 +17470,11 @@ var readU16Be = (slice) => {
   return value;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-reader.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-reader.js
 var MIN_BOX_HEADER_SIZE = 8;
 var MAX_BOX_HEADER_SIZE = 16;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/media-source.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/media-source.js
 var MediaSource = class {
   constructor() {
     this._connectedTrack = null;
@@ -17606,7 +17606,7 @@ var SubtitleSource = class extends MediaSource {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/codec.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/codec.js
 var VIDEO_CODECS = [
   "avc",
   "hevc",
@@ -18017,7 +18017,7 @@ var validateSubtitleMetadata = (metadata) => {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/muxer.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/muxer.js
 var Muxer = class {
   constructor(output) {
     this.mutex = new AsyncMutex();
@@ -18068,7 +18068,7 @@ var PacketOrderValidator = class {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-boxes.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-boxes.js
 var IsobmffBoxWriter = class {
   constructor(writer) {
     this.writer = writer;
@@ -19924,7 +19924,7 @@ var getLanguageCodeInt = (code) => {
   return language;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/writer.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/writer.js
 var Writer = class {
   constructor(target, isMonotonic) {
     this.finalized = false;
@@ -20016,7 +20016,7 @@ var Writer = class {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/target.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/target.js
 var Target = class extends EventEmitter {
   constructor() {
     super(...arguments);
@@ -20183,7 +20183,7 @@ var PathedTarget = class {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-muxer.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-muxer.js
 var GLOBAL_TIMESCALE = 57600;
 var MIN_CHUNK_DURATION = 0.5;
 var getTrackMetadata = (trackData) => {
@@ -20674,8 +20674,8 @@ var IsobmffMuxer = class extends Muxer {
         this.auxWriter.seek(0);
         const box2 = vtte();
         this.auxBoxWriter.writeBox(box2);
-        const body2 = this.auxTarget._getSlice(0, this.auxWriter.getPos());
-        const sample2 = this.createSampleForTrack(trackData, body2, trackData.lastCueEndTimestamp, sampleStart - trackData.lastCueEndTimestamp, "key", 0);
+        const body3 = this.auxTarget._getSlice(0, this.auxWriter.getPos());
+        const sample2 = this.createSampleForTrack(trackData, body3, trackData.lastCueEndTimestamp, sampleStart - trackData.lastCueEndTimestamp, "key", 0);
         await this.registerSample(trackData, sample2);
         trackData.lastCueEndTimestamp = sampleStart;
       }
@@ -20703,8 +20703,8 @@ var IsobmffMuxer = class extends Muxer {
           trackData.cueQueue.splice(i2--, 1);
         }
       }
-      const body = this.auxTarget._getSlice(0, this.auxWriter.getPos());
-      const sample = this.createSampleForTrack(trackData, body, sampleStart, sampleEnd - sampleStart, "key", 0);
+      const body2 = this.auxTarget._getSlice(0, this.auxWriter.getPos());
+      const sample = this.createSampleForTrack(trackData, body2, sampleStart, sampleEnd - sampleStart, "key", 0);
       await this.registerSample(trackData, sample);
       trackData.lastCueEndTimestamp = sampleEnd;
     }
@@ -21294,7 +21294,7 @@ var IsobmffMuxer = class extends Muxer {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/output-format.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/output-format.js
 var OutputFormat = class {
   /**
    * Whether this output format supports video rotation metadata.
@@ -21497,7 +21497,7 @@ var MovOutputFormat = class extends IsobmffOutputFormat {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/output.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/output.js
 var ALL_TRACK_TYPES = ["video", "audio", "subtitle"];
 var OutputTrack = class _OutputTrack {
   /** @internal */
@@ -22036,14 +22036,14 @@ var Output = class extends EventEmitter {
   }
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/mediabunny/dist/modules/src/index.js
 var MEDIABUNNY_LOADED_SYMBOL = Symbol.for("mediabunny loaded");
 if (globalThis[MEDIABUNNY_LOADED_SYMBOL]) {
   Logging._error("[WARNING]\nMediabunny was loaded twice. This will likely cause Mediabunny not to work correctly. Check if multiple dependencies are importing different versions of Mediabunny, or if something is being bundled incorrectly.");
 }
 globalThis[MEDIABUNNY_LOADED_SYMBOL] = true;
 
-// ../src/clip.mjs
+// wt-ui-dock-away-glyph-1/prototypes/play/src/clip.mjs
 var canClip = () => typeof VideoEncoder !== "undefined" && typeof VideoFrame !== "undefined";
 var canRecordAny = () => canClip() || typeof MediaRecorder !== "undefined" && typeof HTMLCanvasElement !== "undefined" && "captureStream" in HTMLCanvasElement.prototype;
 function shot(canvas) {
@@ -22230,7 +22230,7 @@ function createTap(getCanvas, win = window) {
   };
 }
 
-// src/controller.js
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/controller.js
 var uid = 0;
 var urlOf = (b) => URL.createObjectURL(b);
 function createController(host) {
@@ -22446,10 +22446,10 @@ function createController(host) {
   return api;
 }
 
-// src/note-ui.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/note-ui.jsx
 var import_react7 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
 var dist_exports3 = {};
 __export(dist_exports3, {
   AccessibleIcon: () => AccessibleIcon,
@@ -22457,7 +22457,7 @@ __export(dist_exports3, {
 });
 var React5 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var dist_exports2 = {};
 __export(dist_exports2, {
   Root: () => VisuallyHidden,
@@ -22466,14 +22466,14 @@ __export(dist_exports2, {
 });
 var React4 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
 var React3 = __toESM(require_react(), 1);
 var ReactDOM = __toESM(require_react_dom(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
 var React2 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
 var React = __toESM(require_react(), 1);
 var __defProp2 = Object.defineProperty;
 var __name = (target, value) => __defProp2(target, "name", { value, configurable: true });
@@ -22515,7 +22515,7 @@ function useComposedRefs(...refs) {
 }
 __name(useComposedRefs, "useComposedRefs");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
 var __defProp3 = Object.defineProperty;
 var __name2 = (target, value) => __defProp3(target, "name", { value, configurable: true });
 // @__NO_SIDE_EFFECTS__
@@ -22668,7 +22668,7 @@ var createSlottableError = /* @__PURE__ */ __name2((ownerName) => {
 }, "createSlottableError");
 var use = React2[" use ".trim().toString()];
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
 var __defProp4 = Object.defineProperty;
 var __name3 = (target, value) => __defProp4(target, "name", { value, configurable: true });
@@ -22709,7 +22709,7 @@ function dispatchDiscreteCustomEvent(target, event) {
 }
 __name3(dispatchDiscreteCustomEvent, "dispatchDiscreteCustomEvent");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
 var __defProp5 = Object.defineProperty;
 var __name4 = (target, value) => __defProp5(target, "name", { value, configurable: true });
@@ -22739,7 +22739,7 @@ var VisuallyHidden = /* @__PURE__ */ React4.forwardRef(
   }, "VisuallyHidden")
 );
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
 var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
 var __defProp6 = Object.defineProperty;
 var __name5 = (target, value) => __defProp6(target, "name", { value, configurable: true });
@@ -22756,7 +22756,7 @@ var AccessibleIcon = /* @__PURE__ */ __name5(({ children, label }) => {
   ] });
 }, "AccessibleIcon");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-context/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-context/dist/index.mjs
 var React6 = __toESM(require_react(), 1);
 var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
 var __defProp7 = Object.defineProperty;
@@ -22849,17 +22849,17 @@ function composeContextScopes(...scopes) {
 }
 __name6(composeContextScopes, "composeContextScopes");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
 var React8 = __toESM(require_react(), 1);
 var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
 var React22 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
 var React7 = __toESM(require_react(), 1);
 var useLayoutEffect2 = globalThis?.document ? React7.useLayoutEffect : () => {
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
 var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
 var __defProp8 = Object.defineProperty;
 var __name7 = (target, value) => __defProp8(target, "name", { value, configurable: true });
@@ -23487,7 +23487,7 @@ function getChildListObserver(callback) {
 }
 __name7(getChildListObserver, "getChildListObserver");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/primitive/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/primitive/dist/index.mjs
 var __defProp9 = Object.defineProperty;
 var __name8 = (target, value) => __defProp9(target, "name", { value, configurable: true });
 var canUseDOM = !!(typeof window !== "undefined" && window.document && window.document.createElement);
@@ -23539,16 +23539,16 @@ function isFrame(element) {
 }
 __name8(isFrame, "isFrame");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var React10 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/primitive/dist/internal/is-development.false.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/primitive/dist/internal/is-development.false.mjs
 var IS_DEVELOPMENT = false;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var React23 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
 var React9 = __toESM(require_react(), 1);
 var __defProp10 = Object.defineProperty;
 var __name9 = (target, value) => __defProp10(target, "name", { value, configurable: true });
@@ -23574,7 +23574,7 @@ function useEffectEvent(callback) {
 }
 __name9(useEffectEvent, "useEffectEvent");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var __defProp11 = Object.defineProperty;
 var __name10 = (target, value) => __defProp11(target, "name", { value, configurable: true });
 var useInsertionEffect = React10[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
@@ -23706,7 +23706,7 @@ function useControllableStateReducer(reducer, userArgs, initialArg, init) {
 }
 __name10(useControllableStateReducer, "useControllableStateReducer");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-presence/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-presence/dist/index.mjs
 var React24 = __toESM(require_react(), 1);
 var React11 = __toESM(require_react(), 1);
 var __defProp12 = Object.defineProperty;
@@ -23885,7 +23885,7 @@ function getElementRef2(element) {
 }
 __name11(getElementRef2, "getElementRef");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-id/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-id/dist/index.mjs
 var React12 = __toESM(require_react(), 1);
 var __defProp13 = Object.defineProperty;
 var __name12 = (target, value) => __defProp13(target, "name", { value, configurable: true });
@@ -23900,7 +23900,7 @@ function useId(deterministicId) {
 }
 __name12(useId, "useId");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-direction/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-direction/dist/index.mjs
 var React13 = __toESM(require_react(), 1);
 var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
 var __defProp14 = Object.defineProperty;
@@ -23916,7 +23916,7 @@ function useDirection(localDir) {
 }
 __name13(useDirection, "useDirection");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var dist_exports5 = {};
 __export(dist_exports5, {
   Action: () => AlertDialogAction,
@@ -23941,7 +23941,7 @@ __export(dist_exports5, {
 });
 var React30 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
 var dist_exports4 = {};
 __export(dist_exports4, {
   Close: () => DialogClose,
@@ -23965,10 +23965,10 @@ __export(dist_exports4, {
 });
 var React29 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
 var React15 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
 var React14 = __toESM(require_react(), 1);
 var __defProp15 = Object.defineProperty;
 var __name14 = (target, value) => __defProp15(target, "name", { value, configurable: true });
@@ -23988,7 +23988,7 @@ function useCallbackRef(callback) {
 }
 __name14(useCallbackRef, "useCallbackRef");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
 var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
 var __defProp16 = Object.defineProperty;
 var __name15 = (target, value) => __defProp16(target, "name", { value, configurable: true });
@@ -24321,7 +24321,7 @@ function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
 }
 __name15(handleAndDispatchCustomEvent, "handleAndDispatchCustomEvent");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-focus-scope/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-focus-scope/dist/index.mjs
 var React16 = __toESM(require_react(), 1);
 var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
 var __defProp17 = Object.defineProperty;
@@ -24594,7 +24594,7 @@ function removeLinks(items) {
 }
 __name16(removeLinks, "removeLinks");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-portal/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-portal/dist/index.mjs
 var React17 = __toESM(require_react(), 1);
 var ReactDOM2 = __toESM(require_react_dom(), 1);
 var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
@@ -24610,7 +24610,7 @@ var Portal = /* @__PURE__ */ React17.forwardRef(
   }, "Portal")
 );
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-focus-guards/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-focus-guards/dist/index.mjs
 var React18 = __toESM(require_react(), 1);
 var __defProp19 = Object.defineProperty;
 var __name18 = (target, value) => __defProp19(target, "name", { value, configurable: true });
@@ -24657,7 +24657,7 @@ function createFocusGuard() {
 }
 __name18(createFocusGuard, "createFocusGuard");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/tslib/tslib.es6.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/tslib/tslib.es6.mjs
 var __assign = function() {
   __assign = Object.assign || function __assign2(t2) {
     for (var s2, i2 = 1, n2 = arguments.length; i2 < n2; i2++) {
@@ -24689,19 +24689,19 @@ function __spreadArray(to, from, pack) {
   return to.concat(ar || Array.prototype.slice.call(from));
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
 var React28 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
 var React21 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/constants.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/constants.js
 var zeroRightClassName = "right-scroll-bar-position";
 var fullWidthClassName = "width-before-scroll-bar";
 var noScrollbarsClassName = "with-scroll-bars-hidden";
 var removedBarSizeVariable = "--removed-body-scroll-bar-size";
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/assignRef.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/assignRef.js
 function assignRef(ref, value) {
   if (typeof ref === "function") {
     ref(value);
@@ -24711,7 +24711,7 @@ function assignRef(ref, value) {
   return ref;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/useRef.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/useRef.js
 var import_react = __toESM(require_react());
 function useCallbackRef2(initialValue, callback) {
   var ref = (0, import_react.useState)(function() {
@@ -24739,7 +24739,7 @@ function useCallbackRef2(initialValue, callback) {
   return ref.facade;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/useMergeRef.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-callback-ref/dist/es2015/useMergeRef.js
 var React19 = __toESM(require_react());
 var useIsomorphicLayoutEffect = typeof window !== "undefined" ? React19.useLayoutEffect : React19.useEffect;
 var currentValues = /* @__PURE__ */ new WeakMap();
@@ -24771,7 +24771,7 @@ function useMergeRefs(refs, defaultValue) {
   return callbackRef;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-sidecar/dist/es2015/medium.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-sidecar/dist/es2015/medium.js
 function ItoI(a2) {
   return a2;
 }
@@ -24857,7 +24857,7 @@ function createSidecarMedium(options) {
   return medium;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-sidecar/dist/es2015/exports.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-sidecar/dist/es2015/exports.js
 var React20 = __toESM(require_react());
 var SideCar = function(_a) {
   var sideCar = _a.sideCar, rest = __rest(_a, ["sideCar"]);
@@ -24876,10 +24876,10 @@ function exportSidecar(medium, exported) {
   return SideCar;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/medium.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/medium.js
 var effectCar = createSidecarMedium();
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
 var nothing = function() {
   return;
 };
@@ -24911,16 +24911,16 @@ RemoveScroll.classNames = {
   zeroRight: zeroRightClassName
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
 var React27 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
 var React26 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/hook.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/hook.js
 var React25 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/get-nonce/dist/es2015/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/get-nonce/dist/es2015/index.js
 var currentNonce;
 var getNonce = function() {
   if (currentNonce) {
@@ -24932,7 +24932,7 @@ var getNonce = function() {
   return void 0;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/singleton.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/singleton.js
 function makeStyleTag() {
   if (!document)
     return null;
@@ -24978,7 +24978,7 @@ var stylesheetSingleton = function() {
   };
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/hook.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/hook.js
 var styleHookSingleton = function() {
   var sheet = stylesheetSingleton();
   return function(styles, isDynamic) {
@@ -24991,7 +24991,7 @@ var styleHookSingleton = function() {
   };
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/component.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-style-singleton/dist/es2015/component.js
 var styleSingleton = function() {
   var useStyle = styleHookSingleton();
   var Sheet = function(_a) {
@@ -25002,7 +25002,7 @@ var styleSingleton = function() {
   return Sheet;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/utils.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/utils.js
 var zeroGap = {
   left: 0,
   top: 0,
@@ -25037,7 +25037,7 @@ var getGapWidth = function(gapMode) {
   };
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
 var Style = styleSingleton();
 var lockAttribute = "data-scroll-locked";
 var getStyles = function(_a, allowRelative, gapMode, important) {
@@ -25077,7 +25077,7 @@ var RemoveScrollBar = function(_a) {
   return React26.createElement(Style, { styles: getStyles(gap, !noRelative, gapMode, !noImportant ? "!important" : "") });
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js
 var passiveSupported = false;
 if (typeof window !== "undefined") {
   try {
@@ -25096,7 +25096,7 @@ if (typeof window !== "undefined") {
 var options;
 var nonPassive = passiveSupported ? { passive: false } : false;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/handleScroll.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/handleScroll.js
 var alwaysContainsScroll = function(node) {
   return node.tagName === "TEXTAREA";
 };
@@ -25196,7 +25196,7 @@ var handleScroll = function(axis, endTarget, event, sourceDelta, noOverscroll) {
   return shouldCancelScroll;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
 var getTouchXY = function(event) {
   return "changedTouches" in event ? [event.changedTouches[0].clientX, event.changedTouches[0].clientY] : [0, 0];
 };
@@ -25367,17 +25367,17 @@ function getOutermostShadowParent(node) {
   return shadowParent;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/sidecar.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/sidecar.js
 var sidecar_default = exportSidecar(effectCar, RemoveScrollSideCar);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
 var ReactRemoveScroll = React28.forwardRef(function(props, ref) {
   return React28.createElement(RemoveScroll, __assign({}, props, { ref, sideCar: sidecar_default }));
 });
 ReactRemoveScroll.classNames = RemoveScroll.classNames;
 var Combination_default = ReactRemoveScroll;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/aria-hidden/dist/es2015/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/aria-hidden/dist/es2015/index.js
 var getDefaultParent = function(originalTarget) {
   if (typeof document === "undefined") {
     return null;
@@ -25498,7 +25498,7 @@ var hideOthers = function(originalTarget, parentNode, markerName) {
   return applyAttributeToOthers(targets, activeParentNode, markerName, "aria-hidden");
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
 var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
 var __defProp20 = Object.defineProperty;
 var __name19 = (target, value) => __defProp20(target, "name", { value, configurable: true });
@@ -25810,7 +25810,7 @@ function getState(open) {
 }
 __name19(getState, "getState");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
 var __defProp21 = Object.defineProperty;
 var __name20 = (target, value) => __defProp21(target, "name", { value, configurable: true });
@@ -25900,7 +25900,7 @@ var AlertDialogCancel = React30.forwardRef(
   }, "AlertDialogCancel")
 );
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-size/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-size/dist/index.mjs
 var React31 = __toESM(require_react(), 1);
 var __defProp22 = Object.defineProperty;
 var __name21 = (target, value) => __defProp22(target, "name", { value, configurable: true });
@@ -25947,10 +25947,10 @@ function useSize(element) {
 }
 __name21(useSize, "useSize");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
 var React34 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
 var sides = ["top", "right", "bottom", "left"];
 var min = Math.min;
 var max = Math.max;
@@ -26079,7 +26079,7 @@ function rectToClientRect(rect) {
   };
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/core/dist/floating-ui.core.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/core/dist/floating-ui.core.mjs
 function computeCoordsFromPlacement(_ref, placement, rtl) {
   let {
     reference,
@@ -26777,7 +26777,7 @@ var size = function(options) {
   };
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
 function hasWindow() {
   return typeof window !== "undefined";
 }
@@ -26933,7 +26933,7 @@ function getFrameElement(win) {
   return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
 function getCssDimensions(element) {
   const css = getComputedStyle2(element);
   let width = parseFloat(css.width) || 0;
@@ -27108,13 +27108,13 @@ function getClientRects(element) {
 }
 function getDocumentRect(html) {
   const scroll = getNodeScroll(html);
-  const body = html.ownerDocument.body;
-  const width = max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
-  const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  const body2 = html.ownerDocument.body;
+  const width = max(html.scrollWidth, html.clientWidth, body2.scrollWidth, body2.clientWidth);
+  const height = max(html.scrollHeight, html.clientHeight, body2.scrollHeight, body2.clientHeight);
   let x = -scroll.scrollLeft + getWindowScrollBarX(html);
   const y = -scroll.scrollTop;
-  if (getComputedStyle2(body).direction === "rtl") {
-    x += max(html.clientWidth, body.clientWidth) - width;
+  if (getComputedStyle2(body2).direction === "rtl") {
+    x += max(html.clientWidth, body2.clientWidth) - width;
   }
   return {
     width,
@@ -27155,10 +27155,10 @@ function getViewportRect(element, strategy, rootBoundary) {
   const windowScrollbarX = getWindowScrollBarX(html);
   if (windowScrollbarX <= 0) {
     const doc = html.ownerDocument;
-    const body = doc.body;
-    const bodyStyles = getComputedStyle(body);
+    const body2 = doc.body;
+    const bodyStyles = getComputedStyle(body2);
     const bodyMarginInline = doc.compatMode === "CSS1Compat" ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
-    const reservedWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
+    const reservedWidth = Math.abs(html.clientWidth - body2.clientWidth - bodyMarginInline);
     const gutter = getComputedStyle(html).scrollbarGutter === "stable both-edges" ? reservedWidth / 2 : reservedWidth;
     if (gutter <= SCROLLBAR_MAX) {
       width -= gutter;
@@ -27542,7 +27542,7 @@ var computePosition2 = (reference, floating, options) => {
   });
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
 var React32 = __toESM(require_react(), 1);
 var import_react2 = __toESM(require_react(), 1);
 var ReactDOM3 = __toESM(require_react_dom(), 1);
@@ -27853,7 +27853,7 @@ var arrow3 = (options, deps) => {
   };
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-arrow/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-arrow/dist/index.mjs
 var React33 = __toESM(require_react(), 1);
 var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
 var __defProp23 = Object.defineProperty;
@@ -27876,7 +27876,7 @@ var Arrow = /* @__PURE__ */ React33.forwardRef(
   }, "Arrow")
 );
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
 var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
 var __defProp24 = Object.defineProperty;
 var __name23 = (target, value) => __defProp24(target, "name", { value, configurable: true });
@@ -28215,10 +28215,10 @@ function getSideAndAlignFromPlacement(placement) {
 }
 __name23(getSideAndAlignFromPlacement, "getSideAndAlignFromPlacement");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-roving-focus/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-roving-focus/dist/index.mjs
 var React36 = __toESM(require_react(), 1);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
 var React210 = __toESM(require_react(), 1);
 var React35 = __toESM(require_react(), 1);
 var __defProp25 = Object.defineProperty;
@@ -28251,7 +28251,7 @@ function useIsHydratedModern() {
 __name24(useIsHydratedModern, "useIsHydratedModern");
 var useIsHydrated2 = typeof useReactSyncExternalStore === "function" ? useIsHydratedModern : useIsHydrated;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-roving-focus/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-roving-focus/dist/index.mjs
 var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
 var __defProp26 = Object.defineProperty;
 var __name25 = (target, value) => __defProp26(target, "name", { value, configurable: true });
@@ -28488,7 +28488,7 @@ function wrapArray(array, startIndex) {
 }
 __name25(wrapArray, "wrapArray");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/number/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/number/dist/index.mjs
 var __defProp27 = Object.defineProperty;
 var __name26 = (target, value) => __defProp27(target, "name", { value, configurable: true });
 function clamp3(value, [min2, max2]) {
@@ -28496,7 +28496,7 @@ function clamp3(value, [min2, max2]) {
 }
 __name26(clamp3, "clamp");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-select/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-select/dist/index.mjs
 var dist_exports7 = {};
 __export(dist_exports7, {
   Arrow: () => SelectArrow,
@@ -29767,7 +29767,7 @@ function wrapArray2(array, startIndex) {
 }
 __name27(wrapArray2, "wrapArray");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-switch/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-switch/dist/index.mjs
 var dist_exports9 = {};
 __export(dist_exports9, {
   Root: () => Switch,
@@ -30059,7 +30059,7 @@ function getState2(checked) {
 }
 __name28(getState2, "getState");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-tabs/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-tabs/dist/index.mjs
 var dist_exports10 = {};
 __export(dist_exports10, {
   Content: () => TabsContent,
@@ -30257,7 +30257,7 @@ function makeContentId(baseId, value) {
 }
 __name29(makeContentId, "makeContentId");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-toggle/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-toggle/dist/index.mjs
 var dist_exports12 = {};
 __export(dist_exports12, {
   Root: () => Toggle,
@@ -30296,7 +30296,7 @@ var Toggle = /* @__PURE__ */ React40.forwardRef(
   }, "Toggle")
 );
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-tooltip/dist/index.mjs
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@radix-ui/react-tooltip/dist/index.mjs
 var dist_exports13 = {};
 __export(dist_exports13, {
   Arrow: () => TooltipArrow,
@@ -30811,7 +30811,7 @@ function concatAriaDescribedby3(...values) {
 }
 __name31(concatAriaDescribedby3, "concatAriaDescribedby");
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@babel/runtime/helpers/esm/extends.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n2) {
     for (var e2 = 1; e2 < arguments.length; e2++) {
@@ -30822,7 +30822,7 @@ function _extends() {
   }, _extends.apply(null, arguments);
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
 function _objectWithoutPropertiesLoose(r2, e2) {
   if (null == r2) return {};
   var t2 = {};
@@ -30833,17 +30833,17 @@ function _objectWithoutPropertiesLoose(r2, e2) {
   return t2;
 }
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
 var React44 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-latest/dist/use-latest.esm.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-latest/dist/use-latest.esm.js
 var import_react4 = __toESM(require_react());
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-isomorphic-layout-effect/dist/use-isomorphic-layout-effect.browser.esm.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-isomorphic-layout-effect/dist/use-isomorphic-layout-effect.browser.esm.js
 var import_react3 = __toESM(require_react());
 var index2 = import_react3.useLayoutEffect;
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-latest/dist/use-latest.esm.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-latest/dist/use-latest.esm.js
 var useLatest = function useLatest2(value) {
   var ref = import_react4.default.useRef(value);
   index2(function() {
@@ -30852,7 +30852,7 @@ var useLatest = function useLatest2(value) {
   return ref;
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-composed-ref/dist/use-composed-ref.esm.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/use-composed-ref/dist/use-composed-ref.esm.js
 var import_react5 = __toESM(require_react());
 var updateRef = function updateRef2(ref, value) {
   if (typeof ref === "function") {
@@ -30876,7 +30876,7 @@ var useComposedRef = function useComposedRef2(libRef, userRef) {
   }, [userRef]);
 };
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
 var HIDDEN_TEXTAREA_STYLE = {
   "min-height": "0",
   "max-height": "none",
@@ -31083,7 +31083,7 @@ var TextareaAutosize = function TextareaAutosize2(_ref, userRef) {
 };
 var index3 = /* @__PURE__ */ React44.forwardRef(TextareaAutosize);
 
-// ../../../../wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-image-crop/dist/index.js
+// wt-ui-lamp-component-1/prototypes/play/options/node_modules/react-image-crop/dist/index.js
 var import_react6 = __toESM(require_react(), 1);
 var r = {
   x: 0,
@@ -31485,7 +31485,7 @@ var h = class s extends import_react6.PureComponent {
 };
 var g = Math.PI / 180;
 
-// ../src/note-strings.json
+// wt-ui-dock-away-glyph-1/prototypes/play/src/note-strings.json
 var note_strings_default = {
   "options.note.label": "Send a note",
   "options.note.line": "A picture of the game as you left it goes in first. Add a few words, more pictures or a clip.",
@@ -31537,7 +31537,7 @@ var note_strings_default = {
   "keys.whole.line": "Add the whole screen to the note"
 };
 
-// src/note-ui.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/note-ui.jsx
 var import_jsx_runtime21 = __toESM(require_jsx_runtime(), 1);
 var T = (key, vars) => fmt(note_strings_default[key] ?? key, vars);
 var useNote = (c) => (0, import_react7.useSyncExternalStore)(c.subscribe, c.getState);
@@ -31644,7 +31644,7 @@ function SectionDialog({ c }) {
   ] }) });
 }
 
-// src/parts.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/parts.jsx
 var import_react8 = __toESM(require_react(), 1);
 var import_jsx_runtime22 = __toESM(require_jsx_runtime(), 1);
 var NONE = "__none";
@@ -31723,10 +31723,56 @@ function Panel({ api }) {
   ] }) });
 }
 
-// src/keytray.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/keytray.jsx
 var import_react9 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 var import_client = __toESM(require_client(), 1);
+
+// wt-ui-dock-away-glyph-1/prototypes/play/src/dockglyph.mjs
+var GLYPH_W = 16;
+var GLYPH_H = 24;
+var BOX = { x0: 1, y0: 0, x1: 13, y1: 23 };
+var GLYPH_CUT = 2;
+var SCREEN = { x0: 4, y0: 4, x1: 10, y1: 15 };
+var BUTTONS = [{ x0: 4, y0: 18, x1: 5, y1: 19 }, { x0: 9, y0: 18, x1: 10, y1: 19 }];
+var TOKEN_HEX = { fog: "#c6c4d8", ink: "#1a1725", night: "#29253a" };
+var STATE_TOKEN = { away: "fog", lit: "ink", docked: "ink" };
+var inBox = (x, y, r2) => x >= r2.x0 && x <= r2.x1 && y >= r2.y0 && y <= r2.y1;
+var cutCorner = (x, y, n2) => {
+  const dx = Math.min(x - BOX.x0, BOX.x1 - x), dy = Math.min(y - BOX.y0, BOX.y1 - y);
+  return dx + dy < n2;
+};
+var body = (x, y, n2) => inBox(x, y, BOX) && !cutCorner(x, y, n2);
+var onScreenLine = (x, y) => inBox(x, y, SCREEN) && (x === SCREEN.x0 || x === SCREEN.x1 || y === SCREEN.y0 || y === SCREEN.y1);
+var onButton = (x, y) => BUTTONS.some((b) => inBox(x, y, b));
+function glyphMap({ state = "away", cutPx = GLYPH_CUT } = {}) {
+  const away = state === "away", rows = [];
+  const rim = (x, y) => !(body(x - 1, y, cutPx) && body(x + 1, y, cutPx) && body(x, y - 1, cutPx) && body(x, y + 1, cutPx));
+  for (let y = 0; y < GLYPH_H; y++) {
+    let r2 = "";
+    for (let x = 0; x < GLYPH_W; x++) {
+      let on;
+      if (away) on = body(x, y, cutPx) && rim(x, y) || onScreenLine(x, y) || onButton(x, y);
+      else on = body(x, y, cutPx) && !inBox(x, y, SCREEN) && !onButton(x, y);
+      r2 += on ? "o" : ".";
+    }
+    rows.push(r2);
+  }
+  return rows;
+}
+function glyphPixels({ state = "away", cutPx = GLYPH_CUT, ink } = {}) {
+  const hex = ink || TOKEN_HEX[STATE_TOKEN[state] || "fog"], out = [];
+  glyphMap({ state, cutPx }).forEach((row, y) => {
+    for (let x = 0; x < GLYPH_W; x++) if (row[x] === "o") out.push({ x, y, hex });
+  });
+  return out;
+}
+function glyphShadow(opts, px4 = 1) {
+  const s2 = Math.max(1, Math.round(px4));
+  return glyphPixels(opts).map((p2) => `${p2.x * s2}px ${p2.y * s2}px 0 0 ${p2.hex}`).join(",");
+}
+
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/keytray.jsx
 var import_jsx_runtime23 = __toESM(require_jsx_runtime(), 1);
 var px = (v) => v + "px";
 var ARROW = { left: "M3 8l7-5v10z", up: "M8 3l5 7H3z", down: "M8 13L3 6h10z", right: "M13 8L6 3v10z" };
@@ -31828,13 +31874,13 @@ function Tray({ cfg, st }) {
   const arms = ARM_OF.map((id) => byId[id]), others = defs.filter((d2) => d2.kind !== "arm");
   const a2 = plan.a, hub = snap([plan.hub[0], plan.hub[1], a2, a2]);
   const press = (def, on) => cfg.onKey(def, on);
-  const body = /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { role: "group", "aria-label": cfg.label, className: "fktray " + (cfg.dev === "station" ? "st" : "co"), style: { "--pk": px(snap([0, 0, a2, a2])[2]) }, children: [
+  const body2 = /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { role: "group", "aria-label": cfg.label, className: "fktray " + (cfg.dev === "station" ? "st" : "co"), style: { "--pk": px(snap([0, 0, a2, a2])[2]) }, children: [
     /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "hub", style: { left: px(hub[0]), top: px(hub[1]), width: px(hub[2]), height: px(hub[3]) } }),
     arms.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(KeyButton, { def: d2, box: snap(plan.keys[d2.id]), held: !!held[d2.id] }, d2.id)),
     /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Pad, { defs: byId, plan, snap, held, press, dirAt: cfg.padDir }),
     others.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Key, { def: d2, plan, snap, held: !!held[d2.id], press, tips }, d2.id))
   ] });
-  return tips ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Provider, { delayDuration: 500, skipDelayDuration: 200, children: body }) : body;
+  return tips ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Provider, { delayDuration: 500, skipDelayDuration: 200, children: body2 }) : body2;
 }
 function mountKeyTray(host, cfg) {
   const root = (0, import_client.createRoot)(host);
@@ -31853,7 +31899,7 @@ function mountKeyTray(host, cfg) {
   } };
 }
 function Dock({ s: s2, onPress }) {
-  const mode = s2.mode, style = s2.box ? { left: px(s2.box[0]), top: px(s2.box[1]), width: px(s2.box[2]), height: px(s2.box[3]) } : void 0;
+  const mode = s2.mode, glyph = s2.docked ? "docked" : s2.lit ? "lit" : "away", style = s2.box ? { left: px(s2.box[0]), top: px(s2.box[1]), width: px(s2.box[2]), height: px(s2.box[3]) } : void 0;
   return /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)(
     dist_exports12.Root,
     {
@@ -31867,7 +31913,7 @@ function Dock({ s: s2, onPress }) {
       "aria-description": s2.disabled ? s2.title : void 0,
       style,
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("img", { className: "mark" + (s2.docked ? " ink" + (s2.inkB ? " inkB" : "") : ""), id: "dockMark", src: s2.mark, alt: "", style: s2.docked ? { "--m": `url(${s2.mark})` } : void 0 }),
+        /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "mark", id: "dockMark", "data-glyph": glyph, "aria-hidden": "true", children: /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("i", { style: { boxShadow: glyphShadow({ state: glyph }, 1) } }) }),
         mode === "mark" ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports2.Root, { id: "dockWord", children: s2.full }) : /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "word", id: "dockWord", children: mode === "full" ? s2.full : s2.short }),
         mode === "full" && s2.hint ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("span", { className: "hint", id: "dockHint", children: "\u21E7D" }) : null
       ]
@@ -31881,7 +31927,7 @@ function mountDockKey(host, cfg) {
   } };
 }
 
-// src/switch.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/switch.jsx
 var import_react_dom3 = __toESM(require_react_dom(), 1);
 var import_client2 = __toESM(require_client(), 1);
 var import_jsx_runtime24 = __toESM(require_jsx_runtime(), 1);
@@ -31905,7 +31951,7 @@ function mountSwitch(host, cfg) {
   } };
 }
 
-// src/docksheet.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/docksheet.jsx
 var import_react10 = __toESM(require_react(), 1);
 var import_react_dom4 = __toESM(require_react_dom(), 1);
 var import_client3 = __toESM(require_client(), 1);
@@ -31997,7 +32043,7 @@ function mountDockScreen(host, cfg) {
   };
 }
 
-// src/panel.jsx
+// wt-ui-dock-away-glyph-1/prototypes/play/options/src/panel.jsx
 var import_jsx_runtime26 = __toESM(require_jsx_runtime(), 1);
 function mountOptions(root, cfg) {
   const notes = createController(cfg.host), api = { ...cfg, notes, open: () => {

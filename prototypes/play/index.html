@@ -41,10 +41,8 @@ iframe{border:0; display:block; background:var(--void)}
 .swtab:focus-visible{outline:2px solid var(--focus); outline-offset:-2px}
 .swdot{flex:none; width:8px; height:8px; border-radius:50%; background:var(--amber)}
 #dockKey{text-align:left; display:flex; align-items:center; gap:8px; padding:0 12px; font-size:14px}
-#dockKey .mark{flex:none; width:16px; height:24px; image-rendering:pixelated}
-/* docked: the mark as a one-colour silhouette in ink, the signed PNG's own alpha as the mask (the picture itself is pushed out of its box, never recoloured) */
-#dockKey .mark.ink{background:var(--mb-ink); object-fit:none; object-position:-64px 0; -webkit-mask:var(--m) 0 0/16px 24px no-repeat; mask:var(--m) 0 0/16px 24px no-repeat; mask-mode:alpha}
-#dockKey .mark.inkB{-webkit-mask:var(--m) 0 0/16px 24px no-repeat, var(--m) 0 0/16px 24px no-repeat; mask:var(--m) 0 0/16px 24px no-repeat, var(--m) 0 0/16px 24px no-repeat; mask-mode:alpha, luminance; mask-composite:subtract}
+#dockKey .mark{flex:none; position:relative; display:block; width:16px; height:24px}   /* the glyph (src/dockglyph.mjs): a 1-px square carrying the box-shadow pixel list, whole pixels, hard edges */
+#dockKey .mark i{position:absolute; left:0; top:0; width:1px; height:1px; background:transparent}
 #dockKey .word{flex:1 1 auto; min-width:0; white-space:nowrap}   /* never an ellipsis: the words are picked by the width the key has (shell.mjs layoutDock) */
 #dockKey.markonly{justify-content:center; padding:0}
 #dockKey .hint{flex:none; color:var(--mist); font-size:12px}

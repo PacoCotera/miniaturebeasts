@@ -4,6 +4,7 @@
 import { useRef } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
+import { glyphShadow } from "../../src/dockglyph.mjs";   // the Dock glyph: one pixel map for away, lit and docked
 import { AccessibleIcon, Toggle, Tooltip, VisuallyHidden } from "radix-ui";   // the umbrella package has no Primitive export: a key is a plain button carrying AccessibleIcon
 
 const px = (v) => v + "px";
@@ -88,17 +89,17 @@ export function mountKeyTray(host, cfg) {
 
 // the Dock key: a page button (the bar's button family), 44 tall; a Toggle (pressed = docked); its words by width: "full" the long words and the ⇧D hint, "short" one word, "mark" the mark alone (the full words stay for a screen reader)
 export function Dock({ s, onPress }) {
-  const mode = s.mode, style = s.box ? { left: px(s.box[0]), top: px(s.box[1]), width: px(s.box[2]), height: px(s.box[3]) } : undefined;
+  const mode = s.mode, glyph = s.docked ? "docked" : s.lit ? "lit" : "away", style = s.box ? { left: px(s.box[0]), top: px(s.box[1]), width: px(s.box[2]), height: px(s.box[3]) } : undefined;
   return (
     <Toggle.Root id="dockKey" className={"ctl" + (s.box ? "" : " hidden") + (s.docked ? " docked" : "") + (s.lit ? " lit" : "") + (s.quiet ? " quiet" : "") + (s.pressed ? " pressed" : "") + (mode === "mark" ? " markonly" : "")}
       pressed={!!s.docked} onPressedChange={() => onPress()} aria-label={s.label} title={s.title} aria-disabled={s.disabled ? "true" : "false"} aria-description={s.disabled ? s.title : undefined} style={style}>
-      <img className={"mark" + (s.docked ? " ink" + (s.inkB ? " inkB" : "") : "")} id="dockMark" src={s.mark} alt="" style={s.docked ? { "--m": `url(${s.mark})` } : undefined} />
+      <span className="mark" id="dockMark" data-glyph={glyph} aria-hidden="true"><i style={{ boxShadow: glyphShadow({ state: glyph }, 1) }} /></span>
       {mode === "mark" ? <VisuallyHidden.Root id="dockWord">{s.full}</VisuallyHidden.Root> : <span className="word" id="dockWord">{mode === "full" ? s.full : s.short}</span>}
       {mode === "full" && s.hint ? <span className="hint" id="dockHint">⇧D</span> : null}
     </Toggle.Root>
   );
 }
-// mountDockKey(host, { onPress }) -> { update({ box, docked, lit, quiet, pressed, disabled, label, title, mark, mode, full, short, hint }) }
+// mountDockKey(host, { onPress }) -> { update({ box, docked, lit, quiet, pressed, disabled, label, title, mode, full, short, hint }) }
 export function mountDockKey(host, cfg) {
   const root = createRoot(host);
   return { update(s) { flushSync(() => root.render(<Dock s={s} onPress={cfg.onPress} />)); } };
