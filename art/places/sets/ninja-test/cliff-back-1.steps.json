@@ -1,28 +1,57 @@
 {
+ "source_sha256": "cf33014bb92f6bfd5043ceab1557c2716fec79fcf7b3547e77e2bae3a43fe76a",
+ "parent": {
+  "ledger_id": "c55af555e4",
+  "sha256": "cf33014bb92f6bfd5043ceab1557c2716fec79fcf7b3547e77e2bae3a43fe76a",
+  "file": "git show 95ca2cf61:art/places/sets/ninja-test/cliff-back-1.png"
+ },
  "steps": [
   [
-   "crop",
+   "map",
    [
-    16,
-    0,
-    16,
-    16
-   ],
-   "terrain"
-  ],
-  [
-   "snap",
-   "walk",
-   "7e90b28e41f4"
-  ],
-  [
-   "key_edge_bg",
-   [
-    "#74a65d"
-   ],
-   0,
-   8
+    [
+     "#99b562",
+     "#82b266"
+    ]
+   ]
   ]
  ],
- "out_sha256": "cf33014bb92f6bfd5043ceab1557c2716fec79fcf7b3547e77e2bae3a43fe76a"
+ "out_sha256": "36ecf86f001302532e6d5b6590aa3e47abbf9a9467c7356b728dc187980fb8c2",
+ "note": "from the signed parent (the pre-map file, sha256 above) by one colour map; the earlier chain from the paid call is in earlier_record",
+ "earlier_record": {
+  "steps": [
+   [
+    "crop",
+    [
+     16,
+     0,
+     16,
+     16
+    ],
+    "terrain"
+   ],
+   [
+    "snap",
+    "walk",
+    "7e90b28e41f4"
+   ],
+   [
+    "key_edge_bg",
+    [
+     "#74a65d"
+    ],
+    0,
+    8
+   ],
+   [
+    "map",
+    [
+     [
+      "#99b562",
+      "#82b266"
+     ]
+    ]
+   ]
+  ]
+ }
 }

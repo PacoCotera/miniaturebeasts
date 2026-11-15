@@ -5,7 +5,9 @@
   "type": "module",
   "description": "The Options panel of the play page: React + Radix (the workbench's versions), built to ../vendor/options.js (committed, like the workbench's static bundle).",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "catalogue": "ladle serve",
+    "catalogue:build": "ladle build"
   },
   "dependencies": {
     "idb-keyval": "6.3.0",
@@ -17,6 +19,7 @@
     "react-textarea-autosize": "8.5.9"
   },
   "devDependencies": {
+    "@ladle/react": "5.1.1",
     "esbuild": "0.25.9"
   }
 }

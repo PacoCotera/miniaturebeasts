@@ -104,6 +104,8 @@ jobs:
             mkdir -p "_site/sandbox/$n"
             cp -r "$p". "_site/sandbox/$n/"
           done
+          # the component catalogue's static build (prototypes/play/options/catalogue-out, Ladle) and the token build's packages are for the team, never deployed
+          rm -rf _site/sandbox/play/options/catalogue-out _site/sandbox/play/options/node_modules _site/sandbox/ui/tokens/node_modules
           mkdir -p _site/ops && cp -r ops/ledger _site/ops/
           # the web server's Caddyfile and the studio login's code travel in the release: deploy.sh checks the Caddyfile before it goes live, the login unit runs from the release
           mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/

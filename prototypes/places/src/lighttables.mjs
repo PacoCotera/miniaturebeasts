@@ -46,7 +46,7 @@ export const STONE_TONES = {
 };
 // The rock ramp at night (art director 2026-11-12): a darker day grey never maps lighter at night, and the rock keeps four or more separate values. Day colour -> night colour, both of the palette;
 // the dark end of the rock (the cracks, the outlines) goes to the darkest greys and the body steps climb from there, in the day order. Applied to the night table only, where the day colour is in the set.
-export const NIGHT_ROCK = [['242626', '141b1b'], ['2a3834', '141b1b'], ['343840', '242626'], ['3e444e', '242626'], ['474d55', '2a3834'], ['555c64', '333b47'], ['5a6470', '333b47'], ['6c7682', '333b47']];
+export const NIGHT_ROCK = [['242626', '141b1b'], ['2a3834', '141b1b'], ['343840', '1d2531'], ['3e444e', '1d2531'], ['474d55', '1d2531'], ['555c64', '1d2531'], ['5a6470', '242c38'], ['6c7682', '242c38'], ['8497a5', '2b333f'], ['9eadb9', '333b47'], ['acbfc5', '3e444e']];   // rock ramp rev 2, second pass (art director 2026-11-15): cool grey night steps #1d2531 (.26), #242c38 (.29), #2b333f (.32), #333b47 (.35), #3e444e (.385) at the hue of #333b47; no rock face below .26; the cracks stay darkest
 // The olive meadow ramp at night (art director 2026-11-12): day colour -> the dark olive green its two lighter steps already take (#54603e). Table entries only; applied only where the step's night colour is not green.
 export const NIGHT_OLIVE = [['667b59', '54603e'], ['79875b', '54603e'], ['8b9561', '54603e'], ['4f6a53', '244523']];   // #4f6a53, the dark tuft green of the widening, takes the night green of the olives below it
 // The sea-fog veil tone (art director 2026-11-12): day colour -> its night colour; both are set colours no other row points at.
