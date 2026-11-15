@@ -223,7 +223,7 @@ window.addEventListener("message", (e) => {
 const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
 function updateDock() {
   const c = S.caddy, d = c.docked;
-  $("dockWord").textContent = d ? "Lift" : "Dock"; $("dockMark").src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png";
+  $("dockWord").textContent = d ? "Lift" : "Dock"; $("dockMark").src = "../ui/assets/masters/pods/frame-companion-solid-16x24.png";
   const crates = !d && c.canDock && c.crates > 0;
   const title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion from the Caddy" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion in the Caddy";
   const ctl = $("dockCtl"); ctl.setAttribute("aria-disabled", String(!c.canDock)); ctl.setAttribute("aria-label", d ? "Lift the Companion from the Caddy" : "Dock the Companion in the Caddy"); ctl.title = title; ctl.classList.toggle("pressed", !!S.awaiting || c.pending);

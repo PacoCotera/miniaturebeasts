@@ -106,7 +106,7 @@ function updateCaddy() {
   const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]) + ":" + c.podHome + ":" + JSON.stringify(c.goal); if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
-  dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
+  dockMark.src = "../ui/assets/masters/pods/frame-companion-solid-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
   const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion");
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.title = title;
