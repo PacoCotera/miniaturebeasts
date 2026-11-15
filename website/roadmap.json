@@ -5,7 +5,6 @@
       "id": "station",
       "name": "Station",
       "oneLine": "Home: where pods are kept and read, mibis are grown and bred, and nothing you bring back is wasted.",
-      "image": "assets/strip-station-2026-10.webp",
       "items": [
         { "title": "Bring pods home and open them at the Bay", "status": "live", "text": "Dock the Companion and its crates arrive in the Bay, to open one by one or all at once, whenever you like.", "link": "prototypes/station/README.md" },
         { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read from the two copies the pod carries, grow the mibi in the incubator and open it to meet the young one.", "link": "design/research-and-breeding.md" },
@@ -28,7 +27,6 @@
       "id": "companion",
       "name": "Companion",
       "oneLine": "The handheld you explore with: your partner, your pods and your identity, carried out into the fog.",
-      "image": "assets/strip-companion.webp",
       "items": [
         { "title": "Expeditions on a fogged world map", "status": "live", "text": "Every step lifts the fog, and each world turn changes what is out there waiting to be found. Worlds have three heights of ground, with cliffs between them and stairs to climb.", "link": "prototypes/exploration/README.md" },
         { "title": "Survey places with Call", "status": "live", "text": "Places start under a veil that lifts as you walk, and Call sweeps further to reveal pods, stones and creatures.", "link": "design/proposals/exploration-round-3.md" },
@@ -48,7 +46,6 @@
       "id": "caddy",
       "name": "Caddy",
       "oneLine": "The shared dock where the handhelds meet: it connects the kit, shows what came home on its e-paper panel, and later prints what you find.",
-      "image": "assets/strip-caddy-dock.webp",
       "items": [
         { "title": "Docking the Companion", "status": "live", "text": "In the sandbox, a stand-in dock beside the Station page moves your crates across when you dock.", "link": "prototypes/station/README.md" },
         { "title": "Handing each portrait to the Caddy", "status": "live", "text": "When you make a mibi's portrait, the Station hands its genome to the Caddy for the finished pictures. Nothing else is sent, and the game plays on with a placeholder while the painting is made or if the Caddy cannot be reached.", "link": "prototypes/caddy/README.md" },

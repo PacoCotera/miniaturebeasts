@@ -147,7 +147,7 @@ jobs:
         with:
           path: ${{ runner.temp }}/pw
           key: playwright-1.56.1-chromium-ubuntu-24.04-${{ runner.arch }}
-      - name: Every page opens in a browser (the home page, the roadmap, the Companion, the Station, the play page, the test page)
+      - name: Every page opens in a browser (the home page, the Companion, the Station, the play page, the test page)
         if: steps.scope.outputs.docs != 'true'
         # .github/smoke.mjs loads each page of the assembled site headless and fails on a page error or a console error, a missing build stamp or the face missing from the bundle.
         run: |
