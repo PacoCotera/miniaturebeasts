@@ -1,8 +1,0 @@
-# place-walk-3 final
-- Causes (lone grass tiles the carving left, sample of 40 windows a seed, before the fix; seeds 7/13/42): mouth 21/31/55, flip 4/13/16, notch 4/5/9, path 0/1/0. Fix in place.mjs `cutThicketGaps`: a lone carved tile is widened into the 2 x 2 needing the fewest thicket cuts, else given back to thicket; the notch is widened the same way; decided from window tiles in scan order.
-- Place test (gen7, to the end): loneTiles 0 / 0 / 1 (seed 42's one is the cliff tile 35,29 / 21,18, B3e's); all other figures equal place-walk-2's (pathUnreached 258/50/0, seam 0); atlas test green (npm ci done). Seed 42 test still reads red only on that cliff tile.
-- Gap shape, 120-window sample: width 1-3 on 92 of 114 gap tiles (81%; place-walk-2 same sample 84 of 103, 82%), longest straight thicket edge 3, runs over 4: 0. The 90% bar was already unmet in place-walk-2 on this sample; widths 4-5 are junctions and mouths.
-- Find mix: not re-measured (no decor change committed).
-- Designer item 5 (decor, seed 13 mixed trees 1.34 against 0.92, limit 1.10): NOT fixed. Regrowth share 0.3 (rounded up), 0.12 and 0.3 rounded down all gave 1.34; shares 0.15 and 0 (full seed-13 runs) also 1.34. So REGROW_SPARSE is not the cause; likely the isFoot or ring changes of place-walk-2 / places.mjs. decor.mjs left as place-walk-2 had it. Decor test seeds 7 and 42 green, 13 red on that one figure. Fruit figure not measured. Needs its own look.
-- Stills (runs/place-walk-3/): gap-s7-637-405-1x, gap-s42-153-1547-1x, gap-s13-428-2239-1x (day, 1x) and former lone tiles gap-s7-525-90-1x, gap-s42-301-1155-1x, gap-s13-857-154-1x; the ones I viewed read clean.
-- Tools: place-walk-lone-map, place-walk-lone-causes, place-walk-decor-seed.

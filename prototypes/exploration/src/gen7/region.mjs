@@ -343,7 +343,9 @@ export function attachStairs(R) {
   R.realm.stairs = list;
 }
 export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); if (!R.realm.stairs) attachStairs(R); cache.set(seed, R); }
-export function realm7(seed) {
+// onStep(done, of): the real stages of the making, for the first-load wait's pips (the region passes, then the coast; a repeated round keeps the count at its last region): REALM_STEPS in all (the Hollow Tree sites make the last)
+export const REALM_STEPS = ATLAS * ATLAS + 2;
+export function realm7(seed, onStep) {
   if (cache.has(seed)) return cache.get(seed);
   const tries = new Uint8Array(ATLAS * ATLAS); let out = null;
   for (let round = 0; round < ROUNDS; round++) {
@@ -353,12 +355,12 @@ export function realm7(seed) {
       for (let y = Math.max(0, ay * MH - 1); y < Math.min(RH, ay * MH + MH + 1); y++) for (let x = Math.max(0, ax * MW - 1); x < Math.min(RW, ax * MW + MW + 1); x++) { const c = y * RW + x;
         if (a.land[c] !== realm.land[c] || a.level[c] !== realm.level[c] || a.ford[c] !== realm.ford[c] || a.wkind[c] !== realm.wkind[c]) return false; }
       return true; };
-    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) { const s = ay * ATLAS + ax; regions.push(same(s, ax, ay) ? out.regions[s] : regionAt(realm, ax, ay)); }
+    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) { const s = ay * ATLAS + ax; regions.push(same(s, ax, ay) ? out.regions[s] : regionAt(realm, ax, ay)); if (onStep) onStep(regions.length, REALM_STEPS); }
     out = { seed, realm, regions, rounds: round + 1 };
     const bad = regions.filter(r => r.fails.length); if (!bad.length) break;
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
   }
-  coastOf(out);
+  coastOf(out); if (onStep) onStep(REALM_STEPS - 1, REALM_STEPS);
   for (const G of out.regions) finishRegion(G);
   attachStairs(out);
   addFeatures(out);

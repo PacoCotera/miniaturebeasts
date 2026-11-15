@@ -1626,15 +1626,20 @@ test("shell: no engravings, the brand line kept, the key icons in their inks, Ca
   for (const k of ["Up", "Left", "Right", "Down", "Call", "Back", "Confirm"]) assert.match(PAGE, new RegExp(`aria-label="${k}"`), k + ": aria-label kept");
   const KEYS = readFileSync(new URL("../../ui/keys.css", import.meta.url), "utf8");   // the key look is the shared sheet's (the page links it)
   assert.match(PAGE, /<link rel="stylesheet" href="\.\.\/ui\/keys\.css">/, "the page links the shared key sheet");
-  assert.match(KEYS, /\.dpad \.key svg\{width:16px; height:16px; fill:#f4f1ec\}/, "pad ink");
-  assert.match(KEYS, /\.dpad \.key\{[^}]*#3a3d42,#2e3136\)/, "pad cap base");
+  assert.match(KEYS, /\.dpad \.key svg\{width:16px; height:16px; fill:var\(--mb-bone\)\}/, "pad ink");
+  assert.match(KEYS, /\.dpad \.key\{[^}]*var\(--mb-hairline\),var\(--mb-panel\)\)/, "pad cap base");
   assert.match(PAGE, /<footer class="build-foot" id="buildFoot">[^<]*<\/footer>/); assert.doesNotMatch(PAGE, /obsEl\.hidden = !on; [a-zA-Z]+\.hidden = !on;/, "the build footer is always shown, not tied to the Observer");
-  assert.match(KEYS, /\.key\.back\{[^}]*background:#33363b;/, "Back's cap");
-  assert.match(KEYS, /\.key\.back \.cap-ico\{background:#f4f1ec; mask: url\(\.\.\/exploration\/shell\/cap-back-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Back's icon and ink");
-  assert.match(KEYS, /\.key\.confirm \.cap-ico\{background:#ffffff; mask: url\(\.\.\/exploration\/shell\/cap-confirm-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Confirm's icon and ink");
-  assert.match(KEYS, /\.key\.confirm\{[^}]*var\(--orange\)/, "Confirm's cap as built");
-  assert.match(KEYS, /\.key\.call\{[^}]*#26b5a4[^}]*\}/, "Call's teal cap as built");
-  assert.match(KEYS, /\.key\.call svg\{width:26px; height:26px; stroke:#eafff9;/, "Call's icon as built");
+  assert.match(KEYS, /\.key\.back\{[^}]*background:var\(--mb-panel\);/, "Back's cap");
+  assert.match(KEYS, /\.key\.back \.cap-ico\{background:var\(--mb-bone\); mask: url\(\.\.\/exploration\/shell\/cap-back-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Back's icon and ink");
+  assert.match(KEYS, /\.key\.confirm \.cap-ico\{background:var\(--mb-white\); mask: url\(\.\.\/exploration\/shell\/cap-confirm-10mm\.png\) center \/ 36px 36px no-repeat luminance\}/, "Confirm's icon and ink");
+  assert.match(KEYS, /\.key\.confirm\{[^}]*var\(--mb-orange\)/, "Confirm's cap as built");
+  assert.match(KEYS, /\.key\.call\{[^}]*var\(--mb-teal\)[^}]*\}/, "Call's teal cap as built");
+  assert.match(KEYS, /\.key\.call svg\{width:26px; height:26px; stroke:var\(--mb-white\);/, "Call's icon as built");
+  // the play page's key family (.fk, ui-keys-1): the cap icons scoped to the keys, the D-pad arms round on their outer corners only, the two-tone focus ring (2 px focus between two 2 px void edges), token colours only
+  assert.match(KEYS, /\.fk \.cap\.b\{background:var\(--mb-bone\);/, "the cap icons are scoped to the .fk keys"); assert.doesNotMatch(KEYS, /^\.cap[.{]/m, "no bare .cap rule: it would reach the page's own captions");
+  assert.match(KEYS, /\.fk\.arm\.up\{border-radius:var\(--mb-radius-8\) var\(--mb-radius-8\) 0 0;/, "the D-pad's outer corners are round, the inner ones square");
+  assert.match(KEYS, /\.fkz:has\(\.fk:focus-visible\)::after\{[^}]*border:2px solid var\(--mb-focus\);[^}]*box-shadow:0 0 0 2px var\(--mb-void\), inset 0 0 0 2px var\(--mb-void\)/, "the focus ring is two-tone");
+  assert.doesNotMatch(KEYS.slice(KEYS.indexOf("The play page's key trays")), /#[0-9a-f]{3,6}\b|rgb\(/i, "the play page's key rules use the tokens, no literal colours");
   assert.match(PAGE, /aria-label="Call"><svg viewBox="0 0 26 26">/, "Call keeps its SVG");
 });
 test("shell: the Back and Confirm icons are the signed masters, byte for byte", () => {

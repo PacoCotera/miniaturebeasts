@@ -18,6 +18,6 @@ step "Companion: the first expedition (a fresh world, a pod and the Data, then E
 step "Companion: the speed check (4x CPU, eight map steps and End Expedition, no task over 250 ms)" node prototypes/exploration/tools/speed-check.mjs
 step "Station: the journey (a crate carried home and opened, Pods, Create, Grow, the hatch)" env JOURNEY_SMALL=1 node prototypes/station/tools/journey.mjs
 step "Station: the layer checks (the palette, the type, the regions)" node prototypes/station/tools/checks.mjs
-step "Play page: the dock round trip" env JOURNEY_ONLY=ST node prototypes/play/tools/journey.mjs
+step "Play page: the dock round trip" env JOURNEY_ONLY=DR node prototypes/play/tools/journey.mjs
 step "Test page: the switch and the dock" env JOURNEY_SMALL=1 node prototypes/test/tools/journey.mjs
 echo "release check: ok, $(( $(date +%s) - start )) s in all"

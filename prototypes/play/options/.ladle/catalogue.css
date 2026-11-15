@@ -1,0 +1,3 @@
+/* The page's own body type, so the portalled dialogs read as they do on the play page. */
+@font-face{font-family:"Inter";font-weight:500;src:url("../../../ui/fonts/inter/src/Inter-Medium-tnum.ttf") format("truetype");font-display:block}
+body{font:500 16px/1 "Inter",system-ui,sans-serif; color:var(--mb-fog)}

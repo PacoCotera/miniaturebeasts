@@ -26,7 +26,12 @@ test('the night table keeps the rock ramp in order: a darker day grey never maps
   const ramp = ['#242626', '#2a3834', '#343840', '#3e444e', '#474d55', '#555c64', '#5a6470', '#6c7682', '#807c74', '#8a937e', '#a5ac9c', '#adb5a6', '#b6beb0'];
   const to = ramp.map((h) => cols[night[at(h)] - 48]);
   for (let i = 1; i < ramp.length; i++) assert.ok(lum(to[i]) >= lum(to[i - 1]), ramp[i - 1] + ' to ' + to[i - 1] + ' is lighter than ' + ramp[i] + ' to ' + to[i]);
-  assert.ok(new Set(to.slice(0, 8)).size >= 4, 'the rock keeps four distinct night values');
+  const rock = [...ramp.slice(0, 8), '#8497a5', '#9eadb9', '#acbfc5'], rockTo = rock.map((h) => cols[night[at(h)] - 48]);   // the whole rock ramp, day order, with its three lit greys
+  for (let i = 1; i < rock.length; i++) assert.ok(lum(rockTo[i]) >= lum(rockTo[i - 1]), rock[i - 1] + ' to ' + rockTo[i - 1] + ' is lighter than ' + rock[i] + ' to ' + rockTo[i]);
+  assert.ok(new Set(rockTo).size >= 6, 'the rock keeps six distinct night values');
+  assert.deepEqual(to, ['#141b1b', '#141b1b', '#1d2531', '#1d2531', '#1d2531', '#1d2531', '#242c38', '#242c38', to[8], to[9], to[10], to[11], to[12]], 'the rock ramp at night: the cool greys .26, .29, .32 sit under the night ground');
+  assert.deepEqual(['#8497a5', '#9eadb9', '#acbfc5'].map((h) => cols[night[at(h)] - 48]), ['#2b333f', '#333b47', '#3e444e']);
+  for (const h of ['#2b333f', '#242c38', '#1d2531']) assert.ok(cols.includes(h), h + ' is on the set');
   for (const h of ['#79875b', '#8b9561', '#667b59']) assert.ok(cols.includes(h), h + ' is on the set');
 });
 

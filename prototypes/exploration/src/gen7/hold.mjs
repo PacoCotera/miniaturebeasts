@@ -261,7 +261,7 @@ export function openingsOf(a) {
       if (!ok && from >= 0) { if (k - from >= 2) openings.push({ side, from, to: k - 1, at: vert ? (side === 'W' ? 1 : CW) : (side === 'N' ? 1 : CH) }); from = -1; }
     }
   }
-  // The world's truth for a side rules (views agree): no way in on a side the map calls a cliff or water, or on the map's end. A side on a region's border is the realm's: the terrain decides there.
+  // The world's truth for a side rules (views agree): no way in on a side the map calls water, or on the map's end (a cliff side keeps the runs its tiles walk). A side on a region's border is the realm's: the terrain decides there.
   return openings.length ? openings.filter(op => !shutSide(seed, G, c, X, Y, op.side)) : openings;
 }
 
