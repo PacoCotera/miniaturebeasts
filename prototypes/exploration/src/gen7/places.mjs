@@ -69,9 +69,10 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   // ---- 1. structure ----
   const walk = new Uint8Array(N), lvl = new Uint8Array(N), way = new Set();
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const t = terrain[I(x, y)]; walk[I(x, y)] = WALKT[t] === 1 && !(FF.flags(x0 + x, y0 + y) & 1) ? 1 : 0; lvl[I(x, y)] = t === TV.CLIFF ? 1 : 0; }
-  plan.grass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.grass[i] = terrain[i] === TV.GRASS ? 1 : 0;
+  const FAM = v => v === TV.GRASS || v === TV.LITTER || v === TV.DRY || v === TV.TURF;   // the grass family (terrain.md item 4): close kinds that blend both ways, so the heart's patch lies on any of them (place-walk-2)
+  plan.grass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.grass[i] = FAM(terrain[i]) ? 1 : 0;
   // a raised top is the same ground, higher (place-walk-1): a raised tile whose top is grass is grass too, for the heart's site and its patch
-  plan.topGrass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.topGrass[i] = terrain[i] === TV.CLIFF && (!ct.top[i] || ct.top[i] === TV.GRASS) ? 1 : 0;
+  plan.topGrass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.topGrass[i] = terrain[i] === TV.CLIFF && (!ct.top[i] || FAM(ct.top[i])) ? 1 : 0;
   plan.cliff = new Uint8Array(N); for (let i = 0; i < N; i++) plan.cliff[i] = terrain[i] === TV.CLIFF ? 1 : 0;
   plan.solid = new Uint8Array(N); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) plan.solid[I(x, y)] = FF.flags(x0 + x, y0 + y) & 5 ? 1 : 0;   // water, thicket, a cliff's ring, face or flank (flags 1), the lip (4)
   const wayups = ct.wayups.map(a => ({ x: a.x - x0, y: a.y - y0, w: a.w, h: a.h }));
