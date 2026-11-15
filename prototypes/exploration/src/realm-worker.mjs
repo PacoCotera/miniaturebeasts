@@ -1,6 +1,6 @@
 // Generator 7, made off the page's thread (src/realm-store.mjs starts this as a module worker). It is plain data in, plain data out (typed arrays, sets, numbers), so everything crosses as it is.
 //   { seed }                       the realm and the Hollow Tree sites (the two things the first cell would otherwise make on the page);
-//   { seed, slot }                 that region's overview (the one byte a tile the maps are drawn from), which takes the cells of the whole region about fifteen seconds;
+//   { op: 'sector', seed, slot, realm }  that region's sector (4 x 4 blocks of ground and level a place, and the realm's lines: world7.mjs sectorOfRegion), made from the realm alone, so no place is built;
 //   { op: 'init', ctx }            the places kit (tile set, terrain table, layer descriptors) the cells are baked with: kept for the worker's life;
 //   { op: 'seed', seed, realm, sites }  the realm this worker bakes cells of (the page has it already);
 //   { op: 'bake', seed, slot, v, cells }  each cell's IR and baked place (world7.mjs bakedCell), one reply a cell, in the order asked;
@@ -9,8 +9,8 @@
 // This file imports the generator and nothing of the page.
 import { paintLand } from './landpaint.mjs';
 import { realm7, setRealm7 } from './gen7/region.mjs';
-import { decorOf, overviewOf, presetHollowSites } from './gen7/place.mjs';
-import { bakedCell } from './world7.mjs';
+import { decorOf, presetHollowSites } from './gen7/place.mjs';
+import { bakedCell, sectorOfRegion } from './world7.mjs';
 import { renderGround, PlaceGroundCache, wholeScale } from '../../places/src/ground.mjs';
 
 let CTX = null, SEEDED = null;
@@ -42,7 +42,7 @@ self.onmessage = e => {
       self.postMessage({ op: 'ground', id: m.id, frames, half, size: s }, [...frames.map(f => f[1].buffer), half.buffer]);
       return;
     }
-    if (slot) { const bytes = overviewOf(seed, slot[0], slot[1]); self.postMessage({ seed, slot, overview: bytes }, [bytes.buffer]); return; }
+    if (m.op === 'sector') { if (SEEDED !== seed) { setRealm7(seed, m.realm); SEEDED = seed; } const sector = sectorOfRegion(seed, slot); self.postMessage({ seed, slot, sector }, [sector.cls.buffer, sector.lv.buffer]); return; }
     const realm = realm7(seed, (step, of) => self.postMessage({ seed, step, of }));   // each real stage, for the first-load wait's pips (src/waitpips.mjs); the last, the Hollow Tree sites, comes with the realm itself
     self.postMessage({ seed, realm, sites: decorOf(seed).hollowSites() });
   } catch (err) { self.postMessage({ seed, error: String((err && err.message) || err) }); }

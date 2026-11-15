@@ -250,11 +250,11 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, overviewReady, CW as OCW, CH as OCH } from "./src/world7.mjs";
-import { readyRealm, readyOverview } from "./src/realm-store.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH } from "./src/world7.mjs";
+import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, PIPS } from "./src/waitpips.mjs";
 import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
-import { landCellOf as landCellIn, paintLand } from "./src/landpaint.mjs";
+import { paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
@@ -1430,13 +1430,15 @@ function mountRegion(id) {
   unmount(S); const R = mount(S, id);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; RT.mp = null; RT.key = null; mapCv = null;
   G = worldOfRegion(R); indexCreatures();   // the region's own kind
-  catchUp(R); wantOverview(R);
+  catchUp(R); wantSector(R);
 }
-// The region's overview (the world tiles, one byte each) is made off the page and every map is painted from it once it is there; until then the maps keep to the cell labels.
-function wantOverview(R) {
-  if (!R || R.gen !== 7 || !R.slot || !S.regions[0] || typeof readyOverview !== 'function') return;
-  const seed = S.regions[0].seed;
-  readyOverview(seed, R.slot).then(how => { if (how !== 'page' && hereRegion() === R) { landReset(); mapCv = null; } }, () => { });
+// The region's sector (4 x 4 blocks of ground and level a place, and the realm's lines; made from the realm alone, so no place is built) is made off the page and every map is painted from it once it is there;
+// until then the maps keep to the cell labels. A page without a worker makes it on the spot when a map first asks (sectorHere).
+const SECTOR_ASKED = new Set();
+function wantSector(R) {
+  if (!R || R.gen !== 7 || !R.slot || !S.regions[0] || typeof readySector !== 'function') return;
+  const seed = S.regions[0].seed, key = seed + ':' + R.slot.join(','); if (SECTOR_ASKED.has(key)) return; SECTOR_ASKED.add(key);
+  readySector(seed, R.slot, realm7(seed)).then(how => { if (how === 'page') sectorMake(seed, R.slot); if (hereRegion() === R) { landReset(); mapCv = null; } }, () => { });   // no worker (or it failed): made here, on the spot
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
 // storm or trail, and no line written. Older turns are let go (the world is permanent, not a ledger). With one region, turnSeen is always S.turn.
@@ -4704,14 +4706,15 @@ function blit48(id, x, y, rm) { const pc = ART48.pieces.get(id); if (!pc) return
 
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
 const MAPK = mapHooks();
-// The map between expeditions, the start pick and the band inset: the region's overview raster shrunk to the map (a pixel takes the tile under it; raised land one step lighter), the same land as the walk.
-// Until the raster has come from the worker the map is drawn from the cell labels (buildMapPBCells).
-const OV_COLOR = [C.grass, C.sand, C.river, C.sea, C.leaf, C.forest, C.rock, C.grass];   // by class: grass, sand, water, deep, wood, thicket, rock, path
+// The map between expeditions, the start pick and the band inset: the region's sector painted to the map (a pixel takes the block under it; raised land one step lighter), the same land as the reach view.
+// Until the sector has come from the worker the map is drawn from the cell labels (buildMapPBCells).
+const SEC_COLOR = [C.grass, C.leaf, C.forest, C.rock, C.sand, C.river];   // by ground class: grass, wood floor, thicket or scrub, rock, sand, water
 function buildMapPB() {
-  const ovr = overviewNow(); if (!ovr) return buildMapPBCells();
-  const pb = new PB(MW * CELL, MH * CELL), TW = MW * OCW, TH = MH * OCH;   // the overview has the cell's own tiles, one byte each
-  for (let y = 0; y < MH * CELL; y++) { const ty = Math.min(TH - 1, Math.floor(y * OCH / CELL)) * TW;
-    for (let x = 0; x < MW * CELL; x++) { const v = ovr[ty + Math.min(TW - 1, Math.floor(x * OCW / CELL))], col = OV_COLOR[v & 7]; pb.set(x, y, v & 8 ? TINT[col] : col); } }
+  const sec = sectorHere(); if (!sec) return buildMapPBCells();
+  const pb = new PB(MW * CELL, MH * CELL);
+  for (let y = 0; y < MH * CELL; y++) for (let x = 0; x < MW * CELL; x++) {
+    const c = Math.floor(y / CELL) * MW + Math.floor(x / CELL), b = c * 16 + Math.min(3, Math.floor((y % CELL) * 4 / CELL)) * 4 + Math.min(3, Math.floor((x % CELL) * 4 / CELL)), v = sec.cls[b], col = v & 8 ? C.sea : SEC_COLOR[v & 7];
+    pb.set(x, y, sec.lv[b] ? TINT[col] : col); }
   return pb;
 }
 function buildMapPBCells() {
@@ -4998,9 +5001,15 @@ function signSprite(kind, s, fr, big) {
 // One continuous painting (src/landpaint.mjs): each pixel takes the land of the cell under it, fog keeps its three states on the same soft borders, no grid lines are drawn. The painting is made once per change of
 // state, off the page's thread (the places worker, src/place-store.mjs landAsk): the page gathers what the painting is made from (landInputs), and draws the last painting, laid where the new one will stand, until the new one
 // arrives. A page without a worker paints it here, whole, with the same function.
-// The region's overview: one byte a world tile, the land every map is shrunk from (null until it is made: the cell labels draw the land meanwhile).
-const overviewNow = () => G.gen === 7 && hereRegion() ? overviewReady(S.regions[0].seed, hereRegion().slot) : null;
-const landCellOf = cs => landCellIn(cs, !!overviewNow());   // the painting's cell borders: the edge marks find their borders with the same function
+// The region's sector: 4 x 4 blocks a place (ground class, level bit) and the realm's lines, the land every map is painted from (null until it is made: the cell labels draw the land meanwhile). A page without a worker
+// makes it on the spot.
+function sectorHere() {
+  const R = hereRegion(); if (G.gen !== 7 || !R || !R.slot) return null;
+  const seed = S.regions[0].seed;
+  if (typeof Worker === 'undefined') return sectorMake(seed, R.slot);
+  const sec = sectorReady(seed, R.slot); if (!sec) wantSector(R);   // asked once; the maps keep to the cell labels until it comes
+  return sec;
+}
 // spec: { X0, Y0 (the top-left cell), w, h (pixels), cs (the cell's size) }
 // The ground is the art desk's seamless tiles (art/walk/, map-tex-*), each pixel taking its tile at (wx mod w, wy mod h) in world pixels, from the set for the cell size (72, 48, 26).
 const LAND_CACHE = { key: null, cv: null, more: new Map(), last: null, stand: null };   // the last painting, and up to four more by key (the opening's mist frames flip between two without a repaint); last: the newest one made, for the stand-in
@@ -5013,24 +5022,20 @@ function landState(spec) {
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
   for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
-  const ovr = overviewNow();
-  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', ovr ? 'o' : ''].join('|');
-  return { key, spec, seen, fogOf, mist, ovr };
+  const sec = sectorHere();
+  const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', sec ? 's' : ''].join('|');
+  return { key, spec, seen, fogOf, mist, sec };
 }
 function landInputs(L0) {   // plain data for paintLand
-  const { X0, Y0, w: N, h: NH, cs } = L0.spec, ex = S.exp, NC = MW * MH, seen = new Uint8Array(NC), fog = new Uint8Array(NC), stormCol = new Uint8Array(MW), tiles = {}, pond = {};
+  const { X0, Y0, w: N, h: NH, cs } = L0.spec, ex = S.exp, NC = MW * MH, seen = new Uint8Array(NC), fog = new Uint8Array(NC), stormCol = new Uint8Array(MW), tiles = {};
   for (let c = 0; c < NC; c++) { if (L0.seen(c)) { seen[c] = 1; fog[c] = L0.fogOf(c); } }
   for (let x = 0; x < MW; x++) stormCol[x] = ex && ex.storm && stormCovers(x) ? 1 : 0;
   const tcs = WALK_CS.reduce((a, b) => Math.abs(b - cs) < Math.abs(a - cs) ? b : a);   // the desk's terrain set nearest the cell size (72, 48 or 26)
   for (const n of WALK_TEX) tiles[n] = WART.pb.get(`map-tex-${n}-${tcs}`) || null;
-  if (!L0.ovr) for (let c = 0; c < NC; c++) if (seen[c] && G.land[c] === L.POND) pond[c] = pondOf(c);   // a pond cell's water: the place's own water tiles, as an ellipse in the cell (so its mirror shows)
-  return { X0, Y0, N, NH, cs, ovr: L0.ovr, OCW, OCH, land: Uint8Array.from(G.land), seen, fog, stormCol, stormOn: !!(ex && ex.storm), mist: L0.mist ? L0.mist[0][L0.spec.mist] : null, mistTile: OPEN_TILE,
-    tiles: Object.fromEntries(Object.entries(tiles).map(([n, t]) => [n, t ? { p: t.p, w: t.w, h: t.h } : null])), tcs, pond, pal: Uint32Array.from(RGB, q => (255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]),
+  return { X0, Y0, N, NH, cs, sec: L0.sec ? { cls: L0.sec.cls, lv: L0.sec.lv } : null, land: Uint8Array.from(G.land), seen, fog, stormCol, stormOn: !!(ex && ex.storm), mist: L0.mist ? L0.mist[0][L0.spec.mist] : null, mistTile: OPEN_TILE,
+    tiles: Object.fromEntries(Object.entries(tiles).map(([n, t]) => [n, t ? { p: t.p, w: t.w, h: t.h } : null])), tcs, pal: Uint32Array.from(RGB, q => (255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]),
     DARK, LIGHT, WOOD_DARK, K: { ink: C.ink, night: C.night, void: C.void, deep: C.deep, stone: C.stone, slate: C.slate }, FOGV: { n: FOGV.n, b: FOGV.b }, BAYER };
 }
-function pondOf(c) { let sx = 0, sy = 0, n = 0, lay = null; try { lay = layout(String(c)); } catch (e) { }
-  if (lay) for (let i = 0; i < lay.w * lay.h; i++) if (lay.tiles[i] === T.WATER || lay.tiles[i] === T.ISLE) { sx += i % lay.w; sy += (i / lay.w) | 0; n++; }
-  return n ? { x: (sx / n + .5) / lay.w, y: (sy / n + .5) / lay.h, r: Math.sqrt(n / (lay.w * lay.h)) * .62 } : { x: .5, y: .5, r: .3 }; }
 const LAND_WAIT = new Set();   // keys asked of the worker, not yet in
 // The painting for this state if it is here; else it is asked of the worker (once) and null comes back. Without a worker it is painted on the spot.
 function landTry(spec) {
@@ -5094,7 +5099,7 @@ function drawReachView(t) {
     const c = Y * MW + X; if (!S.revealed[c]) continue;
     if ((ex.mstrike && ex.mstrike.c === c) || (ex.stray && ex.stray.scope === 'map' && ex.stray.cell === c)) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
   }
-  // pass 3: the edge marks (they still run straight along the cell edges); the fog is already in the painting
+  // pass 3: the edge marks (on the sector's block contour, then its lines and destination rings); the fog is already in the painting
   drawEdgeMarks(q);
   // pass 4: the signs at the heart's spot in their cell (the others beside the first), the start flag planted at the cell's centre (2× at tier 1; at the upper left on the pawn's own cell)
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
@@ -5134,11 +5139,9 @@ function drawReachView(t) {
   drawInset(ix, iy, t, u);
 }
 // Edge marks (generator 2): cliff and stair edges on the reach view (72 and 48 px) and the full map (26 px), never baked into mapCv and never in the band inset. The art desk's pieces
-// (art/walk/, edge-*) are laid along the painting's displaced border, not the straight cell line: for each column (or row) of an edge the border is found where landCellOf changes from
-// the one cell to the other, searching +-16k px round the cell line (k = cs / 72), the columns' y smoothed with a 7 px running mean. Every CLIFF and RAMP edge whose two cells are revealed,
-// plus the pawn's four edges always. A piece takes the light table of the cell it lies in (fog: the fog table). Cliff face (south-facing drop), lip-h (north-facing), side (east-facing),
-// lip-v (west-facing): the piece's column (row) at (wx mod w, wy mod h) from the border into the second cell; a stair is its ramp piece on its span, the face skipped under it.
-const EDGE_RAMP = { 72: { s0: 24, w: 24 }, 48: { s0: 16, w: 16 }, 26: { s0: 9, w: 8 } };   // the stair's span along its edge, in cell pixels
+// (art/walk/, edge-*) are laid along the sector's block contour (drawSectorMarks): every edge between two blocks of different level whose two cells are revealed, plus the pawn's. A piece takes the light table of
+// the cell it lies in (fog: the fog table). Cliff face (south-facing drop), lip-h (north-facing), side (east-facing), lip-v (west-facing): the piece's column (row) at (wx mod w, wy mod h) from the border into the
+// second block; a stair is its ramp piece at the stair's port, the face skipped under it.
 const EDGE_CACHE = {};
 const posMod = (a, n) => ((a % n) + n) % n;
 // The stair mark a refusal names blinks twice (off, on, off, on over 800 ms); with reduced motion it only stays shown.
@@ -5150,56 +5153,64 @@ function drawEdgeMarks(q) {
   const ex = S.exp, pawn = ex ? ex.pos : -1, cs = q.cs, cells = [];
   if (q.map) for (let c = 0; c < MW * MH; c++) cells.push([c, q.ox + (c % MW) * CELL, q.oy + ((c / MW) | 0) * CELL]);
   else for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) { const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j; if (X >= 0 && Y >= 0 && X < MW && Y < MH) cells.push([Y * MW + X, q.dx + i * cs, q.dy + j * cs]); }
-  const rmOf = c => !S.revealed[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), seen = new Set(), edges = [];
-  for (const [c] of cells) for (const dir of ['up', 'left', 'down', 'right']) {
-    const n = stepCell(c, dir); if (n < 0) continue;
-    const ei = edgeIndex(c, dir); if (seen.has(ei)) continue; seen.add(ei);
-    const kind = edgeKind(c, dir); if (kind !== EDGE.CLIFF && kind !== EDGE.RAMP) continue;
-    if (kind === EDGE.CLIFF && softEdge(ei)) continue;   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
-    if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
-    const horiz = dir === 'up' || dir === 'down', A = dir === 'up' || dir === 'left' ? n : c, B = A === n ? c : n;   // A: the north or west cell, B: the south or east one
-    const ts = kind === EDGE.CLIFF ? tileSideKnown(c, dir) : null;   // a cliff side the tiles are known for: the mark leaves a gap where the side is open
-    const e = { A, B, horiz, ramp: kind === EDGE.RAMP && !stairBlinkOff(ei), hiA: G.level[A] > G.level[B], mask: ts && ts.open ? ts.mask : null };   // a blinking stair mark is shown or hidden, nothing drawn
-    e.rm = rmOf(!horiz && e.ramp && !e.hiA ? A : B);   // the cell the piece lies in (a stair going down west lies in A)
-    edges.push(e);
-  }
-  if (edges.length) {
-    const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;
-    const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, overviewNow() ? 'o' : '', ...edges.map(e => e.A + '>' + e.B + (e.ramp ? 'r' : 'c') + (e.hiA ? 1 : 0) + ':' + e.rm + (e.mask ? ':' + e.mask.join('') : ''))].join('|'), slot = q.map ? 'map' : 'reach';
-    let cv = EDGE_CACHE[slot] && EDGE_CACHE[slot].key === key ? EDGE_CACHE[slot].cv : null;
-    if (!cv) {
-      const pix = new Int16Array(W * H).fill(-1), cellOf = landCellOf(cs), rad = Math.ceil(16 * cs / 72), R7 = EDGE_RAMP[cs];
-      const put = (wx, wy, v, rm) => { const x = wx - X0 * cs, y = wy - Y0 * cs; if (v >= 0 && x >= 0 && y >= 0 && x < W && y < H) { const t = REMAP[rm]; pix[y * W + x] = t ? t[v] : v; } };
-      const hBorder = (B, wx) => { const y0 = ((B / MW) | 0) * cs; for (let y = y0 - rad; y <= y0 + rad; y++) if (cellOf(wx, y) === B) return y; return y0; };
-      const vBorder = (B, wy) => { const x0 = (B % MW) * cs; for (let x = x0 - rad; x <= x0 + rad; x++) if (cellOf(x, wy) === B) return x; return x0; };
-      const pieces = e => ({ face: walkPB(`edge-cliff-${e.hiA ? 'face' : 'lip-h'}-${cs}`), side: walkPB(`edge-cliff-${e.hiA ? 'side' : 'lip-v'}-${cs}`), ramp: walkPB(`edge-ramp-${cs}`), rampSide: walkPB(`edge-ramp-side-${cs}`) });
-      const yb = new Map();   // a horizontal edge's smoothed border y per column
-      for (const e of edges) if (e.horiz) {
-        const xs = (e.B % MW) * cs, raw = []; for (let wx = xs - 3; wx < xs + cs + 3; wx++) raw.push(hBorder(e.B, wx));
-        const col = []; for (let i = 0; i < cs; i++) { let t = 0; for (let d = 0; d <= 6; d++) t += raw[i + d]; col.push(Math.round(t / 7)); }
-        yb.set(e, col);
-      }
-      // sides first (east- and west-facing), then the faces and lips along the horizontal borders, then the stairs
-      for (const e of edges) if (!e.horiz) { const P = pieces(e).side, ys = ((e.B / MW) | 0) * cs;
-        for (let wy = ys; wy < ys + cs; wy++) { if (e.ramp && wy >= ys + R7.s0 && wy < ys + R7.s0 + R7.w) continue;
-          if (e.mask && e.mask[Math.min(e.mask.length - 1, ((wy - ys) * e.mask.length / cs) | 0)]) continue;   // open here: no cliff mark
-          const xb = vBorder(e.B, wy), r = posMod(wy, P.h); for (let i = 0; i < P.w; i++) put(xb + i, wy, P.p[r * P.w + i], e.rm); } }
-      for (const e of edges) if (e.horiz) { const P = pieces(e), xs = (e.B % MW) * cs, col = yb.get(e), F = P.face;
-        for (let wx = xs; wx < xs + cs; wx++) { if (e.ramp && wx >= xs + R7.s0 && wx < xs + R7.s0 + P.ramp.w) continue;
-          if (e.mask && e.mask[Math.min(e.mask.length - 1, ((wx - xs) * e.mask.length / cs) | 0)]) continue;   // open here: no cliff mark
-          const c = posMod(wx, F.w); for (let r = 0; r < F.h; r++) put(wx, col[wx - xs] + r, F.p[r * F.w + c], e.rm); } }
-      for (const e of edges) if (e.ramp) { const P = pieces(e);
-        if (e.horiz) { const xs = (e.B % MW) * cs, rx = xs + R7.s0, top = yb.get(e)[rx + (P.ramp.w >> 1) - xs];
-          for (let r = 0; r < P.ramp.h; r++) for (let i = 0; i < P.ramp.w; i++) put(rx + i, top + r, P.ramp.p[r * P.ramp.w + i], e.rm); }
-        else { const ys = ((e.B / MW) | 0) * cs, ry = ys + R7.s0, rp = P.rampSide, xb = vBorder(e.B, ry + (rp.h >> 1));   // east-facing: into B from the border; west-facing: mirrored, into A up to the border
-          for (let j = 0; j < rp.h; j++) for (let i = 0; i < rp.w; i++) put(e.hiA ? xb + i : xb - 1 - i, ry + j, rp.p[j * rp.w + i], e.rm); } }
-      cv = document.createElement('canvas'); cv.width = W; cv.height = H; const cg = cv.getContext('2d'), id = cg.createImageData(W, H), u = new Uint32Array(id.data.buffer);
-      for (let i = 0; i < pix.length; i++) { const v = pix[i]; if (v >= 0) { const c = RGB[v]; u[i] = (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]; } }
-      cg.putImageData(id, 0, 0); EDGE_CACHE[slot] = { key, cv };
-    }
-    g.drawImage(cv, sx, sy);
-  }
+  const sec = sectorHere();
+  if (sec) drawSectorMarks(q, cells, pawn, sec);
   drawSoftMarks(q, cells, pawn);
+}
+// The sector's marks on the reach view and the full map, one canvas made once per state: the cliff and stair pieces along the BLOCK contour (every place edge between two blocks of different level, the sector's level
+// line, not the straight place edges), then the realm's lines (trail, stream), its bridges and fords, and a mark where a destination's place is in sight (a plain ring, a named empty slot for the art desk: reach-destination).
+// A cell takes its marks once it is revealed (a block edge needs both its cells revealed, or the pawn's).
+const DEST_RING = { pass: 'plum', ravine: 'plum', 'ravine head': 'plum', falls: 'river', spring: 'river', 'stream mouth': 'river', ford: 'river', bridge: 'gold', reach: 'gold' };
+function drawSectorMarks(q, cells, pawn, sec) {
+  const cs = q.cs, u = cs / 4, rmOf = c => !S.revealed[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), inV = new Map(cells.map(([c]) => [c, 1]));
+  const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;
+  const ramps = sec.ramps.filter(r => inV.has(r.c) && inV.has(r.c + MW) && S.revealed[r.c] && S.revealed[r.c + MW]).map(r => ({ ...r, off: stairBlinkOff(edgeIndex(r.c, 'down')) }));
+  const key = [q.map ? 'm' : 'r', X0, Y0, cs, S.seed, S.gen || 1, WART.ready ? 1 : 0, pawn, ramps.map(r => r.c + (r.off ? 'o' : '')).join(','), cells.map(([c]) => S.revealed[c] ? rmOf(c) : '-').join('')].join('|'), slot = q.map ? 'map' : 'reach';
+  let cv = EDGE_CACHE[slot] && EDGE_CACHE[slot].key === key ? EDGE_CACHE[slot].cv : null;
+  if (!cv) {
+    const pix = new Int16Array(W * H).fill(-1);
+    const put = (wx, wy, v, rm) => { const x = wx - X0 * cs, y = wy - Y0 * cs; if (v >= 0 && x >= 0 && y >= 0 && x < W && y < H) { const t = REMAP[rm]; pix[y * W + x] = t ? t[v] : v; } };
+    const lvAt = (gx, gy) => { const X = Math.floor(gx / 4), Y = Math.floor(gy / 4); return X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : sec.lv[(Y * MW + X) * 16 + (gy - Y * 4) * 4 + gx - X * 4]; };
+    const cellOfBlock = (gx, gy) => Math.floor(gy / 4) * MW + Math.floor(gx / 4);
+    const pc = hiA => ({ face: walkPB(`edge-cliff-${hiA ? 'face' : 'lip-h'}-${cs}`), side: walkPB(`edge-cliff-${hiA ? 'side' : 'lip-v'}-${cs}`), ramp: walkPB(`edge-ramp-${cs}`) });
+    const seen = (a, b) => (S.revealed[a] && S.revealed[b]) || a === pawn || b === pawn;
+    const soft = (a, b, dir) => a !== b && softEdge(edgeIndex(a, dir));   // scree and earth banks have their own marks (drawSoftMarks), never a cliff's
+    const edges = [];
+    for (const [c] of cells) { const X = c % MW, Y = (c / MW) | 0;
+      for (let by = 0; by < 4; by++) for (let bx = 0; bx < 4; bx++) { const gx = X * 4 + bx, gy = Y * 4 + by, a = lvAt(gx, gy);
+        const e = lvAt(gx + 1, gy), s = lvAt(gx, gy + 1);
+        if (e >= 0 && e !== a) { const cB = cellOfBlock(gx + 1, gy); if (seen(c, cB) && !soft(c, cB, 'right')) edges.push({ horiz: false, gx, gy, hiA: a > e, rm: rmOf(cB) }); }
+        if (s >= 0 && s !== a) { const cB = cellOfBlock(gx, gy + 1); if (seen(c, cB) && !soft(c, cB, 'down')) edges.push({ horiz: true, gx, gy, hiA: a > s, rm: rmOf(cB) }); } } }
+    // the stairs: where the sector's level line runs under the stair's port (within two block rows of the place's south edge) the ramp stands on it, else on the place edge
+    const rampAt = ramps.map(r => { const X = r.c % MW, Y = (r.c / MW) | 0, P = pc(r.hiA).ramp, cx = Math.round(r.x * cs / OCW), gx = Math.floor(cx / u); let top = (Y + 1) * cs;
+      for (const d of [0, -1, 1, -2, 2]) { const k = (Y + 1) * 4 - 1 + d, a = lvAt(gx, k), b = lvAt(gx, k + 1); if (a >= 0 && b >= 0 && a !== b) { top = Math.round((k + 1) * u); break; } }
+      return { r, P, x0: cx - (P.w >> 1), top, rm: rmOf(r.c + MW) }; });
+    for (const e of edges) { const P = pc(e.hiA);
+      if (!e.horiz) { const xb = Math.round((e.gx + 1) * u), y0 = Math.round(e.gy * u), y1 = Math.round((e.gy + 1) * u);
+        for (let wy = y0; wy < y1; wy++) { const r = posMod(wy, P.side.h); for (let i = 0; i < P.side.w; i++) put(xb + i, wy, P.side.p[r * P.side.w + i], e.rm); } }
+      else { const yb = Math.round((e.gy + 1) * u), x0 = Math.round(e.gx * u), x1 = Math.round((e.gx + 1) * u), F = P.face;
+        for (let wx = x0; wx < x1; wx++) { if (rampAt.some(a => !a.r.off && a.top === yb && wx >= a.x0 && wx < a.x0 + a.P.w)) continue;
+          const col = posMod(wx, F.w); for (let r = 0; r < F.h; r++) put(wx, yb + r, F.p[r * F.w + col], e.rm); } } }
+    for (const a of rampAt) if (!a.r.off) for (let r = 0; r < a.P.h; r++) for (let i = 0; i < a.P.w; i++) put(a.x0 + i, a.top + r, a.P.p[r * a.P.w + i], a.rm);
+    // the realm's lines at map scale: world tiles (CW x CH to a place) to pixels, two pixels wide at the reach's sizes, one on the full map
+    const wide = cs > 26 ? 2 : 1, px = v => Math.round(v * cs / OCW), py = v => Math.round(v * cs / OCH);
+    const dot = (wx, wy, col, rm) => { for (let j = 0; j < wide; j++) for (let i = 0; i < wide; i++) put(wx + i, wy + j, col, rm); };
+    const seg = (x0, y0, x1, y1, col, rm) => { const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0), 1); for (let i = 0; i <= n; i++) dot(Math.round(x0 + (x1 - x0) * i / n), Math.round(y0 + (y1 - y0) * i / n), col, rm); };
+    for (const l of sec.lines) { if (!inV.has(l.c) || !S.revealed[l.c]) continue; const rm = rmOf(l.c), col = l.k === 'trail' ? C.orange : C.sky;
+      for (let i = 0; i + 3 < l.pts.length; i += 2) seg(px(l.pts[i]), py(l.pts[i + 1]), px(l.pts[i + 2]), py(l.pts[i + 3]), col, rm); }
+    const bw = cs > 26 ? 8 : 5;
+    for (const m of sec.marks) { if (!inV.has(m.c) || !S.revealed[m.c]) continue; const rm = rmOf(m.c), mx = px(m.x), my = py(m.y);
+      if (m.k === 'bridge') { const lx = m.ax === 0 ? bw : 2, ly = m.ax === 0 ? 2 : bw; for (let j = -ly; j <= ly; j++) for (let i = -lx; i <= lx; i++) put(mx + i, my + j, Math.abs(i) === lx || Math.abs(j) === ly ? C.bark : C.paper, rm); }
+      else for (const d of [-bw, 0, bw]) { put(mx + d, my, C.ice, rm); put(mx + d + 1, my, C.ice, rm); put(mx + d, my + 1, C.ice, rm); put(mx + d + 1, my + 1, C.ice, rm); } }
+    // a destination's ring once its place is in sight, in its cell's upper left (the place's own mark and signs keep the middle)
+    const rr = cs > 26 ? 4 : 3;
+    for (const d of sec.dest) { if (!inV.has(d.c) || !S.revealed[d.c]) continue; const X = d.c % MW, Y = (d.c / MW) | 0, rm = rmOf(d.c), mx = Math.round((X + 0.28) * cs), my = Math.round((Y + 0.28) * cs), col = C[DEST_RING[d.kind] || 'gold'];
+      for (let j = -rr; j <= rr; j++) for (let i = -rr; i <= rr; i++) { const dd = i * i + j * j; if (dd <= rr * rr) put(mx + i, my + j, dd > (rr - 1) * (rr - 1) ? C.bone : col, rm); } }
+    cv = document.createElement('canvas'); cv.width = W; cv.height = H; const cg = cv.getContext('2d'), id = cg.createImageData(W, H), pu = new Uint32Array(id.data.buffer);
+    for (let i = 0; i < pix.length; i++) { const v = pix[i]; if (v >= 0) { const c = RGB[v]; pu[i] = (255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]; } }
+    cg.putImageData(id, 0, 0); EDGE_CACHE[slot] = { key, cv };
+  }
+  g.drawImage(cv, sx, sy);
 }
 // Soft ground and earth banks on the map and reach view (art list c-map-soft-26): the art desk's marks (softMarkPB, wadeMarkPB), drawn after the cliff and stair marks.
 const softEdge = i => !!((G.soft && G.soft.scree[i]) || (G.banks && G.banks[i]));

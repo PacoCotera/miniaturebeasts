@@ -55,7 +55,7 @@ const CTX = new Map();
 function ctxOf(seed) {
   let S = CTX.get(seed); if (S) return S;
   const R = realm7(seed), re = R.realm, N = RW * RH;
-  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), cells: new Map(), stairs: null, trails: null };
+  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), secG: new Map(), cells: new Map(), stairs: null, trails: null };
   for (const G of R.regions) {
     const [ax, ay] = G.slot;
     for (let c = 0; c < NC; c++) {
@@ -673,24 +673,101 @@ export function windowIR(seed, X0, Y0, nx, ny) {
   for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = T(x0 - LAND_M + x, y0 - LAND_M + y) === TV.CLIFF ? 1 : 0;
   return irOf(seed, `g7-window-${X0}-${Y0}`, x0, y0, w, h, terrain, wayups.filter(a => a.x - 1 >= 0 && a.x + a.w + 1 <= w && a.y >= 0 && a.y + 2 <= h), null, top, undefined, { m: LAND_M, w: lw, h: lh, raised });
 }
-// ---- the overview of a region: one byte a world tile, the one land every map view is shrunk from ----
-// The region's 16 x 20 cells as (16 * 24) x (20 * 28) tiles, row by row: the low three bits are the ground class (OV below), bit 3 says the tile is raised land. It reads the settled world tiles
-// (worldTiles / worldGround), the very land the walk draws, so a map pixel is the class of the tile under it and no map view needs the cell labels for land.
-export const OV = { GRASS: 0, SAND: 1, WATER: 2, DEEP: 3, WOOD: 4, THICKET: 5, ROCK: 6, PATH: 7, RAISED: 8 };
-const OV_OF = []; OV_OF[TV.SAND] = OV.SAND; OV_OF[TV.WATER] = OV.WATER; OV_OF[TV.DEEP] = OV.DEEP; OV_OF[TV.LITTER] = OV.WOOD; OV_OF[TV.THICKET] = OV.THICKET; OV_OF[TV.SCREE] = OV.ROCK; OV_OF[TV.PATH] = OV.PATH;
-export const OVW = MW * CW, OVH = MH * CH;
-const OVERVIEWS = new Map();
-export function overviewOf(seed, ax, ay) {
-  const key = seed + ':' + ax + ',' + ay, hit = OVERVIEWS.get(key); if (hit) return hit;
-  const T = worldTiles(seed), Gd = worldGround(seed), out = new Uint8Array(OVW * OVH), x0 = ax * OVW, y0 = ay * OVH;
-  for (let y = 0; y < OVH; y++) for (let x = 0; x < OVW; x++) {
-    const gx = x0 + x, gy = y0 + y, raisedTile = T(gx, gy) === TV.CLIFF;
-    out[y * OVW + x] = (OV_OF[Gd(gx, gy)] || OV.GRASS) | (raisedTile ? OV.RAISED : 0);
-  }
-  if (OVERVIEWS.size > 6) OVERVIEWS.clear();
-  OVERVIEWS.set(key, out); return out;
+// ---- the sector of a place (world-topdown-spec-1 2.4): what the reach view paints, made from the realm alone, before any place is built ----
+// The place is 4 x 4 blocks of 6 x 7 tiles. A block holds a ground class (0 grass, 1 wood floor, 2 thicket or scrub, 3 rock, 4 sand, 5 water; +8 when the water is the deep sea) that is the majority of
+// the place's own ground before its passes (the same fields and the biome's recipe as windowOf, read from chunk()), and a level bit: the sign of the height field at the block's centre tile against the
+// realm's edited raising height e0 (a water block is low). `lines` are the realm's trail and streams at map scale (world tile coordinates, through the shared ports and each place's bend point), `marks`
+// the bridges and fords, `dest` the realm's destinations in the place, `ramps` the stairs that start in it. `cellTerrain` is never called: no place is built.
+// Result: { cls: Uint8Array(16), lv: Uint8Array(16), lines: [{ k: 'trail' | 'stream', pts: [x, y, x, y, ...] }], marks: [{ k: 'bridge' | 'ford', x, y, ax }], dest: [{ kind }], ramps: [{ dir: 's' | 'e', x, y, hiA }] }
+const SEC_BX = 6, SEC_BY = 7, SEC_NX = CW / SEC_BX, SEC_NY = CH / SEC_BY;
+const SEC_CLS = []; SEC_CLS[TV.WATER] = 5; SEC_CLS[TV.DEEP] = 5; SEC_CLS[TV.SAND] = 4; SEC_CLS[TV.THICKET] = 2; SEC_CLS[TV.SCRUB] = 2; SEC_CLS[TV.LITTER] = 1; SEC_CLS[TV.SCREE] = 3;
+function secClassAt(S, gbx, gby) {   // the class of the block at block coordinates (gbx, gby) of the realm (the realm's edge repeats)
+  const bx = clamp(gbx, 0, RW * SEC_NX - 1), by = clamp(gby, 0, RH * SEC_NY - 1), X = (bx / SEC_NX) | 0, Y = (by / SEC_NY) | 0;
+  return secGround(S, X, Y)[(by - Y * SEC_NY) * SEC_NX + bx - X * SEC_NX] & 7;
 }
-// an overview made elsewhere (the realm worker, or the page's store) is put in the cache
-export const presetOverview = (seed, ax, ay, bytes) => { if (OVERVIEWS.size > 6) OVERVIEWS.clear(); OVERVIEWS.set(seed + ':' + ax + ',' + ay, bytes); };
-export const hasOverview = (seed, ax, ay) => OVERVIEWS.has(seed + ':' + ax + ',' + ay);
+function secGround(S, X, Y) {   // the class of every block: the majority of its tiles' pre-pass ground
+  const key = (X + 8) * 1000 + (Y + 8), got = S.secG.get(key); if (got) return got;
+  const c = chunk(S, X, Y), cnt = new Uint8Array(SEC_NX * SEC_NY * 6), deep = new Uint8Array(SEC_NX * SEC_NY), slotAt = (a, b) => S.re.slotBiome[clamp(b, 0, ATLAS - 1) * ATLAS + clamp(a, 0, ATLAS - 1)];
+  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
+    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, b = ((ty / SEC_BY) | 0) * SEC_NX + ((tx / SEC_BX) | 0), d = inlandOf(gx, gy);
+    let t = TV.GRASS;
+    if (d < COAST_REACH) { const [deepEnd, wl, sandEnd] = coastEdges(S, gx, gy); t = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < sandEnd ? TV.SAND : TV.GRASS; }
+    else {
+      const r = recipeAt(slotAt, ATLAS, MW * CW, MH * CH, gx, gy);
+      if (c.rock[k] + r.rockAdd > SAND_AT) t = TV.SCREE;
+      else if (r.litterAt < LITTER_NONE && c.forest[k] + 0.35 * S.nE(gx, gy) + c.push[k] > r.litterAt) t = TV.LITTER;
+      else if (r.dry > 0 || r.turf > 0) { const u = 0.5 + 0.5 * S.nD(gx, gy); if (u < r.dry) t = TV.DRY; else if (1 - u < r.turf) t = TV.TURF; }
+      if (c.forest[k] > r.scrubAt && c.forest[k] <= r.thicketAt && c.scrub[k] > r.scrubNoise && t !== TV.DRY && t !== TV.TURF) t = TV.SCRUB;
+      if (c.forest[k] > r.thicketAt) t = TV.THICKET;
+      if (c.wet[k] > r.waterAt || (r.chan > 0.005 && Math.abs(S.nC(gx, gy)) < r.chan && S.nM(gx, gy) > r.mask)) t = TV.WATER;
+    }
+    cnt[b * 6 + (SEC_CLS[t] || 0)]++; if (t === TV.DEEP) deep[b]++;
+  }
+  const cls = new Uint8Array(SEC_NX * SEC_NY);
+  for (let b = 0; b < cls.length; b++) { let m = 0; for (let i = 1; i < 6; i++) if (cnt[b * 6 + i] > cnt[b * 6 + m]) m = i; cls[b] = m | (m === 5 && deep[b] * 2 >= cnt[b * 6 + 5] ? 8 : 0); }
+  if (S.secG.size > 4000) S.secG.clear();
+  S.secG.set(key, cls); return cls;
+}
+const secPt = (seed, kind, cx, cy, ox, oy) => { const h = hash(seed, 'gen7', kind, cx, cy); return [cx * CW + 12 + (h % 9) - 4 + ox, cy * CH + 14 + ((h >>> 8) % 9) - 4 + oy]; };
+// the point where the line between two neighbouring world cells crosses their edge (the realm's port: the tile row or column both places agree on)
+function secPort(S, p, q) {
+  if (p[1] === q[1]) { const left = Math.min(p[0], q[0]); return [(left + 1) * CW, p[1] * CH + portAt(S.seed, left, p[1], false) + 0.5]; }
+  const top = Math.min(p[1], q[1]); return [p[0] * CW + portAt(S.seed, p[0], top, true) + 0.5, (top + 1) * CH];
+}
+// per seed: the streams' pieces by cell, each [port in, bend, port out] (a stream that comes out of raised land starts at its port in the face, not on the land above)
+function secStreams(S) {
+  if (S.secStreams) return S.secStreams;
+  const by = new Map(), xy = c => [c % RW, (c / RW) | 0], put = (c, pts) => { const k = c; if (!by.has(k)) by.set(k, []); by.get(k).push(pts); };
+  for (const f of S.re.features || []) {
+    if (f.kind !== 'stream') continue;
+    const seen = f.links.seen || 0, m = f.links.mouth, chain = f.cells.slice(Math.max(0, seen - 1)).concat(m && m.c >= 0 && m.c !== f.cells[f.cells.length - 1] ? [m.c] : []), first = seen > 0 ? 1 : 0;
+    for (let i = first; i < chain.length; i++) {
+      const c = chain[i], cur = xy(c), pts = [];
+      if (i > 0) pts.push(...secPort(S, xy(chain[i - 1]), cur));
+      pts.push(...secPt(S.seed, 'sbend', cur[0], cur[1], 0, 0));
+      if (i + 1 < chain.length) pts.push(...secPort(S, cur, xy(chain[i + 1])));
+      put(c, pts);
+    }
+  }
+  return (S.secStreams = by);
+}
+function secMarks(S) {   // per seed: bridges, river fords and trail-over-stream fords by cell
+  if (S.secMarks) return S.secMarks;
+  const by = new Map(), put = (c, m) => { if (!by.has(c)) by.set(c, []); by.get(c).push(m); }, re = S.re;
+  for (const f of re.features || []) if (f.kind === 'bridge') for (const c of f.cells) put(c, { k: 'bridge', ax: f.links.axis === 'x' ? 0 : 1 });
+  for (let c = 0; c < re.ford.length; c++) if (re.ford[c] && re.land[c] === 4) put(c, { k: 'ford', ax: 0 });
+  const on = re.roads && re.roads.on; if (on) for (const c of secStreams(S).keys()) if (on[c] && !(by.get(c) || []).length) put(c, { k: 'ford', ax: 0 });
+  return (S.secMarks = by);
+}
+export function sectorOf(seed, X, Y) {
+  const S = ctxOf(seed), re = S.re, cls = secGround(S, X, Y), lv = new Uint8Array(SEC_NX * SEC_NY), f = tileFields(seed, X, Y), e0 = re.e0, c0 = Y * RW + X;
+  for (let by = 0; by < SEC_NY; by++) for (let bx = 0; bx < SEC_NX; bx++) {   // the level bit: the height at the block's centre tile against the edited raising height; water is low
+    const tx = bx * SEC_BX + 3, ty = by * SEC_BY + 3, gx = X * CW + tx, gy = Y * CH + ty;
+    if ((cls[by * SEC_NX + bx] & 7) === 5) continue;
+    const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
+    const e = e0[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + e0[cellIdx(X0 + 1, Y0)] * a * (1 - b) + e0[cellIdx(X0, Y0 + 1)] * (1 - a) * b + e0[cellIdx(X0 + 1, Y0 + 1)] * a * b;
+    const inl = inlandOf(gx, gy), coast = inl >= 22 ? 0 : -Math.floor((22 - Math.max(inl, 12)) * 23000 / 10);
+    lv[by * SEC_NX + bx] = Math.round((f.height[ty * CW + tx] - e) * 65536) + coast >= 0 ? 1 : 0;
+  }
+  const lines = [], marks = [], dest = [], ramps = [];
+  // the trail: each neighbour the realm's trails join this place to is a port; two ports meet at a bend point 3-6 tiles off their straight line, one or three or more at the place's hub
+  const tr = trailsOf(S), hits = tr.by.get(X * 1000 + Y);
+  if (hits) {
+    const nbs = new Map(); for (const { t, k } of hits) for (const o of [t.cells[k - 1], t.cells[k + 1]]) if (o) nbs.set(o[0] * 1000 + o[1], o);
+    const anchors = [...nbs.values()].sort((p, q) => p[0] * 1000 + p[1] - q[0] * 1000 - q[1]).map(o => secPort(S, [X, Y], o));
+    if (anchors.length) {
+      let j;
+      if (anchors.length === 2) {
+        const [a, b] = anchors, mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, horiz = Math.abs(a[0] - b[0]) >= Math.abs(a[1] - b[1]), h2 = hash(seed, 'gen7', 'bend', X, Y), sd = h2 & 1 ? 1 : -1, d = 3 + ((h2 >>> 4) % 4);
+        j = [clamp(mx + (horiz ? 0 : sd * d), X * CW + 3, X * CW + CW - 4), clamp(my + (horiz ? sd * d : 0), Y * CH + 3, Y * CH + CH - 4)];
+      } else { const hh = hash(seed, 'gen7', 'hub', X, Y); j = [X * CW + 12 + (hh % 7) - 3, Y * CH + 14 + ((hh >>> 4) % 7) - 3]; }
+      for (const a of anchors) lines.push({ k: 'trail', pts: [a[0], a[1], j[0], j[1]] });
+    }
+  }
+  for (const pts of secStreams(S).get(c0) || []) lines.push({ k: 'stream', pts });
+  for (const m of secMarks(S).get(c0) || []) marks.push({ k: m.k, x: X * CW + 12, y: Y * CH + 14, ax: m.ax });
+  for (const d of re.destinations || []) if (d.c === c0) dest.push({ kind: d.kind });
+  for (const st of re.stairs || []) if (st.X === X && st.Y === Y) ramps.push({ dir: 's', x: X * CW + st.port + 0.5, y: (Y + 1) * CH, hiA: S.lvC[c0] > S.lvC[cellIdx(X, Y + 1)] });   // the stair's port (the place seats the way up beside it)
+  return { cls, lv, lines, marks, dest, ramps };
+}
 export { CW, CH, RW, RH };
