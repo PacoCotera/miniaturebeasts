@@ -640,7 +640,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
         // a stair on its longest south face, held straight (the second pass over the window carries it)
         let best = null; const cset = new Set(c.tiles);
         for (let y = 4; y < H - foot - 2; y++) { let n = 0, from = 0;
-          for (let x = 1; x <= W - 1; x++) { const on = x < W - 1 && r[y * W + x] === 1 && r[(y + 1) * W + x] === 0 && cset.has((isRaised ? y - 1 : y + 2) * W + x);
+          for (let x = 1; x <= W - 1; x++) { const on = x < W - 1 && r[y * W + x] === 1 && r[(y + 1) * W + x] === 0 && cset.has((isRaised ? y - 1 : y + fr + 1) * W + x);
             if (on) { if (!n) from = x; n++; } else { if (n && (!best || n > best.n)) best = { x0: from, n, y }; n = 0; } } }
         if (best && attempt < 2 && (c.n >= 6 || !isRaised)) { const xm = best.x0 + ((best.n - 2) >> 1); if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; } }
       }
