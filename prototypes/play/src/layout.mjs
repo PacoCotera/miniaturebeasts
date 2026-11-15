@@ -21,12 +21,17 @@ const abs = (b, dx, dy) => b && [b[0] + dx, b[1] + dy, b[2], b[3]];
 const bx = (b) => (b ? box(b[0], b[1], b[2], b[3]) : null);
 
 // the laptop's two scales, in CSS px per lp: the Companion's (a whole number of device pixels where one fits) and the Station's (the fit, never above 1); zSet: the size control's choice, device px per lp for the Companion
+// The largest whole z (device px per lp) at which the Companion's whole panel fits the window: nothing cut, nothing scrolled. Never below 1.
+export function zCap(W, H, dpr = 1) {
+  const K = sizes(44), lw = EDGE + K.cross + EDGE, rw = EDGE + K.clusterW + EDGE, byH = (H - BAR - 2 * EDGE) / FACE.companion[1], byW = (W - lw - rw) / FACE.companion[0];
+  return Math.max(1, Math.floor(Math.min(byH, byW) * dpr + 1e-9));
+}
 function laptopScales(W, H, dpr, zSet) {
   const K = sizes(44), lw = EDGE + K.cross + EDGE, rw = EDGE + K.clusterW + EDGE, avail = H - BAR, maxW = Math.min(W - 2 * SIDE_LAPTOP, LAPTOP_MAX_W), maxH = avail - 2 * LAPTOP_TOP;
   const fitOf = (dev) => Math.max(1 / 16, Math.min((maxW - lw - rw) / FACE[dev][0], (maxH - 2 * EDGE) / FACE[dev][1]));
   const fitC = fitOf("companion"), zFit = Math.floor(fitC * dpr), sC = zFit >= 1 ? zFit / dpr : fitC, fitS = Math.min(1, fitOf("station"));
   if (zSet == null) return { companion: sC, station: fitS, zFit: zFit >= 1 ? zFit : fitC * dpr };
-  const z = Math.max(1, Math.round(zSet)), ratio = z / (zFit >= 1 ? zFit : fitC * dpr);
+  const z = Math.min(Math.max(1, Math.round(zSet)), zCap(W, H, dpr)), ratio = z / (zFit >= 1 ? zFit : fitC * dpr);
   return { companion: z / dpr, station: fitS * ratio, zFit: zFit >= 1 ? zFit : fitC * dpr };
 }
 

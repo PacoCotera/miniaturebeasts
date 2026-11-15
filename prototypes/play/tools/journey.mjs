@@ -173,8 +173,13 @@ if (!ONLY || ONLY === "Z") {
   eq(await page.evaluate(() => [document.getElementById("stamp").textContent, getComputedStyle(document.getElementById("stamp")).display !== "none"]), ["build local", true], "Z: the build stamp shows (no build.json here: build local)");
   await clip(page, "play-fit-1440x900.png");
   await page.keyboard.press("Equal"); await page.waitForTimeout(400);
+  eq((await zs()).slice(0, 3), ["laptop", 1, true], "Z: at 1440 × 900 = stops at z 1 (a ×2 Companion, 900 × 1200, would be cut: the size is capped at the largest whole step that fits)");
+  eq(await page.evaluate(() => document.getElementById("zUp").getAttribute("aria-disabled")), "true", "Z: + is disabled at the cap");
+  await page.setViewportSize({ width: 1600, height: 1300 }); await page.waitForTimeout(400);   // tall enough for ×2
+  await page.keyboard.press("Equal"); await page.waitForTimeout(400);
   eq(await zs(), ["laptop", 2, false, "2", "×2"], "Z: = chooses z 2, kept in localStorage");
-  eq(await box(page, "#fCompanion"), [266, 80, 900, 1200], "Z: at z 2 the Companion is 900 × 1200 CSS px");
+  eq((await box(page, "#fCompanion")).slice(2), [900, 1200], "Z: at z 2 the Companion is 900 × 1200 CSS px");
+  await page.keyboard.press("Equal"); await page.waitForTimeout(300); eq((await zs()).slice(1, 3), [2, false], "Z: = stops at the cap (z 2 in 1600 × 1300)");
   { const [bad, n] = await zBad(page, "#fCompanion", 450, 2, () => mb().evaluate(() => window.__mb.capture())); eq([bad, n > 500000], [0, true], "Z: the Companion at z 2: whole 2 × 2 blocks (differing device pixels, compared " + n + ")"); }
   await clip(page, "play-z2.png");
   await page.keyboard.press("Minus"); await page.waitForTimeout(300); eq((await zs()).slice(0, 4), ["laptop", 1, false, "1"], "Z: − chooses z 1 (kept)");
@@ -234,9 +239,7 @@ if (!ONLY || ONLY === "PT") {
   await page.getByRole("switch", { name: "Developer tools" }).click();
   eq(await page.evaluate(() => !document.getElementById("devBtn").classList.contains("hidden")), true, "PT: Developer tools on, the dev button shows");
   await page.click("#optionsDone"); await page.waitForTimeout(300);
-  { const h0 = await page.evaluate(() => document.getElementById("devBtn").getBoundingClientRect().height); if (h0 !== 44) console.log(`PT: PAGE BUG (reported, not fixed): with Developer tools turned on in Options the Tools button is not placed until the next layout: ${h0} tall, not 44`); }
-  await page.setViewportSize({ width: 1920, height: 1081 }); await page.waitForTimeout(300);   // a resize runs the layout
-  eq(await page.evaluate(() => document.getElementById("devBtn").getBoundingClientRect().height), 44, "PT: the Tools button is in the bar once the layout has run (44 tall)");
+  eq(await page.evaluate(() => document.getElementById("devBtn").getBoundingClientRect().height), 44, "PT: the Tools button is in the bar as soon as Developer tools is on, no resize (44 tall)");
   await ctx.close();
 }
 

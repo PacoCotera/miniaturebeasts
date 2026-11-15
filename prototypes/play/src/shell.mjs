@@ -7,7 +7,7 @@
 
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, clampZ, Z_MAX } from "./fit.mjs";   // the size control's bounds: z device px per lp
-import { plan as layoutPlan, barPlan, biggerTurned, dockSheet, form as formOf, BAR } from "./layout.mjs";   // the page's layout: one device in view, its panel centred (pure; tests/layout.test.mjs)
+import { plan as layoutPlan, barPlan, biggerTurned, dockSheet, zCap, form as formOf, BAR } from "./layout.mjs";   // the page's layout: one device in view, its panel centred (pure; tests/layout.test.mjs)
 import { padDir, dockWords, KEYBOARD } from "./keyplan.mjs";   // the key trays' geometry: one measure, one family at every size
 import { stampText, aboutText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
@@ -181,12 +181,12 @@ function layoutSize([d, ft, u]) {
   placeBox(zDown, d); placeBox(zFit, ft); placeBox(zUp, u);
   const z = Math.round(kOf.companion), fit = zSet == null; zFit.textContent = (fit ? "fit ×" : "×") + z; zFit.classList.toggle("on", fit); zFit.setAttribute("aria-pressed", String(fit));
   zFit.setAttribute("aria-label", "Fit to the window, now ×" + z); zFit.title = fit ? "Fitted to the window: ×" + z : "Fit to the window (now ×" + z + ")";
-  zDown.setAttribute("aria-disabled", String(z <= 1)); zUp.setAttribute("aria-disabled", String(z >= Z_MAX));
+  zDown.setAttribute("aria-disabled", String(z <= 1)); zUp.setAttribute("aria-disabled", String(z >= Math.min(Z_MAX, zCap(CW, CH, dpr))));
 }
 function setZ(v) {   // v: a z, or null for fit; the choice is kept per browser, fit clears it
   zSet = v == null ? null : clampZ(v); saveZ(zSet); layout();
 }
-const zStep = (d) => { if (TEST || form !== "laptop") return; const z = Math.round(kOf.companion), n = clampZ(z + d); if (n !== z) setZ(n); };
+const zStep = (d) => { if (TEST || form !== "laptop") return; const z = Math.round(kOf.companion), n = Math.min(clampZ(z + d), zCap(CW, CH, dpr)); if (n !== z) setZ(n); };
 // The Dock / Lift key (first-ten-front A2): quiet until the walk ends with a sealed crate, then lit; docked, it says how to go out. One press asks for the same dock or lift as Shift+D.
 function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or null when it is not shown
   const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, touch = window.matchMedia("(pointer: coarse)").matches;
@@ -397,7 +397,7 @@ const blank = (v) => { vctx.fillStyle = `rgb(${v},${v},${v})`; vctx.fillRect(0, 
 blank(255);   // paper, not black, until the first face is drawn
 function panelOp(o) {
   if (o.kind === "partial") setTimeout(() => { const img = imageOf(o.face); for (const r of o.regions) { const [x, y, w, h] = REGIONS[r]; vctx.putImageData(img, 0, 0, x, y, w, h); } drawn = o.face; drawnLog.push({ kind: "partial", id: o.face.id, regions: o.regions, at: now() }); dockScreen.paint(view); }, PARTIAL_MS);
-  else { blank(0); setTimeout(() => blank(255), FULL_MS / 3); setTimeout(() => { vctx.putImageData(imageOf(o.face), 0, 0); drawn = o.face; drawnLog.push({ kind: "full", id: o.face.id, why: o.why, at: now() }); dockScreen.paint(view); }, (2 * FULL_MS) / 3); }
+  else { const first = drawn === null; if (!first) { blank(0); setTimeout(() => blank(255), FULL_MS / 3); }    /* the first picture never blacks the panel: blank paper until the face lands */ setTimeout(() => { vctx.putImageData(imageOf(o.face), 0, 0); drawn = o.face; drawnLog.push({ kind: "full", id: o.face.id, why: o.why, at: now() }); dockScreen.paint(view); }, (2 * FULL_MS) / 3); }
 }
 function faceInput(t) {
   const who = (svc.up && svc.snap && svc.snap.face && svc.snap.face.who) || (seatedNow() && comp ? { name: comp.name } : null) || (heard && heard.companion ? { name: heard.companion.name } : null);
@@ -462,7 +462,7 @@ printLook(); setInterval(printLook, 10000);
 // before any frame is set (a frame still open would write its save back as it unloaded). The Companions' identities stay; the worlds go.
 const FRESH_KEY = "mb-play-fresh", PLACES = [["HollowTree", "Hollow Tree"], ["Reedpool", "Reedpool"], ["SplitStone", "Split Stone"], ["Test_AllCases", "Test, all cases"], ["Windstep", "Windstep"]];   // [id, the place's name]
 try { if (sessionStorage.getItem(FRESH_KEY)) { sessionStorage.removeItem(FRESH_KEY); for (const key of Object.keys(localStorage)) if (key.startsWith("mb-save-v8") || key.startsWith("mb-exploration-v") || key === "mb-station-dev") localStorage.removeItem(key); } } catch { /* no storage: nothing to erase */ }
-function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); }
+function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of ["helpDevK", "helpDevD"]) $(id).classList.toggle("hidden", !on); if (!on && devOpen) toggleDev(false); layout(); }
 // ---- play notes (owner 2026-11-12 18:2x; play/src/notes.mjs, play/options/src/controller.js): the note's screens come from the played device's own canvas, its details from both devices ----
 const noteBtn = $("noteBtn"), shotBtn = $("shotBtn"), recBox = $("recBox"), recStop = $("recStop"), toast = $("noteToast");
 let notes = null, buildInfo = null, toastTimer = 0, askId = 0;

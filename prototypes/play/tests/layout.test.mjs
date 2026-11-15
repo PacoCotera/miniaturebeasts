@@ -1,7 +1,7 @@
 // The play page's layout (src/layout.mjs): one device in view, the panel inside the window with its margins, no two blocks overlapping, the keys line at one height for both devices, every key at least 44, nothing scrolls.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { plan, barPlan, dockSheet, BAR, LAPTOP_MAX_W } from "../src/layout.mjs";
+import { plan, barPlan, dockSheet, zCap, BAR, LAPTOP_MAX_W } from "../src/layout.mjs";
 
 const WINDOWS = [["390×844@3", 390, 844, 3, true], ["360×780@3", 360, 780, 3, true], ["844×390@3", 844, 390, 3, true], ["932×430@3", 932, 430, 3, true], ["1440×900@1", 1440, 900, 1, false], ["1280×720@1", 1280, 720, 1, false], ["1280×720@1.5", 1280, 720, 1.5, false]];
 const STATES = [["companion", false], ["station", false], ["station", true]];
@@ -54,9 +54,17 @@ test("the laptop Companion's scale × dpr is a whole number where 1 fits; the si
   for (const [tag, W, H, dpr, coarse] of WINDOWS.filter((w) => !w[4])) {
     const p = plan({ W, H, dpr, coarse, dev: "companion" }), z = p.scale * dpr;
     assert.ok(Math.abs(z - Math.round(z)) < 1e-9 && z >= 1, `${tag}: ${z} device px per lp`);
-    const q = plan({ W, H, dpr, coarse, dev: "companion", zSet: 2 }); assert.ok(Math.abs(q.scale * dpr - 2) < 1e-9, tag + ": a chosen 2");
+    const cap = zCap(W, H, dpr), q = plan({ W, H, dpr, coarse, dev: "companion", zSet: 2 }); assert.ok(Math.abs(q.scale * dpr - Math.min(2, cap)) < 1e-9, tag + ": a chosen 2, capped at the largest whole step that fits (" + cap + ")");
+    const big = plan({ W, H, dpr, coarse, dev: "companion", zSet: 8 }); assert.ok(big.panel.h <= H - BAR + 1e-6 && big.panel.w <= W + 1e-6, tag + ": a chosen 8 never pushes the panel out of the window");
     assert.ok(plan({ W, H, dpr, coarse, dev: "station" }).scale <= 1, tag + ": the Station never above 1");
   }
+});
+
+test("the size cap: at 1440 × 900 a chosen ×2 stays at ×1 (a ×2 Companion is 900 × 1200 and would be cut); a window tall enough lets ×2 through", () => {
+  assert.equal(zCap(1440, 900, 1), 1);
+  const a = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "companion", zSet: 2 }); assert.equal(a.scale, 1); assert.ok(a.panel.y + a.panel.h <= 900);
+  assert.equal(zCap(1600, 1300, 1), 2);
+  const b = plan({ W: 1600, H: 1300, dpr: 1, coarse: false, dev: "companion", zSet: 3 }); assert.equal(b.scale, 2); assert.ok(b.panel.y + b.panel.h <= 1300);
 });
 
 test("the first-view numbers of the signed design (390 × 844, 1440 × 900)", () => {
