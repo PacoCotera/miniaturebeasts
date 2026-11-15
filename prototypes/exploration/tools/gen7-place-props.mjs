@@ -33,7 +33,9 @@ function seamOf(seed, X, Y) {
 export function placeProps(seed) {
   const t0 = Date.now(), st = stat();
   const lvOfCell = (X, Y) => genRegion7(seed, Math.floor(X / MW), Math.floor(Y / MH)).level[(Y % MH) * MW + (X % MW)];
+  const ONLY = typeof process !== 'undefined' && process.env.B3C_ONLY ? process.env.B3C_ONLY.split(',').map(Number) : null;   // land-b3c: one region only, and a list of what it leaves unreached (B3C_DUMP=1)
   for (let ay = 0; ay < RH / MH; ay++) for (let ax = 0; ax < RW / MW; ax++) {
+    if (ONLY && (ax !== ONLY[0] || ay !== ONLY[1])) continue;
     const cx0 = ax * MW, cy0 = ay * MH, SW = MW * CW, SH = MH * CH, R = new Uint8Array(SW * SH), G = genRegion7(seed, ax, ay), wayups = [];   // the region's tiles stitched
     for (let j = 0; j < MH; j++) for (let i = 0; i < MW; i++) {
       const X = cx0 + i, Y = cy0 + j, c = cellTerrain(seed, X, Y), w = c.w, h = c.h, t = c.terrain;
@@ -146,6 +148,18 @@ export function placeProps(seed) {
       for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const x = (q[k] % SW) + dx, y = ((q[k] / SW) | 0) + dy; if (x < 0 || y < 0 || x >= SW || y >= SH || seen[y * SW + x] || !pass(x, y)) continue; seen[y * SW + x] = 1; q.push(y * SW + x); }
       let walk = 0, un = 0, unMain = 0;
       for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) if (pass(x, y)) { walk++; if (!seen[y * SW + x]) { un++; if (G.comp[((y / CH) | 0) * MW + ((x / CW) | 0)]) unMain++; } }
+      if (typeof process !== 'undefined' && process.env.B3C_DUMP) {   // the unreached land as parts: size, raised or low, the cell box, and what walls it
+        const lab = new Int32Array(SW * SH).fill(-1), parts = [];
+        for (let s = 0; s < SW * SH; s++) { if (lab[s] >= 0 || seen[s] || !pass(s % SW, (s / SW) | 0)) continue;
+          const id = parts.length, P = { n: 0, up: 0, x0: 1e9, y0: 1e9, x1: -1, y1: -1, water: 0, thicket: 0, lip: 0, edge: 0, face: 0 }, qq = [s]; lab[s] = id;
+          for (let k = 0; k < qq.length; k++) { const x = qq[k] % SW, y = (qq[k] / SW) | 0; P.n++; if (isC(x, y)) P.up++; P.x0 = Math.min(P.x0, x); P.x1 = Math.max(P.x1, x); P.y0 = Math.min(P.y0, y); P.y1 = Math.max(P.y1, y);
+            for (const [dx, dy] of NB4) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= SW || b >= SH) { P.edge++; continue; } const m = b * SW + a;
+              if (pass(a, b)) { if (lab[m] < 0) { lab[m] = id; qq.push(m); } } else { const v = t[m]; if (v === TV.WATER || v === TV.DEEP) P.water++; else if (v === TV.THICKET) P.thicket++; else P.lip++; } } }
+          parts.push(P); }
+        parts.sort((p, q) => q.n - p.n);
+        console.log(`region ${ax},${ay}: walk ${walk}, unreached ${un}, parts ${parts.length}; start cell ${(sp % MW) + cx0},${((sp / MW) | 0) + cy0}`);
+        for (const P of parts.slice(0, 12)) console.log(`  ${P.n} tiles ${P.up * 2 > P.n ? 'raised' : 'low'} cells x ${cx0 + Math.floor(P.x0 / CW)}-${cx0 + Math.floor(P.x1 / CW)} y ${cy0 + Math.floor(P.y0 / CH)}-${cy0 + Math.floor(P.y1 / CH)} walls: water ${P.water} thicket ${P.thicket} cliff ${P.lip} edge ${P.edge}`);
+      }
       // what a player needs never sits on unreached land: every trail tile (ports are trail ends) and the centre tile of every set-piece cell (starts, glints, gate, deep stone, swim gate, beacons, depots)
       for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) if (t[y * SW + x] === TV.PATH && !seen[y * SW + x]) { st.pathUnreached++; if (st.needAt.length < 6) st.needAt.push(['path', ax, ay, x, y]); }
       const pieces = [...G.spawns, ...G.glow, G.gate, G.deep, G.swim, ...G.beacons.set, ...G.depots.set].filter(c => c >= 0);

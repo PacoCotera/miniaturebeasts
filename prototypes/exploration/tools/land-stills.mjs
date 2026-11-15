@@ -65,18 +65,25 @@ function finders(r, w, h) {
 const near = (list, cx, cy) => list && list.length ? list.slice().sort((p, q) => Math.hypot(p[0] - cx, p[1] - cy) - Math.hypot(q[0] - cx, q[1] - cy))[0] : null;
 
 // ---- the overview: a schematic of the window: raised land, south faces by kind (straight: brown; bend: amber; 9+: red), the frames ----
-function overview(seed, wv, bits, frames, file) {
+function overview(seed, wv, bits, frames, file, marks = { ways: [], pockets: [] }) {
   const S = 5, w = wv.w, h = wv.h, img = png.newImage(w * S, h * S), R = (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : bits[y * w + x]), lip = (x, y) => R(x, y) && !R(x, y + 1) && y + 1 < h;
   const put = (x, y, c) => { for (let j = 0; j < S; j++) for (let i = 0; i < S; i++) img.data.set([...c, 255], ((y * S + j) * img.w + x * S + i) * 4); };
   const run = new Map(); for (let y = 0; y < h; y++) { let x = 0; while (x < w) { if (!lip(x, y)) { x++; continue; } let x1 = x; while (x1 < w && lip(x1, y)) x1++; for (let k = x; k < x1; k++) run.set(y * w + k, x1 - x); x = x1; } }
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const n = run.get(y * w + x); put(x, y, n ? (n === 1 ? [240, 150, 30] : n >= 9 ? [214, 40, 40] : [128, 82, 48]) : R(x, y) ? [150, 180, 112] : [234, 230, 214]); }
   for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) if (x % (CW * S) === 0 || y % (CH * S) === 0) img.data.set([200, 200, 200, 255], (y * img.w + x) * 4);   // the cell lines
   for (const [fx, fy] of frames) { const x0 = Math.round((fx - 4.7) * S), y0 = Math.round((fy - 5.5) * S), x1 = Math.round((fx + 4.7) * S), y1 = Math.round((fy + 5.5) * S); for (let x = x0; x <= x1; x++) for (const y of [y0, y1]) if (x >= 0 && y >= 0 && x < img.w && y < img.h) img.data.set([20, 20, 20, 255], (y * img.w + x) * 4); for (let y = y0; y <= y1; y++) for (const x of [x0, x1]) if (x >= 0 && y >= 0 && x < img.w && y < img.h) img.data.set([20, 20, 20, 255], (y * img.w + x) * 4); }
+  const box = (x0, y0, x1, y1, c) => { for (let x = x0; x <= x1; x++) for (const y of [y0, y1]) if (x >= 0 && y >= 0 && x < img.w && y < img.h) img.data.set([...c, 255], (y * img.w + x) * 4); for (let y = y0; y <= y1; y++) for (const x of [x0, x1]) if (x >= 0 && y >= 0 && x < img.w && y < img.h) img.data.set([...c, 255], (y * img.w + x) * 4); };
+  for (const [x, y, own] of marks.ways) { const cx = Math.round((x + 1) * S), cy = Math.round((y + 0.5) * S); for (let j = -9; j <= 9; j++) for (let i = -9; i <= 9; i++) { const X = cx + i, Y = cy + j; if (X >= 0 && Y >= 0 && X < img.w && Y < img.h && (Math.abs(i) <= 7 && Math.abs(j) <= 7)) img.data.set(Math.abs(i) >= 6 || Math.abs(j) >= 6 ? [20, 20, 20, 255] : own ? [255, 225, 60, 255] : [60, 200, 255, 255], (Y * img.w + X) * 4); } }
+  for (const [x0, y0, x1, y1] of marks.pockets) box(Math.round(x0 * S) - 3, Math.round(y0 * S) - 3, Math.round((x1 + 1) * S) + 3, Math.round((y1 + 1) * S) + 3, [220, 0, 200]);
   writeFileSync(file, encodePng(img)); console.log(file);
 }
 
 const report = [];
+// --at seed:name:wx:wy,...  extra frames at world tiles; --only-at: nothing else
+const AT = String(opt('at', '')).split(',').filter(Boolean).map((s) => s.split(':')), ONLY = args.includes('--only-at');
 for (const seed of SEEDS) {
+  for (const [s, name, x, y] of AT) if (Number(s) === seed) shoot(seed, Number(x), Number(y), name);
+  if (ONLY) continue;
   const wv = WINDOWS.find((v) => v.seed === seed), gx0 = wv.X * CW, gy0 = wv.Y * CH, PADX = 2 * CW, PADY = 2 * CH;
   const bx = gx0 - PADX, by = gy0 - PADY, bw = wv.w + 2 * PADX, bh = wv.h + 2 * PADY, block = blockRaster(seed, bx, by, bw, bh);
   // the three frames of the window: the longest south face, the longest side wall, the densest bends (inside the window)
@@ -104,7 +111,17 @@ for (const seed of SEEDS) {
     else missing.push('wayup');
   } catch (e) { missing.push('wayup (' + e.message + ')'); }
   const bits = new Uint8Array(wv.w * wv.h); for (let y = 0; y < wv.h; y++) for (let x = 0; x < wv.w; x++) bits[y * wv.w + x] = block[(y + PADY) * bw + x + PADX];
-  overview(seed, wv, bits, frames.map(([, b]) => [b[1][0] - PADX, b[1][1] - PADY]), path.join(OUT, `${TAG}-s${seed}-overview.png`));
+  // the ways up of the window (the realm's: yellow; a pocket stair the land rule made: cyan) and the closed pockets it left (magenta outlines)
+  const marks = { ways: [], pockets: [] };
+  try {
+    const inWin = (x, y) => x >= gx0 && y >= gy0 && x < gx0 + wv.w && y < gy0 + wv.h;
+    for (const s of stairsInfo(seed)) if (s.wayup && inWin(s.wayup.x, s.wayup.y)) marks.ways.push([s.wayup.x - gx0, s.wayup.y - gy0, true]);
+    if (levels.pocketWayups && levels.windowInfo) { const L = levels.levelsOf(place.realmOf ? place.realmOf(seed) : (await imp('prototypes/exploration/src/gen7/region.mjs')).realm7(seed).realm);
+      for (let j = 0; j < wv.h / CH; j++) for (let i = 0; i < wv.w / CW; i++) {
+        for (const w of levels.pocketWayups(L, wv.X + i, wv.Y + j)) if (inWin(w.x, w.y)) marks.ways.push([w.x - gx0, w.y - gy0, false]);
+        for (const p of levels.windowInfo(L, wv.X + i, wv.Y + j).pk || []) { const m = /\[(\d+),(\d+)-(\d+),(\d+)\]/.exec(p); if (m && inWin(+m[1], +m[2])) marks.pockets.push([+m[1] - gx0, +m[2] - gy0, +m[3] - gx0, +m[4] - gy0]); } } }
+  } catch (e) { console.log('marks:', e.message); }
+  overview(seed, wv, bits, frames.map(([, b]) => [b[1][0] - PADX, b[1][1] - PADY]), path.join(OUT, `${TAG}-s${seed}-overview.png`), marks);
   report.push({ seed, got, missing });
 }
 writeFileSync(path.join(OUT, `${TAG}-report.json`), JSON.stringify({ tag: TAG, d: D, faceRows: FACE, ...over, report }, null, 1) + '\n');

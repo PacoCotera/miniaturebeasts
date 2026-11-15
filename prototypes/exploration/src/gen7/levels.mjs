@@ -297,6 +297,26 @@ function fixSquares(r, W, H, rule, lk, noRaise) {
   return { fixed, left };
 }
 
+// what the held sites, the jogs and the pockets leave at their edges (a sliver, a pinch, a lone face, a short foot): a tile is flipped (never a held one) when that leaves fewer failing checks round it; at most 8 rounds
+function fixLeft(r, W, H, rule, lk, noRaise) {
+  let fixed = 0;
+  for (let round = 0; round < 8; round++) { let hit = 0;
+    for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+      if (violAt(r, W, H, x, y, rule.faceRows) === 0) continue;
+      // the failing tile and its neighbours are the candidates: the first flip that lowers the count round it, in a fixed order
+      let done = false;
+      for (const [dx, dy] of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) {
+        const a = x + dx, b = y + dy, i = b * W + a; if (a < 1 || b < 1 || a >= W - 1 || b >= H - 1 || (lk && lk[i]) || (!r[i] && noRaise[i])) continue;
+        DBGV.length = 0; const before = violBox(r, W, H, a, b, a, b, rule.faceRows); r[i] = 1 - r[i];
+        if (violBox(r, W, H, a, b, a, b, rule.faceRows) < before) { done = true; hit++; fixed++; break; } r[i] = 1 - r[i];
+      }
+      void done;
+    }
+    if (!hit) break;
+  }
+  return fixed;
+}
+
 // ---- the walk, on the raster: the game's own parts (relief.mjs) ----
 // raised with a low tile beside it blocks (the lip, the side's rim); a low tile under a raised one (the face) or beside one (the flank, and the cell beyond a face's end) blocks; water that is not a ford blocks;
 // a way up's tiles walk. Components are found 4-connected; a component that reaches the window's edge or the coast belongs to more land than the window sees.
@@ -388,7 +408,9 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   const clear = x0 => { for (let y = st.lip - SITE_UP; y <= st.lip; y++) for (let x = x0 - 1; x < x0 + SITE_W + 1; x++) if (held(x, y)) return false;
     for (let y = st.lip + 1; y <= st.lip + L.rule.faceRows + 1; y++) for (let x = x0 + 1; x < x0 + SITE_W - 1; x++) if (wet(x, y)) return false; return true; };
   const base = st.x0, lo = st.X * CW + 2, hi = st.X * CW + CW - SITE_W - 2;
-  for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if (clear(x0)) { st.x0 = x0; st.ok = true; return st; } }
+  // first a place where the field itself is raised above the lip and low below it (the site cuts no pit into raised land and heaps no hill on low land), else any clear one
+  const nat = x0 => { const lr = st.lip - st.Y * CH; let hi = 0, lo = 0; for (let c = x0 - st.X * CW; c < x0 - st.X * CW + SITE_W; c++) { if (qAt(c, lr - 2) >= 0) hi++; if (qAt(c, lr + 3) < 0) lo++; } return hi >= 3 && lo >= 3; };
+  for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0)) { st.x0 = x0; st.ok = true; return st; } }
   return st;
 }
 // can a stair stand on the edge south of the cell (X, Y) at this port? (the site finds 6 columns clear of water; read from the field and the wet flags, so the region may ask before any pass runs)
@@ -409,7 +431,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     r = cleanup(base, W, H, L.rule, lk);
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; };
+    const shape = () => { const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
@@ -418,6 +440,13 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
       let changed = false;
       for (const c of shut) {
         const isRaised = r[c.tiles[0]] === 1;
+        // a pocket is handled only where every window that shows one of the cells it touches shows all of it: its footprint (its box and 6 tiles round) lies within one cell round each cell it touches; a larger
+        // one is left (listed), since a neighbour's window could not tell it from land that goes on, and a cell must be the same from every window (the seam)
+        { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+          const fx0 = gx0 + x0 - 6, fx1 = gx0 + x1 + 6, fy0 = gy0 + y0 - 6, fy1 = gy0 + y1 + 6; let fits = true;
+          for (let cx = Math.floor(fx0 / CW); cx <= Math.floor(fx1 / CW) && fits; cx++) if (fx0 < (cx - 1) * CW || fx1 >= (cx + 2) * CW) fits = false;
+          for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH) && fits; cy++) if (fy0 < (cy - 1) * CH || fy1 >= (cy + 2) * CH) fits = false;
+          if (!fits) { (info.deferred || (info.deferred = [])).push(c.n); continue; } }
         if (!isRaised) {   // low land with no cliff near it is a lake's islet: the realm's own, not a pocket the land made
           let near = false; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -2; dy <= 2 && !near; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && r[b * W + a]) { near = true; break; } } if (near) break; }
           if (!near) { (info.islets || (info.islets = [])).push(c.n); continue; }
