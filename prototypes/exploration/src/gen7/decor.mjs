@@ -23,8 +23,8 @@ import SPRITES from '../../../../art/places/sets/ninja-test/set.json' with { typ
 const spriteRect = (s, ax, ay) => (s ? [ax - s.anchor[0], ay - s.anchor[1], s.rect[2], s.rect[3]] : null);
 const overlaps = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
 
-export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
-const { DEEP, WATER, SAND, PATH, GRASS, CLIFF, THICKET, SCRUB, LITTER, DRY, TURF, SCREE } = TERR;
+export const TERR = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 15 };
+const { DEEP, WATER, SAND, PATH, PATHTOP, GRASS, CLIFF, THICKET, SCRUB, LITTER, DRY, TURF, SCREE } = TERR;
 const OPEN = t => t === GRASS || t === DRY || t === TURF;   // the open low ground a prop may stand on (the biome grounds are patches of it)
 
 // ---- the table (variety scheme section 2; where it gives no number, the pick is marked and listed in the report) ----
@@ -93,7 +93,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const flags = (x, y) => {
     if (!inMap(x, y)) return 1;
     const k = key(x, y), hit = cls.get(k); if (hit !== undefined) return hit;
-    const t = T(x, y), f = (t === WATER || t === DEEP || t === THICKET || isLip(x, y) || isFlank(x, y) ? 1 : 0) | (t === PATH ? 2 : 0) | (isLip(x, y) ? 4 : 0);
+    const t = T(x, y), f = (t === WATER || t === DEEP || t === THICKET || isLip(x, y) || isFlank(x, y) ? 1 : 0) | (t === PATH || (t === CLIFF && G(x, y) === PATHTOP) ? 2 : 0) | (isLip(x, y) ? 4 : 0);
     if (cls.size > 600000) cls.clear();
     cls.set(k, f); return f;
   };

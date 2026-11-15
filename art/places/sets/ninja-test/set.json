@@ -51,7 +51,8 @@
     ["cliff", "litter"],
     ["cliff", "drygrass"],
     ["cliff", "turf"],
-    ["cliff", "scree"]
+    ["cliff", "scree"],
+    ["path-top", "grass"]
   ],
   "layers": {
     "deep": {
@@ -124,6 +125,9 @@
           "sheets": ["over-path.png"]
         }
       ]
+    },
+    "path-top": {
+      "drawAs": "path"
     },
     "grass": {
       "fill": {

@@ -15,6 +15,7 @@
     { "id": "litter", "name": "Leaf litter", "value": 11, "z": 9, "play": "walk", "T": "GRASS", "editorColour": "#8a6a3c" },
     { "id": "drygrass", "name": "Dry grass", "value": 12, "z": 7, "play": "walk", "T": "GRASS", "editorColour": "#b8a85a" },
     { "id": "turf", "name": "Short turf", "value": 13, "z": 8, "play": "walk", "T": "GRASS", "editorColour": "#7fae5e" },
-    { "id": "scree", "name": "Scree", "value": 14, "z": 10, "play": "walk", "T": "SAND", "editorColour": "#a9a39a" }
+    { "id": "scree", "name": "Scree", "value": 14, "z": 10, "play": "walk", "T": "SAND", "editorColour": "#a9a39a" },
+    { "id": "path-top", "name": "Path on a raised top", "value": 15, "z": 14, "play": "walk", "T": "GRASS", "editorColour": "#c49a63" }
   ]
 }

@@ -316,6 +316,13 @@
 						"color": "#A9A39A",
 						"tile": null,
 						"groupUid": 0
+					},
+					{
+						"value": 15,
+						"identifier": "path-top",
+						"color": "#C49A63",
+						"tile": null,
+						"groupUid": 0
 					}
 				],
 				"intGridValuesGroups": [],
