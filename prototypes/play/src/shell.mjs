@@ -13,6 +13,7 @@ import { stampText, aboutText } from "./stamp.mjs";   // the build stamp's line,
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
 import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
 import { mountOptions, mountKeyTray, mountDockKey, mountSwitch, mountDockScreen, T } from "../vendor/options.js";   // the Options panel, the play note, the key trays, the Dock key, the device switch and the dock's screen: React + Radix, built from play/options (npm run build there)
+import { createStall } from "./stall.mjs";   // the Station's silence is counted only while this page was awake (a world being made stalls every frame's timers)
 import { sourceOf } from "./notes.mjs";   // the note's source: the stored setting noteFrom, "owner" by default
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), SEED = params.get("seed");   // test-harness flags only: every option a person sets is in the Options panel (play/src/options.mjs)
@@ -404,8 +405,10 @@ function faceInput(t) {
   return { now: t, tz: TZ, bootAt, cradles: cradles(), who, hold, fault,
     station: heard ? { at: heardAt, partner: heard.partner ?? null, along: heard.along ?? null, opened: heard.opened ?? null, crates: heard.crates | 0, ledger: heard.ledger ?? null } : null };
 }
+const stall = createStall();
 function faceTick() {
-  const t = now(), f = faceOf(faceInput(t)); faceNow = f;
+  const t = now(); if (heard) heardAt = stall.credit(heardAt, t); else stall.credit(null, t);
+  const f = faceOf(faceInput(t)); faceNow = f;
   lamps(f, t);
   if (!faceStarted) { const ready = !!heard && (svc.up === false || (!!svc.snap && svc.snap.cradles.station.state === "seated")); if (!ready && t - bootAt < FIRST_MS) return; faceStarted = true; }   // the first picture once the Station has spoken and sits in its cradle (or, with no word, at 15 s)
   for (const o of [sched.push(f, t, { beat }), sched.tick(t)]) if (o) panelOp(o);
