@@ -11,6 +11,7 @@
   "dependencies": {
     "fastnoise-lite": "1.1.1",
     "flatqueue": "3.1.0",
-    "idb-keyval": "6.3.0"
+    "idb-keyval": "6.3.0",
+    "pureimage": "0.4.20"
   }
 }
