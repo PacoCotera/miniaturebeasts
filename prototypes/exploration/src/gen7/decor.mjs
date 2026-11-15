@@ -33,7 +33,7 @@ const OPEN = t => t === GRASS || t === DRY || t === TURF;   // the open low grou
 export const FAMS = ['trees', 'rocks', 'stumps', 'bushes', 'sweeps'];
 export const TABLE = RULES.biomes;
 export const BIOME_IDS = Object.keys(TABLE);
-const REGROW_SPARSE = 0.3;   // the share of the trees a ring took that grows again where trees are sparse
+const REGROW_SPARSE = 0.2; // the share of the trees a ring took that grows again where trees are sparse
 const REGROW_DENSE = 5;   // trees a 100 tiles in the table from which a ring-cut cluster is grown again
 const DISP = 7;   // tiles beyond its reach a tree or bush may stand when a ring kept clear by a place took its place in the cluster
 // props per 100 tiles a table row asks for (on tiles where the kind may stand)
@@ -270,8 +270,10 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
       const free = grow((x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y, false) && !earlier(fi, x, y, false), s.size, false);
       if (members.length < free.members.length) {
         const wideOk = (x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y) && !earlier(fi, x, y);
-        const again = grow(wideOk, dense ? free.members.length : members.length + Math.ceil((free.members.length - members.length) * REGROW_SPARSE), true);
-        if (again.members.length > members.length) ({ members, set } = again);
+        // sparse: the count grown again is a share of what the ring took, rounded by the cluster's own hash (the share holds over many clusters; clusters here are one or two trees, so rounding up gave all of them back)
+        const want = dense ? free.members.length : members.length + Math.floor((free.members.length - members.length) * REGROW_SPARSE + U(seed, TAG.MEM + 7, s.x, s.y, s.h));
+        const again = want > members.length ? grow(wideOk, want, true) : null;
+        if (again && again.members.length > members.length) ({ members, set } = again);
       }
     }
     const c = members.length >= keep ? { members, set } : { members: [], set: new Map() };
