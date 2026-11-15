@@ -9,6 +9,7 @@ import FlatQueue from 'flatqueue';
 import { hash, clamp, MW, MH, L, G2, BIOME_GROUND } from '../world.mjs';
 import { slotBiome, ATLAS } from '../regions.mjs';
 import { windGrid, gridAt, WIND, erodeHeight, spineRanges } from './shape.mjs';
+import { planCuts } from './features.mjs';
 
 export const RW = ATLAS * MW, RH = ATLAS * MH, NR = RW * RH;     // the realm in cells: 80 x 100
 export const CW = 24, CH = 28;                                   // a place's tiles (the scheme's open style)
@@ -249,11 +250,14 @@ const jit = (seed, s, t, tag) => t ? ((hash(seed, 'gen7', 'try', tag, s, t) / 21
 // can be re-drawn. Only the slot's own parameters change, and they blend into the neighbours' border cells by position, so borders keep agreeing.
 // The e0 pass (world-topdown-spec-1 2.1 step 3): every level the realm decides is written into its raising height. A cell whose level is not the sign of the height at its centre
 // (water, its ring, closures, joins, the coast's taper) gets e0 one EDIT past the height, so the tile land rule (levels.mjs) agrees with the realm by construction. Water is always low.
-export const EDIT = 0.16;
+export const EDIT = 0.16, EDIT_CUT = 0.9;
 export function editE0(realm) {
   const { land, level, E, e0 } = realm;
   for (let c = 0; c < e0.length; c++) { const want = land[c] === L.WATER ? 0 : level[c], have = E[c] >= e0[c] ? 1 : 0; if (have !== want) e0[c] = want ? E[c] - EDIT : E[c] + EDIT; }
+  // a cut cell (a ravine's) is held low harder: the land is read at a position moved by the warp, so a cut one cell wide would otherwise be read from the raised cells beside it
+  if (realm.cuts) for (const k of [...realm.cuts.ravines, ...realm.cuts.gaps]) for (const c of k.cells) if (e0[c] < E[c] + EDIT_CUT) e0[c] = E[c] + EDIT_CUT;
 }
+const ringOf = () => Uint8Array.from({ length: NR }, (_, c) => { const x = c % RW, y = (c / RW) | 0; return x === 0 || y === 0 || x === RW - 1 || y === RH - 1 ? 1 : 0; });   // the cells the coast will take
 export function buildRealm(seed, tries = null) {
   const R = rawRealm(seed), { E, M, F, K, Z, acc } = R, nS = ATLAS * ATLAS, sb = slotBiomes(seed), tg = sb.map(biomeTargets), tr = s => (tries ? tries[s] : 0);
   // water: pulled by the slot's rules
@@ -300,8 +304,13 @@ export function buildRealm(seed, tries = null) {
   mergeSmallZones(c => land[c] !== L.WATER || ford[c] === 1, land, level, RW, RH, G2.ZONE_MIN);
   joinSouth(land, ford, level);
   // the tile layer reads the noise height against e0: what water and the spines did to the height is carried by e0 (the raw height less the worn one), so the two scales agree
+  // the cuts (world-f3 F3): stream ravines and through-ravines lower cells of `level` here, before the raising heights are written, so the tile layer holds them low
+  const cutIn = { RW, RH, level, land, ford, wkind, acc: Int32Array.from(acc, v => Math.round(v)), down: R.down, coast: ringOf(), slot: Uint8Array.from({ length: NR }, (_, c) => slotOfCell(c % RW, (c / RW) | 0)),
+    lift: Int32Array.from({ length: NR }, (_, c) => Math.round(1000 * (Eh[c] - e0c[c]))), seat: c => { const w = c + 2 * RW; return ((c / RW) | 0) % MH !== MH - 1 && (w >= NR || land[w] !== L.WATER || ford[w] === 1); } };
+  const cuts = planCuts(cutIn); level.set(cuts.level);
+  const line = Float64Array.from(e0c);   // the raise line in the worn height's own scale (a cell is raised where the worn height reaches it)
   for (let c = 0; c < NR; c++) e0c[c] += E[c] - Eh[c];
-  const realm = { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, worn: Eh, M, T: R.T, F, K, acc, e0: e0c };
+  const realm = { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, worn: Eh, line, cuts, M, T: R.T, F, K, acc, e0: e0c };
   editE0(realm);
   return realm;   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
 }

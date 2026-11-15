@@ -12,7 +12,8 @@
 export const P = {
   STREAM_ACC: 20,   // flow (catchment, humidity-weighted) at which a dry cell carries a stream
   STREAM_MIN: 4,    // cells: shorter streams are dropped
-  RAV_LEN: 2,       // cells a ravine cuts back into raised land, at most
+  RAV_MAX: 6,       // cells a stream ravine cuts back into raised land, at most (the first cell is always cut)
+  RAV_K: 40,        // x 1000: the water cuts on while the raised land is under this many thousandths of height over the raise line per root of the flow (so a bigger stream cuts further)
   RANGE_LIFT: 320,  // height above the raising height (x 1000) of a range's cells: about the top 15% of the raised land
   RANGE_MIN: 12,    // cells: a range (smaller crest patches are not named)
   PASS_LIFT: 200,   // a pass stands on raised land at least this high (x 1000)
@@ -22,27 +23,32 @@ export const P = {
   ESC_MIN: 4,       // south-face edges: an escarpment
   LAKE_MIN: 5,      // water cells: a lake (under it a pond)
   DEST_GAP: 3,      // cells (Chebyshev) between two destinations, at least
-  CUT: 0,           // 1: lower the cells of stream ravines and through-ravines (build step F3); 0: they are found and listed, the land is not touched
 };
 const WATER = 4;    // world.mjs L.WATER
 
-export function realmFeatures(J) {
-  const { RW, RH } = J, NR = RW * RH, level = Uint8Array.from(J.level), land = J.land, coast = J.coast, down = J.down, acc = J.acc;
-  const X = c => c % RW, Y = c => (c / RW) | 0, inR = (x, y) => x >= 0 && y >= 0 && x < RW && y < RH;
+const geom = (RW, RH) => { const NR = RW * RH, X = c => c % RW, Y = c => (c / RW) | 0, inR = (x, y) => x >= 0 && y >= 0 && x < RW && y < RH;
   const nb4 = c => { const x = X(c), o = []; if (c >= RW) o.push(c - RW); if (x < RW - 1) o.push(c + 1); if (c < NR - RW) o.push(c + RW); if (x > 0) o.push(c - 1); return o; };
-  const wet = c => land[c] === WATER;
-  const stats = {};
-  // ---- water bodies ----
+  return { NR, X, Y, inR, nb4 }; };
+// water bodies and streams: read off the land, the flow and the level (a stream follows the realm's D4 flow to water, the coast or another stream)
+function waterOf(J, level) {
+  const { RW } = J, { NR, nb4 } = geom(RW, J.RH), land = J.land, coast = J.coast, down = J.down, acc = J.acc, wet = c => land[c] === WATER;
   const body = new Int32Array(NR).fill(-1), bodies = [];
   for (let s = 0; s < NR; s++) { if (!wet(s) || coast[s] || body[s] >= 0) continue; const id = bodies.length, cells = [s]; body[s] = id;
     for (let h = 0; h < cells.length; h++) for (const n of nb4(cells[h])) if (wet(n) && !coast[n] && body[n] < 0) { body[n] = id; cells.push(n); }
     const river = cells.filter(c => J.wkind[c] === 1).length * 2 >= cells.length;
     bodies.push({ id, kind: river ? 'river' : cells.length >= P.LAKE_MIN ? 'lake' : 'pond', cells, fords: cells.filter(c => J.ford[c]) }); }
-  // ---- streams ----
-  const isStream = c => !wet(c) && !coast[c] && acc[c] >= P.STREAM_ACC;
+  const ex = new Set(), isStream = c => !wet(c) && !coast[c] && acc[c] >= P.STREAM_ACC && !ex.has(c);
   const sid = new Int32Array(NR).fill(-1), streams = [];
   const hasUp = c => nb4(c).some(m => down[m] === c && isStream(m));
-  const sources = []; for (let c = 0; c < NR; c++) if (isStream(c) && !hasUp(c)) sources.push(c);
+  let sources;
+  // a lake lets out one stream: of the lines that start on its shore (a lake or pond is not a river), the one with the most flow stays and the others start one cell on
+  for (let round = 0; round < 8; round++) {
+    sources = []; for (let c = 0; c < NR; c++) if (isStream(c) && !hasUp(c)) sources.push(c);
+    const byBody = new Map(); for (const s of sources) for (const n of nb4(s)) { const b = body[n]; if (b >= 0 && bodies[b].kind !== 'river') { if (!byBody.has(b)) byBody.set(b, new Set()); byBody.get(b).add(s); } }
+    let moved = false;
+    for (const set of byBody.values()) { if (set.size < 2) continue; const all = [...set].sort((p, q) => acc[q] - acc[p] || p - q); for (const s of all.slice(1)) { ex.add(s); moved = true; } }
+    if (!moved) break;
+  }
   sources.sort((a, b) => acc[b] - acc[a] || a - b);   // not needed for the result (each line is followed to its end), kept for a stable order
   let uphill = 0;
   for (const s of sources) {
@@ -57,13 +63,18 @@ export function realmFeatures(J) {
     const id = streams.length; for (const k of cells) sid[k] = id;
     streams.push({ id, cells, source: cells[0], mouth });
   }
-  stats.uphillRestarts = uphill;
-  const work = Uint8Array.from(level);   // the level with the cuts applied: what the cut checks read (the cuts are made on it; they reach `level` only when P.CUT is 1)
-  // ---- drops: falls on a south face, a ravine elsewhere ----
-  // On raised land a stream runs unseen (one height: no water on raised tops); it comes out where its line leaves the raised land.
-  const falls = [], ravines = []; let ravSkipped = 0, strandSkipped = 0;
-  // a cut never strands raised land: every raised part beside it keeps a stair whose face still holds (the region's stairs, J.stair: the upper cell)
-  const stairOk = (lv, c) => J.stair[c] === 1 && lv[c] === 1 && c + RW < NR && lv[c + RW] === 0 && work[c] === lv[c] && work[c + RW] === lv[c + RW];
+  return { body, bodies, sid, streams, uphill };
+}
+
+// ---- the cuts (build step F3): stream ravines and through-ravines, planned on the realm's levels before the raising heights are written ----
+// J: RW, RH, level, land, ford, wkind, acc, down, slot (per cell), coast (the rim ring), lift (the worn height over the raise line, thousandths), seat(c) (a stair could stand on the face under c).
+// Returns the levels with the cuts made, the cuts and their counts. Whole numbers and no engine maths beyond + - * /, so Node and the small engine agree.
+export function planCuts(J) {
+  const { RW, RH } = J, { NR, X, Y, inR, nb4 } = geom(RW, RH), land = J.land, coast = J.coast, acc = J.acc, wet = c => land[c] === WATER;
+  const work = Uint8Array.from(J.level), W = waterOf(J, work), stats = { ravinesRefused: 0, ravinesShortened: 0, gapsRefused: 0, strandRefused: 0 };
+  // a cut never strands raised land: every raised part beside it keeps a south face a stair can stand on
+  const pass = c => !wet(c) || J.ford[c] === 1;
+  const stairOk = (lv, c) => lv[c] === 1 && c + RW < NR && lv[c + RW] === 0 && pass(c) && pass(c + RW) && J.seat(c);
   const strands = (lv, cut) => { const seen = new Uint8Array(NR);
     for (const k of cut) for (const s of nb4(k)) { if (!lv[s] || seen[s]) continue; const cells = [s]; seen[s] = 1; let has = false;
       for (let h = 0; h < cells.length; h++) { const u = cells[h]; if (stairOk(lv, u)) { has = true; break; } for (const n of nb4(u)) if (lv[n] && !seen[n]) { seen[n] = 1; cells.push(n); } }
@@ -71,42 +82,66 @@ export function realmFeatures(J) {
     return false; };
   const saddleAt = (lv, c) => { const x = X(c), y = Y(c); for (const [ox, oy] of [[0, 0], [-1, 0], [0, -1], [-1, -1]]) { const a = (y + oy) * RW + x + ox; if (!inR(x + ox, y + oy) || !inR(x + ox + 1, y + oy + 1)) continue;
     const b = a + 1, d = a + RW, e = a + RW + 1; if (lv[a] === lv[e] && lv[b] === lv[d] && lv[a] !== lv[b]) return true; } return false; };
-  for (const st of streams) {
-    const cs = st.cells; let firstLow = cs.findIndex(c => !work[c]);
-    st.seen = firstLow < 0 ? cs.length : firstLow;   // cells hidden under raised land before the stream comes out
-    if (firstLow <= 0) continue;
-    const a = cs[firstLow - 1], b = cs[firstLow];
-    if (b === a + RW) { falls.push({ stream: st.id, lip: a, foot: b }); st.drop = 'falls'; continue; }
-    // a ravine: the last raised cells of the line are lowered (at most RAV_LEN), unless that would make a work saddle or cut next to the coast
-    const cut = cs.slice(Math.max(0, firstLow - P.RAV_LEN), firstLow), lv = work.slice(); for (const c of cut) lv[c] = 0;
-    if (cut.some(c => saddleAt(lv, c) || nb4(c).some(n => coast[n]))) { ravSkipped++; st.drop = 'spill'; continue; }
-    if (strands(lv, cut)) { strandSkipped++; st.drop = 'spill'; continue; }
-    for (const c of cut) work[c] = 0;
-    ravines.push({ stream: st.id, cells: cut.slice(), head: cut[0], mouth: b }); st.drop = 'ravine'; st.seen = P.CUT ? firstLow - cut.length : firstLow;
+  const refused = (lv, cut) => cut.some(c => saddleAt(lv, c) || nb4(c).some(n => coast[n]) || X(c) <= 1 || Y(c) <= 1 || X(c) >= RW - 2 || Y(c) >= RH - 2);
+  // ---- stream ravines: a stream that leaves raised land through a side wall or the back rim cuts back up its own line; it cuts on while the land over it is low for its flow (a bigger stream cuts further) ----
+  const ravines = [];
+  for (const st of W.streams) {
+    const cs = st.cells; for (let firstLow = 1; firstLow < cs.length; firstLow++) { if (!work[cs[firstLow - 1]] || work[cs[firstLow]]) continue;   // every place the stream comes out of raised land
+    const a = cs[firstLow - 1], b = cs[firstLow]; if (b === a + RW) continue;   // a south face: falls
+    let n = 1; while (n < P.RAV_MAX && firstLow - n - 1 >= 0) { const c = cs[firstLow - n - 1]; if (!work[c]) break; const lf = J.lift[c] > 0 ? J.lift[c] : 0; if (lf * lf > P.RAV_K * P.RAV_K * acc[c]) break; n++; }
+    let done = false, shrunk = false, why = 0;
+    for (; n >= 1 && !done; n--) { const cut = cs.slice(firstLow - n, firstLow), lv = work.slice(); for (const c of cut) lv[c] = 0;
+      if (refused(lv, cut)) { why = 1; shrunk = true; continue; }
+      if (strands(lv, cut)) { why = 2; shrunk = true; continue; }
+      for (const c of cut) work[c] = 0; ravines.push({ cells: cut, head: cut[0], mouth: b, flow: acc[cut[cut.length - 1]] }); done = true; if (shrunk) stats.ravinesShortened++; }
+    if (!done) { stats.ravinesRefused++; if (why === 2) stats.strandRefused++; } }
   }
-  stats.ravinesSkipped = ravSkipped;
   // ---- through-ravines: a dry cut of 1..PASS_MAX raised cells across a neck of the raised land, where the low land on its two ends is far apart on foot ----
   // (one height: the raised land is mostly one terrace entered only up its south faces, so a neck cut is the way through it)
-  const lowWalk = c => !work[c] && (!wet(c) || J.ford[c]) && !coast[c];
+  const lowWalk = c => !work[c] && pass(c) && !coast[c];
   const walkDist = (a, b, lim) => { const d = new Map([[a, 0]]), q = [a]; for (let h = 0; h < q.length; h++) { const u = q[h], k = d.get(u); if (u === b) return k; if (k >= lim) continue;
     for (const n of nb4(u)) if (!d.has(n) && lowWalk(n)) { d.set(n, k + 1); q.push(n); } } return 9999; };
   const necks = [];
   for (let c = 0; c < NR; c++) { if (!work[c]) continue; for (const [d, ax] of [[1, 'x'], [RW, 'y']]) {
     const back = c - d; if ((ax === 'x' && X(c) === 0) || back < 0 || !lowWalk(back)) continue;
     const run = [c]; let k = c;
-    while (run.length <= P.PASS_MAX) { const n = k + d; if (n >= NR || (ax === 'x' && X(n) === 0)) break; if (work[n]) { run.push(n); k = n; continue; } if (lowWalk(n)) necks.push({ cells: run.slice(), a: back, b: n, axis: ax, e: run.reduce((s, q) => s + J.E[q] - J.e0[q], 0) }); break; } } }
+    while (run.length <= P.PASS_MAX) { const n = k + d; if (n >= NR || (ax === 'x' && X(n) === 0)) break; if (work[n]) { run.push(n); k = n; continue; } if (lowWalk(n)) necks.push({ cells: run.slice(), a: back, b: n, axis: ax, e: run.reduce((s, q) => s + J.lift[q], 0) }); break; } } }
   necks.sort((p, q) => p.cells.length - q.cells.length || p.e - q.e || p.cells[0] - q.cells[0]);
   const gaps = [], gapSlot = new Set();
   for (const k of necks) {
     const m = k.cells[k.cells.length >> 1], s = J.slot[m]; if (gapSlot.has(s)) continue;
     if (gaps.some(g => Math.max(Math.abs(X(g.mid) - X(m)), Math.abs(Y(g.mid) - Y(m))) < P.PASS_GAP)) continue;
     if (walkDist(k.a, k.b, P.DETOUR_MIN) < P.DETOUR_MIN) continue;   // the low land already joins round it: no cut
-    const lv = work.slice(); for (const c of k.cells) lv[c] = 0; if (k.cells.some(c => saddleAt(lv, c) || nb4(c).some(n => coast[n]))) continue;
-    if (strands(lv, k.cells)) { strandSkipped++; continue; }
+    const lv = work.slice(); for (const c of k.cells) lv[c] = 0; if (refused(lv, k.cells)) { stats.gapsRefused++; continue; }
+    if (strands(lv, k.cells)) { stats.gapsRefused++; stats.strandRefused++; continue; }
     for (const c of k.cells) work[c] = 0;
     gaps.push({ cells: k.cells, mid: m, axis: k.axis }); gapSlot.add(s);
   }
-  if (P.CUT) level.set(work);
+  return { level: work, ravines, gaps, stats };
+}
+
+// The realm's named features. J.cuts (planCuts's) says which cells the realm already lowered; they are listed here, the level is read as it stands.
+export function realmFeatures(J) {
+  const { RW, RH } = J, { NR, X, Y, inR, nb4 } = geom(RW, RH), level = Uint8Array.from(J.level), land = J.land, coast = J.coast, wet = c => land[c] === WATER;
+  const stats = {}, cuts = J.cuts || { ravines: [], gaps: [], stats: {} };
+  const { bodies, sid, streams, uphill } = waterOf(J, level);
+  stats.uphillRestarts = uphill;
+  // ---- drops: falls on a south face, a ravine where the realm cut one ----
+  // On raised land a stream runs unseen (one height: no water on raised tops); it comes out where its line leaves the raised land (or at its ravine's head).
+  const falls = [], ravines = [], ravHead = new Map(cuts.ravines.map(r => [r.head, r]));
+  for (const st of streams) {
+    const cs = st.cells, firstLow = cs.findIndex(c => !level[c]);
+    st.seen = firstLow < 0 ? cs.length : firstLow;   // cells hidden under raised land before the stream comes out
+    if (firstLow <= 0) continue;
+    const r = ravHead.get(cs[firstLow]);
+    if (r) { st.drop = 'ravine'; continue; }
+    const a = cs[firstLow - 1], b = cs[firstLow];
+    if (b === a + RW) { falls.push({ stream: st.id, lip: a, foot: b }); st.drop = 'falls'; continue; }
+    st.drop = 'spill';
+  }
+  for (const r of cuts.ravines) if (sid[r.head] >= 0) ravines.push({ stream: sid[r.head], cells: r.cells, head: r.head, mouth: r.mouth });
+  const gaps = cuts.gaps;
+  stats.ravinesRefused = cuts.stats.ravinesRefused || 0; stats.ravinesShortened = cuts.stats.ravinesShortened || 0; stats.gapsRefused = cuts.stats.gapsRefused || 0; stats.cutsRefusedStrand = cuts.stats.strandRefused || 0;
   // ---- ranges: the crest belts of the height field on the raised land; passes are the saddles of the field between and along them ----
   // One height: a range is walked over (its ground is rock); it is where the land is highest, and its passes are where a trail goes over. Three heights: the belt is the next level up and the passes its gaps.
   const lift = c => J.E[c] - J.e0[c], inRange = new Uint8Array(NR);
@@ -122,10 +157,13 @@ export function realmFeatures(J) {
   const saddleE = c => { const x = X(c), y = Y(c); let ch = 0, prev = null, first = null;
     for (const [dx, dy] of NB8) { if (!inR(x + dx, y + dy)) return false; const s = J.E[(y + dy) * RW + x + dx] > J.E[c]; if (first === null) first = s; else if (s !== prev) ch++; prev = s; }
     if (prev !== first) ch++; return ch >= 4; };
+  // a pass is a saddle: range cells (within 2) on both sides across it, and lower ground on the other two sides
+  const acrossRange = c => { const x = X(c), y = Y(c), rg = (a, b) => { for (let k = 1; k <= 2; k++) if (inR(a * k + x, b * k + y) && rid[(y + b * k) * RW + x + a * k] >= 0) return true; return false; }, lo = (a, b) => inR(x + a, y + b) && J.E[(y + b) * RW + x + a] < J.E[c];
+    return (rg(1, 0) && rg(-1, 0) && lo(0, 1) && lo(0, -1)) || (rg(0, 1) && rg(0, -1) && lo(1, 0) && lo(-1, 0)); };
   const passCand = [];
   for (let c = 0; c < NR; c++) { if (!level[c] || wet(c) || coast[c] || lift(c) < P.PASS_LIFT || !saddleE(c)) continue;
     const near = new Set(); const x = X(c), y = Y(c); for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { if (!inR(x + dx, y + dy)) continue; const r = rid[(y + dy) * RW + x + dx]; if (r >= 0) near.add(r); }
-    if (!near.size) continue; passCand.push({ c, e: J.E[c], ranges: [...near] }); }
+    if (!near.size || !acrossRange(c)) continue; passCand.push({ c, e: J.E[c], ranges: [...near] }); }
   passCand.sort((p, q) => p.e - q.e || p.c - q.c);
   const passes = [];
   for (const k of passCand) if (passes.every(p => Math.max(Math.abs(X(p.c) - X(k.c)), Math.abs(Y(p.c) - Y(k.c))) >= P.PASS_GAP)) passes.push({ c: k.c, ranges: k.ranges });
@@ -157,8 +195,8 @@ export function realmFeatures(J) {
   for (const b of bodies) add({ id: b.kind + '-' + b.id, kind: b.kind, cells: b.cells, links: { fords: b.fords.slice() } });
   for (const st of streams) add({ id: 'stream-' + st.id, kind: 'stream', cells: st.cells, links: { mouth: st.mouth, drop: st.drop || null, seen: st.seen } });
   falls.forEach((f, i) => { f.id = 'falls-' + i; add({ id: f.id, kind: 'falls', cells: [f.lip, f.foot], links: { stream: 'stream-' + f.stream, lip: f.lip, foot: f.foot } }); });
-  ravines.forEach((r, i) => { r.id = 'ravine-' + i; add({ id: r.id, kind: 'ravine', cells: r.cells, links: { stream: 'stream-' + r.stream, head: r.head, mouth: r.mouth, cut: P.CUT } }); });
-  gaps.forEach((g, i) => { g.id = 'gap-' + i; add({ id: g.id, kind: 'through-ravine', cells: g.cells, links: { mid: g.mid, axis: g.axis, cut: P.CUT } }); });
+  ravines.forEach((r, i) => { r.id = 'ravine-' + i; add({ id: r.id, kind: 'ravine', cells: r.cells, links: { stream: 'stream-' + r.stream, head: r.head, mouth: r.mouth, cut: 1 } }); });
+  gaps.forEach((g, i) => { g.id = 'gap-' + i; add({ id: g.id, kind: 'through-ravine', cells: g.cells, links: { mid: g.mid, axis: g.axis, cut: 1 } }); });
   ranges.forEach(r => { r.fid = 'range-' + r.id; add({ id: r.fid, kind: 'range', cells: r.crest, links: { area: r.cells.length, box: r.box, passes: [] } }); });
   passes.forEach((p, i) => { p.id = 'pass-' + i; add({ id: p.id, kind: 'pass', cells: [p.c], links: { ranges: p.ranges.map(r => 'range-' + r) } }); for (const r of p.ranges) byId.get('range-' + r).links.passes.push(p.id); });
   escarpments.forEach((e, i) => { e.id = 'escarpment-' + i; add({ id: e.id, kind: 'escarpment', cells: e.faces, links: { south: e.south, stairs: e.stairs, falls: e.falls } }); });
@@ -176,6 +214,6 @@ export function realmFeatures(J) {
   const order = ['pass', 'ravine', 'falls', 'ravine head', 'ford', 'spring', 'stream mouth'], kept = [];
   dest.sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || a.c - b.c);
   for (const d of dest) if (kept.every(k => Math.max(Math.abs(X(k.c) - X(d.c)), Math.abs(Y(k.c) - Y(d.c))) >= P.DEST_GAP)) kept.push(d);
-  stats.destDropped = dest.length - kept.length; stats.cutsRefusedStrand = strandSkipped;
+  stats.destDropped = dest.length - kept.length;
   return { P, level, list, bodies, streams, sid, falls, ravines, gaps, ranges, rid, passes, escarpments, loops: loops.length, dest: kept, stats };
 }

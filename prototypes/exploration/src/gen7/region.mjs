@@ -138,8 +138,12 @@ export function regionAt(realm, ax, ay, pt = 0) {
     let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
     const along = i => [i - 2, i + 2];
     const extras = cand.filter(e => southUp(e) && edge[e.i] === EDGE.CLIFF && !wet(e.a) && !wet(e.b)).sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i);
+    // the gate needs a face without a stair, inside the region's inner box (a rim region whose raised land was tapered has few): the extra stairs never take the last two
+    const gateFace = e => { const x = e.b % MW, y = (e.b / MW) | 0; return x >= 2 && x <= MW - 3 && y >= 2 && y <= MH - 3; };
+    let free = extras.filter(gateFace).length;
     for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0, at = 0; k < want && at < extras.length; at++) {
       const e = extras[at]; if (!along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP) || !seatOk(e.i)) continue;
+      if (gateFace(e)) { if (free <= 2) continue; free--; }
       edge[e.i] = EDGE.RAMP; k++;
     }
   }
@@ -150,6 +154,11 @@ export function regionAt(realm, ax, ay, pt = 0) {
     for (let c0 = 0; c0 < NC; c0++) { if (seen[c0] >= 0 || !passableIn(Gp, c0)) continue; let h = 0, n = 0; qu[n++] = c0; seen[c0] = c0;
       while (h < n) { const c = qu[h++], x = c % MW, y = (c / MW) | 0; for (let k = 0; k < 4; k++) { if (!stepK(Gp, c, k)) continue; const d = (y + SIDES[k][2]) * MW + x + SIDES[k][1]; if (seen[d] < 0) { seen[d] = c0; qu[n++] = d; } } }
       if (n > bestN) { bestN = n; best = c0; } }
+    // a rim region whose raised land the coast tapered can be left with walkable parts that no stair joins (their walls face north, east or west): if the largest has no cliff base for the gate, the largest that has one is the walkable part
+    const hasBase = new Set(); for (let c = MW; c < NC; c++) { const x = c % MW, y = (c / MW) | 0;
+      if (seen[c] >= 0 && x >= 2 && x <= MW - 3 && y >= 2 && y <= MH - 3 && edge[2 * (c - MW) + 1] === EDGE.CLIFF && level[c - MW] === level[c] + 1 && !wet(c) && !wet(c - MW)) hasBase.add(seen[c]); }
+    if (best >= 0 && !hasBase.has(best) && hasBase.size) { const size = new Map(); for (let c = 0; c < NC; c++) if (seen[c] >= 0) size.set(seen[c], (size.get(seen[c]) || 0) + 1);
+      best = [...hasBase].sort((a, b) => size.get(b) - size.get(a) || a - b)[0]; }
     for (let c = 0; c < NC; c++) comp[c] = seen[c] === best && best >= 0 ? 1 : 0; }
   // set pieces, each on a stream of its own. The gate: a non-stair cliff base in the walkable part (its rock stays off the border cells).
   const RG = RGn('gate'), gc = [];
@@ -322,7 +331,7 @@ export function featureInput(out) {
     for (const cr of G.cross) if (cr.side === 's' && G.level[cr.c] > G.level[cr.c + MW]) stair[wc(cr.c)] = 1;
   }
   return { RW, RH, level, land, ford, stair, slot, coast: realm.coast, wkind: realm.wkind, E: Int32Array.from(realm.E, r3), e0: Int32Array.from(realm.e0, r3),
-    acc: Int32Array.from(raw.acc, v => Math.round(v)), down: raw.down };
+    acc: Int32Array.from(raw.acc, v => Math.round(v)), down: raw.down, cuts: realm.cuts };
 }
 // The realm's named features (features.mjs). They only read the realm: its land, levels and every other output are as they were.
 export function addFeatures(out) {
