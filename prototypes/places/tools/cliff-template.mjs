@@ -135,7 +135,11 @@ function concave() {
     const yy = y - 6;
     if (yy <= LIP.dark) continue;
     if (yy > LIP.under && yy <= LIP.rock1) for (let x = 0; x < 16 - SIDE; x++) put(p, x, y, 'shade', 'rock');   // the 2 px on the face's side are the crease's shadow: no strata ticks, so the corner reads the same beside a face and beside a steep wall
-    for (let x = 16 - SIDE; x < 16; x++) put(p, x, y, x === 16 - SIDE ? 'crack' : x === 17 - SIDE ? 'shade' : wallPx(15 - x, true), 'side');
+    // GD 11-15 fix-3 (1): the crease is only where the face's rock is beside the wall; below the face's rock the wall is the flank's own (14 px, its two planes, the 2 px drop shade on the ground side), so the
+    // flank's outer edge is one straight line from the corner to the wall's end, never a dark strip and then a wider wall one cell lower
+    const crease = yy <= LIP.rock1;
+    for (let x = 16 - SIDE; x < 16; x++) put(p, x, y, crease && x === 16 - SIDE ? 'crack' : crease && x === 17 - SIDE ? 'shade' : wallPx(15 - x, true), 'side');
+    if (yy > LIP.foot[1]) for (let x = 0; x < 16 - SIDE; x++) put(p, x, y, 'drop', 'side');
   }
   return p;
 }
@@ -150,10 +154,11 @@ function lipSide() {   // east hand: the ring cell with low ground to its east
 }
 // east hand: the flank cell east of raised land. head: the wall starts thin under the rounded back corner; band; tail: the last wall cell, over the corner cap or the land it meets (the greybox draws it as the band:
 // the cap carries the turn). lit: a west-facing wall (toward the light) is lit, an east-facing one in shade.
+const HEAD_TOP = 9;   // the rim's arc ends on row 8 of the ring cell (rim(): centre row 8.5, radius 7.5); the straight side lip starts on row 9
 function wall(part, lit) {
   const p = P(16, 16);
-  for (let y = 0; y < 16; y++) {
-    const reach = part === 'head' ? SIDE - arcInset(y) : SIDE;
+  for (let y = part === 'head' ? HEAD_TOP : 0; y < 16; y++) {   // GD 11-15 fix-3 (3): a head starts below the back corner's arc (the rim's lip turns there and runs down the wall's inner edge): the rock starts under the lip, never up at the rim line as a cap
+    const reach = part === 'head' ? SIDE - arcInset(y - HEAD_TOP) : SIDE;
     for (let x = 0; x < reach; x++) put(p, x, y, wallPx(x, lit), 'side');
     for (let x = reach; x < Math.min(reach + 2, 16); x++) put(p, x, y, 'drop', 'side');
   }
@@ -202,7 +207,11 @@ function wayHalf() {
 function diagonal(role) {
   const p = P(16, 112);
   const yt = (x) => 16 + (role === 'start' ? (x < 8 ? 6 : 6 + (x - 8)) : role === 'mid' ? -2 + x : x < 8 ? -2 + x : 6);
-  for (let x = 0; x < 16; x++) for (let y = 0; y < 112; y++) columnPixel(p, x, y, yt(x), [-1, -1, -1]);
+  for (let x = 0; x < 16; x++) for (let y = 0; y < 112; y++) {
+    // GD 11-15 fix-3 (2): a start piece leaves the west 3 px of the row above its lip alone: that is the side lip of the wall above (lip-side), which runs on down to the start's own lip, never cut off by a plain top
+    if (role === 'start' && x < 3 && y < 16) continue;
+    columnPixel(p, x, y, yt(x), [-1, -1, -1]);
+  }
   return p;
 }
 
