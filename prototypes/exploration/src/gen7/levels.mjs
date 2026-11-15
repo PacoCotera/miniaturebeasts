@@ -490,6 +490,32 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
   info.sites = sites.concat(extra).map(s => ({ x: gx0 + s.lx + 2, y: gy0 + s.ly, real: s.real }));
   return r;
 }
+// ---- diagonal runs (land-b3d-face3-1) ----
+// A south lip tile with no lip tile beside it in its row is a one-tile step. Three or more such steps in a row, each one row down and one column over from the last, are a diagonal run for the
+// diagonal piece to draw (down-right: the lip row grows with x; down-left: it falls with x); one or two stay corners. Pure on a raster (1 raised, level above 0).
+export const DIAG_MIN = 3;
+export function diagonalRuns(R, W, H) {
+  const lip = (x, y) => x >= 0 && y >= 0 && x < W && y + 1 < H && R[y * W + x] > 0 && R[(y + 1) * W + x] === 0;
+  const step = (x, y) => lip(x, y) && !lip(x - 1, y) && !lip(x + 1, y), runs = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (!step(x, y)) continue;
+    for (const dir of [1, -1]) {
+      if (step(x - 1, y - dir)) continue;   // not the run's first step (scanning columns left to right)
+      let n = 1; while (step(x + n, y + dir * n)) n++;
+      if (n >= DIAG_MIN) runs.push({ x, y, dir: dir === 1 ? 'down-right' : 'down-left', n });
+    }
+  }
+  return runs;
+}
+// the diagonal runs whose first step (leftmost) stands in cell (X, Y), in world tiles; read off the window's own raster, so every window gives the same list for a cell (the cell's tiles are the same from each)
+export function levelDiagonals(L, X, Y) {
+  if (!inRealm(X, Y)) return [];
+  const key = (X + 8) * 1000 + (Y + 8); if (!L.diag) L.diag = new Map(); const hit = L.diag.get(key); if (hit) return hit;
+  const w = windowLevels(L, X, Y), o = L.rule.window, gx0 = (X - o) * CW, gy0 = (Y - o) * CH, out = [];
+  for (const r of diagonalRuns(w.R, w.W, w.H)) { const gx = gx0 + r.x, gy = gy0 + r.y; if (gx >= X * CW && gx < (X + 1) * CW && gy >= Y * CH && gy < (Y + 1) * CH) out.push({ ...r, x: gx, y: gy }); }
+  if (L.diag.size > 4000) L.diag.clear();
+  L.diag.set(key, out); return out;
+}
 // a cell's tile levels, 24 x 28 values (0 outside the realm)
 export function levelCell(L, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = L.cells.get(key); if (hit) return hit;
