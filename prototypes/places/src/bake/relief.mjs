@@ -75,6 +75,34 @@ function partCompute(A, x, y) {
   return PART.LOW;
 }
 
+// The runs of 1-column steps (designer 2026-11-15, cliff-rules.md section 6): the land names each one so the piece table picks right.
+//   A south lip cell (x, y) with the next column over (east, or west) raised on row y and its own lip d rows lower (d = 1 .. 3) is a step; consecutive steps in one direction make a run of n steps (n + 1 columns).
+//   diagonal  3+ steps, every one d = 1 (the 45 degree line)
+//   steep     3+ steps that average more than 1.25 rows a column (4 * sum >= 5 * n): steeper than 45 degrees, so one side wall running down at an angle, never a slab to a step
+//   steps     any other chain of 1 or more steps (1-2 steps use the corners; a long gentle mix keeps the diagonal and the front faces)
+// runAt(A, x, y) for a south lip cell: { kind, hand ('r' = going down to the east, 'l' = to the west), i (this column's place in the run, 0 .. n), n, ds (the steps' drops) } or null when no step touches the column.
+const lipAt = (A, x, y) => A.raised(x, y) && A.low(x, y + 1);
+const dropBy = (A, x, y, dx) => {   // the rows the lip of the next column over (dx = 1 east, -1 west) lies below this one, 1 .. 3, or 0
+  if (!lipAt(A, x, y) || A.way(x, y) || !A.raised(x + dx, y)) return 0;
+  let r = y; while (r < y + 4 && A.raised(x + dx, r + 1)) r++;
+  const d = r - y;
+  return d >= 1 && d <= 3 && A.low(x + dx, r + 1) && !A.way(x + dx, r) ? d : 0;
+};
+export function runAt(A, x, y) {
+  if (!lipAt(A, x, y)) return null;
+  for (const [hand, dx] of [['r', 1], ['l', -1]]) {
+    const back = (cx, cy) => { for (let d = 1; d <= 3; d++) if (dropBy(A, cx - dx, cy - d, dx) === d) return d; return 0; };
+    let sx = x, sy = y, ds = [], d;
+    while ((d = back(sx, sy)) && ds.length < 64) { ds.unshift(d); sx -= dx; sy -= d; }
+    const i = ds.length; let cx = x, cy = y;
+    while ((d = dropBy(A, cx, cy, dx)) && ds.length < 64) { ds.push(d); cx += dx; cy += d; }
+    if (!ds.length) continue;
+    const n = ds.length, sum = ds.reduce((s, v) => s + v, 0);
+    return { kind: n >= 3 && ds.every((v) => v === 1) ? 'diagonal' : n >= 3 && 4 * sum >= 5 * n ? 'steep' : 'steps', hand, i, n, ds };
+  }
+  return null;
+}
+
 // The parts of a rectangle of the land: Uint8Array of w x h (cells x0 .. x0 + w - 1, y0 .. y0 + h - 1)
 export function partsOf(A, x0, y0, w, h) {
   const out = new Uint8Array(w * h);

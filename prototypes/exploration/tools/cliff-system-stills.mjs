@@ -12,7 +12,7 @@ import { windowIR, cellIR, CW, CH } from '../src/gen7/place.mjs';
 import { bakeCtx, bakeIR } from './gen7-render.mjs';
 import { cliffInfo } from '../../places/src/bake/openedges.mjs';
 import { landOf, partAt, PART, extentClear } from '../../places/src/bake/relief.mjs';
-import { TABLE, placeBoundary, installPieces, useCliffSet, kindOf, sortItems, FALLBACK, middleOf } from '../../places/src/bake/cliffsystem.mjs';
+import { TABLE, placeBoundary, installPieces, useCliffSet, kindOf, sortItems, FALLBACK, middleOf, HI, hiBandOf } from '../../places/src/bake/cliffsystem.mjs';
 import { renderView, lightState, tablesOf } from '../../places/src/ground.mjs';
 import { blitRle, encodeRle } from '../../places/src/blit.mjs';
 import { paletteRgb } from '../../places/src/bake/build.mjs';
@@ -31,7 +31,14 @@ function install(cutDir) {
   for (const p of TABLE.pieces) for (const level of [1, 2]) {
     const f = path.join(cutDir, `${p.id}${level > 1 ? '@' + level : ''}.png`);
     if (!existsSync(f)) continue;
-    pieces.push({ kind: kindOf(p.id, level), img: scaleNearest(decodePng(readFileSync(f)), TABLE.scale) });
+    const img = scaleNearest(decodePng(readFileSync(f)), TABLE.scale);
+    pieces.push({ kind: kindOf(p.id, level), img });
+    if (level === 1) {   // the same piece with its lit band one step lighter (beside a light low ground: TABLE.band), when it has a band
+      const own = [1, 2, 3].map((c) => parseInt(TABLE.band.own.slice(2 * c - 1, 2 * c + 1), 16)), hi = [1, 2, 3].map((c) => parseInt(TABLE.band.hi.slice(2 * c - 1, 2 * c + 1), 16));
+      const data = Uint8Array.from(img.data); let n = 0;
+      for (let q = 0; q < data.length; q += 4) if (data[q + 3] && data[q] === own[0] && data[q + 1] === own[1] && data[q + 2] === own[2]) { data[q] = hi[0]; data[q + 1] = hi[1]; data[q + 2] = hi[2]; n++; }
+      if (n) pieces.push({ kind: kindOf(p.id, level) + HI, img: { ...img, data } });
+    }
   }
   for (const ts of bakeCtx().sets.values()) installPieces(ts, pieces);
   useCliffSet('system-greybox');
@@ -53,8 +60,30 @@ function pawnActor(ts, x48, y48, remap) {
 }
 const treeProp = (cx, cy) => ({ kind: 'tree-broad', x: cx * 48 + 24, y: cy * 48 + 40, sortY: cy * 48 + 40, cx, cy });
 
+// ---- the measure (GD canon check 7, AD 5-6): the top's fill and the low ground below it, by the commonest colour of each whole cell of the frame, day and night; and the lit band against the low ground ----
+const hexOf = (c) => '#' + c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join(''), lumaOf = (c) => Math.round(0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]);
+function measureFrame(buf, pal, win, land, ts, light, kinds) {
+  const tops = new Map(), lows = new Map();
+  const x0 = Math.ceil(win.x / 48), x1 = Math.floor((win.x + win.w) / 48) - 1, y0 = Math.ceil(win.y / 48), y1 = Math.floor((win.y + win.h) / 48) - 1;
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    const p = partAt(land, x, y); if (p !== PART.TOP && p !== PART.LOW) continue;
+    const m = new Map(); for (let j = 0; j < 48; j++) for (let i = 0; i < 48; i++) { const v = buf[(y * 48 - win.y + j) * win.w + x * 48 - win.x + i]; m.set(v, (m.get(v) || 0) + 1); }
+    const [idx] = [...m.entries()].sort((a, b) => b[1] - a[1])[0], hx = hexOf(pal.rgb[idx]), t = p === PART.TOP ? tops : lows;
+    t.set(hx, (t.get(hx) || 0) + 1);
+  }
+  const rank = (t) => [...t.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([hex, cells]) => ({ hex, luma: lumaOf([1, 3, 5].map((k) => parseInt(hex.slice(k, k + 2), 16))), cells }));
+  const top = rank(tops), low = rank(lows), dark2 = tablesOf(ts).dark2, night = light === 'night';
+  const bandOf = (dayHex) => {
+    if (!night) return dayHex;
+    const k = ts.palette.findIndex((c) => '#' + c.toString(16).padStart(6, '0') === dayHex);
+    return k < 0 ? dayHex : hexOf(pal.rgb[dark2[48 + k]]);
+  };
+  const used = [['own', TABLE.band.own], ...(kinds.some((k) => k.endsWith(HI)) ? [['hi', TABLE.band.hi]] : [])].map(([kind, h]) => { const hex = bandOf(h), luma = lumaOf([1, 3, 5].map((k) => parseInt(hex.slice(k, k + 2), 16))); return { kind, hex, luma, overLow: low[0] ? luma - low[0].luma : null }; });
+  return { top: top[0] || null, topOther: top.slice(1), low: low[0] || null, lowOther: low.slice(1), topOverLow: top[0] && low[0] ? top[0].luma - low[0].luma : null, band: used };
+}
+
 // ---- one frame: day and night, the sidecar ----
-function shootFrame(outDir, name, tag, place, ts, win, pawn, info) {
+function shootFrame(outDir, name, tag, place, ts, win, pawn, info, land = null) {
   const files = [];
   for (const [light, level] of LIGHTS) {
     const lit = level ? lightState(place, { level: new Uint8Array(place.w * place.h).fill(level) }) : null;
@@ -65,7 +94,8 @@ function shootFrame(outDir, name, tag, place, ts, win, pawn, info) {
     const png = encodePng(indexedToRgba(buf, win.w, win.h, pal)), file = path.join(outDir, `${tag}-${name}-${light}-1x.png`);
     writeFileSync(file, png);
     const kinds = [...new Set(place.decals.map((d) => ts.sprites[d.kind].kind).filter((k) => k.startsWith('cs-')))].sort();
-    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tool: 'cliff-system-stills', tag, set: 'system-greybox (cut from the template; no paint)', light, zoom: 48, frame: [win.w, win.h], window: [win.x, win.y], scale: 1, ...info, pieces: kinds, fallbacks: kinds.includes(FALLBACK), stillSha256: sha(png), madeAt: new Date().toISOString() }, null, 1) + '\n');
+    const measure = land ? measureFrame(buf, pal, win, land, ts, light, kinds) : null;
+    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tool: 'cliff-system-stills', tag, set: 'system-greybox (cut from the template; no paint)', light, zoom: 48, frame: [win.w, win.h], window: [win.x, win.y], scale: 1, ...info, measure, pieces: kinds, fallbacks: kinds.includes(FALLBACK), stillSha256: sha(png), madeAt: new Date().toISOString() }, null, 1) + '\n');
     files.push(file); console.log(file);
   }
   return files;
@@ -135,10 +165,23 @@ if (WHICH === 'find') {
   for (const v of views) {
     const shots = v.seam ? v.seam.map((s) => ({ name: `${v.name}-${s.tag}`, ir: cellIR(v.seed, s.cell[0], s.cell[1]), tx: s.world[0] - s.cell[0] * CW, ty: s.world[1] - s.cell[1] * CH, cells: s.cell })) : [{ name: v.name, ir: windowIR(v.seed, v.X0, v.Y0, 2, 2), tx: v.tx, ty: v.ty, cells: [v.X0, v.Y0] }];
     for (const s of shots) {
-      let { ir } = s; const A = landOf(ir, cliffInfo(ir, ctx.terrains)), win = frameAt(ir.w, ir.h, s.tx, s.ty);
+      let { ir } = s;
+      // a face near water (GD rule 11 case: "a face in water"; the realm has none in these seeds): the straight run of the view with water laid on the ground in front of it, from the foot row down 6 rows
+      // and from 1 column west to 6 east of the view's tile (v.water); the props and decals on it are lifted. The pawn stands on the foot row west of the water.
+      let pawnAt = null;
+      if (v.water) {
+        const A0 = landOf(ir, cliffInfo(ir, ctx.terrains)); let ly = s.ty - 6; while (!(A0.raised(s.tx, ly) && A0.low(s.tx, ly + 1)) && ly < s.ty + 6) ly++;
+        const wx0 = s.tx - 1, wx1 = s.tx + 6, wy0 = ly + 4, wy1 = ly + 10, WATER = ctx.terrains.find((t) => t.id === 'water').value, terrain = Uint8Array.from(ir.terrain);
+        const CLIFF = ctx.terrains.find((t) => t.id === 'cliff').value, nearCliff = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (ir.terrain[Math.max(0, Math.min(ir.h - 1, y + dy)) * ir.w + Math.max(0, Math.min(ir.w - 1, x + dx))] === CLIFF) return true; return false; };
+        for (let y = wy0; y <= Math.min(ir.h - 1, wy1); y++) for (let x = wx0; x <= wx1; x++) if (!nearCliff(x, y)) terrain[y * ir.w + x] = WATER;
+        const out = (o) => o.cx >= wx0 && o.cx <= wx1 && o.cy >= wy0 - 1 && o.cy <= wy1 + 1;
+        ir = { ...ir, terrain, props: ir.props.filter((o) => !out(o)), decals: ir.decals.filter((o) => !out(o)) };
+        pawnAt = [s.tx - 3, ly + 4];
+      }
+      const A = landOf(ir, cliffInfo(ir, ctx.terrains)), win = frameAt(ir.w, ir.h, s.tx, s.ty);
       const fx0 = Math.floor(win.x / 48), fy0 = Math.floor(win.y / 48), fx1 = Math.floor((win.x + FW - 1) / 48), fy1 = Math.floor((win.y + FH - 1) / 48);
       // the pawn: on a foot row in front of a face in frame (GD 3), else on low ground near the frame's middle; a tree in frame (one is added on clear low ground when none stands there)
-      let pawn = null;
+      let pawn = pawnAt;
       for (let y = fy0 + 2; y <= fy1 - 1 && !pawn; y++) for (let x = fx0 + 2; x <= fx1 - 2; x++) if (partAt(A, x, y) === PART.FOOT && A.raised(x, y - 4) && Math.abs(x - s.tx) <= 3) { pawn = [x, y]; break; }
       if (!pawn) for (let r = 0; r < 6 && !pawn; r++) for (let y = s.ty - r; y <= s.ty + r && !pawn; y++) for (let x = s.tx - r; x <= s.tx + r; x++) if (partAt(A, x, y) === PART.LOW && y > fy0 + 1 && y < fy1) { pawn = [x, y]; break; }
       const hasTree = ir.props.some((p) => /^tree-/.test(p.kind) && p.x >= win.x - 24 && p.x < win.x + FW + 24 && p.y >= win.y && p.y < win.y + FH + 96);
@@ -151,7 +194,7 @@ if (WHICH === 'find') {
       if (added) ir = { ...ir, props: ir.props.concat([treeProp(added[0], added[1])]).sort((a, b) => a.sortY - b.sortY || a.x - b.x) };
       const place = bakeIR(ir), ts = ctx.sets.get(ir.tileset);
       const missing = (place.decals.missing || []);
-      shootFrame(outDir, s.name, tag, place, ts, win, pawn, { case: s.name.replace(/^seed\d+-/, ''), seed: v.seed, cells: s.cells, tile: [s.tx, s.ty], world: ir.origin ? [ir.origin.x + s.tx, ir.origin.y + s.ty] : null, pawn, treeAdded: added, tree: ROOT });
+      shootFrame(outDir, s.name, tag, place, ts, win, pawn, { case: s.name.replace(/^seed\d+-/, ''), seed: v.seed, cells: s.cells, tile: [s.tx, s.ty], world: ir.origin ? [ir.origin.x + s.tx, ir.origin.y + s.ty] : null, pawn, treeAdded: added, tree: ROOT, ...(v.water ? { water: v.water } : {}) }, A);
       void missing;
     }
   }
@@ -170,6 +213,10 @@ if (WHICH === 'find') {
     // T4's land with the block 6 wide (8 wide and both walls is 480 px: wider than the frame)
     { case: 'rim', zone: 'T4', name: 'mock-rim', pad: [6, 9], pawn: [5, 10], tree: [1, 11], centre: 6, cx: 5, rows: ['............', ...Array(6).fill('...111111...'), ...Array(5).fill('............')] },
     { case: 'diag', zone: 'T6a', name: 'mock-diag', pad: [6, 9], pawn: [2, 6], tree: [9, 13], centre: 7 },
+    // the steep run of seed 7's k2 site (columns 9-13 of its window, lips 42 43 44 46 47: drops 1 1 2 1, then the wall running on south), as a mock; and the template's T8a (drops 2 3 1 2)
+    { case: 'steep', zone: 'T8a', name: 'mock-steep', pad: [6, 9], pawn: [4, 11], tree: [1, 12], centre: 7, cx: 4, from: "seed 7's k2 site (lips 42 43 44 46 47, drops 1 1 2 1, the wall on south)",
+      rows: Array.from({ length: 15 }, (_, y) => '.' + [2, 3, 4, 6, 7].map((l) => (y <= l ? '1' : '.')).join('') + '1111') },
+    { case: 'steep2', zone: 'T8a', name: 'mock-steep2', pad: [6, 9], pawn: [3, 13], tree: [0, 14], centre: 8, cx: 3, from: 'template zone T8a (drops 2 3 1 2)' },
   ].filter((m) => m.case === 'stacked' || process.argv.slice(7).includes(m.case));
   for (const m of MOCKS) {
     const rows0 = m.rows || zones.find((z) => z.id === m.zone).rows, zw = rows0[0].length, zh = rows0.length, [px, py] = m.pad;
@@ -189,7 +236,7 @@ if (WHICH === 'find') {
     const place = { w: W, h: H, ground: [{ tiles: Uint16Array.from({ length: (W + 1) * (H + 1) }, (_, i) => fillTile[i % fillTile.length]) }], decals, props: [{ kind: tIdx, x: tr[0] * 48 + 24, y: tr[1] * 48 + 40, sortY: tr[1] * 48 + 40 }], canopy: [], landmarks: [] };
     const pawn = [m.pawn[0] + px, m.pawn[1]], win = frameAt(W, H, px + (m.cx ?? (zw >> 1)), m.centre), z = zones.find((q) => q.id === m.zone);
     const why = m.case === 'stacked' ? 'the land has one raised level' : 'seeds 7, 13 and 42 have no such case';
-    shootFrame(outDir, m.name, tag, place, ts, win, pawn, { case: m.case, from: `template zone ${m.zone} as a mock place (${why}); middles by the world pick`, zone: { id: z.id, label: z.label }, pawn, tree: ROOT });
+    shootFrame(outDir, m.name, tag, place, ts, win, pawn, { case: m.case, from: m.from ? `mock place from ${m.from}; middles by the world pick` : `template zone ${m.zone} as a mock place (${why}); middles by the world pick`, zone: { id: z.id, label: z.label }, pawn, tree: ROOT }, { raised: (x, y) => lv(x, y) >= 1, low: (x, y) => lv(x, y) < 1, way: () => false, inside: () => true });
   }
   void middleOf; void sortItems;
 } else throw new Error('usage: find <views.json> <check.json> | shoot <outDir> <views.json> <cutDir> <tag> | mock <outDir> <templateDir> <cutDir> <tag>');

@@ -61,3 +61,20 @@ test('step-downs of each k, a concave corner, and a diagonal of 4 steps', () => 
   assert.ok(!d.items.some((it) => /^end-/.test(it.id)), 'a diagonal draws no step caps');
   assert.deepEqual(d.missing, []);
 });
+
+test('steep runs (rule 6): 3+ steps of 1 column over that average more than 1.25 rows draw one wall, no slab or cap to a step; a gentle mix keeps the diagonal and the faces', () => {
+  const draw = (lips, h = 16, wall = 3) => Array.from({ length: h }, (_, y) => [...'.' + lips.map((l) => (y <= l ? '1' : '.')).join('') + '1'.repeat(wall)].join(''));
+  // the seed 7 k2 site: drops 1 1 2 1 (4 steps, 5 rows), going down to the east, the wall running on south
+  const s = run(draw([2, 3, 4, 6, 7]));
+  assert.deepEqual(s.missing, []);
+  assert.deepEqual([1, 2, 3, 4, 5].map((x) => at(s.items, x, [2, 3, 4, 6, 7][x - 1]).filter((id) => /^steep-/.test(id))[0]), ['steep-r-1', 'steep-r-1', 'steep-r-2', 'steep-r-1', 'steep-r-end']);
+  assert.ok(!s.items.some((it) => /^(end|convex|concave|dr|dl)-/.test(it.id) && it.x > 0 && it.x < 6 && it.y < 14), 'no cap, concave or diagonal piece inside the run');
+  // down to the west, drops 2 3 1 2
+  const w = run(draw([1, 3, 6, 7, 9], 15).map((r) => [...r].reverse().join('')));
+  assert.deepEqual(w.missing, []);
+  assert.ok(w.items.some((it) => /^steep-l-/.test(it.id)));
+  // a long run of 45 degree steps with one 2-row step in it averages under 1.25: not steep (the diagonal and a front face)
+  const gentle = run(draw([2, 3, 4, 5, 6, 7, 8, 10, 11], 20));
+  assert.ok(!gentle.items.some((it) => /^steep-/.test(it.id)));
+  assert.ok(gentle.items.some((it) => /^dr-/.test(it.id)));
+});

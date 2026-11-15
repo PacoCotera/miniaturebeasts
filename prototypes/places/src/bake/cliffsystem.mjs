@@ -5,6 +5,7 @@
 //   end cap      on the low cell beyond a run's end: end-{hand}-{k} (k = rows low upward from the lip row, 1-3), convex-{hand} when the side stays low a row more (a side wall above)
 //   concave      the run's last column when the land beside it runs 2 or more rows further south (a wall in front of the face)
 //   diagonal     every column of a run of 3 or more 1-tile steps (the GD's rule 6): start, mid, end; the steps' end caps are not drawn
+//   steep        every column of a run (relief.mjs runAt names it) of 3 or more 1-column steps averaging over 1.25 rows down: steep-{r,l}-{1,2,3,end}, one wall running down at an angle, tall to the next column's foot row; no caps inside the run
 //   side, rim    ring cells with low to the east or west (lip seen from above), flank cells left over (the wall edge-on: head, band, tail), ring cells with low to the north (the back rim)
 //   top          every raised cell (the greybox set draws its own top; the painted set's top comes from the ground's tile set)
 // A cell of any part but low that no piece accounts for gets the fallback piece (magenta in the stills), and is listed: the GD's check "no part drawn by a fallback" is mechanical.
@@ -13,7 +14,7 @@ import TABLE from '../../../../art/places/cliff-system.json' with { type: 'json'
 import { hash32 } from '../dualgrid.mjs';
 import { encodeRle } from '../blit.mjs';
 import { halve } from '../bakeset.mjs';
-import { PART, partAt } from './relief.mjs';
+import { PART, partAt, runAt } from './relief.mjs';
 
 export { TABLE };
 export const ART = TABLE.cell, SCALE = TABLE.scale, CELL48 = ART * SCALE;
@@ -63,6 +64,15 @@ export function installPieces(ts, pieces) {
   return kinds;
 }
 
+// the lighter lit band (TABLE.band.hi): a piece's kind with this suffix is the piece with its band one step lighter; used where the ground beside the band is more than ownLuma - clear in luma
+export const HI = '~hi';
+const BAND = TABLE.band;
+export function hiBandOf(ir, x, y) {
+  const g = ir.terrain && ir.terrain[Math.max(0, Math.min(ir.h - 1, y)) * ir.w + Math.max(0, Math.min(ir.w - 1, x))];
+  const l = g === undefined ? undefined : BAND.groundLuma[g];
+  return l !== undefined && l > BAND.ownLuma - BAND.clear;
+}
+
 // ---- the middle pick (world coordinates only) ----
 export function middleOf(key, wx, wy, level) {
   const s = hash32(`${key}/cs-row/${level}`, wy, 0) % 6, t = wx + s, letter = ((t % 6) + 6) % 6, block = Math.floor(t / 6);
@@ -85,25 +95,28 @@ export function placeBoundary(A, o) {
   const drRole = (x, y) => chain((b) => stepDR(x - 1 - b, y - 1 - b), (f) => stepDR(x + f, y + f));
   const dlRole = (x, y) => chain((b) => stepDL(x + 1 + b, y - 1 - b), (f) => stepDL(x - f, y + f));
   const items = [], covered = new Set(), ck = (x, y) => `${x},${y}`;
-  const emit = (id, x, y) => {
+  const hiAt = o.hiBand || (() => false);   // hiBand(x, y): the low cell beside a lit band is so light that the band of the ground's own ramp would not clear it by 25 luma (AD 11-15): the piece takes the lighter band
+  const emit = (id, x, y, hi = false) => {
     const p = BY_ID.get(id);
-    items.push({ id, x, y, box: p ? p.box : [0, 0, ART, ART], line: y + (p ? p.line : 0), cls: p ? p.cls : 9, level });
+    items.push({ id, x, y, box: p ? p.box : [0, 0, ART, ART], line: y + (p ? p.line : 0), cls: p ? p.cls : 9, level, ...(hi ? { hi: true } : {}) });
     for (const [dx, dy] of p ? p.covers : [[0, 0]]) covered.add(ck(x + dx, y + dy));
   };
   // the face columns and the end caps: every south lip whose picture reaches the window (rows y0 - 5 .. y1 + 2)
   for (let y = y0 - 5; y <= y1 + 2; y++) for (let x = x0 - 1; x <= x1 + 1; x++) {
     if (!lip(x, y)) continue;
-    if (W(x, y)) { emit(W(x - 1, y) && lip(x - 1, y) ? 'way-r' : 'way-l', x, y); continue; }
-    const dr = drRole(x, y), dl = dlRole(x, y);
+    if (W(x, y)) { emit(W(x - 1, y) && lip(x - 1, y) ? 'way-r' : 'way-l', x, y, hiAt(x, y + 1)); continue; }
+    const run = runAt(A, x, y), steep = run && run.kind === 'steep' ? run : null;   // a steep run (rule 6): one side wall running down at an angle, no front slab per step
+    const dr = steep ? null : drRole(x, y), dl = steep ? null : dlRole(x, y);
     const westEnd = !lip(x - 1, y), eastEnd = !lip(x + 1, y);
     const concaveW = westEnd && R(x - 1, y) && R(x - 1, y + 1) && !lip(x - 1, y + 1), concaveE = eastEnd && R(x + 1, y) && R(x + 1, y + 1) && !lip(x + 1, y + 1);
     let id;
-    if (dr) id = `dr-${dr}`; else if (dl) id = `dl-${dl}`;
+    if (steep) id = `steep-${steep.hand}-${steep.i < steep.n ? Math.min(3, steep.ds[steep.i]) : 'end'}`;
+    else if (dr) id = `dr-${dr}`; else if (dl) id = `dl-${dl}`;
     else if (concaveE) id = 'concave-e'; else if (concaveW) id = 'concave-w';
     else id = pick ? pick(x, y) || middleOf(key, wx0 + x, wy0 + y, level).id : middleOf(key, wx0 + x, wy0 + y, level).id;
-    emit(id, x, y);
+    emit(id, x, y, hiAt(x, y + 1));
     // the caps on the low cell beyond each open end; a diagonal's own steps draw none
-    for (const [hand, xn, open, skip] of [['w', x - 1, westEnd, dr === 'mid' || dr === 'end'], ['e', x + 1, eastEnd, dl === 'mid' || dl === 'end']]) {
+    for (const [hand, xn, open, skip] of [['w', x - 1, westEnd, dr === 'mid' || dr === 'end' || (steep && steep.hand === 'r' && steep.i > 0)], ['e', x + 1, eastEnd, dl === 'mid' || dl === 'end' || (steep && steep.hand === 'l' && steep.i > 0)]]) {
       if (!open || skip || !Lo(xn, y) || W(xn, y)) continue;
       const k = up(xn, y);
       emit(k === 3 && Lo(xn, y - 3) ? `convex-${hand}` : `end-${hand}-${k}`, xn, y);
@@ -115,7 +128,7 @@ export function placeBoundary(A, o) {
     if (!R(x, y) || Lo(x, y + 1) || W(x, y)) continue;
     const n = Lo(x, y - 1), e = Lo(x + 1, y), w = Lo(x - 1, y);
     if (!n && !e && !w) continue;
-    if (n) { if (e && w) continue; emit(e ? 'rim-ne' : w ? 'rim-nw' : 'rim-n', x, y); continue; }
+    if (n) { if (e && w) continue; emit(e ? 'rim-ne' : w ? 'rim-nw' : 'rim-n', x, y, hiAt(x, y - 1)); continue; }
     if (e && w) continue;   // a ridge one cell wide: no piece (the check lists it)
     emit(e ? 'lip-side-e' : 'lip-side-w', x, y);
   }
@@ -157,10 +170,12 @@ export function decorOff(A) {
 // `A` is relief.mjs's landOf(ir, cliffs). The result's `missing` lists the parts no piece accounts for.
 export function systemDecals(ir, A) {
   const key = ir.origin ? `${ir.seed}` : ir.id, wx0 = ir.origin ? ir.origin.x : 0, wy0 = ir.origin ? ir.origin.y : 0;
-  const { items, missing } = placeBoundary(A, { x0: 0, y0: 0, x1: ir.w - 1, y1: ir.h - 1, wx0, wy0, key, level: 1 });
+  const hiBand = (x, y) => hiBandOf(ir, x, y);
+  const { items, missing } = placeBoundary(A, { x0: 0, y0: 0, x1: ir.w - 1, y1: ir.h - 1, wx0, wy0, key, level: 1, hiBand });
   const W = ir.w * CELL48, H = ir.h * CELL48, out = [];
   for (const it of sortItems(items)) {
     let kind = kindOf(it.id, it.level), [bx, by, bw, bh] = it.box;
+    if (it.hi && STATE.kinds.has(kind + HI)) kind += HI;   // the lighter band beside a light low ground (installed by the tools that have the pieces in two bands)
     if (!STATE.kinds.has(kind)) { kind = FALLBACK; bx = 0; by = 0; bw = ART; bh = ART; }
     const x = (it.x * ART + bx) * SCALE, y = (it.y * ART + by) * SCALE;
     if (x + bw * SCALE <= 0 || y + bh * SCALE <= 0 || x >= W || y >= H) continue;
