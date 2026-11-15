@@ -3740,6 +3740,20 @@
    "sha256": "888850aca7fe0e96faacd0e3c0150fd483adf79f725d94d4bcb94b62d5c31855"
   },
   {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "fe2dabe776",
+   "path": "prototypes/exploration/shell/cap-back-10mm.png",
+   "sha256": "35ab07210bb9ebe1365274cd318a760fa9f542ee7f172a94b5c36d8fcde65f6f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "b1c9f4d8d9",
+   "path": "prototypes/exploration/shell/cap-confirm-10mm.png",
+   "sha256": "9da91926311c7b49c56ce014410f7c6226610f62da490dee7ccd4a21d043780a"
+  },
+  {
    "class": "paint",
    "date": "2026-11-12",
    "id": "c87d1642bf",
@@ -3808,6 +3822,55 @@
    "id": "3428a1dc28",
    "path": "prototypes/places/veil/map-edge-veil-night.png",
    "sha256": "a97c14f90a5e785daaf9093c35e1ea062a22452efc462350c3c14032f0100038"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "8dbf508813",
+   "path": "prototypes/ui/assets/masters/pods/frame-companion-outline-16x24.png",
+   "sha256": "cfb646a487bc11857f86c4326db65d8d1f496a24c84e63149837210b8defbfbd"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "d73a28371f",
+   "path": "prototypes/ui/assets/masters/pods/frame-lamp-8-stone.png",
+   "sha256": "17b7df730dea3623359a8c6b85e3178e97818b4ca410c33e083a836a372527de"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "0d57dc76d5",
+   "path": "prototypes/ui/assets/masters/pods/mark-asleep-24x16.png",
+   "sha256": "224608e151c9dd9374750d72f974bb058da311395d0a671b739c43936dc247ef"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "5f94dd5c14",
+   "path": "prototypes/ui/assets/masters/shell/shell-key-home-24.png",
+   "sha256": "c041f436db6c68166db74c8c4ab7cb6c740c24e14e6268d3064f8ecfd8c3441f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "4c61af085f",
+   "path": "prototypes/ui/assets/masters/shell/shell-key-library-24.png",
+   "sha256": "0869b143e1226087cebb1f62d0ba39d456a08a544ca2bb07b7528eaca2ed2bd5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "b9e392e75b",
+   "path": "prototypes/ui/assets/masters/shell/shell-key-pods-24.png",
+   "sha256": "be09ca6c5f5589cbc62fc83f05ccac9b85ba653eba63253c56a077c26b2b794b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-15",
+   "id": "7db35a1500",
+   "path": "prototypes/ui/assets/masters/shell/shell-key-vivarium-24.png",
+   "sha256": "816b5f63ac2c1a44b36b352fc5a056fb1fefbe6b81d7c158aa641da07f82a2a0"
   },
   {
    "class": "paint",
