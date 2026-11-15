@@ -467,6 +467,30 @@
    "value": "js-tokens",
    "rule": "secret-value",
    "reason": "a dependency name in the lockfile (the package js-tokens), not a secret"
+  },
+  {
+   "path": "prototypes/play/options/package-lock.json",
+   "value": "js-tokens",
+   "rule": "secret-value",
+   "reason": "a dependency name in the lockfile (the package js-tokens), not a secret"
+  },
+  {
+   "path": "prototypes/play/options/package-lock.json",
+   "value": "space-separated-tokens",
+   "rule": "secret-value",
+   "reason": "a dependency name in the lockfile (the package space-separated-tokens), not a secret"
+  },
+  {
+   "path": "prototypes/play/options/package-lock.json",
+   "value": "comma-separated-tokens",
+   "rule": "secret-value",
+   "reason": "a dependency name in the lockfile (the package comma-separated-tokens), not a secret"
+  },
+  {
+   "path": "prototypes/play/options/package-lock.json",
+   "value": "micromark-util-subtokenize",
+   "rule": "secret-value",
+   "reason": "a dependency name in the lockfile (the package micromark-util-subtokenize), not a secret"
   }
  ],
  "commitTrailers": [
