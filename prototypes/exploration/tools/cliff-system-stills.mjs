@@ -224,6 +224,10 @@ if (WHICH === 'find') {
   const MOCKS = [
     { case: 'stacked', zone: 'T7', name: 'mock-stacked', pad: [7, 9], pawn: [3, 12], tree: [1, 13], centre: 8 },
     { case: 'run13', zone: 'T1', name: 'mock-run13', pad: [6, 9], pawn: [12, 7], tree: [8, 10], centre: 5, cx: 12 },
+    // paint-2: the whole painted run, both k1 caps and the 18 middles A1..F3 in the template's own order (the zone's pick), as three overlapping 450 x 600 windows (west, middle, east) and the F1a/F1b join zone (the run's columns 10-15) on its own
+    { case: 'run18', zone: 'T1', name: 'mock-run18', pad: [6, 9], pawn: [12, 7], tree: [8, 10], trees: [[3, 10], [15, 10], [21, 10], [26, 10]], centre: 5, cx: 12,
+      pick: (x, y) => (y === 3 && x >= 4 && x <= 21 ? `mid-${((x - 4) / 6 | 0) + 1}${'ABCDEF'[(x - 4) % 6]}` : y === 3 && x === 3 ? 'mid-3F' : y === 3 && x === 22 ? 'mid-1A' : y === 2 ? ['mid-1D', 'mid-1E', 'mid-1F'][x % 3] : null),
+      windows: [{ tag: 'west', cx: 6, pawn: [8, 7] }, { tag: 'middle', cx: 13, pawn: [14, 7] }, { tag: 'east', cx: 19, pawn: [20, 7] }, { tag: 'join', cx: 12, pawn: [12, 7] }] },
     // T4's land with the block 6 wide (8 wide and both walls is 480 px: wider than the frame)
     { case: 'rim', zone: 'T4', name: 'mock-rim', pad: [6, 9], pawn: [5, 10], tree: [1, 11], centre: 6, cx: 5, rows: ['............', ...Array(6).fill('...111111...'), ...Array(5).fill('............')] },
     { case: 'diag', zone: 'T6a', name: 'mock-diag', pad: [6, 9], pawn: [2, 6], tree: [9, 13], centre: 7 },
@@ -242,17 +246,22 @@ if (WHICH === 'find') {
     const tileDecals = [];
     for (const level of [1, 2]) {
       const A = { raised: (x, y) => lv(x, y) >= level, low: (x, y) => lv(x, y) < level, way: () => false, inside: () => true };
-      items.push(...placeBoundary(A, { x0: 0, y0: 0, x1: W - 1, y1: H - 1, key: `mock/${m.zone}`, level }).items);
+      items.push(...placeBoundary(A, { x0: 0, y0: 0, x1: W - 1, y1: H - 1, key: `mock/${m.zone}`, level, pick: m.pick ? (x, y) => m.pick(x - px, y) : null }).items);
       if (process.env.CLIFF_GT) tileDecals.push(...groundTileItems(A, { x0: 0, y0: 0, x1: W - 1, y1: H - 1, level }));
     }
     items = items.sort((a, b) => a.line - b.line || a.cls - b.cls || a.level - b.level || a.x - b.x || a.y - b.y);
     const idx = (kind) => ts.sprites.findIndex((s) => s.group === 'decal' && s.kind === kind);
     const decals = tileDecals.map((t) => ({ kind: idx(t.kind), x: t.x, y: t.y, sortY: 0 })).concat(items.map((it) => { const k = idx(kindOf(it.id, it.level)); return { kind: k >= 0 ? k : idx(FALLBACK), x: (it.x * 16 + it.box[0]) * 3, y: (it.y * 16 + it.box[1]) * 3, sortY: 0 }; }));
     const tIdx = ts.sprites.findIndex((s) => s.group === 'prop' && s.kind === 'tree-broad'), tr = [m.tree[0] + px, m.tree[1]];
-    const place = { w: W, h: H, ground: [{ tiles: Uint16Array.from({ length: (W + 1) * (H + 1) }, (_, i) => fillTile[i % fillTile.length]) }], decals, props: [{ kind: tIdx, x: tr[0] * 48 + 24, y: tr[1] * 48 + 40, sortY: tr[1] * 48 + 40 }], canopy: [], landmarks: [] };
-    const pawn = [m.pawn[0] + px, m.pawn[1]], win = frameAt(W, H, px + (m.cx ?? (zw >> 1)), m.centre), z = zones.find((q) => q.id === m.zone);
+    const trees = [tr, ...(m.trees || []).map(([a, b]) => [a + px, b])].map(([a, b]) => ({ kind: tIdx, x: a * 48 + 24, y: b * 48 + 40, sortY: b * 48 + 40 })).sort((a, b) => a.sortY - b.sortY || a.x - b.x);
+    const place = { w: W, h: H, ground: [{ tiles: Uint16Array.from({ length: (W + 1) * (H + 1) }, (_, i) => fillTile[i % fillTile.length]) }], decals, props: trees, canopy: [], landmarks: [] };
+    const z = zones.find((q) => q.id === m.zone);
     const why = m.case === 'stacked' ? 'the land has one raised level' : 'seeds 7, 13 and 42 have no such case';
-    shootFrame(outDir, m.name, tag, place, ts, win, pawn, { case: m.case, from: m.from ? `mock place from ${m.from}; middles by the world pick` : `template zone ${m.zone} as a mock place (${why}); middles by the world pick`, zone: { id: z.id, label: z.label }, pawn, tree: ROOT }, { raised: (x, y) => lv(x, y) >= 1, low: (x, y) => lv(x, y) < 1, way: () => false, inside: () => true });
+    const land = { raised: (x, y) => lv(x, y) >= 1, low: (x, y) => lv(x, y) < 1, way: () => false, inside: () => true };
+    for (const w of (m.windows || [{ tag: null, cx: m.cx ?? (zw >> 1), pawn: m.pawn }])) {
+      const pawn = [w.pawn[0] + px, w.pawn[1]], win = frameAt(W, H, px + w.cx, m.centre);
+      shootFrame(outDir, w.tag ? `${m.name}-${w.tag}` : m.name, tag, place, ts, win, pawn, { case: m.case, from: m.from ? `mock place from ${m.from}; middles by the world pick` : `template zone ${m.zone} as a mock place (${why}); middles by ${m.pick ? "the template zone's own order A1..F3" : 'the world pick'}`, zone: { id: z.id, label: z.label }, pawn, tree: ROOT }, land);
+    }
   }
   void middleOf; void sortItems;
 } else throw new Error('usage: find <views.json> <check.json> | shoot <outDir> <views.json> <cutDir> <tag> | mock <outDir> <templateDir> <cutDir> <tag>');
