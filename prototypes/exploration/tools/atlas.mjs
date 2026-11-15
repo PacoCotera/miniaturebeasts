@@ -12,6 +12,7 @@ import path from 'node:path';
 import PImage from 'pureimage';
 import { cellIR, stairsInfo, raisedAt, levelAt, worldTiles, TV } from '../src/gen7/place.mjs';
 import { CW, CH, RW, RH } from '../src/gen7/world.mjs';
+import { realm7 } from '../src/gen7/region.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url)), S = 5;   // pixels a tile
 const FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';
@@ -91,7 +92,7 @@ async function windowData(o) {
     if (pm && pm.planOf) { try { plan = pm.planOf(o.seed, X, Y); } catch { plan = null; } }
     places.push({ X, Y, i, j, ir, plan, ms: performance.now() - t1 });
   }
-  return { o, w, h, gx0, gy0, ter, raised, W, level, rows: bits.join(''), places, stairs: stairsInfo(o.seed), pm, ms: performance.now() - t0 };
+  return { o, w, h, gx0, gy0, ter, raised, W, level, rows: bits.join(''), places, stairs: stairsInfo(o.seed), pm, realm: realm7(o.seed).realm, ms: performance.now() - t0 };
 }
 
 // ---- the overlays: a table. Each: name, what it reads, colour, key label, and draw(ctx, d, px) which returns false when the branch lacks the data ----
@@ -148,6 +149,23 @@ const OVERLAYS = [
       g.fillStyle = '#c81e78'; if (st.south) rect(g, wx * S - 6, wy * S - 1, 14, 3); else rect(g, wx * S - 1, wy * S - 6, 3, 14);
     }
     return true; } },
+  { name: 'features', reads: 'realm.features and realm.destinations (gen7/features.mjs)', colour: '#0a3cff', label: 'the realm cell by cell (the lines below are the key)', extra: [['#0a3cff', 'stream line (thin where it runs under raised land)'], ['#00a0b4', 'falls: bar on the foot cell'], ['#d62828', 'red box: a ravine found (stream ravine thick, through-ravine thin), not cut'], ['#141414', 'black bar: escarpment south face'], ['#7a4a1e', 'brown dot: range crest'], ['#1c9a3c', 'green triangle: pass'], ['#d9a400', 'small square beside a cell centre = a destination, by colour:'], ['#d9a400', '  gold pass, red through-ravine, cyan falls, orange ravine head,'], ['#1c9a3c', '  white ford, green spring, blue stream mouth']], draw(g, d) {
+    const re = d.realm; if (!re || !re.features) return false;
+    const [X0, Y0] = d.o.at, cw = CW * S, ch = CH * S, cx = c => ((c % RW) - X0) * cw + cw / 2, cy = c => (((c / RW) | 0) - Y0) * ch + ch / 2;
+    const near = c => { const x = (c % RW) - X0, y = ((c / RW) | 0) - Y0; return x >= -1 && y >= -1 && x <= d.o.size[0] && y <= d.o.size[1]; };
+    const seg = (a, b, t) => { const x0 = cx(a), y0 = cy(a), x1 = cx(b), y1 = cy(b); g.fillRect(Math.min(x0, x1) - t / 2, Math.min(y0, y1) - t / 2, Math.abs(x1 - x0) + t, Math.abs(y1 - y0) + t); };
+    const DEST = { pass: '#d9a400', ravine: '#d62828', falls: '#00a0b4', 'ravine head': '#f0961e', ford: '#ffffff', spring: '#1c9a3c', 'stream mouth': '#1e3cc8' };
+    for (const f of re.features) {
+      if (f.kind === 'stream') for (let i = 1; i < f.cells.length; i++) { const a = f.cells[i - 1], b = f.cells[i]; if (!near(a) && !near(b)) continue; g.fillStyle = '#0a3cff'; seg(a, b, i <= f.links.seen ? 2 : 5); }
+      else if (f.kind === 'escarpment') for (const c of f.cells) { if (!near(c)) continue; g.fillStyle = '#141414'; g.fillRect(((c % RW) - X0) * cw, (((c / RW) | 0) - Y0 + 1) * ch - 2, cw, 4); }
+      else if (f.kind === 'range') for (const c of f.cells) { if (!near(c)) continue; g.fillStyle = '#7a4a1e'; g.fillRect(cx(c) - 4, cy(c) - 4, 9, 9); }
+      else if (f.kind === 'ravine') for (const c of f.cells) { if (!near(c)) continue; box(g, cx(c) - 14, cy(c) - 14, 29, 29, '#d62828', 3); }
+      else if (f.kind === 'through-ravine') for (const c of f.cells) { if (!near(c)) continue; box(g, cx(c) - 14, cy(c) - 14, 29, 29, '#d62828', 1); }
+      else if (f.kind === 'falls') { if (!near(f.links.foot)) continue; g.fillStyle = '#00a0b4'; g.fillRect(cx(f.links.foot) - 16, cy(f.links.foot) - ch / 2 - 3, 33, 7); }
+      else if (f.kind === 'pass') { const c = f.cells[0]; if (!near(c)) continue; g.fillStyle = '#1c9a3c'; for (let k = 0; k < 10; k++) g.fillRect(cx(c) - k, cy(c) - 10 + 2 * k, 2 * k + 1, 2); }
+    }
+    for (const t of re.destinations) { if (!near(t.c)) continue; g.fillStyle = '#000'; g.fillRect(cx(t.c) + 14, cy(t.c) - 28, 19, 19); g.fillStyle = DEST[t.kind] || '#888'; g.fillRect(cx(t.c) + 16, cy(t.c) - 26, 15, 15); }
+    return true; } },
 ];
 const ALL = OVERLAYS.map(o => o.name);
 
@@ -176,6 +194,16 @@ function numbers(d) {
   return { seed: o.seed, window: { at: o.at, size: o.size, tiles: [d.w, d.h] }, totals: { ...strip(m), finds, findsByKind: kinds, setPiecesByKind: setPieces, heartsSeenFromAWay: { hearts, seen }, borderTiles: { open: openT, closed: closedT }, placesWithNoWayIn: noWay, buildMs: Math.round(d.ms) }, places: per };
 }
 
+// the realm's features that touch the window's cells (streams, falls, ravines found, through-ravines found, ranges, passes, escarpments) and its destinations by kind
+function featureCounts(d) {
+  const re = d.realm; if (!re || !re.features) return null;
+  const [X0, Y0] = d.o.at, [nx, ny] = d.o.size, inW = c => { const x = (c % RW) - X0, y = ((c / RW) | 0) - Y0; return x >= 0 && y >= 0 && x < nx && y < ny; };
+  const kinds = {}, dest = {};
+  for (const f of re.features) if (f.cells.some(inW)) kinds[f.kind] = (kinds[f.kind] || 0) + 1;
+  for (const t of re.destinations) if (inW(t.c)) dest[t.kind] = (dest[t.kind] || 0) + 1;
+  return { inWindow: kinds, destinations: dest };
+}
+
 // ---- the picture ----
 const BASE = { [TV.WATER]: '#8cb4dc', [TV.DEEP]: '#5a86bc', [TV.SAND]: '#e6d6a0', [TV.CLIFF]: '#a8c47c' };
 function commit() {
@@ -187,7 +215,7 @@ export async function atlas(opts) {
   const d = await windowData(o);
   d.meas = measure(d.w, d.h, d.rows);
   const shown = [], skipped = [];
-  const PAD = 12, top = 52, PW = d.w * S, PH = d.h * S, keyH = 24 * (OVERLAYS.length + 4), IW = Math.max(PW + PAD * 2, 900);
+  const PAD = 12, top = 52, PW = d.w * S, PH = d.h * S, keyH = 24 * (OVERLAYS.length + 4 + 8), IW = Math.max(PW + PAD * 2, 900);
   const img = PImage.make(IW, top + PH + keyH + PAD), g = img.getContext('2d');
   g.fillStyle = '#ffffff'; g.fillRect(0, 0, img.width, img.height);
   const map = PImage.make(PW, PH), gm = map.getContext('2d');   // the map on its own layer, laid on the sheet below the title
@@ -210,12 +238,12 @@ export async function atlas(opts) {
   let ky = top + PH + 24; g.font = '12pt Dej';
   g.fillStyle = '#000'; g.fillText('Key', PAD, ky); ky += 24;
   for (const [c, t] of [['#a8c47c', 'raised land'], ['#eae6d6', 'low ground (blue water, tan sand)']]) { g.fillStyle = c; g.fillRect(PAD, ky - 12, 22, 14); g.fillStyle = '#000'; g.fillText(t, PAD + 32, ky); ky += 22; }
-  for (const ov of shown) { g.fillStyle = ov.colour; g.fillRect(PAD, ky - 12, 22, 14); g.fillStyle = '#000'; g.fillText(ov.name + ': ' + ov.label, PAD + 32, ky); ky += 22; }
+  for (const ov of shown) { g.fillStyle = ov.colour; g.fillRect(PAD, ky - 12, 22, 14); g.fillStyle = '#000'; g.fillText(ov.name + ': ' + ov.label, PAD + 32, ky); ky += 22; for (const [c, t] of ov.extra || []) { g.fillStyle = c; g.fillRect(PAD + 24, ky - 10, 14, 10); g.fillStyle = '#000'; g.fillText(t, PAD + 46, ky); ky += 20; } }
   for (const [n, why] of skipped) { g.fillStyle = '#888'; g.fillText(n + ': skipped, ' + why, PAD + 32, ky); ky += 22; }
   const stem = path.join(o.out, 'atlas-' + o.seed + '-' + o.at.join('-') + '-' + o.size.join('x'));
   mkdirSync(o.out, { recursive: true });
   await PImage.encodePNGToStream(img, createWriteStream(stem + '.png'));
-  const json = { ...numbers(d), overlays: { shown: shown.map(v => v.name), skipped: skipped.map(([n, why]) => n + ': ' + why) }, commit: commit() };
+  const json = { ...numbers(d), features: featureCounts(d), overlays: { shown: shown.map(v => v.name), skipped: skipped.map(([n, why]) => n + ': ' + why) }, commit: commit() };
   const { writeFileSync } = await import('node:fs'); writeFileSync(stem + '.json', JSON.stringify(json, null, 1) + '\n');
   return { png: stem + '.png', json: stem + '.json', numbers: json };
 }

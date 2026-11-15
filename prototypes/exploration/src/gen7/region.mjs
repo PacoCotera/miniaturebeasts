@@ -6,7 +6,8 @@
 import FlatQueue from 'flatqueue';
 import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
-import { buildRealm, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
+import { buildRealm, rawRealm, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
+import { realmFeatures } from './features.mjs';
 import { levelsOf, findWayup, forgetLevels } from './levels.mjs';
 
 export const NC = MW * MH;
@@ -282,6 +283,23 @@ function coastOf(out) {
     out.regions[ay * ATLAS + ax] = G;
   }
 }
+// The arrays the realm's features read (features.mjs): the realm's cells, with the regions' final land, level, fords and stairs, whole numbers (heights in thousandths).
+export function featureInput(out) {
+  const { realm, regions } = out, NR = RW * RH, raw = rawRealm(realm.seed), r3 = v => Math.round(v * 1000);
+  const level = new Uint8Array(NR), ford = new Uint8Array(NR), land = new Uint8Array(NR), stair = new Uint8Array(NR), slot = new Uint8Array(NR);
+  for (const G of regions) {
+    const [ax, ay] = G.slot, wc = c => (ay * MH + ((c / MW) | 0)) * RW + ax * MW + (c % MW);
+    for (let c = 0; c < NC; c++) { const w = wc(c); level[w] = G.level[c]; ford[w] = G.ford[c]; land[w] = G.land[c]; slot[w] = ay * ATLAS + ax; }
+    for (const cr of G.cross) if (cr.side === 's' && G.level[cr.c] > G.level[cr.c + MW]) stair[wc(cr.c)] = 1;
+  }
+  return { RW, RH, level, land, ford, stair, slot, coast: realm.coast, wkind: realm.wkind, E: Int32Array.from(realm.E, r3), e0: Int32Array.from(realm.e0, r3),
+    acc: Int32Array.from(raw.acc, v => Math.round(v)), down: raw.down };
+}
+// The realm's named features (features.mjs). They only read the realm: its land, levels and every other output are as they were.
+export function addFeatures(out) {
+  const F = realmFeatures(featureInput(out));
+  out.realm.features = F.list; out.realm.destinations = F.dest; out.realm.featureStats = F.stats;
+}
 export const ROUNDS = 64;   // was 24: with stairs only where a south-facing face exists, two marsh regions of seeds 1-200 (62 and 173) needed more draws
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
@@ -300,6 +318,7 @@ export function realm7(seed) {
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
   }
   coastOf(out);
+  addFeatures(out);
   if (cache.size > 6) cache.clear();
   cache.set(seed, out); return out;
 }
