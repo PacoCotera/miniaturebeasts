@@ -92,8 +92,9 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const land7 = { raised: (x, y) => T(x, y) === CLIFF, low: (x, y) => T(x, y) !== CLIFF, way: (x, y) => wayCell.has(key(x, y)), inside: inMap, memo: new Map() };
   const isLip = (x, y) => { const p = partAt(land7, x, y); return p === PART.RING || p === PART.FACE; };
   const isFlank = (x, y) => partAt(land7, x, y) === PART.FLANK;
-  // the foot rows under a face (two or three rows below the lip row): the face picture is drawn down over them, so nothing is laid there (vertical rock grows nothing). Not part of `flags`, which the Hollow Tree's clearing reads.
-  const isFoot = (x, y) => partAt(land7, x, y) === PART.FOOT;
+  // the rows under a face (land-b3f-foot-1): the 3 rock rows under a south lip (face; an end piece's too, flank) and the foot row below them (the first walkable row, which only the contact shade is drawn on): the face picture is drawn down
+  // over them, so nothing is laid there (vertical rock grows nothing). Not part of `flags`, which the Hollow Tree's clearing reads.
+  const isFoot = (x, y) => { const p = partAt(land7, x, y); return p === PART.FOOT || p === PART.FACE || p === PART.FLANK; };
   const flags = (x, y) => {
     if (!inMap(x, y)) return 1;
     const k = key(x, y), hit = cls.get(k); if (hit !== undefined) return hit;
