@@ -240,7 +240,11 @@ test('the map\'s land kind and the walk\'s ground agree in the middle of every c
       for (let c = 0; c < MW * MH; c++) {
         const lab = Object.keys(L).find(k => L[k] === G.land[c]); if (!seen[lab]) continue;
         const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), t = cellTerrain(seed, X, Y), n = {}; let low = 0, raised = 0;
-        for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = t.terrain[(y + 1) * t.w + x + 1]; if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
+        // a trail's path (and a path on a top) is not the land under it: a path tile reads the nearest tile that is not path (the ground the trail lies on)
+        // (the lane of grass the trail lays beside its path is the trail's too: a tile that is path or touches path reads the nearest tile that neither is nor touches path)
+        const tv = (x, y) => (x < -1 || y < -1 || x > CW || y > CH ? -1 : t.terrain[(y + 1) * t.w + x + 1]), nearPath = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (tv(x + dx, y + dy) === TV.PATH) return true; return false; };
+        const groundAt = (x, y) => { const v = tv(x, y); if (!nearPath(x, y)) return v; for (let r = 1; r <= 8; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; const a = x + dx, b = y + dy, u = tv(a, b); if (u >= 0 && !nearPath(a, b)) return u; } return v === TV.PATH ? TV.GRASS : v; };
+        for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = groundAt(x, y); if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
         if (raised) continue;
         // a water cell may be the coast's ring: deep water in the walk
         const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') + f('DEEP') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
