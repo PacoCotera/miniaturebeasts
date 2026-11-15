@@ -206,7 +206,18 @@ function openClose(r, W, H, E, lk) {
 const same = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
 const hasLip = (r, W, H, x, y) => { const xx = x < 0 ? 0 : x >= W ? W - 1 : x, ya = y < 0 ? 0 : y >= H ? H - 1 : y, yb = y + 1 < 0 ? 0 : y + 1 >= H ? H - 1 : y + 1; return r[ya * W + xx] === 1 && r[yb * W + xx] === 0; };   // the raster's rim read as itself, no call per tile
 
-// Low rows kept under a south lip: the faceRows rock rows (they block), the foot row L + faceRows + 1 and one walkable row more (a channel under a face is at least 2 walkable tiles)
+// cliff-contour-1: a lean. A side wall that moves one column in toward the raised land going south leaves one south lip tile alone in its row (x, y): the wall above it runs down its outer side and the wall
+// below runs down the next column in. The set draws it as the wall leaning over by one column (the pieces lean-e, lean-w), not as a face one column wide, so the land keeps it. i = y * W + x, clear of the rim
+// (rows y - 1 .. y + 2, columns x - 1 .. x + 1 read). Raised on the east (the wall's outside is west): (x - 1, y - 1) and (x - 1, y) low, (x, y - 1) raised, (x + 1, y + 1) and (x + 1, y + 2) raised; or mirrored.
+let LEAN_ON = true;
+export const setLeans = (on) => { LEAN_ON = !!on; GEN++; };
+function leanAt(r, W, i) {
+  if (r[i] !== 1 || r[i + W] !== 0 || r[i - W] !== 1) return false;
+  for (const d of [-1, 1]) if (!r[i + d] && !r[i + d - W] && r[i - d] && r[i - d + W] && r[i - d + 2 * W] && !r[i + 2 * W]) return true;
+  return false;
+}
+
+// Low rows kept under a south lip:the faceRows rock rows (they block), the foot row L + faceRows + 1 and one walkable row more (a channel under a face is at least 2 walkable tiles)
 const footRoom = fr => fr + 2;
 // P4, P5, P6, repeated until nothing changes (at most 8 rounds)
 let FP_OK = false;   // whether the last fixPatterns ended on a round with no edit (a fixed point of P4 - P6), not on the 8-round limit
@@ -232,11 +243,13 @@ function fixPatterns(r0, W, H, faceRows, from = null, lk = null) {
     if (r[i] !== 1 || r[i + W] !== 0) return 0;
     if ((r[i - 1] === 1 && r[i - 1 + W] === 0) || (r[i + 1] === 1 && r[i + 1 + W] === 0)) return 0;
     if ((r[i - 1 - W] === 1 && r[i - 1] === 0) || (r[i + 1 - W] === 1 && r[i + 1] === 0) || (r[i - 1 + W] === 1 && r[i - 1 + 2 * W] === 0) || (r[i + 1 + W] === 1 && r[i + 1 + 2 * W] === 0)) return 0;
+    if (LEAN_ON && leanAt(r, W, i)) return 0;   // cliff-contour-1: a side wall's one-column jog is kept (the set draws it as the wall leaning over by a column), never filled down into a straight wall
     r[i + W] = 1; mark(x, y + 1); return 1;
   };
   const t6 = (x, y) => {
     const i = y * W + x;
     if (r[i] !== 1 || r[i + W] !== 0) return 0;
+    if (LEAN_ON && x > 0 && x + 1 < W && y > 0 && leanAt(r, W, i)) return 0;   // cliff-contour-1: a lean has no face under it (the rows under its lip are the wall below's flank): no foot room
     for (let k = 2; k <= fRoom; k++) if (r[i + k * W]) { for (let j = 1; j < k; j++) { r[i + j * W] = 1; mark(x, y + j); } return 1; }
     return 0;
   };
@@ -316,22 +329,28 @@ function openCloseNear(r, prev, co, W, H, E, lk) {
   }
   return out;
 }
+let CLEAN_SINK = null;   // cliff-contour-1: the tools' sink for the cleanup's own steps (the first cleanup of a window only)
 function cleanup(r0, W, H, rule, lk) {
   // (land-time-1) `known`: the raster the last fix made when that was a fixed point (see fixPatterns): the next fix of a raster that differs from it in a few tiles looks only at the tiles that read them
   const E = elemOf(rule.minFeature); let known = null;
   const fix = (r, from) => { const o = relock(fixPatterns(r, W, H, rule.faceRows, from, lk), lk); known = FP_OK ? o : null; return o; };
   let r = relock(r0.slice(), lk);
   let fixed = false, prev = null, co = null;
+  const sink = CLEAN_SINK; CLEAN_SINK = null;
   for (let pass = 0; pass < 12; pass++) {
     co = prev ? openCloseNear(r, prev, co, W, H, E, lk) : openClose(r, W, H, E, lk);
+    if (sink && pass === 0) sink.openclose1 = co.slice();
     const n = fix(co, known), done = same(n, r);
+    if (sink && pass === 0) sink.patterns1 = n.slice();
     prev = r; r = n; if (done) { fixed = true; break; }
   }
   // end on the opening, then one closing: no raised land narrower than the feature, and nothing the closing leaves low is narrower either (the same step again on a raster the loop left unchanged is that raster: skipped)
   if (!fixed) r = fix(openClose(r, W, H, E, lk), null);
+  if (sink) sink.loop = r.slice();
   const kn = known ? r.slice() : null;
   dropSmall(r, W, H); relock(r, lk);
   r = fix(r, kn);
+  if (sink) sink.small = r.slice();
   // what the foot-room and lone-lip passes can leave: a one-tile sliver (a tile with no 2 x 2 block of its own level) is flipped to what rings it, and a face of 2+ tiles ending square against a side wall
   // 3 rows high loses its last lip tile (the end becomes a step); then the patterns are fixed again; at most 4 rounds
   for (let round = 0; round < 8; round++) {
@@ -374,8 +393,8 @@ function violAt(r, W, H, x, y, fr) {
     { const c = v * 8 + rr * 4 + d * 2 + r[i + W + 1]; if (c === 6 || c === 9) { n++; DBGV.push("pinch"); } }
     if (v === 1 && d === 0) {
       const lipL = l === 1 && r[i - 1 + W] === 0, lipR = rr === 1 && r[i + 1 + W] === 0;
-      if (!lipL && !lipR && !((r[i - W - 1] === 1 && l === 0) || (r[i - W + 1] === 1 && rr === 0) || (r[i + W - 1] === 1 && r[i + 2 * W - 1] === 0) || (r[i + W + 1] === 1 && r[i + 2 * W + 1] === 0))) { n++; DBGV.push("lone"); }
-      for (let k = 2; k <= footRoom(fr); k++) if (r[i + k * W]) { n++; DBGV.push("foot"); break; }
+      if (!lipL && !lipR && !((r[i - W - 1] === 1 && l === 0) || (r[i - W + 1] === 1 && rr === 0) || (r[i + W - 1] === 1 && r[i + 2 * W - 1] === 0) || (r[i + W + 1] === 1 && r[i + 2 * W + 1] === 0)) && !(LEAN_ON && leanAt(r, W, i))) { n++; DBGV.push("lone"); }
+      if (!(LEAN_ON && leanAt(r, W, i))) for (let k = 2; k <= footRoom(fr); k++) if (r[i + k * W]) { n++; DBGV.push("foot"); break; }
       if (!lipR && lipL && !rr && !r[i + 1 - W] && !r[i + 1 - 2 * W]) { n++; DBGV.push("square"); }
       if (!lipL && lipR && !l && !r[i - 1 - W] && !r[i - 1 - 2 * W]) { n++; DBGV.push("square"); }
     }
@@ -638,6 +657,25 @@ function blobOf(r, W, H, tiles, v, limit, bad, box) {
   return q;
 }
 
+// The field's sum over the rounded element of radius rad (the tiles dx, dy with dx² + dy² <= rad² + rad: for 2, the 5 x 5 square without its corners) round each tile, from an integral image (whole numbers,
+// exact): { s (Float64Array), c (the element's tile count) }; null when rad is 0. A held tile's sum is its own -1 times c (it stays low).
+function smoothField(q, held, W, H, rad) {
+  if (!rad) return null;
+  // each row padded by rad tiles each side (its first and last tile repeated), its running sums; rows past the raster's top and bottom are its first and last row
+  const PW = W + 2 * rad, P = new Float64Array(H * (PW + 1));
+  for (let y = 0; y < H; y++) { const o = y * (PW + 1); let s = 0; for (let j = 0; j < PW; j++) { const x = j - rad; s += q[y * W + (x < 0 ? 0 : x >= W ? W - 1 : x)]; P[o + j + 1] = s; } }
+  // the element as rows: for each dy, the half width hw (dx² + dy² <= rad² + rad)
+  const DY = [], HW = []; let c = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); c += 2 * hw + 1; }
+  const s = new Float64Array(W * H), nr = DY.length;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x; if (held[i]) { s[i] = -c; continue; }
+    let t = 0;
+    for (let r = 0; r < nr; r++) { let yy = y + DY[r]; yy = yy < 0 ? 0 : yy >= H ? H - 1 : yy; const o = yy * (PW + 1), j = x + rad; t += P[o + j + HW[r] + 1] - P[o + j - HW[r]]; }
+    s[i] = t;
+  }
+  return { s, c };
+}
+
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 export function windowLevels(L, X, Y) {
@@ -669,10 +707,13 @@ export function windowLevels(L, X, Y) {
     noRaise[i] = held[i] || inl < RAISE_OFF + 1 ? 1 : 0;
     wblock[i] = wr[i] && !(inRealm(Math.floor(gx / CW), Math.floor(gy / CH)) && L.realm.ford[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))]) ? 1 : 0;
     edge[i] = x < 2 || y < 2 || x >= W - 2 || y >= H - 2 || inl < 6 ? 1 : 0; }
+  // cliff-contour-1: the field is read at the minimum feature's own scale before the threshold: a tile's value is the sum of q over the rounded element of radius `smooth` round it (the window's rim read
+  // as itself, replicated; held tiles stay held), so the threshold draws the field's smooth contour and the opening below has little left to square off. smooth 0: the tile's own q, as before.
+  const sq = smoothField(q, held, W, H, L.rule.smooth | 0);
   // one raster per boundary (level above k), each cleaned on its own; a higher level lies inside the lower one
   const out = new Uint8Array(W * H); let below = null; const info = { sites: [], filled: [], pockets: [], jogs: 0, jogsMissed: 0, pocketStairs: [], dbg: !!globalThis.B3C_DBG };
   for (let k = 0; k < th.length; k++) {
-    const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = q[i] >= th[k] && (!below || below[i]) ? 1 : 0;
+    const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = (sq ? sq.s[i] >= th[k] * sq.c && !held[i] : q[i] >= th[k]) && (!below || below[i]) ? 1 : 0;
     let r = base;
     if (k === 0) r = landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info);
     else r = cleanup(base, W, H, L.rule, null);
@@ -719,10 +760,14 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly - SITE_UP; y <= s.ly; y++) if (!noRaise[y * W + x]) lk[y * W + x] = 1;
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly + 1; y <= s.ly + foot; y++) lk[y * W + x] = 2;   // the low rows win where two sites meet
     const way = new Uint8Array(W * H); for (const s of all) { way[s.ly * W + s.lx + 2] = 1; way[s.ly * W + s.lx + 3] = 1; }
+    if (globalThis.LAND_STAGES) info.stages = { threshold: relock(base.slice(), lk) };   // cliff-contour-1: the tools read the raster after each stage (where the straightness comes from)
+    CLEAN_SINK = info.stages || null;
     r = cleanup(base, W, H, L.rule, lk);
+    CLEAN_SINK = null;
+    if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
