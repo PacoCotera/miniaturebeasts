@@ -80,20 +80,30 @@ function coastQ16(seed, gx, gy) {
 }
 
 // q of the tiles of a cell (Q16): the realm's height above its raising height (bilinear in the cells' centres, whole-number weights over 2 CW and 2 CH), the warped detail, the coast
+// one tile's q (the same number qCell holds for it), without making the cell: the realm's edge probe reads a few strips of tiles
+export function qTile(L, gx, gy) {
+  const S = seedCtx(L.seed), D = L.rule.detail, reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, wo = L.rule.wobbleOctaves, st = L.rule.wobbleStretch, e0q = L.e0q, W2 = 2 * CW, H2 = 2 * CH;
+  const sd = L.qSeeds || (L.qSeeds = (() => { const sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'); return { sD, sWx: subSeed(sW, 'x'), sWy: subSeed(sW, 'y'), sDet: subSeed(sD, 'detail') }; })()), sD = sd.sD, sWx = sd.sWx, sWy = sd.sWy, sDet = sd.sDet;
+  const px = 256 * gx + 128, py = 256 * gy + 128;
+  // the position the land is read at: moved by the coarse warp (32 and 16 tile noise, up to `reach` tiles) and the fine wobble (8 and 4 tile noise, up to `wob` tiles), in Q8 tiles.
+  // The macro height and its raising height are read there too, so the contour itself bends and wobbles by that many tiles, however steep the land is.
+  const w = warp(px, py, sD, reach), wx = w.x + shr(fbm(px, st * py, ws, wo, sWx) * wob, 8), wy = w.y + shr(fbm(st * px, py, ws, wo, sWy) * wob, 8);
+  const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
+  const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
+  const h = S.at((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5).height, macro = Math.round(h * 65536) - e;
+  return macro + shr(fbm(px + wx, py + wy, 5, 4, sDet) * D, 16) + coastQ16(L.seed, gx, gy);
+}
+export function wetTile(L, gx, gy) {   // one tile's wet flag (the same as wetCell's), without making the cell
+  if (inlandOf(gx, gy) < WET_REACH) return 0;
+  const S = seedCtx(L.seed), wc = wetCells(L); if (!S.nW) S.nW = noiseField(L.seed, 't-wet', 1 / 12, 'FBm', 2);
+  const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
+  const w = wc[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + wc[cellIdx(X0 + 1, Y0)] * a * (1 - b) + wc[cellIdx(X0, Y0 + 1)] * (1 - a) * b + wc[cellIdx(X0 + 1, Y0 + 1)] * a * b;
+  return w + WET_NOISE * S.nW(gx, gy) > WET_AT ? 1 : 0;
+}
 export function qCell(L, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = L.q.get(key); if (hit) return hit;
-  const S = seedCtx(L.seed), q = new Int32Array(N), D = L.rule.detail, reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, wo = L.rule.wobbleOctaves, st = L.rule.wobbleStretch, e0q = L.e0q, sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'), W2 = 2 * CW, H2 = 2 * CH;
-  const sWx = subSeed(sW, 'x'), sWy = subSeed(sW, 'y'), sDet = subSeed(sD, 'detail');
-  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
-    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, px = 256 * gx + 128, py = 256 * gy + 128;
-    // the position the land is read at: moved by the coarse warp (32 and 16 tile noise, up to `reach` tiles) and the fine wobble (8 and 4 tile noise, up to `wob` tiles), in Q8 tiles.
-    // The macro height and its raising height are read there too, so the contour itself bends and wobbles by that many tiles, however steep the land is.
-    const w = warp(px, py, sD, reach), wx = w.x + shr(fbm(px, st * py, ws, wo, sWx) * wob, 8), wy = w.y + shr(fbm(st * px, py, ws, wo, sWy) * wob, 8);
-    const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
-    const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
-    const h = S.at((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5).height, macro = Math.round(h * 65536) - e;
-    q[k] = macro + shr(fbm(px + wx, py + wy, 5, 4, sDet) * D, 16) + coastQ16(L.seed, gx, gy);
-  }
+  const q = new Int32Array(N);
+  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) q[ty * CW + tx] = qTile(L, X * CW + tx, Y * CH + ty);
   if (L.q.size > 3000) L.q.clear();
   L.q.set(key, q); return q;
 }
@@ -501,6 +511,39 @@ export function tileLevel(L, gx, gy) {
 }
 // raised land: level 1 or more, and at least RAISE_OFF tiles from the border line
 export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
+
+// ---- the realm's edge probe (before any pass): reads the height field and the wet field on the strip of tiles each side of an edge, never a place ----
+// The rows (columns, for a north-south edge) along the edge between the cells A and B (B east or south of A) where the `deep` tiles each side are all dry and on one level (raised or low by the field's own
+// threshold, the passes not run). `need` rows are enough: the count stops there (the rows are read from the middle outwards). The roads ask this of the edges a trail or a bridge bank uses.
+export function edgeRows(L, ax, ay, bx, by, need, deep = 2) {
+  const east = bx > ax, n = east ? CH : CW, th = L.rule.levels[0], out = []; let rows = 0;
+  const lvl = (gx, gy) => (inlandOf(gx, gy) >= RAISE_OFF && qTile(L, gx, gy) >= th ? 1 : 0);
+  for (let s = 0; s < n && rows < need; s++) {
+    const t = (s & 1 ? -1 : 1) * ((s + 1) >> 1) + (n >> 1), ok = t >= 0 && t < n; if (!ok) continue;
+    let good = true;
+    for (let i = 0; i < deep && good; i++) for (const side of [0, 1]) {
+      const gx = east ? (side ? bx * CW + i : bx * CW - 1 - i) : ax * CW + t, gy = east ? ay * CH + t : (side ? by * CH + i : by * CH - 1 - i), v = lvl(gx, gy);
+      if (v !== 0 || wetTile(L, gx, gy)) { good = false; break; }
+    }
+    if (good) rows++;
+  }
+  return rows;
+}
+// a bridge's two banks: the rows where the `deep` tiles of the bank's edge by the water are dry and low on both banks, the same row on each (a bridge runs straight across)
+export function bankRows(L, ax, ay, bx, by, need, deep = 2) {
+  const east = bx !== ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
+  const lo = (gx, gy) => !(inlandOf(gx, gy) >= RAISE_OFF && qTile(L, gx, gy) >= th) && !wetTile(L, gx, gy);
+  const [lx, ly, hx, hy] = (east ? bx < ax : by < ay) ? [bx, by, ax, ay] : [ax, ay, bx, by];   // the western (northern) bank, the eastern (southern) one
+  for (let t = 0; t < n && rows < need; t++) {
+    let good = true;
+    for (let i = 0; i < deep && good; i++) {
+      const g1x = east ? (lx + 1) * CW - 1 - i : lx * CW + t, g1y = east ? ly * CH + t : (ly + 1) * CH - 1 - i, g2x = east ? hx * CW + i : hx * CW + t, g2y = east ? hy * CH + t : hy * CH + i;
+      if (!lo(g1x, g1y) || !lo(g2x, g2y)) good = false;
+    }
+    if (good) rows++;
+  }
+  return rows;
+}
 
 // ---- the way up: placed on the stair's held-straight site, never searched ----
 // The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher, has its site made before the passes (landPipeline: 6 columns held, the lip row and 4 rows above raised, the foot

@@ -9,6 +9,7 @@ import { ATLAS } from '../regions.mjs';
 import { buildRealm, rawRealm, editE0, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
 import { realmFeatures } from './features.mjs';
 import { realmRoads, roadGraph, ringDist } from './roads.mjs';
+import { levelsOf, edgeRows, bankRows } from './levels.mjs';
 
 export const NC = MW * MH;
 // world.mjs hash() with its leading arguments folded once (the same bytes in the same order), then one number appended and finalised; and mulberry32's first draw
@@ -389,7 +390,11 @@ export function addFeatures(out) {
 export function addRoads(out, F) {
   const t0 = Date.now(), I = roadInput(out), realm = out.realm;
   const extraHubs = F.dest.filter(d => d.kind === 'pass' || d.kind === 'ravine').map(d => d.c);
-  const R = realmRoads({ ...I, extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams });
+  // the edge probe: the land's height field (levels.mjs, before any pass), read only on the edges a trail or a bridge bank uses; the realm still reads no tile land (S1)
+  const LV = levelsOf(realm), cx = c => c % RW, cy = c => (c / RW) | 0;
+  const pond = c => realm.land[c] === L.POND, edgeOk = (a, b) => { const need = pond(a) || pond(b) ? 8 : 4; return edgeRows(LV, cx(a), cy(a), cx(b), cy(b), need) >= need; };   // a pond place lays more water than the field shows: twice the rows
+  const bankOk = (a, b) => bankRows(LV, cx(a), cy(a), cx(b), cy(b), 7) >= 7;
+  const R = realmRoads({ ...I, ...(globalThis.F4NOPROBE ? {} : { edgeOk, bankOk }), extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams });
   const bodyOf = new Map(); for (const b of F.bodies) for (const c of b.cells) bodyOf.set(c, b);
   for (const b of R.bridges) { const w = bodyOf.get(b.cells[0]); b.river = w ? w.kind + '-' + w.id : null; realm.features.push({ id: b.id, kind: 'bridge', cells: b.cells, links: { ends: b.ends, axis: b.axis === 1 ? 'x' : 'y', river: b.river, around: b.around } }); }
   realm.destinations = R.dest;
@@ -402,7 +407,7 @@ export const ROUNDS = 64;   // was 24: with stairs only where a south-facing fac
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 7;   // 7: the realm's one trail network (roads.mjs; the region's own trails are gone) and the piece pass; 6: stairs at cell scale (the realm reads no tile land; the place seats the way up) with the land rule's held sites; 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
+export const REALM_REV = 8;   // 8: the realm crosses a cell edge only where the land's height field leaves shared low dry rows (the edge probe), and a bridge needs dry banks that meet; 7: the realm's one trail network (roads.mjs; the region's own trails are gone) and the piece pass; 6: stairs at cell scale (the realm reads no tile land; the place seats the way up) with the land rule's held sites; 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
 // the realm's stairs for the place (levels.mjs seats each way up): every south stair, by the cell it stands on and its port, read from the regions that stayed. Plain data: the realm reads no tile land
 export function attachStairs(R) {

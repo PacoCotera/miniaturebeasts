@@ -98,6 +98,7 @@ export function realmRoads(I) {
     for (const k of ok) { if (bridges.length >= P.BR_MAX_REALM) break;
       const s = Math.floor(Y(k.a) / MH) * A + Math.floor(X(k.a) / MW); if (slotUsed.has(s)) continue;
       if (bridges.some(b => cheb(b.mid, k.cells[0]) < P.BR_GAP)) continue;
+      if (I.bankOk && !I.bankOk(k.a, k.b)) { stats.bridgesMoved = (stats.bridgesMoved || 0) + 1; continue; }   // both banks need 7+ dry low rows that meet (the probe of the height field): else the next candidate along the water
       slotUsed.add(s); bridges.push({ id: 'bridge-' + bridges.length, cells: k.cells, ends: [k.a, k.b], axis: k.ax, mid: k.cells[0], around: k.around, body: -1 }); }
     for (const b of bridges) for (const c of b.cells) bridgeAxis[c] = b.axis; }
   stats.bridges = bridges.length;
@@ -105,7 +106,7 @@ export function realmRoads(I) {
 
   // the cost of a step from c to n (4-neighbours), or -1
   const step = (c, n) => {
-    if (!walkB(n) || !walkB(c)) return -1;
+    if (!walkB(n) || !walkB(c) || (blocked.size && blocked.has(edgeKey(c, n)))) return -1;
     const d = n - c, ax = d === 1 || d === -1 ? 1 : 2;
     if (bridgeAxis[n] && bridgeAxis[n] !== ax) return -1;   // a bridge is entered and left straight
     if (bridgeAxis[c] && bridgeAxis[c] !== ax) return -1;
@@ -140,6 +141,7 @@ export function realmRoads(I) {
 
   tick('hubs');
   // ---- one Dijkstra from every hub; the pairs; Kruskal; loops; trace ----
+  const netw = () => {
   const dist = new Int32Array(NR).fill(0x3fffffff), owner = new Int32Array(NR).fill(-1), prev = new Int32Array(NR).fill(-1), q = heap();
   hubs.forEach((h, i) => { dist[h.c] = 0; owner[h.c] = i; q.push(0, h.c); });
   while (q.size) {
@@ -170,6 +172,19 @@ export function realmRoads(I) {
     const right = []; for (let c = p.y; c >= 0; c = prev[c]) right.push(c);
     paths.push({ a: p.a, b: p.b, loop: loops.includes(p), cells: left.reverse().concat(right) });
   }
+  return { tree, loops, paths };
+  };
+  // the realm's edge probe (I.edgeOk, levels.mjs: the land's height field before any pass): a trail crosses a cell edge only where the places can meet (4+ shared low dry rows); a crossing that fails is
+  // closed and the network made again, so the probe reads only the edges a trail uses (and, below, a branch or a spur would)
+  const blocked = new Set(), edgeKey = (a, b) => Math.min(a, b) * 16384 + Math.max(a, b), probed = new Map();
+  const crossOk = (a, b) => { if (!I.edgeOk || ford[a] || ford[b] || bridgeAxis[a] || bridgeAxis[b] || level[a] !== level[b] || land[a] === 4 || land[b] === 4) return true;
+    const k = edgeKey(a, b); let v = probed.get(k); if (v === undefined) { v = I.edgeOk(Math.min(a, b), Math.max(a, b)); probed.set(k, v); } return v; };
+  let net = netw(); stats.edgeRounds = 0;
+  for (let round = 0; round < 40; round++) {
+    let bad = 0; for (const p of net.paths) for (let i = 1; i < p.cells.length; i++) if (!crossOk(p.cells[i - 1], p.cells[i])) { const k = edgeKey(p.cells[i - 1], p.cells[i]); if (!blocked.has(k)) { blocked.add(k); bad++; } }
+    if (!bad) break; net = netw(); stats.edgeRounds++;
+  }
+  const { tree, loops, paths } = net; stats.edgesBlocked = blocked.size;
   const lists = paths.map(p => p.cells), kinds = paths.map(p => (p.loop ? 'loop' : 'tree'));   // kinds: what each list is (tree, loop, bridge, dest, spur)
   for (const b of bridges) { lists.push([b.ends[0], ...b.cells, b.ends[1]]); kinds.push('bridge'); }   // the span itself, whole
   const onArr = new Uint8Array(NR), mark = cells => { for (const c of cells) onArr[c] = 1; };   // the cells on the trail so far, kept as lists are added
@@ -196,7 +211,7 @@ export function realmRoads(I) {
   // ---- branches: a destination within DEST_REACH places on its own level is joined to the nearest trail cell ----
   const branchTo = (s, onR, reach) => { const pv = new Map([[s, -1]]), qq = [[s, 0]];
     for (let h = 0; h < qq.length; h++) { const [u, k] = qq[h]; if (onR[u]) { const cells = []; for (let v = u; v >= 0; v = pv.get(v)) cells.push(v); return cells; } if (k >= reach) continue;
-      for (const n of nb4(u)) { if (pv.has(n) || !walk[n] || land[n] === 1 || level[n] !== level[u]) continue; pv.set(n, u); qq.push([n, k + 1]); } } return null; };
+      for (const n of nb4(u)) { if (pv.has(n) || !walk[n] || land[n] === 1 || level[n] !== level[u] || !crossOk(u, n)) continue; pv.set(n, u); qq.push([n, k + 1]); } } return null; };
   const branchEnds = new Set(); let destBranches = 0;
   const joinDest = d => { if (d.kind === 'pass' || d.kind === 'ravine' || d.kind === 'bridge') return; const onR = onNow(); if (onR[d.c] || !walk[d.c]) return;
     const b = branchTo(d.c, onR, P.DEST_REACH); if (b && b.length > 1) { lists.push(b.reverse()); kinds.push('dest'); mark(b); destBranches++; d.branch = true; } };
@@ -251,7 +266,7 @@ export function realmRoads(I) {
   const spurAt = (u, onR) => { let best = null;
     for (const [minLen, loose] of [[2, false], [1, false], [1, true]]) { const pv = new Map([[u, -1]]), qq = [[u, 0]];
       for (let h = 0; h < qq.length; h++) { const [v, k] = qq[h]; if (k >= P.SPUR) continue;
-        for (const n of nb4(v)) { if (pv.has(n) || !walk[n] || land[n] === 1 || (ford[n] && !loose) || (side[n] && !loose) || !stepOk(v, n, loose) || onR[n]) continue; if (!loose && nb4(n).some(m => m !== v && onR[m])) continue; pv.set(n, v); qq.push([n, k + 1]); } }
+        for (const n of nb4(v)) { if (pv.has(n) || !walk[n] || land[n] === 1 || (ford[n] && !loose) || (side[n] && !loose) || !stepOk(v, n, loose) || !crossOk(v, n) || onR[n]) continue; if (!loose && nb4(n).some(m => m !== v && onR[m])) continue; pv.set(n, v); qq.push([n, k + 1]); } }
       const [end, k] = qq[qq.length - 1]; if (k >= minLen) { const cells = []; for (let v = end; v >= 0; v = pv.get(v)) cells.push(v); best = cells.reverse(); break; } }
     return best; };
   let spurs = 0; const stuckRuns = [];
