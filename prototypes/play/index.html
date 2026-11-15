@@ -41,7 +41,8 @@ iframe{border:0; display:block; background:var(--void)}
 .swtab:focus-visible{outline:2px solid var(--focus); outline-offset:-2px}
 .swdot{flex:none; width:8px; height:8px; border-radius:50%; background:var(--amber)}
 #dockKey{text-align:left; display:flex; align-items:center; gap:8px; padding:0 12px; font-size:14px}
-#dockKey .mark{flex:none; width:16px; height:24px; image-rendering:pixelated}
+#dockKey .mark{flex:none; position:relative; display:block; width:16px; height:24px}   /* the glyph (src/dockglyph.mjs): a 1-px square carrying the box-shadow pixel list, whole pixels, hard edges */
+#dockKey .mark i{position:absolute; left:0; top:0; width:1px; height:1px; background:transparent}
 #dockKey .word{flex:1 1 auto; min-width:0; white-space:nowrap}   /* never an ellipsis: the words are picked by the width the key has (shell.mjs layoutDock) */
 #dockKey.markonly{justify-content:center; padding:0}
 #dockKey .hint{flex:none; color:var(--mist); font-size:12px}
@@ -138,7 +139,7 @@ body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
   <div class="row" id="rowStation"></div>
   <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
   <div class="row" id="rowCompanion"></div>
-  <!-- the Dock / Lift key (first-ten-front A2): one row under the panel upright, the right key column's foot otherwise; quiet, lit or docked. [art] its mark: today's frame-companion-outline-16x24 until the art director rules -->
+  <!-- the Dock / Lift key (first-ten-front A2): one row under the panel upright, the right key column's foot otherwise; quiet, lit or docked. [art] its mark: the signed frame-companion-solid-16x24, in both states (docked and away) -->
   <div id="dockRoot"></div>   <!-- the Dock key (a Radix Toggle, mounted here as #dockKey by options/src/keytray.jsx) -->
   <div id="dockScreenRoot"></div>   <!-- the dock's-screen button and its sheet (a Radix Dialog; options/src/docksheet.jsx) -->
   <!-- the asleep Station (A1): until the first pod is home the Station's panel carries this note above it. [art] slot station-asleep-24 (the mark; empty until the art director rules) -->

@@ -43,7 +43,7 @@ const bar = `.ctl{position:relative; background:var(--mb-ground); border:1px sol
 .ctl .mark{flex:none; width:16px; height:24px; image-rendering:pixelated} .ctl .word{flex:1 1 auto; min-width:0; white-space:nowrap} .ctl .hint{flex:none; color:var(--mb-mist); font-size:12px}
 .ctl{text-align:left} .ctl.markonly{justify-content:center; padding:0} .ctl.quiet{color:var(--mb-mist)} .ctl.lit,.ctl.docked{background:var(--mb-amber); border-color:var(--mb-amber); color:var(--mb-void)} .ctl.lit .hint,.ctl.docked .hint{color:var(--mb-void)}
 .ctl[aria-disabled="true"]{color:var(--mb-stone)}`;
-const dockState = (o) => ({ box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: false, label: "Dock the Companion", title: "Dock the Companion", mark: "../../../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true, ...o });
+const dockState = (o) => ({ box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: false, label: "Dock the Companion", title: "Dock the Companion", mark: "../../../ui/assets/masters/pods/frame-companion-solid-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true, ...o });
 const DockAt = ({ w, o, title }) => (<div><div style={label}>{title}</div><div style={{ width: w }}><Dock s={dockState({ box: [0, 0, w, 44], ...o })} onPress={noop} /></div></div>);
 export const DockByWidth = () => (
   <div><style>{bar}</style>

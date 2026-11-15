@@ -49,11 +49,12 @@ button{font:inherit; color:inherit; appearance:none; margin:0; padding:0; cursor
 #sw button{position:absolute; top:0; height:100%; border:0; background:none; color:var(--muted); display:flex; align-items:center; justify-content:center; font-size:14px; white-space:nowrap}
 #sw button[aria-pressed="true"]{background:var(--lit); color:var(--ink); box-shadow:inset 0 -2px 0 var(--cream)}
 #sw button:focus-visible{outline:2px solid var(--cream); outline-offset:-3px}
-#sw button svg,#sw button img{display:none}
-#sw.glyphs button .w{display:none} #sw.glyphs button svg{display:block; width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round} #sw.glyphs button img{display:block; width:16px; height:24px; image-rendering:pixelated}
+#sw button svg,#sw button .g{display:none}
+#sw.glyphs button .w{display:none} #sw.glyphs button svg{display:block; width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round} #sw.glyphs button .g{display:block; position:relative; width:16px; height:24px}
 #sw .dot{position:absolute; width:7px; height:7px; border-radius:50%; background:var(--cream); pointer-events:none}
 #dockCtl{justify-content:flex-start; gap:0}
-#dockCtl .mark{width:16px; height:24px; image-rendering:pixelated; flex:none}
+#dockCtl .mark{position:relative; display:block; width:16px; height:24px; flex:none}   /* the Dock glyph (play/src/dockglyph.mjs): mist, this control is dark in both states */
+#dockCtl .mark i,#sw .g i{position:absolute; left:0; top:0; width:1px; height:1px; display:block}
 #dockCtl .word{margin-left:8px}
 #dockCtl .hint{position:absolute; right:11px}
 #dockCtl .dot{position:absolute; width:6px; height:6px; border-radius:50%; background:var(--amber)}
@@ -167,10 +168,10 @@ button{font:inherit; color:inherit; appearance:none; margin:0; padding:0; cursor
 <div id="bar" data-r="bar"></div>
 <div id="sw" data-r="switch" role="group" aria-label="Device">
   <button type="button" id="swSt" data-dev="station" data-r="switchStation" aria-pressed="true" aria-label="Station"><span class="w">Station</span><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg></button>
-  <button type="button" id="swCo" data-dev="companion" data-r="switchCompanion" aria-pressed="false" aria-label="Companion"><span class="w">Companion</span><img src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" alt=""></button>
+  <button type="button" id="swCo" data-dev="companion" data-r="switchCompanion" aria-pressed="false" aria-label="Companion"><span class="w">Companion</span><span class="g" id="swCoMark" aria-hidden="true"><i></i></span></button>
   <i class="dot" id="swDot" hidden></i>
 </div>
-<button type="button" class="cc" id="dockCtl" data-r="dock" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" width="16" height="24" alt=""><i class="dot" id="dockDot" hidden></i><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
+<button type="button" class="cc" id="dockCtl" data-r="dock" aria-label="Dock the Companion in the Caddy" title="Dock the Companion in the Caddy"><span class="mark" id="dockMark" aria-hidden="true"><i></i></span><i class="dot" id="dockDot" hidden></i><span class="word" id="dockWord">Dock</span><span class="hint" id="dockHint">⇧D</span></button>
 <button type="button" class="cc" id="flagBtn" data-r="flag" aria-label="Flag this screen" aria-disabled="true" hidden><svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h12l-2.5 4L18 13H6"/></svg><span class="w" id="flagWord">Flag</span><span class="hint" id="flagHint">N</span></button>
 <button type="button" class="cc" id="drawerBtn" data-r="drawer" aria-label="Test tools" aria-expanded="false" hidden><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 <button type="button" class="cc" id="menuBtn" data-r="menu" aria-label="Menu" aria-expanded="false" hidden><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="w" id="menuWord">Menu</span></button>

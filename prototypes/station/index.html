@@ -140,7 +140,8 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
 .dock-ctl:active,.dock-ctl.is-pressed{background:#0c0a12}
 .dock-ctl:active>*,.dock-ctl.is-pressed>*{transform:translateY(1px)}
 .dock-ctl:focus-visible{outline:2px solid #ffe6ad; outline-offset:2px}
-.dock-ctl .mark{position:absolute; left:11px; top:3px; width:16px; height:24px; image-rendering:pixelated}
+.dock-ctl .mark{position:absolute; left:11px; top:3px; width:16px; height:24px; display:block}   /* the Dock glyph (play/src/dockglyph.mjs): a 1-px square carrying the box-shadow pixel list; mist, the control is always on a dark ground */
+.dock-ctl .mark i{position:absolute; left:0; top:0; width:1px; height:1px; display:block}
 .dock-ctl .word{position:absolute; left:35px; top:7px}
 .dock-ctl .hint{position:absolute; right:11px; top:10px; font-size:12px; color:#8d8aa6}
 .dock-ctl .dot{position:absolute; left:25px; top:1px; width:6px; height:6px; border-radius:50%; background:#ffa83f}
@@ -193,7 +194,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <div class="paper" id="caddyPaper">Dock</div>
         <div class="slot"><div class="comp" title="Companion"></div></div>
       </div>
-      <button class="dock-ctl" id="dockCtl" type="button" aria-label="Dock the Companion" title="Dock the Companion"><img class="mark" id="dockMark" src="../ui/assets/masters/pods/frame-companion-outline-16x24.png" width="16" height="24" alt=""><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint">D</span></button>
+      <button class="dock-ctl" id="dockCtl" type="button" aria-label="Dock the Companion" title="Dock the Companion"><span class="mark" id="dockMark" aria-hidden="true"><i></i></span><span class="dot" id="dockDot" hidden></span><span class="word" id="dockWord">Dock</span><span class="hint">D</span></button>
     </div>
     <div class="debug" aria-label="Developer tools (not part of play)">
       <button class="btn" id="devBtn" type="button" aria-pressed="false" hidden>Developer tools</button>

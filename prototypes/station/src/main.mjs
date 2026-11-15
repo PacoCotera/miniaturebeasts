@@ -6,6 +6,7 @@ import { clock, motion } from "./pixels.mjs";
 import { G, FX, UI, SPECS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, switchCompanion, activeCompanion } from "./game.mjs";
 import * as S from "./state.mjs";
 import { readOptions } from "../../play/src/options.mjs";
+import { glyphShadow } from "../../play/src/dockglyph.mjs";
 import * as Lib from "./library.mjs";
 import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode, chapterLooks } from "./genome.mjs";
@@ -85,6 +86,7 @@ function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr);
 function onDpr() { setEmbedS(); armDpr(); }
 if (EMBED) { setEmbedS(); armDpr(); window.addEventListener("resize", setEmbedS); window.removeEventListener("resize", fit); }
 const caddyEl = $("caddy"), dockCtl = $("dockCtl"), dockMark = $("dockMark"), dockWord = $("dockWord"), dockDot = $("dockDot"), caddyPaper = $("caddyPaper");
+dockMark.firstElementChild.style.boxShadow = glyphShadow({ state: "away" }, 1);   // the Dock glyph, mist: this control is dark in both states (docked or away), so never ink
 let caddyKey = "";
 const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 // The Caddy's state as the control and the play page's shell take it (frame.json navigation.dock; the shell never reads the save): canDock is the exact condition state.mjs refuses a dock on
@@ -106,7 +108,7 @@ function updateCaddy() {
   const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]) + ":" + c.podHome + ":" + JSON.stringify(c.goal); if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
-  dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
+  dockWord.textContent = d ? "Lift" : "Dock";
   const crates = !d && c.canDock && c.crates > 0, title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";  dockCtl.setAttribute("aria-disabled", String(!c.canDock)); dockCtl.setAttribute("aria-label", d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion");
   if (!c.canDock) dockCtl.setAttribute("aria-description", title); else dockCtl.removeAttribute("aria-description");
   dockCtl.title = title;
