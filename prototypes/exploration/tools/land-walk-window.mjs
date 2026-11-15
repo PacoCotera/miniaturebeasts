@@ -14,7 +14,7 @@ const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf('--
 const SEEDS = String(opt('seeds', '7,13')).split(',').map(Number), WINDOWS = JSON.parse(readFileSync(new URL('./land-windows.json', import.meta.url), 'utf8'));
 const terrains = bakeCtx().terrains;
 for (const seed of SEEDS) {
-  const wv = WINDOWS.find(v => v.seed === seed), LV = levelsOf(realm7(seed).realm), PW = wv.w / CW, PH = wv.h / CH, W = wv.w, H = wv.h;
+  const w0 = WINDOWS.find(v => v.seed === seed), g = +opt('grow', 0), wv = { ...w0, X: w0.X - g, Y: w0.Y - g, w: w0.w + 2 * g * CW, h: w0.h + 2 * g * CH }, LV = levelsOf(realm7(seed).realm), PW = wv.w / CW, PH = wv.h / CH, W = wv.w, H = wv.h;
   const walk = new Uint8Array(W * H), up = new Uint8Array(W * H);
   for (let j = 0; j < PH; j++) for (let i = 0; i < PW; i++) {
     const X = wv.X + i, Y = wv.Y + j, ir = cellIR(seed, X, Y), cl = cliffInfo(ir, terrains), G = genRegion7(seed, Math.floor(X / MW), Math.floor(Y / MH)), ford = G.ford[(Y % MH) * MW + (X % MW)];   // the water of a ford cell is the ford: shallow, walked
@@ -39,7 +39,14 @@ for (const seed of SEEDS) {
   }
   void run; if (opt('rows', '')) for (let y = +opt('rows', 0); y < +opt('rows', 0) + 8; y++) { let s = ''; for (let x = 16; x < 36; x++) s += walk[y * W + x] ? (up[y * W + x] ? 'U' : 'w') : (up[y * W + x] ? '^' : '.'); console.log(y, s); } if (opt('map', '')) { const ids = new Map(); let out = ''; for (let y = 0; y < H; y += 3) { for (let x = 0; x < W; x += 2) { const i = y * W + x; if (!walk[i]) { out += up[i] ? '^' : '.'; continue; } const r = find(i); if (!ids.has(r)) ids.set(r, ids.size); out += 'ABCDEFGHIJKLMNOP'[ids.get(r) % 16]; } out += '\n'; } console.log(out); }
   const comp = new Map(); for (let i = 0; i < W * H; i++) if (walk[i]) { const r = find(i); let c = comp.get(r); if (!c) comp.set(r, c = { n: 0, cells: new Map(), up: 0 }); c.n++; c.up += up[i]; const key = `${wv.X + Math.floor((i % W) / CW)},${wv.Y + Math.floor(((i / W) | 0) / CH)}`; c.cells.set(key, (c.cells.get(key) || 0) + 1); }
-  const list = [...comp.values()].sort((a, b) => b.n - a.n), total = list.reduce((s, c) => s + c.n, 0);
+  // b3c: each pocket is open (a tile on the window's own edge: more land beyond) or closed; a closed low one with no raised tile within 2 is a lake's islet (the realm's own)
+  const edgeOf = new Map(), nearUp = new Map();
+  for (let i = 0; i < W * H; i++) if (walk[i]) { const r = find(i), x = i % W, y = (i / W) | 0; if (x === 0 || y === 0 || x === W - 1 || y === H - 1) edgeOf.set(r, 1);
+    if (!nearUp.has(r)) for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && up[b * W + a]) nearUp.set(r, 1); } }
+  const list = [...comp.entries()].map(([r, c]) => ({ ...c, open: !!edgeOf.get(r), cliffNear: !!nearUp.get(r), wx: [...c.cells.keys()][0] })).sort((a, b) => b.n - a.n), total = list.reduce((s, c) => s + c.n, 0);
   console.log(`seed ${seed}: ${total} walkable tiles, ${list.length} component(s); main ${list[0].n} (${(100 * list[0].n / total).toFixed(1)}%)`);
-  for (const c of list.slice(1)) console.log(`  pocket ${c.n} tiles (${c.up ? 'raised' : 'low'}${c.up && c.up < c.n ? ' part' : ''}) in place(s) ${[...c.cells].map(([k, n]) => k + 'x' + n).join(' ')}`);
+  let closed = 0, closedIslet = 0, open = 0;
+  for (const c of list.slice(1)) { const kind = c.open ? 'open' : c.up || c.cliffNear ? 'CLOSED' : 'closed islet'; if (c.open) open++; else if (c.up || c.cliffNear) closed++; else closedIslet++;
+    console.log(`  pocket ${c.n} tiles (${c.up ? 'raised' : 'low'}${c.up && c.up < c.n ? ' part' : ''}) ${kind} in place(s) ${[...c.cells].map(([k, n]) => k + 'x' + n).join(' ')}`); }
+  console.log(`  summary seed ${seed}: closed pockets ${closed}, closed lake islets ${closedIslet}, open pockets ${open}`);
 }

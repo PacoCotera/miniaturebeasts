@@ -7,7 +7,7 @@ import FlatQueue from 'flatqueue';
 import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { buildRealm, editE0, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
-import { levelsOf, findWayup, forgetLevels } from './levels.mjs';
+import { levelsOf, forgetLevels, setStairs, siteClear } from './levels.mjs';
 
 export const NC = MW * MH;
 export const STRANDED_MAX_PCT = 6;   // the most a region's dry land that no stair with a way up reaches (a pocket across a river that ends on a north-facing wall), in percent
@@ -103,8 +103,9 @@ export function regionAt(realm, ax, ay, pt = 0) {
   // Stairs. A way up exists only in a south-facing face (the one painted piece), so a stair sits on an edge between a cell and the one south of it, the higher to the north, and only
   // where the place layer finds a straight face of the way up's width on that edge (levels.mjs, the one face test). The tree keeps today's rule (every level zone reachable) and picks
   // another edge, in the order of the hashed keys, where an edge has no face; a region whose zones cannot all be joined that way fails its check and is drawn again.
-  const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [], LVL = levelsOf(realm);
-  const faceOk = i => { const c = i >> 1; return !!findWayup(LVL, ax * MW + (c % MW), ay * MH + ((c / MW) | 0), portOffset(seed, ax, ay, i)); };
+  const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [];
+  // every stair is given its held-straight site before the land's passes (levels.mjs), so an edge lacks a face only where water leaves no 6 clear columns (the site is read from the field, not the passes)
+  const LVL = levelsOf(realm), faceOk = i => { const c = i >> 1; return siteClear(LVL, ax * MW + (c % MW), ay * MH + ((c / MW) | 0), portOffset(seed, ax, ay, i)); };
   const southUp = e => (e.i & 1) === 1 && level[e.a] > level[e.b];
   for (let i = 0; i < 2 * NC; i++) { if (edge[i] !== EDGE.CLIFF) continue; const a = i >> 1, b = i & 1 ? a + MW : a + 1;
     if (pass(a) && pass(b)) cand.push({ i, a, b, key: hash(seed, 'gen7', 'ramp', 2 * wc(a) + (i & 1)) }); }
@@ -289,7 +290,14 @@ const cache = new Map();
 // change that moves a realm (a stored realm of another revision is never used).
 export const REALM_REV = 5;   // 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
-export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
+// the realm's stairs for the land rule (levels.mjs): every south stair, by the cell it stands on and its port, read from the regions that stayed
+export function attachStairs(R) {
+  const list = [];
+  for (const G of R.regions) { const [ax, ay] = G.slot;
+    for (const cr of G.cross) if (cr.side === 's') list.push({ X: ax * MW + (cr.c % MW), Y: ay * MH + ((cr.c / MW) | 0), port: portOffset(R.seed, ax, ay, 2 * cr.c + 1) }); }
+  setStairs(R.realm, list);
+}
+export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); if (!R.realm.stairs) attachStairs(R); cache.set(seed, R); }
 export function realm7(seed) {
   if (cache.has(seed)) return cache.get(seed);
   const tries = new Uint8Array(ATLAS * ATLAS); let out = null;
@@ -301,6 +309,7 @@ export function realm7(seed) {
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
   }
   coastOf(out);
+  attachStairs(out);
   if (cache.size > 6) cache.clear();
   cache.set(seed, out); return out;
 }
