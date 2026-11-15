@@ -46,6 +46,11 @@ function spined(seed, E) {
   for (let s = 0; s < tgt.length; s++) q[s] = quantile(slotCells(s).map(c => E[c]).sort((a, b) => a - b), clamp(tgt[s].lv[0] / 100, 0.04, 0.9));
   return spineRanges(E, blend(q), new Uint8Array(NR), RW, RH);
 }
+// the height of fieldsAt alone (the same number, the other fields not read): the realm's edge probe reads thousands of tiles
+export function heightAt(seed) {
+  const elev = noiseField(seed, 'elev', 1 / 13), ridge = noiseField(seed, 'ridge', 1 / 10, 'Ridged', 3), wx = noiseField(seed, 'warpx', 1 / 18, 'FBm', 2), wy = noiseField(seed, 'warpy', 1 / 18, 'FBm', 2);
+  return (X, Y) => { const u = X + 4 * wx(X, Y), v = Y + 4 * wy(X, Y), r = ridge(u, v); return clamp(0.5 + 0.36 * elev(u, v) + 0.2 * r, 0, 1); };
+}
 export function fieldsAt(seed) {
   const elev = noiseField(seed, 'elev', 1 / 13), ridge = noiseField(seed, 'ridge', 1 / 10, 'Ridged', 3);
   const wx = noiseField(seed, 'warpx', 1 / 18, 'FBm', 2), wy = noiseField(seed, 'warpy', 1 / 18, 'FBm', 2);

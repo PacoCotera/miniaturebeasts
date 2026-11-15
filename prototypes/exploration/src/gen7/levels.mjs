@@ -5,10 +5,10 @@
 // on the raster "level above k", never on "raised vs low", so more heights are data (a longer list), not a rewrite. Level 0 is the low ground; `raised` means level 1 or more.
 // Then the passes P1 to P6: threshold; opening and closing by a rounded element; small hills and hollows; no diagonal pinch; no lone one-tile face; foot room under every lip.
 // The same function serves the region (which chooses each stair where this land has a way-up site) and the place (which puts the way up there).
-import { hash2, subSeed, fbm, warp } from '../../../core/base/noise.mjs';
-import { div, shr } from '../../../core/base/whole.mjs';
+import { hash2, subSeed } from '../../../core/base/noise.mjs';
+import { div, shr, quot } from '../../../core/base/whole.mjs';
 import RULE from './land-rule.json' with { type: 'json' };
-import { RW, RH, CW, CH, fieldsAt, noiseField } from './world.mjs';
+import { RW, RH, CW, CH, fieldsAt, heightAt, noiseField } from './world.mjs';
 import { L as LAND } from '../world.mjs';
 
 export { CW, CH };
@@ -81,17 +81,65 @@ function coastQ16(seed, gx, gy) {
 
 // q of the tiles of a cell (Q16): the realm's height above its raising height (bilinear in the cells' centres, whole-number weights over 2 CW and 2 CH), the warped detail, the coast
 // one tile's q (the same number qCell holds for it), without making the cell: the realm's edge probe reads a few strips of tiles
-export function qTile(L, gx, gy) {
-  const S = seedCtx(L.seed), D = L.rule.detail, reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, wo = L.rule.wobbleOctaves, st = L.rule.wobbleStretch, e0q = L.e0q, W2 = 2 * CW, H2 = 2 * CH;
-  const sd = L.qSeeds || (L.qSeeds = (() => { const sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'); return { sD, sWx: subSeed(sW, 'x'), sWy: subSeed(sW, 'y'), sDet: subSeed(sD, 'detail') }; })()), sD = sd.sD, sWx = sd.sWx, sWy = sd.sWy, sDet = sd.sDet;
+// (the octave seeds of the noise are made once per realm, not per tile: fbm of core/base/noise.mjs with the seeds given, the same sum)
+// grad2 of the core, written flat (no closure, no 2 ** bits): the same arithmetic, so the same numbers
+const GX = [1, -1, 0, 0, 1, -1, 1, -1], GY = [0, 0, 1, -1, 1, 1, -1, -1], F16 = 65536;
+// the lattice gradients (hash2 & 7) of an octave are kept in a grid per realm, filled as read: a tile's neighbours read the same lattice points
+const LAT_PAD = 48 * 256;   // the position is moved by at most the warp and the wobble (about 32 tiles); beyond the grid the hash is read
+function gradIdx(d, s, ix, iy) {
+  let g = d.grid;
+  if (g === null) { const sh = 8 + s; d.x0 = (-LAT_PAD >> sh) - 1; d.y0 = d.x0; d.w = ((WTW * 256 + LAT_PAD) >> sh) + 3 - d.x0; d.h = ((WTH * 256 + LAT_PAD) >> sh) + 3 - d.y0; g = d.grid = new Int8Array(d.w * d.h).fill(-1); }
+  const x = ix - d.x0, y = iy - d.y0;
+  if (x < 0 || y < 0 || x >= d.w || y >= d.h) return hash2(ix, iy, d.seed) & 7;
+  const k = y * d.w + x; let v = g[k]; if (v < 0) { v = hash2(ix, iy, d.seed) & 7; g[k] = v; } return v;
+}
+function grad2q(px, py, s, d) {
+  const sh = 8 + s, mask = (1 << sh) - 1, ix = px >> sh, iy = py >> sh, fx = (px & mask) << (16 - sh), fy = (py & mask) << (16 - sh);
+  let g = gradIdx(d, s, ix, iy); const n00 = GX[g] * fx + GY[g] * fy;
+  g = gradIdx(d, s, ix + 1, iy); const n10 = GX[g] * (fx - F16) + GY[g] * fy;
+  g = gradIdx(d, s, ix, iy + 1); const n01 = GX[g] * fx + GY[g] * (fy - F16);
+  g = gradIdx(d, s, ix + 1, iy + 1); const n11 = GX[g] * (fx - F16) + GY[g] * (fy - F16);
+  const u = fadeQ(fx), v = fadeQ(fy);
+  const a = n00 + Math.floor((n10 - n00) * u / F16), b = n01 + Math.floor((n11 - n01) * u / F16);
+  return a + Math.floor((b - a) * v / F16);
+}
+function fadeQ(t) {
+  const t2 = Math.floor(t * t / F16), t3 = Math.floor(t2 * t / F16);
+  return Math.floor(t3 * (Math.floor(t * (6 * t - 15 * F16) / F16) + 10 * F16) / F16);
+}
+function fbmQ(px, py, s0, seeds) {
+  const oc = seeds.length; let sum = 0, wsum = 0;
+  for (let o = 0; o < oc; o++) { const w = 1 << (oc - 1 - o); sum += w * grad2q(px, py, s0 - o, seeds[o]); wsum += w; }
+  return quot(sum, wsum) | 0;
+}
+const octSeeds = (seed, n) => { const a = []; for (let o = 0; o < n; o++) a.push({ seed: subSeed(seed, 'oct', o), grid: null, x0: 0, y0: 0, w: 0, h: 0 }); return a; };
+function qMacro(L, gx, gy) {   // q without its detail term (the fbm), leaving the position the detail is read at in _wx, _wy
+  const reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, st = L.rule.wobbleStretch, e0q = L.e0q, W2 = 2 * CW, H2 = 2 * CH;
+  const sd = L.qSeeds || (L.qSeeds = (() => {
+    const sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'), wo = L.rule.wobbleOctaves;
+    return { wpx: octSeeds(subSeed(sD, 'warpx'), 2), wpy: octSeeds(subSeed(sD, 'warpy'), 2), wbx: octSeeds(subSeed(sW, 'x'), wo), wby: octSeeds(subSeed(sW, 'y'), wo), det: octSeeds(subSeed(sD, 'detail'), 4), h: heightAt(L.seed) };
+  })());
   const px = 256 * gx + 128, py = 256 * gy + 128;
   // the position the land is read at: moved by the coarse warp (32 and 16 tile noise, up to `reach` tiles) and the fine wobble (8 and 4 tile noise, up to `wob` tiles), in Q8 tiles.
   // The macro height and its raising height are read there too, so the contour itself bends and wobbles by that many tiles, however steep the land is.
-  const w = warp(px, py, sD, reach), wx = w.x + shr(fbm(px, st * py, ws, wo, sWx) * wob, 8), wy = w.y + shr(fbm(st * px, py, ws, wo, sWy) * wob, 8);
+  const wx = ((fbmQ(px, py, 5, sd.wpx) * reach) >> 8) + shr(fbmQ(px, st * py, ws, sd.wbx) * wob, 8), wy = ((fbmQ(px, py, 5, sd.wpy) * reach) >> 8) + shr(fbmQ(st * px, py, ws, sd.wby) * wob, 8);
   const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
   const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
-  const h = S.at((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5).height, macro = Math.round(h * 65536) - e;
-  return macro + shr(fbm(px + wx, py + wy, 5, 4, sDet) * D, 16) + coastQ16(L.seed, gx, gy);
+  const h = sd.h((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5), macro = Math.round(h * 65536) - e;
+  _wx = px + wx; _wy = py + wy; _sd = sd;
+  return macro + coastQ16(L.seed, gx, gy);
+}
+let _wx = 0, _wy = 0, _sd = null;
+export function qTile(L, gx, gy) {
+  const m = qMacro(L, gx, gy);
+  return m + shr(fbmQ(_wx, _wy, 5, _sd.det) * L.rule.detail, 16);
+}
+// whether q (the tile's) reaches the threshold th: the same answer as qTile(L, gx, gy) >= th. The detail term is a fbm (a weighted mean of gradient noise, each under 2 in Q16: dot of a
+// (+-1, +-1) gradient with an offset under 1 on each axis), so it lies within +-2D: where the macro and the coast are further than that from th the detail is not read.
+export function qAtLeast(L, gx, gy, th) {
+  const d = qMacro(L, gx, gy) - th, B = 2 * L.rule.detail + 1;
+  if (d > B) return true; if (d < -B) return false;
+  return d + shr(fbmQ(_wx, _wy, 5, _sd.det) * L.rule.detail, 16) >= 0;
 }
 export function wetTile(L, gx, gy) {   // one tile's wet flag (the same as wetCell's), without making the cell
   if (inlandOf(gx, gy) < WET_REACH) return 0;
@@ -518,7 +566,7 @@ export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(
 // threshold, the passes not run). `need` rows are enough: the count stops there (the rows are read from the middle outwards). The roads ask this of the edges a trail or a bridge bank uses.
 export function edgeRows(L, ax, ay, bx, by, need, deep = 2, want = 0) {
   const east = bx > ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
-  const lvl = (gx, gy) => (inlandOf(gx, gy) >= RAISE_OFF && qTile(L, gx, gy) >= th ? 1 : 0);
+  const lvl = (gx, gy) => (inlandOf(gx, gy) >= RAISE_OFF && qAtLeast(L, gx, gy, th) ? 1 : 0);
   for (let s = 0; s < n && rows < need; s++) {   // every second row is read and stands for the pair (the field moves slowly along an edge)
     const t = (s & 1 ? -1 : 1) * ((s + 1) >> 1) * 2 + (n >> 1), ok = t >= 0 && t < n; if (!ok) continue;
     let good = true;
@@ -535,7 +583,7 @@ export function edgeRows(L, ax, ay, bx, by, need, deep = 2, want = 0) {
 // a bridge's two banks: the rows where the `deep` tiles of the bank's edge by the water are dry and low on both banks, the same row on each (a bridge runs straight across)
 export function bankRows(L, ax, ay, bx, by, need, deep = 2) {
   const east = bx !== ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
-  const lo = (gx, gy) => !(inlandOf(gx, gy) >= RAISE_OFF && qTile(L, gx, gy) >= th) && !wetTile(L, gx, gy);
+  const lo = (gx, gy) => !(inlandOf(gx, gy) >= RAISE_OFF && qAtLeast(L, gx, gy, th)) && !wetTile(L, gx, gy);
   const [lx, ly, hx, hy] = (east ? bx < ax : by < ay) ? [bx, by, ax, ay] : [ax, ay, bx, by];   // the western (northern) bank, the eastern (southern) one
   for (let t = 0; t < n && rows < need; t++) {
     let good = true;
