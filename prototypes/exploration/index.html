@@ -1438,7 +1438,11 @@ const SECTOR_ASKED = new Set();
 function wantSector(R) {
   if (!R || R.gen !== 7 || !R.slot || !S.regions[0] || typeof readySector !== 'function') return;
   const seed = S.regions[0].seed, key = seed + ':' + R.slot.join(','); if (SECTOR_ASKED.has(key)) return; SECTOR_ASKED.add(key);
-  readySector(seed, R.slot, realm7(seed)).then(how => { if (how === 'page') sectorMake(seed, R.slot); if (hereRegion() === R) { landReset(); mapCv = null; } }, () => { });   // no worker (or it failed): made here, on the spot
+  const again = () => { if (hereRegion() === R) { landReset(); mapCv = null; } };
+  // the places in view first (the Probe's reach and every cell already seen), then the rest of the region, both in the worker
+  const view = new Set(S.exp && S.exp.reach ? S.exp.reach : []);
+  for (let c = 0; c < MW * MH; c++) if (S.revealed[c]) view.add(c);
+  readySector(seed, R.slot, realm7(seed), [...view], again).then(how => { if (how === 'page') sectorMake(seed, R.slot); again(); }, () => { });   // no worker (or it failed): made here, on the spot
 }
 // A region that was away while the realm turned is brought up when it is mounted: the last three turns it missed, each with its own seed and no pending
 // storm or trail, and no line written. Older turns are let go (the world is permanent, not a ledger). With one region, turnSeen is always S.turn.
@@ -5008,6 +5012,7 @@ function sectorHere() {
   const seed = S.regions[0].seed;
   if (typeof Worker === 'undefined') return sectorMake(seed, R.slot);
   const sec = sectorReady(seed, R.slot); if (!sec) wantSector(R);   // asked once; the maps keep to the cell labels until it comes
+  if (sec && sec.have) { for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && !sec.have[c]) return null; }   // the places in view only, so far: it serves while every seen cell is in it
   return sec;
 }
 // spec: { X0, Y0 (the top-left cell), w, h (pixels), cs (the cell's size) }
@@ -5022,7 +5027,7 @@ function landState(spec) {
   const nx = Math.ceil(N / cs), ny = Math.ceil(NH / cs); let st = '';
   for (let j = -1; j <= ny; j++) for (let i = -1; i <= nx; i++) { const X = X0 + i, Y = Y0 + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) { st += 'x'; continue; } const c = Y * MW + X; st += !seen(c) ? 'n' : (fogOf(c) + (ex && ex.storm && stormCovers(X) ? 4 : 0)); }
   const mist = spec.mist != null && OPEN_ART.ready ? OPEN_ART.night : null;   // the opening's night mist: unseen pixels take the desk's tiles (frame 0, 1 or 2 = still), a variant per 96 px block of world pixels
-  const sec = sectorHere();
+  let sec = sectorHere(); if (sec && sec.have) for (let c = 0; c < MW * MH; c++) if (seen(c) && !sec.have[c]) { sec = null; break; }   // the glimpse's cells too
   const key = [X0, Y0, N, NH, cs, FOGV.n, FOGV.b, S.seed, st, glimpse ? 'g' : '', mist ? 'm' + spec.mist : '', sec ? 's' : ''].join('|');
   return { key, spec, seen, fogOf, mist, sec };
 }

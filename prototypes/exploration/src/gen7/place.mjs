@@ -55,7 +55,7 @@ const CTX = new Map();
 function ctxOf(seed) {
   let S = CTX.get(seed); if (S) return S;
   const R = realm7(seed), re = R.realm, N = RW * RH;
-  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), secG: new Map(), cells: new Map(), stairs: null, trails: null };
+  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), secC: new Map(), cells: new Map(), stairs: null, trails: null };
   for (const G of R.regions) {
     const [ax, ay] = G.slot;
     for (let c = 0; c < NC; c++) {
@@ -78,23 +78,29 @@ const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 function chunk(S, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = S.chunks.get(key); if (hit) return hit;
   const n = CW * CH, forest = new Float32Array(n), rock = new Float32Array(n), wet = new Float32Array(n), scrub = new Float32Array(n), push = new Float32Array(n), f = tileFields(S.seed, X, Y), land = S.landC[cellIdx(X, Y)];   // the fields of each tile, sampled once for the levels and for this
-  const bil = (A, i00, i10, i01, i11, a, b) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
   for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
-    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx;
-    const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
-    const i00 = cellIdx(X0, Y0), i10 = cellIdx(X0 + 1, Y0), i01 = cellIdx(X0, Y0 + 1), i11 = cellIdx(X0 + 1, Y0 + 1);
-    forest[k] = 0.55 * f.wild[k] + 0.45 * bil(S.forestC, i00, i10, i01, i11, a, b) + 0.12 * S.nF(gx, gy);
-    rock[k] = 0.3 * f.rock[k] + 0.7 * bil(S.rockC, i00, i10, i01, i11, a, b) + 0.12 * S.nR(gx, gy);
-    wet[k] = bil(S.wetC, i00, i10, i01, i11, a, b) + 0.22 * S.nW(gx, gy);
-    scrub[k] = S.nS(gx, gy);
-    // the map's land kind shows at the cell's middle whatever its neighbours are: a rock cell is stony and a wood cell has its floor there (a bump that falls to nothing before the cell's edge, so no seam)
-    const bump = Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10));
-    if (land === L.ROCK) rock[k] += 0.5 * bump; else if (land === L.WOOD) push[k] = 0.5 * bump;
-    if (inlandOf(gx, gy) < COAST_REACH) { rock[k] = 0; push[k] = 0; forest[k] = 0; wet[k] = 0; }   // the coast band is laid whole in windowOf: the fields give it plain ground
+    const k = ty * CW + tx; tileField(S, land, X, Y, tx, ty, f.wild[k], f.rock[k]);
+    forest[k] = TF[0]; rock[k] = TF[1]; wet[k] = TF[2]; scrub[k] = TF[3]; push[k] = TF[4];
   }
   const out = { forest, rock, wet, scrub, push };
   if (S.chunks.size > 600) S.chunks.clear();
   S.chunks.set(key, out); return out;
+}
+// the fields of one tile (forest, rock, wet, scrub, push into TF), from the tile's own wildness and rockiness: chunk() lays them for every tile of a cell, the sector (secCount) for the few it samples
+const TF = new Float64Array(5);
+function tileField(S, land, X, Y, tx, ty, wild, rockiness) {
+  const gx = X * CW + tx, gy = Y * CH + ty;
+  const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
+  const i00 = cellIdx(X0, Y0), i10 = cellIdx(X0 + 1, Y0), i01 = cellIdx(X0, Y0 + 1), i11 = cellIdx(X0 + 1, Y0 + 1);
+  const bil = (A) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
+  const fr = Math.fround;   // each field is the single-precision value chunk() has always stored
+  let forest = fr(0.55 * wild + 0.45 * bil(S.forestC) + 0.12 * S.nF(gx, gy)), rock = fr(0.3 * rockiness + 0.7 * bil(S.rockC) + 0.12 * S.nR(gx, gy)), wet = fr(bil(S.wetC) + 0.22 * S.nW(gx, gy)), push = 0;
+  const scrub = fr(S.nS(gx, gy));
+  // the map's land kind shows at the cell's middle whatever its neighbours are: a rock cell is stony and a wood cell has its floor there (a bump that falls to nothing before the cell's edge, so no seam)
+  const bump = Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10));
+  if (land === L.ROCK) rock = fr(rock + 0.5 * bump); else if (land === L.WOOD) push = fr(0.5 * bump);
+  if (inlandOf(gx, gy) < COAST_REACH) { rock = 0; push = 0; forest = 0; wet = 0; }   // the coast band is laid whole in windowOf: the fields give it plain ground
+  TF[0] = forest; TF[1] = rock; TF[2] = wet; TF[3] = scrub; TF[4] = push;
 }
 
 // ---- the terrain levels: tile scale, from the elevation field (levels.mjs) ----
@@ -681,33 +687,66 @@ export function windowIR(seed, X0, Y0, nx, ny) {
 // Result: { cls: Uint8Array(16), lv: Uint8Array(16), lines: [{ k: 'trail' | 'stream', pts: [x, y, x, y, ...] }], marks: [{ k: 'bridge' | 'ford', x, y, ax }], dest: [{ kind }], ramps: [{ dir: 's' | 'e', x, y, hiA }] }
 const SEC_BX = 6, SEC_BY = 7, SEC_NX = CW / SEC_BX, SEC_NY = CH / SEC_BY;
 const SEC_CLS = []; SEC_CLS[TV.WATER] = 5; SEC_CLS[TV.DEEP] = 5; SEC_CLS[TV.SAND] = 4; SEC_CLS[TV.THICKET] = 2; SEC_CLS[TV.SCRUB] = 2; SEC_CLS[TV.LITTER] = 1; SEC_CLS[TV.SCREE] = 3;
-function secClassAt(S, gbx, gby) {   // the class of the block at block coordinates (gbx, gby) of the realm (the realm's edge repeats)
-  const bx = clamp(gbx, 0, RW * SEC_NX - 1), by = clamp(gby, 0, RH * SEC_NY - 1), X = (bx / SEC_NX) | 0, Y = (by / SEC_NY) | 0;
-  return secGround(S, X, Y)[(by - Y * SEC_NY) * SEC_NX + bx - X * SEC_NX] & 7;
-}
-function secGround(S, X, Y) {   // the class of every block: the majority of its tiles' pre-pass ground
-  const key = (X + 8) * 1000 + (Y + 8), got = S.secG.get(key); if (got) return got;
-  const c = chunk(S, X, Y), cnt = new Uint8Array(SEC_NX * SEC_NY * 6), deep = new Uint8Array(SEC_NX * SEC_NY), slotAt = (a, b) => S.re.slotBiome[clamp(b, 0, ATLAS - 1) * ATLAS + clamp(a, 0, ATLAS - 1)];
-  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
-    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, b = ((ty / SEC_BY) | 0) * SEC_NX + ((tx / SEC_BX) | 0), d = inlandOf(gx, gy);
+// the numbers, from the confusion matrix of the sector against the built place (450 places, seeds 1-15): per class the least tiles of a block's 42 that claim it (wood 19, thicket 36, rock 20, water 6 of its
+// core); thicket also needs 24 tiles of true thicket (not scrub); water is claimed whole at 27 tiles; the trail lane is 5 tiles from the line
+let SEC_MIN = [0, 19, 36, 20, 0, 6], SEC_LANE = 5, SEC_WT = 27, SEC_TH = 24, SEC_STEP = 2;
+export const setSecForTune = (min, lane, wt, th, step) => { SEC_MIN = min; SEC_LANE = lane; SEC_WT = wt; SEC_TH = th; SEC_STEP = step; for (const S of CTX.values()) S.secC.clear(); };   // for tools/tune only; the numbers above are the game's
+// Only every SEC_STEP-th tile in each direction is read (the tiles 1, 3, 5, ... of the cell): the sector is a picture of 6 x 7 blocks, so a sparse sample of the ground says as much, at a fraction of the noise.
+// The counts are scaled back to the block's 42 tiles, so the numbers above mean the same at any step.
+function secCount(S, X, Y) {   // per block, the count of its tiles' pre-pass ground by class (6 a block) and of deep-sea tiles
+  const key = (X + 8) * 1000 + (Y + 8), got = S.secC.get(key); if (got) return got;
+  const nb = SEC_NX * SEC_NY, raw = new Uint8Array(nb * 6), deepR = new Uint8Array(nb), thickR = new Uint8Array(nb), coreR = new Uint8Array(nb), nS = new Uint8Array(nb), land = S.landC[cellIdx(X, Y)];
+  const o = SEC_STEP === 1 ? 0 : 1, LX = ((CW - o + SEC_STEP - 1) / SEC_STEP) | 0, LY = ((CH - o + SEC_STEP - 1) / SEC_STEP) | 0, wet = new Uint8Array(LX * LY), slotAt = (a, b) => S.re.slotBiome[clamp(b, 0, ATLAS - 1) * ATLAS + clamp(a, 0, ATLAS - 1)];
+  for (let j = 0; j < LY; j++) for (let i = 0; i < LX; i++) {
+    const tx = o + i * SEC_STEP, ty = o + j * SEC_STEP, gx = X * CW + tx, gy = Y * CH + ty, b = ((ty / SEC_BY) | 0) * SEC_NX + ((tx / SEC_BX) | 0), d = inlandOf(gx, gy);
     let t = TV.GRASS;
     if (d < COAST_REACH) { const [deepEnd, wl, sandEnd] = coastEdges(S, gx, gy); t = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < sandEnd ? TV.SAND : TV.GRASS; }
     else {
-      const r = recipeAt(slotAt, ATLAS, MW * CW, MH * CH, gx, gy);
-      if (c.rock[k] + r.rockAdd > SAND_AT) t = TV.SCREE;
-      else if (r.litterAt < LITTER_NONE && c.forest[k] + 0.35 * S.nE(gx, gy) + c.push[k] > r.litterAt) t = TV.LITTER;
+      const f = S.at((gx + 0.5) / CW - 0.5, (gy + 0.5) / CH - 0.5); tileField(S, land, X, Y, tx, ty, f.wildness, f.rockiness);
+      const forest = TF[0], rock = TF[1], wetF = TF[2], scrub = TF[3], push = TF[4], r = recipeAt(slotAt, ATLAS, MW * CW, MH * CH, gx, gy);
+      if (rock + r.rockAdd > SAND_AT) t = TV.SCREE;
+      else if (r.litterAt < LITTER_NONE && forest + 0.35 * S.nE(gx, gy) + push > r.litterAt) t = TV.LITTER;
       else if (r.dry > 0 || r.turf > 0) { const u = 0.5 + 0.5 * S.nD(gx, gy); if (u < r.dry) t = TV.DRY; else if (1 - u < r.turf) t = TV.TURF; }
-      if (c.forest[k] > r.scrubAt && c.forest[k] <= r.thicketAt && c.scrub[k] > r.scrubNoise && t !== TV.DRY && t !== TV.TURF) t = TV.SCRUB;
-      if (c.forest[k] > r.thicketAt) t = TV.THICKET;
-      if (c.wet[k] > r.waterAt || (r.chan > 0.005 && Math.abs(S.nC(gx, gy)) < r.chan && S.nM(gx, gy) > r.mask)) t = TV.WATER;
+      if (forest > r.scrubAt && forest <= r.thicketAt && scrub > r.scrubNoise && t !== TV.DRY && t !== TV.TURF) t = TV.SCRUB;
+      if (forest > r.thicketAt) t = TV.THICKET;
+      if (wetF > r.waterAt || (r.chan > 0.005 && Math.abs(S.nC(gx, gy)) < r.chan && S.nM(gx, gy) > r.mask)) t = TV.WATER;
     }
-    cnt[b * 6 + (SEC_CLS[t] || 0)]++; if (t === TV.DEEP) deep[b]++;
+    nS[b]++; raw[b * 6 + (SEC_CLS[t] || 0)]++; if (t === TV.DEEP) deepR[b]++; if (t === TV.THICKET) thickR[b]++; wet[j * LX + i] = SEC_CLS[t] === 5 ? 1 : 0;
   }
-  const cls = new Uint8Array(SEC_NX * SEC_NY);
-  for (let b = 0; b < cls.length; b++) { let m = 0; for (let i = 1; i < 6; i++) if (cnt[b * 6 + i] > cnt[b * 6 + m]) m = i; cls[b] = m | (m === 5 && deep[b] * 2 >= cnt[b * 6 + 5] ? 8 : 0); }
-  if (S.secG.size > 4000) S.secG.clear();
-  S.secG.set(key, cls); return cls;
+  // the water that stays: the passes shave a body's rim, so only a sample whose four neighbours are water too (the place's edge counts as water) is counted
+  for (let j = 0; j < LY; j++) for (let i = 0; i < LX; i++) {
+    const k = j * LX + i; if (!wet[k]) continue;
+    if ((i === 0 || wet[k - 1]) && (i === LX - 1 || wet[k + 1]) && (j === 0 || wet[k - LX]) && (j === LY - 1 || wet[k + LX])) coreR[(((o + j * SEC_STEP) / SEC_BY) | 0) * SEC_NX + (((o + i * SEC_STEP) / SEC_BX) | 0)]++;
+  }
+  const sc = (a, bi) => Math.min(SEC_BX * SEC_BY, Math.round(a * SEC_BX * SEC_BY / nS[bi])), cnt = new Uint8Array(nb * 6), deep = new Uint8Array(nb), thick = new Uint8Array(nb), core = new Uint8Array(nb);
+  for (let b = 0; b < nb; b++) { for (let i = 0; i < 6; i++) cnt[b * 6 + i] = sc(raw[b * 6 + i], b); deep[b] = sc(deepR[b], b); thick[b] = sc(thickR[b], b); core[b] = sc(coreR[b], b); }
+  if (S.secC.size > 4000) S.secC.clear();
+  const r = { cnt, deep, thick, core }; S.secC.set(key, r); return r;
 }
+// the class of every block: the majority of its tiles' pre-pass ground, claimed only when that class holds at least SEC_MIN[class] of the block's 42 tiles (the place's passes clear thinner
+// wood, thicket and rock to grass); a block under its class's number shows grass
+// The trail's lane (windowOf's paint: the path and 3 tiles of grass each side) clears sand, scrub, wood and rock to grass, so the tiles of a block that lie within SEC_LANE of a trail line
+// count as grass; water is never cleared.
+function secGround(S, X, Y, lines, lv) {
+  const { cnt, deep, thick, core } = secCount(S, X, Y), cls = new Uint8Array(SEC_NX * SEC_NY), trails = lines.filter(l => l.k === 'trail'), eff = new Float32Array(6);
+  for (let b = 0; b < cls.length; b++) {
+    let cl = 0;
+    if (trails.length) for (let ty = 0; ty < SEC_BY; ty++) for (let tx = 0; tx < SEC_BX; tx++) {
+      const px = X * CW + (b % SEC_NX) * SEC_BX + tx + 0.5, py = Y * CH + ((b / SEC_NX) | 0) * SEC_BY + ty + 0.5;
+      if (trails.some(l => segDist(px, py, l.pts) <= SEC_LANE)) cl++;
+    }
+    const keep = 1 - cl / (SEC_BX * SEC_BY); let rest = SEC_BX * SEC_BY;
+    for (let i = 1; i < 6; i++) { eff[i] = (cnt[b * 6 + i] - (i === 2 && lv[b] ? thick[b] : 0)) * (i === 5 ? 1 : keep); rest -= eff[i]; }   // raised land holds no thicket on its top (topsOf)
+    eff[5] = cnt[b * 6 + 5] >= SEC_WT ? SEC_BX * SEC_BY : core[b];   // water counts by its core (the passes shave a body's rim), or all of it when the block is nearly all water
+    eff[0] = rest;
+    let m = 0; for (let i = 1; i < 6; i++) if (eff[i] > eff[m]) m = i;
+    if (m && eff[m] < SEC_MIN[m]) m = 0;
+    if (m === 2 && thick[b] * keep < SEC_TH) m = 0;
+    cls[b] = m | (m === 5 && deep[b] * 2 >= cnt[b * 6 + 5] ? 8 : 0);
+  }
+  return cls;
+}
+const segDist = (px, py, [x0, y0, x1, y1]) => { const dx = x1 - x0, dy = y1 - y0, u = Math.max(0, Math.min(1, ((px - x0) * dx + (py - y0) * dy) / (dx * dx + dy * dy || 1))); return Math.hypot(px - x0 - u * dx, py - y0 - u * dy); };
 const secPt = (seed, kind, cx, cy, ox, oy) => { const h = hash(seed, 'gen7', kind, cx, cy); return [cx * CW + 12 + (h % 9) - 4 + ox, cy * CH + 14 + ((h >>> 8) % 9) - 4 + oy]; };
 // the point where the line between two neighbouring world cells crosses their edge (the realm's port: the tile row or column both places agree on)
 function secPort(S, p, q) {
@@ -740,15 +779,7 @@ function secMarks(S) {   // per seed: bridges, river fords and trail-over-stream
   return (S.secMarks = by);
 }
 export function sectorOf(seed, X, Y) {
-  const S = ctxOf(seed), re = S.re, cls = secGround(S, X, Y), lv = new Uint8Array(SEC_NX * SEC_NY), f = tileFields(seed, X, Y), e0 = re.e0, c0 = Y * RW + X;
-  for (let by = 0; by < SEC_NY; by++) for (let bx = 0; bx < SEC_NX; bx++) {   // the level bit: the height at the block's centre tile against the edited raising height; water is low
-    const tx = bx * SEC_BX + 3, ty = by * SEC_BY + 3, gx = X * CW + tx, gy = Y * CH + ty;
-    if ((cls[by * SEC_NX + bx] & 7) === 5) continue;
-    const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
-    const e = e0[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + e0[cellIdx(X0 + 1, Y0)] * a * (1 - b) + e0[cellIdx(X0, Y0 + 1)] * (1 - a) * b + e0[cellIdx(X0 + 1, Y0 + 1)] * a * b;
-    const inl = inlandOf(gx, gy), coast = inl >= 22 ? 0 : -Math.floor((22 - Math.max(inl, 12)) * 23000 / 10);
-    lv[by * SEC_NX + bx] = Math.round((f.height[ty * CW + tx] - e) * 65536) + coast >= 0 ? 1 : 0;
-  }
+  const S = ctxOf(seed), re = S.re, lv = new Uint8Array(SEC_NX * SEC_NY), e0 = re.e0, c0 = Y * RW + X;
   const lines = [], marks = [], dest = [], ramps = [];
   // the trail: each neighbour the realm's trails join this place to is a port; two ports meet at a bend point 3-6 tiles off their straight line, one or three or more at the place's hub
   const tr = trailsOf(S), hits = tr.by.get(X * 1000 + Y);
@@ -764,6 +795,15 @@ export function sectorOf(seed, X, Y) {
       for (const a of anchors) lines.push({ k: 'trail', pts: [a[0], a[1], j[0], j[1]] });
     }
   }
+  for (let by = 0; by < SEC_NY; by++) for (let bx = 0; bx < SEC_NX; bx++) {   // the level bit: the height at the block's centre tile against the edited raising height
+    const tx = bx * SEC_BX + 3, ty = by * SEC_BY + 3, gx = X * CW + tx, gy = Y * CH + ty;
+    const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
+    const e = e0[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + e0[cellIdx(X0 + 1, Y0)] * a * (1 - b) + e0[cellIdx(X0, Y0 + 1)] * (1 - a) * b + e0[cellIdx(X0 + 1, Y0 + 1)] * a * b;
+    const inl = inlandOf(gx, gy), coast = inl >= 22 ? 0 : -Math.floor((22 - Math.max(inl, 12)) * 23000 / 10);
+    lv[by * SEC_NX + bx] = Math.round((Math.fround(S.at((gx + 0.5) / CW - 0.5, (gy + 0.5) / CH - 0.5).height) - e) * 65536) + coast >= 0 ? 1 : 0;   // the height as the place's own field holds it (single precision)
+  }
+  const cls = secGround(S, X, Y, lines, lv);
+  for (let b = 0; b < cls.length; b++) if ((cls[b] & 7) === 5) lv[b] = 0;   // water is low
   for (const pts of secStreams(S).get(c0) || []) lines.push({ k: 'stream', pts });
   for (const m of secMarks(S).get(c0) || []) marks.push({ k: m.k, x: X * CW + 12, y: Y * CH + 14, ax: m.ax });
   for (const d of re.destinations || []) if (d.c === c0) dest.push({ kind: d.kind });

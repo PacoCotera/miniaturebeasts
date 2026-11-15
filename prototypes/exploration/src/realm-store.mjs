@@ -51,18 +51,24 @@ export async function readyRealm(seed, times = {}, onStep) {
 
 // A region's sector (world7.mjs sectorOfRegion: 4 x 4 blocks of ground and level a place, and the realm's lines), the land the reach view and every map are painted from. It is made from the realm alone, so no place is
 // built: about a third of a second in a worker, then kept in memory (it is not stored: it is made again faster than it is read). Returns 'cached', 'worker' or 'page' (no worker: the page makes it on the spot, world7.mjs sectorNow).
-export async function readySector(seed, slot, realm) {
+// cells (the places in view): they are asked first and held as soon as they come (the promise resolves then); the rest of the region follows in the same worker, and onWhole() is called when it is held.
+export async function readySector(seed, slot, realm, cells, onWhole) {
   if (hasSector(seed, slot)) return 'cached';
   if (typeof Worker === 'undefined') return 'page';
+  let first = null;
   const sec = await new Promise((resolve, reject) => {
     const w = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' });
-    const end = (f, v) => { w.terminate(); f(v); };
-    w.onmessage = e => (e.data && e.data.sector ? end(resolve, e.data.sector) : end(reject, new Error((e.data && e.data.error) || 'the sector was not made')));
-    w.onerror = e => end(reject, new Error((e && e.message) || 'the sector worker failed'));
+    const end = (f, v) => { w.terminate(); f(v); }, fail = msg => { if (first) { w.terminate(); return; } end(reject, new Error(msg)); };
+    w.onmessage = e => {
+      const d = e.data || {};
+      if (!d.sector) { fail(d.error || 'the sector was not made'); return; }
+      if (d.part) { first = d.sector; presetSector(seed, slot, d.sector); resolve(d.sector); return; }
+      presetSector(seed, slot, d.sector); w.terminate(); if (!first) resolve(d.sector); if (onWhole) onWhole();
+    };
+    w.onerror = e => fail((e && e.message) || 'the sector worker failed');
+    if (cells && cells.length) w.postMessage({ op: 'sector', seed, slot, realm, cells });
     w.postMessage({ op: 'sector', seed, slot, realm });
   }).catch(() => null);
-  if (!sec) return 'page';
-  presetSector(seed, slot, sec);
-  return 'worker';
+  return sec ? 'worker' : 'page';
 }
 

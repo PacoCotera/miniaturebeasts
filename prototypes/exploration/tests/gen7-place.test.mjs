@@ -301,13 +301,23 @@ test('seed 7: the sector of a place is 16 blocks of ground and level, agrees wit
       if ((s.cls[b] & 7) === 5) assert.equal(s.lv[b], 0, 'a water block is low');
     }
   }
-  assert.ok(gOk / n >= 0.85, 'C2g on the sample: ' + gOk + ' of ' + n); assert.ok(lOk / n >= 0.85, 'C2l on the sample: ' + lOk + ' of ' + n);
+  assert.ok(gOk / n >= 0.9, 'C2g on the sample: ' + gOk + ' of ' + n); assert.ok(lOk / n >= 0.85, 'C2l on the sample: ' + lOk + ' of ' + n);
   // a stretch of trail: the two places' lines share the port of the edge between them
   const list = re.roads.lists.find(l => l.length >= 2), a = [list[0] % RW, (list[0] / RW) | 0], b = [list[1] % RW, (list[1] / RW) | 0];
   const ends = (X, Y) => sectorOf(seed, X, Y).lines.filter(l => l.k === 'trail').map(l => l.pts.slice(0, 2).join());
   assert.ok(ends(a[0], a[1]).some(p => ends(b[0], b[1]).includes(p)), 'the trail leaves one place and enters the next at the same port');
 });
 
+// The reach asks for the places in view first: a sector made for some cells holds exactly what the whole region's holds in them, marks them in `have`, and leaves the rest empty.
+test('seed 7: a sector asked for the cells in view equals the whole region sector in those cells', { timeout: 900000 }, async () => {
+  const { sectorOfRegion } = await import('../src/world7.mjs'), seed = 7, slot = [1, 1], cells = [0, 1, 25, 26, 100], part = sectorOfRegion(seed, slot, cells), whole = sectorOfRegion(seed, slot);
+  assert.equal(whole.have, undefined);
+  for (let c = 0; c < part.have.length; c++) {
+    assert.equal(part.have[c], cells.includes(c) ? 1 : 0);
+    for (let i = 0; i < 16; i++) { const same = part.cls[c * 16 + i] === whole.cls[c * 16 + i] && part.lv[c * 16 + i] === whole.lv[c * 16 + i]; assert.ok(cells.includes(c) ? same : part.cls[c * 16 + i] === 0 && part.lv[c * 16 + i] === 0); }
+  }
+  assert.deepEqual(part.lines, whole.lines.filter(l => cells.includes(l.c)));
+});
 
 // The region atlas tool (tools/atlas.mjs) runs on one place and writes its picture and its numbers.
 test("atlas: one place gives a PNG and a JSON of numbers", async () => {
