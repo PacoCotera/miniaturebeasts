@@ -201,7 +201,7 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
         let pick = null, pn = 9;
         for (let oy = -1; oy <= 0; oy++) for (let ox = -1; ox <= 0; ox++) {
           const xs = x + ox, ys = y + oy; if (xs < 0 || ys < 0 || xs + 1 >= W || ys + 1 >= H) continue;
-          let bad = 0, foreign = 0; for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const u = a[(ys + dy) * W + xs + dx]; if (u !== TV.GRASS) { foreign++; if (never(u)) bad++; } }
+          let bad = 0, foreign = 0; for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const u = a[(ys + dy) * W + xs + dx]; if (u !== TV.GRASS) { foreign++; if (never(u) || u === TV.PATH) bad++; } }   // a trail's path is never given up to a grass bit's 2 x 2 block (it cut trails at the places' edges)
           if (!bad && foreign < pn) { pn = foreign; pick = [xs, ys]; }
         }
         if (pick) for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const k = (pick[1] + dy) * W + pick[0] + dx; if (a[k] !== TV.GRASS) { a[k] = TV.GRASS; changed++; } }
@@ -434,12 +434,14 @@ function windowOf(S, X, Y) {
   // The cell's drawing (the trail's junction): every neighbour the realm's trails join this cell to is a port; two ports meet at a bend point 3-6 tiles off their straight line, one or three or more at the
   // cell's hub tile; each port is routed to the junction. A port slides along its edge (+1, -1, +2, ...) to the first pair of tiles that is open on both sides, so the trail crosses the edge where both
   // places can draw it. A trail clears thicket only where no way round it exists.
-  const tr = trailsOf(S), ground = t.slice(), blocked = new Uint8Array(N), blockedT = new Uint8Array(N), rough = new Uint8Array(N);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let hard = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H, hardT = hard, soft = 0; for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.CLIFF) { hard = true; hardT = true; } else if (v === TV.THICKET) hard = true; if (v !== TV.GRASS) soft = 1; } blocked[y * W + x] = hard ? 1 : 0; blockedT[y * W + x] = hardT ? 1 : 0; rough[y * W + x] = soft; }
+  const tr = trailsOf(S), ground = t.slice(), blocked = new Uint8Array(N), blockedT = new Uint8Array(N), blockedB = new Uint8Array(N), blockedC = new Uint8Array(N), rough = new Uint8Array(N);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let hard = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H, hardT = hard, soft = 0; for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.CLIFF) { hard = true; hardT = true; } else if (v === TV.THICKET) hard = true; if (v !== TV.GRASS) soft = 1; } blocked[y * W + x] = hard ? 1 : 0; blockedT[y * W + x] = hardT ? 1 : 0; rough[y * W + x] = soft;
+    let hardB = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H; for (let dy = 0; dy <= 1; dy++) for (let dx = 0; dx <= 1; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.DEEP || v === TV.CLIFF) hardB = true; } blockedB[y * W + x] = hardB ? 1 : 0;
+    let hardC = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H; for (let dy = 0; dy <= 1; dy++) for (let dx = 0; dx <= 1; dx++) if (t[(y + dy) * W + x + dx] === TV.CLIFF) hardC = true; blockedC[y * W + x] = hardC ? 1 : 0; }
   const paint = (x, y, clear) => { const R0 = 3; /* a lane of grass 3 tiles each side */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
   const stairBy = new Map(); for (const st of stairsOf(S)) stairBy.set(st.A[0] * 1000 + st.A[1] + (st.south ? 's' : 'e'), st);
   const blockedAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blockedT[y * W + x] === 1; };
-  const walkOnlyAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; return v === TV.WATER || v === TV.DEEP || v === TV.CLIFF || v === TV.THICKET; };
+  const walkOnlyAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = ground[y * W + x]; return v === TV.WATER || v === TV.DEEP || v === TV.CLIFF || v === TV.THICKET; };   // the ground as it was before any trail was laid, so the port is the same from every window
   for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) {
     const cx = X - HX + i, cy = Y - HY + j, hits = tr.by.get(cx * 1000 + cy); if (!hits) continue;
     const cur = [cx, cy], nbs = new Map();
@@ -450,8 +452,10 @@ function windowOf(S, X, Y) {
       if (lc === lo) {
         const base = portAt(S.seed, Math.min(cur[0], o[0]), Math.min(cur[1], o[1]), o[0] === cur[0]), pt0 = portTiles(S, cur, o, 0);
         // slide along the whole edge (+1, -1, +2, ...) to the first pair of tiles open on both sides (the same test from either place); else to the first pair that only walks (no water, thicket or raised land)
-        for (const open of [blockedAt, walkOnlyAt]) { if (!pt0.some(p => open(p[0], p[1]))) return pt0[0];
-          for (let d = 1; d < len; d++) for (const s of [d, -d]) { if (base + s < 2 || base + s > len - 4) continue; const pt = portTiles(S, cur, o, s); if (!pt.some(p => open(p[0], p[1]))) return pt[0]; } }
+        // (the walking test holds the brush's whole 2 x 2 on both sides: the pair of the port and the pair one tile along the edge)
+        const free = (open, s) => !portTiles(S, cur, o, s).concat(open === walkOnlyAt ? [-1, 1, 2].flatMap(k => portTiles(S, cur, o, s + k)) : []).some(p => open(p[0], p[1]));
+        for (const open of [blockedAt, walkOnlyAt]) { if (free(open, 0)) return pt0[0];
+          for (let d = 1; d < len; d++) for (const s of [d, -d]) { if (base + s < 2 || base + s > len - 4) continue; if (free(open, s)) return portTiles(S, cur, o, s)[0]; } }
         return pt0[0];
       }
       if (lc > lo) return null;   // a stair, and this is its high side
@@ -474,13 +478,15 @@ function windowOf(S, X, Y) {
     }
     const routeTo = (a, b) => {
       const from = ly(a) * CW + lx(a), to = ly(b) * CW + lx(b);
-      for (const clear of [false, true]) {
-        const bl = clear ? blockedT : blocked;
-        const cost = (c, n) => { const w = wAt(n % CW, (n / CW) | 0); return bl[w] && n !== to ? null : 1 + 0.7 * (0.5 + 0.5 * S.nP(gx0 + w % W, gy0 + ((w / W) | 0))) + (ground[w] === TV.SAND ? 0.5 : 0) + 3 * rough[w] + (clear && blocked[w] ? 4 : 0); };
-        const r = route(CW, CH, from, to, cost); if (r) { for (const c of r) paint(ox + (c % CW), oy + ((c / CW) | 0), clear); return true; }
+      for (const tier of [0, 1, 2, 3]) {   // 0: open ground; 1: may clear thicket; 2: a narrow neck (a shore pinch): only the 2 x 2 brush must be dry and clear of raised land; 3: the last resort, water crossed at a high cost (the brush is never laid on water)
+        const clear = tier > 0, bl = tier === 3 ? blockedC : tier === 2 ? blockedB : clear ? blockedT : blocked;
+        const cost = (c, n) => { const w = wAt(n % CW, (n / CW) | 0); return bl[w] && n !== to ? null : 1 + 0.7 * (0.5 + 0.5 * S.nP(gx0 + w % W, gy0 + ((w / W) | 0))) + (ground[w] === TV.SAND ? 0.5 : 0) + 3 * rough[w] + (clear && blocked[w] ? 4 : 0) + (tier === 3 && blockedB[w] ? 12 : 0); };
+        const r = route(CW, CH, from, to, cost);
+        if (r) { for (const c of r) paint(ox + (c % CW), oy + ((c / CW) | 0), clear); return true; }
       }
       return false;
     };
+    for (const a of anchors) paint(ox + lx(a), oy + ly(a), true);   // the port's own 2 x 2 of path is always laid, so a neighbour that cannot route past a pinch still meets the trail at the shared tile
     if (junction) for (const a of anchors) routeTo(a, junction);
     else if (!routeTo(anchors[0], anchors[1])) { const j = nearOpen(hub); for (const a of anchors) routeTo(a, j); }
   }
