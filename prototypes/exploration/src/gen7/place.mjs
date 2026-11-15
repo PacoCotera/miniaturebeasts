@@ -28,7 +28,8 @@ export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH
 // and every two of them are such a pair
 // The table is the set's own: art/places/sets/ninja-test/set.json `groundPairs` (ids, through art/places/terrain.json's values), the one source; tools/gen7-layers.mjs refuses a pair the layers' `lowers` cannot draw and the
 // page's layers.json is made from the same file. (Sand-raised is not in the table: a raised region that meets both grass and sand is drawn two ways, which the bake refuses.)
-const VALUE_OF = Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
+const FAMILY = new Set([6, 11, 12, 13]);   // the grass family the heart's patch lies on: grass, litter, dry grass, turf (terrain.md item 4; place-walk-2)
+const VALUE_OF =Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
 const PAIRS = new Set(SET.groundPairs.map(([a, b]) => (VALUE_OF[a] < VALUE_OF[b] ? VALUE_OF[a] + '|' + VALUE_OF[b] : VALUE_OF[b] + '|' + VALUE_OF[a])));
 // the low grounds the cliff's face meets with no grass between: the cliff's pairs in the table besides grass (the biome grounds). Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
 // keeps one tile of grass between it and the rim, made on its side
@@ -379,8 +380,8 @@ function pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion) {
 // thinnest stretch of thicket, to the nearest other part that is not itself such a pocket. A part is judged only where every window that shows one of the cells it touches shows all of it with its gap's reach (its box and
 // GAP_MAX + 3 tiles round it lie within one cell round each cell it touches across, two cells up and down: the window is 7 x 9 cells), as the land rule's pockets are, so a cell is the same from every neighbour's window. The gap runs through thicket tiles only (a cliff, water,
 // deep water and the coast band are never cut) and is marked as a gate tile, which the settling passes keep. Returns the number of gaps cut.
-const GAP_MAX = 10, GAP_SMALL = 1500, GAP_ANCHOR = 200;
-function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate) {
+const GAP_MAX = 10, GAP_SMALL = 1500, GAP_ANCHOR = 200, GAP_RUN = 4;
+function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
   const N = W * H, NB = [[1, 0], [-1, 0], [0, 1], [0, -1]];
   const wu = new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const lx = x - gx0, ly = y - gy0; if (lx >= 0 && ly >= 0 && lx < W && ly < H) wu[ly * W + lx] = 1; }
   const pass = new Uint8Array(N);
@@ -420,12 +421,50 @@ function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate) {
       ring++;
     }
     if (hit < 0) continue;
-    const path = []; for (let m = hit; m >= 0; m = prev.get(m)) path.push(m);
-    // the gap is 2 tiles wide: each tile of the path and the one beside it across the way the path runs
-    let mx0 = W, mx1 = 0, my0 = H, my1 = 0; for (const m of path) { const x = m % W, y = (m / W) | 0; if (x < mx0) mx0 = x; if (x > mx1) mx1 = x; if (y < my0) my0 = y; if (y > my1) my1 = y; }
-    const horiz = path.length > 1 ? mx1 - mx0 >= my1 - my0 : ((hit / W) | 0) === ((hitFrom / W) | 0);
-    for (const m of path) { const x = m % W, y = (m / W) | 0, b = horiz ? (y + 1 < H ? m + W : -1) : (x + 1 < W ? m + 1 : -1); for (const k of [m, b]) if (k >= 0 && cuttable(k)) { t[k] = TV.GRASS; gate[k] = 1; } }
+    // a deer path (place-walk-2): the way through is the cheapest walk through thicket within the thinnest crossing's reach, each step costing 1 plus a noise of the world position (as the trail's wander), so it bends;
+    // then it is carved 2 to 3 tiles wide by the noise, its two edges ragged, flared at both ends into a mouth
+    const isTarget = k => pass[k] && lab[k] !== c.id && comps[lab[k]] && (anchor(comps[lab[k]]) || comps[lab[k]].n > c.n || (comps[lab[k]].n === c.n && lab[k] > c.id));
+    const reach = new Map(), rq = []; for (const s of prev.keys()) if (prev.get(s) === -1) { reach.set(s, 0); rq.push(s); }
+    for (let h = 0; h < rq.length; h++) { const m = rq[h], d = reach.get(m); if (d >= GAP_MAX) continue;
+      for (const [dx, dy] of NB) { const a = (m % W) + dx, b = ((m / W) | 0) + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const k = b * W + a; if (cuttable(k) && !reach.has(k)) { reach.set(k, d + 1); rq.push(k); } } }
+    const cost = m => 1 + 2.4 * clamp(0.5 + 0.5 * S.nS(gx0 + (m % W), gy0 + ((m / W) | 0)), 0, 1);
+    const best = new Map(), from = new Map(), heap = []; let goal = -1;
+    const less = (p, q) => p[0] < q[0] || (p[0] === q[0] && p[1] < q[1]);
+    const push = e => { heap.push(e); for (let i = heap.length - 1; i > 0; ) { const p = (i - 1) >> 1; if (!less(heap[i], heap[p])) break; [heap[i], heap[p]] = [heap[p], heap[i]]; i = p; } };
+    const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; for (let i = 0; ; ) { let a = 2 * i + 1; if (a >= heap.length) break; if (a + 1 < heap.length && less(heap[a + 1], heap[a])) a++; if (!less(heap[a], heap[i])) break; [heap[i], heap[a]] = [heap[a], heap[i]]; i = a; } } return top; };
+    for (const s of reach.keys()) if (reach.get(s) === 0) { best.set(s, cost(s)); from.set(s, -1); push([cost(s), s]); }
+    while (heap.length && goal < 0) {
+      const [d, m] = pop(); if (d > best.get(m) + 1e-9) continue;
+      const x = m % W, y = (m / W) | 0; let end = false; for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && isTarget(b * W + a)) { end = true; break; } }
+      if (end) { goal = m; break; }
+      for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const k = b * W + a; if (!reach.has(k)) continue; const nd = d + cost(k); if (!best.has(k) || nd < best.get(k) - 1e-9) { best.set(k, nd); from.set(k, m); push([nd, k]); } }
+    }
+    if (goal < 0) goal = hit;
+    const path = []; for (let m = goal; m >= 0; m = from.has(m) ? from.get(m) : prev.get(m)) path.push(m);
+    if (path.length > GAP_MAX + 6) { path.length = 0; for (let m = hit; m >= 0; m = prev.get(m)) path.push(m); }   // a wander never runs far past the thinnest crossing
+    const carve = k => { if (k >= 0 && cuttable(k)) { t[k] = TV.GRASS; gate[k] = 1; mark[k] = 1; } };
+    path.forEach((m, n) => {
+      const x = m % W, y = (m / W) | 0, a = path[Math.max(0, n - 1)], b = path[Math.min(path.length - 1, n + 1)];
+      const ddx = Math.abs((b % W) - (a % W)), ddy = Math.abs(((b / W) | 0) - ((a / W) | 0)), horiz = path.length > 1 ? ddx >= ddy : ((hit / W) | 0) === ((hitFrom / W) | 0);
+      const sx = horiz ? 0 : 1, sy = horiz ? 1 : 0, wx = gx0 + x, wy = gy0 + y, f = clamp(0.5 + 0.5 * S.nE(wx, wy), 0, 1);
+      const side = f > 0.5 ? 1 : -1, wide = S.nD(wx + 31, wy - 17) > 0.05, mouth = n < 2 || n >= path.length - 2;   // the extra tile lies on the side the noise picks; a third where it is wide; a flared mouth at each end
+      carve(m); carve((y + side * sy) * W + x + side * sx);
+      if (wide || mouth) carve((y - side * sy) * W + x - side * sx);
+      if (mouth) { carve((y + sy) * W + x + sx + side * (horiz ? 1 : 0)); carve((y - sy) * W + x - sx - side * (horiz ? 1 : 0)); }
+    });
     cuts++;
+  }
+  // no straight thicket edge longer than GAP_RUN along a gap (the shape bar): a run of gap tiles with thicket across them is broken by a notch cut into the thicket at its middle
+  for (let pass = 0; pass < 6; pass++) {   // also on a call that cuts no new gap: the settling between rounds may have grown thicket against an earlier gap's edge
+    const notch = [];
+    for (const [ex, ey] of NB) { const ax = ey !== 0 ? 1 : 0, ay = ey !== 0 ? 0 : 1;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const edgeAt = (a, b) => a >= 0 && b >= 0 && a < W && b < H && mark[b * W + a] === 1 && a + ex >= 0 && b + ey >= 0 && a + ex < W && b + ey < H && t[(b + ey) * W + a + ex] === TV.THICKET;
+        if (!edgeAt(x, y) || edgeAt(x - ax, y - ay)) continue;
+        let n = 0; while (edgeAt(x + ax * n, y + ay * n)) n++;
+        if (n > GAP_RUN) { const m = n >> 1; for (const o of [0, -1, 1]) { const k = m + o, i = (y + ay * k + ey) * W + x + ax * k + ex; if (cuttable(i)) { notch.push(i); break; } } } } }
+    if (!notch.length) break;
+    for (const i of notch) { t[i] = TV.GRASS; gate[i] = 1; mark[i] = 1; }
   }
   return cuts;
 }
@@ -544,8 +583,9 @@ function windowOf(S, X, Y) {
   settle(null);
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   if (gate.some(v => v)) settle(gate);
-  for (let round = 0; round < 3; round++) { if (!cutThicketGaps(t, W, H, gx0, gy0, wayups, gate)) break; settle(gate); }   // thicket never closes a way (place-walk-1)
-  return { t, W, H, gx0, gy0, wayups, top: topsOf(t, recipe, W, H) };
+  const gaps = new Uint8Array(W * H);
+  for (let round = 0; round < 3; round++) { if (!cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, gaps)) break; settle(gate); }   // thicket never closes a way (place-walk-1); the gaps are deer paths (place-walk-2)
+  return { t, W, H, gx0, gy0, wayups, gaps, top: topsOf(t, recipe, W, H) };
 }
 
 // ---- the ground under raised land (amendment L): a raised tile's top is the biome's recipe ground there ----
@@ -687,7 +727,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
     terrain = terrain.slice(); tone = tone.slice(); if (top) top = top.slice();
     for (const { kind, tiles } of hold.patches) {
       // a patch on a raised top is the top's own ground kind (`bed-ground-top`: drawn as the raised grass until its sheet is signed), set in the top layer under the raised tile
-      for (const [x, y] of tiles) { const i = y * w + x; if (/-top$/.test(kind)) { if (top && terrain[i] === TV.CLIFF && (!top[i] || top[i] === TV.GRASS)) top[i] = VALUE_OF[kind]; } else if (terrain[i] === TV.GRASS) terrain[i] = VALUE_OF[kind]; }
+      for (const [x, y] of tiles) { const i = y * w + x; if (/-top$/.test(kind)) { if (top && terrain[i] === TV.CLIFF && (!top[i] || FAMILY.has(top[i]))) top[i] = VALUE_OF[kind]; } else if (FAMILY.has(terrain[i])) terrain[i] = VALUE_OF[kind]; }
       for (const [x, y] of tiles) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h) tone[(y + dy) * w + x + dx] = 0;
     }
   }
@@ -741,4 +781,5 @@ export function overviewOf(seed, ax, ay) {
 // an overview made elsewhere (the realm worker, or the page's store) is put in the cache
 export const presetOverview = (seed, ax, ay, bytes) => { if (OVERVIEWS.size > 6) OVERVIEWS.clear(); OVERVIEWS.set(seed + ':' + ax + ',' + ay, bytes); };
 export const hasOverview = (seed, ax, ay) => OVERVIEWS.has(seed + ':' + ax + ',' + ay);
+export const windowGaps = (seed, X, Y) => windowOf(ctxOf(seed), X, Y);   // the settled window with its gap tiles (`gaps`), for the gap measure (tools/place-walk-gaps.mjs)
 export { CW, CH, RW, RH };

@@ -18,7 +18,7 @@ for (const seed of seeds) {
     const heart = plan && plan.spots.find(s => s.role === 'heart'); if (!heart) continue; res.hearts++;
     const ct = cellTerrain(seed, X, Y), w = ct.w, I = (x, y) => y * w + x;
     const cx = heart.x + (heart.w >> 1), cy = heart.y + (heart.h >> 1), raised = ct.terrain[I(cx, cy)] === TV.CLIFF;
-    let g = 0; for (let y = heart.y; y < heart.y + heart.h; y++) for (let x = heart.x; x < heart.x + heart.w; x++) { const t = ct.terrain[I(x, y)]; if (t === TV.GRASS || (t === TV.CLIFF && (!ct.top[I(x, y)] || ct.top[I(x, y)] === TV.GRASS))) g++; }
+    let g = 0; for (let y = heart.y; y < heart.y + heart.h; y++) for (let x = heart.x; x < heart.x + heart.w; x++) { const t = ct.terrain[I(x, y)]; const FAM = v => v === TV.GRASS || v === TV.LITTER || v === TV.DRY || v === TV.TURF; if (FAM(t) || (t === TV.CLIFF && (!ct.top[I(x, y)] || FAM(ct.top[I(x, y)])))) g++; }
     const grass70 = g / (heart.w * heart.h) >= 0.7;
     // the patch as the page gets it: tiles of the patch's ground kind in the terrain (low) or in the top layer (raised)
     const has = new Set(); for (let i = 0; i < ir.w * ir.h; i++) if ([15, 16].includes(ir.terrain[i]) || (ir.top && [17, 18].includes(ir.top[i]))) has.add(i);
@@ -26,7 +26,11 @@ for (const seed of seeds) {
     const mineOf = () => [...has].filter(i => { const x = i % ir.w, y = (i / ir.w) | 0; return x >= heart.x - 3 && x < heart.x + heart.w + 3 && y >= heart.y - 3 && y < heart.y + heart.h + 3; });
     const isSplit = heart.kind === 'split-stone-ground';
     if (isSplit) { res.splits++; if (mineOf().length) res.splitsPatched++; } else { res.beds++; if (raised) res.bedsRaised++; if (mineOf().length) res.bedsPatched++; if (grass70) res.bedsGrass70++; }
-    if (!mineOf().length) continue; res.patches++;
+    if (!mineOf().length) {   // no patch: tally the heart's ground (the centre tile; a raised tile by its top), a bed's only
+      if (!isSplit) { const nm = { 6: 'grass', 11: 'litter', 12: 'drygrass', 13: 'turf', 14: 'scree', 3: 'sand', 7: 'earth', 10: 'scrub', 5: 'path', 4: 'mud', 9: 'thicket' }, tv = ct.terrain[I(cx, cy)] === TV.CLIFF ? (ct.top[I(cx, cy)] || 6) : ct.terrain[I(cx, cy)], key = (raised ? 'raised ' : '') + (nm[tv] || 'kind' + tv); res.noPatchBy = res.noPatchBy || {}; res.noPatchBy[key] = (res.noPatchBy[key] || 0) + 1; }
+      continue;
+    }
+    res.patches++;
     const mine = mineOf();
     const set = new Set(mine), inP = (x, y) => set.has(y * ir.w + x); let longest = 0;
     for (const [ex, ey] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) { const along = ex === 0 ? [1, 0] : [0, 1];
@@ -38,5 +42,5 @@ for (const seed of seeds) {
 }
 const pct = (a, d) => +(100 * a / Math.max(1, d)).toFixed(1);
 const out = { places: res.places, seeds, hearts: res.hearts, beds: res.beds, bedsRaisedPct: pct(res.bedsRaised, res.beds), bedsWithPatchPct: pct(res.bedsPatched, res.beds), bedsGrass70Pct: pct(res.bedsGrass70, res.beds), splits: res.splits, splitsPatched: res.splitsPatched,
-  patches: res.patches, areaIn55to85Pct: pct(res.areaIn, res.patches), longestEdge: res.longest, meanFinds: +(res.finds / res.places).toFixed(3), findMix: Object.fromEntries(Object.entries(res.kinds).map(([k, v]) => [k, +(v / res.places).toFixed(3)])), msPerPlace: Math.round(res.ms / res.places) };
+  patches: res.patches, bedsNoPatchByGround: res.noPatchBy || {},areaIn55to85Pct: pct(res.areaIn, res.patches), longestEdge: res.longest, meanFinds: +(res.finds / res.places).toFixed(3), findMix: Object.fromEntries(Object.entries(res.kinds).map(([k, v]) => [k, +(v / res.places).toFixed(3)])), msPerPlace: Math.round(res.ms / res.places) };
 writeFileSync(outFile, JSON.stringify(out, null, 1) + '\n'); console.log(JSON.stringify(out, null, 1));

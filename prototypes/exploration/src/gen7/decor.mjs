@@ -33,6 +33,7 @@ const OPEN = t => t === GRASS || t === DRY || t === TURF;   // the open low grou
 export const FAMS = ['trees', 'rocks', 'stumps', 'bushes', 'sweeps'];
 export const TABLE = RULES.biomes;
 export const BIOME_IDS = Object.keys(TABLE);
+const REGROW_SPARSE = 0.3;   // the share of the trees a ring took that grows again where trees are sparse
 const REGROW_DENSE = 5;   // trees a 100 tiles in the table from which a ring-cut cluster is grown again
 const DISP = 7;   // tiles beyond its reach a tree or bush may stand when a ring kept clear by a place took its place in the cluster
 // props per 100 tiles a table row asks for (on tiles where the kind may stand)
@@ -262,11 +263,13 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     // free ground (up to DISP tiles beyond its own reach), so the place keeps its count of trees. The count to match is that of the cluster as it stands with no ring (a function of the world alone).
     // (place-walk-1) Only in a biome of dense trees (table 5 or more a 100 tiles: Woods and Tallwood): where trees are sparse the density is read on the tiles that may hold a tree, which the rings already
     // leave out, so the trees a ring took need no regrowth (mixed trees stood at 1.48 a 100 against the table's 0.92); the regrowth never exceeds what the ring removed, counted per biome by this rule
-    if (fi === 0 && expectedPer100(s.b, 'trees') >= REGROW_DENSE && maskedNear(fi, s)) {
+    // (place-walk-2) In the sparse biomes a share of what the ring took grows again (REGROW_SPARSE of it, rounded up): the fruit trees that stand at a wood's edge are part of the find mix, which fell with the whole of it
+    if (fi === 0 && maskedNear(fi, s)) {
+      const dense = expectedPer100(s.b, 'trees') >= REGROW_DENSE;
       const free = grow((x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y, false) && !earlier(fi, x, y, false), s.size, false);
       if (members.length < free.members.length) {
         const wideOk = (x, y) => owner(fi, x, y, true, true) === s && stands(fi, x, y) && !earlier(fi, x, y);
-        const again = grow(wideOk, free.members.length, true);
+        const again = grow(wideOk, dense ? free.members.length : members.length + Math.ceil((free.members.length - members.length) * REGROW_SPARSE), true);
         if (again.members.length > members.length) ({ members, set } = again);
       }
     }
@@ -550,7 +553,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
       if (!inMap(x, y)) continue;
       const t = G(x, y); let kind = null;
-      if ((t === SAND || t === SCREE) && !occ.has(key(x, y)) && !lip(x, y) && !isFoot(x, y)) {
+      if ((t === SAND || t === SCREE) && !occ.has(key(x, y)) && !lip(x, y) && !isFoot(x, y) && !isFlank(x, y)) {   // a cliff's flank (the leaning side, the end pieces' rock rows) grows nothing either (place-walk-2: the stricter cliffs of place-walk-1 put scree under a flank)
         if (U(seed, TAG.PEB, x, y) < (TABLE[biome(x, y)] || TABLE.mixed).pebbles) kind = ['pebbles-a', 'pebbles-b', 'pebbles-c'][H(seed, TAG.PEB + 1, x, y) % 3];
       } else if (t === WATER) {
         const pr = (TABLE[biome(x, y)] || TABLE.mixed).pads;
