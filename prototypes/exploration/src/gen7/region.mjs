@@ -392,7 +392,7 @@ export function addRoads(out, F) {
   const extraHubs = F.dest.filter(d => d.kind === 'pass' || d.kind === 'ravine').map(d => d.c);
   // the edge probe: the land's height field (levels.mjs, before any pass), read only on the edges a trail or a bridge bank uses; the realm still reads no tile land (S1)
   const LV = levelsOf(realm), cx = c => c % RW, cy = c => (c / RW) | 0;
-  const pond = c => realm.land[c] === L.POND, edgeOk = (a, b) => { const need = pond(a) || pond(b) ? 8 : 4; return edgeRows(LV, cx(a), cy(a), cx(b), cy(b), need) >= need; };   // a pond place lays more water than the field shows: twice the rows
+  const pond = c => realm.land[c] === L.POND, edgeOk = (a, b) => { const need = pond(a) || pond(b) ? 10 : 6; return edgeRows(LV, cx(a), cy(a), cx(b), cy(b), need, 2, I.level[a] ? 1 : 0) >= need; };   // a pond place lays more water than the field shows: twice the rows
   const bankOk = (a, b) => bankRows(LV, cx(a), cy(a), cx(b), cy(b), 7) >= 7;
   const R = realmRoads({ ...I, ...(globalThis.F4NOPROBE ? {} : { edgeOk, bankOk }), extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams });
   const bodyOf = new Map(); for (const b of F.bodies) for (const c of b.cells) bodyOf.set(c, b);

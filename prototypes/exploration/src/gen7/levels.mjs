@@ -98,6 +98,7 @@ export function wetTile(L, gx, gy) {   // one tile's wet flag (the same as wetCe
   const S = seedCtx(L.seed), wc = wetCells(L); if (!S.nW) S.nW = noiseField(L.seed, 't-wet', 1 / 12, 'FBm', 2);
   const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
   const w = wc[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + wc[cellIdx(X0 + 1, Y0)] * a * (1 - b) + wc[cellIdx(X0, Y0 + 1)] * (1 - a) * b + wc[cellIdx(X0 + 1, Y0 + 1)] * a * b;
+  if (w + WET_NOISE * 1.5 <= WET_AT) return 0;   // the noise (about -1 to 1) cannot lift it over the threshold: no need to read it
   return w + WET_NOISE * S.nW(gx, gy) > WET_AT ? 1 : 0;
 }
 export function qCell(L, X, Y) {
@@ -515,17 +516,19 @@ export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(
 // ---- the realm's edge probe (before any pass): reads the height field and the wet field on the strip of tiles each side of an edge, never a place ----
 // The rows (columns, for a north-south edge) along the edge between the cells A and B (B east or south of A) where the `deep` tiles each side are all dry and on one level (raised or low by the field's own
 // threshold, the passes not run). `need` rows are enough: the count stops there (the rows are read from the middle outwards). The roads ask this of the edges a trail or a bridge bank uses.
-export function edgeRows(L, ax, ay, bx, by, need, deep = 2) {
-  const east = bx > ax, n = east ? CH : CW, th = L.rule.levels[0], out = []; let rows = 0;
+export function edgeRows(L, ax, ay, bx, by, need, deep = 2, want = 0) {
+  const east = bx > ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
   const lvl = (gx, gy) => (inlandOf(gx, gy) >= RAISE_OFF && qTile(L, gx, gy) >= th ? 1 : 0);
-  for (let s = 0; s < n && rows < need; s++) {
-    const t = (s & 1 ? -1 : 1) * ((s + 1) >> 1) + (n >> 1), ok = t >= 0 && t < n; if (!ok) continue;
+  for (let s = 0; s < n && rows < need; s++) {   // every second row is read and stands for the pair (the field moves slowly along an edge)
+    const t = (s & 1 ? -1 : 1) * ((s + 1) >> 1) * 2 + (n >> 1), ok = t >= 0 && t < n; if (!ok) continue;
     let good = true;
     for (let i = 0; i < deep && good; i++) for (const side of [0, 1]) {
-      const gx = east ? (side ? bx * CW + i : bx * CW - 1 - i) : ax * CW + t, gy = east ? ay * CH + t : (side ? by * CH + i : by * CH - 1 - i), v = lvl(gx, gy);
-      if (v !== 0 || wetTile(L, gx, gy)) { good = false; break; }
+      const gx = east ? (side ? bx * CW + i : bx * CW - 1 - i) : ax * CW + t, gy = east ? ay * CH + t : (side ? by * CH + i : by * CH - 1 - i);
+      if (wetTile(L, gx, gy)) { good = false; break; }
+      const v = lvl(gx, gy);
+      if (v !== want) { good = false; break; }
     }
-    if (good) rows++;
+    if (good) rows += 2;
   }
   return rows;
 }
