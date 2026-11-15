@@ -190,7 +190,7 @@ test('raised tops carry their biome\'s ground: the signature skin of each biome 
       for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) {
         const gx = X * CW + x - 1, gy = Y * CH + y - 1; if (!inner(gx, SW) || !inner(gy, SH)) continue;
         const o = (by[sb[Math.floor(gy / SH) * ATLAS + Math.floor(gx / SW)]] ||= { low: {}, top: {}, nl: 0, nt: 0 }), v = c.terrain[y * c.w + x];
-        if (v === TV.CLIFF) { const n = SKIN[c.top[y * c.w + x] || TV.GRASS]; o.top[n] = (o.top[n] || 0) + 1; o.nt++; } else if (SKIN[v]) { o.low[SKIN[v]] = (o.low[SKIN[v]] || 0) + 1; o.nl++; }
+        if (v === TV.CLIFF) { if (c.top[y * c.w + x] === TV.PATHTOP) continue; /* a trail's path on a top is not a skin of the biome */ const n = SKIN[c.top[y * c.w + x] || TV.GRASS]; o.top[n] = (o.top[n] || 0) + 1; o.nt++; } else if (SKIN[v]) { o.low[SKIN[v]] = (o.low[SKIN[v]] || 0) + 1; o.nl++; }
       }
     }
     let nonGrassTops = 0, topTiles = 0;
