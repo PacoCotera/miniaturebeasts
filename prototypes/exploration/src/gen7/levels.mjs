@@ -428,6 +428,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     const lk = new Uint8Array(W * H), all = sites.concat(extra);
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly - SITE_UP; y <= s.ly; y++) if (!noRaise[y * W + x]) lk[y * W + x] = 1;
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly + 1; y <= s.ly + foot; y++) lk[y * W + x] = 2;   // the low rows win where two sites meet
+    for (let i = 0; i < W * H; i++) if (noRaise[i] && !lk[i]) lk[i] = 2;   // water held low (and the coast) stays low through every pass: the closings may not fill a notch beside water
     const way = new Uint8Array(W * H); for (const s of all) { way[s.ly * W + s.lx + 2] = 1; way[s.ly * W + s.lx + 3] = 1; }
     r = cleanup(base, W, H, L.rule, lk);
     const seedJ = L.seed;
