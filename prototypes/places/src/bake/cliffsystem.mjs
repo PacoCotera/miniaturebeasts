@@ -39,6 +39,8 @@ export function groundTileItems(A, o) {
   for (let vy = y0; vy <= y1 + 1; vy++) for (let vx = x0; vx <= x1 + 1; vx++) {
     const code = `${U(vx - 1, vy - 1)}${U(vx, vy - 1)}${U(vx - 1, vy)}${U(vx, vy)}`;
     if (code === '0000') continue;
+    // a tile whose upper cells are only the set's own pieces' cells (face, flank, way: none of them raised land) would draw the lit band and the drop shade along a side wall's outer edge or under a face's foot (the dashed dark line and the green specks at the cap feet of paint-1): the band runs along the raised land's fronts and backs only, the pieces carry their own edges
+    if (![[vx - 1, vy - 1], [vx, vy - 1], [vx - 1, vy], [vx, vy]].some(([x, y]) => A.raised(x, y))) continue;
     const hi = [[vx - 1, vy - 1], [vx, vy - 1], [vx - 1, vy], [vx, vy]].some(([x, y], i) => code[i] === '0' && hiBand(x, y));
     out.push({ code, level, hi, kind: gtKind(code, level, hi), x: (vx * ART - ART / 2) * SCALE, y: (vy * ART - ART / 2) * SCALE });
   }
