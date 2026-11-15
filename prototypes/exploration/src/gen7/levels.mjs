@@ -315,11 +315,9 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
       const cut = []; for (let t = run.from + 3; t <= end - 3; t++) if ((alongW + t + hl) % P === 0) cut.push(t);
       const pieces = [], edges = [run.from, ...cut, end];
       for (let i = 0; i + 1 < edges.length; i++) pieces.push({ a: edges[i], b: edges[i + 1], j: i === 0 && edges.length > 2 ? jOf(edges[1] - 1) : jOf(edges[i]) });
-      // a run of 11 to 13 may hold no such column 3 tiles in from both ends: the column half a period on is used then, and the part after it moves (a single world-fixed jog, again not counted from the start)
-      if (!cut.length) { for (let t = run.from + 3; t <= end - 3; t++) if ((alongW + t + hl) % P === P / 2) { pieces.length = 0; pieces.push({ a: run.from, b: t, j: 0 }, { a: t, b: end, j: 1 }); break; } }
       // one piece moved one tile, by the first of the two moves that leaves no shape check failing round it and fewer tiles over the cap on the lines near
       const shift = pc => {
-        if (pc.a < JOG_CLEAR || pc.b > len - JOG_CLEAR) return false;
+        if (pc.a < JOG_CLEAR || pc.b > len - JOG_CLEAR) return null;   // near the window's rim: left, and nothing is made of it (another window sees the piece whole)
         for (const mv of K.moves) {
           const tiles = []; for (let t = pc.a; t < pc.b; t++) for (const [dx, dy, v] of mv) tiles.push([(K.alongX ? t : run.l) + dx, (K.alongX ? run.l : t) + dy, v]);
           if (tiles.some(([x, y, v]) => x < 1 || y < 1 || x >= W - 1 || y >= H - 1 || (lk && lk[y * W + x]) || (v === 1 && noRaise[y * W + x]))) continue;
@@ -331,13 +329,11 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
         }
         return false;
       };
-      // the odd pieces move; where one cannot (a shape check fails round it), the even pieces either side of it move instead, so it stands alone between two jogs (both are world-fixed pieces, the same from every window)
-      pieces.forEach((pc, i) => {
-        if ((pc.j & 1) === 0) return;
-        if (shift(pc)) return;
-        missed++; (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`);
-        for (const nb of [pieces[i - 1], pieces[i + 1]]) if (nb && (nb.j & 1) === 0) shift(nb);
-      });
+      // the odd pieces move (a piece that cannot, a shape check failing round it, stays: the run is left over its cap there)
+      for (const pc of pieces) {
+        if ((pc.j & 1) === 0) continue;
+        if (shift(pc) === false) { missed++; (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`); }
+      }
     }
   }
   return { jogs, missed };
