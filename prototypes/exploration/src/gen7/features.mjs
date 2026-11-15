@@ -4,7 +4,7 @@
 // What it makes (spec section 2.1), in order, each reading only what is above it:
 //   water bodies  rivers (water, kind 1) and lakes / ponds (kind 2), 4-connected, off the coast ring
 //   streams       flow lines below the river threshold: acc >= STREAM_ACC, followed down the realm's D4 flow (world.mjs rawRealm `down`) to water or another stream
-//   drops         where a stream leaves raised land: a south face -> falls; any other side -> a ravine is cut RAV_LEN cells back up the stream (cells lowered)
+//   drops         where a stream leaves raised land: a south face -> falls; any other side -> a ravine, cut by planCuts (world-f3 F3) up the stream as far as the water cuts: RAV_MAX cells at most, further for a bigger flow
 //   ranges        raised components of RANGE_MIN cells or more; hills are the smaller ones
 //   passes        a range spanning PASS_SPAN+ cells with no cut through it gets one straight cut of 1..PASS_MAX raised cells, lowest first, every PASS_EVERY cells of span
 //   cliff lines   the contour between the levels traced as loops on the cell corners; escarpments are the stretches of a loop with no back rim and ESC_MIN+ south-face edges
