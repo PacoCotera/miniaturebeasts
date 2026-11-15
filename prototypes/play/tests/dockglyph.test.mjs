@@ -1,45 +1,32 @@
-// The Dock glyph component v3: the pixel lead's 16 x 24 grid (and the 16 x 22 fallback), the same pixels in every state, one token ink per state, holes of 2 px or more.
+// The Dock glyph component v4: the pixel lead's grid A (16 x 24, 11-15), the same pixels in every state, one token ink per state, holes of 2 px or more.
 // node --test prototypes/play/tests/dockglyph.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { GLYPH_W, GLYPH_H, GRID, GRID_24, GRID_22, GRID_22_Y0, SHIP, TOKEN_HEX, STATE_TOKEN, glyphMap, glyphPixels, glyphShadow } from "../src/dockglyph.mjs";
+import * as mod from "../src/dockglyph.mjs";
+import { GLYPH_W, GLYPH_H, GRID, TOKEN_HEX, STATE_TOKEN, glyphMap, glyphPixels, glyphShadow } from "../src/dockglyph.mjs";
 
 const tokens = JSON.parse(readFileSync(new URL("../../ui/tokens/tokens.json", import.meta.url), "utf8"));
 const find = (o, k) => { for (const [n, v] of Object.entries(o)) { if (n === k && v && v.$value) return v.$value; if (v && typeof v === "object") { const r = find(v, k); if (r) return r; } } };
 const STATES = ["away", "lit", "docked"];
-const DRAWN_24 = [
+const DRAWN = [
   "..############..", ".##############.", "###..........###", "###..........###", "###..........###", "###..........###",
   "###..........###", "###..........###", "###..........###", "###..........###", "###..........###", "###..........###",
-  "###..........###", "###..........###", "################", "################", "####..##########", "####..####....##",
-  "##......##....##", "##......##....##", "####..####....##", "####..##########", ".##############.", "..############..",
-];
-const DRAWN_22 = [
-  "..############..", ".##############.", "###..........###", "###..........###", "###..........###", "###..........###",
-  "###..........###", "###..........###", "###..........###", "###..........###", "###..........###", "###..........###",
-  "################", "################", "####..##########", "####..####....##", "##......##....##", "##......##....##",
-  "####..####....##", "####..##########", ".##############.", "..############..",
+  "###..........###", "################", "################", "####..##########", "####..####....##", "##......##....##",
+  "##......##....##", "####..####....##", "####..##########", "################", ".##############.", "..############..",
 ];
 
 test("the hexes are tokens.json's", () => { for (const [name, hex] of Object.entries(TOKEN_HEX)) assert.equal(hex, find(tokens, name), name); });
 
-test("the grid equals the 24 strings drawn; 16 x 24; the 24 ships by default", () => {
-  assert.deepEqual(GRID_24, DRAWN_24);
+test("the grid equals the 24 strings drawn; 16 x 24; no fallback grid remains", () => {
+  assert.deepEqual(GRID, DRAWN);
   assert.deepEqual([GLYPH_W, GLYPH_H], [16, 24]);
-  assert.equal(GRID_24.length, 24);
-  for (const r of GRID_24) assert.equal(r.length, 16);
-  assert.equal(SHIP, "24");
-  assert.deepEqual(GRID, DRAWN_24);
+  assert.equal(GRID.length, 24);
+  for (const r of GRID) assert.equal(r.length, 16);
+  for (const k of ["GRID_22", "GRID_22_Y0", "GRID_24", "SHIP", "GRID_Y0"]) assert.equal(mod[k], undefined, k + " is gone");
   const m = glyphMap();
   assert.equal(m.length, 24);
-  m.forEach((r, y) => assert.equal(r, DRAWN_24[y].replace(/#/g, "o"), "row " + y));
-});
-
-test("the fallback equals its 22 strings, placed at rows 1-22 of the box", () => {
-  assert.deepEqual(GRID_22, DRAWN_22);
-  const m = glyphMap(GRID_22, GRID_22_Y0);
-  assert.equal(m.length, 24);
-  for (let y = 0; y < 24; y++) assert.equal(m[y], y >= 1 && y <= 22 ? DRAWN_22[y - 1].replace(/#/g, "o") : ".".repeat(16), "row " + y);
+  m.forEach((r, y) => assert.equal(r, DRAWN[y].replace(/#/g, "o"), "row " + y));
 });
 
 test("the same pixels in all three states", () => {
@@ -67,12 +54,11 @@ const check = (line, what) => {
     if (inner) assert.ok(len >= 2, what + " run of '" + c + "' at " + start + " is " + len + " px");
   });
 };
-for (const [name, m] of [["24", glyphMap(GRID_24, 0)], ["22", glyphMap(GRID_22, GRID_22_Y0)]]) {
-  test("every hole and gap is at least 2 px (grid " + name + ")", () => {
-    for (let y = 0; y < 24; y++) check(m[y], "row " + y);
-    for (let x = 0; x < 16; x++) check(m.map((r) => r[x]).join(""), "col " + x);
-  });
-}
+test("every hole and gap is at least 2 px", () => {
+  const m = glyphMap();
+  for (let y = 0; y < 24; y++) check(m[y], "row " + y);
+  for (let x = 0; x < 16; x++) check(m.map((r) => r[x]).join(""), "col " + x);
+});
 
 test("the shadow list is whole-pixel steps with no blur", () => {
   for (const scale of [1, 4]) {

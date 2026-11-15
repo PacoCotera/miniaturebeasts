@@ -3,6 +3,10 @@
 // (`mb-dock`, `mb-caddy`). Where everything goes is src/layout.mjs; this file applies it.
 import { layout, hardware, menuLayout, classify, SIZES, snap, render } from "./layout.mjs";
 import { footerParts, loadBuild, caddyAnswers } from "../../play/src/footer.mjs";
+import { glyphShadow } from "../../play/src/dockglyph.mjs";
+// the Dock glyph: the Caddy's Dock key is dark in both states (mist); the Companion switch is amber when pressed (ink) and dark otherwise (mist)
+const GLYPH_SHADOW = { mist: glyphShadow({ state: "away" }, 1), ink: glyphShadow({ state: "docked" }, 1) };
+document.querySelector("#dockMark i").style.boxShadow = GLYPH_SHADOW.mist;
 
 const params = new URLSearchParams(location.search), DEV = params.has("dev"), TEST = params.has("test"), SEED = params.get("seed");
 const $ = (id) => document.getElementById(id);
@@ -118,6 +122,7 @@ function apply() {
   setR($("bar"), kind === "landscape" ? null : rg.bar);
   const sw = $("sw"); setR(sw, rg.switch); sw.classList.toggle("glyphs", kind === "landscape");
   for (const [id, key] of [["swSt", "switchStation"], ["swCo", "switchCompanion"]]) { const b = $(id), r = rg[key]; b.style.left = r[0] - rg.switch[0] + "px"; b.style.width = r[2] + "px"; b.style.fontSize = kind === "desktop" ? "13px" : "14px"; b.setAttribute("aria-pressed", String(dev === (id === "swSt" ? "station" : "companion"))); }
+  $("swCoMark").firstElementChild.style.boxShadow = GLYPH_SHADOW[dev === "companion" ? "ink" : "mist"];
   const dotHalf = rg[S.shown === "station" ? "switchCompanion" : "switchStation"], dot = $("swDot");
   dot.hidden = !S.dirty[S.shown === "station" ? "companion" : "station"]; dot.style.left = dotHalf[0] - rg.switch[0] + dotHalf[2] - 11 + "px"; dot.style.top = "4px";
   setR($("dockCtl"), rg.dock); $("dockHint").hidden = kind !== "desktop";
@@ -223,8 +228,7 @@ window.addEventListener("message", (e) => {
 const plural = (n, w) => n + " " + w + (n === 1 ? "" : "s");
 function updateDock() {
   const c = S.caddy, d = c.docked;
-  $("dockWord").textContent = d ? "Lift" : "Dock"; $("dockMark").src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png";
-  const crates = !d && c.canDock && c.crates > 0;
+  $("dockWord").textContent = d ? "Lift" : "Dock";  const crates = !d && c.canDock && c.crates > 0;
   const title = !c.canDock ? "The Companion has no world yet" : d ? "Lift the Companion from the Caddy" : crates ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion in the Caddy";
   const ctl = $("dockCtl"); ctl.setAttribute("aria-disabled", String(!c.canDock)); ctl.setAttribute("aria-label", d ? "Lift the Companion from the Caddy" : "Dock the Companion in the Caddy"); ctl.title = title; ctl.classList.toggle("pressed", !!S.awaiting || c.pending);
   const dot = $("dockDot"); dot.hidden = !crates; dot.style.left = "25px"; dot.style.top = "1px";
