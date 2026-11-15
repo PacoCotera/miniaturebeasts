@@ -92,7 +92,7 @@ export function Dock({ s, onPress }) {
   return (
     <Toggle.Root id="dockKey" className={"ctl" + (s.box ? "" : " hidden") + (s.docked ? " docked" : "") + (s.lit ? " lit" : "") + (s.quiet ? " quiet" : "") + (s.pressed ? " pressed" : "") + (mode === "mark" ? " markonly" : "")}
       pressed={!!s.docked} onPressedChange={() => onPress()} aria-label={s.label} title={s.title} aria-disabled={s.disabled ? "true" : "false"} aria-description={s.disabled ? s.title : undefined} style={style}>
-      <img className="mark" id="dockMark" src={s.mark} alt="" />
+      <img className={"mark" + (s.docked ? " ink" + (s.inkB ? " inkB" : "") : "")} id="dockMark" src={s.mark} alt="" style={s.docked ? { "--m": `url(${s.mark})` } : undefined} />
       {mode === "mark" ? <VisuallyHidden.Root id="dockWord">{s.full}</VisuallyHidden.Root> : <span className="word" id="dockWord">{mode === "full" ? s.full : s.short}</span>}
       {mode === "full" && s.hint ? <span className="hint" id="dockHint">⇧D</span> : null}
     </Toggle.Root>
