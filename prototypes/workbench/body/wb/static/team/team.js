@@ -73,7 +73,9 @@ function Streams({ d }) {
         <div class="name">${p.name}</div>
         <div class="mile">${p.milestone || html`<span class="dim">No milestone written yet.</span>`}</div>
         <div class="strip">
-          ${p.running.map((t) => html`<span class=${"pill run" + (t.stuck ? " stuck" : "")}>${t.stuck ? "stuck · " : ""}${t.title}</span>`)}
+          ${p.running.length ? html`<span class="lbl run">Running now</span>` : ""}
+          ${p.running.map((t) => html`<span class=${"pill run" + (t.stuck ? " stuck" : "")}><span class="dot"></span>${t.stuck ? "stuck · " : ""}${t.title}${t.running_s != null ? html` <span class="dim">· ${dur(t.running_s)}</span>` : ""}</span>`)}
+          ${p.next.length ? html`<span class="lbl">Up next</span>` : ""}
           ${p.next.map((t) => html`<span class="pill">${t.title}</span>`)}
           ${!p.running.length && !p.next.length && html`<span class="dim tiny">Nothing running or waiting.</span>`}
         </div>

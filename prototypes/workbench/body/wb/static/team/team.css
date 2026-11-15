@@ -92,3 +92,7 @@ footer { color: var(--dim); font-size: 12px; text-align: center; padding: 16px 0
   .desks { grid-template-columns: repeat(4, 1fr); }
   .pipes { grid-template-columns: repeat(3, 1fr); }
 }
+.lbl { flex-basis: 100%; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
+.lbl.run { color: var(--busy); }
+.pill .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--busy); margin-right: 6px; vertical-align: middle; }
+.pill.run { font-weight: 600; }
