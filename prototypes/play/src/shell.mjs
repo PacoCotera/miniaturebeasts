@@ -384,7 +384,7 @@ for (const n of ["silent", "quiet", "fault"]) { const box = $("sw-" + n); if (bo
 // ---- the dock's screen: a live miniature in the button, whole in the sheet (Radix Dialog) ----
 // The shell draws the Caddy's face (caddy/face.mjs) of the service's state into its own 792 × 272 canvas with the panel's timing: a partial appears 0.8 s after its change over the regions that changed; a full refresh
 // blacks the panel, whitens it, then draws, over 4 s. Every picture is handed on to the dock's-screen button's miniature and the sheet (dockScreen.paint). Until the first face is drawn the screen shows blank paper, not black.
-// The two cradle lamps are in the sheet: the placed 8 px lamp picture each, beside their words.
+// The two cradle lamps are in the sheet: the 8 px lamp component (lamp8.mjs) each, beside their words.
 const PARTIAL_MS = 800, FULL_MS = 4000;
 // The first picture waits for the Station's word and its seat; with no word it is drawn at 15 s anyway. ?test&firstms=N moves that fallback (test pages only), so a journey on a loaded machine
 // can wait for the real condition instead of a page that took longer than 15 s to boot drawing a stand-in first.
@@ -416,14 +416,11 @@ function faceTick() {
   if (!f.keep && f.id !== lastFaceId) lastFaceId = f.id;
 }
 setInterval(faceTick, 200);
-const LAMP_SRC = { stone: "../ui/assets/masters/pods/frame-lamp-8-stone.png", mint: "../ui/assets/masters/pods/frame-lamp-8-mint.png", amber: null };
-{ const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = 8; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const d = x.getImageData(0, 0, 8, 8);   // the 8 px amber lamp: the mint master's light in amber
-    for (let i = 0; i < 256; i += 4) { const k = Math.max(d.data[i], d.data[i + 1], d.data[i + 2]) / 255; d.data[i] = Math.round(0xff * k); d.data[i + 1] = Math.round(0xa8 * k); d.data[i + 2] = Math.round(0x3f * k); } x.putImageData(d, 0, 0); LAMP_SRC.amber = c.toDataURL(); }; im.src = LAMP_SRC.mint; }
+// The lamps are the 8 px component of src/lamp8.mjs (a pixel map in token colours); the sheet draws it from the state's colour name.
 function lamps(f, t) {
   if (f.lamp.companion !== lampOf.c) lampOf = { c: f.lamp.companion, since: t };
-  const srcOf = (L) => (L.colour === "amber" ? LAMP_SRC.amber || LAMP_SRC.mint : L.colour ? LAMP_SRC.mint : LAMP_SRC.stone);
-  const L = lampAt(lampOf.c, t - lampOf.since), S2 = lampAt(f.lamp.station, 0, STATION_LAMPS), rel = L.colour ? L.level / LAMPS.seated.level : 1;   // seated is the master as drawn; the breath dims it, the swell brightens it
-  lampView = { c: { src: srcOf(L), colour: L.colour || "off", opacity: rel < 1 ? Number(rel.toFixed(3)) : 0, filter: rel > 1 ? `brightness(${rel.toFixed(3)})` : "" }, s: { src: srcOf(S2), colour: S2.colour || "off", opacity: 0, filter: "" } };
+  const L = lampAt(lampOf.c, t - lampOf.since), S2 = lampAt(f.lamp.station, 0, STATION_LAMPS), rel = L.colour ? L.level / LAMPS.seated.level : 1;   // seated is the lamp as drawn; the breath dims it (opacity), the swell above it shows the highlight pixel
+  lampView = { c: { colour: L.colour || "off", opacity: rel < 1 ? Number(rel.toFixed(3)) : 0, highlight: rel > 1 }, s: { colour: S2.colour || "off", opacity: 0, highlight: false } };
   const key = JSON.stringify(lampView) + (lampOf.c === "amber"); if (key === lampKey) return; lampKey = key;
   dockScreen.update({ lampC: lampView.c, lampS: lampView.s, hand: lampOf.c === "amber" });
 }

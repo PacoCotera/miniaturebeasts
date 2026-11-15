@@ -31607,8 +31607,8 @@ function NoteDialog({ c }) {
   ] }) });
 }
 function SectionDialog({ c }) {
-  const s2 = useNote(c), cut = s2.cut, img = (0, import_react7.useRef)(null), [crop, setCrop] = (0, import_react7.useState)(), [done, setDone] = (0, import_react7.useState)(null);
-  const n2 = s2.items.length + (cut && cut.add ? 1 : 0), i2 = cut ? cut.add ? n2 : s2.items.findIndex((x) => x.id === cut.it.id) + 1 : 0;
+  const s2 = useNote(c), cut2 = s2.cut, img = (0, import_react7.useRef)(null), [crop, setCrop] = (0, import_react7.useState)(), [done, setDone] = (0, import_react7.useState)(null);
+  const n2 = s2.items.length + (cut2 && cut2.add ? 1 : 0), i2 = cut2 ? cut2.add ? n2 : s2.items.findIndex((x) => x.id === cut2.it.id) + 1 : 0;
   const reset = () => {
     setCrop(void 0);
     setDone(null);
@@ -31625,7 +31625,7 @@ function SectionDialog({ c }) {
     reset();
     c.useSection(r2);
   };
-  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Root, { open: !!cut, onOpenChange: (o2) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Root, { open: !!cut2, onOpenChange: (o2) => {
     if (!o2) {
       reset();
       c.cancelCut();
@@ -31635,7 +31635,7 @@ function SectionDialog({ c }) {
     /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(dist_exports4.Content, { className: "op-panel op-section", "data-options": "", "data-note": "", "aria-describedby": void 0, children: [
       /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Title, { className: "op-title", children: T("section.title") }),
       /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-line", children: T("section.line", { i: i2, n: n2 }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-cropbox", children: cut ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(h, { crop, onChange: (p2) => setCrop(p2), onComplete: (p2) => setDone(p2), keepSelection: true, minWidth: 8, minHeight: 8, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("img", { ref: img, src: cut.it.url, alt: "", className: "op-cropimg" }) }) : null }),
+      /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("div", { className: "op-cropbox", children: cut2 ? /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(h, { crop, onChange: (p2) => setCrop(p2), onComplete: (p2) => setDone(p2), keepSelection: true, minWidth: 8, minHeight: 8, children: /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("img", { ref: img, src: cut2.it.url, alt: "", className: "op-cropimg" }) }) : null }),
       /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-actions", children: [
         /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports4.Close, { className: "op-btn", id: "sectionWhole", children: T("section.whole") }),
         /* @__PURE__ */ (0, import_jsx_runtime21.jsx)("button", { type: "button", className: "op-btn op-go", id: "sectionUse", disabled: !done || !done.width, onClick: use2, children: T("section.use") })
@@ -31909,13 +31909,50 @@ function mountSwitch(host, cfg) {
 var import_react10 = __toESM(require_react(), 1);
 var import_react_dom4 = __toESM(require_react_dom(), 1);
 var import_client3 = __toESM(require_client(), 1);
+
+// ../src/lamp8.mjs
+var LAMP_SIZE = 8;
+var LAMP_CUT = 1;
+var HIGHLIGHT_AT = [1, 1];
+var TOKEN_HEX = { stone: "#5d5974", mint: "#adf6e0", amber: "#ffa83f", fog: "#c6c4d8" };
+var STATE_TOKEN = { off: "stone", mint: "mint", warm: "mint", amber: "amber" };
+var cut = (x, y, n2) => {
+  const dx = Math.min(x, LAMP_SIZE - 1 - x), dy = Math.min(y, LAMP_SIZE - 1 - y);
+  return dx + dy < n2;
+};
+function lampMap({ cutPx = LAMP_CUT, highlight = false } = {}) {
+  const rows = [];
+  for (let y = 0; y < LAMP_SIZE; y++) {
+    let r2 = "";
+    for (let x = 0; x < LAMP_SIZE; x++) r2 += cut(x, y, cutPx) ? "." : highlight && x === HIGHLIGHT_AT[0] && y === HIGHLIGHT_AT[1] ? "h" : "o";
+    rows.push(r2);
+  }
+  return rows;
+}
+function lampPixels({ state = "off", cutPx = LAMP_CUT, highlight = false } = {}) {
+  const body = TOKEN_HEX[STATE_TOKEN[state] || "stone"], out = [];
+  lampMap({ cutPx, highlight }).forEach((row, y) => {
+    for (let x = 0; x < LAMP_SIZE; x++) {
+      const c = row[x];
+      if (c !== ".") out.push({ x, y, hex: c === "h" ? TOKEN_HEX.fog : body });
+    }
+  });
+  return out;
+}
+function lampShadow(opts, px4 = 2) {
+  const s2 = Math.max(1, Math.round(px4));
+  return lampPixels(opts).map((p2) => `${p2.x * s2}px ${p2.y * s2}px 0 0 ${p2.hex}`).join(",");
+}
+
+// src/docksheet.jsx
 var import_jsx_runtime25 = __toESM(require_jsx_runtime(), 1);
 var px3 = (v) => v + "px";
 var NAME2 = "The dock's screen";
 var EP_W = 808;
 var EP_H = 288;
+var LAMP_PX = 2;
 function Lamp({ l: l2 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("img", { className: "dslamp", alt: "", width: 8, height: 8, src: l2.src, "data-lamp": l2.colour || "off", style: { opacity: l2.opacity || void 0, filter: l2.filter || void 0 } });
+  return /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("span", { className: "dslamp", "aria-hidden": "true", "data-lamp": l2.colour || "off", "data-highlight": l2.highlight ? "1" : void 0, style: { opacity: l2.opacity || void 0 }, children: /* @__PURE__ */ (0, import_jsx_runtime25.jsx)("i", { style: { boxShadow: lampShadow({ state: l2.colour || "off", highlight: !!l2.highlight }, LAMP_PX) } }) });
 }
 function DockScreen({ api }) {
   const [open, setOpen] = (0, import_react10.useState)(false), [s2, setS] = (0, import_react10.useState)(api.state), mini = (0, import_react10.useRef)(null), big = (0, import_react10.useRef)(null);
