@@ -12,7 +12,7 @@ import { windowIR, cellIR, CW, CH } from '../src/gen7/place.mjs';
 import { bakeCtx, bakeIR } from './gen7-render.mjs';
 import { cliffInfo } from '../../places/src/bake/openedges.mjs';
 import { landOf, partAt, PART, extentClear } from '../../places/src/bake/relief.mjs';
-import { TABLE, placeBoundary, installPieces, useCliffSet, kindOf, sortItems, FALLBACK, middleOf, HI, hiBandOf } from '../../places/src/bake/cliffsystem.mjs';
+import { TABLE, placeBoundary, installPieces, useCliffSet, useGroundTiles, groundTileItems, gtKind, kindOf, sortItems, FALLBACK, middleOf, HI, hiBandOf } from '../../places/src/bake/cliffsystem.mjs';
 import { renderView, lightState, tablesOf } from '../../places/src/ground.mjs';
 import { blitRle, encodeRle } from '../../places/src/blit.mjs';
 import { paletteRgb } from '../../places/src/bake/build.mjs';
@@ -40,8 +40,22 @@ function install(cutDir) {
       if (n) pieces.push({ kind: kindOf(p.id, level) + HI, img: { ...img, data } });
     }
   }
+  // paint-1 F0a: the ground pass's own 16 tiles (dir in CLIFF_GT: t-<NW><NE><SW><SE>.png), for the top and the back rim; level 2 by the table's colour map, the lighter band by the same swap as the pieces'
+  const GT = process.env.CLIFF_GT;
+  if (GT) {
+    const hexOfPx = (d, q) => '#' + [0, 1, 2].map((c) => d[q + c].toString(16).padStart(2, '0')).join('');
+    const remap = (img, map) => { const data = Uint8Array.from(img.data); let n = 0; for (let q = 0; q < data.length; q += 4) { const to = data[q + 3] && map[hexOfPx(data, q)]; if (to) { for (let c = 0; c < 3; c++) data[q + c] = parseInt(to.slice(1 + 2 * c, 3 + 2 * c), 16); n++; } } return { n, img: { ...img, data } }; };
+    for (let m = 1; m < 16; m++) {
+      const code = m.toString(2).padStart(4, '0'), f = path.join(GT, `t-${code}.png`);
+      const img = scaleNearest(decodePng(readFileSync(f)), TABLE.scale);
+      pieces.push({ kind: gtKind(code, 1), img });
+      const hi = remap(img, { [TABLE.band.own]: TABLE.band.hi }); if (hi.n) pieces.push({ kind: gtKind(code, 1, true), img: hi.img });
+      pieces.push({ kind: gtKind(code, 2), img: remap(img, TABLE.levelMap['2']).img });
+    }
+  }
   for (const ts of bakeCtx().sets.values()) installPieces(ts, pieces);
   useCliffSet('system-greybox');
+  if (GT) useGroundTiles(true);
   return pieces.length;
 }
 
@@ -95,7 +109,7 @@ function shootFrame(outDir, name, tag, place, ts, win, pawn, info, land = null) 
     writeFileSync(file, png);
     const kinds = [...new Set(place.decals.map((d) => ts.sprites[d.kind].kind).filter((k) => k.startsWith('cs-')))].sort();
     const measure = land ? measureFrame(buf, pal, win, land, ts, light, kinds) : null;
-    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tool: 'cliff-system-stills', tag, set: 'system-greybox (cut from the template; no paint)', light, zoom: 48, frame: [win.w, win.h], window: [win.x, win.y], scale: 1, ...info, measure, pieces: kinds, fallbacks: kinds.includes(FALLBACK), stillSha256: sha(png), madeAt: new Date().toISOString() }, null, 1) + '\n');
+    writeFileSync(file.replace(/\.png$/, '.json'), JSON.stringify({ still: path.basename(file), tool: 'cliff-system-stills', tag, set: process.env.CLIFF_SET_NOTE || 'system-greybox (cut from the template; no paint)', light, zoom: 48, frame: [win.w, win.h], window: [win.x, win.y], scale: 1, ...info, measure, pieces: kinds, fallbacks: kinds.includes(FALLBACK), stillSha256: sha(png), madeAt: new Date().toISOString() }, null, 1) + '\n');
     files.push(file); console.log(file);
   }
   return files;
@@ -163,7 +177,7 @@ if (WHICH === 'find') {
   const n = install(cutDir), ctx = bakeCtx(), views = JSON.parse(readFileSync(viewsFile, 'utf8'));
   console.log(`installed ${n} greybox pieces`);
   for (const v of views) {
-    const shots = v.seam ? v.seam.map((s) => ({ name: `${v.name}-${s.tag}`, ir: cellIR(v.seed, s.cell[0], s.cell[1]), tx: s.world[0] - s.cell[0] * CW, ty: s.world[1] - s.cell[1] * CH, cells: s.cell })) : [{ name: v.name, ir: windowIR(v.seed, v.X0, v.Y0, 2, 2), tx: v.tx, ty: v.ty, cells: [v.X0, v.Y0] }];
+    const shots = v.cell ? [{ name: v.name, ir: cellIR(v.seed, v.cell[0], v.cell[1]), tx: v.tx, ty: v.ty, cells: v.cell }] : v.seam ? v.seam.map((s) => ({ name: `${v.name}-${s.tag}`, ir: cellIR(v.seed, s.cell[0], s.cell[1]), tx: s.world[0] - s.cell[0] * CW, ty: s.world[1] - s.cell[1] * CH, cells: s.cell })) : [{ name: v.name, ir: windowIR(v.seed, v.X0, v.Y0, 2, 2), tx: v.tx, ty: v.ty, cells: [v.X0, v.Y0] }];
     for (const s of shots) {
       let { ir } = s;
       // a face near water (GD rule 11 case: "a face in water"; the realm has none in these seeds): the straight run of the view with water laid on the ground in front of it, from the foot row down 6 rows
@@ -225,13 +239,15 @@ if (WHICH === 'find') {
     const ch = (x, y) => { const zx = Math.max(0, Math.min(zw - 1, x - px)), zy = y; return zy < 0 ? rows0[0][zx] : zy >= zh ? '.' : rows0[zy][zx]; };
     const lv = (x, y) => { const c = ch(x, y); return c === '2' ? 2 : c === '1' ? 1 : 0; };
     let items = [];
+    const tileDecals = [];
     for (const level of [1, 2]) {
       const A = { raised: (x, y) => lv(x, y) >= level, low: (x, y) => lv(x, y) < level, way: () => false, inside: () => true };
       items.push(...placeBoundary(A, { x0: 0, y0: 0, x1: W - 1, y1: H - 1, key: `mock/${m.zone}`, level }).items);
+      if (process.env.CLIFF_GT) tileDecals.push(...groundTileItems(A, { x0: 0, y0: 0, x1: W - 1, y1: H - 1, level }));
     }
     items = items.sort((a, b) => a.line - b.line || a.cls - b.cls || a.level - b.level || a.x - b.x || a.y - b.y);
     const idx = (kind) => ts.sprites.findIndex((s) => s.group === 'decal' && s.kind === kind);
-    const decals = items.map((it) => { const k = idx(kindOf(it.id, it.level)); return { kind: k >= 0 ? k : idx(FALLBACK), x: (it.x * 16 + it.box[0]) * 3, y: (it.y * 16 + it.box[1]) * 3, sortY: 0 }; });
+    const decals = tileDecals.map((t) => ({ kind: idx(t.kind), x: t.x, y: t.y, sortY: 0 })).concat(items.map((it) => { const k = idx(kindOf(it.id, it.level)); return { kind: k >= 0 ? k : idx(FALLBACK), x: (it.x * 16 + it.box[0]) * 3, y: (it.y * 16 + it.box[1]) * 3, sortY: 0 }; }));
     const tIdx = ts.sprites.findIndex((s) => s.group === 'prop' && s.kind === 'tree-broad'), tr = [m.tree[0] + px, m.tree[1]];
     const place = { w: W, h: H, ground: [{ tiles: Uint16Array.from({ length: (W + 1) * (H + 1) }, (_, i) => fillTile[i % fillTile.length]) }], decals, props: [{ kind: tIdx, x: tr[0] * 48 + 24, y: tr[1] * 48 + 40, sortY: tr[1] * 48 + 40 }], canopy: [], landmarks: [] };
     const pawn = [m.pawn[0] + px, m.pawn[1]], win = frameAt(W, H, px + (m.cx ?? (zw >> 1)), m.centre), z = zones.find((q) => q.id === m.zone);
