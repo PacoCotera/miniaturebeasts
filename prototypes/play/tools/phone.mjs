@@ -70,7 +70,7 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
       const canvas = { l: fb.l + cv.left * sc, t: fb.t + cv.top * sc, r: fb.l + cv.right * sc, b: fb.t + cv.bottom * sc, w: cv.width * sc, h: cv.height * sc };
       const other = document.getElementById(d === "station" ? "shCompanion" : "shStation");
       return { z: __play.z, dpr: devicePixelRatio, canvas, frame: fb, shell: box(sh), tray: box(tr), shellVis: getComputedStyle(sh).visibility, otherVis: getComputedStyle(other).visibility,
-        keys: [...tr.querySelectorAll(".k")].map((k) => ({ name: k.getAttribute("aria-label"), cls: k.className, ...box(k) })), hub: box(tr.querySelector(".hub")), up: __play.geom, scrollTop: document.getElementById("stage").scrollTop };
+        keys: [...tr.querySelectorAll(".fk")].map((k) => ({ name: k.getAttribute("aria-label"), cls: k.className, ...box(k) })), hub: box(tr.querySelector(".fktray .hub")), up: __play.geom, scrollTop: document.getElementById("stage").scrollTop };
     }, dev);
     eq([m.shellVis, m.otherVis], ["visible", "hidden"], tag + ": one device at a time, the other is not shown (it is never to the right, off screen)");
     expect(inside(m.canvas, W, H) && inside(m.frame, W, H) && inside(m.shell, W, H), tag + `: the canvas, frame and shell are whole in the viewport (canvas ${JSON.stringify(m.canvas)})`);
@@ -82,11 +82,11 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
     // the D-pad is a cross round a hub
     const K = Object.fromEntries(m.keys.map((k) => [k.name, k])), A = K.Up.w;
     expect(Math.abs(K.Left.t - K.Up.b) < 1.5 && Math.abs(K.Down.t - K.Left.b) < 1.5 && Math.abs(K.Left.r - K.Up.l) < 1.5 && Math.abs(K.Right.l - K.Up.r) < 1.5 && Math.abs(m.hub.l - K.Up.l) < 1.5 && Math.abs(m.hub.t - K.Left.t) < 1.5 && Math.abs(m.hub.w - A) < 1.5, tag + ": the arrows are a cross round a hub");
-    expect(K.Left.l < K.Call.l && K.Call.l < K.Back.l && K.Back.l < K.Confirm.l || !portrait, tag + ": the D-pad is left, Call, Back, Confirm right");
+    expect(K.Left.l < K.Call.l && Math.abs(K.Call.l - K.Back.l) < 1.5 && K.Call.b <= K.Back.t + 1.5 && K.Back.l < K.Confirm.l || !portrait, tag + ": the D-pad is left, Call above ←, ✓ right of them");
     if (portrait) {
       expect(m.canvas.t < m.tray.t && m.tray.t - m.shell.b < 1.5, tag + ": the tray is joined under the screen");
       expect(Math.abs(m.tray.w - (W - 12)) < 1.5, tag + ": the tray fills the width (" + m.tray.w + " of " + (W - 12) + ")");
-      if (dev === "companion") expect(Math.abs((K.Call.t + K.Call.b) / 2 - (K.Left.t + K.Left.b) / 2) < 1.5, tag + ": Call, ←, ✓ on the D-pad's middle line");
+      if (dev === "companion") expect(Math.abs((K.Confirm.t + K.Confirm.b) / 2 - (K.Left.t + K.Left.b) / 2) < 1.5, tag + ": ✓ on the D-pad's middle line, Call above ←");
       else expect(K.Home.t > K.Down.b - 1 && K.Home.l < K.Down.l, tag + ": the room keys in a row under the D-pad");
     }
     // the Dock key: on screen, a 44 target, clear of the tray; quiet before the first walk's crate
@@ -105,7 +105,7 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
   }
   // and what the Station's room keys do
   await page.touchscreen.tap(...(await page.evaluate(() => { const r = document.getElementById("tabStation").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }))); await page.waitForTimeout(400);
-  const tapKey = async (name) => { const b = await page.evaluate((n) => { const r = document.querySelector(`#rowStation .k[aria-label="${n}"]`).getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }, name); await page.touchscreen.tap(...b); await page.waitForTimeout(600); };
+  const tapKey = async (name) => { const b = await page.evaluate((n) => { const r = document.querySelector(`#rowStation .fk[aria-label="${n}"]`).getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }, name); await page.touchscreen.tap(...b); await page.waitForTimeout(600); };
   await tapKey("Home"); const s0 = await st().evaluate(() => window.__st.UI.screen);
   await tapKey("Library"); const s1 = await st().evaluate(() => window.__st.UI.screen); eq(s1, "library", tag0 + ": the Library key opens the Library (it was " + s0 + ")");
   await tapKey("Home"); eq(await st().evaluate(() => window.__st.UI.screen), "home", tag0 + ": the Home key goes Home");

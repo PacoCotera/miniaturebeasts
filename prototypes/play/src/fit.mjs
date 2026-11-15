@@ -5,14 +5,17 @@
 // device's block (its shell and its one-row key tray) fits the window's height under the bar, so the page can show each device whole; the stack is taken whenever it gives a larger z
 // than the row. Lengths are CSS px of the window, the bar included.
 
-export const BAR = 40, TOP = 16, BOT = 16, GAPV = 24, ROWH = 72, Z_MAX = 8;
-export const ARM = 22, CROSS_ROW = 72;   // the desktop d-pad cross: three arms of 22 CSS px in the tray's 72 px row (a mouse has the keyboard beside it; the phone plan grows the arms to 44 and over, phone.mjs); the tray's first row is CROSS_ROW, a second row (the groups that wrap) is ROWH
+import { laptopRowH } from "./keyplan.mjs";
+
+export const BAR = 40, TOP = 16, BOT = 16, GAPV = 24, Z_MAX = 8;
+export const CROSS_ROW = laptopRowH(44);   // the laptop tray's one row: the D-pad's three arms of 44 CSS px and the tray's edges, 156 (keyplan.mjs; it was 72 before the key family)
+const ROW_MIN_H = 800 + (CROSS_ROW - 72);   // the Row needs the window as tall as it did (800) plus the taller tray (156 for 72)
 export const SHELL_W = 1040, SHELL_H = 616, COMPANION_W = 466, DEV_COLUMN = 348;   // lp (the shells), CSS px (the developer column's room beside the row, as the 1878 threshold keeps it)
 
 export const baseK = (dpr) => Math.max(1, Math.floor(dpr || 1));
 
 // today's tiers, at z = k
-export const baseTier = (W, H) => (W < 1064 ? "narrow" : W >= 1878 && H >= 800 ? "row" : "stack");
+export const baseTier = (W, H) => (W < 1064 ? "narrow" : W >= 1878 && H >= ROW_MIN_H ? "row" : "stack");
 
 // the width a tier needs at f CSS px per lp
 const needW = (tier, f) => (tier === "row" ? (SHELL_W + COMPANION_W) * f + GAPV + DEV_COLUMN : SHELL_W * f + GAPV);

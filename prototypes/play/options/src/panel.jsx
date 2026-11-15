@@ -16,3 +16,4 @@ export function mountOptions(root, cfg) {
   return notes;
 }
 export { T };
+export { mountKeyTray, mountDockKey } from "./keytray.jsx";

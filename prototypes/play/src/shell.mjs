@@ -6,12 +6,13 @@
 // Lengths are in lp: one lp is `f` CSS px, so every edge lands on a whole physical pixel. Colours are the Station's 14.
 
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
-import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX, ARM, CROSS_ROW, ROWH } from "./fit.mjs";   // the size: z device px per lp and its tier
-import { areaHeight, isPhone, isPortrait, phoneFit, biggerTurned, planPortrait, planLandscape, trayMin, trayMax, sides, dockReserve, DOCK_KEY_H, DOCK_KEY_GAP, PHONE_BAR, PHONE_PAD } from "./phone.mjs";   // the phone: one device whole, its keys in the viewport
+import { baseK, baseTier, fitChoice, chosen, clampZ, Z_MAX } from "./fit.mjs";   // the size: z device px per lp and its tier
+import { areaHeight, isPhone, isPortrait, phoneFit, phoneKeyA, biggerTurned, dockReserve, DOCK_KEY_GAP, PHONE_BAR, PHONE_PAD } from "./phone.mjs";   // the phone: one device whole, its keys in the viewport
+import { plan as keyPlan, pickA, padDir, dockWords, KEYBOARD, DOCK_H } from "./keyplan.mjs";   // the key trays' geometry: one measure, one family at every size
 import { stampText, aboutText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
 import { NAME_LISTS } from "./names.mjs";   // the Options panel's settings
-import { mountOptions, T } from "../vendor/options.js";   // the Options panel and the play note: React + Radix, built from play/options (npm run build there)
+import { mountOptions, mountKeyTray, mountDockKey, T } from "../vendor/options.js";   // the Options panel, the play note, the key trays and the Dock key: React + Radix, built from play/options (npm run build there)
 import { sourceOf } from "./notes.mjs";   // the note's source: the stored setting noteFrom, "owner" by default
 
 const params = new URLSearchParams(location.search), TEST = params.has("test"), SEED = params.get("seed");   // test-harness flags only: every option a person sets is in the Options panel (play/src/options.mjs)
@@ -75,91 +76,38 @@ const frames = { station: $("fStation"), companion: $("fCompanion") };
 const stationUrl = "../station/?embed" + (TEST ? "&test" : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
-const SVG = {
-  left: '<svg viewBox="0 0 16 16"><path d="M3 8l7-5v10z"/></svg>', up: '<svg viewBox="0 0 16 16"><path d="M8 3l5 7H3z"/></svg>', down: '<svg viewBox="0 0 16 16"><path d="M8 13L3 6h10z"/></svg>', right: '<svg viewBox="0 0 16 16"><path d="M13 8L6 3v10z"/></svg>',
-  back: '<svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>', confirm: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
-  call: '<svg viewBox="0 0 26 26"><path d="M7 8a7 7 0 0 1 0 10M11.5 5a11 11 0 0 1 0 16M16 2.5a14.5 14.5 0 0 1 0 21"/><circle cx="4" cy="13" r="1.6" fill="#eafff9" stroke="none"/></svg>',
-};
-const MARK = (n) => `<img src="../ui/assets/masters/shell/shell-key-${n}-24.png" alt="">`;
-// key sizes in CSS px (the ruling's minimums); g is the group: P the D-pad, R the rooms, A the actions
-const KEYS = {
-  station: [
-    { id: "left", code: "ArrowLeft", name: "Left", cls: "pad arm left", glyph: SVG.left, g: "P", s: ARM }, { id: "up", code: "ArrowUp", name: "Up", cls: "pad arm up", glyph: SVG.up, g: "P", s: ARM },
-    { id: "down", code: "ArrowDown", name: "Down", cls: "pad arm down", glyph: SVG.down, g: "P", s: ARM }, { id: "right", code: "ArrowRight", name: "Right", cls: "pad arm right", glyph: SVG.right, g: "P", s: ARM },
-    { id: "home", code: "KeyH", name: "Home", cls: "room home", glyph: MARK("home"), g: "R", s: 56 }, { id: "research", code: "KeyR", name: "Pods", cls: "room research", glyph: MARK("pods"), g: "R", s: 56 },
-    { id: "vivarium", code: "KeyB", name: "Vivarium", cls: "room vivarium", glyph: MARK("vivarium"), g: "R", s: 56 }, { id: "library", code: "KeyL", name: "Library", cls: "room library", glyph: MARK("library"), g: "R", s: 56 },
-    { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 },
-    { id: "back", code: "Escape", name: "Back", cls: "round back", glyph: SVG.back, g: "A", s: 56 }, { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
-  ],
-  companion: [
-    { id: "left", code: "ArrowLeft", name: "Left", cls: "cpad arm left", glyph: SVG.left, g: "P", s: ARM }, { id: "up", code: "ArrowUp", name: "Up", cls: "cpad arm up", glyph: SVG.up, g: "P", s: ARM },
-    { id: "down", code: "ArrowDown", name: "Down", cls: "cpad arm down", glyph: SVG.down, g: "P", s: ARM }, { id: "right", code: "ArrowRight", name: "Right", cls: "cpad arm right", glyph: SVG.right, g: "P", s: ARM },
-    { id: "call", code: "KeyC", name: "Call", cls: "round call", glyph: SVG.call, g: "A", s: 56 }, { id: "back", code: "Escape", name: "Back", cls: "round cback", glyph: SVG.back, g: "A", s: 56 },
-    { id: "confirm", code: "Enter", name: "Confirm", cls: "round confirm", glyph: SVG.confirm, g: "A", s: 64 },
-  ],
-};
-const keyEls = { station: [], companion: [] }, hubEl = {};   // { def, el }; the hubs
+// The trays are React + Radix (options/src/keytray.jsx); the geometry is keyplan.mjs (one measure a: laptops 44, phones the largest step that fits). A key press is a keydown on the device's frame, its release a keyup.
+const MARK = (n) => "../ui/assets/masters/shell/shell-key-" + n + "-24.png";
+const defOf = (id, code, name, kind, cls) => ({ id, code, name, kind, cls, tip: KEYBOARD[id], mark: kind === "room" ? MARK(id === "research" ? "pods" : id) : undefined });
+const DEFS = (st) => [
+  defOf("left", "ArrowLeft", "Left", "arm", (st ? "pad" : "cpad") + " arm left"), defOf("up", "ArrowUp", "Up", "arm", (st ? "pad" : "cpad") + " arm up"),
+  defOf("down", "ArrowDown", "Down", "arm", (st ? "pad" : "cpad") + " arm down"), defOf("right", "ArrowRight", "Right", "arm", (st ? "pad" : "cpad") + " arm right"),
+  ...(st ? [defOf("home", "KeyH", "Home", "room", "room home"), defOf("research", "KeyR", "Pods", "room", "room research"), defOf("vivarium", "KeyB", "Vivarium", "room", "room vivarium"), defOf("library", "KeyL", "Library", "room", "room library")] : []),
+  defOf("call", "KeyC", "Call", "call", "round call"), defOf("back", "Escape", "Back", "back", "round " + (st ? "back" : "cback")), defOf("confirm", "Enter", "Confirm", "confirm", "round confirm"),
+];
+const trays = {};   // the mounted trays: { update({ plan, snap, tips }) }
 function buildKeys() {
   for (const dev of ["station", "companion"]) {
-    const host = $(dev === "station" ? "rowStation" : "rowCompanion");
-    const hub = document.createElement("div"); hub.className = "hub " + (dev === "station" ? "shub" : "chub"); host.appendChild(hub); hubEl[dev] = hub;   // the d-pad's centre: the cross is four arms round a hub
-    for (const def of KEYS[dev]) {
-      const b = document.createElement("button"); b.type = "button"; b.className = "k " + def.cls; b.innerHTML = def.glyph; b.setAttribute("aria-label", def.name); b.tabIndex = -1; wireKey(b, dev, def);
-      host.appendChild(b); keyEls[dev].push({ def, el: b });
-    }
+    const st = dev === "station";
+    trays[dev] = mountKeyTray($(st ? "rowStation" : "rowCompanion"), { dev, label: st ? "Station keys" : "Companion keys", defs: DEFS(st), padDir, onKey: (def, down) => { if (down) setOwner(dev); fire(dev, down ? "keydown" : "keyup", def); } });
   }
 }
 function fire(dev, type, def) {
   const w = frames[dev].contentWindow; if (!w) return;
   try { w.dispatchEvent(new KeyboardEvent(type, { code: def.code, key: def.code === "Enter" ? "Enter" : def.code === "Escape" ? "Escape" : def.code, bubbles: true, cancelable: true })); } catch { /* the frame is reloading */ }
 }
-function wireKey(b, dev, def) {
-  let down = false;
-  const up = () => { if (!down) return; down = false; b.classList.remove("dn"); fire(dev, "keyup", def); };
-  b.addEventListener("pointerdown", (e) => { e.preventDefault(); try { b.setPointerCapture(e.pointerId); } catch { /* no capture */ } setOwner(dev); down = true; b.classList.add("dn"); fire(dev, "keydown", def); });
-  b.addEventListener("pointerup", up); b.addEventListener("pointercancel", up); b.addEventListener("lostpointercapture", up);
-  b.addEventListener("click", (e) => e.preventDefault());
-}
-
-// ---- the key trays (ruling 6.1): a tray is as wide as its shell, 72 CSS px a row; the groups wrap to two rows, a key never shrinks and the shell never widens ----
-const GAP = [16, 8], MARGIN = [8, 4], GROUPS = { station: ["P", "R", "A"], companion: ["P", "A"] }, INNER = { P: 4, R: 8, A: 8 };
-const CROSS = { up: [ARM, 0], left: [0, ARM], right: [2 * ARM, ARM], down: [ARM, 2 * ARM] };   // the D-pad is a cross: up above, down below, left and right at the sides, a hub between (owner 2026-11-09)
-function groupOf(dev, n) {
-  if (n === "P") return { n, w: 3 * ARM, off: CROSS };   // each key's [x, y] in the cross
-  const defs = KEYS[dev].filter((d) => d.g === n); let x = 0; const off = {};
-  defs.forEach((d, i) => { off[d.id] = x; x += d.s + (i < defs.length - 1 ? INNER[n] : 0); });
-  return { n, w: x, off };
-}
-// returns { rows, pos: { id: [x, y] } } in CSS px inside the tray
-function trayPlan(dev, T) {
-  const gs = GROUPS[dev].map((n) => groupOf(dev, n)), by = Object.fromEntries(gs.map((g) => [g.n, g]));
-  const need = (list, g, m) => list.reduce((a, x) => a + x.w, 0) + (list.length - 1) * g + 2 * m;
-  const sizeOf = Object.fromEntries(KEYS[dev].map((d) => [d.id, d.s])), pos = {}, rowTop = (row) => (row ? CROSS_ROW : 0), rowH = (row) => (row ? ROWH : CROSS_ROW); let hub = null;
-  const put = (grp, x, row) => { for (const [id, o] of Object.entries(grp.off)) {
-    if (grp.n === "P") pos[id] = [S(x + o[0]), S(rowTop(row) + (rowH(row) - 3 * ARM) / 2 + o[1])];
-    else pos[id] = [S(x + o), S(rowTop(row) + (rowH(row) - sizeOf[id]) / 2)];
-    if (grp.n === "P") hub = [S(x + ARM), S(rowTop(row) + (rowH(row) - 3 * ARM) / 2 + ARM)]; } };
-  const gm = (list) => { for (let i = 0; i < 2; i++) if (need(list, GAP[i], MARGIN[i]) <= T) return i; return -1; };
-  const one = gm(gs);
-  if (one >= 0) {   // one row: the D-pad at the left, the rooms centred (kept clear of both neighbours), the actions at the right
-    const g = GAP[one], m = MARGIN[one], P = by.P, A = by.A, R = by.R;
-    put(P, m, 0); put(A, T - m - A.w, 0);
-    if (R) put(R, Math.min(Math.max((T - R.w) / 2, m + P.w + g), T - m - A.w - g - R.w), 0);
-    return { rows: 1, h: CROSS_ROW, pos, hub };
-  }
-  if (dev === "station") {   // row 1 the D-pad at the left and the rooms at the right; row 2 the actions, right-aligned
-    const l1 = [by.P, by.R], i1 = gm(l1), m1 = MARGIN[i1 < 0 ? 1 : i1], g1 = GAP[i1 < 0 ? 1 : i1];
-    if (i1 >= 0) { put(by.P, m1, 0); put(by.R, T - m1 - by.R.w, 0); } else { const sh = (T - need(l1, g1, m1)) / 2; put(by.P, sh + m1, 0); put(by.R, sh + m1 + by.P.w + g1, 0); }
-    const i2 = gm([by.A]), m2 = MARGIN[i2 < 0 ? 1 : i2];
-    if (i2 >= 0) put(by.A, T - m2 - by.A.w, 1); else put(by.A, (T - by.A.w) / 2, 1);
-  } else { put(by.P, (T - by.P.w) / 2, 0); put(by.A, (T - by.A.w) / 2, 1); }   // the Companion: the D-pad centred, then the actions centred
-  return { rows: 2, h: CROSS_ROW + ROWH, pos, hub };
-}
+// a tray's plan at a size, its boxes snapped to whole physical pixels (the keys are CSS px); `tips`: the laptop's hover hint (a touch screen has none)
+const snapBox = ([x, y, w, h]) => [S(x), S(y), Zc(w), Zc(h)];
+const drawTray = (dev, pl) => trays[dev].update({ plan: pl, snap: snapBox, tips: !phone && !window.matchMedia("(pointer: coarse)").matches });
 
 // ---- layout ----
 const bar = $("bar"), stage = $("stage"), shS = $("shStation"), shC = $("shCompanion"), ring = $("ring"), cradle = $("cradle"), slot = $("slot"), lamp = $("lamp"), dev = $("dev"), keysPanel = $("keysPanel");
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
-const tabs = { station: $("tabStation"), companion: $("tabCompanion") }, dockKey = $("dockKey"), asleepStrip = $("asleepStrip"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), note = $("note");
+const tabs = { station: $("tabStation"), companion: $("tabCompanion") }, asleepStrip = $("asleepStrip"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), note = $("note");
+// the Dock key: a Radix Toggle (options/src/keytray.jsx), its look and words set by layoutDock from this state
+const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: "../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true };
+const dockUi = mountDockKey($("dockRoot"), { onPress: () => { dockPress(); giveKeysBack(); } }); dockUi.update(dockState);
+const dockKey = $("dockKey");
 const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp"), turnHint = $("turnHint");
 const GAPV = 24, TOP = 16, BOT = 16;   // CSS px: between blocks, from the bar, below the last block
 const geom = { station: null, companion: null, caddy: null, height: 0, rows: { station: 1, companion: 1 } };   // block boxes in stage CSS px, for the scroll and the checks
@@ -180,7 +128,6 @@ function layout() {
   if (!TEST) layoutSize((narrow ? CW - 112 : CW - 160) - zw);
   devBtn.textContent = narrow ? "Tools" : "Developer tools"; devBtn.setAttribute("aria-label", "Developer tools"); devBtn.classList.toggle("on", devOpen); devBtn.setAttribute("aria-pressed", String(devOpen));
   const ctlX = layoutCompanionCtl(narrow, tabsEnd + 16); const noteX = layoutOptions(narrow, keysX, ctlX + (narrow ? 72 : 148) + 8); layoutNoteCtl(keysX, noteX, narrow);
-  layoutDock();
   // the bar's note: the narrow tier's line, or for 4000 ms after a seat, a lift or the opening's end, the Caddy's two lines as one (T-20261016-109)
   note.textContent = noteCaddy || NOTE_TEXT;
   note.classList.toggle("hidden", !narrow);
@@ -188,7 +135,7 @@ function layout() {
   // the column(s): the shell (the face and 8 lp all round), its key tray joined below, the Companion's cradle under its tray, the Caddy's block
   const cwid = stage.clientWidth || CW;
   const sw = Zc(1040 * f), cw = Zc(466 * f), shH = 616 * f, cradleH = 28 * f, caddyW = 808 * f, caddyH = 288 * f;
-  const planS = trayPlan("station", sw), planC = trayPlan("companion", cw), trS = planS.h, trC = planC.h;
+  const A = pickA("laptop", cwid, CH), planS = keyPlan("station", "laptop", sw, 0, A), planC = keyPlan("companion", "laptop", cw, 0, A), trS = planS.h, trC = planC.h;
   geom.rows = { station: planS.rows, companion: planC.rows };
   const y0 = narrow ? 28 : TOP;
   let xS, xC, yS = y0, yC, caddyX, caddyY, h;
@@ -201,7 +148,7 @@ function layout() {
   else { xS = centre(sw); xC = centre(cw); yC = yS + shH + trS + GAPV; }
   const cradleY = yC + shH + trC;
   // the Dock key (first-ten-front A2): beside the Companion's tray (under the asleep strip while the Station sleeps), else under its cradle
-  const DKW = sleeping ? STRIP_W : 196, dockBeside = sleeping || xC + cw + 12 + DKW <= cwid - 8, dockExtra = dockBeside ? 0 : DOCK_KEY_H + 12;
+  const DKW = sleeping ? STRIP_W : 196, dockBeside = sleeping || xC + cw + 12 + DKW <= cwid - 8, dockExtra = dockBeside ? 0 : DOCK_H + 12;
   if (row && !sleeping) { caddyX = xS + sw - caddyW; caddyY = yS + shH + trS + GAPV; } else { caddyX = centre(caddyW); caddyY = cradleY + cradleH + dockExtra + GAPV; }
   const printH = print.id && print.h && !narrow ? print.h * f + 24 : 0, printGap = printH ? 12 : 0;   // the recovery print's strip under the Caddy's block, while a print waits
   const wide = row && !sleeping;
@@ -211,10 +158,9 @@ function layout() {
   placeC(shS, xS, yS, sw, shH, true); place(frames.station, 8, 8, 1024, 600);
   placeC(shC, xC, yC + seatPx, cw, shH, true); place(frames.companion, 8, 8, 450, 600);
   placeC(trayEl.station, xS, yS + shH, sw, trS, true); placeC(trayEl.companion, xC, yC + shH, cw, trC, true);
-  for (const dv of ["station", "companion"]) { const pl = dv === "station" ? planS : planC; trayEl[dv].style.setProperty("--pk", ARM + "px"); placeC(hubEl[dv], pl.hub[0], pl.hub[1], ARM, ARM); for (const { def, el } of keyEls[dv]) { const [kx, ky] = pl.pos[def.id]; placeC(el, kx, ky, def.s, def.s); } }
-  { const x = dockBeside ? xC + cw + (sleeping ? GAPV : 12) : xC, y = dockBeside ? yC + shH + Math.floor((trC - DOCK_KEY_H) / 2) : cradleY + cradleH + 12;
-    placeC(dockKey, x, y,dockBeside ? DKW : cw, DOCK_KEY_H);
-    dockKey.classList.toggle("hidden", narrow && owner !== "companion"); }
+  drawTray("station", planS); drawTray("companion", planC);
+  { const x = dockBeside ? xC + cw + (sleeping ? GAPV : 12) : xC, y = dockBeside ? yC + shH + Math.floor((trC - DOCK_H) / 2) : cradleY + cradleH + 12;
+    layoutDock(narrow && owner !== "companion" ? null : [x, y, dockBeside ? DKW : cw, DOCK_H]); }
   asleepStrip.classList.toggle("hidden", !sleeping); if (sleeping) placeC(asleepStrip, xC + cw + GAPV, y0, STRIP_W, STRIP_H);
   const vis = (el, on) => { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; };
   vis(shS, (!narrow && !sleeping) || owner === "station"); vis(trayEl.station, (!narrow && !sleeping) || owner === "station"); vis(shC, !narrow || owner === "companion"); vis(trayEl.companion, !narrow || owner === "companion");
@@ -268,20 +214,19 @@ function layoutPhone() {
   setTabWords();
   placeC(optionsBtn, CW - P - ow, 4, ow, 44); optionsBtn.classList.remove("corner"); optionsBtn.style.bottom = ""; layoutNoteCtl(CW, 0, true);
   // the devices
-  const hSh = 616 * f, geomOf = {};
+  const hSh = 616 * f, geomOf = {}, plans = {}, a = phoneKeyA(CW, CH, dpr);   // one a for both devices: switching tabs never resizes the D-pad
   for (const dv of ["station", "companion"]) {
     const st = dv === "station", shell = st ? shS : shC, tray = trayEl[dv], fw = st ? 1024 : 450, shLp = st ? 1040 : 466;
     let sx, sy = P, sw, T, plan, box;
     if (portrait) {
-      T = Math.max(0, Math.min(trayMax(dv), Math.floor(areaHeight(portrait, CH, dockReserve(dv, portrait)) - hSh))); sx = P; sw = areaW; plan = planPortrait(dv, areaW, T);
+      plan = keyPlan(dv, "portrait", areaW, 0, a); T = plan.h; sx = P; sw = areaW;
       box = { x: P, y: P + Math.ceil(hSh), w: areaW, h: T }; tray.classList.remove("side");
     } else {
-      const sd = sides(dv, areaH), shW = shLp * f; sw = shW; sx = P + sd.LW + 8 + Math.max(0, Math.floor((areaW - sd.LW - sd.RW - 16 - shW) / 2)); plan = planLandscape(dv, areaW, areaH);
+      plan = keyPlan(dv, "landscape", areaW, areaH - 1, a); const shW = shLp * f; sw = shW; sx = P + plan.LW + 8 + Math.max(0, Math.floor((areaW - plan.LW - plan.RW - 16 - shW) / 2));
       box = { x: P, y: P, w: areaW, h: areaH - 1 }; tray.classList.add("side");   // a pixel short: a size rounds up to a whole device pixel
     }
     placeC(shell, sx, sy, sw, hSh, true); placeFrameC(frames[dv], (sw - fw * f) / 2, 8 * f, fw, 600);
-    placeC(tray, box.x, box.y, box.w, box.h, true); tray.style.setProperty("--pk", plan.arm + "px"); placeC(hubEl[dv], plan.hub[0], plan.hub[1], plan.arm, plan.arm);
-    for (const { def, el } of keyEls[dv]) { const [kx, ky, kw, kh] = plan.pos[def.id]; placeC(el, kx, ky, kw, kh); }
+    placeC(tray, box.x, box.y, box.w, box.h, true); plans[dv] = plan; drawTray(dv, plan);
     geomOf[dv] = portrait ? { x: P, y: P, w: areaW, h: Math.ceil(hSh) + T } : { x: sx, y: P, w: sw, h: hSh };
     const on = d === dv; for (const el of [shell, tray]) { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; }
     if (!portrait) tray.style.pointerEvents = "none";   // the landscape tray is the whole area: only its keys take a touch
@@ -290,9 +235,7 @@ function layoutPhone() {
   const g = geomOf[d]; geom.height = portrait ? P + g.h + P : CH - bh;
   for (const el of [ring, cradle, caddyBlock, lampsEl, printBox, dev, asleepStrip]) el.classList.add("hidden");
   // the Dock key: under the tray (portrait), or the right column's foot (landscape); on both devices, so a docked Companion can be lifted from the Station
-  dockKey.classList.remove("hidden"); layoutDock();
-  if (portrait) placeC(dockKey, P, P + g.h + DOCK_KEY_GAP, areaW, DOCK_KEY_H);
-  else placeC(dockKey, P + areaW - 76, P + areaH - DOCK_KEY_H - 2, 72, DOCK_KEY_H);
+  { const dk = plans[d].dock; layoutDock(portrait ? [P, P + g.h + DOCK_KEY_GAP, areaW, DOCK_H] : [P + dk[0], P + dk[1], dk[2], dk[3]]); }
   spacer.style.top = "0px"; spacer.style.left = "";
   // the build stamp: in the free strip under a portrait tray when there is one
   const free = CH - bh - (P + g.h + P) - reserve; stamp.classList.toggle("hidden", !portrait || free < 20); if (portrait && free >= 20) placeC(stamp, 0, CH - bh - 18, CW - P, 12, true);
@@ -300,7 +243,7 @@ function layoutPhone() {
   const want = portrait && d === "station" && biggerTurned(CW, CH, dpr);
   if (want && turnState === "idle") { turnState = "shown"; try { localStorage.setItem(TURN_KEY, "1"); } catch { /* no storage: shown again next visit */ } }
   else if (!want && turnState === "shown") turnState = "done";
-  turnHint.classList.toggle("hidden", !(want && turnState === "shown")); if (want && turnState === "shown") placeC(turnHint, P, P + g.h + DOCK_KEY_GAP + DOCK_KEY_H + 8, areaW, 16);
+  turnHint.classList.toggle("hidden", !(want && turnState === "shown")); if (want && turnState === "shown") placeC(turnHint, P, P + g.h + DOCK_KEY_GAP + DOCK_H + 8, areaW, 16);
   keysPanel.classList.toggle("hidden", !keysOpen); if (keysOpen) placeC(keysPanel, 0, 48, CW, Math.min(CH - 56, 760));
   window.__playRects = rects;
 }
@@ -319,20 +262,19 @@ function setZ(v) {   // v: a z, or null for fit; the choice is kept per browser,
 }
 const zStep = (d) => { if (TEST) return; const n = clampZ(k + d); if (n !== k) setZ(n); };
 // The Dock / Lift key (first-ten-front A2): quiet until the walk ends with a sealed crate, then lit; docked, it says how to go out. One press asks for the same dock or lift as Shift+D.
-function layoutDock() {
-  const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, short = phone && !isPortrait(CW, CH);
-  const mark = $("dockMark"), wordEl = $("dockWord"), hint = $("dockHint");
-  mark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png";
-  // [copy] placeholders: the scheme's section 7 item 4
-  wordEl.textContent = d ? (short ? "Lift" : "Docked · Lift to go out") : crates ? (short ? "Dock" : "Dock the Companion") : (short ? "Dock" : "Dock · after the walk");
-  hint.classList.toggle("hidden", short);
-  dockKey.classList.toggle("docked", d); dockKey.classList.toggle("lit", crates); dockKey.classList.toggle("quiet", !d && !crates);
-  dockKey.setAttribute("aria-disabled", String(!c.canDock));
+function layoutDock(box) {   // box: the key's [x, y, w, h] in stage CSS px, or null when it is not shown
+  const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, touch = window.matchMedia("(pointer: coarse)").matches;
+  // [copy] placeholders: the scheme's section 7 item 4; the short words are the long ones cut down ("Dock", "Lift")
+  const full = d ? "Docked · Lift to go out" : crates ? "Dock the Companion" : "Dock · after the walk", short = d ? "Lift" : "Dock";
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
-  dockKey.setAttribute("aria-label", label); dockKey.title = title;
-  if (!c.canDock) dockKey.setAttribute("aria-description", title); else dockKey.removeAttribute("aria-description");
-  dockKey.classList.toggle("pressed", pressed || c.pending);
+  let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
+  if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; if (dockNeed(full, false) > box[2]) mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis
+  Object.assign(dockState, { box: box ? snapBox(box) : null, docked: d, lit: crates, quiet: !d && !crates, pressed: pressed || c.pending, disabled: !c.canDock, label, title, mark: "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png", mode, full, short, hint });
+  dockUi.update(dockState);
 }
+// the width the Dock key's long words need (14 px Inter, its mark, the padding and the ⇧D hint)
+let dockCtx = null;
+function dockNeed(text, hint) { dockCtx = dockCtx || document.createElement("canvas").getContext("2d"); dockCtx.font = '500 14px "Inter", system-ui, sans-serif'; return Math.ceil(dockCtx.measureText(text).width) + 12 * 2 + 16 + 8 + (hint ? 8 + 22 : 0); }
 // The two device tabs: until a pod is home the Companion's comes first and the Station's says it sleeps ([copy] "Station · asleep").
 function setTabWords() {
   tabs.station.textContent = podHome ? "Station" : "Station · asleep";
@@ -490,7 +432,6 @@ function reconcile() {
   inflight = now() + 1500; handedPub = comp && comp.pub ? comp.pub : null;
   try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name, pub: comp.pub || null } : null }, location.origin); } catch { inflight = 0; }
 }
-dockKey.addEventListener("click", () => { dockPress(); giveKeysBack(); });
 cradle.addEventListener("click", () => dockPress());
 const giveKeysBack = () => { if (document.activeElement === dockKey) dockKey.blur(); };
 window.addEventListener("message", (e) => {

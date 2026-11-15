@@ -1,5 +1,6 @@
 // Every story reads the design tokens and the Options panel's own stylesheet, on the page's ground.
 import "../../../ui/tokens/out/tokens.css";
+import "../../../ui/keys.css";
 import "../options.css";
 import "./catalogue.css";
 
