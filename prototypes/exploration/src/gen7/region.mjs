@@ -265,8 +265,8 @@ export function piecesOf(out, I) {
     const [ax, ay] = G.slot, wc = c => (ay * MH + ((c / MW) | 0)) * RW + ax * MW + (c % MW);
     if (!G.spawns.length || G.gate < 0) continue;
     // starts: 0 stays; 1-4 by the trail, five cells apart
-    const sp = [G.spawns[0]], key = c => hash(seed, 'gen7', 'spawn-road', ax, ay, c), sband = c => (dl[wc(c)] === 0 ? 0 : dl[wc(c)] <= 3 ? 1 : 2);
-    const cand = G.startSites.filter(c => c !== sp[0]).sort((a, b) => sband(a) - sband(b) || key(a) - key(b) || a - b);
+    const sp = [G.spawns[0]], hSp = hashHead([seed, 'gen7', 'spawn-road', ax, ay]), sband = c => (dl[wc(c)] === 0 ? 0 : dl[wc(c)] <= 3 ? 1 : 2);
+    const cand = G.startSites.filter(c => c !== sp[0]).map(c => ({ c, b: sband(c), k: hashTail(hSp, c) })).sort((a, b) => a.b - b.b || a.k - b.k || a.c - b.c).map(o => o.c);
     for (const c of cand) { if (sp.length >= 5) break; if (sp.every(p => cdist(p, c) >= 5)) sp.push(c); }
     if (sp.length < 5) for (const c of G.spawns) { if (sp.length >= 5) break; if (!sp.includes(c) && sp.every(p => cdist(p, c) >= 5)) sp.push(c); }
     if (sp.length === 5) {
@@ -287,14 +287,14 @@ export function piecesOf(out, I) {
     const band = c => { const w = wc(c), camp = coveAt[w] || confAt[w];
       if ((endSet.has(w) || forkSet.has(w)) && camp) return 0; if (forkSet.has(w) && openLow(w)) return 1; if (endSet.has(w)) return 2;
       if (d0[w] <= 1 && camp) return 3; if (d0[w] === 0) return 4; if (d0[w] <= 1) return 5; return 6; };
-    const dk = c => hash(seed, 'gen7', 'depot-road', ax, ay, c);
-    dc.sort((a, b) => band(a) - band(b) || dk(a) - dk(b) || a - b);
-    const dset = new Set(); for (const c of dc) { if (dset.size >= 6) break; if ([...dset].every(d => cdist(d, c) >= 5)) dset.add(c); }
+    const hDp = hashHead([seed, 'gen7', 'depot-road', ax, ay]);
+    const dcs = dc.map(c => ({ c, b: band(c), k: hashTail(hDp, c) })).sort((a, b) => a.b - b.b || a.k - b.k || a.c - b.c).map(o => o.c);
+    const dset = new Set(); for (const c of dcs) { if (dset.size >= 6) break; if ([...dset].every(d => cdist(d, c) >= 5)) dset.add(c); }
     if (dset.size === 6) G.depots = { seed: G.seed, set: dset };
     // beacons: today's chance (rock 35, meadow 8 in 100) two and a half times as likely within a cell of the trail, a quarter as likely off it; none within 2 cells of another
-    const bset = new Set();
+    const bset = new Set(), hBc = hashHead([seed, 'gen7', 'cairn-road', ax, ay]);
     for (let c = 0; c < NC; c++) { if ((G.land[c] !== L.ROCK && G.land[c] !== L.MEADOW) || !G.comp[c] || G.depots.set.has(c)) continue; const pct = (G.land[c] === L.ROCK ? 35 : 8) * (d0[wc(c)] <= 1 ? 2.5 : 0.25);
-      if (hash(seed, 'gen7', 'cairn-road', ax, ay, c) % 100 >= pct) continue; if ([...bset].every(b => cdist(b, c) > 2)) bset.add(c); }
+      if (hashTail(hBc, c) % 100 >= pct) continue; if ([...bset].every(b => cdist(b, c) > 2)) bset.add(c); }
     G.beacons = { seed: G.seed, set: bset };
   }
   if (extra.length) { roads.lists.push(...extra); for (const _ of extra) roads.kinds.push('start'); const g = roadGraph(NR, RW, roads.lists); roads.on = g.on; roads.ends = []; roads.forks = []; for (const [v, a] of g.adj) { if (a.length === 1) roads.ends.push(v); else if (a.length >= 3) roads.forks.push(v); } roads.startBranches = extra.length; }
@@ -387,14 +387,15 @@ export function addFeatures(out) {
 // The realm's one trail network (roads.mjs), laid on the realm once the features are known; then every region draws its pieces by it (piecesOf). Bridges and the destinations the trails add (far
 // shores, bridges, the land's own spots in holes) join the realm's features and destinations.
 export function addRoads(out, F) {
-  const I = roadInput(out), realm = out.realm;
+  const t0 = Date.now(), I = roadInput(out), realm = out.realm;
   const extraHubs = F.dest.filter(d => d.kind === 'pass' || d.kind === 'ravine').map(d => d.c);
   const R = realmRoads({ ...I, extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams });
   const bodyOf = new Map(); for (const b of F.bodies) for (const c of b.cells) bodyOf.set(c, b);
   for (const b of R.bridges) { const w = bodyOf.get(b.cells[0]); b.river = w ? w.kind + '-' + w.id : null; realm.features.push({ id: b.id, kind: 'bridge', cells: b.cells, links: { ends: b.ends, axis: b.axis === 1 ? 'x' : 'y', river: b.river, around: b.around } }); }
   realm.destinations = R.dest;
   realm.roads = { lists: R.lists, kinds: R.kinds, on: R.on, ends: R.ends, forks: R.forks, hubs: R.hubs.map(h => h.c), loops: R.loops.length, bridges: R.bridges, stuck: R.stuck, stats: R.stats };
-  piecesOf(out, I);
+  const t1 = Date.now(); piecesOf(out, I);
+  realm.roads.stats.msRoads = t1 - t0; realm.roads.stats.msPieces = Date.now() - t1;   // the time of the network and of the piece pass (reported by the checks)
   return I;
 }
 export const ROUNDS = 64;   // was 24: with stairs only where a south-facing face exists, two marsh regions of seeds 1-200 (62 and 173) needed more draws

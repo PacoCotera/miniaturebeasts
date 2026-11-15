@@ -12,7 +12,7 @@ export const P = {
   HUB_GAP: 6,       // cells (Chebyshev) between two hubs of a region, at least
   HUB_IN: 2,        // a hub stands this many cells inside its region's border
   BASE: 10,         // the cost of a step onto open meadow, low ground
-  LAND: [0, 6, 4, 8, 0, 99],   // by land kind: meadow, pond, rock, wood, water (a ford, below), cliff
+  LAND: [0, 300, 4, 14, 0, 99],   // by land kind: meadow, pond (a shore: its tiles are water and strip), rock, wood (thicket: a trail clears a lane), water (a ford, below), cliff
   FORD: 24,         // a step onto a ford (water is crossed only there)
   BRIDGE: 12,       // a step onto a bridge cell (cheaper than a ford, so the road takes a bridge it was offered)
   RAISED: 3,        // a step on raised land (roads prefer the low ground)
@@ -21,12 +21,12 @@ export const P = {
   WANDER: 6,        // + 0 .. 6 from the whole-number noise, 4-cell lattice (the wander)
   STAIR: 40,        // a step up or down one of the region's stairs (the only way a road changes level)
   LOOPS: 75,        // loop edges a realm, at most
-  LOOP_REGION: 3,   // loop edges whose middle lies in one region, at most
-  LOOP_RATIO: 11,   // a loop only where the tree's way round is 1.1x (in tenths) the direct pair or more (1.2x left four of 15 seeds under 50 loops)
+  LOOP_REGION: 4,   // loop edges whose middle lies in one region, at most (the steer says 2-3; 3 left seed 11 at 49 loops a realm)
+  LOOP_RATIO: 10,   // a loop only where the tree's way round is 1.0x (in tenths) the direct pair or more: any non-tree pair (1.2x left four of 15 seeds under 50 loops, 1.1x one)
   LOOP_GAP: 3,      // cells between the middles of two loops, at least
-  SHORE: 8,         // + this on the three rings of land inside the coast (no road runs round the realm's shore)
+  SHORE: 16,        // + this on the three rings of land inside the coast (no road runs round the realm's shore)
   SHORE_IN: 4,      // a hub stands this many cells in from the realm's rim, at least
-  WATERSIDE: 40,    // R8: + this on a cell beside deep water (a trail steps back from the water except where it crosses)
+  WATERSIDE: 70,    // R8: + this on a cell beside deep water (a trail steps back from the water except where it crosses)
   RUN_MAX: 12,      // places of trail without a fork, at most (spurs)
   SPUR: 4,          // places a spur is long, at most
   DEST_REACH: 6,    // a destination within this many places on its own level gets a branch to the trail
@@ -73,8 +73,9 @@ export function realmRoads(I) {
   for (let c = 0; c < NR; c++) { const v = fbm(256 * X(c) + 128, 256 * Y(c) + 128, 2, 2, ns); wander[c] = Math.max(0, Math.min(P.WANDER, ((v + 65536) * (P.WANDER + 1)) >> 17)); }
   const side = new Uint8Array(NR);   // R8: a cell beside deep water
   for (let c = 0; c < NR; c++) if (walk[c] && nb4(c).some(deepWater)) side[c] = 1;
-  const stats = {};
+  const stats = {}, T0 = Date.now(), tick = n => { stats['t_' + n] = Date.now() - T0; };   // the milliseconds at the end of each stage (the checks report them)
 
+  tick('wander');
   // ---- bridges: a straight span of 1..BR_SPAN cells of deep water (a river or a lake's narrows), both ends dry walkable on one level, where the way round is BR_RATIO x the bridge's road or more ----
   const bridgeAxis = new Uint8Array(NR);   // 1 east-west, 2 north-south, on a bridge's water cells
   const bridges = [];
@@ -108,7 +109,7 @@ export function realmRoads(I) {
     const d = n - c, ax = d === 1 || d === -1 ? 1 : 2;
     if (bridgeAxis[n] && bridgeAxis[n] !== ax) return -1;   // a bridge is entered and left straight
     if (bridgeAxis[c] && bridgeAxis[c] !== ax) return -1;
-    let k = P.BASE + (bridgeAxis[n] ? P.BRIDGE : ford[n] ? P.FORD : P.LAND[land[n]]) + (level[n] ? P.RAISED : 0) + (rim(n) <= 3 ? P.SHORE : 0) + Math.min(P.SLOPE_MAX, (Math.abs(e[n] - e[c]) / P.SLOPE_DIV) | 0) + wander[n] + (side[n] && !ford[n] && !bridgeAxis[n] ? P.WATERSIDE : 0);
+    let k = P.BASE + (bridgeAxis[n] ? P.BRIDGE : ford[n] ? P.FORD : P.LAND[land[n]]) + (level[n] ? P.RAISED : 0) + (rim(n) <= 5 ? P.SHORE : 0) + Math.min(P.SLOPE_MAX, (Math.abs(e[n] - e[c]) / P.SLOPE_DIV) | 0) + wander[n] + (side[n] && !ford[n] && !bridgeAxis[n] ? P.WATERSIDE : 0);
     if (level[n] !== level[c]) {
       if (n === c + RW && level[c] > level[n] && stair[c]) k += P.STAIR;
       else if (n === c - RW && level[n] > level[c] && stair[n]) k += P.STAIR;
@@ -117,6 +118,7 @@ export function realmRoads(I) {
     return k;
   };
 
+  tick('bridges');
   // ---- hubs: per region, the open low meadow cells of its main part, three of them apart; the realm's junction destinations and the bridges are hubs too ----
   const hubs = [];
   for (let ay = 0; ay < B; ay++) for (let ax = 0; ax < A; ax++) {
@@ -136,6 +138,7 @@ export function realmRoads(I) {
   for (const c of I.extraHubs || []) { if (!walk[c] || ford[c] || rim(c) < P.SHORE_IN) continue; if (hubs.every(h => cheb(h.c, c) >= 3)) hubs.push({ c, slot: [(X(c) / MW) | 0, (Y(c) / MH) | 0], dest: true }); }
   for (const b of bridges) for (const c of b.ends) if (!hubs.some(h => h.c === c)) hubs.push({ c, slot: [(X(c) / MW) | 0, (Y(c) / MH) | 0], dest: true, bridge: b.id });
 
+  tick('hubs');
   // ---- one Dijkstra from every hub; the pairs; Kruskal; loops; trace ----
   const dist = new Int32Array(NR).fill(0x3fffffff), owner = new Int32Array(NR).fill(-1), prev = new Int32Array(NR).fill(-1), q = heap();
   hubs.forEach((h, i) => { dist[h.c] = 0; owner[h.c] = i; q.push(0, h.c); });
@@ -169,42 +172,52 @@ export function realmRoads(I) {
   }
   const lists = paths.map(p => p.cells), kinds = paths.map(p => (p.loop ? 'loop' : 'tree'));   // kinds: what each list is (tree, loop, bridge, dest, spur)
   for (const b of bridges) { lists.push([b.ends[0], ...b.cells, b.ends[1]]); kinds.push('bridge'); }   // the span itself, whole
-  const onNow = () => roadGraph(NR, RW, lists).on;
+  const onArr = new Uint8Array(NR), mark = cells => { for (const c of cells) onArr[c] = 1; };   // the cells on the trail so far, kept as lists are added
+  for (const l of lists) mark(l);
+  const onNow = () => onArr;
 
+  tick('network');
   // ---- destinations: the realm's, the lakes' far shores, the bridges ----
   const dest = (I.dest || []).map(d => ({ ...d }));
   const far = [];
   { const d0 = ringDist(onNow(), RW, RH);
-    for (const b of I.bodies || []) { if (b.kind !== 'lake') continue; const wetSet = new Set(b.cells), shore = [];
-      for (let c = 0; c < NR; c++) if (walk[c] && !ford[c] && !wetSet.has(c) && nb4(c).some(n => wetSet.has(n))) shore.push(c);
+    for (const b of I.bodies || []) { if (b.kind !== 'lake') continue; const wetSet = new Set(b.cells), shoreSet = new Set();
+      for (const w of b.cells) for (const n of nb4(w)) if (walk[n] && !ford[n] && !wetSet.has(n)) shoreSet.add(n);
+      const shore = [...shoreSet];
       if (shore.length < 4) continue; shore.sort((a, b2) => d0[a] - d0[b2] || a - b2); const entry = shore[0];
-      const dd = new Map([[entry, 0]]), qq = [entry]; for (let h = 0; h < qq.length; h++) { const u = qq[h]; for (const n of nb4(u)) if (!dd.has(n) && walk[n] && !wetSet.has(n)) { dd.set(n, dd.get(u) + 1); qq.push(n); } }
-      const best = shore.filter(c => dd.has(c)).sort((a, b2) => dd.get(b2) - dd.get(a) || a - b2)[0];
-      if (best !== undefined && dd.get(best) >= 4) far.push({ kind: 'far shore', c: best, feature: 'lake-' + b.id, index: 0, heart: 'landmark ground (Reedpool)' }); } }
+      const dd = new Int16Array(NR).fill(-1), qq = [entry]; dd[entry] = 0; for (let h = 0; h < qq.length; h++) { const u = qq[h]; for (const n of nb4(u)) if (dd[n] < 0 && walk[n] && !wetSet.has(n)) { dd[n] = dd[u] + 1; qq.push(n); } }
+      const best = shore.filter(c => dd[c] >= 0).sort((a, b2) => dd[b2] - dd[a] || a - b2)[0];
+      if (best !== undefined && dd[best] >= 4) far.push({ kind: 'far shore', c: best, feature: 'lake-' + b.id, index: 0, heart: 'landmark ground (Reedpool)' }); } }
   const addDest = d => { if (dest.every(k => cheb(k.c, d.c) >= P.DEST_GAP)) { dest.push(d); return true; } return false; };
   for (const f of far) addDest(f);
   for (const b of bridges) dest.push({ kind: 'bridge', c: b.mid, feature: b.id, index: 0, heart: 'the land\'s own' });
 
+  tick('dest');
   // ---- branches: a destination within DEST_REACH places on its own level is joined to the nearest trail cell ----
   const branchTo = (s, onR, reach) => { const pv = new Map([[s, -1]]), qq = [[s, 0]];
     for (let h = 0; h < qq.length; h++) { const [u, k] = qq[h]; if (onR[u]) { const cells = []; for (let v = u; v >= 0; v = pv.get(v)) cells.push(v); return cells; } if (k >= reach) continue;
-      for (const n of nb4(u)) { if (pv.has(n) || !walk[n] || level[n] !== level[u]) continue; pv.set(n, u); qq.push([n, k + 1]); } } return null; };
+      for (const n of nb4(u)) { if (pv.has(n) || !walk[n] || land[n] === 1 || level[n] !== level[u]) continue; pv.set(n, u); qq.push([n, k + 1]); } } return null; };
   const branchEnds = new Set(); let destBranches = 0;
   const joinDest = d => { if (d.kind === 'pass' || d.kind === 'ravine' || d.kind === 'bridge') return; const onR = onNow(); if (onR[d.c] || !walk[d.c]) return;
-    const b = branchTo(d.c, onR, P.DEST_REACH); if (b && b.length > 1) { lists.push(b.reverse()); kinds.push('dest'); destBranches++; d.branch = true; } };
+    const b = branchTo(d.c, onR, P.DEST_REACH); if (b && b.length > 1) { lists.push(b.reverse()); kinds.push('dest'); mark(b); destBranches++; d.branch = true; } };
   for (const d of dest) joinDest(d);
 
+  tick('branches');
   // ---- R14: every walkable place within REACH places' walk of a destination; a hole gets the land's own best spot as a destination ----
   const stairUp = new Uint8Array(NR); for (let c = 0; c < NR; c++) if (stair[c] && level[c] && c + RW < NR && !level[c + RW]) stairUp[c] = 1;
   const can = (u, n) => walk[n] && !deepWater(n) && (level[n] === level[u] || (n === u + RW && stairUp[u]) || (n === u - RW && stairUp[n]));
-  const reachFrom = () => { const d = new Int16Array(NR).fill(-1), qq = []; for (const k of dest) if (walk[k.c] || bridgeAxis[k.c]) { if (d[k.c] < 0) { d[k.c] = 0; qq.push(k.c); } }
-    for (let h = 0; h < qq.length; h++) { const u = qq[h]; for (const n of nb4(u)) if (d[n] < 0 && can(u, n)) { d[n] = d[u] + 1; qq.push(n); } } return d; };
+  // places' walk from the nearest destination, kept as destinations are added: a new one only relaxes the cells it is nearer to
+  const reachD = new Int16Array(NR).fill(-1);
+  const reachAdd = ss => { const qq = []; for (const c of ss) if (walk[c] || bridgeAxis[c]) { if (reachD[c] !== 0) { reachD[c] = 0; qq.push(c); } }
+    for (let h = 0; h < qq.length; h++) { const u = qq[h], x = X(u), nd = reachD[u] + 1;
+      for (let k = 0; k < 4; k++) { const n = k === 0 ? u - RW : k === 1 ? u + 1 : k === 2 ? u + RW : u - 1; if (n < 0 || n >= NR || (k === 1 && x === RW - 1) || (k === 3 && x === 0)) continue; if ((reachD[n] < 0 || nd < reachD[n]) && can(u, n)) { reachD[n] = nd; qq.push(n); } } } };
+  const reachFrom = () => reachD;
   const places = []; for (let c = 0; c < NR; c++) if (walk[c] && !ford[c] && comp[c]) places.push(c);
   const streamCells = new Map(); for (const st of I.streams || []) st.cells.forEach((c, i) => streamCells.set(c, { st, i }));
   const bend = c => { const s = streamCells.get(c); if (!s || s.i === 0 || s.i >= s.st.cells.length - 1) return false; const a = s.st.cells[s.i - 1], n = s.st.cells[s.i + 1]; return X(a) !== X(n) && Y(a) !== Y(n); };
   const spot = c => {   // the land's own best spot, and the heart it asks for (existing heart kinds only)
     let sc = 0, heart = 'herd ground';
-    if (land[c] === 1) { sc = 50; }                                        // a pond edge: herd ground
+    if (land[c] === 0 && nb4(c).some(n => land[n] === 1)) { sc = 50; }       // a pond edge (the meadow beside the pond cell, whose own tiles are mostly water): herd ground
     else if (bend(c)) { sc = 40; }                                          // a bend of a stream: herd ground
     else if (c + RW < NR && level[c] && !level[c + RW] && walk[c + RW]) { sc = 38; heart = 'overhang'; }   // under a south face
     else { let lower = 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (!dx && !dy) continue; const m = c + dy * RW + dx; if (m >= 0 && m < NR && e[m] > e[c]) lower++; }
@@ -212,7 +225,10 @@ export function realmRoads(I) {
       else if (land[c] === 3 && level[c]) { sc = 30; heart = 'sleepers\' bed'; }   // a lone tree on a rise
       else if (land[c] === 0) sc = 10; }
     if (side[c]) sc += 3; return { sc, heart }; };
-  let filled = 0, reach = reachFrom();
+  let filled = 0; reachAdd(dest.map(k => k.c)); const reach = reachD;
+  const isDest = new Uint8Array(NR), near3 = new Uint8Array(NR);   // a destination here / one within 2 cells (DEST_GAP 3)
+  const markDest = c => { isDest[c] = 1; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = X(c) + dx, y = Y(c) + dy; if (x >= 0 && y >= 0 && x < RW && y < RH) near3[y * RW + x] = 1; } };
+  for (const k of dest) markDest(k.c);
   for (let round = 0; round < 400; round++) {
     let f = -1, fd = -1; for (const c of places) { const d = reach[c] < 0 ? 9999 : reach[c]; if (d > fd || (d === fd && f >= 0 && c < f)) { fd = d; f = c; } }
     if (fd <= P.REACH_FILL) break;
@@ -220,21 +236,22 @@ export function realmRoads(I) {
     let best = null;
     for (const gap of [P.DEST_GAP, 1]) {   // three cells from another destination; where the hole is ringed by them (water or a cliff between), one cell
       for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = X(f) + dx, y = Y(f) + dy; if (x < 0 || y < 0 || x >= RW || y >= RH) continue; const c = y * RW + x;
-        if (!walk[c] || ford[c] || !comp[c] || level[c] !== level[f] || rim(c) < P.SHORE_IN || dest.some(k => cheb(k.c, c) < gap)) continue;
+        if (!walk[c] || ford[c] || land[c] === 1 || !comp[c] || level[c] !== level[f] || rim(c) < P.SHORE_IN || (gap === 1 ? isDest[c] : near3[c])) continue;
         const s = spot(c), key = s.sc * 100000 - (Math.abs(dx) + Math.abs(dy)) * 1000 - (h32(seed, c, 19) & 255); if (!best || key > best.key) best = { c, key, heart: s.heart, kind: s.sc >= 50 ? 'pond edge' : s.sc >= 40 ? 'stream bend' : s.sc >= 38 ? 'cliff foot' : s.sc >= 36 ? 'hollow' : s.sc >= 30 ? 'tree on a rise' : 'open ground' }; }
       if (best) break; }
-    if (!best && dest.every(k => k.c !== f)) best = { c: f, heart: 'herd ground', kind: 'open ground' };   // the hole itself, where nothing round it fits (the coast's edge)
+    if (!best && !isDest[f]) best = { c: f, heart: 'herd ground', kind: 'open ground' };   // the hole itself, where nothing round it fits (the coast's edge)
     if (!best) { reach[f] = 0; continue; }
-    const d = { kind: 'reach', c: best.c, feature: 'land', index: 0, heart: best.heart, spot: best.kind }; dest.push(d); filled++; joinDest(d); reach = reachFrom();
+    const d = { kind: 'reach', c: best.c, feature: 'land', index: 0, heart: best.heart, spot: best.kind }; dest.push(d); markDest(d.c); filled++; joinDest(d); reachAdd([d.c]);
   }
   stats.holesFilled = filled;
 
+  tick('reach');
   // ---- the fork rule: walking any stretch with no fork, a spur leaves it at the last cell within RUN_MAX - 1 steps where one fits ----
   const stepOk = (v, n, loose) => { if (level[n] === level[v]) return true; if (!loose) return false; return (n === v + RW && level[v] > level[n] && stair[v]) || (n === v - RW && level[n] > level[v] && stair[n]); };
   const spurAt = (u, onR) => { let best = null;
     for (const [minLen, loose] of [[2, false], [1, false], [1, true]]) { const pv = new Map([[u, -1]]), qq = [[u, 0]];
       for (let h = 0; h < qq.length; h++) { const [v, k] = qq[h]; if (k >= P.SPUR) continue;
-        for (const n of nb4(v)) { if (pv.has(n) || !walk[n] || (ford[n] && !loose) || (side[n] && !loose) || !stepOk(v, n, loose) || onR[n]) continue; if (!loose && nb4(n).some(m => m !== v && onR[m])) continue; pv.set(n, v); qq.push([n, k + 1]); } }
+        for (const n of nb4(v)) { if (pv.has(n) || !walk[n] || land[n] === 1 || (ford[n] && !loose) || (side[n] && !loose) || !stepOk(v, n, loose) || onR[n]) continue; if (!loose && nb4(n).some(m => m !== v && onR[m])) continue; pv.set(n, v); qq.push([n, k + 1]); } }
       const [end, k] = qq[qq.length - 1]; if (k >= minLen) { const cells = []; for (let v = end; v >= 0; v = pv.get(v)) cells.push(v); best = cells.reverse(); break; } }
     return best; };
   let spurs = 0; const stuckRuns = [];
@@ -263,6 +280,7 @@ export function realmRoads(I) {
   const g1 = roadGraph(NR, RW, lists), onF = g1.on, deg1 = v => g1.adj.get(v).length;
   const ends = []; for (const v of g1.adj.keys()) if (deg1(v) === 1) ends.push(v);
   const forks = []; for (const v of g1.adj.keys()) if (deg1(v) >= 3) forks.push(v);
+  tick('spurs');
   stats.hubs = hubs.length; stats.loops = loops.length; stats.spurs = spurs; stats.stuck = stuckRuns.length; stats.destBranches = destBranches;
   return { hubs, tree, paths, loops, lists, kinds, bridges, dest, far, on: onF, ends, forks, branchEnds: [...branchEnds], stuck: stuckRuns, stats };
 }

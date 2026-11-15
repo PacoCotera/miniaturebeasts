@@ -436,9 +436,10 @@ function windowOf(S, X, Y) {
   // places can draw it. A trail clears thicket only where no way round it exists.
   const tr = trailsOf(S), ground = t.slice(), blocked = new Uint8Array(N), blockedT = new Uint8Array(N), rough = new Uint8Array(N);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { let hard = x < 1 || y < 1 || x + 2 >= W || y + 2 >= H, hardT = hard, soft = 0; for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const v = t[(y + dy) * W + x + dx]; if (v === TV.WATER || v === TV.CLIFF) { hard = true; hardT = true; } else if (v === TV.THICKET) hard = true; if (v !== TV.GRASS) soft = 1; } blocked[y * W + x] = hard ? 1 : 0; blockedT[y * W + x] = hardT ? 1 : 0; rough[y * W + x] = soft; }
-  const paint = (x, y, clear) => { for (let dy = -1; dy <= 2; dy++) for (let dx = -1; dx <= 2; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
+  const paint = (x, y, clear) => { const R0 = 3; /* a lane of grass 3 tiles each side */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
   const stairBy = new Map(); for (const st of stairsOf(S)) stairBy.set(st.A[0] * 1000 + st.A[1] + (st.south ? 's' : 'e'), st);
   const blockedAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blockedT[y * W + x] === 1; };
+  const walkOnlyAt = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; return v === TV.WATER || v === TV.DEEP || v === TV.CLIFF || v === TV.THICKET; };
   for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) {
     const cx = X - HX + i, cy = Y - HY + j, hits = tr.by.get(cx * 1000 + cy); if (!hits) continue;
     const cur = [cx, cy], nbs = new Map();
@@ -447,9 +448,11 @@ function windowOf(S, X, Y) {
     const anchor = o => {   // the tile where the trail meets the edge to `o`, on this cell's side; null where that side is raised land (no path there yet: art slot)
       const lc = S.lvC[cellIdx(cur[0], cur[1])], lo = S.lvC[cellIdx(o[0], o[1])], len = o[0] !== cur[0] ? CH : CW;
       if (lc === lo) {
-        let pt = portTiles(S, cur, o, 0);
-        for (const s of [1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6]) { if (!pt.some(p => blockedAt(p[0], p[1]))) break; const base = portAt(S.seed, Math.min(cur[0], o[0]), Math.min(cur[1], o[1]), o[0] === cur[0]); if (base + s < 2 || base + s > len - 4) continue; pt = portTiles(S, cur, o, s); }
-        return pt[0];
+        const base = portAt(S.seed, Math.min(cur[0], o[0]), Math.min(cur[1], o[1]), o[0] === cur[0]), pt0 = portTiles(S, cur, o, 0);
+        // slide along the whole edge (+1, -1, +2, ...) to the first pair of tiles open on both sides (the same test from either place); else to the first pair that only walks (no water, thicket or raised land)
+        for (const open of [blockedAt, walkOnlyAt]) { if (!pt0.some(p => open(p[0], p[1]))) return pt0[0];
+          for (let d = 1; d < len; d++) for (const s of [d, -d]) { if (base + s < 2 || base + s > len - 4) continue; const pt = portTiles(S, cur, o, s); if (!pt.some(p => open(p[0], p[1]))) return pt[0]; } }
+        return pt0[0];
       }
       if (lc > lo) return null;   // a stair, and this is its high side
       const vertical = cur[0] === o[0], A = vertical ? (cur[1] < o[1] ? cur : o) : (cur[0] < o[0] ? cur : o), st = stairBy.get(A[0] * 1000 + A[1] + (vertical ? 's' : 'e'));
@@ -459,7 +462,11 @@ function windowOf(S, X, Y) {
     if (!anchors.length) continue;
     const lx = a => clamp(a[0] - cx * CW, 0, CW - 1), ly = a => clamp(a[1] - cy * CH, 0, CH - 1), ox = (cx - (X - HX)) * CW, oy = (cy - (Y - HY)) * CH;
     const wAt = (x, y) => (oy + y) * W + ox + x;
-    let junction = hub;
+    // the hub may stand in water or thicket: it moves to the nearest tile that is open (first ground a trail can use as it is, then ground it may clear thicket on)
+    const nearOpen = p => { const px = lx(p), py = ly(p);
+      for (const bl of [blocked, blockedT]) for (let r = 0; r <= 9; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; const x = px + dx, y = py + dy; if (x < 2 || y < 2 || x > CW - 4 || y > CH - 4) continue; if (!bl[wAt(x, y)]) return [cx * CW + x, cy * CH + y]; }
+      return p; };
+    let junction = anchors.length === 2 ? null : nearOpen(hub);
     if (anchors.length === 2) {   // a bend: 3-6 tiles off the straight line between the two ports, to the side the hash picks, on open ground
       const a = anchors[0], b = anchors[1], mx = (lx(a) + lx(b)) >> 1, my = (ly(a) + ly(b)) >> 1, horiz = Math.abs(lx(a) - lx(b)) >= Math.abs(ly(a) - ly(b)), h2 = hash(seed, 'gen7', 'bend', cx, cy);
       junction = null;
@@ -475,7 +482,7 @@ function windowOf(S, X, Y) {
       return false;
     };
     if (junction) for (const a of anchors) routeTo(a, junction);
-    else routeTo(anchors[0], anchors[1]);
+    else if (!routeTo(anchors[0], anchors[1])) { const j = nearOpen(hub); for (const a of anchors) routeTo(a, j); }
   }
   // the set's pairs are all opaque (Rule 1.2-1.3): every 2 x 2 block holds at most two terrains and they must be a pair; the lesser gives way to grass. The 2 x 2 rule alternates
   // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge. The gates (openGates) are cut once the land has settled, and it settles again round them.
