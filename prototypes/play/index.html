@@ -84,7 +84,7 @@ body.phone iframe{image-rendering:pixelated}
 /* the Caddy's own canvas: kept off screen, drawn as the dock's e-paper and copied into the miniature and the sheet */
 #caddyHold{position:absolute; width:0; height:0; overflow:hidden}
 /* the Caddy's recovery print (sandbox): a card at the window's foot while a print waits: the print as the printer set it (1 dot = 1 CSS px, never smoothed), what it is, and the "I have it" button */
-#caddyPrint{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); width:min(560px,calc(100vw - 32px)); max-height:calc(100vh - 32px); overflow:auto; background:var(--bar); border:1px solid var(--bevel); border-radius:var(--mb-radius-8); z-index:35; display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px; padding:12px; color:var(--fog)}
+#caddyPrint{position:fixed; left:50%; bottom:8px; transform:translateX(-50%); width:min(560px,calc(100vw - 32px)); max-height:calc(100vh - 68px); max-height:calc(100dvh - 68px); overflow:auto; overscroll-behavior:contain; background:var(--bar); border:1px solid var(--bevel); border-radius:var(--mb-radius-8); z-index:35; display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px; padding:12px; color:var(--fog)}
 #printImg{display:block; flex:none; image-rendering:pixelated; background:#fff; max-width:100%}
 #printText{flex:1 1 200px; min-width:0; display:flex; flex-direction:column; gap:10px}
 #printText p{margin:0; font-size:14px; line-height:20px}
@@ -92,6 +92,7 @@ body.phone iframe{image-rendering:pixelated}
 #printNote{color:var(--fog)}
 #printStatus{color:var(--amber); min-height:20px}
 #printTaken{align-self:flex-start; height:44px; padding:0 24px; background:var(--ground); border:1px solid var(--hairline); border-radius:6px; color:var(--bone); font-size:16px}
+@media (max-height:479px){#caddyPrint{width:min(820px,calc(100vw - 32px)); flex-wrap:nowrap}#printText{position:sticky; top:0}}
 #printTaken:hover{border-color:var(--bevel)}
 #printTaken:active{background:var(--void)}
 #printTaken:focus-visible{outline:2px solid var(--focus); outline-offset:2px}

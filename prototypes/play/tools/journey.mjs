@@ -474,6 +474,30 @@ if (!ONLY || ONLY === "R") {
   expect(shown.btn >= 40, "R: the I-have-it button is at least 40 px tall: " + shown.btn);
   const sb = await box(page, "#caddyPrint");
   expect(sb[0] >= 0 && sb[1] >= 0 && sb[0] + sb[2] <= 1920 && sb[1] + sb[3] <= 1300, "R: the card is whole inside the window (fixed at its foot while a print waits)");
+  {   // the sheet fits below the top bar plus 8 px and above the window's foot minus 8 px at phone sizes, with the build line under it (the real page, no ?test, so the build line shows)
+    const real = await open(1440, 900, { query: "" }), shotDir = process.env.PRINT_SHOTS;
+    await real.page.waitForFunction(() => { const b = document.getElementById("caddyPrint"), i = document.getElementById("printImg"); return b && !b.classList.contains("hidden") && i.complete && i.naturalWidth === 384; }, null, { timeout: 30000 }).catch(() => {});
+    if (shotDir) mkdirSync(shotDir, { recursive: true });
+    for (const scheme of ["dark", "light"]) {
+      await real.page.emulateMedia({ colorScheme: scheme });
+      for (const [W, H] of [[390, 844], [844, 390], [1440, 900]]) {
+        await real.page.setViewportSize({ width: W, height: H }); await real.page.waitForTimeout(500);
+        const m = await real.page.evaluate(() => {
+          const r = (id) => { const e = document.getElementById(id); const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, hidden: getComputedStyle(e).display === "none" || e.classList.contains("hidden") }; };
+          const s = r("caddyPrint"), bar = r("bar"), btn = r("printTaken"), stamp = r("stamp"), box = document.getElementById("caddyPrint");
+          const mid = (b) => document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, (b.left + b.right) / 2)), (b.top + b.bottom) / 2);
+          const sb = box.getBoundingClientRect(), onTop = document.elementFromPoint(sb.left + sb.width / 2, sb.bottom - 4);
+          return { top: s.top, bottom: s.bottom, barBottom: bar.bottom, vh: innerHeight, btnTop: btn.top, btnBottom: btn.bottom, scrolls: box.scrollHeight > box.clientHeight, sheetOnTop: box.contains(onTop), stampShown: !stamp.hidden };
+        });
+        console.log(`R-fit ${scheme} ${W}x${H}: ${JSON.stringify(m)}`);
+        expect(m.top >= m.barBottom + 8 - 0.5 && m.bottom <= m.vh - 8 + 0.5, `R: the sheet sits between the bar+8 and the foot-8 at ${W}x${H}: ${JSON.stringify(m)}`);
+        expect(m.sheetOnTop, `R: nothing draws over the sheet's foot at ${W}x${H}`);
+        if (H < 480) expect(m.btnTop >= m.top && m.btnBottom <= m.bottom, `R: I have it is in reach without scrolling at ${W}x${H}`);
+        if (shotDir) await real.page.screenshot({ path: path.join(shotDir, `print-${W}x${H}-${scheme}.png`) });
+      }
+    }
+    await real.ctx.close();
+  }
   await page.locator("#printTaken").click(); await page.waitForTimeout(800);
   expect(await page.evaluate(() => document.getElementById("caddyPrint").classList.contains("hidden")), "R: I have it takes the strip away");
   const id = JSON.parse(readFileSync(path.join(caddyData, "identity.json"), "utf8"));
