@@ -382,8 +382,8 @@ function pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion) {
 // deep water and the coast band are never cut) and is marked as a gate tile, which the settling passes keep. Returns the number of gaps cut.
 const GAP_MAX = 10, GAP_SMALL = 1500, GAP_ANCHOR = 200, GAP_RUN = 4;
 function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
-  const N = W * H, NB = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-  const wu = new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const lx = x - gx0, ly = y - gy0; if (lx >= 0 && ly >= 0 && lx < W && ly < H) wu[ly * W + lx] = 1; }
+  const N = W * H, NB = [[1, 0], [-1, 0], [0, 1], [0, -1]], cause = new Uint8Array(N);   // cause: how a gap tile came to be (1 path, 2 side, 3 wide third, 4 mouth, 5 notch)
+  const wu =new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const lx = x - gx0, ly = y - gy0; if (lx >= 0 && ly >= 0 && lx < W && ly < H) wu[ly * W + lx] = 1; }
   const pass = new Uint8Array(N);
   const L7 = { raised: (x, y) => x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF, low: (x, y) => !(x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF), way: (x, y) => x >= 0 && y >= 0 && x < W && y < H && wu[y * W + x] === 1, inside: () => true };
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {   // the game's own walk (relief.mjs): water, deep water and thicket block, and so do a cliff's ring (lip), its face under it and its flank beside it; a way up walks
@@ -442,15 +442,15 @@ function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
     if (goal < 0) goal = hit;
     const path = []; for (let m = goal; m >= 0; m = from.has(m) ? from.get(m) : prev.get(m)) path.push(m);
     if (path.length > GAP_MAX + 6) { path.length = 0; for (let m = hit; m >= 0; m = prev.get(m)) path.push(m); }   // a wander never runs far past the thinnest crossing
-    const carve = k => { if (k >= 0 && cuttable(k)) { t[k] = TV.GRASS; gate[k] = 1; mark[k] = 1; } };
+    const carve = (k, why) => { if (k >= 0 && cuttable(k)) { t[k] = TV.GRASS; gate[k] = 1; mark[k] = 1; cause[k] = why; } };
     path.forEach((m, n) => {
       const x = m % W, y = (m / W) | 0, a = path[Math.max(0, n - 1)], b = path[Math.min(path.length - 1, n + 1)];
       const ddx = Math.abs((b % W) - (a % W)), ddy = Math.abs(((b / W) | 0) - ((a / W) | 0)), horiz = path.length > 1 ? ddx >= ddy : ((hit / W) | 0) === ((hitFrom / W) | 0);
       const sx = horiz ? 0 : 1, sy = horiz ? 1 : 0, wx = gx0 + x, wy = gy0 + y, f = clamp(0.5 + 0.5 * S.nE(wx, wy), 0, 1);
       const side = f > 0.5 ? 1 : -1, wide = S.nD(wx + 31, wy - 17) > 0.05, mouth = n < 2 || n >= path.length - 2;   // the extra tile lies on the side the noise picks; a third where it is wide; a flared mouth at each end
-      carve(m); carve((y + side * sy) * W + x + side * sx);
-      if (wide || mouth) carve((y - side * sy) * W + x - side * sx);
-      if (mouth) { carve((y + sy) * W + x + sx + side * (horiz ? 1 : 0)); carve((y - sy) * W + x - sx - side * (horiz ? 1 : 0)); }
+      carve(m, 1); carve((y + side * sy) * W + x + side * sx, 2);
+      if (wide || mouth) carve((y - side * sy) * W + x - side * sx, mouth ? 4 : 3);
+      if (mouth) { carve((y + sy) * W + x + sx + side * (horiz ? 1 : 0), 4); carve((y - sy) * W + x - sx - side * (horiz ? 1 : 0), 4); }
     });
     cuts++;
   }
@@ -463,11 +463,29 @@ function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
         if (!edgeAt(x, y) || edgeAt(x - ax, y - ay)) continue;
         let n = 0; while (edgeAt(x + ax * n, y + ay * n)) n++;
         if (n > GAP_RUN) { const m = n >> 1; for (const o of [0, -1, 1]) { const k = m + o, i = (y + ay * k + ey) * W + x + ax * k + ex; if (cuttable(i)) { notch.push(i); break; } } } } }
-    if (!notch.length) break;
-    for (const i of notch) { t[i] = TV.GRASS; gate[i] = 1; mark[i] = 1; }
+    for (const i of notch) { t[i] = TV.GRASS; gate[i] = 1; mark[i] = 1; cause[i] = 5; }
+    // every tile the carving left sits in a 2 x 2 block of grass (place-walk-3): a lone one is widened into the block that needs the fewest thicket tiles cut (the first of the four by position on a tie), or, where the thicket
+    // does not allow one, given back to thicket. Decided from the tiles' own place in the window, in scan order, so two windows agree.
+    let fixed = 0;
+    const isG = (a, b) => a >= 0 && b >= 0 && a < W && b < H && t[b * W + a] === TV.GRASS, inBlock = (x, y) => { for (const [ox, oy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) if (isG(x + ox, y + oy) && isG(x + ox + 1, y + oy) && isG(x + ox, y + oy + 1) && isG(x + ox + 1, y + oy + 1)) return true; return false; };
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * W + x; if (mark[i] !== 1 || t[i] !== TV.GRASS || inBlock(x, y)) continue;
+      loneCauses[['', 'path', 'flip', 'wide', 'mouth', 'notch'][cause[i]] || 'other']++;
+      let bestCut = null;
+      for (const [ox, oy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) {
+        const cut = []; let ok = true;
+        for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const a = x + ox + dx, b = y + oy + dy; if (a < 0 || b < 0 || a >= W || b >= H) { ok = false; break; } const k = b * W + a; if (t[k] === TV.GRASS) continue; if (cuttable(k)) cut.push(k); else { ok = false; break; } }
+        if (ok && (!bestCut || cut.length < bestCut.length)) bestCut = cut;
+      }
+      if (bestCut) for (const k of bestCut) { t[k] = TV.GRASS; gate[k] = 1; mark[k] = 1; cause[k] = cause[i]; }
+      else { t[i] = TV.THICKET; mark[i] = 0; }
+      fixed++;
+    }
+    if (!notch.length && !fixed) break;
   }
   return cuts;
 }
+export const loneCauses = { path: 0, flip: 0, wide: 0, mouth: 0, notch: 0, other: 0 };   // diagnostics for the tools: lone tiles the carving left, by cause, before they were widened
 
 function windowOf(S, X, Y) {
   const W = WIN_X * CW, H = WIN_Y * CH, gx0 = (X - HX) * CW, gy0 = (Y - HY) * CH, N = W * H, seed = S.seed;
