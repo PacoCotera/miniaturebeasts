@@ -20674,8 +20674,8 @@ var IsobmffMuxer = class extends Muxer {
         this.auxWriter.seek(0);
         const box2 = vtte();
         this.auxBoxWriter.writeBox(box2);
-        const body3 = this.auxTarget._getSlice(0, this.auxWriter.getPos());
-        const sample2 = this.createSampleForTrack(trackData, body3, trackData.lastCueEndTimestamp, sampleStart - trackData.lastCueEndTimestamp, "key", 0);
+        const body2 = this.auxTarget._getSlice(0, this.auxWriter.getPos());
+        const sample2 = this.createSampleForTrack(trackData, body2, trackData.lastCueEndTimestamp, sampleStart - trackData.lastCueEndTimestamp, "key", 0);
         await this.registerSample(trackData, sample2);
         trackData.lastCueEndTimestamp = sampleStart;
       }
@@ -20703,8 +20703,8 @@ var IsobmffMuxer = class extends Muxer {
           trackData.cueQueue.splice(i2--, 1);
         }
       }
-      const body2 = this.auxTarget._getSlice(0, this.auxWriter.getPos());
-      const sample = this.createSampleForTrack(trackData, body2, sampleStart, sampleEnd - sampleStart, "key", 0);
+      const body = this.auxTarget._getSlice(0, this.auxWriter.getPos());
+      const sample = this.createSampleForTrack(trackData, body, sampleStart, sampleEnd - sampleStart, "key", 0);
       await this.registerSample(trackData, sample);
       trackData.lastCueEndTimestamp = sampleEnd;
     }
@@ -27108,13 +27108,13 @@ function getClientRects(element) {
 }
 function getDocumentRect(html) {
   const scroll = getNodeScroll(html);
-  const body2 = html.ownerDocument.body;
-  const width = max(html.scrollWidth, html.clientWidth, body2.scrollWidth, body2.clientWidth);
-  const height = max(html.scrollHeight, html.clientHeight, body2.scrollHeight, body2.clientHeight);
+  const body = html.ownerDocument.body;
+  const width = max(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = max(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
   let x = -scroll.scrollLeft + getWindowScrollBarX(html);
   const y = -scroll.scrollTop;
-  if (getComputedStyle2(body2).direction === "rtl") {
-    x += max(html.clientWidth, body2.clientWidth) - width;
+  if (getComputedStyle2(body).direction === "rtl") {
+    x += max(html.clientWidth, body.clientWidth) - width;
   }
   return {
     width,
@@ -27155,10 +27155,10 @@ function getViewportRect(element, strategy, rootBoundary) {
   const windowScrollbarX = getWindowScrollBarX(html);
   if (windowScrollbarX <= 0) {
     const doc = html.ownerDocument;
-    const body2 = doc.body;
-    const bodyStyles = getComputedStyle(body2);
+    const body = doc.body;
+    const bodyStyles = getComputedStyle(body);
     const bodyMarginInline = doc.compatMode === "CSS1Compat" ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
-    const reservedWidth = Math.abs(html.clientWidth - body2.clientWidth - bodyMarginInline);
+    const reservedWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
     const gutter = getComputedStyle(html).scrollbarGutter === "stable both-edges" ? reservedWidth / 2 : reservedWidth;
     if (gutter <= SCROLLBAR_MAX) {
       width -= gutter;
@@ -31731,38 +31731,40 @@ var import_client = __toESM(require_client(), 1);
 // wt-ui-dock-away-glyph-1/prototypes/play/src/dockglyph.mjs
 var GLYPH_W = 16;
 var GLYPH_H = 24;
-var BOX = { x0: 1, y0: 0, x1: 13, y1: 23 };
-var GLYPH_CUT = 2;
-var SCREEN = { x0: 4, y0: 4, x1: 10, y1: 15 };
-var BUTTONS = [{ x0: 4, y0: 18, x1: 5, y1: 19 }, { x0: 9, y0: 18, x1: 10, y1: 19 }];
+var GRID_Y0 = 3;
+var GRID = [
+  "..############..",
+  ".##############.",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "###..........###",
+  "################",
+  "################",
+  "####..##########",
+  "####..#####..###",
+  "##......##....##",
+  "##......##....##",
+  "####..#####..###",
+  "####..##########",
+  ".##############.",
+  "..############.."
+];
 var TOKEN_HEX = { fog: "#c6c4d8", ink: "#1a1725", night: "#29253a" };
 var STATE_TOKEN = { away: "fog", lit: "ink", docked: "ink" };
-var inBox = (x, y, r2) => x >= r2.x0 && x <= r2.x1 && y >= r2.y0 && y <= r2.y1;
-var cutCorner = (x, y, n2) => {
-  const dx = Math.min(x - BOX.x0, BOX.x1 - x), dy = Math.min(y - BOX.y0, BOX.y1 - y);
-  return dx + dy < n2;
-};
-var body = (x, y, n2) => inBox(x, y, BOX) && !cutCorner(x, y, n2);
-var onScreenLine = (x, y) => inBox(x, y, SCREEN) && (x === SCREEN.x0 || x === SCREEN.x1 || y === SCREEN.y0 || y === SCREEN.y1);
-var onButton = (x, y) => BUTTONS.some((b) => inBox(x, y, b));
-function glyphMap({ state = "away", cutPx = GLYPH_CUT } = {}) {
-  const away = state === "away", rows = [];
-  const rim = (x, y) => !(body(x - 1, y, cutPx) && body(x + 1, y, cutPx) && body(x, y - 1, cutPx) && body(x, y + 1, cutPx));
+function glyphMap() {
+  const blank = ".".repeat(GLYPH_W), rows = [];
   for (let y = 0; y < GLYPH_H; y++) {
-    let r2 = "";
-    for (let x = 0; x < GLYPH_W; x++) {
-      let on;
-      if (away) on = body(x, y, cutPx) && rim(x, y) || onScreenLine(x, y) || onButton(x, y);
-      else on = body(x, y, cutPx) && !inBox(x, y, SCREEN) && !onButton(x, y);
-      r2 += on ? "o" : ".";
-    }
-    rows.push(r2);
+    const g2 = GRID[y - GRID_Y0];
+    rows.push(g2 ? g2.replace(/#/g, "o") : blank);
   }
   return rows;
 }
-function glyphPixels({ state = "away", cutPx = GLYPH_CUT, ink } = {}) {
+function glyphPixels({ state = "away", ink } = {}) {
   const hex = ink || TOKEN_HEX[STATE_TOKEN[state] || "fog"], out = [];
-  glyphMap({ state, cutPx }).forEach((row, y) => {
+  glyphMap().forEach((row, y) => {
     for (let x = 0; x < GLYPH_W; x++) if (row[x] === "o") out.push({ x, y, hex });
   });
   return out;
@@ -31874,13 +31876,13 @@ function Tray({ cfg, st }) {
   const arms = ARM_OF.map((id) => byId[id]), others = defs.filter((d2) => d2.kind !== "arm");
   const a2 = plan.a, hub = snap([plan.hub[0], plan.hub[1], a2, a2]);
   const press = (def, on) => cfg.onKey(def, on);
-  const body2 = /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { role: "group", "aria-label": cfg.label, className: "fktray " + (cfg.dev === "station" ? "st" : "co"), style: { "--pk": px(snap([0, 0, a2, a2])[2]) }, children: [
+  const body = /* @__PURE__ */ (0, import_jsx_runtime23.jsxs)("div", { role: "group", "aria-label": cfg.label, className: "fktray " + (cfg.dev === "station" ? "st" : "co"), style: { "--pk": px(snap([0, 0, a2, a2])[2]) }, children: [
     /* @__PURE__ */ (0, import_jsx_runtime23.jsx)("div", { className: "hub", style: { left: px(hub[0]), top: px(hub[1]), width: px(hub[2]), height: px(hub[3]) } }),
     arms.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(KeyButton, { def: d2, box: snap(plan.keys[d2.id]), held: !!held[d2.id] }, d2.id)),
     /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Pad, { defs: byId, plan, snap, held, press, dirAt: cfg.padDir }),
     others.map((d2) => /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(Key, { def: d2, plan, snap, held: !!held[d2.id], press, tips }, d2.id))
   ] });
-  return tips ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Provider, { delayDuration: 500, skipDelayDuration: 200, children: body2 }) : body2;
+  return tips ? /* @__PURE__ */ (0, import_jsx_runtime23.jsx)(dist_exports13.Provider, { delayDuration: 500, skipDelayDuration: 200, children: body }) : body;
 }
 function mountKeyTray(host, cfg) {
   const root = (0, import_client.createRoot)(host);
