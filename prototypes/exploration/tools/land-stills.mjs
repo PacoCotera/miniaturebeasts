@@ -45,7 +45,7 @@ function shoot(seed, wx, wy, name) {
     const A = relief.landOf(ir, null), fx0 = Math.floor(win.x / 48), fy0 = Math.floor(win.y / 48), fx1 = Math.floor((win.x + FW - 1) / 48), fy1 = Math.floor((win.y + FH - 1) / 48);
     let bd = 1e9; for (let y = fy0 + 1; y <= fy1 - 1; y++) for (let x = fx0 + 1; x <= fx1 - 1; x++) if (relief.partAt(A, x, y) === relief.PART.FOOT) { const d = Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; pawn = [x, y]; } }
     if (!pawn) for (let y = ty; y <= fy1 - 1 && !pawn; y++) if (relief.partAt(A, tx, y) === relief.PART.LOW) pawn = [tx, y];
-    if (pawn) for (let r = 3; r < 12 && !treeAt; r++) for (let y = fy0 + 3; y <= fy1 - 1 && !treeAt; y++) for (let x = fx0 + 2; x <= fx1 - 2; x++) if (Math.abs(x - pawn[0]) + Math.abs(y - pawn[1]) >= r && ir.terrain[y * ir.w + x] === place.TV.GRASS && relief.partAt(A, x, y) === relief.PART.LOW && relief.extentClear(A, x, y, 'trees')) { treeAt = [x, y]; break; }
+    if (pawn) for (let r = 3; r < 12 && !treeAt; r++) for (let y = fy0 + 3; y <= fy1 - 1 && !treeAt; y++) for (let x = fx0 + 2; x <= fx1 - 2; x++) if (Math.abs(x - pawn[0]) + Math.abs(y - pawn[1]) >= r && (ir.terrain[y * ir.w + x] === place.TV.GRASS || ir.terrain[y * ir.w + x] === place.TV.TURF) && relief.partAt(A, x, y) === relief.PART.LOW && relief.extentClear(A, x, y, 'trees')) { treeAt = [x, y]; break; }
     if (treeAt) irB = { ...ir, props: ir.props.concat([{ kind: 'tree-broad', x: treeAt[0] * 48 + 24, y: treeAt[1] * 48 + 40, sortY: treeAt[1] * 48 + 40, cx: treeAt[0], cy: treeAt[1] }]).sort((a, b) => a.sortY - b.sortY || a.x - b.x) };
   }
   let pl; try { pl = bakeIR(irB); } catch (e) { console.log('REFUSED', name, e.message); return null; }
