@@ -269,16 +269,18 @@ function diagonal(role) {
 // lip piece beside the next column joins them), no lit band along it (the wall's own lit plane is the edge), and the foot follows below at each column's foot row.
 function steepCol(d) {
   // the relief blocks this column down to the next column's foot row (its end rows), so the wall runs d rows lower than a face: its foot is d rows lower, where the pawn can stand
+  // cliff-contour-1, the slope rule: the lip falls evenly across the column to the next column's lip (d rows lower at the east edge), so a steep run's top is one slanted line, never a stair of flat lips
   const p = P(16, 80 + 16 * d), slope = d || 2, ext = 16 * d;
   for (let x = 0; x < 16; x++) for (let y = 0; y < p.h; y++) {
-    const yy = y - 6;
+    // ya: rows from the lip row's top edge (the foot stays where the relief puts it); yy: rows from the falling lip
+    const fall = Math.round(d * 16 * (x + 0.5) / 16), ya = y - 6, yy = ya - fall;
     if (yy < 0) { put(p, x, y, 'top', 'top'); continue; }
     if (yy === LIP.light) { put(p, x, y, 'mosslight', 'lip'); continue; }
     if (yy <= LIP.moss[1]) { put(p, x, y, 'moss', 'lip'); continue; }
     if (yy === LIP.dark) { put(p, x, y, 'mossdark', 'lip'); continue; }
-    if (yy <= LIP.rock1 + ext) { put(p, x, y, yy === LIP.under ? 'crack' : yy <= LIP.under + 3 ? 'edge' : yy < 22 + slope * x ? 'lit' : 'shade', 'rock', yy === LIP.under ? FLAG.underside : 0); continue; }
-    if (yy <= LIP.foot[1] + ext) { put(p, x, y, yy <= LIP.foot[0] + 1 + ext ? 'foot2' : 'foot1', 'foot'); continue; }
-    if (yy <= LIP.end + ext) put(p, x, y, null, 'foot');
+    if (ya <= LIP.rock1 + ext) { put(p, x, y, yy === LIP.under ? 'crack' : yy <= LIP.under + 3 ? 'edge' : ya < 22 + slope * x ? 'lit' : 'shade', 'rock', yy === LIP.under ? FLAG.underside : 0); continue; }
+    if (ya <= LIP.foot[1] + ext) { put(p, x, y, ya <= LIP.foot[0] + 1 + ext ? 'foot2' : 'foot1', 'foot'); continue; }
+    if (ya <= LIP.end + ext) put(p, x, y, null, 'foot');
   }
   return p;
 }

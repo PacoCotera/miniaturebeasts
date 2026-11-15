@@ -178,6 +178,22 @@ export function measureLand(R, w, h, q, model, inside = () => true) {
   return st;
 }
 
+// the drawn line as segments [x0, y0, x1, y1, long] in tiles (long: part of a straight run of 6 or more), for the overviews
+export function drawnSegments(R, w, h, model) {
+  const segs = [];
+  for (const lp of traceLoops(R, w, h)) {
+    const { runs } = lp, n = runs.length; if (n < 4) continue;
+    const vx = [lp.x], vy = [lp.y]; for (let i = 0; i < n; i++) { vx.push(vx[i] + DX[runs[i].d] * runs[i].n); vy.push(vy[i] + DY[runs[i].d] * runs[i].n); }
+    const cut = cutCorners(runs, model), C = (i) => cut[((i % n) + n) % n], Rn = (i) => runs[((i % n) + n) % n];
+    for (let i = 0; i < n; i++) {
+      const r = runs[i], a0 = C(i - 1) ? 0.5 : 0, a1 = r.n - (C(i) ? 0.5 : 0), long = r.n >= 6;
+      if (a1 > a0) segs.push([vx[i] + DX[r.d] * a0, vy[i] + DY[r.d] * a0, vx[i] + DX[r.d] * a1, vy[i] + DY[r.d] * a1, long]);
+      if (C(i)) { const nx = Rn(i + 1).d; segs.push([vx[i + 1] - DX[r.d] * 0.5, vy[i + 1] - DY[r.d] * 0.5, vx[i + 1] + DX[nx] * 0.5, vy[i + 1] + DY[nx] * 0.5, false]); }
+    }
+  }
+  return segs;
+}
+
 // a summary row of a measure
 export function summary(st) {
   const f = (a) => ({ n: a.length, ge5: a.filter((v) => v >= 5).length, ge6: a.filter((v) => v >= 6).length, over10: a.filter((v) => v > 10).length, max: Math.max(0, ...a), mean: +(a.reduce((s, v) => s + v, 0) / Math.max(1, a.length)).toFixed(2) });

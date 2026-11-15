@@ -47,7 +47,8 @@ const up = (A, x, y) => { let k = 0; while (k < 3 && A.low(x, y - k)) k++; retur
 // beyond it are open ground, and the set draws the wall leaning over by one column. Returns the hand ('w': the wall's outside is west) or null.
 export function leanAt(A, x, y) {
   if (!A.raised(x, y) || !A.low(x, y + 1) || !A.raised(x, y - 1) || !A.low(x, y + 2)) return null;
-  for (const [h, d] of [['w', -1], ['e', 1]]) if (A.low(x + d, y) && A.low(x + d, y - 1) && A.raised(x - d, y) && A.raised(x - d, y + 1) && A.raised(x - d, y + 2) && A.raised(x - d, y + 3) && A.raised(x - d, y + 4)) return h;
+  for (const [h, d] of [['w', -1], ['e', 1]]) if (A.low(x + d, y) && A.low(x + d, y - 1) && A.raised(x - d, y) && A.raised(x - d, y + 1) && A.raised(x - d, y + 2) && A.raised(x - d, y + 3) && A.raised(x - d, y + 4)
+    && [2, 3, 4].every((k) => A.raised(x - k * d, y + 1) && A.raised(x - k * d, y + 2))) return h;   // the land behind the lower wall 4 wide (no neck under the minimum feature)
   return null;
 }
 

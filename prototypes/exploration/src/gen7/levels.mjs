@@ -213,8 +213,9 @@ const hasLip = (r, W, H, x, y) => { const xx = x < 0 ? 0 : x >= W ? W - 1 : x, y
 let LEAN_ON = true;
 export const setLeans = (on) => { LEAN_ON = !!on; GEN++; };
 function leanAt(r, W, i) {
-  if (i < W || i + 4 * W + 1 >= r.length || r[i] !== 1 || r[i + W] !== 0 || r[i - W] !== 1 || r[i + 2 * W]) return false;
-  for (const d of [-1, 1]) if (!r[i + d] && !r[i + d - W] && r[i - d] && r[i - d + W] && r[i - d + 2 * W] && r[i - d + 3 * W] && r[i - d + 4 * W]) return true;
+  if (i < W || i + 4 * W + 4 >= r.length || i < 4 || r[i] !== 1 || r[i + W] !== 0 || r[i - W] !== 1 || r[i + 2 * W]) return false;
+  // and the land behind the lower wall at least 4 wide on its first two rows (no neck under the minimum feature: two leans facing each other leave none narrower)
+  for (const d of [-1, 1]) if (!r[i + d] && !r[i + d - W] && r[i - d] && r[i - d + W] && r[i - d + 2 * W] && r[i - d + 3 * W] && r[i - d + 4 * W] && r[i - 2 * d + W] && r[i - 3 * d + W] && r[i - 4 * d + W] && r[i - 2 * d + 2 * W] && r[i - 3 * d + 2 * W] && r[i - 4 * d + 2 * W]) return true;
   return false;
 }
 export const leanAtRaster = leanAt;
@@ -230,10 +231,11 @@ function fixPatterns(r0, W, H, faceRows, from = null, lk = null) {
   // `from`: a raster known to be a fixed point of the three passes except at the held tiles `lk` (the last fixPatterns result, relocked): the tiles that read a tile of `r0` that differs from it, or a held tile, are the
   // first round's, and no other tile can be edited by it, so the first round too looks at those only.
   const D4 = new Uint8Array(W * H), D5 = new Uint8Array(W * H), D6 = new Uint8Array(W * H), F4 = new Uint8Array(H), F5 = new Uint8Array(H), F6 = new Uint8Array(H);
-  const mark = (ex, ey) => {   // P4 reads a tile's x..x+1, y..y+1; P5 x-1..x+1, y-1..y+2; P6 its column, y..y+fRoom
+  // cliff-contour-1: P5 and P6 also read the lean test (x - 1 .. x + 1, y - 1 .. y + 4), so an edit marks the tiles that read it there too
+  const mark = (ex, ey) => {   // P4 reads a tile's x..x+1, y..y+1; P5 x-1..x+1, y-1..y+4; P6 its column, y..y+fRoom, and x-1..x+1, y-1..y+4
     for (let y = Math.max(0, ey - 1); y <= ey; y++) { F4[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex; x++) D4[y * W + x] = 1; }
-    for (let y = Math.max(0, ey - 2); y <= ey + 1 && y < H; y++) { F5[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex + 1 && x < W; x++) D5[y * W + x] = 1; }
-    for (let y = Math.max(0, ey - fRoom); y <= ey; y++) { F6[y] = 1; D6[y * W + ex] = 1; }
+    for (let y = Math.max(0, ey - 4); y <= ey + 1 && y < H; y++) { F5[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex + 1 && x < W; x++) D5[y * W + x] = 1; }
+    for (let y = Math.max(0, ey - fRoom); y <= ey + 1 && y < H; y++) { F6[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex + 1 && x < W; x++) D6[y * W + x] = 1; }
   };
   const t4 = (x, y) => {
     const i = y * W + x, a = r[i], b = r[i + 1], c = r[i + W], d = r[i + W + 1];

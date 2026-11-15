@@ -45,13 +45,18 @@ test('a raised block: back rim, rounded back corners, side walls, convex corners
 });
 
 test('step-downs of each k, a concave corner, and a diagonal of 4 steps', () => {
-  for (const k of [1, 2, 3]) {
+  for (const k of [2, 3]) {
     const rows = ['1'.repeat(10), '1'.repeat(10), '1'.repeat(10), ...Array(k).fill('...1111...'), ...Array(6).fill('..........')], L = 2 + k;
     const { items, missing } = run(rows);
     assert.deepEqual(missing, [], `k${k}`);
     assert.ok(at(items, 2, L).includes(`end-w-${k}`), `k${k}`);
     assert.ok(at(items, 7, L).includes(`end-e-${k}`), `k${k}`);
   }
+  // cliff-contour-1: a one-row step is a 2:1 slope (the two halves either side of it), never a k1 end cap
+  { const k1 = run(['1'.repeat(10), '1'.repeat(10), '1'.repeat(10), '...1111...', ...Array(6).fill('..........')]);
+    assert.deepEqual(k1.missing, []);
+    assert.deepEqual([2, 3, 6, 7].map((x) => at(k1.items, x, x === 2 || x === 7 ? 2 : 3).filter((id) => /^d[rl]-/.test(id))[0]), ['dr-start', 'dr-end', 'dl-end', 'dl-start']);
+    assert.ok(!k1.items.some((it) => /^end-[ew]-1$/.test(it.id)), 'no k1 cap'); }
   const notch = [...Array(3).fill('11111111'), ...Array(8).fill('11....11')];
   const n = run(notch, { h: 8 });
   assert.deepEqual(at(n.items, 2, 2), ['concave-w']); assert.deepEqual(at(n.items, 5, 2), ['concave-e']); assert.deepEqual(n.missing, []);
@@ -85,4 +90,18 @@ test('steep runs (rule 6): 3+ steps of 1 column over that average more than 1.25
   const gentle = run(draw([2, 3, 4, 5, 6, 7, 8, 10, 11], 20));
   assert.ok(!gentle.items.some((it) => /^steep-/.test(it.id)));
   assert.ok(gentle.items.some((it) => /^dr-/.test(it.id)));
+});
+
+test('cliff-contour-1: side walls moving one column draw leans; the back rim steps one row as slopes', () => {
+  // the template's T9b: the west wall moves in at row 3 and out at row 7, the east wall out at row 3 and in at row 7
+  const rows = [...Array(3).fill('...11111111...'), ...Array(4).fill('....11111111..'), ...Array(6).fill('...11111111...'), ...Array(4).fill('..............')];
+  const b = run(rows);
+  assert.deepEqual(b.missing, []);
+  assert.deepEqual(at(b.items, 3, 2), ['lean-w']); assert.deepEqual(at(b.items, 3, 7), ['lean-out-w']);
+  assert.deepEqual(at(b.items, 11, 3), ['lean-out-e']); assert.deepEqual(at(b.items, 11, 6), ['lean-e']);
+  assert.ok(!b.items.some((it) => /^(concave|convex|end)-/.test(it.id) && it.y < 10), 'no face, cap or corner at a lean');
+  // a hill: the back rim climbs and falls in one-row steps over a flat rim
+  const hill = run(['................', '.......11.......', '......1111......', '.....111111.....', '....11111111....', ...Array(4).fill('1'.repeat(16)), ...Array(4).fill('.'.repeat(16))]);
+  assert.deepEqual(hill.missing, []);
+  assert.deepEqual([3, 4, 5, 7, 8, 10, 11, 12].map((x) => at(hill.items, x, [5, 4, 3, 1, 1, 3, 4, 5][[3, 4, 5, 7, 8, 10, 11, 12].indexOf(x)])[0]), ['rim-dl-end', 'rim-dl-mid', 'rim-dl-mid', 'rim-dl-start', 'rim-dr-start', 'rim-dr-mid', 'rim-dr-mid', 'rim-dr-end']);
 });
