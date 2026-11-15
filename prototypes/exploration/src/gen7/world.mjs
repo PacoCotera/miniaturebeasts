@@ -178,18 +178,25 @@ function joinSouth(land, ford, lv, tr) {
       const Z = levelZones(pass, loc, MW, MH), uS = Int32Array.from({ length: Z.n }, (_, z) => z), uA = uS.slice();
       const fnd = (u, z) => { while (u[z] !== z) z = u[z]; return z; }, uni = (u, a, b) => { a = fnd(u, a); b = fnd(u, b); if (a !== b) u[a < b ? b : a] = a < b ? a : b; };
       const edges = [];   // every cliff edge between two zones: [zone a, zone b, joins south-facing?, length]
-      for (let c = 0; c < NC; c++) for (const [d, south] of [[1, false], [MW, true]]) {
-        if (!south && c % MW === MW - 1) continue; const n = c + d; if (n >= NC || !pass(c) || !pass(n) || loc[c] === loc[n]) continue;
-        uni(uA, Z.id[c], Z.id[n]); const sf = south && loc[c] > loc[n]; if (sf) uni(uS, Z.id[c], Z.id[n]);
-        edges.push([Z.id[c], Z.id[n], sf]);
-      }
+      // the east and south edge of each cell, in that order, with no array made per cell; the walkable test read once per cell
+      const ok = new Uint8Array(NC); for (let c = 0; c < NC; c++) ok[c] = pass(c) ? 1 : 0;
+      for (let c = 0; c < NC; c++) { if (!ok[c]) continue;
+        for (let k = 0; k < 2; k++) { const south = k === 1, d = south ? MW : 1;
+          if (!south && c % MW === MW - 1) continue; const n = c + d; if (n >= NC || !ok[n] || loc[c] === loc[n]) continue;
+          uni(uA, Z.id[c], Z.id[n]); const sf = south && loc[c] > loc[n]; if (sf) uni(uS, Z.id[c], Z.id[n]);
+          edges.push([Z.id[c], Z.id[n], sf]); } }
       const size = new Map(); for (let z = 0; z < Z.n; z++) { const g = fnd(uS, z); size.set(g, (size.get(g) || 0) + Z.cells[z].length); }
       const byAll = new Map(); for (const g of size.keys()) { const k = fnd(uA, g); if (!byAll.has(k)) byAll.set(k, []); byAll.get(k).push(g); }
+      // each group's border counts in one pass over the edges (the groups do not change in the loop below, and the sort decides the order fully)
+      const touchOf = new Map();
+      for (const [a, b, sf] of edges) { if (sf) continue; const ga = fnd(uS, a), gb = fnd(uS, b); if (ga === gb) continue;
+        let t = touchOf.get(ga); if (!t) touchOf.set(ga, t = new Map()); t.set(a, (t.get(a) || 0) + 1);
+        let u = touchOf.get(gb); if (!u) touchOf.set(gb, u = new Map()); u.set(b, (u.get(b) || 0) + 1); }
       for (const gs of byAll.values()) {
         if (gs.length < 2) continue;
         gs.sort((a, b) => size.get(b) - size.get(a) || a - b);
         for (const g of gs.slice(1)) {   // a group no south-facing edge joins to the largest: flip the zone of it that borders the rest the longest
-          const touch = new Map(); for (const [a, b, sf] of edges) { if (sf) continue; const ga = fnd(uS, a), gb = fnd(uS, b); if (ga === g && gb !== g) touch.set(a, (touch.get(a) || 0) + 1); else if (gb === g && ga !== g) touch.set(b, (touch.get(b) || 0) + 1); }
+          const touch = touchOf.get(g) || new Map();
           const order = [...touch].sort((p, q) => q[1] - p[1] || p[0] - q[0]);
           for (const [z] of order) {
             const to = 1 - Z.lvOf[z]; if (to === 1 && Z.cells[z].some(c => wetNear(cells[c]))) continue;
