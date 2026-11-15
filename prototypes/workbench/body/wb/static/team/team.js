@@ -1,4 +1,4 @@
-import { html, render, useState, useEffect } from "./preact-htm.mjs";
+import { html, render, useState, useEffect } from "./preact-htm.js";
 
 const REFRESH_MS = 10000;
 const ROLE = { build: "builder", paint: "painter", art: "painter", design: "designer", research: "researcher", review: "reviewer", builder: "builder", painter: "painter" };
