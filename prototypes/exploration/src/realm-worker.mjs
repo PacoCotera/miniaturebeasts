@@ -43,6 +43,7 @@ self.onmessage = e => {
       return;
     }
     if (slot) { const bytes = overviewOf(seed, slot[0], slot[1]); self.postMessage({ seed, slot, overview: bytes }, [bytes.buffer]); return; }
-    const realm = realm7(seed); self.postMessage({ seed, realm, sites: decorOf(seed).hollowSites() });
+    const realm = realm7(seed, (step, of) => self.postMessage({ seed, step, of }));   // each real stage, for the first-load wait's pips (src/waitpips.mjs); the last, the Hollow Tree sites, comes with the realm itself
+    self.postMessage({ seed, realm, sites: decorOf(seed).hollowSites() });
   } catch (err) { self.postMessage({ seed, error: String((err && err.message) || err) }); }
 };

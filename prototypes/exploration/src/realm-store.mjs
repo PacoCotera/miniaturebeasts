@@ -6,16 +6,17 @@
 // Where there is no Worker (a test's sandbox) or the worker fails, the caller's own first use makes the realm on the page's thread, as it always did.
 // Only the newest few worlds are kept (KEEP): a realm is about 0.3 MB.
 import { get, set, del } from 'idb-keyval';
-import { REALM_REV, hasRealm7, setRealm7 } from './gen7/region.mjs';
+import { REALM_REV, REALM_STEPS, hasRealm7, setRealm7 } from './gen7/region.mjs';
 import { presetHollowSites, presetOverview, hasOverview } from './gen7/place.mjs';
 
 const KEEP = 3, INDEX = 'realm7:index', keyOf = seed => `realm7:${REALM_REV}:${seed}`;
 
-function inWorker(seed) {
+function inWorker(seed, onStep) {
   return new Promise((resolve, reject) => {
     const w = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' });
     const end = (f, v) => { w.terminate(); f(v); };
-    w.onmessage = e => (e.data && e.data.realm ? end(resolve, { realm: e.data.realm, sites: e.data.sites }) : end(reject, new Error((e.data && e.data.error) || 'the realm was not made')));
+    w.onmessage = e => { if (e.data && e.data.step != null) { if (onStep) onStep(e.data.step, e.data.of); return; }   // a stage of the making: passed on to the wait's pips
+      return e.data && e.data.realm ? end(resolve, { realm: e.data.realm, sites: e.data.sites }) : end(reject, new Error((e.data && e.data.error) || 'the realm was not made')); };
     w.onerror = e => end(reject, new Error((e && e.message) || 'the realm worker failed'));
     w.postMessage({ seed });
   });
@@ -23,17 +24,19 @@ function inWorker(seed) {
 const give = (seed, made) => { setRealm7(seed, made.realm); presetHollowSites(seed, made.sites); };
 
 // Returns how the realm came: 'cached' (already in the generator), 'stored' (IndexedDB), 'worker' (made off the page), 'page' (left to the page: no worker). `times` collects the milliseconds of each step.
-export async function readyRealm(seed, times = {}) {
-  if (hasRealm7(seed)) return 'cached';
+// onStep(done, of): the real stages, for the wait's pips; a realm that is cached or read back from the browser's store jumps to full at once.
+export async function readyRealm(seed, times = {}, onStep) {
+  const full = () => { if (onStep) onStep(REALM_STEPS, REALM_STEPS); };
+  if (hasRealm7(seed)) { full(); return 'cached'; }
   const t0 = performance.now(), idb = typeof indexedDB !== 'undefined';
   if (idb) {
-    try { const hit = await get(keyOf(seed)); if (hit && hit.realm && hit.sites) { give(seed, hit); times.stored = performance.now() - t0; return 'stored'; } } catch (e) { /* no storage: made again */ }
+    try { const hit = await get(keyOf(seed)); if (hit && hit.realm && hit.sites) { give(seed, hit); times.stored = performance.now() - t0; full(); return 'stored'; } } catch (e) { /* no storage: made again */ }
   }
   if (typeof Worker === 'undefined') return 'page';
   let made;
-  try { made = await inWorker(seed); } catch (e) { console.warn('the realm worker did not run; the page makes the realm', e); return 'page'; }
+  try { made = await inWorker(seed, onStep); } catch (e) { console.warn('the realm worker did not run; the page makes the realm', e); return 'page'; }
   times.worker = performance.now() - t0;
-  give(seed, made);
+  give(seed, made); full();
   if (idb) {
     try {
       await set(keyOf(seed), made);
