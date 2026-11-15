@@ -1,0 +1,386 @@
+// The cliff system's template (pixel desk spec cliff-system.md section 3): ONE schematic sheet, 16 art px a cell, laid out as mock places T1-T7, every piece of the set drawn as a GREYBOX of flat value
+// zones in the art director's values, placed by the game's own piece table and pick (src/bake/cliffsystem.mjs) over each mock place's land. A schematic, made in code (rules.md 18: diagrams and schematics may be
+// code); never shipped: it is the paint calls' init and mask source, and the greybox set the designer signs for shape. The same cut step cuts the painted sheet later.
+//   node tools/cliff-template.mjs <outDir>
+// Writes <outDir>/template.png (the clean greybox, the paint init), template-4x.png (4x with the marks: cut boxes, shared edge columns, no-crack bands, strata and lip underside, locked joints, overhangs),
+// template-tags.json (each pixel's piece instance and role, run-length rows; the instances' piece ids, zones and boxes; the contract flags), cut-list.json (every piece: id, zone, box in the sheet, the case it
+// serves), cut/<id>.png (each piece cut back out of template.png along its box and its own tag mask; level 2 by the table's colour map) and zones.json (the zones' place in the sheet, for the legend).
+import { mkdirSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+import { encodePng, newImage, scaleNearest } from '../src/png.mjs';
+import { TABLE, BY_ID, placeBoundary, middleOf } from '../src/bake/cliffsystem.mjs';
+
+const OUT = process.argv[2];
+if (!OUT) throw new Error('usage: node tools/cliff-template.mjs <outDir>');
+const C = 16;
+
+// ---- the values (map-look.md, ramps.md rock rev 2; level 1) and the roles ----
+export const VALUES = {
+  meadow: '#74a65d', top: '#82b266', rimlit: '#a8d082', drop: '#5e9357',
+  mosslight: '#cde38a', moss: '#aac46e', mossdark: '#52753a',
+  edge: '#9eadb9', lit: '#8497a5', shade: '#6c7682', crack: '#474d55',
+  foot1: '#4a814e', foot2: '#36603a', tread: '#9eadb9', riser: '#6c7682',
+};
+const ROLES = ['ground', 'top', 'lip', 'rock', 'foot', 'rim', 'side', 'stair'];
+const FLAG = { edge: 1, band: 2, strata: 4, underside: 8, joint: 16, over: 32 };
+
+// ---- a piece raster: value name and role per pixel, contract flags ----
+const P = (w, h) => ({ w, h, v: new Array(w * h).fill(null), r: new Array(w * h).fill(null), f: new Uint8Array(w * h) });
+const put = (p, x, y, v, r, f = 0) => { if (x < 0 || y < 0 || x >= p.w || y >= p.h) return; const i = y * p.w + x; p.v[i] = v; p.r[i] = r; p.f[i] |= f; };
+const flag = (p, x, y, f) => { if (x >= 0 && y >= 0 && x < p.w && y < p.h) p.f[y * p.w + x] |= f; };
+const mirror = (p) => { const q = P(p.w, p.h); for (let y = 0; y < p.h; y++) for (let x = 0; x < p.w; x++) { const i = y * p.w + x, j = y * p.w + (p.w - 1 - x); q.v[j] = p.v[i]; q.r[j] = p.r[i]; q.f[j] = p.f[i]; } return q; };
+const swapLight = (p) => { for (let i = 0; i < p.v.length; i++) if (p.v[i] === 'lit') p.v[i] = 'shade'; else if (p.v[i] === 'edge' && p.r[i] !== 'stair') p.v[i] = 'lit'; return p; };
+
+// The face column: 16 x 80 from the lip row's top. yt: the lip's top edge (6 on a straight column); the strata and the lip underside sit at fixed offsets from it (the edge contract).
+// rock(x, yy): the value of rock pixel (x, yy = rows below the lip top), so a diagonal shares the straight column's strata.
+const LIP = { top: 0, light: 0, moss: [1, 5], dark: 6, under: 7, rock0: 8, s1: 24, s2: 41, rock1: 57, foot: [58, 61], end: 73 };
+function rockValue(yy, x, cracks) {
+  if (yy === LIP.under) return 'crack';
+  if (yy === LIP.s1 || yy === LIP.s2) return 'crack';
+  const s = yy < LIP.s1 ? 0 : yy < LIP.s2 ? 1 : 2, first = s === 0 ? LIP.rock0 : s === 1 ? LIP.s1 + 1 : LIP.s2 + 1;
+  if (cracks && cracks[s] === x && yy > first) return 'crack';
+  if (yy === first) return 'edge';
+  if (s === 0) return yy < first + 11 ? 'lit' : 'shade';
+  if (s === 1) return yy < first + 11 ? 'lit' : 'shade';
+  return yy < first + 6 ? 'lit' : 'shade';   // the lowest stratum is darker: its lower two thirds in shade
+}
+function columnPixel(p, x, y, yt, cracks, opts = {}) {
+  const yy = y - yt;
+  if (yy < 0) return put(p, x, y, 'top', 'top');
+  if (yy === LIP.light) return put(p, x, y, 'mosslight', 'lip');
+  if (yy <= LIP.moss[1]) return put(p, x, y, 'moss', 'lip');
+  if (yy === LIP.dark) return put(p, x, y, 'mossdark', 'lip');
+  if (yy <= LIP.rock1) return put(p, x, y, rockValue(yy, x, cracks), 'rock', yy === LIP.under ? FLAG.underside : yy === LIP.s1 || yy === LIP.s2 ? FLAG.strata : 0);
+  if (yy <= LIP.foot[1]) return put(p, x, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
+  if (yy <= LIP.end && !opts.noFootMask) return put(p, x, y, null, 'foot');
+}
+// the slabs: one vertical crack per stratum (or none) inside the tile, never in the 3 px bands at its edges (look 1); different for each middle
+const cracksOf = (set, letter) => [0, 1, 2].map((s) => ((set + letter + s) % 3 === 0 ? -1 : 3 + ((set * 7 + letter * 5 + s * 3) % 10)));
+
+function middle(set, letter) {
+  const p = P(16, 80), cracks = cracksOf(set, letter);
+  for (let y = 0; y < 80; y++) for (let x = 0; x < 16; x++) columnPixel(p, x, y, 6, cracks);
+  for (let y = 6 + LIP.rock0; y <= 6 + LIP.rock1; y++) {
+    for (const x of [0, 15]) flag(p, x, y, FLAG.edge);
+    for (const x of [0, 1, 2, 13, 14, 15]) flag(p, x, y, FLAG.band);
+  }
+  for (const x of [0, 15]) for (let y = 0; y < 6 + LIP.foot[1] + 1; y++) flag(p, x, y, FLAG.edge);
+  if (letter === 0) for (let y = 0; y < 80; y++) flag(p, 0, y, FLAG.joint);
+  if (letter === 5) for (let y = 0; y < 80; y++) flag(p, 15, y, FLAG.joint);
+  return p;
+}
+
+// End cap, east hand (on the low cell east of a run; cols 0-3 overhang the run's last column): k rows of step, convex (the side wall continues above) or not.
+function cap(k, convex, lit = false) {
+  const ly = (k - 1) * 16, p = P(20, 80 + ly), cracks = [-1, -1, -1];
+  // the overhang over the run's last column: its rock turning away from the light, under the crease (col 0)
+  for (let y = ly; y < ly + 80; y++) for (let x = 0; x < 4; x++) {
+    const yy = y - ly - 6;
+    if (yy < 0) continue;   // the lip cell's top stays the column's own
+    columnPixel(p, x, y, ly + 6, cracks, { noFootMask: true });
+    const i = y * p.w + x;
+    if (p.r[i] === 'rock') p.v[i] = x === 0 && yy > LIP.under ? 'crack' : p.v[i] === 'lit' || p.v[i] === 'edge' ? 'shade' : p.v[i];
+    if (p.v[i] !== null) p.f[i] |= FLAG.over;
+  }
+  // with a side above (k >= 2) the side lip's moss turns down the column's corner to meet the face's lip (look 3: the lip wraps onto the side)
+  if (k >= 2) for (let y = ly; y < ly + 6; y++) for (let x = 0; x < 4; x++) put(p, x, y, x === 0 ? 'mosslight' : x === 3 ? 'mossdark' : 'moss', 'lip', FLAG.over);
+  // the rounded end on the cap's own cell (cols 4..): the lip wraps round, the rock rounds under it, a crease outline, the foot under it
+  const R = (yy) => (yy < 2 ? 1 + yy : yy < 52 ? 5 : yy < 56 ? 4 : 3);   // the rock's reach into the cell by rows below the lip top
+  for (let y = ly; y < ly + 80; y++) {
+    const yy = y - ly - 6;
+    if (yy < 0) continue;
+    if (yy <= LIP.dark) { const reach = Math.min(5, 2 + yy); for (let c = 0; c < reach; c++) put(p, 4 + c, y, yy === 0 ? 'mosslight' : c === reach - 1 || yy === LIP.dark ? 'mossdark' : 'moss', 'lip'); continue; }
+    if (yy <= LIP.rock1) { const reach = R(yy - LIP.under); for (let c = 0; c < reach; c++) put(p, 4 + c, y, c === reach - 1 ? 'crack' : yy === LIP.s1 || yy === LIP.s2 ? 'crack' : 'shade', 'rock'); continue; }
+    if (yy <= LIP.foot[1]) for (let c = 0; c < 7; c++) put(p, 4 + c, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
+  }
+  // above the lip row: the run's side seen edge-on (k >= 2); a step-down's wall ends under the back run's lip, a convex corner's wall runs on up
+  // the same reach, values and drop shade as the wall pieces (wall()), so a wall runs into the cap with no step
+  const sideV = lit ? 'lit' : 'shade';
+  for (let y = 0; y < ly; y++) {
+    const reach = convex ? 5 : Math.min(5, 1 + y);
+    for (let c = 0; c < reach; c++) put(p, 4 + c, y, c === reach - 1 ? 'crack' : sideV, 'side');
+    for (let c = reach; c < reach + 3; c++) put(p, 4 + c, y, 'drop', 'side');
+  }
+  return p;
+}
+
+// Concave, east hand: the run's last column, the wall of the land to the east standing in front of it, the crease in shadow between.
+function concave() {
+  const p = middle(1, 2);
+  for (let y = 0; y < 80; y++) {
+    const yy = y - 6;
+    if (yy < 0) continue;
+    if (yy <= LIP.dark) { for (let x = 11; x < 16; x++) put(p, x, y, x === 11 ? 'mossdark' : 'moss', 'lip'); continue; }
+    put(p, 10, y, 'crack', 'rock');
+    for (let x = 11; x < 16; x++) put(p, x, y, x < 13 ? 'shade' : x === 15 ? 'mossdark' : 'lit', 'side');
+  }
+  return p;
+}
+
+// Side pieces. The wall of a block's east side (flank cell east of raised land) faces away from the light: shade; the west side faces it: lit.
+function lipSide() {   // east hand: the ring cell with low ground to its east
+  const p = P(16, 16);
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, x < 10 ? 'top' : x === 10 ? 'mosslight' : x < 15 ? 'moss' : 'mossdark', x < 10 ? 'top' : 'lip');
+  return p;
+}
+// east hand: the flank cell east of raised land. head: the wall starts thin under the rounded back corner; band; tail: the last wall cell, over the corner cap or the land it meets (the greybox draws it as the band:
+// the cap carries the turn). lit: a west-facing wall (toward the light) is lit, an east-facing one in shade.
+function wall(part, lit) {
+  const p = P(16, 16), v = lit ? 'lit' : 'shade';
+  for (let y = 0; y < 16; y++) {
+    const reach = part === 'head' ? Math.min(5, 1 + y) : 5;
+    for (let x = 0; x < reach; x++) put(p, x, y, x === reach - 1 ? 'crack' : v, 'side');
+    for (let x = reach; x < reach + 3; x++) put(p, x, y, 'drop', 'side');
+  }
+  return p;
+}
+// The back rim: the ring cell (rows 16-31) with its thin lit edge, the drop shade on the low cell north of it (rows 12-15). Rounded back corners cut the ring cell's outer corner round.
+function rim(corner) {
+  const p = P(16, 32);
+  for (let y = 12; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, y < 14 ? 'drop' : 'foot1', 'rim');
+  for (let y = 16; y < 32; y++) for (let x = 0; x < 16; x++) put(p, x, y, y === 16 ? 'rimlit' : 'top', y === 16 ? 'rim' : 'top');
+  if (corner) {   // east hand: round the north-east corner of the ring cell (radius 7)
+    const cx = 8.5, cy = 24.5, r = 7.5;
+    for (let y = 12; y < 32; y++) for (let x = 0; x < 16; x++) {
+      if (x <= cx || y >= cy) continue;
+      const d = Math.hypot(x - cx, y - cy);
+      if (y >= 16 && d > r + 1) put(p, x, y, 'meadow', 'rim');
+      else if (y >= 16 && d > r) put(p, x, y, 'rimlit', 'rim');
+      if (y < 16 && x > 12) put(p, x, y, null, null);
+    }
+    for (let y = 17; y < 32; y++) for (let x = 0; x < 16; x++) { const d = Math.hypot(x - cx, y - cy); if (x > cx && y < cy && d > r + 1 && d <= r + 3) put(p, x, y, 'drop', 'rim'); }
+  }
+  return p;
+}
+const topPiece = () => { const p = P(16, 16); for (let i = 0; i < 256; i++) { p.v[i] = 'top'; p.r[i] = 'top'; } return p; };
+
+// The way up, west half (16 x 96 from the landing row): the cheek (cols 0-2) is face rock with the lip, the stair cut through lip and rock, its cap on the lip line, its foot inside its footprint.
+function wayHalf() {
+  const p = P(16, 96);
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, 'top', 'top');
+  for (let y = 16; y < 96; y++) for (let x = 0; x < 3; x++) columnPixel(p, x, y, 22, [-1, -1, -1]);
+  for (let y = 22; y < 96; y++) put(p, 2, y, y < 29 ? 'mossdark' : y <= 79 ? 'crack' : null, y <= 79 ? 'rock' : 'foot');
+  for (let y = 16; y < 22; y++) for (let x = 3; x < 16; x++) put(p, x, y, 'top', 'stair');   // the landing runs to the lip line
+  for (let y = 22; y < 25; y++) for (let x = 3; x < 16; x++) put(p, x, y, 'edge', 'stair');  // the stair's top cap, on the lip line
+  for (let y = 25; y < 80; y++) {
+    const s = (y - 25) % 13, last = y === 79;
+    for (let x = 3; x < 16; x++) put(p, x, y, last || s === 12 ? 'crack' : s < 4 ? 'tread' : 'riser', 'stair');
+  }
+  for (let y = 80; y < 82; y++) for (let x = 0; x < 16; x++) put(p, x, y, 'foot1', 'foot');
+  return p;
+}
+
+// Diagonal, down to the east (16 x 112 from the row above the lip): the lip's top on the 45 degree line, the strata and lip underside at the straight column's offsets from it.
+function diagonal(role) {
+  const p = P(16, 112);
+  const yt = (x) => 16 + (role === 'start' ? (x < 8 ? 6 : 6 + (x - 8)) : role === 'mid' ? -2 + x : x < 8 ? -2 + x : 6);
+  for (let x = 0; x < 16; x++) for (let y = 0; y < 112; y++) columnPixel(p, x, y, yt(x), [-1, -1, -1]);
+  return p;
+}
+
+// every piece of the table, drawn (level 1)
+const LET = TABLE.pick.letters;
+const DRAW = new Map();
+for (let s = 0; s < 3; s++) for (let l = 0; l < 6; l++) DRAW.set(`mid-${s + 1}${LET[l]}`, middle(s, l));
+for (const k of [1, 2, 3]) { DRAW.set(`end-e-${k}`, cap(k, false)); DRAW.set(`end-w-${k}`, mirror(cap(k, false, true))); }
+DRAW.set('convex-e', cap(3, true)); DRAW.set('convex-w', mirror(cap(3, true, true)));
+DRAW.set('concave-e', concave()); DRAW.set('concave-w', swapLight(mirror(concave())));
+for (const r of ['start', 'mid', 'end']) { DRAW.set(`dr-${r}`, diagonal(r)); DRAW.set(`dl-${r}`, swapLight(mirror(diagonal(r)))); }
+DRAW.set('way-l', wayHalf()); DRAW.set('way-r', swapLight(mirror(wayHalf())));
+DRAW.set('lip-side-e', lipSide()); DRAW.set('lip-side-w', mirror(lipSide()));
+for (const part of ['head', 'band', 'tail']) { DRAW.set(`wall-e-${part}`, wall(part, false)); DRAW.set(`wall-w-${part}`, mirror(wall(part, true))); }
+DRAW.set('rim-n', rim(false)); DRAW.set('rim-ne', rim(true)); DRAW.set('rim-nw', mirror(rim(true)));
+DRAW.set('top', topPiece());
+for (const p of TABLE.pieces) if (!DRAW.has(p.id)) throw new Error(`no greybox for ${p.id}`);
+for (const [id, d] of DRAW) { const b = BY_ID.get(id).box; if (b[2] !== d.w || b[3] !== d.h) throw new Error(`${id}: drawn ${d.w} x ${d.h}, table box ${b[2]} x ${b[3]}`); }
+
+// ---- the zones: mock places (rows of the land: . low, 1 level 1, 2 level 2, w raised way cell, v low way cell); the land past a zone's edge is its edge row or column ----
+const rep = (s, n) => s.repeat(n);
+const ZONES = [
+  { id: 'T1', label: 'T1 long run: W end k1 | F3 | 18 middles A1..F3 | A1 | E end k1', at: [16, 16],
+    rows: [rep('1', 26), rep('1', 26), rep('1', 26), '...' + rep('1', 20) + '...', ...Array(5).fill(rep('.', 26))],
+    pick: (x, y) => (y === 3 && x >= 4 && x <= 21 ? `mid-${((x - 4) / 6 | 0) + 1}${LET[(x - 4) % 6]}` : y === 3 && x === 3 ? 'mid-3F' : y === 3 && x === 22 ? 'mid-1A' : y === 2 ? ['mid-1D', 'mid-1E', 'mid-1F'][x % 3] : null) },
+  { id: 'T2a', label: 'T2a step-down k1 (W and E ends against the back run)', at: [16, 192],
+    rows: [rep('1', 10), rep('1', 10), rep('1', 10), '...1111...', ...Array(5).fill(rep('.', 10))] },
+  { id: 'T2b', label: 'T2b step-down k2', at: [192, 192],
+    rows: [rep('1', 10), rep('1', 10), rep('1', 10), '...1111...', '...1111...', ...Array(5).fill(rep('.', 10))] },
+  { id: 'T2c', label: 'T2c step-down k3', at: [368, 192],
+    rows: [rep('1', 10), rep('1', 10), rep('1', 10), '...1111...', '...1111...', '...1111...', ...Array(5).fill(rep('.', 10))] },
+  { id: 'T3a', label: 'T3a convex SW and SE', at: [16, 400],
+    rows: [...Array(6).fill('.1111.'), ...Array(5).fill('......')] },
+  { id: 'T3b', label: 'T3b concave SW and SE (walls run on south)', at: [128, 400],
+    rows: [...Array(3).fill(rep('1', 8)), ...Array(6).fill('11....11')] },
+  { id: 'T4', label: 'T4 block 8 x 6: back rim, rounded back corners, side walls, south face', at: [272, 400],
+    rows: [rep('.', 12), ...Array(6).fill('..' + rep('1', 8) + '..'), ...Array(5).fill(rep('.', 12))] },
+  { id: 'T5', label: 'T5 the way up: 2 wide, plain middles each side', at: [16, 624],
+    rows: [rep('1', 10), '1111ww1111', '1111ww1111', '1111ww1111', '....vv....', '....vv....', '....vv....', rep('.', 10), rep('.', 10)] },
+  { id: 'T6a', label: 'T6a diagonal down to the east: start, 3 middles, end', at: [192, 624],
+    rows: Array.from({ length: 12 }, (_, y) => Array.from({ length: 11 }, (_, x) => (y <= [2, 2, 2, 2, 3, 4, 5, 6, 6, 6, 6][x] ? '1' : '.')).join('')) },
+  { id: 'T6b', label: 'T6b diagonal down to the west: end, 3 middles, start', at: [384, 624],
+    rows: Array.from({ length: 12 }, (_, y) => Array.from({ length: 11 }, (_, x) => (y <= [6, 6, 6, 6, 5, 4, 3, 2, 2, 2, 2][x] ? '1' : '.')).join('')) },
+  { id: 'T7', label: 'T7 stacked: level 0, 1, 2 with the ledge', at: [16, 848],
+    rows: [...Array(3).fill(rep('2', 8)), ...Array(6).fill(rep('1', 8)), ...Array(5).fill(rep('.', 8))] },
+];
+const SHEET_W = 576, SHEET_H = 1088;
+
+// the land of a zone for the boundary below `level`: relief.mjs's accessor
+function landOfZone(z, level) {
+  const H = z.rows.length, Wd = z.rows[0].length;
+  const ch = (x, y) => z.rows[Math.max(0, Math.min(H - 1, y))][Math.max(0, Math.min(Wd - 1, x))];
+  const lv = (x, y) => { const c = ch(x, y); return c === '2' ? 2 : c === '1' || c === 'w' ? 1 : 0; };
+  return { raised: (x, y) => lv(x, y) >= level, low: (x, y) => lv(x, y) < level, way: (x, y) => ch(x, y) === 'w' || ch(x, y) === 'v', inside: () => true, lv, W: Wd, H };
+}
+
+// ---- composite ----
+const sheet = { v: new Array(SHEET_W * SHEET_H).fill(null), inst: new Int32Array(SHEET_W * SHEET_H).fill(-1), role: new Int8Array(SHEET_W * SHEET_H).fill(-1), f: new Uint8Array(SHEET_W * SHEET_H), level: new Uint8Array(SHEET_W * SHEET_H) };
+const instances = [], zonesOut = [], allMissing = [];
+for (const z of ZONES) {
+  const A1 = landOfZone(z, 1), Wd = A1.W, H = A1.H, [ox, oy] = z.at;
+  zonesOut.push({ id: z.id, label: z.label, x: ox, y: oy, w: Wd * C, h: H * C, rows: z.rows });
+  for (let y = 0; y < H * C; y++) for (let x = 0; x < Wd * C; x++) { const i = (oy + y) * SHEET_W + ox + x; sheet.v[i] = 'meadow'; sheet.role[i] = 0; }
+  const items = [];
+  for (const level of [1, 2]) {
+    const A = landOfZone(z, level);
+    let any = false; for (let y = 0; y < H && !any; y++) for (let x = 0; x < Wd; x++) if (A.raised(x, y)) { any = true; break; }
+    if (!any) continue;
+    const r = placeBoundary(A, { x0: 0, y0: 0, x1: Wd - 1, y1: H - 1, key: `template/${z.id}`, level, pick: z.pick ? (x, y) => z.pick(x, y) : null });
+    items.push(...r.items);
+    for (const m of r.missing) allMissing.push({ zone: z.id, level, ...m });
+  }
+  items.sort((a, b) => a.line - b.line || a.cls - b.cls || a.level - b.level || a.x - b.x || a.y - b.y);
+  for (const it of items) {
+    const d = DRAW.get(it.id); if (!d) continue;
+    const [bx, by] = it.box, X = it.x * C + bx, Y = it.y * C + by, n = instances.length;
+    instances.push({ n, id: it.id, level: it.level, zone: z.id, x: ox + X, y: oy + Y, w: d.w, h: d.h, cell: [it.x, it.y], inside: X >= 0 && Y >= 0 && X + d.w <= Wd * C && Y + d.h <= H * C, own: 0 });
+    for (let y = 0; y < d.h; y++) for (let x = 0; x < d.w; x++) {
+      const zx = X + x, zy = Y + y; if (zx < 0 || zy < 0 || zx >= Wd * C || zy >= H * C) continue;
+      const k = y * d.w + x; if (d.v[k] === null && d.r[k] === null) continue;
+      const i = (oy + zy) * SHEET_W + ox + zx;
+      if (d.v[k] !== null) { sheet.v[i] = d.v[k]; sheet.inst[i] = n; sheet.role[i] = ROLES.indexOf(d.r[k]); sheet.level[i] = it.level; sheet.f[i] = d.f[k]; instances[n].own++; }
+      else if (sheet.inst[i] < 0 || sheet.role[i] <= 0) { sheet.role[i] = ROLES.indexOf(d.r[k]); }   // a masked but unpainted pixel (the foot strip's room) tags its role over plain ground only
+    }
+  }
+}
+// a piece instance is clean when every pixel it painted is still its own on the sheet (nothing drawn after it covered it)
+const seen = new Int32Array(instances.length);
+for (let i = 0; i < sheet.inst.length; i++) if (sheet.inst[i] >= 0) seen[sheet.inst[i]]++;
+for (const it of instances) it.clean = seen[it.n] === it.own;
+
+// ---- colours: level 1 values, level 2 through the table's map ----
+const L2 = TABLE.levelMap['2'];
+const hexOf = (v, level) => { const h = VALUES[v]; return level === 2 && L2[h] ? L2[h] : h; };
+const rgb = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const img = newImage(SHEET_W, SHEET_H);
+for (let i = 0; i < sheet.v.length; i++) {
+  if (sheet.v[i] === null) continue;
+  const lev = sheet.inst[i] >= 0 ? sheet.level[i] : 1, c = rgb(sheet.v[i] === 'meadow' && sheet.inst[i] < 0 ? VALUES.meadow : hexOf(sheet.v[i], lev));
+  img.data.set([...c, 255], i * 4);
+}
+mkdirSync(OUT, { recursive: true });
+writeFileSync(path.join(OUT, 'template.png'), encodePng(img));
+
+// ---- the cut list: each piece's canonical instance (clean, inside its zone; its table zone first), cut back out of template.png by its box and its own tag mask ----
+mkdirSync(path.join(OUT, 'cut'), { recursive: true });
+const cut = [];
+for (const p of TABLE.pieces) {
+  const cands = instances.filter((it) => it.id === p.id && it.level === 1 && it.clean && it.inside);
+  const it = cands.filter((c) => c.zone === p.zone).pop() || cands[0];   // the last drawn in its zone: T1's front run holds the 18 middles in order
+  if (!it) { cut.push({ id: p.id, zone: null, box: null, note: 'no clean instance in the template' }); continue; }
+  const out = newImage(it.w, it.h), out2 = newImage(it.w, it.h);
+  for (let y = 0; y < it.h; y++) for (let x = 0; x < it.w; x++) {
+    const i = (it.y + y) * SHEET_W + it.x + x; if (sheet.inst[i] !== it.n) continue;
+    out.data.set(img.data.subarray(i * 4, i * 4 + 4), (y * it.w + x) * 4);
+    const h = '#' + [0, 1, 2].map((c) => img.data[i * 4 + c].toString(16).padStart(2, '0')).join(''), h2 = L2[h] || h;
+    out2.data.set([...rgb(h2), 255], (y * it.w + x) * 4);
+  }
+  writeFileSync(path.join(OUT, 'cut', `${p.id}.png`), encodePng(out));
+  writeFileSync(path.join(OUT, 'cut', `${p.id}@2.png`), encodePng(out2));
+  cut.push({ id: p.id, family: p.family, zone: it.zone, box: [it.x, it.y, it.w, it.h], cell: it.cell, serves: { part: p.part, hand: p.hand || null, k: p.k || null, level: '1; 2 by the colour map' }, instances: instances.filter((c) => c.id === p.id).length });
+}
+writeFileSync(path.join(OUT, 'cut-list.json'), JSON.stringify(cut, null, 1) + '\n');
+// --from <sheet.png>: cut a painted sheet (the template's size, the painted canvases laid back in place) along the same boxes, whole boxes only, into <outDir>/cut-from/<id>.png; see-through parts are keyed after, by poststeps
+const FROM = process.argv.indexOf('--from');
+if (FROM > 0) {
+  const { decodePng, crop } = await import('../src/png.mjs');
+  const { readFileSync } = await import('node:fs');
+  const painted = decodePng(readFileSync(process.argv[FROM + 1]));
+  if (painted.w !== SHEET_W || painted.h !== SHEET_H) throw new Error(`--from: ${painted.w} x ${painted.h}, the template is ${SHEET_W} x ${SHEET_H}`);
+  mkdirSync(path.join(OUT, 'cut-from'), { recursive: true });
+  for (const c of cut) if (c.box) writeFileSync(path.join(OUT, 'cut-from', `${c.id}.png`), encodePng(crop(painted, ...c.box)));
+  console.log(`cut ${cut.filter((c) => c.box).length} boxes from ${process.argv[FROM + 1]}`);
+}
+
+// ---- the tag map: run-length rows of [count, instance, role, flags] (instance -1 = ground) ----
+const rowsOut = [];
+for (let y = 0; y < SHEET_H; y++) {
+  const row = []; let prev = null;
+  for (let x = 0; x < SHEET_W; x++) {
+    const i = y * SHEET_W + x, key = [sheet.inst[i], sheet.role[i], sheet.f[i]];
+    if (prev && prev[1] === key[0] && prev[2] === key[1] && prev[3] === key[2]) prev[0]++; else { prev = [1, ...key]; row.push(prev); }
+  }
+  rowsOut.push(row);
+}
+writeFileSync(path.join(OUT, 'template-tags.json'), JSON.stringify({
+  description: 'cliff-system template tags: per pixel the piece instance on top (instance -1: the zone\'s low ground or nothing), its role and the edge-contract flags; rows run-length coded as [count, instance, role, flags]. Roles index `roles` (-1 none). Flags: bit values in `flags`. Instances: piece id, level, zone, box (sheet px), anchor cell (zone cells), clean = no later piece covers any of its pixels.',
+  w: SHEET_W, h: SHEET_H, cell: C, roles: ROLES, flags: FLAG, values: VALUES, levelMap: TABLE.levelMap,
+  zones: zonesOut, instances: instances.map(({ n, id, level, zone, x, y, w, h, cell, clean }) => ({ n, id, level, zone, box: [x, y, w, h], cell, clean })), rows: rowsOut,
+}) + '\n');
+writeFileSync(path.join(OUT, 'zones.json'), JSON.stringify(zonesOut, null, 1) + '\n');
+
+// ---- template-4x: the sheet at 4x with the marks ----
+const K = 4, big = scaleNearest(img, K);
+const mark = (x, y, c) => { if (x < 0 || y < 0 || x >= SHEET_W * K || y >= SHEET_H * K) return; big.data.set([...c, 255], (y * SHEET_W * K + x) * 4); };
+const MARK = { grid: [255, 255, 255], cut: [230, 40, 40], edge: [40, 220, 230], band: [40, 120, 230], strata: [250, 210, 40], underside: [250, 130, 30], joint: [230, 40, 230], over: [40, 60, 230] };
+for (const z of zonesOut) {   // the 16 px grid, dotted
+  for (let y = z.y; y <= z.y + z.h; y += C) for (let x = z.x * K; x < (z.x + z.w) * K; x += 2) mark(x, y * K, MARK.grid);
+  for (let x = z.x; x <= z.x + z.w; x += C) for (let y = z.y * K; y < (z.y + z.h) * K; y += 2) mark(x * K, y, MARK.grid);
+}
+for (let y = 0; y < SHEET_H; y++) for (let x = 0; x < SHEET_W; x++) {   // the contract flags, as small marks inside each 4 x 4 pixel
+  const f = sheet.f[y * SHEET_W + x]; if (!f) continue;
+  const bx = x * K, by = y * K;
+  if (f & FLAG.strata) for (let d = 0; d < K; d++) mark(bx + d, by + 1, MARK.strata);
+  if (f & FLAG.underside) for (let d = 0; d < K; d++) mark(bx + d, by + 1, MARK.underside);
+  if (f & FLAG.band) mark(bx + 1, by + 1, MARK.band);
+  if (f & FLAG.edge) { mark(bx + 2, by + 2, MARK.edge); mark(bx + 2, by + 1, MARK.edge); }
+  if (f & FLAG.joint) for (let d = 0; d < K; d++) mark(bx + 3, by + d, MARK.joint);
+  if (f & FLAG.over) mark(bx, by + 3, MARK.over);
+}
+for (const c of cut) if (c.box) {   // the cut boxes of the canonical instances
+  const [x, y, w, h] = c.box.map((v) => v * K);
+  for (let d = 0; d < w; d++) { mark(x + d, y, MARK.cut); mark(x + d, y + h - 1, MARK.cut); }
+  for (let d = 0; d < h; d++) { mark(x, y + d, MARK.cut); mark(x + w - 1, y + d, MARK.cut); }
+}
+writeFileSync(path.join(OUT, 'template-4x.png'), encodePng(big));
+writeFileSync(path.join(OUT, 'marks.json'), JSON.stringify(MARK) + '\n');
+
+// ---- the paint calls' canvases up to GATE A (cliff-system.md section 5, as corrected in cliff-system-1's report): the greybox init (the paint job pastes the F0 top's real pixels and the locked
+// columns into it first), the mask (white = paint: every lip, rock, foot, side or stair pixel of the pieces the call paints; black = keep), and the list of what each call paints and keeps ----
+const T1 = zonesOut.find((z) => z.id === 'T1');
+const CALLS = [
+  { id: 'F1a', box: [T1.x, T1.y, 256, T1.h], paints: (it) => it.zone === 'T1' && it.cell[0] <= 15, note: 'T1 columns 0-15: the back run and the west k1 cap, the context F3, middles A1-F1 and A2-F2; paints the joints F3|A1 and F1|A2 and the W end' },
+  { id: 'F1b', box: [T1.x + 160, T1.y, 256, T1.h], paints: (it) => it.zone === 'T1' && it.cell[0] >= 16, keepCols: [10, 15],
+    joints: [{ fromCall: 'F1a', fromX: 4 * C, toX: [6 * C, 12 * C] }, { fromCall: 'F1a', fromX: 9 * C + 15, toX: [11 * C + 15] }], jointRows: [3 * C, 8 * C - 1], note:'T1 columns 10-25: A2-F2 kept from F1a (black), A3-F3, the context A1, the east k1 cap and the back run; the joint columns are pasted from F1a: A1 x=0 into A3 x=0 and context A1 x=0, F1 x=15 into F3 x=15' },
+];
+mkdirSync(path.join(OUT, 'calls'), { recursive: true });
+const callsOut = [];
+for (const call of CALLS) {
+  const [cx, cy, cw, ch] = call.box, init = newImage(cw, ch), mask = newImage(cw, ch), painted = new Set(), kept = new Set();
+  for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) {
+    const i = (cy + y) * SHEET_W + cx + x, o = (y * cw + x) * 4, n = sheet.inst[i], role = ROLES[sheet.role[i]] || 'ground';
+    init.data.set(img.data.subarray(i * 4, i * 4 + 4), o);
+    const it = n >= 0 ? instances[n] : null, paintRole = role !== 'top' && role !== 'ground';
+    const paint = it && call.paints(it) && paintRole && !(it.id.startsWith('mid-') && call.keepCols && it.cell[0] >= call.keepCols[0] && it.cell[0] <= call.keepCols[1]);
+    if (paint) painted.add(`${it.id}@${it.cell.join(',')}`); else if (it && it.id !== 'top') kept.add(`${it.id}@${it.cell.join(',')}`);
+    const joint = call.joints && y >= call.jointRows[0] && y <= call.jointRows[1] && call.joints.some((j) => j.toX.includes(x));
+    mask.data.set(paint && !joint ? [255, 255, 255, 255] : [0, 0, 0, 255], o);
+  }
+  writeFileSync(path.join(OUT, 'calls', `${call.id}-init.png`), encodePng(init));
+  writeFileSync(path.join(OUT, 'calls', `${call.id}-mask.png`), encodePng(mask));
+  callsOut.push({ id: call.id, canvas: [cw, ch], sheetBox: call.box, note: call.note, paints: [...painted].sort(), keeps: [...kept].filter((k) => !painted.has(k)).sort(), lockedColumns: call.joints ? { rows: call.jointRows, paste: call.joints } : null });
+}
+writeFileSync(path.join(OUT, 'calls', 'calls.json'), JSON.stringify(callsOut, null, 1) + '\n');
+
+const counts = {}; for (const p of TABLE.pieces) counts[p.family] = (counts[p.family] || 0) + 1;
+console.log(`template ${SHEET_W} x ${SHEET_H}; ${instances.length} instances; pieces ${TABLE.pieces.length} ${JSON.stringify(counts)}; cut ${cut.filter((c) => c.box).length}; no clean instance: ${cut.filter((c) => !c.box).map((c) => c.id).join(' ') || 'none'}`);
+console.log(`template parts with no piece: ${allMissing.length ? JSON.stringify(allMissing) : 'none'}`);
+void middleOf;

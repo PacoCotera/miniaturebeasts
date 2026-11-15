@@ -9,6 +9,7 @@
 import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
 import { rimOf } from './cliffrules.mjs';
 import { BLOCKS, PART, landOf, partAt } from './relief.mjs';
+import { cliffSet } from './cliffsystem.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
@@ -55,6 +56,7 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
   const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, rim = cliff ? rimOf(ir, landOf(ir, cinfo), isCliff) : null;
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
+  const system = cliffSet() !== 'live';   // the cliff system's set (cliffsystem.mjs) draws the top, the rim and every edge: the cliff layer keeps its four-raised fill only, no old way-up tiles
   for (const layer of dg.layers) {
     if (layer.tone) continue;
     const d = layers.get(layer.terrain), isCliffLayer = cliff && layer.terrain === cliff.value;
@@ -64,6 +66,7 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
       const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
       if (isCliffLayer) {
         if (fill) continue;   // four raised cells: the raised meadow ground
+        if (system) { layer.tiles[j * w1 + i] = EMPTY; continue; }
         const r = rim[j * w1 + i];   // the rule map cliff-7-rim: the tile of a rim case (back rim, its corners) stays 0; a side keeps the fill (2) unless the fill pieces cover its cells; every other edge tile is drawn by the pieces (1)
         if (r === 1) { layer.tiles[j * w1 + i] = EMPTY; continue; }
         if (r === 2) { layer.tiles[j * w1 + i] = FILL_CODE; continue; }
@@ -87,7 +90,7 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
     }
   }
   // the way up: the kit's piece for the terrain below the face replaces the cliff's own tiles on the tile above the face (row 0) and on the face (row 1)
-  if (cliff && ir.wayups && ir.wayups.length) {
+  if (cliff && ir.wayups && ir.wayups.length && !system) {
     const layer = dg.layers.find((l) => l.terrain === cliff.value), d = layer && layers.get(cliff.value), withUp = d && d.kinds.find((k) => k.rows.wayup);
     if (withUp) {
       const idOfValue = new Map(terrains.map((t) => [t.value, t.id]));

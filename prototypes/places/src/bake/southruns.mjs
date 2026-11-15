@@ -10,6 +10,7 @@
 // Every choice reads world tiles only: the land a place carries (ir.land, the cell and its apron and 6 tiles more each side, from the generator's own window), so two places that draw the same world cell place the same piece there.
 import { landOf, pieceOf, PIECES } from './relief.mjs';
 import { cliffDecals as decalsOf } from './cliffrules.mjs';
+import { cliffSet, systemDecals } from './cliffsystem.mjs';
 
 export const southKind = (k) => `cliff-south-${k + 1}`;
 export const CORNER_HANDS = ['e', 'w'];   // the corner strip's cells 0..5 (48 x 288 each): the east hand as painted, the west hand its mirror
@@ -23,7 +24,8 @@ export const WAYUP_U_KIND = 'cliff-way-up-u';   // the way up U: one 213 x 348 p
 export const FILL_KIND = 'cliff-fill';   // the signed raised fill (fill-cliff.png) as one whole 48 x 48 cell
 
 // Every cliff decal of a level in draw order: [{ kind, x, y }] in game px, keeping only those that reach the place's picture. The one entry both bakes use.
-export const cliffDecals = (ir, cliffs, cell = PIECES.cell) => decalsOf(ir, landOf(ir, cliffs), cell);
+// With the cliff system's set switched on (cliffsystem.mjs useCliffSet, tools only) the system's piece table places them instead; the live set is untouched while the switch is 'live'.
+export const cliffDecals = (ir, cliffs, cell = PIECES.cell) => (cliffSet() === 'live' ? decalsOf(ir, landOf(ir, cliffs), cell) : systemDecals(ir, landOf(ir, cliffs)));
 
 // The rows of the table that are still named empty slots for the art desk: [{ id, family, kinds }]
 export const emptySlots = () => PIECES.pieces.filter((p) => p.state === 'empty').map(({ id, family, kinds }) => ({ id, family, kinds }));

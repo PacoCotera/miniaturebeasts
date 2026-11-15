@@ -8,6 +8,8 @@ import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';
 import { cliffDecals } from './southruns.mjs';
+import { cliffSet, decorOff } from './cliffsystem.mjs';
+import { landOf } from './relief.mjs';
 
 // dg: terrainLayers' output after applyOpenEdges; tileset: the baked tile set; desc: setload.layerDescriptors' { layers, tone }. Returns [{ tiles: Uint16Array of tile ids }] in draw order (0xFFFF draws nothing).
 export function layersToTileIds(dg, tileset, desc) {
@@ -61,6 +63,9 @@ export function buildPlace(ir, ctx) {
   for (const i of cl.blockCells) setBit(i);   // relief: the cliff's ring, face and flank cells block; its top, its foot rows and the way up walk
   for (const cell of footprintCells(ir, tileset).keys()) setBit(cell);
   const heart = ir.hearts[0] || { x: 0, y: 0, kinds: [], species: [], revealLine: '', reachBy: 'none' };   // a generated place has no per-cell heart (scheme section 4)
+  // the cliff system's set (tools only): decor and props keep off the lip, face, foot, foot strip, flank, way up and the top cell behind a lip
+  const off = cliffSet() === 'live' ? null : decorOff(landOf(ir, cl)), keep = (p) => !off || !off(Math.floor(p.x / 48), Math.floor((p.sortY ?? p.y) / 48));
+  if (off) ir = { ...ir, decals: ir.decals.filter(keep), props: ir.props.filter(keep) };
   const place = {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: ir.mirrorOf || '',
     terrain: ir.terrain, ground,
