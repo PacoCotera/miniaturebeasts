@@ -52,15 +52,13 @@ export function tileFields(seed, X, Y) {
 // ---- the levels of one realm (a realm is the object buildRealm made) ----
 const LEVELS = new WeakMap();
 export function levelsOf(realm) {
-  let L = LEVELS.get(realm); if (L && L.gen === GEN) return L;
+  let L = LEVELS.get(realm); if (L && L.gen === GEN && L.stairsList === realm.stairs) return L;
   const e0q = new Int32Array(RW * RH); for (let i = 0; i < RW * RH; i++) e0q[i] = Math.round(realm.e0[i] * 65536);   // the realm's raising height, rounded once to Q16
-  L = { realm, seed: realm.seed, gen: GEN, rule: RULE_NOW, e0q, q: new Map(), wet: new Map(), cells: new Map(), wayups: new Map(), pk: new Map(), stairs: new Map() };
+  L = { realm, seed: realm.seed, gen: GEN, stairsList: realm.stairs, rule: RULE_NOW, e0q, q: new Map(), wet: new Map(), cells: new Map(), wayups: new Map(), pk: new Map(), stairs: new Map() };
   for (const s of realm.stairs || []) L.stairs.set(s.X * 1000 + s.Y, { ...s });   // the realm's stairs: each gets its held-straight site before the passes
   LEVELS.set(realm, L); return L;
 }
-// the realm's stairs (region.mjs attachStairs): [{ X, Y, port }] on the edge between the cell (X, Y) and the one south of it
-export const setStairs = (realm, list) => { realm.stairs = list; LEVELS.delete(realm); };
-export const forgetLevels = realm => LEVELS.delete(realm);   // the realm's cells changed (the coast): its tile levels are read again
+// the realm's stairs (region.mjs attachStairs, plain data on the realm): [{ X, Y, port }] on the edge between the cell (X, Y) and the one south of it; the realm never reads this file
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 const inRealm = (X, Y) => X >= 0 && Y >= 0 && X < RW && Y < RH;
 
@@ -418,8 +416,6 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0)) { st.x0 = x0; st.ok = true; return st; } }
   return st;
 }
-// can a stair stand on the edge south of the cell (X, Y) at this port? (the site finds 6 columns clear of water; read from the field and the wet flags, so the region may ask before any pass runs)
-export const siteClear = (L, X, Y, port) => !!siteOf(L, { X, Y, port }).ok;
 function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info) {
   const WR = L.rule.window, fr = L.rule.faceRows, foot = fr + 1, extra = [];
   const sites = [];   // { lx, ly (window tiles), real }

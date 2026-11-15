@@ -8,7 +8,6 @@ import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy,
 import { ATLAS } from '../regions.mjs';
 import { buildRealm, rawRealm, editE0, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
 import { realmFeatures } from './features.mjs';
-import { levelsOf, forgetLevels, setStairs, siteClear } from './levels.mjs';
 
 export const NC = MW * MH;
 // world.mjs hash() with its leading arguments folded once (the same bytes in the same order), then one number appended and finalised; and mulberry32's first draw
@@ -119,12 +118,12 @@ export function regionAt(realm, ax, ay, pt = 0) {
   for (let c = 0; c < NC; c++) { const x = c % MW, y = (c / MW) | 0;
     if (x < MW - 1 && level[c] !== level[c + 1]) edge[2 * c] = EDGE.CLIFF;
     if (y < MH - 1 && level[c] !== level[c + MW]) edge[2 * c + 1] = EDGE.CLIFF; }
-  // Stairs. A way up exists only in a south-facing face (the one painted piece), so a stair sits on an edge between a cell and the one south of it, the higher to the north, and only
-  // where the place layer finds a straight face of the way up's width on that edge (levels.mjs, the one face test). The tree keeps today's rule (every level zone reachable) and picks
-  // another edge, in the order of the hashed keys, where an edge has no face; a region whose zones cannot all be joined that way fails its check and is drawn again.
+  // Stairs. A way up exists only in a south-facing face (the one painted piece), so a stair sits on an edge between a cell and the one south of it, the higher to the north. The realm reads no tile
+  // land: every such edge may carry a stair, in the order of the hashed keys, and the place seats the way up where the realm put it (the held-straight site, levels.mjs, made before the land's passes).
+  // The tree keeps today's rule (every level zone reachable); a region whose zones cannot all be joined fails its check and is drawn again.
   const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [];
-  // every stair is given its held-straight site before the land's passes (levels.mjs), so an edge lacks a face only where water leaves no 6 clear columns (the site is read from the field, not the passes)
-  const LVL = levelsOf(realm), faceOk = i => { const c = i >> 1; return siteClear(LVL, ax * MW + (c % MW), ay * MH + ((c / MW) | 0), portOffset(seed, ax, ay, i)); };
+  // The one cell-scale test: a lake right under the lower cell leaves the site no dry columns (the tile water reaches into the cell above it), so no stair on an edge whose lower cell has open water (not a ford) right south of it.
+  const seatOk = i => { const w = wc(i >> 1) + 2 * RW; return w >= RW * RH || realm.land[w] !== L.WATER || realm.ford[w] === 1; };
   const southUp = e => (e.i & 1) === 1 && level[e.a] > level[e.b];
   for (let i = 0; i < 2 * NC; i++) { if (edge[i] !== EDGE.CLIFF) continue; const a = i >> 1, b = i & 1 ? a + MW : a + 1;
     if (pass(a) && pass(b)) cand.push({ i, a, b, key: hash(seed, 'gen7', 'ramp', 2 * wc(a) + (i & 1)) }); }
@@ -133,14 +132,14 @@ export function regionAt(realm, ax, ay, pt = 0) {
   const upAll = Int32Array.from({ length: Z.n }, (_, z) => z);   // the zones as every cliff edge would join them
   for (const e of cand) { const ra = find(upAll, Z.id[e.a]), rb = find(upAll, Z.id[e.b]); if (ra !== rb) upAll[ra < rb ? rb : ra] = ra < rb ? ra : rb; }
   const up = Int32Array.from({ length: Z.n }, (_, z) => z);
-  for (const e of cand) { if (!southUp(e)) continue; const ra = find(up, Z.id[e.a]), rb = find(up, Z.id[e.b]); if (ra === rb || !faceOk(e.i)) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
+  for (const e of cand) { if (!southUp(e)) continue; const ra = find(up, Z.id[e.a]), rb = find(up, Z.id[e.b]); if (ra === rb || !seatOk(e.i)) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
   const zonesJoined = roots(up) === roots(upAll);
   if (B && B.extraStairs) {   // a biome's own stairs besides the tree's, each clear of a stair beside it on the same wall
     let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
     const along = i => [i - 2, i + 2];
     const extras = cand.filter(e => southUp(e) && edge[e.i] === EDGE.CLIFF && !wet(e.a) && !wet(e.b)).sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i);
     for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0, at = 0; k < want && at < extras.length; at++) {
-      const e = extras[at]; if (!along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP) || !faceOk(e.i)) continue;
+      const e = extras[at]; if (!along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP) || !seatOk(e.i)) continue;
       edge[e.i] = EDGE.RAMP; k++;
     }
   }
@@ -306,7 +305,6 @@ function coastOf(out) {
   taperCoast(realm);
   editE0(realm);
   realm.coast = coast;
-  forgetLevels(realm);
   for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) if (ax === 0 || ay === 0 || ax === ATLAS - 1 || ay === ATLAS - 1) {
     let G = regionAt(realm, ax, ay);
     for (let pt = 1; pt < 12 && G.fails.length; pt++) { const H = regionAt(realm, ax, ay, pt); if (H.fails.length < G.fails.length) G = H; }
@@ -335,14 +333,14 @@ export const ROUNDS = 64;   // was 24: with stairs only where a south-facing fac
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 5;   // 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
+export const REALM_REV = 6;   // 6: stairs at cell scale (the realm reads no tile land; the place seats the way up) with the land rule's held sites; 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
-// the realm's stairs for the land rule (levels.mjs): every south stair, by the cell it stands on and its port, read from the regions that stayed
+// the realm's stairs for the place (levels.mjs seats each way up): every south stair, by the cell it stands on and its port, read from the regions that stayed. Plain data: the realm reads no tile land
 export function attachStairs(R) {
   const list = [];
   for (const G of R.regions) { const [ax, ay] = G.slot;
     for (const cr of G.cross) if (cr.side === 's') list.push({ X: ax * MW + (cr.c % MW), Y: ay * MH + ((cr.c / MW) | 0), port: portOffset(R.seed, ax, ay, 2 * cr.c + 1) }); }
-  setStairs(R.realm, list);
+  R.realm.stairs = list;
 }
 export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); if (!R.realm.stairs) attachStairs(R); cache.set(seed, R); }
 export function realm7(seed) {
@@ -350,7 +348,12 @@ export function realm7(seed) {
   const tries = new Uint8Array(ATLAS * ATLAS); let out = null;
   for (let round = 0; round < ROUNDS; round++) {
     const realm = buildRealm(seed, tries), regions = [];
-    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) regions.push(regionAt(realm, ax, ay));
+    // a region whose cells and their one-cell ring are as last round, with the same attempt, is the same region: it is kept, not made again
+    const same = (s, ax, ay) => { if (!out || out.realm.tries[s] !== tries[s]) return false; const a = out.realm;
+      for (let y = Math.max(0, ay * MH - 1); y < Math.min(RH, ay * MH + MH + 1); y++) for (let x = Math.max(0, ax * MW - 1); x < Math.min(RW, ax * MW + MW + 1); x++) { const c = y * RW + x;
+        if (a.land[c] !== realm.land[c] || a.level[c] !== realm.level[c] || a.ford[c] !== realm.ford[c] || a.wkind[c] !== realm.wkind[c]) return false; }
+      return true; };
+    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) { const s = ay * ATLAS + ax; regions.push(same(s, ax, ay) ? out.regions[s] : regionAt(realm, ax, ay)); }
     out = { seed, realm, regions, rounds: round + 1 };
     const bad = regions.filter(r => r.fails.length); if (!bad.length) break;
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
