@@ -49,8 +49,10 @@ for (const seed of seeds) {
     choice[seed] = picked.map((q) => ({ c: q.c, X: q.X, Y: q.Y, land: q.land, kinds: q.kinds, heart: q.focus && { x: q.focus.x, y: q.focus.y, w: q.focus.w, h: q.focus.h, id: q.focus.id } }));   // `heart`: the spot the pawn faces (the overhang where there is one, else the heart)
   }
   let n = 0;
+  const { planOf: planNow, contentOf } = await import(path.join(root, 'prototypes/exploration/src/gen7/places.mjs'));
   for (const q of choice[seed]) {
     n++;
+    { const pl = planNow(seed, q.X, q.Y); q.patchTiles = pl ? contentOf(pl, seed).patches.flatMap((p) => p.tiles || []) : []; }   // the heart's patch, tile by tile (the sheets for it are empty slots: it draws as grass until they are signed)
     await page.evaluate((o) => {
       const m = window.__mb; if (m.S.exp.patch) m.leavePatch(); m.S.exp.pos = o.c; m.S.exp.start = o.c; m.enterPatch();
       const P = m.S.exp.patch, lay = m.layout(P.key); m.S.veil[P.key] = new Array(lay.h).fill(0x0fffffff);
@@ -60,7 +62,7 @@ for (const seed of seeds) {
       if (best) { P.x = best.x; P.y = best.y; P.dir = 'up'; } m.walkLift(); if (m.RT.view) m.endView();
     }, q);
     await settle(page, 1400);
-    const data = await page.evaluate(async (ov) => {
+    const data = await page.evaluate(async ([ov, patchTiles]) => {
       const m = window.__mb; let d = m.capture(); if (!ov) return d;
       const P = m.S.exp.patch, lay = m.layout(P.key), RT = m.RT, pl = RT.gridScr, ts = RT.ts;
       const img = new Image(); img.src = d; await img.decode();
@@ -69,13 +71,13 @@ for (const seed of seeds) {
       g.font = '9px monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
       for (const s of lay.stamps || []) {
         const slot = /bed/.test(s.kind) ? 'bed-ground' : s.kind === 'split-stone-ground' ? 'split-stone-ground' : null;   // the heart's ground patch: a named empty slot, shown as a labelled tint over the footprint
-        if (slot) { g.globalAlpha = 0.22; g.fillStyle = '#2f9d5a'; g.fillRect(pl.x + (s.x - 1) * ts, pl.y + (s.y - 1) * ts, s.w * ts, s.h * ts); g.globalAlpha = 1; g.fillStyle = '#fff'; g.fillText('[' + slot + ']', pl.x + (s.x - 1 + s.w / 2) * ts, pl.y + (s.y - 1 + s.h) * ts - 6); }
+        if (slot) { g.globalAlpha = 0.3; g.fillStyle = '#2f9d5a'; for (const [tx, ty] of (patchTiles || [])) if (tx >= s.x - 3 && tx < s.x + s.w + 3 && ty >= s.y - 3 && ty < s.y + s.h + 3) g.fillRect(pl.x + (tx - 1) * ts, pl.y + (ty - 1) * ts, ts, ts); g.globalAlpha = 1; g.fillStyle = '#fff'; g.fillText('[' + slot + ']', pl.x + (s.x - 1 + s.w / 2) * ts, pl.y + (s.y - 1 + s.h) * ts - 6); }
         g.strokeStyle = '#e0407a'; g.lineWidth = 2; g.strokeRect(pl.x + (s.x - 1) * ts, pl.y + (s.y - 1) * ts, s.w * ts, s.h * ts);
         for (const [cx, cy, k] of s.cells) { const x = pl.x + (cx - 1) * ts, y = pl.y + (cy - 1) * ts; g.globalAlpha = 0.55; g.fillStyle = COL[k] || '#888'; g.fillRect(x + 2, y + 2, ts - 4, ts - 4); g.globalAlpha = 1; g.fillStyle = '#fff'; g.fillText(NAME[k] || k, x + ts / 2, y + ts / 2); }
         g.fillStyle = '#e0407a'; g.textAlign = 'left'; g.fillText(s.id + (s.role === 'heart' ? ' (heart)' : ''), pl.x + (s.x - 1) * ts + 2, pl.y + (s.y - 1) * ts - 6); g.textAlign = 'center';
       }
       return cv.toDataURL('image/png');
-    }, overlay);
+    }, [overlay, q.patchTiles]);
     const f = `${seed}-${n}-${q.land}-c${q.c}${overlay ? '-blocks' : ''}.png`;
     writeFileSync(path.join(out, f), Buffer.from(data.split(',')[1], 'base64')); console.log(f, q.kinds.join('+'));
   }
