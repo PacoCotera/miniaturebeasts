@@ -56,7 +56,7 @@ export function Panel({ api }) {
           <Toggle label="Developer tools" line="Shows the tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
           <Pick label="Companion" line="Which Companion the page plays." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />
           <Pick label="Name list" line="Where new mibi names come from." value={o.names} set={set("names")} items={[["", "The current list"], ...api.names.map((n) => [n, n])]} />
-          <Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value={o.place} set={set("place")} items={[["", "Off"], ...api.places]} />
+          <Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value={o.place} set={set("place")} items={[["", "The usual map"], ...api.places]} />
           <Row label="Start fresh" line="Erases the save in this browser and starts again. The options stay.">
             <AlertDialog.Root>
               <AlertDialog.Trigger className="op-btn" id="optionsFresh">Start fresh</AlertDialog.Trigger>

@@ -1,12 +1,12 @@
 // The device switch (ui-play-layout-2): two equal halves in the bar, "Companion" then "Station" in that fixed order, Radix Tabs (the one web kit). The half in view is `panel` with `bone` words, the other `mist`.
 // News: an 8 px amber dot after the label of the device NOT in view (the Station waking, crates waiting, an arrival choice waiting); it clears when that device comes into view. Its spoken name is hidden text read after the device's name.
-// The words are today's; the dot's spoken name is the copywriter's ([copy] placeholder "has news" until cw-play-layout-1's words land).
+// The words are today's; the dot's spoken name is the copywriter's ("something new").
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { Tabs, VisuallyHidden } from "radix-ui";
 
 const px = (v) => v + "px";
-export const NEWS_WORDS = "has news";   // [copy] the dot's spoken name
+export const NEWS_WORDS = ", something new";   // the dot's spoken name, read after the device's name ("Station, something new") (copywriter, cw-play-layout-1)
 
 function Switch({ s, onPick }) {
   const box = s.box, style = box ? { left: px(box[0]), top: px(box[1]), width: px(box[2]), height: px(box[3]) } : undefined;

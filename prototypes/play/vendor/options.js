@@ -31699,7 +31699,7 @@ function Panel({ api }) {
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Developer tools", line: "Shows the tools button, the Station's panel and the Companion's Observer.", on: o2.dev, set: set2("dev") }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Companion", line: "Which Companion the page plays.", value: o2.companion, set: set2("companion"), items: [["A", "Companion A"], ["B", "Companion B"]] }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Name list", line: "Where new mibi names come from.", value: o2.names, set: set2("names"), items: [["", "The current list"], ...api.names.map((n2) => [n2, n2])] }),
-      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "One place everywhere", line: "Every land cell of the Companion's map plays this hand-made place.", value: o2.place, set: set2("place"), items: [["", "Off"], ...api.places] }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "One place everywhere", line: "Every land cell of the Companion's map plays this hand-made place.", value: o2.place, set: set2("place"), items: [["", "The usual map"], ...api.places] }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label: "Start fresh", line: "Erases the save in this browser and starts again. The options stay.", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports5.Root, { children: [
         /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Trigger, { className: "op-btn", id: "optionsFresh", children: "Start fresh" }),
         /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)(dist_exports5.Portal, { children: [
@@ -31886,7 +31886,7 @@ var import_react_dom3 = __toESM(require_react_dom(), 1);
 var import_client2 = __toESM(require_client(), 1);
 var import_jsx_runtime24 = __toESM(require_jsx_runtime(), 1);
 var px2 = (v) => v + "px";
-var NEWS_WORDS = "has news";
+var NEWS_WORDS = ", something new";
 function Switch3({ s: s2, onPick }) {
   const box2 = s2.box, style = box2 ? { left: px2(box2[0]), top: px2(box2[1]), width: px2(box2[2]), height: px2(box2[3]) } : void 0;
   const label = (dev) => dev === "station" ? s2.asleep ? "Station \xB7 asleep" : "Station" : "Companion";
