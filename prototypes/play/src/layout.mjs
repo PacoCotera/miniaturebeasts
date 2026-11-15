@@ -14,8 +14,16 @@ export const FACE = { companion: [450, 600], station: [1024, 600] };   // the fa
 export const SWITCH_LAPTOP_W = 320;
 
 // 'up' a phone held upright, 'side' a phone on its side, 'laptop' everything else
-export const form = (W, H, coarse) => (coarse && Math.min(W, H) < 600 ? (H >= W ? "up" : "side") : "laptop");
+// A coarse pointer on a small screen is a phone. Any other pointer gets the laptop form only where it fits: the Companion at ×1 under the laptop plan, and the bar's controls in one row, apart. Otherwise the phone form for the orientation.
+export function laptopFits(W, H) {
+  const K = sizes(44), lw = EDGE + K.cross + EDGE, rw = EDGE + K.clusterW + EDGE, maxW = Math.min(W - 2 * SIDE_LAPTOP, LAPTOP_MAX_W), maxH = H - BAR - 2 * LAPTOP_TOP;
+  if ((maxW - lw - rw) / FACE.companion[0] < 1 || (maxH - 2 * EDGE) / FACE.companion[1] < 1) return false;
+  const b = barPlan({ W, form: "laptop", size: true }), left = Math.min(b.size[0][0], b.keys[0]);
+  return b.switch[0] + b.switch[2] + BAR_GAP <= left;
+}
+export const form = (W, H, coarse) => (coarse ? (Math.min(W, H) < 600 ? (H >= W ? "up" : "side") : "laptop") : laptopFits(W, H) ? "laptop" : H >= W ? "up" : "side");
 
+const assert = (ok, msg) => { if (!ok) throw new Error(msg); };
 const box = (x, y, w, h) => ({ x, y, w, h });
 const abs = (b, dx, dy) => b && [b[0] + dx, b[1] + dy, b[2], b[3]];
 const bx = (b) => (b ? box(b[0], b[1], b[2], b[3]) : null);
@@ -83,6 +91,7 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, hint 
     out.margins = { side: bxx, top: y0 - BAR, bottom: H - by - bh };
     out.stamp = { box: null, where: "barLeft" };
     if (lift) out.note = box(bxx, y0, Math.min(bw, 400), NOTE_H);
+    if (!coarse && dpr >= 1) assert(sc.zFit >= 1 - 1e-9, `layout: the laptop fit is ×${sc.zFit} at ${W} × ${H}; the laptop form is only chosen where it fits at ×1`);
     out.zFit = sc.zFit;
   }
   out.a = a; out.scale = s; out.panel = box(bxx, by, bw, bh);
