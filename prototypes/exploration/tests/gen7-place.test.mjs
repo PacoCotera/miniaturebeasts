@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, overviewOf, OV, OVW, COAST_REACH } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, sectorOf, COAST_REACH } from '../src/gen7/place.mjs';
 import { inlandOf, RAISE_OFF, levelsOf, tileLevel, setLandRule } from '../src/gen7/levels.mjs';
 import { realm7 } from '../src/gen7/region.mjs';
 import { readFileSync } from 'node:fs';
@@ -294,17 +294,37 @@ test('seed 13: two thresholds in the rule give three levels, each boundary with 
   } finally { setLandRule({}); }
 });
 
-// One land at every zoom (F1): the region's overview is the class of the world tile under each of its tiles, and the raised bit is the tile being raised land; two cells side by side share their edge.
-test('seed 7: the overview of a region reads the world tiles (class and raised), 0 differing tiles on a sample, and cells meet at their edges', { timeout: 900000 }, () => {
-  const seed = 7, ax = 2, ay = 2, ov = overviewOf(seed, ax, ay), T = worldTiles(seed), Gd = worldGround(seed);
-  const cls = v => (v === TV.SAND ? OV.SAND : v === TV.WATER ? OV.WATER : v === TV.DEEP ? OV.DEEP : v === TV.LITTER ? OV.WOOD : v === TV.THICKET ? OV.THICKET : v === TV.SCREE ? OV.ROCK : v === TV.PATH ? OV.PATH : OV.GRASS);
-  let diff = 0, n = 0;
-  for (let y = 0; y < ov.length / OVW; y += 7) for (let x = 0; x < OVW; x += 5) {
-    const gx = ax * OVW + x, gy = ay * (ov.length / OVW) + y, want = cls(Gd(gx, gy)) | (T(gx, gy) === TV.CLIFF ? OV.RAISED : 0); n++;
-    if (ov[y * OVW + x] !== want) diff++;
+// The sector (world-topdown-spec-1 2.4): a place is 4 x 4 blocks of ground class and level bit, made from the realm alone; its blocks are the majority of the built place's tiles (C2g, C2l),
+// a water block is low, and the trail's line leaves a place at the port the neighbour's line arrives at.
+test('seed 7: the sector of a place is 16 blocks of ground and level, agrees with the built place, holds water low, and its trail lines meet at the shared port', { timeout: 900000 }, () => {
+  const seed = 7, re = realm7(seed).realm, cls = v => (v === TV.WATER || v === TV.DEEP ? 5 : v === TV.SAND ? 4 : v === TV.THICKET || v === TV.SCRUB ? 2 : v === TV.LITTER ? 1 : v === TV.SCREE ? 3 : 0);
+  let gOk = 0, lOk = 0, n = 0;
+  for (const [X, Y] of [[8, 8], [9, 8], [8, 9], [20, 30], [40, 50], [41, 50]]) {
+    const s = sectorOf(seed, X, Y), T = cellTerrain(seed, X, Y);
+    assert.equal(s.cls.length, 16); assert.equal(s.lv.length, 16);
+    for (let b = 0; b < 16; b++) {
+      const bx = b % 4, by = (b / 4) | 0, k = new Array(6).fill(0); let up = 0;
+      for (let y = 0; y < 7; y++) for (let x = 0; x < 6; x++) { const i = (by * 7 + y + 1) * T.w + bx * 6 + x + 1, v = T.terrain[i]; k[v === TV.CLIFF ? cls(T.top[i] || TV.GRASS) : cls(v)]++; if (v === TV.CLIFF) up++; }
+      n++; if ((s.cls[b] & 7) === k.indexOf(Math.max(...k))) gOk++; if (s.lv[b] === (up * 2 >= 42 ? 1 : 0)) lOk++;
+      if ((s.cls[b] & 7) === 5) assert.equal(s.lv[b], 0, 'a water block is low');
+    }
   }
-  assert.ok(n > 3000); assert.equal(diff, 0, 'tiles whose overview byte differs from the world tile under it');
-  for (let c = 1; c < MW; c++) for (const y of [3, 100, 250]) assert.equal(ov[y * OVW + c * CW - 1], cls(Gd(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y)) | (T(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y) === TV.CLIFF ? OV.RAISED : 0));
+  assert.ok(gOk / n >= 0.9, 'C2g on the sample: ' + gOk + ' of ' + n); assert.ok(lOk / n >= 0.85, 'C2l on the sample: ' + lOk + ' of ' + n);
+  // a stretch of trail: the two places' lines share the port of the edge between them
+  const list = re.roads.lists.find(l => l.length >= 2), a = [list[0] % RW, (list[0] / RW) | 0], b = [list[1] % RW, (list[1] / RW) | 0];
+  const ends = (X, Y) => sectorOf(seed, X, Y).lines.filter(l => l.k === 'trail').map(l => l.pts.slice(0, 2).join());
+  assert.ok(ends(a[0], a[1]).some(p => ends(b[0], b[1]).includes(p)), 'the trail leaves one place and enters the next at the same port');
+});
+
+// The reach asks for the places in view first: a sector made for some cells holds exactly what the whole region's holds in them, marks them in `have`, and leaves the rest empty.
+test('seed 7: a sector asked for the cells in view equals the whole region sector in those cells', { timeout: 900000 }, async () => {
+  const { sectorOfRegion } = await import('../src/world7.mjs'), seed = 7, slot = [1, 1], cells = [0, 1, 25, 26, 100], part = sectorOfRegion(seed, slot, cells), whole = sectorOfRegion(seed, slot);
+  assert.equal(whole.have, undefined);
+  for (let c = 0; c < part.have.length; c++) {
+    assert.equal(part.have[c], cells.includes(c) ? 1 : 0);
+    for (let i = 0; i < 16; i++) { const same = part.cls[c * 16 + i] === whole.cls[c * 16 + i] && part.lv[c * 16 + i] === whole.lv[c * 16 + i]; assert.ok(cells.includes(c) ? same : part.cls[c * 16 + i] === 0 && part.lv[c * 16 + i] === 0); }
+  }
+  assert.deepEqual(part.lines, whole.lines.filter(l => cells.includes(l.c)));
 });
 
 // The region atlas tool (tools/atlas.mjs) runs on one place and writes its picture and its numbers.
