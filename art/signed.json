@@ -1073,6 +1073,13 @@
    "sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479"
   },
   {
+   "class": "paint",
+   "date": "2026-11-16",
+   "id": "105e78adcd",
+   "path": "art/places/sets/ninja-test/fill-litter-top.png",
+   "sha256": "ca16f4e55ae38287a48d0603ef884ec014efa3a692af2213280fd21842030aea"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "f19efc03b0",
@@ -1491,6 +1498,13 @@
    "id": "6c7ece4447",
    "path": "art/places/sets/ninja-test/over-grass-flat.png",
    "sha256": "185a7e7f130c5a36b32406969be915c804f2a23f1a53cc26d12057c8c1d70b55"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-16",
+   "id": "7ee8bdd6f7",
+   "path": "art/places/sets/ninja-test/over-litter-top.png",
+   "sha256": "7a96fdd0d484399619e41ea6ad7ad99eef23bde7051bd89b85acd532737ec235"
   },
   {
    "class": "legacy-paint",

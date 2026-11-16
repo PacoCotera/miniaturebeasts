@@ -255,6 +255,10 @@
     "sheets": ["tone-grass.png"],
     "raised": "tone-grass-raised.png"
   },
+  "litterTop": {
+    "over": "over-litter-top.png",
+    "fill": "fill-litter-top.png"
+  },
   "props": {
     "tree-broad": {
       "rect": [0, 2640, 134, 25],
