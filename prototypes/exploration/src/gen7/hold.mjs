@@ -16,12 +16,15 @@ import { ATLAS, regionKinds, KIND_INFO } from '../regions.mjs';
 import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
 import { landmarksOf, LM_PROP, LM_SLOT } from './landmarks.mjs';
+import { planOf, contentOf } from './places.mjs';
 
 const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB]) WALKT[t] = 1;
 export const FIND_MEAN = 5.5;                                            // finds a place, the realm's average (today's templates)
 const KIND_SHARE = { pod: 1.35, fruit: 0.9, dew: 1.1, stone: 1.1, material: 0.35 };   // today's template mix, with 0.7 cups a cell from the spring's budget added to dew below
 const SPRING_CUPS = 0.7;
+const MIX_FIX = { pod: 1.14, fruit: 0.78, dew: 1.18, stone: 1.04, material: 1.15 };   // the last trim of each kind's mean to today's (tools/gen7-places-check.mjs)
+const SUPPLY_FULL = { pod: 4.5, fruit: 2.7, dew: 1.5, stone: 4.5, material: 2 };   // a kind's pool weight at which its draw is at full share (6 for all before the set pieces; the scenery they keep clear leaves less supply, this keeps each kind's mean what it was: tools/gen7-places-check.mjs)
 export const STRIKE_PER_CELL = 0.28;                                     // marks a land cell, on average
 const STRIKE_BIOME = { fells: 1.8, tarns: 1.8, woods: 0.45, tallwood: 0.35, thickets: 0.7, marsh: 0.6, meres: 0.7, mixed: 1, downs: 1.1 };
 export const STRIKE_GLASS_PCT = 12;                                      // of the marks on sand, a few hold storm glass
@@ -89,19 +92,8 @@ function holdOn(a, pick) {
   const H = (...k) => hash(seed, 'gen7', 'hold', X, Y, ...k), U = (...k) => (H(...k) % 100000) / 100000;
   const tt = (lx, ly) => (lx < 0 || ly < 0 || lx >= w || ly >= h ? TV.THICKET : terrain[ly * w + lx]);
   const lip = (lx, ly) => D.isLip(x0 + lx, y0 + ly);
-  const out = { inner: { x: 1, y: 1, w: CW, h: CH }, names: [], openings: [], finds: [], spawns: [], landmarks: [], signs: [], traces: [], strikes: [] };
-  // ways in: runs along each side where the tile and the one across the border both walk
+  const out = { inner: { x: 1, y: 1, w: CW, h: CH }, names: [], openings: openingsOf(a), finds: [], spawns: [], landmarks: [], signs: [], traces: [], strikes: [], pieces: [], setProps: [], shelter: [], stamps: [] };
   const walk = (lx, ly) => { const t = tt(lx, ly); return WALKT[t] === 1 || (t === TV.CLIFF && !lip(lx, ly)); };
-  for (const [side, vert, at, across] of [['N', false, 1, 0], ['S', false, CH, CH + 1], ['W', true, 1, 0], ['E', true, CW, CW + 1]]) {
-    const n = vert ? CH : CW; let from = -1;
-    for (let k = 1; k <= n + 1; k++) {
-      const ok = k <= n && (vert ? walk(at, k) && walk(across, k) : walk(k, at) && walk(k, across));
-      if (ok && from < 0) from = k;
-      if (!ok && from >= 0) { if (k - from >= 2) out.openings.push({ side, from, to: k - 1, at: vert ? (side === 'W' ? 1 : CW) : (side === 'N' ? 1 : CH) }); from = -1; }
-    }
-  }
-  // The world's truth for a side rules (views agree): no way in on a side the map calls water, or on the map's end (a cliff side keeps the runs its tiles walk). A side on a region's border is the realm's: the terrain decides there.
-  if (out.openings.length) out.openings = out.openings.filter(op => !shutSide(seed, G, c, X, Y, op.side));
   const lm = a.landmarks.at.get(X + ',' + Y);
   const isLand = land !== L.WATER && !G.island[c];
   if (!isLand) return out;
@@ -113,6 +105,14 @@ function holdOn(a, pick) {
     const q = { x: p.tx - x0, y: p.ty - y0 };
     if (p.fam === 'trees') trees.push(q); else if (p.fam === 'rocks') rocks.push(q); else if (p.fam === 'bushes') bushes.push(q); else if (p.fam === 'landmark') hollowT.push(q);
   }
+  // what the place's set pieces stand on (places.mjs): their walls are rocks, and they and the slab and the Split Stone take their tiles
+  const content = contentOf(planOf(seed, X, Y), seed);
+  for (const p of content.setProps) {
+    if (p.kind === 'split-stone') { for (const [dx, dy] of [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]]) { const lx = p.x + dx, ly = p.y + dy; if (lx >= 0 && ly >= 0 && lx < w && ly < h) occ[ly * w + lx] = 1; } continue; }
+    if (p.x >= 0 && p.y >= 0 && p.x < w && p.y < h && p.fam === 'rocks') { occ[p.y * w + p.x] = 1; }   // a wall takes its tile but adds no pod or stone supply: the set pieces give finds from the place's count, never more supply
+  }
+  for (const p of content.pieces) for (let i = 0; i < (p.w || 1); i++) if (p.x + i >= 0 && p.y >= 0 && p.x + i < w && p.y < h) occ[p.y * w + p.x + i] = 1;
+  out.patches = content.patches; out.setProps = content.setProps; out.pieces = content.pieces; out.shelter = content.shelter; out.stamps = content.spots;
   // The cell's MAIN ground: the biggest part of the free ground that a way in leads to (the page floods from each opening's middle tile, as adapt7 does). Everything the cell holds lies on it, so no find,
   // strike mark or pod slot sits in a cut-off part. A cell with no way in uses its biggest part.
   const open = (lx, ly) => lx >= 1 && ly >= 1 && lx <= CW && ly <= CH && !occ[ly * w + lx] && walk(lx, ly) && !lip(lx, ly);
@@ -144,6 +144,7 @@ function holdOn(a, pick) {
     const cx = 12.5, cy = 14.5, near = pred => { let best = null, bd = 1e9; for (const [lx, ly] of tiles) if (pred(lx, ly)) { const d = (lx - cx) ** 2 + (ly - cy) ** 2; if (d < bd) { bd = d; best = [lx, ly]; } } return best; };
     if (lm.kind === 'hollow-tree' && lm.tile) lmTile = [lm.tile.x - x0, lm.tile.y - y0];
     else if (lm.kind === 'windstep') { const wu = a.wayups.map(q => ({ ...q, d: (q.x - cx) ** 2 + (q.y - cy) ** 2 })).sort((p, q) => p.d - q.d)[0]; lmTile = wu && free(wu.x + (wu.w >> 1), wu.y - 2) ? [wu.x + (wu.w >> 1), wu.y - 2] : near(() => true); }
+    else if (lm.kind === 'split-stone' && content.landmark) lmTile = [content.landmark.x, content.landmark.y];
     else if (lm.kind === 'split-stone') lmTile = near((lx, ly) => tt(lx, ly) === TV.SAND || tt(lx, ly) === TV.SCREE) || near(() => true);
     else lmTile = near((lx, ly) => nearTerr(lx, ly, 1, WET)) || near(() => true);
     if (lmTile) out.landmarks.push({ kind: lm.kind, name: lm.name, label: lm.name, prop: LM_PROP[lm.kind], slot: LM_SLOT[lm.kind], x: lmTile[0], y: lmTile[1] });
@@ -172,6 +173,11 @@ function holdOn(a, pick) {
     const f = { x: t.x, y: t.y, kinds: [kind], chance: 1 }; chosen.push(f); out.finds.push(f);
     pools[kind] = pools[kind].filter(p => p.x !== t.x || p.y !== t.y); return f;
   };
+  // the set pieces' find slots take finds from the place's count and from its kind shares, never add: the tiles are kept for them (out of every pool), the herds' pods, the moss and the pearl are taken as before,
+  // then the rest of the count is planned as a list of kinds drawn by today's mix (`plan`); a slot takes its kind off that list, or stays bare when the list holds none of it. What is left of the list fills the rest.
+  const SLOT_KIND = { p: 'pod', k: 'stone', c: 'stone', m: land === L.MEADOW ? 'fruit' : land === L.ROCK ? 'stone' : 'dew' };
+  const slotTiles = content.slots.filter(s => free(s.x, s.y));
+  if (slotTiles.length) for (const k of Object.keys(pools)) pools[k] = pools[k].filter(p => !slotTiles.some(s => s.x === p.x && s.y === p.y));
   // a pod near each herd (the awake creatures set pods by their herds), at most two a cell
   herds.slice(0, 2).forEach((hd, i) => { const f = take('pod', 'herd' + i, hd) || nearTile(hd, free, chosen, out, apart); if (f) f.herd = hd.sp; });
   // a moss hollow in damp shade, kept as two readings: full cups, and a pod asleep under the moss
@@ -193,10 +199,20 @@ function holdOn(a, pick) {
     out.signs.push({ kind: 'reedline', banks: reeds.map(r => ({ x: r.x, y: r.y, w: r.w, h: r.h })), pearl: p ? out.finds.length - 1 : -1 });
   }
   // the rest, by the mix of today's templates (the spring's cups added to dew)
+  // a kind's draw follows its supply: scarce ground (a sand strip, one bush) gets fewer of its kind than the mix says
+  const kindWts = () => Object.keys(pools).map(k => ({ k, wt: pools[k].length ? (KIND_SHARE[k] + (k === 'dew' ? SPRING_CUPS : 0)) * MIX_FIX[k] * Math.min(1, pools[k].reduce((s, p) => s + p.wt, 0) / SUPPLY_FULL[k]) : 0 }));
+  const plan = [], w0 = kindWts();
+  for (let i = 0; i < count - out.finds.length; i++) { const k = roulette(w0, U('kind', i))?.k; if (k) plan.push(k); }
+  for (const s of slotTiles) {
+    if (out.finds.length >= count) break;
+    const kind = SLOT_KIND[s.k], at = plan.indexOf(kind);
+    if (at < 0 || !apart(s.x, s.y, 1)) continue;   // over the place's share of the kind: left bare
+    plan.splice(at, 1);
+    const f = { x: s.x, y: s.y, kinds: [kind], chance: 1, spot: s.spot };
+    chosen.push(f); out.finds.push(f);
+  }
   for (let guard = 0; out.finds.length < count && guard < 40; guard++) {
-    // a kind's draw follows its supply: scarce ground (a sand strip, one bush) gets fewer of its kind than the mix says
-    const wts = Object.keys(pools).map(k => ({ k, wt: pools[k].length ? (KIND_SHARE[k] + (k === 'dew' ? SPRING_CUPS : 0)) * Math.min(1, pools[k].reduce((s, p) => s + p.wt, 0) / 6) : 0 }));
-    const k = roulette(wts, U('kind', guard))?.k; if (!k) break;
+    const k = (plan.length ? plan.shift() : roulette(kindWts(), U('kind', 100 + guard))?.k); if (!k) break;
     take(k, 'f' + guard);
   }
   // a start's guarantees: a stone in reach and a pod (the page's ensureCharge and firstPods read them)
@@ -226,6 +242,27 @@ function holdOn(a, pick) {
     if (t) out.strikes.push({ x: t.x, y: t.y, age: H('age', i) % STRIKE_START_AGE, glass: (t.t === TV.SAND || t.t === TV.SCREE) && H('glass', i) % 100 < STRIKE_GLASS_PCT, read: false });
   }
   return out;
+}
+
+// The ways in of a cell: runs along each side where the tile and the one across the border both walk, minus the sides the world calls shut. a: { seed, X, Y, x0, y0, w, h, terrain, D }.
+// Terrain only (no prop is read), so the place's structure pass (places.mjs) can use it before any prop exists.
+export function openingsOf(a) {
+  const { seed, X, Y, x0, y0, w, h, terrain, D } = a, R = realm7(seed);
+  const ax = Math.floor(X / MW), ay = Math.floor(Y / MH), G = R.regions[ay * ATLAS + ax], c = (Y % MH) * MW + (X % MW);
+  const tt = (lx, ly) => (lx < 0 || ly < 0 || lx >= w || ly >= h ? TV.THICKET : terrain[ly * w + lx]);
+  const lip = (lx, ly) => D.isLip(x0 + lx, y0 + ly);
+  const walk = (lx, ly) => { const t = tt(lx, ly); return WALKT[t] === 1 || (t === TV.CLIFF && !lip(lx, ly)); };
+  const openings = [];
+  for (const [side, vert, at, across] of [['N', false, 1, 0], ['S', false, CH, CH + 1], ['W', true, 1, 0], ['E', true, CW, CW + 1]]) {
+    const n = vert ? CH : CW; let from = -1;
+    for (let k = 1; k <= n + 1; k++) {
+      const ok = k <= n && (vert ? walk(at, k) && walk(across, k) : walk(k, at) && walk(k, across));
+      if (ok && from < 0) from = k;
+      if (!ok && from >= 0) { if (k - from >= 2) openings.push({ side, from, to: k - 1, at: vert ? (side === 'W' ? 1 : CW) : (side === 'N' ? 1 : CH) }); from = -1; }
+    }
+  }
+  // The world's truth for a side rules (views agree): no way in on a side the map calls a cliff or water, or on the map's end. A side on a region's border is the realm's: the terrain decides there.
+  return openings.length ? openings.filter(op => !shutSide(seed, G, c, X, Y, op.side)) : openings;
 }
 
 // the count of finds in a cell: the realm mean FIND_MEAN, 2 to 9, from the cell's fields (how much cover and wet ground and rock it has) and a hashed spread

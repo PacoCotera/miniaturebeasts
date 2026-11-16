@@ -182,6 +182,18 @@
         }
       ]
     },
+    "bed-ground": {
+      "drawAs": "grass"
+    },
+    "split-stone-ground": {
+      "drawAs": "grass"
+    },
+    "bed-ground-top": {
+      "drawAs": "grass"
+    },
+    "split-stone-ground-top": {
+      "drawAs": "grass"
+    },
     "scree": {
       "fill": {
         "sheets": ["fill-scree.png"]
