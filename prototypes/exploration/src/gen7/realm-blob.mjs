@@ -15,7 +15,7 @@ const FORMAT = 1, MAGIC = [77, 66, 82, 76];   // 'MBRL'
 const TYPED = { Uint8Array, Int8Array, Uint16Array, Int16Array, Uint32Array, Int32Array, Float32Array, Float64Array };
 const kindOf = v => { const n = v && v.constructor && v.constructor.name; return TYPED[n] ? n : null; };
 
-// keys the places hang on the realm as caches (streams.mjs flowClasses, a closure): derived from the rest, made again on first use, never stored and never in the digest
+// keys the places hang on the realm as caches (streams.mjs flowClasses, the width terciles): derived from the rest, made again on first use, never stored and never in the digest
 const DERIVED = ['flowClasses'];
 // and the roads' stage clock (roads.mjs stats t_* and ms*: milliseconds read from the clock while the realm was made, different every run): not part of the realm, so neither stored nor in the digest
 const CLOCK = /^(t_|ms[A-Z])/;
