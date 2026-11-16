@@ -6,6 +6,8 @@
 import { hash, L, MW, MH } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { realm7, NC } from './region.mjs';
+import { ringDist } from './roads.mjs';
+import { RW, RH } from './world.mjs';
 import { LANDMARK_NAMES } from './landmark-names.mjs';
 
 export const LM_SPACING = 3;       // Chebyshev distance between two landmarks, at least
@@ -20,7 +22,7 @@ const MEMO = new Map();
 // hollow: the decor's hollow-tree sites [{ x, y (world tiles), slot: [ax, ay] }]. Returns { list: [{ kind, X, Y, name, slot, tile? }], at: Map('X,Y' -> entry) }.
 export function landmarksOf(seed, hollow) {
   if (MEMO.has(seed)) return MEMO.get(seed);
-  const R = realm7(seed), list = [], placed = [];
+  const R = realm7(seed), list = [], placed = [], d0 = ringDist(R.realm.roads.on, RW, RH);
   const ok = (X, Y) => placed.every(p => Math.max(Math.abs(p.X - X), Math.abs(p.Y - Y)) >= LM_SPACING);
   const add = (kind, X, Y, slot, tile) => { placed.push({ kind, X, Y, slot, tile }); };
   // the Hollow Tree first: its clearing is the decor's, one a Woods or Tallwood region
@@ -29,7 +31,7 @@ export function landmarksOf(seed, hollow) {
   for (const G of R.regions) {
     const [ax, ay] = G.slot, wc = c => [ax * MW + (c % MW), ay * MH + ((c / MW) | 0)];
     const cand = { windstep: [], 'split-stone': [], reedpool: [] };
-    const trailN = new Int16Array(NC); for (const t of G.trails) for (const c of t.cells) trailN[c]++;
+    const byTrail = c => { const [X, Y] = wc(c); return d0[Y * RW + X] <= 2 ? 0 : 1; };   // within 2 places of the realm's trail first
     const edgeCell = c => { const x = c % MW, y = (c / MW) | 0; return x < 1 || y < 1 || x >= MW - 1 || y >= MH - 1; };
     for (const cr of G.cross) {
       if (cr.side !== 's') continue;
@@ -42,9 +44,9 @@ export function landmarksOf(seed, hollow) {
       if (G.land[c] === L.POND && [-1, 1, -MW, MW].some(d => G.land[c + d] === L.WATER && !G.ford[c + d])) cand.reedpool.push(c);
     }
     const key = (kind, c) => hash(seed, 'gen7', 'landmark', kind, ax, ay, c);
-    cand['split-stone'].sort((a, b) => trailN[b] - trailN[a] || key('split-stone', a) - key('split-stone', b) || a - b);
+    cand['split-stone'].sort((a, b) => byTrail(a) - byTrail(b) || key('split-stone', a) - key('split-stone', b) || a - b);
+    cand.reedpool.sort((a, b) => byTrail(a) - byTrail(b) || key('reedpool', a) - key('reedpool', b) || a - b);
     cand.windstep.sort((a, b) => key('windstep', a) - key('windstep', b) || a - b);
-    cand.reedpool.sort((a, b) => key('reedpool', a) - key('reedpool', b) || a - b);
     const have = () => placed.filter(p => p.slot[0] === ax && p.slot[1] === ay).length;
     const done = { windstep: new Set(), 'split-stone': new Set(), reedpool: new Set() };
     const take = kind => { for (const c of cand[kind]) { if (done[kind].has(c)) continue; const [X, Y] = wc(c); if (ok(X, Y)) { done[kind].add(c); add(kind, X, Y, G.slot, null); return true; } } return false; };

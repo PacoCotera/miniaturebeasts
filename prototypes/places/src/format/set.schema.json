@@ -49,6 +49,13 @@
         "raised": { "type": "string", "description": "the tone sheet for the raised ground (the cliff terrain's fill): one 4x4 grid, drawn in place of `sheets` on a tile whose four cells are all raised" }
       }
     },
+    "litterTop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["over", "fill"],
+      "description": "the paler litter family of a raised litter top (never chosen by the dual grid; the open edges draw it on a tile of four raised cells): `over` one 4x4 grid of the litter over cases, `fill` one 4x4 grid whose cells 1 to 3 are the fill variants",
+      "properties": { "over": { "type": "string" }, "fill": { "type": "string" } }
+    },
     "props": {
       "type": "object",
       "additionalProperties": { "$ref": "#/definitions/sprite" }

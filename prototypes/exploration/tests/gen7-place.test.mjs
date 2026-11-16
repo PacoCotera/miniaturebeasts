@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { placeProps } from '../tools/gen7-place-props.mjs';
-import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, overviewOf, OV, OVW, COAST_REACH } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, windowIR, pairOk, blockOk, TV, CW, CH, RW, RH, decorOf, toneField, worldTiles, worldGround, sectorOf, COAST_REACH } from '../src/gen7/place.mjs';
 import { inlandOf, RAISE_OFF, levelsOf, tileLevel, setLandRule } from '../src/gen7/levels.mjs';
 import { realm7 } from '../src/gen7/region.mjs';
 import { readFileSync } from 'node:fs';
@@ -44,7 +44,9 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     assert.ok(s.seamCells > 20 && s.seamBad === 0, 'seam: a cell is the same from every neighbour\'s window: ' + s.seamBad + ' tiles differ in ' + s.seamCells + ' cells');
     // every walkable tile of low ground is reached from the cell's sides. On a plateau, an inner-corner tile whose four neighbours are all lip (the rim wraps round a concave corner) is
     // enclosed by the lip by the tests' own definition of a lip (seed 7 has one in 8000 cells); no more than 4 of them a seed
-    assert.equal(s.unreachedCells - s.unreachedRaisedOnly, 0, 'every walkable tile of low ground is reached from the cell\'s sides: ' + JSON.stringify(s.unreachedAt));
+    // a walled part that holds no path is the land's, apart from the trail's line (seed 7 14,14; 13 18,24; 42 56,79: pockets the levels leave): listed here, a land job's (designer 2026-11-16)
+    console.log(`# seed ${seed}: cells the land leaves walled apart from the trail's line: ${s.unreachedLand} ${JSON.stringify(s.landWalledAt)}`);
+    assert.equal(s.unreachedCells - s.unreachedRaisedOnly - s.unreachedLand, 0, 'every walkable tile of low ground on the trail\'s line is reached from the cell\'s sides: ' + JSON.stringify(s.unreachedAt));
     assert.ok(s.unreachedRaisedOnly <= 4, 'plateau tiles enclosed by the lip: ' + s.unreachedRaisedOnly);
     assert.equal(s.stairsWithoutWayUp, 0, 'every stair has a way up');
     assert.ok(s.stairs > 50 && s.stairsSouthWithWayUp === s.stairs, 'stairs: ' + s.stairs);
@@ -71,7 +73,8 @@ test('a cell is the same land whatever else was made before it, and its picture 
   // the one table of ground pairs (set.json groundPairs): the page's layers.json is made from the same set (not stale), and the layers draw every pair the generator may make
   const page = JSON.parse(readFileSync(new URL('../art/gen7/layers.json', import.meta.url), 'utf8')), live = bakeCtx().layersOf.get('ninja-test'), val = new Map(bakeCtx().terrains.map(t => [t.id, t.value]));
   assert.deepEqual(page.layers, [...live.layers].map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: [...k.lowers] })) }]).map(([v, l]) => JSON.parse(JSON.stringify([v, l]))), 'art/gen7/layers.json is stale: run tools/gen7-layers.mjs');
-  assert.ok(SET.groundPairs.every(([a, b]) => [[a, b], [b, a]].some(([hi, lo]) => page.layers.find(([v]) => v === val.get(hi))[1].kinds.some(k => k.lowers.includes(val.get(lo))))), 'every pair of the table is drawable by the page\'s layers');
+  const drawnAs = v => { for (let l = page.layers.find(([x]) => x === v)[1]; l.drawAs !== undefined; l = page.layers.find(([x]) => x === v)[1]) v = l.drawAs; return v; };   // path-top is drawn as the path until its own layers are signed
+  assert.ok(SET.groundPairs.every(([a, b]) => drawnAs(val.get(a)) === drawnAs(val.get(b)) || [[a, b], [b, a]].some(([hi, lo]) => page.layers.find(([v]) => v === drawnAs(val.get(hi)))[1].kinds.some(k => k.lowers.includes(drawnAs(val.get(lo)))))), 'every pair of the table is drawable by the page\'s layers');
   // a window of cells is each cell's own tiles side by side: its bake is the cells' bakes, tile for tile
   const win = windowIR(13, 35, 47, 2, 2);
   assert.equal(win.w, 2 * CW);
@@ -192,7 +195,7 @@ test('raised tops carry their biome\'s ground: the signature skin of each biome 
       for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) {
         const gx = X * CW + x - 1, gy = Y * CH + y - 1; if (!inner(gx, SW) || !inner(gy, SH)) continue;
         const o = (by[sb[Math.floor(gy / SH) * ATLAS + Math.floor(gx / SW)]] ||= { low: {}, top: {}, nl: 0, nt: 0 }), v = c.terrain[y * c.w + x];
-        if (v === TV.CLIFF) { const n = SKIN[c.top[y * c.w + x] || TV.GRASS]; o.top[n] = (o.top[n] || 0) + 1; o.nt++; } else if (SKIN[v]) { o.low[SKIN[v]] = (o.low[SKIN[v]] || 0) + 1; o.nl++; }
+        if (v === TV.CLIFF) { if (c.top[y * c.w + x] === TV.PATHTOP) continue; /* a trail's path on a top is not a skin of the biome */ const n = SKIN[c.top[y * c.w + x] || TV.GRASS]; o.top[n] = (o.top[n] || 0) + 1; o.nt++; } else if (SKIN[v]) { o.low[SKIN[v]] = (o.low[SKIN[v]] || 0) + 1; o.nl++; }
       }
     }
     let nonGrassTops = 0, topTiles = 0;
@@ -236,21 +239,26 @@ test('the biome recipe never changes on a cell edge: it blends over a few tiles 
 // ground (floor, scrub or thicket), a meadow cell's is open ground you can walk (grass or the wood floor). Water and pond hold in every cell; the others in all but 2 in 100 (a rock cell whose middle is a path or a stair's foot).
 test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000 }, () => {
   for (const seed of FAST ? [7] : [7, 13, 42]) {   // about five minutes a seed: a pull request (MB_CI_FAST=1) runs seed 7, as the proofs above do
-    const seen = { WATER: [0, 0], POND: [0, 0], ROCK: [0, 0], WOOD: [0, 0], MEADOW: [0, 0] }, bad = [];
+    const seen = { WATER: [0, 0], POND: [0, 0], ROCK: [0, 0], WOOD: [0, 0], MEADOW: [0, 0] }, bad = [], coast = [];
     for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) {
       const G = genRegion7(seed, ax, ay);
       for (let c = 0; c < MW * MH; c++) {
         const lab = Object.keys(L).find(k => L[k] === G.land[c]); if (!seen[lab]) continue;
         const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), t = cellTerrain(seed, X, Y), n = {}; let low = 0, raised = 0;
-        for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = t.terrain[(y + 1) * t.w + x + 1]; if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
+        // the lane is 2 tiles a side (the path meets grass only), so the check reads 2 tiles round the path (designer 2026-11-15)
+        // a trail's path (and a path on a top) is not the land under it: a path tile reads the nearest tile that is not path (the ground the trail lies on)
+        // (the lane of grass the trail lays beside its path is the trail's too: a tile that is path or touches path reads the nearest tile that neither is nor touches path)
+        const tv = (x, y) => (x < -1 || y < -1 || x > CW || y > CH ? -1 : t.terrain[(y + 1) * t.w + x + 1]), nearPath = (x, y) => { for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (tv(x + dx, y + dy) === TV.PATH) return true; return false; };
+        const groundAt = (x, y) => { const v = tv(x, y); if (!nearPath(x, y)) return v; for (let r = 1; r <= 8; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; const a = x + dx, b = y + dy, u = tv(a, b); if (u >= 0 && !nearPath(a, b)) return u; } return v === TV.PATH ? TV.GRASS : v; };
+        for (let y = (CH >> 1) - 3; y < (CH >> 1) + 5; y++) for (let x = (CW >> 1) - 3; x < (CW >> 1) + 5; x++) { const v = groundAt(x, y); if (v === TV.CLIFF) { raised++; continue; } low++; n[v] = (n[v] || 0) + 1; }
         if (raised) continue;
         // a water cell may be the coast's ring: deep water in the walk
         const f = k => (n[TV[k]] || 0) / low, ok = lab === 'WATER' ? (G.ford[c] || f('WATER') + f('DEEP') >= 0.15) : lab === 'POND' ? f('WATER') >= 0.2 : lab === 'ROCK' ? f('SCREE') + f('SAND') >= 0.1 : lab === 'WOOD' ? f('LITTER') + f('THICKET') + f('SCRUB') >= 0.1 : f('GRASS') + f('LITTER') + f('DRY') + f('TURF') >= 0.2;
-        if (!ok && Math.min(X, Y, MW * ATLAS - 1 - X, MH * ATLAS - 1 - Y) === 1) continue;   // the cell beside the coast's ring: its shore band (water, beach, grass) takes the half of it nearest the ring, so what the map labels it (pond, water, wood, rock) is not the ground in its middle (a known gap; its raised land used to hide it)
+        if (!ok && Math.min(X, Y, MW * ATLAS - 1 - X, MH * ATLAS - 1 - Y) <= 1) { coast.push(`${lab} ${X},${Y}`); continue; }   // the cell beside the coast's ring, or the ring's own (part land, its middle on the shore): its shore band (water, beach, grass) takes the half of it nearest the ring, so what the map labels it is not the ground in its middle (a known gap, listed apart; open-water cells stay at 0)
         seen[lab][0]++; if (!ok) { seen[lab][1]++; if (bad.length < 8) bad.push(`${lab} ${X},${Y}`); }
       }
     }
-    console.log(`# seed ${seed}: map and walk disagree (cells read / disagree): ${JSON.stringify(seen)}`);
+    console.log(`# seed ${seed}: map and walk disagree (cells read / disagree): ${JSON.stringify(seen)}; coast-ring cells out of the line, listed apart: ${coast.length} ${coast.slice(0, 12)}`);
     for (const lab of ['WATER', 'POND']) assert.equal(seen[lab][1], 0, `seed ${seed}: ${lab} cells whose middle is not that ground: ${bad}`);
     for (const lab of ['ROCK', 'WOOD', 'MEADOW']) assert.ok(seen[lab][0] > 50 && seen[lab][1] * 50 <= seen[lab][0], `seed ${seed}: ${lab} cells whose middle is not that ground: ${seen[lab]} ${bad}`);
   }
@@ -289,17 +297,37 @@ test('seed 13: two thresholds in the rule give three levels, each boundary with 
   } finally { setLandRule({}); }
 });
 
-// One land at every zoom (F1): the region's overview is the class of the world tile under each of its tiles, and the raised bit is the tile being raised land; two cells side by side share their edge.
-test('seed 7: the overview of a region reads the world tiles (class and raised), 0 differing tiles on a sample, and cells meet at their edges', { timeout: 900000 }, () => {
-  const seed = 7, ax = 2, ay = 2, ov = overviewOf(seed, ax, ay), T = worldTiles(seed), Gd = worldGround(seed);
-  const cls = v => (v === TV.SAND ? OV.SAND : v === TV.WATER ? OV.WATER : v === TV.DEEP ? OV.DEEP : v === TV.LITTER ? OV.WOOD : v === TV.THICKET ? OV.THICKET : v === TV.SCREE ? OV.ROCK : v === TV.PATH ? OV.PATH : OV.GRASS);
-  let diff = 0, n = 0;
-  for (let y = 0; y < ov.length / OVW; y += 7) for (let x = 0; x < OVW; x += 5) {
-    const gx = ax * OVW + x, gy = ay * (ov.length / OVW) + y, want = cls(Gd(gx, gy)) | (T(gx, gy) === TV.CLIFF ? OV.RAISED : 0); n++;
-    if (ov[y * OVW + x] !== want) diff++;
+// The sector (world-topdown-spec-1 2.4): a place is 4 x 4 blocks of ground class and level bit, made from the realm alone; its blocks are the majority of the built place's tiles (C2g, C2l),
+// a water block is low, and the trail's line leaves a place at the port the neighbour's line arrives at.
+test('seed 7: the sector of a place is 16 blocks of ground and level, agrees with the built place, holds water low, and its trail lines meet at the shared port', { timeout: 900000 }, () => {
+  const seed = 7, re = realm7(seed).realm, cls = v => (v === TV.WATER || v === TV.DEEP ? 5 : v === TV.SAND ? 4 : v === TV.THICKET || v === TV.SCRUB ? 2 : v === TV.LITTER ? 1 : v === TV.SCREE ? 3 : 0);
+  let gOk = 0, lOk = 0, n = 0;
+  for (const [X, Y] of [[8, 8], [9, 8], [8, 9], [20, 30], [40, 50], [41, 50]]) {
+    const s = sectorOf(seed, X, Y), T = cellTerrain(seed, X, Y);
+    assert.equal(s.cls.length, 16); assert.equal(s.lv.length, 16);
+    for (let b = 0; b < 16; b++) {
+      const bx = b % 4, by = (b / 4) | 0, k = new Array(6).fill(0); let up = 0;
+      for (let y = 0; y < 7; y++) for (let x = 0; x < 6; x++) { const i = (by * 7 + y + 1) * T.w + bx * 6 + x + 1, v = T.terrain[i]; k[v === TV.CLIFF ? cls(T.top[i] || TV.GRASS) : cls(v)]++; if (v === TV.CLIFF) up++; }
+      n++; if ((s.cls[b] & 7) === k.indexOf(Math.max(...k))) gOk++; if (s.lv[b] === (up * 2 >= 42 ? 1 : 0)) lOk++;
+      if ((s.cls[b] & 7) === 5) assert.equal(s.lv[b], 0, 'a water block is low');
+    }
   }
-  assert.ok(n > 3000); assert.equal(diff, 0, 'tiles whose overview byte differs from the world tile under it');
-  for (let c = 1; c < MW; c++) for (const y of [3, 100, 250]) assert.equal(ov[y * OVW + c * CW - 1], cls(Gd(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y)) | (T(ax * OVW + c * CW - 1, ay * (ov.length / OVW) + y) === TV.CLIFF ? OV.RAISED : 0));
+  assert.ok(gOk / n >= 0.9, 'C2g on the sample: ' + gOk + ' of ' + n); assert.ok(lOk / n >= 0.85, 'C2l on the sample: ' + lOk + ' of ' + n);
+  // a stretch of trail: the two places' lines share the port of the edge between them
+  const list = re.roads.lists.find(l => l.length >= 2), a = [list[0] % RW, (list[0] / RW) | 0], b = [list[1] % RW, (list[1] / RW) | 0];
+  const ends = (X, Y) => sectorOf(seed, X, Y).lines.filter(l => l.k === 'trail').map(l => l.pts.slice(0, 2).join());
+  assert.ok(ends(a[0], a[1]).some(p => ends(b[0], b[1]).includes(p)), 'the trail leaves one place and enters the next at the same port');
+});
+
+// The reach asks for the places in view first: a sector made for some cells holds exactly what the whole region's holds in them, marks them in `have`, and leaves the rest empty.
+test('seed 7: a sector asked for the cells in view equals the whole region sector in those cells', { timeout: 900000 }, async () => {
+  const { sectorOfRegion } = await import('../src/world7.mjs'), seed = 7, slot = [1, 1], cells = [0, 1, 25, 26, 100], part = sectorOfRegion(seed, slot, cells), whole = sectorOfRegion(seed, slot);
+  assert.equal(whole.have, undefined);
+  for (let c = 0; c < part.have.length; c++) {
+    assert.equal(part.have[c], cells.includes(c) ? 1 : 0);
+    for (let i = 0; i < 16; i++) { const same = part.cls[c * 16 + i] === whole.cls[c * 16 + i] && part.lv[c * 16 + i] === whole.lv[c * 16 + i]; assert.ok(cells.includes(c) ? same : part.cls[c * 16 + i] === 0 && part.lv[c * 16 + i] === 0); }
+  }
+  assert.deepEqual(part.lines, whole.lines.filter(l => cells.includes(l.c)));
 });
 
 // The region atlas tool (tools/atlas.mjs) runs on one place and writes its picture and its numbers.

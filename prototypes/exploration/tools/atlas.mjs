@@ -95,6 +95,8 @@ async function windowData(o) {
   return { o, w, h, gx0, gy0, ter, raised, W, level, rows: bits.join(''), places, stairs: stairsInfo(o.seed), pm, realm: realm7(o.seed).realm, ms: performance.now() - t0 };
 }
 
+// the destination kinds, each in its own colour (the key lists them one row a kind; white ford has a grey outline so it shows on the white sheet)
+const DEST = { pass: '#d9a400', ravine: '#d62828', falls: '#00a0b4', 'ravine head': '#f0961e', ford: '#ffffff', spring: '#1c9a3c', 'stream mouth': '#1e3cc8' };
 // ---- the overlays: a table. Each: name, what it reads, colour, key label, and draw(ctx, d, px) which returns false when the branch lacks the data ----
 const rect = (g, x, y, w, h) => g.fillRect(x, y, w, h);
 const box = (g, x, y, w, h, c, t) => { g.fillStyle = c; g.fillRect(x, y, w, t); g.fillRect(x, y + h - t, w, t); g.fillRect(x, y, t, h); g.fillRect(x + w - t, y, t, h); };
@@ -149,12 +151,22 @@ const OVERLAYS = [
       g.fillStyle = '#c81e78'; if (st.south) rect(g, wx * S - 6, wy * S - 1, 14, 3); else rect(g, wx * S - 1, wy * S - 6, 3, 14);
     }
     return true; } },
-  { name: 'features', reads: 'realm.features and realm.destinations (gen7/features.mjs)', colour: '#0a3cff', label: 'the realm cell by cell (the lines below are the key)', extra: [['#0a3cff', 'stream line (thin where it runs under raised land)'], ['#00a0b4', 'falls: bar on the foot cell'], ['#d62828', 'red box: a ravine found (stream ravine thick, through-ravine thin), not cut'], ['#141414', 'black bar: escarpment south face'], ['#7a4a1e', 'brown dot: range crest'], ['#1c9a3c', 'green triangle: pass'], ['#d9a400', 'small square beside a cell centre = a destination, by colour:'], ['#d9a400', '  gold pass, red through-ravine, cyan falls, orange ravine head,'], ['#1c9a3c', '  white ford, green spring, blue stream mouth']], draw(g, d) {
+  { name: 'trails', reads: 'realm.roads (gen7/roads.mjs): the realm\'s one trail network', colour: '#d2691e', label: 'the realm\'s trails cell by cell (the lines below are the key)', extra: [['#b5541a', 'trail between hubs (thick); loops are drawn the same'], ['#e89a5a', 'branch to a destination, spur at a fork rule, start branch (thin)'], ['#7a2ab4', 'bridge (thick purple, the span itself)'], ['#141414', 'black dot: a fork'], ['#ffffff', 'white dot with black edge: a branch end'], ['#00a0b4', 'cyan tick: a stair on the trail']], draw(g, d) {
+    const rd = d.realm && d.realm.roads; if (!rd) return false;
+    const [X0, Y0] = d.o.at, cw = CW * S, ch = CH * S, cx = c => ((c % RW) - X0) * cw + cw / 2, cy = c => (((c / RW) | 0) - Y0) * ch + ch / 2;
+    const near = c => { const x = (c % RW) - X0, y = ((c / RW) | 0) - Y0; return x >= -1 && y >= -1 && x <= d.o.size[0] && y <= d.o.size[1]; };
+    const seg = (a, b, t) => { const x0 = cx(a), y0 = cy(a), x1 = cx(b), y1 = cy(b); g.fillRect(Math.min(x0, x1) - t / 2, Math.min(y0, y1) - t / 2, Math.abs(x1 - x0) + t, Math.abs(y1 - y0) + t); };
+    rd.lists.forEach((cells, k) => { const kind = rd.kinds[k], thick = kind === 'tree' || kind === 'loop', col = kind === 'bridge' ? '#7a2ab4' : thick ? '#b5541a' : '#e89a5a', t = kind === 'bridge' ? 7 : thick ? 5 : 3;
+      for (let i = 1; i < cells.length; i++) { if (!near(cells[i - 1]) && !near(cells[i])) continue; g.fillStyle = col; seg(cells[i - 1], cells[i], t); } });
+    for (const c of rd.forks) if (near(c)) { g.fillStyle = '#141414'; g.fillRect(cx(c) - 4, cy(c) - 4, 9, 9); }
+    for (const c of rd.ends) if (near(c)) { g.fillStyle = '#141414'; g.fillRect(cx(c) - 4, cy(c) - 4, 9, 9); g.fillStyle = '#fff'; g.fillRect(cx(c) - 2, cy(c) - 2, 5, 5); }
+    for (const st of d.stairs) { const c = st.A[1] * RW + st.A[0]; if (!rd.on[c] || !rd.on[c + RW] || !near(c)) continue; g.fillStyle = '#00a0b4'; g.fillRect(cx(c) - 8, (cy(c) + cy(c + RW)) / 2 - 2, 17, 4); }
+    return true; } },
+  { name: 'features', reads: 'realm.features and realm.destinations (gen7/features.mjs)', colour: '#0a3cff', label: 'the realm cell by cell (the lines below are the key)', extra: [['#0a3cff', 'stream line (thin where it runs under raised land)'], ['#00a0b4', 'falls: bar on the foot cell'], ['#d62828', 'red box: a ravine cut into the land (stream ravine thick, through-ravine thin)'], ['#141414', 'black bar: escarpment south face'], ['#7a4a1e', 'brown dot: range crest'], ['#1c9a3c', 'green triangle: pass'], ['#888888', 'small square beside a cell centre = a destination; one row a kind, each in its own colour:'], ...Object.entries(DEST).map(([k, c]) => [c, '  destination: ' + k])], draw(g, d) {
     const re = d.realm; if (!re || !re.features) return false;
     const [X0, Y0] = d.o.at, cw = CW * S, ch = CH * S, cx = c => ((c % RW) - X0) * cw + cw / 2, cy = c => (((c / RW) | 0) - Y0) * ch + ch / 2;
     const near = c => { const x = (c % RW) - X0, y = ((c / RW) | 0) - Y0; return x >= -1 && y >= -1 && x <= d.o.size[0] && y <= d.o.size[1]; };
     const seg = (a, b, t) => { const x0 = cx(a), y0 = cy(a), x1 = cx(b), y1 = cy(b); g.fillRect(Math.min(x0, x1) - t / 2, Math.min(y0, y1) - t / 2, Math.abs(x1 - x0) + t, Math.abs(y1 - y0) + t); };
-    const DEST = { pass: '#d9a400', ravine: '#d62828', falls: '#00a0b4', 'ravine head': '#f0961e', ford: '#ffffff', spring: '#1c9a3c', 'stream mouth': '#1e3cc8' };
     for (const f of re.features) {
       if (f.kind === 'stream') for (let i = 1; i < f.cells.length; i++) { const a = f.cells[i - 1], b = f.cells[i]; if (!near(a) && !near(b)) continue; g.fillStyle = '#0a3cff'; seg(a, b, i <= f.links.seen ? 2 : 5); }
       else if (f.kind === 'escarpment') for (const c of f.cells) { if (!near(c)) continue; g.fillStyle = '#141414'; g.fillRect(((c % RW) - X0) * cw, (((c / RW) | 0) - Y0 + 1) * ch - 2, cw, 4); }
@@ -215,7 +227,7 @@ export async function atlas(opts) {
   const d = await windowData(o);
   d.meas = measure(d.w, d.h, d.rows);
   const shown = [], skipped = [];
-  const PAD = 12, top = 52, PW = d.w * S, PH = d.h * S, keyH = 24 * (OVERLAYS.length + 4 + 8), IW = Math.max(PW + PAD * 2, 900);
+  const PAD = 12, top = 52, PW = d.w * S, PH = d.h * S, keyH = 24 * (6 + OVERLAYS.reduce((n, v) => n + 1 + (v.extra || []).length, 0)), IW = Math.max(PW + PAD * 2, 900);
   const img = PImage.make(IW, top + PH + keyH + PAD), g = img.getContext('2d');
   g.fillStyle = '#ffffff'; g.fillRect(0, 0, img.width, img.height);
   const map = PImage.make(PW, PH), gm = map.getContext('2d');   // the map on its own layer, laid on the sheet below the title
@@ -238,7 +250,7 @@ export async function atlas(opts) {
   let ky = top + PH + 24; g.font = '12pt Dej';
   g.fillStyle = '#000'; g.fillText('Key', PAD, ky); ky += 24;
   for (const [c, t] of [['#a8c47c', 'raised land'], ['#eae6d6', 'low ground (blue water, tan sand)']]) { g.fillStyle = c; g.fillRect(PAD, ky - 12, 22, 14); g.fillStyle = '#000'; g.fillText(t, PAD + 32, ky); ky += 22; }
-  for (const ov of shown) { g.fillStyle = ov.colour; g.fillRect(PAD, ky - 12, 22, 14); g.fillStyle = '#000'; g.fillText(ov.name + ': ' + ov.label, PAD + 32, ky); ky += 22; for (const [c, t] of ov.extra || []) { g.fillStyle = c; g.fillRect(PAD + 24, ky - 10, 14, 10); g.fillStyle = '#000'; g.fillText(t, PAD + 46, ky); ky += 20; } }
+  for (const ov of shown) { g.fillStyle = ov.colour; g.fillRect(PAD, ky - 12, 22, 14); g.fillStyle = '#000'; g.fillText(ov.name + ': ' + ov.label, PAD + 32, ky); ky += 22; for (const [c, t] of ov.extra || []) { g.fillStyle = "#777"; g.fillRect(PAD + 23, ky - 11, 16, 12); g.fillStyle = c; g.fillRect(PAD + 24, ky - 10, 14, 10); g.fillStyle = '#000'; g.fillText(t, PAD + 46, ky); ky += 20; } }
   for (const [n, why] of skipped) { g.fillStyle = '#888'; g.fillText(n + ': skipped, ' + why, PAD + 32, ky); ky += 22; }
   const stem = path.join(o.out, 'atlas-' + o.seed + '-' + o.at.join('-') + '-' + o.size.join('x'));
   mkdirSync(o.out, { recursive: true });

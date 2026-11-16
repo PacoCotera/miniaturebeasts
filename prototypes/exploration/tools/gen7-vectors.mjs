@@ -10,7 +10,6 @@ export const vectorOf = G => ({
   biome: G.biome, attempt: G.attempt,
   land: Array.from(G.land).join(''), levels: Array.from(G.level).join(''), edges: Array.from(G.edge).join(''),
   fords: Array.from(G.ford).join(''), island: Array.from(G.island).join(''),
-  ports: G.ports.map(p => [p.e, p.off, p.kind]),
   pieces: { gate: G.gate, deep: G.deep, swim: G.swim, spawns: G.spawns, glow: G.glow, beacons: [...G.beacons.set].sort((a, b) => a - b), outposts: [...G.depots.set].sort((a, b) => a - b) },
 });
 // G4a: what the cells of a region hold, as the IR carries it - the landmarks of the region, and the whole hold of its first start, the cell beside it, the region's centre cell and its

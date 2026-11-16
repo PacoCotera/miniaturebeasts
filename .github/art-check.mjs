@@ -78,26 +78,31 @@ export function check({ base, head, site, cwd }) {
 }
 
 // --all: the whole-set check (owner 2026-11-14): every shipped image at head must have its sha256 on art/signed.json, whatever the base holds.
-// The grandfathered list (art/unsigned-shipped.csv, one path a line, '#' comments) names the unsigned images already on main when this check began; it is printed every run and may only shrink
+// The grandfathered list (art/unsigned-shipped.csv, one "path,sha256" row a line, '#' comments) names the unsigned images already on main when this check began; it is printed every run and may only shrink
 // (an entry that is not in the base's copy of the list is refused). With --site the assembled site's images are judged the same way, by hash.
 const GRANDFATHERED = 'art/unsigned-shipped.csv';
-const readList = (buf) => (buf ? buf.toString('utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')) : null);
+// A row is "path,sha256" (sha256 of the bytes on main when listed). An image is grandfathered only while its path AND its current sha256 match a row (a re-cut under a listed name is refused like a new image).
+const readList = (buf) => (buf ? buf.toString('utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')).map((l) => { const i = l.lastIndexOf(','); return i < 0 ? { path: l, sha: null } : { path: l.slice(0, i).trim(), sha: l.slice(i + 1).trim().toLowerCase() }; }) : null);
 
 export function checkAll({ base, head, site, cwd }) {
   if (cwd) CWD = cwd;
   const signedRaw = show(head, 'art/signed.json');
   if (!signedRaw) return { problems: [`art/signed.json is missing at ${head}: the signed list is exported by the art desk (sign.py export)`], unsigned: [], grandfathered: [] };
   const signed = new Set(JSON.parse(signedRaw.toString()).signed.map((e) => e.sha256));
-  const grand = readList(show(head, GRANDFATHERED)) || [], grandSet = new Set(grand);
-  const was = base ? readList(show(base, GRANDFATHERED)) : null;
+  const rows = readList(show(head, GRANDFATHERED)) || [], grand = rows.map((r) => r.path), grandSha = new Map(rows.map((r) => [r.path, r.sha]));
+  const was = base ? readList(show(base, GRANDFATHERED)) : null, wasSha = new Map((was || []).map((r) => [r.path, r.sha]));
   const problems = [], unsigned = [], grandShas = new Set();
-  if (was) for (const p of grand) if (!was.includes(p)) problems.push(`grandfathered list grew: ${p} is in ${GRANDFATHERED} but not in the base's copy; the list may only shrink (sign the image or delete it)`);
+  if (was) for (const p of grand) {
+    if (!wasSha.has(p)) problems.push(`grandfathered list grew: ${p} is in ${GRANDFATHERED} but not in the base's copy; the list may only shrink (sign the image or delete it)`);
+    else if (wasSha.get(p) && wasSha.get(p) !== grandSha.get(p)) problems.push(`grandfathered row changed: ${p} has a different sha256 in ${GRANDFATHERED} than in the base's copy; a row is never re-hashed (sign the new image or delete the row)`);
+  }
   for (const [p, blob] of blobIds(head)) {
     if (!inScope(p)) continue;
     const s = sha256(git(['cat-file', 'blob', blob]));
     if (signed.has(s)) continue;
     unsigned.push(p);
-    if (grandSet.has(p)) grandShas.add(s);
+    if (grandSha.has(p) && grandSha.get(p) === s) grandShas.add(s);
+    else if (grandSha.has(p)) problems.push(`unsigned shipped image changed: ${p} is on ${GRANDFATHERED} but its bytes are not the listed ones (sha256 ${s.slice(0, 12)}, listed ${(grandSha.get(p) || 'none').slice(0, 12)}); a changed image must be on art/signed.json`);
     else problems.push(`unsigned shipped image: ${p} (sha256 ${s.slice(0, 12)} is not in art/signed.json and the path is not grandfathered)`);
   }
   if (site) {

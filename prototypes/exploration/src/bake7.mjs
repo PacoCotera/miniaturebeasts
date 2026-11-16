@@ -41,7 +41,7 @@ export const reviveLayers = j => ({ layers: new Map(j.layers.map(([v, l]) => [v,
 export function bakeCell(ir, ctx) {
   const { terrains, ts, desc } = ctx;
   const dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone, top: ir.top }, terrains, desc.layers, desc.tone);
-  applyOpenEdges(dg, ir, terrains, desc.layers, desc.tone);
+  applyOpenEdges(dg, ir, terrains, desc.layers, desc.tone, desc.litterTop);
   const ground = packDepth(layersToTileIds(dg, ts, desc), dg.w1, dg.h1).map(tiles => ({ tiles }));
   const index = (group, kind) => spriteFor(ts, group, kind).index;
   const placed = group => p => ({ kind: index(group, p.kind), x: p.x, y: p.y, sortY: p.sortY });

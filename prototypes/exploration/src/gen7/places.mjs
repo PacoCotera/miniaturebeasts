@@ -8,7 +8,7 @@ import FlatQueue from 'flatqueue';
 import { hash, L, MW, MH, groundName } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
 import { realm7 } from './region.mjs';
-import { CW, CH } from './world.mjs';
+import { CW, CH, RW } from './world.mjs';
 import { cellTerrain, decorOf } from './place.mjs';
 import { openingsOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
@@ -18,7 +18,7 @@ import { PART, partAt } from '../../../places/src/bake/relief.mjs';
 import STAMPS from './stamps.json' with { type: 'json' };
 
 const TV = { DEEP: 1, WATER: 2, SAND: 3, PATH: 5, GRASS: 6, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
-const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, TV.CLIFF]) WALKT[t] = 1;
+const WALKT = new Uint8Array(32); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, TV.CLIFF, 20, 21]) WALKT[t] = 1;   // 20, 21: the ford and the bridge (F6)
 export const ZM = 4;                         // the zone's margin round the frame, tiles
 export const QUIET = 3;                      // no tall scenery within this many tiles of a spot
 const EDGE = QUIET + 2;                      // a spot keeps this far in from the frame's edge (the frame's first and last tile are the apron): its quiet ring (QUIET) stays inside its own cell, and the spot itself stays out of the band a neighbour's cell shows of this one (the apron and two tiles more), so a cell's decor never needs a neighbour's plan
@@ -155,11 +155,11 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   for (const s of D.hollowSites()) { const hx = s.x - x0, hy = s.y - y0; if (hx > -12 && hy > -12 && hx < w + 12 && hy < h + 12) blocks.push([hx - HO.left, hy - HO.up, HO.left + HO.right + 1, HO.up + HO.down + 1, 1]); }
   if (lm && lm.kind === 'reedpool') blocks.push([7, 9, 11, 12, 1]);
   if (lm && lm.kind === 'windstep') for (const a of wayups) blocks.push([a.x - 3, a.y - 5, a.w + 6, 5, 1]);
-  const rectOk = (sx, sy, fw, fh, level, anyLevel = false) => {
+  const rectOk = (sx, sy, fw, fh, level, anyLevel = false, ey = EDGE) => {
     for (const [bx, by, bw, bh, gp] of blocks) if (sx < bx + bw + gp && bx < sx + fw + gp && sy < by + bh + gp && by < sy + fh + gp) return false;
     for (const [bx, by, bw, bh] of placed) if (sx < bx + bw + GAP && bx < sx + fw + GAP && sy < by + bh + GAP && by < sy + fh + GAP) return false;
     for (let y = sy; y < sy + fh; y++) for (let x = sx; x < sx + fw; x++) {
-      if (x < EDGE || y < EDGE || x > w - 1 - EDGE || y > h - 1 - EDGE || !walk[I(x, y)] || plan.spine[I(x, y)]) return false;
+      if (x < EDGE || y < ey || x > w - 1 - EDGE || y > h - 1 - EDGE || !walk[I(x, y)] || plan.spine[I(x, y)]) return false;
       if (!anyLevel && lvl[I(x, y)] !== level) return false;
     }
     return true;
@@ -188,22 +188,30 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   };
   const pickStamp = (kind) => { const list = stampsOfKind(kind, word); return list.length ? list[Math.floor(U('layout', kind) * list.length) % list.length] : null; };
   const addSpot = (spot) => { plan.spots.push(spot); placed.push([spot.x, spot.y, spot.w, spot.h]); };
+  // the destination step of the heart order (F6, spec 2.3; after the landmark and the post, before the land's own): the realm's destination in this place asks for a heart; an overhang takes the heart's place
+  // where the walls give a face for it (else the sleepers' bed stands, as for the destinations that ask for a bed, a herd ground or a post yard, which have no stamp of their own yet)
+  const dest = (R.realm.destinations || []).find(d => d.c === Y * RW + X) || null, destOverhang = !!(dest && dest.heart === 'overhang' && !(lm && lm.kind === 'split-stone' && land === L.ROCK));
+  plan.dest = dest ? { kind: dest.kind, heart: dest.heart } : null;
   if (plan.entries.length) {
     // the overhang: a 4 x 4 whose top row lies on a south face (the face row above its middle two is raised land's edge), shelter below it, 3+ tiles off the spine
     const oh = stampById.overhang;
     if (oh) {
       const cand = [];
-      for (let sy = EDGE; sy <= h - 6; sy++) for (let sx = EDGE; sx <= w - 6; sx++) {
-        if (!(raised(sx + 1, sy - 1) && raised(sx + 2, sy - 1) && (FF.flags(x0 + sx + 1, y0 + sy) & 1) && (FF.flags(x0 + sx + 2, y0 + sy) & 1))) continue;   // the roof on the face
+      for (let sy = destOverhang ? 3 : EDGE; sy <= h - 6; sy++) for (let sx = EDGE; sx <= w - 6; sx++) {
+        const FR = 3;   // the face is 3 rock rows under the lip (land-b3f-foot-1): the roof row is the last of them, the shelter starts on the foot row below
+        if (!(raised(sx + 1, sy - FR) && raised(sx + 2, sy - FR) && [0, 1, 2].every(k => (FF.flags(x0 + sx + 1, y0 + sy - k) & 1) && (FF.flags(x0 + sx + 2, y0 + sy - k) & 1)))) continue;   // the roof on the face
         let ok = true;
         for (let i = 0; i < 4 && ok; i++) for (let j = 1; j < 4; j++) { const x = sx + i, y = sy + j; if (!walk[I(x, y)] || lvl[I(x, y)] || plan.spine[I(x, y)] || (FF.flags(x0 + x, y0 + y) & 1)) ok = false; }
         if (!ok || !(dsp[I(sx + 1, sy + 1)] >= 3)) continue;
+        // beside falls (F6, 2.6): the roof's south face run lies at least 4 tiles from the falls' two face columns
+        if (ct.falls && ct.falls.some(f => Math.max(Math.max(f.x - x0 - (sx + 2), sx + 1 - (f.x - x0 + 1), 0), Math.abs(f.y - y0 - (sy - FR))) < 4)) continue;
         // the roof row's own cells are the face (blocked); the rows below it keep the usual margins
-        if (!rectOk(sx, sy + 1, 4, 3, 0)) continue;
+        if (!rectOk(sx, sy + 1, 4, 3, 0, false, destOverhang ? 3 : EDGE)) continue;   // a destination that asks for the overhang may stand nearer the place's top, where the falls' face lies
         cand.push({ sx, sy, sc: Math.min(dent[I(sx + 1, sy + 1)], 14) + 4 * U('oh', sx, sy) });
       }
+      plan.overhangCandidates = cand.length;
       cand.sort((a, b) => b.sc - a.sc || a.sy - b.sy || a.sx - b.sx);
-      if (cand.length) { const b = cand[0]; addSpot(instantiate(oh, b.sx, b.sy, { role: 'spot', spineDist: +dsp[I(b.sx + 1, b.sy + 1)].toFixed(1), entryDist: +dent[I(b.sx + 1, b.sy + 1)].toFixed(1), candidates: cand.length })); }
+      if (cand.length) { const b = cand[0]; addSpot(instantiate(oh, b.sx, b.sy, { role: destOverhang ? 'heart' : 'spot', ...(destOverhang ? { tier: 0, dest: dest.kind } : {}), spineDist: +dsp[I(b.sx + 1, b.sy + 1)].toFixed(1), entryDist: +dent[I(b.sx + 1, b.sy + 1)].toFixed(1), candidates: cand.length })); }
     }
     // the heart: 7 x 5, in tiers. Tier 1: 2-6 off the spine, 6+ walking tiles from every way in, seen from a way in. Tier 2 (a cramped place): 1-6 off the spine, 4+ from the ways in, no sight needed.
     // Tier 3: the 5 x 3 bed, as tier 2. Among a tier's spots one is drawn by the cell's hash, weighted toward the far ones.
@@ -220,7 +228,7 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
         for (let k = 0; k <= n; k++) plan.sightLine.push([Math.round(ax + (pick.cx - ax) * k / n), Math.round(ay + (pick.cy - ay) * k / n)]);
       }
     };
-    for (const [kind, dmin, dmax, demin, needSight] of tiers) {
+    for (const [kind, dmin, dmax, demin, needSight] of plan.spots.some(s => s.role === 'heart') ? [] : tiers) {   // an overhang that is the destination's heart stands for the bed
       const s0 = kind === heartKind && kind !== 'sleepers-bed' ? stampById['split-stone-ground'] : kind === 'sleepers-bed-cramped' ? stampById['bed-cramped'] : pickStamp('sleepers-bed');
       if (!s0) continue;
       const hc = []; let tot = 0;
