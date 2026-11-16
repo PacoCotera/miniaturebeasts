@@ -41,7 +41,7 @@ test("age words: turns old, what the stage means, and the span of real time", ()
   const note = (m, turn) => { const r = stageNote(m, turn, 2, 16); return [r.stage, r.n]; };
   assert.deepEqual(note({ born: 0 }, 1), ["juvenile", 1]); assert.deepEqual(note({ born: 0 }, 2), ["adult", 0]); assert.deepEqual(note({ born: 0 }, 9), ["adult", 7]);
   assert.deepEqual(note({ born: 0 }, 18), ["elder", 0]); assert.deepEqual(note({ born: 0 }, 25), ["elder", 7], "an elder's count rises from the turn it became one");
-  assert.deepEqual(note({ born: 0, bonded: true }, 30), ["juvenile", null], "a bonded young mibi waits for care: no count"); assert.deepEqual(note({ born: 0, bonded: true, grownTurn: 5 }, 23), ["elder", 2]);
+  assert.deepEqual(note({ born: 0, bonded: true }, 30), ["elder", 12], "a bonded young mibi grows on the clock like any other"); assert.deepEqual(note({ born: 0, bonded: true, grownTurn: 5 }, 23), ["elder", 2]);
   const at = (since, now, floor) => yoursLine({ since: new Date(...since, 12).getTime(), ...(floor ? { sinceFloor: true } : {}) }, new Date(...now, 12).getTime());
   assert.deepEqual(at([2026, 9, 14], [2026, 9, 27]), { span: "13 days", date: "14 Oct", floor: false, today: false });
   assert.equal(at([2026, 9, 27], [2026, 9, 27]).span, null); assert.equal(at([2026, 9, 26], [2026, 9, 27]).span, "a day"); assert.equal(at([2026, 0, 1], [2026, 3, 10]).span, "99 days"); assert.equal(at([2026, 0, 1], [2026, 3, 11]).span, "3 months");

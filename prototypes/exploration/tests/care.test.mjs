@@ -48,26 +48,25 @@ const station = (...names) => names.every(n => typeof ST[n] === "function") ? fa
 function clockAt(day) { const [y, m, d] = day.split("-").map(Number), at = new Date(y, m - 1, d, 12).getTime();
   return class extends Date { constructor(...a) { super(...(a.length ? a : [at])); } }; }
 
-const CARE = ["mibiById", "listWords", "localDay", "careDay", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
-  "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "canTend", "tend", "bondCheck", "growCheck", "migrateCarried", "normalizeCare",
+const CARE = ["mibiById", "listWords", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
+  "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "bondCheck", "playWouldBond", "playsLeftLines", "migrateCarried", "normalizeCare",
   "carryApply", "canWalk", "walkAll", "tripRecord", "TRIP_KINDS", "tripsWith", "liveMibis", "setLead", "nextLead", "LEAD_Y", "rosterAt", "rosterCount", "rosterRect", "rosterOff"];
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
-  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 16, CARRY_MAX: 3, BOND_TENDS: 3, PLAYTEST_ON: !!o.playtest, PLAYTEST: { careDayMs: 60000 },
+  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 16, CARRY_MAX: 3, BOND_PLAYS: 3, PLAYTEST_ON: !!o.playtest,
     isDocked: () => env.docked, stPart: () => env.st || null, logEv: t => env.log.push(t) });
   const names = CARE.filter(n => !["JUVENILE_TURNS", "CARRY_MAX"].includes(n));
   const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
   return Object.assign(out, { ctx, env, setDay: d => { ctx.Date = clockAt(d); }, setS: s => { ctx.S = s; } });
 }
-const mibi = (id, name, o = {}) => Object.assign({ id, name, sp: (id - 1) % 3, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }, o);
+const mibi = (id, name, o = {}) => Object.assign({ id, name, sp: (id - 1) % 3, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }, o);
 const save = (o = {}) => Object.assign({ v: 8, turn: 3, exp: null, walkTurn: -1, mibis: [mibi(1, "Dot"), mibi(2, "Moss"), mibi(3, "Fig"), mibi(4, "Pip")], carried: [], lead: null, carrySeen: 0, carryRefused: [], trips: [] }, o);
 const stageCases = function* () { for (const born of [0, 1, 2, 3]) for (const bonded of [false, true]) for (const grownTurn of [null, 2, 5]) for (let turn = 0; turn <= 14; turn++) yield { born, bonded, grownTurn, turn }; };
 
 // ---- §3: one definition of the stage ----
 const STAGE_AT = `function stageAt(m, turn, j, e) {
   if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
-  if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }`;
 test("stageAt is the C0 text exactly, and mibiStage reads it with the constants", () => {
@@ -75,7 +74,7 @@ test("stageAt is the C0 text exactly, and mibiStage reads it with the constants"
   assert.match(source("mibiStage"), /stageAt\(m, S\.turn, JUVENILE_TURNS, ELDER_TURNS\)/);
   const t = world(save());
   assert.equal(t.stageAt({ born: 0 }, 1, 2, 6), "juvenile"); assert.equal(t.stageAt({ born: 0 }, 2, 2, 6), "adult"); assert.equal(t.stageAt({ born: 0 }, 8, 2, 6), "elder");
-  assert.equal(t.stageAt({ born: 0, bonded: true }, 30, 2, 6), "juvenile", "a bonded juvenile waits");
+  assert.equal(t.stageAt({ born: 0, bonded: true }, 30, 2, 6), "elder", "a bonded young mibi grows on the clock like any other");
   assert.equal(t.stageAt({ born: 0, bonded: true, grownTurn: 7 }, 12, 2, 6), "adult"); assert.equal(t.stageAt({ born: 0, bonded: true, grownTurn: 7 }, 13, 2, 6), "elder");
 });
 test("T1 parity: the Companion's stageAt and the Station's agree on every case", { skip: station("stageAt") }, () => {
@@ -84,117 +83,77 @@ test("T1 parity: the Companion's stageAt and the Station's agree on every case",
     assert.equal(t.stageAt(m, c.turn, 2, 6), ST.stageAt(m, c.turn, 2, 6), JSON.stringify(c)); }
 });
 
-// ---- Tend ----
-test("Tend: a carried mibi, once per local day; same day refused; the clock moved back refused and resets nothing; next day allowed", () => {
-  const S = save({ carried: [1] }), t = world(S, { day: "2026-10-09" }), dot = S.mibis[0];
-  assert.equal(t.localDay(), "2026-10-09");
-  assert.equal(t.canTend(dot), true);
-  assert.deepEqual(plain(t.tend(dot)), { bonded: false, grown: false });
-  assert.equal(dot.care, 1); assert.equal(dot.tends, 1); assert.equal(dot.tendDay, "2026-10-09");
-  assert.equal(t.canTend(dot), false); assert.equal(t.tend(dot), null, "refused the same day");
-  assert.equal(dot.care, 1); assert.equal(dot.tends, 1);
-  t.setDay("2026-10-08"); assert.equal(t.tend(dot), null, "the clock moved back");
-  assert.equal(dot.tendDay, "2026-10-09", "tendDay unchanged"); assert.equal(dot.care, 1);
-  t.setDay("2026-10-10"); assert.ok(t.tend(dot)); assert.equal(dot.care, 2); assert.equal(dot.tends, 2); assert.equal(dot.tendDay, "2026-10-10");
-  t.setDay("2027-01-01"); assert.ok(t.tend(dot), "a new year is a later day (string order)");
-});
-test("Tend: never a mibi at home, never mid-expedition; any carried mibi, bonded or not, gains care (Spend time is gone)", () => {
-  const S = save({ carried: [1] }), t = world(S), [dot, moss] = S.mibis;
-  assert.equal(t.tend(moss), null, "at home"); assert.equal(moss.care, 0);
-  S.exp = { n: 5 }; assert.equal(t.tend(dot), null, "mid-expedition"); assert.equal(dot.care, 0);
-  S.exp = null; assert.equal(dot.bonded, false); t.tend(dot); assert.equal(dot.care, 1, "unbonded: care counts");
-  assert.ok(!/spendTime|Spend time/.test(PAGE), "no Spend time anywhere");
-  assert.match(source("tendPress"), /tend\(m\)/);
-});
-test("localDay is the local date, never UTC", () => {
-  assert.match(source("localDay"), /getFullYear\(\).*getMonth\(\).*getDate\(\)/);
-  assert.ok(!/toISOString/.test(source("localDay")));
-  const t = world(save(), { day: "2026-03-05" }); assert.equal(t.localDay(), "2026-03-05");
+// ---- Tend is gone ----
+test("Tend is gone: no action, rule, strings, care day or developer button; the page's care is Play together only", () => {
+  for (const w of ["canTend", "tendPress", "careDay", "newCareDay", "devCareDay", "tendDay", "TEND_MOMENT", "BOND_TENDS", "growCheck", "bondCare", "localDay"]) assert.ok(!PAGE.includes(w), w + " is gone from the page");
+  assert.ok(!/\btend\(|Tend /.test(PAGE.replace(/c-moment-tend-/g, "")), "no Tend in the page's words or code");
+  assert.ok(!/ontend|Walk together|Walk with|walk together/.test(PAGE.replace(/ontend/g, "")), "the press is Play together");
 });
 
-// ---- The Walk ----
-test("Walk: all carried together, +1 outing and +1 care each, once per world turn, undocked, between expeditions", () => {
+// ---- Play together ----
+test("Play together: all carried together, +1 outing and +1 play each, once per world turn, undocked, between expeditions", () => {
   const S = save({ carried: [1, 2, 3] }), t = world(S), [dot, moss, fig, pip] = S.mibis;
   const evs = t.walkAll();
   assert.equal(evs.length, 3); assert.deepEqual(plain(evs.map(e => e.m.id)), [1, 2, 3], "carried order");
-  for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.care, 1); assert.equal(m.tends, 0, "a walk is not a Tend"); }
-  assert.equal(pip.outings, 0); assert.equal(pip.care, 0, "a mibi at home does not walk");
-  assert.equal(t.walkAll(), null, "once per world turn"); assert.equal(dot.care, 1);
-  S.turn = 4; t.env.docked = true; assert.equal(t.walkAll(), null, "docked: no walk");
-  t.env.docked = false; S.exp = { n: 6 }; assert.equal(t.walkAll(), null, "mid-expedition: no walk");
+  for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.plays, 1); }
+  assert.equal(pip.outings, 0); assert.equal(pip.plays, 0, "a mibi at home does not play");
+  assert.equal(t.walkAll(), null, "once per world turn"); assert.equal(dot.plays, 1);
+  S.turn = 4; t.env.docked = true; assert.equal(t.walkAll(), null, "docked: no play");
+  t.env.docked = false; S.exp = { n: 6 }; assert.equal(t.walkAll(), null, "mid-expedition: no play");
   S.exp = null; S.carried = []; assert.equal(t.canWalk(), false, "no one with you");
-  S.carried = [1]; assert.ok(t.walkAll()); assert.equal(dot.care, 2);
+  S.carried = [1]; assert.ok(t.walkAll()); assert.equal(dot.plays, 2);
 });
 
 // ---- The bond ----
-test("the bond: three Tends, no outing needed; the third Tend bonds, bondCare = care then; checked after a Tend only", () => {
+test("the bond: the third play together bonds; the first two do not; never more than once", () => {
   const S = save({ carried: [1, 2], turn: 1 }), t = world(S), [dot, moss] = S.mibis;
-  for (let turn = 1; turn <= 6; turn++) { S.turn = turn; t.walkAll(); }
-  assert.equal(moss.care, 6); assert.equal(moss.bonded, false, "walks grow but never bond");
-  S.turn = 1; dot.care = 0; dot.outings = 0; dot.tends = 0; S.walkTurn = -1;
-  ["2026-10-09", "2026-10-10", "2026-10-11"].forEach((d, i) => { t.setDay(d); const r = t.tend(dot); assert.equal(r.bonded, i === 2, "Tend " + (i + 1)); });
-  assert.equal(dot.tends, 3); assert.equal(dot.outings, 0); assert.equal(dot.bonded, true, "three Tends and no outing: bonded");
-  assert.equal(dot.bondCare, 3, "bondCare = care at the third Tend"); assert.equal(dot.grownTurn, null, "a juvenile when it bonds: it waits for care");
-  assert.equal(t.bondCheck(dot), false, "once");
-  assert.ok(t.env.log.includes("Dot is bonded with you"));
-  assert.match(source("tend"), /bondCheck\(m\)[^]*growCheck\(m\)/, "bond, then growth");
-  assert.match(source("walkAll"), /q\.care = \(q\.care \|\| 0\) \+ 1; out\.push\(\{ m: q, bonded: false, grown: growCheck\(q\) \}\)/);
-  assert.ok(!/bondCheck\(/.test(source("walkAll")), "a Walk never checks the bond");
+  moss.plays = 0; for (let turn = 1; turn <= 3; turn++) { S.turn = turn; const evs = t.walkAll(); assert.deepEqual(plain(evs.map(e => e.bonded)), [turn === 3, turn === 3], "play " + turn); assert.equal(dot.bonded, turn === 3); }
+  assert.equal(dot.plays, 3); assert.equal(dot.bonded, true); assert.equal(moss.bonded, true);
+  assert.equal(t.bondCheck(dot), false, "once"); assert.ok(t.env.log.includes("Dot is bonded with you"));
+  S.turn = 4; assert.deepEqual(plain(t.walkAll().map(e => e.bonded)), [false, false], "already bonded: the bond never repeats");
+  assert.match(source("walkAll"), /bondCheck\(q\)/);
 });
-test("the bond: a carried mibi with 3 Tends and 0 outings bonds on the 3rd Tend; a Walk alone never bonds, even with tends >= 3", () => {
-  const S = save({ carried: [1, 2], turn: 1 }), t = world(S), [dot, moss] = S.mibis;
-  ["2026-10-09", "2026-10-10"].forEach(d => { t.setDay(d); assert.equal(t.tend(dot).bonded, false); });
-  t.setDay("2026-10-11"); const r = t.tend(dot); assert.equal(r.bonded, true, "the 3rd Tend bonds"); assert.equal(dot.outings, 0);
-  moss.tends = 3; moss.outings = 0; moss.care = 3;
-  for (let turn = 1; turn <= 4; turn++) { S.turn = turn; const evs = t.walkAll(); for (const e of evs) assert.equal(e.bonded, false, "a Walk never returns bonded: true"); }
-  assert.equal(moss.bonded, false, "Walks alone never bond"); assert.equal(moss.outings, 4); assert.equal(moss.care, 7);
+test("the bond: an expedition is not a play; plays carried over from a young mibi count; a bonded mibi is never unbonded", () => {
+  const S = save({ carried: [1], turn: 1 }), t = world(S), dot = S.mibis[0];
+  for (const fn of ["worldTurn", "regionTurn", "realmTurn", "endExpedition"]) assert.ok(!/\.plays|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never counts a play, bonds or grows a mibi");
+  S.turn = 1; t.walkAll(); S.turn = 2; t.walkAll(); assert.equal(dot.bonded, false, "two plays while young");
+  assert.equal(t.mibiStage(dot), "adult", "grown on the clock at turn 2"); S.turn = 3; const evs = t.walkAll();
+  assert.equal(evs[0].bonded, true, "the third play bonds, after it grew"); assert.equal(dot.grownTurn, 2, "its adulthood is kept: born + JUVENILE_TURNS");
 });
-
-// ---- T6: growth through care (rulings 1 and 3) ----
-test("T6: bonded at turn 1, at home until 6, carried: juvenile after the expedition to 7; the first Walk at 7 grows it; elder at 23", () => {
-  const S = save({ carried: [1], turn: 1 }), t = world(S, { day: "2026-10-01" }), dot = S.mibis[0];
-  dot.tends = 2;
-  const r = t.tend(dot); assert.equal(r.bonded, true); assert.equal(r.grown, false);
-  assert.equal(dot.grownTurn, null); assert.equal(t.mibiStage(dot), "juvenile");
-  S.carried = [];   // left at home
-  for (let turn = 2; turn <= 6; turn++) { S.turn = turn;
-    assert.equal(t.grownNow(dot), false); assert.equal(t.agedNow(dot), false); assert.equal(t.mibiStage(dot), "juvenile", "turn " + turn);
-    assert.equal(t.growCheck(dot), false, "at home: no growth"); }
-  S.carried = [1]; assert.equal(t.mibiStage(dot), "juvenile", "carried at 6");
-  S.turn = 7; assert.equal(t.mibiStage(dot), "juvenile", "after the expedition that ends at turn 7");
-  const evs = t.walkAll(); assert.equal(evs[0].grown, true); assert.equal(dot.grownTurn, 7);
-  for (const [turn, stage] of [[7, "adult"], [22, "adult"], [23, "elder"]]) { S.turn = turn; assert.equal(t.mibiStage(dot), stage, "turn " + turn); }
-  S.turn = 23; assert.equal(t.agedNow(dot), true, "the elder line at grownTurn + 16");
-  if (!station("stageAt")) for (const turn of [6, 7, 22, 23]) assert.equal(ST.stageAt(dot, turn, 2, 16), t.stageAt(dot, turn, 2, 16));
+test("the bond: a young mibi is at most two plays from the bond before the clock grows it, so no bond lands on a young mibi", () => {
+  const S = save({ carried: [2], turn: 0 }), t = world(S), moss = S.mibis[1]; moss.born = 0;
+  S.turn = 0; t.walkAll(); S.turn = 1; t.walkAll(); assert.equal(moss.plays, 2); assert.equal(t.mibiStage(moss), "juvenile"); assert.equal(moss.bonded, false);
+  S.turn = 2; assert.equal(t.mibiStage(moss), "adult", "the world turned to born + 2");
 });
-test("T6: the bonding Tend leaves it juvenile (care == bondCare); the next day's Tend grows it", () => {
-  const S = save({ carried: [2], turn: 4 }), t = world(S, { day: "2026-10-09" }), moss = S.mibis[1];
-  moss.born = 3; moss.tends = 2; moss.care = 5;
-  let r = t.tend(moss); assert.deepEqual(plain(r), { bonded: true, grown: false });
-  assert.equal(moss.bondCare, 6); assert.equal(moss.care, 6); assert.equal(t.mibiStage(moss), "juvenile");
-  t.setDay("2026-10-10"); r = t.tend(moss); assert.deepEqual(plain(r), { bonded: false, grown: true });
-  assert.equal(moss.grownTurn, 4); assert.equal(t.mibiStage(moss), "adult");
-  assert.equal(t.growCheck(moss), false, "once");
+test("the warning: only the play that will bond a carried mibi says 'a bond is for good'", () => {
+  const S = save({ carried: [1, 2] }), t = world(S), [dot, moss] = S.mibis;
+  assert.equal(t.playWouldBond(), false); dot.plays = 1; assert.equal(t.playWouldBond(), false, "one play: no warning");
+  dot.plays = 2; assert.equal(t.playWouldBond(), true, "two plays: the next one bonds"); dot.bonded = true; assert.equal(t.playWouldBond(), false, "a bonded mibi never warns");
+  moss.plays = 2; assert.equal(t.playWouldBond(), true, "any carried mibi will do"); S.carried = [1]; assert.equal(t.playWouldBond(), false, "a mibi at home does not warn");
+  assert.match(PAGE, /canWalk\(\)\) return L1\(pl, playWouldBond\(\) \? CARE_TEXT\.playBond : CARE_TEXT\.playOnce/);
+  assert.equal(PAGE.match(/playBond: '([^']*)'/)[1], "a bond is for good");
 });
-test("T6: a bonded juvenile never grows on the clock: no grownTurn, no clock grow or elder line, carried or at home", () => {
-  const S = save({ carried: [1] }), t = world(S), [dot, moss] = S.mibis;
-  Object.assign(dot, { bonded: true, bondCare: 0 }); Object.assign(moss, { bonded: true, bondCare: 0 });
-  for (let turn = 0; turn <= 20; turn++) { S.turn = turn;
-    for (const m of [dot, moss]) { assert.equal(t.grownNow(m), false); assert.equal(t.agedNow(m), false); assert.equal(t.mibiStage(m), "juvenile"); assert.equal(m.grownTurn, null); } }
-  // the world-turn advance writes its lines from grownNow and agedNow, and nothing on the turn or at the expedition's end grows a mibi
-  assert.match(source("realmTurn"), /const grown = liveMibis\(\)\.filter\(grownNow\), aged = liveMibis\(\)\.filter\(agedNow\)/);
-  for (const fn of ["worldTurn", "regionTurn", "realmTurn", "endExpedition"]) assert.ok(!/growCheck\(|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never grows or bonds");
-  // an unbonded mibi grows on the clock as built: the line at born + 2, elder at born + 18
-  const fig = S.mibis[2]; S.turn = 2; assert.equal(t.grownNow(fig), true); S.turn = 18; assert.equal(t.agedNow(fig), true);
+test("the plays-left words: names and what is left, one line per count, never for a bonded mibi", () => {
+  const S = save({ carried: [1, 2, 3], turn: 1 }), t = world(S), [dot, moss, fig] = S.mibis;
+  const ctx = vm.createContext({ listWords: t.listWords }), T = vm.runInContext("({ " + PAGE.match(/^\s+playsLeft: .*$/m)[0].trim().replace(/,$/, "") + " })", ctx);
+  assert.equal(T.playsLeft(["Dot"], 2), "Dot · play twice more to bond"); assert.equal(T.playsLeft(["Dot", "Moss"], 1), "Dot and Moss · play once more to bond");
+  t.ctx.CARE_TEXT = T; dot.plays = 1; moss.plays = 1; fig.plays = 0; fig.bonded = true;
+  const evs = t.walkAll();   // dot, moss now at 2; fig bonded
+  assert.deepEqual(plain(t.playsLeftLines(evs)), ["Dot and Moss · play once more to bond"]);
+  S.turn = 2; dot.plays = 0; moss.plays = 1; const evs2 = t.walkAll();
+  assert.deepEqual(plain(t.playsLeftLines(evs2)), ["Dot · play twice more to bond", "Moss · play once more to bond"], "twos first, then ones");
 });
-test("T6: born 0, bonded at turn 5 gets grownTurn 2 (the constant), elder at 18; a juvenile bonded at turn 1 gets none", () => {
-  const S = save({ carried: [1, 2], turn: 5 }), t = world(S), [dot, moss] = S.mibis;
-  dot.tends = 3; assert.equal(t.bondCheck(dot), true);
-  assert.equal(dot.grownTurn, 2); S.turn = 17; assert.equal(t.mibiStage(dot), "adult"); S.turn = 18; assert.equal(t.mibiStage(dot), "elder");
-  assert.match(source("bondCheck"), /m\.grownTurn = \(m\.born \|\| 0\) \+ JUVENILE_TURNS/, "the constant, never a developer setting");
-  if (!station("stageAt", "mibiStage")) for (const adultTurns of [2, 1, 0]) for (let turn = 5; turn <= 24; turn++) {
-    S.turn = turn; assert.equal(ST.mibiStage({ turn }, dot, { adultTurns }), t.mibiStage(dot), "adultTurns " + adultTurns + ", turn " + turn); }
-  S.turn = 1; moss.tends = 3; assert.equal(t.bondCheck(moss), true); assert.equal(moss.grownTurn, null);
+test("the walks of an old save: plays back-filled once from tends; an old bonded young mibi goes on the clock", () => {
+  const S = save({ carried: [1], turn: 5 }), t = world(S), [dot, moss, fig] = S.mibis;
+  delete dot.plays; dot.tends = 2; dot.tendDay = "2026-10-09"; dot.care = 2; delete moss.plays; delete fig.plays;
+  Object.assign(fig, { bonded: true, bondCare: 1, tends: 3, born: 4 }); Object.assign(moss, { bonded: true, bondCare: 1, tends: 3, born: 0, grownTurn: null });
+  t.normalizeCare(S); assert.equal(dot.plays, 2, "Tends given count as plays"); assert.equal(dot.tends, 2, "tends stay in the old save"); assert.equal(dot.tendDay, "2026-10-09"); assert.equal(dot.care, 2);
+  dot.tends = 9; t.normalizeCare(S); assert.equal(dot.plays, 2, "the back-fill happens once, never read again");
+  assert.equal(moss.plays, 3); assert.equal(moss.grownTurn, null, "no grownTurn written: the clock decides");
+  assert.equal(t.mibiStage(moss), "adult", "old bonded young mibi, 5 turns old: grown on the clock");
+  assert.equal(t.mibiStage(fig), "juvenile", "born 4, 1 turn old: young, grows at turn 6"); S.turn = 6; assert.equal(t.mibiStage(fig), "adult");
+  assert.equal(t.grownNow(fig), true, "its grown-up line plays on the clock"); assert.equal(fig.grownTurn, null);
+  assert.ok(!/bondCare|tendDay|\.tends|\.care\b/.test(source("normalizeCare").replace(/m\.tends/g, "").replace(/\/\/.*$/gm, "")), "normalizeCare reads only tends, once");
 });
 
 // ---- The carried set: Take, Leave, the roster ----
@@ -241,10 +200,10 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   S.exp = Object.assign(ex(5), { pt: { id: 1 } });
   ending(S, S.exp);
   const [dot, moss, fig, pip] = S.mibis;
-  for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.care, 0, "an expedition is not care"); }
+  for (const m of [dot, moss, fig]) { assert.equal(m.outings, 1); assert.equal(m.plays, 0, "an expedition is not a play together"); }
   assert.equal(pip.outings, 0); assert.equal(dot.notches, 0, "an unbonded partner earns no notch");
   assert.deepEqual(plain(S.trips.at(-1)), { v: 1, n: 5, partner: 1, places: ["meadow"], storm: false, carried: [1, 2, 3] });
-  dot.bonded = true; dot.bondCare = 0; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
+  dot.bonded = true; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
   assert.equal(dot.notches, 1, "the bonded partner"); assert.equal(moss.notches, 0);
   assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0 }, "named on End expedition as the outcome block's row, with no count");
   assert.deepEqual(plain(S.report.lines), ["The world turned."], "never among the world lines");
@@ -295,11 +254,9 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   assert.deepEqual(plain(sv.carried), [1]); assert.equal(sv.lead, 1); assert.equal(sv.carrySeen, 0);
   assert.ok(!("with" in sv)); assert.equal(sv.withSeen, 1, "withSeen kept, frozen, for the Station's step"); assert.deepEqual(plain(sv.carryRefused), []);
   const [dot, moss, fig] = sv.mibis;
-  assert.deepEqual([dot.bondCare, dot.grownTurn], [0, 2], "Dot: adult, elder at 18");
-  assert.deepEqual([moss.bondCare, moss.grownTurn], [0, null], "Moss: a juvenile that waits");
-  assert.equal(fig.grownTurn, null); assert.equal(fig.bondCare, undefined);
-  for (const m of sv.mibis) { assert.equal(m.care, 0); assert.equal(m.tends, 0); assert.equal(m.tendDay, null); }
-  assert.deepEqual([t.mibiStage(dot), t.mibiStage(moss), t.mibiStage(fig)], ["adult", "juvenile", "adult"]);
+  assert.deepEqual([dot.grownTurn, moss.grownTurn, fig.grownTurn], [null, null, null], "no grownTurn written: every mibi is on the clock");
+  for (const m of sv.mibis) { assert.equal(m.plays, 0); assert.equal(m.bondCare, undefined, "no old care field is added"); assert.equal(m.tends, undefined, "an old field is never added"); }
+  assert.deepEqual([t.mibiStage(dot), t.mibiStage(moss), t.mibiStage(fig)], ["adult", "juvenile", "adult"], "Moss, bonded and born at 3: young until the clock grows it");
   sv.turn = 18; assert.equal(t.mibiStage(dot), "elder"); sv.turn = 4;
   const once = JSON.stringify(sv); t.migrateCarried(sv); t.normalizeCare(sv); assert.equal(JSON.stringify(sv), once, "idempotent");
   // `with` naming no mibi of the Companion's: nothing carried
@@ -309,20 +266,20 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   assert.match(source("save"), /syncStation\(\); normalizeCare\(S\);/, "after every dock read, defaults only");
   assert.ok(!/releasedIds/.test(source("save")), "save never drops released ids: only the dock gate does");
 });
-test("ruling 2 on the fixture: Moss at home stays juvenile through 14; carried, one Walk at turn 5 grows it; Dot elder at 18", () => {
+test("ruling 2 on the fixture: Moss, bonded and young, grows on the clock at turn 5 whether carried or at home; Dot elder at 18", () => {
   const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
   const [dot, moss] = sv.mibis;
-  for (let turn = 4; turn <= 14; turn++) { sv.turn = turn; assert.equal(t.mibiStage(moss), "juvenile"); assert.equal(t.grownNow(moss), false); }
-  sv.turn = 5; sv.carried = [2]; const evs = t.walkAll();
-  assert.equal(moss.care, 1); assert.equal(moss.grownTurn, 5); assert.equal(evs[0].grown, true);
+  sv.turn = 4; assert.equal(t.mibiStage(moss), "juvenile"); assert.equal(t.grownNow(moss), false);
+  sv.turn = 5; assert.equal(t.mibiStage(moss), "adult", "at home, on the clock"); assert.equal(t.grownNow(moss), true, "its grown-up line plays at the world turn"); assert.equal(moss.grownTurn, null);
   sv.turn = 18; assert.equal(t.mibiStage(dot), "elder");
 });
-test("normalizeCare: defaults for the additive fields; ids not in S.mibis dropped; old bonds back-filled once", () => {
-  const S = { turn: 6, mibis: [{ id: 1, name: "Dot", born: 0, bonded: true, care: 2 }, { id: 2, name: "Moss", born: 5, bonded: true }, { id: 3, name: "Fig", born: 0 }], carried: [1, 7, 1, 2] };
+test("normalizeCare: defaults for the additive fields; ids not in S.mibis dropped; old Tends back-filled into plays once", () => {
+  const S = { turn: 6, mibis: [{ id: 1, name: "Dot", born: 0, bonded: true, care: 2, tends: 3, bondCare: 2 }, { id: 2, name: "Moss", born: 5, bonded: true }, { id: 3, name: "Fig", born: 0 }], carried: [1, 7, 1, 2] };
   const t = world(S); t.normalizeCare(S);
   assert.deepEqual(plain(S.carried), [1, 2]); assert.equal(S.lead, null); assert.equal(S.carrySeen, 0); assert.deepEqual(plain(S.carryRefused), []);
-  assert.deepEqual([S.mibis[0].bondCare, S.mibis[0].grownTurn], [2, 2]); assert.deepEqual([S.mibis[1].bondCare, S.mibis[1].grownTurn], [0, null]);
-  assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, care: 0, tends: 0, outings: 0, notches: 0, habitsDone: [], tendDay: null, grownTurn: null });   // L2b: habitsDone, [] by default, the field habits it did on walks
+  assert.deepEqual([S.mibis[0].plays, S.mibis[0].grownTurn, S.mibis[0].tends, S.mibis[0].bondCare], [3, null, 3, 2], "plays from tends; the old fields stay as they were");
+  assert.deepEqual([S.mibis[1].plays, S.mibis[1].grownTurn], [0, null]);
+  assert.deepEqual(plain(S.mibis[2]), { id: 3, name: "Fig", born: 0, plays: 0, outings: 0, notches: 0, habitsDone: [], grownTurn: null });   // L2b: habitsDone, [] by default, the field habits it did on walks
   const once = JSON.stringify(S); t.normalizeCare(S); assert.equal(JSON.stringify(S), once);
   S.mibis[2].habitsDone.push("beacon-sit"); t.normalizeCare(S); assert.deepEqual(plain(S.mibis[2].habitsDone), ["beacon-sit"], "a set, never cleared by the normalize");
 });
@@ -392,16 +349,16 @@ test("the dock: today's Station (no carryReqs) changes nothing; a request made a
 });
 test("the dock: `bonded` flows in by OR; no care field is read from the Station; a new mibi starts with the defaults", () => {
   const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0 });
-  S.mibis[0].bonded = true; S.mibis[0].bondCare = 1; S.mibis[0].care = 1;
+  S.mibis[0].bonded = true; S.mibis[0].plays = 1;
   const st = { accepted: [], known: [], dock: { docked: true }, dockN: 1, returned: [], mibis: [
-    { id: 1, name: "Dot", sp: 0, born: 0, bonded: false, care: 9, tends: 9, grownTurn: 1 },
-    { id: 2, name: "Moss", sp: 1, born: 0, bonded: true, care: 9 },
-    { id: 5, name: "Kit", sp: 2, born: 3, bonded: false, care: 4, outings: 4 }] };
+    { id: 1, name: "Dot", sp: 0, born: 0, bonded: false, plays: 9, grownTurn: 1 },
+    { id: 2, name: "Moss", sp: 1, born: 0, bonded: true, plays: 9 },
+    { id: 5, name: "Kit", sp: 2, born: 3, bonded: false, plays: 4, outings: 4 }] };
   dock(S, st, true);
   const [dot, moss] = S.mibis, kit = S.mibis.find(m => m.id === 5);
-  assert.equal(dot.bonded, true, "the Station never unsets a bond"); assert.equal(dot.care, 1); assert.equal(dot.tends, 0); assert.equal(dot.grownTurn, null);
-  assert.equal(moss.bonded, true, "a legacy bond made on the Station flows in"); assert.equal(moss.care, 0); assert.equal(moss.bondCare, 0, "back-filled");
-  assert.deepEqual([kit.care, kit.tends, kit.outings, kit.notches, kit.tendDay, kit.grownTurn], [0, 0, 0, 0, null, null]);
+  assert.equal(dot.bonded, true, "the Station never unsets a bond"); assert.equal(dot.plays, 1); assert.equal(dot.grownTurn, null);
+  assert.equal(moss.bonded, true, "a legacy bond made on the Station flows in"); assert.equal(moss.plays, 0);
+  assert.deepEqual([kit.plays, kit.outings, kit.notches, kit.grownTurn], [0, 0, 0, null]);
   assert.match(source("syncStation"), /q\.bonded = !!q\.bonded \|\| !!m\.bonded/);
 });
 
@@ -424,10 +381,10 @@ test("T3 round trip: two Station adds apply; a third is refused on the Station",
 });
 test("T4 merge: Companion care writes reach the Station by max and OR, and a second merge changes nothing", { skip: station("mergeCare") }, () => {
   const S = save({ carried: [1], turn: 3 }), t = world(S);
-  const dot = S.mibis[0]; dot.tends = 2; dot.outings = 1; t.tend(dot); t.walkAll();
+  const dot = S.mibis[0]; dot.plays = 2; dot.outings = 1; t.walkAll();
   const st = { turn: 3, mibis: S.mibis.map(m => ({ id: m.id, name: m.name, outings: 0, notches: 0, bonded: m.id === 2 })), dock: { docked: true } };
   ST.mergeCare(st, S); const once = JSON.stringify(st); ST.mergeCare(st, S); assert.equal(JSON.stringify(st), once);
-  const q = st.mibis[0]; assert.equal(q.care, dot.care); assert.equal(q.bonded, true); assert.equal(q.bondCare, dot.bondCare);
+  const q = st.mibis[0]; assert.equal(q.plays, 3); assert.equal(q.plays, dot.plays); assert.equal(q.bonded, true, "the bond reaches the Station by OR"); assert.equal(dot.bonded, true);
   assert.equal(st.mibis[1].bonded, true, "the Station's true stays true");
 });
 
@@ -440,8 +397,9 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
     ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"], ["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
-  const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
+  const ids = ["c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
   for (const id of ids) { assert.ok(calls.includes(id), id + " is drawn as its placeholder"); assert.equal(PAGE.split("'" + id + "'").length - 1, 2 + calls.filter(c => c === id).length, id + ": named in the register, the plate table and placeholderPlate calls only"); }
+  assert.ok(!calls.some(c => /^c-heart-/.test(c)), "bonded mark hidden until the painted heart is signed: no heart plate is drawn");
   const hp = source("placeholderPlate"); assert.match(hp, /CARE_ASSETS\.find/); assert.ok(!/ell\(|poly\(|pline\(|blit\(/.test(hp), "no drawn shape");
   assert.ok(!/upArt\('mini'/.test(source("ringFace")) && /placeholderPlate\('c-face-24'/.test(source("ringFace")), "the 24 px face is its placeholder, never the HUD icon enlarged");
   assert.ok(!/creatureArt\([^)]*1\.5\)/.test(PAGE), "no token drawn at 1.5× for the 48 px slot");
@@ -455,24 +413,28 @@ test("no Companion line carries a skill count; the status line is exactly one li
   const ctx = vm.createContext({ console, S, JUVENILE_TURNS: 2, ELDER_TURNS: 16, isDocked: () => false });
   const names = ["mibiById", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "partnerMibi", "activeStatus"];
   const a = vm.runInContext(names.map(source).join("\n") + "\n;({ activeStatus })", ctx);
-  const LINES = ["with you · leads the Probe", "with you · can lead the Probe", "with you · too young for the Probe", "with you · grows up in time", "at home", "at home · grows up in time"];
-  ctx.CARE_TEXT = { stLeads: LINES[0], stCanLead: LINES[1], stTooYoung: LINES[2], stGrowsWithCare: LINES[3], stHome: LINES[4], stHomeBonded: LINES[5] };
+  const LINES = ["with you · leads the Probe", "with you · can lead the Probe", "with you · too young for the Probe", "at home"];
+  ctx.CARE_TEXT = { stLeads: LINES[0], stCanLead: LINES[1], stTooYoung: LINES[2], stHome: LINES[3] };
   const [dot, moss, fig, pip] = S.mibis; S.mibis.forEach(m => { m.notches = 3; });
-  fig.born = 2; pip.born = 3; pip.bonded = true; pip.bondCare = 0;
+  fig.born = 2; pip.born = 3; pip.bonded = true;
   assert.equal(a.activeStatus(moss), LINES[0]); assert.equal(a.activeStatus(dot), LINES[1]); assert.equal(a.activeStatus(fig), LINES[2]);
-  S.carried = [1, 2, 3, 4]; assert.equal(a.activeStatus(pip), LINES[3]); S.carried = [1, 2, 3]; assert.equal(a.activeStatus(pip), LINES[5]);
-  pip.bonded = false; assert.equal(a.activeStatus(pip), LINES[4]);
-  for (const k of ["stLeads", "stCanLead", "stTooYoung", "stGrowsWithCare", "stHome", "stHomeBonded"]) assert.match(PAGE, new RegExp(k + ": '" + ctx.CARE_TEXT[k] + "'"), "the page's table holds the approved line");
+  S.carried = [1, 2, 3, 4]; assert.equal(a.activeStatus(pip), LINES[2], "a young mibi with you, bonded or not: too young"); S.carried = [1, 2, 3]; assert.equal(a.activeStatus(pip), LINES[3], "at home, bonded or not: at home");
+  pip.bonded = false; assert.equal(a.activeStatus(pip), LINES[3]);
+  for (const k of ["stLeads", "stCanLead", "stTooYoung", "stHome"]) assert.match(PAGE, new RegExp(k + ": '" + ctx.CARE_TEXT[k] + "'"), "the page's table holds the approved line");
 });
-test("the approved strings: Tend's line from the species moment and the place; the grow-up and full lines", () => {
-  const src = PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0], tm = source("TEND_MOMENT");
-  const T = vm.runInContext(tm + "\n" + source("listWords") + "\n" + src + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
-  assert.equal(T.tended({ name: "Dot", sp: 0, mem: "meadow" }), "Dot leans on the glass · it remembers the meadow");
-  assert.equal(T.tended({ name: "Fig", sp: 1, mem: null }), "Fig glows softly · it hasn’t been out yet");
-  assert.equal(T.walked(["Dot", "Moss", "Fig"]), "Dot, Moss and Fig walk together"); assert.equal(T.walked(["Dot", "Moss"]), "Dot and Moss walk together");
+test("the approved strings: Play together's lines (the final words), the grow-up and full lines", () => {
+  const src = PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0];
+  const T = vm.runInContext(source("listWords") + "\n" + src + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
+  assert.equal(T.playedOther("Dot", "meadow"), "Dot plays · it remembers the meadow"); assert.equal(T.playedOther("Fig", null), "Fig plays · it hasn’t been out yet"); assert.equal(T.playedOther("Fig", "mud"), "Fig crosses the mud");
+  assert.equal(T.played(["Dot", "Moss", "Fig"]), "Dot, Moss and Fig play together"); assert.equal(T.played(["Dot", "Moss"]), "Dot and Moss play together");
+  assert.equal(T.playLabel(["Dot"]), "Play with Dot"); assert.equal(T.playLabel(["Dot", "Moss"]), "Play together"); assert.equal(T.playOnce, "once a turn"); assert.equal(T.playBond, "a bond is for good");
+  assert.equal(T.playDocked, "docked · lift to play"); assert.equal(T.playAfter, "after the expedition"); assert.equal(T.playedTurn, "again after the next expedition");
+  assert.equal(T.playedRefused, "You played this turn · again after the next expedition"); assert.equal(T.playDockedRefused, "Lift the Companion to play");
+  assert.equal(T.playsLeft(["Dot"], 2), "Dot · play twice more to bond"); assert.equal(T.playsLeft(["Dot", "Moss"], 1), "Dot and Moss · play once more to bond");
+  assert.equal(T.bonded("Dot"), "Dot is bonded with you"); assert.equal(T.stHome, "at home");
   assert.equal(T.grownLeads("Moss"), "Moss is grown · it leads the Probe now"); assert.equal(T.clockGrownHome("Fig"), "Fig is grown · at home");
   assert.equal(T.fullRefused("Pip"), "Pip stays home: the Companion is full · leave one at home first");
-  assert.equal(T.tendMidExp("Dot"), "Tend Dot when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
+  assert.equal(T.playMidExp, "Play together when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
   assert.equal(T.noOneWith, "no one with you"); assert.equal(T.noOneGrown, "no one grown yet");
   // the expedition choice's partner card, bottom-line context (companion-screens.md, "Expedition choice: the partner card")
   const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 16, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs out narrow burrows" }] });
@@ -480,7 +442,7 @@ test("the approved strings: Tend's line from the species moment and the place; t
   assert.equal(pr(), "no one with you");
   S.carried = [1]; assert.equal(pr(), "no one grown yet", "a juvenile with you, no one grown");
   S.turn = 3; assert.equal(pr(), "Partner: Dot · calms wary creatures", "as built");
-  for (const k of Object.keys(T)) { const v = typeof T[k] === "function" ? T[k](k.startsWith("walk") ? ["Abcdefghij"] : k === "tended" ? { name: "Abcdefghij", sp: 0, mem: "meadow" } : "Abcdefghij") : T[k];
+  for (const k of Object.keys(T)) { const v = typeof T[k] === "function" ? T[k](/^play(Label|ed|sLeft)$/.test(k) ? ["Abcdefghij"] : "Abcdefghij") : T[k];
     assert.ok(!/[{}]/.test(v), k + ": no placeholder braces"); }
 });
 
@@ -556,9 +518,9 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
   assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
 });
-test("the page's help: the carried set, Walk together and Tend; no Spend time and no Habitat", () => {
+test("the page's help: the carried set and Play together; no Tend, no Spend time and no Habitat", () => {
   const help = PAGE.slice(0, PAGE.indexOf("<script type=\"module\">"));   // the page before its script (the ?embed line in <head> is a classic script)
-  assert.match(help, /Up to three mibis are <b>with you<\/b>/); assert.match(help, /<b>Tend<\/b> each one once a day/);
+  assert.match(help, /Up to three mibis are <b>with you<\/b>/); assert.match(help, /<b>Play together<\/b> once a turn, off the dock, with all of them/); assert.match(help, /Play together three times and a mibi is bonded, and a bond is for good\. A young mibi grows up in time\./); assert.ok(!/Tend|Walk together/.test(help), "the retired press is gone from the help");
   assert.ok(!/spends time|One mibi is|Habitat/.test(PAGE), "retired words");
 });
 
@@ -582,7 +544,7 @@ test("T7, the Station's half: a full refusal shows once, null after it is seen, 
   assert.equal(ST.carryRefusal(st, sv).id, 2, "a later refusal never hides the full one"); ST.seenCarryRefusal(st, sv); assert.equal(ST.carryRefusal(st, sv), null, "both seen");
 });
 test("T4 with a lift, a redock and a reload: the Station's care mirror does not move", { skip: station("mergeCare", "dockKey", "normalize") }, () => {
-  const S = save({ carried: [1], turn: 3 }), t = world(S); const dot = S.mibis[0]; dot.tends = 2; dot.outings = 1; t.tend(dot); t.walkAll();
+  const S = save({ carried: [1], turn: 3 }), t = world(S); const dot = S.mibis[0]; dot.plays = 2; dot.outings = 1; t.walkAll();
   let st = stationWorld(S); ST.mergeCare(st, S); const care = s => JSON.stringify(s.mibis.map(q => [q.id, q.care, q.tends, q.outings, q.notches, q.bonded, q.bondCare ?? null, q.grownTurn ?? null]));
   const once = care(st);
   ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 2000); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 3000); ST.mergeCare(st, S); assert.equal(care(st), once, "lift and redock");
@@ -729,7 +691,7 @@ test("careQueue: bonds first in carried order, 2400 ms each; then one grow-up cu
   r = q([ev(1, { grown: true }), ev(2, { bonded: true }), ev(3, { bonded: true }), ev(4, { grown: true })], 2400);
   assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 2, at: 2400 }, { kind: "bond", id: 3, at: 4800 }, { kind: "grow", id: 1, at: 7200 }, { kind: "grow", id: 4, at: 8400 }]);
   assert.equal(r.lock, 8700);
-  // a Tend that bonds: after the 1.8 s moment, held to the end of the bond
+  // a play together that bonds: after the 1.8 s moment, held to the end of the bond
   r = q([ev(1, { bonded: true })], 1800); assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 1, at: 1800 }]); assert.equal(r.lock, 4200);
   r = q([ev(1, { grown: true })], 1800); assert.equal(r.lock, 2100, "one grow: 300 ms after its cut");
   assert.equal(q([ev(1)], 1800).cuts.length, 0); assert.equal(q([ev(1)], 1800).lock, 300);
@@ -739,7 +701,7 @@ test("careQueue: bonds first in carried order, 2400 ms each; then one grow-up cu
   assert.match(source("careLines"), /careQueue\(evs, dur\)/);
 });
 test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to the Station", () => {
-  const T = vm.runInContext(source("TEND_MOMENT") + "\n" + source("listWords") + "\n" + PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0] + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
+  const T = vm.runInContext(source("listWords") + "\n" + PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0] + "\n;CARE_TEXT", vm.createContext({ PLAYTEST_ON: false }));
   assert.equal(T.takeOne, "dock to take one along"); assert.equal(T.takeAlong, "take mibis along"); assert.equal(T.whenDocked, "when docked");
   assert.ok(!/'[^'\n]*(take one at the Station|dock at the Station|lift at the Station|consignment)[^'\n]*'/.test(PAGE), "no retired docking words in any string");
 });
@@ -780,7 +742,7 @@ test("X1 1: a save holding S05 and S10 mibis (sp 4 and 9, beyond the list the pa
   assert.equal(q.S.mibis.length, 4);
 });
 
-test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Tend, Walk and the skills run; no line reads undefined or null", () => {
+test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Play together and the skills run; no line reads undefined or null", () => {
   const { p, st } = X1.docked(); p.run("save()");
   // every labelled plate drawn, recorded as id@x,y×k
   p.run("var __plates = []; (() => { const real = placeholderPlate; placeholderPlate = (id, x, y, k) => { __plates.push([id, x, y, k || 1]); return real(id, x, y, k); }; })()");
@@ -796,15 +758,13 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
     assert.ok(d.includes("c-sprite-other-32@97,52x8"), "the stage: the 256×256 plate at (97, 52), page " + i + ": " + d); }
   render("menu");
   d = render("setup"); assert.ok(d.includes("c-sprite-other-32@8,458x3"), "the partner at 3× at (8, 458): " + d);
-  assert.doesNotThrow(() => p.run("tendPress(mibiById(1))"));
-  assert.match(p.run("FX.notes.map(n => n.text).join('\\n')"), /^Dot settles · it hasn’t been out yet$/m, "Tend's line takes tendMomentOther");
-  p.pass(3000); assert.doesNotThrow(() => p.run("tendPress(mibiById(3))"));
+  assert.doesNotThrow(() => p.run("playRefused()"));   // docked: the refusal line, never a throw
   assert.equal(p.run("mibiSpName(mibiById(1))"), "Tepor"); assert.equal(p.run("mibiSpName(mibiById(3))"), "Igara");
   // lift, Walk with Dot alone, then an expedition
   assert.ok(ST.dockKey(st, p.sv()).lifted); p.putSt(st); p.run("save()");
   p.run("S.carried = [1]; S.walkTurn = -1;");
   assert.doesNotThrow(() => p.run("walk(mibiById(1))"));
-  assert.match(p.run("FX.notes.map(n => n.text).join('\\n') + S.log.join('\\n')"), /Dot walks the path/, "the Walk line takes walkedOther");
+  assert.match(p.run("FX.notes.map(n => n.text).join('\\n') + S.log.join('\\n')"), /Dot plays · it hasn’t been out yet/, "the play's line takes playedOther");
   p.run("S.carried = [1, 3]; S.phase = 'setup';");
   p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp, "an expedition started with Dot leading");
   assert.equal(p.run("S.exp.pt && S.exp.pt.sp"), 4);
@@ -851,8 +811,7 @@ test("X1 5: with no spName in the save (a Station save from before it), the name
   const { p } = X1.docked({ oldSave: true }); p.run("save()");
   assert.equal(p.run("CARE_TEXT.spOther"), "a Station species");
   // the copywriter's signed strings (2026-10-11 14:42)
-  assert.equal(p.run("CARE_TEXT.abOther"), "no field ability yet"); assert.equal(p.run("CARE_TEXT.tendMomentOther"), "settles");
-  assert.equal(p.run("CARE_TEXT.walkedOther('Dot', 'meadow')"), "Dot walks the meadow"); assert.equal(p.run("CARE_TEXT.walkedOther('Dot', null)"), "Dot walks the path");
+  assert.equal(p.run("CARE_TEXT.abOther"), "no field ability yet"); assert.equal(p.run("CARE_TEXT.playedOther('Dot', 'meadow')"), "Dot plays · it remembers the meadow"); assert.equal(p.run("CARE_TEXT.playedOther('Dot', null)"), "Dot plays · it hasn’t been out yet");
   assert.deepEqual(plain(p.run("S.mibis.map(mibiSpName)")), Array(4).fill("a Station species"));
   assert.ok(p.S.log.some(l => /Dot \(a Station species\) is home at the Station/.test(l)));
 });
@@ -910,7 +869,7 @@ test("X1 7: a returned S05 pod keeps its species and genome seed through every r
 // The whole page in the sandbox, undocked, with the given mibis carried; draw calls recorded by wrapping the page's own
 // functions (text, panel, miniOf, mibiSprite, placeholderPlate, and art for the rings: RING is 'ptring2', RING_S 'ptrings2').
 const X26 = (() => {
-  const mib = (id, name, sp, o = {}) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null, mem: null }, o);
+  const mib = (id, name, sp, o = {}) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null, mem: null }, o);
   function world(mibis, carried, { motion = false } = {}) {
     const p = X1.page(); p.run("newWorld(1); save();");
     p.run(`S.mibis = ${JSON.stringify(mibis)}; S.carried = ${JSON.stringify(carried)}; S.phase = 'setup'; S.ui.sel = 0; RM.matches = ${!motion};`);
@@ -993,11 +952,11 @@ test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a r
   assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "dcirc64")), "no ring and no dashed circle");
   assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 116 && c[3] === 452 && c[5] === 3), "its name at (116, 452), 3×");
   assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 124 && c[3] === 491), "the young chip at (116, 488)");
-  const lines = d.filter(c => c[0] === "text" && c[3] === 520 && c[2] === 116); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line, unbonded");
+  const lines = d.filter(c => c[0] === "text" && c[3] === 520 && c[2] === 116); assert.deepEqual(lines.map(c => c[1]), [T.riderTime], "one 2× line");
   assert.equal(lines[0][4], p.run("C.mist"));
   for (const no of ["No partner", "young · grows up in time"]) assert.ok(!d.some(c => c[0] === "text" && c[1] === no), "no " + no);
   p = X26.world([dot({ bonded: true })], [1]); d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "text" && c[1] === T.riderCare && c[3] === 520), "bonded: riderCare");
+  assert.ok(d.some(c => c[0] === "text" && c[1] === T.riderTime && c[3] === 520), "bonded: the same riderTime line");
   p = X26.world([dot(), X26.mib(3, "Moss", 2)], [3, 1]); d = p.draw("setup");
   assert.ok(d.some(c => c[0] === "open" && c[1] === 2 && c[4] === 8 && c[6] === 3) && d.some(c => c[0] === "text" && c[1] === "Moss" && c[3] === 452), "the first in S.carried");
   assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 398 && c[6] === 1), "the other at 1× at the top right");
@@ -1034,7 +993,7 @@ test("X26 §5.6: endExpedition gives the rider +1 outing and its mem, no notch; 
 });
 
 test("X26 §5.7: the Walk adds no Data at any stage: nothing in the save moves but the mibis, walkTurn and the log", () => {
-  for (const [label, m] of [["juvenile", dot()], ["bonded juvenile", dot({ bonded: true, bondCare: 0, care: 0 })], ["adult", dot({ grownTurn: 0 })], ["elder", dot({ grownTurn: 0 })]]) {
+  for (const [label, m] of [["juvenile", dot()], ["bonded juvenile", dot({ bonded: true })], ["adult", dot({ grownTurn: 0 })], ["elder", dot({ grownTurn: 0 })]]) {
     const p = X26.world([m], [1]); if (label === "elder") p.run("S.turn = 6");
     p.run("S.hold = { e: 1, d: 2, s: 3, pods: [] }; save();"); const before = p.sv();
     p.run("walk(mibiById(1)); save();"); const after = p.sv();
@@ -1042,19 +1001,19 @@ test("X26 §5.7: the Walk adds no Data at any stage: nothing in the save moves b
     assert.equal(without(after, ["mibis", "walkTurn", "log"]), without(before, ["mibis", "walkTurn", "log"]), label + ": no Data, nothing else");
   }
   const T = X1.page().run("CARE_TEXT");
-  assert.equal(T.walkedYoung("Dot", "meadow"), "Dot walks the meadow"); assert.equal(T.walkedYoung("Dot", null), "Dot walks the path");
+  assert.equal(T.playedYoung("Dot", "meadow"), "Dot plays · it remembers the meadow"); assert.equal(T.playedYoung("Dot", null), "Dot plays · it hasn’t been out yet");
   const p = X26.world([X26.mib(1, "Dot", 0, { mem: "meadow" })], [1]); p.run("walk(mibiById(1))");
   const said = p.run("FX.notes.map(n => n.text).join('\\n')");
-  assert.match(said, /^Dot walks the meadow$/m, "a juvenile Loika's Walk line names no field result"); assert.ok(!/calms a wary Loika/.test(said));
+  assert.match(said, /^Dot plays · it remembers the meadow$/m, "a juvenile Loika's line names no field result"); assert.ok(!/calms a wary Loika/.test(said));
   const q = X26.world([X26.mib(1, "Dot", 0, { grownTurn: 0, mem: "meadow" })], [1]); q.run("walk(mibiById(1))");
   assert.match(q.run("FX.notes.map(n => n.text).join('\\n')"), /calms a wary Loika/, "a grown Loika's line as built");
 });
 
-test("X26 §5.8: activeStatus with you: an unbonded juvenile exactly stTooYoung, a bonded one exactly stGrowsWithCare, mid-expedition too", () => {
+test("X26 §5.8: activeStatus with you: a juvenile, bonded or not, exactly stTooYoung, mid-expedition too", () => {
   const p = X26.world([dot(), X26.mib(3, "Moss", 2, { bonded: true })], [1, 3]);
-  assert.equal(p.run("activeStatus(mibiById(1))"), p.run("CARE_TEXT.stTooYoung")); assert.equal(p.run("activeStatus(mibiById(3))"), p.run("CARE_TEXT.stGrowsWithCare"));
+  assert.equal(p.run("activeStatus(mibiById(1))"), p.run("CARE_TEXT.stTooYoung")); assert.equal(p.run("activeStatus(mibiById(3))"), p.run("CARE_TEXT.stTooYoung"));
   p.setOut();
-  assert.equal(p.run("activeStatus(mibiById(1))"), "with you · too young for the Probe"); assert.equal(p.run("activeStatus(mibiById(3))"), "with you · grows up in time");
+  assert.equal(p.run("activeStatus(mibiById(1))"), "with you · too young for the Probe"); assert.equal(p.run("activeStatus(mibiById(3))"), "with you · too young for the Probe");
 });
 
 test("X26 §5.9: a save made before this change loads and plays; an expedition in progress without ex.rider shows the empty slot and does not throw", () => {
@@ -1077,11 +1036,11 @@ test("X26 bottom line: mid-expedition with a rider the menu's Mibis row reads ri
 
 test("X26 copy: the copywriter's signed strings, within their widths", () => {
   const p = X1.page(), T = p.run("CARE_TEXT"), N = "Abcdefghij";
-  assert.equal(T.riderTime, "grows up in time, riding along"); assert.equal(T.riderCare, "grows up in time, riding along");
+  assert.equal(T.riderTime, "grows up in time, riding along"); assert.equal(T.riderCare, undefined);
   assert.equal(T.riderSetOut("Dot"), "Dot rides along until it’s grown"); assert.equal(T.riderMenu("Dot"), "Dot rides along");
-  assert.equal(T.walkedYoung("Dot", "pond"), T.walkedOther("Dot", "pond"), "walkedYoung shares walkedOther's string");
+  assert.equal(T.playedYoung("Dot", "pond"), T.playedOther("Dot", "pond"), "playedYoung shares playedOther's string");
   const w = (s, f = "textW") => p.run(`${f}(${JSON.stringify(s)}, 2)`), wide = "W".repeat(10), nm = w(wide) <= 118 ? wide : N;
-  assert.ok(w(T.riderTime) <= 306 && w(T.riderCare) <= 306, "the card line fits 306");
+  assert.ok(w(T.riderTime) <= 306, "the card line fits 306");
   assert.ok(w(T.riderSetOut(nm)) <= 400, "the set-out note fits one line"); assert.ok(w(T.riderMenu(nm), "textWT") <= 249, "the menu context fits 249");
   // the stage species line for a juvenile: '‹Species› · ‹abText› once grown'; an unknown-species juvenile keeps abOther; an adult as built
   const q = X26.world([dot(), X26.mib(3, "Bean", -1), pip()], [1, 3, 2]);
@@ -1252,14 +1211,14 @@ test("juvenile pictures: only the places that draw a mibi ask for the juvenile (
   assert.match(source("drawActive"), /mibiSprite\(m\.sp, pose, fr, x, y, BIG, flip, st === 'juvenile'\)/, "the stage follows its chip (st), not the stage the clock has reached");
 });
 
-test("juvenile pictures: no site draws a juvenile in huddle or eat (Tend, the Walk, the Call, 20 s of look-out, every card, face, mini, row)", () => {
+test("juvenile pictures: no site draws a juvenile in huddle or eat (Play together, the Call, 20 s of look-out, every card, face, mini, row)", () => {
   const bad = new Set(["huddle", "eat", "eat0", "eat1"]), seen = [];
   const scan = (p, pages, ts, tag) => { for (const pg of pages) for (const t of ts) for (const c of p.draw(pg, t)) { seen.push(1); if (c[c.length - 1] === true && c.some(v => bad.has(v))) assert.fail(tag + " " + pg + " t " + t + ": " + JSON.stringify(c)); } };
   for (const sp of [0, 1, 2]) {
     const m = () => X26.mib(1, "Kit", sp), pal = () => X26.mib(2, "Pal", (sp + 1) % 3);
     let p = X26.world([m(), pal()], [1, 2]); p.run("S.ui.aId = 1");
     scan(p, ["setup", "mibis", "active"], [0, 400], "rest sp " + sp);
-    p.run("FX.moment = { id: 1, at: 0 }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Tend sp " + sp);                       // Tend
+    p.run("FX.moment = { id: 1, at: 0 }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Play sp " + sp);                       // Play together
     p.run("FX.moment = { id: 1, at: 0 }; FX.walk = { id: 1, at: 0, others: [2] }"); scan(p, ["active", "mibis"], [0, 300, 900, 1500, 2400], "Walk sp " + sp);   // the Walk
     p.run("FX.moment = null; FX.walk = null; FX.callMibi = { id: 1, at: 0, wrong: false }"); scan(p, ["active", "mibis"], [0, 300, 700, 1200], "Call sp " + sp);   // the Call
     p = X26.world([m()], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1"); scan(p, ["active", "map"], Array.from({ length: 1000 }, (_, i) => 1000 + i * 20), "look-out sp " + sp);   // 20 s of look-out
@@ -1310,14 +1269,31 @@ test("juvenile pictures at the sites: setup card and faces, header mini, roster,
   d = p.draw("active", 100); assert.deepEqual(d.filter(c => c[0] === "plate" && c[1] === "c-token-48").map(c => [c[2], c[5], c[7]]), [[36, 0, false], [366, 2, true]], "left Pip (adult), right Moss (juvenile)");
 });
 
-test("R2: the Tend that will make the bond says 'a bond is for good'; the others say 'once a day'", () => {
+test("R2: the play together that will make the bond says 'a bond is for good'; the others say 'once a turn'", () => {
   const p = X26.world([dot()], [1]);
-  const ctx = (tends, bonded = false) => p.run(`{ const m = mibiById(1); m.tends = ${tends}; m.bonded = ${bonded}; delete m.tendDay; S.phase = 'active'; S.walkTurn = S.turn; lineFor().ctx; }`);
-  assert.equal(ctx(0), "once a day"); assert.equal(ctx(1), "once a day");
-  assert.equal(ctx(2), "a bond is for good", "the third Tend sets bonded");
-  assert.equal(ctx(2, true), "once a day", "already bonded: nothing to warn of");
-  p.run("{ const m = mibiById(1); m.bonded = false; m.tends = 2; m.care = 2; delete m.tendDay; tend(m); }");
+  const ctx = (plays, bonded = false) => p.run(`{ const m = mibiById(1); m.plays = ${plays}; m.bonded = ${bonded}; S.walkTurn = -1; S.phase = 'active'; lineFor().ctx; }`);
+  assert.equal(ctx(0), "once a turn"); assert.equal(ctx(1), "once a turn");
+  assert.equal(ctx(2), "a bond is for good", "the third play bonds");
+  assert.equal(ctx(2, true), "once a turn", "already bonded: nothing to warn of");
+  p.run("{ const m = mibiById(1); m.bonded = false; m.plays = 2; S.walkTurn = -1; walk(m); }");
   assert.equal(p.run("mibiById(1).bonded"), true, "the press the line warns of is the one that bonds");
+  assert.equal(p.run("(S.walkTurn = S.turn, lineFor().ctx)"), "again after the next expedition", "played this turn: dimmed with its reason");
+  assert.equal(p.run("lineFor().ok"), "Play with Dot", "one with you: Play with ‹name›");
+});
+
+test("bond-walks-fix-1: each Play together press shows its own lines in order; no stale line after a later press or the bond", () => {
+  const p = X26.world([pip(), dot()], [1, 2]);   // two adults... Pip grown, Dot young: both carried
+  p.run("S.phase = 'active'; S.ui.aId = 1;");
+  const press = () => p.run("{ S.walkTurn = -1; FX.notes = []; FX.held = []; walk(mibiById(2)); FX.msg; }");
+  assert.equal(press(), "Dot and Pip play together", "press 1: its own line first");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip · play twice more to bond", "press 1: then plays left");
+  assert.equal(press(), "Dot and Pip play together", "press 2: first line, not press 1's leftover");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip · play once more to bond", "press 2: once more");
+  assert.equal(press(), "Dot and Pip play together", "press 3: the play line first, never 'once more'");
+  p.pass(2400); assert.match(p.run("FX.msg"), /is bonded with you$/, "press 3: then the bond line");
+  assert.equal(press(), "Dot and Pip play together", "press 4: a bonded mibi gets no plays-left line");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip play together", "press 4: no stale or plays-left line after the bond");
+  assert.ok(!/bonded|once more|twice more/.test(p.run("FX.msg")));
 });
 
 // ---- Ageing in turns: the age words, the stage words, and the real time a mibi has been the player's ----
@@ -1348,7 +1324,7 @@ test("the age line: {n} turns old, then what the stage means; never a countdown 
   assert.equal(at({ born: 0 }, 17), "17 turns old", "an adult says nothing more here; no countdown to elder"); assert.equal(at({ born: 0 }, 2), "2 turns old");
   assert.equal(at({ born: 25 }, 26), "1 turn old · grows up next turn"); assert.equal(at({ born: 24 }, 26), "2 turns old", "grown on the clock");
   assert.equal(at({ born: 25 }, 25), "new this turn · grows up in 2 turns");
-  assert.equal(at({ born: 25, bonded: true }, 26), "1 turn old", "a bonded young mibi: its status already says it grows with care");
+  assert.equal(at({ born: 25, bonded: true }, 26), "1 turn old · grows up next turn", "a bonded young mibi grows on the clock like any other");
   assert.equal(at({ born: 0, bonded: true, grownTurn: 2 }, 20), "20 turns old · an elder for 2 turns", "an elder from grownTurn + 16");
   S.turn = 26; assert.deepEqual([{ born: 26 }, { born: 25 }, { born: 1 }].map(m => a.turnsShort(m)), ["new", "1 turn", "25 turns"]);
 });
@@ -1367,7 +1343,7 @@ test("Yours: calendar days on the device's own clock, then months, then years; t
 });
 test("the mibi page: the status on one line at 396, the age line at 424 and Yours at 446, the dots lowered to 478 and 480", () => {
   const d = source("drawActive");
-  assert.match(d, /text\(clipText\(growing \? CARE_TEXT\.stGrowsWithCare : activeStatus\(m\), 390, 2\), 30, 396,/);
+  assert.match(d, /text\(clipText\(activeStatus\(m\), 390, 2\), 30, 396,/);
   assert.match(d, /text\(clipText\(ageLine\(m\), 390, 2\), 30, 424, C\.fog\)/); assert.match(d, /text\(clipText\(yt, 390, 2\), 30, 446, C\.mist\)/);
   assert.match(d, /R\(px - 2, 478, 10, 10, C\.amber\); R\(px, 480, 6, 6,/); assert.ok(!/wrapText\(growing/.test(d), "the status never wraps");
 });

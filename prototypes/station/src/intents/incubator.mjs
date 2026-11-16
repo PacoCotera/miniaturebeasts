@@ -14,7 +14,7 @@ export function choosePod(h) {
   if (!h.st.tray.length || S.vivFull(h.st, h.settings)) return null;
   const i = h.st.tray.findIndex((q) => q.idd); return i >= 0 ? i : 0;
 }
-// Why the empty Incubator's ✓ cannot act, as a key: "full" | "settling" (a new room takes mibis after the next walk) | "noPods" | null (dead ends B1: never a silent ✓).
+// Why the empty Incubator's ✓ cannot act, as a key: "full" | "settling" (a new room takes mibis after the next expedition) | "noPods" | null (dead ends B1: never a silent ✓).
 export const emptyBlock = (st, settings) => S.placeBlock(st, settings) ?? (st.tray.length ? null : "noPods");
 // The settling words (incubator.json strings.settling / settlingPlate), the room named; one turn left says "ready next turn", more say how many (the Reeds and the later rooms settle longer).
 export function settlingNotice(st, settings, Sg) { const i = S.settlingRoom(st, settings), n = i === null ? 1 : S.settlingLeft(st, i), Room = i === null ? "" : S.roomName(st, i); return n > 1 ? Sg.settlingMany.replace("{Room}", Room).replace("{n}", n) : Sg.settling.replace("{Room}", Room); }

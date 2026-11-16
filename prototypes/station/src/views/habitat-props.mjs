@@ -50,7 +50,7 @@ export function modulesOf(m, shown, Sg, sittingSpec = null) {
   if (crossWhy) rows.cross = held(fill(Sg.cross, named), crossWhy, out ? plateT : kinPlate ?? [capLine(crossWhy)]);
   // Wild: in the order of the rule (state.returnMibiBlock): bonded, with you, going at the next dock; a young mibi is not held (the rooms words C12a)
   const wildBlock = S.returnMibiBlock(st, sv, shown), price = "";   // a release pays nothing (owner 2026-10-28 23:16)
-  if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)).concat(stage === "juvenile" ? [fill(Sg.wildPlates.bondedYoung, named)] : []), { price });
+  if (wildBlock === "a bonded mibi stays") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.bonded, Sg.wildPlates.bonded.map((l) => fill(l, named)), { price });
   else if (wildBlock === "already with you") rows.wild = held(fill(Sg.wild, named), Sg.wildBlocks.withYou[where], plateT, { price });
   else if (wildBlock) { const k = wildBlock === "your last mibi at home stays" ? "last" : wildBlock.startsWith("tucked away") ? "tucked" : wildBlock.startsWith("back in") ? "coming" : "waiting";   // the put-away rules: the last at home stays; tucked away or on its way back, it cannot be returned
     rows.wild = held(fill(Sg.wild, named), k === "coming" ? wildBlock : Sg.wildBlocks[k], Sg.wildPlates[k].map((l) => fill(l, { ...named, n: S.backIn(st, shown) })), { price }); }

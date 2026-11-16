@@ -3,7 +3,7 @@
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
 // accepted, dockN, known, probe, carryReqs, returned (with species, gs, and rg, the region it goes back to; none means region 1), and each mibi's id, name, sp, species, spName, born, since, sinceFloor, from, bonded.
-// The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
+// The care fields of a mibi (plays, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the one-time back-fill of plays from tends.
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework/cross.mjs";
@@ -176,8 +176,7 @@ export function normalize(st, now = Date.now()) {
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); if (!Number.isInteger(p.dryAt)) p.dryAt = (st.turn | 0) + POD_LIFE;   /* a pod from before freshness keeps a full life from now (additive, no schema bump) */ if (p.id === st.readingPod && !Number.isInteger(p.keep)) p.keep = Math.max(1, p.dryAt - (st.turn | 0)); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
     if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
-    m.care = m.care > 0 ? m.care | 0 : 0; m.tends = m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;
-    if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
+    m.plays = m.plays > 0 ? m.plays | 0 : m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;   /* plays: the Companion's Play together count; an older save back-fills it once from its tends, which stay unread (additive, no schema bump) */ }
   if (!Array.isArray(st.roomMeta)) st.roomMeta = []; if (!Array.isArray(st.finds)) st.finds = [];   /* each room's theme and settling, and the themed finds held at home (rooms-rules.json; additive, no schema bump): a room with no entry is the i-th theme, settled */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
   delete st.bench;   /* the bench's day ledger is gone (2026-11-03): an older save's copy is dropped, nothing else changes */
@@ -325,7 +324,6 @@ export function seenCarryRefusal(st, sv) { const r = carryRefusal(st, sv); if (r
 // The stage, one definition on both pages (the Companion's index.html has the same text; the parity test proves they agree).
 export function stageAt(m, turn, j, e) {
   if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
-  if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
 export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, stageTurn(st, m), settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);   // a tucked-away mibi's clocks are stopped (stageTurn)
@@ -375,8 +373,7 @@ export function mergeCare(st, sv, seen = null) {   // seen: if given, each habit
     const q = mibiById(st, m.id); if (!q) continue;
     const was = q.outings || 0;
     if (m.mem) q.mem = m.mem; if (m.places) q.places = m.places;
-    q.outings = Math.max(was, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); q.care = Math.max(q.care || 0, m.care || 0); q.tends = Math.max(q.tends || 0, m.tends || 0);
-    if (m.bondCare != null) q.bondCare = q.bondCare == null ? m.bondCare : Math.max(q.bondCare, m.bondCare);
+    q.outings = Math.max(was, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); q.plays = Math.max(q.plays || 0, m.plays || 0);
     if (m.grownTurn != null) q.grownTurn = q.grownTurn == null ? m.grownTurn : Math.max(q.grownTurn, m.grownTurn);
     q.bonded = !!q.bonded || !!m.bonded;
     if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) { const r = recordHabit(st, q, h); if (r.ok && seen) seen.push({ id: q.id, habit: h }); } }
@@ -903,8 +900,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
       const two = members(sp).slice(0, 2), budIsSecond = two.length < 2 && !!bud && speciesOf(bud) === sp;
       const walkOf = (m) => Math.max(0, (m.born || 0) + aT - st.turn);
       const walks = Math.max(...two.map(walkOf), budIsSecond ? aT : 0);
-      const bondedWaits = two.some((m) => m.bonded && m.grownTurn == null && !isAdult(st, m, settings));
-      g = { key: "growUp", names: [two[0].name, budIsSecond ? null : two[1]?.name ?? null], walks, bondedWaits, step: budIsSecond ? budStep() : { key: "goOut" } }; break;
+      g = { key: "growUp", names: [two[0].name, budIsSecond ? null : two[1]?.name ?? null], walks, step: budIsSecond ? budStep() : { key: "goOut" } }; break;
     }
     if (!g && crossOpen && !living.some((m) => m.from && m.from.how === "cross") && !(bud && bud.kind === "cross")) {
       for (const sp of spOrder) { const ad = members(sp).filter((m) => isAdult(st, m, settings)); if (ad.length < 2) continue;
@@ -1038,7 +1034,7 @@ export function freePlace(st, settings = DEFAULT_SETTINGS, prefer = null) {
   return null;
 }
 export const vivFull = (st, settings = DEFAULT_SETTINGS) => freePlace(st, settings) === null;
-// Why no place is free (dead ends B1): null when one is, "settling" when a new room still has a free place but is settling (it takes mibis after the next walk), else "full". The settling room's index: settlingRoom.
+// Why no place is free (dead ends B1): null when one is, "settling" when a new room still has a free place but is settling (it takes mibis after the next expedition), else "full". The settling room's index: settlingRoom.
 export const settlingRoom = (st, settings = DEFAULT_SETTINGS) => { const n = roomCount(st, settings); for (let i = 0; i < n; i++) if (isSettling(st, i) && inRoom(st, i).length < ROOM) return i; return null; };
 export const placeBlock = (st, settings = DEFAULT_SETTINGS) => (!vivFull(st, settings) ? null : settlingRoom(st, settings) !== null ? "settling" : "full");
 // The room rules (rooms-rules.json): the ladder, the settling times, the ceiling, the themes and the finds. `settings.roomRules` overrides a key (a test, the developer's panel); `needFind` is off until the Companion's trips produce finds.

@@ -14,7 +14,7 @@ const page = (store = {}) => makePage({ store });
 
 const world = (crates, withMibi = true) => {
   const p = page();
-  p.run(`newWorld(1); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = ${withMibi ? "[1]" : "[]"}; S.bay = ${JSON.stringify(Array.from({ length: crates }, (_, i) => ({ id: "c" + i, pods: [] })))}; S.phase = 'setup'; save();`);
+  p.run(`newWorld(1); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }); S.carried = ${withMibi ? "[1]" : "[]"}; S.bay = ${JSON.stringify(Array.from({ length: crates }, (_, i) => ({ id: "c" + i, pods: [] })))}; S.phase = 'setup'; save();`);
   const st = freshSt(p.S.wid, p.S.turn); st.mibis = [{ id: 1, name: "Dot", sp: 0, born: -9 }]; p.writeSt(st);
   p.run("RM.matches = false; trackDock()");   // moving (the sandbox says reduced motion otherwise); the first look: nothing happens on load
   return { p, st };
