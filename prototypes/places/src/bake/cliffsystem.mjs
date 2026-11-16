@@ -105,7 +105,7 @@ export function placeBoundary(A, o) {
   // an outward lean: the wall moves one column out going south; the raised cell at the corner (low to the north and on the outside) is the lean-out piece, with the upper wall's last cell and the lower wall's first
   // (the lower wall runs 3 rows or more before any face, so no end cap reaching up the wall meets the piece; else the rounded back corner stays)
   const leanOut = (x, y) => { if (!R(x, y) || !Lo(x, y - 1)) return null; for (const [h, d] of [['w', -1], ['e', 1]]) if (Lo(x + d, y) && R(x - d, y - 1) && R(x - d, y - 2) && Lo(x, y - 2) && R(x - d, y) && [1, 2, 3].every((k) => R(x, y + k) && Lo(x + d, y + k))) return h; return null; };
-  const items = [], covered = new Set(), ck = (x, y) => `${x},${y}`;
+  const items = [], covered = new Set(), underSlant = new Set(), ck = (x, y) => `${x},${y}`;
   const hiAt = o.hiBand || (() => false);   // hiBand(x, y): the low cell beside a lit band is so light that the band of the ground's own ramp would not clear it by 25 luma (AD 11-15): the piece takes the lighter band
   const emit = (id, x, y, hi = false) => {
     const p = BY_ID.get(id);
@@ -126,10 +126,15 @@ export function placeBoundary(A, o) {
     // a steep run's last column that meets the wall of the land running on (a concave corner) ends as the concave corner does (GD 11-15 fix-2 (3)): no end piece of its own, the wall goes on down the land's flank
     if (steep && steep.i >= steep.n && (steep.hand === 'r' ? concaveE : concaveW)) id = steep.hand === 'r' ? 'concave-e' : 'concave-w';
     else if (steep) id = `steep-${steep.hand}-${steep.i < steep.n ? Math.min(3, steep.ds[steep.i]) : 'end'}`;
+    // cliff-contour-2 (fix 2): a one-row step that ends in a concave corner (the land beside runs on south) is the corner reached by a slope: the wall stands in front, never a face end with the flank left bare
+    else if (dr === 'end' && concaveE) id = 'concave-e-slope'; else if (dl === 'end' && concaveW) id = 'concave-w-slope';
     else if (dr) id = `dr-${dr}`; else if (dl) id = `dl-${dl}`;
     else if (concaveE) id = 'concave-e'; else if (concaveW) id = 'concave-w';
     else id = pick ? pick(x, y) || middleOf(key, wx0 + x, wy0 + y, level).id : middleOf(key, wx0 + x, wy0 + y, level).id;
     emit(id, x, y, hiAt(x, y + 1));
+    // cliff-contour-2 (fix 3): a steep column's lip falls across it to the next column's lip d rows lower, so the next column's ring cells between the two lips (rows y + 1 .. y + d - 1) lie under the slant: the
+    // slanted lip is their edge, and a side lip drawn there would stand alone on the top. They draw none (the check counts them as the steep column's).
+    if (steep && steep.i < steep.n) { const dx = steep.hand === 'r' ? 1 : -1; for (let k = 1; k < steep.ds[steep.i]; k++) underSlant.add(ck(x + dx, y + k)); }
     // the caps on the low cell beyond each open end; a diagonal's own steps draw none
     for (const [hand, xn, open, skip] of [['w', x - 1, westEnd, dr === 'mid' || dr === 'end' || (steep && steep.hand === 'r' && steep.i > 0)], ['e', x + 1, eastEnd, dl === 'mid' || dl === 'end' || (steep && steep.hand === 'l' && steep.i > 0)]]) {
       if (!open || skip || !Lo(xn, y) || W(xn, y)) continue;
@@ -152,9 +157,13 @@ export function placeBoundary(A, o) {
       // a side with a wall going down 2 rows or more keeps its rounded back corner (rim-ne, rim-nw): the slope's half on the other side gives way to it
       const cornerW = rl === 0 && w && Lo(x - 1, y + 1), cornerE = rr === 0 && e && Lo(x + 1, y + 1), rs = cornerW || cornerE ? null : SLOPE[`${rl},${rr}`];
       if (rs) { emit(`rim-${rs[0]}-${rs[1]}`, x, y, hiAt(x, y - 1)); continue; }
+      // cliff-contour-2 (GD item 3): the rounded corner with a one-row rim step on its other side meets that step as a slope (the hi pieces also account for the one-row wall cell above: no rock there, rule 7)
+      const far = cornerW && !cornerE && !e ? rr : cornerE && !cornerW && !w ? rl : 0;
+      if (far < 0) { emit(`rim-${cornerE ? 'ne' : 'nw'}-hi`, x, y, hiAt(x, y - 1)); continue; }
       if (e && w) continue; emit(e ? 'rim-ne' : w ? 'rim-nw' : 'rim-n', x, y, hiAt(x, y - 1)); continue;
     }
     if (e && w) continue;   // a ridge one cell wide: no piece (the check lists it)
+    if (underSlant.has(ck(x, y))) { covered.add(ck(x, y)); continue; }
     emit(e ? 'lip-side-e' : 'lip-side-w', x, y);
   }
   // the flank cells nothing above has drawn: the wall seen edge-on, by hand (raised to the west: the block's east wall), head (north end), band, tail (south end)

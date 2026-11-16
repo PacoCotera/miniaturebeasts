@@ -58,6 +58,35 @@ function columnPixel(p, x, y, yt, cracks, opts = {}) {
   if (yy <= LIP.foot[1]) return put(p, x, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
   if (yy <= LIP.end && !opts.noFootMask) return put(p, x, y, null, 'foot');
 }
+// cliff-contour-2 (AD 11-15: strata step, never bend; pixel lead: the foot steps with them): a slope column's face. The lip (moss and underside) follows the slope line, its top at yt; the rock under it keeps
+// the straight middle's courses HORIZONTAL from yo, the lip's fall rounded to the half row (stepOf: 8 px), so at each half row the lip passes, the strata end against a step and carry on one half row lower. The
+// course right under the lip follows the lip (its top edge), the lit/shade split and the strata breaks stay level; the foot sits under the lowest course at the same steps (a short level stretch of contact
+// shade, the next one a half row lower), so foot and courses read as one stepped rock. riser: at the step's first column (the lower side) the joint runs down from the higher course's break to the lower one's.
+const stepOf = (fall) => 8 * Math.floor((fall + 4) / 8);
+function steppedPixel(p, x, y, yt, yo, riser, opts = {}) {
+  const yy = y - yt, yr = y - yo;
+  if (yy < 0) return opts.noBand ? put(p, x, y, 'top', 'top') : put(p, x, y, -yy <= bandOf(x) ? 'rimlit' : 'top', 'top');
+  if (yy === LIP.light) return put(p, x, y, 'mosslight', 'lip');
+  if (yy <= LIP.moss[1]) return put(p, x, y, 'moss', 'lip');
+  if (yy === LIP.dark) return put(p, x, y, 'mossdark', 'lip');
+  if (yy === LIP.under) return put(p, x, y, 'crack', 'rock', FLAG.underside);
+  if (yr <= LIP.rock1) {
+    const strata = yr === LIP.s1 || yr === LIP.s2;
+    // the riser: the joint between the higher course's break (riser rows above this column's) and this column's own
+    const joint = riser !== null && [LIP.s1, LIP.s2].some((s) => yr >= s - riser && yr < s);
+    const v = yy === LIP.rock0 ? 'edge' : joint ? 'crack' : rockValue(Math.max(yr, LIP.rock0 + 1), x, null);
+    return put(p, x, y, v, 'rock', strata ? FLAG.strata : 0);
+  }
+  if (yr <= LIP.foot[1]) return put(p, x, y, yr <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
+  if (yr <= LIP.end) put(p, x, y, null, 'foot');
+}
+// one slope column x: yt the lip's top (the drawn slope line, as cliff-contour-1 drew it), fallAt(x) the lip's fall at the pixel column's centre (px from the straight lip, continuous across the pieces'
+// joins), y0 the straight lip top in the piece's box
+function steppedColumn(p, x, y0, yt, fallAt, opts = {}) {
+  const yo = y0 + stepOf(fallAt(x)), prev = y0 + stepOf(fallAt(x - 1)), riser = yo > prev ? yo - prev : null;
+  for (let y = 0; y < p.h; y++) { if (opts.skip && opts.skip(x, y)) continue; steppedPixel(p, x, y, yt, yo, riser, opts); }
+}
+
 // the slabs: one vertical crack per stratum (or none) inside the tile, never in the 3 px bands at its edges (look 1); different for each middle
 const cracksOf = (set, letter) => [0, 1, 2].map((s) => ((set + letter + s) % 3 === 0 ? -1 : 3 + ((set * 7 + letter * 5 + s * 3) % 10)));
 
@@ -85,13 +114,13 @@ const arcInset = (y, R = 8) => (y >= R ? 0 : Math.round(R - Math.sqrt(R * R - (R
 // End cap, east hand (on the low cell east of a run; cols 0-3 overhang the run's last column): k rows of step, convex (the side wall continues above) or not.
 function cap(k, convex, lit = false) {
   const ly = (k - 1) * 16, p = P(20, 80 + ly), cracks = [-1, -1, -1];
-  // the overhang over the run's last column: its rock turning away from the light, under the crease (col 0)
+  // the overhang over the run's last column: the column's own courses run on into the corner (cliff-contour-2, GD rules 4 and 5: the rock wraps the corner as one rock; the crease line and the shaded band
+  // that stood here made every end and convex corner a separate square pillar beside the face)
   for (let y = ly; y < ly + 80; y++) for (let x = 0; x < 4; x++) {
     const yy = y - ly - 6;
     if (yy < 0) continue;   // the lip cell's top stays the column's own
     columnPixel(p, x, y, ly + 6, cracks, { noFootMask: true });
     const i = y * p.w + x;
-    if (p.r[i] === 'rock') p.v[i] = x === 0 && yy > LIP.under ? 'crack' : p.v[i] === 'lit' || p.v[i] === 'edge' ? 'shade' : p.v[i];
     if (p.v[i] !== null) p.f[i] |= FLAG.over;
   }
   // with a side above (k >= 2) the side lip's moss turns down the column's corner to meet the face's lip (look 3: the lip wraps onto the side)
@@ -144,6 +173,29 @@ function concave() {
   return p;
 }
 
+// cliff-contour-2 (fix 2): the concave corner reached by a slope, east hand (16 x 96 from the row above the lip): the run's last column steps down to it from the west by half a row (the 2:1 end half, dr-end's
+// lip and stepped courses), and the wall of the land to the east stands in front of it as in concave(): the same 14 px wall with its crease, starting right under the sloping lip and running on through the foot
+// rows. Before, the slope piece won over the corner: the column drew a plain face end with its foot, the wall's flank under it was drawn by nobody, and the convex cap further south stood alone as a slab.
+function concaveSlope() {
+  const p = diagonal('end'), S = 22;   // S: the straight lip's top in this box
+  for (let x = 0; x < 16; x++) {
+    const yt = 14 + Math.round(x / 2);
+    for (let y = yt + LIP.under; y < S + 74; y++) {
+      const yy = y - S;
+      if (x >= 16 - SIDE) {
+        const crease = yy <= LIP.rock1;
+        put(p, x, y, crease && x === 16 - SIDE ? 'crack' : crease && x === 17 - SIDE ? 'shade' : wallPx(15 - x, true), 'side');
+        continue;
+      }
+      if (y === yt + LIP.under) continue;   // the lip's underside stays
+      if (yy <= LIP.rock1) put(p, x, y, 'shade', 'rock');
+      else if (yy <= LIP.foot[1]) put(p, x, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
+      else put(p, x, y, 'drop', 'side');
+    }
+  }
+  return p;
+}
+
 // Side pieces. The wall of a block's east side (flank cell east of raised land) faces away from the light: shade; the west side faces it: lit.
 function lipSide() {   // east hand: the ring cell with low ground to its east
   const p = P(16, 16);
@@ -165,10 +217,18 @@ function wall(part, lit) {
   return p;
 }
 // The back rim: the ring cell (rows 16-31) with its thin lit edge, the drop shade on the low cell north of it (rows 12-15). Rounded back corners cut the ring cell's outer corner round.
-function rim(corner) {
+// cliff-contour-2 (GD item 3: a rim corner is rounded and a one-row rim step is a rim slope): edge -1 / +1, the rim on the far side (the west, for the east hand's corner) one row higher / lower: the rim line
+// comes in from the far edge half a row higher / lower and runs at 45 degrees to the corner's arc (the arc's top at the cell's middle), so the step meets the rounded corner with no offset and no one-row rock.
+function rim(corner, edge = 0) {
   const p = P(16, 32);
-  for (let y = 12; y < 16; y++) for (let x = 0; x < 16; x++) put(p, x, y, y < 14 ? 'drop' : 'foot1', 'rim');
-  for (let y = 16; y < 32; y++) for (let x = 0; x < 16; x++) put(p, x, y, y - 16 < bandOf(x) ? 'rimlit' : 'top', y - 16 < bandOf(x) ? 'rim' : 'top');
+  for (let x = 0; x < 16; x++) {
+    const yb = edge && x < 9 ? Math.round(16 + edge * (8.5 - (x + 0.5))) : 16;
+    for (let y = 0; y < 32; y++) {
+      if (y < yb - 4) { if (y >= 16) put(p, x, y, 'meadow', 'rim'); continue; }
+      if (y < yb) { put(p, x, y, y < yb - 2 ? 'drop' : 'foot1', 'rim'); continue; }
+      put(p, x, y, y - yb < bandOf(x) ? 'rimlit' : 'top', y - yb < bandOf(x) ? 'rim' : 'top');
+    }
+  }
   if (corner) {   // east hand: round the north-east corner of the ring cell (radius 7)
     const cx = 8.5, cy = 24.5, r = 7.5;
     for (let y = 12; y < 32; y++) for (let x = 0; x < 16; x++) {
@@ -252,14 +312,13 @@ function wayHalf() {
 // cliff-contour-1, the slope rule: the lip line runs from the column's west edge to its east edge through the half rows between its lip and its neighbours': mid (-8 -> +8 px, the 45 degree line);
 // start (0 -> +8 px) and end (-8 -> 0 px) are the two halves of a 2:1 slope, one even line (a column's lip falls 1 px every 2 px), so a 2:1 stretch (end, start, end, start ...) is one straight line and
 // a 2:1 half beside a 45 degree column bends the line, never a right angle.
+// cliff-contour-2: the face under the lip carries the straight courses, stepped (steppedColumn), never bent along the slope.
 function diagonal(role) {
   const p = P(16, 112);
   const yt = (x) => 16 + (role === 'start' ? 6 + Math.round(x / 2) : role === 'mid' ? -2 + x : -2 + Math.round(x / 2));
-  for (let x = 0; x < 16; x++) for (let y = 0; y < 112; y++) {
-    // GD 11-15 fix-3 (2): a start piece leaves the west 3 px of the row above its lip alone: that is the side lip of the wall above (lip-side), which runs on down to the start's own lip, never cut off by a plain top
-    if (role === 'start' && x < 3 && y < 16) continue;
-    columnPixel(p, x, y, yt(x), [-1, -1, -1]);
-  }
+  const fall = (x) => (role === 'start' ? (x + 0.5) / 2 : role === 'mid' ? -8 + (x + 0.5) : -8 + (x + 0.5) / 2);
+  // GD 11-15 fix-3 (2): a start piece leaves the west 3 px of the row above its lip alone: that is the side lip of the wall above (lip-side), which runs on down to the start's own lip, never cut off by a plain top
+  for (let x = 0; x < 16; x++) steppedColumn(p, x, 22, yt(x), fall, { skip: (xx, y) => role === 'start' && xx < 3 && y < 16 });
   return p;
 }
 
@@ -270,18 +329,10 @@ function diagonal(role) {
 function steepCol(d) {
   // the relief blocks this column down to the next column's foot row (its end rows), so the wall runs d rows lower than a face: its foot is d rows lower, where the pawn can stand
   // cliff-contour-1, the slope rule: the lip falls evenly across the column to the next column's lip (d rows lower at the east edge), so a steep run's top is one slanted line, never a stair of flat lips
-  const p = P(16, 80 + 16 * d), slope = d || 2, ext = 16 * d;
-  for (let x = 0; x < 16; x++) for (let y = 0; y < p.h; y++) {
-    // ya: rows from the lip row's top edge (the foot stays where the relief puts it); yy: rows from the falling lip
-    const fall = Math.round(d * 16 * (x + 0.5) / 16), ya = y - 6, yy = ya - fall;
-    if (yy < 0) { put(p, x, y, 'top', 'top'); continue; }
-    if (yy === LIP.light) { put(p, x, y, 'mosslight', 'lip'); continue; }
-    if (yy <= LIP.moss[1]) { put(p, x, y, 'moss', 'lip'); continue; }
-    if (yy === LIP.dark) { put(p, x, y, 'mossdark', 'lip'); continue; }
-    if (ya <= LIP.rock1 + ext) { put(p, x, y, yy === LIP.under ? 'crack' : yy <= LIP.under + 3 ? 'edge' : ya < 22 + slope * x ? 'lit' : 'shade', 'rock', yy === LIP.under ? FLAG.underside : 0); continue; }
-    if (ya <= LIP.foot[1] + ext) { put(p, x, y, ya <= LIP.foot[0] + 1 + ext ? 'foot2' : 'foot1', 'foot'); continue; }
-    if (ya <= LIP.end + ext) put(p, x, y, null, 'foot');
-  }
+  // cliff-contour-2 (pixel lead 11-16, fix 4): the face under the slanted lip carries the straight courses stepped a half row at a time (steppedColumn), and the foot steps at the same x, a short level
+  // stretch of contact shade each, the face's lowest course ending on it: one stepped rock, never a slab over a stair of per-column feet. No lit band along the lip (as before).
+  const p = P(16, 80 + 16 * d), fall = (x) => d * (x + 0.5);
+  for (let x = 0; x < 16; x++) steppedColumn(p, x, 6, 6 + Math.round(fall(x)), fall, { noBand: true });
   return p;
 }
 
@@ -292,12 +343,16 @@ for (let s = 0; s < 3; s++) for (let l = 0; l < 6; l++) DRAW.set(`mid-${s + 1}${
 for (const k of [1, 2, 3]) { DRAW.set(`end-e-${k}`, cap(k, false)); DRAW.set(`end-w-${k}`, mirror(cap(k, false, true))); }
 DRAW.set('convex-e', cap(3, true)); DRAW.set('convex-w', mirror(cap(3, true, true)));
 DRAW.set('concave-e', concave()); DRAW.set('concave-w', swapLight(mirror(concave())));
-for (const r of ['start', 'mid', 'end']) { DRAW.set(`dr-${r}`, diagonal(r)); DRAW.set(`dl-${r}`, swapLight(mirror(diagonal(r)))); }
-for (const d of [1, 2, 3, 0]) { DRAW.set(`steep-r-${d || 'end'}`, steepCol(d)); DRAW.set(`steep-l-${d || 'end'}`, swapLight(mirror(steepCol(d)))); }
+DRAW.set('concave-e-slope', concaveSlope()); DRAW.set('concave-w-slope', swapLight(mirror(concaveSlope())));
+// cliff-contour-2 (pixel lead: the face texture is one family, the same course tones as the straight middle): the down-to-the-west slopes and steep columns are the mirror only, no light swap (they were drawn
+// in the shade tones, a tone break against the middles beside them)
+for (const r of ['start', 'mid', 'end']) { DRAW.set(`dr-${r}`, diagonal(r)); DRAW.set(`dl-${r}`, mirror(diagonal(r))); }
+for (const d of [1, 2, 3, 0]) { DRAW.set(`steep-r-${d || 'end'}`, steepCol(d)); DRAW.set(`steep-l-${d || 'end'}`, mirror(steepCol(d))); }
 DRAW.set('way-l', wayHalf()); DRAW.set('way-r', swapLight(mirror(wayHalf())));
 DRAW.set('lip-side-e', lipSide()); DRAW.set('lip-side-w', mirror(lipSide()));
 for (const part of ['head', 'band', 'tail']) { DRAW.set(`wall-e-${part}`, wall(part, false)); DRAW.set(`wall-w-${part}`, mirror(wall(part, true))); }
 DRAW.set('rim-n', rim(false)); DRAW.set('rim-ne', rim(true)); DRAW.set('rim-nw', mirror(rim(true)));
+DRAW.set('rim-ne-hi', rim(true, -1)); DRAW.set('rim-nw-hi', mirror(rim(true, -1)));   // (a far rim one row lower would leave low ground on both sides: a ridge, no piece)
 for (const [r, vl, vr] of [['start', 0, 1], ['mid', -1, 1], ['end', -1, 0]]) { DRAW.set(`rim-dr-${r}`, rimSlope(vl, vr)); DRAW.set(`rim-dl-${r}`, mirror(rimSlope(vl, vr))); }
 DRAW.set('lean-w', leanIn(true)); DRAW.set('lean-e', mirror(leanIn(false)));
 DRAW.set('lean-out-w', leanOut(true)); DRAW.set('lean-out-e', mirror(leanOut(false)));
@@ -341,8 +396,14 @@ const ZONES = [
   // a block whose west wall moves in going south (lean-w) and out again (lean-out-w), and whose east wall moves out (lean-out-e) and in (lean-e)
   { id: 'T9b', label: 'T9b leans: side walls moving one column in and out', at: [304, 1088],
     rows: ['...11111111...', '...11111111...', '...11111111...', '....11111111..', '....11111111..', '....11111111..', '....11111111..', '...11111111...', '...11111111...', '...11111111...', '...11111111...', '...11111111...', '...11111111...', '..............', '..............', '..............', '..............'] },
+  // cliff-contour-2 (fix 2): a one-row step down into a concave corner on each hand (the land in the middle runs on south as a block, its side walls in front of the steps' last columns)
+  { id: 'T9c', label: 'T9c a one-row step ending in a concave corner (W and E): the wall stands in front', at: [16, 1376],
+    rows: [rep('1', 14), rep('1', 14), rep('1', 14), '...11111111...', ...Array(7).fill('....111111....'), ...Array(5).fill(rep('.', 14))] },
+  // cliff-contour-2 (GD item 3): a back rim whose one-row steps meet the rounded corners above 3-row side walls (rim-nw-hi, rim-ne-hi)
+  { id: 'T9d', label: 'T9d back rim: a one-row step meeting each rounded corner as a slope', at: [272, 1376],
+    rows: [rep('.', 12), '....1111....', '...111111...', '...111111...', '...111111...', ...Array(3).fill(rep('1', 12)), ...Array(5).fill(rep('.', 12))] },
 ];
-const SHEET_W = 576, SHEET_H = 1360;
+const SHEET_W = 576, SHEET_H = 1632;
 
 // the land of a zone for the boundary below `level`: relief.mjs's accessor
 function landOfZone(z, level) {

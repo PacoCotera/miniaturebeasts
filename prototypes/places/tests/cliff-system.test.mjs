@@ -105,3 +105,23 @@ test('cliff-contour-1: side walls moving one column draw leans; the back rim ste
   assert.deepEqual(hill.missing, []);
   assert.deepEqual([3, 4, 5, 7, 8, 10, 11, 12].map((x) => at(hill.items, x, [5, 4, 3, 1, 1, 3, 4, 5][[3, 4, 5, 7, 8, 10, 11, 12].indexOf(x)])[0]), ['rim-dl-end', 'rim-dl-mid', 'rim-dl-mid', 'rim-dl-start', 'rim-dr-start', 'rim-dr-mid', 'rim-dr-mid', 'rim-dr-end']);
 });
+
+test('cliff-contour-2: a one-row step into a concave corner, no side lip under a steep slant, rim corners meeting a one-row step', () => {
+  // the template's T9c (seed 7 seam-east): the step's last column meets the wall of the land running on south: the corner reached by a slope; the wall's flank under it is accounted for, the convex cap below
+  const c = run(['1'.repeat(14), '1'.repeat(14), '1'.repeat(14), '...11111111...', ...Array(7).fill('....111111....'), ...Array(5).fill('.'.repeat(14))]);
+  assert.deepEqual(c.missing, []);
+  assert.deepEqual(at(c.items, 3, 3), ['concave-e-slope']); assert.deepEqual(at(c.items, 10, 3), ['concave-w-slope']);
+  assert.deepEqual(at(c.items, 2, 2), ['dr-start']); assert.deepEqual(at(c.items, 3, 10), ['convex-w']);
+  // a steep run down to the west (seed 9 cell 268): the ring cells between a column's lip and the next one's, under the slant, draw no side lip
+  const draw = (lips, h = 16) => Array.from({ length: h }, (_, y) => [...'.' + lips.map((l) => (y <= l ? '1' : '.')).join('') + '1111'].join(''));
+  const s = run(draw([1, 3, 6, 7, 9]).map((r) => [...r].reverse().join('')));
+  assert.deepEqual(s.missing, []);
+  const under = s.items.filter((it) => /^lip-side-/.test(it.id) && it.x >= 4 && it.x <= 8);   // the run's columns (the land west of them runs to the edge: its own side lip is real)
+  assert.deepEqual(under.map((it) => `${it.id}@${it.x},${it.y}`), []);
+  // the template's T9d: the back rim's one-row steps meet the rounded corners over 3-row side walls; no one-row rock above them
+  const r = run(['.'.repeat(12), '....1111....', '...111111...', '...111111...', '...111111...', ...Array(3).fill('1'.repeat(12)), ...Array(5).fill('.'.repeat(12))]);
+  assert.deepEqual(r.missing, []);
+  assert.deepEqual(at(r.items, 3, 2), ['rim-nw-hi']); assert.deepEqual(at(r.items, 8, 2), ['rim-ne-hi']);
+  assert.deepEqual(at(r.items, 4, 1), ['rim-dl-start']); assert.deepEqual(at(r.items, 7, 1), ['rim-dr-start']);
+  assert.ok(!r.items.some((it) => /^wall-/.test(it.id) && it.y === 1), 'no one-row wall');
+});
