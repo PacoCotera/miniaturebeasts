@@ -620,7 +620,7 @@ function windowOf(S, X, Y) {
       if (!ok) lone.push(y * W + x); }
     const joins = (k, pend) => { const p = i => i === k || t[i] === TV.PATH || pend.has(i); for (const [a, b] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) { const o = k + b * W + a; if (p(o) && p(o + 1) && p(o + W) && p(o + W + 1)) return true; } return false; };   // the strip's tile would sit in a 2 x 2 block of path (else the path pass would give it up again, and the two would never settle)
     const strip = lone.filter(k => (t[k - 1] === TV.PATH && t[k + 1] === TV.PATH) || (t[k - W] === TV.PATH && t[k + W] === TV.PATH)), stripSet = new Set(strip);   // a strip two tiles long (side by side) fills as a pair
-    let n = 0; for (const k of strip) if (lane[k] && joins(k, stripSet)) { t[k] = TV.PATH; n++; }   // a one-tile strip between two paths (a gate beside its trail) joins them, only inside a lane
+    let n = 0; for (const k of strip) if (joins(k, stripSet)) { t[k] = TV.PATH; n++; }   // a one-tile strip between two paths (a gate beside its trail, the notch where two lanes meet: the corner rounds by 1 tile) joins them
     for (const k of lone) if (t[k] === TV.GRASS) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const j = k + dy * W + dx; if (t[j] === TV.PATH && !(gate && gate[j]) && !atEdge(j)) { t[j] = TV.GRASS; n++; } }
     for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { if (t[y * W + x] !== TV.PATH) continue; let ok = false;
       for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) { const a = x + ox, b = y + oy; if (t[b * W + a] === TV.PATH && t[b * W + a + 1] === TV.PATH && t[(b + 1) * W + a] === TV.PATH && t[(b + 1) * W + a + 1] === TV.PATH) ok = true; }
@@ -649,6 +649,11 @@ function windowOf(S, X, Y) {
     let ox = (fcx - (X - HX)) * CW, oy = (fcy - (Y - HY)) * CH, bw = CW, bh = CH, to = nearest(ox, oy, bw, bh);
     if (to < 0 && (st.B[0] !== fcx || st.B[1] !== fcy)) { ox = (Math.min(fcx, st.B[0]) - (X - HX)) * CW; oy = (Math.min(fcy, st.B[1]) - (Y - HY)) * CH; bw = (Math.abs(st.B[0] - fcx) + 1) * CW; bh = (Math.abs(st.B[1] - fcy) + 1) * CH; to = nearest(ox, oy, bw, bh); }
     if (to < 0) { spurs.set(key, 'no path in the cell'); continue; }
+    // the spur holds only if the foot's path reaches the trail tile it aimed at, any break 2 tiles at most (the pinch rule)
+    const reaches = (tx, ty) => { const seen = new Set(), q = []; for (let y = fy + 1; y <= fy + 3; y++) for (let x = fx - 1; x <= fx + wu.w; x++) if (t[y * W + x] === TV.PATH) { seen.add(y * W + x); q.push(y * W + x); }
+      for (let h = 0; h < q.length; h++) { const x = q[h] % W, y = (q[h] / W) | 0; if (Math.abs(x - tx) <= 1 && Math.abs(y - ty) <= 1) return true;
+        for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < ox || Y2 < oy || X2 >= ox + bw || Y2 >= oy + bh) continue; const m = Y2 * W + X2; if (!seen.has(m) && t[m] === TV.PATH) { seen.add(m); q.push(m); } } }
+      return false; };
     const hard = (x, y, r, th) => { for (let dy = -r; dy <= 1 + r; dy++) for (let dx = -r; dx <= 1 + r; dx++) { const X2 = ox + x + dx, Y2 = oy + y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) return true; const v = t[Y2 * W + X2]; if (v === TV.WATER || v === TV.DEEP || v === TV.CLIFF || (th && v === TV.THICKET)) return true; } return false; };
     const masks = [-1, 0, 2].map(tier => { const m = new Uint8Array(bw * bh); for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) m[y * bw + x] = (tier === -1 ? hard(x, y, 2, false) || hard(x, y, 1, true) : tier === 0 ? hard(x, y, 1, true) : hard(x, y, 0, true)) ? 1 : 0; return m; });
     let ok = false, tries = 0;
@@ -659,7 +664,7 @@ function windowOf(S, X, Y) {
         const t0 = t.slice(), l0 = lane.slice(); tries++;
         for (const c of r) paint(ox + (c % bw), oy + ((c / bw) | 0), false);
         settle(gate); offLane(); fade(gate);
-        if (joined()) { ok = true; break; }
+        if (joined() && reaches(ox + (to % bw), oy + ((to / bw) | 0))) { ok = true; break; }
         t.set(t0); lane.set(l0); break;   // the first tier that routes from this start is the spur from it
       }
       if (ok || tries >= 6) break;
