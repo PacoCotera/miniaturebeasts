@@ -112,8 +112,9 @@ export function placeBoundary(A, o) {
     items.push({ id, x, y, box: p ? p.box : [0, 0, ART, ART], line: y + (p ? p.line : 0), cls: p ? p.cls : 9, level, ...(hi ? { hi: true } : {}) });
     for (const [dx, dy] of p ? p.covers : [[0, 0]]) covered.add(ck(x + dx, y + dy));
   };
-  // the face columns and the end caps: every south lip whose picture reaches the window (rows y0 - 5 .. y1 + 2)
-  for (let y = y0 - 5; y <= y1 + 2; y++) for (let x = x0 - 1; x <= x1 + 1; x++) {
+  // the face columns and the end caps: every south lip whose picture reaches the window (rows y0 - 8 .. y1 + 2; cliff-contour-2: a steep column of drop 3 covers 7 rows under its lip, so a lip up to 7 rows
+  // above the window still accounts for cells in it: from y0 - 5, 7 cells over seeds 7, 13, 42 were left to the fallback)
+  for (let y = y0 - 8; y <= y1 + 2; y++) for (let x = x0 - 1; x <= x1 + 1; x++) {
     if (!lip(x, y)) continue;
     if (W(x, y)) { emit(W(x - 1, y) && lip(x - 1, y) ? 'way-r' : 'way-l', x, y, hiAt(x, y + 1)); continue; }
     const lean = leanIn(x, y);
