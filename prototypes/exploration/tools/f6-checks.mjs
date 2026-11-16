@@ -52,7 +52,7 @@ function S2() { return globalThis.__S || (globalThis.__S = P.contextOf ? P.conte
 S.streamPlaces = streamPlaces; S.cutPlaces = cut; S.cutList = cutList.slice(0, 20); S.throughNoFord = noFord; S.throughNoFordList = noFordList.slice(0, 20); S.throughWithFord = ford1;
 // ---- C4 (streams): the tiles of every stream port, both sides of the edge ----
 if (ST && P.contextOf) {
-  const SS = P.contextOf(seed), pcs = ST.streamPieces(SS); let ports = 0, broken = 0; const brokenList = [];
+  const SS = P.contextOf(seed), pcs = ST.streamPieces(SS); let ports = 0, broken = 0, brokenRaised = 0; const brokenList = [];
   const wet = v => v === 2 || v === 20 || v === 21 || v === 1;
   for (const [c, ps] of pcs) for (const p of ps) {
     if (!p.out) continue;
@@ -64,8 +64,9 @@ if (ST && P.contextOf) {
       if (o.side === 'e') { ix = CW; iy = o.off + k + 1; jx = CW + 1; jy = iy; } else if (o.side === 'w') { ix = 1; iy = o.off + k + 1; jx = 0; jy = iy; } else if (o.side === 's') { ix = o.off + k + 1; iy = CH; jx = ix; jy = CH + 1; } else { ix = o.off + k + 1; iy = 1; jx = ix; jy = 0; }
       if (!wet(ct.terrain[iy * ct.w + ix]) || !wet(ct.terrain[jy * ct.w + jx])) bad++;
     }
-    if (bad) { broken++; if (brokenList.length < 12) brokenList.push(X + ',' + Y + o.side); }
+    if (bad) { broken++; const raisedPort = ST.edgeId && (globalThis.F6_STATS.portRaised || new Set()).has(ST.edgeId(X, Y, o.side)); if (raisedPort) brokenRaised++; if (brokenList.length < 12) brokenList.push(X + ',' + Y + o.side + (raisedPort ? ':raised' : ':?')); }
   }
+  S.c4BrokenOnRaised = brokenRaised;
   S.c4Ports = ports; S.c4Broken = broken; S.c4BrokenList = brokenList;
 }
 // ---- falls ----
@@ -109,6 +110,9 @@ if (P.sectorOf) { let tiles = 0, near = 0, far = 0, worst = 0;
   S.c3Tiles = tiles; S.c3Within7Pct = tiles ? +(100 * near / tiles).toFixed(1) : null; S.c3Worst = worst; }
 // ---- R16: the stream's drawn length over the straight distance between its ports ----
 { const r = globalThis.F6_STATS.routes, flat = r.filter(q => !q.slope), slope = r.filter(q => q.slope), mean = a => a.length ? +(a.reduce((s, q) => s + q.len / q.straight, 0) / a.length).toFixed(2) : null; S.r16Flat = mean(flat); S.r16FlatN = flat.length; S.r16Slope = mean(slope); S.r16SlopeN = slope.length; }
+// ---- splits (F6 try 2): the places the stream cut in two that got a ford (water) and the ones cut by something else (listed, not fixed) ----
+{ const sp = globalThis.F6_STATS.splits || new Map(), w = [], o = []; for (const c of cells) { if (!streamCells.has(c)) continue; const r = sp.get(c % RW + ',' + ((c / RW) | 0)); if (!r) continue; if (r.w) w.push(c % RW + ',' + ((c / RW) | 0) + (r.w > 1 ? 'x' + r.w : '')); if (r.o) o.push(c % RW + ',' + ((c / RW) | 0)); }
+  S.splitWater = w.length; S.splitWaterList = w; S.splitOther = o.length; S.splitOtherList = o; }
 S.springs = globalThis.F6_STATS.springs || 0; S.springsKept = globalThis.F6_STATS.kept || 0; S.springsMoved = globalThis.F6_STATS.moved || 0; S.springsNoHollow = globalThis.F6_STATS.noHollow || 0;
 S.totalMs = Date.now() - t0;
 console.log(JSON.stringify({ seed, ...S }));

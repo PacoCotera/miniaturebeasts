@@ -4,7 +4,9 @@
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { writeFileSync, mkdirSync, createWriteStream } from 'node:fs';
-const [seedS, outDir, rootArg] = process.argv.slice(2), seed = +seedS;
+// try 2 modes (a 4th argument):   edge                    one stream crossing a place edge, both places drawn joined (the walking view straddles the edge)
+//                                 split:X,Y,tag,cx,cy     the place X,Y with the walking view at tile cx,cy, the file named <seed>-split-<tag>.png (run it on a tree before and on a tree after the split ford)
+const [seedS, outDir, rootArg, mode] = process.argv.slice(2), seed = +seedS;
 const root = rootArg || path.resolve(new URL('../../..', import.meta.url).pathname), imp = f => import(path.join(root, 'prototypes/exploration/src/gen7', f));
 const require = createRequire(path.join(root, 'prototypes/exploration/package.json')), PI = require('pureimage');
 mkdirSync(outDir, { recursive: true });
@@ -30,10 +32,22 @@ feats.filter(f => f.kind === 'bridge').slice(0, 2).forEach((f, i) => { const c =
   if (n) scenes.push({ name: 'bridge' + (i + 1), title: 'a bridge with its trail', cx: Math.round(sx / n), cy: Math.round(sy / n), cell: [X, Y], slots: [] }); });
 const rav = feats.find(f => f.kind === 'stream' && f.links.drop === 'ravine'); if (rav) { const c = rav.cells[rav.links.seen], X = c % RW, Y = (c / RW) | 0; scenes.push({ name: 'ravine-head', title: 'a ravine head: the stream comes out of the rock', cx: X * CW + 12, cy: Y * CH + 10, cell: [X, Y], slots: [] }); }
 const pass = (re.destinations || []).find(d => d.kind === 'pass' && d.c % RW > 1 && d.c % RW < RW - 2); if (pass) { const X = pass.c % RW, Y = (pass.c / RW) | 0, ir = P.cellIR(seed, X, Y), b = (ir.traces || []).find(t => t.kind === 'beacon') || (ir.traces || [])[0]; scenes.push({ name: 'pass', title: 'a pass with its post' + (b ? '' : ' (no post stands in this place yet)'), cx: b ? ir.origin.x + b.x : X * CW + 12, cy: b ? ir.origin.y + b.y : Y * CH + 14, cell: [X, Y], slots: b ? [{ k: 'post', x: ir.origin.x + b.x, y: ir.origin.y + b.y, w: 1, h: 1 }] : [] }); }
+if (mode === 'edge') {
+  scenes.length = 0; const ST = await imp('streams.mjs'), SS = P.contextOf(seed), pcs = ST.streamPieces(SS), wet = v => v === 2 || v === 20 || v === 21 || v === 1, found = [];
+  for (const [c, ps] of pcs) for (const p of ps) { if (!p.out || p.wOut < 3) continue; const X = c % RW, Y = (c / RW) | 0; if (X < 6 || X > RW - 7 || Y < 6 || Y > 92) continue;
+    const o = p.out, dx = o.side === 'e' ? 1 : o.side === 'w' ? -1 : 0, dy = o.side === 's' ? 1 : o.side === 'n' ? -1 : 0, A = cellOf(X, Y), B = cellOf(X + dx, Y + dy);
+    const gx = o.side === 'e' ? (X + 1) * CW : o.side === 'w' ? X * CW : X * CW + o.off, gy = o.side === 's' ? (Y + 1) * CH : o.side === 'n' ? Y * CH : Y * CH + o.off; let ok = true;
+    for (let k = 0; k < p.wOut; k++) { const ax = (o.side === 'e' || o.side === 'w') ? gx : gx + k, ay = (o.side === 'e' || o.side === 'w') ? gy + k : gy; if (!wet(tileAt(ax, ay)) || !wet(tileAt(ax - (o.side === 'e' ? 1 : o.side === 'w' ? -1 : 0), ay - (o.side === 's' ? 1 : o.side === 'n' ? -1 : 0)))) ok = false; }
+    if (ok) { const horiz = o.side === 'e' || o.side === 'w'; let run = 0; for (let k = -6; k < p.wOut + 6; k++) if (wet(tileAt(horiz ? gx : gx + k, horiz ? gy + k : gy))) run++; if (run > p.wOut + 1) ok = false; }   // a stream, not a lake or a river along the edge
+    if (ok) found.push({ X, Y, dx, dy, o, w: p.wOut, gx, gy }); }
+  const q = found[found.length >> 1]; if (q) scenes.push({ name: 'edge', title: 'a stream crossing a place edge, both places joined', cx: q.gx + (q.o.side === 'n' || q.o.side === 's' ? 1 : 0), cy: q.gy + (q.o.side === 'e' || q.o.side === 'w' ? 1 : 0), cell: [q.X, q.Y], cell2: [q.X + q.dx, q.Y + q.dy], slots: [] });
+}
+if (mode && mode.startsWith('split:')) { scenes.length = 0; const [sx, sy, tag, cx, cy] = mode.slice(6).split(','); scenes.push({ name: 'split-' + tag, title: 'a place cut in two by a stream, ' + tag, cx: +cx, cy: +cy, cell: [+sx, +sy], slots: [] }); }
 // ---- draw ----
 async function draw(sc) {
   const VW = 450, VH = 600, TS = 48, ox = sc.cx - VW / TS / 2, oy = sc.cy - VH / TS / 2 - 1;
-  const img = PI.make(VW + 14 * (CW + 2) + 30, Math.max(VH, 14 * (CH + 2)) + 80), g = img.getContext('2d');
+  const two = sc.cell2 ? [sc.cell2[0] - sc.cell[0], sc.cell2[1] - sc.cell[1]] : null, pW = two ? CW * (1 + Math.abs(two[0])) * 14 : 14 * (CW + 2), pH = two ? CH * (1 + Math.abs(two[1])) * 14 : 14 * (CH + 2);
+  const img = PI.make(VW + Math.max(pW, 700) + 54, Math.max(VH, pH) + 80 + (two ? 60 : 0)), g = img.getContext('2d');
   g.fillStyle = '#222'; g.fillRect(0, 0, img.width, img.height);
   g.fillStyle = '#fff'; g.font = '15pt LS'; g.fillText(`seed ${seed}  ${sc.title}  (place ${sc.cell[0]},${sc.cell[1]})`, 8, 24);
   // walking view
@@ -47,12 +61,20 @@ async function draw(sc) {
   g.fillStyle = '#fff'; g.beginPath(); g.arc((sc.cx - ox + 0.5) * TS, (sc.cy - oy + 0.5) * TS + y0 + 4 * TS * 0, 9, 0, Math.PI * 2); g.fill(); g.fillStyle = '#000'; g.font = '9pt LS'; g.fillText('pawn', (sc.cx - ox) * TS - 2, (sc.cy - oy + 1.15) * TS + y0);
   g.strokeStyle = '#fff'; g.strokeRect(0, y0, VW, VH);
   // the whole place
-  const [X, Y] = sc.cell, ct = cellOf(X, Y), wx = VW + 24, wy = y0, S = 14;
-  for (let y = 0; y < ct.h; y++) for (let x = 0; x < ct.w; x++) { g.fillStyle = COL[ct.terrain[y * ct.w + x]] || '#f0f'; g.fillRect(wx + x * S, wy + y * S, S - 1, S - 1); }
-  for (const s of sc.slots) if (s.x >= ct.x0 && s.x < ct.x0 + ct.w && s.y >= ct.y0 && s.y < ct.y0 + ct.h) { g.fillStyle = '#ffd400'; g.fillRect(wx + (s.x - ct.x0) * S, wy + (s.y - ct.y0) * S, s.w * S - 1, S - 1); }
-  g.strokeStyle = '#fff'; g.strokeRect(wx, wy, ct.w * S, ct.h * S); g.fillStyle = '#fff'; g.font = '9pt LS'; g.fillText('the whole place (its tiles and the one-tile apron), 14 px a tile', wx, wy + ct.h * S + 14);
+  const [X, Y] = sc.cell, ct = cellOf(X, Y), wx = VW + 24, wy = y0, S = 14, used = new Set();
+  let panelBottom;
+  if (two) {   // the two places joined: each one's own tiles, side by side as they lie on the map, the shared edge a white line
+    const lx = Math.min(X, sc.cell2[0]), ly = Math.min(Y, sc.cell2[1]), nx = 1 + Math.abs(two[0]), ny = 1 + Math.abs(two[1]);
+    for (let y = 0; y < ny * CH; y++) for (let x = 0; x < nx * CW; x++) { const v = tileAt(lx * CW + x, ly * CH + y); used.add(v); g.fillStyle = COL[v] || '#f0f'; g.fillRect(wx + x * S, wy + y * S, S - 1, S - 1); }
+    g.strokeStyle = '#fff'; g.strokeRect(wx, wy, nx * CW * S, ny * CH * S); g.strokeStyle = '#ffd400'; g.lineWidth = 3; g.beginPath(); if (two[0]) { g.moveTo(wx + CW * S, wy); g.lineTo(wx + CW * S, wy + ny * CH * S); } else { g.moveTo(wx, wy + CH * S); g.lineTo(wx + nx * CW * S, wy + CH * S); } g.stroke(); g.lineWidth = 1;
+    g.fillStyle = '#fff'; g.font = '9pt LS'; g.fillText(`places ${X},${Y} and ${sc.cell2[0]},${sc.cell2[1]} joined; the yellow line is the edge between them, 14 px a tile`, wx, wy + ny * CH * S + 14); panelBottom = wy + ny * CH * S;
+  } else {
+    for (let y = 0; y < ct.h; y++) for (let x = 0; x < ct.w; x++) { g.fillStyle = COL[ct.terrain[y * ct.w + x]] || '#f0f'; g.fillRect(wx + x * S, wy + y * S, S - 1, S - 1); used.add(ct.terrain[y * ct.w + x]); }
+    for (const s of sc.slots) if (s.x >= ct.x0 && s.x < ct.x0 + ct.w && s.y >= ct.y0 && s.y < ct.y0 + ct.h) { g.fillStyle = '#ffd400'; g.fillRect(wx + (s.x - ct.x0) * S, wy + (s.y - ct.y0) * S, s.w * S - 1, S - 1); }
+    g.strokeStyle = '#fff'; g.strokeRect(wx, wy, ct.w * S, ct.h * S); g.fillStyle = '#fff'; g.font = '9pt LS'; g.fillText('the whole place (its tiles and the one-tile apron), 14 px a tile', wx, wy + ct.h * S + 14); panelBottom = wy + ct.h * S;
+  }
   // the key
-  let ky = wy + ct.h * S + 30; const used = new Set(); for (let y = 0; y < ct.h; y++) for (let x = 0; x < ct.w; x++) used.add(ct.terrain[y * ct.w + x]);
+  let ky = panelBottom + 30;
   g.font = '9pt LS'; let kx = wx; for (const v of [...used].sort((a, b) => a - b)) { if (kx + 150 > img.width) { kx = wx; ky += 16; } g.fillStyle = COL[v] || '#f0f'; g.fillRect(kx, ky - 9, 11, 11); g.fillStyle = '#fff'; g.fillText(NAME[v] || 'ground ' + v, kx + 15, ky); kx += 150; }
   const file = path.join(outDir, `${seed}-${sc.name}.png`);
   await PI.encodePNGToStream(img, createWriteStream(file)); return file;

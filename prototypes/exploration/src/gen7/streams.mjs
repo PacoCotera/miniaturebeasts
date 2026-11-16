@@ -48,6 +48,8 @@ export function streamPieces(S) {
   return (S.streamPieces = by);
 }
 
+// a name for the world edge a port lies on, the same from both places (the checks list a port by it)
+export const edgeId = (cx, cy, side) => side === 'e' ? 'v' + (cx + 1) + ',' + cy : side === 'w' ? 'v' + cx + ',' + cy : side === 's' ? 'h' + cx + ',' + (cy + 1) : 'h' + cx + ',' + cy;
 const brushA = w => (w - 1) >> 1, brushB = w => w >> 1;
 // the cell-local tile where a port's brush is centred: its first row or column of the edge plus the brush's reach
 const startTile = (pt, w) => { const a = brushA(w), o = pt.off + a; return pt.side === 'w' ? [0, o] : pt.side === 'e' ? [CW - 1, o] : pt.side === 'n' ? [o, 0] : [o, CH - 1]; };
@@ -87,7 +89,7 @@ export function drawStream(t, raised, mask, W, H, ox, oy, gx0, gy0, piece, nP, f
     if (piece.mouth && i > 0) { const k = rn(x, y); if ((t[k] === G.WATER || t[k] === G.DEEP) && !mask[k]) break; }
     for (let dy = -a; dy <= b; dy++) for (let dx = -a; dx <= b; dx++) {
       const X = ox + x + dx, Y = oy - up + y + dy; if (X < 0 || Y < 0 || X >= W || Y >= H) continue;
-      const k = Y * W + X; if (raised[k] || t[k] === G.CLIFF || t[k] === G.DEEP) continue;
+      const k = Y * W + X; if (raised[k] || t[k] === G.CLIFF || t[k] === G.DEEP) { if (raised[k] || t[k] === G.CLIFF) { if (i < 3 && piece.in && !falls) tiles.rIn = true; if (i >= n - 3 && piece.out) tiles.rOut = true; } continue; }
       t[k] = G.WATER; mask[k] = 1;
     }
     tiles.push(rn(x, y));
