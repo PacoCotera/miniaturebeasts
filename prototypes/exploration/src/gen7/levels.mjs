@@ -607,12 +607,17 @@ function fixGaps(r, W, H, rule, lk, noRaise) {
 // straight edge and comes back (the tile beyond it and the tiles before and after it along the edge are the other level, the tiles behind it its own) is cut (a bump) or filled (a notch), so the edge runs
 // straight past it. Its two one-tile turns would draw as a lean and a lean back (a face one tile wide). An edit is kept when it makes no shape check fail that did not, leaves no straight run over its cap,
 // and touches no held tile (and raises none the rule keeps low). Found in raster order (the world's order in every window). Returns the number of edits.
-export const BUMP_MAX = 4;
+export const BUMP_MAX = 4, BUMP_READ = 8, BUMP_WHY = { done: 0, held: 0, viol: 0, cap: 0 };   // BUMP_WHY: the tools' count of what the pass did and why it left a strip
+let BUMPS_ON = true;
+export const setBumps = (on) => { BUMPS_ON = !!on; GEN++; };   // the tools: the land with the pass off (before / after counts)
 function flattenBumps(r, W, H, rule, lk, noRaise) {
-  const R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]); let n = 0;
+  if (!BUMPS_ON) return 0;
+  const R =(x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]); let n = 0;
   // the straight run of edge tiles through (x, y) that face (ox, oy) (raised, the tile that way low), along the edge
-  const runAt = (x, y, ox, oy) => { const ax = oy ? 1 : 0, ay = ox ? 1 : 0, is = (a, b) => R(a, b) === 1 && R(a + ox, b + oy) === 0; if (!is(x, y)) return 0;
-    let k = 1; for (let t = 1; is(x + t * ax, y + t * ay); t++) k++; for (let t = 1; is(x - t * ax, y - t * ay); t++) k++; return k; };
+  // every read of the pass stays within BUMP_READ tiles of the strip (a window's ring may differ from the true land further out: the seam), so a run that goes on past that is taken as over its cap
+  const runAt = (x, y, ox, oy, k0) => { const ax = oy ? 1 : 0, ay = ox ? 1 : 0, is = (a, b) => R(a, b) === 1 && R(a + ox, b + oy) === 0; if (!is(x, y)) return 0;
+    let k = 1, t = 1; for (; t <= k0 + BUMP_READ && is(x + t * ax, y + t * ay); t++) k++; if (t > k0 + BUMP_READ) return 1e9;
+    for (t = 1; t <= BUMP_READ + 1 && is(x - t * ax, y - t * ay); t++) k++; if (t > BUMP_READ + 1) return 1e9; return k; };
   const capOf = (ox, oy) => (ox ? CAP.side : oy > 0 ? CAP.south : CAP.rim);
   for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
     const v = r[y * W + x], ax = oy ? 1 : 0, ay = ox ? 1 : 0; if (R(x - ax, y - ay) === v) continue;
@@ -620,16 +625,29 @@ function flattenBumps(r, W, H, rule, lk, noRaise) {
     if (k < 1 || k > BUMP_MAX || R(x + k * ax, y + k * ay) !== 1 - v) continue;
     let ok = true; for (let j = -1; j <= k && ok; j++) if (R(x + j * ax - ox, y + j * ay - oy) !== v) ok = false;
     if (!ok) continue;
-    const tiles = []; for (let j = 0; j < k; j++) tiles.push((y + j * ay) * W + x + j * ax);
-    if (tiles.some(i => (lk && lk[i]) || (v === 0 && noRaise[i]))) continue;
-    const x0 = x - 1, y0 = y - 1, x1 = x + k * ax + 1, y1 = y + k * ay + 1;
-    DBGV.length = 0; const before = violBox(r, W, H, x0, y0, x1, y1, rule.faceRows);
-    for (const i of tiles) r[i] = 1 - v;
-    // the edge it leaves: a bump cut leaves the tiles behind it facing out; a notch filled leaves the strip itself facing back
-    const ex = v ? x - ox : x, ey = v ? y - oy : y, fx = v ? ox : -ox, fy = v ? oy : -oy;
-    DBGV.length = 0;
-    if (violBox(r, W, H, x0, y0, x1, y1, rule.faceRows) > before || runAt(ex, ey, fx, fy) > capOf(fx, fy)) { for (const i of tiles) r[i] = v; continue; }
-    n++;
+    // the edits tried, in order: the strip turned to the other level (a bump cut, a notch filled: the edge runs straight past it), else the strip carried on along the edge, forward then back, by 1 to
+    // BUMP_MAX tiles of its own level (it then meets the next turn, a corner or another step, and its out-and-back becomes one step)
+    const strip = []; for (let j = 0; j < k; j++) strip.push([(y + j * ay) * W + x + j * ax, 1 - v]);
+    const tries = [strip];
+    for (const dir of [1, -1]) for (let m = 1; m <= BUMP_MAX; m++) { const t = []; for (let j = 0; j < m; j++) { const jj = dir > 0 ? k + j : -1 - j; t.push([(y + jj * ay) * W + x + jj * ax, v]); } tries.push(t); }
+    const x0 = x - 1 - BUMP_MAX * ax, y0 = y - 1 - BUMP_MAX * ay, x1 = x + (k + BUMP_MAX) * ax + 1, y1 = y + (k + BUMP_MAX) * ay + 1;
+    DBGV.length = 0; const before = violBox(r, W, H, x0, y0, x1, y1, rule.faceRows); let done = false, why = null;
+    for (const t of tries) {
+      if (t.some(([i, to]) => i < 0 || i >= W * H || (lk && lk[i]) || (to === 1 && noRaise[i]) || r[i] === to)) { why = why || 'held'; continue; }
+      for (const [i, to] of t) r[i] = to;
+      // the edge a cut or fill leaves: a bump cut leaves the tiles behind it facing out; a notch filled leaves the strip itself facing back (a carried strip makes no longer run than was there)
+      const ex = v ? x - ox : x, ey = v ? y - oy : y, fx = v ? ox : -ox, fy = v ? oy : -oy;
+      DBGV.length = 0;
+      // a carried strip must end the out-and-back: past its new end the edge turns (a corner or a step), it does not come back to the line (that would only be a longer bump)
+      let back = false; if (t !== strip) { const dir = t[0][0] === (y + k * ay) * W + x + k * ax ? 1 : -1; let j = dir > 0 ? k : -1, steps = 0; while (steps++ <= BUMP_READ && R(x + j * ax, y + j * ay) === v && R(x + j * ax + ox, y + j * ay + oy) === 1 - v) j += dir;
+        back = R(x + j * ax, y + j * ay) === 1 - v && R(x + j * ax - ox, y + j * ay - oy) === v; }
+      const vb = violBox(r, W, H, x0, y0, x1, y1, rule.faceRows) > before, cp = back || (t === strip && runAt(ex, ey, fx, fy, k) > capOf(fx, fy));
+      if (!vb && !cp) { done = true; break; }
+      for (const [i, to] of t) r[i] = 1 - to;
+      if (!why || why === 'held') why = vb ? 'viol' : 'cap';
+    }
+    if (!done) { BUMP_WHY[why || 'held']++; continue; }
+    n++; BUMP_WHY.done++;
   }
   return n;
 }
@@ -814,10 +832,10 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
 }
 // land-reach-1: the natural site of a stair on the edge (st.X, st.Y)-(st.X, st.Y + 1), or null: [x0, lip] in world tiles (see siteOf). The field is smoothed as windowLevels smooths it (the sum over the rounded
 // element of radius `smooth`), read from the cells' q; a tile is raised where the sum is at or over the threshold times the element's count.
-export const NAT_FOOT = 3, NAT_PART = 200;   // walkable low rows under the foot row; the field part a way up must climb from and to (tiles, or the search box's rim)
+export const NAT_FOOT = 3, NAT_PART = 200, NAT_DEEP = 20;   // NAT_DEEP: the lip row may lie this many rows into the lower cell (a basin whose tip starts low in it)   // walkable low rows under the foot row; the field part a way up must climb from and to (tiles, or the search box's rim)
 function natSite(L, st, wet, clearAt) {
   const rad = L.rule.smooth | 0, th = L.rule.levels[0], foot = footRoom(L.rule.faceRows), up = SITE_UP + 2, down = foot + NAT_FOOT - 1;   // footRoom counts the foot row and one walkable row
-  const xa = (st.X - 1) * CW + 2, xb = (st.X + 2) * CW - SITE_W - 2, ya = st.Y * CH + 10, yb = (st.Y + 1) * CH + 6;
+  const xa = (st.X - 1) * CW + 2, xb = (st.X + 2) * CW - SITE_W - 2, ya = st.Y * CH + 10, yb = (st.Y + 1) * CH + NAT_DEEP;
   const M = 16, bx0 = xa - rad - M, by0 = ya - up - rad - M, bw = xb + SITE_W + rad + M - bx0, bh = yb + down + 1 + rad + M - by0;   // M: room for the part floods (wide)
   const qW = (gx, gy) => { const cx = Math.floor(gx / CW), cy = Math.floor(gy / CH); return qCell(L, cx, cy)[(gy - cy * CH) * CW + gx - cx * CW]; };
   const Q = new Int32Array(bw * bh); for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) Q[y * bw + x] = qW(bx0 + x, by0 + y);
@@ -842,7 +860,7 @@ function natSite(L, st, wet, clearAt) {
     return false; }
   const base = st.X * CW + st.port - 2, xs = [];
   for (let d = 0; base + d <= xb || base - d >= xa; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 >= xa && x0 <= xb) xs.push(x0); }
-  const lips = []; for (let d = 0; d <= 18; d++) for (const s of d ? [1, -1] : [1]) { const y = st.Y * CH + CH - 1 + s * d; if (y >= ya && y <= yb) lips.push(y); }
+  const lips = []; for (let d = 0; d <= 22; d++) for (const s of d ? [1, -1] : [1]) { const y = st.Y * CH + CH - 1 + s * d; if (y >= ya && y <= yb) lips.push(y); }
   for (const x0 of xs) for (const ly of lips) if (ok(x0, ly)) return [x0, ly];
   return null;
 }
@@ -886,7 +904,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps += flattenBumps(r, W, H, L.rule, lk, noRaise); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
