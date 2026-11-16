@@ -7,7 +7,7 @@
   "wobbleOctaves": 2,
   "wobbleStretch": 1,
   "minFeature": 5,
-  "smooth": 0,
+  "smooth": 2,
   "window": 2,
   "faceRows": 3,
   "wayupStraight": true,
