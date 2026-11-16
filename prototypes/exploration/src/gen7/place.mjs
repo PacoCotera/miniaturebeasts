@@ -620,14 +620,20 @@ function windowOf(S, X, Y) {
       if (!ok) lone.push(y * W + x); }
     const joins = (k, pend) => { const p = i => i === k || t[i] === TV.PATH || pend.has(i); for (const [a, b] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) { const o = k + b * W + a; if (p(o) && p(o + 1) && p(o + W) && p(o + W + 1)) return true; } return false; };   // the strip's tile would sit in a 2 x 2 block of path (else the path pass would give it up again, and the two would never settle)
     const strip = lone.filter(k => (t[k - 1] === TV.PATH && t[k + 1] === TV.PATH) || (t[k - W] === TV.PATH && t[k + W] === TV.PATH)), stripSet = new Set(strip);   // a strip two tiles long (side by side) fills as a pair
-    let n = 0; for (const k of strip) if (joins(k, stripSet)) { t[k] = TV.PATH; n++; }   // a one-tile strip between two paths (a gate beside its trail, the notch where two lanes meet: the corner rounds by 1 tile) joins them
+    // a one-tile strip between two paths (a gate beside its trail, the notch where two lanes meet) joins them, inside a lane only; or beside a cell edge, where two places' own drawings meet (each cell
+    // draws its arms alone, so two cells' lanes that leave a shared port the same way lie a tile apart across the edge: left as grass, the fade gave up both and broke the trail)
+    const edgeSide = k => { const mx = (gx0 + (k % W)) % CW, my = (gy0 + ((k / W) | 0)) % CH; return mx <= 1 || mx >= CW - 2 || my <= 1 || my >= CH - 2; };
+    let n = 0; for (const k of strip) if ((lane[k] || edgeSide(k)) && joins(k, stripSet)) { t[k] = TV.PATH; n++; }
     for (const k of lone) if (t[k] === TV.GRASS) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const j = k + dy * W + dx; if (t[j] === TV.PATH && !(gate && gate[j]) && !atEdge(j)) { t[j] = TV.GRASS; n++; } }
     for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { if (t[y * W + x] !== TV.PATH) continue; let ok = false;
       for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) { const a = x + ox, b = y + oy; if (t[b * W + a] === TV.PATH && t[b * W + a + 1] === TV.PATH && t[(b + 1) * W + a] === TV.PATH && t[(b + 1) * W + a + 1] === TV.PATH) ok = true; }
       if (!ok && !atEdge(y * W + x)) { t[y * W + x] = TV.GRASS; n++; } }
     if (!n) break; settle(gate); } };
   // one pass before the fade: every path tile outside every lane goes back to grass at once (never one tile at a time, which the fade refilled)
-  const offLane = () => { for (let k = 0; k < N; k++) if (t[k] === TV.PATH && !lane[k]) t[k] = TV.GRASS; };
+  // then the corner where two lanes meet rounds by 1 tile: a tile with path on 3 or 4 sides joins the lane, once (never again in the fade, so a strip of grass between two lanes side by side is never zipped shut)
+  const offLane = () => { for (let k = 0; k < N; k++) if (t[k] === TV.PATH && !lane[k]) t[k] = TV.GRASS;
+    const round = []; for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const k = y * W + x; if (lane[k] || t[k] !== TV.GRASS) continue; let n = 0; for (const d of [1, -1, W, -W]) if (t[k + d] === TV.PATH) n++; if (n >= 3) round.push(k); }
+    for (const k of round) lane[k] = 1; };
   settle(null); offLane(); fade(null);
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   for (let k = 0; k < N; k++) if (gate[k] && t[k] === TV.PATH) lane[k] = 1;   // a gate's path is a lane of its trail
