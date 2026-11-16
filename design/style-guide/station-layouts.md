@@ -1781,6 +1781,10 @@ Every string, its zone and its longest case, measured in the face's metrics at i
 | Context (16 px, 208) | The contexts above; out with the Companion, crosses when you dock, pairs when you dock, sits when you dock | out with the Companion 177 |
 | Tag (16 px on the whole, 20 px up close) | the name | 160 at 16, 200 at 20 |
 
+### The Vivarium: Tucked away
+
+A mibi tucked away leaves its place free; the rail's Tucked away row lists it, and its card offers **Bring out** in the same plate position as Tuck away. For an unbonded mibi the plates read "Tuck away ⚡ n" and "Bring out ⚡ 2", the why line "Frees its place · bringing it out costs ⚡n and 2 turns". On a **bonded** mibi's card the price slot of Tuck away reads "free" and of Bring out "free · at once", the why line reads "Frees its place · bonded, so it comes back free and at once" (Bring out: "Free · bonded, so it is back at once"), and the footer line reads "Tuck {name} away · free" and "Bring {name} out · free · at once". Bring out on a bonded mibi puts it in a free place at the press; it still needs a free place. The slot fits "free · at once" beside an eight-letter wide name at 1x.
+
 ### The Vivarium: the masters
 
 Every picture these levels place 1:1; none is drawn by the build. Until a master lands, its labelled placeholder stands in at its size.

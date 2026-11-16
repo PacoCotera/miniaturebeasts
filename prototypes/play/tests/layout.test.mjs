@@ -1,14 +1,14 @@
 // The play page's layout (src/layout.mjs): one device in view, the panel inside the window with its margins, no two blocks overlapping, the keys line at one height for both devices, every key at least 44, nothing scrolls.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { plan, barPlan, dockSheet, zCap, form, BAR, LAPTOP_MAX_W } from "../src/layout.mjs";
+import { plan, barPlan, dockSheet, zCap, form, panFor, BAR, LAPTOP_MAX_W, ZOOM } from "../src/layout.mjs";
 
 const WINDOWS = [["390×844@3", 390, 844, 3, true], ["360×780@3", 360, 780, 3, true], ["844×390@3", 844, 390, 3, true], ["932×430@3", 932, 430, 3, true], ["1440×900@1", 1440, 900, 1, false], ["1280×720@1", 1280, 720, 1, false], ["1280×720@1.5", 1280, 720, 1.5, false]];
 const STATES = [["companion", false], ["station", false], ["station", true]];
 const arr = (b) => (Array.isArray(b) ? b : [b.x, b.y, b.w, b.h]);
 const overlap = (a, b) => { a = arr(a); b = arr(b); return a[0] < b[0] + b[2] - 1e-9 && b[0] < a[0] + a[2] - 1e-9 && a[1] < b[1] + b[3] - 1e-9 && b[1] < a[1] + a[3] - 1e-9; };
 const inside = (b, W, H) => { b = arr(b); return b[0] >= -1e-9 && b[1] >= -1e-9 && b[0] + b[2] <= W + 1e-9 && b[1] + b[3] <= H + 1e-9; };
-const each = (fn) => { for (const [tag, W, H, dpr, coarse] of WINDOWS) for (const [dev, asleep] of STATES) fn(plan({ W, H, dpr, coarse, dev, asleep, hint: asleep && W < H }), `${tag} ${dev}${asleep ? " asleep" : ""}`, { W, H, dpr, coarse }); };
+const each = (fn) => { for (const [tag, W, H, dpr, coarse] of WINDOWS) for (const [dev, asleep] of STATES) fn(plan({ W, H, dpr, coarse, dev, asleep }), `${tag} ${dev}${asleep ? " asleep" : ""}`, { W, H, dpr, coarse }); };
 
 test("the panel is inside the window with side margins: 24 on a phone, 48 on a laptop; the panel is at most 1040 wide", () => {
   each((p, tag, w) => {
@@ -74,10 +74,29 @@ test("the first-view numbers of the signed design (390 × 844, 1440 × 900)", ()
   const s = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "station" }); assert.deepEqual([s.panel.w, Math.round(s.panel.h), s.margins.side], [1040, 446, 200]);
 });
 
-test("the turn hint stands 16 above the note, or above an awake Station's panel; the content box covers it", () => {
-  const a = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station", asleep: true, hint: true }), w = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station", hint: true });
-  assert.ok(Math.abs(a.hint.y + a.hint.h + 16 - a.note.y) < 1e-9 && Math.abs(w.hint.y + w.hint.h + 16 - w.panel.y) < 1e-9 && w.note === null);
-  assert.ok(w.content[1] <= w.hint.y && w.content[1] + w.content[3] >= w.dock.y + w.dock.h - 1e-9 && w.content[1] + w.content[3] <= 844, "nothing in the content box leaves the window");
+test("the Station on a phone: x0.6 in a window (view) where the whole screen would be smaller; the whole screen wherever x0.6 fits; no turn hint", () => {
+  for (const [W, H] of [[390, 844], [360, 780], [844, 390], [932, 430]]) for (const asleep of [false, true]) {
+    const p = plan({ W, H, dpr: 3, coarse: true, dev: "station", asleep }), tag = `${W}×${H}${asleep ? " asleep" : ""}`;
+    assert.equal(p.scale, ZOOM, tag + ": x0.6"); assert.ok(p.view && p.view.w < 1024 && p.view.h <= 600, tag + ": a window on part of the screen");
+    assert.ok(Math.abs(p.screen.w - p.view.w * p.scale) < 1e-6 && Math.abs(p.screen.h - p.view.h * p.scale) < 1e-6, tag + ": the window is the view at x0.6");
+    assert.ok(!("hint" in p) || p.hint == null, tag + ": no turn hint");
+    if (p.note) assert.ok(p.note.y >= BAR + 16 - 1e-9 && p.note.y + p.note.h + 16 <= p.panel.y + 1e-9, tag + ": the asleep note under the bar, above the panel");
+  }
+  assert.equal(plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station" }).view.h, 600, "390×844 awake: the window as tall as the screen");
+  for (const [W, H, dpr, coarse] of [[1440, 900, 1, false], [1280, 720, 1, false]]) assert.equal(plan({ W, H, dpr, coarse, dev: "station" }).view, null, `${W}×${H}: the whole screen on a laptop`);
+  assert.equal(plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" }).view, null, "the Companion is always whole");
+});
+
+test("panFor: the focused target whole with 12 lp round it, the least move, always inside the screen", () => {
+  const v = { w: 530, h: 513 };
+  assert.deepEqual(panFor(v, null), { x: 0, y: 0 }, "no ring at first: the top left");
+  assert.deepEqual(panFor(v, null, { x: 300, y: 40 }), { x: 300, y: 40 }, "no ring: it stays");
+  assert.deepEqual(panFor(v, [20, 60, 450, 300]), { x: 0, y: 0 }, "a target in view: no move");
+  assert.deepEqual(panFor(v, [800, 60, 200, 300]), { x: 482, y: 0 }, "a target to the right: the window's right edge at its right + 12"); assert.deepEqual(panFor(v, [900, 60, 120, 300]), { x: 494, y: 0 }, "at the screen's edge: held inside (1024 − 530)");
+  assert.deepEqual(panFor(v, [36, 500, 200, 80], { x: 300, y: 0 }), { x: 24, y: 79 }, "down and left: its left − 12, its bottom + 12");
+  const big = panFor({ w: 300, h: 200 }, [100, 100, 400, 300]); assert.deepEqual(big, { x: 88, y: 88 }, "a target larger than the window: its top left in view");
+  for (let i = 0; i < 200; i++) { const b = [Math.random() * 900, Math.random() * 500, 20 + Math.random() * 300, 20 + Math.random() * 200], p = panFor(v, b, { x: Math.random() * 494, y: Math.random() * 87 });
+    assert.ok(p.x >= 0 && p.x <= 494 && p.y >= 0 && p.y <= 87, "inside the screen"); }
 });
 
 test("the bar: 52 tall, controls 44 and apart, inside the window; the laptop's switch is 320 wide and centred where it can be", () => {

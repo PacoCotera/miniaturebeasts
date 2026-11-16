@@ -33,7 +33,7 @@ function heldSay(h, p, m) {
   const H = Sg(h).msg.held, lines = H[p.plate];
   if (!lines) { if (p.why) h.say(p.why); return; }
   const n = m && p.plate === "young" ? (youngTurns(h.st, m, h.settings) ?? 1) : m ? S.backIn(h.st, m) || 1 : 1;   // a young mibi's plate counts its turns to grow up (the card's own count), not its way back
-  say(h, lines, { name: m?.name ?? "", n, p: priceOf(p.price) || S.tuckPrice(h.st, h.settings), e: h.st.e });
+  say(h, lines, { name: m?.name ?? "", n, p: priceOf(p.price) || S.tuckPrice(h.st, h.settings, m), e: h.st.e });
 }
 const priceOf = (s) => +String(s ?? "").replace(/[^0-9]/g, "") || 0;
 // the ring after a mibi left the room view's field (tucked away, returned): the nearest mibi in the room, else its chip
@@ -50,6 +50,7 @@ function plateDo(h, target, act = null) {
     case "takeAlong": { const r = S.carryAdd(st, h.sv, m); if (r.ok) h.save(); return; }
     case "bringHome": { const r = S.carryHome(st, h.sv, m); if (r.ok) h.save(); return; }
     case "tuckAway": { const r = S.tuckAway(st, h.sv, m, h.settings, h.now()); if (!r.ok) return; say(h, Mg.tucked, { name: m.name }); h.save(); ringAfterLeaving(h); return; }
+    case "bringOut": { const fp = S.freePlace(st, h.settings, st.face?.room ?? 0); const r = fp ? S.bringOut(st, h.sv, m, fp.room, h.settings) : { ok: false }; if (!r.ok) return; const n = S.bringOutTurns(m); say(h, n === 0 ? Mg.back : n === 1 ? Mg.reservedOne : Mg.reserved, { name: m.name, n }); h.save(); ringAfterLeaving(h); return; }   // a bonded mibi is back at the press (0 turns); the rest keep a place for the wait
     case "breed": {   // the partner pick: the Wall in a mode, A's species only, the ring on the first partner in rank order
       if (v.view !== "wall") { const best = partnersOf(st, h.sv, m, h.settings).ranked[0]; if (!best) return; h.ui.cross = { aId: m.id, bId: best.m.id, state: 0, fc: null, clash: [] }; h.goto("cross"); return; }
       v.pair = { a: m.id }; v.pick = null; const nb = build(h), first = nb.nav.order[0]; v.f = first != null ? "cell." + first : null; if (first != null) v.last = +first; return; }

@@ -129,7 +129,7 @@ static void draw(void) {
   { char sc[32]; spec_str("props", "screen", sc, sizeof sc);
     if (strcmp(sc, "create") == 0 && spec_has("create") && spec_has("pods") && spec_has("panel") && spec_len("props", "regions") >= 0 && incubate_open()) { if (prim_snapshot_handle() < 0) snapshot_create(); }
     else prim_snapshot_free(); }
-  prim_begin(); v_set_focal(NULL);
+  prim_begin(); v_set_focal(NULL); word_ringSceneBegin();
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
     if (strcmp(screen, "habitat") != 0 || spec_bool("props", "idle", 0)) habitat_hidden();   /* one mibi up close's own tick starts again from its first frame when it shows again */
     if (strcmp(screen, "library") != 0 || spec_bool("props", "idle", 0)) library_hidden();   /* the Library's glints: their clock starts again when Level 1 shows again */

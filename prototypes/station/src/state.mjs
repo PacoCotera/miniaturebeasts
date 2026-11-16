@@ -1362,8 +1362,10 @@ export const TUCK = { floor: 2 /* Energy at least, to tuck away */, out: 2 /* En
 // The next room's price in Energy on the ladder: 4, 8, 12, then 4 more each (the put-away rules; it still stands for the put-away price below when no room can be added)
 export const nextRoomPrice = (st) => ladderPrice(st.rooms || 1);
 // Tuck away: the next room's price per place rounded up, never under TUCK.floor; so it never costs less than keeping a room (the put-away rules, the 19:35 ruling)
-export const tuckPrice = (st, settings = DEFAULT_SETTINGS) => price(Math.max(TUCK.floor, Math.ceil(nextRoomPrice(st) / ROOM)), settings);
-export const bringOutPrice = (st, settings = DEFAULT_SETTINGS) => price(TUCK.out, settings);
+// A bonded mibi tucks away and comes out free and at once (owner 2026-11-16: "yes"): pass the mibi as the third argument.
+export const tuckPrice = (st, settings = DEFAULT_SETTINGS, m = null) => (m?.bonded ? 0 : price(Math.max(TUCK.floor, Math.ceil(nextRoomPrice(st) / ROOM)), settings));
+export const bringOutPrice = (st, settings = DEFAULT_SETTINGS, m = null) => (m?.bonded ? 0 : price(TUCK.out, settings));
+export const bringOutTurns = (m) => (m?.bonded ? 0 : TUCK.turns);
 export const inStore = (m) => !!m && !m.released && !!m.tucked && m.tucked.out == null;
 // on its way back: Bring out pressed, its place reserved, the world turn it is back at not reached yet
 export const comingOut = (st, m) => !!m && !m.released && !!m.tucked && m.tucked.out != null && (st.turn | 0) < m.tucked.out;
@@ -1382,17 +1384,17 @@ export function tuckBlock(st, sv, m, settings = DEFAULT_SETTINGS) {
   if (comingOut(st, m)) return { key: "coming", n: backIn(st, m) };
   if (projectCarried(st, sv).includes(m.id)) return { key: "carried" };
   if (lastAtHome(st, sv, m)) return { key: "last" };
-  const p = tuckPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  const p = tuckPrice(st, settings, m); if (p > 0 && st.e < p) return { key: "short", price: p, have: st.e };
   return null;
 }
 // Tuck away: paid at the press, instant; the place frees at once, the clocks stop. A bond, the stage, a breather owed and everything the mibi is stay.
 export function tuckAway(st, sv, m, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const b = tuckBlock(st, sv, m, settings); if (b) return { ok: false, ...b };
-  const p = tuckPrice(st, settings), room = m.room; st.e -= p;
+  const p = tuckPrice(st, settings, m), room = m.room; st.e -= p;
   st.tuckSeq = (st.tuckSeq | 0) + 1;
   m.tucked = { turn: st.turn | 0, seq: st.tuckSeq, ...(now >= GOOD_CLOCK ? { at: now } : {}), from: room };
   m.room = m.slot = null; m.bay = null;
-  logEv(st, "Tucked " + m.name + " away · " + spendText(p, 0, 0) + " · its place in the " + roomName(st, room) + " room is free");
+  logEv(st, "Tucked " + m.name + " away" + (p > 0 ? " · " + spendText(p, 0, 0) : "") + " · its place in the " + roomName(st, room) + " room is free");
   return { ok: true, room, cost: p };
 }
 // What stops Bring out into room i (i null: any room), as a key: null when nothing does. { key: "notTucked" | "noPlace" | "short" (price, have) }
@@ -1400,20 +1402,21 @@ export function bringOutBlock(st, sv, m, i = null, settings = DEFAULT_SETTINGS) 
   if (!inStore(m)) return { key: "notTucked" };
   const free = i == null ? freePlace(st, settings) : inRoomCount(st, i) < ROOM && i >= 0 && i < roomCount(st, settings) && !isSettling(st, i) ? i : null;
   if (free == null) return { key: "noPlace" };
-  const p = bringOutPrice(st, settings); if (st.e < p) return { key: "short", price: p, have: st.e };
+  const p = bringOutPrice(st, settings, m); if (p > 0 && st.e < p) return { key: "short", price: p, have: st.e };
   return null;
 }
 const inRoomCount = (st, i) => inRoom(st, i).length;
 // Bring out into room i: paid at the press, the place reserved then (the lowest free slot of the room); back in TUCK.turns world turns, never sooner, whatever the time at the Station. No cancel, no refund.
 export function bringOut(st, sv, m, i, settings = DEFAULT_SETTINGS) {
   const b = bringOutBlock(st, sv, m, i, settings); if (b) return { ok: false, ...b };
-  const p = bringOutPrice(st, settings); st.e -= p;
+  const p = bringOutPrice(st, settings, m); st.e -= p;
   const taken = new Set(inRoom(st, i).map((x) => x.slot)); let slot = 0; while (taken.has(slot)) slot++;
-  const out = (st.turn | 0) + TUCK.turns, shift = out - m.tucked.turn;
+  const turns = bringOutTurns(m), out = (st.turn | 0) + turns, shift = out - m.tucked.turn;
   m.born = (m.born | 0) + shift; if (m.grownTurn != null) m.grownTurn += shift;   // the clocks restart where they stopped, at the turn it is back
   m.tucked = { ...m.tucked, out, shift };
   m.room = i; m.slot = slot; m.bay = i * ROOM + slot;
-  logEv(st, "Bringing " + m.name + " out · " + spendText(p, 0, 0) + " · a place kept in the " + roomName(st, i) + " room · back in " + plural(TUCK.turns, "turn"));
+  if (turns === 0) { delete m.tucked; if (Date.now() >= GOOD_CLOCK) m.roomSince = Date.now(); logEv(st, m.name + " is back in the " + roomName(st, i) + " room"); }   // a bonded mibi: back at the press, the record closed at once
+  else logEv(st, "Bringing " + m.name + " out" + (p > 0 ? " · " + spendText(p, 0, 0) : "") + " · a place kept in the " + roomName(st, i) + " room · back in " + plural(turns, "turn"));
   return { ok: true, room: i, slot, out, cost: p };
 }
 // The mibis whose way back is over (the world turn reached m.tucked.out): their record closes (m.tucked goes), they are fresh in their room. Read at the dock and when the manager opens; returns them.

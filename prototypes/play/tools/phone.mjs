@@ -68,13 +68,16 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
       const fr = document.getElementById(d === "station" ? "fStation" : "fCompanion"), sh = document.getElementById(d === "station" ? "shStation" : "shCompanion"), tr = document.getElementById(d === "station" ? "rowStation" : "rowCompanion");
       const box = (e) => { const r = e.getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height }; };
       const fb = box(fr), sc = fb.w / fr.offsetWidth, cv = fr.contentDocument.querySelector("canvas").getBoundingClientRect();
-      const canvas = { l: fb.l + cv.left * sc, t: fb.t + cv.top * sc, r: fb.l + cv.right * sc, b: fb.t + cv.bottom * sc, w: cv.width * sc, h: cv.height * sc };
+      const whole = { l: fb.l + cv.left * sc, t: fb.t + cv.top * sc, r: fb.l + cv.right * sc, b: fb.t + cv.bottom * sc, w: cv.width * sc, h: cv.height * sc };
+      // the Station's phone window (layout.mjs view): the frame's clip-path inset, in the frame's own px; the part shown is the canvas inside it
+      const ins = (fr.style.clipPath.match(/inset\(([^)]*)\)/) || [, "0 0 0 0"])[1].split(/\s+/).map(parseFloat), clip = { l: fb.l + ins[3] * sc, t: fb.t + ins[0] * sc, r: fb.r - ins[1] * sc, b: fb.b - ins[2] * sc };
+      const canvas = { l: Math.max(whole.l, clip.l), t: Math.max(whole.t, clip.t), r: Math.min(whole.r, clip.r), b: Math.min(whole.b, clip.b), w: whole.w, h: whole.h };   // w, h: the canvas whole (its scale)
       const other = document.getElementById(d === "station" ? "shCompanion" : "shStation");
       return { z: __play.z, dpr: devicePixelRatio, canvas, frame: fb, shell: box(sh), tray: box(tr), shellVis: getComputedStyle(sh).visibility, otherVis: getComputedStyle(other).visibility,
         keys: [...tr.querySelectorAll(".fk")].map((k) => ({ name: k.getAttribute("aria-label"), cls: k.className, ...box(k) })), hub: box(tr.querySelector(".fktray .hub")), up: __play.geom, scrollTop: document.getElementById("stage").scrollTop };
     }, dev);
     eq([m.shellVis, m.otherVis], ["visible", "hidden"], tag + ": one device at a time, the other is not shown (it is never to the right, off screen)");
-    expect(inside(m.canvas, W, H) && inside(m.frame, W, H) && inside(m.shell, W, H), tag + `: the canvas, frame and shell are whole in the viewport (canvas ${JSON.stringify(m.canvas)})`);
+    expect(inside(m.canvas, W, H) && inside(m.shell, W, H) && (inside(m.frame, W, H) || m.canvas.r - m.canvas.l < m.canvas.w - 1), tag + `: the canvas shown (the Station's window on a phone), the frame and the shell are whole in the viewport (canvas ${JSON.stringify(m.canvas)})`);
     expect(m.keys.every((k) => inside(k, W, H)) && inside(m.tray, W, H), tag + ": the tray and every key are whole in the viewport");
     expect(m.z > 0, tag + ": z is " + m.z + " device px an lp (a smooth step on a phone: the screen fits the panel)");
     expect(Math.abs(m.canvas.w * m.dpr - (dev === "station" ? 1024 : 450) * m.z) < 1.5, tag + `: the canvas is ${m.z} device px an lp (${m.canvas.w * m.dpr} wide)`);
@@ -127,16 +130,16 @@ for (const [W, H, dsf] of [[412, 915, 2.625], [390, 844, 3], [915, 412, 2.625]])
   await ctx.close();
 }
 
-// the turn hint: once, a quiet line under the portrait Station, only where turning the phone gives a bigger one (a 412 × 915 phone at ratio 3.5: 1× upright, 2× turned)
+// the Station upright on a phone: x0.6 in a window (a clip on its frame), no turn hint; the window follows the focus ring down to the cards
 {
-  const { ctx, page } = await open(412, 915, 3.5);
-  await page.touchscreen.tap(...(await page.evaluate(() => { const r = document.getElementById("tabStation").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }))); await page.waitForTimeout(500);
-  const z = await page.evaluate(() => __play.z), hint = () => page.evaluate(() => { const h = document.getElementById("turnHint"), r = h.getBoundingClientRect(); return { shown: !h.classList.contains("hidden"), text: h.textContent, inView: r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight, pe: getComputedStyle(h).pointerEvents }; });
-  expect(z > 0, "hint: the Station upright on a ratio-3.5 phone");
-  const h1 = await hint(); expect(h1.shown && h1.inView && h1.pe === "none" && h1.text.length > 5, "hint: shown once under the Station, on screen, never blocking " + JSON.stringify(h1));
-  await page.reload({ waitUntil: "load" }); await page.waitForFunction(() => window.__play); await page.waitForTimeout(1500);
-  await page.touchscreen.tap(...(await page.evaluate(() => { const r = document.getElementById("tabStation").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }))); await page.waitForTimeout(500);
-  eq((await hint()).shown, false, "hint: not shown again on the next visit");
+  const { ctx, page } = await open(390, 844, 3);
+  await page.touchscreen.tap(...(await page.evaluate(() => { const r = document.getElementById("tabStation").getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }))); await page.waitForTimeout(800);
+  const win = () => page.evaluate(() => { const f = document.getElementById("fStation"); return { clip: f.style.clipPath, tf: f.style.transform, hint: !!document.getElementById("turnHint") }; });
+  const w0 = await win(); expect(/^inset\(/.test(w0.clip) && /scale\(/.test(w0.tf) && !w0.hint, "station window: clipped at x0.6, no turn hint " + JSON.stringify(w0));
+  await page.waitForFunction(() => { try { return !!document.getElementById("fStation").contentWindow.__st?.ready; } catch { return false; } }, null, { timeout: 30000 }).catch(() => {});
+  await page.waitForTimeout(1500);
+  for (const k of ["Down", "Right", "Right", "Right"]) { await page.touchscreen.tap(...(await page.evaluate((n) => { const r = document.querySelector(`#rowStation [aria-label=${n}]`).getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }, k))); await page.waitForTimeout(400); }   // the on-screen keys, as a player presses them: to the Bay card at the screen's right
+  const w1 = await win(); expect(w1.clip !== w0.clip, "station window: moves to the focus ring (the Bay card, past the window's right edge) " + JSON.stringify(w1));
   await ctx.close();
 }
 await browser.close(); server.close();

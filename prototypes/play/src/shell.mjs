@@ -7,7 +7,7 @@
 
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, clampZ, Z_MAX } from "./fit.mjs";   // the size control's bounds: z device px per lp
-import { plan as layoutPlan, barPlan, biggerTurned, dockSheet, zCap, form as formOf, BAR } from "./layout.mjs";   // the page's layout: one device in view, its panel centred (pure; tests/layout.test.mjs)
+import { plan as layoutPlan, barPlan, panFor, dockSheet, zCap, form as formOf, BAR } from "./layout.mjs";   // the page's layout: one device in view, its panel centred (pure; tests/layout.test.mjs)
 import { padDir, dockWords, KEYBOARD } from "./keyplan.mjs";   // the key trays' geometry: one measure, one family at every size
 import { stampText, aboutText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
@@ -109,24 +109,17 @@ const dockKey = $("dockKey");
 const switchUi = mountSwitch($("switchRoot"), { onPick: (d) => setOwner(d) });
 // the dock's screen: a live miniature of the e-paper in a button; the Radix Dialog shows it whole
 const dockScreen = mountDockScreen($("dockScreenRoot"), { onOpenChange: (open) => { if (!open) giveKeys(owner); } });
-const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp"), turnHint = $("turnHint");
+const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp");
 const geom = { station: null, companion: null, bar: null };   // the devices' panels in window CSS px, for the checks
 const arr = (b) => (b ? [b.x, b.y, b.w, b.h] : null);
 const kOf = { station: 1, companion: 1 };   // device px per lp of each device's screen
-const TURN_KEY = "mb-play-turn-hint";
-let turnState = (() => { try { return localStorage.getItem(TURN_KEY) ? "done" : "idle"; } catch { return "idle"; } })();   // the turn hint: idle, shown, done (once, never blocking)
 const newsOf = () => ({ companion: false, station: wokeNews || !!(heard && (heard.pending || (heard.crates | 0) > 0)) });   // the other device's news: the Station woke, crates wait in its bay, its arrival choice waits (the Companion's own news is the lit Dock key)
 
 function layout() {
   metrics();
   document.body.classList.toggle("phone", phone);
-  // the turn hint: once, a quiet line above the asleep note (or the Station's panel) when turning the phone gives a bigger Station
-  const want = form === "up" && owner === "station" && biggerTurned(CW, CH, dpr);
-  if (want && turnState === "idle") { turnState = "shown"; try { localStorage.setItem(TURN_KEY, "1"); } catch { /* no storage: shown again next visit */ } }
-  else if (!want && turnState === "shown") turnState = "done";
-  const hintOn = want && turnState === "shown";
   for (const dv of ["station", "companion"]) {
-    const st = dv === "station", p = layoutPlan({ W: CW, H: CH, dpr, coarse: coarseNow(), dev: dv, asleep: st && !podHome, hint: st && hintOn, zSet });
+    const st = dv === "station", p = layoutPlan({ W: CW, H: CH, dpr, coarse: coarseNow(), dev: dv, asleep: st && !podHome, zSet });
     PLAN[dv] = p; kOf[dv] = Math.floor(p.scale * dpr * 64 + 1e-6) / 64;
   }
   k = kOf[owner]; f = k / dpr;
@@ -144,7 +137,7 @@ function layout() {
   for (const dv of ["station", "companion"]) {
     const p = PLAN[dv], st = dv === "station", fw = st ? 1024 : 450, shell = shells[dv], tray = trayEl[dv], on = owner === dv;
     placeC(shell, p.panel.x, p.panel.y, p.panel.w, p.panel.h, true);
-    placeFrameC(frames[dv], p.screen.x - p.panel.x, p.screen.y - p.panel.y, fw, 600, kOf[dv]);
+    if (st) placeStation(p); else placeFrameC(frames[dv], p.screen.x - p.panel.x, p.screen.y - p.panel.y, fw, 600, kOf[dv]);
     placeBox(tray, p.tray.box, true); drawTray(dv, p.tray.plan);
     for (const el of [shell, tray]) { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; }
     tray.style.pointerEvents = "none";   // the tray is a transparent box over the panel: only its keys take a touch
@@ -160,7 +153,6 @@ function layout() {
   const inBar = sleepingShown && !P.note && !!bp.stamp;
   asleepStrip.classList.toggle("hidden", !(sleepingShown && P.note)); asleepBar.classList.toggle("hidden", !inBar);
   if (sleepingShown && P.note) placeBox(asleepStrip, arr(P.note)); if (inBar) placeBox(asleepBar, bp.stamp);
-  turnHint.classList.toggle("hidden", !(hintOn && P.hint)); if (hintOn && P.hint) placeBox(turnHint, arr(P.hint));
   printBox.classList.toggle("hidden", !(print.id && print.h));   // the recovery print's card (sandbox): fixed at the window's foot while a print waits
   // the build line: the foot (upright), or the bar (on its side before Options; on a laptop its left end)
   const sbox = P.stamp.where === "foot" ? arr(P.stamp.box) : bp.stamp;
@@ -174,6 +166,25 @@ function layout() {
   window.__playRects = rects;
 }
 const CTL_LINE = 44;
+// ---- the Station's phone window (layout.mjs ZOOM, view, panFor) ----
+// Where the whole screen would be under x0.6 the Station is drawn at x0.6 in a window (plan.view, in lp) that keeps the focus ring's target whole (the Station posts the ring's box, "mb-focus").
+// The frame is moved under a clip-path that moves with it, both eased over the same time, so the window stays put while the screen slides under it; reduced motion jumps.
+let pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null };
+function placeStation(p) {
+  const el = frames.station, xc = p.screen.x - p.panel.x, yc = p.screen.y - p.panel.y;
+  el.classList.toggle("pan", !!p.view);
+  if (!p.view) { pan = { x: 0, y: 0 }; el.style.clipPath = ""; placeFrameC(el, xc, yc, 1024, 600, kOf.station); return; }
+  pan = panFor(p.view, focusNow.box, pan);
+  const fl = kOf.station / dpr, u = k0 / dpr;   // CSS px per lp on the page, and in the frame before its scale
+  placeFrameC(el, xc - pan.x * fl, yc - pan.y * fl, 1024, 600, kOf.station);
+  el.style.clipPath = "inset(" + [pan.y, 1024 - pan.x - p.view.w, 600 - pan.y - p.view.h, pan.x].map((v) => Math.max(0, v) * u + "px").join(" ") + ")";
+}
+function stationFocus(m) {
+  const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null, moved = m.screen !== focusNow.screen;
+  if (moved && !box) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
+  focusNow = { screen: m.screen, box };
+  const p = PLAN.station; if (p && p.view) placeStation(p);
+}
 function dockTitle() {
   const c = caddy; return !c.canDock ? "The Companion has no world yet" : c.docked ? "Lift the Companion" : c.crates > 0 ? "Cargo waits aboard: dock to bring it home" : "Dock the Companion";
 }
@@ -202,7 +213,7 @@ function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or
 // the width the Dock key's long words need (14 px Inter, its mark, the padding and the ⇧D hint)
 let dockCtx = null;
 function dockNeed(text, hint) { dockCtx = dockCtx || document.createElement("canvas").getContext("2d"); dockCtx.font = '500 14px "Inter", system-ui, sans-serif'; return Math.ceil(dockCtx.measureText(text).width) + 12 * 2 + 16 + 8 + (hint ? 8 + 22 : 0); }
-const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockKey, dockScreen: $("dockScreenBtn"), dev, switch: $("tabCompanion") && $("tabCompanion").parentElement, stamp, asleep: asleepStrip, hint: turnHint })) { if (!el) continue; const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
+const rects = () => { const o = {}; for (const [n, el] of Object.entries({ station: frames.station, companion: frames.companion, shStation: shS, shCompanion: shC, trayStation: trayEl.station, trayCompanion: trayEl.companion, dock: dockKey, dockScreen: $("dockScreenBtn"), dev, switch: $("tabCompanion") && $("tabCompanion").parentElement, stamp, asleep: asleepStrip })) { if (!el) continue; const r = el.getBoundingClientRect(); o[n] = [r.left, r.top, r.width, r.height]; } return o; };
 
 // ---- who has the keys ----
 // The device in view always has the keys: there is no ring and no click-to-give-keys (the other device is hidden). Taking a device into view clears its news dot.
@@ -334,6 +345,7 @@ window.addEventListener("message", (e) => {
     return;
   }
   if (e.source === frames.station.contentWindow && m.t === "mb-sleep") { relaySleep(m); return; }
+  if (e.source === frames.station.contentWindow && m.t === "mb-focus") { stationFocus(m); return; }   // the Station's focus ring moved: the phone window follows it
   if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
   if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
   heard = m; heardAt = now(); inflight = 0;
