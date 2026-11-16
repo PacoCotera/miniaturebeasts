@@ -11,7 +11,7 @@ import { ATLAS } from '../src/regions.mjs';
 const [s0, s1, per, out] = [Number(process.argv[2] || 7), Number(process.argv[3] || 7), Number(process.argv[4] || 100), process.argv[5]];
 const res = { seeds: 0, cells: 0, bad: [], finds: 0, byKind: {}, byBiome: {}, hist: Array(12).fill(0), marks: 0, glassOffSand: 0, glass: 0, marksCells: 0, landCellsAll: 0, landmarks: 0, spacingBreaks: 0, regionsMissing: [], startNoMark: 0, starts: 0, startNoStone: 0, startNoPod: 0, startNoFind: 0, noOpen: 0, noSpawn: 0, noName: 0, noFind: 0, hearts: 0, oldClues: 0, kindsLm: {}, ms: 0, tracks: 0, reedlines: 0, moss: 0, pearls: 0, traces: 0, herdPods: 0, namesRepeat: 0 };
 for (let seed = s0; seed <= s1; seed++) {
-  const R = realm7(seed), lms = landmarksOf(seed, decorOf(seed).hollowSites());
+  const R = realm7(seed), lms = landmarksOf(seed, decorOf(seed));
   res.seeds++;
   const land = (X, Y) => { if (X < 0 || Y < 0 || X >= MW * ATLAS || Y >= MH * ATLAS) return null; const G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)]; const c = (Y % MH) * MW + (X % MW); return G.land[c] !== L.WATER && !G.island[c] ? G : null; };
   let all = 0; const cells = [];

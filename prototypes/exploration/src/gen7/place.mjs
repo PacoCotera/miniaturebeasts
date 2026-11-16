@@ -21,7 +21,7 @@ import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' }
 import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
 import { touchesRaised, partAt, PART, FACE_ROWS } from '../../../places/src/bake/relief.mjs';
-import { landmarksOf } from './landmarks.mjs';
+import { landmarksOf, forgetLandmarks } from './landmarks.mjs';
 import { maskFn } from './places.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 19, FORD: 20, BRIDGE: 21 };   // FORD and BRIDGE: walkable ground over a stream and over a river (streams.mjs; drawn as the path until painted). PATHTOP: the path on a raised top (a value of `top`, never of the terrain: the tile stays cliff; drawn as the path)
@@ -79,7 +79,7 @@ export const contextOf = ctxOf;   // the per-seed context (the checks' tools rea
 // every place, field and decor cache of a seed forgotten (the realm itself stays): the scheduler's test builds the same places cold in another order
 export function forgetPlaces(seed) {
   const S = CTX.get(seed); if (S) forgetLevels(S.re);
-  CTX.delete(seed); DEC.delete(seed);
+  CTX.delete(seed); DEC.delete(seed); SITES.delete(seed); forgetLandmarks(seed);
   for (const k of [...CELLS.keys()]) if (k.startsWith(seed + ':')) CELLS.delete(k);
 }
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
@@ -1038,9 +1038,11 @@ function landOf(seed) {
   const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
   return { T, G: worldGround(seed), biome, mask: maskFn(seed), W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
 }
-const SITES = new Map();   // Hollow Tree sites made off the page (src/realm-worker.mjs), by seed
-export const presetHollowSites = (seed, sites) => { if (SITES.size > 3) SITES.clear(); SITES.set(seed, sites); };
-export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed), undefined, SITES.get(seed) || null); DEC.set(seed, d); } return d; };
+const SITES = new Map();   // the Hollow Tree sites made so far, by seed: 'ax,ay' -> { x, y, slot } or null. The decor of the seed makes into it; a site made off the page (src/realm-worker.mjs) is merged in by presetHollowSites
+const siteCacheOf = seed => { let m = SITES.get(seed); if (!m) { if (SITES.size > 3) SITES.clear(); m = new Map(); SITES.set(seed, m); } return m; };
+// sites: what a decor's madeSites() sent: [{ slot, x, y }] or [{ slot, none: true }]; a slot already known is left as it is
+export const presetHollowSites = (seed, sites) => { const m = siteCacheOf(seed); for (const s of sites || []) { const k = s.slot[0] + ',' + s.slot[1]; if (!m.has(k)) m.set(k, s.none ? null : { x: s.x, y: s.y, slot: [s.slot[0], s.slot[1]] }); } };
+export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed), undefined, siteCacheOf(seed)); DEC.set(seed, d); } return d; };
 export const biomeAtTile = (seed, gx, gy) => landOf(seed).biome(gx, gy);
 // the decor of the tiles x0 .. x0 + w - 1, y0 .. y0 + h - 1 as IR lists (pixels at 48 a tile, relative to the IR's own corner). A prop is in the list when its foot is within two tiles sideways or
 // three tiles below: its crown (up to three tiles above the foot, one or two either side) then hangs into the rectangle, and the neighbour draws it identically
@@ -1060,7 +1062,7 @@ function decorIR(seed, x0, y0, w, h) {
 function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null, falls = []) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
-  const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
+  const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed), [[Math.floor(cell[0] / MW), Math.floor(cell[1] / MH)]]), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   // what the place's set pieces add: their wall props (the land's boulders or stumps, the Split Stone), as props at their tiles
   const placed2 = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
   const setProps = hold ? hold.setProps.map(p => ({ ...placed2(p.kind, { x: (p.x) * 48 + 24, y: (p.y) * 48 + 47 }), tx: x0 + p.x, ty: y0 + p.y, fam: p.fam, cluster: -5 })) : [];
