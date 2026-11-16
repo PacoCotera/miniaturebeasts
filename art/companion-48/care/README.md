@@ -7,4 +7,6 @@ How made: a Retro Diffusion master, then a hand touch-up by the pixel lead (rule
 | Id | Size | Where | sha256 |
 | --- | --- | --- | --- |
 | `c-heart-24` | 24×24 | The active mibi's name row; at 2× (48×48, pixel for pixel) in the bond event; copied byte for byte to the Vivarium's `heart-full-24.png` (two paths) | `d1d035c63eb20684869b922bdbe38209c26e81810ceafb2d50eb2f97143f93e7` |
-| `c-heart-16` | 16×16 | Roster rows, the Lead card, the expedition choice's partner card; drawn from the 24 master | `b5e694575431bc34a2cc8e173d77eb9a6a19b3700e6b1273a46c1f3f9164e7d7` |
+| `c-heart-16` | 16×16 | Roster rows, the Lead card, the expedition choice's partner card. NOT YET HERE: the hand 16 drawn from the 24 master (`b5e694575431bc34a2cc8e173d77eb9a6a19b3700e6b1273a46c1f3f9164e7d7`, kept in `miniaturebeasts-internal/tools/credit-runner/runs/companion-heart-5/c-heart-16.png`) is placed when the Companion page draws the PNG and the art director signs it there; this file is still the old one, and the page draws a plate | old file |
+
+The 24 is signed: ledger `edfc9f6745` (all three paths), 2026-11-16.
