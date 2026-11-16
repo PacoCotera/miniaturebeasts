@@ -6912,7 +6912,7 @@ function drawSealed(t) {
     if (ld) { L(E.where(ld.land, ld.dir), C.fog); if (ld.pod) L(E.start, C.fog); } else L(E.rock + '.', C.fog);
     y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
-  if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name, r.notch.ab, r.notch.n), 374, 2), 54, top, C.bone); y += 28; }
+  if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(cutLine(CARE_TEXT.notch(r.notch.name, r.notch.ab, r.notch.n), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, all at their final place at once
   // an empty walk still shows its empty crate in the next place in the bay (it is never added to the bay)
   const none = (r.empty || r.waited) && !r.sealed && S.bay.length < BAY ? { n: r.n, e: 0, d: 0, s: 0, pods: [], none: true } : null;
