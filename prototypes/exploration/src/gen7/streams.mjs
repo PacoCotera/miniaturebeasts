@@ -12,15 +12,17 @@ import { portAt, route } from './region.mjs';
 export const G = { DEEP: 1, WATER: 2, GRASS: 6, CLIFF: 8, THICKET: 9, FORD: 20, BRIDGE: 21 };
 export const WANDER = 2.2, WANDER_SLOPE = 0.15;   // the A* wander of a stream on open ground (R16: drawn length over straight distance 1.1-1.4 on flat ground)
 
-// the width classes: the flow terciles of the realm's streams (R5)
+// the width classes: the flow terciles of the realm's streams (R5). The cache on the realm is plain data ({ t1, t2 }): the realm crosses to the places worker as it is (structured clone), so nothing
+// on it may be a function; the width of a cell is flowWidth, a pure function of the realm and the terciles.
 export function flowClasses(re) {
   if (re.flowClasses) return re.flowClasses;
   const acc = re.acc, a = [];
   for (const f of re.features || []) if (f.kind === 'stream') for (const c of f.cells) a.push(acc[c]);
   a.sort((p, q) => p - q);
   const t1 = a.length ? a[Math.floor(a.length / 3)] : 0, t2 = a.length ? a[Math.floor(2 * a.length / 3)] : 0;
-  return (re.flowClasses = { t1, t2, of: c => (acc[c] < t1 ? 2 : acc[c] < t2 ? 3 : 4) });
+  return (re.flowClasses = { t1, t2 });
 }
+export const flowWidth = (re, fc, c) => (re.acc[c] < fc.t1 ? 2 : re.acc[c] < fc.t2 ? 3 : 4);
 
 // the port of the edge between two world cells as seen from `cur`: the side of cur it lies on and its offset along the edge (the realm's port, the same tile row or column from both places)
 function portOf(seed, cur, o) {
@@ -32,7 +34,7 @@ const bendOf = (seed, cx, cy) => { const h = hash(seed, 'gen7', 'sbend', cx, cy)
 // per seed: the pieces of every stream by world cell: { fid, in: {side, off} | null, out, wIn, wOut, bend: [x, y], mouth, fromRaised, source, drop }
 export function streamPieces(S) {
   if (S.streamPieces) return S.streamPieces;
-  const by = new Map(), re = S.re, fc = flowClasses(re), seed = S.seed, xy = c => [c % RW, (c / RW) | 0];
+  const by = new Map(), re = S.re, fc = { of: c => flowWidth(re, flowClasses(re), c) }, seed = S.seed, xy = c => [c % RW, (c / RW) | 0];
   for (const f of re.features || []) {
     if (f.kind !== 'stream') continue;
     const seen = f.links.seen || 0, m = f.links.mouth, chain = f.cells.slice(Math.max(0, seen - 1)), hasMouth = m && m.c >= 0 && m.c !== f.cells[f.cells.length - 1];
