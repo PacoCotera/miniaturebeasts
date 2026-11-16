@@ -378,11 +378,11 @@ The reach view's 72 px and 48 px cells and both insets fit as given above. In a 
 **Purpose.** Be with one of the mibis with you. **Reads first:** the mibi.
 
 - **Composition.** The mibi at 280×300 in HiBit, centred in the upper two thirds, on a soft painted ground (grass, clover, cream light) quieter than the mibi. Name at 3×, a stage chip, species and ability at 2×, one status line ("with you · joins the Probe"). Page dots below, the mibis with you ringed; ◀ ▶ when there are others.
-- **Lively / quiet.** Lively: the mibi (idle, answering Call, the Tend moment). Quiet: the ground and every label.
+- **Lively / quiet.** Lively: the mibi (idle, answering Call, the Play together moment). Quiet: the ground and every label.
 - **Light and weather.** Soft daylight from the top left; a contact shadow under the mibi. No weather.
 - **Palette.** Greens and cream for the ground, two steps lower in contrast than the mibi.
 - **Type.** 3× name; 2× the rest; no meters.
-- **Chrome.** `✓ Tend Dot · ← Mibis`, or `✓ Walk together` once a world turn, undocked; the full set of states is in [Care and the carried set](#care-and-the-carried-set).
+- **Chrome.** `✓ Play with Dot · ← Mibis`, or `✓ Play together` once a world turn, off the dock; the full set of states is in [Care and the carried set](#care-and-the-carried-set).
 - **Motion.** Idle 2 frames at 2 Hz; Call: a hop to the front and a chirp; docked, the mibi sleeps and the line says "Lift to explore".
 
 The Companion calls nothing; it learns at the dock. **The delivery notice:** when a portrait's crate lands while docked, the docked screen shows a message box, "**Fig's portrait** has come · see it at the Station", the name in orange; away, the notice waits for the next dock and joins the link sheet ("The Station has them · a portrait for Fig"). One notice per portrait, never repeated. At that dock the Companion takes Fig's painted set, derived to HiBit on the Station, if Fig is one it carries. **The card:** on a portrayed mibi this screen adds `✓ Show Fig's card`: the portrait card at 450×600, Fig's portrait in HiBit, its name and place, and the postmark large enough for a phone camera; the phone opens Fig's page on the website. A plain mibi has no card.
@@ -403,7 +403,7 @@ The 280×300 HiBit resident on this screen, the 48 px field token, the 64 px par
 
 ## Care and the carried set
 
-The Companion carries up to three mibis. Care happens here and nowhere else: Tend, once a day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends earn the bond; a bonded juvenile grows up through care. This section sets the screens that carry it: Mibis (the roster, with the Lead card), the active mibi screen, and the expedition choice's partner card.
+The Companion carries up to three mibis. Care happens here and nowhere else: Play together, once a world turn for all the mibis with you at once. Three plays earn the bond; every young mibi grows up on the clock. This section sets the screens that carry it: Mibis (the roster, with the Lead card), the active mibi screen, and the expedition choice's partner card.
 
 The geometry is on the frame: HUD rows 0–31, view rows 32–563, bottom line rows 564–599, all at 1×. Type is the Mibi 7×9 face at 2× (18 px line) or 3× (27 px line). Strings are given in backticks, exactly as they show. `‹name›` is the mibi's name; `‹next›` is the mibi that would lead next. Every string has been checked against a ten-letter name in the widest letters (118 px at 2×, 177 px at 3×), and every ✓ label is at most 24 characters with one.
 
@@ -411,11 +411,11 @@ Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wire
 
 ### What never shows
 
-- No meter, bar, number, need or count for care, Tends or the bond. Nothing says how close a mibi is to bonding or to growing up. *Decided, not yet built:* the Tend that makes the bond carries one warning first, in the words "a bond is for good". Nothing is amber because a mibi has not been tended.
+- No meter, bar, number, need or count for care, plays or the bond. The way to the bond is told in words only, once, right after a play (`‹names› · play twice more to bond`, `‹names› · play once more to bond`), never as a reminder. The play that will make the bond carries one warning first, in the words "a bond is for good". Nothing is amber because a mibi has not played.
 - An unbonded mibi shows no heart at all, never a dim one: the bond is never a need.
 - Undocked, a mibi at home is never shown: not in the roster, not as a page, not as a dot.
 - A mibi the Station has released is never shown, docked or not: not a row, a page, a dot, a face or a name, and no count includes it.
-- Mid-expedition, nothing can be tended, taken, left or made the lead.
+- Mid-expedition, nothing can be played with, taken, left or made the lead.
 
 ### The words the screens use
 
@@ -460,7 +460,7 @@ The Station's release is read at the dock, between expeditions (mid-expedition i
 | --- | --- | --- |
 | HUD | 0, 0, 450, 32 | "Mibis" at the left, as built |
 | Lead card | 16, 44, 418, 92 | Ink card. Caption `Partner` 2× `mist` at (104, 50). The partner's 64 px face at (28, 56) on the teal ring (28×11 at 46, 114). Name 3× at (104, 72), clipped at 314 px. Heart 16×16 at 8 px after the name, y 78, when bonded. One 2× line at (104, 108), clipped at 314 px: the partner's ability |
-| Lead card, no partner | same | The face place is a dashed circle, 64×64 at (28, 56), 1 px `stone`, dash 2 and 2. Name line `No partner` 3×. The 2× line gives why: `young · grows with care` (the first juvenile with you is bonded) or `young · grows in time` (it is not). When none is carried, the name line is `No one with you` and the 2× line `dock to take one along` |
+| Lead card, no partner | same | The face place is a dashed circle, 64×64 at (28, 56), 1 px `stone`, dash 2 and 2. Name line `No partner` 3×. The 2× line gives why: `young · grows in time`. When none is carried, the name line is `No one with you` and the 2× line `dock to take one along` |
 | Caption | 20, 148 | `With you` 2× `mist` |
 | Place *i* (0–2) | 16, 172 + 72*i*, 418, 64 | A carried mibi's row, in carried order, or a free place: a dashed outline, 1 px `stone`, dash 2 and 2, no words, never focused |
 | Row: token | 28, row + 8, 48, 48 | The mibi's 48 px field token. The partner's stands on the teal ring (38, row + 48, 28×11) |
@@ -508,11 +508,11 @@ The three counts, as the wireframes show them:
 
 The section [Companion mode / active mibi](#companion-mode--active-mibi) above sets the screen's look. This sets its pages, its ✓ and the two events.
 
-**Purpose.** Be with one mibi with you: tend it, walk with them all, and see the bond and growing up happen. **Reads first:** the mibi.
+**Purpose.** Be with one mibi with you: play together with them all, and see the bond and growing up happen. **Reads first:** the mibi.
 
 **Pages.** Undocked: one page per mibi with you, in carried order, and no others. Docked: the mibis with you, then the mibis at home in hatch order. ◀ ▶ page through them, wrapping, when there is more than one page. Mid-expedition: the mibis with you only.
 
-**Composition.** <img src="wireframes/companion-care/08-active-tend.png" width="225" alt="Tend Pip"> <img src="wireframes/companion-care/11-active-bond.png" width="225" alt="The bond">
+**Composition.** <img src="wireframes/companion-care/08-active-tend.png" width="225" alt="Play with Pip"> <img src="wireframes/companion-care/11-active-bond.png" width="225" alt="The bond">
 
 | Region | x, y, w, h | Contents |
 | --- | --- | --- |
@@ -527,35 +527,35 @@ The section [Companion mode / active mibi](#companion-mode--active-mibi) above s
 | Page dots | centred, y 452 | 6×6 at a 16 px pitch; a mibi with you ringed (10×10 `amber`); docked, 16 px more between the last mibi with you and the first at home |
 | Message box | centred, foot at 556 | As built: up to three 2× lines; never reaches the dots (its top is at least 484) |
 
-Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words the Vivarium uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Vivarium card; on the Companion it is named only when a notch is earned when an expedition ends, `‹name› gains a skill notch`, with no count, as its own row of the outcome block, see [End expedition with the carried set](#end-expedition-with-the-carried-set)), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
+Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (a juvenile, bonded or not), `at home`. The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for), no skill count (skill is drawn only as filled notches on the Station's Vivarium card; on the Companion it is named only when a notch is earned when an expedition ends, `‹name› gains a skill notch`, with no count, as its own row of the outcome block, see [End expedition with the carried set](#end-expedition-with-the-carried-set)), no "played this turn" (the ✓ already says whether Play together is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
 
 **The ✓ on a mibi with you,** the first that applies:
 
 | When | Bottom line | ✓ does |
 | --- | --- | --- |
-| Mid-expedition | `✓ Tend ‹name›` dimmed `· ← Mibis`, context `after the expedition` | Nothing; message box `Tend ‹name› when the expedition is over` |
-| Undocked, the Walk not taken this world turn | `✓ Walk together · ← Mibis` (`✓ Walk with ‹name›` when one is with you), context `once a turn` | The Walk |
-| Not tended today | `✓ Tend ‹name› · ← Mibis`, context `once a day` | Tend |
-| Tended today | `✓ Tend ‹name›` dimmed `· ← Mibis`, context `tended today` | Nothing changes: the 3 px shake and message box `‹name› was tended today`. No countdown, no "come back" ([09](wireframes/companion-care/09-active-tended.png)) |
+| Mid-expedition | `✓ Play together` (`Play with ‹name›` with one) dimmed `· ← Mibis`, context `after the expedition` | Nothing; message box `Play together when the expedition is over` |
+| Docked | `✓ Play together` dimmed `· ← Mibis`, context `docked · lift to play` | Nothing; the shake and message box `Lift the Companion to play` |
+| Off the dock, not played this world turn | `✓ Play together · ← Mibis` (`✓ Play with ‹name›` when one is with you), context `once a turn`; `a bond is for good` when this play bonds a mibi | Play together |
+| Played this turn | `✓ Play together` dimmed `· ← Mibis`, context `again after the next expedition` | Nothing changes: the 3 px shake and message box `You played this turn · again after the next expedition`. No countdown, no "come back" ([09](wireframes/companion-care/09-active-tended.png)) |
 
 **On a mibi at home** (docked only): `✓ Take ‹name› · ← Mibis`, context `goes with you now`, which takes it and stays on its page, now ringed in the dots; or, with three with you, `✓ Take ‹name›` dimmed, context `the Companion is full`, the shake and the same message as on Mibis ([13](wireframes/companion-care/13-active-docked-home.png)).
 
 **No one with you, undocked** ([14](wireframes/companion-care/14-active-away-0.png)): three dashed circles, 72×72 at (93, 150), (189, 150), (285, 150), 1 px `stone`; `No one with you` 3× centred at y 250; `take mibis along` and `when docked` 2× centred at y 294 and 316; the bay line at y 352 when crates are sealed, as built. `✓ Next expedition · ← menu`. With no mibis at all, the built "No mibi yet" screen stays.
 
-**Tend.** One press: the species moment plays on the stage (a Loika leans on the glass, a Tuikis glows, an Untuva puffs; 1.8 s), and the message box gives the Tend line: `‹name› leans on the glass · it remembers the ‹place›`, the moment's words as built for its species and the place from its last expedition, or `· it hasn't been out yet` when it has none. Input is held 300 ms, or to the end of an event that follows. Docked, the mibi with you sleeps between presses; Tend wakes it for the moment and it settles back.
+**Tend is gone.** It had two jobs, the bond and growing a bonded young mibi; the bond is now made by Play together and every young mibi grows up on the clock.
 
-**The Walk.** One press, on any page of a mibi with you: the shown mibi plays its walk moment on the stage, and every other mibi with you stands at the stage's foot as its 48 px field token, at (36, 260) and (366, 260), 2 idle frames at 4 Hz, for 2.4 s, then they go ([10](wireframes/companion-care/10-active-walk.png)). The message box names them all, `‹A›, ‹B› and ‹C› walk together` or `‹A› and ‹B› walk together`; walking with one keeps the built walk line for its species. The view stays on the shown mibi.
+**Play together.** One press, on any page of a mibi with you: the shown mibi plays its moment on the stage, and every other mibi with you stands at the stage's foot as its 48 px field token, at (36, 260) and (366, 260), 2 idle frames at 4 Hz, for 2.4 s, then they go ([10](wireframes/companion-care/10-active-walk.png)). The message box names them all, `‹A›, ‹B› and ‹C› play together` or `‹A› and ‹B› play together`; with one mibi it keeps the built line for its kind, or `‹name› plays · it remembers the ‹place›` (`· it hasn't been out yet` with none). Then one line per count names the mibis still to bond and what is left, `‹names› · play twice more to bond` or `‹names› · play once more to bond`, never for a bonded mibi. The view stays on the shown mibi.
 
-**The bond** ([11](wireframes/companion-care/11-active-bond.png)). It is checked after a Tend only; a Walk never bonds. When a mibi bonds, after the Tend's own moment:
+**The bond** ([11](wireframes/companion-care/11-active-bond.png)). It is checked after a play together only: the third play bonds. When a mibi bonds, after the play's own moment:
 
-1. The view is on that mibi's page (the Tend was on it).
+1. The view is on that mibi's page.
 2. The species moment plays again, short (900 ms).
 3. The heart, `c-heart-24` drawn at 2× (48×48, pixel for pixel), rises beside the mibi's head from (362, 140) to (362, 60) in four 20 px steps of 150 ms, holds 900 ms, and is gone. At that moment the 24×24 heart appears in the name row, and stays.
 4. The message box takes the bond line, `‹name› is bonded with you`, which stays until the next action.
 
 Input is held to the end. Under reduced motion the heart stands at (362, 60) for 1.5 s, without the rise. No other screen plays the bond; Mibis, the expedition choice and the Station's Vivarium show the heart as a state from then on.
 
-**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, 1200 ms apart), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event. Timing: one cut per mibi that grew, in carried order, 1200 ms apart, from the end of the action's moment. Bonds play first, 2400 ms each. Input is held until 300 ms after the last cut; reduced motion gets the same cuts.
+**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A young mibi grows up on the clock, two world turns after it hatched (one under Playtest waits), whether it is with you or at home; no press makes it. The message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, `‹name› is grown · it can lead the Probe` when it is with you, or `‹name› is grown · at home`. Nothing rises and nothing else plays: the line is the event.
 
 Lines the world turn writes stay on the Expedition ended screen, as built, worded for the carried set: a juvenile grown on the clock `‹name› is grown · it leads the Probe now` (with you and now the partner), `‹name› is grown · it can lead the Probe` (with you), `‹name› is grown · at home` (at home). The elder line is unchanged.
 
@@ -605,7 +605,7 @@ A juvenile rides in the Companion and never joins the Probe. When the expedition
 | Face | 28, 264, 64, 64 | The rider's sprite at 2×, the partner's size and place. No ring, no dashed circle |
 | Name | 112, 260 | 3× `ink`, clipped at 220 px; heart 16×16 8 px after it, y 266, when bonded |
 | Stage chip | 112, 292, h 22 | `juvenile`, `teal` fill, `bone` label |
-| Line | 112, 320 | 2× `stone`, clipped at 306 px: `grows in time in the Companion`, or `grows with care in the Companion` when bonded |
+| Line | 112, 320 | 2× `stone`, clipped at 306 px: `grows in time in the Companion` |
 | With you | 338, 366, 394; y 262; 24×24 each | As above, every ring `stone` |
 
 No `No partner` headline, no ability line, no count of turns.
@@ -614,7 +614,7 @@ No `No partner` headline, no ability line, no count of turns.
 
 **The stage mid-expedition, undocked,** for a juvenile with you: awake, always, the two breath frames at (97, 52), never asleep, dimmed or absent. It looks out: `alert` frame 0 at (97, 52), the place of idle, for 960 ms, every 5000–8000 ms (start to start, seeded per mibi), counted from the page opening; a Call answer or a page change starts the count again. Every second look-out is mirrored, and the mibi keeps facing that way in its idle until the next look-out turns it back. Only the pose and the facing change: visible feet end on the foot row, 283 (source row 28 at 8×), in every stage pose; the shadow fills rows 297–316. No chirp marks. Reduced motion: idle frame 0, no look-out. The species line for a juvenile is `‹Species› · ‹ability› once grown`; a species with no ability text keeps `no field ability yet`.
 
-**The Walk with one juvenile:** `‹name› walks the ‹place›` (`· the path` with no place), naming no field result its stage cannot have.
+**Play together with one juvenile:** `‹name› plays · it remembers the ‹place›` (`· it hasn't been out yet` with no place), naming no field result its stage cannot have.
 
 **Placeholder plates.** A mibi's `c-face-24` plate carries its 12 px mini centred (x + 6, y + 6); its `c-token-48` plate carries its 32 px sprite at 1× (x + 8, y + 8) with the screen's breath frame; the hearts are the plain `red` plate. A plate's label is drawn only while the Observer panel is open: a player sees the plate and the mibi's existing picture, no words.
 
@@ -648,7 +648,7 @@ Left to the field screens' next pass; the care build does not touch these screen
 | --- | --- | --- |
 | `c-heart-24` | 24×24, HiBit, the Companion's palette | The active mibi's name row; at 2× in the bond event |
 | `c-heart-16` | 16×16, HiBit, its own drawing (not the 24 shrunk) | Roster rows, the Lead card, the expedition choice's partner card |
-| `c-moment-tend-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms) | Tend and the bond (the built code-drawn moments stand in until it lands) |
+| `c-moment-tend-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms) | Play together and the bond (the built code-drawn moments stand in until it lands) |
 | `c-moment-walk-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f7, 8 at 300 ms (2.4 s) | The Walk (the built walk moment stands in) |
 | `c-face-24` | 24×24, derived per mibi: a head crop of its standard painting, to the Companion's palette | The HUD ring face (the ring is composed in code): the partner card's With you, rows |
 | `c-token-48` | 48×48, 2 idle frames at 4 Hz, derived per mibi from its standard painting | The field token: the walk |
@@ -661,8 +661,8 @@ The heart is the same object as the Vivarium's enamel heart, drawn for the Compa
 - [ ] The three places always show; "full" reads from the picture before the words.
 - [ ] Take refused at three says why in the bottom line and the message box.
 - [ ] The partner reads from the teal ring alone, in the roster, the card and the field.
-- [ ] Nothing shows care, Tends or closeness to the bond or to growing up: no meter, bar, number or need.
-- [ ] Tended today is a dimmed ✓ and a plain line, never a countdown.
+- [ ] Nothing shows care, plays or closeness to the bond or to growing up other than the words right after a play: no meter, bar, number or need.
+- [ ] Played this turn is a dimmed ✓ and a plain line, never a countdown.
 - [ ] The bond plays only on the active mibi screen, once; afterwards the heart is a state everywhere.
 - [ ] An unbonded mibi has no heart, not a dim one.
 - [ ] Every slot fits a ten-letter name at 1×.
@@ -672,7 +672,7 @@ The heart is the same object as the Vivarium's enamel heart, drawn for the Compa
 
 ## End expedition
 
-The menu entry reads **End expedition**; the screen it opens reads **Expedition N ended**. It ends this expedition only: the hold is sealed into the bay (or stays unsealed when the bay is full), the world turns, and you can set out again at once, Walk or Tend, or dock when you like.
+The menu entry reads **End expedition**; the screen it opens reads **Expedition N ended**. It ends this expedition only: the hold is sealed into the bay (or stays unsealed when the bay is full), the world turns, and you can set out again at once, play together, or dock when you like.
 
 **Purpose.** End the expedition and seal the hold. **Reads first:** the outcome: Sealed, Bay full, Nothing explored, or The Probe broke.
 

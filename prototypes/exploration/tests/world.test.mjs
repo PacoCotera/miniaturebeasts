@@ -1535,7 +1535,7 @@ function sprite(p, expr, x0, y0, inside = () => true) {
 // A new world with one grown mibi with you; `rec` wraps the named page functions so their calls are recorded.
 function world(seed = 1) {
   const p = page({}, undefined, { canvas: true });
-  p.run(`newWorld(${seed}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1]; save();`);
+  p.run(`newWorld(${seed}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }); S.carried = [1]; save();`);
   p.run("var __rec = []; function __wrap(n) { const f = globalThis[n]; globalThis[n] = function (...a) { const r = f.apply(this, a); __rec.push({ n, a, r }); return r; }; }");
   p.rec = (...names) => { for (const n of names) p.run(`__wrap(${JSON.stringify(n)})`); };
   p.calls = n => p.run(`__rec.filter(c => c.n === ${JSON.stringify(n)})`);

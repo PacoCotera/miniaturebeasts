@@ -389,7 +389,7 @@ test("B2 the full panel: Add the room buys and settles and the player stays; Mak
     h.settings = { ...settings, rooms: 0 }; se.rooms = 2; se.mibis = Array.from({ length: 16 }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false, from: {}, sp: 0 })); return h; };
   { const h = mk(), e0 = h.st.e, rooms = h.st.rooms; INTENTS.incubator.intent(h, "bud", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm");
     assert.deepEqual([h.ui.panel, h.ui.screen, h.st.rooms, h.st.e < e0, h.said.length], [null, "incubator", rooms + 1, true, 1], "bought; no screen change"); assert.match(h.said[0], /settles · ready/);
-    assert.equal(S.placeBlock(h.st, h.settings), "settling", "the new room settles: still no place, and the next ✓ says so"); h.said.length = 0; INTENTS.incubator.intent(h, "bud", "confirm"); assert.deepEqual([h.ui.panel, h.said.length], [null, 1], "settling: the plate, not the panel"); assert.match(h.said[0], /settles/); assert.match(h.said[0], /ready in 2 turns\nIt takes mibis after 2 more walks/, "the third room settles two turns"); }
+    assert.equal(S.placeBlock(h.st, h.settings), "settling", "the new room settles: still no place, and the next ✓ says so"); h.said.length = 0; INTENTS.incubator.intent(h, "bud", "confirm"); assert.deepEqual([h.ui.panel, h.said.length], [null, 1], "settling: the plate, not the panel"); assert.match(h.said[0], /settles/); assert.match(h.said[0], /ready in 2 turns\nIt takes mibis after 2 more expeditions/, "the third room settles two turns"); }
   { const h = mk(); INTENTS.incubator.intent(h, "bud", "confirm"); INTENTS.panel.intent(h, "card.make", "confirm"); assert.deepEqual([h.ui.panel, h.went.at(-1), h.ui.viv.f], [null, "vivarium", "resident.900"], "Make room: the Vivarium's whole, the ring on the first resident"); }
   { const h = mk(); INTENTS.incubator.intent(h, "bud", "confirm"); const e0 = h.st.e; INTENTS.panel.intent(h, "card.add", "back"); assert.deepEqual([h.ui.panel, h.st.e, h.st.rooms], [null, e0, 2], "← closes with nothing changed"); }
   { const h = mk(); h.st.e = 1; INTENTS.incubator.intent(h, "bud", "confirm"); INTENTS.panel.intent(h, "card.add", "confirm"); assert.deepEqual([h.ui.panel?.id, h.st.rooms, h.said.length], ["full", 2, 1], "short of Energy: the panel stays and the card says what is short"); }
@@ -401,10 +401,10 @@ test("B3 Habitat ✓ on Cross when every partner at home is family: the plate sa
 });
 test("B1 the empty Incubator's ✓ is never silent: no pods plays its plate, a settling room its plate, a full Vivarium the panel", () => {
   const h = host(world()); h.specs.incubator = incubatorSpec; h.ui.screen = "incubator"; h.st.tray = []; INTENTS.incubator.intent(h, "bud", "confirm");
-  assert.deepEqual(h.said, ["No pods at home\nThe Companion brings them from a walk"], "no pods at home");
+  assert.deepEqual(h.said, ["No pods at home\nExpeditions bring pods home"], "no pods at home");
   const g = host(world()); g.specs.incubator = incubatorSpec; g.ui.screen = "incubator"; g.st.tray = [pod(g.st, "S01", chapters("S01"))]; g.st.mibis = Array.from({ length: S.ROOM }, (_, i) => ({ id: 900 + i, room: 0, slot: i, bay: i, released: false })); g.st.rooms = 2; g.settings = { ...settings, rooms: 2 };
   g.st.roomMeta = [{ theme: S.ROOM_THEMES[0], settleUntil: 0 }, { theme: S.ROOM_THEMES[1], settleUntil: (g.st.turn | 0) + 1 }]; INTENTS.incubator.intent(g, "bud", "confirm");
-  assert.deepEqual([g.said.length, g.ui.panel ?? null], [1, null]); assert.match(g.said[0], /settles · ready next turn\nIt takes mibis after the next walk/);
+  assert.deepEqual([g.said.length, g.ui.panel ?? null], [1, null]); assert.match(g.said[0], /settles · ready next turn\nIt takes mibis after the next expedition/);
   g.st.roomMeta[1].settleUntil = 0; g.st.mibis = Array.from({ length: 16 }, (_, i) => ({ id: 900 + i, room: i >> 3, slot: i & 7, bay: i, released: false })); g.said.length = 0; INTENTS.incubator.intent(g, "bud", "confirm");
   assert.deepEqual([g.said, g.ui.panel?.id], [[], "full"], "full: the panel");
 });

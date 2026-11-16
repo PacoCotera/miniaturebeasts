@@ -1569,7 +1569,7 @@ The Vivarium is the place the mibis live, opened as a section in two levels: **t
 | **The out mark** in its place (state out) | The mibi is out with the Companion: its place is kept, never shown as missing |
 | **The name tag** under it | Which mibi this is; the way to rename it |
 | **The card**: "your Loika, adult" (the species word is the door to the guide), where it came from and what it remembers, its code, the heart, the skill notches, the stamp label and one plate a chapter | Who it is, as a readout, without a text page |
-| **The heart** on the card | Bonded: drawn; unbonded: nothing. A state, never a target; the bond is made by Tends on the Companion |
+| **The heart** on the card | Bonded: drawn; unbonded: nothing. A state, never a target; the bond is made by playing together three times on the Companion |
 | **The skill notches** on the card | Its skill: filled notches only, min(notches, 3); nothing at zero; never an empty notch or a figure; shown here and nowhere else on the Station |
 | **Four modules**: Companion, Portrait, Cross, Wild | The four next steps, each one engraved word and one object, on every mibi |
 | **The strip** of bays | The other mibis; walking it changes the mibi shown |

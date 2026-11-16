@@ -5,7 +5,7 @@ import { makePage } from "./page-harness.mjs";
 
 export const plain = v => JSON.parse(JSON.stringify(v));
 export const ALL_KNOWN = [0, 1, 2, 3, 4, 7, 11, 16, 19];
-const mibi = (id, name, sp) => ({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] });
+const mibi = (id, name, sp) => ({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: 0, mem: null, habitsDone: [] });
 
 // One-time page code: helpers every test shares (messages, creatures at a spot, free tiles).
 const HELPERS = `

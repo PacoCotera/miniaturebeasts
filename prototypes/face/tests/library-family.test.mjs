@@ -169,8 +169,8 @@ test("close's info panel: Moss's rows (portrait, name, mark, age, place, both pa
   // the age is in turns for every living stage, the trips are gone from it; an elder counts up from the turn it became one
   by.Moss.outings = 3; assert.deepEqual(rowsOf("Moss").age, ["3 turns old", ""], "no trips line: the age is never outings");
   const re = rowsOf("Reed"); assert.deepEqual([re.age, re.stage], [["25 turns old", ""], { label: "Elder", value: "for 7 turns" }]); by.Moss.outings = 0;
-  // a young mibi: its turns to grow, or "grows with care" once bonded; a mibi born this turn reads "new this turn"
-  const so = rowsOf("Sorrel"); assert.deepEqual([so.age, so.stage], [["new this turn", ""], { label: "Young", value: "adult in 2 turns" }]); by.Sorrel.born = 19; assert.equal(rowsOf("Sorrel").stage.value, "adult next turn"); assert.equal(rowsOf("Sorrel").age[0], "1 turn old"); by.Sorrel.bonded = true; assert.equal(rowsOf("Sorrel").stage.value, "grows with care"); by.Sorrel.bonded = false; by.Sorrel.born = 20;
+  // a young mibi: its turns to grow; a mibi born this turn reads "new this turn"
+  const so = rowsOf("Sorrel"); assert.deepEqual([so.age, so.stage], [["new this turn", ""], { label: "Young", value: "adult in 2 turns" }]); by.Sorrel.born = 19; assert.equal(rowsOf("Sorrel").stage.value, "adult next turn"); assert.equal(rowsOf("Sorrel").age[0], "1 turn old"); by.Sorrel.bonded = true; assert.equal(rowsOf("Sorrel").stage.value, "adult next turn", "bonded or not, it grows on the clock"); by.Sorrel.bonded = false; by.Sorrel.born = 20;
   by.Moss.born = 18; assert.deepEqual(rowsOf("Moss").stage, { label: "Adult", value: "from this turn" }); by.Moss.born = 17;
   // Yours: the real time, then the date; today; an older save says or longer, and or before under today; no clock, no rows
   by.Moss.since = NOW; assert.deepEqual(rowsOf("Moss").yours, { label: "Yours", value: "since today", since: "since 17 Oct" }); by.Moss.sinceFloor = true; assert.deepEqual(rowsOf("Moss").yours, { label: "Yours", value: "since today", since: "or before" });

@@ -281,9 +281,6 @@ test("8. freeSlots: the empty neighbours of the open home regions, inside the 5 
   const two = [g1, home(2, [2, 1])];
   assert.deepEqual(R.freeSlots(two), [[2, 0], [1, 1], [3, 1], [1, 2], [3, 2], [2, 3]], "two regions, six free slots (the mock's 3 x 4)");
   assert.deepEqual(R.freeSlots([home(1, [0, 0])]), [[1, 0], [0, 1]], "a corner has two");
-  // a seasonal region has no slot and opens none; closed or not
-  const season = R.regionRecord({ n: 3, kind: "season", ev: "frost", name: "the Frost Hollow", biome: "marsh", seed: 5, gen: 4, opened: NOW, closes: NOW + 9 });
-  assert.equal(season.slot, null); assert.deepEqual(R.freeSlots([g1, season]), R.freeSlots([g1]));
   // all 25: none left. Every free slot is empty, in range and touches an open region, over random growth
   const all = []; for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) all.push(home(all.length + 1, [x, y]));
   assert.deepEqual(R.freeSlots(all), []);
@@ -297,13 +294,12 @@ test("8. freeSlots: the empty neighbours of the open home regions, inside the 5 
   }
 });
 
-test("9. canOpen: 140 x n explored cells across the home regions, up to 25, seasonal regions not counted", () => {
+test("9. canOpen: 140 x n explored cells across the home regions, up to 25", () => {
   const S = { here: "g1", regions: [home(1, [2, 2], { biome: "mixed", exploredN: 139 })] };
   assert.equal(R.canOpen(S), false); S.regions[0].exploredN = 140; assert.equal(R.canOpen(S), true);
   S.regions.push(home(2, [2, 1], { exploredN: 100 }));   // two regions: 280 needed
   assert.equal(R.canOpen(S), false, "240 of 280"); S.regions[1].exploredN = 140; assert.equal(R.canOpen(S), true, "280 of 280");
-  S.regions.push(R.regionRecord({ n: 3, kind: "season", ev: "e", name: "x", biome: "fells", seed: 1, gen: 4, opened: NOW, exploredN: 5000 }));
-  S.regions[1].exploredN = 139; assert.equal(R.canOpen(S), false, "a seasonal region's cells do not count");
+  S.regions[1].exploredN = 139; assert.equal(R.canOpen(S), false, "279 of 280");
   assert.equal(R.canOpen({ ...S, regions: S.regions.slice(0, 2) }, 100), true, "the developer's number");
   assert.equal(R.exploredAcross({ here: "g1", regions: S.regions.slice(0, 2) }), 279);
   // the region in use counts live, not as last cached
@@ -317,7 +313,7 @@ test("9. canOpen: 140 x n explored cells across the home regions, up to 25, seas
   const most = all.slice(0, 24); assert.equal(R.canOpen({ here: "g1", regions: most }), true, "24 are open and a slot is free");
 });
 
-test("10. regionName: the Meadows, then the side and the biome; Far for the second on a side; the event's own name for a seasonal region", () => {
+test("10. regionName: the Meadows, then the side and the biome; Far for the second on a side", () => {
   const nm = (slot, biome, n = 9) => R.regionName(home(n, slot, { biome }), {});
   assert.equal(R.regionName(home(1, [2, 2], { biome: "mixed" }), {}), "the Meadows");
   assert.equal(nm([2, 1], "woods"), "North Woods"); assert.equal(nm([3, 2], "fells"), "East Cliffs"); assert.equal(nm([2, 3], "marsh"), "South Marsh"); assert.equal(nm([1, 2], "woods"), "West Woods");
@@ -325,8 +321,6 @@ test("10. regionName: the Meadows, then the side and the biome; Far for the seco
   assert.equal(nm([3, 2], "mixed"), "East Meadows", "a repeat of the Meadows later");
   // the diagonals have no words yet: the copywriter owes them
   assert.equal(nm([1, 1], "woods"), null); assert.equal(nm([4, 4], "fells"), null);
-  const season = R.regionRecord({ n: 5, kind: "season", ev: "frost", name: "the Frost Hollow", biome: "marsh", seed: 5, gen: 4, opened: NOW });
-  assert.equal(R.regionName(season, {}), "the Frost Hollow");
 });
 
 test("11. seeds and ids: region 1 keeps the realm's seed and its pod ids; region n has a seed and pod ids of its own", () => {

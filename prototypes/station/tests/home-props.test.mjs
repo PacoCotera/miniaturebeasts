@@ -286,11 +286,11 @@ test("the goal away reads the aim, and growUp counts the walks in words", () => 
 });
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
-  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows up in time", icons: "", plain: "The young mibi grows up in time" });
+  assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, step: { key: "goOut" } }), { text: "More expeditions grow the pair", icons: "", plain: "" });
   assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "put", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }), { text: "Put Data in the Loika pod", icons: "", plain: "" }, "the guide's step puts Data in a pod and has no name, so no nameless sibling");
   assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "Find a Loika pod", "away, a findPod step reads its own words, not the aim");
   assert.deepEqual(face({ key: "readChild", name: "Dot", step: { key: "read", name: "Dot" } }), { text: "Read Dot's chapters", icons: "", plain: "Read the new mibi's chapters" });
-  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "Expeditions grow the pair up");
+  assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, step: { key: "goOut" } }, false).plain, "Expeditions grow the pair up");
   assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "Read the new mibi's chapters");
   for (const goal of [{ key: "cross", names: ["Dot", "Moss"], step: { key: "cross" } }, { key: "firstPod", step: { key: "goOut" } }, { key: "pair", name: "Dot", species: "S01", step: { key: "identify", species: "S01" } }]) assert.equal(face(goal).plain, "", goal.key);
   assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆ ⚡", from: "fieldAndBench" } }).text, "Go out and watch for more"); assert.equal(face({ key: "firstMibi", step: { key: "short", icons: "◆", from: "bench" } }).icons, "◆");
@@ -360,5 +360,5 @@ test("the growing pod names its kind and the minutes; the Companion's line is on
   assert.equal(companionWords({ key: "pair", name: "Dot", species: "S01", step: { key: "goOut" } }, frameSpec).text, "A mibi to cross with Dot");
   assert.equal(companionWords({ key: "guide", species: "S01", step: { key: "short", from: "bench", icons: "◆" } }, frameSpec), null, "short from the bench is the Station's");
   assert.equal(companionWords({ key: "guide", species: "S01", step: { key: "short", from: "field", icons: "⚡ ❀" } }, frameSpec).text, "Bring back Energy and Essence");
-  assert.equal(companionWords({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, frameSpec).text, "Expeditions grow Dot up", "away, the aim");
+  assert.equal(companionWords({ key: "growUp", names: ["Dot", "Moss"], walks: 2, step: { key: "goOut" } }, frameSpec).text, "Expeditions grow Dot up", "away, the aim");
 });

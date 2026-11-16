@@ -102,7 +102,7 @@ const shells = { station: shS, companion: shC };
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
 const asleepStrip = $("asleepStrip"), asleepBar = $("asleepBar"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), optionsBtn = $("optionsBtn");
 // the Dock key: a Radix Toggle (options/src/keytray.jsx), its look and words set by layoutDock from this state
-const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: "../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true };
+const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: "../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the expedition", short: "Dock", hint: true };
 const dockUi = mountDockKey($("dockRoot"), { onPress: () => { dockPress(); giveKeysBack(); } }); dockUi.update(dockState);
 const dockKey = $("dockKey");
 // the device switch (Radix Tabs): Companion, then Station, in that order always
@@ -192,7 +192,7 @@ const zStep = (d) => { if (TEST || form !== "laptop") return; const z = Math.rou
 function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or null when it is not shown
   const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, touch = window.matchMedia("(pointer: coarse)").matches;
   // [copy] placeholders: the scheme's section 7 item 4; the short words are the long ones cut down ("Dock", "Lift")
-  const full = d ? "Docked · Lift to go out" : crates ? "Dock the Companion" : "Dock · after the walk", short = d ? "Lift" : "Dock";
+  const full = d ? "Docked · Lift to go out" : crates ? "Dock the Companion" : "Dock · after the expedition", short = d ? "Lift" : "Dock";
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
   if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; if (dockNeed(full, false) > box[2]) mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis

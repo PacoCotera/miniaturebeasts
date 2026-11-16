@@ -70,14 +70,14 @@ test("goalKey: pair with the first living mibi, then growUp counting the bud and
   assert.deepEqual(S.goalKey(st, sv0()), { key: "pair", name: "Dot", species: "S01", step: { key: "findPod", species: "S01" }, probe: null, meanwhile: null });
   // Dot (born 1) + Moss (born 2) at turn 2: two walks; at turn 3: one
   const w = fresh(); const [a, b] = adults(w, 2); named([a, b], ["Dot", "Moss"], [1, 2]); w.turn = 2; w.dock = { docked: false, at: 1 };
-  let g = S.goalKey(w, sv0()); assert.equal(g.key, "growUp"); assert.deepEqual(g.names, ["Dot", "Moss"]); assert.equal(g.walks, 2); assert.equal(g.bondedWaits, false); assert.deepEqual(g.step, { key: "goOut" });
+  let g = S.goalKey(w, sv0()); assert.equal(g.key, "growUp"); assert.deepEqual(g.names, ["Dot", "Moss"]); assert.equal(g.walks, 2); assert.equal(g.bondedWaits, undefined, "no bonded waits: every young mibi grows on the clock"); assert.deepEqual(g.step, { key: "goOut" });
   w.turn = 3; assert.equal(S.goalKey(w, sv0()).walks, 1);
   // the bud is the second member
   const x = fresh(); const [d] = adults(x, 1); d.name = "Dot"; x.bud = { kind: "founder", species: "S01", start: 1000, minutes: 5 }; x.dock = { docked: false, at: 1 };
   g = S.goalKey(x, sv0()); assert.equal(g.key, "growUp"); assert.equal(g.step.key, "bud");
-  // a bonded juvenile with no grownTurn grows with care
+  // a bonded juvenile with no grownTurn grows on the clock: the goal counts its turns like any other
   const y = fresh(); const [p, q] = adults(y, 2); named([p, q], ["Dot", "Moss"], [1, 2]); q.bonded = true; q.grownTurn = null; y.turn = 2; y.dock = { docked: false, at: 1 };
-  assert.equal(S.goalKey(y, sv0()).bondedWaits, true);
+  assert.equal(S.goalKey(y, sv0()).bondedWaits, undefined);
 });
 test("goalKey: both adult, no cross → cross (when Cross is open), a short step when ⚡ is short, a block when crossBlock refuses", () => {
   const st = fresh(); const [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"]); st.dock = { docked: true, at: 1 }; st.e = 9; st.s = 9; st.d = 9;

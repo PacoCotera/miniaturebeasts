@@ -15,7 +15,7 @@ const PLACES = ["meadow", "pond", "rock", "wood", "shallows", "cliff"];
 const SEED = 7;
 const fresh = (turn, setup = "") => { const p = page(); p.run(`newWorld(${SEED}); S.turn = ${turn}; S.cr = S.cr.slice(0, 0); ${setup}`); return p; };   // no creatures: nothing roams, arrives or is born unless a test says so
 const turnOf = (p, storm = []) => JSON.parse(p.run(`JSON.stringify(worldTurn({ trail: [], storm: ${JSON.stringify(storm)} }))`));
-const mibi = (id, o = {}) => ({ id, name: "M" + id, sp: 0, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null, ...o });
+const mibi = (id, o = {}) => ({ id, name: "M" + id, sp: 0, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null, ...o });
 const mibis = (p, list, carried = [], lead = null) => p.run(`S.mibis = ${JSON.stringify(list)}; S.carried = ${JSON.stringify(carried)}; S.lead = ${JSON.stringify(lead)};`);
 const valid = e => Array.isArray(e) && e.length === 4 && KINDS.includes(e[0]) && (e[1] === null || PLACES.includes(e[1])) && (e[2] === null || Number.isInteger(e[2])) && Number.isInteger(e[3]);
 const turnN = 10;   // S.turn after the turn is 11

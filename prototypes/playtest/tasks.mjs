@@ -221,7 +221,7 @@ export function addRoom(ctx) {
   if (ctx.view().L.overlay === "panel") { ctx.press("back", "no room"); return false; }
   return true;
 }
-// Care at Habitat (the Station's part: the Companion does the Tends): greet the resident, read its chapters while Data lasts
+// Care at Habitat (the Station's part: the Companion does the playing together): greet the resident, read its chapters while Data lasts
 export function careHere(ctx, { read = true } = {}) {
   if (screenOf(ctx) !== "habitat") return false;
   if (focusLine(ctx, "resident")) { ctx.press("confirm", "greet"); ctx.mark("care"); }

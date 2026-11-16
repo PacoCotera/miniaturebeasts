@@ -20,7 +20,7 @@ const SEED = 1;   // a Weather expedition with the storm and a fog bank from its
 // A world with one grown mibi with you, an expedition started at the first glint (undocked), and the Station's part.
 function begin(store) {
   const p = page(store);
-  p.run(`newWorld(${SEED}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1]; save();`);
+  p.run(`newWorld(${SEED}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }); S.carried = [1]; save();`);
   const st = freshSt(p.S.wid, p.S.turn); st.mendFull = false;
   st.mibis = [{ id: 1, name: "Dot", sp: 0, born: -9 }];
   p.writeSt(st);
@@ -382,8 +382,8 @@ test("C2a: rendering changes nothing: 600 frames in the reach view, a place, the
     assert.ok(p.run(`(() => { for (let c = 0; c < MW * MH; c++) { const lay = layout(String(c)); if (lay.cave) continue; const f = lay.feats.find(f => f.kind === 'j'); if (!f) continue;
       S.exp.pos = c; S.exp.patch = { key: String(c), x: f.x, y: f.y + 1, dir: 'up', noise: 'creep' }; ensureLive(String(c)); S.phase = 'patch'; S.exp.cargo.e = 9; lightBeacon(f); return !!S.exp.beaconView; } return false; })()`), "the sweep runs");
     frozenBy(p, "the beacon sweep"); p.pass(1800); assert.equal(p.S.exp.beaconView, undefined, "the sweep's own timer still brings the view back"); }
-  { const p = page(); p.run(`newWorld(${SEED}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null },
-      { id: 2, name: 'Pip', sp: 1, born: -9, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }); S.carried = [1, 2];
+  { const p = page(); p.run(`newWorld(${SEED}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null },
+      { id: 2, name: 'Pip', sp: 1, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }); S.carried = [1, 2];
       S.phase = 'active'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
     frozenBy(p, "the active screen with a cut due"); }
 });

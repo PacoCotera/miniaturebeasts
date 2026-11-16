@@ -231,7 +231,7 @@ function rowsOf(m, spec, lin, n, { req, slot, pod, home, frame, compare }) {
     out.age = [mb.released ? capLine(home.strings.stages[stage] ?? stage) : ageTurns(mb, st.turn), ""];   // a released mibi keeps its stage word; the turns count is for the living, at every stage
     if (!mb.released && !compare) {   // the stage row and the Yours row: a living mibi's in close, never a bud's, a released mibi's or compare's (compare is about looks: age is one ring move away in close; the stamp keeps its place, so the panel never reflows as the ring moves)
       const note = stageNote(mb, st.turn, settings.adultTurns ?? S.JUVENILE_TURNS, settings.elderTurns ?? S.ELDER_TURNS), y = yoursLine(mb, m.now ?? Date.now());
-      out.stage = { label: capLine(home.strings.stages[stage] ?? stage), value: stage === "juvenile" ? (note.n == null ? P.stageCare : fill(P.stageYoung, { until: turnsUntil(note.n) })) : turnsFor(note.n) };
+      out.stage = { label: capLine(home.strings.stages[stage] ?? stage), value: stage === "juvenile" ? fill(P.stageYoung, { until: turnsUntil(note.n) }) : turnsFor(note.n) };
       if (y) out.yours = { label: P.yours, value: y.span ?? P.sinceToday, since: y.floor ? (y.span ? P.orLonger : P.orBefore) : fill(P.since, { date: y.date }) };
     }
     out.now = P.places[mb.released ? "wild" : S.isAway(st, sv, mb) ? "trip" : "home"];

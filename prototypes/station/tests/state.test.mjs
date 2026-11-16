@@ -485,16 +485,16 @@ const careFixture = () => JSON.parse(readFileSync(path.join(here, "fixtures/save
 const adults = (n, seed = 5) => { const st = S.freshSt("w1", 4, 1000); S.normalize(st); S.seedAdults(st, "S01", seed, n, settings); st.turn = 4; return st; };
 const svOf = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 4, bay: [], mibis: [], trips: [], carried: [], carrySeen: 0, carryRefused: [], tier: 1, shield: 3, ...over });
 
-test("T2 the care fixture (Station half): the swap request becomes an add, the legacy bonds are back-filled, stages follow, and the migration is idempotent", () => {
+test("T2 the care fixture (Station half): the swap request becomes an add, old bonds are kept, stages follow the clock, and the migration is idempotent", () => {
   const raw = careFixture(), once = S.normalize(S.migrate(raw.st, 777, raw)), twice = S.normalize(S.migrate(structuredClone(once), 778, raw));
   assert.equal(once.schema, S.ST_SCHEMA); assert.deepEqual(once.carryReqs, [{ seq: 1, op: "add", id: 3 }]); assert.equal(once.carrySeq, 1); assert.equal("withReq" in once, false);
   const [dot, moss, fig] = once.mibis;
-  assert.deepEqual([dot.bondCare, dot.grownTurn], [0, 2], "an old bonded adult stays adult: elder at born + 18"); assert.deepEqual([moss.bondCare, moss.grownTurn], [0, null], "an old bonded juvenile waits for care"); assert.equal(fig.grownTurn, null); assert.equal(fig.bonded, false); assert.equal(fig.bondCare, undefined);
+  assert.deepEqual([dot.plays, dot.grownTurn], [0, null], "an old bonded adult stays adult on the clock: elder at born + 18"); assert.deepEqual([moss.plays, moss.grownTurn], [0, null], "an old bonded juvenile is on the clock too"); assert.equal(fig.grownTurn, null); assert.equal(fig.bonded, false); assert.equal(fig.bondCare, undefined, "no old care field is added");
   assert.deepEqual(twice, once, "run twice: the same JSON");
   assert.deepEqual(S.carriedIds(once, raw), [1], "no `carried` yet: the old `with` is read"); assert.deepEqual(S.carriedIds(once, { ...raw, carried: [1], with: undefined }), [1]);
   const stages = (m) => Array.from({ length: 11 }, (_, i) => S.mibiStage({ ...once, turn: 4 + i }, m));
   assert.deepEqual(stages(dot), Array.from({ length: 11 }, () => "adult"), "Dot: adult through turn 14, elder at 18"); assert.equal(S.mibiStage({ ...once, turn: 17 }, dot), "adult"); assert.equal(S.mibiStage({ ...once, turn: 18 }, dot), "elder");
-  assert.ok(stages(moss).every((x) => x === "juvenile"), "Moss: a bonded juvenile waits for care, through turn 14"); assert.deepEqual(stages(fig), Array.from({ length: 11 }, () => "adult")); assert.equal(S.mibiStage({ ...once, turn: 18 }, fig), "adult"); assert.equal(S.mibiStage({ ...once, turn: 19 }, fig), "elder", "born 1: elder at 19");
+  assert.deepEqual(stages(moss), ["juvenile", ...Array.from({ length: 10 }, () => "adult")], "Moss: a bonded juvenile, born 3, grows on the clock at turn 5"); assert.deepEqual(stages(fig), Array.from({ length: 11 }, () => "adult")); assert.equal(S.mibiStage({ ...once, turn: 18 }, fig), "adult"); assert.equal(S.mibiStage({ ...once, turn: 19 }, fig), "elder", "born 1: elder at 19");
 });
 test("the care step keeps an unapplied request as an add and drops an applied one; a mibi the Companion already carries is not asked for twice", () => {
   const raw = careFixture(); raw.st.withReq = { id: 3, seq: 2 }; raw.withSeen = 2; assert.deepEqual(S.migrate(structuredClone(raw.st), 1, raw).carryReqs, [], "applied");
@@ -516,15 +516,15 @@ test("T3 the carried set (Station half): adds queue against the projection, a fo
   assert.deepEqual(S.carriedIds(st, { carried: [a.id, 77] }), [a.id], "ids that are not Station mibis are dropped"); assert.deepEqual(S.carriedIds(st, null), []);
 });
 test("T4 the dock merge: max and OR only, idempotent through a lift, a redock and a reload; the Station never sets bonded", () => {
-  const st = adults(2), [a, b] = st.mibis, sv = svOf({ mibis: [{ id: a.id, care: 3, tends: 2, bonded: true, bondCare: 1, grownTurn: 5, outings: 2, notches: 1 }, { id: b.id, care: 0, tends: 0, bonded: false }] });
-  b.bonded = true; b.care = 4;
+  const st = adults(2), [a, b] = st.mibis, sv = svOf({ mibis: [{ id: a.id, plays: 3, bonded: true, grownTurn: 5, outings: 2, notches: 1 }, { id: b.id, plays: 0, bonded: false }] });
+  b.bonded = true; b.plays = 4;
   const home = S.mergeCare(st, sv); assert.deepEqual(home, [a.id]);
-  assert.deepEqual([a.care, a.tends, a.bonded, a.bondCare, a.grownTurn, a.outings, a.notches], [3, 2, true, 1, 5, 2, 1]); assert.deepEqual([b.care, b.bonded], [4, true], "sv false, st true: stays true; care keeps the higher");
+  assert.deepEqual([a.plays, a.bonded, a.grownTurn, a.outings, a.notches], [3, true, 5, 2, 1]); assert.deepEqual([b.plays, b.bonded], [4, true], "sv false, st true: stays true; plays keeps the higher");
   const snap = JSON.stringify(st); S.mergeCare(st, sv); assert.equal(JSON.stringify(st), snap, "twice: identical");
   S.dockKey(st, sv, settings, 2000); S.dockKey(st, sv, settings, 2001); const after = JSON.parse(JSON.stringify(st)); S.mergeCare(after, sv); S.normalize(after);
-  assert.deepEqual([after.mibis[0].care, after.mibis[0].bondCare, after.mibis[0].grownTurn, after.mibis[1].bonded], [3, 1, 5, true], "a lift, a redock and a reload change nothing");
-  const lower = svOf({ mibis: [{ id: a.id, care: 1, bondCare: 0, grownTurn: 3, bonded: false }] }); S.mergeCare(st, lower); assert.deepEqual([a.care, a.bondCare, a.grownTurn, a.bonded], [3, 1, 5, true], "lower values never lower a mirror (max), and false never clears true (OR)");
-  const c = adults(1).mibis[0]; assert.equal(c.bonded, false); const cs = adults(1); S.mergeCare(cs, svOf({ mibis: [{ id: cs.mibis[0].id, care: 2, bonded: false }] })); assert.equal(cs.mibis[0].bonded, false, "the Station never sets bonded");
+  assert.deepEqual([after.mibis[0].plays, after.mibis[0].grownTurn, after.mibis[1].bonded], [3, 5, true], "a lift, a redock and a reload change nothing");
+  const lower = svOf({ mibis: [{ id: a.id, plays: 1, grownTurn: 3, bonded: false }] }); S.mergeCare(st, lower); assert.deepEqual([a.plays, a.grownTurn, a.bonded], [3, 5, true], "lower values never lower a mirror (max), and false never clears true (OR)");
+  const c = adults(1).mibis[0]; assert.equal(c.bonded, false); const cs = adults(1); S.mergeCare(cs, svOf({ mibis: [{ id: cs.mibis[0].id, plays: 2, bonded: false }] })); assert.equal(cs.mibis[0].bonded, false, "the Station never sets bonded");
   const g = adults(1); g.mibis[0].grownTurn = 4; S.mergeCare(g, svOf({ mibis: [{ id: g.mibis[0].id, grownTurn: 4 }] })); assert.equal(g.mibis[0].grownTurn, 4);
 });
 test("T5 trips: a record without `carried` reads as its partner; with it, every carried mibi enters the places, once", () => {
@@ -541,10 +541,10 @@ test("T7 the refusal plate: the newest unseen 'full' refusal of a Station mibi s
   assert.equal(S.carryRefusal(st, svOf({ carryRefused: [{ seq: 9, id: 404, why: "full" }] })), null, "a refusal of a mibi that is not a Station mibi");
   const s2 = adults(2), svb = svOf({ carryRefused: [{ seq: 1, id: s2.mibis[0].id, why: "full" }, { seq: 2, id: s2.mibis[1].id, why: "full" }] }); assert.equal(S.carryRefusal(s2, svb).id, s2.mibis[1].id, "the newest full"); S.seenCarryRefusal(s2, svb); assert.equal(S.carryRefusal(s2, svb), null, "every refusal up to it is seen");
 });
-test("T6 stageAt (Station): care grows a bonded mibi; the clock grows an unbonded one; adultTurns moves the clock path only", () => {
+test("T6 stageAt (Station): the clock grows every young mibi, bonded or not; adultTurns moves the clock path only", () => {
   const E = S.ELDER_TURNS, J = S.JUVENILE_TURNS;
   for (const [j, bondedAt] of [[2, 5], [1, 5], [0, 5]]) { const m = { born: 0, bonded: true, grownTurn: 2 }; assert.equal(S.stageAt(m, 17, j, E), "adult"); assert.equal(S.stageAt(m, 18, j, E), "elder", "bonded at turn 5 → grownTurn 2, elder at 18, whatever adultTurns is"); void bondedAt; }
-  assert.equal(S.stageAt({ born: 0, bonded: true, grownTurn: null }, 14, J, E), "juvenile", "a juvenile bonded at turn 1 waits for care");
+  assert.equal(S.stageAt({ born: 0, bonded: true, grownTurn: null }, 14, J, E), "adult", "a bonded young mibi grows on the clock like any other");
   assert.deepEqual([0, 1, 2, 17, 18].map((t) => S.stageAt({ born: 0, bonded: false, grownTurn: null }, t, J, E)), ["juvenile", "juvenile", "adult", "adult", "elder"]);
   assert.equal(S.stageAt({ born: 0, grownTurn: null, bonded: false }, 2, 3, E), "juvenile"); assert.equal(S.stageAt({ born: 0, grownTurn: null, bonded: false }, 3, 3, E), "adult"); assert.equal(S.stageAt({ born: 0, grownTurn: null, bonded: false }, 19, 3, E), "elder", "elder follows adultTurns on the clock path");
   const st = adults(1); st.turn = 19; st.mibis[0].born = 0; assert.equal(S.mibiStage(st, st.mibis[0], { ...settings, adultTurns: 3 }), "elder"); assert.equal(S.mibiStage(st, st.mibis[0]), "elder");
@@ -555,9 +555,9 @@ test("the Station's own care rules: a carried, pending or bonded mibi is not ret
   assert.equal(S.benchWatch(st, sv, a, 250, settings).ok, false, "a carried mibi is not watched"); assert.equal(S.benchWatch(st, sv, d, 250, settings).ok, true);
   a.outings = 3; assert.ok(!/bond/i.test(S.need(st, sv, settings).text), "an offered bond is not a need"); assert.equal("bond" in S, false); assert.equal("bondOffered" in S, false); for (const k of ["withId", "effWithId", "atHome", "pendingWith", "takeWith"]) assert.equal(k in S, false, k + " is gone");
 });
-test("the migration of an older write defaults the care fields and back-fills a legacy bond once", () => {
-  const st = adults(2); const [a, b] = st.mibis; a.bonded = true; a.outings = 3; delete a.care; b.bonded = true; b.born = 3; st.turn = 4; delete st.carryReqs; delete st.carrySeq;
-  S.normalize(st); assert.deepEqual([a.care, a.tends, a.bondCare, a.grownTurn], [0, 0, 0, a.born + S.JUVENILE_TURNS]); assert.deepEqual([b.bondCare, b.grownTurn], [0, null]); assert.deepEqual([st.carryReqs, st.carrySeq, st.carryRefusedSeen], [[], 0, 0]);
+test("the migration of an older write defaults plays, back-filled once from its tends, and leaves the old care fields as they were", () => {
+  const st = adults(2); const [a, b] = st.mibis; a.bonded = true; a.outings = 3; delete a.plays; a.tends = 2; a.care = 5; a.bondCare = 1; b.bonded = true; b.born = 3; delete b.plays; st.turn = 4; delete st.carryReqs; delete st.carrySeq;
+  S.normalize(st); assert.deepEqual([a.plays, a.tends, a.care, a.bondCare, a.grownTurn], [2, 2, 5, 1, a.grownTurn ?? null]); assert.deepEqual([b.plays, b.bondCare, b.grownTurn], [0, undefined, null]); assert.deepEqual([st.carryReqs, st.carrySeq, st.carryRefusedSeen], [[], 0, 0]);
   const snap = JSON.stringify(st); S.normalize(st); assert.equal(snap, JSON.stringify(st), "idempotent");
 });
 

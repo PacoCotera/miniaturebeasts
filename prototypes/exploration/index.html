@@ -196,7 +196,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>The dots top left are your reach, one per cell: a dot fills once you have been over most of that place; your cell is framed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
         <li>Up to three mibis are <b>with you</b> in the Companion; the others are at home at the Station. The partner joins the Probe: the lead if it is grown, otherwise the first grown mibi with you. While docked, ✓ <b>Take</b> a mibi at home or <b>Leave</b> one at home on Mibis (the Companion is full at three); the Station's Vivarium can ask for a mibi too, applied at the dock.</li>
-        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Walk together</b> once per world turn, undocked, with all of them (a moment together, no Data), then ✓ <b>Tend</b> each one once a day (once a minute with Playtest waits on). Three Tends earn the bond; a bonded juvenile grows up with care. The pad looks at the others; ← goes up to Mibis.</li>
+        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Play together</b> once a turn, off the dock, with all of them (a moment together, no Data). Play together three times and a mibi is bonded, and a bond is for good. A young mibi grows up in time. The pad looks at the others; ← goes up to Mibis.</li>
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
     </details>
@@ -209,7 +209,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it (sometimes a pod too). <span id="helpData"></span></li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not. Lightning finds what stands still in the open: it marks your tile one action ahead, so step off the mark and it misses. A strike costs one plate and is followed by a long quiet; on its last plate the Probe can still break.</li>
-        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
+        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, play together, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
       </ol>
@@ -236,7 +236,6 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
           <dt>Data yield</dt><dd id="oYield">–</dd>
           <dt>Seed</dt><dd id="oSeed">–</dd>
         </dl>
-        <div class="dev-row"><label for="devCareDay">Developer · care</label><button class="btn" id="devCareDay" type="button">New care day</button></div>
         <h2>Events</h2>
         <ol class="log" id="oLog"></ol>
         <h2 id="palHead">Palette</h2>
@@ -1182,18 +1181,15 @@ function logEv(text) {
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // ---- Care and the carried set (the care save shape, C0) ----
 // The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
-// Tend, once a Companion day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends
-// earn the bond; a bonded juvenile grows up through care, never on the clock. The Companion owns care,
-// tends, tendDay, bonded, bondCare, grownTurn, notches and outings; the Station only mirrors them at the dock.
+// Play together, once a world turn for all of them together. Three plays earn the bond; every young mibi grows up on the
+// clock. The Companion owns plays, bonded, grownTurn, notches and outings; the Station only mirrors them at the dock.
 // The words: one table, the final strings of companion-screens.md "Care and the carried set" (the copywriter's). A function
 // takes the mibi's name (or the mibi, or the names).
-const TEND_MOMENT = ['leans on the glass', 'glows softly', 'puffs'];   // the species moment's words, as built (Loika, Tuikis, Untuva)
 const CARE_TEXT = {
-  tendLabel: n => 'Tend ' + n, tendOnce: PLAYTEST_ON ? 'once a minute' : 'once a day', tendBond: 'a bond is for good', tendedToday: PLAYTEST_ON ? 'again in a minute' : 'tended today', tendAfter: 'after the expedition',
-  tended: m => m.name + ' ' + (TEND_MOMENT[m.sp] ?? CARE_TEXT.tendMomentOther) + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
-  tendedRefused: n => PLAYTEST_ON ? n + ' was just tended · again in a minute' : n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
-  walkLabel: names => names.length === 1 ? 'Walk with ' + names[0] : 'Walk together', walkOnce: 'once a turn',
-  walked: names => listWords(names) + ' walk together',
+  playLabel: names => names.length === 1 ? 'Play with ' + names[0] : 'Play together', playOnce: 'once a turn', playBond: 'a bond is for good', playDocked: 'docked · lift to play', playAfter: 'after the expedition',
+  playMidExp: 'Play together when the expedition is over', playedTurn: 'again after the next expedition', playedRefused: 'You played this turn · again after the next expedition', playDockedRefused: 'Lift the Companion to play',
+  playsLeft: (names, left) => listWords(names) + ' · play ' + (left === 1 ? 'once' : 'twice') + ' more to bond',
+  played: names => listWords(names) + ' play together',
   bonded: n => n + ' is bonded with you',
   grownLeads: n => n + ' is grown · it leads the Probe now', grownCanLead: n => n + ' is grown · it can lead the Probe',
   clockGrownHome: n => n + ' is grown · at home',
@@ -1202,22 +1198,22 @@ const CARE_TEXT = {
   full: 'the Companion is full', fullRefused: n => n + ' stays home: the Companion is full · leave one at home first',
   leaveLabel: n => 'Leave ' + n + ' at home', leaveCtx: 'comes home now', left: n => n + ' stays home',
   visitLabel: n => 'Visit ' + n, visitCtx: 'with you', withYouThisExp: 'with you for this expedition',
-  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows up in time',
-  stHome: 'at home', stHomeBonded: 'at home · grows up in time',
+  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe',
+  stHome: 'at home',
   noOneWith: 'no one with you', noOneGrown: 'no one grown yet',
   // the care screens (companion-screens.md: Mibis, the Lead card, the active mibi screen, the partner card)
   leadLabel: n => 'Let ' + n + ' lead', leads: n => n + ' leads the Probe', leadCtx: 'joins the Probe', onlyGrown: 'the only grown one', leadsThisExp: 'leads this expedition',
   partnerCap: 'Partner', noPartner: 'No partner', noOneWithT: 'No one with you', takeOne: 'dock to take one along',
-  youngCare: 'young · grows up in time', youngTime: 'young · grows up in time', leadsChip: 'leads',
+  youngTime: 'young · grows up in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
   takeAlong: 'take mibis along', whenDocked: 'when docked',
   // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
-  spOther: 'a Station species', abOther: 'no field ability yet', tendMomentOther: 'settles',
-  walkedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' walks the ' + (mem || 'path'),
+  spOther: 'a Station species', abOther: 'no field ability yet',
+  playedOther: (n, mem) => mem === 'mud' ? n + ' crosses the mud' : n + ' plays · ' + (mem ? 'it remembers the ' + mem : 'it hasn’t been out yet'),
   // the juvenile that rides in the Companion on an expedition (X26): the copywriter's signed strings (2026-10-11 15:04)
-  riderTime: 'grows up in time, riding along', riderCare: 'grows up in time, riding along',
+  riderTime: 'grows up in time, riding along',
   riderSetOut: n => n + ' rides along until it’s grown', riderMenu: n => n + ' rides along',
-  walkedYoung: (n, mem) => CARE_TEXT.walkedOther(n, mem), onceGrown: ' once grown',
+  playedYoung: (n, mem) => CARE_TEXT.playedOther(n, mem), onceGrown: ' once grown',
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
@@ -1230,15 +1226,15 @@ const CARE_ASSETS = [
   { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
   { id: 'c-sprite-other-32', what: 'a mibi of a species the Companion has no art for: the field partner (1×), the partner card and the Lead card (2×), the active mibi stage (8×)', until: 'the species’ HiBit sprite from the art director (X6, one look)', w: 32, h: 32, status: 'placeholder' },
   { id: 'c-mini-other-12', what: 'the 12 px partner mini of such a mibi: the HUD and the field marker', until: 'the species’ HiBit mini from the art director', w: 12, h: 12, status: 'placeholder' },
-  { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S01-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S02-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage: the desk’s painted adult stand (art/moment/stand-S03-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-tend-S01-280x300', what: 'the Loika moment on the stage (Play together): the desk’s painted adult stand (art/moment/stand-S01-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva moment on the stage (Play together): the desk’s painted adult stand (art/moment/stand-S02-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis moment on the stage (Play together): the desk’s painted adult stand (art/moment/stand-S03-280x300.png), its foot on the token’s; the code effects play over it', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (mb-2c call, art-swap-signed-2)', w: 280, h: 300, status: 'signed' },
   { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage: the same painted adult stand', until: 'signed by the art desk, 2026-11-09 (ad sweep, art-swap-signed)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-young-S01-280x300', what: 'the Loika young moment on the stage (Tend and walk): the desk’s painted young stand (art/moment/stand-S01j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-young-S02-280x300', what: 'the Untuva young moment on the stage (Tend and walk): the desk’s painted adult stand at the young scale, 0.737 (art/moment/stand-S02j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
-  { id: 'c-moment-young-S03-280x300', what: 'the Tuikis young moment on the stage (Tend and walk): the desk’s painted young stand (art/moment/stand-S03j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-young-S01-280x300', what: 'the Loika young moment on the stage (Play together): the desk’s painted young stand (art/moment/stand-S01j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-young-S02-280x300', what: 'the Untuva young moment on the stage (Play together): the desk’s painted adult stand at the young scale, 0.737 (art/moment/stand-S02j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
+  { id: 'c-moment-young-S03-280x300', what: 'the Tuikis young moment on the stage (Play together): the desk’s painted young stand (art/moment/stand-S03j-280x300.png), its foot on the young token’s', until: 'signed by the art desk, 2026-11-09 (art-swap-signed-4)', w: 280, h: 300, status: 'signed' },
   { id: 'LIP', what: 'the rim of the higher ground at a steep edge in a generator 2 place, by its 8-neighbour mask (lip/<47-blob index>)', until: 'the phase 6 atlas, meadow/lip (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'FACE', what: 'the south face, two rows under the higher ground, with its foot, ends and inner corners (face/face3x2, face2x2, face1x2, corner-out-sw/-se, corner-in-w/-e)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'SIDE', what: 'the east or west side face, one column, with its ends; the side tail beside a south face’s outer end uses it too (face/side-e, face/side-w)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
@@ -1262,14 +1258,11 @@ const CARE_ASSETS = [
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f'], 'mini'], 'c-token-48': ['stone', ['token', 't'], 'sprite'],
   'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels (longest first), and the mibi's own built art it carries ('mini' 12 px, 'sprite' 32 px)
-const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
+const CARRY_MAX = 3, BOND_PLAYS = 3;   // the carry cap; the bond: three plays together (owner 2026-11-11)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
-// The Companion's local date, Y-M-D on its own clock (never toISOString: that is UTC).
-function localDay(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 // One definition of a mibi's stage on both pages (the Station's copy is the same text; a parity test proves it).
 function stageAt(m, turn, j, e) {
   if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
-  if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
   const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
 function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); }
@@ -1277,10 +1270,10 @@ function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); 
 // "{n} turns old", counted from `born`: "1 turn old" at 1, "new this turn" at 0.
 function ageTurns(m, turn) { const n = Math.max(0, turn - (m.born || 0)); return n === 0 ? 'new this turn' : n === 1 ? '1 turn old' : n + ' turns old'; }
 // What the stage means now, as { stage, n }: n is the whole turns spent in an adult's or an elder's stage (an elder's count never warns, it only rises),
-// or the turns still to grow for a young mibi on the clock; null for a young mibi that is bonded (it grows through care, never on the clock).
+// or the turns still to grow for a young mibi on the clock.
 function stageNote(m, turn, j, e) {
   const stage = stageAt(m, turn, j, e);
-  if (stage === 'juvenile') return { stage, n: m.bonded ? null : (m.born || 0) + j - turn };
+  if (stage === 'juvenile') return { stage, n: (m.born || 0) + j - turn };
   const grown = m.grownTurn != null ? m.grownTurn : (m.born || 0) + j;
   return { stage, n: Math.max(0, turn - (stage === 'elder' ? grown + e : grown)) };
 }
@@ -1313,9 +1306,9 @@ function partnerMibi() { const c = carriedMibis(), l = c.find(m => m.id === S.le
 function setLead(m) { if (!m || S.exp || !isCarried(m) || !isAdult(m)) return false; S.lead = m.id; logEv(m.name + ' leads the Probe'); return true; }
 // Who would lead next: the next grown mibi with you after the partner, in carried order, wrapping; none with fewer than two grown.
 function nextLead() { const g = carriedMibis().filter(isAdult), pm = partnerMibi(); return g.length < 2 || !pm ? null : g[(g.indexOf(pm) + 1) % g.length]; }
-// A juvenile grown on the clock this turn: never one with grownTurn and never a bonded juvenile (they grow through care).
-function grownNow(m) { return m.grownTurn == null && !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS; }
-function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDER_TURNS : !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS; }
+// A juvenile grown on the clock this turn: never one with grownTurn.
+function grownNow(m) { return m.grownTurn == null && S.turn - (m.born || 0) === JUVENILE_TURNS; }
+function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDER_TURNS : S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS; }
 // The roster's order: the mibis with you in carried order, then (docked, between expeditions) the others as they hatched.
 // Undocked or mid-expedition, a mibi at home is never shown.
 function rosterList() { const c = carriedMibis(); return S.exp || !isDocked() ? c : c.concat(homeMibis()); }
@@ -1334,28 +1327,13 @@ function leaveMibi(m) {
   if (!m || !canSwap() || !isCarried(m)) return { ok: false };
   S.carried = S.carried.filter(id => id !== m.id); if (S.lead === m.id) S.lead = null; logEv(m.name + ' stays home'); return { ok: true };
 }
-// The care day a Tend is counted in: the Companion's local date; under the playtest preset a span of PLAYTEST.careDayMs (a string that sorts after any date, so the order check below holds).
-function careDay(d) { d = d || new Date(); return PLAYTEST_ON ? 'T' + String(Math.floor(d.getTime() / PLAYTEST.careDayMs)).padStart(10, '0') : localDay(d); }
-// Tend: a carried mibi, between expeditions, once per Companion day. A clock moved back is refused and resets nothing.
-function canTend(m) { return !S.exp && isCarried(m) && (m.tendDay == null || careDay() > m.tendDay); }
-// One Tend: +1 care, +1 tends, then the bond, then growth. Returns what happened, for the lines.
-function tend(m) {
-  if (!canTend(m)) return null;
-  m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = careDay(); logEv('Tended ' + m.name);
-  return { bonded: bondCheck(m), grown: growCheck(m) };
-}
-// The bond, after a Tend only: three Tends. A mibi already adult by the clock keeps its adulthood:
+// The bond, after a play together only: three plays. A mibi already adult by the clock keeps its adulthood:
 // grownTurn = born + JUVENILE_TURNS (the constant, never a developer setting).
 function bondCheck(m) {
-  if (!m || m.bonded || (m.tends || 0) < BOND_TENDS) return false;
-  m.bonded = true; m.bondCare = m.care || 0;
+  if (!m || m.bonded || (m.plays || 0) < BOND_PLAYS) return false;
+  m.bonded = true;
   if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS;
   logEv(m.name + ' is bonded with you'); return true;
-}
-// Growing up through care: a carried bonded juvenile grows at the first care after its bond (care > bondCare).
-function growCheck(m) {
-  if (!m || !isCarried(m) || !m.bonded || m.grownTurn != null || m.bondCare == null || !((m.care || 0) > m.bondCare)) return false;
-  m.grownTurn = S.turn; logEv(m.name + ' is grown (through care)'); return true;
 }
 // The save: S.with (one slot) becomes S.carried, once. withSeen stays, frozen: the Station's care step reads it.
 function migrateCarried(S) {
@@ -1374,10 +1352,10 @@ function normalizeCare(S, released) {
   if (S.lead != null && gone.has(S.lead)) S.lead = null;            // the lead clears; the partner is found again
   if (S.lead === undefined) S.lead = null; if (typeof S.carrySeen !== 'number') S.carrySeen = 0; if (!Array.isArray(S.carryRefused)) S.carryRefused = [];
   for (const m of S.mibis) {
-    for (const k of ['care', 'tends', 'outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
+    for (const k of ['outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
+    if (typeof m.plays !== 'number') m.plays = typeof m.tends === 'number' ? m.tends : 0;   // once: tends already given count as plays; the old care fields stay in old saves, never read again
     if (!Array.isArray(m.habitsDone)) m.habitsDone = [];   // the field habits it did on walks: a set, never cleared (the Station records each once at the dock)
-    for (const k of ['tendDay', 'grownTurn']) if (m[k] === undefined) m[k] = null;
-    if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; }
+    if (m.grownTurn === undefined) m.grownTurn = null;
   }
   return S;
 }
@@ -3453,25 +3431,34 @@ function emptyLead(flag) {
   if (!r) { const rock = []; for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && (G.land[c] === L.WOOD || G.land[c] === L.ROCK)) rock.push(c); r = rock.length ? pick(rock, false) : null; }
   return r;
 }
-// The Walk: once per world turn, undocked, between expeditions, with every mibi with you together.
+// Play together: once per world turn, undocked, between expeditions, with every mibi with you together.
 const canWalk = () => !S.exp && S.carried.length > 0 && !isDocked() && S.walkTurn !== S.turn;
-// The group Walk, state only: every mibi with you, in carried order, +1 outing and +1 care, then growth (a Walk never bonds).
+// The press that would bond at least one carried mibi says so first: a carried, unbonded mibi with two plays.
+const playWouldBond = () => carriedMibis().some(m => !m.bonded && (m.plays || 0) + 1 >= BOND_PLAYS);
+// The group play, state only: every mibi with you, in carried order, +1 outing and +1 play, then the bond on the third.
 function walkAll() {
   if (!canWalk()) return null; S.walkTurn = S.turn; const out = [];
-  for (const q of carriedMibis()) { q.outings = (q.outings || 0) + 1; q.care = (q.care || 0) + 1; out.push({ m: q, bonded: false, grown: growCheck(q) }); }
-  logEv('Walked with ' + listWords(out.map(o => o.m.name))); return out;
+  for (const q of carriedMibis()) { q.outings = (q.outings || 0) + 1; q.plays = (q.plays || 0) + 1; out.push({ m: q, bonded: bondCheck(q), grown: false }); }
+  logEv('Played together · ' + listWords(out.map(o => o.m.name))); return out;
 }
-// The lines after a Tend or a Walk: the action's own, then bond lines, then grow-up lines, in carried order. After the
+// The "plays left" lines, after a play: the unbonded mibis with one or two to go, one line per count, in carried order.
+function playsLeftLines(evs) {
+  const out = [];
+  for (const left of [2, 1]) { const names = evs.filter(e => !e.m.bonded && BOND_PLAYS - (e.m.plays || 0) === left).map(e => e.m.name); if (names.length) out.push(CARE_TEXT.playsLeft(names, left)); }
+  return out;
+}
+// The lines after a play: the action's own, the plays left, then bond lines, then grow-up lines, in carried order. After the
 // action's moment (dur ms) the bond plays on its mibi's page (input held to its end); a grown mibi's page takes the view.
 function careLines(first, evs, dur) {
   fxMsg(first, 3);
+  for (const l of playsLeftLines(evs)) fxMsg(l, 3);
   for (const e of evs) if (e.bonded) fxMsg(CARE_TEXT.bonded(e.m.name), 3);
   for (const e of evs) if (e.grown) fxMsg((partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(e.m.name), 3);
   const q = careQueue(evs, dur);
   FX.cuts = q.cuts.map(c => Object.assign({}, c, { at: NOW + c.at, done: 0 })); lockInput(q.lock);
   for (const c of FX.cuts) setTimeout(() => { if (!c.done) { c.done = 1; S.ui.aId = c.id; } }, c.at - NOW);   // each bond and grow-up takes the view to its mibi, in turn
 }
-// The events after a Tend or a Walk, in ms from the press: the bonds first, in carried order, one every BOND_MS from the end of
+// The events after a play together, in ms from the press: the bonds first, in carried order, one every BOND_MS from the end of
 // the action's moment; then one grow-up cut per mibi, in carried order, every GROW_MS. Each moves the view to its mibi's page.
 // Input is held to the end of the last bond, or 300 ms after the last cut (and at least 300 ms).
 const GROW_MS = 1200;
@@ -3483,11 +3470,11 @@ function careQueue(evs, dur) {
   const lock = Math.max(300, bonds.length ? g0 : 0, grows.length ? g0 + (grows.length - 1) * GROW_MS + 300 : 0);
   return { cuts, lock };
 }
-// The Walk as pressed on the shown mibi m: its walk moment; the line names them all. The Walk brings no Data.
+// Play together as pressed on the shown mibi m: its moment; the line names them all. It brings no Data.
 function walk(m) {
-  const young = !isAdult(m), evs = walkAll(); if (!evs) return;   // young: as it set out (a bonded juvenile may grow on this Walk)
+  const young = !isAdult(m), evs = walkAll(); if (!evs) return;
   FX.moment = { id: m.id, at: NOW }; FX.walk = { id: m.id, at: NOW, others: carriedMibis().filter(q => q !== m).map(q => q.id) }; lockInput(400);
-  const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : young ? CARE_TEXT.walkedYoung(m.name, m.mem) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.walkedOther(m.name, m.mem);
+  const did = evs.length > 1 ? CARE_TEXT.played(evs.map(e => e.m.name)) : young ? CARE_TEXT.playedYoung(m.name, m.mem) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.playedOther(m.name, m.mem);
   careLines(did, evs, WALK_MS);
 }
 function dirWord(dx, dy, n) {
@@ -3618,7 +3605,7 @@ function surfaceMissing(R, t, farFromPlayer) {
 function realmTurn(turned, pending) {
   const { mv, charged, bushes, bloom, newPods, young } = turned;
   S.turn++; S.expN++;
-  const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
+  const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: elder from grownTurn when it has one
   // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
   for (const m of grown) say((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name), ['grown', null, m.id, !isCarried(m) ? 0 : partnerMibi() === m ? 1 : 2]);
@@ -6279,7 +6266,7 @@ async function loadOpenArt(after) {
     openRead(files);
   } catch (e) { console.warn('the opening art did not load', e); ART_FAIL.push('open'); } finally { ART_DONE.open = true; }
 }
-// The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
+// The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during Play together
 // moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
 // Until the files are in (or if they fail) the token plays.
 const MOMENT_ART = { stand: {}, young: {} }, MOMENT_COLOURS = [], MOMENT_KINDS = ['S01', 'S02', 'S03', 'S01j', 'S02j', 'S03j'];   // stand[sp] / young[sp]: { w, h, foot, canvas() }; the young are the signed young stands (S02: the adult stand at the young scale, listed for the art director)
@@ -6417,7 +6404,7 @@ function drawSetup(t) {
     openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102 - hop, juv);
     text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, hi, 3);
     let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm || front) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
-    text(clipText(pm || front ? abCardOf(lead.sp) : (lead.bonded ? CARE_TEXT.riderCare : CARE_TEXT.riderTime), 320, 2), 116, PY + 70, lo);
+    text(clipText(pm || front ? abCardOf(lead.sp) : CARE_TEXT.riderTime, 320, 2), 116, PY + 70, lo);
     others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else {   // mibis, none with you: their silhouettes
     liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
@@ -6624,7 +6611,7 @@ function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return nu
 function turnsShort(m) { const n = Math.max(0, S.turn - (m.born || 0)); return n === 0 ? 'new' : n === 1 ? '1 turn' : n + ' turns'; }
 function ageLine(m) {
   const nt = stageNote(m, S.turn, JUVENILE_TURNS, ELDER_TURNS);
-  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (nt.n != null && nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
+  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
 }
 function yoursText(m) {
   const y = yoursLine(m, new Date().getTime()); if (!y) return '';
@@ -6666,7 +6653,7 @@ function mibiSprite(sp, pose, fr, x, y, k, flip, juv) {
 // The 12 px partner mini (the HUD, the field marker); a species with no art is its labelled plate.
 function miniOf(sp, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-mini-other-12', x, y); else blit(ICON.mini(sp, juv), x, y); }
 // Why there is no partner, on the Lead card and the partner card.
-function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; const j = cm.find(m => !isAdult(m)); return j && j.bonded ? CARE_TEXT.youngCare : CARE_TEXT.youngTime; }
+function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; return CARE_TEXT.youngTime; }
 // Mibis: the roster. The Lead card; "With you" and three places (a free place dashed, never focused); docked, "At home".
 // Focus order (S.ui.rSel): the Lead card (0), the mibis with you, then (docked) the mibis at home.
 const LEAD_Y = 44, PLACE_Y = 172, HOME_Y = 416, ROW_P = 72, ROSTER_FOOT = 526;
@@ -6722,7 +6709,7 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
 const bigArt = (sp, pose, fr, juv) => upArt('cr' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr, 1, juv), BIG);
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
-// Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
+// Call: it answers. Confirm: Play together (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
 // A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
 // The shown page reads only (render calls it); syncShown() makes its choice the state, from input.
 function shownMibi() { const list = rosterList(); let i = list.findIndex(m => m.id === S.ui.aId);
@@ -6732,10 +6719,9 @@ function syncShown() { const list = rosterList(); let i = list.findIndex(m => m.
   if (i < 0 && list.length) { i = Math.min(S.ui.aIdx | 0, list.length - 1); S.ui.aId = list[i].id; }
   if (i >= 0) S.ui.aIdx = i; }
 function activeStatus(m) {
-  if (!isCarried(m)) return m.bonded && !isAdult(m) ? CARE_TEXT.stHomeBonded : CARE_TEXT.stHome;
+  if (!isCarried(m)) return CARE_TEXT.stHome;
   if (m === partnerMibi()) return CARE_TEXT.stLeads;
   if (isAdult(m)) return CARE_TEXT.stCanLead;
-  if (m.bonded) return CARE_TEXT.stGrowsWithCare;
   return CARE_TEXT.stTooYoung;   // exactly one listed line, nothing appended: no count of any kind
 }
 // No one with you, undocked: three free places and why.
@@ -6755,7 +6741,7 @@ function lookOut(seed, a) {
   for (let next = R.range(LOOK_MIN, LOOK_MAX); next <= a; next += R.range(LOOK_MIN, LOOK_MAX)) { at = next; k++; }
   return { on: k >= 0 && a - at < LOOK_HOLD, flip: k % 2 === 1 };
 }
-const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
+const MOMENT_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
 // ---- The dock frames (specs/companion-dock-frames-spec.md, T-20261016-93): "home" when the Companion is seated and "Off we go" when it is lifted. A show: no press is asked for.
 // Read from the shared save's dock flag (isDocked), once per change, so it plays from whatever moves the Dock (the play page's control, the Station's own key).
 const SEAT = { start: 500, on: 120, beat: 333 };            // the crate flashes: from 0.5 s, 120 ms on, one a Station beat (333 ms)
@@ -6813,7 +6799,7 @@ function drawActive(t) {
   const bc = cuts.find(c => c.kind === 'bond' && c.id === m.id), bond = bc ? NOW - bc.at : null;   // ms into the bond event (negative before its turn)
   panel(24, 40, 402, 280, C.ink, C.slate);
   const h = callAnim(m);
-  let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
+  let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < MOMENT_MS ? FX.moment : null;
   if (bond != null && bond >= 0 && bond < 900) sp = { at: bc.at };   // the bond: the species moment again, short
   const home = isDocked() && !S.exp;   // seated between expeditions: the stage one step darker, the mibi resting on idle frame 1 (the dock frames, "home")
   let x = 97, y = 52, pose = 'idle', fr = home ? 1 : mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
@@ -6827,7 +6813,7 @@ function drawActive(t) {
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
-  const juv = st === 'juvenile', stand = sp && !h ? MOMENT_ART[juv ? 'young' : 'stand'][m.sp] : null;   // a Tend or Walk moment: the kind's painted stand (the young's own for a young one), its foot on the token's foot row (a kind without one keeps the token)
+  const juv = st === 'juvenile', stand = sp && !h ? MOMENT_ART[juv ? 'young' : 'stand'][m.sp] : null;   // a Play together moment: the kind's painted stand (the young's own for a young one), its foot on the token's foot row (a kind without one keeps the token)
   if (stand) blit({ w: stand.w, h: stand.h, canvas: stand.canvas }, x + 128 - (stand.w >> 1), y + tokenFoot(m.sp, juv) - stand.foot);
   else mibiSprite(m.sp, pose, fr, x, y, BIG, flip, st === 'juvenile');
   if (h && !h.quiet && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
@@ -6844,7 +6830,7 @@ function drawActive(t) {
   const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, STAGE_WORD[st], stageFill(st), 'bone');
   if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
   text(clipText(mibiSpName(m) + ' · ' + abCardOf(m.sp, !isAdult(m) || st === 'elder') + (!isAdult(m) && spOf(m.sp).abText ? CARE_TEXT.onceGrown : '') + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
-  text(clipText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2), 30, 396, isW ? C.amber : C.mist);   // one line: the widest status is 314 in 390
+  text(clipText(activeStatus(m), 390, 2), 30, 396, isW ? C.amber : C.mist);   // one line: the widest status is 314 in 390
   text(clipText(ageLine(m), 390, 2), 30, 424, C.fog);
   { const yt = yoursText(m); if (yt) text(clipText(yt, 390, 2), 30, 446, C.mist); }
   // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
@@ -6865,13 +6851,9 @@ function callWith() {
   FX.callMibi = { id: m.id, at: NOW, wrong }; lockInput(300);
   fxMsg(m.name + ' hops to the front and chirps' + (wrong ? ', looking the wrong way first' : ''));
 }
-// Tend as pressed: the species moment (the built one stands in for the Tend moment) and the Tend line; then any bond or
-// grow-up line. Refused the same day, or mid-expedition: the shake and a plain line, nothing changes.
-function tendPress(m) {
-  if (S.exp) { fxMsg(CARE_TEXT.tendMidExp(m.name)); FX.bumpAt = NOW; return; }
-  const r = tend(m); if (!r) { fxMsg(CARE_TEXT.tendedRefused(m.name)); FX.bumpAt = NOW; return; }
-  FX.moment = { id: m.id, at: NOW }; lockInput(300);
-  careLines(CARE_TEXT.tended(m), [Object.assign({ m }, r)], TEND_MS);
+// Play together pressed when it cannot play (mid-expedition, docked, or already played this turn): the shake and a plain line, nothing changes.
+function playRefused() {
+  fxMsg(S.exp ? CARE_TEXT.playMidExp : isDocked() ? CARE_TEXT.playDockedRefused : CARE_TEXT.playedRefused, 3); FX.bumpAt = NOW;
 }
 // Take and Leave as pressed (docked, between expeditions). Take at three: the shake and why.
 function takePress(m) {
@@ -7078,9 +7060,10 @@ function lineBase() {
       if (isCarried(m)) return canSwap() ? L1(CARE_TEXT.leaveLabel(m.name), CARE_TEXT.leaveCtx, bk) : L1(CARE_TEXT.visitLabel(m.name), CARE_TEXT.visitCtx, bk);
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, bk, !canSwap() || S.carried.length >= CARRY_MAX); }   // a mibi at home shows only docked
     case 'active': { const m = shownMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
-      if (isCarried(m)) { if (S.exp) return L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendAfter, 'Mibis', true);
-        if (canWalk()) return L1(CARE_TEXT.walkLabel(carriedMibis().map(q => q.name)), CARE_TEXT.walkOnce, 'Mibis');
-        return canTend(m) ? L1(CARE_TEXT.tendLabel(m.name), !m.bonded && (m.tends || 0) + 1 >= BOND_TENDS ? CARE_TEXT.tendBond : CARE_TEXT.tendOnce, 'Mibis') : L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendedToday, 'Mibis', true); }
+      if (isCarried(m)) { const pl = CARE_TEXT.playLabel(carriedMibis().map(q => q.name));
+        if (S.exp) return L1(pl, CARE_TEXT.playAfter, 'Mibis', true);
+        if (canWalk()) return L1(pl, playWouldBond() ? CARE_TEXT.playBond : CARE_TEXT.playOnce, 'Mibis');
+        return L1(pl, isDocked() ? CARE_TEXT.playDocked : CARE_TEXT.playedTurn, 'Mibis', true); }
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, 'Mibis', !canSwap() || S.carried.length >= CARRY_MAX); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
     case 'worldmap': return L1('', 'the whole map', 'close');
@@ -7283,7 +7266,7 @@ function act(k, mode) {
       else if (k === 'call') callWith();
       else if (k === 'confirm') {
         if (!m) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
-        else if (isCarried(m)) { if (canWalk()) walk(m); else tendPress(m); }
+        else if (isCarried(m)) { if (canWalk()) walk(m); else playRefused(); }
         else takePress(m); }   // a mibi at home shows only docked; Take stays on its page
       break; }
     case 'worldmap': if (k === 'back') { S.phase = 'menu'; transition(); } break;
@@ -7452,9 +7435,6 @@ import('../play/src/footer.mjs').then(m => m.mountFooter(footEl, { buildUrl: '..
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
 function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
 obsBtn.addEventListener('click', e => { setObserver(obsBtn.getAttribute('aria-pressed') !== 'true'); if (e.detail) obsBtn.blur(); });   // a mouse click hands the keys back to the game
-// Developer: a new care day for the mibis with you (tendDay cleared), logged; never on the device.
-function newCareDay() { const c = carriedMibis(); for (const m of c) m.tendDay = null; logEv('Developer · new care day' + (c.length ? ' for ' + listWords(c.map(m => m.name)) : '')); save(); }
-document.getElementById('devCareDay').addEventListener('click', e => { if (S) newCareDay(); if (e.detail) e.currentTarget.blur(); });
 // What this expedition yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
@@ -7502,7 +7482,7 @@ function onStateChanged() {
   document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
   document.getElementById('oWhere').textContent = whereText();
   const cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
-  const careOf = m => ' (care ' + (m.care || 0) + ', tends ' + (m.tends || 0) + (m.tendDay ? ', tended ' + m.tendDay : '') + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
+  const careOf = m => ' (plays ' + (m.plays || 0) + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
   document.getElementById('oPartner').textContent = (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + mibiSpName(m) + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : '');
   document.getElementById('oSeed').textContent = S.seed;
   const t = tierOf();
@@ -7661,7 +7641,7 @@ requestAnimationFrame(frame);
 window.__mb = { PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
-  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).concat(bakedColours()).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

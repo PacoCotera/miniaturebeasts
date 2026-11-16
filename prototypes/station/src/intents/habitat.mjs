@@ -25,7 +25,7 @@ function heldModule(h, m, target) {
   if (!row) return false;
   h.say(row.plate.join("\n")); return true;
 }
-// The held Portrait before the welcome sitting says a walk home earns one; when Take is live, the ring moves onto it (dead ends B5): the way out is one ✓ away on the same card.
+// The held Portrait before the welcome sitting says an expedition earns one; when Take is live, the ring moves onto it (dead ends B5): the way out is one ✓ away on the same card.
 function ringToTake(h, m) {
   const mods = modulesOf({ st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st) }, m, h.specs.habitat.strings, h.specs.sitting);
   if (mods.noSit && !h.st.welcomeGiven && mods.dKind === "take" && !mods.rows.door) h.ui.hab.f = "door";
