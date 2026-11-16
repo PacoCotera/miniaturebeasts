@@ -1,4 +1,4 @@
-// land-b3e-seam-1: ledges of stacked faces (cliff-rules.md 2): where a level-v face stands above a level-(v-1) face, the walkable top between the upper face's foot line and the lower face's lip (rows)
+// ledges of stacked faces: where a level-v face stands above a level-(v-1) face, the walkable top between the upper face's foot line and the lower face's lip (rows)
 //   node land-ledges.mjs [--seeds 7,13,42]
 // per seed (the fixed 4 x 3 window, stitched from each cell's own window): the number of stacked pairs found down the columns, the narrowest ledge, and how many are under 2; also the highest tile level seen
 // (the land rule's `levels` list has one threshold today, so tiles are 0 or 1 and no face stacks)

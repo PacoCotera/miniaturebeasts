@@ -28,7 +28,7 @@ export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH
 // and every two of them are such a pair
 // The table is the set's own: art/places/sets/ninja-test/set.json `groundPairs` (ids, through art/places/terrain.json's values), the one source; tools/gen7-layers.mjs refuses a pair the layers' `lowers` cannot draw and the
 // page's layers.json is made from the same file. (Sand-raised is not in the table: a raised region that meets both grass and sand is drawn two ways, which the bake refuses.)
-const FAMILY = new Set([6, 11, 12, 13]);   // the grass family the heart's patch lies on: grass, litter, dry grass, turf (terrain.md item 4; place-walk-2)
+const FAMILY = new Set([6, 11, 12, 13]);   // the grass family the heart's patch lies on: grass, litter, dry grass, turf
 const VALUE_OF =Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
 const PAIRS = new Set(SET.groundPairs.map(([a, b]) => (VALUE_OF[a] < VALUE_OF[b] ? VALUE_OF[a] + '|' + VALUE_OF[b] : VALUE_OF[b] + '|' + VALUE_OF[a])));
 // the low grounds the cliff's face meets with no grass between: the cliff's pairs in the table besides grass (the biome grounds). Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)

@@ -1,4 +1,4 @@
-// Generator 7: what a place holds, in three steps (scheme: design/desk boards/gdd/places.md; the job's proposal sections 3 and 4). Pure: a function of the realm seed and a cell.
+// Generator 7: what a place holds, in three steps. Pure: a function of the realm seed and a cell.
 //   1. Structure. From the terrain alone (no prop exists yet): the ways in, the walking-distance map from them, and the spine (the shortest paths joining the ways in and the way up).
 //   2. Set pieces, from the stamps (art/places/ldtk/stamps, baked to stamps.json): the overhang under a south face run, the heart (a sleepers' bed, or the Split Stone's ground where the region put that
 //      landmark), and a smaller spot besides, each placed by distance to the spine and the ways in and by sight from a way in.
@@ -69,7 +69,7 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   // ---- 1. structure ----
   const walk = new Uint8Array(N), lvl = new Uint8Array(N), way = new Set();
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const t = terrain[I(x, y)]; walk[I(x, y)] = WALKT[t] === 1 && !(FF.flags(x0 + x, y0 + y) & 1) ? 1 : 0; lvl[I(x, y)] = t === TV.CLIFF ? 1 : 0; }
-  const FAM = v => v === TV.GRASS || v === TV.LITTER || v === TV.DRY || v === TV.TURF;   // the grass family (terrain.md item 4): close kinds that blend both ways, so the heart's patch lies on any of them (place-walk-2)
+  const FAM = v => v === TV.GRASS || v === TV.LITTER || v === TV.DRY || v === TV.TURF;   // the grass family: close kinds that blend both ways, so the heart's patch lies on any of them
   plan.grass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.grass[i] = FAM(terrain[i]) ? 1 : 0;
   // a raised top is the same ground, higher (place-walk-1): a raised tile whose top is grass is grass too, for the heart's site and its patch
   plan.topGrass = new Uint8Array(N); for (let i = 0; i < N; i++) plan.topGrass[i] = terrain[i] === TV.CLIFF && (!ct.top[i] || FAM(ct.top[i])) ? 1 : 0;
