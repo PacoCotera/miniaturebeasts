@@ -35,6 +35,7 @@ for (const c of cells) {
   writeFileSync(`${db}/gen7/levels.mjs`, patch(readFileSync(baseLevels, 'utf8')));
   const R = realm7(seed).realm, L = levelsOf(R);
   for (const s of L.stairs.values()) findWayup(L, s.X, s.Y, s.port);
+  L.q.clear(); L.wet.clear(); delete L.bkd;   // finding every stair read thousands of cells (and the cache drops past 3000): only the window's own are dumped
   windowLevels(L, X, Y);   // reads every field cell the window and the bank verdict need
   const q = {}, wet = {};
   for (const [k, v] of L.q) q[k] = Array.from(v);

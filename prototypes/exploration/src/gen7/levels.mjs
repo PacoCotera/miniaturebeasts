@@ -1031,6 +1031,13 @@ function landComp(L, p) {
     if (!way && (!best || c.n > best.n)) best = c; }
   return best;
 }
+// the closed parts of the window of cell (X, Y) made with no banks (info.pkr), kept per cell: a verdict asks the same window again for its neighbours
+function noBankPockets(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.pkr && B.pkr.get(key); if (hit) return hit;
+  const was = BANKS_SKIP; BANKS_SKIP = true; let out;
+  try { out = windowLevels(L, X, Y).info.pkr || []; } finally { BANKS_SKIP = was; }
+  if (!B.pkr) B.pkr = new Map(); if (B.pkr.size > 400) B.pkr.clear(); B.pkr.set(key, out); return out;
+}
 // the part's bank site { x0, lip } in world tiles, or null (the reason in L.bkd.why)
 export function partBank(L, p) {
   const B = bkOf(L); if (p.bank !== undefined) return p.bank;
@@ -1046,17 +1053,27 @@ export function partBank(L, p) {
   const env = p.x1 - p.x0 > (2 * L.rule.window - 1) * CW - 2 * STAIR_RIM - 13 || p.y1 - p.y0 > (2 * L.rule.window - 1) * CH - 2 * STAIR_RIM - 13;
   if (env) comp = landComp(L, p);
   else { const was = BANKS_SKIP; BANKS_SKIP = true;
-    try { for (let cy = cya; cy <= cyb; cy++) for (let cx = cxa; cx <= cxb; cx++) for (const k of windowLevels(L, cx, cy).info.pkr || [])
+    // rupar-banks-speed-1: a closed part shows whole in every window that holds it, so the one window that holds the part's box with a cell's margin each side tells what the windows over its cells tell (a part
+    // whose box has no such window is asked of every window over its cells, as before)
+    const WRc = L.rule.window, ccx = (cxa + cxb) >> 1, ccy = (cya + cyb) >> 1, M = CW;
+    const one = (ccx - WRc) * CW + M <= p.x0 && p.x1 <= (ccx + WRc + 1) * CW - 1 - M && (ccy - WRc) * CH + M <= p.y0 && p.y1 <= (ccy + WRc + 1) * CH - 1 - M;
+    try { for (let cy = one ? ccy : cya; cy <= (one ? ccy : cyb); cy++) for (let cx = one ? ccx : cxa; cx <= (one ? ccx : cxb); cx++) for (const k of noBankPockets(L, cx, cy))
       if (k.raised && k.n >= FILL_UNDER && k.x0 <= p.x1 + 6 && k.x1 >= p.x0 - 6 && k.y0 <= p.y1 + 6 && k.y1 >= p.y0 - 6 && (!comp || k.n > comp.n || (k.n === comp.n && (k.y0 < comp.y0 || (k.y0 === comp.y0 && k.x0 < comp.x0))))) comp = k; }
     finally { BANKS_SKIP = was; } }
   if (!comp) return why('window');
   const inComp = (x0, ly) => x0 >= comp.x0 - 1 && x0 + SITE_W - 1 <= comp.x1 + 1 && ly - SITE_UP >= comp.y0 - 1 && ly <= comp.y1 + 1;
+  const hit = siteOn(L, p, inComp);
+  if (!hit) return why('nosite');
+  p.bank = { x0: hit.x0, lip: hit.ly, part: p.id, n: comp.n, loose: hit.loose }; return p.bank;
+}
+// the first site on the part's south faces that the test `ok(x0, lip)` lets through: { x0, ly, loose } or null
+function siteOn(L, p, ok) {
   const runs = partRuns(L, p);
   for (const loose of [false, true]) for (const run of runs) { if (!loose && run.n < 4) continue;   // the land's own contour first; else a site the held rows straighten (the stair rule's second choice)
     const base = run.x0 + ((run.n - 2) >> 1) - 2;
     for (const ly of [run.y, run.y + 1, run.y - 1]) for (let d = 0; d <= 12; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d;
-      if (inComp(x0, ly) && bankSiteAt(L, x0, ly, loose)) { p.bank = { x0, lip: ly, part: p.id, n: comp.n, loose }; return p.bank; } } }
-  return why('nosite');
+      if (ok(x0, ly) && bankSiteAt(L, x0, ly, loose)) return { x0, ly, loose }; } }
+  return null;
 }
 export const bankDebug = { partAt, partRuns, bankSiteAt, rfAt, raisableSite, wetTile };   // the tools read the rule's own pieces
 // every raised part of the realm's field (the tools: one flood each, from a 4 x 4 lattice of tiles)
