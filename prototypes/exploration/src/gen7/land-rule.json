@@ -8,7 +8,7 @@
   "wobbleStretch": 1,
   "minFeature": 5,
   "window": 2,
-  "faceRows": 2,
+  "faceRows": 3,
   "wayupStraight": true,
   "levels": [0]
 }

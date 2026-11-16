@@ -29,7 +29,7 @@ export function measure(w, h, bits, faceRows) {
   }
   let loneBlk = 0;   // a tile with no 2 x 2 block of its own level (a sliver one tile wide, raised or low): the ground layers cannot draw it
   for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const v = R(x, y); let ok = false; for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) ok = R(x + ox, y + oy) === v && R(x + ox + 1, y + oy) === v && R(x + ox, y + oy + 1) === v && R(x + ox + 1, y + oy + 1) === v; if (!ok) loneBlk++; }
-  let minBelow = 99; for (let y = 0; y < h - faceRows - 3; y++) for (let x = 0; x < w; x++) if (lip(x, y)) { let k = 0; while (k < faceRows + 1 && !R(x, y + 1 + k)) k++; if (k < minBelow) minBelow = k; }
+  let minBelow = 99; for (let y = 0; y < h - faceRows - 4; y++) for (let x = 0; x < w; x++) if (lip(x, y)) { let k = 0; while (k < faceRows + 2 && !R(x, y + 1 + k)) k++; if (k < minBelow) minBelow = k; }
   const straight = south.filter(n => n >= 2), mean = straight.reduce((a, b) => a + b, 0) / Math.max(1, straight.length);
   const mx = a => Math.max(0, ...a), big = a => a.filter(n => n >= 9).length;
   return { faces: south.length, meanStraight: +mean.toFixed(2), bendShare: +(south.filter(n => n === 1).length / Math.max(1, south.length)).toFixed(2), maxSouth: mx(south), maxSide: mx(side), maxRim: mx(rim), long9: big(south) + big(side) + big(rim), l9S: big(south), l9Side: big(side), l9Rim: big(rim), minBelow, lone, saddle, square, loneBlk };

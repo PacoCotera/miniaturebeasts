@@ -844,7 +844,7 @@ export function cellTerrain(seed, X, Y) {
   const S = ctxOf(seed), win = windowOf(S, X, Y), w = CW + 2, h = CH + 2, terrain = new Uint8Array(w * h), top = new Uint8Array(w * h), ox = HX * CW - 1, oy = HY * CH - 1;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { terrain[y * w + x] = win.t[(oy + y) * win.W + ox + x]; top[y * w + x] = win.top[(oy + y) * win.W + ox + x]; }
   const x0 = X * CW - 1, y0 = Y * CH - 1;
-  const wayups = win.wayups.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 2 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles
+  const wayups = win.wayups.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 5 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles
   // the land the cliff rules read: raised or not for the cell, its apron and LAND_M tiles more each side, from the same window, so a run's end, its steps and the faces of the rows above are found on the land, not on the baked cell
   const lw = w + 2 * LAND_M, lh = h + 2 * LAND_M, raised = new Uint8Array(lw * lh);
   for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = win.t[(oy - LAND_M + y) * win.W + ox - LAND_M + x] === TV.CLIFF ? 1 : 0;

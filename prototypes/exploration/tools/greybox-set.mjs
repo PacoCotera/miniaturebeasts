@@ -22,8 +22,8 @@ const cut = (FACE === 3 ? 0 : CELL);   // rows lost at the foot of a tall piece 
 
 // a piece's picture as rows of cells: each row is [class | null] (null: clear)
 const rowsOf = (name) => {
-  const foot = Array(FACE - 1).fill('foot');
-  if (/^cliff-south-\d$/.test(name) || /^cliff-corner-[ew]-[0-4]$/.test(name)) return [null, null, 'lip', 'face', ...foot];
+  // land-b3f-foot-1: the lip row and the FACE rock rows under it all block (relief.mjs), so the picture is lip then FACE rows of face; the foot is the first walkable row, L + FACE + 1, under the picture (ground shows there)
+  if (/^cliff-south-\d$/.test(name) || /^cliff-corner-[ew]-[0-4]$/.test(name)) return [null, null, 'lip', ...Array(FACE).fill('face')];
   if (/^cliff-corner-[ew]-5$/.test(name)) return [null, null, 'bend', 'bend', ...Array(FACE - 1).fill('bend')];
   if (/^cliff-end2-[ew]$/.test(name)) return [null, 'bend', 'bend', ...Array(FACE - 1).fill('bend')];
   if (/^cliff-end1-[ew]$/.test(name)) return ['bend', 'bend', ...Array(FACE - 1).fill('bend')];

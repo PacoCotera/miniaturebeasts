@@ -9,7 +9,7 @@ import { stairsInfo } from '../src/gen7/place.mjs';
 
 const WINDOWS = JSON.parse(readFileSync(new URL('./land-windows.json', import.meta.url), 'utf8'));
 const sites = (L, X, Y, straight) => {
-  const R = (x, y) => inlandOf(x, y) >= RAISE_OFF && tileLevel(L, x, y) > 0, foot = landRule().faceRows + 1, lip = (x, y) => R(x, y) && !R(x, y + 1);
+  const R = (x, y) => inlandOf(x, y) >= RAISE_OFF && tileLevel(L, x, y) > 0, foot = landRule().faceRows + 2, lip = (x, y) => R(x, y) && !R(x, y + 1);
   const flank = straight ? (x, y) => lip(x, y) : (x, y) => lip(x, y) || lip(x, y - 1) || lip(x, y + 1);
   let n = 0, bends = 0;
   for (let y = Y * CH; y < (Y + 1) * CH; y++) for (let x = X * CW; x < (X + 1) * CW; x++) {
