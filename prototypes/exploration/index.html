@@ -1522,11 +1522,11 @@ function load() {
     const noPods = !Object.hasOwn(S, 'pods'), badNext = !(Number.isInteger(S.nextId) && S.nextId > 0), ids = [...idsIn(S)];
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
-    layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here)); wantOverview(hereRegion());   // the mounted region's kind
+    layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here)); try { wantSector(hereRegion()); } catch (e) { console.error('the sector was not asked for', e); }   // the mounted region's kind; its sector is asked of the worker (a failure here only leaves the maps on the cell labels, never the save unread)
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
-  } catch (e) { S = null; return 'broken'; }   // it would not load: kept as it is
+  } catch (e) { console.error('the save would not load', e); S = null; return 'broken'; }   // it would not load: kept as it is; the cause is logged so the next failure shows it
   })();
   if (SAVE_KEY === LEGACY_KEY && r === true) legacyTo = own;   // loaded: its first write goes under this Companion's key and the old key goes (a read-only save is never moved)
   else if (SAVE_KEY === LEGACY_KEY && r === false) SAVE_KEY = own;   // nothing it could play: the new world is this Companion's own
