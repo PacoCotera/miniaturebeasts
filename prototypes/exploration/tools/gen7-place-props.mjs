@@ -9,7 +9,7 @@ import { MW, MH, L } from '../src/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, bakeFails: 0, bakeMessages: [], unreachedCells: 0, unreachedRaisedOnly: 0,
+const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, bakeFails: 0, bakeMessages: [], unreachedCells: 0, unreachedRaisedOnly: 0, unreachedLand: 0, landWalledAt: [],
   centreWrong: 0, edges: 0, openNoRun: 0, changeNoCliff: 0, steps: 0, bandTiles: 0, bandWalkable: 0,
   cliffRuns: 0, cliffRunsUnder4: 0, cliffRunsUnder8: 0, cliffRunMin: 999, cliffRunMax: 0, cliffRunsOnCellEdge: 0, cliffTiles: 0, cliffTilesInRunsOver8: 0, runHist: {},
   cliffThin: 0, thinAt: [], loneAt: [], unreachedAt: [],
@@ -66,8 +66,9 @@ export function placeProps(seed) {
       const seen = new Uint8Array(CW * CH), q = [];
       for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if ((x === 0 || y === 0 || x === CW - 1 || y === CH - 1) && pass(x, y)) { seen[y * CW + x] = 1; q.push(y * CW + x); }
       for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const a = (q[k] % CW) + dx, b = ((q[k] / CW) | 0) + dy; if (a < 0 || b < 0 || a >= CW || b >= CH || seen[b * CW + a] || !pass(a, b)) continue; seen[b * CW + a] = 1; q.push(b * CW + a); }
-      let un = 0, onlyRaised = true; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (!seen[y * CW + x] && pass(x, y)) { un++; if (inner(x, y) !== TV.CLIFF) onlyRaised = false; }
-      if (un) { st.unreachedCells++; if (onlyRaised) st.unreachedRaisedOnly++; if (st.unreachedAt.length < 6) st.unreachedAt.push([X, Y, un, onlyRaised]); }
+      let un = 0, onlyRaised = true, onPath = 0; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (!seen[y * CW + x] && pass(x, y)) { un++; if (inner(x, y) !== TV.CLIFF) onlyRaised = false; if (inner(x, y) === TV.PATH) onPath++; }
+      // a walled part that holds no path is the land's (a pocket the levels leave, apart from the trail's line): listed, not the trail's to open (designer 2026-11-16)
+      if (un) { st.unreachedCells++; if (onlyRaised) st.unreachedRaisedOnly++; else if (!onPath) { st.unreachedLand++; st.landWalledAt.push([X, Y, un]); } else if (st.unreachedAt.length < 6) st.unreachedAt.push([X, Y, un, onPath]); }
       // the bake runs
       try { bakeIR(cellIR(seed, X, Y)); } catch (e) { st.bakeFails++; if (st.bakeMessages.length < 3) st.bakeMessages.push(e.message.slice(0, 200)); }
       // the map's cell level is the land's level at its centre; edges agree with the land (Rule 5.2)
