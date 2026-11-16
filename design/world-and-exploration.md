@@ -320,6 +320,17 @@ at 20 carried; Essence never turns into Energy (**Built**).
   One at a time is the expedition partner, and only a grown one can be; a
   juvenile is never the partner. Choosing is one press between expeditions; it
   can't change during one. A partner is never hurt.
+- **Skill notches (Built).** A bonded leader that used its ability on an expedition that explored something earns a notch (three at most; only the leader's own notches count). Each notch moves the one reach its kind already has, and none opens a gate the kind cannot already open or keeps one open:
+
+  | Kind | What a notch moves | n = 0 | 1 | 2 | 3 | Elder |
+  |---|---|---|---|---|---|---|
+  | Loika | calm reach, tiles | 4 | 5 | 6 | 7 | 8 + n |
+  | Untuva | sniff reach, tiles | 5 | 6 | 7 | 8 | 10 + n |
+  | Tuikis | how far it notices the burrow (from it / from you) | 8 / 7 | 10 / 9 | 12 / 11 | 14 / 13 | same |
+  | Rupar | in a place, goes to the nearest undug earth bank within r of you and waits sniffing | none | 6 | 8 | 10 | same |
+  | Tuliko | the same for mud or scree | none | 6 | 8 | 10 | same |
+
+  The Rupar and Tuliko stop once the bank is dug or the ground crossed; a Call always brings the leader back; out of reach it follows again. A Tuliko's first mud or scree crossing, or first step into its extra ring, counts as its ability used.
 - **Partners are optional gates.** A partner opens events, map areas and
   expedition types otherwise unavailable, using its real abilities; without one the
   player still explores (**Decided**). Built abilities: the Tuikis digs narrow
