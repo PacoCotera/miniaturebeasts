@@ -125,3 +125,23 @@ test('cliff-contour-2: a one-row step into a concave corner, no side lip under a
   assert.deepEqual(at(r.items, 4, 1), ['rim-dl-start']); assert.deepEqual(at(r.items, 7, 1), ['rim-dr-start']);
   assert.ok(!r.items.some((it) => /^wall-/.test(it.id) && it.y === 1), 'no one-row wall');
 });
+
+test('cliff-contour-3: a short wall standing on a back rim is a step in the rim (no rock); a wall over a face keeps its rock; the same from two windows', () => {
+  // the template's T9d (seed 42): the tongue's side walls (3 rows) end on the back rim of the land south of them: no wall piece, every cell accounted for
+  const rows = ['.'.repeat(12), '....1111....', '...111111...', '...111111...', '...111111...', ...Array(3).fill('1'.repeat(12)), ...Array(5).fill('.'.repeat(12))];
+  const r = run(rows);
+  assert.deepEqual(r.missing, []);
+  assert.ok(!r.items.some((it) => /^wall-/.test(it.id)), 'no wall slab on the back rim');
+  // seed 42's case: a 2-row wall between a rounded corner and the rim one column west, two rows lower
+  const s = run(['.....111', '....1111', '....1111', '11111111', '11111111', ...Array(6).fill('........')]);
+  assert.deepEqual(s.missing, []);
+  assert.ok(!s.items.some((it) => /^wall-/.test(it.id) && it.x === 3), 'no wall slab at the step');
+  // a block whose walls run down to its own face (T4) keeps them; a 4-row tongue on a rim keeps its rock (a side wall proper)
+  const b = run(['............', ...Array(6).fill('..11111111..'), ...Array(6).fill('............')]);
+  assert.ok(b.items.some((it) => /^wall-w-/.test(it.id)) && b.items.some((it) => /^wall-e-/.test(it.id)));
+  const t = run(['.'.repeat(12), ...Array(4).fill('...111111...'), ...Array(3).fill('1'.repeat(12)), ...Array(5).fill('.'.repeat(12))]);
+  assert.ok(t.items.some((it) => /^wall-w-/.test(it.id) && it.x === 2));
+  // a window starting inside the wall's rows decides the same (the land is read past the window's edge)
+  const a = run(rows, { oy: 3, h: 6 }), whole = run(rows);
+  for (let y = 3; y < 9; y++) for (const x of [2, 9]) assert.deepEqual(at(a.items, x, y - 3), at(whole.items, x, y));
+});

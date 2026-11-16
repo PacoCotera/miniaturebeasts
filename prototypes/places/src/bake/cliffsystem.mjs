@@ -170,11 +170,23 @@ export function placeBoundary(A, o) {
   // the flank cells nothing above has drawn: the wall seen edge-on, by hand (raised to the west: the block's east wall), head (north end), band, tail (south end)
   const drawn = new Set(covered);   // the cells the faces, caps, rims and side lips account for, fixed before any wall is placed
   const wallHand = (x, y) => (drawn.has(ck(x, y)) || partAt(A, x, y) !== PART.FLANK ? null : R(x - 1, y) && !R(x + 1, y) ? 'e' : R(x + 1, y) && !R(x - 1, y) ? 'w' : null);
+  const RIM_STEP_ROWS = 3;
+  const rimStep = (x, y, h, sameWall) => {
+    let top = y, bot = y;
+    while (top > y - RIM_STEP_ROWS && wallHand(x, top - 1) === h) top--;
+    if (sameWall(x, top - 1)) return false;   // the wall runs down from a face (a concave corner, a steep run's end): a side wall
+    while (bot < y + RIM_STEP_ROWS && wallHand(x, bot + 1) === h) bot++;
+    return bot - top + 1 <= RIM_STEP_ROWS && R(x, bot + 1);
+  };
   for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) {
     const h = wallHand(x, y); if (!h) continue;
     // the wall goes on from the cell above when that one is also a flank or face cell of the same wall (a concave corner's, or a steep run's end): it is a band, never a new head (GD 11-15 fix-2 (3): no lone end piece)
     const sameWall = (xx, yy) => { const p = partAt(A, xx, yy); return (p === PART.FLANK || p === PART.FACE) && (h === 'e' ? R(xx - 1, yy) : R(xx + 1, yy)) && !R(xx, yy); };
     const north = wallHand(x, y - 1) === h || sameWall(x, y - 1), south = wallHand(x, y + 1) === h;
+    // cliff-contour-3 (fix 2; GD rule 7: a step in a back rim draws no rock): a short wall whose south end stands on the back rim of the same raised land (the cell under its last flank cell is raised: no
+    // face, cap or foot under it) is a step in the back rim, from one rim row to the next; its rock had nothing under it and stood in the grass as a lone slab (seed 42, slope-pieces T9d). Its cells take no
+    // rock: the rounded corner above and the side lip carry the edge. A wall up to the face's own height (3 rows) is such a step; a taller one is a side wall proper.
+    if (rimStep(x, y, h, sameWall)) { covered.add(ck(x, y)); continue; }
     emit(`wall-${h}-${!north ? 'head' : !south ? 'tail' : 'band'}`, x, y);
   }
   if (tops) for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) if (R(x, y)) items.push({ id: 'top', x, y, box: [0, 0, ART, ART], line: -1e6, cls: 0, level });

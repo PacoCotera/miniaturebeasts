@@ -87,6 +87,38 @@ function steppedColumn(p, x, y0, yt, fallAt, opts = {}) {
   for (let y = 0; y < p.h; y++) { if (opts.skip && opts.skip(x, y)) continue; steppedPixel(p, x, y, yt, yo, riser, opts); }
 }
 
+// cliff-contour-3 (pixel lead and GD 11-16, cliff-rules 6: the outline reads as the slope): the 45-degree and steep faces. Stepped half a row at a time, every step carried a lit ledge and a shade under it, so a
+// steep run read as a staircase beside the real way up. Now the lip AND the foot run on the slope's line (the rock is the lip's 3 rows deep everywhere, the foot's contact shade parallel to the lip), and no
+// step shows on the outline. Inside the face, by variant (CLIFF_STEEP, the template tool's own switch for the signers' A / B sheets; never a game option):
+//   A: the courses step one whole course (16 px) per column, never per half row, with no lit ledge (no edge row on a course): each step lands on the next course joint, so the courses run level across the run
+//      and end against the slanted lip and foot, as bedding cut by the slope;
+//   B: one shaded side plane (the flank's shade tone, as a corner's side), no courses: the 2:1 halves' and middles' courses end against it as at a corner.
+// The 2:1 halves (start, end) stay as cliff-contour-2 drew them.
+// A is kept (cliff-contour-3): the face stays one rock with the middles (rule 1, strata across columns) and carries texture at night; B leaves wide flat planes (seed 9: about 4 tiles) that read as a pasted panel.
+const STEEP_VARIANT = process.env.CLIFF_STEEP || 'A';
+function slopePixel(p, x, y, yt, y0, opts = {}) {
+  const yy = y - yt;
+  if (yy < 0) return opts.noBand ? put(p, x, y, 'top', 'top') : put(p, x, y, -yy <= bandOf(x) ? 'rimlit' : 'top', 'top');
+  if (yy === LIP.light) return put(p, x, y, 'mosslight', 'lip');
+  if (yy <= LIP.moss[1]) return put(p, x, y, 'moss', 'lip');
+  if (yy === LIP.dark) return put(p, x, y, 'mossdark', 'lip');
+  if (yy === LIP.under) return put(p, x, y, 'crack', 'rock', FLAG.underside);
+  if (yy <= LIP.rock1) {
+    if (STEEP_VARIANT === 'B') return put(p, x, y, 'shade', 'rock');
+    // the course joints 16 px apart from the column's straight lip: a whole course a column, so every column's joints meet its neighbours' and the 2:1 halves' (their half next to the 45-degree run sits
+    // half a row off its own lip: joints at 32 and 49 from the start's lip, 16 + 16 k here); the course's top row is lit as on a middle (it is level, no tread)
+    const m = (((y - y0) % 16) + 16) % 16;
+    if (m === 0) return put(p, x, y, 'crack', 'rock', FLAG.strata);
+    return put(p, x, y, yy === LIP.rock0 || m === 1 ? 'edge' : m <= 11 ? 'lit' : 'shade', 'rock');
+  }
+  if (yy <= LIP.foot[1]) return put(p, x, y, yy <= LIP.foot[0] + 1 ? 'foot2' : 'foot1', 'foot');
+  if (yy <= LIP.end) put(p, x, y, null, 'foot');
+}
+// one 45-degree or steep column: yt the lip's top on the slope line, y0 the straight lip's top in the piece's box
+function slopeColumn(p, x, y0, yt, opts = {}) {
+  for (let y = 0; y < p.h; y++) { if (opts.skip && opts.skip(x, y)) continue; slopePixel(p, x, y, yt, y0, opts); }
+}
+
 // the slabs: one vertical crack per stratum (or none) inside the tile, never in the 3 px bands at its edges (look 1); different for each middle
 const cracksOf = (set, letter) => [0, 1, 2].map((s) => ((set + letter + s) % 3 === 0 ? -1 : 3 + ((set * 7 + letter * 5 + s * 3) % 10)));
 
@@ -318,7 +350,11 @@ function diagonal(role) {
   const yt = (x) => 16 + (role === 'start' ? 6 + Math.round(x / 2) : role === 'mid' ? -2 + x : -2 + Math.round(x / 2));
   const fall = (x) => (role === 'start' ? (x + 0.5) / 2 : role === 'mid' ? -8 + (x + 0.5) : -8 + (x + 0.5) / 2);
   // GD 11-15 fix-3 (2): a start piece leaves the west 3 px of the row above its lip alone: that is the side lip of the wall above (lip-side), which runs on down to the start's own lip, never cut off by a plain top
-  for (let x = 0; x < 16; x++) steppedColumn(p, x, 22, yt(x), fall, { skip: (xx, y) => role === 'start' && xx < 3 && y < 16 });
+  // cliff-contour-3: the 45-degree middle's lip and foot run on the slope line (slopeColumn); the 2:1 halves keep the stepped courses
+  for (let x = 0; x < 16; x++) {
+    if (role === 'mid') slopeColumn(p, x, 22, yt(x));
+    else steppedColumn(p, x, 22, yt(x), fall, { skip: (xx, y) => role === 'start' && xx < 3 && y < 16 });
+  }
   return p;
 }
 
@@ -332,7 +368,11 @@ function steepCol(d) {
   // cliff-contour-2 (pixel lead 11-16, fix 4): the face under the slanted lip carries the straight courses stepped a half row at a time (steppedColumn), and the foot steps at the same x, a short level
   // stretch of contact shade each, the face's lowest course ending on it: one stepped rock, never a slab over a stair of per-column feet. No lit band along the lip (as before).
   const p = P(16, 80 + 16 * d), fall = (x) => d * (x + 0.5);
-  for (let x = 0; x < 16; x++) steppedColumn(p, x, 6, 6 + Math.round(fall(x)), fall, { noBand: true });
+  // cliff-contour-3: a column that falls (d >= 1) runs its lip and foot on the slope line (slopeColumn); the run's last column (d = 0) is level and keeps the straight courses
+  for (let x = 0; x < 16; x++) {
+    if (d > 0) slopeColumn(p, x, 6, 6 + Math.round(fall(x)), { noBand: true });
+    else steppedColumn(p, x, 6, 6 + Math.round(fall(x)), fall, { noBand: true });
+  }
   return p;
 }
 
