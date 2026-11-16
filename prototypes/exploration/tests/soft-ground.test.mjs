@@ -101,7 +101,7 @@ test("banks: 3 to 5 per world (fewer only where no candidate qualifies), each op
 });
 
 // ---- the page ----
-const mibi = (id, sp, o = {}) => ({ id, name: "Fig", sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null, ...o });
+const mibi = (id, sp, o = {}) => ({ id, name: "Fig", sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null, ...o });
 const walk = (seed, sp, { tier = 1, rider = false, elder = false } = {}) => {
   const p = makePage({}), run = p.run;
   run(`newWorld(${seed}); TEST.calm = true; S.turn = ${elder ? 25 : 5}; S.tier = ${tier}; S.known = [0, 1, 2]; S.mibis = [${JSON.stringify(mibi(1, sp, rider ? { born: 5 } : elder ? { born: 0 } : {}))}]; S.carried = [1]; S.lead = 1; startExpedition('weather', G.spawns[0])`);
@@ -247,7 +247,7 @@ test("the card fields: abCard and abCardShort, and every changed line fits its s
     for (const s of page) { sizes.push([s, w(s)]); assert.ok(w(s) <= 390, s + " " + w(s)); }
     for (const s of card) { sizes.push([s, w(s)]); assert.ok(w(s) <= 314, s + " " + w(s)); } }
   const deep = p.run(`clipText(OPEN_TEXT.digs(${JSON.stringify(W8)}), 154, 2)`); sizes.push([deep, w(deep)]); assert.ok(w(deep) <= 154, "deep ground tab line " + w(deep));
-  p.run(`S.turn = 5; S.known = [0, 1, 2]; S.mibis = [{ id: 1, name: ${JSON.stringify(W8)}, sp: 19, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }]; S.carried = [1]; S.lead = 1`);
+  p.run(`S.turn = 5; S.known = [0, 1, 2]; S.mibis = [{ id: 1, name: ${JSON.stringify(W8)}, sp: 19, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }]; S.carried = [1]; S.lead = 1`);
   for (const sp of [19, 7, 1]) { p.run(`S.mibis[0].sp = ${sp}`);
     const r = p.run(`lineCtx({ ok: 'Open Mibis', back: 'menu', ctx: partnerCtx() })`), forms = p.run("partnerCtx()"), last = forms[forms.length - 1];
     sizes.push(["bottom line " + sp + " (avail " + r.avail + ")", w(last, "textWT")]); assert.ok(!r.r.includes("…")); assert.equal(r.r, forms.find(f => w(f, "textWT") <= r.avail) ?? r.r); }
@@ -268,6 +268,6 @@ test("the count line drops trailing segments at a ' · ' cut, never an ellipsis 
   assert.equal(cut(full, w(full) - 1), "Found 0 of 47 · 1 gated · 18 need a rambler");
   assert.ok(cut(one, 20).endsWith("…"), "a single segment too wide for the line is clipped");
   const tw = p.run("(() => { const q = { big: false }; return 450 - MW * 4 - 10 - 22; })()");
-  p.run("S.mibis = [{ id: 1, name: 'Fig', sp: 19, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }]; S.carried = [1]; S.lead = 1");
+  p.run("S.mibis = [{ id: 1, name: 'Fig', sp: 19, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }]; S.carried = [1]; S.lead = 1");
   assert.ok(!cut(full, tw).includes("…") && w(cut(full, tw)) <= tw);
 });

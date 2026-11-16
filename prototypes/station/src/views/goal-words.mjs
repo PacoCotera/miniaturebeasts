@@ -16,7 +16,6 @@ export function goalWords(goal, docked, frame) {
     return out(fill(G.aim[goal.key], vals), nameless ? fill(nameless, vals) : "");
   }
   if (st.key === "goOut" && goal.key === "growUp") {
-    if (goal.bondedWaits) return out(fill(G.step.growUp.care, vals), G.step.growUp.careNoName);
     return out(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more);
   }
   if (st.key === "short") return out(fill(G.step.short[st.from] ?? G.step.short.field, { icons: "" }).trim(), "", st.icons);
@@ -48,7 +47,7 @@ export function companionWords(goal, frame) {
       const nameless = { growUp: G.aim.growUpNoName, readChild: G.aim.readChildNoName, pair: G.aim.pairNoName }[goal.key];
       return { text: fill(!name && nameless ? nameless : G.aim[goal.key], vals), icons: "" };
     }
-    if (goal.key === "growUp") { if (goal.bondedWaits) return { text: fill(G.step.growUp.care, vals), icons: "" }; return { text: goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, icons: "" }; }
+    if (goal.key === "growUp") { return { text: goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, icons: "" }; }
     return null;
   }
   if (st.key === "findPod") { const sp = speciesWord(st.species ?? goal.species); return { text: sp ? fill(G.step.findPod, { ...vals, species: sp, a: article(sp) }) : G.step.goOut, icons: "" }; }

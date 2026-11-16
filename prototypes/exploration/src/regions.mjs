@@ -3,7 +3,7 @@
 // The page keeps reading S.seed, S.revealed, S.pods and the rest; the region in use is
 // mounted onto S, and unmounted before anything is written.
 //   save v10 on disk: { v: 10, seed (= regions[0].seed), began, here, regions: [Region …], resetFrom?, …the realm's fields… }
-//   Region = { id, n, kind: "home" | "season", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
+//   Region = { id, n, kind: "home", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
 import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
 import { LANGUAGE, kindLands } from "../../workbench/framework/language.mjs";
@@ -50,7 +50,7 @@ export const ATLAS = 5, CENTER = [2, 2], MAX_HOME = 25, REGION_EVERY = 140;
 const GOOD_CLOCK = Date.UTC(2026, 0, 1);   // a time before this is a clock that was never set
 
 export const regionId = n => "g" + n;
-// Region 1 keeps the realm's seed, so its map stays the same cell for cell. Region n takes a seed of its own (a seasonal region takes the event's).
+// Region 1 keeps the realm's seed, so its map stays the same cell for cell. Region n takes a seed of its own.
 export const regionSeed = (seed1, n) => n === 1 ? seed1 : hash(seed1, "region", n);
 
 // ---- a region's map state ----
@@ -66,7 +66,7 @@ export function seenCount(map) { let n = 0; for (let c = 0; c < MW * MH; c++) if
 export function regionRecord(o) {
   const n = o.n, kind = o.kind || "home";
   if (!Number.isInteger(n) || n < 1) throw new Error("a region needs n, from 1");
-  if (kind !== "home" && kind !== "season") throw new Error("region kind " + kind);
+  if (kind !== "home") throw new Error("region kind " + kind);
   const biome = o.biome || "mixed"; if (!BIOMES.includes(biome)) throw new Error("region biome " + biome);
   if (kind === "home" && !(Array.isArray(o.slot) && o.slot.length === 2)) throw new Error("a home region needs a slot");
   if (typeof o.seed !== "number") throw new Error("a region needs a seed");
@@ -151,7 +151,7 @@ export function freeSlots(regions) {
 const isMounted = S => Array.isArray(S.visited);
 // Explored cells of one region: live for the region that is mounted, cached (at its last unmount) for the others.
 const exploredOf = (S, r) => r.id === S.here && isMounted(S) ? exploredCount(S) : r.exploredN;
-// The rule: a realm with n home regions can open the next when 140 x n cells are explored across them, up to 25 regions. Seasonal regions do not count.
+// The rule: a realm with n home regions can open the next when 140 x n cells are explored across them, up to 25 regions.
 export function canOpen(S, every = REGION_EVERY) {
   const hs = homes(S.regions), n = hs.length;
   if (n >= MAX_HOME || !freeSlots(S.regions).length) return false;
@@ -160,10 +160,9 @@ export function canOpen(S, every = REGION_EVERY) {
 export const exploredAcross = S => homes(S.regions).reduce((a, r) => a + exploredOf(S, r), 0);
 
 // A home region is named by its side of region 1 and its biome: "the Meadows", "North Woods", and "Far East Cliffs" for the second on a side.
-// A seasonal region has the event's own name. A home region off the four axes has no name yet: the copywriter owes the words.
+// A home region off the four axes has no name yet: the copywriter owes the words.
 const SIDE = { "0,-1": "North", "1,0": "East", "0,1": "South", "-1,0": "West" };
 export function regionName(region, realm) {
-  if (region.kind === "season") return region.name ?? null;
   if (region.n === 1 || (region.slot[0] === CENTER[0] && region.slot[1] === CENTER[1])) return "the " + BIOME_NAME[region.biome];
   const dx = region.slot[0] - CENTER[0], dy = region.slot[1] - CENTER[1];
   if (dx && dy) return null;

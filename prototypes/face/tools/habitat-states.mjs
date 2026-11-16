@@ -49,7 +49,7 @@ const SCENES = {
 };
 // R6: the scenes where ✓ was pressed on a held target and its message plate stands (4000 ms): taken with motion and the virtual clock, 400 ms after the press, as the plate is an event (reduced motion cuts it away)
 const PRESSED = {
-  "portrait-walk": { shown: 0, f: "portrait", ring: "door", state: "rest", plate: "No sitting held yet\\nTake \\w+ on a walk: the first walk home earns one", set: (w) => { w.rooms(1); w.adults(4); } },   // B5: ✓ on the empty Portrait before the welcome sitting: the way to earn one on the plate, the ring moved onto Take
+  "portrait-walk": { shown: 0, f: "portrait", ring: "door", state: "rest", plate: "No sitting held yet\\nTake \\w+ on an expedition to earn one", set: (w) => { w.rooms(1); w.adults(4); } },   // B5: ✓ on the empty Portrait before the welcome sitting: the way to earn one on the plate, the ring moved onto Take
   "wild-bonded-pressed": { shown: 3, f: "wild", state: "rest", plate: "A bond is for good\\n\\w+ stays with you\\nCarried and tended, \\w+ grows up", set: (w) => { w.rooms(1); w.adults(3); w.young(1); const m = window.__st.ST.mibis[3]; m.bonded = true; } },   // a bonded juvenile: ✓ on the held Return plays its three lines
 };
 async function enter(page, sc) {

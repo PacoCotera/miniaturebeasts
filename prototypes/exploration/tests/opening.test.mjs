@@ -11,7 +11,7 @@ import { decodePng } from "../../places/src/png.mjs";
 import { compareGolden } from "../../places/src/golden.mjs";
 
 const plain = x => JSON.parse(JSON.stringify(x));
-const mib = (id, name, sp, o = {}) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] }, o);
+const mib = (id, name, sp, o = {}) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: 0, mem: null, habitsDone: [] }, o);
 // The page between expeditions with a canvas to read back; reduced motion, so every frame is the first.
 function opening(seed = 14, { carried = [], known = [] } = {}) {
   const p = makePage({ console: "silent", els: true, raf: 1, canvas: true, gen: 6 });
@@ -38,7 +38,7 @@ const stands = (p, pb, x, y) => { const px = p.run("scr").px(), W = p.run("SCR_W
 test("B1: a fresh world draws one tab and the pod, its three lines and the dark line; no strip, no counts, no world inset", () => {
   const p = opening(), t = said(p);
   assert.ok(t.includes("Weather") && !t.includes("Deep ground"), "Weather alone: " + t);
-  assert.equal(t.filter(s => /^(Your first walk|Find a pod and bring it home\.|The Station grows it\.)$/.test(s)).length, 0, "no partner card on a first save"); assert.ok(t.includes("Press ✓ to set out"), "the one line under the land teaches the key: " + t);
+  assert.equal(t.filter(s => /^(Your first (walk|expedition)|Find a pod and bring it home\.|The Station grows it\.)$/.test(s)).length, 0, "no partner card on a first save"); assert.ok(t.includes("Press ✓ to set out"), "the one line under the land teaches the key: " + t);
   assert.ok(t.includes("storms charge stones"), "the Weather tab's first-time line");
   for (const s of t) assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start|hatch|egg|born|No partner/i.test(s), "no such line: " + s);
   assert.ok(!t.some(s => /Signs in the dark/.test(s)), "the first-time line is gone: the teaching line says it");
@@ -221,7 +221,7 @@ test("B1/B2 in Chromium: the first-time and the returning screens (goldens openi
       assert.ok(mist > tot * 0.8, "the mist fills the frame: " + mist + " of " + tot); }
     const rev = await page.evaluate(() => window.__mb.S.revealed.some(v => v)); assert.equal(rev, false, "the glimpse revealed nothing");
     // the returning player: Pip (Loika), Moss (Tuikis), Dot (a young Untuva); expedition 5; four places found and three been into; one crate; last turn's line
-    await page.evaluate(() => { const m = window.__mb, S = m.S, mk = (id, name, sp, o) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: 0, mem: null, habitsDone: [] }, o);
+    await page.evaluate(() => { const m = window.__mb, S = m.S, mk = (id, name, sp, o) => Object.assign({ id, name, sp, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: 0, mem: null, habitsDone: [] }, o);
       S.turn = 5; S.expN = 5; S.known = [0, 1, 2]; S.mibis = [mk(1, "Pip", 0), mk(2, "Moss", 1), mk(3, "Dot", 2, { grownTurn: null, born: 4 })]; S.carried = [1, 2, 3]; S.lead = 1;
       S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.report = { lines: ["A storm charged stones in the wood."], n: 4 };
       const s0 = m.G.spawns[0]; S.ui.lastPos = s0; const qx = s0 % m.MW, qy = Math.floor(s0 / m.MW), land = [];

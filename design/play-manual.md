@@ -279,7 +279,7 @@ The vivarium has six bays. The mibis with you keep their beds.
 
 ### Life stages
 
-- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. An unbonded juvenile grows up after 2 world turns; a bonded one grows through care on the Companion, and waits at home, not growing, until it is carried and tended.
+- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. A juvenile grows up after 2 world turns, bonded or not.
 - **Adult**: a full partner, using its ability at full strength.
 - **Elder**: after 6 more world turns. Still a partner: it calms and sniffs twice as far and feels every stray strike coming, but it is slow, and digs in two actions instead of one.
 
@@ -293,12 +293,12 @@ To choose, open the **Vivarium** on the Station, up close on the mibi, move to t
 
 Between expeditions the Companion shows the mibi with you, large: its name, stage, species, ability and how it is doing ("with you · joins the Probe"). The pad shows your other mibis. **Call** makes it answer (a juvenile sometimes looks the wrong way first).
 - ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does. A walk neither grows nor bonds a mibi.
-- ✓ **Tend** it, once a day for each mibi with you. A few Tends (three) bond it, and a small heart marks it; a bond is never lost.
+- ✓ **Play together**, once a turn, off the dock, with every mibi with you. Play together three times and a mibi is bonded, and a small heart marks it; the press that will bond it says "a bond is for good" first, and a bond is never lost.
 
 ### Getting better and bonding
 
 - **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you end the expedition, three at most. A notch is earned only on an expedition that explored something, and a break keeps it. The notches show on the mibi's card in the vivarium, never as a number.
-- **Bond**: a mibi bonds only through **Tends** on the Companion. ✓ **Tend** works on any mibi with you, once a day; a few Tends (three) bond it, and a small heart then marks its card in the vivarium. A walk neither grows nor bonds a mibi, and the vivarium never makes a bond. There is no limit on bonds, a bond is never lost, and a bonded mibi is never returned to the wild. A bonded juvenile grows up through care, and waits at home, not growing, until it is with you and tended.
+- **Bond**: a mibi bonds only through **Play together** on the Companion. ✓ **Play together** works on every mibi with you, once a turn (a turn comes when an expedition ends); three plays bond it, and a small heart then marks its card in the vivarium. After a play, a line says how many more a mibi needs. An expedition neither grows nor bonds a mibi, and the vivarium never makes a bond. There is no limit on bonds, a bond is never lost, and a bonded mibi is never returned to the wild. Every young mibi grows up on the clock.
 
 ### Partners and what they do
 
@@ -319,7 +319,7 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | | Map | Place | Screens | Home |
 | --- | --- | --- | --- | --- |
 | Pad | Step / hold to walk | Tap: creep · hold: walk | Move choice | Other mibis |
-| ✓ | Go down | Act on what you face, or Wait | Choose | Walk, Tend / Take |
+| ✓ | Go down | Act on what you face, or Wait | Choose | Play together / Take |
 | ← | End expedition (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
