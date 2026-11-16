@@ -27,6 +27,25 @@ const STATE = { set: 'live', kinds: new Set() };
 export const cliffSet = () => STATE.set;
 // Turn the system on for this process: name (e.g. 'system-greybox'), the kinds installed in the tile sets (installPieces). 'live' turns it off.
 export function useCliffSet(name) { STATE.set = name; }
+// The ground pass's own tiles (stills tool only, paint-1 F0a): on, the top and the back rim are not pieces of the set but the dual grid's 16 tiles (cs-gt-<NW><NE><SW><SE>, 1 = upper) laid on the cell corners
+export function useGroundTiles(on) { STATE.gt = !!on; }
+export const gtKind = (code, level = 1, hi = false) => `cs-gt-${code}${level > 1 ? '@' + level : ''}${hi ? '~hi' : ''}`;
+// The tile decals of one level boundary: [{ kind, x, y }] in game px, drawn first. The upper terrain is the raised cells and the cells the set's own pieces stand on (face, flank, way): the face's lip is painted
+// over the top in the piece, so no edge is drawn under a face or a side wall.
+export function groundTileItems(A, o) {
+  const { x0, y0, x1, y1, level = 1, hiBand = () => false } = o;
+  const U = (x, y) => (A.raised(x, y) || [PART.FACE, PART.FLANK, PART.WAY].includes(partAt(A, x, y)) ? 1 : 0);
+  const out = [];
+  for (let vy = y0; vy <= y1 + 1; vy++) for (let vx = x0; vx <= x1 + 1; vx++) {
+    const code = `${U(vx - 1, vy - 1)}${U(vx, vy - 1)}${U(vx - 1, vy)}${U(vx, vy)}`;
+    if (code === '0000') continue;
+    // a tile whose upper cells are only the set's own pieces' cells (face, flank, way: none of them raised land) would draw the lit band and the drop shade along a side wall's outer edge or under a face's foot (the dashed dark line and the green specks at the cap feet of paint-1): the band runs along the raised land's fronts and backs only, the pieces carry their own edges
+    if (![[vx - 1, vy - 1], [vx, vy - 1], [vx - 1, vy], [vx, vy]].some(([x, y]) => A.raised(x, y))) continue;
+    const hi = [[vx - 1, vy - 1], [vx, vy - 1], [vx - 1, vy], [vx, vy]].some(([x, y], i) => code[i] === '0' && hiBand(x, y));
+    out.push({ code, level, hi, kind: gtKind(code, level, hi), x: (vx * ART - ART / 2) * SCALE, y: (vy * ART - ART / 2) * SCALE });
+  }
+  return out;
+}
 // the decal kind of a piece at a level ('mid-1A' at level 1, 'mid-1A@2' at level 2)
 export const kindOf = (id, level = 1) => (level > 1 ? `cs-${id}@${level}` : `cs-${id}`);
 
@@ -107,8 +126,10 @@ export function placeBoundary(A, o) {
   const leanOut = (x, y) => { if (!R(x, y) || !Lo(x, y - 1)) return null; for (const [h, d] of [['w', -1], ['e', 1]]) if (Lo(x + d, y) && R(x - d, y - 1) && R(x - d, y - 2) && Lo(x, y - 2) && R(x - d, y) && [1, 2, 3].every((k) => R(x, y + k) && Lo(x + d, y + k))) return h; return null; };
   const items = [], covered = new Set(), underSlant = new Set(), ck = (x, y) => `${x},${y}`;
   const hiAt = o.hiBand || (() => false);   // hiBand(x, y): the low cell beside a lit band is so light that the band of the ground's own ramp would not clear it by 25 luma (AD 11-15): the piece takes the lighter band
+  const gt = o.gt ?? STATE.gt;   // the ground pass's own tiles draw the top and the back rim: those pieces account for their cells but draw nothing
   const emit = (id, x, y, hi = false) => {
     const p = BY_ID.get(id);
+    if (gt && /^rim-/.test(id)) { for (const [dx, dy] of p.covers) covered.add(ck(x + dx, y + dy)); return; }
     items.push({ id, x, y, box: p ? p.box : [0, 0, ART, ART], line: y + (p ? p.line : 0), cls: p ? p.cls : 9, level, ...(hi ? { hi: true } : {}) });
     for (const [dx, dy] of p ? p.covers : [[0, 0]]) covered.add(ck(x + dx, y + dy));
   };
@@ -189,7 +210,7 @@ export function placeBoundary(A, o) {
     if (rimStep(x, y, h, sameWall)) { covered.add(ck(x, y)); continue; }
     emit(`wall-${h}-${!north ? 'head' : !south ? 'tail' : 'band'}`, x, y);
   }
-  if (tops) for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) if (R(x, y)) items.push({ id: 'top', x, y, box: [0, 0, ART, ART], line: -1e6, cls: 0, level });
+  if (tops && !gt) for (let y = y0 - 1; y <= y1 + 1; y++) for (let x = x0 - 1; x <= x1 + 1; x++) if (R(x, y)) items.push({ id: 'top', x, y, box: [0, 0, ART, ART], line: -1e6, cls: 0, level });
   // the check: every cell of the window with a part other than low and top is accounted for
   const missing = [];
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
@@ -230,6 +251,7 @@ export function systemDecals(ir, A) {
     if (x + bw * SCALE <= 0 || y + bh * SCALE <= 0 || x >= W || y >= H) continue;
     out.push({ kind, x, y });
   }
+  if (STATE.gt) out.unshift(...groundTileItems(A, { x0: 0, y0: 0, x1: ir.w - 1, y1: ir.h - 1, hiBand }).filter((t) => STATE.kinds.has(t.kind) || STATE.kinds.has(gtKind(t.code))).map((t) => ({ kind: STATE.kinds.has(t.kind) ? t.kind : gtKind(t.code), x: t.x, y: t.y })));
   out.missing = missing;
   return out;
 }

@@ -503,7 +503,9 @@ mkdirSync(path.join(OUT, 'cut'), { recursive: true });
 const cut = [];
 for (const p of TABLE.pieces) {
   const cands = instances.filter((it) => it.id === p.id && it.level === 1 && it.clean && it.inside);
-  const it = cands.filter((c) => c.zone === p.zone).pop() || cands[0];   // the last drawn in its zone: T1's front run holds the 18 middles in order
+  // the last drawn in its zone: T1's front run holds the 18 middles in order; the k1 end caps are painted in T1 (beside the run's face, one top line and one foot line), so they are cut from T1 (paint-2 geometry fix; the shape is the same as T2a's, only the place differs)
+  const zoneOf = /^end-[we]-1$/.test(p.id) ? 'T1' : p.zone;
+  const it = cands.filter((c) => c.zone === zoneOf).pop() || cands[0];
   if (!it) { cut.push({ id: p.id, zone: null, box: null, note: 'no clean instance in the template' }); continue; }
   const out = newImage(it.w, it.h), out2 = newImage(it.w, it.h);
   for (let y = 0; y < it.h; y++) for (let x = 0; x < it.w; x++) {
