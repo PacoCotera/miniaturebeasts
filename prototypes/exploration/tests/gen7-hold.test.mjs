@@ -17,7 +17,7 @@ const FIND_KINDS = new Set(['pod', 'fruit', 'dew', 'stone', 'material']);
 
 for (const seed of SEEDS) {
   test(`seed ${seed}: a cell holds ways in, finds, life and a name; the landmarks keep their spacing and names; strike marks lie on bare ground`, { timeout: 900000 }, () => {
-    const R = realm7(seed), lms = landmarksOf(seed, decorOf(seed).hollowSites()), bad = [];
+    const R = realm7(seed), lms = landmarksOf(seed, decorOf(seed)), bad = [];
     const land = (X, Y) => { if (X < 0 || Y < 0 || X >= MW * ATLAS || Y >= MH * ATLAS) return null; const G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW); return G.land[c] !== L.WATER && !G.island[c] ? G : null; };
     // landmarks: spacing, names, kinds
     for (let i = 0; i < lms.list.length; i++) for (let j = 0; j < i; j++) if (Math.max(Math.abs(lms.list[i].X - lms.list[j].X), Math.abs(lms.list[i].Y - lms.list[j].Y)) < LM_SPACING) bad.push('landmark spacing ' + i + ' ' + j);
@@ -60,7 +60,7 @@ for (const seed of SEEDS) {
 }
 
 test('a cell with a landmark and its finds, spawns and openings bakes', { timeout: 300000 }, () => {
-  const lms = landmarksOf(7, decorOf(7).hollowSites());
+  const lms = landmarksOf(7, decorOf(7));
   for (const kind of ['hollow-tree', 'split-stone', 'reedpool', 'windstep']) {
     const p = lms.list.find(q => q.kind === kind); if (!p) continue;
     const ir = cellIR(7, p.X, p.Y), place = bakeIR(ir);
