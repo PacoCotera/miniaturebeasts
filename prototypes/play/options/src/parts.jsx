@@ -54,6 +54,11 @@ export function Panel({ api }) {
           </Row>
           <Toggle label="Playtest waits" line="Short waits, so the whole loop fits in about an hour." on={o.playtest} set={set("playtest")} />
           <Toggle label="Developer tools" line="Shows the tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
+          {o.dev && api.phone && api.phone() ? (
+            <Row label="Observer" line="The Companion's Observer is on its own page.">
+              <a className="op-btn" id="optionsObserver" href={api.observerHref}>Observer</a>
+            </Row>
+          ) : null}
           <Pick label="Companion" line="Which Companion the page plays." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />
           <Pick label="Name list" line="Where new mibi names come from." value={o.names} set={set("names")} items={[["", "The current list"], ...api.names.map((n) => [n, n])]} />
           <Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value={o.place} set={set("place")} items={[["", "The usual map"], ...api.places]} />

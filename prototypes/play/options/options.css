@@ -16,6 +16,7 @@
 .op-thumb[data-state=checked]{transform:translateX(23px); background:var(--mb-void)}
 .op-select,.op-btn{flex:none; min-width:140px; height:32px; display:inline-flex; align-items:center; justify-content:space-between; gap:var(--mb-space-8); padding:0 var(--mb-space-16); background:var(--mb-ground); border:1px solid var(--mb-hairline); border-radius:var(--mb-radius-6); color:var(--mb-fog); font-size:var(--mb-size-web-14)}
 .op-btn{min-width:88px; justify-content:center; color:var(--mb-bone)}
+a.op-btn{text-decoration:none}   /* the Observer row's link (a phone with Developer tools on) */
 .op-select:hover,.op-btn:hover{border-color:var(--mb-bevel)}
 .op-go{background:var(--mb-amber); color:var(--mb-void); border-color:var(--mb-amber)}
 .op-menu{z-index:60; min-width:var(--radix-select-trigger-width); max-height:240px; overflow:auto; background:var(--mb-bar); border:1px solid var(--mb-bevel); border-radius:var(--mb-radius-6); padding:var(--mb-space-4); color:var(--mb-fog); font-size:var(--mb-size-web-14)}
