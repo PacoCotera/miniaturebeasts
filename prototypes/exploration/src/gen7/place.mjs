@@ -1062,7 +1062,7 @@ function decorIR(seed, x0, y0, w, h) {
 function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null, falls = []) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
-  const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed), [[Math.floor(cell[0] / MW), Math.floor(cell[1] / MH)]]), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
+  const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), terrainOf: (X2, Y2) => cellTerrain(seed, X2, Y2), landmarks: landmarksOf(seed, decorOf(seed), [[Math.floor(cell[0] / MW), Math.floor(cell[1] / MH)]]), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
   // what the place's set pieces add: their wall props (the land's boulders or stumps, the Split Stone), as props at their tiles
   const placed2 = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
   const setProps = hold ? hold.setProps.map(p => ({ ...placed2(p.kind, { x: (p.x) * 48 + 24, y: (p.y) * 48 + 47 }), tx: x0 + p.x, ty: y0 + p.y, fam: p.fam, cluster: -5 })) : [];
@@ -1082,7 +1082,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone,
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [],
-    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [], falls };   // falls: the empty slot `falls`, 2 face columns each ({ x, y, w: 2, h: 1 } world tiles of the lip row)
+    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [], soft: hold ? hold.soft : null, falls };   // falls: the empty slot `falls`, 2 face columns each ({ x, y, w: 2, h: 1 } world tiles of the lip row)
 }
 // the bare tiles (sand, scree, leaf litter, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {

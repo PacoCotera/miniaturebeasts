@@ -17,11 +17,14 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const tileOf = new Map(terrains.map(t => [t.value, T[t.T]]));
   const tiles = new Uint8Array(NP), press = new Uint8Array(NP);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) tiles[I(x, y)] = tileOf.get(place.terrain[P(x, y)]) ?? T.GRASS;
+  // mud the Tuliko wades (hold.mjs softOf): the water tiles of the narrowest crossing between the west and east ground. They block like water until a Tuliko is the partner (the page's softTileOpen).
+  for (const [sx, sy] of (ir.soft && ir.soft.wade) || []) { const x = sx - 1, y = sy - 1; if (x >= 0 && y >= 0 && x < w && y < h && tiles[I(x, y)] === T.WATER) tiles[I(x, y)] = T.WADE; }
   const cliffV = (terrains.find(t => t.id === 'cliff') || {}).value;
   // (a set bit on a walkable tile that is no cliff is the cell under a south lip, which blocks too; a prop's footprint cell is overwritten below)
+  const steep = new Uint8Array(NP);   // the steep rock of a raised land's edge (its lip and face): what a scree crossing runs over
   if (cliffV != null && place.blockMask) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const b = P(x, y); if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
-    if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) tiles[I(x, y)] = T.ROCK;
+    if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; steep[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) { tiles[I(x, y)] = T.ROCK; steep[I(x, y)] = 1; }
   }
   for (const p of place.props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48) - 1, cy = Math.floor(p.y / 48) - 1;
@@ -31,6 +34,21 @@ export function adaptCell(place, ir, ts, terrains, o) {
       if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
+  // scree the Tuliko crosses (hold.mjs softOf): two lines of tiles from the cell's border inwards over the steep rock to the first ground that walks, the same pair of lines from either cell of the edge.
+  // lay.cross is what the page reads (crossingAt, entryPoint, crossEdge): the side, the first line, the tile just inside.
+  const cross = [];
+  for (const sc of (ir.soft && ir.soft.scree) || []) {
+    const side = sc.side, js = sc.s - 1, at = (j, d) => side === 'S' ? [j, h - 1 - d] : side === 'N' ? [j, d] : side === 'E' ? [w - 1 - d, j] : [d, j], run = [];
+    let ok = true, entry = null;
+    for (const j of [js, js + 1]) { let d = 0;
+      for (; d <= 5; d++) { const [x, y] = at(j, d); if (x < 0 || y < 0 || x >= w || y >= h) { ok = false; break; } if (steep[I(x, y)]) { run.push(I(x, y)); continue; } if (T_BLOCK[tiles[I(x, y)]]) ok = false; else if (j === js) entry = { x, y }; break; }
+      if (d > 5) ok = false; }
+    if (!ok || !entry) continue;   // a line that meets walking ground at the border has no steep rock in this cell: its other cell lays the scree
+    for (const i of run) { tiles[i] = T.SCREE; press[i] = 0; }
+    cross.push({ dir: SIDE_STEP[side], kind: 'scree', s: js, ei: sc.ei, off: 0, entry });
+  }
+  // the page draws these tiles (mud, scree) over the baked ground with the art desk's signed pieces (lay.rim: the tiles of the world's edges laid over a baked place)
+  const rim = []; for (let i = 0; i < NP; i++) if (tiles[i] === T.WADE || tiles[i] === T.SCREE) rim.push(i);
   // the set pieces drawn by the page (the slab of a sleepers' bed): their tile blocks like a rock; shelter tiles (under an overhang) keep strikes off whoever stands on them
   const shelter = new Uint8Array(NP), pieces = [];
   for (const p of ir.pieces || []) { const x = p.x - 1, y = p.y - 1, pw = p.w || 1; if (x >= 0 && y >= 0 && x < w && y < h) { for (let i = 0; i < pw && x + i < w; i++) tiles[I(x + i, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y, w: pw }); } }
@@ -140,7 +158,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
     baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
-    strikes, decalNear,
+    strikes, decalNear, ...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;

@@ -11,12 +11,13 @@
 //   traces     [{ kind: 'outpost'|'beacon', x, y }]       explorers' traces, only where the region already places them
 //   strikes    [{ x, y, age, glass, read: false }]        strike marks (section 4.7a); age = world turns since the strike, glass = storm glass lies in it (sand only)
 // No hearts, springs or clue gleams: section 4 replaces them.
-import { hash, L, MW, MH, HERD, groundName, genLife5, sideKind, softGround, bankEdges, canStepIn } from '../world.mjs';
+import { hash, L, MW, MH, HERD, groundName, genLife5, sideKind, softGround, bankEdges, canStepIn, edgeIndex } from '../world.mjs';
 import { ATLAS, regionKinds, KIND_INFO } from '../regions.mjs';
 import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
 import { landmarksOf, LM_PROP, LM_SLOT } from './landmarks.mjs';
 import { planOf, contentOf } from './places.mjs';
+import { cliffInfo } from '../../../places/src/bake/openedges.mjs';
 
 const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 const WALKT = new Uint8Array(32); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, 20, 21]) WALKT[t] = 1;   // 20, 21: the ford and the bridge (F6)
@@ -96,6 +97,7 @@ function holdOn(a, pick) {
   const walk = (lx, ly) => { const t = tt(lx, ly); return WALKT[t] === 1 || (t === TV.CLIFF && !lip(lx, ly)); };
   const lm = a.landmarks.at.get(X + ',' + Y);
   const isLand = land !== L.WATER && !G.island[c];
+  out.soft = softOf(seed, G, c, X, Y, { tt, walk, lip, openings: out.openings, w, h, x0, y0, terrain, D, wayups: a.wayups, terrainOf: a.terrainOf });
   if (!isLand) return out;
   out.names = [lm ? lm.name : groundName(land, false)];
   // ---- the cell's tiles ----
@@ -273,6 +275,64 @@ function findCount(seed, X, Y, land, biome, walkable, supply, H) {
   return Math.max(2, Math.min(9, Math.round(v), Math.floor(walkable / 8)));
 }
 export const FIND_OFFSET = -1.1;
+
+// ---- soft ground (tuliko-soft-7-1): the tiles the Tuliko crosses, laid on the ground the place already draws where softGround (world.mjs) names the cell or edge ----
+// ir.soft = { wade: [[x, y] ...] }: IR tiles (the cell's own are 1 .. 24 by 1 .. 28). A wade cell is water with land on its west and east: a two-row crossing at the narrowest stretch of water
+// (6 tiles or so) between ground the west way in leads to and ground the east way in leads to becomes mud (adapt7 lays T.WADE on it).
+const MUD_MAX = 30;
+function softOf(seed, G, c, X, Y, k) {
+  const out = { wade: [], scree: [] };
+  G.soft = G.soft || softGround(G, seed);
+  if (G.soft.wade[c] === 1) out.wade = wadeTiles(seed, X, Y, k);
+  for (const side of ['N', 'S', 'W', 'E']) { const dir = SIDE_DIR[side], [dx, dy] = SIDE_STEP[side], x = (c % MW) + dx, y = ((c / MW) | 0) + dy;
+    if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
+    const ei = edgeIndex(c, dir); if (!G.soft.scree[ei]) continue;
+    const s = screeSite(seed, ei, side, X, Y, k); if (s != null) out.scree.push({ side, ei, s }); }   // s: the crossing's first column (row, on a west or east side) in IR tiles; the page's two tiles are s and s + 1
+  return out;
+}
+// A scree edge is crossed by two tiles side by side along the border, the same pair from either cell (chosen from both cells' tiles and the edge's number). In each cell the crossing runs from the border
+// inwards over the steep rock (lip and face tiles, which block) to the first ground that walks; adapt7 lays it. A pair qualifies when, in both cells, both its lines meet walking ground within SCREE_RUN tiles and
+// the steep rock holds at least one tile somewhere.
+const SCREE_RUN = 5, CLIFF_ONLY = [{ id: 'cliff', value: TV.CLIFF }];
+function screeSite(seed, ei, side, X, Y, k) {
+  const [dx, dy] = SIDE_STEP[side], nb = k.terrainOf(X + dx, Y + dy); if (!nb) return null;
+  const D = k.D, OPP = { N: 'S', S: 'N', W: 'E', E: 'W' }, vertical = side === 'N' || side === 'S', len = vertical ? CW : CH;
+  // the steep rock is what the bake blocks round a raised land (openedges.mjs cliffInfo: the lip, the face and the flanks), the same cells adapt7 reads from the baked place
+  const mk = (T, wayups, sd) => { const tt2 = (lx, ly) => (lx < 0 || ly < 0 || lx >= T.w || ly >= T.h ? TV.THICKET : T.terrain[ly * T.w + lx]), blocks = cliffInfo({ w: T.w, h: T.h, terrain: T.terrain, wayups }, CLIFF_ONLY).blockCells;
+    const at = (j, d) => sd === 'S' ? [j, CH - d] : sd === 'N' ? [j, 1 + d] : sd === 'E' ? [CW - d, j] : [1 + d, j];
+    // the line j from the border: the steep rock tiles it crosses, or -1 when it meets no walking ground within SCREE_RUN
+    return j => { let n = 0; for (let d = 0; d <= SCREE_RUN; d++) { const [lx, ly] = at(j, d), t = tt2(lx, ly), steep = blocks.has(ly * T.w + lx) && (t === TV.CLIFF || WALKT[t] === 1);
+      if (steep) { n++; continue; } return WALKT[t] === 1 || t === TV.CLIFF ? n : -1; } return -1; }; };
+  const mine = mk({ terrain: k.terrain, w: k.w, h: k.h }, k.wayups, side), theirs = mk(nb, nb.wayups.map(a => ({ x: a.x - nb.x0, y: a.y - nb.y0, w: a.w, h: a.h })), OPP[side]);
+  let best = null;
+  for (let j = 1; j < len; j++) { const a = mine(j), b = mine(j + 1), c = theirs(j), d = theirs(j + 1);
+    if (a < 0 || b < 0 || c < 0 || d < 0 || a + b + c + d < 1) continue;
+    const key = hash(seed, 'gen7', 'scree', ei, j); if (!best || key < best.key) best = { key, j }; }
+  return best ? best.j : null;
+}
+function wadeTiles(seed, X, Y, { tt, walk, lip, openings }) {
+  const open = (x, y) => x >= 1 && y >= 1 && x <= CW && y <= CH && walk(x, y) && !lip(x, y);
+  const flood = side => {
+    const seen = new Set(), st = [];
+    for (const op of openings) if (op.side === side) for (let q = op.from; q <= op.to; q++) { const x = side === 'W' ? 1 : CW; if (open(x, q) && !seen.has(q * 100 + x)) { seen.add(q * 100 + x); st.push([x, q]); } }
+    while (st.length) { const [x, y] = st.pop(); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const x2 = x + dx, y2 = y + dy; if (open(x2, y2) && !seen.has(y2 * 100 + x2)) { seen.add(y2 * 100 + x2); st.push([x2, y2]); } } }
+    return seen;
+  };
+  // the shortest run of water tiles from ground the west way in leads to, to ground the east way in leads to (east first on ties, so a straight crossing wins); then a second row beside it
+  const west = flood('W'), east = flood('E'), water = (x, y) => x >= 1 && y >= 1 && x <= CW && y <= CH && tt(x, y) === TV.WATER;
+  const DIRS4 = [[1, 0], [0, 1], [0, -1], [-1, 0]], prev = new Map(), q = [];
+  for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) if (water(x, y) && DIRS4.some(([dx, dy]) => west.has((y + dy) * 100 + x + dx))) { prev.set(y * 100 + x, -1); q.push([x, y]); }
+  let goal = null;
+  for (let h = 0; h < q.length && !goal; h++) { const [x, y] = q[h];
+    if (DIRS4.some(([dx, dy]) => east.has((y + dy) * 100 + x + dx))) { goal = [x, y]; break; }
+    for (const [dx, dy] of DIRS4) { const x2 = x + dx, y2 = y + dy; if (water(x2, y2) && !prev.has(y2 * 100 + x2)) { prev.set(y2 * 100 + x2, y * 100 + x); q.push([x2, y2]); } } }
+  if (!goal) return [];
+  const path = []; for (let k = goal[1] * 100 + goal[0]; k !== -1; k = prev.get(k)) path.push([k % 100, (k / 100) | 0]);
+  if (path.length > MUD_MAX) return [];
+  const have = new Set(path.map(([x, y]) => y * 100 + x)), tiles = path.slice();
+  for (const [x, y] of path) for (const [dx, dy] of [[0, 1], [1, 0]]) { const k = (y + dy) * 100 + x + dx; if (!have.has(k) && water(x + dx, y + dy)) { have.add(k); tiles.push([x + dx, y + dy]); break; } }
+  return tiles;
+}
 
 // Is this side of the cell shut by the world's own edge kind (water that is not the cell's own, the map's end)? c: the cell's number in its region G; X, Y: its realm cell.
 const SIDE_DIR = { N: 'up', S: 'down', W: 'left', E: 'right' }, SIDE_STEP = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
