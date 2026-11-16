@@ -3,7 +3,7 @@ name: Sandbox
 on:
   push:
     branches: [main]
-    paths: ['website/**', 'prototypes/**', 'art/companion-48/terrain/**', 'art/places/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
+    paths: ['website/**', 'prototypes/**', 'art/companion-48/terrain/**', 'art/companion-48/care/**', 'art/places/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
   pull_request:
     # The release check holds before a merge, not after it, on every pull request into main, whatever it touches: the Sandbox `build` check is one main requires, and so is `browser`.
     # The release and the gh-pages steps below run on main only.
@@ -111,6 +111,8 @@ jobs:
           mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
+          # the bond's hearts (the pixel desk's 24 and 16), the files only
+          mkdir -p _site/art/companion-48/care && cp art/companion-48/care/c-heart-24.png art/companion-48/care/c-heart-16.png _site/art/companion-48/care/
           # build.json carries the release number (and name) from prototypes/package.json
           python3 -I .github/scripts/build-json.py "$GITHUB_SHA" _site/build.json
       - name: Install the exploration page's packages (the generator's noise and queue)

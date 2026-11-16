@@ -31697,6 +31697,7 @@ function Panel({ api }) {
       }, children: T("options.note.button") }) }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Playtest waits", line: "Short waits, so the whole loop fits in about an hour.", on: o2.playtest, set: set2("playtest") }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Developer tools", line: "Shows the tools button, the Station's panel and the Companion's Observer.", on: o2.dev, set: set2("dev") }),
+      o2.dev && api.phone && api.phone() ? /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label: "Observer", line: "The Companion's Observer is on its own page.", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("a", { className: "op-btn", id: "optionsObserver", href: api.observerHref, children: "Observer" }) }) : null,
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Companion", line: "Which Companion the page plays.", value: o2.companion, set: set2("companion"), items: [["A", "Companion A"], ["B", "Companion B"]] }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Name list", line: "Where new mibi names come from.", value: o2.names, set: set2("names"), items: [["", "The current list"], ...api.names.map((n2) => [n2, n2])] }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "One place everywhere", line: "Every land cell of the Companion's map plays this hand-made place.", value: o2.place, set: set2("place"), items: [["", "The usual map"], ...api.places] }),
