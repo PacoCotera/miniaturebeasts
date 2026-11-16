@@ -99,6 +99,7 @@ export function layerRows(set) {
   }
   if (set.tone) rows.push({ type: 'tone', terrain: 'tone', sheets: set.tone.sheets });
   if (set.tone && set.tone.raised) rows.push({ type: 'toneraised', terrain: 'tone', sheets: [set.tone.raised] });   // the tone on the raised ground, a sheet of its own
+  if (set.litterTop) { rows.push({ type: 'littertop', part: 'over', terrain: 'litter', sheets: [set.litterTop.over] }); rows.push({ type: 'littertop', part: 'fill', terrain: 'litter', sheets: [set.litterTop.fill] }); }   // the raised litter top: over cases, then fill variants (cells 1 to 3)
   return rows;
 }
 
@@ -127,5 +128,5 @@ export function layerDescriptors(loaded, terrains) {
       ground: l.ground === undefined ? undefined : val(l.ground, `${id} ground`), drawAs: l.drawAs === undefined ? undefined : val(l.drawAs, `${id} drawAs`),
     });
   }
-  return { layers, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone'), ...(set.tone.raised ? { rowRaised: at((x) => x.type === 'toneraised') } : {}) } : null };
+  return { layers, litterTop: set.litterTop ? { over: at((x) => x.type === 'littertop' && x.part === 'over'), fill: at((x) => x.type === 'littertop' && x.part === 'fill') } : null, tone: set.tone ? { of: val(set.tone.of, 'tone'), also: (set.tone.also || []).map((x) => val(x, 'tone also')), row: at((x) => x.type === 'tone'), ...(set.tone.raised ? { rowRaised: at((x) => x.type === 'toneraised') } : {}) } : null };
 }

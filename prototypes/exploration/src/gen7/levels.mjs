@@ -5,10 +5,10 @@
 // on the raster "level above k", never on "raised vs low", so more heights are data (a longer list), not a rewrite. Level 0 is the low ground; `raised` means level 1 or more.
 // Then the passes P1 to P6: threshold; opening and closing by a rounded element; small hills and hollows; no diagonal pinch; no lone one-tile face; foot room under every lip.
 // The same function serves the region (which chooses each stair where this land has a way-up site) and the place (which puts the way up there).
-import { hash2, subSeed, fbm, warp } from '../../../core/base/noise.mjs';
-import { div, shr } from '../../../core/base/whole.mjs';
+import { hash2, subSeed } from '../../../core/base/noise.mjs';
+import { div, shr, quot } from '../../../core/base/whole.mjs';
 import RULE from './land-rule.json' with { type: 'json' };
-import { RW, RH, CW, CH, fieldsAt, noiseField } from './world.mjs';
+import { RW, RH, CW, CH, fieldsAt, heightAt, noiseField } from './world.mjs';
 import { L as LAND } from '../world.mjs';
 
 export { CW, CH };
@@ -80,20 +80,79 @@ function coastQ16(seed, gx, gy) {
 }
 
 // q of the tiles of a cell (Q16): the realm's height above its raising height (bilinear in the cells' centres, whole-number weights over 2 CW and 2 CH), the warped detail, the coast
+// one tile's q (the same number qCell holds for it), without making the cell: the realm's edge probe reads a few strips of tiles
+// (the octave seeds of the noise are made once per realm, not per tile: fbm of core/base/noise.mjs with the seeds given, the same sum)
+// grad2 of the core, written flat (no closure, no 2 ** bits): the same arithmetic, so the same numbers
+const GX = [1, -1, 0, 0, 1, -1, 1, -1], GY = [0, 0, 1, -1, 1, 1, -1, -1], F16 = 65536;
+// the lattice gradients (hash2 & 7) of an octave are kept in a grid per realm, filled as read: a tile's neighbours read the same lattice points
+const LAT_PAD = 48 * 256;   // the position is moved by at most the warp and the wobble (about 32 tiles); beyond the grid the hash is read
+function gradIdx(d, s, ix, iy) {
+  let g = d.grid;
+  if (g === null) { const sh = 8 + s; d.x0 = (-LAT_PAD >> sh) - 1; d.y0 = d.x0; d.w = ((WTW * 256 + LAT_PAD) >> sh) + 3 - d.x0; d.h = ((WTH * 256 + LAT_PAD) >> sh) + 3 - d.y0; g = d.grid = new Int8Array(d.w * d.h).fill(-1); }
+  const x = ix - d.x0, y = iy - d.y0;
+  if (x < 0 || y < 0 || x >= d.w || y >= d.h) return hash2(ix, iy, d.seed) & 7;
+  const k = y * d.w + x; let v = g[k]; if (v < 0) { v = hash2(ix, iy, d.seed) & 7; g[k] = v; } return v;
+}
+function grad2q(px, py, s, d) {
+  const sh = 8 + s, mask = (1 << sh) - 1, ix = px >> sh, iy = py >> sh, fx = (px & mask) << (16 - sh), fy = (py & mask) << (16 - sh);
+  let g = gradIdx(d, s, ix, iy); const n00 = GX[g] * fx + GY[g] * fy;
+  g = gradIdx(d, s, ix + 1, iy); const n10 = GX[g] * (fx - F16) + GY[g] * fy;
+  g = gradIdx(d, s, ix, iy + 1); const n01 = GX[g] * fx + GY[g] * (fy - F16);
+  g = gradIdx(d, s, ix + 1, iy + 1); const n11 = GX[g] * (fx - F16) + GY[g] * (fy - F16);
+  const u = fadeQ(fx), v = fadeQ(fy);
+  const a = n00 + Math.floor((n10 - n00) * u / F16), b = n01 + Math.floor((n11 - n01) * u / F16);
+  return a + Math.floor((b - a) * v / F16);
+}
+function fadeQ(t) {
+  const t2 = Math.floor(t * t / F16), t3 = Math.floor(t2 * t / F16);
+  return Math.floor(t3 * (Math.floor(t * (6 * t - 15 * F16) / F16) + 10 * F16) / F16);
+}
+function fbmQ(px, py, s0, seeds) {
+  const oc = seeds.length; let sum = 0, wsum = 0;
+  for (let o = 0; o < oc; o++) { const w = 1 << (oc - 1 - o); sum += w * grad2q(px, py, s0 - o, seeds[o]); wsum += w; }
+  return quot(sum, wsum) | 0;
+}
+const octSeeds = (seed, n) => { const a = []; for (let o = 0; o < n; o++) a.push({ seed: subSeed(seed, 'oct', o), grid: null, x0: 0, y0: 0, w: 0, h: 0 }); return a; };
+function qMacro(L, gx, gy) {   // q without its detail term (the fbm), leaving the position the detail is read at in _wx, _wy
+  const reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, st = L.rule.wobbleStretch, e0q = L.e0q, W2 = 2 * CW, H2 = 2 * CH;
+  const sd = L.qSeeds || (L.qSeeds = (() => {
+    const sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'), wo = L.rule.wobbleOctaves;
+    return { wpx: octSeeds(subSeed(sD, 'warpx'), 2), wpy: octSeeds(subSeed(sD, 'warpy'), 2), wbx: octSeeds(subSeed(sW, 'x'), wo), wby: octSeeds(subSeed(sW, 'y'), wo), det: octSeeds(subSeed(sD, 'detail'), 4), h: heightAt(L.seed) };
+  })());
+  const px = 256 * gx + 128, py = 256 * gy + 128;
+  // the position the land is read at: moved by the coarse warp (32 and 16 tile noise, up to `reach` tiles) and the fine wobble (8 and 4 tile noise, up to `wob` tiles), in Q8 tiles.
+  // The macro height and its raising height are read there too, so the contour itself bends and wobbles by that many tiles, however steep the land is.
+  const wx = ((fbmQ(px, py, 5, sd.wpx) * reach) >> 8) + shr(fbmQ(px, st * py, ws, sd.wbx) * wob, 8), wy = ((fbmQ(px, py, 5, sd.wpy) * reach) >> 8) + shr(fbmQ(st * px, py, ws, sd.wby) * wob, 8);
+  const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
+  const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
+  const h = sd.h((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5), macro = Math.round(h * 65536) - e;
+  _wx = px + wx; _wy = py + wy; _sd = sd;
+  return macro + coastQ16(L.seed, gx, gy);
+}
+let _wx = 0, _wy = 0, _sd = null;
+export function qTile(L, gx, gy) {
+  const m = qMacro(L, gx, gy);
+  return m + shr(fbmQ(_wx, _wy, 5, _sd.det) * L.rule.detail, 16);
+}
+// whether q (the tile's) reaches the threshold th: the same answer as qTile(L, gx, gy) >= th. The detail term is a fbm (a weighted mean of gradient noise, each under 2 in Q16: dot of a
+// (+-1, +-1) gradient with an offset under 1 on each axis), so it lies within +-2D: where the macro and the coast are further than that from th the detail is not read.
+export function qAtLeast(L, gx, gy, th) {
+  const d = qMacro(L, gx, gy) - th, B = 2 * L.rule.detail + 1;
+  if (d > B) return true; if (d < -B) return false;
+  return d + shr(fbmQ(_wx, _wy, 5, _sd.det) * L.rule.detail, 16) >= 0;
+}
+export function wetTile(L, gx, gy) {   // one tile's wet flag (the same as wetCell's), without making the cell
+  if (inlandOf(gx, gy) < WET_REACH) return 0;
+  const S = seedCtx(L.seed), wc = wetCells(L); if (!S.nW) S.nW = noiseField(L.seed, 't-wet', 1 / 12, 'FBm', 2);
+  const u = (gx + 0.5) / CW - 0.5, v = (gy + 0.5) / CH - 0.5, X0 = Math.floor(u), Y0 = Math.floor(v), a = u - X0, b = v - Y0;
+  const w = wc[cellIdx(X0, Y0)] * (1 - a) * (1 - b) + wc[cellIdx(X0 + 1, Y0)] * a * (1 - b) + wc[cellIdx(X0, Y0 + 1)] * (1 - a) * b + wc[cellIdx(X0 + 1, Y0 + 1)] * a * b;
+  if (w + WET_NOISE * 1.5 <= WET_AT) return 0;   // the noise (about -1 to 1) cannot lift it over the threshold: no need to read it
+  return w + WET_NOISE * S.nW(gx, gy) > WET_AT ? 1 : 0;
+}
 export function qCell(L, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = L.q.get(key); if (hit) return hit;
-  const S = seedCtx(L.seed), q = new Int32Array(N), D = L.rule.detail, reach = L.rule.warpReach, wob = L.rule.wobbleReach, ws = L.rule.wobbleSpacing, wo = L.rule.wobbleOctaves, st = L.rule.wobbleStretch, e0q = L.e0q, sD = subSeed(L.seed, 'land'), sW = subSeed(L.seed, 'land-wobble'), W2 = 2 * CW, H2 = 2 * CH;
-  const sWx = subSeed(sW, 'x'), sWy = subSeed(sW, 'y'), sDet = subSeed(sD, 'detail');
-  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
-    const gx = X * CW + tx, gy = Y * CH + ty, k = ty * CW + tx, px = 256 * gx + 128, py = 256 * gy + 128;
-    // the position the land is read at: moved by the coarse warp (32 and 16 tile noise, up to `reach` tiles) and the fine wobble (8 and 4 tile noise, up to `wob` tiles), in Q8 tiles.
-    // The macro height and its raising height are read there too, so the contour itself bends and wobbles by that many tiles, however steep the land is.
-    const w = warp(px, py, sD, reach), wx = w.x + shr(fbm(px, st * py, ws, wo, sWx) * wob, 8), wy = w.y + shr(fbm(st * px, py, ws, wo, sWy) * wob, 8);
-    const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
-    const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
-    const h = S.at((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5).height, macro = Math.round(h * 65536) - e;
-    q[k] = macro + shr(fbm(px + wx, py + wy, 5, 4, sDet) * D, 16) + coastQ16(L.seed, gx, gy);
-  }
+  const q = new Int32Array(N);
+  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) q[ty * CW + tx] = qTile(L, X * CW + tx, Y * CH + ty);
   if (L.q.size > 3000) L.q.clear();
   L.q.set(key, q); return q;
 }
@@ -700,7 +759,12 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   const base = st.x0, lo = st.X * CW + 2, hi = st.X * CW + CW - SITE_W - 2;
   // first a place where the field itself is raised above the lip and low below it (the site cuts no pit into raised land and heaps no hill on low land), else any clear one
   const nat = x0 => { const lr = st.lip - st.Y * CH; let hi = 0, lo = 0; for (let c = x0 - st.X * CW; c < x0 - st.X * CW + SITE_W; c++) { if (qAt(c, lr - 2) >= 0) hi++; if (qAt(c, lr + 3) < 0) lo++; } return hi >= 3 && lo >= 3; };
-  for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0)) { st.x0 = x0; st.ok = true; return st; } }
+  // room at the foot (f4 fix 7): under the foot rows, 3 rows of walkable low ground across the way up's 2 columns and 1 column each side, before any cliff, lip or water (a cliff or a pond 2 rows under the foot
+  // makes the place's settle drop the stem, and the foot would stand in a pocket); a site without it is passed over for the next held straight on the face
+  const room = x0 => { const lr = st.lip - st.Y * CH + L.rule.faceRows + 1;
+    for (let r = lr + 1; r <= lr + 3; r++) for (let c = x0 - st.X * CW + 1; c <= x0 - st.X * CW + SITE_W - 2; c++) { if (qAt(c, r) >= 0) return false; const gx = st.X * CW + c, gy = st.Y * CH + r; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (wet(gx + dx, gy + dy)) return false; }
+    return true; };
+  for (const needRoom of [true, false]) for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0) && (!needRoom || room(x0))) { st.x0 = x0; st.ok = true; st.room = needRoom; return st; } }   // a site with room first; none: the old choice (a stair the realm planned keeps its way up: dropping it left whole regions unreached, 16-20 stairs a seed)
   return st;
 }
 // a pocket stair's site is made only where every tile it holds raised may be raised (none is held low by water or the coast): else its lip would stand alone beside tiles the rule keeps low
@@ -835,6 +899,41 @@ export function tileLevel(L, gx, gy) {
 }
 // raised land: level 1 or more, and at least RAISE_OFF tiles from the border line
 export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
+
+// ---- the realm's edge probe (before any pass): reads the height field and the wet field on the strip of tiles each side of an edge, never a place ----
+// The rows (columns, for a north-south edge) along the edge between the cells A and B (B east or south of A) where the `deep` tiles each side are all dry and on one level (raised or low by the field's own
+// threshold, the passes not run). `need` rows are enough: the count stops there (the rows are read from the middle outwards). The roads ask this of the edges a trail or a bridge bank uses.
+export function edgeRows(L, ax, ay, bx, by, need, deep = 2, want = 0) {
+  const east = bx > ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
+  const lvl = (gx, gy) => (inlandOf(gx, gy) >= RAISE_OFF && qAtLeast(L, gx, gy, th) ? 1 : 0);
+  for (let s = 0; s < n && rows < need; s++) {   // every second row is read and stands for the pair (the field moves slowly along an edge)
+    const t = (s & 1 ? -1 : 1) * ((s + 1) >> 1) * 2 + (n >> 1), ok = t >= 0 && t < n; if (!ok) continue;
+    let good = true;
+    for (let i = 0; i < deep && good; i++) for (const side of [0, 1]) {
+      const gx = east ? (side ? bx * CW + i : bx * CW - 1 - i) : ax * CW + t, gy = east ? ay * CH + t : (side ? by * CH + i : by * CH - 1 - i);
+      if (wetTile(L, gx, gy)) { good = false; break; }
+      const v = lvl(gx, gy);
+      if (v !== want) { good = false; break; }
+    }
+    if (good) rows += 2;
+  }
+  return rows;
+}
+// a bridge's two banks: the rows where the `deep` tiles of the bank's edge by the water are dry and low on both banks, the same row on each (a bridge runs straight across)
+export function bankRows(L, ax, ay, bx, by, need, deep = 2) {
+  const east = bx !== ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
+  const lo = (gx, gy) => !(inlandOf(gx, gy) >= RAISE_OFF && qAtLeast(L, gx, gy, th)) && !wetTile(L, gx, gy);
+  const [lx, ly, hx, hy] = (east ? bx < ax : by < ay) ? [bx, by, ax, ay] : [ax, ay, bx, by];   // the western (northern) bank, the eastern (southern) one
+  for (let t = 0; t < n && rows < need; t++) {
+    let good = true;
+    for (let i = 0; i < deep && good; i++) {
+      const g1x = east ? (lx + 1) * CW - 1 - i : lx * CW + t, g1y = east ? ly * CH + t : (ly + 1) * CH - 1 - i, g2x = east ? hx * CW + i : hx * CW + t, g2y = east ? hy * CH + t : hy * CH + i;
+      if (!lo(g1x, g1y) || !lo(g2x, g2y)) good = false;
+    }
+    if (good) rows++;
+  }
+  return rows;
+}
 
 // ---- the way up: placed on the stair's held-straight site, never searched ----
 // The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher, has its site made before the passes (landPipeline: 6 columns held, the lip row and 4 rows above raised, the foot

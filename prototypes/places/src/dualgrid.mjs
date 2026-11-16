@@ -85,6 +85,7 @@ export function terrainLayers(level, terrains, layers, tone = null) {
   const grass = (terrains.find((t) => t.id === 'grass') || {}).value, cliff0 = terrains.find((t) => t.id === 'cliff');
   const cliff = cliff0 && grass !== undefined && lay.has(cliff0.value) && lay.has(grass) ? cliff0 : null;   // a set with a raised land: its top is a ground of its own (grass where the level names none)
   const topOf = (x, y) => (level.top ? level.top[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] : 0) || grass;   // 0 = grass
+  const pathTop0 = terrains.find((t) => t.id === 'path-top'), pathTopAs = pathTop0 && lay.has(pathTop0.value) ? resolve(pathTop0.value) : undefined;
   const noLayer = (r, i, j) => new DualGridError('no-layer', `${id}: ${cellName(i, j)}: the set has no layer for ${byValue.get(r).id}`, { level: id, cell: { i, j } });
 
   for (let j = 0; j < h1; j++) for (let i = 0; i < w1; i++) {
@@ -100,6 +101,8 @@ export function terrainLayers(level, terrains, layers, tone = null) {
     layerOf(B)[idx] = FILL_CODE + (vh(i, j) % Math.max(1, fill.fillCount || 1));
     for (const T of order.slice(1)) {
       const d = lay.get(T), zT = z(T), ec = cliff && T === cliff.value ? cs : gs;   // every layer but the cliff's reads the corners as the ground they stand on
+      // a trail's path on a raised top (the ground `path-top`, drawn as the path): on a tile of four cliff corners the cliff's own fill would cover it, so the fill is left off where the path shows
+      if (cliff && T === cliff.value && pathTopAs !== undefined && gs.includes(pathTopAs) && cs.every((c) => c === cliff.value)) continue;
       let mask = 0;
       [NW, NE, SW, SE].forEach((bit, k) => { if (z(ec[k]) >= zT) mask |= bit; });
       if (mask === 0) continue;

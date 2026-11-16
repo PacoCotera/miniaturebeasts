@@ -344,6 +344,27 @@
 						"color": "#7C8794",
 						"tile": null,
 						"groupUid": 0
+					},
+					{
+						"value": 19,
+						"identifier": "path-top",
+						"color": "#C49A63",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 20,
+						"identifier": "ford-ground",
+						"color": "#A9A07A",
+						"tile": null,
+						"groupUid": 0
+					},
+					{
+						"value": 21,
+						"identifier": "bridge",
+						"color": "#8A6A3C",
+						"tile": null,
+						"groupUid": 0
 					}
 				],
 				"intGridValuesGroups": [],

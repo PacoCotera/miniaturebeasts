@@ -51,7 +51,16 @@
     ["cliff", "litter"],
     ["cliff", "drygrass"],
     ["cliff", "turf"],
-    ["cliff", "scree"]
+    ["cliff", "scree"],
+    ["path-top", "grass"],
+    ["ford-ground", "water"],
+    ["ford-ground", "deep"],
+    ["ford-ground", "grass"],
+    ["ford-ground", "path"],
+    ["bridge", "water"],
+    ["bridge", "deep"],
+    ["bridge", "grass"],
+    ["bridge", "path"]
   ],
   "layers": {
     "deep": {
@@ -124,6 +133,15 @@
           "sheets": ["over-path.png"]
         }
       ]
+    },
+    "path-top": {
+      "drawAs": "path"
+    },
+    "ford-ground": {
+      "drawAs": "path"
+    },
+    "bridge": {
+      "drawAs": "path"
     },
     "grass": {
       "fill": {
@@ -240,10 +258,6 @@
             "3": "cliff-back-3.png",
             "7": "cliff-back-7.png",
             "11": "cliff-back-11.png"
-          },
-          "wayup": {
-            "grass": "wayup-cliff-grass.png",
-            "sand": "wayup-cliff-sand.png"
           }
         }
       ]
@@ -254,6 +268,10 @@
     "also": ["cliff"],
     "sheets": ["tone-grass.png"],
     "raised": "tone-grass-raised.png"
+  },
+  "litterTop": {
+    "over": "over-litter-top.png",
+    "fill": "fill-litter-top.png"
   },
   "props": {
     "tree-broad": {

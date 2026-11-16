@@ -2618,16 +2618,6 @@
     "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-11.steps.json)",
     "sha256": "fe221ad77a164679446e23d5d1811035ebe7e48e680251331fdbe17320fd19e8"
   },
-  "wayup-cliff-grass.png": {
-    "commit": "704373a58",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-wayup/out/wayup-cliff-grass.png keyed",
-    "sha256": "e65c16493ff3bbafcfabde2055f3ae5d0c1472a113edc677365b3f3d7158ffb5"
-  },
-  "wayup-cliff-sand.png": {
-    "commit": "704373a58",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-wayup/out/wayup-cliff-sand.png keyed",
-    "sha256": "7fcc105bc2aec8e250a9ae90591b23f8ec755f2286abbace54bf48557689ec11"
-  },
   "tone-grass.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-tone.png sunlit (#5e9357 to #82b266)",

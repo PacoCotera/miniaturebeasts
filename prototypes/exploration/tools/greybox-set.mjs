@@ -68,8 +68,6 @@ for (const [c, bits] of Object.entries(BITS)) {
   });
   writePng(path.join(SET, `cliff-back-${c}.png`), img);
 }
-// the old way-up tiles (the unsigned dual-grid piece that stands in for the way up where the U is not drawn): the way colour
-for (const nme of ['wayup-cliff-grass', 'wayup-cliff-sand']) { const p = readPng(path.join(SET, nme + '.png')); writePng(path.join(SET, nme + '.png'), flat(p.w, p.h, () => COLOURS.way)); }
 
 // face 2: the table and the set's rects follow
 if (FACE === 2) {

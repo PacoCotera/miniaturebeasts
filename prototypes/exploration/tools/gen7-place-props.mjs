@@ -9,7 +9,7 @@ import { MW, MH, L } from '../src/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, bakeFails: 0, bakeMessages: [], unreachedCells: 0, unreachedRaisedOnly: 0,
+const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, bakeFails: 0, bakeMessages: [], unreachedCells: 0, unreachedRaisedOnly: 0, unreachedLand: 0, landWalledAt: [],
   centreWrong: 0, edges: 0, openNoRun: 0, changeNoCliff: 0, steps: 0, bandTiles: 0, bandWalkable: 0,
   cliffRuns: 0, cliffRunsUnder4: 0, cliffRunsUnder8: 0, cliffRunMin: 999, cliffRunMax: 0, cliffRunsOnCellEdge: 0, cliffTiles: 0, cliffTilesInRunsOver8: 0, runHist: {},
   cliffThin: 0, thinAt: [], loneAt: [], unreachedAt: [],
@@ -45,7 +45,7 @@ export function placeProps(seed) {
       for (const a of c.wayups) if (!wayups.some(b => b.x === a.x && b.y === a.y)) wayups.push({ x: a.x - cx0 * CW, y: a.y - cy0 * CH, w: a.w, h: a.h });
       // no 2 x 2 block breaks the pair table: at most three terrains, every two a pair of the set (over the cell and its apron)
       for (let y = 0; y + 1 < h; y++) for (let x = 0; x + 1 < w; x++) {
-        if (!blockOk([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]])) st.pairBreaks++;
+        if (!blockOk([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]]) && !c.wayups.some(a => c.x0 + x >= a.x - 1 && c.x0 + x <= a.x + a.w && c.y0 + y >= a.y - 1 && c.y0 + y <= a.y + a.h + 1)) st.pairBreaks++;   // the cut of a way up is drawn as path: the path meets it and the cliff beside it
       }
       // every tile of the cell sits in a 2 x 2 block of its own terrain
       for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
@@ -67,8 +67,9 @@ export function placeProps(seed) {
       const seen = new Uint8Array(CW * CH), q = [];
       for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if ((x === 0 || y === 0 || x === CW - 1 || y === CH - 1) && pass(x, y)) { seen[y * CW + x] = 1; q.push(y * CW + x); }
       for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const a = (q[k] % CW) + dx, b = ((q[k] / CW) | 0) + dy; if (a < 0 || b < 0 || a >= CW || b >= CH || seen[b * CW + a] || !pass(a, b)) continue; seen[b * CW + a] = 1; q.push(b * CW + a); }
-      let un = 0, onlyRaised = true; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (!seen[y * CW + x] && pass(x, y)) { un++; if (inner(x, y) !== TV.CLIFF) onlyRaised = false; }
-      if (un) { st.unreachedCells++; if (onlyRaised) st.unreachedRaisedOnly++; if (st.unreachedAt.length < 6) st.unreachedAt.push([X, Y, un, onlyRaised]); }
+      let un = 0, onlyRaised = true, onPath = 0; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (!seen[y * CW + x] && pass(x, y)) { un++; if (inner(x, y) !== TV.CLIFF) onlyRaised = false; if (inner(x, y) === TV.PATH) onPath++; }
+      // a walled part that holds no path is the land's (a pocket the levels leave, apart from the trail's line): listed, not the trail's to open (designer 2026-11-16)
+      if (un) { st.unreachedCells++; if (onlyRaised) st.unreachedRaisedOnly++; else if (!onPath) { st.unreachedLand++; st.landWalledAt.push([X, Y, un]); } else if (st.unreachedAt.length < 6) st.unreachedAt.push([X, Y, un, onPath]); }
       // the bake runs
       try { bakeIR(cellIR(seed, X, Y)); } catch (e) { st.bakeFails++; if (st.bakeMessages.length < 3) st.bakeMessages.push(e.message.slice(0, 200)); }
       // the map's cell level is the land's level at its centre; edges agree with the land (Rule 5.2)
