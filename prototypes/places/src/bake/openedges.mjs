@@ -6,7 +6,7 @@
 //           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
-import { EMPTY, FILL_CODE, hash32, splitCode } from '../dualgrid.mjs';
+import { EMPTY, FILL_CODE, NE, NW, SE, SW, hash32, splitCode } from '../dualgrid.mjs';
 import { rimOf } from './cliffrules.mjs';
 import { BLOCKS, PART, landOf, partAt } from './relief.mjs';
 
@@ -46,12 +46,12 @@ export function gullies(ir, terrains) {
 
 // Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
 // layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
-// `tone` is setload.layerDescriptors' tone ({ of, row, rowRaised }): the raised ground's own tone row.
+// `tone` is setload.layerDescriptors' tone ({ of, row, rowRaised }): the raised ground's own tone row. `litterTop` is its { over, fill } rows (the paler litter of a raised litter top), or null.
 // The cliff by "rim and face" (the rule maps, cliffrules.mjs): the south faces, the corner cells, the face ends and every side are painted pieces (decals), so the cliff layer draws only the raised ground and the back rim: a tile of a rim case
 // (3, 1, 2, 7, 11) keeps the old rim sheet's tile (no face variants: the face is not drawn from it), a tile of four raised cells is the raised ground, a side tile (5, 10) is the raised ground to the cell edge (the side cell
 // covers the low cell beside it), and every other edge tile (the south lip, the run ends, the inner corners) draws nothing: the pieces draw them.
 // Every raised tile that is no old rim keeps the cliff layer's fill, the raised meadow ground (fill-cliff.png), and takes the raised tone.
-export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
+export function applyOpenEdges(dg, ir, terrains, layers, tone = null, litterTop = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
   const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, rim = cliff ? rimOf(ir, landOf(ir, cinfo), isCliff) : null;
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
@@ -77,6 +77,25 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
         if (n > 0) layer.tiles[j * w1 + i] = ALT_CODE + 16 * rows.variants[n - 1] + corner;
       }
     }
+  }
+  // the litter top: a tile of the cliff's fill (four raised cells, or a side tile's two) draws the paler litter family (the litter layer's `top` kind, art-jobs/2026-11-16-top-ground-5) through the dual grid, the corners whose top ground is litter
+  // (four: its fill, one of three; one to three: the over case of those corners) in a layer drawn after the cliff's fill. Every other top ground keeps the cliff fill above, unchanged; no tint, blend or remap.
+  const lit = terrains.find((t) => t.id === 'litter'), cliffLayer = cliff && dg.layers.find((l) => l.terrain === cliff.value);
+  if (litterTop && lit && cliffLayer && ir.top) {
+    const tiles = new Uint16Array(cliffLayer.tiles.length).fill(EMPTY), strip = [1, 2, 1, 2, 1, 2, 1, 3];   // the fill's cells 1 to 3 (v0, v1, v2), weighted like the low litter fill: v0 and v1 common, v2 rare
+    const litAt = (x, y) => ir.top[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] === lit.value;
+    let any = false;
+    for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
+      const idx = j * w1 + i;
+      if (cliffLayer.tiles[idx] < FILL_CODE) continue;   // not the cliff's fill: a rim, an edge the pieces draw, or already empty
+      const cs = [[i - 1, j - 1, NW], [i, j - 1, NE], [i - 1, j, SW], [i, j, SE]].filter(([x, y]) => isCliff(x, y));   // the raised corners (a side tile has two: its fill covers the low cell beside it)
+      if (cs.length < 2) continue;
+      const mask = cs.reduce((m, [x, y, bit]) => m | (litAt(x, y) ? bit : 0), 0);
+      if (mask === 0) continue;
+      tiles[idx] = mask === cs.reduce((m, [, , bit]) => m | bit, 0) ? ALT_CODE + 16 * litterTop.fill + strip[vh(i, j) % strip.length] : ALT_CODE + 16 * litterTop.over + mask;
+      any = true;
+    }
+    if (any) { const at = dg.layers.findIndex((l) => l.tone); dg.layers.splice(at < 0 ? dg.layers.length : at, 0, { terrain: lit.value, tiles }); }
   }
   // the raised top is plain raised fill: no tone patch on a tile whose four cells are all cliff, until a painted tone exists (map-cut-1b; the sheet stays in the set, nothing draws it)
   const toneLayer = dg.layers.find((l) => l.tone);

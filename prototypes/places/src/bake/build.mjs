@@ -44,7 +44,7 @@ export function buildPlace(ir, ctx) {
   let dg;
   try {
     dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone, top: ir.top }, ctx.terrains, desc.layers, desc.tone);
-    applyOpenEdges(dg, ir, ctx.terrains, desc.layers, desc.tone);
+    applyOpenEdges(dg, ir, ctx.terrains, desc.layers, desc.tone, desc.litterTop);
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
     const cell = e.cell && e.cell.i !== undefined ? { x: Math.min(e.cell.i, ir.w - 1), y: Math.min(e.cell.j, ir.h - 1) } : e.cell || null;
