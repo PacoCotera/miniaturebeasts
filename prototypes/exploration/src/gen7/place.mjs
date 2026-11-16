@@ -75,6 +75,7 @@ function ctxOf(seed) {
   if (CTX.size > 3) CTX.clear();
   CTX.set(seed, S); return S;
 }
+export const contextOf = ctxOf;   // the per-seed context (the checks' tools read the realm's streams through it)
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 
 // the tile fields of one cell (24 x 28 values each), from the world's fields at tile scale
@@ -571,6 +572,7 @@ function windowOf(S, X, Y) {
   }
   // streams (F6, streams.mjs): each stretch of the realm's streams through the window's cells, port to port through the cell's bend point, 2-4 tiles of water by flow; then the realm's bridges over their rivers.
   // Raised land is never drawn over; the trail's brush that crosses a stream's water lays a ford (paint, below), and every stretch that runs through a place gets one more ford at its middle.
+  const snap = label => { if (globalThis.F6_SNAP) globalThis.F6_SNAP.push({ label, X, Y, t: t.slice(), W, H, gx0, gy0 }); };   // the debug tools read the window at a stage
   const streamMask = new Uint8Array(N), streamRuns = [], fallsSlots = [];
   { const sp = streamPieces(S);
     for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) for (const p of sp.get(cellIdx(X - HX + i, Y - HY + j)) || []) {
@@ -581,8 +583,25 @@ function windowOf(S, X, Y) {
         if (site) { foot = [site.x - i * CW, site.lip + 2 - j * CH]; up = 8; fallsSlots.push({ x: gx0 + site.x, y: gy0 + site.lip, w: 2, h: 1, held: site.held, run: site.run }); }
       }
       const tiles = drawStream(t, raised, streamMask, W, H, i * CW, j * CH, gx0, gy0, p, S.nP, foot, up); if (tiles) streamRuns.push({ p, tiles });
+      const st = globalThis.F6_STATS;   // the checks' hook (tools/f6-checks.mjs): each stretch's drawn length over the straight distance between its ends, once
+      if (st && tiles && tiles.length > 8 && p.in && p.out && !st.seen.has(p.c + p.fid)) { st.seen.add(p.c + p.fid); const a = tiles[0], b = tiles[tiles.length - 1], d = Math.abs(a % W - b % W) + Math.abs(((a / W) | 0) - ((b / W) | 0)), mid = tiles[tiles.length >> 1];
+        const slope = tiles.slope;
+        if (d > 0) st.routes.push({ len: tiles.length - 1, straight: d, slope }); }
     }
-    for (const br of bridgeList(S, (a, b) => portOff(S, a, b))) layBridge(t, W, H, gx0, gy0, br); }
+    // the banks: water meets only grass, sand, scree (the pairs), so what stands within a tile of a stream's water that is not one of them, and any thicket or scrub within two, is grass (else the passes bite the stream's rim)
+    { const bank = new Uint8Array(N);
+      for (let k = 0; k < N; k++) if (streamMask[k]) { const x0 = k % W, y0 = (k / W) | 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X2 = x0 + dx, Y2 = y0 + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const j = Y2 * W + X2, v = t[j];
+        if (v === TV.CLIFF || v === TV.WATER || v === TV.DEEP || v === TV.GRASS || v === TV.PATH) continue;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) <= 1 ? v !== TV.SAND && v !== TV.SCREE : v === TV.THICKET || v === TV.SCRUB) bank[j] = 1; } }
+      for (let k = 0; k < N; k++) if (bank[k]) t[k] = TV.GRASS;
+      // a bit of grass on the rim with no 2 x 2 block of grass would make its own block by biting the water in the passes (minFeature): the rim is smoothed here instead, such a bit becomes water (twice over)
+      for (let pass = 0; pass < 2; pass++) { const fill = [];
+        for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) { const k = y * W + x; if (t[k] !== TV.GRASS || !(streamMask[k - 1] || streamMask[k + 1] || streamMask[k - W] || streamMask[k + W])) continue;
+          let ok = false; for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) { const b = k + oy * W + ox; if (t[b] === TV.GRASS && t[b + 1] === TV.GRASS && t[b + W] === TV.GRASS && t[b + W + 1] === TV.GRASS) ok = true; }
+          if (!ok) fill.push(k); }
+        for (const k of fill) { t[k] = TV.WATER; streamMask[k] = 1; } } }
+    for (const br of bridgeList(S, (a, b) => portOff(S, a, b))) layBridge(t, W, H, gx0, gy0, br);
+    snap('streams'); }
   // trails: through each cell of the window, port to port (or to the cell's hub at a trail's end), by the same A* the region uses, painted with a 2 x 2 brush. Raised land takes no path (art slot).
   // a trail runs on ground you can walk: a route tile is open when the 4 x 4 tiles round its 2 x 2 brush hold no water, thicket or raised land; sand and scrub under it turn to grass and its brush to path,
   // so path never meets anything but grass
@@ -719,23 +738,13 @@ function windowOf(S, X, Y) {
     };
     for (const a of anchors) { const fx = a[0] - gx0, fy = a[1] - gy0; if (a[0] >= cx * CW && a[0] < cx * CW + CW && a[1] >= cy * CH && a[1] < cy * CH + CH) continue; if (fx < 1 || fy < 1 || fx >= W - 3 || fy >= H - 3) continue; paint(fx, fy, true); routeBox(fx, fy, ox + lx(a), oy + ly(a)); }
   }
-  // one more ford (F6): in the middle of every stretch of a stream that runs through a place, the stream's water within one tile of three tiles of its run becomes ford ground (2-3 tiles along, the stream's
-  // width across); the thicket and scrub two tiles round it clear to grass, so both banks walk. Never in the water of a river (only what a stream drew).
-  for (const { p, tiles } of streamRuns) {
-    if (!(p.in && p.out) || tiles.length < 6) continue;
-    const m = tiles.length >> 1, fordTiles = [];
-    { const x0 = tiles[m] % W, y0 = (tiles[m] / W) | 0, xa = tiles[m - 2] % W, ya = (tiles[m - 2] / W) | 0, xb = tiles[m + 2] % W, yb = (tiles[m + 2] / W) | 0, vertical = Math.abs(yb - ya) >= Math.abs(xb - xa);   // the run's direction at its middle
-      const len = 2 + (hash(seed, 'gen7', 'ford', p.c) & 1);   // 2 or 3 tiles along the stream, all of its width across
-      for (let u = 0; u < len; u++) for (let v = -4; v <= 4; v++) { const X2 = vertical ? x0 + v : x0 + u - 1, Y2 = vertical ? y0 + u - 1 : y0 + v; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2;
-        if (t[k] === TV.WATER && streamMask[k]) { t[k] = TV.FORD; fordTiles.push(k); } } }
-    for (const k of fordTiles) { const x0 = k % W, y0 = (k / W) | 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X2 = x0 + dx, Y2 = y0 + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const j = Y2 * W + X2; if (t[j] === TV.THICKET || t[j] === TV.SCRUB) t[j] = TV.GRASS; } }
-  }
+  snap('trail');
   // the set's pairs are all opaque (Rule 1.2-1.3): every 2 x 2 block holds at most two terrains and they must be a pair; the lesser gives way to grass. The 2 x 2 rule alternates
   // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge. The gates (openGates) are cut once the land has settled, and it settles again round them.
   const wuTile = new Set(); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const wx = x - gx0, wy = y - gy0; if (wx >= 0 && wy >= 0 && wx < W && wy < H) wuTile.add(wy * W + wx); }
   const settle = gate => { for (let round = 0; round < 60; round++) {
     let changed = 0;
-    { const before = t.slice(); minFeature(t, W, H, isCliff, isCliff, 4, true, lane); for (let k = 0; k < N; k++) if (t[k] !== before[k]) changed++; }
+    { const before = t.slice(); minFeature(t, W, H, isCliff, isCliff, 4, true, lane); for (let k = 0; k < N; k++) if (t[k] !== before[k]) changed++; } if (globalThis.F6_SNAP && !globalThis.F6_ONCE) snap("min" + round);
     for (let sweep = 0, n = 1; n && sweep < 200; sweep++) {   // sweeps to a fixed point: a chain along a boundary is followed at once
       n = 0;
       for (let j = 0; j <= H; j++) for (let i = 0; i <= W; i++) {
@@ -779,7 +788,7 @@ function windowOf(S, X, Y) {
   const offLane = () => { for (let k = 0; k < N; k++) if (t[k] === TV.PATH && !lane[k]) t[k] = TV.GRASS;
     const round = []; for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const k = y * W + x; if (lane[k] || t[k] !== TV.GRASS) continue; let n = 0; for (const d of [1, -1, W, -W]) if (t[k + d] === TV.PATH) n++; if (n >= 3) round.push(k); }
     for (const k of round) lane[k] = 1; };
-  settle(null); offLane(); fade(null);
+  settle(null); snap('settle1'); offLane(); fade(null); snap('fade1');
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   for (let k = 0; k < N; k++) if (gate[k] && t[k] === TV.PATH) lane[k] = 1;   // a gate's path is a lane of its trail
   if (gate.some(v => v)) { settle(gate); offLane(); fade(gate); }
@@ -823,6 +832,18 @@ function windowOf(S, X, Y) {
       if (ok || tries >= 6) break;
     }
     spurs.set(key, ok ? 'spur' : tries ? 'the passes do not keep a spur' : 'no route');
+  }
+  // one more ford (F6): in the middle of every stretch of a stream that runs through a place, the stream's water across 2 or 3 tiles of its run becomes ford ground (the stream's whole width across), laid last, on the
+  // settled land. What stands beside it that is no pair of the ford (sand, scree, thicket, scrub, litter, dry grass, turf) is grass, so both banks walk and no block is illegal. Only what a stream drew, never the water of a river.
+  for (const { p, tiles } of streamRuns) {
+    if (!(p.in && p.out) || tiles.length < 6) continue;
+    const m = tiles.length >> 1, fordTiles = [];
+    const x0 = tiles[m] % W, y0 = (tiles[m] / W) | 0, a = Math.max(0, m - 3), b = Math.min(tiles.length - 1, m + 3), dx = (tiles[b] % W) - (tiles[a] % W), dy = ((tiles[b] / W) | 0) - ((tiles[a] / W) | 0), dn = Math.hypot(dx, dy) || 1;   // the run's direction at its middle
+    const len = 2 + (hash(seed, 'gen7', 'ford', p.c) & 1);   // 2 or 3 tiles along the stream: the strip across it, of that thickness, through the run's middle
+    for (let v = -7; v <= 7; v++) for (let u = -7; u <= 7; u++) { const X2 = x0 + u, Y2 = y0 + v; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const along = (u * dx + v * dy) / dn; if (along < -len / 2 || along >= len / 2) continue; const k = Y2 * W + X2;
+      if (t[k] === TV.WATER && streamMask[k]) { t[k] = TV.FORD; fordTiles.push(k); } }
+    for (const k of fordTiles) { const fx = k % W, fy = (k / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = fx + dx, Y2 = fy + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const j = Y2 * W + X2, v = t[j];
+      if (v === TV.SAND || v === TV.SCREE || v === TV.THICKET || v === TV.SCRUB || v === TV.LITTER || v === TV.DRY || v === TV.TURF) t[j] = TV.GRASS; } }
   }
   return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, top: topsOf(t, recipe, W, H, pathTop) };
 }
@@ -958,7 +979,7 @@ function decorIR(seed, x0, y0, w, h) {
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
-function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null) {   // v: the realm's kind version, for what the cell's creatures are
+function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null, falls = []) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
@@ -981,7 +1002,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone,
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [],
-    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [] };
+    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [], falls };   // falls: the empty slot `falls`, 2 face columns each ({ x, y, w: 2, h: 1 } world tiles of the lip row)
 }
 // the bare tiles (sand, scree, leaf litter, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {
@@ -992,7 +1013,7 @@ function bareTiles(seed, X, Y) {
 // One cell for the bake: terrain with its one-tile apron.
 export function cellIR(seed, X, Y, v) {
   const c = cellTerrain(seed, X, Y);
-  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v, c.land);
+  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v, c.land, c.falls.map(f => ({ x: f.x - c.x0, y: f.y - c.y0, w: f.w, h: f.h })));
 }
 // A block of nx x ny cells as one picture (for the goldens): each cell's own tiles, side by side, with no apron. Equal to baking each cell with its apron.
 export function windowIR(seed, X0, Y0, nx, ny) {
@@ -1160,3 +1181,4 @@ export const presetOverview = (seed, ax, ay, bytes) => { if (OVERVIEWS.size > 6)
 export const hasOverview = (seed, ax, ay) => OVERVIEWS.has(seed + ':' + ax + ',' + ay);
 export const windowGaps = (seed, X, Y) => windowOf(ctxOf(seed), X, Y);   // the settled window with its gap tiles (`gaps`), for the gap measure (tools/place-walk-gaps.mjs)
 export { CW, CH, RW, RH };
+export { minFeature as __minFeature };

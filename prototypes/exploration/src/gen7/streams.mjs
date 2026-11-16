@@ -10,7 +10,7 @@ import { RW, CW, CH } from './world.mjs';
 import { portAt, route } from './region.mjs';
 
 export const G = { DEEP: 1, WATER: 2, GRASS: 6, CLIFF: 8, THICKET: 9, FORD: 20, BRIDGE: 21 };
-export const WANDER = 2.2;   // the A* wander of a stream on open ground (R16: drawn length over straight distance 1.1-1.4 on flat ground)
+export const WANDER = 2.2, WANDER_SLOPE = 0.15;   // the A* wander of a stream on open ground (R16: drawn length over straight distance 1.1-1.4 on flat ground)
 
 // the width classes: the flow terciles of the realm's streams (R5)
 export function flowClasses(re) {
@@ -63,13 +63,14 @@ export function drawStream(t, raised, mask, W, H, ox, oy, gx0, gy0, piece, nP, f
   if (pts.length < 2) return null;
   const GH = CH + up, g = pts.map(([x, y]) => [x, y + up]), wmax = Math.max(piece.wIn, piece.wOut), rn = (x, y) => ((oy - up + y) * W + ox + x);
   const near = (x, y, m) => { for (let dy = -m; dy <= m; dy++) for (let dx = -m; dx <= m; dx++) { const X = ox + x + dx, Y = oy - up + y + dy; if (X >= 0 && Y >= 0 && X < W && Y < H && raised[Y * W + X]) return true; } return false; };
+  const wander = near(piece.bend[0], piece.bend[1] + up, 8) ? WANDER_SLOPE : WANDER;   // R16: on a slope (raised land within 8 tiles of the bend) the stream runs straighter
   let all = null;
   for (const margin of [(wmax >> 1) + 2, 1, 0]) {
     all = [];
     let ok = true;
     for (let s = 0; s + 1 < g.length && ok; s++) {
       const a = g[s], b = g[s + 1], from = a[1] * CW + a[0], to = b[1] * CW + b[0];
-      const r = route(CW, GH, from, to, (c, n) => { const x = n % CW, y = (n / CW) | 0; if (n !== to && near(x, y, margin)) return null; const k = rn(x, y); return 1 + WANDER * (0.5 + 0.5 * nP(gx0 + ox + x, gy0 + oy - up + y)) + (t[k] === G.THICKET ? 2 : 0); });
+      const r = route(CW, GH, from, to, (c, n) => { const x = n % CW, y = (n / CW) | 0; if (n !== to && near(x, y, margin)) return null; const k = rn(x, y); return 1 + wander * (0.5 + 0.5 * nP(gx0 + ox + x, gy0 + oy - up + y)) + (t[k] === G.THICKET ? 2 : 0); });
       if (!r) ok = false; else all.push(...(s ? r.slice(1) : r));
     }
     if (ok) break;
@@ -91,6 +92,7 @@ export function drawStream(t, raised, mask, W, H, ox, oy, gx0, gy0, piece, nP, f
     }
     tiles.push(rn(x, y));
   }
+  tiles.slope = wander === WANDER_SLOPE;
   return tiles;
 }
 

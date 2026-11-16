@@ -19,7 +19,7 @@ import { landmarksOf, LM_PROP, LM_SLOT } from './landmarks.mjs';
 import { planOf, contentOf } from './places.mjs';
 
 const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
-const WALKT = new Uint8Array(16); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB]) WALKT[t] = 1;
+const WALKT = new Uint8Array(32); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, 20, 21]) WALKT[t] = 1;   // 20, 21: the ford and the bridge (F6)
 export const FIND_MEAN = 5.5;                                            // finds a place, the realm's average (today's templates)
 const KIND_SHARE = { pod: 1.35, fruit: 0.9, dew: 1.1, stone: 1.1, material: 0.35 };   // today's template mix, with 0.7 cups a cell from the spring's budget added to dew below
 const SPRING_CUPS = 0.7;
