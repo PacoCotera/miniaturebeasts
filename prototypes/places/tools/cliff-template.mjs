@@ -93,7 +93,7 @@ function steppedColumn(p, x, y0, yt, fallAt, opts = {}) {
 //   A: the courses step one whole course (16 px) per column, never per half row, with no lit ledge (no edge row on a course): each step lands on the next course joint, so the courses run level across the run
 //      and end against the slanted lip and foot, as bedding cut by the slope;
 //   B: one shaded side plane (the flank's shade tone, as a corner's side), no courses: the 2:1 halves' and middles' courses end against it as at a corner.
-// The 2:1 halves (start, end) stay as cliff-contour-2 drew them.
+// cliff-contour-4: the 2:1 halves (start, end) are drawn the same way (variant A).
 // A is kept (cliff-contour-3): the face stays one rock with the middles (rule 1, strata across columns) and carries texture at night; B leaves wide flat planes (seed 9: about 4 tiles) that read as a pasted panel.
 const STEEP_VARIANT = process.env.CLIFF_STEEP || 'A';
 function slopePixel(p, x, y, yt, y0, opts = {}) {
@@ -348,13 +348,10 @@ function wayHalf() {
 function diagonal(role) {
   const p = P(16, 112);
   const yt = (x) => 16 + (role === 'start' ? 6 + Math.round(x / 2) : role === 'mid' ? -2 + x : -2 + Math.round(x / 2));
-  const fall = (x) => (role === 'start' ? (x + 0.5) / 2 : role === 'mid' ? -8 + (x + 0.5) : -8 + (x + 0.5) / 2);
   // GD 11-15 fix-3 (2): a start piece leaves the west 3 px of the row above its lip alone: that is the side lip of the wall above (lip-side), which runs on down to the start's own lip, never cut off by a plain top
-  // cliff-contour-3: the 45-degree middle's lip and foot run on the slope line (slopeColumn); the 2:1 halves keep the stepped courses
-  for (let x = 0; x < 16; x++) {
-    if (role === 'mid') slopeColumn(p, x, 22, yt(x));
-    else steppedColumn(p, x, 22, yt(x), fall, { skip: (xx, y) => role === 'start' && xx < 3 && y < 16 });
-  }
+  // cliff-contour-3/4: the 45-degree middle and (cliff-contour-4, pixel lead and GD 11-16) the 2:1 halves too: the lip and the foot run on the slope line, the courses run level from the straight lip's joints
+  // (22 + 16 k, the same on every piece, so a 2:1 half and a 45-degree column carry the courses on through with no seam) and step a whole course where the slope has dropped one, with no lit ledge
+  for (let x = 0; x < 16; x++) slopeColumn(p, x, 22, yt(x), { skip: (xx, y) => role === 'start' && xx < 3 && y < 16 });
   return p;
 }
 
