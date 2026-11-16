@@ -198,16 +198,18 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
     if (oh) {
       const cand = [];
       for (let sy = destOverhang ? 3 : EDGE; sy <= h - 6; sy++) for (let sx = EDGE; sx <= w - 6; sx++) {
-        if (!(raised(sx + 1, sy - 1) && raised(sx + 2, sy - 1) && (FF.flags(x0 + sx + 1, y0 + sy) & 1) && (FF.flags(x0 + sx + 2, y0 + sy) & 1))) continue;   // the roof on the face
+        const FR = 3;   // the face is 3 rock rows under the lip (land-b3f-foot-1): the roof row is the last of them, the shelter starts on the foot row below
+        if (!(raised(sx + 1, sy - FR) && raised(sx + 2, sy - FR) && [0, 1, 2].every(k => (FF.flags(x0 + sx + 1, y0 + sy - k) & 1) && (FF.flags(x0 + sx + 2, y0 + sy - k) & 1)))) continue;   // the roof on the face
         let ok = true;
         for (let i = 0; i < 4 && ok; i++) for (let j = 1; j < 4; j++) { const x = sx + i, y = sy + j; if (!walk[I(x, y)] || lvl[I(x, y)] || plan.spine[I(x, y)] || (FF.flags(x0 + x, y0 + y) & 1)) ok = false; }
         if (!ok || !(dsp[I(sx + 1, sy + 1)] >= 3)) continue;
         // beside falls (F6, 2.6): the roof's south face run lies at least 4 tiles from the falls' two face columns
-        if (ct.falls && ct.falls.some(f => Math.max(Math.max(f.x - x0 - (sx + 2), sx + 1 - (f.x - x0 + 1), 0), Math.abs(f.y - y0 - (sy - 1))) < 4)) continue;
+        if (ct.falls && ct.falls.some(f => Math.max(Math.max(f.x - x0 - (sx + 2), sx + 1 - (f.x - x0 + 1), 0), Math.abs(f.y - y0 - (sy - FR))) < 4)) continue;
         // the roof row's own cells are the face (blocked); the rows below it keep the usual margins
         if (!rectOk(sx, sy + 1, 4, 3, 0, false, destOverhang ? 3 : EDGE)) continue;   // a destination that asks for the overhang may stand nearer the place's top, where the falls' face lies
         cand.push({ sx, sy, sc: Math.min(dent[I(sx + 1, sy + 1)], 14) + 4 * U('oh', sx, sy) });
       }
+      plan.overhangCandidates = cand.length;
       cand.sort((a, b) => b.sc - a.sc || a.sy - b.sy || a.sx - b.sx);
       if (cand.length) { const b = cand[0]; addSpot(instantiate(oh, b.sx, b.sy, { role: destOverhang ? 'heart' : 'spot', ...(destOverhang ? { tier: 0, dest: dest.kind } : {}), spineDist: +dsp[I(b.sx + 1, b.sy + 1)].toFixed(1), entryDist: +dent[I(b.sx + 1, b.sy + 1)].toFixed(1), candidates: cand.length })); }
     }

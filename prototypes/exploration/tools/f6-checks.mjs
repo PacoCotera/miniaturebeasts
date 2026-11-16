@@ -77,14 +77,21 @@ if (ST && P.contextOf) {
 // ---- bridges ----
 { let n = 0, laid = 0; for (const f of feats.filter(x => x.kind === 'bridge')) { n++; const c = f.cells[0], X = c % RW, Y = (c / RW) | 0, ct = P.cellTerrain(seed, X, Y); let b = 0; for (let i = 0; i < ct.terrain.length; i++) if (ct.terrain[i] === 21) b++; if (b >= 2) laid++; } S.bridges = n; S.bridgesLaid = laid; }
 // ---- C5: the destination's heart ----
-{ let asked = 0, got = 0, allowed = 0, allowedGot = 0; const miss = [];
+{ let asked = 0, got = 0, allowed = 0, allowedGot = 0, faceOnly = 0; const miss = [];
   for (const d of re.destinations || []) { if (d.heart !== 'overhang') continue; const X = d.c % RW, Y = (d.c / RW) | 0; if (X < 1 || Y < 1 || X >= RW - 1 || Y >= 99) continue; if (!cells.includes(d.c) && cells.length >= maxCells && !process.argv.includes('--allDest')) continue;
     const ct = P.cellTerrain(seed, X, Y), plan = PL.planOf(seed, X, Y); if (!plan) continue; asked++;
     const heart = plan.spots.find(s => s.role === 'heart'), ok = !!(heart && heart.id === 'overhang');
     // the walls give a face: two side by side raised tiles over low ground with raised land above (the overhang's roof), in the cell
     let face = false; const { terrain: T, w } = ct; for (let y = 3; y < CH - 4 && !face; y++) for (let x = 2; x < CW - 3 && !face; x++) { const r = (xx, yy) => T[yy * w + xx] === 8; if (r(x, y) && r(x + 1, y) && r(x, y - 1) && r(x + 1, y - 1) && !r(x, y + 1) && !r(x + 1, y + 1)) face = true; }
-    if (ok) got++; if (face) { allowed++; if (ok) allowedGot++; else if (miss.length < 10) miss.push(X + ',' + Y + ':' + d.kind); } }
-  S.c5Asked = asked; S.c5Got = got; S.c5Allowed = allowed; S.c5AllowedGot = allowedGot; S.c5Miss = miss; }
+    if (ok) got++; if (face) faceOnly++; if ((plan.overhangCandidates || 0) > 0) { allowed++; if (ok) allowedGot++; else if (miss.length < 10) miss.push(X + "," + Y + ":" + d.kind); } }
+  S.c5Asked = asked; S.c5FaceOnly = faceOnly; S.c5Got = got; S.c5Allowed = allowed; S.c5AllowedGot = allowedGot; S.c5Miss = miss; }
+// ---- R15: at least half of the 5 x 5 tiles round a heart or an outpost walk, at its own level ----
+{ let n = 0, ok = 0; const bad = [];
+  for (const c of cells.filter((_, i) => i % 3 === 0)) { const X = c % RW, Y = (c / RW) | 0, plan = PL.planOf(seed, X, Y); if (!plan) continue; const ct = P.cellTerrain(seed, X, Y), T = ct.terrain, w = ct.w;
+    const pts = []; const heart = plan.spots.find(s => s.role === 'heart'); if (heart) pts.push([heart.anchor[0], heart.anchor[1], 'heart']);
+    for (const t of P.cellIR(seed, X, Y).traces || []) if (t.kind === 'outpost') pts.push([t.x, t.y, 'outpost']);
+    for (const [px, py, kind] of pts) { const lv = T[py * w + px] === 8; let walk = 0, tot = 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const x = px + dx, y = py + dy; if (x < 0 || y < 0 || x >= w || y >= ct.h) continue; tot++; const v = T[y * w + x]; if (lv ? v === 8 : WALK.has(v)) walk++; } n++; if (walk * 2 >= 25) ok++; else if (bad.length < 8) bad.push(X + ',' + Y + ':' + kind + ' ' + walk + '/25'); } }
+  S.r15 = n; S.r15Ok = ok; S.r15Bad = bad; }
 // ---- C3: contour tiles within 7 tiles of the sector's level line ----
 if (P.sectorOf) { let tiles = 0, near = 0, far = 0, worst = 0;
   for (const c of cells.filter((_, i) => i % 2 === 0)) {
@@ -102,5 +109,6 @@ if (P.sectorOf) { let tiles = 0, near = 0, far = 0, worst = 0;
   S.c3Tiles = tiles; S.c3Within7Pct = tiles ? +(100 * near / tiles).toFixed(1) : null; S.c3Worst = worst; }
 // ---- R16: the stream's drawn length over the straight distance between its ports ----
 { const r = globalThis.F6_STATS.routes, flat = r.filter(q => !q.slope), slope = r.filter(q => q.slope), mean = a => a.length ? +(a.reduce((s, q) => s + q.len / q.straight, 0) / a.length).toFixed(2) : null; S.r16Flat = mean(flat); S.r16FlatN = flat.length; S.r16Slope = mean(slope); S.r16SlopeN = slope.length; }
+S.springs = globalThis.F6_STATS.springs || 0; S.springsKept = globalThis.F6_STATS.kept || 0; S.springsMoved = globalThis.F6_STATS.moved || 0; S.springsNoHollow = globalThis.F6_STATS.noHollow || 0;
 S.totalMs = Date.now() - t0;
 console.log(JSON.stringify({ seed, ...S }));

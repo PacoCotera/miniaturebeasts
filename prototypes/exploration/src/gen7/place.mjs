@@ -308,11 +308,11 @@ function fillPockets(t, W, H, gx0, gy0, island, gate) {
 // (a thicket mass, a lake), a gate 2 tiles wide is cut at the edge's port (the trail's tiles, region.mjs portOffset) and runs straight in on each side until it meets ground that walks, at most
 // GATE_DEPTH tiles; what it crosses turns to grass (raised land and deep water are never cut). It is a function of the world edge and the tiles round it, so both cells cut the same gate.
 const GATE_DEPTH = 14;
-function openGates(S, t, W, H, gx0, gy0, X, Y) {
+function openGates(S, t, W, H, gx0, gy0, X, Y, fordMask = null) {   // fordMask: the water a stream drew, which a gate crosses as ford ground (F6)
   const at = (gx, gy, a = t) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? -1 : a[y * W + x]; };
   const walkAt = (gx, gy, a = t) => { const v = at(gx, gy, a); return v === TV.GRASS || v === TV.SAND || v === TV.PATH || v >= TV.LITTER || v === TV.SCRUB || (v === TV.CLIFF && at(gx - 1, gy, a) === TV.CLIFF && at(gx + 1, gy, a) === TV.CLIFF && at(gx, gy - 1, a) === TV.CLIFF && at(gx, gy + 1, a) === TV.CLIFF); };
   const gate = new Uint8Array(W * H);
-  const put = (gx, gy, ground = TV.GRASS) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP || inlandOf(gx, gy) < COAST_REACH) return false; t[y * W + x] = ground; gate[y * W + x] = 1; return true; };
+  const put = (gx, gy, ground = TV.GRASS) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP || inlandOf(gx, gy) < COAST_REACH) return false; t[y * W + x] = fordMask && fordMask[y * W + x] && v === TV.WATER ? TV.FORD : ground; gate[y * W + x] = 1; return true; };
   const fordCell = (cx, cy, nx, ny) => { const g = (X, Y) => { const R = cellRegion(X, Y); return !!(R && R.ford[(Y % MH) * MW + (X % MW)]); }; return g(cx, cy) || g(nx, ny); };   // one of the two cells is a ford
   const tr = trailsOf(S), trailEdge =(cx, cy, nx, ny) => (tr.by.get(cx * 1000 + cy) || []).some(({ t: T, k }) => [T.cells[k - 1], T.cells[k + 1]].some(o => o && o[0] === nx && o[1] === ny));   // the realm's trails cross this edge
   const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
@@ -582,6 +582,15 @@ function windowOf(S, X, Y) {
         const site = fallsSite(raised, W, H, i * CW, j * CH, i * CW + p.in.off + (p.wIn >> 1), wayups, gx0, gy0);
         if (site) { foot = [site.x - i * CW, site.lip + 2 - j * CH]; up = 8; fallsSlots.push({ x: gx0 + site.x, y: gy0 + site.lip, w: 2, h: 1, held: site.held, run: site.run }); }
       }
+      // R13: a spring (a stream that rises on low ground, not out of a face or a ravine) rises in a hollow: the nearest tile within 7 of its bend with raised land on 3 of 4 sides within 2 tiles; none: it stays at its bend (counted)
+      if (!foot && p.source && !p.in && !p.drop) {
+        const ox = i * CW, oy = j * CH, hollow = (x, y) => { let n = 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) for (let r = 1; r <= 2; r++) { const X2 = ox + x + dx * r, Y2 = oy + y + dy * r; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H && raised[Y2 * W + X2]) { n++; break; } } return n >= 3; };
+        const [bx, by] = p.bend; let hit = null;
+        if (!raised[(oy + by) * W + ox + bx] && hollow(bx, by)) hit = [bx, by];
+        else for (let r = 1; r <= 7 && !hit; r++) for (let dy = -r; dy <= r && !hit; dy++) for (let dx = -r; dx <= r; dx++) { if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; const x = bx + dx, y = by + dy; if (x < 3 || y < 3 || x > CW - 4 || y > CH - 4 || raised[(oy + y) * W + ox + x] || t[(oy + y) * W + ox + x] === TV.WATER) continue; if (hollow(x, y)) { hit = [x, y]; break; } }
+        const st = globalThis.F6_STATS; if (st && !st.seen.has('spring' + p.c)) { st.seen.add('spring' + p.c); st.springs = (st.springs || 0) + 1; if (!hit) st.noHollow = (st.noHollow || 0) + 1; else if (hit[0] === bx && hit[1] === by) st.kept = (st.kept || 0) + 1; else st.moved = (st.moved || 0) + 1; }
+        if (hit) foot = hit;
+      }
       const tiles = drawStream(t, raised, streamMask, W, H, i * CW, j * CH, gx0, gy0, p, S.nP, foot, up); if (tiles) streamRuns.push({ p, tiles });
       const st = globalThis.F6_STATS;   // the checks' hook (tools/f6-checks.mjs): each stretch's drawn length over the straight distance between its ends, once
       if (st && tiles && tiles.length > 8 && p.in && p.out && !st.seen.has(p.c + p.fid)) { st.seen.add(p.c + p.fid); const a = tiles[0], b = tiles[tiles.length - 1], d = Math.abs(a % W - b % W) + Math.abs(((a / W) | 0) - ((b / W) | 0)), mid = tiles[tiles.length >> 1];
@@ -789,7 +798,7 @@ function windowOf(S, X, Y) {
     const round = []; for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const k = y * W + x; if (lane[k] || t[k] !== TV.GRASS) continue; let n = 0; for (const d of [1, -1, W, -W]) if (t[k + d] === TV.PATH) n++; if (n >= 3) round.push(k); }
     for (const k of round) lane[k] = 1; };
   settle(null); snap('settle1'); offLane(); fade(null); snap('fade1');
-  const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
+  const gate = openGates(S, t, W, H, gx0, gy0, X, Y, streamMask);
   for (let k = 0; k < N; k++) if (gate[k] && t[k] === TV.PATH) lane[k] = 1;   // a gate's path is a lane of its trail
   if (gate.some(v => v)) { settle(gate); offLane(); fade(gate); }
   const gaps = new Uint8Array(W * H);
