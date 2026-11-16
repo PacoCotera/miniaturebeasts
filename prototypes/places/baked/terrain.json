@@ -20,6 +20,8 @@
     { "id": "split-stone-ground", "name": "Split Stone ground (the heart's patch)", "value": 16, "z": 15, "play": "walk", "T": "GRASS", "editorColour": "#7c8794" },
     { "id": "bed-ground-top", "name": "Bed ground on a raised top (the heart's patch)", "value": 17, "z": 16, "play": "walk", "T": "GRASS", "editorColour": "#52753a" },
     { "id": "split-stone-ground-top", "name": "Split Stone ground on a raised top (the heart's patch)", "value": 18, "z": 17, "play": "walk", "T": "GRASS", "editorColour": "#7c8794" },
-    { "id": "path-top", "name": "Path on a raised top", "value": 19, "z": 18, "play": "walk", "T": "GRASS", "editorColour": "#c49a63" }
+    { "id": "path-top", "name": "Path on a raised top", "value": 19, "z": 18, "play": "walk", "T": "GRASS", "editorColour": "#c49a63" },
+    { "id": "ford-ground", "name": "Ford ground (shallow, walkable, across a stream)", "value": 20, "z": 19, "play": "walk", "T": "GRASS", "editorColour": "#a9a07a" },
+    { "id": "bridge", "name": "Bridge (a walkable run over a river)", "value": 21, "z": 20, "play": "walk", "T": "GRASS", "editorColour": "#8a6a3c" }
   ]
 }

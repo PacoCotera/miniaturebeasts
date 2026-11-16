@@ -127,7 +127,8 @@ export const GROUND_PAIRS = [
   ['grass', 'turf'], ['thicket', 'turf'], ['scrub', 'turf'], ['grass', 'scree'], ['sand', 'scree'], ['thicket', 'scree'], ['scrub', 'scree'], ['water', 'scree'],
   ['litter', 'drygrass'], ['litter', 'turf'], ['litter', 'scree'], ['scrub', 'litter'], ['drygrass', 'turf'], ['drygrass', 'scree'], ['turf', 'scree'],
   ['cliff', 'litter'], ['cliff', 'drygrass'], ['cliff', 'turf'], ['cliff', 'scree'],
-  ['path-top', 'grass'],   // a trail over a raised top: the path on the top's grass, drawn as the path until the pixel desk paints its own
+  ['path-top', 'grass'],
+  ['ford-ground', 'water'], ['ford-ground', 'deep'], ['ford-ground', 'grass'], ['ford-ground', 'path'], ['bridge', 'water'], ['bridge', 'deep'], ['bridge', 'grass'], ['bridge', 'path'],   // a ford and a bridge: walkable runs over water, drawn as the path until painted   // a trail over a raised top: the path on the top's grass, drawn as the path until the pixel desk paints its own
 ];
 
 // Returns { files: Map(name -> Buffer), images: Map(name -> image), layers: the set.json `layers` block, tone, pairs: GROUND_PAIRS, desk: the DESK.json entries } for the terrain layers.
@@ -169,6 +170,8 @@ export function deskLayers() {
     mud: { fill: { sheets: [place(SAND, 'layers/fill-mud.png', 'fill-mud.png')] }, over: [{ kind: 'flat', lowers: ['deep', 'water', 'earth', 'sand'], sheets: [place(SAND, 'layers/mud-over.png', 'over-mud.png')] }] },
     path: { fill: { sheets: [fillFrom(MEADOW2, 'layers/path-over.png', 'fill-path.png')] }, over: [{ kind: 'bank', lowers: ['deep', 'water'], sheets: [place(MEADOW2, 'layers/path-over.png', 'over-path.png')] }] },
     'path-top': { drawAs: 'path' },
+    'ford-ground': { drawAs: 'path' },
+    bridge: { drawAs: 'path' },
     grass: {
       fill: { sheets: [fillFrom(MEADOW1, 'layers/grass-over.png', 'fill-grass.png')] },
       over: [

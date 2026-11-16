@@ -74,7 +74,7 @@ test('a cell is the same land whatever else was made before it, and its picture 
   const page = JSON.parse(readFileSync(new URL('../art/gen7/layers.json', import.meta.url), 'utf8')), live = bakeCtx().layersOf.get('ninja-test'), val = new Map(bakeCtx().terrains.map(t => [t.id, t.value]));
   assert.deepEqual(page.layers, [...live.layers].map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: [...k.lowers] })) }]).map(([v, l]) => JSON.parse(JSON.stringify([v, l]))), 'art/gen7/layers.json is stale: run tools/gen7-layers.mjs');
   const drawnAs = v => { for (let l = page.layers.find(([x]) => x === v)[1]; l.drawAs !== undefined; l = page.layers.find(([x]) => x === v)[1]) v = l.drawAs; return v; };   // path-top is drawn as the path until its own layers are signed
-  assert.ok(SET.groundPairs.every(([a, b]) => [[a, b], [b, a]].some(([hi, lo]) => page.layers.find(([v]) => v === drawnAs(val.get(hi)))[1].kinds.some(k => k.lowers.includes(drawnAs(val.get(lo)))))), 'every pair of the table is drawable by the page\'s layers');
+  assert.ok(SET.groundPairs.every(([a, b]) => drawnAs(val.get(a)) === drawnAs(val.get(b)) || [[a, b], [b, a]].some(([hi, lo]) => page.layers.find(([v]) => v === drawnAs(val.get(hi)))[1].kinds.some(k => k.lowers.includes(drawnAs(val.get(lo)))))), 'every pair of the table is drawable by the page\'s layers');
   // a window of cells is each cell's own tiles side by side: its bake is the cells' bakes, tile for tile
   const win = windowIR(13, 35, 47, 2, 2);
   assert.equal(win.w, 2 * CW);

@@ -14,6 +14,7 @@ import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
 import { levelsOf, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
+import { streamPieces, drawStream, bridgeList, layBridge, fallsSite } from './streams.mjs';
 import { RULES } from './rules.mjs';
 import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
 import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' };
@@ -23,7 +24,7 @@ import { touchesRaised, partAt, PART } from '../../../places/src/bake/relief.mjs
 import { landmarksOf } from './landmarks.mjs';
 import { maskFn } from './places.mjs';
 
-export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 19 };   // PATHTOP: the path on a raised top (a value of `top`, never of the terrain: the tile stays cliff; drawn as the path)
+export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 19, FORD: 20, BRIDGE: 21 };   // FORD and BRIDGE: walkable ground over a stream and over a river (streams.mjs; drawn as the path until painted). PATHTOP: the path on a raised top (a value of `top`, never of the terrain: the tile stays cliff; drawn as the path)
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
 // and every two of them are such a pair
 // The table is the set's own: art/places/sets/ninja-test/set.json `groundPairs` (ids, through art/places/terrain.json's values), the one source; tools/gen7-layers.mjs refuses a pair the layers' `lowers` cannot draw and the
@@ -35,7 +36,7 @@ const PAIRS = new Set(SET.groundPairs.map(([a, b]) => (VALUE_OF[a] < VALUE_OF[b]
 // keeps one tile of grass between it and the rim, made on its side
 const CLIFF_LOWERS = new Set(SET.groundPairs.filter(p => p.includes('cliff')).map(p => VALUE_OF[p[0] === 'cliff' ? p[1] : p[0]]).filter(v => v !== TV.GRASS));
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
-const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 15: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0 };
+const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 15: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0, 20: 8, 21: 11 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
 // the terrains of one 2 x 2 block (an iterable of values, repeats allowed): at most three distinct, every two a legal pair
 export function blockOk(values) {
@@ -568,6 +569,20 @@ function windowOf(S, X, Y) {
     if (wu.x - 1 < gx0 || wu.x + 3 > gx0 + W || wu.y - 3 < gy0 || wu.y + 3 > gy0 + H || wayups.some(a => a.x === wu.x && a.y === wu.y)) continue;
     wayups.push({ x: wu.x, y: wu.y, w: wu.w, h: wu.h });
   }
+  // streams (F6, streams.mjs): each stretch of the realm's streams through the window's cells, port to port through the cell's bend point, 2-4 tiles of water by flow; then the realm's bridges over their rivers.
+  // Raised land is never drawn over; the trail's brush that crosses a stream's water lays a ford (paint, below), and every stretch that runs through a place gets one more ford at its middle.
+  const streamMask = new Uint8Array(N), streamRuns = [], fallsSlots = [];
+  { const sp = streamPieces(S);
+    for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) for (const p of sp.get(cellIdx(X - HX + i, Y - HY + j)) || []) {
+      // the falls (R12): where the stream comes out of a south face, its water starts under the 2 face columns of the straight run nearest its port (the slot `falls`); no run: it starts at its port
+      let foot = null, up = 0;
+      if (p.fromRaised && p.drop === 'falls' && p.in && p.in.side === 'n') {
+        const site = fallsSite(raised, W, H, i * CW, j * CH, i * CW + p.in.off + (p.wIn >> 1), wayups, gx0, gy0);
+        if (site) { foot = [site.x - i * CW, site.lip + 2 - j * CH]; up = 8; fallsSlots.push({ x: gx0 + site.x, y: gy0 + site.lip, w: 2, h: 1, held: site.held, run: site.run }); }
+      }
+      const tiles = drawStream(t, raised, streamMask, W, H, i * CW, j * CH, gx0, gy0, p, S.nP, foot, up); if (tiles) streamRuns.push({ p, tiles });
+    }
+    for (const br of bridgeList(S, (a, b) => portOff(S, a, b))) layBridge(t, W, H, gx0, gy0, br); }
   // trails: through each cell of the window, port to port (or to the cell's hub at a trail's end), by the same A* the region uses, painted with a 2 x 2 brush. Raised land takes no path (art slot).
   // a trail runs on ground you can walk: a route tile is open when the 4 x 4 tiles round its 2 x 2 brush hold no water, thicket or raised land; sand and scrub under it turn to grass and its brush to path,
   // so path never meets anything but grass
@@ -594,7 +609,7 @@ function windowOf(S, X, Y) {
   // the trail's lanes: every tile a brush has laid (each arm's 2 x 2 brush along its own line, the stems, the ports, the gates' path). The trail is their union and nothing else is path: the passes after the
   // drawing never make path outside a lane (f4 fix 8: a fork is its arms' lanes, never a blob the settle or the fade filled)
   const lane = new Uint8Array(N);
-  const paint = (x, y, clear) => { if (curTop && x >= 0 && y >= 0 && x < W && y < H && topFree[y * W + x]) { laidTop(x, y); return; } const R0 = 1; /* a lane of grass 1 tile each side: path meets grass only; a wider lane wiped the ground in the middle of trail cells */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush) lane[k] = 1; if (brush && v === TV.WATER && fordAt(gx0 + X2, gy0 + Y2)) t[k] = TV.GRASS; else if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
+  const paint = (x, y, clear) => { if (curTop && x >= 0 && y >= 0 && x < W && y < H && topFree[y * W + x]) { laidTop(x, y); return; } const R0 = 1; /* a lane of grass 1 tile each side: path meets grass only; a wider lane wiped the ground in the middle of trail cells */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush) lane[k] = 1; if (brush && v === TV.WATER && streamMask[k]) t[k] = TV.FORD; else if (brush && v === TV.WATER && fordAt(gx0 + X2, gy0 + Y2)) t[k] = TV.GRASS; else if (brush && v !== TV.WATER && v !== TV.FORD && v !== TV.BRIDGE && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || (v >= TV.LITTER && v <= TV.SCREE) || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };   // a trail over a stream's water is a ford (F6); the ford and the bridge are never laid over
   const stairBy = new Map(); for (const st of stairsOf(S)) stairBy.set(st.A[0] * 1000 + st.A[1] + (st.south ? 's' : 'e'), st);
   const blockedAt = (gx, gy, topOk) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blockedT[y * W + x] === 1 && !(topOk && topFree[y * W + x]); };
   const blockedAt2 = (gx, gy, topOk) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blocked2[y * W + x] === 1 && !(topOk && topFree[y * W + x]); };   // 2 tiles off cliff and water (a trail keeps 0 or 2+, never 1)
@@ -704,6 +719,17 @@ function windowOf(S, X, Y) {
     };
     for (const a of anchors) { const fx = a[0] - gx0, fy = a[1] - gy0; if (a[0] >= cx * CW && a[0] < cx * CW + CW && a[1] >= cy * CH && a[1] < cy * CH + CH) continue; if (fx < 1 || fy < 1 || fx >= W - 3 || fy >= H - 3) continue; paint(fx, fy, true); routeBox(fx, fy, ox + lx(a), oy + ly(a)); }
   }
+  // one more ford (F6): in the middle of every stretch of a stream that runs through a place, the stream's water within one tile of three tiles of its run becomes ford ground (2-3 tiles along, the stream's
+  // width across); the thicket and scrub two tiles round it clear to grass, so both banks walk. Never in the water of a river (only what a stream drew).
+  for (const { p, tiles } of streamRuns) {
+    if (!(p.in && p.out) || tiles.length < 6) continue;
+    const m = tiles.length >> 1, fordTiles = [];
+    { const x0 = tiles[m] % W, y0 = (tiles[m] / W) | 0, xa = tiles[m - 2] % W, ya = (tiles[m - 2] / W) | 0, xb = tiles[m + 2] % W, yb = (tiles[m + 2] / W) | 0, vertical = Math.abs(yb - ya) >= Math.abs(xb - xa);   // the run's direction at its middle
+      const len = 2 + (hash(seed, 'gen7', 'ford', p.c) & 1);   // 2 or 3 tiles along the stream, all of its width across
+      for (let u = 0; u < len; u++) for (let v = -4; v <= 4; v++) { const X2 = vertical ? x0 + v : x0 + u - 1, Y2 = vertical ? y0 + u - 1 : y0 + v; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2;
+        if (t[k] === TV.WATER && streamMask[k]) { t[k] = TV.FORD; fordTiles.push(k); } } }
+    for (const k of fordTiles) { const x0 = k % W, y0 = (k / W) | 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X2 = x0 + dx, Y2 = y0 + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const j = Y2 * W + X2; if (t[j] === TV.THICKET || t[j] === TV.SCRUB) t[j] = TV.GRASS; } }
+  }
   // the set's pairs are all opaque (Rule 1.2-1.3): every 2 x 2 block holds at most two terrains and they must be a pair; the lesser gives way to grass. The 2 x 2 rule alternates
   // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge. The gates (openGates) are cut once the land has settled, and it settles again round them.
   const wuTile = new Set(); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const wx = x - gx0, wy = y - gy0; if (wx >= 0 && wy >= 0 && wx < W && wy < H) wuTile.add(wy * W + wx); }
@@ -798,7 +824,7 @@ function windowOf(S, X, Y) {
     }
     spurs.set(key, ok ? 'spur' : tries ? 'the passes do not keep a spur' : 'no route');
   }
-  return { t, W, H, gx0, gy0, wayups, gaps, top: topsOf(t, recipe, W, H, pathTop) };
+  return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, top: topsOf(t, recipe, W, H, pathTop) };
 }
 
 // ---- the ground under raised land (amendment L): a raised tile's top is the biome's recipe ground there ----
@@ -848,7 +874,8 @@ export function cellTerrain(seed, X, Y) {
   // the land the cliff rules read: raised or not for the cell, its apron and LAND_M tiles more each side, from the same window, so a run's end, its steps and the faces of the rows above are found on the land, not on the baked cell
   const lw = w + 2 * LAND_M, lh = h + 2 * LAND_M, raised = new Uint8Array(lw * lh);
   for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = win.t[(oy - LAND_M + y) * win.W + ox - LAND_M + x] === TV.CLIFF ? 1 : 0;
-  const out = { x0, y0, w, h, terrain, top, wayups, land: { m: LAND_M, w: lw, h: lh, raised } };
+  const falls = win.falls.filter(f => f.x + f.w > X * CW && f.x < X * CW + CW && f.y >= Y * CH - 1 && f.y < Y * CH + CH + 1);   // the falls' two face columns (world tiles) that lie in this cell: the empty slot `falls` ([art])
+  const out = { x0, y0, w, h, terrain, top, wayups, falls, land: { m: LAND_M, w: lw, h: lh, raised } };
   if (CELLS.size > 4000) CELLS.clear();
   CELLS.set(key, out); return out;
 }
