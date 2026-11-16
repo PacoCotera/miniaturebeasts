@@ -188,9 +188,9 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 
 // ---- The expedition: outings, notches, the trip ----
 function ending(S, ex, reason = "home") {
-  const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 16,
+  const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], JUVENILE_TURNS: 2, ELDER_TURNS: 16,
     reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {}, emptyLead: () => null });
+    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, spOf: s => ({ ab: ({ 0: "calm", 1: "dig", 2: "nose", 7: "bank", 19: "sure" })[s] }), transition: () => {}, save: () => {}, emptyLead: () => null });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }
@@ -205,7 +205,7 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   assert.deepEqual(plain(S.trips.at(-1)), { v: 1, n: 5, partner: 1, places: ["meadow"], storm: false, carried: [1, 2, 3] });
   dot.bonded = true; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
   assert.equal(dot.notches, 1, "the bonded partner"); assert.equal(moss.notches, 0);
-  assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0 }, "named on End expedition as the outcome block's row, with no count");
+  assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0, ab: "calm", n: 1 }, "named on End expedition as the outcome block's row, with no count");
   assert.deepEqual(plain(S.report.lines), ["The world turned."], "never among the world lines");
   assert.deepEqual(plain(S.bay.at(-1).lines), ["The world turned."], "the crate keeps the world's lines only");
   moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
@@ -240,6 +240,12 @@ test("notch: already at 3 stays 3, no line", () => {
   S.exp = notchExp(1); ending(S, S.exp, "home");
   assert.equal(dot.notches, 3);
   assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
+});
+test("notch: a bonded Tuliko partner earns a notch (named by kind and count on the row); still 3 at most", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.sp = 19; dot.bonded = true; dot.notches = 2;
+  S.exp = notchExp(0); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 3); assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 19, ab: "sure", n: 3 });
+  S.exp = notchExp(0, { n: 6 }); ending(S, S.exp, "home"); assert.equal(dot.notches, 3, "never past three");
 });
 test("T5: a trip record without `carried` reads as [partner] on the Station; with it, every id", { skip: station("tripCarried") }, () => {
   assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: 2, places: [], storm: false }), [2]);
@@ -408,7 +414,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
 // ---- No count on the Companion (game designer, 16:24; the approved copy) ----
 test("no Companion line carries a skill count; the status line is exactly one listed line", () => {
   assert.ok(!/of 3'|\(' \+ \w+\.notches|skill ' \+/.test(PAGE), "no 'N of 3' and no skill number in any line");
-  assert.match(source("endExpedition"), /logEv\(CARE_TEXT\.notch\(w\.name\)\)/);
+  assert.match(source("endExpedition"), /logEv\(CARE_TEXT\.notch\(w\.name, spOf\(w\.sp\)\.ab, w\.notches\)\)/);
   const S = save({ carried: [1, 2, 3], lead: 2, turn: 3 }), t = world(S);
   const ctx = vm.createContext({ console, S, JUVENILE_TURNS: 2, ELDER_TURNS: 16, isDocked: () => false });
   const names = ["mibiById", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "partnerMibi", "activeStatus"];
@@ -603,7 +609,7 @@ test("the active screen: a page gone goes to the page now at that index, or the 
 function sealed(rep, lines, bay = 1) {
   const said = [], faces = [], crates = [], dots = [], noop = () => {};
   const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
-    NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x,
+    NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x, cutLine: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
     bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
   ctx.goalForms = () => "";

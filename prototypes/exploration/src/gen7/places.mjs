@@ -147,12 +147,12 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   const dsp = flood(spineTiles);
   plan.dent = dent; plan.dsp = dsp;
   // ---- 2. set pieces ----
-  const lm = landmarksOf(seed, D.hollowSites()).at.get(X + ',' + Y);
+  const lm = landmarksOf(seed, D, [[Math.floor(X / MW), Math.floor(Y / MH)]]).at.get(X + ',' + Y);
   const placed = [];   // rectangles [x, y, w, h] of the spots so far; plus what stands in the way
   const blocks = [];
   for (const a of wayups) blocks.push([a.x - 1, a.y - 1, a.w + 2, 5, 1]);
   const HO = RULES.props.hollow.keepOff.tree;
-  for (const s of D.hollowSites()) { const hx = s.x - x0, hy = s.y - y0; if (hx > -12 && hy > -12 && hx < w + 12 && hy < h + 12) blocks.push([hx - HO.left, hy - HO.up, HO.left + HO.right + 1, HO.up + HO.down + 1, 1]); }
+  for (const s of D.hollowSitesIn(x0 - 12, y0 - 12, x0 + w + 12, y0 + h + 12)) { const hx = s.x - x0, hy = s.y - y0; if (hx > -12 && hy > -12 && hx < w + 12 && hy < h + 12) blocks.push([hx - HO.left, hy - HO.up, HO.left + HO.right + 1, HO.up + HO.down + 1, 1]); }
   if (lm && lm.kind === 'reedpool') blocks.push([7, 9, 11, 12, 1]);
   if (lm && lm.kind === 'windstep') for (const a of wayups) blocks.push([a.x - 3, a.y - 5, a.w + 6, 5, 1]);
   const rectOk = (sx, sy, fw, fh, level, anyLevel = false, ey = EDGE) => {

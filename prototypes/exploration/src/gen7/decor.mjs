@@ -118,28 +118,53 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const lip = (x, y) => (flags(x, y) & 4) !== 0;
 
   // ---- the Hollow Tree: a site in each region of Woods or Tallwood, on a clearing of plain grass (nothing is drawn on the terrain here: the clearing is the absence of props) ----
-  let sites = presetSites;   // the Hollow Tree sites may be given (made off the page by src/realm-worker.mjs): a list of { x, y, slot }
   const CL = HO.clearing, clearing = (x, y) => { for (let dy = -CL.up; dy <= CL.down; dy++) for (let dx = -CL.left; dx <= CL.right; dx++) { { const tt = T(x + dx, y + dy); if ((!OPEN(tt) && tt !== LITTER) || flags(x + dx, y + dy) !== 0) return false; } } return true; };
-  const hollowSites = () => {
-    if (sites) return sites;
-    sites = [];
-    for (const s of land.slots) {
-      if (s.biome !== 'woods' && s.biome !== 'tallwood') continue;
-      const tx = Math.floor((s.x0 + s.x1) / 2) + ((H(seed, TAG.HOLLOW, s.ax, s.ay) % 161) - 80), ty = Math.floor((s.y0 + s.y1) / 2) + ((H(seed, TAG.HOLLOW + 1, s.ax, s.ay) % 221) - 110);
+  // A site is made per region slot, when first asked (it reads only its own slot: the search stays 8 tiles inside it) and kept in `siteCache` ('ax,ay' -> { x, y, slot } or null: a Woods region with no clearing).
+  // The cache may be given (the page and the worker share the one a seed has: place.mjs siteCacheOf), so a site made in one is not made again in the other.
+  const siteCache = presetSites || new Map(), slotAt = new Map(land.slots.map(s => [s.ax + ',' + s.ay, s]));
+  const isWoods = s => !!s && (s.biome === 'woods' || s.biome === 'tallwood');
+  const targetOf = s => [Math.floor((s.x0 + s.x1) / 2) + ((H(seed, TAG.HOLLOW, s.ax, s.ay) % 161) - 80), Math.floor((s.y0 + s.y1) / 2) + ((H(seed, TAG.HOLLOW + 1, s.ax, s.ay) % 221) - 110)];
+  // where a slot's site can stand, without searching for it: the box of the search's rings round the target, inside the slot's 8-tile margin; null for a slot with no Woods
+  const hollowReach = (ax, ay) => {
+    const s = slotAt.get(ax + ',' + ay); if (!isWoods(s)) return null;
+    const [tx, ty] = targetOf(s); return { x0: Math.max(s.x0 + 8, tx - 90), y0: Math.max(s.y0 + 8, ty - 90), x1: Math.min(s.x1 - 8, tx + 90), y1: Math.min(s.y1 - 8, ty + 90) };
+  };
+  const hollowSiteOf = (ax, ay) => {
+    const k = ax + ',' + ay, hit = siteCache.get(k); if (hit !== undefined) return hit;
+    const s = slotAt.get(k); let site = null;
+    if (isWoods(s)) {
+      const [tx, ty] = targetOf(s);
       let found = null;
-      for (let r = 0; r <= 90 && !found; r += 3) for (let k = 0; k < 8 * Math.max(r / 3, 1) && !found; k++) {   // rings round the target
-        const a = (2 * Math.PI * k) / (8 * Math.max(r / 3, 1)) + (H(seed, TAG.HOLLOW + 2, s.ax, s.ay) % 100) / 100, x = Math.round(tx + r * Math.cos(a)), y = Math.round(ty + r * Math.sin(a));
+      for (let r = 0; r <= 90 && !found; r += 3) for (let k2 = 0; k2 < 8 * Math.max(r / 3, 1) && !found; k2++) {   // rings round the target
+        const a = (2 * Math.PI * k2) / (8 * Math.max(r / 3, 1)) + (H(seed, TAG.HOLLOW + 2, s.ax, s.ay) % 100) / 100, x = Math.round(tx + r * Math.cos(a)), y = Math.round(ty + r * Math.sin(a));
         if (x < s.x0 + 8 || y < s.y0 + 8 || x > s.x1 - 8 || y > s.y1 - 8 || !clearing(x, y)) continue;
         found = { x, y };
       }
-      if (found) sites.push({ ...found, slot: [s.ax, s.ay] });
+      if (found) site = { ...found, slot: [s.ax, s.ay] };
     }
-    return sites;
+    siteCache.set(k, site); return site;
   };
+  // the sites of the slots a world box [x0, x1] x [y0, y1] touches (made if not yet), and of every slot, in the atlas's order
+  const hollowSitesIn = (x0, y0, x1, y1) => { const out = []; for (const s of land.slots) { if (s.x1 < x0 || s.x0 > x1 || s.y1 < y0 || s.y0 > y1) continue; const h = hollowSiteOf(s.ax, s.ay); if (h) out.push(h); } return out; };
+  const hollowSites = () => { const out = []; for (const s of land.slots) { const h = hollowSiteOf(s.ax, s.ay); if (h) out.push(h); } return out; };
+  // the sites made so far, as plain data to send: [{ slot, x, y }] or { slot, none: true }
+  const madeSites = () => { const out = []; for (const [k, h] of siteCache) out.push(h ? { slot: h.slot, x: h.x, y: h.y } : { slot: k.split(',').map(Number), none: true }); return out; };
   // the tiles other props keep off: the hollow tree's footprint (5 x 2) and two tiles round it; a crown (3 wide, 3 up) must keep two tiles from the tree's own box
+  const nearMemo = new Map();   // the sites of a tile's slot and the eight round it (a keep-off box never reaches further: the sites stand 8 tiles inside their slots), by slot
+  const sitesNear = (x, y) => {
+    const s = land.slots.find(t => x >= t.x0 && x <= t.x1 && y >= t.y0 && y <= t.y1); if (!s) return [];
+    const k = s.ax + ',' + s.ay, hit = nearMemo.get(k); if (hit) return hit;
+    const M = Math.max(...Object.values(HO.keepOff.tree), ...Object.values(HO.keepOff.other)), out = [];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (!slotAt.has((s.ax + dx) + ',' + (s.ay + dy))) continue;
+      if (dx || dy) { const r = hollowReach(s.ax + dx, s.ay + dy); if (!r || r.x1 + M < s.x0 || r.x0 - M > s.x1 || r.y1 + M < s.y0 || r.y0 - M > s.y1) continue; }   // a neighbour's tree that cannot stand within a keep-off box of this slot is not made for it
+      const h = hollowSiteOf(s.ax + dx, s.ay + dy); if (h) out.push(h);
+    }
+    nearMemo.set(k, out); return out;
+  };
   const hollowNear = (x, y, tree) => {
     const B = tree ? HO.keepOff.tree : HO.keepOff.other;
-    for (const h of hollowSites()) {
+    for (const h of sitesNear(x, y)) {
       if (x >= h.x - B.left && x <= h.x + B.right && y >= h.y - B.up && y <= h.y + B.down) return true;
     }
     return false;
@@ -379,7 +404,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     }
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (shrubAt(x, y)) out.push({ kind: SHRUBS[H(seed, TAG.SHRUB + 2, x, y) % SHRUBS.length], x, y, fam: 'shrubs', cluster: -2 });
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { const e = groundAt(x, y); if (e && e.prop) out.push({ kind: e.kinds[H(seed, TAG.GROUND + 2, x, y) % e.kinds.length], x, y, fam: 'ground', cluster: -4 }); }
-    for (const h of hollowSites()) if (h.x >= x0 && h.x <= x1 && h.y >= y0 && h.y <= y1) out.push({ kind: HOLLOW, x: h.x, y: h.y, fam: 'landmark', cluster: -1 });
+    for (const h of hollowSitesIn(x0, y0, x1, y1)) if (h.x >= x0 && h.x <= x1 && h.y >= y0 && h.y <= y1) out.push({ kind: HOLLOW, x: h.x, y: h.y, fam: 'landmark', cluster: -1 });
     return out.sort((a, b) => a.y - b.y || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));
   }
   // the tiles a prop of the list stands on (the hollow tree: five by two)
@@ -602,5 +627,5 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     return out;
   }
   const free = (fi, x, y) => stands(fi, x, y) && !earlier(fi, x, y);   // a tile this kind could take (what the table's density is counted on)
-  return { propsIn, decalsIn, reedsIn, reedClumpsIn, hollowSites, footprint, shoreCorner, stands, free, isLip: lip, flags, memberOf, grassTile, plain };
+  return { propsIn, decalsIn, reedsIn, reedClumpsIn, hollowSites, hollowSiteOf, hollowSitesIn, madeSites, hollowReach, hollowSlots: () => land.slots.filter(s => s.biome === 'woods' || s.biome === 'tallwood').map(s => [s.ax, s.ay]), footprint, shoreCorner, stands, free, isLip: lip, flags, memberOf, grassTile, plain };
 }
