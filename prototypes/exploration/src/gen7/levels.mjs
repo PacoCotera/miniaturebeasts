@@ -782,12 +782,14 @@ const siteRaisable = (noRaise, W, lx, ly) => { for (let y = ly - SITE_UP; y <= l
 // check compares on those cells (the windows centred on them and on their 4-neighbours) sees the whole pocket, with its 6-tile footprint, at least STAIR_RIM tiles in from that window's rim: then each of
 // them finds the same shut pocket and cuts the same stair. Else the pocket is left (listed as deferred), as a pocket too large for its cells is. Two seed 13 cases under land-rule smooth broke this: a low pocket
 // closing on one window's last raster row (open there) and a coast plateau reaching one window's rim ring; the other window cut a stair whose held rows reshaped tiles in the shared cell.
-const STAIR_RIM = 6, STAIR_REACH = 6;
+const STAIR_RIM = 2, STAIR_REACH = 4;   // the window's edge band (2 tiles); how far the cleanup carries a held tile's change
 function stairSeenBy(gx0, gy0, W, foot, WR) {
-  return (tiles, lx, ly) => {
+  // edit: the window tiles the edit sets [ex0, ey0, ex1, ey1] (a stair: its site; a fill: the pocket and its ring), or null for the stair at (lx, ly)
+  return (tiles, lx, ly, edit = null) => {
     let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of tiles) { const x = i % W, y = (i / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-    const fx0 = gx0 + Math.min(x0, lx) - 6, fx1 = gx0 + Math.max(x1, lx + SITE_W - 1) + 6, fy0 = gy0 + Math.min(y0, ly - SITE_UP) - 6, fy1 = gy0 + Math.max(y1, ly + foot) + 6;
-    const cx0 = Math.floor((gx0 + lx - STAIR_REACH) / CW), cx1 = Math.floor((gx0 + lx + SITE_W - 1 + STAIR_REACH) / CW), cy0 = Math.floor((gy0 + ly - SITE_UP - STAIR_REACH) / CH), cy1 = Math.floor((gy0 + ly + foot + STAIR_REACH) / CH);
+    const [ex0, ey0, ex1, ey1] = edit || [lx, ly - SITE_UP, lx + SITE_W - 1, ly + foot];
+    const fx0 = gx0 + Math.min(x0, ex0) - 6, fx1 = gx0 + Math.max(x1, ex1) + 6, fy0 = gy0 + Math.min(y0, ey0) - 6, fy1 = gy0 + Math.max(y1, ey1) + 6;
+    const cx0 = Math.floor((gx0 + ex0 - STAIR_REACH) / CW), cx1 = Math.floor((gx0 + ex1 + STAIR_REACH) / CW), cy0 = Math.floor((gy0 + ey0 - STAIR_REACH) / CH), cy1 = Math.floor((gy0 + ey1 + STAIR_REACH) / CH);
     // the windows centred on cx0 - 1 .. cx1 + 1 (rows cy0 .. cy1) and on cy0 - 1 .. cy1 + 1 (columns cx0 .. cx1) span cells c - WR .. c + WR
     return fx0 >= (cx1 + 1 - WR) * CW + STAIR_RIM && fx1 <= (cx0 + WR) * CW - 1 - STAIR_RIM && fy0 >= (cy1 + 1 - WR) * CH + STAIR_RIM && fy1 <= (cy0 + WR) * CH - 1 - STAIR_RIM;
   };
@@ -864,7 +866,16 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
         for (let y = 4; y < H - foot - 2; y++) { let n = 0, from = 0;
           for (let x = 1; x <= W - 1; x++) { const on = x < W - 1 && r[y * W + x] === 1 && r[(y + 1) * W + x] === 0 && cset.has((isRaised ? y - 1 : y + fr + 1) * W + x);
             if (on) { if (!n) from = x; n++; } else { if (n && (!best || n > best.n)) best = { x0: from, n, y }; n = 0; } } }
-        if (best && attempt < 2 && (c.n >= 6 || !isRaised)) { const xm = best.x0 + ((best.n - 2) >> 1); if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && stairSeen(c.tiles, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; } }
+        if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: best ${best ? `${best.x0 + gx0},${best.y + gy0} n${best.n}` : 'none'} attempt ${attempt}${best ? ` raisable ${siteRaisable(noRaise, W, best.x0 + ((best.n - 2) >> 1) - 2, best.y)} seen ${stairSeen(c.tiles, best.x0 + ((best.n - 2) >> 1) - 2, best.y)}` : ''}`);
+        let placed = false;
+        if (best && attempt < 2 && (c.n >= 6 || !isRaised)) { const xm = best.x0 + ((best.n - 2) >> 1); if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && stairSeen(c.tiles, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; placed = true; } }
+        // cliff-contour-2: a low pocket of up to 160 tiles that takes no seam-safe stair is filled (as a pit under 60 is), where every window the seam compares on the cells the fill sets sees it whole
+        if (!placed && !isRaised && c.n >= 60 && c.n < 160) {
+          const s = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const m = (y + dy) * W + x + dx; if (m >= 0 && m < W * H && !r[m]) s.add(m); } }
+          const blob = [...s]; let bx0 = W, by0 = H, bx1 = -1, by1 = -1; for (const i of blob) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+          if (blob.every(i => !noRaise[i] && !wblock[i] && !edge[i] && !lk[i]) && stairSeen(c.tiles, 0, 0, [bx0, by0, bx1, by1])) { for (const i of blob) r[i] = 1; info.filled.push(c.n); changed = true; }
+          else if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: no stair, not filled`);
+        }
       }
       if (again) break;
       if (!changed) break;
