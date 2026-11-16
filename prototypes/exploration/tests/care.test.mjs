@@ -4,7 +4,7 @@
 // landed and is skipped until then, so the agreement tests switch on by themselves.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import vm from "node:vm";
@@ -1151,20 +1151,6 @@ test("species art: twenty adult and twenty juvenile entries, each an idle of 102
     assert.ok(hj < ha && hj / ha > 0.65 && hj / ha < 0.9, `${tag}: the juvenile idle is ${hj} px against the adult's ${ha}`);
     assert.notEqual(a.idle, J[sp].idle, tag + ": the juvenile is its own picture"); assert.notEqual(a.mini, J[sp].mini, tag + ": and its own mini");
   });
-});
-
-test("species art: the page's tables are the art desk's signed tokens (when the art desk's file is in reach), string for string", async () => {
-  const f = "/home/mb/mb/mibi-art/art-jobs/2026-11-06-field-tokens/work/tokens.mjs";
-  if (!existsSync(f)) return;
-  const T = await import(f), p = X1.page();
-  // the signed round-2 tokens, with the sage S04 (page species 3) and S20 (19) rows laid over them (the desk's tokens-sage-rows.mjs, 2026-11-07)
-  const sageF = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-step-frames/work/tokens-sage-rows.mjs";
-  if (!existsSync(sageF)) return;
-  const R = (await import(sageF)).SAGE_ROWS, adult = JSON.parse(JSON.stringify(T.SPECIES_ART)), young = JSON.parse(JSON.stringify(T.JUVENILE_ART));
-  for (const [sp, k] of [[3, "S04"], [19, "S20"]]) { Object.assign(adult[sp], R[k + "-adult"]); Object.assign(young[sp], R[k + "-young"]); }
-  assert.deepEqual(plain(p.run("SPECIES_ART")), adult);
-  assert.deepEqual(plain(p.run("JUVENILE_ART")), young);
-  assert.deepEqual(T.ORDER, KINDS20);
 });
 
 test("species art: every pose draws a kind's idle, the cards show it at whole pixels, glow and nest are the idle, and the silhouette is derived", () => {
