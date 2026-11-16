@@ -610,14 +610,24 @@ function fixGaps(r, W, H, rule, lk, noRaise) {
 export const BUMP_MAX = 4, BUMP_READ = 8, BUMP_WHY = { done: 0, held: 0, viol: 0, cap: 0 };   // BUMP_WHY: the tools' count of what the pass did and why it left a strip
 let BUMPS_ON = true;
 export const setBumps = (on) => { BUMPS_ON = !!on; GEN++; };   // the tools: the land with the pass off (before / after counts)
-function flattenBumps(r, W, H, rule, lk, noRaise) {
+// Every strip is judged on the land as the pass found it (a snapshot), never on another strip's edit, so no chain of edits carries a difference in from a window's ring (the seam); the edits are then made
+// together, and one whose box fails more shape checks than the snapshot's did (two edits side by side) is undone.
+// Every read a decision makes lies inside one cell (the cell's tiles are the same in every window that shows it at or next to its middle; a window's outer ring of cells may differ from the true land,
+// even a few tiles from the cells it shares: the seam), so a strip whose reads would cross a cell edge is left.
+function flattenBumps(rOut, W, H, rule, lk, noRaise, gx0, gy0) {
   if (!BUMPS_ON) return 0;
-  const R =(x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]); let n = 0;
-  // the straight run of edge tiles through (x, y) that face (ox, oy) (raised, the tile that way low), along the edge
-  // every read of the pass stays within BUMP_READ tiles of the strip (a window's ring may differ from the true land further out: the seam), so a run that goes on past that is taken as over its cap
-  const runAt = (x, y, ox, oy, k0) => { const ax = oy ? 1 : 0, ay = ox ? 1 : 0, is = (a, b) => R(a, b) === 1 && R(a + ox, b + oy) === 0; if (!is(x, y)) return 0;
-    let k = 1, t = 1; for (; t <= k0 + BUMP_READ && is(x + t * ax, y + t * ay); t++) k++; if (t > k0 + BUMP_READ) return 1e9;
-    for (t = 1; t <= BUMP_READ + 1 && is(x - t * ax, y - t * ay); t++) k++; if (t > BUMP_READ + 1) return 1e9; return k; };
+  const r = rOut.slice(), R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]), acc = [], fr = footRoom(rule.faceRows); let n = 0;
+  let cx0 = 0, cy0 = 0, cx1 = 0, cy1 = 0;   // the cell the current strip's reads must stay in (window tiles)
+  const inCell = (x, y) => x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1;
+  // the shape checks an edit of the tiles T can change: violAt of every tile that reads one of them (1 column each side, footRoom rows above, 2 below); and what those checks read (2 columns, 2 rows above,
+  // footRoom below): null when that leaves the cell
+  const boxOf = T => { let a = 1e9, b = 1e9, c = -1, d = -1; for (const [i] of T) { const x = i % W, y = (i / W) | 0; if (x < a) a = x; if (x > c) c = x; if (y < b) b = y; if (y > d) d = y; }
+    const box = [a - 1, b - fr, c + 1, d + 2]; return inCell(box[0] - 1, box[1] - 2) && inCell(box[2] + 1, box[3] + fr) ? box : null; };
+  const count = (arr, box) => { let s = 0; for (let y = box[1]; y <= box[3]; y++) for (let x = box[0]; x <= box[2]; x++) s += violAt(arr, W, H, x, y, rule.faceRows); return s; };
+  // the straight run of edge tiles through (x, y) that face (ox, oy) (raised, the tile that way low), along the edge; a run that reaches the cell's edge is taken as over its cap
+  const runAt = (x, y, ox, oy) => { const ax = oy ? 1 : 0, ay = ox ? 1 : 0, is = (a, b) => R(a, b) === 1 && R(a + ox, b + oy) === 0; if (!is(x, y)) return 0;
+    let k = 1, t = 1; for (; is(x + t * ax, y + t * ay); t++) { if (!inCell(x + t * ax + ox, y + t * ay + oy) || !inCell(x + (t + 1) * ax, y + (t + 1) * ay)) return 1e9; k++; }
+    for (t = 1; is(x - t * ax, y - t * ay); t++) { if (!inCell(x - t * ax + ox, y - t * ay + oy) || !inCell(x - (t + 1) * ax, y - (t + 1) * ay)) return 1e9; k++; } return k; };
   const capOf = (ox, oy) => (ox ? CAP.side : oy > 0 ? CAP.south : CAP.rim);
   for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
     const v = r[y * W + x], ax = oy ? 1 : 0, ay = ox ? 1 : 0; if (R(x - ax, y - ay) === v) continue;
@@ -625,30 +635,37 @@ function flattenBumps(r, W, H, rule, lk, noRaise) {
     if (k < 1 || k > BUMP_MAX || R(x + k * ax, y + k * ay) !== 1 - v) continue;
     let ok = true; for (let j = -1; j <= k && ok; j++) if (R(x + j * ax - ox, y + j * ay - oy) !== v) ok = false;
     if (!ok) continue;
+    { const X = Math.floor((gx0 + x) / CW), Y = Math.floor((gy0 + y) / CH); cx0 = X * CW - gx0; cy0 = Y * CH - gy0; cx1 = cx0 + CW - 1; cy1 = cy0 + CH - 1; }
+    if (!inCell(x - ax - Math.abs(ox), y - ay - Math.abs(oy)) || !inCell(x + k * ax + Math.abs(ox), y + k * ay + Math.abs(oy))) { BUMP_WHY.edge = (BUMP_WHY.edge || 0) + 1; continue; }
     // the edits tried, in order: the strip turned to the other level (a bump cut, a notch filled: the edge runs straight past it), else the strip carried on along the edge, forward then back, by 1 to
     // BUMP_MAX tiles of its own level (it then meets the next turn, a corner or another step, and its out-and-back becomes one step)
     const strip = []; for (let j = 0; j < k; j++) strip.push([(y + j * ay) * W + x + j * ax, 1 - v]);
     const tries = [strip];
     for (const dir of [1, -1]) for (let m = 1; m <= BUMP_MAX; m++) { const t = []; for (let j = 0; j < m; j++) { const jj = dir > 0 ? k + j : -1 - j; t.push([(y + jj * ay) * W + x + jj * ax, v]); } tries.push(t); }
-    const x0 = x - 1 - BUMP_MAX * ax, y0 = y - 1 - BUMP_MAX * ay, x1 = x + (k + BUMP_MAX) * ax + 1, y1 = y + (k + BUMP_MAX) * ay + 1;
-    DBGV.length = 0; const before = violBox(r, W, H, x0, y0, x1, y1, rule.faceRows); let done = false, why = null;
+    let done = false, why = null;
     for (const t of tries) {
       if (t.some(([i, to]) => i < 0 || i >= W * H || (lk && lk[i]) || (to === 1 && noRaise[i]) || r[i] === to)) { why = why || 'held'; continue; }
+      const box = boxOf(t); if (!box) { why = why || 'edge'; continue; }
+      DBGV.length = 0; const before = count(r, box);
       for (const [i, to] of t) r[i] = to;
       // the edge a cut or fill leaves: a bump cut leaves the tiles behind it facing out; a notch filled leaves the strip itself facing back (a carried strip makes no longer run than was there)
       const ex = v ? x - ox : x, ey = v ? y - oy : y, fx = v ? ox : -ox, fy = v ? oy : -oy;
       DBGV.length = 0;
       // a carried strip must end the out-and-back: past its new end the edge turns (a corner or a step), it does not come back to the line (that would only be a longer bump)
-      let back = false; if (t !== strip) { const dir = t[0][0] === (y + k * ay) * W + x + k * ax ? 1 : -1; let j = dir > 0 ? k : -1, steps = 0; while (steps++ <= BUMP_READ && R(x + j * ax, y + j * ay) === v && R(x + j * ax + ox, y + j * ay + oy) === 1 - v) j += dir;
-        back = R(x + j * ax, y + j * ay) === 1 - v && R(x + j * ax - ox, y + j * ay - oy) === v; }
-      const vb = violBox(r, W, H, x0, y0, x1, y1, rule.faceRows) > before, cp = back || (t === strip && runAt(ex, ey, fx, fy, k) > capOf(fx, fy));
-      if (!vb && !cp) { done = true; break; }
+      let back = false; if (t !== strip) { const dir = t[0][0] === (y + k * ay) * W + x + k * ax ? 1 : -1; let j = dir > 0 ? k : -1;
+        while (inCell(x + j * ax + ox, y + j * ay + oy) && inCell(x + j * ax - ox, y + j * ay - oy) && R(x + j * ax, y + j * ay) === v && R(x + j * ax + ox, y + j * ay + oy) === 1 - v) j += dir;
+        back = !inCell(x + j * ax + ox, y + j * ay + oy) || !inCell(x + j * ax - ox, y + j * ay - oy) || (R(x + j * ax, y + j * ay) === 1 - v && R(x + j * ax - ox, y + j * ay - oy) === v); }
+      const vb = count(r, box) > before, cp = back || (t === strip && runAt(ex, ey, fx, fy) > capOf(fx, fy));
       for (const [i, to] of t) r[i] = 1 - to;
+      if (!vb && !cp) { done = true; acc.push({ t, box, before }); break; }
       if (!why || why === 'held') why = vb ? 'viol' : 'cap';
     }
-    if (!done) { BUMP_WHY[why || 'held']++; continue; }
-    n++; BUMP_WHY.done++;
+    if (!done) BUMP_WHY[why || 'held']++;
   }
+  // the edits made together (in raster order; one whose tiles another has changed already is passed over), then each checked on the result
+  const made = [];
+  for (const e of acc) { if (e.t.some(([i]) => rOut[i] !== r[i])) { BUMP_WHY.clash = (BUMP_WHY.clash || 0) + 1; continue; } for (const [i, to] of e.t) rOut[i] = to; made.push(e); }
+  for (const e of made) { DBGV.length = 0; if (count(rOut, e.box) > e.before) { for (const [i, to] of e.t) rOut[i] = 1 - to; BUMP_WHY.undone = (BUMP_WHY.undone || 0) + 1; } else { n++; BUMP_WHY.done++; } }
   return n;
 }
 // what the held sites, the jogs and the pockets leave at their edges (a sliver, a pinch, a lone face, a short foot): a tile is flipped (never a held one) when that leaves fewer failing checks round it; at most 8 rounds
@@ -904,7 +921,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
