@@ -121,6 +121,8 @@ function stairsOf(S) {
   return (S.stairs = out);
 }
 export const stairsInfo = seed => stairsOf(ctxOf(seed));
+// the feet of the trail's ways up the places made so far, by 'x,y' of the way up: 'trail' (the trail's path reaches it), 'spur' (a spur joins it), else why neither does (the tools list them)
+export const footSpurs = seed => ctxOf(seed).spurs || new Map();
 
 // ---- trails: the realm's one network (roads.mjs), drawn through each cell's ports with a 2 x 2 brush ----
 // Each list of world cells is a stretch of trail; a cell's drawing joins every neighbour any list takes it to (a bend between two ports, a fork between more).
@@ -183,7 +185,7 @@ function majority(a, W, H, passes) {
   }
 }
 // minimum feature size 2 x 2 (Rule 1.9): a tile that belongs to no 2 x 2 block of its own terrain takes the most common terrain among its four neighbours
-function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8, toGrass = false) {
+function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8, toGrass = false, lane = null) {   // lane: where path may be (a grass bit never turns to path outside the trail's lanes)
   const cnt = new Int16Array(16), at = (src, x, y) => src[clamp(y, 0, H - 1) * W + clamp(x, 0, W - 1)];
   for (let p = 0; p < passes; p++) {
     const src = a.slice(); let changed = 0;
@@ -200,7 +202,7 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
         for (let oy = -1; oy <= 0 && !held; oy++) for (let ox = -1; ox <= 0 && !held; ox++) if (at(a, x + ox, y + oy) === v && at(a, x + ox + 1, y + oy) === v && at(a, x + ox, y + oy + 1) === v && at(a, x + ox + 1, y + oy + 1) === v) held = true;
         if (held) continue;
         cnt.fill(0); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const u = at(a, x + dx, y + dy); if (u !== v && !never(u)) cnt[u]++; }
-        let best = -1, bc = 0; for (let u = 1; u < 16; u++) if (cnt[u] > bc) { best = u; bc = cnt[u]; }
+        let best = -1, bc = 0; for (let u = 1; u < 16; u++) if (cnt[u] > bc && !(u === TV.PATH && lane && !lane[y * W + x])) { best = u; bc = cnt[u]; }
         if (best >= 0) {
           a[y * W + x] = best;
           let legal = true, own = false;
@@ -470,7 +472,10 @@ function windowOf(S, X, Y) {
   const fordMemo = new Map(), fordAt = (gx, gy) => { const cx = (gx / CW) | 0, cy = (gy / CH) | 0, key = cx * 1000 + cy; let r = fordMemo.get(key); if (r === undefined) { const G = S.R.regions[((cy / MH) | 0) * ATLAS + ((cx / MW) | 0)], c = (cy % MH) * MW + (cx % MW); r = !!(G && G.ford[c]); fordMemo.set(key, r); } return r; };
   // a ford is walkable shallow ground: the brush laid on the water of a ford cell is grass (water meets grass), so the trail's two ends are joined across it
   let curTop = false;   // the cell being drawn is a raised cell: its trail may lie on a free top
-  const paint = (x, y, clear) => { if (curTop && x >= 0 && y >= 0 && x < W && y < H && topFree[y * W + x]) { laidTop(x, y); return; } const R0 = 1; /* a lane of grass 1 tile each side: path meets grass only; a wider lane wiped the ground in the middle of trail cells */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush && v === TV.WATER && fordAt(gx0 + X2, gy0 + Y2)) t[k] = TV.GRASS; else if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
+  // the trail's lanes: every tile a brush has laid (each arm's 2 x 2 brush along its own line, the stems, the ports, the gates' path). The trail is their union and nothing else is path: the passes after the
+  // drawing never make path outside a lane (f4 fix 8: a fork is its arms' lanes, never a blob the settle or the fade filled)
+  const lane = new Uint8Array(N);
+  const paint = (x, y, clear) => { if (curTop && x >= 0 && y >= 0 && x < W && y < H && topFree[y * W + x]) { laidTop(x, y); return; } const R0 = 1; /* a lane of grass 1 tile each side: path meets grass only; a wider lane wiped the ground in the middle of trail cells */ for (let dy = -R0; dy <= 1 + R0; dy++) for (let dx = -R0; dx <= 1 + R0; dx++) { const X2 = x + dx, Y2 = y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) continue; const k = Y2 * W + X2, v = t[k], brush = dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1; if (brush) lane[k] = 1; if (brush && v === TV.WATER && fordAt(gx0 + X2, gy0 + Y2)) t[k] = TV.GRASS; else if (brush && v !== TV.WATER && (clear || v !== TV.THICKET) && v !== TV.CLIFF) t[k] = TV.PATH; else if (!brush && (v === TV.SAND || v === TV.SCRUB || v >= TV.LITTER || (clear && v === TV.THICKET))) t[k] = TV.GRASS; } };
   const stairBy = new Map(); for (const st of stairsOf(S)) stairBy.set(st.A[0] * 1000 + st.A[1] + (st.south ? 's' : 'e'), st);
   const blockedAt = (gx, gy, topOk) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blockedT[y * W + x] === 1 && !(topOk && topFree[y * W + x]); };
   const blockedAt2 = (gx, gy, topOk) => { const x = gx - gx0, y = gy - gy0; return x < 0 || y < 0 || x >= W || y >= H ? false : blocked2[y * W + x] === 1 && !(topOk && topFree[y * W + x]); };   // 2 tiles off cliff and water (a trail keeps 0 or 2+, never 1)
@@ -541,20 +546,31 @@ function windowOf(S, X, Y) {
       junction = null;
       for (const bm of [bk2, bk]) if (!junction) for (const sd of [h2 & 1 ? 1 : -1, h2 & 1 ? -1 : 1]) for (let d = 3 + ((h2 >>> 4) % 4), k = 0; k < 4 && !junction; k++, d = d > 3 ? d - 1 : d) { const bx = clamp(mx + (horiz ? 0 : sd * d), 3, CW - 4), by = clamp(my + (horiz ? sd * d : 0), 3, CH - 4); if (!bm[wAt(bx, by)]) junction = [cx * CW + bx, cy * CH + by]; }
     }
-    const routeTo = (a, b) => {
+    // the lines laid in this cell (route tiles, cell-local): an arm after the first ends where it first comes within 3 tiles of one (two lines 3 apart leave a strip of grass one tile wide between
+    // their lanes), joined by the brushes straight across to it, so two arms meet and never run side by side (side by side, two 2-wide lanes made a 4-wide blob at every fork)
+    const laid = new Uint8Array(CW * CH), JOIN = 3;
+    const nearLaid = c => { const x = c % CW, y = (c / CW) | 0; for (let r = 0; r <= JOIN; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue; const X2 = x + dx, Y2 = y + dy; if (X2 >= 0 && Y2 >= 0 && X2 < CW && Y2 < CH && laid[Y2 * CW + X2]) return Y2 * CW + X2; } return -1; };
+    const routeTo = (a, b, join = false) => {
       const from = ly(a) * CW + lx(a), to = ly(b) * CW + lx(b);
       for (const tier of [-1, 0, 1, 2, 3]) {   // -1: open ground 2 tiles off cliff and water (a trail keeps 0 or 2+ tiles from them, never 1); 0: open ground; 1: may clear thicket; 2: a narrow neck (a shore pinch): only the 2 x 2 brush must be dry and clear of raised land; 3: the last resort, water crossed at a high cost (the brush is never laid on water)
         const clear = tier > 0, bl = tier === 3 ? bkC : tier === 2 ? bkB : clear ? bkT : tier === -1 ? bk2 : bk;
         const cost = (c, n) => { const w = wAt(n % CW, (n / CW) | 0); return bl[w] && n !== to ? null : 1 + 0.7 * (0.5 + 0.5 * S.nP(gx0 + w % W, gy0 + ((w / W) | 0))) + (ground[w] === TV.SAND ? 0.5 : 0) + 3 * rough[w] + (clear && bk[w] ? 4 : 0) + (tier === 3 && bkB[w] ? 12 : 0); };
-        const r = route(CW, CH, from, to, cost);
-        if (r) { for (const c of r) paint(ox + (c % CW), oy + ((c / CW) | 0), clear); return true; }
+        let r = route(CW, CH, from, to, cost);
+        if (r) {
+          if (join) for (let i = 0; i < r.length; i++) { const m = nearLaid(r[i]); if (m < 0) continue;
+            let x = r[i] % CW, y = (r[i] / CW) | 0; const mx = m % CW, my = (m / CW) | 0; r = r.slice(0, i + 1);
+            while (Math.max(Math.abs(mx - x), Math.abs(my - y)) > 1) { x += Math.sign(mx - x); y += Math.sign(my - y); r.push(y * CW + x); }   // the brushes between: the two lanes overlap, never only touch at a corner
+            break; }
+          for (const c of r) { paint(ox + (c % CW), oy + ((c / CW) | 0), clear); laid[c] = 1; }
+          return true;
+        }
       }
       return false;
     };
     for (const wu of stems) paint(wu.x - gx0, wu.y + 1 - gy0, true);   // the stem from the way up's cut to its foot
     for (const a of anchors) { if (topAnch.has(a)) laidTop(a[0] - gx0, a[1] - gy0); else paint(ox + lx(a), oy + ly(a), true); }   // the way up's top is laid where it is; the port's own 2 x 2 of path is always laid, so a neighbour that cannot route past a pinch still meets the trail at the shared tile
-    if (junction) for (const a of anchors) routeTo(a, junction);
-    else if (!routeTo(anchors[0], anchors[1])) { const j = nearOpen(hub); for (const a of anchors) routeTo(a, j); }
+    if (junction) anchors.forEach((a, i) => routeTo(a, junction, i > 0));
+    else if (!routeTo(anchors[0], anchors[1])) { const j = nearOpen(hub); anchors.forEach((a, i) => routeTo(a, j, i > 0)); }
     // a way up's foot can lie in the higher cell's own rows (the lip is low in that cell): the trail runs from the cell's entry tile (the clamped anchor) up to the foot, over the window
     const routeBox = (ax, ay, bx, by) => {   // window tiles
       const x0 = clamp(Math.min(ax, bx) - 4, 1, W - 3), y0 = clamp(Math.min(ay, by) - 4, 1, H - 3), x1 = clamp(Math.max(ax, bx) + 5, 3, W - 1), y1 = clamp(Math.max(ay, by) + 5, 3, H - 1), bw = x1 - x0, bh = y1 - y0;
@@ -574,7 +590,7 @@ function windowOf(S, X, Y) {
   const wuTile = new Set(); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const wx = x - gx0, wy = y - gy0; if (wx >= 0 && wy >= 0 && wx < W && wy < H) wuTile.add(wy * W + wx); }
   const settle = gate => { for (let round = 0; round < 60; round++) {
     let changed = 0;
-    { const before = t.slice(); minFeature(t, W, H, isCliff, isCliff, 4, true); for (let k = 0; k < N; k++) if (t[k] !== before[k]) changed++; }
+    { const before = t.slice(); minFeature(t, W, H, isCliff, isCliff, 4, true, lane); for (let k = 0; k < N; k++) if (t[k] !== before[k]) changed++; }
     for (let sweep = 0, n = 1; n && sweep < 200; sweep++) {   // sweeps to a fixed point: a chain along a boundary is followed at once
       n = 0;
       for (let j = 0; j <= H; j++) for (let i = 0; i <= W; i++) {
@@ -604,15 +620,52 @@ function windowOf(S, X, Y) {
       if (!ok) lone.push(y * W + x); }
     const joins = (k, pend) => { const p = i => i === k || t[i] === TV.PATH || pend.has(i); for (const [a, b] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) { const o = k + b * W + a; if (p(o) && p(o + 1) && p(o + W) && p(o + W + 1)) return true; } return false; };   // the strip's tile would sit in a 2 x 2 block of path (else the path pass would give it up again, and the two would never settle)
     const strip = lone.filter(k => (t[k - 1] === TV.PATH && t[k + 1] === TV.PATH) || (t[k - W] === TV.PATH && t[k + W] === TV.PATH)), stripSet = new Set(strip);   // a strip two tiles long (side by side) fills as a pair
-    let n = 0; for (const k of strip) if (joins(k, stripSet)) { t[k] = TV.PATH; n++; }   // a one-tile strip between two paths (a gate beside its trail) joins them
+    let n = 0; for (const k of strip) if (lane[k] && joins(k, stripSet)) { t[k] = TV.PATH; n++; }   // a one-tile strip between two paths (a gate beside its trail) joins them, only inside a lane
     for (const k of lone) if (t[k] === TV.GRASS) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const j = k + dy * W + dx; if (t[j] === TV.PATH && !(gate && gate[j]) && !atEdge(j)) { t[j] = TV.GRASS; n++; } }
     for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { if (t[y * W + x] !== TV.PATH) continue; let ok = false;
       for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) { const a = x + ox, b = y + oy; if (t[b * W + a] === TV.PATH && t[b * W + a + 1] === TV.PATH && t[(b + 1) * W + a] === TV.PATH && t[(b + 1) * W + a + 1] === TV.PATH) ok = true; }
       if (!ok && !atEdge(y * W + x)) { t[y * W + x] = TV.GRASS; n++; } }
     if (!n) break; settle(gate); } };
-  settle(null); fade(null);
+  // one pass before the fade: every path tile outside every lane goes back to grass at once (never one tile at a time, which the fade refilled)
+  const offLane = () => { for (let k = 0; k < N; k++) if (t[k] === TV.PATH && !lane[k]) t[k] = TV.GRASS; };
+  settle(null); offLane(); fade(null);
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
-  if (gate.some(v => v)) { settle(gate); fade(gate); }
+  for (let k = 0; k < N; k++) if (gate[k] && t[k] === TV.PATH) lane[k] = 1;   // a gate's path is a lane of its trail
+  if (gate.some(v => v)) { settle(gate); offLane(); fade(gate); }
+  // the way up's foot (f4 fix 8): where no path reaches the foot after the passes (a foot in a narrow pocket: the fade gave the stem up), a spur is drawn from the foot along walkable ground to the
+  // nearest path tile of the foot's cell, 2 wide, by the lane rule (2+ tiles off cliff, lip and water, else 1, else the pinch); the passes run again, and a spur they do not keep is taken back and the foot
+  // listed (footSpurs). Only feet in the window's middle 3 x 3 cells are drawn (what a spur changes stays in its cell), so every window that shows the foot's cell draws the same spur.
+  curTop = false;
+  const spurs = S.spurs || (S.spurs = new Map());
+  for (const st of stairsOf(S)) {
+    const wu = st.wayup; if (!wu || st.kind !== 'south') continue;
+    const fcx = Math.floor(wu.x / CW), fcy = Math.floor((wu.y + 2) / CH); if (Math.abs(fcx - X) > 1 || (Math.abs(fcy - Y) > 1 && Math.abs(st.B[1] - Y) > 1)) continue;   // the foot's cell or the stair's low cell (where a spur may run) is in the middle 3 x 3
+    if (!(tr.by.get(st.A[0] * 1000 + st.A[1]) || []).some(({ t: T, k }) => [T.cells[k - 1], T.cells[k + 1]].some(o => o && o[0] === st.B[0] && o[1] === st.B[1]))) continue;   // a stair the trail takes
+    const fx = wu.x - gx0, fy = wu.y - gy0, key = wu.x + ',' + wu.y;
+    const joined = () => { for (let y = fy + 1; y <= fy + 3; y++) for (let x = fx - 1; x <= fx + wu.w; x++) if (t[y * W + x] === TV.PATH) return true; return false; };   // path within 3 rows under the lip, a column each side
+    if (joined()) { if (!spurs.has(key)) spurs.set(key, 'trail'); continue; }
+    // the nearest path tile of the foot's cell; a foot in the upper cell's low rows with no path there reads the stair's low cell too (the trail's own cell on that side)
+    const nearest = (ox, oy, bw, bh) => { let to = -1, td = 1e9; for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) { if (t[(oy + y) * W + ox + x] !== TV.PATH) continue; const d = Math.abs(ox + x - fx) + Math.abs(oy + y - fy - 2); if (d < td) { td = d; to = y * bw + x; } } return to; };
+    let ox = (fcx - (X - HX)) * CW, oy = (fcy - (Y - HY)) * CH, bw = CW, bh = CH, to = nearest(ox, oy, bw, bh);
+    if (to < 0 && (st.B[0] !== fcx || st.B[1] !== fcy)) { ox = (Math.min(fcx, st.B[0]) - (X - HX)) * CW; oy = (Math.min(fcy, st.B[1]) - (Y - HY)) * CH; bw = (Math.abs(st.B[0] - fcx) + 1) * CW; bh = (Math.abs(st.B[1] - fcy) + 1) * CH; to = nearest(ox, oy, bw, bh); }
+    if (to < 0) { spurs.set(key, 'no path in the cell'); continue; }
+    const hard = (x, y, r, th) => { for (let dy = -r; dy <= 1 + r; dy++) for (let dx = -r; dx <= 1 + r; dx++) { const X2 = ox + x + dx, Y2 = oy + y + dy; if (X2 < 0 || Y2 < 0 || X2 >= W || Y2 >= H) return true; const v = t[Y2 * W + X2]; if (v === TV.WATER || v === TV.DEEP || v === TV.CLIFF || (th && v === TV.THICKET)) return true; } return false; };
+    const masks = [-1, 0, 2].map(tier => { const m = new Uint8Array(bw * bh); for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) m[y * bw + x] = (tier === -1 ? hard(x, y, 2, false) || hard(x, y, 1, true) : tier === 0 ? hard(x, y, 1, true) : hard(x, y, 0, true)) ? 1 : 0; return m; });
+    let ok = false, tries = 0;
+    for (const [dx, dy] of [[0, 1], [-1, 1], [1, 1], [0, 2], [-2, 2], [2, 2], [0, 3], [-2, 3], [2, 3]]) {
+      const sx = fx + dx - ox, sy = fy + dy - oy; if (sx < 0 || sy < 0 || sx > bw - 2 || sy > bh - 2 || hard(sx, sy, 0, true)) continue;
+      for (const m of masks) {
+        const r = route(bw, bh, sy * bw + sx, to, (c, n) => (m[n] && n !== to ? null : 1)); if (!r) continue;
+        const t0 = t.slice(), l0 = lane.slice(); tries++;
+        for (const c of r) paint(ox + (c % bw), oy + ((c / bw) | 0), false);
+        settle(gate); offLane(); fade(gate);
+        if (joined()) { ok = true; break; }
+        t.set(t0); lane.set(l0); break;   // the first tier that routes from this start is the spur from it
+      }
+      if (ok || tries >= 6) break;
+    }
+    spurs.set(key, ok ? 'spur' : tries ? 'the passes do not keep a spur' : 'no route');
+  }
   return { t, W, H, gx0, gy0, wayups, top: topsOf(t, recipe, W, H, pathTop) };
 }
 
