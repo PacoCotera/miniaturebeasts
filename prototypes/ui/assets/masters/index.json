@@ -365,7 +365,7 @@
   "glint-star-12x12": {"group":"pods","w":12,"h":12,"bytes":126,"sha":"1cc6768df7c3"},
   "hatch-frame-166x266": {"group":"pods","w":166,"h":266,"bytes":204,"sha":"381ea6c9b831"},
   "hatch-shut-160x260": {"group":"pods","w":160,"h":260,"bytes":42897,"sha":"78d3b3837644"},
-  "heart-full-24": {"group":"pods","w":24,"h":24,"bytes":181,"sha":"8cf844d959db"},
+  "heart-full-24": {"group":"pods","w":24,"h":24,"bytes":302,"sha":"d1d035c63eb2"},
   "home-bay-open-176x72": {"group":"home","w":176,"h":72,"bytes":12104,"sha":"8f948a28de1a"},
   "home-bay-shut-176x72": {"group":"home","w":176,"h":72,"bytes":11171,"sha":"a0bbcdd72892"},
   "home-bed-dawn-192x56": {"group":"home","w":192,"h":56,"bytes":23552,"sha":"990a0017fa1d"},
