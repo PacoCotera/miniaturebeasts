@@ -1,0 +1,154 @@
+{
+	"__header__": {
+		"fileType": "LDtk Level JSON",
+		"app": "LDtk",
+		"doc": "https://ldtk.io/json",
+		"schema": "https://ldtk.io/files/JSON_SCHEMA.json",
+		"appAuthor": "Sebastien 'deepnight' Benard",
+		"appVersion": "1.5.3",
+		"url": "https://ldtk.io"
+	},
+	"identifier": "overhang",
+	"iid": "00000000-0000-4000-8000-000000000015",
+	"uid": 115,
+	"worldX": 2400,
+	"worldY": 0,
+	"worldDepth": 0,
+	"pxWid": 64,
+	"pxHei": 64,
+	"__bgColor": "#696A79",
+	"bgColor": null,
+	"useAutoIdentifier": false,
+	"bgRelPath": null,
+	"bgPos": null,
+	"__smartColor": "#ADADB5",
+	"__bgPos": null,
+	"externalRelPath": "stamps/overhang.ldtkl",
+	"fieldInstances": [
+		{
+			"__identifier": "kind",
+			"__type": "String",
+			"__value": "overhang",
+			"__tile": null,
+			"defUid": 4,
+			"realEditorValues": []
+		},
+		{
+			"__identifier": "lands",
+			"__type": "Array<String>",
+			"__value": [
+				"meadow",
+				"wood",
+				"rock",
+				"pond"
+			],
+			"__tile": null,
+			"defUid": 5,
+			"realEditorValues": []
+		},
+		{
+			"__identifier": "flip",
+			"__type": "String",
+			"__value": "ew",
+			"__tile": null,
+			"defUid": 6,
+			"realEditorValues": []
+		}
+	],
+	"layerInstances": [
+		{
+			"__identifier": "Anchor",
+			"__type": "Entities",
+			"__cWid": 4,
+			"__cHei": 4,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "00000000-0000-4000-8000-000000001015",
+			"levelId": 115,
+			"layerDefUid": 2,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 1,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": [
+				{
+					"__identifier": "Anchor",
+					"__grid": [
+						0,
+						1
+					],
+					"__pivot": [
+						0,
+						0
+					],
+					"__tags": [],
+					"__tile": null,
+					"__smartColor": "#CC3377",
+					"iid": "00000000-0000-4000-8000-000000002015",
+					"width": 16,
+					"height": 16,
+					"defUid": 3,
+					"px": [
+						0,
+						16
+					],
+					"fieldInstances": [],
+					"__worldX": 2400,
+					"__worldY": 16
+				}
+			]
+		},
+		{
+			"__identifier": "Kinds",
+			"__type": "IntGrid",
+			"__cWid": 4,
+			"__cHei": 4,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "00000000-0000-4000-8000-000000003015",
+			"levelId": 115,
+			"layerDefUid": 1,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [
+				6,
+				6,
+				6,
+				6,
+				7,
+				7,
+				7,
+				7,
+				3,
+				10,
+				1,
+				11,
+				1,
+				1,
+				1,
+				1
+			],
+			"autoLayerTiles": [],
+			"seed": 1,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		}
+	],
+	"__neighbours": []
+}

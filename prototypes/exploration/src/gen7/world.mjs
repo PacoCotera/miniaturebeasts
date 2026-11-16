@@ -178,18 +178,25 @@ function joinSouth(land, ford, lv, tr) {
       const Z = levelZones(pass, loc, MW, MH), uS = Int32Array.from({ length: Z.n }, (_, z) => z), uA = uS.slice();
       const fnd = (u, z) => { while (u[z] !== z) z = u[z]; return z; }, uni = (u, a, b) => { a = fnd(u, a); b = fnd(u, b); if (a !== b) u[a < b ? b : a] = a < b ? a : b; };
       const edges = [];   // every cliff edge between two zones: [zone a, zone b, joins south-facing?, length]
-      for (let c = 0; c < NC; c++) for (const [d, south] of [[1, false], [MW, true]]) {
-        if (!south && c % MW === MW - 1) continue; const n = c + d; if (n >= NC || !pass(c) || !pass(n) || loc[c] === loc[n]) continue;
-        uni(uA, Z.id[c], Z.id[n]); const sf = south && loc[c] > loc[n]; if (sf) uni(uS, Z.id[c], Z.id[n]);
-        edges.push([Z.id[c], Z.id[n], sf]);
-      }
+      // the east and south edge of each cell, in that order, with no array made per cell; the walkable test read once per cell
+      const ok = new Uint8Array(NC); for (let c = 0; c < NC; c++) ok[c] = pass(c) ? 1 : 0;
+      for (let c = 0; c < NC; c++) { if (!ok[c]) continue;
+        for (let k = 0; k < 2; k++) { const south = k === 1, d = south ? MW : 1;
+          if (!south && c % MW === MW - 1) continue; const n = c + d; if (n >= NC || !ok[n] || loc[c] === loc[n]) continue;
+          uni(uA, Z.id[c], Z.id[n]); const sf = south && loc[c] > loc[n]; if (sf) uni(uS, Z.id[c], Z.id[n]);
+          edges.push([Z.id[c], Z.id[n], sf]); } }
       const size = new Map(); for (let z = 0; z < Z.n; z++) { const g = fnd(uS, z); size.set(g, (size.get(g) || 0) + Z.cells[z].length); }
       const byAll = new Map(); for (const g of size.keys()) { const k = fnd(uA, g); if (!byAll.has(k)) byAll.set(k, []); byAll.get(k).push(g); }
+      // each group's border counts in one pass over the edges (the groups do not change in the loop below, and the sort decides the order fully)
+      const touchOf = new Map();
+      for (const [a, b, sf] of edges) { if (sf) continue; const ga = fnd(uS, a), gb = fnd(uS, b); if (ga === gb) continue;
+        let t = touchOf.get(ga); if (!t) touchOf.set(ga, t = new Map()); t.set(a, (t.get(a) || 0) + 1);
+        let u = touchOf.get(gb); if (!u) touchOf.set(gb, u = new Map()); u.set(b, (u.get(b) || 0) + 1); }
       for (const gs of byAll.values()) {
         if (gs.length < 2) continue;
         gs.sort((a, b) => size.get(b) - size.get(a) || a - b);
         for (const g of gs.slice(1)) {   // a group no south-facing edge joins to the largest: flip the zone of it that borders the rest the longest
-          const touch = new Map(); for (const [a, b, sf] of edges) { if (sf) continue; const ga = fnd(uS, a), gb = fnd(uS, b); if (ga === g && gb !== g) touch.set(a, (touch.get(a) || 0) + 1); else if (gb === g && ga !== g) touch.set(b, (touch.get(b) || 0) + 1); }
+          const touch = touchOf.get(g) || new Map();
           const order = [...touch].sort((p, q) => q[1] - p[1] || p[0] - q[0]);
           for (const [z] of order) {
             const to = 1 - Z.lvOf[z]; if (to === 1 && Z.cells[z].some(c => wetNear(cells[c]))) continue;
@@ -212,6 +219,13 @@ const jit = (seed, s, t, tag) => t ? ((hash(seed, 'gen7', 'try', tag, s, t) / 21
 // ---- the realm: water, land, levels, closed over the whole realm ----
 // tries[s] (0 by default) is region s's attempt number: attempt t moves the slot's water and level pulls a little, so a region that fails its checks
 // can be re-drawn. Only the slot's own parameters change, and they blend into the neighbours' border cells by position, so borders keep agreeing.
+// The e0 pass (world-topdown-spec-1 2.1 step 3): every level the realm decides is written into its raising height. A cell whose level is not the sign of the height at its centre
+// (water, its ring, closures, joins, the coast's taper) gets e0 one EDIT past the height, so the tile land rule (levels.mjs) agrees with the realm by construction. Water is always low.
+export const EDIT = 0.16;
+export function editE0(realm) {
+  const { land, level, E, e0 } = realm;
+  for (let c = 0; c < e0.length; c++) { const want = land[c] === L.WATER ? 0 : level[c], have = E[c] >= e0[c] ? 1 : 0; if (have !== want) e0[c] = want ? E[c] - EDIT : E[c] + EDIT; }
+}
 export function buildRealm(seed, tries = null) {
   const R = rawRealm(seed), { E, M, F, K, Z, acc } = R, nS = ATLAS * ATLAS, sb = slotBiomes(seed), tg = sb.map(biomeTargets), tr = s => (tries ? tries[s] : 0);
   // water: pulled by the slot's rules
@@ -256,5 +270,7 @@ export function buildRealm(seed, tries = null) {
   closeLevels(level, RW, RH); fixSaddles(level, RW, RH);
   mergeSmallZones(c => land[c] !== L.WATER || ford[c] === 1, land, level, RW, RH, G2.ZONE_MIN);
   joinSouth(land, ford, level);
-  return { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c };   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
+  const realm = { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c };
+  editE0(realm);
+  return realm;   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
 }

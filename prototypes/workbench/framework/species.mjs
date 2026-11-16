@@ -9,6 +9,7 @@
 import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, LANGUAGE_FRAME, isContinuous, valueRange, samePair, lookConflicts } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
+import { rng, streamOf } from "./draws.mjs";
 import { planFacts } from "./plans.mjs";
 import { carried, ownerOn, isDoing, isPartSwitch, SWITCH_TARGETS } from "./guards.mjs";
 import { resolveIndividual } from "./resolve.mjs";
@@ -38,19 +39,9 @@ export const FIND_KINDS = ["crystal", "pearl", "shard"];
 // A sealed chapter's find picture follows the find its words name; words naming none of the three (the workbench's "a find") have no kind.
 export const findKindOf = (words) => FIND_KINDS.find((k) => new RegExp(`\\b${k}\\b`).test(words ?? "")) ?? null;
 
-// A deterministic stream (mulberry32, as v1 generation and the genome stamp use).
-export function rng(seed) {
-  let a = 0;
-  for (const ch of String(seed)) a = (Math.imul(a ^ ch.charCodeAt(0), 0x01000193) + 0x9e3779b9) >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-const pick = (r, list) => list[Math.floor(r() * list.length)];
+// A deterministic stream from a text: the core's one random module (draws.mjs).
+export { rng };
+const pick = (r, list) => streamOf(r).pick(list);
 // One draw from a pool by shares (a frame row's `weights`); the last allele takes any rounding left over.
 const pickWeighted = (r, list, weights) => { let x = r(); for (const a of list) { x -= weights[a] ?? 0; if (x < 0) return a; } return list[list.length - 1]; };
 
@@ -205,7 +196,7 @@ export function buildFrame(spec, options = {}) {
     const signature = new Set(Object.keys(spec.finish ?? {}));
     const applicable = VOCAB.map((t) => vocabTrait(t[1])).filter((t) => t.loci.every((id) => carriedIds.includes(id) && !signature.has(id)) && t.id !== "size" && !(spec.lockTraits ?? []).includes(t.id) && !(spec.neverOpen ?? []).includes(t.id) && (!language || t.loci.every((id) => !refuseOpen(spec.id, id))));
     const [lo, hi] = TIERS[spec.tier];
-    const n = Math.min(applicable.length, lo + Math.floor(r() * (hi - lo + 1)));
+    const n = Math.min(applicable.length, lo + streamOf(r).below(hi - lo + 1));
     const looks = applicable.filter((t) => !["movement", "stamina", "character", "glow", "charge"].includes(t.chapter));
     const doings = applicable.filter((t) => ["movement", "stamina", "character", "glow", "charge"].includes(t.chapter));
     const must = spec.tier === "starter" ? [] : looks.filter((t) => t.id === "colour");
@@ -229,7 +220,7 @@ export function buildFrame(spec, options = {}) {
   }
   // Pools.
   const k = WHEEL.indexOf(spec.anchor);
-  const colourPool = [spec.anchor, ...[1, -1, 2].map((d) => WHEEL[(k + d + WHEEL.length) % WHEEL.length])].slice(0, 1 + Math.floor(r() * 3) + 1);
+  const colourPool = [spec.anchor, ...[1, -1, 2].map((d) => WHEEL[(k + d + WHEEL.length) % WHEEL.length])].slice(0, 1 + streamOf(r).below(3) + 1);
   const pools = {};
   for (const t of traits) for (const id of t.loci) {
     const all = alleleIds(id, version);
@@ -245,7 +236,7 @@ export function buildFrame(spec, options = {}) {
     let a = fixed[id];
     if (a === undefined) {
       if (isPartSwitch(id)) a = switchesOn[id] ?? "off";
-      else if (id === "appearance.cap-palette") a = spec.anchor in BODY_PIGMENTS ? ["coral", "raspberry", "marigold", "plum"][Math.floor(r() * 4)] : "coral";
+      else if (id === "appearance.cap-palette") a = spec.anchor in BODY_PIGMENTS ? ["coral", "raspberry", "marigold", "plum"][streamOf(r).below(4)] : "coral";
       else a = pick(r, alleleIds(id, version));
       if (spec.reset?.[id] !== undefined) a = spec.reset[id];   // the seeded roll is still taken, so no other locked copy moves; the species' value replaces what it rolled
     }
@@ -294,7 +285,7 @@ export function buildFrame(spec, options = {}) {
   for (let i = 0; members.length < 24 && i < 96; i++) { const g = sampleIndividual(frame, sampleRng); try { if (buildIndividual(frame, g).validation.status === "valid") members.push(g); } catch { /* not a member */ } }
   let crossed = 0, crossedBuilt = 0;
   for (let i = 0; i < samples && members.length > 1; i++) {
-    const a = members[Math.floor(sampleRng() * members.length)], b = members[Math.floor(sampleRng() * members.length)];
+    const a = members[streamOf(sampleRng).below(members.length)], b = members[streamOf(sampleRng).below(members.length)];
     if (a === b) continue;
     const g = cross(frame, { id: 1, genome: a }, { id: 2, genome: b }, { rng: sampleRng, kinship: 0 });
     crossed++;
@@ -311,7 +302,7 @@ export function buildFrame(spec, options = {}) {
   return frame;
 }
 
-function shuffle(r, list) { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function shuffle(r, list) { return streamOf(r).shuffle([...list]); }
 
 // A self-changing trait's entry in a frame: its rule, with the end it moves toward checked against the species' pool
 // (a frame whose pool does not hold that end cannot carry the trait as self-changing: the build stops, nothing is guessed).

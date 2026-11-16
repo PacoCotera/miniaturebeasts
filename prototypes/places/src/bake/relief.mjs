@@ -1,9 +1,9 @@
 // relief(land): the one function that names every cell's part of the raised land. Walking, the decor rules, the ground pairs and the bake all read it and nowhere else.
 //   top    raised, no low cell beside it (4-neighbours)                                   walks
 //   ring   raised, with a low cell beside it (the lip cells)                                blocks
-//   face   the low cell under a south ring cell (row L + 1)                                 blocks
-//   flank  a low cell with a raised cell to its east or west, and the end pieces' cells     blocks
-//   foot   rows L + 2 and L + 3 under a south ring cell                                     walks (foot pieces only stand there)
+//   face   the 3 low cells under a south ring cell (rows L + 1 .. L + 3: the rock)          blocks
+//   flank  a low cell with a raised cell to its east or west, and the end pieces' cells     blocks (an end piece's rows L + 1 .. L + 3 too)
+//   foot   the one row L + 4 under a south ring cell (the contact shade)                    walks (foot pieces only stand there)
 //   way    a way up's cells                                                                 walks
 //   low    the rest
 // The land is a small accessor { raised(x, y), low(x, y), way(x, y), inside(x, y) } over world or place tiles; nothing here draws.
@@ -34,7 +34,8 @@ export function landOf(ir, cliffs) {
   const { w, h } = ir, L = ir.land, m = L ? L.m : 0, lw = L ? L.w : w;
   const inside = (x, y) => (L ? x >= -m && y >= -m && x < w + m && y < h + m : x >= 0 && y >= 0 && x < w && y < h);
   const raised = L ? (x, y) => L.raised[(y + m) * lw + x + m] === 1 : (x, y) => cliffs.isCliff(x, y);
-  const way = (x, y) => x >= 0 && y >= 0 && x < w && y < h && cliffs.wayup.has(y * w + x);
+  // a way up's cells, also those above the place's first row (a stair whose lip row lies up to 4 rows above this place cuts the face rows inside it): read off the areas, never the set's y * w + x keys
+  const wus = ir.wayups || [], way = (x, y) => { for (const a of wus) if (x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h) return true; return false; };
   return { raised, low: (x, y) => !raised(x, y), way, inside, m };
 }
 
@@ -42,8 +43,8 @@ export function landOf(ir, cliffs) {
 const up = (A, x, y) => { let k = 0; while (k < 3 && A.low(x, y - k)) k++; return k; };
 
 // The end piece a low cell belongs to, or null: the cell beyond the end of a south run, rows top .. L + `bottom` ({ L, hand, k, top }; k = rows low upward from row L, 1, 2, 3 = 3 or more).
-// The rock rows (down to L + 1) block; the picture itself reaches the foot (down to L + FACE_ROWS), which no side cell may be drawn on.
-export function endAt(A, x, y, bottom = 1) {
+// The rock rows (down to L + FACE_ROWS, the same 3 rows as the face under the lip) block; the foot row below is walkable.
+export function endAt(A, x, y, bottom = FACE_ROWS) {
   if (!A.low(x, y)) return null;
   for (let L = y + 2; L >= y - bottom; L--) {
     if (!A.low(x, L)) continue;
@@ -69,7 +70,8 @@ function partCompute(A, x, y) {
   if (A.raised(x, y)) return A.low(x + 1, y) || A.low(x - 1, y) || A.low(x, y + 1) || A.low(x, y - 1) ? PART.RING : PART.TOP;
   if (A.raised(x, y - 1) && !A.way(x, y - 1)) return PART.FACE;
   if (endAt(A, x, y) || A.raised(x - 1, y) || A.raised(x + 1, y)) return PART.FLANK;
-  for (let d = 2; d <= FACE_ROWS; d++) if (A.raised(x, y - d) && !A.way(x, y - d) && A.low(x, y - d + 1) && !A.way(x, y - d + 1)) { let clear = true; for (let j = 1; j < d; j++) if (A.raised(x, y - j)) clear = false; if (clear) return PART.FOOT; }
+  // rows L + 2 .. L + FACE_ROWS under a south lip are rock too (face, blocks); the one row L + FACE_ROWS + 1 is the foot (walks). The first raised cell going up decides; a way up's cut stays low.
+  for (let d = 2; d <= FACE_ROWS + 1; d++) if (A.raised(x, y - d)) { if (A.way(x, y - d) || A.way(x, y - d + 1)) break; if (!A.low(x, y - d + 1)) break; return d <= FACE_ROWS ? PART.FACE : PART.FOOT; }
   return PART.LOW;
 }
 

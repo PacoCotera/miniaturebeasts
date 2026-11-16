@@ -8,6 +8,8 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { loadPage, fakeCanvas, paletteLook, PAGE, MODULE, SCRIPT, STONE_ART } from "./page-harness.mjs";
 import { blank } from "../../face/tools/blank.mjs";
+import { detail } from "../../core/base/noise.mjs";
+import { NOISE_VECTORS } from "./noise-vectors.mjs";
 import * as W from "../src/world.mjs";
 import * as R from "../src/regions.mjs";
 import * as A from "../src/atlas.mjs";
@@ -60,6 +62,10 @@ test("the world's key set is complete: G gains no field the vectors do not hash"
   for (const want of VECTORS.gens["1"].seeds) assert.equal(worldDigest(API, W.genWorld(want.seed, 1)).keys, want.world.keys, `seed ${want.seed}`);
 });
 
+test("golden: the core's whole-number noise gives the vectors on file (seed, tile, q)", () => {
+  for (const [seed, x, y, q] of NOISE_VECTORS) assert.equal(detail(x, y, seed), q, `seed ${seed} tile ${x},${y}`);
+});
+
 test("determinism: the same world twice, and places in reverse order on a fresh world", () => {
   assert.deepEqual(seedDigest(API, 7), seedDigest(API, 7));
   const G = W.genWorld(7, 1), keys = placeKeys(G, W.L, [...W.beaconCells(G, 7)], [...W.depotCells(G, 7)]);
@@ -72,7 +78,9 @@ test("determinism: the same world twice, and places in reverse order on a fresh 
 
 test("purity, by source: no page state, DOM, storage, clock, randomness, drawing or import", () => {
   const code = blank(MODULE_SRC);
-  for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
+  for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/]) assert.doesNotMatch(code, re);
+  const imports = MODULE_SRC.split("\n").filter((l) => /^\s*import\b/.test(l));
+  assert.deepEqual(imports, ['import { mulberry32 } from "../../core/base/random.mjs";'], "the one import is the core's random module");
 });
 
 test("unknown generators are refused; the module knows generators 1 to 5, the page plays generator 7 only, and new worlds take generator 7", () => {

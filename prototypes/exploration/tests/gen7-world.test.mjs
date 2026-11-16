@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { genRegion7, realm7, regionAt } from '../src/gen7/region.mjs';
+import { genRegion7, realm7, regionAt, finishRegion } from '../src/gen7/region.mjs';
 import { buildRealm, fieldsAt } from '../src/gen7/world.mjs';
 import { ATLAS } from '../src/regions.mjs';
 import { vectorOf, SEEDS, SLOTS } from '../tools/gen7-vectors.mjs';
@@ -30,7 +30,7 @@ test('a region is its place, not its turn: the same whenever and in whatever ord
     // rebuilt from the realm's attempt numbers alone, out of order, on a realm with no coast: the nine inner regions are as they were before the coast (the coast is laid after the checks and only
     // remakes the sixteen on the rim), which is the guard that the land, once made, is kept
     for (const [ax, ay] of [[1, 1], [2, 2], [3, 1], [1, 3], [3, 3]]) {
-      const G = regionAt(buildRealm(seed, R.realm.tries), ax, ay);
+      const G = finishRegion(regionAt(buildRealm(seed, R.realm.tries), ax, ay));   // the trails and ports are made once, for the final region
       assert.deepEqual(vectorOf(G), vectorOf(R.regions[ay * ATLAS + ax]), seed + ' ' + ax + ',' + ay);
     }
   }

@@ -11,6 +11,7 @@ import { buildBody } from "../../workbench/framework/rig.mjs";
 import { validateBody } from "../../workbench/framework/validate.mjs";
 import { LOCI } from "../../workbench/framework/catalogue.mjs";
 import { treat } from "./unknown.mjs";
+import { mulberry32 as coreMulberry32 } from "../../core/base/random.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
@@ -312,7 +313,7 @@ export const gateArt = () => art("gate", () => { const pb = new PB(76, 70); pb.r
 // The return hatch of the rack: a slot with a leaf mark.
 export const hatchArt = () => art("hatch", () => { const pb = new PB(120, 56); pb.rect(2, 4, 116, 48, C.slate); pb.rect(6, 8, 108, 40, C.night); pb.rect(10, 24, 100, 8, C.void);
   pb.ell(60, 20, 5, 10, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; });
-function mulberry32(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function mulberry32(a) { const s = coreMulberry32(a); return () => s.next() / 4294967296; }
 const ramp = (cols, t, x, y) => { const f = Math.max(0, Math.min(0.999, t)) * (cols.length - 1), i = Math.floor(f); return C[cols[bay(x, y) < (f - i) * 16 ? i + 1 : i]]; };
 export function vivArt(w, h) { return art("viv" + w + "x" + h, () => {
   const pb = new PB(w, h), gy = Math.round(h * 0.62);

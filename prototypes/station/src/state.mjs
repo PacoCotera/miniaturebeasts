@@ -7,6 +7,8 @@
 // Those keep their shape (station-build.md §2.3).
 import { currentLooks } from "../../workbench/framework/describe.mjs";
 import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework/cross.mjs";
+import { fromStream } from "../../workbench/framework/draws.mjs";
+import { seeded24 } from "../../core/base/random.mjs";
 import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
 import { fill, capLine } from "./views/words.mjs";
 import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
@@ -1096,7 +1098,7 @@ export function moveMibi(st, m, i, settings = DEFAULT_SETTINGS, now = Date.now()
   return { ok: true, room: i, slot };
 }
 // The integer-seeded generator the developer siblings and the shed pod draw from: the same seed, the same stream.
-export function seededRng(seed) { let x = seed >>> 0; return () => { x = (Math.imul(x ^ (x >>> 15), 0x2c1b3c6d) + 0x9e3779b9) >>> 0; return (x >>> 8) / 16777216; }; }
+export const seededRng = (seed) => fromStream(seeded24(seed));
 // The record fields of a place: room, slot and the rollback index.
 const placeOf = (p) => ({ room: p.room, slot: p.slot, bay: p.room * ROOM + p.slot });
 // The words state.mjs returns when no place is free (cw C10): the message, and the plate's lines (the third only while a room can still be added).

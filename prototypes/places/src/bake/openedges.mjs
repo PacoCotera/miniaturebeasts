@@ -86,18 +86,5 @@ export function applyOpenEdges(dg, ir, terrains, layers, tone = null) {
       if (c !== EMPTY && isCliff(i - 1, j - 1) && isCliff(i, j - 1) && isCliff(i - 1, j) && isCliff(i, j)) toneLayer.tiles[j * w1 + i] = EMPTY;
     }
   }
-  // the way up: the kit's piece for the terrain below the face replaces the cliff's own tiles on the tile above the face (row 0) and on the face (row 1)
-  if (cliff && ir.wayups && ir.wayups.length) {
-    const layer = dg.layers.find((l) => l.terrain === cliff.value), d = layer && layers.get(cliff.value), withUp = d && d.kinds.find((k) => k.rows.wayup);
-    if (withUp) {
-      const idOfValue = new Map(terrains.map((t) => [t.value, t.id]));
-      for (const a of ir.wayups) if (!a.u) for (let c = 0; c <= a.w; c++) {   // a `u` area is the new way up: no old tile, its extent is plain ground until the piece is painted
-        const col = c === 0 ? 0 : c === a.w ? 2 : 1, i = a.x + c;
-        const below = ir.terrain[Math.min(h - 1, a.y + 1) * w + Math.max(0, Math.min(w - 1, Math.max(a.x, Math.min(i, a.x + a.w - 1))))];   // the cell under the face, in the area's columns
-        const row = withUp.rows.wayup[idOfValue.get(below)] ?? withUp.rows.wayup.grass;
-        layer.tiles[a.y * w1 + i] = ALT_CODE + 16 * row + col;           // the tile above the face (row 0)
-        layer.tiles[(a.y + 1) * w1 + i] = ALT_CODE + 16 * row + 3 + col;  // the face (row 1)
-      }
-    }
-  }
+  // the way up: preview5-fix-1 (art director 2026-11-16) removed the old flat tan way-up tiles; the gap shows the ground below running up through it, and the way up still walks (relief.mjs WAY)
 }

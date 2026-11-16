@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, writeFileSync } from "node:fs";
 import { b64uEncode, b64uDecode, hexDecode, utf8, unutf8 } from "../src/realm/b64.mjs";
-import { canonical } from "../src/realm/canonical.mjs";
+import { canonical } from "../../core/base/written.mjs";
 import { sha256, pairFromSeed, generateKeyPair, sign, verify } from "../src/realm/keys.mjs";
 import { formatRecovery, recoveryPub, kid } from "../src/realm/recovery.mjs";
 import { MAGIC, MAX_BYTES, OLD_SAVE_LINE, fileHash, prepareSleep, assembleSleepFile, buildSleepFile, parseSleepFile, verifySleepFile, readBody, ledgerState, wakeCheck, wake } from "../src/realm/sleepfile.mjs";

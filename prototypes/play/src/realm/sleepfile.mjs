@@ -7,7 +7,7 @@
 // The file is signed, not encrypted. The ledger (see wakeCheck) is what keeps a signed copy of someone else's body from waking.
 // Pure and async (WebCrypto): the Station, the Companion, the Caddy and the tests run this one module.
 import { b64uDecode, hexEncode, utf8, unutf8 } from "./b64.mjs";
-import { canonical } from "./canonical.mjs";
+import { canonical } from "../../../core/base/written.mjs";
 import { sha256, sign, verify } from "./keys.mjs";
 import { parseRecovery, recoveryPub } from "./recovery.mjs";
 
