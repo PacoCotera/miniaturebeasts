@@ -346,7 +346,8 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     const k = key(x, y), hit = gCand.get(k); if (hit !== undefined) return hit;
     let r = null;
     const GR = inMap(x, y) ? GD[GROUND_OF[G(x, y)]] : null;
-    if (GR && GR.entries.length && plain(x, y) && !isFoot(x, y) && !wayZone.has(k) && !hollowNear(x, y, false) && maskAt(x, y) < 2) {
+    // top-decor-1: a raised top's ground decor keeps one tile clear of the lip (ring and face), as the meadow and the props do
+    if (GR && GR.entries.length && plain(x, y) && !isFoot(x, y) && !(T(x, y) === CLIFF && near9(x, y, 4)) && !wayZone.has(k) && !hollowNear(x, y, false) && maskAt(x, y) < 2) {
       let u = U(seed, TAG.GROUND, x, y), c = 0;
       for (const e of GR.entries) { c += e.per100 / 100 * (e.scale || GR.drawScale); if (u < c) { r = e; break; } }
       if (r && r.prop && earlier(5, x, y)) r = null;   // a rock keeps off every other prop
