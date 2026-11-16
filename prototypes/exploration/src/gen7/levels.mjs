@@ -629,8 +629,12 @@ function flattenBumps(rOut, W, H, rule, lk, noRaise, gx0, gy0) {
     let k = 1, t = 1; for (; is(x + t * ax, y + t * ay); t++) { if (!inCell(x + t * ax + ox, y + t * ay + oy) || !inCell(x + (t + 1) * ax, y + (t + 1) * ay)) return 1e9; k++; }
     for (t = 1; is(x - t * ax, y - t * ay); t++) { if (!inCell(x - t * ax + ox, y - t * ay + oy) || !inCell(x - (t + 1) * ax, y - (t + 1) * ay)) return 1e9; k++; } return k; };
   const capOf = (ox, oy) => (ox ? CAP.side : oy > 0 ? CAP.south : CAP.rim);
-  for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-    const v = r[y * W + x], ax = oy ? 1 : 0, ay = ox ? 1 : 0; if (R(x - ax, y - ay) === v) continue;
+  // only the window's middle cell and the ring of cells round it: the place keeps the middle cell, and the seam compares the cells next to it; a decision reads one cell, so these come out the same
+  const wr = rule.window, ya = Math.max(2, (wr - 1) * CH), yb = Math.min(H - 2, (wr + 2) * CH), xa = Math.max(2, (wr - 1) * CW), xb = Math.min(W - 2, (wr + 2) * CW);
+  for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) {
+    const i0 = y * W + x, v0 = r[i0]; if (r[i0 - 1] === v0 && r[i0 + 1] === v0 && r[i0 - W] === v0 && r[i0 + W] === v0) continue;   // no edge at this tile
+    for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    const v = v0, ax = oy ? 1 : 0, ay = ox ? 1 : 0; if (R(x + ox, y + oy) !== 1 - v || R(x - ax, y - ay) === v) continue;
     let k = 0; while (k <= BUMP_MAX && R(x + k * ax, y + k * ay) === v && R(x + k * ax + ox, y + k * ay + oy) === 1 - v) k++;
     if (k < 1 || k > BUMP_MAX || R(x + k * ax, y + k * ay) !== 1 - v) continue;
     let ok = true; for (let j = -1; j <= k && ok; j++) if (R(x + j * ax - ox, y + j * ay - oy) !== v) ok = false;
@@ -661,7 +665,7 @@ function flattenBumps(rOut, W, H, rule, lk, noRaise, gx0, gy0) {
       if (!why || why === 'held') why = vb ? 'viol' : 'cap';
     }
     if (!done) BUMP_WHY[why || 'held']++;
-  }
+  } }
   // the edits made together (in raster order; one whose tiles another has changed already is passed over), then each checked on the result
   const made = [];
   for (const e of acc) { if (e.t.some(([i]) => rOut[i] !== r[i])) { BUMP_WHY.clash = (BUMP_WHY.clash || 0) + 1; continue; } for (const [i, to] of e.t) rOut[i] = to; made.push(e); }

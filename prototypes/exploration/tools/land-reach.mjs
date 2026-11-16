@@ -80,7 +80,7 @@ const bumps = { bump: [0, 0, 0, 0], notch: [0, 0, 0, 0], side: 0, row: 0, at: []
       if (k < 1 || k > 4 || r(x + k * ax, y + k * ay) !== 1 - v) continue;
       let ok = true; for (let j = -1; j <= k && ok; j++) if (r(x + j * ax - ox, y + j * ay - oy) !== v) ok = false;
       if (!ok) continue;
-      bumps[v ? 'bump' : 'notch'][k - 1]++; if (ox) bumps.side++; else bumps.row++; if (bumps.at.length < 12) bumps.at.push(`${v ? 'B' : 'N'}${k}${ox ? 'side' : 'row'}@${x},${y}`);
+      bumps[v ? 'bump' : 'notch'][k - 1]++; if (ox) bumps.side++; else bumps.row++; if (bumps.at.length < 12) bumps.at.push(`${v ? 'B' : 'N'}${k}${ox ? 'side' : 'row'}@${x},${y}`); (bumps.all ||= []).push([v, k, x, y, ox, oy]);
     } } }
 console.log('bumps (raised, length 1/2/3/4):', bumps.bump.join('/'), ' notches (low):', bumps.notch.join('/'), ' on side walls', bumps.side, 'on rows', bumps.row, ' e.g.', bumps.at.join(' '));
 // ways up whose foot or top is a pit: the walkable part under the way up (from the tile below it, the way up's own tiles left out) or over it, when under 200 tiles; and whether that part is reached
@@ -90,5 +90,6 @@ console.log('bumps (raised, length 1/2/3/4):', bumps.bump.join('/'), ' notches (
   for (const a of wayups) { const f = partSize((a.y + 1) * WW + a.x, 200), t = partSize((a.y - 1) * WW + a.x, 200);
     if (f < 200) { footPit++; if (pits.length < 20) pits.push(`foot ${a.x},${a.y} ${f}`); } if (t < 200) { topPit++; if (pits.length < 20) pits.push(`top ${a.x},${a.y} ${t}`); } }
   console.log(`ways up ${wayups.length}: foot in a pit (under 200 tiles) ${footPit}, top on a pit ${topPit}; ${pits.join('; ')}`); }
+{ const bi = process.argv.indexOf('--bumps'); if (bi > 0) writeFileSync(process.argv[bi + 1], JSON.stringify(bumps.all || [])); }
 { const mi = process.argv.indexOf('--mask'); if (mi > 0) { const M = new Uint8Array(N); for (let i = 0; i < N; i++) if (K[i] === 0 && !seen[i]) M[i] = 1; writeFileSync(process.argv[mi + 1], M); } }
 if (partsOut) writeFileSync(partsOut, JSON.stringify({ seed, walk, un, parts: parts.map(P => ({ n: P.n, raised: P.raised, cause: P.cause, at: P.at, w: P.w })) }));
