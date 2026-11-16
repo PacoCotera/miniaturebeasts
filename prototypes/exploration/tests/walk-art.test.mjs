@@ -58,28 +58,25 @@ test("the page draws the desk's pieces as they are: marks and the bubble", () =>
   same(p, "bubbleArt('?')", "bubble-curious-11x13");
 });
 
-test("a south-facing cliff on the full map: the desk's face piece, its column at wx mod w, hangs from the displaced border, not the straight cell line; a stair is the ramp piece on its span", () => {
-  const p = makePage({ console: "silent", els: true, canvas: true, raf: 1 });
+test("a cliff on the full map runs on the sector's block contour: the desk's face piece, its column at wx mod w, hangs from the block's border row; a stair is the ramp piece at its port", () => {
+  const p = makePage({ gen: 7, console: "silent", els: true, canvas: true, raf: 1 });
   p.run("newWorld(14); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1;");
-  const edge = (kind, hi) => p.run(`(() => { for (let c = 0; c < MW * (MH - 1); c++) { if (edgeKind(c, 'down') === ${kind} && !(G.soft && (G.soft.scree[edgeIndex(c, 'down')] || (G.banks && G.banks[edgeIndex(c, 'down')]))) && (!${hi} || G.level[c] > G.level[c + MW])) return [c, c + MW]; } return null; })()`);
-  const cl = edge("EDGE.CLIFF", true), ramp = edge("EDGE.RAMP", false);
-  assert.ok(cl, "a south-facing cliff on this map"); assert.ok(ramp, "a stair on this map");
-  const draw = () => { p.run("scr.px().fill(-1); drawEdgeMarks({ map: true, cs: CELL, ox: 0, oy: 0, rmOf: () => 0 })"); return p.run("scr").px(); };
-  const W = p.run("SCR_W"), CELL = p.run("CELL"), face = WALK_ART["edge-cliff-face-26"], rgb = p.run("RGB");
-  const px = draw(), B = Array.from(cl)[1];
-  const MW = p.run("MW"), bx = (B % MW) * CELL, by = ((B / MW) | 0) * CELL;
-  let hung = 0, moved = 0;
-  for (let x = bx + 1; x < bx + CELL - 1; x++) {   // per column: the piece's column, wherever it starts within 6 px of the cell line
-    const fc = (x % face.width), want = []; for (let r = 0; r < face.height; r++) { const o = (r * face.width + fc) * 4; want.push(face.data[o + 3] ? [face.data[o], face.data[o + 1], face.data[o + 2]].join() : null); }
-    let at = -1; for (let y = by - 7; y <= by + 7 && at < 0; y++) { let ok = true; for (let r = 0; r < want.length && ok; r++) { const v = px[(y + r) * W + x]; if (want[r] && (v < 0 || Array.from(rgb[v]).join() !== want[r])) ok = false; } if (ok) at = y; }
-    if (at >= 0) hung++; if (at >= 0 && at !== by) moved++;
-  }
-  assert.ok(hung >= CELL - 6, `the face's column hangs from the border in ${hung} of ${CELL - 2} columns`);
-  assert.ok(moved > 0, "the border is the displaced one: some columns start off the straight cell line");
-  // the stair: the ramp piece's rows are drawn at the span's centre, and no face column stands under it
-  const rp = WALK_ART["edge-ramp-26"], [, RB] = Array.from(ramp), rx = (RB % MW) * CELL + 9, ry = ((RB / MW) | 0) * CELL;
-  let found = false; for (let y = ry - 7; y <= ry + 7 && !found; y++) { let ok = true; for (let j = 0; j < rp.height && ok; j++) for (let i = 0; i < rp.width && ok; i++) { const o = (j * rp.width + i) * 4; if (!rp.data[o + 3]) continue; const v = px[(y + j) * W + rx + i]; if (v < 0 || Array.from(rgb[v]).join() !== [rp.data[o], rp.data[o + 1], rp.data[o + 2]].join()) ok = false; } found = ok; }
-  assert.ok(found, "the ramp piece sits on its span, within 6 px of the cell line");
+  // a horizontal block edge inside one place (never on a place edge): the block above raised, the block below low
+  const e = p.run(`(() => { const sec = sectorHere(); for (let c = 0; c < MW * MH; c++) for (let by = 0; by < 3; by++) for (let bx = 0; bx < 4; bx++) { if (sec.lv[c * 16 + by * 4 + bx] === 1 && sec.lv[c * 16 + (by + 1) * 4 + bx] === 0) return [c, bx, by]; } return null; })()`);
+  assert.ok(e, "a south-facing block edge on this map");
+  p.run("scr.px().fill(-1); drawEdgeMarks({ map: true, cs: CELL, ox: 0, oy: 0, rmOf: () => 0 })");
+  const px = p.run("scr").px(), W = p.run("SCR_W"), CELL = p.run("CELL"), MW = p.run("MW"), rgb = p.run("RGB"), face = WALK_ART["edge-cliff-face-26"], u = CELL / 4;
+  const [c, bx, by] = e, gx = (c % MW) * 4 + bx, gy = ((c / MW) | 0) * 4 + by, yb = Math.round((gy + 1) * u), x0 = Math.round(gx * u), x1 = Math.round((gx + 1) * u);
+  let hung = 0; for (let x = x0; x < x1; x++) {   // per column: the piece's column starts at the block's border row, not displaced
+    const fc = x % face.width; let ok = true;
+    for (let r = 0; r < face.height && ok; r++) { const o = (r * face.width + fc) * 4; if (!face.data[o + 3]) continue; const v = px[(yb + r) * W + x]; if (v < 0 || Array.from(rgb[v]).join() !== [face.data[o], face.data[o + 1], face.data[o + 2]].join()) ok = false; }
+    if (ok) hung++; }
+  assert.ok(hung >= (x1 - x0) * 0.6, `the face's column hangs from the block's border in ${hung} of ${x1 - x0} columns`);
+  // the stair: the ramp piece's rows stand at the stair's port, on the sector's level line (or the place edge) within two block rows
+  const r0 = p.run(`(() => { const sec = sectorHere(); const r = sec.ramps.find(r => S.revealed[r.c] && r.c + MW < MW * MH); return r ? { c: r.c, x: r.x, y: r.y } : null; })()`);
+  if (r0) { const rp = WALK_ART["edge-ramp-26"], rx = Math.round(r0.x * CELL / p.run("OCW")) - (rp.width >> 1), ey = (((r0.c / MW) | 0) + 1) * CELL;
+    let found = false; for (let y = ey - 2 * u - 2; y <= ey + 2 * u + 2 && !found; y++) { let n = 0, t = 0; for (let j = 0; j < rp.height; j++) for (let i = 0; i < rp.width; i++) { const o = (j * rp.width + i) * 4; if (!rp.data[o + 3]) continue; t++; const v = px[(y + j) * W + rx + i]; if (v >= 0 && Array.from(rgb[v]).join() === [rp.data[o], rp.data[o + 1], rp.data[o + 2]].join()) n++; } if (n / t >= 0.8) found = true; }   // a trail line may cross a few of its pixels
+    assert.ok(found, "the ramp piece stands at the stair's port, within two block rows of the place edge"); }
 });
 
 test("the land takes the desk's tiles at (wx mod w, wy mod h) for each cell size, and no code stand-in is left for them", () => {

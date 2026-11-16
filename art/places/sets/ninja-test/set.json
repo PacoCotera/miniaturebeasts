@@ -51,7 +51,16 @@
     ["cliff", "litter"],
     ["cliff", "drygrass"],
     ["cliff", "turf"],
-    ["cliff", "scree"]
+    ["cliff", "scree"],
+    ["path-top", "grass"],
+    ["ford-ground", "water"],
+    ["ford-ground", "deep"],
+    ["ford-ground", "grass"],
+    ["ford-ground", "path"],
+    ["bridge", "water"],
+    ["bridge", "deep"],
+    ["bridge", "grass"],
+    ["bridge", "path"]
   ],
   "layers": {
     "deep": {
@@ -124,6 +133,15 @@
           "sheets": ["over-path.png"]
         }
       ]
+    },
+    "path-top": {
+      "drawAs": "path"
+    },
+    "ford-ground": {
+      "drawAs": "path"
+    },
+    "bridge": {
+      "drawAs": "path"
     },
     "grass": {
       "fill": {

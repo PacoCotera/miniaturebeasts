@@ -103,22 +103,17 @@ test("on the coast a step from the beach or the shallows into the deep water is 
   assert.ok(r.refused > 5, "rows that ended against the water: " + r.refused);
 });
 
-// Owner 2026-11-11 note 18: every zoom is drawn from the same land. The map between expeditions (and so the band inset) is the overview raster shrunk, once the raster is there; the edge marks follow straight cell borders then.
-test("the map between expeditions is painted from the overview raster once it is there, the cell labels until then", async () => {
-  const { presetOverview, overviewOf, OV, CW, CH } = await import("../src/gen7/place.mjs");
+// Owner 2026-11-11 note 18: every zoom is drawn from the same land. The map between expeditions (and so the band inset) is painted from the region's sector (4 x 4 blocks a place): a pixel takes the block under it.
+test("the map between expeditions is painted from the sector: every water block is water on the map, raised blocks one step lighter", () => {
   const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(13);`);
-  const colors = p.run(`(() => { const pb = buildMapPB(); return { ready: !!overviewNow() }; })()`);
-  assert.equal(colors.ready, false, "no raster yet: the cell labels draw the map");
-  const rows = p.run(`(() => { const R = hereRegion(); return [S.regions[0].seed, R.slot[0], R.slot[1]]; })()`);
-  const ov = overviewOf(rows[0], rows[1], rows[2]); presetOverview(rows[0], rows[1], rows[2], ov);
-  const q = p.run(`(() => { const ovr = overviewNow(), pb = buildMapPB(); const want = (x, y) => ovr[Math.floor(y * ${CH} / CELL) * (MW * ${CW}) + Math.floor(x * ${CW} / CELL)];   // the raster: the cell's 24 x 28 tiles a cell, row by row
-    let bad = 0, n = 0, water = 0, raised = 0; for (let y = 0; y < MH * CELL; y += 3) for (let x = 0; x < MW * CELL; x += 3) { const v = want(x, y), c = pb.get(x, y); n++; if ((v & 15) === 2) { water++; if (c !== C.river) bad++; } if (v & 8) raised++; }
-    const cellOf = landCellOf(72); return { ready: !!ovr, bad, n, water, raised, c0: cellOf(100, 100), c1: cellOf(71, 71), c2: cellOf(72, 72) }; })()`);
-  assert.equal(q.ready, true); assert.equal(q.bad, 0, "every water tile of the raster is water on the map (of " + q.water + ")");
-  assert.ok(q.n > 1000 && q.water + q.raised > 0, "the sample read the raster");
-  assert.deepEqual([q.c0, q.c1, q.c2], [1 + 1 * 16, 0, 1 + 1 * 16], "from the raster the cell borders are the straight lines");
-  assert.ok(OV.RAISED === 8);
+  const q = p.run(`(() => { const sec = sectorHere(), pb = buildMapPB(); let bad = 0, n = 0, water = 0, raised = 0;
+    for (let y = 0; y < MH * CELL; y += 3) for (let x = 0; x < MW * CELL; x += 3) { const c = Math.floor(y / CELL) * MW + Math.floor(x / CELL), b = c * 16 + Math.min(3, Math.floor((y % CELL) * 4 / CELL)) * 4 + Math.min(3, Math.floor((x % CELL) * 4 / CELL)), v = sec.cls[b], px = pb.get(x, y); n++;
+      if ((v & 7) === 5) { water++; if (px !== C.river && px !== C.sea && px !== TINT[C.river] && px !== TINT[C.sea]) bad++; } if (sec.lv[b]) raised++; }
+    return { ready: !!sec, bad, n, water, raised }; })()`);
+  assert.equal(q.ready, true); assert.equal(q.bad, 0, "every water block of the sector is water on the map (of " + q.water + ")");
+  assert.ok(q.n > 1000 && q.water + q.raised > 0, "the sample read the sector");
 });
+
 
 // Walk fixes (owner's notes of 2026-11-10, 14-15 and 25-32): over 200 places at tier 1 (so range hazes stand) no thing the explorer can act on lies where the explorer cannot walk to it, a bush or a mark
 // is never under a crown or on a blocking tile, decor keeps its gap round every find, and the walk and the hold-Call (whole place) view read one uncovered set.

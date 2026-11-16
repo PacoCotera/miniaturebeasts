@@ -4,8 +4,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { realm7, NC } from '../src/gen7/region.mjs';
+import { RW } from '../src/gen7/world.mjs';
 import { biomeTargets } from '../src/gen7/world.mjs';
-import { MW, L, EDGE, canStepIn } from '../src/world.mjs';
+import { MW, MH, L, EDGE, canStepIn } from '../src/world.mjs';
 import { ATLAS, BIOMES } from '../src/regions.mjs';
 
 const SHARE_TOL = 5;
@@ -64,22 +65,30 @@ export function regionChecks(lo, hi) {
     assert.ok(pairs > 0);
   });
 
-  test('trails run over walkable cells, cross levels only at stairs, and every crossing has a port', () => {
-    let trails = 0, ports = 0;
-    for (const { seed, G } of all.filter(x => x.seed <= 60)) {
-      for (const t of G.trails) {
-        trails++;
-        for (let i = 1; i < t.cells.length; i++) {
-          const a = t.cells[i - 1], b = t.cells[i], d = b - a, dir = d === 1 ? 'right' : d === -1 ? 'left' : d === MW ? 'down' : 'up';
-          assert.ok(canStepIn(G, a, dir), seed + ' trail step ' + a + '>' + b);
-          if (G.level[a] !== G.level[b]) assert.equal(G.edge[(d === 1 ? 2 * a : d === -1 ? 2 * b : d === MW ? 2 * a + 1 : 2 * b + 1)], EDGE.RAMP);
+  test('the realm\'s trails run over walkable cells, cross levels only at stairs and water only at fords and bridges, and one network joins every region', () => {
+    let lists = 0, steps = 0;
+    const realms = new Map(); for (const { seed, R } of all) if (seed <= 60) realms.set(seed, R);
+    for (const [seed, R] of realms) {
+      const rd = R.realm.roads, cellOf = w => { const X = w % RW, Y = (w / RW) | 0, G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW); return { G, c }; };
+      const bridge = new Set(); for (const b of rd.bridges) for (const w of b.cells) bridge.add(w);
+      rd.lists.forEach(cells => {
+        lists++;
+        for (let i = 0; i < cells.length; i++) {
+          const { G, c } = cellOf(cells[i]);
+          assert.ok(bridge.has(cells[i]) || (G.land[c] !== L.WATER || G.ford[c] === 1) && !G.island[c], seed + ' a trail cell walks: ' + cells[i]);
+          if (!i) continue; steps++;
+          const a = cells[i - 1], b = cells[i], d = Math.abs(b - a); assert.ok(d === 1 || d === RW, seed + ' a trail steps to a 4-neighbour');
+          const A = cellOf(a), B = cellOf(b);
+          if (A.G.level[A.c] !== B.G.level[B.c]) { const up = A.G.level[A.c] > B.G.level[B.c] ? a : b, U = cellOf(up); assert.equal(up + RW === (A.G.level[A.c] > B.G.level[B.c] ? b : a), true, seed + ' a level changes down a south face'); assert.ok(U.G.cross.some(x => x.side === 's' && x.c === U.c), seed + ' at a stair'); }
         }
-      }
-      const byE = new Map(G.ports.map(p => [p.e, p]));
-      for (let i = 0; i < 2 * NC; i++) if (G.edge[i] === EDGE.RAMP) assert.equal(byE.get(i)?.kind, 'stair', 'a stair has its port');
-      for (const p of G.ports) { ports++; const len = p.e & 1 ? 24 : 28; assert.ok(p.off >= 6 && p.off <= len - 7, 'a port is 6 or more tiles from either end'); }
+      });
+      // one network: the trail cells form one connected set that touches all 25 regions
+      const adj = new Map(); rd.lists.forEach(cells => cells.forEach((w, i) => { if (!adj.has(w)) adj.set(w, new Set()); if (i) { adj.get(w).add(cells[i - 1]); if (!adj.has(cells[i - 1])) adj.set(cells[i - 1], new Set()); adj.get(cells[i - 1]).add(w); } }));
+      const first = adj.keys().next().value, seen = new Set([first]), st = [first]; while (st.length) { const u = st.pop(); for (const v of adj.get(u)) if (!seen.has(v)) { seen.add(v); st.push(v); } }
+      assert.equal(seen.size, adj.size, seed + ' one network');
+      const regs = new Set([...seen].map(w => Math.floor(((w / RW) | 0) / MH) * ATLAS + Math.floor((w % RW) / MW))); assert.equal(regs.size, ATLAS * ATLAS, seed + ' joins all regions');
     }
-    console.log('# trails checked: ' + trails + ' trails, ' + ports + ' ports (seeds 1-60 of ' + range + ')');
-    if (lo <= 60) assert.ok(trails > 0 && ports > 0);   // the trail check covers seeds 1-60 only
+    console.log('# trails checked: ' + lists + ' lists, ' + steps + ' steps (seeds 1-60 of ' + range + ')');
+    if (lo <= 60) assert.ok(lists > 0);   // the trail check covers seeds 1-60 only
   });
 }

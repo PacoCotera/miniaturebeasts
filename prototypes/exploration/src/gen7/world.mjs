@@ -8,6 +8,8 @@ import FastNoiseLite from 'fastnoise-lite';
 import FlatQueue from 'flatqueue';
 import { hash, clamp, MW, MH, L, G2, BIOME_GROUND } from '../world.mjs';
 import { slotBiome, ATLAS } from '../regions.mjs';
+import { windGrid, gridAt, WIND, erodeHeight, spineRanges } from './shape.mjs';
+import { planCuts } from './features.mjs';
 
 export const RW = ATLAS * MW, RH = ATLAS * MH, NR = RW * RH;     // the realm in cells: 80 x 100
 export const CW = 24, CH = 28;                                   // a place's tiles (the scheme's open style)
@@ -15,25 +17,86 @@ export const BLEND = 2;                                          // neighbouring
 
 // ---- the fields ----
 // One FastNoiseLite per field, seeded from the realm seed and the field's name. Returns f(x, y) in -1..1.
+// (noise-time-1) The field is read through simplex2(): the library's 2D OpenSimplex2 fractal (FBm or Ridged, weighted strength 0) with every operation in the same order, so the same double
+// to the last bit, without the per-octave method dispatch and closures; the library supplies the seed, the fractal bounding and the gradient table. noise-time.mjs digests the values.
+const SQRT3 = 1.7320508075688772935274463415059, F2 = 0.5 * (SQRT3 - 1), G2S = (3 - SQRT3) / 6;
+const PX = 501125321, PY = 1136930381, C2A = 2 * (1 - 2 * G2S) * (1 / G2S - 2), C2B = -2 * (1 - 2 * G2S) * (1 - 2 * G2S), G2M = 2 * G2S - 1, G2N = G2S - 1, SCALE = 99.83685446303647;
+function single(seed, x, y, G) {
+  const i0 = Math.floor(x), j0 = Math.floor(y), xi = x - i0, yi = y - j0, t = (xi + yi) * G2S, x0 = xi - t, y0 = yi - t, i = Math.imul(i0, PX), j = Math.imul(j0, PY);
+  let n0 = 0, n1 = 0, n2 = 0, h;
+  const a = 0.5 - x0 * x0 - y0 * y0;
+  if (a > 0) { h = Math.imul(seed ^ i ^ j, 0x27d4eb2d); h ^= h >> 15; h &= 254; n0 = a * a * (a * a) * (x0 * G[h] + y0 * G[h | 1]); }
+  const c = C2A * t + (C2B + a);
+  if (c > 0) { const x2 = x0 + G2M, y2 = y0 + G2M; h = Math.imul(seed ^ (i + PX) ^ (j + PY), 0x27d4eb2d); h ^= h >> 15; h &= 254; n2 = c * c * (c * c) * (x2 * G[h] + y2 * G[h | 1]); }
+  if (y0 > x0) {
+    const x1 = x0 + G2S, y1 = y0 + G2N, b = 0.5 - x1 * x1 - y1 * y1;
+    if (b > 0) { h = Math.imul(seed ^ i ^ (j + PY), 0x27d4eb2d); h ^= h >> 15; h &= 254; n1 = b * b * (b * b) * (x1 * G[h] + y1 * G[h | 1]); }
+  } else {
+    const x1 = x0 + G2N, y1 = y0 + G2S, b = 0.5 - x1 * x1 - y1 * y1;
+    if (b > 0) { h = Math.imul(seed ^ (i + PX) ^ j, 0x27d4eb2d); h ^= h >> 15; h &= 254; n1 = b * b * (b * b) * (x1 * G[h] + y1 * G[h | 1]); }
+  }
+  return (n0 + n1 + n2) * SCALE;
+}
+function simplex2(n, ridged) {
+  const seed0 = n._Seed, freq = n._Frequency, oct = n._Octaves, lac = n._Lacunarity, gain = n._Gain, bound = n._FractalBounding, G = Float64Array.from(n._Gradients2D);
+  return (px, py) => {
+    let x = px * freq, y = py * freq; const t = (x + y) * F2; x += t; y += t;
+    let sum = 0, amp = bound, seed = seed0;
+    for (let o = 0; o < oct; o++) {
+      const v = single(seed++, x, y, G);
+      if (ridged) sum += (Math.abs(v) * -2 + 1) * amp; else sum += v * amp;
+      x *= lac; y *= lac; amp *= gain;
+    }
+    return sum;
+  };
+}
 export function noiseField(seed, tag, freq, fractal = 'FBm', octaves = 4) {
   const n = new FastNoiseLite(hash(seed, 'gen7', tag) | 0);
   n.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2); n.SetFrequency(freq);
   n.SetFractalType(FastNoiseLite.FractalType[fractal]); n.SetFractalOctaves(octaves); n.SetFractalGain(0.5);
-  return (x, y) => n.GetNoise(x, y);
+  return simplex2(n, fractal === 'Ridged');
 }
 // The fields as one function of a world position: { height, temperature, humidity, wildness, rockiness }, each 0..1. The region samples it at cell
 // centres; the place layer (G2) samples the very same function at every tile.
+// The shape passes (shape.mjs) can each be switched off for the before-and-after measures (setShape); the game runs them all.
+let SHAPE_ON = { erode: true, wind: true, spine: true };
+export const shapeOn = () => SHAPE_ON;
+export function setShape(over) { SHAPE_ON = { ...SHAPE_ON, ...over }; rawCache.clear(); windCache.clear(); }
+const windCache = new Map();
+// rain with the wind (world-f3a R3): half the humidity is today's noise, half a sweep of moisture across the realm's height from the west
+function windOf(seed, core) {
+  const key = seed + ':' + (SHAPE_ON.wind ? 1 : 0); let g = windCache.get(key); if (g) return g;
+  const E = new Float64Array(NR), M0 = new Float64Array(NR);
+  for (let Y = 0; Y < RH; Y++) for (let X = 0; X < RW; X++) { const f = core(X, Y, undefined); E[Y * RW + X] = f.height; M0[Y * RW + X] = f.humidity; }
+  g = windGrid(spined(seed, E), M0, RW, RH);   // the wind meets the ranges where they are drawn
+  if (windCache.size > 8) windCache.clear();
+  windCache.set(key, g); return g;
+}
+// the height with its ranges drawn as spines (world-f3a R2); the raising height is estimated from the biomes' level shares
+function spined(seed, E) {
+  if (!SHAPE_ON.spine) return E;
+  const tgt = slotBiomes(seed).map(biomeTargets), q = new Float64Array(tgt.length);
+  for (let s = 0; s < tgt.length; s++) q[s] = quantile(slotCells(s).map(c => E[c]).sort((a, b) => a - b), clamp(tgt[s].lv[0] / 100, 0.04, 0.9));
+  return spineRanges(E, blend(q), new Uint8Array(NR), RW, RH);
+}
+// the height of fieldsAt alone (the same number, the other fields not read): the realm's edge probe reads thousands of tiles
+export function heightAt(seed) {
+  const elev = noiseField(seed, 'elev', 1 / 13), ridge = noiseField(seed, 'ridge', 1 / 10, 'Ridged', 3), wx = noiseField(seed, 'warpx', 1 / 18, 'FBm', 2), wy = noiseField(seed, 'warpy', 1 / 18, 'FBm', 2);
+  return (X, Y) => { const u = X + 4 * wx(X, Y), v = Y + 4 * wy(X, Y), r = ridge(u, v); return clamp(0.5 + 0.36 * elev(u, v) + 0.2 * r, 0, 1); };
+}
 export function fieldsAt(seed) {
   const elev = noiseField(seed, 'elev', 1 / 13), ridge = noiseField(seed, 'ridge', 1 / 10, 'Ridged', 3);
   const wx = noiseField(seed, 'warpx', 1 / 18, 'FBm', 2), wy = noiseField(seed, 'warpy', 1 / 18, 'FBm', 2);
   const moist = noiseField(seed, 'moist', 1 / 9, 'FBm', 3), wild = noiseField(seed, 'wild', 1 / 6, 'FBm', 3), temp = noiseField(seed, 'temp', 1 / 24, 'FBm', 2);
-  return (X, Y) => {
+  let wind = null;
+  const core = (X, Y, wn) => {
     const u = X + 4 * wx(X, Y), v = Y + 4 * wy(X, Y), r = ridge(u, v);   // the domain warp bends the ridges
-    const height = clamp(0.5 + 0.36 * elev(u, v) + 0.2 * r, 0, 1), humidity = clamp(0.5 + 0.5 * moist(X, Y), 0, 1);
+    const height = clamp(0.5 + 0.36 * elev(u, v) + 0.2 * r, 0, 1), humidity = clamp(wn === undefined ? 0.5 + 0.5 * moist(X, Y) : 0.5 + WIND.GAIN * ((1 - WIND.MIX) * (0.5 + 0.5 * moist(X, Y)) + WIND.MIX * wn - 0.5), 0, 1);
     const temperature = clamp(0.5 + 0.5 * temp(X, Y) - 0.25 * Math.max(0, height - 0.6), 0, 1);   // the high ground is cooler
     const wildness = clamp(0.55 * humidity + 0.45 * (0.5 + 0.5 * wild(X, Y)) - 0.4 * Math.max(0, height - 0.72) - 0.25 * Math.max(0, 0.4 - temperature), 0, 1);
     return { height, temperature, humidity, wildness, rockiness: clamp((0.5 + 0.5 * r) * (height > 0.5 ? 1 : 0.55), 0, 1) };
   };
+  return (X, Y) => { if (wind === null) wind = SHAPE_ON.wind ? windOf(seed, core) : false; return core(X, Y, wind ? gridAt(wind, RW, RH, X, Y) : undefined); };
 }
 
 // ---- the biomes' targets ----
@@ -100,7 +163,11 @@ export function rawRealm(seed) {
   for (let c = 0; c < NR; c++) { const x = c % RW, y = (c / RW) | 0; if (x === 0 || y === 0 || x === RW - 1 || y === RH - 1) continue;
     let best = -1; for (const [dx, dy] of nb4) { const m = (y + dy) * RW + x + dx; if (Z[m] < Z[c] && (best < 0 || Z[m] < Z[best])) best = m; } down[c] = best; }
   for (let k = NR - 1; k >= 0; k--) { const c = order[k]; acc[c] += 0.4 + M[c]; if (down[c] >= 0) acc[down[c]] += acc[c]; }
-  const raw = { seed, E, M, T, F, K, Z, acc, down };
+  // water wears the land (world-f3a R1): a light stream-power pass on the height; the levels are cut from this, the water and the flow above stay as the noise made them
+  // ranges first drawn as spines (world-f3a R2) on the noise height, where the raising height is estimated from the biomes' level shares; then the water wears the result
+  const Es = spined(seed, E);
+  const wetW = Float64Array.from(M, v => 0.4 + v), Ee = SHAPE_ON.erode ? erodeHeight(Es, wetW, RW, RH) : Es;
+  const raw = { seed, E, Ee, M, T, F, K, Z, acc, down };
   if (rawCache.size > 8) rawCache.clear();
   rawCache.set(seed, raw); return raw;
 }
@@ -221,11 +288,14 @@ const jit = (seed, s, t, tag) => t ? ((hash(seed, 'gen7', 'try', tag, s, t) / 21
 // can be re-drawn. Only the slot's own parameters change, and they blend into the neighbours' border cells by position, so borders keep agreeing.
 // The e0 pass (world-topdown-spec-1 2.1 step 3): every level the realm decides is written into its raising height. A cell whose level is not the sign of the height at its centre
 // (water, its ring, closures, joins, the coast's taper) gets e0 one EDIT past the height, so the tile land rule (levels.mjs) agrees with the realm by construction. Water is always low.
-export const EDIT = 0.16;
+export const EDIT = 0.16, EDIT_CUT = 0.9;
 export function editE0(realm) {
   const { land, level, E, e0 } = realm;
   for (let c = 0; c < e0.length; c++) { const want = land[c] === L.WATER ? 0 : level[c], have = E[c] >= e0[c] ? 1 : 0; if (have !== want) e0[c] = want ? E[c] - EDIT : E[c] + EDIT; }
+  // a cut cell (a ravine's) is held low harder: the land is read at a position moved by the warp, so a cut one cell wide would otherwise be read from the raised cells beside it
+  if (realm.cuts) for (const k of [...realm.cuts.ravines, ...realm.cuts.gaps]) for (const c of k.cells) if (e0[c] < E[c] + EDIT_CUT) e0[c] = E[c] + EDIT_CUT;
 }
+const ringOf = () => Uint8Array.from({ length: NR }, (_, c) => { const x = c % RW, y = (c / RW) | 0; return x === 0 || y === 0 || x === RW - 1 || y === RH - 1 ? 1 : 0; });   // the cells the coast will take
 export function buildRealm(seed, tries = null) {
   const R = rawRealm(seed), { E, M, F, K, Z, acc } = R, nS = ATLAS * ATLAS, sb = slotBiomes(seed), tg = sb.map(biomeTargets), tr = s => (tries ? tries[s] : 0);
   // water: pulled by the slot's rules
@@ -249,10 +319,11 @@ export function buildRealm(seed, tries = null) {
     wT[s] = cutTop(fs, nw);
     const ks = dry.filter(c => F[c] < wT[s]).map(c => K[c]).sort((a, b) => b - a);
     rT[s] = cutTop(ks, Math.min(t.rock, ks.length));
-    const es = dry.map(c => E[c]).sort((a, b) => a - b), a = clamp(t.lv[0] / 100 + 0.06 * jit(seed, s, tr(s), 'e0'), 0.04, 0.9);
-    e0[s] = quantile(es, a);
   }
-  const wTc = blend(wT), rTc = blend(rT), e0c = blend(e0);
+  // the raising height per slot: the height's quantile over the slot's dry cells that puts the fixed level threshold at the level share (the height is the noise as water wore it, and ranges drawn as spines)
+  const slotE0 = Eh => { for (let s = 0; s < nS; s++) { const dry = slotCells(s).filter(c => !land[c]), es = dry.map(c => Eh[c]).sort((a, b) => a - b), a = clamp(tg[s].lv[0] / 100 + 0.06 * jit(seed, s, tr(s), 'e0'), 0.04, 0.9); e0[s] = quantile(es, a); } return blend(e0); };
+  const Eh = R.Ee, e0c = slotE0(Eh);
+  const wTc = blend(wT), rTc = blend(rT);
   for (let c = 0; c < NR; c++) { if (land[c]) continue; land[c] = F[c] >= wTc[c] ? L.WOOD : K[c] >= rTc[c] ? L.ROCK : L.MEADOW; }
   const onR = (x, y) => x >= 0 && y >= 0 && x < RW && y < RH;
   const pond = [];
@@ -265,12 +336,19 @@ export function buildRealm(seed, tries = null) {
     if (((dryAt(x - 1, y) && dryAt(x + 1, y)) || (dryAt(x, y - 1) && dryAt(x, y + 1))) && hash(seed, 'gen7', 'ford', x, y) % 100 < 28) ford[c] = 1; }
   // levels: fixed thresholds on the pulled height; water and its 8 neighbours are level 0; then today's closure, saddles and small zones
   const level = new Uint8Array(NR);   // one raised level only (the art director, Call 1): 0 or 1
-  for (let c = 0; c < NR; c++) level[c] = land[c] === L.WATER ? 0 : E[c] >= e0c[c] ? 1 : 0;
+  for (let c = 0; c < NR; c++) level[c] = land[c] === L.WATER ? 0 : Eh[c] >= e0c[c] ? 1 : 0;
   for (let c = 0; c < NR; c++) { if (land[c] !== L.WATER) continue; const x = c % RW, y = (c / RW) | 0; for (const [dx, dy] of NB8) if (onR(x + dx, y + dy)) level[(y + dy) * RW + x + dx] = 0; }
   closeLevels(level, RW, RH); fixSaddles(level, RW, RH);
   mergeSmallZones(c => land[c] !== L.WATER || ford[c] === 1, land, level, RW, RH, G2.ZONE_MIN);
   joinSouth(land, ford, level);
-  const realm = { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, M, T: R.T, F, K, acc, e0: e0c };
+  // the tile layer reads the noise height against e0: what water and the spines did to the height is carried by e0 (the raw height less the worn one), so the two scales agree
+  // the cuts (world-f3 F3): stream ravines and through-ravines lower cells of `level` here, before the raising heights are written, so the tile layer holds them low
+  const cutIn = { RW, RH, level, land, ford, wkind, acc: Int32Array.from(acc, v => Math.round(v)), down: R.down, coast: ringOf(), slot: Uint8Array.from({ length: NR }, (_, c) => slotOfCell(c % RW, (c / RW) | 0)),
+    lift: Int32Array.from({ length: NR }, (_, c) => Math.round(1000 * (Eh[c] - e0c[c]))), seat: c => { const w = c + 2 * RW; return ((c / RW) | 0) % MH !== MH - 1 && (w >= NR || land[w] !== L.WATER || ford[w] === 1); } };
+  const cuts = planCuts(cutIn); level.set(cuts.level);
+  const line = Float64Array.from(e0c);   // the raise line in the worn height's own scale (a cell is raised where the worn height reaches it)
+  for (let c = 0; c < NR; c++) e0c[c] += E[c] - Eh[c];
+  const realm = { seed, tries: tries ? Uint8Array.from(tries) : new Uint8Array(nS), slotBiome: sb, land, wkind, ford, level, E, worn: Eh, line, cuts, M, T: R.T, F, K, acc, e0: e0c };
   editE0(realm);
   return realm;   // e0: the height at which a cell is raised, per cell, which the place layer reads at tile scale
 }
