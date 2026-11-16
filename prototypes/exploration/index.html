@@ -5631,7 +5631,8 @@ function drawPatchBody(t) {
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   const heroDraw = () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)), spriteRm(P.x, P.y));   // through the places' light tables like the walk props
+    const heroRm = spriteRm(P.x, P.y);
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)), heroRm === 2 ? 0 : heroRm);   // through the places' light tables like the walk props, except the night's dark2 step: the explorer keeps its own colours then (outline kept), so it reads on the dark land (GD note 2026-11-16)
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); };
   items.push({ y: RT.pl.y + 5, hero: true, d: heroDraw });
   if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet

@@ -67,7 +67,7 @@ export function cliffPieces(ir, A) {
   }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const i = y * W + x, px = x - m, py = y - m;
-    for (const layer of [face, endE, endW]) if (layer[i]) out.push(piece(layer[i], px, py, py));
+    for (const layer of [face, endE, endW]) if (layer[i]) { const pc = piece(layer[i], px, py, py); if (/^cliff-corner-[ew]-3$/.test(pc.kind)) pc.kind = pc.kind.replace('-3', '-4'); out.push(pc); }   // preview5-fix-1: corner-3's top is the pale square with the red mark: its cell takes the signed corner-4 piece instead
     // the foot overlay under every face cell (a column or a corner cell: the cell's own column phase) and under every end piece (its hand), from the lip row L, before the face of its line
     for (const [layer, hand] of [[face, null], [endE, 'e'], [endW, 'w']]) if (layer[i]) {
       const kind = hand ? `cliff-foot-${hand}` : `cliff-foot-${tiles.clsOf(phase[i]).replace('col-', '') * 1 + 1}`;
