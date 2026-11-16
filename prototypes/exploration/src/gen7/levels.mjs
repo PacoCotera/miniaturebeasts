@@ -1059,8 +1059,15 @@ export function tileLevel(L, gx, gy) {
   const X = Math.floor(gx / CW), Y = Math.floor(gy / CH);
   return levelCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW];
 }
+// land-reach-2: a tile the field puts on a level above the lowest that the passes left low (a mesa the fill lowered, a bump cut). Read from the world tile alone (its q and its final level), so every window agrees.
+export function loweredAt(L, gx, gy) {
+  if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH || inlandOf(gx, gy) < RAISE_OFF) return false;
+  const X = Math.floor(gx / CW), Y = Math.floor(gy / CH), k = (gy - Y * CH) * CW + gx - X * CW;
+  if (levelCell(L, X, Y)[k] !== 0) return false;
+  return qCell(L, X, Y)[k] >= L.rule.levels[0];
+}
 // raised land: level 1 or more, and at least RAISE_OFF tiles from the border line
-export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
+export const raised =(L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
 
 // ---- the way up: placed on the stair's held-straight site, never searched ----
 // The stair on the edge between the cell A = (ax, ay) and the cell south of it, A being the higher, has its site made before the passes (landPipeline: 6 columns held, the lip row and 4 rows above raised, the foot

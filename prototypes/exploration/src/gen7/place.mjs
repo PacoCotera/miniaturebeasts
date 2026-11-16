@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { levelsOf, loweredAt, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
 import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
@@ -102,6 +102,7 @@ function chunk(S, X, Y) {
 // a world tile's level (0 at the map's end: the closing band and a tile beyond it keep to the low ground)
 export const levelAt = (seed, gx, gy) => tileLevel(levelsOf(ctxOf(seed).re), gx, gy);
 export const raisedAt = (seed, gx, gy) => raisedTile(levelsOf(ctxOf(seed).re), gx, gy);
+export const loweredTileAt = (seed, gx, gy) => loweredAt(levelsOf(ctxOf(seed).re), gx, gy);   // land-reach-2: the tools count the lowered parts by their ground
 
 // ---- ways up: on the straight south-facing face the region chose the stair for (levels.mjs `findWayup`, the one face test), nearest the stair's port ----
 // Every stair is on an edge between a cell A (north, the higher) and the cell south of it, and the region only chose it where a face exists: no way up is ever carved. The east,
@@ -438,10 +439,11 @@ function windowOf(S, X, Y) {
     for (let ty = 0; ty < CH; ty++) { const o = (j * CH + ty) * W + i * CW, k = ty * CW; for (let tx = 0; tx < CW; tx++) { forest[o + tx] = c.forest[k + tx]; rock[o + tx] = c.rock[k + tx]; wet[o + tx] = c.wet[k + tx]; scrub[o + tx] = c.scrub[k + tx]; push[o + tx] = c.push[k + tx]; } }
   }
   // ground from the fields by the biome's recipe (ground.mjs, blended over the borders between biomes): sand, then the wood floor, then scrub, then thicket, then water (the thicket's rim breaks into scrub clumps)
+  const LVL0 = levelsOf(S.re);
   const slotAt = (a, b) => S.re.slotBiome[clamp(b, 0, ATLAS - 1) * ATLAS + clamp(a, 0, ATLAS - 1)], shoreOf = new Float32Array(N);
   for (let i = 0; i < N; i++) {
     const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), r = recipeAt(slotAt, ATLAS, MW * CW, MH * CH, gx, gy);
-    if (rock[i] + r.rockAdd > SAND_AT) t[i] = TV.SCREE;
+    if (rock[i] + r.rockAdd > SAND_AT && !loweredAt(LVL0, gx, gy)) t[i] = TV.SCREE;   // land-reach-2: a part the land lowered takes its neighbours' recipe ground, not scree
     else if (r.litterAt < LITTER_NONE && forest[i] + 0.35 * S.nE(gx, gy) + push[i] > r.litterAt) t[i] = TV.LITTER;
     else if (r.dry > 0 || r.turf > 0) { const u = 0.5 + 0.5 * S.nD(gx, gy); if (u < r.dry) t[i] = TV.DRY; else if (1 - u < r.turf) t[i] = TV.TURF; }
     if (forest[i] > r.scrubAt && forest[i] <= r.thicketAt && scrub[i] > r.scrubNoise && t[i] !== TV.DRY && t[i] !== TV.TURF) t[i] = TV.SCRUB;   // a scrub patch is darker than dry grass and turf and would read as a hole on them: none lies on them (art director 2026-11-10)
