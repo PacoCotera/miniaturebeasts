@@ -319,7 +319,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
       for (const [dx, dy] of SIDE4) { const a = px + dx, b = py + dy; if (inMap(a, b) && G(a, b) === SCRUB && !seen.has(key(a, b))) { seen.set(key(a, b), 1); q.push([a, b]); } }
     }
     let pick = null;
-    if (!eligible && q.length <= SH.smallPatchMax) for (const [a, b] of q) if (!pick || before(a, b, pick[0], pick[1])) pick = [a, b];
+    if (!eligible && q.length <= SH.smallPatchMax) for (const [a, b] of q) if (!(flags(a, b) & 1) && (!pick || before(a, b, pick[0], pick[1]))) pick = [a, b];   // never a wall tile (water, thicket, cliff flank): decor-mix-2
     for (const [a, b] of q) patchMemo.set(key(a, b), pick && pick[0] === a && pick[1] === b);
     if (patchMemo.size > 400000) patchMemo.clear();
     return patchMemo.get(k);
