@@ -129,8 +129,10 @@ function stairsOf(S) {
     for (const cr of G.cross) {
       const X = ax * MW + (cr.c % MW), Y = ay * MH + ((cr.c / MW) | 0), south = cr.side === 's', e = 2 * cr.c + (south ? 1 : 0);
       const A = [X, Y], B = south ? [X, Y + 1] : [X + 1, Y], lvA = S.lvC[cellIdx(A[0], A[1])], lvB = S.lvC[cellIdx(B[0], B[1])], port = portOffset(S.seed, ax, ay, e);
-      const st = { A, B, south, upperIsA: lvA > lvB, port, wayup: null, kind: south ? (lvA > lvB ? 'south' : 'north') : 'east-west' };
-      if (st.kind === 'south') st.wayup = findWayup(L, X, Y, port);
+      const st = { A, B, south, upperIsA: lvA > lvB, port, kind: south ? (lvA > lvB ? 'south' : 'north') : 'east-west' };
+      // the way up is found on first read (the stair's own land window, levels.mjs findWayup): a place reads only the stairs near its window, so the first place no longer waits for every stair of the realm
+      let wu = null, have = st.kind !== 'south';
+      Object.defineProperty(st, 'wayup', { enumerable: true, get() { if (!have) { wu = findWayup(L, X, Y, port); have = true; } return wu; } });
       out.push(st);
     }
   }
@@ -523,12 +525,14 @@ function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
 export const loneCauses = { path: 0, flip: 0, wide: 0, mouth: 0, notch: 0, other: 0 };   // diagnostics for the tools: lone tiles the carving left, by cause, before they were widened
 
 function windowOf(S, X, Y) {
-  const W = WIN_X * CW, H = WIN_Y * CH, gx0 = (X - HX) * CW, gy0 = (Y - HY) * CH, N = W * H, seed = S.seed;
+  const W = WIN_X * CW, H = WIN_Y * CH, gx0 = (X - HX) * CW, gy0 = (Y - HY) * CH, N = W * H, seed = S.seed, stg = globalThis.F6_STAGE || null;   // F6_STAGE(label): the tools' stage clock (tools/slices-time.mjs)
+  if (stg) stg('start');
   const t = new Uint8Array(N).fill(TV.GRASS), forest = new Float32Array(N), rock = new Float32Array(N), wet = new Float32Array(N), scrub = new Float32Array(N), push = new Float32Array(N);
   for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) {
     const c = chunk(S, X - HX + i, Y - HY + j);
     for (let ty = 0; ty < CH; ty++) { const o = (j * CH + ty) * W + i * CW, k = ty * CW; for (let tx = 0; tx < CW; tx++) { forest[o + tx] = c.forest[k + tx]; rock[o + tx] = c.rock[k + tx]; wet[o + tx] = c.wet[k + tx]; scrub[o + tx] = c.scrub[k + tx]; push[o + tx] = c.push[k + tx]; } }
   }
+  if (stg) stg('fields');
   // ground from the fields by the biome's recipe (ground.mjs, blended over the borders between biomes): sand, then the wood floor, then scrub, then thicket, then water (the thicket's rim breaks into scrub clumps)
   const slotAt = (a, b) => S.re.slotBiome[clamp(b, 0, ATLAS - 1) * ATLAS + clamp(a, 0, ATLAS - 1)], shoreOf = new Float32Array(N);
   for (let i = 0; i < N; i++) {
@@ -541,8 +545,10 @@ function windowOf(S, X, Y) {
     if (wet[i] > r.waterAt || (r.chan > 0.005 && Math.abs(S.nC(gx, gy)) < r.chan && S.nM(gx, gy) > r.mask)) t[i] = TV.WATER;
     shoreOf[i] = r.shore;
   }
+  if (stg) stg('ground');
   dropPools(t, W, H);
-  smoothBays(t, W, H, TV.WATER); smoothBays(t, W, H, TV.THICKET);   // the art director, b and c: no bay, strip or block under 3 tiles wide, so shores and thickets do not read as walls
+  smoothBays(t, W, H, TV.WATER); smoothBays(t, W, H, TV.THICKET);
+  if (stg) stg('pools+bays');   // the art director, b and c: no bay, strip or block under 3 tiles wide, so shores and thickets do not read as walls
   // a sand shore round every body of water in the Lakes and the Highpools, 1 to 3 tiles wide by noise (rule 4: one shore kind all round, so a beach is never partway along a shore)
   { const dist = new Int8Array(N).fill(99), q = [];
     for (let i = 0; i < N; i++) if (t[i] === TV.WATER) { dist[i] = 0; q.push(i); }
@@ -552,12 +558,15 @@ function windowOf(S, X, Y) {
       if (!shoreOf[i] || dist[i] === 0 || dist[i] > 3) continue;
       const wide = Math.max(1, Math.min(3, Math.round(shoreOf[i] * (0.45 + 0.55 * (0.5 + 0.5 * S.nS(gx0 + (i % W), gy0 + ((i / W) | 0)))))));
       if (dist[i] <= wide && (t[i] === TV.GRASS || t[i] === TV.LITTER || t[i] === TV.DRY || t[i] === TV.TURF || t[i] === TV.SCREE)) t[i] = TV.SAND; } }
+  if (stg) stg('shore');
   majority(t, W, H, 2); minFeature(t, W, H);
+  if (stg) stg('majority+minFeature');
   for (let i = 0; i < N; i++) {   // the coast band (see COAST_REACH): a function of the world tile alone, so a place and its neighbour lay the same shore; its edges are the smoothed lines of coastEdges
     const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), d = inlandOf(gx, gy); if (d >= COAST_REACH) continue;
     const [deepEnd, wl, sandEnd] = coastEdges(S, gx, gy);
     t[i] = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < sandEnd ? TV.SAND : d < sandEnd + 4 ? TV.GRASS : t[i];
   }
+  if (stg) stg('coast');
   const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
@@ -566,11 +575,14 @@ function windowOf(S, X, Y) {
   // the cliff's outline is the blocks' outline and nothing else bites into it: terrain the cliff has no pair with keeps one tile of grass between it and the rim, made on its side
   { const isRaised = (x, y) => x >= 0 && y >= 0 && x < W && y < H && raised[y * W + x] === 1;   // relief.mjs's touchesRaised: the 3 x 3 round a tile holds raised land
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = y * W + x; if (!raised[i] && t[i] !== TV.GRASS && !CLIFF_LOWERS.has(t[i]) && touchesRaised(isRaised, x, y)) t[i] = TV.GRASS; } }   // sand too: a sand-grass edge reaching the rim would be a three-terrain corner, and the legal pass would eat the sand along the whole rim
+  if (stg) stg('raised');
   const isCliff = v => v === TV.CLIFF;
   minFeature(t, W, H, isCliff, isCliff);
+  if (stg) stg('cliff minFeature');
   // ways up (Rule 1.5): the stairs' faces were found on the block land; nothing is carved. Kept when they touch the window
   const wayups = [];
   for (const st of stairsOf(S)) {
+    if (Math.abs(st.A[0] - X) > HX + 1 || Math.abs(st.A[1] - Y) > HY + 1) continue;   // a way up stands in its stair's cell or the one south of it: a stair this far from the window has none in it (and is not looked for)
     const wu = st.wayup; if (!wu) continue;
     if (wu.x - 1 < gx0 || wu.x + 3 > gx0 + W || wu.y - 3 < gy0 || wu.y + 3 > gy0 + H) continue;
     wayups.push({ x: wu.x, y: wu.y, w: wu.w, h: wu.h });
@@ -621,7 +633,7 @@ function windowOf(S, X, Y) {
     for (const br of bridgeList(S, (a, b) => portOff(S, a, b))) layBridge(t, W, H, gx0, gy0, br);
     // F6 try 2: the water of a stream within PORT_HOLD tiles of a place edge is held (its port rows): no pass shaves it, so a stream never stops at the seam
     for (let k = 0; k < N; k++) if (streamMask[k]) { const mx = (gx0 + (k % W)) % CW, my = (gy0 + ((k / W) | 0)) % CH; if (mx < PORT_HOLD || mx >= CW - PORT_HOLD || my < PORT_HOLD || my >= CH - PORT_HOLD) portHold[k] = 1; }
-    snap('streams'); }
+    snap('streams'); if (stg) stg('streams'); }
   // trails: through each cell of the window, port to port (or to the cell's hub at a trail's end), by the same A* the region uses, painted with a 2 x 2 brush. Raised land takes no path (art slot).
   // a trail runs on ground you can walk: a route tile is open when the 4 x 4 tiles round its 2 x 2 brush hold no water, thicket or raised land; sand and scrub under it turn to grass and its brush to path,
   // so path never meets anything but grass
@@ -758,7 +770,7 @@ function windowOf(S, X, Y) {
     };
     for (const a of anchors) { const fx = a[0] - gx0, fy = a[1] - gy0; if (a[0] >= cx * CW && a[0] < cx * CW + CW && a[1] >= cy * CH && a[1] < cy * CH + CH) continue; if (fx < 1 || fy < 1 || fx >= W - 3 || fy >= H - 3) continue; paint(fx, fy, true); routeBox(fx, fy, ox + lx(a), oy + ly(a)); }
   }
-  snap('trail');
+  snap('trail'); if (stg) stg('trails+gates');
   // the set's pairs are all opaque (Rule 1.2-1.3): every 2 x 2 block holds at most two terrains and they must be a pair; the lesser gives way to grass. The 2 x 2 rule alternates
   // with the legal pass (Rule 1.9), and no one-row gully stays under a raised edge. The gates (openGates) are cut once the land has settled, and it settles again round them.
   const wuTile = new Set(); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const wx = x - gx0, wy = y - gy0; if (wx >= 0 && wy >= 0 && wx < W && wy < H) wuTile.add(wy * W + wx); }
@@ -809,7 +821,7 @@ function windowOf(S, X, Y) {
   const offLane = () => { for (let k = 0; k < N; k++) if (t[k] === TV.PATH && !lane[k]) t[k] = TV.GRASS;
     const round = []; for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const k = y * W + x; if (lane[k] || t[k] !== TV.GRASS) continue; let n = 0; for (const d of [1, -1, W, -W]) if (t[k + d] === TV.PATH) n++; if (n >= 3) round.push(k); }
     for (const k of round) lane[k] = 1; };
-  settle(null); snap('settle1'); offLane(); fade(null); snap('fade1');
+  settle(null); snap('settle1'); if (stg) stg('settle'); offLane(); fade(null); snap('fade1'); if (stg) stg('fade');
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y, streamMask);
   for (let k = 0; k < N; k++) if (gate[k] && t[k] === TV.PATH) lane[k] = 1;   // a gate's path is a lane of its trail
   if (gate.some(v => v)) { settle(gate); offLane(); fade(gate); }
@@ -821,7 +833,8 @@ function windowOf(S, X, Y) {
   curTop = false;
   const spurs = S.spurs || (S.spurs = new Map());
   for (const st of stairsOf(S)) {
-    const wu = st.wayup; if (!wu || st.kind !== 'south') continue;
+    if (st.kind !== 'south' || Math.abs(st.A[0] - X) > 3 || st.A[1] < Y - 4 || st.A[1] > Y + 3) continue;   // the foot's cell or the stair's low cell must be in the middle 3 x 3 (below): a stair further off is never read
+    const wu = st.wayup; if (!wu) continue;
     const fcx = Math.floor(wu.x / CW), fcy = Math.floor((wu.y + 2) / CH); if (Math.abs(fcx - X) > 1 || (Math.abs(fcy - Y) > 1 && Math.abs(st.B[1] - Y) > 1)) continue;   // the foot's cell or the stair's low cell (where a spur may run) is in the middle 3 x 3
     if (!(tr.by.get(st.A[0] * 1000 + st.A[1]) || []).some(({ t: T, k }) => [T.cells[k - 1], T.cells[k + 1]].some(o => o && o[0] === st.B[0] && o[1] === st.B[1]))) continue;   // a stair the trail takes
     const fx = wu.x - gx0, fy = wu.y - gy0, key = wu.x + ',' + wu.y;
@@ -897,7 +910,9 @@ function windowOf(S, X, Y) {
         if (v === TV.SAND || v === TV.SCREE || v === TV.THICKET || v === TV.SCRUB || v === TV.LITTER || v === TV.DRY || v === TV.TURF) t[j] = TV.GRASS; } }
       if (st) { const m = st.splits || (st.splits = new Map()), r = m.get(X + ',' + Y) || { w: 0, o: 0 }; r.w++; m.set(X + ',' + Y, r); }
     } }
-  return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, top: topsOf(t, recipe, W, H, pathTop) };
+  if (stg) stg('gaps+spurs');
+  const topLayer = topsOf(t, recipe, W, H, pathTop); if (stg) stg('tops');
+  return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, top: topLayer };
 }
 
 // ---- the ground under raised land (amendment L): a raised tile's top is the biome's recipe ground there ----

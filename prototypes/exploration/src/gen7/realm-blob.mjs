@@ -17,7 +17,15 @@ const kindOf = v => { const n = v && v.constructor && v.constructor.name; return
 
 // keys the places hang on the realm as caches (streams.mjs flowClasses, a closure): derived from the rest, made again on first use, never stored and never in the digest
 const DERIVED = ['flowClasses'];
-const clean = R => { if (!DERIVED.some(k => R.realm && k in R.realm)) return R; const realm = { ...R.realm }; for (const k of DERIVED) delete realm[k]; return { ...R, realm }; };
+// and the roads' stage clock (roads.mjs stats t_* and ms*: milliseconds read from the clock while the realm was made, different every run): not part of the realm, so neither stored nor in the digest
+const CLOCK = /^(t_|ms[A-Z])/;
+const clean = R => {
+  const re = R.realm, st = re && re.roads && re.roads.stats, clock = st && Object.keys(st).some(k => CLOCK.test(k));
+  if (!clock && !DERIVED.some(k => re && k in re)) return R;
+  const realm = { ...re }; for (const k of DERIVED) delete realm[k];
+  if (clock) { const stats = {}; for (const k of Object.keys(st)) if (!CLOCK.test(k)) stats[k] = st[k]; realm.roads = { ...re.roads, stats }; }
+  return { ...R, realm };
+};
 
 // ---- the digest ----
 export function realmDigest(R0) {
