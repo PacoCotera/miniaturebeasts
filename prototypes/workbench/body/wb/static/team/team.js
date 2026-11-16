@@ -1,25 +1,10 @@
 import { html, render, useState, useEffect } from "./preact-htm.js";
+import { dur, ago, pct, Bar } from "./util.js";
+import { Coordination } from "./coord.js";
 
 const REFRESH_MS = 10000;
 const DESK = { lead: "Lead", art: "Art director", design: "Game designer", ui: "Screens and phone UI", pixel: "Pixel art", editorial: "Book editor", hardware: "Hardware", mobile: "Phone app" };
 
-const dur = (s) => {
-  if (s == null) return "?";
-  const m = Math.round(s / 60);
-  if (m < 1) return "under 1 min";
-  if (m < 60) return m + " min";
-  const h = Math.floor(m / 60);
-  return h + " h " + String(m % 60).padStart(2, "0") + " min";
-};
-const ago = (s) => (s == null ? "" : s < 90 ? "just now" : dur(s) + " ago");
-const pct = (n) => (n == null ? "?" : Math.round(n) + "%");
-const clamp = (n) => Math.max(0, Math.min(100, n));
-
-const Bar = ({ value, mark, kind }) => html`
-  <div class="bar" role="img" aria-label=${"bar at " + Math.round(value) + " percent"}>
-    <i class=${kind || ""} style=${"width:" + clamp(value) + "%"}></i>
-    ${mark != null && html`<u style=${"left:calc(" + clamp(mark) + "% - 1px)"}></u>`}
-  </div>`;
 
 // ---- top screen: is it moving, what comes to the owner next, is anything stuck
 function Top({ d, stale }) {
@@ -137,7 +122,14 @@ function Queue({ d }) {
     </details>`;
 }
 
+const Tabs = ({ tab, setTab }) => html`
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected=${tab === "work"} class=${tab === "work" ? "on" : ""} onClick=${() => setTab("work")}>Work</button>
+    <button role="tab" aria-selected=${tab === "coord"} class=${tab === "coord" ? "on" : ""} onClick=${() => setTab("coord")}>Coordination</button>
+  </div>`;
+
 function App() {
+  const [tab, setTab] = useState("work");
   const [d, setD] = useState(null);
   const [err, setErr] = useState(null);
   const [last, setLast] = useState(Date.now());
@@ -157,9 +149,11 @@ function App() {
     const a = setInterval(load, REFRESH_MS), b = setInterval(() => setNow(Date.now()), 1000);
     return () => { live = false; clearInterval(a); clearInterval(b); };
   }, []);
-  if (!d) return html`<p class="loading">${err || "Loading the team…"}</p>`;
+  if (tab === "coord") return html`<${Tabs} tab=${tab} setTab=${setTab} /><${Coordination} />`;
+  if (!d) return html`<${Tabs} tab=${tab} setTab=${setTab} /><p class="loading">${err || "Loading the team…"}</p>`;
   const stale = now - last > 30000 ? Math.round((now - last) / 1000) : 0;
   return html`
+    <${Tabs} tab=${tab} setTab=${setTab} />
     <${Top} d=${d} stale=${stale} />
     ${err && html`<div class="banner err"><b>Could not refresh.</b>${err}</div>`}
     <${Streams} d=${d} />

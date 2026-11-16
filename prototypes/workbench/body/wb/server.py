@@ -23,7 +23,7 @@ if BODY not in sys.path:
     sys.path.insert(0, BODY)
 
 import checks as CH
-from wb import cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S, webp as WP
+from wb import coord, cas as C, facade as F, hashing as H, jobs as J, keys as K, report as R, store as S, webp as WP
 from wb.store import ApiError
 
 STATIC_APP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "app")
@@ -1963,6 +1963,18 @@ def make_handler(srv):
                 return self.wfile.write(data)
             if p == "/team.json":                                       # the live team page's data: tools/team/state.py of the internal repo, cached 10 s
                 return self.send_json(team_state())
+            if p == "/team-coord.json":                                 # the Coordination tab's data (wb/coord.py), cached 10 s
+                return self.send_json(coord.state())
+            if p.startswith("/team-doc/"):                              # plain text the tab links to: the rules page, one rule with the owner's words, a desk card, the memory index
+                code, text = coord.document(*(p[len("/team-doc/"):].split("/", 1) + [""])[:2])
+                body = text.encode("utf-8")
+                self.send_response(code)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("X-Content-Type-Options", "nosniff")
+                self.end_headers()
+                return self.wfile.write(body)
             if p == "/team/":                                           # the page's own links are relative to /team, so the slash form goes there
                 self.send_response(301)
                 self.send_header("Location", "../team")
