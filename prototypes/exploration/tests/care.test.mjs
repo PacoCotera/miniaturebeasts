@@ -397,8 +397,9 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
     ["c-creature-32", 32, 32, "stand-in"], ["c-pawn-32", 32, 32, "stand-in"], ["c-trunk-32", 32, 32, "stand-in"], ["c-step-32", 32, 32, "stand-in"], ["c-wade-32", 32, 32, "signed"], ["c-scree-32", 32, 32, "signed"], ["c-bank-32", 32, 32, "signed"], ["c-map-soft-26", 26, 26, "signed"], ["c-canopy-88x76", 88, 76, "stand-in"], ["c-roof-104x22", 104, 22, "stand-in"], ["c-open-night", 192, 192, "signed"], ["c-open-pod-96", 96, 96, "signed"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
-  const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
+  const ids = ["c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z-]+-\d+)'/g)].map(x => x[1]);
   for (const id of ids) { assert.ok(calls.includes(id), id + " is drawn as its placeholder"); assert.equal(PAGE.split("'" + id + "'").length - 1, 2 + calls.filter(c => c === id).length, id + ": named in the register, the plate table and placeholderPlate calls only"); }
+  assert.ok(!calls.some(c => /^c-heart-/.test(c)), "bonded mark hidden until the painted heart is signed: no heart plate is drawn");
   const hp = source("placeholderPlate"); assert.match(hp, /CARE_ASSETS\.find/); assert.ok(!/ell\(|poly\(|pline\(|blit\(/.test(hp), "no drawn shape");
   assert.ok(!/upArt\('mini'/.test(source("ringFace")) && /placeholderPlate\('c-face-24'/.test(source("ringFace")), "the 24 px face is its placeholder, never the HUD icon enlarged");
   assert.ok(!/creatureArt\([^)]*1\.5\)/.test(PAGE), "no token drawn at 1.5× for the 48 px slot");
@@ -1278,6 +1279,21 @@ test("R2: the play together that will make the bond says 'a bond is for good'; t
   assert.equal(p.run("mibiById(1).bonded"), true, "the press the line warns of is the one that bonds");
   assert.equal(p.run("(S.walkTurn = S.turn, lineFor().ctx)"), "again after the next expedition", "played this turn: dimmed with its reason");
   assert.equal(p.run("lineFor().ok"), "Play with Dot", "one with you: Play with ‹name›");
+});
+
+test("bond-walks-fix-1: each Play together press shows its own lines in order; no stale line after a later press or the bond", () => {
+  const p = X26.world([pip(), dot()], [1, 2]);   // two adults... Pip grown, Dot young: both carried
+  p.run("S.phase = 'active'; S.ui.aId = 1;");
+  const press = () => p.run("{ S.walkTurn = -1; FX.notes = []; FX.held = []; walk(mibiById(2)); FX.msg; }");
+  assert.equal(press(), "Dot and Pip play together", "press 1: its own line first");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip · play twice more to bond", "press 1: then plays left");
+  assert.equal(press(), "Dot and Pip play together", "press 2: first line, not press 1's leftover");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip · play once more to bond", "press 2: once more");
+  assert.equal(press(), "Dot and Pip play together", "press 3: the play line first, never 'once more'");
+  p.pass(2400); assert.match(p.run("FX.msg"), /is bonded with you$/, "press 3: then the bond line");
+  assert.equal(press(), "Dot and Pip play together", "press 4: a bonded mibi gets no plays-left line");
+  p.pass(2400); assert.equal(p.run("FX.msg"), "Dot and Pip play together", "press 4: no stale or plays-left line after the bond");
+  assert.ok(!/bonded|once more|twice more/.test(p.run("FX.msg")));
 });
 
 // ---- Ageing in turns: the age words, the stage words, and the real time a mibi has been the player's ----
