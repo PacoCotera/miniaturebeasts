@@ -105,6 +105,10 @@ footer { color: var(--dim); font-size: 12px; text-align: center; padding: 16px 0
 .tabs { display: flex; gap: 6px; padding: 2px 4px 8px; position: sticky; top: 0; z-index: 2; background: var(--bg); }
 .tabs button { flex: 1; font: inherit; font-weight: 650; padding: 9px 12px; min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--dim); cursor: pointer; }
 .tabs button.on { color: var(--text); border-color: var(--busy); background: color-mix(in srgb, var(--busy) 14%, var(--card)); }
+.zoom { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 0 10px; }
+.zoom > span { margin-right: 4px; }
+.zoom button { font: inherit; font-size: 14px; font-weight: 600; padding: 6px 12px; min-height: 44px; min-width: 64px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--dim); cursor: pointer; }
+.zoom button.on { color: var(--text); border-color: var(--busy); background: color-mix(in srgb, var(--busy) 14%, var(--card)); }
 .name.big { font-size: 26px; line-height: 1.15; }
 .name.sub { margin-top: 12px; }
 .chartbox { position: relative; width: 100%; margin: 6px 0 2px; }

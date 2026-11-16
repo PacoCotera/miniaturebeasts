@@ -120,6 +120,106 @@ def read_bus(days):
     return src, dst, pairs
 
 
+# ---- time series at four zooms (owner 11-16: "multiple levels of aggregation pls. full days is too big")
+ZOOMS = [("15m", 15 * 60, 24), ("hour", 3600, 24), ("day", 86400, 14), ("week", 7 * 86400, 8)]   # (key, bucket seconds, bars)
+
+
+def _router():
+    """The bus's own Router (tools/bus/buslib.py), so the lead-line count here is the router's rule, never a copy. None if it can't load."""
+    import sys
+    p = os.path.join(INTERNAL, "tools", "bus")
+    if p not in sys.path:
+        sys.path.insert(0, p)
+    try:
+        import buslib
+        return buslib
+    except Exception:                                   # noqa: BLE001 - a broken import must not blank the tab
+        return None
+
+
+def _posts():
+    path = os.path.join(_boards(), "bus", "bus.jsonl")
+    try:
+        size = os.path.getsize(path)
+        with open(path, "rb") as fh:
+            if size > MAX_LOG_BYTES:
+                fh.seek(size - MAX_LOG_BYTES)
+                fh.readline()
+            raw = fh.read().decode("utf-8", "replace")
+    except OSError:
+        return []
+    out = []
+    for ln in raw.splitlines():
+        try:
+            p = json.loads(ln)
+            t = dt.datetime.fromisoformat(p["time"])
+        except (ValueError, KeyError, TypeError):
+            continue
+        if t.tzinfo is None:
+            t = t.replace(tzinfo=dt.timezone.utc)
+        out.append((t.timestamp(), p))
+    out.sort(key=lambda x: x[0])
+    return out
+
+
+def _lead_times(posts):
+    """Times of every line that woke the lead: the at-once lines and the batch lines, replayed through the router. None if the router can't load."""
+    bl = _router()
+    if bl is None:
+        return None
+    r = bl.Router({}, bl.desk_keys())
+    out = []
+    for ts, p in posts:
+        t = dt.datetime.fromtimestamp(ts, dt.timezone.utc)
+        b = r.tick(t)
+        if b:
+            out.append(ts)
+        try:
+            feed, line = r.handle(p)
+        except Exception:                               # noqa: BLE001 - a malformed post is skipped, as the router does
+            continue
+        if feed == "lead" and line is not None:
+            out.append(ts)
+    now = dt.datetime.now(dt.timezone.utc)
+    if r.tick(now):
+        out.append(now.timestamp())
+    return out
+
+
+def _bucket_start(ts, key, size):
+    if key == "week":                                   # weeks start Monday 00:00 UTC
+        d = dt.datetime.fromtimestamp(ts, dt.timezone.utc).date()
+        d -= dt.timedelta(days=d.weekday())
+        return dt.datetime(d.year, d.month, d.day, tzinfo=dt.timezone.utc).timestamp()
+    return ts - ts % size
+
+
+def read_series():
+    posts = _posts()
+    leads = _lead_times(posts)
+    now = time.time()
+    out = {}
+    for key, size, bars in ZOOMS:
+        last = _bucket_start(now, key, size)
+        starts = [last - i * size for i in range(bars - 1, -1, -1)]
+        idx = {s: i for i, s in enumerate(starts)}
+        rows = [dict(start=s, posts=0, kinds={k: 0 for k in KINDS + ["other"]}, lead_lines=0 if leads is not None else None) for s in starts]
+        for ts, p in posts:
+            i = idx.get(_bucket_start(ts, key, size))
+            if i is None:
+                continue
+            if p.get("from") != "router":
+                rows[i]["posts"] += 1
+            rows[i]["kinds"][_kind(p.get("kind"))] += 1
+        for ts in leads or []:
+            i = idx.get(_bucket_start(ts, key, size))
+            if i is not None:
+                rows[i]["lead_lines"] += 1
+        target = TARGET if key == "day" else TARGET * 7 if key == "week" else None
+        out[key] = dict(size=size, target=target, rows=rows)
+    return out
+
+
 def read_days():
     d = os.path.join(_boards(), "bus", "stats")
     try:
@@ -228,7 +328,7 @@ def collect():
     top = sorted(pairs.items(), key=lambda kv: -kv[1])[:14]
     return dict(
         kinds=[dict(key=k, name=KIND_WORDS[k]) for k in KINDS + ["other"]],
-        days=days, target=TARGET,
+        days=days, target=TARGET, series=read_series(),
         router_quiet_s=alive,
         sources=_stack(src), addressed=_stack(dst),
         routed=[dict(key=k, name=DEST_WORDS.get(k) or _name(k), n=n) for k, n in sorted(routed.items(), key=lambda kv: -kv[1])],

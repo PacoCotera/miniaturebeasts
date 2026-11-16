@@ -73,7 +73,10 @@ const shortWho = (w) => (w.includes("/") ? w.split("/").slice(-2).join("/") : w)
 // ---- 1. right now
 function Now({ d }) {
   const today = d.days[d.days.length - 1];
-  const lines = today ? today.lead_lines : 0, target = d.target;
+  // the count replayed from the whole log (series) when it is there: the router's day file began counting later than the log
+  const dayRows = ((d.series || {}).day || {}).rows || [], replay = dayRows.length ? dayRows[dayRows.length - 1].lead_lines : null;
+  const lines = replay != null ? replay : today ? today.lead_lines : 0, target = d.target;
+  const split = today && today.lead_lines === lines;
   const kind = lines > target ? "bad" : lines >= target * 0.8 ? "warn" : "ok";
   const up = d.router_quiet_s != null && d.router_quiet_s < 120;
   const failing = d.checks.filter((c) => !c.pass_).length;
@@ -82,7 +85,7 @@ function Now({ d }) {
       <h2>The lead's lines today</h2>
       <div class="name big">${lines} of ${target}</div>
       <${Bar} value=${lines / target * 100} kind=${kind} />
-      <div class="small dim">${today ? today.lead_urgent + " came at once, " + today.lead_held + " were held for a batch." : "No day recorded yet."} ${today && today.over ? "Over the target." : ""}</div>
+      <div class="small dim">${split ? today.lead_urgent + " came at once, " + today.lead_held + " were held for a batch." : lines ? "" : "No lines yet today."} ${lines > target ? "Over the target." : ""}</div>
     </div>
     <div class="card">
       <div class="row small"><span><span class=${"dot " + (up ? "idle" : "off")}></span>Message router</span><span class="dim">${up ? "running" : d.router_quiet_s == null ? "no heartbeat found" : "no heartbeat for " + dur(d.router_quiet_s)}</span></div>
@@ -91,38 +94,75 @@ function Now({ d }) {
     </div>`;
 }
 
+// ---- the zoom of the time charts (owner 11-16: "multiple levels of aggregation pls. full days is too big"); remembered per viewer
+const ZOOMS = [
+  { key: "15m", word: "15 min", head: "every 15 minutes, last 6 hours", col: "15 minutes from", every: 4 },
+  { key: "hour", word: "Hour", head: "every hour, last 24 hours", col: "Hour from", every: 4 },
+  { key: "day", word: "Day", head: "every day, last 14 days", col: "Day", every: 3 },
+  { key: "week", word: "Week", head: "every week, last 8 weeks", col: "Week from", every: 2 },
+];
+// a label on every n-th bar counted back from the newest, so the newest bar is always named
+const tickEvery = (n, every) => ({ autoSkip: false, maxRotation: 0, callback(v, i) { return (n - 1 - i) % every === 0 ? this.getLabelForValue(v) : ""; } });
+const ZKEY = "mb-team-coord-zoom";
+const readZoom = () => { try { const z = localStorage.getItem(ZKEY); return ZOOMS.some((x) => x.key === z) ? z : "hour"; } catch { return "hour"; } };
+const MX = "America/Mexico_City";
+const stamp = (s, zoom) => {
+  const d = new Date(s * 1000);
+  if (zoom === "day") return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
+  if (zoom === "week") return "w/c " + d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: MX });
+};
+
+function ZoomSwitch({ zoom, setZoom }) {
+  return html`<div class="zoom" role="radiogroup" aria-label="Group the time charts by">
+    <span class="dim small">Group by</span>
+    ${ZOOMS.map((z) => html`<button role="radio" aria-checked=${zoom === z.key} class=${zoom === z.key ? "on" : ""} onClick=${() => setZoom(z.key)}>${z.word}</button>`)}
+  </div>`;
+}
+
 // ---- 2. flow: who posts, to whom, how much, of what kind
 function Flow({ d }) {
   const days = d.days;
   const kinds = d.kinds;
+  const [zoom, setZoomState] = useState(readZoom);
+  const setZoom = (z) => { setZoomState(z); try { localStorage.setItem(ZKEY, z); } catch { /* private window: the choice lasts this visit */ } };
+  const Z = ZOOMS.find((x) => x.key === zoom);
+  const ser = (d.series || {})[zoom] || { rows: [], target: null };
+  const rows = ser.rows, target = ser.target;
+  const labels = rows.map((x) => stamp(x.start, zoom));
+  const leadKnown = rows.every((x) => x.lead_lines != null);
   const total = days.reduce((a, x) => a + x.posts, 0);
   const rowsH = (rows) => 38 + rows.length * 26 + 44;
   return html`
-    <h2 class="sec">Messages: ${days.length === 1 ? "today" : "last " + days.length + " days"}</h2>
+    <h2 class="sec">Messages</h2>
+    <${ZoomSwitch} zoom=${zoom} setZoom=${setZoom} />
     <div class="flowgrid">
     <div class="card">
-      <div class="name">A day at a time, by kind</div>
-      <${Chart} height=${230} deps=${days} label="Messages a day, split by kind"
-        build=${() => ({ type: "bar", data: { labels: days.map((x) => dayWord(x.day)), datasets: stackedSets(kinds, days) }, options: chartBase({}) })} />
-      <${Table} head=${["Day", "Messages", ...kinds.map((k) => k.name)]} rows=${days.map((x) => [dayWord(x.day), x.posts, ...kinds.map((k) => x.kinds[k.key])])} />
-      ${days.length < 7 && html`<div class="dim tiny note">The message bus started on 16 Nov, so only ${days.length} ${days.length === 1 ? "day exists" : "days exist"} so far.</div>`}
+      <div class="name">Messages ${Z.head}, by kind</div>
+      <${Chart} height=${230} deps=${[zoom, rows]} label=${"Messages " + Z.head + ", split by kind"}
+        build=${() => { const o = chartBase({}); Object.assign(o.scales.x.ticks, tickEvery(rows.length, Z.every)); return { type: "bar", data: { labels, datasets: stackedSets(kinds, rows) }, options: o }; }} />
+      <${Table} head=${[Z.col, "Messages", ...kinds.map((k) => k.name)]} rows=${rows.map((x, i) => [labels[i], x.posts, ...kinds.map((k) => x.kinds[k.key])])} />
+      ${(zoom === "15m" || zoom === "hour") && html`<div class="dim tiny note">Times are Mexico City.</div>`}
+      ${(zoom === "day" || zoom === "week") && days.length < 7 && html`<div class="dim tiny note">The message bus started on 16 Nov; earlier bars are empty.</div>`}
     </div>
     <div class="card">
-      <div class="name">The lead's lines a day, against the target</div>
-      <${Chart} height=${190} deps=${[days, d.target]} label="Lines the lead received each day against the target"
+      <div class="name">The lead's lines ${Z.head}${target ? ", against the target" : ""}</div>
+      ${leadKnown ? html`<${Chart} height=${190} deps=${[zoom, rows, target]} label=${"Lines the lead received " + Z.head + (target ? " against the target" : "")}
         build=${() => {
           const text = css("--dim"), line = css("--line"), bad = css("--bad"), busy = css("--busy"), tcol = css("--text");
           const mark = { id: "target", afterDatasetsDraw(c) {
-            const { ctx, chartArea: a, scales: { y } } = c, py = y.getPixelForValue(d.target);
+            if (!target) return;
+            const { ctx, chartArea: a, scales: { y } } = c, py = y.getPixelForValue(target);
             ctx.save(); ctx.strokeStyle = tcol; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
             ctx.beginPath(); ctx.moveTo(a.left, py); ctx.lineTo(a.right, py); ctx.stroke();
-            ctx.setLineDash([]); ctx.fillStyle = tcol; ctx.font = "11px system-ui"; ctx.textBaseline = "bottom"; ctx.fillText("target " + d.target, a.left + 4, py - 3); ctx.restore();
+            ctx.setLineDash([]); ctx.fillStyle = tcol; ctx.font = "11px system-ui"; ctx.textBaseline = "bottom"; ctx.fillText("target " + target, a.left + 4, py - 3); ctx.restore();
           } };
-          return { type: "bar", plugins: [mark], data: { labels: days.map((x) => dayWord(x.day)), datasets: [{ label: "Lines to the lead", data: days.map((x) => x.lead_lines), backgroundColor: days.map((x) => (x.over ? bad : busy)), borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }] },
+          return { type: "bar", plugins: [mark], data: { labels, datasets: [{ label: "Lines to the lead", data: rows.map((x) => x.lead_lines), backgroundColor: rows.map((x) => (target && x.lead_lines > target ? bad : busy)), borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }] },
             options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false } },
-              scales: { x: { ticks: { color: text, font: { size: 11 } }, grid: { display: false }, border: { color: line } }, y: { beginAtZero: true, suggestedMax: d.target + 3, ticks: { color: text, font: { size: 11 }, precision: 0 }, grid: { color: line }, border: { color: line } } } } };
-        }} />
-      <${Table} head=${["Day", "Lines to the lead", "At once", "Held for a batch", "Target"]} rows=${days.map((x) => [dayWord(x.day), x.lead_lines, x.lead_urgent, x.lead_held, d.target])} />
+              scales: { x: { ticks: { color: text, font: { size: 11 }, ...tickEvery(rows.length, Z.every) }, grid: { display: false }, border: { color: line } }, y: { beginAtZero: true, suggestedMax: target ? target + 3 : 4, ticks: { color: text, font: { size: 11 }, precision: 0 }, grid: { color: line }, border: { color: line } } } } };
+        }} />` : html`<div class="dim small">The router's code could not be read, so the lead's lines can't be split finer than a day.</div>`}
+      <${Table} head=${[Z.col, "Lines to the lead", ...(target ? ["Target"] : [])]} rows=${rows.map((x, i) => [labels[i], x.lead_lines ?? "-", ...(target ? [target] : [])])} />
+      ${!target && html`<div class="dim tiny note">The target is ${d.target} a day; switch to Day or Week to see it.</div>`}
     </div>
     </div>
     <div class="flowgrid">
