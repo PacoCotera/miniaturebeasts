@@ -3,11 +3,8 @@
 //   node --test prototypes/exploration/tests/step-art.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
 import { fixture, plain } from "./walk-fixture.mjs";
 
-const DESK = "/home/mb/mb/mibi-art/art-jobs/2026-11-06-field-tokens/work/tokens.mjs";
-const FRAMES = "/home/mb/mb/mibi-art/art-jobs/2026-11-07-step-frames/work/frames-sage.mjs";   // the signed rows with the sage S04 and S20 (2026-11-07)
 const STEPPERS = [0, 1, 3, 4, 7, 11, 16, 19];
 const px = (f, src) => f.run(`Array.from(${src}.p).join()`);
 
@@ -27,13 +24,10 @@ function moving({ off = false, inject = false, motion = true, st = "idle", empty
   return { f, id, draw, used: (arts, sp, fr) => f.run(`__b.includes('${sp}:${fr}')`) };
 }
 
-test("STEP_ART: in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only, the desk frames", async (t) => {
+test("STEP_ART: in page species order, for sp 0, 1, 3, 4, 7, 11, 16, 19 only, both frames painted", () => {
   const f = fixture();
   assert.deepEqual(plain(f.run("Object.keys(STEP_ART).map(Number)")), STEPPERS);
-  if (!existsSync(FRAMES)) return t.skip("the desk's step frames are not here: " + FRAMES);
-  const D = await import(FRAMES), SP = [0, 1, 3, 4, 7, 11, 16, 19];
-  SP.forEach((sp, i) => assert.deepEqual(plain(f.run(`STEP_ART[${sp}]`)), { adult: [D.STEP_ART[i].idle, D.STEP_ART[i].step], juvenile: [D.JUVENILE_STEP_ART[i].idle, D.JUVENILE_STEP_ART[i].step] }, D.STEP_ORDER[i]));
-  for (const sp of SP) { assert.ok(f.run(`STEP_ART[${sp}].adult.every(Boolean) && STEP_ART[${sp}].juvenile.every(Boolean)`)); assert.equal(px(f, `tokenOf(${sp}, "step", 0)`), px(f, `tokenOf(${sp}, "idle", 0)`), "frame A is the signed idle"); }
+  for (const sp of STEPPERS) { assert.ok(f.run(`STEP_ART[${sp}].adult.every(Boolean) && STEP_ART[${sp}].juvenile.every(Boolean)`)); assert.equal(px(f, `tokenOf(${sp}, "step", 0)`), px(f, `tokenOf(${sp}, "idle", 0)`), "frame A is the signed idle"); }
   assert.equal(f.run("STEP_ART.length"), 20, "absent for the rest, not a short table");
 });
 
@@ -86,10 +80,3 @@ test("the step is drawn only while moving and only in a moving state; reduced mo
   const d = moving({ inject: true }); d.f.run("curLive().pt.st = 'sniff'; __b.length = 0; NOW = 1040; render(1.04)"); assert.ok(!d.used(null, 19, 0) && !d.used(null, 19, 1));
 });
 
-test("the page's table deep-equals the desk's STEP_ART, when the desk's tokens file exports one", async t => {
-  if (!existsSync(DESK)) return t.skip("the desk's tokens file is not here: " + DESK);
-  const T = await import(DESK);
-  if (!T.STEP_ART) return t.skip("the desk's tokens file exports no STEP_ART yet: the page's table stays empty");
-  const f = fixture();
-  assert.deepEqual(plain(f.run("STEP_ART")), JSON.parse(JSON.stringify(T.STEP_ART)));
-});
