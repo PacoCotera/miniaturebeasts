@@ -34,14 +34,14 @@ export function subSeed(seed, name, k = 0) {
   return h;
 }
 
-const ONE = 65536, INV = 1 / 65536;   // floor(v / 65536) is Math.floor(v * INV): the same whole number, the factor a power of two
+const ONE = 65536;
 const GX = new Int32Array([1, -1, 0, 0, 1, -1, 1, -1]), GY = new Int32Array([0, 0, 1, -1, 1, 1, -1, -1]);
 const KY = 198491317;   // hash2's row multiplier
 
 // quintic fade 6t^5 - 15t^4 + 10t^3 on t in Q16, result Q16
 export function fade(t) {
-  const t2 = Math.floor(t * t * INV), t3 = Math.floor(t2 * t * INV);
-  return Math.floor(t3 * (Math.floor(t * (6 * t - 15 * ONE) * INV) + 10 * ONE) * INV);
+  const t2 = shr(t * t, 16), t3 = shr(t2 * t, 16);
+  return shr(t3 * (shr(t * (6 * t - 15 * ONE), 16) + 10 * ONE), 16);
 }
 
 // the gradient number (0..7) of lattice corner pos: hash1's last word, & 7 (the same as hash1(pos, seed) & 7, the steps written out)
@@ -68,8 +68,8 @@ function mixGrad(g00, g10, g01, g11, fx, fy) {
   const fx1 = fx - ONE, fy1 = fy - ONE, T = FADE8 || fadeTable();
   const n00 = GX[g00] * fx + GY[g00] * fy, n10 = GX[g10] * fx1 + GY[g10] * fy, n01 = GX[g01] * fx + GY[g01] * fy1, n11 = GX[g11] * fx1 + GY[g11] * fy1;
   const u = (fx & 7) === 0 && fx >= 0 && fx < ONE ? T[fx >> 3] : fade(fx), v = (fy & 7) === 0 && fy >= 0 && fy < ONE ? T[fy >> 3] : fade(fy);
-  const a = n00 + Math.floor((n10 - n00) * u * INV), b = n01 + Math.floor((n11 - n01) * u * INV);
-  return a + Math.floor((b - a) * v * INV);
+  const a = n00 + shr((n10 - n00) * u, 16), b = n01 + shr((n11 - n01) * u, 16);
+  return a + shr((b - a) * v, 16);
 }
 
 export function grad2(px, py, s, seed) {
