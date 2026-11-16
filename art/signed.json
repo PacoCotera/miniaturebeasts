@@ -3840,20 +3840,6 @@
   {
    "class": "ui",
    "date": "2026-11-15",
-   "id": "8dbf508813",
-   "path": "prototypes/ui/assets/masters/pods/frame-companion-outline-16x24.png",
-   "sha256": "cfb646a487bc11857f86c4326db65d8d1f496a24c84e63149837210b8defbfbd"
-  },
-  {
-   "class": "ui",
-   "date": "2026-11-15",
-   "id": "d73a28371f",
-   "path": "prototypes/ui/assets/masters/pods/frame-lamp-8-stone.png",
-   "sha256": "17b7df730dea3623359a8c6b85e3178e97818b4ca410c33e083a836a372527de"
-  },
-  {
-   "class": "ui",
-   "date": "2026-11-15",
    "id": "0d57dc76d5",
    "path": "prototypes/ui/assets/masters/pods/mark-asleep-24x16.png",
    "sha256": "224608e151c9dd9374750d72f974bb058da311395d0a671b739c43936dc247ef"
