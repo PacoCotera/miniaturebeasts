@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { levelsOf, forgetLevels, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { streamPieces, drawStream, bridgeList, layBridge, fallsSite, edgeId } from './streams.mjs';
 import { RULES } from './rules.mjs';
@@ -76,6 +76,12 @@ function ctxOf(seed) {
   CTX.set(seed, S); return S;
 }
 export const contextOf = ctxOf;   // the per-seed context (the checks' tools read the realm's streams through it)
+// every place, field and decor cache of a seed forgotten (the realm itself stays): the scheduler's test builds the same places cold in another order
+export function forgetPlaces(seed) {
+  const S = CTX.get(seed); if (S) forgetLevels(S.re);
+  CTX.delete(seed); DEC.delete(seed);
+  for (const k of [...CELLS.keys()]) if (k.startsWith(seed + ':')) CELLS.delete(k);
+}
 const cellIdx = (X, Y) => clamp(Y, 0, RH - 1) * RW + clamp(X, 0, RW - 1);
 
 // the tile fields of one cell (24 x 28 values each), from the world's fields at tile scale

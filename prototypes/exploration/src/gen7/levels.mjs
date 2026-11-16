@@ -51,6 +51,7 @@ export function tileFields(seed, X, Y) {
 
 // ---- the levels of one realm (a realm is the object buildRealm made) ----
 const LEVELS = new WeakMap();
+export const forgetLevels = realm => { LEVELS.delete(realm); };   // the realm's tile caches dropped (a test builds the same places cold again)
 export function levelsOf(realm) {
   let L = LEVELS.get(realm); if (L && L.gen === GEN && L.stairsList === realm.stairs) return L;
   const e0q = new Int32Array(RW * RH); for (let i = 0; i < RW * RH; i++) e0q[i] = Math.round(realm.e0[i] * 65536);   // the realm's raising height, rounded once to Q16
