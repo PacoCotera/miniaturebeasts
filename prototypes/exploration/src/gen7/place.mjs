@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, loweredAt, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { levelsOf, loweredAt, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
 import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
@@ -489,6 +489,12 @@ function windowOf(S, X, Y) {
     if (wu.x - 1 < gx0 || wu.x + 3 > gx0 + W || wu.y - 3 < gy0 || wu.y + 3 > gy0 + H || wayups.some(a => a.x === wu.x && a.y === wu.y)) continue;
     wayups.push({ x: wu.x, y: wu.y, w: wu.w, h: wu.h });
   }
+  // rupar-banks-7-1: the earth banks (levels.mjs bankWayups): their site is a straight south face that no one walks until a Rupar digs it, so they are not ways up here; the page blocks them and opens a dug one
+  const banks = [];
+  for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) for (const wu of bankWayups(LVL, X - HX + i, Y - HY + j)) {
+    if (wu.x - 1 < gx0 || wu.x + 3 > gx0 + W || wu.y - 3 < gy0 || wu.y + 3 > gy0 + H || banks.some(a => a.x === wu.x && a.y === wu.y)) continue;
+    banks.push({ x: wu.x, y: wu.y, w: wu.w, h: wu.h });
+  }
   // trails: through each cell of the window, port to port (or to the cell's hub at a trail's end), by the same A* the region uses, painted with a 2 x 2 brush. Raised land takes no path (art slot).
   // a trail runs on ground you can walk: a route tile is open when the 4 x 4 tiles round its 2 x 2 brush hold no water, thicket or raised land; sand and scrub under it turn to grass and its brush to path,
   // so path never meets anything but grass
@@ -547,7 +553,7 @@ function windowOf(S, X, Y) {
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   if (gate.some(v => v)) settle(gate);
   for (let round = 0; round < 3; round++) { if (!cutThicketGaps(t, W, H, gx0, gy0, wayups, gate)) break; settle(gate); }   // thicket never closes a way (place-walk-1)
-  return { t, W, H, gx0, gy0, wayups, top: topsOf(t, recipe, W, H) };
+  return { t, W, H, gx0, gy0, wayups, banks, top: topsOf(t, recipe, W, H) };
 }
 
 // ---- the ground under raised land (amendment L): a raised tile's top is the biome's recipe ground there ----
@@ -591,7 +597,8 @@ export function cellTerrain(seed, X, Y) {
   // the land the cliff rules read: raised or not for the cell, its apron and LAND_M tiles more each side, from the same window, so a run's end, its steps and the faces of the rows above are found on the land, not on the baked cell
   const lw = w + 2 * LAND_M, lh = h + 2 * LAND_M, raised = new Uint8Array(lw * lh);
   for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = win.t[(oy - LAND_M + y) * win.W + ox - LAND_M + x] === TV.CLIFF ? 1 : 0;
-  const out = { x0, y0, w, h, terrain, top, wayups, land: { m: LAND_M, w: lw, h: lh, raised } };
+  const banks = win.banks.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 5 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles (the page's, never the bake's)
+  const out = { x0, y0, w, h, terrain, top, wayups, banks, land: { m: LAND_M, w: lw, h: lh, raised } };
   if (CELLS.size > 4000) CELLS.clear();
   CELLS.set(key, out); return out;
 }
@@ -674,7 +681,7 @@ function decorIR(seed, x0, y0, w, h) {
 }
 
 // the bake's IR for the tiles x0 .. x0 + w, y0 .. y0 + h of the world (window: whole cells, no apron needed on the picture's own border, which then clamps like any place's)
-function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null) {   // v: the realm's kind version, for what the cell's creatures are
+function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, v, land = null, banks = null) {   // v: the realm's kind version, for what the cell's creatures are
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
@@ -697,7 +704,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone,
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [],
-    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [] };
+    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [], ...(banks && banks.length ? { banks } : {}) };   // banks: the earth banks of the cell (the page's, read by adapt7; the bake ignores them)
 }
 // the bare tiles (sand, scree, leaf litter, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {
@@ -708,7 +715,7 @@ function bareTiles(seed, X, Y) {
 // One cell for the bake: terrain with its one-tile apron.
 export function cellIR(seed, X, Y, v) {
   const c = cellTerrain(seed, X, Y);
-  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v, c.land);
+  return irOf(seed, `g7-${X}-${Y}`, c.x0, c.y0, c.w, c.h, c.terrain, c.wayups.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })), [X, Y], c.top, v, c.land, c.banks.map(a => ({ x: a.x - c.x0, y: a.y - c.y0, w: a.w, h: a.h })));
 }
 // A block of nx x ny cells as one picture (for the goldens): each cell's own tiles, side by side, with no apron. Equal to baking each cell with its apron.
 export function windowIR(seed, X0, Y0, nx, ny) {

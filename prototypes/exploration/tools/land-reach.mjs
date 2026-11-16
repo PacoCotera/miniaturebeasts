@@ -16,19 +16,21 @@ import { MW, MH } from '../src/world.mjs';
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const seed = +process.argv[2], dir = process.argv[3], fresh = process.argv.includes('--fresh'), pi = process.argv.indexOf('--parts'), partsOut = pi > 0 ? process.argv[pi + 1] : null;
 const SW = MW * CW, SH = MH * CH, WW = RW * CW, WH = RH * CH, N = WW * WH;
-const file = `${dir}/stitch-${seed}.bin`, wfile = `${dir}/wayups-${seed}.json`;
-let T, wayups; const t0 = Date.now();
-if (!fresh && existsSync(file)) { T = new Uint8Array(readFileSync(file)); wayups = JSON.parse(readFileSync(wfile, 'utf8')); } else {
-  T = new Uint8Array(N); const seen = new Set(); wayups = [];
+const file = `${dir}/stitch-${seed}.bin`, wfile = `${dir}/wayups-${seed}.json`, bfile = `${dir}/banks-${seed}.json`;
+let T, wayups, banks = []; const t0 = Date.now();
+if (!fresh && existsSync(file) && existsSync(bfile)) { T = new Uint8Array(readFileSync(file)); wayups = JSON.parse(readFileSync(wfile, 'utf8')); banks = JSON.parse(readFileSync(bfile, 'utf8')); } else {
+  T = new Uint8Array(N); const seen = new Set(), seenB = new Set(); wayups = [];
   for (let Y = 0; Y < RH; Y++) for (let X = 0; X < RW; X++) {
     const c = cellTerrain(seed, X, Y);
     for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) T[(Y * CH + y) * WW + X * CW + x] = c.terrain[(y + 1) * c.w + x + 1];
     for (const a of c.wayups) { const k = a.x + ',' + a.y; if (!seen.has(k)) { seen.add(k); wayups.push(a); } }
+    for (const a of c.banks || []) { const k = a.x + ',' + a.y; if (!seenB.has(k)) { seenB.add(k); banks.push(a); } }
   }
-  writeFileSync(file, T); writeFileSync(wfile, JSON.stringify(wayups));
+  writeFileSync(file, T); writeFileSync(wfile, JSON.stringify(wayups)); writeFileSync(bfile, JSON.stringify(banks));
 }
 const stitchMs = Date.now() - t0;
-const wu = new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) if (x >= 0 && y >= 0 && x < WW && y < WH) wu[y * WW + x] = 1;
+const dug = process.argv.includes('--dug');   // rupar-banks-7-1: with a Rupar every earth bank is dug open (a way up); without, it blocks as the lip it is
+const wu = new Uint8Array(N); for (const a of dug ? wayups.concat(banks) : wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) if (x >= 0 && y >= 0 && x < WW && y < WH) wu[y * WW + x] = 1;
 const regions = []; for (let ay = 0; ay < RH / MH; ay++) for (let ax = 0; ax < RW / MW; ax++) regions.push({ ax, ay, G: genRegion7(seed, ax, ay) });
 const regionOf = (x, y) => regions[Math.floor(y / SH) * (RW / MW) + Math.floor(x / SW)];
 const at = (x, y) => (x < 0 || y < 0 || x >= WW || y >= WH ? TV.THICKET : T[y * WW + x]);
