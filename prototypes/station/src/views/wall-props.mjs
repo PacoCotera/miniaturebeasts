@@ -197,7 +197,7 @@ export function wallBuild(m, spec, frame, home, pods) {
       plates: plates.map((p) => ({ id: p.id, verb: p.verb, price: p.price, held: p.held })), why: "", room };
   } else card = { state: "none", name: "", looks: [], plates: [], why: "" };
   if (pick && picked.size && !moving) {   // the pick pane (spec §7): "{n} picked", the faces strip and Move to · Tuck away ⚡{total} · Clear picks
-    const mine = [...picked].map((id) => S.mibiById(st, +id)).filter(Boolean), total = mine.reduce((t) => t + S.tuckPrice(st, settings), 0), homeN = S.homeMibis(st, sv).length, atHome = mine.filter((x) => S.presentAtHome(st, sv, x)).length, Wh = Sg.why;
+    const mine = [...picked].map((id) => S.mibiById(st, +id)).filter(Boolean), total = mine.reduce((t, x) => t + S.tuckPrice(st, settings, x), 0), homeN = S.homeMibis(st, sv).length, atHome = mine.filter((x) => S.presentAtHome(st, sv, x)).length, Wh = Sg.why;
     const out = ordered.filter((x) => picked.has(String(x.id))).length < picked.size ? picked.size - ordered.filter((x) => picked.has(String(x.id))).length : 0;
     const tuckHeld = atHome >= homeN ? { held: true, why: Wh.last, plate: "last" } : st.e < total ? { held: true, why: fill(Wh.short, { p: total, e: st.e }), plate: "short" } : { held: false, why: "" };
     plates = [{ act: "moveTo", verb: Sg.plate.moveTo, price: "", held: false, why: "" }, { act: "tuckAway", verb: Sg.plate.tuck, price: S.priceText(total, 0, 0), ...tuckHeld }, { act: "clearPicks", verb: Sg.plate.clearPicks, price: "", held: false, why: "" }].map((p, k) => ({ ...p, id: "plate." + k }));
@@ -231,7 +231,7 @@ export function wallBuild(m, spec, frame, home, pods) {
   const onCell = idOfCell(cur), oc = onCell != null ? S.mibiById(st, onCell) : null;
   if (oc) line.ok = pick ? fill(picked.has(String(oc.id)) ? F.unpick : F.pick, { name: oc.name }) : fill(F.open, { name: oc.name });
   else if (p0 && p0.act === "incubator") line.ok = F.plate.incubator;
-  else if (p0 && !p0.held) { const kk = { look: "look", moveTo: "moveTo", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p0.act]; line.ok = fill(F.plate[kk] ?? p0.verb, { name, p: String(p0.price ?? "").replace(/[^0-9]/g, "") }); }
+  else if (p0 && !p0.held) { const kk = { look: "look", moveTo: "moveTo", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p0.act]; line.ok = fill(F.plate[p0.free ? kk + "Free" : kk] ?? p0.verb, { name, p: String(p0.price ?? "").replace(/[^0-9]/g, "") }); }
   else if (cur === "rail.add" && rows.find((r) => r.id === "add")?.live) line.ok = Sg.newRoom.action;
   else if (/^rail\./.test(cur) || /^sort\./.test(cur) || cur === "pill") line.ok = cur === "pill" ? (pick ? F.pillOff : F.pillOn) : null;
   if (pairing) { line.back = Sg.backCancel; const pp = plates[0]; line.ok = pp && !pp.held ? fill(Sg.foot.plate.seePair, { a: pairA.name, b: name }) : null; }   // See {A} and {B} on a partner the plate is live for; held, no act: ✓ plays the plate's message

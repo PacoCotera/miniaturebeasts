@@ -105,3 +105,19 @@ test("the manager's moves: free and instant to a free place (the house rule); a 
   const d = S.inRoom(st, 0).find((x) => x !== c && !S.comingOut(st, x)), r = S.moveMibi(st, d, 1, settings); assert.equal(r.ok, true); assert.equal(d.room, 1);
   assert.equal(S.inRoom(st, 0).length, 7, "the reserved place counts in its room");
 });
+test("bonded: tucks away for 0 Energy and comes out at once into a free place; it still needs a free place; others unchanged; clocks stay stopped while tucked", () => {
+  const st = world(4, { e: 20 }), [a, b] = st.mibis; a.bonded = true; const born0 = a.born, e0 = st.e;
+  assert.equal(S.tuckPrice(st, settings, a), 0); assert.equal(S.bringOutPrice(st, settings, a), 0); assert.equal(S.bringOutTurns(a), 0);
+  assert.equal(S.tuckPrice(st, settings, b), 2, "unbonded: as today"); assert.equal(S.bringOutPrice(st, settings, b), 2);
+  { const poor = world(4, { e: 0 }); poor.mibis[0].bonded = true; assert.equal(S.tuckBlock(poor, docked, poor.mibis[0], settings), null, "no Energy needed, never short"); }
+  assert.equal(S.tuckAway(st, docked, a, settings).ok, true); assert.equal(st.e, e0, "tucked for 0 Energy"); assert.equal(S.inStore(a), true);
+  a.restUntil = st.turn + 3; st.turn += 6; assert.equal(S.stageTurn(st, a), 5, "its clocks stay stopped while tucked"); assert.equal(a.restUntil, 8, "its breather is untouched while tucked");
+  const r = S.bringOut(st, docked, a, 1, settings);
+  assert.equal(r.ok, true); assert.equal(st.e, e0, "out for 0 Energy"); assert.equal(S.comingOut(st, a), false, "back at the press"); assert.equal(a.tucked, undefined, "the record closes at once");
+  assert.equal(S.homeMibis(st, docked).includes(a), true); assert.equal(a.room, 1);
+  assert.equal(a.born, born0 + 6, "born moved on by the turns it was away, as today"); assert.equal(S.stageTurn(st, a) - a.born, 5 - born0);
+  const f = world(16, { rooms: 2, e: 99 }), m = f.mibis[0]; m.bonded = true; S.tuckAway(f, docked, m, settings); S.seedAdults(f, "S01", 9, 1, settings);
+  assert.equal(S.bringOutBlock(f, docked, m, null, settings).key, "noPlace"); assert.equal(S.bringOut(f, docked, m, 0, settings).ok, false);
+  const one = world(1); one.mibis[0].bonded = true; assert.equal(S.tuckBlock(one, docked, one.mibis[0], settings).key, "last");
+  const e1 = st.e; S.tuckAway(st, docked, b, settings); assert.equal(st.e, e1 - 2); S.bringOut(st, docked, b, 1, settings); assert.equal(st.e, e1 - 4); assert.equal(S.comingOut(st, b), true);
+});

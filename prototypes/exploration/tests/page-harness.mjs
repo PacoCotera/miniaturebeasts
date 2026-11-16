@@ -57,8 +57,8 @@ export function loadPage(ctx, script = SCRIPT) {
   // The page plays generator 7 only (GENS = [7]). The suites written for generator 5's generated places run on generator 5, which stays frozen in world.mjs: a page opened with
   // `gen: 7` (makePage) or `__gen7: true` (a ctx given to loadPage) is the page as played; any other is that page with generator 5 played too and new worlds of generator 5.
   if (!ctx.__gen7) { ctx.NEW_GEN = 5; ctx.GENS = [...new Set([...MODS.world.GENS, 5])]; }
-  vm.createContext(ctx); vm.runInContext(script, ctx);
-  return src => vm.runInContext(src, ctx);
+  vm.createContext(ctx); const run = src => vm.runInContext(src, ctx); ctx.__run = run; vm.runInContext(script, ctx);
+  return run;
 }
 
 // A value that answers every property, call and construction with itself (the browser's objects, stubbed).
@@ -107,7 +107,7 @@ export function makePage(opts = {}) {
   const store = opts.store || {};
   const els = {}, elStub = () => new Proxy({}, { get: (t, k) => k in t ? t[k] : any, set: (t, k, v) => { t[k] = v; return true; } });
   let run = null, pal = null;
-  const P = () => pal || (pal = { hex: new Map(run("HEX").map((h, i) => [h, i])), rgb: run("RGB"), of: new Map(run("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) });
+  const P = () => { const r = run || ctx.__run; return pal || (pal = { hex: new Map(r("HEX").map((h, i) => [h, i])), rgb: r("RGB"), of: new Map(r("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) }); };   // a page that draws while it boots (a loaded save) asks before `run` is handed back
   const { look, rgbTable } = paletteLook(P, opts.paint);
   const document = opts.els || opts.canvas ? new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any }) : any;
   const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
