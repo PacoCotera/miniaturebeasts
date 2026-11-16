@@ -1,7 +1,6 @@
 // The art desk's signed pieces that prepare-set adds to the set when the recipe says `"desk": true`. Files are read from the pinned desk commit (git show), never the desk's live folder, copied
 // byte for byte (or, where the desk has not re-issued a piece in the map palette, with the desk's own colour map applied, tools/recolour.mjs), and listed with their sha256 in the set's DESK.json.
 //   Map palette (art director, mibi-art f1a9fe54e; commit 633e4d641 carries it): every map picture is the desk's recoloured copy in art-jobs/2026-11-10-art-recolour-map-palette/out/applied/<job>/<same path>.
-//   Way up (mibi-art 1158b9710, art-jobs/2026-11-10-art-paint-wayup/out/): the way-up pieces of the cliff, wayup-cliff-grass and wayup-cliff-sand, painted in the map palette.
 //   Water bits (mibi-art 3323aa85d): the pebbles and the lily pads.
 //   Map decor, the walk's sprites (art director mb-74, mibi-art 75f1ff195, the p2 folder): every sprite at its signed 1x size with the manifest's foot (see deskArt); the kit's names stay in the set and draw these pieces,
 //   so the hand-set places and the generator need no new names.
@@ -20,7 +19,6 @@ const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
 const DC = '633e4d641';   // mibi-art art/desk: the map palette (f1a9fe54e), the decor, the reeds, the grass flecks and the hollow tree and split stone
 const APPLIED = 'art-jobs/2026-11-10-art-recolour-map-palette/out/applied';
 const applied = (job, sub) => ({ commit: DC, dir: `${APPLIED}/${job}/out${sub ? '/' + sub : ''}` });
-export const WAYUP = { commit: '704373a58', dir: `${APPLIED}/art-paint-wayup/out` };   // the way-up pieces (art director signed 2026-11-09 22:1x; the applied copies, art/desk 704373a58), 48 x 32, in the map palette; the sand one keeps its one painted sand tone #dfd387
 // the walk's sprites at their signed 1x sizes (art director mb-74, mibi-art art/desk 75f1ff195, art-jobs/2026-11-10-art-fix-decor-edges/out/p2/, 77 pieces with mirrors): manifest.json gives each piece's file, size and foot
 export const P2 = { commit: '75f1ff195', dir: 'art-jobs/2026-11-10-art-fix-decor-edges/out/p2' };
 // the middle sizes of the flowers (14 tall) and tufts (10 tall), re-cut (art director, mibi-art art/desk cc712a83e, art-jobs/2026-11-10-art-recut-flowers-tufts-up/out/p3/): only the nine pieces its changed.json lists; every other p3 piece is the p2 piece
@@ -196,9 +194,8 @@ export function deskLayers() {
     cliff: {
       fill: { sheets: [rec({ commit: 'local' }, 'fill-cliff.png', `${RAISED.dir}/fill-grass-raised-day.png`, readFileSync(path.join(SET_DIR, 'fill-cliff.png')))] },   // the raised meadow ground: every raised cell that is no old face
       over: [{
-        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'],   // no sheet: the old over-cliff sheets were unsigned and drew nowhere (art director 2026-11-14 02:24); the kind's pieces are the back cells and the way-ups
+        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'],   // no sheet: the old over-cliff sheets were unsigned and drew nowhere (art director 2026-11-14 02:24); the kind's pieces are the back cells
         back: Object.fromEntries([1, 2, 3, 7, 11].map((n) => [n, backTile(`cliff-back-${n}.png`)])),   // the back edge's five cases, each its own file
-        wayup: { grass: keyed(WAYUP, 'wayup-cliff-grass.png', 'wayup-cliff-grass.png'), sand: keyed(WAYUP, 'wayup-cliff-sand.png', 'wayup-cliff-sand.png') },   // keyed as the cliff sheets are (the soft cast shade made transparent, art director ruling 2026-11-09)
       }],
     },
   };

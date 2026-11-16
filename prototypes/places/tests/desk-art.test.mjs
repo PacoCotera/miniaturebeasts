@@ -17,7 +17,7 @@ const img = (n) => decodePng(readFileSync(path.join(dir, n)));
 test('every placed desk file equals the recorded hash, names its signed commit and its source in the desk', () => {
   const names = Object.keys(desk);
   assert.ok(names.length > 60, 'files recorded: ' + names.length);
-  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['2bc909714', '633e4d641', '704373a58', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', 'local'].sort());
+  assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['2bc909714', '633e4d641', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', 'local'].sort());
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
     assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
@@ -25,8 +25,8 @@ test('every placed desk file equals the recorded hash, names its signed commit a
 });
 
 test('every map picture is in the new map palette: no pastel colour is left', () => {
-  // two files carry one colour the palette table does not list: the scrub ground (SCRUB_GROUND: the grass's value, drier and yellower, made for the map) and the sand way-up's one painted sand tone (signed as is)
-  const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : n === 'wayup-cliff-sand.png' ? ['#dfd387'] : []);
+  // the scrub ground carries one colour the palette table does not list (SCRUB_GROUND: the grass's value, drier and yellower, made for the map)
+  const ALLOWED = (n) => (n.startsWith('over-scrub') ? [SCRUB_GROUND] : []);
   for (const n of Object.keys(desk)) {
     if (['75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', '2bc909714', 'local'].includes(desk[n].commit)) continue;   // 2bc909714: the raised ground (the raised table's colours); local: the south columns, snapped to the set palette by the post-step tool   // the biome grounds (8c0ddc470), the biome decor (a6d2e0be4) and the walk's sprites are the art director's signed bytes in their own colours (mb-74), never recoloured; the set's palette holds them (prepare-set checks the limit)
     const im = img(n), r = recolour(im);

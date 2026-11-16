@@ -240,10 +240,6 @@
             "3": "cliff-back-3.png",
             "7": "cliff-back-7.png",
             "11": "cliff-back-11.png"
-          },
-          "wayup": {
-            "grass": "wayup-cliff-grass.png",
-            "sand": "wayup-cliff-sand.png"
           }
         }
       ]
