@@ -82,13 +82,13 @@ export function platesOf(st, sv, m, settings, Sg, docked) {
     else { let h = null; if (w === "store") h = tucked; else if (w === "coming") h = coming; else if (!docked) h = held(W.takeOut, "out"); else if (proj.length >= S.CARRY_MAX) h = held(W.takeFull, "take");
       out.push({ act: "takeAlong", verb: P.takealong, price: "", ...(h ?? { held: false, why: fill(W.take, { k: proj.length + 1 }) }) }); } }
   if (w === "store") {
-    const p = S.bringOutPrice(st, settings), b = S.bringOutBlock(st, sv, m, null, settings), four = S.roomPrice(st, settings) == null;
+    const p = S.bringOutPrice(st, settings, m), b = S.bringOutBlock(st, sv, m, null, settings), four = S.roomPrice(st, settings) == null, free = !!m.bonded && p === 0;   // a bonded mibi: free and at once
     const h = !b ? null : b.key === "noPlace" ? held(four ? W.noPlace4 : W.noPlace, four ? "noPlace4" : "noPlace") : held(fill(W.short, { p, e: st.e }), "short");
-    out.push({ act: "bringOut", verb: P.out, price: S.priceText(p, 0, 0), ...(h ?? { held: false, why: fill(W.out, { p, n: S.TUCK.turns }) }) });
+    out.push({ act: "bringOut", verb: P.out, price: free ? P.outFree : S.priceText(p, 0, 0), ...(free ? { free: true } : {}), ...(h ?? { held: false, why: free ? W.outBonded : fill(W.out, { p, n: S.TUCK.turns }) }) });
   } else {
-    const p = S.tuckPrice(st, settings), b = S.tuckBlock(st, sv, m, settings);
+    const p = S.tuckPrice(st, settings, m), b = S.tuckBlock(st, sv, m, settings), free = !!m.bonded && p === 0;
     const h = !b ? null : b.key === "carried" ? onboard : b.key === "coming" ? coming : b.key === "last" ? held(W.last, "last") : b.key === "short" ? held(fill(W.short, { p: b.price, e: b.have }), "short") : tucked;
-    out.push({ act: "tuckAway", verb: P.tuck, price: S.priceText(p, 0, 0), ...(h ?? { held: false, why: fill(W.tuck, { p: S.bringOutPrice(st, settings), n: S.TUCK.turns }) }) });
+    out.push({ act: "tuckAway", verb: P.tuck, price: free ? P.tuckFree : S.priceText(p, 0, 0), ...(free ? { free: true } : {}), ...(h ?? { held: false, why: free ? W.tuckBonded : fill(W.tuck, { p: S.bringOutPrice(st, settings), n: S.TUCK.turns }) }) });
   }
   { let h = null; const nY = youngTurns(st, m, settings), four = S.roomPrice(st, settings) == null;
     if (w === "carried") h = held(Sg.why.partnerOut, "onboard"); else if (w === "store") h = tucked; else if (w === "coming") h = coming;
@@ -210,7 +210,7 @@ function lineOf({ st, sv, settings, Sg, cur, plates, card, pods }) {
   if (/^room\./.test(cur ?? "")) return line;
   if (cur === "plate.incubator") { line.ok = F.plate.incubator; return line; }
   const p = plates.find((x) => x.id === cur);
-  if (p) { if (p.held) return line; const key = { look: "look", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p.act]; line.ok = fill(F.plate[key], { name: card.name, p: priceFig(p.price) }); return line; }
+  if (p) { if (p.held) return line; const key = { look: "look", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p.act]; line.ok = fill(F.plate[p.free ? key + "Free" : key], { name: card.name, p: priceFig(p.price) }); return line; }
   const o = S.mibiById(st, idOf(cur)); if (o && !pickHeld(st, sv, o, settings, Sg, S.docked(st))) line.ok = fill(F.pickUp, { name: o.name });   // held (a traveller, one coming out): no ✓, the message plate
   return line;
 }
