@@ -1,5 +1,6 @@
 // Generator 7, made off the page's thread (src/realm-store.mjs starts this as a module worker). It is plain data in, plain data out (typed arrays, sets, numbers), so everything crosses as it is.
-//   { seed }                       the realm and the Hollow Tree sites (the two things the first cell would otherwise make on the page);
+//   { seed }                       the realm (the Hollow Tree sites are made per region, later);
+//   { op: 'sites', seed, slots }   the Hollow Tree sites of these regions [[ax, ay], ...], answered { op: 'sites', sites } with the ones not yet sent;
 //   { op: 'sector', seed, slot, realm, cells? }  that region's sector (4 x 4 blocks of ground and level a place, and the realm's lines: world7.mjs sectorOfRegion), made from the realm alone, so no place is built; with cells, only those cells (the places in view), answered at once;
 //   { op: 'init', ctx }            the places kit (tile set, terrain table, layer descriptors) the cells are baked with: kept for the worker's life;
 //   { op: 'seed', seed, realm, sites }  the realm this worker bakes cells of (the page has it already);
@@ -14,6 +15,9 @@ import { bakedCell, sectorOfRegion } from './world7.mjs';
 import { renderGround, PlaceGroundCache, wholeScale } from '../../places/src/ground.mjs';
 
 let CTX = null, SEEDED = null;
+const SENT = new Set();   // 'seed|ax,ay' of the Hollow Tree sites the page has (given by it or sent to it)
+// the sites this worker has made that the page does not yet have: [{ slot, x, y }] or [{ slot, none: true }]
+const newSites = seed => { const out = []; for (const s of decorOf(seed).madeSites()) { const k = seed + '|' + s.slot[0] + ',' + s.slot[1]; if (!SENT.has(k)) { SENT.add(k); out.push(s); } } return out; };
 const KEEP = new Map();   // the baked places made here (by id), the newest few: a ground is asked for after its cell
 const KEEP_MAX = 24;
 
@@ -21,13 +25,17 @@ self.onmessage = e => {
   const m = e.data || {}, seed = m.seed, slot = m.slot;
   try {
     if (m.op === 'init') { CTX = m.ctx; return; }
-    if (m.op === 'seed') { if (SEEDED !== seed) { setRealm7(seed, m.realm); presetHollowSites(seed, m.sites); SEEDED = seed; } return; }
+    if (m.op === 'seed') { if (SEEDED !== seed) { setRealm7(seed, m.realm); presetHollowSites(seed, m.sites); for (const s of m.sites || []) SENT.add(seed + '|' + s.slot[0] + ',' + s.slot[1]); SEEDED = seed; } return; }
+    if (m.op === 'sites') {   // a background slice: the sites of these regions [[ax, ay], ...], made now and sent
+      const D = decorOf(seed); for (const [ax, ay] of m.slots) D.hollowSiteOf(ax, ay);
+      self.postMessage({ op: 'sites', seed, sites: newSites(seed) }); return;
+    }
     if (m.op === 'bake') {
       for (const cell of m.cells) {
         try {
           const b = bakedCell(CTX, seed, slot, cell, m.v);
           KEEP.delete(b.place.id); KEEP.set(b.place.id, b.place); while (KEEP.size > KEEP_MAX) KEEP.delete(KEEP.keys().next().value);
-          self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, ir: b.ir, place: b.place });
+          self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, ir: b.ir, place: b.place, sites: newSites(seed) });
         } catch (err) { self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, error: String((err && err.message) || err) }); }
       }
       return;
@@ -44,6 +52,6 @@ self.onmessage = e => {
     }
     if (m.op === 'sector') { if (SEEDED !== seed) { setRealm7(seed, m.realm); SEEDED = seed; } const sector = sectorOfRegion(seed, slot, m.cells || undefined); self.postMessage({ seed, slot, sector, part: !!m.cells }, [sector.cls.buffer, sector.lv.buffer, ...(sector.have ? [sector.have.buffer] : [])]); return; }
     const realm = realm7(seed, (step, of) => self.postMessage({ seed, step, of }));   // each real stage, for the first-load wait's pips (src/waitpips.mjs); the last, the Hollow Tree sites, comes with the realm itself
-    self.postMessage({ seed, realm, sites: decorOf(seed).hollowSites() });
+    self.postMessage({ seed, realm, sites: [] });   // the sites are made per region, when a place asks or a background slice (op 'sites') comes: not with the realm
   } catch (err) { self.postMessage({ seed, error: String((err && err.message) || err) }); }
 };

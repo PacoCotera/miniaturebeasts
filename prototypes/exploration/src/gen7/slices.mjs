@@ -8,7 +8,7 @@
 //   s.front(kind, X, Y)  puts a slice at the head of the line (a front request); a slice already made is not made again
 //   s.run(budgetMs)    steps until the budget is spent (checked between slices), the plan is done or a pause; returns the slices made
 //   s.digests          Map of 'p:X,Y' / 's:X,Y' to the slice's digest; s.log every slice made, in order, with its ms
-import { cellTerrain, sectorOf, CW, CH, RW, RH } from './place.mjs';
+import { cellTerrain, sectorOf, decorOf, CW, CH, RW, RH } from './place.mjs';
 
 const H0 = 2166136261;
 const fnvBytes = (h, a) => { const b = new Uint8Array(a.buffer, a.byteOffset, a.byteLength); for (let i = 0; i < b.length; i++) { h ^= b[i]; h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -20,26 +20,31 @@ export function sectorDigest(s) { let h = fnvBytes(H0, s.cls); h = fnvBytes(h, s
 
 const SLICE = {
   p: { make: (seed, X, Y) => cellTerrain(seed, X, Y), digest: placeDigest },
-  s: { make: (seed, X, Y) => sectorOf(seed, X, Y), digest: sectorDigest }
+  s: { make: (seed, X, Y) => sectorOf(seed, X, Y), digest: sectorDigest },
+  h: { make: (seed, ax, ay) => decorOf(seed).hollowSiteOf(ax, ay), digest: site => fnvText(H0, JSON.stringify(site)) }   // a Hollow Tree site: X, Y are the region's slot (ax, ay)
 };
 const key = (k, X, Y) => k + ':' + X + ',' + Y;
-const kindCode = kind => (kind === 'place' ? 'p' : kind === 'sector' ? 's' : null);
+const kindCode = kind => (kind === 'place' ? 'p' : kind === 'sector' ? 's' : kind === 'site' ? 'h' : null);
+const kindName = c => (c === 'p' ? 'place' : c === 's' ? 'sector' : 'site');
 
 // The plan, as a lazy list: the start place's 8 neighbours, the start region's sectors (the reach view), then the places outward by walking distance, then the other regions' sectors (by distance too).
 // Distance is the walk's: the king's step count, ties by the plain step count and the cell number, so the order is one fixed order.
-export function* plan(start, MWx, MHy) {
+export function* plan(start, MWx, MHy, siteSlots = []) {
   const [sx, sy] = start, dist = (X, Y) => Math.max(Math.abs(X - sx), Math.abs(Y - sy)) * 100000 + (Math.abs(X - sx) + Math.abs(Y - sy)) * 1000 + Y * 40 + X;
   const cells = []; for (let Y = 0; Y < RH; Y++) for (let X = 0; X < RW; X++) cells.push([X, Y]);
   cells.sort((a, b) => dist(a[0], a[1]) - dist(b[0], b[1]));
   const ax0 = Math.floor(sx / MWx) * MWx, ay0 = Math.floor(sy / MHy) * MHy, inStart = (X, Y) => X >= ax0 && X < ax0 + MWx && Y >= ay0 && Y < ay0 + MHy;
   for (const [X, Y] of cells) if ((X !== sx || Y !== sy) && Math.max(Math.abs(X - sx), Math.abs(Y - sy)) === 1) yield ['p', X, Y];
   for (const [X, Y] of cells) if (inStart(X, Y)) yield ['s', X, Y];
+  // one site slice for each Woods or Tallwood region, the start region first, then by the regions' distance from it (a place reads only the sites of the regions it touches, so these are made before the player gets there)
+  const sa = Math.floor(sx / MWx), sb = Math.floor(sy / MHy);
+  for (const [ax, ay] of siteSlots.slice().sort((a, b) => Math.max(Math.abs(a[0] - sa), Math.abs(a[1] - sb)) - Math.max(Math.abs(b[0] - sa), Math.abs(b[1] - sb)) || Math.abs(a[0] - sa) + Math.abs(a[1] - sb) - Math.abs(b[0] - sa) - Math.abs(b[1] - sb) || a[1] - b[1] || a[0] - b[0])) yield ['h', ax, ay];
   for (const [X, Y] of cells) if (Math.max(Math.abs(X - sx), Math.abs(Y - sy)) > 1) yield ['p', X, Y];
   for (const [X, Y] of cells) if (!inStart(X, Y)) yield ['s', X, Y];
 }
 
 export function createScheduler(seed, start, { now = () => 0, keep = false, MW: MWx = 16, MH: MHy = 20 } = {}) {
-  const digests = new Map(), log = [], products = keep ? new Map() : null, fronts = [], it = plan(start, MWx, MHy);
+  const digests = new Map(), log = [], products = keep ? new Map() : null, fronts = [], it = plan(start, MWx, MHy, decorOf(seed).hollowSlots());
   let paused = false, total = 0;
   const made = k => digests.has(k);
   function nextPlanned() { for (;;) { const n = it.next(); if (n.done) return null; if (!made(key(n.value[0], n.value[1], n.value[2]))) return n.value; } }
@@ -58,7 +63,7 @@ export function createScheduler(seed, start, { now = () => 0, keep = false, MW: 
       if (!n) return null;
       const [c, X, Y] = n, t0 = now(), prod = SLICE[c].make(seed, X, Y), ms = now() - t0, digest = SLICE[c].digest(prod);
       digests.set(key(c, X, Y), digest); if (products) products.set(key(c, X, Y), prod);
-      const rec = { kind: c === 'p' ? 'place' : 'sector', X, Y, ms, digest, front }; log.push(rec); total++;
+      const rec = { kind: kindName(c), X, Y, ms, digest, front }; log.push(rec); total++;
       return rec;
     },
     run(budgetMs) { const t0 = now(), out = []; for (;;) { if (paused || now() - t0 >= budgetMs) break; const r = self.step(); if (!r) break; out.push(r); } return out; },

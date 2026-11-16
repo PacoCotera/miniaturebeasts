@@ -271,3 +271,60 @@ test("the count line drops trailing segments at a ' · ' cut, never an ellipsis 
   p.run("S.mibis = [{ id: 1, name: 'Fig', sp: 19, born: 0, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }]; S.carried = [1]; S.lead = 1");
   assert.ok(!cut(full, tw).includes("…") && w(cut(full, tw)) <= tw);
 });
+
+// ---- skill notches: the leader's notch count moves its ability's reach (bond-perks-notches-1) ----
+const NX = `Object.assign(${standX}, ptCtx(), { call: false, ptName: "Fig" })`;
+test("notches: only a bonded leader carries them into the walk (3 at most); calm reach is 4+n (elder 8+n)", () => {
+  const p = walk(7, 0, { tier: 1 });
+  p.run("S.mibis[0].bonded = true; S.mibis[0].notches = 5; startExpedition('weather', G.spawns[0])"); assert.equal(J(p, "S.exp.pt.n"), 3, "capped at three");
+  p.run("S.mibis[0].notches = 2; startExpedition('weather', G.spawns[0])"); assert.equal(J(p, "S.exp.pt.n"), 2);
+  p.run("S.mibis[0].bonded = false; startExpedition('weather', G.spawns[0])"); assert.equal(J(p, "S.exp.pt.n"), 0, "an unbonded leader gains nothing from its notches");
+  for (const n of [0, 1, 2, 3]) { assert.equal(J(p, `calmRadius({ ptElder: false, ptN: ${n} })`), 4 + n); assert.equal(J(p, `calmRadius({ ptElder: true, ptN: ${n} })`), 8 + n); }
+});
+
+test("notches: an Untuva with a notch sniffs a pod 6 tiles off; with none it does not", () => {
+  let seen = 0;
+  for (const n of [0, 1]) {
+    const p = walk(7, 2, { tier: 1 }); p.run(`S.mibis[0].bonded = true; S.mibis[0].notches = ${n}; startExpedition('weather', G.spawns[0])`);
+    const c = J(p, "G.spawns[0]"); p.run(`S.exp.start = ${c}; S.exp.pos = ${c}; S.exp.range = 4; enterPatch()`);
+    if (!J(p, "curLive().pt")) continue; seen++;
+    p.run("{ const P = S.exp.patch, pt = curLive().pt; S.pods.length = 0; S.pods.push({ id: 'z', k: S.exp.patch.key, x: P.x + 6 < curLay().w ? P.x + 6 : P.x - 6, y: P.y, h: 1, sp: 0 }); pt.x = P.x; pt.y = P.y; }");
+    p.run(`partnerTick(${NX})`);
+    const moved = J(p, "(() => { const pt = curLive().pt, d = S.pods[0]; return Math.max(Math.abs(pt.x - d.x), Math.abs(pt.y - d.y)) < 5; })()");
+    assert.equal(moved, n === 1, "notches " + n);
+  }
+  assert.ok(seen >= 1);
+});
+
+test("notches: a notched Rupar goes to an undug bank and waits sniffing, stops once it is dug, comes back on a Call", () => {
+  let seen = 0;
+  for (const seed of [7, 19, 88, 140, 250, 400, 555, 777]) {
+    const p = walk(seed, 7, { tier: 2 }); p.run("S.mibis[0].bonded = true; S.mibis[0].notches = 2; startExpedition('weather', G.spawns[0])");
+    const at = inPlace(p, "BANK"); if (!at || !J(p, "curLive().pt")) continue;
+    const q = J(p, `crossingAt(curLay(), ${at[0]}, ${at[1]})`); if (!q) continue;
+    p.run(`{ const P = S.exp.patch, pt = curLive().pt; P.x = ${q.entry.x}; P.y = ${q.entry.y}; pt.x = P.x; pt.y = P.y; }`);
+    for (let k = 0; k < 14; k++) p.run(`partnerTick(${NX})`);
+    const near = J(p, "(() => { const pt = curLive().pt, l = curLay(); let m = 99; for (let i = 0; i < l.w * l.h; i++) if (l.tiles[i] === T.BANK) m = Math.min(m, Math.max(Math.abs(pt.x - i % l.w), Math.abs(pt.y - ((i / l.w) | 0)))); return m; })()");
+    if (near > 1) continue; seen++;
+    assert.equal(J(p, "curLive().pt.st"), "sniff"); assert.ok(J(p, "FX.notes").some(n => /shows you an earth bank/.test(n.text)));
+    p.run(`S.exp.dug = [${q.ei}]`); p.run(`partnerTick(${NX})`); assert.equal(J(p, "curLive().pt.st"), "follow", "dug: back to following");
+    p.run("S.exp.dug = []"); p.run(`partnerTick(Object.assign(${NX}, { call: true }))`); assert.equal(J(p, "curLive().pt.st"), "follow", "a Call comes first");
+  }
+  assert.ok(seen >= 1, "banks reached: " + seen);
+});
+
+test("notches: a notched Tuliko goes to mud or scree and stops once the walk has crossed one; its first crossing sets the ability-used flag", () => {
+  let seen = 0;
+  for (const [kind, seed] of [["WADE", 7], ["SCREE", 19], ["SCREE", 88], ["WADE", 140], ["SCREE", 250], ["SCREE", 400]]) {
+    const p = walk(seed, 19, { tier: 2 }); p.run("S.mibis[0].bonded = true; S.mibis[0].notches = 3; startExpedition('weather', G.spawns[0])");
+    const at = inPlace(p, kind); if (!at || !J(p, "curLive().pt")) continue;
+    p.run(`{ const P = S.exp.patch, pt = curLive().pt; P.x = ${at[0]}; P.y = ${at[1]}; pt.x = P.x; pt.y = P.y; }`);
+    p.run(`partnerTick(${NX})`); seen++;
+    assert.equal(J(p, "curLive().pt.st"), "sniff", "beside the soft ground it waits"); assert.ok(J(p, "FX.notes").some(n => /shows you the mud/.test(n.text)));
+    p.run("S.exp.softSaid = 1"); p.run(`partnerTick(${NX})`); assert.equal(J(p, "curLive().pt.st"), "follow", "crossed: back to following");
+  }
+  assert.ok(seen >= 1, "soft ground places: " + seen);
+  const p = walk(7, 19, { tier: 2 }), sc = J(p, "(() => { for (let i = 0; i < 2 * MW * MH; i++) if (G.soft.scree[i]) return i; return -1; })()"), a = sc >> 1, dir = sc & 1 ? "down" : "right";
+  p.run(`S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; S.exp.abUsed = 0; mapStep(${JSON.stringify(dir)})`);
+  assert.equal(J(p, "S.exp.abUsed"), 1, "its first crossing sets the ability-used flag");
+});

@@ -5,7 +5,7 @@
 // A second worker renders a place's ground (the pixel work of places/src/ground.mjs, which the page did a frame at a time): groundAsk, groundTake. It is a second one so that a ground is not queued behind the reach.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, realm7 } from './gen7/region.mjs';
-import { decorOf } from './gen7/place.mjs';
+import { decorOf, presetHollowSites } from './gen7/place.mjs';
 
 const PLACE_REV = 2, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
@@ -29,6 +29,7 @@ function worker(name, ctx) {
     w = W[name] = new Worker(new URL('./realm-worker.mjs', import.meta.url), { type: 'module' }); CTXS[name] = null; if (name === 'bake') PW_SEED = null;
     w.onmessage = e => {
       const m = e.data || {};
+      if (m.sites) presetHollowSites(m.seed, m.sites);   // sites the worker made for a place: now the page's too
       if (m.op === 'baked') {
         const mk = memKey(m.seed, m.slot, m.v, m.cell); ASKED.delete(mk);
         if (m.ir) { const b = { ir: m.ir, place: m.place }; BAKED.set(mk, b); keep(m.seed, m.slot, m.v, m.cell, b); } else console.warn('a place was not made in the worker', m.cell, m.error);
@@ -67,11 +68,20 @@ export async function readyPlaces(seed, slot, v, cells, kit) {
   if (todo.length && PW_ON && kit) {
     try {
       const w = worker('bake', kit.ctx);
-      if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorOf(seed).hollowSites() }); PW_SEED = seed; }   // the page has both (readyRealm gave them): they are sent, not made again
+      if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorOf(seed).madeSites() }); PW_SEED = seed; }   // the realm is the page's; of the sites it sends the ones it has made (the worker makes the rest as its places ask, and sends them back with the bake)
       w.postMessage({ op: 'bake', seed, slot, v, cells: todo });
     } catch (e) { for (const c of todo) ASKED.delete(memKey(seed, slot, v, c)); console.warn('the places worker did not run', e); }
   } else for (const c of todo) ASKED.delete(memKey(seed, slot, v, c));
   wake();
+}
+// A background slice: the Hollow Tree sites of these regions [[ax, ay], ...], made in the places worker before the player reaches them; they come back on the page's own cache (presetHollowSites).
+export function readySites(seed, slots, kit) {
+  if (!PW_ON || !kit) return false;
+  try {
+    const w = worker('bake', kit.ctx);
+    if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorOf(seed).madeSites() }); PW_SEED = seed; }
+    w.postMessage({ op: 'sites', seed, slots }); return true;
+  } catch (e) { return false; }
 }
 // A promise that resolves once the cell is in memory, or is no longer owed (the worker is gone); the caller then asks bakedGet.
 export const bakedWhen = (seed, slot, v, cell) => new Promise(resolve => {

@@ -23,7 +23,7 @@ const compact = ir => ({
 });
 export function holdVector(seed, ax, ay) {
   const G = genRegion7(seed, ax, ay), wc = c => [ax * 16 + (c % 16), ay * 20 + ((c / 16) | 0)];
-  const lms = landmarksOf(seed, decorOf(seed).hollowSites()).list.filter(p => p.slot[0] === ax && p.slot[1] === ay);
+  const lms = landmarksOf(seed, decorOf(seed)).list.filter(p => p.slot[0] === ax && p.slot[1] === ay);
   const cells = [wc(G.spawns[0]), [wc(G.spawns[0])[0] + 1, wc(G.spawns[0])[1]], [ax * 16 + 8, ay * 20 + 10]];
   if (lms.length) cells.push([lms[0].X, lms[0].Y]);
   return { landmarks: lms.map(p => [p.kind, p.name, p.X, p.Y]), cells: Object.fromEntries(cells.map(([X, Y]) => [X + ',' + Y, compact(cellIR(seed, X, Y))])) };

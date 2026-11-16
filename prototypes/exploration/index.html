@@ -1193,7 +1193,7 @@ const CARE_TEXT = {
   bonded: n => n + ' is bonded with you',
   grownLeads: n => n + ' is grown · it leads the Probe now', grownCanLead: n => n + ' is grown · it can lead the Probe',
   clockGrownHome: n => n + ' is grown · at home',
-  notch: n => n + ' gains a skill notch',
+  notch: (n, ab, k) => n + ' gains a skill notch' + (({ calm: ' · calms from farther', nose: ' · sniffs from farther', dig: ' · finds the burrow from farther' })[ab] || (ab === 'bank' ? (k > 1 ? ' · finds banks from farther' : ' · shows you earth banks') : ab === 'sure' ? (k > 1 ? ' · finds mud and scree from farther' : ' · shows you mud and scree') : '')),   // what got better, by kind (the copywriter finalises)
   takeLabel: n => 'Take ' + n, takeCtx: 'goes with you now', took: n => n + ' is with you',
   full: 'the Companion is full', fullRefused: n => n + ' stays home: the Companion is full · leave one at home first',
   leaveLabel: n => 'Leave ' + n + ' at home', leaveCtx: 'comes home now', left: n => n + ' stays home',
@@ -2002,7 +2002,7 @@ function startExpedition(type, cell) {
     cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold) } : { e: 0, d: 0, s: 0, pods: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
-    pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder' } : null,
+    pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0 } : null,
     rider: rd ? { id: rd.id, name: rd.name, sp: rd.sp } : null,   // shown in the HUD and named at set-out; never the partner, no field token, no ability
     stats: { flee: 0, sheds: 0, rev: 0, lit: 0, hits: 0, putFeeds: 0, handFeeds: 0, feedTries: 0, maxLvl: 0, stormActs: 0, openStormActs: 0 },
     supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [] };
@@ -2109,6 +2109,7 @@ function mapStep(dir, viaTiles) {   // viaTiles: a step out of a place that cros
   const ei = edgeIndex(ex.pos, dir);
   if (canBank() && G.banks && G.banks[ei] && !canStepIn(G, ex.pos, dir, { bank: new Set(ex.dug || []) })) { if (!digBank(ei, ex.pos, c)) return; }   // an earth bank: the first crossing of a walk is the dig
   noteSure(ex.pos, dir, c);
+  if (canSure() && cheb(cxy(c), cxy(ex.start)) === ex.range) ex.abUsed = 1;   // Tuliko's first step into its one extra ring is its ability used
   if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
   advance('map');
@@ -2487,7 +2488,7 @@ function softPin(a, dir) {
 function noteSure(a, dir, c) {
   const ex = S.exp, sk = softKind(a, dir);
   if (!canSure() || ex.softSaid || (sk !== 'wade' && sk !== 'scree')) return;
-  ex.softSaid = 1; logEv(ex.pt.name + ' crosses the ' + (sk === 'wade' ? 'mud' : 'scree') + ', sure-footed');
+  ex.softSaid = 1; ex.abUsed = 1; logEv(ex.pt.name + ' crosses the ' + (sk === 'wade' ? 'mud' : 'scree') + ', sure-footed');
 }
 // Rupar digs an earth bank at the first crossing of it in a walk: one extra action (an elder two), then it crosses at a normal step for the rest of the walk (ex.dug, edge indices).
 // Returns false while an elder is still digging (the press spent its action and the step waits for the next).
@@ -2567,7 +2568,7 @@ function softBump(t) {
   fxMsg((t === T.WADE ? WADE_BUMP : t === T.SCREE ? SCREE_BUMP : BANK_BUMP) + (fresh ? ' · pinned' : ''));
   FX.bumpAt = NOW; save();
 }
-function noteSureTile(t) { const ex = S.exp; if (!canSure() || ex.softSaid || (t !== T.WADE && t !== T.SCREE)) return; ex.softSaid = 1; logEv(ex.pt.name + ' crosses the ' + (t === T.WADE ? 'mud' : 'scree') + ', sure-footed'); }
+function noteSureTile(t) { const ex = S.exp; if (!canSure() || ex.softSaid || (t !== T.WADE && t !== T.SCREE)) return; ex.softSaid = 1; ex.abUsed = 1; logEv(ex.pt.name + ' crosses the ' + (t === T.WADE ? 'mud' : 'scree') + ', sure-footed'); }
 // Rupar facing a bank tile in a place: the dig, then the same two tiles cross.
 function digBankHere() {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), f = frontOf(P), q = crossingAt(lay, f.x, f.y); if (!q) return;
@@ -2851,9 +2852,9 @@ function takePod(p, leave) {
   if (!out && ex.cargo.pods.length >= ex.hold) fxSign('full');   // ("Pods open at the Station" is gone: the goal line says it)
   advance('patch', { noise: 'act' });
 }
-function calmRadius(X) { return X.ptElder ? 8 : 4; }
+function calmRadius(X) { return (X.ptElder ? 8 : 4) + (X.ptN | 0); }
 function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
-function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? spOf(ex.pt.sp).ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
+function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? spOf(ex.pt.sp).ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder), ptN: ex.pt ? ex.pt.n | 0 : 0 }; }
 // Data is a record of creatures doing things: every act on a creature pays +1 Data, for certain, once per creature per act per
 // expedition, and the player sees it before doing it (the facing line). Acts built today: feeding (eat) and settling (settle).
 // Watch, follow and play are not built. No act pays by chance, there is no first-time bonus and no ceiling: only the hold (CAP)
@@ -3301,7 +3302,8 @@ function partnerTick(X) {
   if (X.call) { pt.st = 'follow'; stepToward(X, pt, P, speed); return; }
   // A digger goes to look at the burrow before you ask. Partners ignore gates they can't handle.
   const g = X.lay.feats.find(f => f.kind === 'g');
-  if (ab === 'dig' && g && !burrowOpen() && (cheb(pt, g) <= 8 || cheb(P, g) <= 7)) {
+  const n = X.ptN | 0;   // the leader's skill notches (bonded only, 0-3): each moves the one reach of its ability up a step
+  if (ab === 'dig' && g && !burrowOpen() && (cheb(pt, g) <= 8 + 2 * n || cheb(P, g) <= 7 + 2 * n)) {
     const near = () => cheb(pt, g) <= 2 && pt.y > g.y;
     if (!near()) { const spots = [{ x: g.x - 1, y: g.y + 1 }, { x: g.x + 1, y: g.y + 1 }, { x: g.x, y: g.y + 1 }, { x: g.x - 1, y: g.y + 2 }, { x: g.x + 1, y: g.y + 2 }];
       const tgt = spots.find(s => canStand(X, s.x, s.y, pt)) || { x: g.x, y: g.y + 2 }; stepToward(X, pt, tgt, speed); }
@@ -3310,11 +3312,27 @@ function partnerTick(X) {
   }
   // A keen nose finds a buried pod close by (an elder's reaches twice as far): it goes over, sniffs twice, and the pod shows.
   if (ab === 'nose') {
-    const r = elder ? 10 : 5, pod = S.pods.find(p => p.k === X.key && p.h && p.x >= 0 && cheb(p, pt) <= r && cheb(p, P) <= r + 1);
+    const r = (elder ? 10 : 5) + n, pod = S.pods.find(p => p.k === X.key && p.h && p.x >= 0 && cheb(p, pt) <= r && cheb(p, P) <= r + 1);
     if (pod) {
       if (cheb(pt, pod) <= 1) { pt.st = 'sniff'; pt.face = Math.sign(pod.x - pt.x) || pt.face; pt.sn = (pt.sn || 0) + 1;
         if (pt.sn >= 2) { pod.h = 0; pod.out = 1; pt.sn = 0; if (S.exp) S.exp.abUsed = 1; fxGlint(pod.x, pod.y); fxMsg(X.ptName + ' found a buried pod'); logEv(X.ptName + ' sniffed out a pod'); } }
       else { pt.st = 'follow'; stepToward(X, pt, pod, speed); }
+      return;
+    }
+  }
+  // A notched Rupar or Tuliko shows you its way through: it goes to the nearest earth bank not yet dug (Rupar) or mud / scree (Tuliko) within 4 + 2n of you and waits beside it sniffing.
+  // It stops once the bank is dug or the soft ground crossed; a Call (above) always comes first, and out of reach it follows again.
+  if (n >= 1 && (ab === 'bank' || ab === 'sure') && !(ab === 'sure' && S.exp && S.exp.softSaid)) {
+    const lay = X.lay, rr = 4 + 2 * n; let tgt = null, bd = 1e9;
+    for (let i = 0; i < lay.w * lay.h; i++) { const t = lay.tiles[i]; if (ab === 'bank' ? t !== T.BANK : (t !== T.WADE && t !== T.SCREE)) continue;
+      const x = i % lay.w, y = (i / lay.w) | 0;
+      if (ab === 'bank') { const q = crossingAt(lay, x, y); if (!q || bankIsDug(q.ei)) continue; }
+      if (cheb({ x, y }, P) > rr) continue;
+      const d = man({ x, y }, pt); if (d < bd) { bd = d; tgt = { x, y }; } }
+    if (tgt) {
+      if (cheb(pt, tgt) <= 1) { pt.st = 'sniff'; pt.face = Math.sign(tgt.x - pt.x) || pt.face; }
+      else { pt.st = 'follow'; stepToward(X, pt, tgt, speed); }
+      if (!X.live.shown) { X.live.shown = 1; fxMsg(X.ptName + (ab === 'bank' ? ' shows you an earth bank' : ' shows you the mud')); }
       return;
     }
   }
@@ -3384,7 +3402,7 @@ function endExpedition(reason) {
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || (a === 'mud' ? 1 : b === 'mud' ? -1 : a - b))[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = best === 'mud' ? 'mud' : LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
-      if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
+      if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name, spOf(w.sp).ab, w.notches)); notch = { id: w.id, name: w.name, sp: w.sp, ab: spOf(w.sp).ab, n: w.notches }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.found, of: rc.total };
   if (explored && !broke) {   // what the walk brought in: Data from strike marks (read by a press) and from creature acts; nothing is added here
     const tier = walkTier(ex);
@@ -6894,7 +6912,7 @@ function drawSealed(t) {
     if (ld) { L(E.where(ld.land, ld.dir), C.fog); if (ld.pod) L(E.start, C.fog); } else L(E.rock + '.', C.fog);
     y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
-  if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
+  if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(cutLine(CARE_TEXT.notch(r.notch.name, r.notch.ab, r.notch.n), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, all at their final place at once
   // an empty walk still shows its empty crate in the next place in the bay (it is never added to the bay)
   const none = (r.empty || r.waited) && !r.sealed && S.bay.length < BAY ? { n: r.n, e: 0, d: 0, s: 0, pods: [], none: true } : null;
