@@ -39,8 +39,15 @@ Object.assign(hooks, { wake: () => caddy.wake(), afterSave: () => { if (G.st.out
 let lastT = null;
 function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
-  if (G.ready && CORE.face) { tick(t, dt); updateCaddy(); if (CORE.lastProps != null && typeof bootDone === "function") bootDone(); }   // the load bar goes when the first screen's props are out
+  if (G.ready && CORE.face) { tick(t, dt); updateCaddy(); postFocus(); if (CORE.lastProps != null && typeof bootDone === "function") bootDone(); }   // the load bar goes when the first screen's props are out
   requestAnimationFrame(frame);
+}
+// ?embed: where the focus ring is, for the play page's phone window (it pans to keep the ring's target in view); box null when the screen shows no ring. Posted when it changes.
+let focusPosted = "";
+function postFocus() {
+  if (!EMBED || parent === window || !CORE.face.focusBox) return;
+  const box = CORE.face.focusBox(), screen = UI.idle ? "idle" : UI.screen, k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
+  parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
 }
 
 const stationEl = $("station");

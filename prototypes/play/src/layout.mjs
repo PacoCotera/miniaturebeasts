@@ -9,9 +9,24 @@
 
 import { sizes, plan as keyPlan, pickA, portraitTrayH, sideCols, leftColH, EDGE, DOCK_H, DOCK_GAP, EPAPER_GAP } from "./keyplan.mjs";
 
-export const BAR = 52, GAP = 16, NOTE_H = 56, STAMP_H = 12, HINT_H = 16, EPAPER_W = 104, SIDE_PHONE = 24, SIDE_LAPTOP = 48, LAPTOP_MAX_W = 1040, LAPTOP_TOP = 16, UPRIGHT_STAMP_BOTTOM = 16;
+export const BAR = 52, GAP = 16, NOTE_H = 56, STAMP_H = 12, EPAPER_W = 104, SIDE_PHONE = 24, SIDE_LAPTOP = 48, LAPTOP_MAX_W = 1040, LAPTOP_TOP = 16, UPRIGHT_STAMP_BOTTOM = 16;
 export const FACE = { companion: [450, 600], station: [1024, 600] };   // the faces, in lp
 export const SWITCH_LAPTOP_W = 320;
+// The Station on a phone (ui-station-phone-1; the AD 11-16: a card and its heart shrink to a dot): its 1024 x 600 screen fitted whole is about x0.31 held upright and x0.44 on its side. Where the whole fit is under
+// ZOOM the screen is drawn at ZOOM in a window as wide as the panel allows (out.view: the part of the screen in view, in lp), and the window pans to keep the focused target whole (panFor). Wherever x0.6 fits, the whole screen.
+export const ZOOM = 0.6, PAN_PAD = 12;
+// The window's top left (lp) that shows `box` (the focus ring's target, [x, y, w, h] in lp) whole with PAN_PAD round it, moving as little as it can from `at`; a box larger than the window keeps its top left in view.
+// box null (no ring on the screen): `at` as it is. Always inside the screen.
+export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v)), axis = (p, b0, bl, vl, fl) => {
+    const lo = b0 - PAN_PAD, hi = b0 + bl + PAN_PAD;
+    if (hi - lo > vl) p = lo; else if (lo < p) p = lo; else if (hi > p + vl) p = hi - vl;
+    return clamp(Math.round(p), 0, Math.max(0, fl - vl));
+  };
+  if (!view) return { x: 0, y: 0 };
+  if (!box) return { x: clamp(at.x, 0, Math.max(0, face[0] - view.w)), y: clamp(at.y, 0, Math.max(0, face[1] - view.h)) };
+  return { x: axis(at.x, box[0], box[2], view.w, face[0]), y: axis(at.y, box[1], box[3], view.h, face[1]) };
+}
 
 // 'up' a phone held upright, 'side' a phone on its side, 'laptop' everything else
 // A coarse pointer on a small screen is a phone. Any other pointer gets the laptop form only where it fits: the Companion at ×1 under the laptop plan, and the bar's controls in one row, apart. Otherwise the phone form for the orientation.
@@ -43,29 +58,32 @@ function laptopScales(W, H, dpr, zSet) {
   return { companion: z / dpr, station: fitS * ratio, zFit: zFit >= 1 ? zFit : fitC * dpr };
 }
 
-// plan({ W, H, dpr, coarse, dev, asleep, hint, zSet }): dev 'companion' | 'station'; asleep: the Station has no pod home yet; hint: the turn hint is shown; zSet: the laptop size control's choice (null = fit)
-// -> { form, W, H, dev, a, scale, bar, panel, screen, tray: { box, layout, plan }, dock, epaper, note, hint, stamp, margins, content }
-// scale: CSS px per lp. tray.plan is keyplan's plan for tray.box; dock and epaper are in window CSS px. note, hint and stamp are null where not shown; stamp.where: 'foot', 'bar' (sideways) or 'barLeft' (laptop).
-export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, hint = false, zSet = null }) {
+// plan({ W, H, dpr, coarse, dev, asleep, zSet }): dev 'companion' | 'station'; asleep: the Station has no pod home yet; zSet: the laptop size control's choice (null = fit)
+// -> { form, W, H, dev, a, scale, bar, panel, screen, tray: { box, layout, plan }, dock, epaper, note, stamp, view, margins, content }
+// scale: CSS px per lp. tray.plan is keyplan's plan for tray.box; dock and epaper are in window CSS px. note and stamp are null where not shown; stamp.where: 'foot', 'bar' (sideways) or 'barLeft' (laptop).
+export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet = null }) {
   const f = form(W, H, coarse), st = dev === "station", [fw, fh] = FACE[dev];
-  const out = { form: f, W, H, dev, asleep, bar: box(0, 0, W, BAR), note: null, hint: null, stamp: null };
+  const out = { form: f, W, H, dev, asleep, bar: box(0, 0, W, BAR), note: null, stamp: null, view: null };   // view: the Station's window on a phone (lp), null where the whole screen shows
   if (f === "up") {
     // the keys row is placed once, from the Companion (the taller panel): its panel and the dock row centred between the bar and the build line; the Station's panel ends on the same line
     const M = SIDE_PHONE, bw = W - 2 * M, a = pickA("portrait", bw, H), stampY = H - UPRIGHT_STAMP_BOTTOM - STAMP_H;
-    const scOf = (d) => (bw - 2 * EDGE) / FACE[d][0], bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
+    const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? Math.max(ZOOM, fitOf(d)) : fitOf(d)), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
     const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((stampY - 12 - BAR - group) / 2) + bhC, dockY = bodyBottom + GAP;
-    const s = scOf(dev), bh = bhOf(dev), by = bodyBottom - bh, trayH = portraitTrayH(dev, a);
+    const s = scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - 2 * EDGE);
+    // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter
+    const topMin = BAR + GAP + (st && asleep ? NOTE_H + GAP : 0), sh = Math.min(fh * s, Math.floor(bodyBottom - trayH - EDGE - topMin));
+    const bh = EDGE + sh + trayH, by = bodyBottom - bh;
     out.a = a; out.scale = s; out.panel = box(M, by, bw, bh);
-    out.screen = box(M + EDGE, by + EDGE, fw * s, fh * s);
+    out.screen = box(M + EDGE, by + EDGE, sw, sh);
+    out.view = sw < fw * s - 1e-6 || sh < fh * s - 1e-6 ? { w: sw / s, h: sh / s } : null;
     const trayBox = [M, by + bh - trayH, bw, trayH];
     out.tray = { box: trayBox, layout: "portrait", plan: keyPlan(dev, "portrait", bw, 0, a) };
     out.dock = box(M, dockY, bw - EPAPER_GAP - EPAPER_W, DOCK_H); out.epaper = box(M + bw - EPAPER_W, dockY, EPAPER_W, DOCK_H);
     out.stamp = { box: box(M, stampY, bw, STAMP_H), where: "foot" };
     if (st && asleep) out.note = box(M, by - GAP - NOTE_H, bw, NOTE_H);
-    if (st && hint) { const top = out.note ? out.note.y : by; out.hint = box(M, top - GAP - HINT_H, bw, HINT_H); }   // the turn hint stands 16 above the note, or above the panel when the Station is awake
     out.keysLineY = trayBox[1] + out.tray.plan.keys.down[1] + out.tray.plan.a;   // the D-pad's centre row: the same y on both devices
     out.margins = { side: M, top: by - BAR, bottom: H - (dockY + DOCK_H) };
-    const top0 = Math.min(by, out.note ? out.note.y : by, out.hint ? out.hint.y : by);
+    const top0 = Math.min(by, out.note ? out.note.y : by);
     out.content = [M, top0, bw, dockY + DOCK_H - top0];
     return out;
   }
@@ -75,8 +93,11 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, hint 
   if (f === "side") {
     const M = SIDE_PHONE, avail = H - BAR;
     bh = EDGE + leftH + EDGE;
-    s = Math.min((W - 2 * M - LW - RW) / fw, (bh - 2 * EDGE) / fh);
-    sw = fw * s; sh = fh * s; bw = LW + sw + RW;
+    const maxW = W - 2 * M - LW - RW, maxH = bh - 2 * EDGE;
+    s = Math.min(maxW / fw, maxH / fh);
+    if (st && s < ZOOM) { s = ZOOM; sw = Math.min(fw * s, maxW); sh = Math.min(fh * s, maxH); out.view = { w: sw / s, h: sh / s }; }   // the Station's window at ZOOM, as large as the side allows
+    else { sw = fw * s; sh = fh * s; }
+    bw = LW + sw + RW;
     by = BAR + Math.floor((avail - bh) / 2); bxx = Math.round((W - bw) / 2);
     out.margins = { side: bxx, top: by - BAR, bottom: H - by - bh };
     out.stamp = { box: null, where: "bar" };
@@ -125,12 +146,6 @@ export function barPlan({ W, form: f, tools = false, size = false }) {
   return out;
 }
 
-// the Station is bigger turned: its screen on the phone's side is larger than held upright (the turn hint's condition)
-export function biggerTurned(W, H, dpr) {
-  if (H < W) return false;
-  const here = plan({ W, H, dpr, coarse: true, dev: "station" }), turned = plan({ W: H, H: W, dpr, coarse: true, dev: "station" });
-  return turned.screen.w > here.screen.w;
-}
 
 // the dock's screen opened: a bottom sheet on a phone (the e-paper across the sheet's width, 808 : 288), the same dialog centred on a laptop
 export function dockSheet(W, H, coarse) {

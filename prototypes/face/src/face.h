@@ -26,6 +26,7 @@ uint32_t face_hash(void);
 /* Keys: LVGL's key codes (LV_KEY_UP 17, DOWN 18, RIGHT 19, LEFT 20, ESC 27, ENTER 10, ...), a press then its release. */
 void face_key(int code, int down);
 int face_key_count(void);
+int face_focus_box(int32_t *out);   /* the last scene's ring box (x, y, w, h) into out; 1 when it drew one */
 int face_last_key(void);
 const char *face_version(void);
 /* LVGL keeps LV_INV_BUF_SIZE invalid areas a refresh and redraws the whole screen on the next one (lv_refr.c lv_inv_area): the face counts those overflows (monotonic) and tells the cap. */
