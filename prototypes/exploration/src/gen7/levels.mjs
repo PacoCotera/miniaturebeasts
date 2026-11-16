@@ -91,7 +91,7 @@ export function qCell(L, X, Y) {
     const w = warp(px, py, sD, reach), wx = w.x + shr(fbm(px, st * py, ws, wo, sWx) * wob, 8), wy = w.y + shr(fbm(st * px, py, ws, wo, sWy) * wob, 8);
     const un = 2 * gx + 1 - CW + shr(wx, 7), vn = 2 * gy + 1 - CH + shr(wy, 7), X0 = Math.floor(un / W2), Y0 = Math.floor(vn / H2), a = un - X0 * W2, b = vn - Y0 * H2;
     const e = div(e0q[cellIdx(X0, Y0)] * (W2 - a) * (H2 - b) + e0q[cellIdx(X0 + 1, Y0)] * a * (H2 - b) + e0q[cellIdx(X0, Y0 + 1)] * (W2 - a) * b + e0q[cellIdx(X0 + 1, Y0 + 1)] * a * b, W2 * H2);
-    const h = S.at((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5).height, macro = Math.round(h * 65536) - e;
+    const h = S.at.height((un + CW) / W2 - 0.5, (vn + CH) / H2 - 0.5), macro = Math.round(h * 65536) - e;
     q[k] = macro + shr(fbm(px + wx, py + wy, 5, 4, sDet) * D, 16) + coastQ16(L.seed, gx, gy);
   }
   if (L.q.size > 3000) L.q.clear();
