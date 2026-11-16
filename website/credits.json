@@ -1,9 +1,13 @@
 {
-  "updated": "2026-11-13",
+  "updated": "2026-11-16",
   "pending": [
     {
       "files": ["prototypes/places/vendor/"],
       "note": "The level editor's JSON schema file carries no licence text of its own; the upstream licence is being confirmed before it is listed."
+    },
+    {
+      "files": [],
+      "note": "\"heart 16*16\" on OpenGameArt (https://opengameart.org/content/heart-1616), looked at for the bond's heart: its author and the version of its CC BY licence are being confirmed before it is listed."
     }
   ],
   "entries": [
@@ -172,6 +176,26 @@
       "url": "https://opengameart.org/content/2d-circle-graphic-desert-cliffs",
       "where": "Starting shapes for our cliff corners: redrawn and recoloured, never shown as it is. A related cliff set on the same site is credited to Dan Cook, and we thank him here too.",
       "added": "2026-11-13"
+    },
+    {
+      "kind": "art",
+      "what": "Pixel Hearts, small pixel-art hearts",
+      "source": "OpenGameArt",
+      "author": "TokyoGeisha",
+      "licence": { "name": "CC0 1.0 Universal", "url": "https://creativecommons.org/publicdomain/zero/1.0/" },
+      "url": "https://opengameart.org/content/pixel-hearts",
+      "where": "Looked at for the bond's heart on the Companion and the Station; our heart is drawn anew, nothing copied. CC0 asks for no credit; we give it.",
+      "added": "2026-11-16"
+    },
+    {
+      "kind": "art",
+      "what": "N64 hearts, pixel-art hearts",
+      "source": "OpenGameArt",
+      "author": "0016",
+      "licence": { "name": "CC0 1.0 Universal", "url": "https://creativecommons.org/publicdomain/zero/1.0/" },
+      "url": "https://opengameart.org/content/n64-hearts",
+      "where": "Looked at for the bond's heart on the Companion and the Station; our heart is drawn anew, nothing copied. CC0 asks for no credit; we give it.",
+      "added": "2026-11-16"
     }
   ]
 }
