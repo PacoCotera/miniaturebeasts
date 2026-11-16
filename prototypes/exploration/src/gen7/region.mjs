@@ -6,10 +6,28 @@
 import FlatQueue from 'flatqueue';
 import { hash, makeRng, MW, MH, L, EDGE, G2, WALK_MIN, BIOME_GROUND, cdist, cxy, cheb, passableIn, canStepIn, edgeIndex } from '../world.mjs';
 import { ATLAS } from '../regions.mjs';
-import { buildRealm, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
-import { levelsOf, findWayup, forgetLevels } from './levels.mjs';
+import { buildRealm, rawRealm, editE0, RW, RH, CW, CH, NB8, isSaddle, levelZones, closeLevels, fixSaddles } from './world.mjs';
+import { realmFeatures } from './features.mjs';
 
 export const NC = MW * MH;
+// world.mjs hash() with its leading arguments folded once (the same bytes in the same order), then one number appended and finalised; and mulberry32's first draw
+function hashHead(parts) { let h = 2166136261 >>> 0;
+  for (const v of parts) { if (typeof v === 'string') { for (let j = 0; j < v.length; j++) { h ^= v.charCodeAt(j); h = Math.imul(h, 16777619); } }
+    else { const n = Math.floor(v) | 0; for (let k = 0; k < 4; k++) { h ^= (n >>> (k * 8)) & 255; h = Math.imul(h, 16777619); } }
+    h ^= 0x5bd1e995; h = Math.imul(h, 16777619); }
+  return h; }
+function hashTail(h, v) { const n = Math.floor(v) | 0;
+  h ^= n & 255; h = Math.imul(h, 16777619); h ^= (n >>> 8) & 255; h = Math.imul(h, 16777619); h ^= (n >>> 16) & 255; h = Math.imul(h, 16777619); h ^= (n >>> 24) & 255; h = Math.imul(h, 16777619);
+  h ^= 0x5bd1e995; h = Math.imul(h, 16777619);
+  h ^= h >>> 16; h = Math.imul(h, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return h >>> 0; }
+// canStepIn without its options (no object made per step): the same test for SIDES[k]
+function stepK(G, a, k) {
+  const s = SIDES[k], x = a % MW + s[1], y = ((a / MW) | 0) + s[2]; if (x < 0 || y < 0 || x >= MW || y >= MH) return false;
+  const b = y * MW + x, e = k === 1 ? 2 * a : k === 3 ? 2 * (a - 1) : k === 2 ? 2 * a + 1 : 2 * (a - MW) + 1, kind = G.edge[e], l = G.land[b];
+  if (!((l !== L.WATER || G.ford[b] === 1) && l !== L.CLIFF)) return false;
+  return kind === EDGE.OPEN || kind === EDGE.RAMP;
+}
+function firstDraw(a) { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
 export const STRANDED_MAX_PCT = 6;   // the most a region's dry land that no stair with a way up reaches (a pocket across a river that ends on a north-facing wall), in percent
 const SIDES = [['up', 0, -1], ['right', 1, 0], ['down', 0, 1], ['left', -1, 0]];
 const inRegion = (x, y) => x >= 0 && y >= 0 && x < MW && y < MH;
@@ -100,11 +118,12 @@ export function regionAt(realm, ax, ay, pt = 0) {
   for (let c = 0; c < NC; c++) { const x = c % MW, y = (c / MW) | 0;
     if (x < MW - 1 && level[c] !== level[c + 1]) edge[2 * c] = EDGE.CLIFF;
     if (y < MH - 1 && level[c] !== level[c + MW]) edge[2 * c + 1] = EDGE.CLIFF; }
-  // Stairs. A way up exists only in a south-facing face (the one painted piece), so a stair sits on an edge between a cell and the one south of it, the higher to the north, and only
-  // where the place layer finds a straight face of the way up's width on that edge (levels.mjs, the one face test). The tree keeps today's rule (every level zone reachable) and picks
-  // another edge, in the order of the hashed keys, where an edge has no face; a region whose zones cannot all be joined that way fails its check and is drawn again.
-  const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [], LVL = levelsOf(realm);
-  const faceOk = i => { const c = i >> 1; return !!findWayup(LVL, ax * MW + (c % MW), ay * MH + ((c / MW) | 0), portOffset(seed, ax, ay, i)); };
+  // Stairs. A way up exists only in a south-facing face (the one painted piece), so a stair sits on an edge between a cell and the one south of it, the higher to the north. The realm reads no tile
+  // land: every such edge may carry a stair, in the order of the hashed keys, and the place seats the way up where the realm put it (the held-straight site, levels.mjs, made before the land's passes).
+  // The tree keeps today's rule (every level zone reachable); a region whose zones cannot all be joined fails its check and is drawn again.
+  const pass = c => passableIn(Gp, c) && !island[c], Z = levelZones(pass, level, MW, MH), cand = [];
+  // The one cell-scale test: a lake right under the lower cell leaves the site no dry columns (the tile water reaches into the cell above it), so no stair on an edge whose lower cell has open water (not a ford) right south of it.
+  const seatOk = i => { const w = wc(i >> 1) + 2 * RW; return w >= RW * RH || realm.land[w] !== L.WATER || realm.ford[w] === 1; };
   const southUp = e => (e.i & 1) === 1 && level[e.a] > level[e.b];
   for (let i = 0; i < 2 * NC; i++) { if (edge[i] !== EDGE.CLIFF) continue; const a = i >> 1, b = i & 1 ? a + MW : a + 1;
     if (pass(a) && pass(b)) cand.push({ i, a, b, key: hash(seed, 'gen7', 'ramp', 2 * wc(a) + (i & 1)) }); }
@@ -113,14 +132,14 @@ export function regionAt(realm, ax, ay, pt = 0) {
   const upAll = Int32Array.from({ length: Z.n }, (_, z) => z);   // the zones as every cliff edge would join them
   for (const e of cand) { const ra = find(upAll, Z.id[e.a]), rb = find(upAll, Z.id[e.b]); if (ra !== rb) upAll[ra < rb ? rb : ra] = ra < rb ? ra : rb; }
   const up = Int32Array.from({ length: Z.n }, (_, z) => z);
-  for (const e of cand) { if (!southUp(e)) continue; const ra = find(up, Z.id[e.a]), rb = find(up, Z.id[e.b]); if (ra === rb || !faceOk(e.i)) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
+  for (const e of cand) { if (!southUp(e)) continue; const ra = find(up, Z.id[e.a]), rb = find(up, Z.id[e.b]); if (ra === rb || !seatOk(e.i)) continue; up[ra < rb ? rb : ra] = ra < rb ? ra : rb; edge[e.i] = EDGE.RAMP; }
   const zonesJoined = roots(up) === roots(upAll);
   if (B && B.extraStairs) {   // a biome's own stairs besides the tree's, each clear of a stair beside it on the same wall
     let have = 0; for (let i = 0; i < 2 * NC; i++) if (edge[i] === EDGE.RAMP) have++;
     const along = i => [i - 2, i + 2];
     const extras = cand.filter(e => southUp(e) && edge[e.i] === EDGE.CLIFF && !wet(e.a) && !wet(e.b)).sort((p, q) => hash(s0, 'xramp', p.i) - hash(s0, 'xramp', q.i) || p.i - q.i);
     for (let k = 0, want = ((have * B.extraStairs + 50) / 100) | 0, at = 0; k < want && at < extras.length; at++) {
-      const e = extras[at]; if (!along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP) || !faceOk(e.i)) continue;
+      const e = extras[at]; if (!along(e.i).every(j => j < 0 || j >= 2 * NC || edge[j] !== EDGE.RAMP) || !seatOk(e.i)) continue;
       edge[e.i] = EDGE.RAMP; k++;
     }
   }
@@ -129,7 +148,7 @@ export function regionAt(realm, ax, ay, pt = 0) {
   const comp = new Uint8Array(NC);
   { const seen = new Int32Array(NC).fill(-1), qu = new Int32Array(NC); let best = -1, bestN = 0;
     for (let c0 = 0; c0 < NC; c0++) { if (seen[c0] >= 0 || !passableIn(Gp, c0)) continue; let h = 0, n = 0; qu[n++] = c0; seen[c0] = c0;
-      while (h < n) { const c = qu[h++], x = c % MW, y = (c / MW) | 0; for (const [dir, dx, dy] of SIDES) { if (!canStepIn(Gp, c, dir)) continue; const d = (y + dy) * MW + x + dx; if (seen[d] < 0) { seen[d] = c0; qu[n++] = d; } } }
+      while (h < n) { const c = qu[h++], x = c % MW, y = (c / MW) | 0; for (let k = 0; k < 4; k++) { if (!stepK(Gp, c, k)) continue; const d = (y + SIDES[k][2]) * MW + x + SIDES[k][1]; if (seen[d] < 0) { seen[d] = c0; qu[n++] = d; } } }
       if (n > bestN) { bestN = n; best = c0; } }
     for (let c = 0; c < NC; c++) comp[c] = seen[c] === best && best >= 0 ? 1 : 0; }
   // set pieces, each on a stream of its own. The gate: a non-stair cliff base in the walkable part (its rock stays off the border cells).
@@ -156,12 +175,16 @@ export function regionAt(realm, ax, ay, pt = 0) {
     // start glints: one near the gate, the rest spread out
     const RS = RGn('spawn');
     const ok = c => { if (!comp[c] || c === gate || c === deep || wet(c)) return false; const x = c % MW, y = (c / MW) | 0; let n = 0;
-      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (inRegion(X, Y) && passableIn(Gp, Y * MW + X) && level[Y * MW + X] === level[c]) n++; }
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X = x + dx, Y = y + dy; if (!inRegion(X, Y)) continue; const b = Y * MW + X, l = land[b];   // passableIn inline
+        if ((l !== L.WATER || ford[b] === 1) && l !== L.CLIFF && level[b] === level[c]) n++; }
       if (n < 6) return false;
-      const seen = new Uint8Array(NC), qu = [c]; seen[c] = 1;   // the cells a 2-cell reach would give from here
-      for (let h = 0; h < qu.length; h++) { const u = qu[h], ux = u % MW, uy = (u / MW) | 0; for (const [dir, dx, dy] of SIDES) { const X = ux + dx, Y = uy + dy; if (!inRegion(X, Y)) continue; const d = Y * MW + X;
-        if (seen[d] || !canStepIn(Gp, u, dir) || island[d] || Math.max(Math.abs(X - x), Math.abs(Y - ((c / MW) | 0))) > 2) continue; seen[d] = 1; qu.push(d); } }
-      return qu.length >= G2.START_REACH; };
+      // one stamped seen array and one queue for every cell (the same search, the same order), stopped once the reach is enough (only the count is read)
+      const st = ++okStamp; let qn = 0; okQ[qn++] = c; okSeen[c] = st;   // the cells a 2-cell reach would give from here
+      for (let h = 0; h < qn && qn < G2.START_REACH; h++) { const u = okQ[h], ux = u % MW, uy = (u / MW) | 0;
+        for (let k = 0; k < 4; k++) { const sd = SIDES[k], X = ux + sd[1], Y = uy + sd[2]; if (!inRegion(X, Y)) continue; const d = Y * MW + X;
+          if (okSeen[d] === st || !stepK(Gp, u, k) || island[d] || Math.max(Math.abs(X - x), Math.abs(Y - y)) > 2) continue; okSeen[d] = st; okQ[qn++] = d; } }
+      return qn >= G2.START_REACH; };
+    const okSeen = new Int32Array(NC), okQ = new Int32Array(NC); let okStamp = 0;
     let sc = []; for (let c = 0; c < NC; c++) if (ok(c)) sc.push(c);
     if (realm.coast) {   // starts keep clear of the coast: 3 cells from the border cells (2 where fewer than 5 are left); a region off the rim never loses one, so its draws are the same
       const gap = c => { const w = wc(c), x = w % RW, y = (w / RW) | 0; return Math.min(x, y, RW - 1 - x, RH - 1 - y); };
@@ -180,20 +203,16 @@ export function regionAt(realm, ax, ay, pt = 0) {
       if (!glow.includes(c)) glow.push(c);
     }
     // beacons on rock and meadow, outposts spread out
-    for (let c = 0; c < NC; c++) { if ((land[c] !== L.ROCK && land[c] !== L.MEADOW) || !comp[c]) continue; const cr = makeRng(hash(s0, 'cairn', c)); if (cr.int(100) >= (land[c] === L.ROCK ? 35 : 8)) continue;
+    const hC = hashHead([s0, 'cairn']), hD = hashHead([s0, 'depot']);
+    for (let c = 0; c < NC; c++) { if ((land[c] !== L.ROCK && land[c] !== L.MEADOW) || !comp[c]) continue; if (Math.floor(firstDraw(hashTail(hC, c)) * 100) >= (land[c] === L.ROCK ? 35 : 8)) continue;
       const p = cxy(c); let close = false; for (const b of bset) if (cheb(p, cxy(b)) <= 2) { close = true; break; } if (!close) bset.add(c); }
-    const dc = []; for (let c = 0; c < NC; c++) if (comp[c] && !wet(c) && !island[c] && c !== gate && c !== deep && c !== swim && !bset.has(c)) dc.push({ c, k: hash(s0, 'depot', c) });
+    const dc = []; for (let c = 0; c < NC; c++) if (comp[c] && !wet(c) && !island[c] && c !== gate && c !== deep && c !== swim && !bset.has(c)) dc.push({ c, k: hashTail(hD, c) });
     dc.sort((a, b) => a.k - b.k || a.c - b.c);
     for (const { c } of dc) { if (dset.size >= 6) break; const p = cxy(c); if ([...dset].every(d => cheb(p, cxy(d)) >= 5)) dset.add(c); }
   }
   const G = { seed, slot: [ax, ay], biome, gen: 7, attempt: t, land, ford, island, level, edge, cross, comp, gate, mouth, deep, swim, swimDir, spawns, glow, wk, wbody,
     beacons: { seed, set: bset }, depots: { seed, set: dset }, coast: Uint8Array.from({ length: NC }, (_, c) => (realm.coast ? realm.coast[wc(c)] : 0)) };   // coast: the cells of the realm's border ring (wide water, never walked)
-  // trails with ports; a stair's port is its way up
-  G.trails = trailsOf(G);
-  const ports = new Map();
-  for (const c of cross) { const e = 2 * c.c + (c.side === 's' ? 1 : 0); ports.set(e, 'stair'); }
-  for (const tr of G.trails) for (let i = 1; i < tr.cells.length; i++) { const e = edgeOfStep(tr.cells[i - 1], tr.cells[i]); if (!ports.has(e)) ports.set(e, 'trail'); }
-  G.ports = [...ports].sort((a, b) => a[0] - b[0]).map(([e, kind]) => ({ e, off: portOffset(seed, ax, ay, e), kind }));
+  // the trails and ports are made once, for the final region (finishRegion): no check reads them
   // the shared borders: per side, per cell along it, this region's cell, the neighbour region's cell and the edge between (read from the realm)
   G.border = {};
   for (const [side, dx, dy] of SIDES) {
@@ -213,6 +232,17 @@ export function regionAt(realm, ax, ay, pt = 0) {
     for (const [r, n] of size) if (top.get(find(upAll, r)) !== r) G.stranded += n; }
   G.zonesJoined = zonesJoined;
   G.fails = checkRegion(G, biome);
+  return G;
+}
+// trails with ports; a stair's port is its way up
+export function finishRegion(G) {
+  if (G.ports) return G;
+  const seed = G.seed, [ax, ay] = G.slot;
+  G.trails = trailsOf(G);
+  const ports = new Map();
+  for (const c of G.cross) { const e = 2 * c.c + (c.side === 's' ? 1 : 0); ports.set(e, 'stair'); }
+  for (const tr of G.trails) for (let i = 1; i < tr.cells.length; i++) { const e = edgeOfStep(tr.cells[i - 1], tr.cells[i]); if (!ports.has(e)) ports.set(e, 'trail'); }
+  G.ports = [...ports].sort((a, b) => a[0] - b[0]).map(([e, kind]) => ({ e, off: portOffset(seed, ax, ay, e), kind }));
   return G;
 }
 
@@ -254,7 +284,7 @@ const LAND_SHAPE = ['walk', 'ways', 'compShare', 'share'];
 // The raised land never ends in a straight cut along the shore: a plateau cell in the first TAPER cells inside the ring is lowered to the low ground, so the drop to the shore happens inland and
 // follows the shapes of cells. How many cells (1 to TAPER) varies along each side by value noise of the seed, three cells to a knot, so the plateau's edge wanders in broad steps and a strip
 // of raised land never stands alone between lowered cells. A cell's rank only ever falls, and the cells further in keep theirs, so no saddle is made by the taper itself (fixSaddles is the guard).
-export const TAPER = 3, TAPER_LIFT = 0.08, TAPER_KNOT = 1;
+export const TAPER = 3, TAPER_KNOT = 1;
 function taperCoast(realm) {
   const { seed, level } = realm, knot = (side, i) => (hash(seed, 'gen7', 'taper', side, i) % 1024) / 1024;
   for (let y = 1; y < RH - 1; y++) for (let x = 1; x < RW - 1; x++) {
@@ -262,7 +292,7 @@ function taperCoast(realm) {
     const kx = Math.min(x, RW - 1 - x), ky = Math.min(y, RH - 1 - y), k = Math.min(kx, ky); if (k > TAPER) continue;
     const alongX = ky < kx, s = alongX ? x : y, side = alongX ? (y < RH / 2 ? 0 : 1) : (x < RW / 2 ? 2 : 3), i = Math.floor(s / TAPER_KNOT), f = (s % TAPER_KNOT) / TAPER_KNOT;
     const v = knot(side, i) * (1 - f) + knot(side, i + 1) * f;
-    if (k <= 1 + Math.floor(v * TAPER * 0.999)) { level[c] = 0; realm.e0[c] = Math.max(realm.e0[c], realm.E[c] + TAPER_LIFT); }   // the height that raises the cell is lifted over its own, so the land at tile scale (levels.mjs) stays low in it too and the contour of the plateau beyond wanders with the land
+    if (k <= 1 + Math.floor(v * TAPER * 0.999)) level[c] = 0;   // its raising height is lifted over its own by the e0 pass (coastOf), so the land at tile scale (levels.mjs) stays low in it too
   }
   closeLevels(level, RW, RH); fixSaddles(level, RW, RH);
 }
@@ -273,8 +303,8 @@ function coastOf(out) {
     if (x === 0 || y === 0 || x === RW - 1 || y === RH - 1) { coast[c] = 1; realm.land[c] = L.WATER; realm.wkind[c] = 2; realm.ford[c] = 0; realm.level[c] = 0; }
   }
   taperCoast(realm);
+  editE0(realm);
   realm.coast = coast;
-  forgetLevels(realm);
   for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) if (ax === 0 || ay === 0 || ax === ATLAS - 1 || ay === ATLAS - 1) {
     let G = regionAt(realm, ax, ay);
     for (let pt = 1; pt < 12 && G.fails.length; pt++) { const H = regionAt(realm, ax, ay, pt); if (H.fails.length < G.fails.length) G = H; }
@@ -282,13 +312,37 @@ function coastOf(out) {
     out.regions[ay * ATLAS + ax] = G;
   }
 }
+// The arrays the realm's features read (features.mjs): the realm's cells, with the regions' final land, level, fords and stairs, whole numbers (heights in thousandths).
+export function featureInput(out) {
+  const { realm, regions } = out, NR = RW * RH, raw = rawRealm(realm.seed), r3 = v => Math.round(v * 1000);
+  const level = new Uint8Array(NR), ford = new Uint8Array(NR), land = new Uint8Array(NR), stair = new Uint8Array(NR), slot = new Uint8Array(NR);
+  for (const G of regions) {
+    const [ax, ay] = G.slot, wc = c => (ay * MH + ((c / MW) | 0)) * RW + ax * MW + (c % MW);
+    for (let c = 0; c < NC; c++) { const w = wc(c); level[w] = G.level[c]; ford[w] = G.ford[c]; land[w] = G.land[c]; slot[w] = ay * ATLAS + ax; }
+    for (const cr of G.cross) if (cr.side === 's' && G.level[cr.c] > G.level[cr.c + MW]) stair[wc(cr.c)] = 1;
+  }
+  return { RW, RH, level, land, ford, stair, slot, coast: realm.coast, wkind: realm.wkind, E: Int32Array.from(realm.E, r3), e0: Int32Array.from(realm.e0, r3),
+    acc: Int32Array.from(raw.acc, v => Math.round(v)), down: raw.down };
+}
+// The realm's named features (features.mjs). They only read the realm: its land, levels and every other output are as they were.
+export function addFeatures(out) {
+  const F = realmFeatures(featureInput(out));
+  out.realm.features = F.list; out.realm.destinations = F.dest; out.realm.featureStats = F.stats;
+}
 export const ROUNDS = 64;   // was 24: with stairs only where a south-facing face exists, two marsh regions of seeds 1-200 (62 and 173) needed more draws
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 4;   // 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
+export const REALM_REV = 6;   // 6: stairs at cell scale (the realm reads no tile land; the place seats the way up) with the land rule's held sites; 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
-export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); cache.set(seed, R); }
+// the realm's stairs for the place (levels.mjs seats each way up): every south stair, by the cell it stands on and its port, read from the regions that stayed. Plain data: the realm reads no tile land
+export function attachStairs(R) {
+  const list = [];
+  for (const G of R.regions) { const [ax, ay] = G.slot;
+    for (const cr of G.cross) if (cr.side === 's') list.push({ X: ax * MW + (cr.c % MW), Y: ay * MH + ((cr.c / MW) | 0), port: portOffset(R.seed, ax, ay, 2 * cr.c + 1) }); }
+  R.realm.stairs = list;
+}
+export function setRealm7(seed, R) { if (cache.size > 6) cache.clear(); if (!R.realm.stairs) attachStairs(R); cache.set(seed, R); }
 // onStep(done, of): the real stages of the making, for the first-load wait's pips (the region passes, then the coast; a repeated round keeps the count at its last region): REALM_STEPS in all (the Hollow Tree sites make the last)
 export const REALM_STEPS = ATLAS * ATLAS + 2;
 export function realm7(seed, onStep) {
@@ -296,12 +350,20 @@ export function realm7(seed, onStep) {
   const tries = new Uint8Array(ATLAS * ATLAS); let out = null;
   for (let round = 0; round < ROUNDS; round++) {
     const realm = buildRealm(seed, tries), regions = [];
-    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) { regions.push(regionAt(realm, ax, ay)); if (onStep) onStep(regions.length, REALM_STEPS); }
+    // a region whose cells and their one-cell ring are as last round, with the same attempt, is the same region: it is kept, not made again
+    const same = (s, ax, ay) => { if (!out || out.realm.tries[s] !== tries[s]) return false; const a = out.realm;
+      for (let y = Math.max(0, ay * MH - 1); y < Math.min(RH, ay * MH + MH + 1); y++) for (let x = Math.max(0, ax * MW - 1); x < Math.min(RW, ax * MW + MW + 1); x++) { const c = y * RW + x;
+        if (a.land[c] !== realm.land[c] || a.level[c] !== realm.level[c] || a.ford[c] !== realm.ford[c] || a.wkind[c] !== realm.wkind[c]) return false; }
+      return true; };
+    for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) { const s = ay * ATLAS + ax; regions.push(same(s, ax, ay) ? out.regions[s] : regionAt(realm, ax, ay)); if (onStep) onStep(regions.length, REALM_STEPS); }
     out = { seed, realm, regions, rounds: round + 1 };
     const bad = regions.filter(r => r.fails.length); if (!bad.length) break;
     for (const r of bad) tries[r.slot[1] * ATLAS + r.slot[0]]++;
   }
   coastOf(out); if (onStep) onStep(REALM_STEPS - 1, REALM_STEPS);
+  for (const G of out.regions) finishRegion(G);
+  attachStairs(out);
+  addFeatures(out);
   if (cache.size > 6) cache.clear();
   cache.set(seed, out); return out;
 }

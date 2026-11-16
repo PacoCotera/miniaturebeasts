@@ -12,22 +12,24 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, tileLevel, raised as raisedTile, findWayup, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { levelsOf, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { RULES } from './rules.mjs';
 import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };
 import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' };
 import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
-import { touchesRaised } from '../../../places/src/bake/relief.mjs';
+import { touchesRaised, partAt, PART } from '../../../places/src/bake/relief.mjs';
 import { landmarksOf } from './landmarks.mjs';
+import { maskFn } from './places.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
 // and every two of them are such a pair
 // The table is the set's own: art/places/sets/ninja-test/set.json `groundPairs` (ids, through art/places/terrain.json's values), the one source; tools/gen7-layers.mjs refuses a pair the layers' `lowers` cannot draw and the
 // page's layers.json is made from the same file. (Sand-raised is not in the table: a raised region that meets both grass and sand is drawn two ways, which the bake refuses.)
-const VALUE_OF = Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
+const FAMILY = new Set([6, 11, 12, 13]);   // the grass family the heart's patch lies on: grass, litter, dry grass, turf (terrain.md item 4; place-walk-2)
+const VALUE_OF =Object.fromEntries(TERRAINS.terrains.map(t => [t.id, t.value]));
 const PAIRS = new Set(SET.groundPairs.map(([a, b]) => (VALUE_OF[a] < VALUE_OF[b] ? VALUE_OF[a] + '|' + VALUE_OF[b] : VALUE_OF[b] + '|' + VALUE_OF[a])));
 // the low grounds the cliff's face meets with no grass between: the cliff's pairs in the table besides grass (the biome grounds). Terrain the cliff has no edge over (water, mud, scrub, thicket, sand)
 // keeps one tile of grass between it and the rim, made on its side
@@ -290,7 +292,9 @@ function openGates(S, t, W, H, gx0, gy0, X, Y) {
   const gate = new Uint8Array(W * H);
   const put = (gx, gy) => { const x = gx - gx0, y = gy - gy0; if (x < 0 || y < 0 || x >= W || y >= H) return false; const v = t[y * W + x]; if (v === TV.CLIFF || v === TV.DEEP || inlandOf(gx, gy) < COAST_REACH) return false; t[y * W + x] = TV.GRASS; gate[y * W + x] = 1; return true; };
   const cellRegion = (cx, cy) => (cx < 0 || cy < 0 || cx >= RW || cy >= RH ? null : S.R.regions[Math.floor(cy / MH) * ATLAS + Math.floor(cx / MW)]);
-  for (let j = HY - 1; j <= HY + 1; j++) for (let i = HX - 1; i <= HX + 1; i++) {
+  // every edge between two cells of the window is opened, not only the centre's: a gate runs up to GATE_DEPTH tiles into a cell, and the thicket gaps (cutThicketGaps) judge a part by the land one cell round the cells it touches,
+  // so a neighbour's window, whose centre is one cell over, must lay the same gates as this one or the two pick different targets for the same deer path (seed 42, cell 12,40 against 13,40)
+  for (let j = 0; j < WIN_Y - 1; j++) for (let i = 0; i < WIN_X - 1; i++) {
     const cx = X - HX + i, cy = Y - HY + j;
     for (const [dx, dy] of [[1, 0], [0, 1]]) {
       const nx = cx + dx, ny = cy + dy, G = cellRegion(cx, cy);
@@ -374,6 +378,117 @@ function pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion) {
   }
 }
 
+// Thicket never closes a way (place-walk-1): after the ground has settled, a walkable part of a window that thicket alone cuts off from the land beyond it (no water or cliff in the way) gets a gap 2 tiles wide through the
+// thinnest stretch of thicket, to the nearest other part that is not itself such a pocket. A part is judged only where every window that shows one of the cells it touches shows all of it with its gap's reach (its box and
+// GAP_MAX + 3 tiles round it lie within one cell round each cell it touches across, two cells up and down: the window is 7 x 9 cells), as the land rule's pockets are, so a cell is the same from every neighbour's window. The gap runs through thicket tiles only (a cliff, water,
+// deep water and the coast band are never cut) and is marked as a gate tile, which the settling passes keep. Returns the number of gaps cut.
+const GAP_MAX = 10, GAP_SMALL = 1500, GAP_ANCHOR = 200, GAP_RUN = 4;
+function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
+  const N = W * H, NB = [[1, 0], [-1, 0], [0, 1], [0, -1]], cause = new Uint8Array(N);   // cause: how a gap tile came to be (1 path, 2 side, 3 wide third, 4 mouth, 5 notch)
+  const wu =new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const lx = x - gx0, ly = y - gy0; if (lx >= 0 && ly >= 0 && lx < W && ly < H) wu[ly * W + lx] = 1; }
+  const pass = new Uint8Array(N);
+  const L7 = { raised: (x, y) => x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF, low: (x, y) => !(x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF), way: (x, y) => x >= 0 && y >= 0 && x < W && y < H && wu[y * W + x] === 1, inside: () => true };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {   // the game's own walk (relief.mjs): water, deep water and thicket block, and so do a cliff's ring (lip), its face under it and its flank beside it; a way up walks
+    const i = y * W + x, v = t[i]; if (v === TV.WATER || v === TV.THICKET || v === TV.DEEP) continue;
+    const p = partAt(L7, x, y); if (p === PART.RING || p === PART.FACE || p === PART.FLANK) continue;
+    pass[i] = 1;
+  }
+  const lab = new Int32Array(N).fill(-1), comps = [];
+  for (let s = 0; s < N; s++) {
+    if (!pass[s] || lab[s] >= 0) continue;
+    const id = comps.length, q = [s]; lab[s] = id; let x0 = W, x1 = 0, y0 = H, y1 = 0;
+    for (let h = 0; h < q.length; h++) { const c = q[h], x = c % W, y = (c / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const m = b * W + a; if (pass[m] && lab[m] < 0) { lab[m] = id; q.push(m); } } }
+    comps.push({ id, tiles: q, n: q.length, x0, x1, y0, y1, edge: x0 === 0 || y0 === 0 || x1 === W - 1 || y1 === H - 1 });
+  }
+  const R = GAP_MAX + 3, cellsOk = c => {   // the part's box and its reach lie within one cell round each cell it touches
+    const fx0 = gx0 + c.x0 - R, fx1 = gx0 + c.x1 + R, fy0 = gy0 + c.y0 - R, fy1 = gy0 + c.y1 + R;
+    for (let cx = Math.floor(fx0 / CW); cx <= Math.floor(fx1 / CW); cx++) if (fx0 < (cx - 1) * CW || fx1 >= (cx + 2) * CW) return false;
+    for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH); cy++) if (fy0 < (cy - 2) * CH || fy1 >= (cy + 3) * CH) return false;   // the window is two cells taller each side than wide: two cells either way
+    return true; };
+  const anchor = c => c.edge || c.n >= GAP_ANCHOR && !(c.n <= GAP_SMALL && cellsOk(c));   // a part that goes on beyond what the window shows, or that is not a small pocket
+  const cuttable = i => t[i] === TV.THICKET && inlandOf(gx0 + (i % W), gy0 + ((i / W) | 0)) >= COAST_REACH;
+  let cuts = 0;
+  for (const c of comps.slice().sort((a, b) => a.n - b.n || a.y0 - b.y0 || a.x0 - b.x0)) {
+    if (c.edge || c.n > GAP_SMALL || !cellsOk(c) || anchor(c)) continue;
+    // thicket tiles beside the part, then outward through thicket, a step a ring; the first ring to touch a walkable tile of another part ends it
+    const prev = new Map(), q = []; let hit = -1, hitFrom = -1;
+    for (const s of c.tiles.slice().sort((a, b) => a - b)) for (const [dx, dy] of NB) { const x = (s % W) + dx, y = ((s / W) | 0) + dy; if (x < 0 || y < 0 || x >= W || y >= H) continue; const m = y * W + x; if (cuttable(m) && !prev.has(m)) { prev.set(m, -1); q.push(m); } }
+    for (let h = 0, ring = 1; h < q.length && hit < 0 && ring <= GAP_MAX; ) {
+      const end = q.length;
+      for (; h < end && hit < 0; h++) { const m = q[h], x = m % W, y = (m / W) | 0;
+        for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const k = b * W + a;
+          if (pass[k] && lab[k] !== c.id && comps[lab[k]] && (anchor(comps[lab[k]]) || comps[lab[k]].n > c.n || (comps[lab[k]].n === c.n && lab[k] > c.id))) { hit = m; hitFrom = k; break; }
+          if (cuttable(k) && !prev.has(k)) { prev.set(k, m); q.push(k); } } }
+      ring++;
+    }
+    if (hit < 0) continue;
+    // a deer path (place-walk-2): the way through is the cheapest walk through thicket within the thinnest crossing's reach, each step costing 1 plus a noise of the world position (as the trail's wander), so it bends;
+    // then it is carved 2 to 3 tiles wide by the noise, its two edges ragged, flared at both ends into a mouth
+    const isTarget = k => pass[k] && lab[k] !== c.id && comps[lab[k]] && (anchor(comps[lab[k]]) || comps[lab[k]].n > c.n || (comps[lab[k]].n === c.n && lab[k] > c.id));
+    const reach = new Map(), rq = []; for (const s of prev.keys()) if (prev.get(s) === -1) { reach.set(s, 0); rq.push(s); }
+    for (let h = 0; h < rq.length; h++) { const m = rq[h], d = reach.get(m); if (d >= GAP_MAX) continue;
+      for (const [dx, dy] of NB) { const a = (m % W) + dx, b = ((m / W) | 0) + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const k = b * W + a; if (cuttable(k) && !reach.has(k)) { reach.set(k, d + 1); rq.push(k); } } }
+    const cost = m => 1 + 2.4 * clamp(0.5 + 0.5 * S.nS(gx0 + (m % W), gy0 + ((m / W) | 0)), 0, 1);
+    const best = new Map(), from = new Map(), heap = []; let goal = -1;
+    const less = (p, q) => p[0] < q[0] || (p[0] === q[0] && p[1] < q[1]);
+    const push = e => { heap.push(e); for (let i = heap.length - 1; i > 0; ) { const p = (i - 1) >> 1; if (!less(heap[i], heap[p])) break; [heap[i], heap[p]] = [heap[p], heap[i]]; i = p; } };
+    const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; for (let i = 0; ; ) { let a = 2 * i + 1; if (a >= heap.length) break; if (a + 1 < heap.length && less(heap[a + 1], heap[a])) a++; if (!less(heap[a], heap[i])) break; [heap[i], heap[a]] = [heap[a], heap[i]]; i = a; } } return top; };
+    for (const s of reach.keys()) if (reach.get(s) === 0) { best.set(s, cost(s)); from.set(s, -1); push([cost(s), s]); }
+    while (heap.length && goal < 0) {
+      const [d, m] = pop(); if (d > best.get(m) + 1e-9) continue;
+      const x = m % W, y = (m / W) | 0; let end = false; for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && isTarget(b * W + a)) { end = true; break; } }
+      if (end) { goal = m; break; }
+      for (const [dx, dy] of NB) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= W || b >= H) continue; const k = b * W + a; if (!reach.has(k)) continue; const nd = d + cost(k); if (!best.has(k) || nd < best.get(k) - 1e-9) { best.set(k, nd); from.set(k, m); push([nd, k]); } }
+    }
+    if (goal < 0) goal = hit;
+    const path = []; for (let m = goal; m >= 0; m = from.has(m) ? from.get(m) : prev.get(m)) path.push(m);
+    if (path.length > GAP_MAX + 6) { path.length = 0; for (let m = hit; m >= 0; m = prev.get(m)) path.push(m); }   // a wander never runs far past the thinnest crossing
+    const carve = (k, why) => { if (k >= 0 && cuttable(k)) { t[k] = TV.GRASS; gate[k] = 1; mark[k] = 1; cause[k] = why; } };
+    path.forEach((m, n) => {
+      const x = m % W, y = (m / W) | 0, a = path[Math.max(0, n - 1)], b = path[Math.min(path.length - 1, n + 1)];
+      const ddx = Math.abs((b % W) - (a % W)), ddy = Math.abs(((b / W) | 0) - ((a / W) | 0)), horiz = path.length > 1 ? ddx >= ddy : ((hit / W) | 0) === ((hitFrom / W) | 0);
+      const sx = horiz ? 0 : 1, sy = horiz ? 1 : 0, wx = gx0 + x, wy = gy0 + y, f = clamp(0.5 + 0.5 * S.nE(wx, wy), 0, 1);
+      const side = f > 0.5 ? 1 : -1, wide = S.nD(wx + 31, wy - 17) > 0.05, mouth = n < 2 || n >= path.length - 2;   // the extra tile lies on the side the noise picks; a third where it is wide; a flared mouth at each end
+      carve(m, 1); carve((y + side * sy) * W + x + side * sx, 2);
+      if (wide || mouth) carve((y - side * sy) * W + x - side * sx, mouth ? 4 : 3);
+      if (mouth) { carve((y + sy) * W + x + sx + side * (horiz ? 1 : 0), 4); carve((y - sy) * W + x - sx - side * (horiz ? 1 : 0), 4); }
+    });
+    cuts++;
+  }
+  // no straight thicket edge longer than GAP_RUN along a gap (the shape bar): a run of gap tiles with thicket across them is broken by a notch cut into the thicket at its middle
+  for (let pass = 0; pass < 6; pass++) {   // also on a call that cuts no new gap: the settling between rounds may have grown thicket against an earlier gap's edge
+    const notch = [];
+    for (const [ex, ey] of NB) { const ax = ey !== 0 ? 1 : 0, ay = ey !== 0 ? 0 : 1;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const edgeAt = (a, b) => a >= 0 && b >= 0 && a < W && b < H && mark[b * W + a] === 1 && a + ex >= 0 && b + ey >= 0 && a + ex < W && b + ey < H && t[(b + ey) * W + a + ex] === TV.THICKET;
+        if (!edgeAt(x, y) || edgeAt(x - ax, y - ay)) continue;
+        let n = 0; while (edgeAt(x + ax * n, y + ay * n)) n++;
+        if (n > GAP_RUN) { const m = n >> 1; for (const o of [0, -1, 1]) { const k = m + o, i = (y + ay * k + ey) * W + x + ax * k + ex; if (cuttable(i)) { notch.push(i); break; } } } } }
+    for (const i of notch) { t[i] = TV.GRASS; gate[i] = 1; mark[i] = 1; cause[i] = 5; }
+    // every tile the carving left sits in a 2 x 2 block of grass (place-walk-3): a lone one is widened into the block that needs the fewest thicket tiles cut (the first of the four by position on a tie), or, where the thicket
+    // does not allow one, given back to thicket. Decided from the tiles' own place in the window, in scan order, so two windows agree.
+    let fixed = 0;
+    const isG = (a, b) => a >= 0 && b >= 0 && a < W && b < H && t[b * W + a] === TV.GRASS, inBlock = (x, y) => { for (const [ox, oy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) if (isG(x + ox, y + oy) && isG(x + ox + 1, y + oy) && isG(x + ox, y + oy + 1) && isG(x + ox + 1, y + oy + 1)) return true; return false; };
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * W + x; if (mark[i] !== 1 || t[i] !== TV.GRASS || inBlock(x, y)) continue;
+      loneCauses[['', 'path', 'flip', 'wide', 'mouth', 'notch'][cause[i]] || 'other']++;
+      let bestCut = null;
+      for (const [ox, oy] of [[-1, -1], [0, -1], [-1, 0], [0, 0]]) {
+        const cut = []; let ok = true;
+        for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const a = x + ox + dx, b = y + oy + dy; if (a < 0 || b < 0 || a >= W || b >= H) { ok = false; break; } const k = b * W + a; if (t[k] === TV.GRASS) continue; if (cuttable(k)) cut.push(k); else { ok = false; break; } }
+        if (ok && (!bestCut || cut.length < bestCut.length)) bestCut = cut;
+      }
+      if (bestCut) for (const k of bestCut) { t[k] = TV.GRASS; gate[k] = 1; mark[k] = 1; cause[k] = cause[i]; }
+      else { t[i] = TV.THICKET; mark[i] = 0; }
+      fixed++;
+    }
+    if (!notch.length && !fixed) break;
+  }
+  return cuts;
+}
+export const loneCauses = { path: 0, flip: 0, wide: 0, mouth: 0, notch: 0, other: 0 };   // diagnostics for the tools: lone tiles the carving left, by cause, before they were widened
+
 function windowOf(S, X, Y) {
   const W = WIN_X * CW, H = WIN_Y * CH, gx0 = (X - HX) * CW, gy0 = (Y - HY) * CH, N = W * H, seed = S.seed;
   const t = new Uint8Array(N).fill(TV.GRASS), forest = new Float32Array(N), rock = new Float32Array(N), wet = new Float32Array(N), scrub = new Float32Array(N), push = new Float32Array(N);
@@ -425,6 +540,10 @@ function windowOf(S, X, Y) {
   for (const st of stairsOf(S)) {
     const wu = st.wayup; if (!wu) continue;
     if (wu.x - 1 < gx0 || wu.x + 3 > gx0 + W || wu.y - 3 < gy0 || wu.y + 3 > gy0 + H) continue;
+    wayups.push({ x: wu.x, y: wu.y, w: wu.w, h: wu.h });
+  }
+  for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) for (const wu of pocketWayups(LVL, X - HX + i, Y - HY + j)) {   // the land rule's stairs for closed parts (levels.mjs)
+    if (wu.x - 1 < gx0 || wu.x + 3 > gx0 + W || wu.y - 3 < gy0 || wu.y + 3 > gy0 + H || wayups.some(a => a.x === wu.x && a.y === wu.y)) continue;
     wayups.push({ x: wu.x, y: wu.y, w: wu.w, h: wu.h });
   }
   // trails: through each cell of the window, port to port (or to the cell's hub at a trail's end), by the same A* the region uses, painted with a 2 x 2 brush. Raised land takes no path (art slot).
@@ -484,7 +603,9 @@ function windowOf(S, X, Y) {
   settle(null);
   const gate = openGates(S, t, W, H, gx0, gy0, X, Y);
   if (gate.some(v => v)) settle(gate);
-  return { t, W, H, gx0, gy0, wayups, top: topsOf(t, recipe, W, H) };
+  const gaps = new Uint8Array(W * H);
+  for (let round = 0; round < 3; round++) { if (!cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, gaps)) break; settle(gate); }   // thicket never closes a way (place-walk-1); the gaps are deer paths (place-walk-2)
+  return { t, W, H, gx0, gy0, wayups, gaps, top: topsOf(t, recipe, W, H) };
 }
 
 // ---- the ground under raised land (amendment L): a raised tile's top is the biome's recipe ground there ----
@@ -524,7 +645,7 @@ export function cellTerrain(seed, X, Y) {
   const S = ctxOf(seed), win = windowOf(S, X, Y), w = CW + 2, h = CH + 2, terrain = new Uint8Array(w * h), top = new Uint8Array(w * h), ox = HX * CW - 1, oy = HY * CH - 1;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { terrain[y * w + x] = win.t[(oy + y) * win.W + ox + x]; top[y * w + x] = win.top[(oy + y) * win.W + ox + x]; }
   const x0 = X * CW - 1, y0 = Y * CH - 1;
-  const wayups = win.wayups.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 2 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles
+  const wayups = win.wayups.filter(a => a.x + 3 > x0 && a.x - 1 < x0 + w && a.y + 5 > y0 && a.y < y0 + h).map(a => ({ x: a.x, y: a.y, w: a.w, h: a.h }));   // in world tiles
   // the land the cliff rules read: raised or not for the cell, its apron and LAND_M tiles more each side, from the same window, so a run's end, its steps and the faces of the rows above are found on the land, not on the baked cell
   const lw = w + 2 * LAND_M, lh = h + 2 * LAND_M, raised = new Uint8Array(lw * lh);
   for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) raised[y * lw + x] = win.t[(oy - LAND_M + y) * win.W + ox - LAND_M + x] === TV.CLIFF ? 1 : 0;
@@ -590,7 +711,7 @@ function landOf(seed) {
   const S = ctxOf(seed), T = worldTiles(seed);
   const biome = (gx, gy) => S.re.slotBiome[((clamp((gy / CH) | 0, 0, RH - 1) / MH) | 0) * ATLAS + ((clamp((gx / CW) | 0, 0, RW - 1) / MW) | 0)];
   const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
-  return { T, G: worldGround(seed), biome, W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
+  return { T, G: worldGround(seed), biome, mask: maskFn(seed), W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
 }
 const SITES = new Map();   // Hollow Tree sites made off the page (src/realm-worker.mjs), by seed
 export const presetHollowSites = (seed, sites) => { if (SITES.size > 3) SITES.clear(); SITES.set(seed, sites); };
@@ -615,11 +736,26 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   const d = decorIR(seed, x0, y0, w, h);
   // what the cell holds (G4a, hold.mjs): only for a whole cell with its apron; a window of cells (the goldens' picture) holds nothing
   const hold = cell ? holdOf({ seed, v, X: cell[0], Y: cell[1], x0, y0, w, h, terrain, props: d.props, reedbanks: d.reedbanks, wayups, D: decorOf(seed), landmarks: landmarksOf(seed, decorOf(seed).hollowSites()), bareOf: (X, Y) => bareTiles(seed, X, Y) }) : null;
-  const props = d.props.concat(d.reedProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
+  // what the place's set pieces add: their wall props (the land's boulders or stumps, the Split Stone), as props at their tiles
+  const placed2 = (kind, p) => ({ kind, x: p.x, y: p.y, sortY: p.y, cx: Math.floor(p.x / 48), cy: Math.floor(p.y / 48) });
+  const setProps = hold ? hold.setProps.map(p => ({ ...placed2(p.kind, { x: (p.x) * 48 + 24, y: (p.y) * 48 + 47 }), tx: x0 + p.x, ty: y0 + p.y, fam: p.fam, cluster: -5 })) : [];
+  const props = d.props.concat(d.reedProps, setProps).sort((a, b) => a.sortY - b.sortY || a.x - b.x || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0));   // the reeds are not read by the hold: only the land's props are
+  // the heart's ground patch (places.mjs content.patches): a ground kind of its own on the stamp's footprint, on the grass-like low ground only (never a way, sand, water, thicket or raised land); the terrain array is the
+  // cell's cached one, so the patch is made on a copy, and tone stays off the patch and the tile round it (tone lies only on plain grass)
+  let tone = toneField(seed, x0, y0, w, h);
+  if (hold && hold.patches && hold.patches.length) {
+    terrain = terrain.slice(); tone = tone.slice(); if (top) top = top.slice();
+    for (const { kind, tiles } of hold.patches) {
+      // a patch on a raised top is the top's own ground kind (`bed-ground-top`: drawn as the raised grass until its sheet is signed), set in the top layer under the raised tile
+      for (const [x, y] of tiles) { const i = y * w + x; if (/-top$/.test(kind)) { if (top && terrain[i] === TV.CLIFF && (!top[i] || FAMILY.has(top[i]))) top[i] = VALUE_OF[kind]; } else if (FAMILY.has(terrain[i])) terrain[i] = VALUE_OF[kind]; }
+      for (const [x, y] of tiles) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && y + dy >= 0 && x + dx < w && y + dy < h) tone[(y + dy) * w + x + dx] = 0;
+    }
+  }
   // `top`: the ground under each raised tile, only when some raised tile holds a ground other than grass (all grass draws as a place with none)
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
-    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone: toneField(seed, x0, y0, w, h),
-    inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [] };
+    finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone,
+    inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [],
+    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [] };
 }
 // the bare tiles (sand, scree, leaf litter, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {
@@ -665,4 +801,5 @@ export function overviewOf(seed, ax, ay) {
 // an overview made elsewhere (the realm worker, or the page's store) is put in the cache
 export const presetOverview = (seed, ax, ay, bytes) => { if (OVERVIEWS.size > 6) OVERVIEWS.clear(); OVERVIEWS.set(seed + ':' + ax + ',' + ay, bytes); };
 export const hasOverview = (seed, ax, ay) => OVERVIEWS.has(seed + ':' + ax + ',' + ay);
+export const windowGaps = (seed, X, Y) => windowOf(ctxOf(seed), X, Y);   // the settled window with its gap tiles (`gaps`), for the gap measure (tools/place-walk-gaps.mjs)
 export { CW, CH, RW, RH };

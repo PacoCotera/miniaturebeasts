@@ -3,8 +3,9 @@
 // G2b: levels come from the field at tile scale (no blocks), one raised level, every stair has a way up. Added: the straight cliff runs (every length, the longest, the share of cliff
 // tiles in runs longer than 8), cliff chains (a stretch of the contour that may step one tile, so a diagonal counts as one), and whole-region reach through the ways up.
 import { cellTerrain, cellIR, TV, blockOk, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
-import { genRegion7 } from '../src/gen7/region.mjs';
-import { MW, MH } from '../src/world.mjs';
+import { genRegion7, realm7 } from '../src/gen7/region.mjs';
+import { levelsOf, windowLevels, landRule } from '../src/gen7/levels.mjs';
+import { MW, MH, L } from '../src/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -12,14 +13,30 @@ const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, b
   centreWrong: 0, edges: 0, openNoRun: 0, changeNoCliff: 0, steps: 0, bandTiles: 0, bandWalkable: 0,
   cliffRuns: 0, cliffRunsUnder4: 0, cliffRunsUnder8: 0, cliffRunMin: 999, cliffRunMax: 0, cliffRunsOnCellEdge: 0, cliffTiles: 0, cliffTilesInRunsOver8: 0, runHist: {},
   cliffThin: 0, thinAt: [], loneAt: [], unreachedAt: [],
+  // the spec's checks (world-topdown-spec-1 section 4; land-shape-spec-1 P1-P6): C1, water held low, no pinch, no lone face, foot room, straight runs per edge kind, the seam
+  c1Ok: 0, c1Misses: [], waterRaisedTiles: 0, pinch: 0, loneFace: 0, footShort: 0, runMax: { south: 0, side: 0, rim: 0 }, runs9: { south: 0, side: 0, rim: 0 }, seamCells: 0, seamBad: 0,
   pathUnreached: 0, pieces: 0, piecesUnreached: 0, needAt: [],
   stairs: 0, stairsSouthWithWayUp: 0, stairsWithoutWayUp: 0, regions: 0, regionsWholeReach: 0, walkableTiles: 0, reachedTiles: 0, unreachedTiles: 0, unreachedInMain: 0, zonesNotJoined: 0, ms: 0 });
+
+// The seam: the cell's tiles as each of the eight neighbours' windows holds them against the cell's own window: the number of tiles that differ.
+function seamOf(seed, X, Y) {
+  const LV = levelsOf(realm7(seed).realm), o = landRule().window, own = windowLevels(LV, X, Y); let bad = 0;
+  for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [1, -1], [-1, 1]]) {
+    if (X + dx < 0 || Y + dy < 0 || X + dx >= RW || Y + dy >= RH) continue;
+    const nb = windowLevels(LV, X + dx, Y + dy);
+    for (let y = o * CH; y < (o + 1) * CH; y++) for (let x = o * CW; x < (o + 1) * CW; x++) { const nx = x - dx * CW, ny = y - dy * CH; if (nx >= 0 && ny >= 0 && nx < nb.W && ny < nb.H && own.R[y * own.W + x] !== nb.R[ny * nb.W + nx]) bad++; }
+  }
+  return bad;
+}
 
 // Every cell of the seed. Returns the numbers; the test asserts them.
 export function placeProps(seed) {
   const t0 = Date.now(), st = stat();
+  const SW = MW * CW, SH = MH * CH, WW = RW * CW, WH = RH * CH, REALM = new Uint8Array(WW * WH), WUR = new Uint8Array(WW * WH), regs = [];   // the realm's tiles stitched: a region's land that only a neighbouring region reaches is not a pocket
   const lvOfCell = (X, Y) => genRegion7(seed, Math.floor(X / MW), Math.floor(Y / MH)).level[(Y % MH) * MW + (X % MW)];
+  const ONLY = typeof process !== 'undefined' && process.env.B3C_ONLY ? process.env.B3C_ONLY.split(',').map(Number) : null;   // land-b3c: one region only, and a list of what it leaves unreached (B3C_DUMP=1)
   for (let ay = 0; ay < RH / MH; ay++) for (let ax = 0; ax < RW / MW; ax++) {
+    if (ONLY && (ax !== ONLY[0] || ay !== ONLY[1])) continue;
     const cx0 = ax * MW, cy0 = ay * MH, SW = MW * CW, SH = MH * CH, R = new Uint8Array(SW * SH), G = genRegion7(seed, ax, ay), wayups = [];   // the region's tiles stitched
     for (let j = 0; j < MH; j++) for (let i = 0; i < MW; i++) {
       const X = cx0 + i, Y = cy0 + j, c = cellTerrain(seed, X, Y), w = c.w, h = c.h, t = c.terrain;
@@ -57,6 +74,11 @@ export function placeProps(seed) {
       // the map's cell level is the land's level at its centre; edges agree with the land (Rule 5.2)
       const lv = lvOfCell(X, Y);
       if (levelAt(seed, X * CW + CW / 2, Y * CH + CH / 2) !== lv) st.centreWrong++;
+      { let up = 0; for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) if (inner(x, y) === TV.CLIFF) up++;
+        const want = G.land[j * MW + i] === L.WATER ? 0 : lv;   // C1: the place's level (the realm's) is the level of most of its tiles
+        if ((up * 2 > CW * CH ? 1 : 0) === want) st.c1Ok++; else if (st.c1Misses.length < 8) st.c1Misses.push([X, Y, want, up]);
+        if (G.land[j * MW + i] === L.WATER && !G.coast[j * MW + i] && !G.ford[j * MW + i]) st.waterRaisedTiles += up; }   // water held low: no raised tile in a water cell (a ford's shallows are walked water, its wet value lower, so a ford cell is left out)
+      if ((X * 7 + Y * 13) % 211 === 0) { const sm = seamOf(seed, X, Y); st.seamCells++; st.seamBad += sm; }   // the seam: a sample of cells, each as its neighbours' windows see it
       for (const [dx, dy] of [[1, 0], [0, 1]]) {
         const X2 = X + dx, Y2 = Y + dy; if (X2 >= RW || Y2 >= RH) continue;
         st.edges++; const lv2 = lvOfCell(X2, Y2);
@@ -94,6 +116,7 @@ export function placeProps(seed) {
           if (!run) continue;
           if (start > 1 && k < len - 1 && l > 1 && l < lines - 2) {
             st.cliffRuns++; st.cliffTiles += run; st.runHist[run] = (st.runHist[run] || 0) + 1;
+            { const kind = dy > 0 ? 'south' : dy < 0 ? 'rim' : 'side'; if (run > st.runMax[kind]) st.runMax[kind] = run; if (run >= 9) st.runs9[kind]++; }
             if (run < st.cliffRunMin) st.cliffRunMin = run; if (run > st.cliffRunMax) st.cliffRunMax = run; if (run < 4) st.cliffRunsUnder4++; if (run < 8) st.cliffRunsUnder8++; if (run > 8) st.cliffTilesInRunsOver8 += run;
             const onEdge = horiz ? (dy > 0 ? (l + 1) % CH === 0 : l % CH === 0) : (dx > 0 ? (l + 1) % CW === 0 : l % CW === 0);
             if (onEdge && run >= 4) st.cliffRunsOnCellEdge++;
@@ -102,6 +125,13 @@ export function placeProps(seed) {
         }
       }
     }
+    // P4 no diagonal pinch, P5 no lone one-tile face, P6 foot room (faceRows + 2 low rows under every south lip: the rock rows, the foot row and one more), on the region's stitched raster (the stitched edge is left out)
+    { const FR = landRule().faceRows, lipAt = (x, y) => isC(x, y) && !isC(x, y + 1);
+      for (let y = 1; y < SH - 2; y++) for (let x = 1; x < SW - 1; x++) {
+        const a = isC(x, y), b = isC(x + 1, y), c2 = isC(x, y + 1), d = isC(x + 1, y + 1); if (a === d && b === c2 && a !== b) st.pinch++;
+        if (!lipAt(x, y)) continue;
+        if (!lipAt(x - 1, y) && !lipAt(x + 1, y) && !(lipAt(x - 1, y - 1) || lipAt(x + 1, y - 1) || lipAt(x - 1, y + 1) || lipAt(x + 1, y + 1))) st.loneFace++;
+        if (y + FR + 2 < SH) for (let k = 1; k <= FR + 2; k++) if (isC(x, y + k)) { st.footShort++; (st.footAt || (st.footAt = [])).push([ax, ay, x, y, k]); break; } } }
     // nothing narrow: a cliff tile that sits in no 4 x 4 block of raised land (a spike, a ridge, a spur); tiles within 4 of the stitched edge are left out
     for (let y = 4; y < SH - 4; y++) for (let x = 4; x < SW - 4; x++) {
       if (!isC(x, y)) continue; let ok = false;
@@ -109,6 +139,9 @@ export function placeProps(seed) {
       if (!ok) { st.cliffThin++; if (st.thinAt.length < 4) st.thinAt.push([ax, ay, x, y]); }
     }
     // whole-region reach through the ways up: every walkable tile of the region, from the region's start (the first start glint's cell); water, thicket and a cliff's lip block, a way up joins
+    for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) REALM[(ay * SH + y) * WW + ax * SW + x] = R[y * SW + x];
+    for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) if (x >= 0 && y >= 0 && x < SW && y < SH) WUR[(ay * SH + y) * WW + ax * SW + x] = 1;
+    regs.push({ ax, ay, G });
     { const t = R, isLip = (x, y) => isC(x, y) && NB4.some(([dx, dy]) => !isC(x + dx, y + dy)), wu = new Set();
       for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wu.add(y * SW + x);
       // the water of a ford cell is the ford: shallow, walked
@@ -119,6 +152,18 @@ export function placeProps(seed) {
       for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const x = (q[k] % SW) + dx, y = ((q[k] / SW) | 0) + dy; if (x < 0 || y < 0 || x >= SW || y >= SH || seen[y * SW + x] || !pass(x, y)) continue; seen[y * SW + x] = 1; q.push(y * SW + x); }
       let walk = 0, un = 0, unMain = 0;
       for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) if (pass(x, y)) { walk++; if (!seen[y * SW + x]) { un++; if (G.comp[((y / CH) | 0) * MW + ((x / CW) | 0)]) unMain++; } }
+      if (typeof process !== 'undefined' && process.env.B3C_DUMP) {   // the unreached land as parts: size, raised or low, the cell box, and what walls it
+        const lab = new Int32Array(SW * SH).fill(-1), parts = [];
+        for (let s = 0; s < SW * SH; s++) { if (lab[s] >= 0 || seen[s] || !pass(s % SW, (s / SW) | 0)) continue;
+          const id = parts.length, P = { n: 0, up: 0, x0: 1e9, y0: 1e9, x1: -1, y1: -1, water: 0, thicket: 0, lip: 0, edge: 0, face: 0 }, qq = [s]; lab[s] = id;
+          for (let k = 0; k < qq.length; k++) { const x = qq[k] % SW, y = (qq[k] / SW) | 0; P.n++; if (isC(x, y)) P.up++; P.x0 = Math.min(P.x0, x); P.x1 = Math.max(P.x1, x); P.y0 = Math.min(P.y0, y); P.y1 = Math.max(P.y1, y);
+            for (const [dx, dy] of NB4) { const a = x + dx, b = y + dy; if (a < 0 || b < 0 || a >= SW || b >= SH) { P.edge++; continue; } const m = b * SW + a;
+              if (pass(a, b)) { if (lab[m] < 0) { lab[m] = id; qq.push(m); } } else { const v = t[m]; if (v === TV.WATER || v === TV.DEEP) P.water++; else if (v === TV.THICKET) P.thicket++; else P.lip++; } } }
+          parts.push(P); }
+        parts.sort((p, q) => q.n - p.n);
+        console.log(`region ${ax},${ay}: walk ${walk}, unreached ${un}, parts ${parts.length}; start cell ${(sp % MW) + cx0},${((sp / MW) | 0) + cy0}`);
+        for (const P of parts.slice(0, 12)) console.log(`  ${P.n} tiles ${P.up * 2 > P.n ? 'raised' : 'low'} cells x ${cx0 + Math.floor(P.x0 / CW)}-${cx0 + Math.floor(P.x1 / CW)} y ${cy0 + Math.floor(P.y0 / CH)}-${cy0 + Math.floor(P.y1 / CH)} walls: water ${P.water} thicket ${P.thicket} cliff ${P.lip} edge ${P.edge}`);
+      }
       // what a player needs never sits on unreached land: every trail tile (ports are trail ends) and the centre tile of every set-piece cell (starts, glints, gate, deep stone, swim gate, beacons, depots)
       for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) if (t[y * SW + x] === TV.PATH && !seen[y * SW + x]) { st.pathUnreached++; if (st.needAt.length < 6) st.needAt.push(['path', ax, ay, x, y]); }
       const pieces = [...G.spawns, ...G.glow, G.gate, G.deep, G.swim, ...G.beacons.set, ...G.depots.set].filter(c => c >= 0);
@@ -126,6 +171,26 @@ export function placeProps(seed) {
       st.regions++; st.walkableTiles += walk; st.unreachedTiles += un; st.reachedTiles += walk - un; st.unreachedInMain += unMain; if (!un) st.regionsWholeReach++;
       if (!G.zonesJoined) st.zonesNotJoined++;
     }
+  }
+  // whole-realm reach (place-walk-1): the same walk (water, thicket and a cliff's lip block, a way up walks, a ford's water is walked) on the realm's stitched tiles, so the lip across a region's border is the
+  // true one, from the start of every region: land that a neighbouring region's own start reaches is reached. What the realm flood leaves is walled in whole (a closed mesa or pit with no way up, a lake's islet, a
+  // part thicket alone closed). The per-region figures (each region on its own) are kept as region*.
+  if (!ONLY) {
+    st.regionUnreachedTiles = st.unreachedTiles; st.regionPathUnreached = st.pathUnreached; st.regionPiecesUnreached = st.piecesUnreached;
+    const at = (x, y) => (x < 0 || y < 0 || x >= WW || y >= WH ? TV.THICKET : REALM[y * WW + x]), regionAt = (x, y) => regs[Math.floor(y / SH) * (RW / MW) + Math.floor(x / SW)];
+    const fordAt = (x, y) => regionAt(x, y).G.ford[Math.floor((y % SH) / CH) * MW + Math.floor((x % SW) / CW)];
+    const pass = (x, y) => { const v = at(x, y); return !((v === TV.WATER && !fordAt(x, y)) || v === TV.THICKET || v === TV.DEEP || (v === TV.CLIFF && NB4.some(([dx, dy]) => at(x + dx, y + dy) !== TV.CLIFF) && !WUR[y * WW + x])); };
+    const seen = new Uint8Array(WW * WH), q = [];
+    for (const r of regs) {
+      const sp = r.G.spawns[0], sx = r.ax * SW + (sp % MW) * CW + CW / 2, sy = r.ay * SH + ((sp / MW) | 0) * CH + CH / 2; let start = -1;
+      for (let d = 0; d < 12 && start < 0; d++) for (let dy = -d; dy <= d && start < 0; dy++) for (let dx = -d; dx <= d; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === d && pass(sx + dx, sy + dy)) { start = (sy + dy) * WW + sx + dx; break; }
+      if (start >= 0 && !seen[start]) { seen[start] = 1; q.push(start); }
+    }
+    for (let k = 0; k < q.length; k++) for (const [dx, dy] of NB4) { const x = (q[k] % WW) + dx, y = ((q[k] / WW) | 0) + dy; if (x < 0 || y < 0 || x >= WW || y >= WH || seen[y * WW + x] || !pass(x, y)) continue; seen[y * WW + x] = 1; q.push(y * WW + x); }
+    let walk = 0, un = 0, path = 0, pieces = 0, pieceAll = 0; st.needAt = [];
+    for (let y = 0; y < WH; y++) for (let x = 0; x < WW; x++) { if (pass(x, y)) { walk++; if (!seen[y * WW + x]) un++; } if (REALM[y * WW + x] === TV.PATH && !seen[y * WW + x]) { path++; if (st.needAt.length < 6) st.needAt.push(['path', x, y]); } }
+    for (const r of regs) for (const c of [...r.G.spawns, ...r.G.glow, r.G.gate, r.G.deep, r.G.swim, ...r.G.beacons.set, ...r.G.depots.set].filter(c => c >= 0)) { const x = r.ax * SW + (c % MW) * CW + (CW >> 1), y = r.ay * SH + ((c / MW) | 0) * CH + (CH >> 1); pieceAll++; if (pass(x, y) && !seen[y * WW + x]) { pieces++; if (st.needAt.length < 6) st.needAt.push(['piece', x, y]); } }
+    st.walkableTiles = walk; st.unreachedTiles = un; st.reachedTiles = walk - un; st.pathUnreached = path; st.piecesUnreached = pieces; st.pieces = pieceAll;
   }
   for (const s of stairsInfo(seed)) { st.stairs++; if (s.kind === 'south' && s.wayup) st.stairsSouthWithWayUp++; else st.stairsWithoutWayUp++; }
   st.cliffShareOver8 = +(st.cliffTilesInRunsOver8 / Math.max(1, st.cliffTiles)).toFixed(3);

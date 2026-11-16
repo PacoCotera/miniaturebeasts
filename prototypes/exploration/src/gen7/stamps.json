@@ -1,0 +1,360 @@
+{
+ "version": 1,
+ "note": "Baked from art/places/ldtk by tools/gen7-stamps.mjs; edit the LDtk levels (or the layouts there), never this file.",
+ "keys": {
+  ".": 1,
+  "r": 2,
+  "R": 3,
+  "S": 4,
+  "L": 5,
+  "O": 6,
+  "h": 7,
+  "p": 8,
+  "m": 9,
+  "k": 10,
+  "c": 11,
+  "x": 12
+ },
+ "stamps": [
+  {
+   "id": "bed-meadow-1",
+   "kind": "sleepers-bed",
+   "lands": [
+    "meadow"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "r....R.",
+    ".m.....",
+    "..RSS.m",
+    "...p...",
+    "..c..k."
+   ]
+  },
+  {
+   "id": "bed-meadow-2",
+   "kind": "sleepers-bed",
+   "lands": [
+    "meadow"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "..R...r",
+    "....m..",
+    "r..SSR.",
+    ".m..p..",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-meadow-3",
+   "kind": "sleepers-bed",
+   "lands": [
+    "meadow"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    4,
+    2
+   ],
+   "rows": [
+    ".r.....",
+    "R..m..r",
+    "....SS.",
+    ".k.p.m.",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-wood-1",
+   "kind": "sleepers-bed",
+   "lands": [
+    "wood"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "Rr...rR",
+    ".m.....",
+    ".R.SS.m",
+    "...pR..",
+    "..c...."
+   ]
+  },
+  {
+   "id": "bed-wood-2",
+   "kind": "sleepers-bed",
+   "lands": [
+    "wood"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    2,
+    2
+   ],
+   "rows": [
+    ".R..r..",
+    "r..m..R",
+    "..SSR..",
+    ".m..p.r",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-wood-3",
+   "kind": "sleepers-bed",
+   "lands": [
+    "wood"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "R....R.",
+    "..m...r",
+    ".r.SS..",
+    "..p.mR.",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-rock-1",
+   "kind": "sleepers-bed",
+   "lands": [
+    "rock"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "R.r...R",
+    "....m..",
+    "R..SSR.",
+    "..p...r",
+    ".k...m."
+   ]
+  },
+  {
+   "id": "bed-rock-2",
+   "kind": "sleepers-bed",
+   "lands": [
+    "rock"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    2,
+    2
+   ],
+   "rows": [
+    ".R...R.",
+    "...m..R",
+    "r.SS...",
+    "..Rp...",
+    ".m...k."
+   ]
+  },
+  {
+   "id": "bed-rock-3",
+   "kind": "sleepers-bed",
+   "lands": [
+    "rock"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    1
+   ],
+   "rows": [
+    "RR.....",
+    "...SSmr",
+    ".m..p..",
+    "....R..",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-pond-1",
+   "kind": "sleepers-bed",
+   "lands": [
+    "pond"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "...r...",
+    ".m...R.",
+    "r..SS.m",
+    "..p....",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-pond-2",
+   "kind": "sleepers-bed",
+   "lands": [
+    "pond"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    2,
+    2
+   ],
+   "rows": [
+    ".r....R",
+    "....m..",
+    "..SSR..",
+    ".m.p.r.",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-pond-3",
+   "kind": "sleepers-bed",
+   "lands": [
+    "pond"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    2
+   ],
+   "rows": [
+    "r......",
+    "..m.R..",
+    ".R.SS.m",
+    "....p..",
+    "......."
+   ]
+  },
+  {
+   "id": "bed-cramped",
+   "kind": "sleepers-bed-cramped",
+   "lands": [
+    "meadow",
+    "wood",
+    "rock",
+    "pond"
+   ],
+   "flip": "ew",
+   "w": 5,
+   "h": 3,
+   "anchor": [
+    1,
+    0
+   ],
+   "rows": [
+    "RSS.m",
+    "..p..",
+    "....."
+   ]
+  },
+  {
+   "id": "bed-nook",
+   "kind": "sleepers-bed-nook",
+   "lands": [
+    "meadow",
+    "wood",
+    "rock",
+    "pond"
+   ],
+   "flip": "ew",
+   "w": 5,
+   "h": 3,
+   "anchor": [
+    1,
+    0
+   ],
+   "rows": [
+    "RSS.m",
+    "..p..",
+    "..c.."
+   ]
+  },
+  {
+   "id": "overhang",
+   "kind": "overhang",
+   "lands": [
+    "meadow",
+    "wood",
+    "rock",
+    "pond"
+   ],
+   "flip": "ew",
+   "w": 4,
+   "h": 4,
+   "anchor": [
+    0,
+    1
+   ],
+   "rows": [
+    "OOOO",
+    "hhhh",
+    "Rk.c",
+    "...."
+   ]
+  },
+  {
+   "id": "split-stone-ground",
+   "kind": "split-stone-ground",
+   "lands": [
+    "rock"
+   ],
+   "flip": "ew",
+   "w": 7,
+   "h": 5,
+   "anchor": [
+    3,
+    3
+   ],
+   "rows": [
+    "r.....r",
+    ".k...c.",
+    ".......",
+    ".c.L.k.",
+    "...x..."
+   ]
+  }
+ ]
+}

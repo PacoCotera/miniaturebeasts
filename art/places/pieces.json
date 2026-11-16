@@ -1,7 +1,7 @@
 {
   "$schema": "./pieces.schema.json",
   "version": 1,
-  "description": "The relief piece table: every piece of the cliff set with its four facts (footprint, extent, overlap margin, foot line), read by the bake (southruns.mjs), the walking mask, the decor rules and the proving place. A new kind of piece is a new row. Cells are 48 px; the lip row L is the southmost raised row of a south run; footprints and anchors are in cells relative to the piece's own cell at row L.",
+  "description": "The relief piece table: every piece of the cliff set with its four facts (footprint, extent, overlap margin, foot line), read by the bake (southruns.mjs), the walking mask, the decor rules and the proving place. A new kind of piece is a new row. Cells are 48 px; the lip row L is the southmost raised row of a south run; footprints and anchors are in cells relative to the piece's own cell at row L. A south face blocks the lip row and the faceRows rock rows under it (rows L to L+3: the footprint of a column or an end piece); the first walkable row is the foot, L+faceRows+1.",
   "cell": 48,
   "faceRows": 3,
   "rowsAbove": 2,
@@ -14,42 +14,42 @@
     {
       "id": "south-column", "family": "face", "state": "signed",
       "kinds": ["cliff-south-1", "cliff-south-2", "cliff-south-3", "cliff-south-4", "cliff-south-5", "cliff-south-6"],
-      "anchor": [0, -2], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "anchor": [0, -2], "footprint": [[0, 0], [0, 1], [0, 2], [0, 3]], "extent": [0, 0, 48, 288], "margin": 0,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
       "places": "every cell of a south run that holds no corner cell and no way up, column by world position"
     },
     {
       "id": "corner-cell-e", "family": "face", "state": "signed",
       "kinds": ["cliff-corner-e-0", "cliff-corner-e-1", "cliff-corner-e-2", "cliff-corner-e-3", "cliff-corner-e-4"],
-      "anchor": [0, -2], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "anchor": [0, -2], "footprint": [[0, 0], [0, 1], [0, 2], [0, 3]], "extent": [0, 0, 48, 288], "margin": 0,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
       "places": "the last cells of a south run's east end: c4 on the end cell, c3 beside it, then c2 to c0"
     },
     {
       "id": "corner-cell-w", "family": "face", "state": "signed",
       "kinds": ["cliff-corner-w-0", "cliff-corner-w-1", "cliff-corner-w-2", "cliff-corner-w-3", "cliff-corner-w-4"],
-      "anchor": [0, -2], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "anchor": [0, -2], "footprint": [[0, 0], [0, 1], [0, 2], [0, 3]], "extent": [0, 0, 48, 288], "margin": 0,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
       "places": "the last cells of a south run's west end, the mirror of the east hand"
     },
     {
       "id": "end-3", "family": "flank", "state": "signed",
       "kinds": ["cliff-corner-e-5", "cliff-corner-w-5"],
-      "anchor": [0, -2], "footprint": [[0, -2], [0, -1], [0, 0], [0, 1]], "extent": [0, 0, 48, 288], "margin": 0,
+      "anchor": [0, -2], "footprint": [[0, -2], [0, -1], [0, 0], [0, 1], [0, 2], [0, 3]], "extent": [0, 0, 48, 288], "margin": 0,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
       "places": "the low cell beyond a south run's end when that cell is low for 3 rows or more upward from row L"
     },
     {
       "id": "end-2", "family": "flank", "state": "signed",
       "kinds": ["cliff-end2-e", "cliff-end2-w"],
-      "anchor": [0, -1], "footprint": [[0, -1], [0, 0], [0, 1]], "extent": [0, 0, 48, 240], "margin": 0,
+      "anchor": [0, -1], "footprint": [[0, -1], [0, 0], [0, 1], [0, 2], [0, 3]], "extent": [0, 0, 48, 240], "margin": 0,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
       "places": "the low cell beyond a south run's end when that cell is low for exactly 2 rows upward from row L"
     },
     {
       "id": "end-1", "family": "flank", "state": "signed",
       "kinds": ["cliff-end1-e", "cliff-end1-w"],
-      "anchor": [0, 0], "footprint": [[0, 0], [0, 1]], "extent": [0, 0, 48, 192], "margin": 0,
+      "anchor": [0, 0], "footprint": [[0, 0], [0, 1], [0, 2], [0, 3]], "extent": [0, 0, 48, 192], "margin": 0,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
       "places": "the low cell beyond a south run's end when only row L of that cell is low"
     },
@@ -146,10 +146,10 @@
     },
     {
       "id": "way-up", "family": "wayup", "state": "stand-in", "kinds": ["way-up", "cliff-way-up-u"],
-      "anchor": [0, -3], "footprint": [[0, -2], [1, -2], [0, -1], [1, -1], [0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2], [0, 3], [1, 3]],
+      "anchor": [0, -3], "footprint": [[0, -2], [1, -2], [0, -1], [1, -1], [0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2], [0, 3], [1, 3], [0, 4], [1, 4]],
       "extent": [-93, -126, 213, 348], "margin": 12,
       "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
-      "places": "two cells wide, six rows walked (L-2 to L+3) on a south run with one plain column each side; the old unsigned way-up tiles stand until it is painted. cliff-way-up-u (the way up U, 213 x 348 game px, placed with its top-left 93 px left of the area and 126 px above its lip row; the paint's own edge, alpha only; stand-in, not signed) is drawn at the foot line of the area's lip row plus 3, after the columns of its line"
+      "places": "two cells wide, six rows walked (L-2 to L+3; the cut through the 3 rock rows, and the landing row L+4 below it walks as the foot does) on a south run with one plain column each side; the old unsigned way-up tiles stand until it is painted. cliff-way-up-u (the way up U, 213 x 348 game px, placed with its top-left 93 px left of the area and 126 px above its lip row; the paint's own edge, alpha only; stand-in, not signed) is drawn at the foot line of the area's lip row plus 3, after the columns of its line"
     }
   ]
 }

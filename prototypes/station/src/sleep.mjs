@@ -26,7 +26,7 @@
 //   quota          optional: bytes the store may hold (5 MB when absent)
 import { prepareSleep, assembleSleepFile, verifySleepFile, parseSleepFile, fileHash, MAX_BYTES, SAVE_V } from "../../play/src/realm/sleepfile.mjs";
 import { utf8, hexEncode } from "../../play/src/realm/b64.mjs";
-import { canonical } from "../../play/src/realm/canonical.mjs";
+import { canonical } from "../../core/base/written.mjs";
 import { sha256 } from "../../play/src/realm/keys.mjs";
 
 export const JOURNAL_KEY = "mb-sleep-journal", INDEX_KEY = "mb-sleep-index", LEDGER_KEY = "mb-sleep-ledger", COPY_PREFIX = "mb-sleep@";

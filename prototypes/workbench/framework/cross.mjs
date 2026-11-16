@@ -36,6 +36,7 @@
 import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, offStepEnds, samePair } from "./catalogue.mjs";
 import { genomeDigest, frameVersionOf, buildIndividual, FRAME_VERSION } from "./species.mjs";
 import { isDoing } from "./guards.mjs";
+import { streamOf } from "./draws.mjs";
 import { resolveIndividual } from "./resolve.mjs";
 
 export const SPREAD = 0.10;                     // the nudge: up to this share of the locus range either way (decided)
@@ -207,7 +208,7 @@ function drawLoci(frame, a, b, k, opts) {
   const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
   const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;
   const weaken = penalty.includes("C") ? clamp(k * strength, 0, 1) : 0;
-  const loci = {};
+  const loci = {}, coin = streamOf(rng);   // the coin and the hidden-copy chance are whole-number questions of the core's random module; the blends still read rng() as a share
   for (const l of frame.loci) {
     if (l.kind === "locked") { loci[l.id] = [...l.copies]; continue; }
     const locus = LOCI.get(l.id);
@@ -222,9 +223,9 @@ function drawLoci(frame, a, b, k, opts) {
       loci[l.id] = end ? [end, end] : [v, v]; // a copy landed on a pool's off-step end is that allele, by name
       continue;
     }
-    const pair = [a.loci[l.id][rng() < 0.5 ? 0 : 1], b.loci[l.id][rng() < 0.5 ? 0 : 1]];
+    const pair = [a.loci[l.id][coin.chance(1, 2) ? 0 : 1], b.loci[l.id][coin.chance(1, 2) ? 0 : 1]];
     const hidden = hiddenCopy(locus, pair);
-    loci[l.id] = hidden !== null && surface > 0 && rng() < surface ? [hidden, hidden] : pair;
+    loci[l.id] = hidden !== null && surface > 0 && coin.under(Math.ceil(surface * 4294967296)) ? [hidden, hidden] : pair;
   }
   return loci;
 }
