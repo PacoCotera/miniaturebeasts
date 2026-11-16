@@ -472,7 +472,12 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   const base = st.x0, lo = st.X * CW + 2, hi = st.X * CW + CW - SITE_W - 2;
   // first a place where the field itself is raised above the lip and low below it (the site cuts no pit into raised land and heaps no hill on low land), else any clear one
   const nat = x0 => { const lr = st.lip - st.Y * CH; let hi = 0, lo = 0; for (let c = x0 - st.X * CW; c < x0 - st.X * CW + SITE_W; c++) { if (qAt(c, lr - 2) >= 0) hi++; if (qAt(c, lr + 3) < 0) lo++; } return hi >= 3 && lo >= 3; };
-  for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0)) { st.x0 = x0; st.ok = true; return st; } }
+  // room at the foot (f4 fix 7): under the foot rows, 3 rows of walkable low ground across the way up's 2 columns and 1 column each side, before any cliff, lip or water (a cliff or a pond 2 rows under the foot
+  // makes the place's settle drop the stem, and the foot would stand in a pocket); a site without it is passed over for the next held straight on the face
+  const room = x0 => { const lr = st.lip - st.Y * CH + L.rule.faceRows + 1;
+    for (let r = lr + 1; r <= lr + 3; r++) for (let c = x0 - st.X * CW + 1; c <= x0 - st.X * CW + SITE_W - 2; c++) { if (qAt(c, r) >= 0) return false; const gx = st.X * CW + c, gy = st.Y * CH + r; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (wet(gx + dx, gy + dy)) return false; }
+    return true; };
+  for (const needRoom of [true, false]) for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0) && (!needRoom || room(x0))) { st.x0 = x0; st.ok = true; st.room = needRoom; return st; } }   // a site with room first; none: the old choice (a stair the realm planned keeps its way up: dropping it left whole regions unreached, 16-20 stairs a seed)
   return st;
 }
 function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info) {
