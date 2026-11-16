@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, forgetLevels, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { levelsOf, forgetLevels, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { streamPieces, drawStream, bridgeList, layBridge, fallsSite, edgeId } from './streams.mjs';
 import { RULES } from './rules.mjs';
@@ -20,7 +20,7 @@ import SET from '../../../../art/places/sets/ninja-test/set.json' with { type: '
 import TERRAINS from '../../../../art/places/terrain.json' with { type: 'json' };
 import { recipeAt, SAND_AT } from './ground.mjs';
 import { holdOf } from './hold.mjs';
-import { touchesRaised, partAt, PART } from '../../../places/src/bake/relief.mjs';
+import { touchesRaised, partAt, PART, FACE_ROWS } from '../../../places/src/bake/relief.mjs';
 import { landmarksOf } from './landmarks.mjs';
 import { maskFn } from './places.mjs';
 
@@ -423,8 +423,15 @@ function cutThicketGaps(t, W, H, gx0, gy0, wayups, gate, S, mark) {
   const wu =new Uint8Array(N); for (const a of wayups) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) { const lx = x - gx0, ly = y - gy0; if (lx >= 0 && ly >= 0 && lx < W && ly < H) wu[ly * W + lx] = 1; }
   const pass = new Uint8Array(N);
   const L7 = { raised: (x, y) => x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF, low: (x, y) => !(x >= 0 && y >= 0 && x < W && y < H && t[y * W + x] === TV.CLIFF), way: (x, y) => x >= 0 && y >= 0 && x < W && y < H && wu[y * W + x] === 1, inside: () => true };
+  // raised tiles counted over any box in one step (an integral image): relief.mjs's ring, face and flank of a tile need raised land within a column either side and FACE_ROWS + 1 rows above or 2 below, so a tile with
+  // none there is none of them and partAt is not asked (the most of a meadow window)
+  const ii = new Int32Array((W + 1) * (H + 1));
+  for (let y = 0; y < H; y++) { let run = 0; for (let x = 0; x < W; x++) { run += t[y * W + x] === TV.CLIFF ? 1 : 0; ii[(y + 1) * (W + 1) + x + 1] = ii[y * (W + 1) + x + 1] + run; } }
+  const UP = FACE_ROWS + 1;
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {   // the game's own walk (relief.mjs): water, deep water and thicket block, and so do a cliff's ring (lip), its face under it and its flank beside it; a way up walks
     const i = y * W + x, v = t[i]; if (v === TV.WATER || v === TV.THICKET || v === TV.DEEP) continue;
+    const xa = x > 1 ? x - 1 : 0, xb = x + 2 < W ? x + 2 : W, ya = y > UP ? y - UP : 0, yb = y + 3 < H ? y + 3 : H;
+    if (ii[yb * (W + 1) + xb] - ii[ya * (W + 1) + xb] - ii[yb * (W + 1) + xa] + ii[ya * (W + 1) + xa] === 0) { pass[i] = 1; continue; }
     const p = partAt(L7, x, y); if (p === PART.RING || p === PART.FACE || p === PART.FLANK) continue;
     pass[i] = 1;
   }
@@ -571,7 +578,11 @@ function windowOf(S, X, Y) {
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
   const LVL = levelsOf(S.re);
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (raisedTile(LVL, gx0 + x, gy0 + y)) { raised[y * W + x] = 1; t[y * W + x] = TV.CLIFF; }
+  for (let j = 0; j < WIN_Y; j++) for (let i = 0; i < WIN_X; i++) {   // each cell's levels read once (levels.mjs raised(), a tile at a time, asked the cell's map for every tile)
+    const cx = X - HX + i, cy = Y - HY + j; if (cx < 0 || cy < 0 || cx >= RW || cy >= RH) continue;
+    const lc = levelCell(LVL, cx, cy);
+    for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) if (lc[ty * CW + tx] >= 1 && inlandOf(cx * CW + tx, cy * CH + ty) >= RAISE_OFF) { const k = (j * CH + ty) * W + i * CW + tx; raised[k] = 1; t[k] = TV.CLIFF; }
+  }
   // the cliff's outline is the blocks' outline and nothing else bites into it: terrain the cliff has no pair with keeps one tile of grass between it and the rim, made on its side
   { const isRaised = (x, y) => x >= 0 && y >= 0 && x < W && y < H && raised[y * W + x] === 1;   // relief.mjs's touchesRaised: the 3 x 3 round a tile holds raised land
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = y * W + x; if (!raised[i] && t[i] !== TV.GRASS && !CLIFF_LOWERS.has(t[i]) && touchesRaised(isRaised, x, y)) t[i] = TV.GRASS; } }   // sand too: a sand-grass edge reaching the rim would be a three-terrain corner, and the legal pass would eat the sand along the whole rim
