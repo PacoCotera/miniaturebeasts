@@ -603,6 +603,75 @@ function fixGaps(r, W, H, rule, lk, noRaise) {
   return fixed;
 }
 
+// land-reach-1 (cliff-rules 6, designer 2026-11-16: no bump or notch under 2 tiles): a strip of raised land (a bump) or low land (a notch) one tile thick and 1 to BUMP_MAX tiles long that stands out of a
+// straight edge and comes back (the tile beyond it and the tiles before and after it along the edge are the other level, the tiles behind it its own) is cut (a bump) or filled (a notch), so the edge runs
+// straight past it. Its two one-tile turns would draw as a lean and a lean back (a face one tile wide). An edit is kept when it makes no shape check fail that did not, leaves no straight run over its cap,
+// and touches no held tile (and raises none the rule keeps low). Found in raster order (the world's order in every window). Returns the number of edits.
+export const BUMP_MAX = 4, BUMP_READ = 8, BUMP_WHY = { done: 0, held: 0, viol: 0, cap: 0 };   // BUMP_WHY: the tools' count of what the pass did and why it left a strip
+let BUMPS_ON = true;
+export const setBumps = (on) => { BUMPS_ON = !!on; GEN++; };   // the tools: the land with the pass off (before / after counts)
+// Every strip is judged on the land as the pass found it (a snapshot), never on another strip's edit, so no chain of edits carries a difference in from a window's ring (the seam); the edits are then made
+// together, and one whose box fails more shape checks than the snapshot's did (two edits side by side) is undone.
+// Every read a decision makes lies inside one cell (the cell's tiles are the same in every window that shows it at or next to its middle; a window's outer ring of cells may differ from the true land,
+// even a few tiles from the cells it shares: the seam), so a strip whose reads would cross a cell edge is left.
+function flattenBumps(rOut, W, H, rule, lk, noRaise, gx0, gy0) {
+  if (!BUMPS_ON) return 0;
+  const r = rOut.slice(), R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]), acc = [], fr = footRoom(rule.faceRows); let n = 0;
+  let cx0 = 0, cy0 = 0, cx1 = 0, cy1 = 0;   // the cell the current strip's reads must stay in (window tiles)
+  const inCell = (x, y) => x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1;
+  // the shape checks an edit of the tiles T can change: violAt of every tile that reads one of them (1 column each side, footRoom rows above, 2 below); and what those checks read (2 columns, 2 rows above,
+  // footRoom below): null when that leaves the cell
+  const boxOf = T => { let a = 1e9, b = 1e9, c = -1, d = -1; for (const [i] of T) { const x = i % W, y = (i / W) | 0; if (x < a) a = x; if (x > c) c = x; if (y < b) b = y; if (y > d) d = y; }
+    const box = [a - 1, b - fr, c + 1, d + 2]; return inCell(box[0] - 1, box[1] - 2) && inCell(box[2] + 1, box[3] + fr) ? box : null; };
+  const count = (arr, box) => { let s = 0; for (let y = box[1]; y <= box[3]; y++) for (let x = box[0]; x <= box[2]; x++) s += violAt(arr, W, H, x, y, rule.faceRows); return s; };
+  // the straight run of edge tiles through (x, y) that face (ox, oy) (raised, the tile that way low), along the edge; a run that reaches the cell's edge is taken as over its cap
+  const runAt = (x, y, ox, oy) => { const ax = oy ? 1 : 0, ay = ox ? 1 : 0, is = (a, b) => R(a, b) === 1 && R(a + ox, b + oy) === 0; if (!is(x, y)) return 0;
+    let k = 1, t = 1; for (; is(x + t * ax, y + t * ay); t++) { if (!inCell(x + t * ax + ox, y + t * ay + oy) || !inCell(x + (t + 1) * ax, y + (t + 1) * ay)) return 1e9; k++; }
+    for (t = 1; is(x - t * ax, y - t * ay); t++) { if (!inCell(x - t * ax + ox, y - t * ay + oy) || !inCell(x - (t + 1) * ax, y - (t + 1) * ay)) return 1e9; k++; } return k; };
+  const capOf = (ox, oy) => (ox ? CAP.side : oy > 0 ? CAP.south : CAP.rim);
+  // only the window's middle cell and the ring of cells round it: the place keeps the middle cell, and the seam compares the cells next to it; a decision reads one cell, so these come out the same
+  const wr = rule.window, ya = Math.max(2, (wr - 1) * CH), yb = Math.min(H - 2, (wr + 2) * CH), xa = Math.max(2, (wr - 1) * CW), xb = Math.min(W - 2, (wr + 2) * CW);
+  for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) {
+    const i0 = y * W + x, v0 = r[i0]; if (r[i0 - 1] === v0 && r[i0 + 1] === v0 && r[i0 - W] === v0 && r[i0 + W] === v0) continue;   // no edge at this tile
+    for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    const v = v0, ax = oy ? 1 : 0, ay = ox ? 1 : 0; if (R(x + ox, y + oy) !== 1 - v || R(x - ax, y - ay) === v) continue;
+    let k = 0; while (k <= BUMP_MAX && R(x + k * ax, y + k * ay) === v && R(x + k * ax + ox, y + k * ay + oy) === 1 - v) k++;
+    if (k < 1 || k > BUMP_MAX || R(x + k * ax, y + k * ay) !== 1 - v) continue;
+    let ok = true; for (let j = -1; j <= k && ok; j++) if (R(x + j * ax - ox, y + j * ay - oy) !== v) ok = false;
+    if (!ok) continue;
+    { const X = Math.floor((gx0 + x) / CW), Y = Math.floor((gy0 + y) / CH); cx0 = X * CW - gx0; cy0 = Y * CH - gy0; cx1 = cx0 + CW - 1; cy1 = cy0 + CH - 1; }
+    if (!inCell(x - ax - Math.abs(ox), y - ay - Math.abs(oy)) || !inCell(x + k * ax + Math.abs(ox), y + k * ay + Math.abs(oy))) { BUMP_WHY.edge = (BUMP_WHY.edge || 0) + 1; continue; }
+    // the edits tried, in order: the strip turned to the other level (a bump cut, a notch filled: the edge runs straight past it), else the strip carried on along the edge, forward then back, by 1 to
+    // BUMP_MAX tiles of its own level (it then meets the next turn, a corner or another step, and its out-and-back becomes one step)
+    const strip = []; for (let j = 0; j < k; j++) strip.push([(y + j * ay) * W + x + j * ax, 1 - v]);
+    const tries = [strip];
+    for (const dir of [1, -1]) for (let m = 1; m <= BUMP_MAX; m++) { const t = []; for (let j = 0; j < m; j++) { const jj = dir > 0 ? k + j : -1 - j; t.push([(y + jj * ay) * W + x + jj * ax, v]); } tries.push(t); }
+    let done = false, why = null;
+    for (const t of tries) {
+      if (t.some(([i, to]) => i < 0 || i >= W * H || (lk && lk[i]) || (to === 1 && noRaise[i]) || r[i] === to)) { why = why || 'held'; continue; }
+      const box = boxOf(t); if (!box) { why = why || 'edge'; continue; }
+      DBGV.length = 0; const before = count(r, box);
+      for (const [i, to] of t) r[i] = to;
+      // the edge a cut or fill leaves: a bump cut leaves the tiles behind it facing out; a notch filled leaves the strip itself facing back (a carried strip makes no longer run than was there)
+      const ex = v ? x - ox : x, ey = v ? y - oy : y, fx = v ? ox : -ox, fy = v ? oy : -oy;
+      DBGV.length = 0;
+      // a carried strip must end the out-and-back: past its new end the edge turns (a corner or a step), it does not come back to the line (that would only be a longer bump)
+      let back = false; if (t !== strip) { const dir = t[0][0] === (y + k * ay) * W + x + k * ax ? 1 : -1; let j = dir > 0 ? k : -1;
+        while (inCell(x + j * ax + ox, y + j * ay + oy) && inCell(x + j * ax - ox, y + j * ay - oy) && R(x + j * ax, y + j * ay) === v && R(x + j * ax + ox, y + j * ay + oy) === 1 - v) j += dir;
+        back = !inCell(x + j * ax + ox, y + j * ay + oy) || !inCell(x + j * ax - ox, y + j * ay - oy) || (R(x + j * ax, y + j * ay) === 1 - v && R(x + j * ax - ox, y + j * ay - oy) === v); }
+      const vb = count(r, box) > before, cp = back || (t === strip && runAt(ex, ey, fx, fy) > capOf(fx, fy));
+      for (const [i, to] of t) r[i] = 1 - to;
+      if (!vb && !cp) { done = true; acc.push({ t, box, before }); break; }
+      if (!why || why === 'held') why = vb ? 'viol' : 'cap';
+    }
+    if (!done) BUMP_WHY[why || 'held']++;
+  } }
+  // the edits made together (in raster order; one whose tiles another has changed already is passed over), then each checked on the result
+  const made = [];
+  for (const e of acc) { if (e.t.some(([i]) => rOut[i] !== r[i])) { BUMP_WHY.clash = (BUMP_WHY.clash || 0) + 1; continue; } for (const [i, to] of e.t) rOut[i] = to; made.push(e); }
+  for (const e of made) { DBGV.length = 0; if (count(rOut, e.box) > e.before) { for (const [i, to] of e.t) rOut[i] = 1 - to; BUMP_WHY.undone = (BUMP_WHY.undone || 0) + 1; } else { n++; BUMP_WHY.done++; } }
+  return n;
+}
 // what the held sites, the jogs and the pockets leave at their edges (a sliver, a pinch, a lone face, a short foot): a tile is flipped (never a held one) when that leaves fewer failing checks round it; at most 8 rounds
 function fixLeft(r, W, H, rule, lk, noRaise) {
   let fixed = 0;
@@ -768,13 +837,53 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   // the site keeps off water: the raised rows hold no tile that water holds low (water and the tile round it), and the foot no water; it moves along the face, nearest the port first, to the first place that does
   const wet = (x, y) => { const cx = Math.floor(x / CW), cy = Math.floor(y / CH); return !!wetCell(L, cx, cy)[(y - cy * CH) * CW + x - cx * CW]; };
   const held = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (wet(x + dx, y + dy)) return true; return inlandOf(x, y) < RAISE_OFF + 1; };
-  const clear = x0 => { for (let y = st.lip - SITE_UP; y <= st.lip; y++) for (let x = x0 - 1; x < x0 + SITE_W + 1; x++) if (held(x, y)) return false;
-    for (let y = st.lip + 1; y <= st.lip + footRoom(L.rule.faceRows); y++) for (let x = x0 + 1; x < x0 + SITE_W - 1; x++) if (wet(x, y)) return false; return true; };
+  const clearAt = (x0, lip) => { for (let y = lip - SITE_UP; y <= lip; y++) for (let x = x0 - 1; x < x0 + SITE_W + 1; x++) if (held(x, y)) return false;
+    for (let y = lip + 1; y <= lip + footRoom(L.rule.faceRows); y++) for (let x = x0 + 1; x < x0 + SITE_W - 1; x++) if (wet(x, y)) return false; return true; };
+  const clear = x0 => clearAt(x0, st.lip);
+  // land-reach-1: first a site on the land's own contour, read on the smoothed field the threshold draws (the rule's `smooth`), anywhere along the edge from the cell west to the cell east, nearest the port:
+  // the 4 middle columns raised from the lip row up SITE_UP + 2 rows and low from the row under the lip down past the foot and 3 walkable rows more, the outer two columns raised on the lip row and low under it
+  // (a straight lip), and no water at the foot. A way up there joins the top it climbs from to the low land it meets (the old choice could cut a pit into raised land, or heap a mesa on low land: 48 of
+  // seed 7's 188 ways up led into a pit or onto a mesa). From the field only, so every window finds the same site. None: the choice below.
+  { const nat2 = natSite(L, st, wet, (x0, ly) => clearAt(x0, ly)); if (nat2) { st.x0 = nat2[0]; st.lip = nat2[1]; st.ok = true; st.nat = true; return st; } }
   const base = st.x0, lo = st.X * CW + 2, hi = st.X * CW + CW - SITE_W - 2;
   // first a place where the field itself is raised above the lip and low below it (the site cuts no pit into raised land and heaps no hill on low land), else any clear one
   const nat = x0 => { const lr = st.lip - st.Y * CH; let hi = 0, lo = 0; for (let c = x0 - st.X * CW; c < x0 - st.X * CW + SITE_W; c++) { if (qAt(c, lr - 2) >= 0) hi++; if (qAt(c, lr + 3) < 0) lo++; } return hi >= 3 && lo >= 3; };
   for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0)) { st.x0 = x0; st.ok = true; return st; } }
   return st;
+}
+// land-reach-1: the natural site of a stair on the edge (st.X, st.Y)-(st.X, st.Y + 1), or null: [x0, lip] in world tiles (see siteOf). The field is smoothed as windowLevels smooths it (the sum over the rounded
+// element of radius `smooth`), read from the cells' q; a tile is raised where the sum is at or over the threshold times the element's count.
+export const NAT_FOOT = 3, NAT_PART = 200, NAT_DEEP = 20;   // NAT_DEEP: the lip row may lie this many rows into the lower cell (a basin whose tip starts low in it)   // walkable low rows under the foot row; the field part a way up must climb from and to (tiles, or the search box's rim)
+function natSite(L, st, wet, clearAt) {
+  const rad = L.rule.smooth | 0, th = L.rule.levels[0], foot = footRoom(L.rule.faceRows), up = SITE_UP + 2, down = foot + NAT_FOOT - 1;   // footRoom counts the foot row and one walkable row
+  const xa = (st.X - 1) * CW + 2, xb = (st.X + 2) * CW - SITE_W - 2, ya = st.Y * CH + 10, yb = (st.Y + 1) * CH + NAT_DEEP;
+  const M = 16, bx0 = xa - rad - M, by0 = ya - up - rad - M, bw = xb + SITE_W + rad + M - bx0, bh = yb + down + 1 + rad + M - by0;   // M: room for the part floods (wide)
+  const qW = (gx, gy) => { const cx = Math.floor(gx / CW), cy = Math.floor(gy / CH); return qCell(L, cx, cy)[(gy - cy * CH) * CW + gx - cx * CW]; };
+  const Q = new Int32Array(bw * bh); for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) Q[y * bw + x] = qW(bx0 + x, by0 + y);
+  const HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; HW.push(hw); cnt += 2 * hw + 1; }
+  const S = new Int8Array(bw * bh).fill(-1);   // 1 raised, 0 low, -1 not read
+  const up1 = (gx, gy) => { const x = gx - bx0, y = gy - by0, k = y * bw + x; if (S[k] >= 0) return S[k];
+    let s = 0; for (let j = 0; j <= 2 * rad; j++) { const yy = y + j - rad, hw = HW[j]; for (let i = -hw; i <= hw; i++) s += Q[yy * bw + x + i]; }
+    return (S[k] = s >= th * cnt ? 1 : 0); };
+  const ok = (x0, ly) => {
+    // the way up's 2 columns: the contour on the lip row; the other 4: within a row of it (the held site makes the 6 straight), so the land above and below is 6 wide (over the minimum feature: the cleanup
+    // keeps it)
+    for (let c = x0; c < x0 + SITE_W; c++) { const e = c === x0 + 2 || c === x0 + 3 ? 0 : 1;
+      for (let r = ly - up; r <= ly - e; r++) if (!up1(c, r)) return false; for (let r = ly + 1 + e; r <= ly + down; r++) if (up1(c, r)) return false; }
+    for (let r = ly + 1; r <= ly + down; r++) for (let c = x0 - 1; c <= x0 + SITE_W; c++) if (wet(c, r)) return false;
+    return clearAt(x0, ly) && wide(x0 + 2, ly + down, 0) && wide(x0 + 2, ly - up, 1);
+  };
+  // the low land under the foot and the raised land over the top go on (the field's part holds NAT_PART tiles or reaches the box's rim): a dip the cleanup fills, or a knoll it lowers, is no place to climb to
+  function wide(x, y, v) { const seen = new Set([y * 4096 + x]), q = [[x, y]];
+    for (let k = 0; k < q.length; k++) { if (q.length >= NAT_PART) return true; const [a, b] = q[k];
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const xx = a + dx, yy = b + dy; if (xx - rad < bx0 + rad || yy - rad < by0 + rad || xx + rad >= bx0 + bw - rad || yy + rad >= by0 + bh - rad) return true;
+        const key = yy * 4096 + xx; if (!seen.has(key) && up1(xx, yy) === v) { seen.add(key); q.push([xx, yy]); } } }
+    return false; }
+  const base = st.X * CW + st.port - 2, xs = [];
+  for (let d = 0; base + d <= xb || base - d >= xa; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 >= xa && x0 <= xb) xs.push(x0); }
+  const lips = []; for (let d = 0; d <= 22; d++) for (const s of d ? [1, -1] : [1]) { const y = st.Y * CH + CH - 1 + s * d; if (y >= ya && y <= yb) lips.push(y); }
+  for (const x0 of xs) for (const ly of lips) if (ok(x0, ly)) return [x0, ly];
+  return null;
 }
 // a pocket stair's site is made only where every tile it holds raised may be raised (none is held low by water or the coast): else its lip would stand alone beside tiles the rule keeps low
 const siteRaisable = (noRaise, W, lx, ly) => { for (let y = ly - SITE_UP; y <= ly; y++) for (let x = lx; x < lx + SITE_W; x++) if (noRaise[y * W + x]) return false; return true; };
@@ -782,6 +891,7 @@ const siteRaisable = (noRaise, W, lx, ly) => { for (let y = ly - SITE_UP; y <= l
 // check compares on those cells (the windows centred on them and on their 4-neighbours) sees the whole pocket, with its 6-tile footprint, at least STAIR_RIM tiles in from that window's rim: then each of
 // them finds the same shut pocket and cuts the same stair. Else the pocket is left (listed as deferred), as a pocket too large for its cells is. Two seed 13 cases under land-rule smooth broke this: a low pocket
 // closing on one window's last raster row (open there) and a coast plateau reaching one window's rim ring; the other window cut a stair whose held rows reshaped tiles in the shared cell.
+const FILL_UNDER = 200;   // land-reach-1 (designer 2026-11-16): a closed part under this many walkable tiles is filled to its neighbours' level; this many or more takes a way up
 const STAIR_RIM = 2, STAIR_REACH = 4;   // the window's edge band (2 tiles); how far the cleanup carries a held tile's change
 function stairSeenBy(gx0, gy0, W, foot, WR) {
   // edit: the window tiles the edit sets [ex0, ey0, ex1, ey1] (a stair: its site; a fill: the pocket and its ring), or null for the stair at (lx, ly)
@@ -798,7 +908,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
   const WR = L.rule.window, fr = L.rule.faceRows, foot = footRoom(fr), extra = [], stairSeen = stairSeenBy(gx0, gy0, W, foot, WR);
   const sites = [];   // { lx, ly (window tiles), real }
   for (const st of L.stairs.values()) {
-    if (st.X < X - WR - 1 || st.X > X + WR + 1 || st.Y < Y - WR - 1 || st.Y > Y + WR) continue;
+    if (st.X < X - WR - 2 || st.X > X + WR + 2 || st.Y < Y - WR - 1 || st.Y > Y + WR) continue;   // land-reach-1: a site may lie in the cell east or west of its stair's (siteOf)
     const s = siteOf(L, st), lx = s.x0 - gx0, ly = s.lip - gy0;
     if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true });
   }
@@ -815,7 +925,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
@@ -827,16 +937,17 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
         const isRaised = r[c.tiles[0]] === 1;
         // a pocket is handled only where every window that shows one of the cells it touches shows all of it: its footprint (its box and 6 tiles round) lies within one cell round each cell it touches; a larger
         // one is left (listed), since a neighbour's window could not tell it from land that goes on, and a cell must be the same from every window (the seam)
+        // land-reach-1: a part that does not fit is no longer left at once: a stair may still be cut where every window the seam compares on the stair's cells sees the whole part (stairSeen, below)
+        let fits = true;
         { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-          const fx0 = gx0 + x0 - 6, fx1 = gx0 + x1 + 6, fy0 = gy0 + y0 - 6, fy1 = gy0 + y1 + 6; let fits = true;
+          const fx0 = gx0 + x0 - 6, fx1 = gx0 + x1 + 6, fy0 = gy0 + y0 - 6, fy1 = gy0 + y1 + 6;
           for (let cx = Math.floor(fx0 / CW); cx <= Math.floor(fx1 / CW) && fits; cx++) if (fx0 < (cx - 1) * CW || fx1 >= (cx + 2) * CW) fits = false;
-          for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH) && fits; cy++) if (fy0 < (cy - 1) * CH || fy1 >= (cy + 2) * CH) fits = false;
-          if (!fits) { (info.deferred || (info.deferred = [])).push(c.n); continue; } }
+          for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH) && fits; cy++) if (fy0 < (cy - 1) * CH || fy1 >= (cy + 2) * CH) fits = false; }
         if (!isRaised) {   // low land with no cliff near it is a lake's islet: the realm's own, not a pocket the land made
           let near = false; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -2; dy <= 2 && !near; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && r[b * W + a]) { near = true; break; } } if (near) break; }
           if (!near) { (info.islets || (info.islets = [])).push(c.n); continue; }
         }
-        if (isRaised && c.n < 6) {   // place-walk-1: a one-tile top where two plateaus meet at a corner (every neighbour of it is a lip, so no one can step on it, and a stair needs 6): it and the raised tiles beside it become low, held low,
+        if (fits && isRaised && c.n < 6) {   // place-walk-1: a one-tile top where two plateaus meet at a corner (every neighbour of it is a lip, so no one can step on it, and a stair needs 6): it and the raised tiles beside it become low, held low,
           // so the two plateaus part with a channel between them (the channel is low land beside both, never a pit)
           const low = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (r[m]) low.add(m); } }
           const T = [...low]; let ok = T.every(i => { const x = i % W, y = (i / W) | 0; return !lk[i] && x >= 3 && y >= 3 && x < W - 3 && y < H - 3; });
@@ -850,7 +961,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
             else { for (const i of T) lk[i] = 2; (info.necks || (info.necks = [])).push(c.n); changed = true; continue; }
           }
         }
-        if (c.n < 60) {   // a pit is filled, a mesa lowered
+        if (fits && c.n < 60) {   // a pit is filled, a mesa lowered
           let blob = null;
           if (isRaised) { let bx0 = 1e9, by0 = 1e9, bx1 = -1, by1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
             // the blob may lie within 10 tiles of the component, and that box must lie within the cells it touches and one round them, clear of every such window's rim (4 tiles): then every window that shows one
@@ -861,21 +972,34 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
             blob = [...s]; if (blob.some(i => noRaise[i] || wblock[i] || edge[i])) { if (info.dbg) (info.why || (info.why = [])).push(`pit ${c.n}: nr ${blob.filter(i => noRaise[i]).length} wb ${blob.filter(i => wblock[i]).length} ed ${blob.filter(i => edge[i]).length}`); blob = null; } }
           if (blob && blob.every(i => !lk[i])) { for (const i of blob) r[i] = isRaised ? 0 : 1; info.filled.push(c.n); changed = true; continue; }
         }
-        // a stair on its longest south face, held straight (the second pass over the window carries it)
-        let best = null; const cset = new Set(c.tiles);
+        // land-reach-1 (designer 2026-11-16): a closed part under FILL_UNDER walkable tiles is filled to its neighbours' level (a low pocket raised, raised land lowered), where every window the seam compares on the
+        // cells the fill sets sees it whole (cliff-contour-2's test for its 60-160 low pockets); a larger one, or one that cannot be filled, takes a stair
+        if (fits && c.n >= 60 && c.n < FILL_UNDER) {
+          let blob = null;
+          if (isRaised) { let bx0 = 1e9, by0 = 1e9, bx1 = -1, by1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+            const box = [bx0 - 10, by0 - 10, bx1 + 10, by1 + 10], lo = [(Math.floor((gx0 + bx0) / CW) - 1) * CW - gx0 + 4, (Math.floor((gy0 + by0) / CH) - 1) * CH - gy0 + 4], hi = [(Math.floor((gx0 + bx1) / CW) + 2) * CW - 1 - gx0 - 4, (Math.floor((gy0 + by1) / CH) + 2) * CH - 1 - gy0 - 4];
+            if (box[0] >= lo[0] && box[1] >= lo[1] && box[2] <= hi[0] && box[3] <= hi[1]) blob = blobOf(r, W, H, c.tiles, 1, 1200, null, box);
+            if (blob && blob.some(i => edge[i])) blob = null; }
+          else { const s = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const m = (y + dy) * W + x + dx; if (m >= 0 && m < W * H && !r[m]) s.add(m); } }
+            blob = [...s]; if (blob.some(i => noRaise[i] || wblock[i] || edge[i])) blob = null; }
+          if (blob) { let bx0 = W, by0 = H, bx1 = -1, by1 = -1; for (const i of blob) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+            if (blob.every(i => !lk[i]) && stairSeen(c.tiles, 0, 0, [bx0, by0, bx1, by1])) { for (const i of blob) r[i] = isRaised ? 0 : 1; info.filled.push(c.n); changed = true; continue; } }
+          if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: not filled`);
+        }
+        // a stair on one of its south faces, held straight (the second pass over the window carries it): the longest first; land-reach-1: the next longest when a face's site is not seen whole by every window
+        // the seam compares there, or meets another site
+        const cset = new Set(c.tiles), runs = [];
         for (let y = 4; y < H - foot - 2; y++) { let n = 0, from = 0;
           for (let x = 1; x <= W - 1; x++) { const on = x < W - 1 && r[y * W + x] === 1 && r[(y + 1) * W + x] === 0 && cset.has((isRaised ? y - 1 : y + fr + 1) * W + x);
-            if (on) { if (!n) from = x; n++; } else { if (n && (!best || n > best.n)) best = { x0: from, n, y }; n = 0; } } }
-        if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: best ${best ? `${best.x0 + gx0},${best.y + gy0} n${best.n}` : 'none'} attempt ${attempt}${best ? ` raisable ${siteRaisable(noRaise, W, best.x0 + ((best.n - 2) >> 1) - 2, best.y)} seen ${stairSeen(c.tiles, best.x0 + ((best.n - 2) >> 1) - 2, best.y)}` : ''}`);
+            if (on) { if (!n) from = x; n++; } else { if (n) runs.push({ x0: from, n, y }); n = 0; } } }
+        runs.sort((a, b) => b.n - a.n || a.y - b.y || a.x0 - b.x0);
         let placed = false;
-        if (best && attempt < 2 && (c.n >= 6 || !isRaised)) { const xm = best.x0 + ((best.n - 2) >> 1); if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && stairSeen(c.tiles, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; placed = true; } }
-        // cliff-contour-2: a low pocket of up to 160 tiles that takes no seam-safe stair is filled (as a pit under 60 is), where every window the seam compares on the cells the fill sets sees it whole
-        if (!placed && !isRaised && c.n >= 60 && c.n < 160) {
-          const s = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const m = (y + dy) * W + x + dx; if (m >= 0 && m < W * H && !r[m]) s.add(m); } }
-          const blob = [...s]; let bx0 = W, by0 = H, bx1 = -1, by1 = -1; for (const i of blob) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
-          if (blob.every(i => !noRaise[i] && !wblock[i] && !edge[i] && !lk[i]) && stairSeen(c.tiles, 0, 0, [bx0, by0, bx1, by1])) { for (const i of blob) r[i] = 1; info.filled.push(c.n); changed = true; }
-          else if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: no stair, not filled`);
+        if (attempt < 2 && (c.n >= 6 || !isRaised)) for (const best of runs) {
+          const xm = best.x0 + ((best.n - 2) >> 1);
+          if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: run ${best.x0 + gx0},${best.y + gy0} n${best.n} attempt ${attempt} raisable ${siteRaisable(noRaise, W, xm - 2, best.y)} seen ${stairSeen(c.tiles, xm - 2, best.y)}`);
+          if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && stairSeen(c.tiles, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; placed = true; break; }
         }
+        if (!placed && !fits) (info.deferred || (info.deferred = [])).push(c.n);
       }
       if (again) break;
       if (!changed) break;
