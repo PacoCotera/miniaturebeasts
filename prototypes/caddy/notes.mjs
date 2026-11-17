@@ -3,7 +3,7 @@
 // (PNG/JPEG/WebP) and 2 clips (MP4/WebM). Stored append only on the service's card as notes/<date>/<id>/note.json,
 // shot-N.<ext>, clip-N.<ext>; a note is written whole into a hidden folder and renamed into place, never changed after.
 // The public route only accepts: nothing is read back from it. Reading (the studio page and its files) is served from
-// /studio/notes only, never under the public prefix, and only with the studio login's X-Studio-User header (the web server
+// /admin/notes only, never under the public prefix, and only with the studio login's X-Studio-User header (the web server
 // strips it from the browser and sets it from the login check). No IP, user agent, file name or cookie is kept.
 // The multipart body is parsed by the platform's own Request.formData(); no library to install on the web machine.
 import { mkdirSync, writeFileSync, readdirSync, readFileSync, renameSync, existsSync, statSync, createReadStream, rmSync } from "node:fs";
@@ -95,11 +95,11 @@ export function createNotes({ dataDir, now = Date.now, limits = {} }) {
     const notes = list(from), srcs = sources();
     const ctxLine = (c) => ["build", "place", "world", "turn", "light"].map((k) => (c[k] != null ? `${k} ${typeof c[k] === "object" ? JSON.stringify(c[k]) : c[k]}` : "")).filter(Boolean).join(" · ");
     const card = (n) => `<article><h2>From: ${esc(n.source)} · ${esc(when(n.receivedAt))}</h2>${n.text ? `<p class="line">${esc(n.text)}</p>` : ""}<p class="ctx">${esc(ctxLine(n.context || {}))}</p>`
-      + `<div class="media">${(n.files || []).filter((f) => FILE_RE.test(f)).map((f) => { const u = `/studio/notes/f/${n.date}/${n.id}/${f}`; return f.startsWith("clip") ? `<video controls preload="metadata" src="${u}"></video>` : `<a href="${u}"><img loading="lazy" src="${u}" alt=""></a>`; }).join("")}</div>`
+      + `<div class="media">${(n.files || []).filter((f) => FILE_RE.test(f)).map((f) => { const u = `/admin/notes/f/${n.date}/${n.id}/${f}`; return f.startsWith("clip") ? `<video controls preload="metadata" src="${u}"></video>` : `<a href="${u}"><img loading="lazy" src="${u}" alt=""></a>`; }).join("")}</div>`
       + `<details><summary>Sent with it</summary><pre>${esc(JSON.stringify(n.context || {}, null, 1))}</pre></details></article>`;
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Play notes</title>`
       + `<style>body{font:16px/1.4 system-ui,sans-serif;margin:0;padding:16px;max-width:900px;margin:auto;background:#fafafa;color:#222}form{margin:0 0 16px}select,button{font:inherit;padding:6px}article{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px 16px;margin:0 0 14px}h2{font-size:1rem;margin:0 0 6px}.line{white-space:pre-wrap;margin:6px 0}.ctx{color:#666;font-size:.85rem;margin:4px 0}.media{display:flex;flex-wrap:wrap;gap:8px}.media img,.media video{max-width:260px;max-height:200px;border:1px solid #ccc;image-rendering:pixelated}pre{overflow:auto;font-size:.8rem}</style></head><body>`
-      + `<h1>Play notes</h1><form method="get" action="/studio/notes"><label>Source <select name="from"><option value="">All</option>${srcs.map((s) => `<option${s === from ? " selected" : ""}>${esc(s)}</option>`).join("")}</select></label> <button>Show</button> <span>${notes.length} notes</span></form>`
+      + `<h1>Play notes</h1><form method="get" action="/admin/notes"><label>Source <select name="from"><option value="">All</option>${srcs.map((s) => `<option${s === from ? " selected" : ""}>${esc(s)}</option>`).join("")}</select></label> <button>Show</button> <span>${notes.length} notes</span></form>`
       + (notes.map(card).join("") || "<p>No notes yet.</p>") + `</body></html>`;
   }
   return { post, list, sources, page, fileOf, limits: L };

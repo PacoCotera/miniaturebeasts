@@ -12,4 +12,11 @@ npm ci --prefix "$root/prototypes" --no-audit --no-fund --silent
 MB_BUNDLE_OUT="$out" "$root/prototypes/node_modules/.bin/vite" build --config "$root/prototypes/vite.config.mjs" --logLevel warn
 cp -r "$out"/. "$site/sandbox/"
 rm -rf "$out"
+# The game's public paths (owner 2026-11-16): /play/ is the play page and /play/station/ the Station. Their links are relative to the page
+# (../ui/, ../assets/), so each gets its own copy of the built page with <base> pointing at where its files live (/sandbox/play/, /sandbox/station/):
+# every link resolves as before, from either address. The old page addresses redirect here (ops/sandbox/Caddyfile); their files stay for the base.
+mkdir -p "$site/play/station"
+sed 's#<head>#<head><base href="/sandbox/play/">#' "$site/sandbox/play/index.html" > "$site/play/index.html"
+sed -e 's#<head>#<head><base href="/sandbox/station/">#' -e 's#href="\.\./play/"#href="/play/"#' "$site/sandbox/station/index.html" > "$site/play/station/index.html"
+grep -q '<base href="/sandbox/play/">' "$site/play/index.html" && grep -q '<base href="/sandbox/station/">' "$site/play/station/index.html" || { echo "bundle-pages: no <head> to put the base in" >&2; exit 3; }
 echo "bundle-pages: $(ls "$site/sandbox/assets" | wc -l) files in $site/sandbox/assets"

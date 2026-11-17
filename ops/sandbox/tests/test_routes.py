@@ -44,7 +44,7 @@ def login_reply(h):
     if h.path.split("?")[0] == "/check":
         if "mb_studio=good" in [c.strip() for c in (h.headers.get("Cookie") or "").split(";")]:
             return h.answer(200, [("X-Studio-User", "paco")])
-        return h.answer(302, [("Location", "/studio/login"), ("Cache-Control", "no-store")], b"")
+        return h.answer(302, [("Location", "/admin/login"), ("Cache-Control", "no-store")], b"")
     h.answer(200, [("Cache-Control", "no-store")], b"login")
 
 
@@ -79,6 +79,9 @@ class Routes(unittest.TestCase):
         (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters").mkdir(parents=True)
         (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters" / "m.png").write_text("png")
         (cls.dir / "root" / "current" / "sandbox" / "index.html").write_text("<p>sandbox</p>")
+        for d, t in (("sandbox/workbench", "workbench-secret"), ("sandbox/play", "play-page"), ("play", "play-copy")):
+            (cls.dir / "root" / "current" / d).mkdir(parents=True, exist_ok=True)
+            (cls.dir / "root" / "current" / d / "index.html").write_text(t)
         cls.port = free_port()
         text = REAL.read_text()
         assert text.count(":80 {") == 1 and "127.0.0.1:8791" in text
@@ -127,11 +130,14 @@ class Routes(unittest.TestCase):
         r = c.getresponse(); r.read(); c.close()
         return r
 
-    TRICKS = ["/studio", "/studio/", "/studio/x", "/studio/api/species", "/studio/events", "/studio/cas/ab.png", "/studio/assets/app.js",
+    TRICKS = ["/studio", "/studio/", "/studio/x", "/studio/api/species", "/studio/events", "/studio/cas/ab.png", "/studio/assets/app.js", "/studio/team", "/studio/team.json",
               "/STUDIO/x", "/Studio/Api/species", "//studio/x", "/studio//x", "///studio/api/x", "/x/../studio/x", "/studio/./x",
               "/studio/%2e%2e/studio/x", "/studio%2fx", "/studio%2Fapi%2Fspecies", "/%73tudio/x", "/studio/login/../x",
               "/studio/login%2f..%2fx", "/studio/logout/../x", "/studio/logout/", "/studio/x?/studio/login", "/studio/x#/studio/login",
-              "/studio/%00", "/studio/x;/studio/login"]
+              "/studio/%00", "/studio/x;/studio/login",
+              "/admin", "/admin/", "/admin/x", "/admin/team", "/admin/team/", "/admin/team/x", "/admin/team.json", "/admin/team-coord.json", "/admin/team-doc/rules/1",
+              "/ADMIN/TEAM", "/Admin/Team.json", "//admin/team", "/admin//team", "/x/../admin/team", "/admin/./team", "/admin/team/%2e%2e/team", "/admin%2fteam", "/%61dmin/team",
+              "/admin/login/../team", "/admin/login%2f..%2fteam", "/admin/logout/../team", "/admin/team?/admin/login", "/admin/team;/admin/login", "/admin/team%00", "/admin/workbench/x", "/admin/notes"]
 
     def test_without_a_session_nothing_reaches_the_studio(self):
         for path in self.TRICKS:
@@ -146,19 +152,21 @@ class Routes(unittest.TestCase):
                     self.assertEqual(self.studio.hits, [], (path, method, cookie))
 
     def test_the_login_routes_go_to_the_login_only(self):
-        for path in ("/studio/login", "/studio/login?next=/studio/x", "/studio/loginx", "/STUDIO/LOGIN", "/studio/logout"):
+        for path in ("/admin/login", "/admin/login?next=/admin/x", "/admin/loginx", "/ADMIN/LOGIN", "/admin/logout"):
             self.req(path, "GET", SPOOF)
             self.req(path, "POST", dict(SPOOF, Origin="https://miniaturebeasts.com"), b"user=a&password=b")
         self.assertEqual(self.studio.hits, [])
-        self.assertTrue(any(p.startswith("/studio/login") for _, p, _ in self.login.hits))
+        self.assertTrue(any(p.startswith("/admin/login") for _, p, _ in self.login.hits))
         self.assertFalse(any(p == "/check" for _, p, _ in self.login.hits))
 
-    def test_with_a_session_the_studio_sees_one_user_and_no_cookie(self):
-        for path in ("/studio/x", "/STUDIO/x", "//studio/api/x"):
+    def test_with_a_session_the_studio_sees_one_user_and_no_cookie_and_its_own_prefix(self):
+        for path, upstream in (("/admin/team", "/studio/team"), ("/ADMIN/team", "/studio/team"), ("//admin/team.json", "/studio/team.json"),
+                               ("/admin/team-doc/rules/1?x=1", "/studio/team-doc/rules/1?x=1")):
             self.studio.hits.clear()
             r = self.req(path, "GET", dict(SPOOF, Cookie="mb_studio=good; other=1", **{"x-studio-user": "mallory"}))
             self.assertEqual(r.status, 200, path)
             self.assertEqual(len(self.studio.hits), 1, path)
+            self.assertEqual(self.studio.hits[0][1], upstream, path)
             h = self.studio.hits[0][2]
             self.assertEqual(h.get_all("X-Studio-User"), ["paco"], path)
             self.assertIsNone(h.get("Cookie"), path)
@@ -166,22 +174,62 @@ class Routes(unittest.TestCase):
         self.assertIn("mb_studio=good", check.get("Cookie"))          # the login still sees it
 
     def test_no_studio_answer_may_be_kept_by_a_shared_cache(self):
-        want = {"/studio/assets/app.js": "private, max-age=31536000, immutable", "/studio/page": "private, no-cache",
-                "/studio/api/x.png": "private, no-cache", "/studio/public.css": "private, max-age=3600", "/studio/cookie.js": "private, no-cache"}
+        want = {"/admin/team/assets/app.js": "private, max-age=31536000, immutable", "/admin/team/page": "private, no-cache",
+                "/admin/team/api/x.png": "private, no-cache", "/admin/team/public.css": "private, max-age=3600", "/admin/team/cookie.js": "private, no-cache"}
         for path, value in want.items():
             r = self.req(path, "GET", {"Cookie": "mb_studio=good"})
             self.assertEqual((r.status, r.headers.get_all("Cache-Control")), (200, [value]), path)
             self.assertIsNone(r.getheader("Set-Cookie"), path)
             self.assertEqual(r.getheader("X-Robots-Tag"), "noindex", path)
-        r = self.req("/studio/assets/app.js", "GET")                  # the login's refusal keeps its own no-store
+        r = self.req("/admin/team/assets/app.js", "GET")              # the login's refusal keeps its own no-store
         self.assertEqual((r.status, r.headers.get_all("Cache-Control")), (302, ["no-store"]))
 
     def test_the_site_stays_static(self):
         r = self.req("/build.json")
         self.assertEqual((r.status, r.getheader("Cache-Control")), (200, "no-store"))
-        self.assertEqual(self.req("/studiox", "GET", SPOOF).status, 404)
-        self.assertEqual(self.req("/studio.html", "GET", SPOOF).status, 404)
+        for p in ("/studiox", "/studio.html", "/adminx", "/admin.html"):
+            self.assertEqual(self.req(p, "GET", SPOOF).status, 404, p)
         self.assertEqual(self.studio.hits, [])
+
+    def where(self, path, cookie=None):
+        r = self.req(path, "GET", {"Cookie": cookie} if cookie else None)
+        return r.status, r.getheader("Location")
+
+    def test_the_old_addresses_redirect(self):
+        for p, to in (("/sandbox/play/", "/play/"), ("/sandbox/play", "/play/"), ("/sandbox/play/index.html", "/play/"), ("/sandbox/station/", "/play/station/"),
+                      ("/sandbox/station", "/play/station/"), ("/sandbox/play/?test", "/play/?test"), ("/sandbox/station/?embed&test", "/play/station/?embed&test")):
+            self.assertEqual(self.where(p), (301, to), p)
+        self.assertEqual(self.where("/play"), (301, "/play/"))
+        self.assertEqual(self.where("/play/station"), (301, "/play/station/"))
+        self.assertEqual(self.where("/play/")[0], 200)
+        self.assertEqual(self.where("/sandbox/play/src/footer.mjs")[0], 404, "a file the page loads is not redirected (here it is simply not in the stand-in release)")
+        for p in ("/studio", "/studio/", "/studio/x", "/studio/api/species", "/STUDIO/x"):
+            self.assertEqual(self.where(p), (302, "/admin/"), p)
+            self.assertEqual(self.where(p, "mb_studio=good"), (302, "/admin/"), p)
+        for p in ("/studio/team", "/studio/team/"):
+            self.assertEqual(self.where(p), (302, "/admin/team"), p)
+        self.assertEqual(self.where("/sandbox/workbench/"), (302, "/admin/workbench/"))
+        self.assertEqual(self.where("/sandbox/workbench/app/main.mjs"), (302, "/admin/workbench/"))
+        self.assertEqual(self.where("/admin/workbench"), (302, "/admin/workbench/"))
+
+    def test_the_admin_paths_need_the_login_and_the_index_is_the_team_page_for_now(self):
+        good = "mb_studio=good"
+        for p in ("/admin", "/admin/", "/admin/x", "/admin/team", "/admin/workbench/", "/admin/workbench/index.html", "/admin/notes"):
+            self.assertEqual(self.where(p), (302, "/admin/login"), p)
+        for p in ("/admin", "/admin/"):
+            self.assertEqual(self.where(p, good), (302, "/admin/team"), p)
+        self.assertEqual(self.where("/admin/nothing-here", good)[0], 404)
+        self.assertEqual(self.where("/admin/team", good)[0], 200)
+
+    def test_the_workbench_is_only_for_a_session(self):
+        r = self.req("/admin/workbench/", "GET", {"Cookie": "mb_studio=good"})
+        self.assertEqual((r.status, r.getheader("Cache-Control"), r.getheader("X-Robots-Tag")), (200, "private, no-cache", "noindex"))
+        self.assertEqual(self.studio.hits, [])
+        for path in ("/sandbox/workbench/", "/sandbox/workbench/index.html", "/sandbox/Workbench/", "//sandbox/workbench/", "/x/../sandbox/workbench/", "/sandbox/./workbench/index.html",
+                     "/sandbox/workbench/%2e%2e/workbench/index.html", "/admin/workbench/", "/admin/Workbench/index.html", "/admin/workbench/../workbench/index.html", "/%61dmin/workbench/"):
+            c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+            c.request("GET", path); r = c.getresponse(); body = r.read(); c.close()
+            self.assertNotIn(b"workbench-secret", body, path)
 
     def test_a_hashed_master_is_kept_a_year_and_every_other_sandbox_path_is_not(self):
         # the real server's answers: the generic /sandbox/* no-cache must not win over a hashed master's immutable (it did, by header order)

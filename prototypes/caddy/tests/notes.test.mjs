@@ -89,13 +89,13 @@ test("never public: nothing is read from the public route, and the studio path n
   await withServer(app, async (base) => {
     const id = (await (await post(base, form({ shots: [{}], source: "owner" }))).json()).id;
     const date = readdirSync(path.join(dir, "notes"))[0];
-    for (const p of ["/caddy-api/v1/notes", "/caddy-api/v1/notes/" + id, "/caddy-api/v1/studio/notes", `/caddy-api/v1/studio/notes/f/${date}/${id}/shot-1.png`, "/caddy-api/v1/notes?from=owner"]) {
+    for (const p of ["/caddy-api/v1/notes", "/caddy-api/v1/notes/" + id, "/caddy-api/v1/admin/notes", `/caddy-api/v1/admin/notes/f/${date}/${id}/shot-1.png`, "/caddy-api/v1/notes?from=owner"]) {
       const r = await fetch(base + p); assert.ok([404, 405].includes(r.status), p + " gave " + r.status); const t = await r.text(); assert.ok(!t.includes("the fox") && !t.includes(id), p + " leaked");
     }
-    assert.equal((await fetch(base + "/studio/notes")).status, 403, "no login header, no page");
-    assert.equal((await fetch(base + `/studio/notes/f/${date}/${id}/shot-1.png`)).status, 403);
-    assert.equal((await fetch(base + "/studio/notes", { method: "POST", headers: { "x-studio-user": "paco" } })).status, 405);
-    const ok = await fetch(base + "/studio/notes", { headers: { "x-studio-user": "paco" } }); assert.equal(ok.status, 200);
+    assert.equal((await fetch(base + "/admin/notes")).status, 403, "no login header, no page");
+    assert.equal((await fetch(base + `/admin/notes/f/${date}/${id}/shot-1.png`)).status, 403);
+    assert.equal((await fetch(base + "/admin/notes", { method: "POST", headers: { "x-studio-user": "paco" } })).status, 405);
+    const ok = await fetch(base + "/admin/notes", { headers: { "x-studio-user": "paco" } }); assert.equal(ok.status, 200);
     assert.match(ok.headers.get("cache-control"), /no-store/); assert.match(await ok.text(), /From: owner/);
   });
 });
@@ -106,16 +106,16 @@ test("the studio page lists newest first, filters by source, escapes the line, a
   await withServer(app, async (base) => {
     await post(base, form({ text: "first from the owner", source: "owner", shots: [{}] }));
     await post(base, form({ text: "<img src=x onerror=alert(1)>", source: "tester-ana", clips: [{}] }));
-    const H = { "x-studio-user": "paco" }, all = await (await fetch(base + "/studio/notes", { headers: H })).text();
+    const H = { "x-studio-user": "paco" }, all = await (await fetch(base + "/admin/notes", { headers: H })).text();
     assert.ok(all.indexOf("tester-ana") < all.indexOf("first from the owner"), "newest first");
     assert.ok(!all.includes("<img src=x onerror") && all.includes("&lt;img src=x"), "the line is escaped");
     assert.match(all, /<option>owner<\/option>/); assert.match(all, /2 notes/);
-    const only = await (await fetch(base + "/studio/notes?from=owner", { headers: H })).text();
+    const only = await (await fetch(base + "/admin/notes?from=owner", { headers: H })).text();
     assert.match(only, /first from the owner/); assert.ok(!only.includes("tester-ana</h2>")); assert.match(only, /1 notes/);
     const date = readdirSync(path.join(dir, "notes"))[0], clipDir = noteDirs(dir).find((d) => existsSync(path.join(d, "clip-1.mp4"))), id = path.basename(clipDir);
-    const full = await fetch(base + `/studio/notes/f/${date}/${id}/clip-1.mp4`, { headers: H }); assert.equal(full.status, 200); assert.equal(full.headers.get("content-type"), "video/mp4"); assert.equal((await full.arrayBuffer()).byteLength, MP4.length);
-    const part = await fetch(base + `/studio/notes/f/${date}/${id}/clip-1.mp4`, { headers: { ...H, range: "bytes=0-9" } }); assert.equal(part.status, 206); assert.equal((await part.arrayBuffer()).byteLength, 10);
-    assert.equal((await fetch(base + `/studio/notes/f/${date}/${id}/note.json`, { headers: H })).status, 404, "only shots and clips are served");
-    assert.equal((await fetch(base + `/studio/notes/f/${date}/..%2F${id}/clip-1.mp4`, { headers: H })).status, 404);
+    const full = await fetch(base + `/admin/notes/f/${date}/${id}/clip-1.mp4`, { headers: H }); assert.equal(full.status, 200); assert.equal(full.headers.get("content-type"), "video/mp4"); assert.equal((await full.arrayBuffer()).byteLength, MP4.length);
+    const part = await fetch(base + `/admin/notes/f/${date}/${id}/clip-1.mp4`, { headers: { ...H, range: "bytes=0-9" } }); assert.equal(part.status, 206); assert.equal((await part.arrayBuffer()).byteLength, 10);
+    assert.equal((await fetch(base + `/admin/notes/f/${date}/${id}/note.json`, { headers: H })).status, 404, "only shots and clips are served");
+    assert.equal((await fetch(base + `/admin/notes/f/${date}/..%2F${id}/clip-1.mp4`, { headers: H })).status, 404);
   });
 });
