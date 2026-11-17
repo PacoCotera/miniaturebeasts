@@ -20,6 +20,7 @@ static void not_built(void) {
   spec_str("frame", "notBuilt.strings.line", s, sizeof s);
   int px = spec_int("frame", "notBuilt.regions.line.px", 20);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
+  { int cx = spec_int("frame", "notBuilt.regions.line.centre", 512), top = spec_int("frame", "notBuilt.regions.line.capTop", 288), w = v_measure(s, px); int b[4] = { cx - w / 2, top, w, px }; word_setRest(b); }   /* no ring: a phone's window rests on the line (its drawn width, as an empty room's message) */
   v_region("notBuilt.line", LAYER_TYPE); v_line_at("notBuilt.line", s, spec_int("frame", "notBuilt.regions.line.centre", 512), spec_int("frame", "notBuilt.regions.line.capTop", 288), V_ANCHOR_CAP, px, c, V_ALIGN_CENTRE);
 }
 /* Idle's line (frame.json idle, the frame's binding table: a composition, not a word): the strip (`ground`, a 1 px `void` rule on its top row) and the one line in `mist`, centred on x 512 with its middle on y 584, 16 px; the line is props.frame.idle.line,

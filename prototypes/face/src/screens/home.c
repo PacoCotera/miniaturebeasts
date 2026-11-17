@@ -70,7 +70,7 @@ static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_
 static long g_wticks;   /* the walk's group ticks applied since its origin g_t0: tick j is at 40 j ms and steps group j mod 2 */
 static int g_ctx = -1;   /* the walk's last context (0 none, 1 Idle, 2 the Vivarium's whole): it starts again from the seeds when the other shows */
 static char g_room[24];   /* the shown room (regions.room.id) the walk was last loaded for: another room restarts the walks (R4c) */
-void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; library_reset(); }   /* the moving household starts again from the seeds too (No replay) */
+void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; library_reset(); home_frame_left(); }   /* the moving household starts again from the seeds too (No replay) */
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
 static int iabs(int v) { return v < 0 ? -v : v; }
 static int bed_k(int x, int feet, int w) { if (g_viv || g_idle) { int fx = x + w / 2; return fx >= g_kx && fx < g_kx + g_kw && feet > g_ky; } return x + w > g_kx && feet > g_ky; }   /* the bed's keep-out keeps its box rule (and Home's away corner); a piece's keep-out is room.c's: the ground point (F.x, feet) inside its rect, by level */

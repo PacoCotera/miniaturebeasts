@@ -183,6 +183,7 @@ int incubator_test_cell(void) { return -100; }              /* the hatch has no 
 
 void incubator_words(void) {
   int t_inc = incubate_time(), t_gn = grownow_time(), t_h = hatch_time();
+  { int cr[4]; v_srect(I, "regions.capsule.rect", cr); word_setRest(cr); }   /* the Incubator draws no ring: a phone's window rests on the capsule, what the room is about */
   build_stage();
   build_capsule(t_inc, t_gn, t_h);
   build_column(t_inc);
