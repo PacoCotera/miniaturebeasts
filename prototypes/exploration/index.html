@@ -718,7 +718,25 @@ function bakedView(lay) {
   if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
   else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, veil: PL.veil }); PL.views.set(lay.baked.id, v);
     while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
+  if (v && lay.banks) bankDecalsOn(v, lay);
   return v || null;
+}
+// An earth bank's art: the bake draws every bank as the undug piece (wayup-undug); a bank Rupar has dug (its id in ex.dug) shows the dug piece (wayup-dug) instead. The place's decal of that bank takes the other kind and the view's ground renders are dropped once,
+// so the next frame draws it. Run when a view is made and when a bank is dug (digBank); a no-op while the dug flags are as the view last saw them.
+function bankDecalsOn(v, lay) {
+  const dugIds = (S.exp && S.exp.dug) || [], sig = lay.banks.map(b => (dugIds.includes(b.ei) ? 1 : 0)).join('');
+  if (v.bankSig === sig) return;
+  const first = v.bankSig === undefined; v.bankSig = sig;
+  const kindAt = k => v.ts.sprites.findIndex(s => s.group === 'decal' && s.kind === k), un = kindAt('wayup-undug'), dug = kindAt('wayup-dug');
+  if (un < 0 || dug < 0) return;
+  let changed = false;
+  for (const d of v.place.decals) {
+    if (d.kind !== un && d.kind !== dug) continue;
+    const b = lay.banks.find(q => q.x === d.x / 48 - 1 && q.y === d.y / 48 - 1); if (!b) continue;
+    const want = dugIds.includes(b.ei) ? dug : un;
+    if (d.kind !== want) { d.kind = want; changed = true; }
+  }
+  if (changed && !first) { v.cache.key = null; v.cache.full = null; v.cache.frames.clear(); v.half.key = null; v.half.buf = null; v.last = null; }
 }
 const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(PL.ts && PL.ts.palette ? PL.ts.palette.map(c => [(c >> 16) & 255, (c >> 8) & 255, c & 255]) : [], STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS);   // the game set palette is the map's and the walk's palette
 // The sides of a cell that are shut now (past the range or closed), as a string: the reachable-only placement of a layout was made against this.
@@ -2505,7 +2523,7 @@ function digBank(ei, a, c) {
   if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
   const up = c < 0 || G.level[c] > G.level[a];   // c < 0: a tile bank of a generator 7 place (lay.banks): its way is always up
   ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (up) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
-  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
+  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; if (lay.banks) bakedView(lay); }   // bakedView swaps the dug bank's decal (bankDecalsOn)
   logEv(name + ' dug a way ' + (up ? 'up' : 'down') + ' the bank');
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
   return true;
