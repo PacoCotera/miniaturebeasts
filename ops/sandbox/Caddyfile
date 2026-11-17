@@ -1,80 +1,40 @@
 # The sandbox web server's whole configuration. It ships in every release; deploy.sh checks it with `caddy validate`
 # before a release goes live and installs it at /etc/caddy/Caddyfile (a release without this file leaves the installed one alone).
 # Owner 2026-11-16: "consolidate all my tools, dashboards, artifacts under /admin. remove /studio we will rebuild that later. and /play for the web play experience".
-#   /play/ and /play/station/           the game and the Station: real copies of the built pages with a <base> on their files in /sandbox/ (ops/sandbox/bundle-pages.sh);
-#                                       the old page addresses (/sandbox/play/, /sandbox/station/) redirect here (301, the query kept); the files under /sandbox/ stay, the pages load them
+#   /play/                              the game, wholly: /play/ the play page, /play/station/, /play/exploration/, and their folders (/play/ui/, /play/face/, /play/assets/ ...), built by ops/sandbox/bundle-pages.sh
+#                                       (except /play/workbench, /play/caddy and /play/test: the team's tools, 404 here, served only under /admin)
+#   /sandbox and /studio                nothing is there: 404 like any address the release does not have
 #   /admin/login and /admin/logout      the login (login/mb_login.py, unit mb-login) on 127.0.0.1:8791
 #   every other /admin path             only with a session: the login's /check says yes (and names the user), then:
 #     /admin/team, team.json ...        the studio's team page, on the private bridge (the studio still answers under its own /studio prefix; this file rewrites to it)
 #     /admin/notes*                     the play notes page and files: the Caddy service (not the studio)
-#     /admin/workbench/                 the species workbench's static files (the release's sandbox/workbench), no longer public
+#     /admin/workbench/                 the species workbench's static files (the release's play/workbench), not public
+#     /admin/test/                      the test page (the release's play/test; its links are made absolute by bundle-pages.sh)
 #     /admin/ itself                    a redirect to /admin/team until the index page is designed
 #     any other /admin path             404, after the login's check
 #     The studio sees X-Studio-User only from here, never the browser's cookies, and none of these answers may be kept by a shared cache.
-#   /studio and /studio/*               retired, rebuilt later: 302 to /admin/team (for /studio/team) or /admin/ (everything else); the studio service itself keeps running for /admin/team
-#   /sandbox/workbench*                 302 to /admin/workbench/
-#   /caddy-api/*                        the Caddy service (POST /caddy-api/v1/notes takes a play note; nothing is read back from here); /sandbox/*, /play/* and the site: the release, static
+#   /caddy-api/*                        the Caddy service (POST /caddy-api/v1/notes takes a play note; nothing is read back from here); /play/* and the site: the release, static
 # Two values come from the web server's environment (install.sh writes them to a file the Caddy unit and deploy.sh both read): MB_ROOT, the
 # directory that holds releases/ and current, and MB_STUDIO, the studio's host:port on the private bridge.
 # `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
 :80 {
 	@admin path /admin /admin/*
-	# the species frames are game data: the live Station loads them (/sandbox/workbench/frames/...), so they stay public
-	@oldwb {
-		path /sandbox/workbench /sandbox/workbench/*
-		not path /sandbox/workbench/frames/*
+	# the species frames (play/workbench/frames/) are game data the Station loads: public; the rest of the workbench is not
+	@private {
+		path /play/workbench /play/workbench/* /play/caddy /play/caddy/* /play/test /play/test/*
+		not path /play/workbench/frames/*
 	}
-	@oldstudioteam path /studio/team /studio/team/
-	@oldstudio path /studio /studio/*
 	@teampage path /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
 
-	# the old game page addresses: the page only (its files under /sandbox/ are what the page loads); a query (the Station's ?embed) goes along
-	@oldplay {
-		path /sandbox/play /sandbox/play/ /sandbox/play/index.html
-		expression `{http.request.uri.query} == ''`
-	}
-	@oldplayq {
-		path /sandbox/play /sandbox/play/ /sandbox/play/index.html
-		expression `{http.request.uri.query} != ''`
-	}
-	@oldstation {
-		path /sandbox/station /sandbox/station/ /sandbox/station/index.html
-		expression `{http.request.uri.query} == ''`
-	}
-	@oldstationq {
-		path /sandbox/station /sandbox/station/ /sandbox/station/index.html
-		expression `{http.request.uri.query} != ''`
-	}
-	handle @oldplay {
-		redir * /play/ 301
-	}
-	handle @oldplayq {
-		redir * /play/?{query} 301
-	}
-	handle @oldstation {
-		redir * /play/station/ 301
-	}
-	handle @oldstationq {
-		redir * /play/station/?{query} 301
+	# the team's tools travel in the release beside the game's folders (the Caddy service and the workbench read their siblings) but are not public: they are served only through /admin below
+	handle @private {
+		respond "not found" 404
 	}
 	handle /play {
 		redir * /play/ 301
 	}
 	handle /play/station {
 		redir * /play/station/ 301
-	}
-
-	# the species workbench is a tool now: its public address and every file under it go to the private one
-	handle @oldwb {
-		redir * /admin/workbench/ 302
-	}
-
-	# the studio is retired: nothing of it is served from /studio any more
-	handle @oldstudioteam {
-		redir * /admin/team 302
-	}
-	handle @oldstudio {
-		redir * /admin/ 302
 	}
 
 	handle /admin/login* {
@@ -128,8 +88,12 @@
 			}
 		}
 	}
-	# the workbench: the release's own files, behind the login
-	handle /admin/workbench/* {
+	handle /admin/test {
+		redir * /admin/test/ 302
+	}
+	# the workbench and the test page: the release's own files (play/workbench, play/test), behind the login
+	@tools path /admin/workbench/* /admin/test/*
+	handle @tools {
 		route {
 			request_header -X-Studio-User
 			forward_auth 127.0.0.1:8791 {
@@ -138,7 +102,7 @@
 			}
 			header X-Robots-Tag noindex
 			header Cache-Control "private, no-cache"
-			uri path_regexp (?i)^/+admin/workbench /sandbox/workbench
+			uri path_regexp (?i)^/+admin/(workbench|test) /play/$1
 			root * {$MB_ROOT}/current
 			encode zstd gzip
 			file_server
@@ -167,19 +131,18 @@
 		encode zstd gzip
 		# a master is asked for as <file>?v=<first 12 of its sha256> (station/src/masters.mjs masterUrl): the name changes with the bytes, so the browser and the CDN keep it a year
 		@hashed {
-			path /sandbox/ui/assets/masters/*
+			path /play/ui/assets/masters/*
 			query v=*
 		}
-		# the pages' build (prototypes/vite.config.mjs, laid over the site by ops/sandbox/bundle-pages.sh) writes its chunks, styles and pictures to /sandbox/assets/<name>-<content hash>.<ext>: the name changes with the bytes,
+		# the pages' build (prototypes/vite.config.mjs, laid over the site by ops/sandbox/bundle-pages.sh) writes its chunks, styles and pictures to /play/assets/<name>-<content hash>.<ext>: the name changes with the bytes,
 		# so they too are kept a year. The pages themselves (/play/, /play/station/ ...) stay no-cache, so a release is seen at the next load.
 		@bundled {
-			path /sandbox/assets/*
+			path /play/assets/*
 		}
 		# one `route`, so the headers apply in the order written: Caddy otherwise sorts header blocks by how specific their matcher is and put
-		# /sandbox/*'s no-cache after the hashed master's immutable, so no-cache won; here the generic line comes first and the hashed one overrides it
+		# /play/*'s no-cache after the hashed master's immutable, so no-cache won; here the generic line comes first and the hashed one overrides it
 		route {
 			header /build.json Cache-Control "no-store"
-			header /sandbox/* Cache-Control "no-cache"
 			header /play/* Cache-Control "no-cache"
 			header @hashed Cache-Control "public, max-age=31536000, immutable"
 			header @bundled Cache-Control "public, max-age=31536000, immutable"

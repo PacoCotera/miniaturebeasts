@@ -95,7 +95,9 @@ login_changed=1; [ -L "$ROOT/current" ] && cmp -s "$old/$login" "$dir/$login" &&
 ln -sfn "$dir" "$ROOT/current.new" && mv -T "$ROOT/current.new" "$ROOT/current"
 # keep the current release and the four newest others; the pinned one is always the current one
 ls -1dt "$ROOT"/releases/sandbox-* | { grep -vxF "$dir" || true; } | tail -n +5 | xargs -r rm -rf
-"$SYSTEMCTL" restart mb-caddy 2>/dev/null || true   # the Caddy service runs from the release: it restarts on the new one (its queue is journaled in its data directory)
+unit=/etc/systemd/system/mb-caddy.service   # a unit installed before 2026-11-17 runs the service from the release's old sandbox/ folder, which a release no longer has: point it at play/caddy
+if grep -q 'current/sandbox/caddy' "$unit" 2>/dev/null; then sed -i 's#current/sandbox/caddy#current/play/caddy#g' "$unit" && "$SYSTEMCTL" daemon-reload || true; fi
+"$SYSTEMCTL" restart mb-caddy 2>/dev/null || true  # the Caddy service runs from the release: it restarts on the new one (its queue is journaled in its data directory)
 # so does the studio login, when its code changed (its sessions are on disk; its lockouts are in memory and would start again)
 [ "$login_changed" = 0 ] || "$SYSTEMCTL" restart mb-login 2>/dev/null || true
 echo "deployed $tag${pin:+ (pinned)}$([ "$changed" = 1 ] && echo ", Caddyfile updated and reloaded")"

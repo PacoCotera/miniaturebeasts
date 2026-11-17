@@ -76,12 +76,17 @@ class Routes(unittest.TestCase):
         (cls.dir / "root" / "current").mkdir(parents=True)
         (cls.dir / "root" / "current" / "build.json").write_text("{}")
         (cls.dir / "root" / "current" / "index.html").write_text("<p>site</p>")
-        (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters").mkdir(parents=True)
-        (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters" / "m.png").write_text("png")
-        (cls.dir / "root" / "current" / "sandbox" / "index.html").write_text("<p>sandbox</p>")
-        for d, t in (("sandbox/workbench", "workbench-secret"), ("sandbox/play", "play-page"), ("play", "play-copy")):
-            (cls.dir / "root" / "current" / d).mkdir(parents=True, exist_ok=True)
-            (cls.dir / "root" / "current" / d / "index.html").write_text(t)
+        game = cls.dir / "root" / "current" / "play"
+        (game / "ui" / "assets" / "masters").mkdir(parents=True)
+        (game / "ui" / "assets" / "masters" / "m.png").write_text("png")
+        (game / "other.html").write_text("<p>other</p>")
+        (game / "workbench" / "frames" / "language").mkdir(parents=True)
+        (game / "workbench" / "frames" / "language" / "index.json").write_text("{}")
+        (game / "assets").mkdir()
+        (game / "assets" / "app-0a1b2c3d.js").write_text("//js")
+        for d, t in (("workbench", "workbench-secret"), ("test", "test-secret"), ("caddy", "caddy-secret"), ("station", "station-page"), (".", "play-page")):
+            (game / d).mkdir(parents=True, exist_ok=True)
+            (game / d / "index.html").write_text(t)
         cls.port = free_port()
         text = REAL.read_text()
         assert text.count(":80 {") == 1 and "127.0.0.1:8791" in text
@@ -195,58 +200,64 @@ class Routes(unittest.TestCase):
         r = self.req(path, "GET", {"Cookie": cookie} if cookie else None)
         return r.status, r.getheader("Location")
 
-    def test_the_old_addresses_redirect(self):
-        for p, to in (("/sandbox/play/", "/play/"), ("/sandbox/play", "/play/"), ("/sandbox/play/index.html", "/play/"), ("/sandbox/station/", "/play/station/"),
-                      ("/sandbox/station", "/play/station/"), ("/sandbox/play/?test", "/play/?test"), ("/sandbox/station/?embed&test", "/play/station/?embed&test")):
-            self.assertEqual(self.where(p), (301, to), p)
+    def test_nothing_is_at_the_old_addresses_and_the_team_tools_are_not_public(self):
+        for p in ("/sandbox", "/sandbox/", "/sandbox/play/", "/sandbox/station/", "/sandbox/station/?embed&test", "/sandbox/workbench/", "/sandbox/test/",
+                  "/studio", "/studio/", "/studio/x", "/studio/api/species", "/STUDIO/x", "/studio/team", "/studio/team/",
+                  "/play/workbench", "/play/workbench/", "/play/workbench/index.html", "/play/Workbench/", "/play/test/", "/play/test", "/play/caddy/index.html", "/play//workbench/",
+                  "/play/./workbench/", "/play/x/../workbench/"):
+            self.assertEqual(self.where(p), (404, None), p)
+            self.assertEqual(self.where(p, "mb_studio=good"), (404, None), p)
         self.assertEqual(self.where("/play"), (301, "/play/"))
         self.assertEqual(self.where("/play/station"), (301, "/play/station/"))
-        self.assertEqual(self.where("/play/")[0], 200)
-        self.assertEqual(self.where("/sandbox/play/src/footer.mjs")[0], 404, "a file the page loads is not redirected (here it is simply not in the stand-in release)")
-        for p in ("/studio", "/studio/", "/studio/x", "/studio/api/species", "/STUDIO/x"):
-            self.assertEqual(self.where(p), (302, "/admin/"), p)
-            self.assertEqual(self.where(p, "mb_studio=good"), (302, "/admin/"), p)
-        for p in ("/studio/team", "/studio/team/"):
-            self.assertEqual(self.where(p), (302, "/admin/team"), p)
-        self.assertEqual(self.where("/sandbox/workbench/"), (302, "/admin/workbench/"))
-        self.assertEqual(self.where("/sandbox/workbench/app/main.mjs"), (302, "/admin/workbench/"))
+        for p in ("/play/", "/play/station/", "/play/other.html", "/play/assets/app-0a1b2c3d.js"):
+            self.assertEqual(self.where(p)[0], 200, p)
+        # the species frames are game data the Station loads: public, while the workbench beside them is not
+        self.assertEqual(self.where("/play/workbench/frames/language/index.json")[0], 200)
+        for p in ("/play/workbench/frames/../index.html", "/play/workbench/frames/%2e%2e/index.html"):
+            self.assertNotIn(b"workbench-secret", self.req(p).read(), p)
         self.assertEqual(self.where("/admin/workbench"), (302, "/admin/workbench/"))
+        self.assertEqual(self.where("/admin/test"), (302, "/admin/test/"))
 
     def test_the_admin_paths_need_the_login_and_the_index_is_the_team_page_for_now(self):
         good = "mb_studio=good"
-        for p in ("/admin", "/admin/", "/admin/x", "/admin/team", "/admin/workbench/", "/admin/workbench/index.html", "/admin/notes"):
+        for p in ("/admin", "/admin/", "/admin/x", "/admin/team", "/admin/workbench/", "/admin/workbench/index.html", "/admin/test/", "/admin/notes"):
             self.assertEqual(self.where(p), (302, "/admin/login"), p)
         for p in ("/admin", "/admin/"):
             self.assertEqual(self.where(p, good), (302, "/admin/team"), p)
         self.assertEqual(self.where("/admin/nothing-here", good)[0], 404)
         self.assertEqual(self.where("/admin/team", good)[0], 200)
 
-    def test_the_workbench_is_only_for_a_session(self):
-        r = self.req("/admin/workbench/", "GET", {"Cookie": "mb_studio=good"})
-        self.assertEqual((r.status, r.getheader("Cache-Control"), r.getheader("X-Robots-Tag")), (200, "private, no-cache", "noindex"))
+    def test_the_workbench_and_the_test_page_are_only_for_a_session(self):
+        for page in ("workbench", "test"):
+            r = self.req("/admin/%s/" % page, "GET", {"Cookie": "mb_studio=good"})
+            self.assertEqual((r.status, r.getheader("Cache-Control"), r.getheader("X-Robots-Tag")), (200, "private, no-cache", "noindex"))
         self.assertEqual(self.studio.hits, [])
-        for path in ("/sandbox/workbench/", "/sandbox/workbench/index.html", "/sandbox/Workbench/", "//sandbox/workbench/", "/x/../sandbox/workbench/", "/sandbox/./workbench/index.html",
-                     "/sandbox/workbench/%2e%2e/workbench/index.html", "/admin/workbench/", "/admin/Workbench/index.html", "/admin/workbench/../workbench/index.html", "/%61dmin/workbench/"):
-            c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
-            c.request("GET", path); r = c.getresponse(); body = r.read(); c.close()
-            self.assertNotIn(b"workbench-secret", body, path)
+        for secret, paths in ((b"workbench-secret", ("/play/workbench/", "/play/workbench/index.html", "/play/Workbench/", "//play/workbench/", "/x/../play/workbench/", "/play/./workbench/index.html",
+                                                    "/play/workbench/%2e%2e/workbench/index.html", "/admin/workbench/", "/admin/Workbench/index.html", "/admin/workbench/../workbench/index.html", "/%61dmin/workbench/")),
+                              (b"test-secret", ("/play/test/", "/play/test/index.html", "/play/Test/", "/admin/test/", "/admin/test/../test/", "/%61dmin/test/"))):
+            for path in paths:
+                c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
+                c.request("GET", path); r = c.getresponse(); body = r.read(); c.close()
+                self.assertNotIn(secret, body, path)
 
-    def test_a_hashed_master_is_kept_a_year_and_every_other_sandbox_path_is_not(self):
-        # the real server's answers: the generic /sandbox/* no-cache must not win over a hashed master's immutable (it did, by header order)
+    def test_a_hashed_file_is_kept_a_year_and_every_other_play_path_is_not(self):
+        # the real server's answers: the generic /play/* no-cache must not win over a hashed master's immutable (it did, by header order)
         cc = lambda p: (lambda r: (r.status, r.headers.get_all("Cache-Control")))(self.req(p))
-        self.assertEqual(cc("/sandbox/ui/assets/masters/m.png?v=0123456789ab"), (200, ["public, max-age=31536000, immutable"]))
-        self.assertEqual(cc("/sandbox/ui/assets/masters/m.png"), (200, ["no-cache"]), "no hash in the name: not kept")
-        self.assertEqual(cc("/sandbox/index.html?v=0123456789ab"), (200, ["no-cache"]), "a version on another path is not a master")
-        self.assertEqual(cc("/sandbox/index.html"), (200, ["no-cache"]))
+        self.assertEqual(cc("/play/ui/assets/masters/m.png?v=0123456789ab"), (200, ["public, max-age=31536000, immutable"]))
+        self.assertEqual(cc("/play/ui/assets/masters/m.png"), (200, ["no-cache"]), "no hash in the name: not kept")
+        self.assertEqual(cc("/play/assets/app-0a1b2c3d.js"), (200, ["public, max-age=31536000, immutable"]))
+        self.assertEqual(cc("/play/other.html?v=0123456789ab"), (200, ["no-cache"]), "a version on another path is not a master")
+        self.assertEqual(cc("/play/other.html"), (200, ["no-cache"]))
+        self.assertEqual(cc("/play/"), (200, ["no-cache"]))
 
 
 class CaddyfileText(unittest.TestCase):
     """Runs without Caddy, and only reads the text: the order the cache headers are written in matters (Caddy runs `header` blocks outside a `route` in its own order),
-    so the hashed master's line must sit in the same `route` as /sandbox/*'s no-cache, after it. The real answer is checked by Routes above, where Caddy is installed."""
+    so the hashed master's line must sit in the same `route` as /play/*'s no-cache, after it. The real answer is checked by Routes above, where Caddy is installed."""
 
-    def test_the_hashed_header_follows_the_sandbox_no_cache_in_one_route(self):
+    def test_the_hashed_header_follows_the_play_no_cache_in_one_route(self):
         text = REAL.read_text()
-        a, b = text.index('header /sandbox/* Cache-Control "no-cache"'), text.index("header @hashed Cache-Control")
+        a, b = text.index('header /play/* Cache-Control "no-cache"'), text.index("header @hashed Cache-Control")
         self.assertLess(a, b)
         route = text.rindex("route {", 0, a)
         self.assertGreater(route, text.index("handle {"), "the file's own route, not the studio's")

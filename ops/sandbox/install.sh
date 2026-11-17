@@ -13,7 +13,7 @@
 # paintings: Node 22, Python 3 with Pillow, a data directory outside the releases, a
 # root-only environment file for its mode, daily limit and key, and the /caddy-api/ proxy route. And the studio login
 # (unit mb-login, its own system user, run from the release; users file beside the environment file) with the
-# mb-studio-passwd tool, and the release's Caddyfile (the /studio routes), installed once and after that by deploy.sh.
+# mb-studio-passwd tool, and the release's Caddyfile (the /admin routes), installed once and after that by deploy.sh.
 set -euo pipefail
 REPO="PacoCotera/miniaturebeasts"
 RAW="https://raw.githubusercontent.com/$REPO/main/ops/sandbox"
@@ -108,8 +108,8 @@ After=network-online.target
 User=www-data
 Group=www-data
 EnvironmentFile=$ENV_FILE
-WorkingDirectory=$ROOT/current/sandbox/caddy
-ExecStart=/usr/bin/node $ROOT/current/sandbox/caddy/server.mjs
+WorkingDirectory=$ROOT/current/play/caddy
+ExecStart=/usr/bin/node $ROOT/current/play/caddy/server.mjs
 Restart=on-failure
 RestartSec=5
 [Install]
@@ -217,7 +217,7 @@ fi
 sleep 1
 curl -fsS http://localhost/build.json || { echo 'build.json not served; see: journalctl -u caddy -n 30'; exit 1; }
 curl -fsS http://localhost/caddy-api/v1/status >/dev/null || echo 'the Caddy service is not answering yet; see: journalctl -u mb-caddy -n 30'
-code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost/studio || true)
-echo "/studio answers $code (302: the login is in front of it; 502: the login is not running, see: journalctl -u mb-login -n 30)"
-echo "Sandbox installed. Serving on port 80 from $ROOT/current; the Caddy service on /caddy-api/; the studio login on /studio."
+code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost/admin/login || true)
+echo "/admin/login answers $code (200: the login is running; 502: it is not, see: journalctl -u mb-login -n 30)"
+echo "Sandbox installed. Serving on port 80 from $ROOT/current; the Caddy service on /caddy-api/; the login on /admin/login."
 echo "Set the studio password:  sudo mb-studio-passwd <user>"

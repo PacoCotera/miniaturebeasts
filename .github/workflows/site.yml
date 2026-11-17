@@ -97,15 +97,15 @@ jobs:
         if: steps.scope.outputs.docs != 'true'
         run: |
           set -euo pipefail
-          mkdir -p _site/sandbox
+          mkdir -p _site/play
           cp -r website/. _site/
           for p in prototypes/*/; do
             n=$(basename "$p")
-            mkdir -p "_site/sandbox/$n"
-            cp -r "$p". "_site/sandbox/$n/"
+            mkdir -p "_site/play/$n"
+            cp -r "$p". "_site/play/$n/"
           done
           # the component catalogue's static build (prototypes/play/options/catalogue-out, Ladle) and the token build's packages are for the team, never deployed
-          rm -rf _site/sandbox/play/options/catalogue-out _site/sandbox/play/options/node_modules _site/sandbox/ui/tokens/node_modules
+          rm -rf _site/play/play/options/catalogue-out _site/play/play/options/node_modules _site/play/ui/tokens/node_modules
           mkdir -p _site/ops && cp -r ops/ledger _site/ops/
           # the web server's Caddyfile and the studio login's code travel in the release: deploy.sh checks the Caddyfile before it goes live, the login unit runs from the release
           mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
@@ -121,7 +121,7 @@ jobs:
       - name: Bundle the pages (Vite)
         if: steps.scope.outputs.docs != 'true'
         # prototypes/vite.config.mjs bundles the Station, play and exploration pages into content-hashed chunks with modulepreload (the spec JSON and p-queue inside, the pictures and metrics hashed) and
-        # lays them over _site/sandbox: the three pages are replaced, /sandbox/assets/ is added (ops/sandbox/Caddyfile keeps it immutable), every source file stays where it was. npm ci installs the
+        # lays them over _site/play: the three pages are replaced, /play/assets/ is added (ops/sandbox/Caddyfile keeps it immutable), every source file stays where it was. npm ci installs the
         # pinned vite and p-queue (prototypes/package-lock.json); the journeys import the sources and use the same install. Measured: about 3 s for the build.
         run: sh ops/sandbox/bundle-pages.sh _site
       - name: Every new or changed image is signed art (ratchet), and no render module gains a drawing call
