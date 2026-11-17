@@ -19,7 +19,11 @@
 # `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
 :80 {
 	@admin path /admin /admin/*
-	@private path /play/workbench /play/workbench/* /play/caddy /play/caddy/* /play/test /play/test/*
+	# the species frames (play/workbench/frames/) are game data the Station loads: public; the rest of the workbench is not
+	@private {
+		path /play/workbench /play/workbench/* /play/caddy /play/caddy/* /play/test /play/test/*
+		not path /play/workbench/frames/*
+	}
 	@teampage path /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
 
 	# the team's tools travel in the release beside the game's folders (the Caddy service and the workbench read their siblings) but are not public: they are served only through /admin below

@@ -80,6 +80,8 @@ class Routes(unittest.TestCase):
         (game / "ui" / "assets" / "masters").mkdir(parents=True)
         (game / "ui" / "assets" / "masters" / "m.png").write_text("png")
         (game / "other.html").write_text("<p>other</p>")
+        (game / "workbench" / "frames" / "language").mkdir(parents=True)
+        (game / "workbench" / "frames" / "language" / "index.json").write_text("{}")
         (game / "assets").mkdir()
         (game / "assets" / "app-0a1b2c3d.js").write_text("//js")
         for d, t in (("workbench", "workbench-secret"), ("test", "test-secret"), ("caddy", "caddy-secret"), ("station", "station-page"), (".", "play-page")):
@@ -209,6 +211,10 @@ class Routes(unittest.TestCase):
         self.assertEqual(self.where("/play/station"), (301, "/play/station/"))
         for p in ("/play/", "/play/station/", "/play/other.html", "/play/assets/app-0a1b2c3d.js"):
             self.assertEqual(self.where(p)[0], 200, p)
+        # the species frames are game data the Station loads: public, while the workbench beside them is not
+        self.assertEqual(self.where("/play/workbench/frames/language/index.json")[0], 200)
+        for p in ("/play/workbench/frames/../index.html", "/play/workbench/frames/%2e%2e/index.html"):
+            self.assertNotIn(b"workbench-secret", self.req(p).read(), p)
         self.assertEqual(self.where("/admin/workbench"), (302, "/admin/workbench/"))
         self.assertEqual(self.where("/admin/test"), (302, "/admin/test/"))
 
