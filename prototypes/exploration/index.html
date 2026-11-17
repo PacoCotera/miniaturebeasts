@@ -2194,6 +2194,7 @@ function ensureLive(key) {
 }
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 let LAND = null;   // the tile a step out of a place lands on in the next one (crossEdge), used once by enterPatchBuilt
+let ROW = null;   // the row a sideways step out of a place left on (crossEdge): the next place's way in keeps it, so the pawn does not jump up or down on screen (bug #11)
 function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
   const occ = (x, y) => !guess && occupant(key, x, y, 'player');
   if (LAND && LAND.key === key && !occ(LAND.x, LAND.y)) return { x: LAND.x, y: LAND.y };
@@ -2210,7 +2211,8 @@ function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most
   }
   { const cf = lay.cross && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;   // came over scree or a bank: the tile just inside its crossing
     if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occ(q.entry.x, q.entry.y)) return { x: q.entry.x, y: q.entry.y }; } }
-  const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : dir ? lay.h / 2 : lay.h - 3;
+  const keepY = (dir === 'left' || dir === 'right') ? (guess ? (S.exp && S.exp.patch ? S.exp.patch.y : null) : ROW && ROW.key === key ? ROW.y : null) : null;   // a sideways crossing keeps the row it left on (clamped to this place)
+  const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : keepY != null ? Math.max(0, Math.min(lay.h - 1, keepY)) : dir ? lay.h / 2 : lay.h - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   // a baked place has the tiles no crown hangs over (lay.clear): the explorer arrives on one of them, the nearest to the way in, never hidden under a canopy (C16); with none, any
   const want = lay.compOfSide ? (dir ? lay.compOfSide[{ up: 'S', down: 'N', left: 'E', right: 'W' }[dir]] : null) ?? lay.mainComp : 0;   // a generator 7 cell: you start on the ground the way you came in by leads to
@@ -2246,7 +2248,7 @@ function enterPatchBuilt() {
   ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
-  const e = entryPoint(lay, key, ex.lastDir); LAND = null;
+  const e = entryPoint(lay, key, ex.lastDir); LAND = null; ROW = null;
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
@@ -2551,9 +2553,9 @@ function crossEdge(dir) {
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   const snap = motion() ? (FX.edgeView && FX.edgeView.key === ex.patch.key ? FX.edgeView.snap : viewSnapshot()) : null, from = ex.pos;
-  ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
+  const P0 = ex.patch; ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
-  LAND = land ? { key: String(c), x: land.x, y: land.y } : null;
+  LAND = land ? { key: String(c), x: land.x, y: land.y } : null; ROW = (dir === 'left' || dir === 'right') && c >= 0 ? { key: String(c), y: P0.y } : null;
   mapStep(dir, !!land);
   // The map is not shown on a crossing: the walk goes straight into the next place under a one-screen slide, and the explorer keeps walking.
   if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
