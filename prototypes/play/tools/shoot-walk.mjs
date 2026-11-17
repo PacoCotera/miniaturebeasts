@@ -1,7 +1,7 @@
 // The walk on the map: open the play page with a pinned seed, set out on expedition 1, take the map steps, go in to the place, take the place steps; the Companion's screen canvas at 1x.
 // Usage: node shoot-walk.mjs <outdir> <seed> <mapSteps "right,down,..."> <placeSteps "up,right,..."> [name]
 // Every place step is saved as <name>-<n> (+ sidecar); the one to ship is chosen by eye and the same command replays it.
-import { open, write } from "./capture-lib.mjs";
+import { open, write, drawn } from "./capture-lib.mjs";
 const [out, seedArg, mapArg, inArg, name = "expedition"] = process.argv.slice(2);
 const seed = +seedArg;
 const { br, page, images, build } = await open({ seed });
@@ -23,7 +23,7 @@ await page.waitForTimeout(1500);
 await tap("confirm", 120);
 await page.waitForTimeout(6000);
 let j = 0;
-const shoot = async () => { const dataUrl = await ex.evaluate(() => window.__mb.capture()); const st = await state(); write({ out, name: `${name}-${j}`, dataUrl, build, seed, cell: String(st.pos), view: "place (Companion screen canvas, 1x)", size: "450x600", script: new URL(import.meta.url).pathname, args: process.argv.slice(2), images }); };
+const shoot = async () => { const dataUrl = await ex.evaluate(() => window.__mb.capture()); const st = await state(); write({ out, name: `${name}-${j}`, dataUrl, build, seed, cell: String(st.pos), view: "place (Companion screen canvas, 1x)", size: "450x600", script: new URL(import.meta.url).pathname, args: process.argv.slice(2), images: await drawn(page, images, "exploration") }); };
 await shoot();
 for (const s of inArg.split(",").filter(Boolean)) { await tap(s); j++; await shoot(); }
 await br.close();

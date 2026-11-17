@@ -1,7 +1,7 @@
 // The Station with pods on the play page, reached as the repo's play journey does: crates seeded with __st.seedCrate (fixed kinds and seeds), then the real Dock key,
 // then the key presses; the Station's screen canvas at 1x, saved after each press as <name>-<n> (+ sidecar). The world seed is pinned through the address.
 // Usage: node shoot-station3.mjs <outdir> <seed> [crates] [presses "confirm,confirm,confirm"] [name]
-import { open, write } from "./capture-lib.mjs";
+import { open, write, drawn } from "./capture-lib.mjs";
 const [out, seedArg, nArg = "4", pressArg = "confirm,confirm,confirm", name = "station"] = process.argv.slice(2);
 const seed = +seedArg;
 const { br, page, images, build } = await open({ seed });
@@ -22,6 +22,6 @@ for (const k of pressArg.split(",").filter(Boolean)) {
   await press(k); j++;
   const dataUrl = await st().evaluate(() => window.__st.capture());
   const screen = await st().evaluate(() => window.__st.UI && window.__st.UI.screen);
-  write({ out, name: `${name}-${j}`, dataUrl, build, seed, cell: "station:" + screen, view: "Station screen (Station screen canvas, 1x), crates " + n, size: "1024x600", script: new URL(import.meta.url).pathname, args: process.argv.slice(2), images });
+  write({ out, name: `${name}-${j}`, dataUrl, build, seed, cell: "station:" + screen, view: "Station screen (Station screen canvas, 1x), crates " + n, size: "1024x600", script: new URL(import.meta.url).pathname, args: process.argv.slice(2), images: await drawn(page, images, "station") });
 }
 await br.close();
