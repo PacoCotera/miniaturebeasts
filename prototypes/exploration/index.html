@@ -7,6 +7,20 @@
 <script type="importmap">{"imports":{"fastnoise-lite":"./node_modules/fastnoise-lite/FastNoiseLite.js","flatqueue":"./node_modules/flatqueue/index.js","idb-keyval":"./node_modules/idb-keyval/dist/index.js"}}</script>
 <script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <script>if (new URLSearchParams(location.search).has("raw")) document.documentElement.classList.add("raw");</script>
+<script>
+// The device's scale, known before the first paint: the head sets --device-s from the viewport (the CSS below sizes the device from it), and the page's fit() (section 17) reads the same function on every resize. Never an unscaled device while the modules load.
+window.__mbDeviceScale = function () {
+  var W = 522, H = 832, de = document.documentElement, vw = de.clientWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
+  var desktop = vw >= 900 && window.matchMedia && matchMedia('(pointer: fine)').matches;
+  var s = Math.min(1, (vw - 32) / W);
+  if (!desktop) s = Math.min(s, (vh - 40) / H);
+  s = Math.max(.3, s);
+  var k = Math.floor(s * dpr + 1e-6); if (k >= 1 && k / dpr >= s * .85) s = k / dpr;
+  de.style.setProperty('--device-s', String(s));
+  return s;
+};
+window.__mbDeviceScale();
+</script>
 <meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 51-colour palette, the world map, living patches, storms, partners and two gates.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,11 +64,11 @@ body{
 .notice[hidden]{display:none}
 
 /* ===== The Companion (keeps its own look in both themes) ===== */
-.device-fit{position:relative}
+.device-fit{position:relative; width:calc(522px * var(--device-s, 1)); height:calc(832px * var(--device-s, 1))}   /* --device-s: the head script, before the first paint */
 .device{
   --stone-1:#ddd4c1; --stone-2:#c9bea8; --stone-3:#b3a790; --bump:#2c2e31; --bump-2:#3b3e42;
   --orange:#f0661a; --orange-2:#c94f0d; --charcoal:#2f3236;
-  position:absolute; left:0; top:0; transform-origin: 0 0;
+  position:absolute; left:0; top:0; transform-origin: 0 0; transform:scale(var(--device-s, 1));
   width:522px; height:832px; border-radius:34px;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
@@ -151,6 +165,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 }
 html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
 html.embed body{visibility:hidden}
+html.embed .device{transform:none}   /* the frame's screen is position:fixed: a transformed ancestor would hold it (the head's --device-s is for the standalone page) */
 html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}
 html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the screen at its own size and the host scales the frame (the test page) */
 </style>
@@ -7537,12 +7552,7 @@ if (SHELL) {
 // physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {
   if (EMBED) return;
-  const W = 522, H = 832, vw = document.documentElement.clientWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
-  const desktop = vw >= 900 && window.matchMedia && matchMedia('(pointer: fine)').matches;
-  let s = Math.min(1, (vw - 32) / W);
-  if (!desktop) s = Math.min(s, (vh - 40) / H);
-  s = Math.max(.3, s);
-  const k = Math.floor(s * dpr + 1e-6); if (k >= 1 && k / dpr >= s * .85) s = k / dpr;
+  const W = 522, H = 832, s = window.__mbDeviceScale ? window.__mbDeviceScale() : 1;   // the head's function (before the first paint): the one formula (the test harness runs the module without the head)
   fitEl.style.width = (W * s) + 'px'; fitEl.style.height = (H * s) + 'px';
   deviceEl.style.transform = `scale(${s})`;
 }
