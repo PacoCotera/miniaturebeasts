@@ -779,7 +779,25 @@ function smoothField(q, held, W, H, rad) {
 
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
+// rupar-banks-speed-2: a window made with no banks (the verdict's) is kept; the same cell's window with banks is that very window when no bank site lands in it (banks are the only thing BANKS_SKIP changes), so it is returned whole
 export function windowLevels(L, X, Y) {
+  if (L.rule.banks !== 0 && !BANKS_SKIP) {
+    // the window with no banks first (it hands the bank scan the raised field of its inner cells, and is the verdicts' window when it holds a part), then the banks that land in it: none, it is the answer
+    const w0 = noBankWindow(L, X, Y), WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, gx0 = (X - WR) * CW, gy0 = (Y - WR) * CH, foot = footRoom(L.rule.faceRows);
+    let any = false;
+    for (const b of banksIn(L, X, Y)) { const lx = b.x0 - gx0, ly = b.lip - gy0; if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) { any = true; break; } }
+    if (!any) return w0;
+  }
+  return windowLevelsMake(L, X, Y);
+}
+// the window of cell (X, Y) made with no banks, kept per cell
+function noBankWindow(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.nbw && B.nbw.get(key); if (hit) return hit;
+  const was = BANKS_SKIP; BANKS_SKIP = true; let w;
+  try { w = windowLevelsMake(L, X, Y); } finally { BANKS_SKIP = was; }
+  if (!B.nbw) B.nbw = new Map(); if (B.nbw.size > 12) B.nbw.clear(); B.nbw.set(key, w); return w;
+}
+function windowLevelsMake(L, X, Y) {
   const WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, q = new Int32Array(W * H), th = L.rule.levels, X0w = X - WR, Y0w = Y - WR;
   for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) {
     const c = qCell(L, X - WR + i, Y - WR + j);
@@ -816,6 +834,9 @@ export function windowLevels(L, X, Y) {
   for (let k = 0; k < th.length; k++) {
     const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = (sq ? sq.s[i] >= th[k] * sq.c && !held[i] : q[i] >= th[k]) && (!below || below[i]) ? 1 : 0;
     let r = base;
+    if (k === 0) { const B = bkOf(L);   // rupar-banks-speed-2: the raised field of the window's inner cells is the bank scan's own (rfCell): a tile in them reads no further than the window holds
+      for (let j = 1; j < 2 * WR; j++) for (let i = 1; i < 2 * WR; i++) { const cx = X0w + i, cy = Y0w + j, key = (cx + 8) * 1000 + (cy + 8); if (!inRealm(cx, cy) || B.rf.has(key)) continue;
+        if (B.rf.size > 3000) B.rf.clear(); const f = new Uint8Array(N); for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) { const x = i * CW + tx, y = j * CH + ty, p = y * W + x; f[ty * CW + tx] = base[p] && !noRaise[p] ? 1 : 0; } B.rf.set(key, f); } }
     if (k === 0) r = landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info);
     else r = cleanup(base, W, H, L.rule, null);
     if (below) for (let i = 0; i < W * H; i++) r[i] &= below[i];
@@ -912,7 +933,15 @@ function stairSeenBy(gx0, gy0, W, foot, WR) {
 export const BANK_PART = 200, BANK_FLOOD = 12000;
 let BANKS_SKIP = false;   // a window made with no banks (the verdict on a part asks what the plain rules leave of it)
 const BK_KEY = (gx, gy) => gy * 8192 + gx;
-function bkOf(L) { return L.bkd || (L.bkd = { rf: new Map(), lab: new Map(), parts: [], banks: new Map(), land: new Map(), why: {} }); }
+// rupar-banks-speed-2: the part labels of the tiles, a Map's get/set/clear/size over one array per cell (a flood reads and writes some tens of thousands of tiles; the cell last used is kept)
+class TileLab {
+  constructor() { this.cells = new Map(); this.size = 0; this.ck = -1; this.ca = null; }
+  arr(x, y, make) { const k = ((y / CH) | 0) * 1000 + ((x / CW) | 0); if (k === this.ck) return this.ca; let a = this.cells.get(k); if (!a) { if (!make) return null; a = new Int32Array(N); this.cells.set(k, a); } this.ck = k; this.ca = a; return a; }
+  get(k) { const x = k & 8191, y = k >> 13; if (y < 0) return undefined; const a = this.arr(x, y, false); if (!a) return undefined; const v = a[(y % CH) * CW + x % CW]; return v ? v - 1 : undefined; }
+  set(k, id) { const x = k & 8191, y = k >> 13, a = this.arr(x, y, true), i = (y % CH) * CW + x % CW; if (!a[i]) this.size++; a[i] = id + 1; }
+  clear() { this.cells.clear(); this.size = 0; this.ck = -1; this.ca = null; }
+}
+function bkOf(L) { return L.bkd || (L.bkd = { rf: new Map(), lab: new TileLab(), parts: [], banks: new Map(), land: new Map(), why: {} }); }
 const wetTile = (L, gx, gy) => { const X = Math.floor(gx / CW), Y = Math.floor(gy / CH); return L.rule.holdWater !== 0 && inlandOf(gx, gy) >= WET_REACH && wetCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW] === 1; };
 const heldTile = (L, gx, gy) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (wetTile(L, gx + dx, gy + dy)) return true; return inlandOf(gx, gy) < RAISE_OFF + 1; };
 // the field's raised tiles of one cell (1 raised): windowLevels' own first raster (the smoothed sum over the rounded element at or over the threshold, water held low), cell by cell
@@ -931,16 +960,21 @@ function rfCell(L, X, Y) {
   for (let i = 0; i < w * h; i++) if (held[i] && q[i] >= 0) q[i] = -1;
   const DY = [], HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; if (rad) while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); cnt += 2 * hw + 1; }
   const th = L.rule.levels[0] * cnt;
+  // rupar-banks-speed-2: the element's row sums from row prefix sums of q (whole numbers: the same sum, a few reads a tile)
+  const w1 = w + 1, P = new Int32Array(w1 * h); for (let y = 0; y < h; y++) { let a = 0; const o = y * w1; for (let x = 0; x < w; x++) { a += q[y * w + x]; P[o + x + 1] = a; } }
   for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
     const x = tx + R1, y = ty + R1, i = y * w + x; if (held[i] || inlandOf(X * CW + tx, Y * CH + ty) < RAISE_OFF + 1) continue;
-    let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w + x; for (let k = -HW[r]; k <= HW[r]; k++) s += q[o + k]; }
+    let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w1 + x; s += P[o + HW[r] + 1] - P[o - HW[r]]; }
     if (s >= th) out[ty * CW + tx] = 1;
   }
   return out;
 }
 function rfAt(L, gx, gy) {
   if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return 0;
-  const X = Math.floor(gx / CW), Y = Math.floor(gy / CH); return rfCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW];
+  // rupar-banks-speed-2: the cell last read is kept (a flood stays in one cell for runs of tiles)
+  const X = (gx / CW) | 0, Y = (gy / CH) | 0, B = L.bkd || bkOf(L), k = Y * 1000 + X;
+  let a = B.lastA; if (!a || B.lastK !== k) { a = B.lastA = rfCell(L, X, Y); B.lastK = k; }
+  return a[(gy - Y * CH) * CW + gx - X * CW];
 }
 // the raised part holding a tile of the field (4-connected), whole: tiles, box, size; `big` past BANK_FLOOD tiles (or meeting one); null where the field is low
 function partAt(L, gx, gy) {
@@ -1009,8 +1043,7 @@ function bankSiteAt(L, x0, ly, loose = false) {
 function landNB(L, X, Y) {
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.land.get(key); if (hit) return hit;
   const out = { r: new Uint8Array(N), sites: [] };
-  if (inRealm(X, Y)) { const was = BANKS_SKIP; BANKS_SKIP = true;
-    try { const w = windowLevels(L, X, Y), o = L.rule.window; for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) out.r[ty * CW + tx] = w.R[(o * CH + ty) * w.W + o * CW + tx] ? 1 : 0; out.sites = w.info.sites; } finally { BANKS_SKIP = was; } }
+  if (inRealm(X, Y)) { const w = noBankWindow(L, X, Y), o = L.rule.window; for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) out.r[ty * CW + tx] = w.R[(o * CH + ty) * w.W + o * CW + tx] ? 1 : 0; out.sites = w.info.sites; }
   if (B.land.size > 600) B.land.clear(); B.land.set(key, out); return out;
 }
 // the raised land (no banks) connected through a field part, the biggest piece of 230 raised tiles or more that no way-up site stands on: { n, x0, y0, x1, y1 } or null
@@ -1034,12 +1067,11 @@ function landComp(L, p) {
 // the closed parts of the window of cell (X, Y) made with no banks (info.pkr), kept per cell: a verdict asks the same window again for its neighbours
 function noBankPockets(L, X, Y) {
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.pkr && B.pkr.get(key); if (hit) return hit;
-  const was = BANKS_SKIP; BANKS_SKIP = true; let out;
-  try { out = windowLevels(L, X, Y).info.pkr || []; } finally { BANKS_SKIP = was; }
+  const out = noBankWindow(L, X, Y).info.pkr || [];
   if (!B.pkr) B.pkr = new Map(); if (B.pkr.size > 400) B.pkr.clear(); B.pkr.set(key, out); return out;
 }
 // the part's bank site { x0, lip } in world tiles, or null (the reason in L.bkd.why)
-export function partBank(L, p) {
+export function partBank(L, p, hx, hy) {
   const B = bkOf(L); if (p.bank !== undefined) return p.bank;
   const why = r => { B.why[r] = (B.why[r] || 0) + 1; p.why = r; p.bank = null; return null; };
   if (p.big) return why('big'); if (p.n < BANK_PART) return why('small');
@@ -1055,8 +1087,13 @@ export function partBank(L, p) {
   else { const was = BANKS_SKIP; BANKS_SKIP = true;
     // rupar-banks-speed-1: a closed part shows whole in every window that holds it, so the one window that holds the part's box with a cell's margin each side tells what the windows over its cells tell (a part
     // whose box has no such window is asked of every window over its cells, as before)
-    const WRc = L.rule.window, ccx = (cxa + cxb) >> 1, ccy = (cya + cyb) >> 1, M = CW;
-    const one = (ccx - WRc) * CW + M <= p.x0 && p.x1 <= (ccx + WRc + 1) * CW - 1 - M && (ccy - WRc) * CH + M <= p.y0 && p.y1 <= (ccy + WRc + 1) * CH - 1 - M;
+    // rupar-banks-speed-2: any window that holds the box so tells the same, so the window being made (hx, hy) is the one asked when it holds it (its banks-off result is then the window's own result: windowLevels)
+    const WRc = L.rule.window, M = CW, holds = (cx, cy) => (cx - WRc) * CW + M <= p.x0 && p.x1 <= (cx + WRc + 1) * CW - 1 - M && (cy - WRc) * CH + M <= p.y0 && p.y1 <= (cy + WRc + 1) * CH - 1 - M;
+    // else a window already made with no banks that holds it, else the one centred on the box
+    let ccx = (cxa + cxb) >> 1, ccy = (cya + cyb) >> 1, mine = hx !== undefined && holds(hx, hy);
+    if (!mine && B.nbw) for (const k of B.nbw.keys()) { const cx = Math.floor(k / 1000) - 8, cy = (k % 1000) - 8; if (holds(cx, cy)) { ccx = cx; ccy = cy; mine = true; break; } }
+    else if (mine) { ccx = hx; ccy = hy; }
+    const one = mine || holds(ccx, ccy);
     try { for (let cy = one ? ccy : cya; cy <= (one ? ccy : cyb); cy++) for (let cx = one ? ccx : cxa; cx <= (one ? ccx : cxb); cx++) for (const k of noBankPockets(L, cx, cy))
       if (k.raised && k.n >= FILL_UNDER && k.x0 <= p.x1 + 6 && k.x1 >= p.x0 - 6 && k.y0 <= p.y1 + 6 && k.y1 >= p.y0 - 6 && (!comp || k.n > comp.n || (k.n === comp.n && (k.y0 < comp.y0 || (k.y0 === comp.y0 && k.x0 < comp.x0))))) comp = k; }
     finally { BANKS_SKIP = was; } }
@@ -1089,7 +1126,7 @@ export function banksIn(L, X, Y) {
   const WR = L.rule.window, out = [], seen = new Set();
   for (let gy = Math.ceil((Y - WR) * CH / 4) * 4; gy < (Y + WR + 1) * CH; gy += 4) for (let gx = Math.ceil((X - WR) * CW / 4) * 4; gx < (X + WR + 1) * CW; gx += 4) {
     if (!rfAt(L, gx, gy)) continue; const p = partAt(L, gx, gy); if (!p || p.big || p.n < BANK_PART || seen.has(p.id)) continue; seen.add(p.id);
-    const b = partBank(L, p); if (b) out.push(b); }
+    const b = partBank(L, p, X, Y); if (b) out.push(b); }
   if (B.banks.size > 4000) B.banks.clear();
   B.banks.set(key, out); return out;
 }
