@@ -59,6 +59,21 @@ for (const seed of SEEDS) {
   });
 }
 
+test('bug #17: no stone find and no strike mark lies under a prop picture', { timeout: 600000 }, () => {
+  const seed = 13, R = realm7(seed), D = decorOf(seed), set = JSON.parse(readFileSync(new URL('../../../art/places/sets/ninja-test/set.json', import.meta.url), 'utf8')), bad = [];
+  let n = 0;
+  for (let Y = 20; Y < 50 && n < 150; Y++) for (let X = 20; X < 50 && n < 150; X++) {
+    const G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW); if (G.land[c] === L.WATER || G.island[c]) continue; n++;
+    const ir = cellIR(seed, X, Y), [x0, y0] = [ir.origin.x, ir.origin.y];
+    const pics = D.propsIn(x0 - 2, y0, x0 + ir.w + 1, y0 + ir.h + 2).map(p => { const s = set.props[p.kind]; return s ? [p.x * 48 + 24 - s.anchor[0], p.y * 48 + 47 - s.anchor[1], s.rect[2], s.rect[3]] : null; }).filter(Boolean);
+    const under = (lx, ly) => { const l = (x0 + lx) * 48 + 4, t = (y0 + ly) * 48 + 4; return pics.some(r => r[0] < l + 40 && l < r[0] + r[2] && r[1] < t + 40 && t < r[1] + r[3]); };
+    for (const f of ir.finds) if (f.kinds[0] === 'stone' && under(f.x, f.y)) bad.push(`${X},${Y} stone find ${f.x},${f.y}`);
+    for (const m of ir.strikes) if (under(m.x, m.y)) bad.push(`${X},${Y} strike mark ${m.x},${m.y}`);
+  }
+  assert.ok(n > 10);
+  assert.deepEqual(bad.slice(0, 10), []);
+});
+
 test('a cell with a landmark and its finds, spawns and openings bakes', { timeout: 300000 }, () => {
   const lms = landmarksOf(7, decorOf(7));
   for (const kind of ['hollow-tree', 'split-stone', 'reedpool', 'windstep']) {
