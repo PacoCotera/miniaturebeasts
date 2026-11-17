@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Admin</title>
+<link rel="stylesheet" href="team/team.css">
+<link rel="stylesheet" href="index/index.css">
+</head>
+<body class="admin">
+<div id="app">
+  <div class="head">
+    <div>
+      <div class="brand">Miniature Beasts</div>
+      <h1>Admin</h1>
+      <p class="lede">Everything you use to run the project.</p>
+    </div>
+    <div class="quick" id="quick-top"></div>
+  </div>
+
+  <div class="main">
+    <h2>Run the team</h2>
+    <div class="cards">
+      <a class="card hero" href="/admin/team">
+        <div class="name">Team and coordination</div>
+        <div class="what">The desks at work, the message board's traffic, and the rule checks.</div>
+        <div class="stats" id="team-stats"></div>
+      </a>
+      <a class="card" href="/admin/workbench/">
+        <div class="name">Workbench</div>
+        <div class="what">Shape and lock mibi species, and see whether their bodies read.</div>
+      </a>
+    </div>
+
+    <h2>Documents</h2>
+    <div class="cards">
+      <a class="card out" href="https://claude.ai/artifact/Xo4T5FbsAYbLeriRub8742" target="_blank" rel="noopener">
+        <div class="name">Project dashboard<span class="where">claude.ai</span></div>
+        <div class="what">Next release, workstreams, past releases, accounts and spending.</div>
+      </a>
+      <a class="card out" href="https://claude.ai/artifact/EA7S7Rhs2cCx16NAMvyG8U" target="_blank" rel="noopener">
+        <div class="name">Book proof<span class="where">claude.ai</span></div>
+        <div class="what">The latest proof of the book, with your comments.</div>
+      </a>
+    </div>
+  </div>
+
+  <h2 class="q-sec">Quick links</h2>
+  <div class="quick" id="quick-bottom">
+    <a class="qlink" href="/play/">
+      <div class="name">The game</div>
+      <div class="what" id="game-live"></div>
+    </a>
+    <a class="qlink" href="/">
+      <div class="name">Public site</div>
+      <div class="what">What visitors see</div>
+    </a>
+  </div>
+</div>
+<script type="module" src="index/index.js"></script>
+</body>
+</html>

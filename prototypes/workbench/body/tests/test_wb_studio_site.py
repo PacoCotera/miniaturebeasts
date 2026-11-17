@@ -59,6 +59,19 @@ class T(unittest.TestCase):
             status, h, body = call(self.none_url + path)
             self.assertEqual((status, body, h["Cache-Control"]), (200, index, "no-cache"), path)
 
+    def test_the_admin_index_page_and_its_files_are_served_like_the_team_page(self):
+        for pre in ("", "/studio"):
+            status, h, body = call(self.none_url + pre + "/index")
+            self.assertEqual((status, h["Content-Type"], h["Cache-Control"]), (200, "text/html; charset=utf-8", "no-cache"), pre)
+            self.assertIn(b"<h1>Admin</h1>", body)
+            self.assertNotIn(b"<script>", body)
+            self.assertIn("script-src 'self'", h["Content-Security-Policy"])
+            for name, ctype in (("index.js", "text/javascript"), ("index.css", "text/css")):
+                status, h, _ = call(self.none_url + pre + "/index/" + name)
+                self.assertEqual((status, h["Content-Type"]), (200, ctype), name)
+        self.assertEqual(call(self.none_url + "/index/nothing.js")[0], 404)
+        self.assertEqual(call(self.none_url + "/index/../server.py")[0], 404)
+
     def test_an_unknown_prefixed_api_cas_events_or_assets_path_is_a_404_never_the_page(self):
         for path in ("/studio/api/nothing", "/studio/api/species/S20/nothing", f"/studio/cas/{'0' * 64}.png", "/studio/cas/zz", "/studio/events/x", "/studio/assets/nothing-1234.js", "/studio/assets/", "/api/nothing"):
             status, h, body = call(self.none_url + path)

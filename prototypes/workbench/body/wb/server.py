@@ -33,6 +33,7 @@ TEAM_STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static",
 TEAM_COLLECTORS = [os.environ.get("MB_TEAM_STATE", ""),                    # where tools/team/state.py lives: the internal repo's main checkout (or its build tree until the merge)
                    os.path.expanduser("~/mb/miniaturebeasts-internal/tools/team/state.py"),
                    os.path.expanduser("~/mb/wt-team-live-1-internal/tools/team/state.py")]
+INDEX_STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "index")
 _TEAM = dict(at=0.0, data=None)
 _TEAM_LOCK = threading.Lock()
 
@@ -1982,14 +1983,21 @@ def make_handler(srv):
                 return self.end_headers()
             if p == "/team" or p.startswith("/team/"):
                 return self.team_file(p)
+            if p == "/index/":                                          # the admin index's own links are relative to /index (and /admin/ behind the site), so the slash form goes there
+                self.send_response(301)
+                self.send_header("Location", "../index")
+                self.send_header("Content-Length", "0")
+                return self.end_headers()
+            if p == "/index" or p.startswith("/index/"):                # the /admin index page (static/index), served like the team page
+                return self.team_file(p, "/index", INDEX_STATIC)
             if srv.static and not p.startswith(("/api", "/cas", "/events")):
                 return self.static(p)
             raise ApiError(404, "no such route", None)
 
-        def team_file(self, p):
-            """/team is the page, /team/<file> its own script and style (static/team). Same content policy as the app: no inline script, nothing from another site."""
-            name = os.path.normpath(p[len("/team"):].lstrip("/") or "index.html")
-            full = os.path.join(TEAM_STATIC, name)
+        def team_file(self, p, base="/team", root=TEAM_STATIC):
+            """/team is the page, /team/<file> its own script and style (static/team); the admin index is served the same way from /index (static/index). Same content policy as the app: no inline script, nothing from another site."""
+            name = os.path.normpath(p[len(base):].lstrip("/") or "index.html")
+            full = os.path.join(root, name)
             if name.startswith("..") or not os.path.isfile(full):
                 raise ApiError(404, "not found", None)
             with open(full, "rb") as fh:
