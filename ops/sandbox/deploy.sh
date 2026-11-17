@@ -38,8 +38,15 @@ if [ -n "$pin" ]; then
   tag="$pin"
   [ -d "$ROOT/releases/$tag" ] || rel=$(curl -fsSL -H 'Accept: application/vnd.github+json' "$API/tags/$tag") || { say "pinned release $tag not found"; exit 1; }
 else
-  rel=$(curl -fsSL -H 'Accept: application/vnd.github+json' "$API?per_page=20" \
-    | jq -r '[.[] | select(.tag_name|startswith("sandbox-")) | select(.draft==false)] | sort_by(.created_at) | last')
+  # every page of the list: GitHub orders releases by tag name, not date, so the newest can sit on any page (11-17: with 52 releases
+  # the newest fell outside the first 20 and the site stayed 40 min behind). 100 a page; a page under 100 is the last; at most 10.
+  all='[]'
+  for page in 1 2 3 4 5 6 7 8 9 10; do
+    batch=$(curl -fsSL -H 'Accept: application/vnd.github+json' "$API?per_page=100&page=$page") || { say "the release list could not be read; nothing deployed"; exit 1; }
+    all=$(jq -s 'add' <<<"$all $batch")
+    [ "$(jq length <<<"$batch")" -ge 100 ] || break
+  done
+  rel=$(jq -r '[.[] | select(.tag_name|startswith("sandbox-")) | select(.draft==false)] | sort_by(.created_at) | last' <<<"$all")
   [ "$rel" != "null" ] || { echo "no sandbox release yet"; exit 0; }
   tag=$(jq -r .tag_name <<<"$rel")
   [[ "$tag" =~ ^sandbox-[0-9a-f]{7,40}$ ]] || { say "the newest release's tag is not sandbox-<sha>; nothing deployed"; exit 1; }
