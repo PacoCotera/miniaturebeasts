@@ -53,9 +53,9 @@ test("B1: a world that knows a Tuikis draws two tabs; Deep ground appears once a
   const along = opening(14, { carried: [THREE[1]] }); assert.ok(said(along).includes("Moss digs"), "a grown Tuikis along: the line names it");
 });
 
-test("B1: Pip, Moss and Dot carried: the 3x Loika stands at (8, 458) and two 1x tokens at the top right, on their rings", () => {
+test("B1: Pip, Moss and Dot carried: the 3x Loika stands at (8, 453) and two 1x tokens at the top right, on their rings", () => {
   const p = returning(); draw(p);
-  const pip = p.run("creatureArt(0, 'idle', 0, 3, false)"), r = stands(p, pip, 8, 458); assert.ok(r.n > 500 && r.bad === 0, "the 3x Loika at (8, 458): " + JSON.stringify(r));
+  const pip = p.run("creatureArt(0, 'idle', 0, 3, false)"), r = stands(p, pip, 8, 453); assert.ok(r.n > 500 && r.bad === 0, "the 3x Loika at (8, 453): " + JSON.stringify(r));
   const moss = p.run("creatureArt(1, 'idle', 0, 1, false)"), dot = p.run("creatureArt(2, 'idle', 1, 1, true)");
   const a = stands(p, moss, 398, 452), b = stands(p, dot, 354, 452); assert.ok(a.n > 50 && a.bad === 0, "Moss at 1x top right " + JSON.stringify(a)); assert.ok(b.n > 50, "Dot's token is there");
   const t = said(p); assert.ok(t.includes("Pip") && t.includes("adult") && t.includes("leads"), "name, stage, leads: " + t);
@@ -71,6 +71,19 @@ test("B1: the rider, no one with you, and the first-time place", () => {
   const nobody = opening(14, { carried: [] }); nobody.run("S.mibis = [" + JSON.stringify(THREE[0]) + "]; S.carried = [];");
   assert.ok(said(nobody).includes("No one with you"), "mibis, none with you");
 });
+
+// bug #33: the grey silhouettes (none with you) and the 3x portrait stand whole inside the partner card (rows 451..552), their feet 4 px above its bottom edge
+test("bug #33: the silhouettes and the lead portrait end inside the partner card, with its padding", () => {
+  const rows = (p, x0, x1, y0, y1, v) => { const px = p.run("scr").px(), W = p.run("SCR_W"); let n = 0; for (let y = y0; y <= y1; y++) for (let x = x0; x < x1; x++) if (px[y * W + x] === v) n++; return n; };
+  const nobody = opening(14, { carried: [] }); nobody.run("S.turn = 5; S.mibis = " + JSON.stringify(THREE) + "; S.carried = [];"); draw(nobody);
+  const slate = nobody.run("C.slate");
+  assert.ok(rows(nobody, 10, 140, 452, 545, slate) > 800, "three silhouettes are drawn in the card");
+  assert.equal(rows(nobody, 14, 140, 549, 551, slate), 0, "none reaches the padding band above the card's bottom edge");
+  const lead = returning(); draw(lead); const pip = lead.run("creatureArt(0, 'idle', 0, 3, false)");
+  let low = 0; for (let j = 0; j < 96; j++) for (let i = 0; i < 96; i++) if (pip.p[j * 96 + i] >= 0) low = Math.max(low, j);
+  assert.equal(453 + low, 548, "the 3x portrait's feet stand on row 548: 4 px above the card's bottom edge");
+});
+
 
 // ---- B4: what changed, on the land ----
 test("B4: realmTurn hands back the charged cells; the bone pip is drawn on a charged cell while the line shows and is gone after set-out", () => {
@@ -116,8 +129,8 @@ test("B3: Right then Set out with Moss along and Pip leading: Deep ground, Moss 
 });
 
 test("B3: the partner strip shows the digger in front while Deep ground is focused", () => {
-  const p = returning(); draw(p); const pip = p.run("creatureArt(0, 'idle', 0, 3, false)"); assert.equal(stands(p, pip, 8, 458).bad, 0, "Pip in front on Weather");
-  p.key("right"); draw(p); const moss = p.run("creatureArt(1, 'idle', 0, 3, false)"); const r = stands(p, moss, 8, 458); assert.ok(r.n > 500 && r.bad === 0, "Moss in front on Deep ground: " + JSON.stringify(r));
+  const p = returning(); draw(p); const pip = p.run("creatureArt(0, 'idle', 0, 3, false)"); assert.equal(stands(p, pip, 8, 453).bad, 0, "Pip in front on Weather");
+  p.key("right"); draw(p); const moss = p.run("creatureArt(1, 'idle', 0, 3, false)"); const r = stands(p, moss, 8, 453); assert.ok(r.n > 500 && r.bad === 0, "Moss in front on Deep ground: " + JSON.stringify(r));
   assert.ok(said(p).includes("Moss"), "named");
 });
 

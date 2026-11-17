@@ -6422,7 +6422,8 @@ const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') 
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
-const OPEN_FRAME_BASE = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110;
+// The partner card (card(8, OPEN_PY + 1, 434, OPEN_PH - 8)) ends at OPEN_PY + OPEN_PH - 7; a mibi picture h tall in it (portrait or silhouette, its art ends on its last row) has its top at openCardTop(h): its feet stand 4 px above that edge, never past it (bug #33). One line: the tests lift it whole.
+const OPEN_FRAME_BASE = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110, openCardTop = h => OPEN_PY + OPEN_PH - 7 - 4 - h;
 // With no mibi at all there is no partner row, and the land takes its room (434 x 430); from the first mibi on the row is back.
 const openAlone = () => !liveMibis().length && !carriedMibis().length;
 const openRect = () => openAlone() ? { ...OPEN_FRAME_BASE, h: 430 } : OPEN_FRAME_BASE;
@@ -6529,13 +6530,13 @@ function drawSetup(t) {
   card(8, PY + 1, 434, PH - 8, selP, true);
   if (cm.length) { const front = sel === 1 ? dig : null, lead = front || pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring; Deep ground focused: the digger steps to the front
     const ca = callAnim(lead), hop = ca && motion() ? Math.round(Math.abs(Math.sin(ca.a / 150)) * 12 * Math.max(0, 1 - ca.a / 900)) : 0;   // Call: it hops and plays its alert frame
-    openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102 - hop, juv);
+    openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, openCardTop(96) - hop, juv);
     text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, hi, 3);
     let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm || front) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
     text(clipText(pm || front ? abCardOf(lead.sp) : CARE_TEXT.riderTime, 320, 2), 116, PY + 70, lo);
     others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else {   // mibis, none with you: their silhouettes
-    liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
+    liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, openCardTop(64) - (i % 2) * 6));
     text(CARE_TEXT.noOneWithT, 116, PY + 10, hi, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, lo); }
 }
 // The partner row: "Partner: Pip · calms wary creatures", or why there is none.

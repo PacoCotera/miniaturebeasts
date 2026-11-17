@@ -766,7 +766,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Pla
   for (let i = 0; i < 4; i++) { p.run(`S.ui.aId = null; S.ui.aIdx = ${i};`); d = render("active");
     assert.ok(d.includes("c-sprite-other-32@97,52x8"), "the stage: the 256×256 plate at (97, 52), page " + i + ": " + d); }
   render("menu");
-  d = render("setup"); assert.ok(d.includes("c-sprite-other-32@8,458x3"), "the partner at 3× at (8, 458): " + d);
+  d = render("setup"); assert.ok(d.includes("c-sprite-other-32@8,453x3"), "the partner at 3× at (8, 453): " + d);
   assert.doesNotThrow(() => p.run("playRefused()"));   // docked: the refusal line, never a throw
   assert.equal(p.run("mibiSpName(mibiById(1))"), "Tepor"); assert.equal(p.run("mibiSpName(mibiById(3))"), "Igara");
   // lift, Walk with Dot alone, then an expedition
@@ -957,7 +957,7 @@ test("X26 §5.3: the HUD draws the rider's mini in a slate window at the partner
 test("X26 §5.4: the partner strip with only Dot: its picture at 3× without a ring, its name, the juvenile chip and one 2× line, no 'No partner'; two juveniles show the first carried", () => {
   const T = X1.page().run("CARE_TEXT");
   let p = X26.world([dot()], [1]); let d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[2] === "idle" && c[4] === 8 && c[5] === 458 && c[6] === 3 && c[7] === true), "Dot's juvenile picture at 3× at (8, 458)");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[2] === "idle" && c[4] === 8 && c[5] === 453 && c[6] === 3 && c[7] === true), "Dot's juvenile picture at 3× at (8, 453)");
   assert.ok(!d.some(c => c[0] === "art" && (c[1] === "opring84" || c[1] === "dcirc64")), "no ring and no dashed circle");
   assert.ok(d.some(c => c[0] === "text" && c[1] === "Dot" && c[2] === 116 && c[3] === 452 && c[5] === 3), "its name at (116, 452), 3×");
   assert.ok(d.some(c => c[0] === "text" && c[1] === "young" && c[2] === 124 && c[3] === 491), "the young chip at (116, 488)");
@@ -1064,7 +1064,7 @@ test("X26 placeholder plates: no label unless the observer panel is open; a mibi
   p.run("var __obs = { hidden: true }; (() => { const d = document; globalThis.document = new Proxy({}, { get: (t, k) => k === 'getElementById' ? (id => id === 'obs' ? __obs : d.getElementById(id)) : d[k] }); })();");
   const labels = ["face", "f", "token", "t", "heart", "h", "mibi", "m"], lettered = d => d.filter(c => c[0] === "text" && c[5] === 1 && labels.includes(c[1]));
   let d = p.draw("setup");
-  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 8 && c[5] === 458 && c[6] === 3), "Dot's picture at 3× on the strip");
+  assert.ok(d.some(c => c[0] === "open" && c[1] === 1 && c[4] === 8 && c[5] === 453 && c[6] === 3), "Dot's picture at 3× on the strip");
   assert.ok(d.some(c => c[0] === "open" && c[1] === -1 && c[4] === 398 && c[6] === 1), "Bean (no art): its plate stands at 1× at the top right (openCreature draws it)");
   assert.deepEqual(lettered(d), [], "the observer closed: no label");
   d = p.draw("mibis"); assert.ok(d.some(c => c[0] === "sprite" && c[1] === 1 && c[2] === "idle" && c[4] === 36 && c[6] === 1), "the token plate carries the 32 px sprite at (x + 8, y + 8)");
@@ -1236,7 +1236,7 @@ function p0() { return X1.page(); }
 test("juvenile pictures at the sites: setup card and faces, header mini, roster, stage, look-out and the Walk's side tokens ask for the juvenile exactly when the mibi is one", () => {
   // setup: Dot (Tuikis, juvenile) alone rides: its card at 2×, no ring; its face plate; with Pip (Loika, grown) the partner card is Pip's, an adult picture
   let p = X26.world([dot()], [1]); let d = p.draw("setup");
-  assert.deepEqual(d.find(c => c[0] === "open" && c[6] === 3).slice(1, 8), [1, "idle", 0, 8, 458, 3, true], "the rider: Dot's idle at 3×, a juvenile");
+  assert.deepEqual(d.find(c => c[0] === "open" && c[6] === 3).slice(1, 8), [1, "idle", 0, 8, 453, 3, true], "the rider: Dot's idle at 3×, a juvenile");
   p = X26.world([pip(), dot()], [1, 2]); d = p.draw("setup");
   assert.equal(d.find(c => c[0] === "open" && c[6] === 3)[7], false, "the strip shows Pip, an adult");
   assert.deepEqual(d.filter(c => c[0] === "open" && c[6] === 1).map(c => [c[1], c[7]]), [[1, true]], "the others at 1×: Dot a juvenile");
