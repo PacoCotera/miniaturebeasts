@@ -13,7 +13,7 @@ import * as C from "./companions.mjs";
 import { resetPlan, keepPre10 } from "../../play/src/realm/reset.mjs";
 import { playtestOn, withPlaytest } from "../../play/src/playtest.mjs";
 
-export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
+export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false, saveFailed: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, carry: null, flight: null, teach: null, answer: false, answerAt: 0, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null, prevRoom: null }, viv: { f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0 }, bench: { f: null, install: false }, settings: { f: null },
@@ -105,8 +105,8 @@ export function save() {
     if (cur && cur.wid === G.st.wid) G.sv = cur;
     else if (cur && cur.wid !== G.st.wid) { G.sv = cur; G.st = S.freshSt(cur.wid, cur.turn || 0); }
     G.sv.st = G.st; S.normalize(G.st); S.trimCarryReqs(G.st, G.sv); G.st.at = Date.now();
-    localStorage.setItem(saveKey(), JSON.stringify(G.sv));
-  } catch { /* storage unavailable: keep playing in memory */ }
+    localStorage.setItem(saveKey(), JSON.stringify(G.sv)); G.saveFailed = false;
+  } catch { G.saveFailed = true; /* storage full, blocked or private: keep playing in memory; the page says so until a save works again (views/words.mjs NOTICE_WORDS.saveFailed) */ }
   changed();
 }
 // The other page wrote the save: take its part, keep ours. A new world or a reset starts a fresh Station.

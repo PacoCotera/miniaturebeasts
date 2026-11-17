@@ -28,6 +28,23 @@ export async function caddyAnswers(base = "/caddy-api/v1") {
   try { return (await fetch(base + "/status", { cache: "no-store" })).ok; } catch { return false; }
 }
 
+// The notice line (lock-playtest-world, owner 2026-11-10 20:18): the one line a page shows when the game cannot save ("saveFailed", until a save works again), when a save names a land this build does not
+// make ("landChanged") and when the page breaks ("pageBroke", with the build number from build.json). The words are the page's own [copy] slots (`words`: { saveFailed, landChanged, pageBroke }, empty
+// until the copywriter writes them; pageBroke is given the build number and may use it); an empty pageBroke slot still shows the bare build number, so a broken page is never blank. Pure text.
+export const NOTICE_KINDS = ["pageBroke", "saveFailed", "landChanged"];   // the one shown when several hold: the page break first
+export function noticeText(words, kind, build = null) {
+  const short = (build && (build.short || String(build.commit || "").slice(0, 7))) || "local", w = words && words[kind];
+  const t = typeof w === "function" ? w(short) : String(w ?? "").replaceAll("{build}", short);   // a slot is a function of the build, or a string with {build} (the Station's frame.json)
+  return t || (kind === "pageBroke" ? short : "");
+}
+// Draws the notice into `el` (hidden while none holds); returns { set(kind, on) }. `el.dataset.slot` names the slot shown. Not gated by the embed class: a frame of the play page shows its own line.
+export function mountNotice(el, words, { buildUrl }) {
+  const on = new Set(); let build = null;
+  const draw = () => { const kind = NOTICE_KINDS.find((k) => on.has(k)); el.hidden = !kind; el.dataset.slot = kind || ""; el.textContent = kind ? noticeText(words, kind, build) : ""; };
+  if (buildUrl) loadBuild(buildUrl).then((b) => { build = b; draw(); });
+  return { set(kind, yes = true) { if (yes) on.add(kind); else on.delete(kind); draw(); }, has: (kind) => on.has(kind) };
+}
+
 // Fills `el` with the footer and keeps it current: `schema` is the number or a function giving it; `caddy` (optional) is a function giving true, false or null, asked at once and every `everyMs`.
 export function mountFooter(el, { buildUrl, schema = null, caddy = null, everyMs = 30000 }) {
   if (document.documentElement.classList.contains("embed")) return;   // the play page's frames hide the page chrome: no fetch, no probe
