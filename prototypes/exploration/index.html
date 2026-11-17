@@ -6557,7 +6557,8 @@ function drawSetup(t) {
     text(clipText(pm || front ? abCardOf(lead.sp) : CARE_TEXT.riderTime, 320, 2), 116, PY + 70, lo);
     others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else {   // mibis, none with you: their silhouettes
-    liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, openCardTop(64) - (i % 2) * 6));
+    const sil = liveMibis().slice(0, 3), step = sil.length > 1 ? Math.min(30, Math.floor((104 - 64) / (sil.length - 1))) : 0;   // 64 px each, all of them left of the words at x 116 (three step 20 px, two 30)
+    sil.forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * step, openCardTop(64) - (i % 2) * 6));
     text(CARE_TEXT.noOneWithT, 116, PY + 10, hi, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, lo); }
 }
 // The partner row: "Partner: Pip · calms wary creatures", or why there is none.

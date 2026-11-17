@@ -79,6 +79,7 @@ test("bug #33: the silhouettes and the lead portrait end inside the partner card
   const slate = nobody.run("C.slate");
   assert.ok(rows(nobody, 10, 140, 452, 545, slate) > 800, "three silhouettes are drawn in the card");
   assert.equal(rows(nobody, 14, 140, 549, 551, slate), 0, "none reaches the padding band above the card's bottom edge");
+  assert.equal(rows(nobody, 114, 300, 452, 548, slate), 0, "none runs under the words that start at x 116");
   const lead = returning(); draw(lead); const pip = lead.run("creatureArt(0, 'idle', 0, 3, false)");
   let low = 0; for (let j = 0; j < 96; j++) for (let i = 0; i < 96; i++) if (pip.p[j * 96 + i] >= 0) low = Math.max(low, j);
   assert.equal(453 + low, 548, "the 3x portrait's feet stand on row 548: 4 px above the card's bottom edge");
