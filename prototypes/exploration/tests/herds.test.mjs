@@ -21,3 +21,10 @@ test("a cell with two spawn areas of two species: each creature lands inside the
     }
   }
 });
+
+test("bug #16: a herd starts spread: no two creatures of a cell stand next to each other", () => {
+  const p = makePage({ gen: 7, console: "silent" }); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);");
+  const r = plain(p.run("(() => { const bad = []; let herds = 0; for (let c = 0; c < MW * MH && herds < 6; c++) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const cr = ensureLive(String(c)).cr; if (cr.length < 3) continue; herds++; for (let i = 0; i < cr.length; i++) for (let j = 0; j < i; j++) if (Math.max(Math.abs(cr[i].x - cr[j].x), Math.abs(cr[i].y - cr[j].y)) < 2) bad.push(c + ': ' + cr[i].id + ' and ' + cr[j].id); } return { herds, bad }; })()"));
+  assert.ok(r.herds >= 3, "herds of three or more: " + r.herds);
+  assert.deepEqual(r.bad, []);
+});

@@ -17,6 +17,7 @@ import { realm7, route, NC } from './region.mjs';
 import { CW, CH } from './world.mjs';
 import { landmarksOf, LM_PROP, LM_SLOT } from './landmarks.mjs';
 import { planOf, contentOf } from './places.mjs';
+import SPRITES from '../../../../art/places/sets/ninja-test/set.json' with { type: 'json' };   // the props' sizes and feet: a stone or strike mark never lies under a prop's picture (bug #17)
 import { cliffInfo } from '../../../places/src/bake/openedges.mjs';
 
 const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
@@ -107,6 +108,11 @@ function holdOn(a, pick) {
     const q = { x: p.tx - x0, y: p.ty - y0 };
     if (p.fam === 'trees') trees.push(q); else if (p.fam === 'rocks') rocks.push(q); else if (p.fam === 'bushes') bushes.push(q); else if (p.fam === 'landmark') hollowT.push(q);
   }
+  // the tiles a prop's picture covers (a crown reaches over the tiles beside its trunk): a stone or a strike mark placed there would be drawn under it (bug #17). A tile is covered when a prop's
+  // sprite rectangle meets the tile's own rectangle, 4 px in from its edge.
+  const pics = [];
+  for (const p of props) { const s = SPRITES.props[p.kind]; if (s) pics.push([p.tx * 48 + 24 - s.anchor[0], p.ty * 48 + 47 - s.anchor[1], s.rect[2], s.rect[3]]); }
+  const covered = (lx, ly) => { const l = (x0 + lx) * 48 + 4, t = (y0 + ly) * 48 + 4; return pics.some(r => r[0] < l + 40 && l < r[0] + r[2] && r[1] < t + 40 && t < r[1] + r[3]); };
   // what the place's set pieces stand on (places.mjs): their walls are rocks, and they and the slab and the Split Stone take their tiles
   const content = contentOf(planOf(seed, X, Y), seed);
   for (const p of content.setProps) {
@@ -163,8 +169,9 @@ function holdOn(a, pick) {
     out.spawns.push({ x: rx, y: ry, w: rw, h: rh, species: [(KIND_INFO[k.sp].name || '').toLowerCase()], count: n });
     if (big) herds.push({ sp: k.sp, x: t0.x, y: t0.y, n });
   }
+  pools.stone = pools.stone.filter(p => !covered(p.x, p.y));
   // ---- finds ----
-  const count = findCount(seed, X, Y, land, G.biome, tiles.length, Object.values(pools).reduce((s, p) => s + p.length, 0), H);
+  const count =findCount(seed, X, Y, land, G.biome, tiles.length, Object.values(pools).reduce((s, p) => s + p.length, 0), H);
   const chosen = [];
   const apart = (lx, ly, d) => chosen.every(f => Math.max(Math.abs(f.x - lx), Math.abs(f.y - ly)) >= d) && (!lmTile || Math.max(Math.abs(lmTile[0] - lx), Math.abs(lmTile[1] - ly)) >= 2);
   const take = (kind, tag, near) => {
@@ -238,7 +245,8 @@ function holdOn(a, pick) {
   let nm = Math.floor(exp) + (U('strikes') < exp - Math.floor(exp) ? 1 : 0);
   const host = a.bareOf ? hostsStrike(seed, X, Y, a.bareOf) : null;
   if (host && nm < 1) nm = 1;
-  const markPool = bare.length ? bare.map(([x, y, t]) => ({ x, y, t, wt: 1 })) : tiles.map(([x, y]) => ({ x, y, t: tt(x, y), wt: 1 }));
+  const markAll = bare.length ? bare.map(([x, y, t]) => ({ x, y, t, wt: 1 })) : tiles.map(([x, y]) => ({ x, y, t: tt(x, y), wt: 1 })), markClear = markAll.filter(p => !covered(p.x, p.y));
+  const markPool = markClear.length ? markClear : markAll;   // a cell with no tile clear of a prop keeps its mark on the old pool (counted, never dropped)
   for (let i = 0; i < Math.min(nm, 2); i++) {
     const t = roulette(markPool.filter(p => out.strikes.every(s => Math.abs(s.x - p.x) + Math.abs(s.y - p.y) >= 4) && out.finds.every(f => f.x !== p.x || f.y !== p.y) && (!lmTile || p.x !== lmTile[0] || p.y !== lmTile[1])), U('strike', i));
     if (t) out.strikes.push({ x: t.x, y: t.y, age: H('age', i) % STRIKE_START_AGE, glass: (t.t === TV.SAND || t.t === TV.SCREE) && H('glass', i) % 100 < STRIKE_GLASS_PCT, read: false });
