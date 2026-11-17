@@ -15,7 +15,7 @@ import { bodyColour, farGeometry, miniGeometry, farPicture, miniPicture } from "
 import { lineageInput } from "../src/views/library-props.mjs";
 import { buildLineage } from "./fixtures/lineage.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")), L3 = spec.l3, GAP = L3.block.gap, BELOW = nameBelow(L3.close, JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours.map(([n, h]) => [n, [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))]));

@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as L from "../src/library-sheet.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), frames = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), frames = path.resolve(here, "../../species/frames");
 const frameOf = (id) => JSON.parse(readFileSync(path.join(frames, `species-${id}.json`), "utf8"));
 const F = Object.fromEntries(["S01", "S02", "S04", "S09", "S11", "S16"].map((id) => [id, frameOf(id)]));
 const mid = JSON.parse(readFileSync(path.join(here, "../tests/fixtures/specimen/states/mid.json"), "utf8"));

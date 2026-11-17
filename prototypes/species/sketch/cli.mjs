@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Writes a sketch set to prototypes/workbench/out/sketch/<species>/<id>/ as PNGs and a manifest.
+// Writes a sketch set to prototypes/species/out/sketch/<species>/<id>/ as PNGs and a manifest.
 //
 //   node sketch/cli.mjs --species S03                 # the type specimen
 //   node sketch/cli.mjs --species S03 --seed 7        # a random individual

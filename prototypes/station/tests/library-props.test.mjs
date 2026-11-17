@@ -8,13 +8,13 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameIds, frameOf } from "../src/genome.mjs";
-import { currentLooks } from "../../workbench/framework/describe.mjs";
+import { currentLooks } from "../../species/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import * as Lib from "../src/library.mjs";
 import { libraryBuild as libraryBuildUnchecked, subjectOf } from "../src/views/library-props.mjs";
 const libraryBuild = lineCased(libraryBuildUnchecked, "library");   // every body it builds goes through assertLineCase (report mode)
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 const FRAMES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 setFrames(FRAMES);
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("library.json"), frameSpec = J("frame.json"), schema = J("library.props.json"), L = spec.l1;

@@ -1,7 +1,7 @@
 // The frame registry: species frames pinned to the catalogue, append-only,
 // shipped with every reader (the stamp never carries the catalogue, only the
 // species number and frame version that pin it). Real frames come from the
-// workbench registry, prototypes/workbench/frames (snapshot in frames-data.mjs by
+// species registry, prototypes/species/frames (snapshot in frames-data.mjs by
 // tools/extract-frames.mjs: S01 Loika = species 1 … S16 = 16, frame version 3, on
 // catalogue mb-genome-framework@9), beside the same sixteen at frame version 2 (the species
 // glyphs before the abstract marks) and the three legacy frames of version 1 (species 11–13 on

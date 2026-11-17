@@ -1,8 +1,8 @@
 {
-  "name": "mb-workbench",
+  "name": "mb-species",
   "version": "0.1.0",
   "private": true,
-  "description": "Miniature Beasts stage-0 workbench: genome framework, structural sketch and the authoring page",
+  "description": "Miniature Beasts stage-0 species: genome framework, the species frames and the structural sketch",
   "type": "module",
   "license": "AGPL-3.0-only",
   "engines": { "node": ">=22" },

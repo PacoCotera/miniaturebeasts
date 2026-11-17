@@ -9,7 +9,7 @@ import { setFrames, frameOf, frameIds } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const framesDir = path.resolve(here, "../../workbench/frames");
+const framesDir = path.resolve(here, "../../species/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const byName = (n) => frameIds().map(frameOf).find((f) => f.species.name === n);
 const pod = (fr, read = [], idd = 1) => ({ id: "p", species: fr.species.id, idd, read: [...read] });

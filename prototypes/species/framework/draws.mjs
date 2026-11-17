@@ -1,4 +1,4 @@
-// The workbench's way to the one random module (core/base/random.mjs).
+// The species's way to the one random module (core/base/random.mjs).
 // rng(seed): the species draws' stream. It is callable and gives the draw as a share of one (what the blends and the shares of a pool still read),
 // and carries the whole-number stream as `.s`, the one the picks, the cross's coin and its hidden-copy chance ask.
 // streamOf(r): the whole-number stream of a draw function; a plain function (Math.random, a test's own) is wrapped so it answers the same questions.

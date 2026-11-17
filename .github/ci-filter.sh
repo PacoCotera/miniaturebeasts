@@ -19,7 +19,7 @@ while IFS= read -r path; do
     website/*) ;;
     .github/workflows/site.yml|.github/ci-filter.sh) tests=true station=true testpage=true ;;
     .github/*) tests=true ;;
-    prototypes/station/*|prototypes/face/*|prototypes/ui/*|prototypes/genome-stamp/*|prototypes/caddy/*|prototypes/workbench/*)
+    prototypes/station/*|prototypes/face/*|prototypes/ui/*|prototypes/genome-stamp/*|prototypes/caddy/*|prototypes/species/*)
       tests=true station=true
       case $path in prototypes/station/*) testpage=true ;; esac ;;
     prototypes/test/*|prototypes/exploration/*|prototypes/play/src/*) tests=true testpage=true ;;

@@ -2,7 +2,7 @@
 // holds, what it still lacks ("more?"), whether a species is unmet, met or found, the face a portrayed mibi gives it, and the wish a player
 // pins. Everything is derived from the save (st.guide, st.knownIds, st.metIds, st.mibis, st.wish, st.face); no drawing, no screen.
 // A wish is knowledge, never material: nothing here writes a genome (research-loop.md §5: "knowing a variant never injects it").
-import { currentLooks } from "../../workbench/framework/describe.mjs";
+import { currentLooks } from "../../species/framework/describe.mjs";
 import { frameOf, chapterLooks, traitState } from "./genome.mjs";
 import { frameFor, speciesOf, guideLooks, mibiById, forecastOf, DEFAULT_SETTINGS, logEv } from "./state.mjs";
 import { fourSlots } from "./splice.mjs";

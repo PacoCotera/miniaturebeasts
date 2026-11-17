@@ -22,7 +22,7 @@ import { isBuilt, DROPS_ON_ROOM_KEY } from "../src/nav.mjs";
 import { loadStandSizesFs } from "../tools/stand-layers-fs.mjs";
 import { injectPortraitSource, dropPortraitSources } from "../src/portrait-source.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const J = (k) => JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel", "sitting"]) SPECS[k] = J(k);

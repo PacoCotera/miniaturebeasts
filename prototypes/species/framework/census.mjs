@@ -10,9 +10,9 @@
 // from every other kind's (shape IoU below READ48_LIMIT). It replaces the old kind check, which scored each species against a
 // hand-drawn silhouette of the animal it resembled; a kind's target is now its own stand and every other kind's stand is a wrong one.
 //
-//   node prototypes/workbench/framework/census.mjs            # writes census.json and census.md
+//   node prototypes/species/framework/census.mjs            # writes census.json and census.md
 //   CENSUS_N=50 node ... for a quicker run
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildIndividual, sampleIndividual, typeSpecimen, rng } from "./species.mjs";
@@ -131,6 +131,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const out = { schema: "mb-silhouette-census/2", sampled: N, margin: MARGIN, views: VIEWS, species: result.rows.map((r, i) => ({ id: r.id, name: r.name, plan: r.plan, planKey: r.planKey, rig: r.rig, built: r.built, sampled: r.sampled, failures: r.failures, ...result.family[i] })), distances: result.table, pairs: result.pairs, verdict: result.verdict };
   writeFileSync(path.join(here, "census.json"), JSON.stringify(out, null, 1) + "\n");
   writeFileSync(path.join(here, "census.md"), censusMarkdown(result));
+  mkdirSync(path.resolve(here, "../img"), { recursive: true });
   writeFileSync(path.resolve(here, "../img/silhouettes-48.png"), encodePNG(silhouetteSheet(result)));
   writeFileSync(path.resolve(here, "../img/silhouettes-48-2x.png"), encodePNG(zoomed(silhouetteSheet(result), 2)));
   console.log(censusMarkdown(result));

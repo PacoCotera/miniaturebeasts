@@ -31,6 +31,6 @@ The [screen design standard](../../screen-design-standard.md) connects those inf
 
 <table>
 <tr>
-<td align="center" valign="top"><img src="research-workbench.png" width="440" alt="research-workbench.png"><br><em>research-workbench.png: research workbench. Reference.</em></td>
+<td align="center" valign="top"><img src="research-workbench.png" width="440" alt="research-workbench.png"><br><em>research-workbench.png: research species. Reference.</em></td>
 </tr>
 </table>

@@ -52,7 +52,7 @@ let lastRoom = null, msgSent = -1, lastLight = null, litHeld = new Set(), moving
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
 export async function loadFrames() {
-  const base = new URL("workbench/frames/language/", PROTOTYPES);
+  const base = new URL("species/frames/language/", PROTOTYPES);
   const index = await (await fetch(new URL("index.json", base))).json();
   const frames = await Promise.all(index.species.map((s) => fetch(new URL(s.file, base)).then((r) => r.json())));
   setFrames(frames);

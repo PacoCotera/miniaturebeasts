@@ -17,7 +17,7 @@ import { createMeasure, measureRole } from "../../ui/specs/measure.mjs";
 import { listPitch } from "../../ui/specs/derive.mjs";
 import { validate } from "./habitat-props.test.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), cargo = J("cargo"), home = J("home"), frame = J("frame"), panel = J("panel"), pods = J("pods"), schema = J("cargo.props"), A = cargo.regions.arrival;
 const metrics = JSON.parse(readFileSync(path.resolve(here, "../../face/dist/metrics.json"), "utf8")), measure = createMeasure(metrics), byRole = (role) => measureRole(metrics, frame, role);   // a text role's measure (frame.json type.roles)

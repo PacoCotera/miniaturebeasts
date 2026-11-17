@@ -41,7 +41,7 @@ const ACCESSOR = () => PAGE.match(/^const SP_OTHER = [^]*?\n(?=\/\/)/m)[0] + ["s
 const ST = await import("../../station/src/state.mjs");
 ST.useNameList("en-short-1");   // the tests below show the archived English names (T-20261027-322)
 const station = (...names) => names.every(n => typeof ST[n] === "function") ? false : "the Station's side (" + names.join(", ") + ") has not landed on main";
-{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../workbench/frames/language/", import.meta.url).pathname;
+{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../species/frames/language/", import.meta.url).pathname;
   setFrames(readdirSync(dir).filter(f => f.startsWith("species-")).map(f => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
 
 // A clock the sandbox reads through `new Date()`: day "YYYY-MM-DD" at noon local time.

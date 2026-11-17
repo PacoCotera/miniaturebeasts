@@ -27,7 +27,7 @@ window.__ready = true;
 const server = createServer((req, res) => {
   const u = decodeURIComponent(req.url.split('?')[0]);
   if (u === '/') { res.writeHead(200, { 'content-type': 'text/html' }); res.end(html); return; }
-  const p = u.startsWith('/nm/') ? path.join(nm, u.slice(4)) : u.startsWith('/ex/') ? path.join(dir, u.slice(4)) : path.join(dir, '..', u);   // the other trees of prototypes (core, workbench, play) beside it
+  const p = u.startsWith('/nm/') ? path.join(nm, u.slice(4)) : u.startsWith('/ex/') ? path.join(dir, u.slice(4)) : path.join(dir, '..', u);   // the other trees of prototypes (core, species, play) beside it
   if (!p || !existsSync(p) || !statSync(p).isFile()) { res.writeHead(404); res.end(); return; }
   res.writeHead(200, { 'content-type': types[path.extname(p)] ?? 'application/octet-stream' }); res.end(readFileSync(p));
 });

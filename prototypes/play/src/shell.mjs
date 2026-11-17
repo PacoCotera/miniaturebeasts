@@ -1,6 +1,6 @@
 // The play page's shell (technical-architecture.md W1; the architect's spec): the Station and the Companion as same-origin frames side by side, the page's own keys, the Dock control, the cradle and the
 // seat. The shell draws only page chrome. It never reads or writes the save (the devices cross it by the storage event, as between two tabs) and it imports nothing from station/, exploration/ or
-// workbench/: the Dock control asks the Caddy service to seat or lift the cradle, the Station is handed the dock by postMessage (`mb-dock`), and the Caddy's face is drawn from the
+// species/: the Dock control asks the Caddy service to seat or lift the cradle, the Station is handed the dock by postMessage (`mb-dock`), and the Caddy's face is drawn from the
 // service's state and the two frames' words (`mb-caddy` from the Station, `mb-companion` from the Companion) by caddy/face.mjs.
 //
 // Lengths are in lp: one lp is `f` CSS px, so every edge lands on a whole physical pixel. Colours are the Station's 14.

@@ -53,7 +53,7 @@ The three fields the lab works separately: the art direction block (the fixed cr
 
 ## Prompt v4: the cute envelope, tested on the worst cases
 
-The owner's reframing after the v3 re-run: the painter was faithfully painting the wrong structure, and the aim is not a Pip replica but that every genome expression yields a cute pet. So the rig got a **cute envelope** (`framework/envelope.mjs`, eight rules E1–E8 with their reasons, applied as clamps and derived ratios in the rig and as pool bounds in the frames; the workbench README lists them), with Pip's measures as one calibration point for the Loika (catalogue 9: a wide, deep, ovoid body, a huge eye at the head's middle, a stub cream snout, a belly field half the depth, rounded feet, a leaf crest). Variant B is the recipe: crisp controls, step 1 draws only the markings the description names with a drawing's proportion tolerance of 25 %, step 2 transfers the treatment with the species reference (the accepted Pip for the Loika).
+The owner's reframing after the v3 re-run: the painter was faithfully painting the wrong structure, and the aim is not a Pip replica but that every genome expression yields a cute pet. So the rig got a **cute envelope** (`framework/envelope.mjs`, eight rules E1–E8 with their reasons, applied as clamps and derived ratios in the rig and as pool bounds in the frames; the species README lists them), with Pip's measures as one calibration point for the Loika (catalogue 9: a wide, deep, ovoid body, a huge eye at the head's middle, a stub cream snout, a belly field half the depth, rounded feet, a leaf crest). Variant B is the recipe: crisp controls, step 1 draws only the markings the description names with a drawing's proportion tolerance of 25 %, step 2 transfers the treatment with the species reference (the accepted Pip for the Loika).
 
 **The test** (`grow/extremes.mjs`): every open proportion locus of S01, S09 and S12 rolled to its extremes and the corners (all low, all high, alternating, small head with a big body and the reverse), the controls rendered, the ugliest by my eye painted with B beside the type specimen. S09 has fourteen open proportion loci (43 cases; the twelve ugliest: the low head lift, the long beak, the thin waist, the down-bent back, the narrow body, the deep body, and the six corners); S01 and S12 have one each (eye size; hind-body taper), so their extremes collapse to two distinct genomes apiece. Contact sheets `sheets/extremes-<species>.png`; the painted sheets `sheets/extremes-<species>-B.png` (control, step 1, step 2, the locus values of the case); the Loika's calibrated individuals and the Pip-silhouette experiment `sheets/S01-pip.png`.
 
@@ -122,7 +122,7 @@ Prompt v2 for comparison (silhouette gate, crisp control): 53 % first attempt, 3
 ## To run it again
 
 ```sh
-cd prototypes/workbench
+cd prototypes/species
 node sketch/cli.mjs --species S01 --set 6 && node sketch/cli.mjs --species S09 --set 5 && node sketch/cli.mjs --species S12 --set 5
 python3 grow/service.py calibrate                                   # no calls; --previous for the last run's raw outputs
 python3 grow/service.py paint --members 6 --control crisp           # paid: the species references first, then 6 individuals each of S01, S09, S12

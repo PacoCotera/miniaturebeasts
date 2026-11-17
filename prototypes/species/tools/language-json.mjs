@@ -2,8 +2,8 @@
 // Generates framework/language.json from framework/language.mjs: the one file the studio, the frames
 // and the game read. Never hand-edit the JSON.
 //
-//   node prototypes/workbench/tools/language-json.mjs           # writes framework/language.json
-//   node prototypes/workbench/tools/language-json.mjs --check   # exits 1 if the file is stale
+//   node prototypes/species/tools/language-json.mjs           # writes framework/language.json
+//   node prototypes/species/tools/language-json.mjs --check   # exits 1 if the file is stale
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

@@ -5,7 +5,7 @@
 // Every mibi has read every open chapter (its Coat read: its dot shows its body colour) except those a lineage names in coatUnread (`full`: Hazel, released, and Sedge: the neutral open ring, in the golden). The frames must be loaded (genome.mjs setFrames).
 //   buildLineage(st, "full" | "one" | "small", { turn, now }) → the mibis by name (and st.bud)
 import { frameOf, podGenome, genomeSha, nameCode, cross, speciesIndex, genomeProblems } from "../../src/genome.mjs";
-import { shedPod } from "../../../workbench/framework/cross.mjs";
+import { shedPod } from "../../../species/framework/cross.mjs";
 
 // [name, parents (names; "shed:<name>" a shed pod of that mibi), stage, released]; in birth order (the ids follow)
 const FULL = [

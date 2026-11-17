@@ -6,7 +6,7 @@ import * as S from "./state.mjs";
 import { frameOf, frameIds } from "./genome.mjs";
 import { PLACEHOLDERS } from "./art.mjs";
 import { status as caddyStatus, state as caddy, flush as caddyFlush } from "./caddy.mjs";
-import { binFor, LOCI } from "../../workbench/framework/catalogue.mjs";
+import { binFor, LOCI } from "../../species/framework/catalogue.mjs";
 import * as T from "./sitting.mjs";
 import * as Lib from "./library.mjs";
 

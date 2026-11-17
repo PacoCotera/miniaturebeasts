@@ -14,7 +14,7 @@ import { idleBuild } from "../src/views/idle-props.mjs";
 import { vivariumBuild } from "../src/views/vivarium-props.mjs";
 import { bandOf, restOf, hash } from "../src/views/home-props.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 setMoving(movingFixture());
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), frame = J("frame.json"), home = J("home.json"), vivSpec = J("vivarium.json"), RULES = vivSpec.rules, CURVE = frame.light.curve;

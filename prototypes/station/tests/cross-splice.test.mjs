@@ -11,7 +11,7 @@ import * as L from "../src/library.mjs";
 import { overviewPlan, chapterPlan } from "../../ui/specs/derive.mjs";
 import { traitLocusCount, chapterLocusCount } from "../src/splice.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames/language");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/cross.json"), "utf8"));
 const ctx = { spec, measure: (t, px) => t.length * px * 0.5, cap: (px) => px * 0.7, line: (px) => Math.round(px * 1.25) };

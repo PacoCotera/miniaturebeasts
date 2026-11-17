@@ -18,7 +18,7 @@ const { drawnLooks } = await import("../src/looks.mjs");
 const { asset } = await import("../../ui/assets.mjs");
 const { loadStandSizesFs, unloadStands } = await import("../tools/stand-layers-fs.mjs");
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const lib = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")); SPECS.library = lib;
 const mid = JSON.parse(readFileSync(path.join(here, "fixtures/specimen/states/mid.json"), "utf8")).S01;

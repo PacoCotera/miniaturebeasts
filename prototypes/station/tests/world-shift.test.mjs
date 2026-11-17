@@ -9,7 +9,7 @@ import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { makePage } from "../../exploration/tests/page-harness.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "loose" };
 

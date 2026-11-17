@@ -17,7 +17,7 @@ import path from 'node:path';
 const IMAGE = /\.(png|jpe?g|webp|gif|svg|avif|ico)$/i;
 const SHIPPED = /^(website\/|prototypes\/|art\/companion-48\/terrain\/meadow\/|art\/places\/)/;
 const NOT_SHIPPED = /(^|\/)(tests?|fixtures|golden|node_modules|dist)\//;   // golden/ holds the tests' reference screenshots, not shipped art
-const RENDER = /^prototypes\/(?!workbench\/)[^/]+\/(index\.html|src\/.+\.(mjs|js))$/;
+const RENDER = /^prototypes\/(?!species\/)[^/]+\/(index\.html|src\/.+\.(mjs|js))$/;
 const PRIMITIVES = ['fillRect', 'arc', 'ellipse', 'lineTo', 'bezierCurveTo', 'putImageData', 'createImageData'];
 const PRIM_RE = Object.fromEntries(PRIMITIVES.map((p) => [p, new RegExp(`\\b${p}\\s*\\(`, 'g')]));
 

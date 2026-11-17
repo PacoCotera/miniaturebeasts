@@ -13,7 +13,7 @@ import { crossBuild } from "../src/views/cross-props.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { isBuilt, doorOpen } from "../src/nav.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), fdir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), fdir = path.resolve(here, "../../species/frames/language");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("cross.json"), pods = J("pods.json"), frameSpec = J("frame.json"), schema = J("cross.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" }, T0 = 1_000_000;

@@ -6,7 +6,7 @@
 //   Region = { id, n, kind: "home", biome, slot: [ax, ay] | null, ev, name, seed, gen, opened, openedTurn, turnSeen,
 //              closes, closed, exploredN, seenN, map: { …MAP_KEYS… } }
 import { MW, MH, GENS, hash, ROSTER, FAMILY_GROUND } from "./world.mjs";
-import { LANGUAGE, kindLands } from "../../workbench/framework/language.mjs";
+import { LANGUAGE, kindLands } from "../../species/framework/language.mjs";
 
 export const REALM_SAVE_V = 10;
 // the fields of a region's own map state: on S while the region is mounted, in regions[i].map when it is not.

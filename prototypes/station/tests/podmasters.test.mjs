@@ -31,7 +31,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), specsDir = path.resol
 const P = J("home.json").regions.rackPod, chips = J("cross.json").colours.pigmentChips, patterns = J("pods.json").podLayers.patterns, L = P.layers, [W, H] = P.size;
 const masterDir = path.resolve(here, "../../ui/assets/masters/pods"), loaded = [];
 const place = (id, status = "master") => { const p = decodePNG(readFileSync(path.join(masterDir, id + ".png"))); placeMaster({ id, w: p.width, h: p.height, file: "pods/" + id + ".png", hash: "ab", status }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); loaded.push(id); return p; };
-const frames = readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8")));
+const frames = readdirSync(path.resolve(here, "../../species/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../species/frames/language", f), "utf8")));
 test("the rack pod: 24×32, each pixel the fill of the last layer on, transparent off the body, on the palette, for S01 to S16 and the unknown pod", () => {
   const masks = {}; for (const l of ["body", "light", "shade", "accent", "outline"]) masks[l] = place(`home-rack-pod-${l}-24x32`).data;
   for (const n of ["dots", "ribs", "segments", "plates", "bands", "stripes"]) masks["pattern-" + n] = place(`home-rack-pod-pattern-${n}-24x32`).data;

@@ -15,7 +15,7 @@ import { offer } from "../src/sitting.mjs";
 import { setFrames } from "../src/genome.mjs";
 import { withSeals } from "./fixtures/sealed.mjs";
 import { readdirSync } from "node:fs";
-const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
+const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../species/frames/language");
 setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 import "./fixtures/place-poses.mjs";
 import { sittingKindScale } from "../src/views/home-props.mjs";

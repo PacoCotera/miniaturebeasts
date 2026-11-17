@@ -2,7 +2,7 @@
 # before a release goes live and installs it at /etc/caddy/Caddyfile (a release without this file leaves the installed one alone).
 # Owner 2026-11-16: "consolidate all my tools, dashboards, artifacts under /admin. remove /studio we will rebuild that later. and /play for the web play experience".
 #   /play/                              the game, wholly: /play/ the play page, /play/station/, /play/exploration/, and their folders (/play/ui/, /play/face/, /play/assets/ ...), built by ops/sandbox/bundle-pages.sh
-#                                       (except /play/workbench, /play/caddy and /play/test: the team's tools, 404 here, served only under /admin)
+#                                       (except /play/caddy and /play/test: the team's tools, 404 here, served only under /admin)
 #   /sandbox and /studio                nothing is there: 404 like any address the release does not have
 #   /admin/login and /admin/logout      the login (login/mb_login.py, unit mb-login) on 127.0.0.1:8791
 #   every other /admin path             only with a session: the login's /check says yes (and names the user), then:
@@ -20,14 +20,13 @@
 # `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
 :80 {
 	@admin path /admin /admin/*
-	# the species frames (play/workbench/frames/) are game data the Station loads: public; the rest of the workbench is not
+	# the species frames (play/species/frames/) are game data the Station loads: /play/species is public
 	@private {
-		path /play/workbench /play/workbench/* /play/caddy /play/caddy/* /play/test /play/test/*
-		not path /play/workbench/frames/*
+		path /play/caddy /play/caddy/* /play/test /play/test/*
 	}
 	@teampage path /admin/ /admin/index /admin/index/* /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
 
-	# the team's tools travel in the release beside the game's folders (the Caddy service and the workbench read their siblings) but are not public: they are served only through /admin below
+	# the team's tools travel in the release beside the game's folders (the Caddy service reads its siblings) but are not public: they are served only through /admin below
 	handle @private {
 		respond "not found" 404
 	}

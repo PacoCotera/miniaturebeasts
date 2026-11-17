@@ -47,7 +47,7 @@ export const CLANS = {
     borrows: ["appearance.belly-field", "growth.belly-field-extent"] },
   // C20, the Tuliko's clan (pin 11, genome-string proposal A.2): a clan with no form-engine plan and no generated species. It exists so the lantern and its glow family
   // (appearance.freckle-glow, appearance.lantern-bleed, appearance.glow-pattern, appearance.whisker-glow, anatomy.tail-tip-form) have an owner; Tuliko (S20) is drawn by the
-  // body engine, and its frame arrives with the workbench's chunk 9 and ticket G3. No `plan`, so nothing here can build a species: the page's new-species list skips it
+  // body engine, and its frame arrives with the species's chunk 9 and ticket G3. No `plan`, so nothing here can build a species: the page's new-species list skips it
   // (`engine: "body"`), and the clan name is the copywriter's (CLAN_NAMES has none yet).
   C20: { number: 20, engine: "body", resembles: "a small upright biped with a lantern at the end of its tail", feature: "a lantern tail tip that glows like a firefly" },
   // C21, the rambler Tuliko's clan in the game (release 21a): a clan on the four-legged plan with a tapering tail, so the language frame of S20 (version 8) can be built by the form engine. The studio's body-engine Tuliko

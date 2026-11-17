@@ -16,7 +16,7 @@ import { RGB, C } from "../src/pixels.mjs";
 import { sheet as sheetOf, disc as discReq, req as collector, sheetId as idOf } from "../src/views/requests.mjs";
 const SPEC = { l2: L.L2 }, sheetReq = (rq) => (fr, input, lit) => sheetOf(rq)(SPEC, input, L.speciesFacts(fr), lit), sheetId = (fr, input) => idOf(input, L.speciesFacts(fr));
 
-const here = path.dirname(fileURLToPath(import.meta.url)), frames = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), frames = path.resolve(here, "../../species/frames");
 const frameOf = (id) => JSON.parse(readFileSync(path.join(frames, `species-${id}.json`), "utf8"));
 const IDS = Array.from({ length: 16 }, (_, i) => "S" + String(i + 1).padStart(2, "0")), F = Object.fromEntries(IDS.map((id) => [id, frameOf(id)]));
 const mid = JSON.parse(readFileSync(path.join(here, "fixtures/specimen/states/mid.json"), "utf8"));

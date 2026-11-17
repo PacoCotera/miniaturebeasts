@@ -15,7 +15,7 @@ import { specimenId, foundDigest, specimenFor } from "../src/specimen-cache.mjs"
 import { CALLS } from "../src/paint2d.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fx = path.join(here, "fixtures/specimen"), frames = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), fx = path.join(here, "fixtures/specimen"), frames = path.resolve(here, "../../species/frames");
 const frameOf = (id) => JSON.parse(readFileSync(path.join(frames, `species-${id}.json`), "utf8"));
 const stateOf = (n) => JSON.parse(readFileSync(path.join(fx, "states", n + ".json"), "utf8"));
 const STATES = ["early", "mid", "late", "new"], S01 = frameOf("S01");

@@ -9,7 +9,7 @@ import { encodeCells, parseMessage, sameGenome, sizeFor, stampCode, decodeStampC
 import { genomeString, decodeGenomeString } from "../src/string.mjs";
 
 const FIX = JSON.parse(readFileSync(new URL("./s20r-type.json", import.meta.url), "utf8"));
-const FRAME_FILE = JSON.parse(readFileSync(new URL("../../workbench/frames/language/species-S20.json", import.meta.url), "utf8"));
+const FRAME_FILE = JSON.parse(readFileSync(new URL("../../species/frames/language/species-S20.json", import.meta.url), "utf8"));
 
 test("the registry's current S20 is the rambler's language frame 20.8: 22 open loci in six chapters, the frame file's ring order", () => {
   const f = byName("S20"); assert.equal(f, frameFor(20, 8)); assert.equal(f.name, "Tuliko");
@@ -35,7 +35,7 @@ test("the type individual: copies from the frame file's type specimen; the strin
 });
 
 test("S01's string and stamp code in the fixture are the registry's current ones (the beside-picture reads them)", () => {
-  const f = byName("S01"), spec = JSON.parse(readFileSync(new URL("../../workbench/frames/language/species-S01.json", import.meta.url), "utf8")).typeSpecimen.genome.loci;
+  const f = byName("S01"), spec = JSON.parse(readFileSync(new URL("../../species/frames/language/species-S01.json", import.meta.url), "utf8")).typeSpecimen.genome.loci;
   const type = { species: 1, version: 8, copies: Object.fromEntries(f.heritable.map((l) => [l.id, spec[l.id]])) };
   assert.equal(genomeString(f, type), FIX.s01.string); assert.equal(stampCode(f, type), FIX.s01.code);
 });

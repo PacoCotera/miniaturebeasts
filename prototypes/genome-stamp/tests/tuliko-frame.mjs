@@ -1,8 +1,8 @@
 // A test frame for the Tuliko (S20) as the genome-string proposal's table A.3 lays it out, with the game designer's rulings of 3 Nov 2026 (the hue shift dropped, the whisker switch added,
 // the rosette renamed marking-rosette): the 54 records of catalogue pin 11 in ring order (Coat, Face, Shape, Legs & tail,
 // Movement), built from the catalogue as tools/extract-frames.mjs reads a frame (the alleles a frame of version 7 sees; a continuous record also carries its values). It is
-// not in the registry: S20 joins it with ticket G3, once the workbench writes the frame. Used by string.test.mjs to reproduce the proposal's worked examples (B.4).
-import { LOCI } from "../../workbench/framework/catalogue.mjs";
+// not in the registry: S20 joins it with ticket G3, once the species writes the frame. Used by string.test.mjs to reproduce the proposal's worked examples (B.4).
+import { LOCI } from "../../species/framework/catalogue.mjs";
 import { stepValue } from "../src/codec.mjs";
 
 export const CHAPTERS = [

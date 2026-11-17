@@ -13,7 +13,7 @@ import { SHARE, YOUNG, SIZE_CLASS, SCENES, standInk, sceneFactor, scaleTable, ta
 import { setFrames } from "../src/genome.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/assets/masters"), M = readIndex(root).masters;
-const fdir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language"), frames = readdirSync(fdir).filter((f) => /^species-S\d\d\.json$/.test(f)).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8")));
+const fdir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../species/frames/language"), frames = readdirSync(fdir).filter((f) => /^species-S\d\d\.json$/.test(f)).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8")));
 setFrames(frames);
 for (const [id, m] of Object.entries(M)) if (/^mibi-(adult|juvenile)-S\d\d(-(curl|shake|calm|puff|sniff|dig|glow))?-304x312$/.test(id) || /^mibi-adult-S\d\d-between-dark-lay-[a-z]+-304x312$/.test(id)) {
   const im = decodePNG(readFileSync(path.join(root, m.file)));

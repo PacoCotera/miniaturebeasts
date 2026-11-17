@@ -1481,7 +1481,7 @@
    "rail": "Legs & Tail",
    "heading": "Legs & Tail"
   },
-  "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name",
+  "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/species/frames/species-*.json, chapters[].name",
   "subjectIs": "{name} is {state}",
   "thisPod": "this pod",
   "theSpecies": "every {species}",

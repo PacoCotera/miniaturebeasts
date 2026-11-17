@@ -1,9 +1,9 @@
 // The splice's data (station-layouts.md "Cross: the splice"; prototypes/ui/specs/station/cross.json): for each locus of a trait that is open to both parents, the two copies each
 // parent carries (which one it hides), the four pairings or the range the child can land in, and the words the player reads on a copy. Pure: derived from two genomes by the
 // framework's own forecast, one pseudo-trait per locus. It is called by forecastOf only for a trait whose chapter both parents have read, so nothing here can name an unread copy.
-import { forecast as crossForecast, hiddenCopy } from "../../workbench/framework/cross.mjs";
-import { LOCI, isContinuous, binFor, valueRange } from "../../workbench/framework/catalogue.mjs";
-import { lookOf } from "../../workbench/framework/describe.mjs";
+import { forecast as crossForecast, hiddenCopy } from "../../species/framework/cross.mjs";
+import { LOCI, isContinuous, binFor, valueRange } from "../../species/framework/catalogue.mjs";
+import { lookOf } from "../../species/framework/describe.mjs";
 
 // One pseudo-trait per locus, so the framework's forecast (which gives a trait's lead locus) gives every locus its own outcome.
 const perLocus = (fr) => ({ ...fr, chapters: fr.chapters.map((ch) => ({ ...ch, traits: ch.traits.flatMap((t) => t.loci.filter((id) => LOCI.has(id)).map((id) => ({ id, name: id, loci: [id] }))) })) });

@@ -80,11 +80,11 @@ class Routes(unittest.TestCase):
         (game / "ui" / "assets" / "masters").mkdir(parents=True)
         (game / "ui" / "assets" / "masters" / "m.png").write_text("png")
         (game / "other.html").write_text("<p>other</p>")
-        (game / "workbench" / "frames" / "language").mkdir(parents=True)
-        (game / "workbench" / "frames" / "language" / "index.json").write_text("{}")
+        (game / "species" / "frames" / "language").mkdir(parents=True)
+        (game / "species" / "frames" / "language" / "index.json").write_text("{}")
         (game / "assets").mkdir()
         (game / "assets" / "app-0a1b2c3d.js").write_text("//js")
-        for d, t in (("workbench", "workbench-secret"), ("test", "test-secret"), ("caddy", "caddy-secret"), ("station", "station-page"), (".", "play-page")):
+        for d, t in (("test", "test-secret"), ("caddy", "caddy-secret"), ("station", "station-page"), (".", "play-page")):
             (game / d).mkdir(parents=True, exist_ok=True)
             (game / d / "index.html").write_text(t)
         cls.port = free_port()
@@ -204,18 +204,15 @@ class Routes(unittest.TestCase):
     def test_nothing_is_at_the_old_addresses_and_the_team_tools_are_not_public(self):
         for p in ("/sandbox", "/sandbox/", "/sandbox/play/", "/sandbox/station/", "/sandbox/station/?embed&test", "/sandbox/workbench/", "/sandbox/test/",
                   "/studio", "/studio/", "/studio/x", "/studio/api/species", "/STUDIO/x", "/studio/team", "/studio/team/",
-                  "/play/workbench", "/play/workbench/", "/play/workbench/index.html", "/play/Workbench/", "/play/test/", "/play/test", "/play/caddy/index.html", "/play//workbench/",
-                  "/play/./workbench/", "/play/x/../workbench/"):
+                  "/play/test/", "/play/test", "/play/caddy/index.html", "/play//test/", "/play/./test/", "/play/x/../test/"):
             self.assertEqual(self.where(p), (404, None), p)
             self.assertEqual(self.where(p, "mb_studio=good"), (404, None), p)
         self.assertEqual(self.where("/play"), (301, "/play/"))
         self.assertEqual(self.where("/play/station"), (301, "/play/station/"))
         for p in ("/play/", "/play/station/", "/play/other.html", "/play/assets/app-0a1b2c3d.js"):
             self.assertEqual(self.where(p)[0], 200, p)
-        # the species frames are game data the Station loads: public, while the workbench beside them is not
-        self.assertEqual(self.where("/play/workbench/frames/language/index.json")[0], 200)
-        for p in ("/play/workbench/frames/../index.html", "/play/workbench/frames/%2e%2e/index.html"):
-            self.assertNotIn(b"workbench-secret", self.req(p).read(), p)
+        # the species frames are game data the Station loads: public
+        self.assertEqual(self.where("/play/species/frames/language/index.json")[0], 200)
         self.assertEqual(self.where("/admin/test"), (302, "/admin/test/"))
 
     def test_the_admin_paths_need_the_login_and_the_index_is_the_team_page_for_now(self):
@@ -237,9 +234,7 @@ class Routes(unittest.TestCase):
         self.assertEqual(self.where("/admin/workbench/", "mb_studio=good")[0], 404)
         self.assertEqual(self.where("/admin/workbench", "mb_studio=good")[0], 404)
         self.assertEqual(self.studio.hits, [])
-        for secret, paths in ((b"workbench-secret", ("/play/workbench/", "/play/workbench/index.html", "/play/Workbench/", "//play/workbench/", "/x/../play/workbench/", "/play/./workbench/index.html",
-                                                    "/play/workbench/%2e%2e/workbench/index.html")),
-                              (b"test-secret", ("/play/test/", "/play/test/index.html", "/play/Test/", "/admin/test/", "/admin/test/../test/", "/%61dmin/test/"))):
+        for secret, paths in ((b"test-secret", ("/play/test/", "/play/test/index.html", "/play/Test/", "/admin/test/", "/admin/test/../test/", "/%61dmin/test/")),):
             for path in paths:
                 c = http.client.HTTPConnection("127.0.0.1", self.port, timeout=10)
                 c.request("GET", path); r = c.getresponse(); body = r.read(); c.close()

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// Builds the frame registry: one JSON file per species under prototypes/workbench/frames/, each
+// Builds the frame registry: one JSON file per species under prototypes/species/frames/, each
 // checked by 200 random individuals (frames.py's check, rule 6 of taxonomy §3: a trait whose
 // individuals do not all build is locked for the species, or the seed moves on; a gene is never
 // repaired).
 //
-//   node prototypes/workbench/framework/build-frames.mjs            # write
-//   node prototypes/workbench/framework/build-frames.mjs --check    # fail if a file is stale
+//   node prototypes/species/framework/build-frames.mjs            # write
+//   node prototypes/species/framework/build-frames.mjs --check    # fail if a file is stale
 //   FRAME_SAMPLES=50 node ... for a quicker run
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";

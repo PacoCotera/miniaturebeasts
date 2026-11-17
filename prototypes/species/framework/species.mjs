@@ -36,7 +36,7 @@ export const TIERS = { starter: [5, 6], early: [7, 10], mid: [12, 18], late: [24
 // Finds): a crystal is dug up, a pearl comes out of water, a shard is left by a storm. Glow and Charge are the storm's.
 export const FINDS = { character: "a vybronic crystal", stamina: "a storm-glass shard", movement: "a tide pearl", glow: "a storm-glass shard", charge: "a storm-glass shard" };
 export const FIND_KINDS = ["crystal", "pearl", "shard"];
-// A sealed chapter's find picture follows the find its words name; words naming none of the three (the workbench's "a find") have no kind.
+// A sealed chapter's find picture follows the find its words name; words naming none of the three (the species's "a find") have no kind.
 export const findKindOf = (words) => FIND_KINDS.find((k) => new RegExp(`\\b${k}\\b`).test(words ?? "")) ?? null;
 
 // A deterministic stream from a text: the core's one random module (draws.mjs).

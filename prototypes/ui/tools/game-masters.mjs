@@ -8,7 +8,7 @@ import { readIndex, writeIndex } from "./index-io.mjs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../png.mjs";
-import { HABITS } from "../../workbench/framework/roster.mjs";
+import { HABITS } from "../../species/framework/roster.mjs";
 
 export const RATIO = 0.8, ALPHA = 128;   // a juvenile's figure height over its adult's; the alpha at which a figure's box is measured (a contact shadow is fainter)
 export const SIZES = ["304x312", "96x88", "48x48"];

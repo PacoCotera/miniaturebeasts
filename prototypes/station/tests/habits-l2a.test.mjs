@@ -7,10 +7,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { HABITS } from "../../workbench/framework/roster.mjs";
+import { HABITS } from "../../species/framework/roster.mjs";
 import { HABIT_POSE } from "../src/layered-stand.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const words = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/habitat.json"), "utf8")).strings.watchHabits;
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" }, sv0 = { with: null, wid: "w1", seed: 7 }, T0 = new Date(2026, 10, 7, 12, 0).getTime();

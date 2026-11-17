@@ -1,6 +1,6 @@
 // Ticket G3 of the genome-string proposal: S20, the Tuliko, version 1, joins the stamp registry. Nothing the registry held moves (every other frame stamps, codes and strings to the
-// same bytes as before), and S20's type stamp, stamp code and genome string round-trip, as do the twelve Tuliko of the workbench (tests/s20-twelve.json: the copies of seeds 1 to 12, their
-// strings and stamp codes, as the workbench writes them).
+// same bytes as before), and S20's type stamp, stamp code and genome string round-trip, as do the twelve Tuliko of the species (tests/s20-twelve.json: the copies of seeds 1 to 12, their
+// strings and stamp codes, as the species writes them).
 //   node --test tests/s20.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -14,7 +14,7 @@ import { individual } from "./cases.mjs";
 
 const sha = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 const FIX = JSON.parse(readFileSync(new URL("./s20-twelve.json", import.meta.url), "utf8"));
-const FRAME_FILE = JSON.parse(readFileSync(new URL("../../workbench/body/frames/species-S20.json", import.meta.url), "utf8"));
+const FRAME_FILE = JSON.parse(readFileSync(new URL("../../species/body/frames/species-S20.json", import.meta.url), "utf8"));
 
 // tests/s20-before.json: sha256 (first 16 hex) of stampCode + "|" + genomeString for individual(frame, 7) with every open chapter read, per frame (key species.version), taken before S20 joined
 
@@ -41,7 +41,7 @@ test("every other frame stamps, codes and strings to the same bytes as before S2
 
 const BEFORE_DIGESTS = JSON.parse(readFileSync(new URL("./s20-before.json", import.meta.url), "utf8"));
 
-test("the registry's S20 is the workbench's frame: 54 open loci in five chapters, 40 continuous, no locked rows, its pools and values from the frame file", () => {
+test("the registry's S20 is the species's frame: 54 open loci in five chapters, 40 continuous, no locked rows, its pools and values from the frame file", () => {
   const f = byName("S20", 1); assert.equal(f, frameFor(20, 1));
   assert.equal(f.heritable.length, 54); assert.equal(f.heritable.filter((l) => l.values).length, 40); assert.deepEqual(f.chapters.map((c) => c.name), ["Coat", "Face", "Shape", "Legs & tail", "Movement"]);
   assert.deepEqual(f.locked, []);
@@ -61,12 +61,12 @@ test("the type: its genome string is the frame's own, 82 characters, and the str
   assert.equal(sizeFor(f, {}).N, 37, "plain, a Tuliko is 37x37"); assert.equal(sizeFor(f, { postmark: true }).N, 41, "with a postmark, 41x41");
 });
 
-test("the twelve Tuliko of the workbench decode and re-encode exactly, by string and by stamp code", () => {
+test("the twelve Tuliko of the species decode and re-encode exactly, by string and by stamp code", () => {
   const f = byName("S20", 1); assert.equal(FIX.twelve.length, 12);
   assert.equal(new Set(FIX.twelve.map((t) => t.string)).size, 12);
   for (const t of FIX.twelve) {
     const label = `seed ${t.seed}`;
-    assert.equal(genomeString(f, { copies: t.copies }), t.string, `${label}: encodes to the workbench's string`);
+    assert.equal(genomeString(f, { copies: t.copies }), t.string, `${label}: encodes to the species's string`);
     const d = decodeGenomeString(t.string); assert.ok(d.ok, `${label}: ${d.detail}`); assert.deepEqual(d.genome.copies, t.copies, `${label}: decodes to the same copies`);
     assert.equal(genomeString(f, d.genome), t.string, `${label}: re-encodes exactly`);
     assert.equal(stampCode(f, { copies: t.copies }), t.code, `${label}: the stamp code`);

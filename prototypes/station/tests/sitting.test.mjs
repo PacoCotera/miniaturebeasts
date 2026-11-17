@@ -12,7 +12,7 @@ import "./fixtures/place-poses.mjs";
 import * as L from "../src/library.mjs";
 import * as T from "../src/sitting.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language");
 setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sittingWait: "hours" };
 const H = 3600000, T0 = 1000000;

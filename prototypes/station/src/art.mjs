@@ -4,12 +4,12 @@
 // (art director, 2026-11-09): pictures.mjs places the kind's signed painted stand.
 import { PB, C, RGB, art, fromRGBA, cropPB, scalePB, flipPB, upPB, bay, lite, shade, clock, motion } from "./pixels.mjs";
 import { buildIndividual, shapeTrait, genomeDigest, stampGenome, stampFrameOf } from "./genome.mjs";
-import { fitCamera, resolveCamera, VIEWS } from "../../workbench/framework/raster.mjs";
-import { plainRender, BG } from "../../workbench/framework/plain.mjs";
-import { resolveIndividual } from "../../workbench/framework/resolve.mjs";
-import { buildBody } from "../../workbench/framework/rig.mjs";
-import { validateBody } from "../../workbench/framework/validate.mjs";
-import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { fitCamera, resolveCamera, VIEWS } from "../../species/framework/raster.mjs";
+import { plainRender, BG } from "../../species/framework/plain.mjs";
+import { resolveIndividual } from "../../species/framework/resolve.mjs";
+import { buildBody } from "../../species/framework/rig.mjs";
+import { validateBody } from "../../species/framework/validate.mjs";
+import { LOCI } from "../../species/framework/catalogue.mjs";
 import { treat } from "./unknown.mjs";
 import { mulberry32 as coreMulberry32 } from "../../core/base/random.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";

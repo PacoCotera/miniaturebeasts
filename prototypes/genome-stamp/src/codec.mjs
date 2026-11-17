@@ -18,7 +18,7 @@
 // Format 2 (2026-10-09, blends on a fixed fine step): a continuous locus (one whose frame carries its
 // alleles' values) packs each copy in STEP_BITS bits: codes below the allele count are the named
 // alleles, and code (allele count + k) is step k of BLEND_STEPS over the locus's catalogue range
-// (stepValue: the same values as the workbench's catalogue.mjs), so a blended copy round-trips
+// (stepValue: the same values as the species's catalogue.mjs), so a blended copy round-trips
 // exactly. Every other locus packs as in format 1. Format 1 (a blended copy as its bin, the nearest
 // named allele) still decodes, so a print made before keeps reading.
 import { frameFor } from "./frames.mjs";
