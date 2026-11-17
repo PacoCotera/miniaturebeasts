@@ -87,7 +87,16 @@ function regionLandmarks(seed, D, R, ax, ay, d0Of) {
     const fit = kind => { const at = []; for (const c of cand[kind]) { const [X, Y] = wc(c); if (at.every(q => Math.max(Math.abs(q[0] - X), Math.abs(q[1] - Y)) >= LM_KIND_SPACING)) at.push([X, Y]); } return at.length; };
     const own = order.find(k => fit(k) >= 2) || order.find(k => cand[k].length) || order[0];
     for (const kind of order) take(kind);   // one of each kind the region has a cell for
-    while (have() < cap(G) && take(own));   // the region's own kind, while the spacing and the share allow
+    // then every kind the region can hold, the own kind first, each up to the share while the spacing allows (a twin still stands 6 or more apart, so twins stay at 0)
+    const haveKind = kind => placed.filter(p => p.kind === kind && mineSlot(p)).length;
+    // the extras pack tight: of the cells that still fit, the one that shuts out the fewest other cells of its kind (min-degree greedy), ties by the hashed order
+    const takeTight = kind => {
+      const fits = cand[kind].filter(c => !done[kind].has(c) && ok(...wc(c), kind)); if (!fits.length) return false;
+      const P = fits.map(wc); let best = -1, bestN = 1e9;
+      fits.forEach((c, i) => { let n = 0; for (let j = 0; j < fits.length; j++) if (j !== i && Math.max(Math.abs(P[i][0] - P[j][0]), Math.abs(P[i][1] - P[j][1])) < LM_KIND_SPACING) n++; if (n < bestN) { bestN = n; best = i; } });
+      done[kind].add(fits[best]); add(kind, P[best][0], P[best][1], G.slot, null); return true;
+    };
+    for (const kind of [own, ...order.filter(k => k !== own)]) while (haveKind(kind) < cap(G) && takeTight(kind));
   }
   // names: per region and kind, editorial's list in a hashed order from a hashed start, none twice in a region
   const cnt = new Map(), list = [];
