@@ -3,7 +3,7 @@
 # esbuild folds the bare imports and the JSON of the tile set into one file; qjs is the dev server's quickjs-ng.
 OUT=$1; shift
 HERE=$(dirname "$0")
-ESB=/home/mb/mb/wt-worldgen-smooth-1/prototypes/places/node_modules/.bin/esbuild
+ESB="$HERE/../../places/node_modules/.bin/esbuild"
 QJS=/home/mb/mb/hw-tools/quickjs-ng/bin/qjs
 mkdir -p "$OUT"
 "$ESB" "$HERE/slices-time.mjs" --bundle --format=esm --target=es2022 --outfile="$OUT/slices-time.bundle.mjs" --log-level=warning || exit 1
