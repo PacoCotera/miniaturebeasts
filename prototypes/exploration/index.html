@@ -6923,10 +6923,12 @@ function dockSeated() {
   if (S.exp) { if (!FX.dockSaid) { fxMsg(DOCK_TEXT.first, 3); FX.dockSaid = 1; } return; }   // mid-expedition: the existing "Docked mid-expedition" rules; the walk's haul goes home only with End expedition (the designed rule), so the dock itself says so, once, in the existing words
   FX.seated = { at: NOW, crates: S.bay.length }; FX.lifted = null;
   const lead = partnerMibi() || carriedMibis()[0];
+  if (S.phase === 'sealed') S.phase = 'active';   // the ended expedition's screen is spent once its haul is home: home, with or without a mibi (owner 11-17, bug #50)
   if (lead && S.phase !== 'newworld') { S.phase = 'active'; S.ui.aId = lead.id; }   // a mibi with you: its page, as a cut
 }
 function dockLifted() {
   FX.seated = null; FX.crateDown = null;
+  if (S.phase === 'sealed' && !S.exp) S.phase = 'active';   // a page opened while seated: lifting from the ended expedition's screen goes home too (bug #50)
   if (S.phase !== 'active') return;   // on any other screen only the Shield flash plays, as built
   const m = shownMibi(); FX.lifted = { at: NOW };
   if (m && isCarried(m)) FX.callMibi = { id: m.id, at: NOW + OFF.at, wrong: false, quiet: true };   // the existing hop, no chirp
