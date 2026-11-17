@@ -18,6 +18,8 @@ export const WORDS = {
   full: (supply, cap, keeps) => supply + ' ' + cap + ' of ' + cap + ' · ' + (keeps || 'the Probe holds no more'),
   // pressing fruit (✓ labels and the bump line)
   press: { stone: 'Press fruit on the stone', tree: 'Press fruit on the tree', dim: 'Press on a stone or tree', bump: 'Press fruit on a stone or tree · or put it down' },
+  // [copy] the HUD line when a step in a place is refused and nothing else says why (placeholders say the meaning only; bug #14)
+  block: { stone: 'Stone · in the way', tree: 'Tree · in the way', water: 'Water · no way across', rock: 'Steep rock · no way over', slab: 'A slab · in the way', thing: 'In the way', mibi: 'A mibi is there', partner: 'Your partner is there', pod: 'A pod is there' },
   // [copy] the Data hold is the only limit on a trip; the copywriter writes the words behind these slots (placeholders say the meaning only)
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
   creature: { holdFull: 'no room for Data' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in

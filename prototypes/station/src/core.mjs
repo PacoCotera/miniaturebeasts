@@ -175,7 +175,9 @@ export function tick(t, dt) {
   watchHabitat(H, dt);   // the bench trickle (before the Idle check: Idle watches nothing): one mibi up close, rest or meet, not carried (habitat.json rules.watch)
   sceneTick(t);   // the motion proof's scene, when one plays (motion-scene.mjs)
   frameIntents.idleTick(H, t, IDLE_MS);   // frame.json idle.enter: a minute without a press, never in a hold, an arrival or Cargo's report card
-  try { render(); H.frame(); } catch (e) { if (holdOn(e)) return; CORE.renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
+  const kept = (e) => { if (holdOn(e)) return; CORE.renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); };   // never swallowed: every throw is kept for the checks to read
+  try { render(); } catch (e) { kept(e); }
+  try { H.frame(); } catch (e) { kept(e); }   // bug #13: the host's due steps (a carry's landing after its flight) run even on a frame whose draw threw (a picture still on its way), so a key's flight never waits for a second press
 }
 
 // --- the Station's keys: pad, Home/Research/Library/Vivarium, ← and ✓, plus the Caddy's Dock/Lift key ---

@@ -71,6 +71,9 @@ test("edges on an 18×22 place: x 17 and y 21 are the last tiles; one more leave
   // coming in: the entry tile is on the small place's own edge, mid-edge
   const e = plain(run("[entryPoint(layout(S.exp.patch.key), S.exp.patch.key, 'up'), entryPoint(layout(S.exp.patch.key), S.exp.patch.key, 'right'), entryPoint(layout(S.exp.patch.key), S.exp.patch.key, 'left'), entryPoint(layout(S.exp.patch.key), S.exp.patch.key, 'down')]"));
   assert.deepEqual(e, [{ x: 9, y: 21 }, { x: 0, y: 11 }, { x: 17, y: 11 }, { x: 9, y: 0 }]);
+  // bug #11: a sideways step keeps the row it left on (not the middle row); a vertical entry ignores it
+  const kept = plain(run("ROW = { key: S.exp.patch.key, y: 4 }; const r = [entryPoint(layout(S.exp.patch.key), S.exp.patch.key, 'right'), entryPoint(layout(S.exp.patch.key), S.exp.patch.key, 'up')]; ROW = null; r"));
+  assert.deepEqual(kept, [{ x: 0, y: 4 }, { x: 9, y: 21 }]);
 });
 
 test("the veil words on an 18×22 place: a veiled stone says so until a Call lifts it", () => {
