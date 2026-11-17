@@ -256,6 +256,7 @@ import { waitPips, PIPS } from "./src/waitpips.mjs";
 import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { landCellOf as landCellIn, paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
@@ -529,7 +530,8 @@ const REL = { v: '' };
 REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); } catch (e) { } })();
 const vurl = u => REL.v ? u + (u.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(REL.v) : u;
 // The first frame waits for the new art and the place (the Probe line shows meanwhile); a load that fails says so with a reload, and never draws old art.
-const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [];
+const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [], ART_WHY = [];   // ART_WHY: { part, file, why } for each part that failed, shown under the failed screen
+const artWhy = (part, e, extra) => { ART_FAIL.push(part); ART_WHY.push({ part, file: (e && e.file) || '', why: extra || String((e && e.message) || e || 'failed').slice(0, 40) }); };
 // The first-load wait's measure (src/waitpips.mjs): the files the loaders count (owed when a loader starts, got as each arrives) and the realm worker's stages (RT.wait)
 const FILES = { done: 0, of: 0 }, fileOwe = n => { FILES.of += n; }, fileGot = () => { FILES.done++; };
 const artHeld = () => RT.artHold && !(ART_DONE.atlas && ART_DONE.places && ART_DONE.walk && ART_DONE.open && ART48.ready && PL.ready && !ART_FAIL.length);
@@ -539,7 +541,7 @@ async function loadPlaces() {
   try {
     if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; setArrived(); return; }
     fileOwe(3);   // the tile set, the terrain table, the layer descriptors (the veil's files are owed when its kit starts)
-    const base = new URL('../places/', location.href).href, bytes = async u => { const b = new Uint8Array(await (await fetch(vurl(u))).arrayBuffer()); fileGot(); return b; };
+    const base = new URL('../places/', location.href).href, bytes = async u => { const b = new Uint8Array(await (await fetchOk(vurl(u))).arrayBuffer()); fileGot(); return b; };
     const pm = await import(vurl(base + 'src/page.mjs')), rd = await import(vurl(base + 'src/format/read.mjs'));
     PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles')); setArrived();
     PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
@@ -549,7 +551,7 @@ async function loadPlaces() {
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadVeilKit(base);
     PL.ready = true; layoutCache.clear(); RT.key = null;
-  } catch (e) { console.warn('the places did not load', e); ART_FAIL.push('places'); } finally { ART_DONE.places = true; }
+  } catch (e) { console.warn('the places did not load', e); artWhy('places', e); } finally { ART_DONE.places = true; }
 }
 // The art desk's edge veil (places/veil/, SOURCE.md there): the straight strip, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
 // a view without it draws no veil.
@@ -558,12 +560,10 @@ async function loadVeilKit(base) {
   try {
     const vm = await import(vurl(base + 'src/veil.mjs')), dir = base + 'veil/', kit = { day: {}, night: {} };
     fileOwe(2 * vm.VEIL_KINDS.length + 2);
-    await Promise.all(['day', 'night'].flatMap(t => vm.VEIL_KINDS.map(k => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); kit[t][k] = c; fileGot(); res(); };
-      im.onerror = () => rej(new Error('missing ' + k)); im.src = vurl(dir + vm.veilFileName(k, t === 'night') + '.png'); }))));
-    PL.mapVeil = {}; await Promise.all(['day', 'night'].map(t => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); PL.mapVeil[t] = c; fileGot(); res(); };
-      im.onerror = () => rej(new Error('missing the map veil')); im.src = vurl(dir + 'map-edge-veil-' + t + '.png'); })));
+    await Promise.all(['day', 'night'].flatMap(t => vm.VEIL_KINDS.map(k => loadImg(vurl(dir + vm.veilFileName(k, t === 'night') + '.png')).then(im => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); kit[t][k] = c; fileGot(); }))));
+    PL.mapVeil = {}; await Promise.all(['day', 'night'].map(t => loadImg(vurl(dir + 'map-edge-veil-' + t + '.png')).then(im => { const c = PL.mk(im.width, im.height); c.getContext('2d').drawImage(im, 0, 0); PL.mapVeil[t] = c; fileGot(); })));
     PL.veil = kit; PL.veilMod = vm;
-  } catch (e) { console.warn('the edge veil did not load', e); ART_FAIL.push('veil'); }
+  } catch (e) { console.warn('the edge veil did not load', e); artWhy('veil', e); }
 }
 // The art desk's quartz stone family (art/stone/, signed in mibi-art ccbb3bb17; SOURCE.md there) and the look view's three stone marks (art/look/, same commit). The stones' colours are not all on the
 // core palette (the quartz ramp, the warm glow): each file is kept as a canvas the page blits as it blits a sprite (dx, dy put a 48 px stone's foot where a 32 px sprite's foot stood), and its colours
@@ -632,17 +632,17 @@ async function loadPropArt() {
   try {
     if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    await Promise.all(PROP_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/props/', location.href).href + n + '.png'); })));
-  } catch (e) { console.warn('the props did not load', e); ART_FAIL.push('props'); }
+    await Promise.all(PROP_FILES.map(n => loadImg(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); })));
+  } catch (e) { console.warn('the props did not load', e); artWhy('props', e); }
 }
 async function loadStoneArt() {
   try {
     if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    await Promise.all(STONE_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/stone/', location.href).href + n + '.png'); })));
-  } catch (e) { console.warn('the stones did not load', e); ART_FAIL.push('stones'); }
+    await Promise.all(STONE_FILES.map(n => loadImg(vurl(new URL('./art/stone/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); })));
+  } catch (e) { console.warn('the stones did not load', e); artWhy('stones', e); }
 }
 // The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
 // the "!" notice card and the Curious bubble. Every file is loaded at boot and read into a palette-index buffer (every pixel is on the core palette), so the fog, storm and night tables
@@ -710,11 +710,11 @@ async function loadWalkArt() {
     if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     fileOwe(WALK_FILES.length + LOOK_FILES.length);
-    const files = {}, load = (dir, names) => Promise.all(names.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png'); })));
+    const files = {}, load = (dir, names) => Promise.all(names.map(n => loadImg(vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); })));
     await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
     walkRead(files);
-  } catch (e) { console.warn('the walk art did not load', e); ART_FAIL.push('walk'); } finally { ART_DONE.walk = true; }
+  } catch (e) { console.warn('the walk art did not load', e); artWhy('walk', e); } finally { ART_DONE.walk = true; }
 }
 // The view that draws a baked layout: the cell's own (made on first use, the last PL_VIEWS_MAX kept; each cell's props and ground are cached in it).
 function bakedView(lay) {
@@ -4595,15 +4595,15 @@ const coreTables = () => ({ names: PALETTE.slice(0, CORE_N).map(p => p[0]), dark
 async function loadAtlas() {
   try {
     const mans = []; fileOwe(ATLAS_URLS.length);
-    for (const url of ATLAS_URLS) { const man = await (await fetch(vurl(url))).json(), dir = url.slice(0, url.lastIndexOf('/') + 1); fileGot();
-      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(vurl(dir + name + '-palette.json'))).json();
+    for (const url of ATLAS_URLS) { const man = await (await fetchOk(vurl(url))).json(), dir = url.slice(0, url.lastIndexOf('/') + 1); fileGot();
+      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetchOk(vurl(dir + name + '-palette.json'))).json();
       mans.push({ man, dir, sig: name + '|' + JSON.stringify(pal && pal.entries), pal }); }
     if (new Set(mans.map(m => m.sig)).size !== 1) throw new Error('the manifests name different palettes');
     const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
     if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
     const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = [];
     const image = async file => { if (!images.has(file)) { fileOwe(1); images.set(file, (async () => {
-      const bm = await createImageBitmap(await (await fetch(vurl(file))).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' }); fileGot();
+      const bm = await createImageBitmap(await (await fetchOk(vurl(file))).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' }); fileGot();
       const cv = document.createElement('canvas'); cv.width = bm.width; cv.height = bm.height; const cg = cv.getContext('2d'); cg.drawImage(bm, 0, 0);
       return { w: bm.width, h: bm.height, data: cg.getImageData(0, 0, bm.width, bm.height).data }; })()); } return images.get(file); };
     const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
@@ -4616,7 +4616,8 @@ async function loadAtlas() {
       list.push(Object.assign({}, p, { w, h, px: d.px }));
     }
     atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
-  } catch (e) { console.warn('the 48 px place art did not load', e); ART_FAIL.push('atlas'); } finally { ART_DONE.atlas = true; }
+    ART48.refusedWhy = refused.length ? refused.length + ' pieces refused · ' + refused[0] : '';
+  } catch (e) { console.warn('the 48 px place art did not load', e); artWhy('atlas', e); } finally { ART_DONE.atlas = true; }
 }
 // The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 51) and
 // the manifest's levelTone. The page's colour and lookup arrays grow from index 51 by the table; 0–50 never change.
@@ -6260,10 +6261,10 @@ async function loadOpenArt(after) {
     if (typeof Image === 'undefined') return;
     await after;   // in a browser the opening art waits for the walk art: the first screen's other work is not disturbed
     const files = {}; fileOwe(OPEN_FILES.length);
-    await Promise.all(OPEN_FILES.map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/open/', location.href).href + n + '.png'); })));
+    await Promise.all(OPEN_FILES.map(n => loadImg(vurl(new URL('./art/open/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); })));
     openRead(files);
-  } catch (e) { console.warn('the opening art did not load', e); ART_FAIL.push('open'); } finally { ART_DONE.open = true; }
+  } catch (e) { console.warn('the opening art did not load', e); artWhy('open', e); } finally { ART_DONE.open = true; }
 }
 // The care moments' signed stands (art/moment/, from the art desk's painted adult stands, scaled once to 280×300 by tools/build-moment-stands.py): on the stage during a Tend or Walk
 // moment the kind's painted stand takes the token's place, its lowest row on the token's foot row; a young one takes the kind's young stand (stand-S0Nj: the Loika's and Tuikis' signed young stands; the Untuva has none, so its adult stand at the young scale, listed for the art director).
@@ -6281,8 +6282,8 @@ async function loadMomentArt() {
     if (window.__momentArt) { momentRead(window.__momentArt); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}; fileOwe(MOMENT_KINDS.length);
-    await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('./art/moment/', location.href).href + n + '.png'); })));
+    await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => loadImg(vurl(new URL('./art/moment/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
+      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); })));
     momentRead(files);
   } catch (e) { console.warn('the moment stands did not load; the tokens play', e); }
 }
@@ -7579,6 +7580,8 @@ function drawArtFailed() {   // the art or the place did not load: said plainly,
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
   text('The land didn’t load · reload', 225, 289, C.bone, 2, 'center');
+  const w = ART_WHY[0], line = w ? w.part + ' · ' + (w.why || w.file) : (ART_DONE.atlas && !ART48.ready) ? 'atlas · ' + (ART48.refusedWhy || 'core set missing') : 'places · not ready';
+  text(line.slice(0, 40), 225, 313, C.bone, 1, 'center');
   drawLine({ ok: 'Reload', ctx: '', back: '' });
 }
 function actReadOnly(k) {
