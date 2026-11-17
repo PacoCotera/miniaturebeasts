@@ -1175,11 +1175,14 @@ function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms
 // A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
 const SLIDE_MS = 300;
 // The place's picture sits below the goal band (the band's rows hold no picture), so the sliding layer is the view below the band: nothing of the band, and no empty band rows, travels with it.
-function viewSnapshot() { const gb = goalBandOn() ? GOAL_BAND_H : 0, cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H - gb; cv.gb = gb; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y + gb, SCR_W, VIEW_H - gb, 0, 0, SCR_W, VIEW_H - gb); return cv; }   // the goal band is drawn once, by drawGoalBand over the slide, never inside the sliding layer
+function viewSnapshot() { const gb = goalBandOn() ? GOAL_BAND_H : 0, cv = document.createElement('canvas'); cv.width = SCR_W; cv.height = VIEW_H - gb; cv.gb = gb; cv.hero = RT.heroN || 0; const c = cv.getContext('2d'); c.drawImage(scr, 0, VIEW_Y + gb, SCR_W, VIEW_H - gb, 0, 0, SCR_W, VIEW_H - gb); return cv; }   // the goal band is drawn once, by drawGoalBand over the slide, never inside the sliding layer
 // The place's own picture (before the goal band, the message and the bottom line go over it) is kept each frame the explorer stands within a tile of an edge: that is what slides out.
+const nearEdge = P => { const lay = layout(P.key); return !(P.x > 1 && P.y > 1 && P.x < lay.w - 2 && P.y < lay.h - 2); };
+// The pawn is drawn once through a crossing: the pictures kept for the slide have no pawn in them; it stands over the picture (here, after it is kept) or rides over the slide (drawSlide).
+function drawHeroLater() { if (RT.heroLater && RT.heroFn && !FX.slide) { try { RT.heroFn(0, 0); } catch (e) { if (RT.err++ < 3) console.error(e); } } }
 function keepEdgeView() {
   const P = S.exp && S.exp.patch; if (!P || !motion()) return;
-  const lay = layout(P.key); if (P.x > 1 && P.y > 1 && P.x < lay.w - 2 && P.y < lay.h - 2) { FX.edgeView = null; return; }
+  if (!nearEdge(P)) { FX.edgeView = null; return; }
   FX.edgeView = { snap: viewSnapshot(), key: P.key, pl: plNow() };
 }
 const plNow = () => RT.plScr ? { x: RT.plScr.x, y: RT.plScr.y } : null;   // where the pawn stands on the screen (the last frame's)
@@ -1189,24 +1192,32 @@ function slideP(sl) { const p = clamp((NOW - sl.at) / SLIDE_MS, 0, 1); return 1 
 // After the new place's frame is on the screen: the screen's view band is moved by the slide (the old picture leaves the way the explorer walks, the new one comes in behind it).
 function drawSlide() {
   const sl = FX.slide; if (!sl) return;
-  if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; return; }
+  if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; drawHeroLater(); return; }   // the slide's last frame: the pawn stands in its place again
   const p = slideP(sl), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
+  RT.slideNewHero = nw.hero;
   const top = VIEW_Y + nw.gb;   // the slide runs below the goal band; the band itself stays where it is
   g.save(); g.beginPath(); g.rect(0, top, W, H - nw.gb); g.clip();
   g.fillStyle = HEX[C.ink]; g.fillRect(0, top, W, H - nw.gb);
   const Hs = H - nw.gb, o = slideOffsets(sl, RT.plScr, W, Hs);   // the layers travel the height they slide in, so no gap opens between them
   g.drawImage(sl.snap, Math.round(o.old.x * p), top + Math.round(o.old.y * p));
   g.drawImage(nw, Math.round(o.nw.x * (1 - p)), top + Math.round(o.nw.y * (1 - p)));
+  if (RT.heroLater && RT.heroFn) {   // the pawn, once: it rides from its spot in the old place (p = 0) to its spot in the new one (p = 1), with the camera
+    const a = sl.pl, b = RT.plScr, ride = a && b && slideRides ? { x: (a.x - b.x) * (1 - p), y: (a.y - b.y) * (1 - p) } : { x: 0, y: 0 };
+    try { RT.heroFn(Math.round(ride.x), Math.round(ride.y)); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  }
   g.restore();
 }
 // Bug #37: the two places are one map. Each layer is a whole screen of its own place; the pawn stands one tile further on in the new one than in the old (the cell across the shared edge).
 // The old layer ends (p = 1) where that puts its pawn, the new one starts (p = 0) where its pawn is one tile beyond the old pawn's: so the view scrolls by exactly what the camera of each place
 // is off by, and the pawn's line of the map never shifts on the screen, whatever the sizes of the two places (a screen away along the way, a few tiles apart across it).
+let slideRides = false;
 function slideOffsets(sl, pl1, W, Hs) {
   const dx = sl.dx, dy = sl.dy, plain = { old: { x: -dx * W, y: -dy * Hs }, nw: { x: dx * W, y: dy * Hs } }, pl0 = sl.pl;
+  slideRides = false;   // true when the pawn's two spots are on the same map line (the offsets are not the plain screen slide): drawSlide then carries the pawn between them
   if (!pl0 || !pl1 || !RT.ts) return plain;
   const ts = RT.ts, nw = { x: pl0.x + dx * ts - pl1.x, y: pl0.y + dy * ts - pl1.y }, old = { x: pl1.x - dx * ts - pl0.x, y: pl1.y - dy * ts - pl0.y };
-  return Math.abs(nw.x) > 1.5 * W || Math.abs(nw.y) > 1.5 * Hs ? plain : { old, nw };   // a camera that is not flush with the place's edge gives a distance that is no screen: keep the plain slide
+  if (Math.abs(nw.x) > 1.5 * W || Math.abs(nw.y) > 1.5 * Hs) return plain;
+  slideRides = true; return { old, nw };   // a camera that is not flush with the place's edge gives a distance that is no screen: keep the plain slide
 }
 // A cell the storm struck: the world turn at the expedition's end reads its place (stones, strike mark), and a cold layout takes a quarter second to build, so it is built now, a moment after the flash, in the walk's idle time and not all at once when End expedition is pressed.
 function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
@@ -5786,12 +5797,15 @@ function drawPatchBody(t) {
       if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(PX(rp)) + 16, y: SY(PY(rp)), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(PX(rp)) + 11, SY(PY(rp)) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
-  const heroDraw = () => {
+  const heroDraw = (ox = 0, oy = 0) => {
+    RT.heroN = (RT.heroN || 0) + 1;   // the pawn's draws this frame (read by the slide test)
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     const heroRm = spriteRm(P.x, P.y);
-    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)), heroRm === 2 ? 0 : heroRm);   // through the places' light tables like the walk props, except the night's dark2 step: the explorer keeps its own colours then (outline kept), so it reads on the dark land (GD note 2026-11-16)
-    if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); };
-  items.push({ y: RT.pl.y + 5, hero: true, d: heroDraw });
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm === 2 ? 0 : heroRm);   // through the places' light tables like the walk props, except the night's dark2 step: the explorer keeps its own colours then (outline kept), so it reads on the dark land (GD note 2026-11-16)
+    if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx + ox, SY(PY(RT.pl) - 6) + oy); };
+  // Near a place's edge, and through a crossing slide, the pawn is kept out of the place's picture: the slide layers are pictures of the place, so a pawn in them would show twice. It is drawn once on top instead (after the picture is kept, or by drawSlide riding between its two spots).
+  RT.heroFn = heroDraw; RT.heroLater = motion() && (!!FX.slide || nearEdge(P));
+  items.push({ y: RT.pl.y + 5, hero: true, d: RT.heroLater ? () => {} : heroDraw });
   if (bk && ts === 48) { const fi = bk.feetItem(g, bOrg, bclk, { x: P.x, y: P.y }, (x, y) => tileLight(x, y), RT.pl.y + 5); if (fi) items.push(fi); }   // standing in a plant: its lower part over the explorer's feet
   if (TEST.boom === 1) items.push({ y: -1e9, d: () => { throw new Error('test: a sprite throws'); } });   // test hook only: an item that throws before everything else
   if (bk) items.push(...bk.propItems(g, bOrg, bclk, (x, y) => see(x, y), (x, y) => tileLight(x, y), lay.cut));
@@ -5799,7 +5813,7 @@ function drawPatchBody(t) {
   if (ts === 48 && !bk) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; let heroDrawn = false;
   items.sort((a, b) => a.y - b.y).forEach(it => { try { it.d(); if (it.hero) heroDrawn = true; } catch (e) { if (RT.err++ < 3) console.error(e); } });   // one sprite that throws costs that sprite, never the explorer or the rest of the frame
-  if (!heroDrawn) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
+  if (!heroDrawn && !RT.heroLater) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
   if (TEST.boom === 2) throw new Error('test: the place view throws after its sprites');   // test hook only
   if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
@@ -7252,7 +7266,7 @@ function renderFrame(t) {
   if (RT.artHold && artFailed()) { drawArtFailed(); vctx.drawImage(scr, 0, 0); return; }   // a load failed: say so, and offer the reload
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
-  trackDock(); RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
+  trackDock(); RT.heroN = 0; RT.heroFn = null; RT.heroLater = false; RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   teachFill();
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
@@ -7260,7 +7274,7 @@ function renderFrame(t) {
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
-      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
+      if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
