@@ -54,11 +54,13 @@ const api = {
   names: ["Tuliko", "Hiljan"], places: [["meadow", "Meadow glade"]],
   onChange: noop, onClose: noop, onStartFresh: noop, notes: { newNote: noop },
 };
-export const OptionsDialog = () => {
-  const a = useMemo(() => ({ ...api }), []);
+const Dialog = ({ dev }) => {
+  const a = useMemo(() => ({ ...api, read: () => ({ ...api.read(), dev }) }), [dev]);
   useEffect(() => { a.open(); }, [a]);
   return <Panel api={a} />;
 };
+export const OptionsDialog = () => <Dialog dev={false} />;   // Developer tools off
+export const OptionsDialogDeveloperTools = () => <Dialog dev />;   // Developer tools on
 
 // The confirm dialog's markup as the panel's Start fresh button opens it, laid in the flow (the live one is fixed over the page).
 export const ConfirmDialog = () => (
