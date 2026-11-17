@@ -424,7 +424,7 @@ footer { padding-bottom: 32px; }
 </div>
 <script type="module">
   // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
-  import('./sandbox/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
+  import('./play/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
 </script>
 </body>
 </html>

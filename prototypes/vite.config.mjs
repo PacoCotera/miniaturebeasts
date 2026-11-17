@@ -2,7 +2,7 @@
 //   npm ci --prefix prototypes && MB_BUNDLE_OUT=<dir> npx --prefix prototypes vite build --config prototypes/vite.config.mjs
 // The output holds only what the build produced: <page>/index.html, and assets/<name>-<hash>.js|css|json|png. site.yml lays it over the assembled site (which keeps every source file where the pages and the
 // tools expect it: masters, the face, the frames), so nothing but the deployed copy changes. The sources, the headless harness, the goldens and the node tests import the modules directly and never run this.
-// Hashed files are immutable (ops/sandbox/Caddyfile, /sandbox/assets/*); the HTML stays no-cache.
+// Hashed files are immutable (ops/sandbox/Caddyfile, /play/assets/*); the HTML stays no-cache.
 import { defineConfig } from "vite";
 import path from "node:path";
 
@@ -12,7 +12,7 @@ const dropSourceImportMap = { name: "drop-source-importmap", transformIndexHtml:
 export default defineConfig({
   root: here,
   plugins: [dropSourceImportMap],
-  base: "./",           // each page's links are relative to the page, so the build works under /sandbox/ and anywhere else it is served
+  base: "/play/",       // the game is served under /play/ (the pages /play/, /play/station/, /play/exploration/; ui/, face/ ... beside them): every link the build writes is absolute from there
   publicDir: false,
   build: {
     outDir: process.env.MB_BUNDLE_OUT ? path.resolve(process.env.MB_BUNDLE_OUT) : path.resolve(here, "../_bundle"),

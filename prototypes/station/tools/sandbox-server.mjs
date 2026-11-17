@@ -22,12 +22,12 @@ const matches = (r, p, q) => {
 };
 const encodes = /^\s*encode\s+(.*)$/m.exec(caddyfile)?.[1].split(/\s+/) ?? [];
 
-export async function startSandbox({ site = null } = {}) {   // site: an assembled site (its sandbox/ folder is served as /sandbox/), the bundled copy; else prototypes/ as it is
+export async function startSandbox({ site = null } = {}) {   // site: an assembled site (its play/ folder is served as /play/, the bundled copy; the local /sandbox/ names the same files for the probes); else prototypes/ as it is
   const gzCache = new Map();
   const server = createServer((req, res) => {
     const [rawPath, q = ""] = req.url.split("?"), urlPath = decodeURIComponent(rawPath);
     if (req.url.startsWith("/caddy-api/")) { res.writeHead(502); res.end(); return; }
-    let p = path.join(site ? path.join(site, "sandbox") : root, urlPath.replace(/^\/sandbox\//, "/"));
+    let p = site && /^\/play(\/|$)/.test(urlPath) ? path.join(site, urlPath) : path.join(site ? path.join(site, "play") : root, urlPath.replace(/^\/sandbox\//, "/"));
     if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
     if (!existsSync(p)) { res.writeHead(404); res.end("not found"); return; }
     const ext = path.extname(p), st = statSync(p), etag = `"${st.size.toString(16)}-${Math.floor(st.mtimeMs).toString(16)}"`;
@@ -39,5 +39,5 @@ export async function startSandbox({ site = null } = {}) {   // site: an assembl
     res.writeHead(200, headers); res.end(body);
   });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
-  return { server, url: `http://127.0.0.1:${server.address().port}/sandbox/station/`, close: () => server.close() };
+  return { server, url: `http://127.0.0.1:${server.address().port}/${site ? "play" : "sandbox"}/station/`, close: () => server.close() };
 }

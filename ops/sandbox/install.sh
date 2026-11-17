@@ -108,8 +108,8 @@ After=network-online.target
 User=www-data
 Group=www-data
 EnvironmentFile=$ENV_FILE
-WorkingDirectory=$ROOT/current/sandbox/caddy
-ExecStart=/usr/bin/node $ROOT/current/sandbox/caddy/server.mjs
+WorkingDirectory=$ROOT/current/play/caddy
+ExecStart=/usr/bin/node $ROOT/current/play/caddy/server.mjs
 Restart=on-failure
 RestartSec=5
 [Install]
