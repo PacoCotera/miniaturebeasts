@@ -23,6 +23,9 @@ export const P = {
   ESC_MIN: 4,       // south-face edges: an escarpment
   LAKE_MIN: 5,      // water cells: a lake (under it a pond)
   DEST_GAP: 3,      // cells (Chebyshev) between two destinations, at least
+  SPRING_MIN: 8,    // W4: an escarpment of this many south faces or more has water at its foot (else a spring is made)
+  SPRING_NEAR: 2,   // W4: water coming out within this many cells (Chebyshev) of its foot counts
+  SPRING_RUN: 8,    // W4: a long foot (SPRING_MIN+ faces) with a dry stretch of this many faces gets another spring in the stretch (second try; the first, one spring a dry foot, left 33% of faces with water)
 };
 const WATER = 4;    // world.mjs L.WATER
 
@@ -218,5 +221,30 @@ export function realmFeatures(J) {
   dest.sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || a.c - b.c);
   for (const d of dest) if (kept.every(k => Math.max(Math.abs(X(k.c) - X(d.c)), Math.abs(Y(k.c) - Y(d.c))) >= P.DEST_GAP)) kept.push(d);
   stats.destDropped = dest.length - kept.length;
+  // ---- W4 (map-making-research-1): water comes out along the cliff foot. An escarpment of SPRING_MIN+ faces with no water coming out within 2 of its foot gets a spring at its lowest foot cell ----
+  // Water coming out is what the map measures: a falls' foot, the cell a stream comes out of the raised land, a ravine's head, a spring. The spring asks for the sleepers' bed, as the others do.
+  const emerge = [];
+  for (const f of falls) emerge.push(f.foot);
+  for (const st of streams) if (st.seen > 0 && st.seen < st.cells.length) emerge.push(st.cells[st.seen]);
+  for (const k of kept) if (k.kind === 'spring' || k.kind === 'ravine head') emerge.push(k.c);
+  const cheb = (a, b) => Math.max(Math.abs(X(a) - X(b)), Math.abs(Y(a) - Y(b)));
+  let springsAdded = 0, springsRefused = 0;
+  const springOk = c => !wet(c) && !coast[c] && land[c] !== 1 && !level[c] && (!J.walk || J.walk[c]) && (!J.comp || J.comp[c]) && X(c) > 1 && Y(c) > 1 && X(c) < RW - 2 && Y(c) < RH - 2;
+  const springAt = (e, cells) => {   // the lowest of these foot cells a spring may stand on (a destination keeps DEST_GAP from the others)
+    const at = cells.filter(springOk).sort((a, b) => J.E[a] - J.E[b] || a - b).find(c => kept.every(k => cheb(k.c, c) >= P.DEST_GAP));
+    if (at === undefined) { springsRefused++; return false; }
+    kept.push({ kind: 'spring', c: at, feature: e.id, index: 0, heart: 'sleepers\' bed', foot: true }); emerge.push(at); springsAdded++; return true; };
+  for (const e of escarpments) {
+    if (e.faces.length < P.SPRING_MIN) continue;
+    const feet = e.faces.map(c => c + RW), dryAt = i => i < feet.length && !emerge.some(w => cheb(feet[i], w) <= P.SPRING_NEAR);
+    if (feet.every((_, i) => dryAt(i))) { if (!springAt(e, feet.filter(c => c < NR))) continue; }   // no water along the whole foot: a spring at its lowest cell
+    // a spring line: water comes out along a long foot at intervals, so a dry stretch of SPRING_RUN faces or more (in the loop's order) gets one at the lowest cell of its middle
+    for (let round = 0; round < 8; round++) {
+      let run = null; for (let i = 0; i < feet.length && !run; i++) { if (!dryAt(i)) continue; let j = i; while (j + 1 < feet.length && dryAt(j + 1)) j++; if (j - i + 1 >= P.SPRING_RUN) run = [i, j]; i = j; }
+      if (!run || !springAt(e, feet.slice(run[0] + 2, run[1] - 1).filter(c => c < NR))) break;
+    }
+  }
+  kept.sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || a.c - b.c);
+  stats.springsAtFoot = springsAdded; stats.springsAtFootRefused = springsRefused;
   return { P, level, list, bodies, streams, sid, falls, ravines, gaps, ranges, rid, passes, escarpments, loops: loops.length, dest: kept, stats };
 }

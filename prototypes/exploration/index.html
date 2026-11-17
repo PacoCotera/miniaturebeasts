@@ -5226,7 +5226,7 @@ function drawEdgeMarks(q) {
 // The sector's marks on the reach view and the full map, one canvas made once per state: the cliff and stair pieces along the BLOCK contour (every place edge between two blocks of different level, the sector's level
 // line, not the straight place edges), then the realm's lines (trail, stream), its bridges and fords, and a mark where a destination's place is in sight (a plain ring, a named empty slot for the art desk: reach-destination).
 // A cell takes its marks once it is revealed (a block edge needs both its cells revealed, or the pawn's).
-const DEST_RING = { pass: 'plum', ravine: 'plum', 'ravine head': 'plum', falls: 'river', spring: 'river', 'stream mouth': 'river', ford: 'river', bridge: 'gold', reach: 'gold' };
+const DEST_RING = { pass: 'plum', ravine: 'plum', 'ravine head': 'plum', falls: 'river', spring: 'river', 'stream mouth': 'river', ford: 'river', shore: 'river', 'stream bend': 'river', 'cliff foot': 'plum', bridge: 'gold', reach: 'gold' };
 function drawSectorMarks(q, cells, pawn, sec) {
   const cs = q.cs, u = cs / 4, rmOf = c => !S.revealed[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), inV = new Map(cells.map(([c]) => [c, 1]));
   const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;

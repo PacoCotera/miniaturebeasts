@@ -3,7 +3,7 @@
 //
 // Layers: bridges (rare, straight, over 1-2 cells of deep water) -> hubs (3 a region, plus passes, through-ravines, bridges) -> one multi-source Dijkstra over the cost field (each cell learns
 // its nearest hub; hubs whose catchments touch are candidate pairs; Kruskal keeps the tree; the worst detours become loops) -> branches to destinations -> holes filled with the land's own
-// destinations (R14) -> spurs by the fork rule (no stretch over RUN_MAX places without a fork).
+// destinations (R14) -> spurs by the fork rule (no stretch over RUN_MAX places without a fork) -> R1: the land's own spots along the trail where a stretch of 8 places has nothing beside it.
 // Level changes only at the region's own stairs (an upper cell with a south face the region seated a stair on); water only at fords and bridges.
 import { fbm, subSeed } from '../../../core/base/noise.mjs';
 
@@ -37,6 +37,7 @@ export const P = {
   REACH: 6,         // R14: places' walk from a destination, at most
   REACH_FILL: 7,    // R14: a hole is filled while a walkable place is farther than this (6 would fill 171 holes a realm; 7 leaves 2% of places over 6 and none over 8)
   DEST_GAP: 3,      // cells (Chebyshev) between two destinations, at least
+  TRAIL_RUN: 7,     // R1: places of trail with no destination within one place, at most (a longer stretch gets a spot at its middle)
 };
 
 // a small binary heap of (priority, id), ties by id: deterministic on every engine
@@ -292,11 +293,59 @@ export function realmRoads(I) {
     let water = 0, cliff = 0, wood = 0;
     for (let i = start; i < Math.min(run.length, start + P.RUN_MAX + 1); i++) for (const n of nb4(run[i])) { if (!walk[n] && land[n] === 4) water++; else if (level[n] !== level[run[i]]) cliff++; else if (land[n] === 3) wood++; }
     return water >= cliff ? (water ? 'water' : 'narrow land') : 'cliff'; }
+  tick('spurs');
+  // ---- R1 (map-making-research-1): something beside the trail. Walking the trail, no stretch of TRAIL_RUN + 1 places goes by with no destination within one place of the path. A stretch that does gets
+  // one of the land's own spots at its middle, on the trail or one cell beside it (a short branch joins it): the spot the land gives a reason for first (a pond edge, a stream bend, a cove shore, a
+  // hollow, the foot of a cliff), the open ground only where it gives none. ----
+  { const cov = new Uint8Array(NR);   // a destination here or within one cell (Chebyshev): "beside the trail"
+    const covAdd = c => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = X(c) + dx, y = Y(c) + dy; if (x >= 0 && y >= 0 && x < RW && y < RH) cov[y * RW + x] = 1; } };
+    for (const k of dest) covAdd(k.c);
+    const bodyAt = new Map(); for (const b of I.bodies || []) for (const w of b.cells) bodyAt.set(w, b);
+    const faceOf = new Map(); for (const e of I.escarpments || []) for (const f of e.faces) faceOf.set(f, e.id);   // a south face's cell -> its escarpment
+    // spot(c), and the cove shore (a shore cell with water on one side only, R10's cove). What the land ties a spot to is a feature: a pond or cove shore is a 'shore', a bend of a stream a 'stream bend'
+    // (kind and the feature they belong to, as the spring and the ford have); a hollow, a lone tree, a cliff's foot and open ground tie it to no named feature: 'reach', the land's own.
+    const tspot = c => {
+      const s = spot(c), b = s.sc - (side[c] ? 3 : 0);
+      if (b >= 50) return { ...s, spot: 'pond edge', kind: 'shore', feature: 'marsh' };
+      if (b >= 40) return { ...s, spot: 'stream bend', kind: 'stream bend', feature: 'stream-' + streamCells.get(c).st.id };
+      let w = 0, wb = null; for (const n of nb4(c)) if (deepWater(n)) { w++; wb = bodyAt.get(n); }
+      if (w === 1 && !ford[c]) return { sc: 45, heart: 'herd ground', spot: 'cove shore', kind: 'shore', feature: wb ? wb.kind + '-' + wb.id : 'sea' };
+      const esc = b >= 38 && b < 40 ? faceOf.get(c) : undefined;   // the cell under a south face of a named escarpment: its cliff foot
+      if (esc) return { ...s, spot: 'cliff foot', kind: 'cliff foot', feature: esc };
+      return { ...s, spot: b >= 38 ? 'cliff foot' : b >= 36 ? 'hollow' : b >= 30 ? 'tree on a rise' : 'open ground', kind: 'reach', feature: 'land' }; };
+    let added = 0, tied = 0, stuck = 0; const skip = new Set();
+    for (let round = 0; round < 800; round++) {
+      const g = roadGraph(NR, RW, lists), U = []; for (const c of g.adj.keys()) if (!cov[c] && !skip.has(c)) U.push(c); U.sort((p, q) => p - q);
+      const seenU = new Uint8Array(NR), farthest = (s, inU) => { const pv = new Map([[s, -1]]), qq = [s]; for (let h = 0; h < qq.length; h++) for (const n of g.adj.get(qq[h])) if (!pv.has(n) && inU(n)) { pv.set(n, qq[h]); qq.push(n); } return { end: qq[qq.length - 1], pv, qq }; };
+      const inU = c => !cov[c] && !skip.has(c);
+      let path = null;
+      for (const s of U) { if (seenU[s]) continue;
+        const a = farthest(s, inU); for (const c of a.qq) seenU[c] = 1;
+        if (a.qq.length <= P.TRAIL_RUN) continue;   // a component of 7 places or fewer has no longer stretch
+        const b = farthest(a.end, inU), p = []; for (let v = b.end; v !== -1; v = b.pv.get(v)) p.push(v);
+        if (p.length > P.TRAIL_RUN) { path = p; break; } }
+      if (!path) break;
+      const L = path.length; let best = null;
+      // the middle third of the stretch; a spot the land ties to no feature is not taken until the whole stretch has been looked over for one that it does (the best by the land's reason, then nearest the middle), then then one cell from another destination, then nearer the coast's edge
+      for (const [lo, hi, gap, inMin, wk] of [[(L / 3) | 0, Math.ceil(2 * L / 3), P.DEST_GAP, P.SHORE_IN], [(L / 6) | 0, Math.ceil(5 * L / 6), P.DEST_GAP, P.SHORE_IN], [1, L - 2, P.DEST_GAP, P.SHORE_IN], [1, L - 2, 1, P.SHORE_IN], [0, L - 1, 1, P.SHORE_IN], [0, L - 1, 1, 2], [0, L - 1, 1, 1]].map((w, k) => [...w, k])) {
+        for (let i = Math.max(0, lo); i <= Math.min(L - 1, hi); i++) { const p = path[i];
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = X(p) + dx, y = Y(p) + dy; if (x < 0 || y < 0 || x >= RW || y >= RH) continue; const c = y * RW + x;
+            if (!walk[c] || ford[c] || land[c] === 1 || !comp[c] || level[c] !== level[p] || rim(c) < inMin || deepWater(c) || (gap === 1 ? isDest[c] : near3[c])) continue;
+            let br = null; if (!g.on[c]) { br = branchTo(c, g.on, 2); if (!br || br.length < 2 || !okPath(br)) continue; }
+            const s = tspot(c), key = s.sc * 100000 - Math.abs(i - (L >> 1)) * 1000 - (br ? 300 : 0) - (h32(seed, c, 23) & 255);
+            if (!best || key > best.key) best = { c, key, s, br }; } }
+        if (best && (best.s.kind !== 'reach' || wk >= 2)) break; }
+      if (!best) { for (const c of path) skip.add(c); stuck++; continue; }
+      const d = { kind: best.s.kind, c: best.c, feature: best.s.feature, index: 0, heart: best.s.heart, spot: best.s.spot, along: true };
+      dest.push(d); markDest(d.c); covAdd(d.c); reachAdd([d.c]); added++; if (best.s.kind !== 'reach') tied++;
+      if (best.br) { const b = best.br.slice().reverse(); lists.push(b); kinds.push('dest'); mark(b); d.branch = true; destBranches++; }
+    }
+    stats.trailSpots = added; stats.trailSpotsTied = tied; stats.trailGapsStuck = stuck; }
+  tick('trailspots');
   // branch ends: the ends of destination branches too (a post yard stands at a branch's end)
   const g1 = roadGraph(NR, RW, lists), onF = g1.on, deg1 = v => g1.adj.get(v).length;
   const ends = []; for (const v of g1.adj.keys()) if (deg1(v) === 1) ends.push(v);
   const forks = []; for (const v of g1.adj.keys()) if (deg1(v) >= 3) forks.push(v);
-  tick('spurs');
   stats.hubs = hubs.length; stats.loops = loops.length; stats.spurs = spurs; stats.stuck = stuckRuns.length; stats.destBranches = destBranches;
   return { hubs, tree, paths, loops, lists, kinds, bridges, dest, far, on: onF, ends, forks, branchEnds: [...branchEnds], stuck: stuckRuns, stats };
 }
