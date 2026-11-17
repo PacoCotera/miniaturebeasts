@@ -5471,10 +5471,13 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
 // A cell the places worker still owes is never asked of layout() (rule: PR 316); it stays under the map's fog until it is here.
 const PEEK_NB_MS = 6, PEEK_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
 function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
+  // The cells meet cell to cell (call-zoom-wide-2): a neighbour is drawn as its own cell only, never with its apron (the ground beyond the cell that a place picture carries unveiled, as the
+  // walking view does), or each border would show a doubled green strip. Only the current place keeps its apron, drawn over the meeting. Land that is not drawn is the veil's dark, never the map's paper.
+  const bkc = bakedView(lay), cw = lay.w * Tp, ch = lay.h * Tp, cx0 = ox + bkc.ox * Tp, cy0 = oy + bkc.oy * Tp;
   ensureMap(); const nb = v.nb || (v.nb = new Map()), cx = lay.cell % MW, cy = (lay.cell / MW) | 0, end = performance.now() + PEEK_NB_MS; let asked = 0;
   for (const [dx, dy] of PEEK_DIRS) {
-    const X = cx + dx, Y = cy + dy; let w = W, h = H;
-    const rect = (nw, nh) => ({ x: dx < 0 ? ox - nw : dx > 0 ? ox + W : ox + ((W - nw) >> 1), y: dy < 0 ? oy - nh : dy > 0 ? oy + H : oy + ((H - nh) >> 1), w: nw, h: nh });
+    const X = cx + dx, Y = cy + dy; let w = cw, h = ch;
+    const rect = (nw, nh) => ({ x: dx < 0 ? cx0 - nw : dx > 0 ? cx0 + cw : cx0 + ((cw - nw) >> 1), y: dy < 0 ? cy0 - nh : dy > 0 ? cy0 + ch : cy0 + ((ch - nh) >> 1), w: nw, h: nh });
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) { const r = rect(w, h); R(r.x, r.y, r.w, r.h, C.void); continue; }
     const c = Y * MW + X, key = String(c); let nl = null, e = nb.get(key);
     if (S.revealed[c] && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {
@@ -5482,19 +5485,19 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
       if (nl && !(nl.baked && !nl.cave)) nl = null;
     }
     const nbk = nl && bakedView(nl);
-    if (nbk) { w = nbk.place.w * Tp; h = nbk.place.h * Tp; }
+    if (nbk) { w = nl.w * Tp; h = nl.h * Tp; }
     const r = rect(w, h); g.imageSmoothingEnabled = false;
     if (nbk) {
-      const veil = placeVeil(nl), wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
+      const veil = placeVeil(nl); if (!S.visited[c]) for (let i = 0; i < veil.length; i++) veil[i] = 1;   // a place never walked is wholly veiled, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
+      const wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
       if (!cvn) {
         if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
         for (let n = 0; n < 40 && !e.cv && performance.now() < end; n++) { const s = e.it.next(); if (s.done) { e.cv = wholeCanvas(nl, nbk, s.value, veil); break; } }   // [tune] one step at least a frame
         cvn = e.cv;
       }
-      if (cvn) { g.drawImage(cvn, r.x, r.y, r.w, r.h); continue; }
+      if (cvn) { const T2 = nbk.wholeSize(); g.drawImage(cvn, nbk.ox * T2, nbk.oy * T2, nl.w * T2, nl.h * T2, r.x, r.y, r.w, r.h); continue; }   // its cell out of the picture
     }
-    if (!S.revealed[c]) g.drawImage(fogCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // land not seen: the map's fog
-    else if (nl || (passable(c) && G.gen === 7)) g.drawImage(fogCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // a place still being made: under fog until it is here
+    if (!S.revealed[c] || nl || (passable(c) && G.gen === 7)) R(r.x, r.y, r.w, r.h, C.night);   // land not seen, or a place still being made: the veil's dark (the map's paper is cream: never the page's colour here)
     else g.drawImage(mapCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // water, cliff: as the map shows the cell
   }
 }
