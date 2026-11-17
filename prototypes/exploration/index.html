@@ -2288,6 +2288,20 @@ function stepsOver(key, o, x, y) {
 }
 // What the explorer stands on that can be acted on (a small thing), or null.
 function standingOn(key, P) { const o = occupant(key, P.x, P.y, 'player'); return o && (o.type === 'fruit' || o.type === 'tuft' || (o.type === 'feat' && SMALL_FEAT.includes(o.f.kind))) ? o : null; }
+// The short reason a step in a place is refused (the HUD line; [copy] slots in words.mjs WORDS.block). o is what occupant() found on the tile.
+function blockWords(lay, x, y, o) {
+  const B = WORDS.block, i = y * lay.w + x;
+  if (o.type === 'cr') return B.mibi;
+  if (o.type === 'pt' || o.type === 'player') return B.partner;
+  if (o.type === 'pod') return B.pod;
+  if (o.type === 'feat') return o.f.kind === 's' ? B.slab : o.f.kind === 'k' ? B.stone : B.thing;
+  if (o.type !== 'tile') return B.thing;
+  if ((lay.pieces || []).some(p => p.y === y && x >= p.x && x < p.x + (p.w || 1))) return B.slab;   // a set piece's tile, drawn or not
+  if (o.t === T.WATER || o.t === T.DEEP) return B.water;
+  if (o.t === T.TRUNK || (lay.press && lay.press[i] === 2)) return B.tree;
+  if (o.t === T.ROCK && lay.press && lay.press[i] === 1) return B.stone;
+  return B.rock;
+}
 function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
@@ -2307,6 +2321,7 @@ function patchStep(dir, mode) {
     else if (o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE)) softBump(o.t);
     else if (o.type === 'tile' && o.t === T.BANK && !canBank()) softBump(o.t);
     else if (o.type !== 'tile' && o.type !== 'cr' && !unveiled(key, x, y)) fxMsg('Something is there under the veil · ))) Call to see');
+    else fxMsg(blockWords(layout(key), x, y, o));   // every other refusal says why too (bug #14: a slab with no art yet blocked with no word)
     return;
   }
   P.x = x; P.y = y; walkLift(); lineWords(layout(key), P);
