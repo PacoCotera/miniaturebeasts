@@ -8,7 +8,8 @@
 #   every other /admin path             only with a session: the login's /check says yes (and names the user), then:
 #     /admin/team, team.json ...        the studio's team page, on the private bridge (the studio still answers under its own /studio prefix; this file rewrites to it)
 #     /admin/notes*                     the play notes page and files: the Caddy service (not the studio)
-#     /admin/bugs                       the bugs page (open bugs, fixed in the last 7 days): the Caddy service, from bugs.json beside the notes
+#     /admin/bugs                       the bugs page (open bugs, fixed in the last 7 days): the Caddy service, from bugs.json beside the notes; /admin/bugs/summary.json is the index card's live line
+#     /admin/book                       the book page (comments, spreads, proof and PDF links): the Caddy service, from book/*.json beside the notes; /admin/book/summary.json is the index card's live line
 #     /admin/workbench/                 the species workbench's static files (the release's play/workbench), not public
 #     /admin/test/                      the test page (the release's play/test; its links are made absolute by bundle-pages.sh)
 #     /admin/ itself                    the index page, from the studio (rewritten to its /index route; /admin redirects to /admin/); its files are /admin/index/*
@@ -49,7 +50,7 @@
 	}
 	# play notes: read only behind the same login, served by the Caddy service on this machine (the notes are on its card, not on the studio's machine);
 	# the service answers only with the login's X-Studio-User, and the public /caddy-api/ route below can post a note but never read one
-	@caddypages path /admin/notes* /admin/bugs*
+	@caddypages path /admin/notes* /admin/bugs* /admin/book /admin/book/*
 	handle @caddypages {
 		route {
 			request_header -X-Studio-User

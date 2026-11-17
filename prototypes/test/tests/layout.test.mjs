@@ -56,3 +56,16 @@ test("the pixel rule", () => {
   assert.equal(render("companion", 0.62, 1), "auto"); assert.equal(render("companion", 0.8311, 3), "pixelated");
   assert.equal(snap(1.1, 1), 1); assert.equal(snap(0.84375, 1), 0.84375);
 });
+
+test("the way back to /admin (shown only under /admin) sits clear of the bar, the keys, the face and the other lines", () => {
+  const hit = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
+  for (const [W, H, safe] of [[390, 664, {}], [390, 844, {}], [375, 667, {}], [844, 390, { r: 47, b: 21, l: 47 }], [844, 390, {}], [915, 412, {}], [1440, 900, {}], [1024, 768, {}]]) {
+    for (const device of ["station", "companion"]) for (const dev of [true, false]) {
+      const l = L(W, H, device, safe, dev), a = l.regions.admin;
+      assert.ok(a && a[0] >= 0 && a[1] >= 0 && a[0] + a[2] <= W && a[1] + a[3] <= H, `${W}x${H} ${device}: on screen`);
+      for (const [k, r] of Object.entries(l.regions)) if (k !== "admin" && r && !(k === "foot" && l.kind === "desktop")) assert.ok(!hit(a, r), `${W}x${H} ${device} dev=${dev}: clear of ${k}`);
+      for (const [k, r] of Object.entries(l.keys)) assert.ok(!hit(a, r), `${W}x${H} ${device}: clear of key ${k}`);
+      assert.ok(!hit(a, l.face), `${W}x${H} ${device}: clear of the face`);
+    }
+  }
+});
