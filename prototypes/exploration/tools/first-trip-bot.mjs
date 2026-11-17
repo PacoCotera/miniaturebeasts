@@ -7,11 +7,13 @@
 import { newPage, makeWalker } from "./walker.mjs";
 
 export const NEXT_DATA = 2;     // Data held at the end of the first walk: identify the pod (1) and read one trait (1)
+const { PRICE } = await import("../../station/src/state.mjs");
+export const GROW_E = PRICE.growE;   // Energy held at the end of the first walk: the first Grow's price today (growCost: PRICE.growE Energy, no Essence for the first mibi, no Data with no trait changed); lock-playtest-world
 export const BUDGET = 900;      // actions of the first walk before the bot gives up looking: it goes into the start and its eight neighbours properly (about 90 actions a place) and then the rest of the reach
 
 export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET } = {}) {
   const p = newPage(seed, { calm }), w = makeWalker(p, { budget, verbose, tag: String(seed) }), { key, phase, acts, cargo } = w;
-  const enough = () => { const c = cargo(); return c.pods >= 1 && c.d >= NEXT_DATA; };
+  const enough = () => { const c = cargo(); return c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E; };
   const out = { seed, ok: false, why: "", actions: 0, places: 0, readings: 0, pods: 0, data: 0, energy: 0, firstPodAt: null, firstDataAt: null };
 
   // One place: Call, take what it shows (pods, stones, strike marks: a press on each), and leave. A place is gone into properly (a Call at its four quarters and its middle) or quickly (the way in and the
@@ -41,6 +43,13 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
       const before = cargo().d; key(w.facing(m.x, m.y)); key("confirm");
       if (cargo().d > before) { out.readings++; w.say("read a strike mark"); } else break;
     }
+    // the Energy of the first Grow's price (lock-playtest-world): a warm or storm-charged stone the Call shows, drawn while the hold is short of it
+    for (let g = 0; g < 4 && phase() === "patch" && !w.budgetGone() && cargo().e < GROW_E; g++) {
+      const m = w.items().find((i) => i.k === "warm" || i.k === "charge"); if (!m) break;
+      if (!w.walk(m.x, m.y, false, 60)) break;
+      const before = cargo().e; key(w.facing(m.x, m.y)); key("confirm");
+      if (cargo().e > before) w.say("drew a stone"); else break;
+    }
   };
   // a few steps toward a point of the place (fractions of its width and height), to see more of it
   const walkTo = (fx, fy) => { const lay = p.run("(() => { const l = layout(S.exp.patch.key); return { w: l.w, h: l.h }; })()"); return w.walkNear(Math.round(lay.w * fx), Math.round(lay.h * fy), 40) || phase() === "patch"; };   // the open tile nearest the aim: the aim itself may be a tree, a stone or a mark
@@ -68,8 +77,8 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
   }
   if (!p.S.exp) { out.sealed = true; out.why = "sealed before the walk was done (the Probe's shield ran out)"; return out; }
   const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = acts();
-  out.ok = c.pods >= 1 && c.d >= NEXT_DATA;
-  if (!out.ok && !out.why) out.why = c.pods < 1 ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : "only " + c.d + " Data";
+  out.ok = c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E;
+  if (!out.ok && !out.why) out.why = c.pods < 1 ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : c.d < NEXT_DATA ? "only " + c.d + " Data" : "only " + c.e + " Energy, the first Grow costs " + GROW_E;
   out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false }); Object.defineProperty(out, "walker", { value: w, enumerable: false });
   return out;
 }
