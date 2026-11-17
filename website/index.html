@@ -346,7 +346,7 @@ footer { padding-bottom: 32px; }
   </div>
 </div>
 
-<section class="strip-band" aria-labelledby="strip-title">
+<section class="strip-band" id="strip-band" aria-labelledby="strip-title" hidden>
   <div class="wrap">
     <p class="eyebrow" id="strip-title">From the game</p>
     <div class="strip">
@@ -486,6 +486,19 @@ footer { padding-bottom: 32px; }
     <p class="caption build" id="build">© 2026 Dirty Pawz Press · local</p>
   </footer>
 </div>
+<script>
+  // The "From the game" strip stays hidden until all three stills load; a missing picture never shows an empty frame.
+  (function () {
+    var band = document.getElementById('strip-band');
+    var imgs = band.querySelectorAll('img');
+    var left = imgs.length;
+    imgs.forEach(function (img) {
+      var probe = new Image();
+      probe.onload = function () { if (--left === 0) band.hidden = false; };
+      probe.src = img.getAttribute('src');
+    });
+  })();
+</script>
 <script type="module">
   // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
   import('./play/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
