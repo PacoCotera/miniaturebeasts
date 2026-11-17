@@ -21,6 +21,9 @@ export const WORDS = {
   // [copy] the HUD line when a step in a place is refused and nothing else says why (placeholders say the meaning only; bug #14)
   block: { stone: 'Stone · in the way', tree: 'Tree · in the way', water: 'Water · no way across', rock: 'Steep rock · no way over', slab: 'A slab · in the way', thing: 'In the way', mibi: 'A mibi is there', partner: 'Your partner is there', pod: 'A pod is there' },
   // [copy] the Data hold is the only limit on a trip; the copywriter writes the words behind these slots (placeholders say the meaning only)
+  // [copy] the notice line (lock-playtest-world, owner 2026-11-10 20:18), three slots left empty for the copywriter: saveFailed is shown while a save cannot be written (storage full, a private window, blocked)
+  // until a save works again; landChanged while the save names a land (REALM_REV) other than the one this build makes; pageBroke when the page breaks, given the build number from build.json (an empty slot still shows it).
+  notice: { saveFailed: '', landChanged: '', pageBroke: build => '' },
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
   creature: { holdFull: 'no room for Data' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
   // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line

@@ -46,6 +46,8 @@ body{
 }
 .device-col{display:flex; flex-direction:column; align-items:center; gap:8px; flex:0 0 auto}
 .build-foot{margin:0 auto; padding:0 16px 20px; max-width:1900px; font: 500 12px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* page chrome in the bottom margin, outside the device; wraps at phone width */
+.notice{margin:0 auto; padding:8px 16px; max-width:1900px; font: 600 13px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* the notice line (WORDS.notice): save failed, land changed, page broke; page chrome like the build footer, but shown in a frame too */
+.notice[hidden]{display:none}
 
 /* ===== The Companion (keeps its own look in both themes) ===== */
 .device-fit{position:relative}
@@ -245,11 +247,21 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
     </div>
   </aside>
 </main>
+<div class="notice" id="notice" role="alert" hidden></div>
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
+<script>
+// A page that breaks shows a line with the build number instead of a blank page (lock-playtest-world): the module's notice line (play/src/footer.mjs mountNotice, the words of WORDS.notice) takes over once it is mounted;
+// this stands for a page whose module never ran, and shows the bare build number from build.json.
+(function () { var el = document.getElementById('notice'); window.__mbBroke = false;
+  function broke(e) { if (e && e.type === 'error' && !e.error) return; window.__mbBroke = true; if (window.__mbNotice) return;
+    fetch('../../build.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (b) { if (window.__mbNotice) return; el.hidden = false; el.dataset.slot = 'pageBroke'; el.textContent = b.short || String(b.commit || '').slice(0, 7) || 'local'; }); }
+  addEventListener('error', broke); addEventListener('unhandledrejection', broke); })();
+</script>
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV } from "./src/world7.mjs";
+import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, PIPS } from "./src/waitpips.mjs";
 import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
@@ -1392,15 +1404,18 @@ function worldFields(seed, gen, wid) {
 }
 // The world on S becomes a realm of one region, the Meadows (g1), mounted: the save of one map, read as the realm it is (migrate8, pure).
 function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now() }); mount(r, 'g1'); return r; }
+// The notice line (play/src/footer.mjs mountNotice; the words are WORDS.notice's [copy] slots): what holds now is kept here, and drawn once the line is mounted.
+const NOTE = { flags: {}, ui: null };
+function noteSet(kind, on) { on = !!on; if (!!NOTE.flags[kind] === on) return; NOTE.flags[kind] = on; if (NOTE.ui) NOTE.ui.set(kind, on); }
 function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid
-  if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
+  if (seed == null) seed = randomSeed();
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   G = worldOf(seed, gen);
   const carry = RESET_CARRY; RESET_CARRY = null;   // a realm that follows the release's reset: it says where it came from, and takes the world id the Station wrote if the Station reset first
   S = worldFields(seed, gen, wid ?? (carry && carry.wid) ?? undefined);
   if (carry && carry.resetFrom != null) S.resetFrom = carry.resetFrom;
   const life = genLife(seed, { n: 1, biome: 'mixed' }); S.cr = life.cr; S.pods = life.pods;   // region 1, the Meadows: the three starters
-  S = realmOf(S); S.biomeV = REALM_BIOME_V;   // a new realm draws the newest kinds; a save without biomeV is version 1
+  S = realmOf(S); S.biomeV = REALM_BIOME_V; S.realmRev = REALM_REV; noteSet('landChanged', false);   // a new realm draws the newest kinds (a save without biomeV is version 1) and records the land it was made on: with the seed, the save always names the same land
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
 const newWorld = newRealm;   // the name the tests and the page's buttons call
@@ -1459,7 +1474,7 @@ function save(keepRipe) {
     FX.shieldAtDock = null; FX.dockSaid = 0; }
   if (typeof keepCompanion === 'function') keepCompanion();
   const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
-  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } } catch (e) { /* storage unavailable: keep playing in memory */ }
+  try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); } catch (e) { noteSet('saveFailed', true); /* storage full, blocked or private: keep playing in memory, and say so until a save works again (WORDS.notice.saveFailed) */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
 // v7 → v8, the same structural move on both pages: the old Station store becomes the Station's part, mibis move to
@@ -1525,6 +1540,8 @@ function load() {
     layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here)); try { wantSector(hereRegion()); } catch (e) { console.error('the sector was not asked for', e); }   // the mounted region's kind; its sector is asked of the worker (a failure here only leaves the maps on the cell labels, never the save unread)
     if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
+    if (typeof S.realmRev !== 'number') S.realmRev = REALM_REV;   // a save from before the land freeze: the land of REALM_REV 9 is the one it was made on (the generator's output did not change)
+    noteSet('landChanged', S.realmRev !== REALM_REV);   // a save made on another land than this build makes: it keeps the number it was made on, and the page says so (WORDS.notice.landChanged)
     indexCreatures(); dropOld(); return true;   // the older saves go only once this one has loaded
   } catch (e) { console.error('the save would not load', e); S = null; return 'broken'; }   // it would not load: kept as it is; the cause is logged so the next failure shows it
   })();
@@ -7489,7 +7506,11 @@ function onDpr() { setEmbedS(); armDpr(); }
 if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }
 
 const footEl = document.getElementById('buildFoot');
-import('../play/src/footer.mjs').then(m => m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers })).catch(() => { });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
+import('../play/src/footer.mjs').then(m => { window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl: '../../build.json' });   // the notice line: a save that cannot be written, a land that changed, a page that broke (the head's script saw it first)
+  for (const k of Object.keys(NOTE.flags)) if (NOTE.flags[k]) NOTE.ui.set(k, true);
+  if (window.__mbBroke) noteSet('pageBroke', true);
+  window.addEventListener('error', e => { if (e.error) noteSet('pageBroke', true); }); window.addEventListener('unhandledrejection', () => noteSet('pageBroke', true));
+  m.mountFooter(footEl, { buildUrl: '../../build.json', schema: SAVE_V, caddy: m.caddyAnswers }); }).catch(() => { });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
 
 const obsBtn = document.getElementById('obsToggle'), obsEl = document.getElementById('obs');
 function setObserver(on) { obsBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); obsEl.hidden = !on; try { localStorage.setItem('mb-observer', on ? '1' : '0'); } catch (e) { } onStateChanged(); }
@@ -7588,7 +7609,7 @@ function actNotice(k) {
 }
 // A new world's realm takes seconds to make: it is made in a Web Worker (src/realm-store.mjs), the page stays live and shows the loading line (the Probe reading the land). A realm made before
 // (it is kept in the browser per seed) is back at once. Without a Worker (the test sandbox) the world is made on the spot, as it always was.
-const randomSeed = () => Math.floor(Math.random() * 4294967295) >>> 0;
+const randomSeed = () => PLAYTEST_SEEDS[Math.floor(Math.random() * PLAYTEST_SEEDS.length)];   // a new world takes only a seed the bots walked (src/playtest-seeds.mjs, tools/playtest-world-check.mjs): the one place a seed is picked
 // The worker runs in the bundled page (the build puts the packages inside it). The page served from the source tree (the dev checks, the goldens, the journeys) has an import map the worker cannot read, so it
 // makes the realm on its own thread as it always did.
 const OFF_PAGE = typeof Worker !== 'undefined' && !(document.querySelector && document.querySelector('script[type="importmap"]'));

@@ -68,3 +68,14 @@ test("docking Companion B switches the Station to B's world; docking A again swi
   assert.equal(game.switchCompanion({ id: a.id, name: a.name }), false, "the same Companion: nothing switches");
   assert.ok(S.SAVE_V === 10 && S.SAVE_KEY === "mb-save-v8", "v10; the storage key keeps its name");
 });
+
+// lock-playtest-world (owner 2026-11-10 20:18): a save the Station cannot write is said (views/words.mjs NOTICE_WORDS.saveFailed) until a save works again.
+test("a save the Station cannot write sets G.saveFailed until a save works again", async () => {
+  const st = memStore(); const a0 = C.companionOf(st, "A", { rand }); st.setItem(C.saveKeyOf(a0.id), RAW10); globalThis.localStorage = st;
+  const game = await import("../src/game.mjs"), { G } = game, { NOTICE_WORDS } = await import("../src/views/words.mjs");
+  game.load(); game.save(); assert.equal(G.saveFailed, false, "a save that works");
+  const set = st.setItem; st.setItem = () => { throw new Error("QuotaExceededError"); };
+  game.save(); assert.equal(G.saveFailed, true, "storage full: the line holds"); game.save(); assert.equal(G.saveFailed, true, "and while saves keep failing");
+  st.setItem = set; game.save(); assert.equal(G.saveFailed, false, "a save that works takes it away");
+  assert.deepEqual(Object.keys(NOTICE_WORDS).sort(), ["pageBroke", "saveFailed"], "the slots are named in the words file");
+});

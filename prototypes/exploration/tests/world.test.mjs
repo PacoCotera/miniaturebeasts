@@ -11,6 +11,9 @@ import { blank } from "../../face/tools/blank.mjs";
 import { detail } from "../../core/base/noise.mjs";
 import { NOISE_VECTORS } from "./noise-vectors.mjs";
 import * as W from "../src/world.mjs";
+import { PLAYTEST_SEEDS, PLAYTEST_REALM_REV, PLAYTEST_BIOME_V } from "../src/playtest-seeds.mjs";
+import { REALM_REV } from "../src/gen7/region.mjs";
+import { WORDS } from "../src/words.mjs";
 import * as R from "../src/regions.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
@@ -1735,4 +1738,36 @@ test("finds: fruit and an unlit beacon are not takes; a place with a full cup re
   assert.equal(p.run("leftTotal(curLay().cell)"), 0);
   assert.equal(p.run("placeLine(curLay(), S.exp.patch)"), "explored · nothing left to take");
   assert.equal(p.run("doneEmpty()"), true);
+});
+
+// lock-playtest-world (owner 2026-11-10 20:18): the playtest seed list, the land version on the save, the three notice slots.
+test("a new world takes its seed from the playtest list only, and the list is made on this build's land", () => {
+  assert.ok(PLAYTEST_SEEDS.length >= 1);
+  assert.equal(PLAYTEST_REALM_REV, REALM_REV, "src/playtest-seeds.mjs is made again (tools/playtest-world-check.mjs --list) when REALM_REV changes");
+  assert.equal(PLAYTEST_BIOME_V, R.REALM_BIOME_V);
+  const p = page({});
+  for (let i = 0; i < 6; i++) assert.ok(PLAYTEST_SEEDS.includes(p.run("randomSeed()")), "randomSeed is a seed of the list");
+  p.run("newWorld(null)"); assert.ok(PLAYTEST_SEEDS.includes(p.run("S.seed")), "a new realm asked for no seed takes one of the list");
+});
+
+test("the save records the land it was made on (REALM_REV, biomeV) with the seed; a save of another land says landChanged and keeps its number", () => {
+  const p = page({}); p.run(`newWorld(${PLAYTEST_SEEDS[0]})`);
+  const sv = JSON.parse(p.store[p.KEY]);
+  assert.deepEqual([sv.seed, sv.realmRev, sv.biomeV], [PLAYTEST_SEEDS[0], REALM_REV, R.REALM_BIOME_V]);
+  assert.equal(p.run("!!NOTE.flags.landChanged"), false);
+  const again = rev => { const o = { ...sv }; if (rev === undefined) delete o.realmRev; else o.realmRev = rev; const q = page({ ...p.store, [p.KEY]: JSON.stringify(o) }); return { flag: q.run("!!NOTE.flags.landChanged"), rev: q.run("S.realmRev"), ok: q.run("load()") === true }; };
+  assert.deepEqual(again(REALM_REV), { flag: false, rev: REALM_REV, ok: true }, "the same land loads quietly");
+  assert.deepEqual(again(REALM_REV - 1), { flag: true, rev: REALM_REV - 1, ok: true }, "another land: the line, and the save keeps the number it was made on");
+  assert.deepEqual(again(undefined), { flag: false, rev: REALM_REV, ok: true }, "a save from before the freeze holds the land of this one");
+});
+
+test("a save that cannot be written shows the saveFailed slot until a save works again", () => {
+  const p = page({}); p.run(`newWorld(${PLAYTEST_SEEDS[0]})`);
+  assert.equal(p.run("!!NOTE.flags.saveFailed"), false);
+  const set = p.ctx.localStorage.setItem; p.ctx.localStorage.setItem = () => { throw new Error("QuotaExceededError"); };
+  p.run("save()"); assert.equal(p.run("NOTE.flags.saveFailed"), true, "storage full: the slot holds");
+  p.run("save()"); assert.equal(p.run("NOTE.flags.saveFailed"), true, "and keeps holding while saves fail");
+  p.ctx.localStorage.setItem = set;
+  p.run("save()"); assert.equal(p.run("NOTE.flags.saveFailed"), false, "a save that works takes the line away");
+  assert.deepEqual(Object.keys(WORDS.notice).sort(), ["landChanged", "pageBroke", "saveFailed"], "the three slots are named in the words file");
 });

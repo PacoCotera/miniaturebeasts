@@ -3,7 +3,7 @@
 //   node --test prototypes/exploration/tests/first-trip.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { firstTrip, NEXT_DATA, BUDGET } from "../tools/first-trip-bot.mjs";
+import { firstTrip, NEXT_DATA, BUDGET, GROW_E } from "../tools/first-trip-bot.mjs";
 import { makePage } from "./page-harness.mjs";
 
 const SEEDS = Array.from({ length: 12 }, (_, i) => i + 1);   // a realm takes about 10 s to make, so the test plays seeds 1-12; node tools/first-trip-bot.mjs plays 1-200
@@ -15,6 +15,14 @@ test(`every seed 1-12: the first walk holds a pod and ${NEXT_DATA} Data (identif
   assert.deepEqual(bad.map((r) => r.seed + ": " + r.why), []);
   assert.deepEqual(sealed.map((r) => r.seed), [], "walks sealed");
   assert.ok(rows.every((r) => r.actions < BUDGET));
+});
+
+// lock-playtest-world: the first trip pays for the first Grow at today's price (no number changed): the Station's growCost for the first mibi with no trait changed, against what the walk holds.
+test("the first walk pays for the first Grow: the Energy of its price is held, on every seed 1-12", async () => {
+  const { growCost } = await import("../../station/src/state.mjs");
+  const price = growCost({ firstMibi: true }, {});
+  assert.deepEqual(price, { e: GROW_E, s: 0, d: 0 }, "the first Grow costs the Energy PRICE.growE and nothing else");
+  assert.deepEqual(rows.filter((r) => !r.sealed && r.energy < price.e).map((r) => r.seed + ": " + r.energy + " Energy"), []);
 });
 
 test("it does not take long: the walk's 90th percentile is within 450 actions and no walk enters more than 12 places", () => {

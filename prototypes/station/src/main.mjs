@@ -11,7 +11,8 @@ import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-s
 import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode, chapterLooks } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
-import { mountFooter, caddyAnswers } from "../../play/src/footer.mjs";
+import { mountFooter, mountNotice, caddyAnswers } from "../../play/src/footer.mjs";
+import { NOTICE_WORDS } from "./views/words.mjs";
 import { openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadRoomsInBackground } from "./masters.mjs";
@@ -142,6 +143,10 @@ function showDev(on) { if (inShell) { devOn = on; if (on) refreshDev(); return; 
 function refreshDev() { if (devOut && (inShell ? true : !devEl.hidden) && devOut.dataset.live === "1") devOut.textContent = genomesText(); }
 devBtn.addEventListener("click", (e) => { showDev(devEl.hidden); e.currentTarget.blur(); });
 onChange(refreshDev);
+{ const note = mountNotice($("notice"), NOTICE_WORDS, { buildUrl: "../../build.json" }); window.__mbNotice = note;   // the notice line: a save that cannot be written, a page that broke (the page's head script saw an early break)
+  const sync = () => note.set("saveFailed", G.saveFailed); onChange(sync);
+  if (window.__mbBroke) note.set("pageBroke", true);
+  window.addEventListener("error", (e) => { if (e.error) note.set("pageBroke", true); }); window.addEventListener("unhandledrejection", () => note.set("pageBroke", true)); }
 mountFooter($("buildFoot"), { buildUrl: "../../build.json", schema: S.ST_SCHEMA, caddy: caddyAnswers });   // the build footer (page chrome, always shown): build, save version, whether the Caddy service answers
 
 // --- boot ---

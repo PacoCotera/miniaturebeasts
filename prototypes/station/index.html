@@ -42,6 +42,8 @@ body{
 .page{display:flex; flex-wrap:wrap; gap:28px 40px; justify-content:center; align-items:flex-start; padding:16px 16px 32px; max-width:1900px; margin:0 auto}
 .device-col{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 1 auto; max-width:100%}
 .build-foot{margin:0 auto; padding:0 16px 20px; max-width:1900px; font: 500 12px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* page chrome in the bottom margin, outside the device; wraps at phone width */
+.notice{margin:0 auto; padding:8px 16px; max-width:1900px; font: 600 13px/1.4 var(--font-ui); color: var(--muted); letter-spacing:.04em; text-align:center; overflow-wrap:anywhere}   /* the notice line (views/words.mjs NOTICE_WORDS): save failed, page broke; page chrome like the build footer, but shown in a frame too */
+.notice[hidden]{display:none}
 
 /* ===== The Station: screen on top, one row of big keys under it (keeps its own look in both themes) =====
    Only the screen scales to the window; the keys keep their real size, so they stay pressable on a phone. */
@@ -236,7 +238,16 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
     </details>
   </aside>
 </main>
+<div class="notice" id="notice" role="alert" hidden></div>
 <footer class="build-foot" id="buildFoot">© 2026 Dirty Pawz Press · local</footer>
+<script>
+// A page that breaks shows a line with the build number instead of a blank page (lock-playtest-world): the module's notice line (play/src/footer.mjs mountNotice, the words of views/words.mjs NOTICE_WORDS) takes over once it is
+// mounted; this stands for a page whose module never ran, and shows the bare build number from build.json.
+(function () { var el = document.getElementById('notice'); window.__mbBroke = false;
+  function broke(e) { if (e && e.type === 'error' && !e.error) return; window.__mbBroke = true; if (window.__mbNotice) return;
+    fetch('../../build.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (b) { if (window.__mbNotice) return; el.hidden = false; el.dataset.slot = 'pageBroke'; el.textContent = b.short || String(b.commit || '').slice(0, 7) || 'local'; }); }
+  addEventListener('error', broke); addEventListener('unhandledrejection', broke); })();
+</script>
 <script type="module" src="src/main.mjs"></script>
 </body>
 </html>
