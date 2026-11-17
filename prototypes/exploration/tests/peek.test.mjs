@@ -134,8 +134,8 @@ test("hold Call marks the finds: a pod and a tuft get a take mark; a fruit and a
     // the golden: the full scene held (reduced motion, seed 7)
     const file = path.join(root, "prototypes/exploration/tests/golden/peek-finds.png");
     const buf = Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64");
-    await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(700);
-    const held = Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64");
+    await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(1800);   // the neighbours' pictures are made a few ms a frame (call-zoom-wide-1): the golden waits for them
+    const held =Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64");
     await page.evaluate(() => window.__mb.release("call")); await page.waitForTimeout(150);
     if (process.env.UPDATE_GOLDEN || !existsSync(file)) writeFileSync(file, held);
     else assert.ok(same(decodePng(readFileSync(file)), decodePng(held)), "peek-finds.png differs from the golden");
