@@ -1584,7 +1584,7 @@ test("bottom line in a place: the place's state leads the middle and is never dr
   const p = inPlace(); p.run("FX.hintNote = null;");   // the first-place control hint would lead the middle; this test is about the usual words
   p.run("TEST.exploreHere(); leftItems = () => [{ k: 'charge', x: S.exp.patch.x + 4, y: S.exp.patch.y }, { k: 'warm', x: S.exp.patch.x + 6, y: S.exp.patch.y }];");   // the place is walked; two takeables, a charge the nearer
   const land = p.run("LAND_NAME[curLay().land]"), L = p.run("lineFor()");
-  assert.match(L.ok, /^(Face the |Keep still)/, "facing nothing the ✓ word turns toward the next thing or keeps still, never Wait"); assert.equal(L.back, "Leave");
+  assert.match(L.ok, /^(Face the |Way back|Keep still)/, "facing nothing the ✓ word turns toward the next thing or keeps still, never Wait"); assert.equal(L.back, "Leave");
   const sv = p.run("placeLine(curLay(), S.exp.patch)"), svN = p.run("placeLine(curLay(), S.exp.patch, true)"), short = p.run("placeState(curLay())");
   assert.match(sv, /^explored · a charged stone (east|close by|[a-z-]+) · 1 more to take$/, "the nearest takeable and its way, then how many more: " + sv); assert.equal(svN, "explored · 2 to take"); assert.equal(short, "explored");
   assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)).map(c => c.replace("\x01", "")).map(c => c.replace(/ · (lull|overcast)$/, "")), [land + " · " + sv, land + " · " + svN, svN, short]);
@@ -1596,7 +1596,7 @@ test("bottom line in a place: the place's state leads the middle and is never dr
   p.run("TEST.exploreHere();");
   // after a Call, drawn: the name and the count stay (the kinds drop first when they do not fit)
   p.key("call"); p.run("S.phase = 'patch'; FX.msg = '';");
-  const L2 = p.run("lineFor()"); assert.match(L2.ok, /^(Face the |Keep still)/);
+  const L2 = p.run("lineFor()"); assert.match(L2.ok, /^(Face the |Way back|Keep still)/);
   p.run("curLay().land = 0"); p.rec("text"); p.clear(); p.run("drawLine(lineFor())");
   const said = p.calls("text").map(c => c.a[0]).join("|");
   assert.match(said, /\|meadow · \|explored · 2 to take/, "the place name stays: " + said);

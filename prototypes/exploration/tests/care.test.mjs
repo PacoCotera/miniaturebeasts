@@ -665,7 +665,7 @@ test("End expedition, Sealed: the trip line is built from what was sealed (pods 
 });
 test("End expedition, the hold-empty branch: the direction card, never the four nothings, and no yield line even when one is passed", () => {
   const d = sealed({ empty: true, lead: { cell: 0, land: "wood", dir: "north", first: true, pod: true }, yield: { data: 0, tier: 0, moments: 0 } }, []);
-  assert.ok(d.at("Your pod still waits") && d.at("In the wood, north of your flag.") && d.at("Start there and press ))) Call."), "the direction card");
+  assert.ok(d.at("Your pod still waits") && d.at("In the wood, north of where you set out.") && d.at("Start there and press ))) Call."), "the direction card");
   assert.ok(!d.said.some(q => /Hold empty|Nothing to seal|bay is empty|Nothing to transfer|Data ·|No crate|crate this time/.test(q.str)), "no nothing, no yield line");
   assert.equal(d.crates[0].y, 138, "the card is a headline and two lines: the crates sit one line lower");
 });
