@@ -1,5 +1,5 @@
 """The realm sheet's table: the changed checks and the kept rules, from m-<seed>.json, k-<seed>.json and c-<seed>.json in a folder.
-   python3 summarize.py <dir> [<before dir>] > summary.md
+   python3 summarize.py <dir> [<before dir>] > table.txt
 With a before folder, each row shows before and after. Seeds are whatever the folder holds (the checks name seeds 1-15)."""
 import json, sys, os, re
 

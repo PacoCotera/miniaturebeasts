@@ -1,7 +1,7 @@
 #!/bin/sh
 # The realm sheet: dump seeds, run measure.py and measure2.py on each, then summarize.py.
 #   sh tools/realm-sheet/run.sh <out dir> <seed> [<seed> ...]
-# Writes <out dir>/realm-<seed>.json (dump, about 3 MB; delete after), m-<seed>.json, k-<seed>.json, summary.md. Up to 6 seeds run at once.
+# Writes <out dir>/realm-<seed>.json (dump, about 3 MB; delete after), m-<seed>.json, k-<seed>.json, c-<seed>.json and table.txt. Up to 6 seeds run at once.
 HERE="$(cd "$(dirname "$0")" && pwd)"
 OUT="$1"; shift
 mkdir -p "$OUT"
@@ -19,4 +19,4 @@ for s in "$@"; do
   if [ $((n % 6)) -eq 0 ]; then wait; fi
 done
 wait
-python3 -I "$HERE/summarize.py" "$OUT" > "$OUT/summary.md"
+python3 -I "$HERE/summarize.py" "$OUT" > "$OUT/table.txt"
