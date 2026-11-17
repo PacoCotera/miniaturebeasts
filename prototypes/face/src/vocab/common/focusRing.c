@@ -41,8 +41,17 @@ static void ground_of(const char *spec, const char *target, char *g, int cap) { 
 /* the box of the ring drawn last (the carry's flight starts from it: the thing the ring is on) */
 static int g_last[4], g_drawn;   /* g_drawn: a ring was drawn in the scene being built (word_ringSceneBegin clears it) */
 void word_lastRing(int out[4]) { for (int i = 0; i < 4; i++) out[i] = g_last[i]; }
-void word_ringSceneBegin(void) { g_drawn = 0; }
+/* the rest box: what a scene with no ring wants kept in view on a phone (an empty room's message); the play page pans to it as to the ring */
+static int g_rest[4], g_restSet;
+void word_ringSceneBegin(void) { g_drawn = 0; g_restSet = 0; }
 int word_ringDrawn(void) { return g_drawn; }   /* the play page pans its phone window to the ring (face_focus_box) */
+void word_setRest(const int r[4]) {
+  if (!g_restSet) { for (int i = 0; i < 4; i++) g_rest[i] = r[i]; g_restSet = 1; return; }
+  int x0 = g_rest[0] < r[0] ? g_rest[0] : r[0], y0 = g_rest[1] < r[1] ? g_rest[1] : r[1];
+  int x1 = g_rest[0] + g_rest[2] > r[0] + r[2] ? g_rest[0] + g_rest[2] : r[0] + r[2], y1 = g_rest[1] + g_rest[3] > r[1] + r[3] ? g_rest[1] + g_rest[3] : r[1] + r[3];
+  g_rest[0] = x0; g_rest[1] = y0; g_rest[2] = x1 - x0; g_rest[3] = y1 - y0;
+}
+int word_restBox(int out[4]) { for (int i = 0; i < 4; i++) out[i] = g_rest[i]; return g_restSet; }
 /* a rect ring round `r` (the object's drawn rect), the object's corner radius `rad`: a nine-slice of S = 2R + 4 with R = rad + reach */
 static void ring_rect(const char *id, const int r[4], int rad, int chip, const bands_t *b) {
   g_last[0] = r[0]; g_last[1] = r[1]; g_last[2] = r[2]; g_last[3] = r[3]; g_drawn = 1;

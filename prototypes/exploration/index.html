@@ -323,7 +323,7 @@ const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', st
 const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
 const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
 const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
-const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff'];   // [4] is a walkable water cell: a ford (a wade is "muddy water" where it is named, landWord and the place line)
+const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'ford', 'cliff'];   // [copy] the place names (a place is named by its ground, never "rock" alone); [4] is a walkable water cell: a ford (a wade is "muddy water" where it is named, landWord and the place line)
 // Save format v8, shared with the Station page (prototypes/station). The Companion owns every top-level field
 // except `st`, which the Station owns; each page re-reads the stored save before writing and keeps the other's part.
 // The Companion is the player's identity: the save lives under this Companion's own key, mb-save-v8@<its id>
@@ -963,6 +963,7 @@ function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q =
 // no flag is drawn there. Over the reach view it keeps the count beside the flag. One helper, so the two forms cannot drift apart.
 const SEND_TXT = {
   hint: (b, dir) => dir ? b.name + ' · ' + dir : b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'),
+  way: dir => dir ? 'Way back: ' + dir : 'Way back',   // [copy] the ✓ word on the walk when nothing is in front and you are away from a send point
   back: (b, dir) => dir ? 'head back ' + dir + ' to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME)
     : 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')',
 };
@@ -1018,11 +1019,11 @@ function settleOnce() {
 // ===================== The first ten minutes, the walk side =====================
 // [copy] placeholders: the copywriter picks the final words. All the player strings of the first walk are in this one table.
 const FIRST_TEXT = {
-  goal: { find: 'Find a pod · bring it home', home: 'Bring it home · your flag', dock: 'Dock the Companion · the pod goes home' },   // F1, F2, F3
+  goal: { find: 'Find a pod · bring it home', home: 'Bring it home · back to the start', dock: 'Dock the Companion · the pod goes home' },   // F1, F2, F3
   teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Press ✓ to go into this place', call: 'Press ))) to Call · buried finds show', pod: 'Go to the glint · ✓ takes the pod',
     stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below' },
-  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', flag: 'Face the flag' },   // the ✓ words on the walk, facing nothing
-  empty: { head: 'Your pod still waits', later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of your flag' : 'at your flag') + '.',
+  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone' },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
+  empty: { head: 'Your pod still waits', later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of where you set out' : 'where you set out') + '.',   // [copy]
     start: 'Start there and press ))) Call.', back: 'Back to the pod' },
 };
 const GOAL_MARK = { slot: 'goal-mark-12', w: 12 };   // [art] the goal line's mark, an empty named slot: the art director's piece fills it (nothing is drawn in it)
@@ -2201,7 +2202,11 @@ function ensureLive(key) {
     const nest = nests.length ? nests[w.id % nests.length] : null;
     const own = lay.spawns && lay.spawns.filter(q => !q.species.length || q.species.includes((spOf(w.sp).name || '').toLowerCase())), inArea = q => (x, y) => x >= q.x && y >= q.y && x < q.x + q.w && y < q.y + q.h;
     const mine = own && own.length ? own[mates.indexOf(w.id) % own.length] : null, inOwn = own && own.length ? (x, y) => own.some(q => inArea(q)(x, y)) : null;   // a template's spawn areas
-    const s = (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
+    // bug #16: a herd starts spread, not packed: each creature keeps its distance from the ones already placed (3 tiles, then 2), first inside its area, then in the ground round it (4 tiles out), seeded as before
+    const apart = d => (x, y) => live.cr.every(q => cheb({ x, y }, q) >= d), big = mine && S.cr.filter(q => q.c === lay.cell && !!q.cv === lay.cave && q.sp === w.sp).length > 3, wide = big ? { x: Math.max(1, mine.x - 3), y: Math.max(1, mine.y - 3), w: mine.w + 6, h: mine.h + 6 } : null;   // only a herd of more than three may spill past its area, when the area is too small to space it
+    let spread = null;
+    if (mine) for (const d of [3, 2]) { spread = freeSpot(key, R, 5, (x, y) => inArea(mine)(x, y) && apart(d)(x, y), mine) || (wide && freeSpot(key, R, 5, apart(d), wide)); if (spread) break; }
+    const s = spread || (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
       // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
@@ -2262,7 +2267,7 @@ function enterPatch() {
 }
 function enterPatchBuilt() {
   const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
-  ex.entered = ex.entered || []; if (!ex.entered.includes(ex.pos)) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
+  ex.entered = ex.entered || []; const firstIn = !ex.entered.includes(ex.pos); if (firstIn) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
   const e = entryPoint(lay, key, ex.lastDir); LAND = null; ROW = null;
@@ -2271,8 +2276,14 @@ function enterPatchBuilt() {
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
+  if (firstIn && !lay.cave) placeNamed(lay);   // owner note #24: the place you step into is named once, in the message line; after that its name leads the bottom bar
   save();
 }
+// The place's name fills the message line for PLACE_NAME_MS (one note, priority 1: any real note outranks it), then the line is clear again.
+const PLACE_NAME_MS = 2000;
+function placeNamed(lay) { const text = placeLand(lay); FX.placeMsg = { text, left: PLACE_NAME_MS, at: null }; fxMsg(text, 1); }
+// Counted in drawn frames (each at most 100 ms), so a stall while the place is built does not use up the 2 s unseen.
+function placeNameExpire() { const m = FX.placeMsg; if (!m) return; m.left -= m.at == null ? 0 : Math.min(100, Math.max(0, NOW - m.at)); m.at = NOW; if (m.left > 0) return; FX.placeMsg = null; const n = FX.notes.length; FX.notes = FX.notes.filter(x => x.text !== m.text); if (FX.notes.length !== n) { FX.msg = ''; FX.sign = null; composeMsg(); } }
 // The skull clears only when you go down into the place that holds the lost pods.
 function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { const k = S.skulls[c] === 1 ? String(c) : S.skulls[c]; if (k === key) { delete S.skulls[c]; logEv('Back where the Probe broke · skull cleared'); fxMsg('The pods you lost lie here', 3); } } }
 function enterCave() {
@@ -2597,7 +2608,7 @@ function crossEdge(dir) {
   if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
     enterPatch();
     FX.transAt = -1e9; FX.resume = true;   // no fade: the slide covers the change
-    if (snap) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], snap }; lockInput(SLIDE_MS); }
+    if (snap) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], snap }; lockInput(SLIDE_MS); if (FX.placeMsg) FX.placeMsg.left += SLIDE_MS; }   // the place's name is up for its 2 s after the slide
   }
 }
 // A soft tile in a place, refused without the partner that crosses it (the shape of swimBump): the pin goes on the place's cell.
@@ -2653,7 +2664,7 @@ function faceThing(P, t) {
 function idleAct(P, lay) {
   const near = curLive().cr.some(c => { if (c.hide || !inSight(c.x, c.y)) return false; const b = bubbleOf(c, S.exp.carry); return b === '!' || b === '…'; });
   const t = near ? null : nextThing(P, lay);
-  return t ? { label: FIRST_TEXT.face[t.kind], face: 1, run: () => faceThing(P, t) } : NOTHING;
+  return t ? { label: t.kind === 'flag' ? SEND_TXT.way(sendWay().dir) : FIRST_TEXT.face[t.kind], face: 1, run: () => faceThing(P, t) } : NOTHING;
 }
 let ACT_AT = null;   // the tile patchAction last read (the faced tile, or the one stood on): where the amber brackets stand
 function patchAction() {
@@ -5852,7 +5863,7 @@ function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
 //   can't go yet (the Probe's reach): a dashed ink line on the haze, along the side's inner face;
 //   a way through: within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
 // [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
-const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land', TAB_NEAR = 3;
+const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land';
 function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
   const bk = lay.baked; if (!bk || lay.cave || !lay.openings) return [];
   const out = [];
@@ -5866,22 +5877,15 @@ function drawEdgeLook(t) {
   const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
   const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + tx * ts, sy = ty => pl.y + ty * ts;   // a page tile edge on the screen (pl: the page's tile-0 corner, from the camera)
   for (const e of edgeSides(lay, P)) {
-    const dir = SIDE_DIR[e.o.side], vertical = e.o.side === 'W' || e.o.side === 'E';
+    const vertical = e.o.side === 'W' || e.o.side === 'E';
     if (e.k.kind === 'range') {   // the dashed reach line: LINE_DEPTH tiles in from the edge, along the whole side
       const bk = lay.baked, face = e.o.side === 'N' ? bk.oy + LINE_DEPTH : e.o.side === 'S' ? bk.oy + bk.h - LINE_DEPTH : e.o.side === 'W' ? bk.ox + LINE_DEPTH : bk.ox + bk.w - LINE_DEPTH;   // the band's inner face
       const ax = vertical ? sx(face) : sx(e.x0), ay = vertical ? sy(e.y0) : sy(face), bx = vertical ? ax : sx(e.x1), by = vertical ? sy(e.y1) : ay;
       clipView(); const x0 = Math.round(Math.min(ax, bx)), y0 = Math.round(Math.min(ay, by)), len = Math.round(vertical ? Math.abs(by - ay) : Math.abs(bx - ax));
       for (let d = 0; d < len; d += 14) { if (vertical) R(x0 - 1, y0 + d, 2, Math.min(8, len - d), C.bark); else R(x0 + d, y0 - 1, Math.min(8, len - d), 2, C.bark); }   // whole pixels only: the screen holds palette colours, nothing blended
       g.restore();
-      continue; }
-    // a way through: the land shows it; only the tab names the next place (the two threshold marks are gone)
-    const c = stepCell(lay.cell, dir); if (c < 0) continue;
-    const near = e.o.side === 'N' ? P.y - e.y0 : e.o.side === 'S' ? e.y0 - 1 - P.y : e.o.side === 'W' ? P.x - e.x0 : e.x0 - 1 - P.x;
-    if (near <= TAB_NEAR && warmReady(String(c)) && !FX.slide) {   // the hint: the Probe has read the neighbour, so its land is named; none in the new place while the old picture slides out with its own tab (one tab the whole slide)
-      const name = groundName(G.land[c], false), word = (name ? name.charAt(0).toUpperCase() + name.slice(1) : '') + ' →', w = textW(word, 2) + 10;
-      const cx = vertical ? sx(e.x0) : (sx(e.x0) + sx(e.x1)) / 2, cy = vertical ? (sy(e.y0) + sy(e.y1)) / 2 : sy(e.y0);
-      const px = clamp(Math.round(cx - w / 2) + (e.o.side === 'W' ? w / 2 + 6 : e.o.side === 'E' ? -w / 2 - 6 : 0), 4, SCR_W - w - 4), py = clamp(Math.round(cy - 10) + (e.o.side === 'N' ? 14 : e.o.side === 'S' ? -14 : 0), VIEW_Y + 4, VIEW_Y + VIEW_H - 24);
-      panel(px, py, w, 20, C.paper, C.bark); text(word, px + 5, py + 3, C.soil); }
+    }
+    // a way through: the land shows it; no tab, no mark (owner note #24: the place is named once when you enter it)
   }
 }
 // The Probe's pulse in the top bar while the neighbours are read ahead (note 19): a small ring in the map's ink that breathes; [art] slot probe-pulse.
@@ -7191,7 +7195,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmTick(); resumeHeld(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { wantPlaces(); warmTick(); resumeHeld(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
