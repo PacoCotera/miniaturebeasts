@@ -10,7 +10,7 @@
 #     /admin/notes*                     the play notes page and files: the Caddy service (not the studio)
 #     /admin/workbench/                 the species workbench's static files (the release's play/workbench), not public
 #     /admin/test/                      the test page (the release's play/test; its links are made absolute by bundle-pages.sh)
-#     /admin/ itself                    a redirect to /admin/team until the index page is designed
+#     /admin/ itself                    the index page, from the studio (rewritten to its /index route; /admin redirects to /admin/); its files are /admin/index/*
 #     any other /admin path             404, after the login's check
 #     The studio sees X-Studio-User only from here, never the browser's cookies, and none of these answers may be kept by a shared cache.
 #   /caddy-api/*                        the Caddy service (POST /caddy-api/v1/notes takes a play note; nothing is read back from here); /play/* and the site: the release, static
@@ -24,7 +24,7 @@
 		path /play/workbench /play/workbench/* /play/caddy /play/caddy/* /play/test /play/test/*
 		not path /play/workbench/frames/*
 	}
-	@teampage path /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
+	@teampage path /admin/ /admin/index /admin/index/* /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
 
 	# the team's tools travel in the release beside the game's folders (the Caddy service and the workbench read their siblings) but are not public: they are served only through /admin below
 	handle @private {
@@ -63,7 +63,11 @@
 			}
 		}
 	}
-	# the team page and its data (team.json, team-coord.json, team-doc/*): the studio on the private bridge answers under its own /studio prefix
+	# the page's own links are relative to /admin/, so the address without the slash goes there
+	handle /admin {
+		redir * /admin/ 302
+	}
+	# the index page (/admin/ and /admin/index/*) and the team page with its data (team.json, team-coord.json, team-doc/*): the studio on the private bridge answers under its own /studio prefix
 	handle @teampage {
 		route {
 			request_header -X-Studio-User
@@ -79,6 +83,9 @@
 				Cache-Control "^(private, *)?" "private, "
 				defer
 			}
+			# /admin/ is the index page: the studio serves it at /index (its files at /index/<file>)
+			@index path /admin/
+			rewrite @index /admin/index
 			uri path_regexp (?i)^/+admin /studio
 			# the session cookie stays here; the studio can set none on the site
 			reverse_proxy {$MB_STUDIO} {
@@ -108,7 +115,7 @@
 			file_server
 		}
 	}
-	# the index waits for its picture: until then /admin/ is the team page; any other /admin path is the login's check, then nothing
+	# any other /admin path is the login's check, then nothing
 	handle @admin {
 		route {
 			request_header -X-Studio-User
@@ -118,8 +125,6 @@
 			}
 			header X-Robots-Tag noindex
 			header Cache-Control "private, no-store"
-			@index path /admin /admin/
-			redir @index /admin/team 302
 			respond "not found" 404
 		}
 	}
