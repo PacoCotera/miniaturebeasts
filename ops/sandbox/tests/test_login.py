@@ -72,7 +72,7 @@ class Base(unittest.TestCase):
         b = dict(user=user, password=password)
         if nxt is not None:
             b["next"] = nxt
-        return self.req("POST", "/studio/login", b, h)
+        return self.req("POST", "/admin/login", b, h)
 
     def cookie_of(self, r):
         return r.getheader("Set-Cookie").split(";")[0]
@@ -82,7 +82,7 @@ class Base(unittest.TestCase):
         self.assertEqual(r.status, 303)
         return self.cookie_of(r)
 
-    def check(self, cookie=None, uri="/studio/S20/shape"):
+    def check(self, cookie=None, uri="/admin/S20/shape"):
         h = {"X-Forwarded-Uri": uri}
         if cookie:
             h["Cookie"] = cookie
@@ -93,10 +93,10 @@ class Login(Base):
     def test_good_login_sets_a_strict_cookie_and_opens_check(self):
         r, _ = self.login()
         self.assertEqual(r.status, 303)
-        self.assertEqual(r.getheader("Location"), "/studio")
+        self.assertEqual(r.getheader("Location"), "/admin")
         c = r.getheader("Set-Cookie")
         self.assertRegex(c, r"^mb_studio=[A-Za-z0-9_-]{40,}; ")
-        for flag in ("Path=/studio", "HttpOnly", "Secure", "SameSite=Strict", "Max-Age=2592000"):
+        for flag in ("Path=/admin", "HttpOnly", "Secure", "SameSite=Strict", "Max-Age=2592000"):
             self.assertIn(flag, c)
         r, _ = self.check(self.cookie_of(r))
         self.assertEqual((r.status, r.getheader("X-Studio-User")), (200, "paco"))
@@ -109,10 +109,10 @@ class Login(Base):
         self.assertIsNone(a.getheader("Set-Cookie"))
 
     def test_check_without_a_session(self):
-        r, _ = self.check(uri="/studio/S20/shape?sel=tail")
+        r, _ = self.check(uri="/admin/S20/shape?sel=tail")
         self.assertEqual(r.status, 302)
-        self.assertEqual(r.getheader("Location"), "/studio/login?next=%2Fstudio%2FS20%2Fshape%3Fsel%3Dtail")
-        for path in ("/studio/api/species", "/studio/events", "/studio/cas/ab.png"):
+        self.assertEqual(r.getheader("Location"), "/admin/login?next=%2Fadmin%2FS20%2Fshape%3Fsel%3Dtail")
+        for path in ("/admin/api/species", "/admin/events", "/admin/cas/ab.png"):
             r, body = self.check(uri=path)
             self.assertEqual(r.status, 401)
             self.assertEqual(r.getheader("Content-Type"), "application/json")
@@ -120,7 +120,7 @@ class Login(Base):
         self.assertEqual(self.req("GET", "/check")[0].status, 302)
 
     def test_login_page_words(self):
-        r, body = self.req("GET", "/studio/login")
+        r, body = self.req("GET", "/admin/login")
         text = body.decode()
         self.assertEqual(r.status, 200)
         for word in (">user<", ">password<", ">sign in<"):
@@ -134,29 +134,29 @@ class Login(Base):
             h = {"Cookie": self.session()}
             if origin:
                 h["Origin"] = origin
-            r, _ = self.req("POST", "/studio/logout", {}, h)
+            r, _ = self.req("POST", "/admin/logout", {}, h)
             self.assertEqual(r.status, 403, origin)
             self.assertEqual(self.check(h["Cookie"])[0].status, 200)
 
     def test_logout_ends_the_session(self):
         c = self.session()
-        r, _ = self.req("POST", "/studio/logout", {}, {"Cookie": c, "Origin": ORIGIN})
+        r, _ = self.req("POST", "/admin/logout", {}, {"Cookie": c, "Origin": ORIGIN})
         self.assertEqual(r.status, 303)
         self.assertIn("Max-Age=0", r.getheader("Set-Cookie"))
         self.assertEqual(self.check(c)[0].status, 302)
 
     def test_next_open_redirect_refused(self):
-        bad = ["https://evil.example/studio", "//evil.example/studio", "/\\evil.example", "/other", "javascript:alert(1)", "/studio/../x",
-               "/studio%2f..%2f", "/studiox", "/studio/%0d%0aSet-Cookie:x=1", "/studio/login", "http://x", "studio", "/studio\r\nX: y", " /studio"]
+        bad = ["https://evil.example/admin", "//evil.example/admin", "/\\evil.example", "/other", "javascript:alert(1)", "/admin/../x",
+               "/admin%2f..%2f", "/adminx", "/admin/%0d%0aSet-Cookie:x=1", "/admin/login", "http://x", "studio", "/admin\r\nX: y", " /admin"]
         for n in bad:
-            self.assertEqual(L.safe_next(n), "/studio", n)
+            self.assertEqual(L.safe_next(n), "/admin", n)
         for n in bad[:8]:
             r, _ = self.login(nxt=n.replace("\\", "%5C").replace(" ", "%20"))
-            self.assertEqual(r.getheader("Location"), "/studio", n)
-        r, _ = self.login(nxt="%2Fstudio%2FS20%2Fshape%3Fsel%3Dtail")
-        self.assertEqual(r.getheader("Location"), "/studio/S20/shape?sel=tail")
-        r, _ = self.check(uri="//evil.example/studio")
-        self.assertEqual(r.getheader("Location"), "/studio/login?next=%2Fstudio")
+            self.assertEqual(r.getheader("Location"), "/admin", n)
+        r, _ = self.login(nxt="%2Fadmin%2FS20%2Fshape%3Fsel%3Dtail")
+        self.assertEqual(r.getheader("Location"), "/admin/S20/shape?sel=tail")
+        r, _ = self.check(uri="//evil.example/admin")
+        self.assertEqual(r.getheader("Location"), "/admin/login?next=%2Fadmin")
 
     def test_password_never_logged(self):
         probe = "zq-secret-Pw-1234567"
@@ -168,7 +168,7 @@ class Login(Base):
         self.assertIn("login user=paco addr=198.51.100.7", log)
 
     def test_oversize_body_refused(self):
-        r, _ = self.req("POST", "/studio/login", {"user": "a", "password": "x" * 5000}, {"Origin": ORIGIN})
+        r, _ = self.req("POST", "/admin/login", {"user": "a", "password": "x" * 5000}, {"Origin": ORIGIN})
         self.assertEqual(r.status, 413)
 
 
@@ -201,7 +201,7 @@ class Lockouts(Base):
     def test_cf_connecting_ip_is_the_address_and_junk_falls_back(self):
         self.fail(ip="203.0.113.5", n=5)
         self.assertEqual(self.login(ip="2001:db8::1")[0].status, 303)
-        r, _ = self.req("POST", "/studio/login", dict(user="paco", password="wrong"), {"Origin": ORIGIN, "Cf-Connecting-IP": "not an ip"})
+        r, _ = self.req("POST", "/admin/login", dict(user="paco", password="wrong"), {"Origin": ORIGIN, "Cf-Connecting-IP": "not an ip"})
         self.assertEqual(r.status, 401)
         self.assertIn("addr=127.0.0.1", self.out.getvalue())
 
@@ -284,8 +284,8 @@ class Attacks(Base):
         return got
 
     def test_a_body_left_unread_cannot_smuggle_a_request(self):
-        inner = b"GET /check HTTP/1.1\r\nHost: x\r\nX-Forwarded-Uri: /studio/x\r\n\r\n"
-        for head in (b"GET /studio/login HTTP/1.1\r\nHost: x\r\nContent-Length: %d\r\n\r\n" % len(inner),
+        inner = b"GET /check HTTP/1.1\r\nHost: x\r\nX-Forwarded-Uri: /admin/x\r\n\r\n"
+        for head in (b"GET /admin/login HTTP/1.1\r\nHost: x\r\nContent-Length: %d\r\n\r\n" % len(inner),
                      b"GET /nothing HTTP/1.1\r\nHost: x\r\nContent-Length: %d\r\n\r\n" % len(inner)):
             got = self.raw(head + inner)
             self.assertEqual(got.count(b"HTTP/1.1 "), 1, got)
@@ -294,7 +294,7 @@ class Attacks(Base):
     def test_a_chunked_post_is_refused_and_closes(self):
         c = self.session()
         body = b"5\r\nuser=\r\n0\r\n\r\nGET /check HTTP/1.1\r\nHost: x\r\n\r\n"
-        got = self.raw(b"POST /studio/logout HTTP/1.1\r\nHost: x\r\nOrigin: " + ORIGIN.encode() + b"\r\nCookie: " + c.encode()
+        got = self.raw(b"POST /admin/logout HTTP/1.1\r\nHost: x\r\nOrigin: " + ORIGIN.encode() + b"\r\nCookie: " + c.encode()
                        + b"\r\nTransfer-Encoding: chunked\r\n\r\n" + body)
         self.assertTrue(got.startswith(b"HTTP/1.1 411"), got)
         self.assertEqual(got.count(b"HTTP/1.1 "), 1, got)
@@ -302,25 +302,25 @@ class Attacks(Base):
 
     def test_a_login_ends_the_session_it_came_with(self):
         old = self.session()
-        r, _ = self.req("POST", "/studio/login", dict(user="paco", password=PASSWORD), {"Origin": ORIGIN, "Cookie": old, "Cf-Connecting-IP": "198.51.100.7"})
+        r, _ = self.req("POST", "/admin/login", dict(user="paco", password=PASSWORD), {"Origin": ORIGIN, "Cookie": old, "Cf-Connecting-IP": "198.51.100.7"})
         self.assertEqual(r.status, 303)
         self.assertNotEqual(self.cookie_of(r), old)
         self.assertEqual(self.check(old)[0].status, 302)
         self.assertEqual(self.check(self.cookie_of(r))[0].status, 200)
 
     def test_spoofed_headers_change_nothing(self):
-        h = {"X-Studio-User": "paco", "X-Forwarded-For": "198.51.100.7", "X-Forwarded-Uri": "/studio/x"}
+        h = {"X-Studio-User": "paco", "X-Forwarded-For": "198.51.100.7", "X-Forwarded-Uri": "/admin/x"}
         self.assertEqual(self.req("GET", "/check", headers=h)[0].status, 302)
-        r, _ = self.req("GET", "/studio/login", headers=h)
+        r, _ = self.req("GET", "/admin/login", headers=h)
         self.assertIsNone(r.getheader("X-Studio-User"))
         for _ in range(5):
-            self.req("POST", "/studio/login", dict(user="paco", password="wrong"), {"Origin": ORIGIN, "Cf-Connecting-IP": "203.0.113.30", "X-Forwarded-For": "192.0.2.1"})
-        r, _ = self.req("POST", "/studio/login", dict(user="paco", password=PASSWORD), {"Origin": ORIGIN, "Cf-Connecting-IP": "203.0.113.30", "X-Forwarded-For": "192.0.2.2"})
+            self.req("POST", "/admin/login", dict(user="paco", password="wrong"), {"Origin": ORIGIN, "Cf-Connecting-IP": "203.0.113.30", "X-Forwarded-For": "192.0.2.1"})
+        r, _ = self.req("POST", "/admin/login", dict(user="paco", password=PASSWORD), {"Origin": ORIGIN, "Cf-Connecting-IP": "203.0.113.30", "X-Forwarded-For": "192.0.2.2"})
         self.assertEqual(r.status, 429)                             # X-Forwarded-For is not the address
 
     def test_every_answer_is_no_store(self):
         c = self.session()
-        answers = [self.check(), self.check(uri="/studio/api/x"), self.check(c), self.req("GET", "/studio/login"), self.req("GET", "/studio/login", headers={"Cookie": c}),
+        answers = [self.check(), self.check(uri="/admin/api/x"), self.check(c), self.req("GET", "/admin/login"), self.req("GET", "/admin/login", headers={"Cookie": c}),
                    self.req("GET", "/nothing"), self.login(password="wrong"), self.login(origin="https://evil.example")]
         for _ in range(6):
             answers.append(self.login(password="wrong", ip="203.0.113.40"))

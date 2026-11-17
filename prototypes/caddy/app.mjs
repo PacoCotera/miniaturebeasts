@@ -79,12 +79,12 @@ export function createApp(opts = {}) {
     const url = new URL(req.url, "http://x"), p = url.pathname.startsWith(cfg.prefix) ? url.pathname.slice(cfg.prefix.length) : url.pathname;
     try {
       // reading play notes: only at the studio's own path (never under the public prefix, which is stripped above) and only with the login's header
-      if (url.pathname === "/studio/notes" || url.pathname.startsWith("/studio/notes/")) {
+      if (url.pathname === "/admin/notes" || url.pathname.startsWith("/admin/notes/")) {
         if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
         if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
-        const f = url.pathname.match(/^\/studio\/notes\/f\/([^/]+)\/([^/]+)\/([^/]+)$/);
+        const f = url.pathname.match(/^\/admin\/notes\/f\/([^/]+)\/([^/]+)\/([^/]+)$/);
         if (f) return sendFile(req, res, notes.fileOf(f[1], f[2], f[3]));
-        if (url.pathname !== "/studio/notes" && url.pathname !== "/studio/notes/") { res.writeHead(404, { "content-type": "text/plain" }); res.end("no such page"); return; }
+        if (url.pathname !== "/admin/notes" && url.pathname !== "/admin/notes/") { res.writeHead(404, { "content-type": "text/plain" }); res.end("no such page"); return; }
         res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(notes.page(url.searchParams.get("from") || "")); return;
       }
       if (req.method === "POST" && p === "/notes") return json(res, ...await notes.post(req));

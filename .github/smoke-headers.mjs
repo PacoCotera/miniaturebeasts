@@ -10,7 +10,7 @@ const [id, e] = Object.entries(index.masters).find(([, m]) => m.file.startsWith(
 const hashed = await get(`${masters}${e.file}?v=${e.sha256.slice(0, 12)}`);
 const cc = hashed.headers.get("cache-control") ?? "";
 if (!/immutable/.test(cc) || !/max-age=31536000/.test(cc)) problems.push(`hashed master ${id}: Cache-Control is "${cc}", want public, max-age=31536000, immutable`);
-const html = (await get("/sandbox/station/")).headers.get("cache-control") ?? "";
+const html = (await get("/play/station/")).headers.get("cache-control") ?? "";
 if (!/no-cache/.test(html)) problems.push(`station HTML: Cache-Control is "${html}", want no-cache`);
 for (const p of [masters + "index.json", "/sandbox/station/src/core.mjs", "/sandbox/face/dist/face.wasm", "/sandbox/ui/specs/station/home.json"]) {
   const enc = (await get(p)).headers.get("content-encoding") ?? "";

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""mb-login: the studio's login. Standard library only, Python 3.12.
+"""mb-login: the admin login (it was the studio's). Standard library only, Python 3.12.
 
 Listens on 127.0.0.1:8791 behind the web server. The web server asks GET /check (forward_auth) before it
-passes any /studio request on; /studio/login and /studio/logout come here directly.
+passes any /admin request on; /admin/login and /admin/logout come here directly.
 State: sessions in $MB_LOGIN_STATE/sessions.json (mode 600, only the SHA-256 of each cookie value),
 users in the file named by $MB_LOGIN_USERS (lines "user:scrypt$n$r$p$salt$hash", base64; written by mb-studio-passwd).
 A session carries a fingerprint of its user's hash line, so a changed password ends every session of that user.
@@ -26,7 +26,7 @@ SAVE_EVERY = 3600                     # a use is written to disk at most this of
 WINDOW, LOCK, FORGET = 15 * 60, 15 * 60, 24 * 3600   # 5 failures in WINDOW lock the address for LOCK, doubling; forgotten after FORGET
 MAX_FAILS = 5
 BRAKE_FAILS, BRAKE_WINDOW, BRAKE_GAP = 30, 3600, 60   # over 30 failures an hour from anywhere: one try a minute for everyone
-JSON_PATHS = ("/studio/api", "/studio/events", "/studio/cas")   # answered 401 JSON, not a redirect
+JSON_PATHS = ("/admin/api", "/admin/events", "/admin/cas")   # answered 401 JSON, not a redirect
 now = time.time                       # tests replace it
 lock = threading.RLock()
 hashing = threading.BoundedSemaphore(2)   # scrypt costs 32 MB and ~0.1 s: never more than two at once
@@ -209,20 +209,20 @@ class Guard:
 
 
 def safe_next(value):
-    """Only a path of this site under /studio; anything else becomes /studio."""
+    """Only a path of this site under /admin; anything else becomes /admin."""
     v = value or ""
     if not re.fullmatch(r"[\x21-\x7e]{1,2000}", v) or "\\" in v or ".." in v or "%2e" in v.lower() or "%0" in v.lower():
-        return "/studio"
+        return "/admin"
     u = urlsplit(v)
-    if u.scheme or u.netloc or not (u.path == "/studio" or u.path.startswith("/studio/")) or u.path.startswith("//"):
-        return "/studio"
-    if u.path in ("/studio/login", "/studio/logout"):
-        return "/studio"
+    if u.scheme or u.netloc or not (u.path == "/admin" or u.path.startswith("/admin/")) or u.path.startswith("//"):
+        return "/admin"
+    if u.path in ("/admin/login", "/admin/logout"):
+        return "/admin"
     return v
 
 
 PAGE = """<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>studio</title><style>
+<meta name="robots" content="noindex"><title>admin</title><style>
 :root{color-scheme:dark;--bg:#1d232b;--panel:#23292f;--raised:#2b3038;--line:#343a42;--text:#f1ebdf;--text2:#b4b1c6;--primary:#f2671b;--on:#1a1725;--fail:#ff6b63}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,sans-serif}
 main{width:min(22rem,calc(100vw - 32px));padding:28px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
@@ -230,7 +230,7 @@ h1{margin:0 0 20px;font-size:1.25rem;font-weight:600}label{display:block;margin:
 input{width:100%;padding:10px 12px;background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:8px;font:inherit}
 input:focus{outline:2px solid var(--primary);outline-offset:1px}button{margin-top:22px;width:100%;padding:11px;background:var(--primary);color:var(--on);border:0;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
 .note{margin:16px 0 0;color:var(--fail);font-size:.875rem}
-</style></head><body><main><h1>studio</h1><form method="post" action="/studio/login">
+</style></head><body><main><h1>admin</h1><form method="post" action="/admin/login">
 <input type="hidden" name="next" value="@NEXT@"><label for="u">user</label><input id="u" name="user" autocomplete="username" autocapitalize="none" required autofocus>
 <label for="p">password</label><input id="p" name="password" type="password" autocomplete="current-password" required><button>sign in</button></form>@NOTE@</main></body></html>"""
 
@@ -285,7 +285,7 @@ class Handler(BaseHTTPRequestHandler):
             return ""
 
     def cookie(self, value, age):
-        return ("Set-Cookie", f"{COOKIE}={value}; Path=/studio; Max-Age={age}; HttpOnly; Secure; SameSite=Strict")
+        return ("Set-Cookie", f"{COOKIE}={value}; Path=/admin; Max-Age={age}; HttpOnly; Secure; SameSite=Strict")
 
     def do_HEAD(self):
         self.do_GET()
@@ -294,7 +294,7 @@ class Handler(BaseHTTPRequestHandler):
         u = urlsplit(self.path)
         if u.path == "/check":
             return self.check()
-        if u.path == "/studio/login":
+        if u.path == "/admin/login":
             nxt = safe_next((parse_qs(u.query).get("next") or [""])[0])
             if self.server.sessions.user_of(self.token(), self.server.users):
                 return self.send(303, headers=[("Location", nxt)])
@@ -305,11 +305,11 @@ class Handler(BaseHTTPRequestHandler):
         user = self.server.sessions.user_of(self.token(), self.server.users)
         if user:
             return self.send(200, b"ok", "text/plain", [("X-Studio-User", user)])
-        uri = self.headers.get("X-Forwarded-Uri", "/studio")
+        uri = self.headers.get("X-Forwarded-Uri", "/admin")
         if urlsplit(uri).path.startswith(JSON_PATHS):
-            body = json.dumps(dict(error="sign in", login="/studio/login")).encode()
+            body = json.dumps(dict(error="sign in", login="/admin/login")).encode()
             return self.send(401, body, "application/json")
-        self.send(302, headers=[("Location", "/studio/login?next=" + quote(safe_next(uri), safe=""))])
+        self.send(302, headers=[("Location", "/admin/login?next=" + quote(safe_next(uri), safe=""))])
 
     def form(self):
         if self.headers.get("Origin") != CFG["origin"]:
@@ -331,14 +331,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlsplit(self.path).path
-        if path not in ("/studio/login", "/studio/logout"):
+        if path not in ("/admin/login", "/admin/logout"):
             return self.send(404, b"not found", "text/plain")
         f = self.form()
         if f is None:
             return
-        if path == "/studio/logout":
+        if path == "/admin/logout":
             self.server.sessions.end(self.token())
-            return self.send(303, headers=[("Location", "/studio/login"), self.cookie("", 0)])
+            return self.send(303, headers=[("Location", "/admin/login"), self.cookie("", 0)])
         ip, nxt = self.ip(), safe_next(f.get("next"))
         g = self.server.guard
         wait, stamp = g.admit(ip)
