@@ -29,11 +29,13 @@ body.admin .dot { display: inline-block; width: 8px; height: 8px; border-radius:
 body.admin .dot.busy { background: var(--busy); }
 body.admin .dot.ok { background: var(--ok); }
 body.admin .dot.bad { background: var(--bad); }
+body.admin .dot.warn { background: var(--warn); }
 
 body.admin .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 body.admin .qlink { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
 body.admin .qlink .name { font-size: 16px; color: var(--busy); }
 body.admin .qlink .what { font-size: 13px; }
+body.admin .qlink.wide { grid-column: 1 / -1; }
 
 /* On its side: two columns of cards; the quick links move up beside the title */
 @media (orientation: landscape) and (max-height: 500px) {
@@ -45,8 +47,10 @@ body.admin .qlink .what { font-size: 13px; }
   body.admin .main { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   body.admin .main h2 { display: none; }
   body.admin .main .cards { display: contents; }
-  body.admin .quick { grid-template-columns: auto auto; flex: none; }
-  body.admin .qlink { padding: 9px 18px; border-radius: 999px; }
+  body.admin .quick { grid-template-columns: auto auto auto; flex: none; }
+  body.admin .qlink.wide { grid-column: auto; }
+  body.admin .qlink { padding: 9px 14px; border-radius: 999px; }
+  body.admin .head .quick { gap: 10px; }
   body.admin .qlink .what { display: none; }
   body.admin .qlink .name { font-size: 15px; }
   body.admin .q-sec { display: none; }

@@ -47,5 +47,41 @@ async function gameFigure() {
   if (m) document.getElementById("game-live").textContent = "Preview " + m[1] + " is live";
 }
 
+// The Bugs card: bugs/summary.json (the Caddy service, behind the same login) counts the same bugs.json the Bugs page draws.
+async function bugFigures() {
+  const s = await getJson("bugs/summary.json");
+  const box = document.getElementById("bug-stats");
+  if (!s) return;
+  if (Number.isInteger(s.open)) stat(box, "busy", s.open, "open");
+  const bp = s.blocks_play;
+  if (Number.isInteger(bp)) {
+    if (bp) stat(box, "bad", bp, bp === 1 ? "blocks play" : "block play");
+    else stat(box, "ok", "None", "blocks play");
+  }
+}
+
+// The Book card: book/summary.json (the Caddy service) reads editorial's book/status files: the open comments and the proof's number and time.
+const MX = "America/Mexico_City";
+function whenMX(iso) {
+  const t = new Date(iso);
+  if (isNaN(t)) return "";
+  const day = (d) => d.toLocaleDateString("en-CA", { timeZone: MX });
+  const hm = t.toLocaleTimeString("en-GB", { timeZone: MX, hour: "2-digit", minute: "2-digit" });
+  if (day(t) === day(new Date())) return "today " + hm;
+  return t.toLocaleDateString("en-GB", { timeZone: MX, day: "numeric", month: "short" }) + " " + hm;
+}
+async function bookFigures() {
+  const s = await getJson("book/summary.json");
+  const box = document.getElementById("book-stats");
+  if (!s) return;
+  if (Number.isInteger(s.open)) stat(box, s.open ? "warn" : "ok", s.open, s.open === 1 ? "comment open" : "comments open");
+  if (Number.isInteger(s.proof)) {
+    const w = s.published ? whenMX(s.published) : "";
+    stat(box, "busy", "Proof " + s.proof, w ? "· " + w : "");
+  }
+}
+
 teamFigures();
 gameFigure();
+bugFigures();
+bookFigures();

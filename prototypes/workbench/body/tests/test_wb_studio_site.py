@@ -65,10 +65,21 @@ class T(unittest.TestCase):
             self.assertEqual((status, h["Content-Type"], h["Cache-Control"]), (200, "text/html; charset=utf-8", "no-cache"), pre)
             self.assertIn(b"<h1>Admin</h1>", body)
             self.assertNotIn(b"<script>", body)
+            # the Bugs and Book cards open inside admin; the GitHub list is a quick link; the Workbench card is gone
+            self.assertIn(b'<a class="card" href="/admin/bugs">', body)
+            self.assertIn(b'<a class="card" href="/admin/book">', body)
+            self.assertIn(b"Bugs on GitHub", body)
+            self.assertNotIn(b"/admin/workbench", body)
+            self.assertIn(b'id="bug-stats"', body)
+            self.assertIn(b'id="book-stats"', body)
             self.assertIn("script-src 'self'", h["Content-Security-Policy"])
             for name, ctype in (("index.js", "text/javascript"), ("index.css", "text/css")):
                 status, h, _ = call(self.none_url + pre + "/index/" + name)
                 self.assertEqual((status, h["Content-Type"]), (200, ctype), name)
+        for pre in ("", "/studio"):   # the team page has its way back to /admin
+            status, h, body = call(self.none_url + pre + "/team")
+            self.assertEqual(status, 200, pre)
+            self.assertIn(b'<a href="/admin/">\xe2\x86\x90 Admin</a>', body)
         self.assertEqual(call(self.none_url + "/index/nothing.js")[0], 404)
         self.assertEqual(call(self.none_url + "/index/../server.py")[0], 404)
 
