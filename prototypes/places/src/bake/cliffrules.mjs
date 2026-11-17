@@ -22,7 +22,6 @@ const [R_LIP, R_ENDS, R_CORNERS, R_COLS, R_WAY, R_SIDES, R_RIM] = [LIP, ENDS, CO
 const T = (cls) => tiles.named(SET, cls);
 const CELL = PIECES.cell;
 const WAYUP_U = 'cliff-way-up-u';   // the way up U's decal (southruns.mjs WAYUP_U_KIND)
-const BANK_UNDUG = 'wayup-undug';   // the earth bank's decal (southruns.mjs BANK_UNDUG_KIND); the dug one, 'wayup-dug', is swapped in by the page
 
 // draw-order class of a piece, for ties on the foot line: sides and fill 0, columns 1, corner cells 2, end pieces 3
 const clsOf = (kind) => (/^cliff-south-/.test(kind) ? 1 : /^cliff-corner-[ew]-[0-4]$/.test(kind) ? 2 : /^cliff-(corner-[ew]-5|end\d-[ew])$/.test(kind) ? 3 : 0);
@@ -77,8 +76,6 @@ export function cliffPieces(ir, A) {
   }
   // the way up U (a WayUp area with `u`): one canvas piece at the area's lip row, drawn at the foot line of its lip row plus 3 after every piece of that line (class 4: after the columns, corner cells and end pieces)
   for (const a of ir.wayups || []) if (a.u) out.push({ kind: WAYUP_U, x: a.x * CELL, y: a.y * CELL, line: footLineOf(WAYUP_U, a.y), cls: 4 });
-  // the earth banks (ir.banks: x, y the way-up site's top row and west column, as a way up's): the undug bank art, one 96 x 192 piece over the site's two columns and four rows (lip and three face rows), after the face columns of its line (class 4)
-  for (const a of ir.banks || []) out.push({ kind: BANK_UNDUG, x: a.x * CELL, y: a.y * CELL, line: footLineOf(BANK_UNDUG, a.y), cls: 4 });
   const res = { items: out, fill }; CACHE.set(ir, res); return res;
 }
 

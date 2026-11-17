@@ -7,6 +7,8 @@
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
 import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { SHIM_NAMES, shimSource, rewrite } from "./bank-shims.mjs";
 
@@ -15,6 +17,9 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("/home/mb/pw156/node_modules/playwright");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".mbtiles": "application/octet-stream", ".mbplace": "application/octet-stream" };
 mkdirSync(out, { recursive: true });
+const sha = (buf) => createHash("sha256").update(buf).digest("hex"), served = new Map();
+const SET_DIR = path.join(root, "art/places/sets/ninja-test");
+const git = (...a) => { try { return execFileSync("git", ["-C", root, ...a], { encoding: "utf8" }).trim(); } catch { return null; } };
 const server = createServer((req, res) => {
   const u = decodeURIComponent(req.url.split("?")[0]), sm = u.match(/^\/__shim\/(\w+)\.mjs$/);
   if (sm && SHIM_NAMES.includes(sm[1])) { res.writeHead(200, { "content-type": "text/javascript" }); res.end(shimSource(sm[1], root)); return; }
@@ -22,6 +27,7 @@ const server = createServer((req, res) => {
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
   const body = readFileSync(p);
+  if (/\.(png|webp|jpe?g|gif|svg)$/i.test(p)) served.set(path.relative(root, p), sha(body));   // the server's own log of the images it handed out (as tools/art/pageshot.mjs does): the sidecar's loadedShas
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(p.endsWith(".mjs") ? rewrite(body.toString("utf8")) : body);
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
@@ -34,11 +40,28 @@ await page.goto(url);
 await page.waitForFunction(() => window.__mb && window.__mb.PL && window.__mb.PL.ready, null, { timeout: 120000 });
 const settle = (ms = 900) => page.waitForTimeout(ms);
 const log = { steps: [] };
+// wayup-place-1: a sidecar beside each 1x still, made by this tool and never by hand (sign.py reads it): the picture's sha256, the light (day | dark; sign.py's name for the storm's dark light is "storm", recorded as `light`),
+// walking zoom 48 at scale 1, the tool, the tree (path, commit, dirty), the save, the moment (a-before, b-dug...), `files` = the set pieces on the view's place (its decals, props and canopy kinds that are files of the set, slot and sha256), and
+// loadedShas = the sha256 of every image the page loaded, from this server's own log of what it handed out (`loaded` lists them with their paths).
+let curMode = "day";
+const SAVE = { name: "rupar-banks-7-2", generator: 7, seed: 35, cell: 75, lead: "grown Rupar (species 7, born turn 0)", turn: 5, tier: 2, range: 4, start: "weather expedition at spawn 0", pawn: [12, 5, "up"] };
+const sidecar = async (name, still) => {
+  const kinds = await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key), v = m.PL.views.get(lay.baked.id); if (!v) return []; const s = v.ts.sprites, ks = new Set(); for (const g of [v.place.decals, v.place.props, v.place.canopy]) for (const d of g || []) if (s[d.kind]) ks.add(s[d.kind].kind); return [...ks].sort(); });
+  const files = [];
+  for (const k of kinds) { const f = path.join(SET_DIR, k + ".png"); if (existsSync(f)) files.push({ slot: "ninja-test/" + k + ".png", sha256: sha(readFileSync(f)) }); }
+  const loaded = [...served].map(([p, s]) => ({ path: p, sha256: s })).sort((a, b) => a.path.localeCompare(b.path));
+  const sc = { still: name + "-1x.png", stillSha256: sha(still), madeAt: new Date().toISOString(), tool: "prototypes/exploration/tools/bank-stills.mjs",
+    tree: { path: root, head: git("rev-parse", "HEAD"), branch: git("rev-parse", "--abbrev-ref", "HEAD"), dirty: (git("status", "--short", "-uno") || "") !== "" },
+    light: curMode === "dark" ? "storm" : "day", lightName: curMode, zoom: 48, scale: 1, size: [450, 600], save: SAVE, moment: name.replace(/-(day|dark)$/, ""),
+    files, loaded, loadedShas: [...new Set(loaded.map((x) => x.sha256))].sort() };
+  writeFileSync(path.join(out, name + "-1x.json"), JSON.stringify(sc, null, 1));
+};
 const shot = async (name) => {
   await page.evaluate(() => { const m = window.__mb; if (m.RT.view) m.endView(); });
   await settle(400);
   writeFileSync(path.join(out, name + "-phone.png"), await page.screenshot());
-  const d = await page.evaluate(() => window.__mb.capture()); writeFileSync(path.join(out, name + "-1x.png"), Buffer.from(d.split(",")[1], "base64"));
+  const d = await page.evaluate(() => window.__mb.capture()), still = Buffer.from(d.split(",")[1], "base64"); writeFileSync(path.join(out, name + "-1x.png"), still);
+  await sidecar(name, still);
   const st = await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; return { x: P.x, y: P.y, dir: P.dir, msg: m.msg, log: m.S.log.slice(-2) }; });
   log.steps.push({ name, ...st }); console.log(name, JSON.stringify(st));
 };
@@ -58,7 +81,7 @@ const place = (x, y, dir) => page.evaluate(([x, y, dir]) => { const m = window._
 const light = (mode) => page.evaluate((mode) => { const m = window.__mb, col = m.S.exp.pos % m.MW; m.S.exp.storm = mode === "dark" ? { x: col - 2, w: 3, dir: 1, t: 0 } : null; }, mode);
 
 for (const mode of (process.argv[4] || "day").split(",")) {   // one light per process: a dug bank stays dug for the walk, so a second light in the same page would start dug
-  await light(mode); await place(12, 5, "up"); await settle(1800);
+  curMode = mode; await light(mode); await place(12, 5, "up"); await settle(1800);
   await shot(`a-before-${mode}`);
   // the pawn walks up into the face: refused
   const before = await page.evaluate(() => { window.__mb.patchStep("up", "walk"); return window.__mb.S.exp.patch.y; }); await settle(500);

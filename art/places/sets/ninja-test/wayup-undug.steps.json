@@ -1,7 +1,0 @@
-{
- "source": "art-jobs/2026-11-17-wayup-paint-2/work/raw/undug-1.png",
- "steps": [["crop", [0, 0, 32, 64], "terrain"], ["snap", "walk", "314649e7e3f7", ["#1e2a3e", "#2b333f", "#242c38", "#1d2531"]]],
- "replay_sha256": "07ef1fd8b478de28313189b5eb8201c79bdd7e3edfff7697d832e7a185725bbf",
- "hand_touchups": "rule 18: the five orange dig-bracket pixels (15,59), (1,60), (2,60), (14,60), (15,60) take the commonest neighbouring colour (script runs/wayup-paint-5/touchup.py); all set-palette colours",
- "out_sha256": "d2d5b0e2da03f434f206191db212d524b1c1fce8a9c927141b5fbdb6d073cd12"
-}
