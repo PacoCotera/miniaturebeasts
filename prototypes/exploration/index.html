@@ -5475,6 +5475,10 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
   // walking view does), or each border would show a doubled green strip. Only the current place keeps its apron, drawn over the meeting. Land that is not drawn is the veil's dark, never the map's paper.
   const bkc = bakedView(lay), cw = lay.w * Tp, ch = lay.h * Tp, cx0 = ox + bkc.ox * Tp, cy0 = oy + bkc.oy * Tp;
   ensureMap(); const nb = v.nb || (v.nb = new Map()), cx = lay.cell % MW, cy = (lay.cell / MW) | 0, end = performance.now() + PEEK_NB_MS; let asked = 0;
+  // (call-zoom-wide-3) the backdrop is the veil's dark, so the seams between neighbours of unlike sizes never read as black; black is only past the realm's edge, all the way to the view's side
+  R(0, VIEW_Y, SCR_W, VIEW_H, C.night);
+  if (cx === 0) R(0, VIEW_Y, Math.max(0, cx0), VIEW_H, C.void); if (cx === MW - 1) R(Math.min(SCR_W, cx0 + cw), VIEW_Y, SCR_W, VIEW_H, C.void);
+  if (cy === 0) R(0, VIEW_Y, SCR_W, Math.max(0, cy0 - VIEW_Y), C.void); if (cy === MH - 1) R(0, Math.min(VIEW_Y + VIEW_H, cy0 + ch), SCR_W, VIEW_H, C.void);
   for (const [dx, dy] of PEEK_DIRS) {
     const X = cx + dx, Y = cy + dy; let w = cw, h = ch;
     const rect = (nw, nh) => ({ x: dx < 0 ? cx0 - nw : dx > 0 ? cx0 + cw : cx0 + ((cw - nw) >> 1), y: dy < 0 ? cy0 - nh : dy > 0 ? cy0 + ch : cy0 + ((ch - nh) >> 1), w: nw, h: nh });
@@ -5497,7 +5501,8 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
       }
       if (cvn) { const T2 = nbk.wholeSize(); g.drawImage(cvn, nbk.ox * T2, nbk.oy * T2, nl.w * T2, nl.h * T2, r.x, r.y, r.w, r.h); continue; }   // its cell out of the picture
     }
-    if (!S.revealed[c] || nl || (passable(c) && G.gen === 7)) R(r.x, r.y, r.w, r.h, C.night);   // land not seen, or a place still being made: the veil's dark (the map's paper is cream: never the page's colour here)
+    // (call-zoom-wide-3) land not seen, or a place not made yet: the map's ground under the veil (its dark copy), never a black band; black (C.void) is only past the realm's edge
+    if (!S.revealed[c] || nl || (passable(c) && G.gen === 7)) { g.drawImage(mapCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h); g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore(); }   // the ground, under the veil
     else g.drawImage(mapCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // water, cliff: as the map shows the cell
   }
 }
@@ -5511,7 +5516,9 @@ function drawWhole(t) {
   // The peek (call-zoom-wide-1) shows the place at half the whole picture's tile (12 or 8 px: a 2:1 step of the 24 / 16 px picture, no smoothing), so it and half of each
   // neighbour fill the view: twice the place in each direction. Look keeps the whole place at T.
   const wide = v.kind === 'peek', Tp = wide ? T >> 1 : T;
-  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * Tp, H = bk.place.h * Tp, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1);
+  // (call-zoom-wide-3) the peek centres on the CELL (lay.w x lay.h), not on the picture with its apron, so half of each neighbour shows on all four sides
+  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * Tp, H = bk.place.h * Tp,
+    ox = wide ? Math.round(SCR_W / 2 - (bk.ox + lay.w / 2) * Tp) : (SCR_W - W) >> 1, oy = wide ? VIEW_Y + Math.round(VIEW_H / 2 - (bk.oy + lay.h / 2) * Tp) : VIEW_Y + ((VIEW_H - H) >> 1);
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
