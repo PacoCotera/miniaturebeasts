@@ -10,7 +10,6 @@
 #     /admin/notes*                     the play notes page and files: the Caddy service (not the studio)
 #     /admin/bugs                       the bugs page (open bugs, fixed in the last 7 days): the Caddy service, from bugs.json beside the notes; /admin/bugs/summary.json is the index card's live line
 #     /admin/book                       the book page (comments, spreads, proof and PDF links): the Caddy service, from book/*.json beside the notes; /admin/book/summary.json is the index card's live line
-#     /admin/workbench/                 the species workbench's static files (the release's play/workbench), not public
 #     /admin/test/                      the test page (the release's play/test; its links are made absolute by bundle-pages.sh)
 #     /admin/ itself                    the index page, from the studio (rewritten to its /index route; /admin redirects to /admin/); its files are /admin/index/*
 #     any other /admin path             404, after the login's check
@@ -44,9 +43,6 @@
 	}
 	handle /admin/logout {
 		reverse_proxy 127.0.0.1:8791
-	}
-	handle /admin/workbench {
-		redir * /admin/workbench/ 302
 	}
 	# play notes: read only behind the same login, served by the Caddy service on this machine (the notes are on its card, not on the studio's machine);
 	# the service answers only with the login's X-Studio-User, and the public /caddy-api/ route below can post a note but never read one
@@ -101,8 +97,8 @@
 	handle /admin/test {
 		redir * /admin/test/ 302
 	}
-	# the workbench and the test page: the release's own files (play/workbench, play/test), behind the login
-	@tools path /admin/workbench/* /admin/test/*
+	# the test page: the release's own files (play/test), behind the login
+	@tools path /admin/test/*
 	handle @tools {
 		route {
 			request_header -X-Studio-User
@@ -112,7 +108,7 @@
 			}
 			header X-Robots-Tag noindex
 			header Cache-Control "private, no-cache"
-			uri path_regexp (?i)^/+admin/(workbench|test) /play/$1
+			uri path_regexp (?i)^/+admin/(test) /play/$1
 			root * {$MB_ROOT}/current
 			encode zstd gzip
 			file_server

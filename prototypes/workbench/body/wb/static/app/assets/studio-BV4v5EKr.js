@@ -1,1 +1,0 @@
-import{k as e,p as t}from"./index-La787Y58.js";var n=n=>e({queryKey:[`studio`,n],queryFn:()=>t(`GET`,`/api/species/${encodeURIComponent(n)}/studio`),staleTime:3e5});export{n as t};

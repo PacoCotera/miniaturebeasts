@@ -25,8 +25,7 @@ set `CADDY_PAINTER=real`, `CADDY_CEILING_USD` and `GEMINI_API_KEY` there to enab
 ## The admin login
 
 `/admin` is the owner's tools (owner 2026-11-16): `/admin/team` is the studio's team page, served from another machine on the private bridge
-(`MB_STUDIO`, host and port; the studio still answers under its own `/studio` prefix and the Caddyfile rewrites to it), `/admin/notes` the play notes,
-`/admin/workbench/` the species workbench (static, from the release).
+(`MB_STUDIO`, host and port; the studio still answers under its own `/studio` prefix and the Caddyfile rewrites to it), `/admin/notes` the play notes.
 The web server asks the login before it passes any `/admin` request on, so a request without a session never reaches the studio.
 The game is public and lives wholly under `/play/` (`/play/`, `/play/station/`, `/play/exploration/`, their folders `/play/ui/`, `/play/face/`, `/play/assets/` ...); nothing is served at `/sandbox/` or `/studio/`.
 The team's tools travel in the release as `/play/workbench`, `/play/caddy` and `/play/test` (the Caddy service and the workbench read their siblings) but are public nowhere (except `/play/workbench/frames/`, the species frames: game data the Station loads, so public): `/admin/workbench/` and `/admin/test/` serve them behind the login.
