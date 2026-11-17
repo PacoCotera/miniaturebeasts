@@ -19,6 +19,7 @@ import { recoveryPrint } from "./recovery-print.mjs";
 import { createRealms, MAX_BYTES } from "./realms.mjs";
 import { createNotes, sendFile } from "./notes.mjs";
 import { createBugs } from "./bugs.mjs";
+import { createBook } from "./book.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const RETRY_S = [60, 300, 1800];   // a failed call retries at one, five and thirty minutes
@@ -46,6 +47,7 @@ export function createApp(opts = {}) {
   const realms = createRealms({ dataDir, now: state.now, fs: cfg.realmsFs });
   const notes = createNotes({ dataDir, now: state.now, limits: cfg.noteLimits });
   const bugs = createBugs({ dataDir, now: state.now });
+  const book = createBook({ dataDir, now: state.now });
   // --- the identity and the recovery print ---
   // state.identity: what identity.json holds. state.print: the print waiting (the seed, in memory only). A file that is there but unreadable is left alone: nothing is queued over it.
   const identityFile = path.join(dataDir, "identity.json");
@@ -90,15 +92,20 @@ export function createApp(opts = {}) {
         res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(notes.page(url.searchParams.get("from") || "")); return;
       }
       // the bugs page: the same rule as the notes page (the login's header, read only, never under the public prefix)
-      if (url.pathname === "/admin/bugs" || url.pathname === "/admin/bugs/") {
+      // and the book page, its sheet and the two live lines the index shows (the Bugs card's and the Book card's): the same rule for each
+      const adminPages = {
+        "/admin/bugs": ["text/html; charset=utf-8", "private, no-store", () => bugs.page()], "/admin/bugs/": ["text/html; charset=utf-8", "private, no-store", () => bugs.page()],
+        "/admin/bugs/bugs.css": ["text/css; charset=utf-8", "private, no-cache", () => bugs.css()],
+        "/admin/bugs/summary.json": ["application/json", "private, no-store", () => JSON.stringify(bugs.summary())],
+        "/admin/book": ["text/html; charset=utf-8", "private, no-store", () => book.page()], "/admin/book/": ["text/html; charset=utf-8", "private, no-store", () => book.page()],
+        "/admin/book/book.css": ["text/css; charset=utf-8", "private, no-cache", () => book.css()],
+        "/admin/book/summary.json": ["application/json", "private, no-store", () => JSON.stringify(book.summary())],
+      };
+      if (Object.hasOwn(adminPages, url.pathname)) {
         if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
         if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
-        res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(bugs.page()); return;
-      }
-      if (url.pathname === "/admin/bugs/bugs.css") {
-        if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
-        if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
-        res.writeHead(200, { "content-type": "text/css; charset=utf-8", "cache-control": "private, no-cache", "x-robots-tag": "noindex" }); res.end(bugs.css()); return;
+        const [type, cache, body] = adminPages[url.pathname];
+        res.writeHead(200, { "content-type": type, "cache-control": cache, "x-robots-tag": "noindex" }); res.end(body()); return;
       }
       if (req.method === "POST" && p === "/notes") return json(res, ...await notes.post(req));
       if (req.method === "OPTIONS") { res.writeHead(204, { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, POST, PUT, DELETE", "access-control-allow-headers": "content-type" }); res.end(); return; }

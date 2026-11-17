@@ -142,7 +142,8 @@ class Routes(unittest.TestCase):
               "/studio/%00", "/studio/x;/studio/login",
               "/admin", "/admin/", "/admin/x", "/admin/team", "/admin/team/", "/admin/team/x", "/admin/team.json", "/admin/team-coord.json", "/admin/team-doc/rules/1",
               "/ADMIN/TEAM", "/Admin/Team.json", "//admin/team", "/admin//team", "/x/../admin/team", "/admin/./team", "/admin/team/%2e%2e/team", "/admin%2fteam", "/%61dmin/team",
-              "/admin/login/../team", "/admin/login%2f..%2fteam", "/admin/logout/../team", "/admin/team?/admin/login", "/admin/team;/admin/login", "/admin/team%00", "/admin/workbench/x", "/admin/notes"]
+              "/admin/login/../team", "/admin/login%2f..%2fteam", "/admin/logout/../team", "/admin/team?/admin/login", "/admin/team;/admin/login", "/admin/team%00", "/admin/workbench/x", "/admin/notes",
+              "/admin/book", "/admin/book/", "/admin/book/book.css", "/admin/book/summary.json", "/admin/bugs", "/admin/bugs/summary.json", "/ADMIN/BOOK", "/admin/book/../book"]
 
     def test_without_a_session_nothing_reaches_the_studio(self):
         for path in self.TRICKS:
@@ -226,6 +227,10 @@ class Routes(unittest.TestCase):
             self.assertEqual(self.where(p, good), (302, "/admin/team"), p)
         self.assertEqual(self.where("/admin/nothing-here", good)[0], 404)
         self.assertEqual(self.where("/admin/team", good)[0], 200)
+
+    def test_the_book_page_and_the_two_index_summaries_need_the_login(self):
+        for p in ("/admin/book", "/admin/book/", "/admin/book/book.css", "/admin/book/summary.json", "/admin/bugs", "/admin/bugs/summary.json"):
+            self.assertEqual(self.where(p), (302, "/admin/login"), p)
 
     def test_the_workbench_and_the_test_page_are_only_for_a_session(self):
         for page in ("workbench", "test"):

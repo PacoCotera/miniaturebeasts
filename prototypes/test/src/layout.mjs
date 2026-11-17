@@ -53,6 +53,7 @@ function portrait(W, H, S, device, dev) {
   const lastY = rd(fy + h) + 6, footY = lastY + 18;
   R.last = [x0 + 8, lastY, bw - 16, 16]; R.foot = [x0 + 8, footY, bw - 16, 14];
   R.hint = [x0 + 8, footY + 14 + 8, bw - 16, 16];   // "Turn the phone for a larger Station": the free band between the footer and the keys
+  R.admin = [x0 + 8, H - S.b - 20, 80, 20];   // "← Admin" (only under /admin), at the bottom left, under the keys (the pad ends at least 4 px above it, down to 390 x 664)
   const top = footY + 14, bottom = H - S.b - 16, padY = rd((top + bottom) / 2 - 84), padX = x0 + 16;
   const z = SIZES.portrait[device], K = {};
   const confirmX = W - S.r - 16 - z.confirm;
@@ -80,6 +81,7 @@ function landscape(W, H, S, device, dev) {
     switch: [cL, 8, 88, 44], switchStation: [cL, 8, 44, 44], switchCompanion: [cL + 44, 8, 44, 44],
     last: [cL, 64, 88, 48], foot: [cL, padY - 12 - 42, 88, 42],
     dock: [cR, 8, 88, 44], menu: [cR, 60, 88, 44], flag: [cR, 112, 88, 44],
+    admin: [cR, 164, 88, 24],   // "← Admin" (only under /admin), under the dev flag
   };
   const K = {}, z = SIZES.landscape[device];
   if (station) {
@@ -112,6 +114,7 @@ function desktop(W, H, dpr, device, dev, touch) {
   x -= 12 + 168; R.dock = [x, cy, 168, ch];
   R.last = [276, rd(bar / 2 - 9), Math.max(0, R.dock[0] - 120 - 276), 18];
   R.foot = [0, H - 28, W, 20];
+  R.admin = [16, H - 28, 80, 20];   // "← Admin" (only under /admin), at the foot's left end
   const K = {};
   if (station) {
     const p = z.pad, px = 14, py = rd(mid - 1.5 * p);

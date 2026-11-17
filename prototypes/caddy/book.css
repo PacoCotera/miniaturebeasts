@@ -1,0 +1,58 @@
+/* /admin/book: layout only. Colours from team.css; cards, back link, head, h2, .words and .meta from bugs.css.
+   The bar's widths (.w-0 .. .w-100) are added by book.mjs, since the page allows no inline style. */
+body.admin .head { display: block; }
+body.admin .lede.sub { font-size: 13.5px; margin-top: 4px; }
+body.admin .links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+body.admin .qlink { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px; }
+body.admin .qlink .name { font-size: 16px; font-weight: 650; color: var(--busy); }
+body.admin .qlink .what { font-size: 13px; color: var(--dim); margin-top: 2px; }
+body.admin .qlink .what.old { color: var(--warn); }
+
+body.admin .tally { display: flex; gap: 10px; margin: 0 0 12px; }
+body.admin .tally div { flex: 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 8px 14px; display: flex; align-items: baseline; gap: 8px; }
+body.admin .tally b { font-size: 24px; line-height: 1.1; font-weight: 750; }
+body.admin .tally span { color: var(--dim); font-size: 13.5px; }
+body.admin .tally .open b { color: var(--warn); }
+body.admin .tally .fixed b { color: var(--ok); }
+
+body.admin .bug .page { color: var(--text); font-weight: 650; }
+body.admin .bug .fixed-in { color: var(--ok); }
+/* comments: one card holding compact rows, not a card each */
+body.admin .cols .cards { grid-template-columns: 1fr; gap: 0; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+body.admin .cols .bug { background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 10px 16px; }
+body.admin .cols .bug:last-child { border-bottom: 0; }
+body.admin .cols .bug .words { font-size: 15px; margin: 0 0 2px; }
+body.admin .cols .bug .meta { font-size: 13px; }
+
+body.admin details.more { margin-top: 12px; }
+body.admin details.more > summary { cursor: pointer; color: var(--busy); font-size: 14.5px; padding: 6px 2px; }
+body.admin details.more[open] > summary { margin-bottom: 8px; }
+
+body.admin .bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--track); }
+body.admin .bar span { display: block; height: 100%; }
+body.admin .s-done { background: var(--ok); }
+body.admin .s-old { background: var(--warn); }
+body.admin .s-made { background: var(--busy); }
+body.admin .s-missing { background: transparent; border: 1.5px dashed var(--dim); }
+body.admin .bar .s-missing { border: 0; background: var(--track); }
+body.admin .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 2px 12px; font-size: 13.5px; color: var(--dim); }
+body.admin .legend b { color: var(--text); font-weight: 700; }
+body.admin .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; box-sizing: border-box; }
+
+body.admin .map { display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 4px; }
+body.admin .map span { display: flex; align-items: center; justify-content: center; height: 24px; border-radius: 5px; font-size: 11px; font-weight: 650; color: #11161c; box-sizing: border-box; }
+body.admin .map .s-missing { color: var(--dim); font-weight: 500; }
+
+body.admin ul.plain { list-style: none; margin: 0; padding: 0 2px; font-size: 14px; }
+body.admin ul.plain li { padding: 7px 0; border-bottom: 1px solid var(--line); color: var(--dim); overflow-wrap: anywhere; }
+body.admin ul.plain li b { color: var(--text); font-weight: 650; margin-right: 8px; }
+
+/* On its side: the links go beside the title; comments on the left, spreads on the right */
+@media (orientation: landscape) and (max-height: 500px) {
+  body.admin .head { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 14px; }
+  body.admin .links { margin-top: 0; grid-template-columns: auto auto; }
+  body.admin .qlink { padding: 8px 16px; }
+  body.admin .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  body.admin .cols h2 { margin-top: 0; }
+}
+@media (min-width: 1000px) { body.admin .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; } }

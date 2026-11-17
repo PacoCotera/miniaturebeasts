@@ -4,6 +4,7 @@
 import { layout, hardware, menuLayout, classify, SIZES, snap, render } from "./layout.mjs";
 import { footerParts, loadBuild, caddyAnswers } from "../../play/src/footer.mjs";
 
+const ADMIN = location.pathname.startsWith("/admin/");   // served behind the login at /admin/test/ (the web server's rewrite): then the page offers the way back
 const params = new URLSearchParams(location.search), DEV = params.has("dev"), TEST = params.has("test"), SEED = params.get("seed");
 const $ = (id) => document.getElementById(id);
 const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* the choice lasts the visit */ } } };
@@ -128,6 +129,7 @@ function apply() {
   const fsBtn = $("fsBtn"); setR(fsBtn, kind === "desktop" && view === S.view ? rg.fullscreen : null); const exitWord = view === "full"; $("fsWord").textContent = exitWord ? "Exit" : "Full screen"; fsBtn.querySelector(".hint").hidden = !exitWord; fsBtn.title = exitWord ? "Exit full screen (F)" : "Full screen (F)";
   fsBtn.setAttribute("aria-label", view === "full" ? "Exit full screen" : "Full screen");
   for (const id of ["dockCtl", "flagBtn", "drawerBtn", "menuBtn", "fsBtn"]) $(id).style.fontSize = kind === "desktop" ? "13px" : "14px";
+  setR($("adminBack"), ADMIN ? rg.admin : null);   // the way back to /admin, only when this page is served under /admin
   const last = $("last"); setR(last, DEV ? rg.last : null); last.classList.toggle("wrap", kind === "landscape"); last.style.fontSize = kind === "desktop" ? "13px" : "12px";
   if (kind === "desktop") last.style.lineHeight = "18px"; else last.style.lineHeight = "16px";
   const foot = $("foot"); setR(foot, rg.foot); foot.classList.toggle("compact", kind !== "desktop"); foot.classList.toggle("stack", kind === "landscape");

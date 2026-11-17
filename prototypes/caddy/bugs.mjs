@@ -28,6 +28,11 @@ export function createBugs({ dataDir, now = () => Date.now() }) {
     const fixed = rows.filter((r) => r.state === "closed" && r.closed && t - Date.parse(r.closed) <= WEEK).sort((a, b) => Date.parse(b.closed) - Date.parse(a.closed));
     return { open, fixed, generated, t };
   }
+  // The Bugs card's live line on the index: the same open list the page draws, counted by groups(). generated is null until the filer has run.
+  function summary() {
+    const { open, generated } = groups();
+    return { open: open.length, blocks_play: open.filter((r) => r.severity === "blocks-play").length, generated: generated || null };
+  }
   function page() {
     const { open, fixed, generated, t } = groups();
     const row = (r, when) => `<li class="bug${r.severity === "blocks-play" ? " blocks" : ""}"><p class="words">${esc(r.words || r.title)}</p><p class="meta"><b>${esc(deskName(r.desk))}</b> · ${esc(age(when, t))}${r.fix_merged ? " · fix merged, not live yet" : ""}${safeUrl(r.url) ? ` · <a href="${esc(safeUrl(r.url))}">#${esc(r.n)}</a>` : ` · #${esc(r.n)}`}</p></li>`;
@@ -45,5 +50,5 @@ export function createBugs({ dataDir, now = () => Date.now() }) {
       + `<h2>Fixed and live, last 7 days (${fixed.length})</h2>` + (fixed.length ? `<ul class="cards">${fixed.map((r) => row(r, r.closed)).join("")}</ul>` : `<p class="empty">None.</p>`) + `</div></body></html>`;
   }
   const css = () => readFileSync(new URL("./bugs.css", import.meta.url), "utf8");
-  return { page, groups, css };
+  return { page, groups, summary, css };
 }
