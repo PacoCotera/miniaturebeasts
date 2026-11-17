@@ -22,7 +22,7 @@ for (const path of pages) {
   if (path.includes('station')) {
     for (const k of ['KeyR', 'ArrowRight', 'Enter', 'KeyL', 'KeyB', 'KeyD', 'KeyH']) { await page.keyboard.press(k); await page.waitForTimeout(150); }
   }
-  if (path.includes('play') && page.frames().length < 3) errors.push('play: the Station and Companion frames did not load');
+  if (path === '/play/' && page.frames().length < 3) errors.push('play: the Station and Companion frames did not load');
   if (path === '/sandbox/test/' && page.frames().length < 3) errors.push('test: the Station and Companion frames did not load');
   const text = (await page.textContent('body')) || '';
   const foot = path === '/' ? '#build' : path === '/sandbox/test/' ? '#foot' : /\/(sandbox\/exploration|play\/station)\/$/.test(path) ? '#buildFoot' : null;
