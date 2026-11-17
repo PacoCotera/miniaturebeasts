@@ -2155,7 +2155,7 @@ function podAt(key, x, y, hiddenToo) { return S.pods.find(p => p.k === key && p.
 function occupant(key, x, y, ignore) {
   const lay = layout(key), live = S.exp.live[key], P = S.exp.patch;
   if (x < 0 || y < 0 || x >= lay.w || y >= lay.h) return { type: 'out' };
-  const t = lay.tiles[y * lay.w + x];
+  const t = bankTile(lay, x, y) ? T.BANK : lay.tiles[y * lay.w + x];   // a generator 7 earth bank is rock in the tiles and a bank to the partner
   if (T_BLOCK[t]) { const f = featAt(lay, key, x, y); return f ? { type: 'feat', f } : { type: 'tile', t }; }
   for (const c of live.cr) if (c !== ignore && !c.hide && c.x === x && c.y === y) return { type: 'cr', c };
   if (live.pt && live.pt !== ignore && live.pt.x === x && live.pt.y === y) return { type: 'pt' };
@@ -2529,15 +2529,19 @@ function noteSure(a, dir, c) {
 function digBank(ei, a, c) {
   const ex = S.exp, name = ex.pt.name;
   if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
-  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (G.level[c] > G.level[a]) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
+  const up = c < 0 || G.level[c] > G.level[a];   // c < 0: a tile bank of a generator 7 place (lay.banks): its way is always up
+  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (up) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
   const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
-  logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
+  logEv(name + ' dug a way ' + (up ? 'up' : 'down') + ' the bank');
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
   return true;
 }
 const bankIsDug = ei => (S.exp.dug || []).includes(ei);
 // The crossing a place tile belongs to (a scree or bank edge's two-by-two), or null.
+// A generator 7 place holds its earth banks as tile sites (lay.banks, adapt7.mjs: a way up's two columns and the four rows of lip and face under them): the bank, or null.
+function bankTile(lay, x, y) { for (const b of lay.banks || []) if (x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h) return b; return null; }
 function crossingAt(lay, x, y) {
+  { const b = bankTile(lay, x, y); if (b) return { bank: b, ei: b.ei }; }
   for (const q of lay.cross || []) { const d = q.dir === 'left' ? x : q.dir === 'right' ? lay.w - 1 - x : q.dir === 'up' ? y : lay.h - 1 - y, k = q.dir === 'up' || q.dir === 'down' ? x : y;
     if (d >= (q.off || 0) && d < (q.off || 0) + 2 && k >= q.s && k <= q.s + 1) return q; }   // a bank stands BANK_IN rows in from the border (world.mjs), scree on it
   return null;
@@ -2606,7 +2610,7 @@ function noteSureTile(t) { const ex = S.exp; if (!canSure() || ex.softSaid || (t
 // Rupar facing a bank tile in a place: the dig, then the same two tiles cross.
 function digBankHere() {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), f = frontOf(P), q = crossingAt(lay, f.x, f.y); if (!q) return;
-  const c = stepCell(lay.cell, q.dir);
+  const c = q.bank ? -1 : stepCell(lay.cell, q.dir);
   const lv = curLive(); if (lv.pt) lv.pt.st = 'dig';
   digBank(q.ei, lay.cell, c);
 }
@@ -2679,7 +2683,7 @@ function patchAction() {
   if (o && o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE) && !canSure()) return { label: 'Needs a rambler', run: () => softBump(o.t) };   // says why ✓ does nothing, as deep water does
   if (o && o.type === 'tile' && o.t === T.BANK && !canBank()) return { label: 'Needs a digger', run: () => softBump(o.t) };
   if (o && o.type === 'tile' && o.t === T.BANK && canBank() && !softTileOpen(lay, o.t, f.x, f.y)) { const q = crossingAt(lay, f.x, f.y);
-    if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
+    if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (q.bank || G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
@@ -3101,7 +3105,7 @@ function pickStrike(X) {
 
 // ===================== 8. Creatures and the partner =====================
 function canStand(X, x, y, who) {
-  if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
+  if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = bankTile(X.lay, x, y) ? T.BANK : X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
     if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
   return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * X.lay.w + x]); }
 function stepToward(X, who, tgt, n) {
@@ -3671,7 +3675,7 @@ function realmTurn(turned, pending) {
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // What the walk dug (a bank, or the burrow) shifts back with the turn: said as the world's, crediting the mibi that dug it (or not naming it, if it has left the Companion). One partner a walk, so one line.
   { const ex = S.exp, bankN = ex && ex.dug ? ex.dug.length : 0, burrow = !!(ex && ex.burrowDug), dm = ex && ex.pt && (bankN || burrow) ? carriedMibis().find(m => m.id === ex.pt.id) : null;
-    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >> 1]], who = dm ? dm.name : null;
+    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >= (1 << 20) ? ex.pos : ex.dug[0] >> 1]], who = dm ? dm.name : null;
       say(burrow ? (who ? 'The ground shifted, and the burrow ' + who + ' dug out is narrow again.' : 'The ground shifted, and the burrow is narrow again.')
         : who ? 'The ground shifted, and the ' + (bankN === 1 ? 'bank ' + who + ' dug is' : 'banks ' + who + ' dug are') + ' whole again.' : 'The ground shifted, and the dug bank is whole again.', ['shift', kind, ex.pt.id, burrow ? 1 : bankN]); } }
   // Movement: a species you know first; a direction only when the herd really drifted one way.

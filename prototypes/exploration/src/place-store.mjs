@@ -7,7 +7,7 @@ import { get, set, del } from 'idb-keyval';
 import { REALM_REV, realm7 } from './gen7/region.mjs';
 import { decorSites, presetHollowSites } from './gen7/place.mjs';
 
-const PLACE_REV = 2, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
+const PLACE_REV = 3, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
 const memKey = (seed, slot, v, cell) => seed + '|' + slot[0] + ',' + slot[1] + '|' + v + '|' + cell;
 const BAKED = new Map(), ASKED = new Set(), GROUNDS = new Map(), GROUND_ASKED = new Set(), WAITERS = [];

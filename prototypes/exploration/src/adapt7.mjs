@@ -5,6 +5,7 @@
 import { T, T_BLOCK, L, hash } from './world.mjs';
 
 export const INNER = { w: 24, h: 28 };
+export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (index.html keeps it in step) and its rows: the lip and the three face rows
 const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
@@ -162,5 +163,9 @@ export function adaptCell(place, ir, ts, terrains, o) {
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;
+  // rupar-banks-7-1: the earth banks of the cell: the two columns of a way up and the four rows (lip and the three face rows) under its top, in the cell's tiles, blocked rock until a Rupar digs them. The id comes from the
+  // site's world tile (the same in both cells a bank spans) and lies above every cell-edge index, so the page's dug list (edge indices) holds it beside them.
+  const banks = (ir.banks || []).map(a => ({ x: a.x - 1, y: a.y - 1, w: a.w, h: BANK_ROWS, ei: BANK_EI + (ir.origin.y + a.y) * 4096 + ir.origin.x + a.x })).filter(b => b.x + b.w > 0 && b.x < w && b.y + b.h > 0 && b.y < h);
+  if (banks.length) lay.banks = banks;
   return lay;
 }
