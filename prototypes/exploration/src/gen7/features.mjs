@@ -16,9 +16,10 @@ export const P = {
   RAV_K: 40,        // x 1000: the water cuts on while the raised land is under this many thousandths of height over the raise line per root of the flow (so a bigger stream cuts further)
   RANGE_LIFT: 320,  // height above the raising height (x 1000) of a range's cells: about the top 15% of the raised land
   RANGE_MIN: 12,    // cells: a range (smaller crest patches are not named)
-  PASS_LIFT: 200,   // a pass stands on raised land at least this high (x 1000)
-  PASS_MAX: 4,      // raised cells a through-ravine may cut, at most
-  PASS_GAP: 8,      // cells between two passes, or two through-ravines, at least
+  PASS_LIFT: 100,  // a pass stands on raised land at least this high (x 1000)
+  PASS_VALLEY: 4,   // cells down each low side of a pass within which a stream-sized flow is a valley head
+  PASS_MAX: 4,     // raised cells a through-ravine may cut, at most
+  PASS_GAP: 8,    // cells between two passes, or two through-ravines, at least
   DETOUR_MIN: 30,   // cells: a through-ravine is cut only where the low land at its two ends is further apart than this on foot (one a region at most)
   ESC_MIN: 4,       // south-face edges: an escarpment
   LAKE_MIN: 5,      // water cells: a lake (under it a pond)
@@ -163,11 +164,22 @@ export function realmFeatures(J) {
   // a pass is a saddle: range cells (within 2) on both sides across it, and lower ground on the other two sides
   const acrossRange = c => { const x = X(c), y = Y(c), rg = (a, b) => { for (let k = 1; k <= 2; k++) if (inR(a * k + x, b * k + y) && rid[(y + b * k) * RW + x + a * k] >= 0) return true; return false; }, lo = (a, b) => inR(x + a, y + b) && J.E[(y + b) * RW + x + a] < J.E[c];
     return (rg(1, 0) && rg(-1, 0) && lo(0, 1) && lo(0, -1)) || (rg(0, 1) && rg(0, -1) && lo(1, 0) && lo(-1, 0)); };
+  // what a pass candidate is: its two low sides (opposite 4-neighbours lower than it); divide = 1 when the flow from the two sides meets 20+ steps downstream or never; valleys = how many sides have a channel cell (flow >= STREAM_ACC) within PASS_VALLEY cells along them
+  const flowPath = c => { const p = []; while (c >= 0 && p.length < 4000) { p.push(c); c = J.down[c]; } return p; };
+  const passKind = c => { const x = X(c), y = Y(c); let sides = null;
+    for (const [a, b] of [[[x, y - 1], [x, y + 1]], [[x - 1, y], [x + 1, y]]]) if (inR(a[0], a[1]) && inR(b[0], b[1]) && J.E[a[1] * RW + a[0]] < J.E[c] && J.E[b[1] * RW + b[0]] < J.E[c]) sides = [a, b];
+    if (!sides) return { divide: 0, valleys: 0 };
+    const pa = flowPath(sides[0][1] * RW + sides[0][0]), pb = flowPath(sides[1][1] * RW + sides[1][0]), sa = new Map(pa.map((u, i) => [u, i]));
+    const m = pb.findIndex(u => sa.has(u)), divide = m < 0 || m + sa.get(pb[m]) >= 20 ? 1 : 0;
+    const head = s => { const dx = s[0] - x, dy = s[1] - y; for (let k = 1; k <= P.PASS_VALLEY; k++) { if (!inR(x + dx * k, y + dy * k)) break; const u = (y + dy * k) * RW + x + dx * k; if (J.acc[u] >= P.STREAM_ACC && !coast[u]) return true; } return false; };
+    return { divide, valleys: (head(sides[0]) ? 1 : 0) + (head(sides[1]) ? 1 : 0) }; };
   const passCand = [];
   for (let c = 0; c < NR; c++) { if (!level[c] || wet(c) || coast[c] || lift(c) < P.PASS_LIFT || !saddleE(c)) continue;
     const near = new Set(); const x = X(c), y = Y(c); for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { if (!inR(x + dx, y + dy)) continue; const r = rid[(y + dy) * RW + x + dx]; if (r >= 0) near.add(r); }
-    if (!near.size || !acrossRange(c)) continue; passCand.push({ c, e: J.E[c], ranges: [...near] }); }
-  passCand.sort((p, q) => p.e - q.e || p.c - q.c);
+    if (!near.size || !acrossRange(c)) continue; passCand.push({ c, e: J.E[c], ranges: [...near], ...passKind(c) }); }
+  // M1: ranked by divide first (the two low sides drain apart), then valley heads (a stream-sized flow within PASS_VALLEY cells down each low side), then height (lowest first among equals)
+  passCand.sort((p, q) => q.divide - p.divide || q.valleys - p.valleys || p.e - q.e || p.c - q.c);
+  stats.passCands = passCand.length; stats.passCandsDivide = passCand.filter(k => k.divide).length; stats.passCandsValley2 = passCand.filter(k => k.valleys === 2).length;
   const passes = [];
   for (const k of passCand) if (passes.every(p => Math.max(Math.abs(X(p.c) - X(k.c)), Math.abs(Y(p.c) - Y(k.c))) >= P.PASS_GAP)) passes.push({ c: k.c, ranges: k.ranges });
   const natural = [], raisedParts = ranges;

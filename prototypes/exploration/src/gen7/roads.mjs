@@ -16,7 +16,9 @@ export const P = {
   FORD: 24,         // a step onto a ford (water is crossed only there)
   BRIDGE: 12,       // a step onto a bridge cell (cheaper than a ford, so the road takes a bridge it was offered)
   RAISED: 3,        // a step on raised land (roads prefer the low ground)
-  SLOPE_DIV: 6,     // + |height difference| / 6 (height x 1000), at most SLOPE_MAX
+  RANGE_COST: 150,  // K3: + this on a step onto a range-belt cell away from a pass
+  PASS_NEAR: 2,     // K3: cells (Chebyshev) round a pass where its range costs no more
+  SLOPE_DIV: 6,    // + |height difference| / 6 (height x 1000), at most SLOPE_MAX
   SLOPE_MAX: 8,
   WANDER: 6,        // + 0 .. 6 from the whole-number noise, 4-cell lattice (the wander)
   STAIR: 40,        // a step up or down one of the region's stairs (the only way a road changes level)
@@ -76,6 +78,11 @@ export function realmRoads(I) {
   for (let c = 0; c < NR; c++) if (walk[c] && nb4(c).some(deepWater)) side[c] = 1;
   const stats = {}, T0 = Date.now(), tick = n => { stats['t_' + n] = Date.now() - T0; };   // the milliseconds at the end of each stage (the checks report them)
 
+  // K3: a step onto a range-belt cell costs RANGE_COST more, except within PASS_NEAR cells of a pass: the trail meets each range at its passes
+  const belt = new Uint8Array(NR);
+  if (I.rangeOf) { for (let c = 0; c < NR; c++) if (I.rangeOf[c] >= 0) belt[c] = 1;
+    for (const d of I.dest || []) if (d.kind === 'pass') for (let dy = -P.PASS_NEAR; dy <= P.PASS_NEAR; dy++) for (let dx = -P.PASS_NEAR; dx <= P.PASS_NEAR; dx++) { const x = X(d.c) + dx, y = Y(d.c) + dy; if (x >= 0 && x < RW && y >= 0 && y < RH) belt[y * RW + x] = 0; } }
+
   tick('wander');
   // ---- bridges: a straight span of 1..BR_SPAN cells of deep water (a river or a lake's narrows), both ends dry walkable on one level, where the way round is BR_RATIO x the bridge's road or more ----
   const bridgeAxis = new Uint8Array(NR);   // 1 east-west, 2 north-south, on a bridge's water cells
@@ -111,7 +118,7 @@ export function realmRoads(I) {
     const d = n - c, ax = d === 1 || d === -1 ? 1 : 2;
     if (bridgeAxis[n] && bridgeAxis[n] !== ax) return -1;   // a bridge is entered and left straight
     if (bridgeAxis[c] && bridgeAxis[c] !== ax) return -1;
-    let k = P.BASE + (bridgeAxis[n] ? P.BRIDGE : ford[n] ? P.FORD : P.LAND[land[n]]) + (level[n] ? P.RAISED : 0) + (rim(n) <= 5 ? P.SHORE : 0) + Math.min(P.SLOPE_MAX, (Math.abs(e[n] - e[c]) / P.SLOPE_DIV) | 0) + wander[n] + (side[n] && !ford[n] && !bridgeAxis[n] ? P.WATERSIDE : 0);
+    let k = P.BASE + (bridgeAxis[n] ? P.BRIDGE : ford[n] ? P.FORD : P.LAND[land[n]]) + (level[n] ? P.RAISED : 0) + (rim(n) <= 5 ? P.SHORE : 0) + Math.min(P.SLOPE_MAX, (Math.abs(e[n] - e[c]) / P.SLOPE_DIV) | 0) + wander[n] + (belt[n] ? P.RANGE_COST : 0) + (side[n] && !ford[n] && !bridgeAxis[n] ? P.WATERSIDE : 0);
     if (level[n] !== level[c]) {
       if (n === c + RW && level[c] > level[n] && stair[c]) k += P.STAIR;
       else if (n === c - RW && level[n] > level[c] && stair[n]) k += P.STAIR;

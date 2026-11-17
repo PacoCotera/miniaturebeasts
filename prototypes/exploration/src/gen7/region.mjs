@@ -395,7 +395,7 @@ export function addRoads(out, F) {
   const LV = levelsOf(realm), cx = c => c % RW, cy = c => (c / RW) | 0;
   const pond = c => realm.land[c] === L.POND, edgeOk = (a, b) => { const need = pond(a) || pond(b) ? 10 : 6; return edgeRows(LV, cx(a), cy(a), cx(b), cy(b), need, 2, I.level[a] ? 1 : 0) >= need; };   // a pond place lays more water than the field shows: twice the rows
   const bankOk = (a, b) => bankRows(LV, cx(a), cy(a), cx(b), cy(b), 7) >= 7;
-  const R = realmRoads({ ...I, ...(globalThis.F4NOPROBE ? {} : { edgeOk, bankOk }), extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams, escarpments: F.escarpments });
+  const R = realmRoads({ ...I, ...(globalThis.F4NOPROBE ? {} : { edgeOk, bankOk }), extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams, escarpments: F.escarpments, rangeOf: F.rid });
   const bodyOf = new Map(); for (const b of F.bodies) for (const c of b.cells) bodyOf.set(c, b);
   for (const b of R.bridges) { const w = bodyOf.get(b.cells[0]); b.river = w ? w.kind + '-' + w.id : null; realm.features.push({ id: b.id, kind: 'bridge', cells: b.cells, links: { ends: b.ends, axis: b.axis === 1 ? 'x' : 'y', river: b.river, around: b.around } }); }
   realm.destinations = R.dest;
