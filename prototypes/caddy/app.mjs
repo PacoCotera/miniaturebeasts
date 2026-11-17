@@ -18,6 +18,7 @@ import { randomBytes } from "node:crypto";
 import { recoveryPrint } from "./recovery-print.mjs";
 import { createRealms, MAX_BYTES } from "./realms.mjs";
 import { createNotes, sendFile } from "./notes.mjs";
+import { createBugs } from "./bugs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const RETRY_S = [60, 300, 1800];   // a failed call retries at one, five and thirty minutes
@@ -44,6 +45,7 @@ export function createApp(opts = {}) {
   const dock = createDock({ dataDir, now: state.now }); dock.sweep();
   const realms = createRealms({ dataDir, now: state.now, fs: cfg.realmsFs });
   const notes = createNotes({ dataDir, now: state.now, limits: cfg.noteLimits });
+  const bugs = createBugs({ dataDir, now: state.now });
   // --- the identity and the recovery print ---
   // state.identity: what identity.json holds. state.print: the print waiting (the seed, in memory only). A file that is there but unreadable is left alone: nothing is queued over it.
   const identityFile = path.join(dataDir, "identity.json");
@@ -86,6 +88,17 @@ export function createApp(opts = {}) {
         if (f) return sendFile(req, res, notes.fileOf(f[1], f[2], f[3]));
         if (url.pathname !== "/admin/notes" && url.pathname !== "/admin/notes/") { res.writeHead(404, { "content-type": "text/plain" }); res.end("no such page"); return; }
         res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(notes.page(url.searchParams.get("from") || "")); return;
+      }
+      // the bugs page: the same rule as the notes page (the login's header, read only, never under the public prefix)
+      if (url.pathname === "/admin/bugs" || url.pathname === "/admin/bugs/") {
+        if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
+        if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
+        res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(bugs.page()); return;
+      }
+      if (url.pathname === "/admin/bugs/bugs.css") {
+        if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
+        if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
+        res.writeHead(200, { "content-type": "text/css; charset=utf-8", "cache-control": "private, no-cache", "x-robots-tag": "noindex" }); res.end(bugs.css()); return;
       }
       if (req.method === "POST" && p === "/notes") return json(res, ...await notes.post(req));
       if (req.method === "OPTIONS") { res.writeHead(204, { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, POST, PUT, DELETE", "access-control-allow-headers": "content-type" }); res.end(); return; }
