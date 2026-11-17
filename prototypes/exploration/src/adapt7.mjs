@@ -144,8 +144,10 @@ export function adaptCell(place, ir, ts, terrains, o) {
   // decor keeps a one-tile gap round a find, and none stands on the foot of one below it that its picture would cover (notes 8, 25, 32)
   const gap = [...finds.filter(f => f.what !== 'pearl'), ...strikes].map(f => [f.x, f.y]);
   const keepDecal = d => { const dx = Math.floor(d.x / 48) - 1, dy = Math.floor(d.y / 48) - 1; return !gap.some(([gx, gy]) => Math.abs(dx - gx) <= 1 && dy - gy >= -1 && dy - gy <= 2); };
-  place.decals = place.decals.filter(keepDecal);
-  const decalNear = (x, y) => place.decals.some(d => Math.abs(Math.floor(d.x / 48) - 1 - x) <= 1 && Math.floor(d.y / 48) - 1 - y >= -1 && Math.floor(d.y / 48) - 1 - y <= 2);   // a tile (a fruit about to fall) whose picture some decor would cover
+  // the cliff's own pieces (faces, corners, ends, sides, fill, foot) are the rock, not decor: they stay whatever lies beside them (bug #44: a stone or strike mark on the top took the face pieces under it, leaving the step bare while its cells still blocked)
+  const isCliffPiece = d => /^cliff-|^way-up/.test(ts.sprites[d.kind].kind), kept = place.decals.filter(keepDecal);
+  place.decals = place.decals.filter(d => isCliffPiece(d) || keepDecal(d));
+  const decalNear = (x, y) => kept.some(d => Math.abs(Math.floor(d.x / 48) - 1 - x) <= 1 && Math.floor(d.y / 48) - 1 - y >= -1 && Math.floor(d.y / 48) - 1 - y <= 2);   // a tile (a fruit about to fall) whose picture some decor would cover
   const lm = ir.landmarks[0] || null;
   // distance to the nearest shelter, for creatures heading for cover (as the older generators' layouts hold it)
   const sdist = new Int16Array(NP).fill(999), sq = [];
