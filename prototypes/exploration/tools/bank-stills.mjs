@@ -49,6 +49,8 @@ const sidecar = async (name, still) => {
   const kinds = await page.evaluate(() => { const m = window.__mb, lay = m.layout(m.S.exp.patch.key), v = m.PL.views.get(lay.baked.id); if (!v) return []; const s = v.ts.sprites, ks = new Set(); for (const g of [v.place.decals, v.place.props, v.place.canopy]) for (const d of g || []) if (s[d.kind]) ks.add(s[d.kind].kind); return [...ks].sort(); });
   const files = [];
   for (const k of kinds) { const f = path.join(SET_DIR, k + ".png"); if (existsSync(f)) files.push({ slot: "ninja-test/" + k + ".png", sha256: sha(readFileSync(f)) }); }
+  const setRel = path.relative(root, SET_DIR) + path.sep;   // the set's own image files the page loaded (the atlas sprites.png is one) are on screen too
+  for (const [p, s] of served) if (p.startsWith(setRel) && !files.some((f) => f.sha256 === s)) files.push({ slot: "ninja-test/" + p.slice(setRel.length), sha256: s });
   const loaded = [...served].map(([p, s]) => ({ path: p, sha256: s })).sort((a, b) => a.path.localeCompare(b.path));
   const sc = { still: name + "-1x.png", stillSha256: sha(still), madeAt: new Date().toISOString(), tool: "prototypes/exploration/tools/bank-stills.mjs",
     tree: { path: root, head: git("rev-parse", "HEAD"), branch: git("rev-parse", "--abbrev-ref", "HEAD"), dirty: (git("status", "--short", "-uno") || "") !== "" },
