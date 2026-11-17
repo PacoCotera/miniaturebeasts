@@ -67,14 +67,17 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
   if (f === "up") {
     // the keys row is placed once, from the Companion (the taller panel): its panel and the dock row centred between the bar and the build line; the Station's panel ends on the same line
     const M = SIDE_PHONE, bw = W - 2 * M, a = pickA("portrait", bw, H), stampY = H - UPRIGHT_STAMP_BOTTOM - STAMP_H;
-    const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? Math.max(ZOOM, fitOf(d)) : fitOf(d)), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
-    const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((stampY - 12 - BAR - group) / 2) + bhC, dockY = bodyBottom + GAP;
+    // The Companion is drawn whole at the width's fit, or smaller where the height runs short (ui-short-phone-1): the group (panel, GAP, dock row) then fills the zone between the bar and the build line less GAP at each end,
+    // so its panel keeps the GAP under the bar, the dock row ends GAP above the build line, and the keys (signed sizes) never meet the screen. Where the height is enough nothing changes.
+    const zone = stampY - 12 - BAR, trayC = portraitTrayH("companion", a), fitH = (zone - 2 * GAP - GAP - DOCK_H - EDGE - trayC - 1e-6) / FACE.companion[1];
+    const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? Math.max(ZOOM, fitOf(d)) : Math.max(1 / 16, Math.min(fitOf(d), fitH))), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
+    const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((zone - group) / 2) + bhC, dockY = bodyBottom + GAP;
     const s = scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - 2 * EDGE);
-    // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter
-    const topMin = BAR + GAP + (st && asleep ? NOTE_H + GAP : 0), sh = Math.min(fh * s, Math.floor(bodyBottom - trayH - EDGE - topMin));
+    // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter. The Companion's screen is always whole.
+    const topMin = BAR + GAP + (st && asleep ? NOTE_H + GAP : 0), sh = st ? Math.max(0, Math.min(fh * s, Math.floor(bodyBottom - trayH - EDGE - topMin))) : fh * s;
     const bh = EDGE + sh + trayH, by = bodyBottom - bh;
     out.a = a; out.scale = s; out.panel = box(M, by, bw, bh);
-    out.screen = box(M + EDGE, by + EDGE, sw, sh);
+    out.screen = box(M + EDGE + (bw - 2 * EDGE - sw) / 2, by + EDGE, sw, sh);   // centred in the panel when it is narrower than the panel (the Companion on a short phone)
     out.view = sw < fw * s - 1e-6 || sh < fh * s - 1e-6 ? { w: sw / s, h: sh / s } : null;
     const trayBox = [M, by + bh - trayH, bw, trayH];
     out.tray = { box: trayBox, layout: "portrait", plan: keyPlan(dev, "portrait", bw, 0, a) };
