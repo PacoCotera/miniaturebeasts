@@ -17,7 +17,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("/home/mb/pw156/node_modules/playwright");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".mbtiles": "application/octet-stream", ".mbplace": "application/octet-stream" };
 mkdirSync(out, { recursive: true });
-const sha = (buf) => createHash("sha256").update(buf).digest("hex"), served = new Map();
+const sha = (buf) => createHash("sha256").update(buf).digest("hex"), served = new Map(), tilesets = new Map();
 const SET_DIR = path.join(root, "art/places/sets/ninja-test");
 const git = (...a) => { try { return execFileSync("git", ["-C", root, ...a], { encoding: "utf8" }).trim(); } catch { return null; } };
 const server = createServer((req, res) => {
@@ -28,6 +28,7 @@ const server = createServer((req, res) => {
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
   const body = readFileSync(p);
   if (/\.(png|webp|jpe?g|gif|svg)$/i.test(p)) served.set(path.relative(root, p), sha(body));   // the server's own log of the images it handed out (as tools/art/pageshot.mjs does): the sidecar's loadedShas
+  if (p.endsWith(".mbtiles")) tilesets.set(path.relative(root, p), sha(body));   // the baked tile sets it handed out (the page takes the set's atlas from these, not from sprites.png)
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(p.endsWith(".mjs") ? rewrite(body.toString("utf8")) : body);
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
@@ -51,11 +52,16 @@ const sidecar = async (name, still) => {
   for (const k of kinds) { const f = path.join(SET_DIR, k + ".png"); if (existsSync(f)) files.push({ slot: "ninja-test/" + k + ".png", sha256: sha(readFileSync(f)) }); }
   const setRel = path.relative(root, SET_DIR) + path.sep;   // the set's own image files the page loaded (the atlas sprites.png is one) are on screen too
   for (const [p, s] of served) if (p.startsWith(setRel) && !files.some((f) => f.sha256 === s)) files.push({ slot: "ninja-test/" + p.slice(setRel.length), sha256: s });
+  // The page never loads sprites.png as a file: the set's atlas comes inside the baked tile set. A served tile set whose sha256 is the one baked/index.json records for this tree is the bake of this tree's set
+  // (tools/bake.mjs --check ties them), so the set's sprites.png is on screen through it: listed with `via` naming the tile set.
+  const bakedIdx = JSON.parse(readFileSync(path.join(root, "prototypes/places/baked/index.json"), "utf8"));
+  for (const [p, s] of tilesets) { const e = bakedIdx.sets.find((x) => x.file === path.basename(p) && x.sha256 === s), sp = e && path.join(root, "art/places/sets", e.id, "sprites.png");
+    if (sp && existsSync(sp) && !files.some((f) => f.slot === e.id + "/sprites.png")) files.push({ slot: e.id + "/sprites.png", sha256: sha(readFileSync(sp)), via: p }); }
   const loaded = [...served].map(([p, s]) => ({ path: p, sha256: s })).sort((a, b) => a.path.localeCompare(b.path));
   const sc = { still: name + "-1x.png", stillSha256: sha(still), madeAt: new Date().toISOString(), tool: "prototypes/exploration/tools/bank-stills.mjs",
     tree: { path: root, head: git("rev-parse", "HEAD"), branch: git("rev-parse", "--abbrev-ref", "HEAD"), dirty: (git("status", "--short", "-uno") || "") !== "" },
     light: curMode === "dark" ? "storm" : "day", lightName: curMode, zoom: 48, scale: 1, size: [450, 600], save: SAVE, moment: name.replace(/-(day|dark)$/, ""),
-    files, loaded, loadedShas: [...new Set(loaded.map((x) => x.sha256))].sort() };
+    files, tilesets: [...tilesets].map(([p, s]) => ({ path: p, sha256: s })), loaded, loadedShas: [...new Set(loaded.map((x) => x.sha256))].sort() };
   writeFileSync(path.join(out, name + "-1x.json"), JSON.stringify(sc, null, 1));
 };
 const shot = async (name) => {
