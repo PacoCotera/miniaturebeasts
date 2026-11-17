@@ -231,8 +231,8 @@ test("a mark names itself when the ring is on it (plan 3.17 B3): the detail line
 test("the count is a fact, never n of N: pods and species; a filter says how many of how many and what; no pods: the empty seat and its two lines, the tools dimmed with their reason", () => {
   const st = mixed(); ident(st);
   assert.equal(inv(model(st, {}, "sort")).detail.right, "12 pods · 4 species", "the ring off the pods: the count");
-  assert.equal(inv(model(st, {}, "card.0")).detail.right, "not read yet", "the ring on an identified pod: the reading, with the dial in front");
-  assert.ok(inv(model(st, {}, "card.0")).detail.left.endsWith(" · fresh for 12 turns"), "a focused pod says how long it stays fresh, quietly, after its history");
+  assert.equal(inv(model(st, {}, "card.0")).detail.right, "", "the ring on an identified pod: no reading legend (the card's dial shows it; bug #19)");
+  assert.ok(!inv(model(st, {}, "card.0")).detail.left.includes("fresh for"), "a focused pod's line carries no freshness count and no find story (bug #19)");
   assert.equal(inv(model(st, { chips: ["S02"] }, "card.0")).detail.right, "3 of 12 · Untuva");
   assert.equal(inv(model(st, { chips: ["S02", "unread"] }, "card.0")).detail.right, "3 of 12 · Untuva, unread");
   assert.equal(inv(model(home(1), {}, "sort")).detail.right, "1 pod · 1 species", "one pod");
@@ -264,7 +264,7 @@ test("the verbs: Read, Grow, Freshen, Compare and Let go, each only while some p
 });
 test("the detail line: the focused pod's first tag and where it was found, the freshness in amber when it dries; on the verb line what the verb does and how many pods can take it", () => {
   const st = mixed(); ident(st); const v = (focus, over = {}) => inv(model(st, over, focus)).detail;
-  assert.match(v("card.0").left, /^.+ · .+$/); assert.deepEqual([v("card.0").amber, v("card.0").right], [false, "not read yet"]); assert.ok(v("card.0").left.endsWith(" · fresh for 12 turns"), "quietly, after the history; the reading holds the right"); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
+  assert.ok(v("card.0").left.length > 0 && !v("card.0").left.includes(" · fresh for") && !v("card.0").left.includes("Found "), "the tag word alone (bug #19)"); assert.deepEqual([v("card.0").amber, v("card.0").right], [false, ""]); st.turn = 9; assert.deepEqual([v("card.0").amber, v("card.0").right], [true, "dries out in 4 turns"]);
   st.turn = 2; assert.deepEqual([v("verb.read").left, v("verb.read").right], ["Read works on the bright pods", "twelve bright pods"]);
   assert.deepEqual([v("verb.freshen", { verb: "freshen" }).left, v("verb.freshen", { verb: "freshen" }).right], ["Pods dry out after 12 turns · Water makes one fresh again", "twelve bright pods"], "a turn down: every pod can be freshened");
 });
@@ -307,9 +307,9 @@ test("the hold Let go asks: the frame carries it with the ring on a pod under Le
 test("the reading dial: each identified card carries its dial and picture, an unidentified one none; the detail line says the reading in words (no digits) with the dial, below drying, a flash and the filter", () => {
   const st = mixed(); ident(st, 11);
   const cs = cardsOf(model(st, {}, "card.0")); for (const c of cs) assert.deepEqual([!!c.dial, !!c.dialPic], [c.sealed ? false : true, c.sealed ? false : true]);
-  const d = inv(model(st, {}, "card.0")).detail; assert.match(d.rightDial, /^dial:0:\d+(:s)?$/); assert.equal(d.right, "not read yet");
+  const d = inv(model(st, {}, "card.0")).detail; assert.equal(d.rightDial ?? "", ""); assert.equal(d.right, "", "no reading legend on the detail line (bug #19)");
   const p = st.tray[0], fr = frameOf(S.speciesOf(p)), open = fr.chapters.filter((c) => !c.sealed); S.read(st, p, open[0].id, settings);
-  const part = inv(model(st, {}, "card.0")).detail; assert.match(part.right, /^\w+ of \w+ (chapters )?read/); assert.ok(!/\d/.test(part.right), "no digits"); assert.match(part.rightDial, /^dial:1:/);
+  const part = inv(model(st, {}, "card.0")).detail; assert.equal(part.right, ""); assert.match(cardsOf(model(st, {}, "card.0"))[0].dialPic, /^dial:1:/, "the card's own dial still shows the reading");
   assert.equal(inv(model(st, { chips: ["S01"] }, "card.0")).detail.rightDial ?? "", "", "the filter words rank above the reading");
   assert.equal(inv(model(st, {}, "sort")).detail.rightDial ?? "", "", "the ring off the pods: the count, no dial");
 });

@@ -198,13 +198,12 @@ function inventoryView(view, m, spec, req) {
   const detail = { left: "", right: flash || filtered || (none ? "" : countAll), amber: false };
   if (focus && focus.startsWith("verb.")) { const n = cards.filter((c) => can(c).can).length; detail.left = peek ? fill(PK.peek, { Verb: PK.verbs[peek] }) : look === "freshen" && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : fill(PK.help, { Verb: PK.verbs[look] }); detail.right = fill(n === 1 ? PK.canOne : PK.can, { n: spell(n, "many") }); }
   else if (curCard && !(focus === "sort" || focus === "filter" || focus === "find")) {
-    const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = [curCard.e.tags[0].text, S.podOrigin(p)].join(" · ");
+    const p = curCard.e.p, f = freshOf(st, p, spec); detail.left = curCard.e.tags[0].text;   // bug #19: the tag word alone; the find story and the freshness count are not for a glance
     const waterRule = look === "freshen" && !ui.fixed && PK.helpFreshen ? fill(PK.helpFreshen, { n: S.POD_LIFE }) : "";   // finding 10: while Water is the verb on, the detail line is the rule; the pod's own freshness stays on its dial
     const markKind = S.podGoal(st, p) ? "star" : dryMark(st, p) || (!p.seen ? "new" : ""), lead = markKind && PK.markLead?.[markKind];   // the mark names itself when the ring is on it (plan 3.17 B3)
     if (f.amber && !f.bench && !flash) { detail.right = f.words; detail.amber = true; }
-    else if (!flash && !filtered) { const dial = S.readDial(p, settings); if (dial) detail.right = inWords(readWords(PK.reading, dial)); }   // drying > a flash > the filter > the reading > the count
-    if (detail.amber || detail.right !== (flash || filtered || (none ? "" : countAll))) { const d = S.readDial(p, settings); detail.rightDial = dialReq(req, d); detail.rightSealed = !!d && d.sealed > 0; }   // the dial before the reading, and under a drying pod's words too
-    if (!detail.amber && !f.bench && f.words) detail.left = detail.left.replace(/\.$/, "") + " · " + f.words;
+    else if (!flash && !filtered) detail.right = "";   // bug #19: no reading legend (each card's dial shows it): drying > a flash > the filter > nothing
+    if (detail.amber) { const d = S.readDial(p, settings); detail.rightDial = dialReq(req, d); detail.rightSealed = !!d && d.sealed > 0; }   // the dial under a drying pod's words
     if (lead && !detail.left.toLowerCase().includes(lead.toLowerCase())) detail.left = lead + " · " + detail.left;   // unless the line already says it (the goal tag reads "your goal: …")   // quietly, from the start: how long the pod stays fresh joins the history on the left (the right is the reading's, the designer's layout); amber on the right once it dries soon
     if (waterRule) detail.left = waterRule;
   }
