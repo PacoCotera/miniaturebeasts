@@ -79,6 +79,7 @@ class Routes(unittest.TestCase):
         (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters").mkdir(parents=True)
         (cls.dir / "root" / "current" / "sandbox" / "ui" / "assets" / "masters" / "m.png").write_text("png")
         (cls.dir / "root" / "current" / "sandbox" / "index.html").write_text("<p>sandbox</p>")
+        (cls.dir / "root" / "current" / "sandbox" / "other.html").write_text("<p>other</p>")
         for d, t in (("sandbox/workbench", "workbench-secret"), ("sandbox/play", "play-page"), ("play", "play-copy")):
             (cls.dir / "root" / "current" / d).mkdir(parents=True, exist_ok=True)
             (cls.dir / "root" / "current" / d / "index.html").write_text(t)
@@ -195,21 +196,16 @@ class Routes(unittest.TestCase):
         r = self.req(path, "GET", {"Cookie": cookie} if cookie else None)
         return r.status, r.getheader("Location")
 
-    def test_the_old_addresses_redirect(self):
-        for p, to in (("/sandbox/play/", "/play/"), ("/sandbox/play", "/play/"), ("/sandbox/play/index.html", "/play/"), ("/sandbox/station/", "/play/station/"),
-                      ("/sandbox/station", "/play/station/"), ("/sandbox/play/?test", "/play/?test"), ("/sandbox/station/?embed&test", "/play/station/?embed&test")):
-            self.assertEqual(self.where(p), (301, to), p)
+    def test_the_old_addresses_answer_404_with_no_redirect(self):
+        for p in ("/sandbox/play/", "/sandbox/play", "/sandbox/play/index.html", "/sandbox/station/", "/sandbox/station", "/sandbox/station/index.html",
+                  "/sandbox/play/?test", "/sandbox/station/?embed&test", "/sandbox/", "/sandbox", "/sandbox/index.html",
+                  "/sandbox/workbench", "/sandbox/workbench/", "/sandbox/workbench/index.html", "/sandbox/workbench/app/main.mjs", "/sandbox/Workbench/",
+                  "/studio", "/studio/", "/studio/x", "/studio/api/species", "/STUDIO/x", "/studio/team", "/studio/team/"):
+            self.assertEqual(self.where(p), (404, None), p)
+            self.assertEqual(self.where(p, "mb_studio=good"), (404, None), p)
         self.assertEqual(self.where("/play"), (301, "/play/"))
         self.assertEqual(self.where("/play/station"), (301, "/play/station/"))
         self.assertEqual(self.where("/play/")[0], 200)
-        self.assertEqual(self.where("/sandbox/play/src/footer.mjs")[0], 404, "a file the page loads is not redirected (here it is simply not in the stand-in release)")
-        for p in ("/studio", "/studio/", "/studio/x", "/studio/api/species", "/STUDIO/x"):
-            self.assertEqual(self.where(p), (302, "/admin/"), p)
-            self.assertEqual(self.where(p, "mb_studio=good"), (302, "/admin/"), p)
-        for p in ("/studio/team", "/studio/team/"):
-            self.assertEqual(self.where(p), (302, "/admin/team"), p)
-        self.assertEqual(self.where("/sandbox/workbench/"), (302, "/admin/workbench/"))
-        self.assertEqual(self.where("/sandbox/workbench/app/main.mjs"), (302, "/admin/workbench/"))
         self.assertEqual(self.where("/admin/workbench"), (302, "/admin/workbench/"))
 
     def test_the_admin_paths_need_the_login_and_the_index_is_the_team_page_for_now(self):
@@ -236,8 +232,8 @@ class Routes(unittest.TestCase):
         cc = lambda p: (lambda r: (r.status, r.headers.get_all("Cache-Control")))(self.req(p))
         self.assertEqual(cc("/sandbox/ui/assets/masters/m.png?v=0123456789ab"), (200, ["public, max-age=31536000, immutable"]))
         self.assertEqual(cc("/sandbox/ui/assets/masters/m.png"), (200, ["no-cache"]), "no hash in the name: not kept")
-        self.assertEqual(cc("/sandbox/index.html?v=0123456789ab"), (200, ["no-cache"]), "a version on another path is not a master")
-        self.assertEqual(cc("/sandbox/index.html"), (200, ["no-cache"]))
+        self.assertEqual(cc("/sandbox/other.html?v=0123456789ab"), (200, ["no-cache"]), "a version on another path is not a master")
+        self.assertEqual(cc("/sandbox/other.html"), (200, ["no-cache"]))
 
 
 class CaddyfileText(unittest.TestCase):

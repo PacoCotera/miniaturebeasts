@@ -31,7 +31,7 @@ let cur = null;   // the last applied layout, for the hooks
 
 // ---- the frames ----
 const frameUrl = {
-  station: "../station/?embed&raw" + (DEV ? "&dev" : "") + (TEST ? "&test" : ""),
+  station: (/^(localhost|127\.|\[::1\])/.test(location.hostname) ? "../station/" : "/play/station/") + "?embed&raw" + (DEV ? "&dev" : "") + (TEST ? "&test" : ""),
   companion: "../exploration/?embed&raw" + (SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (DEV ? "&dev=1" : "") + (TEST ? "&test" : ""),
 };
 frames.station.src = frameUrl.station; frames.companion.src = frameUrl.companion;

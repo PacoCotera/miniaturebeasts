@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 for (const f of ['_site/sandbox/face/dist/face.mjs', '_site/sandbox/face/dist/face.wasm']) if (!existsSync(f)) { console.log('missing from the assembled site: ' + f); process.exit(1); }
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + '/' : import.meta.url);
 const { chromium } = require('playwright');
-const pages = ['/','/sandbox/exploration/', '/play/station/', '/play/', '/sandbox/test/'];   // the game's public addresses (the /sandbox/ ones redirect on the web server)
+const pages = ['/','/sandbox/exploration/', '/play/station/', '/play/', '/sandbox/test/'];   // the game's public addresses
 const browser = await chromium.launch();
 let failed = false;
 for (const path of pages) {

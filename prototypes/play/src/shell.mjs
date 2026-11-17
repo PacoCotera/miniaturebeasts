@@ -67,7 +67,7 @@ let wokeNews = false;   // the Station woke while it was out of view: the switch
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
-const stationUrl = "../station/?embed" + (TEST ? "&test" : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
+const stationUrl = (import.meta.env?.PROD ? "/play/station/" : "../station/") + "?embed" + (TEST ? "&test" : ""),   // the built page is at /play/; /sandbox/station/ itself answers 404 on the web server companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 // The trays are React + Radix (options/src/keytray.jsx); the geometry is keyplan.mjs (one measure a: laptops 44, phones the largest step that fits). A key press is a keydown on the device's frame, its release a keyup.

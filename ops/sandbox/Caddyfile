@@ -2,7 +2,7 @@
 # before a release goes live and installs it at /etc/caddy/Caddyfile (a release without this file leaves the installed one alone).
 # Owner 2026-11-16: "consolidate all my tools, dashboards, artifacts under /admin. remove /studio we will rebuild that later. and /play for the web play experience".
 #   /play/ and /play/station/           the game and the Station: real copies of the built pages with a <base> on their files in /sandbox/ (ops/sandbox/bundle-pages.sh);
-#                                       the old page addresses (/sandbox/play/, /sandbox/station/) redirect here (301, the query kept); the files under /sandbox/ stay, the pages load them
+#                                       the files under /sandbox/ stay, the pages load them
 #   /admin/login and /admin/logout      the login (login/mb_login.py, unit mb-login) on 127.0.0.1:8791
 #   every other /admin path             only with a session: the login's /check says yes (and names the user), then:
 #     /admin/team, team.json ...        the studio's team page, on the private bridge (the studio still answers under its own /studio prefix; this file rewrites to it)
@@ -11,66 +11,25 @@
 #     /admin/ itself                    a redirect to /admin/team until the index page is designed
 #     any other /admin path             404, after the login's check
 #     The studio sees X-Studio-User only from here, never the browser's cookies, and none of these answers may be kept by a shared cache.
-#   /studio and /studio/*               retired, rebuilt later: 302 to /admin/team (for /studio/team) or /admin/ (everything else); the studio service itself keeps running for /admin/team
-#   /sandbox/workbench*                 302 to /admin/workbench/
+#   page addresses with no page: 404 (no redirect)
 #   /caddy-api/*                        the Caddy service (POST /caddy-api/v1/notes takes a play note; nothing is read back from here); /sandbox/*, /play/* and the site: the release, static
 # Two values come from the web server's environment (install.sh writes them to a file the Caddy unit and deploy.sh both read): MB_ROOT, the
 # directory that holds releases/ and current, and MB_STUDIO, the studio's host:port on the private bridge.
 # `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
 :80 {
 	@admin path /admin /admin/*
-	@oldwb path /sandbox/workbench /sandbox/workbench/*
-	@oldstudioteam path /studio/team /studio/team/
-	@oldstudio path /studio /studio/*
+	@gone path /studio /studio/* /sandbox /sandbox/ /sandbox/index.html /sandbox/play /sandbox/play/ /sandbox/play/index.html /sandbox/station /sandbox/station/ /sandbox/station/index.html /sandbox/workbench /sandbox/workbench/*
 	@teampage path /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
 
-	# the old game page addresses: the page only (its files under /sandbox/ are what the page loads); a query (the Station's ?embed) goes along
-	@oldplay {
-		path /sandbox/play /sandbox/play/ /sandbox/play/index.html
-		expression `{http.request.uri.query} == ''`
-	}
-	@oldplayq {
-		path /sandbox/play /sandbox/play/ /sandbox/play/index.html
-		expression `{http.request.uri.query} != ''`
-	}
-	@oldstation {
-		path /sandbox/station /sandbox/station/ /sandbox/station/index.html
-		expression `{http.request.uri.query} == ''`
-	}
-	@oldstationq {
-		path /sandbox/station /sandbox/station/ /sandbox/station/index.html
-		expression `{http.request.uri.query} != ''`
-	}
-	handle @oldplay {
-		redir * /play/ 301
-	}
-	handle @oldplayq {
-		redir * /play/?{query} 301
-	}
-	handle @oldstation {
-		redir * /play/station/ 301
-	}
-	handle @oldstationq {
-		redir * /play/station/?{query} 301
+	# pages with no address of their own: 404, no redirect (the /play/ pages load their files from /sandbox/, which stay served)
+	handle @gone {
+		respond "not found" 404
 	}
 	handle /play {
 		redir * /play/ 301
 	}
 	handle /play/station {
 		redir * /play/station/ 301
-	}
-
-	# the species workbench is a tool now: its public address and every file under it go to the private one
-	handle @oldwb {
-		redir * /admin/workbench/ 302
-	}
-
-	# the studio is retired: nothing of it is served from /studio any more
-	handle @oldstudioteam {
-		redir * /admin/team 302
-	}
-	handle @oldstudio {
-		redir * /admin/ 302
 	}
 
 	handle /admin/login* {
