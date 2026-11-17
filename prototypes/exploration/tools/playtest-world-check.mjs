@@ -6,9 +6,10 @@
 //   (c) every place can reach "0 to take": the places' counted items (the page's leftItems, with the veil lifted so every item counts) are all of a kind the page takes, a pod has its tile, and every one
 //       is reached by (b): taking every counted item brings leftCounts to 0, nothing counted out of reach or never takeable.
 // A failing seed lists its first failing place and item.
-//   node tools/playtest-world-check.mjs --from 1 --to 200 --rows rows-1-200.json     (shard by --from/--to; each seed is about 3 minutes, the realm's 1500 places are built)
-//   node tools/playtest-world-check.mjs --list rows-a.json rows-b.json ...             (the rows merged, the passing seeds written to src/playtest-seeds.mjs)
-import { writeFileSync, readFileSync } from "node:fs";
+//   node tools/playtest-world-check.mjs --from 1 --to 200 --dir rows --worker 0 --of 4 --max-min 90   (one seed-N.json per seed the moment it ends; a rerun skips them; each seed is minutes: the realm's 1500 places are built)
+//   node tools/playtest-world-check.mjs --list rows                                    (the rows merged, the passing seeds written to src/playtest-seeds.mjs)
+import { writeFileSync, readFileSync, readdirSync, statSync, mkdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
 import { firstTrip } from "./first-trip-bot.mjs";
 import { makePage } from "../tests/page-harness.mjs";
 import { REALM_REV } from "../src/gen7/region.mjs";
@@ -84,17 +85,27 @@ export const PLAYTEST_SEEDS = [${seeds.join(", ")}];
 if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const a = process.argv.slice(2), arg = (k, d) => { const i = a.indexOf("--" + k); return i < 0 ? d : a[i + 1]; };
   if (a.includes("--list")) {
-    const rows = a.slice(a.indexOf("--list") + 1).flatMap((f) => JSON.parse(readFileSync(f, "utf8"))).sort((x, y) => x.seed - y.seed);
+    // --list <dir | row files...>: a directory holds one seed-N.json per seed; files hold arrays of rows
+    const srcs = a.slice(a.indexOf("--list") + 1).flatMap((f) => statSync(f).isDirectory() ? readdirSync(f).filter((n) => /^seed-\d+\.json$/.test(n)).map((n) => join(f, n)) : [f]);
+    const rows = srcs.flatMap((f) => [].concat(JSON.parse(readFileSync(f, "utf8")))).sort((x, y) => x.seed - y.seed);
     const ok = rows.filter((r) => r.ok), bad = rows.filter((r) => !r.ok);
     for (const r of bad) console.log(`seed ${r.seed}: ` + [!r.trip.ok ? "first trip: " + r.trip.why : "", r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : ""].filter(Boolean).join(" | "));
     writeFileSync(LIST_FILE, listText(ok.map((r) => r.seed), rows[0].seed, rows[rows.length - 1].seed));
     console.log(`${ok.length} of ${rows.length} seeds pass; list written to src/playtest-seeds.mjs`);
   } else {
-    const from = +arg("from", 1), to = +arg("to", 200), out = arg("rows", null), rows = [];
+    // Resumable and bounded: --dir <rows dir> gets one seed-N.json the moment a seed finishes; a rerun skips the seeds already there.
+    // --worker k --of n takes the seeds s with s % n == k (run up to 4 workers); --max-min m stops starting seeds after m minutes of wall time (90 is the brief's).
+    const from = +arg("from", 1), to = +arg("to", 200), dir = arg("dir", null), k = +arg("worker", 0), n = +arg("of", 1), stopAt = Date.now() + +arg("max-min", 90) * 60000;
+    if (dir) mkdirSync(dir, { recursive: true });
+    const only = arg("seeds", null) && arg("seeds", "").split(",").map(Number);   // --seeds 5,29: just these (to redo failures)
     for (let s = from; s <= to; s++) {
-      const r = checkSeed(s, { regions: +arg("regions", 5), trip: !a.includes("--no-trip") }); rows.push(r);
-      console.log(`seed ${s}: ${r.ok ? "ok" : "FAIL"} ${r.trip.ok ? "" : "trip: " + r.trip.why + " "}${r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : ""}`);
-      if (out) writeFileSync(out, JSON.stringify(rows));
+      if (only ? only.indexOf(s) < 0 || only.indexOf(s) % n !== k : s % n !== k) continue;
+      const file = dir && join(dir, `seed-${s}.json`);
+      if (file && existsSync(file)) continue;
+      if (Date.now() >= stopAt) { console.log(`stopped at the time limit before seed ${s}`); break; }
+      const t0 = Date.now(), r = checkSeed(s, { regions: +arg("regions", 5), trip: !a.includes("--no-trip") });
+      console.log(`seed ${s}: ${r.ok ? "ok" : "FAIL"} (${Math.round((Date.now() - t0) / 1000)} s) ${r.trip.ok ? "" : "trip: " + r.trip.why + " "}${r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : ""}`);
+      if (file) writeFileSync(file, JSON.stringify(r));
     }
   }
 }
