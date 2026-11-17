@@ -209,6 +209,13 @@ void word_bottomLine(void) {
       for (int q = kn - 1; q >= 0 && right - total < grow; q--) if (use[q]) { use[q] = 0; total = cue_span(use, w, kn, gap, &cn); }
     }
   }
+  /* a notice wider than its zone (bug #12: "Five Loika chapters read while you were out" ran into the step's words) takes the subject's room: the context is not drawn while the notice reaches it, as with the cues */
+  char need_s[V_STR]; need_s[0] = 0;
+  if (kn == 0 && !hide_mid && spec_str(P, "frame.line.need", need_s, sizeof need_s) > 0 && spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
+    int sr0[4]; v_srect(F, "regions.subject.rect", sr0); char nrole[24]; snprintf(nrole, sizeof nrole, "%s", v_sstr(F, "regions.need.role"));
+    int nright = v_si(F, "regions.need.right", 0) - back_extra, nleft = nright - v_role_width(need_s, nrole) - v_si(F, "regions.need.lampGap", 0) - spec_int(F, "regions.need.lamp.0", 12);
+    if (nleft < sr0[0] + sr0[2] + v_si(F, "regions.cues.gap", 12)) hide_mid = 1;
+  }
   /* the context, centred on 512, clipped with an ellipsis to its zone; not drawn while the cues have grown into it */
   if (!hide_mid && spec_str(P, "frame.line.subject", s, sizeof s) > 0) {
     int sr[4]; v_srect(F, "regions.subject.rect", sr); v_region("subject", LAYER_TYPE); snprintf(c, 24, "%s", v_sstr(F, "regions.subject.role"));
