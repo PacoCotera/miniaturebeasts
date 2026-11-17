@@ -118,7 +118,7 @@ export function createApp(opts = {}) {
       // the identity and the recovery print: the print is the seed itself, so it is served only while it waits and is gone once taken
       if (req.method === "GET" && p === "/identity") return json(res, 200, { ...identityBody(), ...(state.identityFault ? { fault: true } : {}) });
       if (req.method === "GET" && p === "/print/pending") {
-        if (!state.print) return json(res, 404, { ok: false, error: "no print is waiting" });
+        if (!state.print) { res.writeHead(204, { "cache-control": "no-store", "access-control-allow-origin": "*" }); res.end(); return; }   // nothing waiting is not an error: every play page asks every 10 s
         const pr = state.print, { png } = await builtPrint();
         res.writeHead(200, { "content-type": "image/png", "cache-control": "no-store", "x-print": pr.caddy, "access-control-allow-origin": "*", "access-control-expose-headers": "x-print" }); res.end(png); return;
       }

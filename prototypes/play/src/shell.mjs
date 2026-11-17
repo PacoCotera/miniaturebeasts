@@ -452,7 +452,7 @@ async function printLook() {
   if (print.busy) return;
   try {
     const r = await fetch(API + "/print/pending", { cache: "no-store" });
-    if (r.status === 404) { if (print.id) printClear(); return; }
+    if (r.status === 204 || r.status === 404) { if (print.id) printClear(); return; }   // none waiting (204; 404 from an older service)
     if (r.status !== 200) return;
     const id = r.headers.get("x-print"); if (!id || id === print.id) return;
     const url = URL.createObjectURL(await r.blob());

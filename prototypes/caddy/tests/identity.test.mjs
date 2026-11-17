@@ -58,14 +58,14 @@ test("Taken writes the public key and the key id, then the print is gone and a s
   assert.deepEqual(Object.keys(file).sort(), ["caddy", "printedAt", "recovery", "v"]);
   assert.deepEqual(file, { v: 1, caddy, recovery: { kid, pub }, printedAt: 1_700_000_000_000 });
   assert.deepEqual(Object.keys(file.recovery).sort(), ["kid", "pub"], "only the public key and the key id");
-  assert.equal((await call(app, "GET", "/print/pending")).status, 404, "the print is gone");
+  assert.equal((await call(app, "GET", "/print/pending")).status, 204, "the print is gone");
   assert.deepEqual((await call(app, "GET", "/identity")).body, { ok: true, caddy, recovery: { kid, pub } });
   const t2 = await call(app, "POST", "/print/taken", {}); assert.equal(t2.status, 200); assert.equal(t2.body.changed, false);
   assert.equal(app.status().identity, "printed");
   // a restart after Taken keeps the identity and queues no print
   const app2 = createApp({ dataDir: dir });
   assert.deepEqual((await call(app2, "GET", "/identity")).body, { ok: true, caddy, recovery: { kid, pub } });
-  assert.equal((await call(app2, "GET", "/print/pending")).status, 404);
+  assert.equal((await call(app2, "GET", "/print/pending")).status, 204);
   assert.equal(app2.state.print, null);
 });
 
@@ -109,7 +109,7 @@ test("an identity.json that cannot be read is left alone and nothing is queued o
   const app = createApp({ dataDir: dir });
   assert.equal(app.state.print, null);
   const id = await call(app, "GET", "/identity"); assert.equal(id.body.recovery, null); assert.equal(id.body.fault, true);
-  assert.equal((await call(app, "GET", "/print/pending")).status, 404);
+  assert.equal((await call(app, "GET", "/print/pending")).status, 204);
   assert.equal((await call(app, "POST", "/print/taken", {})).status, 409);
   assert.equal(readFileSync(path.join(dir, "identity.json"), "utf8"), "{not json");
 });

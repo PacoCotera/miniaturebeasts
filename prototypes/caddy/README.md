@@ -38,7 +38,7 @@ At its first start (no `identity.json` in the data directory) the Caddy draws a 
 | Call | Does |
 | --- | --- |
 | `GET /caddy-api/v1/identity` | `{ caddy, recovery: { kid, pub } \| null }`; `recovery` is null until the print is taken |
-| `GET /caddy-api/v1/print/pending` | the waiting print as a PNG (its id in `x-print`); 404 once taken |
+| `GET /caddy-api/v1/print/pending` | the waiting print as a PNG (its id in `x-print`); 204 (no body) when none is waiting or once taken |
 | `POST /caddy-api/v1/print/taken` `{ print? }` | 200 and the identity written; 409 when `print` is not the waiting print's id; repeating it changes nothing |
 
 The play page shows the waiting print once, in a strip under the Caddy's screen with an "I have it" button. Tests: `caddy/tests/identity.test.mjs` (the seed is in no file in the data directory, byte-scanned) and the print's golden `caddy/golden/recovery-print.png` (`MB_WRITE_GOLDEN=1` renews it).
