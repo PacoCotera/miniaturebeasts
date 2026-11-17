@@ -62,6 +62,17 @@ test("lifted on the active page: 'Off we go' for 1500 ms from 0.2 s and one quie
 test("a dock with no mibi with you stays on its screen; no key is needed anywhere", () => {
   const { p, st } = world(2, false); seat(p, st); assert.equal(p.S.phase, "setup"); assert.equal(p.run("FX.seated.crates"), 2);
 });
+test("the ended expedition's screen goes home when docked, with or without a mibi (bug #50)", () => {
+  for (const withMibi of [true, false]) {
+    const { p, st } = world(1, withMibi); p.run("S.phase = 'sealed'"); seat(p, st);
+    assert.equal(p.S.phase, "active", (withMibi ? "with" : "without") + " a mibi: home on seating");
+    lift(p, st); assert.equal(p.S.phase, "active", "and still home after the lift");
+  }
+});
+test("a page opened while seated on the ended expedition's screen goes home on the lift (bug #50)", () => {
+  const { p, st } = world(1, false); dockKey(st, p.sv()); p.writeSt(st); p.run("RT.dockPrev = null; trackDock(); S.phase = 'sealed'");
+  lift(p, st); assert.equal(p.S.phase, "active");
+});
 
 const region2 = (seed) => JSON.stringify(regionRecord({ n: 2, kind: "home", biome: "woods", slot: [2, 1], seed: hash(seed, "region", 2), gen: 3, opened: 1, map: blankMap() }));
 
