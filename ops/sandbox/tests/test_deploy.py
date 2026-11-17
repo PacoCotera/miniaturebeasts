@@ -3,6 +3,7 @@ With a real `caddy` on the path, the real Caddyfile is also validated. Run: pyth
 import hashlib, io, json, os, shutil, subprocess, tarfile, tempfile, threading, unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 HERE = Path(__file__).resolve().parent
 DEPLOY = HERE.parent / "deploy.sh"
@@ -44,8 +45,11 @@ class Hub(BaseHTTPRequestHandler):
         hub = self.server
         hub.hits.append(self.path)
         p = self.path.split("?")[0]
-        if p == "/releases":
-            body = json.dumps([hub.meta(t) for t in hub.releases]).encode()
+        if p == "/releases":   # as GitHub lists them: by tag name, not date, one page at a time (default 30)
+            q = parse_qs(urlparse(self.path).query)
+            per, page = int(q.get("per_page", ["30"])[0]), int(q.get("page", ["1"])[0])
+            tags = sorted(hub.releases, key=hub.order)[(page - 1) * per: page * per]
+            body = json.dumps([hub.meta(t) for t in tags]).encode()
         elif p.startswith("/releases/tags/") and p.rsplit("/", 1)[1] in hub.releases:
             body = json.dumps(hub.meta(p.rsplit("/", 1)[1])).encode()
         elif p.startswith("/dl/") and p[4:] in hub.files:
@@ -68,7 +72,7 @@ class Deploy(unittest.TestCase):
             (self.dir / name).write_text(text); (self.dir / name).chmod(0o755)
         self.hub = ThreadingHTTPServer(("127.0.0.1", 0), Hub)
         self.hub.releases, self.hub.files, self.hub.hits, self.n = [], {}, [], 0
-        self.hub.meta = self.meta
+        self.hub.meta, self.hub.order = self.meta, str
         threading.Thread(target=self.hub.serve_forever, daemon=True).start()
         self.addCleanup(lambda: (self.hub.shutdown(), self.hub.server_close()))
         self.base = f"http://127.0.0.1:{self.hub.server_address[1]}"
@@ -79,7 +83,7 @@ class Deploy(unittest.TestCase):
 
     def meta(self, tag):
         i = self.hub.releases.index(tag)
-        return dict(tag_name=tag, draft=False, created_at=f"2026-11-0{i + 1}T00:00:00Z", assets=[
+        return dict(tag_name=tag, draft=False, created_at=f"2026-11-01T{i // 3600:02d}:{i // 60 % 60:02d}:{i % 60:02d}Z", assets=[
             dict(name=f"{tag}.tar.gz", browser_download_url=f"{self.base}/dl/{tag}.tar.gz"),
             dict(name=f"{tag}.sha256", browser_download_url=f"{self.base}/dl/{tag}.sha256")])
 
@@ -115,6 +119,15 @@ class Deploy(unittest.TestCase):
         t2 = self.publish("# VALID one\n")                   # new release, same Caddyfile: switch, no reload
         self.assertEqual(self.run_deploy().returncode, 0)
         self.assertEqual((self.current(), self.calls().count("reload caddy")), (t2, 1))
+
+    def test_the_newest_release_is_found_on_any_page_of_the_list(self):
+        # 130 releases, listed by tag name (as GitHub does) 100 a page: the newest is on page 2 (11-17: the site stayed 40 min behind)
+        for _ in range(129):
+            self.publish("# VALID one\n")
+        newest = self.publish("# VALID one\n", tag="sandbox-fffffff")   # sorts last by name, newest by date
+        r = self.run_deploy()
+        self.assertEqual((r.returncode, self.current()), (0, newest), r.stderr)
+        self.assertTrue(any("page=2" in h for h in self.hub.hits), "the second page was read")
 
     def test_a_bad_caddyfile_keeps_the_current_release_and_file(self):
         t1 = self.publish("# VALID one\n"); self.run_deploy()
