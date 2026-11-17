@@ -281,8 +281,12 @@ static void station_words(const char *key) {
 }
 
 /* ---- the ring on the focused target: the house ring follows the outline (the spec's shape: radius 10 on a bezel, 8 on a station) ---- */
+static int g_rung;   /* a ring has been drawn since Home was entered: from then on the window stays where the ring took it, even when the ring goes at rest */
+void home_frame_left(void) { g_rung = 0; }
 static void ring(const char *cur) {
-  if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;   /* at rest there is no ring; it goes when the rest begins and stays away while it holds */
+  if ((!cur[0] || strcmp(cur, "room") == 0) && !g_rung && !anim_holding()) { int c[4]; v_srect(H, "regions.console.rect", c); word_setRest(c); }   /* asleep, or awake before the first press: no ring yet, so a phone's window rests on the station cards (the console's row), whole, not at the top left with the foot cut */
+  if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;
+  g_rung = 1;   /* at rest there is no ring; it goes when the rest begins and stays away while it holds */
   for (int i = 0; i < 7; i++) if (strcmp(cur, TARGETS[i]) == 0) { int box[4]; v_srect(H, v_fmt("regions.%s.rect", cur), box); v_region("focus", LAYER_CHROME); word_focusRing("focus", H, v_fmt("focus.targets.%s", cur), box); return; }
 }
 

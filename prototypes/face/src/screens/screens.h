@@ -130,6 +130,7 @@ void incubator_key(int code);
 int incubator_tick(uint32_t now); int incubator_test_cell(void);   /* the hatch with a moving set (Station M1 §2.5) */
 /* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */
 void home_hidden(void);
+void home_frame_left(void);   /* Home is left: its window rests on the cards again when it is entered */
 /* An intent or a focus message for the screen of the props (kind "intent" with a verb, or "focus"). */
 void screens_say(const char *kind, const char *target, const char *verb);
 /* The clock moved to `now` (ms): 1 when the screen is to be drawn again for a step of its own (Home's residents walking). */
