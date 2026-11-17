@@ -1,0 +1,13 @@
+[Unit]
+Description=Miniature Beasts Caddy service (the Station's painting broker)
+After=network-online.target
+[Service]
+User=www-data
+Group=www-data
+EnvironmentFile=@ENV_FILE@
+WorkingDirectory=@ROOT@/current/play/caddy
+ExecStart=/usr/bin/node @ROOT@/current/play/caddy/server.mjs
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

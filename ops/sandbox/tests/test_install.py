@@ -4,7 +4,7 @@ import os, re, shutil, subprocess, tempfile, unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
-FILES = ["install.sh", "deploy.sh", "Caddyfile", "login/mb_login.py", "login/mb-studio-passwd", "login/mb-login-run"]
+FILES = ["install.sh", "deploy.sh", "Caddyfile", "mb-caddy.service.in", "login/mb_login.py", "login/mb-studio-passwd", "login/mb-login-run"]
 STOP = "#!/bin/sh\necho \"$(basename \"$0\") $*\" >> \"$FAKE_LOG\"\necho \"stand-in: stopped at $(basename \"$0\")\" >&2\nexit 97\n"
 
 

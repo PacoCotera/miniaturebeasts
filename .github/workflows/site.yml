@@ -108,7 +108,7 @@ jobs:
           rm -rf _site/play/play/options/catalogue-out _site/play/play/options/node_modules _site/play/ui/tokens/node_modules
           mkdir -p _site/ops && cp -r ops/ledger _site/ops/
           # the web server's Caddyfile and the studio login's code travel in the release: deploy.sh checks the Caddyfile before it goes live, the login unit runs from the release
-          mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
+          mkdir -p _site/ops/sandbox/login && cp ops/sandbox/Caddyfile ops/sandbox/mb-caddy.service.in _site/ops/sandbox/ && cp ops/sandbox/login/mb_login.py ops/sandbox/login/mb-studio-passwd _site/ops/sandbox/login/
           # the Companion's 48 px place art, from where it lives: the shipping folder only (sheets, palette and manifest)
           mkdir -p _site/art/companion-48/terrain && cp -r art/companion-48/terrain/meadow _site/art/companion-48/terrain/
           # the bond's hearts (the pixel desk's 24 and 16), the files only
