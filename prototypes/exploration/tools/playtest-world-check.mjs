@@ -30,8 +30,9 @@ const SCAN = `(() => {
     withItems++; items += its.length;
     // the ground walked from every way in the pawn can come by (and from where a walk with no side starts)
     // the ways in: the tile the pawn arrives on from each side (entryPoint) and every tile along each opening that is not closed (a gate takes the partner), as adapt7.mjs floods them
-    // what stops the pawn for good: a blocked tile or a standing feature (stone, cup, bush, beacon...); a creature, the partner, a pod, a fruit and a tuft move or are taken in the walk
-    const solid = (x, y) => T_BLOCK[lay.tiles[y * lay.w + x]] || !!featAt(lay, key, x, y);
+    // what stops the pawn for good: a blocked tile or a standing feature that is not small (stone, bush, beacon...: SMALL_FEAT, the leaf cup and the strike mark, are stepped over, note 33); a creature,
+    // the partner, a pod, a fruit and a tuft move or are taken in the walk
+    const solid = (x, y) => T_BLOCK[lay.tiles[y * lay.w + x]] || (() => { const f = featAt(lay, key, x, y); return !!f && !SMALL_FEAT.includes(f.kind); })();
     const reached = new Uint8Array(lay.w * lay.h), ways = (lay.openings || []).filter(o => openingKind(lay, o).kind !== 'closed');
     const starts = [entryPoint(lay, key, undefined), ...ways.map(o => entryPoint(lay, key, OPEN[o.side]))];
     for (const o of ways) for (let k = o.from - 1; k <= o.to - 1; k++) starts.push(o.side === 'N' ? { x: k, y: 0 } : o.side === 'S' ? { x: k, y: lay.h - 1 } : o.side === 'W' ? { x: 0, y: k } : { x: lay.w - 1, y: k });   // adapt7.mjs runPts
