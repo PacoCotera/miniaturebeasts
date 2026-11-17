@@ -346,19 +346,7 @@ footer { padding-bottom: 32px; }
   </div>
 </div>
 
-<section class="strip-band" id="strip-band" aria-labelledby="strip-title" hidden>
-  <div class="wrap">
-    <p class="eyebrow" id="strip-title">From the game</p>
-    <div class="strip">
-      <figure><img class="px" src="assets/play/expedition-meadow.png" width="450" height="600" loading="lazy"
-        alt="The Companion's screen: a meadow place with flowers and a boulder, fog at the edges, the explorer's marker small in the grass."><figcaption>Out on an expedition</figcaption></figure>
-      <figure><img src="assets/play/station-crate.png" width="1024" height="600" loading="lazy"
-        alt="The Station's screen: an opened crate lined with moss, two pods in its nest, supplies in the corners."><figcaption>A crate comes home</figcaption></figure>
-      <figure><img class="px" src="assets/play/partner-loika.png" width="450" height="600" loading="lazy"
-        alt="The Companion's screen: Dot, an adult Loika, with a heart beside its name; it calms wary creatures and leads the Probe."><figcaption>Your partner</figcaption></figure>
-    </div>
-  </div>
-</section>
+<!-- "From the game" strip: left out of the page until its three stills are signed and committed under assets/play/ (markup kept in the build notes). -->
 
 <main id="main">
   <section class="section how after-hero" id="how" aria-labelledby="how-title">
@@ -486,19 +474,6 @@ footer { padding-bottom: 32px; }
     <p class="caption build" id="build">© 2026 Dirty Pawz Press · local</p>
   </footer>
 </div>
-<script>
-  // The "From the game" strip stays hidden until all three stills load; a missing picture never shows an empty frame.
-  (function () {
-    var band = document.getElementById('strip-band');
-    var imgs = band.querySelectorAll('img');
-    var left = imgs.length;
-    imgs.forEach(function (img) {
-      var probe = new Image();
-      probe.onload = function () { if (--left === 0) band.hidden = false; };
-      probe.src = img.getAttribute('src');
-    });
-  })();
-</script>
 <script type="module">
   // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
   import('./play/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
