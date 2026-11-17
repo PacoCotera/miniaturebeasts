@@ -1180,8 +1180,11 @@ function viewSnapshot() { const gb = goalBandOn() ? GOAL_BAND_H : 0, cv = docume
 function keepEdgeView() {
   const P = S.exp && S.exp.patch; if (!P || !motion()) return;
   const lay = layout(P.key); if (P.x > 1 && P.y > 1 && P.x < lay.w - 2 && P.y < lay.h - 2) { FX.edgeView = null; return; }
-  FX.edgeView = { snap: viewSnapshot(), key: P.key };
+  FX.edgeView = { snap: viewSnapshot(), key: P.key, pl: plNow() };
 }
+const plNow = () => RT.plScr ? { x: RT.plScr.x, y: RT.plScr.y } : null;   // where the pawn stands on the screen (the last frame's)
+// What a crossing slides out: the picture of the place left and where the pawn stood in it (null when motion is off: then the next place is a cut).
+function slideOut() { if (!motion()) return null; const ev = FX.edgeView && FX.edgeView.key === S.exp.patch.key ? FX.edgeView : null; return { snap: ev ? ev.snap : viewSnapshot(), pl: ev ? ev.pl : plNow() }; }
 function slideP(sl) { const p = clamp((NOW - sl.at) / SLIDE_MS, 0, 1); return 1 - (1 - p) * (1 - p); }   // ease-out
 // After the new place's frame is on the screen: the screen's view band is moved by the slide (the old picture leaves the way the explorer walks, the new one comes in behind it).
 function drawSlide() {
@@ -1191,10 +1194,19 @@ function drawSlide() {
   const top = VIEW_Y + nw.gb;   // the slide runs below the goal band; the band itself stays where it is
   g.save(); g.beginPath(); g.rect(0, top, W, H - nw.gb); g.clip();
   g.fillStyle = HEX[C.ink]; g.fillRect(0, top, W, H - nw.gb);
-  const Hs = H - nw.gb;   // the layers travel the height they slide in, so no gap opens between them
-  g.drawImage(sl.snap, Math.round(-sl.dx * p * W), top + Math.round(-sl.dy * p * Hs));
-  g.drawImage(nw, Math.round(sl.dx * (1 - p) * W), top + Math.round(sl.dy * (1 - p) * Hs));
+  const Hs = H - nw.gb, o = slideOffsets(sl, RT.plScr, W, Hs);   // the layers travel the height they slide in, so no gap opens between them
+  g.drawImage(sl.snap, Math.round(o.old.x * p), top + Math.round(o.old.y * p));
+  g.drawImage(nw, Math.round(o.nw.x * (1 - p)), top + Math.round(o.nw.y * (1 - p)));
   g.restore();
+}
+// Bug #37: the two places are one map. Each layer is a whole screen of its own place; the pawn stands one tile further on in the new one than in the old (the cell across the shared edge).
+// The old layer ends (p = 1) where that puts its pawn, the new one starts (p = 0) where its pawn is one tile beyond the old pawn's: so the view scrolls by exactly what the camera of each place
+// is off by, and the pawn's line of the map never shifts on the screen, whatever the sizes of the two places (a screen away along the way, a few tiles apart across it).
+function slideOffsets(sl, pl1, W, Hs) {
+  const dx = sl.dx, dy = sl.dy, plain = { old: { x: -dx * W, y: -dy * Hs }, nw: { x: dx * W, y: dy * Hs } }, pl0 = sl.pl;
+  if (!pl0 || !pl1 || !RT.ts) return plain;
+  const ts = RT.ts, nw = { x: pl0.x + dx * ts - pl1.x, y: pl0.y + dy * ts - pl1.y }, old = { x: pl1.x - dx * ts - pl0.x, y: pl1.y - dy * ts - pl0.y };
+  return Math.abs(nw.x) > 1.5 * W || Math.abs(nw.y) > 1.5 * Hs ? plain : { old, nw };   // a camera that is not flush with the place's edge gives a distance that is no screen: keep the plain slide
 }
 // A cell the storm struck: the world turn at the expedition's end reads its place (stones, strike mark), and a cold layout takes a quarter second to build, so it is built now, a moment after the flash, in the walk's idle time and not all at once when End expedition is pressed.
 function stormMark(ex, c) { ex.stormCells[c] = 1; setTimeout(() => { if (S && S.exp === ex && typeof layout === 'function' && !layoutCache.has(String(c)) && placeHave(String(c))) layout(String(c)); }, 600); }
@@ -2231,15 +2243,19 @@ function ensureLive(key) {
 }
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 let LAND = null;   // the tile a step out of a place lands on in the next one (crossEdge), used once by enterPatchBuilt
-let ROW = null;   // the row a sideways step out of a place left on (crossEdge): the next place's way in keeps it, so the pawn does not jump up or down on screen (bug #11)
+let ALONG = null;   // where along the edge a step out of a place left from (crossEdge): the row for a sideways step, the column for an up or down one. The next place's way in keeps it: the pawn lands on the cell across the shared edge, on the same line of the map (bugs #11, #37)
+const alongOf = (dir, P) => dir === 'left' || dir === 'right' ? P.y : P.x;   // the coordinate along the edge that a step in dir crosses
 function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
   const occ = (x, y) => !guess && occupant(key, x, y, 'player');
   if (LAND && LAND.key === key && !occ(LAND.x, LAND.y)) return { x: LAND.x, y: LAND.y };
+  // bug #37: the pawn keeps its line of the map: the row (a sideways step) or column (up or down) it left on, over the edge shared with the place it came from
+  const keep = !dir ? null : guess ? (S.exp && S.exp.patch ? alongOf(dir, S.exp.patch) : null) : ALONG && ALONG.key === key ? ALONG.k : null;
+  const onLine = (e, s) => keep == null || (keep !== s && keep !== s + 1) ? e : dir === 'up' || dir === 'down' ? { x: keep, y: e.y } : { x: e.x, y: keep };   // a two-tile crossing (stair, scree, bank): the tile of the pair the pawn crossed on
   // Up or down a stair (the edge just crossed is a ramp): its entry tile, or the nearest free tile that is not the stair itself.
   const from = lay.stairs && lay.stairs.length && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;
   if (from >= 0 && edgeKind(from, dir) === EDGE.RAMP) {
     const st = lay.stairs.find(q => q.dir === OPPOSITE[dir]);
-    if (st) { const e = st.entry; if (!occ(e.x, e.y)) return { x: e.x, y: e.y };
+    if (st) { const e = onLine(st.entry, st.s); if (!occ(e.x, e.y)) return { x: e.x, y: e.y };
       let best = null, bd = 1e9;
       for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { const i = y * lay.w + x;
         if (!lay.reach[i] || lay.tiles[i] === T.STAIR || T_BLOCK[lay.tiles[i]] || occ(x, y)) continue;
@@ -2247,17 +2263,21 @@ function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most
       if (best) return best; }
   }
   { const cf = lay.cross && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;   // came over scree or a bank: the tile just inside its crossing
-    if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q && !occ(q.entry.x, q.entry.y)) return { x: q.entry.x, y: q.entry.y }; } }
-  const keepY = (dir === 'left' || dir === 'right') ? (guess ? (S.exp && S.exp.patch ? S.exp.patch.y : null) : ROW && ROW.key === key ? ROW.y : null) : null;   // a sideways crossing keeps the row it left on (clamped to this place)
-  const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : keepY != null ? Math.max(0, Math.min(lay.h - 1, keepY)) : dir ? lay.h / 2 : lay.h - 3;
+    if (cf >= 0 && edgeKind(cf, dir) === EDGE.CLIFF) { const q = lay.cross.find(r => r.dir === OPPOSITE[dir]); if (q) { const e = onLine(q.entry, q.s); if (!occ(e.x, e.y)) return { x: e.x, y: e.y }; } } }
+  const vert = dir === 'up' || dir === 'down', clampK = (k, n) => Math.max(0, Math.min(n - 1, k));   // the kept line, clamped to this place
+  const tx = dir === 'right' ? 0 : dir === 'left' ? lay.w - 1 : keep != null ? clampK(keep, lay.w) : lay.w / 2, ty = dir === 'down' ? 0 : dir === 'up' ? lay.h - 1 : keep != null ? clampK(keep, lay.h) : dir ? lay.h / 2 : lay.h - 3;
   let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   // a baked place has the tiles no crown hangs over (lay.clear): the explorer arrives on one of them, the nearest to the way in, never hidden under a canopy (C16); with none, any
   const want = lay.compOfSide ? (dir ? lay.compOfSide[{ up: 'S', down: 'N', left: 'E', right: 'W' }[dir]] : null) ?? lay.mainComp : 0;   // a generator 7 cell: you start on the ground the way you came in by leads to
-  for (let pass = lay.clear ? 0 : 1; pass < 2 && !best; pass++)
-    for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
-      if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x]) || (want && lay.compId[y * lay.w + x] !== want)) continue;
-      const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
-    }
+  // the cell across the edge being taken (an animal, a boulder, a tree or a pod stands on it): the nearest walkable cell ALONG the edge first, then the nearest one anywhere
+  for (const edgeOnly of dir && keep != null ? [true, false] : [false]) {
+    for (let pass = lay.clear ? 0 : 1; pass < 2 && !best; pass++)
+      for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
+        if (!lay.reach[y * lay.w + x] || occ(x, y) || (pass === 0 && !lay.clear[y * lay.w + x]) || (want && lay.compId[y * lay.w + x] !== want) || (edgeOnly && (vert ? y !== ty : x !== tx))) continue;
+        const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
+      }
+    if (best) break;
+  }
   return best || lay.spawnPt;
 }
 function placePartnerNear(key, P) {
@@ -2285,7 +2305,7 @@ function enterPatchBuilt() {
   ex.entered = ex.entered || []; const firstIn = !ex.entered.includes(ex.pos); if (firstIn) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
-  const e = entryPoint(lay, key, ex.lastDir); LAND = null; ROW = null;
+  const e = entryPoint(lay, key, ex.lastDir); LAND = null; ALONG = null;
   ex.patch = { key, x: e.x, y: e.y, dir: ex.lastDir || 'up', noise: 'creep' }; walkLift(); S.ui.swap = null; ex.ptTagUntil = ex.actions + 3;
   placePartnerNear(key, ex.patch);
   S.phase = 'patch'; recordSigns(ex.pos); transition();
@@ -2581,7 +2601,7 @@ function softTileOpen(lay, t, x, y) {
 const RG_FIELDS = ['live', 'dug', 'stormCells', 'entered', 'trail', 'reach', 'start', 'warm', 'mstrike'];
 // Walking off a region side into an open region: the same expedition goes on there (the hold, the clock, the shield, the partner and the cargo stay), under the same slide as between places.
 function crossRegion(dir, sw) {
-  const ex = S.exp, from = S.here, snap = motion() ? (FX.edgeView && FX.edgeView.key === ex.patch.key ? FX.edgeView.snap : viewSnapshot()) : null;
+  const ex = S.exp, from = S.here, out = slideOut(), P0 = ex.patch;
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1; ex.stats.regions = (ex.stats.regions || 0) + 1;
   const away = ex.away || (ex.away = {}), mine = {}; for (const k of RG_FIELDS) mine[k] = ex[k]; away[from] = mine;
@@ -2594,9 +2614,10 @@ function crossRegion(dir, sw) {
   RT.behind = null; RT.behindKey = null;
   advance('map');   // the step costs the one map action it costs between places
   if (ex.ending) return;
+  ALONG = { key: String(sw.cell), k: alongOf(dir, P0) };   // the pawn keeps its line over the seam too
   enterPatch();
   FX.transAt = -1e9; FX.resume = true;   // no fade: the slide covers the change
-  if (snap) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], snap }; lockInput(SLIDE_MS); }
+  if (out) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], ...out }; lockInput(SLIDE_MS); }
 }
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
@@ -2610,16 +2631,16 @@ function crossEdge(dir) {
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
-  const snap = motion() ? (FX.edgeView && FX.edgeView.key === ex.patch.key ? FX.edgeView.snap : viewSnapshot()) : null, from = ex.pos;
+  const out = slideOut(), from = ex.pos;
   const P0 = ex.patch; ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
-  LAND = land ? { key: String(c), x: land.x, y: land.y } : null; ROW = (dir === 'left' || dir === 'right') && c >= 0 ? { key: String(c), y: P0.y } : null;
+  LAND = land ? { key: String(c), x: land.x, y: land.y } : null; ALONG = c >= 0 ? { key: String(c), k: alongOf(dir, P0) } : null;   // bug #37: the cell across the edge, on the same row or column
   mapStep(dir, !!land);
   // The map is not shown on a crossing: the walk goes straight into the next place under a one-screen slide, and the explorer keeps walking.
   if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
     enterPatch();
     FX.transAt = -1e9; FX.resume = true;   // no fade: the slide covers the change
-    if (snap) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], snap }; lockInput(SLIDE_MS); if (FX.placeMsg) FX.placeMsg.left += SLIDE_MS; }   // the place's name is up for its 2 s after the slide
+    if (out) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], ...out }; lockInput(SLIDE_MS); if (FX.placeMsg) FX.placeMsg.left += SLIDE_MS; }   // the place's name is up for its 2 s after the slide
   }
 }
 // A soft tile in a place, refused without the partner that crosses it (the shape of swimBump): the pin goes on the place's cell.
@@ -6437,7 +6458,8 @@ const deepShown = () => !!digger() || S.known.some(sp => spOf(sp).ab === 'dig') 
 // A mibi's picture at k× at (x, y); a kind the Companion has no art for is its labelled plate.
 function openCreature(sp, pose, fr, k, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(creatureArt(sp, pose, fr, k, juv), x, y); }
 // The Companion's front door: the land you know (the frame), one line of what changed, the way out as two tabs, and who comes along.
-const OPEN_FRAME_BASE = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110;
+// The partner card (card(8, OPEN_PY + 1, 434, OPEN_PH - 8)) ends at OPEN_PY + OPEN_PH - 7; a mibi picture h tall in it (portrait or silhouette, its art ends on its last row) has its top at openCardTop(h): its feet stand 4 px above that edge, never past it (bug #33). One line: the tests lift it whole.
+const OPEN_FRAME_BASE = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH = 110, openCardTop = h => OPEN_PY + OPEN_PH - 7 - 4 - h;
 // With no mibi at all there is no partner row, and the land takes its room (434 x 430); from the first mibi on the row is back.
 const openAlone = () => !liveMibis().length && !carriedMibis().length;
 const openRect = () => openAlone() ? { ...OPEN_FRAME_BASE, h: 430 } : OPEN_FRAME_BASE;
@@ -6544,13 +6566,14 @@ function drawSetup(t) {
   card(8, PY + 1, 434, PH - 8, selP, true);
   if (cm.length) { const front = sel === 1 ? dig : null, lead = front || pm || cm[0], st = mibiStage(lead), juv = st === 'juvenile', others = cm.filter(m => m !== lead);   // only juveniles: the first, its own picture, no ring; Deep ground focused: the digger steps to the front
     const ca = callAnim(lead), hop = ca && motion() ? Math.round(Math.abs(Math.sin(ca.a / 150)) * 12 * Math.max(0, 1 - ca.a / 900)) : 0;   // Call: it hops and plays its alert frame
-    openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, PY + PH - 102 - hop, juv);
+    openCreature(lead.sp, (selP && fr) || (ca && ca.a < 900) ? 'alert' : 'idle', fr, 3, 8, openCardTop(96) - hop, juv);
     text(clipText(lead.name, 200 - others.length * 44, 3), 116, PY + 2, hi, 3);
     let cx = 116; cx += chip(cx, PY + 38, STAGE_WORD[st], stageFill(st), 'bone') + 6; if (pm || front) chip(cx, PY + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
     text(clipText(pm || front ? abCardOf(lead.sp) : CARE_TEXT.riderTime, 320, 2), 116, PY + 70, lo);
     others.forEach((m, i) => { const x = SCR_W - 52 - i * 44, y = PY + 2; openCreature(m.sp, 'idle', (fr + i) % 2, 1, x, y, !isAdult(m)); }); }
   else {   // mibis, none with you: their silhouettes
-    liveMibis().slice(0, 3).forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * 30, PY + PH - 66 - (i % 2) * 6));
+    const sil = liveMibis().slice(0, 3), step = sil.length > 1 ? Math.min(30, Math.floor((104 - 64) / (sil.length - 1))) : 0;   // 64 px each, all of them left of the words at x 116 (three step 20 px, two 30)
+    sil.forEach((m, i) => blit(upArt('silo' + m.sp, silhouette(m.sp), 2), 8 + i * step, openCardTop(64) - (i % 2) * 6));
     text(CARE_TEXT.noOneWithT, 116, PY + 10, hi, 3); text(clipText(leadWhy(), 320, 2), 116, PY + 48, lo); }
 }
 // The partner row: "Partner: Pip · calms wary creatures", or why there is none.
