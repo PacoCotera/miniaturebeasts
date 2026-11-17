@@ -5,15 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#172e25">
 <title>Miniature Beasts</title>
-<meta name="description" content="A creature game you can hold: find pods in the fog on the Companion, read them at the Station, and breed mibis no one has seen, with genes that really work and odds that never lie. Open source, made in public.">
+<meta name="description" content="Find pods in the fog and raise the mibis inside: carry them home, read each pod before it opens, and cross them into mibis no one has seen. Play it now in your browser. Open source, made in public.">
 <link rel="canonical" href="https://miniaturebeasts.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172e25'/%3E%3Cpath d='M16 6c-6 0-9 8-9 13a9 9 0 0 0 18 0c0-5-3-13-9-13z' fill='%23dcdf9b'/%3E%3Ccircle cx='12.5' cy='18' r='1.8' fill='%23ee9b58'/%3E%3Ccircle cx='19' cy='22' r='1.8' fill='%23ee9b58'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Miniature Beasts">
 <meta property="og:url" content="https://miniaturebeasts.com/">
-<meta property="og:title" content="Miniature Beasts: one for the field, one for home">
-<meta property="og:description" content="Find pods in the fog. Read them at home. Breed mibis no one has seen. A creature game you can hold, open source and made in public.">
-<meta name="twitter:card" content="summary">
+<meta property="og:title" content="Miniature Beasts: find pods in the fog, raise the mibis inside">
+<meta property="og:description" content="Carry them home, read each pod before it opens, and cross them into mibis no one has seen. Play it now in your browser.">
+<meta property="og:image" content="https://miniaturebeasts.com/assets/site-top-felted-6-2400.webp">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1350">
+<meta property="og:image:alt" content="A felted Loika on bright moss at a misty lake, looking up at a clover leaf.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="image" href="assets/site-top-felted-6-2400.webp" fetchpriority="high">
 <style>
 :root {
   color-scheme: light;
@@ -82,20 +87,33 @@ figcaption .label, .caption .label { margin-right: .4em; color: var(--ink); }
 .skip { position: absolute; left: 16px; top: -100px; z-index: 5; background: var(--paper); color: var(--ink); padding: 12px; font-weight: 700; }
 .skip:focus { top: 16px; }
 
-/* Hero */
-.top { background: var(--forest); color: var(--on-dark); }
-.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 24px; padding-bottom: 24px; }
+/* The top: the felted Loika, big; the headline, one line under it, Play. The words sit on the quiet water to the right of the clover. */
+.top { background: var(--forest); color: var(--on-dark); display: flex; flex-direction: column; height: calc(100svh - 40px); min-height: 600px; max-height: 1000px; }
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 20px; padding-bottom: 20px; width: 100%; }
 .wordmark { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; }
 .masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
 .masthead nav a:not(.button) { text-decoration: none; }
 .masthead nav a:not(.button):hover { text-decoration: underline; }
-.hero { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px 48px; align-items: end; padding-top: 56px; padding-bottom: 48px; }
-.hero .eyebrow { color: var(--lime); }
-.hero .lede { margin-top: 0; font-size: 1.25rem; line-height: 1.4; }
-.hero .button { margin-top: 24px; }
+.stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.stage > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 55%; }
+.hero { position: relative; height: 100%; max-width: none; display: flex; align-items: center; justify-content: flex-end; padding-right: clamp(24px, 4vw, 72px); padding-bottom: 4%; }
+.hero-words { width: min(24rem, 26vw); color: var(--forest); text-shadow: 0 0 22px rgb(245 242 233 / .65); }
+.hero h1 { font-size: var(--fs-section); line-height: 1.02; letter-spacing: -.02em; }
+.hero h1 span { display: block; color: #2f5a2c; }
+.hero .lede { margin-top: 20px; font-size: 1.25rem; line-height: 1.4; color: var(--ink); text-wrap: pretty; }
+.hero .button { margin-top: 28px; padding: 16px 30px; font-size: 1.25rem; box-shadow: 0 10px 24px -12px rgb(23 46 37 / .6); text-shadow: none; }
+
+/* The strip: real screens of today's game, one row (a sideways swipe on a phone) */
+.strip-band { background: var(--forest); color: var(--on-dark); padding: 72px 0 96px; }
+.strip-band .eyebrow { color: var(--lime); text-align: center; margin-bottom: 32px; }
+.strip { display: grid; grid-template-columns: 450fr 1024fr 450fr; gap: 24px; align-items: start; }
+.strip figure { min-width: 0; }
+.strip img { border-radius: 10px; box-shadow: 0 18px 40px -24px rgb(0 0 0 / .8); background: #1d2230; }
+.strip figcaption { color: rgb(229 234 221 / .8); font-weight: 700; padding-top: 12px; }
 
 /* How it plays: the loop as pictures */
-.how { background: var(--sage); }
+.how { background: var(--sage); padding: 160px 0; }
+.how .wrap { max-width: calc(1040px + 2 * var(--gutter)); }
 .loop { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; margin-top: 56px; counter-reset: step; }
 .loop li { counter-increment: step; }
 .loop img { border-radius: var(--radius); aspect-ratio: 4 / 3; object-fit: cover; }
@@ -122,8 +140,8 @@ figcaption .label, .caption .label { margin-right: .4em; color: var(--ink); }
 .again svg { width: 28px; height: 28px; vertical-align: -7px; margin-right: 8px; }
 
 /* Facts */
-.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 72px; }
-.facts div { background: var(--paper); border-radius: var(--radius); padding: 24px; display: grid; gap: 8px; align-content: start; justify-items: start; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 88px; }
+.facts div { background: var(--paper); border-radius: var(--radius); padding: 36px 32px; display: grid; gap: 8px; align-content: start; justify-items: start; }
 .facts .glyph { height: 34px; display: flex; align-items: center; }
 .facts dt { font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
 .facts dd { color: var(--muted); font-size: var(--fs-caption); }
@@ -230,9 +248,15 @@ footer { padding-bottom: 32px; }
 @media (max-width: 760px) {
   :root { --gutter: 16px; --pad: 72px; --p: 76px; }
   .masthead nav a:not(.button) { display: none; }
-  .hero, .faq-grid, .play, .odds-stamp { grid-template-columns: 1fr; }
-  .hero { padding-top: 24px; padding-bottom: 32px; }
-  .hero .lede { font-size: var(--fs-body); }
+  .faq-grid, .play, .odds-stamp { grid-template-columns: 1fr; }
+  .how { padding: 96px 0; }
+  .facts { gap: 16px; }
+  .strip-band { padding: 56px 0 72px; }
+  .strip-band .eyebrow { margin-bottom: 24px; }
+  .strip { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 8px; scrollbar-width: none; }
+  .strip figure { flex: none; scroll-snap-align: center; }
+  .strip figure:has(img.px) { width: 240px; }
+  .strip figure:has(img:not(.px)) { width: 546px; }
   .loop { grid-template-columns: 1fr 1fr; gap: 28px 12px; margin-top: 40px; }
   .loop img { border-radius: 10px; }
   .loop .name { font-size: var(--fs-body); }
@@ -266,6 +290,31 @@ footer { padding-bottom: 32px; }
   .play figure { justify-self: start; max-width: 240px; }
   .build { text-align: left; }
 }
+/* Phone upright: the picture on top, the words under it on the dark band, all above the fold with the strip's edge showing */
+@media (max-width: 1100px) and (orientation: portrait) {
+  .top { height: auto; min-height: 0; max-height: none; }
+  .masthead { padding-top: 14px; padding-bottom: 14px; }
+  .stage { flex: none; overflow: visible; }
+  .stage > img { position: static; height: 44svh; min-height: 300px; max-height: 560px; object-position: 24% 62%; }
+  .hero { height: auto; display: block; max-width: calc(var(--content) + 2 * var(--gutter)); padding: 24px var(--gutter) 28px; }
+  .hero-words { width: auto; max-width: 34rem; color: var(--on-dark); text-shadow: none; }
+  .hero h1 span { color: var(--lime); }
+  .hero .lede { margin-top: 12px; font-size: var(--fs-body); color: var(--on-dark); }
+  .hero .button { margin-top: 20px; display: block; text-align: center; }
+  .strip-band { padding-top: 8px; }
+}
+/* Phone on its side and other short screens: picture left, words right on the dark band */
+@media (max-height: 520px) and (orientation: landscape) {
+  .top { height: 100svh; min-height: 0; }
+  .masthead { padding-top: 10px; padding-bottom: 10px; }
+  .masthead nav a:not(.button) { display: none; }
+  .stage > img { width: 56%; object-position: 34% 60%; }
+  .hero { padding-bottom: 0; }
+  .hero-words { width: 40%; color: var(--on-dark); text-shadow: none; }
+  .hero h1 span { color: var(--lime); }
+  .hero .lede { margin-top: 10px; font-size: var(--fs-body); line-height: 1.4; color: var(--on-dark); }
+  .hero .button { margin-top: 16px; padding: 12px 24px; font-size: var(--fs-body); }
+}
 </style>
 </head>
 <body>
@@ -279,22 +328,25 @@ footer { padding-bottom: 32px; }
       <a href="#caddy">Caddy</a>
       <a href="#station">Station</a>
       <a href="#vivarium">Vivarium</a>
-      <a href="#breeding">Breeding</a>
+      <a href="#breeding">Crossing</a>
       <a class="button ghost" href="play/">Play</a>
     </nav>
   </header>
 
-  <section class="wrap hero" aria-labelledby="hero-title">
-    <div>
-      <p class="eyebrow">A creature game you can hold</p>
-      <h1 id="hero-title">One for the field.<br><span>One for home.</span></h1>
-    </div>
-    <div>
-      <p class="lede">Find pods in the fog. Read them at home. Breed mibis no one has seen.</p>
-      <a class="button primary" href="play/">Play the field test</a>
-    </div>
-  </section>
+  <div class="stage">
+    <img src="assets/site-top-felted-6-2400.webp" width="2400" height="1350" fetchpriority="high"
+      alt="A felted Loika, dark plum with a cream chest and three leaves on its head, sits on bright moss at a misty lake and looks up at a clover leaf with a drop of dew.">
+    <section class="wrap hero" aria-labelledby="hero-title">
+      <div class="hero-words">
+        <h1 id="hero-title">Find pods in the fog. <span>Raise the mibis inside.</span></h1>
+        <p class="lede">Carry them home, read each pod before it opens, and cross them into mibis no one has seen.</p>
+        <a class="button primary" href="play/">Play it now</a>
+      </div>
+    </section>
+  </div>
 </div>
+
+<!-- "From the game" strip: left out of the page until its three stills are signed and committed under assets/play/ (markup kept in the build notes). -->
 
 <main id="main">
   <section class="section how after-hero" id="how" aria-labelledby="how-title">
@@ -314,7 +366,7 @@ footer { padding-bottom: 32px; }
   <section class="section" id="companion" aria-labelledby="companion-title">
     <div class="wrap head">
       <p class="eyebrow">Companion</p>
-      <h2 id="companion-title">Walk into the fog.</h2>
+      <h2 id="companion-title">Go out into the fog.</h2>
       <p class="lede">Creatures react to you, and some leave a pod behind.</p>
     </div>
   </section>
@@ -360,7 +412,7 @@ footer { padding-bottom: 32px; }
   <section class="section breeding" id="breeding" aria-labelledby="breeding-title">
     <div class="wrap">
       <div class="head">
-        <p class="eyebrow">Breeding</p>
+        <p class="eyebrow">Crossing</p>
         <h2 id="breeding-title">One cross. One child.<br>True odds.</h2>
         <p class="lede">The odds come from the parents alone. Wishing never changes them.</p>
       </div>
@@ -381,7 +433,7 @@ footer { padding-bottom: 32px; }
     <div class="wrap faq-grid">
       <h2 id="faq-title">A few fair questions.</h2>
       <div class="faq">
-        <details><summary>Is it real?</summary><p>The field test and the Station build run in your browser today. Every picture says what it is: in the build, being built, in design, Station art, rough playable, or concept. No device exists yet.</p></details>
+        <details><summary>Is it real?</summary><p>The field test runs in your browser today. Every picture says what it is: in the build, being built, in design, Station art, rough playable, or concept. No device exists yet.</p></details>
         <details><summary>When can I get one?</summary><p>No date and no price yet.</p></details>
         <details><summary>Can I build one myself?</summary><p>Not yet. The boards and cases will be open hardware, and the software is open source already.</p></details>
         <details><summary>Is anything for sale in the game?</summary><p>No supplies, no speed, no luck. The kit plays fully on its own, with no account and no internet.</p></details>
@@ -394,15 +446,11 @@ footer { padding-bottom: 32px; }
   <section class="section" id="play" aria-labelledby="play-title">
     <div class="wrap play">
       <div>
-        <p class="eyebrow">Play and source</p>
-        <h2 id="play-title">Play it today.<br>Read every rule.</h2>
+        <p class="eyebrow">Play</p>
+        <h2 id="play-title">Play it today.<br>Read the manual.</h2>
         <div class="actions">
           <a class="button primary" href="play/">Play the field test</a>
-          <a class="link" href="play/station/">Station build</a>
-        </div>
-        <div class="actions">
-          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/play-manual.md">Read every rule</a>
-          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts">Source on GitHub</a>
+          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/play-manual.md">Read the manual</a>
         </div>
       </div>
     </div>
