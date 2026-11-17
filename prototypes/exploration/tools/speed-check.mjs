@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.
 const arg = (n, d) => { const a = process.argv.find((x) => x.startsWith("--" + n + "=")); return a ? +a.split("=")[1] : d; };
 const SEED = arg("seed", 7), CPU = arg("cpu", 4), N = arg("n", 8), LIMIT = arg("limit", 250);
 const bundle = mkdtempSync(path.join(os.tmpdir(), "speed-check-")); execFileSync(path.join(root, "prototypes/node_modules/.bin/vite"), ["build", "--config", path.join(root, "prototypes/vite.config.mjs"), "--logLevel", "warn"], { env: { ...process.env, MB_BUNDLE_OUT: bundle }, stdio: "inherit" });
-const server = createServer((req, res) => { const rel = decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/"); let p = path.join(root, rel); const b = path.join(bundle, rel.replace(/^\/prototypes\//, ""));
+const server = createServer((req, res) => { const rel = decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/").replace(/^\/play\//, "/prototypes/");   /* the build's base is /play/: its assets are the bundle's, every other /play/ file is a source folder */ let p = path.join(root, rel); const b = path.join(bundle, rel.replace(/^\/prototypes\//, ""));
   if (rel.startsWith("/prototypes/") && existsSync(b) && statSync(b).isFile()) p = b; else if (rel === "/prototypes/exploration/" || rel === "/prototypes/exploration/index.html") p = path.join(bundle, "exploration/index.html");
   if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html");
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; } res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(readFileSync(p)); });
