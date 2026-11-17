@@ -19,7 +19,11 @@
 # `encode` stays off the studio so nothing buffers its event stream; `route` keeps the header strip ahead of the check.
 :80 {
 	@admin path /admin /admin/*
-	@oldwb path /sandbox/workbench /sandbox/workbench/*
+	# the species frames are game data: the live Station loads them (/sandbox/workbench/frames/...), so they stay public
+	@oldwb {
+		path /sandbox/workbench /sandbox/workbench/*
+		not path /sandbox/workbench/frames/*
+	}
 	@oldstudioteam path /studio/team /studio/team/
 	@oldstudio path /studio /studio/*
 	@teampage path /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
