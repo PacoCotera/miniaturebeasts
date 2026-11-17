@@ -42,7 +42,8 @@ test("book page: login only, read only, the head, comments open and fixed, sprea
     const html = await (await fetch(base + "/admin/book", { headers: H })).text(), at = (s) => html.indexOf(s);
     assert.match(html, /Proof 105 · updated today 10:36/, "proof version and its time in Mexico City");
     assert.ok(html.includes("Last change: The Hills &lt;b&gt;opener&lt;/b&gt; added.") && !html.includes("<b>opener</b>"), "escaped");
-    assert.ok(html.includes('href="https://claude.ai/artifact/EA7S7Rhs2cCx16NAMvyG8U"') && html.includes("miniature-beasts-proof.pdf"), "the two buttons");
+    assert.ok(html.includes('href="https://claude.ai/artifact/EA7S7Rhs2cCx16NAMvyG8U"') && html.includes('href="/admin/index/book/miniature-beasts-proof.pdf"'), "the two buttons");
+    assert.ok(!html.includes("github.com") && !html.includes("proof-light.pdf"), "the PDF from the admin's own server, never the private release; no light button without its size");
     assert.ok(html.includes("12 Nov · older than proof 105") && html.includes('what old"'), "an old PDF says so");
     assert.ok(at("early one") < at("late &lt;i&gt;one&lt;/i&gt;"), "open comments in order of place");
     assert.ok(html.includes('<div class="open"><b>2</b><span>open</span>') && html.includes('<div class="fixed"><b>2</b><span>fixed</span>'), "the tally");
@@ -61,6 +62,9 @@ test("book page: login only, read only, the head, comments open and fixed, sprea
     put(dir, "proof", { version: 106, published: "2026-11-17T10:36:48-06:00", url: "javascript:alert(1)" });
     put(dir, "pdf", { file: "https://evil.example/x.pdf", stale: false });
     const bad = await (await fetch(base + "/admin/book", { headers: H })).text();
+    put(dir, "pdf", { built: "2026-11-17T13:05:46-06:00", pages: 109, size_mb_light: 21.1, stale: false });
+    const both = await (await fetch(base + "/admin/book", { headers: H })).text();
+    assert.ok(both.includes('href="/admin/index/book/miniature-beasts-proof-light.pdf"') && both.includes("21 MB"), "the light button with its size");
     assert.ok(!bad.includes("javascript:") && !bad.includes("evil.example") && !bad.includes(">Proof ↗<"), "only the proof and the project's releases are linked");
   } finally { close(); }
 });

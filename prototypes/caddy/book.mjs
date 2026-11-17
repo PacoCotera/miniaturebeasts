@@ -31,6 +31,9 @@ const STATES = [
 const CLASS_OF = Object.fromEntries(STATES.map(([k, c]) => [k, c]));
 const LEGEND = [["done", "in the proof"], ["old", "in the proof, old layout"], ["made", "made, not in the proof yet"], ["missing", "not made yet"]];
 
+// Where the admin's own server (internal tools/admin, static/index/book/) serves the two proof PDFs, behind the /admin login.
+export const PDF_URLS = { full: "/admin/index/book/miniature-beasts-proof.pdf", light: "/admin/index/book/miniature-beasts-proof-light.pdf" };
+
 export function createBook({ dataDir, now = () => Date.now() }) {
   const read = (name) => { try { const o = JSON.parse(readFileSync(path.join(dataDir, "book", name + ".json"), "utf8")); return o && typeof o === "object" ? o : null; } catch { return null; } };
 
@@ -50,11 +53,13 @@ export function createBook({ dataDir, now = () => Date.now() }) {
     const t = now(), proof = read("proof"), pdf = read("pdf"), comments = read("comments"), spreads = read("spreads");
     const version = proof && Number.isInteger(proof.version) ? proof.version : null;
     const lede = proof && version != null ? `Proof ${version}${isoOk(proof.published) ? ` · updated ${esc(whenMX(proof.published, t))}` : ""}` : "No proof published yet";
-    const proofUrl = proof && safeUrl(proof.url), pdfUrl = pdf && safeUrl(pdf.file || pdf.url);
+    // The PDFs are served by the admin's own server behind the same login (PDF_URLS): the release they come from is private, so a link to it is a "Not Found" page (owner 11-17)
+    const proofUrl = proof && safeUrl(proof.url), pdfUrl = pdf ? PDF_URLS.full : "", pdfLightUrl = pdf && Number.isFinite(pdf.size_mb_light) ? PDF_URLS.light : "";
     const pdfOld = !!(pdf && pdf.stale);
     const pdfWhat = pdf ? [isoOk(pdf.built) ? dayWords(pdf.built) : "", pdfOld && version != null ? `older than proof ${version}` : "", !pdfOld && Number.isFinite(pdf.pages) ? `${pdf.pages} pages` : ""].filter(Boolean).join(" · ") : "";
     const link = (url, name, what, cls = "") => url ? `<a class="qlink" href="${esc(url)}" target="_blank" rel="noopener"><div class="name">${name} ↗</div><div class="what${cls}">${esc(what)}</div></a>` : "";
-    const links = link(proofUrl, "Proof", version != null ? `Proof ${version} · claude.ai` : "claude.ai") + link(pdfUrl, "PDF", pdfWhat, pdfOld ? " old" : "");
+    const links = link(proofUrl, "Proof", version != null ? `Proof ${version} · claude.ai` : "claude.ai") + link(pdfUrl, "PDF", pdfWhat, pdfOld ? " old" : "")
+      + link(pdfLightUrl, "PDF, light", pdfLightUrl ? `${Math.round(pdf.size_mb_light)} MB` : "", pdfOld ? " old" : "");
 
     // ---- your comments: the open ones by page (or by row where editorial gives no page), the fixed ones folded, newest fix first
     let cSection = "";
