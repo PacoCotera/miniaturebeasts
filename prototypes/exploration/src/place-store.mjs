@@ -5,7 +5,7 @@
 // A second worker renders a place's ground (the pixel work of places/src/ground.mjs, which the page did a frame at a time): groundAsk, groundTake. It is a second one so that a ground is not queued behind the reach.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, realm7 } from './gen7/region.mjs';
-import { decorOf, presetHollowSites } from './gen7/place.mjs';
+import { decorSites, presetHollowSites } from './gen7/place.mjs';
 
 const PLACE_REV = 2, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
@@ -68,7 +68,7 @@ export async function readyPlaces(seed, slot, v, cells, kit) {
   if (todo.length && PW_ON && kit) {
     try {
       const w = worker('bake', kit.ctx);
-      if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorOf(seed).madeSites() }); PW_SEED = seed; }   // the realm is the page's; of the sites it sends the ones it has made (the worker makes the rest as its places ask, and sends them back with the bake)
+      if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed) }); PW_SEED = seed; }   // the realm is the page's; of the sites it sends the ones it has made (the worker makes the rest as its places ask, and sends them back with the bake)
       w.postMessage({ op: 'bake', seed, slot, v, cells: todo });
     } catch (e) { for (const c of todo) ASKED.delete(memKey(seed, slot, v, c)); console.warn('the places worker did not run', e); }
   } else for (const c of todo) ASKED.delete(memKey(seed, slot, v, c));
@@ -79,7 +79,7 @@ export function readySites(seed, slots, kit) {
   if (!PW_ON || !kit) return false;
   try {
     const w = worker('bake', kit.ctx);
-    if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorOf(seed).madeSites() }); PW_SEED = seed; }
+    if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed) }); PW_SEED = seed; }
     w.postMessage({ op: 'sites', seed, slots }); return true;
   } catch (e) { return false; }
 }

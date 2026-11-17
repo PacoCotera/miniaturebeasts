@@ -1042,6 +1042,7 @@ const SITES = new Map();   // the Hollow Tree sites made so far, by seed: 'ax,ay
 const siteCacheOf = seed => { let m = SITES.get(seed); if (!m) { if (SITES.size > 3) SITES.clear(); m = new Map(); SITES.set(seed, m); } return m; };
 // sites: what a decor's madeSites() sent: [{ slot, x, y }] or [{ slot, none: true }]; a slot already known is left as it is
 export const presetHollowSites = (seed, sites) => { const m = siteCacheOf(seed); for (const s of sites || []) { const k = s.slot[0] + ',' + s.slot[1]; if (!m.has(k)) m.set(k, s.none ? null : { x: s.x, y: s.y, slot: [s.slot[0], s.slot[1]] }); } };
+export const decorSites = seed => { const d = DEC.get(seed); return d ? d.madeSites() : []; };   // the Hollow Tree sites already made here: asking never makes the decor (its land is seconds of work) on a page that has none
 export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed), undefined, siteCacheOf(seed)); DEC.set(seed, d); } return d; };
 export const biomeAtTile = (seed, gx, gy) => landOf(seed).biome(gx, gy);
 // the decor of the tiles x0 .. x0 + w - 1, y0 .. y0 + h - 1 as IR lists (pixels at 48 a tile, relative to the IR's own corner). A prop is in the list when its foot is within two tiles sideways or
