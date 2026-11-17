@@ -23,7 +23,7 @@ ENV_DIR="$(dirname "$ENV_FILE")"
 WEB_ENV=/etc/caddy/mb.env                        # MB_ROOT and MB_STUDIO for Caddy's unit and for deploy.sh
 USERS_FILE="$ENV_DIR/studio-users"               # beside the environment file
 LIB=/usr/local/lib/mb-login                      # the login's start and the copy it runs while no release carries the login
-FILES="deploy.sh Caddyfile login/mb_login.py login/mb-studio-passwd login/mb-login-run"
+FILES="deploy.sh Caddyfile mb-caddy.service.in login/mb_login.py login/mb-studio-passwd login/mb-login-run"
 export DEBIAN_FRONTEND=noninteractive
 aptq() { apt-get -o Dpkg::Options::=--force-confold -y -qq "$@" >/dev/null; }
 # MB_STUDIO must be host:port (a name, an IPv4 address or a [bracketed] IPv6 one; a port 1-65535). Caddy itself accepts an empty one.
@@ -100,21 +100,8 @@ install -d /etc/systemd/system/caddy.service.d
 DROPIN=/etc/systemd/system/caddy.service.d/mb.conf
 printf '[Service]\nEnvironmentFile=%s\n' "$WEB_ENV" > "$DROPIN.new"
 if cmp -s "$DROPIN.new" "$DROPIN" 2>/dev/null; then rm "$DROPIN.new"; else mv "$DROPIN.new" "$DROPIN"; restart=1; fi
-cat > /etc/systemd/system/mb-caddy.service <<UNIT
-[Unit]
-Description=Miniature Beasts Caddy service (the Station's painting broker)
-After=network-online.target
-[Service]
-User=www-data
-Group=www-data
-EnvironmentFile=$ENV_FILE
-WorkingDirectory=$ROOT/current/play/caddy
-ExecStart=/usr/bin/node $ROOT/current/play/caddy/server.mjs
-Restart=on-failure
-RestartSec=5
-[Install]
-WantedBy=multi-user.target
-UNIT
+# the Caddy service's unit comes from the template deploy.sh also renders (a later release may move the service's path)
+sed -e "s#@ROOT@#$ROOT#g" -e "s#@ENV_FILE@#$ENV_FILE#g" "$SRC/mb-caddy.service.in" > /etc/systemd/system/mb-caddy.service
 # the login: localhost only, no privileges, a read-only system; it writes only its state directory
 cat > /etc/systemd/system/mb-login.service <<UNIT
 [Unit]

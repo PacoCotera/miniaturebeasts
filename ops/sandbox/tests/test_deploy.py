@@ -20,7 +20,7 @@ exit 0
 """
 
 
-def release_tar(caddyfile, login=None):
+def release_tar(caddyfile, login=None, unit=None):
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as t:
         def add(name, data):
@@ -31,6 +31,8 @@ def release_tar(caddyfile, login=None):
             add("ops/sandbox/Caddyfile", caddyfile.encode())
         if login is not None:
             add("ops/sandbox/login/mb_login.py", login.encode())
+        if unit is not None:
+            add("ops/sandbox/mb-caddy.service.in", unit.encode())
     return buf.getvalue()
 
 
@@ -81,10 +83,10 @@ class Deploy(unittest.TestCase):
             dict(name=f"{tag}.tar.gz", browser_download_url=f"{self.base}/dl/{tag}.tar.gz"),
             dict(name=f"{tag}.sha256", browser_download_url=f"{self.base}/dl/{tag}.sha256")])
 
-    def publish(self, caddyfile=None, corrupt=False, tag=None, login=None):
+    def publish(self, caddyfile=None, corrupt=False, tag=None, login=None, unit=None):
         self.n += 1
         tag = tag or f"sandbox-{self.n:07x}"
-        data = release_tar(caddyfile, login)
+        data = release_tar(caddyfile, login, unit)
         self.hub.files[tag + ".tar.gz"] = data
         self.hub.files[tag + ".sha256"] = (("0" * 64) if corrupt else hashlib.sha256(data).hexdigest()).encode() + f"  {tag}.tar.gz\n".encode()
         self.hub.releases.append(tag)
@@ -254,6 +256,22 @@ class Deploy(unittest.TestCase):
         self.assertEqual(self.calls().count("restart mb-caddy"), 2)
         self.publish(login="v2"); self.run_deploy()
         self.assertEqual(self.calls().count("restart mb-login"), 2)
+
+    def test_the_caddy_unit_follows_the_releases_template(self):
+        unit = self.dir / "mb-caddy.service"
+        unit.write_text("ExecStart=/usr/bin/node /r/current/sandbox/caddy/server.mjs\n")   # a unit from before the move
+        env = dict(MB_UNIT=str(unit), MB_ENV_FILE="/etc/mb/caddy.env")
+        self.publish(unit="EnvironmentFile=@ENV_FILE@\nExecStart=/usr/bin/node @ROOT@/current/play/caddy/server.mjs\n")
+        r = self.run_deploy(**env)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        want = f"EnvironmentFile=/etc/mb/caddy.env\nExecStart=/usr/bin/node {self.root}/current/play/caddy/server.mjs\n"
+        self.assertEqual(unit.read_text(), want)
+        c = self.calls()
+        self.assertLess(c.index("daemon-reload"), c.index("restart mb-caddy"))
+        self.publish(unit="EnvironmentFile=@ENV_FILE@\nExecStart=/usr/bin/node @ROOT@/current/play/caddy/server.mjs\n")
+        self.run_deploy(**env)                                # same unit again: no rewrite, no second reload
+        self.assertEqual(self.calls().count("daemon-reload"), 1)
+        self.assertEqual(unit.read_text(), want)
 
     def test_a_stale_previous_file_is_never_put_back(self):
         self.caddyfile.unlink()
