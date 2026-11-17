@@ -66,86 +66,20 @@
     [
      "split-stone",
      "Split Stone",
-     40,
-     41
-    ],
-    [
-     "split-stone",
-     "Cracked Stone",
-     36,
-     42
-    ],
-    [
-     "split-stone",
-     "Struck Rock",
-     42,
-     45
-    ],
-    [
-     "split-stone",
-     "Split Rock",
      35,
      47
     ],
     [
      "split-stone",
-     "Sand Stone",
+     "Cracked Stone",
      41,
      48
     ],
     [
      "split-stone",
-     "Forked Stone",
-     46,
-     49
-    ],
-    [
-     "split-stone",
-     "Halved Stone",
-     40,
-     51
-    ],
-    [
-     "split-stone",
-     "Stone at the Crossing",
-     45,
-     52
-    ],
-    [
-     "split-stone",
-     "Cleft Stone",
-     46,
-     55
-    ],
-    [
-     "reedpool",
-     "Islet Pool",
-     36,
-     57
-    ],
-    [
-     "reedpool",
-     "Clear Pond",
-     39,
-     57
-    ],
-    [
-     "reedpool",
-     "Still Pool",
-     33,
-     58
-    ],
-    [
-     "windstep",
-     "Broad Step",
-     42,
-     58
-    ],
-    [
-     "split-stone",
-     "Two Halves",
-     46,
-     58
+     "Struck Rock",
+     37,
+     56
     ]
    ],
    "cells": {
@@ -514,7 +448,7 @@
      ],
      "strikes": []
     },
-    "40,41": {
+    "35,47": {
      "names": [
       "Split Stone"
      ],
@@ -542,8 +476,17 @@
      ],
      "finds": [
       [
-       15,
-       17,
+       23,
+       18,
+       "pod",
+       1,
+       "",
+       "",
+       0
+      ],
+      [
+       16,
+       19,
        "pod",
        "",
        "",
@@ -551,16 +494,7 @@
        0
       ],
       [
-       10,
-       7,
-       "stone",
-       "",
-       "",
-       "",
-       0
-      ],
-      [
-       6,
+       15,
        9,
        "stone",
        "",
@@ -569,35 +503,26 @@
        0
       ],
       [
-       16,
-       1,
-       "pod",
+       19,
+       11,
+       "stone",
        "",
        "",
        "",
        0
       ],
       [
-       14,
-       2,
-       "pod",
+       18,
+       18,
+       "stone",
        "",
        "",
        "",
        0
       ],
       [
-       15,
-       2,
-       "pod",
-       "",
-       "",
-       "",
-       0
-      ],
-      [
-       14,
-       1,
+       24,
+       22,
        "pod",
        "",
        "",
@@ -608,11 +533,11 @@
      "spawns": [
       [
        2,
+       23,
+       6,
        4,
-       4,
-       3,
        "tuikis",
-       0
+       4
       ]
      ],
      "landmarks": [
@@ -621,13 +546,28 @@
        "Split Stone",
        "",
        "landmark-split-stone",
-       8,
-       9
+       17,
+       11
       ]
      ],
-     "signs": [],
-     "traces": [],
-     "strikes": []
+     "signs": [
+      "{\"kind\":\"tracks\",\"species\":\"tuikis\",\"path\":[[1,14],[3,14],[5,14],[7,14],[9,14],[11,14],[13,14],[15,14],[17,14],[19,14],[20,15],[21,16],[22,17],[23,18]],\"to\":[23,18]}"
+     ],
+     "traces": [
+      [
+       "beacon",
+       7,
+       22
+      ]
+     ],
+     "strikes": [
+      [
+       5,
+       8,
+       2,
+       0
+      ]
+     ]
     }
    }
   }
@@ -689,12 +629,6 @@
   "hold": {
    "landmarks": [
     [
-     "split-stone",
-     "Cracked Stone",
-     3,
-     1
-    ],
-    [
      "windstep",
      "Wind Shelf",
      10,
@@ -703,68 +637,26 @@
     [
      "windstep",
      "Ridge Step",
-     6,
-     7
-    ],
-    [
-     "split-stone",
-     "Two Halves",
-     14,
-     7
-    ],
-    [
-     "windstep",
-     "Windstep",
      3,
      8
     ],
     [
      "split-stone",
-     "Struck Rock",
+     "Cracked Stone",
      11,
      9
     ],
     [
-     "reedpool",
-     "Islet Pool",
-     7,
-     10
-    ],
-    [
      "windstep",
-     "Top Meadow",
+     "Windstep",
      10,
      12
     ],
     [
      "reedpool",
-     "Rush Pond",
-     2,
-     13
-    ],
-    [
-     "reedpool",
-     "Reedpool",
+     "Islet Pool",
      6,
      13
-    ],
-    [
-     "split-stone",
-     "Stone at the Crossing",
-     2,
-     16
-    ],
-    [
-     "reedpool",
-     "Island Pond",
-     10,
-     17
-    ],
-    [
-     "split-stone",
-     "Cleft Stone",
-     13,
-     18
     ]
    ],
    "cells": {
@@ -1155,11 +1047,16 @@
       ]
      ]
     },
-    "3,1": {
+    "10,4": {
      "names": [
-      "Cracked Stone"
+      "Wind Shelf"
      ],
      "openings": [
+      [
+       "N",
+       1,
+       24
+      ],
       [
        "S",
        1,
@@ -1167,28 +1064,37 @@
       ],
       [
        "W",
-       7,
+       1,
        28
       ],
       [
        "E",
-       5,
+       1,
        28
       ]
      ],
      "finds": [
       [
-       2,
-       26,
-       "pod",
-       17,
+       18,
+       5,
+       "dew",
        "",
        "",
+       0,
        0
       ],
       [
-       14,
+       20,
+       5,
+       "dew",
+       "",
+       "",
+       0,
+       0
+      ],
+      [
        8,
+       22,
        "pod",
        "",
        "",
@@ -1196,8 +1102,17 @@
        0
       ],
       [
-       15,
-       17,
+       16,
+       19,
+       "pod",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       10,
+       23,
        "stone",
        "",
        "",
@@ -1205,8 +1120,17 @@
        0
       ],
       [
-       5,
-       23,
+       6,
+       20,
+       "fruit",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       18,
+       14,
        "pod",
        "",
        "",
@@ -1214,7 +1138,7 @@
        0
       ],
       [
-       24,
+       19,
        5,
        "dew",
        "",
@@ -1225,37 +1149,45 @@
      ],
      "spawns": [
       [
-       1,
-       24,
-       6,
+       9,
+       18,
        4,
+       3,
+       "untuva",
+       0
+      ],
+      [
+       7,
+       1,
+       4,
+       3,
+       "lehten",
+       2
+      ],
+      [
+       17,
+       25,
+       4,
+       3,
        "drapet",
-       6
+       0
       ]
      ],
      "landmarks": [
       [
-       "split-stone",
-       "Cracked Stone",
+       "windstep",
+       "Wind Shelf",
        "",
-       "landmark-split-stone",
-       17,
-       19
+       "landmark-windstep-tree",
+       12,
+       14
       ]
      ],
      "signs": [
-      "{\"kind\":\"reedline\",\"banks\":[{\"x\":-3,\"y\":5,\"w\":3,\"h\":3},{\"x\":5,\"y\":5,\"w\":3,\"h\":3},{\"x\":13,\"y\":5,\"w\":3,\"h\":3},{\"x\":21,\"y\":5,\"w\":3,\"h\":3},{\"x\":25,\"y\":5,\"w\":3,\"h\":3}],\"pearl\":-1}",
-      "{\"kind\":\"tracks\",\"species\":\"drapet\",\"path\":[[12,28],[10,28],[8,28],[6,28],[4,28],[3,27],[2,26]],\"to\":[2,26]}"
+      "{\"kind\":\"moss-hollow\",\"x\":19,\"y\":5,\"r\":2,\"finds\":[0,1]}"
      ],
      "traces": [],
-     "strikes": [
-      [
-       9,
-       23,
-       0,
-       0
-      ]
-     ]
+     "strikes": []
     }
    }
   }
@@ -1332,18 +1264,6 @@
     [
      "split-stone",
      "Forked Stone",
-     46,
-     41
-    ],
-    [
-     "split-stone",
-     "Broken Rock",
-     36,
-     42
-    ],
-    [
-     "split-stone",
-     "Two Halves",
      44,
      44
     ],
@@ -1355,93 +1275,21 @@
     ],
     [
      "split-stone",
-     "Seam Rock",
-     34,
-     46
-    ],
-    [
-     "reedpool",
-     "Islet Pool",
-     40,
-     46
-    ],
-    [
-     "split-stone",
-     "Split Rock",
-     43,
-     47
-    ],
-    [
-     "split-stone",
-     "Split Stone",
-     46,
-     48
-    ],
-    [
-     "split-stone",
-     "Sand Stone",
+     "Broken Rock",
      36,
      49
     ],
     [
      "reedpool",
-     "Still Pool",
+     "Islet Pool",
      39,
      49
     ],
     [
-     "reedpool",
-     "Sandy Shore",
-     33,
-     50
-    ],
-    [
-     "reedpool",
-     "Clear Pond",
-     43,
-     52
-    ],
-    [
      "split-stone",
-     "Struck Rock",
-     46,
-     52
-    ],
-    [
-     "reedpool",
-     "Reedpool",
-     37,
-     53
-    ],
-    [
-     "reedpool",
-     "Quiet Water",
-     33,
-     54
-    ],
-    [
-     "split-stone",
-     "Cleft Stone",
-     45,
-     55
-    ],
-    [
-     "split-stone",
-     "Cracked Stone",
+     "Two Halves",
      39,
      56
-    ],
-    [
-     "split-stone",
-     "Stone at the Crossing",
-     35,
-     58
-    ],
-    [
-     "split-stone",
-     "Halved Stone",
-     42,
-     58
     ]
    ],
    "cells": {
@@ -1745,7 +1593,7 @@
      "traces": [],
      "strikes": []
     },
-    "46,41": {
+    "44,44": {
      "names": [
       "Forked Stone"
      ],
@@ -1774,16 +1622,7 @@
      "finds": [
       [
        15,
-       7,
-       "pod",
-       1,
-       "",
-       "",
-       0
-      ],
-      [
        18,
-       7,
        "pod",
        "",
        "",
@@ -1791,17 +1630,26 @@
        0
       ],
       [
-       15,
-       17,
-       "stone",
+       20,
+       28,
+       "dew",
        "",
        "",
        "",
        0
       ],
       [
-       11,
-       12,
+       24,
+       26,
+       "dew",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       22,
+       28,
        "pod",
        "",
        "",
@@ -1811,12 +1659,12 @@
      ],
      "spawns": [
       [
-       15,
-       20,
-       6,
+       11,
+       26,
        4,
+       3,
        "tuikis",
-       3
+       0
       ]
      ],
      "landmarks": [
@@ -1825,25 +1673,17 @@
        "Forked Stone",
        "",
        "landmark-split-stone",
-       17,
-       19
+       16,
+       11
       ]
      ],
-     "signs": [
-      "{\"kind\":\"tracks\",\"species\":\"tuikis\",\"path\":[[1,14],[3,14],[5,14],[6,13],[7,12],[9,12],[11,12],[13,12],[14,11],[14,9],[15,8],[15,7]],\"to\":[15,7]}"
-     ],
-     "traces": [
-      [
-       "beacon",
-       24,
-       28
-      ]
-     ],
+     "signs": [],
+     "traces": [],
      "strikes": [
       [
-       9,
-       8,
-       0,
+       14,
+       20,
+       2,
        0
       ]
      ]
@@ -1911,18 +1751,6 @@
   "hold": {
    "landmarks": [
     [
-     "split-stone",
-     "Sand Stone",
-     1,
-     1
-    ],
-    [
-     "split-stone",
-     "Split Stone",
-     11,
-     1
-    ],
-    [
      "windstep",
      "High Shelf",
      3,
@@ -1930,63 +1758,27 @@
     ],
     [
      "split-stone",
-     "Stone at the Crossing",
+     "Sand Stone",
      8,
      5
     ],
     [
-     "split-stone",
-     "Split Rock",
-     12,
-     6
-    ],
-    [
      "windstep",
      "Ridge Step",
-     3,
-     8
-    ],
-    [
-     "split-stone",
-     "Two Halves",
-     4,
+     9,
      11
     ],
     [
      "windstep",
      "Wind Shelf",
-     9,
-     11
-    ],
-    [
-     "reedpool",
-     "Quiet Water",
-     13,
-     12
-    ],
-    [
-     "windstep",
-     "Thistle Shelf",
      3,
      14
     ],
     [
      "reedpool",
-     "Stone Pool",
+     "Quiet Water",
      10,
      14
-    ],
-    [
-     "split-stone",
-     "Cleft Stone",
-     13,
-     16
-    ],
-    [
-     "reedpool",
-     "Clear Pond",
-     8,
-     18
     ]
    ],
    "cells": {
@@ -2365,34 +2157,49 @@
       ]
      ]
     },
-    "1,1": {
+    "3,5": {
      "names": [
-      "Sand Stone"
+      "High Shelf"
      ],
      "openings": [
       [
-       "S",
-       7,
+       "N",
+       1,
        24
       ],
       [
+       "S",
+       3,
+       4
+      ],
+      [
+       "S",
+       8,
+       24
+      ],
+      [
+       "W",
+       1,
+       27
+      ],
+      [
        "E",
-       7,
+       1,
        28
       ]
      ],
      "finds": [
       [
-       15,
-       5,
-       "material",
+       10,
+       19,
+       "pod",
        "",
-       "pearl",
+       "",
        "",
        0
       ],
       [
-       12,
+       15,
        10,
        "pod",
        "",
@@ -2401,17 +2208,44 @@
        0
       ],
       [
-       8,
-       28,
-       "dew",
+       12,
+       20,
+       "stone",
        "",
        "",
        "",
        0
       ],
       [
-       14,
-       21,
+       9,
+       20,
+       "stone",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       15,
+       11,
+       "stone",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       17,
+       8,
+       "pod",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       19,
+       4,
        "pod",
        "",
        "",
@@ -2421,8 +2255,24 @@
      ],
      "spawns": [
       [
-       12,
-       24,
+       1,
+       18,
+       4,
+       3,
+       "untuva",
+       1
+      ],
+      [
+       3,
+       19,
+       4,
+       3,
+       "lehten",
+       0
+      ],
+      [
+       6,
+       9,
        4,
        3,
        "drapet",
@@ -2431,30 +2281,22 @@
      ],
      "landmarks": [
       [
-       "split-stone",
-       "Sand Stone",
+       "windstep",
+       "High Shelf",
        "",
-       "landmark-split-stone",
-       11,
-       23
+       "landmark-windstep-tree",
+       4,
+       26
       ]
      ],
-     "signs": [
-      "{\"kind\":\"reedline\",\"banks\":[{\"x\":5,\"y\":5,\"w\":3,\"h\":3},{\"x\":13,\"y\":5,\"w\":3,\"h\":3},{\"x\":17,\"y\":5,\"w\":3,\"h\":3},{\"x\":21,\"y\":5,\"w\":3,\"h\":3},{\"x\":25,\"y\":5,\"w\":3,\"h\":3},{\"x\":5,\"y\":9,\"w\":3,\"h\":3},{\"x\":5,\"y\":25,\"w\":3,\"h\":3},{\"x\":5,\"y\":29,\"w\":3,\"h\":3}],\"pearl\":0}"
-     ],
-     "traces": [
-      [
-       "beacon",
-       18,
-       27
-      ]
-     ],
+     "signs": [],
+     "traces": [],
      "strikes": [
       [
-       16,
-       7,
-       0,
-       1
+       20,
+       4,
+       2,
+       0
       ]
      ]
     }
@@ -2532,36 +2374,6 @@
     [
      "split-stone",
      "Broken Rock",
-     45,
-     41
-    ],
-    [
-     "split-stone",
-     "Split Rock",
-     38,
-     42
-    ],
-    [
-     "split-stone",
-     "Struck Rock",
-     34,
-     43
-    ],
-    [
-     "split-stone",
-     "Cleft Stone",
-     46,
-     45
-    ],
-    [
-     "split-stone",
-     "Two Halves",
-     33,
-     46
-    ],
-    [
-     "split-stone",
-     "Forked Stone",
      36,
      46
     ],
@@ -2572,46 +2384,16 @@
      48
     ],
     [
-     "split-stone",
-     "Stone at the Crossing",
-     33,
-     49
-    ],
-    [
-     "split-stone",
-     "Sand Stone",
-     44,
-     49
-    ],
-    [
-     "split-stone",
-     "Split Stone",
-     46,
-     52
-    ],
-    [
      "reedpool",
      "Islet Pool",
      35,
      54
     ],
     [
-     "split-stone",
-     "Cracked Stone",
-     42,
-     54
-    ],
-    [
-     "windstep",
-     "High Shelf",
-     36,
-     57
-    ],
-    [
      "reedpool",
      "Round Pool",
      42,
-     57
+     56
     ]
    ],
    "cells": {
@@ -2960,7 +2742,7 @@
      "traces": [],
      "strikes": []
     },
-    "45,41": {
+    "36,46": {
      "names": [
       "Broken Rock"
      ],
@@ -2968,6 +2750,11 @@
       [
        "N",
        1,
+       19
+      ],
+      [
+       "N",
+       21,
        24
       ],
       [
@@ -2983,13 +2770,18 @@
       [
        "E",
        1,
+       10
+      ],
+      [
+       "E",
+       24,
        28
       ]
      ],
      "finds": [
       [
-       15,
-       19,
+       14,
+       18,
        "pod",
        "",
        "",
@@ -2997,9 +2789,18 @@
        0
       ],
       [
-       14,
        10,
+       9,
        "stone",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       16,
+       2,
+       "pod",
        "",
        "",
        "",
@@ -3007,16 +2808,16 @@
       ],
       [
        18,
-       12,
-       "stone",
+       1,
+       "pod",
        "",
        "",
        "",
        0
       ],
       [
-       14,
-       3,
+       16,
+       1,
        "pod",
        "",
        "",
@@ -3026,8 +2827,8 @@
      ],
      "spawns": [
       [
-       21,
-       22,
+       11,
+       1,
        4,
        3,
        "tuikis",
@@ -3040,13 +2841,26 @@
        "Broken Rock",
        "",
        "landmark-split-stone",
-       16,
-       12
+       12,
+       11
       ]
      ],
      "signs": [],
-     "traces": [],
-     "strikes": []
+     "traces": [
+      [
+       "beacon",
+       17,
+       16
+      ]
+     ],
+     "strikes": [
+      [
+       23,
+       18,
+       2,
+       0
+      ]
+     ]
     }
    }
   }
@@ -3118,62 +2932,20 @@
   "hold": {
    "landmarks": [
     [
-     "split-stone",
-     "Sand Stone",
-     12,
-     1
-    ],
-    [
-     "split-stone",
-     "Split Rock",
-     5,
-     2
-    ],
-    [
-     "reedpool",
-     "Reed Shore",
-     9,
-     2
-    ],
-    [
-     "split-stone",
-     "Two Halves",
-     2,
+     "windstep",
+     "Broad Step",
+     3,
      6
     ],
     [
      "split-stone",
-     "Broken Rock",
+     "Sand Stone",
      8,
      6
     ],
     [
-     "split-stone",
-     "Cleft Stone",
-     3,
-     9
-    ],
-    [
-     "windstep",
-     "Broad Step",
-     6,
-     10
-    ],
-    [
      "reedpool",
-     "Clear Pond",
-     9,
-     10
-    ],
-    [
-     "reedpool",
-     "Reed Bank",
-     14,
-     11
-    ],
-    [
-     "reedpool",
-     "Round Pool",
+     "Reed Shore",
      8,
      14
     ],
@@ -3182,24 +2954,6 @@
      "Bright Shelf",
      11,
      15
-    ],
-    [
-     "windstep",
-     "Ridge Step",
-     2,
-     16
-    ],
-    [
-     "windstep",
-     "Top Meadow",
-     14,
-     16
-    ],
-    [
-     "split-stone",
-     "Struck Rock",
-     5,
-     17
     ]
    ],
    "cells": {
@@ -3530,40 +3284,41 @@
      "traces": [],
      "strikes": []
     },
-    "12,1": {
+    "3,6": {
      "names": [
-      "Sand Stone"
+      "Broad Step"
      ],
      "openings": [
       [
-       "S",
+       "N",
        1,
        24
       ],
       [
+       "S",
+       1,
+       3
+      ],
+      [
+       "S",
+       6,
+       24
+      ],
+      [
        "W",
-       7,
+       1,
        28
       ],
       [
        "E",
-       7,
+       1,
        28
       ]
      ],
      "finds": [
       [
        16,
-       27,
-       "pod",
-       17,
-       "",
-       "",
-       0
-      ],
-      [
-       12,
-       10,
+       19,
        "pod",
        "",
        "",
@@ -3571,8 +3326,17 @@
        0
       ],
       [
-       10,
-       18,
+       16,
+       9,
+       "pod",
+       "",
+       "",
+       "",
+       0
+      ],
+      [
+       14,
+       19,
        "stone",
        "",
        "",
@@ -3580,36 +3344,18 @@
        0
       ],
       [
-       23,
-       8,
-       "dew",
+       16,
+       10,
+       "stone",
        "",
        "",
        "",
        0
       ],
       [
-       11,
-       7,
-       "dew",
-       "",
-       "",
-       "",
-       0
-      ],
-      [
-       21,
-       7,
-       "dew",
-       "",
-       "",
-       "",
-       0
-      ],
-      [
-       1,
-       27,
-       "dew",
+       15,
+       25,
+       "stone",
        "",
        "",
        "",
@@ -3618,33 +3364,46 @@
      ],
      "spawns": [
       [
-       13,
-       6,
-       6,
+       18,
+       26,
        4,
+       3,
+       "untuva",
+       0
+      ],
+      [
+       8,
+       7,
+       4,
+       3,
+       "lehten",
+       0
+      ],
+      [
+       3,
+       5,
+       4,
+       3,
        "drapet",
-       7
+       0
       ]
      ],
      "landmarks": [
       [
-       "split-stone",
-       "Sand Stone",
+       "windstep",
+       "Broad Step",
        "",
-       "landmark-split-stone",
-       8,
-       20
+       "landmark-windstep-tree",
+       12,
+       14
       ]
      ],
-     "signs": [
-      "{\"kind\":\"reedline\",\"banks\":[{\"x\":-3,\"y\":5,\"w\":3,\"h\":3},{\"x\":9,\"y\":5,\"w\":3,\"h\":3},{\"x\":13,\"y\":5,\"w\":3,\"h\":3},{\"x\":-3,\"y\":13,\"w\":3,\"h\":3},{\"x\":-3,\"y\":17,\"w\":3,\"h\":3},{\"x\":-3,\"y\":25,\"w\":3,\"h\":3},{\"x\":-3,\"y\":29,\"w\":3,\"h\":3},{\"x\":1,\"y\":29,\"w\":3,\"h\":3}],\"pearl\":-1}",
-      "{\"kind\":\"tracks\",\"species\":\"drapet\",\"path\":[[12,28],[14,28],[16,28],[16,27]],\"to\":[16,27]}"
-     ],
+     "signs": [],
      "traces": [],
      "strikes": [
       [
+       11,
        4,
-       18,
        2,
        0
       ]

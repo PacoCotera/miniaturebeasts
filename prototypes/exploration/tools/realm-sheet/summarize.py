@@ -62,6 +62,10 @@ row('R2 trail places with no feature destination in a 7 x 7 reach, %', 'G2_reach
 row('R2 the same, 11 x 11, %', 'G2_reach_no_feature_dest_11x11_pct', '(report)', None)
 row('R2 the same, 5 x 5, %', 'G2_reach_no_feature_dest_pct', '(report)', None)
 row('Filler spots (land\'s own) a realm', 'reach_spots', '(report)', None)
+row('R3 landmarks with another of their own kind within 5 places, %', 'G3_landmark_same_kind_in_reach_pct', 'under 10', lambda v: v < 10)
+row('R3 landmarks a region', 'G3_landmarks_per_region', '(report)', None)
+row('R3 trail-sample 11 x 11 reaches that show no landmark, %', 'G2_reach_no_landmark_pct', '(report)', None)
+row('R3 landmarks of a realm', 'G7_landmarks_n', '(report)', None)
 
 print('\n## The 17 kept rules (report.md "kept" table; the land rules hold by the land hash)\n')
 print('| rule | target | before | after | range after | |')
