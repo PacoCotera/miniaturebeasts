@@ -332,6 +332,11 @@ static void picker_grid(void) {
 }
 static void picker_empty(void) {
   int n = v_plen(P ".empty"); if (n < 1) return; int st[4], t[4], l[4]; v_srect(S, I K ".empty.seat", st); v_srect(S, I K ".empty.title", t); v_srect(S, I K ".empty.line", l);
+  { /* no ring on an empty picker: a phone keeps this message in view (the seat and each line's drawn width, centred in its rect) */
+    word_setRest(st);
+    for (int k = 0; k < n && k < 2; k++) { const int *r = k ? l : t; char s[V_STR], role[32]; snprintf(s, sizeof s, "%s", v_pstr(k ? P ".empty.1" : P ".empty.0")); snprintf(role, sizeof role, "%s", v_sstr(S, k ? I K ".empty.lineRole" : I K ".empty.titleRole"));
+      int tw = v_role_width(s, role); if (tw > r[2]) tw = r[2]; int b[4] = { r[0] + (r[2] - tw) / 2, r[1], tw, r[3] }; word_setRest(b); }
+  }
   { static char sb[4096]; char o[24], in[24]; snprintf(o, sizeof o, "%s", v_scol(S, I K ".ground.seat.fill")); snprintf(in, sizeof in, "%s", v_scol(S, I K ".ground.seat.inner")); seat_ops(sb, sizeof sb, st[2], st[3], o, in); v_region("empty.seat", LAYER_CHROME); v_composed("empty.seat", st[0], st[1], st[2], st[3], sb); }
   v_region("empty.words", LAYER_TYPE); { char s[V_STR]; snprintf(s, sizeof s, "%s", v_pstr(P ".empty.0")); inv_say("empty.title", s, t[0], t[1], t[2], t[3], v_sstr(S, I K ".empty.titleRole"), "panel", V_ALIGN_CENTRE);
     if (n > 1) { snprintf(s, sizeof s, "%s", v_pstr(P ".empty.1")); inv_say("empty.line", s, l[0], l[1], l[2], l[3], v_sstr(S, I K ".empty.lineRole"), "panel", V_ALIGN_CENTRE); } }
