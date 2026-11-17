@@ -8,7 +8,10 @@ import path from "node:path";
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const SEV = ["blocks-play", "wrong", "looks-off"];
 const SEV_TEXT = { "blocks-play": "Blocks play", wrong: "Wrong", "looks-off": "Looks off", none: "Not rated" };
-const WEEK = 7 * 24 * 3600 * 1000;
+// The desks' names in plain words: the same ones the team page shows (coord.py NAMES). An unknown key shows as it is.
+const DESKS = { lead: "Lead", art: "Art director", design: "Game designer", ui: "Screens and phone UI", pixel: "Pixel art", editorial: "Book editor", hardware: "Hardware", mobile: "Phone app", watchdog: "Watchdog", owner: "You", all: "Everyone", jobs: "Jobs", job: "Jobs" };
+const deskName = (k) => (Object.hasOwn(DESKS, k) && DESKS[k]) || k;
+const WEEK =7 * 24 * 3600 * 1000;
 const safeUrl = (u) => (/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/\d+$/.test(u) ? u : "");
 
 export function createBugs({ dataDir, now = () => Date.now() }) {
@@ -27,16 +30,20 @@ export function createBugs({ dataDir, now = () => Date.now() }) {
   }
   function page() {
     const { open, fixed, generated, t } = groups();
-    const row = (r, when) => `<li><p class="w">${esc(r.words || r.title)}</p><p class="m"><b>${esc(r.desk)}</b> · ${esc(age(when, t))}${r.fix_merged ? " · fix merged, not live yet" : ""}${safeUrl(r.url) ? ` · <a href="${esc(safeUrl(r.url))}">#${esc(r.n)}</a>` : ` · #${esc(r.n)}`}</p></li>`;
+    const row = (r, when) => `<li class="bug${r.severity === "blocks-play" ? " blocks" : ""}"><p class="words">${esc(r.words || r.title)}</p><p class="meta"><b>${esc(deskName(r.desk))}</b> · ${esc(age(when, t))}${r.fix_merged ? " · fix merged, not live yet" : ""}${safeUrl(r.url) ? ` · <a href="${esc(safeUrl(r.url))}">#${esc(r.n)}</a>` : ` · #${esc(r.n)}`}</p></li>`;
     const sections = [...SEV, "none"].map((s) => {
       const rs = open.filter((r) => (r.severity || "none") === s);
-      return rs.length ? `<h2>${SEV_TEXT[s]} (${rs.length})</h2><ul>${rs.map((r) => row(r, r.created)).join("")}</ul>` : "";
+      return rs.length ? `<h2>${SEV_TEXT[s]} (${rs.length})</h2><ul class="cards">${rs.map((r) => row(r, r.created)).join("")}</ul>` : "";
     }).join("");
-    return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Bugs</title>`
-      + `<style>body{font:16px/1.4 system-ui,sans-serif;margin:0;padding:16px;max-width:760px;margin:auto;background:#fafafa;color:#222}h1{font-size:1.3rem}h2{font-size:1rem;margin:20px 0 6px}ul{list-style:none;margin:0;padding:0}li{background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px 14px;margin:0 0 8px}.w{white-space:pre-wrap;margin:0 0 4px}.m{color:#666;font-size:.85rem;margin:0}a{color:#0b5cad}</style></head><body>`
-      + `<h1>Bugs <small>${open.length} open</small></h1><p class="m">${generated ? `Updated ${esc(age(generated, t))} ago` : "Nothing filed yet"} · <a href="/admin/notes">Play notes</a></p>`
-      + (sections || "<p>No open bugs.</p>")
-      + `<h2>Fixed and live, last 7 days (${fixed.length})</h2>` + (fixed.length ? `<ul>${fixed.map((r) => row(r, r.closed)).join("")}</ul>` : "<p>None.</p>") + `</body></html>`;
+    // No inline style: the colours are the /admin index's own tokens (team.css, same origin, same login) and the layout is bugs.css.
+    return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark light"><meta name="robots" content="noindex"><title>Bugs</title>`
+      + `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; base-uri 'none'; form-action 'none'">`
+      + `<link rel="stylesheet" href="/admin/team/team.css"><link rel="stylesheet" href="/admin/bugs/bugs.css"></head><body class="admin"><div id="app">`
+      + `<a class="back" href="/admin/">← Admin</a>`
+      + `<div class="head"><h1>Bugs</h1><p class="lede">${open.length} open · ${generated ? `Updated ${esc(age(generated, t))} ago` : "Nothing filed yet"} · <a href="/admin/notes">Play notes</a></p></div>`
+      + (sections || `<p class="empty">No open bugs.</p>`)
+      + `<h2>Fixed and live, last 7 days (${fixed.length})</h2>` + (fixed.length ? `<ul class="cards">${fixed.map((r) => row(r, r.closed)).join("")}</ul>` : `<p class="empty">None.</p>`) + `</div></body></html>`;
   }
-  return { page, groups };
+  const css = () => readFileSync(new URL("./bugs.css", import.meta.url), "utf8");
+  return { page, groups, css };
 }

@@ -95,6 +95,11 @@ export function createApp(opts = {}) {
         if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
         res.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-robots-tag": "noindex" }); res.end(bugs.page()); return;
       }
+      if (url.pathname === "/admin/bugs/bugs.css") {
+        if (!req.headers["x-studio-user"]) { res.writeHead(403, { "content-type": "text/plain", "cache-control": "no-store" }); res.end("the studio login is required"); return; }
+        if (req.method !== "GET") { res.writeHead(405, { "content-type": "text/plain" }); res.end("read only"); return; }
+        res.writeHead(200, { "content-type": "text/css; charset=utf-8", "cache-control": "private, no-cache", "x-robots-tag": "noindex" }); res.end(bugs.css()); return;
+      }
       if (req.method === "POST" && p === "/notes") return json(res, ...await notes.post(req));
       if (req.method === "OPTIONS") { res.writeHead(204, { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, POST, PUT, DELETE", "access-control-allow-headers": "content-type" }); res.end(); return; }
       if (req.method === "GET" && p === "/status") return json(res, 200, status());

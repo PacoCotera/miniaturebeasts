@@ -36,5 +36,15 @@ test("bugs page: login only, read only, ordered, a week of fixed, escaped", asyn
     assert.ok(html.includes("fixed yesterday") && !html.includes("fixed long ago"), "only the last 7 days of fixed");
     assert.match(html, /3 open|4 open/); assert.match(html, /fix merged, not live yet/);
     assert.ok(!html.includes("javascript:"), "only issue links are linked");
+    // the /admin look: the index's tokens linked at their /admin URL, a same-origin stylesheet, no inline style, a way back
+    assert.ok(html.includes('href="/admin/team/team.css"') && html.includes('href="/admin/bugs/bugs.css"'), "the index's tokens and the page's own sheet");
+    assert.ok(!/<style|style=/.test(html), "no inline style");
+    assert.ok(html.includes('<a class="back" href="/admin/">← Admin</a>'), "a way back");
+    assert.ok(html.includes("<b>Screens and phone UI</b>") && html.includes("<b>Game designer</b>") && html.includes("<b>Art director</b>") && !html.includes("<b>ui</b>"), "desk names in plain words");
+    const css = await fetch(base + "/admin/bugs/bugs.css", { headers: H });
+    assert.equal(css.status, 200); assert.match(css.headers.get("content-type"), /text\/css/); assert.match(await css.text(), /var\(--card/);
+    assert.equal((await fetch(base + "/admin/bugs/bugs.css")).status, 403, "the sheet needs the login too");
+    writeFileSync(path.join(dir, "bugs.json"), JSON.stringify({ generated: "2026-11-17T11:50:00Z", rows: [row(7, { desk: "someone-new" })] }));
+    assert.ok((await (await fetch(base + "/admin/bugs", { headers: H })).text()).includes("<b>someone-new</b>"), "an unknown key shows as is");
   } finally { server.close(); }
 });
