@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { plan, barPlan, dockSheet, zCap, form, panFor, BAR, LAPTOP_MAX_W, ZOOM } from "../src/layout.mjs";
 
-const WINDOWS = [["390×844@3", 390, 844, 3, true], ["360×780@3", 360, 780, 3, true], ["844×390@3", 844, 390, 3, true], ["932×430@3", 932, 430, 3, true], ["1440×900@1", 1440, 900, 1, false], ["1280×720@1", 1280, 720, 1, false], ["1280×720@1.5", 1280, 720, 1.5, false]];
+const WINDOWS = [["390×844@3", 390, 844, 3, true], ["360×780@3", 360, 780, 3, true], ["393×659@3", 393, 659, 3, true], ["375×553@3", 375, 553, 3, true], ["375×667@3", 375, 667, 3, true], ["659×393@3", 659, 393, 3, true],["844×390@3", 844, 390, 3, true], ["932×430@3", 932, 430, 3, true], ["1440×900@1", 1440, 900, 1, false], ["1280×720@1", 1280, 720, 1, false], ["1280×720@1.5", 1280, 720, 1.5, false]];
 const STATES = [["companion", false], ["station", false], ["station", true]];
 const arr = (b) => (Array.isArray(b) ? b : [b.x, b.y, b.w, b.h]);
 const overlap = (a, b) => { a = arr(a); b = arr(b); return a[0] < b[0] + b[2] - 1e-9 && b[0] < a[0] + a[2] - 1e-9 && a[1] < b[1] + b[3] - 1e-9 && b[1] < a[1] + a[3] - 1e-9; };
@@ -72,6 +72,25 @@ test("the first-view numbers of the signed design (390 × 844, 1440 × 900)", ()
   assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 604]); assert.equal(Math.round(c.screen.w), 318); assert.equal(Math.round(c.margins.top), 44);
   const l = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "companion" }); assert.deepEqual([l.panel.w, l.panel.h, l.margins.side], [770, 624, 335]);
   const s = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "station" }); assert.deepEqual([s.panel.w, Math.round(s.panel.h), s.margins.side], [1040, 446, 200]);
+});
+
+test("a short phone upright (Safari with its bars): the Companion is drawn whole at the scale the height gives; its screen ends above the keys; the Dock row is inside the window and clear of the build line", () => {
+  for (const [W, H] of [[393, 659], [375, 553], [375, 667]]) for (const dev of ["companion", "station"]) {
+    const p = plan({ W, H, dpr: 3, coarse: true, dev }), tag = `${W}×${H} ${dev}`, keysTop = p.tray.box[1], full = p.screen.y + 600 * p.scale;
+    assert.ok(p.screen.y + p.screen.h <= keysTop + 1e-9, tag + ": the screen's bottom is above the keys' top");
+    if (dev === "companion") {
+      assert.ok(p.view == null && Math.abs(p.screen.h - 600 * p.scale) < 1e-6 && Math.abs(p.screen.w - 450 * p.scale) < 1e-6, tag + ": whole, at the scale it is drawn at");
+      assert.ok(full <= keysTop + 1e-9, tag + ": the whole frame ends above the keys (it is drawn at full scale)");
+      assert.ok(p.scale < (W - 48 - 24) / 450, tag + ": smaller than the width's fit, since the height is short");
+      assert.ok(Math.abs((p.screen.x - p.panel.x) - (p.panel.w - p.screen.w) / 2) < 1e-6, tag + ": centred in the panel");
+    }
+    assert.ok(p.dock.y + p.dock.h <= H && p.dock.y + p.dock.h <= p.stamp.box.y, tag + ": the Dock row is whole, inside the window and above the build line");
+    assert.ok(p.panel.y >= BAR + 16 - 1, tag + ": the panel keeps its gap under the bar");
+  }
+  // where the height is enough nothing changes: the width's fit, the screen at full height, as before
+  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }); assert.ok(Math.abs(p.scale - (W - 72) / 450) < 1e-9 && p.screen.x === 36, `${W}×${H}: the width's fit, the screen at the panel's left edge + 12`); }
+  // the smaller the window the smaller the Companion, never the keys
+  let last = 1; for (let H = 800; H >= 480; H -= 20) { const p = plan({ W: 375, H, dpr: 3, coarse: true, dev: "companion" }); assert.ok(p.scale <= last + 1e-9 && p.a === 44, `375×${H}: the scale only shrinks, the keys stay at their signed size`); last = p.scale; }
 });
 
 test("the Station on a phone: x0.6 in a window (view) where the whole screen would be smaller; the whole screen wherever x0.6 fits; no turn hint", () => {
