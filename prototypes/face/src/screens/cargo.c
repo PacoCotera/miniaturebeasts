@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 #define C "cargo"
+static void rest_foot(void);
 /* a picture shown, or its node kept with no size until its step */
 static int has(const char *id) { return id && *id && wire_has_asset(id); }
 /* a picture at its own size, 1:1; 0 when the host has not sent it */
@@ -87,6 +88,7 @@ static void build_bay(void) {
 /* ---- the berths (build spec 3): three of 256, or four of 188 with the portrait crate in the fourth ---- */
 static void build_berths(void) {
   int four = v_pint("berths", 3) == 4, n = four ? 4 : 3, y = v_si(C, "regions.berths.y", 252); const char *G = four ? "regions.berths.four" : "regions.berths.three";
+  int anyfull = 0, have = 0, row[4] = { 0, 0, 0, 0 };
   char rb[96], sb[96], eb[96], gb[96]; str_of("regions.berths.recess", rb, sizeof rb); str_of("regions.berths.shut", sb, sizeof sb); str_of("regions.berths.edge", eb, sizeof eb); str_of("regions.berths.gilt", gb, sizeof gb);
   for (int i = 0; i < n; i++) {
     int x = v_sk(C, v_fmt("%s.%s", G, "x"), i); char P[48]; snprintf(P, sizeof P, "regions.berths.list.%d", i);
@@ -103,9 +105,21 @@ static void build_berths(void) {
       if (st == 0 && beat && walk) { const char *bx = four ? "regions.inside.beat.box.four" : "regions.inside.beat.box.three";   /* a sealed crate that holds a pod beats */
         int cx = x + v_sk(C, v_fmt("%s.%s", G, "sealed.at"), 0) + v_sk(C, bx, 0), cy = y + v_sk(C, v_fmt("%s.%s", G, "sealed.at"), 1) + v_sk(C, bx, 1); beat_ring(v_fmt("berth.%d.beat", i), cx, cy, v_sk(C, bx, 2), v_sk(C, bx, 3)); v_region("berth", LAYER_ART); }
     }
+    { int ez[2], ex = x + v_sk(C, v_fmt("%s.%s", G, "edge.at"), 0), ey = y + v_sk(C, v_fmt("%s.%s", G, "edge.at"), 1);   /* the phone window's rest: every crate's berth with its frame (the edge); with no crate, the whole berth row */
+      if (v_asset_size(eb, ez) >= 0) { int b[4] = { ex, ey, ez[0], ez[1] }; if (full) { word_setRest(b); anyfull = 1; } if (i == 0) memcpy(row, b, sizeof row); else { int x2 = b[0] + b[2] > row[0] + row[2] ? b[0] + b[2] : row[0] + row[2], y2 = b[1] + b[3] > row[1] + row[3] ? b[1] + b[3] : row[1] + row[3]; if (b[0] < row[0]) row[0] = b[0]; if (b[1] < row[1]) row[1] = b[1]; row[2] = x2 - row[0]; row[3] = y2 - row[1]; } have = 1; } }
     nat(v_fmt("berth.%d.edge", i), eb, x + v_sk(C, v_fmt("%s.%s", G, "edge.at"), 0), y + v_sk(C, v_fmt("%s.%s", G, "edge.at"), 1));   /* the berth's outline and lip: a 1 px rounded outline at the rect - 1 and a lip along the bottom, built at build time (cargo-cuts.py) */
     if (four && i == 3 && *gb) nat("berth.3.gilt", gb, x + spec_int(C, "regions.berths.four.portrait.gilt.at.0", -5), y + spec_int(C, "regions.berths.four.portrait.gilt.at.1", -5));   /* the fourth berth carries the difference: a 2 px gold edge and its keyline */
   }
+  if (!anyfull && have) word_setRest(row);
+  if (anyfull || have) rest_foot();
+}
+
+/* the foot's ✓ action (the bottom line's first slot: the ✓ mark and its verb), when that word is drawn: every rest box joins it, so a phone window never pans it out of view */
+static void rest_foot(void) {
+  char s[V_STR]; if (spec_str("props", "frame.line.ok", s, sizeof s) <= 0) return;
+  int r[4]; v_srect("frame", "regions.action.rect", r);
+  int w = v_si("frame", "regions.action.capSize.0", 0) + v_si("frame", "regions.action.capGap", 0) + v_role_width(s, v_sstr("frame", "regions.action.role"));
+  int b[4] = { r[0], r[1], w, r[3] }; word_setRest(b);
 }
 
 /* ---- the hatch: shut with its ring, or open with its six wells and the find strip ---- */
@@ -339,7 +353,7 @@ static void build_crates_arrival(int t) {
   int at = v_si(C, ARR ".crates.at", 500), stagger = v_si(C, ARR ".crates.stagger", 333), ms = v_si(C, ARR ".crates.ms", 400), from = v_si(C, ARR ".crates.fromX", -256);
   int xs[8], shown[8], landed[8], sent = 0;
   for (int i = 0; i < n; i++) {
-    int r[4]; v_srect(C, v_fmt("regions.dockCrates.byCount.%d.%d", n, i), r); int e = t - (at + i * stagger); shown[i] = e >= 0; landed[i] = e >= ms; xs[i] = r[0];
+    int r[4]; v_srect(C, v_fmt("regions.dockCrates.byCount.%d.%d", n, i), r); word_setRest(r); rest_foot(); int e = t - (at + i * stagger);   /* the crates' final places are the phone window's rest (the whole show in view, not the slide) */ shown[i] = e >= 0; landed[i] = e >= ms; xs[i] = r[0];
     if (!shown[i]) xs[i] = r[0] + from; else if (!landed[i]) { int p = e * 1000 / ms; xs[i] = r[0] + from * (1000 - ease_out(p)) / 1000; }
     if (has(shadow)) sent++; if (has(v_pstr(v_fmt("regions.dockCrates.places.%d", i)))) sent++;
   }
@@ -400,6 +414,7 @@ static void build_arrival(int choice) {
   if (!choice) { int r[4]; v_srect(C, ARR ".apron.rect", r); v_region("apron", LAYER_ART); v_name("apron"); v_sprite("apron", v_pstr(ARR ".apron"), r[0], r[1], r[2], r[3]); }
   { int r[4]; v_srect(C, "regions.dockRibbon.rect", r); const char *words = v_pstr(ARR ".ribbon"); int rpad = v_si(C, "regions.dockRibbon.pad", 16), rib = v_si(C, ARR ".crates.at", 500);
     int w = layout_plate_width(C, "regions.dockRibbon", v_role_width(words, "heading")); r[0] = 512 - w / 2; r[2] = w;
+    if (t >= rib && *words) { word_setRest(r); rest_foot(); }   /* the phone window's rest: the banner, with the crates below */
     v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= rib ? words : "", rpad, v_scol(C, "colours.ribbon.fill"), v_scol(C, "colours.ribbon.edge"), NULL); }
   build_crates_arrival(t);
   if (!choice) build_mibis(t);
