@@ -560,7 +560,7 @@ test("the first walk: one teaching line per deed, signs and hints held unspent, 
   assert.equal(p.run("teachStep()"), "Go to the glint · ✓ takes the pod");
   p.run("S.exp.cargo.pods.push({ id: 1, sp: 0, g: 'bone' });");
   assert.ok(["A charged stone · ✓ takes its Energy", "← then End · your finds go in a crate"].includes(p.run("teachStep()")));
-  assert.equal(p.run("goalLine()"), "Bring it home · your flag");
+  assert.equal(p.run("goalLine()"), "Bring it home · back to the start");
   p.run("S.exp.cargo.pods = []; FX.notes = []; FX.msg = ''; fxSign('call'); fxSign('bubbleNotice'); fxHint('callmap', 'CALL here drops a pin', 1);");
   assert.equal(p.run("FX.msg"), "", "no sign shows");
   assert.equal(p.run("FX.hintNote"), null, "no hint is set");
@@ -582,7 +582,8 @@ test("the ✓ word on the walk is an act, Keep still or Face the thing; never Wa
   const labels = [];
   for (const d of ["up", "right", "down", "left"]) { p.run(`S.exp.patch.dir = '${d}'`); labels.push(p.run("patchAction().label")); }
   assert.ok(labels.every(l => l !== "Wait"), labels.join());
-  const face = labels.find(l => /^Face the /.test(l));
+  assert.ok(labels.every(l => !/flag/i.test(l)), "no walk word says flag: " + labels.join());
+  const face = labels.find(l => /^(Face the |Way back)/.test(l));
   if (face) { const before = here(); p.run("patchAction().run()"); assert.equal(here(), before, "the explorer does not move and no action is spent"); }
   p.run("(() => { const P = S.exp.patch; curLive().cr.push({ id: 9998, sp: 0, x: P.x + 3, y: P.y, st: 'alert', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .5, face: 1, ready: false }); })()");
   p.run("S.exp.patch.dir = 'up'");
