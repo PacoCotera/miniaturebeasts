@@ -5465,6 +5465,39 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
   const st = live ? RT.ca.s : Object.assign({}, RT.ca.s), tile = live ? { x: P.x, y: P.y } : { x: Math.round(px / ts), y: Math.round(py / ts) };
   return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), null);
 }
+// The peek's neighbours (call-zoom-wide-1): the eight cells round the place, each at the same tile size as the place (Tp), half of each showing in the view. A neighbour whose place
+// is built is its whole-place picture at its own veil; land not yet seen is the map's fog, land seen with no place to draw (water, cliff, or its place not here yet) the map's own cell.
+// Nothing is built on the page thread in one go: a neighbour's picture is made in steps (overviewSteps), PEEK_NB_MS of steps a frame, the nearest first, and shows when it is done.
+// A cell the places worker still owes is never asked of layout() (rule: PR 316); it stays under the map's fog until it is here.
+const PEEK_NB_MS = 6, PEEK_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
+function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
+  ensureMap(); const nb = v.nb || (v.nb = new Map()), cx = lay.cell % MW, cy = (lay.cell / MW) | 0, end = performance.now() + PEEK_NB_MS; let asked = 0;
+  for (const [dx, dy] of PEEK_DIRS) {
+    const X = cx + dx, Y = cy + dy; let w = W, h = H;
+    const rect = (nw, nh) => ({ x: dx < 0 ? ox - nw : dx > 0 ? ox + W : ox + ((W - nw) >> 1), y: dy < 0 ? oy - nh : dy > 0 ? oy + H : oy + ((H - nh) >> 1), w: nw, h: nh });
+    if (X < 0 || Y < 0 || X >= MW || Y >= MH) { const r = rect(w, h); R(r.x, r.y, r.w, r.h, C.void); continue; }
+    const c = Y * MW + X, key = String(c); let nl = null, e = nb.get(key);
+    if (S.revealed[c] && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {
+      nl = layoutCache.get(key); if (!nl && asked < 1) { asked++; nl = layout(key); }   // made at most one a frame, and only from a place that is here
+      if (nl && !(nl.baked && !nl.cave)) nl = null;
+    }
+    const nbk = nl && bakedView(nl);
+    if (nbk) { w = nbk.place.w * Tp; h = nbk.place.h * Tp; }
+    const r = rect(w, h); g.imageSmoothingEnabled = false;
+    if (nbk) {
+      const veil = placeVeil(nl), wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
+      if (!cvn) {
+        if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
+        for (let n = 0; n < 40 && !e.cv && performance.now() < end; n++) { const s = e.it.next(); if (s.done) { e.cv = wholeCanvas(nl, nbk, s.value, veil); break; } }   // [tune] one step at least a frame
+        cvn = e.cv;
+      }
+      if (cvn) { g.drawImage(cvn, r.x, r.y, r.w, r.h); continue; }
+    }
+    if (!S.revealed[c]) g.drawImage(fogCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // land not seen: the map's fog
+    else if (nl || (passable(c) && G.gen === 7)) g.drawImage(fogCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // a place still being made: under fog until it is here
+    else g.drawImage(mapCv, X * CELL, Y * CELL, CELL, CELL, r.x, r.y, r.w, r.h);   // water, cliff: as the map shows the cell
+  }
+}
 // The whole place at 24 px (RT.view: 'look' as seen so far, 'peek' while Call is held). A find draws no whole view: its spot and card stand over the walking view (drawPatch).
 function drawWhole(t) {
   const v = RT.view, P = S.exp && S.exp.patch;
@@ -5472,19 +5505,23 @@ function drawWhole(t) {
   const lay = layout(v.key), bk = bakedView(lay), live = curLive();
   if (!bk) { RT.view = null; return; }
   const T = bk.wholeSize();   // 16 for a place larger than 18 x 22 (the kit's own pixel), 24 for today's places
-  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * T, H = bk.place.h * T, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1);
-  const tp = (x, y) => ({ x: ox + (x - bk.ox) * T + T / 2, y: oy + (y - bk.oy) * T + T / 2 });
+  // The peek (call-zoom-wide-1) shows the place at half the whole picture's tile (12 or 8 px: a 2:1 step of the 24 / 16 px picture, no smoothing), so it and half of each
+  // neighbour fill the view: twice the place in each direction. Look keeps the whole place at T.
+  const wide = v.kind === 'peek', Tp = wide ? T >> 1 : T;
+  const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * Tp, H = bk.place.h * Tp, ox = (SCR_W - W) >> 1, oy = VIEW_Y + ((VIEW_H - H) >> 1);
+  const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  g.drawImage(cv, ox, oy);
+  if (wide) { clipView(); try { drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); } finally { g.restore(); } }
+  else g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
     if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still';
       if (it.k === 'strike') { const pc = propPiece('strike-mark-unread-' + (f === '2' ? 2 : 1)); if (pc.w > 1) blit(pc, Math.round(r.x - pc.w / 2), Math.round(r.y - pc.h / 2), 0, hash(it.x, it.y, 9) % 2 === 1); continue; }   // the same piece the walk draws (the desk's look-take-strike picture is a slot)
-      lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, T); }
-    if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, T); }   // the partner as its kind, under the you-mark
-    { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, T); }
+      lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, Tp); }
+    if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, Tp); }   // the partner as its kind, under the you-mark
+    { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, Tp); }
   };
   marks();
 }
