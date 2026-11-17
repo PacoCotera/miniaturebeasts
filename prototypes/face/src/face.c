@@ -101,7 +101,12 @@ void face_key(int code, int down) {
 }
 /* the focus ring of the last scene built: its target's box (x, y, w, h in face px) into out, and 1 when that scene drew a ring (0: none on screen, out is the one before).
    The play page pans its phone window to keep the ring's target in view. */
-int face_focus_box(int32_t *out) { int r[4]; word_lastRing(r); for (int i = 0; i < 4; i++) out[i] = r[i]; return word_ringDrawn(); }
+int face_focus_box(int32_t *out) {   /* the ring's box; with no ring, the scene's rest box (an empty room's message) */
+  int r[4], on = word_ringDrawn();
+  if (on) word_lastRing(r); else on = word_restBox(r);
+  for (int i = 0; i < 4; i++) out[i] = on ? r[i] : 0;
+  return on;
+}
 int face_key_count(void) { return g_kcount; }
 int face_last_key(void) { return g_klast; }
 const char *face_version(void) {
