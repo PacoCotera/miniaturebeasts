@@ -67,3 +67,11 @@ test("what the page posts to the places worker crosses by structured clone, and 
   assert.ok(withCache >= 1, "the test reaches the realm's caches (at least one seed had made its width classes before the realm was posted)");
   for (const op of ["init", "seed", "bake", "sites", "ground"]) assert.ok(posted.includes(op), `a '${op}' message was posted and cloned`);
 });
+
+// play-freeze-1 (live, 2026-11-17: Firefox "slowing down" on a played save): telling the worker which sites the page has made never makes the page's decor (its land is seconds of work on the page thread).
+test("the sites sent to the worker come from the decor the page already has, and asking makes none", async () => {
+  const { decorSites } = await import("../src/gen7/place.mjs");
+  const t0 = performance.now();
+  assert.deepEqual(decorSites(9999), [], "a seed the page never made decor for has no sites to send");
+  assert.ok(performance.now() - t0 < 200, "and the ask is instant (it made no decor)");
+});
