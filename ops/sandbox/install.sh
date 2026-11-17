@@ -13,7 +13,7 @@
 # paintings: Node 22, Python 3 with Pillow, a data directory outside the releases, a
 # root-only environment file for its mode, daily limit and key, and the /caddy-api/ proxy route. And the studio login
 # (unit mb-login, its own system user, run from the release; users file beside the environment file) with the
-# mb-studio-passwd tool, and the release's Caddyfile (the /studio routes), installed once and after that by deploy.sh.
+# mb-studio-passwd tool, and the release's Caddyfile (the /admin routes), installed once and after that by deploy.sh.
 set -euo pipefail
 REPO="PacoCotera/miniaturebeasts"
 RAW="https://raw.githubusercontent.com/$REPO/main/ops/sandbox"
@@ -23,7 +23,7 @@ ENV_DIR="$(dirname "$ENV_FILE")"
 WEB_ENV=/etc/caddy/mb.env                        # MB_ROOT and MB_STUDIO for Caddy's unit and for deploy.sh
 USERS_FILE="$ENV_DIR/studio-users"               # beside the environment file
 LIB=/usr/local/lib/mb-login                      # the login's start and the copy it runs while no release carries the login
-FILES="deploy.sh Caddyfile login/mb_login.py login/mb-studio-passwd login/mb-login-run"
+FILES="deploy.sh Caddyfile mb-caddy.service.in login/mb_login.py login/mb-studio-passwd login/mb-login-run"
 export DEBIAN_FRONTEND=noninteractive
 aptq() { apt-get -o Dpkg::Options::=--force-confold -y -qq "$@" >/dev/null; }
 # MB_STUDIO must be host:port (a name, an IPv4 address or a [bracketed] IPv6 one; a port 1-65535). Caddy itself accepts an empty one.
@@ -100,21 +100,8 @@ install -d /etc/systemd/system/caddy.service.d
 DROPIN=/etc/systemd/system/caddy.service.d/mb.conf
 printf '[Service]\nEnvironmentFile=%s\n' "$WEB_ENV" > "$DROPIN.new"
 if cmp -s "$DROPIN.new" "$DROPIN" 2>/dev/null; then rm "$DROPIN.new"; else mv "$DROPIN.new" "$DROPIN"; restart=1; fi
-cat > /etc/systemd/system/mb-caddy.service <<UNIT
-[Unit]
-Description=Miniature Beasts Caddy service (the Station's painting broker)
-After=network-online.target
-[Service]
-User=www-data
-Group=www-data
-EnvironmentFile=$ENV_FILE
-WorkingDirectory=$ROOT/current/sandbox/caddy
-ExecStart=/usr/bin/node $ROOT/current/sandbox/caddy/server.mjs
-Restart=on-failure
-RestartSec=5
-[Install]
-WantedBy=multi-user.target
-UNIT
+# the Caddy service's unit comes from the template deploy.sh also renders (a later release may move the service's path)
+sed -e "s#@ROOT@#$ROOT#g" -e "s#@ENV_FILE@#$ENV_FILE#g" "$SRC/mb-caddy.service.in" > /etc/systemd/system/mb-caddy.service
 # the login: localhost only, no privileges, a read-only system; it writes only its state directory
 cat > /etc/systemd/system/mb-login.service <<UNIT
 [Unit]
@@ -217,7 +204,7 @@ fi
 sleep 1
 curl -fsS http://localhost/build.json || { echo 'build.json not served; see: journalctl -u caddy -n 30'; exit 1; }
 curl -fsS http://localhost/caddy-api/v1/status >/dev/null || echo 'the Caddy service is not answering yet; see: journalctl -u mb-caddy -n 30'
-code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost/studio || true)
-echo "/studio answers $code (302: the login is in front of it; 502: the login is not running, see: journalctl -u mb-login -n 30)"
-echo "Sandbox installed. Serving on port 80 from $ROOT/current; the Caddy service on /caddy-api/; the studio login on /studio."
+code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost/admin/login || true)
+echo "/admin/login answers $code (200: the login is running; 502: it is not, see: journalctl -u mb-login -n 30)"
+echo "Sandbox installed. Serving on port 80 from $ROOT/current; the Caddy service on /caddy-api/; the login on /admin/login."
 echo "Set the studio password:  sudo mb-studio-passwd <user>"

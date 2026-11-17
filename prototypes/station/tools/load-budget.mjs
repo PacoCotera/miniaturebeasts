@@ -28,7 +28,7 @@ const LIMITS = { coldS: 20, coldMB: 12, coldReq: 350, warmS: 10, warmMB: 1, heap
 export const TARGET = { coldS: 10, coldMB: 12, coldReq: 250, warmS: 3, warmMB: 1, heapMB: 250 };
 const TIME_MARGIN = 1.5;   // the gate machine's CPU noise: the time limits get +50 %
 
-const SITE = opt("--site", null);   // --site <dir>: the bundled copy (an assembled site with the pages built over it, ops/sandbox/bundle-pages.sh), served as /sandbox/; else the source tree
+const SITE = opt("--site", null);   // --site <dir>: the bundled copy (an assembled site with the pages built over it, ops/sandbox/bundle-pages.sh), served as /play/; else the source tree (as /sandbox/, local only)
 const sandbox = await startSandbox({ site: SITE ? path.resolve(SITE) : null }), server = sandbox.server, URL_ = sandbox.url;
 
 // --- the probe ---
@@ -62,7 +62,7 @@ async function pass(page, cdp) {
   if (PROFILE && !profiled) {   // --profile: the main thread's self time by function until the first draw, the top 25 (a CPU profile of the cold pass)
     profiled = true; const { profile } = await cdp.send("Profiler.stop"), self = new Map(), dt = new Map(profile.nodes.map((n) => [n.id, 0]));
     profile.samples.forEach((id, i) => dt.set(id, dt.get(id) + (profile.timeDeltas[i] ?? 0)));
-    for (const n of profile.nodes) { const k = `${n.callFrame.functionName || "(anon)"} ${n.callFrame.url.replace(/^.*\/sandbox\//, "")}:${n.callFrame.lineNumber}`; self.set(k, (self.get(k) ?? 0) + dt.get(n.id) / 1000); }
+    for (const n of profile.nodes) { const k = `${n.callFrame.functionName || "(anon)"} ${n.callFrame.url.replace(/^.*\/(sandbox|play)\//, "")}:${n.callFrame.lineNumber}`; self.set(k, (self.get(k) ?? 0) + dt.get(n.id) / 1000); }
     console.log("cpu profile, self ms: " + [...self.entries()].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => `${Math.round(v)} ${k}`).join("\n  "));
   }
   const heap = await page.evaluate(() => (performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1e6) : null));
@@ -71,9 +71,9 @@ async function pass(page, cdp) {
   const endAbs = base + ((firstDraw ?? ready ?? Date.now() - t0) / 1000) - 0;   // the requests that began before the first draw (t0 of the page is at the navigation: close enough to the first request)
   const before = list.filter((r) => r.t0 - base <= (firstDraw ?? ready) / 1000);
   const sum = (a) => a.reduce((s, r) => s + (r.bytes || 0), 0);
-  const top = before.map((r) => ({ url: r.url.replace(/^.*\/sandbox\//, ""), kb: Math.round((r.bytes || 0) / 1024), ms: Math.round(((r.t1 || r.t0) - r.t0) * 1000) })).sort((a, b) => b.ms - a.ms).slice(0, 10);
+  const top = before.map((r) => ({ url: r.url.replace(/^.*\/(sandbox|play)\//, ""), kb: Math.round((r.bytes || 0) / 1024), ms: Math.round(((r.t1 || r.t0) - r.t0) * 1000) })).sort((a, b) => b.ms - a.ms).slice(0, 10);
   void endAbs;
-  const reqsOut = OUT ? before.map((r) => [r.url.replace(/^.*\/sandbox\//, ""), Math.round((r.bytes || 0) / 1024), Math.round((r.t0 - base) * 1000), Math.round(((r.t1 || r.t0) - base) * 1000)]) : undefined;
+  const reqsOut = OUT ? before.map((r) => [r.url.replace(/^.*\/(sandbox|play)\//, ""), Math.round((r.bytes || 0) / 1024), Math.round((r.t0 - base) * 1000), Math.round(((r.t1 || r.t0) - base) * 1000)]) : undefined;
   return { barMs: barAt, firstDrawMs: firstDraw, playableMs: ready, bootErr, requests: before.length, totalRequests: list.length, mb: +(sum(before) / 1e6).toFixed(2), mbTotal: +(sum(list) / 1e6).toFixed(2), n304: before.filter((r) => r.status === 304).length, nCache: before.filter((r) => r.fromCache).length, heapMB: heap, modules: before.filter((r) => /\.m?js(\?|$)/.test(r.url)).length, top, reqs: reqsOut };
 }
 async function once() {

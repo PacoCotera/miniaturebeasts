@@ -67,11 +67,12 @@ let wokeNews = false;   // the Station woke while it was out of view: the switch
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
-const stationUrl = "../station/?embed" + (TEST ? "&test" : ""), companionUrl = "../exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
+const SITE = import.meta.env?.PROD ? "/play/" : "../";   // the built game lives under /play/ (its folders: ui/, station/, exploration/); the source tree has them beside play/
+const stationUrl = SITE + "station/?embed" + (TEST ? "&test" : ""), companionUrl = SITE + "exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 // The trays are React + Radix (options/src/keytray.jsx); the geometry is keyplan.mjs (one measure a: laptops 44, phones the largest step that fits). A key press is a keydown on the device's frame, its release a keyup.
-const MARK = (n) => "../ui/assets/masters/shell/shell-key-" + n + "-24.png";
+const MARK = (n) => SITE + "ui/assets/masters/shell/shell-key-" + n + "-24.png";
 const defOf = (id, code, name, kind, cls) => ({ id, code, name, kind, cls, tip: KEYBOARD[id], mark: kind === "room" ? MARK(id === "research" ? "pods" : id) : undefined });
 const DEFS = (st) => [
   defOf("left", "ArrowLeft", "Left", "arm", (st ? "pad" : "cpad") + " arm left"), defOf("up", "ArrowUp", "Up", "arm", (st ? "pad" : "cpad") + " arm up"),
@@ -102,7 +103,7 @@ const shells = { station: shS, companion: shC };
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
 const asleepStrip = $("asleepStrip"), asleepBar = $("asleepBar"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), optionsBtn = $("optionsBtn");
 // the Dock key: a Radix Toggle (options/src/keytray.jsx), its look and words set by layoutDock from this state
-const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: "../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the expedition", short: "Dock", hint: true };
+const dockState = { box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: true, label: "Dock the Companion", title: "", mark: SITE + "ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the expedition", short: "Dock", hint: true };
 const dockUi = mountDockKey($("dockRoot"), { onPress: () => { dockPress(); giveKeysBack(); } }); dockUi.update(dockState);
 const dockKey = $("dockKey");
 // the device switch (Radix Tabs): Companion, then Station, in that order always
@@ -207,7 +208,7 @@ function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
   if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; if (dockNeed(full, false) > box[2]) mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis
-  Object.assign(dockState, { box: box ? snapBox(box) : null, docked: d, lit: crates, quiet: !d && !crates, pressed: pressed || c.pending, disabled: !c.canDock, label, title, mark: "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png", mode, full, short, hint });
+  Object.assign(dockState, { box: box ? snapBox(box) : null, docked: d, lit: crates, quiet: !d && !crates, pressed: pressed || c.pending, disabled: !c.canDock, label, title, mark: SITE + "ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png", mode, full, short, hint });
   dockUi.update(dockState);
 }
 // the width the Dock key's long words need (14 px Inter, its mark, the padding and the ⇧D hint)
@@ -428,7 +429,7 @@ function faceTick() {
   if (!f.keep && f.id !== lastFaceId) lastFaceId = f.id;
 }
 setInterval(faceTick, 200);
-const LAMP_SRC = { stone: "../ui/assets/masters/pods/frame-lamp-8-stone.png", mint: "../ui/assets/masters/pods/frame-lamp-8-mint.png", amber: null };
+const LAMP_SRC = { stone: SITE + "ui/assets/masters/pods/frame-lamp-8-stone.png", mint: SITE + "ui/assets/masters/pods/frame-lamp-8-mint.png", amber: null };
 { const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = c.height = 8; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const d = x.getImageData(0, 0, 8, 8);   // the 8 px amber lamp: the mint master's light in amber
     for (let i = 0; i < 256; i += 4) { const k = Math.max(d.data[i], d.data[i + 1], d.data[i + 2]) / 255; d.data[i] = Math.round(0xff * k); d.data[i + 1] = Math.round(0xa8 * k); d.data[i + 2] = Math.round(0x3f * k); } x.putImageData(d, 0, 0); LAMP_SRC.amber = c.toDataURL(); }; im.src = LAMP_SRC.mint; }
 function lamps(f, t) {
@@ -524,7 +525,7 @@ notes = mountOptions($("optionsRoot"), {
   onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
   onStartFresh: () => { saveHome(false); try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
   // a phone has no Tools button (barPlan: a laptop only), so with Developer tools on the panel carries the Companion's Observer: its own page, in this tab (one page plays at a time)
-  phone: () => phone, observerHref: "../exploration/",
+  phone: () => phone, observerHref: SITE + "exploration/",
 });
 notes.subscribe(syncNote);
 notes.tapStart();   // the last 10 seconds: the played device's canvas, encoded as it plays

@@ -95,7 +95,16 @@ login_changed=1; [ -L "$ROOT/current" ] && cmp -s "$old/$login" "$dir/$login" &&
 ln -sfn "$dir" "$ROOT/current.new" && mv -T "$ROOT/current.new" "$ROOT/current"
 # keep the current release and the four newest others; the pinned one is always the current one
 ls -1dt "$ROOT"/releases/sandbox-* | { grep -vxF "$dir" || true; } | tail -n +5 | xargs -r rm -rf
-"$SYSTEMCTL" restart mb-caddy 2>/dev/null || true   # the Caddy service runs from the release: it restarts on the new one (its queue is journaled in its data directory)
+# the Caddy service's unit is written from the release's template (the one install.sh uses) whenever it differs, so a release that moves the
+# service's folder (PR 313: sandbox/caddy to play/caddy) is followed; the restart below then runs it. Skipped when the release has no template.
+unit="${MB_UNIT:-/etc/systemd/system/mb-caddy.service}"; tmpl="$dir/ops/sandbox/mb-caddy.service.in"
+if [ -f "$tmpl" ] && [ -n "${MB_ENV_FILE:-}" ]; then
+  sed -e "s#@ROOT@#$ROOT#g" -e "s#@ENV_FILE@#$MB_ENV_FILE#g" "$tmpl" > "$work/mb-caddy.service"
+  if ! cmp -s "$work/mb-caddy.service" "$unit"; then
+    install -m 644 "$work/mb-caddy.service" "$unit.new" && mv -f "$unit.new" "$unit" && "$SYSTEMCTL" daemon-reload || say "could not write $unit"
+  fi
+fi
+"$SYSTEMCTL" restart mb-caddy 2>/dev/null || true  # the Caddy service runs from the release: it restarts on the new one (its queue is journaled in its data directory)
 # so does the studio login, when its code changed (its sessions are on disk; its lockouts are in memory and would start again)
 [ "$login_changed" = 0 ] || "$SYSTEMCTL" restart mb-login 2>/dev/null || true
 echo "deployed $tag${pin:+ (pinned)}$([ "$changed" = 1 ] && echo ", Caddyfile updated and reloaded")"

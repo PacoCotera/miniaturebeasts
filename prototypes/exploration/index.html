@@ -183,7 +183,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 
   <aside class="panel" aria-label="Playtest notes">
     <h1>Companion Field Test</h1>
-    <p class="lede">Exploration on a simulated Companion screen. It shares one save with the <a href="../station/">Station page</a> in this browser: End an expedition here, then dock there and open your crates to read the pods.</p>
+    <p class="lede">Exploration on a simulated Companion screen. It shares one save with the <a href="/play/station/">Station page</a> in this browser: End an expedition here, then dock there and open your crates to read the pods.</p>
     <details id="howTo">
       <summary>How to play</summary>
       <ul>
@@ -209,7 +209,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
         <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it (sometimes a pod too). <span id="helpData"></span></li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not. Lightning finds what stands still in the open: it marks your tile one action ahead, so step off the mark and it misses. A strike costs one plate and is followed by a long quiet; on its last plate the Probe can still break.</li>
-        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, play together, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
+        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, play together, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="/play/station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
       </ol>
@@ -743,7 +743,7 @@ const placeHave = key => key[0] === 'c' || !G || G.gen !== 7 || !PL.ready || !pl
 function wantPlaces() {   // each frame: if the reach, the region or the walked cells changed, the places not yet made are asked of the worker, the nearest first
   if (!PL.ready || !S || RT.readOnly || RT.making || !G || G.gen !== 7 || !placesWorker()) return;
   const R = hereRegion(); if (!R) return;
-  const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = Object.keys(S.visited || {}).map(Number);
+  const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.visited || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
   const sig = seed + '|' + R.id + '|' + v + '|' + (ex ? ex.pos + ':' + ex.reach.length : '-') + '|' + visited.length;
   if (sig === PLACES.sig) return; PLACES.sig = sig;
   if (PLACES.seed !== seed) { if (PLACES.seed != null) placesReset(); PLACES.seed = seed; }
@@ -866,12 +866,12 @@ function warmStep(key, dir) {   // one small step on a cell's pictures; true whi
 function warmTargets() {
   const ex = S && S.exp; if (!ex || RT.readOnly || !(S.phase === 'map' || S.phase === 'patch') || !PL.View) return [];
   const P = ex.patch, lay = P && !P.key.startsWith('c') ? layout(P.key) : null, out = [];
-  if (!P && S.phase === 'map') out.push({ key: String(ex.pos), dir: ex.lastDir || null });
+  if (!P && S.phase === 'map' && placeHave(String(ex.pos))) out.push({ key: String(ex.pos), dir: ex.lastDir || null });
   if (P && P.key.startsWith('c')) return out;
   const edge = d => !lay ? 0 : d === 'up' ? P.y : d === 'down' ? lay.h - 1 - P.y : d === 'left' ? P.x : lay.w - 1 - P.x, face = (P && P.dir) || ex.face || ex.lastDir;
   const way = d => !!lay && !!lay.openings && lay.openings.some(o => SIDE_DIR[o.side] === d && openingKind(lay, o).kind === 'open');   // a visible way through: its neighbour is warmed before the rest
   for (const d of Object.keys(DIRS).sort((a, b) => way(b) - way(a) || (b === face) - (a === face) || edge(a) - edge(b))) {
-    const c = stepCell(ex.pos, d); if (c < 0 || !inRange(c) || !canStep(ex.pos, d) || !placeHave(String(c))) continue; out.push({ key: String(c), dir: d }); }   // a cell the worker still owes is warmed when it arrives (PLACES.epoch)
+    const c = stepCell(ex.pos, d); if (c < 0 || !inRange(c) || !placeHave(String(c)) || !canStep(ex.pos, d)) continue; out.push({ key: String(c), dir: d }); }   // a cell the worker still owes is warmed when it arrives (PLACES.epoch)
   return out;
 }
 const warmIdle = f => typeof requestIdleCallback === 'function' ? requestIdleCallback(f, { timeout: 400 }) : setTimeout(() => f({ timeRemaining: () => 4, didTimeout: true }), 120);
@@ -4933,9 +4933,9 @@ function mapSigns() {
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
   for (const c of depotCells(S.seed)) { if (!S.visited[c]) continue; const f = depotOf(c); if (f && unveiled(String(c), f.x, f.y)) add(c, 'depot', 10, { lit: outpostLeft(String(c), f) }); }
-  for (let c = 0; c < MW * MH; c++) { if (!S.revealed[c] || !passable(c) || !(S.visited[c] || S.cells[c])) continue; const k = String(c), j = layout(k).feats.find(f => f.kind === 'j'); if (!j) continue; if (fs(k, j.id).up) add(c, 'beacon', 10, { lit: 1 }); else if (S.visited[c] && unveiled(k, j.x, j.y)) add(c, 'beacon', 9, { lit: 0 }); }   // a lit beacon, for good   // a gated cell shows its gate
+  for (let c = 0; c < MW * MH; c++) { if (!S.revealed[c] || !passable(c) || !(S.visited[c] || S.cells[c])) continue; const k = String(c); if (!placeHave(k)) continue; const j = layout(k).feats.find(f => f.kind === 'j'); if (!j) continue;   /* a place the worker has not made yet is not baked here for its beacon: it is signed when it comes (every frame draws this) */ if (fs(k, j.id).up) add(c, 'beacon', 10, { lit: 1 }); else if (S.visited[c] && unveiled(k, j.x, j.y)) add(c, 'beacon', 9, { lit: 0 }); }   // a lit beacon, for good   // a gated cell shows its gate
   // Energy the Probe has found stays marked until drawn, found place or not: solid bolt for storm charge, hollow for warm
-  if (S.exp) for (const c of S.exp.reach) { const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
+  if (S.exp) for (const c of S.exp.reach) { if (!placeHave(String(c))) continue; const f = foundEnergy(c); if (f.charge) add(c, 'k', 9); else if (f.warm) add(c, 'kw', 9);
     if (S.visited[c] && passable(c) && leftItems(c).some(i => i.k === 'pod' && !i.cave)) add(c, 'pod', 9); }   // a pod you saw and left behind
   for (const k in S.signs) { const c = +k, s = S.signs[k], age = S.turn - s.t; if (age > 1) continue; const rm = age ? 4 : 0;
     if (s.d && !S.deepRead) add(c, 'deep', 9, { rm }); if (s.g) add(c, 'burrow', 9, { rm }); if (hide(c)) continue; if (s.b) add(c, 'b', 5, { rm }); if (s.k) add(c, 'k', 4, { rm });
@@ -6980,7 +6980,7 @@ function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.
 const placeName = lay => lay.landmark && S.veil[lay.key] ? lay.landmark.name : G.soft && G.soft.wade[lay.cell] ? 'muddy water' : LAND_NAME[lay.land];
 function landWord(c) {
   if (G.land[c] === L.WATER) return G.ford[c] ? 'ford' : G.soft && G.soft.wade[c] ? 'muddy water' : nextToIsland(c) ? 'fast water' : 'wide water';
-  if (G.gen === 7 && S.veil[String(c)] && passable(c) && PL.ready) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
+  if (G.gen === 7 && S.veil[String(c)] && passable(c) && PL.ready && placeHave(String(c))) { const nm = layout(String(c)).landmark; if (nm) return nm.name; }
   return LAND_NAME[G.land[c]] + (c === G.gate ? ' under the cliff' : c === G.swim ? ' by the island' : ''); }
 function cellWords(c) { const w = signWords(c); return landWord(c) + (w.length ? ' · ' + w.join(', ') : ''); }
 function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.face || 'down'], x = p.x + dx, y = p.y + dy; return x < 0 || y < 0 || x >= MW || y >= MH ? -1 : y * MW + x; }
