@@ -40,7 +40,7 @@ export function createBugs({ dataDir, now = () => Date.now() }) {
       + `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; base-uri 'none'; form-action 'none'">`
       + `<link rel="stylesheet" href="/admin/team/team.css"><link rel="stylesheet" href="/admin/bugs/bugs.css"></head><body class="admin"><div id="app">`
       + `<a class="back" href="/admin/">← Admin</a>`
-      + `<div class="head"><h1>Bugs</h1><p class="lede">${open.length} open · ${generated ? `Updated ${esc(age(generated, t))} ago` : "Nothing filed yet"} · <a href="/admin/notes">Play notes</a></p></div>`
+      + `<div class="head"><h1>Bugs</h1><p class="lede">${open.length} open · ${generated ? `Updated ${esc(age(generated, t))} ago` : "Nothing filed yet"} · <a href="/admin/notes">Play notes</a> · <a href="https://github.com/PacoCotera/miniaturebeasts-internal/issues" target="_blank" rel="noopener">Bugs on GitHub</a></p></div>`
       + (sections || `<p class="empty">No open bugs.</p>`)
       + `<h2>Fixed and live, last 7 days (${fixed.length})</h2>` + (fixed.length ? `<ul class="cards">${fixed.map((r) => row(r, r.closed)).join("")}</ul>` : `<p class="empty">None.</p>`) + `</div></body></html>`;
   }
