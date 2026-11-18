@@ -65,6 +65,11 @@ test("#77 the reach square is not drawn on the map of a walk, and is on the star
   const pick = countAmber();
   p.run(`startExpedition('weather', ${cell}); S.exp.fog = null; scr.px().fill(-1); drawMap('walk', 0);`);
   const walk = countAmber();
+  p.run("S.ui.from = 'map'; S.ui.mapFull = false; S.exp.beaconView = false; scr.px().fill(-1); drawReachView(0);");
+  const reach = countAmber();
+  p.run("peek.on = true; scr.px().fill(-1); drawReachView(0); peek.on = false;");
+  const held = countAmber();
+  assert.ok(held > reach + 40, `the reach view draws its dotted square only while the Call is held: ${reach} plain, ${held} held`);
   assert.ok(pick > 40, "the start pick draws the dashed square: " + pick);
   assert.ok(walk < pick / 2, "the map of a walk does not: " + walk + " against " + pick);
 });

@@ -5376,7 +5376,7 @@ function drawReachView(t) {
     const L = q.big ? 9 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
     R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
-  for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
+  if (peek.on) for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
   // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
   const tw = ix - 22;
