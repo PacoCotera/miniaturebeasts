@@ -1,7 +1,15 @@
 // The first-load wait's pips (src/waitpips.mjs): 0 to 10 from the real steps, never past 10, never backwards by itself being fed more.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { waitPips, PIPS } from "../src/waitpips.mjs";
+import { waitPips, fracPips, PIPS } from "../src/waitpips.mjs";
+
+test("a one-thing wait (the reach's places): empty at the start, a pip a tenth, never full while the wait is on", () => {
+  assert.equal(fracPips(0, 40), 0);
+  assert.equal(fracPips(0, 0), 0);
+  assert.equal(fracPips(20, 40), 5);
+  assert.equal(fracPips(40, 40), PIPS - 1);
+  assert.equal(fracPips(99, 40), PIPS - 1);
+});
 
 test("nothing done: no pip; everything done: all ten", () => {
   assert.equal(waitPips(0, 18, 0, 20), 0);

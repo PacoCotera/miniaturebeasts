@@ -28,6 +28,7 @@ self.onmessage = e => {
   try {
     if (m.op === 'init') { CTX = m.ctx; return; }
     if (m.op === 'seed') { if (SEEDED !== seed) { setRealm7(seed, m.realm); presetHollowSites(seed, m.sites); for (const s of m.sites || []) SENT.add(seed + '|' + s.slot[0] + ',' + s.slot[1]); if (m.banks && m.banks.length) presetBanks(seed, m.banks); for (const r of m.banks || []) SENT_B.add(seed + '|' + r.ra + ',' + r.rb); SEEDED = seed; } return; }
+    if (m.op === 'warm') { decorOf(seed); return; }   // the seed's decor, built ahead (the first place of a seed waited on it)
     if (m.op === 'banks') {   // a background slice: the Rupar's earth banks of these regions [[ra, rb], ...], made now and sent (the lists not yet sent)
       for (const [ra, rb] of m.slots) banksOfRegion(seed, ra, rb);
       self.postMessage({ op: 'banks', seed, banks: newBanks(seed) }); return;
