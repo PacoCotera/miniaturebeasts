@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage, scaleNearest } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, END_ROWS, FILL_KIND, FLANK_PARTS, FOOT_KINDS, WAYUP_U_KIND, BANK_UNDUG_KIND, BANK_DUG_KIND, cornerKind, endKind, flankKind } from '../src/bake/southruns.mjs';
+import { CORNER_HANDS, END_ROWS, FILL_KIND, FLANK_PARTS, FOOT_KINDS, WAYUP_U_KIND, BANK_DUG_KIND, cornerKind, endKind, flankKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -88,7 +88,7 @@ export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-pla
 export const FLANK_FROM = 'art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png';   // the side wall's paid raw (the art director's pick)
 export const BACK_FROM = 'art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png';   // the back rim's paid raw (Retro Diffusion tileset, task 1f35f995)
 export const WAYUP_U_FROM = 'art-jobs/2026-11-14-cliff-wayup-2/work/raw/nbp-edit.png';   // the way up U's paid raw (call 1, Nano Banana Pro edit)
-export const BANK_FROM = { "wayup-undug": "art-jobs/2026-11-18-wayup-undug-2/work/raw/undug-1.png (PixelLab inpaint, seed 71803)", "wayup-dug": "art-jobs/2026-11-17-wayup-paint-2/work/raw/dug-1.png (PixelLab inpaint, seed 62201)" };   // the earth bank's paid raws, one per piece
+export const BANK_FROM = 'art-jobs/2026-11-17-wayup-paint-2/work/raw/dug-1.png (PixelLab inpaint, seed 62201)', BANK_STEPS = 'wayup-dug.steps.json';   // the earth bank's paid raws
 export const FOOT_FROM ='art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png';   // the foot overlay's paid raw (Nano Banana Pro edit)
 export const CORNER_FROM ='art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png';
 export const SOUTH_COLUMNS = 6,SOUTH_FROM = 'art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png';
@@ -365,13 +365,13 @@ export function deskArt() {
     files.set(file, b); decals[WAYUP_U_KIND] = { image: im, anchor: [93, 126] };
     desk[file] = { commit: 'local', from: `${WAYUP_U_FROM} (the keyed piece, cut on its own bounding box; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [213, 348], foot: [0, 0], sha256: sha(b) };
   }
-  // the earth bank (PixelLab inpaint of the bank's own 32 x 64 crop, the model's paint with the orange bracket pixels removed by hand): the undug and the dug piece, 96 x 192 at 3x, anchored on the site's west column and top row
-  for (const kind of [BANK_UNDUG_KIND, BANK_DUG_KIND]) {
+  // the earth bank (wayup-paint-5: PixelLab inpaint of the bank's own 32 x 64 crop, the model's paint with the orange bracket pixels removed by hand): the dug piece, 96 x 192 at 3x (the undug bank has no piece: it is the rock face as it was), anchored on the site's west column and top row
+  for (const kind of [BANK_DUG_KIND]) {
     const file = `${kind}.png`, b = readFileSync(path.join(SET_DIR, file)), art = decodePng(b);
     if (art.w !== 32 || art.h !== 64) throw new Error(`${file}: an earth bank piece is 32 x 64 art px, this is ${art.w} x ${art.h}`);
     const im = scaleNearest(art, 3);
     files.set(file, b); decals[kind] = { image: im, anchor: [0, 0] };
-    desk[file] = { commit: 'local', from: `${BANK_FROM[kind]} (the model's paint cut on the bank crop and snapped to the set palette; the chain is in ${kind}.steps.json; hand touch-ups of the orange bracket pixels, rule 18)`, size: [art.w, art.h], foot: [0, 0], sha256: sha(b) };
+    desk[file] = { commit: 'local', from: `${BANK_FROM} (the model's paint cut on the bank crop and snapped to the set palette; the chain is in ${BANK_STEPS}; hand touch-ups of the orange bracket pixels, rule 18)`, size: [art.w, art.h], foot: [0, 0], sha256: sha(b) };
   }
   return { files, props, canopy, decals, desk };
 }

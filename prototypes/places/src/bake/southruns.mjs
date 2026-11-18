@@ -20,7 +20,7 @@ export const FLANK_PARTS = ['head', 'band', 'tail'];   // a side wall: its north
 export const flankKind = (part, hand) => `cliff-flank-${part}-${hand}`;
 export const FOOT_KINDS = [1, 2, 3, 4, 5, 6].map((k) => `cliff-foot-${k}`).concat(['cliff-foot-w', 'cliff-foot-e']);   // the foot overlay: one per column phase, and one under each hand's end piece; each 72 x 192 (the cell and 12 px of its paint each side), drawn from the lip row under the face
 export const WAYUP_U_KIND = 'cliff-way-up-u';   // the way up U: one 213 x 348 piece (alpha), anchored 93 px left and 126 px above the lip row cell of its area, drawn after the columns of its line
-export const BANK_UNDUG_KIND = 'wayup-undug', BANK_DUG_KIND = 'wayup-dug';   // the earth bank (ir.banks, a Rupar's dig): two 96 x 192 pieces (alpha), anchored on the bank's lip row and west column; the bake draws every bank as the undug piece, the page swaps in the dug one when the bank is dug (index.html bankDecalsOn)
+export const BANK_DUG_KIND = 'wayup-dug';   // the earth bank a Rupar has dug (ir.banks): one 96 x 192 piece (alpha), anchored on the bank's lip row and west column; the bake draws an undug bank with no decal, the page adds this one when the bank is dug (index.html bankDecalsOn)
 export const FILL_KIND = 'cliff-fill';   // the signed raised fill (fill-cliff.png) as one whole 48 x 48 cell
 
 // Every cliff decal of a level in draw order: [{ kind, x, y }] in game px, keeping only those that reach the place's picture. The one entry both bakes use.
