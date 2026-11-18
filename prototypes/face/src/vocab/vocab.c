@@ -73,6 +73,13 @@ int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, in
   prim_node(v_id(id), FN_SPRITE, x, y, w, h, ((uint32_t)sx << 16) | (uint32_t)sy, hd, 0); return 1;   /* the window of the picture at source (sx, sy): its w x h, 1:1 */
 }
 
+int v_sprite_window_stretch(const char *id, const char *asset, int sx, int sy, int sw, int h, int dx, int dy, int dw) {
+  if (sw <= 0 || dw <= 0 || sx < 0 || sy < 0) return 0;
+  if (sw == dw) return v_sprite_window(id, asset, sx, sy, dx, dy, dw, h);
+  int hd = wire_asset_slot(asset); if (hd < 0) return 0;
+  prim_node(v_id(id), FN_SPRITE, dx, dy, dw, h, ((uint32_t)sx << 16) | (uint32_t)sy, hd, sw); return 1;   /* b = the source width: the node stretches it to dw across */
+}
+
 int v_nine(const char *id, const char *asset, int x, int y, int w, int h, const int insets[4]) {
   int hd = wire_asset_slot(asset); if (hd < 0) return 0;
   int ins[4] = { 0, 0, 0, 0 }, tile = 0; if (!wire_asset_nine(hd, ins, &tile) && insets) { for (int k = 0; k < 4; k++) ins[k] = insets[k]; }

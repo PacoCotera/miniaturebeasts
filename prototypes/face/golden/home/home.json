@@ -156,6 +156,26 @@
   "home-full-bud": {
    "hash": "64a751c5",
    "png": "home-full-bud.png"
+  },
+  "home-narrow-rest": {
+   "hash": "76ea25b9",
+   "png": "home-narrow-rest.png"
+  },
+  "home-narrow-need-lamp": {
+   "hash": "828c3326",
+   "png": "home-narrow-need-lamp.png"
+  },
+  "home-narrow-focus-vivarium": {
+   "hash": "112fecd2",
+   "png": "home-narrow-focus-vivarium.png"
+  },
+  "home-narrow-focus-pods": {
+   "hash": "118d0db1",
+   "png": "home-narrow-focus-pods.png"
+  },
+  "home-narrow-focus-library": {
+   "hash": "31e3fdd1",
+   "png": "home-narrow-focus-library.png"
   }
  }
 }

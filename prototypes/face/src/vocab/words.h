@@ -23,6 +23,8 @@ void word_lastRing(int out[4]);   /* the box of the ring drawn last: the carry's
 void word_ringSceneBegin(void);   /* a scene starts: no ring drawn in it yet */
 int word_ringDrawn(void);   /* 1 when the scene drew a ring (its box is word_lastRing) */
 void word_setRest(const int r[4]);   /* a scene with no ring: add r to the box a phone window keeps in view (union of every call this scene) */
+void word_setPanBox(const int r[4]);   /* the box a phone window keeps in view instead of the ring's own, for this scene (the ring is still drawn on its target) */
+int word_panBox(int out[4]);   /* the scene's pan box into out; 1 when one was set */
 int word_restBox(int out[4]);   /* the scene's rest box into out; 1 when one was set */
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
 void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);

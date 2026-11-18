@@ -298,7 +298,7 @@ function couldIncubate(st, settings) {
 function glassOf(m, spec, frame, housed, requests) {
   const { st, sv, settings } = m, R = spec.regions, light = m.light ?? "day", docked = !!m.docked, req = reqOf(requests);
   const ph = phOf(req, "its master (station-layouts.md, The Vivarium: the whole)");
-  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, room = shownRoom(st, m.ui?.meet ?? null), lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, room, time: m.time, now: m.now, restRules: m.restRules, rules: m.rules, ui: { meet }, arrived: m.arrived, motionSets: m.motionSets }, { resident: R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);
+  const meet = m.ui?.meet != null ? String(m.ui.meet) : null, room = shownRoom(st, m.ui?.meet ?? null), lw = livingOf({ st, sv, settings, docked, light, view: "home", noBed: true, room, time: m.time, now: m.now, restRules: m.restRules, rules: m.rules, ui: { meet }, arrived: m.arrived, motionSets: m.motionSets }, { resident: m.ui?.narrow && spec.narrow?.regions?.resident?.max != null ? { ...R.resident, max: spec.narrow.regions.resident.max } : R.resident, bed: { sleepers: { ink: { max: R.resident.asleep.ink } } } }, req, ph, frame.light);   // the upright phone's window (home.json narrow) holds fewer
   const bayOf = new Map(housed.map((mb) => [String(mb.id), mb.bay]));
   const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));
   const region = roomRegion(req, room, light), glass = { picture: region.base };

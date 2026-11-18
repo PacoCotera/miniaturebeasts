@@ -8,7 +8,7 @@
 #include "jnum.h"
 
 #define MAX_SPEC 24
-typedef struct { char name[32]; char *js; size_t len; jsmntok_t *tok; int n; unsigned serial; } spec_t;
+typedef struct { char name[32]; char *js; size_t len; jsmntok_t *tok; int n; unsigned serial; char var[16]; } spec_t;   /* var: the variant read first (spec_variant), kept across a reload */
 static spec_t g_s[MAX_SPEC];
 static int g_ns;
 static unsigned g_serial;   /* counts the loads: each load gets the next, so a reader that caches what it read from a spec knows when that spec changed */
@@ -51,7 +51,14 @@ int spec_load(const char *screen, const char *json, size_t len) {
 }
 static int skip(const spec_t *s, int i) { int k = s->tok[i].size; i++; for (; k > 0; k--) i = skip(s, i); return i; }   /* the token after the one at i and its children */
 /* the token a dotted path names, or -1 */
+static int at_plain(const spec_t *s, const char *path);
+/* a spec with a variant (spec_variant) reads the path under that top-level key first, then the plain path: a variant names only what it changes */
 static int at(const spec_t *s, const char *path) {
+  if (s->var[0]) { char vp[256]; if (snprintf(vp, sizeof vp, "%s.%s", s->var, path) < (int)sizeof vp) { int i = at_plain(s, vp); if (i >= 0) return i; } }
+  return at_plain(s, path);
+}
+void spec_variant(const char *screen, const char *name) { spec_t *s = find(screen); if (!s) return; if (!name) name = ""; snprintf(s->var, sizeof s->var, "%s", name); }
+static int at_plain(const spec_t *s, const char *path) {
   int i = 0; const char *p = path;
   while (*p) {
     const char *e = strchr(p, '.'); size_t l = e ? (size_t)(e - p) : strlen(p);

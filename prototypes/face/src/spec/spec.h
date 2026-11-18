@@ -13,6 +13,9 @@ unsigned spec_serial(const char *screen);
 /* Forget a spec (the loader refused it after parsing). */
 void spec_drop(const char *screen);
 int spec_count(void);
+/* Read `screen` through the variant `name` (a top-level key of the spec, e.g. "narrow") first: a path found under it wins, any other is read plain. NULL or "" reads plain. Only the reads of the whole path
+   see a variant: a subtree read by spec_raw or spec_member is the variant's if it has one, never a merge. */
+void spec_variant(const char *screen, const char *name);
 /* A number at a path, or dflt when it is absent or not a number. */
 int spec_int(const char *screen, const char *path, int dflt);
 /* true or false at a path, as 1 or 0; dflt when it is absent or not a boolean. */
