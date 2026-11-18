@@ -283,6 +283,10 @@ import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet
 import { paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
+import { readPixels } from "./src/pngdecode.mjs";
+// Every exact-colour read of a picture goes through the file's own bytes (src/pngdecode.mjs), never a canvas read-back a browser may colour-manage or farble (bug 68).
+const canvasPx = im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0); return { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; };   // the fallback only: no DecompressionStream
+const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
@@ -660,16 +664,16 @@ async function loadPropArt() {
   try {
     if (window.__propArt) { for (const [n, f] of Object.entries(window.__propArt)) stonePut(n, f, true, PROP_DY[n]); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    await Promise.all(PROP_FILES.map(n => loadImg(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, true, PROP_DY[n]); })));
+    await Promise.all(PROP_FILES.map(n => pixelsOf(vurl(new URL('./art/props/', location.href).href + n + '.png')).then(im => {
+      stonePut(n, im, true, PROP_DY[n]); })));
   } catch (e) { console.warn('the props did not load', e); artWhy('props', e); }
 }
 async function loadStoneArt() {
   try {
     if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    await Promise.all(STONE_FILES.map(n => loadImg(vurl(new URL('./art/stone/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      stonePut(n, { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }, false, 0); })));
+    await Promise.all(STONE_FILES.map(n => pixelsOf(vurl(new URL('./art/stone/', location.href).href + n + '.png')).then(im => {
+      stonePut(n, im, false, 0); })));
   } catch (e) { console.warn('the stones did not load', e); artWhy('stones', e); }
 }
 // The art desk's walk art (art/walk/, signed in mibi-art ce97d1c19; SOURCE.md there): place marks, map terrain tiles, cliff and ramp marks,
@@ -738,8 +742,8 @@ async function loadWalkArt() {
     if (window.__walkArt) { walkRead(window.__walkArt); if (window.__lookArt) walkRead(window.__lookArt); loadStoneArt(); loadPropArt(); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     fileOwe(WALK_FILES.length + LOOK_FILES.length);
-    const files = {}, load = (dir, names) => Promise.all(names.map(n => loadImg(vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); })));
+    const files = {}, load = (dir, names) => Promise.all(names.map(n => pixelsOf(vurl(new URL('./art/' + dir + '/', location.href).href + n + '.png')).then(im => {
+      files[n] = im; fileGot(); })));
     await Promise.all([load('walk', WALK_FILES), load('look', LOOK_FILES), loadStoneArt(), loadPropArt()]);
     walkRead(files);
   } catch (e) { console.warn('the walk art did not load', e); artWhy('walk', e); } finally { ART_DONE.walk = true; }
@@ -4730,11 +4734,10 @@ async function loadAtlas() {
     if (new Set(mans.map(m => m.sig)).size !== 1) throw new Error('the manifests name different palettes');
     const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
     if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
-    const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = [];
+    const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = []; let viaCanvas = false;
     const image = async file => { if (!images.has(file)) { fileOwe(1); images.set(file, (async () => {
-      const bm = await createImageBitmap(await (await fetchOk(vurl(file))).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' }); fileGot();
-      const cv = document.createElement('canvas'); cv.width = bm.width; cv.height = bm.height; const cg = cv.getContext('2d'); cg.drawImage(bm, 0, 0);
-      return { w: bm.width, h: bm.height, data: cg.getImageData(0, 0, bm.width, bm.height).data }; })()); } return images.get(file); };
+      const px = await readPixels(vurl(file), { canvas: im => { viaCanvas = true; return canvasPx(im); } }); fileGot();   // the PNG's own bytes, decoded here (bug 68); canvas read-back only without DecompressionStream
+      return { w: px.width, h: px.height, data: px.data }; })()); } return images.get(file); };
     const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
     for (const [name, { p, dir, sheets }] of byName) {
       const img = await image(dir + (p.file != null ? p.file : sheets[p.sheet])), x0 = p.file != null ? 0 : p.x, y0 = p.file != null ? 0 : p.y, w = p.file != null ? img.w : p.w, h = p.file != null ? img.h : p.h;
@@ -4745,7 +4748,7 @@ async function loadAtlas() {
       list.push(Object.assign({}, p, { w, h, px: d.px }));
     }
     atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
-    ART48.refusedWhy = refused.length ? refused.length + ' pieces refused · ' + refused[0] : '';
+    ART48.refusedWhy = refused.length ? refused.length + ' pieces refused · ' + refused[0] + (viaCanvas ? ' · read through the canvas (no DecompressionStream or an unreadable PNG)' : '') : '';
   } catch (e) { console.warn('the 48 px place art did not load', e); artWhy('atlas', e); } finally { ART_DONE.atlas = true; }
 }
 // The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 51) and
@@ -6446,8 +6449,8 @@ async function loadOpenArt(after) {
     if (typeof Image === 'undefined') return;
     await after;   // in a browser the opening art waits for the walk art: the first screen's other work is not disturbed
     const files = {}; fileOwe(OPEN_FILES.length);
-    await Promise.all(OPEN_FILES.map(n => loadImg(vurl(new URL('./art/open/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); })));
+    await Promise.all(OPEN_FILES.map(n => pixelsOf(vurl(new URL('./art/open/', location.href).href + n + '.png')).then(im => {
+      files[n] = im; fileGot(); })));
     openRead(files);
   } catch (e) { console.warn('the opening art did not load', e); artWhy('open', e); } finally { ART_DONE.open = true; }
 }
@@ -6467,8 +6470,8 @@ async function loadMomentArt() {
     if (window.__momentArt) { momentRead(window.__momentArt); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
     const files = {}; fileOwe(MOMENT_KINDS.length);
-    await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => loadImg(vurl(new URL('./art/moment/', location.href).href + n + '.png')).then(im => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data }; fileGot(); })));
+    await Promise.all(MOMENT_KINDS.map(s => `stand-${s}-280x300`).map(n => pixelsOf(vurl(new URL('./art/moment/', location.href).href + n + '.png')).then(im => {
+      files[n] = im; fileGot(); })));
     momentRead(files);
   } catch (e) { console.warn('the moment stands did not load; the tokens play', e); }
 }
@@ -6484,8 +6487,8 @@ async function loadCareArt() {
   try {
     if (typeof Image === 'undefined') return;
     const files = {}; fileOwe(Object.keys(CARE_FILES).length);
-    await Promise.all(Object.keys(CARE_FILES).map(n => new Promise((res, rej) => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const cg = c.getContext('2d'); cg.drawImage(im, 0, 0);
-      files[n] = { width: im.width, height: im.height, data: cg.getImageData(0, 0, im.width, im.height).data, canvas: c }; fileGot(); res(); }; im.onerror = () => rej(new Error('missing ' + n)); im.src = vurl(new URL('../../art/companion-48/care/', location.href).href + n + '.png'); })));
+    await Promise.all(Object.keys(CARE_FILES).map(n => pixelsOf(vurl(new URL('../../art/companion-48/care/', location.href).href + n + '.png')).then(async px => { const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);   // the canvas is made from the decoded bytes, never read back
+      files[n] = { width: px.width, height: px.height, data: px.data, canvas: c }; fileGot(); })));
     careRead(files);
   } catch (e) { console.warn('the hearts did not load; their plates stand', e); }
 }
