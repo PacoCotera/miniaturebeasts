@@ -897,7 +897,7 @@ function primeWindow(lay, bk, key, dir) {
   if (!lay.lines) applyLines(lay);   // the range lines (the veil and the blocks) as enterPatch will make them
   const lvl = warmLightLevel(lay); if (lvl == null) return false;
   const e = entryPoint(lay, key, dir, true); if (!e) return false;
-  const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); liftFlood(lay, rows, e.x, e.y);
+  const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); const pre = S.veilPre && S.veilPre[key]; if (pre) for (let y = 0; y < rows.length; y++) rows[y] = (rows[y] | (pre[y] || 0)) >>> 0; liftFlood(lay, rows, e.x, e.y);
   const vb = veilable(lay), un = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || ((rows[y] >>> x) & 1) === 1 || !vb[y * lay.w + x];
   const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
   bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
@@ -2453,6 +2453,7 @@ function enterPatch() {
 }
 function enterPatchBuilt() {
   const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
+  takeCallVeil(key, lay);   // what a Call from the place next door already lifted here (owner #49)
   ex.entered = ex.entered || []; const firstIn = !ex.entered.includes(ex.pos); if (firstIn) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
@@ -3143,6 +3144,29 @@ function offer(c) {
 // The Call is not cut at the place's edge (owner 11-17, #49): the finds of the places next door (the eight round this one) that lie inside the Call's circle, drawn in this place's tile
 // coordinates, are lit too, but only in a place the Probe's reach holds. A pod is read from the pod list (no place is built for it); a feature (stone, crack) only where that place's
 // layout is already made, so the Call never generates a place. cue entries carry nk (the neighbour's key) and ax, ay (the find's own tile there).
+// The Call also lifts the veil of the part of its circle inside a place next door held by the Probe's reach (owner #49: "explore the adjacent place"). The lifted rows are kept apart
+// (S.veilPre[key], one bit per tile as S.veil) because S.veil's presence means "been in this place" to the map; takeCallVeil merges them when the player enters (walkLift and checkWalked
+// then run as usual, so "explored" counts them). Needs no layout: a place not made yet is taken to be this place's size, as nextDoorFinds does.
+function nextDoorVeil(P, lay, reach) {
+  const ex = S.exp; if (!ex || !ex.reach || lay.cave) return;
+  const c = cxy(lay.cell); S.veilPre = S.veilPre || {};
+  for (const [dx, dy] of PEEK_DIRS) {
+    const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+    const nc = Y * MW + X; if (!ex.reach.includes(nc)) continue;
+    const nk = String(nc), nl = layoutCache.get(nk); if (nl && nl.cave) continue;
+    const w = nl ? nl.w : lay.w, h = nl ? nl.h : lay.h, ox = dx * (dx < 0 ? w : lay.w), oy = dy * (dy < 0 ? h : lay.h);
+    const v = S.veil[nk] || S.veilPre[nk] || new Array(h).fill(0);   // a place walked in before keeps its own veil
+    let any = false;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inCall(P, x + ox, y + oy, reach)) { v[y] = (v[y] | (1 << x)) >>> 0; any = true; }
+    if (any && !S.veil[nk]) S.veilPre[nk] = v;   // nothing is kept for a place the circle does not touch
+  }
+}
+function takeCallVeil(key, lay) {
+  const pre = S.veilPre && S.veilPre[key]; if (!pre) return;
+  const v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0));
+  for (let y = 0; y < lay.h; y++) v[y] = (v[y] | (pre[y] || 0)) >>> 0;
+  delete S.veilPre[key];
+}
 function nextDoorFinds(P, lay, reach, cue) {
   const ex = S.exp; if (!ex || !ex.reach || lay.cave) return 0;
   const c = cxy(lay.cell); let n = 0;
@@ -3171,6 +3195,7 @@ function callPlace() {
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
+  if (!lay.cave) nextDoorVeil(P, lay, reach);   // and lifts the veil of the strip it covers there (the finds below read it)
   if (!lay.cave) found += nextDoorFinds(P, lay, reach, cue);   // the wave goes on past the place's edge, cut only by the Probe's reach (owner #49)
   let lifted = null;
   if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkWalked(); }

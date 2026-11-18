@@ -27,6 +27,25 @@ test("a Call 2 tiles from the edge shows the find next door inside the Probe's r
   assert.equal(p.run("findThere(S.exp.patch.key, layout(S.exp.patch.key), FX.cue.finds[0])"), true);
 });
 
+test("the Call lifts the neighbour's veil inside its circle, not outside it, and it holds on arrival", () => {
+  const p = setup();
+  p.run("callPlace();");
+  const nk = p.run("String(S.exp.patch.key * 1 + 1)"), y = p.run("S.exp.patch.y");
+  assert.equal(p.run(`!!(S.veilPre[${nk}][${y}] & 1)`), true, "tile 0 next door (1 tile from the Call) is lifted");
+  assert.equal(p.run(`!!((S.veilPre[${nk}][${y}] >>> (CALL_R + 4)) & 1)`), false, "a tile past the circle stays veiled");
+  assert.equal(p.run(`!!S.veil[${nk}]`), false, "the map still reads the place as never entered");
+  p.run(`takeCallVeil(${nk}, layout(${nk}));`);
+  assert.equal(p.run(`!!(S.veil[${nk}][${y}] & 1)`), true, "on entering, the lifted strip is part of its veil");
+  assert.equal(p.run(`S.veilPre[${nk}]`), undefined);
+});
+
+test("a neighbour outside the Probe's reach keeps its veil", () => {
+  const p = setup(false);
+  p.run("callPlace();");
+  const nk = p.run("String(S.exp.patch.key * 1 + 1)");
+  assert.equal(p.run(`!!(S.veilPre && S.veilPre[${nk}])`), false);
+});
+
 test("a place outside the Probe's reach is not lit", () => {
   const p = setup(false);
   p.run("callPlace();");
