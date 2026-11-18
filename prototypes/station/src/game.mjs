@@ -95,6 +95,8 @@ export function load() {
   adopt(o);
   if (S.resetNotice(G.st, G.sv)) { UI.panel = { screen: "home", id: "reset", focus: "card.begin" }; G.st.resetSeen = true; save(); }   // the one-time notice over Home, shown once on this device
 }
+// Whether a save can be written at all, asked once at boot: a blocked or full store sets G.saveFailed (the notice line) before the first dock; a working one leaves it as it is.
+export function probeStorage() { try { const k = saveKey() + ":probe"; localStorage.setItem(k, "1"); localStorage.removeItem(k); } catch { G.saveFailed = true; changed(); } }
 // Re-read before writing and keep the Companion's part as stored; only `st` is ours.
 export function save() {
   if (G.resetting) return;

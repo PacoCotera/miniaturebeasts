@@ -342,8 +342,14 @@ function reconcile() {
   try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name, pub: comp.pub || null } : null }, location.origin); } catch { inflight = 0; }
 }
 const giveKeysBack = () => { if (document.activeElement === dockKey) dockKey.blur(); };
+// The frames' notice line (play/src/footer.mjs mountNotice posts it up): a frame's own line is clipped or hidden on the play page, so the page says it, one line at the window's foot, whichever frame holds one.
+const frameNotes = new Map(), frameNoticeEl = $("frameNotice");
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin) return; const m = e.data || {};
+  if (m.t === "mb-notice" && (e.source === frames.station.contentWindow || e.source === frames.companion.contentWindow)) {
+    frameNotes.set(e.source, String(m.text || "").slice(0, 120)); const t = [...frameNotes.values()].find(Boolean) || "";
+    frameNoticeEl.textContent = t; frameNoticeEl.hidden = !t; return;
+  }
   if (e.source === frames.companion.contentWindow && m.t === "mb-companion") {   // the Companion's word: who it is, its world, its crates, the seat it answers
     comp = m; const c = cradles().companion;
     if (c.state === "seated" && m.seat === c.seats) { if (!hold || hold.seat !== m.seat) hold = { seat: m.seat, crates: activeHere() ? heard.crates | 0 : m.crates | 0, left: m.crates | 0 }; else hold.left = m.crates | 0; }
