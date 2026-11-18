@@ -2103,6 +2103,13 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-18",
+   "id": "6362e0737e",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "fa49588a0f9bc71e1e1df2101c905bc5e3d763db2f5fed33a687f07f1c64cceb"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "a02bb61525",
    "path": "art/places/sets/ninja-test/stump.png",
