@@ -4,7 +4,8 @@
 // cell is picked by the page, and no world edge is laid over the ground (the terrain at the cell's border already is the neighbour's).
 import { T, T_BLOCK, L, hash } from './world.mjs';
 
-export const INNER = { w: 24, h: 28 };
+export const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
+export const INNER ={ w: 24, h: 28 };
 export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (index.html keeps it in step) and its rows: the lip and the three face rows
 const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
@@ -52,7 +53,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const rim = []; for (let i = 0; i < NP; i++) if (tiles[i] === T.WADE || tiles[i] === T.SCREE) rim.push(i);
   // the set pieces drawn by the page (the slab of a sleepers' bed): their tile blocks like a rock; shelter tiles (under an overhang) keep strikes off whoever stands on them
   const shelter = new Uint8Array(NP), pieces = [];
-  for (const p of ir.pieces || []) { const x = p.x - 1, y = p.y - 1, pw = p.w || 1; if (x >= 0 && y >= 0 && x < w && y < h) { for (let i = 0; i < pw && x + i < w; i++) tiles[I(x + i, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y, w: pw }); } }
+  // a piece with no signed picture is not placed and does not block (bugs #14, #35, #40, #78: the heart slab blocked the pawn while drawing nothing); it is placed once its art is in DRAWN_PIECES
+  for (const p of ir.pieces || []) { if (!DRAWN_PIECES.has(p.piece)) continue; const x = p.x - 1, y = p.y - 1, pw = p.w || 1; if (x >= 0 && y >= 0 && x < w && y < h) { for (let i = 0; i < pw && x + i < w; i++) tiles[I(x + i, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y, w: pw }); } }
   for (const [sx, sy] of ir.shelter || []) { const x = sx - 1, y = sy - 1; if (x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]]) shelter[I(x, y)] = 1; }
   // the tiles no crown hangs over: a crown's box at 48 px, a tile's pawn as its centre and a margin round it
   const clear = new Uint8Array(NP).fill(1), crowns = [];
