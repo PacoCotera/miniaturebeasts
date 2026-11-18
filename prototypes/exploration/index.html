@@ -5677,7 +5677,6 @@ function drawPatchBody(t) {
   const overlay = (pb, x, y, tx, ty) => { const rm = lightAt ? lightAt(tx, ty) : tileLight(tx, ty), vl = !lightAt && rm !== 3 && !unveiled(P.key, tx, ty);
     g.drawImage(pb.canvas(rm, false, false, vl), Math.round(x), Math.round(y)); };
   clipView();
-  if ((po.x || po.y) && bakedView(lay)) { const bkp = bakedView(lay); drawPeekNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, -camX + bkp.ox * 48, VIEW_Y - camY + bkp.oy * 48, lay.w * 48, lay.h * 48, 48); }   // the edge peek: the neighbours under the place, as the call-hold draws them, veiled as they stand
   // tile map
   const r = visTiles(v, cam);
   const sgGrid = new Map(), inSG = (x, y) => { const k = y * lay.w + x; let v = sgGrid.get(k); if (v === undefined) { v = inS(x, y); sgGrid.set(k, v); } return v; };
@@ -5705,6 +5704,10 @@ function drawPatchBody(t) {
     const cv = rimCanvas(lay, fr, tileLight, uvAt), x0 = Math.max(0, r.tx0), y0 = Math.max(0, r.ty0), x1 = Math.min(lay.w - 1, r.tx1), y1 = Math.min(lay.h - 1, r.ty1);
     if (x1 >= x0 && y1 >= y0) g.drawImage(cv, x0 * 48, y0 * 48, (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48, W(x0 * 48), H(y0 * 48), (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48); }
   if (bk) bk.drawVeil(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, overcast);
+  // the edge peek (bug #58): the neighbours, as the call-hold draws them (veiled as they stand), on the view outside the place's picture. The ground is put with putImageData, which writes
+  // transparent over anything under it, so the neighbours go after it and are clipped to outside the picture; the place, its props and the pawn slide with the same camera.
+  if (bk && (po.x || po.y)) { g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.rect(bOrg.x, bOrg.y, bk.place.w * 48, bk.place.h * 48); g.clip('evenodd');
+    try { drawPeekNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, bOrg.x, bOrg.y, lay.w * 48, lay.h * 48, 48); } finally { g.restore(); } }
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * lay.w + tx, L = lvAt(tx, ty);

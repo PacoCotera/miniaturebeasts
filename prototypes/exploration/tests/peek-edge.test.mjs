@@ -55,7 +55,7 @@ async function run(t, dir, motion) {
   return { browser, server, url };
 }
 
-for (const dir of ["up", "right"]) {
+for (const dir of ["up", "right", "down", "left"]) {
   test(`held ${dir} against a refused step: the view slides out to the reach, holds, eases back; S is untouched (motion on)`, { skip }, async (t) => {
     const r = await run(t); if (!r) return; const { browser, server, url } = r;
     try {
@@ -120,3 +120,31 @@ test("reduced motion: the view cuts out and cuts back, no ease", { skip }, async
     assert.equal((await pan(page)).f, 0, "back at once");
   } finally { await browser.close(); server.close(); }
 });
+
+// The DRAW check (bug #58, -2): the picture itself slides. The pawn's screen spot (RT.plScr, from the camera that draws the place) moves by the reach, away from the held key
+// (up: y grows, down: y shrinks, left: x grows, right: x shrinks); the view is never left empty; at release it is back where it was.
+const REACH = { up: (c, l) => [0, c.y + l.h * 24], down: (c, l) => [0, -Math.max(0, l.h * 72 - 532 - c.y)], left: (c, l) => [c.x + l.w * 24, 0], right: (c, l) => [-Math.max(0, l.w * 72 - 450 - c.x), 0] };
+const plAt = (page) => page.evaluate(() => { const m = window.__mb, p = m.RT.plScr, c = m.camNow(), l = m.layout(m.RT.key); return { x: p.x, y: p.y, c, l: { w: l.w, h: l.h } }; });
+const blankPx = (page) => page.evaluate(() => new Promise((res) => { const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = 450; c.height = 600; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const d = x.getImageData(0, 32, 450, 532).data; let n = 0; for (let k = 3; k < d.length; k += 4) if (d[k] < 255) n++; res(n); }; im.src = window.__mb.capture(); }));
+for (const dir of ["up", "down", "left", "right"]) {
+  test(`draw: held ${dir}, the pawn's spot on the canvas moves by the reach, away from the key, and returns at release`, { skip }, async (t) => {
+    const r = await run(t); if (!r) return; const { browser, server, url } = r;
+    try {
+      const { page, errors } = await enter(browser, url, true);
+      await toBlock(page, dir);
+      await page.evaluate(() => { const m = window.__mb; m.TEST.clock = m.PAN.at; }); await page.waitForTimeout(150);
+      const p0 = await plAt(page);
+      await page.evaluate(() => { window.__mb.TEST.clock += 300; }); await page.waitForTimeout(150);
+      await page.evaluate(() => { window.__mb.TEST.clock += 1000; }); await page.waitForTimeout(150);
+      const p1 = await plAt(page), [ex, ey] = REACH[dir](p0.c, p0.l);
+      if (process.env.STILLS) { mkdirSync(process.env.STILLS, { recursive: true }); await page.screenshot({ path: path.join(process.env.STILLS, `${dir}-draw-full-reach.png`) }); }
+      assert.equal(Math.round(p1.x - p0.x), Math.round(ex), `${dir}: x moved by the reach`); assert.equal(Math.round(p1.y - p0.y), Math.round(ey), `${dir}: y moved by the reach`);
+      assert.ok(Math.abs(ex) + Math.abs(ey) > 40, "the reach is a real distance");
+      assert.equal(await blankPx(page), 0, "the view is full: no empty band where the place was");
+      await page.evaluate((k) => { const m = window.__mb; m.HELD.length = 0; m.release(k); }, dir);
+      await page.evaluate(() => { window.__mb.TEST.clock += 400; }); await page.waitForTimeout(150);
+      const p2 = await plAt(page); assert.ok(Math.abs(p2.x - p0.x) <= 3, "back at x (within the bump's shake): " + p2.x + " vs " + p0.x); assert.ok(Math.abs(p2.y - p0.y) <= 3, "back at y: " + p2.y + " vs " + p0.y);   // the refused step's bump shake still settles at the first reading
+      assert.deepEqual(errors, []);
+    } finally { await browser.close(); server.close(); }
+  });
+}
