@@ -5648,7 +5648,7 @@ function drawPatchBody(t) {
   if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
-  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
+  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0), cam = { x: c0.x + sx + po.x, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
@@ -5677,6 +5677,7 @@ function drawPatchBody(t) {
   const overlay = (pb, x, y, tx, ty) => { const rm = lightAt ? lightAt(tx, ty) : tileLight(tx, ty), vl = !lightAt && rm !== 3 && !unveiled(P.key, tx, ty);
     g.drawImage(pb.canvas(rm, false, false, vl), Math.round(x), Math.round(y)); };
   clipView();
+  if ((po.x || po.y) && bakedView(lay)) { const bkp = bakedView(lay); drawPeekNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, -camX + bkp.ox * 48, VIEW_Y - camY + bkp.oy * 48, lay.w * 48, lay.h * 48, 48); }   // the edge peek: the neighbours under the place, as the call-hold draws them, veiled as they stand
   // tile map
   const r = visTiles(v, cam);
   const sgGrid = new Map(), inSG = (x, y) => { const k = y * lay.w + x; let v = sgGrid.get(k); if (v === undefined) { v = inS(x, y); sgGrid.set(k, v); } return v; };
@@ -7296,7 +7297,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmTick(); resumeHeld(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { wantPlaces(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
@@ -7490,7 +7491,42 @@ function peekStart() {
   peek.on = true; RT.view = { kind: 'peek', key: S.exp.patch.key, at: performance.now() };
 }
 function peekEnd() { clearTimeout(peek.timer); peek.timer = null; if (peek.on && RT.view && RT.view.kind === 'peek') RT.view = null; peek.on = false; }
+// The edge peek (bug #58): an arrow held PANPEEK_WAIT ms against a step that is refused slides the view that way, as far as the call-hold view reaches (the place and half of the
+// neighbour), holds while the key is held, and eases back on release. Free: nothing in S changes, no turn passes, the pawn stays on its tile, the veil is never lifted
+// (the neighbours draw as the call-hold draws them, veiled as they stand). Another key ends it, then acts as usual. Reduced motion: a cut out and a cut back.
+const PANPEEK_WAIT = 300, PANPEEK_MS = 250;   // [tune]
+const PAN = { dir: null, key: null, at: 0, live: false, rel: null };   // at: the press (waiting) or the start of the slide out (live); rel: { at, from } once let go
+const panEase = p => 1 - (1 - p) * (1 - p);
+function panArm(dir) { PAN.dir = dir; PAN.key = S.exp.patch.key; PAN.at = NOW; PAN.live = false; PAN.rel = null; }
+function panFrac() {   // 0..1 of the way out
+  if (!PAN.dir || !PAN.live) return 0;
+  if (PAN.rel) { const p = clamp((NOW - PAN.rel.at) / PANPEEK_MS, 0, 1); return motion() ? PAN.rel.from * (1 - panEase(p)) : 0; }
+  return motion() ? panEase(clamp((NOW - PAN.at) / PANPEEK_MS, 0, 1)) : 1;
+}
+function panEnd() {   // let go, or another key: ease back (a wait that never began just ends)
+  if (!PAN.dir) return;
+  if (!PAN.live || PAN.rel) { if (!PAN.live) PAN.dir = null; return; }
+  PAN.rel = { at: NOW, from: panFrac() };
+}
+function panTick() {   // each frame: the wait is over and the key still down: the slide out begins; a finished ease back clears it
+  if (!PAN.dir) return;
+  const P = S && S.phase === 'patch' && S.exp && S.exp.patch;
+  if (!P || P.key !== PAN.key || RT.view || RT.readOnly || RT.notice) { PAN.dir = null; PAN.live = false; PAN.rel = null; return; }
+  if (!PAN.live) { if (!HELD.includes(PAN.dir)) { PAN.dir = null; return; } if (NOW - PAN.at >= PANPEEK_WAIT && lookable()) { PAN.live = true; PAN.at = NOW; } return; }
+  if (PAN.rel && NOW - PAN.rel.at >= PANPEEK_MS) { PAN.dir = null; PAN.live = false; PAN.rel = null; }
+  else if (!PAN.rel && !HELD.includes(PAN.dir)) panEnd();   // the key came up unseen (a blur, a lost pointer)
+}
+// How far the view may slide, in page pixels from the camera c0: its edge ends half a place beyond the place's edge, as the call-hold view's does.
+function panOffset(lay, c0) {
+  const f = panFrac(); if (!f) return { x: 0, y: 0 };
+  const d = PAN.dir;
+  if (d === 'up') return { x: 0, y: -f * Math.max(0, c0.y + lay.h * 24) };
+  if (d === 'down') return { x: 0, y: f * Math.max(0, lay.h * 72 - VIEW_H - c0.y) };
+  if (d === 'left') return { x: -f * Math.max(0, c0.x + lay.w * 24), y: 0 };
+  return { x: f * Math.max(0, lay.w * 72 - SCR_W - c0.x), y: 0 };
+}
 function press(k) {
+  if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual
   if (k === 'call') {
     NOW = performance.now();
     if (peek.held) return;   // a key repeat or a second finger: the hold is already counting
@@ -7498,7 +7534,11 @@ function press(k) {
     act(k); return;
   }
   if (k in DIRS) {
-    stopRepeat(); repeat.dir = k; act(k, 'creep');
+    stopRepeat(); repeat.dir = k;
+    const P0 = S && S.phase === 'patch' && S.exp && S.exp.patch, at0 = P0 ? P0.key + ':' + P0.x + ':' + P0.y : null, bump0 = FX.bumpAt;
+    act(k, 'creep');
+    const P1 = S && S.phase === 'patch' && S.exp && S.exp.patch;
+    if (P1 && at0 === P1.key + ':' + P1.x + ':' + P1.y && FX.bumpAt !== bump0 && FX.bumpAt === NOW && lookable() && !RT.view && !RT.readOnly && !(S.ui && S.ui.swap)) { stopRepeat(); panArm(k); return; }   // refused: a held arrow is a peek that way, not a repeated refusal
     const loop = () => { if (repeat.dir !== k) return; act(k, 'walk'); repeat.timer = setTimeout(loop, REPEAT_EVERY); };
     repeat.timer = setTimeout(loop, REPEAT_DELAY);
   } else act(k);
@@ -7506,6 +7546,7 @@ function press(k) {
 function release(k) {
   if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) act('call'); return; }   // a short press: Call, fired on release
   if (repeat.dir === k) stopRepeat();
+  if (PAN.dir === k) panEnd();
 }
 
 const deviceEl = document.getElementById('device');
@@ -7825,7 +7866,7 @@ requestAnimationFrame(frame);
   if (!OFF_PAGE) boot(null);
   else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { PAN, panFrac, panTick, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
