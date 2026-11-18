@@ -15,6 +15,13 @@ test("the stamp's line", () => {
   assert.equal(stampText(null), "build local");
 });
 
+test("the stamp leads with the release name (owner bug #38), and drops only the time when brief", () => {
+  const j = { commit: "c1e7585bab", short: "c1e7585", built: "2026-11-18T16:49:00Z", version: "0.33.0-preview.13", name: "Beacon" };
+  assert.equal(stampText(j), "Beacon · build c1e7585 · 2026-11-18 10:49 Mexico City");
+  assert.equal(stampText(j, true), "Beacon · build c1e7585");
+  assert.equal(stampText({ short: "a9d087f", built: "2026-10-24T23:59:00Z" }, true), "build a9d087f");
+});
+
 test("the Options about line: number, milestone name, Mexico City time", () => {
   assert.equal(aboutText({ version: "0.32.2", built: "2026-11-13T22:25:00Z" }), "0.32.2 · 2026-11-13 16:25 Mexico City");
   assert.equal(aboutText({ version: "1.0.0", name: "First Light", built: "2026-12-01T06:00:00Z" }), '1.0.0 "First Light" · 2026-12-01 00:00 Mexico City');

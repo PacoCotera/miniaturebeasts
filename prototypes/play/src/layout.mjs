@@ -134,7 +134,7 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
 // The bar (52 tall everywhere; its controls 44 tall, `space-16` padding, `space-8` between): the switch, and at the right Options and, on a laptop, Keys ? and the size control (and the developer tools' button when the option is on).
 // Upright the switch fills the bar left of Options; on its side the build line sits between them; on a laptop the build line is the bar's left end and the switch is 320 wide, centred.
 // barPlan({ W, form, tools, size }) -> { switch, options, keys, size: [down, fit, up] | null, tools, stamp } (boxes [x, y, w, h]; null where not shown)
-export const BAR_PAD = 16, BAR_GAP = 8, CTL_H = 44, OPTIONS_W = 92, KEYS_W = 64, SIZE_W = 152, TOOLS_W = 100, STAMP_W = 300, SWITCH_SIDE_W = 280;
+export const BAR_PAD = 16, BAR_GAP = 8, CTL_H = 44, OPTIONS_W = 92, KEYS_W = 64, SIZE_W = 152, TOOLS_W = 100, STAMP_W = 360, SWITCH_SIDE_W = 280;
 export function barPlan({ W, form: f, tools = false, size = false }) {
   const y = (BAR - CTL_H) / 2, b = (x, w) => [x, y, w, CTL_H], out = { switch: null, options: b(W - BAR_PAD - OPTIONS_W, OPTIONS_W), keys: null, size: null, tools: null, stamp: null };
   if (f !== "laptop") {
