@@ -269,9 +269,9 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 // A page that breaks shows a line with the build number instead of a blank page (lock-playtest-world): the module's notice line (play/src/footer.mjs mountNotice, the words of WORDS.notice) takes over once it is mounted;
 // this stands for a page whose module never ran, and shows the bare build number from build.json.
 (function () { var el = document.getElementById('notice'); window.__mbBroke = false;
-  function broke(e) { if (e && e.type === 'error' && !e.error) return; window.__mbBroke = true; if (window.__mbNotice) return;
-    fetch('../../build.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (b) { if (window.__mbNotice) return; el.hidden = false; el.dataset.slot = 'pageBroke'; el.textContent = b.short || String(b.commit || '').slice(0, 7) || 'local'; }); }
-  addEventListener('error', broke); addEventListener('unhandledrejection', broke); })();
+  function broke(e) { if (e && e.type === 'error' && !e.error && !(e.target && e.target.tagName === 'SCRIPT')) return; window.__mbBroke = true; if (window.__mbNotice) return;
+    fetch('../../build.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (b) { if (window.__mbNotice) return; el.hidden = false; el.dataset.slot = 'pageBroke'; el.textContent = 'build ' + (b.short || String(b.commit || '').slice(0, 7) || 'local'); }); }
+  addEventListener('error', broke, true); addEventListener('unhandledrejection', broke); })();
 </script>
 <script type="module">
 "use strict";
@@ -282,6 +282,7 @@ import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, PIPS } from "./src/waitpips.mjs";
 import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
+import { breakLines, buildTag } from "../play/src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { readPixels } from "./src/pngdecode.mjs";
@@ -560,11 +561,11 @@ const PL = { ready: false, ts: null, terrains: null, desc: null, ctx: null, View
 const PL_VIEWS_MAX = 8, SET7 = 'ninja-test';
 // The release number (build.json, never cached) rides on every fetch of game data and every image, so a new release never reads an older release's files from the browser's cache. One helper, no player option.
 const REL = { v: '' };
-REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); } catch (e) { } })();
+REL.ready = (async () => { try { const b = await (await fetch(new URL('../../build.json', location.href).href, { cache: 'no-store' })).json(); if (b && b.version) REL.v = String(b.version); REL.build = b; } catch (e) { } })();
 const vurl = u => REL.v ? u + (u.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(REL.v) : u;
 // The first frame waits for the new art and the place (the Probe line shows meanwhile); a load that fails says so with a reload, and never draws old art.
 const ART_DONE = { walk: false, open: false, atlas: false, places: false }, ART_FAIL = [], ART_WHY = [];   // ART_WHY: { part, file, why } for each part that failed, shown under the failed screen
-const artWhy = (part, e, extra) => { ART_FAIL.push(part); ART_WHY.push({ part, file: (e && e.file) || '', why: extra || String((e && e.message) || e || 'failed').slice(0, 40) }); };
+const artWhy = (part, e, extra) => { ART_FAIL.push(part); ART_WHY.push({ part, file: (e && e.file) || '', why: extra || String((e && e.message) || e || 'failed').slice(0, 300) }); };
 // The first-load wait's measure (src/waitpips.mjs): the files the loaders count (owed when a loader starts, got as each arrives) and the realm worker's stages (RT.wait)
 const FILES = { done: 0, of: 0 }, fileOwe = n => { FILES.of += n; }, fileGot = () => { FILES.done++; };
 const artHeld = () => RT.artHold && !(ART_DONE.atlas && ART_DONE.places && ART_DONE.walk && ART_DONE.open && ART48.ready && PL.ready && !ART_FAIL.length);
@@ -7820,14 +7821,17 @@ function drawNewer() {
   const bx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;
   text(RT.broken ? 'This save can’t be shown · kept untouched' : 'Newer save · untouched · reload plays it', 225 + bx, 289, C.bone, 2, 'center');
   if (RT.armNew) text('The mibis stay with the old save', 225 + bx, 311, C.amber, 2, 'center');
+  if (RT.broken) text(buildTag(REL.build), 225, 333, C.bone, 1, 'center');   // a save that cannot be shown is a break line: it carries the build
   drawLine({ ok: RT.broken ? (RT.armNew ? 'Confirm: new world' : 'Start a new world') : 'Reload', ctx: '', back: '' });
 }
 function drawArtFailed() {   // the art or the place did not load: said plainly, one way on (reload), nothing drawn in old art
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
   text('The land didn’t load · reload', 225, 289, C.bone, 2, 'center');
-  const w = ART_WHY[0], line = w ? w.part + ' · ' + (w.why || w.file) : (ART_DONE.atlas && !ART48.ready) ? 'atlas · ' + (ART48.refusedWhy || 'core set missing') : 'places · not ready';
-  text(line.slice(0, 40), 225, 313, C.bone, 1, 'center');
+  const w = ART_WHY[0], lead = w ? w.part : (ART_DONE.atlas && !ART48.ready) ? 'atlas' : 'places', why = w ? (w.why || w.file) : (ART_DONE.atlas && !ART48.ready) ? (ART48.refusedWhy || 'core set missing') : 'not ready';
+  const bl = breakLines({ lead, why, build: REL.build, measure: str => textW(str, 1), maxW: 420, maxLines: 2 });   // the detail wraps at words, its error text cut from the middle, "build <sha>" whole at the end
+  window.__mbBreakLines = bl.lines;   // a test's read-only view of the detail lines drawn
+  bl.lines.forEach((l, i) => text(l, 225, 313 + i * 10, C.bone, 1, 'center'));
   drawLine({ ok: 'Reload', ctx: '', back: '' });
 }
 function actReadOnly(k) {

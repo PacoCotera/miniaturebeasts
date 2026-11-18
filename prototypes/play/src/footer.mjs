@@ -35,7 +35,7 @@ export const NOTICE_KINDS = ["pageBroke", "saveFailed", "landChanged"];   // the
 export function noticeText(words, kind, build = null) {
   const short = (build && (build.short || String(build.commit || "").slice(0, 7))) || "local", w = words && words[kind];
   const t = typeof w === "function" ? w(short) : String(w ?? "").replaceAll("{build}", short);   // a slot is a function of the build, or a string with {build} (the Station's frame.json)
-  return t || (kind === "pageBroke" ? short : "");
+  return t || (kind === "pageBroke" ? "build " + short : "");
 }
 // Draws the notice into `el` (hidden while none holds); returns { set(kind, on) }. `el.dataset.slot` names the slot shown. Not gated by the embed class: a frame of the play page shows its own line.
 export function mountNotice(el, words, { buildUrl }) {

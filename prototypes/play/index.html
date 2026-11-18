@@ -179,6 +179,15 @@ body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
   <h3>Companion</h3>
   <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call; hold to look around</dd></dl>
 </div>
+<p id="pageBroke" hidden style="margin:12px 16px; text-align:center; font-size:var(--mb-size-web-12); color:var(--mist)"></p>
+<script>
+// The page itself cannot start (the shell module or one it imports did not load): one plain line with the build, in this page's own DOM, no frame needed. Once the shell runs it
+// sets window.__mbShell and the line stays hidden. "build local" with no build.json.
+(function () { var el = document.getElementById('pageBroke');
+  function show() { if (window.__mbShell) return;
+    fetch('../../build.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (b) { if (window.__mbShell) return; el.hidden = false; el.textContent = 'build ' + (b.short || String(b.commit || '').slice(0, 7) || 'local'); }); }
+  addEventListener('error', function (e) { if (e.target && e.target.tagName === 'SCRIPT') show(); }, true); })();
+</script>
 <script type="module" src="src/shell.mjs"></script>
 </body>
 </html>

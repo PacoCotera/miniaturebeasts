@@ -16,6 +16,7 @@ import { mountOptions, mountKeyTray, mountDockKey, mountSwitch, mountDockScreen,
 import { createStall } from "./stall.mjs";   // the Station's silence is counted only while this page was awake (a world being made stalls every frame's timers)
 import { sourceOf } from "./notes.mjs";   // the note's source: the stored setting noteFrom, "owner" by default
 
+window.__mbShell = true;   // every import loaded: index.html's own "build <sha>" line (for a shell that cannot start) stays hidden
 const params = new URLSearchParams(location.search), TEST = params.has("test"), SEED = params.get("seed");   // test-harness flags only: every option a person sets is in the Options panel (play/src/options.mjs)
 // The play page is the playtest build: Playtest waits is ON until a person sets the options themselves (the stored options are written once, before any frame reads them). Test pages keep the options as they are.
 try { if (!TEST && localStorage.getItem(OPTIONS_KEY) == null) writeOptions({ playtest: true }); } catch { /* no storage: the options stay the defaults */ }
