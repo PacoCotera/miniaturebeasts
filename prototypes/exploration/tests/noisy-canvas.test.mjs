@@ -38,6 +38,7 @@ for (const [name, noise] of Object.entries(NOISE)) {
       const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
       await ctx.addInitScript(noise);
       const page = await ctx.newPage(), errors = []; page.on("pageerror", (e) => errors.push(e.message));
+      page.on("console", (m) => { if (/did not load|refused/.test(m.text())) errors.push("console: " + m.text()); });   // any art that fails to load says so on the console
       await page.goto(url); await page.waitForTimeout(6000);
       const frame = page.frames().find((f) => /exploration/.test(f.url()));
       assert.ok(frame, "the Companion frame is on /play");

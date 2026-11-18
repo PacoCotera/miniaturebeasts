@@ -6487,7 +6487,7 @@ async function loadCareArt() {
   try {
     if (typeof Image === 'undefined') return;
     const files = {}; fileOwe(Object.keys(CARE_FILES).length);
-    await Promise.all(Object.keys(CARE_FILES).map(n => pixelsOf(vurl(new URL('../../art/companion-48/care/', location.href).href + n + '.png')).then(px => { const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; const id = c.getContext('2d').createImageData(px.width, px.height); id.data.set(px.data); c.getContext('2d').putImageData(id, 0, 0);   // the canvas is made from the decoded bytes, never read back
+    await Promise.all(Object.keys(CARE_FILES).map(n => pixelsOf(vurl(new URL('../../art/companion-48/care/', location.href).href + n + '.png')).then(async px => { const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);   // the canvas is made from the decoded bytes, never read back
       files[n] = { width: px.width, height: px.height, data: px.data, canvas: c }; fileGot(); })));
     careRead(files);
   } catch (e) { console.warn('the hearts did not load; their plates stand', e); }
