@@ -95,6 +95,8 @@ figcaption { margin-top: 8px; }
 .band.cream.object .pic { background: transparent; }
 .band.fog { background: #cdd0d8; padding-top: 0; }
 .band.fog .pic { background: transparent; padding-top: 0; }
+/* the call painting is a soft circle on grey paper: show only its circle (AD 11-18), the picture itself unchanged */
+.band .pic.circle img { clip-path: circle(35% at 50% 50.5%); }
 .band.dark.object .pic { background: transparent; }
 .band .pic.right img { object-position: 82% 50%; }
 
@@ -198,6 +200,7 @@ figcaption { margin-top: 8px; }
 .kinds figure img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 12px; }
 .kinds figure.felt img { object-fit: contain; background: var(--cream); padding: 10%; }
 .kinds h3 { margin-top: 10px; font-size: 1.15rem; }
+.kinds .words-only { border-top: 2px solid var(--line); padding-top: 4px; align-self: start; }
 .kinds p { font-size: .98rem; line-height: 1.4; }
 .kinds .where { display: block; margin-top: 4px; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
 .landnav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
