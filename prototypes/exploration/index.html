@@ -3821,7 +3821,7 @@ function regionTurn(R, t, pending, farFromPlayer) {
     if (!rng.chance(.45)) continue;
     const p = cxy(w.c), opts = [];
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const c = y * MW + x; if (canStep(w.c, dir) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
+      const c = y * MW + x; if (canStepIn(G, w.c, dir, abOpts()) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }   // the cell summary, not canStep: a creature's roam must not build both places to read their tiles (End expedition built hundreds), and the same answer whatever is cached
     const good = opts.filter(c => spOf(w.sp).hab.includes(G.land[c]));
     const pick = (good.length && rng.chance(.8)) ? rng.pick(good) : opts.length ? rng.pick(opts) : -1;
     if (pick >= 0) { const q = cxy(pick); mv[w.sp].dx += q.x - p.x; mv[w.sp].dy += q.y - p.y; mv[w.sp].n++; w.c = pick; }
