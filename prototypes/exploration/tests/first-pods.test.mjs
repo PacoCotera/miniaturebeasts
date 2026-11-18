@@ -476,7 +476,7 @@ test("S5 shows what is still on the lit tile: a bush only when the view draws it
   p.run("unveiled = () => true;");
 });
 test("the opening screen: no strip and no counts (no turn, tier, fog, 'of 320' or Seen), even with a plate lost and a sealed crate in the bay", () => {
-  const p = page();
+  const p = makePage({ store: {}, gen: 6, canvas: true }); p.run("RT.caddy = { podHome: true }");   // the opening paints its land onto a canvas of its own size: a real (fake) canvas, not the bare stub
   p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.shield = 1; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => { p.run("__t = []; drawSetup(0);"); return p.run("__t.join('|')"); };
   const t = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Shield \d|\d+\/\d+|crate|sealed/.test(t), t);
