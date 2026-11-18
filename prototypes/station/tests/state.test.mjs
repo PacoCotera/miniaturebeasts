@@ -86,7 +86,7 @@ test("no Pods trait line is longer than six words, over every pair of looks in a
 test("the bay: one crate accepted once, the loose economy tops up, every pod comes home (no rack, nothing waits)", () => {
   const { sv, st } = world([crate(1, [loikaPod(1, 11), loikaPod(2, 12)]), crate(2, Array.from({ length: 6 }, (_, i) => loikaPod(10 + i, 100 + i)))]);
   S.normalize(st);
-  const loose = { ...S.DEFAULT_SETTINGS, economy: "loose" };   // the default is "decided" since 2026-11-18 (owner 13:3x): the top-up is the developer's choice
+  const loose = { ...S.DEFAULT_SETTINGS, economy: "loose" };   // the default is "decided"; the top-up is the developer's choice
   assert.equal(S.dockKey(st, sv, loose, 5).ok, true);
   const r = S.openBay(st, sv, loose, 5);
   assert.equal(r.plays.length, 2);

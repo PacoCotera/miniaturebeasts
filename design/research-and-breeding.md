@@ -193,7 +193,7 @@ play.
   cross, and a mibi cannot be paired with itself on the Cross screen (the pod a mibi let go leaves is the world's, not a cross: see the game doc). Any other pair is refused when it
   is picked, before any price. A mibi out with the Companion is away: it shows
   dimmed and comes back.
-- **Price.** A cross costs **2 Energy and 2 Essence (reconciled with the code 2026-11-18: owner line "yes, or you will never know how to balance the game"; measured with no crate top-up, Essence already stops a grow on 7 of 12 weather seeds)**. Its bud grows for 20
+- **Price.** A cross costs **2 Energy and 2 Essence (reconciled with the code; measured with no crate top-up, Essence already stops a grow on 7 of 12 weather seeds)**. Its bud grows for 20
   minutes, and Grow now works on it as on any bud.
 - **The forecast.** For each trait it shows what the child can be, as pictures:
   - For a switch, it shows four seed pictures. Each is a quarter, never a
