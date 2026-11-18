@@ -42,9 +42,16 @@ for (const [name, [w, h]] of Object.entries(WIDTHS)) {
     await page.waitForTimeout(500);   // the focus script, the lamp's amber picture, the sheet's open animation
     const broken = await page.evaluate(() => [...document.images].filter((i) => !i.complete || i.naturalWidth === 0).map((i) => i.getAttribute("src") || "").slice(0, 3));
     if (broken.length) fails.push(`${id} @${name}: image not loaded: ${broken.join(", ")}`);
+    // a laptop-sized story (a 770 or 1040 px tray) is wider than a phone: widen the shot to the story so it is whole, and say so in the index; a story that is cut at the laptop width, or a phone-sized one that overflows, fails
+    let shotW = w;
+    const wide = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    if (wide > 0) {
+      if (name === "phone" && /laptop|sideways/.test(id)) { shotW = w + wide; await page.setViewportSize({ width: shotW, height: h }); await page.waitForTimeout(300); }
+      else fails.push(`${id} @${name}: cut at the right (${wide}px wider than the screen)`);
+    }
     const file = `${id}--${name}.png`;
     await page.screenshot({ path: path.join(out, file), fullPage: true });
-    index.push({ story: id, width: w, file });
+    index.push({ story: id, width: shotW, file });
     await page.close();
   }
   await ctx.close();

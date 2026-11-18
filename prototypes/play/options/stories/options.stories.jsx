@@ -64,7 +64,7 @@ export const OptionsDialogDeveloperTools = () => <Dialog dev />;   // Developer 
 
 // The confirm dialog's markup as the panel's Start fresh button opens it, laid in the flow (the live one is fixed over the page).
 export const ConfirmDialog = () => (
-  <div className="op-panel op-confirm" style={{ position: "static", transform: "none", width: "min(360px, 100%)" }}>
+  <div className="op-panel op-confirm" style={{ position: "static", transform: "none", width: "100%", maxWidth: 360, boxSizing: "border-box" }}>
     <h2 className="op-title">Start fresh?</h2>
     <div className="op-line">This erases the save in this browser. It cannot be undone.</div>
     <div className="op-actions"><button type="button" className="op-btn">Cancel</button><button type="button" className="op-btn op-go">Start fresh</button></div>
