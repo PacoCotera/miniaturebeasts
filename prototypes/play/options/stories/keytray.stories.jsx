@@ -1,9 +1,11 @@
 // The key trays and the Dock key as they are (keytray.jsx, ui/keys.css, src/keyplan.mjs), in their states: rest, held, focus; the Dock key by width and state. Use the width control for 390 and 1440.
 import { Tray, Dock } from "../src/keytray.jsx";
 import { plan, padDir, KEYBOARD } from "../../src/keyplan.mjs";
+import { asset } from "./assets.js";
+import { DOCK_WORDS } from "./page-words.js";
 
 const noop = () => {};
-const mark = (n) => "../../../ui/assets/masters/shell/shell-key-" + n + "-24.png";
+const mark = (n) => asset("shell/shell-key-" + n + "-24.png");
 const def = (id, code, name, kind, cls) => ({ id, code, name, kind, cls, tip: KEYBOARD[id], mark: kind === "room" ? mark(id === "research" ? "pods" : id) : undefined });
 const defs = (st) => [
   def("left", "ArrowLeft", "Left", "arm", (st ? "pad" : "cpad") + " arm left"), def("up", "ArrowUp", "Up", "arm", (st ? "pad" : "cpad") + " arm up"), def("down", "ArrowDown", "Down", "arm", (st ? "pad" : "cpad") + " arm down"), def("right", "ArrowRight", "Right", "arm", (st ? "pad" : "cpad") + " arm right"),
@@ -31,9 +33,18 @@ export const PhoneUpright = () => (<div style={{ width: 342 }}><TrayStory dev="s
 export const PhoneSideways = () => (<div style={{ width: 796 }}><TrayStory dev="station" layout="landscape" W={796} H={316} title="Station, phone sideways (a = 48): the D-pad and rooms at the left, the actions, the Dock key and the dock's-screen button at the right" /></div>);
 
 // focus: a script focuses a key (they stay out of the tab order): the two-tone ring on the dark tray
+const focusOn = (el) => { if (el) setTimeout(() => el.querySelector(".fk.confirm")?.focus({ focusVisible: true }), 0); };
+// at the phone's real tray size (keyplan: portrait, 342 wide, as PhoneUpright)
 export const FocusRing = () => (
-  <div><div style={label}>Focus: 2 px focus ring 4 px out, a 2 px void edge on both sides</div>
-    <div style={trayBox(770, 624)} ref={(el) => { if (el) setTimeout(() => el.querySelector(".fk.confirm")?.focus({ focusVisible: true }), 0); }}>
+  <div style={{ width: 342 }}><div style={label}>Focus, phone upright: 2 px focus ring 4 px out, a 2 px void edge on both sides</div>
+    <div style={trayBox(342, plan("companion", "portrait", 342, 0).h)} ref={focusOn}>
+      <Tray cfg={{ dev: "companion", label: "Companion keys", defs: defs(false), padDir, onKey: noop }} st={{ plan: plan("companion", "portrait", 342, 0), snap, held: {}, tips: false }} />
+    </div>
+  </div>
+);
+export const FocusRingLaptop = () => (
+  <div><div style={label}>Focus, laptop: the same ring on the laptop's tray</div>
+    <div style={trayBox(770, 624)} ref={focusOn}>
       <Tray cfg={{ dev: "companion", label: "Companion keys", defs: defs(false), padDir, onKey: noop }} st={{ plan: plan("companion", "landscape", 770, 624), snap, held: {}, tips: false }} />
     </div>
   </div>
@@ -43,7 +54,8 @@ const bar = `.ctl{position:relative; background:var(--mb-ground); border:1px sol
 .ctl .mark{flex:none; width:16px; height:24px; image-rendering:pixelated} .ctl .word{flex:1 1 auto; min-width:0; white-space:nowrap} .ctl .hint{flex:none; color:var(--mb-mist); font-size:12px}
 .ctl{text-align:left} .ctl.markonly{justify-content:center; padding:0} .ctl.quiet{color:var(--mb-mist)} .ctl.lit,.ctl.docked{background:var(--mb-amber); border-color:var(--mb-amber); color:var(--mb-void)} .ctl.lit .hint,.ctl.docked .hint{color:var(--mb-void)}
 .ctl[aria-disabled="true"]{color:var(--mb-stone)}`;
-const dockState = (o) => ({ box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: false, label: "Dock the Companion", title: "Dock the Companion", mark: "../../../ui/assets/masters/pods/frame-companion-outline-16x24.png", mode: "full", full: "Dock · after the walk", short: "Dock", hint: true, ...o });
+const W = DOCK_WORDS;   // every player word comes from the page (stories/page-words.js)
+const dockState = (o) => ({ box: null, docked: false, lit: false, quiet: true, pressed: false, disabled: false, ...W.quiet, mark: asset("pods/frame-companion-outline-16x24.png"), mode: "full", hint: true, ...o });
 const DockAt = ({ w, o, title }) => (<div><div style={label}>{title}</div><div style={{ width: w }}><Dock s={dockState({ box: [0, 0, w, 44], ...o })} onPress={noop} /></div></div>);
 export const DockByWidth = () => (
   <div><style>{bar}</style>
@@ -52,7 +64,7 @@ export const DockByWidth = () => (
 );
 export const DockStates = () => (
   <div><style>{bar}</style>
-    <DockAt w={300} o={{}} title="Quiet: before the walk" /><DockAt w={300} o={{ quiet: false, lit: true, full: "Dock the Companion" }} title="Lit: cargo waits aboard" />
-    <DockAt w={300} o={{ quiet: false, docked: true, full: "Docked · Lift to go out", short: "Lift", mark: "../../../ui/assets/masters/pods/frame-companion-solid-16x24.png" }} title="Docked" /><DockAt w={300} o={{ disabled: true }} title="Disabled: no world yet (word and mark in stone)" />
+    <DockAt w={300} o={{}} title="Quiet: before the expedition" /><DockAt w={300} o={{ quiet: false, lit: true, ...W.lit }} title="Lit: cargo waits aboard" />
+    <DockAt w={300} o={{ quiet: false, docked: true, ...W.docked, mark: asset("pods/frame-companion-solid-16x24.png") }} title="Docked" /><DockAt w={300} o={{ disabled: true, title: W.noWorld.title }} title="Disabled: no world yet (word and mark in stone)" />
   </div>
 );
