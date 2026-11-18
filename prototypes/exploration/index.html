@@ -109,6 +109,9 @@ body{
 .dpad .right{left:104px; top:52px}
 .back{left:322px; top:87px; width:60px; height:60px}
 .call{left:322px; top:9px; width:60px; height:60px}
+.key.cue{outline:3px solid #f2c94c !important; outline-offset:3px; box-shadow:0 0 0 8px rgba(242,201,76,.35)}   /* the one next step is this key: it keeps the ring until pressed (walk-first-lines-1) */
+.key.hop{animation:keyhop .45s ease-out 2}
+@keyframes keyhop{0%,100%{translate:0 0}40%{translate:0 -9px}}
 .confirm{left:398px; top:32px; width:92px; height:92px}
 
 /* ===== Side panel ===== */
@@ -1041,8 +1044,9 @@ function settleOnce() {
 const FIRST_TEXT = {
   goal: { find: 'Find a pod · bring it home', home: 'Bring it home · back to the start', dock: 'Dock the Companion · the pod goes home' },   // F1, F2, F3
   teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Press ✓ to go into this place', call: 'Press ))) to Call · buried finds show', pod: 'Go to the glint · ✓ takes the pod',
-    stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below' },
-  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone' },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
+    stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below',
+    endHere: '← End · your finds go in a crate', noPod: dir => 'No pod in reach. Its beat is ' + dir + ': walk that way, then Call again.' },   // [copy] walk-first-lines-1
+  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', callFirst: '))) Call first', turn: dir => 'Turn ' + dir },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
   empty: { head: 'Your pod still waits', later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of where you set out' : 'where you set out') + '.',   // [copy]
     start: 'Start there and press ))) Call.', back: 'Back to the pod' },
 };
@@ -1056,14 +1060,40 @@ function firstHome() {
 }
 const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
 // The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
+// A pod this place shows now (a Call lifted it, or the veil does): the glint to go to.
+const podShown = key => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && unveiled(key, p.x, p.y));
+// The first walk's pod beat as a way from here: the nearest buried pod, in this place or next door; { dir: 'north-east', vx, vy } or null.
+const DIR_VEC = { 'north': [0, -1], 'south': [0, 1], 'east': [1, 0], 'west': [-1, 0], 'north-east': [1, -1], 'north-west': [-1, -1], 'south-east': [1, 1], 'south-west': [-1, 1] };
+function beatWay(P) {
+  const here = cxy(+P.key), at = (dx, dy) => ({ dx, dy, d: Math.hypot(dx, dy) });
+  const b = S.pods.filter(p => p.h).map(p => p.k === P.key && p.x >= 0 ? at(p.x - P.x, p.y - P.y) : /^\d+$/.test(String(p.k)) ? (q => at(q.x - here.x, q.y - here.y))(cxy(+p.k)) : null)
+    .filter(q => q && q.d > 0).sort((a, c) => a.d - c.d)[0];
+  const dir = b && dirWord(b.dx, b.dy, b.d); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1] } : null;
+}
+// First walk, standing in a place with no pod shown and no Call made here yet: the Call is the next step (its key rings, ✓ hops it).
+function callFirst() {
+  const ex = S.exp, P = ex && S.phase === 'patch' && ex.patch;
+  return !!P && firstWalk() && !S.ui.swap && !RT.view && !ex.cargo.pods.length && !(ex.callsAt && ex.callsAt[layout(P.key).cell]) && !podShown(P.key);
+}
+// The Call key's ring and hop: on this page's own key, and (on /play, where the shell draws the keys) as a `mb-keycue` message the shell can place (the UI desk's).
+let CUE_SENT = null;
+function keyCues() {
+  const on = !!(S && S.exp && callFirst()), k = document.querySelector('.key[data-key="call"]'); if (k) k.classList.toggle('cue', on);
+  if (EMBED && on !== CUE_SENT) { CUE_SENT = on; try { parent.postMessage({ t: 'mb-keycue', key: 'call', ring: on }, location.origin); } catch (e) { } }
+}
+function hopCall() {   // ✓ "Call first": the Call key hops once; no action is spent
+  if (EMBED) try { parent.postMessage({ t: 'mb-keycue', key: 'call', hop: 1 }, location.origin); } catch (e) { }
+  const k = document.querySelector('.key[data-key="call"]'); if (!k) return; k.classList.remove('hop'); void k.offsetWidth; k.classList.add('hop');
+}
 function teachStep() {
   const T = FIRST_TEXT.teach, ex = S.exp;
   if (isDocked() || RT.view || (S.phase === 'patch' && S.ui.swap)) return '';
   if (!ex) return S.phase === 'setup' ? (S.bay.length ? T.dock : T.setOut) : S.phase === 'sealed' && S.bay.length ? T.dock : '';
   if (S.phase === 'place') return T.place;
-  if (S.phase === 'map') return T.go;
+  if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
-  if (!ex.cargo.pods.length) return ex.callsAt && ex.callsAt[layout(P.key).cell] ? T.pod : T.call;
+  if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod; if (!(ex.callsAt && ex.callsAt[layout(P.key).cell])) return T.call;
+    const w = beatWay(P); return w ? T.noPod(w.dir) : T.call; }
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
   return T.end;
 }
@@ -2346,7 +2376,7 @@ function enterPatchBuilt() {
   S.phase = 'patch'; recordSigns(ex.pos); transition();
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
-  if (firstIn && !lay.cave) placeNamed(lay);   // owner note #24: the place you step into is named once, in the message line; after that its name leads the bottom bar
+  if (firstIn && !lay.cave && !(firstWalk() && teachStep())) placeNamed(lay);   // on the first walk the teaching line comes first; the name is already in the bottom bar   // owner note #24: the place you step into is named once, in the message line; after that its name leads the bottom bar
   save();
 }
 // The place's name fills the message line for PLACE_NAME_MS (one note, priority 1: any real note outranks it), then the line is clear again.
@@ -2719,19 +2749,22 @@ function nextThing(P, lay) {
   if (!ex.cargo.pods.length) {   // finding a pod: the one in view, else the beat (a buried pod, shown by the first walk or by the map's slow beat)
     const pods = S.pods.filter(p => p.k === key && p.x >= 0), seen = nearest(pods.filter(p => !p.h && unveiled(key, p.x, p.y)).map(p => ({ kind: 'pod', ...at(p.x, p.y) })));
     if (seen) return seen;
-    if (firstWalk() || signsAt(lay.cell).includes('b')) { const b = nearest(pods.filter(p => p.h).map(p => ({ kind: 'beat', ...at(p.x, p.y) }))); if (b) return b; } }
+    if (firstWalk()) { const w = beatWay(P); if (w) return { kind: 'beat', x: P.x + w.vx * 60, y: P.y + w.vy * 60, d: 60, virt: 1, dir: w.dir }; }
+    else if (signsAt(lay.cell).includes('b')) { const b = nearest(pods.filter(p => p.h).map(p => ({ kind: 'beat', ...at(p.x, p.y) }))); if (b) return b; } }
   if (!ex.cargo.e) { const st = nearest(lay.feats.filter(f => f.kind === 'k' && stoneCharge(key, f) > 0 && stoneSeen(key, f)).map(f => ({ kind: 'stone', ...at(f.x, f.y) }))); if (st) return st; }
   if (!canSend()) { const b = nearestSend(), p = cxy(ex.pos), q = cxy(b.c), dx = q.x - p.x, dy = q.y - p.y; if (dx || dy) return { kind: 'flag', x: P.x + dx, y: P.y + dy, d: 0 }; }
   return null;
 }
 function faceThing(P, t) {
   const dx = t.x - P.x, dy = t.y - P.y; if (dx || dy) P.dir = Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down');
-  if (t.kind !== 'flag') fxGlint(t.x, t.y, 0);   // the one glint pulse; the explorer does not move and no action is spent
+  if (t.kind !== 'flag' && !t.virt) fxGlint(t.x, t.y, 0);   // the one glint pulse; the explorer does not move and no action is spent
 }
 function idleAct(P, lay) {
-  const near = curLive().cr.some(c => { if (c.hide || !inSight(c.x, c.y)) return false; const b = bubbleOf(c, S.exp.carry); return b === '!' || b === '…'; });
-  const t = near ? null : nextThing(P, lay);
-  return t ? { label: t.kind === 'flag' ? SEND_TXT.way(sendWay().dir) : FIRST_TEXT.face[t.kind], face: 1, run: () => faceThing(P, t) } : NOTHING;
+  if (callFirst()) return { label: FIRST_TEXT.face.callFirst, run: hopCall };   // first walk, before the first Call: the Call key is the one next step
+  const first = firstWalk() && !S.exp.cargo.pods.length, t0 = nextThing(P, lay);   // on the first walk the pod or its beat outranks "Keep still"
+  const near = !(first && t0 && (t0.kind === 'pod' || t0.kind === 'beat')) && curLive().cr.some(c => { if (c.hide || !inSight(c.x, c.y)) return false; const b = bubbleOf(c, S.exp.carry); return b === '!' || b === '…'; });
+  const t = near ? null : t0;
+  return t ? { label: t.kind === 'flag' ? SEND_TXT.way(sendWay().dir) : t.dir ? FIRST_TEXT.face.turn(t.dir) : FIRST_TEXT.face[t.kind], face: 1, run: () => faceThing(P, t) } : NOTHING;
 }
 let ACT_AT = null;   // the tile patchAction last read (the faced tile, or the one stood on): where the amber brackets stand
 function patchAction() {
@@ -5960,6 +5993,7 @@ function edgeTabs() {
     all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
+  if (firstWalk() && !ex.cargo.pods.length && ex.callsAt && ex.callsAt[lay.cell] && !podShown(P.key)) { const w = beatWay(P); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // after an empty Call: one tab on the beat's edge
   const q = FX.cue;
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
@@ -7323,7 +7357,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { wantPlaces(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); keyCues(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
