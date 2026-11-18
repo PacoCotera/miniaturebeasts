@@ -99,6 +99,8 @@ const drawTray = (dev, pl) => trays[dev].update({ plan: pl, snap: snapBox, tips:
 // One device in view, everywhere: its panel (the screen and its keys) centred in the window; the other device keeps running, hidden. The bar holds the switch (Radix Tabs), Options and, on a laptop, Keys ? and the size control.
 // Nothing scrolls (the page is clipped) unless the size control's choice is larger than the window.
 const bar = $("bar"), stage = $("stage"), shS = $("shStation"), shC = $("shCompanion"), dev = $("dev"), keysPanel = $("keysPanel");
+// A long press on a key or a screen is a held key, never the browser's text or image menu (fields keep theirs).
+stage.addEventListener("contextmenu", e => { if (!e.target.closest("input,textarea")) e.preventDefault(); });
 const shells = { station: shS, companion: shC };
 const trayEl = { station: $("rowStation"), companion: $("rowCompanion") };
 const asleepStrip = $("asleepStrip"), asleepBar = $("asleepBar"), keysBtn = $("keysBtn"), devBtn = $("devBtn"), optionsBtn = $("optionsBtn");
