@@ -291,7 +291,10 @@ test('seed 13: two thresholds in the rule give three levels, each boundary with 
       const R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? 0 : lv[y * W + x] > k ? 1 : 0), lip = (x, y) => R(x, y) && !R(x, y + 1);
       let pinch = 0, lone = 0;
       for (let y = 0; y + 1 < H; y++) for (let x = 0; x + 1 < W; x++) { const c = R(x, y) * 8 + R(x + 1, y) * 4 + R(x, y + 1) * 2 + R(x + 1, y + 1); if (c === 6 || c === 9) pinch++; }
-      for (let y = 1; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (lip(x, y) && !lip(x - 1, y) && !lip(x + 1, y) && !(lip(x - 1, y - 1) || lip(x + 1, y - 1) || lip(x - 1, y + 1) || lip(x + 1, y + 1))) lone++;
+      // cliff-contour-1: a lean (a side wall moving one column in going south, levels.mjs leanAt) is no face; the land behind it is read past the raster's sides as raised (the land rule saw it whole)
+      const Rb = (x, y) => (x < 0 || x >= W || y < 0 || y >= H ? true : R(x, y));
+      const lean = (x, y) => R(x, y - 1) && !R(x, y + 2) && [-1, 1].some((d) => !R(x + d, y) && !R(x + d, y - 1) && [0, 1, 2, 3, 4].every((j) => Rb(x - d, y + j)) && [2, 3, 4].every((j) => Rb(x - j * d, y + 1) && Rb(x - j * d, y + 2)));
+      for (let y = 1; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (lip(x, y) && !lip(x - 1, y) && !lip(x + 1, y) && !(lip(x - 1, y - 1) || lip(x + 1, y - 1) || lip(x - 1, y + 1) || lip(x + 1, y + 1)) && !lean(x, y)) lone++;
       assert.equal(pinch, 0, 'boundary ' + k + ': no pinch'); assert.equal(lone, 0, 'boundary ' + k + ': no lone face');
     }
   } finally { setLandRule({}); }

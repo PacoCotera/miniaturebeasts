@@ -283,7 +283,7 @@ import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers,
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, PIPS } from "./src/waitpips.mjs";
-import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
@@ -759,7 +759,28 @@ function bakedView(lay) {
   if (v) { PL.views.delete(lay.baked.id); PL.views.set(lay.baked.id, v); }
   else if (PL.View) { v = new PL.View(PL.ts, lay.baked.place, { core: RGB.slice(0, 48), night: C.night, ox: lay.baked.ox, oy: lay.baked.oy, mkCanvas: PL.mk, ring: PL.ring || null, veil: PL.veil }); PL.views.set(lay.baked.id, v);
     while (PL.views.size > PL_VIEWS_MAX) PL.views.delete(PL.views.keys().next().value); }
+  if (v && lay.banks) bankDecalsOn(v, lay);
   return v || null;
+}
+// An earth bank's art: the bake draws an undug bank with no decal of its own (today's rock face, the dither patch at the foot and the page's brackets); a bank Rupar has dug (its id in ex.dug) gets the dug piece (wayup-dug) as one decal added to the view's place,
+// at the draw order the bake would give it: after every cliff piece whose foot line (its top row + its height in rows - 1) is at or above the bank's lip row + 3, before any other decal. The view's ground renders are dropped once so the next frame draws it.
+// Run when a view is made and when a bank is dug (digBank); a no-op while the dug flags are as the view last saw them.
+function bankDecalsOn(v, lay) {
+  const dugIds = (S.exp && S.exp.dug) || [], sig = lay.banks.map(b => (dugIds.includes(b.ei) ? 1 : 0)).join('');
+  if (v.bankSig === sig) return;
+  const first = v.bankSig === undefined; v.bankSig = sig;
+  const dug = v.ts.sprites.findIndex(s => s.group === 'decal' && s.kind === 'wayup-dug');
+  if (dug < 0) return;
+  const isCliff = d => { const s = v.ts.sprites[d.kind]; return !!s && /^cliff-/.test(s.kind); }, lineOf = d => d.y / 48 + v.ts.sprites[d.kind].h48 / 48 - 1;
+  let changed = false;
+  for (const b of lay.banks) {
+    if (!dugIds.includes(b.ei)) continue;
+    const x = (b.x + 1) * 48, y = (b.y + 1) * 48, ds = v.place.decals;
+    if (ds.some(d => d.kind === dug && d.x === x && d.y === y)) continue;
+    let at = 0; while (at < ds.length && isCliff(ds[at]) && lineOf(ds[at]) <= b.y + 1 + 3) at++;
+    ds.splice(at, 0, { kind: dug, x, y, sortY: y }); changed = true;
+  }
+  if (changed && !first) { v.cache.key = null; v.cache.full = null; v.cache.frames.clear(); v.half.key = null; v.half.buf = null; v.last = null; }
 }
 const bakedColours = () => [...PL.views.values()].flatMap(v => v.paletteRgb()).concat(PL.ts && PL.ts.palette ? PL.ts.palette.map(c => [(c >> 16) & 255, (c >> 8) & 255, c & 255]) : [], STONE_COLOURS, OPEN_COLOURS, OPEN_POD_COLOURS, MOMENT_COLOURS, CARE_COLOURS);   // the game set palette is the map's and the walk's palette
 // The sides of a cell that are shut now (past the range or closed), as a string: the reachable-only placement of a layout was made against this.
@@ -785,6 +806,23 @@ function wantPlaces() {   // each frame: if the reach, the region or the walked 
   const here = ex ? cxy(ex.pos) : null, near = c => here ? cheb(cxy(c), here) : 0;
   const list = [...new Set([...(ex ? [ex.pos, ...ex.reach] : []), ...visited])].filter(c => passable(c)).sort((a, b) => near(a) - near(b));
   readyPlaces(seed, R.slot, v, list, { ctx: PL.ctx });
+  wantBanks(seed, R.slot, list);   // after the places (the worker takes its messages in order, so the nearest cells are never held behind a slice)
+}
+// bank-wire-1: the Rupar's earth banks are made a region at a time (levels.mjs regionBanks); a place's window reads the lists of the regions it touches. Each region the reach's windows touch is asked of the worker once, the
+// nearest first; the lists come back through presetBanks (place-store.mjs), so a place made after them (or by the page itself) finds them made, and the place's banks (lay.banks) are in its baked layout either way.
+const BANK_WINDOW = 2;   // cells: a place's window reads this far round the cell (levels.mjs rule.window)
+function bankRegions(slot, cells) {
+  const seen = new Map(), here = slot;
+  for (const c of cells) { const q = cxy(c);
+    for (const dy of [-BANK_WINDOW, 0, BANK_WINDOW]) for (const dx of [-BANK_WINDOW, 0, BANK_WINDOW]) {
+      const ra = Math.floor((slot[0] * MW + q.x + dx) / MW), rb = Math.floor((slot[1] * MH + q.y + dy) / MH);
+      if (ra >= 0 && rb >= 0 && ra < ATLAS && rb < ATLAS) seen.set(ra * 100 + rb, [ra, rb]); } }
+  return [...seen.values()].sort((a, b) => Math.max(Math.abs(a[0] - here[0]), Math.abs(a[1] - here[1])) - Math.max(Math.abs(b[0] - here[0]), Math.abs(b[1] - here[1])));
+}
+function wantBanks(seed, slot, cells) {
+  if (PLACES.bankSeed !== seed) { PLACES.bankSeed = seed; PLACES.banked = new Set(); }
+  const todo = bankRegions(slot, cells).filter(r => !PLACES.banked.has(r[0] * 100 + r[1]));
+  if (todo.length && readyBanks(seed, todo, { ctx: PL.ctx })) for (const r of todo) PLACES.banked.add(r[0] * 100 + r[1]);
 }
 function layout(key) {   // a land cell's layout from the generator (cached); a stand-in while the tile set loads
   let lay = layoutCache.get(key);
@@ -2273,7 +2311,7 @@ function podAt(key, x, y, hiddenToo) { return S.pods.find(p => p.k === key && p.
 function occupant(key, x, y, ignore) {
   const lay = layout(key), live = S.exp.live[key], P = S.exp.patch;
   if (x < 0 || y < 0 || x >= lay.w || y >= lay.h) return { type: 'out' };
-  const t = lay.tiles[y * lay.w + x];
+  const t = bankTile(lay, x, y) ? T.BANK : lay.tiles[y * lay.w + x];   // a generator 7 earth bank is rock in the tiles and a bank to the partner
   if (T_BLOCK[t]) { const f = featAt(lay, key, x, y); return f ? { type: 'feat', f } : { type: 'tile', t }; }
   for (const c of live.cr) if (c !== ignore && !c.hide && c.x === x && c.y === y) return { type: 'cr', c };
   if (live.pt && live.pt !== ignore && live.pt.x === x && live.pt.y === y) return { type: 'pt' };
@@ -2665,15 +2703,20 @@ function noteSure(a, dir, c) {
 function digBank(ei, a, c) {
   const ex = S.exp, name = ex.pt.name;
   if (ex.pt.elder && ex.bankProg !== ei + 1) { ex.bankProg = ei + 1; fxMsg(name + ' is digging · slow but sure', 1); advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined); return false; }
-  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (G.level[c] > G.level[a]) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
-  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; }
-  logEv(name + ' dug a way ' + (G.level[c] > G.level[a] ? 'up' : 'down') + ' the bank');
+  const up = c < 0 || G.level[c] > G.level[a];   // c < 0: a tile bank of a generator 7 place (lay.banks): its way is always up
+  ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (up) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
+  const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; if (lay.banks) bakedView(lay); }   // bakedView swaps the dug bank's decal (bankDecalsOn)
+  logEv(name + ' dug a way ' + (up ? 'up' : 'down') + ' the bank');
+  { const refused = Object.values(WORDS.block); FX.notes = FX.notes.filter(n => !refused.includes(n.text)); composeMsg(); }   // the refusal that waited its turn ('Steep rock · no way over') is stale once the way is dug
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
   return true;
 }
 const bankIsDug = ei => (S.exp.dug || []).includes(ei);
 // The crossing a place tile belongs to (a scree or bank edge's two-by-two), or null.
+// A generator 7 place holds its earth banks as tile sites (lay.banks, adapt7.mjs: a way up's two columns and the four rows of lip and face under them): the bank, or null.
+function bankTile(lay, x, y) { for (const b of lay.banks || []) if (x >= b.x && x < b.x + b.w && y >= b.y && y < b.y + b.h) return b; return null; }
 function crossingAt(lay, x, y) {
+  { const b = bankTile(lay, x, y); if (b) return { bank: b, ei: b.ei }; }
   for (const q of lay.cross || []) { const d = q.dir === 'left' ? x : q.dir === 'right' ? lay.w - 1 - x : q.dir === 'up' ? y : lay.h - 1 - y, k = q.dir === 'up' || q.dir === 'down' ? x : y;
     if (d >= (q.off || 0) && d < (q.off || 0) + 2 && k >= q.s && k <= q.s + 1) return q; }   // a bank stands BANK_IN rows in from the border (world.mjs), scree on it
   return null;
@@ -2743,7 +2786,7 @@ function noteSureTile(t) { const ex = S.exp; if (!canSure() || ex.softSaid || (t
 // Rupar facing a bank tile in a place: the dig, then the same two tiles cross.
 function digBankHere() {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), f = frontOf(P), q = crossingAt(lay, f.x, f.y); if (!q) return;
-  const c = stepCell(lay.cell, q.dir);
+  const c = q.bank ? -1 : stepCell(lay.cell, q.dir);
   const lv = curLive(); if (lv.pt) lv.pt.st = 'dig';
   digBank(q.ei, lay.cell, c);
 }
@@ -2820,7 +2863,7 @@ function patchAction() {
   if (o && o.type === 'tile' && (o.t === T.WADE || o.t === T.SCREE) && !canSure()) return { label: 'Needs a rambler', run: () => softBump(o.t) };   // says why ✓ does nothing, as deep water does
   if (o && o.type === 'tile' && o.t === T.BANK && !canBank()) return { label: 'Needs a digger', run: () => softBump(o.t) };
   if (o && o.type === 'tile' && o.t === T.BANK && canBank() && !softTileOpen(lay, o.t, f.x, f.y)) { const q = crossingAt(lay, f.x, f.y);
-    if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
+    if (q) return { label: ex.pt.elder && ex.bankProg === q.ei + 1 ? 'Keep digging' : ex.pt.name + ' digs a way ' + (q.bank || G.level[stepCell(lay.cell, q.dir)] > G.level[lay.cell] ? 'up' : 'down'), run: digBankHere }; }
   if (o && o.type === 'feat') {
     const ft = o.f;
     switch (ft.kind) {
@@ -3242,7 +3285,7 @@ function pickStrike(X) {
 
 // ===================== 8. Creatures and the partner =====================
 function canStand(X, x, y, who) {
-  if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
+  if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = bankTile(X.lay, x, y) ? T.BANK : X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
     if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
   return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * X.lay.w + x]); }
 function stepToward(X, who, tgt, n) {
@@ -3812,7 +3855,7 @@ function realmTurn(turned, pending) {
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
   // What the walk dug (a bank, or the burrow) shifts back with the turn: said as the world's, crediting the mibi that dug it (or not naming it, if it has left the Companion). One partner a walk, so one line.
   { const ex = S.exp, bankN = ex && ex.dug ? ex.dug.length : 0, burrow = !!(ex && ex.burrowDug), dm = ex && ex.pt && (bankN || burrow) ? carriedMibis().find(m => m.id === ex.pt.id) : null;
-    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >> 1]], who = dm ? dm.name : null;
+    if (bankN || burrow) { const kind = PLACE_KIND[G.land[burrow ? G.gate : ex.dug[0] >= (1 << 20) ? ex.pos : ex.dug[0] >> 1]], who = dm ? dm.name : null;
       say(burrow ? (who ? 'The ground shifted, and the burrow ' + who + ' dug out is narrow again.' : 'The ground shifted, and the burrow is narrow again.')
         : who ? 'The ground shifted, and the ' + (bankN === 1 ? 'bank ' + who + ' dug is' : 'banks ' + who + ' dug are') + ' whole again.' : 'The ground shifted, and the dug bank is whole again.', ['shift', kind, ex.pt.id, burrow ? 1 : bankN]); } }
   // Movement: a species you know first; a direction only when the herd really drifted one way.
@@ -5352,7 +5395,7 @@ function drawEdgeMarks(q) {
 // The sector's marks on the reach view and the full map, one canvas made once per state: the cliff and stair pieces along the BLOCK contour (every place edge between two blocks of different level, the sector's level
 // line, not the straight place edges), then the realm's lines (trail, stream), its bridges and fords, and a mark where a destination's place is in sight (a plain ring, a named empty slot for the art desk: reach-destination).
 // A cell takes its marks once it is revealed (a block edge needs both its cells revealed, or the pawn's).
-const DEST_RING = { pass: 'plum', ravine: 'plum', 'ravine head': 'plum', falls: 'river', spring: 'river', 'stream mouth': 'river', ford: 'river', bridge: 'gold', reach: 'gold' };
+const DEST_RING = { pass: 'plum', ravine: 'plum', 'ravine head': 'plum', falls: 'river', spring: 'river', 'stream mouth': 'river', ford: 'river', shore: 'river', 'stream bend': 'river', 'cliff foot': 'plum', bridge: 'gold', reach: 'gold' };
 function drawSectorMarks(q, cells, pawn, sec) {
   const cs = q.cs, u = cs / 4, rmOf = c => !S.revealed[c] ? 3 : q.map ? q.rmOf(c) : reachRm(c), inV = new Map(cells.map(([c]) => [c, 1]));
   const X0 = q.map ? 0 : q.s0.x - q.r, Y0 = q.map ? 0 : q.s0.y - q.r, W = q.map ? MW * CELL : q.size, H = q.map ? MH * CELL : q.size, sx = q.map ? q.ox : q.dx, sy = q.map ? q.oy : q.dy;

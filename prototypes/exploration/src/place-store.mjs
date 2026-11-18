@@ -5,9 +5,9 @@
 // A second worker renders a place's ground (the pixel work of places/src/ground.mjs, which the page did a frame at a time): groundAsk, groundTake. It is a second one so that a ground is not queued behind the reach.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, realm7 } from './gen7/region.mjs';
-import { decorSites, presetHollowSites } from './gen7/place.mjs';
+import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
 
-const PLACE_REV = 2, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
+const PLACE_REV = 3, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
 const memKey = (seed, slot, v, cell) => seed + '|' + slot[0] + ',' + slot[1] + '|' + v + '|' + cell;
 const BAKED = new Map(), ASKED = new Set(), GROUNDS = new Map(), GROUND_ASKED = new Set(), WAITERS = [];
@@ -30,6 +30,7 @@ function worker(name, ctx) {
     w.onmessage = e => {
       const m = e.data || {};
       if (m.sites) presetHollowSites(m.seed, m.sites);   // sites the worker made for a place: now the page's too
+      if (m.banks && m.banks.length) presetBanks(m.seed, m.banks);   // the Rupar's bank lists the worker made (a region's, once): now the page's too
       if (m.op === 'baked') {
         const mk = memKey(m.seed, m.slot, m.v, m.cell); ASKED.delete(mk);
         if (m.ir) { const b = { ir: m.ir, place: m.place }; BAKED.set(mk, b); keep(m.seed, m.slot, m.v, m.cell, b); } else console.warn('a place was not made in the worker', m.cell, m.error);
@@ -68,7 +69,7 @@ export async function readyPlaces(seed, slot, v, cells, kit) {
   if (todo.length && PW_ON && kit) {
     try {
       const w = worker('bake', kit.ctx);
-      if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed) }); PW_SEED = seed; }   // the realm is the page's; of the sites it sends the ones it has made (the worker makes the rest as its places ask, and sends them back with the bake)
+      if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed), banks: madeBanks(seed) }); PW_SEED = seed; }   // the realm is the page's; of the sites it sends the ones it has made (the worker makes the rest as its places ask, and sends them back with the bake)
       w.postMessage({ op: 'bake', seed, slot, v, cells: todo });
     } catch (e) { for (const c of todo) ASKED.delete(memKey(seed, slot, v, c)); console.warn('the places worker did not run', e); }
   } else for (const c of todo) ASKED.delete(memKey(seed, slot, v, c));
@@ -81,6 +82,15 @@ export function readySites(seed, slots, kit) {
     const w = worker('bake', kit.ctx);
     if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed) }); PW_SEED = seed; }
     w.postMessage({ op: 'sites', seed, slots }); return true;
+  } catch (e) { return false; }
+}
+// A background slice: the Rupar's earth banks of these regions [[ra, rb], ...], made in the places worker before the player reaches them; the lists come back on the page's own levels (presetBanks).
+export function readyBanks(seed, slots, kit) {
+  if (!PW_ON || !kit) return false;
+  try {
+    const w = worker('bake', kit.ctx);
+    if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed), banks: madeBanks(seed) }); PW_SEED = seed; }
+    w.postMessage({ op: 'banks', seed, slots }); return true;
   } catch (e) { return false; }
 }
 // A promise that resolves once the cell is in memory, or is no longer owed (the worker is gone); the caller then asks bakedGet.

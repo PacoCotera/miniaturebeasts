@@ -1,0 +1,7 @@
+{
+ "source": "art-jobs/2026-11-17-wayup-paint-2/work/raw/dug-1.png",
+ "steps": [["crop", [0, 0, 32, 64], "terrain"], ["snap", "walk", "314649e7e3f7", ["#1e2a3e", "#2b333f", "#242c38", "#1d2531"]]],
+ "replay_sha256": "659e01cd59caa273f2660d7ec5718ec2962276ee8a420a421d68b3d76e90e202",
+ "hand_touchups": "rule 18: the five orange dig-bracket pixels (15,58), (1,60), (2,60), (14,60), (15,60) take the commonest neighbouring colour (script runs/wayup-paint-5/touchup.py); all set-palette colours",
+ "out_sha256": "016599fc8bf7526420b13d1fc73be07ca4ffb118aa9c05eff3834e78860ba0dc"
+}

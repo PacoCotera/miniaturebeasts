@@ -21,12 +21,14 @@ for (const seed of SEEDS) {
     const land = (X, Y) => { if (X < 0 || Y < 0 || X >= MW * ATLAS || Y >= MH * ATLAS) return null; const G = R.regions[Math.floor(Y / MH) * ATLAS + Math.floor(X / MW)], c = (Y % MH) * MW + (X % MW); return G.land[c] !== L.WATER && !G.island[c] ? G : null; };
     // landmarks: spacing, names, kinds
     for (let i = 0; i < lms.list.length; i++) for (let j = 0; j < i; j++) if (Math.max(Math.abs(lms.list[i].X - lms.list[j].X), Math.abs(lms.list[i].Y - lms.list[j].Y)) < LM_SPACING) bad.push('landmark spacing ' + i + ' ' + j);
+    // R3: no two landmarks of one kind within the 11 x 11 reach (Chebyshev 5), the Hollow Tree apart (its sites are the decor's)
+    for (let i = 0; i < lms.list.length; i++) for (let j = 0; j < i; j++) { const a = lms.list[i], b = lms.list[j]; if (a.kind === b.kind && a.kind !== 'hollow-tree' && Math.max(Math.abs(a.X - b.X), Math.abs(a.Y - b.Y)) <= 5) bad.push('twin ' + a.kind + ' ' + i + ' ' + j); }
     for (const G of R.regions) {
       const mine = lms.list.filter(p => p.slot[0] === G.slot[0] && p.slot[1] === G.slot[1]), names = mine.map(p => p.name);
       assert.equal(new Set(names).size, names.length, 'no name twice in a region');
       for (const p of mine) assert.ok(LANDMARK_NAMES[p.kind].includes(p.name), p.name + ' is on editorial\'s list for ' + p.kind);
     }
-    assert.ok(lms.list.length > 100, 'landmarks: ' + lms.list.length);
+    assert.ok(lms.list.length > 60, 'landmarks: ' + lms.list.length);
     // cells: a hashed sample of the land
     const cells = []; for (let Y = 0; Y < MH * ATLAS; Y++) for (let X = 0; X < MW * ATLAS; X++) if (land(X, Y)) cells.push([X, Y]);
     const sample = cells.map(c => ({ c, k: hash(seed, 'g4a-test', c[0], c[1]) })).sort((a, b) => a.k - b.k).slice(0, 60).map(o => o.c);

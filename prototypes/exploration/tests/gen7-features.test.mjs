@@ -54,6 +54,8 @@ test('every feature has an id, cells in order and links; names are empty slots; 
   for (const f of re.features) { assert.ok(f.id && !ids.has(f.id), 'unique id ' + f.id); ids.add(f.id); assert.ok(f.cells.length > 0 && f.links, f.id); assert.equal(f.name, undefined); }
   for (const d of re.destinations) {
     if (d.feature === 'land') { assert.equal(d.kind, 'reach'); continue; }   // a spot the trails added in a hole (R14): the land's own, no feature
+    // R1 and W4 (map-making-research-1): a spring at an escarpment's foot and a trail spot the land ties to a feature stand beside their feature's cells, not on them: the feature is named, or is the marsh or the sea (no record)
+    if (d.along || d.foot) { assert.ok(['shore', 'stream bend', 'cliff foot', 'spring', 'reach'].includes(d.kind), d.kind); if (d.feature !== 'marsh' && d.feature !== 'sea') assert.ok(ids.has(d.feature), 'destination feature ' + d.feature); continue; }
     assert.ok(ids.has(d.feature), 'destination feature ' + d.feature);
     const f = re.features.find(x => x.id === d.feature);
     assert.ok(Number.isInteger(d.index) && d.index >= 0 && d.index < f.cells.length, d.kind + ' index');
