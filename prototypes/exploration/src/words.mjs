@@ -15,7 +15,7 @@ export const WORDS = {
   },
   pressNoRoom: (n, cap) => 'Essence ' + n + ' of ' + cap + ' · no room to press the fruit',
   stoneKeeps: 'the stone keeps the rest', holdsNoMore: 'the Probe holds no more',
-  full: (supply, cap, keeps) => supply + ' ' + cap + ' of ' + cap + ' · ' + (keeps || 'the Probe holds no more'),
+  full: (supply, cap, keeps) => 'Your ' + supply + ' is full (' + cap + ' of ' + cap + ') · ' + (keeps || 'the Probe holds no more'),   // [copy] owner note #75: said the same way as the refusal
   // pressing fruit (✓ labels and the bump line)
   press: { stone: 'Press fruit on the stone', tree: 'Press fruit on the tree', dim: 'Press on a stone or tree', bump: 'Press fruit on a stone or tree · or put it down' },
   // [copy] the HUD line when a step in a place is refused and nothing else says why (placeholders say the meaning only; bug #14)
