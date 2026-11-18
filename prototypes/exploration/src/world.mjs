@@ -494,6 +494,7 @@ export const BANK = { MIN: 3, MAX: 5, APART: 2 };
 export const BANK_IN = 3;   // rows between a place's border and a bank's face in the place (the bank piece itself is the art desk's 2 x 2 block, unchanged)
 export function bankEdges(G, seed = 0) {
   const bank = new Uint8Array(2 * NC); if (!G.edge || !G.level) return bank;
+  if (G.gen === 7) return bank;   // rupar-banks-7-1: a generator 7 region has no bank on a cell edge: its banks are tile sites in the land (levels.mjs banksIn), drawn in the places, never picked by cell
   const cands = [];
   for (let i = 0; i < 2 * NC; i++) {
     if (G.edge[i] !== EDGE.CLIFF || !edgeOk(G, i)) continue;

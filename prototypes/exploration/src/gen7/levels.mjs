@@ -266,7 +266,21 @@ function openClose(r, W, H, E, lk) {
 const same = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
 const hasLip = (r, W, H, x, y) => { const xx = x < 0 ? 0 : x >= W ? W - 1 : x, ya = y < 0 ? 0 : y >= H ? H - 1 : y, yb = y + 1 < 0 ? 0 : y + 1 >= H ? H - 1 : y + 1; return r[ya * W + xx] === 1 && r[yb * W + xx] === 0; };   // the raster's rim read as itself, no call per tile
 
-// Low rows kept under a south lip: the faceRows rock rows (they block), the foot row L + faceRows + 1 and one walkable row more (a channel under a face is at least 2 walkable tiles)
+// cliff-contour-1: a lean. A side wall that moves one column in toward the raised land going south leaves one south lip tile alone in its row (x, y): the wall above it runs down its outer side and the wall
+// below runs down the next column in. The set draws it as the wall leaning over by one column (the pieces lean-e, lean-w), not as a face one column wide, so the land keeps it. i = y * W + x, clear of the rim
+// (rows y - 1 .. y + 4, columns x - 1 .. x + 1 read). Raised on the east (the wall's outside is west): (x - 1, y - 1) and (x - 1, y) low, (x, y - 1) raised, (x + 1, y .. y + 4) raised (the next column's
+// lip 4 or more rows lower: a wall, not a steep run's step of 1 to 3 rows), (x, y + 2) low; or mirrored.
+let LEAN_ON = true;
+export const setLeans = (on) => { LEAN_ON = !!on; GEN++; };
+function leanAt(r, W, i) {
+  if (i < W || i + 4 * W + 4 >= r.length || i < 4 || r[i] !== 1 || r[i + W] !== 0 || r[i - W] !== 1 || r[i + 2 * W]) return false;
+  // and the land behind the lower wall at least 4 wide on its first two rows (no neck under the minimum feature: two leans facing each other leave none narrower)
+  for (const d of [-1, 1]) if (!r[i + d] && !r[i + d - W] && r[i - d] && r[i - d + W] && r[i - d + 2 * W] && r[i - d + 3 * W] && r[i - d + 4 * W] && r[i - 2 * d + W] && r[i - 3 * d + W] && r[i - 4 * d + W] && r[i - 2 * d + 2 * W] && r[i - 3 * d + 2 * W] && r[i - 4 * d + 2 * W]) return true;
+  return false;
+}
+export const leanAtRaster = leanAt;
+
+// Low rows kept under a south lip:the faceRows rock rows (they block), the foot row L + faceRows + 1 and one walkable row more (a channel under a face is at least 2 walkable tiles)
 const footRoom = fr => fr + 2;
 // P4, P5, P6, repeated until nothing changes (at most 8 rounds)
 let FP_OK = false;   // whether the last fixPatterns ended on a round with no edit (a fixed point of P4 - P6), not on the 8-round limit
@@ -277,10 +291,11 @@ function fixPatterns(r0, W, H, faceRows, from = null, lk = null) {
   // `from`: a raster known to be a fixed point of the three passes except at the held tiles `lk` (the last fixPatterns result, relocked): the tiles that read a tile of `r0` that differs from it, or a held tile, are the
   // first round's, and no other tile can be edited by it, so the first round too looks at those only.
   const D4 = new Uint8Array(W * H), D5 = new Uint8Array(W * H), D6 = new Uint8Array(W * H), F4 = new Uint8Array(H), F5 = new Uint8Array(H), F6 = new Uint8Array(H);
-  const mark = (ex, ey) => {   // P4 reads a tile's x..x+1, y..y+1; P5 x-1..x+1, y-1..y+2; P6 its column, y..y+fRoom
+  // cliff-contour-1: P5 and P6 also read the lean test (x - 1 .. x + 1, y - 1 .. y + 4), so an edit marks the tiles that read it there too
+  const mark = (ex, ey) => {   // P4 reads a tile's x..x+1, y..y+1; P5 x-1..x+1, y-1..y+4; P6 its column, y..y+fRoom, and x-1..x+1, y-1..y+4
     for (let y = Math.max(0, ey - 1); y <= ey; y++) { F4[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex; x++) D4[y * W + x] = 1; }
-    for (let y = Math.max(0, ey - 2); y <= ey + 1 && y < H; y++) { F5[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex + 1 && x < W; x++) D5[y * W + x] = 1; }
-    for (let y = Math.max(0, ey - fRoom); y <= ey; y++) { F6[y] = 1; D6[y * W + ex] = 1; }
+    for (let y = Math.max(0, ey - 4); y <= ey + 1 && y < H; y++) { F5[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex + 1 && x < W; x++) D5[y * W + x] = 1; }
+    for (let y = Math.max(0, ey - fRoom); y <= ey + 1 && y < H; y++) { F6[y] = 1; for (let x = Math.max(0, ex - 1); x <= ex + 1 && x < W; x++) D6[y * W + x] = 1; }
   };
   const t4 = (x, y) => {
     const i = y * W + x, a = r[i], b = r[i + 1], c = r[i + W], d = r[i + W + 1];
@@ -292,11 +307,13 @@ function fixPatterns(r0, W, H, faceRows, from = null, lk = null) {
     if (r[i] !== 1 || r[i + W] !== 0) return 0;
     if ((r[i - 1] === 1 && r[i - 1 + W] === 0) || (r[i + 1] === 1 && r[i + 1 + W] === 0)) return 0;
     if ((r[i - 1 - W] === 1 && r[i - 1] === 0) || (r[i + 1 - W] === 1 && r[i + 1] === 0) || (r[i - 1 + W] === 1 && r[i - 1 + 2 * W] === 0) || (r[i + 1 + W] === 1 && r[i + 1 + 2 * W] === 0)) return 0;
+    if (LEAN_ON && leanAt(r, W, i)) return 0;   // cliff-contour-1: a side wall's one-column jog is kept (the set draws it as the wall leaning over by a column), never filled down into a straight wall
     r[i + W] = 1; mark(x, y + 1); return 1;
   };
   const t6 = (x, y) => {
     const i = y * W + x;
     if (r[i] !== 1 || r[i + W] !== 0) return 0;
+    if (LEAN_ON && x > 0 && x + 1 < W && y > 0 && leanAt(r, W, i)) return 0;   // cliff-contour-1: a lean has no face under it (the rows under its lip are the wall below's flank): no foot room
     for (let k = 2; k <= fRoom; k++) if (r[i + k * W]) { for (let j = 1; j < k; j++) { r[i + j * W] = 1; mark(x, y + j); } return 1; }
     return 0;
   };
@@ -376,22 +393,28 @@ function openCloseNear(r, prev, co, W, H, E, lk) {
   }
   return out;
 }
+let CLEAN_SINK = null;   // cliff-contour-1: the tools' sink for the cleanup's own steps (the first cleanup of a window only)
 function cleanup(r0, W, H, rule, lk) {
   // (land-time-1) `known`: the raster the last fix made when that was a fixed point (see fixPatterns): the next fix of a raster that differs from it in a few tiles looks only at the tiles that read them
   const E = elemOf(rule.minFeature); let known = null;
   const fix = (r, from) => { const o = relock(fixPatterns(r, W, H, rule.faceRows, from, lk), lk); known = FP_OK ? o : null; return o; };
   let r = relock(r0.slice(), lk);
   let fixed = false, prev = null, co = null;
+  const sink = CLEAN_SINK; CLEAN_SINK = null;
   for (let pass = 0; pass < 12; pass++) {
     co = prev ? openCloseNear(r, prev, co, W, H, E, lk) : openClose(r, W, H, E, lk);
+    if (sink && pass === 0) sink.openclose1 = co.slice();
     const n = fix(co, known), done = same(n, r);
+    if (sink && pass === 0) sink.patterns1 = n.slice();
     prev = r; r = n; if (done) { fixed = true; break; }
   }
   // end on the opening, then one closing: no raised land narrower than the feature, and nothing the closing leaves low is narrower either (the same step again on a raster the loop left unchanged is that raster: skipped)
   if (!fixed) r = fix(openClose(r, W, H, E, lk), null);
+  if (sink) sink.loop = r.slice();
   const kn = known ? r.slice() : null;
   dropSmall(r, W, H); relock(r, lk);
   r = fix(r, kn);
+  if (sink) sink.small = r.slice();
   // what the foot-room and lone-lip passes can leave: a one-tile sliver (a tile with no 2 x 2 block of its own level) is flipped to what rings it, and a face of 2+ tiles ending square against a side wall
   // 3 rows high loses its last lip tile (the end becomes a step); then the patterns are fixed again; at most 4 rounds
   for (let round = 0; round < 8; round++) {
@@ -434,8 +457,8 @@ function violAt(r, W, H, x, y, fr) {
     { const c = v * 8 + rr * 4 + d * 2 + r[i + W + 1]; if (c === 6 || c === 9) { n++; DBGV.push("pinch"); } }
     if (v === 1 && d === 0) {
       const lipL = l === 1 && r[i - 1 + W] === 0, lipR = rr === 1 && r[i + 1 + W] === 0;
-      if (!lipL && !lipR && !((r[i - W - 1] === 1 && l === 0) || (r[i - W + 1] === 1 && rr === 0) || (r[i + W - 1] === 1 && r[i + 2 * W - 1] === 0) || (r[i + W + 1] === 1 && r[i + 2 * W + 1] === 0))) { n++; DBGV.push("lone"); }
-      for (let k = 2; k <= footRoom(fr); k++) if (r[i + k * W]) { n++; DBGV.push("foot"); break; }
+      if (!lipL && !lipR && !((r[i - W - 1] === 1 && l === 0) || (r[i - W + 1] === 1 && rr === 0) || (r[i + W - 1] === 1 && r[i + 2 * W - 1] === 0) || (r[i + W + 1] === 1 && r[i + 2 * W + 1] === 0)) && !(LEAN_ON && leanAt(r, W, i))) { n++; DBGV.push("lone"); }
+      if (!(LEAN_ON && leanAt(r, W, i))) for (let k = 2; k <= footRoom(fr); k++) if (r[i + k * W]) { n++; DBGV.push("foot"); break; }
       if (!lipR && lipL && !rr && !r[i + 1 - W] && !r[i + 1 - 2 * W]) { n++; DBGV.push("square"); }
       if (!lipL && lipR && !l && !r[i - 1 - W] && !r[i - 1 - 2 * W]) { n++; DBGV.push("square"); }
     }
@@ -491,24 +514,50 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
       const pieces = [], edges = [run.from, ...cut, end];
       for (let i = 0; i + 1 < edges.length; i++) pieces.push({ a: edges[i], b: edges[i + 1], j: i === 0 && edges.length > 2 ? jOf(edges[1] - 1) : jOf(edges[i]) });
       // one piece moved one tile, by the first of the two moves that leaves no shape check failing round it and fewer tiles over the cap on the lines near
-      const shift = pc => {
+      // lenient (cliff-contour-2, the end moves below): a move is kept when it leaves no more failing shape checks round it than were there (a square corner already beside the stretch no longer blocks it)
+      const shift = (pc, lenient = false) => {
         if (pc.a < JOG_CLEAR || pc.b > len - JOG_CLEAR) return null;   // near the window's rim: left, and nothing is made of it (another window sees the piece whole)
         for (const mv of K.moves) {
           const tiles = []; for (let t = pc.a; t < pc.b; t++) for (const [dx, dy, v] of mv) tiles.push([(K.alongX ? t : run.l) + dx, (K.alongX ? run.l : t) + dy, v]);
           if (tiles.some(([x, y, v]) => x < 1 || y < 1 || x >= W - 1 || y >= H - 1 || (lk && lk[y * W + x]) || (v === 1 && noRaise[y * W + x]))) continue;
           const xs = tiles.map(p => p[0]), ys = tiles.map(p => p[1]), b = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], old = tiles.map(([x, y]) => r[y * W + x]);
+          const v0 = lenient ? violBox(r, W, H, ...b, fr) : 0;
           for (const [x, y, v] of tiles) r[y * W + x] = v;
-          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) === 0 && (() => { const ex1 = excess(K, run.l - 2, run.l + 2); tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; }); const ex0 = excess(K, run.l - 2, run.l + 2); for (const [x, y, v] of tiles) r[y * W + x] = v; return ex1 < ex0; })()) { jogs++; return true; }
+          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) <= v0 && (() => { const ex1 = excess(K, run.l - 2, run.l + 2); tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; }); const ex0 = excess(K, run.l - 2, run.l + 2); for (const [x, y, v] of tiles) r[y * W + x] = v; return ex1 < ex0; })()) { jogs++; return true; }
           if (info.dbg) (info.why || (info.why = [])).push(`try ${K.k} ${pc.a}-${pc.b} ${tiles.length}t: ${[...new Set(DBGV)].join(',')}`);
           tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; });
         }
         return false;
       };
       // the odd pieces move (a piece that cannot, a shape check failing round it, stays: the run is left over its cap there)
+      const failed = [];
       for (const pc of pieces) {
         if ((pc.j & 1) === 0) continue;
-        if (shift(pc) === false) { missed++; (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`); }
+        if (shift(pc) === false) failed.push(pc);
       }
+      // cliff-contour-2 (GD item 2, 2026-11-16): where a stretch is still over its cap (a held way-up site in the piece, or a shape check failing round it), its tail or head is moved by one row instead: the fewest
+      // tiles that bring the stretch under its cap, then a few more, tail first. That is one one-row step, which the set draws as a slope. It depends only on the stretch's own ends, so it is made only where
+      // the whole stretch lies JOG_CLEAR clear of the window's rim (every window that compares its cells sees it whole and makes the same move).
+      // (rule 8: no bend within 2 columns of a held way-up site, so no moved tile within 2 of a held one on the line.) A stretch whose site sits in its middle takes a move at each end: when no single move
+      // brings it under its cap, the largest move that is allowed is made and the stretch looked at again (at most 3 moves).
+      const nearHeld = (pc) => { if (!lk) return false; for (let u = pc.a - 2; u < pc.b + 2; u++) { const x = K.alongX ? u : run.l, y = K.alongX ? run.l : u; if (x >= 0 && y >= 0 && x < W && y < H && lk[y * W + x]) return true; } return false; };
+      const over = () => { const out = []; for (let t = run.from, n = 0; t <= Math.min(len, run.from + run.n + 1); t++) { if (t < len && isOn(t, run.l)) { n++; continue; } if (n > CAP[K.k]) out.push([t - n, t]); n = 0; } return out; };
+      let left = 0; const before = over().length ? r.slice() : null, jogs0 = jogs;
+      for (let round = 0; round < 3 && before; round++) {
+        const st = over(); if (!st.length) break;
+        let moved = false;
+        for (const [s, e] of st) {
+          const n = e - s; if (s < JOG_CLEAR || e > len - JOG_CLEAR) continue;
+          let done = false;
+          for (let k = n - CAP[K.k]; k <= Math.min(n - 3, n - CAP[K.k] + 3) && !done; k++) for (const pc of [{ a: e - k, b: e }, { a: s, b: s + k }]) if (!nearHeld(pc) && shift(pc, true)) { done = true; break; }
+          for (let k = Math.min(n - 3, n - CAP[K.k] - 1); k >= 2 && !done; k--) for (const pc of [{ a: e - k, b: e }, { a: s, b: s + k }]) if (!nearHeld(pc) && shift(pc, true)) { done = true; break; }
+          if (done) moved = true;
+        }
+        if (!moved) break;
+      }
+      left = over().length;
+      if (left && before && jogs > jogs0) { r.set(before); jogs = jogs0; left = over().length; }   // moves that leave the stretch over its cap are undone (a notch for nothing)
+      if (left) { missed += left; for (const pc of failed) (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`); if (!failed.length) (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} run ${run.from}-${run.from + run.n}`); }
     }
   }
   return { jogs, missed };
@@ -550,6 +599,7 @@ function blockedAt(r, W, H, x, y) {
       const li = L * W + x; if (r[li]) continue;
       for (let d = -1; d <= 1; d += 2) {
         const xi = li + d; if (!r[xi] || r[xi + W]) continue;
+        if (LEAN_ON && leanAt(r, W, xi)) continue;   // a lean has no end piece (relief.mjs endAt)
         let k = 0; while (k < 3 && !r[li - k * W]) k++;
         if (y >= (k >= 3 ? L - 2 : k === 2 ? L - 1 : L) && y <= L + FACE3) return true;
       }
@@ -566,6 +616,7 @@ function blockedEdge(r, W, H, x, y) {
     if (R(x, L)) continue;
     for (const xl of [x - 1, x + 1]) {
       if (!R(xl, L) || R(xl, L + 1)) continue;
+      if (LEAN_ON && xl >= 1 && xl < W - 1 && L >= 1 && leanAt(r, W, L * W + xl)) continue;
       let k = 0; while (k < 3 && !R(x, L - k)) k++;
       if (y >= (k >= 3 ? L - 2 : k === 2 ? L - 1 : L) && y <= L + FACE3) return true;
     }
@@ -612,6 +663,75 @@ function fixGaps(r, W, H, rule, lk, noRaise) {
   return fixed;
 }
 
+// land-reach-1 (cliff-rules 6, designer 2026-11-16: no bump or notch under 2 tiles): a strip of raised land (a bump) or low land (a notch) one tile thick and 1 to BUMP_MAX tiles long that stands out of a
+// straight edge and comes back (the tile beyond it and the tiles before and after it along the edge are the other level, the tiles behind it its own) is cut (a bump) or filled (a notch), so the edge runs
+// straight past it. Its two one-tile turns would draw as a lean and a lean back (a face one tile wide). An edit is kept when it makes no shape check fail that did not, leaves no straight run over its cap,
+// and touches no held tile (and raises none the rule keeps low). Found in raster order (the world's order in every window). Returns the number of edits.
+export const BUMP_MAX = 4, BUMP_READ = 8, BUMP_WHY = { done: 0, held: 0, viol: 0, cap: 0 };   // BUMP_WHY: the tools' count of what the pass did and why it left a strip
+let BUMPS_ON = true;
+export const setBumps = (on) => { BUMPS_ON = !!on; GEN++; };   // the tools: the land with the pass off (before / after counts)
+// Every strip is judged on the land as the pass found it (a snapshot), never on another strip's edit, so no chain of edits carries a difference in from a window's ring (the seam); the edits are then made
+// together, and one whose box fails more shape checks than the snapshot's did (two edits side by side) is undone.
+// Every read a decision makes lies inside one cell (the cell's tiles are the same in every window that shows it at or next to its middle; a window's outer ring of cells may differ from the true land,
+// even a few tiles from the cells it shares: the seam), so a strip whose reads would cross a cell edge is left.
+function flattenBumps(rOut, W, H, rule, lk, noRaise, gx0, gy0) {
+  if (!BUMPS_ON) return 0;
+  const r = rOut.slice(), R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]), acc = [], fr = footRoom(rule.faceRows); let n = 0;
+  let cx0 = 0, cy0 = 0, cx1 = 0, cy1 = 0;   // the cell the current strip's reads must stay in (window tiles)
+  const inCell = (x, y) => x >= cx0 && x <= cx1 && y >= cy0 && y <= cy1;
+  // the shape checks an edit of the tiles T can change: violAt of every tile that reads one of them (1 column each side, footRoom rows above, 2 below); and what those checks read (2 columns, 2 rows above,
+  // footRoom below): null when that leaves the cell
+  const boxOf = T => { let a = 1e9, b = 1e9, c = -1, d = -1; for (const [i] of T) { const x = i % W, y = (i / W) | 0; if (x < a) a = x; if (x > c) c = x; if (y < b) b = y; if (y > d) d = y; }
+    const box = [a - 1, b - fr, c + 1, d + 2]; return inCell(box[0] - 1, box[1] - 2) && inCell(box[2] + 1, box[3] + fr) ? box : null; };
+  const count = (arr, box) => { let s = 0; for (let y = box[1]; y <= box[3]; y++) for (let x = box[0]; x <= box[2]; x++) s += violAt(arr, W, H, x, y, rule.faceRows); return s; };
+  // the straight run of edge tiles through (x, y) that face (ox, oy) (raised, the tile that way low), along the edge; a run that reaches the cell's edge is taken as over its cap
+  const runAt = (x, y, ox, oy) => { const ax = oy ? 1 : 0, ay = ox ? 1 : 0, is = (a, b) => R(a, b) === 1 && R(a + ox, b + oy) === 0; if (!is(x, y)) return 0;
+    let k = 1, t = 1; for (; is(x + t * ax, y + t * ay); t++) { if (!inCell(x + t * ax + ox, y + t * ay + oy) || !inCell(x + (t + 1) * ax, y + (t + 1) * ay)) return 1e9; k++; }
+    for (t = 1; is(x - t * ax, y - t * ay); t++) { if (!inCell(x - t * ax + ox, y - t * ay + oy) || !inCell(x - (t + 1) * ax, y - (t + 1) * ay)) return 1e9; k++; } return k; };
+  const capOf = (ox, oy) => (ox ? CAP.side : oy > 0 ? CAP.south : CAP.rim);
+  // only the window's middle cell and the ring of cells round it: the place keeps the middle cell, and the seam compares the cells next to it; a decision reads one cell, so these come out the same
+  const wr = rule.window, ya = Math.max(2, (wr - 1) * CH), yb = Math.min(H - 2, (wr + 2) * CH), xa = Math.max(2, (wr - 1) * CW), xb = Math.min(W - 2, (wr + 2) * CW);
+  for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) {
+    const i0 = y * W + x, v0 = r[i0]; if (r[i0 - 1] === v0 && r[i0 + 1] === v0 && r[i0 - W] === v0 && r[i0 + W] === v0) continue;   // no edge at this tile
+    for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    const v = v0, ax = oy ? 1 : 0, ay = ox ? 1 : 0; if (R(x + ox, y + oy) !== 1 - v || R(x - ax, y - ay) === v) continue;
+    let k = 0; while (k <= BUMP_MAX && R(x + k * ax, y + k * ay) === v && R(x + k * ax + ox, y + k * ay + oy) === 1 - v) k++;
+    if (k < 1 || k > BUMP_MAX || R(x + k * ax, y + k * ay) !== 1 - v) continue;
+    let ok = true; for (let j = -1; j <= k && ok; j++) if (R(x + j * ax - ox, y + j * ay - oy) !== v) ok = false;
+    if (!ok) continue;
+    { const X = Math.floor((gx0 + x) / CW), Y = Math.floor((gy0 + y) / CH); cx0 = X * CW - gx0; cy0 = Y * CH - gy0; cx1 = cx0 + CW - 1; cy1 = cy0 + CH - 1; }
+    if (!inCell(x - ax - Math.abs(ox), y - ay - Math.abs(oy)) || !inCell(x + k * ax + Math.abs(ox), y + k * ay + Math.abs(oy))) { BUMP_WHY.edge = (BUMP_WHY.edge || 0) + 1; continue; }
+    // the edits tried, in order: the strip turned to the other level (a bump cut, a notch filled: the edge runs straight past it), else the strip carried on along the edge, forward then back, by 1 to
+    // BUMP_MAX tiles of its own level (it then meets the next turn, a corner or another step, and its out-and-back becomes one step)
+    const strip = []; for (let j = 0; j < k; j++) strip.push([(y + j * ay) * W + x + j * ax, 1 - v]);
+    const tries = [strip];
+    for (const dir of [1, -1]) for (let m = 1; m <= BUMP_MAX; m++) { const t = []; for (let j = 0; j < m; j++) { const jj = dir > 0 ? k + j : -1 - j; t.push([(y + jj * ay) * W + x + jj * ax, v]); } tries.push(t); }
+    let done = false, why = null;
+    for (const t of tries) {
+      if (t.some(([i, to]) => i < 0 || i >= W * H || (lk && lk[i]) || (to === 1 && noRaise[i]) || r[i] === to)) { why = why || 'held'; continue; }
+      const box = boxOf(t); if (!box) { why = why || 'edge'; continue; }
+      DBGV.length = 0; const before = count(r, box);
+      for (const [i, to] of t) r[i] = to;
+      // the edge a cut or fill leaves: a bump cut leaves the tiles behind it facing out; a notch filled leaves the strip itself facing back (a carried strip makes no longer run than was there)
+      const ex = v ? x - ox : x, ey = v ? y - oy : y, fx = v ? ox : -ox, fy = v ? oy : -oy;
+      DBGV.length = 0;
+      // a carried strip must end the out-and-back: past its new end the edge turns (a corner or a step), it does not come back to the line (that would only be a longer bump)
+      let back = false; if (t !== strip) { const dir = t[0][0] === (y + k * ay) * W + x + k * ax ? 1 : -1; let j = dir > 0 ? k : -1;
+        while (inCell(x + j * ax + ox, y + j * ay + oy) && inCell(x + j * ax - ox, y + j * ay - oy) && R(x + j * ax, y + j * ay) === v && R(x + j * ax + ox, y + j * ay + oy) === 1 - v) j += dir;
+        back = !inCell(x + j * ax + ox, y + j * ay + oy) || !inCell(x + j * ax - ox, y + j * ay - oy) || (R(x + j * ax, y + j * ay) === 1 - v && R(x + j * ax - ox, y + j * ay - oy) === v); }
+      const vb = count(r, box) > before, cp = back || (t === strip && runAt(ex, ey, fx, fy) > capOf(fx, fy));
+      for (const [i, to] of t) r[i] = 1 - to;
+      if (!vb && !cp) { done = true; acc.push({ t, box, before }); break; }
+      if (!why || why === 'held') why = vb ? 'viol' : 'cap';
+    }
+    if (!done) BUMP_WHY[why || 'held']++;
+  } }
+  // the edits made together (in raster order; one whose tiles another has changed already is passed over), then each checked on the result
+  const made = [];
+  for (const e of acc) { if (e.t.some(([i]) => rOut[i] !== r[i])) { BUMP_WHY.clash = (BUMP_WHY.clash || 0) + 1; continue; } for (const [i, to] of e.t) rOut[i] = to; made.push(e); }
+  for (const e of made) { DBGV.length = 0; if (count(rOut, e.box) > e.before) { for (const [i, to] of e.t) rOut[i] = 1 - to; BUMP_WHY.undone = (BUMP_WHY.undone || 0) + 1; } else { n++; BUMP_WHY.done++; } }
+  return n;
+}
 // what the held sites, the jogs and the pockets leave at their edges (a sliver, a pinch, a lone face, a short foot): a tile is flipped (never a held one) when that leaves fewer failing checks round it; at most 8 rounds
 function fixLeft(r, W, H, rule, lk, noRaise) {
   let fixed = 0;
@@ -666,7 +786,7 @@ function walkParts(R, W, H, way, wblock) {
     if (R[i]) wk[i] = r(x + 1, y) && r(x - 1, y) && r(x, y + 1) && r(x, y - 1) ? 1 : 0;
     else wk[i] = wblock[i] || rockUnder(R, W, way, x, y) || r(x - 1, y) || r(x + 1, y) ? 0 : 1;
   }
-  for (let y = 0; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (R[y * W + x] && !R[(y + 1) * W + x])   // the cell beyond a south run's end: rows L - 2 .. L + 3 are the end piece's
+  for (let y = 0; y < H - 1; y++) for (let x = 1; x < W - 1; x++) if (R[y * W + x] && !R[(y + 1) * W + x] && !(LEAN_ON && y >= 1 && leanAt(R, W, y * W + x)))   // the cell beyond a south run's end: rows L - 2 .. L + 3 are the end piece's (a lean has none)
     for (const dx of [-1, 1]) if (!R[y * W + x + dx]) for (let j = -2; j <= FACE3; j++) if (y + j >= 0 && y + j < H && !R[(y + j) * W + x + dx] && !way[(y + j) * W + x + dx]) wk[(y + j) * W + x + dx] = 0;
   return wk;
 }
@@ -698,9 +818,46 @@ function blobOf(r, W, H, tiles, v, limit, bad, box) {
   return q;
 }
 
+// The field's sum over the rounded element of radius rad (the tiles dx, dy with dx² + dy² <= rad² + rad: for 2, the 5 x 5 square without its corners) round each tile, from an integral image (whole numbers,
+// exact): { s (Float64Array), c (the element's tile count) }; null when rad is 0. A held tile's sum is its own -1 times c (it stays low).
+function smoothField(q, held, W, H, rad) {
+  if (!rad) return null;
+  // each row padded by rad tiles each side (its first and last tile repeated), its running sums; rows past the raster's top and bottom are its first and last row
+  const PW = W + 2 * rad, P = new Float64Array(H * (PW + 1));
+  for (let y = 0; y < H; y++) { const o = y * (PW + 1); let s = 0; for (let j = 0; j < PW; j++) { const x = j - rad; s += q[y * W + (x < 0 ? 0 : x >= W ? W - 1 : x)]; P[o + j + 1] = s; } }
+  // the element as rows: for each dy, the half width hw (dx² + dy² <= rad² + rad)
+  const DY = [], HW = []; let c = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); c += 2 * hw + 1; }
+  const s = new Float64Array(W * H), nr = DY.length;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = y * W + x; if (held[i]) { s[i] = -c; continue; }
+    let t = 0;
+    for (let r = 0; r < nr; r++) { let yy = y + DY[r]; yy = yy < 0 ? 0 : yy >= H ? H - 1 : yy; const o = yy * (PW + 1), j = x + rad; t += P[o + j + HW[r] + 1] - P[o + j - HW[r]]; }
+    s[i] = t;
+  }
+  return { s, c };
+}
+
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
+// rupar-banks-speed-2: a window made with no banks (the verdict's) is kept; the same cell's window with banks is that very window when no bank site lands in it (banks are the only thing BANKS_SKIP changes), so it is returned whole
 export function windowLevels(L, X, Y) {
+  if (L.rule.banks !== 0 && !BANKS_SKIP) {
+    // the window with no banks first (it hands the bank scan the raised field of its inner cells, and is the verdicts' window when it holds a part), then the banks that land in it: none, it is the answer
+    const w0 = noBankWindow(L, X, Y), WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, gx0 = (X - WR) * CW, gy0 = (Y - WR) * CH, foot = footRoom(L.rule.faceRows);
+    let any = false;
+    for (const b of banksIn(L, X, Y)) { const lx = b.x0 - gx0, ly = b.lip - gy0; if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) { any = true; break; } }
+    if (!any) return w0;
+  }
+  return windowLevelsMake(L, X, Y);
+}
+// the window of cell (X, Y) made with no banks, kept per cell
+function noBankWindow(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.nbw && B.nbw.get(key); if (hit) return hit;
+  const was = BANKS_SKIP; BANKS_SKIP = true; let w;
+  try { w = windowLevelsMake(L, X, Y); } finally { BANKS_SKIP = was; }
+  if (!B.nbw) B.nbw = new Map(); if (B.nbw.size > 12) B.nbw.clear(); B.nbw.set(key, w); return w;
+}
+function windowLevelsMake(L, X, Y) {
   const WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, q = new Int32Array(W * H), th = L.rule.levels, X0w = X - WR, Y0w = Y - WR;
   for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) {
     const c = qCell(L, X - WR + i, Y - WR + j);
@@ -729,11 +886,17 @@ export function windowLevels(L, X, Y) {
     noRaise[i] = held[i] || inl < RAISE_OFF + 1 ? 1 : 0;
     wblock[i] = wr[i] && !(inRealm(Math.floor(gx / CW), Math.floor(gy / CH)) && L.realm.ford[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))]) ? 1 : 0;
     edge[i] = x < 2 || y < 2 || x >= W - 2 || y >= H - 2 || inl < 6 ? 1 : 0; }
+  // cliff-contour-1: the field is read at the minimum feature's own scale before the threshold: a tile's value is the sum of q over the rounded element of radius `smooth` round it (the window's rim read
+  // as itself, replicated; held tiles stay held), so the threshold draws the field's smooth contour and the opening below has little left to square off. smooth 0: the tile's own q, as before.
+  const sq = smoothField(q, held, W, H, L.rule.smooth | 0);
   // one raster per boundary (level above k), each cleaned on its own; a higher level lies inside the lower one
   const out = new Uint8Array(W * H); let below = null; const info = { sites: [], filled: [], pockets: [], jogs: 0, jogsMissed: 0, pocketStairs: [], dbg: !!globalThis.B3C_DBG };
   for (let k = 0; k < th.length; k++) {
-    const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = q[i] >= th[k] && (!below || below[i]) ? 1 : 0;
+    const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = (sq ? sq.s[i] >= th[k] * sq.c && !held[i] : q[i] >= th[k]) && (!below || below[i]) ? 1 : 0;
     let r = base;
+    if (k === 0) { const B = bkOf(L);   // rupar-banks-speed-2: the raised field of the window's inner cells is the bank scan's own (rfCell): a tile in them reads no further than the window holds
+      for (let j = 1; j < 2 * WR; j++) for (let i = 1; i < 2 * WR; i++) { const cx = X0w + i, cy = Y0w + j, key = (cx + 8) * 1000 + (cy + 8); if (!inRealm(cx, cy) || B.rf.has(key)) continue;
+        if (B.rf.size > 3000) B.rf.clear(); const f = new Uint8Array(N); for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) { const x = i * CW + tx, y = j * CH + ty, p = y * W + x; f[ty * CW + tx] = base[p] && !noRaise[p] ? 1 : 0; } B.rf.set(key, f); } }
     if (k === 0) r = landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info);
     else r = cleanup(base, W, H, L.rule, null);
     if (below) for (let i = 0; i < W * H; i++) r[i] &= below[i];
@@ -755,8 +918,14 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   // the site keeps off water: the raised rows hold no tile that water holds low (water and the tile round it), and the foot no water; it moves along the face, nearest the port first, to the first place that does
   const wet = (x, y) => { const cx = Math.floor(x / CW), cy = Math.floor(y / CH); return !!wetCell(L, cx, cy)[(y - cy * CH) * CW + x - cx * CW]; };
   const held = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (wet(x + dx, y + dy)) return true; return inlandOf(x, y) < RAISE_OFF + 1; };
-  const clear = x0 => { for (let y = st.lip - SITE_UP; y <= st.lip; y++) for (let x = x0 - 1; x < x0 + SITE_W + 1; x++) if (held(x, y)) return false;
-    for (let y = st.lip + 1; y <= st.lip + footRoom(L.rule.faceRows); y++) for (let x = x0 + 1; x < x0 + SITE_W - 1; x++) if (wet(x, y)) return false; return true; };
+  const clearAt = (x0, lip) => { for (let y = lip - SITE_UP; y <= lip; y++) for (let x = x0 - 1; x < x0 + SITE_W + 1; x++) if (held(x, y)) return false;
+    for (let y = lip + 1; y <= lip + footRoom(L.rule.faceRows); y++) for (let x = x0 + 1; x < x0 + SITE_W - 1; x++) if (wet(x, y)) return false; return true; };
+  const clear = x0 => clearAt(x0, st.lip);
+  // land-reach-1: first a site on the land's own contour, read on the smoothed field the threshold draws (the rule's `smooth`), anywhere along the edge from the cell west to the cell east, nearest the port:
+  // the 4 middle columns raised from the lip row up SITE_UP + 2 rows and low from the row under the lip down past the foot and 3 walkable rows more, the outer two columns raised on the lip row and low under it
+  // (a straight lip), and no water at the foot. A way up there joins the top it climbs from to the low land it meets (the old choice could cut a pit into raised land, or heap a mesa on low land: 48 of
+  // seed 7's 188 ways up led into a pit or onto a mesa). From the field only, so every window finds the same site. None: the choice below.
+  { const nat2 = natSite(L, st, wet, (x0, ly) => clearAt(x0, ly)); if (nat2) { st.x0 = nat2[0]; st.lip = nat2[1]; st.ok = true; st.nat = true; return st; } }
   const base = st.x0, lo = st.X * CW + 2, hi = st.X * CW + CW - SITE_W - 2;
   // first a place where the field itself is raised above the lip and low below it (the site cuts no pit into raised land and heaps no hill on low land), else any clear one
   const nat = x0 => { const lr = st.lip - st.Y * CH; let hi = 0, lo = 0; for (let c = x0 - st.X * CW; c < x0 - st.X * CW + SITE_W; c++) { if (qAt(c, lr - 2) >= 0) hi++; if (qAt(c, lr + 3) < 0) lo++; } return hi >= 3 && lo >= 3; };
@@ -768,47 +937,314 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   for (const needRoom of [true, false]) for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0) && (!needRoom || room(x0))) { st.x0 = x0; st.ok = true; st.room = needRoom; return st; } }   // a site with room first; none: the old choice (a stair the realm planned keeps its way up: dropping it left whole regions unreached, 16-20 stairs a seed)
   return st;
 }
+// land-reach-1: the natural site of a stair on the edge (st.X, st.Y)-(st.X, st.Y + 1), or null: [x0, lip] in world tiles (see siteOf). The field is smoothed as windowLevels smooths it (the sum over the rounded
+// element of radius `smooth`), read from the cells' q; a tile is raised where the sum is at or over the threshold times the element's count.
+export const NAT_FOOT = 3, NAT_PART = 200, NAT_DEEP = 20;   // NAT_DEEP: the lip row may lie this many rows into the lower cell (a basin whose tip starts low in it)   // walkable low rows under the foot row; the field part a way up must climb from and to (tiles, or the search box's rim)
+function natSite(L, st, wet, clearAt) {
+  const rad = L.rule.smooth | 0, th = L.rule.levels[0], foot = footRoom(L.rule.faceRows), up = SITE_UP + 2, down = foot + NAT_FOOT - 1;   // footRoom counts the foot row and one walkable row
+  const xa = (st.X - 1) * CW + 2, xb = (st.X + 2) * CW - SITE_W - 2, ya = st.Y * CH + 10, yb = (st.Y + 1) * CH + NAT_DEEP;
+  const M = 16, bx0 = xa - rad - M, by0 = ya - up - rad - M, bw = xb + SITE_W + rad + M - bx0, bh = yb + down + 1 + rad + M - by0;   // M: room for the part floods (wide)
+  const qW = (gx, gy) => { const cx = Math.floor(gx / CW), cy = Math.floor(gy / CH); return qCell(L, cx, cy)[(gy - cy * CH) * CW + gx - cx * CW]; };
+  const Q = new Int32Array(bw * bh); for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) Q[y * bw + x] = qW(bx0 + x, by0 + y);
+  const HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; HW.push(hw); cnt += 2 * hw + 1; }
+  const S = new Int8Array(bw * bh).fill(-1);   // 1 raised, 0 low, -1 not read
+  const up1 = (gx, gy) => { const x = gx - bx0, y = gy - by0, k = y * bw + x; if (S[k] >= 0) return S[k];
+    let s = 0; for (let j = 0; j <= 2 * rad; j++) { const yy = y + j - rad, hw = HW[j]; for (let i = -hw; i <= hw; i++) s += Q[yy * bw + x + i]; }
+    return (S[k] = s >= th * cnt ? 1 : 0); };
+  const ok = (x0, ly) => {
+    // the way up's 2 columns: the contour on the lip row; the other 4: within a row of it (the held site makes the 6 straight), so the land above and below is 6 wide (over the minimum feature: the cleanup
+    // keeps it)
+    for (let c = x0; c < x0 + SITE_W; c++) { const e = c === x0 + 2 || c === x0 + 3 ? 0 : 1;
+      for (let r = ly - up; r <= ly - e; r++) if (!up1(c, r)) return false; for (let r = ly + 1 + e; r <= ly + down; r++) if (up1(c, r)) return false; }
+    for (let r = ly + 1; r <= ly + down; r++) for (let c = x0 - 1; c <= x0 + SITE_W; c++) if (wet(c, r)) return false;
+    return clearAt(x0, ly) && wide(x0 + 2, ly + down, 0) && wide(x0 + 2, ly - up, 1);
+  };
+  // the low land under the foot and the raised land over the top go on (the field's part holds NAT_PART tiles or reaches the box's rim): a dip the cleanup fills, or a knoll it lowers, is no place to climb to
+  function wide(x, y, v) { const seen = new Set([y * 4096 + x]), q = [[x, y]];
+    for (let k = 0; k < q.length; k++) { if (q.length >= NAT_PART) return true; const [a, b] = q[k];
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const xx = a + dx, yy = b + dy; if (xx - rad < bx0 + rad || yy - rad < by0 + rad || xx + rad >= bx0 + bw - rad || yy + rad >= by0 + bh - rad) return true;
+        const key = yy * 4096 + xx; if (!seen.has(key) && up1(xx, yy) === v) { seen.add(key); q.push([xx, yy]); } } }
+    return false; }
+  const base = st.X * CW + st.port - 2, xs = [];
+  for (let d = 0; base + d <= xb || base - d >= xa; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 >= xa && x0 <= xb) xs.push(x0); }
+  const lips = []; for (let d = 0; d <= 22; d++) for (const s of d ? [1, -1] : [1]) { const y = st.Y * CH + CH - 1 + s * d; if (y >= ya && y <= yb) lips.push(y); }
+  for (const x0 of xs) for (const ly of lips) if (ok(x0, ly)) return [x0, ly];
+  return null;
+}
 // a pocket stair's site is made only where every tile it holds raised may be raised (none is held low by water or the coast): else its lip would stand alone beside tiles the rule keeps low
 const siteRaisable = (noRaise, W, lx, ly) => { for (let y = ly - SITE_UP; y <= ly; y++) for (let x = lx; x < lx + SITE_W; x++) if (noRaise[y * W + x]) return false; return true; };
+// cliff-contour-2 (seam-safe pocket stairs, GD 11-16): a pocket stair changes the land round its site (its held rows and what the cleanup does near them), so it is cut only where every window the seam
+// check compares on those cells (the windows centred on them and on their 4-neighbours) sees the whole pocket, with its 6-tile footprint, at least STAIR_RIM tiles in from that window's rim: then each of
+// them finds the same shut pocket and cuts the same stair. Else the pocket is left (listed as deferred), as a pocket too large for its cells is. Two seed 13 cases under land-rule smooth broke this: a low pocket
+// closing on one window's last raster row (open there) and a coast plateau reaching one window's rim ring; the other window cut a stair whose held rows reshaped tiles in the shared cell.
+const FILL_UNDER = 200;   // land-reach-1 (designer 2026-11-16): a closed part under this many walkable tiles is filled to its neighbours' level; this many or more takes a way up
+const STAIR_RIM = 2, STAIR_REACH = 4;   // the window's edge band (2 tiles); how far the cleanup carries a held tile's change
+function stairSeenBy(gx0, gy0, W, foot, WR) {
+  // edit: the window tiles the edit sets [ex0, ey0, ex1, ey1] (a stair: its site; a fill: the pocket and its ring), or null for the stair at (lx, ly)
+  return (tiles, lx, ly, edit = null) => {
+    let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of tiles) { const x = i % W, y = (i / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    const [ex0, ey0, ex1, ey1] = edit || [lx, ly - SITE_UP, lx + SITE_W - 1, ly + foot];
+    const fx0 = gx0 + Math.min(x0, ex0) - 6, fx1 = gx0 + Math.max(x1, ex1) + 6, fy0 = gy0 + Math.min(y0, ey0) - 6, fy1 = gy0 + Math.max(y1, ey1) + 6;
+    const cx0 = Math.floor((gx0 + ex0 - STAIR_REACH) / CW), cx1 = Math.floor((gx0 + ex1 + STAIR_REACH) / CW), cy0 = Math.floor((gy0 + ey0 - STAIR_REACH) / CH), cy1 = Math.floor((gy0 + ey1 + STAIR_REACH) / CH);
+    // the windows centred on cx0 - 1 .. cx1 + 1 (rows cy0 .. cy1) and on cy0 - 1 .. cy1 + 1 (columns cx0 .. cx1) span cells c - WR .. c + WR
+    return fx0 >= (cx1 + 1 - WR) * CW + STAIR_RIM && fx1 <= (cx0 + WR) * CW - 1 - STAIR_RIM && fy0 >= (cy1 + 1 - WR) * CH + STAIR_RIM && fy1 <= (cy0 + WR) * CH - 1 - STAIR_RIM;
+  };
+}
+// ---- rupar-banks-7-1: the Rupar's earth bank (cliff-rules 8; designer 2026-11-16) ----
+// Raised land of BANK_PART tiles or more that has no way up gets one way-up site, undug: an earth bank that blocks until a Rupar digs it. The decision is the world's, never a window's: it is made on the land's
+// own field (the smoothed q the threshold draws, water held low) by flooding each raised part whole (the same part from any tile of it), so every window that shows the site holds the same six columns straight
+// and the seam is untouched. A part has a way up when a realm stair's site stands on it, or when a window could cut a pocket stair on one of its south faces (the pocket rule's own seen-whole geometry, applied
+// to the part's box): those parts are left to the old rules. A part flooding past BANK_FLOOD tiles is the land's own (a plateau with its ways up).
+export const BANK_PART = 200, BANK_FLOOD = 12000;
+let BANKS_SKIP = false;   // a window made with no banks (the verdict on a part asks what the plain rules leave of it)
+const BK_KEY = (gx, gy) => gy * 8192 + gx;
+// rupar-banks-speed-2: the part labels of the tiles, a Map's get/set/clear/size over one array per cell (a flood reads and writes some tens of thousands of tiles; the cell last used is kept)
+class TileLab {
+  constructor() { this.cells = new Map(); this.size = 0; this.ck = -1; this.ca = null; }
+  arr(x, y, make) { const k = ((y / CH) | 0) * 1000 + ((x / CW) | 0); if (k === this.ck) return this.ca; let a = this.cells.get(k); if (!a) { if (!make) return null; a = new Int32Array(N); this.cells.set(k, a); } this.ck = k; this.ca = a; return a; }
+  get(k) { const x = k & 8191, y = k >> 13; if (y < 0) return undefined; const a = this.arr(x, y, false); if (!a) return undefined; const v = a[(y % CH) * CW + x % CW]; return v ? v - 1 : undefined; }
+  set(k, id) { const x = k & 8191, y = k >> 13, a = this.arr(x, y, true), i = (y % CH) * CW + x % CW; if (!a[i]) this.size++; a[i] = id + 1; }
+  clear() { this.cells.clear(); this.size = 0; this.ck = -1; this.ca = null; }
+}
+function bkOf(L) { return L.bkd || (L.bkd = { rf: new Map(), lab: new TileLab(), parts: [], banks: new Map(), land: new Map(), why: {} }); }
+const landWet = (L, gx, gy) => { const X = Math.floor(gx / CW), Y = Math.floor(gy / CH); return L.rule.holdWater !== 0 && inlandOf(gx, gy) >= WET_REACH && wetCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW] === 1; };
+const heldTile = (L, gx, gy) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (landWet(L, gx + dx, gy + dy)) return true; return inlandOf(gx, gy) < RAISE_OFF + 1; };
+// the field's raised tiles of one cell (1 raised): windowLevels' own first raster (the smoothed sum over the rounded element at or over the threshold, water held low), cell by cell
+function rfCell(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.rf.get(key); if (hit) return hit;
+  const out = new Uint8Array(N); if (B.rf.size > 3000) B.rf.clear(); B.rf.set(key, out);
+  if (!inRealm(X, Y)) return out;
+  const rad = L.rule.smooth | 0, R1 = rad + 1, w = CW + 2 * R1, h = CH + 2 * R1, gx0 = X * CW - R1, gy0 = Y * CH - R1, q = new Int32Array(w * h), wr = new Uint8Array(w * h), cw8 = new Uint8Array(w * h);
+  for (let cy = Math.floor(gy0 / CH); cy <= Math.floor((gy0 + h - 1) / CH); cy++) for (let cx = Math.floor(gx0 / CW); cx <= Math.floor((gx0 + w - 1) / CW); cx++) {
+    const qc = qCell(L, cx, cy), wc = L.rule.holdWater !== 0 ? wetCell(L, cx, cy) : null, water = inRealm(cx, cy) && L.realm.land[cy * RW + cx] === LAND.WATER && !L.realm.ford[cy * RW + cx];
+    for (let ty = 0; ty < CH; ty++) { const y = cy * CH + ty - gy0; if (y < 0 || y >= h) continue;
+      for (let tx = 0; tx < CW; tx++) { const x = cx * CW + tx - gx0; if (x < 0 || x >= w) continue; const i = y * w + x; q[i] = qc[ty * CW + tx]; if (wc) wr[i] = wc[ty * CW + tx]; if (water) cw8[i] = 1; } }
+  }
+  const held = new Uint8Array(w * h);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x; let v = cw8[i]; if (!v) for (let dy = -1; dy <= 1 && !v; dy++) for (let dx = -1; dx <= 1; dx++) if (wr[i + dy * w + dx]) { v = 1; break; } held[i] = v; }
+  for (let i = 0; i < w * h; i++) if (held[i] && q[i] >= 0) q[i] = -1;
+  const DY = [], HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; if (rad) while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); cnt += 2 * hw + 1; }
+  const th = L.rule.levels[0] * cnt;
+  // rupar-banks-speed-2: the element's row sums from row prefix sums of q (whole numbers: the same sum, a few reads a tile)
+  const w1 = w + 1, P = new Int32Array(w1 * h); for (let y = 0; y < h; y++) { let a = 0; const o = y * w1; for (let x = 0; x < w; x++) { a += q[y * w + x]; P[o + x + 1] = a; } }
+  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
+    const x = tx + R1, y = ty + R1, i = y * w + x; if (held[i] || inlandOf(X * CW + tx, Y * CH + ty) < RAISE_OFF + 1) continue;
+    let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w1 + x; s += P[o + HW[r] + 1] - P[o - HW[r]]; }
+    if (s >= th) out[ty * CW + tx] = 1;
+  }
+  return out;
+}
+function rfAt(L, gx, gy) {
+  if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return 0;
+  // rupar-banks-speed-2: the cell last read is kept (a flood stays in one cell for runs of tiles)
+  const X = (gx / CW) | 0, Y = (gy / CH) | 0, B = L.bkd || bkOf(L), k = Y * 1000 + X;
+  let a = B.lastA; if (!a || B.lastK !== k) { a = B.lastA = rfCell(L, X, Y); B.lastK = k; }
+  return a[(gy - Y * CH) * CW + gx - X * CW];
+}
+// the raised part holding a tile of the field (4-connected), whole: tiles, box, size; `big` past BANK_FLOOD tiles (or meeting one); null where the field is low
+function partAt(L, gx, gy) {
+  const B = bkOf(L), k0 = BK_KEY(gx, gy), got = B.lab.get(k0); if (got !== undefined) return B.parts[got];
+  if (!rfAt(L, gx, gy)) return null;
+  const id = B.parts.length, tiles = [k0], p = { id, n: 0, big: false, x0: gx, y0: gy, x1: gx, y1: gy, tiles };
+  B.parts.push(p); B.lab.set(k0, id);
+  for (let h = 0; h < tiles.length; h++) {
+    const k = tiles[h], x = k & 8191, y = k >> 13;
+    if (x < p.x0) p.x0 = x; if (x > p.x1) p.x1 = x; if (y < p.y0) p.y0 = y; if (y > p.y1) p.y1 = y;
+    if (tiles.length > BANK_FLOOD) { p.big = true; break; }
+    for (let d = 0; d < 4; d++) { const a = x + NB4X[d], b = y + NB4Y[d]; if (!rfAt(L, a, b)) continue; const nk = BK_KEY(a, b), l = B.lab.get(nk);
+      if (l === undefined) { B.lab.set(nk, id); tiles.push(nk); } else if (l !== id && B.parts[l].big) p.big = true; }
+    if (p.big) break;
+  }
+  p.n = tiles.length; if (p.big) p.tiles = null;
+  return p;
+}
+// the part's south faces: runs of lip tiles (the tile above in the part) by length, then row, then column (the order the window rule walks them in)
+function partRuns(L, p) {
+  const rows = new Map();
+  for (const k of p.tiles) { const x = k & 8191, y = k >> 13; if (!rfAt(L, x, y + 1) && rfAt(L, x, y - 1)) { if (!rows.has(y)) rows.set(y, []); rows.get(y).push(x); } }
+  const runs = [];
+  for (const [y, xs] of rows) { xs.sort((a, b) => a - b); let from = xs[0], n = 1;
+    for (let i = 1; i <= xs.length; i++) { if (i < xs.length && xs[i] === xs[i - 1] + 1) { n++; continue; } runs.push({ x0: from, n, y }); if (i < xs.length) { from = xs[i]; n = 1; } } }
+  return runs.sort((a, b) => b.n - a.n || a.y - b.y || a.x0 - b.x0);
+}
+// would a window cut a pocket stair at the site (lx, ly)? The pocket rule's geometry (stairSeenBy) on the part's box, in world tiles
+function seenByWindows(L, p, lx, ly) {
+  const WR = L.rule.window, foot = footRoom(L.rule.faceRows), ex0 = lx, ey0 = ly - SITE_UP, ex1 = lx + SITE_W - 1, ey1 = ly + foot;
+  const fx0 = Math.min(p.x0, ex0) - 6, fx1 = Math.max(p.x1, ex1) + 6, fy0 = Math.min(p.y0, ey0) - 6, fy1 = Math.max(p.y1, ey1) + 6;
+  const cx0 = Math.floor((ex0 - STAIR_REACH) / CW), cx1 = Math.floor((ex1 + STAIR_REACH) / CW), cy0 = Math.floor((ey0 - STAIR_REACH) / CH), cy1 = Math.floor((ey1 + STAIR_REACH) / CH);
+  return fx0 >= (cx1 + 1 - WR) * CW + STAIR_RIM && fx1 <= (cx0 + WR) * CW - 1 - STAIR_RIM && fy0 >= (cy1 + 1 - WR) * CH + STAIR_RIM && fy1 <= (cy0 + WR) * CH - 1 - STAIR_RIM;
+}
+function raisableSite(L, lx, ly) { for (let y = ly - SITE_UP; y <= ly; y++) for (let x = lx; x < lx + SITE_W; x++) if (heldTile(L, x, y)) return false; return true; }
+function partHasStair(L, p) {
+  const X0 = Math.floor(p.x0 / CW) - 1, X1 = Math.floor(p.x1 / CW) + 1, Y0 = Math.floor(p.y0 / CH) - 1, Y1 = Math.floor(p.y1 / CH) + 1, B = bkOf(L);
+  for (const st of L.stairs.values()) {
+    if (st.X < X0 || st.X > X1 || st.Y < Y0 || st.Y > Y1) continue;
+    const s = siteOf(L, st); if (!s.ok) continue;
+    for (let y = s.lip - SITE_UP; y <= s.lip; y++) for (let x = s.x0; x < s.x0 + SITE_W; x++) if (B.lab.get(BK_KEY(x, y)) === p.id) return true;
+  }
+  return false;
+}
+// the site: the way up's 2 columns on the contour on the lip row, the other 4 within a row of it, 6 wide raised above and low below (natSite's test, read on the part's own field), no water, off every stair site
+function bankSiteAt(L, x0, ly, loose = false) {
+  const foot = footRoom(L.rule.faceRows), up = SITE_UP + 2, down = foot + NAT_FOOT - 1;
+  if (!loose) { for (let c = x0; c < x0 + SITE_W; c++) { const e = c === x0 + 2 || c === x0 + 3 ? 0 : 1;
+    for (let r = ly - up; r <= ly - e; r++) if (!rfAt(L, c, r)) return false; for (let r = ly + 1 + e; r <= ly + down; r++) if (rfAt(L, c, r)) return false; } }
+  else {   // as the stair rule's fallback site: the way up's two columns on the contour, half the six raised two rows above and low three rows below; the held rows make the rest straight
+    for (let c = x0 + 2; c <= x0 + 3; c++) { for (let r = ly - 2; r <= ly; r++) if (!rfAt(L, c, r)) return false; for (let r = ly + 1; r <= ly + 4; r++) if (rfAt(L, c, r)) return false; }
+    let hi = 0, lo = 0; for (let c = x0; c < x0 + SITE_W; c++) { if (rfAt(L, c, ly - 2)) hi++; if (!rfAt(L, c, ly + 3)) lo++; } if (hi < 3 || lo < 3) return false; }
+  if (!raisableSite(L, x0, ly)) return false;
+  for (let r = ly + 1; r <= ly + foot; r++) for (let c = x0 + 1; c < x0 + SITE_W - 1; c++) if (landWet(L, c, r)) return false;
+  for (let r = ly + 1; r <= ly + down; r++) for (let c = x0 - 1; c <= x0 + SITE_W; c++) if (landWet(L, c, r)) return false;
+  // the low land under the foot goes on: the field's low part from the foot holds NAT_PART tiles
+  { const seen = new Set([BK_KEY(x0 + 2, ly + down)]), q = [[x0 + 2, ly + down]]; let wide = false;
+    for (let k = 0; k < q.length && !wide; k++) { if (q.length >= NAT_PART) { wide = true; break; } const [a, b] = q[k];
+      for (let d = 0; d < 4; d++) { const xx = a + NB4X[d], yy = b + NB4Y[d], key = BK_KEY(xx, yy); if (xx < 0 || yy < 0 || xx >= WTW || yy >= WTH) { wide = true; break; } if (!seen.has(key) && !rfAt(L, xx, yy)) { seen.add(key); q.push([xx, yy]); } } }
+    if (!wide) return false; }
+  for (const st of L.stairs.values()) { if (Math.abs(st.X - Math.floor(x0 / CW)) > 2 || Math.abs(st.Y - Math.floor(ly / CH)) > 2) continue; const s = siteOf(L, st);
+    if (Math.abs(s.x0 - x0) < SITE_W + 2 && s.lip - SITE_UP - 2 < ly + foot + 2 && ly - SITE_UP - 2 < s.lip + foot + 2) return false; }
+  return true;
+}
+// one cell of the land the windows make with no banks (the centre of its own window): its raised flags and the way-up sites that window holds
+function landNB(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.land.get(key); if (hit) return hit;
+  const out = { r: new Uint8Array(N), sites: [] };
+  if (inRealm(X, Y)) { const w = noBankWindow(L, X, Y), o = L.rule.window; for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) out.r[ty * CW + tx] = w.R[(o * CH + ty) * w.W + o * CW + tx] ? 1 : 0; out.sites = w.info.sites; }
+  if (B.land.size > 600) B.land.clear(); B.land.set(key, out); return out;
+}
+// the raised land (no banks) connected through a field part, the biggest piece of 230 raised tiles or more that no way-up site stands on: { n, x0, y0, x1, y1 } or null
+function landComp(L, p) {
+  const raisedNB = (x, y) => { if (x < 0 || y < 0 || x >= WTW || y >= WTH) return 0; const X = Math.floor(x / CW), Y = Math.floor(y / CH); return landNB(L, X, Y).r[(y - Y * CH) * CW + x - X * CW]; };
+  const lab = new Map(), comps = [];
+  for (const k of p.tiles) { const sx = k & 8191, sy = k >> 13; if (sx % 3 || sy % 3 || !raisedNB(sx, sy) || lab.has(k)) continue;
+    const c = { id: comps.length, n: 0, big: false, x0: sx, y0: sy, x1: sx, y1: sy }, q = [k]; lab.set(k, c.id);
+    for (let h = 0; h < q.length && !c.big; h++) { const x = q[h] & 8191, y = q[h] >> 13; c.n++; if (x < c.x0) c.x0 = x; if (x > c.x1) c.x1 = x; if (y < c.y0) c.y0 = y; if (y > c.y1) c.y1 = y;
+      if (q.length > BANK_FLOOD) { c.big = true; break; }
+      for (let d = 0; d < 4; d++) { const a = x + NB4X[d], b = y + NB4Y[d], nk = BK_KEY(a, b); if (!lab.has(nk) && raisedNB(a, b)) { lab.set(nk, c.id); q.push(nk); } } }
+    comps.push(c); }
+  let best = null;
+  for (const c of comps) { if (c.big || c.n < FILL_UNDER + 30) continue;
+    let way = false;
+    for (let Y = Math.floor(c.y0 / CH) - 1; Y <= Math.floor(c.y1 / CH) + 1 && !way; Y++) for (let X = Math.floor(c.x0 / CW) - 1; X <= Math.floor(c.x1 / CW) + 1 && !way; X++)
+      for (const s of landNB(L, X, Y).sites) if (lab.get(BK_KEY(s.x, s.y)) === c.id || lab.get(BK_KEY(s.x + 1, s.y)) === c.id) { way = true; break; }
+    if (!way && (!best || c.n > best.n)) best = c; }
+  return best;
+}
+// the closed parts of the window of cell (X, Y) made with no banks (info.pkr), kept per cell: a verdict asks the same window again for its neighbours
+function noBankPockets(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.pkr && B.pkr.get(key); if (hit) return hit;
+  const out = noBankWindow(L, X, Y).info.pkr || [];
+  if (!B.pkr) B.pkr = new Map(); if (B.pkr.size > 400) B.pkr.clear(); B.pkr.set(key, out); return out;
+}
+// the part's bank site { x0, lip } in world tiles, or null (the reason in L.bkd.why)
+export function partBank(L, p, hx, hy) {
+  const B = bkOf(L); if (p.bank !== undefined) return p.bank;
+  const why = r => { B.why[r] = (B.why[r] || 0) + 1; p.why = r; p.bank = null; return null; };
+  if (p.big) return why('big'); if (p.n < BANK_PART) return why('small');
+  if (partHasStair(L, p)) return why('stair');
+  // does the land leave it without a way up? The windows over the part's cells, made without banks, each either cut a stair on it, fill it or lower it, or leave a closed raised part of FILL_UNDER walkable
+  // tiles or more (a closed part is closed in every window: none of its tiles touches a window's rim). The biggest such part there is the one that needs the bank; the site lies on it.
+  const cxa = Math.floor(p.x0 / CW), cxb = Math.floor(p.x1 / CW), cya = Math.floor(p.y0 / CH), cyb = Math.floor(p.y1 / CH);
+  if ((cxb - cxa + 1) * (cyb - cya + 1) > 30) return why('big');
+  let comp = null;
+  // a part no window can see whole (its box over the seen-whole envelope: stairSeenBy's own geometry) is judged on the land the windows made (banks off): the raised land connected through it, and whether a way up stands on it
+  const env = p.x1 - p.x0 > (2 * L.rule.window - 1) * CW - 2 * STAIR_RIM - 13 || p.y1 - p.y0 > (2 * L.rule.window - 1) * CH - 2 * STAIR_RIM - 13;
+  if (env) comp = landComp(L, p);
+  else { const was = BANKS_SKIP; BANKS_SKIP = true;
+    // rupar-banks-speed-1: a closed part shows whole in every window that holds it, so the one window that holds the part's box with a cell's margin each side tells what the windows over its cells tell (a part
+    // whose box has no such window is asked of every window over its cells, as before)
+    // rupar-banks-speed-2: any window that holds the box so tells the same, so the window being made (hx, hy) is the one asked when it holds it (its banks-off result is then the window's own result: windowLevels)
+    const WRc = L.rule.window, M = CW, holds = (cx, cy) => (cx - WRc) * CW + M <= p.x0 && p.x1 <= (cx + WRc + 1) * CW - 1 - M && (cy - WRc) * CH + M <= p.y0 && p.y1 <= (cy + WRc + 1) * CH - 1 - M;
+    // else a window already made with no banks that holds it, else the one centred on the box
+    let ccx = (cxa + cxb) >> 1, ccy = (cya + cyb) >> 1, mine = hx !== undefined && holds(hx, hy);
+    if (!mine && B.nbw) for (const k of B.nbw.keys()) { const cx = Math.floor(k / 1000) - 8, cy = (k % 1000) - 8; if (holds(cx, cy)) { ccx = cx; ccy = cy; mine = true; break; } }
+    else if (mine) { ccx = hx; ccy = hy; }
+    const one = mine || holds(ccx, ccy);
+    try { for (let cy = one ? ccy : cya; cy <= (one ? ccy : cyb); cy++) for (let cx = one ? ccx : cxa; cx <= (one ? ccx : cxb); cx++) for (const k of noBankPockets(L, cx, cy))
+      if (k.raised && k.n >= FILL_UNDER && k.x0 <= p.x1 + 6 && k.x1 >= p.x0 - 6 && k.y0 <= p.y1 + 6 && k.y1 >= p.y0 - 6 && (!comp || k.n > comp.n || (k.n === comp.n && (k.y0 < comp.y0 || (k.y0 === comp.y0 && k.x0 < comp.x0))))) comp = k; }
+    finally { BANKS_SKIP = was; } }
+  if (!comp) return why('window');
+  const inComp = (x0, ly) => x0 >= comp.x0 - 1 && x0 + SITE_W - 1 <= comp.x1 + 1 && ly - SITE_UP >= comp.y0 - 1 && ly <= comp.y1 + 1;
+  const hit = siteOn(L, p, inComp);
+  if (!hit) return why('nosite');
+  p.bank = { x0: hit.x0, lip: hit.ly, part: p.id, n: comp.n, loose: hit.loose }; return p.bank;
+}
+// the first site on the part's south faces that the test `ok(x0, lip)` lets through: { x0, ly, loose } or null
+function siteOn(L, p, ok) {
+  const runs = partRuns(L, p);
+  for (const loose of [false, true]) for (const run of runs) { if (!loose && run.n < 4) continue;   // the land's own contour first; else a site the held rows straighten (the stair rule's second choice)
+    const base = run.x0 + ((run.n - 2) >> 1) - 2;
+    for (const ly of [run.y, run.y + 1, run.y - 1]) for (let d = 0; d <= 12; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d;
+      if (ok(x0, ly) && bankSiteAt(L, x0, ly, loose)) return { x0, ly, loose }; } }
+  return null;
+}
+export const bankDebug = { partAt, partRuns, bankSiteAt, rfAt, raisableSite, wetTile: landWet };   // the tools read the rule's own pieces
+// every raised part of the realm's field (the tools: one flood each, from a 4 x 4 lattice of tiles)
+export function bankScan(L) {
+  const seen = new Set(), out = [];
+  for (let gy = 0; gy < WTH; gy += 4) for (let gx = 0; gx < WTW; gx += 4) { if (!rfAt(L, gx, gy)) continue; const p = partAt(L, gx, gy); if (p && !seen.has(p.id)) { seen.add(p.id); out.push(p); } }
+  return out;
+}
+// the banks whose sites lie in the window of cell (X, Y): every raised part touching the window's cells is found from a tile on a 4 x 4 lattice (a site's rows always hold one), flooded whole, and asked
+export function banksIn(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.banks.get(key); if (hit) return hit;
+  if (B.lab.size > 500000) { B.lab.clear(); B.parts.length = 0; B.banks.clear(); }
+  const WR = L.rule.window, out = [], seen = new Set();
+  for (let gy = Math.ceil((Y - WR) * CH / 4) * 4; gy < (Y + WR + 1) * CH; gy += 4) for (let gx = Math.ceil((X - WR) * CW / 4) * 4; gx < (X + WR + 1) * CW; gx += 4) {
+    if (!rfAt(L, gx, gy)) continue; const p = partAt(L, gx, gy); if (!p || p.big || p.n < BANK_PART || seen.has(p.id)) continue; seen.add(p.id);
+    const b = partBank(L, p, X, Y); if (b) out.push(b); }
+  if (B.banks.size > 4000) B.banks.clear();
+  B.banks.set(key, out); return out;
+}
 function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info) {
-  const WR = L.rule.window, fr = L.rule.faceRows, foot = footRoom(fr), extra = [];
+  const WR = L.rule.window, fr = L.rule.faceRows, foot = footRoom(fr), extra = [], stairSeen = stairSeenBy(gx0, gy0, W, foot, WR);
   const sites = [];   // { lx, ly (window tiles), real }
   for (const st of L.stairs.values()) {
-    if (st.X < X - WR - 1 || st.X > X + WR + 1 || st.Y < Y - WR - 1 || st.Y > Y + WR) continue;
+    if (st.X < X - WR - 2 || st.X > X + WR + 2 || st.Y < Y - WR - 1 || st.Y > Y + WR) continue;   // land-reach-1: a site may lie in the cell east or west of its stair's (siteOf)
     const s = siteOf(L, st), lx = s.x0 - gx0, ly = s.lip - gy0;
     if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true });
+  }
+  if (L.rule.banks !== 0 && !BANKS_SKIP) for (const b of banksIn(L, X, Y)) {   // rupar-banks-7-1: a held-straight site that stays blocked (no way[]), the part's one bank
+    const lx = b.x0 - gx0, ly = b.lip - gy0;
+    if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true, bank: true });
   }
   let r = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     const lk = new Uint8Array(W * H), all = sites.concat(extra);
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly - SITE_UP; y <= s.ly; y++) if (!noRaise[y * W + x]) lk[y * W + x] = 1;
     for (const s of all) for (let x = s.lx; x < s.lx + SITE_W; x++) for (let y = s.ly + 1; y <= s.ly + foot; y++) lk[y * W + x] = 2;   // the low rows win where two sites meet
-    const way = new Uint8Array(W * H); for (const s of all) { way[s.ly * W + s.lx + 2] = 1; way[s.ly * W + s.lx + 3] = 1; }
+    const way = new Uint8Array(W * H); for (const s of all) { if (s.bank) continue; way[s.ly * W + s.lx + 2] = 1; way[s.ly * W + s.lx + 3] = 1; }   // a bank is no way: it blocks until dug
+    if (globalThis.LAND_STAGES) info.stages = { threshold: relock(base.slice(), lk) };   // cliff-contour-1: the tools read the raster after each stage (where the straightness comes from)
+    CLEAN_SINK = info.stages || null;
     r = cleanup(base, W, H, L.rule, lk);
+    CLEAN_SINK = null;
+    if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
       const snap = r.slice();
       const { comps } = components(walkParts(r, W, H, way, wblock), W, H, edge, way), shut = comps.filter(c => !c.open && !c.way);
-      info.pockets = shut.map(c => c.n); info.pk = shut.map(c => { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return `${c.n}${r[c.tiles[0]] ? 'R' : 'L'}[${x0 + gx0},${y0 + gy0}-${x1 + gx0},${y1 + gy0}]`; }); if (!shut.length) break;
+      info.pockets = shut.map(c => c.n); info.pk = shut.map(c => { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return `${c.n}${r[c.tiles[0]] ? 'R' : 'L'}[${x0 + gx0},${y0 + gy0}-${x1 + gx0},${y1 + gy0}]`; });
+      info.pkr = shut.map(c => { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return { n: c.n, raised: r[c.tiles[0]] === 1, x0: x0 + gx0, y0: y0 + gy0, x1: x1 + gx0, y1: y1 + gy0 }; });
+      if (!shut.length) break;
       let changed = false;
       for (const c of shut) {
         const isRaised = r[c.tiles[0]] === 1;
         // a pocket is handled only where every window that shows one of the cells it touches shows all of it: its footprint (its box and 6 tiles round) lies within one cell round each cell it touches; a larger
         // one is left (listed), since a neighbour's window could not tell it from land that goes on, and a cell must be the same from every window (the seam)
+        // land-reach-1: a part that does not fit is no longer left at once: a stair may still be cut where every window the seam compares on the stair's cells sees the whole part (stairSeen, below)
+        let fits = true;
         { let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-          const fx0 = gx0 + x0 - 6, fx1 = gx0 + x1 + 6, fy0 = gy0 + y0 - 6, fy1 = gy0 + y1 + 6; let fits = true;
+          const fx0 = gx0 + x0 - 6, fx1 = gx0 + x1 + 6, fy0 = gy0 + y0 - 6, fy1 = gy0 + y1 + 6;
           for (let cx = Math.floor(fx0 / CW); cx <= Math.floor(fx1 / CW) && fits; cx++) if (fx0 < (cx - 1) * CW || fx1 >= (cx + 2) * CW) fits = false;
-          for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH) && fits; cy++) if (fy0 < (cy - 1) * CH || fy1 >= (cy + 2) * CH) fits = false;
-          if (!fits) { (info.deferred || (info.deferred = [])).push(c.n); continue; } }
+          for (let cy = Math.floor(fy0 / CH); cy <= Math.floor(fy1 / CH) && fits; cy++) if (fy0 < (cy - 1) * CH || fy1 >= (cy + 2) * CH) fits = false; }
         if (!isRaised) {   // low land with no cliff near it is a lake's islet: the realm's own, not a pocket the land made
           let near = false; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -2; dy <= 2 && !near; dy++) for (let dx = -2; dx <= 2; dx++) { const a = x + dx, b = y + dy; if (a >= 0 && b >= 0 && a < W && b < H && r[b * W + a]) { near = true; break; } } if (near) break; }
           if (!near) { (info.islets || (info.islets = [])).push(c.n); continue; }
         }
-        if (isRaised && c.n < 6) {   // place-walk-1: a one-tile top where two plateaus meet at a corner (every neighbour of it is a lip, so no one can step on it, and a stair needs 6): it and the raised tiles beside it become low, held low,
+        if (fits && isRaised && c.n < 6) {   // place-walk-1: a one-tile top where two plateaus meet at a corner (every neighbour of it is a lip, so no one can step on it, and a stair needs 6): it and the raised tiles beside it become low, held low,
           // so the two plateaus part with a channel between them (the channel is low land beside both, never a pit)
           const low = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const m = (y + dy) * W + x + dx; if (r[m]) low.add(m); } }
           const T = [...low]; let ok = T.every(i => { const x = i % W, y = (i / W) | 0; return !lk[i] && x >= 3 && y >= 3 && x < W - 3 && y < H - 3; });
@@ -822,7 +1258,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
             else { for (const i of T) lk[i] = 2; (info.necks || (info.necks = [])).push(c.n); changed = true; continue; }
           }
         }
-        if (c.n < 60) {   // a pit is filled, a mesa lowered
+        if (fits && c.n < 60) {   // a pit is filled, a mesa lowered
           let blob = null;
           if (isRaised) { let bx0 = 1e9, by0 = 1e9, bx1 = -1, by1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
             // the blob may lie within 10 tiles of the component, and that box must lie within the cells it touches and one round them, clear of every such window's rim (4 tiles): then every window that shows one
@@ -833,12 +1269,34 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
             blob = [...s]; if (blob.some(i => noRaise[i] || wblock[i] || edge[i])) { if (info.dbg) (info.why || (info.why = [])).push(`pit ${c.n}: nr ${blob.filter(i => noRaise[i]).length} wb ${blob.filter(i => wblock[i]).length} ed ${blob.filter(i => edge[i]).length}`); blob = null; } }
           if (blob && blob.every(i => !lk[i])) { for (const i of blob) r[i] = isRaised ? 0 : 1; info.filled.push(c.n); changed = true; continue; }
         }
-        // a stair on its longest south face, held straight (the second pass over the window carries it)
-        let best = null; const cset = new Set(c.tiles);
+        // land-reach-1 (designer 2026-11-16): a closed part under FILL_UNDER walkable tiles is filled to its neighbours' level (a low pocket raised, raised land lowered), where every window the seam compares on the
+        // cells the fill sets sees it whole (cliff-contour-2's test for its 60-160 low pockets); a larger one, or one that cannot be filled, takes a stair
+        if (fits && c.n >= 60 && c.n < FILL_UNDER) {
+          let blob = null;
+          if (isRaised) { let bx0 = 1e9, by0 = 1e9, bx1 = -1, by1 = -1; for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+            const box = [bx0 - 10, by0 - 10, bx1 + 10, by1 + 10], lo = [(Math.floor((gx0 + bx0) / CW) - 1) * CW - gx0 + 4, (Math.floor((gy0 + by0) / CH) - 1) * CH - gy0 + 4], hi = [(Math.floor((gx0 + bx1) / CW) + 2) * CW - 1 - gx0 - 4, (Math.floor((gy0 + by1) / CH) + 2) * CH - 1 - gy0 - 4];
+            if (box[0] >= lo[0] && box[1] >= lo[1] && box[2] <= hi[0] && box[3] <= hi[1]) blob = blobOf(r, W, H, c.tiles, 1, 1200, null, box);
+            if (blob && blob.some(i => edge[i])) blob = null; }
+          else { const s = new Set(c.tiles); for (const i of c.tiles) { const x = i % W, y = (i / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const m = (y + dy) * W + x + dx; if (m >= 0 && m < W * H && !r[m]) s.add(m); } }
+            blob = [...s]; if (blob.some(i => noRaise[i] || wblock[i] || edge[i])) blob = null; }
+          if (blob) { let bx0 = W, by0 = H, bx1 = -1, by1 = -1; for (const i of blob) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+            if (blob.every(i => !lk[i]) && stairSeen(c.tiles, 0, 0, [bx0, by0, bx1, by1])) { for (const i of blob) r[i] = isRaised ? 0 : 1; info.filled.push(c.n); changed = true; continue; } }
+          if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: not filled`);
+        }
+        // a stair on one of its south faces, held straight (the second pass over the window carries it): the longest first; land-reach-1: the next longest when a face's site is not seen whole by every window
+        // the seam compares there, or meets another site
+        const cset = new Set(c.tiles), runs = [];
         for (let y = 4; y < H - foot - 2; y++) { let n = 0, from = 0;
           for (let x = 1; x <= W - 1; x++) { const on = x < W - 1 && r[y * W + x] === 1 && r[(y + 1) * W + x] === 0 && cset.has((isRaised ? y - 1 : y + fr + 1) * W + x);
-            if (on) { if (!n) from = x; n++; } else { if (n && (!best || n > best.n)) best = { x0: from, n, y }; n = 0; } } }
-        if (best && attempt < 2 && (c.n >= 6 || !isRaised)) { const xm = best.x0 + ((best.n - 2) >> 1); if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; } }
+            if (on) { if (!n) from = x; n++; } else { if (n) runs.push({ x0: from, n, y }); n = 0; } } }
+        runs.sort((a, b) => b.n - a.n || a.y - b.y || a.x0 - b.x0);
+        let placed = false;
+        if (attempt < 2 && (c.n >= 6 || !isRaised)) for (const best of runs) {
+          const xm = best.x0 + ((best.n - 2) >> 1);
+          if (info.dbg) (info.why || (info.why = [])).push(`pocket ${c.n}: run ${best.x0 + gx0},${best.y + gy0} n${best.n} attempt ${attempt} raisable ${siteRaisable(noRaise, W, xm - 2, best.y)} seen ${stairSeen(c.tiles, xm - 2, best.y)}`);
+          if (xm - 2 >= 1 && xm + 4 < W && siteRaisable(noRaise, W, xm - 2, best.y) && stairSeen(c.tiles, xm - 2, best.y) && ![...sites, ...extra].some(s => Math.abs(s.lx - (xm - 2)) < SITE_W + 2 && s.ly - SITE_UP - 2 < best.y + foot + 2 && best.y - SITE_UP - 2 < s.ly + foot + 2)) { extra.push({ lx: xm - 2, ly: best.y, real: false }); info.pocketStairs.push({ x: gx0 + xm, y: gy0 + best.y, n: c.n, raised: isRaised ? 1 : 0 }); again = true; placed = true; break; }
+        }
+        if (!placed && !fits) (info.deferred || (info.deferred = [])).push(c.n);
       }
       if (again) break;
       if (!changed) break;
@@ -846,7 +1304,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     }
     if (!again) { shape(); break; }
   }
-  info.sites = sites.concat(extra).map(s => ({ x: gx0 + s.lx + 2, y: gy0 + s.ly, real: s.real }));
+  info.sites = sites.concat(extra).map(s => ({ x: gx0 + s.lx + 2, y: gy0 + s.ly, real: s.real, ...(s.bank ? { bank: true } : {}) }));
   return r;
 }
 // ---- diagonal runs (land-b3d-face3-1) ----
@@ -880,7 +1338,8 @@ export function levelCell(L, X, Y) {
   const key = (X + 8) * 1000 + (Y + 8), hit = L.cells.get(key); if (hit) return hit;
   const out = new Uint8Array(N);
   if (inRealm(X, Y)) { const w = windowLevels(L, X, Y), o = L.rule.window; for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) out[ty * CW + tx] = w.R[(o * CH + ty) * w.W + o * CW + tx];
-    L.pk.set(key, w.info.sites.filter(s => !s.real && s.x >= X * CW - 2 && s.x < (X + 1) * CW + 2 && s.y >= Y * CH - 3 && s.y < (Y + 1) * CH + 3)); }
+    L.pk.set(key, w.info.sites.filter(s => !s.real && s.x >= X * CW - 2 && s.x < (X + 1) * CW + 2 && s.y >= Y * CH - 3 && s.y < (Y + 1) * CH + 3));
+    (L.bkw || (L.bkw = new Map())).set(key, w.info.sites.filter(s => s.bank && s.x >= X * CW - 2 && s.x < (X + 1) * CW + 2 && s.y >= Y * CH - 3 && s.y < (Y + 1) * CH + 3)); }
   if (L.cells.size > 4000) L.cells.clear();
   L.cells.set(key, out); return out;
 }
@@ -898,8 +1357,15 @@ export function tileLevel(L, gx, gy) {
   const X = Math.floor(gx / CW), Y = Math.floor(gy / CH);
   return levelCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW];
 }
+// land-reach-2: a tile the field puts on a level above the lowest that the passes left low (a mesa the fill lowered, a bump cut). Read from the world tile alone (its q and its final level), so every window agrees.
+export function loweredAt(L, gx, gy) {
+  if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH || inlandOf(gx, gy) < RAISE_OFF) return false;
+  const X = Math.floor(gx / CW), Y = Math.floor(gy / CH), k = (gy - Y * CH) * CW + gx - X * CW;
+  if (levelCell(L, X, Y)[k] !== 0) return false;
+  return qCell(L, X, Y)[k] >= L.rule.levels[0];
+}
 // raised land: level 1 or more, and at least RAISE_OFF tiles from the border line
-export const raised = (L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
+export const raised =(L, gx, gy) => inlandOf(gx, gy) >= RAISE_OFF && tileLevel(L, gx, gy) >= 1;
 
 // ---- the realm's edge probe (before any pass): reads the height field and the wet field on the strip of tiles each side of an edge, never a place ----
 // The rows (columns, for a north-south edge) along the edge between the cells A and B (B east or south of A) where the `deep` tiles each side are all dry and on one level (raised or low by the field's own
@@ -912,7 +1378,7 @@ export function edgeRows(L, ax, ay, bx, by, need, deep = 2, want = 0) {
     let good = true;
     for (let i = 0; i < deep && good; i++) for (const side of [0, 1]) {
       const gx = east ? (side ? bx * CW + i : bx * CW - 1 - i) : ax * CW + t, gy = east ? ay * CH + t : (side ? by * CH + i : by * CH - 1 - i);
-      if (wetTile(L, gx, gy)) { good = false; break; }
+      if (landWet(L, gx, gy)) { good = false; break; }
       const v = lvl(gx, gy);
       if (v !== want) { good = false; break; }
     }
@@ -923,7 +1389,7 @@ export function edgeRows(L, ax, ay, bx, by, need, deep = 2, want = 0) {
 // a bridge's two banks: the rows where the `deep` tiles of the bank's edge by the water are dry and low on both banks, the same row on each (a bridge runs straight across)
 export function bankRows(L, ax, ay, bx, by, need, deep = 2) {
   const east = bx !== ax, n = east ? CH : CW, th = L.rule.levels[0]; let rows = 0;
-  const lo = (gx, gy) => !(inlandOf(gx, gy) >= RAISE_OFF && qAtLeast(L, gx, gy, th)) && !wetTile(L, gx, gy);
+  const lo = (gx, gy) => !(inlandOf(gx, gy) >= RAISE_OFF && qAtLeast(L, gx, gy, th)) && !landWet(L, gx, gy);
   const [lx, ly, hx, hy] = (east ? bx < ax : by < ay) ? [bx, by, ax, ay] : [ax, ay, bx, by];   // the western (northern) bank, the eastern (southern) one
   for (let t = 0; t < n && rows < need; t++) {
     let good = true;
@@ -957,6 +1423,12 @@ function checkSite(L, x, y, k = 0) {
 export function pocketWayups(L, X, Y) {
   levelCell(L, X, Y); const out = [];
   for (const s of L.pk.get((X + 8) * 1000 + (Y + 8)) || []) { const w = checkSite(L, s.x, s.y); if (w) out.push(w); }
+  return out;
+}
+// the earth banks of the window of cell (X, Y) that stand after the passes (a straight site, as a way up), in world tiles: { x, y, w: 2, h: 1 } like a way up; the page draws them undug and blocks them
+export function bankWayups(L, X, Y) {
+  levelCell(L, X, Y); const out = [];
+  for (const s of (L.bkw && L.bkw.get((X + 8) * 1000 + (Y + 8))) || []) { const w = checkSite(L, s.x, s.y); if (w) out.push(w); }
   return out;
 }
 // the held sites of the realm's stairs that did not survive the passes, and the window information of a cell (the tools read it)
