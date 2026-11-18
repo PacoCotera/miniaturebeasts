@@ -40,7 +40,8 @@ export function noticeText(words, kind, build = null) {
 // Draws the notice into `el` (hidden while none holds); returns { set(kind, on) }. `el.dataset.slot` names the slot shown. Not gated by the embed class: a frame of the play page shows its own line.
 export function mountNotice(el, words, { buildUrl }) {
   const on = new Set(); let build = null;
-  const draw = () => { const kind = NOTICE_KINDS.find((k) => on.has(k)); el.hidden = !kind; el.dataset.slot = kind || ""; el.textContent = kind ? noticeText(words, kind, build) : ""; };
+  const draw = () => { const kind = NOTICE_KINDS.find((k) => on.has(k)); el.hidden = !kind; el.dataset.slot = kind || ""; el.textContent = kind ? noticeText(words, kind, build) : "";
+    try { if (window.parent !== window) window.parent.postMessage({ t: "mb-notice", text: el.textContent }, location.origin); } catch { /* no parent to tell */ } };   // in the play page's frame the page says the line (shell.mjs frameNotes)
   if (buildUrl) loadBuild(buildUrl).then((b) => { build = b; draw(); });
   return { set(kind, yes = true) { if (yes) on.add(kind); else on.delete(kind); draw(); }, has: (kind) => on.has(kind) };
 }
