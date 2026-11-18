@@ -22043,8 +22043,12 @@ if (globalThis[MEDIABUNNY_LOADED_SYMBOL]) {
 }
 globalThis[MEDIABUNNY_LOADED_SYMBOL] = true;
 
+// play/src/engine.mjs
+var isWebKit2 = (ua = typeof navigator !== "undefined" && navigator.userAgent || "") => /AppleWebKit\//.test(ua) && !/(Chrome|Chromium|Edg|OPR)\//.test(ua);
+var webCodecsOk = (ua, g2 = globalThis) => !isWebKit2(ua) && typeof g2.VideoEncoder !== "undefined" && typeof g2.VideoFrame !== "undefined";
+
 // play/src/clip.mjs
-var canClip = () => typeof VideoEncoder !== "undefined" && typeof VideoFrame !== "undefined";
+var canClip = () => webCodecsOk();
 var canRecordAny = () => canClip() || typeof MediaRecorder !== "undefined" && typeof HTMLCanvasElement !== "undefined" && "captureStream" in HTMLCanvasElement.prototype;
 function shot(canvas) {
   return new Promise((res, rej) => canvas.toBlob((b) => b ? res(b) : rej(new Error("no picture")), "image/png"));
@@ -26850,7 +26854,7 @@ var isNotNone = (value) => !!value && value !== "none";
 var isWebKitValue;
 function isContainingBlock(elementOrCss) {
   const css = isElement(elementOrCss) ? getComputedStyle2(elementOrCss) : elementOrCss;
-  return isNotNone(css.transform) || isNotNone(css.translate) || isNotNone(css.scale) || isNotNone(css.rotate) || isNotNone(css.perspective) || !isWebKit2() && (isNotNone(css.backdropFilter) || isNotNone(css.filter)) || willChangeRe.test(css.willChange || "") || containRe.test(css.contain || "");
+  return isNotNone(css.transform) || isNotNone(css.translate) || isNotNone(css.scale) || isNotNone(css.rotate) || isNotNone(css.perspective) || !isWebKit3() && (isNotNone(css.backdropFilter) || isNotNone(css.filter)) || willChangeRe.test(css.willChange || "") || containRe.test(css.contain || "");
 }
 function getContainingBlock(element) {
   let currentNode = getParentNode(element);
@@ -26864,7 +26868,7 @@ function getContainingBlock(element) {
   }
   return null;
 }
-function isWebKit2() {
+function isWebKit3() {
   if (isWebKitValue == null) {
     isWebKitValue = typeof CSS !== "undefined" && CSS.supports && CSS.supports("-webkit-backdrop-filter", "none");
   }
@@ -26982,7 +26986,7 @@ function getScale(element) {
 var noOffsets = /* @__PURE__ */ createCoords(0);
 function getVisualOffsets(element) {
   const win = getWindow(element);
-  if (!isWebKit2() || !win.visualViewport) {
+  if (!isWebKit3() || !win.visualViewport) {
     return noOffsets;
   }
   return {
@@ -27137,7 +27141,7 @@ function getViewportRect(element, strategy, rootBoundary) {
   let x = 0;
   let y = 0;
   if (visualViewport) {
-    const layoutRelativeClientCoords = !isWebKit2() || strategy === "fixed";
+    const layoutRelativeClientCoords = !isWebKit3() || strategy === "fixed";
     if (isLayoutViewport) {
       if (!layoutRelativeClientCoords) {
         x = -visualViewport.offsetLeft;
