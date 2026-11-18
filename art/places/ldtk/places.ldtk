@@ -2657,6 +2657,11 @@
 						"tileRect": null
 					},
 					{
+						"id": "wayup-undug",
+						"color": 0,
+						"tileRect": null
+					},
+					{
 						"id": "wayup-dug",
 						"color": 0,
 						"tileRect": null
