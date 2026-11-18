@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { mkdtempSync, mkdirSync, writeFileSync, renameSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { check } from './art-check.mjs';
+import { check, checkAll } from './art-check.mjs';
 
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const ENV = { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' };
@@ -73,6 +73,21 @@ test('the built-site pass finds an image that is neither signed nor already in t
   assert.deepEqual(check({ base: b, head: b, site, cwd: r.dir }), []);
   writeFileSync(path.join(site, 'sandbox/c.png'), UNSIGNED);
   assert.match(check({ base: b, head: b, site, cwd: r.dir })[0], /unsigned image in the built site: sandbox\/c\.png/);
+});
+
+test('--all: a listed image moved with its bytes unchanged keeps its row under the new path; a new row, a second copy or changed bytes are refused', () => {
+  const r = repo();
+  r.put('prototypes/species/a/old.png', OLD); r.put('art/signed.json', signedJson(SIGNED));
+  r.put('art/unsigned-shipped.csv', `prototypes/species/a/old.png,${sha(OLD)}\n`); const b = r.commit('base');
+  r.put('prototypes/species/b/old.png', OLD); r.g('rm', '-q', 'prototypes/species/a/old.png');
+  r.put('art/unsigned-shipped.csv', `prototypes/species/b/old.png,${sha(OLD)}\n`); const moved = r.commit('move');
+  assert.deepEqual(checkAll({ base: b, head: moved, cwd: r.dir }).problems, []);
+  r.put('prototypes/species/c/copy.png', OLD);
+  r.put('art/unsigned-shipped.csv', `prototypes/species/b/old.png,${sha(OLD)}\nprototypes/species/c/copy.png,${sha(OLD)}\n`); const copied = r.commit('copy');
+  assert.match(checkAll({ base: moved, head: copied, cwd: r.dir }).problems.join('\n'), /list grew: prototypes\/species\/c\/copy\.png/, 'a second copy is not a move');
+  r.put('prototypes/species/d/new.png', UNSIGNED); r.g('rm', '-q', 'prototypes/species/c/copy.png', 'prototypes/species/b/old.png');
+  r.put('art/unsigned-shipped.csv', `prototypes/species/d/new.png,${sha(OLD)}\n`); const lied = r.commit('new bytes under a moved row');
+  assert.match(checkAll({ base: moved, head: lied, cwd: r.dir }).problems.join('\n'), /d\/new\.png is on .* but its bytes are not the listed ones/, 'the row moves, the bytes must still match');
 });
 
 test('a missing signed list is a failure', () => {
