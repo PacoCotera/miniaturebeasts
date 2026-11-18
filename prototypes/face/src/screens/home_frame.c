@@ -16,6 +16,10 @@
 #define H "home"
 /* a key cap on the bottom line: the picture 1:1 in a square of `s` px (one call, so the guard's direct-draw ratchet counts it once) */
 static int line_cap(const char *id, const char *pic, int x, int y, int s) { return v_sprite(id, pic, x, y, s, s); }
+/* Home on an upright phone (home.json "narrow", read first while the host's props say narrow: spec.h spec_variant): one window that turns between the Vivarium and the Library, the four cards 2 x 2 */
+static int is_narrow(void) { return spec_bool(H, "regions.bar.noDate", 0); }
+static int g_turn;   /* narrow: 0 the window shows the Vivarium, 1 the Library; it follows the ring when the ring is on a window and stays where it was while the ring is on a card or at rest */
+static char g_back[16] = "pods";   /* narrow: the card the ring last stood on, where down from the window goes */
 static const char *STATIONS[4] ={ "pods", "incubator", "companion", "bay" };
 static const char *TARGETS[7] = { "vivarium", "library", "pods", "incubator", "companion", "bay", "settings" };
 
@@ -42,11 +46,12 @@ static void bar_words(void) {
   { int capw = panel_cap("bar", "home", tx, r[1] + (r[3] - v_si(H, "regions.cap.size", 22)) / 2); tx += capw; v_region("bar", LAYER_TYPE); }   /* the house, then the title */
   int tw = v_line_at("bar.title", title, tx, ty, V_ANCHOR_CAP, tpx, v_scol(H, "regions.bar.title.colour"), V_ALIGN_LEFT);
   int ppx = v_si(H, "regions.bar.place.px", 16), by = 12;   /* a 16 px figure's cap top in the bar: zone 8 + 4 (the counters', the turn's) */
-  if (place[0]) v_line_at("bar.place", place, tx + tw + v_si(H, "regions.bar.place.gap", 12), by, V_ANCHOR_CAP, ppx, v_scol(H, "regions.bar.place.colour"), V_ALIGN_LEFT);
+  int nar = is_narrow();   /* narrow: the date and the place name give way to the line (no new words) */
+  if (place[0] && !nar) v_line_at("bar.place", place, tx + tw + v_si(H, "regions.bar.place.gap", 12), by, V_ANCHOR_CAP, ppx, v_scol(H, "regions.bar.place.colour"), V_ALIGN_LEFT);
   int cpx = v_si(H, "regions.bar.clock.px", 20), right = v_si(H, "regions.bar.clock.right", 1008), cw = v_measure(clock, cpx), cx = right - cw;
   if (clock[0]) v_line_at("bar.clock", clock, cx, ty, V_ANCHOR_CAP, cpx, v_scol(H, "regions.bar.clock.colour"), V_ALIGN_LEFT);
   int dpx = v_si(H, "regions.bar.date.px", 16);
-  if (date[0]) v_line_at("bar.date", date, cx - v_si(H, "regions.bar.dateGap", 12) - v_measure(date, dpx), by, V_ANCHOR_CAP, dpx, v_scol(H, "regions.bar.date.colour"), V_ALIGN_LEFT);
+  if (date[0] && !nar) v_line_at("bar.date", date, cx - v_si(H, "regions.bar.dateGap", 12) - v_measure(date, dpx), by, V_ANCHOR_CAP, dpx, v_scol(H, "regions.bar.date.colour"), V_ALIGN_LEFT);
 }
 
 /* the line, in its zone of the bar (home.json regions.line), centred and never wrapping:
@@ -66,7 +71,16 @@ static void line_words(void) {
   if (nn > 0) {
     snprintf(s0, sizeof s0, "%s", v_pstr("regions.line.needs.0")); if (nn > 1) snprintf(s1, sizeof s1, "%s", v_pstr("regions.line.needs.1"));
     snprintf(full, sizeof full, "%s%s%s", s0, nn > 1 ? sep : "", nn > 1 ? s1 : "");
-    int W = lamp + lampGap + cap + capGap + v_run_width(full, px), x0 = centre - (W + 1) / 2;
+    int base = lamp + lampGap + cap + capGap, W, narrow = is_narrow(), cut = 0;   /* narrow: the bar's zone is 328 lp; a line that does not fit drops its second need (the first carries the ✓), then steps down to 14 px, then loses what follows its own " · " (a shortfall's "· need ⚡ 2"); a copy ruling for a first need that still does not fit is the UI desk's */
+    for (;;) {
+      W = base + v_run_width(full, px);
+      if (!narrow || W <= z[2]) break;
+      if (nn > 1) { snprintf(full, sizeof full, "%s", s0); nn = 1; continue; }
+      if (px > 14) { px--; continue; }
+      char *at = cut ? NULL : strstr(full, sep); if (!at) break;
+      *at = 0; cut = 1; px = v_si(H, "regions.line.px", 16);
+    }
+    int x0 = centre - (W + 1) / 2;
     v_region("line", LAYER_ART);
     if (!v_sprite("line.lamp", home_lamp_pic("needsYou"), x0, z[1] + (z[3] - 12 + 1) / 2, lamp, lamp)) v_error("word: the amber lamp is not on the face");
     line_cap("line.cap", capPic, x0 + lamp + lampGap, z[1] + 4, cap);
@@ -145,8 +159,10 @@ static void library_window(void) {
   if (!g_lib_have) { g_lib_have = 1; g_lib_t0 = now; }
   int lvl = lib_breath_level(now); g_lib_level = lvl;
   char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr(v_fmt("regions.library.levels.%d", lvl))); if (!pic[0] || wire_asset_slot(pic) < 0) snprintf(pic, sizeof pic, "%s", v_pstr("regions.library.picture"));
+  int nar = is_narrow() && painted, sw = v_sk(H, "regions.library.specimen.size", 0), sy = v_si(H, "regions.library.specimen.crop.sy", 0), ox = nar ? (g[2] - sw) / 2 : 0;   /* narrow: the specimen stands centred on a matte, its rows sy .. sy + the window's height */
   v_region("library.window", LAYER_PAINTED);
-  if (painted) { v_name("library.window"); v_sprite("library.picture", pic, g[0], g[1], g[2], g[3]); }
+  if (painted && nar) { v_name("library.window"); v_sprite_window("library.picture", pic, 0, sy, g[0] + ox, g[1], sw, g[3]); }
+  else if (painted) { v_name("library.window"); v_sprite("library.picture", pic, g[0], g[1], g[2], g[3]); }
   { char shade[24]; spec_str(H, "regions.library.specimen.shade.colour", shade, sizeof shade); int sp2 = v_si(H, "regions.library.specimen.shade.px", 2);
     v_region("library.window", LAYER_CHROME);
     v_rect("library.shade.t", g[0], g[1], painted ? g[2] : 0, painted ? sp2 : 0, shade); v_rect("library.shade.l", g[0], g[1], painted ? sp2 : 0, painted ? g[3] : 0, shade); }   /* omitted on the placeholder: nodes of no size */
@@ -154,7 +170,8 @@ static void library_window(void) {
   const char *star = v_pstr("regions.library.star"); int ng = v_plen("regions.library.glints"), mx = v_si(H, "regions.library.specimen.glint.max", 8), gw = v_sk(H, "regions.library.specimen.glint.size", 0), gh = v_sk(H, "regions.library.specimen.glint.size", 1);
   int gl = kit_glint_level(H, "regions.library.specimen.glint", now - g_lib_t0, lib_motion()); g_lib_glint = gl; if (ng > mx) ng = mx;
   if (painted && star && *star) for (int i = 0; i < ng; i++) {
-    int x = v_pint(v_fmt("regions.library.glints.%d.0", i), 0), y = v_pint(v_fmt("regions.library.glints.%d.1", i), 0);
+    int x = v_pint(v_fmt("regions.library.glints.%d.0", i), 0) + ox, y = v_pint(v_fmt("regions.library.glints.%d.1", i), 0) - (nar ? sy : 0);
+    if (nar && (y < gh / 2 || y > g[3] - gh / 2)) continue;   /* a bead the crop cuts off has no glint */
     kit_glint(v_fmt("library.glint.%d", i), star, g[0] + x, g[1] + y, gw, gh, gl);   /* centred on the bead */
   }
 }
@@ -171,7 +188,7 @@ static void bezel_words(const char *key) {
   v_region(key, LAYER_CHROME);
   kit_bezel(key, r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.bezel.fill"), v_scol(H, "regions.bezel.edge"), v_scol(H, "regions.bezel.bevel"), NULL);   /* with the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
-    int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size */
+    int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted() && !is_narrow());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size; narrow, the Library's placeholder is its matte (the specimen is narrower than the window) */
     kit_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e, NULL, gone); }   /* the window: a placeholder until its picture lands */
   if (strcmp(key, "vivarium") == 0) home_window();
   if (strcmp(key, "library") == 0) library_window();
@@ -200,6 +217,21 @@ static void settings_knob(void) {
   for (int y = 1; y < r[3] - 1; y++) n += snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",0,%d,%d,\"%s\"]", y, r[2], fill);
   snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",%d,%d,%d,\"%s\"]]", in, r[3] - 1, r[2] - 2 * in, shade);
   v_region("settings", LAYER_ART); v_composed("settings.knob", r[0], r[1], r[2], r[3], ops);
+}
+
+/* ---- narrow: the turn cue (regions.cue) ----
+   Two plates of the Settings knob's make under the window, the first for the Vivarium, the second for the Library: the one the window shows is lit, the other dimmed. Composed pictures in the art layer, palette-exact. */
+static void turn_cue(void) {
+  int n = spec_len(H, "regions.cue.rects"); if (n < 2) return;
+  for (int k = 0; k < 2; k++) {
+    int r[4], on = k == g_turn; v_srect(H, v_fmt("regions.cue.rects.%d", k), r); if (r[2] < 3 || r[3] < 3) continue;
+    char lit[24], fill[24], shade[24], ops[480];
+    spec_str(H, on ? "regions.cue.lit" : "regions.cue.dimLit", lit, sizeof lit); spec_str(H, on ? "regions.cue.fill" : "regions.cue.dimFill", fill, sizeof fill); spec_str(H, on ? "regions.cue.shade" : "regions.cue.dimShade", shade, sizeof shade);
+    int in = v_si(H, "regions.cue.inset", 1), m = snprintf(ops, sizeof ops, "[[\"h\",0,0,%d,\"%s\"]", r[2], lit);
+    for (int y = 1; y < r[3] - 1; y++) m += snprintf(ops + m, sizeof ops - (size_t)m, ",[\"h\",0,%d,%d,\"%s\"]", y, r[2], fill);
+    snprintf(ops + m, sizeof ops - (size_t)m, ",[\"h\",%d,%d,%d,\"%s\"]]", in, r[3] - 1, r[2] - 2 * in, shade);
+    v_region("cue", LAYER_ART); v_composed(v_fmt("cue.%d", k), r[0], r[1], r[2], r[3], ops);
+  }
 }
 
 /* ---- the console and its stations ---- */
@@ -282,21 +314,28 @@ static void station_words(const char *key) {
 
 /* ---- the ring on the focused target: the house ring follows the outline (the spec's shape: radius 10 on a bezel, 8 on a station) ---- */
 static int g_rung;   /* a ring has been drawn since Home was entered: from then on the window stays where the ring took it, even when the ring goes at rest */
-void home_frame_left(void) { g_rung = 0; }
+void home_frame_left(void) { g_rung = 0; g_turn = 0; }   /* narrow: the window shows the Vivarium again on the next visit; coming back with the ring on the Library turns it */
 static void ring(const char *cur) {
   if ((!cur[0] || strcmp(cur, "room") == 0) && !g_rung && !anim_holding()) { int c[4]; v_srect(H, "regions.console.rect", c); word_setRest(c); }   /* asleep, or awake before the first press: no ring yet, so a phone's window rests on the station cards (the console's row), whole, not at the top left with the foot cut */
   if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;
   g_rung = 1;   /* at rest there is no ring; it goes when the rest begins and stays away while it holds */
-  for (int i = 0; i < 7; i++) if (strcmp(cur, TARGETS[i]) == 0) { int box[4]; v_srect(H, v_fmt("regions.%s.rect", cur), box); v_region("focus", LAYER_CHROME); word_focusRing("focus", H, v_fmt("focus.targets.%s", cur), box); return; }
+  for (int i = 0; i < 7; i++) if (strcmp(cur, TARGETS[i]) == 0) { int box[4]; v_srect(H, v_fmt("regions.%s.rect", cur), box); v_region("focus", LAYER_CHROME); word_focusRing("focus", H, v_fmt("focus.targets.%s", cur), box);
+    if (is_narrow() && i < 2) { int pb[4] = { box[0], 0, box[2], box[1] + box[3] }; word_setPanBox(pb); }   /* narrow: a window short of the whole screen keeps the bar (the line) in view with the ring on the window */
+    return; }
 }
 
 void home_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   kit_stage(H, "regions.stage.rect", v_scol("frame", "colours.stageGround"), "stage", "stage.ground", NULL, NULL);   /* the ground under the bezels and the console, down to the foot: there is no bottom line */
+  int nar = is_narrow();
+  if (nar) {   /* the window follows the ring: on a window the ring says which it shows; on a card the last one stays */
+    if (strcmp(cur, "library") == 0) g_turn = 1; else if (strcmp(cur, "vivarium") == 0) g_turn = 0;
+    for (int i = 2; i < 6; i++) if (strcmp(cur, TARGETS[i]) == 0) snprintf(g_back, sizeof g_back, "%s", TARGETS[i]);
+  }
   bar_words();
   line_words();
-  bezel_words("vivarium");
-  bezel_words("library");
+  if (nar) { bezel_words(g_turn ? "library" : "vivarium"); turn_cue(); }
+  else { bezel_words("vivarium"); bezel_words("library"); }
   settings_knob();
   { int c[4]; v_srect(H, "regions.console.rect", c); v_region("console", LAYER_CHROME);
     kit_bezel("console", c[0], c[1], c[2], c[3], v_si(H, "regions.console.radius", 10), v_scol(H, "regions.console.fill"), v_scol(H, "regions.console.edge"), NULL, NULL); }
@@ -306,14 +345,24 @@ void home_words(void) {
 
 /* the targets as the words drew them, in the props' order, with the graph's key */
 int home_focus(focus_target_t *out, int cap) {
-  int n = v_plen("focus.targets"); if (n > cap) n = cap;
-  for (int i = 0; i < n; i++) {
-    focus_target_t *t = &out[i]; focus_fill(t, "focus.targets", i, NULL);
+  int n = v_plen("focus.targets"), m = 0, nar = is_narrow();
+  for (int i = 0; i < n && m < cap; i++) {
+    focus_target_t *t = &out[m]; focus_fill(t, "focus.targets", i, NULL);
+    if (nar && (strcmp(t->id, "settings") == 0 || strcmp(t->id, g_turn ? "vivarium" : "library") == 0)) continue;   /* narrow: the window that is turned away and the Settings knob are not on the screen */
     int r[4] = { 0, 0, 0, 0 }; v_srect(H, v_fmt("regions.%s.rect", t->id), r);
-    focus_fill(t, "focus.targets", i, r);
+    focus_fill(t, "focus.targets", i, r); m++;
   }
-  return n;
+  return m;
+}
+/* narrow: the keys the plain grid does not say. On the window, → turns it to the Library and ← back (the ring goes with it), ↓ goes back to the card the ring came from; the rest is focus.graph */
+static int narrow_window_key(int code) {
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); int win = strcmp(cur, "vivarium") == 0 || strcmp(cur, "library") == 0; if (!win || anim_holding()) return 0;
+  const char *to = code == 19 && g_turn == 0 ? "library" : code == 20 && g_turn == 1 ? "vivarium" : code == 18 ? g_back : NULL;   /* 19 →, 20 ←, 18 ↓ (screens.c key_dir) */
+  if (!to) return 0;
+  g_turn = strcmp(to, "library") == 0 ? 1 : strcmp(to, "vivarium") == 0 ? 0 : g_turn;
+  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
+  return 1;
 }
 
 /* a key on Home: ✓ and the room keys say an intent on the focused target (the room when the ring is on nothing); ← does nothing (Home is the top); the pad moves the ring by home.json focus.graph */
-void home_key(int code) { screens_key_graph(code, H, "focus.graph", home_focus, "room", &(screens_keys_t){ .no_back = 1, .room_at = "focus.roomAt" }); }
+void home_key(int code) { if (is_narrow() && narrow_window_key(code)) return; screens_key_graph(code, H, "focus.graph", home_focus, "room", &(screens_keys_t){ .no_back = 1, .room_at = "focus.roomAt" }); }

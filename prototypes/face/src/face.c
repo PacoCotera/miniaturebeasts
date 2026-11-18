@@ -103,6 +103,7 @@ void face_key(int code, int down) {
    The play page pans its phone window to keep the ring's target in view. */
 int face_focus_box(int32_t *out) {   /* the ring's box; with no ring, the scene's rest box (an empty room's message) */
   int r[4], on = word_ringDrawn();
+  if (on && word_panBox(r)) { for (int i = 0; i < 4; i++) out[i] = r[i]; return 1; }   /* the scene's own pan box over the ring's */
   if (on) word_lastRing(r); else on = word_restBox(r);
   for (int i = 0; i < 4; i++) out[i] = on ? r[i] : 0;
   return on;

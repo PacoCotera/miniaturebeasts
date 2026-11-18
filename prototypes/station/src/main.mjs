@@ -145,6 +145,7 @@ if (EMBED) window.addEventListener("message", (e) => {   // the play page's shel
     postCaddy(true);
   }
   else if (m.t === "mb-dev") showDev(!!m.on);
+  else if (m.t === "mb-view") UI.narrow = !!m.narrow;   // the phone held upright (a 530 lp window): Home's narrow form; the next frame sends the props again
   else if (m.t === "mb-note-ask") {   // a play note's details from this device: its screen and its store (answered to the page; no name, no address)
     const c = G.ready ? caddyState() : null;   // before the Station has loaded its save there is no state to read
     parent.postMessage({ t: "mb-note-state", id: m.id, state: c ? { screen: UI.idle ? "idle" : UI.screen, store: c.ledger, crates: c.crates, podHome: c.podHome, docked: c.docked } : { screen: "boot" } }, location.origin);

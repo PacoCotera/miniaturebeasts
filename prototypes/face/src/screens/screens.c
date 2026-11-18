@@ -165,6 +165,7 @@ int screens_props(const char *json, int len) {
   if (spec_load("props", json, (size_t)len) < 0) { wire_error(spec_error()); return -1; }
   if (!spec_has("frame")) { wire_error("props: the frame spec has not been sent"); return -1; }
   v_focus_set(NULL);   /* the props carry the truth of the focus */
+  { char scr[32]; spec_str("props", "screen", scr, sizeof scr); spec_variant("home", spec_bool("props", "narrow", 0) && strcmp(scr, "home") == 0 && !spec_bool("props", "idle", 0) ? "narrow" : ""); }   /* the host's upright phone window (530 lp wide): Home reads its narrow variant (home.json "narrow") */
   draw();
   return 0;
 }

@@ -138,7 +138,7 @@ function layout() {
   for (const dv of ["station", "companion"]) {
     const p = PLAN[dv], st = dv === "station", fw = st ? 1024 : 450, shell = shells[dv], tray = trayEl[dv], on = owner === dv;
     placeC(shell, p.panel.x, p.panel.y, p.panel.w, p.panel.h, true);
-    if (st) placeStation(p); else placeFrameC(frames[dv], p.screen.x - p.panel.x, p.screen.y - p.panel.y, fw, 600, kOf[dv]);
+    if (st) { placeStation(p); tellNarrow(); } else placeFrameC(frames[dv], p.screen.x - p.panel.x, p.screen.y - p.panel.y, fw, 600, kOf[dv]);
     placeBox(tray, p.tray.box, true); drawTray(dv, p.tray.plan);
     for (const el of [shell, tray]) { el.style.visibility = on ? "visible" : "hidden"; el.style.pointerEvents = on ? "" : "none"; }
     tray.style.pointerEvents = "none";   // the tray is a transparent box over the panel: only its keys take a touch
@@ -179,6 +179,13 @@ function placeStation(p) {
   const fl = kOf.station / dpr, u = k0 / dpr;   // CSS px per lp on the page, and in the frame before its scale
   placeFrameC(el, xc - pan.x * fl, yc - pan.y * fl, 1024, 600, kOf.station);
   el.style.clipPath = "inset(" + [pan.y, 1024 - pan.x - p.view.w, 600 - pan.y - p.view.h, pan.x].map((v) => Math.max(0, v) * u + "px").join(" ") + ")";
+}
+// Home's narrow form (home.json narrow): told to the Station whenever the plan says (and when it loads): the phone held upright, the window 530 lp wide
+let sentNarrow = null;
+function tellNarrow(force = false) {
+  const on = !!(PLAN.station && PLAN.station.narrow);
+  if (!force && on === sentNarrow) return; sentNarrow = on;
+  try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
 }
 function stationFocus(m) {
   const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null, moved = m.screen !== focusNow.screen;
@@ -533,7 +540,7 @@ addEventListener("online", () => notes.flush(true));
 setTimeout(() => notes.flush(true), 3000); setInterval(() => notes.flush(true), 60000);   // notes kept from an earlier visit go when the route answers
 // ---- boot ----
 buildKeys();
-for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner(START_OWNER); } } });
+for (const d of ["station", "companion"]) frames[d].addEventListener("load", () => { attach(d); if (d === "station") { tellNarrow(true); if (devOpen) toggleDev(true); if (!gotLoadOwner) { gotLoadOwner = true; setOwner(START_OWNER); } } });
 let gotLoadOwner = false;
 frames.station.src = stationUrl; frames.companion.src = companionUrl;
 if (DEV) { applyDev(true); devOpen = true; }   // the Developer tools option shows the button and its help row, and opens the tools at load
