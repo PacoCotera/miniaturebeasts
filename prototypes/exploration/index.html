@@ -2628,6 +2628,7 @@ function digBank(ei, a, c) {
   ex.bankProg = 0; ex.abUsed = 1; (ex.dug = ex.dug || []).push(ei); if (up) fieldHabit('bank-dig');   // the habit is the dig up a bank (the book's pose); a dig down is the ability only
   const lay = ex.patch && layout(ex.patch.key); if (lay) { lay.bankDug = 1; lay.tk = null; lay.l48 = null; if (lay.banks) bakedView(lay); }   // bakedView swaps the dug bank's decal (bankDecalsOn)
   logEv(name + ' dug a way ' + (up ? 'up' : 'down') + ' the bank');
+  { const refused = Object.values(WORDS.block); FX.notes = FX.notes.filter(n => !refused.includes(n.text)); composeMsg(); }   // the refusal that waited its turn ('Steep rock · no way over') is stale once the way is dug
   advance(ex.patch ? 'patch' : 'map', ex.patch ? { noise: 'act' } : undefined);
   return true;
 }
