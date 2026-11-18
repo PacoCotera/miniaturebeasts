@@ -114,7 +114,8 @@ export function makePage(opts = {}) {
   const silent = { log() {}, warn() {}, error() {} };
   const cons = opts.console === "silent" ? silent : opts.console === "collect" ? { ...silent, error: e => errors.push(e) } : console;
   const D = opts.date == null ? Date : class extends Date { constructor(...a) { super(...(a.length ? a : [opts.date])); } static now() { return opts.date; } };
-  const ctx = { __gen7: opts.gen === 7, console: cons, URLSearchParams, Date: D, fetch: () => new Promise(() => {}), document, location: any, navigator: any,
+  const ctx = { __gen7: opts.gen === 7, __noBusy: !opts.busy,   // busy: true lets the page say it is busy and wait a frame before long work (ui-worldgen-busy-1); the other tests run that work at once
+ console: cons, URLSearchParams, Date: D, fetch: () => new Promise(() => {}), document, location: any, navigator: any,
     matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     requestAnimationFrame: () => opts.raf === "count" ? ++raf.n : (++raf.n, opts.raf || 0),
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},

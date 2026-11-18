@@ -2159,6 +2159,19 @@ function ensureCharge(ex) {
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
+// Long work on the page's own thread (a place not yet made is baked on the spot) freezes it: before it, the page says so on the Companion's screen (the making screen, LAND_COMING), lets that paint (one frame:
+// requestAnimationFrame, then setTimeout 0), runs the work, and takes the line away. Presses made meanwhile are ignored (act returns while RT.making).
+function busyThen(work) {
+  if (RT.making) return;
+  RT.making = true; RT.makingAt = performance.now();
+  requestAnimationFrame(() => setTimeout(() => { try { work(); } finally { RT.making = false; } }, 0));
+}
+// True when setting out from `cell` would bake a place of the reach on the page: generator 7, a reach cell with no layout yet and no baked place from the worker.
+function coldReach(cell) {
+  if (!G || G.gen !== 7 || !PL.ready || window.__noBusy) return false;   // __noBusy: the test harness, which runs the work at once
+  const seed = S.regions[0].seed, slot = hereRegion().slot, v = biomeVersion(S);
+  return reachCells(cell, tierOf().range + 1).some(c => passable(c) && G.land[c] !== L.WATER && !layoutCache.has(String(c)) && !bakedGet(seed, slot, v, +c));
+}
 function startExpedition(type, cell) {
   flushRipe();
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
@@ -7557,7 +7570,7 @@ function act(k, mode) {
       break;
     case 'place':
       if (isDir) moveCursor(k);
-      else if (k === 'confirm') { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; } else if (placeValid(S.ui.cur)) startExpedition(S.ui.type || 'weather', S.ui.cur); else { fxMsg(placeReason(S.ui.cur)); FX.bumpAt = NOW; } }
+      else if (k === 'confirm') { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; } else if (placeValid(S.ui.cur)) { const type = S.ui.type || 'weather', cell = S.ui.cur; if (coldReach(cell)) busyThen(() => startExpedition(type, cell)); else startExpedition(type, cell); } else { fxMsg(placeReason(S.ui.cur)); FX.bumpAt = NOW; } }
       else if (k === 'back') { S.phase = 'setup'; }
       break;
     case 'map':
