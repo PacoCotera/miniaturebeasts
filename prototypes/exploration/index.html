@@ -899,7 +899,7 @@ function primeWindow(lay, bk, key, dir) {
   const e = entryPoint(lay, key, dir, true); if (!e) return false;
   const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); liftFlood(lay, rows, e.x, e.y);
   const vb = veilable(lay), un = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || ((rows[y] >>> x) & 1) === 1 || !vb[y * lay.w + x];
-  const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
+  const cam = bk.camera(newCamFor(bk, key), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
   bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
   const g = PL.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
   bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
@@ -2372,6 +2372,8 @@ function ensureLive(key) {
 }
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 let LAND = null;   // the tile a step out of a place lands on in the next one (crossEdge), used once by enterPatchBuilt
+let CAMKEEP = null;   // the view's rest along the edge a step out of a place crossed (crossEdge): { key, axis: 'ix' | 'iy', i }; the next place's first camera starts from it (bug #36)
+const newCamFor = (bk, key) => { const s = bk.newCam(); if (CAMKEEP && CAMKEEP.key === String(key)) s[CAMKEEP.axis] = CAMKEEP.i; return s; };
 let ALONG = null;   // where along the edge a step out of a place left from (crossEdge): the row for a sideways step, the column for an up or down one. The next place's way in keeps it: the pawn lands on the cell across the shared edge, on the same line of the map (bugs #11, #37)
 const alongOf = (dir, P) => dir === 'left' || dir === 'right' ? P.y : P.x;   // the coordinate along the edge that a step in dir crosses
 function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
@@ -2800,6 +2802,7 @@ function crossEdge(dir) {
   const P0 = ex.patch; ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
   LAND = land ? { key: String(c), x: land.x, y: land.y } : null; ALONG = c >= 0 ? { key: String(c), k: alongOf(dir, P0) } : null;   // bug #37: the cell across the edge, on the same row or column
+  CAMKEEP = c >= 0 && RT.ca && RT.ca.p === P0 && RT.ca.s.ix >= 0 ? { key: String(c), axis: dir === 'up' || dir === 'down' ? 'ix' : 'iy', i: dir === 'up' || dir === 'down' ? RT.ca.s.ix : RT.ca.s.iy } : null;   // bug #36: the view keeps its rest along the edge crossed (the along axis is not asked again)
   mapStep(dir, !!land);
   // The map is not shown on a crossing: the walk goes straight into the next place under a one-screen slide, and the explorer keeps walking.
   if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
@@ -5722,7 +5725,7 @@ const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', sh
 function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null, bk = lay && bakedView(lay);
   if (!bk) return camAt(v, px, py);
   const P = S.exp.patch, ts = v.ts;
-  if (!RT.ca || RT.ca.p !== P) RT.ca = { p: P, s: bk.newCam() };
+  if (!RT.ca || RT.ca.p !== P) RT.ca = { p: P, s: newCamFor(bk, P.key) };
   const st = live ? RT.ca.s : Object.assign({}, RT.ca.s), tile = live ? { x: P.x, y: P.y } : { x: Math.round(px / ts), y: Math.round(py / ts) };
   return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), null);
 }
