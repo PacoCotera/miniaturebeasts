@@ -1,182 +1,517 @@
 {
- "source_sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48",
+ "source_sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
  "parent": {
-  "ledger_id": "3f832eaf2d",
-  "sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48",
-  "file": "git show 95ca2cf61:art/places/sets/ninja-test/cliff-south-5.png"
+  "ledger_id": "3b4842f823",
+  "sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+  "file": "git show c1e7585ba:art/places/sets/ninja-test/cliff-south-5.png"
  },
  "steps": [
   [
-   "map",
+   "levels",
    [
-    [
-     "#99b562",
-     "#82b266"
-    ]
+    1.0,
+    1.0,
+    1.0
+   ],
+   [
+    0.61,
+    0.61,
+    0.61
+   ],
+   [
+    0,
+    90,
+    3,
+    225
+   ]
+  ],
+  [
+   "snap",
+   "walk",
+   "314649e7e3f7",
+   [
+    "#0a4a25",
+    "#17331f",
+    "#1c3820",
+    "#1d2531",
+    "#1e2a3e",
+    "#1f6831",
+    "#203d22",
+    "#242c38",
+    "#244523",
+    "#28432d",
+    "#294a26",
+    "#2b333f",
+    "#2c6c72",
+    "#2e4f29",
+    "#2e7aa3",
+    "#2f5233",
+    "#33683f",
+    "#36582d",
+    "#36603a",
+    "#386a42",
+    "#3a5d2e",
+    "#3a8785",
+    "#3e422f",
+    "#3f6130",
+    "#3f9cc0",
+    "#456834",
+    "#468c50",
+    "#4a5f78",
+    "#4a7f4b",
+    "#4a814e",
+    "#4a9f9a",
+    "#4e484a",
+    "#4f6a53",
+    "#51574f",
+    "#528a51",
+    "#54603e",
+    "#56634d",
+    "#584b46",
+    "#589054",
+    "#598e4d",
+    "#5a6470",
+    "#5b6c35",
+    "#5c9457",
+    "#5d9d68",
+    "#5e6e60",
+    "#5e8443",
+    "#5f7160",
+    "#5f7fd0",
+    "#616b44",
+    "#628550",
+    "#62aa5c",
+    "#65a05d",
+    "#664330",
+    "#667b59",
+    "#669a5a",
+    "#69a55d",
+    "#6a2e41",
+    "#6e5038",
+    "#6e7438",
+    "#6f4a37",
+    "#71ddee",
+    "#736e23",
+    "#74a334",
+    "#79b8ce",
+    "#7a743e",
+    "#7a9d5a",
+    "#7ac6bb",
+    "#7b473c",
+    "#7c5a3d",
+    "#7c6857",
+    "#7c8435",
+    "#805640",
+    "#807c74",
+    "#817b42",
+    "#82603f",
+    "#82796f",
+    "#82a05a",
+    "#86c46c",
+    "#878045",
+    "#889030",
+    "#8a6444",
+    "#8a7e72",
+    "#8a937e",
+    "#8b9260",
+    "#8b9561",
+    "#8cba68",
+    "#8d977f",
+    "#8e7c73",
+    "#8f6244",
+    "#8f884a",
+    "#909a39",
+    "#91a13b",
+    "#93a332",
+    "#948d4d",
+    "#949b61",
+    "#954625",
+    "#965340",
+    "#965746",
+    "#96703e",
+    "#99958b",
+    "#99a060",
+    "#99b562",
+    "#9a7453",
+    "#9a9083",
+    "#9bad41",
+    "#9c7350",
+    "#9cc4f4",
+    "#9d9451",
+    "#9fce78",
+    "#a09853",
+    "#a16240",
+    "#a1b548",
+    "#a26a83",
+    "#a29686",
+    "#a2a462",
+    "#a3d276",
+    "#a49b56",
+    "#a5ac9c",
+    "#a88a58",
+    "#a8a129",
+    "#a8d082",
+    "#aa8c46",
+    "#aaa297",
+    "#aba69b",
+    "#adb5a6",
+    "#adbc3a",
+    "#aea55c",
+    "#aec351",
+    "#b08a63",
+    "#b36f3c",
+    "#b3957f",
+    "#b6beb0",
+    "#b98b60",
+    "#baa48e",
+    "#bab062",
+    "#bc84b5",
+    "#bccb4f",
+    "#bd7959",
+    "#bd9460",
+    "#beb2a2",
+    "#c3a56a",
+    "#c3b86e",
+    "#c69469",
+    "#c6bc6a",
+    "#c96b9c",
+    "#c9b28c",
+    "#cbc275",
+    "#cdeee6",
+    "#cee78c",
+    "#d0c6af",
+    "#d0c9ba",
+    "#d2ad7e",
+    "#d2b06f",
+    "#d2b37d",
+    "#d3865f",
+    "#d3e887",
+    "#d4683b",
+    "#d4ca7a",
+    "#d6a46f",
+    "#d78b4a",
+    "#dfd387",
+    "#e46d3a",
+    "#e7cd86",
+    "#e8ad75",
+    "#e9a73c",
+    "#ece6d8",
+    "#ee82ad",
+    "#eecf9b",
+    "#f1ae41",
+    "#f4a3c8",
+    "#f5aabd",
+    "#f7da6e",
+    "#ffad5d",
+    "#ffcb8d",
+    "#ffe166",
+    "#fff8e6",
+    "#ffffff"
    ]
   ]
  ],
- "out_sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
- "note": "from the signed parent (the pre-map file, sha256 above) by one colour map; the earlier chain from the paid call is in earlier_record",
+ "out_sha256": "8c2e669cca5da1eda5acfa1ec2ae43cc0e87f4e98472ad3aef346c8b97a0a956",
+ "note": "from the signed shipped file (the sha256 above) by recorded steps only; levels in the 3 px edge columns of the rock rows to the interior luminance, then the walk snap",
  "earlier_record": {
-  "source_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
+  "source_sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
   "parent": {
-   "ledger_id": "d30ab8bf5f",
-   "file": "../../signed-parents/cliff-south-5.png"
+   "ledger_id": "3b4842f823",
+   "sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+   "file": "git show c1e7585ba:art/places/sets/ninja-test/cliff-south-5.png"
   },
   "steps": [
    [
-    "key_below",
+    "levels",
     [
-     "#6c7682",
-     "#3e444e",
-     "#343840",
-     "#242626",
-     "#333b47",
-     "#8497a5",
-     "#141b1b",
-     "#9eadb9",
-     "#555c64",
-     "#474d55",
-     "#5a6470",
-     "#6a7b8e",
-     "#acbfc5",
-     "#616b44",
-     "#5e8443",
-     "#79875b"
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.61,
+     0.61,
+     0.61
+    ],
+    [
+     0,
+     90,
+     3,
+     225
     ]
    ],
    [
-    "map",
+    "snap",
+    "walk",
+    "314649e7e3f7",
     [
-     [
-      "#99b562",
-      "#82b266"
-     ]
+     "#1e2a3e",
+     "#4a5f78"
     ]
    ]
   ],
-  "from_paid_call": {
-   "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below",
-   "parent_steps": {
-    "source_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+  "out_sha256": "893e27362a79cebdf24d16031a83dff140ea9856c4ee53015d202a4cd32be9e0",
+  "note": "from the signed shipped file (the sha256 above) by recorded steps only; levels in the 3 px edge columns of the rock rows to the interior luminance, then the walk snap",
+  "earlier_record": {
+   "source_sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+   "parent": {
+    "ledger_id": "3b4842f823",
+    "sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+    "file": "git show c1e7585ba:art/places/sets/ninja-test/cliff-south-5.png"
+   },
+   "steps": [
+    [
+     "levels",
+     [
+      1.0,
+      1.0,
+      1.0
+     ],
+     [
+      0.61,
+      0.61,
+      0.61
+     ],
+     [
+      0,
+      90,
+      3,
+      225
+     ]
+    ],
+    [
+     "snap",
+     "walk",
+     "314649e7e3f7",
+     [
+      "#1e2a3e",
+      "#4a5f78"
+     ]
+    ]
+   ],
+   "out_sha256": "893e27362a79cebdf24d16031a83dff140ea9856c4ee53015d202a4cd32be9e0",
+   "note": "from the signed shipped file (the sha256 above) by recorded steps only; levels in the 3 px edge columns of the rock rows to the interior luminance, then the walk snap",
+   "earlier_record": {
+    "source_sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+    "parent": {
+     "ledger_id": "3b4842f823",
+     "sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+     "file": "git show c1e7585ba:art/places/sets/ninja-test/cliff-south-5.png"
+    },
     "steps": [
      [
-      "layout",
+      "levels",
       [
-       1024,
-       1024
+       1.0,
+       1.0,
+       1.0
       ],
       [
-       {
-        "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
-        "steps": [
-         [
-          "crop",
-          [
-           512,
-           0,
-           512,
-           1024
-          ],
-          "terrain"
-         ]
-        ],
-        "at": [
-         0,
-         0
-        ]
-       },
-       {
-        "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
-        "steps": [
-         [
-          "crop",
-          [
-           0,
-           0,
-           512,
-           1024
-          ],
-          "terrain"
-         ]
-        ],
-        "at": [
-         512,
-         0
-        ]
-       }
-      ]
-     ],
-     [
-      "scale_nearest",
+       0.691,
+       0.691,
+       0.691
+      ],
       [
-       960,
-       960
+       0,
+       90,
+       3,
+       225
       ]
-     ],
-     [
-      "reduce_mode",
-      10
      ],
      [
       "snap",
       "walk",
-      "7e90b28e41f4",
+      "314649e7e3f7",
       [
        "#1e2a3e",
        "#4a5f78"
       ]
-     ],
-     [
-      "key_edge_bg",
-      [
-       "#69a55d",
-       "#65a05d",
-       "#74a334",
-       "#36603a"
-      ],
-      0,
-      8
-     ],
-     [
-      "crop",
-      [
-       64,
-       0,
-       16,
-       96
-      ],
-      "terrain"
-     ],
-     [
-      "scale_nearest",
-      [
-       48,
-       288
-      ]
-     ],
-     [
-      "key_edge_bg",
-      [
-       "#82b266",
-       "#7a9d5a",
-       "#99b562",
-       "#82a05a"
-      ],
-      0,
-      8
      ]
     ],
-    "out_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
-    "paid_call": {
-     "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
-     "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
-     "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
-     "raw": "work/raw/step2-seam.png",
-     "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
-    },
-    "note": "one replayable list from the paid raw step2-seam.png; the first step is the roll-back layout, whose sources are found by sha256 in the raw's folder"
+    "out_sha256": "38fdf3fcdeae5a1f8e4599a7dc51af9325be88b5242e12d6bd99eabe5657706b",
+    "note": "from the signed shipped file (the sha256 above) by recorded steps only; levels in the 3 px edge columns of the rock rows to the interior luminance, then the walk snap",
+    "earlier_record": {
+     "source_sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48",
+     "parent": {
+      "ledger_id": "3f832eaf2d",
+      "sha256": "996fc1a1bba86b93461f52cf229454dde04ce6244c91e29d588ef22c7ec7cc48",
+      "file": "git show 95ca2cf61:art/places/sets/ninja-test/cliff-south-5.png"
+     },
+     "steps": [
+      [
+       "map",
+       [
+        [
+         "#99b562",
+         "#82b266"
+        ]
+       ]
+      ]
+     ],
+     "out_sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd",
+     "note": "from the signed parent (the pre-map file, sha256 above) by one colour map; the earlier chain from the paid call is in earlier_record",
+     "earlier_record": {
+      "source_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
+      "parent": {
+       "ledger_id": "d30ab8bf5f",
+       "file": "../../signed-parents/cliff-south-5.png"
+      },
+      "steps": [
+       [
+        "key_below",
+        [
+         "#6c7682",
+         "#3e444e",
+         "#343840",
+         "#242626",
+         "#333b47",
+         "#8497a5",
+         "#141b1b",
+         "#9eadb9",
+         "#555c64",
+         "#474d55",
+         "#5a6470",
+         "#6a7b8e",
+         "#acbfc5",
+         "#616b44",
+         "#5e8443",
+         "#79875b"
+        ]
+       ],
+       [
+        "map",
+        [
+         [
+          "#99b562",
+          "#82b266"
+         ]
+        ]
+       ]
+      ],
+      "from_paid_call": {
+       "note": "the signed parent's own list from its paid raw (replays to the signed parent bytes), then key_below",
+       "parent_steps": {
+        "source_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+        "steps": [
+         [
+          "layout",
+          [
+           1024,
+           1024
+          ],
+          [
+           {
+            "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+            "steps": [
+             [
+              "crop",
+              [
+               512,
+               0,
+               512,
+               1024
+              ],
+              "terrain"
+             ]
+            ],
+            "at": [
+             0,
+             0
+            ]
+           },
+           {
+            "src": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9",
+            "steps": [
+             [
+              "crop",
+              [
+               0,
+               0,
+               512,
+               1024
+              ],
+              "terrain"
+             ]
+            ],
+            "at": [
+             512,
+             0
+            ]
+           }
+          ]
+         ],
+         [
+          "scale_nearest",
+          [
+           960,
+           960
+          ]
+         ],
+         [
+          "reduce_mode",
+          10
+         ],
+         [
+          "snap",
+          "walk",
+          "7e90b28e41f4",
+          [
+           "#1e2a3e",
+           "#4a5f78"
+          ]
+         ],
+         [
+          "key_edge_bg",
+          [
+           "#69a55d",
+           "#65a05d",
+           "#74a334",
+           "#36603a"
+          ],
+          0,
+          8
+         ],
+         [
+          "crop",
+          [
+           64,
+           0,
+           16,
+           96
+          ],
+          "terrain"
+         ],
+         [
+          "scale_nearest",
+          [
+           48,
+           288
+          ]
+         ],
+         [
+          "key_edge_bg",
+          [
+           "#82b266",
+           "#7a9d5a",
+           "#99b562",
+           "#82a05a"
+          ],
+          0,
+          8
+         ]
+        ],
+        "out_sha256": "77e841fdcbf5b48407a399503fdabfc97d907b797678467b691b1f84ec5580b5",
+        "paid_call": {
+         "model": "fal-ai/nano-banana-pro/edit (seam edit of the rolled strip)",
+         "log": "/home/mb/mb/mibi-art/art-jobs/2026-11-13-cliff-strip-angular-3/log/calls.jsonl",
+         "parent": "work/raw/step1-edit.png (paid angular repaint of work/canvas.png = S-paint with the CC0 scaffold rock band laid in the rock zone; scaffold: Jetrel 2D Circle Graphic Desert Cliffs, https://opengameart.org/content/2d-circle-graphic-desert-cliffs, licence CC0, via work/band.png.steps.json and canvas.png.steps.json)",
+         "raw": "work/raw/step2-seam.png",
+         "raw_sha256": "9c1c47fb9a2673ce9e8e6036d6b33fe7d7dca84a21a2af0a4ec6efc0f40147c9"
+        },
+        "note": "one replayable list from the paid raw step2-seam.png; the first step is the roll-back layout, whose sources are found by sha256 in the raw's folder"
+       }
+      }
+     }
+    }
    }
   }
  }
