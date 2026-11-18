@@ -170,12 +170,12 @@ const CTL_LINE = 44;
 // ---- the Station's phone window (layout.mjs ZOOM, view, panFor) ----
 // Where the whole screen would be under x0.6 the Station is drawn at x0.6 in a window (plan.view, in lp) that keeps the focus ring's target whole (the Station posts the ring's box, "mb-focus").
 // The frame is moved under a clip-path that moves with it, both eased over the same time, so the window stays put while the screen slides under it; reduced motion jumps.
-let pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null };
+let pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null, rects: [] };
 function placeStation(p) {
   const el = frames.station, xc = p.screen.x - p.panel.x, yc = p.screen.y - p.panel.y;
   el.classList.toggle("pan", !!p.view);
   if (!p.view) { pan = { x: 0, y: 0 }; el.style.clipPath = ""; placeFrameC(el, xc, yc, 1024, 600, kOf.station); return; }
-  pan = panFor(p.view, focusNow.box, pan);
+  pan = panFor(p.view, focusNow.box, pan, undefined, focusNow.rects);
   const fl = kOf.station / dpr, u = k0 / dpr;   // CSS px per lp on the page, and in the frame before its scale
   placeFrameC(el, xc - pan.x * fl, yc - pan.y * fl, 1024, 600, kOf.station);
   el.style.clipPath = "inset(" + [pan.y, 1024 - pan.x - p.view.w, 600 - pan.y - p.view.h, pan.x].map((v) => Math.max(0, v) * u + "px").join(" ") + ")";
@@ -183,7 +183,8 @@ function placeStation(p) {
 function stationFocus(m) {
   const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null, moved = m.screen !== focusNow.screen;
   if (moved && !box) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
-  focusNow = { screen: m.screen, box };
+  const rects = Array.isArray(m.rects) ? m.rects.filter((r) => Array.isArray(r) && r.length === 4).map((r) => r.map(Number)) : [];
+  focusNow = { screen: m.screen, box, rects };
   const p = PLAN.station; if (p && p.view) placeStation(p);
 }
 function dockTitle() {

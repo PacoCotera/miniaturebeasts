@@ -301,6 +301,8 @@ void home_words(void) {
   { int c[4]; v_srect(H, "regions.console.rect", c); v_region("console", LAYER_CHROME);
     kit_bezel("console", c[0], c[1], c[2], c[3], v_si(H, "regions.console.radius", 10), v_scol(H, "regions.console.fill"), v_scol(H, "regions.console.edge"), NULL, NULL); }
   for (int i = 0; i < 4; i++) station_words(STATIONS[i]);
+  { const char *panels[6] = { "vivarium", "library", STATIONS[0], STATIONS[1], STATIONS[2], STATIONS[3] };   /* the cards and panels of Home's blocks: a phone's window never cuts one at its side edges */
+    for (int i = 0; i < 6; i++) { int r[4]; v_srect(H, v_fmt("regions.%s.rect", panels[i]), r); word_cardRect(r); } }
   ring(cur);
 }
 

@@ -107,6 +107,12 @@ int face_focus_box(int32_t *out) {   /* the ring's box; with no ring, the scene'
   for (int i = 0; i < 4; i++) out[i] = on ? r[i] : 0;
   return on;
 }
+/* the cards and panels the last scene listed (x, y, w, h each, face px) into out (cap rects of 4); how many. The phone window keeps none of them cut by its side edges. */
+int face_card_rects(int32_t *out, int cap) {
+  int r[16][4], n = word_cardRects(r, cap < 16 ? cap : 16);
+  for (int i = 0; i < n; i++) for (int k = 0; k < 4; k++) out[i * 4 + k] = r[i][k];
+  return n;
+}
 int face_key_count(void) { return g_kcount; }
 int face_last_key(void) { return g_klast; }
 const char *face_version(void) {

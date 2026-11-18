@@ -56,7 +56,13 @@ static const char *target_entry(const char *id) {
   if (strncmp(id, "tchip.", 6) == 0 || strncmp(id, "recent.", 7) == 0 || strncmp(id, "letter.", 7) == 0 || strncmp(id, "word.", 5) == 0) return "targets.chip";
   return "targets.tool";
 }
+/* the cards of the grid on screen (the focused row's neighbours): a phone's window never cuts one at its side edges */
+static void list_cards(void) {
+  int top = v_sk(S, "regions.inventory.picker.grid.origin", 1), py = v_sk(S, "regions.inventory.picker.grid.pitch", 1), rows = v_si(S, "regions.inventory.picker.grid.rows", 2);
+  for (int k = 0, n = v_plen("regions.inv.grid.cards"); k < n; k++) { int r[4]; if (inv_card_rect_k(k, r) && r[2] > 0 && r[3] > 0 && r[1] >= top && r[1] + r[3] <= top + (rows - 1) * py + r[3]) word_cardRect(r); }
+}
 static void focus_ring(const char *state) {
+  if (!is(state, "compare") && !is(state, "read")) list_cards();
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || is(state, "trait") || (is(state, "read") && spec_len("props", "regions.read.stamp") >= 0)) return;
   int r[4]; target_box(cur, r); if (r[2] <= 0 || r[3] <= 0) return;
   v_region("focus", LAYER_CHROME); word_focusRing("focus", S, target_entry(cur), r);

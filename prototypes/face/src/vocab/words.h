@@ -24,6 +24,8 @@ void word_ringSceneBegin(void);   /* a scene starts: no ring drawn in it yet */
 int word_ringDrawn(void);   /* 1 when the scene drew a ring (its box is word_lastRing) */
 void word_setRest(const int r[4]);   /* a scene with no ring: add r to the box a phone window keeps in view (union of every call this scene) */
 int word_restBox(int out[4]);   /* the scene's rest box into out; 1 when one was set */
+void word_cardRect(const int r[4]);   /* a card or panel of the focused row or block, as drawn (screen px): a phone window never cuts it at its side edges; up to 16 a scene */
+int word_cardRects(int out[][4], int cap);   /* the scene's card rects into out; how many */
 /* A creature's ring: its footprint on the ground. `picture` is the creature's picture id as drawn (a still, a moving-set atlas or a nap), `cell` is "stand", "curl", "shadow" or "" (the whole picture), `drawn` is its box, not lifted. */
 void word_focusRingFootprint(const char *id, const char *spec, const char *target, const char *picture, const char *cell, const int drawn[4]);
 void kit_focusRingHold(const char *id, const int box[4], int rad);   /* the hold mark: one composed node at box grown by frame focus.ring.hold's gap and band, 1 px, with the ring's outer corner (rad: the target's shape radius) in the ring's core colour, no key bands, at the chrome layer of the caller's region, marked a hold in the log (contract header in common/focusRing.c) */

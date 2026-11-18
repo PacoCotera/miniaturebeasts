@@ -26,6 +26,7 @@ uint32_t face_hash(void);
 /* Keys: LVGL's key codes (LV_KEY_UP 17, DOWN 18, RIGHT 19, LEFT 20, ESC 27, ENTER 10, ...), a press then its release. */
 void face_key(int code, int down);
 int face_key_count(void);
+int face_card_rects(int32_t *out, int cap);   /* the last scene's listed card rects (x, y, w, h each) into out; how many */
 int face_focus_box(int32_t *out);   /* the last scene's ring box (x, y, w, h) into out, or with no ring its rest box (an empty room's message); 1 when there is one */
 int face_last_key(void);
 const char *face_version(void);

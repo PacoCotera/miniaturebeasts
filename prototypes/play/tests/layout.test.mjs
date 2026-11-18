@@ -118,6 +118,33 @@ test("panFor: the focused target whole with 12 lp round it, the least move, alwa
     assert.ok(p.x >= 0 && p.x <= 494 && p.y >= 0 && p.y <= 87, "inside the screen"); }
 });
 
+// ui-station-card-edges-1: a neighbour card is whole in the window or fully out, never cut by the left or right edge; the focus box (and the ✓ action in its rest box) never leaves
+const cutBy = (p, v, r) => r[0] + r[2] > p.x && r[0] < p.x + v.w && !(r[0] >= p.x && r[0] + r[2] <= p.x + v.w);
+test("panFor with card rects: a card cut at the right edge ends whole or out, the focus box stays whole", () => {
+  const v = { w: 530, h: 513 }, cards = [[36, 100, 150, 100], [196, 100, 150, 100], [356, 100, 150, 100], [516, 100, 150, 100]];
+  const p = panFor(v, cards[2], { x: 0, y: 0 }, undefined, cards);
+  assert.equal(cards.filter((r) => cutBy(p, v, r)).length, 0, "no card cut"); assert.deepEqual(p, { x: 186, y: 0 }, "the left card leaves, the right one comes whole (the least move that cuts none)");
+  assert.ok(p.x <= cards[2][0] - 12 && p.x + v.w >= cards[2][0] + cards[2][2] + 12, "the focus box keeps its 12 lp");
+  assert.deepEqual(panFor(v, cards[2], { x: 0, y: 0 }), { x: 0, y: 0 }, "no rects: as before");
+  assert.deepEqual(panFor(v, cards[0], { x: 0, y: 0 }, undefined, cards), { x: 0, y: 0 }, "a cut that cannot be cleared without losing the focus box: the window stays");
+  const row = [[300, 100, 100, 100], [420, 100, 100, 100]]; assert.deepEqual(panFor(v, row[0], { x: 0, y: 0 }, undefined, row), { x: 0, y: 0 }, "all whole: no move");
+  assert.deepEqual(panFor(v, cards[2], { x: 0, y: 0 }, undefined, [[516, 700, 150, 100]]), { x: 0, y: 0 }, "a card in other rows (not in the window's rows) is not looked at");
+  assert.deepEqual(panFor(v, cards[2], { x: 0, y: 0 }, undefined, [[500, 100, 620, 100]]), { x: 0, y: 0 }, "a rect wider than the window (the Vivarium's bezel upright) can never be whole: left alone");
+  { const con = [12, 300, 1000, 150], st = [[12, 310, 200, 130], [262, 310, 200, 130], [512, 310, 200, 130], [762, 310, 200, 130]], q = panFor(v, con, { x: 0, y: 0 }, undefined, st), q0 = panFor(v, con, { x: 0, y: 0 });
+    assert.equal(st.filter((r) => cutBy(q0, v, r)).length, 1, "at rest the window cuts the third card");
+    assert.equal(st.filter((r) => cutBy(q, v, r)).length, 0, "the console's row at rest (a box wider than the window): the window slides along it until no card is cut"); assert.ok(q.x >= q0.x && q.x + v.w <= 1012 + 12 + 1, "it stays on the row"); }
+  for (let i = 0; i < 300; i++) {
+    const n = 2 + Math.floor(Math.random() * 4), rs = Array.from({ length: n }, () => [Math.random() * 900, Math.random() * 400, 40 + Math.random() * 200, 40 + Math.random() * 150]), b = rs[Math.floor(Math.random() * n)], at = { x: Math.random() * 494, y: Math.random() * 87 };
+    const q = panFor(v, b, at, undefined, rs), q0 = panFor(v, b, at);
+    assert.ok(q.x >= 0 && q.x <= 494 && q.y === q0.y, "inside the screen, y untouched");
+    assert.ok(q.x <= b[0] - 12 + 1 && q.x + v.w >= b[0] + b[2] + 12 - 1 || b[0] - 12 < 0 || b[0] + b[2] + 12 > 1024 || q.x === q0.x, "the focus box (12 lp round) stays whole");
+    const ofW = (p) => rs.filter((r) => r[1] < q0.y + v.h && r[1] + r[3] > q0.y && cutBy(p, v, r)).length; assert.ok(ofW(q) <= ofW(q0), "never more cuts than without the nudge");
+  }
+  const s = { w: 700, h: 300 }; // sideways: the same, a wider window
+  const sc = [[40, 80, 200, 120], [260, 80, 200, 120], [480, 80, 200, 120], [700, 80, 200, 120]], ps = panFor(s, sc[2], { x: 0, y: 0 }, undefined, sc);
+  assert.equal(sc.filter((r) => cutBy(ps, s, r)).length, 0, "sideways: no card cut");
+});
+
 test("the bar: 52 tall, controls 44 and apart, inside the window; the laptop's switch is 320 wide and centred where it can be", () => {
   for (const [W, f, tools, size] of [[390, "up", false, false], [360, "up", false, false], [844, "side", false, false], [932, "side", false, false], [1440, "laptop", false, true], [1280, "laptop", true, true], [1100, "laptop", true, true]]) {
     const b = barPlan({ W, form: f, tools, size }), items = Object.entries({ switch: b.switch, options: b.options, keys: b.keys, tools: b.tools, stamp: b.stamp, ...(b.size ? { down: b.size[0], fit: b.size[1], up: b.size[2] } : {}) }).filter(([, v]) => v);

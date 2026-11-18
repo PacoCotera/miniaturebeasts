@@ -43,7 +43,12 @@ static int g_last[4], g_drawn;   /* g_drawn: a ring was drawn in the scene being
 void word_lastRing(int out[4]) { for (int i = 0; i < 4; i++) out[i] = g_last[i]; }
 /* the rest box: what a scene with no ring wants kept in view on a phone (an empty room's message); the play page pans to it as to the ring */
 static int g_rest[4], g_restSet;
-void word_ringSceneBegin(void) { g_drawn = 0; g_restSet = 0; }
+/* the neighbours: the cards and panels of the focused row or block, as the screen drew them; a phone's window nudges so none of them is cut by its left or right edge (ui-station-card-edges-1) */
+#define MAX_CARDS 16
+static int g_cards[MAX_CARDS][4], g_ncards;
+void word_cardRect(const int r[4]) { if (g_ncards < MAX_CARDS && r[2] > 0 && r[3] > 0) { for (int i = 0; i < 4; i++) g_cards[g_ncards][i] = r[i]; g_ncards++; } }
+int word_cardRects(int out[][4], int cap) { int n = g_ncards < cap ? g_ncards : cap; for (int i = 0; i < n; i++) for (int k = 0; k < 4; k++) out[i][k] = g_cards[i][k]; return n; }
+void word_ringSceneBegin(void) { g_drawn = 0; g_restSet = 0; g_ncards = 0; }
 int word_ringDrawn(void) { return g_drawn; }   /* the play page pans its phone window to the ring (face_focus_box) */
 void word_setRest(const int r[4]) {
   if (!g_restSet) { for (int i = 0; i < 4; i++) g_rest[i] = r[i]; g_restSet = 1; return; }

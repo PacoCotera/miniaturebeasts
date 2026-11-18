@@ -47,17 +47,17 @@ function frame(t) {
 // ?embed: where the focus ring is, for the play page's phone window (it pans to keep the ring's target in view); box null when the screen shows no ring. Posted when it changes.
 let focusPosted = "";
 // The standalone page's phone window (fit() below): view {w, h} in lp while the screen is drawn at ZOOM in a window narrower than it; pan: the window's top left (lp); focus: the ring's last screen and box
-const win = { view: null, pan: { x: 0, y: 0 }, focus: { screen: null, box: null }, shown: null };
+const win = { view: null, pan: { x: 0, y: 0 }, focus: { screen: null, box: null, rects: [] }, shown: null };
 function placeWindow() {
   const f = win.focus, moved = f.screen !== win.shown; win.shown = f.screen;
-  win.pan = panFor(win.view, f.box, moved && !f.box ? { x: 0, y: 0 } : win.pan);   // a new screen with no ring on it: its top left (as the play page's window)
+  win.pan = panFor(win.view, f.box, moved && !f.box ? { x: 0, y: 0 } : win.pan, undefined, f.rects);   // a new screen with no ring on it: its top left (as the play page's window)
   vis.style.marginLeft = -win.pan.x * ZOOM + "px"; vis.style.marginTop = -win.pan.y * ZOOM + "px";
 }
 function postFocus() {
   if (!CORE.face.focusBox || (EMBED ? parent === window : !win.view)) return;
-  const box = CORE.face.focusBox(), screen = UI.idle ? "idle" : UI.screen, k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
-  if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
-  else { win.focus = { screen, box }; placeWindow(); }   // standalone on a phone: the page's own window follows the ring
+  const box = CORE.face.focusBox(), rects = CORE.face.cardRects ? CORE.face.cardRects() : [], screen = UI.idle ? "idle" : UI.screen, k = screen + ":" + (box ? box.join(",") : "-") + "|" + rects.join(";"); if (k === focusPosted) return; focusPosted = k;
+  if (EMBED) parent.postMessage({ t: "mb-focus", screen, box, rects }, location.origin);
+  else { win.focus = { screen, box, rects }; placeWindow(); }   // standalone on a phone: the page's own window follows the ring
 }
 
 const stationEl = $("station"), stWindow = $("stWindow");

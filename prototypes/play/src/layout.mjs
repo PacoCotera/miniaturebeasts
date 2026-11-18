@@ -17,7 +17,7 @@ export const SWITCH_LAPTOP_W = 320;
 export const ZOOM = 0.6, PAN_PAD = 12;
 // The window's top left (lp) that shows `box` (the focus ring's target, [x, y, w, h] in lp) whole with PAN_PAD round it, moving as little as it can from `at`; a box larger than the window keeps its top left in view.
 // box null (no ring on the screen): `at` as it is. Always inside the screen.
-export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
+export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station, rects = null) {
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v)), axis = (p, b0, bl, vl, fl) => {
     const lo = b0 - PAN_PAD, hi = b0 + bl + PAN_PAD;
     if (hi - lo > vl) p = lo; else if (lo < p) p = lo; else if (hi > p + vl) p = hi - vl;
@@ -25,7 +25,32 @@ export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
   };
   if (!view) return { x: 0, y: 0 };
   if (!box) return { x: clamp(at.x, 0, Math.max(0, face[0] - view.w)), y: clamp(at.y, 0, Math.max(0, face[1] - view.h)) };
-  return { x: axis(at.x, box[0], box[2], view.w, face[0]), y: axis(at.y, box[1], box[3], view.h, face[1]) };
+  const x = axis(at.x, box[0], box[2], view.w, face[0]), y = axis(at.y, box[1], box[3], view.h, face[1]);
+  return { x: nudgeX(view, box, x, at.x, y, face, rects), y };
+}
+// ui-station-card-edges-1: no listed card or panel (`rects`, [x, y, w, h] in lp, the ones the face drew in the focused row or block) is left half in, half out at the window's left or right edge: it is whole in view or fully out.
+// Only the pan's x moves, and only within the span that keeps the focus box (with PAN_PAD) whole, so the focus box, and the ✓ action the Station's rest box takes in, never leave (a box wider than the window: the window stays within it). A rect wider than the window can never be whole and is left to the focus;
+// a rect clear of the window's rows is not looked at. Fewest cuts first, then the thinnest sliver left, then the least move, then the side the focus moved toward (x against `from`, where the window was before).
+function nudgeX(view, box, x, from, y, face, rects) {
+  if (!Array.isArray(rects) || !rects.length) return x;
+  const vw = view.w, top = y, bot = y + view.h, fl = face[0], clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const lo = box[0] - PAN_PAD, hi = box[0] + box[2] + PAN_PAD;
+  const max = Math.max(0, fl - vw);
+  // a focus box wider than the window (Home's console row at rest) cannot be whole: the window may slide along it, never off it (its first and last column stay in view)
+  const span = hi - lo > vw ? [clamp(Math.floor(lo - PAN_PAD), 0, max), clamp(Math.ceil(hi - vw + PAN_PAD), 0, max)] : [clamp(Math.ceil(hi - vw), 0, max), clamp(Math.floor(lo), 0, max)];
+  const cards = rects.filter((r) => r[2] > 0 && r[2] <= vw && r[1] < bot && r[1] + r[3] > top);
+  if (!cards.length) return x;
+  const slice = (p, r) => { const seen = Math.min(r[0] + r[2], p + vw) - Math.max(r[0], p); return seen > 0 && seen < r[2] ? Math.min(seen, r[2] - seen) : 0; };   // how much of a cut card is on the smaller side of the edge, 0 for whole or out
+  const cuts = (p) => cards.reduce((n, r) => n + (slice(p, r) > 0 ? 1 : 0), 0), amount = (p) => cards.reduce((n, r) => n + slice(p, r), 0);
+  if (cuts(x) === 0) return x;
+  const dir = Math.sign(x - from) || 0, cand = new Set([span[0], span[1], x]);
+  for (const r of cards) for (const c of [r[0] + r[2] - vw, r[0], r[0] + r[2], r[0] - vw]) cand.add(c);
+  let best = x, bc = cuts(x), ba = amount(x), bd = 0, bt = 0;
+  for (const c of cand) {
+    const p = clamp(Math.round(c), span[0], span[1]), n = cuts(p), a = amount(p), d = Math.abs(p - x), toward = dir && Math.sign(p - x) === dir ? 0 : 1;
+    if (n < bc || (n === bc && (a < ba || (a === ba && (d < bd || (d === bd && toward < bt)))))) { best = p; bc = n; ba = a; bd = d; bt = toward; }
+  }
+  return best;
 }
 
 // 'up' a phone held upright, 'side' a phone on its side, 'laptop' everything else

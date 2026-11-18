@@ -46,6 +46,7 @@ export async function bootFace(base = new URL("face/dist/", PROTOTYPES), { test 
     M, loadMs, display, present, forceFull: () => { first = true; },
     stats: () => ({ frames: f.frames(), copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: f.pictures(), props: M._face_props_count(), events: M._face_event_count(), heap: M.HEAPU8.buffer.byteLength }),
     // the focus ring of the last scene: its target's box [x, y, w, h] in face px, or null when the scene drew no ring (the play page pans its phone window to it)
+    cardRects: (() => { let q = 0; return () => { if (!M._face_card_rects) return []; q = q || M._malloc(64); const n = M._face_card_rects(q, 16), a = Array.from(new Int32Array(M.HEAPU8.buffer, q, n * 4)), out = []; for (let i = 0; i < n; i++) out.push(a.slice(i * 4, i * 4 + 4)); return out; }; })(),
     focusBox: (() => { let q = 0; return () => { if (!M._face_focus_box) return null; q = q || M._malloc(16); const on = M._face_focus_box(q), b = Array.from(new Int32Array(M.HEAPU8.buffer, q, 4)); return on && b[2] > 0 && b[3] > 0 ? b : null; }; })(),
     pixel: (x, y) => { const p = M._face_fb() + (y * W + x) * 4; return [M.HEAPU8[p + 2], M.HEAPU8[p + 1], M.HEAPU8[p]]; },
     // the framebuffer as RGBA bytes (opaque), for a headless capture
