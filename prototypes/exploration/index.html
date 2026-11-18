@@ -2163,8 +2163,8 @@ function ensureCharge(ex) {
 // requestAnimationFrame, then setTimeout 0), runs the work, and takes the line away. Presses made meanwhile are ignored (act returns while RT.making).
 function busyThen(work) {
   if (RT.making) return;
-  RT.making = true; RT.makingAt = performance.now();
-  requestAnimationFrame(() => setTimeout(() => { try { work(); } finally { RT.making = false; } }, 0));
+  RT.making = true; RT.busy = true; RT.makingAt = performance.now();   // RT.busy: no pips (nothing is measured in this stall; frozen pips would read as nearly done)
+  requestAnimationFrame(() => setTimeout(() => { try { work(); } finally { RT.making = false; RT.busy = false; } }, 0));
 }
 // True when setting out from `cell` would bake a place of the reach on the page: generator 7, a reach cell with no layout yet and no baked place from the worker.
 function coldReach(cell) {
@@ -7948,7 +7948,7 @@ function drawMaking() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
   text(LAND_COMING, 225, 289, C.bone, 2, 'center');
-  drawWaitPips();
+  if (!RT.busy) drawWaitPips();
   drawLine({ ok: '', ctx: '', back: '' });
 }
 // The first-load wait's measure (option A, ui-play-layout-1): ten pips, 14 × 8 lp, 4 apart, centred 32 lp under the line's centre: mint when done, ink with a 2 lp slate edge when not. They fill from the real steps
