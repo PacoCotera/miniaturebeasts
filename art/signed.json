@@ -2,6 +2,20 @@
  "formatVersion": 1,
  "signed": [
   {
+   "class": "ui",
+   "date": "2026-11-16",
+   "id": "f08f7c4984",
+   "path": "art/companion-48/care/c-heart-16.png",
+   "sha256": "b5e694575431bc34a2cc8e173d77eb9a6a19b3700e6b1273a46c1f3f9164e7d7"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-16",
+   "id": "edfc9f6745",
+   "path": "art/companion-48/care/c-heart-24.png",
+   "sha256": "d1d035c63eb20684869b922bdbe38209c26e81810ceafb2d50eb2f97143f93e7"
+  },
+  {
    "class": "cut-of-signed",
    "date": "2026-11-12",
    "id": "a43a26a06a",
@@ -1073,6 +1087,13 @@
    "sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479"
   },
   {
+   "class": "paint",
+   "date": "2026-11-16",
+   "id": "105e78adcd",
+   "path": "art/places/sets/ninja-test/fill-litter-top.png",
+   "sha256": "ca16f4e55ae38287a48d0603ef884ec014efa3a692af2213280fd21842030aea"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "f19efc03b0",
@@ -1491,6 +1512,13 @@
    "id": "6c7ece4447",
    "path": "art/places/sets/ninja-test/over-grass-flat.png",
    "sha256": "185a7e7f130c5a36b32406969be915c804f2a23f1a53cc26d12057c8c1d70b55"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-16",
+   "id": "7ee8bdd6f7",
+   "path": "art/places/sets/ninja-test/over-litter-top.png",
+   "sha256": "7a96fdd0d484399619e41ea6ad7ad99eef23bde7051bd89b85acd532737ec235"
   },
   {
    "class": "legacy-paint",
@@ -2040,6 +2068,13 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-17",
+   "id": "c4f6030568",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "81060b45deced540faf85ff0a01967cf20c38266d0616b3308f5e66cdaf25dd5"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-14",
    "id": "22d0fd6dbb",
    "path": "art/places/sets/ninja-test/sprites.png",
@@ -2065,6 +2100,13 @@
    "id": "5a69ae9bcd",
    "path": "art/places/sets/ninja-test/sprites.png",
    "sha256": "f09b1a9d5c42cd63e2e8c06a9c858dc7d22ea355f969609de769a230090f9471"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-18",
+   "id": "6362e0737e",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "fa49588a0f9bc71e1e1df2101c905bc5e3d763db2f5fed33a687f07f1c64cceb"
   },
   {
    "class": "legacy-paint",
@@ -2247,6 +2289,20 @@
    "id": "28d9e2b021",
    "path": "art/places/sets/ninja-test/tufts-3.png",
    "sha256": "ebc0ecc0b282d8f3b3f37447a4b945538fb31f5571710dc17930fc4a392c55c8"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-17",
+   "id": "897260ab53",
+   "path": "art/places/sets/ninja-test/wayup-dug.png",
+   "sha256": "016599fc8bf7526420b13d1fc73be07ca4ffb118aa9c05eff3834e78860ba0dc"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-16",
+   "id": "edfc9f6745",
+   "path": "art/station-masters/home-hand/slices/heart-full-24.png",
+   "sha256": "d1d035c63eb20684869b922bdbe38209c26e81810ceafb2d50eb2f97143f93e7"
   },
   {
    "class": "legacy-paint",
@@ -3822,6 +3878,13 @@
    "id": "3428a1dc28",
    "path": "prototypes/places/veil/map-edge-veil-night.png",
    "sha256": "a97c14f90a5e785daaf9093c35e1ea062a22452efc462350c3c14032f0100038"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-16",
+   "id": "edfc9f6745",
+   "path": "prototypes/ui/assets/masters/pods/heart-full-24.png",
+   "sha256": "d1d035c63eb20684869b922bdbe38209c26e81810ceafb2d50eb2f97143f93e7"
   },
   {
    "class": "ui",
