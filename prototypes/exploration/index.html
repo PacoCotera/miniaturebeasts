@@ -282,8 +282,8 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, c
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV } from "./src/world7.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
-import { waitPips, PIPS } from "./src/waitpips.mjs";
-import { placesOn, placesWorker, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { waitPips, fracPips, PIPS } from "./src/waitpips.mjs";
+import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
@@ -799,6 +799,7 @@ const placeHave = key => key[0] === 'c' || !G || G.gen !== 7 || !PL.ready || !pl
 function wantPlaces() {   // each frame: if the reach, the region or the walked cells changed, the places not yet made are asked of the worker, the nearest first
   if (!PL.ready || !S || RT.readOnly || RT.making || !G || G.gen !== 7 || !placesWorker()) return;
   const R = hereRegion(); if (!R) return;
+  if (PLACES.warmSeed !== S.regions[0].seed) { PLACES.warmSeed = S.regions[0].seed; warmPlaces(PLACES.warmSeed, { ctx: PL.ctx }); }   // the worker builds the world's decor while the player is on the Station's screens
   const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.visited || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
   const sig = seed + '|' + R.id + '|' + v + '|' + (ex ? ex.pos + ':' + ex.reach.length : '-') + '|' + visited.length;
   if (sig === PLACES.sig) return; PLACES.sig = sig;
@@ -2159,7 +2160,7 @@ function ensureCharge(ex) {
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
-function startExpedition(type, cell) {
+function startExpeditionNow(type, cell) {
   flushRipe();
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
   if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
@@ -2415,11 +2416,33 @@ function placePartnerNear(key, P) {
     const x = P.x + dx, y = P.y + dy; if (!occupant(key, x, y)) { live.pt = { x, y, st: 'follow', face: 1 }; return; }
   }
 }
+// The wait for places made in the worker (the set-out's reach, a cell entered before its place is here): the page stays live and the loading line's pips count the places that are here (RT.placeWait; drawWaitPips).
+const yieldTurn = () => new Promise(res => setTimeout(res, 0));
+function beginPlaceWait(seed, slot, v, cells, laying) {
+  RT.making = true; RT.makingAt = performance.now(); RT.wait = null; RT.pips = 0;   // a new wait starts empty, whatever the last one reached
+  RT.placeWait = { seed, slot, v, cells, laying, laid: 0 };
+  readyPlaces(seed, slot, v, cells, { ctx: PL.ctx });
+  return Promise.all(cells.map(c => bakedWhen(seed, slot, v, c)));
+}
 function waitForPlace(key) {
   const seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S);
-  RT.making = true; RT.makingAt = performance.now();
-  readyPlaces(seed, R.slot, v, [+key], { ctx: PL.ctx });
-  bakedWhen(seed, R.slot, v, +key).then(() => { RT.making = false; if (S && S.exp && String(S.exp.pos) === key && !S.exp.patch) enterPatch(); });
+  beginPlaceWait(seed, R.slot, v, [+key], false).then(() => { RT.making = false; RT.placeWait = null; if (S && S.exp && String(S.exp.pos) === key && !S.exp.patch) enterPatch(); });
+}
+// The set-out reads the layout of every cell of the reach (the first pods, the warm stones, the signs of the 3 x 3 round the start): a cell the worker has not made is baked on the page, a few hundred milliseconds
+// each, which locked the browser for as long as the reach took. So the reach's places are asked of the worker first, the loading line counts them as they come, and each is laid out in its own turn; the set-out then
+// finds every one made. A page without the worker (the tests) sets out at once, as it always did.
+function startExpedition(type, cell) {
+  const tier = tierOf(), live = G.gen === 7 && PL.ready && placesWorker() && !RT.making && !RT.readOnly;
+  const cells = live ? [...new Set([cell, ...reachCells(cell, tier.range + 1), ...[-1, 0, 1].flatMap(dy => [-1, 0, 1].map(dx => { const p = cxy(cell); const x = p.x + dx, y = p.y + dy; return x >= 0 && y >= 0 && x < MW && y < MH ? y * MW + x : -1; }))])].filter(c => c >= 0 && passable(c)) : [];
+  const seed = S && S.regions && S.regions[0].seed, R = live && hereRegion();
+  if (!cells.length || !R) { startExpeditionNow(type, cell); return; }
+  const v = biomeVersion(S), saveId = S.wid;
+  beginPlaceWait(seed, R.slot, v, cells, true).then(async () => {
+    let t0 = performance.now();
+    for (const c of cells) { try { layout(String(c)); } catch (e) { /* the set-out finds it */ } RT.placeWait.laid++; if (performance.now() - t0 > 12) { await yieldTurn(); t0 = performance.now(); } }   // no turn holds the page for more than about a frame
+    RT.making = false; RT.placeWait = null;
+    if (S && S.wid === saveId && !S.exp && S.phase === 'place') startExpeditionNow(type, cell);
+  });
 }
 // A place that takes long to build freezes the page; key presses made meanwhile queue in the browser and would all run in a rush afterwards. They are dropped (STALL: the window they were made in).
 const STALL_MS = 120, STALL = { from: 0, to: 0 }, RESUME_GRACE_MS = 80;   // the grace: the key-ups the freeze held back arrive before a held direction walks on
@@ -4847,10 +4870,11 @@ async function loadAtlas() {
     const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
     if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
     const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = []; let viaCanvas = false;
-    const image = async file => { if (!images.has(file)) { fileOwe(1); images.set(file, (async () => {
+    const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
+    fileOwe(new Set([...byName.values()].map(({ p, dir, sheets }) => dir + (p.file != null ? p.file : sheets[p.sheet]))).size);   // every image the pieces come from is owed now, so the wait's measure is the whole load and not the part seen so far
+    const image = async file => { if (!images.has(file)) { images.set(file, (async () => {
       const px = await readPixels(vurl(file), { canvas: im => { viaCanvas = true; return canvasPx(im); } }); fileGot();   // the PNG's own bytes, decoded here (bug 68); canvas read-back only without DecompressionStream
       return { w: px.width, h: px.height, data: px.data }; })()); } return images.get(file); };
-    const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
     for (const [name, { p, dir, sheets }] of byName) {
       const img = await image(dir + (p.file != null ? p.file : sheets[p.sheet])), x0 = p.file != null ? 0 : p.x, y0 = p.file != null ? 0 : p.y, w = p.file != null ? img.w : p.w, h = p.file != null ? img.h : p.h;
       if (x0 + w > img.w || y0 + h > img.h) { refused.push(name); continue; }
@@ -7941,8 +7965,13 @@ function drawMaking() {
 // The first-load wait's measure (option A, ui-play-layout-1): ten pips, 14 × 8 lp, 4 apart, centred 32 lp under the line's centre: mint when done, ink with a 2 lp slate edge when not. They fill from the real steps
 // (the realm worker's stages in RT.wait, the loaders' files in FILES) and never go back; with no realm being made the realm part is whole. UI component on the device's screen, drawn in code (rule 18).
 function drawWaitPips() {
-  const r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
-  RT.pips = Math.max(RT.pips || 0, waitPips(r.done, r.of, FILES.done, FILES.of));
+  const pw = RT.placeWait;   // waiting for places made in the worker: the pips count the places that are here (and, at the set-out, laid out), nothing else
+  if (pw) RT.pips = Math.max(RT.pips || 0, fracPips(pw.cells.filter(c => bakedGet(pw.seed, pw.slot, pw.v, c)).length + pw.laid, pw.cells.length * (pw.laying ? 2 : 1)));
+  else {
+    const r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
+    // the files are part of this wait only while the art is coming in (a new world's wait has none owed); the bar is never full while the wait is on (the screen goes away when the land is ready)
+    RT.pips = Math.max(RT.pips || 0, Math.min(PIPS - 1, (RT.artHold ? artHeld() : RT.filesFollow) ? waitPips(r.done, r.of, FILES.done, FILES.of) : fracPips(r.done, r.of)));
+  }
   const w = 14, h = 8, gap = 4, x0 = Math.round(225 - (PIPS * w + (PIPS - 1) * gap) / 2), y0 = 289 + 32 - h / 2;
   for (let i = 0; i < PIPS; i++) { const x = x0 + i * (w + gap); if (i < RT.pips) R(x, y0, w, h, C.mint); else { R(x, y0, w, h, C.slate); R(x + 2, y0 + 2, w - 4, h - 4, C.ink); } }
 }
@@ -7950,7 +7979,7 @@ const waitStep = (done, of) => { RT.wait = { done, of }; };   // the realm worke
 function newWorldLive(keepGame = true) {   // the menu's New world keeps the game (only the map is new); a save that could not be read starts whole (keepGame false)
   const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newRealm(seed, NEW_GEN, keepGame && S && S.regions ? S.wid : undefined, keepGame && S && S.regions ? keepOfGame(S) : undefined); RT.mp = null; RT.key = null; mapCv = null; transition(); };
   if (!OFF_PAGE) { done(); return; }
-  RT.making = true; RT.makingAt = performance.now();
+  RT.making = true; RT.makingAt = performance.now(); RT.wait = null; RT.pips = 0;   // a new world's wait starts empty, whatever the first load reached
   readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
 }
 // The seed of the realm a saved game plays (generator 7), read from the save without loading it; null for no save, another generator, or a save that cannot be read.
@@ -8036,7 +8065,10 @@ requestAnimationFrame(frame);
 // Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
 { const saved = savedRealmSeed(), seed = saved ?? urlSeed() ?? randomSeed();
   if (!OFF_PAGE) boot(null);
-  else { RT.making = true; drawMaking(); vctx.drawImage(scr, 0, 0); readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
+  else { RT.making = true; RT.filesFollow = true; drawMaking(); vctx.drawImage(scr, 0, 0);
+    const showWait = () => { if (!RT.making) return; drawMaking(); vctx.drawImage(scr, 0, 0); requestAnimationFrame(showWait); };   // the page is live while the realm is made in the worker: the pips move with its stages
+    requestAnimationFrame(showWait);
+    readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { PAN, panFrac, panTick, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,

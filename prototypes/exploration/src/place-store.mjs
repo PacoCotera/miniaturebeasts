@@ -75,6 +75,16 @@ export async function readyPlaces(seed, slot, v, cells, kit) {
   } else for (const c of todo) ASKED.delete(memKey(seed, slot, v, c));
   wake();
 }
+// Background, once a seed's realm is here: the places worker builds the seed's decor (the one-time part of making any place: the land the props and the Hollow Tree sites are read from, many seconds), so the first
+// set-out does not wait for it. Nothing comes back; the worker holds it.
+export function warmPlaces(seed, kit) {
+  if (!PW_ON || !kit) return false;
+  try {
+    const w = worker('bake', kit.ctx);
+    if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed), banks: madeBanks(seed) }); PW_SEED = seed; }
+    w.postMessage({ op: 'warm', seed }); return true;
+  } catch (e) { return false; }
+}
 // A background slice: the Hollow Tree sites of these regions [[ax, ay], ...], made in the places worker before the player reaches them; they come back on the page's own cache (presetHollowSites).
 export function readySites(seed, slots, kit) {
   if (!PW_ON || !kit) return false;
