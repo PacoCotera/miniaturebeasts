@@ -2942,11 +2942,18 @@ function pressOn(lay, o, f) {
   const m = lay.press ? lay.press[f.y * lay.w + f.x] : 0;
   return m === 1 ? 'stone' : m === 2 ? 'tree' : null;
 }
-function freeAround(key, x, y, prefer) {
+function freeAround(key, x, y, prefer, clearOnly = false) {
   const lw = layout(key).w, ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
   if (prefer) ds.sort((a, b) => man({ x: x + a[0], y: y + a[1] }, prefer) - man({ x: x + b[0], y: y + b[1] }, prefer));
-  const lay = layout(key), seen = (X, Y) => !!lay.reach[Y * lw + X] && !(lay.lines && lay.lines.cells.has(Y * lw + X)) && !(lay.decalNear && lay.decalNear(X, Y));   // reachable ground, clear of the haze and of any decor that would cover it
-  for (const strict of [true, false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
+  const lay = layout(key), seen = (X, Y) => !!lay.reach[Y * lw + X] && !(lay.lines && lay.lines.cells.has(Y * lw + X)) && !(lay.decalNear && lay.decalNear(X, Y)) && !(clearOnly && lay.coverAt && lay.coverAt(X, Y));   // reachable ground, clear of the haze and of any decor that would cover it (clearOnly, a dropped fruit: and of any prop's picture)
+  const ok = (X, Y) => !occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]);
+  for (const [dx, dy] of ds) if (ok(x + dx, y + dy) && seen(x + dx, y + dy)) return { x: x + dx, y: y + dy };
+  if (clearOnly) for (let r = 2; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {   // no clear tile beside it: the nearest clear one within four tiles (owner note #41)
+    if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+    const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= lw || Y >= lay.h) continue;
+    if (ok(X, Y) && seen(X, Y)) return { x: X, y: Y };
+  }
+  for (const strict of [false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
   return null;
 }
 // Materials carried cap at 20 each. Returns how much was taken.
@@ -2998,7 +3005,7 @@ function grabFruit(live, fr) {
 }
 function shakeBush(f) {
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
-  const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
+  const p = freeAround(key, f.x, f.y, S.exp.patch, true); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
   if (p) { fxMsg('A fruit drops · ' + eatersHere(live), 2); grabFruit(live, live.fr[live.fr.length - 1]); }
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
 }
@@ -5393,7 +5400,7 @@ function drawReachView(t) {
     const L = q.big ? 9 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
     R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
-  for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
+  if (peek.on) for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
   // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
   const tw = ix - 22;
@@ -5606,7 +5613,8 @@ function drawMap(mode, t) {
   // the Probe's range: a dotted square around the start
   // (call-probe-marks-1, owner #64) while picking the start, the same square round the chosen cell, moving with it; its size is the range the expedition would have (the tier, and a rambler's extra ring)
   const pickR = !ex && mode === 'place' ? TIER[S.tier].range + (S.ui.type !== 'deep' && partnerMibi() && spOf(partnerMibi().sp).ab === 'sure' ? 1 : 0) : 0;
-  if (ex || pickR) { const s0 = cxy(ex ? ex.start : S.ui.cur), r = ex ? ex.range : pickR, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
+  // owner note #77: the square shows only on this start pick and in the held Call view (peekReachLine), not on the plain map of a walk
+  if (pickR) { const s0 = cxy(ex ? ex.start : S.ui.cur), r = ex ? ex.range : pickR, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
       x1 = ox + Math.min(MW, s0.x + r + 1) * CELL - (s0.x + r + 1 > MW ? 4 : 2), y1 = oy + Math.min(MH, s0.y + r + 1) * CELL - (s0.y + r + 1 > MH ? 4 : 2);
     for (let xx = x0; xx <= x1; xx += 6) { R(xx, y0, 3, 2, C.amber); R(xx, y1, 3, 2, C.amber); }
     for (let yy = y0; yy <= y1; yy += 6) { R(x0, yy, 2, 3, C.amber); R(x1, yy, 2, 3, C.amber); } }
