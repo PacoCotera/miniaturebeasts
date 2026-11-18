@@ -10,7 +10,7 @@
 // This file imports the generator and nothing of the page.
 import { paintLand } from './landpaint.mjs';
 import { realm7, setRealm7 } from './gen7/region.mjs';
-import { decorOf, presetHollowSites } from './gen7/place.mjs';
+import { decorOf, presetHollowSites, banksOfRegion, madeBanks, presetBanks } from './gen7/place.mjs';
 import { bakedCell, sectorOfRegion } from './world7.mjs';
 import { renderGround, PlaceGroundCache, wholeScale } from '../../places/src/ground.mjs';
 
@@ -18,6 +18,8 @@ let CTX = null, SEEDED = null;
 const SENT = new Set();   // 'seed|ax,ay' of the Hollow Tree sites the page has (given by it or sent to it)
 // the sites this worker has made that the page does not yet have: [{ slot, x, y }] or [{ slot, none: true }]
 const newSites = seed => { const out = []; for (const s of decorOf(seed).madeSites()) { const k = seed + '|' + s.slot[0] + ',' + s.slot[1]; if (!SENT.has(k)) { SENT.add(k); out.push(s); } } return out; };
+const SENT_B = new Set();   // 'seed|ra,rb' of the bank lists the page has (given by it or sent to it)
+const newBanks = seed => { const out = []; for (const r of madeBanks(seed)) { const k = seed + '|' + r.ra + ',' + r.rb; if (!SENT_B.has(k)) { SENT_B.add(k); out.push(r); } } return out; };
 const KEEP = new Map();   // the baked places made here (by id), the newest few: a ground is asked for after its cell
 const KEEP_MAX = 24;
 
@@ -25,7 +27,11 @@ self.onmessage = e => {
   const m = e.data || {}, seed = m.seed, slot = m.slot;
   try {
     if (m.op === 'init') { CTX = m.ctx; return; }
-    if (m.op === 'seed') { if (SEEDED !== seed) { setRealm7(seed, m.realm); presetHollowSites(seed, m.sites); for (const s of m.sites || []) SENT.add(seed + '|' + s.slot[0] + ',' + s.slot[1]); SEEDED = seed; } return; }
+    if (m.op === 'seed') { if (SEEDED !== seed) { setRealm7(seed, m.realm); presetHollowSites(seed, m.sites); for (const s of m.sites || []) SENT.add(seed + '|' + s.slot[0] + ',' + s.slot[1]); if (m.banks && m.banks.length) presetBanks(seed, m.banks); for (const r of m.banks || []) SENT_B.add(seed + '|' + r.ra + ',' + r.rb); SEEDED = seed; } return; }
+    if (m.op === 'banks') {   // a background slice: the Rupar's earth banks of these regions [[ra, rb], ...], made now and sent (the lists not yet sent)
+      for (const [ra, rb] of m.slots) banksOfRegion(seed, ra, rb);
+      self.postMessage({ op: 'banks', seed, banks: newBanks(seed) }); return;
+    }
     if (m.op === 'sites') {   // a background slice: the sites of these regions [[ax, ay], ...], made now and sent
       const D = decorOf(seed); for (const [ax, ay] of m.slots) D.hollowSiteOf(ax, ay);
       self.postMessage({ op: 'sites', seed, sites: newSites(seed) }); return;
@@ -35,7 +41,7 @@ self.onmessage = e => {
         try {
           const b = bakedCell(CTX, seed, slot, cell, m.v);
           KEEP.delete(b.place.id); KEEP.set(b.place.id, b.place); while (KEEP.size > KEEP_MAX) KEEP.delete(KEEP.keys().next().value);
-          self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, ir: b.ir, place: b.place, sites: newSites(seed) });
+          self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, ir: b.ir, place: b.place, sites: newSites(seed), banks: newBanks(seed) });
         } catch (err) { self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, error: String((err && err.message) || err) }); }
       }
       return;

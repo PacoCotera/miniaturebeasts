@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, forgetLevels, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { levelsOf, forgetLevels, regionBanks, madeRegionBanks, presetRegionBanks, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { streamPieces, drawStream, bridgeList, layBridge, fallsSite, edgeId } from './streams.mjs';
 import { RULES } from './rules.mjs';
@@ -1051,6 +1051,10 @@ const SITES = new Map();   // the Hollow Tree sites made so far, by seed: 'ax,ay
 const siteCacheOf = seed => { let m = SITES.get(seed); if (!m) { if (SITES.size > 3) SITES.clear(); m = new Map(); SITES.set(seed, m); } return m; };
 // sites: what a decor's madeSites() sent: [{ slot, x, y }] or [{ slot, none: true }]; a slot already known is left as it is
 export const presetHollowSites = (seed, sites) => { const m = siteCacheOf(seed); for (const s of sites || []) { const k = s.slot[0] + ',' + s.slot[1]; if (!m.has(k)) m.set(k, s.none ? null : { x: s.x, y: s.y, slot: [s.slot[0], s.slot[1]] }); } };
+// rupar-banks-slice-2: the Rupar's earth banks of one region (ra, rb), made once (levels.mjs regionBanks); a background slice asks it, a place window reads the lists of the regions it touches
+export const banksOfRegion = (seed, ra, rb) => regionBanks(levelsOf(ctxOf(seed).re), ra, rb);
+export const madeBanks = seed => { const S = CTX.get(seed); return S ? madeRegionBanks(levelsOf(S.re)) : []; };   // the lists made so far, for the page (plain data); asking never makes the seed's context
+export const presetBanks = (seed, lists) => presetRegionBanks(levelsOf(ctxOf(seed).re), lists);   // lists made elsewhere (the worker's), taken as they are
 export const decorSites = seed => { const d = DEC.get(seed); return d ? d.madeSites() : []; };   // the Hollow Tree sites already made here: asking never makes the decor (its land is seconds of work) on a page that has none
 export const decorOf = seed => { let d = DEC.get(seed); if (!d) { if (DEC.size > 3) DEC.clear(); d = createDecor(seed, landOf(seed), undefined, siteCacheOf(seed)); DEC.set(seed, d); } return d; };
 export const biomeAtTile = (seed, gx, gy) => landOf(seed).biome(gx, gy);

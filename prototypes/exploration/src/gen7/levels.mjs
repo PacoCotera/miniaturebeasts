@@ -9,7 +9,7 @@ import { hash2, subSeed } from '../../../core/base/noise.mjs';
 import { div, shr, quot } from '../../../core/base/whole.mjs';
 import RULE from './land-rule.json' with { type: 'json' };
 import { RW, RH, CW, CH, fieldsAt, heightAt, noiseField } from './world.mjs';
-import { L as LAND } from '../world.mjs';
+import { L as LAND, MW, MH } from '../world.mjs';
 
 export { CW, CH };
 export const WTW = RW * CW, WTH = RH * CH;                // the realm in tiles
@@ -841,13 +841,7 @@ function smoothField(q, held, W, H, rad) {
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 // rupar-banks-speed-2: a window made with no banks (the verdict's) is kept; the same cell's window with banks is that very window when no bank site lands in it (banks are the only thing BANKS_SKIP changes), so it is returned whole
 export function windowLevels(L, X, Y) {
-  if (L.rule.banks !== 0 && !BANKS_SKIP) {
-    // the window with no banks first (it hands the bank scan the raised field of its inner cells, and is the verdicts' window when it holds a part), then the banks that land in it: none, it is the answer
-    const w0 = noBankWindow(L, X, Y), WR = L.rule.window, W = (2 * WR + 1) * CW, H = (2 * WR + 1) * CH, gx0 = (X - WR) * CW, gy0 = (Y - WR) * CH, foot = footRoom(L.rule.faceRows);
-    let any = false;
-    for (const b of banksIn(L, X, Y)) { const lx = b.x0 - gx0, ly = b.lip - gy0; if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) { any = true; break; } }
-    if (!any) return w0;
-  }
+  // rupar-banks-slice-2: the banks come from the region lists (banksIn), so the window is made once, with them; no bank verdict here unless a list is not made yet
   return windowLevelsMake(L, X, Y);
 }
 // the window of cell (X, Y) made with no banks, kept per cell
@@ -1185,13 +1179,29 @@ export function bankScan(L) {
   return out;
 }
 // the banks whose sites lie in the window of cell (X, Y): every raised part touching the window's cells is found from a tile on a 4 x 4 lattice (a site's rows always hold one), flooded whole, and asked
+// rupar-banks-slice-2: the banks are made once a region (MW x MH cells), not by each window. A bank belongs to the region its site's corner (x0, lip) lies in; the region's list is every raised part found
+// from a 4 x 4 lattice over the region's tiles and BANK_MARGIN round them, each asked its one verdict (partBank), the banks kept whose corner is in the region. A window reads the lists of the (at most four)
+// regions it touches and keeps the banks whose site can land in it; landPipeline then takes the ones whose site lies whole in the window, as before. No window makes a verdict unless the list is not made yet.
+const BANK_MARGIN = 16, REG_W = MW * CW, REG_H = MH * CH;
+export function regionBanks(L, ra, rb) {
+  const B = bkOf(L), key = ra * 100 + rb; if (!B.reg) B.reg = new Map(); const hit = B.reg.get(key); if (hit) return hit;
+  const rx0 = ra * REG_W, ry0 = rb * REG_H, rx1 = rx0 + REG_W, ry1 = ry0 + REG_H, out = [], seen = new Set();
+  for (let gy = Math.max(0, Math.ceil((ry0 - BANK_MARGIN) / 4) * 4); gy < Math.min(WTH, ry1 + BANK_MARGIN); gy += 4) {
+    if (B.lab.size > 500000) { B.lab.clear(); B.parts.length = 0; }   // a part is found again (its verdict is the same) after the label table is cleared
+    for (let gx = Math.max(0, Math.ceil((rx0 - BANK_MARGIN) / 4) * 4); gx < Math.min(WTW, rx1 + BANK_MARGIN); gx += 4) {
+      if (!rfAt(L, gx, gy)) continue; const p = partAt(L, gx, gy); if (!p || p.big || p.n < BANK_PART || seen.has(p.id)) continue; seen.add(p.id);
+      const b = partBank(L, p); if (b && b.x0 >= rx0 && b.x0 < rx1 && b.lip >= ry0 && b.lip < ry1) out.push(b); } }
+  out.sort((a, b) => a.lip - b.lip || a.x0 - b.x0);
+  B.reg.set(key, out); return out;
+}
+// the regions' lists made so far (the worker sends them to the page) and a list made elsewhere, taken as it is
+export const madeRegionBanks = L => { const B = bkOf(L), out = []; if (B.reg) for (const [k, banks] of B.reg) out.push({ ra: Math.floor(k / 100), rb: k % 100, banks: banks.map(b => ({ ...b })) }); return out; };
+export const presetRegionBanks = (L, lists) => { const B = bkOf(L); if (!B.reg) B.reg = new Map(); for (const r of lists || []) { const k = r.ra * 100 + r.rb; if (!B.reg.has(k)) B.reg.set(k, r.banks.map(b => ({ ...b }))); } };
 export function banksIn(L, X, Y) {
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.banks.get(key); if (hit) return hit;
-  if (B.lab.size > 500000) { B.lab.clear(); B.parts.length = 0; B.banks.clear(); }
-  const WR = L.rule.window, out = [], seen = new Set();
-  for (let gy = Math.ceil((Y - WR) * CH / 4) * 4; gy < (Y + WR + 1) * CH; gy += 4) for (let gx = Math.ceil((X - WR) * CW / 4) * 4; gx < (X + WR + 1) * CW; gx += 4) {
-    if (!rfAt(L, gx, gy)) continue; const p = partAt(L, gx, gy); if (!p || p.big || p.n < BANK_PART || seen.has(p.id)) continue; seen.add(p.id);
-    const b = partBank(L, p, X, Y); if (b) out.push(b); }
+  const WR = L.rule.window, out = [], gx0 = (X - WR) * CW, gx1 = (X + WR + 1) * CW, gy0 = (Y - WR) * CH, gy1 = (Y + WR + 1) * CH;
+  for (let rb = Math.max(0, Math.floor(gy0 / REG_H)); rb <= Math.floor((gy1 - 1) / REG_H) && rb < RH / MH; rb++) for (let ra = Math.max(0, Math.floor(gx0 / REG_W)); ra <= Math.floor((gx1 - 1) / REG_W) && ra < RW / MW; ra++)
+    for (const b of regionBanks(L, ra, rb)) if (b.x0 >= gx0 && b.x0 < gx1 && b.lip >= gy0 && b.lip < gy1) out.push(b);
   if (B.banks.size > 4000) B.banks.clear();
   B.banks.set(key, out); return out;
 }
