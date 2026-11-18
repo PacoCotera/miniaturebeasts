@@ -19,9 +19,11 @@ export function aboutText(j) {
   return j.version + (j.name ? ` "${j.name}"` : "") + (t ? " · " + t : "");
 }
 
-export function stampText(j) {
+// The release's name leads when build.json has one (owner bug #38: "you show the build, but not the release name"): `Beacon · build c1e7585 · 2026-11-18 10:49 Mexico City`.
+// `brief`: without the time, for a box too narrow for the whole line (shell.mjs fitStamp).
+export function stampText(j, brief = false) {
   const short = j && (j.short || String(j.commit || "").slice(0, 7));
   if (!short) return "build local";
-  const t = mexicoCity(j.built);
-  return "build " + short + (t ? " · " + t : "");
+  const t = brief ? "" : mexicoCity(j.built);
+  return (j.name ? j.name + " · " : "") + "build " + short + (t ? " · " + t : "");
 }
