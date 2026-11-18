@@ -22,6 +22,7 @@ export function goalWords(goal, docked, frame) {
   if (st.key === "put") return out(fill(G.step.put, { species: speciesWord(st.species) }));   // the guide's step: Data into that kind's pod
   if (st.key === "read") return out(fill(G.step.read, vals), G.step.readNoName);
   if (st.key === "findPod" && !vals.species) return out(G.step.goOut);
+  if (st.key === "findPod" && goal.key === "pair" && name && G.step.findPodPair) return out(fill(G.step.findPodPair, vals));   // the next goal with its reason (first-session scheme moment 19)
   if (st.key === "identify" && !(st.species ?? goal.species)) return out(G.step.identifyAny);   // no species known yet: "identify a pod"
   if (st.key === "bud") return budWords(st, G.step.bud);
   const t = G.step[st.key]; if (typeof t !== "string") return null;
@@ -50,7 +51,7 @@ export function companionWords(goal, frame) {
     if (goal.key === "growUp") { return { text: goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, icons: "" }; }
     return null;
   }
-  if (st.key === "findPod") { const sp = speciesWord(st.species ?? goal.species); return { text: sp ? fill(G.step.findPod, { ...vals, species: sp, a: article(sp) }) : G.step.goOut, icons: "" }; }
+  if (st.key === "findPod") { const sp = speciesWord(st.species ?? goal.species); if (sp && goal.key === "pair" && name && G.step.findPodPair) return { text: fill(G.step.findPodPair, { ...vals, species: sp }), icons: "" }; return { text: sp ? fill(G.step.findPod, { ...vals, species: sp, a: article(sp) }) : G.step.goOut, icons: "" }; }
   if (st.key === "short" && ["field", "fieldOrPod", "fieldAndBench"].includes(st.from)) {   // the Companion has no material icons at hand: the supplies by their player names
     const names = (st.icons || "").split(" ").map((i) => ({ "⚡": "Energy", "◆": "Data", "❀": "Essence" })[i]).filter(Boolean);
     return { text: fill(G.companion.shortWords, { words: names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names.at(-1) : names[0] ?? "" }).trim(), icons: "" };

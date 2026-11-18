@@ -279,7 +279,7 @@ test("the goal: with no firm need the goal is the line; a first-group need keeps
 });
 test("the goal away reads the aim, and growUp counts the walks in words", () => {
   const st = world(); dock(st, false); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
-  assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).props.regions.line, { goal: { text: "Find a Loika pod", icons: "", plain: "" } }, "away, pair, findPod: only goOut reads the aim, so the step's own words show");
+  assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).props.regions.line, { goal: { text: "A Loika pod to cross with Dot", icons: "", plain: "" } }, "away, pair, findPod: the next goal with its reason (first-session scheme moment 19)"); assert.deepEqual(companionWords(S.goalKey(st, sv0()), frameSpec), { text: "A Loika pod to cross with Dot", icons: "" }, "the Companion reads the same line");
   const w = world(); dock(w, false); const [a, b2] = S.seedAdults(w, "S01", 5, 2, settings).mibis; a.name = "Dot"; b2.name = "Moss"; a.born = 1; b2.born = 2; w.turn = 2;
   assert.equal(build(w, sv0()).props.regions.line.goal.text, "Expeditions grow Dot up"); assert.equal(build(w, sv0()).props.regions.line.goal.plain, "Expeditions grow the pair up");
   dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).props.regions.line.goal.text, "More expeditions grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).props.regions.line.goal.text, "One more expedition grows the pair");
