@@ -1070,6 +1070,31 @@ function beatWay(P) {
     .filter(q => q && q.d > 0).sort((a, c) => a.d - c.d)[0];
   const dir = b && dirWord(b.dx, b.dy, b.d); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1] } : null;
 }
+// (call-probe-marks-1, owner #56) After every Call here, if nothing to take is in sight, the way to the nearest thing to take or explore: a buried find first (its beat), then anything to take seen
+// in another place of the reach, then the nearest way out not yet walked. { dir, vx, vy, kind } or null; null at once when something to take is in sight (no tab then).
+const SIDE_VEC = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
+function leadWay(P, lay) {
+  const ex = S.exp; if (!ex || !P || lay.cave || !(ex.callsAt && ex.callsAt[lay.cell]) || leftItems(lay.cell).length) return null;
+  const sig = P.key + ':' + P.x + ':' + P.y + ':' + ex.actions + ':' + ex.stats.calls + ':' + S.pods.length + ':' + ex.cargo.pods.length + ':' + ex.carry;
+  if (RT.lead && RT.lead.sig === sig) return RT.lead.way;
+  const here = cxy(lay.cell), toWay = (dx, dy, kind) => { const dir = dirWord(dx, dy, Math.hypot(dx, dy)); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1], kind } : null; };
+  let way = beatWay(P);
+  if (way) way.kind = 'beat';
+  else {
+    let best = null;   // anything to take seen in a place already made in this reach
+    for (const c of ex.reach) { if (c === lay.cell || !S.visited[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { d, dx: q.x - here.x, dy: q.y - here.y }; }
+    if (best) way = toWay(best.dx, best.dy, 'take');
+    if (!way) {   // the nearest side of this place that leads on to a cell of the reach not walked yet
+      let out = null;
+      for (const o of lay.openings || []) { if (openingKind(lay, o).kind !== 'open') continue; const [dx, dy] = SIDE_VEC[o.side], c = (here.y + dy) * MW + here.x + dx;
+        if (here.x + dx < 0 || here.y + dy < 0 || here.x + dx >= MW || here.y + dy >= MH || !ex.reach.includes(c) || S.visited[c]) continue;
+        const mid = (o.from + o.to) / 2, d = o.side === 'N' || o.side === 'S' ? Math.abs(mid - P.x) + (o.side === 'N' ? P.y : lay.h - P.y) : Math.abs(mid - P.y) + (o.side === 'W' ? P.x : lay.w - P.x);
+        if (!out || d < out.d) out = { d, dx, dy }; }
+      if (out) way = toWay(out.dx, out.dy, 'out');
+    }
+  }
+  RT.lead = { sig, way }; return way;
+}
 // First walk, standing in a place with no pod shown and no Call made here yet: the Call is the next step (its key rings, ✓ hops it).
 function callFirst() {
   const ex = S.exp, P = ex && S.phase === 'patch' && ex.patch;
@@ -2752,6 +2777,7 @@ function nextThing(P, lay) {
     if (firstWalk()) { const w = beatWay(P); if (w) return { kind: 'beat', x: P.x + w.vx * 60, y: P.y + w.vy * 60, d: 60, virt: 1, dir: w.dir }; }
     else if (signsAt(lay.cell).includes('b')) { const b = nearest(pods.filter(p => p.h).map(p => ({ kind: 'beat', ...at(p.x, p.y) }))); if (b) return b; } }
   if (!ex.cargo.e) { const st = nearest(lay.feats.filter(f => f.kind === 'k' && stoneCharge(key, f) > 0 && stoneSeen(key, f)).map(f => ({ kind: 'stone', ...at(f.x, f.y) }))); if (st) return st; }
+  { const w = leadWay(P, lay); if (w) return { kind: 'beat', x: P.x + w.vx * 60, y: P.y + w.vy * 60, d: 60, virt: 1, dir: w.dir }; }   // after a Call with nothing in sight: turn toward the nearest thing to take or explore (call-probe-marks-1)
   if (!canSend()) { const b = nearestSend(), p = cxy(ex.pos), q = cxy(b.c), dx = q.x - p.x, dy = q.y - p.y; if (dx || dy) return { kind: 'flag', x: P.x + dx, y: P.y + dy, d: 0 }; }
   return null;
 }
@@ -5502,7 +5528,9 @@ function drawMap(mode, t) {
   }
   for (const pin of S.pins) if (pin.k === 'own') { const p = cxy(pin.c); blit(ICON.pin(), ox + p.x * CELL + 5, oy + p.y * CELL - 2); }
   // the Probe's range: a dotted square around the start
-  if (ex) { const s0 = cxy(ex.start), r = ex.range, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
+  // (call-probe-marks-1, owner #64) while picking the start, the same square round the chosen cell, moving with it; its size is the range the expedition would have (the tier, and a rambler's extra ring)
+  const pickR = !ex && mode === 'place' ? TIER[S.tier].range + (S.ui.type !== 'deep' && partnerMibi() && spOf(partnerMibi().sp).ab === 'sure' ? 1 : 0) : 0;
+  if (ex || pickR) { const s0 = cxy(ex ? ex.start : S.ui.cur), r = ex ? ex.range : pickR, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
       x1 = ox + Math.min(MW, s0.x + r + 1) * CELL - (s0.x + r + 1 > MW ? 4 : 2), y1 = oy + Math.min(MH, s0.y + r + 1) * CELL - (s0.y + r + 1 > MH ? 4 : 2);
     for (let xx = x0; xx <= x1; xx += 6) { R(xx, y0, 3, 2, C.amber); R(xx, y1, 3, 2, C.amber); }
     for (let yy = y0; yy <= y1; yy += 6) { R(x0, yy, 2, 3, C.amber); R(x1, yy, 2, 3, C.amber); } }
@@ -5647,7 +5675,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
         for (let n = 0; n < 40 && !e.cv && performance.now() < end; n++) { const s = e.it.next(); if (s.done) { e.cv = wholeCanvas(nl, nbk, s.value, veil); break; } }   // [tune] one step at least a frame
         cvn = e.cv;
       }
-      if (cvn) { const T2 = nbk.wholeSize(); g.drawImage(cvn, -nbk.ox * T2, -nbk.oy * T2, nl.w * T2, nl.h * T2, r.x, r.y, r.w, r.h); continue; }   // its cell out of the picture (the cell stands -ox tiles into it)
+      if (cvn) { const T2 = nbk.wholeSize(); g.drawImage(cvn, -nbk.ox * T2, -nbk.oy * T2, nl.w * T2, nl.h * T2, r.x, r.y, r.w, r.h); peekFruit(key, nl, (x, y) => ({ x: r.x + x * Tp, y: r.y + y * Tp }), Tp); continue; }   // its cell out of the picture (the cell stands -ox tiles into it)
     }
     // (call-zoom-wide-4) land not seen, or a place not made yet (or made without a picture to show): the map's fog, as the map draws unseen land; never a flat block of the map's colour.
     // Wide water and cliff that is seen has no place to borrow from: the map's own land for it (landPatchPB, a pixel texture, not the 26 px cell blown up), under the veil of a place not walked.
@@ -5679,13 +5707,42 @@ function drawWhole(t) {
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
-    if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of leftItems(lay.cell).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still';
+    if (v.kind === 'peek') { clipView(); try { peekReachLine(lay, tp(0, 0).x - Tp / 2, tp(0, 0).y - Tp / 2, Tp); peekFruit(lay.cell, lay, (x, y) => { const r = tp(x, y); return { x: r.x - Tp / 2, y: r.y - Tp / 2 }; }, Tp); } finally { g.restore(); } }   // (call-probe-marks-1) the Probe's reach line, then the bushes with fruit and the fruit on the ground the walk shows, at this view's tile
+    if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of (v.kind === 'peek' ? leftItemsAll(lay.cell).filter(i => FINDS.includes(i.k) || i.k === 'fruit') : leftItems(lay.cell)).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still';
       if (it.k === 'strike') { const pc = propPiece('strike-mark-unread-' + (f === '2' ? 2 : 1)); if (pc.w > 1) blit(pc, Math.round(r.x - pc.w / 2), Math.round(r.y - pc.h / 2), 0, hash(it.x, it.y, 9) % 2 === 1); continue; }   // the same piece the walk draws (the desk's look-take-strike picture is a slot)
       lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, Tp); }
     if (live && live.pt && S.exp.pt) { const m = tp(live.pt.x, live.pt.y), pm = mibiById(S.exp.pt.id); lookMark(partnerMark(S.exp.pt.sp, !!pm && !isAdult(pm)), 'partner', m.x, m.y, Tp); }   // the partner as its kind, under the you-mark
     { const e = tp(P.x, P.y); lookMark(motion() ? 'you-here-pulse-' + (1 + Math.floor(NOW / 400) % 2) : 'you-here-still', 'you', e.x, e.y, Tp); }
   };
   marks();
+}
+// (call-probe-marks-1, owner #55) The walk's own pieces, a bush with fruit and a fruit on the ground, drawn in the held view at its tile size Tp (nearest-pixel, as the whole view is) wherever the
+// ground is seen. at(x, y): the tile's top-left on the screen. Never under the veil: a place never walked has none seen, and a tile still veiled shows nothing.
+function blitScaled(pb, x, y, k) {
+  if (!pb || pb.w <= 1 || pb.h <= 1) return;   // a named empty slot until its art is in
+  const cv = pb.canvas(0); g.imageSmoothingEnabled = false;
+  g.drawImage(cv, Math.round(x + (pb.dx || 0) * k), Math.round(y + (pb.dy || 0) * k), Math.max(1, Math.round(cv.width * k)), Math.max(1, Math.round(cv.height * k)));
+}
+function peekFruit(key, lay, at, Tp) {
+  if (!lay || lay.cave || !S.exp || !(key === S.exp.patch.key || S.visited[+key])) return;
+  const k = Tp / placeTs(lay), live = S.exp.live[key];
+  for (const f of lay.feats) { if (f.kind !== 'b' || f.tree || !bushFull(key, f) || !unveiled(key, f.x, f.y)) continue; const a = at(f.x, f.y); blitScaled(bushArt(true, f), a.x, a.y, k); }
+  if (live) for (const q of live.fr) { if (!(unveiled(key, q.x, q.y) || q.put)) continue; const a = at(q.x, q.y); blitScaled(FRUIT(), a.x + 10 * k, a.y + 14 * k, k); }
+}
+// (call-probe-marks-1, owner #60) The Probe's reach line in the held view: the walk's dashed line (2 px bark, LINE_DEPTH tiles in from the side), on every side of the range square that faces
+// ground outside it, for the cell you stand in and the ring of cells round it. x0, y0: the standing cell's top-left; the cells round it are the same size.
+function peekReachLine(lay, x0, y0, Tp) {
+  const ex = S.exp; if (!ex) return;
+  const s0 = cxy(ex.start), r = ex.range, cx = lay.cell % MW, cy = (lay.cell / MW) | 0, cw = lay.w * Tp, ch = lay.h * Tp, dep = LINE_DEPTH * Tp;
+  const real = (X, Y) => X >= 0 && Y >= 0 && X < MW && Y < MH, inSq = (X, Y) => real(X, Y) && Math.abs(X - s0.x) <= r && Math.abs(Y - s0.y) <= r;
+  const hl = (x, y, len) => { for (let d = 0; d < len; d += 14) R(x + d, y - 1, Math.min(8, len - d), 2, C.bark); };
+  const vl = (x, y, len) => { for (let d = 0; d < len; d += 14) R(x - 1, y + d, 2, Math.min(8, len - d), C.bark); };
+  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+    const X = cx + dx, Y = cy + dy; if (!inSq(X, Y)) continue;
+    const ax = x0 + dx * cw, ay = y0 + dy * ch, shut = (a, b) => real(a, b) && !inSq(a, b);
+    if (shut(X, Y - 1)) hl(ax, ay + dep, cw); if (shut(X, Y + 1)) hl(ax, ay + ch - dep, cw);
+    if (shut(X - 1, Y)) vl(ax + dep, ay, ch); if (shut(X + 1, Y)) vl(ax + cw - dep, ay, ch);
+  }
 }
 // The canvas state a frame starts from: no clip, no transform, no pending save, sharp pixels. A frame that threw half way (a save with no restore) can never leave a clip behind.
 function resetCanvas() { while (gDepth > 0) g.restore(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false; }
@@ -5993,7 +6050,7 @@ function edgeTabs() {
     all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
-  if (firstWalk() && !ex.cargo.pods.length && ex.callsAt && ex.callsAt[lay.cell] && !podShown(P.key)) { const w = beatWay(P); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // after an empty Call: one tab on the beat's edge
+  { const w = leadWay(P, lay); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // after any Call that leaves nothing to take in sight: one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
   const q = FX.cue;
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
