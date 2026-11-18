@@ -53,7 +53,7 @@ export function ResetRow({ api }) {
             <AlertDialog.Description className="op-line">This erases everything in this browser: all your mibis, the Station with its pods and Library, your Energy, Data and Essence, and the map. To change only the map, use New world on the Companion.</AlertDialog.Description>
             <div className="op-actions">
               <AlertDialog.Cancel className="op-btn">Keep my game</AlertDialog.Cancel>
-              <AlertDialog.Action className="op-btn op-go" id="optionsFreshAsk" onClick={() => setAgain(true)}>Reset the game</AlertDialog.Action>
+              <AlertDialog.Action className="op-btn op-danger" id="optionsFreshAsk" onClick={() => setAgain(true)}>Reset the game</AlertDialog.Action>
             </div>
           </AlertDialog.Content>
         </AlertDialog.Portal>
@@ -66,7 +66,7 @@ export function ResetRow({ api }) {
             <AlertDialog.Description className="op-line">All your mibis and everything you have found and made will be gone. This cannot be undone.</AlertDialog.Description>
             <div className="op-actions">
               <AlertDialog.Cancel className="op-btn" id="optionsFreshNo">Keep my game</AlertDialog.Cancel>
-              <AlertDialog.Action className="op-btn op-go" id="optionsFreshYes" onClick={() => api.onStartFresh()}>Yes, erase everything</AlertDialog.Action>
+              <AlertDialog.Action className="op-btn op-danger" id="optionsFreshYes" onClick={() => api.onStartFresh()}>Yes, erase everything</AlertDialog.Action>
             </div>
           </AlertDialog.Content>
         </AlertDialog.Portal>

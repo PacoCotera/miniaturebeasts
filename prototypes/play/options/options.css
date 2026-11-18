@@ -19,6 +19,8 @@
 a.op-btn{text-decoration:none}   /* the Observer row's link (a phone with Developer tools on) */
 .op-select:hover,.op-btn:hover{border-color:var(--mb-bevel)}
 .op-go{background:var(--mb-amber); color:var(--mb-void); border-color:var(--mb-amber)}
+/* an action that erases something (reset, delete): coral, never the amber of a main action (UI desk 11-18) */
+.op-danger{background:var(--mb-coral); color:var(--mb-void); border-color:var(--mb-coral)}
 .op-menu{z-index:60; min-width:var(--radix-select-trigger-width); max-height:240px; overflow:auto; background:var(--mb-bar); border:1px solid var(--mb-bevel); border-radius:var(--mb-radius-6); padding:var(--mb-space-4); color:var(--mb-fog); font-size:var(--mb-size-web-14)}
 .op-item{padding:var(--mb-space-8) var(--mb-space-8); border-radius:var(--mb-radius-4); cursor:pointer; outline:none}
 .op-item[data-highlighted]{background:var(--mb-hairline); color:var(--mb-bone)}

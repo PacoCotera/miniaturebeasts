@@ -31594,7 +31594,7 @@ function NoteDialog({ c }) {
               /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Description, { className: "op-line", children: T("note.delete.confirm.line") }),
               /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)("div", { className: "op-actions", children: [
                 /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Cancel, { className: "op-btn", children: T("note.delete.confirm.cancel") }),
-                /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "noteDeleteYes", onClick: () => c.discard(), children: T("note.delete.confirm.yes") })
+                /* @__PURE__ */ (0, import_jsx_runtime21.jsx)(dist_exports5.Action, { className: "op-btn op-danger", id: "noteDeleteYes", onClick: () => c.discard(), children: T("note.delete.confirm.yes") })
               ] })
             ] })
           ] })
@@ -31683,7 +31683,7 @@ function ResetRow({ api }) {
           /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Description, { className: "op-line", children: "This erases everything in this browser: all your mibis, the Station with its pods and Library, your Energy, Data and Essence, and the map. To change only the map, use New world on the Companion." }),
           /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "op-actions", children: [
             /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Cancel, { className: "op-btn", children: "Keep my game" }),
-            /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "optionsFreshAsk", onClick: () => setAgain(true), children: "Reset the game" })
+            /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Action, { className: "op-btn op-danger", id: "optionsFreshAsk", onClick: () => setAgain(true), children: "Reset the game" })
           ] })
         ] })
       ] })
@@ -31695,7 +31695,7 @@ function ResetRow({ api }) {
         /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Description, { className: "op-line", children: "All your mibis and everything you have found and made will be gone. This cannot be undone." }),
         /* @__PURE__ */ (0, import_jsx_runtime22.jsxs)("div", { className: "op-actions", children: [
           /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Cancel, { className: "op-btn", id: "optionsFreshNo", children: "Keep my game" }),
-          /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Action, { className: "op-btn op-go", id: "optionsFreshYes", onClick: () => api.onStartFresh(), children: "Yes, erase everything" })
+          /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(dist_exports5.Action, { className: "op-btn op-danger", id: "optionsFreshYes", onClick: () => api.onStartFresh(), children: "Yes, erase everything" })
         ] })
       ] })
     ] }) })

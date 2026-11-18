@@ -59,7 +59,7 @@ export function NoteDialog({ c }) {
                   <AlertDialog.Description className="op-line">{T("note.delete.confirm.line")}</AlertDialog.Description>
                   <div className="op-actions">
                     <AlertDialog.Cancel className="op-btn">{T("note.delete.confirm.cancel")}</AlertDialog.Cancel>
-                    <AlertDialog.Action className="op-btn op-go" id="noteDeleteYes" onClick={() => c.discard()}>{T("note.delete.confirm.yes")}</AlertDialog.Action>
+                    <AlertDialog.Action className="op-btn op-danger" id="noteDeleteYes" onClick={() => c.discard()}>{T("note.delete.confirm.yes")}</AlertDialog.Action>
                   </div>
                 </AlertDialog.Content>
               </AlertDialog.Portal>
