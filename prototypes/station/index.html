@@ -159,6 +159,8 @@ html.embed, html.embed body{background:none; min-height:0; overflow:hidden; marg
 html.embed body{visibility:hidden}
 html.embed{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}   /* the play page's screen is never selectable text or a picture to save */
 html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:1024px; height:auto; max-width:none; border-radius:0; transform:scale(var(--embed-s,1)); transform-origin:0 0}
+html.embed .boot.broke, html.embed #notice:not([hidden]){visibility:visible; position:fixed; left:0; top:0; width:calc(1024px - var(--clip-r,0px)); height:calc(600px - var(--clip-b,0px)); box-sizing:border-box; padding:0 24px; display:flex; align-items:center; justify-content:center; text-align:center; font:500 24px/1.4 var(--font-ui); color:var(--ink); transform:scale(var(--embed-s,1)); transform-origin:0 0; background:var(--bg,#14161c); z-index:5}
+html.embed .boot.broke{z-index:6}   /* the Station's own line (it ends with the build) over the head script's bare notice */   /* a line that says the Station broke shows over the screen's place in the play page's frame (the body is hidden there), at a size that still reads at the page's x0.6 on a phone */
 html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the screen at its own size and the host scales the frame (the test page) */
 </style>
 </head>

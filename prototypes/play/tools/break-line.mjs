@@ -49,6 +49,8 @@ for (const size of [[390, 844], [844, 390]]) {
     expect(lines && lines.length >= 1 && lines.length <= 2, `${name} companion: the detail is at most 2 lines (${JSON.stringify(lines)})`);
     expect(lines && lines.at(-1).endsWith("build f252de4"), `${name} companion: ends with the whole "build f252de4"`);
     expect(lines && /^places · Failed to fetch/.test(lines[0]) && /page\.mjs/.test(lines.join(" ")), `${name} companion: the start and the end of the error text are kept (a longer one is cut with …, tests/breakline.test.mjs)`);
+    const cv = await page.evaluate(() => { const f = [...document.querySelectorAll("iframe")].find((i) => /exploration/.test(i.src)), r = f.getBoundingClientRect(); return { frameShown: r.width > 0 && r.bottom > 0 && r.top < innerHeight }; });
+    expect(cv.frameShown, `${name} companion: its frame is on screen (the line is drawn in its canvas; the words are read from window.__mbBreakLines)`);
     if (shotDir) await page.screenshot({ path: path.join(shotDir, `${tag}-companion-${name}.png`) });
     await ctx.close(); }
   // 2. the Station (opened as its own tab)
@@ -60,6 +62,12 @@ for (const size of [[390, 844], [844, 390]]) {
     const lines = txt.split("\n");
     expect(/did not start/.test(txt) && lines.length <= 3, `${name} station: headline + at most 2 detail lines (${JSON.stringify(lines)})`);
     expect(/build f252de4$/.test(txt), `${name} station: ends with the whole "build f252de4"`);
+    // visible to the player: shown, inside the frame's viewport, nothing over its centre, and big enough on the phone (frame scale x font >= 11 px)
+    const vis = st() ? await st().evaluate(() => { const e = document.getElementById("boot"), r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2), fr = window.frameElement.getBoundingClientRect();
+      return { shown: cs.visibility === "visible" && cs.display !== "none" && r.width > 0 && r.height > 0, inside: (() => { const m = /inset\(([\d.]+)px ([\d.]+)px ([\d.]+)px/.exec(window.frameElement.style.clipPath || ""), tr = document.createRange(); tr.selectNodeContents(e); const t = tr.getBoundingClientRect(); return t.left >= 0 && t.top >= 0 && t.right <= innerWidth - (m ? +m[2] : 0) && t.bottom <= innerHeight - (m ? +m[3] : 0); })(), onTop: !!top && (top === e || e.contains(top)), topIs: top && (top.tagName + "#" + top.id + "." + top.className), px: parseFloat(cs.fontSize) * fr.width / innerWidth }; }) : {};
+    expect(vis.shown && vis.inside && vis.onTop, `${name} station: the line is visible, inside the frame, uncovered (${JSON.stringify(vis)})`);
+    expect(vis.px >= 11, `${name} station: readable at the page's scale (${vis.px && vis.px.toFixed(1)} px)`);
     if (shotDir) await page.screenshot({ path: path.join(shotDir, `${tag}-station-${name}.png`) });
     await ctx.close(); }
   // 3. the shell
@@ -67,6 +75,13 @@ for (const size of [[390, 844], [844, 390]]) {
     await page.waitForTimeout(1500);
     const t = await page.evaluate(() => { const e = document.getElementById("pageBroke"); return e && !e.hidden ? e.textContent : null; });
     expect(t === "build f252de4", `${name} shell: the page's own line (${JSON.stringify(t)})`);
+    const sv = await page.evaluate(() => { const e = document.getElementById("pageBroke"), r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2), bar = [...document.querySelectorAll("#bar .ctl, #switchRoot")].filter((c) => { const k = c.getBoundingClientRect(); return getComputedStyle(c).display !== "none" && k.width > 0; }).length;
+      const tr = document.createRange(); tr.selectNodeContents(e); const t = tr.getBoundingClientRect();
+      return { shown: cs.visibility === "visible" && r.width > 0, inside: t.left >= 0 && t.top >= 52 && t.right <= innerWidth && t.bottom <= innerHeight, onTop: !!top && (top === e || e.contains(top)), px: parseFloat(cs.fontSize), bar }; });
+    expect(sv.shown && sv.inside && sv.onTop, `${name} shell: the line is visible under the bar, uncovered (${JSON.stringify(sv)})`);
+    expect(sv.px >= 14 && sv.px <= 16, `${name} shell: Inter 14-16 px`);
+    expect(sv.bar === 0, `${name} shell: no half-drawn bar controls (${sv.bar} showing)`);
     if (shotDir) await page.screenshot({ path: path.join(shotDir, `${tag}-shell-${name}.png`) });
     await ctx.close(); }
 }
