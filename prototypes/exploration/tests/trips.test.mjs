@@ -47,7 +47,7 @@ function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARR
   const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [] };
   const turned = [];
   const t = load(["endExpedition", "holdEmpty", ...TRIP], {
-    S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, emptyLead: () => null,
+    S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], emptyLead: () => null,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
     worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
@@ -86,7 +86,7 @@ test("the walk with the mibi writes no trip", () => {
   const S = { exp: null, carried: [1], turn: 2, walkTurn: -1, trips: [{ v: 1, n: 1, partner: 1, places: [], storm: false }], mibis: [m], ui: {} };
   const before = JSON.stringify(S.trips);
   const t = load(["walk", "canWalk", "walkAll", "careLines", "playsLeftLines", "careQueue", "GROW_MS", "carriedMibis", "mibiById", "bondCheck", "listWords", "partnerMibi", "isAdult", "mibiStage", "stageAt"],
-    { S, isDocked: () => false, isCarried: q => S.carried.includes(q.id), FX: {}, NOW: 0, lockInput: () => {}, fxMsg: () => {}, logEv: () => {}, CARE_TEXT: { played: () => "", playedYoung: () => "", playedOther: () => "", playsLeft: () => "" }, BOND_PLAYS: 3, WALK_MS: 2400, BOND_MS: 2400, JUVENILE_TURNS: 2, ELDER_TURNS: 16 });
+    { S, setTimeout, CARE_LINE_MS: 2200, isDocked: () => false, isCarried: q => S.carried.includes(q.id), FX: {}, NOW: 0, lockInput: () => {}, fxMsg: () => {}, logEv: () => {}, CARE_TEXT: { played: () => "", playedYoung: () => "", playedOther: () => "", playsLeft: () => "" }, BOND_PLAYS: 3, WALK_MS: 2400, BOND_MS: 2400, JUVENILE_TURNS: 2, ELDER_TURNS: 16 });
   t.walk(m);
   assert.equal(m.outings, 1, "the walk happened");
   assert.equal(JSON.stringify(S.trips), before);
@@ -170,7 +170,7 @@ test("End expedition while docked at the start", () => {
   const sv = () => JSON.parse(store["mb-save-v8"]);
   const t = load(["endExpedition", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
     "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
-    S, window: {}, RT: {}, FX: {}, NOW: 0, emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+    S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, RIPE_PENDING: [], emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
@@ -204,7 +204,7 @@ test("End expedition while docked at the start", () => {
 
 // ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, scaled to whole physical pixels.
 test("?embed shows the screen alone, fit() stands aside and the scale follows a dpr change", () => {
-  assert.ok(PAGE.includes('<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>'));
+  assert.ok(PAGE.includes('<script>if (new URLSearchParams(location.search).has("embed")) { document.documentElement.classList.add("embed"); document.addEventListener("contextmenu", e => e.preventDefault()); }</script>'));
   for (const rule of [
     "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
     "html.embed body{visibility:hidden}",
