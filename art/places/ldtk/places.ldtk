@@ -2655,6 +2655,11 @@
 						"id": "cliff-way-up-u",
 						"color": 0,
 						"tileRect": null
+					},
+					{
+						"id": "wayup-dug",
+						"color": 0,
+						"tileRect": null
 					}
 				],
 				"iconTilesetUid": null,

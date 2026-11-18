@@ -2417,6 +2417,19 @@
     ],
     "sha256": "66bc1b9463de3266336d768f85408322d187c55286a5d2dbb5b75078023ed820"
   },
+  "wayup-dug.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-17-wayup-paint-2/work/raw/dug-1.png (PixelLab inpaint, seed 62201) (the model's paint cut on the bank crop and snapped to the set palette; the chain is in wayup-dug.steps.json; hand touch-ups of the orange bracket pixels, rule 18)",
+    "size": [
+      32,
+      64
+    ],
+    "foot": [
+      0,
+      0
+    ],
+    "sha256": "016599fc8bf7526420b13d1fc73be07ca4ffb118aa9c05eff3834e78860ba0dc"
+  },
   "fill-deep.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/sets/pair-deep-water.png#15",
