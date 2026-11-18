@@ -58,9 +58,11 @@ export function stepCamera(state, view, place, tile, nowMs, motion, extra = null
   const ax = camAnchors(place.pw - view.w, view.w), ay = camAnchors(place.ph - view.h, view.h);
   let x0 = tile.x * T, x1 = x0 + T, y0 = tile.y * T, y1 = y0 + T;
   if (extra) { x0 = Math.min(x0, extra.x0); x1 = Math.max(x1, extra.x1); y0 = Math.min(y0, extra.y0); y1 = Math.max(y1, extra.y1); }
-  if (state.ix < 0 || state.ix >= ax.length || state.iy >= ay.length) {   // the first look in this place: the rest nearest the explorer, then the rule
-    state.ix = (extra ? camSpan : camAxis)(ax, nearest(ax, x0 + ((x1 - x0) >> 1), view.w), x0, x1, view.w, margin);
-    state.iy = (extra ? camSpan : camAxis)(ay, nearest(ay, y0 + ((y1 - y0) >> 1), view.h), y0, y1, view.h, margin);
+  if (state.ix < 0 || state.iy < 0 || state.ix >= ax.length || state.iy >= ay.length) {   // the first look in this place: the rest nearest the explorer, then the rule
+    // An axis the caller has already set (a crossing keeps the view's rest along the edge crossed, bug #36) starts from that rest; the rule still applies to it.
+    const rest = (an, i, lo, hi, V) => (extra ? camSpan : camAxis)(an, i >= 0 && i < an.length ? i : nearest(an, lo + ((hi - lo) >> 1), V), lo, hi, V, margin);
+    state.ix = rest(ax, state.ix, x0, x1, view.w);
+    state.iy = rest(ay, state.iy, y0, y1, view.h);
     state.fx = ax[state.ix]; state.fy = ay[state.iy]; state.at = nowMs - SLIDE_MS;
   } else {
     const nx = extra ? camSpan(ax, state.ix, x0, x1, view.w, margin) : camAxis(ax, state.ix, x0, x1, view.w, margin);
