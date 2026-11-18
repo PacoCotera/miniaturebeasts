@@ -41,7 +41,7 @@ export function sweepSeed(seed) {
       for (let k = 0; k < len; k++) {
         const ax = name === "east" ? A.w - 1 : name === "west" ? 0 : k, ay = name === "south" ? A.h - 1 : name === "north" ? 0 : k;
         const bx = name === "east" ? 0 : name === "west" ? B.w - 1 : k, by = name === "south" ? 0 : name === "north" ? B.h - 1 : k;
-        if (T_BLOCK[A.tiles[ay * A.w + ax]] || !(T_BLOCK[B.tiles[by * B.w + bx]] || !!A.raisedFn(ax, ay) !== !!B.raisedFn(bx, by))) continue;
+        if (T_BLOCK[A.tiles[ay * A.w + ax]] || !(T_BLOCK[B.tiles[by * B.w + bx]] || (!!A.raisedFn(ax, ay) !== !!B.raisedFn(bx, by) && (A.cliffShown(ax, ay) && B.cliffShown(bx, by))))) continue;
         count("border-refused");
         const ox = ax + 1 + (name === "east" ? 1 : name === "west" ? -1 : 0), oy = ay + 1 + (name === "south" ? 1 : name === "north" ? -1 : 0);
         const t = pl.terrain[oy * W + ox], row = PLACES.terrains.find(q => q.value === t);

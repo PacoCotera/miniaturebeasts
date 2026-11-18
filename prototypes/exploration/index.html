@@ -486,6 +486,8 @@ function tileSideApplies(a, dir) {
   const k = edgeKind(a, dir); if (k === EDGE.RAMP || (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)))) return false;
   return passable(a) && passable(n) && !G.island[a] && !G.island[n] && G.land[a] !== L.WATER && G.land[n] !== L.WATER;
 }
+// A change of level between two tiles across a border stops a step only where a cliff is drawn on both sides (a cliff drawn on one side only is not seen from the other, so it is a slope); with none drawn it is a slope and walks (design 2026-11-18, bugs #45 #67).
+const levelBlocks = (la, ax, ay, lb, bx, by) => !!la.raisedFn(ax, ay) !== !!lb.raisedFn(bx, by) && !!((la.cliffShown && la.cliffShown(ax, ay)) && (lb.cliffShown && lb.cliffShown(bx, by)));
 const tileSideKey = (a, n) => Math.min(a, n) * 4096 + Math.max(a, n);
 function tileSideKnown(a, dir) { const n = stepCell(a, dir); return n < 0 || !G.tileSides ? null : G.tileSides.get(tileSideKey(a, n)) || null; }
 function tileSide(a, dir) {
@@ -495,7 +497,7 @@ function tileSide(a, dir) {
   const east = hi - lo === 1, len = east ? la.h : la.w, mask = new Uint8Array(len), ok = new Uint8Array(len);
   for (let k = 0; k < len; k++) {
     const ax = east ? la.w - 1 : k, ay = east ? k : la.h - 1, bx = east ? 0 : k, by = east ? k : 0;
-    ok[k] = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !!la.raisedFn(ax, ay) === !!lb.raisedFn(bx, by) ? 1 : 0; }
+    ok[k] = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !levelBlocks(la, ax, ay, lb, bx, by) ? 1 : 0; }
   for (let k = 0, s = 0; k <= len; k++) { if (k < len && ok[k]) continue; if (k - s >= 2) for (let j = s; j < k; j++) mask[j] = 1; s = k + 1; }
   const st = { open: mask.some(v => v), mask, len, east };
   (G.tileSides || (G.tileSides = new Map())).set(key, st); return st;
@@ -505,7 +507,7 @@ function crossLanding(dir) {
   const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir)) return undefined;
   const la = layout(P.key), lb = layout(String(c)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return undefined;
   const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y;
-  if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || !!la.raisedFn(P.x, P.y) !== !!lb.raisedFn(x, y)) return null;
+  if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || levelBlocks(la, P.x, P.y, lb, x, y)) return null;
   return { x, y };
 }
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
