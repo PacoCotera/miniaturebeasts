@@ -3140,6 +3140,23 @@ function offer(c) {
   } else { c.st = 'alert'; c.t = 1; c.go = 1; fxSign('bubbleNotice'); }
   advance('patch', { noise: 'act' });
 }
+// The Call is not cut at the place's edge (owner 11-17, #49): the finds of the places next door (the eight round this one) that lie inside the Call's circle, drawn in this place's tile
+// coordinates, are lit too, but only in a place the Probe's reach holds. A pod is read from the pod list (no place is built for it); a feature (stone, crack) only where that place's
+// layout is already made, so the Call never generates a place. cue entries carry nk (the neighbour's key) and ax, ay (the find's own tile there).
+function nextDoorFinds(P, lay, reach, cue) {
+  const ex = S.exp; if (!ex || !ex.reach || lay.cave) return 0;
+  const c = cxy(lay.cell); let n = 0;
+  for (const [dx, dy] of PEEK_DIRS) {
+    const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+    const nc = Y * MW + X; if (!ex.reach.includes(nc)) continue;
+    const nk = String(nc), nl = layoutCache.get(nk), w = nl ? nl.w : lay.w, h = nl ? nl.h : lay.h, ox = dx * (dx < 0 ? w : lay.w), oy = dy * (dy < 0 ? h : lay.h);
+    for (const p of S.pods) if (p.k === nk && p.h && p.x >= 0 && inCall(P, p.x + ox, p.y + oy, reach)) { p.h = 0; p.out = 1; cue.push({ x: p.x + ox, y: p.y + oy, nk, ax: p.x, ay: p.y }); n++; }
+    if (nl) for (const f of nl.feats) {
+      const fp = featPos(nk, f); if (!inCall(P, fp.x + ox, fp.y + oy, reach)) continue;
+      if ((f.kind === 'k' && stoneCharge(nk, f) > 0 && !stoneSeen(nk, f)) || (f.kind === 'd' && !(ex.live[nk] && ex.live[nk].seen.d))) { cue.push({ x: f.x + ox, y: f.y + oy, nk, ax: f.x, ay: f.y }); n++; } }
+  }
+  return n;
+}
 // Call in a place: the pulse. It lifts the veil CALL_R tiles around you (a round ring; 4 in a fog bank unless a glowing partner is along).
 // Hidden finds there glint and stay outlined; curious creatures come, wary ones hide; your partner comes and digs a burrow it can handle.
 // It reports the heart (found, or its tell) and what is still there to take.
@@ -3154,6 +3171,7 @@ function callPlace() {
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
+  if (!lay.cave) found += nextDoorFinds(P, lay, reach, cue);   // the wave goes on past the place's edge, cut only by the Probe's reach (owner #49)
   let lifted = null;
   if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkWalked(); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
@@ -6119,6 +6137,8 @@ const rectsMeet = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.
 function cueView() { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), [sx, sy] = shakeOff(), c0 = camPos(v, S.exp.patch.x * v.ts, S.exp.patch.y * v.ts); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
 // a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
 function findThere(key, lay, q) {
+  if (q.nk) { const nl = layoutCache.get(q.nk);   // a find in the place next door (nextDoorFinds): its own tile there
+    return S.pods.some(p => p.k === q.nk && !p.h && p.x === q.ax && p.y === q.ay) || (!!nl && nl.feats.some(f => f.x === q.ax && f.y === q.ay && (f.kind === 'd' || (f.kind === 'k' && stoneCharge(q.nk, f) > 0)))); }
   return S.pods.some(p => p.k === key && !p.h && p.x === q.x && p.y === q.y)
     || lay.feats.some(f => f.x === q.x && f.y === q.y && (f.kind === 'd' || (f.kind === 'k' && stoneCharge(key, f) > 0)));
 }
