@@ -96,7 +96,7 @@ export function buildDevPanel(container, hooks) {
     h("div", { class: "dev-row" },
       h("button", { class: "btn", type: "button", onclick: () => { const blob = new Blob([JSON.stringify(G.sv, null, 1)], { type: "application/json" }); const a = h("a", { href: URL.createObjectURL(blob), download: "mb-save-v8.json" }); a.click(); } }, "Export the save"),
       h("button", { class: "btn", type: "button", onclick: () => { const f = h("input", { type: "file", accept: "application/json" }); f.onchange = async () => { try { const o = JSON.parse(await f.files[0].text()); const st = o.st || o; if (!st || st.wid !== G.st.wid) { show("that Station part belongs to another world (" + (st && st.wid) + " vs " + G.st.wid + ") · only this world's st is imported; the Companion's part is never written"); return; } G.st = S.normalize(S.migrate(st, Date.now(), G.sv)); G.sv.st = G.st; save(); show("Station part imported"); } catch (e) { show("import failed: " + e.message); } }; f.click(); } }, "Import a Station part"),
-      h("button", { class: "btn btn-danger", type: "button", onclick: () => { if (confirm("Erase the shared save (both pages)?")) { resetSave(); location.reload(); } } }, "Reset game")),
+      h("button", { class: "btn btn-danger", type: "button", onclick: () => { if (confirm("Erase the whole game, mibis and all (both pages)?")) { resetSave(); location.reload(); } } }, "Reset game")),
     out);
   root.append(...groups);
   root.addEventListener("click", (e) => { const b = e.target.closest && e.target.closest("button"); if (b) setTimeout(() => b.blur(), 0); });   // a button that has acted gives the keys back to the Station (Enter must not press it again)

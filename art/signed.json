@@ -3881,6 +3881,34 @@
   },
   {
    "class": "ui",
+   "date": "2026-11-18",
+   "id": "8df2f96608",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C01-mask.png",
+   "sha256": "960a6fc371b4c28c86b3aac186ba8bfa9e8a117981a88bfc7db396fec25044b6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "4e51620af2",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C01-shade.png",
+   "sha256": "d961bd04414473e1aa80cea5b014fa105b60c8cde8674bf5dd34e30c15cf8415"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "3250ef57be",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C07-mask.png",
+   "sha256": "960a6fc371b4c28c86b3aac186ba8bfa9e8a117981a88bfc7db396fec25044b6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "76f550f886",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C07-shade.png",
+   "sha256": "d961bd04414473e1aa80cea5b014fa105b60c8cde8674bf5dd34e30c15cf8415"
+  },
+  {
+   "class": "ui",
    "date": "2026-11-16",
    "id": "edfc9f6745",
    "path": "prototypes/ui/assets/masters/pods/heart-full-24.png",
@@ -3892,6 +3920,174 @@
    "id": "0d57dc76d5",
    "path": "prototypes/ui/assets/masters/pods/mark-asleep-24x16.png",
    "sha256": "224608e151c9dd9374750d72f974bb058da311395d0a671b739c43936dc247ef"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "b5e9ea80e2",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C01-mask.png",
+   "sha256": "6e77c8cdf719875a52f7e534cd5522b0457379f7041d6748552479f83701554d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "804a47bb7d",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C01-shade.png",
+   "sha256": "9a7ac8aa261617698fc1393d4d550e481c1fa06f9020c9d1aadee6ca05cc76c1"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "b8df81ae11",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C07-mask.png",
+   "sha256": "6e77c8cdf719875a52f7e534cd5522b0457379f7041d6748552479f83701554d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c101da6a75",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C07-shade.png",
+   "sha256": "9a7ac8aa261617698fc1393d4d550e481c1fa06f9020c9d1aadee6ca05cc76c1"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "5989631000",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C01-mask.png",
+   "sha256": "b08f40b925376f441a5e92fce3f59f1776b4517c987b352f3ea945eeb73a4d00"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "90880faa1e",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C01-shade.png",
+   "sha256": "b98837d3bc073a9fbffdf6d08a9506bf2fb56e892be4e2a02c44f4510298440b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "dfbfdaeeea",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C07-mask.png",
+   "sha256": "b08f40b925376f441a5e92fce3f59f1776b4517c987b352f3ea945eeb73a4d00"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c22bb78a4f",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C07-shade.png",
+   "sha256": "b98837d3bc073a9fbffdf6d08a9506bf2fb56e892be4e2a02c44f4510298440b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "7527128f5a",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C01-mask.png",
+   "sha256": "ba25a14c6501d84fa6c3722673d227859a0e00b8731bf5cb761e8f0d912f4932"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "ad1d0c0f34",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C01-shade.png",
+   "sha256": "33eeba3b6679de0bf7b4b5cbc59a47cbac82216c397fbc91a641738ddd4a68ea"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c9d6586758",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C07-mask.png",
+   "sha256": "ba25a14c6501d84fa6c3722673d227859a0e00b8731bf5cb761e8f0d912f4932"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "8964fc1920",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C07-shade.png",
+   "sha256": "33eeba3b6679de0bf7b4b5cbc59a47cbac82216c397fbc91a641738ddd4a68ea"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "2257ebb1c6",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C01-mask.png",
+   "sha256": "c80966892cf2c62522505c9d51d98f3dcdbf253eb694284c7338a06b7ce0aee6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "579861c8ea",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C01-shade.png",
+   "sha256": "653e2a43d1cec0470611d039de79f4006f6854cbd03489efdf21e36e964bc5be"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "31e9b4e142",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C07-mask.png",
+   "sha256": "c80966892cf2c62522505c9d51d98f3dcdbf253eb694284c7338a06b7ce0aee6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "7b0e1e742d",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C07-shade.png",
+   "sha256": "653e2a43d1cec0470611d039de79f4006f6854cbd03489efdf21e36e964bc5be"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "771771ddf8",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C01-mask.png",
+   "sha256": "200ca995e0ae7c3a33f9e85da8cfff3ab9dec460bd84d46ee367b06d6a5d508f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "453e9ff95f",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C01-shade.png",
+   "sha256": "f2b9de4aa26027edb873f22cae4f65536465bb80dd23778e537ae5071ee29fed"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "a2445153ef",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C07-mask.png",
+   "sha256": "200ca995e0ae7c3a33f9e85da8cfff3ab9dec460bd84d46ee367b06d6a5d508f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "0e460c72bc",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C07-shade.png",
+   "sha256": "f2b9de4aa26027edb873f22cae4f65536465bb80dd23778e537ae5071ee29fed"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "b7bcc1f00d",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C01-mask.png",
+   "sha256": "30bd6a310c18d2eca971f6a3ba47ee97684b3e3c289a235f67606d1062d1b30e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c1c8bd8e19",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C01-shade.png",
+   "sha256": "b95a8423c96b2d21652cb663ca51b87ba8417471c498841f5ef8b1cc3d5643d4"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "3fdff7559f",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C07-mask.png",
+   "sha256": "30bd6a310c18d2eca971f6a3ba47ee97684b3e3c289a235f67606d1062d1b30e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "d355000312",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C07-shade.png",
+   "sha256": "b95a8423c96b2d21652cb663ca51b87ba8417471c498841f5ef8b1cc3d5643d4"
   },
   {
    "class": "ui",

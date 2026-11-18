@@ -18,7 +18,7 @@ import { homeBuild, homeNeeds, wordsOf, setLibrary } from "../../station/src/vie
 import { libraryOf, warmLibrary, glintAt, glintSpot, GLINT_TURNS } from "../../station/src/views/specimen-props.mjs";
 import { renderSpecimen } from "../../station/src/specimen.mjs";
 setLibrary(libraryOf);   // the host registers it; Home's Library module is the specimen (build spec 4.2)
-import { departures, TARGETS } from "../tools/home-regions.mjs";
+import { departures, narrowDepartures, narrowSpec, TARGETS } from "../tools/home-regions.mjs";
 import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -61,18 +61,19 @@ function stationPictures(b) {
   for (const id of Object.values(R.bay.pictures)) add(id, sized(id));
   return out;
 }
-async function start(b, { motion = true, t0 = 0, dir = dist } = {}) {
+function gradIn(id, [w, h]) { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; d[i] = (x * 7 + 11) & 255; d[i + 1] = (y * 5 + 40) & 255; d[i + 2] = ((x + y) * 3 + 90) & 255; d[i + 3] = 255; } return { w, h, data: d }; }   // a specimen whose every column differs, for the edge-clamp check
+async function start(b, { motion = true, t0 = 0, dir = dist, narrow = false, grad = false } = {}) {
   const f = await bootFace(pathToFileURL(dir + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec], ["rooms", J("rooms")]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const [id, size] of MARKS) f.handleOf(id, withPolicy((i) => standIn(i, size)));
-  for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => standIn(i, size)));
-  f.t = t0; f.motion = motion; f.build = b;
-  assert.equal(f.props({ screen: "home", ...b.props, motion, frame: frameProps() }), 0, f.errors().join("; ")); frames(f); return f;
+  for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => ((grad && (b.props.regions.library.levels ?? []).includes(i)) ? gradIn : standIn)(i, size)));
+  f.t = t0; f.motion = motion; f.build = b; f.narrow = narrow;
+  assert.equal(f.props({ screen: "home", ...b.props, ...(narrow ? { narrow: true } : {}), motion, frame: frameProps() }), 0, f.errors().join("; ")); frames(f); return f;
 }
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
-const resend = (f, b, n = 2) => { f.build = b; assert.equal(f.props({ screen: "home", ...b.props, motion: f.motion, frame: frameProps() }), 0, f.errors().join("; ")); frames(f, n); };   // n: the frames drawn after the props (1: the frame that carries the change)
+const resend = (f, b, n = 2) => { f.build = b; assert.equal(f.props({ screen: "home", ...b.props, ...(f.narrow ? { narrow: true } : {}), motion: f.motion, frame: frameProps() }), 0, f.errors().join("; ")); frames(f, n); };   // n: the frames drawn after the props (1: the frame that carries the change)
 const withFocus = (f, cur, n = 2) => { f.build.props.focus.cur = cur; resend(f, f.build, n); };
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
 const typeIn = (lg, region) => (lg?.type ?? []).filter((t) => t.region === region);   // the face's log: every string it set, with its px and region
@@ -292,7 +293,7 @@ test("the ring moves between targets as the same eight LVGL objects; going away 
 });
 
 // ---- the Vivarium window (build spec 3, H2): the crop of Idle's painting, the inner shade, six walkers on the moved profile, the away frame and its keep-out, the event tag, and the budgets of section 7 ----
-import { movingScene, bootScene, runFrames, STATE, SPEC } from "./moving-scene.mjs";
+import { movingScene, bootScene, runFrames, STATE, SPEC, resend as mresend } from "./moving-scene.mjs";
 const vivSpec = SPEC("vivarium"), WIN = homeSpec.regions.window, RW = homeSpec.regions.resident.walk;
 // Home's ground is the main level of the room (rooms.json, painting coordinates) in the window's: the painting less the crop's offset, x less 40 and y less 116 (home.json window.rect less painting.at)
 const ROOMMAIN = SPEC("rooms").rooms.roots.levels[0], HDX = WIN.rect[0] - WIN.painting.cx, HDY = WIN.rect[1] - WIN.painting.rows[0];
@@ -554,4 +555,97 @@ test("R3: Home draws the room's pieces that fall in its window, at the painting'
   assert.deepEqual(pieces.map((n) => n[0]).sort(), ["p.roots-mister", "p.roots-mist-2", "p.roots-sorrel-1", "p.roots-stone-2"].map(fnv).sort(), "the sorrel tuft, the stone, the mister and its mist fall in the window (the collection v2 design §4: the moved pieces move on Home too)");
   assert.deepEqual(at[fnv("p.roots-sorrel-1")], [78, 380, 96, 46], "(118, 496) less (40, 116)"); assert.deepEqual(at[fnv("p.roots-stone-2")], [552, 383, 68, 41], "(592, 499) less (40, 116), whole in Home's window (x 628), 8 px clear"); assert.deepEqual(at[fnv("p.roots-mister")], [570, 207, 50, 34], "(610, 323) less (40, 116), whole, 8 px clear");
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+});
+
+// ---- Home on an upright phone (home.json "narrow", the host's `narrow` prop: the play page's window, 530 lp wide at x0.6) ----
+// One window that turns between the Vivarium and the Library, the four cards 2 x 2 whole and lit, the top bar with Station, the line and the clock. Sideways, on a laptop and on the device itself the plain Home stands (every test above, and the goldens).
+const NR = narrowSpec(homeSpec).regions;
+const NSCENES = {
+  "at rest, the Vivarium": { adults: 3, carry: [0], away: true },
+  "the ring on the window": { adults: 3, carry: [0], away: true, focus: "vivarium" },
+  "turned to the Library, the ring on it": { adults: 3, carry: [0], away: true, focus: "library" },
+  "a needs-you lamp (the Bay) and the line that leads to it": { adults: 3, carry: [0], away: true, crates: 2 },
+  "two needs in the line (the first only, as the zone is 334 lp)": { adults: 3, carry: [0], crates: 2, bud: 1e8 / 60000, pods: 2 },
+  "a place name and nobody at home": { adults: 2, carry: [0, 1], away: true, place: "Burrow Station" },
+  "the ring on Pods": { adults: 2, pods: 3, focus: "pods" }, "the ring on the Incubator": { adults: 2, bud: 1, focus: "incubator" }, "the ring on the Companion, away": { adults: 2, carry: [0], away: true, focus: "companion" }, "the ring on the Bay": { adults: 2, crates: 3, focus: "bay" },
+};
+for (const [name, o] of Object.entries(NSCENES)) {
+  test(`narrow Home, ${name}: draws without an error or a refusal inside the budgets, the cards whole, the window one, the bar in view (the region check)`, { skip }, async () => {
+    const b = scene({ ...o, ui: { narrow: true } }), f = await start(b, { narrow: true }); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    const lg = logOf(f), cur = b.props.focus.cur; assert.deepEqual(narrowDepartures(lg, homeSpec, frameSpec, cur, cur === "library", b.props), []);
+    const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
+    for (const t of typeIn(lg, "line")) assert.ok(t.rect ? inside(t.rect, NR.line.rect) : true, `the line's words ${t.text} stay in the bar's zone`);
+  });
+}
+test("the narrow region check bites: a card moved over another, a card cut by the window, the other window drawn, the cue too close to the ring, a ring at rest are each found", { skip }, async () => {
+  const b = scene({ adults: 2, crates: 2, focus: "bay", ui: { narrow: true } }), f = await start(b, { narrow: true }), lg = logOf(f), bad = (fn, cur = "bay") => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return narrowDepartures(c, homeSpec, frameSpec, cur, false, b.props); };
+  assert.deepEqual(narrowDepartures(lg, homeSpec, frameSpec, "bay", false, b.props), []);
+  const moved = (spec, k, dx, dy) => { const s = JSON.parse(JSON.stringify(spec)); s.narrow.regions[k].rect[0] += dx; s.narrow.regions[k].rect[1] += dy; return s; };
+  assert.match(narrowDepartures(lg, moved(homeSpec, "bay", -100, -10), frameSpec, "bay")[0], /./, "a card moved off the grid is found");
+  assert.ok(narrowDepartures(lg, moved(homeSpec, "bay", 40, 0), frameSpec, "bay").some((m) => /whole inside|overlap|plain/.test(m) || /bay/.test(m)), "a card pushed past the 530 lp window is found");
+  assert.match(bad((c) => { c.regions.push({ id: "library", layer: "chrome", rect: [16, 48, 498, 286] }); }).join("|"), /library is drawn while the window shows vivarium/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "cue.0" || r.id.startsWith("cue")).rect[1] -= 8; }).join("|"), /from the window's ring|cue/);
+  assert.match(bad(() => {}, "room").join("|"), /a ring is drawn at rest/);
+});
+test("the narrow Home draws one window: the Vivarium's walkers and the away frame, or the Library on its matte; never both, and the cue stands under it", { skip }, async () => {
+  const sc = homeScene({ adults: 3, juveniles: 0, docked: false, carry: [0] }); sc.props.narrow = true;
+  let last = null; const f = await bootScene(sc, { motion: false, dir: node }), regionIds = () => { last = logOf(f) ?? last; return new Set((last?.regions ?? []).map((r) => r.id)); }, setFocus = (cur) => { sc.props.focus.cur = cur; mresend(f); frames(f); };
+  let ids = regionIds(); assert.ok(ids.has("vivarium") && !ids.has("library") && !ids.has("library.window"), "the Vivarium alone at rest");
+  assert.deepEqual(box(f, "vivarium.glass"), NR.window.rect, "the painting's window is the window's 482 x 248"); assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting");
+  const h0 = f.hash(); assert.deepEqual(box(f, "cue.0"), NR.cue.rects[0]); assert.deepEqual(box(f, "cue.1"), NR.cue.rects[1]);
+  setFocus("library"); ids = regionIds(); assert.ok(ids.has("library") && !ids.has("vivarium"), "turned: the Library alone"); assert.notEqual(f.hash(), h0);
+  assert.deepEqual(box(f, "library.window").slice(2), [0, 0], "no placeholder matte: the bands are the specimen's edge columns"); assert.deepEqual(box(f, "library.edge.l"), [NR.library.window[0], NR.library.window[1], 69, 248]); assert.deepEqual(box(f, "library.edge.r"), [NR.library.window[0] + 69 + 344, NR.library.window[1], 69, 248]); assert.deepEqual(box(f, "library.picture"), [NR.library.window[0] + 69, NR.library.window[1], 344, 248], "the specimen 344 wide stands centred, its rows from 60");
+  setFocus("pods"); ids = regionIds(); assert.ok(ids.has("library") && !ids.has("vivarium"), "the ring on a card: the window stays turned"); assert.deepEqual(narrowDepartures(last, homeSpec, frameSpec, "pods", true, sc.props), []);
+  setFocus("vivarium"); ids = regionIds(); assert.ok(ids.has("vivarium") && !ids.has("library"), "the ring on the Vivarium turns it back"); assert.deepEqual(narrowDepartures(last, homeSpec, frameSpec, "vivarium", false, sc.props), []);
+  assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+});
+test("narrow Home, the Library: the pixels left and right of the specimen are its edge columns, row by row (no seam, no matte colour), on a specimen whose every column differs", { skip }, async () => {
+  const f = await start(scene({ adults: 3, carry: [0], away: true, focus: "library", ui: { narrow: true } }), { narrow: true, motion: false, grad: true }), [wx, wy, ww, wh] = NR.library.window, sx0 = wx + 69, sx1 = wx + 69 + 343;
+  assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0); assert.notDeepEqual(f.pixel(sx0, wy + 100), f.pixel(sx0 + 1, wy + 100), "the specimen's columns differ (the check can fail)");
+  for (let r = 2; r < wh - 52; r++) {   // rows 0 and 1 carry the window's 2 px top shade across the bands, as they did before; the last 52 rows hold the captions ('new' at x 36, the genome ending at 494, y 298) over the bands
+    const l = f.pixel(sx0, wy + r), rt = f.pixel(sx1, wy + r);
+    for (let k = 2; k < 69; k++) assert.deepEqual(f.pixel(wx + k, wy + r), l, `left band, row ${r}, column ${k}`);
+    for (let k = 0; k < ww - 69 - 344; k++) assert.deepEqual(f.pixel(sx1 + 1 + k, wy + r), rt, `right band, row ${r}, column ${k}`);
+  }
+});
+test("the narrow pad is a plain grid: up from a top card goes to the window, → turns it to the Library and ← back, ↓ goes back to the card it came from; the Settings knob is not on it; the plain pad is unchanged", { skip }, async () => {
+  const go = async (from, ks, o = {}) => { const f = await start(scene({ adults: 2, focus: from === "room" ? null : from, ui: { narrow: true }, ...o }), { narrow: true, motion: false }); const seen = []; for (const k of ks) { const out = key(f, k); seen.push(out.length ? out[0].target : "-"); } return { f, seen }; };
+  assert.deepEqual((await go("room", ["up"])).seen, ["vivarium"]);
+  assert.deepEqual((await go("pods", ["up", "right", "down"])).seen, ["vivarium", "library", "pods"], "up to the window, turned right to the Library, down back to the card it came from");
+  assert.deepEqual((await go("bay", ["up", "up", "right", "left", "left", "down"])).seen, ["incubator", "vivarium", "library", "vivarium", "-", "incubator"], "Bay up is the Incubator, up again the window, → the Library, ← the Vivarium, ← nothing, ↓ the card it left");
+  assert.deepEqual((await go("incubator", ["up", "right", "down"])).seen, ["vivarium", "library", "incubator"], "from the Incubator the window and back to the Incubator");
+  assert.deepEqual((await go("companion", ["up", "down", "right", "left", "down"])).seen, ["pods", "companion", "bay", "companion", "-"], "the grid 2 x 2: Companion up is Pods, Bay left is the Companion, down from the last row stays");
+  assert.deepEqual((await go("library", ["up", "right"])).seen, ["-", "-"], "nothing above the window, nothing right of the Library");
+  assert.deepEqual((await go("vivarium", ["left"])).seen, ["-"], "nothing left of the Vivarium");
+  { const { f } = await go("pods", ["up", "right", "down"]); assert.deepEqual(key(f, "up").map((m) => m.target), ["library"], "the window the ring goes up to is the one that is turned: the Library"); }
+  { const b = scene({ adults: 2, ui: { narrow: true } }); assert.ok(b.props.focus.targets.some((t) => t.id === "settings"), "the Settings target is listed (realmSleep on)"); const f = await start(b, { narrow: true, dir: node, motion: false }); assert.equal(f.nodeBox("settings.knob"), null, "no Settings knob drawn on the narrow Home"); assert.deepEqual(narrowDepartures(logOf(f), homeSpec, frameSpec, "room", false, b.props), []); }
+  // the plain Home's pad stays: Pods up is the Vivarium, → is the Incubator, the Library is right of the Vivarium
+  const plain = await start(scene({ adults: 2, focus: "vivarium" }), { motion: false }); assert.deepEqual(key(plain, "right").map((m) => m.target), ["library"]);
+  const confirm = await start(scene({ adults: 2, focus: "library", ui: { narrow: true } }), { narrow: true, motion: false }); assert.deepEqual(key(confirm, "confirm").map((m) => [m.t, m.target, m.verb]), [["intent", "library", "confirm"]], "✓ on the window opens what it shows");
+});
+test("the narrow window holds three residents (home.json narrow regions.resident.max); the walkers keep to the 248 lp window's ground, whole (their top in the window, never cut by the sky), and out of the away frame's keep-out; the away frame stands in the corner with its caption", { skip }, async () => {
+  const wide = homeScene({ adults: 5 }), narrow = homeScene({ adults: 5, ui: { narrow: true } });
+  assert.equal(wide.props.regions.residents.filter((r) => r.shown !== false).length, 5); assert.equal(narrow.props.regions.residents.filter((r) => r.shown !== false).length, 3, "the cap is 3 on the narrow window");
+  const NW = NR.window, NRW = NR.resident.walk, NHDX = NW.rect[0] - NW.painting.cx, NHDY = NW.rect[1] - NW.painting.rows[0];
+  const groundTopNarrow = (fx) => { const x = fx - NHDX; let t = ROOMMAIN.top[0]; ROOMMAIN.x.slice(0, -1).forEach((b, i) => { if (x >= b) t = ROOMMAIN.top[i]; }); return t + NHDY; };
+  assert.deepEqual(NR.away.rect, [NW.rect[0] + NW.rect[2] - 8 - 64, NW.rect[1] + NW.rect[3] - 24 - 64, 64, 64], "the away frame is 8 in from the right and 24 up from the window's foot, as on the device");
+  assert.deepEqual(NRW.keepOut, [NR.away.rect[0] - 8, NR.away.rect[1] - 8, 80, 96], "the keep-out reaches 8 round the away frame's corner, as on the device");
+  for (const away of [false, true]) {
+    const sc = homeScene({ adults: 3, juveniles: 1, ...(away ? { docked: false, carry: [0] } : {}) }); sc.props.narrow = true;
+    const f = await bootScene(sc, { motion: true, dir: node }), res = sc.props.regions.residents, M = f.M, shownIx = res.map((p, i) => i).filter((i) => res[i].shown !== false);
+    assert.equal(!!sc.props.regions.glass.away, away); assert.deepEqual(f.errors(), []);
+    assert.deepEqual(box(f, "vivarium.glass"), NW.rect, "the painting's window is the narrow window");
+    const fig = res.map((p) => p.figure ?? [0, 0, p.stage === "juvenile" ? 104 : 144, p.stage === "juvenile" ? 112 : 152]);
+    let moved = 0; const seen = new Set();
+    runFrames(f, 40000, { each: () => { res.forEach((p, i) => { if (!shownIx.includes(i)) return; let x = M._face_test_mv(i, 0), feet = M._face_test_mv(i, 1); if (x < -1000) { const b = box(f, `g.${p.id}`); x = b[0] + NW.rect[0]; feet = b[1] + b[3] + NW.rect[1]; }
+      const W = fig[i][2], H = fig[i][3], fx = x + Math.floor(W / 2); seen.add(i);
+      assert.ok(x >= NRW.ground[0] && x + W <= NRW.ground[0] + NRW.ground[2], `${p.id} x ${x} + ${W} leaves ${NRW.ground[0]} .. ${NRW.ground[0] + NRW.ground[2]}`);
+      assert.ok(feet <= NRW.ground[1] + NRW.ground[3] - 1 + 1 && feet >= NRW.ground[1], `${p.id} feet ${feet} are off Home's narrow band ${NRW.ground[1]} .. ${NRW.ground[1] + NRW.ground[3]}`);
+      assert.ok(feet - H >= NW.rect[1], `${p.id} stands cut by the sky: its top ${feet - H} is above the window's ${NW.rect[1]}`);
+      assert.ok(feet >= groundTopNarrow(fx), `${p.id} feet ${feet} above the main floor ${groundTopNarrow(fx)} at ${fx}`);
+      { const st = STATE(M._face_test_state(i)); assert.deepEqual([st.lv, st.leg], [0, 0], `${p.id} is on a raised level or a join`); }
+      if (away) assert.ok(!(x + W > NRW.keepOut[0] && feet >= NRW.keepOut[1]), `${p.id} at (${x}, ${feet}) meets the away frame's keep-out`); moved++; }); } });
+    assert.ok(moved > 0 && seen.size === shownIx.length, "every shown resident walked and was read"); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    if (away) { const lg = logOf(f); const awayR = (lg.regions ?? []).find((r) => r.id.startsWith("away")); assert.ok(awayR && inside(awayR.rect, NW.rect), `the away frame ${awayR?.rect} is inside the window`); assert.ok((lg.type ?? []).some((t) => t.text === "away"), "the caption 'away'"); }
+  }
 });

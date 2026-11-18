@@ -444,7 +444,7 @@ await page.waitForTimeout(1600);
 const hpressI = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
 stepOf("incubator-states");
 await page.evaluate(() => window.__st.addMaterials(0, 0, 40));
-{ const s0 = await st(); await hpressI("confirm", 300); expect((await props()).overlay?.id === "panel" && (await props()).overlay.form === "hatchnow" && (await props()).frame.line.ok === "Open now", "✓ Hatch now above ❀ 4 opens the Hatch now | Wait panel (the 180 ms dither): " + JSON.stringify((await props()).frame.line)); await hpressI("back", 300); expect(!(await props()).overlay, "← dithers back, nothing spent"); await hpressI("confirm", 300);
+{ const s0 = await st(); await hpressI("confirm", 300); expect((await props()).overlay?.id === "panel" && (await props()).overlay.form === "hatchnow" && (await props()).overlay.focus.cur === "card.wait", "✓ Open now opens the Hatch now | Wait panel (the 180 ms dither), the ring on Wait: " + JSON.stringify([(await props()).overlay?.focus, (await props()).frame.line])); await hpressI("back", 300); expect(!(await props()).overlay, "← dithers back, nothing spent"); await hpressI("confirm", 300); await hpressI("left", 200);   // the ring starts on Wait (first-session scheme item 6); ◀ moves it to Hatch now
   // ✓ Hatch now (the panel, then its Hatch now card): the leaves still to fill turn whole over 400 ms, input held 400 ms, then the hatch. From the card's press to the end of the hatch the page's clock is held and stepped, so a slow runner cannot let the 2.8 s hatch finish between two checks
   await said(); await hold(); await page.evaluate(() => window.__st.act("confirm")); await stepClock(120);
   { const m = await said(), u = await ui(), l = await line(), p = await props(); cur.push({ key: "confirm", said: m, screen: u.screen, state: p.state ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); }
@@ -865,6 +865,8 @@ const landed = async (what, test, from) => { await page.waitForFunction(test, nu
   await loop("confirm", "✓ Grow it opens Create", () => window.__st.UI.screen === "create");
   await loop("confirm", "✓ Incubate opens the Incubate | Keep shaping panel", () => window.__st.props?.overlay?.form === "incubate");
   await loop("confirm", "✓ Incubate in the panel (the grow event, then the Incubator's incubate moment)", () => window.__st.UI.screen === "incubator");
+  await loop("confirm", "✓ Open now asks first: the Hatch now | Wait panel", () => window.__st.props?.overlay?.form === "hatchnow");
+  await loop("left", "◀ the ring from Wait to Hatch now", () => window.__st.props?.overlay?.focus?.cur === "card.grow");
   await loop("confirm", "✓ Hatch now (the bar, the door, the hatch, then the meet)", () => window.__st.UI.screen === "habitat");
   { const p = await props(); expect(p.screen === "habitat" && p.state === "meet" && p.focus.cur === "resident" && /^Name /.test(p.frame.line.ok) && !p.overlay, "fresh-loop: the hatch lands in the meet with the ring on the resident, ✓ Name it: " + JSON.stringify([p.state, p.focus.cur, p.frame.line.ok])); }
   await loop("confirm", "the meet's first ✓ opens the namer", () => window.__st.props?.overlay?.id === "namer");

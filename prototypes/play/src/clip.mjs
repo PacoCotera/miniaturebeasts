@@ -5,8 +5,9 @@
 //                          record works, through canvas.captureStream() + MediaRecorder (a WebM clip).
 import { Output, Mp4OutputFormat, BufferTarget, EncodedVideoPacketSource, EncodedPacket } from "mediabunny";
 import { ClipRing, LIMITS } from "./notes.mjs";
+import { webCodecsOk } from "./engine.mjs";
 
-export const canClip = () => typeof VideoEncoder !== "undefined" && typeof VideoFrame !== "undefined";
+export const canClip = () => webCodecsOk();   // false on WebKit (engine.mjs): its VideoEncoder crashes the page
 export const canRecordAny = () => canClip() || (typeof MediaRecorder !== "undefined" && typeof HTMLCanvasElement !== "undefined" && "captureStream" in HTMLCanvasElement.prototype);
 
 export function shot(canvas) {

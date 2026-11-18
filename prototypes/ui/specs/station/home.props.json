@@ -16,6 +16,7 @@
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["home"] },
+  "narrow": { "type": "boolean", "description": "the host's upright phone window (530 lp wide): Home reads its narrow variant (home.json narrow); absent: the 1024 lp form" },
   "regions": { "type": "object", "required": ["bar", "line", "vivarium", "library", "glass", "room", "residents", "pods", "incubator", "companion", "bay"], "additionalProperties": false, "properties": {
    "bar": { "type": "object", "required": ["place", "date", "clock"], "additionalProperties": false, "properties": { "place": { "type": "string" }, "date": { "type": "string" }, "clock": { "type": "string" } } },
    "line": { "oneOf": [

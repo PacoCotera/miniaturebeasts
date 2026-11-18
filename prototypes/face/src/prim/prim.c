@@ -408,7 +408,7 @@ static void remove_at(int i) {
   int last = --g_n; if (i == last) return;
   g_o[i] = g_o[last]; node_t *m = &g_o[i];
   if (m->kind == FN_COMPOSED && m->composed) lv_image_set_src(m->obj, &m->cdsc);
-  else if (m->kind == FN_SPRITE && m->rgb != 0) lv_image_set_src(m->obj, &m->crop);
+  else if (m->kind == FN_SPRITE && (m->rgb != 0 || m->b > 0)) lv_image_set_src(m->obj, &m->crop);
 }
 /* drop a node; a clip takes its children with it (their records go first, so none is left pointing at a deleted object) */
 static void drop(int i) {
@@ -440,7 +440,9 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (w < 0 || h < 0) REFUSE();   /* a size is never negative: a node with no size is a slot kept for a step that has not come (0 by 0) */
   if (kind == FN_TEXT && !font_of(a)) REFUSE();
   int sx = (int)(rgb >> 16), sy = (int)(rgb & 0xffff);
-  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET + MAX_SRC + 1 || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
+  int stretch = kind == FN_SPRITE && b > 0 && b != w;   /* a sprite's `b` is its source window's width when that is not its own width: stretched to w across, nearest-neighbour (v_sprite_window_stretch) */
+  int sww = stretch ? b : w;
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET + MAX_SRC + 1 || !g_a[a].px || (rgb == 0 && !stretch ? (g_a[a].w != w || g_a[a].h != h) : (sx + sww > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
   if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
   if (kind == FN_COMPOSED && ((long)w * h > 1024L * 600 || ((w == 0 || h == 0) && strcmp(g_ops, "[]") != 0))) REFUSE();   /* a composed node of no size is a slot (ops []): no picture */
@@ -492,7 +494,13 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
       dsc_of(&n->cdsc, n->composed, w, h, w * 4); lv_image_set_src(o, &n->cdsc); lv_obj_invalidate(o); n->ops_hash = oh;
     }
   }
-  if (n->fresh || n->rgb != rgb || n->a != a || n->b != b || (kind == FN_SPRITE && rgb != 0 && (n->w != w || n->h != h))) {
+  if (stretch && (n->fresh || n->rgb != rgb || n->a != a || n->b != b || n->w != w || n->h != h || n->ops_hash != g_a[a].gen || !n->composed)) {   /* the stretched window: its w x h pixels made here, source column ((x * sww) / w) of each row, no filtering; kept for the picture's gen */
+    free(n->composed); n->composed = (uint8_t *)calloc((size_t)w * h + 1, 4);
+    if (n->composed) { for (int y = 0; y < h; y++) { const uint8_t *src = g_a[a].px + ((size_t)(sy + y) * g_a[a].w + sx) * 4; uint8_t *dst = n->composed + (size_t)y * w * 4; for (int x = 0; x < w; x++) memcpy(dst + (size_t)x * 4, src + (size_t)(x * sww / w) * 4, 4); }
+      dsc_of(&n->crop, n->composed, w, h, w * 4); lv_image_set_src(o, &n->crop); lv_obj_invalidate(o); }
+    else g_unknown++;
+    n->ops_hash = g_a[a].gen;
+  } else if (!stretch && (n->fresh || n->rgb != rgb || n->a != a || n->b != b || (kind == FN_SPRITE && rgb != 0 && (n->w != w || n->h != h)))) {
     if (kind == FN_RECT) { lv_obj_set_style_bg_color(o, lv_color_hex(rgb), 0); lv_obj_set_style_bg_opa(o, LV_OPA_COVER, 0); }
     else if (kind == FN_TEXT) lv_obj_set_style_text_color(o, lv_color_hex(rgb), 0);
     else if (kind == FN_SPRITE) { if (rgb == 0) lv_image_set_src(o, &g_a[a].dsc); else { dsc_of(&n->crop, g_a[a].px + sy * g_a[a].w * 4 + sx * 4, w, h, g_a[a].w * 4); lv_image_set_src(o, &n->crop); } }
@@ -604,6 +612,8 @@ static int node_json(char *buf, int cap, int *pn, node_t *nd, const int *cut, in
     int jx = ix > ax ? ix : ax, jy = iy > ay ? iy : ay, kx = ix + iw < ex ? ix + iw : ex, ky = iy + ih < ey ? iy + ih : ey;
     if (iw > 0 && kx > jx && ky > jy) { ink[0] = jx; ink[1] = jy; ink[2] = kx - jx; ink[3] = ky - jy; } else { ink[2] = 0; ink[3] = 0; }
     int sb[4]; prim_asset_solid_box(nd->a, sb); solid[0] = nd->x + ox + sb[0]; solid[1] = nd->y + oy + sb[1]; solid[2] = sb[2]; solid[3] = sb[3]; cut_box(solid, ax, ay, ex, ey);
+  } else if (pic && nd->b > 0 && nd->b != nd->w) {   /* a stretched window: flagged a window, its solid box the node's own */
+    flags |= 8;
   } else if (pic) {   /* a window of a larger picture at source (sx, sy): its own solid rows and columns, and whether it cuts solid ink, kept for the picture's gen and the window */
     asset_t *s = &g_a[nd->a]; int sx = (int)(nd->rgb >> 16), sy = (int)(nd->rgb & 0xffff);
     if (nd->win_gen != s->gen || nd->win_key[0] != sx || nd->win_key[1] != sy || nd->win_key[2] != nd->w || nd->win_key[3] != nd->h) {
