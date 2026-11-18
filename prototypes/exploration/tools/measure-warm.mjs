@@ -11,7 +11,7 @@ const server = createServer((req, res) => { let p = path.join(root, decodeURICom
 await new Promise((r) => server.listen(0, "127.0.0.1", r)); const port = server.address().port;
 const b = await chromium.launch(), rows = [];
 for (let i = 0; i < N; i++) {
-  const ctx = await b.newContext(), page = await ctx.newPage(); await page.goto(`http://127.0.0.1:${port}/exploration/index.html`); await page.waitForTimeout(500);
+  const ctx = await b.newContext(), page = await ctx.newPage(); await page.goto(`http://127.0.0.1:${port}/exploration/index.html?test`); await page.waitForTimeout(500);
   await page.evaluate(() => { window.__mb.TEST.calm = true; }); await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(150); await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(300);
   rows.push(await page.evaluate((CELLS) => { const m = window.__mb, ex = m.S.exp; if (!ex) return null; const MW = m.MW, xy = (c) => [c % MW, Math.floor(c / MW)], [sx, sy] = xy(ex.start);
     const near = ex.reach.slice().sort((a, b) => Math.hypot(xy(a)[0] - sx, xy(a)[1] - sy) - Math.hypot(xy(b)[0] - sx, xy(b)[1] - sy)).slice(0, CELLS), keys = new Set(near.map(String));

@@ -22,7 +22,7 @@ const server = createServer((req, res) => {
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(readFileSync(p));
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
-const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html`;
+const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html?test`;
 const browser = await chromium.launch();
 const errors = [];
 async function open(init) {
