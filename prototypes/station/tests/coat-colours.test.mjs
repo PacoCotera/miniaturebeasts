@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { coatColours, LAND_OF, LAND_BODY, CREAM } from "../src/coat-colours.mjs";
 import { lookColours } from "../src/specimen.mjs";
 
-const lang = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
+const lang = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../species/frames/language");
 test("Loika: the nine coat_main hexes of the ruling, beside the cream", () => {
   const want = { redder: ["#482a1e", "#864d2b", "#a26b4f"], between: ["#2e2a2d", "#615c5f", "#989397"], yellower: ["#3e301f", "#72583b", "#9f805a"] };
   for (const [t, row] of Object.entries(want)) row.forEach((hex, i) => assert.deepEqual(coatColours("S01", t, ["dark", "between", "light"][i]), [hex, CREAM]));

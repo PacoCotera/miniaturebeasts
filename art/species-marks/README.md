@@ -13,8 +13,8 @@ The sixteen species glyphs, redrawn as abstract marks. The glyph is the small 5�
 ## What was done
 
 - **Grid kept: 5×5, lit or dark** (the frames' `glyph`, the stamp's corner, the pod's `source/glyphs.txt`). Nothing about the grid, the stamp codec or the pod's geometry changed.
-- **One source.** The marks are `GLYPHS` in `prototypes/workbench/framework/roster.mjs`; the old per-clan tops and the seeded lower rows are gone. `prototypes/workbench/framework/build-frames.mjs` was re-run, so the sixteen `frames/species-S*.json` carry them (not edited by hand; `--check` passes). `prototypes/ui/assets/placeholders/pod/source/glyphs.txt` was refreshed from the frames, then `build.py` and `check.py` re-run: `pod-glyphs.png`, `contact-1x.png` and `contact-2x.png` regenerated, atlas unchanged, 0 off-palette pixels, 0 differences from the frames.
-- **A test** in the workbench (`tests/framework.test.mjs`): sixteen 5×5 marks, each held by its frame, 6 to 16 lit cells, and every pair differing in at least 5 of the 25 cells in each of the eight orientations (the stamp reader tries them all). 17 of 17 workbench tests pass; the station's 30 pass.
+- **One source.** The marks are `GLYPHS` in `prototypes/species/framework/roster.mjs`; the old per-clan tops and the seeded lower rows are gone. `prototypes/species/framework/build-frames.mjs` was re-run, so the sixteen `frames/species-S*.json` carry them (not edited by hand; `--check` passes). `prototypes/ui/assets/placeholders/pod/source/glyphs.txt` was refreshed from the frames, then `build.py` and `check.py` re-run: `pod-glyphs.png`, `contact-1x.png` and `contact-2x.png` regenerated, atlas unchanged, 0 off-palette pixels, 0 differences from the frames.
+- **A test** in the species (`tests/framework.test.mjs`): sixteen 5×5 marks, each held by its frame, 6 to 16 lit cells, and every pair differing in at least 5 of the 25 cells in each of the eight orientations (the stamp reader tries them all). 17 of 17 species tests pass; the station's 30 pass.
 - `old-glyphs.txt` keeps the retired glyphs as they were on main; `make-contact.py` rebuilds the sheet (`python3 -I make-contact.py`).
 
 ## The marks
@@ -49,7 +49,7 @@ Calm catalogue marks, one stroke weight (1 cell): strokes, dots, arcs, steps, ri
 
 ## Art director's pass (2026-10-08)
 
-Judged as one family of catalogue seals on the contact sheet and the pod sheet at 1×, 3× and 6×: calm, one stroke weight, geometric, light on the slate, each an echo and none a drawing. The retired set's alien, skull and cross are gone. Five marks failed and are redrawn here in `GLYPHS` (frames rebuilt, pod sheet and this contact sheet regenerated, 17 of 17 workbench tests, `check.py` ok, 0 off-palette pixels):
+Judged as one family of catalogue seals on the contact sheet and the pod sheet at 1×, 3× and 6×: calm, one stroke weight, geometric, light on the slate, each an echo and none a drawing. The retired set's alien, skull and cross are gone. Five marks failed and are redrawn here in `GLYPHS` (frames rebuilt, pod sheet and this contact sheet regenerated, 17 of 17 species tests, `check.py` ok, 0 off-palette pixels):
 
 - **S02 Untuva: redrawn.** The arch over a centred dot reads as a question mark, which the game already uses for the unknown. The fleck now drifts off under one side.
 - **S05 Tepor: redrawn.** The chevron and dot is an arrow, a "next" on a cap the player taps. Now the tail's sweep and its tip.
@@ -64,7 +64,7 @@ Signed by the art director, 2026-10-08.
 
 ## For the genome engineer (not changed here)
 
-The stamp's frame registry is append-only: a frame is identified by species and frame version, and an old print decodes only while its frame is carried. The frame's glyph is part of what a v2 stamp was drawn with, so replacing the glyph inside frame version 2 breaks the rule: `src/frames-data.mjs` was **not** regenerated, and `tools/extract-frames.mjs` would overwrite the v2 glyphs if run now. The rule requires a **new frame version (3)** for the sixteen species, with the v2 frames kept beside it so printed stamps still decode, and the reader's orientation score (`orientations()` in `src/decode.mjs`, which tries every frame's glyph) will then match both marks. The workbench's `FRAME_VERSION` (`framework/species.mjs`) is still 2 and the frames carry the new marks under it; that constant and the extract tool are the engineer's to move together.
+The stamp's frame registry is append-only: a frame is identified by species and frame version, and an old print decodes only while its frame is carried. The frame's glyph is part of what a v2 stamp was drawn with, so replacing the glyph inside frame version 2 breaks the rule: `src/frames-data.mjs` was **not** regenerated, and `tools/extract-frames.mjs` would overwrite the v2 glyphs if run now. The rule requires a **new frame version (3)** for the sixteen species, with the v2 frames kept beside it so printed stamps still decode, and the reader's orientation score (`orientations()` in `src/decode.mjs`, which tries every frame's glyph) will then match both marks. The species's `FRAME_VERSION` (`framework/species.mjs`) is still 2 and the frames carry the new marks under it; that constant and the extract tool are the engineer's to move together.
 
 ## Departures, listed
 

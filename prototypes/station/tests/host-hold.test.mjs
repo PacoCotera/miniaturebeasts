@@ -15,7 +15,7 @@ import { createHost, onFaceMessage, screenProps } from "../src/host.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
 import { enterIdle, idleTick } from "../src/intents/frame.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 for (const k of ["frame", "pods", "home", "cargo", "create", "vivarium", "habitat", "namer", "panel"]) SPECS[k] = JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 const rig = ({ motion = true, onDock } = {}) => {

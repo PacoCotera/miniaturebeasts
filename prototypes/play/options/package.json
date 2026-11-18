@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "The Options panel of the play page: React + Radix (the workbench's versions), built to ../vendor/options.js (committed, like the workbench's static bundle).",
+  "description": "The Options panel of the play page: React + Radix (the species's versions), built to ../vendor/options.js (committed, like the species's static bundle).",
   "scripts": {
     "build": "node build.mjs",
     "catalogue": "ladle serve",

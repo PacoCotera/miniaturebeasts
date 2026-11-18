@@ -10,7 +10,7 @@ import { FRAME_DATA } from "../src/frames-data.mjs";
 import { FRAMES_LIST } from "../src/frames.mjs";
 import { encodeCells, parseMessage, sameGenome } from "../src/codec.mjs";
 import { individual } from "./cases.mjs";
-import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { LOCI } from "../../species/framework/catalogue.mjs";
 
 const sha = (s) => createHash("sha256").update(s).digest("hex").slice(0, 16);
 // sha256 (first 16 hex) of each frame's JSON, and of the stamp's message bits for individual(frame, 7) with every open chapter read, as they were at pin 10 (6cecf8ed4)
@@ -40,7 +40,7 @@ test("a stamp frame that opens the marking layout keeps its two alleles and its 
   for (const f of FRAMES_LIST) for (const [id, idx] of f.locked) if (id === "appearance.marking-layout") assert.ok(idx <= 1, `${f.id}: a locked layout is bands or patches`);
 });
 
-test("tools/extract-frames.mjs --check finds src/frames-data.mjs current against the workbench registry and the pin 11 catalogue", () => {
+test("tools/extract-frames.mjs --check finds src/frames-data.mjs current against the species registry and the pin 11 catalogue", () => {
   const r = spawnSync(process.execPath, ["tools/extract-frames.mjs", "--check"], { cwd: new URL("..", import.meta.url), encoding: "utf8" });
   assert.equal(r.status, 0, r.stderr || r.stdout);
 });

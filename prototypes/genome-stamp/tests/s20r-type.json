@@ -1,5 +1,5 @@
 {
- "note": "The rambler Tuliko (S20, frame 20.8) type specimen as the registry stamps it: copies read from prototypes/workbench/frames/language/species-S20.json typeSpecimen. The retired v1 biped is frame 20.1 (s20-twelve.json).",
+ "note": "The rambler Tuliko (S20, frame 20.8) type specimen as the registry stamps it: copies read from prototypes/species/frames/language/species-S20.json typeSpecimen. The retired v1 biped is frame 20.1 (s20-twelve.json).",
  "type": {
   "frame": "20.8",
   "open": 22,

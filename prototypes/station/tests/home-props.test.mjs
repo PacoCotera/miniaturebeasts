@@ -13,13 +13,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { traitLooks } from "../../workbench/framework/describe.mjs";
+import { traitLooks } from "../../species/framework/describe.mjs";
 import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, wordsOf } from "../src/views/home-props.mjs";
 const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it builds goes through assertLineCase (report mode)
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { goalWords, warnWords, companionWords } from "../src/views/goal-words.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("home.json"), frameSpec = J("frame.json"), schema = J("home.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;

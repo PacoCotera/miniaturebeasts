@@ -17,7 +17,7 @@ import { answerOf, carryPlan } from "../src/carry.mjs";
 import { UI, G, goScreen } from "../src/game.mjs";
 import { podsProps } from "../src/views/pods-props.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))).filter((f) => !f.species.draft));
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;

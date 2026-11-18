@@ -1,4 +1,4 @@
-// The Options panel's parts: Radix Dialog, Switch, Select and AlertDialog (the workbench's radix-ui), one short line under each control. The settings are options.mjs's; this file only shows and writes them.
+// The Options panel's parts: Radix Dialog, Switch, Select and AlertDialog (the species's radix-ui), one short line under each control. The settings are options.mjs's; this file only shows and writes them.
 // Kept apart from panel.jsx (which mounts them) so the component catalogue (Ladle, ../stories) shows the very same parts.
 // [copy] every string here is a placeholder for the copywriter.
 import { useRef, useState } from "react";

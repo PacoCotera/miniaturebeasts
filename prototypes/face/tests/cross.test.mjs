@@ -15,7 +15,7 @@ import { setFrames, frameOf } from "../../station/src/genome.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), spec = J("cross"), frameSpec = J("frame"), pods = J("pods");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../species/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../species/frames/language", f), "utf8"))));
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 
 function model(o = {}) {

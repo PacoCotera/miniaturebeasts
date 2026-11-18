@@ -14,7 +14,7 @@ import * as S from "../src/state.mjs";
 import { createBuild as createBuildUnchecked, reviewTraits, founderPicture, createPod } from "../src/views/create-props.mjs";
 const createBuild = lineCased(createBuildUnchecked, "create");   // every body it builds goes through assertLineCase (report mode)
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("create.json"), pods = J("pods.json"), schema = J("create.props.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000, SPECIES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => f.slice(8, 11)).filter((id) => frameOf(id));   // a draft species is not loaded (genome.mjs setFrames)

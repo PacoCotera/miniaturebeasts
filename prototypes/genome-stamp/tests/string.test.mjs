@@ -235,7 +235,7 @@ test("the encoder refuses a missing locus, one copy, three copies, a blend off t
   assert.throws(() => genomeString(f, g({ "appearance.marking-layout": ["bands", "masked"] })), /unknown look masked/, "a frame of version 4 does not know the pin 11 layouts");
   assert.throws(() => genomeString(f, {}), /no copies/);
   assert.throws(() => genomeString({ ...f, species: 4096 }, { copies: LOIKA_TYPE }), /does not fit/); assert.throws(() => genomeString({ ...f, version: 1024 }, { copies: LOIKA_TYPE }), /does not fit/);
-  // a record of the shape the workbench saves (mb-genome/2: `loci`) works as well as the stamp's `copies`
+  // a record of the shape the species saves (mb-genome/2: `loci`) works as well as the stamp's `copies`
   assert.equal(genomeString(f, { loci: LOIKA_TYPE }), "G1-S1v4-200G201KGG010049B");
 });
 

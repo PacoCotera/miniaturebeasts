@@ -9,11 +9,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, traitState, stampFrameOf } from "../src/genome.mjs";
 import { drawnLooks } from "../src/looks.mjs";
-import { buildIndividual } from "../../workbench/framework/species.mjs";
-import { versionRefusal } from "../../workbench/framework/cross.mjs";
+import { buildIndividual } from "../../species/framework/species.mjs";
+import { versionRefusal } from "../../species/framework/cross.mjs";
 import * as S from "../src/state.mjs";
 
-const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../workbench/frames/language");
+const framesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../species/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const fr = frameOf("S01"), allRead = fr.chapters.map((c) => c.id), LEN = "growth.auricular-length-ratio";
 const ears = fr.chapters.flatMap((c) => c.traits).find((t) => t.id === "ears");

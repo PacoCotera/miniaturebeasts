@@ -13,7 +13,7 @@ import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { setFrames, frameOf } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import * as Lib from "../../station/src/library.mjs";
-import { currentLooks } from "../../workbench/framework/describe.mjs";
+import { currentLooks } from "../../species/framework/describe.mjs";
 import { speciesBuild } from "../../station/src/views/library-props.mjs";
 import { partDepartures, speciesParts, targetBox, shelfOf } from "../tools/library-species-regions.mjs";
 import { moveFocus } from "../../ui/focus.mjs";
@@ -22,7 +22,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(h
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("library");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const metrics = built ? JSON.parse(readFileSync(path.resolve(here, "../dist/metrics.json"), "utf8")) : null;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames/language", f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../species/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../species/frames/language", f), "utf8"))));
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12, sealedOpen: false }, SV = { v: 8, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
 const findLooks = (st, id, n) => { let left = n; for (const ch of frameOf(id).chapters) for (const t of ch.traits) for (const l of currentLooks(frameOf(id), t)) { if (left <= 0) return; if (S.guideLooks(st, id, t.id).includes(l)) continue; S.guideAdd(st, id, t.id, [l]); left--; } };
 

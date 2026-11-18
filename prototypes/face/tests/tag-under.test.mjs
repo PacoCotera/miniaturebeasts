@@ -15,7 +15,7 @@ import { vivariumBuild } from "../../station/src/views/vivarium-props.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("vivarium"), homeSpec = J("home");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(path.resolve(here, "../../workbench/frames/language"), f), "utf8"))));
+setFrames(readdirSync(path.resolve(here, "../../species/frames/language")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(path.resolve(here, "../../species/frames/language"), f), "utf8"))));
 const T0 = 1_000_000, WIN = spec.regions.window.rect;
 
 function scene(o) {

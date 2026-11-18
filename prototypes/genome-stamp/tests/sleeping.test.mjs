@@ -6,10 +6,10 @@ import assert from "node:assert/strict";
 import { genomeString, decodeGenomeString } from "../src/string.mjs";
 import { stampCode, decodeStampCode } from "../src/codec.mjs";
 import { tulikoFrame, tulikoType } from "./tuliko-frame.mjs";
-import { LOCI, stepValue } from "../../workbench/framework/catalogue.mjs";
-import { SPECIES, specOf } from "../../workbench/framework/roster.mjs";
-import { buildFrame, typeSpecimen, rng } from "../../workbench/framework/species.mjs";
-import { cross } from "../../workbench/framework/cross.mjs";
+import { LOCI, stepValue } from "../../species/framework/catalogue.mjs";
+import { SPECIES, specOf } from "../../species/framework/roster.mjs";
+import { buildFrame, typeSpecimen, rng } from "../../species/framework/species.mjs";
+import { cross } from "../../species/framework/cross.mjs";
 
 // Every record of the Tuliko frame that sleeps, by the rules of catalogue pin 11
 const SLEEPERS = ["appearance.pattern-scale", "appearance.pattern-contrast", "appearance.marking-rosette", "appearance.band-count", "appearance.emblem-place", "appearance.emblem-size", "appearance.lantern-bleed",
@@ -54,7 +54,7 @@ test("the stamp code with every chapter read holds the sleeping records too, and
 });
 
 // --- a cross, then the string and the stamp ----------------------------------------------------------------------------------------------------------
-// A cat at frame version 7 that opens the whisker switch and the sleeping records, as workbench/tests/sleep.test.mjs builds it; its workbench frame is made a stamp frame the way tools/extract-frames.mjs does.
+// A cat at frame version 7 that opens the whisker switch and the sleeping records, as species/tests/sleep.test.mjs builds it; its species frame is made a stamp frame the way tools/extract-frames.mjs does.
 const wbSpec = () => ({
   ...specOf(SPECIES.find((s) => s.id === "S04")), frameVersion: 7, openSwitches: ["anatomy.whisker-presence"],
   open: [

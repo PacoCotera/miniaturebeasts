@@ -1,12 +1,12 @@
 // The Station's genome bridge: nothing here is a genome model of the Station's own. The frames come
-// from the workbench registry (../workbench/frames/language/*.json), individuals from the workbench framework
+// from the species registry (../species/frames/language/*.json), individuals from the species framework
 // (species.mjs), looks in words from describe.mjs, the stamp from the genome stamp's codec. The
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
-import { LOCI, LAYOUT_WORD, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../workbench/framework/catalogue.mjs";
-import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../workbench/framework/species.mjs";
-import { lookOf } from "../../workbench/framework/describe.mjs";
-import { cross, forecast, kinship, directKin, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
+import { LOCI, LAYOUT_WORD, resolveCopies, isContinuous, quantize, valueRange, binFor } from "../../species/framework/catalogue.mjs";
+import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../species/framework/species.mjs";
+import { lookOf } from "../../species/framework/describe.mjs";
+import { cross, forecast, kinship, directKin, relatedness, identity, SPREAD, blendRange } from "../../species/framework/cross.mjs";
 import { frameFor as stampFrameFor } from "../../genome-stamp/src/frames.mjs";
 import { sizeFor as stampSizeFor } from "../../genome-stamp/src/codec.mjs";
 import { stampCode as stampCodeOf, decodeStampCode } from "../../genome-stamp/src/codec.mjs";
@@ -19,13 +19,13 @@ export const speciesIndex = (id) => SP_INDEX.indexOf(id);           // -1 for a 
 export const speciesId = (index) => SP_INDEX[index] ?? null;
 
 const FRAMES = new Map();
-// Every frame the game loads is a frame of version 8 (workbench/frames/language): none is draft or parked, so all twenty kinds load.
+// Every frame the game loads is a frame of version 8 (species/frames/language): none is draft or parked, so all twenty kinds load.
 export function setFrames(list) { FRAMES.clear(); for (const f of list) FRAMES.set(f.species.id, f); }
 export const frameOf = (id) => FRAMES.get(id) ?? null;
 export const frameIds = () => [...FRAMES.keys()].sort();
 export const framesLoaded = () => FRAMES.size > 0;
 
-// A pod's genome from its genome seed: sampled from the species' pools with the workbench's own stream,
+// A pod's genome from its genome seed: sampled from the species' pools with the species's own stream,
 // and resampled from the same stream until the body builds, so a pod keeps its identity across loads.
 export function podGenome(frame, gs) {
   const r = rng(`pod:${frame.species.id}:${gs >>> 0}`);

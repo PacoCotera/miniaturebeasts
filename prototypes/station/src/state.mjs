@@ -5,9 +5,9 @@
 // accepted, dockN, known, probe, carryReqs, returned (with species, gs, and rg, the region it goes back to; none means region 1), and each mibi's id, name, sp, species, spName, born, since, sinceFloor, from, bonded.
 // The care fields of a mibi (plays, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the one-time back-fill of plays from tends.
 // Those keep their shape (station-build.md §2.3).
-import { currentLooks } from "../../workbench/framework/describe.mjs";
-import { shedPod, SELF_KINSHIP, versionRefusal } from "../../workbench/framework/cross.mjs";
-import { fromStream } from "../../workbench/framework/draws.mjs";
+import { currentLooks } from "../../species/framework/describe.mjs";
+import { shedPod, SELF_KINSHIP, versionRefusal } from "../../species/framework/cross.mjs";
+import { fromStream } from "../../species/framework/draws.mjs";
 import { seeded24 } from "../../core/base/random.mjs";
 import { MIBI_NAMES as NAME_LIST_NOW, NAME_LISTS } from "../../play/src/names.mjs";
 import { fill, capLine } from "./views/words.mjs";

@@ -10,9 +10,9 @@ import { setFrames, frameOf, frameIds, podGenome, traitState, chapterLooks } fro
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import { fourSlots } from "../src/splice.mjs";
-import { traitLooks, currentLooks } from "../../workbench/framework/describe.mjs";
+import { traitLooks, currentLooks } from "../../species/framework/describe.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const fresh = () => { const st = S.freshSt("w1", 3, 1000); S.normalize(st); return st; };

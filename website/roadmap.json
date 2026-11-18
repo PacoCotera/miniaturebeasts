@@ -60,7 +60,7 @@
       "name": "Species and genetics",
       "oneLine": "Real genetics under every mibi: species built from genomes, and children that inherit from both parents.",
       "items": [
-        { "title": "The species workbench", "status": "live", "text": "Build any of the sixteen species from its genome, roll individuals and cross two of them in your browser.", "link": "prototypes/workbench/README.md" },
+        { "title": "The species workbench", "status": "live", "text": "Build any of the sixteen species from its genome, roll individuals and cross two of them in your browser.", "link": "prototypes/species/README.md" },
         { "title": "Inheritance that really works", "status": "live", "text": "Some traits blend between the parents, others show or hide by dominant and recessive copies, and close relatives make weaker crosses. A cross makes one child.", "link": "design/proposals/the-cross.md" },
         { "title": "The genome stamp", "status": "live", "text": "Every mibi carries a stamp that encodes its real genome, and a phone scan page reads back what its keeper has read.", "link": "prototypes/genome-stamp/README.md" },
         { "title": "A pod's stamp in progress", "status": "building", "text": "A pod's stamp starts with an empty block for each unread chapter and fills as you read; when the pod grows, it becomes the mibi's stamp.", "link": "prototypes/genome-stamp/README.md" },

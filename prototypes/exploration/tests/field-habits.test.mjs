@@ -107,7 +107,7 @@ test("only the partner: a rider never, a kind that does not list the habit never
 
 // ---- end to end: a Companion walk with a Wickle beside a lit beacon, End expedition, then the Station's dock ----
 const ST = await import("../../station/src/state.mjs");
-{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../workbench/frames/language/", import.meta.url).pathname;
+{ const { setFrames } = await import("../../station/src/genome.mjs"), dir = new URL("../../species/frames/language/", import.meta.url).pathname;
   setFrames(readdirSync(dir).filter(f => f.startsWith("species-")).map(f => JSON.parse(readFileSync(path.join(dir, f), "utf8")))); }
 
 test("end to end: the Wickle sits by a lit beacon on a walk; End expedition; the Station's dock records beacon-sit on its mibi, with the plate's log line", async () => {

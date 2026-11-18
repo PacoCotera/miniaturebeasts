@@ -12,7 +12,7 @@ import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import { guideModel, guideInit, guideMove } from "../src/guide.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames/language");
 setFrames(withSeals(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8")))));
 const specs = (f) => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station", f), "utf8"));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };

@@ -17,7 +17,7 @@ import path from 'node:path';
 const IMAGE = /\.(png|jpe?g|webp|gif|svg|avif|ico)$/i;
 const SHIPPED = /^(website\/|prototypes\/|art\/companion-48\/terrain\/meadow\/|art\/places\/)/;
 const NOT_SHIPPED = /(^|\/)(tests?|fixtures|golden|node_modules|dist)\//;   // golden/ holds the tests' reference screenshots, not shipped art
-const RENDER = /^prototypes\/(?!workbench\/)[^/]+\/(index\.html|src\/.+\.(mjs|js))$/;
+const RENDER = /^prototypes\/(?!species\/)[^/]+\/(index\.html|src\/.+\.(mjs|js))$/;
 const PRIMITIVES = ['fillRect', 'arc', 'ellipse', 'lineTo', 'bezierCurveTo', 'putImageData', 'createImageData'];
 const PRIM_RE = Object.fromEntries(PRIMITIVES.map((p) => [p, new RegExp(`\\b${p}\\s*\\(`, 'g')]));
 
@@ -92,7 +92,13 @@ export function checkAll({ base, head, site, cwd }) {
   const rows = readList(show(head, GRANDFATHERED)) || [], grand = rows.map((r) => r.path), grandSha = new Map(rows.map((r) => [r.path, r.sha]));
   const was = base ? readList(show(base, GRANDFATHERED)) : null, wasSha = new Map((was || []).map((r) => [r.path, r.sha]));
   const problems = [], unsigned = [], grandShas = new Set();
+  // A move keeps its row (lead 11-18, the workbench folder renamed): a row new to the list is allowed when its sha256 is that of a base row whose
+  // path has left the list, each base row once; the bytes check below still requires the image at the new path to have exactly those bytes.
+  const heldPaths = new Set(grand), movedFrom = new Map();
+  for (const r of was || []) if (r.sha && !heldPaths.has(r.path)) { const a = movedFrom.get(r.sha) || []; a.push(r.path); movedFrom.set(r.sha, a); }
+  const isMove = (p) => { const s = grandSha.get(p), a = s && movedFrom.get(s); if (!a || !a.length) return false; a.pop(); return true; };
   if (was) for (const p of grand) {
+    if (!wasSha.has(p) && isMove(p)) continue;
     if (!wasSha.has(p)) problems.push(`grandfathered list grew: ${p} is in ${GRANDFATHERED} but not in the base's copy; the list may only shrink (sign the image or delete it)`);
     else if (wasSha.get(p) && wasSha.get(p) !== grandSha.get(p)) problems.push(`grandfathered row changed: ${p} has a different sha256 in ${GRANDFATHERED} than in the base's copy; a row is never re-hashed (sign the new image or delete the row)`);
   }

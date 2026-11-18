@@ -15,7 +15,7 @@ import { homeBuild, setLibrary } from "../src/views/home-props.mjs";
 import { specimenId, clearSpecimens, renderCount } from "../src/specimen-cache.mjs";
 
 setLibrary(libraryOf);   // the host registers it
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("home.json"), frameSpec = J("frame.json");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;

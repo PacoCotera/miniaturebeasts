@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { LOCI } from "../../workbench/framework/catalogue.mjs";
+import { LOCI } from "../../species/framework/catalogue.mjs";
 import { setFrames, frameOf, frameIds, podGenome, traitState, stampGenome, stampFrameOf, genomeSha, nameCode, sha256, speciesIndex } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 S.useNameList("en-short-1");   // these tests show the archived English names (T-20261027-322): they pin that list; names.test.mjs proves the current one
@@ -16,7 +16,7 @@ import { decode } from "../../genome-stamp/src/decode.mjs";
 import { sameGenome } from "../../genome-stamp/src/codec.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const framesDir = path.resolve(here, "../../workbench/frames");
+const framesDir = path.resolve(here, "../../species/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const fixture = () => JSON.parse(readFileSync(path.join(here, "fixtures/save-v8-schema1.json"), "utf8"));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };

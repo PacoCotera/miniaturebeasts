@@ -16,7 +16,7 @@ import { stampPicture } from "../../station/src/pictures.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("library"), home = J("home");
 const metrics = built ? JSON.parse(readFileSync(path.resolve(here, "../dist/metrics.json"), "utf8")) : null;
-setFrames(readdirSync(path.resolve(here, "../../workbench/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../workbench/frames", f), "utf8"))).filter((f) => !f.species.draft));
+setFrames(readdirSync(path.resolve(here, "../../species/frames")).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.resolve(here, "../../species/frames", f), "utf8"))).filter((f) => !f.species.draft));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 };
 const SINCE = new Date(2026, 9, 4, 12).getTime(), NOW = new Date(2026, 9, 17, 12).getTime();
 const world = () => { const st = S.freshSt("w1", 3, 1e6); S.normalize(st); st.turn = 20; const by = buildLineage(st, "full", { turn: 20 }); for (const m of st.mibis) m.since = SINCE; return { st, by }; };

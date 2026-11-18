@@ -4,7 +4,7 @@
 // Bump RECIPE whenever this file changes what it draws: it is in the picture's cache id.
 import { createCanvas } from './paint2d.mjs';
 import { coatColours } from './coat-colours.mjs';
-import { IRIS_SWATCH } from '../../workbench/framework/language.mjs';   // the house iris table: the Iris trait's looks are drawn in it, for every kind
+import { IRIS_SWATCH } from '../../species/framework/language.mjs';   // the house iris table: the Iris trait's looks are drawn in it, for every kind
 
 // Library specimen generator, v3 rules (frame-driven body). Home's Library module is this render (build spec section 4.2).
 // Library specimen generator. Pure function of (species frame, discovery state).

@@ -19,7 +19,7 @@ import { roomIds } from "../src/views/room-props.mjs";
 import { capLine } from "../src/views/words.mjs";
 const habitatBuild = lineCased(habitatBuildUnchecked, "habitat");   // every body it builds goes through assertLineCase (report mode)
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), sittingSpec = J("sitting.json"), spec = J("habitat.json"), frameSpec = J("frame.json"), home = J("home.json"), schema = J("habitat.props.json"), namerSchema = J("namer.props.json"), panelSpec = J("panel.json"), podsSpec = J("pods.json");
 const T0 = 1_000_000, cfg = (rooms) => ({ ...S.DEFAULT_SETTINGS, economy: "decided", rooms });

@@ -14,7 +14,7 @@ import { miniRail, miniWidths } from "../src/views/pods-props.mjs";
 S.useNameList("en-short-1");
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const framesDir = path.resolve(here, "../../workbench/frames");
+const framesDir = path.resolve(here, "../../species/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))).filter((f) => !f.species.draft));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 const crate = (n, pods, extra = {}) => ({ id: "x" + n, n, turn: n, at: 0, e: 3, d: 3, s: 4, pods, met: [], explored: 5, of: 20, lines: [], ...extra });

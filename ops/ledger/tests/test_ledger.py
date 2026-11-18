@@ -56,13 +56,13 @@ class LedgerTest(unittest.TestCase):
             ledger.price("google", "nope")
 
     def test_record_list_and_vendor(self):
-        a = ledger.record("grow/service.py paint", "prototypes/workbench/grow/prompts.json", "c1", "google", "m-tokens",
+        a = ledger.record("grow/service.py paint", "prototypes/species/grow/prompts.json", "c1", "google", "m-tokens",
                           usage={"promptTokenCount": 1000, "candidatesTokenCount": 1000})
         b = ledger.record("rd.py", "art/x/records.json", "task-1", "rd", "m-image", cost_usd=0.18, credit_cost=1, balance_after=7.0)
         self.assertEqual((a["costUSD"], a["basis"], a["usage"]), (0.122, "list", {"in": 1000, "out": 1000}))
         self.assertEqual((b["costUSD"], b["basis"], b["balanceAfterUSD"], b["creditCost"]), (0.18, "vendor", 7.0, 1))
         got = self.lines()
-        self.assertEqual([l["public"] for l in got], [{"file": "prototypes/workbench/grow/prompts.json", "record": "c1"}, {"file": "art/x/records.json", "record": "task-1"}])
+        self.assertEqual([l["public"] for l in got], [{"file": "prototypes/species/grow/prompts.json", "record": "c1"}, {"file": "art/x/records.json", "record": "task-1"}])
         self.assertTrue(all(l["schema"] == "mb-ledger/1" for l in got))
         t = ledger.total()
         self.assertEqual((t["calls"], t["costUSD"]), (2, 0.302))

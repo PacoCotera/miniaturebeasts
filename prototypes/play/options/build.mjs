@@ -1,4 +1,4 @@
-// Builds the Options panel to ../vendor/options.js (one unminified ES module (identifiers and whitespace kept, so the public guard reads it plainly); committed, as the workbench commits its static bundle). Run: npm run build, in this folder.
+// Builds the Options panel to ../vendor/options.js (one unminified ES module (identifiers and whitespace kept, so the public guard reads it plainly); committed, as the species commits its static bundle). Run: npm run build, in this folder.
 import { build } from "esbuild";
 import { fileURLToPath } from "node:url";
 

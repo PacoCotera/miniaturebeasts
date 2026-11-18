@@ -140,7 +140,7 @@ def species_pod(code, cls='collection'):
     """A species' pod from the pod renderer's signed layers (ui/podlayers.mjs composePod, ported):
     colour = (A·body·(1−pattern) + B·min(1, accent+pattern)) × 2·shade × 2·relief, alpha the shade's."""
     import numpy as np
-    pod = json.load(open('prototypes/workbench/frames/species-%s.json' % code))['pod']
+    pod = json.load(open('prototypes/species/frames/species-%s.json' % code))['pod']
     pat = {'smooth dots': 'dots', 'soft ribs': 'ribs', 'segments': 'segments', 'plates': 'plates'}
     name = next((v for k, v in pat.items() if k in (pod.get('shellPattern') or '')), None)
     base = 'prototypes/ui/assets/masters/pods/pod-%s-' % cls

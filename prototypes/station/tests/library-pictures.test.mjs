@@ -14,7 +14,7 @@ import { drawnLooks } from "../src/looks.mjs";
 import { RGB, C } from "../src/pixels.mjs";
 import { loadStandSizesFs, unloadStands } from "../tools/stand-layers-fs.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const lib = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/library.json"), "utf8")), rgb = (n) => RGB[C[n]];
 before(() => { loadStandSizesFs(); });

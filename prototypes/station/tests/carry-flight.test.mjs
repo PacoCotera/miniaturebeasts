@@ -17,7 +17,7 @@ import { toRoom } from "../src/intents/pods.mjs";
 import { listOf } from "../src/views/pods-props.mjs";
 import { taughtOf, landFlight, teachTick } from "../src/intents/frame.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))).filter((f) => !f.species.draft));
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;

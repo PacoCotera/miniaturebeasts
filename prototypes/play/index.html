@@ -63,7 +63,7 @@ iframe{border:0; display:block; background:var(--void)}
 #live{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .hidden{display:none !important}
 /* a phone: the bar holds the switch and Options only (everything else is in the Options panel) */
-body.phone #keysBtn,body.phone #devBtn,body.phone #zDown,body.phone #zFit,body.phone #zUp,body.phone #tabBench{display:none !important}
+body.phone #keysBtn,body.phone #devBtn,body.phone #zDown,body.phone #zFit,body.phone #zUp{display:none !important}
 body.phone iframe{image-rendering:pixelated}
 #fStation.pan{transition:transform 220ms ease-out, clip-path 220ms ease-out}   /* the Station's phone window slides to the focus (shell.mjs placeStation) */
 @media (prefers-reduced-motion: reduce){ #fStation.pan{transition:none} }
@@ -147,7 +147,6 @@ body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
   <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the dock printed it"><div id="printText"><p id="printHead">The dock printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The dock prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
   <div id="spacer"></div>
 </div>
-  <iframe id="fBench" title="Bench" class="hidden" allow=""></iframe>   <!-- the workbench is hidden on the play page (an outdated tool): never loaded -->
   <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The dock's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Dock fault (the dock refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
 <div id="bar">
   <div id="asleepBar" class="hidden">It wakes when your first pod comes home.</div>   <!-- the asleep note on a phone's side: in the build line's place in the bar -->

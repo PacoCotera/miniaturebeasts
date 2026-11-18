@@ -9,10 +9,10 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
-import { buildIndividual } from "../workbench/framework/species.mjs";
-import { plainSet } from "../workbench/framework/plain.mjs";
-import { encodePNG } from "../workbench/framework/png.mjs";
-import { growCameras } from "../workbench/grow/controls.mjs";
+import { buildIndividual } from "../species/framework/species.mjs";
+import { plainSet } from "../species/framework/plain.mjs";
+import { encodePNG } from "../species/framework/png.mjs";
+import { growCameras } from "../species/grow/controls.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const SET_FILES = ["station-portrait-300x310.png", "station-side-300x310.png", "companion-280x300.png", "token-48.png"];
@@ -35,7 +35,7 @@ export async function mockPaint(job, frame, { mockDelay = 20, signal } = {}) {
 }
 
 // The real painter: grow/service.py, its key from the service's environment.
-export async function realPaint(job, frame, { growService = path.resolve(here, "../workbench/grow/service.py"), python = "python3", outRoot, signal } = {}) {
+export async function realPaint(job, frame, { growService = path.resolve(here, "../species/grow/service.py"), python = "python3", outRoot, signal } = {}) {
   const dir = path.join(outRoot, job.id); mkdirSync(dir, { recursive: true });
   const genomeFile = path.join(dir, "genome.json"); writeFileSync(genomeFile, JSON.stringify(job.genome, null, 1) + "\n");
   const costFile = path.join(dir, "cost.json");   // inside the service's data directory, never in the release

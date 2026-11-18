@@ -13,12 +13,12 @@ import { decode } from "../src/decode.mjs";
 import { individual } from "./cases.mjs";
 import { encodeCells, parseMessage, sizeFor, copyIndex, copyLook, sameGenome, stampCode, decodeStampCode, locusBits, stepValue, stepOf, BLEND_STEPS, STEP_BITS, FORMAT, CODE_ALPHABET } from "../src/codec.mjs";
 import { readFileSync, readdirSync } from "node:fs";
-import { LOCI, BLEND_STEPS as CATALOGUE_STEPS, stepValue as catalogueStep } from "../../workbench/framework/catalogue.mjs";
-import { kinship } from "../../workbench/framework/cross.mjs";
+import { LOCI, BLEND_STEPS as CATALOGUE_STEPS, stepValue as catalogueStep } from "../../species/framework/catalogue.mjs";
+import { kinship } from "../../species/framework/cross.mjs";
 import { setFrames, frameOf as stationFrame, podGenome, stampGenome, stampCode as stationStampCode, quantizeGenome, paintKey, genomeSha, genomeDigest, nameCode, cross } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 
-const framesDir = new URL("../../workbench/frames/", import.meta.url);
+const framesDir = new URL("../../species/frames/", import.meta.url);
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(new URL(f, framesDir), "utf8"))));
 const ROSTER = Array.from({ length: 16 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);
 
@@ -28,7 +28,7 @@ const roundTrip = (frame, genome) => {
   return parseMessage(bits, L.N, { postmark: !!genome.postmark });
 };
 
-test("the registry carries the sixteen species of the workbench at frame version 3, the same sixteen at version 2, and the three legacy frames", () => {
+test("the registry carries the sixteen species of the species at frame version 3, the same sixteen at version 2, and the three legacy frames", () => {
   const v2 = FRAMES_LIST.filter((f) => f.version === 2 && !f.synthetic), v3 = FRAMES_LIST.filter((f) => f.version === 3), legacy = FRAMES_LIST.filter((f) => f.legacy);
   assert.equal(v2.length, 16); assert.equal(v3.length, 16);
   assert.deepEqual(v2.map((f) => f.species), Array.from({ length: 16 }, (_, i) => i + 1));
@@ -101,7 +101,7 @@ test("a version 2 print still decodes and a version 3 print decodes, each on its
 
 // --- genome C1, C5, C6 (2026-10-09) ---------------------------------------------------------------------
 test("the step's cost, measured: bits per blended copy and the stamp size per species", (t) => {
-  assert.equal(CATALOGUE_STEPS, BLEND_STEPS, "the workbench and the codec share one step");
+  assert.equal(CATALOGUE_STEPS, BLEND_STEPS, "the species and the codec share one step");
   const rows = [];
   for (const id of ROSTER) {
     const f = newestBefore8(id), wf = stationFrame(id);   // the Station still loads the form frames: the Loika at 6 (the language frame, 8, is the stamp's newest and waits for the game art swap)

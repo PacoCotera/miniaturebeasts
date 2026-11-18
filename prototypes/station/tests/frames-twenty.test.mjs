@@ -1,4 +1,4 @@
-// The Station loads the twenty frames of version 8 (workbench/frames/language): none is draft or parked, every kind lists its asleep habit, S20 Tuliko is among them and the Library's catalogue is twenty.
+// The Station loads the twenty frames of version 8 (species/frames/language): none is draft or parked, every kind lists its asleep habit, S20 Tuliko is among them and the Library's catalogue is twenty.
 // Release 21a: the form frames (versions 2 to 6) stay on disk for the studio and the stamp registry, but the game no longer fetches them.
 //   node --test prototypes/station/tests/frames-twenty.test.mjs
 import { test } from "node:test";
@@ -10,9 +10,9 @@ import { setFrames, frameIds, frameOf, podGenome, SP_INDEX, speciesIndex, specie
 import { stampFrameOf, stampCode, decodeStampCode } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { libraryBuild } from "../src/views/library-props.mjs";
-import { buildIndividual } from "../../workbench/framework/species.mjs";
+import { buildIndividual } from "../../species/framework/species.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
+const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../species/frames/language"), specs = path.resolve(here, "../../ui/specs/station");
 const FRAMES = readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8")));
 const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8"));
 const IDS = Array.from({ length: 20 }, (_, i) => `S${String(i + 1).padStart(2, "0")}`);

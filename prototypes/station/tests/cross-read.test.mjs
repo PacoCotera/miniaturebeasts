@@ -10,7 +10,7 @@ import { withSeals } from "./fixtures/sealed.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames/language");
+const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../species/frames/language");
 setFrames(withSeals(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8")))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sealedOpen: true };
 const world = (seed = 7) => { const st = S.freshSt("w1", 3, 1); S.normalize(st); const r = S.seedAdults(st, "S01", seed, 2, settings); return { st, a: r.mibis[0], b: r.mibis[1] }; };
