@@ -10,8 +10,8 @@ export const WORDS = {
   takeDew: 'Take the dew',
   // refusals and counts against the cap (the thing stays where it is, nothing is spent)
   refuse: {
-    dew: cap => 'Essence ' + cap + ' of ' + cap + ' · the cup keeps its dew', charge: cap => 'Energy ' + cap + ' of ' + cap + ' · the stone keeps its charge',
-    tuft: cap => 'Essence ' + cap + ' of ' + cap + ' · the tuft stays where it is',
+    dew: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the cup keeps its dew', charge: cap => 'Your Energy is full (' + cap + ' of ' + cap + ') · the stone keeps its charge',   // [copy] owner notes #75 #76: the 20 is his hold, not the stone's
+    tuft: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the tuft stays where it is',
   },
   pressNoRoom: (n, cap) => 'Essence ' + n + ' of ' + cap + ' · no room to press the fruit',
   stoneKeeps: 'the stone keeps the rest', holdsNoMore: 'the Probe holds no more',
