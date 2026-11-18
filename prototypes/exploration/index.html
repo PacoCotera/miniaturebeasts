@@ -1290,7 +1290,7 @@ function slideP(sl) { const p = clamp((NOW - sl.at) / SLIDE_MS, 0, 1); return 1 
 // After the new place's frame is on the screen: the screen's view band is moved by the slide (the old picture leaves the way the explorer walks, the new one comes in behind it).
 function drawSlide() {
   const sl = FX.slide; if (!sl) return;
-  if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; drawHeroLater(); return; }   // the slide's last frame: the pawn stands in its place again
+  if (!motion() || NOW - sl.at >= SLIDE_MS) { FX.slide = null; drawHeroLater(); const k = FX.slideKey; FX.slideKey = null; if (k && !HELD.includes(k)) setTimeout(() => { if (S && S.phase === 'patch') act(k, 'creep'); }, 0); return; }   // the slide's last frame: the pawn stands in its place again; a tap made inside the slide is played now (a key still held walks on by the resume)
   const p = slideP(sl), nw = viewSnapshot(), W = SCR_W, H = VIEW_H;
   RT.slideNewHero = nw.hero;
   const top = VIEW_Y + nw.gb;   // the slide runs below the goal band; the band itself stays where it is
@@ -2764,6 +2764,15 @@ function crossEdge(dir) {
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+  if (G.gen === 7 && c >= 0 && !placeHave(String(c)) && motion() && !FX.crossRetry) {   // the next place is not built yet: the old place stays on the screen, nothing has moved; the crossing is made when it is here
+    if (FX.crossWait) return;
+    const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
+    FX.crossWait = { key, dir };
+    const go = ok => { FX.crossWait = null; if (!ok || !S || !S.exp || S.exp.patch !== at || S.phase !== 'patch') return; FX.crossRetry = true; try { crossEdge(dir); } finally { FX.crossRetry = false; } };   // one retry: a place that still is not here falls to the plain wait of enterPatch
+    readyPlaces(seed, R.slot, v, [+key], { ctx: PL.ctx });
+    bakedWhen(seed, R.slot, v, +key).then(() => go(true), () => go(false));
+    return;
+  }
   const out = slideOut(), from = ex.pos;
   const P0 = ex.patch; ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
@@ -7696,6 +7705,7 @@ function press(k) {
     act(k); return;
   }
   if (k in DIRS) {
+    if (FX.slide || FX.crossWait) { FX.slideKey = k; return; }   // inside a crossing's slide (or its wait for the next place): the press is held, not lost
     stopRepeat(); repeat.dir = k;
     const P0 = S && S.phase === 'patch' && S.exp && S.exp.patch, at0 = P0 ? P0.key + ':' + P0.x + ':' + P0.y : null, bump0 = FX.bumpAt;
     act(k, 'creep');
