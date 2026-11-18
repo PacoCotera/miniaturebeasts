@@ -6165,9 +6165,11 @@ function drawEdgeCues(t) {
   const tabs = edgeTabs(), seen = RT.tabSeen || (RT.tabSeen = new Map()), keep = new Set();
   clipView();
   for (const tb of tabs) { const k = tb.kind + tb.id, col = C[TAB.border[tb.kind]]; keep.add(k); if (!seen.has(k)) seen.set(k, NOW);
-    panel(tb.cx - 11, tb.cy - 11, 22, 22, motion() && NOW - seen.get(k) < TAB.flashMs ? C.cream : C.ink, col);
-    if (tb.kind === 'find') blit(sparkArt(true), tb.cx - 6, tb.cy - 6); else blit(bubbleArt(tb.kind), tb.cx - 5, tb.cy - 7);
-    for (const [x, y, w, h] of tabPointer(tb)) R(x, y, w, h, col); }
+    // bug #79: the find tab is a pale badge with no pointer nub (a dark round body, a nub and a spark read as a bomb with a lit fuse); the other tabs keep their dark body and pointer
+    const isFind = tb.kind === 'find';
+    panel(tb.cx - 11, tb.cy - 11, 22, 22, motion() && NOW - seen.get(k) < TAB.flashMs ? C.cream : isFind ? C.bark : C.ink, col);
+    if (isFind) blit(sparkArt(true), tb.cx - 6, tb.cy - 6); else blit(bubbleArt(tb.kind), tb.cx - 5, tb.cy - 7);
+    if (!isFind) for (const [x, y, w, h] of tabPointer(tb)) R(x, y, w, h, col); }
   for (const k of [...seen.keys()]) if (!keep.has(k)) seen.delete(k);   // a tab that goes and comes back flashes again
   g.restore();
 }
