@@ -6,161 +6,166 @@
  "mibis": 0,
  "dock": 0,
  "stopMid": false,
- "presses": 4277,
- "digest": "de1a74406503edde9de2ec76a05c5688f41270bb6a52f624499225bfcf29cc40",
+ "presses": 4412,
+ "digest": "aad23e4e365b9cb8290b6b7a4b23f06d59098019b29e3c69acdff09700b5eaec",
  "steps": [
   {
    "n": 1,
-   "presses": 242,
+   "presses": 188,
    "turn": 1,
    "bay": 0,
-   "d": "713d34c219a1aefb"
+   "d": "c41b81d6ddd508fa"
   },
   {
    "n": 2,
-   "presses": 471,
+   "presses": 410,
    "turn": 2,
-   "bay": 0,
-   "d": "7340a752bbd2b5f9"
+   "bay": 1,
+   "d": "e33b2ff8997b0a0f"
   },
   {
    "n": 3,
-   "presses": 760,
+   "presses": 644,
    "turn": 3,
-   "bay": 0,
-   "d": "c05efe306130ce78"
+   "bay": 1,
+   "d": "defa31f5fc3d02d9"
   },
   {
    "n": 4,
-   "presses": 793,
+   "presses": 752,
    "turn": 4,
-   "bay": 0,
-   "d": "49c0b3415080134b"
+   "bay": 1,
+   "d": "e1b6bc450a4da5b3"
   },
   {
    "n": 5,
-   "presses": 998,
+   "presses": 959,
    "turn": 5,
-   "bay": 0,
-   "d": "1ec222e6ae3af16c"
+   "bay": 1,
+   "d": "b1d54076a5a3a067"
   },
   {
    "n": 6,
-   "presses": 1340,
+   "presses": 1360,
    "turn": 6,
    "bay": 1,
-   "d": "3af6a8d87592a6d2"
+   "d": "2e1d323dd225f57d"
   },
   {
    "n": 7,
-   "presses": 1517,
+   "presses": 1495,
    "turn": 7,
-   "bay": 2,
-   "d": "85a7a3e7923b56af"
+   "bay": 1,
+   "d": "aea4560d59b615e4"
   },
   {
    "n": 8,
-   "presses": 1742,
+   "presses": 1648,
    "turn": 8,
-   "bay": 3,
-   "d": "46c29d6f82a2584c"
+   "bay": 1,
+   "d": "5ec484ca2d073bec"
   },
   {
    "n": 9,
-   "presses": 2054,
+   "presses": 1908,
    "turn": 9,
-   "bay": 3,
-   "d": "d276b3a2d7c71db7"
+   "bay": 1,
+   "d": "9bb81a0ef0629326"
   },
   {
    "n": 10,
-   "presses": 2235,
+   "presses": 2061,
    "turn": 10,
-   "bay": 3,
-   "d": "0112bcb4882786b9"
+   "bay": 2,
+   "d": "b6b3a9be4508b7c1"
   },
   {
    "n": 11,
-   "presses": 2257,
+   "presses": 2231,
    "turn": 11,
-   "bay": 3,
-   "d": "cbfefa6631d37f65"
+   "bay": 2,
+   "d": "db170eb523c0095a"
   },
   {
    "n": 12,
-   "presses": 2541,
+   "presses": 2437,
    "turn": 12,
-   "bay": 0,
-   "d": "fc1c845b77f1b0c7"
+   "bay": 2,
+   "d": "2b1b5dd61064d531"
   },
   {
    "n": 13,
-   "presses": 2883,
+   "presses": 2720,
    "turn": 13,
-   "bay": 0,
-   "d": "535baaab0e7921ce"
+   "bay": 2,
+   "d": "f2ad800bd51b6b9b"
   },
   {
    "n": 14,
-   "presses": 3162,
+   "presses": 2934,
    "turn": 14,
-   "bay": 0,
-   "d": "cca343b300f08095"
+   "bay": 2,
+   "d": "283e43ee68717883"
   },
   {
    "n": 15,
-   "presses": 3211,
+   "presses": 3222,
    "turn": 15,
-   "bay": 0,
-   "d": "b92dbc046b0d0824"
+   "bay": 2,
+   "d": "8e5a60303ba09062"
   },
   {
    "n": 16,
-   "presses": 3548,
+   "presses": 3471,
    "turn": 16,
-   "bay": 0,
-   "d": "c306b6c231a4bb2c"
+   "bay": 3,
+   "d": "5814e9d5fc5eefb7"
   },
   {
    "n": 17,
-   "presses": 3686,
+   "presses": 3648,
    "turn": 17,
-   "bay": 0,
-   "d": "a1911415c9698097"
+   "bay": 3,
+   "d": "696c3d67a999fe06"
   },
   {
    "n": 18,
-   "presses": 3933,
+   "presses": 3893,
    "turn": 18,
-   "bay": 0,
-   "d": "8463ba0de3d888cd"
+   "bay": 3,
+   "d": "6d6a3578a057129a"
   },
   {
    "n": 19,
-   "presses": 4218,
+   "presses": 4222,
    "turn": 19,
-   "bay": 1,
-   "d": "24757d4a550aa69a"
+   "bay": 3,
+   "d": "40f7892321ba0755"
   },
   {
    "n": 20,
-   "presses": 4277,
+   "presses": 4412,
    "turn": 20,
-   "bay": 1,
-   "d": "de1a74406503edde"
+   "bay": 3,
+   "d": "aad23e4e365b9cb8"
   }
  ],
  "summary": {
   "turn": 20,
   "expN": 21,
   "gen": 7,
-  "revealed": 156,
-  "visited": 45,
-  "called": 40,
-  "pods": 67,
-  "creatures": 777,
-  "bay": 1,
-  "hold": null,
+  "revealed": 125,
+  "visited": 25,
+  "called": 25,
+  "pods": 72,
+  "creatures": 819,
+  "bay": 3,
+  "hold": {
+   "e": 0,
+   "d": 4,
+   "s": 0,
+   "pods": 0
+  },
   "mibis": 0,
   "carried": 0,
   "known": 0,
