@@ -6291,8 +6291,9 @@ function drawReachGrid(x0) {
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
     const X = s0.x - r + i, Y = s0.y - r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue;
     const px = x0 + i * pitch, py = y0 + j * pitch;
-    if (c === ex.pos) { R(px - 1, py - 1, d + 2, d + 2, C.amber); R(px, py, d, d, C.ink); }
-    if (gatedCell(c)) { R(px, py, d, d, C.stone); if (big) R(px + 1, py + 1, 1, 1, C.ink); R(px + (big ? 1 : 0), py, 1, 1, C.ink); }   // hollow with a notch: behind a gate
+    if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
+    if (c === ex.pos) R(px, py, d, d, C.orange);   // you are here: the player's orange, drawn last so no state fill covers it (owner 11-17, #39 #53)
+    else if (gatedCell(c)) { R(px, py, d, d, C.stone); if (big) R(px + 1, py + 1, 1, 1, C.ink); R(px + (big ? 1 : 0), py, 1, 1, C.ink); }   // hollow with a notch: behind a gate
     else if (explored(c)) R(px, py, d, d, C.mint);
     else if (big) { R(px, py, 3, 3, C.stone); R(px + 1, py + 1, 1, 1, C.ink); }
     else R(px, py, d, d, C.slate);
