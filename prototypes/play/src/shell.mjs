@@ -342,6 +342,14 @@ function reconcile() {
   try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name, pub: comp.pub || null } : null }, location.origin); } catch { inflight = 0; }
 }
 const giveKeysBack = () => { if (document.activeElement === dockKey) dockKey.blur(); };
+// A frame's key cue (mb-keycue {key, ring|hop}, the Companion page's keyCues/hopCall): the drawn key rings until the frame says stop, or hops once. Set on the tray's host (React leaves it alone), read by play/index.html's CSS.
+const CUE_KEYS = new Set(["call"]);
+function keyCue(dv, m) {
+  const host = trayEl[dv], key = String(m.key || ""); if (!host || !CUE_KEYS.has(key)) return;
+  const flag = (attr, on) => { const s = new Set((host.getAttribute(attr) || "").split(" ").filter(Boolean)); if (on) s.add(key); else s.delete(key); if (s.size) host.setAttribute(attr, [...s].join(" ")); else host.removeAttribute(attr); };
+  if ("ring" in m) flag("data-cue", !!m.ring);
+  if (m.hop) { flag("data-hop", false); void host.offsetWidth; flag("data-hop", true); }   // off, reflow, on: the hop plays again
+}
 // The frames' notice line (play/src/footer.mjs mountNotice posts it up): a frame's own line is clipped or hidden on the play page, so the page says it, one line at the window's foot, whichever frame holds one.
 const frameNotes = new Map(), frameNoticeEl = $("frameNotice");
 window.addEventListener("message", (e) => {
@@ -362,6 +370,7 @@ window.addEventListener("message", (e) => {
   }
   if (e.source === frames.station.contentWindow && m.t === "mb-sleep") { relaySleep(m); return; }
   if (e.source === frames.station.contentWindow && m.t === "mb-focus") { stationFocus(m); return; }   // the Station's focus ring moved: the phone window follows it
+  if (m.t === "mb-keycue" && (e.source === frames.companion.contentWindow || e.source === frames.station.contentWindow)) { keyCue(e.source === frames.station.contentWindow ? "station" : "companion", m); return; }
   if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
   if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
   heard = m; heardAt = now(); inflight = 0;

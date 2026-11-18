@@ -20,6 +20,11 @@ button{font:inherit; color:inherit; appearance:none; margin:0; cursor:pointer}
 /* the devices, their keys and the bar are controls, not text: a long press never selects words or opens the browser's text menu (fields still take text) */
 #stage,#bar{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 #stage input,#stage textarea,#bar input,#bar textarea{-webkit-user-select:text; user-select:text}
+/* a frame's key cue (mb-keycue, shell.mjs keyCue): the one next step is this key; it rings until pressed and hops on ✓ (the Companion page's own .key.cue / .key.hop, walk-first-lines-1) */
+#rowStation[data-cue~="call"] .fk[data-id="call"],#rowCompanion[data-cue~="call"] .fk[data-id="call"]{outline:3px solid #f2c94c; outline-offset:3px; box-shadow:0 0 0 8px rgba(242,201,76,.35)}
+#rowStation[data-hop~="call"] .fk[data-id="call"],#rowCompanion[data-hop~="call"] .fk[data-id="call"]{animation:keyhop .45s ease-out 2}
+@keyframes keyhop{0%,100%{translate:0 0}40%{translate:0 -9px}}
+@media (prefers-reduced-motion:reduce){#rowStation .fk[data-id="call"],#rowCompanion .fk[data-id="call"]{animation:none !important}}
 #spacer{position:absolute; left:0; width:1px; height:1px; visibility:hidden}
 .abs{position:absolute}
 iframe{border:0; display:block; background:var(--void)}
