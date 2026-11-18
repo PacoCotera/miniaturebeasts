@@ -161,7 +161,9 @@ static void library_window(void) {
   char pic[96]; snprintf(pic, sizeof pic, "%s", v_pstr(v_fmt("regions.library.levels.%d", lvl))); if (!pic[0] || wire_asset_slot(pic) < 0) snprintf(pic, sizeof pic, "%s", v_pstr("regions.library.picture"));
   int nar = is_narrow() && painted, sw = v_sk(H, "regions.library.specimen.size", 0), sy = v_si(H, "regions.library.specimen.crop.sy", 0), ox = nar ? (g[2] - sw) / 2 : 0;   /* narrow: the specimen stands centred on a matte, its rows sy .. sy + the window's height */
   v_region("library.window", LAYER_PAINTED);
-  if (painted && nar) { v_name("library.window"); v_sprite_window("library.picture", pic, 0, sy, g[0] + ox, g[1], sw, g[3]); }
+  if (painted && nar) { v_name("library.window"); v_sprite_window("library.picture", pic, 0, sy, g[0] + ox, g[1], sw, g[3]);
+    if (ox > 0) v_sprite_window_stretch("library.edge.l", pic, 0, sy, 1, g[3], g[0], g[1], ox);   /* the matte: the specimen's own edge columns, repeated across the bands */
+    if (g[2] - sw - ox > 0) v_sprite_window_stretch("library.edge.r", pic, sw - 1, sy, 1, g[3], g[0] + ox + sw, g[1], g[2] - sw - ox); }
   else if (painted) { v_name("library.window"); v_sprite("library.picture", pic, g[0], g[1], g[2], g[3]); }
   { char shade[24]; spec_str(H, "regions.library.specimen.shade.colour", shade, sizeof shade); int sp2 = v_si(H, "regions.library.specimen.shade.px", 2);
     v_region("library.window", LAYER_CHROME);
@@ -188,7 +190,7 @@ static void bezel_words(const char *key) {
   v_region(key, LAYER_CHROME);
   kit_bezel(key, r[0], r[1], r[2], r[3], rad, v_scol(H, "regions.bezel.fill"), v_scol(H, "regions.bezel.edge"), v_scol(H, "regions.bezel.bevel"), NULL);   /* with the bevel line on top: the first row inside the edge, between the corners */
   { char f[24], e[24]; spec_str(H, v_fmt("regions.%s.placeholder.fill", key), f, sizeof f); spec_str(H, v_fmt("regions.%s.placeholder.edge", key), e, sizeof e);
-    int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted() && !is_narrow());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size; narrow, the Library's placeholder is its matte (the specimen is narrower than the window) */
+    int gone = (strcmp(key, "vivarium") == 0 && home_window_painted()) || (strcmp(key, "library") == 0 && lib_painted());   /* a window is its picture once that is on the face: the placeholder stays as a node of no size; narrow, the matte is the specimen's edge columns (library.edge.l/.r) */
     kit_panel(v_fmt("%s.window", key), win[0], win[1], win[2], win[3], f, e, NULL, gone); }   /* the window: a placeholder until its picture lands */
   if (strcmp(key, "vivarium") == 0) home_window();
   if (strcmp(key, "library") == 0) library_window();

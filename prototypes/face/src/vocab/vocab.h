@@ -27,6 +27,7 @@ int v_change_box(const char *from, const char *to, int out[4]);
 /* A picture placed 1:1 by its asset id; 1 when it was drawn, 0 when the host has not sent it (a mark whose master is not placed draws nothing and the layout does not move). */
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
 int v_asset_size(const char *asset, int out[2]);   /* a picture's own size: 0, or -1 when the host has not sent it (a word that places a picture at its own size, 1:1) */
+int v_sprite_window_stretch(const char *id, const char *asset, int sx, int sy, int sw, int h, int dx, int dy, int dw);   /* a sw x h window at source (sx, sy) stretched across dw px at (dx, dy), horizontally only, nearest-neighbour: sw 1 repeats one column dw px; 0 when the asset was not sent; a window outside the asset is refused by the node (as the 1:1 one is) */
 int v_sprite_window(const char *id, const char *asset, int sx, int sy, int x, int y, int w, int h);   /* a w x h window of a larger picture, its source origin (sx, sy), drawn 1:1 at (x, y): 0 when the asset was not sent; at (0, 0) it is v_sprite. The log flags the node 8 (a window), and 16 when the window cuts solid ink (prim_log_json) */
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);

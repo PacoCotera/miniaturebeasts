@@ -61,12 +61,13 @@ function stationPictures(b) {
   for (const id of Object.values(R.bay.pictures)) add(id, sized(id));
   return out;
 }
-async function start(b, { motion = true, t0 = 0, dir = dist, narrow = false } = {}) {
+function gradIn(id, [w, h]) { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4; d[i] = (x * 7 + 11) & 255; d[i + 1] = (y * 5 + 40) & 255; d[i + 2] = ((x + y) * 3 + 90) & 255; d[i + 3] = 255; } return { w, h, data: d }; }   // a specimen whose every column differs, for the edge-clamp check
+async function start(b, { motion = true, t0 = 0, dir = dist, narrow = false, grad = false } = {}) {
   const f = await bootFace(pathToFileURL(dir + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec], ["rooms", J("rooms")]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const [id, size] of MARKS) f.handleOf(id, withPolicy((i) => standIn(i, size)));
-  for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => standIn(i, size)));
+  for (const [id, size] of stationPictures(b)) f.handleOf(id, withPolicy((i) => ((grad && (b.props.regions.library.levels ?? []).includes(i)) ? gradIn : standIn)(i, size)));
   f.t = t0; f.motion = motion; f.build = b; f.narrow = narrow;
   assert.equal(f.props({ screen: "home", ...b.props, ...(narrow ? { narrow: true } : {}), motion, frame: frameProps() }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -593,10 +594,19 @@ test("the narrow Home draws one window: the Vivarium's walkers and the away fram
   assert.deepEqual(box(f, "vivarium.glass"), NR.window.rect, "the painting's window is the window's 482 x 248"); assert.deepEqual(box(f, "vivarium.window").slice(2), [0, 0], "no placeholder under the painting");
   const h0 = f.hash(); assert.deepEqual(box(f, "cue.0"), NR.cue.rects[0]); assert.deepEqual(box(f, "cue.1"), NR.cue.rects[1]);
   setFocus("library"); ids = regionIds(); assert.ok(ids.has("library") && !ids.has("vivarium"), "turned: the Library alone"); assert.notEqual(f.hash(), h0);
-  assert.deepEqual(box(f, "library.window"), NR.library.window, "the matte (the placeholder panel) is the window's whole, the specimen on it"); assert.deepEqual(box(f, "library.picture"), [NR.library.window[0] + 69, NR.library.window[1], 344, 248], "the specimen 344 wide stands centred, its rows from 60");
+  assert.deepEqual(box(f, "library.window").slice(2), [0, 0], "no placeholder matte: the bands are the specimen's edge columns"); assert.deepEqual(box(f, "library.edge.l"), [NR.library.window[0], NR.library.window[1], 69, 248]); assert.deepEqual(box(f, "library.edge.r"), [NR.library.window[0] + 69 + 344, NR.library.window[1], 69, 248]); assert.deepEqual(box(f, "library.picture"), [NR.library.window[0] + 69, NR.library.window[1], 344, 248], "the specimen 344 wide stands centred, its rows from 60");
   setFocus("pods"); ids = regionIds(); assert.ok(ids.has("library") && !ids.has("vivarium"), "the ring on a card: the window stays turned"); assert.deepEqual(narrowDepartures(last, homeSpec, frameSpec, "pods", true, sc.props), []);
   setFocus("vivarium"); ids = regionIds(); assert.ok(ids.has("vivarium") && !ids.has("library"), "the ring on the Vivarium turns it back"); assert.deepEqual(narrowDepartures(last, homeSpec, frameSpec, "vivarium", false, sc.props), []);
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+});
+test("narrow Home, the Library: the pixels left and right of the specimen are its edge columns, row by row (no seam, no matte colour), on a specimen whose every column differs", { skip }, async () => {
+  const f = await start(scene({ adults: 3, carry: [0], away: true, focus: "library", ui: { narrow: true } }), { narrow: true, motion: false, grad: true }), [wx, wy, ww, wh] = NR.library.window, sx0 = wx + 69, sx1 = wx + 69 + 343;
+  assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0); assert.notDeepEqual(f.pixel(sx0, wy + 100), f.pixel(sx0 + 1, wy + 100), "the specimen's columns differ (the check can fail)");
+  for (let r = 2; r < wh - 52; r++) {   // rows 0 and 1 carry the window's 2 px top shade across the bands, as they did before; the last 52 rows hold the captions ('new' at x 36, the genome ending at 494, y 298) over the bands
+    const l = f.pixel(sx0, wy + r), rt = f.pixel(sx1, wy + r);
+    for (let k = 2; k < 69; k++) assert.deepEqual(f.pixel(wx + k, wy + r), l, `left band, row ${r}, column ${k}`);
+    for (let k = 0; k < ww - 69 - 344; k++) assert.deepEqual(f.pixel(sx1 + 1 + k, wy + r), rt, `right band, row ${r}, column ${k}`);
+  }
 });
 test("the narrow pad is a plain grid: up from a top card goes to the window, → turns it to the Library and ← back, ↓ goes back to the card it came from; the Settings knob is not on it; the plain pad is unchanged", { skip }, async () => {
   const go = async (from, ks, o = {}) => { const f = await start(scene({ adults: 2, focus: from === "room" ? null : from, ui: { narrow: true }, ...o }), { narrow: true, motion: false }); const seen = []; for (const k of ks) { const out = key(f, k); seen.push(out.length ? out[0].target : "-"); } return { f, seen }; };
