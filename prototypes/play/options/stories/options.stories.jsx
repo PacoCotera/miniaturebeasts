@@ -43,8 +43,8 @@ export const ButtonStates = () => (
   <div style={{ ...stack, flexDirection: "row", flexWrap: "wrap", alignItems: "flex-start", gap: "var(--mb-space-16)" }}>
     <button type="button" className="op-btn">Done</button>
     <button type="button" className="op-btn" disabled>Done</button>
-    <button type="button" className="op-btn op-go">Start fresh</button>
-    <button type="button" className="op-btn op-go" disabled>Start fresh</button>
+    <button type="button" className="op-btn op-go">Reset the game</button>
+    <button type="button" className="op-btn op-go" disabled>Reset the game</button>
   </div>
 );
 
@@ -62,11 +62,20 @@ const Dialog = ({ dev }) => {
 export const OptionsDialog = () => <Dialog dev={false} />;   // Developer tools off
 export const OptionsDialogDeveloperTools = () => <Dialog dev />;   // Developer tools on
 
-// The confirm dialog's markup as the panel's Start fresh button opens it, laid in the flow (the live one is fixed over the page).
+// The confirm dialogs' markup as the panel's Reset game button opens them, laid in the flow (the live ones are fixed over the page).
+const flow = { position: "static", transform: "none", width: "100%", maxWidth: 360, boxSizing: "border-box" };
 export const ConfirmDialog = () => (
-  <div className="op-panel op-confirm" style={{ position: "static", transform: "none", width: "100%", maxWidth: 360, boxSizing: "border-box" }}>
-    <h2 className="op-title">Start fresh?</h2>
-    <div className="op-line">This erases the save in this browser. It cannot be undone.</div>
-    <div className="op-actions"><button type="button" className="op-btn">Cancel</button><button type="button" className="op-btn op-go">Start fresh</button></div>
+  <div className="op-panel op-confirm" style={flow}>
+    <h2 className="op-title">Reset the whole game?</h2>
+    <div className="op-line">This erases everything in this browser: all your mibis, the Station with its pods and Library, your Energy, Data and Essence, and the map. To change only the map, use New world on the Companion.</div>
+    <div className="op-actions"><button type="button" className="op-btn">Keep my game</button><button type="button" className="op-btn op-go">Reset the game</button></div>
+  </div>
+);
+// The second confirm: only its action erases.
+export const SecondConfirmDialog = () => (
+  <div className="op-panel op-confirm" style={flow}>
+    <h2 className="op-title">Erase everything for good?</h2>
+    <div className="op-line">All your mibis and everything you have found and made will be gone. This cannot be undone.</div>
+    <div className="op-actions"><button type="button" className="op-btn">Keep my game</button><button type="button" className="op-btn op-go">Yes, erase everything</button></div>
   </div>
 );

@@ -234,9 +234,9 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
     <div class="observer">
       <div class="obs-row"><button class="switch" id="obsToggle" aria-pressed="false" aria-controls="obs"><span class="track"></span>Observer</button>
         <button class="btn" id="resetGame" type="button">Reset game</button></div>
-      <p class="obs-note" id="resetNote" hidden>Reset game erases this save and starts fresh</p>
-      <div class="reset-ask" id="resetAsk" hidden role="alertdialog" aria-labelledby="resetQ"><span id="resetQ">Erase this world and start fresh?</span>
-        <button class="btn btn-danger" id="resetYes" type="button">Erase and start fresh</button><button class="btn" id="resetNo" type="button">Keep playing</button></div>
+      <p class="obs-note" id="resetNote" hidden>Reset game erases your whole game and starts again</p>
+      <div class="reset-ask" id="resetAsk" hidden role="alertdialog" aria-labelledby="resetQ"><span id="resetQ">Erase your whole game, mibis and all?</span>
+        <button class="btn btn-danger" id="resetYes" type="button">Yes, erase everything</button><button class="btn" id="resetNo" type="button">Keep playing</button></div>
       <div class="obs" id="obs" hidden>
         <dl>
           <dt>Expedition</dt><dd id="oExp">–</dd>
@@ -284,7 +284,7 @@ import { paintLand } from "./src/landpaint.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
-import { migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
+import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS } from "./src/words.mjs";
 document.getElementById('helpData').textContent = WORDS.help.data;   // the help page's Data item: one source, src/words.mjs
@@ -1446,7 +1446,21 @@ function realmOf(flat) { const r = migrate8({ ...flat, v: 8 }, { now: Date.now()
 // The notice line (play/src/footer.mjs mountNotice; the words are WORDS.notice's [copy] slots): what holds now is kept here, and drawn once the line is mounted.
 const NOTE = { flags: {}, ui: null };
 function noteSet(kind, on) { on = !!on; if (!!NOTE.flags[kind] === on) return; NOTE.flags[kind] = on; if (NOTE.ui) NOTE.ui.set(kind, on); }
-function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid
+// New world, from the menu: the map is replaced and the game is not (bug #59, the owner's words: "under no circumstance you should delete user game data").
+// What the player has made (mibis, the Station's part, crates, the hold, the Library, bonds, the world turn) is read off the old save here, as a copy;
+// what belongs to the old land (every region and its map, the expedition on it, the report, the screen the player was on) is left out. Carried mibis come home.
+// An expedition on the old land ends with it: its cargo goes to the hold (nothing in it is lost), the Probe's Shield stays as it was.
+const NEW_MAP_ONLY = new Set(['v', 'seed', 'regions', 'here', 'phase', 'ui', 'exp', 'report', 'walkTurn', 'biomeV', 'realmRev', 'pods', 'cr', 'gen', 'hold', ...MAP_KEYS]);
+function keepOfGame(old) {
+  const o = serialize(old), keep = {};
+  for (const k of Object.keys(o)) if (!NEW_MAP_ONLY.has(k)) keep[k] = o[k];
+  const ex = old.exp, cargo = ex && ex.cargo && (ex.cargo.e | 0 || ex.cargo.d | 0 || ex.cargo.s | 0 || (ex.cargo.pods || []).length) ? ex.cargo : null;
+  const hold = cargo || old.hold; if (hold) keep.hold = hold;
+  const k2 = JSON.parse(JSON.stringify(keep));
+  k2.carried = []; k2.lead = null;   // the mibis with you come home
+  return k2;
+}
+function newRealm(seed, gen = NEW_GEN, wid, keep) {   // a new realm takes the newest generator (a test may ask for an older one); a realm that follows a sleep is given its wid; `keep` is the game that stays (keepOfGame)
   if (seed == null) seed = randomSeed();
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   G = worldOf(seed, gen);
@@ -1454,6 +1468,11 @@ function newRealm(seed, gen = NEW_GEN, wid) {   // a new realm takes the newest 
   S = worldFields(seed, gen, wid ?? (carry && carry.wid) ?? undefined);
   if (carry && carry.resetFrom != null) S.resetFrom = carry.resetFrom;
   const life = genLife(seed, { n: 1, biome: 'mixed' }); S.cr = life.cr; S.pods = life.pods;   // region 1, the Meadows: the three starters
+  if (keep) {   // the game stays: its fields over the new world's, its world id and the Station's part with it; a pod of the new land never takes the id of a kept one
+    const taken = idsIn(keep); Object.assign(S, keep); S.wid = keep.wid || S.wid;
+    for (const p of S.pods) if (taken.has(p.id)) p.id = 'r' + (S.nextId++);
+    if (S.hold === undefined) S.hold = null;
+  }
   S = realmOf(S); S.biomeV = REALM_BIOME_V; S.realmRev = REALM_REV; noteSet('landChanged', false);   // a new realm draws the newest kinds (a save without biomeV is version 1) and records the land it was made on: with the seed, the save always names the same land
   indexCreatures(); logEv('New world · seed ' + seed); save();
 }
@@ -7049,8 +7068,8 @@ function leavePress(m) { const r = leaveMibi(m); if (r.ok) fxMsg(CARE_TEXT.left(
 function drawNewWorld() {
   viewBg(); drawTop('New world');
   text('Start a new world?', SCR_W / 2, 136, C.bone, 3, 'center');
-  text('This map, its creatures, your mibis', SCR_W / 2, 182, C.mist, 2, 'center'); text('and your pins will be gone for good.', SCR_W / 2, 204, C.mist, 2, 'center');
-  ['Keep this world', 'Start a new world'].forEach((s, i) => { const y = 266 + i * 80, sel = S.ui.nw === i;
+  text('This map, its creatures and pins go.', SCR_W / 2, 182, C.mist, 2, 'center'); text('Your mibis and everything else stay.', SCR_W / 2, 204, C.mist, 2, 'center');
+  ['Keep this world', 'New world, keep mibis'].forEach((s, i) => { const y = 266 + i * 80, sel = S.ui.nw === i;
     panel(75, y, 300, 54, sel ? (i ? C.red : C.paper) : C.slate, sel ? C.ink : null); if (sel) brackets(68, y - 7, 314, 68, C.amber);
     text(s, SCR_W / 2, y + 20, sel ? (i ? C.bone : C.ink) : C.fog, 2, 'center'); });
 }
@@ -7233,7 +7252,7 @@ function lineBase() {
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
-      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
+      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', S.bay.length >= BAY ? 'finds stay in the hold' : ['seals a crate · the world turns', 'seals a crate'], 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
@@ -7250,7 +7269,7 @@ function lineBase() {
         if (canWalk()) return L1(pl, playWouldBond() ? CARE_TEXT.playBond : CARE_TEXT.playOnce, 'Mibis');
         return L1(pl, isDocked() ? CARE_TEXT.playDocked : CARE_TEXT.playedTurn, 'Mibis', true); }
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, 'Mibis', !canSwap() || S.carried.length >= CARRY_MAX); }
-    case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
+    case 'newworld': return L1(S.ui.nw ? 'New world, keep mibis' : 'Keep this world', '', 'close');
     case 'worldmap': return L1('', 'the whole map', 'close');
     case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && !blk ? FIRST_TEXT.empty.back : 'Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
   }
@@ -7418,7 +7437,7 @@ function act(k, mode) {
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorldLive(); }
-          else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
+          else { S.ui.nwArm = 1; fxMsg('Only the map changes. Your mibis and everything else stay · Confirm again' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : ''), 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = carriedMibis().length ? 1 : 0; S.ui.rFrom = 'menu'; } }   // Mibis from the menu: the first mibi with you
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
@@ -7734,8 +7753,8 @@ function drawWaitPips() {
   for (let i = 0; i < PIPS; i++) { const x = x0 + i * (w + gap); if (i < RT.pips) R(x, y0, w, h, C.mint); else { R(x, y0, w, h, C.slate); R(x + 2, y0 + 2, w - 4, h - 4, C.ink); } }
 }
 const waitStep = (done, of) => { RT.wait = { done, of }; };   // the realm worker's real stages, for the wait's pips (drawWaitPips)
-function newWorldLive() {
-  const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newWorld(seed); RT.mp = null; RT.key = null; mapCv = null; transition(); };
+function newWorldLive(keepGame = true) {   // the menu's New world keeps the game (only the map is new); a save that could not be read starts whole (keepGame false)
+  const seed = urlSeed() ?? randomSeed(), done = () => { RT.making = false; newRealm(seed, NEW_GEN, keepGame && S && S.regions ? S.wid : undefined, keepGame && S && S.regions ? keepOfGame(S) : undefined); RT.mp = null; RT.key = null; mapCv = null; transition(); };
   if (!OFF_PAGE) { done(); return; }
   RT.making = true; RT.makingAt = performance.now();
   readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(() => { RT.makeMs = performance.now() - RT.makingAt; done(); });
@@ -7771,7 +7790,7 @@ function actReadOnly(k) {
       localStorage.setItem(KEPT_KEY + '-' + at, raw); if (localStorage.getItem(KEPT_KEY + '-' + at) !== raw) throw new Error('not kept'); } }
   catch (e) { RT.armNew = 0; FX.bumpAt = NOW; return; }   // it cannot be kept: nothing changes
   RT.readOnly = false; RT.broken = false; RT.armNew = 0; const note = document.getElementById('resetNote'); if (note) note.hidden = true;
-  newWorldLive();
+  newWorldLive(false);
 }
 function boot(seed) {
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (ld === 'broken') readOnlyBroken(); else if (!ld) newWorld(seed ?? urlSeed());
