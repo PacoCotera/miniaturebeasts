@@ -510,6 +510,9 @@
  "strings": {
   "title": "Incubator",
   "skip": "Skip",
+  "meet": "Meet {Name}",
+  "hatchFirst": "{Name} is your first mibi. {Name} lives in the Vivarium now, and grows up on expeditions.",
+  "hatchLine": "{Name} lives in the Vivarium now, and grows up on expeditions.",
   "grow": "Open now",
   "open": "Open",
   "choose": "Choose a pod",
@@ -517,6 +520,7 @@
   "bud": "{a/an} {Species}",
   "readyIn": "ready in about {n} min",
   "readyUnderMinute": "ready in under a minute",
+  "rule": "It opens by itself when ready, Companion home or out. Waiting is free; Open now costs {price}.",
   "crossBud": "{A} and {B}'s child",
   "crossBudFallback": "{a/an} {Species}",
   "empty": "Ready for a pod",

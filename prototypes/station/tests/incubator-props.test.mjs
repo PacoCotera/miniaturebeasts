@@ -82,6 +82,16 @@ test("a growing bud: the bar is floor(158 x progress) px, the time is 'ready in 
   assert.equal(spec.strings.grow, "Open now"); assert.notEqual(rd.line.ok, spec.strings.grow); assert.ok(!("price" in rd.line), "Open has no price");
 });
 
+test("first-session scheme items 6 and 9: the growing line holds the bud, the time and the one rule line; the hatch line says who is new and ✓ is Meet {Name}", () => {
+  const { st, p } = world(); S.grow(st, p, {}, settings, T0);
+  const mins = st.bud.minutes, g = build(st, { inc: {} }, T0 + 1000), cost = S.instantGrowCost(st, settings, T0 + 1000);
+  assert.match(g.line.subject, /^an? .+ · ready in about \d+ min$/i, "name and time in the line"); assert.equal(g.line.need, spec.strings.rule.replace("{price}", S.priceText(cost.e, cost.d, cost.s)), "the rule line names the price");
+  assert.ok(/Waiting is free/.test(g.line.need) && /by itself/.test(g.line.need));
+  const bf = build(st, { inc: {} }, T0 + mins * 60_000 - 1_000); assert.ok(bf.line.subject.endsWith(spec.strings.readyUnderMinute) || /about 1 min/.test(bf.line.subject));
+  const m = S.openBud(st, null, settings, T0 + mins * 60_000 + 1); assert.ok(m.ok, "the bud opens");
+  const h = build(st, { inc: { hatch: { mibi: m.mibi.id, species: m.mibi.species, code: "", read: m.mibi.read, kind: "founder" } }, skip: true }, T0 + mins * 60_000 + 2);
+  assert.equal(h.line.ok, "Meet " + m.mibi.name); assert.equal(h.line.subject, spec.strings.hatchFirst.replaceAll("{Name}", m.mibi.name), "the first mibi's line");
+});
 test("while Hatch now plays the chamber is already empty, and the screen keeps the bud it hatched: growing, the bar at its width, the time, the stamp and the line as they were", () => {
   const { st, p } = world(); S.grow(st, p, {}, settings, T0); const now = T0 + 1000, B = st.bud, was = build(st, { inc: {} }, now);
   const grow = { known: knownChapters(st, B, settings, now), cost: S.instantGrowCost(st, settings, now), need: was.line.need, progress: S.budProgress(st, settings, now), left: S.budMinutesLeft(st, settings, now), bud: B, until: now + 580 };
