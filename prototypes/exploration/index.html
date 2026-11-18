@@ -7523,10 +7523,12 @@ function panTick() {   // each frame: the wait is over and the key still down: t
 function panOffset(lay, c0) {
   const f = panFrac(); if (!f) return { x: 0, y: 0 };
   const d = PAN.dir;
-  if (d === 'up') return { x: 0, y: -f * Math.max(0, c0.y + lay.h * 24) };
-  if (d === 'down') return { x: 0, y: f * Math.max(0, lay.h * 72 - VIEW_H - c0.y) };
-  if (d === 'left') return { x: -f * Math.max(0, c0.x + lay.w * 24), y: 0 };
-  return { x: f * Math.max(0, lay.w * 72 - SCR_W - c0.x), y: 0 };
+  // full reach: the place's edge in the held direction sits across the middle of the view, so half is your place and half the neighbour
+  // (the designer's "your place plus half the neighbour", UI desk 11-18); an edge already in the near half needs no slide
+  if (d === 'up') return { x: 0, y: -f * Math.max(0, c0.y + VIEW_H / 2) };
+  if (d === 'down') return { x: 0, y: f * Math.max(0, lay.h * 48 - VIEW_H / 2 - c0.y) };
+  if (d === 'left') return { x: -f * Math.max(0, c0.x + SCR_W / 2), y: 0 };
+  return { x: f * Math.max(0, lay.w * 48 - SCR_W / 2 - c0.x), y: 0 };
 }
 function press(k) {
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual

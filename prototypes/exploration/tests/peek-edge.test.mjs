@@ -123,7 +123,8 @@ test("reduced motion: the view cuts out and cuts back, no ease", { skip }, async
 
 // The DRAW check (bug #58, -2): the picture itself slides. The pawn's screen spot (RT.plScr, from the camera that draws the place) moves by the reach, away from the held key
 // (up: y grows, down: y shrinks, left: x grows, right: x shrinks); the view is never left empty; at release it is back where it was.
-const REACH = { up: (c, l) => [0, c.y + l.h * 24], down: (c, l) => [0, -Math.max(0, l.h * 72 - 532 - c.y)], left: (c, l) => [c.x + l.w * 24, 0], right: (c, l) => [-Math.max(0, l.w * 72 - 450 - c.x), 0] };
+// the reach (UI desk 11-18): the place's edge in the held direction sits across the middle of the view (half your place, half the neighbour)
+const REACH = { up: (c, l) => [0, Math.max(0, c.y + 532 / 2)], down: (c, l) => [0, -Math.max(0, l.h * 48 - 532 / 2 - c.y)], left: (c, l) => [Math.max(0, c.x + 450 / 2), 0], right: (c, l) => [-Math.max(0, l.w * 48 - 450 / 2 - c.x), 0] };
 const plAt = (page) => page.evaluate(() => { const m = window.__mb, p = m.RT.plScr, c = m.camNow(), l = m.layout(m.RT.key); return { x: p.x, y: p.y, c, l: { w: l.w, h: l.h } }; });
 const blankPx = (page) => page.evaluate(() => new Promise((res) => { const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = 450; c.height = 600; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const d = x.getImageData(0, 32, 450, 532).data; let n = 0; for (let k = 3; k < d.length; k += 4) if (d[k] < 255) n++; res(n); }; im.src = window.__mb.capture(); }));
 for (const dir of ["up", "down", "left", "right"]) {
