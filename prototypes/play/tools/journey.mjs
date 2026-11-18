@@ -226,10 +226,12 @@ if (!ONLY || ONLY === "PT") {
   eq(await page.evaluate(() => JSON.parse(localStorage.getItem("mb-options")).playtest), true, "PT: and on again");
   await page.waitForFunction(() => Object.keys(localStorage).some((x) => x.startsWith("mb-save-v8@")), null, { timeout: 15000 }).catch(() => {});
   const w0 = await world(page); expect(!!w0, "PT: this browser holds a world");
-  await page.click("#optionsFresh"); await page.getByRole("button", { name: "Cancel" }).click(); await page.waitForTimeout(400);
+  await page.click("#optionsFresh"); await page.getByRole("button", { name: "Keep my game" }).click(); await page.waitForTimeout(400);
   eq(await world(page), w0, "PT: a cancelled confirm changes nothing");
-  await page.click("#optionsFresh"); await Promise.all([page.waitForNavigation({ waitUntil: "load" }), page.click("#optionsFreshYes")]); await settled(page);
-  const w1 = await world(page); expect(!!w1 && w1 !== w0, "PT: Start fresh erased the world and a new one began (" + w0 + " -> " + w1 + ")");
+  await page.click("#optionsFresh"); await page.click("#optionsFreshAsk"); await page.waitForTimeout(400);
+  eq(await world(page), w0, "PT: the first confirm erased nothing (the second is still to come)");
+  await Promise.all([page.waitForNavigation({ waitUntil: "load" }), page.click("#optionsFreshYes")]); await settled(page);
+  const w1 = await world(page); expect(!!w1 && w1 !== w0, "PT: Reset game erased the world and a new one began (" + w0 + " -> " + w1 + ")");
   eq([page.url().includes("?"), await page.evaluate(() => sessionStorage.getItem("mb-play-fresh")), /playtest|dev|jump|names|place/.test(st().url() + page.frame({ url: /\/exploration\// }).url())], [false, null, false], "PT: no URL carries an option, the one-time flag spent");
   eq(await st().evaluate(() => { const s = window.__st.settings; return [s.playtest, s.sittingWait, s.budScale, s.adultTurns, s.elderTurns]; }), [true, "minute", 10, 1, 4], "PT: the Station's settings are the preset's");
   expect(!/playtest|minute/.test((await page.evaluate(() => localStorage.getItem("mb-station-dev"))) ?? ""), "PT: the preset is never written to the settings key");

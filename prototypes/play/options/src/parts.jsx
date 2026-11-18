@@ -38,6 +38,43 @@ export function Pick({ label, line, value, set, items }) {
   );
 }
 
+// The whole-game reset (bug #59: New world keeps the game; only this erases it). Two confirms: the first dialog's action opens the second and erases nothing;
+// only the second's action calls api.onStartFresh(). Each dialog's Cancel is the one Radix focuses first.
+export function ResetRow({ api }) {
+  const [again, setAgain] = useState(false);
+  return (
+    <Row label="Reset the whole game" line="Erases all your mibis, your Station and the map in this browser. The options stay.">
+      <AlertDialog.Root>
+        <AlertDialog.Trigger className="op-btn" id="optionsFresh">Reset game</AlertDialog.Trigger>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay className="op-overlay op-over2" />
+          <AlertDialog.Content className="op-panel op-confirm" data-options="">
+            <AlertDialog.Title className="op-title">Reset the whole game?</AlertDialog.Title>
+            <AlertDialog.Description className="op-line">This erases everything in this browser: all your mibis, the Station with its pods and Library, your Energy, Data and Essence, and the map. To change only the map, use New world on the Companion.</AlertDialog.Description>
+            <div className="op-actions">
+              <AlertDialog.Cancel className="op-btn">Keep my game</AlertDialog.Cancel>
+              <AlertDialog.Action className="op-btn op-go" id="optionsFreshAsk" onClick={() => setAgain(true)}>Reset the game</AlertDialog.Action>
+            </div>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>
+      <AlertDialog.Root open={again} onOpenChange={setAgain}>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay className="op-overlay op-over2" />
+          <AlertDialog.Content className="op-panel op-confirm" data-options="">
+            <AlertDialog.Title className="op-title">Erase everything for good?</AlertDialog.Title>
+            <AlertDialog.Description className="op-line">All your mibis and everything you have found and made will be gone. This cannot be undone.</AlertDialog.Description>
+            <div className="op-actions">
+              <AlertDialog.Cancel className="op-btn" id="optionsFreshNo">Keep my game</AlertDialog.Cancel>
+              <AlertDialog.Action className="op-btn op-go" id="optionsFreshYes" onClick={() => api.onStartFresh()}>Yes, erase everything</AlertDialog.Action>
+            </div>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>
+    </Row>
+  );
+}
+
 export function Panel({ api }) {
   const [open, setOpen] = useState(false), [o, setO] = useState(api.read()), changed = useRef(false);
   api.open = () => { setO(api.read()); changed.current = false; setOpen(true); };
@@ -62,22 +99,7 @@ export function Panel({ api }) {
           <Pick label="Companion" line="Which Companion the page plays." value={o.companion} set={set("companion")} items={[["A", "Companion A"], ["B", "Companion B"]]} />
           <Pick label="Name list" line="Where new mibi names come from." value={o.names} set={set("names")} items={[["", "The current list"], ...api.names.map((n) => [n, n])]} />
           <Pick label="One place everywhere" line="Every land cell of the Companion's map plays this hand-made place." value={o.place} set={set("place")} items={[["", "The usual map"], ...api.places]} />
-          <Row label="Start fresh" line="Erases the save in this browser and starts again. The options stay.">
-            <AlertDialog.Root>
-              <AlertDialog.Trigger className="op-btn" id="optionsFresh">Start fresh</AlertDialog.Trigger>
-              <AlertDialog.Portal>
-                <AlertDialog.Overlay className="op-overlay op-over2" />
-                <AlertDialog.Content className="op-panel op-confirm" data-options="">
-                  <AlertDialog.Title className="op-title">Start fresh?</AlertDialog.Title>
-                  <AlertDialog.Description className="op-line">This erases the save in this browser. It cannot be undone.</AlertDialog.Description>
-                  <div className="op-actions">
-                    <AlertDialog.Cancel className="op-btn">Cancel</AlertDialog.Cancel>
-                    <AlertDialog.Action className="op-btn op-go" id="optionsFreshYes" onClick={() => api.onStartFresh()}>Start fresh</AlertDialog.Action>
-                  </div>
-                </AlertDialog.Content>
-              </AlertDialog.Portal>
-            </AlertDialog.Root>
-          </Row>
+          <ResetRow api={api} />
           <div className="op-actions op-foot"><div className="op-apply" id="optionsApply">Changes apply when you press Done; the page reloads. Developer tools applies at once.</div><Dialog.Close className="op-btn" id="optionsDone">Done</Dialog.Close></div>
           {api.about && api.about() ? <div className="op-about" id="optionsAbout">{api.about()}</div> : null}
         </Dialog.Content>
