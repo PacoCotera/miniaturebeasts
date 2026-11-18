@@ -127,7 +127,7 @@ export function resetSave() {
 }
 // --- developer settings, under their own key ---
 export function loadSettings() {
-  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") Object.assign(G.settings, o); delete G.settings.trickleCap; } catch { /* defaults */ }
+  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") { if (o.economy === "loose" && !o.economyChosen) delete o.economy; Object.assign(G.settings, o); } delete G.settings.trickleCap; } catch { /* defaults */ }
   if (playtestOn()) Object.assign(G.settings, withPlaytest({}, true));   // ?playtest: the playtest preset (play/src/playtest.mjs) laid over the settings, in memory only
   return G.settings;
 }

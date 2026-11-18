@@ -86,15 +86,25 @@ test("no Pods trait line is longer than six words, over every pair of looks in a
 test("the bay: one crate accepted once, the loose economy tops up, every pod comes home (no rack, nothing waits)", () => {
   const { sv, st } = world([crate(1, [loikaPod(1, 11), loikaPod(2, 12)]), crate(2, Array.from({ length: 6 }, (_, i) => loikaPod(10 + i, 100 + i)))]);
   S.normalize(st);
-  assert.equal(S.dockKey(st, sv, S.DEFAULT_SETTINGS, 5).ok, true);
-  const r = S.openBay(st, sv, S.DEFAULT_SETTINGS, 5);
+  const loose = { ...S.DEFAULT_SETTINGS, economy: "loose" };   // the default is "decided" since 2026-11-18 (owner 13:3x): the top-up is the developer's choice
+  assert.equal(S.dockKey(st, sv, loose, 5).ok, true);
+  const r = S.openBay(st, sv, loose, 5);
   assert.equal(r.plays.length, 2);
   assert.deepEqual(st.accepted, ["x1", "x2"]);
   assert.equal(st.tray.length, 8); assert.equal(st.waiting.length, 0, "no rack: nothing waits");
   assert.equal(st.e, 2 * (3 + 2)); assert.equal(st.d, 2 * (3 + 3)); assert.equal(st.s, 2 * (4 + 4));
   assert.ok(st.tray.every((p) => p.species === "S01" && p.genome && p.read.length === 0 && !p.idd));
-  assert.equal(S.openBay(st, sv, S.DEFAULT_SETTINGS, 6).plays.length, 0, "accepted crates never reopen");
+  assert.equal(S.openBay(st, sv, loose, 6).plays.length, 0, "accepted crates never reopen");
   assert.equal(S.bayCrates(st, sv).length, 0);
+});
+
+test("the bay on the default settings (decided): a crate brings what it carried, no top-up", () => {
+  assert.equal(S.DEFAULT_SETTINGS.economy, "decided");
+  const { sv, st } = world([crate(1, [loikaPod(1, 11), loikaPod(2, 12)]), crate(2, Array.from({ length: 6 }, (_, i) => loikaPod(10 + i, 100 + i)))]);
+  S.normalize(st);
+  assert.equal(S.dockKey(st, sv, S.DEFAULT_SETTINGS, 5).ok, true);
+  S.openBay(st, sv, S.DEFAULT_SETTINGS, 5);
+  assert.equal(st.e, 2 * 3); assert.equal(st.d, 2 * 3); assert.equal(st.s, 2 * 4);
 });
 
 test("identify: ◆1 on every pod, no free first one, no Energy; a new species is learned once and the Companion's known index follows", () => {

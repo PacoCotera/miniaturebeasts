@@ -151,7 +151,7 @@ Three supplies pace the game. Each has one job, so the player learns what each i
 
 | Supply | Its job | Comes from | Spent on | The pressure it creates |
 | --- | --- | --- | --- | --- |
-| **Energy** (bolt) | runs the machines | charged and warm stones, found and caused in the world | growing, crossing, mending, upgrading, lighting outposts | The scarce one: it makes the player choose between growing now and preparing the next trip |
+| **Energy** (bolt) | runs the machines | charged and warm stones, found and caused in the world | growing, crossing, mending, upgrading, lighting outposts | Plentiful on weather walks, scarce on calm ones (measured 2026-11-18): on a calm walk it makes the player choose between growing now and preparing the next trip |
 | **Data** (diamond) | buys knowledge | creature moments the player causes; a little each day at the bench | identifying, reading, shaping | Where curiosity goes: read this pod or that one; the glint says where it's worth it |
 | **Essence** (drop) | builds bodies | dew, pressed fruit, tufts; returning pods and mibis to the wild | growing, crossing, Grow now | The body budget: more mibis or faster ones |
 
@@ -159,7 +159,7 @@ Three supplies pace the game. Each has one job, so the player learns what each i
 - **Running out limits what you can do, never what you know.**
 - **Time is a resource the player can trade for Essence,** never for money.
 - **Nothing in the economy is ever sold.** The paid cloud layer adds services, never supplies, speed or randomness.
-- Prices and waits are set low so the loop can be played through quickly. Their final pacing is an open question.
+- Measured (2026-11-18, runs/design-gaps-1): pods and Essence pace the first hours; Energy is plentiful on weather walks and scarce on calm ones. The playtest runs on the decided prices with no free top-up on each crate (owner 2026-11-18: "yes, or you will never know how to balance the game"). Final pacing stays an open question until it is played.
 
 ## Progression
 
