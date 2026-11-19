@@ -1626,6 +1626,13 @@
    "sha256": "42626e650f202cbbb50db237512f8888e7588fc037ebf8b90b124006403fedbf"
   },
   {
+   "class": "paint",
+   "date": "2026-11-19",
+   "id": "9c3911b0ae",
+   "path": "art/places/sets/ninja-test/over-grass-bank.png",
+   "sha256": "6f4479f6d25290a5f40329d68bfdf7a84ea0bcccc64b11464fae88224f6f6b11"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "028d8e204b",
