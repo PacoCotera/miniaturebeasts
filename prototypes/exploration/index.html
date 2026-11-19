@@ -5784,7 +5784,10 @@ function unwalkedVeil(veil, nl, pre, dx, dy) {   // veil (placeVeil's, one byte 
   const pw = nl.baked.place.w, W = nl.w, H = nl.h, hx = W >> 1, hy = H >> 1;
   for (let i = 0; i < veil.length; i++) {
     const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy, inside = px >= 0 && py >= 0 && px < W && py < H;
-    const half = inside && dx != null && (dx < 0 ? px >= W - hx : dx > 0 ? px < hx : true) && (dy < 0 ? py >= H - hy : dy > 0 ? py < hy : true);
+    // the apron strip between two lit halves is lit by the same rule (the tile's nearest cell tile decides); on an axis where the neighbour leans away from the held place (dx/dy != 0) only the apron on the near side counts, so the outer edge of the whole lit area keeps its veil
+    const cx = Math.min(W - 1, Math.max(0, px)), cy = Math.min(H - 1, Math.max(0, py));
+    const nearX = dx == null || dx == 0 || (dx > 0 ? px < W : px >= 0), nearY = dy == null || dy == 0 || (dy > 0 ? py < H : py >= 0);
+    const half = dx != null && nearX && nearY && (dx < 0 ? cx >= W - hx : dx > 0 ? cx < hx : true) && (dy < 0 ? cy >= H - hy : dy > 0 ? cy < hy : true);
     veil[i] = half || (pre && inside && ((pre[py] >>> px) & 1)) ? 0 : 1; }
   return veil;
 }

@@ -64,6 +64,9 @@ test("#85 the held view lights the half of each unwalked neighbour that it shows
   assert.equal(open(0, -1), 32, "the north neighbour: its south half");
   assert.equal(open(-1, -1), 16, "the north-west neighbour: its south-east quarter, the corner");
   assert.equal(open(1, 1), 16);
-  assert.equal(p.run(`(() => { const nl = { w: 8, h: 8, baked: { ox: -1, oy: -1, place: { w: 10, h: 10 } } }; const v = unwalkedVeil(new Uint8Array(100).fill(1), nl, null, 1, 0); return v[0] + v[9] + v[90] + v[99]; })()`), 4, "the apron stays veiled");
+  // the apron: lit where it lies between lit halves (no dark seam), veiled on the outer edge of the whole lit area. East neighbour (dx 1, dy 0), 8 x 8 in a 10 x 10 picture:
+  const apron = `(() => { const nl = { w: 8, h: 8, baked: { ox: -1, oy: -1, place: { w: 10, h: 10 } } }; const v = unwalkedVeil(new Uint8Array(100).fill(1), nl, null, 1, 0); return [v[0], v[9], v[90], v[99], v[5], v[1 + 10 * 5], v[9 + 10 * 5], v[1 + 10 * 9]].join(''); })()`;
+  assert.equal(p.run(apron), "01011010", "west apron and the apron above and below the lit half are lit; the east (outer) edge and the apron beyond the lit half stay veiled");
+  assert.equal(p.run(`(() => { const nl = { w: 8, h: 8, baked: { ox: -1, oy: -1, place: { w: 10, h: 10 } } }; const v = unwalkedVeil(new Uint8Array(100).fill(1), nl, null, 1, 1); return [v[0], v[3], v[30], v[5], v[50], v[91]].join(''); })()`), "000111", "a corner neighbour (dx 1, dy 1): the apron above and left of its lit quarter is lit, beyond the quarter and on the bottom (outer) edge veiled");
 });
 
