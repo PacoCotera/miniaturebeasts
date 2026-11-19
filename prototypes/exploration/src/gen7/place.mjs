@@ -38,6 +38,18 @@ const CLIFF_LOWERS = new Set(SET.groundPairs.filter(p => p.includes('cliff')).ma
 // who gives way to grass when a 2 x 2 block breaks the table: the lesser first; raised land is never cut (round 4), the others yield to it
 const KEEP = { 8: 10, 2: 9, 9: 7, 5: 6, 15: 6, 11: 5, 3: 4, 14: 4, 10: 3, 12: 2, 13: 2, 6: 0, 20: 8, 21: 11 };
 export const pairOk = (a, b) => PAIRS.has(a < b ? a + '|' + b : b + '|' + a);
+// The land rule's two shapes of a tile in no 2 x 2 block of its own (Rule 1.9 as the land of the land round is; land-rules-2), in a grid `t` of row length W (k has its four neighbours):
+// a diagonal step (its own terrain beside it in its row and in its column: a contour's staircase, which the corner pieces draw as a diagonal), and the one-tile grass buffer
+// (Rule 1.3, "where two terrains that may not meet come near each other, grass goes between them": grass joined to grass on a side, with two terrains among its eight neighbours that are no pair of
+// each other, such as raised land and a stream's water, or a ford and scree: the narrowest bank there is)
+export function lonePlainAt(t, W, k) {
+  const v = t[k], l = t[k - 1] === v, r = t[k + 1] === v, u = t[k - W] === v, d = t[k + W] === v;
+  if ((l || r) && (u || d)) return true;
+  if (v !== TV.GRASS || !(l || r || u || d)) return false;
+  const around = new Set([t[k - W - 1], t[k - W], t[k - W + 1], t[k - 1], t[k + 1], t[k + W - 1], t[k + W], t[k + W + 1]]); around.delete(v);
+  const a = [...around]; for (let i = 0; i < a.length; i++) for (let j = i + 1; j < a.length; j++) if (!pairOk(a[i], a[j])) return true;
+  return false;
+}
 // the terrains of one 2 x 2 block (an iterable of values, repeats allowed): at most three distinct, every two a legal pair
 export function blockOk(values) {
   const v = [...new Set(values)];
@@ -888,15 +900,30 @@ function windowOf(S, X, Y) {
   }
   // one more ford (F6): in the middle of every stretch of a stream that runs through a place, the stream's water across 2 or 3 tiles of its run becomes ford ground (the stream's whole width across), laid last, on the
   // settled land. What stands beside it that is no pair of the ford (sand, scree, thicket, scrub, litter, dry grass, turf) is grass, so both banks walk and no block is illegal. Only what a stream drew, never the water of a river.
-  // land-rules-fix-1: the ford is laid after the passes, so it can leave a bit of the stream's water beside it, or a ford tile at a staircase end, in no 2 x 2 block of its own (Rule 1.9). Each such tile of a ford, and each
-  // water tile that touches a ford, takes the first of water, ford, grass that gives it a 2 x 2 block of its own (grass only where grass is already beside it, so the banks stay legal), until none is left
-  const tidyFord = () => { const loneAt = k => { const v = t[k], x = k % W, y = (k / W) | 0; for (let oy = -1; oy <= 0; oy++) for (let ox = -1; ox <= 0; ox++) { const a = x + ox, b = y + oy; if (a < 0 || b < 0 || a + 1 >= W || b + 1 >= H) continue; const j = b * W + a; if (t[j] === v && t[j + 1] === v && t[j + W] === v && t[j + W + 1] === v) return false; } return true; };
-    const nb4 = k => [t[k - 1], t[k + 1], t[k - W], t[k + W]];
+  // land-rules-2 (the stream band's tidy; land-rules-fix-1 began it for the fords): streams and fords are laid after the passes, on the settled land, so their rims can leave a tile in no 2 x 2 block of its own (Rule 1.9):
+  // a one-tile notch of water in a bank, a ford tile at a staircase end, a grass or scree spike. Within 2 tiles of a stream's water or a ford, each such tile that the land rule does not keep (lonePlainAt: a diagonal step,
+  // or the one-tile grass buffer between two terrains that are no pair) takes the terrain of most of its four neighbours that gives it a 2 x 2 block of its own (or makes it one of those two shapes) and keeps every
+  // block round it a pair of the set; where one tile cannot, it and a neighbour of its own terrain change together (a ford that stops a row short of the stream's far bank takes the two water tiles under it);
+  // raised land, path, deep water and a bridge are never changed; in the held port rows of a stream (PORT_HOLD) water and ford may trade places, and a wet tile dries only where the wet tiles beside it stay
+  // joined round it, so the stream still runs through the seam. Until none is left (6 passes at most)
+  const tidyStreams = () => { const loneAt = k => { const v = t[k], x = k % W, y = (k / W) | 0; for (let oy = -1; oy <= 0; oy++) for (let ox = -1; ox <= 0; ox++) { const a = x + ox, b = y + oy; if (a < 0 || b < 0 || a + 1 >= W || b + 1 >= H) continue; const j = b * W + a; if (t[j] === v && t[j + 1] === v && t[j + W] === v && t[j + W + 1] === v) return false; } return true; };
+    const blocksOk = k => { const x = k % W, y = (k / W) | 0; for (let oy = -1; oy <= 0; oy++) for (let ox = -1; ox <= 0; ox++) { const a = x + ox, b = y + oy; if (a < 0 || b < 0 || a + 1 >= W || b + 1 >= H) continue; const j = b * W + a; if (!blockOk([t[j], t[j + 1], t[j + W], t[j + W + 1]])) return false; } return true; };
+    const FIXED = new Set([TV.CLIFF, TV.PATH, TV.DEEP, TV.BRIDGE]), band = new Uint8Array(N);
+    for (let k = 0; k < N; k++) if (streamMask[k] || t[k] === TV.FORD) { const x0 = k % W, y0 = (k / W) | 0; for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const X2 = x0 + dx, Y2 = y0 + dy; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H) band[Y2 * W + X2] = 1; } }
+    const wet = u => u === TV.WATER || u === TV.FORD, RING = [-W, -W + 1, 1, W + 1, W, W - 1, -1, -W - 1];
+    const joined = k => { let runs = 0; for (let i = 0; i < 8; i++) { if (!wet(t[k + RING[i]]) || wet(t[k + RING[(i + 7) % 8]])) continue; let orth = false; for (let j = i; j < i + 8 && wet(t[k + RING[j % 8]]); j++) if (j % 2 === 0) orth = true; if (orth) runs++; }
+      return runs <= 1 || RING.every(d => wet(t[k + d])); };   // the wet tiles beside k are one run round it (k drying cuts nothing)
+    const inner = k => { const x = k % W, y = (k / W) | 0; return x >= 1 && y >= 1 && x < W - 1 && y < H - 1; };
+    const tryTidy = (ks, v, u) => { if (!ks.every(inner) || ks.some(k => portHold[k] && wet(v) && !wet(u) && !joined(k))) return false;
+      for (const k of ks) t[k] = u;
+      if (ks.every(k => (!loneAt(k) || lonePlainAt(t, W, k)) && blocksOk(k))) return true;
+      for (const k of ks) t[k] = v; return false; };
     for (let pass = 0; pass < 6; pass++) { let n = 0;
-      for (let k = W + 1; k < N - W - 1; k++) { const v = t[k]; if ((v !== TV.FORD && v !== TV.WATER) || portHold[k] || (k % W) < 1 || (k % W) > W - 2 || !loneAt(k)) continue;
-        const nb = nb4(k); if (v === TV.WATER && !nb.includes(TV.FORD)) continue;
-        for (const u of [TV.WATER, TV.FORD, TV.GRASS]) { if (u === v || (u === TV.GRASS && !nb.includes(TV.GRASS))) continue; if (u === TV.FORD && !nb.includes(TV.FORD)) continue; if (u === TV.WATER && !nb.includes(TV.WATER)) continue;
-          t[k] = u; if (!loneAt(k)) { n++; break; } t[k] = v; } }
+      for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const k = y * W + x, v = t[k]; if (!band[k] || FIXED.has(v) || !loneAt(k) || lonePlainAt(t, W, k)) continue;
+        const nb = [t[k - 1], t[k + 1], t[k - W], t[k + W]], count = new Map(); for (const u of nb) if (u !== v && !FIXED.has(u)) count.set(u, (count.get(u) || 0) + 1);
+        const order = [...count].sort((p, q) => q[1] - p[1] || p[0] - q[0]).map(([u]) => u);
+        if (order.some(u => tryTidy([k], v, u))) { n++; continue; }
+        for (const j of [k - 1, k + 1, k - W, k + W]) if (t[j] === v && band[j] && order.some(u => tryTidy([k, j], v, u))) { n++; break; } }
       if (!n) break; } };
   for (const { p, tiles } of streamRuns) {
     if (!(p.in && p.out) || tiles.length < 6) continue;
@@ -939,7 +966,7 @@ function windowOf(S, X, Y) {
         if (v === TV.SAND || v === TV.SCREE || v === TV.THICKET || v === TV.SCRUB || v === TV.LITTER || v === TV.DRY || v === TV.TURF) t[j] = TV.GRASS; } }
       if (st) { const m = st.splits || (st.splits = new Map()), r = m.get(X + ',' + Y) || { w: 0, o: 0 }; r.w++; m.set(X + ',' + Y, r); }
     } }
-  tidyFord();
+  tidyStreams();
   if (stg) stg('gaps+spurs');
   const topLayer = topsOf(t, recipe, W, H, pathTop); if (stg) stg('tops');
   return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, banks, top: topLayer };

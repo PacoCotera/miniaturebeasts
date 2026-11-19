@@ -2,14 +2,14 @@
 //   node tools/gen7-place-props.mjs 13
 // G2b: levels come from the field at tile scale (no blocks), one raised level, every stair has a way up. Added: the straight cliff runs (every length, the longest, the share of cliff
 // tiles in runs longer than 8), cliff chains (a stretch of the contour that may step one tile, so a diagonal counts as one), and whole-region reach through the ways up.
-import { cellTerrain, cellIR, TV, blockOk, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
+import { cellTerrain, cellIR, TV, blockOk, lonePlainAt, levelAt, stairsInfo, CW, CH, RW, RH } from '../src/gen7/place.mjs';
 import { genRegion7, realm7 } from '../src/gen7/region.mjs';
 import { levelsOf, windowLevels, landRule } from '../src/gen7/levels.mjs';
 import { MW, MH, L } from '../src/world.mjs';
 import { bakeIR } from './gen7-render.mjs';
 
 const NB4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, apronMismatch: 0, bakeFails: 0, bakeMessages: [], unreachedCells: 0, unreachedRaisedOnly: 0, unreachedLand: 0, landWalledAt: [],
+const stat = () => ({ cells: 0, pairBreaks: 0, loneTiles: 0, loneKept: 0, loneLeft: 0, loneLeftAt: [], loneRaised: 0, loneRaisedAt: [], apronMismatch: 0, bakeFails: 0, bakeMessages: [], unreachedCells: 0, unreachedRaisedOnly: 0, unreachedLand: 0, landWalledAt: [],
   centreWrong: 0, edges: 0, openNoRun: 0, changeNoCliff: 0, steps: 0, bandTiles: 0, bandWalkable: 0,
   cliffRuns: 0, cliffRunsUnder4: 0, cliffRunsUnder8: 0, cliffRunMin: 999, cliffRunMax: 0, cliffRunsOnCellEdge: 0, cliffTiles: 0, cliffTilesInRunsOver8: 0, runHist: {},
   cliffThin: 0, thinAt: [], loneAt: [], unreachedAt: [],
@@ -29,14 +29,16 @@ function seamOf(seed, X, Y) {
   return bad;
 }
 
-// Every cell of the seed. Returns the numbers; the test asserts them.
-export function placeProps(seed) {
+// Every cell of the seed. Returns the numbers; the test asserts them. regions: a list of [ax, ay] to read only those regions (CI's small check, land-rules-2); then the whole-realm reach is not
+// run (it needs every region) and the reach numbers are each region's own.
+export function placeProps(seed, regions = null) {
   const t0 = Date.now(), st = stat();
   const SW = MW * CW, SH = MH * CH, WW = RW * CW, WH = RH * CH, REALM = new Uint8Array(WW * WH), WUR = new Uint8Array(WW * WH), regs = [];   // the realm's tiles stitched: a region's land that only a neighbouring region reaches is not a pocket
   const lvOfCell = (X, Y) => genRegion7(seed, Math.floor(X / MW), Math.floor(Y / MH)).level[(Y % MH) * MW + (X % MW)];
   const ONLY = typeof process !== 'undefined' && process.env.B3C_ONLY ? process.env.B3C_ONLY.split(',').map(Number) : null;   // land-b3c: one region only, and a list of what it leaves unreached (B3C_DUMP=1)
   for (let ay = 0; ay < RH / MH; ay++) for (let ax = 0; ax < RW / MW; ax++) {
     if (ONLY && (ax !== ONLY[0] || ay !== ONLY[1])) continue;
+    if (regions && !regions.some(([a, b]) => a === ax && b === ay)) continue;
     const cx0 = ax * MW, cy0 = ay * MH, SW = MW * CW, SH = MH * CH, R = new Uint8Array(SW * SH), G = genRegion7(seed, ax, ay), wayups = [];   // the region's tiles stitched
     for (let j = 0; j < MH; j++) for (let i = 0; i < MW; i++) {
       const X = cx0 + i, Y = cy0 + j, c = cellTerrain(seed, X, Y), w = c.w, h = c.h, t = c.terrain;
@@ -47,11 +49,16 @@ export function placeProps(seed) {
       for (let y = 0; y + 1 < h; y++) for (let x = 0; x + 1 < w; x++) {
         if (!blockOk([t[y * w + x], t[y * w + x + 1], t[(y + 1) * w + x], t[(y + 1) * w + x + 1]]) && !c.wayups.some(a => c.x0 + x >= a.x - 1 && c.x0 + x <= a.x + a.w && c.y0 + y >= a.y - 1 && c.y0 + y <= a.y + a.h + 1)) st.pairBreaks++;   // the cut of a way up is drawn as path: the path meets it and the cliff beside it
       }
-      // every tile of the cell sits in a 2 x 2 block of its own terrain
+      // every tile of the cell sits in a 2 x 2 block of its own terrain (loneTiles counts those that do not), or is one of the land rule's two shapes (place.mjs lonePlainAt: a diagonal step, the one-tile
+      // grass buffer between terrains that may not meet; loneKept); loneLeft is every other one of the ground (a notch, a spike, a one-tile strip or dot); loneRaised a one-tile bump of raised land
       for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
         const v = t[y * w + x]; let ok = false;
         for (let oy = -1; oy <= 0 && !ok; oy++) for (let ox = -1; ox <= 0 && !ok; ox++) { const a = x + ox, b = y + oy; if (a >= 0 && b >= 0 && a + 1 < w && b + 1 < h && t[b * w + a] === v && t[b * w + a + 1] === v && t[(b + 1) * w + a] === v && t[(b + 1) * w + a + 1] === v) ok = true; }
-        if (!ok) { st.loneTiles++; if (st.loneAt.length < 6) st.loneAt.push([X, Y, x - 1, y - 1, v]); }
+        if (ok) continue;
+        st.loneTiles++; if (st.loneAt.length < 6) st.loneAt.push([X, Y, x - 1, y - 1, v]);
+        if (lonePlainAt(t, w, y * w + x)) st.loneKept++;
+        else if (v === TV.CLIFF) { st.loneRaised++; if (st.loneRaisedAt.length < 8) st.loneRaisedAt.push([X, Y, x - 1, y - 1]); }   // raised land's shape is the cliff rules' (P4-P6, nothing under 4): reported
+        else { st.loneLeft++; if (st.loneLeftAt.length < 8) st.loneLeftAt.push([X, Y, x - 1, y - 1, v]); }
       }
       // the apron of every cell equals its neighbours' tiles
       for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [-1, 1]]) {
@@ -181,7 +188,7 @@ export function placeProps(seed) {
   // whole-realm reach (place-walk-1): the same walk (water, thicket and a cliff's lip block, a way up walks, a ford's water is walked) on the realm's stitched tiles, so the lip across a region's border is the
   // true one, from the start of every region: land that a neighbouring region's own start reaches is reached. What the realm flood leaves is walled in whole (a closed mesa or pit with no way up, a lake's islet, a
   // part thicket alone closed). The per-region figures (each region on its own) are kept as region*.
-  if (!ONLY) {
+  if (!ONLY && !regions) {
     st.regionUnreachedTiles = st.unreachedTiles; st.regionPathUnreached = st.pathUnreached; st.regionPiecesUnreached = st.piecesUnreached;
     const at = (x, y) => (x < 0 || y < 0 || x >= WW || y >= WH ? TV.THICKET : REALM[y * WW + x]), regionAt = (x, y) => regs[Math.floor(y / SH) * (RW / MW) + Math.floor(x / SW)];
     const fordAt = (x, y) => regionAt(x, y).G.ford[Math.floor((y % SH) / CH) * MW + Math.floor((x % SW) / CW)];
