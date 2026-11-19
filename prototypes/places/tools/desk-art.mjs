@@ -158,7 +158,7 @@ export function deskLayers() {
   };
   const ON = ['earth', 'sand', 'mud', 'path', 'grass'], ABOVE = ['litter', 'drygrass', 'turf', 'scree'];
   const layers = {
-    deep: { fill: { sheets: ['fill-deep.png', 'fill-deep@1.png', 'fill-deep@2.png', 'fill-deep@3.png'].map((n) => rec({ commit: 'local' }, n, `puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in ${n.replace(/\.png$/, '.steps.json')}`, readFileSync(path.join(SET_DIR, n)))), frameMs: 250 } },
+    deep: { fill: { sheets: ['fill-deep.png', 'fill-deep@1.png', 'fill-deep@2.png', 'fill-deep@3.png'].map((n) => rec({ commit: 'local' }, n, `${RIPPLE.dir}/fill-water-v0..v3@${n.includes('@') ? n.match(/@(\d)/)[1] : 0}.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in ${n.replace(/\.png$/, '.steps.json')}`, readFileSync(path.join(SET_DIR, n)))), frameMs: 250 } },
     water: { fill: { sheets: [frameStrip(RIPPLE, 0, 'fill-water.png'), ...[1, 2, 3].map((f) => frameStrip(RIPPLE, f, `fill-water@${f}.png`))], frameMs: 250 }, over: [{ kind: 'step', lowers: ['deep'], sheets: [signedSheet('over-water.png', `${SAND.dir}/layers/water-over.png`)] }] },
     earth: { fill: { sheets: [place(SAND, 'layers/fill-earth.png', 'fill-earth.png')] }, over: [{ kind: 'flat', lowers: ['deep', 'water'], sheets: [place(SAND, 'layers/earth-over.png', 'over-earth.png')] }] },
     sand: {

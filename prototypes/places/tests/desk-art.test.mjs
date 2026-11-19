@@ -20,7 +20,7 @@ test('every placed desk file equals the recorded hash, names its signed commit a
   assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['2bc909714', '633e4d641', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', 'local'].sort());
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
-    assert.ok(d.from.startsWith('art-jobs/') || d.from.startsWith('puny-world/'), n + ' names a source in the desk: ' + d.from);
+    assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
   }
 });
 
@@ -48,9 +48,9 @@ test('the terrain layers are signed pieces: every layer file is recorded, fills 
   assert.match(from('fill-water.png'), /fill-water-v0@0\.png \+ .*fill-water-v3@0\.png$/);
   assert.deepEqual(set.layers.water.fill.sheets, ['fill-water.png', 'fill-water@1.png', 'fill-water@2.png', 'fill-water@3.png'], 'four water frames');
   assert.equal(set.layers.water.fill.frameMs, 250);
-  assert.deepEqual(set.layers.deep.fill.sheets, ['fill-deep.png', 'fill-deep@1.png', 'fill-deep@2.png', 'fill-deep@3.png'], 'four deep frames (Puny World water, CC0)');
+  assert.deepEqual(set.layers.deep.fill.sheets, ['fill-deep.png', 'fill-deep@1.png', 'fill-deep@2.png', 'fill-deep@3.png'], 'four deep frames (the signed water fill, recoloured)');
   assert.equal(set.layers.deep.fill.frameMs, 250);
-  assert.match(from('fill-deep.png'), /punyworld-overworld-tileset\.png tiles 295 and 296/);
+  assert.match(from('fill-deep.png'), /fill-water-v0\.\.v3@0\.png/);
   assert.equal(desk['fill-earth.png'].from.includes('#'), false, 'the earth fill is the desk\'s own strip');
   assert.deepEqual(Object.keys(set.layers), ['deep', 'water', 'earth', 'sand', 'mud', 'path', 'grass', 'drygrass', 'turf', 'litter', 'scree', 'scrub', 'thicket', 'cliff']);
   assert.equal(set.layers.scrub.ground, 'grass');
