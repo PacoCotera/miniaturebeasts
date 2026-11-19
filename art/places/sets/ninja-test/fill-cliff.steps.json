@@ -1,39 +1,31 @@
 {
- "source_sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002",
+ "source_sha256": "d4721a84412f1dac67b66d87c1a2879444daf5192d897de46b80e1b469d118f3",
  "parent": {
-  "ledger_id": "f9450e273e",
-  "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002",
-  "file": "git show 95ca2cf61:art/places/sets/ninja-test/fill-cliff.png"
+  "sha256": "d4721a84412f1dac67b66d87c1a2879444daf5192d897de46b80e1b469d118f3",
+  "file": "git show HEAD:art/places/sets/ninja-test/fill-cliff.png",
+  "note": "the signed fill-cliff (#82b266), as shipped"
  },
  "steps": [
   [
    "map",
    [
     [
-     "#99b562",
-     "#82b266"
+     "#82b266",
+     "#8cba68"
     ]
    ]
   ]
  ],
- "out_sha256": "d4721a84412f1dac67b66d87c1a2879444daf5192d897de46b80e1b469d118f3",
- "note": "from the signed parent (the pre-map file, sha256 above) by one colour map; the earlier chain from the paid call is in earlier_record",
+ "out_sha256": "57d8fc60fcc19c21254b171c609fc7155f035afd9db8a49eb96a7b4628a35086",
+ "note": "P5 of the cliff method: the raised top one clear step lighter than the low grass (#74a65d): #82b266 to #8cba68, one colour map",
  "earlier_record": {
-  "source_sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479",
+  "source_sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002",
+  "parent": {
+   "ledger_id": "f9450e273e",
+   "sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002",
+   "file": "git show 95ca2cf61:art/places/sets/ninja-test/fill-cliff.png"
+  },
   "steps": [
-   [
-    "map",
-    [
-     [
-      "#74a65d",
-      "#99b562"
-     ],
-     [
-      "#82b266",
-      "#b7d273"
-     ]
-    ]
-   ],
    [
     "map",
     [
@@ -44,10 +36,39 @@
     ]
    ]
   ],
-  "parent": {
-   "slot": "fill-grass.png",
-   "ledger_id": "c1c8a1d7b1",
-   "file": "fill-grass.png"
+  "out_sha256": "d4721a84412f1dac67b66d87c1a2879444daf5192d897de46b80e1b469d118f3",
+  "note": "from the signed parent (the pre-map file, sha256 above) by one colour map; the earlier chain from the paid call is in earlier_record",
+  "earlier_record": {
+   "source_sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479",
+   "steps": [
+    [
+     "map",
+     [
+      [
+       "#74a65d",
+       "#99b562"
+      ],
+      [
+       "#82b266",
+       "#b7d273"
+      ]
+     ]
+    ],
+    [
+     "map",
+     [
+      [
+       "#99b562",
+       "#82b266"
+      ]
+     ]
+    ]
+   ],
+   "parent": {
+    "slot": "fill-grass.png",
+    "ledger_id": "c1c8a1d7b1",
+    "file": "fill-grass.png"
+   }
   }
  }
 }

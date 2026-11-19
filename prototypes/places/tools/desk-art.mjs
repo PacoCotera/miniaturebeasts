@@ -12,7 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { decodePng, encodePng, crop, paste, newImage, scaleNearest } from '../src/png.mjs';
 import { recolour } from './recolour.mjs';
-import { CORNER_HANDS, END_ROWS, FILL_KIND, FLANK_PARTS, FOOT_KINDS, WAYUP_U_KIND, BANK_DUG_KIND, cornerKind, endKind, flankKind } from '../src/bake/southruns.mjs';
+import { CAP_HANDS, FACE_COLUMNS, SHADOW_KINDS, WAYUP_U_KIND, BANK_DUG_KIND, capKind, faceKind } from '../src/bake/southruns.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DESK = process.env.MIBI_ART_REPO || '/home/mb/mb/mibi-art';
@@ -84,14 +84,11 @@ export const SUNLIT_FROM = '#5e9357';
 export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
 // the raised meadow ground (the art director's cliff-plateau-raised-1, mibi-art 2bc909714): the signed meadow fill and tone through the "raised" light table, day files, byte for byte
 export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-plateau-raised-1/work' };
-// the south-face columns: the paid seam edit of cliff-fill-trial-2 (work/raw/step3-seam.png) -> six columns of the seamless strip, through the plain post-step chain; the files sit in the set folder with their sidecars
-export const FLANK_FROM = 'art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png';   // the side wall's paid raw (the art director's pick)
-export const BACK_FROM = 'art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png';   // the back rim's paid raw (Retro Diffusion tileset, task 1f35f995)
+// the cliff (cliff-slice-1, method.md of cliff-research-1): the rim sheet, three face columns and two end caps are cut and recoloured from Ninja Adventure TilesetRelief.png (CC0); the cast shade is a dithered palette shade
+// (tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py); each cut file's .steps.json replays it from the CC0 file (tools/art/poststeps.py replay, --sources the kits folder)
+export const CLIFF_FROM = 'ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png';
 export const WAYUP_U_FROM = 'art-jobs/2026-11-14-cliff-wayup-2/work/raw/nbp-edit.png';   // the way up U's paid raw (call 1, Nano Banana Pro edit)
 export const BANK_FROM = 'art-jobs/2026-11-17-wayup-paint-2/work/raw/dug-1.png (PixelLab inpaint, seed 62201)', BANK_STEPS = 'wayup-dug.steps.json';   // the earth bank's paid raws
-export const FOOT_FROM ='art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png';   // the foot overlay's paid raw (Nano Banana Pro edit)
-export const CORNER_FROM ='art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png';
-export const SOUTH_COLUMNS = 6,SOUTH_FROM = 'art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png';
 const SET_DIR = path.join(here, '..', '..', '..', 'art', 'places', 'sets', 'ninja-test');
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const show = (c, p) => execFileSync('git', ['-C', DESK, 'show', `${c.commit}:${c.dir}/${p}`], { maxBuffer: 1 << 26 });
@@ -138,7 +135,6 @@ export function deskLayers() {
   const place = (c, src, as) => rec(c, as, `${c.dir}/${src}`, show(c, src));
   const scrubPlace = (src, as) => rec(SCRUBJOB, as, `${SCRUBJOB.dir}/${src} scrub ground (${SCRUB_FROM} to ${SCRUB_GROUND})`, Buffer.from(encodePng(mapColour(decodePng(show(SCRUBJOB, src)), SCRUB_FROM, SCRUB_GROUND))));
   const keyed = (c, src, as) => rec(c, as, `${c.dir}/${src} keyed`, Buffer.from(encodePng(keyShade(decodePng(show(c, src))))));
-  const backTile = (name) => rec({ commit: 'local' }, name, `${BACK_FROM} (one whole 16 px cell of the paid raw, meadow keyed; the chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
   // a signed sheet the set folder holds as its own file (PR 396 grass bank, PR 399 sand beach: the paid paint through the plain post-step chain, the chain in <name>.steps.json): recorded from the folder, never re-read from the desk's older file
   const signedSheet = (name, from) => rec({ commit: 'local' }, name, `${from} (the signed sheet; the whole chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
   const fillFrom = (c, src, as) => rec(c, as, `${c.dir}/${src}#15`, Buffer.from(encodePng(slot15(decodePng(show(c, src))))));
@@ -187,7 +183,8 @@ export function deskLayers() {
     litter: biome('litter', ['sand', 'grass', 'drygrass', 'turf']),
     // the heart stamp's ground patches (e23ca6933) and their raised-top kinds: drawn as the grass
     'bed-ground': { drawAs: 'grass' }, 'split-stone-ground': { drawAs: 'grass' }, 'bed-ground-top': { drawAs: 'grass' }, 'split-stone-ground-top': { drawAs: 'grass' },
-    scree: biome('scree', ['water', 'sand', 'grass', 'litter', 'drygrass', 'turf']),
+    // scree over grass: the ragged grass edge (PR 406, bug #29: a Happyland CC0 derivative, the sheet is the set folder's own file with its .steps.json); the flat sheet draws over every other lower
+    scree: (() => { const b = biome('scree', ['water', 'sand', 'litter', 'drygrass', 'turf']); return { fill: b.fill, over: [{ kind: 'grass-edge', lowers: ['grass'], sheets: [signedSheet('over-scree-grass.png', 'happyland-wang (CC0) grass/stone edge, bug #29')] }, ...b.over] }; })(),
     // scrub (mibi-art 34a8dc49c): the olive flat ground over the grass beneath it (its paint has gaps; the grass fill shows through), three variants of the sheet and the slot-15 strip
     scrub: {
       ground: 'grass',
@@ -202,11 +199,9 @@ export function deskLayers() {
       over: [{ kind: 'rim', lowers: [...ON, ...ABOVE, 'scrub'], sheets: [keyed(THICKET, 'over-thicket.png', 'over-thicket.png')] }],
     },
     cliff: {
-      fill: { sheets: [rec({ commit: 'local' }, 'fill-cliff.png', `${RAISED.dir}/fill-grass-raised-day.png`, readFileSync(path.join(SET_DIR, 'fill-cliff.png')))] },   // the raised meadow ground: every raised cell that is no old face
-      over: [{
-        kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'],   // no sheet: the old over-cliff sheets were unsigned and drew nowhere (art director 2026-11-14 02:24); the kind's pieces are the back cells
-        back: Object.fromEntries([1, 2, 3, 7, 11].map((n) => [n, backTile(`cliff-back-${n}.png`)])),   // the back edge's five cases, each its own file
-      }],
+      fill: { sheets: [rec({ commit: 'local' }, 'fill-cliff.png', `${RAISED.dir}/fill-grass-raised-day.png, one colour map to #8cba68 (P5 of the cliff method; the chain is in fill-cliff.steps.json)`, readFileSync(path.join(SET_DIR, 'fill-cliff.png')))] },   // the raised top: one clear step lighter than the low grass
+      // P1: the rim sheet, the cliff layer's 14-slot over sheet (the raised quadrants filled with the top's colour, the outline and crest on their edge), drawn by the dual grid over every lower it lists
+      over: [{ kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [rec({ commit: 'local' }, 'over-cliff.png', `${CLIFF_FROM} (cut and recoloured; the whole chain is in over-cliff.steps.json)`, readFileSync(path.join(SET_DIR, 'over-cliff.png')))] }],
     },
   };
   // the tone layer: the desk's signed lipless grass tone, one colour map (its dark #5e9357 to the sunlit #82b266: a patch is lighter than the grass, never a hollow)
@@ -321,46 +316,26 @@ export function deskArt() {
   for (const [n, key] of Object.entries(DECOR_SOURCES.sweeps)) props[n] = { ...piece(key), footprint: [] };   // sweeps of tall grass block nothing
   for (const [n, key] of Object.entries(DECOR_SOURCES.decals)) decals[n] = { ...piece(key) };
   for (const [n, key] of Object.entries(DECOR_SOURCES.reeds)) props[n] = { ...piece(key), footprint: [] };   // a prop with no footprint: it sorts with the walkers and blocks nothing
-  // the six south-face columns (the art director's seamless strip S; the files are the build job's regenerated plain-chain columns, read from the set folder as placed, with their sidecars beside them)
-  for (let k = 1; k <= SOUTH_COLUMNS; k++) {
-    const file = `cliff-south-${k}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 48 || im.h !== 288) throw new Error(`${file}: a south column is 48 x 288, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[`cliff-south-${k}`] = { image: im, anchor: [0, 0] };
-    desk[file] = { commit: 'local', from: `${SOUTH_FROM} (the plain chain; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
+  // P2: three plain face columns (48 x 144: crest row, mid row, dark base row), cut from the Ninja relief's wall strip; the files sit in the set folder with their .steps.json (the chain from TilesetRelief.png)
+  for (let k = 0; k < FACE_COLUMNS; k++) {
+    const kind = faceKind(k), file = `${kind}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 48 || im.h !== 144) throw new Error(`${file}: a face column is 48 x 144, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[kind] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `${CLIFF_FROM} (a plain wall column, recoloured, x3; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 144], foot: [0, 0], sha256: sha(b) };
   }
-  // the outer-corner strip (cells 0..5, both hands; the east hand is the art director's cells, the west hand their mirror; each file's .steps.json replays it from the paid raw)
-  for (const hand of CORNER_HANDS) for (let k = 0; k < 6; k++) {
-    const file = `${cornerKind(hand, k)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 48 || im.h !== 288) throw new Error(`${file}: a corner cell is 48 x 288, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[cornerKind(hand, k)] = { image: im, anchor: [0, 0] };
-    desk[file] = { commit: 'local', from: `${CORNER_FROM} (the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 288], foot: [0, 0], sha256: sha(b) };
+  // P3: the two end caps (48 x 144), the wall strip's rounded end columns
+  for (const hand of CAP_HANDS) {
+    const kind = capKind(hand), file = `${kind}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
+    if (im.w !== 48 || im.h !== 144) throw new Error(`${file}: an end cap is 48 x 144, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[kind] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `${CLIFF_FROM} (an end column of the wall strip, recoloured, x3; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, 144], foot: [0, 0], sha256: sha(b) };
   }
-  // the side wall (the paid paint of cliff-lip-side-1, cut on its own painted edge into head, band and tail, 96 px wide: the cell and 48 px of the raised cell beside it; the west hand the flip;
-  // each file's .steps.json holds the whole list from the paid raw)
-  for (const hand of CORNER_HANDS) for (const part of FLANK_PARTS) {
-    const file = `${flankKind(part, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b), h = part === 'tail' ? 54 : 48;
-    if (im.w !== 96 || im.h !== h) throw new Error(`${file}: a side wall ${part} is 96 x ${h}, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[flankKind(part, hand)] = { image: im, anchor: [hand === 'e' ? 48 : 0, 0] };   // the east hand hangs 48 px over the raised cell on its west; no part hangs over the row above
-    desk[file] = { commit: 'local', from: `${FLANK_FROM} (the whole chain from the paid raw is in ${file.replace(/\.png$/, '.steps.json')})`, size: [96, h], foot: [0, 0], sha256: sha(b) };
-  }
-  // the raised fill as one whole cell decal (spec 3.3): the signed fill-cliff.png scaled to a cell, no file of its own (the sprite sheet carries it)
-  const fillSrc = decodePng(readFileSync(path.join(SET_DIR, 'fill-cliff.png')));
-  decals[FILL_KIND] = { image: scaleNearest(fillSrc, 48 / fillSrc.w), anchor: [0, 0] };
-  // the face ends for a step of 2 rows (E2, 48 x 240) and of 1 row (E1, 48 x 192): whole-cell crops of the signed end cell cliff-corner-e-5 (rows 48..288 and 96..288; the west hand the crop flipped, step flip h); each file's .steps.json
-  // holds the cut and the whole list from the paid raw and replays to the placed bytes (tools/art/poststeps.py replay)
-  for (const rows of END_ROWS) for (const hand of CORNER_HANDS) {
-    const file = `${endKind(rows, hand)}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 48 || im.h !== 48 * (3 + rows)) throw new Error(`${file}: an end piece for a step of ${rows} is 48 x ${48 * (3 + rows)}, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[endKind(rows, hand)] = { image: im, anchor: [0, 0] };
-    desk[file] = { commit: 'local', from: `${CORNER_FROM} (cut of the signed cell cliff-corner-e-5; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [48, im.h], foot: [0, 0], sha256: sha(b) };
-  }
-  // the foot overlay (cliff-foot-place-1: the paid paint of cliff-foot-1, the keyed foot band cut per column phase 1..6 and for the west end, the east end its flip): each 72 x 192, its own cell and 12 px of its paint each side,
-  // drawn under the face from row L; each file's .steps.json holds the cut and the chain from the paid raw
-  for (const kind of FOOT_KINDS) {
+  // P4: the cast shade (48 x 6): a two-row dither of the grass's darkest ramp step with a taper at each end, a palette shade made by tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py (no model, no alpha blend)
+  for (const kind of SHADOW_KINDS) {
     const file = `${kind}.png`, b = readFileSync(path.join(SET_DIR, file)), im = decodePng(b);
-    if (im.w !== 72 || im.h !== 192) throw new Error(`${file}: a foot piece is 72 x 192, this is ${im.w} x ${im.h}`);
-    files.set(file, b); decals[kind] = { image: im, anchor: [12, 0] };
-    desk[file] = { commit: 'local', from: `${FOOT_FROM} (the keyed foot band, cut on the cell; the whole chain is in ${file.replace(/\.png$/, '.steps.json')})`, size: [72, 192], foot: [0, 0], sha256: sha(b) };
+    if (im.w !== 48 || im.h !== 6) throw new Error(`${file}: the cast shade is 48 x 6, this is ${im.w} x ${im.h}`);
+    files.set(file, b); decals[kind] = { image: im, anchor: [0, 0] };
+    desk[file] = { commit: 'local', from: `tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py (a dithered shade of the map palette's #4a814e)`, size: [48, 6], foot: [0, 0], sha256: sha(b) };
   }
   // the way up U (cliff-wayup-place-1: the paid paint of call 1 of cliff-wayup-2, keyed on its own edge): one 213 x 348 piece, anchored 93 px left and 126 px above the lip row cell of its area
   {

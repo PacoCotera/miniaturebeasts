@@ -20,7 +20,7 @@ test('every placed desk file equals the recorded hash, names its signed commit a
   assert.deepEqual([...new Set(Object.values(desk).map((d) => d.commit))].sort(), ['2bc909714', '633e4d641', '75f1ff195', '8c0ddc470', '9c902c7ec', 'a6d2e0be4', 'cc712a83e', 'local'].sort());
   for (const [n, d] of Object.entries(desk)) {
     assert.equal(createHash('sha256').update(readFileSync(path.join(dir, n))).digest('hex'), d.sha256, n);
-    assert.ok(d.from.startsWith('art-jobs/'), n + ' names a source in the desk: ' + d.from);
+    assert.ok(['art-jobs/', 'ninja-adventure/', 'happyland-wang', 'tools/credit-runner/'].some((p) => d.from.startsWith(p)), n + ' names a source in the desk or a CC0 kit: ' + d.from);   // the cliff is cut from the Ninja Adventure relief (CC0), the cast shade is a palette shade made by its script
   }
 });
 
