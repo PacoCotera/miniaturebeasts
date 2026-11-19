@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadSet, validateSetJson, ALLOWED_SPDX, layerTiles, fillTiles, kindFullTiles, layerRows, layerDescriptors } from '../src/setload.mjs';
 import { newImage, writePng, fill, decodePng, crop } from '../src/png.mjs';
-import { checkSourcePath, prepareSet, PALETTE_MAX } from '../tools/prepare-set.mjs';
+import { checkSourcePath, prepareSet, pixelsEqual, PALETTE_MAX } from '../tools/prepare-set.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const places = path.join(here, '..');
@@ -236,9 +236,7 @@ test('regenerating the set from the kit gives the committed pixels (skipped when
   for (const [name, buf] of files) {
     const committed = readFileSync(path.join(setDir, name));
     if (name.endsWith('.png')) {
-      const a = decodePng(committed), b = decodePng(buf);
-      assert.equal(a.w, b.w, name);
-      assert.ok(Buffer.compare(Buffer.from(a.data), Buffer.from(b.data)) === 0, name + ' differs');
+      assert.ok(pixelsEqual(committed, buf), name + ' differs');
     } else assert.equal(Buffer.compare(committed, buf), 0, name + ' differs');
   }
   assert.ok(files.size >= 20);
