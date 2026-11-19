@@ -13,7 +13,7 @@
 <meta property="og:title" content="The kit · Miniature Beasts">
 <meta property="og:description" content="The Companion goes out. The Station stays home. The Caddy is where the two meet.">
 <meta property="og:image" content="https://miniaturebeasts.com/assets/kit-1600.webp">
-<link rel="stylesheet" href="../site.css?v=37453c5">
+<link rel="stylesheet" href="../site.css?v=s3a">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -21,13 +21,14 @@
   <div class="wrap">
     <a class="wordmark" href="../">Miniature Beasts</a>
     <nav aria-label="Main">
+      <a href="../game/">How it plays</a>
       <a href="../devices/" aria-current="page">The kit</a>
       <a href="../families/">Families</a>
       <a href="../world/">The world</a>
       <a class="button primary" href="../play/">Play</a>
     </nav>
   </div>
-  <nav class="pages" aria-label="Pages"><a href="../devices/" aria-current="page">The kit</a><a href="../families/">Families</a><a href="../world/">The world</a></nav>
+  <nav class="pages" aria-label="Pages"><a href="../game/">How it plays</a><a href="../devices/" aria-current="page">The kit</a><a href="../families/">Families</a><a href="../world/">The world</a></nav>
 </header>
 
 <main id="main">
@@ -35,14 +36,30 @@
     <div class="wrap split">
       <div>
         <p class="eyebrow">The kit</p>
-        <h1>Three small devices, one job each.</h1>
-        <p class="lede">To get in, and to get back out again, the explorer built three things. We're building them too, in the open.</p>
+        <h1>One goes out. One stays home and thinks.</h1>
+        <p class="lede">The Companion plays the trip in your hand. The Station, on your desk, makes your world, opens what you bring home and keeps every mibi. The Caddy is the dock between them. We're building all three in the open.</p>
       </div>
       <figure class="kit bleed">
         <img src="../assets/kit-1600.webp" width="1600" height="1107"
           alt="A painting of the kit: the Station and the Companion seated in the Caddy, a cream dock with a small grey screen and a paper slip coming out of it.">
         <figcaption>A painting of the kit at home: the Station and the Companion, seated in the Caddy.</figcaption>
       </figure>
+    </div>
+  </section>
+
+  <section class="section sage" aria-labelledby="why-title">
+    <div class="wrap split top-align">
+      <div>
+        <p class="eyebrow">Why its own devices</p>
+        <h2 id="why-title">Why not just an app?</h2>
+        <p class="lede">Because the game lives in two places. A world you go out into, and a home that keeps going while you're away. A phone does both badly: it is never only out, and never always on.</p>
+      </div>
+      <dl class="specs">
+        <div><dt>One job each</dt><dd>The Companion plays the trip. The Station does the heavy work: making the world, drawing every mibi, opening crates. The Caddy keeps the archive.</dd></div>
+        <div><dt>Always on</dt><dd>The Station's screen stays on, with your vivarium living its own hours on the shelf.</dd></div>
+        <div><dt>Keys</dt><dd>A pad, ✓, ← and Call. The game is turn-based, so nothing needs quick fingers.</dd></div>
+        <div><dt>Offline</dt><dd>The kit plays fully offline, for good. Only the Station ever goes online, and only when you allow it, for updates. No account, ever.</dd></div>
+      </dl>
     </div>
   </section>
 
@@ -55,12 +72,12 @@
       <div>
         <p class="eyebrow">Companion</p>
         <h2 id="companion-title">Goes out with you, everywhere you go.</h2>
-        <p class="lede">The Companion is the one in your hand on an expedition: the place, the mibis out with you, the pods underfoot.</p>
+        <p class="lede">The Companion is the one in your hand on an expedition: the place, the mibis out with you, the pods underfoot. It plays the land the Station packed for it, and signs what happens out there.</p>
         <dl class="specs">
-          <div><dt>Screen</dt><dd><span class="num">450 × 600</span>colour, upright, 2.41 inches on the reference board</dd></div>
+          <div><dt>Screen</dt><dd><span class="num">450 × 600</span>colour, upright, 2.41 inches</dd></div>
           <div><dt>Keys</dt><dd>A pad, ✓ and ←, and Call: it wakes the ground and hears what's buried.</dd></div>
-          <div><dt>Away</dt><dd>Lift it from the Caddy charged and ready, for about half an hour out.</dd></div>
-          <div><dt>Inside</dt><dd>An ESP32-S3 board with a motion sensor, Wi-Fi and Bluetooth.</dd></div>
+          <div><dt>Power</dt><dd>A battery, charged without wires while it sits in its cradle.</dd></div>
+          <div><dt>Inside</dt><dd>An ESP32-P4, with an ESP32-C6 for its radio.</dd></div>
         </dl>
       </div>
     </div>
@@ -75,7 +92,8 @@
         <dl class="specs">
           <div><dt>Screen</dt><dd><span class="num">1024 × 600</span>colour, 7 inches, wide</dd></div>
           <div><dt>Keys</dt><dd>A pad, ✓ and ←, and four room keys: Home, Research, the Library and the Vivarium.</dd></div>
-          <div><dt>Inside</dt><dd>A Raspberry Pi 4 on Wi-Fi. It draws every mibi from its kind's painted look and its own traits.</dd></div>
+          <div><dt>Inside</dt><dd>A Raspberry Pi 4. It makes your world, and draws every mibi from its kind's painted look and its own traits.</dd></div>
+          <div><dt>Online</dt><dd>The only device in the kit that ever is: outbound, and only when you allow it.</dd></div>
         </dl>
       </div>
       <figure>
@@ -94,8 +112,9 @@
       <div>
         <p class="eyebrow">Caddy</p>
         <h2 id="caddy-title">Where the two meet, and where the crates cross.</h2>
-        <p class="lede">It charges both handhelds, carries the crates across when you dock, and prints. Its little grey screen says what came home.</p>
+        <p class="lede">It charges both handhelds, carries the crates across when you dock, keeps the archive of your mibis, and prints. Its little grey screen says what came home.</p>
         <dl class="specs">
+          <div><dt>Keeps</dt><dd>Your mibis and their backups, on a card inside. It signs what is made at home.</dd></div>
           <div><dt>Screen</dt><dd><span class="num">792 × 272</span>e-paper, four greys. The picture stays with no power.</dd></div>
           <div><dt>Printer</dt><dd>A 58 mm thermal printer, for a mibi's slip.</dd></div>
           <div><dt>Cradles</dt><dd>Two, one shaped for each handheld, each with a seat sensor and a soft lamp.</dd></div>
@@ -119,16 +138,26 @@
   <section class="section dark" aria-labelledby="dock-title">
     <div class="wrap split top-align">
       <div>
-        <p class="eyebrow">The dock</p>
+        <p class="eyebrow">The hand-off</p>
         <h2 id="dock-title">Seat the Companion, and all three answer.</h2>
         <p class="lede">The trip comes home as one moment. The Caddy feels the Companion land, lights its cradle and tells the Station, in about half a second.</p>
-        <p class="note">Docking never takes anything for you. Your crate waits in the bay until you open it.</p>
+        <p class="note">Docking never takes anything for you. Your crate waits in the bay until you open it, and only the Station opens it.</p>
       </div>
       <dl class="specs">
         <div><dt>Feels it</dt><dd>A small magnet in each handheld, and a magnet sensor under each cradle. It reads true with a flat battery or a full one.</dd></div>
-        <div><dt>Lights</dt><dd>One soft lamp in each cradle, behind frosted plastic. It lights the moment you seat it, without waiting on Wi-Fi.</dd></div>
-        <div><dt>No plugs</dt><dd>Everything is wireless. Nothing to line up, nothing to wear out.</dd></div>
+        <div><dt>Lights</dt><dd>One soft lamp in each cradle, behind frosted plastic. It lights the moment you seat it.</dd></div>
+        <div><dt>Contacts</dt><dd>Magnetic contacts carry the data while it sits. Charging stays wireless. Radio only between devices that are apart.</dd></div>
+        <div><dt>Safe</dt><dd>Crates are copied, not moved: the Companion keeps each one until the Station has it. Lift it at any moment and nothing is lost.</dd></div>
       </dl>
+    </div>
+    <div class="wrap">
+      <ol class="handoff" aria-label="The hand-off, in five steps">
+        <li><span class="where">Station</span><b>Pack</b><span>The Station makes the land you'll walk and hands it over at the dock.</span></li>
+        <li><span class="where">Companion</span><b>Lift</b><span>Take the Companion out of its cradle and set out.</span></li>
+        <li><span class="where">Companion</span><b>Seal</b><span>End the trip: what you carry is sealed in a crate.</span></li>
+        <li><span class="where">Caddy</span><b>Seat</b><span>The lamp lights; the crate crosses through the contacts.</span></li>
+        <li><span class="where">Station</span><b>Open</b><span>You open the crate. The pods roll into their cups.</span></li>
+      </ol>
     </div>
   </section>
 
@@ -141,11 +170,12 @@
         <table class="parts">
           <thead><tr><th scope="col">Device</th><th scope="col">Part</th><th scope="col">For</th></tr></thead>
           <tbody>
-            <tr><td>Companion</td><td>ESP32-S3 board with a 2.41" AMOLED screen</td><td>Screen, logic, radio</td></tr>
+            <tr><td>Companion</td><td>ESP32-P4 with an ESP32-C6 radio, and a 2.41" AMOLED screen, 450 × 600</td><td>Logic, screen, radio</td></tr>
             <tr><td>Station</td><td>Raspberry Pi 4 and a 7" panel, 1024 × 600</td><td>Logic and screen</td></tr>
-            <tr><td>Caddy</td><td>ESP32-S3 module and a 5.79" e-paper panel</td><td>Service, Wi-Fi, screen</td></tr>
-            <tr><td>Caddy</td><td>58 mm thermal printer and an SD card</td><td>Slips and portraits</td></tr>
+            <tr><td>Caddy</td><td>ESP32-S3 module and a 5.79" e-paper panel</td><td>Service, screen, direct link to the Station</td></tr>
+            <tr><td>Caddy</td><td>58 mm thermal printer and a microSD card</td><td>Slips, the archive and backups</td></tr>
             <tr><td>Caddy</td><td>Two magnet sensors and two RGB lamps</td><td>Knowing who's seated</td></tr>
+            <tr><td>Dock</td><td>Magnetic pogo-pin contacts and a wireless charging coil</td><td>Data while seated; charging</td></tr>
           </tbody>
         </table>
       </div>
@@ -197,6 +227,7 @@
     <div class="foot">
       <nav aria-label="Footer">
         <a href="../">Home</a>
+        <a href="../game/">How it plays</a>
         <a href="../families/">Families</a>
         <a href="../world/">The world</a>
         <a href="https://github.com/PacoCotera/miniaturebeasts">Source code</a>
