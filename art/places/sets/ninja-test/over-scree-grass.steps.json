@@ -1,0 +1,363 @@
+{
+ "source_sha256": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+ "steps": [
+  [
+   "layout",
+   [
+    64,
+    64
+   ],
+   [
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        86,
+        86,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      0,
+      0
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        18,
+        103,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      16,
+      0
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        1,
+        120,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      32,
+      0
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        52,
+        120,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      48,
+      0
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        103,
+        86,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      0,
+      16
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        35,
+        103,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      16,
+      16
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        18,
+        120,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      32,
+      16
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        69,
+        120,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      48,
+      16
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        69,
+        154,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      0,
+      32
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        1,
+        171,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      16,
+      32
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        103,
+        171,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      32,
+      32
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        35,
+        188,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      48,
+      32
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        86,
+        154,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      0,
+      48
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        18,
+        171,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      16,
+      48
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        1,
+        188,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      32,
+      48
+     ]
+    },
+    {
+     "src": "721ecba41b88170b08cf4af5af3ee3f567a3244f89efb91de134ce806d53c715",
+     "steps": [
+      [
+       "crop",
+       [
+        52,
+        188,
+        16,
+        16
+       ],
+       "terrain"
+      ]
+     ],
+     "at": [
+      48,
+      48
+     ]
+    }
+   ]
+  ],
+  [
+   "map",
+   [
+    [
+     "#4f6e54",
+     "#5e9357"
+    ],
+    [
+     "#5c5545",
+     "#807c74"
+    ],
+    [
+     "#6c654b",
+     "#9a9083"
+    ],
+    [
+     "#75874b",
+     "#669a5a"
+    ],
+    [
+     "#7d764f",
+     "#9a9083"
+    ],
+    [
+     "#8a8761",
+     "#aba69b"
+    ],
+    [
+     "#8ba049",
+     "#74a65d"
+    ]
+   ]
+  ],
+  [
+   "snap",
+   "map",
+   "314649e7e3f7"
+  ],
+  [
+   "key_colours",
+   [
+    "#74a65d"
+   ]
+  ]
+ ],
+ "out_sha256": "c2a7031b3d3691ed65798d21a27f01a99b4cde7a1f38756ad0d2abeddae3c130"
+}
