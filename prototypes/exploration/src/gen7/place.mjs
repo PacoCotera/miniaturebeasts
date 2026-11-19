@@ -888,6 +888,16 @@ function windowOf(S, X, Y) {
   }
   // one more ford (F6): in the middle of every stretch of a stream that runs through a place, the stream's water across 2 or 3 tiles of its run becomes ford ground (the stream's whole width across), laid last, on the
   // settled land. What stands beside it that is no pair of the ford (sand, scree, thicket, scrub, litter, dry grass, turf) is grass, so both banks walk and no block is illegal. Only what a stream drew, never the water of a river.
+  // land-rules-fix-1: the ford is laid after the passes, so it can leave a bit of the stream's water beside it, or a ford tile at a staircase end, in no 2 x 2 block of its own (Rule 1.9). Each such tile of a ford, and each
+  // water tile that touches a ford, takes the first of water, ford, grass that gives it a 2 x 2 block of its own (grass only where grass is already beside it, so the banks stay legal), until none is left
+  const tidyFord = () => { const loneAt = k => { const v = t[k], x = k % W, y = (k / W) | 0; for (let oy = -1; oy <= 0; oy++) for (let ox = -1; ox <= 0; ox++) { const a = x + ox, b = y + oy; if (a < 0 || b < 0 || a + 1 >= W || b + 1 >= H) continue; const j = b * W + a; if (t[j] === v && t[j + 1] === v && t[j + W] === v && t[j + W + 1] === v) return false; } return true; };
+    const nb4 = k => [t[k - 1], t[k + 1], t[k - W], t[k + W]];
+    for (let pass = 0; pass < 6; pass++) { let n = 0;
+      for (let k = W + 1; k < N - W - 1; k++) { const v = t[k]; if ((v !== TV.FORD && v !== TV.WATER) || portHold[k] || (k % W) < 1 || (k % W) > W - 2 || !loneAt(k)) continue;
+        const nb = nb4(k); if (v === TV.WATER && !nb.includes(TV.FORD)) continue;
+        for (const u of [TV.WATER, TV.FORD, TV.GRASS]) { if (u === v || (u === TV.GRASS && !nb.includes(TV.GRASS))) continue; if (u === TV.FORD && !nb.includes(TV.FORD)) continue; if (u === TV.WATER && !nb.includes(TV.WATER)) continue;
+          t[k] = u; if (!loneAt(k)) { n++; break; } t[k] = v; } }
+      if (!n) break; } };
   for (const { p, tiles } of streamRuns) {
     if (!(p.in && p.out) || tiles.length < 6) continue;
     const m = tiles.length >> 1, fordTiles = [];
@@ -929,6 +939,7 @@ function windowOf(S, X, Y) {
         if (v === TV.SAND || v === TV.SCREE || v === TV.THICKET || v === TV.SCRUB || v === TV.LITTER || v === TV.DRY || v === TV.TURF) t[j] = TV.GRASS; } }
       if (st) { const m = st.splits || (st.splits = new Map()), r = m.get(X + ',' + Y) || { w: 0, o: 0 }; r.w++; m.set(X + ',' + Y, r); }
     } }
+  tidyFord();
   if (stg) stg('gaps+spurs');
   const topLayer = topsOf(t, recipe, W, H, pathTop); if (stg) stg('tops');
   return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, banks, top: topLayer };
