@@ -11,7 +11,7 @@ Two same-origin documents in one page, and the page's own chrome around them:
 | Station | `../station/?embed` (plus `&test` under the test harness) | 1024 × 600 |
 | Companion | `../exploration/?embed` (plus `&seed=<n>` under the test harness) | 450 × 600 |
 
-The standalone Companion Field Test page is retired: `exploration/` with no query redirects to the play page; the Observer (a developer tool) is `exploration/?observer`, which the Options panel links to with Developer tools on.
+The standalone Companion Field Test page is retired: `exploration/` with no query is not found on the site (no redirect); the Observer (a developer tool) is `exploration/?observer`, which the Options panel links to with Developer tools on.
 
 `?embed` is each device's screen alone, at a whole number of physical pixels per device pixel: each screen keeps its whole CSS size (1024 and 450 px) and is scaled by `k / devicePixelRatio` with `k = max(1, floor(devicePixelRatio))`, set from a function that re-arms itself on every device-pixel-ratio change; on the page one lp is `z / devicePixelRatio` CSS pixels, where `z` is the page's size (below; `z = k` by default where nothing larger fits). The shell scales each frame as a whole by `z / k` from its top left, so every face pixel stays a `z × z` block of device pixels. The play page applies the same rule to every edge it places.
 
