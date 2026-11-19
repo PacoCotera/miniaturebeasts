@@ -153,8 +153,9 @@ figcaption { margin-top: 8px; }
 /* one device from the kit painting, framed in CSS (the same signed picture, never a new file) */
 .cut { overflow: hidden; border-radius: var(--radius); background: radial-gradient(120% 90% at 50% 40%, #e8e2d2, #d9d1bf); aspect-ratio: 4 / 3; position: relative; }
 .cut img { position: absolute; max-width: none; }
-.cut.station img { width: 172%; left: -6%; top: -2%; }
-.cut.companion img { width: 270%; left: -164%; top: -6%; }
+/* each crop shows one device only (AD 11-19): the Station x 70-975 of the painting, the Companion from x 1008 */
+.cut.station img { width: 176.8%; left: -7.7%; top: -1%; }
+.cut.companion img { width: 287.8%; left: -181.3%; top: -6%; }
 .cut.companion { aspect-ratio: 3 / 4; }
 .cut.caddy img { width: 100%; left: 0; top: -62%; }
 .cut.caddy { aspect-ratio: 16 / 7; }
@@ -311,8 +312,11 @@ figcaption { margin-top: 8px; }
 .moments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 14px; margin-top: 24px; }
 .tile { background: #f6f1e4; border-radius: 14px; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; }
 .tile img { width: 86%; height: 86%; object-fit: contain; }
-/* the call painting is a soft circle on grey paper: only its circle shows (AD 11-18), cropped square here, the picture itself unchanged */
-.tile img.circle { width: 100%; height: 100%; object-fit: cover; clip-path: circle(36% at 50% 50%); transform: translateY(-1%); }
+/* a round painting shown through one clean disc, the same size and margin in every tile (AD 11-19): the picture itself unchanged, placed so its painted circle fills the disc */
+.tile .disc { position: relative; width: 78%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; }
+.tile .disc img { position: absolute; max-width: none; height: auto; object-fit: initial; }
+.disc.call img { width: 125.7%; left: -12.85%; top: -29.9%; }   /* the call circle: centre 450,572, radius 358 of 900x1133 (as site-2's AD-passed clip) */
+.disc.incu img { width: 112.5%; left: -5.75%; top: -7%; }      /* inside the incubator's ragged vignette: centre 446,456, radius 400 of 900x920 */
 .moments h3 { margin-top: 12px; font-size: 1.15rem; }
 .moments p { font-size: .98rem; line-height: 1.4; color: var(--muted); margin-top: 4px; }
 
