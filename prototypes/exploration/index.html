@@ -798,14 +798,23 @@ function freshLayout(key) {
 const PLACES = { inline: 0, seed: null, sig: '', epoch: 0 };
 placesWatch(() => { PLACES.epoch++; });
 const placeHave = key => key[0] === 'c' || !G || G.gen !== 7 || !PL.ready || !placesWorker() || !!bakedGet(S.regions[0].seed, hereRegion().slot, biomeVersion(S), +key);   // nothing owed for this cell: its baked place is here (or the page makes it)
+const SIGNS_OWED = new Map();   // cell -> the turn its sign was read at, for a cell whose place the worker still owes (cellSigns)
+function signsOwe(c) {
+  if (SIGNS_OWED.has(c)) return; SIGNS_OWED.set(c, S.turn);
+  readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), [c], { ctx: PL.ctx });
+}
+function signsPay() {   // each frame: a cell owed its sign whose place has come is read now (one a frame), at the turn it was reached
+  for (const [c, turn] of SIGNS_OWED) { if (!placeHave(String(c))) continue; SIGNS_OWED.delete(c); recordSigns(c, turn); return; }
+}
 function wantPlaces() {   // each frame: if the reach, the region or the walked cells changed, the places not yet made are asked of the worker, the nearest first
   if (!PL.ready || !S || RT.readOnly || RT.making || !G || G.gen !== 7 || !placesWorker()) return;
+  if (SIGNS_OWED.size) signsPay();
   const R = hereRegion(); if (!R) return;
   if (PLACES.warmSeed !== S.regions[0].seed) { PLACES.warmSeed = S.regions[0].seed; warmPlaces(PLACES.warmSeed, { ctx: PL.ctx }); }   // the worker builds the world's decor while the player is on the Station's screens
   const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.visited || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
   const sig = seed + '|' + R.id + '|' + v + '|' + (ex ? ex.pos + ':' + ex.reach.length : '-') + '|' + visited.length;
   if (sig === PLACES.sig) return; PLACES.sig = sig;
-  if (PLACES.seed !== seed) { if (PLACES.seed != null) placesReset(); PLACES.seed = seed; }
+  if (PLACES.seed !== seed) { if (PLACES.seed != null) { placesReset(); SIGNS_OWED.clear(); } PLACES.seed = seed; }
   const here = ex ? cxy(ex.pos) : null, near = c => here ? cheb(cxy(c), here) : 0;
   const list = [...new Set([...(ex ? [ex.pos, ...ex.reach] : []), ...visited])].filter(c => passable(c)).sort((a, b) => near(a) - near(b));
   readyPlaces(seed, R.slot, v, list, { ctx: PL.ctx });
@@ -1832,7 +1841,10 @@ function cellSigns(c) {
   let b = 0, k = 0; const key = String(c);
   let pd = 0;   // a beat means a pod not found yet; one already located shows as a pod
   for (const p of S.pods) if (p.k === key) { if (p.h || p.x < 0) b = 1; else pd = 1; }
-  if (passable(c)) { const lay = layout(key); for (const f of lay.feats) if (f.kind === 'k' && stormCharge(key, f) > 0) k = 1; }   // warm stones give no sign
+  if (passable(c)) {   // warm stones give no sign
+    if (placeHave(key)) { const lay = layout(key); for (const f of lay.feats) if (f.kind === 'k' && stormCharge(key, f) > 0) k = 1; }
+    else signsOwe(c);   // a cell the worker still owes (past the reach, a bump at an edge reads it): baking it here took seconds of one turn (bug 82); its stone sign is recorded when it arrives
+  }
   const gt = c === G.gate && !burrowOpen() && S.pods.some(p => p.k === 'c' + c) ? 1 : 0;   // the cave below holds a pod
   return { tr, b, k, pd, d: c === G.deep && !S.deepRead ? 1 : 0, g: gt };
 }
