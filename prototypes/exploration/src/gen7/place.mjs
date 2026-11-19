@@ -914,7 +914,11 @@ function windowOf(S, X, Y) {
     const joined = k => { let runs = 0; for (let i = 0; i < 8; i++) { if (!wet(t[k + RING[i]]) || wet(t[k + RING[(i + 7) % 8]])) continue; let orth = false; for (let j = i; j < i + 8 && wet(t[k + RING[j % 8]]); j++) if (j % 2 === 0) orth = true; if (orth) runs++; }
       return runs <= 1 || RING.every(d => wet(t[k + d])); };   // the wet tiles beside k are one run round it (k drying cuts nothing)
     const inner = k => { const x = k % W, y = (k / W) | 0; return x >= 1 && y >= 1 && x < W - 1 && y < H - 1; };
+    // a ford sits across running water (land-rules-3): the stream's water beside a ford (within 1 tile) is never dried, so the stream carries on up and down stream of the crossing
+    const nearFord = new Uint8Array(N);
+    for (let k = 0; k < N; k++) if (t[k] === TV.FORD) { const x0 = k % W, y0 = (k / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x0 + dx, Y2 = y0 + dy; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H) nearFord[Y2 * W + X2] = 1; } }
     const tryTidy = (ks, v, u) => { if (!ks.every(inner) || ks.some(k => portHold[k] && wet(v) && !wet(u) && !joined(k))) return false;
+      if (v === TV.WATER && !wet(u) && ks.some(k => nearFord[k] && t[k] === TV.WATER && streamMask[k])) return false;
       for (const k of ks) t[k] = u;
       if (ks.every(k => (!loneAt(k) || lonePlainAt(t, W, k)) && blocksOk(k))) return true;
       for (const k of ks) t[k] = v; return false; };
