@@ -51,7 +51,9 @@ export function switchCompanion(who) {
 // the key is kept as it is, read-only: nothing is written under it (G.lockedKey).
 function resetFound() {
   let raw = null; try { raw = localStorage.getItem(saveKey()); } catch { return; }
-  const plan = resetPlan(raw, S.SAVE_V); if (plan.action !== "reset") return;
+  const plan = resetPlan(raw, S.SAVE_V);
+  if (plan.action === "broken") { G.lockedKey = saveKey(); return; }   // bytes it cannot read are kept untouched, as the Companion keeps them (audit A6)
+  if (plan.action !== "reset") return;
   if (!keepPre10(localStorage, saveKey(), raw)) { G.lockedKey = saveKey(); return; }
   const wid = "w" + Date.now().toString(36), sv = { v: S.SAVE_V, wid, resetFrom: plan.from, st: S.freshSt(wid, 0) };
   try { localStorage.setItem(saveKey(), JSON.stringify(sv)); } catch { G.lockedKey = saveKey(); }
