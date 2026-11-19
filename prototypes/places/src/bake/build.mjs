@@ -38,12 +38,29 @@ export function reedProps(ir) {
   return out;
 }
 
+// Water with water on all 8 sides (2+ tiles from any shore) is drawn as deep water (owner bug #48: inland water read as the wadeable shallow fill). Drawing only: place.terrain and the
+// block mask keep `water`, so play is unchanged. A cell past the place edge reads as water (the dual grid's clamp). A set with no deep or no water layer draws the terrain as it is.
+export function drawnTerrain(terrain, w, h, terrains, layers) {
+  const val = (id) => (terrains.find((t) => t.id === id) || {}).value;
+  const water = val('water'), deep = val('deep'), has = (v) => (layers instanceof Map ? layers.has(v) : layers[v] !== undefined);
+  if (water === undefined || deep === undefined || !has(water) || !has(deep)) return terrain;
+  const wet = (x, y) => x < 0 || y < 0 || x >= w || y >= h || terrain[y * w + x] === water || terrain[y * w + x] === deep;
+  const out = terrain.slice();
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (terrain[y * w + x] !== water) continue;
+    let all = true;
+    for (let dy = -1; dy <= 1 && all; dy++) for (let dx = -1; dx <= 1; dx++) if (!wet(x + dx, y + dy)) { all = false; break; }
+    if (all) out[y * w + x] = deep;
+  }
+  return out;
+}
+
 // ctx: { terrains, sets: Map(id -> baked tile set), layersOf: Map(id -> setload.layerDescriptors) }. Returns { place } or { errors }.
 export function buildPlace(ir, ctx) {
   const tileset = ctx.sets.get(ir.tileset), desc = ctx.layersOf.get(ir.tileset);
   let dg;
   try {
-    dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: ir.terrain, origin: ir.origin, tone: ir.tone, top: ir.top }, ctx.terrains, desc.layers, desc.tone);
+    dg = terrainLayers({ id: ir.id, w: ir.w, h: ir.h, terrain: drawnTerrain(ir.terrain, ir.w, ir.h, ctx.terrains, desc.layers), origin: ir.origin, tone: ir.tone, top: ir.top }, ctx.terrains, desc.layers, desc.tone);
     applyOpenEdges(dg, ir, ctx.terrains, desc.layers, desc.tone, desc.litterTop);
   } catch (e) {
     if (!(e instanceof DualGridError)) throw e;
