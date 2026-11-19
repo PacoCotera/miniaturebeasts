@@ -2432,22 +2432,22 @@
   },
   "fill-deep.png": {
     "commit": "local",
-    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep.steps.json",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@0.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep.steps.json",
     "sha256": "b707edb304cb5bd4fcdf07b064ce65e096880271f4eac0c9c54d3c8eb8625b40"
   },
   "fill-deep@1.png": {
     "commit": "local",
-    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep@1.steps.json",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@1.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep@1.steps.json",
     "sha256": "823d12a9f8840213e06cf06ae16ae74a5665dbfe0a707a0a39ee3913bc0cfe59"
   },
   "fill-deep@2.png": {
     "commit": "local",
-    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep@2.steps.json",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@2.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep@2.steps.json",
     "sha256": "0f9f3fea6b3ab3476a09909da333b73a464e25d4c42fe6a5f69873f07dde9528"
   },
   "fill-deep@3.png": {
     "commit": "local",
-    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep@3.steps.json",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@3.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep@3.steps.json",
     "sha256": "d309358e2bcf433e59ee6179e5174ff542cb63feb7b97863465c585d73442bc3"
   },
   "fill-water.png": {
