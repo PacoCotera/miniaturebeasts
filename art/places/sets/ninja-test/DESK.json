@@ -1999,7 +1999,7 @@
       0,
       0
     ],
-    "sha256": "83eca605ba3d25f3c3b65002f73663f7ff97f82fa7081d80d1d42914ada86ebd"
+    "sha256": "8c2e669cca5da1eda5acfa1ec2ae43cc0e87f4e98472ad3aef346c8b97a0a956"
   },
   "cliff-south-6.png": {
     "commit": "local",
@@ -2012,7 +2012,7 @@
       0,
       0
     ],
-    "sha256": "97439f7bbaa9e5dad5ae336d5f5c134d5539b1ba3e93cca798345036fc31c874"
+    "sha256": "eede5c24dfc0a7e7680fc6ed8afed38c5fdf227c6020be6113c3e3758050dd23"
   },
   "cliff-corner-e-0.png": {
     "commit": "local",
@@ -2025,7 +2025,7 @@
       0,
       0
     ],
-    "sha256": "05ac01d36ef0ddedab966f7c72abfbcaebc011dd82724d429438be18fa10c6b5"
+    "sha256": "a3c8cbf6dfcb7ee53f253da2d326c79ddd9715f2dbf735bdf6a0303212c0f156"
   },
   "cliff-corner-e-1.png": {
     "commit": "local",
@@ -2038,7 +2038,7 @@
       0,
       0
     ],
-    "sha256": "bac50147b9d0dbc665f9c74a1db162068946c2837c244d5d13eb107d812b6c24"
+    "sha256": "bc6ea858fec5a009f84c611f0856508c421bf2279acaa7642cd309672635c599"
   },
   "cliff-corner-e-2.png": {
     "commit": "local",
@@ -2051,7 +2051,7 @@
       0,
       0
     ],
-    "sha256": "03de99905206fe15f071431e21b31cc1e91c98c248748e0d4a65a17ecc518428"
+    "sha256": "18c32d1f34668052ae5800b97cfc7d421a28ff1205d0c411ee01c2a67d50ad62"
   },
   "cliff-corner-e-3.png": {
     "commit": "local",
@@ -2077,7 +2077,7 @@
       0,
       0
     ],
-    "sha256": "831e72ed738427ca15f8e1bbca146f1994ee265186189ed947df44f0298eb957"
+    "sha256": "be158d74d674233986d8b815f4489b73de91be8a91e10595ee193b08a2d13a60"
   },
   "cliff-corner-e-5.png": {
     "commit": "local",
@@ -2090,7 +2090,7 @@
       0,
       0
     ],
-    "sha256": "41eb698a36370b6eda18286b56f391f1235a6e42b6364acbdc48792db4cac6ba"
+    "sha256": "cbc763da8d1fe8b83212cb644e0ed8a680c057752958ad66f326bb51542f2305"
   },
   "cliff-corner-w-0.png": {
     "commit": "local",
@@ -2103,7 +2103,7 @@
       0,
       0
     ],
-    "sha256": "92a0e8e4256371840f27ad14f6f03e882a2d28c3267265de6459f5c87700289e"
+    "sha256": "ac7d9410990b11dac7638309607741ebebd0834bb179e446690b2d77c0b6ff3e"
   },
   "cliff-corner-w-1.png": {
     "commit": "local",
@@ -2116,7 +2116,7 @@
       0,
       0
     ],
-    "sha256": "cc27f2b0051cb00422e745c77e0addd63c0f2d792611f7693098b1c13fe74d94"
+    "sha256": "d160850689ea77fcc31988d22d84d8e457d898c68dc04defafa3a96d7710d3bb"
   },
   "cliff-corner-w-2.png": {
     "commit": "local",
@@ -2129,7 +2129,7 @@
       0,
       0
     ],
-    "sha256": "28a1b32dbbda28a2491f4ce6b002e05aad31374b43a64675893e83a9bfd36e5d"
+    "sha256": "70a63089b120aa459ea63595fcf1e07350401ea4ed90d63ba55036012da21996"
   },
   "cliff-corner-w-3.png": {
     "commit": "local",
@@ -2155,7 +2155,7 @@
       0,
       0
     ],
-    "sha256": "ba90b65ab491e30a8b182da88625a7106eb59dc2afbae69bd9ffbfef5e6928c1"
+    "sha256": "5804906aa862aecd3d4d1fb133ca67b5fe6d33d42db16c2d6b19231b55322047"
   },
   "cliff-corner-w-5.png": {
     "commit": "local",
@@ -2168,7 +2168,7 @@
       0,
       0
     ],
-    "sha256": "568236f3240e8dac47b9c91b2fee96f3263929bc449731be76f9aa651c758459"
+    "sha256": "99c8ce6070dcc3f3d2d8239a65679237d8a66c78528ced018033961faec46408"
   },
   "cliff-flank-head-e.png": {
     "commit": "local",
@@ -2259,7 +2259,7 @@
       0,
       0
     ],
-    "sha256": "9c0391be29f2cefa9a9276d2e90f572214438ff153a1cb9afc607dc2a95d53e8"
+    "sha256": "a0a2c95b8e890b8b5b29f1226bb8cba7aa55f5713ddc0b58d893d64d26276006"
   },
   "cliff-end1-w.png": {
     "commit": "local",
@@ -2272,7 +2272,7 @@
       0,
       0
     ],
-    "sha256": "1a197deeaa79414c4be7e2d9db997f7e30a0880d372866d383cce128d7d02526"
+    "sha256": "06108f3b3bc4363c343defbe5f660d1ef0118af92200cdb9214e3ee89ae887d9"
   },
   "cliff-end2-e.png": {
     "commit": "local",
@@ -2285,7 +2285,7 @@
       0,
       0
     ],
-    "sha256": "a32366e1862e1084d4377c074f53e6c50be8281b5ed17eb7ebfe2757b93417a5"
+    "sha256": "f0a6453f242979721b286f2a1efa30561ec009865a03edf5e93dd76ef234378d"
   },
   "cliff-end2-w.png": {
     "commit": "local",
@@ -2298,7 +2298,7 @@
       0,
       0
     ],
-    "sha256": "f0ef9b802d30d874fab56b7cd182fb31dac1d49abe65b4aa86c8a3bfdd9c1810"
+    "sha256": "2568d59a610e471340185c337c8bf1336f6c0f769949a7d22346c0148f930d0f"
   },
   "cliff-foot-1.png": {
     "commit": "local",
@@ -2389,7 +2389,7 @@
       0,
       0
     ],
-    "sha256": "094c692fdc34e3225de6b5d3e4181c48db75f3a76f1d0b393ce4d90611074278"
+    "sha256": "510e6e9467d73d895f0f2f485ff2d9e883416524a5c57955ebfbbf13c6bc0e2a"
   },
   "cliff-foot-e.png": {
     "commit": "local",
@@ -2402,7 +2402,7 @@
       0,
       0
     ],
-    "sha256": "e92ffe26c85c1e1a68c959998a99c1e9f81c6f75317bdc18b479250bbb6dc9ab"
+    "sha256": "f55991236b17f73884a9d5cbe19babc5a61fe8433e4e994524b2b20b67b71425"
   },
   "cliff-way-up-u.png": {
     "commit": "local",
@@ -2476,9 +2476,9 @@
     "sha256": "da7cb39f1d0fe58b5dcec10a7e062201ecf3a3d6f10f5a298064adbb0be1c686"
   },
   "over-sand-beach.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/sand_beach-over.png",
-    "sha256": "ec03a5c415814afc912c74846eb0bb5913ec4ee8dc1d02feab161812a9a77515"
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/sand_beach-over.png (the signed sheet; the whole chain is in over-sand-beach.steps.json)",
+    "sha256": "2d35b9a19957072f18edd15c27c77c1e74bc499160e1b2ba6882d4b64b0b1952"
   },
   "over-sand-flat.png": {
     "commit": "633e4d641",
@@ -2511,9 +2511,9 @@
     "sha256": "8fae7fd5a3858d0620be2d9309177ccc246fabc9fb26070105cf1d08efc71479"
   },
   "over-grass-bank.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-over.png",
-    "sha256": "837306db3d923bde3e9adb2dd550188b295a479e1c50902c804038f560fa2073"
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-over.png (the signed sheet; the whole chain is in over-grass-bank.steps.json)",
+    "sha256": "6f4479f6d25290a5f40329d68bfdf7a84ea0bcccc64b11464fae88224f6f6b11"
   },
   "over-grass-flat.png": {
     "commit": "633e4d641",

@@ -139,6 +139,8 @@ export function deskLayers() {
   const scrubPlace = (src, as) => rec(SCRUBJOB, as, `${SCRUBJOB.dir}/${src} scrub ground (${SCRUB_FROM} to ${SCRUB_GROUND})`, Buffer.from(encodePng(mapColour(decodePng(show(SCRUBJOB, src)), SCRUB_FROM, SCRUB_GROUND))));
   const keyed = (c, src, as) => rec(c, as, `${c.dir}/${src} keyed`, Buffer.from(encodePng(keyShade(decodePng(show(c, src))))));
   const backTile = (name) => rec({ commit: 'local' }, name, `${BACK_FROM} (one whole 16 px cell of the paid raw, meadow keyed; the chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
+  // a signed sheet the set folder holds as its own file (PR 396 grass bank, PR 399 sand beach: the paid paint through the plain post-step chain, the chain in <name>.steps.json): recorded from the folder, never re-read from the desk's older file
+  const signedSheet = (name, from) => rec({ commit: 'local' }, name, `${from} (the signed sheet; the whole chain is in ${name.replace(/\.png$/, '.steps.json')})`, readFileSync(path.join(SET_DIR, name)));
   const fillFrom = (c, src, as) => rec(c, as, `${c.dir}/${src}#15`, Buffer.from(encodePng(slot15(decodePng(show(c, src))))));
   // water: four frames, each a strip of the four fill variants v0..v3 (v0 and v2 blank, v1 and v3 glinted), laid side by side, no pixel changed
   const frameStrip = (c, f, as) => {
@@ -162,7 +164,7 @@ export function deskLayers() {
     sand: {
       fill: { sheets: [fillFrom(SAND, 'layers/sand_beach-over.png', 'fill-sand.png')] },
       over: [
-        { kind: 'beach', lowers: ['deep', 'water'], sheets: [place(SAND, 'layers/sand_beach-over.png', 'over-sand-beach.png')] },
+        { kind: 'beach', lowers: ['deep', 'water'], sheets: [signedSheet('over-sand-beach.png', `${SAND.dir}/layers/sand_beach-over.png`)] },
         { kind: 'flat', lowers: ['earth'], sheets: [place(SAND, 'layers/sand_flat-over.png', 'over-sand-flat.png')] },
       ],
     },
@@ -174,7 +176,7 @@ export function deskLayers() {
     grass: {
       fill: { sheets: [fillFrom(MEADOW1, 'layers/grass-over.png', 'fill-grass.png')] },
       over: [
-        { kind: 'bank', lowers: ['deep', 'water'], sheets: [place(MEADOW1, 'layers/grass-over.png', 'over-grass-bank.png')] },
+        { kind: 'bank', lowers: ['deep', 'water'], sheets: [signedSheet('over-grass-bank.png', `${MEADOW1.dir}/layers/grass-over.png`)] },
         { kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path'], sheets: [place(MEADOW2, 'layers/grass-flat.png', 'over-grass-flat.png')] },
       ],
     },
@@ -183,6 +185,8 @@ export function deskLayers() {
     drygrass: biome('drygrass', ['grass']),
     turf: biome('turf', ['grass', 'drygrass']),
     litter: biome('litter', ['sand', 'grass', 'drygrass', 'turf']),
+    // the heart stamp's ground patches (e23ca6933) and their raised-top kinds: drawn as the grass
+    'bed-ground': { drawAs: 'grass' }, 'split-stone-ground': { drawAs: 'grass' }, 'bed-ground-top': { drawAs: 'grass' }, 'split-stone-ground-top': { drawAs: 'grass' },
     scree: biome('scree', ['water', 'sand', 'grass', 'litter', 'drygrass', 'turf']),
     // scrub (mibi-art 34a8dc49c): the olive flat ground over the grass beneath it (its paint has gaps; the grass fill shows through), three variants of the sheet and the slot-15 strip
     scrub: {
