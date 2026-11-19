@@ -247,7 +247,7 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 | Mechanic | How it works |
 | --- | --- |
 | **Exploration** | A fogged world map of living places that turns once per expedition. The player starts on any cell they can see; the Probe's tier sets the reach; walking and Call survey a place; storms, fog banks, outposts and beacons shape the trip ([world and exploration](world-and-exploration.md)) |
-| **Gathering** | Collecting is deliberate, in whole items. A full hold offers a swap, and nothing is lost. The Probe carries 2 pods at tier 1 and 3 at tier 2, and up to 20 of each material |
+| **Gathering** | Collecting is deliberate, in whole items. A full hold of pods offers a swap. Pressing fruit, or drawing a stone, with room for less than it gives fills the material to the cap and the extra is lost, and a line says so; it is refused only when the hold is already at the cap. The Probe carries 2 pods at tier 1 and 3 at tier 2, and up to 20 of each material |
 | **Return** | End expedition works only on the start cell or a lit outpost, and it ends the expedition. It seals the hold into a crate that travels in the Companion's bay until it docks; the player may keep exploring with crates aboard. The Station opens each crate exactly once. A break sends nothing home: the pods drop where the Probe broke |
 | **Identification** | Shows the species, not the pod's hidden traits; an identified pod can be grown unedited ([research and breeding](research-and-breeding.md#identify)) |
 | **Research** | Optional, and the core of play. A chapter at a time, as pictures; glints say where something new is; findings are kept; sealed chapters open with finds ([research and breeding](research-and-breeding.md#reading-a-chapter)) |
