@@ -150,11 +150,11 @@ export function deskLayers() {
   };
   // a biome ground: the fill is a strip of eight 16 x 16 tiles (v0 and v1 alternate, the rare detail v2 once: the dual grid picks a variant by hash, so v2 is one fill in eight), the over sheet the desk's file
   const BIOME_STRIP = [0, 1, 0, 1, 0, 1, 0, 2];
-  const biome = (b, lowers) => {
+  const biome = (b, lowers, lead = []) => {
     const c = biomeDir(b), s = BIOMES[b].stem, vs = ['', '~v1', '~v2'].map((v) => `fill-${s}${v}.png`), out = newImage(BIOME_STRIP.length * T, T);
     BIOME_STRIP.forEach((v, k) => paste(out, decodePng(show(c, vs[v])), k * T, 0));
     const fill = rec(c, `fill-${b}.png`, vs.map((v) => `${c.dir}/${v}`).join(' + ') + ` as the strip ${BIOME_STRIP.join(' ')} (layout)`, Buffer.from(encodePng(out)));
-    return { fill: { sheets: [fill] }, over: [{ kind: 'flat', lowers, sheets: [place(c, BIOMES[b].over, `over-${b}.png`)] }] };
+    return { fill: { sheets: [fill] }, over: [...lead, { kind: 'flat', lowers, sheets: [place(c, BIOMES[b].over, `over-${b}.png`)] }] };
   };
   const ON = ['earth', 'sand', 'mud', 'path', 'grass'], ABOVE = ['litter', 'drygrass', 'turf', 'scree'];
   const layers = {
@@ -187,7 +187,8 @@ export function deskLayers() {
     litter: biome('litter', ['sand', 'grass', 'drygrass', 'turf']),
     // the heart stamp's ground patches (e23ca6933) and their raised-top kinds: drawn as the grass
     'bed-ground': { drawAs: 'grass' }, 'split-stone-ground': { drawAs: 'grass' }, 'bed-ground-top': { drawAs: 'grass' }, 'split-stone-ground-top': { drawAs: 'grass' },
-    scree: biome('scree', ['water', 'sand', 'grass', 'litter', 'drygrass', 'turf']),
+    // scree: the grass edge (PR 406, bug #29) is the set folder's own signed sheet (chain in over-scree-grass.steps.json), drawn before the flat row
+    scree: biome('scree', ['water', 'sand', 'litter', 'drygrass', 'turf'], [{ kind: 'grass-edge', lowers: ['grass'], sheets: [signedSheet('over-scree-grass.png', `${biomeDir('scree').dir} (scree grass edge, PR 406)`)] }]),
     // scrub (mibi-art 34a8dc49c): the olive flat ground over the grass beneath it (its paint has gaps; the grass fill shows through), three variants of the sheet and the slot-15 strip
     scrub: {
       ground: 'grass',

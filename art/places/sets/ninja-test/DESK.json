@@ -2569,6 +2569,11 @@
     "sha256": "513eadc9552cc1bfd85842877fbb6ba3e92aa59023318b2699edbc110bc5b270",
     "merged": true
   },
+  "over-scree-grass.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-biome-scree/out/tiles (scree grass edge, PR 406) (the signed sheet; the whole chain is in over-scree-grass.steps.json)",
+    "sha256": "c2a7031b3d3691ed65798d21a27f01a99b4cde7a1f38756ad0d2abeddae3c130"
+  },
   "fill-scree.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-scree/out/tiles/fill-scree.png + art-jobs/2026-11-10-art-biome-scree/out/tiles/fill-scree~v1.png + art-jobs/2026-11-10-art-biome-scree/out/tiles/fill-scree~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
