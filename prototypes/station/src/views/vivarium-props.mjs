@@ -9,6 +9,7 @@ import { roomRegion, roomData, roomName, withLight } from "./room-props.mjs";
 import { frameOf } from "../genome.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { fill } from "./words.mjs";
+import { growIn } from "../age-words.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf } from "./requests.mjs";
 
 const sizeOf = (id) => id.match(/-(\d+)x(\d+)$/).slice(1).map(Number);
@@ -61,6 +62,8 @@ export const breatherWords = (W, n) => (n === 1 ? W.breatherNext : fill(W.breath
 export const breatherAfter = (m) => { const load = Math.min(8, (m?.crossLoad | 0) + 1); return Math.min(5, (load <= 4 ? 1 : load - 3) + (m?.restExtra | 0)); };
 // turns until a young one grows up (null when it does not)
 export const youngTurns = (st, m, settings) => { const aT = settings.adultTurns ?? S.JUVENILE_TURNS; return m.bonded && m.grownTurn == null ? null : Math.max(1, (m.born | 0) + aT - S.stageTurn(st, m)); };
+// the words for it: the real time left on the clock ("in 2 hours", "soon"), or turns for a mibi with no clock; null when it does not grow up
+export const youngWhen = (st, m, settings) => { if (m.bonded && m.grownTurn == null) return null; if (m.growAt > 0) return growIn(Math.max(0, m.growAt - Date.now())); const n = youngTurns(st, m, settings); return "in " + n + (n === 1 ? " turn" : " turns"); };
 
 // What holds a pick up (✓ on a mibi, §3): the message plate's { held, why, plate } for a traveller, one coming out or one tucked away (whose pick up is its Bring out), else null. The card has no Move plate (the sign-off of the build: five plates)
 export function pickHeld(st, sv, m, settings, Sg, docked) {
@@ -90,9 +93,9 @@ export function platesOf(st, sv, m, settings, Sg, docked) {
     const h = !b ? null : b.key === "carried" ? onboard : b.key === "coming" ? coming : b.key === "last" ? held(W.last, "last") : b.key === "short" ? held(fill(W.short, { p: b.price, e: b.have }), "short") : tucked;
     out.push({ act: "tuckAway", verb: P.tuck, price: free ? P.tuckFree : S.priceText(p, 0, 0), ...(free ? { free: true } : {}), ...(h ?? { held: false, why: free ? W.tuckBonded : fill(W.tuck, { p: S.bringOutPrice(st, settings), n: S.TUCK.turns }) }) });
   }
-  { let h = null; const nY = youngTurns(st, m, settings), four = S.roomPrice(st, settings) == null;
+  { let h = null; const nY = youngWhen(st, m, settings), four = S.roomPrice(st, settings) == null;
     if (w === "carried") h = held(Sg.why.partnerOut, "onboard"); else if (w === "store") h = tucked; else if (w === "coming") h = coming;
-    else if (stage === "juvenile") h = held(nY === 1 ? W.breedYoungOne : nY == null ? W.breedYoung.split(" · ")[0] : fill(W.breedYoung, { n: nY }), "young");
+    else if (stage === "juvenile") h = held(nY == null ? W.breedYoung.split(" · ")[0] : fill(W.breedYoung, { when: nY }), "young");
     else if (breatherLeft(st, m) > 0) h = held(breatherWords(W, breatherLeft(st, m)), "breather");
     else if (st.bud) h = held(W.breedBusy, "busy");
     else if (S.vivFull(st, settings)) h = held(four ? W.breedNoPlace4 : W.breedNoPlace, four ? "noPlace4" : "noPlace");

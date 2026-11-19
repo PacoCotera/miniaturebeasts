@@ -1292,7 +1292,7 @@ test("bond-walks-fix-1: each Play together press shows its own lines in order; n
 });
 
 // ---- Ageing in turns: the age words, the stage words, and the real time a mibi has been the player's ----
-const AGE_FNS = ["ageTurns", "stageNote", "turnsFor", "turnsUntil", "yoursLine"];
+const AGE_FNS = ["ageTurns", "stageNote", "growIn", "turnsFor", "turnsUntil", "yoursLine"];
 const AGE_WORLD = (S, day) => { const ctx = vm.createContext({ console, S, Date: clockAt(day || "2026-10-27"), JUVENILE_TURNS: 2, ELDER_TURNS: 16 });
   const names = ["stageAt", "turnsShort", "ageLine", "yoursText", ...AGE_FNS], at = (n, k = ctx) => vm.runInContext(source(n), k);
   return vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx); };

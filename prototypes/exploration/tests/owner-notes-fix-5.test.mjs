@@ -56,3 +56,14 @@ test("#85 a Call at a corner of an explored place lifts the strips next door, an
   assert.equal(p.run(`unwalkedVeil(new Uint8Array(4).fill(0), { w: 2, h: 2, baked: { ox: 0, oy: 0, place: { w: 2, h: 2 } } }, null).join('')`), "1111", "no Call, wholly veiled as before");
 });
 
+test("#85 the held view lights the half of each unwalked neighbour that it shows, at a corner too", () => {
+  const p = makePage({ console: "silent", canvas: true });
+  p.run(SETUP);
+  const open = (dx, dy) => p.run(`(() => { const nl = { w: 8, h: 8, baked: { ox: 0, oy: 0, place: { w: 8, h: 8 } } }; return Array.from(unwalkedVeil(new Uint8Array(64).fill(1), nl, null, ${dx}, ${dy})).filter((x) => !x).length; })()`);
+  assert.equal(open(-1, 0), 32, "the west neighbour: its east half");
+  assert.equal(open(0, -1), 32, "the north neighbour: its south half");
+  assert.equal(open(-1, -1), 16, "the north-west neighbour: its south-east quarter, the corner");
+  assert.equal(open(1, 1), 16);
+  assert.equal(p.run(`(() => { const nl = { w: 8, h: 8, baked: { ox: -1, oy: -1, place: { w: 10, h: 10 } } }; const v = unwalkedVeil(new Uint8Array(100).fill(1), nl, null, 1, 0); return v[0] + v[9] + v[90] + v[99]; })()`), 4, "the apron stays veiled");
+});
+

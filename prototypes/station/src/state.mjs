@@ -902,7 +902,8 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
       const two = members(sp).slice(0, 2), budIsSecond = two.length < 2 && !!bud && speciesOf(bud) === sp;
       const walkOf = (m) => Math.max(0, (m.born || 0) + aT - st.turn);
       const walks = Math.max(...two.map(walkOf), budIsSecond ? aT : 0);
-      g = { key: "growUp", names: [two[0].name, budIsSecond ? null : two[1]?.name ?? null], walks, step: budIsSecond ? budStep() : { key: "goOut" } }; break;
+      const leftMs = Math.max(...two.map((m) => (m.growAt > 0 ? Math.max(0, m.growAt - Date.now()) : GROW_UP_MS)), budIsSecond ? GROW_UP_MS : 0);   // the real time till the last of them grows up (the banner's words)
+      g = { key: "growUp", names: [two[0].name, budIsSecond ? null : two[1]?.name ?? null], walks, leftMs, step: budIsSecond ? budStep() : { key: "goOut" } }; break;
     }
     if (!g && crossOpen && !living.some((m) => m.from && m.from.how === "cross") && !(bud && bud.kind === "cross")) {
       for (const sp of spOrder) { const ad = members(sp).filter((m) => isAdult(st, m, settings)); if (ad.length < 2) continue;

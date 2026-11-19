@@ -1387,7 +1387,6 @@ function stageAt(m, turn, j, e) {
   const age = turn - (m.born || 0), young = m.growAt > 0 ? Date.now() < m.growAt : age < j; return young ? 'juvenile' : m.growAt > 0 || age < j + e ? 'adult' : 'elder';   // a hatched mibi grows up on the real clock (growAt, ms); one without it, on turns
 }
 const GROW_UP_MS = 2 * 3600 * 1000;   // a young mibi grows up two real hours after it hatched (owner 2026-11-18 14:3x, 11-19 14:11: the station runs on real clocks)
-function growWait(ms) { const n = Math.max(1, Math.ceil(ms / 60000)); return n < 60 ? 'in ' + n + ' min' : n < 90 ? 'in about an hour' : 'in about ' + Math.round(n / 60) + ' hours'; }
 function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); }
 // Age in words (the Station's copy, station/src/age-words.mjs, is the same text; a parity test proves it).
 // "{n} turns old", counted from `born`: "1 turn old" at 1, "new this turn" at 0.
@@ -1396,10 +1395,12 @@ function ageTurns(m, turn) { const n = Math.max(0, turn - (m.born || 0)); return
 // or the turns still to grow for a young mibi on the clock.
 function stageNote(m, turn, j, e) {
   const stage = stageAt(m, turn, j, e);
-  if (stage === 'juvenile') return { stage, n: m.growAt > 0 ? 0 : (m.born || 0) + j - turn };
+  if (stage === 'juvenile') return m.growAt > 0 ? { stage, n: 0, ms: Math.max(0, m.growAt - Date.now()) } : { stage, n: (m.born || 0) + j - turn };
   const grown = m.grownTurn != null ? m.grownTurn : (m.born || 0) + j;
   return { stage, n: Math.max(0, turn - (stage === 'elder' ? grown + e : grown)) };
 }
+// The real time still to wait, rounded plainly (ms left): "soon" (a minute or less), "in 40 minutes", "in an hour", "in 2 hours". [copy]
+function growIn(ms) { const n = Math.ceil(ms / 60000); return n <= 1 ? 'soon' : n < 60 ? 'in ' + n + ' minutes' : n < 90 ? 'in an hour' : 'in ' + Math.round(n / 60) + ' hours'; }
 // "for 7 turns", "for 1 turn", "from this turn" (n is whole turns, 0 or more).
 function turnsFor(n) { return n <= 0 ? 'from this turn' : n === 1 ? 'for 1 turn' : 'for ' + n + ' turns'; }
 // "in 2 turns", "next turn" (n is turns still to come, 1 or more).
@@ -5779,9 +5780,12 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
 // is built is its whole-place picture at its own veil; land not yet seen is the map's fog, land seen with no place to draw (water, cliff, or its place not here yet) the map's own cell.
 // Nothing is built on the page thread in one go: a neighbour's picture is made in steps (overviewSteps), PEEK_NB_MS of steps a frame, the nearest first, and shows when it is done.
 // A cell the places worker still owes is never asked of layout() (rule: PR 316); it stays under the map's fog until it is here.
-function unwalkedVeil(veil, nl, pre) {   // veil (placeVeil's, one byte a picture tile): all veiled, but the tiles a Call lifted (pre: S.veilPre's rows) and never the apron
-  const pw = nl.baked.place.w;
-  for (let i = 0; i < veil.length; i++) { const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy; veil[i] = pre && px >= 0 && py >= 0 && px < nl.w && py < nl.h && ((pre[py] >>> px) & 1) ? 0 : 1; }
+function unwalkedVeil(veil, nl, pre, dx, dy) {   // veil (placeVeil's, one byte a picture tile): the half of the place next door that the held view shows (the half nearest the held place; dx/dy: where it lies) and the tiles a Call lifted (pre: S.veilPre's rows) are lit; the rest and the apron stay veiled
+  const pw = nl.baked.place.w, W = nl.w, H = nl.h, hx = W >> 1, hy = H >> 1;
+  for (let i = 0; i < veil.length; i++) {
+    const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy, inside = px >= 0 && py >= 0 && px < W && py < H;
+    const half = inside && dx != null && (dx < 0 ? px >= W - hx : dx > 0 ? px < hx : true) && (dy < 0 ? py >= H - hy : dy > 0 ? py < hy : true);
+    veil[i] = half || (pre && inside && ((pre[py] >>> px) & 1)) ? 0 : 1; }
   return veil;
 }
 const PEEK_NB_MS = 6, PEEK_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
@@ -5807,7 +5811,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     const r = rect(w, h); g.imageSmoothingEnabled = false;
     if (nbk) {
       const pre = !S.visited[c] && S.veilPre && S.veilPre[key];   // the strip a Call from next door lifted there (owner #85; #377 kept it apart in S.veilPre)
-      const veil = placeVeil(nl); if (!S.visited[c]) unwalkedVeil(veil, nl, pre);   // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
+      const veil = placeVeil(nl); if (!S.visited[c]) unwalkedVeil(veil, nl, pre, dx, dy);   // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
       const wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
       if (!cvn) {
         if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
@@ -7057,7 +7061,7 @@ function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return nu
 function turnsShort(m) { const n = Math.max(0, S.turn - (m.born || 0)); return n === 0 ? 'new' : n === 1 ? '1 turn' : n + ' turns'; }
 function ageLine(m) {
   const nt = stageNote(m, S.turn, JUVENILE_TURNS, ELDER_TURNS);
-  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (m.growAt > 0 ? ' · grows up ' + growWait(m.growAt - Date.now()) : nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
+  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (nt.ms != null ? ' · grows up ' + growIn(nt.ms) : nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
 }
 function yoursText(m) {
   const y = yoursLine(m, new Date().getTime()); if (!y) return '';
