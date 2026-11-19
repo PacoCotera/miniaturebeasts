@@ -1186,10 +1186,38 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-19",
+   "id": "27685deefa",
+   "path": "art/places/sets/ninja-test/fill-deep.png",
+   "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "6439da0f52",
    "path": "art/places/sets/ninja-test/fill-deep.png",
    "sha256": "2ad2dfafc802f0720764f569f1def08ed4fd6160f7ca59ad3010c91addd05593"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-19",
+   "id": "27685deefa",
+   "path": "art/places/sets/ninja-test/fill-deep@1.png",
+   "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-19",
+   "id": "27685deefa",
+   "path": "art/places/sets/ninja-test/fill-deep@2.png",
+   "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-19",
+   "id": "27685deefa",
+   "path": "art/places/sets/ninja-test/fill-deep@3.png",
+   "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
   },
   {
    "class": "legacy-paint",
@@ -1696,6 +1724,13 @@
    "sha256": "b400fd83d0ceb5905f4ec58fb6a8bb8a587c6052d4fc244233f807bca923dc37"
   },
   {
+   "class": "derivative",
+   "date": "2026-11-19",
+   "id": "b4d960c768",
+   "path": "art/places/sets/ninja-test/over-scree-grass.png",
+   "sha256": "c2a7031b3d3691ed65798d21a27f01a99b4cde7a1f38756ad0d2abeddae3c130"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "8745d99519",
@@ -1757,6 +1792,13 @@
    "id": "b776e72805",
    "path": "art/places/sets/ninja-test/over-water.png",
    "sha256": "4a0b26c3dafaaa9050cca1c8521e01e4b8cdf684db8683c59a7c169464c0a113"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-19",
+   "id": "45d424b40d",
+   "path": "art/places/sets/ninja-test/over-water.png",
+   "sha256": "6843ba2a4f769207b659988cf5ab952e6af787cca20ac6d2fcd5973b07e12ff3"
   },
   {
    "class": "legacy-paint",
