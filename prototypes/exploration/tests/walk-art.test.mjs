@@ -58,7 +58,7 @@ test("the page draws the desk's pieces as they are: marks and the bubble", () =>
   same(p, "bubbleArt('?')", "bubble-curious-11x13");
 });
 
-test("a cliff on the full map runs on the sector's block contour: the desk's face piece, its column at wx mod w, hangs from the block's border row; a stair is the ramp piece at its port", () => {
+test("a cliff on the full map runs on the sector's block contour: a one-pixel ink line on the block's border row and no grey face block under it (bug #61); a stair is the ramp piece at its port", () => {
   const p = makePage({ gen: 7, console: "silent", els: true, canvas: true, raf: 1 });
   p.run("newWorld(14); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; for (let c = 0; c < MW * MH; c++) S.revealed[c] = 1;");
   // a horizontal block edge inside one place (never on a place edge): the block above raised, the block below low
@@ -67,11 +67,10 @@ test("a cliff on the full map runs on the sector's block contour: the desk's fac
   p.run("scr.px().fill(-1); drawEdgeMarks({ map: true, cs: CELL, ox: 0, oy: 0, rmOf: () => 0 })");
   const px = p.run("scr").px(), W = p.run("SCR_W"), CELL = p.run("CELL"), MW = p.run("MW"), rgb = p.run("RGB"), face = WALK_ART["edge-cliff-face-26"], u = CELL / 4;
   const [c, bx, by] = e, gx = (c % MW) * 4 + bx, gy = ((c / MW) | 0) * 4 + by, yb = Math.round((gy + 1) * u), x0 = Math.round(gx * u), x1 = Math.round((gx + 1) * u);
-  let hung = 0; for (let x = x0; x < x1; x++) {   // per column: the piece's column starts at the block's border row, not displaced
-    const fc = x % face.width; let ok = true;
-    for (let r = 0; r < face.height && ok; r++) { const o = (r * face.width + fc) * 4; if (!face.data[o + 3]) continue; const v = px[(yb + r) * W + x]; if (v < 0 || Array.from(rgb[v]).join() !== [face.data[o], face.data[o + 1], face.data[o + 2]].join()) ok = false; }
-    if (ok) hung++; }
-  assert.ok(hung >= (x1 - x0) * 0.6, `the face's column hangs from the block's border in ${hung} of ${x1 - x0} columns`);
+  // bug #61: the cliff is a one-pixel ink line on the border row; the pixels below it are left to the land (no grey face block)
+  const ink = p.run("C.ink"); let line = 0, below = 0; for (let x = x0; x < x1; x++) { if (px[yb * W + x] === ink) line++; if (px[(yb + 1) * W + x] === -1 && px[(yb + 2) * W + x] === -1) below++; }
+  assert.ok(line >= (x1 - x0) * 0.6, `the ink line runs along the block's border row in ${line} of ${x1 - x0} columns`);
+  assert.ok(below >= (x1 - x0) * 0.6, `the rows under the line are left as the land in ${below} of ${x1 - x0} columns`);
   // the stair: the ramp piece's rows stand at the stair's port, on the sector's level line (or the place edge) within two block rows
   const r0 = p.run(`(() => { const sec = sectorHere(); const r = sec.ramps.find(r => S.revealed[r.c] && r.c + MW < MW * MH); return r ? { c: r.c, x: r.x, y: r.y } : null; })()`);
   if (r0) { const rp = WALK_ART["edge-ramp-26"], rx = Math.round(r0.x * CELL / p.run("OCW")) - (rp.width >> 1), ey = (((r0.c / MW) | 0) + 1) * CELL;
