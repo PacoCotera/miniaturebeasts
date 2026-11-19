@@ -5501,12 +5501,13 @@ function drawSectorMarks(q, cells, pawn, sec) {
     const rampAt = ramps.map(r => { const X = r.c % MW, Y = (r.c / MW) | 0, P = pc(r.hiA).ramp, cx = Math.round(r.x * cs / OCW), gx = Math.floor(cx / u); let top = (Y + 1) * cs;
       for (const d of [0, -1, 1, -2, 2]) { const k = (Y + 1) * 4 - 1 + d, a = lvAt(gx, k), b = lvAt(gx, k + 1); if (a >= 0 && b >= 0 && a !== b) { top = Math.round((k + 1) * u); break; } }
       return { r, P, x0: cx - (P.w >> 1), top, rm: rmOf(r.c + MW) }; });
-    for (const e of edges) { const P = pc(e.hiA);
+    // a cliff on the map is one ink pixel along the block edge (bug #61: the grey face pieces, one per block, hid the land at this density); the land beside it shows through
+    for (const e of edges) {
       if (!e.horiz) { const xb = Math.round((e.gx + 1) * u), y0 = Math.round(e.gy * u), y1 = Math.round((e.gy + 1) * u);
-        for (let wy = y0; wy < y1; wy++) { const r = posMod(wy, P.side.h); for (let i = 0; i < P.side.w; i++) put(xb + i, wy, P.side.p[r * P.side.w + i], e.rm); } }
-      else { const yb = Math.round((e.gy + 1) * u), x0 = Math.round(e.gx * u), x1 = Math.round((e.gx + 1) * u), F = P.face;
+        for (let wy = y0; wy < y1; wy++) put(xb, wy, C.ink, e.rm); }
+      else { const yb = Math.round((e.gy + 1) * u), x0 = Math.round(e.gx * u), x1 = Math.round((e.gx + 1) * u);
         for (let wx = x0; wx < x1; wx++) { if (rampAt.some(a => !a.r.off && a.top === yb && wx >= a.x0 && wx < a.x0 + a.P.w)) continue;
-          const col = posMod(wx, F.w); for (let r = 0; r < F.h; r++) put(wx, yb + r, F.p[r * F.w + col], e.rm); } } }
+          put(wx, yb, C.ink, e.rm); } } }
     for (const a of rampAt) if (!a.r.off) for (let r = 0; r < a.P.h; r++) for (let i = 0; i < a.P.w; i++) put(a.x0 + i, a.top + r, a.P.p[r * a.P.w + i], a.rm);
     // the realm's lines at map scale: world tiles (CW x CH to a place) to pixels, two pixels wide at the reach's sizes, one on the full map
     const wide = cs > 26 ? 2 : 1, px = v => Math.round(v * cs / OCW), py = v => Math.round(v * cs / OCH);
