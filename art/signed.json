@@ -1199,11 +1199,39 @@
    "sha256": "2ad2dfafc802f0720764f569f1def08ed4fd6160f7ca59ad3010c91addd05593"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "3cf5b46ba5",
+   "path": "art/places/sets/ninja-test/fill-deep.png",
+   "sha256": "b707edb304cb5bd4fcdf07b064ce65e096880271f4eac0c9c54d3c8eb8625b40"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-19",
    "id": "27685deefa",
    "path": "art/places/sets/ninja-test/fill-deep@1.png",
    "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "87fffecdb8",
+   "path": "art/places/sets/ninja-test/fill-deep@1.png",
+   "sha256": "823d12a9f8840213e06cf06ae16ae74a5665dbfe0a707a0a39ee3913bc0cfe59"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "3cf5b46ba5",
+   "path": "art/places/sets/ninja-test/fill-deep@1.png",
+   "sha256": "b707edb304cb5bd4fcdf07b064ce65e096880271f4eac0c9c54d3c8eb8625b40"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "adb1051e81",
+   "path": "art/places/sets/ninja-test/fill-deep@2.png",
+   "sha256": "0f9f3fea6b3ab3476a09909da333b73a464e25d4c42fe6a5f69873f07dde9528"
   },
   {
    "class": "legacy-paint",
@@ -1213,11 +1241,32 @@
    "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "3cf5b46ba5",
+   "path": "art/places/sets/ninja-test/fill-deep@2.png",
+   "sha256": "b707edb304cb5bd4fcdf07b064ce65e096880271f4eac0c9c54d3c8eb8625b40"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-19",
    "id": "27685deefa",
    "path": "art/places/sets/ninja-test/fill-deep@3.png",
    "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "3cf5b46ba5",
+   "path": "art/places/sets/ninja-test/fill-deep@3.png",
+   "sha256": "b707edb304cb5bd4fcdf07b064ce65e096880271f4eac0c9c54d3c8eb8625b40"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "16c1307ab6",
+   "path": "art/places/sets/ninja-test/fill-deep@3.png",
+   "sha256": "d309358e2bcf433e59ee6179e5174ff542cb63feb7b97863465c585d73442bc3"
   },
   {
    "class": "legacy-paint",
@@ -1799,6 +1848,13 @@
    "id": "45d424b40d",
    "path": "art/places/sets/ninja-test/over-water.png",
    "sha256": "6843ba2a4f769207b659988cf5ab952e6af787cca20ac6d2fcd5973b07e12ff3"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-19",
+   "id": "f0935a3022",
+   "path": "art/places/sets/ninja-test/over-water.png",
+   "sha256": "7f298ace8f1a6c56f1612029f2253af2e6cf90396d8a156d1a5cb27810347e87"
   },
   {
    "class": "legacy-paint",

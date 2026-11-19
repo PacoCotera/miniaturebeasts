@@ -9,7 +9,7 @@ import { paths, bakeAll, loadSets, writeOutputs, checkOutputs } from '../src/bak
 import { loadProject, checkDefs, levelToIR, listSetIds } from '../src/bake/ldtk.mjs';
 import { checkRules } from '../src/bake/rules.mjs';
 import { mirrorIR } from '../src/bake/mirror.mjs';
-import { buildPlace } from '../src/bake/build.mjs';
+import { buildPlace, drawnTerrain } from '../src/bake/build.mjs';
 import { readPlace } from '../src/format/read.mjs';
 import { terrainLayers, packDepth } from '../src/dualgrid.mjs';
 import { layersToTileIds } from '../src/bake/build.mjs';
@@ -157,7 +157,7 @@ test('the mirror maps E and W, mirrors terrain and entities on the logic grid, a
   assert.deepEqual(mm.openings.map((o) => [o.side, o.from, o.to]).sort(), ir.openings.map((o) => [o.side, o.from, o.to]).sort());
   // the dual grid is looked up again on the mirrored terrain...
   const a = buildPlace(ir, ctx).place, b = buildPlace(m, ctx).place;
-  const desc = layersOf.get('ninja-test'), dg = terrainLayers({ id: m.id, w: W, h: H, terrain: m.terrain }, terrains, desc.layers, desc.tone);
+  const desc = layersOf.get('ninja-test'), dg = terrainLayers({ id: m.id, w: W, h: H, terrain: drawnTerrain(m.terrain, W, H, terrains, desc.layers) }, terrains, desc.layers, desc.tone);   // inland water 2+ tiles from shore is drawn deep (water-deep-2)
   applyOpenEdges(dg, m, terrains, desc.layers);
   assert.deepEqual(b.ground.map((l) => Array.from(l.tiles)), packDepth(layersToTileIds(dg, sets.get('ninja-test'), desc), dg.w1, dg.h1).map((t) => Array.from(t)));
   // ...and is not the original's tile ids flipped: the shore art is lit from the top left, so a mirrored shore is a different tile

@@ -233,7 +233,7 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const litter = [];
   const litterImg = images.get('fill-litter.png');
   if (litterImg) { const im = litterImg; for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]), c = unhex(h), k = palIdx(h); if (k >= 0 && family(c) === 'warm' && !litter.includes(k)) litter.push(k); } }
-  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo, noTarget: (recipe.paletteWiden || []).map((c) => palIdx(c.replace('#', ''))).filter((k) => k > 0) });
+  const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo, noTarget: [...(recipe.paletteWiden || []), ...(recipe.paletteNoTarget || [])].map((c) => palIdx(c.replace('#', ''))).filter((k) => k > 0) });
   if (recipe.paletteRows) {   // table rows set by hand for the last colours (top-ground-5, 729589306: the raised litter top's five colours): { from: <palette index of the first row>, <table>: [targets] }
     const { from, ...rows } = recipe.paletteRows;
     for (const [n, r] of Object.entries(rows)) { if (!TABLE_NAMES.includes(n)) throw new Error(`paletteRows: ${n} is no table`); r.forEach((v, k) => { tables[n][from + k] = v; }); }

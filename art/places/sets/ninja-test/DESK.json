@@ -2431,9 +2431,24 @@
     "sha256": "016599fc8bf7526420b13d1fc73be07ca4ffb118aa9c05eff3834e78860ba0dc"
   },
   "fill-deep.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/sets/pair-deep-water.png#15",
-    "sha256": "2ad2dfafc802f0720764f569f1def08ed4fd6160f7ca59ad3010c91addd05593"
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@0.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep.steps.json",
+    "sha256": "b707edb304cb5bd4fcdf07b064ce65e096880271f4eac0c9c54d3c8eb8625b40"
+  },
+  "fill-deep@1.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@1.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep@1.steps.json",
+    "sha256": "823d12a9f8840213e06cf06ae16ae74a5665dbfe0a707a0a39ee3913bc0cfe59"
+  },
+  "fill-deep@2.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@2.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep@2.steps.json",
+    "sha256": "0f9f3fea6b3ab3476a09909da333b73a464e25d4c42fe6a5f69873f07dde9528"
+  },
+  "fill-deep@3.png": {
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-water-ripple/out/tiles/fill-water-v0..v3@3.png (the signed water fill; variant 1 loses its dashes, the rest map to #348f8b / marks #60c4cc); the whole chain is in fill-deep@3.steps.json",
+    "sha256": "d309358e2bcf433e59ee6179e5174ff542cb63feb7b97863465c585d73442bc3"
   },
   "fill-water.png": {
     "commit": "633e4d641",
@@ -2456,9 +2471,9 @@
     "sha256": "b964108b5853d2f19ba17d147611e7e2cc24067de22ffb1a532f52f336083a90"
   },
   "over-water.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/water-over.png",
-    "sha256": "4a0b26c3dafaaa9050cca1c8521e01e4b8cdf684db8683c59a7c169464c0a113"
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/water-over.png (the signed sheet; the whole chain is in over-water.steps.json)",
+    "sha256": "7f298ace8f1a6c56f1612029f2253af2e6cf90396d8a156d1a5cb27810347e87"
   },
   "fill-earth.png": {
     "commit": "633e4d641",
