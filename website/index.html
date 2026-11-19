@@ -5,473 +5,181 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#172e25">
 <title>Miniature Beasts</title>
-<meta name="description" content="Find pods in the fog and raise the mibis inside: carry them home, read each pod before it opens, and cross them into mibis no one has seen. Play it now in your browser. Open source, made in public.">
+<meta name="description" content="A small world asleep under the fog, three little devices to wake it with, and the mibis who live there. Play it in your browser today. Open source, made in public.">
 <link rel="canonical" href="https://miniaturebeasts.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172e25'/%3E%3Cpath d='M16 6c-6 0-9 8-9 13a9 9 0 0 0 18 0c0-5-3-13-9-13z' fill='%23dcdf9b'/%3E%3Ccircle cx='12.5' cy='18' r='1.8' fill='%23ee9b58'/%3E%3Ccircle cx='19' cy='22' r='1.8' fill='%23ee9b58'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Miniature Beasts">
 <meta property="og:url" content="https://miniaturebeasts.com/">
-<meta property="og:title" content="Miniature Beasts: find pods in the fog, raise the mibis inside">
-<meta property="og:description" content="Carry them home, read each pod before it opens, and cross them into mibis no one has seen. Play it now in your browser.">
+<meta property="og:title" content="Miniature Beasts: a small world asleep under the fog">
+<meta property="og:description" content="Three little devices to wake it with, and the mibis who live there. Play it in your browser today.">
 <meta property="og:image" content="https://miniaturebeasts.com/assets/site-top-felted-6-2400.webp">
 <meta property="og:image:width" content="2400">
 <meta property="og:image:height" content="1350">
 <meta property="og:image:alt" content="A felted Loika on bright moss at a misty lake, looking up at a clover leaf.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="image" href="assets/site-top-felted-6-2400.webp" fetchpriority="high">
-<style>
-:root {
-  color-scheme: light;
-  --forest: #172e25;
-  --paper: #f5f2e9;
-  --sage: #dce3c5;
-  --panel: #e6e8dd;
-  --ink: #222e26;
-  --muted: #56664f;
-  --on-dark: #e5eadd;
-  --lime: #dcdf9b;
-  --orange: #ee9b58;
-  --line: #c9cec2;
-
-  /* The four type sizes. No others. */
-  --fs-display: clamp(2.75rem, 5.6vw, 5rem);
-  --fs-section: clamp(2rem, 3.6vw, 3.25rem);
-  --fs-body: 1.0625rem;
-  --fs-caption: 0.8125rem;
-
-  --content: 1200px;
-  --gutter: 32px;
-  --pad: 120px;
-  --radius: 14px;
-  --p: 150px; /* family-tree portrait */
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-synthesis: none;
-  scroll-behavior: smooth;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-size: var(--fs-body); line-height: 1.5; overflow-x: clip; }
-h1, h2, p, figure, ul, ol, dl, dd { margin: 0; padding: 0; }
-ul, ol { list-style: none; }
-img { display: block; width: 100%; height: auto; }
-a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
-a:focus-visible, summary:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
-
-h1 { font-size: var(--fs-display); font-weight: 800; line-height: .96; letter-spacing: -.03em; }
-h1 span { color: var(--lime); }
-h2, .wordmark-lg { font-size: var(--fs-section); font-weight: 800; line-height: 1.02; letter-spacing: -.02em; }
-.eyebrow, .label { font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1.5; }
-.eyebrow { margin-bottom: 12px; color: var(--muted); }
-.lede { margin-top: 16px; max-width: 30em; text-wrap: balance; }
-h2 { text-wrap: balance; }
-figcaption, .caption { font-size: var(--fs-caption); line-height: 1.5; color: var(--muted); }
-figcaption { padding-top: 10px; }
-figcaption .label, .caption .label { margin-right: .4em; color: var(--ink); }
-
-.wrap { max-width: calc(var(--content) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
-.section { padding: var(--pad) 0; }
-.head { text-align: center; display: grid; justify-items: center; }
-.head .lede { margin-inline: auto; }
-.shot img, .grid img { border-radius: var(--radius); }
-
-/* An honest tag on a picture */
-.tagged { position: relative; }
-.tag { position: absolute; left: 12px; top: 12px; z-index: 1; background: rgb(245 242 233 / .94); color: var(--ink);
-  font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1; padding: 6px 9px; border-radius: 999px; }
-
-/* Buttons and nav */
-.button { display: inline-block; font: inherit; font-weight: 700; line-height: 1.2; padding: 14px 22px; border-radius: 999px; text-decoration: none; }
-.button.primary { background: var(--orange); color: var(--forest); }
-.button.ghost { box-shadow: inset 0 0 0 1.5px var(--on-dark); color: var(--on-dark); padding: 10px 18px; }
-.button:hover { filter: brightness(1.06); }
-.link { font-weight: 700; }
-.skip { position: absolute; left: 16px; top: -100px; z-index: 5; background: var(--paper); color: var(--ink); padding: 12px; font-weight: 700; }
-.skip:focus { top: 16px; }
-
-/* The top: the felted Loika, big; the headline, one line under it, Play. The words sit on the quiet water to the right of the clover. */
-.top { background: var(--forest); color: var(--on-dark); display: flex; flex-direction: column; height: calc(100svh - 40px); min-height: 600px; max-height: 1000px; }
-.masthead { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 20px; padding-bottom: 20px; width: 100%; }
-.wordmark { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; }
-.masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
-.masthead nav a:not(.button) { text-decoration: none; }
-.masthead nav a:not(.button):hover { text-decoration: underline; }
-.stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
-.stage > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 55%; }
-.hero { position: relative; height: 100%; max-width: none; display: flex; align-items: center; justify-content: flex-end; padding-right: clamp(24px, 4vw, 72px); padding-bottom: 4%; }
-.hero-words { width: min(24rem, 26vw); color: var(--forest); text-shadow: 0 0 22px rgb(245 242 233 / .65); }
-.hero h1 { font-size: var(--fs-section); line-height: 1.02; letter-spacing: -.02em; }
-.hero h1 span { display: block; color: #2f5a2c; }
-.hero .lede { margin-top: 20px; font-size: 1.25rem; line-height: 1.4; color: var(--ink); text-wrap: pretty; }
-.hero .button { margin-top: 28px; padding: 16px 30px; font-size: 1.25rem; box-shadow: 0 10px 24px -12px rgb(23 46 37 / .6); text-shadow: none; }
-
-/* The strip: real screens of today's game, one row (a sideways swipe on a phone) */
-.strip-band { background: var(--forest); color: var(--on-dark); padding: 72px 0 96px; }
-.strip-band .eyebrow { color: var(--lime); text-align: center; margin-bottom: 32px; }
-.strip { display: grid; grid-template-columns: 450fr 1024fr 450fr; gap: 24px; align-items: start; }
-.strip figure { min-width: 0; }
-.strip img { border-radius: 10px; box-shadow: 0 18px 40px -24px rgb(0 0 0 / .8); background: #1d2230; }
-.strip figcaption { color: rgb(229 234 221 / .8); font-weight: 700; padding-top: 12px; }
-
-/* How it plays: the loop as pictures */
-.how { background: var(--sage); padding: 160px 0; }
-.how .wrap { max-width: calc(1040px + 2 * var(--gutter)); }
-.loop { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; margin-top: 56px; counter-reset: step; }
-.loop li { counter-increment: step; }
-.loop img { border-radius: var(--radius); aspect-ratio: 4 / 3; object-fit: cover; }
-.loop .step { display: flex; align-items: baseline; gap: 10px; margin-top: 14px; }
-.loop .step::before { content: counter(step); font-weight: 800; color: var(--muted); }
-.loop .name { font-weight: 800; font-size: 1.25rem; }
-.loop .words { display: block; margin-top: 2px; }
-.dev { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-.dev::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
-.dev.companion { --c: #c9b79c; } .dev.caddy { --c: #8a8f86; } .dev.station { --c: #6f8f6a; }
-/* The key art: the loop as one painting */
-.keyart { margin-top: 48px; }
-.keyart img { border-radius: var(--radius); box-shadow: 0 24px 48px -28px rgb(34 46 38 / .5); }
-.zones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 14px; text-align: center; }
-.zones li { font-weight: 800; }
-.zones .dev { display: flex; justify-content: center; margin-top: 2px; }
-.keyart figcaption { text-align: center; }
-/* The Caddy's e-paper panel, as the build draws it, in a drawn bezel */
-.epaper { display: block; background: #e9e6dc; border: 4px solid #4a4c48; border-radius: 6px; overflow: hidden; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08); }
-.epaper img { mix-blend-mode: multiply; border-radius: 0 !important; aspect-ratio: auto !important; }
-.dockcard { aspect-ratio: 4 / 3; border-radius: var(--radius); background: linear-gradient(160deg, #e2dacd, #c9bfb0); display: grid; place-items: center; padding: 0 9%; }
-.dockcard .epaper { width: 100%; box-shadow: 0 8px 18px -10px rgb(0 0 0 / .45); }
-.again { margin-top: 40px; text-align: center; font-weight: 800; font-size: 1.25rem; }
-.again svg { width: 28px; height: 28px; vertical-align: -7px; margin-right: 8px; }
-
-/* Facts */
-.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 88px; }
-.facts div { background: var(--paper); border-radius: var(--radius); padding: 36px 32px; display: grid; gap: 8px; align-content: start; justify-items: start; }
-.facts .glyph { height: 34px; display: flex; align-items: center; }
-.facts dt { font-size: 2rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
-.facts dd { color: var(--muted); font-size: var(--fs-caption); }
-.seeds { display: flex; gap: 5px; }
-.seeds b { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); }
-.seeds b.on { background: var(--orange); box-shadow: inset 0 0 0 1.5px #b9682a; }
-
-/* Full-bleed pictures */
-.bleed { margin-top: 56px; }
-.bleed img { width: 100%; aspect-ratio: 16 / 9; max-height: 820px; object-fit: cover; }
-.bleed figcaption { max-width: calc(var(--content) + 2 * var(--gutter)); margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
-.bleed + .grid { margin-top: 32px; }
-
-/* Caddy */
-.caddy-band { background: var(--panel); }
-.caddy-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; margin-top: 48px; align-items: center; }
-.caddy-grid .shot { margin-top: 0; }
-.panels ol { display: grid; gap: 16px; }
-.panels li { display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: 14px; align-items: center; }
-.panels .when { font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-align: right; }
-
-/* Grids of screens */
-.grid { display: grid; gap: 24px; margin-top: 48px; }
-.grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
-.grid.four img { border-radius: 10px; }
-.shot { margin-top: 48px; }
-.dark { background: var(--forest); color: var(--on-dark); }
-.dark .eyebrow { color: var(--lime); }
-.dark figcaption, .dark .caption { color: rgb(229 234 221 / .75); }
-.dark figcaption .label { color: var(--on-dark); }
-
-/* Breeding: sage band, family tree */
-.breeding { background: var(--sage); }
-.tree { --gap: 56px; --conn: 32px; width: min(100%, calc(4 * (var(--p) + var(--gap)))); margin: 48px auto 0;
-  display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: auto var(--conn) auto var(--conn) auto auto; }
-.kin { text-align: center; position: relative; z-index: 1; }
-.kin img { width: var(--p); margin: 0 auto; }
-.kin figcaption { padding-top: 2px; color: var(--ink); }
-.kin.ring img { border-radius: 50%; box-shadow: 0 0 0 2px var(--orange); }
-.join { position: relative; pointer-events: none; }
-.join::before { content: ""; position: absolute; left: calc(var(--p) / 2); right: calc(var(--p) / 2); top: calc(var(--p) / 2 - 1px); border-top: 2px solid var(--ink); }
-.join::after { content: ""; position: absolute; left: calc(50% - 1px); top: calc(var(--p) / 2); bottom: 0; border-left: 2px solid var(--ink); }
-.kids { border: 2px solid var(--ink); border-bottom: 0; margin: 0 -1px; }
-.note { align-self: center; padding-left: 12px; color: var(--ink); }
-.tree-cap { margin-top: 32px; text-align: center; }
-.odds-stamp { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 24px; margin-top: 72px; align-items: stretch; }
-.odds-stamp > figure { display: flex; flex-direction: column; }
-.stamp-card { flex: 1; background: var(--paper); border-radius: var(--radius); display: grid; place-items: center; padding: 32px 16px; }
-/* The stamp as a postage stamp: perforated paper, its own frame inside */
-.postage { filter: drop-shadow(0 10px 14px rgb(34 46 38 / .22)); transform: rotate(-4deg); }
-.postage > div {
-  width: 236px; padding: 14px 14px 10px; background: #fbf8f0;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle at 7px 7px, transparent 4.5px, #000 5px) -7px -7px / 14px 14px round;
-          mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle at 7px 7px, transparent 4.5px, #000 5px) -7px -7px / 14px 14px round;
-}
-.postage img { width: 208px; }
-.postage p { display: flex; justify-content: space-between; font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #2b2a27; padding: 8px 2px 0; }
-.species { margin-top: 72px; text-align: center; }
-.species img { max-width: 960px; margin: 16px auto 0; }
-
-/* Life */
-.life img { max-width: 900px; margin: 0 auto; }
-.stages { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; max-width: 900px; margin: 8px auto 0; font-weight: 700; }
-.life figcaption { text-align: center; }
-
-/* Now, next, later */
-.ahead { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 48px; }
-.ahead li { border-top: 2px solid var(--ink); padding-top: 12px; font-weight: 700; font-size: 1.25rem; line-height: 1.3; }
-.ahead .label { display: block; color: var(--muted); margin-bottom: 6px; font-size: var(--fs-caption); }
-.more { margin-top: 32px; text-align: center; }
-
-/* FAQ */
-.faq-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 24px 48px; align-items: start; }
-.faq { background: var(--panel); border-radius: var(--radius); padding: 8px 24px; }
-.faq details + details { border-top: 1px solid var(--line); }
-.faq summary { font-weight: 700; cursor: pointer; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+"; font-weight: 400; }
-.faq details[open] summary::after { content: "−"; }
-.faq details p { padding-bottom: 16px; max-width: 36em; }
-
-/* Play and footer */
-.end { background: var(--forest); color: var(--on-dark); }
-.end .section { padding-bottom: 64px; }
-.play { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: center; }
-.play .eyebrow { color: var(--lime); }
-.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
-.play figure { max-width: 300px; justify-self: end; width: 100%; }
-.play img { border-radius: var(--radius); }
-.end figcaption, .end .caption { color: rgb(229 234 221 / .75); }
-.end figcaption .label { color: var(--on-dark); }
-footer { padding-bottom: 32px; }
-.foot { border-top: 1px solid rgb(229 234 221 / .2); padding-top: 48px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px 32px; }
-.wordmark-lg { text-transform: uppercase; text-decoration: none; }
-.foot nav { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 700; }
-.foot nav a { text-decoration: none; }
-.foot nav a:hover { text-decoration: underline; }
-.foot-lines { margin-top: 24px; }
-.build { text-align: right; margin-top: 24px; color: rgb(229 234 221 / .6); }
-
-/* Phone */
-@media (max-width: 760px) {
-  :root { --gutter: 16px; --pad: 72px; --p: 76px; }
-  .masthead nav a:not(.button) { display: none; }
-  .faq-grid, .play, .odds-stamp { grid-template-columns: 1fr; }
-  .how { padding: 96px 0; }
-  .facts { gap: 16px; }
-  .strip-band { padding: 56px 0 72px; }
-  .strip-band .eyebrow { margin-bottom: 24px; }
-  .strip { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 8px; scrollbar-width: none; }
-  .strip figure { flex: none; scroll-snap-align: center; }
-  .strip figure:has(img.px) { width: 240px; }
-  .strip figure:has(img:not(.px)) { width: 546px; }
-  .loop { grid-template-columns: 1fr 1fr; gap: 28px 12px; margin-top: 40px; }
-  .loop img { border-radius: 10px; }
-  .loop .name { font-size: var(--fs-body); }
-  .loop .words { font-size: var(--fs-caption); }
-  .tag { left: 8px; top: 8px; padding: 5px 7px; font-size: .6875rem; }
-  .facts { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 48px; }
-  .facts div { padding: 16px; }
-  .facts div:last-child { grid-column: 1 / -1; }
-  .facts dt { font-size: 1.5rem; }
-  .bleed { margin-top: 40px; }
-  .bleed img { aspect-ratio: 4 / 3; }
-  .grid { margin-top: 32px; gap: 20px; }
-  .grid.three, .grid.two { grid-template-columns: 1fr; }
-  .grid.four { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .shot { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); margin-top: 32px; }
-  .shot img { border-radius: 0; }
-  .shot figcaption { padding-left: var(--gutter); padding-right: var(--gutter); }
-  .tree { --gap: 12px; --conn: 20px; }
-  .note { grid-column: 1 / -1 !important; grid-row: 6 !important; text-align: center; padding: 12px 0 0; }
-  .odds-stamp, .species { margin-top: 48px; }
-  .ahead { grid-template-columns: 1fr; gap: 16px; }
-  .keyart { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); margin-top: 32px; }
-  .keyart img { border-radius: 0; }
-  .zones { font-size: var(--fs-caption); padding: 0 var(--gutter); }
-  .keyart figcaption { padding-left: var(--gutter); padding-right: var(--gutter); }
-  .caddy-grid { grid-template-columns: 1fr; margin-top: 32px; }
-  .panels li { grid-template-columns: 1fr; gap: 6px; }
-  .panels .when { text-align: left; }
-  .epaper { border-width: 3px; }
-  .ahead li { font-size: var(--fs-body); }
-  .play figure { justify-self: start; max-width: 240px; }
-  .build { text-align: left; }
-}
-/* Phone upright: the picture on top, the words under it on the dark band, all above the fold with the strip's edge showing */
-@media (max-width: 1100px) and (orientation: portrait) {
-  .top { height: auto; min-height: 0; max-height: none; }
-  .masthead { padding-top: 14px; padding-bottom: 14px; }
-  .stage { flex: none; overflow: visible; }
-  .stage > img { position: static; height: 44svh; min-height: 300px; max-height: 560px; object-position: 24% 62%; }
-  .hero { height: auto; display: block; max-width: calc(var(--content) + 2 * var(--gutter)); padding: 24px var(--gutter) 28px; }
-  .hero-words { width: auto; max-width: 34rem; color: var(--on-dark); text-shadow: none; }
-  .hero h1 span { color: var(--lime); }
-  .hero .lede { margin-top: 12px; font-size: var(--fs-body); color: var(--on-dark); }
-  .hero .button { margin-top: 20px; display: block; text-align: center; }
-  .strip-band { padding-top: 8px; }
-}
-/* Phone on its side and other short screens: picture left, words right on the dark band */
-@media (max-height: 520px) and (orientation: landscape) {
-  .top { height: 100svh; min-height: 0; }
-  .masthead { padding-top: 10px; padding-bottom: 10px; }
-  .masthead nav a:not(.button) { display: none; }
-  .stage > img { width: 56%; object-position: 34% 60%; }
-  .hero { padding-bottom: 0; }
-  .hero-words { width: 40%; color: var(--on-dark); text-shadow: none; }
-  .hero h1 span { color: var(--lime); }
-  .hero .lede { margin-top: 10px; font-size: var(--fs-body); line-height: 1.4; color: var(--on-dark); }
-  .hero .button { margin-top: 16px; padding: 12px 24px; font-size: var(--fs-body); }
-}
-</style>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-
-<div class="top">
-  <header class="wrap masthead">
-    <a class="wordmark" href="#main">Miniature Beasts</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="wordmark" href="./">Miniature Beasts</a>
     <nav aria-label="Main">
-      <a href="#how">How it plays</a>
-      <a href="#caddy">Caddy</a>
-      <a href="#station">Station</a>
-      <a href="#vivarium">Vivarium</a>
-      <a href="#breeding">Crossing</a>
-      <a class="button ghost" href="play/">Play</a>
+      <a href="devices/">The kit</a>
+      <a href="families/">Families</a>
+      <a href="world/">The world</a>
+      <a class="button primary" href="play/">Play</a>
     </nav>
-  </header>
-
-  <div class="stage">
-    <img src="assets/site-top-felted-6-2400.webp" width="2400" height="1350" fetchpriority="high"
-      alt="A felted Loika, dark plum with a cream chest and three leaves on its head, sits on bright moss at a misty lake and looks up at a clover leaf with a drop of dew.">
-    <section class="wrap hero" aria-labelledby="hero-title">
-      <div class="hero-words">
-        <h1 id="hero-title">Find pods in the fog. <span>Raise the mibis inside.</span></h1>
-        <p class="lede">Carry them home, read each pod before it opens, and cross them into mibis no one has seen.</p>
-        <a class="button primary" href="play/">Play it now</a>
-      </div>
-    </section>
   </div>
-</div>
-
-<!-- "From the game" strip: left out of the page until its three stills are signed and committed under assets/play/ (markup kept in the build notes). -->
+  <nav class="pages" aria-label="Pages"><a href="devices/">The kit</a><a href="families/">Families</a><a href="world/">The world</a></nav>
+</header>
 
 <main id="main">
-  <section class="section how after-hero" id="how" aria-labelledby="how-title">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">How it plays</p>
-        <h2 id="how-title">Go out. Come home.<br>Make something new.</h2>
+  <section class="top" aria-labelledby="top-title">
+    <div class="top-pic">
+      <img src="assets/site-top-felted-6-2400.webp" width="2400" height="1350" fetchpriority="high"
+        alt="A felted Loika, dark plum with a cream chest and three leaves on its head, sits on bright moss at a misty lake and looks up at a clover leaf with a drop of dew.">
+    </div>
+    <div class="top-words">
+      <h1 id="top-title">A small world, <span>asleep under the fog.</span></h1>
+      <p class="lede">Wake it with three little devices, and bring its mibis home.</p>
+      <div class="actions">
+        <a class="button primary" href="play/">Play it now</a>
+        <a class="button quiet" href="devices/">See the kit</a>
       </div>
-      <dl class="facts" aria-label="A few of the numbers">
-        <div><span class="glyph"><span class="seeds" role="img" aria-label="Eight seeds, one lit"><b class="on"></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span></span><dt>1 in 8</dt><dd>Odds, always in eighths</dd></div>
-        <div><span class="glyph"><svg width="28" height="34" viewBox="0 0 28 34" aria-hidden="true"><path d="M14 2C6 2 2 13 2 21a12 12 0 0 0 24 0C26 13 22 2 14 2z" fill="#6f8f6a"/><circle cx="9" cy="17" r="2" fill="#ee9b58"/><circle cx="17" cy="24" r="2" fill="#ee9b58"/><circle cx="19" cy="14" r="1.6" fill="#ee9b58"/></svg></span><dt>1 child</dt><dd>From every cross</dd></div>
-        <div><span class="glyph"><svg width="44" height="34" viewBox="0 0 44 34" aria-hidden="true"><path d="M22 17c-5-7-16-7-16 0s11 7 16 0c5-7 16-7 16 0s-11 7-16 0z" fill="none" stroke="#222e26" stroke-width="3.5"/></svg></span><dt>No limit</dt><dd>On the pods you keep at home</dd></div>
+    </div>
+  </section>
+
+  <section class="band dark" aria-labelledby="kit-title">
+    <figure class="pic kit">
+      <img src="assets/kit-1600.webp" width="1600" height="1107" loading="lazy"
+        alt="A painting of the kit: the Station, a sage handheld with a wide screen, and the Companion, a stone-grey handheld with a map on its screen, both seated in the Caddy, a cream dock with a small grey screen and a paper slip.">
+    </figure>
+    <div class="words">
+      <p class="eyebrow">The kit</p>
+      <h2 id="kit-title">Three devices, one world.</h2>
+      <ul class="jobs">
+        <li><b>Companion</b><span>goes out with you.</span></li>
+        <li><b>Station</b><span>stays home. Its vivarium keeps real hours.</span></li>
+        <li><b>Caddy</b><span>is where the two meet.</span></li>
+      </ul>
+      <figcaption>A painting of the kit. All three play in your browser today.</figcaption>
+      <a class="more" href="devices/">How the kit works</a>
+    </div>
+  </section>
+
+  <section class="band object fog flip" aria-labelledby="out-title">
+    <figure class="pic circle">
+      <img src="assets/call-ring-900.webp" width="900" height="1133" loading="lazy"
+        alt="A Loika sits on a ring of bright moss and clover, cleared out of the grey fog all around it.">
+    </figure>
+    <div class="words">
+      <h2 id="out-title">Go out into the fog.</h2>
+      <p class="lede">Every step wakes a little of the ground. A call wakes a whole lot more.</p>
+    </div>
+  </section>
+
+  <section class="band object cream" aria-labelledby="pod-title">
+    <figure class="pic">
+      <img src="assets/pod-felt-640.webp" width="640" height="640" loading="lazy"
+        alt="A felted pod, slate blue and softly ribbed, with a cream lid, on a tuft of moss.">
+    </figure>
+    <div class="words">
+      <h2 id="pod-title">It all starts with a pod.</h2>
+      <p class="lede">Only a call hears what's buried.</p>
+    </div>
+  </section>
+
+  <section class="band object flip" aria-labelledby="home-title">
+    <figure class="pic">
+      <img src="assets/crate-1100.webp" width="1100" height="863" loading="lazy"
+        alt="A wooden crate tied with rope and closed with a red wax seal, a little moss on its slats.">
+    </figure>
+    <div class="words">
+      <h2 id="home-title">Bring it home.</h2>
+      <p class="lede">Dock the Companion, and the crate you sealed comes home to the Station.</p>
+    </div>
+  </section>
+
+  <section class="band object cream" aria-labelledby="read-title">
+    <figure class="pic">
+      <img src="assets/incubator-900.webp" width="900" height="920" loading="lazy"
+        alt="A pod under a glass dome on a bed of moss, thin green shoots curling up inside the glass.">
+    </figure>
+    <div class="words">
+      <h2 id="read-title">Read it before it opens.</h2>
+      <p class="lede">Read a pod at the Station, chapter by chapter. Then meet who's inside.</p>
+    </div>
+  </section>
+
+  <section class="band sage wide" aria-labelledby="fam-title">
+    <div class="words">
+      <p class="eyebrow">Families</p>
+      <h2 id="fam-title">Every Loika its own.</h2>
+      <p class="lede">Each Loika carries two copies of everything, drawn from both its parents.</p>
+    </div>
+    <div class="family" role="list">
+      <figure role="listitem"><img src="assets/loika-bramble-480.webp" width="480" height="468" loading="lazy" alt="Bramble, a Loika with a brown coat and a crest of three leaves."><figcaption>Bramble</figcaption></figure>
+      <figure role="listitem"><img src="assets/loika-sable-480.webp" width="480" height="480" loading="lazy" alt="Sable, a dark Loika with pale patches and a bare head."><figcaption>Sable</figcaption></figure>
+      <figure role="listitem"><img src="assets/loika-pip-480.webp" width="480" height="480" loading="lazy" alt="Pip, a grey Loika with faint stripes and a crest of leaves."><figcaption>Pip</figcaption></figure>
+      <figure role="listitem"><img src="assets/loika-thistle-480.webp" width="480" height="468" loading="lazy" alt="Thistle, a near-black Loika with a crest of leaves."><figcaption>Thistle</figcaption></figure>
+      <figure role="listitem"><img src="assets/loika-ember-480.webp" width="480" height="469" loading="lazy" alt="Ember, a russet Loika with a crest of leaves."><figcaption>Ember</figcaption></figure>
+      <figure role="listitem"><img src="assets/loika-dapple-480.webp" width="480" height="467" loading="lazy" alt="Dapple, an ash-grey Loika with pale patches."><figcaption>Dapple</figcaption></figure>
+      <figure role="listitem"><img src="assets/loika-moss-480.webp" width="480" height="467" loading="lazy" alt="Moss, a dark brown Loika with a crest of leaves."><figcaption>Moss</figcaption></figure>
+    </div>
+    <div class="words"><a class="more" href="families/">How families work</a></div>
+  </section>
+
+  <section class="band paint" aria-labelledby="world-title">
+    <figure class="pic right">
+      <img src="assets/land-lakes-1400.webp" width="1400" height="939" loading="lazy"
+        alt="A painting of a lake shore in the afternoon: ferns along the wet sand, still teal water, and a small Loika at the water's edge.">
+    </figure>
+    <div class="words">
+      <p class="eyebrow">The world</p>
+      <h2 id="world-title">Twenty kinds, nine lands.</h2>
+      <p class="lede">And a Loika in every one.</p>
+      <a class="more" href="world/">Meet all twenty</a>
+    </div>
+  </section>
+
+  <section class="band dark wide" aria-labelledby="ask-title">
+    <div class="words">
+      <h2 id="ask-title">Before you play</h2>
+      <dl class="answers">
+        <div><dt>What do I need?</dt><dd>A browser, on a phone or a laptop.</dd></div>
+        <div><dt>Is there an account or a chat?</dt><dd>No account and no chat. No loot boxes, and no rewards for coming back every day.</dd></div>
+        <div><dt>What if I'm away?</dt><dd>Nothing gets sick or leaves while you're away.</dd></div>
+        <div><dt>Can I hold it?</dt><dd>Not yet. The devices are designed, not made. The game plays in your browser.</dd></div>
       </dl>
-    </div>
-  </section>
-
-  <section class="section" id="companion" aria-labelledby="companion-title">
-    <div class="wrap head">
-      <p class="eyebrow">Companion</p>
-      <h2 id="companion-title">Go out into the fog.</h2>
-      <p class="lede">Creatures react to you, and some leave a pod behind.</p>
-    </div>
-  </section>
-
-  <section class="section caddy-band" id="caddy" aria-labelledby="caddy-title">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Caddy</p>
-        <h2 id="caddy-title">Where the two meet.</h2>
-        <p class="lede">Seat the Companion and its crates cross to the Station. The panel says what came home.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section dark" id="station" aria-labelledby="station-title">
-    <div class="wrap head">
-      <p class="eyebrow">Station</p>
-      <h2 id="station-title">This is home.<br>Take your time.</h2>
-      <p class="lede">Every pod you bring back has a place, and nothing is forced on you.</p>
-    </div>
-  </section>
-
-  <section class="section" id="reading" aria-labelledby="reading-title">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Reading</p>
-        <h2 id="reading-title">Read a pod.<br>See what it’s made of.</h2>
-        <p class="lede">Each read uncovers a chapter of its genes.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="vivarium" aria-labelledby="viv-title" style="padding-top:0">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Vivarium</p>
-        <h2 id="viv-title">Rooms full of mibis.</h2>
-        <p class="lede">Watch them wander and slip behind the stones.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section breeding" id="breeding" aria-labelledby="breeding-title">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Crossing</p>
-        <h2 id="breeding-title">One cross. One child.<br>True odds.</h2>
-        <p class="lede">The odds come from the parents alone. Wishing never changes them.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section life" id="life" aria-labelledby="life-title">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Life</p>
-        <h2 id="life-title">Raise them for life.</h2>
-        <p class="lede">Juvenile, adult, elder. They never decline.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="faq" aria-labelledby="faq-title" style="padding-top:0">
-    <div class="wrap faq-grid">
-      <h2 id="faq-title">A few fair questions.</h2>
-      <div class="faq">
-        <details><summary>Is it real?</summary><p>The field test runs in your browser today. Every picture says what it is: in the build, being built, in design, Station art, rough playable, or concept. No device exists yet.</p></details>
-        <details><summary>When can I get one?</summary><p>No date and no price yet.</p></details>
-        <details><summary>Can I build one myself?</summary><p>Not yet. The boards and cases will be open hardware, and the software is open source already.</p></details>
-        <details><summary>Is anything for sale in the game?</summary><p>No supplies, no speed, no luck. The kit plays fully on its own, with no account and no internet.</p></details>
-      </div>
     </div>
   </section>
 </main>
 
-<div class="end">
-  <section class="section" id="play" aria-labelledby="play-title">
-    <div class="wrap play">
-      <div>
-        <p class="eyebrow">Play</p>
-        <h2 id="play-title">Play it today.<br>Read the manual.</h2>
-        <div class="actions">
-          <a class="button primary" href="play/">Play the field test</a>
-          <a class="link" href="https://github.com/PacoCotera/miniaturebeasts/blob/main/design/play-manual.md">Read the manual</a>
-        </div>
-      </div>
-    </div>
-  </section>
-  <footer class="wrap">
+<footer class="end">
+  <div class="wrap">
+    <h2>To meet a mibi, <span>get small first.</span></h2>
+    <div class="actions"><a class="button primary" href="play/">Play it now</a></div>
     <div class="foot">
-      <a class="wordmark-lg" href="#main">Miniature Beasts</a>
       <nav aria-label="Footer">
-        <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+        <a href="devices/">The kit</a>
+        <a href="families/">Families</a>
+        <a href="world/">The world</a>
+        <a href="https://github.com/PacoCotera/miniaturebeasts">Source code</a>
         <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a>
       </nav>
+      <div>
+        <p class="small">A project by Dirty Pawz Press · Mexico City</p>
+        <p class="small">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
+        <p class="small" id="build">© 2026 Dirty Pawz Press · local</p>
+      </div>
     </div>
-    <div class="foot-lines">
-      <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
-      <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
-    </div>
-    <p class="caption build" id="build">© 2026 Dirty Pawz Press · local</p>
-  </footer>
-</div>
+  </div>
+</footer>
 <script type="module">
-  // the build footer: the one line every page shows, from the module the sandbox pages share (the text stays as written above when it cannot load)
+  // the build line every page shows, from the module the game's pages share (the text stays as written when it cannot load)
   import('./play/play/src/footer.mjs').then(m => m.mountFooter(document.getElementById('build'), {buildUrl: 'build.json'})).catch(() => {});
 </script>
 </body>

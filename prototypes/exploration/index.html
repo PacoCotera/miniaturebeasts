@@ -897,9 +897,9 @@ function primeWindow(lay, bk, key, dir) {
   if (!lay.lines) applyLines(lay);   // the range lines (the veil and the blocks) as enterPatch will make them
   const lvl = warmLightLevel(lay); if (lvl == null) return false;
   const e = entryPoint(lay, key, dir, true); if (!e) return false;
-  const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); liftFlood(lay, rows, e.x, e.y);
+  const rows = (S.veil[key] || []).slice(); while (rows.length < lay.h) rows.push(0); const pre = S.veilPre && S.veilPre[key]; if (pre) for (let y = 0; y < rows.length; y++) rows[y] = (rows[y] | (pre[y] || 0)) >>> 0; liftFlood(lay, rows, e.x, e.y);
   const vb = veilable(lay), un = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h || ((rows[y] >>> x) & 1) === 1 || !vb[y * lay.w + x];
-  const cam = bk.camera(bk.newCam(), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
+  const cam = bk.camera(newCamFor(bk, key), { w: SCR_W, h: VIEW_H }, e, NOW, motion(), null);
   bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));
   const g = PL.mk(SCR_W, VIEW_H).getContext('2d'); warmOf(bk).fk = bk.cache.frameKey(motion() ? NOW : 0);
   bk.drawGround(g, 0, 0, { x: cam.x - bk.ox * 48, y: cam.y - bk.oy * 48, w: SCR_W, h: VIEW_H }, motion() ? NOW : 0, bk.lightFor({ veiled: (x, y) => !un(x, y), foggedFar: () => false, level: () => lvl }, key));
@@ -2372,6 +2372,8 @@ function ensureLive(key) {
 }
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 let LAND = null;   // the tile a step out of a place lands on in the next one (crossEdge), used once by enterPatchBuilt
+let CAMKEEP = null;   // the view's rest along the edge a step out of a place crossed (crossEdge): { key, axis: 'ix' | 'iy', i }; the next place's first camera starts from it (bug #36)
+const newCamFor = (bk, key) => { const s = bk.newCam(); if (CAMKEEP && CAMKEEP.key === String(key)) s[CAMKEEP.axis] = CAMKEEP.i; return s; };
 let ALONG = null;   // where along the edge a step out of a place left from (crossEdge): the row for a sideways step, the column for an up or down one. The next place's way in keeps it: the pawn lands on the cell across the shared edge, on the same line of the map (bugs #11, #37)
 const alongOf = (dir, P) => dir === 'left' || dir === 'right' ? P.y : P.x;   // the coordinate along the edge that a step in dir crosses
 function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
@@ -2453,6 +2455,7 @@ function enterPatch() {
 }
 function enterPatchBuilt() {
   const ex = S.exp, key = String(ex.pos), lay = freshLayout(key); applyLines(lay); ensureLive(key); S.visited[ex.pos] = 1;
+  takeCallVeil(key, lay);   // what a Call from the place next door already lifted here (owner #49)
   ex.entered = ex.entered || []; const firstIn = !ex.entered.includes(ex.pos); if (firstIn) ex.entered.push(ex.pos); tripPlace(ex, groundName(G.land[ex.pos], false));
   noteTier(ex, lay); clearSkull(key);
   RT.view = null;
@@ -2800,6 +2803,7 @@ function crossEdge(dir) {
   const P0 = ex.patch; ex.patch = null; S.phase = 'map'; recordSigns(ex.pos);
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
   LAND = land ? { key: String(c), x: land.x, y: land.y } : null; ALONG = c >= 0 ? { key: String(c), k: alongOf(dir, P0) } : null;   // bug #37: the cell across the edge, on the same row or column
+  CAMKEEP = c >= 0 && RT.ca && RT.ca.p === P0 && RT.ca.s.ix >= 0 ? { key: String(c), axis: dir === 'up' || dir === 'down' ? 'ix' : 'iy', i: dir === 'up' || dir === 'down' ? RT.ca.s.ix : RT.ca.s.iy } : null;   // bug #36: the view keeps its rest along the edge crossed (the along axis is not asked again)
   mapStep(dir, !!land);
   // The map is not shown on a crossing: the walk goes straight into the next place under a one-screen slide, and the explorer keeps walking.
   if (S.phase === 'map' && S.exp && S.exp.pos === c && c !== from && !S.exp.ending) {
@@ -2942,20 +2946,27 @@ function pressOn(lay, o, f) {
   const m = lay.press ? lay.press[f.y * lay.w + f.x] : 0;
   return m === 1 ? 'stone' : m === 2 ? 'tree' : null;
 }
-function freeAround(key, x, y, prefer) {
+function freeAround(key, x, y, prefer, clearOnly = false) {
   const lw = layout(key).w, ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
   if (prefer) ds.sort((a, b) => man({ x: x + a[0], y: y + a[1] }, prefer) - man({ x: x + b[0], y: y + b[1] }, prefer));
-  const lay = layout(key), seen = (X, Y) => !!lay.reach[Y * lw + X] && !(lay.lines && lay.lines.cells.has(Y * lw + X)) && !(lay.decalNear && lay.decalNear(X, Y));   // reachable ground, clear of the haze and of any decor that would cover it
-  for (const strict of [true, false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
+  const lay = layout(key), seen = (X, Y) => !!lay.reach[Y * lw + X] && !(lay.lines && lay.lines.cells.has(Y * lw + X)) && !(lay.decalNear && lay.decalNear(X, Y)) && !(clearOnly && lay.coverAt && lay.coverAt(X, Y));   // reachable ground, clear of the haze and of any decor that would cover it (clearOnly, a dropped fruit: and of any prop's picture)
+  const ok = (X, Y) => !occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]);
+  for (const [dx, dy] of ds) if (ok(x + dx, y + dy) && seen(x + dx, y + dy)) return { x: x + dx, y: y + dy };
+  if (clearOnly) for (let r = 2; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {   // no clear tile beside it: the nearest clear one within four tiles (owner note #41)
+    if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+    const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= lw || Y >= lay.h) continue;
+    if (ok(X, Y) && seen(X, Y)) return { x: X, y: Y };
+  }
+  for (const strict of [false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
   return null;
 }
 // Materials carried cap at 20 each. Returns how much was taken.
 const MAT = { e: 'Energy', d: 'Data', s: 'Essence' };
-function addMat(k, n, x, y, keeps) {   // keeps: what the source keeps when part of a take did not fit ('the stone keeps the rest')
+function addMat(k, n, x, y, keeps, ownLine) {   // keeps: what the source keeps when part of a take did not fit ('the stone keeps the rest'); ownLine: the caller says the shortfall itself
   const ex = S.exp, got = Math.max(0, Math.min(n, CAP - ex.cargo[k]));
   ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
   if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
-  if (got < n) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
+  if (got < n && !ownLine) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
   return got;
 }
 // Who eats fruit here, said when one drops: "A fruit drops · Untuvas eat these".
@@ -2998,7 +3009,7 @@ function grabFruit(live, fr) {
 }
 function shakeBush(f) {
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
-  const p = freeAround(key, f.x, f.y, S.exp.patch); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
+  const p = freeAround(key, f.x, f.y, S.exp.patch, true); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
   if (p) { fxMsg('A fruit drops · ' + eatersHere(live), 2); grabFruit(live, live.fr[live.fr.length - 1]); }
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
 }
@@ -3010,9 +3021,11 @@ function pickUp(fr) {
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
 function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
   const ex = S.exp, P = at || ex.patch;
-  if (CAP - ex.cargo.s < 2) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // pressing would waste the fruit
+  if (ex.cargo.s >= CAP) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // refused only at the cap (owner note #15)
+  const part = CAP - ex.cargo.s < 2;   // room for 1: fills to the cap, the extra is lost, and the line says so
   ex.carry = null;
-  const got = addMat('s', 2, P.x, P.y); fxSign('press');
+  const got = addMat('s', 2, P.x, P.y, null, part); fxSign('press');
+  if (part) fxMsg(WORDS.pressLost(CAP), 2);
   advance('patch', { noise: 'act' });
 }
 function takeTuft(tf) {
@@ -3133,6 +3146,46 @@ function offer(c) {
   } else { c.st = 'alert'; c.t = 1; c.go = 1; fxSign('bubbleNotice'); }
   advance('patch', { noise: 'act' });
 }
+// The Call is not cut at the place's edge (owner 11-17, #49): the finds of the places next door (the eight round this one) that lie inside the Call's circle, drawn in this place's tile
+// coordinates, are lit too, but only in a place the Probe's reach holds. A pod is read from the pod list (no place is built for it); a feature (stone, crack) only where that place's
+// layout is already made, so the Call never generates a place. cue entries carry nk (the neighbour's key) and ax, ay (the find's own tile there).
+// The Call also lifts the veil of the part of its circle inside a place next door held by the Probe's reach (owner #49: "explore the adjacent place"). The lifted rows are kept apart
+// (S.veilPre[key], one bit per tile as S.veil) because S.veil's presence means "been in this place" to the map; takeCallVeil merges them when the player enters (walkLift and checkWalked
+// then run as usual, so "explored" counts them). Needs no layout: a place not made yet is taken to be this place's size, as nextDoorFinds does.
+function nextDoorVeil(P, lay, reach) {
+  const ex = S.exp; if (!ex || !ex.reach || lay.cave) return;
+  const c = cxy(lay.cell); S.veilPre = S.veilPre || {};
+  for (const [dx, dy] of PEEK_DIRS) {
+    const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+    const nc = Y * MW + X; if (!ex.reach.includes(nc)) continue;
+    const nk = String(nc), nl = layoutCache.get(nk); if (nl && nl.cave) continue;
+    const w = nl ? nl.w : lay.w, h = nl ? nl.h : lay.h, ox = dx * (dx < 0 ? w : lay.w), oy = dy * (dy < 0 ? h : lay.h);
+    const v = S.veil[nk] || S.veilPre[nk] || new Array(h).fill(0);   // a place walked in before keeps its own veil
+    let any = false;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inCall(P, x + ox, y + oy, reach)) { v[y] = (v[y] | (1 << x)) >>> 0; any = true; }
+    if (any && !S.veil[nk]) S.veilPre[nk] = v;   // nothing is kept for a place the circle does not touch
+  }
+}
+function takeCallVeil(key, lay) {
+  const pre = S.veilPre && S.veilPre[key]; if (!pre) return;
+  const v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0));
+  for (let y = 0; y < lay.h; y++) v[y] = (v[y] | (pre[y] || 0)) >>> 0;
+  delete S.veilPre[key];
+}
+function nextDoorFinds(P, lay, reach, cue) {
+  const ex = S.exp; if (!ex || !ex.reach || lay.cave) return 0;
+  const c = cxy(lay.cell); let n = 0;
+  for (const [dx, dy] of PEEK_DIRS) {
+    const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+    const nc = Y * MW + X; if (!ex.reach.includes(nc)) continue;
+    const nk = String(nc), nl = layoutCache.get(nk), w = nl ? nl.w : lay.w, h = nl ? nl.h : lay.h, ox = dx * (dx < 0 ? w : lay.w), oy = dy * (dy < 0 ? h : lay.h);
+    for (const p of S.pods) if (p.k === nk && p.h && p.x >= 0 && inCall(P, p.x + ox, p.y + oy, reach)) { p.h = 0; p.out = 1; cue.push({ x: p.x + ox, y: p.y + oy, nk, ax: p.x, ay: p.y }); n++; }
+    if (nl) for (const f of nl.feats) {
+      const fp = featPos(nk, f); if (!inCall(P, fp.x + ox, fp.y + oy, reach)) continue;
+      if ((f.kind === 'k' && stoneCharge(nk, f) > 0 && !stoneSeen(nk, f)) || (f.kind === 'd' && !(ex.live[nk] && ex.live[nk].seen.d))) { cue.push({ x: f.x + ox, y: f.y + oy, nk, ax: f.x, ay: f.y }); n++; } }
+  }
+  return n;
+}
 // Call in a place: the pulse. It lifts the veil CALL_R tiles around you (a round ring; 4 in a fog bank unless a glowing partner is along).
 // Hidden finds there glint and stay outlined; curious creatures come, wary ones hide; your partner comes and digs a burrow it can handle.
 // It reports the heart (found, or its tell) and what is still there to take.
@@ -3147,6 +3200,8 @@ function callPlace() {
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
+  if (!lay.cave) nextDoorVeil(P, lay, reach);   // and lifts the veil of the strip it covers there (the finds below read it)
+  if (!lay.cave) found += nextDoorFinds(P, lay, reach, cue);   // the wave goes on past the place's edge, cut only by the Probe's reach (owner #49)
   let lifted = null;
   if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkWalked(); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
@@ -5393,7 +5448,7 @@ function drawReachView(t) {
     const L = q.big ? 9 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
     R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
-  for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
+  if (peek.on) for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
   // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
   const tw = ix - 22;
@@ -5606,7 +5661,8 @@ function drawMap(mode, t) {
   // the Probe's range: a dotted square around the start
   // (call-probe-marks-1, owner #64) while picking the start, the same square round the chosen cell, moving with it; its size is the range the expedition would have (the tier, and a rambler's extra ring)
   const pickR = !ex && mode === 'place' ? TIER[S.tier].range + (S.ui.type !== 'deep' && partnerMibi() && spOf(partnerMibi().sp).ab === 'sure' ? 1 : 0) : 0;
-  if (ex || pickR) { const s0 = cxy(ex ? ex.start : S.ui.cur), r = ex ? ex.range : pickR, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
+  // owner note #77: the square shows only on this start pick and in the held Call view (peekReachLine), not on the plain map of a walk
+  if (pickR) { const s0 = cxy(ex ? ex.start : S.ui.cur), r = ex ? ex.range : pickR, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
       x1 = ox + Math.min(MW, s0.x + r + 1) * CELL - (s0.x + r + 1 > MW ? 4 : 2), y1 = oy + Math.min(MH, s0.y + r + 1) * CELL - (s0.y + r + 1 > MH ? 4 : 2);
     for (let xx = x0; xx <= x1; xx += 6) { R(xx, y0, 3, 2, C.amber); R(xx, y1, 3, 2, C.amber); }
     for (let yy = y0; yy <= y1; yy += 6) { R(x0, yy, 2, 3, C.amber); R(x1, yy, 2, 3, C.amber); } }
@@ -5714,7 +5770,7 @@ const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', sh
 function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.patch ? layout(RT.key) : null, bk = lay && bakedView(lay);
   if (!bk) return camAt(v, px, py);
   const P = S.exp.patch, ts = v.ts;
-  if (!RT.ca || RT.ca.p !== P) RT.ca = { p: P, s: bk.newCam() };
+  if (!RT.ca || RT.ca.p !== P) RT.ca = { p: P, s: newCamFor(bk, P.key) };
   const st = live ? RT.ca.s : Object.assign({}, RT.ca.s), tile = live ? { x: P.x, y: P.y } : { x: Math.round(px / ts), y: Math.round(py / ts) };
   return bk.camera(st, { w: v.w, h: v.h }, tile, NOW, motion(), null);
 }
@@ -6106,11 +6162,15 @@ function drawPartner(sp, pt, x, y, t, stepFr = -1) {
 // ---------- The view's edge cues: tabs for what is off screen, the Call's hold on the edge, the name tag's place ----------
 // Read only: S, FX and RT in, pixels out. The one render state is RT.tabSeen (when each tab first showed, for its flash).
 const TAB = { order: ['!', '?', 'find'], border: { '!': 'yellow', '?': 'sprout', find: 'cream' }, max: 4, merge: 24, clear: 4, flashMs: 160 };
-const rectsMeet = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+const TOP_LINE_B = 56;   // the bottom of the goal line drawn over the view's top (VIEW_Y + GOAL_BAND_H)
+const findTabY = t => t.kind === 'find' ? Math.max(t.cy, TOP_LINE_B + 12) : t.cy;   // the find marker sits whole below the goal line, never a sliver under it (owner #80)
+const rectsMeet =(a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 // the place view and its drawn camera, as drawPatch has them this frame (the shake after the clamp)
 function cueView() { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), [sx, sy] = shakeOff(), c0 = camPos(v, S.exp.patch.x * v.ts, S.exp.patch.y * v.ts); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
 // a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
 function findThere(key, lay, q) {
+  if (q.nk) { const nl = layoutCache.get(q.nk);   // a find in the place next door (nextDoorFinds): its own tile there
+    return S.pods.some(p => p.k === q.nk && !p.h && p.x === q.ax && p.y === q.ay) || (!!nl && nl.feats.some(f => f.x === q.ax && f.y === q.ay && (f.kind === 'd' || (f.kind === 'k' && stoneCharge(q.nk, f) > 0)))); }
   return S.pods.some(p => p.k === key && !p.h && p.x === q.x && p.y === q.y)
     || lay.feats.some(f => f.x === q.x && f.y === q.y && (f.kind === 'd' || (f.kind === 'k' && stoneCharge(key, f) > 0)));
 }
@@ -6126,8 +6186,8 @@ function edgeTabs() {
     all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
-  { const w = leadWay(P, lay); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // after any Call that leaves nothing to take in sight: one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
-  const q = FX.cue;
+  const q = FX.cue, callLive = !!q && q.key === P.key && ex.actions < q.until;
+  if (callLive) { const w = leadWay(P, lay); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // only for the Call's own time (owner #80): never on the plain map; one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
     add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }
@@ -6135,6 +6195,7 @@ function edgeTabs() {
   const kept = [];
   for (const t of all) { if (kept.length >= TAB.max) break;
     if (kept.some(k => k.side === t.side && Math.abs(t.side === 'N' || t.side === 'S' ? k.cx - t.cx : k.cy - t.cy) <= TAB.merge)) continue; kept.push(t); }
+  for (const t of kept) t.cy = findTabY(t);
   const m = msgGeom();   // never over the message box: slide along the edge until the tab, grown by 4, clears it
   if (m) for (const t of kept) { const g4 = 11 + TAB.clear; if (!rectsMeet({ x: t.cx - g4, y: t.cy - g4, w: 2 * g4, h: 2 * g4 }, m)) continue;
     t.cy = m.y > VIEW_Y + (VIEW_H >> 1) ? m.y - g4 : m.y + m.h + g4; }
@@ -6291,8 +6352,9 @@ function drawReachGrid(x0) {
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
     const X = s0.x - r + i, Y = s0.y - r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue;
     const px = x0 + i * pitch, py = y0 + j * pitch;
-    if (c === ex.pos) { R(px - 1, py - 1, d + 2, d + 2, C.amber); R(px, py, d, d, C.ink); }
-    if (gatedCell(c)) { R(px, py, d, d, C.stone); if (big) R(px + 1, py + 1, 1, 1, C.ink); R(px + (big ? 1 : 0), py, 1, 1, C.ink); }   // hollow with a notch: behind a gate
+    if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
+    if (c === ex.pos) R(px, py, d, d, C.orange);   // you are here: the player's orange, drawn last so no state fill covers it (owner 11-17, #39 #53)
+    else if (gatedCell(c)) { R(px, py, d, d, C.stone); if (big) R(px + 1, py + 1, 1, 1, C.ink); R(px + (big ? 1 : 0), py, 1, 1, C.ink); }   // hollow with a notch: behind a gate
     else if (explored(c)) R(px, py, d, d, C.mint);
     else if (big) { R(px, py, 3, 3, C.stone); R(px + 1, py + 1, 1, 1, C.ink); }
     else R(px, py, d, d, C.slate);

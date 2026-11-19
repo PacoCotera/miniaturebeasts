@@ -64,6 +64,17 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const s = ts.sprites[k], left = fx - s.anchor48[0] - 48, top = fy - s.anchor48[1] - 48;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x * 48 + 24, py = y * 48 + 28; if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) clear[I(x, y)] = 0; }
   }
+  // owner note #41: the tiles a prop's picture is drawn over (a bush, a boulder, a crown, a trunk's foot): a fruit that drops is never laid on one. A tile is covered when a prop's box meets the tile's box, 4 px in from its edge
+  // (tall grass is walked through and draws no cover)
+  const covered = new Uint8Array(NP);
+  for (const p of place.props) {
+    const s = ts.sprites[p.kind]; if (!s || s.kind === 'tall-grass' || !s.w48) continue;
+    const left = p.x - s.anchor48[0] - 48, top = p.y - s.anchor48[1] - 48;
+    for (let y = Math.max(0, Math.floor((top - 44) / 48)); y < h && y * 48 + 4 < top + s.h48; y++) for (let x = Math.max(0, Math.floor((left - 44) / 48)); x < w && x * 48 + 4 < left + s.w48; x++) {
+      if (x * 48 + 44 > left && y * 48 + 44 > top) covered[I(x, y)] = 1;
+    }
+  }
+  const coverAt = (x, y) => x < 0 || y < 0 || x >= w || y >= h || covered[I(x, y)] === 1 || clear[I(x, y)] === 0;
   // the ways in: the IR's runs along a side, kept in the baked place's tiles (1..24 and 1..28 inside its apron), as the page's range lines read them (lay.baked has the offset)
   const openings = ir.openings.map(op => ({ side: op.side, from: op.from, to: op.to }));
   const arrive = (op) => { const mid = ((op.from + op.to) >> 1) - 1; return op.side === 'N' ? { x: mid, y: 0 } : op.side === 'S' ? { x: mid, y: h - 1 } : op.side === 'W' ? { x: 0, y: mid } : { x: w - 1, y: mid }; };
@@ -163,7 +174,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
     baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
-    strikes, decalNear, ...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
+    strikes, decalNear, coverAt,...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;

@@ -117,12 +117,16 @@ function holdOn(a, pick) {
   const covered = (lx, ly) => { const l = (x0 + lx) * 48 + 4, t = (y0 + ly) * 48 + 4; return pics.some(r => r[0] < l + 40 && l < r[0] + r[2] && r[1] < t + 40 && t < r[1] + r[3]); };
   // what the place's set pieces stand on (places.mjs): their walls are rocks, and they and the slab and the Split Stone take their tiles
   const content = contentOf(planOf(seed, X, Y), seed);
+  // owner note #34: no wall stone or stump on a road tile or the tile beside it (a way stone or a sign belongs on the road; a wall boulder does not)
+  const roadNear = (lx, ly) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (tt(lx + dx, ly + dy) === TV.PATH) return true; return false; };
+  // (only the drawn prop goes: the tile stays taken below, so no find, pod or mark moves and the digests move props only)
+  const drawnSetProps = content.setProps.filter(p => p.fam === 'landmark' || !roadNear(p.x, p.y));
   for (const p of content.setProps) {
     if (p.kind === 'split-stone') { for (const [dx, dy] of [[-1, 0], [0, 0], [1, 0], [-1, -1], [0, -1], [1, -1]]) { const lx = p.x + dx, ly = p.y + dy; if (lx >= 0 && ly >= 0 && lx < w && ly < h) occ[ly * w + lx] = 1; } continue; }
     if (p.x >= 0 && p.y >= 0 && p.x < w && p.y < h && p.fam === 'rocks') { occ[p.y * w + p.x] = 1; }   // a wall takes its tile but adds no pod or stone supply: the set pieces give finds from the place's count, never more supply
   }
   for (const p of content.pieces) for (let i = 0; i < (p.w || 1); i++) if (p.x + i >= 0 && p.y >= 0 && p.x + i < w && p.y < h) occ[p.y * w + p.x + i] = 1;
-  out.patches = content.patches; out.setProps = content.setProps; out.pieces = content.pieces; out.shelter = content.shelter; out.stamps = content.spots;
+  out.patches = content.patches; out.setProps = drawnSetProps; out.pieces = content.pieces; out.shelter = content.shelter; out.stamps = content.spots;
   // The cell's MAIN ground: the biggest part of the free ground that a way in leads to (the page floods from each opening's middle tile, as adapt7 does). Everything the cell holds lies on it, so no find,
   // strike mark or pod slot sits in a cut-off part. A cell with no way in uses its biggest part.
   const open = (lx, ly) => lx >= 1 && ly >= 1 && lx <= CW && ly <= CH && !occ[ly * w + lx] && walk(lx, ly) && !lip(lx, ly);

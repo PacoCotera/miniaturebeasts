@@ -15,7 +15,7 @@ const SCHEMA = real(FLAT);
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub, except that an element keeps what is set on it
 // (els[id].hidden); localStorage is `store`, its writes counted; requestAnimationFrame calls are counted.
-const page = (store = {}) => makePage({ store, console: "collect", els: true, raf: "count" });
+const page = (store = {}) => makePage({ store, console: "collect", els: true, canvas: true, raf: "count" });
 // A saved new world (seed 7), as the page writes it.
 function newSave() { const p = page(); p.run("newWorld(7)"); return p.store[p.KEY]; }
 const plain = x => JSON.parse(JSON.stringify(x));
