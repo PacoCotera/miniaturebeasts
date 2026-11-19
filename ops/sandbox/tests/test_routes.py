@@ -84,7 +84,7 @@ class Routes(unittest.TestCase):
         (game / "species" / "frames" / "language" / "index.json").write_text("{}")
         (game / "assets").mkdir()
         (game / "assets" / "app-0a1b2c3d.js").write_text("//js")
-        for d, t in (("test", "test-secret"), ("caddy", "caddy-secret"), ("station", "station-page"), (".", "play-page")):
+        for d, t in (("test", "test-secret"), ("caddy", "caddy-secret"), ("station", "station-page"), ("exploration", "companion-page"), (".", "play-page")):
             (game / d).mkdir(parents=True, exist_ok=True)
             (game / d / "index.html").write_text(t)
         cls.port = free_port()
@@ -214,6 +214,13 @@ class Routes(unittest.TestCase):
         # the species frames are game data the Station loads: public
         self.assertEqual(self.where("/play/species/frames/language/index.json")[0], 200)
         self.assertEqual(self.where("/admin/test"), (302, "/admin/test/"))
+
+    def test_the_old_field_test_page_is_gone_and_the_companion_frame_stays(self):
+        # owner 11-18: "don't keep old stale URLs that nobody uses, just delete it": no redirect, not found
+        for p in ("/play/exploration/", "/play/exploration", "/play/exploration/index.html", "/PLAY/Exploration/", "/play/exploration/?"):
+            self.assertEqual(self.where(p), (404, None), p)
+        for p in ("/play/exploration/?embed", "/play/exploration/?embed&seed=7", "/play/exploration/?observer", "/play/exploration/?test", "/play/exploration/index.html?embed"):
+            self.assertEqual(self.where(p), (200, None), p)
 
     def test_the_admin_paths_need_the_login_and_the_index_is_the_team_page_for_now(self):
         good = "mb_studio=good"

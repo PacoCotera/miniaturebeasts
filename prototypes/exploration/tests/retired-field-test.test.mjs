@@ -1,5 +1,5 @@
 // The standalone Companion Field Test page is retired (owner 11-18). The game file stays: /play/ frames it (?embed). Real Chromium (PW_DIR names the folder holding node_modules/playwright; without it the tests are skipped).
-//   no query -> the browser goes up one folder (to /play/ on the site); any query keeps the page; ?observer = the device and the Observer panel only.
+//   no query -> no redirect (owner 11-18: "just delete it"; the site answers 404, ops/sandbox/Caddyfile); any query keeps the page; ?observer = the device and the Observer panel only.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -35,8 +35,8 @@ async function open(t, query, fn) {
   } finally { await browser.close(); server.close(); }
 }
 
-test("no query: the browser goes up to the play page", { skip }, async (t) => {
-  await open(t, "", async (page) => { assert.match(new URL(page.url()).pathname, /^\/prototypes\/$/); });
+test("no query: the page sends nowhere (no redirect; the site answers 404 for it: ops/sandbox/Caddyfile @oldpage, tests/test_routes.py)", { skip }, async (t) => {
+  await open(t, "", async (page) => { assert.match(new URL(page.url()).pathname, /^\/prototypes\/exploration\/$/); });
 });
 
 test("?embed keeps the page: the frame the play page loads", { skip }, async (t) => {
