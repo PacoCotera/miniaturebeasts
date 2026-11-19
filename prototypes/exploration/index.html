@@ -3977,7 +3977,7 @@ const FIRST_N = 48;
 function nearestPal(r, g, b, n = RGB.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
 function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b], k) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t, k < FIRST_N ? FIRST_N : RGB.length)); }
 const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low contrast
-     FADE = mixLUT('stone', .5);
+     FADE = mixLUT('stone', .5); FADE[C.river] = FADE[C.sea] = C.sea;   // faded water stays sea blue: stone's mix sent it to the same grey-purple as faded rock (owner bug #65, "that doesn't look like wide water")
 FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs to fog, as grass does: it never grows brighter asleep than woken (the palette's place fog says the same)
 // The Shade's asleep wash, one table: every colour mixed .48 toward bone, then the nearest of the core colours (the first 48 for the first 48, as the fog and fade tables); a cool colour that lands there
 // (sky, ice, river, aqua, mint) becomes mist, so a glow cap or water never shines through the Shade. Built and tested; nothing draws through it yet
