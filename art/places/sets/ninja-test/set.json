@@ -65,7 +65,8 @@
   "layers": {
     "deep": {
       "fill": {
-        "sheets": ["fill-deep.png"]
+        "sheets": ["fill-deep.png", "fill-deep@1.png", "fill-deep@2.png", "fill-deep@3.png"],
+        "frameMs": 250
       }
     },
     "water": {

@@ -2431,9 +2431,24 @@
     "sha256": "016599fc8bf7526420b13d1fc73be07ca4ffb118aa9c05eff3834e78860ba0dc"
   },
   "fill-deep.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/sets/pair-deep-water.png#15",
-    "sha256": "2ad2dfafc802f0720764f569f1def08ed4fd6160f7ca59ad3010c91addd05593"
+    "commit": "local",
+    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep.steps.json",
+    "sha256": "15b85341c16a5a61cb9d93c3d82cbd897e177f66560a91f949aefa7377231a80"
+  },
+  "fill-deep@1.png": {
+    "commit": "local",
+    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep@1.steps.json",
+    "sha256": "2f03ca53ac90c52aba630d188dab10551ead74c6378d5868314031e3f302a9c2"
+  },
+  "fill-deep@2.png": {
+    "commit": "local",
+    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep@2.steps.json",
+    "sha256": "334a948f127aa058319a669ab3cb81ee527e4c1173b18998779a5a133194ca19"
+  },
+  "fill-deep@3.png": {
+    "commit": "local",
+    "from": "puny-world/punyworld-overworld-tileset.png tiles 295 and 296 (CC0, Shade; 4 frames, tile id + 81 per frame), four variants per frame, two map steps to #348f8b/#58b0a8; the whole chain is in fill-deep@3.steps.json",
+    "sha256": "79fa520e7678fac660f0d642c9d2f778fc466f35429568def3316b3e4ecadbb6"
   },
   "fill-water.png": {
     "commit": "633e4d641",
@@ -2456,9 +2471,9 @@
     "sha256": "b964108b5853d2f19ba17d147611e7e2cc24067de22ffb1a532f52f336083a90"
   },
   "over-water.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/water-over.png",
-    "sha256": "4a0b26c3dafaaa9050cca1c8521e01e4b8cdf684db8683c59a7c169464c0a113"
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/water-over.png (the signed sheet; the whole chain is in over-water.steps.json)",
+    "sha256": "f5b1bf0700086efd895ad547f5391377edf2e290cfdea1d1f76a9c5f43aff180"
   },
   "fill-earth.png": {
     "commit": "633e4d641",
