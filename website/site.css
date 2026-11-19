@@ -244,7 +244,7 @@ figcaption { margin-top: 8px; }
   .band.flip .pic { order: 2; }
   .band .pic { margin: 0; height: 100%; display: grid; align-items: center; }
   .band.paint .pic img { height: 100%; aspect-ratio: auto; }
-  .band .words { padding: 48px var(--gutter); }
+  .band .words { padding: 48px var(--gutter); max-width: none; }   /* the side padding below grows with the screen; a fixed max-width left the words ~100 px wide at 2000 px (owner, 11-19) */
   .band.flip .words { padding-left: max(var(--gutter), calc((100vw - var(--content)) / 2)); }
   .band:not(.flip) .words { padding-right: max(var(--gutter), calc((100vw - var(--content)) / 2)); }
   .band.object .pic { padding: 6% 10%; }
