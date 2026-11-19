@@ -43,7 +43,10 @@ static int g_last[4], g_drawn;   /* g_drawn: a ring was drawn in the scene being
 void word_lastRing(int out[4]) { for (int i = 0; i < 4; i++) out[i] = g_last[i]; }
 /* the rest box: what a scene with no ring wants kept in view on a phone (an empty room's message); the play page pans to it as to the ring */
 static int g_rest[4], g_restSet;
-void word_ringSceneBegin(void) { g_drawn = 0; g_restSet = 0; }
+static int g_pan[4], g_panSet;   /* the box the phone window keeps in view instead of the ring's own (Home narrow: the window's ring brings the top bar with it) */
+void word_ringSceneBegin(void) { g_drawn = 0; g_restSet = 0; g_panSet = 0; }
+void word_setPanBox(const int r[4]) { for (int i = 0; i < 4; i++) g_pan[i] = r[i]; g_panSet = 1; }
+int word_panBox(int out[4]) { for (int i = 0; i < 4; i++) out[i] = g_pan[i]; return g_panSet; }
 int word_ringDrawn(void) { return g_drawn; }   /* the play page pans its phone window to the ring (face_focus_box) */
 void word_setRest(const int r[4]) {
   if (!g_restSet) { for (int i = 0; i < 4; i++) g_rest[i] = r[i]; g_restSet = 1; return; }

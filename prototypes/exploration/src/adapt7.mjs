@@ -4,7 +4,9 @@
 // cell is picked by the page, and no world edge is laid over the ground (the terrain at the cell's border already is the neighbour's).
 import { T, T_BLOCK, L, hash } from './world.mjs';
 
-export const INNER = { w: 24, h: 28 };
+export const DRAWN_PIECES = new Set();   // the set pieces the page draws with a signed picture (index.html propPiece): none yet; 'heart-slab' is a named empty slot (art/props has no picture for it)
+export const INNER ={ w: 24, h: 28 };
+export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (index.html keeps it in step) and its rows: the lip and the three face rows
 const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
@@ -26,12 +28,13 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const b = P(x, y); if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
     if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; steep[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) { tiles[I(x, y)] = T.ROCK; steep[I(x, y)] = 1; }
   }
+  const propFoot = new Uint8Array(NP);   // the tiles a prop stands on (a steep tile under a prop shows the prop)
   for (const p of place.props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48) - 1, cy = Math.floor(p.y / 48) - 1;
     if (s.kind === 'tall-grass' && !s.footprint.length) { if (cx >= 0 && cy >= 0 && cx < w && cy < h && tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
     for (let i = 0; i + 1 < s.footprint.length; i += 2) {
       const x = cx + s.footprint[i], y = cy + s.footprint[i + 1];
-      if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
+      if (x >= 0 && y >= 0 && x < w && y < h) { propFoot[I(x, y)] = 1; tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
   // scree the Tuliko crosses (hold.mjs softOf): two lines of tiles from the cell's border inwards over the steep rock to the first ground that walks, the same pair of lines from either cell of the edge.
@@ -51,7 +54,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const rim = []; for (let i = 0; i < NP; i++) if (tiles[i] === T.WADE || tiles[i] === T.SCREE) rim.push(i);
   // the set pieces drawn by the page (the slab of a sleepers' bed): their tile blocks like a rock; shelter tiles (under an overhang) keep strikes off whoever stands on them
   const shelter = new Uint8Array(NP), pieces = [];
-  for (const p of ir.pieces || []) { const x = p.x - 1, y = p.y - 1, pw = p.w || 1; if (x >= 0 && y >= 0 && x < w && y < h) { for (let i = 0; i < pw && x + i < w; i++) tiles[I(x + i, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y, w: pw }); } }
+  // a piece with no signed picture is not placed and does not block (bugs #14, #35, #40, #78: the heart slab blocked the pawn while drawing nothing); it is placed once its art is in DRAWN_PIECES
+  for (const p of ir.pieces || []) { if (!DRAWN_PIECES.has(p.piece)) continue; const x = p.x - 1, y = p.y - 1, pw = p.w || 1; if (x >= 0 && y >= 0 && x < w && y < h) { for (let i = 0; i < pw && x + i < w; i++) tiles[I(x + i, y)] = T.ROCK; pieces.push({ piece: p.piece, x, y, w: pw }); } }
   for (const [sx, sy] of ir.shelter || []) { const x = sx - 1, y = sy - 1; if (x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[tiles[I(x, y)]]) shelter[I(x, y)] = 1; }
   // the tiles no crown hangs over: a crown's box at 48 px, a tile's pawn as its centre and a margin round it
   const clear = new Uint8Array(NP).fill(1), crowns = [];
@@ -61,6 +65,17 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const s = ts.sprites[k], left = fx - s.anchor48[0] - 48, top = fy - s.anchor48[1] - 48;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const px = x * 48 + 24, py = y * 48 + 28; if (px > left - CROWN_MARGIN && px < left + s.w48 + CROWN_MARGIN && py > top - CROWN_MARGIN && py < top + s.h48 + CROWN_MARGIN) clear[I(x, y)] = 0; }
   }
+  // owner note #41: the tiles a prop's picture is drawn over (a bush, a boulder, a crown, a trunk's foot): a fruit that drops is never laid on one. A tile is covered when a prop's box meets the tile's box, 4 px in from its edge
+  // (tall grass is walked through and draws no cover)
+  const covered = new Uint8Array(NP);
+  for (const p of place.props) {
+    const s = ts.sprites[p.kind]; if (!s || s.kind === 'tall-grass' || !s.w48) continue;
+    const left = p.x - s.anchor48[0] - 48, top = p.y - s.anchor48[1] - 48;
+    for (let y = Math.max(0, Math.floor((top - 44) / 48)); y < h && y * 48 + 4 < top + s.h48; y++) for (let x = Math.max(0, Math.floor((left - 44) / 48)); x < w && x * 48 + 4 < left + s.w48; x++) {
+      if (x * 48 + 44 > left && y * 48 + 44 > top) covered[I(x, y)] = 1;
+    }
+  }
+  const coverAt = (x, y) => x < 0 || y < 0 || x >= w || y >= h || covered[I(x, y)] === 1 || clear[I(x, y)] === 0;
   // the ways in: the IR's runs along a side, kept in the baked place's tiles (1..24 and 1..28 inside its apron), as the page's range lines read them (lay.baked has the offset)
   const openings = ir.openings.map(op => ({ side: op.side, from: op.from, to: op.to }));
   const arrive = (op) => { const mid = ((op.from + op.to) >> 1) - 1; return op.side === 'N' ? { x: mid, y: 0 } : op.side === 'S' ? { x: mid, y: h - 1 } : op.side === 'W' ? { x: 0, y: mid } : { x: w - 1, y: mid }; };
@@ -157,12 +172,16 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const lay = {
     key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter, pieces, stamps: ir.stamps || [], feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
     sdist, trees: {}, shade: false, w, h, openings, clear, compId, compOfSide, mainComp, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
-    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
+    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
-    strikes, decalNear, ...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
+    strikes, decalNear, coverAt,...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;
+  // rupar-banks-7-1: the earth banks of the cell: the two columns of a way up and the four rows (lip and the three face rows) under its top, in the cell's tiles, blocked rock until a Rupar digs them. The id comes from the
+  // site's world tile (the same in both cells a bank spans) and lies above every cell-edge index, so the page's dug list (edge indices) holds it beside them.
+  const banks = (ir.banks || []).map(a => ({ x: a.x - 1, y: a.y - 1, w: a.w, h: BANK_ROWS, ei: BANK_EI + (ir.origin.y + a.y) * 4096 + ir.origin.x + a.x })).filter(b => b.x + b.w > 0 && b.x < w && b.y + b.h > 0 && b.y < h);
+  if (banks.length) lay.banks = banks;
   return lay;
 }

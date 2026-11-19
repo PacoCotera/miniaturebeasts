@@ -145,6 +145,12 @@
       "places": "keyed contact shade and tumbled stones under a south lip, over whatever ground is there: the cell's own column phase (cliff-foot-1..6) under every column and corner cell, cliff-foot-w / cliff-foot-e under the west / east end piece; drawn from the lip row L (rows L to L+3) before the face of its line, so the face covers its top rows; placed, not yet signed"
     },
     {
+      "id": "earth-bank", "family": "wayup", "state": "stand-in", "kinds": ["wayup-dug"],
+      "anchor": [0, 0], "footprint": [], "extent": [0, 0, 96, 192], "margin": 0,
+      "pass": "relief", "footLine": { "from": "lip", "plus": 3 },
+      "places": "the Rupar's earth bank (an ir.banks site: two cells wide, the lip row and three face rows): an undug bank has no piece (it draws as today's rock face, the dither patch at the foot and the page's brackets); wayup-dug (a rough cut ramp with a notch in the rim and spoil at the foot, 96 x 192 game px, 32 x 64 art px, alpha) is added by the page when the bank is dug, on the site's west column and top row at the foot line of its lip row plus 3, after the columns of its line; PixelLab inpaint of the bank's own crop (wayup-paint-5), not yet signed"
+    },
+    {
       "id": "way-up", "family": "wayup", "state": "stand-in", "kinds": ["way-up", "cliff-way-up-u"],
       "anchor": [0, -3], "footprint": [[0, -2], [1, -2], [0, -1], [1, -1], [0, 0], [1, 0], [0, 1], [1, 1], [0, 2], [1, 2], [0, 3], [1, 3], [0, 4], [1, 4]],
       "extent": [-93, -126, 213, 348], "margin": 12,

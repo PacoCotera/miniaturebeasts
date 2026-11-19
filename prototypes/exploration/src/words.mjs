@@ -10,12 +10,13 @@ export const WORDS = {
   takeDew: 'Take the dew',
   // refusals and counts against the cap (the thing stays where it is, nothing is spent)
   refuse: {
-    dew: cap => 'Essence ' + cap + ' of ' + cap + ' · the cup keeps its dew', charge: cap => 'Energy ' + cap + ' of ' + cap + ' · the stone keeps its charge',
-    tuft: cap => 'Essence ' + cap + ' of ' + cap + ' · the tuft stays where it is',
+    dew: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the cup keeps its dew', charge: cap => 'Your Energy is full (' + cap + ' of ' + cap + ') · the stone keeps its charge',   // [copy] owner notes #75 #76: the 20 is his hold, not the stone's
+    tuft: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the tuft stays where it is',
   },
   pressNoRoom: (n, cap) => 'Essence ' + n + ' of ' + cap + ' · no room to press the fruit',
+  pressLost: cap => 'Essence full (' + cap + ' of ' + cap + ') · the rest is lost',   // [copy] owner note #15: a press with room for 1 fills to the cap
   stoneKeeps: 'the stone keeps the rest', holdsNoMore: 'the Probe holds no more',
-  full: (supply, cap, keeps) => supply + ' ' + cap + ' of ' + cap + ' · ' + (keeps || 'the Probe holds no more'),
+  full: (supply, cap, keeps) => 'Your ' + supply + ' is full (' + cap + ' of ' + cap + ') · ' + (keeps || 'the Probe holds no more'),   // [copy] owner note #75: said the same way as the refusal
   // pressing fruit (✓ labels and the bump line)
   press: { stone: 'Press fruit on the stone', tree: 'Press fruit on the tree', dim: 'Press on a stone or tree', bump: 'Press fruit on a stone or tree · or put it down' },
   // [copy] the HUD line when a step in a place is refused and nothing else says why (placeholders say the meaning only; bug #14)
@@ -23,7 +24,7 @@ export const WORDS = {
   // [copy] the Data hold is the only limit on a trip; the copywriter writes the words behind these slots (placeholders say the meaning only)
   // [copy] the notice line (lock-playtest-world, owner 2026-11-10 20:18), three slots left empty for the copywriter: saveFailed is shown while a save cannot be written (storage full, a private window, blocked)
   // until a save works again; landChanged while the save names a land (REALM_REV) other than the one this build makes; pageBroke when the page breaks, given the build number from build.json (an empty slot still shows it).
-  notice: { saveFailed: '', landChanged: '', pageBroke: build => '' },
+  notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
   creature: { holdFull: 'no room for Data' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
   // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line

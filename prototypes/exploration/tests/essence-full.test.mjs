@@ -39,8 +39,16 @@ test("a full hold: a tuft stays where it is and no turn passes", () => {
   assert.equal(run("curLive().tf.length"), 1);
 });
 
-test("one free place: a fruit is not pressed and stays in hand", () => {
+test("one free place: pressing fills to 20, the extra is lost and the line says so", () => {
   const run = setup(19); run("S.exp.carry = 'fruit'");
+  run("pressFruit()");
+  assert.equal(state(run).s, 20);
+  assert.equal(state(run).carry, null);
+  assert.equal(run("WORDS.pressLost(CAP)"), "Essence full (20 of 20) · the rest is lost");
+});
+
+test("at the cap: a fruit is refused and stays in hand", () => {
+  const run = setup(20); run("S.exp.carry = 'fruit'");
   const before = state(run); run("pressFruit()");
   assert.deepEqual(state(run), before);
   assert.equal(state(run).carry, "fruit");
@@ -51,4 +59,23 @@ test("with two free places, pressing a fruit gives 2 Essence", () => {
   run("pressFruit()");
   assert.equal(state(run).s, 20);
   assert.equal(state(run).carry, null);
+});
+
+// The bar (drawCounter) counts a gain up one per 90 ms; after the press at 19 it reaches 20 (the line and the bar agree) within a few frames.
+test("the Essence bar goes 19 to 20 with the press and settles on the hold", () => {
+  const run = setup(19); run("S.exp.carry = 'fruit'");
+  run("NOW = 1000; drawCounter(0, 'xs', 'essence', S.exp.cargo.s)");
+  assert.equal(run("CNT.xs.v"), 19);
+  run("pressFruit()");
+  for (let t = 1100; t <= 1400; t += 100) run(`NOW = ${t}; drawCounter(0, 'xs', 'essence', S.exp.cargo.s)`);
+  assert.equal(run("CNT.xs.v"), 20);
+  assert.equal(state(run).s, 20);
+});
+
+// #80: the find marker sits whole below the goal band (24 px under the HUD), never a sliver under it.
+test("a find marker is placed whole below the goal line; other tabs are left alone", () => {
+  const run = page();
+  assert.equal(run("findTabY({ kind: 'find', cy: 49 })"), 68);
+  assert.equal(run("findTabY({ kind: 'find', cy: 300 })"), 300);
+  assert.equal(run("findTabY({ kind: '!', cy: 49 })"), 49);
 });

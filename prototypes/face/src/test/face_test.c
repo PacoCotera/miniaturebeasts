@@ -577,6 +577,22 @@ static void layout_log(void) {
   { char out[24]; snprintf(out, sizeof out, "[%u,", (unsigned)v_id("ll.out")); check(n > 0 && log_has(lg, want) && !log_has(lg, out), "layout log: a source node inside the rect is kept whole, one outside it is left out", want); }
   prim_snapshot_free(); prim_begin(); prim_end(); n = prim_log_json(lg, (int)sizeof lg);
   check(n > 0 && !log_has(lg, "\"snapshot\""), "layout log: a freed snapshot leaves the log", "");
+  /* v_sprite_window_stretch: a 6 x 4 picture whose pixel (x, y) is (10 + 20x, 30 + 10y, 200), a column of it across 9 px, two columns across 6, and a window outside the asset */
+  { const char *m = "{\"t\":\"asset\",\"id\":\"ll-col\",\"w\":6,\"h\":4,\"policy\":\"art\",\"status\":\"placeholder\"}"; check(wire_send(m, (int)strlen(m)) == 0 && wire_asset_slot("ll-col") >= 0, "stretch: a picture is loaded", "");
+    uint8_t *p = prim_asset_ptr(wire_asset_slot("ll-col")); for (int y = 0; y < 4; y++) for (int x = 0; x < 6; x++) { uint8_t *q = p + (y * 6 + x) * 4; q[0] = (uint8_t)(10 + 20 * x); q[1] = (uint8_t)(30 + 10 * y); q[2] = 200; q[3] = 255; }
+    prim_begin(); v_region("ll.st", LAYER_ART);
+    int ok1 = v_sprite_window_stretch("ll.st1", "ll-col", 3, 0, 1, 4, 100, 100, 9);    /* column 3 across 9 px (source origin sy 0: still a window) */
+    int ok2 = v_sprite_window_stretch("ll.st2", "ll-col", 2, 0, 2, 4, 200, 100, 6);    /* columns 2 and 3 across 6 px */
+    int ok3 = v_sprite_window_stretch("ll.st3", "ll-col", 5, 0, 2, 4, 300, 100, 6);    /* columns 5 and 6: 6 is outside the picture */
+    prim_end(); face_frame(100); face_frame(200); n = prim_log_json(lg, (int)sizeof lg);
+    const uint8_t *fb = face_fb(); int col9 = 1, two = 1;
+    for (int y = 0; y < 4; y++) for (int x = 0; x < 9; x++) { const uint8_t *q = fb + ((100 + y) * FACE_W + 100 + x) * 4; if (q[0] != (uint8_t)(10 + 20 * 3) || q[1] != (uint8_t)(30 + 10 * y) || q[2] != 200) col9 = 0; }
+    for (int y = 0; y < 4; y++) for (int x = 0; x < 6; x++) { const uint8_t *q = fb + ((100 + y) * FACE_W + 200 + x) * 4; if (q[0] != (uint8_t)(10 + 20 * (2 + x / 3)) || q[1] != (uint8_t)(30 + 10 * y)) two = 0; }
+    check(ok1 && ok2 && col9, "stretch: a 1-column source stretched to 9 px is that column repeated, row by row", "");
+    check(two, "stretch: a 2-column source stretched to 6 px is each column 3 px, nearest-neighbour (no blend)", "");
+    snprintf(want, sizeof want, "[%u,", (unsigned)v_id("ll.st3"));
+    check(ok3 && !log_has(lg, want), "stretch: a window outside the asset is refused as the 1:1 one is (no node)", "");
+    check(v_sprite_window_stretch("ll.st4", "ll-col", 0, 0, 0, 4, 0, 0, 5) == 0 && v_sprite_window_stretch("ll.st5", "no-such", 0, 0, 1, 4, 0, 0, 5) == 0, "stretch: no source width, or an asset not sent, draws nothing and says 0", ""); }
 }
 /* kit_glint (Home's Library glints on it) and the top bar's readout after the title */
 static void glint_readout(void) {

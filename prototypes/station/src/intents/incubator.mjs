@@ -45,10 +45,10 @@ export function intent(h, target, verb) {
     const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { refused(h, r); return r; }
     startHatch(h, B, r.mibi); return r;
   }
-  const above = h.settings.growNowAbove ?? h.specs.panel?.growNowAbove ?? 4;   // a large Hatch now asks first (decision panel spec §1.6); at or below the threshold ✓ acts as before
   if (noPlace(h)) return;   // Open now with no place: the same panel
   const cost = S.instantGrowCost(h.st, h.settings, h.now());
-  if (cost.s > above && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.vivFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with the Vivarium full the refusal plate shows (as Open's words) and the panel does not open
+  // first-session scheme item 6: ✓ Open now never spends ❀ in one press: any price asks first, the ring on Wait (a free one, the "free" preset, acts at once)
+  if (cost.s > 0 && S.canPay(h.st, cost.e, cost.d, cost.s) && !S.vivFull(h.st, h.settings)) { openPanel(h, "incubator", "growNow"); if (h.motion ? h.motion() : true) h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }   // a large Hatch now asks first: the Hatch now | Wait panel, by the 180 ms stage dither (a cut with reduced motion); short of Essence or with the Vivarium full the refusal plate shows (as Open's words) and the panel does not open
   return growNow(h);
 }
 // The hatch both presses play: Open (a ready bud) at once, Hatch now after the leaves have turned. The rule has already made the mibi and emptied the chamber.

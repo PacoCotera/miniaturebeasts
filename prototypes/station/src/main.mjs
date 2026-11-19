@@ -3,7 +3,7 @@
 // there is no drawing here. Also: the Caddy's one key, the shared save's storage event, the developer panel and the test hooks. Rules are in state.mjs, the key's rule call in intents/*, the
 // props in host.mjs.
 import { clock, motion } from "./pixels.mjs";
-import { G, FX, UI, SPECS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, switchCompanion, activeCompanion } from "./game.mjs";
+import { G, FX, UI, SPECS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, probeStorage, switchCompanion, activeCompanion } from "./game.mjs";
 import * as S from "./state.mjs";
 import { readOptions } from "../../play/src/options.mjs";
 import { ZOOM, panFor } from "../../play/src/layout.mjs";   // the phone window: the play page's x0.6 and its pan to the focus ring
@@ -145,6 +145,7 @@ if (EMBED) window.addEventListener("message", (e) => {   // the play page's shel
     postCaddy(true);
   }
   else if (m.t === "mb-dev") showDev(!!m.on);
+  else if (m.t === "mb-view") UI.narrow = !!m.narrow;   // the phone held upright (a 530 lp window): Home's narrow form; the next frame sends the props again
   else if (m.t === "mb-note-ask") {   // a play note's details from this device: its screen and its store (answered to the page; no name, no address)
     const c = G.ready ? caddyState() : null;   // before the Station has loaded its save there is no state to read
     parent.postMessage({ t: "mb-note-state", id: m.id, state: c ? { screen: UI.idle ? "idle" : UI.screen, store: c.ledger, crates: c.crates, podHome: c.podHome, docked: c.docked } : { screen: "boot" } }, location.origin);
@@ -183,7 +184,7 @@ const bootBar = $("bootBar");   // the load bar: indeterminate until the boot pi
 const bootDone = () => { if (bootBar) bootBar.hidden = true; };
 const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (done, total) => { if (bootBar && total > 0) { bootBar.max = total; bootBar.value = done; } } }), faceUp]).then(async ([info]) => {
   await faceBoot();
-  loadSettings(); load();
+  loadSettings(); load(); probeStorage();   // a page that cannot write says so at once (NOTICE_WORDS.saveFailed), not at the first dock
   UI.lastInput = performance.now(); G.ready = true;
   loadRoomsInBackground();   // the other rooms, now that the first screen can draw (the room after the shown one first; 16 in flight)
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { CORE.host.goto("cargo"); cargo.openBay(CORE.host); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });

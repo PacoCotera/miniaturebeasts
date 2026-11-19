@@ -51,7 +51,9 @@ export function switchCompanion(who) {
 // the key is kept as it is, read-only: nothing is written under it (G.lockedKey).
 function resetFound() {
   let raw = null; try { raw = localStorage.getItem(saveKey()); } catch { return; }
-  const plan = resetPlan(raw, S.SAVE_V); if (plan.action !== "reset") return;
+  const plan = resetPlan(raw, S.SAVE_V);
+  if (plan.action === "broken") { G.lockedKey = saveKey(); return; }   // bytes it cannot read are kept untouched, as the Companion keeps them (audit A6)
+  if (plan.action !== "reset") return;
   if (!keepPre10(localStorage, saveKey(), raw)) { G.lockedKey = saveKey(); return; }
   const wid = "w" + Date.now().toString(36), sv = { v: S.SAVE_V, wid, resetFrom: plan.from, st: S.freshSt(wid, 0) };
   try { localStorage.setItem(saveKey(), JSON.stringify(sv)); } catch { G.lockedKey = saveKey(); }
@@ -95,6 +97,8 @@ export function load() {
   adopt(o);
   if (S.resetNotice(G.st, G.sv)) { UI.panel = { screen: "home", id: "reset", focus: "card.begin" }; G.st.resetSeen = true; save(); }   // the one-time notice over Home, shown once on this device
 }
+// Whether a save can be written at all, asked once at boot: a blocked or full store sets G.saveFailed (the notice line) before the first dock; a working one leaves it as it is.
+export function probeStorage() { try { const k = saveKey() + ":probe"; localStorage.setItem(k, "1"); localStorage.removeItem(k); } catch { G.saveFailed = true; changed(); } }
 // Re-read before writing and keep the Companion's part as stored; only `st` is ours.
 export function save() {
   if (G.resetting) return;
@@ -125,7 +129,7 @@ export function resetSave() {
 }
 // --- developer settings, under their own key ---
 export function loadSettings() {
-  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") Object.assign(G.settings, o); delete G.settings.trickleCap; } catch { /* defaults */ }
+  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") { if (o.economy === "loose" && !o.economyChosen) delete o.economy; Object.assign(G.settings, o); } delete G.settings.trickleCap; } catch { /* defaults */ }
   if (playtestOn()) Object.assign(G.settings, withPlaytest({}, true));   // ?playtest: the playtest preset (play/src/playtest.mjs) laid over the settings, in memory only
   return G.settings;
 }

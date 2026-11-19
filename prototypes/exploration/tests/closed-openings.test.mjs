@@ -197,12 +197,4 @@ test("a side open on part of its length is crossable there and refused at its cl
   assert.deepEqual(p.run("({ x: S.exp.patch.x, y: S.exp.patch.y })"), land, "and the pawn lands on the far tile");
 });
 
-// Bug #14 (owner 2026-11-15/17: "can't walk down"): the owner's world, place 3,12, tile 10,12: the heart slab below has no art yet (empty slot), blocks, and said nothing. Every refusal in a place says why on the HUD line.
-test("a step into a heart slab that draws nothing yet is refused with a reason on the HUD line", () => {
-  const p = makePage({ gen: 7, console: "silent" }); p.run(`newWorld(2668471853); TEST.calm = true; S.tier = 2; startExpedition('weather', G.spawns[0]); S.exp.pos = 195; enterPatch(); if (RT.view) endView();`);
-  const at = p.run(`(() => { const lay = layout('195'), s = lay.pieces.find(q => q.piece === 'heart-slab' && q.x === 10 && q.y === 13); return s ? { x: 10, y: 12 } : null; })()`);
-  assert.ok(at, "the slab is at 10,13 in the owner's place");
-  p.run(`S.exp.patch.x = ${at.x}; S.exp.patch.y = ${at.y}; FX.notes = []; patchStep('down', 'creep');`);
-  assert.deepEqual(p.run("({ x: S.exp.patch.x, y: S.exp.patch.y })"), at, "the pawn does not move");
-  assert.equal(p.run("FX.notes.map(n => n.text).join('|')"), p.run("WORDS.block.slab"), "and the line says why");
-});
+// Bug #14 (the heart slab with no art blocked and said nothing) is fixed at the cause: an undrawn piece is not placed (undrawn-pieces-dont-block.test.mjs).

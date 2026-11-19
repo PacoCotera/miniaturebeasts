@@ -105,6 +105,17 @@ test("the Station on a phone: x0.6 in a window (view) where the whole screen wou
   for (const [W, H, dpr, coarse] of [[1440, 900, 1, false], [1280, 720, 1, false]]) assert.equal(plan({ W, H, dpr, coarse, dev: "station" }).view, null, `${W}×${H}: the whole screen on a laptop`);
   assert.equal(plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" }).view, null, "the Companion is always whole");
 });
+test("Home's narrow form (the `narrow` the page tells the Station): only the Station on a phone held upright, a window of at most 530 lp, centred in the panel on a wider phone; never sideways, on a laptop, or on the Companion", () => {
+  for (const [W, H] of [[390, 844], [393, 659], [360, 780], [430, 932]]) for (const asleep of [false, true]) {
+    const p = plan({ W, H, dpr: 3, coarse: true, dev: "station", asleep }), tag = `${W}×${H}${asleep ? " asleep" : ""}`;
+    assert.equal(p.form, "up"); assert.equal(p.narrow, true, tag + ": narrow upright"); assert.ok(p.view.w <= 530 + 1e-6, tag + ": the window is at most 530 lp wide");
+    assert.ok(p.screen.x >= p.panel.x - 1e-9 && p.screen.x + p.screen.w <= p.panel.x + p.panel.w + 1e-9, tag + ": the window stays inside the panel");
+  }
+  { const p = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "390×844: the window is 530 lp wide, 1:1 at x0.6"); assert.equal(p.view.h, 600); assert.ok(Math.abs(p.screen.w - 318) < 1e-6, "318 CSS px"); }
+  { const p = plan({ W: 430, H: 932, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "a wider phone: still 530 lp, not more of the screen"); assert.ok(Math.abs((p.screen.x - p.panel.x) - (p.panel.x + p.panel.w - p.screen.x - p.screen.w)) < 1e-6, "centred in the panel"); }
+  for (const [W, H, dpr, coarse] of [[844, 390, 3, true], [932, 430, 3, true], [1440, 900, 1, false], [1280, 720, 1, false]]) assert.ok(!plan({ W, H, dpr, coarse, dev: "station" }).narrow, `${W}×${H}: not narrow`);
+  assert.ok(!plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" }).narrow, "the Companion is never narrow");
+});
 
 test("panFor: the focused target whole with 12 lp round it, the least move, always inside the screen", () => {
   const v = { w: 530, h: 513 };

@@ -151,7 +151,7 @@ Three supplies pace the game. Each has one job, so the player learns what each i
 
 | Supply | Its job | Comes from | Spent on | The pressure it creates |
 | --- | --- | --- | --- | --- |
-| **Energy** (bolt) | runs the machines | charged and warm stones, found and caused in the world | growing, crossing, mending, upgrading, lighting outposts | The scarce one: it makes the player choose between growing now and preparing the next trip |
+| **Energy** (bolt) | runs the machines | charged and warm stones, found and caused in the world | growing, crossing, mending, upgrading, lighting outposts | Plentiful on weather walks, scarce on calm ones (measured): on a calm walk it makes the player choose between growing now and preparing the next trip |
 | **Data** (diamond) | buys knowledge | creature moments the player causes; a little each day at the bench | identifying, reading, shaping | Where curiosity goes: read this pod or that one; the glint says where it's worth it |
 | **Essence** (drop) | builds bodies | dew, pressed fruit, tufts; returning pods and mibis to the wild | growing, crossing, Grow now | The body budget: more mibis or faster ones |
 
@@ -159,7 +159,7 @@ Three supplies pace the game. Each has one job, so the player learns what each i
 - **Running out limits what you can do, never what you know.**
 - **Time is a resource the player can trade for Essence,** never for money.
 - **Nothing in the economy is ever sold.** The paid cloud layer adds services, never supplies, speed or randomness.
-- Prices and waits are set low so the loop can be played through quickly. Their final pacing is an open question.
+- Measured: pods and Essence pace the first hours; Energy is plentiful on weather walks and scarce on calm ones. The playtest runs on the decided prices with no free top-up on each crate. Final pacing stays an open question until it is played.
 
 ## Progression
 
@@ -247,7 +247,7 @@ A naturalist's expedition that ends in a home full of life: curious, unhurried a
 | Mechanic | How it works |
 | --- | --- |
 | **Exploration** | A fogged world map of living places that turns once per expedition. The player starts on any cell they can see; the Probe's tier sets the reach; walking and Call survey a place; storms, fog banks, outposts and beacons shape the trip ([world and exploration](world-and-exploration.md)) |
-| **Gathering** | Collecting is deliberate, in whole items. A full hold offers a swap, and nothing is lost. The Probe carries 2 pods at tier 1 and 3 at tier 2, and up to 20 of each material |
+| **Gathering** | Collecting is deliberate, in whole items. A full hold of pods offers a swap. Pressing fruit, or drawing a stone, with room for less than it gives fills the material to the cap and the extra is lost, and a line says so; it is refused only when the hold is already at the cap. The Probe carries 2 pods at tier 1 and 3 at tier 2, and up to 20 of each material |
 | **Return** | End expedition works only on the start cell or a lit outpost, and it ends the expedition. It seals the hold into a crate that travels in the Companion's bay until it docks; the player may keep exploring with crates aboard. The Station opens each crate exactly once. A break sends nothing home: the pods drop where the Probe broke |
 | **Identification** | Shows the species, not the pod's hidden traits; an identified pod can be grown unedited ([research and breeding](research-and-breeding.md#identify)) |
 | **Research** | Optional, and the core of play. A chapter at a time, as pictures; glints say where something new is; findings are kept; sealed chapters open with finds ([research and breeding](research-and-breeding.md#reading-a-chapter)) |

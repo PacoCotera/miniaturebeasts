@@ -46,6 +46,12 @@ export const SCENES = {
   "need-pair-short":     { f: "room", set: (w) => { w.adults(2); window.__st.ST.s = 0; } },   // the same pair, short of Essence: "A and B could cross · need ❀2"
   // R5 (T-20261027-318): every place taken and a bud ready (the last scene, so the rooms and the Energy it sets are in no earlier one): the line leads to the Vivarium (✓ Make room: no Energy for a room), the Incubator module says it waits for room
   "full-bud":            { f: "room", set: (w) => { const st = window.__st.ST; w.rooms(1); st.rooms = 1; st.e = 0; w.adults(8); w.bud(true); } },
+  // Home on an upright phone (home.json "narrow", the host's `narrow` prop): the left 530 lp of the screen, one window that turns between the Vivarium and the Library, the cards 2 x 2. The window stays turned while Home is shown, so the turned scene is the last
+  "narrow-rest":         { f: "room", narrow: true, set: (w) => { w.adults(3); w.carry([0]); w.away(); } },   // at rest, the Vivarium: two walkers and the away frame
+  "narrow-need-lamp":    { f: "room", narrow: true, set: (w) => { w.adults(3); w.carry([0]); w.crates(2); } },   // a "needs you" lamp (the Bay) and a line that leads to it
+  "narrow-focus-vivarium": { f: "vivarium", narrow: true, set: (w) => { w.adults(3); w.carry([0]); w.away(); } },   // the ring on the window
+  "narrow-focus-pods":   { f: "pods", narrow: true, set: (w) => { w.adults(3); w.carry([0]); w.away(); w.pods(2); w.seen(); } },   // the ring on a card
+  "narrow-focus-library": { f: "library", narrow: true, set: (w) => { w.adults(3); w.carry([0]); w.away(); w.libNew(3); } },   // the window turned to the Library, the ring on it
 };
 // the helpers the scenes call, in the page
 export const WORLD = () => ({
@@ -75,10 +81,10 @@ export const WORLD = () => ({
 export async function homeStates(visit, { motion = false } = {}) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm, sl, teach]) => {
+  const apply = (sc) => page.evaluate(([setSrc, f, lt, tm, sl, teach, narrow]) => {
     const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
-    const S = window.__st; S.UI.noTeach = !teach;   /* the first-time teaching is off in a golden but for the scene that asks for it */ S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.settings.realmSleep = sl; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
-  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00", sc.sleep ?? true, !!sc.teach]);
+    const S = window.__st; S.UI.narrow = narrow; S.UI.noTeach = !teach;   /* the first-time teaching is off in a golden but for the scene that asks for it */ S.settings.light = lt; S.settings.stationTime = tm; S.settings.stationDate = "2026-10-17"; S.settings.realmSleep = sl; S.UI.home.f = f; S.UI.idle = false; S.UI.lastInput = performance.now(); S.goto("home");
+  }, [sc.set.toString(), sc.f, sc.light ?? "day", sc.time ?? "12:00", sc.sleep ?? true, !!sc.teach, !!sc.narrow]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
       await apply(sc); await page.waitForTimeout(600);

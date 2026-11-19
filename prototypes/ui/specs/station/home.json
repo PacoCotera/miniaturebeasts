@@ -424,5 +424,61 @@
    }
   }
  },
- "colours": {"ground":"ground","nameTag":{"fill":"panel","edge":"hairline","text":"bone"},"waitingLamp":{"fill":"sky","rim":"void"}}
+ "colours": {"ground":"ground","nameTag":{"fill":"panel","edge":"hairline","text":"bone"},"waitingLamp":{"fill":"sky","rim":"void"}},
+ "narrow": {
+  "form": "narrow",
+  "note": "Home on an upright phone (owner 2026-11-18, option C of ui-home-row-phone-1: \"ok with the station\"): the play page's window is 530 lp wide at x0.6, and this variant is read, path by path, before the plain spec when the host's props say `narrow` (spec_variant). A path not named here is today's. Four cards 2 x 2, whole and lit at all times (226 x 98, the device's 12 lp gap, pitch 238); one full-width window above them that shows the Vivarium and turns to the Library (right on it, left back); the turn cue is a pair of the Settings knob's plates under it. The top bar keeps Station, the line and the clock: the date and the place name give way. Nothing scales. Rectangles are [x, y, w, h] on the same 1024 x 600 screen, in the left 530.",
+  "regions": {
+   "line": {"rect": [122,8,328,24], "centre": 286},
+   "bar": {"clock": {"right": 514}, "noDate": true},
+   "vivarium": {"rect": [16,48,498,286], "window": [24,78,482,248]},
+   "library": {
+    "rect": [16,48,498,286],
+    "window": [24,78,482,248],
+    "specimen": {
+     "crop": {"sy": 60, "note": "the 344 x 362 specimen stands centred in the 482 window, its rows sy .. sy + 248 (the fan's heart and roots), on the placeholder panel as its matte (the nearest of the palette to the specimen's own near-black green edge; the art director rules it). The glints move with it; one that falls outside the rows is not drawn"},
+     "captions": {
+      "new": {"at": [36,298]},
+      "genome": {"right": 494, "y": 298}
+     }
+    },
+    "placeholder": {"fill": "libWell", "edge": "libWell"}
+   },
+   "window": {
+    "rect": [24,78,482,248],
+    "painting": {"at": [100,308], "cx": 100, "rows": [308,555], "note": "the same painting of the light, its columns 100 .. 581 (the room's stone and mister at its right edge stay out of the frame, whole or not at all) and its lowest 248 rows: the sky gives way, never the ground"},
+    "foot": [24,321,482,5]
+   },
+   "cue": {"rects": [[229,345,32,6],[269,345,32,6]], "lit": "enamel", "fill": "bevel", "shade": "hairline", "dimLit": "bevel", "dimFill": "panel", "dimShade": "hairline", "inset": 1, "note": "the turn cue under the window (the Settings knob's plates, regions.settings: lit row, four fill rows, shade row), the first for the Vivarium and the second for the Library; the one the window shows is lit, the other dimmed. the window ring reaches 5 below the bezel (334): 6 lp clear of it, and 6 lp over the console"},
+   "console": {"rect": [16,357,498,232]},
+   "pods": {"rect": [33,369,226,98], "slots": {"forms": {"grid": {"first": [175,385]}}}},
+   "incubator": {"rect": [271,369,226,98]},
+   "companion": {"rect": [33,479,226,98], "plates": {"forms": {"row": {"first": [45,543]}}}},
+   "bay": {"rect": [271,479,226,98]},
+   "settings": {"rect": [0,0,0,0], "note": "the Settings knob and its target do not show on the narrow Home: the cue pair stands in its place"},
+   "away": {"rect": [434,238,64,64], "caption": {"centre": 466, "y": 304}},
+   "resident": {
+    "max": 3,
+    "maxWhy": "what fits at 1x in the 482 window: 3 adults at the 92 lp each of the 322 lp centre span (the device's 5 in 444); the rest rest as the cap says (home-props shownOf)",
+    "walk": {
+     "ground": [32,230,466,92],
+     "keepOut": [426,230,80,96]
+    }
+   }
+  },
+  "focus": {
+   "roomAt": [249,200,32,24],
+   "graph": {
+    "roomKey": "room",
+    "fallback": "none",
+    "room": {"up":["vivarium","library"],"down":"pods","left":"none","right":"none"},
+    "vivarium": {"up":"none","down":"pods","left":"none","right":"library"},
+    "library": {"up":"none","down":"pods","left":"vivarium","right":"none"},
+    "pods": {"up":["vivarium","library"],"down":"companion","left":"none","right":"incubator"},
+    "incubator": {"up":["vivarium","library"],"down":"bay","left":"pods","right":"none"},
+    "companion": {"up":"pods","down":"none","left":"none","right":"bay"},
+    "bay": {"up":"incubator","down":"none","left":"companion","right":"none"}
+   }
+  }
+ }
 }

@@ -15,6 +15,8 @@ export const SWITCH_LAPTOP_W = 320;
 // The Station on a phone (ui-station-phone-1; the AD 11-16: a card and its heart shrink to a dot): its 1024 x 600 screen fitted whole is about x0.31 held upright and x0.44 on its side. Where the whole fit is under
 // ZOOM the screen is drawn at ZOOM in a window as wide as the panel allows (out.view: the part of the screen in view, in lp), and the window pans to keep the focused target whole (panFor). Wherever x0.6 fits, the whole screen.
 export const ZOOM = 0.6, PAN_PAD = 12;
+// The upright phone's window is NARROW_W lp wide at most (530 lp is 318 CSS px at ZOOM: a 390 wide phone's 342 less the panel's own edge): Home draws its narrow form there (home.json "narrow", 530 lp wide), never more of the screen than that form fills.
+export const NARROW_W = 530;
 // The window's top left (lp) that shows `box` (the focus ring's target, [x, y, w, h] in lp) whole with PAN_PAD round it, moving as little as it can from `at`; a box larger than the window keeps its top left in view.
 // box null (no ring on the screen): `at` as it is. Always inside the screen.
 export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
@@ -72,13 +74,14 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     const zone = stampY - 12 - BAR, trayC = portraitTrayH("companion", a), fitH = (zone - 2 * GAP - GAP - DOCK_H - EDGE - trayC - 1e-6) / FACE.companion[1];
     const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? Math.max(ZOOM, fitOf(d)) : Math.max(1 / 16, Math.min(fitOf(d), fitH))), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
     const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((zone - group) / 2) + bhC, dockY = bodyBottom + GAP;
-    const s = scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - 2 * EDGE);
+    const s = scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - 2 * EDGE, st ? NARROW_W * s : Infinity);   // the Station's window is never wider than the narrow Home (centred in the panel when the phone is wider)
     // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter. The Companion's screen is always whole.
     const topMin = BAR + GAP + (st && asleep ? NOTE_H + GAP : 0), sh = st ? Math.max(0, Math.min(fh * s, Math.floor(bodyBottom - trayH - EDGE - topMin))) : fh * s;
     const bh = EDGE + sh + trayH, by = bodyBottom - bh;
     out.a = a; out.scale = s; out.panel = box(M, by, bw, bh);
     out.screen = box(M + EDGE + (bw - 2 * EDGE - sw) / 2, by + EDGE, sw, sh);   // centred in the panel when it is narrower than the panel (the Companion on a short phone)
     out.view = sw < fw * s - 1e-6 || sh < fh * s - 1e-6 ? { w: sw / s, h: sh / s } : null;
+    out.narrow = !!(st && out.view && out.view.w <= NARROW_W + 1e-6);   // Home's narrow form: only the upright phone's window (sideways and the laptop never)
     const trayBox = [M, by + bh - trayH, bw, trayH];
     out.tray = { box: trayBox, layout: "portrait", plan: keyPlan(dev, "portrait", bw, 0, a) };
     out.dock = box(M, dockY, bw - EPAPER_GAP - EPAPER_W, DOCK_H); out.epaper = box(M + bw - EPAPER_W, dockY, EPAPER_W, DOCK_H);
@@ -131,7 +134,7 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
 // The bar (52 tall everywhere; its controls 44 tall, `space-16` padding, `space-8` between): the switch, and at the right Options and, on a laptop, Keys ? and the size control (and the developer tools' button when the option is on).
 // Upright the switch fills the bar left of Options; on its side the build line sits between them; on a laptop the build line is the bar's left end and the switch is 320 wide, centred.
 // barPlan({ W, form, tools, size }) -> { switch, options, keys, size: [down, fit, up] | null, tools, stamp } (boxes [x, y, w, h]; null where not shown)
-export const BAR_PAD = 16, BAR_GAP = 8, CTL_H = 44, OPTIONS_W = 92, KEYS_W = 64, SIZE_W = 152, TOOLS_W = 100, STAMP_W = 300, SWITCH_SIDE_W = 280;
+export const BAR_PAD = 16, BAR_GAP = 8, CTL_H = 44, OPTIONS_W = 92, KEYS_W = 64, SIZE_W = 152, TOOLS_W = 100, STAMP_W = 360, SWITCH_SIDE_W = 280;
 export function barPlan({ W, form: f, tools = false, size = false }) {
   const y = (BAR - CTL_H) / 2, b = (x, w) => [x, y, w, CTL_H], out = { switch: null, options: b(W - BAR_PAD - OPTIONS_W, OPTIONS_W), keys: null, size: null, tools: null, stamp: null };
   if (f !== "laptop") {

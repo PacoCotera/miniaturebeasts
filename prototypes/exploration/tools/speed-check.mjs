@@ -23,6 +23,8 @@ try { await page.waitForFunction(() => window.__mb && window.__mb.ART48.ready, n
 await page.waitForTimeout(500);
 await page.evaluate(() => { window.__mb.TEST.calm = true; window.__mb.act("confirm"); }); await page.waitForTimeout(150); await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(600);
 await page.evaluate(() => { const m = window.__mb; if (m.S.phase !== "patch") m.act("confirm"); }); await page.waitForTimeout(800);   // the set-out
+try { await page.waitForFunction(() => { const m = window.__mb; return !m.RT.making && m.S.exp; }, null, { timeout: 120000 }); } catch (e) { console.log("speed check: FAIL, the set-out did not finish (places from the worker)"); process.exit(1); }   // the set-out waits for the worker's places: the expedition exists when the wait is over
+await page.waitForTimeout(500);
 await page.evaluate(() => { const m = window.__mb; if (m.S.exp && m.S.exp.patch) m.leavePatch(); }); await page.waitForTimeout(500);
 if (await page.evaluate(() => !!window.__noLongtask)) { console.log("speed check: FAIL, this browser has no long-task observer"); process.exit(1); }
 await cdp.send("Emulation.setCPUThrottlingRate", { rate: CPU }); await page.evaluate(() => { window.__long.length = 0; });

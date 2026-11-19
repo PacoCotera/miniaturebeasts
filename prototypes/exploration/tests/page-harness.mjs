@@ -110,15 +110,16 @@ export function makePage(opts = {}) {
   const P = () => { const r = run || ctx.__run; return pal || (pal = { hex: new Map(r("HEX").map((h, i) => [h, i])), rgb: r("RGB"), of: new Map(r("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) }); };   // a page that draws while it boots (a loaded save) asks before `run` is handed back
   const { look, rgbTable } = paletteLook(P, opts.paint);
   const document = opts.els || opts.canvas ? new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any }) : any;
+  const listeners = {};
   const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
   const silent = { log() {}, warn() {}, error() {} };
   const cons = opts.console === "silent" ? silent : opts.console === "collect" ? { ...silent, error: e => errors.push(e) } : console;
   const D = opts.date == null ? Date : class extends Date { constructor(...a) { super(...(a.length ? a : [opts.date])); } static now() { return opts.date; } };
   const ctx = { __gen7: opts.gen === 7, console: cons, URLSearchParams, Date: D, fetch: () => new Promise(() => {}), document, location: any, navigator: any,
-    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
+    matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), addEventListener: (t, f) => { (listeners[t] = listeners[t] || []).push(f); }, innerWidth: 450, innerHeight: 600,
     requestAnimationFrame: () => opts.raf === "count" ? ++raf.n : (++raf.n, opts.raf || 0),
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
-    localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { writes.push(k); store[k] = String(v); }, removeItem: k => { writes.push(k); delete store[k]; } } };
+    localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { writes.push(k); store[k] = String(v); if (opts.onSet) opts.onSet(k); }, removeItem: k => { writes.push(k); delete store[k]; } } };
   run = loadPage(ctx);
   let KEY; try { KEY = run("SAVE_KEY"); } catch { KEY = undefined; }
   const p = { run, ctx, store, clock, els, writes, errors, raf, KEY,
@@ -129,6 +130,7 @@ export function makePage(opts = {}) {
     // one key press, after any input lock has run out
     key(k, n = 1) { for (let i = 0; i < n; i++) { p.pass(400); run("act(" + JSON.stringify(k) + ")"); } },
     sv: () => JSON.parse(store[KEY]),
+    storageEvent(key) { for (const f of listeners.storage || []) f({ key }); },   // the other tab wrote `key`
     // the Station writes its part of the shared save, and the Companion reads it (the page's storage event calls save())
     writeSt(st) { const o = JSON.parse(store[KEY]); o.st = JSON.parse(JSON.stringify(st)); store[KEY] = JSON.stringify(o); run("save()"); },
   };
