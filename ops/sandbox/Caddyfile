@@ -1,7 +1,7 @@
 # The sandbox web server's whole configuration. It ships in every release; deploy.sh checks it with `caddy validate`
 # before a release goes live and installs it at /etc/caddy/Caddyfile (a release without this file leaves the installed one alone).
 # Owner 2026-11-16: "consolidate all my tools, dashboards, artifacts under /admin. remove /studio we will rebuild that later. and /play for the web play experience".
-#   /play/                              the game, wholly: /play/ the play page, /play/station/, /play/exploration/, and their folders (/play/ui/, /play/face/, /play/assets/ ...), built by ops/sandbox/bundle-pages.sh
+#   /play/                              the game, wholly: /play/ the play page, /play/station/, /play/exploration/ (the Companion's frame; the old Field Test page is retired: with no query it redirects to /play/), and their folders (/play/ui/, /play/face/, /play/assets/ ...), built by ops/sandbox/bundle-pages.sh
 #                                       (except /play/caddy and /play/test: the team's tools, 404 here, served only under /admin)
 #   /sandbox and /studio                nothing is there: 404 like any address the release does not have
 #   /admin/login and /admin/logout      the login (login/mb_login.py, unit mb-login) on 127.0.0.1:8791

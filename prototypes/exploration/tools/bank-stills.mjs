@@ -32,7 +32,7 @@ const server = createServer((req, res) => {
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(p.endsWith(".mjs") ? rewrite(body.toString("utf8")) : body);
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
-const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html`;
+const url = `http://127.0.0.1:${server.address().port}/prototypes/exploration/index.html?test`;
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, reducedMotion: "no-preference" });
 const page = await ctx.newPage(), errors = [];

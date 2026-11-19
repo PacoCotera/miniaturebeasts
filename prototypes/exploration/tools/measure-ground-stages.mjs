@@ -9,7 +9,7 @@ const server = createServer((req, res) => { let p = path.join(root, decodeURICom
   if (!existsSync(p)) { res.writeHead(404); res.end(); return; } res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(readFileSync(p)); });
 await new Promise((r) => server.listen(0, "127.0.0.1", r)); const port = server.address().port;
 const b = await chromium.launch(), ctx = await b.newContext({ viewport: { width: 412, height: 915 } }), page = await ctx.newPage(), cdp = await ctx.newCDPSession(page);
-await page.goto(`http://127.0.0.1:${port}/prototypes/exploration/index.html`); await page.waitForTimeout(800);
+await page.goto(`http://127.0.0.1:${port}/prototypes/exploration/index.html?test`); await page.waitForTimeout(800);
 await cdp.send("Emulation.setCPUThrottlingRate", { rate: CPU });
 await page.evaluate(async () => {
   const pm = await import("/prototypes/places/src/page.mjs"), P = pm.BakedView.prototype; window.__t = {};

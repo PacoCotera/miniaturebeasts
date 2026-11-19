@@ -557,7 +557,7 @@ notes = mountOptions($("optionsRoot"), {
   onClose: (changed) => { if (changed) location.reload(); giveKeys(owner); },
   onStartFresh: () => { saveHome(false); try { sessionStorage.setItem(FRESH_KEY, "1"); } catch { return; } location.reload(); },
   // a phone has no Tools button (barPlan: a laptop only), so with Developer tools on the panel carries the Companion's Observer: its own page, in this tab (one page plays at a time)
-  phone: () => phone, observerHref: SITE + "exploration/",
+  phone: () => phone, observerHref: SITE + "exploration/?observer",
 });
 notes.subscribe(syncNote);
 notes.tapStart();   // the last 10 seconds: the played device's canvas, encoded as it plays

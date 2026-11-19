@@ -100,7 +100,7 @@ for (const sc of SCENES) {
   if (only && !only.has(sc.name)) continue;
   const ctx = await browser.newContext({ viewport: { width: 450, height: 600 }, reducedMotion: "reduce" }), page = await ctx.newPage();
   page.on("pageerror", e => console.log("pageerror", sc.name, e.message));
-  await page.goto("http://127.0.0.1:" + port + "/prototypes/exploration/index.html"); await page.waitForFunction(() => window.__mb && window.__mb.ART48.ready, null, { timeout: 30000 });
+  await page.goto("http://127.0.0.1:" + port + "/prototypes/exploration/index.html?test"); await page.waitForFunction(() => window.__mb && window.__mb.ART48.ready, null, { timeout: 30000 });
   const setup = (s, ts32) => page.evaluate(({ s, ts32 }) => { const run = window.__run;
     return run(`(() => { const s = ${JSON.stringify(s)}; TEST.calm = true;
       if (s.gen === 1) { layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(s.seed, 1); S = worldFields(s.seed, 1); const life = genLife(s.seed); S.cr = life.cr; S.pods = life.pods; indexCreatures(); }

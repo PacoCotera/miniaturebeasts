@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Companion Field Test</title>
+<title>Miniature Beasts · Companion</title>
 <script type="importmap">{"imports":{"fastnoise-lite":"./node_modules/fastnoise-lite/FastNoiseLite.js","flatqueue":"./node_modules/flatqueue/index.js","idb-keyval":"./node_modules/idb-keyval/dist/index.js"}}</script>
+<script>if (!location.search) location.replace("../");</script>
 <script>if (new URLSearchParams(location.search).has("embed")) { document.documentElement.classList.add("embed"); document.addEventListener("contextmenu", e => e.preventDefault()); }</script>
 <script>if (new URLSearchParams(location.search).has("raw")) document.documentElement.classList.add("raw");</script>
 <script>
@@ -116,14 +117,7 @@ body{
 
 /* ===== Side panel ===== */
 .panel{flex: 0 1 340px; max-width:340px; padding-top:28px; color:var(--ink)}
-.panel h1{font: 600 22px/1.15 var(--font-ui); margin:0 0 4px; letter-spacing:.01em}
-.panel .lede{margin:0 0 18px; color:var(--muted); font-size:14px}
-.panel details{border-top:1px solid var(--line); padding:10px 0}
-.panel summary{cursor:pointer; font: 500 15px/1.4 var(--font-ui); list-style:none; display:flex; align-items:center; gap:8px; border-radius:6px}
-.panel summary::-webkit-details-marker{display:none}
-.panel summary::before{content:""; width:7px; height:7px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(-45deg); transition:transform .15s}
-.panel details[open] summary::before{transform:rotate(45deg)}
-.panel summary:focus-visible, .panel button:focus-visible{outline:3px solid var(--focus); outline-offset:3px}
+.panel button:focus-visible{outline:3px solid var(--focus); outline-offset:3px}
 .panel ul, .panel ol{margin:8px 0 2px; padding-left:20px; font-size:14px; color:var(--ink)}
 .panel a{color:var(--accent)}
 .panel li{margin:5px 0}
@@ -202,39 +196,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
     </div>
   </div>
 
-  <aside class="panel" aria-label="Playtest notes">
-    <h1>Companion Field Test</h1>
-    <p class="lede">Exploration on a simulated Companion screen. It shares one save with the <a href="/play/station/">Station page</a> in this browser: End an expedition here, then dock there and open your crates to read the pods.</p>
-    <details id="howTo">
-      <summary>How to play</summary>
-      <ul>
-        <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
-        <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← End expedition" on the start cell or a lit outpost, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or End expedition on top, then Wait, Probe, Cargo, Mibis.</li>
-        <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. On Mibis and a mibi's own screen it calls the mibi with you, which answers..</li>
-        <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ turns you toward the next thing to find (it never moves you), or says Keep still while a creature has noticed you or is settling, which waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
-        <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. Nothing puts the veil back. On high ground you see further: it lifts 6 tiles around you.</li>
-        <li>The dots top left are your reach, one per cell: a dot fills once you have been over most of that place; your cell is framed.</li>
-        <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
-        <li>Up to three mibis are <b>with you</b> in the Companion; the others are at home at the Station. The partner joins the Probe: the lead if it is grown, otherwise the first grown mibi with you. While docked, ✓ <b>Take</b> a mibi at home or <b>Leave</b> one at home on Mibis (the Companion is full at three); the Station's Vivarium can ask for a mibi too, applied at the dock.</li>
-        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Play together</b> once a turn, off the dock, with all of them (a moment together, no Data). Play together three times and a mibi is bonded, and a bond is for good. A young mibi grows up in time. The pad looks at the others; ← goes up to Mibis.</li>
-        <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
-      </ul>
-    </details>
-    <details id="whatTry">
-      <summary>What to try</summary>
-      <ol>
-        <li>On an expedition the map shows your reach large, with the whole world small in the corner; "Full map" in the menu switches to the whole map (and "Reach view" back).</li>
-        <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
-        <li>Go into a place and look around. Call lifts the veil around you and shows what is there; once you have been over most of a place, its dot fills.</li>
-        <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it (sometimes a pod too). <span id="helpData"></span></li>
-        <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not. Lightning finds what stands still in the open: it marks your tile one action ahead, so step off the mark and it misses. A strike costs one plate and is followed by a long quiet; on its last plate the Probe can still break.</li>
-        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, play together, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="/play/station/">Station page</a>, press <kbd>D</kbd> to dock, then open the crates in the Station's Bay, and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
-        <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
-        <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
-      </ol>
-    </details>
+  <aside class="panel" aria-label="Developer tools">
     <div class="observer">
       <div class="obs-row"><button class="switch" id="obsToggle" aria-pressed="false" aria-controls="obs"><span class="track"></span>Observer</button>
         <button class="btn" id="resetGame" type="button">Reset game</button></div>
@@ -261,7 +223,6 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
         <ol class="log" id="oLog"></ol>
         <h2 id="palHead">Palette</h2>
         <div class="pal" id="oPal" role="img" aria-label="The screen palette"></div>
-        <p class="obs-note"><code>?seed=</code> in the address sets the seed of the <b>next New world</b>; a saved world keeps playing until you choose New world. <code>?dev=1</code> opens this panel. A strike mark pays 2 / 3 / 4 / 5 Data by the tier of its place (starter, early, mid, late); the hold of 20 is the only limit on a trip.</p>
       </div>
     </div>
   </aside>
@@ -295,7 +256,6 @@ import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./sr
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS } from "./src/words.mjs";
-document.getElementById('helpData').textContent = WORDS.help.data;   // the help page's Data item: one source, src/words.mjs
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
@@ -8119,7 +8079,6 @@ RT.bootHold = true;   // nothing is written until a loaded save has drawn once (
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
 // The side panel's two sections start collapsed on every load.
-for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
 { const btn = document.getElementById('resetGame'), ask = document.getElementById('resetAsk'), yes = document.getElementById('resetYes'), no = document.getElementById('resetNo');
   const back = () => { ask.hidden = true; btn.blur(); yes.blur(); no.blur(); };   // keys go back to the game
@@ -8145,7 +8104,7 @@ SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
 RT.bootHold = false; save();
 if (!RT.readOnly) SLEEP.start().catch(() => { });   // the key at the first boot (and its pub), and a committed sleep finished
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
-if (OPT.dev) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
+if (OPT.dev || new URLSearchParams(location.search).has('observer')) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
 fit();
 requestAnimationFrame(frame);
 }

@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 for (const f of ['_site/play/face/dist/face.mjs', '_site/play/face/dist/face.wasm']) if (!existsSync(f)) { console.log('missing from the assembled site: ' + f); process.exit(1); }
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + '/' : import.meta.url);
 const { chromium } = require('playwright');
-const pages = ['/','/play/exploration/', '/play/station/', '/play/', '/play/test/'];   // the game's public addresses
+const pages = ['/','/play/exploration/?test','/play/station/', '/play/', '/play/test/'];   // the game's public addresses
 const browser = await chromium.launch();
 let failed = false;
 for (const path of pages) {
@@ -27,7 +27,7 @@ for (const path of pages) {
   if (path === '/play/' && page.frames().length < 3) errors.push('play: the Station and Companion frames did not load');
   if (path === '/play/test/' && page.frames().length < 3) errors.push('test: the Station and Companion frames did not load');
   const text = (await page.textContent('body')) || '';
-  const foot = path === '/' ? '#build' : path === '/play/test/' ? '#foot' : /\/(play\/exploration|play\/station)\/$/.test(path) ? '#buildFoot' : null;
+  const foot = path === '/' ? '#build' : path === '/play/test/' ? '#foot' : /\/(play\/exploration\/\?test|play\/station\/)$/.test(path) ? '#buildFoot' : null;
   if (foot) await page.waitForFunction((s) => /^© 2026 Dirty Pawz Press · [0-9a-f]{7} · \d\d\/\d\d \d\d:\d\d( · save v\d+ · Caddy (online|offline))?$/.test(document.querySelector(s)?.textContent || ''), foot, { timeout: 5000 }).catch(() => errors.push(path + ': build footer missing or local'));
   console.log(path, errors.length ? 'ERRORS: ' + errors.join(' | ') : 'ok');
   if (errors.length) failed = true;
