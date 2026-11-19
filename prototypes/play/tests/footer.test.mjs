@@ -45,8 +45,8 @@ test("the notice line: empty slots say nothing, a page break still shows the bui
   const empty = { saveFailed: "", landChanged: "", pageBroke: () => "" };
   assert.equal(noticeText(empty, "saveFailed", B), "");
   assert.equal(noticeText(empty, "landChanged", B), "");
-  assert.equal(noticeText(empty, "pageBroke", B), "a9d087f", "the build number alone");
-  assert.equal(noticeText(empty, "pageBroke", null), "local");
+  assert.equal(noticeText(empty, "pageBroke", B), "build a9d087f", "the build tag alone");
+  assert.equal(noticeText(empty, "pageBroke", null), "build local");
   assert.equal(noticeText({ pageBroke: (b) => "x " + b }, "pageBroke", B), "x a9d087f");
   assert.equal(noticeText({ pageBroke: "x {build}" }, "pageBroke", B), "x a9d087f");
   assert.equal(noticeText({}, "saveFailed", B), "", "a words file without the slot");

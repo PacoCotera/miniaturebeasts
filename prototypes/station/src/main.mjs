@@ -12,7 +12,8 @@ import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-s
 import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode, chapterLooks } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
-import { mountFooter, mountNotice, caddyAnswers } from "../../play/src/footer.mjs";
+import { mountFooter, mountNotice, caddyAnswers, loadBuild } from "../../play/src/footer.mjs";
+import { breakLines } from "../../play/src/breakline.mjs";
 import { NOTICE_WORDS } from "./views/words.mjs";
 import { openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
@@ -193,7 +194,11 @@ const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (d
   if (OPT.dev) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
-}).catch((e) => { bootDone(); bootText("the Station did not start: " + e.message); console.error(e); throw e; });
+}).catch(async (e) => { bootDone(); bootText("the Station did not start: " + e.message); console.error(e);
+  // the detail wraps at words into two lines, the error text cut from its middle, "build <sha>" whole at the end (play/src/breakline.mjs); one line at first, in case build.json is slow
+  const build = await loadBuild("../../build.json"), { lines } = breakLines({ lead: "", why: e.message, build, measure: (s) => s.length, maxW: 44, maxLines: 2 });
+  bootText("the Station did not start:\n" + lines.join("\n")); if (bootEl) { try { const m = /inset\(([\d.]+)px ([\d.]+)px ([\d.]+)px/.exec(window.frameElement?.style.clipPath ?? ""); if (m) { bootEl.style.setProperty("--clip-r", m[2] + "px"); bootEl.style.setProperty("--clip-b", m[3] + "px"); } } catch { } bootEl.classList.add("broke"); }   // the shell shows only part of the frame (clip-path): the line centres in what shows
+  throw e; });
 
 // The motion proof's scene drives the page as a player would (keys, intents, the host's goto) from the frame loop's clock.
 const sceneHost = () => ({ act, goto: (s) => CORE.host.goto(s), settings: G.settings, intent: (m) => onFaceMessage(CORE.host, { t: "intent", seq: 0, ...m }), now: () => clock.now });
