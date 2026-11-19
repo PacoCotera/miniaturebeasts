@@ -3999,6 +3999,20 @@
    "sha256": "888850aca7fe0e96faacd0e3c0150fd483adf79f725d94d4bcb94b62d5c31855"
   },
   {
+   "class": "derivative",
+   "date": "2026-11-19",
+   "id": "eb379d98b4",
+   "path": "prototypes/exploration/art/walk/wade-mud-f0.png",
+   "sha256": "142566d5636e82330d6e897094122400acbfdc83e1960a4c463c9290150f35cd"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-19",
+   "id": "60c435d5bb",
+   "path": "prototypes/exploration/art/walk/wade-mud-f1.png",
+   "sha256": "048e6cdb93b613b0a3db79f3d90560a5b640e369aa07e5d35673a242846ebae0"
+  },
+  {
    "class": "ui",
    "date": "2026-11-15",
    "id": "fe2dabe776",
