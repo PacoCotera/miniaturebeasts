@@ -2964,6 +2964,13 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-19",
+   "id": "12fd6792eb",
+   "path": "prototypes/exploration/art/props/find-tuft-1.png",
+   "sha256": "99e822d009de714c84dafab0f6fb28ceadef17e2d0d9763e4b8a39ee8f18eaf0"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "72d64d319e",
    "path": "prototypes/exploration/art/props/icon-beacon-lit.png",
