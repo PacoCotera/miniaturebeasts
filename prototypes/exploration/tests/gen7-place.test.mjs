@@ -34,7 +34,7 @@ for (const seed of FAST ? [7] : [7, 13, 42]) {
     assert.equal(s.cells, FAST ? SAMPLE.length * 320 : 8000);
     assert.equal(s.pairBreaks, 0, 'no 2 x 2 block holds more than three terrains or two that are not a pair of the set');
     // Rule 1.9 on the new land: a diagonal step (a contour's staircase) and the one-tile grass buffer between terrains that may not meet (a stream along a cliff's foot, a ford beside scree) are the land's;
-    // a notch, a spike, a one-tile strip or dot of the ground is not (owner 11-09: no one-tile notches): the streams' tidy takes them at their source. What it cannot take is held to 1 in 1000 cells, rounded up
+    // a notch, a spike, a one-tile strip or dot of the ground is not (a map is judged by its edges: no one-tile notches): the streams' tidy takes them at their source. What it cannot take is held to 1 in 1000 cells, rounded up
     // (seeds 7, 13, 42: 6, 6, 4: a ford across a one-tile neck of a stream, a stream's tail that drying would cut off, a sand or scree spike away from water; the sample's region 4,4 holds one, seed 7 cell 70,95). Raised land's shape is the cliff rules' (P4-P6 below, nothing under 4); its one-tile
     // bumps on a side wall are reported (seeds 7, 13, 42: 7, 6, 2), a land-shape job's
     console.log(`# seed ${seed}: tiles in no 2 x 2 block of their own ${s.loneTiles}, kept by the land rule (steps, grass buffers) ${s.loneKept}, others ${s.loneLeft} ${JSON.stringify(s.loneLeftAt)}, raised bumps ${s.loneRaised} ${JSON.stringify(s.loneRaisedAt)}`);
