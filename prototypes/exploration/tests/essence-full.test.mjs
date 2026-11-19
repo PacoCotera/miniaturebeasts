@@ -39,8 +39,16 @@ test("a full hold: a tuft stays where it is and no turn passes", () => {
   assert.equal(run("curLive().tf.length"), 1);
 });
 
-test("one free place: a fruit is not pressed and stays in hand", () => {
+test("one free place: pressing fills to 20, the extra is lost and the line says so", () => {
   const run = setup(19); run("S.exp.carry = 'fruit'");
+  run("pressFruit()");
+  assert.equal(state(run).s, 20);
+  assert.equal(state(run).carry, null);
+  assert.equal(run("WORDS.pressLost(CAP)"), "Essence full (20 of 20) · the rest is lost");
+});
+
+test("at the cap: a fruit is refused and stays in hand", () => {
+  const run = setup(20); run("S.exp.carry = 'fruit'");
   const before = state(run); run("pressFruit()");
   assert.deepEqual(state(run), before);
   assert.equal(state(run).carry, "fruit");

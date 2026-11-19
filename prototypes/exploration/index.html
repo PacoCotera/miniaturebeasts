@@ -2962,11 +2962,11 @@ function freeAround(key, x, y, prefer, clearOnly = false) {
 }
 // Materials carried cap at 20 each. Returns how much was taken.
 const MAT = { e: 'Energy', d: 'Data', s: 'Essence' };
-function addMat(k, n, x, y, keeps) {   // keeps: what the source keeps when part of a take did not fit ('the stone keeps the rest')
+function addMat(k, n, x, y, keeps, ownLine) {   // keeps: what the source keeps when part of a take did not fit ('the stone keeps the rest'); ownLine: the caller says the shortfall itself
   const ex = S.exp, got = Math.max(0, Math.min(n, CAP - ex.cargo[k]));
   ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
   if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
-  if (got < n) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
+  if (got < n && !ownLine) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
   return got;
 }
 // Who eats fruit here, said when one drops: "A fruit drops · Untuvas eat these".
@@ -3021,9 +3021,11 @@ function pickUp(fr) {
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
 function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
   const ex = S.exp, P = at || ex.patch;
-  if (CAP - ex.cargo.s < 2) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // pressing would waste the fruit
+  if (ex.cargo.s >= CAP) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // refused only at the cap (owner note #15)
+  const part = CAP - ex.cargo.s < 2;   // room for 1: fills to the cap, the extra is lost, and the line says so
   ex.carry = null;
-  const got = addMat('s', 2, P.x, P.y); fxSign('press');
+  const got = addMat('s', 2, P.x, P.y, null, part); fxSign('press');
+  if (part) fxMsg(WORDS.pressLost(CAP), 2);
   advance('patch', { noise: 'act' });
 }
 function takeTuft(tf) {
@@ -6182,8 +6184,8 @@ function edgeTabs() {
     all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
-  { const w = leadWay(P, lay); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // after any Call that leaves nothing to take in sight: one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
-  const q = FX.cue;
+  const q = FX.cue, callLive = !!q && q.key === P.key && ex.actions < q.until;
+  if (callLive) { const w = leadWay(P, lay); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // only for the Call's own time (owner #80): never on the plain map; one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
     add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }

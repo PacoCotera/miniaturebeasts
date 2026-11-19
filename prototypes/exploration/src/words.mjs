@@ -14,6 +14,7 @@ export const WORDS = {
     tuft: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the tuft stays where it is',
   },
   pressNoRoom: (n, cap) => 'Essence ' + n + ' of ' + cap + ' · no room to press the fruit',
+  pressLost: cap => 'Essence full (' + cap + ' of ' + cap + ') · the rest is lost',   // [copy] owner note #15: a press with room for 1 fills to the cap
   stoneKeeps: 'the stone keeps the rest', holdsNoMore: 'the Probe holds no more',
   full: (supply, cap, keeps) => 'Your ' + supply + ' is full (' + cap + ' of ' + cap + ') · ' + (keeps || 'the Probe holds no more'),   // [copy] owner note #75: said the same way as the refusal
   // pressing fruit (✓ labels and the bump line)
