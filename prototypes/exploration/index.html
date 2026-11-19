@@ -258,7 +258,7 @@ import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS } from "./src/words.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
-import { standNudge, isGrass } from "./src/standnudge.mjs";
+import { standNudge, crownAt } from "./src/standnudge.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 import { readOptions } from "./src/options.mjs";
@@ -6066,11 +6066,10 @@ function drawPatchBody(t) {
     RT.heroN = (RT.heroN || 0) + 1;   // the pawn's draws this frame (read by the slide test)
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     const heroRm = spriteRm(P.x, P.y);
-    const footX = Math.round(SX(PX(RT.pl))) + bx + ox + 13, footY = Math.round(SY(PY(RT.pl))) + oy + 30;   // the foot centre on the screen: the pawn is a 32 px sprite, the middle of its boots 13 px across and their last row 30 px down
-    const grassProbe = (dx, dy) => {   // is the ground the place drew at this pixel from the foot centre the crown's grass? (one block of the screen read, kept while he stands)
-      const k = `${P.key}|${footX}|${footY}`; let bl = RT.stk && RT.stk.k === k ? RT.stk : null;
-      if (!bl) { try { bl = RT.stk = { k, d: g.getImageData(footX - 24, footY - 20, 49, 42).data }; } catch (e) { return true; } }
-      const i = ((dy + 20) * 49 + dx + 24) * 4; return i < 0 || i >= bl.d.length ? true : isGrass(bl.d[i], bl.d[i + 1], bl.d[i + 2]);
+    const grassProbe = (dx, dy) => {   // is the ground at this pixel from the foot centre the crown's grass? From the cliff pieces' tile data (src/standlip.mjs) and where the place drew them: no screen read, no light
+      if (!bk) return true;
+      if (bk.standDecals === undefined) bk.standDecals = bk.place.decals.map(d => { const s = bk.ts.sprites[d.kind]; return s && /^cliff-/.test(s.kind) ? { kind: s.kind, x0: d.x - s.anchor48[0], y0: d.y - s.anchor48[1], w: s.w48, h: s.h48 } : null; }).filter(Boolean);   // the cliff pieces in draw order, place pixels
+      return crownAt(bk.standDecals, (P.x - bk.ox) * 48 + 13 + dx, (P.y - bk.oy) * 48 + 30 + dy) === 'g';   // the foot centre: 13 px across his tile, its last boot row 30 down
     };
     const [tnx, tny] = ts === 48 && !stepping ? standNudge(lay, P.x, P.y, grassProbe) : [0, 0], nd = RT.nd && RT.nd.key === P.key ? RT.nd : (RT.nd = { key: P.key, x: 0, y: 0, at: NOW }), dtn = Math.min(100, NOW - nd.at) * .15;   // at a cliff top the pawn is drawn nearer the lip (src/standnudge.mjs), eased in
     nd.at = NOW; nd.x = motion() ? nd.x + Math.max(-dtn, Math.min(dtn, tnx - nd.x)) : tnx; nd.y = motion() ? nd.y + Math.max(-dtn, Math.min(dtn, tny - nd.y)) : tny;
