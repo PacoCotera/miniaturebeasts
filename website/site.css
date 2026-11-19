@@ -29,7 +29,7 @@
   font-synthesis: none;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 104px; } /* an anchor jump lands its headline under the sticky bar (one row 56 px, two rows on a phone), never behind it */
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; background: var(--paper); color: var(--ink); font-size: var(--fs-body); line-height: 1.5; overflow-x: clip; -webkit-text-size-adjust: 100%; }
 h1, h2, h3, p, figure, ul, ol, dl, dd, blockquote { margin: 0; padding: 0; }
@@ -230,11 +230,12 @@ figcaption { margin-top: 8px; }
   /* the words sit on the quiet water to the right of the clover, as on the live page the owner kept */
   .top { position: relative; min-height: calc(100svh - 56px); max-height: 980px; display: flex; align-items: center; justify-content: flex-end; }
   .top-pic { position: absolute; inset: 0; }
-  .top-pic img { height: 100%; max-height: none; min-height: 0; object-position: 30% 56%; }
-  .top-words { position: relative; margin: 0; width: min(38rem, 44vw); padding: 0 clamp(24px, 5vw, 80px) 4% 0; color: var(--forest); text-shadow: 0 0 22px rgb(245 242 233 / .7); }
-  .top h1 { font-size: clamp(2.2rem, 3.8vw, 3.6rem); }
+  .top-pic img { height: 100%; max-height: none; min-height: 0; object-position: 100% 56%; }
+  /* the words keep to the calm water right of the clover leaf (the leaf ends at 67% of the picture's width, the words start at 70%) */
+  .top-words { position: relative; margin: 0 3% 0 0; width: 27%; padding: 0 0 4% 0; color: var(--forest); text-shadow: 0 0 22px rgb(245 242 233 / .7); }
+  .top h1 { font-size: clamp(1.6rem, 3.3vw, 3.2rem); }
   .top h1 span { color: #2f5a2c; }
-  .top .lede { color: var(--ink); font-size: 1.25rem; }
+  .top .lede { color: var(--ink); font-size: clamp(1rem, 1.5vw, 1.25rem); }
   .top .button { text-shadow: none; }
   .top .button.quiet { color: var(--forest); background: rgb(245 242 233 / .6); }
   .band { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); align-items: center; gap: 0 clamp(24px, 4vw, 64px); padding: 0; min-height: min(86svh, 760px); }
@@ -269,9 +270,10 @@ figcaption { margin-top: 8px; }
   .top { min-height: calc(100svh - 56px); }
   .band { min-height: calc(100svh - 56px); }
   .band.object .pic img { max-height: 76svh; }
-  h1, .top h1 { font-size: 1.9rem; }
+  h1 { font-size: 1.9rem; }
+  .top h1 { font-size: 1.45rem; }
   h2 { font-size: 1.75rem; }
-  .top .lede { font-size: 1rem; margin-top: 8px; }
+  .top .lede { font-size: .85rem; margin-top: 6px; }
   .top .actions { margin-top: 14px; }
   .top .button { padding: 10px 16px; font-size: .95rem; }
   .jobs { gap: 4px; margin-top: 10px; font-size: 1rem; }
