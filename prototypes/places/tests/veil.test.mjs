@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { veilPlan, paintVeil, paintMapVeil, VEIL_BAND, VEIL_PERIOD } from '../src/veil.mjs';
+import { veilPlan, waterVeilPlan, paintVeil, paintMapVeil, VEIL_BAND, VEIL_PERIOD } from '../src/veil.mjs';
 
 const none = { N: false, E: false, S: false, W: false };
 const T = 48, W = 24 * T, H = 28 * T;
@@ -61,6 +61,47 @@ test('a run is laid so the strip row that best meets the corner piece, or the ba
   { const { g, calls } = rec(); paintVeil(g, kit2, far, W, H); const c = calls.filter((q) => q[0] === kit2.strip).pop(); assert.equal((c[2] + c[4] - 1) % VEIL_PERIOD, 150); }
   const noPix = { ...kit, joins: undefined };   // pictures that cannot be read leave the rows alone
   { const { g, calls } = rec(); paintVeil(g, noPix, corner, W, H); assert.equal(calls.find((q) => q[0] === 'strip' && q[6] === VEIL_BAND)[2], VEIL_BAND); }
+});
+
+// water at a place edge that is not the coast or a range side: the veil over the water run only
+const edgeOf = (n, wet) => Array.from({ length: n }, (_, i) => wet(i));
+const noEdge = { N: edgeOf(24, () => false), S: edgeOf(24, () => false), W: edgeOf(28, () => false), E: edgeOf(28, () => false) };
+
+test('a lake on the east side: a strip over the water run only, an end piece at each end where it meets land', () => {
+  const base = veilPlan(24, 28, none, {});
+  const p = waterVeilPlan(24, 28, { ...noEdge, E: edgeOf(28, (i) => i >= 6 && i < 22) }, none, base);   // tiles 6..21: 16 tiles, 768 px
+  assert.deepEqual(p.runs, [{ side: 'E', a0: 6 * T + 2 * VEIL_BAND, a1: 22 * T - 2 * VEIL_BAND, endA: true, endB: true }]);
+  assert.deepEqual(p.pieces, [{ kind: 'end', side: 'E', far: false, at: 6 * T }, { kind: 'end', side: 'E', far: true, at: 22 * T }]);
+  for (const r of p.runs) assert.ok(r.a0 >= 6 * T && r.a1 <= 22 * T);   // nothing before or after the run: no land cell is veiled
+  const { g, calls } = rec(); paintVeil(g, kit, p, W, H);   // the end pieces sit on the shoreline: the first spans 6T..6T+2B along the side, the second ends at 22T
+  const ends = calls.filter((q) => q[0] === 'end').map((q) => q[q.length - 1]);
+  assert.equal(ends.length, 2);
+  assert.equal(ends[0][5], 6 * T);          // east side: v along y = at + Y
+  assert.equal(ends[1][5], 22 * T);         // far: v = at - Y
+  const covered = new Uint8Array(H); for (const r of p.runs) for (let a = r.a0; a < r.a1; a++) covered[a] = 1;
+  assert.equal(r2(6 * T + 2 * VEIL_BAND), r2(p.runs[0].a0));   // strip starts where the end piece stops: no gap
+});
+const r2 = (x) => x;
+
+test('a river across a side too short for two end pieces: a strip on the water only, square on the shoreline', () => {
+  const p = waterVeilPlan(24, 28, { ...noEdge, S: edgeOf(24, (i) => i >= 10 && i < 13) }, none, veilPlan(24, 28, none, {}));
+  assert.deepEqual(p.runs, [{ side: 'S', a0: 10 * T, a1: 13 * T }]);
+  assert.deepEqual(p.pieces, []);
+});
+
+test('coast and range sides are unchanged, and a veiled side gets no water run', () => {
+  const sides = { ...none, W: true }, diag = { NW: false, SW: false }, base = veilPlan(24, 28, sides, diag);
+  const p = waterVeilPlan(24, 28, { ...noEdge, W: edgeOf(28, () => true) }, sides, base);
+  assert.deepEqual(p, base);
+  assert.deepEqual(waterVeilPlan(24, 28, noEdge, none, veilPlan(24, 28, none, {})), { runs: [], pieces: [] });
+});
+
+test('a run that reaches the corner runs on to the place edge; two water runs at a corner share one outer piece', () => {
+  const a = waterVeilPlan(24, 28, { ...noEdge, E: edgeOf(28, (i) => i >= 10) }, none, veilPlan(24, 28, none, {}));
+  assert.deepEqual(a.runs, [{ side: 'E', a0: 10 * T + 2 * VEIL_BAND, a1: H, endA: true }]);
+  const b = waterVeilPlan(24, 28, { ...noEdge, E: edgeOf(28, (i) => i >= 10), S: edgeOf(24, (i) => i >= 10) }, none, veilPlan(24, 28, none, {}));
+  assert.deepEqual(b.pieces.filter((q) => q.kind === 'outer'), [{ kind: 'outer', corner: 'SE' }]);
+  assert.equal(b.runs.find((r) => r.side === 'E').a1, H - VEIL_BAND);
 });
 
 test('the map veil runs west and east full height and north and south between them', () => {

@@ -2706,10 +2706,20 @@ function veilPlanOf(lay) {
   const hz = lay.lines ? lay.lines.ops.filter(o => o.kind === 'range' && hazeDepth(lay, o.side) > 0).map(o => o.side) : [];
   for (const side of ['N', 'E', 'S', 'W']) sides[side] = lay.veilCoast[side] || hz.includes(side);
   const diag = diagVeiled(cell);
-  if (!Object.values(sides).includes(true) && !Object.values(diag).includes(true)) return null;
-  const id = ['N', 'E', 'S', 'W'].map(k => (sides[k] ? 1 : 0)).join('') + ['NW', 'NE', 'SW', 'SE'].map(k => String(diag[k])[0]).join('');
-  const plan = PL.veilMod.veilPlan(lay.baked.w, lay.baked.h, sides, diag);
-  return plan.runs.length || plan.pieces.length ? { id: lay.baked.id + id, plan } : null;
+  // water at a place edge that is not veiled above (a lake or a river meeting an inland side): the same veil along each run of water cells, never over land (veil.mjs waterVeilPlan)
+  if (!lay.veilWater) {
+    const pl = lay.baked.place, w = pl.w, h = pl.h, wet = (x, y) => pl.terrain[y * w + x] === 1 || pl.terrain[y * w + x] === 2;   // TV.DEEP, TV.WATER (a ford or bridge is walkable ground)
+    const edge = { N: Array.from({ length: w }, (_, x) => wet(x, 0)), S: Array.from({ length: w }, (_, x) => wet(x, h - 1)), W: Array.from({ length: h }, (_, y) => wet(0, y)), E: Array.from({ length: h }, (_, y) => wet(w - 1, y)) };
+    lay.veilWater = { edge, id: 'NSWE'.split('').map(k => edge[k].map(b => (b ? 1 : 0)).join('')).join('|') };
+  }
+  const anyWater = ['N', 'E', 'S', 'W'].some(k => !sides[k] && lay.veilWater.edge[k].includes(true));
+  if (!Object.values(sides).includes(true) && !Object.values(diag).includes(true) && !anyWater) return null;
+  const id = ['N', 'E', 'S', 'W'].map(k => (sides[k] ? 1 : 0)).join('') + ['NW', 'NE', 'SW', 'SE'].map(k => String(diag[k])[0]).join('') + (anyWater ? lay.veilWater.id : '');
+  if (lay.veilMade && lay.veilMade.id === id) return lay.veilMade.out;
+  let plan = PL.veilMod.veilPlan(lay.baked.w, lay.baked.h, sides, diag);
+  if (anyWater) plan = PL.veilMod.waterVeilPlan(lay.baked.w, lay.baked.h, lay.veilWater.edge, sides, plan);
+  const out = plan.runs.length || plan.pieces.length ? { id: lay.baked.id + id, plan } : null;
+  lay.veilMade = { id, out }; return out;
 }
 // Within 2 tiles of a range line the Probe's words show on the band, once per approach.
 function lineWords(lay, P) {
