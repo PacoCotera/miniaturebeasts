@@ -486,6 +486,8 @@ function tileSideApplies(a, dir) {
   const k = edgeKind(a, dir); if (k === EDGE.RAMP || (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)))) return false;
   return passable(a) && passable(n) && !G.island[a] && !G.island[n] && G.land[a] !== L.WATER && G.land[n] !== L.WATER;
 }
+// A change of level between two tiles across a border stops a step only where a cliff is drawn on both sides (a cliff drawn on one side only is not seen from the other, so it is a slope); with none drawn it is a slope and walks (design 2026-11-18, bugs #45 #67).
+const levelBlocks = (la, ax, ay, lb, bx, by) => !!la.raisedFn(ax, ay) !== !!lb.raisedFn(bx, by) && !!((la.cliffShown && la.cliffShown(ax, ay)) && (lb.cliffShown && lb.cliffShown(bx, by)));
 const tileSideKey = (a, n) => Math.min(a, n) * 4096 + Math.max(a, n);
 function tileSideKnown(a, dir) { const n = stepCell(a, dir); return n < 0 || !G.tileSides ? null : G.tileSides.get(tileSideKey(a, n)) || null; }
 function tileSide(a, dir) {
@@ -495,7 +497,7 @@ function tileSide(a, dir) {
   const east = hi - lo === 1, len = east ? la.h : la.w, mask = new Uint8Array(len), ok = new Uint8Array(len);
   for (let k = 0; k < len; k++) {
     const ax = east ? la.w - 1 : k, ay = east ? k : la.h - 1, bx = east ? 0 : k, by = east ? k : 0;
-    ok[k] = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !!la.raisedFn(ax, ay) === !!lb.raisedFn(bx, by) ? 1 : 0; }
+    ok[k] = !T_BLOCK[la.tiles[ay * la.w + ax]] && !T_BLOCK[lb.tiles[by * lb.w + bx]] && !levelBlocks(la, ax, ay, lb, bx, by) ? 1 : 0; }
   for (let k = 0, s = 0; k <= len; k++) { if (k < len && ok[k]) continue; if (k - s >= 2) for (let j = s; j < k; j++) mask[j] = 1; s = k + 1; }
   const st = { open: mask.some(v => v), mask, len, east };
   (G.tileSides || (G.tileSides = new Map())).set(key, st); return st;
@@ -505,7 +507,7 @@ function crossLanding(dir) {
   const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir)) return undefined;
   const la = layout(P.key), lb = layout(String(c)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return undefined;
   const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y;
-  if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || !!la.raisedFn(P.x, P.y) !== !!lb.raisedFn(x, y)) return null;
+  if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || levelBlocks(la, P.x, P.y, lb, x, y)) return null;
   return { x, y };
 }
 function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
@@ -2519,7 +2521,7 @@ function blockWords(lay, x, y, o) {
   if ((lay.pieces || []).some(p => p.y === y && x >= p.x && x < p.x + (p.w || 1))) return B.slab;   // a set piece's tile, drawn or not
   if (o.t === T.WATER || o.t === T.DEEP) return B.water;
   if (o.t === T.TRUNK || (lay.press && lay.press[i] === 2)) return B.tree;
-  if (o.t === T.ROCK && lay.press && lay.press[i] === 1) return B.stone;
+  if (o.t === T.ROCK && lay.press && lay.press[i] === 1 && !(lay.steep && lay.steep[i])) return B.stone;   // a cliff tile is steep rock, not a stone (bug #45: "what stone?")
   return B.rock;
 }
 function patchStep(dir, mode) {
@@ -2779,13 +2781,21 @@ function crossRegion(dir, sw) {
   FX.transAt = -1e9; FX.resume = true;   // no fade: the slide covers the change
   if (out) { FX.slide = { at: NOW, dx: DIRS[dir][0], dy: DIRS[dir][1], ...out }; lockInput(SLIDE_MS); }
 }
+// Why the tile across a place's border is refused: a cliff (the two sides differ in level, or the tile beyond is steep rock) says "Cliff · too steep"; a tree, stone or water on the tile beyond says that
+// (bug #67: "there's no cliff down" - a trunk on the neighbour's first row was worded as a cliff).
+function crossBlockWords(dir) {
+  const P = S.exp.patch, c = stepCell(S.exp.pos, dir), lb = c >= 0 ? layout(String(c)) : null; if (!lb || !lb.tiles) return cliffPlaceWords(dir);
+  const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y, i = y * lb.w + x;
+  if (!T_BLOCK[lb.tiles[i]] || (lb.steep && lb.steep[i]) || ![T.TRUNK, T.WATER, T.DEEP, T.ROCK].includes(lb.tiles[i])) return cliffPlaceWords(dir);
+  return blockWords(lb, x, y, { type: 'tile', t: lb.tiles[i] });
+}
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
   { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
   let why = crossReason(ex.pos, dir, true);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
   const land = why ? undefined : crossLanding(dir);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
-  if (land === null) why = cliffPlaceWords(dir);
+  if (land === null) why = crossBlockWords(dir);
   if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }

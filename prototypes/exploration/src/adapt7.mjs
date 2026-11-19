@@ -28,12 +28,13 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const b = P(x, y); if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
     if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; steep[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) { tiles[I(x, y)] = T.ROCK; steep[I(x, y)] = 1; }
   }
+  const propFoot = new Uint8Array(NP);   // the tiles a prop stands on (a steep tile under a prop shows the prop)
   for (const p of place.props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48) - 1, cy = Math.floor(p.y / 48) - 1;
     if (s.kind === 'tall-grass' && !s.footprint.length) { if (cx >= 0 && cy >= 0 && cx < w && cy < h && tiles[I(cx, cy)] === T.GRASS) tiles[I(cx, cy)] = T.TALL; continue; }
     for (let i = 0; i + 1 < s.footprint.length; i += 2) {
       const x = cx + s.footprint[i], y = cy + s.footprint[i + 1];
-      if (x >= 0 && y >= 0 && x < w && y < h) { tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
+      if (x >= 0 && y >= 0 && x < w && y < h) { propFoot[I(x, y)] = 1; tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
   // scree the Tuliko crosses (hold.mjs softOf): two lines of tiles from the cell's border inwards over the steep rock to the first ground that walks, the same pair of lines from either cell of the edge.
@@ -171,7 +172,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const lay = {
     key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter, pieces, stamps: ir.stamps || [], feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
     sdist, trees: {}, shade: false, w, h, openings, clear, compId, compOfSide, mainComp, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
-    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, heart: null,
+    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
     strikes, decalNear, coverAt,...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
