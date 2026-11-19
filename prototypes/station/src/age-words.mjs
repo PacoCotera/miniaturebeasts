@@ -9,7 +9,7 @@ function ageTurns(m, turn) { const n = Math.max(0, turn - (m.born || 0)); return
 // or the turns still to grow for a young mibi on the clock.
 function stageNote(m, turn, j, e) {
   const stage = stageAt(m, turn, j, e);
-  if (stage === 'juvenile') return { stage, n: (m.born || 0) + j - turn };
+  if (stage === 'juvenile') return { stage, n: m.growAt > 0 ? 0 : (m.born || 0) + j - turn };
   const grown = m.grownTurn != null ? m.grownTurn : (m.born || 0) + j;
   return { stage, n: Math.max(0, turn - (stage === 'elder' ? grown + e : grown)) };
 }

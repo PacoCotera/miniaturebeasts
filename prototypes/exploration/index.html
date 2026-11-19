@@ -1384,8 +1384,10 @@ function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join('
 // One definition of a mibi's stage on both pages (the Station's copy is the same text; a parity test proves it).
 function stageAt(m, turn, j, e) {
   if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
-  const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
+  const age = turn - (m.born || 0), young = m.growAt > 0 ? Date.now() < m.growAt : age < j; return young ? 'juvenile' : m.growAt > 0 || age < j + e ? 'adult' : 'elder';   // a hatched mibi grows up on the real clock (growAt, ms); one without it, on turns
 }
+const GROW_UP_MS = 2 * 3600 * 1000;   // a young mibi grows up two real hours after it hatched (owner 2026-11-18 14:3x, 11-19 14:11: the station runs on real clocks)
+function growWait(ms) { const n = Math.max(1, Math.ceil(ms / 60000)); return n < 60 ? 'in ' + n + ' min' : n < 90 ? 'in about an hour' : 'in about ' + Math.round(n / 60) + ' hours'; }
 function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); }
 // Age in words (the Station's copy, station/src/age-words.mjs, is the same text; a parity test proves it).
 // "{n} turns old", counted from `born`: "1 turn old" at 1, "new this turn" at 0.
@@ -1394,7 +1396,7 @@ function ageTurns(m, turn) { const n = Math.max(0, turn - (m.born || 0)); return
 // or the turns still to grow for a young mibi on the clock.
 function stageNote(m, turn, j, e) {
   const stage = stageAt(m, turn, j, e);
-  if (stage === 'juvenile') return { stage, n: (m.born || 0) + j - turn };
+  if (stage === 'juvenile') return { stage, n: m.growAt > 0 ? 0 : (m.born || 0) + j - turn };
   const grown = m.grownTurn != null ? m.grownTurn : (m.born || 0) + j;
   return { stage, n: Math.max(0, turn - (stage === 'elder' ? grown + e : grown)) };
 }
@@ -1428,7 +1430,7 @@ function setLead(m) { if (!m || S.exp || !isCarried(m) || !isAdult(m)) return fa
 // Who would lead next: the next grown mibi with you after the partner, in carried order, wrapping; none with fewer than two grown.
 function nextLead() { const g = carriedMibis().filter(isAdult), pm = partnerMibi(); return g.length < 2 || !pm ? null : g[(g.indexOf(pm) + 1) % g.length]; }
 // A juvenile grown on the clock this turn: never one with grownTurn.
-function grownNow(m) { return m.grownTurn == null && S.turn - (m.born || 0) === JUVENILE_TURNS; }
+function grownNow(m) { return m.grownTurn == null && (m.growAt > 0 ? Date.now() >= m.growAt : S.turn - (m.born || 0) === JUVENILE_TURNS); }
 function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDER_TURNS : S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS; }
 // The roster's order: the mibis with you in carried order, then (docked, between expeditions) the others as they hatched.
 // Undocked or mid-expedition, a mibi at home is never shown.
@@ -1453,7 +1455,7 @@ function leaveMibi(m) {
 function bondCheck(m) {
   if (!m || m.bonded || (m.plays || 0) < BOND_PLAYS) return false;
   m.bonded = true;
-  if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS;
+  if (m.grownTurn == null && (m.growAt > 0 ? Date.now() >= m.growAt : S.turn - (m.born || 0) >= JUVENILE_TURNS)) m.grownTurn = m.growAt > 0 ? S.turn : (m.born || 0) + JUVENILE_TURNS;
   logEv(m.name + ' is bonded with you'); return true;
 }
 // The save: S.with (one slot) becomes S.carried, once. withSeen stays, frozen: the Station's care step reads it.
@@ -1476,8 +1478,7 @@ function normalizeCare(S, released) {
     for (const k of ['outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
     if (typeof m.plays !== 'number') m.plays = typeof m.tends === 'number' ? m.tends : 0;   // once: tends already given count as plays; the old care fields stay in old saves, never read again
     if (!Array.isArray(m.habitsDone)) m.habitsDone = [];   // the field habits it did on walks: a set, never cleared (the Station records each once at the dock)
-    if (m.grownTurn === undefined) m.grownTurn = null;
-  }
+    if (m.grownTurn === undefined) m.grownTurn = null;  }
   return S;
 }
 // The Station's carry requests (st.carryReqs), at the dock and between expeditions only, in seq order, each once.
@@ -1704,7 +1705,8 @@ function syncStation() {
     const isNew = !q; if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); }
     q.name = m.name; q.born = m.born || 0; q.species = m.species ?? q.species ?? null; q.spName = m.spName ?? q.spName ?? null;   // the Station's species id and name, for a species the Companion has no entry for
     if (isNew) logEv(m.name + ' (' + mibiSpName(q) + ') is home at the Station');
-    q.since = m.since ?? null; q.sinceFloor = !!m.sinceFloor;   // the real time the mibi has been the player's: the Station's clock at its hatch (or when first seen), shown on the mibi's page
+    if (m.growAt > 0) q.growAt = m.growAt;   // the Station's hatch time plus two hours
+    q.since = m.since ?? null; q.sinceFloor = !!m.sinceFloor;  // the real time the mibi has been the player's: the Station's clock at its hatch (or when first seen), shown on the mibi's page
     q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
   if (st.probe && st.probe.seq > (S.probeSeen || 0) && !(S.exp && S.exp.ending)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
     if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; frozen while docked; resumes at Lift as it was
@@ -2500,7 +2502,11 @@ function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
-  if (x < 0 || y < 0 || x >= layout(key).w || y >= layout(key).h) { if (mode === 'walk') { stopRepeat(); fxHint('edgehold', 'Edge · tap again to step off', 1); return; } if (!layout(key).cave) crossEdge(dir); return; }
+  if (x < 0 || y < 0 || x >= layout(key).w || y >= layout(key).h) {
+    if (layout(key).cave) { if (mode === 'walk') stopRepeat(); return; }
+    const bump0 = FX.bumpAt; crossEdge(dir);   // an open edge crosses on the first press, held or tapped: no "tap again" (owner note #84); a refused one (cliff, water) bumps and keeps the peek
+    if (mode === 'walk' && FX.bumpAt !== bump0) stopRepeat();
+    return; }
   { const lay = layout(key), lc = lay.lines && lay.lines.cells.get(y * lay.w + x);   // past a range line or into a closed opening: the reason, nothing spent
     if (lc) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
   let o = occupant(key, x, y, 'player');
@@ -3930,6 +3936,7 @@ function realmTurn(turned, pending) {
   // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
   for (const m of grown) say((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name), ['grown', null, m.id, !isCarried(m) ? 0 : partnerMibi() === m ? 1 : 2]);
+  for (const m of grown) if (m.growAt > 0) Object.assign(m, { grownTurn: S.turn });   // grown on the real clock: its adult turns count from here
   for (const m of aged) say(m.name + ' is an elder now · slower, with keener senses.', ['elder', null, m.id, 0]);
   for (const c of depotCells(S.seed)) { if (!everLit(c)) continue; const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) say('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.', ['lampLow', PLACE_KIND[G.land[c]], null, 0]); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) say('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.', ['lampOut', PLACE_KIND[G.land[c]], null, 0]); }
@@ -5772,6 +5779,11 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
 // is built is its whole-place picture at its own veil; land not yet seen is the map's fog, land seen with no place to draw (water, cliff, or its place not here yet) the map's own cell.
 // Nothing is built on the page thread in one go: a neighbour's picture is made in steps (overviewSteps), PEEK_NB_MS of steps a frame, the nearest first, and shows when it is done.
 // A cell the places worker still owes is never asked of layout() (rule: PR 316); it stays under the map's fog until it is here.
+function unwalkedVeil(veil, nl, pre) {   // veil (placeVeil's, one byte a picture tile): all veiled, but the tiles a Call lifted (pre: S.veilPre's rows) and never the apron
+  const pw = nl.baked.place.w;
+  for (let i = 0; i < veil.length; i++) { const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy; veil[i] = pre && px >= 0 && py >= 0 && px < nl.w && py < nl.h && ((pre[py] >>> px) & 1) ? 0 : 1; }
+  return veil;
+}
 const PEEK_NB_MS = 6, PEEK_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
 function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
   // The cells meet cell to cell (call-zoom-wide-2): a neighbour is drawn as its own cell only, never with its apron (the ground beyond the cell that a place picture carries unveiled, as the
@@ -5794,7 +5806,8 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     if (nbk) { w = nl.w * Tp; h = nl.h * Tp; }
     const r = rect(w, h); g.imageSmoothingEnabled = false;
     if (nbk) {
-      const veil = placeVeil(nl); if (!S.visited[c]) for (let i = 0; i < veil.length; i++) veil[i] = 1;   // a place never walked is wholly veiled, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
+      const pre = !S.visited[c] && S.veilPre && S.veilPre[key];   // the strip a Call from next door lifted there (owner #85; #377 kept it apart in S.veilPre)
+      const veil = placeVeil(nl); if (!S.visited[c]) unwalkedVeil(veil, nl, pre);   // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
       const wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
       if (!cvn) {
         if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
@@ -7044,7 +7057,7 @@ function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return nu
 function turnsShort(m) { const n = Math.max(0, S.turn - (m.born || 0)); return n === 0 ? 'new' : n === 1 ? '1 turn' : n + ' turns'; }
 function ageLine(m) {
   const nt = stageNote(m, S.turn, JUVENILE_TURNS, ELDER_TURNS);
-  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
+  return ageTurns(m, S.turn) + (nt.stage === 'juvenile' ? (m.growAt > 0 ? ' · grows up ' + growWait(m.growAt - Date.now()) : nt.n > 0 ? ' · grows up ' + turnsUntil(nt.n) : '') : nt.stage === 'elder' ? ' · an elder ' + turnsFor(nt.n) : '');
 }
 function yoursText(m) {
   const y = yoursLine(m, new Date().getTime()); if (!y) return '';

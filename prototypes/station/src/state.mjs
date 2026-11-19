@@ -176,6 +176,7 @@ export function normalize(st, now = Date.now()) {
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); if (!Number.isInteger(p.dryAt)) p.dryAt = (st.turn | 0) + POD_LIFE;   /* a pod from before freshness keeps a full life from now (additive, no schema bump) */ if (p.id === st.readingPod && !Number.isInteger(p.keep)) p.keep = Math.max(1, p.dryAt - (st.turn | 0)); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
     if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
+    if (!(m.growAt > 0) && m.grownTurn == null && (st.turn | 0) - (m.born || 0) < JUVENILE_TURNS && now >= GOOD_CLOCK) m.growAt = now + GROW_UP_MS;   /* a young mibi in a save with no hatch clock counts its two hours from this load (additive, no schema bump) */
     m.plays = m.plays > 0 ? m.plays | 0 : m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;   /* plays: the Companion's Play together count; an older save back-fills it once from its tends, which stay unread (additive, no schema bump) */ }
   if (!Array.isArray(st.roomMeta)) st.roomMeta = []; if (!Array.isArray(st.finds)) st.finds = [];   /* each room's theme and settling, and the themed finds held at home (rooms-rules.json; additive, no schema bump): a room with no entry is the i-th theme, settled */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
@@ -324,8 +325,9 @@ export function seenCarryRefusal(st, sv) { const r = carryRefusal(st, sv); if (r
 // The stage, one definition on both pages (the Companion's index.html has the same text; the parity test proves they agree).
 export function stageAt(m, turn, j, e) {
   if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
-  const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
+  const age = turn - (m.born || 0), young = m.growAt > 0 ? Date.now() < m.growAt : age < j; return young ? 'juvenile' : m.growAt > 0 || age < j + e ? 'adult' : 'elder';   // a hatched mibi grows up on the real clock (growAt, ms); one without it, on turns
 }
+export const GROW_UP_MS = 2 * 3600 * 1000;   // a young mibi grows up two real hours after it hatched (owner 2026-11-18 14:3x, 11-19 14:11)
 export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, stageTurn(st, m), settings.adultTurns ?? JUVENILE_TURNS, settings.elderTurns ?? ELDER_TURNS);   // a tucked-away mibi's clocks are stopped (stageTurn)
 // Who walked with a trip record: its carried set, else (an older record) its partner.
 export const tripCarried = (rec) => (Array.isArray(rec.carried) ? rec.carried : rec.partner != null ? [rec.partner] : []);
@@ -1173,7 +1175,7 @@ function hatchBud(st, settings, now, line) {
   const name = drawName(st);
   // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
-  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
+  const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now, growAt: now + GROW_UP_MS } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
   logEv(st, line(m, fr.species.name, roomName(st, place.room)));
