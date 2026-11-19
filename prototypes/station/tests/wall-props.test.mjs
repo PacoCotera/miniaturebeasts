@@ -276,7 +276,7 @@ test("the partner pick: A's species only with A left out; those who can cross no
   const rel = (x) => build(st, { pair: { a: oak.id }, focus: "cell." + x.id }).props.regions.card.lines[0];
   assert.deepEqual([rel(fen), rel(wren), rel(elm)], [1, 2].map(() => spec.strings.pair.rel.child.replace("{name}", "Oak")).concat(spec.strings.pair.kin.wild), "the co-parent is not family");
   assert.deepEqual(Object.keys(spec.strings.pair.rel), ["parent", "grandparent", "greatGrandparent", "child", "grandchild", "greatGrandchild", "sameParents"]);
-  const young = build(st, { pair: { a: fen.id }, focus: "cell." + bud.id }).props.regions.card; assert.equal(young.stateLines[0], "young"); assert.match(young.stateLines[1], /^grows up in \d+ turns?$/);
+  const young = build(st, { pair: { a: fen.id }, focus: "cell." + bud.id }).props.regions.card; assert.equal(young.stateLines[0], "young"); assert.match(young.stateLines[1], /^grows up (in \d+ (turns?|minutes|hours)|in an hour|soon)$/);
   const rest = build(st, { pair: { a: fen.id }, focus: "cell." + sky.id }); assert.deepEqual(rest.props.regions.card.stateLines, ["on a breather", "can cross in 2 turns"]); assert.match(rest.props.regions.card.mark, /mark-breather-16/, "the breather's mark leads the state"); assert.equal(rest.props.regions.card.why, "", "the why line shows with the ring on the plate");
   const onPlate = build(st, { pair: { a: fen.id }, focus: "plate.0", last: sky.id }); assert.equal(onPlate.props.regions.card.why, "on a breather · can cross in 2 turns", "an unpickable partner: the plate is held with its reason");
   assert.equal(build(st, { pair: { a: fen.id }, focus: "plate.0", last: moss.id }).props.regions.card.why, "", "a pickable one: the cross is the breeding screens' (held here), with no reason of its own (pairSoon is gone)");
@@ -313,7 +313,7 @@ test("the breather (spec §3, §5): the disc after coming out and before asleep,
 test("the partner's state on the pair card: each part between · its own line, no line ends in a hanging word; the breather leads with its mark", () => {
   const { st, fen, bud, sky } = pairWorld();
   const lines = (x) => build(st, { pair: { a: fen.id }, focus: "cell." + x.id }).props.regions.card.stateLines;
-  assert.deepEqual(lines(sky), ["on a breather", "can cross in 2 turns"]); assert.equal(lines(bud)[0], "young"); assert.match(lines(bud)[1], /^grows up in 1 turn$|^grows up in \d+ turns$/);
+  assert.deepEqual(lines(sky), ["on a breather", "can cross in 2 turns"]); assert.equal(lines(bud)[0], "young"); assert.match(lines(bud)[1], /^grows up (in \d+ (turns?|minutes|hours)|in an hour|soon)$/);
   for (const l of [...lines(sky), ...lines(bud)]) assert.ok(!/(·|can|in)$/.test(l), l);
   const away = pairWorld(); away.moss.tucked = { turn: away.st.turn, seq: 1, from: 1 }; assert.deepEqual(build(away.st, { pair: { a: away.fen.id }, focus: "cell." + away.moss.id }).props.regions.card.stateLines, ["tucked away"]);
 });

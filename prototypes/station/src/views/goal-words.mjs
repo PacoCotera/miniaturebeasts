@@ -3,12 +3,13 @@
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { fill } from "./words.mjs";
+import { growIn } from "../age-words.mjs";
 
 const speciesWord = (id) => (id && frameOf(id)?.species.name) || "";
 const article = (w) => S.aAn(w).split(" ")[0];
 // goal: goalKey's result (not null); docked: whether the Companion is docked; frame: frame.json.
 export function goalWords(goal, docked, frame) {
-  const G = frame.strings.goal, st = goal.step, name = goal.names ? goal.names[0] : goal.name ?? st.name, vals = { name, species: speciesWord(goal.species ?? st.species), a: article(speciesWord(goal.species ?? st.species)) };
+  const G = frame.strings.goal, st = goal.step, name = goal.names ? goal.names[0] : goal.name ?? st.name, vals = { name, species: speciesWord(goal.species ?? st.species), a: article(speciesWord(goal.species ?? st.species)), when: growIn(goal.leftMs ?? S.GROW_UP_MS) };
   const out = (text, plain = "", icons = "") => ({ text, icons, plain });
   // away, a goOut step reads the aim: what the Companion is out for
   if (!docked && st.key === "goOut" && G.aim[goal.key]) {
@@ -16,7 +17,7 @@ export function goalWords(goal, docked, frame) {
     return out(fill(G.aim[goal.key], vals), nameless ? fill(nameless, vals) : "");
   }
   if (st.key === "goOut" && goal.key === "growUp") {
-    return out(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more);
+    return out(fill(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, vals));
   }
   if (st.key === "short") return out(fill(G.step.short[st.from] ?? G.step.short.field, { icons: "" }).trim(), "", st.icons);
   if (st.key === "put") return out(fill(G.step.put, { species: speciesWord(st.species) }));   // the guide's step: Data into that kind's pod
@@ -42,13 +43,13 @@ function budWords(st, B) {
 // goal: goalKey's result; frame: frame.json. Returns { text, icons } or null.
 export function companionWords(goal, frame) {
   if (!goal) return null;
-  const G = frame.strings.goal, st = goal.step, name = goal.names ? goal.names[0] : goal.name ?? st.name, vals = { name, species: speciesWord(goal.species ?? st.species), a: article(speciesWord(goal.species ?? st.species)) };
+  const G = frame.strings.goal, st = goal.step, name = goal.names ? goal.names[0] : goal.name ?? st.name, vals = { name, species: speciesWord(goal.species ?? st.species), a: article(speciesWord(goal.species ?? st.species)), when: growIn(goal.leftMs ?? S.GROW_UP_MS).replace(" minutes", " min") }   // the Companion header is narrow: "in 30 min" [copy];
   if (st.key === "goOut") {
     if (G.aim[goal.key]) {
       const nameless = { growUp: G.aim.growUpNoName, readChild: G.aim.readChildNoName, pair: G.aim.pairNoName }[goal.key];
       return { text: fill(!name && nameless ? nameless : G.aim[goal.key], vals), icons: "" };
     }
-    if (goal.key === "growUp") { return { text: goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, icons: "" }; }
+    if (goal.key === "growUp") { return { text: fill(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, vals), icons: "" }; }
     return null;
   }
   if (st.key === "findPod") { const sp = speciesWord(st.species ?? goal.species); if (sp && goal.key === "pair" && name && G.step.findPodPair) return { text: fill(G.step.findPodPair, { ...vals, species: sp }), icons: "" }; return { text: sp ? fill(G.step.findPod, { ...vals, species: sp, a: article(sp) }) : G.step.goOut, icons: "" }; }

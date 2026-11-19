@@ -9,10 +9,12 @@ function ageTurns(m, turn) { const n = Math.max(0, turn - (m.born || 0)); return
 // or the turns still to grow for a young mibi on the clock.
 function stageNote(m, turn, j, e) {
   const stage = stageAt(m, turn, j, e);
-  if (stage === 'juvenile') return { stage, n: (m.born || 0) + j - turn };
+  if (stage === 'juvenile') return m.growAt > 0 ? { stage, n: 0, ms: Math.max(0, m.growAt - Date.now()) } : { stage, n: (m.born || 0) + j - turn };
   const grown = m.grownTurn != null ? m.grownTurn : (m.born || 0) + j;
   return { stage, n: Math.max(0, turn - (stage === 'elder' ? grown + e : grown)) };
 }
+// The real time still to wait, rounded plainly (ms left): "soon" (a minute or less), "in 40 minutes", "in an hour", "in 2 hours". [copy]
+function growIn(ms) { const n = Math.ceil(ms / 60000); return n <= 1 ? 'soon' : n < 60 ? 'in ' + n + ' minutes' : n < 90 ? 'in an hour' : 'in ' + Math.round(n / 60) + ' hours'; }
 // "for 7 turns", "for 1 turn", "from this turn" (n is whole turns, 0 or more).
 function turnsFor(n) { return n <= 0 ? 'from this turn' : n === 1 ? 'for 1 turn' : 'for ' + n + ' turns'; }
 // "in 2 turns", "next turn" (n is turns still to come, 1 or more).
@@ -29,4 +31,4 @@ function yoursLine(m, now) {
   const span = days === 0 ? null : days === 1 ? 'a day' : days < 100 ? days + ' days' : months < 24 ? months + ' months' : Math.floor(months / 12) + ' years';
   return { span, date: a.getFullYear() === b.getFullYear() ? a.getDate() + ' ' + MON[a.getMonth()] : MON[a.getMonth()] + ' ' + a.getFullYear(), floor: !!m.sinceFloor, today: days === 0 };
 }
-export { ageTurns, stageNote, turnsFor, turnsUntil, yoursLine };
+export { ageTurns, stageNote, growIn, turnsFor, turnsUntil, yoursLine };

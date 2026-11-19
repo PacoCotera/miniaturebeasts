@@ -11,7 +11,7 @@ import { req as reqOf, slot as slotOf } from "./requests.mjs";
 import { frameOf } from "../genome.mjs";
 import { drawnLooks } from "../looks.mjs";
 import { fill } from "./words.mjs";
-import { platesOf, stateWords, breatherLeft, breatherWords, breatherAfter, youngTurns } from "./vivarium-props.mjs";
+import { platesOf, stateWords, breatherLeft, breatherWords, breatherAfter, youngWhen } from "./vivarium-props.mjs";
 
 const living = (st) => st.mibis.filter((m) => !m.released);
 export const SORTS = ["room", "kind", "age"];
@@ -54,7 +54,7 @@ export function pairWhy(st, sv, x, settings, Sg, a = null) {
   if (w === "carried") return { key: "onboard", text: P.onboard };
   if (w === "store") return { key: "tucked", text: P.tucked };
   if (w === "coming") { const n = S.backIn(st, x); return { key: "coming", text: n === 1 ? W.comingOne : fill(W.coming, { n }) }; }
-  if (S.mibiStage(st, x, settings) === "juvenile") { const n = youngTurns(st, x, settings); return { key: "young", text: n === 1 ? W.breedYoungOne : n == null ? W.breedYoung.split(" \u00b7 ")[0] : fill(W.breedYoung, { n }) }; }
+  if (S.mibiStage(st, x, settings) === "juvenile") { const n = youngWhen(st, x, settings); return { key: "young", text: n == null ? W.breedYoung.split(" \u00b7 ")[0] : fill(W.breedYoung, { when: n }) }; }
   const b = breatherLeft(st, x); if (b > 0) return { key: "breather", text: breatherWords(W, b) };
   return null;
 }
@@ -76,7 +76,7 @@ export function stateLinesOf(st, sv, m, settings, Sg) {
 export function pairStateLines(why, st, x, settings, Sg) {
   const T = Sg.pair.state, F = (l, n) => fill(l, { n });
   if (why.key === "breather") { const n = breatherLeft(st, x); return n === 1 ? T.breatherNext : T.breather.map((l) => F(l, n)); }
-  if (why.key === "young") { const n = youngTurns(st, x, settings); return n === 1 || n == null ? T.youngOne : T.young.map((l) => F(l, n)); }
+  if (why.key === "young") { const n = youngWhen(st, x, settings); return n == null ? [T.young[0]] : T.young.map((l) => fill(l, { when: n })); }
   if (why.key === "coming") { const n = S.backIn(st, x); return n === 1 ? T.comingOne : T.coming.map((l) => F(l, n)); }
   return [why.text];
 }

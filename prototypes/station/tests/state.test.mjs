@@ -504,7 +504,7 @@ test("T2 the care fixture (Station half): the swap request becomes an add, old b
   assert.deepEqual(S.carriedIds(once, raw), [1], "no `carried` yet: the old `with` is read"); assert.deepEqual(S.carriedIds(once, { ...raw, carried: [1], with: undefined }), [1]);
   const stages = (m) => Array.from({ length: 11 }, (_, i) => S.mibiStage({ ...once, turn: 4 + i }, m));
   assert.deepEqual(stages(dot), Array.from({ length: 11 }, () => "adult"), "Dot: adult through turn 14, elder at 18"); assert.equal(S.mibiStage({ ...once, turn: 17 }, dot), "adult"); assert.equal(S.mibiStage({ ...once, turn: 18 }, dot), "elder");
-  assert.deepEqual(stages(moss), ["juvenile", ...Array.from({ length: 10 }, () => "adult")], "Moss: a bonded juvenile, born 3, grows on the clock at turn 5"); assert.deepEqual(stages(fig), Array.from({ length: 11 }, () => "adult")); assert.equal(S.mibiStage({ ...once, turn: 18 }, fig), "adult"); assert.equal(S.mibiStage({ ...once, turn: 19 }, fig), "elder", "born 1: elder at 19");
+  assert.deepEqual(stages(moss), Array.from({ length: 11 }, () => "juvenile"), "Moss: a bonded juvenile, born 3: two real hours from the load, turns do not grow it (#83)"); assert.deepEqual(stages(fig), Array.from({ length: 11 }, () => "adult")); assert.equal(S.mibiStage({ ...once, turn: 18 }, fig), "adult"); assert.equal(S.mibiStage({ ...once, turn: 19 }, fig), "elder", "born 1: elder at 19");
 });
 test("the care step keeps an unapplied request as an add and drops an applied one; a mibi the Companion already carries is not asked for twice", () => {
   const raw = careFixture(); raw.st.withReq = { id: 3, seq: 2 }; raw.withSeen = 2; assert.deepEqual(S.migrate(structuredClone(raw.st), 1, raw).carryReqs, [], "applied");

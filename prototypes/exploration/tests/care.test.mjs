@@ -67,7 +67,7 @@ const stageCases = function* () { for (const born of [0, 1, 2, 3]) for (const bo
 // ---- §3: one definition of the stage ----
 const STAGE_AT = `function stageAt(m, turn, j, e) {
   if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
-  const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
+  const age = turn - (m.born || 0), young = m.growAt > 0 ? Date.now() < m.growAt : age < j; return young ? 'juvenile' : m.growAt > 0 || age < j + e ? 'adult' : 'elder';   // a hatched mibi grows up on the real clock (growAt, ms); one without it, on turns
 }`;
 test("stageAt is the C0 text exactly, and mibiStage reads it with the constants", () => {
   assert.equal(source("stageAt"), STAGE_AT);
@@ -1292,7 +1292,7 @@ test("bond-walks-fix-1: each Play together press shows its own lines in order; n
 });
 
 // ---- Ageing in turns: the age words, the stage words, and the real time a mibi has been the player's ----
-const AGE_FNS = ["ageTurns", "stageNote", "turnsFor", "turnsUntil", "yoursLine"];
+const AGE_FNS = ["ageTurns", "stageNote", "growIn", "turnsFor", "turnsUntil", "yoursLine"];
 const AGE_WORLD = (S, day) => { const ctx = vm.createContext({ console, S, Date: clockAt(day || "2026-10-27"), JUVENILE_TURNS: 2, ELDER_TURNS: 16 });
   const names = ["stageAt", "turnsShort", "ageLine", "yoursText", ...AGE_FNS], at = (n, k = ctx) => vm.runInContext(source(n), k);
   return vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx); };

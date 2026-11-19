@@ -1384,8 +1384,7 @@
    "takeOut": "The Companion is out · dock it to send a mibi",
    "home": "Back to its place in {Room}",
    "homeAway": "Away with the Companion · comes home when it docks",
-   "breedYoung": "young · grows up in {n} {turn|turns}",
-   "breedYoungOne": "young · grows up in 1 turn",
+   "breedYoung": "young · grows up {when}",
    "breedResting": "resting after a cross",
    "breedBusy": "the incubator is busy",
    "breedNoPlace": "No place free · return one, or add a room",
@@ -1400,7 +1399,7 @@
    "pair": "{kin} · {trait} {odds}",
    "pairKin": "{kin}",
    "partnerKind": "another kind",
-   "partnerYoung": "young · grows up in {n} {turn|turns}",
+   "partnerYoung": "young · grows up {when}",
    "partnerTucked": "tucked away · bring it out first",
    "partnerOut": "out with the Companion",
    "partnerResting": "resting after a cross",
@@ -1470,7 +1469,7 @@
     ],
     "young": [
      "{name} is still young",
-     "It grows up in {n} {turn|turns}"
+     "It grows up {when}"
     ],
     "resting": [
      "{name} is resting after a cross"
@@ -1634,11 +1633,7 @@
     ],
     "young": [
      "young",
-     "grows up in {n} {turn|turns}"
-    ],
-    "youngOne": [
-     "young",
-     "grows up in 1 turn"
+     "grows up {when}"
     ],
     "coming": [
      "coming out",
