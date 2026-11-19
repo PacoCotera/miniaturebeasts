@@ -285,12 +285,6 @@ figcaption { margin-top: 8px; }
   .kinds.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-/* the game's own screens: real recordings in a dark frame (a UI frame, not a device picture); the Companion's pixels kept square */
-.screen-frame { background: #15181d; border-radius: 14px; padding: 7px; box-shadow: 0 14px 28px -18px rgb(0 0 0 / .6); }
-.screen-frame img { width: 100%; border-radius: 6px; background: #22252b; }
-.screen-frame.c { border-radius: 18px; }
-img.px { image-rendering: pixelated; }
-
 /* front page: the two devices, each with its game on its screen */
 .duo { background: var(--forest); color: var(--on-dark); padding: 48px 0 56px; }
 .duo .eyebrow { color: var(--lime); }
@@ -315,7 +309,10 @@ img.px { image-rendering: pixelated; }
 
 /* one trip in three moments */
 .moments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 14px; margin-top: 24px; }
-.moments li:last-child { grid-column: 1 / -1; }
+.tile { background: #f6f1e4; border-radius: 14px; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; }
+.tile img { width: 86%; height: 86%; object-fit: contain; }
+/* the call painting is a soft circle on grey paper: only its circle shows (AD 11-18), cropped square here, the picture itself unchanged */
+.tile img.circle { width: 100%; height: 100%; object-fit: cover; clip-path: circle(36% at 50% 50%); transform: translateY(-1%); }
 .moments h3 { margin-top: 12px; font-size: 1.15rem; }
 .moments p { font-size: .98rem; line-height: 1.4; color: var(--muted); margin-top: 4px; }
 
@@ -340,7 +337,7 @@ img.px { image-rendering: pixelated; }
 
 /* how it plays: a mechanic beside its recording */
 .mech { display: grid; gap: 22px; align-items: center; }
-.mech .screen-frame.c { max-width: 300px; }
+.mech .tile { max-width: 360px; width: 100%; }
 .mech + .mech { margin-top: 44px; }
 .tag { display: inline-block; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; padding: 3px 8px; border-radius: 6px; background: rgb(238 155 88 / .18); color: #8a4a17; margin-bottom: 10px; }
 .dark .tag { color: var(--orange); background: rgb(238 155 88 / .14); }
@@ -353,8 +350,7 @@ img.px { image-rendering: pixelated; }
   .devices { grid-template-columns: minmax(0, 30fr) minmax(0, 70fr); align-items: start; gap: 32px; }
   .dev.c { display: block; }
   .dev.c figcaption { margin-top: 10px; }
-  .moments { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2.2fr); gap: 28px; }
-  .moments li:last-child { grid-column: auto; }
+  .moments { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
   .gather { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
   .handoff { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .handoff li { grid-template-columns: 1fr; }
@@ -368,6 +364,6 @@ img.px { image-rendering: pixelated; }
   .devices { grid-template-columns: minmax(0, 24fr) minmax(0, 76fr); max-width: 125svh; }
   .duo { padding: 28px 0 36px; }
   .duo .lede { font-size: 1rem; }
-  .moments { max-width: 150svh; }
-  .mech .screen-frame.c { max-width: 210px; }
+  .moments { max-width: 170svh; }
+  .mech .tile { max-width: 60svh; }
 }
