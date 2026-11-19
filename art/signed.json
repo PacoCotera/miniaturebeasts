@@ -3033,6 +3033,13 @@
    "sha256": "65035701767e5179b6a79bfcc8e4b4b39a4f0da7d422687f899bb2b0752f7ba8"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-19",
+   "id": "8c7517781c",
+   "path": "prototypes/exploration/art/props/landmark-reedpool-island-stone.png",
+   "sha256": "977e1da355426e48b40cfa6719dc0610f2cad86856cddb3378f7c3bf4771f81e"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "d4e5acf3fe",

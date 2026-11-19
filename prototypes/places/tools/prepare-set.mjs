@@ -167,6 +167,11 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     const pin = recipe.palettePin.map((c) => c.replace('#', ''));
     sorted = [...pin, ...sorted.filter((c) => !pin.includes(c))];
   }
+  if (recipe.paletteHold) {   // colours a signed sheet now holds that keep the slot they were promised (an extra or widen entry, after every picture colour): held out of the picture-sorted run so they take that slot
+    const hold = recipe.paletteHold.map((c) => c.replace('#', ''));
+    for (const c of hold) if (![...(recipe.paletteExtra || []), ...(recipe.paletteWiden || [])].some((e) => e.replace('#', '') === c)) throw new Error(`paletteHold ${c} is in neither paletteExtra nor paletteWiden`);
+    sorted = sorted.filter((c) => !hold.includes(c));
+  }
   if (recipe.paletteExtra) {   // colours the map ground needs that no picture holds yet (a palette pick from the art director's reference, never a drawing): they follow every other colour, so no index moves
     const extra = recipe.paletteExtra.map((c) => c.replace('#', '')).filter((c) => !sorted.includes(c));
     sorted = [...sorted, ...extra];
@@ -229,6 +234,10 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   const litterImg = images.get('fill-litter.png');
   if (litterImg) { const im = litterImg; for (let i = 0; i < im.data.length; i += 4) if (im.data[i + 3]) { const h = hex(im.data[i], im.data[i + 1], im.data[i + 2]), c = unhex(h), k = palIdx(h); if (k >= 0 && family(c) === 'warm' && !litter.includes(k)) litter.push(k); } }
   const tables = computeTables(core, sorted.map(unhex), { ground, tone, crowns, stone, stoneHi, stoneLine, bank, bankTo, trunkShade, trunkLit, trunkShadeTo: palIdx(NIGHT_SHADE), trunkLitTo: palIdx(NIGHT_LIT), litter, litterTo: palIdx(NIGHT_SHADE), glint, glintTo, noTarget: (recipe.paletteWiden || []).map((c) => palIdx(c.replace('#', ''))).filter((k) => k > 0) });
+  if (recipe.paletteRows) {   // table rows set by hand for the last colours (top-ground-5, 729589306: the raised litter top's five colours): { from: <palette index of the first row>, <table>: [targets] }
+    const { from, ...rows } = recipe.paletteRows;
+    for (const [n, r] of Object.entries(rows)) { if (!TABLE_NAMES.includes(n)) throw new Error(`paletteRows: ${n} is no table`); r.forEach((v, k) => { tables[n][from + k] = v; }); }
+  }
   const palette = { formatVersion: 1, firstIndex: CORE_COLOURS, count: sorted.length, colours: sorted.map((h) => '#' + h), tables: {} };
   for (const n of TABLE_NAMES) palette.tables[n] = tables[n];
   if (desk) {   // the stone states' named colour tables (desk-art.mjs STONE_TABLES): every target is a colour of the set
@@ -245,7 +254,7 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
     formatVersion: 1, id: recipe.id, name: recipe.name, ship: recipe.ship,
     licence: { spdx: recipe.licence.spdx, author: recipe.licence.author, source: recipe.licence.source, fetched: recipe.licence.fetched, archiveSha256: recipe.licence.archiveSha256 },
     sourceTile: t, scale: recipe.scale, half: recipe.half, palette: 'palette.json', spriteSheet: 'sprites.png',
-    ...(deskTerrain ? { groundPairs: deskTerrain.pairs, layers: deskTerrain.layers, tone: deskTerrain.tone } : {}), props: setSprites.props, decals: setSprites.decals, canopy: setSprites.canopy,
+    ...(deskTerrain ? { groundPairs: deskTerrain.pairs, layers: deskTerrain.layers, tone: deskTerrain.tone } : {}), ...(recipe.litterTop ? { litterTop: recipe.litterTop } : {}), props: setSprites.props, decals: setSprites.decals, canopy: setSprites.canopy,
   };
   if (desk) {
     for (const [n, b] of desk.files) files.set(n, b);
@@ -275,9 +284,15 @@ export function prepareSet(recipe, { tilesetsRoot, repoRoot: root = repoRoot }) 
   return { files, colourCount: sorted.length };
 }
 
-function pixelsEqual(a, b) {
+// The pictures hold the same pixels: same size, same alpha everywhere, same colour wherever alpha is not 0 (the colour a fully transparent pixel carries is never drawn; paste() writes 0 there, a spliced sheet may keep the source's).
+export function pixelsEqual(a, b) {
   const x = decodePng(a), y = decodePng(b);
-  return x.w === y.w && x.h === y.h && Buffer.compare(Buffer.from(x.data), Buffer.from(y.data)) === 0;
+  if (x.w !== y.w || x.h !== y.h) return false;
+  for (let i = 0; i < x.data.length; i += 4) {
+    if (x.data[i + 3] !== y.data[i + 3]) return false;
+    if (x.data[i + 3] !== 0 && (x.data[i] !== y.data[i] || x.data[i + 1] !== y.data[i + 1] || x.data[i + 2] !== y.data[i + 2])) return false;
+  }
+  return true;
 }
 
 function main(argv) {
