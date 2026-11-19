@@ -915,20 +915,22 @@ function windowOf(S, X, Y) {
       return runs <= 1 || RING.every(d => wet(t[k + d])); };   // the wet tiles beside k are one run round it (k drying cuts nothing)
     const inner = k => { const x = k % W, y = (k / W) | 0; return x >= 1 && y >= 1 && x < W - 1 && y < H - 1; };
     // a ford sits across running water (land-rules-3): the stream's water beside a ford (within 1 tile) is never dried, so the stream carries on up and down stream of the crossing
+    // (only where the water lies in line with the ford: a ford tile on one side, more wet tiles straight on the other)
     const nearFord = new Uint8Array(N);
-    for (let k = 0; k < N; k++) if (t[k] === TV.FORD) { const x0 = k % W, y0 = (k / W) | 0; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const X2 = x0 + dx, Y2 = y0 + dy; if (X2 >= 0 && Y2 >= 0 && X2 < W && Y2 < H) nearFord[Y2 * W + X2] = 1; } }
+    for (let k = W + 1; k < N - W - 1; k++) if (t[k] === TV.WATER && streamMask[k]) for (const d of [1, -1, W, -W]) if (t[k + d] === TV.FORD && wet(t[k - d]) && wet(t[k - 2 * d]) && wet(t[k - d + (Math.abs(d) === 1 ? W : 1)]) && wet(t[k - d - (Math.abs(d) === 1 ? W : 1)])) nearFord[k] = 1;
+    let guardOn = true;   // the guard holds for the first 6 passes; a tile still lone after them is tidied as before (3 more passes)
     const tryTidy = (ks, v, u) => { if (!ks.every(inner) || ks.some(k => portHold[k] && wet(v) && !wet(u) && !joined(k))) return false;
-      if (v === TV.WATER && !wet(u) && ks.some(k => nearFord[k] && t[k] === TV.WATER && streamMask[k])) return false;
+      if (guardOn && v === TV.WATER && !wet(u) && ks.some(k => nearFord[k] && t[k] === TV.WATER && streamMask[k])) return false;
       for (const k of ks) t[k] = u;
       if (ks.every(k => (!loneAt(k) || lonePlainAt(t, W, k)) && blocksOk(k))) return true;
       for (const k of ks) t[k] = v; return false; };
-    for (let pass = 0; pass < 6; pass++) { let n = 0;
+    for (let pass = 0; pass < 9; pass++) { let n = 0; guardOn = pass < 6;
       for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const k = y * W + x, v = t[k]; if (!band[k] || FIXED.has(v) || !loneAt(k) || lonePlainAt(t, W, k)) continue;
         const nb = [t[k - 1], t[k + 1], t[k - W], t[k + W]], count = new Map(); for (const u of nb) if (u !== v && !FIXED.has(u)) count.set(u, (count.get(u) || 0) + 1);
         const order = [...count].sort((p, q) => q[1] - p[1] || p[0] - q[0]).map(([u]) => u);
         if (order.some(u => tryTidy([k], v, u))) { n++; continue; }
         for (const j of [k - 1, k + 1, k - W, k + W]) if (t[j] === v && band[j] && order.some(u => tryTidy([k, j], v, u))) { n++; break; } }
-      if (!n) break; } };
+      if (!n) { if (!guardOn) break; pass = 5; } } };
   for (const { p, tiles } of streamRuns) {
     if (!(p.in && p.out) || tiles.length < 6) continue;
     const m = tiles.length >> 1, fordTiles = [];
