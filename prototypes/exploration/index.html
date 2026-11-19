@@ -6069,7 +6069,7 @@ function drawPatchBody(t) {
     const grassProbe = (dx, dy) => {   // is the ground at this pixel from the foot centre the crown's grass? From the cliff pieces' tile data (src/standlip.mjs) and where the place drew them: no screen read, no light
       if (!bk) return true;
       if (bk.standDecals === undefined) bk.standDecals = bk.place.decals.map(d => { const s = bk.ts.sprites[d.kind]; return s && /^cliff-/.test(s.kind) ? { kind: s.kind, x0: d.x - s.anchor48[0], y0: d.y - s.anchor48[1], w: s.w48, h: s.h48 } : null; }).filter(Boolean);   // the cliff pieces in draw order, place pixels
-      return crownAt(bk.standDecals, (P.x - bk.ox) * 48 + 13 + dx, (P.y - bk.oy) * 48 + 30 + dy) === 'g';   // the foot centre: 13 px across his tile, its last boot row 30 down
+      return crownAt(bk.standDecals, (P.x - bk.ox) * 48 + 23 + dx, (P.y - bk.oy) * 48 + 46 + dy) === 'g';   // the foot centre in his tile: 23 px across, 46 down (the boots' last row; measured on the stills: his sprite is drawn 8 px right and 16 px down of cliff-stand-2's 13 / 30)
     };
     const [tnx, tny] = ts === 48 && !stepping ? standNudge(lay, P.x, P.y, grassProbe) : [0, 0], nd = RT.nd && RT.nd.key === P.key ? RT.nd : (RT.nd = { key: P.key, x: 0, y: 0, at: NOW }), dtn = Math.min(100, NOW - nd.at) * .15;   // at a cliff top the pawn is drawn nearer the lip (src/standnudge.mjs), eased in
     nd.at = NOW; nd.x = motion() ? nd.x + Math.max(-dtn, Math.min(dtn, tnx - nd.x)) : tnx; nd.y = motion() ? nd.y + Math.max(-dtn, Math.min(dtn, tny - nd.y)) : tny;

@@ -18,11 +18,14 @@ const crownKind = (k) => /^cliff-(south|corner|end1|end2|flank|back)/.test(k);
 export function crownTable(tree) {
   const set = path.join(tree, 'art/places/sets/ninja-test'), out = {};
   for (const f of readdirSync(set).filter(f => f.endsWith('.png')).map(f => f.slice(0, -4)).filter(crownKind).sort()) {
-    const img = readPng(path.join(set, f + '.png')), rows = [];
-    for (let y = 0; y < Math.min(img.h, ROWS); y++) {
+    const img = readPng(path.join(set, f + '.png')), rows = [], R = Math.min(img.h, ROWS);
+    // the lip row of each column: the last row (above ROWS) with a grass pixel; every opaque pixel on or above it is the crown (its ink lines between the lumps too), every opaque pixel under it the rim or the face
+    const lip = new Int16Array(img.w).fill(-1);
+    for (let x = 0; x < img.w; x++) for (let y = 0; y < R; y++) { const i = (y * img.w + x) * 4; if (img.data[i + 3] >= 128 && isGrass(img.data[i], img.data[i + 1], img.data[i + 2])) lip[x] = y; }
+    for (let y = 0; y < R; y++) {
       let s = '', cur = '', n = 0;
       for (let x = 0; x < img.w; x++) {
-        const i = (y * img.w + x) * 4, c = img.data[i + 3] < 128 ? 't' : isGrass(img.data[i], img.data[i + 1], img.data[i + 2]) ? 'g' : 'x';
+        const i = (y * img.w + x) * 4, c = img.data[i + 3] < 128 ? 't' : y <= lip[x] ? 'g' : 'x';
         if (c === cur) n++; else { if (n) s += cur + n; cur = c; n = 1; }
       }
       rows.push(s + cur + n);
