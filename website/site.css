@@ -153,8 +153,9 @@ figcaption { margin-top: 8px; }
 /* one device from the kit painting, framed in CSS (the same signed picture, never a new file) */
 .cut { overflow: hidden; border-radius: var(--radius); background: radial-gradient(120% 90% at 50% 40%, #e8e2d2, #d9d1bf); aspect-ratio: 4 / 3; position: relative; }
 .cut img { position: absolute; max-width: none; }
-.cut.station img { width: 172%; left: -6%; top: -2%; }
-.cut.companion img { width: 270%; left: -164%; top: -6%; }
+/* each crop shows one device only (AD 11-19): the Station x 70-975 of the painting, the Companion from x 1008 */
+.cut.station img { width: 176.8%; left: -7.7%; top: -1%; }
+.cut.companion img { width: 287.8%; left: -181.3%; top: -6%; }
 .cut.companion { aspect-ratio: 3 / 4; }
 .cut.caddy img { width: 100%; left: 0; top: -62%; }
 .cut.caddy { aspect-ratio: 16 / 7; }
@@ -283,4 +284,90 @@ figcaption { margin-top: 8px; }
 }
 @media (min-width: 1100px) {
   .kinds.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* front page: the two devices, each with its game on its screen */
+.duo { background: var(--forest); color: var(--on-dark); padding: 48px 0 56px; }
+.duo .eyebrow { color: var(--lime); }
+.duo h2 span { display: block; color: var(--lime); }
+.duo .small { color: var(--on-dark-2); margin-top: 8px; }
+.devices { display: grid; gap: 22px; margin-top: 24px; }
+.dev figcaption { color: var(--on-dark); font-size: 1rem; line-height: 1.4; margin-top: 10px; }
+.dev figcaption b { display: block; font-family: var(--display); font-weight: 800; font-size: 1.2rem; color: var(--lime); margin-bottom: 2px; }
+.dev.c { display: grid; grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); gap: 14px; align-items: center; }
+.dev.c figcaption { margin-top: 0; }
+
+/* front page: the secret, opened by the visitor */
+.secret .trio { max-width: 520px; }
+.secret .lede { margin-top: 16px; }
+.reveal { margin-top: 18px; max-width: 34em; }
+.reveal summary { display: inline-block; cursor: pointer; list-style: none; font-family: var(--display); font-weight: 750; padding: 12px 18px; border-radius: 12px; border: 2px dashed var(--orange); background: rgb(255 255 255 / .45); }
+.reveal summary::-webkit-details-marker { display: none; }
+.reveal summary::after { content: " ?"; color: var(--orange); }
+.reveal[open] summary { border-style: solid; }
+.reveal[open] summary::after { content: ""; }
+.reveal p { margin-top: 12px; padding-left: 14px; border-left: 3px solid var(--orange); }
+
+/* one trip in three moments */
+.moments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 14px; margin-top: 24px; }
+.tile { background: #f6f1e4; border-radius: 14px; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; }
+.tile img { width: 86%; height: 86%; object-fit: contain; }
+/* a round painting shown through one clean disc, the same size and margin in every tile (AD 11-19): the picture itself unchanged, placed so its painted circle fills the disc */
+.tile .disc { position: relative; width: 78%; aspect-ratio: 1; border-radius: 50%; overflow: hidden; }
+.tile .disc img { position: absolute; max-width: none; height: auto; object-fit: initial; }
+.disc.call img { width: 125.7%; left: -12.85%; top: -29.9%; }   /* the call circle: centre 450,572, radius 358 of 900x1133 (as site-2's AD-passed clip) */
+.disc.incu img { width: 112.5%; left: -5.75%; top: -7%; }      /* inside the incubator's ragged vignette: centre 446,456, radius 400 of 900x920 */
+.moments h3 { margin-top: 12px; font-size: 1.15rem; }
+.moments p { font-size: .98rem; line-height: 1.4; color: var(--muted); margin-top: 4px; }
+
+/* the three things to gather */
+.gather { display: grid; gap: 14px; margin-top: 22px; }
+.gather div { border-left: 4px solid var(--c); padding: 4px 0 4px 16px; }
+.gather dt { font-family: var(--display); font-weight: 800; font-size: 1.35rem; color: var(--c); }
+.gather dd .from { display: block; color: var(--on-dark-2); font-size: .98rem; }
+.gather .energy { --c: #f2b15c; }
+.gather .data { --c: #78b6f0; }
+.gather .essence { --c: #8fd47b; }
+
+/* the hand-off, drawn as one cycle of steps (a diagram) */
+.handoff { counter-reset: h; display: grid; gap: 10px; margin-top: 22px; }
+.handoff li { counter-increment: h; display: grid; grid-template-columns: 2.4em 1fr; gap: 4px 10px; align-items: start; background: rgb(255 255 255 / .55); border-radius: 12px; padding: 12px 14px; }
+.handoff li::before { content: counter(h); grid-row: span 2; display: grid; place-items: center; width: 2em; height: 2em; border-radius: 50%; background: var(--forest); color: var(--lime); font-family: var(--display); font-weight: 800; }
+.handoff b { font-family: var(--display); font-weight: 800; }
+.handoff .where { font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.handoff span:not(.where) { grid-column: 2; font-size: .98rem; line-height: 1.4; }
+.dark .handoff li { background: rgb(255 255 255 / .07); }
+.dark .handoff .where { color: var(--on-dark-2); }
+
+/* how it plays: a mechanic beside its recording */
+.mech { display: grid; gap: 22px; align-items: center; }
+.mech .tile { max-width: 360px; width: 100%; }
+.mech + .mech { margin-top: 44px; }
+.tag { display: inline-block; font-family: var(--mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; padding: 3px 8px; border-radius: 6px; background: rgb(238 155 88 / .18); color: #8a4a17; margin-bottom: 10px; }
+.dark .tag { color: var(--orange); background: rgb(238 155 88 / .14); }
+.partners { display: grid; gap: 0; margin-top: 18px; border-top: 1px solid var(--line); }
+.partners div { display: grid; grid-template-columns: 6.5em 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.partners dt { font-family: var(--display); font-weight: 800; }
+
+@media (min-width: 760px), (orientation: landscape) and (min-width: 640px) {
+  .duo { padding: 72px 0; }
+  .devices { grid-template-columns: minmax(0, 30fr) minmax(0, 70fr); align-items: start; gap: 32px; }
+  .dev.c { display: block; }
+  .dev.c figcaption { margin-top: 10px; }
+  .moments { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+  .gather { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .handoff { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .handoff li { grid-template-columns: 1fr; }
+  .handoff li::before { grid-row: auto; }
+  .handoff span:not(.where) { grid-column: 1; }
+  .mech { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; }
+  .mech.wide { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+}
+/* phone on its side: the two devices fit one screen */
+@media (orientation: landscape) and (max-height: 520px) {
+  .devices { grid-template-columns: minmax(0, 24fr) minmax(0, 76fr); max-width: 125svh; }
+  .duo { padding: 28px 0 36px; }
+  .duo .lede { font-size: 1rem; }
+  .moments { max-width: 170svh; }
+  .mech .tile { max-width: 60svh; }
 }
