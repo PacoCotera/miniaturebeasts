@@ -1620,7 +1620,7 @@ function openRegion(slot) {
 const rgField = () => S.here === 'g1' ? {} : { rg: S.here };
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
-function save(keepRipe) {
+function save(keepRipe, noWrite) {   // noWrite: the storage event's call: the Station's part is read and synced, the bytes are left as they are
   if (window.__mbResetting || RT.readOnly || RT.bootHold || RT.sleepLock) return;   // a reset is reloading, the save is read-only, the loaded save has not drawn yet, or the realm is being put to sleep (src/sleeper.mjs): nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
@@ -1631,6 +1631,7 @@ function save(keepRipe) {
     FX.shieldAtDock = null; FX.dockSaid = 0; }
   if (typeof keepCompanion === 'function') keepCompanion();
   const moving = typeof legacyTo === 'string' ? legacyTo : null;   // the shared save of earlier builds, moving under this Companion's key with this write
+  if (noWrite) { if (typeof onStateChanged === 'function') onStateChanged(); return; }
   try { localStorage.setItem(moving || SAVE_KEY, JSON.stringify(serialize(S))); if (moving) { legacyTo = null; SAVE_KEY = moving; localStorage.removeItem(LEGACY_KEY); } noteSet('saveFailed', false); } catch (e) { noteSet('saveFailed', true); /* storage full, blocked or private: keep playing in memory, and say so until a save works again (WORDS.notice.saveFailed) */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
@@ -8109,7 +8110,7 @@ window.addEventListener('storage', e => {
   if (window.__mbResetting) return;
   let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (_) { }
   if (!raw) { window.__mbResetting = true; location.reload(); return; }
-  save();   // save() re-reads the Station's part, syncs, and writes ours back unchanged otherwise
+  save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
 if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup';
