@@ -30,9 +30,40 @@ export function veilPlan(w, h, sides, diag = {}) {
   return { runs, pieces };
 }
 
-// base (X, Y) of a piece to place pixels, as a canvas matrix [a, b, c, d, e, f]. A corner piece: mirrored toward its corner. A side piece: u across from the edge (X + uOff), v along it (Y, or L - Y at the far end).
-function sideMatrix(side, W, H, L, far, uOff) {
-  const at = (X, Y) => { const u = X + uOff, v = far ? L - Y : Y; return side === 'W' ? [u, v] : side === 'E' ? [W - u, v] : side === 'N' ? [v, u] : [v, H - u]; };
+// The veil over WATER on a side the plan does not veil (a lake or a river meeting a place edge that is not the coast or a range side): the same signed pictures along each run of water cells on the
+// edge row, never over land. edge: { N: [bool x w], S: [bool x w], W: [bool x h], E: [bool x h] }, true where the edge tile is water (deep, shallow or a river; a ford or bridge is walkable, so not water).
+// base: the veilPlan of the coast and range sides; sides: the sides it veiled. Returns a new plan: base plus, per water run, a strip and (where the run meets land at room to spare) an end piece
+// at each such end, its taper on the shoreline and its dense end towards the strip. A run too short for two end pieces (under 4 bands) is a strip only, cut square on the shoreline.
+// A run that reaches a corner runs on to the place edge; two water runs meeting at a corner share one outer corner piece. { runs: [{ side, a0, a1, endA?, endB? }], pieces: [...] }
+export function waterVeilPlan(w, h, edge, sides, base) {
+  const runs = base.runs.map((r) => ({ ...r })), pieces = base.pieces.map((p) => ({ ...p })), corners = new Set(pieces.filter((p) => p.kind === 'outer').map((p) => p.corner));
+  const wet = (side) => !sides[side] && edge[side] && edge[side].some(Boolean);
+  for (const side of 'NESW') {
+    if (!wet(side)) continue;
+    const e = edge[side], n = e.length;
+    for (let i = 0; i < n;) {
+      if (!e[i]) { i++; continue; }
+      let j = i; while (j < n && e[j]) j++;
+      const a0 = i * VEIL_T, a1 = j * VEIL_T, cut = [0, 0], open = [i > 0, j < n];
+      ENDS[side].forEach(([corner, across], k) => {
+        if (open[k]) return;
+        if (sides[across]) cut[k] = VEIL_BAND;
+        else if (wet(across)) { cut[k] = VEIL_BAND; if (!corners.has(corner)) { corners.add(corner); pieces.push({ kind: 'outer', corner }); } }
+      });
+      const room = a1 - a0 - cut[0] - cut[1] >= (open[0] ? 2 * VEIL_BAND : 0) + (open[1] ? 2 * VEIL_BAND : 0);
+      const s0 = a0 + cut[0] + (room && open[0] ? 2 * VEIL_BAND : 0), s1 = a1 - cut[1] - (room && open[1] ? 2 * VEIL_BAND : 0);
+      if (s1 > s0) runs.push({ side, a0: s0, a1: s1, ...(room && open[0] ? { endA: true } : {}), ...(room && open[1] ? { endB: true } : {}) });
+      if (room && open[0]) pieces.push({ kind: 'end', side, far: false, at: a0 });
+      if (room && open[1]) pieces.push({ kind: 'end', side, far: true, at: a1 });
+      i = j;
+    }
+  }
+  return { runs, pieces };
+}
+
+// base (X, Y) of a piece to place pixels, as a canvas matrix [a, b, c, d, e, f]. A corner piece: mirrored toward its corner. A side piece: u across from the edge (X + uOff), v along it (Y + vOff, or L - Y at the far end).
+function sideMatrix(side, W, H, L, far, uOff, vOff = 0) {
+  const at = (X, Y) => { const u = X + uOff, v = far ? L - Y : Y + vOff; return side === 'W' ? [u, v] : side === 'E' ? [W - u, v] : side === 'N' ? [v, u] : [v, H - u]; };
   const o = at(0, 0), x = at(1, 0), y = at(0, 1);
   return [x[0] - o[0], x[1] - o[1], y[0] - o[0], y[1] - o[1], o[0], o[1]];
 }
@@ -76,8 +107,10 @@ export function veilJoins(kit) {
 }
 
 // The shift of a run's rows (the row shown at place px `a` is a + shift, before the drift): anchored at the end that meets a piece, the start first.
-function runShift(plan, joins, side, a0, a1) {
+function runShift(plan, joins, side, a0, a1, run = {}) {
   if (!joins) return 0;
+  if (run.endA) return joins.end - a0;       // a water run after an end piece on the shoreline
+  if (run.endB) return joins.end - (a1 - 1);
   const meets = (corner) => plan.pieces.find((p) => p.corner === corner && (p.kind === 'outer' || (p.kind === 'end' && p.side === side)));
   const row = (p) => (p.kind === 'end' ? joins.end : side === 'W' || side === 'E' ? joins.outerV : joins.outerH);
   const [first, last] = ENDS[side], s = meets(first[0]), f = meets(last[0]);
@@ -91,15 +124,15 @@ export function paintVeil(g, kit, plan, W, H) {
   g.save(); g.imageSmoothingEnabled = false; g.beginPath(); g.rect(0, 0, W, H); g.clip();
   const put = (m, img, ...a) => { g.setTransform(...m); g.drawImage(img, ...a); };
   const joins = veilJoins(kit);
-  for (const { side, a0, a1 } of plan.runs) {
-    const L = (side === 'W' || side === 'E' ? H : W), m = sideMatrix(side, W, H, L, false, 0), shift = runShift(plan, joins, side, a0, a1);
+  for (const run of plan.runs) {
+    const { side, a0, a1 } = run, L = (side === 'W' || side === 'E' ? H : W), m = sideMatrix(side, W, H, L, false, 0), shift = runShift(plan, joins, side, a0, a1, run);
     for (let a = a0; a < a1;) {
       const r = (((a + shift) % VEIL_PERIOD) + VEIL_PERIOD) % VEIL_PERIOD, len = Math.min(VEIL_PERIOD - r, a1 - a);
       put(m, kit.strip, 0, r, VEIL_BAND, len, 0, a, VEIL_BAND, len); a += len;
     }
   }
   for (const p of plan.pieces) {
-    if (p.kind === 'end') { const L = (p.side === 'W' || p.side === 'E' ? H : W); put(sideMatrix(p.side, W, H, L, p.far, -VEIL_BAND), kit.end, 0, 0, 2 * VEIL_BAND, 2 * VEIL_BAND); }
+    if (p.kind === 'end') { const L = p.at !== undefined && p.far ? p.at : (p.side === 'W' || p.side === 'E' ? H : W); put(sideMatrix(p.side, W, H, L, p.far, -VEIL_BAND, p.far ? 0 : p.at || 0), kit.end, 0, 0, 2 * VEIL_BAND, 2 * VEIL_BAND); }
     else put(cornerMatrix(p.corner, W, H), kit[p.kind], 0, 0, VEIL_BAND, VEIL_BAND);
   }
   g.restore();
