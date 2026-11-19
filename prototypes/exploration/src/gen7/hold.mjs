@@ -58,6 +58,7 @@ function startsOf(seed) {
   STARTS.set(seed, by); return by;
 }
 const HOSTS = new Map();
+const HOST_OWN_BARE = 40;   // bare tiles: the cell's mark count is bare / 40 up to 2, so from 40 a cell holds a mark of its own
 // the cell that holds the strike mark guaranteed to a start: the cell of its 3 x 3 with the most bare ground (the start's own on a tie); bareOf(X, Y) counts it.
 // Only a cell the Probe can walk to is named: inside the start's region, reached from the start by steps over open or ramp sides within one cell of it (the walk's own reach, no partner skill).
 function hostOf(seed, st, bareOf) {
@@ -67,7 +68,8 @@ function hostOf(seed, st, bareOf) {
   while (q.length) { const c = q.shift(), x = c % MW, y = (c / MW) | 0;
     for (const [dir, dx, dy] of [['up', 0, -1], ['right', 1, 0], ['down', 0, 1], ['left', -1, 0]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH || Math.max(Math.abs(X - x0), Math.abs(Y - y0)) > 1) continue;
       const d = Y * MW + X; if (seen.has(d) || G.island[d] || !canStepIn(G, c, dir)) continue; seen.add(d); q.push(d); } }
-  let best = [st.X, st.Y], bn = G.land[c0] !== L.WATER && !G.island[c0] ? bareOf(st.X, st.Y) * 1.01 : -1;
+  const own = G.land[c0] !== L.WATER && !G.island[c0] ? bareOf(st.X, st.Y) : -1;
+  let best = [st.X, st.Y], bn = own >= HOST_OWN_BARE ? Infinity : own * 1.01;   // the start's own cell hosts the mark when it has ground enough for one (a mark in the first place, not a search of the next)
   for (const d of seen) { if (d === c0) continue; const X = st.X + (d % MW) - x0, Y = st.Y + ((d / MW) | 0) - y0, n = bareOf(X, Y); if (G.land[d] !== L.WATER && n > bn) { bn = n; best = [X, Y]; } }
   if (HOSTS.size > 5000) HOSTS.clear();
   HOSTS.set(key, best); return best;
@@ -247,8 +249,10 @@ function holdOn(a, pick) {
   if (host && nm < 1) nm = 1;
   const markAll = bare.length ? bare.map(([x, y, t]) => ({ x, y, t, wt: 1 })) : tiles.map(([x, y]) => ({ x, y, t: tt(x, y), wt: 1 })), markClear = markAll.filter(p => !covered(p.x, p.y));
   const markPool = markClear.length ? markClear : markAll;   // a cell with no tile clear of a prop keeps its mark on the old pool (counted, never dropped)
+  // the guaranteed mark of a start's cell lies where a Call from the middle of the place reaches (7 tiles round), so the first walk finds it without a search of the edges
+  const midPool = host ? markPool.filter(p => Math.hypot(p.x - 12.5, p.y - 14.5) <= 6) : [];
   for (let i = 0; i < Math.min(nm, 2); i++) {
-    const t = roulette(markPool.filter(p => out.strikes.every(s => Math.abs(s.x - p.x) + Math.abs(s.y - p.y) >= 4) && out.finds.every(f => f.x !== p.x || f.y !== p.y) && (!lmTile || p.x !== lmTile[0] || p.y !== lmTile[1])), U('strike', i));
+    const t = roulette((i === 0 && midPool.length ? midPool : markPool).filter(p => out.strikes.every(s => Math.abs(s.x - p.x) + Math.abs(s.y - p.y) >= 4) && out.finds.every(f => f.x !== p.x || f.y !== p.y) && (!lmTile || p.x !== lmTile[0] || p.y !== lmTile[1])), U('strike', i));
     if (t) out.strikes.push({ x: t.x, y: t.y, age: H('age', i) % STRIKE_START_AGE, glass: (t.t === TV.SAND || t.t === TV.SCREE) && H('glass', i) % 100 < STRIKE_GLASS_PCT, read: false });
   }
   return out;

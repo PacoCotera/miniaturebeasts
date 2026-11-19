@@ -6,7 +6,8 @@
 // --end: after the trip, walk home and End the expedition, and check the Companion shows the packing screen (packingScreen below); the release check runs one trip so.
 import { newPage, makeWalker } from "./walker.mjs";
 
-export const NEXT_DATA = 2;     // Data held at the end of the first walk: identify the pod (1) and read one trait (1)
+const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+export const NEXT_DATA = 2;    // Data held at the end of the first walk: identify the pod (1) and read one trait (1)
 const { PRICE } = await import("../../station/src/state.mjs");
 export const GROW_E = PRICE.growE;   // Energy held at the end of the first walk: the first Grow's price today (growCost: PRICE.growE Energy, no Essence for the first mibi, no Data with no trait changed); lock-playtest-world
 export const BUDGET = 900;      // actions of the first walk before the bot gives up looking: it goes into the start and its eight neighbours properly (about 90 actions a place) and then the rest of the reach
@@ -18,7 +19,7 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
 
   // One place: Call, take what it shows (pods, stones, strike marks: a press on each), and leave. A place is gone into properly (a Call at its four quarters and its middle) or quickly (the way in and the
   // middle). The first walk goes into the start and the cells round it properly (the pods lie in reach, the first strike mark within one cell), then into the rest of the reach quickly, then back for the rest properly.
-  const QUICK = [[.5, .5]], THOROUGH = [[.25, .25], [.75, .25], [.25, .75], [.75, .75], [.5, .5]];
+  const QUICK = [[.5, .5]], THOROUGH = [[.5, .5], [.25, .25], [.75, .25], [.25, .75], [.75, .75]];
   const inPlace = (thorough = false) => {
     out.places++; w.say("in place " + p.S.exp.pos + (thorough ? " (properly)" : ""));
     key("call"); w.takeShownPods(); takeReadings();
@@ -39,8 +40,18 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
   const takeReadings = () => {
     for (let g = 0; g < 8 && phase() === "patch" && !w.budgetGone(); g++) {
       const m = w.items().find((i) => i.k === "strike"); if (!m) break;
+      const before = cargo().d;
       if (!w.walk(m.x, m.y, false, 60)) break;
-      const before = cargo().d; key(w.facing(m.x, m.y)); key("confirm");
+      // a key toward a free tile walks onto it (there is no turn in place), so the press is made from the tile beside the mark, arrived at moving toward it; the standing-on press is the last try
+      if (p.S.exp.patch.dir === w.facing(m.x, m.y)) key("confirm");
+      else { key(w.facing(m.x, m.y)); key("confirm"); }
+      if (cargo().d === before && phase() === "patch") {
+        for (const d of ["up", "right", "down", "left"]) {
+          const [dx, dy] = DIRS[d]; if (cargo().d > before || phase() !== "patch") break;
+          if (!w.walk(m.x - 2 * dx, m.y - 2 * dy, true, 60)) continue;
+          key(d); if (p.S.exp.patch.x === m.x - dx && p.S.exp.patch.y === m.y - dy) key("confirm");
+        }
+      }
       if (cargo().d > before) { out.readings++; w.say("read a strike mark"); } else break;
     }
     // the Energy of the first Grow's price (lock-playtest-world): a warm or storm-charged stone the Call shows, drawn while the hold is short of it
