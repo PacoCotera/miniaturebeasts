@@ -214,8 +214,13 @@
       },
       "over": [
         {
+          "kind": "grass-edge",
+          "lowers": ["grass"],
+          "sheets": ["over-scree-grass.png"]
+        },
+        {
           "kind": "flat",
-          "lowers": ["water", "sand", "grass", "litter", "drygrass", "turf"],
+          "lowers": ["water", "sand", "litter", "drygrass", "turf"],
           "sheets": ["over-scree.png"]
         }
       ]
