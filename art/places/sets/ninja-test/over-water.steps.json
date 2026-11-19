@@ -461,9 +461,18 @@
    ]
   ],
   [
+   "map",
+   [
+    [
+     "#7ac6bb",
+     "#4a9f9a"
+    ]
+   ]
+  ],
+  [
    "snap",
    "map",
-   "314649e7e3f7"
+   "80f5dc0c90cf"
   ],
   [
    "key_colours",
@@ -472,5 +481,5 @@
    ]
   ]
  ],
- "out_sha256": "f5b1bf0700086efd895ad547f5391377edf2e290cfdea1d1f76a9c5f43aff180"
+ "out_sha256": "6843ba2a4f769207b659988cf5ab952e6af787cca20ac6d2fcd5973b07e12ff3"
 }

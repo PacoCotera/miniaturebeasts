@@ -2473,7 +2473,7 @@
   "over-water.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-sand/out/layers/water-over.png (the signed sheet; the whole chain is in over-water.steps.json)",
-    "sha256": "f5b1bf0700086efd895ad547f5391377edf2e290cfdea1d1f76a9c5f43aff180"
+    "sha256": "6843ba2a4f769207b659988cf5ab952e6af787cca20ac6d2fcd5973b07e12ff3"
   },
   "fill-earth.png": {
     "commit": "633e4d641",
