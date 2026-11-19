@@ -1370,7 +1370,7 @@ const CARE_ASSETS = [
   { id: 'c-pawn-32', what: 'the pawn in a 48 px place: today’s code-drawn 32 px sprite, 1:1, bottom-aligned and centred in its cell', until: 'the 48 px pawn', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-trunk-32', what: 'a tree trunk in a 48 px place: the built code-drawn 32 px trunk, with its canopy over it', until: 'the meadow tree prop', w: 32, h: 32, status: 'stand-in' },
   { id: 'c-step-32', what: 'a stepping stone in a 48 px place: the built code-drawn 32 px stone on the water’s quarters', until: 'the ford pieces', w: 32, h: 32, status: 'stand-in' },
-  { id: 'c-wade-32', what: 'a wade in a place (T.WADE): wet mud with a pale sheen, laid over the whole 48 px tile, one opaque piece flipped by the tile’s x and y parity, the sheen moving with the 2 frames (art/walk/wade-mud-f0, -f1: josehzz Mud&Water CC0, re-cut; 32 px at the fallback size keeps the signed brown cloud)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
+  { id: 'c-wade-32', what: 'a wade in a place (T.WADE): wet dark-brown mud with a pale sheen and a few water puddles, one piece flipped by the tile’s x and y parity, its north and south edges ragged so the river shows through (closed against land and other mud), the sheen and glints moving with the 2 frames (art/walk/wade-mud-f0, -f1: josehzz Mud&Water CC0, re-cut; 32 px at the fallback size keeps the signed brown cloud)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
   { id: 'c-scree-32', what: 'loose scree on a steep edge in a place (T.SCREE): stones heaped over the edge, wider downhill; the desk’s piece, apart from the Fells’ walkable scree ground', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
   { id: 'c-bank-32', what: 'an earth bank in a place (T.BANK): its face, side and lip in earth, no rock hatching; dug footholds once Rupar has dug it; the desk’s piece', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 32, h: 32, status: 'signed' },
   { id: 'c-map-soft-26', what: 'the map’s and the reach view’s wade (muddy water), scree edge (heaped stones), bank (earth face or lip), dug bank (footholds), their signs and pins, and Tuliko’s extra range ring (a gold lattice)', until: 'signed by the art desk, 2026-11-07 (mibi-art ce746450)', w: 26, h: 26, status: 'signed' },
@@ -4581,14 +4581,19 @@ L2.screeBlock = (ts, dir, type, seed) => art('l2scree|' + ts + dir + type + seed
 });
 // nb: 4 chars n,e,s,w: 'w' wade, 'o' open water, 'l' land; rv: a ripple variant; ox: the tile's x in the place (px) so the cloud runs on
 // unbroken from tile to tile (no ox: a cloud that repeats every tile, seamless, for the 32 px tiles that carry no position)
-// 48 px (mud-wade-2, bug #47): the desk's mud piece (art/walk/wade-mud-f0, -f1: josehzz Mud&Water CC0, re-cut; steps beside them), opaque, one tile for every key, flipped by the tile's x and y parity
+// 48 px (mud-wade-2, bug #47): the desk's mud piece (art/walk/wade-mud-f0, -f1: josehzz Mud&Water CC0, re-cut; steps beside them), one piece for every key (its N and S edges ragged, alpha 0 where open water shows; closed below for 'w'/'l' neighbours), flipped by the tile's x and y parity
 // (mirrored neighbours share their edge column, so no seam), clipped to the 7 px shore inset where land is. fr picks the frame (the sheen laid on 3 px). Until the files are in: a named empty slot.
 L2.wade48 = (nb, fr, ox, oy) => {
   const pb = new PB(48, 48), src = walkPB('wade-mud-f' + (fr & 1), 48, 48), fx = ((ox || 0) / 48) & 1, fy = ((oy || 0) / 48) & 1, x0 = nb[3] === 'l' ? 7 : 0, x1 = nb[1] === 'l' ? 41 : 48;
   for (let y = 0; y < 48; y++) for (let x = x0; x < x1; x++) { const v = src.p[(fy ? 47 - y : y) * 48 + (fx ? 47 - x : x)]; if (v >= 0) pb.p[y * 48 + x] = v; }
+  // mud-wade-3: the piece's N and S edges are josehzz's ragged line (alpha 0 where the river shows through). That is for open water (nb 'o') only: against a wade or land
+  // neighbour (nb 'w' / 'l', key n = nb[0], s = nb[2]) the edge is closed by running each column's first opaque pixel out to the tile edge, so no gap opens between tiles.
+  for (const [side, dy, y0] of [[nb[0], 1, 0], [nb[2], -1, 47]]) if (side !== 'o') for (let x = x0; x < x1; x++) {
+    let y = y0; while (y >= 0 && y < 48 && pb.p[y * 48 + x] < 0 && Math.abs(y - y0) < 14) y += dy;
+    if (y >= 0 && y < 48 && pb.p[y * 48 + x] >= 0) for (let k = y0; k !== y; k += dy) pb.p[k * 48 + x] = pb.p[y * 48 + x]; }
   return pb;
 };
-L2.wade = (ts, nb, fr, rv, ox, period, oy) => ts === 48 ? art('l2wade48|' + nb[1] + nb[3] + (fr & 1) + ':' + (((ox || 0) / 48) & 1) + ((((oy || 0) / 48) & 1)) + ':' + (WART.ready ? 1 : 0), () => L2.wade48(nb, fr, ox, oy)) : art('l2wade|' + ts + nb + fr + ':' + (rv || 0) + ':' + (ox == null ? 'p' : ox) + ':' + (period || 0), () => {
+L2.wade = (ts, nb, fr, rv, ox, period, oy) => ts === 48 ? art('l2wade48|' + nb[0] + nb[1] + nb[2] + nb[3] + (fr & 1) + ':' + (((ox || 0) / 48) & 1) + ((((oy || 0) / 48) & 1)) + ':' + (WART.ready ? 1 : 0), () => L2.wade48(nb, fr, ox, oy)) : art('l2wade|' + ts + nb + fr + ':' + (rv || 0) + ':' + (ox == null ? 'p' : ox) + ':' + (period || 0), () => {
   const pb = new PB(ts, ts), u = ts / 32, f = Math.round(ts * .5), shore = Math.round((ts === 48 ? 7 : 2) * u);
   const soft = { n: nb[0] === 'o' ? f : 0, e: nb[1] === 'l' ? 3 * u : 0, s: nb[2] === 'o' ? f : 0, w: nb[3] === 'l' ? 3 * u : 0 };
   const x0 = nb[3] === 'l' ? shore : 0, x1 = nb[1] === 'l' ? ts - shore : ts;
@@ -5009,7 +5014,8 @@ function tile48(lay, i, fr, sl, bare) {
   const key = tile48Key(lay, i, fr, sl, bare); let pb = ART.get(key); if (pb) return pb;
   if (ART48.g48 > 4000) { for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); ART48.g48 = 0; }
   const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
-  for (const l of bare && isLawn(t.layers[0]) ? t.layers.slice(1) : t.layers) {
+  // mud-wade-3: a baked place's wade tile (bare) carries only the mud piece, so the baked river shows through its ragged north and south edge; its own water layers are the deep-pond blue, not the river's teal
+  for (const l of bare && lay.tiles[i] === T.WADE ? [] : bare && isLawn(t.layers[0]) ? t.layers.slice(1) : t.layers) {
     if (l.stand) { const tr = lay.trees && lay.trees[i], ts32 = tr ? treeSet(tr, treeCrop(lay, tr), sl) : null, s32 = ts32 ? ts32.trunk : stand32(l.stand, lay.base);
       if (ts32) for (let k = 0; k < 1024; k++) { const q = (l.dy + (k >> 5)) * 48 + l.dx + (k & 31); if (ts32.shadow[k] && pb.p[q] >= 0) pb.p[q] = DARK[pb.p[q]]; }   // the tree's foot shadow on the ground
       for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }

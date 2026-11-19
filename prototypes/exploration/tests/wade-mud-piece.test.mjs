@@ -18,20 +18,38 @@ const expected = (nb, fr, ox, oy) => {
     const sx = fx ? 47 - x : x, sy = fy ? 47 - y : y, o = (sy * 48 + sx) * 4;
     out.push(x < x0 || x >= x1 || f.data[o + 3] < 128 ? -1 : [f.data[o], f.data[o + 1], f.data[o + 2]].join());
   }
+  // mud-wade-3: the ragged N / S edge stays open only against open water ('o'); against land or a wade its gap is closed from the column's first opaque pixel
+  for (const [side, dy, y0] of [[nb[0], 1, 0], [nb[2], -1, 47]]) if (side !== "o") for (let x = x0; x < x1; x++) {
+    let y = y0; while (y >= 0 && y < 48 && out[y * 48 + x] === -1 && Math.abs(y - y0) < 14) y += dy;
+    if (y >= 0 && y < 48 && out[y * 48 + x] !== -1) for (let k = y0; k !== y; k += dy) out[k * 48 + x] = out[y * 48 + x];
+  }
   return out;
 };
 
-test("the piece files are 48 x 48, opaque, two frames that differ only in the sheen", () => {
+test("the piece files are 48 x 48, ragged at the north and south edges, mid rows solid, two frames that differ in the sheen and puddle glints", () => {
   const a = WALK_ART["wade-mud-f0"], b = WALK_ART["wade-mud-f1"];
   assert.equal(a.width + "x" + a.height, "48x48"); assert.equal(b.width + "x" + b.height, "48x48");
-  let opaque = 0, diff = 0; for (let i = 0; i < 48 * 48; i++) { if (a.data[i * 4 + 3] === 255) opaque++; if (a.data[i * 4] !== b.data[i * 4] || a.data[i * 4 + 1] !== b.data[i * 4 + 1] || a.data[i * 4 + 2] !== b.data[i * 4 + 2]) diff++; }
-  assert.equal(opaque, 2304, "one opaque tile");
-  assert.ok(diff > 20 && diff < 200, "the frames differ by the shifted sheen only: " + diff);
+  const alpha = (f, x, y) => f.data[(y * 48 + x) * 4 + 3];
+  let opaque = 0, diff = 0, edge = 0, mid = 0;
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) {
+    const i = y * 48 + x; if (alpha(a, x, y) === 255) { opaque++; if (y >= 12 && y < 36) mid++; } else if (y < 12 || y >= 36) edge++;
+    if (a.data[i * 4] !== b.data[i * 4] || a.data[i * 4 + 1] !== b.data[i * 4 + 1] || a.data[i * 4 + 2] !== b.data[i * 4 + 2]) diff++;
+  }
+  assert.equal(mid, 48 * 24, "rows 12-35 are solid");
+  assert.ok(edge > 150 && opaque < 2304, "the N and S edges are ragged: " + edge + " open pixels");
+  for (const x of [0, 47]) for (const y of [11, 36]) assert.equal(alpha(a, x, y), 255, "rows 11 and 36 are mud at the tile's sides, so mirrored tiles meet");
+  assert.ok(diff > 20 && diff < 300, "the frames differ by the shifted sheen and puddle glints (and the source's one-pixel puddle wobble): " + diff);
+});
+
+test("the piece has no near-black and its colours are the wet-mud and river ones", () => {
+  const ok = new Set(["#664330", "#584b46", "#6f4a37", "#9a7453", "#4a9f9a", "#2c6c72", "#79b8ce"]);
+  for (const n of ["wade-mud-f0", "wade-mud-f1"]) { const f = WALK_ART[n];
+    for (let i = 0; i < 48 * 48; i++) { if (f.data[i * 4 + 3] === 0) continue; const h = "#" + [0, 1, 2].map((k) => f.data[i * 4 + k].toString(16).padStart(2, "0")).join(""); assert.ok(ok.has(h), n + " has " + h); } }
 });
 
 test("a wade tile draws the piece by sha: both frames, all four parities, clipped at land ends", () => {
   const seen = new Set();
-  for (const nb of ["owow", "owol", "lwow", "lwoo"]) for (const fr of [0, 1]) for (const [ox, oy] of [[0, 0], [48, 0], [0, 48], [48, 48], [96, 96]]) {
+  for (const nb of ["owow", "owol", "lwow", "lwoo", "wwwl", "lwlw"]) for (const fr of [0, 1]) for (const [ox, oy] of [[0, 0], [48, 0], [0, 48], [48, 48], [96, 96]]) {
     const got = drawn(nb, fr, ox, oy), want = expected(nb, fr, ox, oy);
     assert.equal(sha(got.join("|")), sha(want.join("|")), `${nb} frame ${fr} at ${ox},${oy}`);
     if (nb === "owow") seen.add(sha(got.join("|")));
