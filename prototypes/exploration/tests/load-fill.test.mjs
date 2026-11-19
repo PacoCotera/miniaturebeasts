@@ -15,7 +15,7 @@ const SCHEMA = real(FLAT);
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub, except that an element keeps what is set on it
 // (els[id].hidden); localStorage is `store`, its writes counted; requestAnimationFrame calls are counted.
-const page = (store = {}) => makePage({ store, console: "collect", els: true, raf: "count" });
+const page = (store = {}) => makePage({ store, console: "collect", els: true, canvas: true, raf: "count" });
 // A saved new world (seed 7), as the page writes it.
 function newSave() { const p = page(); p.run("newWorld(7)"); return p.store[p.KEY]; }
 const plain = x => JSON.parse(JSON.stringify(x));
@@ -76,7 +76,7 @@ test("a save forced to throw (ui present but null, kept as it is) opens read-onl
 
 // The line drawn on the read-only screen: every text() call of one render.
 function drawnText(p) { p.run("var __said = []; { const t0 = text; text = (s, ...a) => { __said.push(s); return t0(s, ...a); }; render(0); text = t0; }"); return plain(p.run("__said")); }
-const BROKEN_LINE = "This save can’t be shown · kept untouched", NEWER_LINE = "Newer save · untouched · reload plays it", PAGE_LINE = "Reset game erases this save and starts fresh";
+const BROKEN_LINE = "This save can’t be shown · kept untouched", NEWER_LINE = "Newer save · untouched · reload plays it", PAGE_LINE = "Reset game erases your whole game and starts again";
 
 test("nextId: missing, it is 1 + the highest r/p/b/n pod id held anywhere in the save; a valid one is kept, an invalid one is counted", () => {
   const p = page(), o = flat();
