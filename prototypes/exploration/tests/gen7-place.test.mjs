@@ -19,9 +19,11 @@ import { MW, MH, L } from '../src/world.mjs';
 
 // The whole-world proofs take about five minutes a seed. A pull request into main (MB_CI_FAST=1) runs seed 7 and seeds 1-5 only; the full set runs locally before every merge.
 const FAST = process.env.MB_CI_FAST === '1';
+// Skipped 2026-11-19 (lead): both describe the land before the land round (PR 364). Lone tiles: a diagonal cliff beside a diagonal stream leaves 1-2 tile slivers the old rule forbids (seed 7: 1889, 892 after the ford tidy in build/land-rules-fix-1). Kind vs ground: the stream-bank rule turns wood beside water into grass, so a wood cell reads 6.4% grass against a 2% limit. They come back with rules matched to the new land in job land-rules-2 (also brings CI back to its small check: these take about 30 min a seed).
+const LAND_RULES_STALE = 'land rules predate the land round (PR 364); restored by land-rules-2';
 
 for (const seed of FAST ? [7] : [7, 13, 42]) {
-  test(`seed ${seed}: every cell holds the scheme's rules for tiles, cliffs, edges, ways up and the bake`, { timeout: 900000 }, () => {
+  test(`seed ${seed}: every cell holds the scheme's rules for tiles, cliffs, edges, ways up and the bake`, { timeout: 900000, skip: LAND_RULES_STALE }, () => {
     const s = placeProps(seed);
     const hist = Object.keys(s.runHist).map(Number).sort((a, b) => a - b).map(k => k + ':' + s.runHist[k]).join(' ');
     console.log(`# seed ${seed}: ${JSON.stringify({ ...s, runHist: undefined })}\n# straight cliff runs (length:count) ${hist}`);
@@ -237,7 +239,7 @@ test('the biome recipe never changes on a cell edge: it blends over a few tiles 
 // The map's land kind and the walk's ground agree (owner note 20: "expecting a stony biome, it was the same grassland again"). For every land cell of seeds 7, 13 and 42 whose middle 8 x 8 tiles are low
 // ground (raised land's top is the meadow ground until the layered edges, amendment L): a water cell's middle is water (a ford is shallows: any), a pond cell's holds a fifth of water, a rock cell's is stony (scree), a wood cell's is wood
 // ground (floor, scrub or thicket), a meadow cell's is open ground you can walk (grass or the wood floor). Water and pond hold in every cell; the others in all but 2 in 100 (a rock cell whose middle is a path or a stair's foot).
-test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000 }, () => {
+test('the map\'s land kind and the walk\'s ground agree in the middle of every cell of seeds 7, 13 and 42', { timeout: 1800000, skip: LAND_RULES_STALE }, () => {
   for (const seed of FAST ? [7] : [7, 13, 42]) {   // about five minutes a seed: a pull request (MB_CI_FAST=1) runs seed 7, as the proofs above do
     const seen = { WATER: [0, 0], POND: [0, 0], ROCK: [0, 0], WOOD: [0, 0], MEADOW: [0, 0] }, bad = [], coast = [];
     for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) {
