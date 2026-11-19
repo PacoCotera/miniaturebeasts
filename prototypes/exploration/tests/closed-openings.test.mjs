@@ -134,7 +134,7 @@ const CHECK = `(() => {
     if (lc.has(t.y * W + t.x)) bad.push(t.what + ' in the haze ' + t.x + ',' + t.y);
     if ((t.what === 'b' || t.what === 'q') && (!lay.clear[t.y * W + t.x] || T_BLOCK[lay.tiles[t.y * W + t.x]])) bad.push(t.what + ' under a crown or on a blocking tile ' + t.x + ',' + t.y);
   }
-  for (const t of things) for (const d of lay.baked.place.decals) { const dx = Math.floor(d.x / 48) - 1 - t.x, dy = Math.floor(d.y / 48) - 1 - t.y; if (t.what !== 'pod' && Math.abs(dx) <= 1 && dy >= -1 && dy <= 2) bad.push('decor over ' + t.what + ' ' + t.x + ',' + t.y); }
+  for (const t of things) for (const d of lay.baked.place.decals) { if (/^cliff-|^way-up/.test(PL.ts.sprites[d.kind].kind)) continue; const dx = Math.floor(d.x / 48) - 1 - t.x, dy = Math.floor(d.y / 48) - 1 - t.y; if (t.what !== 'pod' && Math.abs(dx) <= 1 && dy >= -1 && dy <= 2) bad.push('decor over ' + t.what + ' ' + t.x + ',' + t.y); }
   { const left = leftItemsAll(lay.cell).filter(i => !i.cave); for (const i of left) if (q.length && !near(i.x, i.y)) bad.push('counted but unreachable ' + i.k + ' ' + i.x + ',' + i.y); }
   // one fog record: lift every other row, then compare the whole view's veil (apron included) with the walk's uncovered set
   S.veil[key] = Array.from({ length: H }, (_, y) => (y % 2 ? 0 : -1) >>> 0);

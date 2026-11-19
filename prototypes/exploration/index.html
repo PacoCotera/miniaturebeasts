@@ -2337,7 +2337,7 @@ function ensureLive(key) {
     const apart = d => (x, y) => live.cr.every(q => cheb({ x, y }, q) >= d), big = mine && S.cr.filter(q => q.c === lay.cell && !!q.cv === lay.cave && q.sp === w.sp).length > 3, wide = big ? { x: Math.max(1, mine.x - 3), y: Math.max(1, mine.y - 3), w: mine.w + 6, h: mine.h + 6 } : null;   // only a herd of more than three may spill past its area, when the area is too small to space it
     let spread = null;
     if (mine) for (const d of [3, 2]) { spread = freeSpot(key, R, 5, (x, y) => inArea(mine)(x, y) && apart(d)(x, y), mine) || (wide && freeSpot(key, R, 5, apart(d), wide)); if (spread) break; }
-    const s = spread || (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
+    const s = spread || (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (mine && freeSpot(key, R, 2, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
       // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
@@ -3869,7 +3869,7 @@ function regionTurn(R, t, pending, farFromPlayer) {
     if (!rng.chance(.45)) continue;
     const p = cxy(w.c), opts = [];
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const c = y * MW + x; if (canStep(w.c, dir) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
+      const c = y * MW + x; if (canStepIn(G, w.c, dir, abOpts()) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }   // the cell summary, not canStep: a creature's roam must not build both places to read their tiles (End expedition built hundreds), and the same answer whatever is cached
     const good = opts.filter(c => spOf(w.sp).hab.includes(G.land[c]));
     const pick = (good.length && rng.chance(.8)) ? rng.pick(good) : opts.length ? rng.pick(opts) : -1;
     if (pick >= 0) { const q = cxy(pick); mv[w.sp].dx += q.x - p.x; mv[w.sp].dy += q.y - p.y; mv[w.sp].n++; w.c = pick; }

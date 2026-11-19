@@ -52,7 +52,8 @@ test("each opening is classified at entry: the south one past the range, another
   assert.deepEqual(plain(p.run("layout(RC).lines.ops.map(o => o.side + ':' + o.kind)")), []);
   // the map's truth for a side: a cliff or water side has no way in (views agree)
   const G = p.run("G"), sides = plain(p.run("layout(RC).openings.map(o => o.side)")), dir = { N: "up", S: "down", W: "left", E: "right" };
-  for (const s of sides) assert.ok(!["cliff", "water"].includes(sideKind(G, Number(RC), dir[s])), "an opening on " + s + " names a side the map calls " + sideKind(G, Number(RC), dir[s]));
+  // (the tiles decide a side between land cells, not the cell summary: a side the summary calls cliff may be open on part of its length, and an opening stands only there)
+  for (const s of sides) if (["cliff", "water"].includes(sideKind(G, Number(RC), dir[s]))) assert.equal(p.run(`(() => { const t = tileSide(${RC}, '${dir[s]}'); return !!(t && t.open); })()`), true, "an opening on " + s + " names a side the map calls " + sideKind(G, Number(RC), dir[s]) + " with no tile open on it");
 });
 
 test("the veil's depth: the whole side 3 cells deep (3, 2, 1), drawn back 3, 2, 1, gone at 200 ms a step before its cells open; reduced motion is a cut; a side that closes lays it the same way", () => {

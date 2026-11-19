@@ -109,7 +109,10 @@ export function makePage(opts = {}) {
   let run = null, pal = null;
   const P = () => { const r = run || ctx.__run; return pal || (pal = { hex: new Map(r("HEX").map((h, i) => [h, i])), rgb: r("RGB"), of: new Map(r("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) }); };   // a page that draws while it boots (a loaded save) asks before `run` is handed back
   const { look, rgbTable } = paletteLook(P, opts.paint);
-  const document = opts.els || opts.canvas ? new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any }) : any;
+  // a canvas nobody reads back: it keeps its size and sizes image data by it (the page's landPixels copies a painting in), everything else is `any`
+  const sinkCanvas = () => { const t = { width: 0, height: 0 }, g = new Proxy({}, { get: (_, k) => k === "createImageData" ? (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }) : any, set: () => true });
+    return new Proxy(t, { get: (o, k) => k in o ? o[k] : k === "getContext" ? () => g : any, set: (o, k, v) => { o[k] = v; return true; } }); };
+  const document = new Proxy(any, { get: (t, k) => k === "getElementById" && opts.els ? id => els[id] || (els[id] = elStub()) : k === "createElement" ? tag => tag === "canvas" ? (opts.canvas ? fakeCanvas(look) : sinkCanvas()) : any : any });
   const listeners = {};
   const clock = { t: 1000, timers: [] }, writes = [], errors = [], raf = { n: 0 };
   const silent = { log() {}, warn() {}, error() {} };

@@ -9,9 +9,9 @@ const { MW, MH, L } = W, CELL = 26;
 const p = makePage({ console: "silent", canvas: true });
 // the page's own bake, and the same function with the cut switched off: the pixels differ inside the corners and nowhere else
 const fnSrc = name => { const i = PAGE.indexOf("\nfunction " + name + "("); assert.ok(i >= 0, name); return PAGE.slice(i, PAGE.indexOf("\nfunction ", i + 1)); };
-const UNCUT = fnSrc("buildMapPB").replace("for (const sy of [1, -1]) for (const sx of [1, -1]) {", "for (const sy of []) for (const sx of [1, -1]) {");
-assert.notEqual(UNCUT, fnSrc("buildMapPB"), "the cut loop is found");
-const bake = () => Int16Array.from(p.run("buildMapPB()").p), plainBake = () => Int16Array.from(p.run("(" + UNCUT.trim() + "\n)()").p);
+const UNCUT = fnSrc("buildMapPBCells").replace("for (const sy of [1, -1]) for (const sx of [1, -1]) {", "for (const sy of []) for (const sx of [1, -1]) {");
+assert.notEqual(UNCUT, fnSrc("buildMapPBCells"), "the cut loop is found");
+const bake = () => Int16Array.from(p.run("buildMapPBCells()").p), plainBake = () => Int16Array.from(p.run("(" + UNCUT.trim() + "\n)()").p);
 function check(G, label) {
   const cut = bake(), plain = plainBake(), w = MW * CELL, ice = p.run("C.ice"); let corners = 0, cutN = 0;
   const land = (x, y) => x >= 0 && y >= 0 && x < MW && y < MH && G.land[y * MW + x] !== L.WATER;
