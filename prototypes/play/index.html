@@ -66,6 +66,7 @@ iframe{border:0; display:block; background:var(--void)}
 /* the Station's asleep note (the switch already says "Station · asleep"): the mark and one line, above the panel; on its side it takes the build line's place in the bar */
 #frameNotice{position:fixed; left:8px; right:8px; bottom:8px; z-index:40; padding:8px 12px; text-align:center; background:var(--bar); border:1px solid var(--hairline); border-radius:var(--mb-radius-8); color:var(--mist); font-size:14px; line-height:1.3; overflow-wrap:anywhere}   /* a frame's notice (save failed, page broke), said by the page where the frames' own lines are clipped */
 #frameNotice[hidden]{display:none}
+#pageBroke:not([hidden]){display:flex}
 #asleepStrip{position:absolute; display:flex; align-items:center; gap:10px; padding:0 12px; background:var(--bar); border:1px solid var(--hairline); border-radius:var(--mb-radius-8); color:var(--mist); font-size:12px; line-height:16px; z-index:3}
 #asleepStrip .art-slot{flex:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center}
 #asleepStrip .art-slot img{width:24px; height:16px; image-rendering:pixelated}
@@ -187,7 +188,7 @@ body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
   <h3>Companion</h3>
   <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call; hold to look around</dd></dl>
 </div>
-<p id="pageBroke" hidden style="position:fixed; left:0; right:0; top:52px; bottom:0; margin:0; padding:0 16px; display:flex; align-items:center; justify-content:center; text-align:center; font:500 16px/1.4 'Inter',system-ui,sans-serif; color:var(--fog); z-index:50"></p>
+<p id="pageBroke" hidden style="position:fixed; left:0; right:0; top:52px; bottom:0; margin:0; padding:0 16px; align-items:center; justify-content:center; text-align:center; font:500 16px/1.4 'Inter',system-ui,sans-serif; color:var(--fog); z-index:50"></p>
 <style>html.pagebroke #bar .ctl, html.pagebroke #switchRoot, html.pagebroke #stamp{display:none !important}</style>
 <script>
 // The page itself cannot start (the shell module or one it imports did not load): one plain line with the build, in this page's own DOM, no frame needed. Once the shell runs it
