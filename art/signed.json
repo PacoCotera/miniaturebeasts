@@ -185,6 +185,13 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "282f5353cd",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-0.png",
+   "sha256": "a3c8cbf6dfcb7ee53f253da2d326c79ddd9715f2dbf735bdf6a0303212c0f156"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "88934ae14d",
    "path": "art/places/sets/ninja-test/cliff-corner-e-0.png",
@@ -220,10 +227,24 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "ae7d69851b",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-1.png",
+   "sha256": "bc6ea858fec5a009f84c611f0856508c421bf2279acaa7642cd309672635c599"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "f2803a9cfa",
    "path": "art/places/sets/ninja-test/cliff-corner-e-2.png",
    "sha256": "03de99905206fe15f071431e21b31cc1e91c98c248748e0d4a65a17ecc518428"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "13be23a2e6",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-2.png",
+   "sha256": "18c32d1f34668052ae5800b97cfc7d421a28ff1205d0c411ee01c2a67d50ad62"
   },
   {
    "class": "cut-of-signed",
@@ -282,6 +303,13 @@
    "sha256": "a8b31a99d21abde6e2ae4de3672cb2b0671d5c926c0075ed153dba7216cc1398"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "4f1f4bf948",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-4.png",
+   "sha256": "be158d74d674233986d8b815f4489b73de91be8a91e10595ee193b08a2d13a60"
+  },
+  {
    "class": "paint",
    "date": "2026-11-13",
    "id": "81b407a5dc",
@@ -294,6 +322,13 @@
    "id": "19ac2c99fe",
    "path": "art/places/sets/ninja-test/cliff-corner-e-5.png",
    "sha256": "41eb698a36370b6eda18286b56f391f1235a6e42b6364acbdc48792db4cac6ba"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "9bd3175a7e",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-5.png",
+   "sha256": "cbc763da8d1fe8b83212cb644e0ed8a680c057752958ad66f326bb51542f2305"
   },
   {
    "class": "paint",
@@ -315,6 +350,13 @@
    "id": "aa184ad14b",
    "path": "art/places/sets/ninja-test/cliff-corner-w-0.png",
    "sha256": "92a0e8e4256371840f27ad14f6f03e882a2d28c3267265de6459f5c87700289e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "8f6ee4cfde",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-0.png",
+   "sha256": "ac7d9410990b11dac7638309607741ebebd0834bb179e446690b2d77c0b6ff3e"
   },
   {
    "class": "cut-of-signed",
@@ -346,10 +388,24 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "9966dc85ff",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-1.png",
+   "sha256": "d160850689ea77fcc31988d22d84d8e457d898c68dc04defafa3a96d7710d3bb"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "597ef34c3c",
    "path": "art/places/sets/ninja-test/cliff-corner-w-2.png",
    "sha256": "28a1b32dbbda28a2491f4ce6b002e05aad31374b43a64675893e83a9bfd36e5d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "756a9f7ac4",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-2.png",
+   "sha256": "70a63089b120aa459ea63595fcf1e07350401ea4ed90d63ba55036012da21996"
   },
   {
    "class": "cut-of-signed",
@@ -409,6 +465,13 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "758756be7f",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-4.png",
+   "sha256": "5804906aa862aecd3d4d1fb133ca67b5fe6d33d42db16c2d6b19231b55322047"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "6658d56365",
    "path": "art/places/sets/ninja-test/cliff-corner-w-4.png",
@@ -420,6 +483,13 @@
    "id": "a1d4998428",
    "path": "art/places/sets/ninja-test/cliff-corner-w-5.png",
    "sha256": "568236f3240e8dac47b9c91b2fee96f3263929bc449731be76f9aa651c758459"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "e0721611f2",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-5.png",
+   "sha256": "99c8ce6070dcc3f3d2d8239a65679237d8a66c78528ced018033961faec46408"
   },
   {
    "class": "cut-of-signed",
@@ -437,10 +507,24 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "39ace835c3",
+   "path": "art/places/sets/ninja-test/cliff-end1-e.png",
+   "sha256": "a0a2c95b8e890b8b5b29f1226bb8cba7aa55f5713ddc0b58d893d64d26276006"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "544c2100e5",
    "path": "art/places/sets/ninja-test/cliff-end1-e.png",
    "sha256": "ec3a7e7531fb0c039cd9bdbf4239deb2c9236ba358b7e86f03ab3bfbac176f2d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "b5a914d4c2",
+   "path": "art/places/sets/ninja-test/cliff-end1-w.png",
+   "sha256": "06108f3b3bc4363c343defbe5f660d1ef0118af92200cdb9214e3ee89ae887d9"
   },
   {
    "class": "cut-of-signed",
@@ -483,6 +567,20 @@
    "id": "681c3d3d93",
    "path": "art/places/sets/ninja-test/cliff-end2-e.png",
    "sha256": "c3cf72fe0a975cf212549ccf8f878d7a26c4fad483fadde5a1a14dc81e63a2ff"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "a0f8ee6a1d",
+   "path": "art/places/sets/ninja-test/cliff-end2-e.png",
+   "sha256": "f0a6453f242979721b286f2a1efa30561ec009865a03edf5e93dd76ef234378d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "75a1c3391f",
+   "path": "art/places/sets/ninja-test/cliff-end2-w.png",
+   "sha256": "2568d59a610e471340185c337c8bf1336f6c0f769949a7d22346c0148f930d0f"
   },
   {
    "class": "cut-of-signed",
@@ -723,11 +821,25 @@
    "sha256": "e92ffe26c85c1e1a68c959998a99c1e9f81c6f75317bdc18b479250bbb6dc9ab"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "f347d82c51",
+   "path": "art/places/sets/ninja-test/cliff-foot-e.png",
+   "sha256": "f55991236b17f73884a9d5cbe19babc5a61fe8433e4e994524b2b20b67b71425"
+  },
+  {
    "class": "paint",
    "date": "2026-11-14",
    "id": "3d757198a5",
    "path": "art/places/sets/ninja-test/cliff-foot-w.png",
    "sha256": "094c692fdc34e3225de6b5d3e4181c48db75f3a76f1d0b393ce4d90611074278"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "efad8031fa",
+   "path": "art/places/sets/ninja-test/cliff-foot-w.png",
+   "sha256": "510e6e9467d73d895f0f2f485ff2d9e883416524a5c57955ebfbbf13c6bc0e2a"
   },
   {
    "class": "cut-of-signed",
@@ -878,6 +990,13 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "e70a5af517",
+   "path": "art/places/sets/ninja-test/cliff-south-5.png",
+   "sha256": "8c2e669cca5da1eda5acfa1ec2ae43cc0e87f4e98472ad3aef346c8b97a0a956"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "3f832eaf2d",
    "path": "art/places/sets/ninja-test/cliff-south-5.png",
@@ -896,6 +1015,13 @@
    "id": "4c6ffb93d5",
    "path": "art/places/sets/ninja-test/cliff-south-6.png",
    "sha256": "97439f7bbaa9e5dad5ae336d5f5c134d5539b1ba3e93cca798345036fc31c874"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "191b5b5973",
+   "path": "art/places/sets/ninja-test/cliff-south-6.png",
+   "sha256": "eede5c24dfc0a7e7680fc6ed8afed38c5fdf227c6020be6113c3e3758050dd23"
   },
   {
    "class": "cut-of-signed",
@@ -2061,10 +2187,24 @@
   },
   {
    "class": "legacy-paint",
+   "date": "2026-11-18",
+   "id": "d8ba16ec8e",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "6b86fde43ecb1e4b2a6b577c7b79c8447d5f60dac2343a425a1562e42846a5a5"
+  },
+  {
+   "class": "legacy-paint",
    "date": "2026-11-13",
    "id": "41786fed75",
    "path": "art/places/sets/ninja-test/sprites.png",
    "sha256": "8105d7dd29d5643753b501e16c8c5bba841783ee78c0568071adcba0b17583b3"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-17",
+   "id": "c4f6030568",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "81060b45deced540faf85ff0a01967cf20c38266d0616b3308f5e66cdaf25dd5"
   },
   {
    "class": "legacy-paint",
@@ -2093,6 +2233,13 @@
    "id": "5a69ae9bcd",
    "path": "art/places/sets/ninja-test/sprites.png",
    "sha256": "f09b1a9d5c42cd63e2e8c06a9c858dc7d22ea355f969609de769a230090f9471"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-18",
+   "id": "6362e0737e",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "fa49588a0f9bc71e1e1df2101c905bc5e3d763db2f5fed33a687f07f1c64cceb"
   },
   {
    "class": "legacy-paint",
@@ -2275,6 +2422,13 @@
    "id": "28d9e2b021",
    "path": "art/places/sets/ninja-test/tufts-3.png",
    "sha256": "ebc0ecc0b282d8f3b3f37447a4b945538fb31f5571710dc17930fc4a392c55c8"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-17",
+   "id": "897260ab53",
+   "path": "art/places/sets/ninja-test/wayup-dug.png",
+   "sha256": "016599fc8bf7526420b13d1fc73be07ca4ffb118aa9c05eff3834e78860ba0dc"
   },
   {
    "class": "ui",
@@ -3860,6 +4014,34 @@
   },
   {
    "class": "ui",
+   "date": "2026-11-18",
+   "id": "8df2f96608",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C01-mask.png",
+   "sha256": "960a6fc371b4c28c86b3aac186ba8bfa9e8a117981a88bfc7db396fec25044b6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "4e51620af2",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C01-shade.png",
+   "sha256": "d961bd04414473e1aa80cea5b014fa105b60c8cde8674bf5dd34e30c15cf8415"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "3250ef57be",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C07-mask.png",
+   "sha256": "960a6fc371b4c28c86b3aac186ba8bfa9e8a117981a88bfc7db396fec25044b6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "76f550f886",
+   "path": "prototypes/ui/assets/masters/capsule/pod-opened-cap-crown-C07-shade.png",
+   "sha256": "d961bd04414473e1aa80cea5b014fa105b60c8cde8674bf5dd34e30c15cf8415"
+  },
+  {
+   "class": "ui",
    "date": "2026-11-16",
    "id": "edfc9f6745",
    "path": "prototypes/ui/assets/masters/pods/heart-full-24.png",
@@ -3871,6 +4053,174 @@
    "id": "0d57dc76d5",
    "path": "prototypes/ui/assets/masters/pods/mark-asleep-24x16.png",
    "sha256": "224608e151c9dd9374750d72f974bb058da311395d0a671b739c43936dc247ef"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "b5e9ea80e2",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C01-mask.png",
+   "sha256": "6e77c8cdf719875a52f7e534cd5522b0457379f7041d6748552479f83701554d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "804a47bb7d",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C01-shade.png",
+   "sha256": "9a7ac8aa261617698fc1393d4d550e481c1fa06f9020c9d1aadee6ca05cc76c1"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "b8df81ae11",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C07-mask.png",
+   "sha256": "6e77c8cdf719875a52f7e534cd5522b0457379f7041d6748552479f83701554d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c101da6a75",
+   "path": "prototypes/ui/assets/masters/pods/pod-collection-crown-C07-shade.png",
+   "sha256": "9a7ac8aa261617698fc1393d4d550e481c1fa06f9020c9d1aadee6ca05cc76c1"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "5989631000",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C01-mask.png",
+   "sha256": "b08f40b925376f441a5e92fce3f59f1776b4517c987b352f3ea945eeb73a4d00"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "90880faa1e",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C01-shade.png",
+   "sha256": "b98837d3bc073a9fbffdf6d08a9506bf2fb56e892be4e2a02c44f4510298440b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "dfbfdaeeea",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C07-mask.png",
+   "sha256": "b08f40b925376f441a5e92fce3f59f1776b4517c987b352f3ea945eeb73a4d00"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c22bb78a4f",
+   "path": "prototypes/ui/assets/masters/pods/pod-large-crown-C07-shade.png",
+   "sha256": "b98837d3bc073a9fbffdf6d08a9506bf2fb56e892be4e2a02c44f4510298440b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "7527128f5a",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C01-mask.png",
+   "sha256": "ba25a14c6501d84fa6c3722673d227859a0e00b8731bf5cb761e8f0d912f4932"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "ad1d0c0f34",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C01-shade.png",
+   "sha256": "33eeba3b6679de0bf7b4b5cbc59a47cbac82216c397fbc91a641738ddd4a68ea"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c9d6586758",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C07-mask.png",
+   "sha256": "ba25a14c6501d84fa6c3722673d227859a0e00b8731bf5cb761e8f0d912f4932"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "8964fc1920",
+   "path": "prototypes/ui/assets/masters/pods/pod-medium-crown-C07-shade.png",
+   "sha256": "33eeba3b6679de0bf7b4b5cbc59a47cbac82216c397fbc91a641738ddd4a68ea"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "2257ebb1c6",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C01-mask.png",
+   "sha256": "c80966892cf2c62522505c9d51d98f3dcdbf253eb694284c7338a06b7ce0aee6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "579861c8ea",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C01-shade.png",
+   "sha256": "653e2a43d1cec0470611d039de79f4006f6854cbd03489efdf21e36e964bc5be"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "31e9b4e142",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C07-mask.png",
+   "sha256": "c80966892cf2c62522505c9d51d98f3dcdbf253eb694284c7338a06b7ce0aee6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "7b0e1e742d",
+   "path": "prototypes/ui/assets/masters/pods/pod-shelf-crown-C07-shade.png",
+   "sha256": "653e2a43d1cec0470611d039de79f4006f6854cbd03489efdf21e36e964bc5be"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "771771ddf8",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C01-mask.png",
+   "sha256": "200ca995e0ae7c3a33f9e85da8cfff3ab9dec460bd84d46ee367b06d6a5d508f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "453e9ff95f",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C01-shade.png",
+   "sha256": "f2b9de4aa26027edb873f22cae4f65536465bb80dd23778e537ae5071ee29fed"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "a2445153ef",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C07-mask.png",
+   "sha256": "200ca995e0ae7c3a33f9e85da8cfff3ab9dec460bd84d46ee367b06d6a5d508f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "0e460c72bc",
+   "path": "prototypes/ui/assets/masters/pods/pod-small-crown-C07-shade.png",
+   "sha256": "f2b9de4aa26027edb873f22cae4f65536465bb80dd23778e537ae5071ee29fed"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "b7bcc1f00d",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C01-mask.png",
+   "sha256": "30bd6a310c18d2eca971f6a3ba47ee97684b3e3c289a235f67606d1062d1b30e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "c1c8bd8e19",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C01-shade.png",
+   "sha256": "b95a8423c96b2d21652cb663ca51b87ba8417471c498841f5ef8b1cc3d5643d4"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "3fdff7559f",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C07-mask.png",
+   "sha256": "30bd6a310c18d2eca971f6a3ba47ee97684b3e3c289a235f67606d1062d1b30e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-18",
+   "id": "d355000312",
+   "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C07-shade.png",
+   "sha256": "b95a8423c96b2d21652cb663ca51b87ba8417471c498841f5ef8b1cc3d5643d4"
   },
   {
    "class": "ui",
@@ -3899,6 +4249,321 @@
    "id": "7db35a1500",
    "path": "prototypes/ui/assets/masters/shell/shell-key-vivarium-24.png",
    "sha256": "816b5f63ac2c1a44b36b352fc5a056fb1fefbe6b81d7c158aa641da07f82a2a0"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "98e9b35183",
+   "path": "website/assets/call-ring-900.webp",
+   "sha256": "6a60380563b2548a97e25cf0a122c8fc52029cd6c723c810c1a8a289f5a0c4e3"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "adf5dda28a",
+   "path": "website/assets/crate-1100.webp",
+   "sha256": "6c97df334403fc3dee08ee25b292dc19b562b569f8d3b8d3f2adfba9661c28d4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "d43c95677b",
+   "path": "website/assets/felt-azkon-600.webp",
+   "sha256": "b76daf28ff8923a6a95df911ccf7d7b07faaf4c13b7de22702bae10e5fa16bae"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "8b03247d25",
+   "path": "website/assets/felt-hiljan-600.webp",
+   "sha256": "de54f63a2df7b5b579cc21cace18f71b8408346ccd431ef547b0de0d2a2171d6"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "27aa5926bc",
+   "path": "website/assets/felt-loika-600.webp",
+   "sha256": "4668369c73ddda2ff838cbe492d0504da67cf0da176fb4ff654a077df9151691"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "150288c0f3",
+   "path": "website/assets/felt-peplos-600.webp",
+   "sha256": "b4c95b3bbdcd28acc6e6fa8508bc9ecbd2f6259e6eed6249bc5b4362ff8b3f05"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "05f9be5cfb",
+   "path": "website/assets/felt-tuikis-600.webp",
+   "sha256": "2d524472efc6090585a14db5a30dfa5124c3ea5cb5a52b4753110ba9149855aa"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "cd37f1a9ca",
+   "path": "website/assets/felt-wickle-600.webp",
+   "sha256": "e35be628e9a3f6848bc1a8be542618518b618ea9d630fc75aa2e2c861a1fa8fd"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "963353ab8c",
+   "path": "website/assets/incubator-900.webp",
+   "sha256": "fd7736edae47d521c1388808804df13e8770af76224a26667a0c33577b07b1b9"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "faec497e7d",
+   "path": "website/assets/kit-1600.webp",
+   "sha256": "61b0fbe01851e1aeb4e299a6e882570ef8b46fe8be4e89364bfd292ec5e83d06"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "a2e0b2a30d",
+   "path": "website/assets/land-cliffs-1400.webp",
+   "sha256": "0226a4a7c2631dfb3c14082d29e451fc0f604be21db517c08663c96fe8fc9315"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "c4a3b2c0e6",
+   "path": "website/assets/land-highpools-1400.webp",
+   "sha256": "c0a1ef08f205f581b255e03e8612ef39aa24e2cd5514d70c6da0a059bac44617"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "d8e8d1b59e",
+   "path": "website/assets/land-hills-1400.webp",
+   "sha256": "fa8c42c444a4d4c16a58ec10db80a570700b2015c647c5d1aeae92dd9714e3db"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "4c61fb083c",
+   "path": "website/assets/land-lakes-1400.webp",
+   "sha256": "3cf9643b550dc912728237beeecfa2c3366e8ea274499a993443b7bd123bd804"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "87968d7c55",
+   "path": "website/assets/land-tallwood-1400.webp",
+   "sha256": "26a38b08d219d49c629ab3aaf38d1abc0ea869ae3323ef9b80349966e00a7192"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "eca491c2f0",
+   "path": "website/assets/land-thickets-1400.webp",
+   "sha256": "383e21af0d904697d2d5be0fdf90d21cffae7027b5d2faa7caebbbe8de152425"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "8f49a24350",
+   "path": "website/assets/land-woods-1400.webp",
+   "sha256": "1d8d204033bddf975ed2512c5f3f109283722ed2d22f12c5567b923279e895bc"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "343c57d83c",
+   "path": "website/assets/loika-adult-600.webp",
+   "sha256": "5e728f4efa52a32194391c61faa34ed3cc650b4e2d207b139a99f579ed344561"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "8ea5ffe24e",
+   "path": "website/assets/loika-bramble-480.webp",
+   "sha256": "3e26c48d2df91479ab3cbe6bec086238da617f8dfffe6645b72b079dc3e2ee93"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "32986b609d",
+   "path": "website/assets/loika-dapple-480.webp",
+   "sha256": "1c83054c799d05b6c74c141edcc1af223715050811ae3c6150aab036926d7567"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "e54d03cc33",
+   "path": "website/assets/loika-elder-600.webp",
+   "sha256": "47ba4b1bb0b48e14a0bc9b6dba7f1180b2335af94ebd8889b5aa14b90d73434c"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "27ab0b1859",
+   "path": "website/assets/loika-ember-480.webp",
+   "sha256": "ff17167fdce827e8c862344bff12557a75e4c9f0636cb6d4eaec0dae82118884"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "2c883d2599",
+   "path": "website/assets/loika-juvenile-600.webp",
+   "sha256": "97c21d9fa57a068d98e6eb8bb589cf9ea52fbabca1d5e1eddb9a03fa5af3be74"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "0b6fc3a06d",
+   "path": "website/assets/loika-moss-480.webp",
+   "sha256": "7f79b916322bd842bec5c92d2cb825940546707bf10dcc58605efdb96106db48"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "c03004a8d6",
+   "path": "website/assets/loika-pip-480.webp",
+   "sha256": "85a1ea5f845ab6673322e9b2466b087a73030c49b921922471c0ddb7935400d4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "ce8cdf0c30",
+   "path": "website/assets/loika-sable-480.webp",
+   "sha256": "ce1168d1e0b7f8fb2d226a2ec71b58d4001d57d399e1426273bf6878bda6e6c3"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "db976f79ad",
+   "path": "website/assets/loika-thistle-480.webp",
+   "sha256": "73fdca254e05282f53c5070a65cf9d40f114ae8be392c755577b3f700f69ba4b"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "77d95f274f",
+   "path": "website/assets/plate-belatz-720.webp",
+   "sha256": "2dae18cab07a62c104bd4c1d41ed36175374ab98ab81285f660956314fbc753e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "cc88884771",
+   "path": "website/assets/plate-blikur-720.webp",
+   "sha256": "d286af6e4cc8c3b205e81a4b07612e4d0e345cb3ab66339c0f751a03fbf040d7"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "ae28fb4d30",
+   "path": "website/assets/plate-curlop-720.webp",
+   "sha256": "e3b3bc6d78f1d02d66d0c27466b158d358a616fbf94e927a528d91cec403d591"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "417876e174",
+   "path": "website/assets/plate-drapet-720.webp",
+   "sha256": "8952f03d6c848be9f37a717577374be62da520c5fe998aad28cb77e78f376c0b"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "408b5c055f",
+   "path": "website/assets/plate-igara-720.webp",
+   "sha256": "6efb592de195ef7dc762172c3a3b463c07e6984f7602cc3717242059636e75b1"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "556e25425b",
+   "path": "website/assets/plate-lehten-720.webp",
+   "sha256": "615194770d04884f4447f66924b9fe5f0f6f2dcb5d428fe05575c7b65d9dafac"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "a8fc760740",
+   "path": "website/assets/plate-oskol-720.webp",
+   "sha256": "212e0a8f4268f828f48ffeaa4baf053df07e1f419575a274a57c8b98f45c4245"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "3a2478b3cb",
+   "path": "website/assets/plate-pesko-720.webp",
+   "sha256": "9fb7bd2776cc91d1fcdfb4901ab6a1d9f92a19de8b35f9969166ff240a67e690"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "61b472ee0c",
+   "path": "website/assets/plate-rupar-720.webp",
+   "sha256": "be12a812877eafd517dab7991abdfa37df8435c45a1660a6e7c49a2fe5a943a8"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "3ea09d13e4",
+   "path": "website/assets/plate-tepor-720.webp",
+   "sha256": "8d7399638e0f3084ddaded093e2d3757724b2ff15037d64dbcd675bd253bcb1e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "a0e15864ed",
+   "path": "website/assets/plate-tuliko-720.webp",
+   "sha256": "0e6c5808291f60f199153830bd4ea34a29e71a31fc7781ddb4c6487118653f36"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "22203dd616",
+   "path": "website/assets/plate-untuva-720.webp",
+   "sha256": "100bf44c7aea8fbbf181a2a042cd56f02c3676ba0260888c8655f259bd781d23"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "f0890013cf",
+   "path": "website/assets/plate-usvel-720.webp",
+   "sha256": "4ba9092e9f7930eb1c05c4446b040607b09b4edef79021811274cd466662b218"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "b45dcd935f",
+   "path": "website/assets/pod-felt-640.webp",
+   "sha256": "b958c721a6ceff14678571478610e4033eb7399629015212e651ead7b594eedb"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "25583dc1f5",
+   "path": "website/assets/seed-1-300.webp",
+   "sha256": "7ba7511b28fd268bedbb8cfc8c94f8b058a450e1cabc1c2ce09be4a1ef41f724"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "4a4fc99e0e",
+   "path": "website/assets/seed-2-300.webp",
+   "sha256": "7f9ee7b5cfba536ac70ccf38f8490015b66cb643502cdb431b3de810cadc1b42"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "720740a06d",
+   "path": "website/assets/seed-3-300.webp",
+   "sha256": "7c4858886dfc0818e3e64710c721d0ab04ef7b305d5369c63ff84235b5af9941"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "476fc0a779",
+   "path": "website/assets/seed-4-300.webp",
+   "sha256": "d45ce90f673bc71bc1e136fb6ca4033813dc78d17cfe9d975f4eee184990c1d7"
   },
   {
    "class": "paint",

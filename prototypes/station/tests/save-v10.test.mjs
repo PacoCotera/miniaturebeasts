@@ -72,6 +72,14 @@ test("a save whose v is above 10 is never written over: save() leaves the bytes,
   assert.equal(store.get(key()), raw); assert.deepEqual(writes, []);
 });
 
+test("a damaged save (audit A6): bytes the Station cannot read lock the key and stay as they are after a load, a save and a storage event", () => {
+  const raw0 = JSON.stringify(realm()), raw = put(raw0.slice(0, Math.floor(raw0.length * 0.6))); game.G.lockedKey = null; game.UI.panel = null;
+  game.load(); game.G.st.log.push({ t: 1, s: "x" }); game.save(); game.storageChanged();
+  assert.equal(store.get(key()), raw, "the damaged bytes are still there"); assert.deepEqual(writes, [], "nothing written");
+  assert.equal(game.G.lockedKey, key(), "the key is locked");
+  game.G.lockedKey = null;
+});
+
 test("a reset removes the save and its .pre9 and .pre10 copies", () => {
   put(realm()); store.set(key() + ".pre9", "v8 bytes"); store.set(key() + ".pre10", "v9 bytes"); game.G.resetting = false;
   game.resetSave(); game.G.resetting = false;

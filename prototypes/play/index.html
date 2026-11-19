@@ -20,6 +20,11 @@ button{font:inherit; color:inherit; appearance:none; margin:0; cursor:pointer}
 /* the devices, their keys and the bar are controls, not text: a long press never selects words or opens the browser's text menu (fields still take text) */
 #stage,#bar{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 #stage input,#stage textarea,#bar input,#bar textarea{-webkit-user-select:text; user-select:text}
+/* a frame's key cue (mb-keycue, shell.mjs keyCue): the one next step is this key; it rings until pressed and hops on ✓ (the Companion page's own .key.cue / .key.hop, walk-first-lines-1) */
+#rowStation[data-cue~="call"] .fk[data-id="call"],#rowCompanion[data-cue~="call"] .fk[data-id="call"]{outline:3px solid #f2c94c; outline-offset:3px; box-shadow:0 0 0 8px rgba(242,201,76,.35)}
+#rowStation[data-hop~="call"] .fk[data-id="call"],#rowCompanion[data-hop~="call"] .fk[data-id="call"]{animation:keyhop .45s ease-out 2}
+@keyframes keyhop{0%,100%{translate:0 0}40%{translate:0 -9px}}
+@media (prefers-reduced-motion:reduce){#rowStation .fk[data-id="call"],#rowCompanion .fk[data-id="call"]{animation:none !important}}
 #spacer{position:absolute; left:0; width:1px; height:1px; visibility:hidden}
 .abs{position:absolute}
 iframe{border:0; display:block; background:var(--void)}
@@ -59,6 +64,8 @@ iframe{border:0; display:block; background:var(--void)}
 #dockKey[aria-disabled="true"] .hint{color:var(--stone)}
 #dockKey[aria-disabled="true"]:hover{border-color:var(--hairline)}
 /* the Station's asleep note (the switch already says "Station · asleep"): the mark and one line, above the panel; on its side it takes the build line's place in the bar */
+#frameNotice{position:fixed; left:8px; right:8px; bottom:8px; z-index:40; padding:8px 12px; text-align:center; background:var(--bar); border:1px solid var(--hairline); border-radius:var(--mb-radius-8); color:var(--mist); font-size:14px; line-height:1.3; overflow-wrap:anywhere}   /* a frame's notice (save failed, page broke), said by the page where the frames' own lines are clipped */
+#frameNotice[hidden]{display:none}
 #asleepStrip{position:absolute; display:flex; align-items:center; gap:10px; padding:0 12px; background:var(--bar); border:1px solid var(--hairline); border-radius:var(--mb-radius-8); color:var(--mist); font-size:12px; line-height:16px; z-index:3}
 #asleepStrip .art-slot{flex:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center}
 #asleepStrip .art-slot img{width:24px; height:16px; image-rendering:pixelated}
@@ -145,6 +152,7 @@ body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
   <div id="dockRoot"></div>   <!-- the Dock key (a Radix Toggle, mounted here as #dockKey by options/src/keytray.jsx) -->
   <div id="dockScreenRoot"></div>   <!-- the dock's-screen button and its sheet (a Radix Dialog; options/src/docksheet.jsx) -->
   <!-- the asleep Station (A1): until the first pod is home the Station's panel carries this note above it. [art] slot station-asleep-24 (the mark; empty until the art director rules) -->
+  <div id="frameNotice" role="alert" hidden></div>
   <div id="asleepStrip" class="hidden" role="status"><span class="art-slot" data-art="station-asleep-24"><img src="../ui/assets/masters/pods/mark-asleep-24x16.png" alt=""></span><span class="aw">It wakes when your first pod comes home.</span></div>
   <div id="caddyHold" aria-hidden="true"><canvas id="caddyView" width="792" height="272"></canvas></div>
   <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the dock printed it"><div id="printText"><p id="printHead">The dock printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The dock prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>

@@ -15,7 +15,7 @@ const model = (h) => ({ st: h.st, sv: h.sv, settings: h.settings, ui: h.ui, jump
 // Opens the panel on the screen: nothing is spent; the ring on the first card that is neither dimmed nor a loss (else the way out).
 export function openPanel(h, screen, id) {
   h.ui.panel = { screen, id, focus: "" };
-  h.ui.panel.focus = initialFocus(cardsOf(model(h), h.specs.panel, h.specs.frame, []));
+  h.ui.panel.focus = id === "growNow" ? "card.wait" : initialFocus(cardsOf(model(h), h.specs.panel, h.specs.frame, []));   // Hatch now | Wait: the ring on Wait, so one press never spends ❀
 }
 export function closePanel(h) { h.ui.panel = null; }
 // The full panel (panel.json full; dead ends B2): the one way out of every full-Vivarium refusal, opened on the screen the player is on (Incubator, Create, Cross) by the 180 ms stage dither (a cut with reduced motion).

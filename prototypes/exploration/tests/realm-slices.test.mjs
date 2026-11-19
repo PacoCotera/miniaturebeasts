@@ -3,8 +3,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { realm7, REALM_REV } from '../src/gen7/region.mjs';
-import { forgetPlaces } from '../src/gen7/place.mjs';
-import { createScheduler } from '../src/gen7/slices.mjs';
+import { forgetPlaces, banksOfRegion, madeBanks, CW, CH } from '../src/gen7/place.mjs';
+import { createScheduler, plan } from '../src/gen7/slices.mjs';
 import { realmDigest, packRealm, unpackRealm, blobInfo } from '../src/gen7/realm-blob.mjs';
 
 const SEED = 7, R = realm7(SEED), G = R.regions[12], MW = 16, MH = 20;
@@ -49,6 +49,22 @@ test('the plan starts with the start place and its 8 neighbours, then the start 
   assert.deepEqual(s.log.slice(9).map(r => r.kind), ['sector', 'sector', 'sector']);
   for (const r of s.log.slice(0, 9)) assert.ok(Math.max(Math.abs(r.X - start[0]), Math.abs(r.Y - start[1])) <= 1);
   for (const r of s.log.filter(r => r.kind === 'sector')) assert.ok(r.ms < 300, 'a sector slice took ' + r.ms);
+});
+
+test('the banks slices come after the start region\'s sectors, the start region first, one for each of the 25 regions', () => {   // rupar-banks-slice-2
+  const items = [...plan(start, MW, MH, [])], firstB = items.findIndex(i => i[0] === 'b'), banks = items.filter(i => i[0] === 'b');
+  assert.equal(banks.length, 25); assert.deepEqual([banks[0][1], banks[0][2]], [2, 2]);
+  assert.equal(items.slice(0, firstB).filter(i => i[0] === 's').length, MW * MH, 'the start region\'s sectors all come first');
+  assert.equal(items.slice(0, firstB).filter(i => i[0] === 'p').length, 8);
+});
+
+test('a region\'s banks made as a slice are the same cold, in any order, and the region lists give a window the banks of the old scan', () => {   // rupar-banks-slice-2
+  const a = fresh(); for (const [ra, rb] of [[2, 2], [0, 0], [3, 1]]) a.front('banks', ra, rb); for (let i = 0; i < 3; i++) a.step();
+  const b = fresh(); for (const [ra, rb] of [[3, 1], [2, 2], [0, 0]]) b.front('banks', ra, rb); for (let i = 0; i < 3; i++) b.step();
+  assert.deepEqual(asObject(b.digests), asObject(a.digests)); assert.equal(a.made, 3);
+  const mine = banksOfRegion(SEED, 2, 2);   // a bank belongs to the region its site's corner lies in
+  for (const x of mine) assert.ok(x.x0 >= 2 * MW * CW && x.x0 < 3 * MW * CW && x.lip >= 2 * MH * CH && x.lip < 3 * MH * CH);
+  assert.ok(madeBanks(SEED).length >= 3);   // (the windows the stairs' ways up are found on ask the lists of the regions they touch)
 });
 
 test('a stored realm loads with the digest of the built one', () => {

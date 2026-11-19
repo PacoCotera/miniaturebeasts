@@ -476,7 +476,7 @@ test("S5 shows what is still on the lit tile: a bush only when the view draws it
   p.run("unveiled = () => true;");
 });
 test("the opening screen: no strip and no counts (no turn, tier, fog, 'of 320' or Seen), even with a plate lost and a sealed crate in the bay", () => {
-  const p = page();
+  const p = makePage({ store: {}, gen: 6, canvas: true }); p.run("RT.caddy = { podHome: true }");   // the opening paints its land onto a canvas of its own size: a real (fake) canvas, not the bare stub
   p.run("newWorld(3); S.phase = 'setup'; S.bay = [{ id: 1, n: 1, pods: [], e: 0, d: 0, s: 0 }]; S.shield = 1; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => { p.run("__t = []; drawSetup(0);"); return p.run("__t.join('|')"); };
   const t = said(); assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Shield \d|\d+\/\d+|crate|sealed/.test(t), t);
@@ -556,9 +556,16 @@ test("the first walk: one teaching line per deed, signs and hints held unspent, 
   assert.equal(p.run("goalLine()"), "Find a pod · bring it home");
   p.run("startExpedition('weather', G.spawns[0]); enterPatch();");
   assert.equal(p.run("teachStep()"), "Press ))) to Call · buried finds show");
-  p.run("S.exp.callsAt = { [curLay().cell]: 1 };");
+  assert.equal(p.run("callFirst()"), true, "before the first Call the Call key is the next step");
+  assert.equal(p.run("patchAction().label"), "))) Call first", "✓ reads Call first and spends nothing (walk-first-lines-1)");
+  p.run("S.pods.forEach(q => { q.h = 1; q.k = '0'; }); S.exp.callsAt = { [curLay().cell]: 1 };");
+  assert.equal(p.run("callFirst()"), false);
+  assert.match(p.run("teachStep()"), /^No pod in reach\. Its beat is [a-z-]+: walk that way, then Call again\.$/, "an empty Call names the beat's way");
+  assert.match(p.run("patchAction().label"), /^Turn [a-z-]+$/, "✓ turns you toward the beat");
+  p.run("(() => { const q = S.pods[0]; q.k = curLay().key; q.x = S.exp.patch.x + 1; q.y = S.exp.patch.y; q.h = 0; })()");
   assert.equal(p.run("teachStep()"), "Go to the glint · ✓ takes the pod");
   p.run("S.exp.cargo.pods.push({ id: 1, sp: 0, g: 'bone' });");
+  p.run("S.phase = 'map'; S.exp.pos = S.exp.start;"); assert.equal(p.run("teachStep()"), "← End · your finds go in a crate", "back at the start with a pod in the hold"); p.run("S.phase = 'patch';");
   assert.ok(["A charged stone · ✓ takes its Energy", "← then End · your finds go in a crate"].includes(p.run("teachStep()")));
   assert.equal(p.run("goalLine()"), "Bring it home · back to the start");
   p.run("S.exp.cargo.pods = []; FX.notes = []; FX.msg = ''; fxSign('call'); fxSign('bubbleNotice'); fxHint('callmap', 'CALL here drops a pin', 1);");
@@ -583,11 +590,11 @@ test("the ✓ word on the walk is an act, Keep still or Face the thing; never Wa
   for (const d of ["up", "right", "down", "left"]) { p.run(`S.exp.patch.dir = '${d}'`); labels.push(p.run("patchAction().label")); }
   assert.ok(labels.every(l => l !== "Wait"), labels.join());
   assert.ok(labels.every(l => !/flag/i.test(l)), "no walk word says flag: " + labels.join());
-  const face = labels.find(l => /^(Face the |Way back)/.test(l));
+  const face = labels.find(l => /^(Face the |Turn |Way back)/.test(l));
   if (face) { const before = here(); p.run("patchAction().run()"); assert.equal(here(), before, "the explorer does not move and no action is spent"); }
   p.run("(() => { const P = S.exp.patch; curLive().cr.push({ id: 9998, sp: 0, x: P.x + 3, y: P.y, st: 'alert', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: .5, face: 1, ready: false }); })()");
   p.run("S.exp.patch.dir = 'up'");
-  if (p.run("(() => { const f = frontOf(S.exp.patch); return !occupant(S.exp.patch.key, f.x, f.y, 'player'); })()")) assert.equal(p.run("patchAction().label"), "Keep still");
+  if (p.run("(() => { const f = frontOf(S.exp.patch); return !occupant(S.exp.patch.key, f.x, f.y, 'player'); })()")) assert.match(p.run("patchAction().label"), p.run("!!beatWay(S.exp.patch)") ? /^Turn / : /^Keep still$/, "a beat to turn to outranks Keep still on the first walk");
 });
 test("an empty walk points on: the first walk names the pod the game knows, from the flag", () => {
   const p = unhomed();

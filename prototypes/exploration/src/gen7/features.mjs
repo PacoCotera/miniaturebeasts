@@ -16,13 +16,17 @@ export const P = {
   RAV_K: 40,        // x 1000: the water cuts on while the raised land is under this many thousandths of height over the raise line per root of the flow (so a bigger stream cuts further)
   RANGE_LIFT: 320,  // height above the raising height (x 1000) of a range's cells: about the top 15% of the raised land
   RANGE_MIN: 12,    // cells: a range (smaller crest patches are not named)
-  PASS_LIFT: 200,   // a pass stands on raised land at least this high (x 1000)
-  PASS_MAX: 4,      // raised cells a through-ravine may cut, at most
-  PASS_GAP: 8,      // cells between two passes, or two through-ravines, at least
+  PASS_LIFT: 100,  // a pass stands on raised land at least this high (x 1000)
+  PASS_VALLEY: 4,   // cells down each low side of a pass within which a stream-sized flow is a valley head
+  PASS_MAX: 4,     // raised cells a through-ravine may cut, at most
+  PASS_GAP: 8,    // cells between two passes, or two through-ravines, at least
   DETOUR_MIN: 30,   // cells: a through-ravine is cut only where the low land at its two ends is further apart than this on foot (one a region at most)
   ESC_MIN: 4,       // south-face edges: an escarpment
   LAKE_MIN: 5,      // water cells: a lake (under it a pond)
   DEST_GAP: 3,      // cells (Chebyshev) between two destinations, at least
+  SPRING_MIN: 8,    // W4: an escarpment of this many south faces or more has water at its foot (else a spring is made)
+  SPRING_NEAR: 2,   // W4: water coming out within this many cells (Chebyshev) of its foot counts
+  SPRING_RUN: 8,    // W4: a long foot (SPRING_MIN+ faces) with a dry stretch of this many faces gets another spring in the stretch (second try; the first, one spring a dry foot, left 33% of faces with water)
 };
 const WATER = 4;    // world.mjs L.WATER
 
@@ -160,11 +164,22 @@ export function realmFeatures(J) {
   // a pass is a saddle: range cells (within 2) on both sides across it, and lower ground on the other two sides
   const acrossRange = c => { const x = X(c), y = Y(c), rg = (a, b) => { for (let k = 1; k <= 2; k++) if (inR(a * k + x, b * k + y) && rid[(y + b * k) * RW + x + a * k] >= 0) return true; return false; }, lo = (a, b) => inR(x + a, y + b) && J.E[(y + b) * RW + x + a] < J.E[c];
     return (rg(1, 0) && rg(-1, 0) && lo(0, 1) && lo(0, -1)) || (rg(0, 1) && rg(0, -1) && lo(1, 0) && lo(-1, 0)); };
+  // what a pass candidate is: its two low sides (opposite 4-neighbours lower than it); divide = 1 when the flow from the two sides meets 20+ steps downstream or never; valleys = how many sides have a channel cell (flow >= STREAM_ACC) within PASS_VALLEY cells along them
+  const flowPath = c => { const p = []; while (c >= 0 && p.length < 4000) { p.push(c); c = J.down[c]; } return p; };
+  const passKind = c => { const x = X(c), y = Y(c); let sides = null;
+    for (const [a, b] of [[[x, y - 1], [x, y + 1]], [[x - 1, y], [x + 1, y]]]) if (inR(a[0], a[1]) && inR(b[0], b[1]) && J.E[a[1] * RW + a[0]] < J.E[c] && J.E[b[1] * RW + b[0]] < J.E[c]) sides = [a, b];
+    if (!sides) return { divide: 0, valleys: 0 };
+    const pa = flowPath(sides[0][1] * RW + sides[0][0]), pb = flowPath(sides[1][1] * RW + sides[1][0]), sa = new Map(pa.map((u, i) => [u, i]));
+    const m = pb.findIndex(u => sa.has(u)), divide = m < 0 || m + sa.get(pb[m]) >= 20 ? 1 : 0;
+    const head = s => { const dx = s[0] - x, dy = s[1] - y; for (let k = 1; k <= P.PASS_VALLEY; k++) { if (!inR(x + dx * k, y + dy * k)) break; const u = (y + dy * k) * RW + x + dx * k; if (J.acc[u] >= P.STREAM_ACC && !coast[u]) return true; } return false; };
+    return { divide, valleys: (head(sides[0]) ? 1 : 0) + (head(sides[1]) ? 1 : 0) }; };
   const passCand = [];
   for (let c = 0; c < NR; c++) { if (!level[c] || wet(c) || coast[c] || lift(c) < P.PASS_LIFT || !saddleE(c)) continue;
     const near = new Set(); const x = X(c), y = Y(c); for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) { if (!inR(x + dx, y + dy)) continue; const r = rid[(y + dy) * RW + x + dx]; if (r >= 0) near.add(r); }
-    if (!near.size || !acrossRange(c)) continue; passCand.push({ c, e: J.E[c], ranges: [...near] }); }
-  passCand.sort((p, q) => p.e - q.e || p.c - q.c);
+    if (!near.size || !acrossRange(c)) continue; passCand.push({ c, e: J.E[c], ranges: [...near], ...passKind(c) }); }
+  // M1: ranked by divide first (the two low sides drain apart), then valley heads (a stream-sized flow within PASS_VALLEY cells down each low side), then height (lowest first among equals)
+  passCand.sort((p, q) => q.divide - p.divide || q.valleys - p.valleys || p.e - q.e || p.c - q.c);
+  stats.passCands = passCand.length; stats.passCandsDivide = passCand.filter(k => k.divide).length; stats.passCandsValley2 = passCand.filter(k => k.valleys === 2).length;
   const passes = [];
   for (const k of passCand) if (passes.every(p => Math.max(Math.abs(X(p.c) - X(k.c)), Math.abs(Y(p.c) - Y(k.c))) >= P.PASS_GAP)) passes.push({ c: k.c, ranges: k.ranges });
   const natural = [], raisedParts = ranges;
@@ -218,5 +233,30 @@ export function realmFeatures(J) {
   dest.sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || a.c - b.c);
   for (const d of dest) if (kept.every(k => Math.max(Math.abs(X(k.c) - X(d.c)), Math.abs(Y(k.c) - Y(d.c))) >= P.DEST_GAP)) kept.push(d);
   stats.destDropped = dest.length - kept.length;
+  // ---- W4 (map-making-research-1): water comes out along the cliff foot. An escarpment of SPRING_MIN+ faces with no water coming out within 2 of its foot gets a spring at its lowest foot cell ----
+  // Water coming out is what the map measures: a falls' foot, the cell a stream comes out of the raised land, a ravine's head, a spring. The spring asks for the sleepers' bed, as the others do.
+  const emerge = [];
+  for (const f of falls) emerge.push(f.foot);
+  for (const st of streams) if (st.seen > 0 && st.seen < st.cells.length) emerge.push(st.cells[st.seen]);
+  for (const k of kept) if (k.kind === 'spring' || k.kind === 'ravine head') emerge.push(k.c);
+  const cheb = (a, b) => Math.max(Math.abs(X(a) - X(b)), Math.abs(Y(a) - Y(b)));
+  let springsAdded = 0, springsRefused = 0;
+  const springOk = c => !wet(c) && !coast[c] && land[c] !== 1 && !level[c] && (!J.walk || J.walk[c]) && (!J.comp || J.comp[c]) && X(c) > 1 && Y(c) > 1 && X(c) < RW - 2 && Y(c) < RH - 2;
+  const springAt = (e, cells) => {   // the lowest of these foot cells a spring may stand on (a destination keeps DEST_GAP from the others)
+    const at = cells.filter(springOk).sort((a, b) => J.E[a] - J.E[b] || a - b).find(c => kept.every(k => cheb(k.c, c) >= P.DEST_GAP));
+    if (at === undefined) { springsRefused++; return false; }
+    kept.push({ kind: 'spring', c: at, feature: e.id, index: 0, heart: 'sleepers\' bed', foot: true }); emerge.push(at); springsAdded++; return true; };
+  for (const e of escarpments) {
+    if (e.faces.length < P.SPRING_MIN) continue;
+    const feet = e.faces.map(c => c + RW), dryAt = i => i < feet.length && !emerge.some(w => cheb(feet[i], w) <= P.SPRING_NEAR);
+    if (feet.every((_, i) => dryAt(i))) { if (!springAt(e, feet.filter(c => c < NR))) continue; }   // no water along the whole foot: a spring at its lowest cell
+    // a spring line: water comes out along a long foot at intervals, so a dry stretch of SPRING_RUN faces or more (in the loop's order) gets one at the lowest cell of its middle
+    for (let round = 0; round < 8; round++) {
+      let run = null; for (let i = 0; i < feet.length && !run; i++) { if (!dryAt(i)) continue; let j = i; while (j + 1 < feet.length && dryAt(j + 1)) j++; if (j - i + 1 >= P.SPRING_RUN) run = [i, j]; i = j; }
+      if (!run || !springAt(e, feet.slice(run[0] + 2, run[1] - 1).filter(c => c < NR))) break;
+    }
+  }
+  kept.sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || a.c - b.c);
+  stats.springsAtFoot = springsAdded; stats.springsAtFootRefused = springsRefused;
   return { P, level, list, bodies, streams, sid, falls, ravines, gaps, ranges, rid, passes, escarpments, loops: loops.length, dest: kept, stats };
 }

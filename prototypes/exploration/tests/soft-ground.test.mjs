@@ -222,6 +222,24 @@ test("a walk that dug a bank but explored nothing still turns the world and says
   assert.equal(J(p, "S.turn"), turn + 1, "the world turned"); assert.ok(!J(p, "S.report.waited")); assert.ok(J(p, "S.report.lines").some(l => /^The ground shifted/.test(l)), JSON.stringify(J(p, "S.report.lines")));
 });
 
+// rupar-banks-7-1: a generator 7 earth bank is a tile site in a place (lay.banks, from the land's own field): rock to everyone until a grown Rupar digs it; dug, the same two columns walk up onto the land above.
+// Seed 78 holds one in its home region on the merged land (land-line-merge-1; seed 35 held 1042,1233 on the land line alone): site 953,1224, in cell 55 (region cell 7,3), lip row 20, columns 19 and 20 of the cell.
+test("a generator 7 earth bank blocks; a grown Rupar digs it and the two columns walk up; a Loika is refused; the dug bank stays dug for the walk", () => {
+  const g7 = sp => { const p = makePage({ gen: 7, console: "silent" });
+    p.run(`newWorld(78); TEST.calm = true; S.turn = 5; S.tier = 2; S.known = [0, 1, 2]; S.mibis = [${JSON.stringify(mibi(1, sp))}]; S.carried = [1]; S.lead = 1; startExpedition('weather', G.spawns[0]); S.exp.start = 55; S.exp.pos = 55; S.exp.range = 4; enterPatch();`);
+    p.run("{ const P = S.exp.patch, lay = curLay(); ensureLive(P.key); P.x = 19; P.y = 24; P.dir = 'up'; for (let y = 0; y < lay.h; y++) unveil(P.key, 19, y, 3); }"); return p; };
+  const p = g7(7), bank = J(p, "curLay().banks");
+  assert.equal(bank.length, 1, "the cell holds the bank"); assert.deepEqual([bank[0].x, bank[0].y, bank[0].w, bank[0].h], [19, 20, 2, 4]);
+  assert.ok(J(p, "T_BLOCK[curLay().tiles[22 * curLay().w + 19]]"), "the face is rock");
+  assert.equal(J(p, "occupant(curLay().key, 19, 22).t"), J(p, "T.BANK")); assert.equal(J(p, "patchAction().label"), "Fig digs a way up");
+  p.run("patchStep('up', 'walk')"); assert.equal(J(p, "S.exp.patch.y"), 24, "an undug bank holds the pawn");
+  p.run("digBankHere()"); assert.deepEqual(J(p, "S.exp.dug"), [bank[0].ei]); assert.ok(J(p, "S.log").some(l => /dug a way up the bank/.test(JSON.stringify(l))));
+  for (let k = 0; k < 5; k++) p.run("patchStep('up', 'walk')");
+  assert.equal(J(p, "S.exp.patch.y"), 19, "up the dug way and onto the land above");
+  const lo = g7(0); assert.equal(J(lo, "patchAction().label"), "Needs a digger"); lo.run("patchStep('up', 'walk')"); assert.equal(J(lo, "S.exp.patch.y"), 24);
+  const young = g7(7); young.run("S.mibis[0].born = 5; S.mibis[0].bonded = true"); assert.equal(J(young, "partnerMibi() ? 1 : 0"), 0, "a young Rupar is no partner: it comes along and cannot dig");
+});
+
 test("Tuliko's ring is drawn on the reach view; the message box keeps off the soft tiles of a place", () => {
   const tul = walk(7, 19, { tier: 1 }); tul.run("S.exp.pos = S.exp.start; render(0)");
   assert.ok(J(tul, "canSure()") && J(tul, "S.exp.range") === 3);

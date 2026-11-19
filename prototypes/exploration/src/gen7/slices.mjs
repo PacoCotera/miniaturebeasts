@@ -8,7 +8,8 @@
 //   s.front(kind, X, Y)  puts a slice at the head of the line (a front request); a slice already made is not made again
 //   s.run(budgetMs)    steps until the budget is spent (checked between slices), the plan is done or a pause; returns the slices made
 //   s.digests          Map of 'p:X,Y' / 's:X,Y' to the slice's digest; s.log every slice made, in order, with its ms
-import { cellTerrain, sectorOf, decorOf, CW, CH, RW, RH } from './place.mjs';
+import { cellTerrain, sectorOf, decorOf, banksOfRegion, CW, CH, RW, RH } from './place.mjs';
+import { ATLAS } from '../regions.mjs';
 
 const H0 = 2166136261;
 const fnvBytes = (h, a) => { const b = new Uint8Array(a.buffer, a.byteOffset, a.byteLength); for (let i = 0; i < b.length; i++) { h ^= b[i]; h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -21,11 +22,12 @@ export function sectorDigest(s) { let h = fnvBytes(H0, s.cls); h = fnvBytes(h, s
 const SLICE = {
   p: { make: (seed, X, Y) => cellTerrain(seed, X, Y), digest: placeDigest },
   s: { make: (seed, X, Y) => sectorOf(seed, X, Y), digest: sectorDigest },
-  h: { make: (seed, ax, ay) => decorOf(seed).hollowSiteOf(ax, ay), digest: site => fnvText(H0, JSON.stringify(site)) }   // a Hollow Tree site: X, Y are the region's slot (ax, ay)
+  h: { make: (seed, ax, ay) => decorOf(seed).hollowSiteOf(ax, ay), digest: site => fnvText(H0, JSON.stringify(site)) },   // a Hollow Tree site: X, Y are the region's slot (ax, ay)
+  b: { make: (seed, ax, ay) => banksOfRegion(seed, ax, ay), digest: banks => fnvText(H0, JSON.stringify(banks)) }   // a region's Rupar earth banks (rupar-banks-slice-2): X, Y are the region's slot (ax, ay)
 };
 const key = (k, X, Y) => k + ':' + X + ',' + Y;
-const kindCode = kind => (kind === 'place' ? 'p' : kind === 'sector' ? 's' : kind === 'site' ? 'h' : null);
-const kindName = c => (c === 'p' ? 'place' : c === 's' ? 'sector' : 'site');
+const kindCode = kind => (kind === 'place' ? 'p' : kind === 'sector' ? 's' : kind === 'site' ? 'h' : kind === 'banks' ? 'b' : null);
+const kindName = c => (c === 'p' ? 'place' : c === 's' ? 'sector' : c === 'b' ? 'banks' : 'site');
 
 // The plan, as a lazy list: the start place's 8 neighbours, the start region's sectors (the reach view), then the places outward by walking distance, then the other regions' sectors (by distance too).
 // Distance is the walk's: the king's step count, ties by the plain step count and the cell number, so the order is one fixed order.
@@ -36,9 +38,12 @@ export function* plan(start, MWx, MHy, siteSlots = []) {
   const ax0 = Math.floor(sx / MWx) * MWx, ay0 = Math.floor(sy / MHy) * MHy, inStart = (X, Y) => X >= ax0 && X < ax0 + MWx && Y >= ay0 && Y < ay0 + MHy;
   for (const [X, Y] of cells) if ((X !== sx || Y !== sy) && Math.max(Math.abs(X - sx), Math.abs(Y - sy)) === 1) yield ['p', X, Y];
   for (const [X, Y] of cells) if (inStart(X, Y)) yield ['s', X, Y];
+  // one banks slice for each region (the Rupar's earth banks: a place reads the lists of the regions its window touches), the start region first, then by the regions' distance from it
+  const sa = Math.floor(sx / MWx), sb = Math.floor(sy / MHy), byDist = (a, b) => Math.max(Math.abs(a[0] - sa), Math.abs(a[1] - sb)) - Math.max(Math.abs(b[0] - sa), Math.abs(b[1] - sb)) || Math.abs(a[0] - sa) + Math.abs(a[1] - sb) - Math.abs(b[0] - sa) - Math.abs(b[1] - sb) || a[1] - b[1] || a[0] - b[0];
+  const regs = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) regs.push([ax, ay]);
+  for (const [ax, ay] of regs.sort(byDist)) yield ['b', ax, ay];
   // one site slice for each Woods or Tallwood region, the start region first, then by the regions' distance from it (a place reads only the sites of the regions it touches, so these are made before the player gets there)
-  const sa = Math.floor(sx / MWx), sb = Math.floor(sy / MHy);
-  for (const [ax, ay] of siteSlots.slice().sort((a, b) => Math.max(Math.abs(a[0] - sa), Math.abs(a[1] - sb)) - Math.max(Math.abs(b[0] - sa), Math.abs(b[1] - sb)) || Math.abs(a[0] - sa) + Math.abs(a[1] - sb) - Math.abs(b[0] - sa) - Math.abs(b[1] - sb) || a[1] - b[1] || a[0] - b[0])) yield ['h', ax, ay];
+  for (const [ax, ay] of siteSlots.slice().sort(byDist)) yield ['h', ax, ay];
   for (const [X, Y] of cells) if (Math.max(Math.abs(X - sx), Math.abs(Y - sy)) > 1) yield ['p', X, Y];
   for (const [X, Y] of cells) if (!inStart(X, Y)) yield ['s', X, Y];
 }

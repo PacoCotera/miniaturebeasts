@@ -370,13 +370,14 @@ function coastOf(out) {
 // The arrays the realm's features read (features.mjs): the realm's cells, with the regions' final land, level, fords and stairs, whole numbers (heights in thousandths).
 export function featureInput(out) {
   const { realm, regions } = out, NR = RW * RH, raw = rawRealm(realm.seed), r3 = v => Math.round(v * 1000);
-  const level = new Uint8Array(NR), ford = new Uint8Array(NR), land = new Uint8Array(NR), stair = new Uint8Array(NR), slot = new Uint8Array(NR);
+  const level = new Uint8Array(NR), ford = new Uint8Array(NR), land = new Uint8Array(NR), stair = new Uint8Array(NR), slot = new Uint8Array(NR), walk = new Uint8Array(NR), comp = new Uint8Array(NR);
   for (const G of regions) {
     const [ax, ay] = G.slot, wc = c => (ay * MH + ((c / MW) | 0)) * RW + ax * MW + (c % MW);
-    for (let c = 0; c < NC; c++) { const w = wc(c); level[w] = G.level[c]; ford[w] = G.ford[c]; land[w] = G.land[c]; slot[w] = ay * ATLAS + ax; }
+    for (let c = 0; c < NC; c++) { const w = wc(c); level[w] = G.level[c]; ford[w] = G.ford[c]; land[w] = G.land[c]; slot[w] = ay * ATLAS + ax; comp[w] = G.comp[c];
+      walk[w] = !G.coast[c] && !G.island[c] && (G.land[c] !== L.WATER || G.ford[c] === 1) ? 1 : 0; }   // walk and comp as roadInput has them: W4 puts a spring only where a trail may stand
     for (const cr of G.cross) if (cr.side === 's' && G.level[cr.c] > G.level[cr.c + MW]) stair[wc(cr.c)] = 1;
   }
-  return { RW, RH, level, land, ford, stair, slot, coast: realm.coast, wkind: realm.wkind, E: Int32Array.from(realm.E, r3), e0: Int32Array.from(realm.e0, r3),
+  return { RW, RH, level, land, ford, stair, slot, walk, comp, coast: realm.coast, wkind: realm.wkind, E: Int32Array.from(realm.E, r3), e0: Int32Array.from(realm.e0, r3),
     acc: Int32Array.from(raw.acc, v => Math.round(v)), down: raw.down, cuts: realm.cuts };
 }
 // The realm's named features (features.mjs). They only read the realm: its land, levels and every other output are as they were.
@@ -394,7 +395,7 @@ export function addRoads(out, F) {
   const LV = levelsOf(realm), cx = c => c % RW, cy = c => (c / RW) | 0;
   const pond = c => realm.land[c] === L.POND, edgeOk = (a, b) => { const need = pond(a) || pond(b) ? 10 : 6; return edgeRows(LV, cx(a), cy(a), cx(b), cy(b), need, 2, I.level[a] ? 1 : 0) >= need; };   // a pond place lays more water than the field shows: twice the rows
   const bankOk = (a, b) => bankRows(LV, cx(a), cy(a), cx(b), cy(b), 7) >= 7;
-  const R = realmRoads({ ...I, ...(globalThis.F4NOPROBE ? {} : { edgeOk, bankOk }), extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams });
+  const R = realmRoads({ ...I, ...(globalThis.F4NOPROBE ? {} : { edgeOk, bankOk }), extraHubs, dest: F.dest, bodies: F.bodies, streams: F.streams, escarpments: F.escarpments, rangeOf: F.rid });
   const bodyOf = new Map(); for (const b of F.bodies) for (const c of b.cells) bodyOf.set(c, b);
   for (const b of R.bridges) { const w = bodyOf.get(b.cells[0]); b.river = w ? w.kind + '-' + w.id : null; realm.features.push({ id: b.id, kind: 'bridge', cells: b.cells, links: { ends: b.ends, axis: b.axis === 1 ? 'x' : 'y', river: b.river, around: b.around } }); }
   realm.destinations = R.dest;
@@ -407,7 +408,7 @@ export const ROUNDS = 64;   // was 24: with stairs only where a south-facing fac
 const cache = new Map();
 // The realm made elsewhere (a Web Worker, or the page's store) is put in the cache, so the page never makes it on its own thread. REALM_REV names this generator's output: it changes with any
 // change that moves a realm (a stored realm of another revision is never used).
-export const REALM_REV = 9;   // 9: the land freeze (lock-playtest-world, owner 2026-11-10 20:20): the land is what main held on 2026-11-17 (signed grounds, raised ground, closed edges, the Loika in every land), the generator's output unchanged; this number and REALM_BIOME_V (regions.mjs) are what a save and src/playtest-seeds.mjs record, and the land a save names is the land it keeps; 8:the realm crosses a cell edge only where the land's height field leaves shared low dry rows (the edge probe), and a bridge needs dry banks that meet; 7: the realm's one trail network (roads.mjs; the region's own trails are gone) and the piece pass; 6: stairs at cell scale (the realm reads no tile land; the place seats the way up) with the land rule's held sites; 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
+export const REALM_REV = 11;   // 11: the land round (realm-landmarks-tune-2, rupar-banks-slice-2, bank-wire-1, PR 364) changed what a seed makes while the number stayed 10; raised so older saves start fresh with the landChanged line (lock-playtest-world-4); 10: something beside the trail and water at the cliff foot (map-making-research-1 R1 and W4, realm-roam-r1w4-1): the land's own spots along the trail where a stretch passes 8 places with nothing beside it, and a spring at the foot of a long escarpment with no water; the land's levels, heights, water and features are as 9 (a trail's own lane may turn one ground cell beside it); 9: the land freeze (lock-playtest-world, owner 2026-11-10 20:20): the land is what main held on 2026-11-17 (signed grounds, raised ground, closed edges, the Loika in every land), the generator's output unchanged; this number and REALM_BIOME_V (regions.mjs) are what a save and src/playtest-seeds.mjs record, and the land a save names is the land it keeps; 8:the realm crosses a cell edge only where the land's height field leaves shared low dry rows (the edge probe), and a bridge needs dry banks that meet; 7: the realm's one trail network (roads.mjs; the region's own trails are gone) and the piece pass; 6: stairs at cell scale (the realm reads no tile land; the place seats the way up) with the land rule's held sites; 5: the land rule (levels.mjs: whole-number noise field, rounded passes, no bins); 4: the coast cliff is drawn in bins (levels.mjs coastBins); 2: the coast (the border ring is water), the shore band, and the overview raster of every region; 3: the raised land tapers away from the ring by cells, and the shore band is smoothed with the ground
 export const hasRealm7 = seed => cache.has(seed);
 // the realm's stairs for the place (levels.mjs seats each way up): every south stair, by the cell it stands on and its port, read from the regions that stayed. Plain data: the realm reads no tile land
 export function attachStairs(R) {

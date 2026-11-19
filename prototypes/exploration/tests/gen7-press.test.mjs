@@ -54,11 +54,11 @@ test("a full hold refuses: nothing is taken, no turn passes, the thing stays whe
   const t = setup(), { p } = t;
   p.run("S.exp.cargo.e = 20; S.exp.cargo.s = 20; S.exp.cargo.d = 20");
   const refused = (spot, msg) => { face(t, spot); const before = hold(p); p.key("confirm"); assert.deepEqual(hold(p), before, "nothing taken and no action spent: " + msg); assert.equal(p.run("FX.msg"), msg); };
-  refused(t.spots.stone, "Energy 20 of 20 · the stone keeps its charge");
+  refused(t.spots.stone, "Your Energy is full (20 of 20) · the stone keeps its charge");
   assert.equal(p.run("stormCharge(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tk'))"), 2, "the stone keeps its charge");
-  refused(t.spots.cup, "Essence 20 of 20 · the cup keeps its dew");
+  refused(t.spots.cup, "Your Essence is full (20 of 20) · the cup keeps its dew");
   assert.equal(p.run("cupFull(S.exp.patch.key, layout(S.exp.patch.key).feats.find(f => f.id === 'tu'))"), true);
-  refused(t.spots.tuft, "Essence 20 of 20 · the tuft stays where it is");
+  refused(t.spots.tuft, "Your Essence is full (20 of 20) · the tuft stays where it is");
   assert.equal(p.run("curLive().tf.length"), 1);
   face(t, t.spots.mark); assert.equal(p.run("patchAction().label"), p.run("WORDS.strike.holdFull"), "no Read is offered with the hold full");
   assert.equal(p.run("patchAction().run"), null); const before = hold(p); p.key("confirm"); assert.deepEqual(hold(p), before, "the press does nothing");

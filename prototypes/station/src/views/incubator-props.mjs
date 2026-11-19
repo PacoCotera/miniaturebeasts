@@ -72,7 +72,9 @@ export function incubatorBuild(m, spec, pods) {
     const bud = kind === "cross" && B.parents?.length !== 2 ? fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) }) : subject;
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
-      line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // the context is the bud; "ready in about {n} min" is the left wall's (regions.readyIn); while Hatch now plays the notice is the one the bud had (the snapshot)
+      const price = S.priceText(c.e, c.d, c.s);
+      line = { ok: Sg.grow, price, back: Sg.back, subject: `${bud} · ${regions.readyIn}`, need: gs ? gs.need : null };   // the context is the bud and the time left, whole on the phone (first-session scheme item 6; the left wall keeps regions.readyIn); while Hatch now plays the notice is the one the bud had (the snapshot)
+      if (!gs) line.need = fill(Sg.rule, { price });   // the one rule line, until a notice (below) has something to say
       if (S.vivFull(st, settings) && !gs) { line.dim = true; line.need = noPlaceNotice(st, settings, Sg); }   // the Vivarium is full: Hatch now is held (the house rule), the notice says why, ✓ plays the plate
       else if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
       else if (!gs && m.frame) line.need = warnWords(st, m.sv, settings, m.frame, c, { key: "growNow" }) ?? line.need;
@@ -80,7 +82,10 @@ export function incubatorBuild(m, spec, pods) {
       const full = S.vivFull(st, settings);
       line = { ok: Sg.open, back: Sg.back, subject: bud, need: full ? noPlaceNotice(st, settings, Sg) : null }; if (full) line.dim = true;   // a dimmed cap while the Vivarium is full: ✓ plays the plate
     }
-  } else line = { ok: state === "hatch" && m.ui.skip ? Sg.skip : null, back: Sg.back, subject: waitingWhy === "offline" ? Sg.offline : waitingWhy === "waiting" ? Sg.painting : "", need: null };   // ✓ Skip only while the hatch's skippable hold runs (the host's ui.skip)
+  } else {
+    const first = state === "hatch" && st.mibis.filter((q) => !q.released).length === 1, said = state === "hatch" ? fill(first ? Sg.hatchFirst : Sg.hatchLine, { Name: mb.name }) : "";   // after the hatch: one line about the new mibi, ✓ Meet {Name} (first-session scheme moment 17)
+    line = { ok: state === "hatch" && m.ui.skip ? fill(Sg.meet, { Name: mb.name }) : null, back: Sg.back, subject: waitingWhy === "offline" ? Sg.offline : waitingWhy === "waiting" ? Sg.painting : said, need: "" };   // ✓ Meet {Name} ends the hatch's skippable hold (the host's ui.skip) and goes to the meet
+  }   // ✓ Skip only while the hatch's skippable hold runs (the host's ui.skip)
   const props = { state, regions, focus: { cur: "room", targets: [] } };
   return { props, line, requests };
 }

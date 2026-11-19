@@ -34,4 +34,4 @@ export const capLine = (s) => {
 
 // [copy] the notice line (lock-playtest-world, owner 2026-11-10 20:18): two slots left empty for the copywriter. saveFailed is shown while a save cannot be written (storage full, a private window, blocked)
 // until a save works again; pageBroke when the page breaks, with the build number from build.json ({build} in the words; an empty slot still shows the bare number). play/src/footer.mjs mountNotice draws it.
-export const NOTICE_WORDS = { saveFailed: "", pageBroke: "" };
+export const NOTICE_WORDS = { saveFailed: "Can't save · leaving loses your game", pageBroke: "" };

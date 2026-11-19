@@ -160,7 +160,7 @@ function layout() {
   printBox.classList.toggle("hidden", !(print.id && print.h));   // the recovery print's card (sandbox): fixed at the window's foot while a print waits
   // the build line: the foot (upright), or the bar (on its side before Options; on a laptop its left end)
   const sbox = P.stamp.where === "foot" ? arr(P.stamp.box) : bp.stamp;
-  stamp.classList.toggle("hidden", TEST || !sbox || (sleepingShown && !P.note && P.stamp.where === "bar")); if (!TEST && sbox) { placeBox(stamp, sbox, true); stamp.style.textAlign = P.stamp.where === "foot" ? "right" : P.stamp.where === "bar" ? "right" : "left"; stamp.style.lineHeight = P.stamp.where === "foot" ? "12px" : CTL_LINE + "px"; }
+  stamp.classList.toggle("hidden", TEST || !sbox || (sleepingShown && !P.note && P.stamp.where === "bar")); if (!TEST && sbox) { placeBox(stamp, sbox, true); stamp.style.textAlign = P.stamp.where === "foot" ? "right" : P.stamp.where === "bar" ? "right" : "left"; stamp.style.lineHeight = P.stamp.where === "foot" ? "12px" : CTL_LINE + "px"; queueMicrotask(fitStamp); }
   // a chosen size larger than the window: the page scrolls (never otherwise)
   const c = P.content, over = c[1] + c[3] + 16 > CH || c[0] + c[2] + 16 > CW;
   stage.style.overflow = over ? "auto" : "clip"; spacer.style.top = over ? Math.max(0, Math.ceil(c[1] + c[3] + 16) - 1) + "px" : "0px"; spacer.style.left = over ? Math.max(0, Math.ceil(c[0] + c[2] + 16) - 1) + "px" : "";
@@ -343,8 +343,22 @@ function reconcile() {
   try { frames.station.contentWindow.postMessage({ t: "mb-dock", want, keysElsewhere: (pressOwner ?? owner) !== "station", companion: comp ? { id: comp.id, name: comp.name, pub: comp.pub || null } : null }, location.origin); } catch { inflight = 0; }
 }
 const giveKeysBack = () => { if (document.activeElement === dockKey) dockKey.blur(); };
+// A frame's key cue (mb-keycue {key, ring|hop}, the Companion page's keyCues/hopCall): the drawn key rings until the frame says stop, or hops once. Set on the tray's host (React leaves it alone), read by play/index.html's CSS.
+const CUE_KEYS = new Set(["call"]);
+function keyCue(dv, m) {
+  const host = trayEl[dv], key = String(m.key || ""); if (!host || !CUE_KEYS.has(key)) return;
+  const flag = (attr, on) => { const s = new Set((host.getAttribute(attr) || "").split(" ").filter(Boolean)); if (on) s.add(key); else s.delete(key); if (s.size) host.setAttribute(attr, [...s].join(" ")); else host.removeAttribute(attr); };
+  if ("ring" in m) flag("data-cue", !!m.ring);
+  if (m.hop) { flag("data-hop", false); void host.offsetWidth; flag("data-hop", true); }   // off, reflow, on: the hop plays again
+}
+// The frames' notice line (play/src/footer.mjs mountNotice posts it up): a frame's own line is clipped or hidden on the play page, so the page says it, one line at the window's foot, whichever frame holds one.
+const frameNotes = new Map(), frameNoticeEl = $("frameNotice");
 window.addEventListener("message", (e) => {
   if (e.origin !== location.origin) return; const m = e.data || {};
+  if (m.t === "mb-notice" && (e.source === frames.station.contentWindow || e.source === frames.companion.contentWindow)) {
+    frameNotes.set(e.source, String(m.text || "").slice(0, 120)); const t = [...frameNotes.values()].find(Boolean) || "";
+    frameNoticeEl.textContent = t; frameNoticeEl.hidden = !t; return;
+  }
   if (e.source === frames.companion.contentWindow && m.t === "mb-companion") {   // the Companion's word: who it is, its world, its crates, the seat it answers
     comp = m; const c = cradles().companion;
     if (c.state === "seated" && m.seat === c.seats) { if (!hold || hold.seat !== m.seat) hold = { seat: m.seat, crates: activeHere() ? heard.crates | 0 : m.crates | 0, left: m.crates | 0 }; else hold.left = m.crates | 0; }
@@ -357,6 +371,7 @@ window.addEventListener("message", (e) => {
   }
   if (e.source === frames.station.contentWindow && m.t === "mb-sleep") { relaySleep(m); return; }
   if (e.source === frames.station.contentWindow && m.t === "mb-focus") { stationFocus(m); return; }   // the Station's focus ring moved: the phone window follows it
+  if (m.t === "mb-keycue" && (e.source === frames.companion.contentWindow || e.source === frames.station.contentWindow)) { keyCue(e.source === frames.station.contentWindow ? "station" : "companion", m); return; }
   if (e.source !== frames.station.contentWindow || m.t !== "mb-caddy") return;
   if (sw.quiet) return;   // the Station quiet: its link is down, the page hears nothing from it
   heard = m; heardAt = now(); inflight = 0;
@@ -492,6 +507,14 @@ function applyDev(on) { devBtn.classList.toggle("hidden", !on); for (const id of
 // ---- play notes (owner 2026-11-12 18:2x; play/src/notes.mjs, play/options/src/controller.js): the note's screens come from the played device's own canvas, its details from both devices ----
 const noteBtn = $("noteBtn"), shotBtn = $("shotBtn"), recBox = $("recBox"), recStop = $("recStop"), toast = $("noteToast");
 let notes = null, buildInfo = null, toastTimer = 0, askId = 0;
+// the stamp's line in its box: the whole line, or without the time where it would not fit (the release name and build always show)
+let stampCtx = null;
+function fitStamp() {
+  if (!buildInfo) return;
+  const full = stampText(buildInfo), w = stamp.getBoundingClientRect().width;
+  try { stampCtx = stampCtx || document.createElement("canvas").getContext("2d"); stampCtx.font = getComputedStyle(stamp).font; } catch { stampCtx = null; }
+  stamp.textContent = !stampCtx || !w || stampCtx.measureText(full).width <= w ? full : stampText(buildInfo, true);
+}
 const asks = new Map();
 window.addEventListener("message", (e) => { if (e.origin !== location.origin) return; const m = e.data || {}; if (m.t === "mb-note-state" && asks.has(m.id)) { asks.get(m.id)(m.state ?? null); asks.delete(m.id); } });
 function askDevice(d) {   // the device's own details (mb-note-ask / mb-note-state); null if it does not answer in time
@@ -553,7 +576,7 @@ function armDpr() { if (dprQuery) dprQuery.removeEventListener("change", onDpr);
 function onDpr() { layout(); armDpr(); }
 armDpr(); window.addEventListener("resize", layout);
 // the build stamp from the site's build.json: "build <short> · YYYY-MM-DD HH:MM Mexico City"; "build local" with no build.json
-fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { buildInfo = j; stamp.textContent = stampText(j); }).catch(() => { stamp.textContent = "build local"; });
+fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { buildInfo = j; fitStamp(); }).catch(() => { stamp.textContent = "build local"; });
 layout();
 // for the play-page journey: read-only views of the shell's state
 window.__play = { get phone() { return phone; }, get form() { return form; }, get plan() { return JSON.parse(JSON.stringify(PLAN[owner])); }, get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get pressed() { return pressed; },

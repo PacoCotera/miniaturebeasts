@@ -16,7 +16,7 @@ let root = null, out = null;
 export function devOpen() { return !!root && !root.hidden; }
 function note(t) { if (out) out.textContent = t; }
 function select(key, options, fmt = (v) => String(v)) {
-  const s = h("select", { onchange: () => { const v = options.find((o) => String(o) === s.value); const patch = { [key]: v }; saveSettings(patch); redraw(); } });
+  const s = h("select", { onchange: () => { const v = options.find((o) => String(o) === s.value); const patch = { [key]: v, ...(key === "economy" ? { economyChosen: true } : {}) }; saveSettings(patch); redraw(); } });
   for (const o of options) s.append(opt(String(o), fmt(o), String(G.settings[key]) === String(o)));
   return s;
 }
@@ -48,7 +48,7 @@ export function buildDevPanel(container, hooks) {
   const mats = h("div", { class: "dev-row" }, h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 5, 5, 5); save(); note("+5 of each material"); } }, "+5 of each"),
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 0, 10, 0); save(); note("+10 Data"); } }, "+10 Data"),
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 10, 0, 10); save(); note("+10 Energy +10 Essence"); } }, "+10 ⚡ +10 ❀"));
-  group("Economy", h("div", { class: "dev-row" }, "Prices ", select("economy", ["loose", "decided", "free"], (v) => ({ loose: "loose (decided + a top-up per crate, the default)", decided: "decided prices", free: "free" })[v])),
+  group("Economy", h("div", { class: "dev-row" }, "Prices ", select("economy", ["loose", "decided", "free"], (v) => ({ loose: "loose (decided + a top-up per crate)", decided: "decided prices", free: "free" })[v])),
     h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["rule", "free"], (v) => ({ rule: "1 ❀ per 2 minutes left, rounded up (decided)", free: "free" })[v])),
     h("p", { class: "dev-note" }, "Decided: Identify 1 ◆ always · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
