@@ -1675,6 +1675,13 @@
    "sha256": "c5eb0852205f6b1917a682d9b24cd8289e053941aca5000762c5de1c4ffd7717"
   },
   {
+   "class": "paint",
+   "date": "2026-11-19",
+   "id": "1774ac37b1",
+   "path": "art/places/sets/ninja-test/over-sand-beach.png",
+   "sha256": "2d35b9a19957072f18edd15c27c77c1e74bc499160e1b2ba6882d4b64b0b1952"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "e70a1bcd93",
