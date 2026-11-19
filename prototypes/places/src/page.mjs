@@ -19,6 +19,7 @@ export async function loadBaked(fetchBytes, base, id) {
 }
 
 const PLANT_PIECE = /^(sc-|shrub|bush|clump|tuft|flower|dry-tufts)/;   // the set's plant pieces (decals and props): walked through, at any height
+const FEET_REACH = 8;   // a plant's base more than this above the explorer's feet is behind him (feetItem)
 const FEET_MIN_H48 = 12, FEET_SHARE = 0.5;   // a plant 12 px tall or more (the sprites are in screen pixels) covers the explorer's feet: its lower half is drawn again over them
 const same = (a, b) => { if (!a || a.length !== b.length) return false; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
 
@@ -170,11 +171,12 @@ export class BakedView {
 
   // Walking through a plant: while the explorer stands in a plant 12 px or taller (a meadow decal, a bush or shrub prop), the lower part of that plant's own picture is drawn again over the explorer's feet.
   // Nothing new is drawn: it is the painted sprite, cropped. tile: the explorer's tile in page cells; returns one sorted-list item (just after the explorer) or null.
-  feetItem(g, org, clockMs, tile, level, heroY) {
+  // feetY (optional): the page y of the explorer's picture bottom. A plant whose base stands above his feet (FEET_REACH px or more) is behind him, not round his feet: it is not drawn again, so it never covers his head (owner bug #54).
+  feetItem(g, org, clockMs, tile, level, heroY, feetY = null) {
     const cx = tile.x - this.ox, cy = tile.y - this.oy, lv = level(tile.x, tile.y), found = [];
     for (const p of this.place.decals) if (Math.floor(p.x / 48) === cx && Math.floor(p.y / 48) === cy) found.push(p);
     for (const p of this.place.props) if (Math.floor(p.x / 48) === cx && Math.floor(p.y / 48) === cy) found.push(p);
-    const plants = found.filter((p) => { const s = this.ts.sprites[p.kind]; return s && s.h48 >= FEET_MIN_H48 && PLANT_PIECE.test(s.kind) &&!(s.footprint && s.footprint.length); });
+    const plants = found.filter((p) => { const s = this.ts.sprites[p.kind]; return s && s.h48 >= FEET_MIN_H48 && PLANT_PIECE.test(s.kind) &&!(s.footprint && s.footprint.length) && (feetY == null || this.oy * 48 + p.y >= feetY - FEET_REACH); });
     if (!plants.length) return null;
     return { y: heroY + 0.5, d: () => { for (const p of plants) {
       const s = this.ts.sprites[p.kind], cv = this.spriteCanvas(p.kind, 0, lv, null, undefined, null), k = Math.max(1, Math.round(s.h48 * FEET_SHARE));
