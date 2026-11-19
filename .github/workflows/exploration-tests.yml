@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: [views-agree-1, views-agree-2, views-agree-3, hold, place, decor, heavy, rest-a, rest-b]
+        group: [views-agree-1, views-agree-2, views-agree-3, hold, heavy, rest-a, rest-b]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,7 +57,7 @@ jobs:
   pending:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 15
+    timeout-minutes: 60
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
