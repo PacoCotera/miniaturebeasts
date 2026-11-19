@@ -185,6 +185,13 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "282f5353cd",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-0.png",
+   "sha256": "a3c8cbf6dfcb7ee53f253da2d326c79ddd9715f2dbf735bdf6a0303212c0f156"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "88934ae14d",
    "path": "art/places/sets/ninja-test/cliff-corner-e-0.png",
@@ -220,10 +227,24 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "ae7d69851b",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-1.png",
+   "sha256": "bc6ea858fec5a009f84c611f0856508c421bf2279acaa7642cd309672635c599"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "f2803a9cfa",
    "path": "art/places/sets/ninja-test/cliff-corner-e-2.png",
    "sha256": "03de99905206fe15f071431e21b31cc1e91c98c248748e0d4a65a17ecc518428"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "13be23a2e6",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-2.png",
+   "sha256": "18c32d1f34668052ae5800b97cfc7d421a28ff1205d0c411ee01c2a67d50ad62"
   },
   {
    "class": "cut-of-signed",
@@ -282,6 +303,13 @@
    "sha256": "a8b31a99d21abde6e2ae4de3672cb2b0671d5c926c0075ed153dba7216cc1398"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "4f1f4bf948",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-4.png",
+   "sha256": "be158d74d674233986d8b815f4489b73de91be8a91e10595ee193b08a2d13a60"
+  },
+  {
    "class": "paint",
    "date": "2026-11-13",
    "id": "81b407a5dc",
@@ -294,6 +322,13 @@
    "id": "19ac2c99fe",
    "path": "art/places/sets/ninja-test/cliff-corner-e-5.png",
    "sha256": "41eb698a36370b6eda18286b56f391f1235a6e42b6364acbdc48792db4cac6ba"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "9bd3175a7e",
+   "path": "art/places/sets/ninja-test/cliff-corner-e-5.png",
+   "sha256": "cbc763da8d1fe8b83212cb644e0ed8a680c057752958ad66f326bb51542f2305"
   },
   {
    "class": "paint",
@@ -315,6 +350,13 @@
    "id": "aa184ad14b",
    "path": "art/places/sets/ninja-test/cliff-corner-w-0.png",
    "sha256": "92a0e8e4256371840f27ad14f6f03e882a2d28c3267265de6459f5c87700289e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "8f6ee4cfde",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-0.png",
+   "sha256": "ac7d9410990b11dac7638309607741ebebd0834bb179e446690b2d77c0b6ff3e"
   },
   {
    "class": "cut-of-signed",
@@ -346,10 +388,24 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "9966dc85ff",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-1.png",
+   "sha256": "d160850689ea77fcc31988d22d84d8e457d898c68dc04defafa3a96d7710d3bb"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "597ef34c3c",
    "path": "art/places/sets/ninja-test/cliff-corner-w-2.png",
    "sha256": "28a1b32dbbda28a2491f4ce6b002e05aad31374b43a64675893e83a9bfd36e5d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "756a9f7ac4",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-2.png",
+   "sha256": "70a63089b120aa459ea63595fcf1e07350401ea4ed90d63ba55036012da21996"
   },
   {
    "class": "cut-of-signed",
@@ -409,6 +465,13 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "758756be7f",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-4.png",
+   "sha256": "5804906aa862aecd3d4d1fb133ca67b5fe6d33d42db16c2d6b19231b55322047"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "6658d56365",
    "path": "art/places/sets/ninja-test/cliff-corner-w-4.png",
@@ -420,6 +483,13 @@
    "id": "a1d4998428",
    "path": "art/places/sets/ninja-test/cliff-corner-w-5.png",
    "sha256": "568236f3240e8dac47b9c91b2fee96f3263929bc449731be76f9aa651c758459"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "e0721611f2",
+   "path": "art/places/sets/ninja-test/cliff-corner-w-5.png",
+   "sha256": "99c8ce6070dcc3f3d2d8239a65679237d8a66c78528ced018033961faec46408"
   },
   {
    "class": "cut-of-signed",
@@ -437,10 +507,24 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "39ace835c3",
+   "path": "art/places/sets/ninja-test/cliff-end1-e.png",
+   "sha256": "a0a2c95b8e890b8b5b29f1226bb8cba7aa55f5713ddc0b58d893d64d26276006"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "544c2100e5",
    "path": "art/places/sets/ninja-test/cliff-end1-e.png",
    "sha256": "ec3a7e7531fb0c039cd9bdbf4239deb2c9236ba358b7e86f03ab3bfbac176f2d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "b5a914d4c2",
+   "path": "art/places/sets/ninja-test/cliff-end1-w.png",
+   "sha256": "06108f3b3bc4363c343defbe5f660d1ef0118af92200cdb9214e3ee89ae887d9"
   },
   {
    "class": "cut-of-signed",
@@ -483,6 +567,20 @@
    "id": "681c3d3d93",
    "path": "art/places/sets/ninja-test/cliff-end2-e.png",
    "sha256": "c3cf72fe0a975cf212549ccf8f878d7a26c4fad483fadde5a1a14dc81e63a2ff"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "a0f8ee6a1d",
+   "path": "art/places/sets/ninja-test/cliff-end2-e.png",
+   "sha256": "f0a6453f242979721b286f2a1efa30561ec009865a03edf5e93dd76ef234378d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "75a1c3391f",
+   "path": "art/places/sets/ninja-test/cliff-end2-w.png",
+   "sha256": "2568d59a610e471340185c337c8bf1336f6c0f769949a7d22346c0148f930d0f"
   },
   {
    "class": "cut-of-signed",
@@ -723,11 +821,25 @@
    "sha256": "e92ffe26c85c1e1a68c959998a99c1e9f81c6f75317bdc18b479250bbb6dc9ab"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "f347d82c51",
+   "path": "art/places/sets/ninja-test/cliff-foot-e.png",
+   "sha256": "f55991236b17f73884a9d5cbe19babc5a61fe8433e4e994524b2b20b67b71425"
+  },
+  {
    "class": "paint",
    "date": "2026-11-14",
    "id": "3d757198a5",
    "path": "art/places/sets/ninja-test/cliff-foot-w.png",
    "sha256": "094c692fdc34e3225de6b5d3e4181c48db75f3a76f1d0b393ce4d90611074278"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "efad8031fa",
+   "path": "art/places/sets/ninja-test/cliff-foot-w.png",
+   "sha256": "510e6e9467d73d895f0f2f485ff2d9e883416524a5c57955ebfbbf13c6bc0e2a"
   },
   {
    "class": "cut-of-signed",
@@ -878,6 +990,13 @@
   },
   {
    "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "e70a5af517",
+   "path": "art/places/sets/ninja-test/cliff-south-5.png",
+   "sha256": "8c2e669cca5da1eda5acfa1ec2ae43cc0e87f4e98472ad3aef346c8b97a0a956"
+  },
+  {
+   "class": "cut-of-signed",
    "date": "2026-11-14",
    "id": "3f832eaf2d",
    "path": "art/places/sets/ninja-test/cliff-south-5.png",
@@ -896,6 +1015,13 @@
    "id": "4c6ffb93d5",
    "path": "art/places/sets/ninja-test/cliff-south-6.png",
    "sha256": "97439f7bbaa9e5dad5ae336d5f5c134d5539b1ba3e93cca798345036fc31c874"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-18",
+   "id": "191b5b5973",
+   "path": "art/places/sets/ninja-test/cliff-south-6.png",
+   "sha256": "eede5c24dfc0a7e7680fc6ed8afed38c5fdf227c6020be6113c3e3758050dd23"
   },
   {
    "class": "cut-of-signed",
@@ -2058,6 +2184,13 @@
    "id": "c977bc95d2",
    "path": "art/places/sets/ninja-test/sprites.png",
    "sha256": "6a7991061c6abc170c326ae3e1065d48c7294c53f3a8c3f4328e86e81c6a23cf"
+  },
+  {
+   "class": "legacy-paint",
+   "date": "2026-11-18",
+   "id": "d8ba16ec8e",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "6b86fde43ecb1e4b2a6b577c7b79c8447d5f60dac2343a425a1562e42846a5a5"
   },
   {
    "class": "legacy-paint",
