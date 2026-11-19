@@ -106,9 +106,9 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
 
 test("the bottom line: ✓ Incubate and the price with ◆ a change (the first founder no Essence), what stays a surprise, the first block in the rules' order with its notice; ← the pod", () => {
   const Sg = spec.strings, m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
-  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Incubate", "⚡ 2 ❀ 4 ⧗ 20", "Loika", "two chapters unread", ""]);
-  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1 ⧗ 21", "the wait last: 20 and one a change");
-  m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
+  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Incubate", "⚡ 2 ❀ 4 ⧗ 20 min", "Loika", "two chapters unread", ""]);
+  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1 ⧗ 21 min", "the wait last: 20 and one a change");
+  m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5 min$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
   assert.equal(make("S01", 3, 0).build().line.subject, Sg.traitLine.none); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina unread"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
   { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
   { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.ok(["growing", "ready"].includes(k.build().props.regions.dome.state), "the capsule shows the bud (glass and bar while it grows, door open when ready)"); }
