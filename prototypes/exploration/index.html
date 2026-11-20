@@ -5930,7 +5930,7 @@ function drawPatchBody(t) {
   if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
-  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0), cam = { x: c0.x + sx + po.x, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
+  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0, { x: (ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - c0.x, y: (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - c0.y }), cam = { x: c0.x + sx + po.x, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
@@ -7815,15 +7815,18 @@ function panTick() {   // each frame: the wait is over and the key still down: t
   else if (!PAN.rel && !HELD.includes(PAN.dir)) panEnd();   // the key came up unseen (a blur, a lost pointer)
 }
 // How far the view may slide, in page pixels from the camera c0: its edge ends half a place beyond the place's edge, as the call-hold view's does.
-function panOffset(lay, c0) {
+const PAN_MARGIN = 72;   // [tune] the pawn keeps this many px (1.5 tiles) clear of the view's edge on the far side of the slide (owner note, 11-19: "you lose sight of the hero")
+function panOffset(lay, c0, hero) {
   const f = panFrac(); if (!f) return { x: 0, y: 0 };
   const d = PAN.dir;
   // full reach: the place's edge in the held direction sits across the middle of the view, so half is your place and half the neighbour
-  // (the designer's "your place plus half the neighbour", UI desk 11-18); an edge already in the near half needs no slide
-  if (d === 'up') return { x: 0, y: -f * Math.max(0, c0.y + VIEW_H / 2) };
-  if (d === 'down') return { x: 0, y: f * Math.max(0, lay.h * 48 - VIEW_H / 2 - c0.y) };
-  if (d === 'left') return { x: -f * Math.max(0, c0.x + SCR_W / 2), y: 0 };
-  return { x: f * Math.max(0, lay.w * 48 - SCR_W / 2 - c0.x), y: 0 };
+  // (the designer's "your place plus half the neighbour", UI desk 11-18); an edge already in the near half needs no slide.
+  // The slide stops short of the reach when it would carry the pawn (hero: its centre in view px) out of the view: it keeps PAN_MARGIN in.
+  const cap = (reach, room) => Math.max(0, Math.min(reach, room));
+  if (d === 'up') return { x: 0, y: -f * cap(c0.y + VIEW_H / 2, VIEW_H - PAN_MARGIN - hero.y) };
+  if (d === 'down') return { x: 0, y: f * cap(lay.h * 48 - VIEW_H / 2 - c0.y, hero.y - PAN_MARGIN) };
+  if (d === 'left') return { x: -f * cap(c0.x + SCR_W / 2, SCR_W - PAN_MARGIN - hero.x), y: 0 };
+  return { x: f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN), y: 0 };
 }
 function press(k) {
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual

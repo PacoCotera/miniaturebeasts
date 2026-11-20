@@ -124,7 +124,9 @@ test("reduced motion: the view cuts out and cuts back, no ease", { skip }, async
 // The DRAW check (bug #58, -2): the picture itself slides. The pawn's screen spot (RT.plScr, from the camera that draws the place) moves by the reach, away from the held key
 // (up: y grows, down: y shrinks, left: x grows, right: x shrinks); the view is never left empty; at release it is back where it was.
 // the reach (UI desk 11-18): the place's edge in the held direction sits across the middle of the view (half your place, half the neighbour)
-const REACH = { up: (c, l) => [0, Math.max(0, c.y + 532 / 2)], down: (c, l) => [0, -Math.max(0, l.h * 48 - 532 / 2 - c.y)], left: (c, l) => [Math.max(0, c.x + 450 / 2), 0], right: (c, l) => [-Math.max(0, l.w * 48 - 450 / 2 - c.x), 0] };
+// owner note 11-19 (fix-10): ...and the slide stops where the pawn would leave the view: it keeps PAN_MARGIN (72 px) in; h = the pawn's spot in view px before the slide
+const M = 72, cap = (r, room) => Math.max(0, Math.min(r, room));
+const REACH = { up: (c, l, h) => [0, cap(c.y + 532 / 2, 532 - M - h.y)], down: (c, l, h) => [0, -cap(l.h * 48 - 532 / 2 - c.y, h.y - M)], left: (c, l, h) => [cap(c.x + 450 / 2, 450 - M - h.x), 0], right: (c, l, h) => [-cap(l.w * 48 - 450 / 2 - c.x, h.x - M), 0] };
 const plAt = (page) => page.evaluate(() => { const m = window.__mb, p = m.RT.plScr, c = m.camNow(), l = m.layout(m.RT.key); return { x: p.x, y: p.y, c, l: { w: l.w, h: l.h } }; });
 const blankPx = (page) => page.evaluate(() => new Promise((res) => { const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = 450; c.height = 600; const x = c.getContext("2d"); x.drawImage(im, 0, 0); const d = x.getImageData(0, 32, 450, 532).data; let n = 0; for (let k = 3; k < d.length; k += 4) if (d[k] < 255) n++; res(n); }; im.src = window.__mb.capture(); }));
 for (const dir of ["up", "down", "left", "right"]) {
@@ -137,10 +139,14 @@ for (const dir of ["up", "down", "left", "right"]) {
       const p0 = await plAt(page);
       await page.evaluate(() => { window.__mb.TEST.clock += 300; }); await page.waitForTimeout(150);
       await page.evaluate(() => { window.__mb.TEST.clock += 1000; }); await page.waitForTimeout(150);
-      const p1 = await plAt(page), [ex, ey] = REACH[dir](p0.c, p0.l);
+      const p1 = await plAt(page), [ex, ey] = REACH[dir](p0.c, p0.l, { x: p0.x, y: p0.y - 32 });
       if (process.env.STILLS) { mkdirSync(process.env.STILLS, { recursive: true }); await page.screenshot({ path: path.join(process.env.STILLS, `${dir}-draw-full-reach.png`) }); }
       assert.equal(Math.round(p1.x - p0.x), Math.round(ex), `${dir}: x moved by the reach`); assert.equal(Math.round(p1.y - p0.y), Math.round(ey), `${dir}: y moved by the reach`);
       assert.ok(Math.abs(ex) + Math.abs(ey) > 40, "the reach is a real distance");
+      // owner note 11-19: the slide goes only along the held key, and the pawn stays in the view with its margin
+      if (dir === "up" || dir === "down") assert.equal(Math.round(p1.x), Math.round(p0.x), "no sideways drift"); else assert.equal(Math.round(p1.y), Math.round(p0.y), "no vertical drift");
+      const lim = { up: [p1.y - 32, 532 - M, p0.y - 32], down: [M, p1.y - 32, p0.y - 32], left: [p1.x, 450 - M, p0.x], right: [M, p1.x, p0.x] }[dir];   // [low, high, before]: low <= high unless the pawn already stood past the margin
+      assert.ok(lim[0] <= lim[1] + 1 || lim[2] === lim[0] || lim[2] === lim[1], "the pawn stays on screen with a margin: " + p1.x + "," + p1.y);
       assert.equal(await blankPx(page), 0, "the view is full: no empty band where the place was");
       await page.evaluate((k) => { const m = window.__mb; m.HELD.length = 0; m.release(k); }, dir);
       await page.evaluate(() => { window.__mb.TEST.clock += 400; }); await page.waitForTimeout(150);
