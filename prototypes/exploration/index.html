@@ -7788,14 +7788,7 @@ function peekStart() {
   peek.on = true; RT.view = { kind: 'peek', key: S.exp.patch.key, at: performance.now() };
 }
 function peekEnd() { clearTimeout(peek.timer); peek.timer = null; if (peek.on && RT.view && RT.view.kind === 'peek') RT.view = null; peek.on = false; }
-// A tap Call on a place's edge tile plays the hold view for TAP_PEEK_MS (corner: it shows every side), then it ends by itself; any key ends it at once and acts as usual (owner #91).
-const TAP_PEEK_MS = 1500;   // [tune]
-function tapPeekAtEdge() {
-  const P = S && S.phase === 'patch' && S.exp && S.exp.patch; if (!P || RT.view || !peekable()) return;
-  const lay = layout(P.key); if (lay.cave) return;
-  if (P.x > 0 && P.y > 0 && P.x < lay.w - 1 && P.y < lay.h - 1) return;
-  RT.view = { kind: 'peek', key: P.key, at: performance.now(), until: performance.now() + TAP_PEEK_MS };
-}
+// A quick press of Call is the Call only; the whole-place view opens only on a long press (owner 2026-11-20: "if i quick press C, it takes me to the zoomed out map, that should only happen with a long press").
 // The edge peek (bug #58): an arrow held PANPEEK_WAIT ms against a step that is refused slides the view that way, as far as the call-hold view reaches (the place and half of the
 // neighbour), holds while the key is held, and eases back on release. Free: nothing in S changes, no turn passes, the pawn stays on its tile, the veil is never lifted
 // (the neighbours draw as the call-hold draws them, veiled as they stand). Another key ends it, then acts as usual. Reduced motion: a cut out and a cut back.
@@ -7858,7 +7851,7 @@ function press(k) {
   } else act(k);
 }
 function release(k) {
-  if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) { act('call'); tapPeekAtEdge(); } return; }   // a short press: Call, fired on release
+  if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) act('call'); return; }   // a short press: Call, fired on release
   if (repeat.dir === k) stopRepeat();
   if (PAN.dir === k) panEnd();
 }
