@@ -3670,6 +3670,13 @@
    "sha256": "1eed68c69843c77007214af2e80f4508fbf4845f8eafda10f5f7875927e12502"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-20",
+   "id": "20d8f0fa19",
+   "path": "prototypes/exploration/art/stone/stone-shadow@48.png",
+   "sha256": "5f9efe07a841f45c16a88a8eb371526e7231e05604e3f1447f5662b74d39de59"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "5825d50d9a",
