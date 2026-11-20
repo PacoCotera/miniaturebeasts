@@ -8,5 +8,5 @@ const WINDOWS = JSON.parse(readFileSync(new URL('./land-windows.json', import.me
 const seed = +process.argv[2], wv = WINDOWS.find(v => v.seed === seed), L = levelsOf(realm7(seed).realm);
 for (let j = 0; j < wv.h / CH; j++) for (let i = 0; i < wv.w / CW; i++) {
   const X = wv.X + i, Y = wv.Y + j, t = windowInfo(L, X, Y);
-  console.log(`${X},${Y}`, JSON.stringify({ sites: t.sites.length, jogs: t.jogs, missed: t.jogsMissed, filled: t.filled, left: t.pk, ps: t.pocketStairs, why: t.why }));
+  console.log(`${X},${Y}`, JSON.stringify({ sites: t.sites.length, filled: t.filled, left: t.pk, ps: t.pocketStairs, why: t.why }));
 }

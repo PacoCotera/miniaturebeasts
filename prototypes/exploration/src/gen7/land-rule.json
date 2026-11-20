@@ -6,7 +6,7 @@
   "wobbleSpacing": 3,
   "wobbleOctaves": 2,
   "wobbleStretch": 1,
-  "minFeature": 5,
+  "minFeature": [4, 4],
   "smooth": 2,
   "window": 2,
   "faceRows": 3,

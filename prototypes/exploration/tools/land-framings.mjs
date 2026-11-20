@@ -1,8 +1,8 @@
-// land-b3d-face3-1: where to shoot the four framings on a seed's fixed window (land-windows.json): a long diagonal run, a face with a way up, two plateaus meeting at a corner, a face beside water.
+// land-b3d-face3-1: where to shoot the four framings on a seed's fixed window (land-windows.json): a face with a way up, two plateaus meeting at a corner, a face beside water.
 //   node land-framings.mjs [--seeds 7,13]   -> one JSON line per seed: { seed, diagonal: [x, y], wayup: [x, y], corner: [x, y], water: [x, y] } in world tiles (the frame's middle)
 import { readFileSync } from 'node:fs';
 import { realm7 } from '../src/gen7/region.mjs';
-import { levelsOf, levelDiagonals, findWayup, tileLevel, CW, CH } from '../src/gen7/levels.mjs';
+import { levelsOf, findWayup, tileLevel, CW, CH } from '../src/gen7/levels.mjs';
 import { wetCell } from '../src/gen7/levels.mjs';
 import { RW, RH } from '../src/gen7/world.mjs';
 import { L as LAND } from '../src/world.mjs';
@@ -13,9 +13,6 @@ for (const seed of SEEDS) {
   const w = WINDOWS.find(v => v.seed === seed), L = levelsOf(realm7(seed).realm), PW = w.w / CW, PH = w.h / CH, gx0 = w.X * CW, gy0 = w.Y * CH, out = { seed };
   // inner frame margin: the frame is 9.4 x 11 tiles, keep it inside the window
   const inside = (x, y) => x >= gx0 + 6 && y >= gy0 + 7 && x < gx0 + w.w - 6 && y < gy0 + w.h - 7;
-  let best = null;
-  for (let j = 0; j < PH; j++) for (let i = 0; i < PW; i++) for (const r of levelDiagonals(L, w.X + i, w.Y + j)) if (inside(r.x, r.y) && (!best || r.n > best.n)) best = r;
-  if (best) out.diagonal = [best.x + (best.n >> 1) * 1, best.y + (best.dir === 'down-right' ? 1 : -1) * (best.n >> 1)], out.diagonalRun = best;
   // a way up (the realm's stair: findWayup per stair in the window)
   const stairs = [...L.stairs.values()].filter(s => s.X >= w.X && s.X < w.X + PW && s.Y >= w.Y && s.Y < w.Y + PH);
   for (const s of stairs) { const wu = findWayup(L, s.X, s.Y, s.port); if (wu && inside(wu.x, wu.y)) { out.wayup = [wu.x + 1, wu.y]; break; } }

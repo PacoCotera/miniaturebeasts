@@ -15,7 +15,7 @@ let all = 2166136261; const per = [];
 for (const [X, Y] of cells) {
   const w = LV.windowLevels(L, X, Y); let h = 2166136261;
   for (let i = 0; i < w.R.length; i++) { h ^= w.R[i]; h = Math.imul(h, 16777619) >>> 0; }
-  const inf = JSON.stringify([w.info.sites, w.info.filled, w.info.pockets, w.info.pocketStairs, w.info.jogs, w.info.jogsMissed, w.info.gapsFixed, w.info.squaresFixed, w.info.squaresLeft, w.info.leftFixed]);
+  const inf = JSON.stringify([w.info.sites, w.info.filled, w.info.pockets, w.info.pocketStairs, w.info.gapsFixed, w.info.leftFixed]);
   for (let i = 0; i < inf.length; i++) { h ^= inf.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
   per.push(`${X},${Y}:${h}`); all = (Math.imul(all ^ h, 16777619)) >>> 0;
 }
