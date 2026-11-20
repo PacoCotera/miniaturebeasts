@@ -3170,6 +3170,7 @@ function nextDoorVeil(P, lay, reach) {
     let any = false;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inCall(P, x + ox, y + oy, reach)) { v[y] = (v[y] | (1 << x)) >>> 0; any = true; }
     if (any && !S.veil[nk]) S.veilPre[nk] = v;   // nothing is kept for a place the circle does not touch
+    if (any) revealCell(nc);   // the lifted cells show only on a revealed map cell (the hold view draws an unrevealed one as fog): reveal it (owner #97)
   }
 }
 function takeCallVeil(key, lay) {
