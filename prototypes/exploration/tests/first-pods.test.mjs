@@ -267,9 +267,17 @@ test("the Probe: no legend rows and no odds; the signs met are pictures in the o
   p.key("right"); assert.equal(p.run("lineCtx(lineFor()).r"), "Flag · your start");
   p.key("down"); assert.equal(p.run("S.ui.pf"), 1, "no row below: the focus stays");
   p.key("left"); p.key("left"); assert.equal(p.run("S.ui.pf"), 0);
-  assert.ok(p.run("TILES.length") === 33 && p.run("TILES.every(t => PIC[t.pic])"));
+  assert.ok(p.run("TILES.length") === 37 && p.run("TILES.every(t => PIC[t.pic])"));
   for (const t of p.run("TILES")) { const n = typeof t.name === "function" ? t.name() : t.name; assert.ok(p.run("textWT")(n, 2) <= 205 && !/%|\d/.test(n.replace("tier 2", "")), n); }
   p.key("back"); assert.equal(p.S.phase, "menu");
+});
+
+test("the Probe's key lists the map marks (ring, trail, pod in water, gold tab) once met, each with its line and picture", () => {
+  const p = page();
+  p.run("newWorld(3); S.phase = 'probe'; meet('ring'); meet('trail'); meet('wpod'); meet('tab'); meet('stone');");
+  assert.equal(p.run("metTiles().map(t => t.id).join()"), "ring,trail,wpod,tab,stone");
+  for (const id of ["ring", "trail", "wpod", "tab"]) assert.ok(p.run(`TILES.find(t => t.id === '${id}').name`).includes(" · "), id);
+  p.run("render(5)");
 });
 
 test("the Probe's marks say what they are (plan 3.17 B3): Reach has its count, and the ringed sign's name is drawn under the heading", () => {
