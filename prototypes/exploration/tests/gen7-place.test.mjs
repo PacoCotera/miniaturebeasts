@@ -298,11 +298,12 @@ test('seed 7: the coast is deep water at the border line, then water, beach and 
 });
 
 // The land rule takes more heights as data (land-rule.json `levels`): two thresholds make three levels, and every boundary between level k and k + 1 is cleaned on its own raster.
+// (map-levels-build-1: high ground is the exception, so the window is one of seed 13 that holds raised land at both thresholds)
 test('seed 13: two thresholds in the rule give three levels, each boundary with no pinch and no lone face', { timeout: 900000 }, () => {
   const seed = 13, realm = realm7(seed).realm;
   setLandRule({ levels: [0, 3000] });
   try {
-    const L = levelsOf(realm), X0 = 37, Y0 = 13, W = 4 * CW, H = 3 * CH, lv = new Uint8Array(W * H), seen = [0, 0, 0, 0];
+    const L = levelsOf(realm), X0 = 20, Y0 = 30, W = 4 * CW, H = 3 * CH, lv = new Uint8Array(W * H), seen = [0, 0, 0, 0];
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { lv[y * W + x] = tileLevel(L, X0 * CW + x, Y0 * CH + y); seen[lv[y * W + x]]++; }
     assert.ok(seen[0] > 0 && seen[1] > 0 && seen[2] > 0 && !seen[3], 'levels 0, 1 and 2 are all there, and no level 3: ' + seen);
     for (const k of [0, 1]) {   // the raster of "above level k": no diagonal pinch, no lone one-tile face

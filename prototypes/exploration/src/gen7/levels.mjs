@@ -805,10 +805,10 @@ function natSite(L, st, wet, clearAt) {
   const S = new Int8Array(bw * bh).fill(-1);   // 1 raised, 0 low, -1 not read
   const up1 = (gx, gy) => { const x = gx - bx0, y = gy - by0, k = y * bw + x; if (S[k] >= 0) return S[k];
     return (S[k] = rfAt(L, gx, gy)); };   // map-levels-build-1: the terraced field's own raster
-  const ok = (x0, ly) => {
+  const ok = (x0, ly, loose = false) => {
     // the way up's 2 columns: the contour on the lip row; the other 4: within a row of it (the held site makes the 6 straight), so the land above and below is 6 wide (over the minimum feature: the cleanup
-    // keeps it)
-    for (let c = x0; c < x0 + SITE_W; c++) { const e = c === x0 + 2 || c === x0 + 3 ? 0 : 1;
+    // keeps it). `loose` (map-levels-build-1, a terrace face of 4 or 5 tiles): the other 4 columns as the field has them, whatever that is; the lock makes the six straight.
+    for (let c = x0; c < x0 + SITE_W; c++) { const way = c === x0 + 2 || c === x0 + 3, e = way ? 0 : 1; if (loose && !way) continue;
       for (let r = ly - up; r <= ly - e; r++) if (!up1(c, r)) return false; for (let r = ly + 1 + e; r <= ly + down; r++) if (up1(c, r)) return false; }
     for (let r = ly + 1; r <= ly + down; r++) for (let c = x0 - 1; c <= x0 + SITE_W; c++) if (wet(c, r)) return false;
     return clearAt(x0, ly) && wide(x0 + 2, ly + down, 0) && wide(x0 + 2, ly - up, 1);
@@ -822,7 +822,7 @@ function natSite(L, st, wet, clearAt) {
   const base = st.X * CW + st.port - 2, xs = [];
   for (let d = 0; base + d <= xb || base - d >= xa; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 >= xa && x0 <= xb) xs.push(x0); }
   const lips = []; for (let d = 0; d <= 22; d++) for (const s of d ? [1, -1] : [1]) { const y = st.Y * CH + CH - 1 + s * d; if (y >= ya && y <= yb) lips.push(y); }
-  for (const x0 of xs) for (const ly of lips) if (ok(x0, ly)) return [x0, ly];
+  for (const loose of [false, true]) for (const x0 of xs) for (const ly of lips) if (ok(x0, ly, loose)) return [x0, ly];
   return null;
 }
 // a pocket stair's site is made only where every tile it holds raised may be raised (none is held low by water or the coast): else its lip would stand alone beside tiles the rule keeps low
@@ -1102,12 +1102,17 @@ function pieceWays(L, X, Y) {
     for (let h = 0; h < q.length; h++) { const j = q[h], x = j % CW, y = (j / CW) | 0; for (let d = 0; d < 4; d++) { const a = x + NB4X[d], b = y + NB4Y[d]; if (a < 0 || b < 0 || a >= CW || b >= CH) continue; const m = b * CW + a; if (rf[m] && lab[m] < 0) { lab[m] = id; q.push(m); } } }
     comps.push(q); }
   const has = new Uint8Array(comps.length);
-  for (const st of L.stairs.values()) { if (st.X < X - 2 || st.X > X + 2 || st.Y < Y - 1 || st.Y > Y + 1) continue; const s = siteOf(L, st);
-    for (const dx of [2, 3]) { const x = s.x0 + dx - x0c, y = s.lip - y0c; if (x >= 0 && y >= 0 && x < CW && y < CH && lab[y * CW + x] >= 0) has[lab[y * CW + x]] = 1; } }
-  const foot = footRoom(L.rule.faceRows);
+  const foot = footRoom(L.rule.faceRows), stairBoxes = [];   // stairBoxes: the held rows of the realm stairs near (x0, x1, y0, y1 in world tiles): a piece's site keeps off them
+  for (const st of L.stairs.values()) { if (st.X < X - 2 || st.X > X + 2 || st.Y < Y - 2 || st.Y > Y + 1) continue; const s = siteOf(L, st);
+    stairBoxes.push([s.x0, s.x0 + SITE_W - 1, s.lip - SITE_UP, s.lip + foot]);
+    for (const dx of [2, 3]) { const x = s.x0 + dx - x0c, y = s.lip - y0c; if (x < 0 || x >= CW) continue;
+      if (y >= 0 && y < CH) { if (lab[y * CW + x] >= 0) has[lab[y * CW + x]] = 1; }
+      else if (y >= CH && y <= CH + STRADDLE) {   // a way just below the place's south edge, tied to the piece by raised tiles from its last row: serves it
+        const id = lab[(CH - 1) * CW + x]; let tied = id >= 0; for (let yy = CH; yy <= y && tied; yy++) tied = rfAt(L, x0c + x, y0c + yy) === 1; if (tied) has[id] = 1; } } }
+  const clear = (gx, ly) => { for (const [a, b, c, d] of stairBoxes) if (gx <= b && gx + SITE_W - 1 >= a && ly + foot >= c && ly - SITE_UP <= d) return false; return true; };
   // a site's test, in tiers: 0 the six columns as the field has them (lip row raised over SITE_UP rows, the foot rows low); 1 the way's two columns as the field has them and the four others within a row of it (as a
   // stair's natural site); 2 the way's two columns as the field has them, the four others whatever the field says (the lock makes the six straight: the face the field draws is 4 or 5 tiles wide)
-  const ok = (gx, ly, tier) => { for (let x = gx; x < gx + SITE_W; x++) { const way = x === gx + 2 || x === gx + 3, e = tier === 0 || way ? 0 : 1;
+  const ok = (gx, ly, tier) => { if (!clear(gx, ly)) return false; for (let x = gx; x < gx + SITE_W; x++) { const way = x === gx + 2 || x === gx + 3, e = tier === 0 || way ? 0 : 1;
       if (tier < 2 || way) { for (let y = ly - SITE_UP; y <= ly - e; y++) if (!rfAt(L, x, y)) return false; for (let y = ly + 1 + e; y <= ly + foot; y++) if (rfAt(L, x, y)) return false; }
       for (let y = ly + 1; y <= ly + foot; y++) if (landWet(L, x, y)) return false; }
     return raisableSite(L, gx, ly); };
