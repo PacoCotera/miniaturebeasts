@@ -60,7 +60,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 body{margin:0;padding:16px;background:#d9d9d6;font-family:Inter,sans-serif;width:max-content}
 h1{font-size:18px;margin:0 0 12px} .row{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;background:#fff;padding:10px;border-radius:8px}
 .row h2{font-size:15px;width:24px;margin:0} figure{margin:0} figcaption{font-size:11px;color:#555;margin-top:3px} img{display:block;border:1px solid #aaa}
-</style></head><body><h1>Loika lab bench: grey pictures, draft words (lab-pictures-1)</h1>
+</style></head><body><h1>Loika lab bench: grey pictures, draft words (lab-pictures-1, with lab-pictures-2's two changes)</h1>
 ${Object.entries(rows).map(([n, list]) => `<div class="row"><h2>${n}</h2>${[...list.filter((s) => !s.phone), ...list.filter((s) => s.phone)].map(img).join("")}</div>`).join("\n")}
 </body></html>`;
 const ctx = await browser.newContext({ viewport: { width: 1800, height: 900 }, deviceScaleFactor: 2 });

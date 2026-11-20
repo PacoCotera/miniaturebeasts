@@ -50,8 +50,9 @@ function phoneFrame(W) {
   const b = document.body, scr = document.getElementById("screen");
   const add = (cls, css, text) => { const e = el("div", cls, null, text); Object.assign(e.style, css); b.insertBefore(e, scr); return e; };
   add("pf-bar", {});
-  add("pf-tab", { left: "16px", width: "128px" }, w("frame.companion", W));
-  add("pf-tab on", { left: "146px", width: "128px" }, w("frame.station", W));
+  const tab = b.dataset.tab || "station"; // which tab is lit; "none" for a page that shows both
+  add("pf-tab" + (tab === "companion" ? " on" : ""), { left: "16px", width: "128px" }, w("frame.companion", W));
+  add("pf-tab" + (tab === "station" ? " on" : ""), { left: "146px", width: "128px" }, w("frame.station", W));
   add("pf-tab", { left: "282px", width: "92px" }, w("frame.options", W));
   add("pf-shell", {});
   const k = (x, y, ww, hh, text, round) => add("pf-key" + (round ? " round" : ""), { left: x + "px", top: y + "px", width: ww + "px", height: hh + "px" }, text);
