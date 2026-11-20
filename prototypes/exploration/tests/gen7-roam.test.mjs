@@ -44,7 +44,7 @@ test('R1: a spot the trail gets is on or one cell off the trail, and one the lan
   }
 });
 
-test('W4: an escarpment of 8+ faces has water coming out within 2 of its foot (a spring where it had none), and 40% of faces have', () => {
+test('W4: an escarpment of 8+ faces has water coming out within 2 of its foot (a spring where it had none), and 25% of faces have (was 40% when most land was raised: map-levels-build-1)', () => {
   let faces = 0, wet = 0;
   for (const seed of SEEDS) {
     const re = realm7(seed).realm, byKind = k => re.features.filter(f => f.kind === k), em = [];
@@ -56,5 +56,5 @@ test('W4: an escarpment of 8+ faces has water coming out within 2 of its foot (a
     let dry = 0; for (const e of byKind('escarpment')) { const f = e.cells; faces += f.length; wet += f.filter(c => dw[c + RW] <= 2).length; if (f.length >= 8 && !f.some(c => dw[c + RW] <= 2)) dry++; }
     assert.ok(dry <= 1, 'seed ' + seed + ' long escarpments with no water at the foot: ' + dry);
   }
-  assert.ok(wet / faces >= 0.4, 'faces with water within 2: ' + Math.round(1000 * wet / faces) / 10 + '%');
+  assert.ok(wet / faces >= 0.25, 'faces with water within 2: ' + Math.round(1000 * wet / faces) / 10 + '%');
 });
