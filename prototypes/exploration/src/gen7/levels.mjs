@@ -396,7 +396,9 @@ function openCloseNear(r, prev, co, W, H, E, lk) {
 let CLEAN_SINK = null;   // cliff-contour-1: the tools' sink for the cleanup's own steps (the first cleanup of a window only)
 function cleanup(r0, W, H, rule, lk) {
   // (land-time-1) `known`: the raster the last fix made when that was a fixed point (see fixPatterns): the next fix of a raster that differs from it in a few tiles looks only at the tiles that read them
-  const E = elemOf(rule.minFeature); let known = null;
+  // map-levels-design-1 prototype: MB_RECT=wxh opens and closes with a w x h rectangle (keeps square terrace corners) instead of the rounded element
+  const RE = process.env.MB_RECT ? process.env.MB_RECT.split('x').map(Number) : null;
+  const E = RE ? [[0, 0, RE[0], RE[1]], [0, 0, RE[0], RE[1]]] : elemOf(rule.minFeature); let known = null;
   const fix = (r, from) => { const o = relock(fixPatterns(r, W, H, rule.faceRows, from, lk), lk); known = FP_OK ? o : null; return o; };
   let r = relock(r0.slice(), lk);
   let fixed = false, prev = null, co = null;
@@ -424,7 +426,7 @@ function cleanup(r0, W, H, rule, lk) {
       const n = r[i - W - 1] === v, u = r[i - W] === v, ur = r[i - W + 1] === v, l = r[i - 1] === v, rr = r[i + 1] === v, dl = r[i + W - 1] === v, d = r[i + W] === v, dr = r[i + W + 1] === v;
       if (!((n && u && l) || (u && ur && rr) || (l && dl && d) || (rr && d && dr))) flip.push(i);
     }
-    for (let y = 3; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (r[y * W + x] === 1 && r[(y + 1) * W + x] === 0) for (const dx of [-1, 1]) {
+    if (process.env.MB_NOSQUARE !== '1') for (let y = 3; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (r[y * W + x] === 1 && r[(y + 1) * W + x] === 0) for (const dx of [-1, 1]) {
       if (lip(x + dx, y) || !lip(x - dx, y)) continue;
       if (!r[y * W + x + dx] && !r[(y - 1) * W + x + dx] && !r[(y - 2) * W + x + dx]) flip.push(y * W + x);
     }
@@ -449,6 +451,7 @@ function recleanNear(r, snap, W, H, rule, lk) {
 
 // ---- the local checks, for an edit: the same shapes land-measure counts (lone face, pinch, square corner, 1-tile sliver, foot room) at one tile ----
 const DBGV = []; export const dbgV = DBGV;
+const NOSQ = process.env.MB_NOSQUARE === '1';   // map-levels-design-1 prototype: a run ending square against a side is the terrace's own shape (the set's end cap draws it), not a failing check
 function violAt(r, W, H, x, y, fr) {
   if (x >= 1 && y >= 2 && x < W - 1 && y + footRoom(fr) < H) {   // (land-time-1) clear of the raster's edge every tile read lies inside it: the same checks straight on the array, no closures
     const i = y * W + x, v = r[i]; let n = 0;
@@ -459,8 +462,8 @@ function violAt(r, W, H, x, y, fr) {
       const lipL = l === 1 && r[i - 1 + W] === 0, lipR = rr === 1 && r[i + 1 + W] === 0;
       if (!lipL && !lipR && !((r[i - W - 1] === 1 && l === 0) || (r[i - W + 1] === 1 && rr === 0) || (r[i + W - 1] === 1 && r[i + 2 * W - 1] === 0) || (r[i + W + 1] === 1 && r[i + 2 * W + 1] === 0)) && !(LEAN_ON && leanAt(r, W, i))) { n++; DBGV.push("lone"); }
       if (!(LEAN_ON && leanAt(r, W, i))) for (let k = 2; k <= footRoom(fr); k++) if (r[i + k * W]) { n++; DBGV.push("foot"); break; }
-      if (!lipR && lipL && !rr && !r[i + 1 - W] && !r[i + 1 - 2 * W]) { n++; DBGV.push("square"); }
-      if (!lipL && lipR && !l && !r[i - 1 - W] && !r[i - 1 - 2 * W]) { n++; DBGV.push("square"); }
+      if (!NOSQ && !lipR && lipL && !rr && !r[i + 1 - W] && !r[i + 1 - 2 * W]) { n++; DBGV.push("square"); }
+      if (!NOSQ && !lipL && lipR && !l && !r[i - 1 - W] && !r[i - 1 - 2 * W]) { n++; DBGV.push("square"); }
     }
     return n;
   }
@@ -472,7 +475,7 @@ function violAt(r, W, H, x, y, fr) {
   if (lip(x, y)) {
     if (!lip(x - 1, y) && !lip(x + 1, y) && !(lip(x - 1, y - 1) || lip(x + 1, y - 1) || lip(x - 1, y + 1) || lip(x + 1, y + 1))) { n++; DBGV.push("lone"); }
     for (let k = 2; k <= footRoom(fr); k++) if (R(x, y + k)) { n++; DBGV.push("foot"); break; }
-    for (const dx of [-1, 1]) if (!lip(x + dx, y) && lip(x - dx, y) && !R(x + dx, y) && !R(x + dx, y - 1) && !R(x + dx, y - 2)) { n++; DBGV.push("square"); }
+    if (!NOSQ) for (const dx of [-1, 1]) if (!lip(x + dx, y) && lip(x - dx, y) && !R(x + dx, y) && !R(x + dx, y - 1) && !R(x + dx, y - 2)) { n++; DBGV.push("square"); }
   }
   return n;
 }
@@ -494,6 +497,7 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
     { k: 'side', alongX: false, is: (x, y) => R(x, y) === 1 && R(x + 1, y) === 0, moves: [[[1, 0, 1]], [[0, 0, 0]]] },
   ];
   let jogs = 0, missed = 0; const info = dbgInfo;
+  if (process.env.MB_NOJOG === '1') return { jogs, missed };
   // how far the runs of a kind on lines l0 .. l1 are over their cap, all together: a jog is kept only when it lowers this (a tail moved onto a neighbour line must not merge with the run there and start the two jogging each other)
   const excess = (K, l0, l1) => { let s = 0; const lines = K.alongX ? H : W, len = K.alongX ? W : H; for (let l = Math.max(0, l0); l <= Math.min(lines - 1, l1); l++) { let n = 0; for (let t = 0; t <= len; t++) { if (t < len && (K.alongX ? K.is(t, l) : K.is(l, t))) n++; else { if (n > CAP[K.k]) s += n - CAP[K.k]; n = 0; } } } return s; };
   for (const K of KINDS) {
@@ -567,6 +571,7 @@ function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
 // out by one tile for its whole straight length (or for 3 rows or more of it), or the end lip tile down; an edit is kept only when no shape check fails round it
 function fixSquares(r, W, H, rule, lk, noRaise) {
   const R = (a, b) => (a < 0 || b < 0 || a >= W || b >= H ? 0 : r[b * W + a]), lip = (a, b) => R(a, b) === 1 && R(a, b + 1) === 0; let fixed = 0, left = 0;
+  if (process.env.MB_NOSQUARE === '1') return { fixed, left };
   for (let round = 0; round < 60; round++) { let hit = false;
     for (let y = 3; y < H - 2 && !hit; y++) for (let x = 1; x < W - 1 && !hit; x++) if (lip(x, y)) for (const dx of [-1, 1]) {
       if (lip(x + dx, y) || !lip(x - dx, y) || R(x + dx, y) || R(x + dx, y - 1) || R(x + dx, y - 2)) continue;
@@ -956,13 +961,15 @@ function windowLevelsMake(L, X, Y) {
     edge[i] = x < 2 || y < 2 || x >= W - 2 || y >= H - 2 || inl < 6 ? 1 : 0; }
   // cliff-contour-1: the field is read at the minimum feature's own scale before the threshold: a tile's value is the sum of q over the rounded element of radius `smooth` round it (the window's rim read
   // as itself, replicated; held tiles stay held), so the threshold draws the field's smooth contour and the opening below has little left to square off. smooth 0: the tile's own q, as before.
-  const sq = smoothField(q, held, W, H, L.rule.smooth | 0);
+  const sq = BLOCKS_ON() ? null : smoothField(q, held, W, H, L.rule.smooth | 0);
   // one raster per boundary (level above k), each cleaned on its own; a higher level lies inside the lower one
   const out = new Uint8Array(W * H); let below = null; const info = { sites: [], filled: [], pockets: [], jogs: 0, jogsMissed: 0, pocketStairs: [], dbg: !!globalThis.B3C_DBG };
   for (let k = 0; k < th.length; k++) {
-    const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = (sq ? sq.s[i] >= th[k] * sq.c && !held[i] : q[i] >= th[k]) && (!below || below[i]) ? 1 : 0;
+    const base = new Uint8Array(W * H);
+    if (BLOCKS_ON() && k === 0) { for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) base[y * W + x] = rfAt(L, gx0 + x, gy0 + y); }   // the terraced field, cell by cell (stationary)
+    else for (let i = 0; i < W * H; i++) base[i] = (sq ? sq.s[i] >= th[k] * sq.c && !held[i] : q[i] >= th[k]) && (!below || below[i]) ? 1 : 0;
     let r = base;
-    if (k === 0) { const B = bkOf(L);   // rupar-banks-speed-2: the raised field of the window's inner cells is the bank scan's own (rfCell): a tile in them reads no further than the window holds
+    if (k === 0 && !BLOCKS_ON()) { const B = bkOf(L);   // rupar-banks-speed-2: the raised field of the window's inner cells is the bank scan's own (rfCell): a tile in them reads no further than the window holds
       for (let j = 1; j < 2 * WR; j++) for (let i = 1; i < 2 * WR; i++) { const cx = X0w + i, cy = Y0w + j, key = (cx + 8) * 1000 + (cy + 8); if (!inRealm(cx, cy) || B.rf.has(key)) continue;
         if (B.rf.size > 3000) B.rf.clear(); const f = new Uint8Array(N); for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) { const x = i * CW + tx, y = j * CH + ty, p = y * W + x; f[ty * CW + tx] = base[p] && !noRaise[p] ? 1 : 0; } B.rf.set(key, f); } }
     if (k === 0) r = landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info);
@@ -1017,6 +1024,7 @@ function natSite(L, st, wet, clearAt) {
   const HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; HW.push(hw); cnt += 2 * hw + 1; }
   const S = new Int8Array(bw * bh).fill(-1);   // 1 raised, 0 low, -1 not read
   const up1 = (gx, gy) => { const x = gx - bx0, y = gy - by0, k = y * bw + x; if (S[k] >= 0) return S[k];
+    if (BLOCKS_ON()) return (S[k] = rfAt(L, gx, gy));
     let s = 0; for (let j = 0; j <= 2 * rad; j++) { const yy = y + j - rad, hw = HW[j]; for (let i = -hw; i <= hw; i++) s += Q[yy * bw + x + i]; }
     return (S[k] = s >= th * cnt ? 1 : 0); };
   const ok = (x0, ly) => {
@@ -1078,7 +1086,19 @@ function bkOf(L) { return L.bkd || (L.bkd = { rf: new Map(), lab: new TileLab(),
 const landWet = (L, gx, gy) => { const X = Math.floor(gx / CW), Y = Math.floor(gy / CH); return L.rule.holdWater !== 0 && inlandOf(gx, gy) >= WET_REACH && wetCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW] === 1; };
 const heldTile = (L, gx, gy) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (landWet(L, gx + dx, gy + dy)) return true; return inlandOf(gx, gy) < RAISE_OFF + 1; };
 // the field's raised tiles of one cell (1 raised): windowLevels' own first raster (the smoothed sum over the rounded element at or over the threshold, water held low), cell by cell
+// map-levels-design-1 prototype: the terrace lattice. Columns of the world are cut into blocks of 4 to 7 tiles (super-blocks of SB tiles from a seed offset, each split by its hash into one of the
+// compositions of SB into parts 4..7). Every row of a block takes one value (the block's mean of the smoothed field), so every raised run in every row, and every south face, is whole blocks: 4 tiles or more.
+// A pure function of the world column and the seed: every window reads the same blocks (stationary).
+export const BLOCKS_ON = () => process.env.MB_BLOCKS === '1';
+const SB = 20, BMIN = 4, BMAX = 7, COMPS = [];
+(function comps(left, acc) { if (!left) { COMPS.push(acc); return; } for (let p = BMIN; p <= Math.min(BMAX, left); p++) if (left - p === 0 || left - p >= BMIN) comps(left - p, [...acc, p]); })(SB, []);
+export function blockOf(seed, gx) {   // [first column, end column) of the block holding world column gx
+  const o = hash2(7, 11, subSeed(seed, 'terrace-o')) % SB, j = Math.floor((gx + o) / SB), parts = COMPS[hash2(j, 3, subSeed(seed, 'terrace')) % COMPS.length];
+  let x = j * SB - o; for (const p of parts) { if (gx < x + p) return [x, x + p]; x += p; }
+  return [x - parts[parts.length - 1], x];
+}
 function rfCell(L, X, Y) {
+  if (BLOCKS_ON()) return rfCellBlocks(L, X, Y);
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.rf.get(key); if (hit) return hit;
   const out = new Uint8Array(N); if (B.rf.size > 3000) B.rf.clear(); B.rf.set(key, out);
   if (!inRealm(X, Y)) return out;
@@ -1099,6 +1119,54 @@ function rfCell(L, X, Y) {
     const x = tx + R1, y = ty + R1, i = y * w + x; if (held[i] || inlandOf(X * CW + tx, Y * CH + ty) < RAISE_OFF + 1) continue;
     let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w1 + x; s += P[o + HW[r] + 1] - P[o - HW[r]]; }
     if (s >= th) out[ty * CW + tx] = 1;
+  }
+  return out;
+}
+// the same raster, terraced: the smoothed field's sum per tile over the cell and MX columns each side, then per row each block's mean against the threshold; a block row holding a tile held low
+// (water and its ring) or the coast's band is low whole
+// then a raised part of the terraced field under PART_MIN tiles (flooded whole over the world's raster, so the same from every window) is lowered: a hill too small to hold a way up is not made
+const PART_MIN = +(process.env.MB_PART_MIN || 0);
+function rfCellBlocks(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.rf.get(key); if (hit) return hit;
+  const r0 = rf0CellBlocks(L, X, Y); if (!PART_MIN) { if (B.rf.size > 3000) B.rf.clear(); B.rf.set(key, r0); return r0; }
+  const out = r0.slice(), seen = new Uint8Array(N);
+  const at0 = (gx, gy) => { if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return 0; const cx = (gx / CW) | 0, cy = (gy / CH) | 0; return rf0CellBlocks(L, cx, cy)[(gy - cy * CH) * CW + gx - cx * CW]; };
+  for (let i = 0; i < N; i++) {
+    if (!r0[i] || seen[i]) continue;
+    const gx = X * CW + (i % CW), gy = Y * CH + ((i / CW) | 0), set = new Set([gy * 8192 + gx]), q = [[gx, gy]];
+    for (let h = 0; h < q.length && set.size < PART_MIN; h++) { const [a, b] = q[h];
+      for (let d = 0; d < 4; d++) { const x = a + NB4X[d], y = b + NB4Y[d], k = y * 8192 + x; if (!set.has(k) && at0(x, y)) { set.add(k); q.push([x, y]); } } }
+    const small = set.size < PART_MIN;
+    for (const k of set) { const x = k & 8191, y = Math.floor(k / 8192); if (x >= X * CW && x < X * CW + CW && y >= Y * CH && y < Y * CH + CH) { const j = (y - Y * CH) * CW + x - X * CW; seen[j] = 1; if (small) out[j] = 0; } }
+  }
+  if (B.rf.size > 3000) B.rf.clear(); B.rf.set(key, out); return out;
+}
+function rf0CellBlocks(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8); if (!B.rf0) B.rf0 = new Map(); const hit = B.rf0.get(key); if (hit) return hit;
+  const out = new Uint8Array(N); if (B.rf0.size > 3000) B.rf0.clear(); B.rf0.set(key, out);
+  if (!inRealm(X, Y)) return out;
+  const rad = L.rule.smooth | 0, R1 = rad + 1, MX = BMAX + R1 + 1, w = CW + 2 * MX, h = CH + 2 * R1, gx0 = X * CW - MX, gy0 = Y * CH - R1, q = new Int32Array(w * h), wr = new Uint8Array(w * h), cw8 = new Uint8Array(w * h);
+  for (let cy = Math.floor(gy0 / CH); cy <= Math.floor((gy0 + h - 1) / CH); cy++) for (let cx = Math.floor(gx0 / CW); cx <= Math.floor((gx0 + w - 1) / CW); cx++) {
+    const qc = qCell(L, cx, cy), wc = L.rule.holdWater !== 0 ? wetCell(L, cx, cy) : null, water = inRealm(cx, cy) && L.realm.land[cy * RW + cx] === LAND.WATER && !L.realm.ford[cy * RW + cx];
+    for (let ty = 0; ty < CH; ty++) { const y = cy * CH + ty - gy0; if (y < 0 || y >= h) continue;
+      for (let tx = 0; tx < CW; tx++) { const x = cx * CW + tx - gx0; if (x < 0 || x >= w) continue; const i = y * w + x; q[i] = qc[ty * CW + tx]; if (wc) wr[i] = wc[ty * CW + tx]; if (water) cw8[i] = 1; } }
+  }
+  const held = new Uint8Array(w * h);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x; let v = cw8[i]; if (!v) for (let dy = -1; dy <= 1 && !v; dy++) for (let dx = -1; dx <= 1; dx++) if (wr[i + dy * w + dx]) { v = 1; break; } held[i] = v; }
+  for (let i = 0; i < w * h; i++) if (held[i] && q[i] >= 0) q[i] = -1;
+  const DY = [], HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; if (rad) while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); cnt += 2 * hw + 1; }
+  const th = L.rule.levels[0] * cnt;
+  const w1 = w + 1, P = new Int32Array(w1 * h); for (let y = 0; y < h; y++) { let a = 0; const o = y * w1; for (let x = 0; x < w; x++) { a += q[y * w + x]; P[o + x + 1] = a; } }
+  const sAt = (x, y) => { let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w1 + x; s += P[o + HW[r] + 1] - P[o - HW[r]]; } return s; };
+  for (let tx = 0; tx < CW;) {
+    const [b0, b1] = blockOf(L.seed, X * CW + tx), xa = b0 - gx0, xb = b1 - gx0;
+    for (let ty = 0; ty < CH; ty++) {
+      const y = ty + R1; let s = 0, low = false;
+      for (let x = xa; x < xb; x++) { if (held[y * w + x] || inlandOf(gx0 + x, Y * CH + ty) < RAISE_OFF + 1) { low = true; break; } s += sAt(x, y); }
+      if (low || s < th * (xb - xa)) continue;
+      for (let x = Math.max(xa, MX); x < Math.min(xb, MX + CW); x++) out[ty * CW + x - MX] = 1;
+    }
+    tx = b1 - X * CW;
   }
   return out;
 }
@@ -1271,6 +1339,30 @@ export function regionBanks(L, ra, rb) {
 // the regions' lists made so far (the worker sends them to the page) and a list made elsewhere, taken as it is
 export const madeRegionBanks = L => { const B = bkOf(L), out = []; if (B.reg) for (const [k, banks] of B.reg) out.push({ ra: Math.floor(k / 100), rb: k % 100, banks: banks.map(b => ({ ...b })) }); return out; };
 export const presetRegionBanks = (L, lists) => { const B = bkOf(L); if (!B.reg) B.reg = new Map(); for (const r of lists || []) { const k = r.ra * 100 + r.rb; if (!B.reg.has(k)) B.reg.set(k, r.banks.map(b => ({ ...b }))); } };
+// map-levels-design-1 prototype: one way up per raised piece per place. A piece is a 4-connected part of the terraced field (rfCell) inside one place; a piece that holds no realm stair's way gets a site on
+// its own straight south face (6 columns lipped on one row, the rows above raised, the foot rows low and dry), the way's two columns inside the place. Read from the field only: the same in every window.
+function pieceWays(L, X, Y) {
+  const B = bkOf(L); if (!B.pw) B.pw = new Map(); const key = (X + 8) * 1000 + (Y + 8), hit = B.pw.get(key); if (hit) return hit;
+  const out = []; B.pw.set(key, out); if (!inRealm(X, Y)) return out;
+  const rf = rfCell(L, X, Y), x0c = X * CW, y0c = Y * CH, lab = new Int32Array(N).fill(-1), comps = [];
+  for (let i = 0; i < N; i++) { if (!rf[i] || lab[i] >= 0) continue; const id = comps.length, q = [i]; lab[i] = id;
+    for (let h = 0; h < q.length; h++) { const j = q[h], x = j % CW, y = (j / CW) | 0; for (let d = 0; d < 4; d++) { const a = x + NB4X[d], b = y + NB4Y[d]; if (a < 0 || b < 0 || a >= CW || b >= CH) continue; const m = b * CW + a; if (rf[m] && lab[m] < 0) { lab[m] = id; q.push(m); } } }
+    comps.push(q); }
+  const has = new Uint8Array(comps.length);
+  for (const st of L.stairs.values()) { if (st.X < X - 2 || st.X > X + 2 || st.Y < Y - 1 || st.Y > Y + 1) continue; const s = siteOf(L, st);
+    for (const dx of [2, 3]) { const x = s.x0 + dx - x0c, y = s.lip - y0c; if (x >= 0 && y >= 0 && x < CW && y < CH && lab[y * CW + x] >= 0) has[lab[y * CW + x]] = 1; } }
+  const foot = footRoom(L.rule.faceRows);
+  const ok = (gx, ly) => { for (let x = gx; x < gx + SITE_W; x++) { for (let y = ly - SITE_UP; y <= ly; y++) if (!rfAt(L, x, y)) return false; for (let y = ly + 1; y <= ly + foot; y++) if (rfAt(L, x, y) || landWet(L, x, y)) return false; }
+    return raisableSite(L, gx, ly); };
+  for (let id = 0; id < comps.length; id++) {
+    if (has[id] || comps[id].length < 12) continue;
+    let pick = null;
+    for (let y = CH - 1; y >= 0 && !pick; y--) for (let d = 0; d <= CW && !pick; d++) for (const sg of d ? [1, -1] : [1]) { const tx = (CW >> 1) - 3 + sg * d;
+      if (tx + 2 < 0 || tx + 3 >= CW || lab[y * CW + tx + 2] !== id) continue; if (ok(x0c + tx, y0c + y)) { pick = { x0: x0c + tx, lip: y0c + y }; break; } }
+    if (pick) out.push(pick);
+  }
+  return out;
+}
 export function banksIn(L, X, Y) {
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.banks.get(key); if (hit) return hit;
   const WR = L.rule.window, out = [], gx0 = (X - WR) * CW, gx1 = (X + WR + 1) * CW, gy0 = (Y - WR) * CH, gy1 = (Y + WR + 1) * CH;
@@ -1286,6 +1378,10 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (st.X < X - WR - 2 || st.X > X + WR + 2 || st.Y < Y - WR - 1 || st.Y > Y + WR) continue;   // land-reach-1: a site may lie in the cell east or west of its stair's (siteOf)
     const s = siteOf(L, st), lx = s.x0 - gx0, ly = s.lip - gy0;
     if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true });
+  }
+  if (process.env.MB_PIECE_WAYS === '1') for (let cy = Y - WR; cy <= Y + WR; cy++) for (let cx = X - WR; cx <= X + WR; cx++) for (const b of pieceWays(L, cx, cy)) {
+    const lx = b.x0 - gx0, ly = b.lip - gy0;
+    if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true, piece: true });
   }
   if (L.rule.banks !== 0 && !BANKS_SKIP) for (const b of banksIn(L, X, Y)) {   // rupar-banks-7-1: a held-straight site that stays blocked (no way[]), the part's one bank
     const lx = b.x0 - gx0, ly = b.lip - gy0;

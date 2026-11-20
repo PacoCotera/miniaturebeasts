@@ -115,9 +115,12 @@ const WATER = {
   meres:    { cap: 0.15, riv: 110, lake: 0.17, pool: 0.85, pond: 0.25 },
 };
 const LEVEL_SHARES = { mixed: G2.LV_PCT, marsh: [15, 35, 50], meres: [15, 35, 50] };   // the low belts keep a third level; the rest are today's
+// map-levels-design-1 prototype: MB_RAISE_Q (0..1) is the share of each slot's dry cells kept low (today lv[0] = 15%: 85% raised before water)
+const RAISE_Q = process.env.MB_RAISE_Q ? +process.env.MB_RAISE_Q : null;
 export const biomeTargets = biome => {
   const B = BIOME_GROUND[biome] || null;
-  return { wood: B ? B.wood : G2.WOOD_N, rock: B ? B.rock : G2.ROCK_N, lv: LEVEL_SHARES[biome] || (B ? B.lv : G2.LV_PCT), ...WATER[biome] };
+  const lv = LEVEL_SHARES[biome] || (B ? B.lv : G2.LV_PCT);
+  return { wood: B ? B.wood : G2.WOOD_N, rock: B ? B.rock : G2.ROCK_N, lv: RAISE_Q === null ? lv : [Math.round(RAISE_Q * 100), ...lv.slice(1)], ...WATER[biome] };
 };
 
 // ---- blending: a region's parameters are its own inside and blend over BLEND cells at each shared border ----
