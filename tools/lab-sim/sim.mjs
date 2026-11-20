@@ -1,5 +1,5 @@
 // lab-sim-1: a headless bot plays the Station's lab on the real genetics engine (see engine.mjs).
-// Model per the brief (core-loops-3 loops.md sections 2-3). Assumptions are listed in ASSUMPTIONS and
+// Model per the brief (the samples and the lab's deduction game). Assumptions are listed in ASSUMPTIONS and
 // written into the results.
 import { rng, drawGenome, outcomes, crossChild, podOf, countOn, kinOf, refuses, SELF_KINSHIP, BLENDS } from "./engine.mjs";
 
