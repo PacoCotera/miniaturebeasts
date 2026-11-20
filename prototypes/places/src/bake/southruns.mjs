@@ -1,4 +1,4 @@
-// The cliff by "rim and face" (cliff-slice-1, method.md of cliff-research-1): the cliff layer's dual-grid over sheet draws the rim all round the raised top (over-cliff.png: P1), and only the south face is placed
+// The cliff by "rim and face" (cliff-slice-1): the cliff layer's dual-grid over sheet draws the rim all round the raised top (over-cliff.png: P1), and only the south face is placed
 // as pieces. The pieces, their sizes, anchors and foot lines are the rows of art/places/pieces.json (relief.mjs reads it); the cell parts (what blocks) are relief.mjs's one function; the rule maps
 // (art/places/rules/, run by cliffrules.mjs) still find the lip cells; WHICH piece goes WHERE is cliffrules.mjs's:
 //   face     under every south lip cell L, rows L + 1 .. L + 3: one of three plain columns (cliff-face-1..3), by world position

@@ -84,7 +84,7 @@ export const SUNLIT_FROM = '#5e9357';
 export const SCRUB_FROM = '#589054', SCRUB_GROUND = '#82a05a';
 // the raised meadow ground (the art director's cliff-plateau-raised-1, mibi-art 2bc909714): the signed meadow fill and tone through the "raised" light table, day files, byte for byte
 export const RAISED = { commit: '2bc909714', dir: 'art-jobs/2026-11-13-cliff-plateau-raised-1/work' };
-// the cliff (cliff-slice-1, method.md of cliff-research-1): the rim sheet, three face columns and two end caps are cut and recoloured from Ninja Adventure TilesetRelief.png (CC0); the cast shade is a dithered palette shade
+// the cliff (cliff-slice-1): the rim sheet, three face columns and two end caps are cut and recoloured from Ninja Adventure TilesetRelief.png (CC0); the cast shade is a dithered palette shade
 // (tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py); each cut file's .steps.json replays it from the CC0 file (tools/art/poststeps.py replay, --sources the kits folder)
 export const CLIFF_FROM = 'ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png';
 export const WAYUP_U_FROM = 'art-jobs/2026-11-14-cliff-wayup-2/work/raw/nbp-edit.png';   // the way up U's paid raw (call 1, Nano Banana Pro edit)

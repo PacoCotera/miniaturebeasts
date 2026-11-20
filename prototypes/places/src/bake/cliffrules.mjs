@@ -1,4 +1,4 @@
-// The cliff's face pieces of a level (cliff-slice-1, method.md of cliff-research-1, R1, R2, R4). The rim is not placed here: it is the cliff layer's dual-grid over sheet (over-cliff.png, art/gen7/layers.json), drawn by the
+// The cliff's face pieces of a level (cliff-slice-1). The rim is not placed here: it is the cliff layer's dual-grid over sheet (over-cliff.png, art/gen7/layers.json), drawn by the
 // dual grid like any ground. What is placed is the south face and its shade, from relief.mjs's land (its raised cells and way-up cells):
 //   face     one of three plain columns (cliff-face-1..3, 48 x 144) under every south lip cell L, top at row L + 1; the column is (world x + hash(seed, world y of the lip)) mod 3
 //   caps     the west cap (cliff-cap-w) on the first cell of a south run, the east cap (cliff-cap-e) on its last; a way-up's gap is no run end

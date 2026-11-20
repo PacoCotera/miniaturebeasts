@@ -13,7 +13,7 @@ import PIECES from '../../../../art/places/pieces.json' with { type: 'json' };
 export { PIECES };
 export const PART = { LOW: 0, TOP: 1, RING: 2, FACE: 3, FLANK: 4, FOOT: 5, WAY: 6 };
 export const BLOCKS = new Set([PART.RING, PART.FACE, PART.FLANK]);   // what no prop may stand on or under
-// What the player cannot walk: only cells the cliff draws something on (the rim, the face). A flank cell (beside a side run, past a run's end) draws nothing since cliff-slice-1, so it walks (no invisible walls; method.md R5).
+// What the player cannot walk: only cells the cliff draws something on (the rim, the face). A flank cell (beside a side run, past a run's end) draws nothing since cliff-slice-1, so it walks (no invisible walls).
 export const WALLS = new Set([PART.RING, PART.FACE]);
 export const FACE_ROWS = PIECES.faceRows;      // the face's height in rows, counted from the lip row: the foot line of a face is its lip row plus this
 export const ROWS_ABOVE = PIECES.rowsAbove;    // rows of a full column above the lip row
