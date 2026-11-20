@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs';
 for (const f of ['_site/play/face/dist/face.mjs', '_site/play/face/dist/face.wasm']) if (!existsSync(f)) { console.log('missing from the assembled site: ' + f); process.exit(1); }
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + '/' : import.meta.url);
 const { chromium } = require('playwright');
-const pages = ['/','/play/exploration/?test','/play/station/', '/play/', '/play/test/'];   // the game's public addresses
+const pages = ['/','/play/exploration/?test','/play/station/', '/play/', '/play/test/', '/play/lab/'];   // the game's public addresses
 const browser = await chromium.launch();
 let failed = false;
 for (const path of pages) {
@@ -23,6 +23,10 @@ for (const path of pages) {
   }
   if (path.includes('station')) {
     for (const k of ['KeyR', 'ArrowRight', 'Enter', 'KeyL', 'KeyB', 'KeyD', 'KeyH']) { await page.keyboard.press(k); await page.waitForTimeout(150); }
+  }
+  if (path === '/play/lab/') {   // the grey lab bench (Loikas only): its four tabs by their keys, then a bench that drew
+    await page.waitForSelector('.sq', { timeout: 5000 }).catch(() => errors.push('lab: the bench drew no trait squares'));
+    for (const k of ['KeyR', 'KeyB', 'KeyL', 'KeyH']) { await page.keyboard.press(k); await page.waitForTimeout(150); }
   }
   if (path === '/play/' && page.frames().length < 3) errors.push('play: the Station and Companion frames did not load');
   if (path === '/play/test/' && page.frames().length < 3) errors.push('test: the Station and Companion frames did not load');
