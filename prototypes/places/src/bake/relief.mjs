@@ -12,7 +12,9 @@ import PIECES from '../../../../art/places/pieces.json' with { type: 'json' };
 
 export { PIECES };
 export const PART = { LOW: 0, TOP: 1, RING: 2, FACE: 3, FLANK: 4, FOOT: 5, WAY: 6 };
-export const BLOCKS = new Set([PART.RING, PART.FACE, PART.FLANK]);
+export const BLOCKS = new Set([PART.RING, PART.FACE, PART.FLANK]);   // what no prop may stand on or under
+// What the player cannot walk: only cells the cliff draws something on (the rim, the face). A flank cell (beside a side run, past a run's end) draws nothing since cliff-slice-1, so it walks (no invisible walls; method.md R5).
+export const WALLS = new Set([PART.RING, PART.FACE]);
 export const FACE_ROWS = PIECES.faceRows;      // the face's height in rows, counted from the lip row: the foot line of a face is its lip row plus this
 export const ROWS_ABOVE = PIECES.rowsAbove;    // rows of a full column above the lip row
 export const COLUMNS = PIECES.columns;         // the south columns S1 .. S6
@@ -70,9 +72,20 @@ function partCompute(A, x, y) {
   if (A.raised(x, y)) return A.low(x + 1, y) || A.low(x - 1, y) || A.low(x, y + 1) || A.low(x, y - 1) ? PART.RING : PART.TOP;
   if (A.raised(x, y - 1) && !A.way(x, y - 1)) return PART.FACE;
   if (endAt(A, x, y) || A.raised(x - 1, y) || A.raised(x + 1, y)) return PART.FLANK;
-  // rows L + 2 .. L + FACE_ROWS under a south lip are rock too (face, blocks); the one row L + FACE_ROWS + 1 is the foot (walks). The first raised cell going up decides; a way up's cut stays low.
-  for (let d = 2; d <= FACE_ROWS + 1; d++) if (A.raised(x, y - d)) { if (A.way(x, y - d) || A.way(x, y - d + 1)) break; if (!A.low(x, y - d + 1)) break; return d <= FACE_ROWS ? PART.FACE : PART.FOOT; }
+  const d = rockRow(A, x, y); if (d) return d <= FACE_ROWS ? PART.FACE : PART.FOOT;
   return PART.LOW;
+}
+// rows L + 2 .. L + FACE_ROWS under a south lip are rock too (face, blocks); the one row L + FACE_ROWS + 1 is the foot (walks). The first raised cell going up decides; a way up's cut stays low. Returns the row's depth d, or 0.
+function rockRow(A, x, y) {
+  for (let d = 2; d <= FACE_ROWS + 1; d++) if (A.raised(x, y - d)) { if (A.way(x, y - d) || A.way(x, y - d + 1)) break; if (!A.low(x, y - d + 1)) break; return d; }
+  return 0;
+}
+// Does the walk rule block this cell (relief.mjs WALLS)? A flank cell that lies under a lip's face rows is drawn as face (the face column is drawn at L + 1 .. L + FACE_ROWS under every south lip cell), so it blocks too.
+export function walled(A, x, y) {
+  const p = partAt(A, x, y);
+  if (WALLS.has(p)) return true;
+  if (p !== PART.FLANK) return false;
+  const d = rockRow(A, x, y); return d > 0 && d <= FACE_ROWS;
 }
 
 // The parts of a rectangle of the land: Uint8Array of w x h (cells x0 .. x0 + w - 1, y0 .. y0 + h - 1)

@@ -7,7 +7,7 @@
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, NE, NW, SE, SW, hash32, splitCode } from '../dualgrid.mjs';
-import { BLOCKS, PART, landOf, partAt } from './relief.mjs';
+import { walled, PART, landOf, partAt } from './relief.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
@@ -18,7 +18,7 @@ export function cliffInfo(ir, terrains) {
   const { w, h } = ir, V = cliff.value, at = (x, y) => ir.terrain[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] === V;   // outside the place reads as the nearest edge cell
   const wayup = new Set(); for (const a of ir.wayups || []) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayup.add(y * w + x);
   const info = { isCliff: at, wayup, blockCells: new Set(), ringCells: new Set() }, A = landOf(ir, info);   // ringCells: the lip alone, which the level rules treat as a prop-sized obstacle
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (BLOCKS.has(p)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (walled(A, x, y)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
   // the way up U (a WayUp area with `u`): no step between its cells and the cells beside it except on row L + 3, so the flanking columns block on the notch's rows L - 2, L - 1 and on L + 2 (rows L and L + 1 beside it are ring and face already)
   for (const a of ir.wayups || []) if (a.u) for (const x of [a.x - 1, a.x + a.w]) for (const y of [a.y - 2, a.y - 1, a.y + 2]) if (x >= 0 && y >= 0 && x < w && y < h) info.blockCells.add(y * w + x);
   return info;
