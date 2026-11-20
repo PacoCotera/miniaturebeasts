@@ -218,12 +218,20 @@ export function partnersFor(st, id) {   // who can stand opposite `id`: your oth
 }
 export function crossCandidates(st) { return [...st.adults, ...st.metNow]; }
 function cloneW(st) { return { recs: JSON.parse(JSON.stringify(st.recs)), K: JSON.parse(JSON.stringify(st.K)) }; }
-// The four children of a cross, each one pairing of the parents' Markings copies (by the likeliest count each parent has), and what each would prove by the kin logic: a child that comes out pale, or not.
+// A chance as "1 in N" (nearest whole N) or, when that is off by more than 3 points, "about N in M" (M = 10).
+export function chanceWord(p) {
+  const n = Math.max(1, Math.round(1 / p));
+  if (Math.abs(1 / n - p) <= 0.03) return `1 in ${n}`;
+  return `about ${Math.round(p * 10)} in 10`;
+}
+// The cross of two parents: the chance of a pale child, weighed over what each parent's Markings may still be (the engine's forecast for each pair of counts), and what a pale or a plain child would prove by the kin logic.
 export function previewCross(frame, st, a, b) {
   const lookup = lookupOf(st), ra = st.recs[a], rb = st.recs[b];
   const k = kinOf(ra, rb, lookup);
-  const na = pencil("M", st.K[a].M), nb = pencil("M", st.K[b].M);
-  const alleles = (n) => [...Array(n).fill("on"), ...Array(2 - n).fill("off")];
+  const wa = weights("M", st.K[a].M), wb = weights("M", st.K[b].M);
+  let pPale = 0;
+  st.K[a].M.forEach((x, i) => st.K[b].M.forEach((y, j) => { pPale += wa[i] * wb[j] * outcomes(frame, "M", x, y, k)[2]; }));
+  const bothPale = st.K[a].M.length === 1 && st.K[a].M[0] === 2 && st.K[b].M.length === 1 && st.K[b].M[0] === 2;
   const proveOf = (pale) => {
     const W = cloneW(st), tmp = { id: -1, name: "child", kind: "own", genome: ra.genome, parents: [a, b], k, gen: 0 };
     W.recs[-1] = tmp; W.K[-1] = { M: pale ? [2] : [0, 1], C: [0, 1, 2], E: true, D: true, F: true, shown: true, habits: [] };
@@ -232,10 +240,8 @@ export function previewCross(frame, st, a, b) {
     return lines;
   };
   const yes = proveOf(true), no = proveOf(false);
-  const cells = [];
-  for (const x of alleles(na)) for (const y of alleles(nb)) { const pale = x === "on" && y === "on"; cells.push({ pale, proves: pale ? yes : no }); }
-  const p = outcomes(frame, "M", na, nb, k);
-  return { cells, k, na, nb, pPale: p[2] };
+  const less = no.length ? [] : [a, b].filter((id) => st.K[id].M.length > 1 && st.K[id].M.includes(1));   // a plain child makes a parent that may hide pale less likely to
+  return { k, pPale, pPlain: 1 - pPale, yes, no, less, bothPale };
 }
 export function startCross(frame, st, a, b, now, budMs) {
   const lookup = lookupOf(st), ra = st.recs[a], rb = st.recs[b];

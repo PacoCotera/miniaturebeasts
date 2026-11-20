@@ -48,15 +48,16 @@ function carriers() {
   return { st, a: home.id, b: b.id };
 }
 
-test("the cross preview: four children, only the pale one proves a parent hides pale", () => {
+test("the cross preview: a pale child proves both parents hide pale; two unproven parents give under 1 in 4 pale, and a plain child still tells something", () => {
   const { st, a, b } = carriers();
   const p = previewCross(frame, st, a, b);
-  assert.equal(p.cells.length, 4);
-  assert.equal(p.cells.filter((c) => c.pale).length, 1, "pencils lean to one copy each: one child in four is pale");
-  const pale = p.cells.find((c) => c.pale);
-  assert.deepEqual(pale.proves.map((x) => x.id).sort(), [a, b].sort());
-  assert.ok(pale.proves.every((x) => x.word === "hides pale"));
-  assert.ok(p.cells.filter((c) => !c.pale).every((c) => c.proves.length === 0), "the other three tell nothing new");
+  assert.deepEqual(p.yes.map((x) => x.id).sort(), [a, b].sort());
+  assert.ok(p.yes.every((x) => x.word === "hides pale"));
+  assert.ok(p.pPale < 0.25, "weighed over what each Markings may still be: below 1 in 4");
+  assert.ok(Math.abs(p.pPale + p.pPlain - 1) < 1e-9);
+  assert.equal(p.no.length, 0);
+  assert.deepEqual(p.less.sort(), [a, b].sort(), "not 'nothing new': both are less likely to hide pale");
+  assert.equal(p.bothPale, false);
 });
 
 test("a cross costs 2 Energy + 4 Essence, fills the incubator, and a pale hatch inks both parents with the reason", () => {

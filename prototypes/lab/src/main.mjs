@@ -3,7 +3,7 @@
 import { PROTOTYPES } from "../../ui/site-base.mjs";
 import { readOptions } from "../../play/src/options.mjs";
 import { WORDS as W } from "./words.mjs";
-import { newGame, expedition, questionsFor, askWord, startSample, tickBench, previewCross, startCross, openBud, partnersFor, crossCandidates, squareOf, allKnown, goal, TRAIT_ORDER, COST, LANDS, wildLand, valueWord } from "./rules.mjs";
+import { newGame, expedition, questionsFor, askWord, startSample, tickBench, previewCross, chanceWord, startCross, openBud, partnersFor, crossCandidates, squareOf, allKnown, goal, TRAIT_ORDER, COST, LANDS, wildLand, valueWord } from "./rules.mjs";
 
 const SAVE_KEY = "mb-save-v8-lab";   // starts with "mb-save-v8": the play page's Start fresh erases it with the rest
 const OPT = readOptions();
@@ -117,11 +117,16 @@ function crossHtml() {
   if (b == null) mid = `<div class="abs note" style="left:16px;top:96px;width:286px">${W.pickParent}. Go out to meet a wild one, or hatch another Loika.</div>`;
   else {
     const p = previewCross(frame, st, a, b);
-    mid = `<div class="abs label" style="left:8px;top:150px">${W.kids}</div>` + p.cells.map((c, i) => {
-      const sq = c.pale ? `<div class="sq known"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${GLYPH.markings}</svg><span class="v">pale</span></div>` : `<div class="sq unknown"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${GLYPH.markings}</svg><span class="v">?</span></div>`;
-      const pr = [...new Set(c.proves.map((x) => x.word))].map((w) => `${c.proves.filter((x) => x.word === w).map((x) => esc(st.recs[x.id].name)).join(" + ")} ${esc(w)}`);
-      return `<div class="kid" style="left:${8 + i * 76}px;top:166px"><div class="item">${W.child}</div>${sq}<div class="p${pr.length ? " yes" : ""}">${pr.length ? "proves " + pr.join(", ") : W.nothingNew}</div></div>`;
-    }).join("");
+    const proves = (lines) => [...new Set(lines.map((x) => x.word))].map((w) => `${lines.filter((x) => x.word === w).map((x) => esc(st.recs[x.id].name)).join(" + ")} ${esc(w)}`);
+    const icon = (v, cls) => `<div class="sq ${cls}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${GLYPH.markings}</svg><span class="v">${v}</span></div>`;
+    const card = (left, head, chance, lines, cls) => `<div class="kid" style="left:${left}px;top:166px;width:146px"><div class="p yes" style="width:146px;font-size:11px">${head}${chance ? " · " + chance : ""}</div>${icon(cls === "known" ? "pale" : "?", cls)}<div class="p${lines.length ? " yes" : ""}" style="width:146px">${lines.map((l) => esc(l)).join("<br>")}</div></div>`;
+    if (p.bothPale) mid = `<div class="abs label" style="left:8px;top:150px">${W.kids}</div>` + card(8, W.paleEvery, "", [], "known");
+    else {
+      const py = proves(p.yes), pn = proves(p.no);
+      const yesLines = py.map((t) => "proves " + t);
+      const noLines = pn.length ? pn.map((t) => "proves " + t) : p.less.length ? p.less.map((id) => `${st.recs[id].name} ${W.lessLikely}`) : [W.nothingNew];
+      mid = `<div class="abs label" style="left:8px;top:150px">${W.kids}</div>` + card(8, W.pale, chanceWord(p.pPale), yesLines, "known") + card(164, W.plain, chanceWord(p.pPlain), noLines, "unknown");
+    }
   }
   const can = b != null && !bud && st.supplies.E >= COST.E && st.supplies.Es >= COST.Es;
   const label = ready ? W.open : W.crossBtn;
