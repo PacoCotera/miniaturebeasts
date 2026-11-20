@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>1 the bench (Station)</title><link rel="stylesheet" href="lab.css"></head>
+<body class="station"><div id="screen">
+  <div class="head"><b data-w="head.station"></b><span data-w="head.bench"></span>
+    <span class="legend"><span><i class="sw ink"></i><span data-w="legend.ink"></span></span><span><i class="sw pencil"></i><span data-w="legend.pencil"></span></span><span><i class="sw open"></i><span data-w="legend.open"></span></span></span>
+    <span class="sp"></span><span class="draft" data-w="draft"></span><span class="dim" data-w="head.time"></span></div>
+  <div class="goal"><span class="gl" data-w="goal.label"></span><span data-w="goal.text"></span><span class="bar"><i></i></span><span data-w="goal.near"></span><span class="sp" style="flex:1"></span><span class="dim" data-w="goal.next"></span></div>
+
+  <div id="board" data-chain="pip>moss@330,moss>bramble@232">
+    <div class="card" id="tita" data-name="Tita" data-tag="tag.yours.grown" style="left:12px;top:62px"
+      data-t="ink:v.plain.nopale, ink:v.bare, ink:v.eyes.thinwide, ink:v.drive.steady, open:v.open"></div>
+    <div class="card wild" id="bramble" data-name="Bramble" data-tag="tag.wild.marsh" style="left:204px;top:62px"
+      data-t="ink:v.plain.carries new, ink:v.crest.carries, open:v.eyes.open, pencil:v.drive.pencil, open:v.open"></div>
+
+    <div class="card" id="wren" data-name="Wren" data-tag="tag.yours.grown" data-parents="tita bramble" style="left:12px;top:199px"
+      data-t="pencil:v.plain.pencil.1in2 new, ink:v.crest.carries, open:v.eyes.open, open:v.open, open:v.open"></div>
+    <div class="card focus" id="moss" data-name="Moss" data-tag="tag.yours.grown" data-parents="tita bramble" style="left:204px;top:199px"
+      data-t="ink:v.plain.carries new, ink:v.crest.carries, open:v.eyes.open, ink:v.drive.bursts, open:v.open"></div>
+    <div class="card wild" id="reed" data-name="Reed" data-tag="tag.wild.brook" style="left:396px;top:199px"
+      data-t="ink:v.pale, pencil:v.crest.pencil.1in2, ink:v.eyes.thinwide, open:v.open, ink:v.eff.thrifty"></div>
+
+    <div class="card" id="pip" data-name="Pip" data-tag="tag.yours.hatched" data-parents="moss reed" style="left:300px;top:336px"
+      data-t="ink:v.pale new, open:v.crest.open, open:v.eyes.open, open:v.open, open:v.open"></div>
+
+    <div class="pop" style="left:12px;top:340px;width:270px"><span class="k">Moss · <span data-w="trait.markings"></span> · <span data-w="reason.tap"></span></span><span data-w="reason.moss.markings"></span></div>
+
+    <div class="side" style="left:596px;top:62px;width:192px">
+      <h4 data-w="clue.wild.title"></h4>
+    </div>
+    <div class="card wild" id="fen" data-name="Fen" data-tag="tag.wild.marsh" style="left:600px;top:80px"
+      data-t="pencil:v.plain.pencil.1in3, open:v.crest.open, open:v.eyes.open, open:v.open, open:v.open"></div>
+    <div class="card wild" id="sorrel" data-name="Sorrel" data-tag="tag.wild.brook" style="left:600px;top:205px"
+      data-t="ink:v.plain.nopale, ink:v.bare, ink:v.eyes.thin, open:v.open, ink:v.eff.ordinary"></div>
+
+    <div class="side" style="left:600px;top:332px;width:176px">
+      <h4 data-w="clues.title"></h4>
+      <div class="clue done"><i class="ic"></i><span><span data-w="clue.pip"></span><span class="w" data-w="clue.pip.when"></span></span></div>
+      <div class="clue"><i class="ic"></i><span><span data-w="clue.fen"></span><span class="w" data-w="clue.fen.when"></span></span></div>
+      <div class="clue"><i class="ic"></i><span><span data-w="clue.sorrel"></span><span class="w" data-w="clue.sorrel.when"></span></span></div>
+    </div>
+
+    <div class="chain" style="left:12px;top:454px;width:576px;padding:3px 8px;font-size:11.5px;line-height:16px"><span data-w="chain.text"></span></div>
+  </div>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>

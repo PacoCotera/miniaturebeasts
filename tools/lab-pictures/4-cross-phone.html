@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=390"><title>4 the Cross screen (phone)</title><link rel="stylesheet" href="lab.css">
+<style>
+.tell { display: flex; align-items: flex-start; gap: 6px; padding: 3px 0; border-top: 1px solid var(--g1); font-size: 10.5px; line-height: 13px; }
+.tell .ic { width: 10px; height: 10px; margin-top: 2px; border-radius: 2px; background: var(--g1); border: 1px solid var(--g2); flex: none; }
+.tell .odds { font-size: 10.5px; min-width: 44px; text-align: right; flex: none; }
+</style></head>
+<body class="phone" data-note="Two adults picked; the list says what each kind of child would settle, and how often.">
+<div id="screen">
+  <div class="head" style="height:26px"><b data-w="head.cross"></b><span class="sp"></span><span class="dim" style="font-size:10.5px" data-w="head.time"></span></div>
+  <div id="board">
+    <div class="card" id="wren" data-name="Wren" data-tag="cross.a.tag" style="left:6px;top:32px"
+      data-t="pencil:v.plain.pencil.1in2, ink:v.crest.carries, open:v.eyes.open, open:v.open, open:v.open"></div>
+    <div class="card wild" id="reed" data-name="Reed" data-tag="tag.wild.met" style="left:162px;top:32px"
+      data-t="ink:v.pale, pencil:v.crest.pencil.1in2, ink:v.eyes.thinwide, open:v.open, ink:v.eff.thrifty"></div>
+    <div class="panel" style="left:6px;top:144px;width:306px;height:158px;padding:5px 8px">
+      <h3 style="font-size:12.5px;margin-bottom:3px" data-w="cross.tell.title"></h3>
+      <div class="tell"><i class="ic" style="background:var(--ink);border-color:var(--ink)"></i><span data-w="cross.tell.pale"></span><span class="odds" data-w="cross.tell.pale.odds"></span></div>
+      <div class="tell"><i class="ic"></i><span data-w="cross.tell.plain"></span><span class="odds" data-w="cross.tell.plain.odds"></span></div>
+      <div class="tell"><i class="ic" style="background:var(--ink);border-color:var(--ink)"></i><span data-w="cross.tell.bare"></span><span class="odds" data-w="cross.tell.bare.odds"></span></div>
+      <div class="tell"><i class="ic"></i><span data-w="cross.tell.eyes"></span><span class="odds" data-w="cross.tell.eyes.odds"></span></div>
+    </div>
+    <div style="position:absolute;left:8px;top:306px;width:220px;font-size:10.5px;line-height:13.5px">
+      <div style="font-weight:500" data-w="cross.cost"></div>
+      <div class="dim" style="color:var(--g4)" data-w="cross.have"></div>
+      <div style="font-weight:500" data-w="cross.incubator"></div>
+    </div>
+    <div style="position:absolute;right:6px;top:312px"><span class="btn" style="padding:8px 16px" data-w="cross.button"></span></div>
+  </div>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>

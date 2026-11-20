@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>3 a trait seen at home (Station)</title><link rel="stylesheet" href="lab.css"></head>
+<body class="station"><div id="screen">
+  <div class="head"><b data-w="head.station"></b><span data-w="head.vivarium"></span><span class="sp"></span><span class="draft" data-w="draft"></span><span class="dim" data-w="head.time"></span></div>
+  <div id="board">
+    <div class="box" style="left:12px;top:40px;width:480px;height:330px;background:var(--g1)"></div>
+    <div class="box dark" style="left:60px;top:300px;width:150px;height:46px" data-w="home.slot.pond"></div>
+    <div class="box dark" style="left:290px;top:120px;width:150px;height:200px;align-items:flex-start;padding-top:8px" data-w="home.slot.log"></div>
+    <div class="box" style="left:250px;top:268px;width:58px;height:40px;background:#fff;border:1.5px solid var(--g5);color:var(--g5);font-weight:600" data-w="home.slot.sorrel"></div>
+    <div class="box" style="left:96px;top:236px;width:50px;height:36px;background:#fff" data-w="home.slot.tita"></div>
+    <svg style="position:absolute;left:0;top:0;width:800px;height:480px;overflow:visible">
+      <path d="M300,262 L330,236" stroke="#6b6b68" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+      <circle cx="336" cy="230" r="3" fill="#6b6b68"/>
+      <path d="M342,222 L372,190" stroke="#6b6b68" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+      <circle cx="378" cy="184" r="3" fill="#6b6b68"/>
+      <path d="M384,176 L410,140" stroke="#6b6b68" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+      <circle cx="414" cy="134" r="3" fill="#6b6b68"/>
+    </svg>
+    <div class="panel" style="left:12px;top:380px;width:480px;height:90px;padding:8px 12px">
+      <p style="font-size:14px;font-weight:500;margin-bottom:3px" data-w="home.title"></p>
+      <p class="dim" style="font-size:12px" data-w="home.first"></p>
+    </div>
+    <div class="card big wild focus" id="sorrel" data-name="Sorrel" data-tag="tag.wild.visiting" style="left:512px;top:40px;width:276px"
+      data-t="ink:v.plain.nopale, ink:v.bare, ink:v.eyes.thin, ink:v.drive.bursts new, ink:v.eff.ordinary"></div>
+    <div class="pop" style="left:512px;top:222px;width:276px;font-size:12.5px;line-height:17px"><span class="k">Sorrel · <span data-w="trait.drive"></span></span><span data-w="home.ink"></span></div>
+    <div class="chain" style="left:512px;top:300px;width:276px;font-size:14px;line-height:19px;padding:8px 10px"><b style="font-weight:600" data-w="home.full"></b><br><span style="color:var(--g5);font-size:12.5px" data-w="home.why"></span></div>
+  </div>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>

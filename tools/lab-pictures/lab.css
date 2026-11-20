@@ -1,0 +1,115 @@
+/* Grey pictures of the Loika lab bench (lab-pictures-1). Grey boxes, name tags and plain text; one accent (ink) only. */
+@font-face { font-family: "Inter"; font-weight: 400; src: url("../../prototypes/ui/fonts/inter/src/Inter-Regular-tnum.ttf"); }
+@font-face { font-family: "Inter"; font-weight: 500; src: url("../../prototypes/ui/fonts/inter/src/Inter-Medium-tnum.ttf"); }
+@font-face { font-family: "Inter"; font-weight: 600; src: url("../../prototypes/ui/fonts/inter/src/Inter-SemiBold-tnum.ttf"); }
+:root { --ink: #1f4fbf; --ink-soft: #e3eaf9; --g0: #f4f4f2; --g1: #e6e6e3; --g2: #cfcfcb; --g3: #9b9b97; --g4: #6b6b68; --g5: #2b2b2a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: "Inter", sans-serif; color: var(--g5); -webkit-font-smoothing: antialiased; }
+body.station { width: 800px; height: 480px; overflow: hidden; background: var(--g0); position: relative; }
+
+/* the screen (Station 800x480, or the phone's window) */
+#screen { position: relative; overflow: hidden; background: var(--g0); }
+body.station #screen { width: 800px; height: 480px; }
+.head { position: absolute; left: 0; right: 0; top: 0; height: 28px; background: var(--g1); border-bottom: 1px solid var(--g2); display: flex; align-items: center; gap: 14px; padding: 0 12px; font-size: 13px; }
+.head b { font-weight: 600; }
+.head .sp { flex: 1; }
+.head .dim { color: var(--g4); font-size: 12px; }
+.draft { font-size: 10.5px; color: var(--g4); border: 1px dashed var(--g3); padding: 1px 6px; border-radius: 3px; letter-spacing: .02em; }
+.legend { display: flex; gap: 10px; font-size: 11px; color: var(--g4); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 4px; }
+.sw { display: inline-block; width: 18px; height: 10px; border-radius: 2px; }
+.sw.ink { background: var(--ink); }
+.sw.pencil { border: 1px dashed var(--g4); }
+.sw.open { border: 1px dotted var(--g3); }
+
+.goal { position: absolute; left: 0; right: 0; top: 28px; height: 28px; white-space: nowrap; display: flex; align-items: center; gap: 10px; padding: 0 12px; font-size: 12.5px; border-bottom: 1px solid var(--g2); background: #fff; }
+.goal .gl { font-weight: 600; }
+.goal .bar { width: 64px; height: 8px; border: 1px solid var(--g3); border-radius: 4px; position: relative; overflow: hidden; }
+.goal .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 50%; background: var(--g4); }
+.goal .dim { color: var(--g4); }
+
+#board { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+svg.links { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+
+/* a card: name tag, a grey slot where the mibi's picture will go, five traits */
+.card { position: absolute; width: 176px; background: #fff; border: 1px solid var(--g3); border-radius: 6px; padding: 5px 7px 6px; }
+.card.wild { border-style: dashed; }
+.card .nm { display: flex; align-items: baseline; gap: 6px; height: 17px; }
+.card .nm b { font-size: 13px; font-weight: 600; }
+.card .nm span { font-size: 10.5px; color: var(--g4); white-space: nowrap; }
+.card .slot { position: absolute; right: 6px; top: 5px; width: 26px; height: 22px; background: var(--g1); border: 1px solid var(--g2); border-radius: 3px; font-size: 7px; color: var(--g3); display: flex; align-items: center; justify-content: center; }
+.tr { display: flex; align-items: center; height: 16px; margin-top: 1px; }
+.tr .tl { width: 55px; font-size: 10.5px; color: var(--g4); flex: none; }
+.tr .tv { flex: 1; font-size: 11.5px; height: 15px; line-height: 13px; padding: 0 4px; border-radius: 3px; white-space: nowrap; overflow: hidden; }
+.tv.ink { background: var(--ink); color: #fff; font-weight: 500; }
+.tv.pencil { border: 1px dashed var(--g4); color: var(--g4); font-style: italic; }
+.tv.open { border: 1px dotted var(--g3); color: var(--g3); }
+.tv.new { box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px var(--g5); }
+.card.focus { box-shadow: 0 0 0 2.5px var(--g5); }
+.card.faded { opacity: .45; }
+.card.big { width: 250px; padding: 8px 10px 9px; }
+.card.big .nm b { font-size: 16px; }
+.card.big .nm span { font-size: 12px; }
+.card.big .tr { height: 21px; }
+.card.big .tr .tl { width: 76px; font-size: 12.5px; }
+.card.big .tr .tv { font-size: 13.5px; height: 19px; line-height: 17px; }
+.card.big .slot { width: 40px; height: 32px; font-size: 9px; }
+.card.big .nm { height: 34px; }
+
+/* a reason line, shown on tap */
+.pop { position: absolute; background: var(--g5); color: #fff; font-size: 11.5px; line-height: 15px; padding: 6px 8px; border-radius: 5px; }
+.pop .k { display: block; font-size: 10px; color: #c9c9c6; margin-bottom: 2px; }
+.chain { position: absolute; font-size: 12px; line-height: 16px; color: var(--ink); background: var(--ink-soft); border-left: 3px solid var(--ink); padding: 5px 8px; }
+
+/* side column, clue cards */
+.side { position: absolute; }
+.side h4 { font-size: 11px; font-weight: 600; color: var(--g4); text-transform: none; margin-bottom: 4px; }
+.clue { background: #fff; border: 1px solid var(--g3); border-radius: 5px; padding: 4px 7px; margin-bottom: 5px; font-size: 11.5px; display: flex; gap: 6px; align-items: center; }
+.clue .ic { width: 16px; height: 16px; background: var(--g1); border: 1px solid var(--g2); border-radius: 3px; flex: none; }
+.clue .w { color: var(--g4); font-size: 10.5px; display: block; }
+.clue.done .ic { background: var(--ink); border-color: var(--ink); }
+
+/* panels, buttons, generic */
+.panel { position: absolute; background: #fff; border: 1px solid var(--g3); border-radius: 8px; padding: 12px 14px; }
+.panel h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.panel p { font-size: 12.5px; line-height: 17px; margin-bottom: 6px; }
+.panel .dim { color: var(--g4); }
+.btn { display: inline-block; background: var(--g5); color: #fff; font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: 6px; }
+.btn.ghost { background: #fff; color: var(--g5); border: 1px solid var(--g4); }
+.opt { border: 1px solid var(--g3); border-radius: 6px; padding: 7px 10px; margin-bottom: 7px; font-size: 13px; display: flex; gap: 10px; align-items: center; }
+.opt .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--g4); flex: none; }
+.opt.on { border: 2px solid var(--g5); }
+.opt.on .dot { background: var(--g5); box-shadow: inset 0 0 0 2.5px #fff; }
+.opt.off { color: var(--g3); border-style: dashed; }
+.opt.off .dot { border-color: var(--g2); }
+.opt .kind { display: block; font-size: 11px; color: var(--g4); margin-top: 1px; }
+.opt.off .kind { color: var(--g3); }
+.box { position: absolute; background: var(--g1); border: 1px solid var(--g2); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--g4); }
+.box.dark { background: var(--g2); border-color: var(--g3); color: var(--g5); }
+.inkline { color: var(--ink); font-weight: 500; }
+.stamp { position: absolute; font-size: 11px; color: var(--g4); }
+.row { display: flex; align-items: center; gap: 8px; }
+.odds { margin-left: auto; font-size: 12px; font-weight: 600; white-space: nowrap; }
+
+/* the phone: /play's frame, drawn as grey boxes; the Station's window is #screen */
+body.phone { width: 390px; height: 844px; overflow: hidden; background: #111114; position: relative; }
+.pf-bar { position: absolute; left: 0; top: 0; width: 390px; height: 52px; background: #1d1f24; border-bottom: 1px solid #34363c; }
+.pf-tab { position: absolute; top: 4px; height: 44px; border: 1px solid #3a3d44; border-radius: 8px; color: #a9abb0; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.pf-tab.on { background: #34363c; color: #e8e8e8; }
+.pf-shell { position: absolute; left: 24px; top: 88px; width: 342px; height: 612px; background: #2a2c31; border: 1px solid #3a3d44; border-radius: 12px; }
+body.phone #screen { position: absolute; left: 36px; top: 100px; width: 318px; height: 356px; border-radius: 2px; }
+.pf-key { position: absolute; background: #3a3c42; border: 1px solid #4a4d55; border-radius: 6px; color: #b9bbc0; font-size: 10.5px; display: flex; align-items: center; justify-content: center; }
+.pf-key.round { border-radius: 50%; }
+.pf-dock { position: absolute; left: 24px; top: 716px; width: 230px; height: 44px; border: 1px solid #3a3d44; border-radius: 8px; color: #8d8f95; font-size: 13px; display: flex; align-items: center; padding-left: 14px; }
+.pf-draft { position: absolute; right: 24px; bottom: 30px; font-size: 12px; color: #a9abb0; border: 1px dashed #6b6e75; padding: 3px 8px; border-radius: 4px; }
+.pf-note { position: absolute; left: 24px; top: 772px; font-size: 11px; color: #8d8f95; width: 220px; line-height: 15px; }
+body.phone .head { height: 26px; font-size: 12px; padding: 0 8px; gap: 8px; }
+body.phone .goal { top: 26px; height: auto; padding: 4px 8px; font-size: 11px; line-height: 14px; flex-wrap: wrap; gap: 0 6px; }
+body.phone .card { width: 148px; padding: 3px 5px 4px; }
+body.phone .card .nm { height: 15px; }
+body.phone .card .nm b { font-size: 12px; }
+body.phone .card .nm span { font-size: 9.5px; }
+body.phone .card .slot { width: 18px; height: 15px; top: 3px; right: 4px; font-size: 0; }
+body.phone .tr { height: 14px; margin-top: 1px; }
+body.phone .tr .tl { width: 46px; font-size: 9.5px; }
+body.phone .tr .tv { font-size: 10px; height: 13px; line-height: 11px; padding: 0 2px; }

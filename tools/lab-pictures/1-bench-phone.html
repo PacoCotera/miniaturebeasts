@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=390"><title>1 the bench (phone)</title><link rel="stylesheet" href="lab.css">
+<style>
+body.phone .card { width: 150px; }
+body.phone .tr { height: 14px; margin-top: 0; }
+</style></head>
+<body class="phone" data-note="The window follows the focus, as /play does today; Reed, Fen, Sorrel and the clues lie to the right.">
+<div id="screen">
+  <div class="head" style="height:24px;white-space:nowrap;font-size:11.5px"><b data-w="goal.label"></b><span data-w="goal.text"></span><span class="sp"></span><span class="dim" data-w="goal.near.short"></span></div>
+  <div class="chain" style="left:0;right:0;top:24px;padding:2px 8px;font-size:10.5px;line-height:13px"><span data-w="chain.text"></span></div>
+  <div id="board" data-chain="pip>moss@190,moss>bramble@190">
+    <div class="card" id="tita" data-name="Tita" data-tag="tag.yours.grown" style="left:6px;top:58px"
+      data-t="ink:v.plain.nopale, ink:v.bare, ink:v.eyes.thinwide, ink:v.drive.steady, open:v.open"></div>
+    <div class="card wild" id="bramble" data-name="Bramble" data-tag="tag.wild.marsh" style="left:162px;top:58px"
+      data-t="ink:v.plain.carries new, ink:v.crest.carries, open:v.eyes.open, pencil:v.drive.pencil, open:v.open"></div>
+    <div class="card" id="wren" data-name="Wren" data-tag="tag.yours.grown" data-parents="tita bramble" style="left:6px;top:158px"
+      data-t="pencil:v.plain.pencil.1in2 new, ink:v.crest.carries, open:v.eyes.open, open:v.open, open:v.open"></div>
+    <div class="card focus" id="moss" data-name="Moss" data-tag="tag.yours.grown" data-parents="tita bramble" style="left:162px;top:158px"
+      data-t="ink:v.plain.carries new, ink:v.crest.carries, open:v.eyes.open, ink:v.drive.bursts, open:v.open"></div>
+    <div class="card" id="pip" data-name="Pip" data-tag="tag.yours.hatched" data-parents="moss" style="left:162px;top:258px"
+      data-t="ink:v.pale new, open:v.crest.open, open:v.eyes.open, open:v.open, open:v.open"></div>
+    <div class="pop" style="left:6px;top:262px;width:146px;font-size:10.5px;line-height:13px;padding:5px 7px"><span class="k">Moss · <span data-w="trait.markings"></span> · <span data-w="reason.tap"></span></span><span data-w="reason.moss.markings"></span></div>
+  </div>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>
