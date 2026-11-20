@@ -7822,11 +7822,12 @@ function panOffset(lay, c0, hero) {
   // full reach: the place's edge in the held direction sits across the middle of the view, so half is your place and half the neighbour
   // (the designer's "your place plus half the neighbour", UI desk 11-18); an edge already in the near half needs no slide.
   // The slide stops short of the reach when it would carry the pawn (hero: its centre in view px) out of the view: it keeps PAN_MARGIN in.
-  const cap = (reach, room) => Math.max(0, Math.min(reach, room));
-  if (d === 'up') return { x: 0, y: -f * cap(c0.y + VIEW_H / 2, VIEW_H - PAN_MARGIN - hero.y) };
-  if (d === 'down') return { x: 0, y: f * cap(lay.h * 48 - VIEW_H / 2 - c0.y, hero.y - PAN_MARGIN) };
-  if (d === 'left') return { x: -f * cap(c0.x + SCR_W / 2, SCR_W - PAN_MARGIN - hero.x), y: 0 };
-  return { x: f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN), y: 0 };
+  // Whole pixels only (bug #92): the baked ground copies its window by rows, so a fractional camera y started every row part-way along the row above (the cliffs broke into steps mid-slide).
+  const cap = (reach, room) => Math.max(0, Math.min(reach, room)), px = (n) => Math.round(n) || 0;
+  if (d === 'up') return { x: 0, y: px(-f * cap(c0.y + VIEW_H / 2, VIEW_H - PAN_MARGIN - hero.y)) };
+  if (d === 'down') return { x: 0, y: px(f * cap(lay.h * 48 - VIEW_H / 2 - c0.y, hero.y - PAN_MARGIN)) };
+  if (d === 'left') return { x: px(-f * cap(c0.x + SCR_W / 2, SCR_W - PAN_MARGIN - hero.x)), y: 0 };
+  return { x: px(f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN)), y: 0 };
 }
 function press(k) {
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual

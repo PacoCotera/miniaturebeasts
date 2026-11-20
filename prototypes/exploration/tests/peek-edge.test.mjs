@@ -69,6 +69,9 @@ for (const dir of ["up", "right", "down", "left"]) {
       await at(page, 300); await page.waitForTimeout(80);
       const p0 = await pan(page); assert.equal(p0.live, true, "300 ms held: the peek begins"); assert.equal(p0.f, 0);
       await page.evaluate(() => { const m = window.__mb; m.PAN.t0 = m.PAN.at; });
+      for (const ms of [73, 161]) {   // bug #92: mid-slide the place sits on whole pixels (the baked ground copies its window by rows; a fractional y broke every row)
+        await at(page, ms); const g = await page.evaluate(() => window.__mb.RT.gridScr);
+        assert.ok(Number.isInteger(g.x) && Number.isInteger(g.y), `whole pixels at ${ms} ms: ${JSON.stringify(g)}`); }
       await at(page, 125); const mid = (await pan(page)).f; assert.ok(mid > 0 && mid < 1, "easing out: " + mid);
       await at(page, 250); assert.equal((await pan(page)).f, 1, "at the reach after 250 ms");
       await at(page, 900); assert.equal((await pan(page)).f, 1, "holds while held"); await shot(page, dir, "2-full-reach");
