@@ -1077,15 +1077,18 @@ const podShown = key => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && unve
 const DIR_VEC = { 'north': [0, -1], 'south': [0, 1], 'east': [1, 0], 'west': [-1, 0], 'north-east': [1, -1], 'north-west': [-1, -1], 'south-east': [1, 1], 'south-west': [-1, 1] };
 function beatWay(P) {
   const here = cxy(+P.key), at = (dx, dy) => ({ dx, dy, d: Math.hypot(dx, dy) });
-  const b = S.pods.filter(p => p.h).map(p => p.k === P.key && p.x >= 0 ? at(p.x - P.x, p.y - P.y) : /^\d+$/.test(String(p.k)) ? (q => at(q.x - here.x, q.y - here.y))(cxy(+p.k)) : null)
+  const b = S.pods.filter(p => p.h).map(p => p.k === P.key && p.x >= 0 ? { ...at(p.x - P.x, p.y - P.y), tx: p.x, ty: p.y } : /^\d+$/.test(String(p.k)) ? (q => at(q.x - here.x, q.y - here.y))(cxy(+p.k)) : null)
     .filter(q => q && q.d > 0).sort((a, c) => a.d - c.d)[0];
-  const dir = b && dirWord(b.dx, b.dy, b.d); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1] } : null;
+  const dir = b && dirWord(b.dx, b.dy, b.d); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1], tx: b.tx, ty: b.ty } : null;   // tx, ty: the pod's own tile when it lies in this place
 }
 // (call-probe-marks-1, owner #56) After every Call here, if nothing to take is in sight, the way to the nearest thing to take or explore: a buried find first (its beat), then anything to take seen
 // in another place of the reach, then the nearest way out not yet walked. { dir, vx, vy, kind } or null; null at once when something to take is in sight (no tab then).
 const SIDE_VEC = { N: [0, -1], S: [0, 1], W: [-1, 0], E: [1, 0] };
 function leadWay(P, lay) {
   const ex = S.exp; if (!ex || !P || lay.cave || !(ex.callsAt && ex.callsAt[lay.cell]) || leftItems(lay.cell).length) return null;
+  // the tab keeps one target until it is reached (owner bug 2026-11-20): pinned for this place and Call while a buried pod of this place is still there
+  const pin = RT.leadPin;
+  if (pin && pin.key === P.key && pin.calls === ex.stats.calls && pin.pods === S.pods.length && pin.held === ex.cargo.pods.length && (pin.way.tx === undefined || S.pods.some(p => p.h && p.k === P.key && p.x === pin.way.tx && p.y === pin.way.ty))) return pin.way;
   const sig = P.key + ':' + P.x + ':' + P.y + ':' + ex.actions + ':' + ex.stats.calls + ':' + S.pods.length + ':' + ex.cargo.pods.length + ':' + ex.carry;
   if (RT.lead && RT.lead.sig === sig) return RT.lead.way;
   const here = cxy(lay.cell), toWay = (dx, dy, kind) => { const dir = dirWord(dx, dy, Math.hypot(dx, dy)); return dir ? { dir, vx: DIR_VEC[dir][0], vy: DIR_VEC[dir][1], kind } : null; };
@@ -1104,7 +1107,7 @@ function leadWay(P, lay) {
       if (out) way = toWay(out.dx, out.dy, 'out');
     }
   }
-  RT.lead = { sig, way }; return way;
+  RT.lead = { sig, way }; RT.leadPin = way ? { key: P.key, calls: ex.stats.calls, pods: S.pods.length, held: ex.cargo.pods.length, way } : null; return way;
 }
 // First walk, standing in a place with no pod shown and no Call made here yet: the Call is the next step (its key rings, ✓ hops it).
 function callFirst() {
@@ -6227,7 +6230,7 @@ function edgeTabs() {
   for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
   const q = FX.cue, callLive = !!q && q.key === P.key && ex.actions < q.until;
-  if (callLive) { const w = leadWay(P, lay); if (w) add('find', P.x + w.vx * 60, P.y + w.vy * 60, 'beat'); }   // only for the Call's own time (owner #80): never on the plain map; one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
+  if (callLive) { const w = leadWay(P, lay); if (w) add('find', w.tx ?? P.x + w.vx * 60, w.ty ?? P.y + w.vy * 60, 'beat'); }   // only for the Call's own time (owner #80): never on the plain map; one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
     add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }
