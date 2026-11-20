@@ -5829,7 +5829,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     const rect = (nw, nh) => ({ x: dx < 0 ? cx0 - nw : dx > 0 ? cx0 + cw : cx0 + ((cw - nw) >> 1), y: dy < 0 ? cy0 - nh : dy > 0 ? cy0 + ch : cy0 + ((ch - nh) >> 1), w: nw, h: nh });
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;   // past the realm's edge: the fog stands
     const c = Y * MW + X, key = String(c); let nl = null, e = nb.get(key);
-    if (S.revealed[c] && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {
+    if ((S.revealed[c] || (S.veilPre && S.veilPre[key])) && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {   // a place a Call lifted a strip of (even one not yet seen, outside the reach: #97) is drawn with that strip
       nl = layoutCache.get(key); if (!nl && asked < 1) { asked++; nl = layout(key); }   // made at most one a frame, and only from a place that is here
       if (nl && !(nl.baked && !nl.cave)) nl = null;
     }
