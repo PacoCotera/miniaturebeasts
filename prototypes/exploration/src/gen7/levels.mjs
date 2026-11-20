@@ -732,6 +732,80 @@ function flattenBumps(rOut, W, H, rule, lk, noRaise, gx0, gy0) {
   for (const e of made) { DBGV.length = 0; if (count(rOut, e.box) > e.before) { for (const [i, to] of e.t) rOut[i] = 1 - to; BUMP_WHY.undone = (BUMP_WHY.undone || 0) + 1; } else { n++; BUMP_WHY.done++; } }
   return n;
 }
+// map-cliff-runs-1 (G4, map-research-1 change 2): a south face of 1 to 3 tiles is joined into a run of RUN_MIN or more. The lip row of the columns beside a short run is moved by one tile onto the run's row
+// (a lip one row further down is cut back to it: the tile at the lip turns low; a lip one row up is carried down: the tile below it turns raised), the nearest side first, so the one-tile steps of a diagonal
+// become steps four tiles wide that the cliff pieces draw. An edit is kept only when it leaves no more failing shape checks round it, the short runs on the rows it touches fall in number, and no run it
+// makes is over its cap. Nothing held (lk) or kept low (noRaise) is touched. Every read and write of a decision stays inside one cell (like flattenBumps), cells are done on their own and in raster order, so
+// every window that shows a cell makes the same edits (the seam). A run that crosses a cell edge is left.
+export const RUN_REACH = 0, RUN_MIN = 4, RUN_SHIFT = 6, RUN_WHY = { dbg: 0, done: 0, held: 0, viol: 0, short: 0, edge: 0 };
+let RUNS_ON = true;
+export const setRuns = (on) => { RUNS_ON = !!on; GEN++; };   // the tools: the land with the pass off (before / after counts)
+function joinShortRuns(r, W, H, rule, lk, noRaise, gx0, gy0) {
+  if (!RUNS_ON) return 0;
+  const R = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? -1 : r[y * W + x]), fr = rule.faceRows; let n = 0;
+  const wr = rule.window, ya = Math.max(2, (wr - 1) * CH), yb = Math.min(H - 2, (wr + 2) * CH), xa = Math.max(2, (wr - 1) * CW), xb = Math.min(W - 2, (wr + 2) * CW);
+  const held = (x, y) => { const i = y * W + x; return (lk && lk[i]) || false; };
+  for (let cy = Math.floor(ya / CH); cy * CH < yb; cy++) for (let cx = Math.floor(xa / CW); cx * CW < xb; cx++) {
+    // the cell's tiles in window coordinates (the window's origin is a whole number of cells, so these are the world cell's)
+    const x0 = Math.max(cx * CW, 3), x1 = Math.min(cx * CW + CW - 1, W - 4), y0 = Math.max(cy * CH, 4), y1 = Math.min(cy * CH + CH - 1, H - 5);
+    if (((gx0 % CW) + CW) % CW !== 0 || ((gy0 % CH) + CH) % CH !== 0) continue;
+    if (cx * CW < xa || cx * CW + CW > xb || cy * CH < ya || cy * CH + CH > yb) continue;
+    const inC = (x, y) => x >= cx * CW - RUN_REACH && x <= cx * CW + CW - 1 + RUN_REACH && y >= cy * CH - RUN_REACH && y <= cy * CH + CH - 1 + RUN_REACH;   // every read and write of a decision lies in this cell
+    const lip = (x, y) => inC(x, y + 1) && R(x, y) === 1 && R(x, y + 1) === 0;   // a lip is judged only where both its tiles lie in the cell
+    const shortRuns = (a, b, c, d) => { let s = 0; for (let y = Math.max(b, cy * CH); y <= Math.min(d, cy * CH + CH - 1); y++) { let k = 0; for (let x = Math.max(a, cx * CW); x <= Math.min(c, cx * CW + CW - 1) + 1; x++) { if (x <= c && lip(x, y)) k++; else { if (k && k < RUN_MIN) s += RUN_MIN - k; k = 0; } } } return s; };
+    // the failing shape checks in a box, not counting the square corner: a run of 4 or more ending against a side wall is what this pass makes (a terrace), the bend the square check asks for is a one-tile run
+    const count = (box) => { DBGV.length = 0; let s = 0; for (let y = box[1]; y <= box[3]; y++) for (let x = box[0]; x <= box[2]; x++) s += violAt(r, W, H, x, y, rule.faceRows); return s - DBGV.filter(k => k === 'square').length; };
+    for (let round = 0; round < 6; round++) { let hit = 0;
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+        if (!lip(x, y) || lip(x - 1, y)) continue;   // the first tile of a run
+        let n1 = 0; while (lip(x + n1, y)) n1++;
+        if (n1 >= RUN_MIN) continue;
+        if (!inC(x - 1, y) || !inC(x + n1, y)) { RUN_WHY.edge++; continue; }
+        // the edits tried, in order: the run's own tiles moved one row (cut back up, or carried down) so it joins the run beside it; then the sides it may grow toward: right m tiles, left k tiles,
+        // k + m = RUN_MIN - n1 (right first, then split, then left), each column's lip moved to this row
+        let done = false, why = null;
+        const cands = [];
+        cands.push(() => { const t = []; for (let j = 0; j < n1; j++) { if (held(x + j, y)) return null; t.push([y * W + x + j, 0]); } return t; });
+        cands.push(() => { const t = []; for (let j = 0; j < n1; j++) { const i = (y + 1) * W + x + j; if (held(x + j, y + 1) || noRaise[i] || R(x + j, y + 2) !== 0) return null; t.push([i, 1]); } return t; });
+        const need = RUN_MIN - n1; for (let m = need; m >= 0; m--) { const k = need - m; cands.push(() => {
+          const t = [], cols = []; for (let j = 1; j <= k; j++) cols.push(x - j); for (let j = 0; j < m; j++) cols.push(x + n1 + j);
+          for (const cxx of cols) {
+            if (!inC(cxx, y)) { why = why || 'edge'; return null; }
+            const a = R(cxx, y), b = R(cxx, y + 1);
+            if (a === 1 && b === 0) continue;                                   // already a lip on this row
+            if (a === 1) {   // its lip is 1 to RUN_SHIFT rows down: cut back to this row
+              let d = 1; while (d <= RUN_SHIFT + 1 && R(cxx, y + d) === 1) d++;
+              if (d > RUN_SHIFT + 1 || R(cxx, y + d) !== 0) { why = why || 'farDown'; return null; }
+              for (let j = 1; j < d; j++) { if (held(cxx, y + j)) { why = why || 'held'; return null; } t.push([(y + j) * W + cxx, 0]); }
+            } else {   // its lip is 1 to RUN_SHIFT rows up: carried down to this row
+              let d = 1; while (d <= RUN_SHIFT && R(cxx, y - d) === 0) d++;
+              if (d > RUN_SHIFT || R(cxx, y - d) !== 1 || R(cxx, y + 1) !== 0) { why = why || 'farUp'; return null; }
+              for (let j = 0; j < d; j++) { const i = (y - j) * W + cxx; if (held(cxx, y - j) || noRaise[i]) { why = why || 'held'; return null; } t.push([i, 1]); }
+            }
+          }
+          return t; }); }
+        for (const mk of cands) {
+          const t = mk();
+          if (!t || !t.length) continue;
+          let bx0 = 1e9, by0 = 1e9, bx1 = -1, by1 = -1; for (const [i] of t) { const tx = i % W, ty = (i / W) | 0; if (tx < bx0) bx0 = tx; if (tx > bx1) bx1 = tx; if (ty < by0) by0 = ty; if (ty > by1) by1 = ty; }
+          const box = [bx0 - 1, by0 - fr, bx1 + 1, by1 + 2];
+          if (!inC(box[0] - 1, box[1] - 2) || !inC(box[2] + 1, box[3] + fr + 1)) { why = why || 'edge'; continue; }
+          const v0 = count(box), s0 = shortRuns(bx0 - 4, by0 - 2, bx1 + 4, by1 + 2);
+          const old = t.map(([i]) => r[i]); for (const [i, to] of t) r[i] = to;
+          const v1 = count(box), s1 = shortRuns(bx0 - 4, by0 - 2, bx1 + 4, by1 + 2);
+          let bad = v1 > v0 ? 'viol' : s1 >= s0 ? 'short' : null;
+          if (!bad) { for (let yy = by0 - 2; yy <= by1 + 2 && !bad; yy++) for (let xx = bx0 - 1; xx <= bx1 + 1; xx++) if (lip(xx, yy)) { let q = 0; while (lip(xx - 1 - q, yy)) q++; let p = 0; while (lip(xx + p, yy)) p++; if (q + p > CAP.south) { bad = 'cap'; break; } } }
+          if (bad) { t.forEach(([i], j) => { r[i] = old[j]; }); why = why || bad; continue; }
+          done = true; n++; hit++; RUN_WHY.done++; break;
+        }
+        if (!done) RUN_WHY[why || 'held'] = (RUN_WHY[why || 'held'] || 0) + 1;
+        if (!done && globalThis.RUN_DBG && RUN_WHY.dbg < 6) { RUN_WHY.dbg++; const rows = []; for (let yy = y - 5; yy <= y + 6; yy++) { let s = ''; for (let xx = x - 8; xx <= x + 8; xx++) s += R(xx, yy) === 1 ? (xx === x && yy === y ? 'L' : '#') : '.'; rows.push(s); } console.log(`run at ${x},${y} n${n1} why ${why}\n` + rows.join('\n')); }
+      }
+      if (!hit) break;
+    }
+  }
+  return n;
+}
 // what the held sites, the jogs and the pockets leave at their edges (a sliver, a pinch, a lone face, a short foot): a tile is flipped (never a held one) when that leaves fewer failing checks round it; at most 8 rounds
 function fixLeft(r, W, H, rule, lk, noRaise) {
   let fixed = 0;
@@ -1230,7 +1304,8 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); info.runsJoined = joinShortRuns(r, W, H, L.rule, lk, noRaise, gx0, gy0);
+      if (globalThis.LAND_TRAPS) { const sh = components(walkParts(r, W, H, way, wblock), W, H, edge, way).comps.filter(c => !c.open && !c.way); info.shutAfter = sh.length; info.shutRaisedAfter = sh.filter(c => r[c.tiles[0]] === 1).length; } };   // the tools' count of walkable parts still shut after the last pass
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
