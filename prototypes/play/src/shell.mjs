@@ -62,14 +62,15 @@ const loadHome = () => { try { return localStorage.getItem(HOME_KEY) === "1"; } 
 const saveHome = (v) => { try { if (v) localStorage.setItem(HOME_KEY, "1"); else localStorage.removeItem(HOME_KEY); } catch { /* no storage: the Station's word is heard again at every load */ } };
 const NEWBIE = !TEST || params.has("new");   // test pages keep today's page (the Station awake) unless a test asks for the new player's (`?test&new`: test-harness flag only)
 let podHome = NEWBIE ? loadHome() : true;
-const START_OWNER = !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station";   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld
+const START_OWNER = OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station";   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld
 let owner = START_OWNER, devOpen = false, keysOpen = false;   // owner: the device in view, which has the keys
 let wokeNews = false;   // the Station woke while it was out of view: the switch's dot, until it comes into view
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
 const SITE = import.meta.env?.PROD ? "/play/" : "../";   // the built game lives under /play/ (its folders: ui/, station/, exploration/); the source tree has them beside play/
-const stationUrl = SITE + "station/?embed" + (TEST ? "&test" : ""), companionUrl = SITE + "exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
+// the Options row "Lab bench (Loikas only)" puts the grey lab bench (prototypes/lab) in the Station's frame
+const stationUrl = SITE + (OPT.lab ? "lab/" : "station/") + "?embed" + (TEST ? "&test" : ""), companionUrl =SITE + "exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 // The trays are React + Radix (options/src/keytray.jsx); the geometry is keyplan.mjs (one measure a: laptops 44, phones the largest step that fits). A key press is a keydown on the device's frame, its release a keyup.

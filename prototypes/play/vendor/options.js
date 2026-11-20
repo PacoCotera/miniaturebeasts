@@ -31730,6 +31730,7 @@ function Panel({ api }) {
         api.notes.newNote();
       }, children: T("options.note.button") }) }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Playtest waits", line: "Short waits, so the whole loop fits in about an hour.", on: o2.playtest, set: set2("playtest") }),
+      /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Lab bench (Loikas only)", line: "The Station's frame shows the grey lab bench: samples, crosses and ink, on Loikas.", on: o2.lab, set: set2("lab") }),
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Toggle3, { label: "Developer tools", line: "Shows the tools button, the Station's panel and the Companion's Observer.", on: o2.dev, set: set2("dev") }),
       o2.dev && api.phone && api.phone() ? /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Row, { label: "Observer", line: "The Companion's Observer is on its own page.", children: /* @__PURE__ */ (0, import_jsx_runtime22.jsx)("a", { className: "op-btn", id: "optionsObserver", href: api.observerHref, children: "Observer" }) }) : null,
       /* @__PURE__ */ (0, import_jsx_runtime22.jsx)(Pick, { label: "Companion", line: "Which Companion the page plays.", value: o2.companion, set: set2("companion"), items: [["A", "Companion A"], ["B", "Companion B"]] }),

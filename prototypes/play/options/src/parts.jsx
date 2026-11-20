@@ -90,6 +90,7 @@ export function Panel({ api }) {
             <button type="button" className="op-btn" id="optionsNewNote" onClick={() => { setOpen(false); api.notes.newNote(); }}>{T("options.note.button")}</button>
           </Row>
           <Toggle label="Playtest waits" line="Short waits, so the whole loop fits in about an hour." on={o.playtest} set={set("playtest")} />
+          <Toggle label="Lab bench (Loikas only)" line="The Station's frame shows the grey lab bench: samples, crosses and ink, on Loikas." on={o.lab} set={set("lab")} />
           <Toggle label="Developer tools" line="Shows the tools button, the Station's panel and the Companion's Observer." on={o.dev} set={set("dev")} />
           {o.dev && api.phone && api.phone() ? (
             <Row label="Observer" line="The Companion's Observer is on its own page.">
