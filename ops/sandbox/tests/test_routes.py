@@ -141,6 +141,7 @@ class Routes(unittest.TestCase):
               "/studio/login%2f..%2fx", "/studio/logout/../x", "/studio/logout/", "/studio/x?/studio/login", "/studio/x#/studio/login",
               "/studio/%00", "/studio/x;/studio/login",
               "/admin", "/admin/", "/admin/x", "/admin/team", "/admin/team/", "/admin/team/x", "/admin/team.json", "/admin/team-coord.json", "/admin/team-doc/rules/1",
+              "/admin/bus", "/admin/bus/", "/admin/bus/bus.js", "/admin/bus-inspect.json", "/admin/bus-msg/abc123", "/ADMIN/BUS", "/admin/bus/../bus",
               "/ADMIN/TEAM", "/Admin/Team.json", "//admin/team", "/admin//team", "/x/../admin/team", "/admin/./team", "/admin/team/%2e%2e/team", "/admin%2fteam", "/%61dmin/team",
               "/admin/login/../team", "/admin/login%2f..%2fteam", "/admin/logout/../team", "/admin/team?/admin/login", "/admin/team;/admin/login", "/admin/team%00", "/admin/workbench/x", "/admin/notes",
               "/admin/book", "/admin/book/", "/admin/book/book.css", "/admin/book/summary.json", "/admin/bugs", "/admin/bugs/summary.json", "/ADMIN/BOOK", "/admin/book/../book"]
@@ -167,7 +168,9 @@ class Routes(unittest.TestCase):
 
     def test_with_a_session_the_studio_sees_one_user_and_no_cookie_and_its_own_prefix(self):
         for path, upstream in (("/admin/team", "/studio/team"), ("/ADMIN/team", "/studio/team"), ("//admin/team.json", "/studio/team.json"),
-                               ("/admin/team-doc/rules/1?x=1", "/studio/team-doc/rules/1?x=1")):
+                               ("/admin/team-doc/rules/1?x=1", "/studio/team-doc/rules/1?x=1"), ("/admin/bus", "/studio/bus"),
+                               ("/admin/bus-inspect.json", "/studio/bus-inspect.json"), ("/admin/bus-msg/abc123", "/studio/bus-msg/abc123"),
+                               ("/admin/bus/bus.js", "/studio/bus/bus.js")):
             self.studio.hits.clear()
             r = self.req(path, "GET", dict(SPOOF, Cookie="mb_studio=good; other=1", **{"x-studio-user": "mallory"}))
             self.assertEqual(r.status, 200, path)

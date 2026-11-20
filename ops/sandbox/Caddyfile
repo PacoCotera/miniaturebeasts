@@ -24,7 +24,7 @@
 	@private {
 		path /play/caddy /play/caddy/* /play/test /play/test/*
 	}
-	@teampage path /admin/ /admin/index /admin/index/* /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/*
+	@teampage path /admin/ /admin/index /admin/index/* /admin/team /admin/team/* /admin/team.json /admin/team-coord.json /admin/team-doc/* /admin/bus /admin/bus/* /admin/bus-inspect.json /admin/bus-msg/*
 
 	# the team's tools travel in the release beside the game's folders (the Caddy service reads its siblings) but are not public: they are served only through /admin below
 	handle @private {
