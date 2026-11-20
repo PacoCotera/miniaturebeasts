@@ -3159,7 +3159,9 @@ function nextDoorVeil(P, lay, reach) {
   const c = cxy(lay.cell); S.veilPre = S.veilPre || {};
   for (const [dx, dy] of PEEK_DIRS) {
     const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
-    const nc = Y * MW + X; if (!ex.reach.includes(nc)) continue;
+    const nc = Y * MW + X;
+    const atSide = (dx < 0 ? P.x === 0 : dx > 0 ? P.x === lay.w - 1 : true) && (dy < 0 ? P.y === 0 : dy > 0 ? P.y === lay.h - 1 : true);   // standing at that edge: the Call lifts the strip next door even outside the reach (owner #91)
+    if (!atSide && !ex.reach.includes(nc)) continue;
     const nk = String(nc), nl = layoutCache.get(nk); if (nl && nl.cave) continue;
     const w = nl ? nl.w : lay.w, h = nl ? nl.h : lay.h, ox = dx * (dx < 0 ? w : lay.w), oy = dy * (dy < 0 ? h : lay.h);
     const v = S.veil[nk] || S.veilPre[nk] || new Array(h).fill(0);   // a place walked in before keeps its own veil
