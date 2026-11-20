@@ -1936,473 +1936,109 @@
     ],
     "sha256": "abb69e86e9b1438874a7ffe965b9da445ff996ec618284d5be8f7c9dc2a25dd3"
   },
-  "cliff-south-1.png": {
+  "cliff-face-1.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-1.steps.json)",
+    "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (a plain wall column, recoloured, x3; the whole chain is in cliff-face-1.steps.json)",
     "size": [
       48,
-      288
+      144
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "f262060b6a2cb6298abaab31f7da89fdb8aa5aecbe1b7cb86d33c1e136f1e189"
+    "sha256": "f4a3d9bc0bebd3d72ee414e59edcdff0eac0101a0c33e208a35a175e8074c053"
   },
-  "cliff-south-2.png": {
+  "cliff-face-2.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-2.steps.json)",
+    "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (a plain wall column, recoloured, x3; the whole chain is in cliff-face-2.steps.json)",
     "size": [
       48,
-      288
+      144
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "fd9c88cd48883f5340862d2e1a8b98d4d928cab37e55b055946d8536f0a28e5c"
+    "sha256": "55753772b2f9b521cc4e5785d2cf92822998d59f7cb2bc38a53a7efefe57863d"
   },
-  "cliff-south-3.png": {
+  "cliff-face-3.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-3.steps.json)",
+    "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (a plain wall column, recoloured, x3; the whole chain is in cliff-face-3.steps.json)",
     "size": [
       48,
-      288
+      144
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "be30177dc67fb6bd016ec1d0199c502bdb5759c9322c5403de326ed689be8c92"
+    "sha256": "5c8bcafee58e7810c8324dcddfd67f4aa8494996f92e6ab6f4497a324b9495a7"
   },
-  "cliff-south-4.png": {
+  "cliff-cap-w.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-4.steps.json)",
+    "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (an end column of the wall strip, recoloured, x3; the whole chain is in cliff-cap-w.steps.json)",
     "size": [
       48,
-      288
+      144
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "0c8d9f779d26b5ce168e01f71b7bc7322b3ca3d7df0b2cb43af838af36f5f6c4"
+    "sha256": "a4976de66720db595ec4559e34f01ccfdaccfb6f6409c226bfc8e608f2f9d6ea"
   },
-  "cliff-south-5.png": {
+  "cliff-cap-e.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-5.steps.json)",
+    "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (an end column of the wall strip, recoloured, x3; the whole chain is in cliff-cap-e.steps.json)",
     "size": [
       48,
-      288
+      144
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "8c2e669cca5da1eda5acfa1ec2ae43cc0e87f4e98472ad3aef346c8b97a0a956"
+    "sha256": "aaf7b8ebd12efea7598131e40e35e329f150c93d3e593b19613bd34cbe0aa876"
   },
-  "cliff-south-6.png": {
+  "cliff-shadow.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-strip-angular-3/work/raw/step2-seam.png (the plain chain; the whole chain is in cliff-south-6.steps.json)",
+    "from": "tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py (a dithered shade of the map palette's #4a814e)",
     "size": [
       48,
-      288
+      6
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "eede5c24dfc0a7e7680fc6ed8afed38c5fdf227c6020be6113c3e3758050dd23"
+    "sha256": "358a62fdf2ce915060f02771a7d18b0ebdbe2d6b9a98ba844fbfaf7fdce59386"
   },
-  "cliff-corner-e-0.png": {
+  "cliff-shadow-w.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-e-0.steps.json)",
+    "from": "tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py (a dithered shade of the map palette's #4a814e)",
     "size": [
       48,
-      288
+      6
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "a3c8cbf6dfcb7ee53f253da2d326c79ddd9715f2dbf735bdf6a0303212c0f156"
+    "sha256": "d919243059ce9e3b687553a39e843da6ce2190ed2fddfb2ec330dddd8b077c3f"
   },
-  "cliff-corner-e-1.png": {
+  "cliff-shadow-e.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-e-1.steps.json)",
+    "from": "tools/credit-runner/runs/cliff-slice-1/work/gen-shadow.py (a dithered shade of the map palette's #4a814e)",
     "size": [
       48,
-      288
+      6
     ],
     "foot": [
       0,
       0
     ],
-    "sha256": "bc6ea858fec5a009f84c611f0856508c421bf2279acaa7642cd309672635c599"
-  },
-  "cliff-corner-e-2.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-e-2.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "18c32d1f34668052ae5800b97cfc7d421a28ff1205d0c411ee01c2a67d50ad62"
-  },
-  "cliff-corner-e-3.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-e-3.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "25af1d6c8cfaa9d7d1170b07ac5a7e94aa595c6ce1509a5b5565005f1c21d423"
-  },
-  "cliff-corner-e-4.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-e-4.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "be158d74d674233986d8b815f4489b73de91be8a91e10595ee193b08a2d13a60"
-  },
-  "cliff-corner-e-5.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-e-5.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "cbc763da8d1fe8b83212cb644e0ed8a680c057752958ad66f326bb51542f2305"
-  },
-  "cliff-corner-w-0.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-w-0.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "ac7d9410990b11dac7638309607741ebebd0834bb179e446690b2d77c0b6ff3e"
-  },
-  "cliff-corner-w-1.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-w-1.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "d160850689ea77fcc31988d22d84d8e457d898c68dc04defafa3a96d7710d3bb"
-  },
-  "cliff-corner-w-2.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-w-2.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "70a63089b120aa459ea63595fcf1e07350401ea4ed90d63ba55036012da21996"
-  },
-  "cliff-corner-w-3.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-w-3.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "14c2f879c8779123a3f70f894227f01f1db2c16e73931bb908964965b6ff1613"
-  },
-  "cliff-corner-w-4.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-w-4.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "5804906aa862aecd3d4d1fb133ca67b5fe6d33d42db16c2d6b19231b55322047"
-  },
-  "cliff-corner-w-5.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (the whole chain is in cliff-corner-w-5.steps.json)",
-    "size": [
-      48,
-      288
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "99c8ce6070dcc3f3d2d8239a65679237d8a66c78528ced018033961faec46408"
-  },
-  "cliff-flank-head-e.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-head-e.steps.json)",
-    "size": [
-      96,
-      48
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "2e8521467f0ad8d5a81aecb2863c6634abb581f8f4fb8c44aaa329f75b5a1871"
-  },
-  "cliff-flank-band-e.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-band-e.steps.json)",
-    "size": [
-      96,
-      48
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "c0b3da03cca6e6c8eaa797fdd855af3f0abdfa81c169e19c9215543cfa8a6414"
-  },
-  "cliff-flank-tail-e.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-tail-e.steps.json)",
-    "size": [
-      96,
-      54
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "c7465441e48d359efcf5344fe3bfaf55d49c5f43285ebd7df671c901cae9cb79"
-  },
-  "cliff-flank-head-w.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-head-w.steps.json)",
-    "size": [
-      96,
-      48
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "8850157010b850c44c5c98e42cfa19049b0801221427afd7b58e2b4f9f675ad2"
-  },
-  "cliff-flank-band-w.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-band-w.steps.json)",
-    "size": [
-      96,
-      48
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "13f6e741b21072a9fcdec0b38518a69a66cf3a4c7e2c486ee4ea0730d3ce9b81"
-  },
-  "cliff-flank-tail-w.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-side-1/work/raw/nbp-edit.png (the whole chain from the paid raw is in cliff-flank-tail-w.steps.json)",
-    "size": [
-      96,
-      54
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "8ddfeecc5677222761d978851b612c5ee1470d7e1bf94e60dbffd92b8b7a422b"
-  },
-  "cliff-end1-e.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end1-e.steps.json)",
-    "size": [
-      48,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "a0a2c95b8e890b8b5b29f1226bb8cba7aa55f5713ddc0b58d893d64d26276006"
-  },
-  "cliff-end1-w.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end1-w.steps.json)",
-    "size": [
-      48,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "06108f3b3bc4363c343defbe5f660d1ef0118af92200cdb9214e3ee89ae887d9"
-  },
-  "cliff-end2-e.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end2-e.steps.json)",
-    "size": [
-      48,
-      240
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "f0a6453f242979721b286f2a1efa30561ec009865a03edf5e93dd76ef234378d"
-  },
-  "cliff-end2-w.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-corner-scaffold-2/work/raw/corner-1.png (cut of the signed cell cliff-corner-e-5; the whole chain is in cliff-end2-w.steps.json)",
-    "size": [
-      48,
-      240
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "2568d59a610e471340185c337c8bf1336f6c0f769949a7d22346c0148f930d0f"
-  },
-  "cliff-foot-1.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-1.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "ee85d689cd6c5c52389427fcbac0ee637def3f0d3c9039a6fdc65e686e828d3c"
-  },
-  "cliff-foot-2.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-2.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "2499258cd003c54d2b82a80c1b1b124ac1c8dbdeae091ac7029a0ab19720dfc3"
-  },
-  "cliff-foot-3.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-3.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "8ebcbd61264e0745cb28a27d2e65a23cbad3a672819aa32ad225c8bb2ddd5a4e"
-  },
-  "cliff-foot-4.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-4.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "7418aa9185b1212e1f8e66c357377458bc9b8d914f7162adad49f0eb7df2d65a"
-  },
-  "cliff-foot-5.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-5.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "5d2f6fb3acc61cc16aac56d9ea84b84fd58a2e6da44bc7243a11b36ebab9da45"
-  },
-  "cliff-foot-6.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-6.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "5b931c9adfa408277a1a4d7628227e5a5f91cb84224d724c970689d69dc22d6e"
-  },
-  "cliff-foot-w.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-w.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "510e6e9467d73d895f0f2f485ff2d9e883416524a5c57955ebfbbf13c6bc0e2a"
-  },
-  "cliff-foot-e.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-foot-1/work/raw/nbp-edit.png (the keyed foot band, cut on the cell; the whole chain is in cliff-foot-e.steps.json)",
-    "size": [
-      72,
-      192
-    ],
-    "foot": [
-      0,
-      0
-    ],
-    "sha256": "f55991236b17f73884a9d5cbe19babc5a61fe8433e4e994524b2b20b67b71425"
+    "sha256": "aa769f2967d0a396c09e0f40da170703b24e064f3fca641ce721fab193339eef"
   },
   "cliff-way-up-u.png": {
     "commit": "local",
@@ -2623,33 +2259,13 @@
   },
   "fill-cliff.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/fill-grass-raised-day.png",
-    "sha256": "d4721a84412f1dac67b66d87c1a2879444daf5192d897de46b80e1b469d118f3"
+    "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/fill-grass-raised-day.png, one colour map to #8cba68 (P5 of the cliff method; the chain is in fill-cliff.steps.json)",
+    "sha256": "57d8fc60fcc19c21254b171c609fc7155f035afd9db8a49eb96a7b4628a35086"
   },
-  "cliff-back-1.png": {
+  "over-cliff.png": {
     "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-1.steps.json)",
-    "sha256": "36ecf86f001302532e6d5b6590aa3e47abbf9a9467c7356b728dc187980fb8c2"
-  },
-  "cliff-back-2.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-2.steps.json)",
-    "sha256": "9361411cb5cc5bd9559cfda07811ef8048f3e8b5a85252098b54b477c21be438"
-  },
-  "cliff-back-3.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-3.steps.json)",
-    "sha256": "4338f549a887b7006719e56bb940d472502d78f7d9c615bc74f7d70e51798742"
-  },
-  "cliff-back-7.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-7.steps.json)",
-    "sha256": "2bc209f0dc7a323cc53258fef8b243028d833c00299a75d43071ded5ec3d10af"
-  },
-  "cliff-back-11.png": {
-    "commit": "local",
-    "from": "art-jobs/2026-11-14-cliff-lip-back-rd-1/work/raw/tileset-back.png (one whole 16 px cell of the paid raw, meadow keyed; the chain is in cliff-back-11.steps.json)",
-    "sha256": "fe221ad77a164679446e23d5d1811035ebe7e48e680251331fdbe17320fd19e8"
+    "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (cut and recoloured; the whole chain is in over-cliff.steps.json)",
+    "sha256": "2538f742d4e1c14a5290ba5c421ce9b111b395dc36c401c6e25a69d9685699e8"
   },
   "tone-grass.png": {
     "commit": "633e4d641",

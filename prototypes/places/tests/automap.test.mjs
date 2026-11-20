@@ -51,18 +51,16 @@ test('ModX and ModY count world tiles: the same world columns are chosen whateve
 // ---- the cliff's piece choice runs as rule maps (art/places/rules): the proving place's pieces are those the code before them chose (the file was recorded from that code, piece for piece, with 27 generated places)
 const here = path.dirname(fileURLToPath(import.meta.url)), terrains = JSON.parse(readFileSync(path.join(here, '../../../art/places/terrain.json'), 'utf8')).terrains;
 
-test('the proving place: every cliff piece the rule maps place is the piece the earlier code placed, at the same spot and in the same order', async () => {
-  const { provingIR } = await import('../src/bake/proving.mjs'), { cliffInfo } = await import('../src/bake/openedges.mjs'), { cliffDecals } = await import('../src/bake/southruns.mjs');
+test('the proving place: the cliff pieces are the south faces, their caps and shades (R2: no sides, no flanks, no foot overlays), at the recorded spots and in draw order', async () => {
+  const { provingIR } = await import('../src/bake/proving.mjs'), { cliffInfo } = await import('../src/bake/openedges.mjs'), { cliffDecals } = await import('../src/bake/southruns.mjs'), { PIECES } = await import('../src/bake/relief.mjs');
   const ir = provingIR(terrains), got = cliffDecals(ir, cliffInfo(ir, terrains)).map((d) => [d.kind, d.x, d.y]);
   assert.deepEqual(got, io.json(path.join(dir, 'proving-pieces.json')));
-  assert.ok(got.length > 60 && new Set(got.map((d) => d[0])).size >= 14, 'columns, corner cells, end pieces, sides and the fill all occur');
-});
-
-test('the cliff rule maps: rules.txt lists the maps the core runs, in its order; every piece the maps name is a row of the piece table', async () => {
-  const { RULE_FILES } = await import('../src/bake/cliffrules.mjs'), { PIECES } = await import('../src/bake/relief.mjs'), rules = path.join(here, '../../../art/places/rules');
-  assert.deepEqual(readFileSync(path.join(rules, 'rules.txt'), 'utf8').split('\n').filter((l) => l && !l.startsWith('#')), RULE_FILES);
-  const kinds = new Set(PIECES.pieces.flatMap((p) => p.kinds)), ts = io.json(path.join(rules, 'cliff-tiles.json'));
-  for (const t of ts.tiles) if (t.class.startsWith('cliff-')) assert.ok(kinds.has(t.class), `${t.class} is a piece of the table`);
+  const kinds = new Set(got.map((d) => d[0])), table = new Set(PIECES.pieces.flatMap((p) => p.kinds));
+  for (const k of kinds) assert.ok(table.has(k), `${k} is a piece of the table`);
+  for (const k of ['cliff-face-1', 'cliff-cap-w', 'cliff-cap-e', 'cliff-shadow', 'cliff-shadow-w', 'cliff-shadow-e']) assert.ok(kinds.has(k), k + ' occurs');
+  assert.ok(![...kinds].some((k) => /flank|foot|end\d|corner|south/.test(k)), 'the retired pieces are not placed');
+  // a face is 3 rows under its lip, its shade the row under that, drawn first: every shade comes before the face of its column
+  for (const [k, x, y] of got) if (/^cliff-shadow/.test(k)) assert.ok(got.findIndex((d) => /^cliff-(face|cap)/.test(d[0]) && d[1] === x && d[2] === y - 3 * 48) > got.findIndex((d) => d[0] === k && d[1] === x && d[2] === y), 'shade first at ' + x + ',' + y);
 });
 
 test('the rules list: comments, nested lists and [filter] lines by the working map\'s name; the old regions layers and AutoEmpty are refused', () => {

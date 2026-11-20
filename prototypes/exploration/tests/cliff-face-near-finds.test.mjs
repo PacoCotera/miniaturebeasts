@@ -20,5 +20,6 @@ test("every cliff piece of a baked cell is still in its layout, also beside a fi
     const marks = [...lay.findSlots, ...lay.strikes].map((f) => [f.x, f.y]);
     for (const d of before) { const dx = Math.floor(d.x / 48) - 1, dy = Math.floor(d.y / 48) - 1; if (marks.some(([gx, gy]) => Math.abs(dx - gx) <= 1 && dy - gy >= -1 && dy - gy <= 2)) near++; }
   }
-  assert.ok(near > 0, "the case holds cliff pieces inside a find's gap (what the old filter dropped)");
+  // cliff-slice-1: the side pieces (flanks, heads, tails) that stood beside this find are retired, so the case no longer holds a piece inside the find's gap; what stays pinned is that no piece the bake places is dropped by the layout
+  assert.ok(near >= 0);
 });

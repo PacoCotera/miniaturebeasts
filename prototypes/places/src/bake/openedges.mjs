@@ -1,14 +1,13 @@
 // The open edges (walk content B5; art desk mibi-art abb33a65b, manifest.json "howLDtkPaints"): what the bake does with the cliff, the way up, the reed bank (a list of areas the reed sprites go in) and the low scrub.
 // Pure over the level IR and the set's layer descriptors (setload.layerDescriptors: `tall`, `variants`, `wayup` are indices into the baked tile set's rows).
-//   cliff   painted as the raised land, like any terrain, by case: the back rim from the rim sheet, the face, its corners and ends and the sides from signed pieces (the rule maps in art/places/rules, run by cliffrules.mjs; applyOpenEdges below).
+//   cliff   painted as the raised land, like any terrain: the rim all round the top is the cliff layer's own over sheet (over-cliff.png, drawn by the dual grid); the south faces, their end caps and the cast shade are placed pieces (cliffrules.mjs); a side is the rim alone.
 //   walking: relief.mjs names every cell's part; the ring, the face and the flank cells block (cliffInfo.blockCells); the top, the foot rows and the cells of a WayUp area walk.
 //   wayup   an area over the cliff's last row on a straight face, n >= 1 cells wide, with straight face one cell either side: for the dual columns x0..x0+n the left, middle and right pieces,
 //           row 1 for the face tile (corners 12) and row 0 for the tile above it (corners 15, s = 3); the piece is the one for the terrain below the face (grass or sand).
 //   reeds   a ReedBank area holds reed sprites (props with no footprint, nothing blocks) laid by the desk's scatter rule: build.mjs `reedProps`, exploration/src/gen7/reeds.mjs.
 //   scrub   variants share every edge line; one per dual tile by hash.
 import { EMPTY, FILL_CODE, NE, NW, SE, SW, hash32, splitCode } from '../dualgrid.mjs';
-import { rimOf } from './cliffrules.mjs';
-import { BLOCKS, PART, landOf, partAt } from './relief.mjs';
+import { walled, PART, landOf, partAt } from './relief.mjs';
 
 export const ALT_CODE = 1024;   // a tile code from ALT_CODE up to FILL_CODE is ALT_CODE + 16 * (index of a row of the baked tile set) + the tile in it
 
@@ -19,7 +18,7 @@ export function cliffInfo(ir, terrains) {
   const { w, h } = ir, V = cliff.value, at = (x, y) => ir.terrain[Math.max(0, Math.min(h - 1, y)) * w + Math.max(0, Math.min(w - 1, x))] === V;   // outside the place reads as the nearest edge cell
   const wayup = new Set(); for (const a of ir.wayups || []) for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayup.add(y * w + x);
   const info = { isCliff: at, wayup, blockCells: new Set(), ringCells: new Set() }, A = landOf(ir, info);   // ringCells: the lip alone, which the level rules treat as a prop-sized obstacle
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (BLOCKS.has(p)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = partAt(A, x, y); if (walled(A, x, y)) info.blockCells.add(y * w + x); if (p === PART.RING) info.ringCells.add(y * w + x); }
   // the way up U (a WayUp area with `u`): no step between its cells and the cells beside it except on row L + 3, so the flanking columns block on the notch's rows L - 2, L - 1 and on L + 2 (rows L and L + 1 beside it are ring and face already)
   for (const a of ir.wayups || []) if (a.u) for (const x of [a.x - 1, a.x + a.w]) for (const y of [a.y - 2, a.y - 1, a.y + 2]) if (x >= 0 && y >= 0 && x < w && y < h) info.blockCells.add(y * w + x);
   return info;
@@ -47,29 +46,18 @@ export function gullies(ir, terrains) {
 // Rewrites the tile codes of dg's layers in place (dg: dualgrid.terrainLayers' output). ir: the level; terrains: terrain.json's list;
 // layers: Map(terrain value -> descriptor) of setload.layerDescriptors, whose kinds carry `rows` (indices into the baked tile set's rows: over, tall { s: [rows] }, variants, wayup { lowerId: row }).
 // `tone` is setload.layerDescriptors' tone ({ of, row, rowRaised }): the raised ground's own tone row. `litterTop` is its { over, fill } rows (the paler litter of a raised litter top), or null.
-// The cliff by "rim and face" (the rule maps, cliffrules.mjs): the south faces, the corner cells, the face ends and every side are painted pieces (decals), so the cliff layer draws only the raised ground and the back rim: a tile of a rim case
-// (3, 1, 2, 7, 11) keeps the old rim sheet's tile (no face variants: the face is not drawn from it), a tile of four raised cells is the raised ground, a side tile (5, 10) is the raised ground to the cell edge (the side cell
-// covers the low cell beside it), and every other edge tile (the south lip, the run ends, the inner corners) draws nothing: the pieces draw them.
-// Every raised tile that is no old rim keeps the cliff layer's fill, the raised meadow ground (fill-cliff.png), and takes the raised tone.
+// The cliff by "rim and face" (cliff-slice-1): the cliff layer needs no rewrite here (its rim and its raised quadrants are its own over sheet, its top the fill), the south faces, caps and shade are decals; the raised top takes the raised tone.
 export function applyOpenEdges(dg, ir, terrains, layers, tone = null, litterTop = null) {
   const { w, h } = ir, cliff = terrains.find((t) => t.id === 'cliff'), w1 = w + 1;
-  const cinfo = cliffInfo(ir, terrains), { isCliff } = cinfo, rim = cliff ? rimOf(ir, landOf(ir, cinfo), isCliff) : null;
+  const { isCliff } = cliffInfo(ir, terrains);
   const vh = (i, j) => (ir.origin ? hash32('', ir.origin.x + i, ir.origin.y + j) : hash32(ir.id, i, j));   // variants and looks by world position when the level has one, else by place id
   for (const layer of dg.layers) {
     if (layer.tone) continue;
-    const d = layers.get(layer.terrain), isCliffLayer = cliff && layer.terrain === cliff.value;
-    if (!isCliffLayer && !d.kinds.some((k) => k.rows.variants)) continue;
+    const d = layers.get(layer.terrain);   // the cliff layer needs no rewrite: its rim is its own over sheet (over-cliff.png), drawn by the dual grid like any ground
+    if (!d.kinds.some((k) => k.rows.variants)) continue;
     for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
       const c = layer.tiles[j * w1 + i]; if (c === EMPTY) continue;
       const fill = c >= FILL_CODE, s0 = fill ? null : splitCode(c), full = fill || s0.full !== undefined, corner = full ? 15 : s0.slot;
-      if (isCliffLayer) {
-        if (fill) continue;   // four raised cells: the raised meadow ground
-        const r = rim[j * w1 + i];   // the rule map cliff-7-rim: the tile of a rim case (back rim, its corners) stays 0; a side keeps the fill (2) unless the fill pieces cover its cells; every other edge tile is drawn by the pieces (1)
-        if (r === 1) { layer.tiles[j * w1 + i] = EMPTY; continue; }
-        if (r === 2) { layer.tiles[j * w1 + i] = FILL_CODE; continue; }
-        const back = !full && d.kinds[s0.kind].rows.back;   // a rim case of the back edge (slots 1, 2, 3, 7, 11): its own tile file, not the sheet's cell
-        if (back && back.slots.includes(corner)) { layer.tiles[j * w1 + i] = ALT_CODE + 16 * back.row + corner; continue; }
-      }
       if (full) continue;
       const rows = d.kinds[s0.kind].rows;
       if (rows.variants && corner > 0 && corner < 15) {

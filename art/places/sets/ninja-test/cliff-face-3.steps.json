@@ -1,0 +1,50 @@
+{
+ "source_sha256": "9f4156d97efe449e161ec9065edd48f296e977cfd77f7e60474f2ddaae34c2e9",
+ "source": "ninja-adventure Backgrounds/Tilesets/TilesetRelief.png (CC0-1.0, Pixel-boy & AAA)",
+ "steps": [
+  [
+   "crop",
+   [
+    160,
+    80,
+    16,
+    48
+   ],
+   "terrain"
+  ],
+  [
+   "map",
+   [
+    [
+     "#543c52",
+     "#3e444e"
+    ],
+    [
+     "#965340",
+     "#5a6470"
+    ],
+    [
+     "#bd7959",
+     "#6c7682"
+    ],
+    [
+     "#f2ad7d",
+     "#b6beb0"
+    ],
+    [
+     "#ffcb8d",
+     "#8cba68"
+    ]
+   ]
+  ],
+  [
+   "scale_nearest",
+   [
+    48,
+    144
+   ]
+  ]
+ ],
+ "note": "a plain wall column of the Ninja relief (3 tiles tall: crest, mid, dark base), recoloured, x3",
+ "out_sha256": "5c8bcafee58e7810c8324dcddfd67f4aa8494996f92e6ab6f4497a324b9495a7"
+}
