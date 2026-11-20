@@ -5804,15 +5804,14 @@ function camPos(v, px, py, live) { const lay = RT.key != null && S.exp && S.exp.
 // is built is its whole-place picture at its own veil; land not yet seen is the map's fog, land seen with no place to draw (water, cliff, or its place not here yet) the map's own cell.
 // Nothing is built on the page thread in one go: a neighbour's picture is made in steps (overviewSteps), PEEK_NB_MS of steps a frame, the nearest first, and shows when it is done.
 // A cell the places worker still owes is never asked of layout() (rule: PR 316); it stays under the map's fog until it is here.
-function unwalkedVeil(veil, nl, pre, dx, dy) {   // veil (placeVeil's, one byte a picture tile): the half of the place next door that the held view shows (the half nearest the held place; dx/dy: where it lies) and the tiles a Call lifted (pre: S.veilPre's rows) are lit; the rest and the apron stay veiled
-  const pw = nl.baked.place.w, W = nl.w, H = nl.h, hx = W >> 1, hy = H >> 1;
+function unwalkedVeil(veil, nl, pre, dx, dy) {   // veil (placeVeil's, one byte a picture tile): only the tiles a Call lifted in the place next door (pre: S.veilPre's rows; dx/dy: where it lies) are lit, and the apron beside them on the near side; the rest stays veiled
+  const pw = nl.baked.place.w, W = nl.w, H = nl.h;
   for (let i = 0; i < veil.length; i++) {
     const px = i % pw + nl.baked.ox, py = ((i / pw) | 0) + nl.baked.oy, inside = px >= 0 && py >= 0 && px < W && py < H;
     // the apron strip between two lit halves is lit by the same rule (the tile's nearest cell tile decides); on an axis where the neighbour leans away from the held place (dx/dy != 0) only the apron on the near side counts, so the outer edge of the whole lit area keeps its veil
     const cx = Math.min(W - 1, Math.max(0, px)), cy = Math.min(H - 1, Math.max(0, py));
     const nearX = dx == null || dx == 0 || (dx > 0 ? px < W : px >= 0), nearY = dy == null || dy == 0 || (dy > 0 ? py < H : py >= 0);
-    const half = dx != null && nearX && nearY && (dx < 0 ? cx >= W - hx : dx > 0 ? cx < hx : true) && (dy < 0 ? cy >= H - hy : dy > 0 ? cy < hy : true);
-    veil[i] = half || (pre && inside && ((pre[py] >>> px) & 1)) ? 0 : 1; }
+    veil[i] = pre && (dx == null ? inside : nearX && nearY) && ((pre[cy] >>> cx) & 1) ? 0 : 1; }   // lit only where a Call lifted the place (owner #90: not half of every neighbour, which hid what a Call reveals)
   return veil;
 }
 const PEEK_NB_MS = 6, PEEK_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]];
