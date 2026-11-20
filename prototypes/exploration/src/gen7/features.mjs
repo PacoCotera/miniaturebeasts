@@ -14,7 +14,7 @@ export const P = {
   STREAM_MIN: 4,    // cells: shorter streams are dropped
   RAV_MAX: 6,       // cells a stream ravine cuts back into raised land, at most (the first cell is always cut)
   RAV_K: 40,        // x 1000: the water cuts on while the raised land is under this many thousandths of height over the raise line per root of the flow (so a bigger stream cuts further)
-  RANGE_LIFT: 320,  // height above the raising height (x 1000) of a range's cells: about the top 15% of the raised land
+  RANGE_LIFT: 100,  // height above the raising height (x 1000) of a range's cells: about the top 15% of the raised land (map-levels-build-1: the raise line moved to the 70% quantile, so the lift is less; was 320)
   RANGE_MIN: 12,    // cells: a range (smaller crest patches are not named)
   PASS_LIFT: 100,  // a pass stands on raised land at least this high (x 1000)
   PASS_VALLEY: 4,   // cells down each low side of a pass within which a stream-sized flow is a valley head

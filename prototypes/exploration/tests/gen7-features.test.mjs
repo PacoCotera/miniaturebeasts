@@ -7,7 +7,8 @@ import { realm7, featureInput } from '../src/gen7/region.mjs';
 import { realmFeatures, P } from '../src/gen7/features.mjs';
 
 const SEEDS = [1, 7, 13];
-const BAND = { river: [10, 25], lake: [2, 14], pond: [25, 50], stream: [50, 80], falls: [5, 17], ravine: [20, 42], 'through-ravine': [12, 24], range: [5, 18], pass: [8, 24], escarpment: [40, 62] };
+// map-levels-build-1: high ground is the exception (a fifth of the dry cells), so the features that read raised land are fewer: falls and ravines (a stream leaving raised land) nearly gone, through-ravines and passes lower
+const BAND = { river: [10, 25], lake: [2, 14], pond: [25, 50], stream: [50, 90], falls: [0, 6], ravine: [0, 8], 'through-ravine': [6, 24], range: [5, 18], pass: [5, 24], escarpment: [40, 66] };
 
 test('the cuts are made: every ravine and through-ravine cell is low in the realm, its raising height holds it low, and no cell is cut twice', () => {
   for (const seed of SEEDS) {
@@ -41,7 +42,7 @@ test('counts of each feature kind on seeds 1, 7 and 13 are in the spec\'s band',
   for (const seed of SEEDS) {
     const re = realm7(seed).realm, n = {};
     for (const f of re.features) n[f.kind] = (n[f.kind] || 0) + 1;
-    for (const [k, [lo, hi]] of Object.entries(BAND)) assert.ok(n[k] >= lo && n[k] <= hi, 'seed ' + seed + ' ' + k + ' ' + n[k] + ' not in ' + lo + '-' + hi);
+    for (const [k, [lo, hi]] of Object.entries(BAND)) assert.ok((n[k] || 0) >= lo && (n[k] || 0) <= hi, 'seed ' + seed + ' ' + k + ' ' + (n[k] || 0) + ' not in ' + lo + '-' + hi);
     const own = realmFeatures(featureInput(realm7(seed))).dest.length;   // the features' own destinations; the trails add far shores, bridges and the land's own spots in holes (R14)
     assert.ok(own >= 95 && own <= 150, 'seed ' + seed + ' destinations ' + own);
     assert.ok(re.destinations.length >= own, 'the trails only add destinations');

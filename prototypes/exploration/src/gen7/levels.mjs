@@ -183,13 +183,13 @@ export function wetCell(L, X, Y) {   // one cell's 24 x 28 wet flags (1 = water)
 
 // ---- passes on a binary raster ----
 const at = (r, W, H, x, y) => r[clamp(y, 0, H - 1) * W + clamp(x, 0, W - 1)];
-// the rounded element: an m x m square without its four corner tiles, anchored at its top-left. It is two rectangles (m wide and m - 2 tall, m - 2 wide and m tall), so an erosion is the
+// the element: a w x h rectangle (map-levels-build-1: 4 x 4, so a terrace's square corner stays), anchored at its top-left. The bit-packed passes take it as two rectangles (here the same one twice): an erosion is the
 // intersection of the two rectangles' erosions and a dilation the union of their dilations, each rectangle done one axis at a time (the raster's rim is read as itself, replicated).
 const ELEMS = new Map();
 function elemOf(m) {
-  let E = ELEMS.get(m); if (E) return E;
-  E = [[0, 1, m, m - 2], [1, 0, m - 2, m]];   // x0, y0, w, h of each rectangle
-  ELEMS.set(m, E); return E;
+  const [w, h] = Array.isArray(m) ? m : [m, m], key = w + 'x' + h; let E = ELEMS.get(key); if (E) return E;
+  E = [[0, 0, w, h], [0, 0, w, h]];   // x0, y0, w, h of each rectangle
+  ELEMS.set(key, E); return E;
 }
 // (land-time-1) open and close on bit-packed rows: 32 tiles to a word. A tile x of a row is bit P + x of its words, the P bits before it and the bits after it (to the end of the last word) hold the row's first and
 // last tile (the raster's rim read as itself, replicated); the rows above and below are the first and last row repeated PV times. A window of n tiles along a row is the AND (erosion) or OR (dilation) of the row shifted
@@ -415,18 +415,14 @@ function cleanup(r0, W, H, rule, lk) {
   dropSmall(r, W, H); relock(r, lk);
   r = fix(r, kn);
   if (sink) sink.small = r.slice();
-  // what the foot-room and lone-lip passes can leave: a one-tile sliver (a tile with no 2 x 2 block of its own level) is flipped to what rings it, and a face of 2+ tiles ending square against a side wall
-  // 3 rows high loses its last lip tile (the end becomes a step); then the patterns are fixed again; at most 4 rounds
+  // what the foot-room and lone-lip passes can leave: a one-tile sliver (a tile with no 2 x 2 block of its own level) is flipped to what rings it; then the patterns are fixed again
+  // (a face ending square against a side is the terrace's own shape, drawn by the set's end cap)
   for (let round = 0; round < 8; round++) {
-    const lip = (x, y) => hasLip(r, W, H, x, y); let changed = 0; const flip = [];
+    let changed = 0; const flip = [];
     for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
       const i = y * W + x, v = r[i];   // (land-time-1) the four 2 x 2 blocks holding the tile, read from the tile's 8 neighbours
       const n = r[i - W - 1] === v, u = r[i - W] === v, ur = r[i - W + 1] === v, l = r[i - 1] === v, rr = r[i + 1] === v, dl = r[i + W - 1] === v, d = r[i + W] === v, dr = r[i + W + 1] === v;
       if (!((n && u && l) || (u && ur && rr) || (l && dl && d) || (rr && d && dr))) flip.push(i);
-    }
-    for (let y = 3; y < H - 2; y++) for (let x = 1; x < W - 1; x++) if (r[y * W + x] === 1 && r[(y + 1) * W + x] === 0) for (const dx of [-1, 1]) {
-      if (lip(x + dx, y) || !lip(x - dx, y)) continue;
-      if (!r[y * W + x + dx] && !r[(y - 1) * W + x + dx] && !r[(y - 2) * W + x + dx]) flip.push(y * W + x);
     }
     const base = known ? r.slice() : null;
     for (const i of flip) { if (lk && lk[i]) continue; r[i] = 1 - r[i]; changed++; }
@@ -459,8 +455,6 @@ function violAt(r, W, H, x, y, fr) {
       const lipL = l === 1 && r[i - 1 + W] === 0, lipR = rr === 1 && r[i + 1 + W] === 0;
       if (!lipL && !lipR && !((r[i - W - 1] === 1 && l === 0) || (r[i - W + 1] === 1 && rr === 0) || (r[i + W - 1] === 1 && r[i + 2 * W - 1] === 0) || (r[i + W + 1] === 1 && r[i + 2 * W + 1] === 0)) && !(LEAN_ON && leanAt(r, W, i))) { n++; DBGV.push("lone"); }
       if (!(LEAN_ON && leanAt(r, W, i))) for (let k = 2; k <= footRoom(fr); k++) if (r[i + k * W]) { n++; DBGV.push("foot"); break; }
-      if (!lipR && lipL && !rr && !r[i + 1 - W] && !r[i + 1 - 2 * W]) { n++; DBGV.push("square"); }
-      if (!lipL && lipR && !l && !r[i - 1 - W] && !r[i - 1 - 2 * W]) { n++; DBGV.push("square"); }
     }
     return n;
   }
@@ -472,120 +466,11 @@ function violAt(r, W, H, x, y, fr) {
   if (lip(x, y)) {
     if (!lip(x - 1, y) && !lip(x + 1, y) && !(lip(x - 1, y - 1) || lip(x + 1, y - 1) || lip(x - 1, y + 1) || lip(x + 1, y + 1))) { n++; DBGV.push("lone"); }
     for (let k = 2; k <= footRoom(fr); k++) if (R(x, y + k)) { n++; DBGV.push("foot"); break; }
-    for (const dx of [-1, 1]) if (!lip(x + dx, y) && lip(x - dx, y) && !R(x + dx, y) && !R(x + dx, y - 1) && !R(x + dx, y - 2)) { n++; DBGV.push("square"); }
   }
   return n;
 }
-const violBox = (r, W, H, x0, y0, x1, y1, fr) => { let n = 0; for (let y = Math.max(1, y0 - footRoom(fr)); y <= Math.min(H - 2, y1 + 3); y++) for (let x = Math.max(1, x0 - 3); x <= Math.min(W - 2, x1 + 3); x++) n += violAt(r, W, H, x, y, fr); return n; };
-
-// ---- straight runs (land call 3): side walls at most 10 tiles, south faces 10, back rims 14; a longer run gets a one-tile jog, 6 to 10 tiles from its start (from the tile hash) ----
-const CAP = { south: 10, side: 10, rim: 14 };
-const PERIOD = { south: 8, side: 8, rim: 12 };   // the spacing of the world-fixed jog columns: first column 3 tiles in lies at most PERIOD + 2 in, so under the cap
-// jogs decided from the world, not the window (land-b3e-seam-1, land-b3f-foot-1): a long run is cut at world columns (see capRuns), never counted from where the run starts, so every window that shows a stretch of wall
-// puts the jogs in the same places. A run that touches the window's rim is cut too (its far end 4 tiles clear of the rim); no round is cut short by a count: every run is looked at.
-const JOG_END = 4, JOG_CLEAR = 10;
-function capRuns(r, W, H, rule, lk, noRaise, seed, gx0, gy0, dbgInfo = {}) {
-  const R = (a, b) => (a < 0 || b < 0 || a >= W || b >= H ? 0 : r[b * W + a]), fr = rule.faceRows, hs = subSeed(seed, 'jog');
-  // each kind: the edge test, the axis the run goes along, and the two ways to move the edge by one tile ([x, y, value] relative to a run tile)
-  const KINDS = [
-    { k: 'south', alongX: true, is: (x, y) => R(x, y) === 1 && R(x, y + 1) === 0, moves: [[[0, 0, 0]], [[0, 1, 1]]] },
-    { k: 'rim', alongX: true, is: (x, y) => R(x, y) === 1 && R(x, y - 1) === 0, moves: [[[0, -1, 1]], [[0, 0, 0]]] },
-    { k: 'side', alongX: false, is: (x, y) => R(x, y) === 1 && R(x - 1, y) === 0, moves: [[[-1, 0, 1]], [[0, 0, 0]]] },
-    { k: 'side', alongX: false, is: (x, y) => R(x, y) === 1 && R(x + 1, y) === 0, moves: [[[1, 0, 1]], [[0, 0, 0]]] },
-  ];
-  let jogs = 0, missed = 0; const info = dbgInfo;
-  // how far the runs of a kind on lines l0 .. l1 are over their cap, all together: a jog is kept only when it lowers this (a tail moved onto a neighbour line must not merge with the run there and start the two jogging each other)
-  const excess = (K, l0, l1) => { let s = 0; const lines = K.alongX ? H : W, len = K.alongX ? W : H; for (let l = Math.max(0, l0); l <= Math.min(lines - 1, l1); l++) { let n = 0; for (let t = 0; t <= len; t++) { if (t < len && (K.alongX ? K.is(t, l) : K.is(l, t))) n++; else { if (n > CAP[K.k]) s += n - CAP[K.k]; n = 0; } } } return s; };
-  for (const K of KINDS) {
-    const lines = K.alongX ? H : W, len = K.alongX ? W : H, P = PERIOD[K.k], tried = new Set(), isOn = (t, l) => (K.alongX ? K.is(t, l) : K.is(l, t)), alongW = K.alongX ? gx0 : gy0;
-    let l0 = 3;   // (land-time-1) the lines before this hold no run over its cap that is not looked at: the last run was the first, and moving a piece of it changes the lines beside its own only
-    for (let guard = 0; guard < 600; guard++) {
-      // the first run over its cap, in raster order, not looked at yet (a run whose start the rim hides is looked at too: its start is taken as the rim)
-      let run = null;
-      for (let l = l0; l < lines - 3 && !run; l++) { let n = 0, from = 0;
-        for (let t = 0; t <= len; t++) { if (t < len && isOn(t, l)) { if (!n) from = t; n++; } else { if (n > CAP[K.k] && !tried.has(l * 65536 + from)) { run = { l, from, n }; break; } n = 0; } } }
-      if (!run) break;
-      tried.add(run.l * 65536 + run.from); l0 = Math.max(3, run.l - 2);
-      // land-b3f-foot-1: jogs stand at world columns, not at the run's start: the run is cut at every column where (world position along it + hash(its line in the world)) mod P is 0 and that lies 3 or more tiles in
-      // from both ends, and the odd pieces (by the world's own count of P-long stretches) are moved one tile, the others stay: no jog depends on where a run starts, so any window that sees a stretch of wall puts its
-      // jogs in the same places (a chain of cuts from the start would not). A piece that reaches the window's rim or lies within JOG_CLEAR of it is left; the cells' own tiles lie far clear of it.
-      const end = Math.min(run.from + run.n, len - JOG_END), hl = hash2((K.alongX ? gy0 : gx0) + run.l, K.alongX ? 1 : 2, hs) % P, jOf = t => Math.floor((alongW + t + hl) / P);
-      const cut = []; for (let t = run.from + 3; t <= end - 3; t++) if ((alongW + t + hl) % P === 0) cut.push(t);
-      const pieces = [], edges = [run.from, ...cut, end];
-      for (let i = 0; i + 1 < edges.length; i++) pieces.push({ a: edges[i], b: edges[i + 1], j: i === 0 && edges.length > 2 ? jOf(edges[1] - 1) : jOf(edges[i]) });
-      // one piece moved one tile, by the first of the two moves that leaves no shape check failing round it and fewer tiles over the cap on the lines near
-      // lenient (cliff-contour-2, the end moves below): a move is kept when it leaves no more failing shape checks round it than were there (a square corner already beside the stretch no longer blocks it)
-      const shift = (pc, lenient = false) => {
-        if (pc.a < JOG_CLEAR || pc.b > len - JOG_CLEAR) return null;   // near the window's rim: left, and nothing is made of it (another window sees the piece whole)
-        for (const mv of K.moves) {
-          const tiles = []; for (let t = pc.a; t < pc.b; t++) for (const [dx, dy, v] of mv) tiles.push([(K.alongX ? t : run.l) + dx, (K.alongX ? run.l : t) + dy, v]);
-          if (tiles.some(([x, y, v]) => x < 1 || y < 1 || x >= W - 1 || y >= H - 1 || (lk && lk[y * W + x]) || (v === 1 && noRaise[y * W + x]))) continue;
-          const xs = tiles.map(p => p[0]), ys = tiles.map(p => p[1]), b = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)], old = tiles.map(([x, y]) => r[y * W + x]);
-          const v0 = lenient ? violBox(r, W, H, ...b, fr) : 0;
-          for (const [x, y, v] of tiles) r[y * W + x] = v;
-          DBGV.length = 0; if (violBox(r, W, H, ...b, fr) <= v0 && (() => { const ex1 = excess(K, run.l - 2, run.l + 2); tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; }); const ex0 = excess(K, run.l - 2, run.l + 2); for (const [x, y, v] of tiles) r[y * W + x] = v; return ex1 < ex0; })()) { jogs++; return true; }
-          if (info.dbg) (info.why || (info.why = [])).push(`try ${K.k} ${pc.a}-${pc.b} ${tiles.length}t: ${[...new Set(DBGV)].join(',')}`);
-          tiles.forEach(([x, y], i) => { r[y * W + x] = old[i]; });
-        }
-        return false;
-      };
-      // the odd pieces move (a piece that cannot, a shape check failing round it, stays: the run is left over its cap there)
-      const failed = [];
-      for (const pc of pieces) {
-        if ((pc.j & 1) === 0) continue;
-        if (shift(pc) === false) failed.push(pc);
-      }
-      // cliff-contour-2 (GD item 2, 2026-11-16): where a stretch is still over its cap (a held way-up site in the piece, or a shape check failing round it), its tail or head is moved by one row instead: the fewest
-      // tiles that bring the stretch under its cap, then a few more, tail first. That is one one-row step, which the set draws as a slope. It depends only on the stretch's own ends, so it is made only where
-      // the whole stretch lies JOG_CLEAR clear of the window's rim (every window that compares its cells sees it whole and makes the same move).
-      // (rule 8: no bend within 2 columns of a held way-up site, so no moved tile within 2 of a held one on the line.) A stretch whose site sits in its middle takes a move at each end: when no single move
-      // brings it under its cap, the largest move that is allowed is made and the stretch looked at again (at most 3 moves).
-      const nearHeld = (pc) => { if (!lk) return false; for (let u = pc.a - 2; u < pc.b + 2; u++) { const x = K.alongX ? u : run.l, y = K.alongX ? run.l : u; if (x >= 0 && y >= 0 && x < W && y < H && lk[y * W + x]) return true; } return false; };
-      const over = () => { const out = []; for (let t = run.from, n = 0; t <= Math.min(len, run.from + run.n + 1); t++) { if (t < len && isOn(t, run.l)) { n++; continue; } if (n > CAP[K.k]) out.push([t - n, t]); n = 0; } return out; };
-      let left = 0; const before = over().length ? r.slice() : null, jogs0 = jogs;
-      for (let round = 0; round < 3 && before; round++) {
-        const st = over(); if (!st.length) break;
-        let moved = false;
-        for (const [s, e] of st) {
-          const n = e - s; if (s < JOG_CLEAR || e > len - JOG_CLEAR) continue;
-          let done = false;
-          for (let k = n - CAP[K.k]; k <= Math.min(n - 3, n - CAP[K.k] + 3) && !done; k++) for (const pc of [{ a: e - k, b: e }, { a: s, b: s + k }]) if (!nearHeld(pc) && shift(pc, true)) { done = true; break; }
-          for (let k = Math.min(n - 3, n - CAP[K.k] - 1); k >= 2 && !done; k--) for (const pc of [{ a: e - k, b: e }, { a: s, b: s + k }]) if (!nearHeld(pc) && shift(pc, true)) { done = true; break; }
-          if (done) moved = true;
-        }
-        if (!moved) break;
-      }
-      left = over().length;
-      if (left && before && jogs > jogs0) { r.set(before); jogs = jogs0; left = over().length; }   // moves that leave the stretch over its cap are undone (a notch for nothing)
-      if (left) { missed += left; for (const pc of failed) (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} piece ${pc.a}-${pc.b}`); if (!failed.length) (info.why || (info.why = [])).push(`${K.k}${K.alongX ? 'x' : 'y'} line ${run.l} run ${run.from}-${run.from + run.n}`); }
-    }
-  }
-  return { jogs, missed };
-}
-
-// a face of 2 or more that ends square against a side wall 3 or more rows high (what a held site can leave at a plateau's corner): the end becomes a bend, by moving the wall's edge beside it
-// out by one tile for its whole straight length (or for 3 rows or more of it), or the end lip tile down; an edit is kept only when no shape check fails round it
-function fixSquares(r, W, H, rule, lk, noRaise) {
-  const R = (a, b) => (a < 0 || b < 0 || a >= W || b >= H ? 0 : r[b * W + a]), lip = (a, b) => R(a, b) === 1 && R(a, b + 1) === 0; let fixed = 0, left = 0;
-  for (let round = 0; round < 60; round++) { let hit = false;
-    for (let y = 3; y < H - 2 && !hit; y++) for (let x = 1; x < W - 1 && !hit; x++) if (lip(x, y)) for (const dx of [-1, 1]) {
-      if (lip(x + dx, y) || !lip(x - dx, y) || R(x + dx, y) || R(x + dx, y - 1) || R(x + dx, y - 2)) continue;
-      let n = 0; while (y - 1 - n > 1 && R(x, y - 1 - n) && !R(x + dx, y - 1 - n)) n++;   // the wall's straight length above the corner
-      const tries = []; for (let m = n; m >= 1; m--) tries.push(Array.from({ length: m }, (_, j) => [x + dx, y - 1 - j, 1]));
-      tries.push([[x, y, 0]]);
-      for (const tiles of tries) {
-        if (tiles.some(([a, b, v]) => a < 1 || b < 1 || a >= W - 1 || b >= H - 1 || (lk && lk[b * W + a]) || (v === 1 && noRaise[b * W + a]))) continue;
-        const old = tiles.map(([a, b]) => r[b * W + a]); for (const [a, b, v] of tiles) r[b * W + a] = v;
-        const xs = tiles.map(p => p[0]), ys = tiles.map(p => p[1]);
-        if (violBox(r, W, H, Math.min(...xs, x), Math.min(...ys, y), Math.max(...xs, x), Math.max(...ys, y), rule.faceRows) === 0) { fixed++; hit = true; break; }
-        tiles.forEach(([a, b], i) => { r[b * W + a] = old[i]; });
-      }
-      if (hit) break; left++;
-    }
-    if (!hit) break;
-  }
-  return { fixed, left };
-}
+const CAP = { south: 10, side: 10, rim: 14 };   // the run length flattenBumps treats as over (straight runs of one kind)
+const violBox =(r, W, H, x0, y0, x1, y1, fr) => { let n = 0; for (let y = Math.max(1, y0 - footRoom(fr)); y <= Math.min(H - 2, y1 + 3); y++) for (let x = Math.max(1, x0 - 3); x <= Math.min(W - 2, x1 + 3); x++) n += violAt(r, W, H, x, y, fr); return n; };
 
 // no one-wide gap between blocking tiles (land-b3e-seam-1): a tile that walks with a blocking tile on both sides (east and west, or north and south) is a gap a place border cannot cross (it needs two). The parts are
 // relief.mjs's: a raised tile with a low one beside it is the ring, the low tile under a raised one the face, a low tile beside a raised one or in an end piece's rows the flank; the rest walks.
@@ -818,25 +703,6 @@ function blobOf(r, W, H, tiles, v, limit, bad, box) {
   return q;
 }
 
-// The field's sum over the rounded element of radius rad (the tiles dx, dy with dx² + dy² <= rad² + rad: for 2, the 5 x 5 square without its corners) round each tile, from an integral image (whole numbers,
-// exact): { s (Float64Array), c (the element's tile count) }; null when rad is 0. A held tile's sum is its own -1 times c (it stays low).
-function smoothField(q, held, W, H, rad) {
-  if (!rad) return null;
-  // each row padded by rad tiles each side (its first and last tile repeated), its running sums; rows past the raster's top and bottom are its first and last row
-  const PW = W + 2 * rad, P = new Float64Array(H * (PW + 1));
-  for (let y = 0; y < H; y++) { const o = y * (PW + 1); let s = 0; for (let j = 0; j < PW; j++) { const x = j - rad; s += q[y * W + (x < 0 ? 0 : x >= W ? W - 1 : x)]; P[o + j + 1] = s; } }
-  // the element as rows: for each dy, the half width hw (dx² + dy² <= rad² + rad)
-  const DY = [], HW = []; let c = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); c += 2 * hw + 1; }
-  const s = new Float64Array(W * H), nr = DY.length;
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const i = y * W + x; if (held[i]) { s[i] = -c; continue; }
-    let t = 0;
-    for (let r = 0; r < nr; r++) { let yy = y + DY[r]; yy = yy < 0 ? 0 : yy >= H ? H - 1 : yy; const o = yy * (PW + 1), j = x + rad; t += P[o + j + HW[r] + 1] - P[o + j - HW[r]]; }
-    s[i] = t;
-  }
-  return { s, c };
-}
-
 // ---- the levels of one cell ----
 // The raster is the cell with a cell's width round it; what the passes do at the raster's rim stays in the ring, so the cell is the same from every neighbour's window.
 // rupar-banks-speed-2: a window made with no banks (the verdict's) is kept; the same cell's window with banks is that very window when no bank site lands in it (banks are the only thing BANKS_SKIP changes), so it is returned whole
@@ -880,17 +746,16 @@ function windowLevelsMake(L, X, Y) {
     noRaise[i] = held[i] || inl < RAISE_OFF + 1 ? 1 : 0;
     wblock[i] = wr[i] && !(inRealm(Math.floor(gx / CW), Math.floor(gy / CH)) && L.realm.ford[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))]) ? 1 : 0;
     edge[i] = x < 2 || y < 2 || x >= W - 2 || y >= H - 2 || inl < 6 ? 1 : 0; }
-  // cliff-contour-1: the field is read at the minimum feature's own scale before the threshold: a tile's value is the sum of q over the rounded element of radius `smooth` round it (the window's rim read
-  // as itself, replicated; held tiles stay held), so the threshold draws the field's smooth contour and the opening below has little left to square off. smooth 0: the tile's own q, as before.
-  const sq = smoothField(q, held, W, H, L.rule.smooth | 0);
+  // map-levels-build-1: the window's first raster is the terraced field's own (rfCell: the smoothed field read per block row, water held low, parts under PART_MIN lowered), cell by cell, so every window
+  // holds the same raster where it shows the same land (stationary); the window's own smoothing is gone
   // one raster per boundary (level above k), each cleaned on its own; a higher level lies inside the lower one
-  const out = new Uint8Array(W * H); let below = null; const info = { sites: [], filled: [], pockets: [], jogs: 0, jogsMissed: 0, pocketStairs: [], dbg: !!globalThis.B3C_DBG };
+  const out = new Uint8Array(W * H); let below = null; const info = { sites: [], filled: [], pockets: [], pocketStairs: [], dbg: !!globalThis.B3C_DBG };
   for (let k = 0; k < th.length; k++) {
-    const base = new Uint8Array(W * H); for (let i = 0; i < W * H; i++) base[i] = (sq ? sq.s[i] >= th[k] * sq.c && !held[i] : q[i] >= th[k]) && (!below || below[i]) ? 1 : 0;
+    const base = new Uint8Array(W * H);
+    if (k === 0) { for (let j = 0; j <= 2 * WR; j++) for (let i = 0; i <= 2 * WR; i++) { const f = rfCell(L, X0w + i, Y0w + j);
+      for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) base[(j * CH + ty) * W + i * CW + tx] = f[ty * CW + tx]; } }
+    else for (let i = 0; i < W * H; i++) base[i] = q[i] >= th[k] && !held[i] && below[i] ? 1 : 0;
     let r = base;
-    if (k === 0) { const B = bkOf(L);   // rupar-banks-speed-2: the raised field of the window's inner cells is the bank scan's own (rfCell): a tile in them reads no further than the window holds
-      for (let j = 1; j < 2 * WR; j++) for (let i = 1; i < 2 * WR; i++) { const cx = X0w + i, cy = Y0w + j, key = (cx + 8) * 1000 + (cy + 8); if (!inRealm(cx, cy) || B.rf.has(key)) continue;
-        if (B.rf.size > 3000) B.rf.clear(); const f = new Uint8Array(N); for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) { const x = i * CW + tx, y = j * CH + ty, p = y * W + x; f[ty * CW + tx] = base[p] && !noRaise[p] ? 1 : 0; } B.rf.set(key, f); } }
     if (k === 0) r = landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info);
     else r = cleanup(base, W, H, L.rule, null);
     if (below) for (let i = 0; i < W * H; i++) r[i] &= below[i];
@@ -931,24 +796,19 @@ function siteOf(L, st) {   // the site's first column and lip row, in world tile
   for (const needRoom of [true, false]) for (const strict of [true, false]) for (let d = 0; d <= 11; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 < lo || x0 > hi) continue; if ((!strict || nat(x0)) && clear(x0) && (!needRoom || room(x0))) { st.x0 = x0; st.ok = true; st.room = needRoom; return st; } }   // a site with room first; none: the old choice (a stair the realm planned keeps its way up: dropping it left whole regions unreached, 16-20 stairs a seed)
   return st;
 }
-// land-reach-1: the natural site of a stair on the edge (st.X, st.Y)-(st.X, st.Y + 1), or null: [x0, lip] in world tiles (see siteOf). The field is smoothed as windowLevels smooths it (the sum over the rounded
-// element of radius `smooth`), read from the cells' q; a tile is raised where the sum is at or over the threshold times the element's count.
+// land-reach-1: the natural site of a stair on the edge (st.X, st.Y)-(st.X, st.Y + 1), or null: [x0, lip] in world tiles (see siteOf). The field is the terraced one (rfAt), the first raster windowLevels cuts.
 export const NAT_FOOT = 3, NAT_PART = 200, NAT_DEEP = 20;   // NAT_DEEP: the lip row may lie this many rows into the lower cell (a basin whose tip starts low in it)   // walkable low rows under the foot row; the field part a way up must climb from and to (tiles, or the search box's rim)
 function natSite(L, st, wet, clearAt) {
-  const rad = L.rule.smooth | 0, th = L.rule.levels[0], foot = footRoom(L.rule.faceRows), up = SITE_UP + 2, down = foot + NAT_FOOT - 1;   // footRoom counts the foot row and one walkable row
+  const rad = L.rule.smooth | 0, foot = footRoom(L.rule.faceRows), up = SITE_UP + 2, down = foot + NAT_FOOT - 1;   // footRoom counts the foot row and one walkable row
   const xa = (st.X - 1) * CW + 2, xb = (st.X + 2) * CW - SITE_W - 2, ya = st.Y * CH + 10, yb = (st.Y + 1) * CH + NAT_DEEP;
   const M = 16, bx0 = xa - rad - M, by0 = ya - up - rad - M, bw = xb + SITE_W + rad + M - bx0, bh = yb + down + 1 + rad + M - by0;   // M: room for the part floods (wide)
-  const qW = (gx, gy) => { const cx = Math.floor(gx / CW), cy = Math.floor(gy / CH); return qCell(L, cx, cy)[(gy - cy * CH) * CW + gx - cx * CW]; };
-  const Q = new Int32Array(bw * bh); for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) Q[y * bw + x] = qW(bx0 + x, by0 + y);
-  const HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; HW.push(hw); cnt += 2 * hw + 1; }
   const S = new Int8Array(bw * bh).fill(-1);   // 1 raised, 0 low, -1 not read
   const up1 = (gx, gy) => { const x = gx - bx0, y = gy - by0, k = y * bw + x; if (S[k] >= 0) return S[k];
-    let s = 0; for (let j = 0; j <= 2 * rad; j++) { const yy = y + j - rad, hw = HW[j]; for (let i = -hw; i <= hw; i++) s += Q[yy * bw + x + i]; }
-    return (S[k] = s >= th * cnt ? 1 : 0); };
-  const ok = (x0, ly) => {
+    return (S[k] = rfAt(L, gx, gy)); };   // map-levels-build-1: the terraced field's own raster
+  const ok = (x0, ly, loose = false) => {
     // the way up's 2 columns: the contour on the lip row; the other 4: within a row of it (the held site makes the 6 straight), so the land above and below is 6 wide (over the minimum feature: the cleanup
-    // keeps it)
-    for (let c = x0; c < x0 + SITE_W; c++) { const e = c === x0 + 2 || c === x0 + 3 ? 0 : 1;
+    // keeps it). `loose` (map-levels-build-1, a terrace face of 4 or 5 tiles): the other 4 columns as the field has them, whatever that is; the lock makes the six straight.
+    for (let c = x0; c < x0 + SITE_W; c++) { const way = c === x0 + 2 || c === x0 + 3, e = way ? 0 : 1; if (loose && !way) continue;
       for (let r = ly - up; r <= ly - e; r++) if (!up1(c, r)) return false; for (let r = ly + 1 + e; r <= ly + down; r++) if (up1(c, r)) return false; }
     for (let r = ly + 1; r <= ly + down; r++) for (let c = x0 - 1; c <= x0 + SITE_W; c++) if (wet(c, r)) return false;
     return clearAt(x0, ly) && wide(x0 + 2, ly + down, 0) && wide(x0 + 2, ly - up, 1);
@@ -962,7 +822,7 @@ function natSite(L, st, wet, clearAt) {
   const base = st.X * CW + st.port - 2, xs = [];
   for (let d = 0; base + d <= xb || base - d >= xa; d++) for (const s of d ? [1, -1] : [1]) { const x0 = base + s * d; if (x0 >= xa && x0 <= xb) xs.push(x0); }
   const lips = []; for (let d = 0; d <= 22; d++) for (const s of d ? [1, -1] : [1]) { const y = st.Y * CH + CH - 1 + s * d; if (y >= ya && y <= yb) lips.push(y); }
-  for (const x0 of xs) for (const ly of lips) if (ok(x0, ly)) return [x0, ly];
+  for (const loose of [false, true]) for (const x0 of xs) for (const ly of lips) if (ok(x0, ly, loose)) return [x0, ly];
   return null;
 }
 // a pocket stair's site is made only where every tile it holds raised may be raised (none is held low by water or the coast): else its lip would stand alone beside tiles the rule keeps low
@@ -1003,12 +863,52 @@ class TileLab {
 function bkOf(L) { return L.bkd || (L.bkd = { rf: new Map(), lab: new TileLab(), parts: [], banks: new Map(), land: new Map(), why: {} }); }
 const landWet = (L, gx, gy) => { const X = Math.floor(gx / CW), Y = Math.floor(gy / CH); return L.rule.holdWater !== 0 && inlandOf(gx, gy) >= WET_REACH && wetCell(L, X, Y)[(gy - Y * CH) * CW + gx - X * CW] === 1; };
 const heldTile = (L, gx, gy) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (landWet(L, gx + dx, gy + dy)) return true; return inlandOf(gx, gy) < RAISE_OFF + 1; };
-// the field's raised tiles of one cell (1 raised): windowLevels' own first raster (the smoothed sum over the rounded element at or over the threshold, water held low), cell by cell
+// map-levels-build-1: the field's raised tiles of one cell (1 raised), windowLevels' own first raster, cell by cell: the terrace lattice. Columns of the world are cut into blocks of 4 to 7 tiles (super-blocks of
+// SB tiles from a seed offset, each split by its hash into one of the compositions of SB into parts 4..7). Every row of a block takes one value (the block's mean of the smoothed field against the threshold), so every
+// raised run in every row, and every south face, is whole blocks: 4 tiles or more. A pure function of the world column and the seed: every window reads the same blocks (stationary). A block row holding a tile held
+// low (water and its ring) or the coast's band is low whole.
+const SB = 20, BMIN = 4, BMAX = 7, COMPS = [];
+(function comps(left, acc) { if (!left) { COMPS.push(acc); return; } for (let p = BMIN; p <= Math.min(BMAX, left); p++) if (left - p === 0 || left - p >= BMIN) comps(left - p, [...acc, p]); })(SB, []);
+// map-levels-build-2: no straight run past JOG_RUN (12) tiles. Side walls: the block columns of a band of JOG_RUN rows are shifted 0, or 1-2 columns in every other band (a jog of 1-2 after at most 12 rows).
+// South runs: block k of a super-block of n blocks reads the field SY rows higher (SY = 0 for the first, 1-2 for odd k, 0 for even k, but 1-2 for a last even k), so neighbouring blocks never share an edge row
+// and a run of equal rows is one block (7 tiles) at most; across super-blocks the last block's shift is never 0 and the next super-block starts at 0.
+export const JOG_RUN = 9;   // the band height; the land's cleanup joins a short bump to its band, so the longest run on the ten test seeds is 15 and 12 for all but a few
+function blockOf0(seed, gx) {   // [first column, end column, row shift] of the block holding world column gx (the shift is the south jog)
+  const o = hash2(7, 11, subSeed(seed, 'terrace-o')) % SB, j = Math.floor((gx + o) / SB), parts = COMPS[hash2(j, 3, subSeed(seed, 'terrace')) % COMPS.length], n = parts.length, js = subSeed(seed, 'jog-s');
+  let x = j * SB - o;
+  for (let k = 0; k < n; k++) {
+    if (gx < x + parts[k] || k === n - 1) {
+      const sy = k % 2 ? 4 : k === n - 1 && k ? 2 : 0;
+      return [x, x + parts[k], sy];
+    }
+    x += parts[k];
+  }
+}
+export const JOG_X = 3;
+export function jogX(seed, gy) { const ro = hash2(5, 13, subSeed(seed, 'jog-r')) % JOG_RUN; return Math.floor((gy + ro) / JOG_RUN) % 2 ? JOG_X : 0; }   // the columns the field is read over in this row (a side wall jogs by this at every band edge)
+export const blockOf = blockOf0;
+// then a raised part of the terraced field under PART_MIN tiles (flooded whole over the world's raster, so the same from every window) is lowered: a hill too small to hold a way up is not made
+export const PART_MIN = 200;
 function rfCell(L, X, Y) {
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.rf.get(key); if (hit) return hit;
-  const out = new Uint8Array(N); if (B.rf.size > 3000) B.rf.clear(); B.rf.set(key, out);
+  const r0 = rf0Cell(L, X, Y), out = r0.slice(), seen = new Uint8Array(N);
+  const at0 = (gx, gy) => { if (gx < 0 || gy < 0 || gx >= WTW || gy >= WTH) return 0; const cx = (gx / CW) | 0, cy = (gy / CH) | 0; return rf0Cell(L, cx, cy)[(gy - cy * CH) * CW + gx - cx * CW]; };
+  for (let i = 0; i < N; i++) {
+    if (!r0[i] || seen[i]) continue;
+    const gx = X * CW + (i % CW), gy = Y * CH + ((i / CW) | 0), set = new Set([gy * 8192 + gx]), q = [[gx, gy]];
+    for (let h = 0; h < q.length && set.size < PART_MIN; h++) { const [a, b] = q[h];
+      for (let d = 0; d < 4; d++) { const x = a + NB4X[d], y = b + NB4Y[d], k = y * 8192 + x; if (!set.has(k) && at0(x, y)) { set.add(k); q.push([x, y]); } } }
+    const small = set.size < PART_MIN;
+    for (const k of set) { const x = k & 8191, y = Math.floor(k / 8192); if (x >= X * CW && x < X * CW + CW && y >= Y * CH && y < Y * CH + CH) { const j = (y - Y * CH) * CW + x - X * CW; seen[j] = 1; if (small) out[j] = 0; } }
+  }
+  if (B.rf.size > 3000) B.rf.clear(); B.rf.set(key, out); return out;
+}
+function rf0Cell(L, X, Y) {
+  const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8); if (!B.rf0) B.rf0 = new Map(); const hit = B.rf0.get(key); if (hit) return hit;
+  const out = new Uint8Array(N); if (B.rf0.size > 3000) B.rf0.clear(); B.rf0.set(key, out);
   if (!inRealm(X, Y)) return out;
-  const rad = L.rule.smooth | 0, R1 = rad + 1, w = CW + 2 * R1, h = CH + 2 * R1, gx0 = X * CW - R1, gy0 = Y * CH - R1, q = new Int32Array(w * h), wr = new Uint8Array(w * h), cw8 = new Uint8Array(w * h);
+  // margin: MX columns each side (7 for the block, 3 for the element, 1 for the held ring)
+  const rad = L.rule.smooth | 0, R1 = rad + 5, MX = BMAX + R1 + 1 + JOG_X, w = CW + 2 * MX, h = CH + 2 * R1, gx0 = X * CW - MX, gy0 = Y * CH - R1, q = new Int32Array(w * h), wr = new Uint8Array(w * h), cw8 = new Uint8Array(w * h);
   for (let cy = Math.floor(gy0 / CH); cy <= Math.floor((gy0 + h - 1) / CH); cy++) for (let cx = Math.floor(gx0 / CW); cx <= Math.floor((gx0 + w - 1) / CW); cx++) {
     const qc = qCell(L, cx, cy), wc = L.rule.holdWater !== 0 ? wetCell(L, cx, cy) : null, water = inRealm(cx, cy) && L.realm.land[cy * RW + cx] === LAND.WATER && !L.realm.ford[cy * RW + cx];
     for (let ty = 0; ty < CH; ty++) { const y = cy * CH + ty - gy0; if (y < 0 || y >= h) continue;
@@ -1019,12 +919,13 @@ function rfCell(L, X, Y) {
   for (let i = 0; i < w * h; i++) if (held[i] && q[i] >= 0) q[i] = -1;
   const DY = [], HW = []; let cnt = 0; for (let dy = -rad; dy <= rad; dy++) { let hw = 0; if (rad) while ((hw + 1) * (hw + 1) + dy * dy <= rad * rad + rad) hw++; DY.push(dy); HW.push(hw); cnt += 2 * hw + 1; }
   const th = L.rule.levels[0] * cnt;
-  // rupar-banks-speed-2: the element's row sums from row prefix sums of q (whole numbers: the same sum, a few reads a tile)
   const w1 = w + 1, P = new Int32Array(w1 * h); for (let y = 0; y < h; y++) { let a = 0; const o = y * w1; for (let x = 0; x < w; x++) { a += q[y * w + x]; P[o + x + 1] = a; } }
-  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) {
-    const x = tx + R1, y = ty + R1, i = y * w + x; if (held[i] || inlandOf(X * CW + tx, Y * CH + ty) < RAISE_OFF + 1) continue;
-    let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w1 + x; s += P[o + HW[r] + 1] - P[o - HW[r]]; }
-    if (s >= th) out[ty * CW + tx] = 1;
+  const sAt = (x, y) => { let s = 0; for (let r = 0; r < DY.length; r++) { const o = (y + DY[r]) * w1 + x; s += P[o + HW[r] + 1] - P[o - HW[r]]; } return s; };
+  for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW;) {
+    const jx = jogX(L.seed, Y * CH + ty), [c0, c1, sy] = blockOf(L.seed, X * CW + tx - jx), b0 = c0 + jx, b1 = c1 + jx, xa = b0 - gx0, xb = b1 - gx0, y = ty + R1 - sy; let s = 0, low = false;
+    for (let x = xa; x < xb; x++) { if (held[y * w + x - jx] || inlandOf(gx0 + x - jx, Y * CH + ty - sy) < RAISE_OFF + 1) { low = true; break; } s += sAt(x - jx, y); }
+    if (!low && s >= th * (xb - xa)) for (let x = Math.max(xa, MX); x < Math.min(xb, MX + CW); x++) out[ty * CW + x - MX] = 1;
+    tx = b1 - X * CW;
   }
   return out;
 }
@@ -1197,6 +1098,49 @@ export function regionBanks(L, ra, rb) {
 // the regions' lists made so far (the worker sends them to the page) and a list made elsewhere, taken as it is
 export const madeRegionBanks = L => { const B = bkOf(L), out = []; if (B.reg) for (const [k, banks] of B.reg) out.push({ ra: Math.floor(k / 100), rb: k % 100, banks: banks.map(b => ({ ...b })) }); return out; };
 export const presetRegionBanks = (L, lists) => { const B = bkOf(L); if (!B.reg) B.reg = new Map(); for (const r of lists || []) { const k = r.ra * 100 + r.rb; if (!B.reg.has(k)) B.reg.set(k, r.banks.map(b => ({ ...b }))); } };
+// map-levels-build-1: one way up per raised piece per place. A piece is a 4-connected part of the terraced field (rfCell) inside one place; a piece that holds no realm stair's way gets a site on its own south
+// face (6 columns lipped on one row, the rows above raised, the foot rows low and dry), the way's two columns inside the place; the site is held straight like a stair's, so the face need not be straight in the
+// field. Where the piece reaches the place's south edge and the part goes on across it, a site within STRADDLE rows below the edge comes first (as realm stairs already straddle), so the piece north of the edge is
+// served. Read from the field only: the same in every window.
+const STRADDLE = 6;
+function pieceWays(L, X, Y) {
+  const B = bkOf(L); if (!B.pw) B.pw = new Map(); const key = (X + 8) * 1000 + (Y + 8), hit = B.pw.get(key); if (hit) return hit;
+  const out = []; if (B.pw.size > 4000) B.pw.clear(); B.pw.set(key, out); if (!inRealm(X, Y)) return out;
+  const rf = rfCell(L, X, Y), x0c = X * CW, y0c = Y * CH, lab = new Int32Array(N).fill(-1), comps = [];
+  for (let i = 0; i < N; i++) { if (!rf[i] || lab[i] >= 0) continue; const id = comps.length, q = [i]; lab[i] = id;
+    for (let h = 0; h < q.length; h++) { const j = q[h], x = j % CW, y = (j / CW) | 0; for (let d = 0; d < 4; d++) { const a = x + NB4X[d], b = y + NB4Y[d]; if (a < 0 || b < 0 || a >= CW || b >= CH) continue; const m = b * CW + a; if (rf[m] && lab[m] < 0) { lab[m] = id; q.push(m); } } }
+    comps.push(q); }
+  const has = new Uint8Array(comps.length);
+  const foot = footRoom(L.rule.faceRows), stairBoxes = [];   // stairBoxes: the held rows of the realm stairs near (x0, x1, y0, y1 in world tiles): a piece's site keeps off them
+  for (const st of L.stairs.values()) { if (st.X < X - 2 || st.X > X + 2 || st.Y < Y - 2 || st.Y > Y + 1) continue; const s = siteOf(L, st);
+    stairBoxes.push([s.x0, s.x0 + SITE_W - 1, s.lip - SITE_UP, s.lip + foot]);
+    for (const dx of [2, 3]) { const x = s.x0 + dx - x0c, y = s.lip - y0c; if (x < 0 || x >= CW) continue;
+      if (y >= 0 && y < CH) { if (lab[y * CW + x] >= 0) has[lab[y * CW + x]] = 1; }
+      else if (y >= CH && y <= CH + STRADDLE) {   // a way just below the place's south edge, tied to the piece by raised tiles from its last row: serves it
+        const id = lab[(CH - 1) * CW + x]; let tied = id >= 0; for (let yy = CH; yy <= y && tied; yy++) tied = rfAt(L, x0c + x, y0c + yy) === 1; if (tied) has[id] = 1; } } }
+  const clear = (gx, ly) => { for (const [a, b, c, d] of stairBoxes) if (gx <= b && gx + SITE_W - 1 >= a && ly + foot >= c && ly - SITE_UP <= d) return false; return true; };
+  // a site's test, in tiers: 0 the six columns as the field has them (lip row raised over SITE_UP rows, the foot rows low); 1 the way's two columns as the field has them and the four others within a row of it (as a
+  // stair's natural site); 2 the way's two columns as the field has them, the four others whatever the field says (the lock makes the six straight: the face the field draws is 4 or 5 tiles wide)
+  const ok = (gx, ly, tier) => { if (!clear(gx, ly)) return false; for (let x = gx; x < gx + SITE_W; x++) { const way = x === gx + 2 || x === gx + 3, e = tier === 0 || way ? 0 : 1;
+      if (tier < 2 || way) { for (let y = ly - SITE_UP; y <= ly - e; y++) if (!rfAt(L, x, y)) return false; for (let y = ly + 1 + e; y <= ly + foot; y++) if (rfAt(L, x, y)) return false; }
+      for (let y = ly + 1; y <= ly + foot; y++) if (landWet(L, x, y)) return false; }
+    return raisableSite(L, gx, ly); };
+  for (let id = 0; id < comps.length; id++) {
+    if (has[id] || comps[id].length < 12) continue;
+    let pick = null;
+    for (let tier = 0; tier < 3 && !pick; tier++) {
+      // the part goes on across the south edge: a site just below it, the way's columns tied to the piece by raised tiles from its last row down to the lip
+      for (let ly = CH; ly <= CH + STRADDLE && !pick; ly++) for (let d = 0; d <= CW && !pick; d++) for (const sg of d ? [1, -1] : [1]) { const tx = (CW >> 1) - 3 + sg * d;
+        if (tx + 2 < 0 || tx + 3 >= CW || lab[(CH - 1) * CW + tx + 2] !== id || lab[(CH - 1) * CW + tx + 3] !== id) continue;
+        let tied = true; for (let y = CH; y <= ly && tied; y++) tied = rfAt(L, x0c + tx + 2, y0c + y) === 1 && rfAt(L, x0c + tx + 3, y0c + y) === 1;
+        if (tied && ok(x0c + tx, y0c + ly, tier)) { pick = { x0: x0c + tx, lip: y0c + ly }; break; } }
+      for (let y = CH - 1; y >= 0 && !pick; y--) for (let d = 0; d <= CW && !pick; d++) for (const sg of d ? [1, -1] : [1]) { const tx = (CW >> 1) - 3 + sg * d;
+        if (tx + 2 < 0 || tx + 3 >= CW || lab[y * CW + tx + 2] !== id || lab[y * CW + tx + 3] !== id) continue; if (ok(x0c + tx, y0c + y, tier)) { pick = { x0: x0c + tx, lip: y0c + y }; break; } }
+    }
+    if (pick) out.push(pick);
+  }
+  return out;
+}
 export function banksIn(L, X, Y) {
   const B = bkOf(L), key = (X + 8) * 1000 + (Y + 8), hit = B.banks.get(key); if (hit) return hit;
   const WR = L.rule.window, out = [], gx0 = (X - WR) * CW, gx1 = (X + WR + 1) * CW, gy0 = (Y - WR) * CH, gy1 = (Y + WR + 1) * CH;
@@ -1212,6 +1156,10 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (st.X < X - WR - 2 || st.X > X + WR + 2 || st.Y < Y - WR - 1 || st.Y > Y + WR) continue;   // land-reach-1: a site may lie in the cell east or west of its stair's (siteOf)
     const s = siteOf(L, st), lx = s.x0 - gx0, ly = s.lip - gy0;
     if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true });
+  }
+  for (let cy = Y - WR; cy <= Y + WR; cy++) for (let cx = X - WR; cx <= X + WR; cx++) for (const b of pieceWays(L, cx, cy)) {   // a piece's way up on its own south face
+    const lx = b.x0 - gx0, ly = b.lip - gy0;
+    if (lx >= 1 && lx + SITE_W < W && ly - SITE_UP >= 1 && ly + foot < H - 1) sites.push({ lx, ly, real: true, piece: true });
   }
   if (L.rule.banks !== 0 && !BANKS_SKIP) for (const b of banksIn(L, X, Y)) {   // rupar-banks-7-1: a held-straight site that stays blocked (no way[]), the part's one bank
     const lx = b.x0 - gx0, ly = b.lip - gy0;
@@ -1230,7 +1178,7 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
     if (info.stages) info.stages.cleanup = r.slice();
     const seedJ = L.seed;
     if (info.dbg) info.pre = r.slice();
-    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); const a = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info), s = fixSquares(r, W, H, L.rule, lk, noRaise), b = capRuns(r, W, H, L.rule, lk, noRaise, seedJ, gx0, gy0, info); info.jogs = a.jogs + b.jogs; info.jogsMissed = b.missed; info.squaresFixed = s.fixed; info.squaresLeft = s.left; if (info.stages) info.stages.jogs = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); };
+    const shape = () => { if (info.stages) info.stages.pockets = r.slice(); info.gapsFixed = fixGaps(r, W, H, L.rule, lk, noRaise); if (info.stages) info.stages.gaps = r.slice(); info.leftFixed = fixLeft(r, W, H, L.rule, lk, noRaise); info.bumps = flattenBumps(r, W, H, L.rule, lk, noRaise, gx0, gy0); };
     // pockets: walkable parts the window closes in, that no way up reaches
     let again = false;
     for (let round = 0; round < 3; round++) {
@@ -1316,32 +1264,6 @@ function landPipeline(L, X, Y, base, noRaise, wblock, edge, W, H, gx0, gy0, info
   }
   info.sites = sites.concat(extra).map(s => ({ x: gx0 + s.lx + 2, y: gy0 + s.ly, real: s.real, ...(s.bank ? { bank: true } : {}) }));
   return r;
-}
-// ---- diagonal runs (land-b3d-face3-1) ----
-// A south lip tile with no lip tile beside it in its row is a one-tile step. Three or more such steps in a row, each one row down and one column over from the last, are a diagonal run for the
-// diagonal piece to draw (down-right: the lip row grows with x; down-left: it falls with x); one or two stay corners. Pure on a raster (1 raised, level above 0).
-export const DIAG_MIN = 3;
-export function diagonalRuns(R, W, H) {
-  const lip = (x, y) => x >= 0 && y >= 0 && x < W && y + 1 < H && R[y * W + x] > 0 && R[(y + 1) * W + x] === 0;
-  const step = (x, y) => lip(x, y) && !lip(x - 1, y) && !lip(x + 1, y), runs = [];
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    if (!step(x, y)) continue;
-    for (const dir of [1, -1]) {
-      if (step(x - 1, y - dir)) continue;   // not the run's first step (scanning columns left to right)
-      let n = 1; while (step(x + n, y + dir * n)) n++;
-      if (n >= DIAG_MIN) runs.push({ x, y, dir: dir === 1 ? 'down-right' : 'down-left', n });
-    }
-  }
-  return runs;
-}
-// the diagonal runs whose first step (leftmost) stands in cell (X, Y), in world tiles; read off the window's own raster, so every window gives the same list for a cell (the cell's tiles are the same from each)
-export function levelDiagonals(L, X, Y) {
-  if (!inRealm(X, Y)) return [];
-  const key = (X + 8) * 1000 + (Y + 8); if (!L.diag) L.diag = new Map(); const hit = L.diag.get(key); if (hit) return hit;
-  const w = windowLevels(L, X, Y), o = L.rule.window, gx0 = (X - o) * CW, gy0 = (Y - o) * CH, out = [];
-  for (const r of diagonalRuns(w.R, w.W, w.H)) { const gx = gx0 + r.x, gy = gy0 + r.y; if (gx >= X * CW && gx < (X + 1) * CW && gy >= Y * CH && gy < (Y + 1) * CH) out.push({ ...r, x: gx, y: gy }); }
-  if (L.diag.size > 4000) L.diag.clear();
-  L.diag.set(key, out); return out;
 }
 // a cell's tile levels, 24 x 28 values (0 outside the realm)
 export function levelCell(L, X, Y) {

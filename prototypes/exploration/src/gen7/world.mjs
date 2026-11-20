@@ -115,9 +115,12 @@ const WATER = {
   meres:    { cap: 0.15, riv: 110, lake: 0.17, pool: 0.85, pond: 0.25 },
 };
 const LEVEL_SHARES = { mixed: G2.LV_PCT, marsh: [15, 35, 50], meres: [15, 35, 50] };   // the low belts keep a third level; the rest are today's
+// map-levels-build-1 (change 1, owner 2026-11-19 "okay"): high ground is the exception. `lv[0]` is the share of a slot's dry cells kept low: the raise line sits at the 70% quantile (lowland is the base; hills, ranges
+// and plateaus rise out of it), read by slotE0 and spined(). Today's 15% left 85% raised before water.
+const RAISE_LINE = 70;
 export const biomeTargets = biome => {
-  const B = BIOME_GROUND[biome] || null;
-  return { wood: B ? B.wood : G2.WOOD_N, rock: B ? B.rock : G2.ROCK_N, lv: LEVEL_SHARES[biome] || (B ? B.lv : G2.LV_PCT), ...WATER[biome] };
+  const B = BIOME_GROUND[biome] || null, lv = LEVEL_SHARES[biome] || (B ? B.lv : G2.LV_PCT);
+  return { wood: B ? B.wood : G2.WOOD_N, rock: B ? B.rock : G2.ROCK_N, lv: [RAISE_LINE, ...lv.slice(1)], ...WATER[biome] };
 };
 
 // ---- blending: a region's parameters are its own inside and blend over BLEND cells at each shared border ----

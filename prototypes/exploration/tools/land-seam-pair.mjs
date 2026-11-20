@@ -5,4 +5,4 @@ const [seed, X, Y, X2, Y2] = process.argv.slice(2).map(Number), L = levelsOf(rea
 const A = windowLevels(L, X, Y), B = windowLevels(L, X2, Y2), at = (W, cx, cy, gx, gy) => { const x = gx - (cx - o) * CW, y = gy - (cy - o) * CH; return x < 0 || y < 0 || x >= W.W || y >= W.H ? -1 : W.R[y * W.W + x]; };
 const diffs = [];
 for (const [cx, cy] of [[X, Y], [X2, Y2]]) for (let ty = 0; ty < CH; ty++) for (let tx = 0; tx < CW; tx++) { const gx = cx * CW + tx, gy = cy * CH + ty, a = at(A, X, Y, gx, gy), b = at(B, X2, Y2, gx, gy); if (a >= 0 && b >= 0 && (a > 0) !== (b > 0)) diffs.push(`${gx},${gy}`); }
-console.log(JSON.stringify({ differing: diffs.length, at: diffs.slice(0, 30), infoA: { jogs: A.info.jogs, missed: A.info.jogsMissed }, infoB: { jogs: B.info.jogs, missed: B.info.jogsMissed } }));
+console.log(JSON.stringify({ differing: diffs.length, at: diffs.slice(0, 30) }));
