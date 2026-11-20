@@ -4279,6 +4279,258 @@
    "sha256": "224608e151c9dd9374750d72f974bb058da311395d0a671b739c43936dc247ef"
   },
   {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "0cb683d7f7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-144x152.png",
+   "sha256": "6de440b77540ca264b946e6dbc8b472b96dc229aa4460064454a1276989dd407"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "88409f0a15",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-304x312.png",
+   "sha256": "22cb77143d0f02e79adf51899cc4e4afb8d0f18e35a6d94d9914c7eb0c03510b"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "a5daf02819",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-48x48.png",
+   "sha256": "0e5aa899af00f979e673eb56e38730aac48d0a62e9fd45f4ef2475a0d4c4e2d1"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "ea47307f84",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-96x88.png",
+   "sha256": "460815afd9e48d39852ae0900a72ecb2ae358b029b6414b949c583600847cd6d"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "216f7de188",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-dark-144x152.png",
+   "sha256": "6803070a19730ad6385fbab8acd52cef2252ccbaeed9dc7829f4df9aa15b7e3d"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "fa6c75cc13",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-dark-304x312.png",
+   "sha256": "6489d9de99f42e279d8f97e54c0d5134e80ea38aa680babafa04d751ce8dd1ce"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "f63f01b7eb",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-dark-48x48.png",
+   "sha256": "24bc35f20cccad73f59fcb80550ba567137198ae817642ad45df451ca0b38a2f"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "acc758c5f8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-dark-96x88.png",
+   "sha256": "72760e14c73f6bacfa26e27334a0715816077225707af8763159353ca7887a39"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "a3495e3f5c",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-light-144x152.png",
+   "sha256": "5e99b15095fb86990768bae2f314d6b0b19d4b393a72a299f9ca713c3bd8854d"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "a036e6f454",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-light-304x312.png",
+   "sha256": "2c4b609e5eae1ddfefe44839f854624deb8e7acccd11bdc15b4390d8c4d3608f"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "12af04f5b3",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-light-48x48.png",
+   "sha256": "6e7e2c6e3fce57d031f5050acda5607b8ec0ac989e86705052996a4e7cd5376a"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "3cd5870462",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-between-light-96x88.png",
+   "sha256": "2ade9d7917b1ffb8324548d280c5234142581e112809556ac6bce035274c3fbb"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "80851852fe",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-between-144x152.png",
+   "sha256": "df5b6f323ba1d4c7e222fcf581fa58ddea50eef0f28e54660ca32f9c97f76a18"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "134a8718b5",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-between-304x312.png",
+   "sha256": "ed968d675fcfad8f02ef520d7ef66af5efd0350aebab6d4d7de70d67f9c5b1d2"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "af78d4583d",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-between-48x48.png",
+   "sha256": "a25eb5b2974a61cc51c4d36b7f66bc23ae566fdead52b7e397a5a7b8790db714"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "62fe11e7f2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-between-96x88.png",
+   "sha256": "48d713ec0b6a870485cc72b46a1d535eceffaef26157d1eca3ca39bfab686982"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "de5c3069db",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-dark-144x152.png",
+   "sha256": "1705d78763c8dba079c3c007b30dfb19ee2d6602a87b1c48f46c0ecc87dc8164"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "df38bfa95c",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-dark-304x312.png",
+   "sha256": "ee6b9d2fd3a4150fa41b27d698987a72a582043046e14f2d58f3368c67d24ea3"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "c7bd7176f5",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-dark-48x48.png",
+   "sha256": "8c79e0cf2a3a008c85d4acd71a433c85ae1c3c53ae298f2c2f799c4e5eda3f29"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "83f957385f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-dark-96x88.png",
+   "sha256": "204a23d34bd0814f287e97a413eb1ef822ea4602e2becc6ccd539cc483354aac"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "00e694ba7d",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-light-144x152.png",
+   "sha256": "f65e19d2a11304a66eec49264dff8425d5581b1166d31077c6547cbbee0cd051"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "4b65351650",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-light-304x312.png",
+   "sha256": "5a6682a8b3515ef6838a57fa9be833ae1e20f5ad782d9f7e9f906674d83a6849"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "230acf7797",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-light-48x48.png",
+   "sha256": "a0dcd3bafe48e3374a66c14099ee22007d3f9a54fb0f8dc9d0afbd4ed9ba2d71"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "31c73f5346",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-greener-light-96x88.png",
+   "sha256": "dcbf21c8b96554ff56a40788834adeb32b449987373267dd43e095342f0dbc3a"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "ec0591ecf6",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-between-144x152.png",
+   "sha256": "3112ecee90441ce37b3df91d79d7c2ca35d9373651515db080cb138c5eeeeaf9"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "854331fc9c",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-between-304x312.png",
+   "sha256": "8834e05b50c147e319ae250bf42ceb8fcb33fd065a604f7d49661a99e8f999f6"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "a8a77417d8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-between-48x48.png",
+   "sha256": "90520f0158d2843a38f9340750ae2359bd3b7b8c85feb9e38bf8ef8cb6aedcdd"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "a6c113b925",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-between-96x88.png",
+   "sha256": "2f914c7cbce267ae9a52de1842f6e81dd2d95a5203991f799dfd81c1f8c97bc1"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "fe18586770",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-dark-144x152.png",
+   "sha256": "0b325776498f194a03e978d9fdbd01b606dbf18c925b1cff884e2caaadc3dae6"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "4d115fa3f0",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-dark-304x312.png",
+   "sha256": "baad934555496367c4864bf6905d81016b53b675b7461826bf24555490ddbeea"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "fc2f437150",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-dark-48x48.png",
+   "sha256": "decf1d7a09dbdec9b37b3710f0801d093f3c894afc7df924465bf8cab0f588af"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "2443abec38",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-dark-96x88.png",
+   "sha256": "4999a7ac9ded89bdab87e5774a29d677021d34c2064d7547b334407046dcb757"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "e451fcae4e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-light-144x152.png",
+   "sha256": "d977d2dd0c397942ff38769fe36a5d1ed41ca0bbddd81e98094c8b3fad893c91"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "7d50f1ac3e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-light-304x312.png",
+   "sha256": "bb7417fc0f223797e7f8a5666b9aa732355cc82e82e3e81c8a43b4e620f4392b"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "2a0cb9bdf7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-light-48x48.png",
+   "sha256": "3f9e140ee1b07f287bfe05ed838051a6a5c46f7355654c99afff686d624cba5f"
+  },
+  {
+   "class": "derivative",
+   "date": "2026-11-20",
+   "id": "bb885ac5a5",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-light-96x88.png",
+   "sha256": "82ce8e0c0761b3f1affc8b2a4af4a4dc3a9237af0a0cf59668ba38b98a1a845c"
+  },
+  {
    "class": "ui",
    "date": "2026-11-18",
    "id": "b5e9ea80e2",
