@@ -26,12 +26,12 @@ export const WORDS = {
   // until a save works again; landChanged while the save names a land (REALM_REV) other than the one this build makes; pageBroke when the page breaks, given the build number from build.json (an empty slot still shows it).
   notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
-  creature: { holdFull: 'no room for Data' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
+  creature: { holdFull: 'Data full (20 of 20)' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
   // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line
   strike: {
     read: 'Read the strike mark', ctx: g => 'strike mark · +' + g + ' Data', ctxShort: g => '+' + g + ' Data',
     press: n => '+' + n + ' Data',   // [copy] said once a strike mark is read
-    holdFull: 'No room for Data · mark stays',   // [copy] facing an unread mark with the hold full: no Read is offered
+    holdFull: 'Data full · mark stays',   // [copy] facing an unread mark with the hold full: no Read is offered
     sign: 'Lightning struck here · noted as Data', tile: 'Strike mark · Data', tileShort: 'Strike mark', left: ['a strike mark', 'strike marks'], take: 'strike mark',
   },
   // storm glass lies in a few marks on sand; no supply holds it yet, so these wait for the Station to use it
