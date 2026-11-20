@@ -78,7 +78,7 @@ function sampleHtml() {
   const T = qs[ui.qIdx];
   const asks = qs.map((q, i) => `<button class="ask${i === ui.qIdx ? " on" : ""}" style="top:${112 + i * 44}px" data-act="ask:${i}"><span class="ic">${glyph(q)}</span><span class="q">${esc(askWord(q))}</span><span class="dot"></span></button>`).join("");
   const busy = !!st.bench;
-  return `${mibiHtml(s.wild, { style: "position:absolute;left:0;top:34px", ringCol: TRAIT_ORDER.indexOf(T) })}<div class="abs label" style="left:100px;top:100px">${W.askHead}</div>
+  return `${mibiHtml(s.wild, { style: "position:absolute;left:0;top:34px", ringCol: TRAIT_ORDER.indexOf(T), noFam: true })}<div class="abs label" style="left:100px;top:100px">${W.askHead}</div>
     <button class="abs item" style="left:8px;top:112px;width:78px;height:70px" data-act="sample:1">${esc(s.label)}</button>
     <div class="abs label" style="left:8px;top:190px">${ui.sIdx + 1} / ${st.pouch.length}</div><button class="abs btn ghost" style="left:42px;top:188px;width:20px;height:18px" data-act="sample:-1">&lt;</button><button class="abs btn ghost" style="left:66px;top:188px;width:20px;height:18px" data-act="sample:1">&gt;</button>
     ${asks}<button class="abs btn${busy ? " off" : " ring"}" style="left:192px;top:236px;width:118px;height:26px" data-act="test">${W.test}</button>${statusHtml()}${sheetHtml(s.label, busy ? `The bench is busy: wait for ${st.bench.label}.` : "One question per sample.")}`;
