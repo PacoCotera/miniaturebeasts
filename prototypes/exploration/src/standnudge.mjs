@@ -5,6 +5,15 @@
 export const STAND_NUDGE = 16;
 const SIDES = [['up', 0, -1, 0, -1], ['left', -1, 0, -1, 0], ['right', 1, 0, 1, 0]];   // [side, dx, dy, nudge x sign, nudge y sign]; the south side needs none
 
+// The drawn nudge nd = {x, y} moves toward the target [tnx, tny]. While the pawn steps it is HELD: easing it to the next tile's target mid-step slid the pawn sideways
+// under a held direction key (owner bug #88, "if i hit down, it goes down and left"). dtn: the most it may move this frame; moving: the page is in motion (else it snaps).
+export function easeNudge(nd, tnx, tny, stepping, moving, dtn) {
+  if (stepping) return nd;
+  const to = (v, t) => (moving ? v + Math.max(-dtn, Math.min(dtn, t - v)) : t);
+  nd.x = to(nd.x, tnx); nd.y = to(nd.y, tny);
+  return nd;
+}
+
 // lay: a layout with tiles, steep (the blocked rock of a raised land's edge), raisedFn(x, y); steep: the same, as lay.steep[y * w + x].
 // Returns the [dx, dy] draw offset in pixels at 48 px a tile for a pawn on tile (x, y).
 export function standNudge(lay, x, y) {
