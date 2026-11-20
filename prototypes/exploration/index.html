@@ -443,7 +443,7 @@ function canStep(a, dir) { const ts = tileSide(a, dir); return ts ? ts.open : ca
 function tileSideApplies(a, dir) {
   if (G.gen !== 7 || !S.exp || !PL.ready) return false;
   const n = stepCell(a, dir); if (n < 0) return false;
-  const k = edgeKind(a, dir); if (k === EDGE.RAMP || (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)))) return false;
+  const k = edgeKind(a, dir); if (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir))) return false;   // a stair edge is tile-decided too: a generator 7 place lists no stairs of its own (adapt7 stairs: []), so the old stair-only crossing refused the whole side over open grass (bugs #95, #96)
   return passable(a) && passable(n) && !G.island[a] && !G.island[n] && G.land[a] !== L.WATER && G.land[n] !== L.WATER;
 }
 // A change of level between two tiles across a border stops a step only where a cliff is drawn on both sides (a cliff drawn on one side only is not seen from the other, so it is a slope); with none drawn it is a slope and walks (design 2026-11-18, bugs #45 #67).
@@ -2789,7 +2789,7 @@ function crossEdge(dir) {
   if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
-  if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
+  if (land === undefined && edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   if (G.gen === 7 && c >= 0 && !placeHave(String(c)) && motion() && !FX.crossRetry) {   // the next place is not built yet: the old place stays on the screen, nothing has moved; the crossing is made when it is here
     if (FX.crossWait) return;
