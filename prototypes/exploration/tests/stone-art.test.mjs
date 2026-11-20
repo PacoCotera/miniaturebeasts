@@ -9,7 +9,7 @@ import { makePage, STONE_ART, PAGE } from "./page-harness.mjs";
 
 const DIR = new URL("../art/stone/", import.meta.url);
 const sha = (b) => createHash("sha256").update(b).digest("hex");
-const files = readdirSync(DIR).filter((f) => f.endsWith(".png")).sort();
+const files = readdirSync(DIR).filter((f) => f.endsWith(".png") && !f.startsWith("stone-shadow")).sort();   // the ground shadow (stone-shadow@48.png) is tested below
 const HASHES = JSON.parse(readFileSync(new URL("SHA256.json", DIR), "utf8"));
 
 test("the 38 placed stone files are the recorded hashes", () => {
@@ -19,6 +19,7 @@ test("the 38 placed stone files are the recorded hashes", () => {
   for (const f of files) assert.equal(sha(readFileSync(new URL(f, DIR))), HASHES[f], f);
   const f = STONE_ART;   // sizes: tall 16 x 24, small 16 x 16, at 1x and 3x; no partial alpha
   for (const [n, im] of Object.entries(f)) {
+    if (n.startsWith("stone-shadow")) continue;
     const k = n.includes("@16") ? 1 : 3, h = n.startsWith("stone-tall") ? 24 : 16;
     assert.deepEqual([im.width, im.height], [16 * k, h * k], n + " size");
     for (let i = 0; i < im.width * im.height; i++) { const a = im.data[i * 4 + 3]; assert.ok(a === 0 || a === 255, n + " partial alpha"); }
@@ -45,6 +46,19 @@ test("the page picks tall for the heart's stone, small for a field stone, the fr
   // the doubled sign stone is the 16 px master, each pixel twice
   const d = p.run("STONE_PIECES.get('stone-small-plain@16x2')"), m = STONE_ART["stone-small-plain@16"];
   assert.equal(d.w, 32); assert.equal(d.h, 32);
+});
+
+test("a field stone stands on the recorded ground shadow; the stone's own file is unchanged (bug #30)", () => {
+  const shadow = STONE_ART["stone-shadow@48"], steps = JSON.parse(readFileSync(new URL("stone-shadow@48.steps.json", DIR), "utf8"));
+  assert.ok(shadow, "the shadow file is placed");
+  assert.deepEqual([shadow.width, shadow.height], [42, 8]);
+  for (let i = 0; i < shadow.width * shadow.height; i++) assert.ok(shadow.data[i * 4 + 3] <= 170, "shadow alpha at most 170");
+  assert.equal(steps[0][0], "layout"); assert.equal(steps[0][2][0].src, HASHES["stone-small-plain@48.png"] && sha(readFileSync(new URL("stone-small-plain@48.png", DIR))), "its source is the signed small stone file");
+  const p = makePage({ console: "silent", els: true, canvas: true, raf: 1 });
+  p.ctx.__stoneArt = STONE_ART; p.run("loadStoneArt()");
+  assert.deepEqual(Array.from(p.run("(() => { const s = STONE_PIECES.get('stone-shadow@48'); return [s.w, s.h, s.dx, s.dy]; })()")), [42, 8, -5, 24]);
+  assert.match(PAGE, /if \(shade\) stoneShadow\(SX\(x\), SY\(y\), rr\); blit\(a, SX\(x\), SY\(y\), rr\)/, "the shadow is drawn before the stone, the stone's blit unchanged");
+  assert.deepEqual(Array.from(p.run("(() => { const a = stoneArt(0, false, 0, 0, 0, false, 0); return [a.w, a.h, a.dx, a.dy]; })()")), [48, 48, -8, -16], "the stone's own piece is unmoved");
 });
 
 test("no stone is drawn in code and no ring surrounds a warm stone", () => {

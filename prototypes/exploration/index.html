@@ -639,7 +639,7 @@ async function loadStoneArt() {
   try {
     if (window.__stoneArt) { for (const [n, f] of Object.entries(window.__stoneArt)) stonePut(n, f, false, 0); return; }   // the tests give them at once, decoded
     if (typeof Image === 'undefined') return;
-    await Promise.all(STONE_FILES.map(n => pixelsOf(vurl(new URL('./art/stone/', location.href).href + n + '.png')).then(im => {
+    await Promise.all(STONE_FILES.concat('stone-shadow@48').map(n => pixelsOf(vurl(new URL('./art/stone/', location.href).href + n + '.png')).then(im => {
       stonePut(n, im, false, 0); })));
   } catch (e) { console.warn('the stones did not load', e); artWhy('stones', e); }
 }
@@ -4380,6 +4380,15 @@ function stoneArt(lit, cave, fr, warm, small, tall, body) {
   }
   return propPiece(lit ? 'crystals-lit' : 'crystals-dim');   // the cave's crystals: the painted dim and lit pictures
 }
+// The ground shadow under a field stone in the walk (bug #30): art/stone/stone-shadow@48.png, the signed stone squeezed flat by recorded steps (runs/rock-shade-4/make-shadow.py), drawn before the stone, whose own picture is unchanged.
+// Its foot sits STONE_SHADOW_DY below the file's own foot offset: the stone's last 2 art rows hide its top, the lower 2 show under the base. In the storm and at night (rm) it takes the night green #36603a.
+const STONE_SHADOW_DY = 6, STONE_SHADOW_NIGHT = new Map();
+function stoneShadow(x, y, rm) {
+  const p = STONE_PIECES.get('stone-shadow@48'); if (!p) return;
+  let c = p.canvas(0);
+  if (rm) { c = STONE_SHADOW_NIGHT.get(c); if (!c) { const d = p.canvas(0); c = PL.mk ? PL.mk(p.w, p.h) : Object.assign(document.createElement('canvas'), { width: p.w, height: p.h }); const cg = c.getContext('2d'); cg.drawImage(d, 0, 0); cg.globalCompositeOperation = 'source-in'; cg.fillStyle = '#36603a'; cg.fillRect(0, 0, p.w, p.h); STONE_SHADOW_NIGHT.set(d, c); } }
+  g.drawImage(c, Math.round(x) + p.dx, Math.round(y) + p.dy + STONE_SHADOW_DY);
+}
 const holeArt = glint => propPiece(glint ? 'prop-hole1' : 'prop-hole0');
 // Rupar fresh hole (the art desk's painted files, art/props/): drawn at HOLE_DX; wired in shedPod, drawPatch and warnPicPlace. Frame 0 is the fresh dig, frame 1 the settled one; a rock or cave floor has no loose earth (bare).
 const HOLE_DX = -4, HOLE_FRESH_MS = 450;
@@ -6049,8 +6058,10 @@ function drawPatchBody(t) {
     const rr = f.kind === 'k' && lay.cave && stoneCharge(P.key, f) > 0 ? 0 : rm;
     // a baked place's bush, cup or stone with something to take is drawn after the crowns, as pods are, so nothing a player can take hides under a tree
     const takeable = f.kind === 'b' ? bushFull(P.key, f) : f.kind === 'u' ? cupFull(P.key, f) : f.kind === 'k' ? (lay.cave ? stoneCharge(P.key, f) > 0 : stormCharge(P.key, f) > 0) : false;
-    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) });
-    else items.push({ y: y + 1, d: () => blit(a, SX(x), SY(y), rr) }); }
+    const shade = f.kind === 'k' && !lay.cave && f.id !== 'kh';   // a field stone stands on its ground shadow (bug #30); the heart's tall stone and the cave's crystals do not
+    const drawIt = () => { if (shade) stoneShadow(SX(x), SY(y), rr); blit(a, SX(x), SY(y), rr); };
+    if (bk && takeable) aboveCrowns.push({ y: y + 1, d: drawIt });
+    else items.push({ y: y + 1, d: drawIt }); }
   // a landmark's own piece (art/props: the Windstep's lone tree, the Reedpool's island stone), drawn at its tile once the tile is seen; the tree stands on its foot, the stone in the middle of the tile
   { const lm = lay.landmark, name = lm && LM_PIECE[lm.kind], pc = name && propPiece(name);
     if (pc && pc.w > 1 && see(lm.x, lm.y)) { const x = lm.x * ts, y = lm.y * ts, low = lm.kind === 'windstep'; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts - pc.w) >> 1), SY(y) + (low ? ts - pc.h : (ts - pc.h) >> 1), spriteRm(lm.x, lm.y)) }); } }
