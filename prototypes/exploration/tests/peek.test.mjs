@@ -143,20 +143,19 @@ test("hold Call marks the finds: a pod and a tuft get a take mark; a fruit and a
   } finally { await browser.close(); server.close(); }
 });
 
-test("tap Call on an edge tile plays the hold view for about 1.5 s, then the walk; a key ends it at once (#91)", { skip }, async (t) => {
+test("a quick press of Call on an edge tile is the Call only: no zoomed-out view (owner 2026-11-20)", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const { server, url } = await serve();
   try {
     const { page, errors } = await enter(browser, url, 7, true);
     await page.evaluate(() => { const P = window.__mb.S.exp.patch; P.x = 0; P.y = 4; });
     await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
-    assert.equal((await st(page)).view, "peek", "a tap at the edge: the hold view");
+    assert.equal((await st(page)).view, null, "a quick press at the edge: no zoomed-out view");
     assert.equal((await st(page)).calls > 0, true, "and the Call was made");
-    await page.waitForTimeout(900); assert.equal((await st(page)).view, "peek", "still there before 1.5 s");
-    await page.waitForTimeout(900); assert.equal((await st(page)).view, null, "back to the walk by itself");
-    await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
-    assert.equal((await st(page)).view, "peek");
-    await page.evaluate(() => window.__mb.act("up")); assert.equal((await st(page)).view, null, "a key ends it");
+    await page.waitForTimeout(600); assert.equal((await st(page)).view, null, "nor later");
+    await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(600);
+    assert.equal((await st(page)).view, "peek", "a long press still opens the view");
+    await page.evaluate(() => window.__mb.release("call")); assert.equal((await st(page)).view, null, "and release ends it");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });
