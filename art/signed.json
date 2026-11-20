@@ -2326,6 +2326,13 @@
    "sha256": "19f7c7d7cb5773927ccd3ad8795169e8e302abcf11e27c30d848985ba4a35390"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-20",
+   "id": "f1d1c7f420",
+   "path": "art/places/sets/ninja-test/sprites.png",
+   "sha256": "1a2bce2b25e82d8aab974bebeaffd07d934330eca3e766fe1612569b13884aa1"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "c49180308b",
