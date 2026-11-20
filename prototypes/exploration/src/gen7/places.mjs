@@ -124,10 +124,12 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   }
   for (const [x, y] of nodeOk) plan.spine[I(x, y)] = 1;   // a node alone in its part of the ground is on the spine too
   const flood = (srcs) => {   // walking distance from some tiles, 8 ways, a step on a region trail costing half (the spine) or full (the entries)
-    const Dm = new Float32Array(N).fill(Infinity), q = new FlatQueue();
+    const Dm = new Float32Array(N).fill(Infinity), q = new FlatQueue(), pops = new Uint8Array(N);
     for (const s of srcs) { Dm[s] = 0; q.push(s, 0); }
     while (q.length) {
-      const d = q.peekValue(), cc = q.pop(); if (d > Dm[cc]) continue;
+      // map-levels-build-1: a tile is expanded a few times at most. The double d + k is pushed and the float32 table rounds it up, so on a few shapes (seed 46, place 39,29) two tiles took each other's rounded
+      // distance for a shorter one for ever; the shapes that ended before end as they did (a tile read twice or three times is rare)
+      const d = q.peekValue(), cc = q.pop(); if (d > Dm[cc] || ++pops[cc] > 8) continue;
       const x = cc % w, y = (cc / w) | 0, bits = sb[cc];
       for (let s = 0; s < 8; s++) {
         const [dx, dy, k] = SIDES8[s];
