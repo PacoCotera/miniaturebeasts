@@ -21,7 +21,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .goal .pip.need { border: 1.5px dotted var(--g3); color: var(--g3); background: #fff; }
 .goal .n { color: var(--ink); margin-left: 2px; }
 
-.list { position: absolute; left: 0; right: 0; top: 60px; height: 204px; overflow: hidden; }
+.list { position: absolute; left: 0; right: 0; top: 60px; height: 196px; overflow: hidden; }
 .mibi { position: relative; margin-left: 8px; width: 302px; height: 68px; }
 .mibi .slot { position: absolute; left: 0; top: 0; width: 50px; height: 40px; background: var(--g1); border: 1.5px solid var(--g3); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 8.5px; color: var(--g3); }
 .mibi .nm { position: absolute; left: -6px; top: 42px; width: 62px; text-align: center; font-size: 11.5px; font-weight: 600; }
@@ -49,7 +49,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .note { font-size: 12px; color: var(--g4); line-height: 16px; }
 .abs { position: absolute; }
 
-.status { position: absolute; left: 8px; right: 8px; top: 266px; height: 24px; display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--g4); }
+.status { position: absolute; left: 8px; right: 8px; top: 257px; height: 24px; display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--g4); }
 .status .chip { height: 22px; padding: 0 8px; border-radius: 6px; background: var(--g1); border: 1px solid var(--g2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .status .btn { height: 22px; padding: 0 10px; font-size: 11.5px; }
 .sheet { position: absolute; left: 8px; right: 8px; bottom: 8px; min-height: 40px; background: var(--g5); color: #fff; border-radius: 8px; padding: 7px 10px 8px; font-size: 12.5px; line-height: 16px; }
