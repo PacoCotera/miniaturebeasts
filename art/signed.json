@@ -4279,6 +4279,48 @@
    "sha256": "224608e151c9dd9374750d72f974bb058da311395d0a671b739c43936dc247ef"
   },
   {
+   "class": "signed",
+   "date": "2026-11-20",
+   "id": "4f4bd0f670",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S01-48x48.png",
+   "sha256": "1163284a198d623c8f0bc2f1266856a0a2b30d09dbda5a7feb735d9a3411d96a"
+  },
+  {
+   "class": "signed",
+   "date": "2026-11-20",
+   "id": "c52825c821",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S01-96x88.png",
+   "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "194d012c6e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S11-304x312.png",
+   "sha256": "a3c1ef6f51d929de034fa7c7ceed245f6279d83bc6ce29d18be9c97e04b98ddc"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "d75f4fc224",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S11-48x48.png",
+   "sha256": "9d3446e571bbd058afa040e3a1b0398003c465982945701c9e53b563a2a8db86"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "3ddcdef591",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S11-96x88.png",
+   "sha256": "e4d2cf72f54293e61a5793ccde09dabcb33375290333413f71e8a5ac7e726cb3"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "bb55e76889",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S11-curl-304x312.png",
+   "sha256": "eb234f05dd56ac280ac805b3ef4f7fec9a357f36a408e21f1687a7495dbeee29"
+  },
+  {
    "class": "derivative",
    "date": "2026-11-20",
    "id": "0cb683d7f7",
@@ -4592,6 +4634,34 @@
    "id": "0f0ea5ca6b",
    "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-light-coin-ruffle-304x312.png",
    "sha256": "7e8dff2fef7357d9c132904f6e489b0be53e2e498ab9812cb49eac7eeb961451"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "c77d84f5b0",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S11-304x312.png",
+   "sha256": "6313f8ef3aa0eaefb11719b9cda3d28f9f2217d2768a498ac7138e9f8406d241"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "676c00dc57",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S11-48x48.png",
+   "sha256": "9c7ae0987c23500987dd4bb123d76984aeed41164fd2166ef137447ea614b932"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "b8405d9e2e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S11-96x88.png",
+   "sha256": "cd665127b6017d680d29317425ddf58b384cae5644566da04bdc79134f3deb51"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "546707baf7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S11-curl-304x312.png",
+   "sha256": "eb7487c15ebb0b5f3f60235639725db639576e7ddb2122ffb1fefa4f28af77da"
   },
   {
    "class": "derivative",
