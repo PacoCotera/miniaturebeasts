@@ -4869,6 +4869,13 @@
   {
    "class": "cut-of-signed",
    "date": "2026-11-21",
+   "id": "1edcea6809",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-304x312.png",
+   "sha256": "15a7f564951011c6110944e947c312a79eabf0ed2a4daf83d0318cf4e024aa0b"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
    "id": "e9ac241de9",
    "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-304x312.png",
    "sha256": "b72135a560a4184b4d3394e565107eafcc92095d570f0ce68086c3399dd93945"
@@ -4879,6 +4886,13 @@
    "id": "4895357c82",
    "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-48x48.png",
    "sha256": "3ca02a1a01c318836dce4bf6636c9656c56228544a8f5b0a9a4ed4d6576846dd"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "f265851090",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-96x88.png",
+   "sha256": "1e8d539460a7da09772e4ad5ad993aea3b7b1e67e9924e244b400cd4b30202f4"
   },
   {
    "class": "cut-of-signed",
@@ -4897,6 +4911,13 @@
   {
    "class": "cut-of-signed",
    "date": "2026-11-21",
+   "id": "8fba06d2e4",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-curl-304x312.png",
+   "sha256": "694dfa22bba26cf17600300c9fb618a75e291961372598ffb337ee2d6767f303"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
    "id": "276217540e",
    "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-curl-48x48.png",
    "sha256": "519a6d74070d9bb6d5c553ebe73a3fd99b9cf7ebd46f4a2aeef3047a5fe5f29b"
@@ -4904,9 +4925,23 @@
   {
    "class": "cut-of-signed",
    "date": "2026-11-21",
+   "id": "1ee25625cf",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-curl-48x48.png",
+   "sha256": "85a3a9cd9920df76e168d1646dd8247a8bbf49ff4306cba6ec65552ebaa085c1"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
    "id": "1c8bab21d0",
    "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-curl-96x88.png",
    "sha256": "1c37c597bb4f8c4439e2b34eff0e81accac2befdeb626176852789e6666bf486"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "023e2855a2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-curl-96x88.png",
+   "sha256": "404acf963b97391ca003c66f112f49c8b7df3865ffdc8694a3e6256c6ecd9cc5"
   },
   {
    "class": "cut-of-signed",
