@@ -1,0 +1,44 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>3 a trait seen on the expedition (Station size, two panels)</title><link rel="stylesheet" href="lab.css">
+<style>
+.step { position: absolute; top: 5px; font-size: 12px; font-weight: 600; color: var(--g4); }
+.frame { position: absolute; top: 24px; height: 450px; background: #fff; border: 2px solid var(--g5); border-radius: 10px; }
+.ph { position: absolute; top: 26px; height: 28px; background: var(--g1); border-bottom: 1px solid var(--g2); border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 10px; padding: 0 10px; font-size: 12.5px; white-space: nowrap; }
+.ph b { font-weight: 600; }
+.ph .sp { flex: 1; }
+.ph .dim { color: var(--g4); font-size: 12px; }
+</style></head>
+<body class="station"><div id="screen">
+  <div id="board">
+    <!-- panel 1: the Companion's screen on the expedition -->
+    <div class="step" style="left:14px" data-w="walk.step1"></div>
+    <div class="frame" style="left:8px;width:330px"></div>
+    <div class="ph" style="left:10px;width:326px"><b data-w="frame.companion"></b><span data-w="walk.head"></span><span class="sp"></span><span class="dim" data-w="walk.time"></span></div>
+    <div class="box" style="left:20px;top:66px;width:306px;height:246px"></div>
+    <div class="box dark" style="left:20px;top:268px;width:306px;height:44px;border-radius:0 0 4px 4px" data-w="walk.slot.brook"></div>
+    <div class="box dark" style="left:204px;top:92px;width:104px;height:160px;align-items:flex-start;padding-top:8px" data-w="walk.slot.log"></div>
+    <div class="box" style="left:138px;top:220px;width:62px;height:36px;background:#fff;border:1.5px solid var(--g5);color:var(--g5);font-weight:600" data-w="walk.slot.sorrel"></div>
+    <div class="box" style="left:38px;top:128px;width:84px;height:30px;background:#fff" data-w="walk.slot.companion"></div>
+    <svg style="position:absolute;left:0;top:0;width:800px;height:480px;overflow:visible">
+      <path d="M200,222 L222,198" stroke="#6b6b68" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+      <circle cx="227" cy="193" r="3" fill="#6b6b68"/>
+      <path d="M232,186 L254,160" stroke="#6b6b68" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+      <circle cx="259" cy="154" r="3" fill="#6b6b68"/>
+      <path d="M264,147 L284,120" stroke="#6b6b68" stroke-width="2" stroke-dasharray="5 4" fill="none"/>
+      <circle cx="289" cy="114" r="3" fill="#6b6b68"/>
+    </svg>
+    <div class="chain" style="left:20px;top:324px;width:306px;font-size:15px;line-height:20px;padding:7px 10px;font-weight:600" data-w="walk.seen"></div>
+    <p style="position:absolute;left:20px;top:372px;width:306px;font-size:13px;line-height:18px" data-w="walk.title"></p>
+
+    <!-- panel 2: the Station's bench at the next dock -->
+    <div class="step" style="left:356px" data-w="walk.step2"></div>
+    <div class="frame" style="left:350px;width:442px"></div>
+    <div class="ph" style="left:352px;width:438px"><b data-w="head.station"></b><span data-w="head.bench"></span><span class="sp"></span><span class="draft" data-w="draft"></span><span class="dim" data-w="walk.dock.time"></span></div>
+    <div class="card big wild focus" id="sorrel" data-name="Sorrel" data-tag="tag.wild.brook" style="left:364px;top:68px;width:250px"
+      data-t="ink:v.plain.nopale, ink:v.bare, ink:v.eyes.thin, ink:v.drive.bursts new, ink:v.eff.ordinary"></div>
+    <div class="chain" style="left:626px;top:68px;width:154px;font-size:14px;line-height:19px;padding:8px 10px"><b style="font-weight:600" data-w="walk.full"></b><br><span style="color:var(--g5);font-size:12.5px;line-height:17px" data-w="walk.why"></span></div>
+    <div class="pop" style="left:364px;top:250px;width:416px;font-size:13px;line-height:18px;padding:8px 10px"><span class="k" style="font-size:11px">Sorrel · <span data-w="trait.drive"></span></span><span data-w="walk.ink"></span></div>
+  </div>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>
