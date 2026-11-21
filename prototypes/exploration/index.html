@@ -2520,7 +2520,7 @@ function patchStep(dir, mode) {
     return; }
   { const lay = layout(key), lc = lay.lines && lay.lines.cells.get(y * lay.w + x);   // past a range line or into a closed opening: the reason, nothing spent
     if (lc) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
-  { const lay = layout(key); if (lay.rim && (lay.rim[P.y * lay.w + P.x] & RIM_BIT[dir])) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(WORDS.block.rock); return; } }   // the step across a drawn rim line (a ring cell walks up to it; bugs #99, #100)
+  { const lay = layout(key); if (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[dir])) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(WORDS.block.rock); return; } }   // the step across a drawn rim line (a ring cell walks up to it; bugs #99, #100)
   let o = occupant(key, x, y, 'player');
   if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
   if (stepsOver(key, o, x, y)) o = null;   // small things (a cup, a tuft, a fruit, a strike mark) are walked onto; standing on one offers its action
@@ -2631,15 +2631,20 @@ function lineCells(lay, o, whole) {
   }
   return out;
 }
+function blockLine(lay, cells, k) {
+  for (const c of cells) { const i = c.y * lay.w + c.x; if (T_BLOCK[lay.tiles[i]]) continue; lay.lineSaved.push([i, lay.tiles[i]]); lay.tiles[i] = T.ROCK; lay.lines.cells.set(i, { kind: k.kind, text: k.text }); }
+}
 function applyLines(lay) {
   if (!lay.baked || lay.cave) return;
   for (const [i, t] of lay.lineSaved || []) lay.tiles[i] = t;   // the last visit's blocks come off
   lay.lineSaved = []; lay.lines = { cells: new Map(), ops: [], patches: [] };
   for (const o of lay.openings || []) {
     const k = openingKind(lay, o); if (k.kind !== 'range' && k.kind !== 'closed') continue;
-    const cells = lineCells(lay, o, k.kind === 'range'); lay.lines.ops.push({ ...o, ...k });
-    for (const c of cells) { const i = c.y * lay.w + c.x; if (T_BLOCK[lay.tiles[i]]) continue; lay.lineSaved.push([i, lay.tiles[i]]); lay.tiles[i] = T.ROCK; lay.lines.cells.set(i, { kind: k.kind, text: k.text }); }
+    lay.lines.ops.push({ ...o, ...k }); blockLine(lay, lineCells(lay, o, k.kind === 'range'), k);
   }
+  // A side the range square shuts is blocked whether or not the place lists an opening on it: the dashed line (peekReachLine) is drawn on every such side, so the walk must refuse it on every such side (owner note #102; a side with no opening had the line and no blocks).
+  const opened = new Set((lay.openings || []).map(o => o.side));
+  for (const side of Object.keys(SIDE_DIR)) { if (opened.has(side)) continue; const k = openingKind(lay, { side }); if (k.kind === 'range') blockLine(lay, lineCells(lay, { side }, true), k); }
   lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
   // Nothing to take, strike or read lies in the wash or past a band (owner walk notes 14, 26-28): such a thing waits out of the place's list while its tile is under a line, and comes back when the line draws back.
   if (lay.lineFeats && lay.lineFeats.length) { lay.feats.push(...lay.lineFeats); lay.lineFeats = []; }
