@@ -1833,6 +1833,7 @@ function veilable(lay) {
   const r = CALL_R, rr = (r + .5) ** 2, o = new Uint8Array(lay.w * lay.h);
   for (let i = 0; i < lay.w * lay.h; i++) { if (!lay.reach[i]) continue; const x0 = i % lay.w, y0 = (i / lay.w) | 0;
     for (let y = Math.max(0, y0 - r); y <= Math.min(lay.h - 1, y0 + r); y++) for (let x = Math.max(0, x0 - r); x <= Math.min(lay.w - 1, x0 + r); x++) if ((x - x0) ** 2 + (y - y0) ** 2 <= rr) o[y * lay.w + x] = 1; }
+  if (lay.steep) for (let i = 0; i < o.length; i++) if (lay.steep[i]) o[i] = 0;   // a steep tile is a cliff face: never veiled, so the veil's dither is not laid over the wall (cliff-height-1; owner #21 "dark smudge")
   return (lay.vbl = o);
 }
 // A Call's round range: the tiles it lifts (and finds things on).

@@ -33,7 +33,7 @@
     ],
     [
      "#ffcb8d",
-     "#8cba68"
+     "#aac46e"
     ]
    ]
   ],
@@ -46,5 +46,5 @@
   ]
  ],
  "note": "a plain wall column of the Ninja relief (3 tiles tall: crest, mid, dark base), recoloured, x3",
- "out_sha256": "5c8bcafee58e7810c8324dcddfd67f4aa8494996f92e6ab6f4497a324b9495a7"
+ "out_sha256": "39a5cdd47d91d93f320159096d8ebfcc4ab03d1ea5b0769cf545e8f5897b012d"
 }
