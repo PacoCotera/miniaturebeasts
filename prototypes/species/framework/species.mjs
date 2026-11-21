@@ -220,11 +220,15 @@ export function buildFrame(spec, options = {}) {
   }
   // Pools.
   const k = WHEEL.indexOf(spec.anchor);
-  const colourPool = [spec.anchor, ...[1, -1, 2].map((d) => WHEEL[(k + d + WHEEL.length) % WHEEL.length])].slice(0, 1 + streamOf(r).below(3) + 1);
+  // The pinks (catalogue 15) sit off the wheel: a pink anchor's pool is the two pinks (the same draw is taken, so no other gene of the species moves).
+  const PINKS = ["pale-pink", "deep-pink"];
+  const colourPool = k < 0 && PINKS.includes(spec.anchor) ? [spec.anchor, ...PINKS.filter((p) => p !== spec.anchor)].slice(0, 1 + streamOf(r).below(3) + 1)
+    : [spec.anchor, ...[1, -1, 2].map((d) => WHEEL[(k + d + WHEEL.length) % WHEEL.length])].slice(0, 1 + streamOf(r).below(3) + 1);
   const pools = {};
   for (const t of traits) for (const id of t.loci) {
-    const all = alleleIds(id, version);
-    pools[id] = t.pool?.[id] ?? spec.pools?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? [fixed["appearance.underside-palette"], ...shuffle(r, SECONDS.filter((p) => p !== fixed["appearance.underside-palette"])).slice(0, 2)] : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
+    const all = alleleIds(id, version, spec.id);
+    const secondPool = () => { const f = fixed["appearance.underside-palette"], drawn = shuffle(r, SECONDS.filter((p) => p !== (PINKS.includes(f) ? "peach" : f))).slice(0, 2); return PINKS.includes(f) ? [f, ...PINKS.filter((p) => p !== f)] : [f, ...drawn]; };   // the pink second takes the same draw the peach one did
+    pools[id] = t.pool?.[id] ?? spec.pools?.[id] ?? (id === "appearance.body-palette" ? colourPool : id === "appearance.underside-palette" ? secondPool() : poolBound(id, all, { clan: spec.clan, limbSet: plan.limbSet })); // E8
     if (!pools[id].every((a) => all.includes(a))) throw new Error(`${spec.id}: pool of ${id} is not in the catalogue`);
   }
   const openIds = Object.keys(pools);
@@ -237,11 +241,11 @@ export function buildFrame(spec, options = {}) {
     if (a === undefined) {
       if (isPartSwitch(id)) a = switchesOn[id] ?? "off";
       else if (id === "appearance.cap-palette") a = spec.anchor in BODY_PIGMENTS ? ["coral", "raspberry", "marigold", "plum"][streamOf(r).below(4)] : "coral";
-      else a = pick(r, alleleIds(id, version));
+      else a = pick(r, alleleIds(id, version, spec.id));
       if (spec.reset?.[id] !== undefined) a = spec.reset[id];   // the seeded roll is still taken, so no other locked copy moves; the species' value replaces what it rolled
     }
     const pair = Array.isArray(a) ? [...a].sort() : [a, a];
-    if (pair.length !== 2 || !pair.every((x) => alleleIds(id, version).includes(x))) throw new Error(`${spec.id}: ${id} cannot be ${JSON.stringify(a)}`);
+    if (pair.length !== 2 || !pair.every((x) => alleleIds(id, version, spec.id).includes(x))) throw new Error(`${spec.id}: ${id} cannot be ${JSON.stringify(a)}`);
     locked[id] = pair;
   }
   // Typical copies of the type specimen at open loci (the species' proportions where the trait is open).
@@ -257,7 +261,7 @@ export function buildFrame(spec, options = {}) {
     ...(language ? { family: spec.family ?? reg?.family ?? null, land: spec.land ?? reg?.land ?? null } : {}),
     species: { id: spec.id, name: spec.name, plural: spec.plural, order: spec.order ?? 0, summary: spec.summary ?? "", ...(spec.parked ? { parked: true } : {}), ...(spec.draft ? { draft: true } : {}), ...(spec.borrows?.length ? { borrows: [...spec.borrows] } : {}) },
     taxonomy: { ...spec.taxonomy, clan: spec.clan, planKey: spec.plan.key, planCode: plan.code, rig: plan.rig, tier: spec.tier ?? "authored", seed: spec.seed ?? null, states: plan.states },
-    catalogue: catalogueHeader(version),
+    catalogue: catalogueHeader(version, spec.id),
     plan: { key: spec.plan.key, extras: { join: plan.join, wave: plan.extras.wave, fins: plan.extras.fins, float: !!spec.plan.extras?.float, stand: !!spec.plan.extras?.stand, flapPairs: plan.extras.flapPairs, flapRest: plan.extras.flapRest, ...(plan.extras.upright ? { upright: true } : {}) }, code: plan.code, rig: plan.rig, limbSet: plan.limbSet, posture: plan.posture, ground: plan.ground, head: plan.head, flapSet: plan.flapSet, stations: plan.stations, ...(plan.armSet ? { armSet: plan.armSet, armStations: plan.armStations } : {}) },
     signature: { anchor: spec.anchor, second: spec.second ?? null, feature: spec.feature, features: switchesOn, finish: spec.finish ?? {}, ...(language ? { part: spec.signature ?? (reg?.signature ? { type: reg.signature.type, socket: reg.signature.socket, accent: reg.signature.accent } : null) } : {}) },
     glyph: spec.glyph, habits: [...(spec.habits ?? [])], pod: null, chapters: [], loci: [], absent, counts: null, notYet: null, typeSpecimen: null, viability: null,
@@ -377,7 +381,7 @@ function finishFrame(frame, spec) {
     open: count((x) => x.kind !== "locked"), traits: traits.length,
     byChapter: Object.fromEntries(chapters.map((c) => [c.name, { loci: c.traits.reduce((s, t) => s + t.loci.length, 0), traits: c.traits.length }])),
     fieldGuideLooks: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + x.looks.length, 0),
-    stampBitsPerCopy: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + Math.max(1, Math.ceil(Math.log2(alleleIds(x.id, frameVersionOf(frame)).length))), 0),
+    stampBitsPerCopy: rows.filter((x) => x.kind !== "locked").reduce((s, x) => s + Math.max(1, Math.ceil(Math.log2(alleleIds(x.id, frameVersionOf(frame), frame.species.id).length))), 0),
   };
   const fams = new Set(rows.map((x) => x.family));
   frame.notYet = { domains: CATALOGUE.families.map((f) => f.id).filter((f) => !fams.has(f)), drafts: DRAFTS.filter((d) => !["appearance.transparency", "energy.uptake-profile"].includes(d)), closedDrafts: { "appearance.transparency": "flap translucency (appearance.flap-translucency)", "energy.uptake-profile": "light feeding (energy.light-feeding)" }, pending: spec.pending ?? [] };

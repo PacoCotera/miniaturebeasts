@@ -29,11 +29,11 @@ test("catalogue 13 carries catalogue6 plus the taxonomy's switches and loci, the
   assert.equal(kinds.filter((l) => l.switch !== "part").length, 27, "twenty-five new loci");
   assert.equal(mine.filter(proportions).length, 2, "ear set and ear width, the proportion loci no record carried");
   assert.equal(mine.filter(gaps).length, 6, "the tail bulb, the cap sheet with colour and spots, the belly field and crest leaves");
-  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles && l.addedAlleles.since <= 10).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 18, "hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, ash, and the Loika's small and medium ears (frame version 6)");
-  assert.equal(CATALOGUE.version, 14, "pin 13 is the language (tests/pin13.test.mjs); pin 12: pin 11's genome-string records (tests/pin11.test.mjs) and the Peplos genome; pin 10 was ash for the fine-tuned Loika (T-20261016-200), and its 178 records are what a frame of version 6 or older sees");
-  assert.equal(CATALOGUE.schema, "mb-catalogue/14");
+  assert.equal(CATALOGUE.loci.filter((l) => l.addedAlleles && l.addedAlleles.since <= 10).reduce((n, l) => n + l.addedAlleles.ids.length, 0), 20, "the two pinks of catalogue 15 (S10 frame 5 only), hoof, webbed, root, one pair, huge, tall ears, three tiny head ratios, the six of the Loika's calibration to Pip, ash, and the Loika's small and medium ears (frame version 6)");
+  assert.equal(CATALOGUE.version, 15, "pin 13 is the language (tests/pin13.test.mjs); pin 12: pin 11's genome-string records (tests/pin11.test.mjs) and the Peplos genome; pin 10 was ash for the fine-tuned Loika (T-20261016-200), and its 178 records are what a frame of version 6 or older sees");
+  assert.equal(CATALOGUE.schema, "mb-catalogue/15");
   assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 6)).length, 179, "the frame-6 view is pin 10's 178 records of the build branches plus the dew tongue");
-  assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-1), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended last, so every older copy keeps its index");
+  assert.deepEqual(LOCI.get("appearance.body-palette").alleles.at(-3), { id: "ash", label: "ash", value: "#8e98a4" }, "ash appended before the two pinks (catalogue 15), so every older copy keeps its index");
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 10).length === 1);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 8).length === 3);
   assert.ok(CATALOGUE.loci.filter((l) => l.addedAlleles?.since === 9).length === 6);
@@ -667,10 +667,11 @@ test("the sleep rest stays flat: the flat value still builds the moth's roof ove
 });
 
 test("pins: every form frame names catalogue 12 and the digest of what its own version sees (catalogue 13 from frame 8)", () => {
-  assert.equal(CATALOGUE.version, 14);
+  assert.equal(CATALOGUE.version, 15);
   for (const f0 of [frameOf("S01"), frameOf("S10"), frameOf("S12"), frameOf("S17")]) {
-    assert.equal(f0.catalogue.version, 12, `${f0.species.id} names pin 12`);
-    assert.equal(f0.catalogue.digest, digestAt(frameVersionOf(f0)), `${f0.species.id}: the digest is the catalogue's at the frame's own version`);
+    const pink = f0.species.id === "S10";   // the Igara's frame 5 holds the two pinks of catalogue 15; every other frame names pin 12
+    assert.equal(f0.catalogue.version, pink ? 15 : 12, `${f0.species.id} names pin ${pink ? 15 : 12}`);
+    assert.equal(f0.catalogue.digest, digestAt(frameVersionOf(f0), f0.species.id), `${f0.species.id}: the digest is the catalogue's at the frame's own version`);
     const g = typeSpecimen(f0);
     assert.deepEqual(checkGenome(f0, g), [], `a genome on ${f0.species.id} checks clean`);
   }

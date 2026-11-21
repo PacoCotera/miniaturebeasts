@@ -1,4 +1,4 @@
-// The genome framework's catalogue, version 14 (catalogue 13 plus one record, form.torso-length, body length, which starts at frame 9, so a frame of version 8 or older builds exactly as it did, byte for byte). Version 13 was the language pin: iris colour, attitude, the signature's size, count and curl, an eye count that is a plan switch, four more marking layouts at indices 6 to 9, and the records the language retires; every one of them starts at frame 8, so a frame of version 7 or older builds exactly as at pin 12, byte for byte). Version 12 was pin 11's genome-string records, then the Peplos genome: curl antennae, a locked dew tongue; pin 11 stays the content the S20 body frame names): the v1 authoring catalogue6 (114 validated pairs
+// The genome framework's catalogue, version 15 (catalogue 14 plus two pigments, pale pink and deep pink, in the body and second colour records, known only to the Igara's frame, S10 at frame version 5, so no other frame moves); version 14 was (catalogue 13 plus one record, form.torso-length, body length, which starts at frame 9, so a frame of version 8 or older builds exactly as it did, byte for byte). Version 13 was the language pin: iris colour, attitude, the signature's size, count and curl, an eye count that is a plan switch, four more marking layouts at indices 6 to 9, and the records the language retires; every one of them starts at frame 8, so a frame of version 7 or older builds exactly as at pin 12, byte for byte). Version 12 was pin 11's genome-string records, then the Peplos genome: curl antennae, a locked dew tongue; pin 11 stays the content the S20 body frame names): the v1 authoring catalogue6 (114 validated pairs
 // and six drafts, snapshotted with provenance in catalogue6-data.mjs) plus the records the
 // taxonomy proposal lists as missing for the V1 roster (design/proposals/taxonomy.md §3, "What the
 // catalogue needs": 11 switches · 25 loci + 6 alleles) and the three gaps the species frames list
@@ -227,6 +227,10 @@ const NEW_LOCI = [
 
 // Alleles added to v1 records (taxonomy §3: "+ 6 alleles"). A changed record is a new record
 // version under this catalogue's pin; v1's pin is the parent and its own records stay exact.
+// Catalogue 15 (owner 2026-11-20, the Igara): two pigments sampled from the picked axolotl painting. The stamp registry is append-only and S10's frame 5 is in it, so the two are appended to
+// that frame's colour lists and to no other frame's: `onlyIn` names the one frame that knows them (species@frame version) (bit widths stay 4 and 3, an older print decodes the same). Deep pink is the
+// belly's tone, deeper than the body's pale pink.
+const PINK_ALLELES = [{ id: "pale-pink", label: "pale pink", value: "#b7747f", onlyIn: "S10@5" }, { id: "deep-pink", label: "deep pink", value: "#9a5566", onlyIn: "S10@5" }];
 const ADDED_ALLELES = {
   "anatomy.contact-terminal-form": { alleles: [{ id: "hoof", label: "hoof", value: "hoof" }, { id: "webbed", label: "webbed", value: "webbed" }, { id: "root", label: "root", value: "root" }], pairMap: dominance(["root", "hoof", "webbed", "wedge", "pad", "rounded"]), why: "a hoof foot (C08), a webbed foot (C10), a root foot (C15)" },
   "anatomy.support-pair-count": { alleles: [{ id: "one", label: "one", value: 1 }], pairMap: { "one|one": 1, "one|two": 2, "one|three": 2, "two|two": 2, "three|two": 3, "three|three": 3 }, why: "one pair of legs for the big bird (C09)" },
@@ -244,7 +248,8 @@ const ADDED_ALLELES = {
   "growth.core-width-ratio": { alleles: [{ id: "wide", label: "wide", value: 0.65 }], since: 9, why: "Pip's body is as round from the front as from the side" },
   "growth.core-depth-ratio": { alleles: [{ id: "deep", label: "deep", value: 0.7 }], since: 9, why: "Pip's body is 0.92 as tall as it is long; high (0.61) gave 0.82" },
   // Catalogue 10: a light, muted body pigment for the fine-tuned Loika (the owner's decision 2026-10-17 13:15; T-20261016-200), appended so every older copy keeps its index and its 4 bits.
-  "appearance.body-palette": { alleles: [{ id: "ash", label: "ash", value: "#8e98a4" }], since: 10, why: "a dove grey-blue a value step above russet, natural on the moss: the Loika's third colour" },
+  "appearance.body-palette": { alleles: [{ id: "ash", label: "ash", value: "#8e98a4" }, ...PINK_ALLELES], since: 10, why: "a dove grey-blue a value step above russet, natural on the moss: the Loika's third colour; catalogue 15 appends pale pink and deep pink (the Igara's pair, S10 only)" },
+  "appearance.underside-palette": { alleles: PINK_ALLELES, since: 15, why: "catalogue 15: pale pink and deep pink for the second colour (the Igara's pair, S10 only)" },
   // Catalogue 11 (frame version 7): the Tuliko's four marking layouts, appended after bands and patches. The record's version moves; bands|patches stays co-dominant; a pair with a new
   // layout follows the order masked > points > bands > patches > spotted > capped (the Tuliko's order, with patches placed beside bands: the proposal is silent on patches).
   // Each new allele is known only from frame version 7 (`sinceFrame`), so an older frame keeps its two alleles and its one bit.
@@ -336,7 +341,7 @@ function newLocus(l) {
 export const CATALOGUE = {
   // Pin 8: 7 plus the tiny head alleles (a changed range is a new pin; frames and genomes carry the pin
   // they were built against, and a saved mibi keeps its own). Pin 12 names one content: `digest`, below.
-  id: "mb-genome-framework", version: 14, schema: "mb-catalogue/14",
+  id: "mb-genome-framework", version: 15, schema: "mb-catalogue/15",
   parent: { id: CATALOGUE6.id, version: CATALOGUE6.version, foundationDigest: CATALOGUE6.foundationDigest, source: CATALOGUE6.source },
   families: CATALOGUE6.families,
   loci: [...CATALOGUE6.loci.map(v1Locus), ...NEW_LOCI.map(newLocus)],
@@ -377,10 +382,12 @@ export const wakesFor = (locus, shownOf) => !locus.wakesWhen || Object.entries(l
 // since-frame) and its pair map with sorted keys, in catalogue order. Words (labels, consumers, provenance) and the record version are left out: a copywriter's edit
 // moves no genome. `digestAt(v)` is the digest of the content a frame of version v sees (records and alleles with a later `sinceFrame` left out): digestAt(6) is the
 // 178-record content of pin 10 on the build branches, digestAt(7) is pin 11.
-const canon = (l, v) => JSON.stringify([l.id, l.status, l.family, l.operator, l.scope, l.clan ?? null, l.owner ?? null, l.wakesWhen ? Object.keys(l.wakesWhen).sort().map((k) => [k, [...l.wakesWhen[k]].sort()]) : null, l.sinceFrame ?? 0,
-  l.alleles.filter((a) => !(a.sinceFrame > v)).map((a) => [a.id, a.value, a.sinceFrame ?? 0]),
-  l.pairMap ? Object.keys(l.pairMap).sort().filter((k) => k.split("|").every((id) => l.alleles.some((a) => a.id === id && !(a.sinceFrame > v)))).map((k) => [k, l.pairMap[k]]) : null]);
-export const digestAt = (frameVersion) => sha256hex(CATALOGUE.loci.filter((l) => !(l.sinceFrame > frameVersion)).map((l) => canon(l, frameVersion)).join("\n"));
+// An allele a frame of version v (of species `sid`) knows: from its `sinceFrame` on; an `onlyIn` allele only in that one frame (species@version). No species named: none of them, so the catalogue digest, every other frame's digest and every other frame's lists stay byte for byte.
+export const knows = (a, v, sid) => !(a.sinceFrame > v) && (!a.onlyIn || a.onlyIn === `${sid}@${v}`);
+const canon = (l, v, sid) => JSON.stringify([l.id, l.status, l.family, l.operator, l.scope, l.clan ?? null, l.owner ?? null, l.wakesWhen ? Object.keys(l.wakesWhen).sort().map((k) => [k, [...l.wakesWhen[k]].sort()]) : null, l.sinceFrame ?? 0,
+  l.alleles.filter((a) => knows(a, v, sid)).map((a) => [a.id, a.value, a.sinceFrame ?? 0]),
+  l.pairMap ? Object.keys(l.pairMap).sort().filter((k) => k.split("|").every((id) => l.alleles.some((a) => a.id === id && knows(a, v, sid)))).map((k) => [k, l.pairMap[k]]) : null]);
+export const digestAt = (frameVersion, sid) => sha256hex(CATALOGUE.loci.filter((l) => !(l.sinceFrame > frameVersion)).map((l) => canon(l, frameVersion, sid)).join("\n"));
 CATALOGUE.digest = digestAt(Infinity);
 // The header a form frame records: every frame built here names pin 12 and the digest of the content its own version sees (digestAt). Pins 10 and 11 are history: pin 11 is named
 // only by the S20 body frame's frozen file.
@@ -389,9 +396,10 @@ CATALOGUE.digest = digestAt(Infinity);
 export const LANGUAGE_FRAME = 8;
 // Catalogue 14 adds one record that starts at frame 9: a frame of version 8 keeps naming pin 13 and its digest (digestAt(8) is pin 13's digest), a frame of version 7 or older pin 12.
 export const BODY_LENGTH_FRAME = 9;
+export const PIN_PINK = 15, PIN_PINK_FRAME = 5, PINK_SPECIES = "S10";   // the Igara's frame 5 names catalogue 15 (it holds the pinks); every other frame keeps its pin and its digest
 export const PIN = 14, PIN_BEFORE_BODY_LENGTH = 13, PIN_BEFORE_LANGUAGE = 12;
 export const pinOfFrame = (frameVersion) => (frameVersion >= BODY_LENGTH_FRAME ? PIN : frameVersion >= LANGUAGE_FRAME ? PIN_BEFORE_BODY_LENGTH : PIN_BEFORE_LANGUAGE);
-export const catalogueHeader = (frameVersion) => ({ id: CATALOGUE.id, version: pinOfFrame(frameVersion), digest: digestAt(frameVersion), parent: CATALOGUE.parent });
+export const catalogueHeader = (frameVersion, sid) => { const pink = sid === PINK_SPECIES && frameVersion === PIN_PINK_FRAME; return { id: CATALOGUE.id, version: pink ? PIN_PINK : pinOfFrame(frameVersion), digest: digestAt(frameVersion, sid), parent: CATALOGUE.parent }; };
 export const VALIDATED = CATALOGUE.loci.filter((l) => l.status === "validated");
 export const DRAFTS = CATALOGUE.loci.filter((l) => l.status !== "validated").map((l) => l.id);
 export const V1_DEFAULTS = CATALOGUE6.defaults;
@@ -401,7 +409,7 @@ export const BODY_PIGMENTS = Object.fromEntries(LOCI.get("appearance.body-palett
 export const SECOND_PIGMENTS = Object.fromEntries(LOCI.get("appearance.underside-palette").alleles.map((a) => [a.id, a.value]));
 export const locusById = (id) => { const l = LOCI.get(id); if (!l) throw new Error(`unknown locus ${id}`); return l; };
 // The allele ids of a record as a frame of this version sees them (an allele appended later is not there; no version: all of them).
-export const alleleIds = (id, frameVersion = Infinity) => locusById(id).alleles.filter((a) => !(a.sinceFrame > frameVersion)).map((a) => a.id);
+export const alleleIds = (id, frameVersion = Infinity, sid) => locusById(id).alleles.filter((a) => knows(a, frameVersion, sid)).map((a) => a.id);
 
 // Operator semantics, as v1's resolver applies them (compositional-vocabulary-adapter.mjs:
 // copy-mean, dominant-enable, recessive-enable, pair-map keyed by the sorted copy pair;

@@ -15,7 +15,7 @@
 //   node tools/extract-frames.mjs            # write
 //   node tools/extract-frames.mjs --check    # fail if the snapshot would change (exit 1), writing nothing
 import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
-import { CATALOGUE as WORKBENCH, LOCI, lookConflicts } from "../../species/framework/catalogue.mjs";
+import { CATALOGUE as WORKBENCH, LOCI, lookConflicts, knows } from "../../species/framework/catalogue.mjs";
 import { FRAME_VERSION } from "../../species/framework/species.mjs";
 
 const registryUrl = new URL("../../species/frames/", import.meta.url);
@@ -44,7 +44,7 @@ const frames = sources.map(({ url, body }) => {
   const locusOf = (id) => {
     const cat = LOCI.get(id), row = byId.get(id);
     // the alleles this frame's version knows (pin 11 appends alleles with a later `sinceFrame`; they are not in an older frame, so its bit widths never move)
-    let known = cat.alleles.filter((a) => !(a.sinceFrame > (body ? CATALOGUE_FRAME : version)));
+    let known = cat.alleles.filter((a) => knows(a, body ? CATALOGUE_FRAME : version, d.species.id));   // `knows`: a pink (catalogue 15) is in S10's frame 5 and no other
     const numeric = cat.operator === "copy-mean" && known.every((a) => typeof a.value === "number");
     // A blended copy is 6 bits: 59 + 1 steps leave 4 codes for names. A record with more names than that (the ear length at frame version 6: short, long, tall, small, medium) names only
     // what the species can carry (its pool) and the two ends of the catalogue's range, which keep the step grid the catalogue's; in catalogue order. A frame that fits is untouched.
