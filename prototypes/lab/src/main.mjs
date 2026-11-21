@@ -216,7 +216,7 @@ function key(e) {
   const [dx, dy] = mv ?? [0, 0];
   if (ui.screen === "bench") {
     ui.msg = null;
-    if (confirm) { if (st.bud && st.bud.ready <= Date.now()) return doOpen(); return render(); }
+    if (confirm) { if (st.bud && st.bud.ready <= Date.now()) return doOpen(); return act("sq:" + ui.row + ":" + ui.col); }   // the same as tapping the square under the ring
     const n = benchRows().length; ui.row = Math.max(0, Math.min(n - 1, ui.row + dy)); ui.col = Math.max(0, Math.min(4, ui.col + dx)); return render();
   }
   if (ui.screen === "sample") {
@@ -227,7 +227,7 @@ function key(e) {
     return render();
   }
   if (ui.screen === "cross") {
-    if (confirm) { if (ui.cf === "go") return act(st.bud && st.bud.ready <= Date.now() ? "open" : "cross"); return; }
+    if (confirm) return act(ui.cf === "go" ? (st.bud && st.bud.ready <= Date.now() ? "open" : "cross") : "pick:" + ui.cf);   // the same as tapping the control the cursor is on
     if (dy) { const o = ["A", "B", "go"], i = Math.max(0, Math.min(2, o.indexOf(ui.cf) + dy)); ui.cf = o[i]; return render(); }
     if (dx && ui.cf !== "go") return cyclePick(ui.cf, dx);
     return;
