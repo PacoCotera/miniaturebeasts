@@ -1212,6 +1212,10 @@ const TILES = [
   ['gate', 'Gate · partner or tier 2', 'Gate', 'm:burrow', ['sign:burrow', 'sign:water', 'sign:deep']],
   ['fogbank', 'Fog bank · calm inside', 'Fog bank', 'fog', []],
   ['pod', 'Pod · found, not taken', 'Pod', 'm:pod', ['sign:pod']],
+  ['ring', 'Ring · worth a visit', 'Ring', 'ring', []],
+  ['trail', 'Line · trail or stream', 'Trail', 'trail', []],
+  ['wpod', 'Pod in water · take it', 'Pod in water', 'wpod', []],
+  ['tab', 'Gold tab · nearest find', 'Gold tab', 'tab', []],
   ['stone', 'Stone · storms charge it', 'Stone', 'stone', []],
   ['warm', 'Warm stone · Energy', 'Warm stone', 'warm', []],
   ['charged', 'Charged stone · Energy', 'Charged stone', 'charged', []],
@@ -6681,6 +6685,11 @@ const PIC = {
   'm:water': (x, y) => cen2('wave', ICON.wave(), x, y), 'm:deep': (x, y) => cen(BADGE(), x, y),
 };
 PIC['m:pod'] = PIC.pod;
+// The map key's marks, drawn as the map and the walk draw them: the three destination rings (gold, river blue, plum), the trail and stream lines, a pod in water, the gold find tab.
+PIC.ring = (x, y) => { [['gold', 0], ['river', 11], ['plum', 22]].forEach(([c, dx]) => disc(x + dx, y + 11, 5, c, 'bone')); };
+PIC.trail = (x, y) => { for (let i = 0; i < 28; i += 2) { R(x + 2 + i, y + 8 + Math.round(Math.sin(i * .3) * 2), 2, 2, C.orange); R(x + 2 + i, y + 20 + Math.round(Math.sin(i * .3 + 2) * 2), 2, 2, C.sky); } };
+PIC.wpod = (x, y) => { R(x, y, 32, 32, C.sky); for (const y0 of [5, 25]) for (let i = 0; i < 28; i += 2) R(x + 2 + i, y + y0 + Math.round(Math.sin(i * .8) * 1.4), 2, 1, C.ice); blit(podArt(POD_SHELL.pond, 1), x + 8, y + 8); };
+PIC.tab = (x, y) => { panel(x + 5, y + 5, 22, 22, C.bark, C.cream); blit(sparkArt(true), x + 10, y + 10); };
 function disc(x, y, r, fill, ring) { blit(art('disc' + r + fill + ring, () => { const pb = new PB(r * 2, r * 2); pb.ell(r, r, r - .2, r - .2, C[ring]); pb.ell(r, r, r - 2.2, r - 2.2, C[fill]); return pb; }), x, y); }
 // A chip: 22 high, the 2× label at top + 3 and 8 px in from each side (a descender ends on top + 20, one row of fill under it).
 const STAGE_WORD = { juvenile: 'young', adult: 'adult', elder: 'elder' };   // the stage's word, the same on both devices
@@ -7469,8 +7478,17 @@ function noteStones() {
   for (const f of layout(P.key).feats) if (f.kind === 'k' && cheb(f, P) <= 6 && unveiled(P.key, f.x, f.y)) {
     meet('stone'); if (stormCharge(P.key, f) > 0) meet('charged'); else if (stoneWarm(P.key, f)) meet('warm'); }
 }
+// The map key's marks, met the first time they are in view: a pod in water, the gold find tab, and (on the map) a destination ring and a trail or stream line.
+function noteMapMarks() {
+  const ex = S.exp, P = ex && ex.patch;
+  if (P && S.phase === 'patch' && P.key[0] !== 'c') {
+    if (S.pods.some(p => p.k === P.key && !p.h && p.x >= 0 && p.g === 'pond' && unveiled(P.key, p.x, p.y))) meet('wpod');
+    if (edgeTabs().some(t => t.kind === 'find')) meet('tab'); }
+  if (S.phase === 'map' && ex) { const sec = sectorHere();
+    if (sec) { if (sec.dest.some(d => S.revealed[d.c])) meet('ring'); if (sec.lines.some(l => S.revealed[l.c])) meet('trail'); } }
+}
 function noteSigns() {
-  noteStones();
+  noteStones(); noteMapMarks();
   if (S.phase === 'patch' && S.exp && S.exp.patch && S.exp.patch.key[0] !== 'c') { const P = S.exp.patch;   // the hut or the beacon in sight in a place
     for (const f of layout(P.key).feats) if ((f.kind === 'h' || f.kind === 'j') && unveiled(P.key, f.x, f.y) && cheb(f, P) <= 6) fxSign('m:' + (f.kind === 'h' ? 'depot' : 'beacon')); }
   if (S.phase !== 'map' || !S.exp) return; const a = aheadCell();
