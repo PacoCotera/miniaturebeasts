@@ -22,7 +22,9 @@ export const LAND_BODY = {   // [hex, L, C, h] of the land's body colour
   downs: ["#8F7598", 0.599, 0.06, 317.3], marsh: ["#8A8B58", 0.623, 0.071, 109.3], tarns: ["#6F87A1", 0.614, 0.048, 250.7], meres: ["#2F6E74", 0.5, 0.065, 203.8],
 };
 export const LAND_OF = { S01: "woods", S02: "downs", S03: "fells", S04: "tallwood", S05: "woods", S06: "thickets", S07: "fells", S08: "mixed", S09: "tallwood", S10: "meres", S11: "thickets", S12: "mixed", S13: "tarns", S14: "marsh", S15: "downs", S16: "tarns", S17: "mixed", S18: "downs", S19: "meres", S20: "tallwood" };
-const TARGET_HUE = { redder: 30, yellower: 95, greener: 140, bluer: 255, pinker: 350 };   // the way each Tint word turns the land's hue
+// The Igara's own coat (owner 2026-11-20 "pale pink", catalogue 15): the pale pink is its body, the deep pink its dark shade (igara-catalogue-wire-1); a stand-in until the desk makes palette-S10-v8.
+const IGARA_PINK = ["#b7747f", 0.633, 0.085, 9.1], IGARA_DEEP_L = 0.535;
+const TARGET_HUE ={ redder: 30, yellower: 95, greener: 140, bluer: 255, pinker: 350 };   // the way each Tint word turns the land's hue
 const SHADE_L = { dark: -0.07, between: 0, light: 0.07 };
 const SHADE_I = { dark: 0, between: 1, light: 2 };
 
@@ -37,8 +39,8 @@ export function coatColours(species, tint, shade = "between") {
   const si = SHADE_I[shade] ?? 1;
   if (species === "S01") { const row = LOIKA_COAT[tint]; return row ? [row[si], CREAM] : null; }
   if (KIND_COAT[species]) { const row = KIND_COAT[species][tint]; return row ? [row[si]] : null; }
-  const land = LAND_BODY[LAND_OF[species]]; if (!land) return null;
+  const land = species === "S10" ? IGARA_PINK : LAND_BODY[LAND_OF[species]]; if (!land) return null;
   if (tint !== "between" && !TARGET_HUE[tint]) return null;
   const [, L, C, h] = land, d = tint === "between" ? 0 : Math.max(-12, Math.min(12, ((TARGET_HUE[tint] - h + 540) % 360) - 180));
-  return [oklchHex(L + (SHADE_L[shade] ?? 0), Math.max(C, 0.055), (h + d + 360) % 360)];   // a land of low chroma (tallwood, fells) is lifted to 0.055 so the three Tints can be told apart on a swatch
+  return [oklchHex(L + (species === "S10" && shade === "dark" ? IGARA_DEEP_L - L : (SHADE_L[shade] ?? 0)), Math.max(C, 0.055), (h + d + 360) % 360)];   // a land of low chroma (tallwood, fells) is lifted to 0.055 so the three Tints can be told apart on a swatch
 }

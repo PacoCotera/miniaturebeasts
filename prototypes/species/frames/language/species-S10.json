@@ -43,8 +43,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 13,
-  "digest": "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5",
+  "version": 15,
+  "digest": "a338d9c2b1d2ec6b77ffeb74a2ac8e9c0af0c3cb7b13953d7763d7ada1e7783a",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -83,8 +83,8 @@
   "eyes": 2
  },
  "signature": {
-  "anchor": "charcoal",
-  "second": "slate",
+  "anchor": "pale-pink",
+  "second": "deep-pink",
   "feature": "a swimmer body, with its tip curling over like a wave",
   "features": {
    "anatomy.exterior-eye-presence": "on"
@@ -480,11 +480,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "charcoal",
-    "charcoal"
+    "pale-pink",
+    "pale-pink"
    ],
    "looks": [
-    "charcoal"
+    "pale-pink"
    ],
    "guard": "sketch: the body pigment slot",
    "nature": "look",
@@ -502,11 +502,11 @@
    "trait": null,
    "shapeable": false,
    "copies": [
-    "slate",
-    "slate"
+    "deep-pink",
+    "deep-pink"
    ],
    "looks": [
-    "slate"
+    "deep-pink"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "nature": "look",
@@ -2999,12 +2999,12 @@
      "low"
     ],
     "appearance.body-palette": [
-     "charcoal",
-     "charcoal"
+     "pale-pink",
+     "pale-pink"
     ],
     "appearance.underside-palette": [
-     "slate",
-     "slate"
+     "deep-pink",
+     "deep-pink"
     ],
     "appearance.marking-switch": [
      "on",
@@ -3451,12 +3451,12 @@
    "low"
   ],
   "appearance.body-palette": [
-   "charcoal",
-   "charcoal"
+   "pale-pink",
+   "pale-pink"
   ],
   "appearance.underside-palette": [
-   "slate",
-   "slate"
+   "deep-pink",
+   "deep-pink"
   ],
   "appearance.marking-extent": [
    "low",

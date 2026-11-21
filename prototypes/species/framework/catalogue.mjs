@@ -230,7 +230,7 @@ const NEW_LOCI = [
 // Catalogue 15 (owner 2026-11-20, the Igara): two pigments sampled from the picked axolotl painting. The stamp registry is append-only and S10's frame 5 is in it, so the two are appended to
 // that frame's colour lists and to no other frame's: `onlyIn` names the one frame that knows them (species@frame version) (bit widths stay 4 and 3, an older print decodes the same). Deep pink is the
 // belly's tone, deeper than the body's pale pink.
-const PINK_ALLELES = [{ id: "pale-pink", label: "pale pink", value: "#b7747f", onlyIn: "S10@5" }, { id: "deep-pink", label: "deep pink", value: "#9a5566", onlyIn: "S10@5" }];
+const PINK_ALLELES = [{ id: "pale-pink", label: "pale pink", value: "#b7747f", onlyIn: "S10@5 S10@8" }, { id: "deep-pink", label: "deep pink", value: "#9a5566", onlyIn: "S10@5 S10@8" }];   // S10@8 is the Igara's language frame, the one the Station loads (igara-catalogue-wire-1)
 const ADDED_ALLELES = {
   "anatomy.contact-terminal-form": { alleles: [{ id: "hoof", label: "hoof", value: "hoof" }, { id: "webbed", label: "webbed", value: "webbed" }, { id: "root", label: "root", value: "root" }], pairMap: dominance(["root", "hoof", "webbed", "wedge", "pad", "rounded"]), why: "a hoof foot (C08), a webbed foot (C10), a root foot (C15)" },
   "anatomy.support-pair-count": { alleles: [{ id: "one", label: "one", value: 1 }], pairMap: { "one|one": 1, "one|two": 2, "one|three": 2, "two|two": 2, "three|two": 3, "three|three": 3 }, why: "one pair of legs for the big bird (C09)" },
@@ -383,7 +383,7 @@ export const wakesFor = (locus, shownOf) => !locus.wakesWhen || Object.entries(l
 // moves no genome. `digestAt(v)` is the digest of the content a frame of version v sees (records and alleles with a later `sinceFrame` left out): digestAt(6) is the
 // 178-record content of pin 10 on the build branches, digestAt(7) is pin 11.
 // An allele a frame of version v (of species `sid`) knows: from its `sinceFrame` on; an `onlyIn` allele only in that one frame (species@version). No species named: none of them, so the catalogue digest, every other frame's digest and every other frame's lists stay byte for byte.
-export const knows = (a, v, sid) => !(a.sinceFrame > v) && (!a.onlyIn || a.onlyIn === `${sid}@${v}`);
+export const knows = (a, v, sid) => !(a.sinceFrame > v) && (!a.onlyIn || a.onlyIn.split(" ").includes(`${sid}@${v}`));
 const canon = (l, v, sid) => JSON.stringify([l.id, l.status, l.family, l.operator, l.scope, l.clan ?? null, l.owner ?? null, l.wakesWhen ? Object.keys(l.wakesWhen).sort().map((k) => [k, [...l.wakesWhen[k]].sort()]) : null, l.sinceFrame ?? 0,
   l.alleles.filter((a) => knows(a, v, sid)).map((a) => [a.id, a.value, a.sinceFrame ?? 0]),
   l.pairMap ? Object.keys(l.pairMap).sort().filter((k) => k.split("|").every((id) => l.alleles.some((a) => a.id === id && knows(a, v, sid)))).map((k) => [k, l.pairMap[k]]) : null]);
@@ -399,7 +399,7 @@ export const BODY_LENGTH_FRAME = 9;
 export const PIN_PINK = 15, PIN_PINK_FRAME = 5, PINK_SPECIES = "S10";   // the Igara's frame 5 names catalogue 15 (it holds the pinks); every other frame keeps its pin and its digest
 export const PIN = 14, PIN_BEFORE_BODY_LENGTH = 13, PIN_BEFORE_LANGUAGE = 12;
 export const pinOfFrame = (frameVersion) => (frameVersion >= BODY_LENGTH_FRAME ? PIN : frameVersion >= LANGUAGE_FRAME ? PIN_BEFORE_BODY_LENGTH : PIN_BEFORE_LANGUAGE);
-export const catalogueHeader = (frameVersion, sid) => { const pink = sid === PINK_SPECIES && frameVersion === PIN_PINK_FRAME; return { id: CATALOGUE.id, version: pink ? PIN_PINK : pinOfFrame(frameVersion), digest: digestAt(frameVersion, sid), parent: CATALOGUE.parent }; };
+export const catalogueHeader = (frameVersion, sid) => { const pink = sid === PINK_SPECIES && (frameVersion === PIN_PINK_FRAME || frameVersion === LANGUAGE_FRAME); return { id: CATALOGUE.id, version: pink ? PIN_PINK : pinOfFrame(frameVersion), digest: digestAt(frameVersion, sid), parent: CATALOGUE.parent }; };
 export const VALIDATED = CATALOGUE.loci.filter((l) => l.status === "validated");
 export const DRAFTS = CATALOGUE.loci.filter((l) => l.status !== "validated").map((l) => l.id);
 export const V1_DEFAULTS = CATALOGUE6.defaults;

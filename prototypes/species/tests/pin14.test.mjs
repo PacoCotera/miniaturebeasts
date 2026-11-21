@@ -61,7 +61,8 @@ test("a frame of version 8 sees no body length: no row and no absent line, and i
   assert.ok(!f.loci.some((x) => x.id === "form.torso-length")); assert.ok(!(f.absent ?? []).some((x) => x.id === "form.torso-length"));
   for (const file of readdirSync(langDir).filter((n) => n.startsWith("species-"))) {
     const d = JSON.parse(readFileSync(path.join(langDir, file), "utf8"));
-    assert.equal(d.catalogue.version, 13, file); assert.equal(d.catalogue.digest, PIN13_DIGEST, file);
+    if (file === "species-S10.json") { assert.equal(d.catalogue.version, 15, file); assert.notEqual(d.catalogue.digest, PIN13_DIGEST, file); }   // the Igara's language frame holds the pinks (catalogue 15)
+    else { assert.equal(d.catalogue.version, 13, file); assert.equal(d.catalogue.digest, PIN13_DIGEST, file); }
     assert.ok(!d.loci.some((x) => x.id === "form.torso-length"), file);
   }
 });
