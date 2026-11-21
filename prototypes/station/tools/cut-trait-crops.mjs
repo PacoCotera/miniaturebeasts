@@ -24,7 +24,7 @@ for (const [sid, k] of Object.entries(CROPS)) {
   for (const [trait, e] of Object.entries(k.ends)) e.masters.forEach((m, i) => cut(`trait-end-${trait}-${END[i]}-${big}x${big}.png`, m, e.window, big, big));
   for (const [trait, c] of Object.entries(k.cards)) {
     const n = Object.keys(c.masters).length, pw = cardsOf(n, "pictured")[0].w - 4, ph = LAYOUT.set.pictured.picH, sc = cardsOf(n, "small")[0];
-    for (const [look, m] of Object.entries(c.masters)) { cut(`trait-card-${trait}-${look}-${pw}x${ph}.png`, m, c.window, pw, ph); cut(`trait-card-${trait}-${look}-${sc.w - 4}x${sc.h - 4}.png`, m, c.window, sc.w - 4, sc.h - 4); }
+    for (const [look, m] of Object.entries(c.masters)) { const win = c.windows?.[look] ?? c.window; cut(`trait-card-${trait}-${look}-${pw}x${ph}.png`, m, win, pw, ph); cut(`trait-card-${trait}-${look}-${sc.w - 4}x${sc.h - 4}.png`, m, win, sc.w - 4, sc.h - 4); }
   }
   writeFileSync(path.join(out, "manifest-" + sid + ".json"), JSON.stringify(manifest, null, 1));
 }

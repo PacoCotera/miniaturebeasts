@@ -33,7 +33,7 @@ export function cropOf(masterId, window, dw, dh) {
 function cropPics(r) {
   const spec = r.species ? cropSpecOf(r.species, r.model) : null, sz = spec ? picSizeOf(r.model, r.size) : null; if (!sz) return null;
   if (spec.ends) return { ends: spec.ends.map((id) => cropOf(id, spec.window, sz.w, sz.h)) };
-  return { cards: Object.fromEntries(Object.entries(spec.cards).map(([look, id]) => [look, cropOf(id, spec.window, sz.w, sz.h)])) };
+  return { cards: Object.fromEntries(Object.entries(spec.cards).map(([look, id]) => [look, cropOf(id, spec.windows[look] ?? spec.window, sz.w, sz.h)])) };
 }
 
 const MINT = [143, 227, 200], AMBER = [240, 180, 90], CREAM = [239, 233, 220];

@@ -14,7 +14,8 @@ export const CROPS = {
       "body-value": { window: [88, 70, 190, 190], masters: ["mibi-adult-S01-304x312", COAT("between", "between"), COAT("between", "light")] },   // the painted stand is the between-dark coat (stands.mjs PAINTED_COAT)
     },
     cards: {
-      markings: { window: [20, 150, 270, 120], masters: { plain: COAT("between", "between"), spotted: LAY("spots"), saddle: LAY("saddle"), shaded: LAY("gradient"), bands: LAY("bands"), patches: LAY("patches") } },
+      // station-build-3 (AD bus 233353): each look is windowed on its marking, on the back (x 20-190, y 100-215); spotted's master faces the other way, so its window is the right flank (x 150-300, y 150-265)
+      markings: { window: [30, 125, 118, 80], windows: { spotted: [150, 160, 140, 80] }, masters: { plain: COAT("between", "between"), spotted: LAY("spots"), saddle: LAY("saddle"), shaded: LAY("gradient"), bands: LAY("bands"), patches: LAY("patches") } },
     },
   },
 };
@@ -22,7 +23,7 @@ export const CROPS = {
 export function cropSpecOf(species, model) {
   const k = CROPS[species]; if (!k) return null;
   if (model.shape === "scale") { const e = k.ends[model.id]; return e ? { window: e.window, ends: e.masters } : null; }
-  const c = k.cards[model.id]; return c ? { window: c.window, cards: c.masters } : null;
+  const c = k.cards[model.id]; return c ? { window: c.window, windows: c.windows ?? {}, cards: c.masters } : null;
 }
 // A window of a master's pixels ({ w, h, rgba }), reduced once to dw x dh with `resample` (layered-stand.mjs); a window past the art is clipped (transparent beyond).
 export function cropPixels(src, window, dw, dh, resample) {
@@ -36,4 +37,4 @@ export function coverWindow(window, dw, dh) {
   return [x + Math.floor((w - nw) / 2), y + Math.floor((h - nh) / 2), nw, nh];
 }
 // A stable token of what a model's pictures are cut from (it goes into the picture's id, so a changed crop is another picture)
-export const cropKey = (spec) => (spec ? JSON.stringify([spec.window, spec.ends ?? spec.cards]) : "");
+export const cropKey = (spec) => (spec ? JSON.stringify([spec.window, spec.windows ?? null, spec.ends ?? spec.cards]) : "");
