@@ -188,7 +188,7 @@ void word_reading(void) {
     { char shp[160]; snprintf(shp, sizeof shp, "%s", v_pstr(v_fmt("%s.shape.pic", B)));
       int sz[2]; if (*shp && has(shp) && v_asset_size(shp, sz) == 0) {
         int ox = pxl + (pw - sz[0]) / 2, oy = py + (ph - sz[1]) / 2, M = si(R ".right.shapes.margin", 8), w = sz[0]; char sd[16], fm[16], K[96];
-        snprintf(sd, sizeof sd, "%s", v_pstr(v_fmt("%s.shape.size", B))); snprintf(fm, sizeof fm, "%s", v_pstr(v_fmt("%s.shape.form", B))); int scale = strcmp(fm, "scale") == 0, tiny = strcmp(sd, "tiny") == 0, large = strcmp(sd, "large") == 0;
+        snprintf(sd, sizeof sd, "%s", v_pstr(v_fmt("%s.shape.size", B))); snprintf(fm, sizeof fm, "%s", v_pstr(v_fmt("%s.shape.form", B))); int scale = strcmp(fm, "scale") == 0, tiny = strcmp(sd, "tiny") == 0, large = strcmp(sd, "large") == 0 || strcmp(sd, "pictured") == 0;   /* "pictured": the large size of a trait with crops of signed art, the same words on a taller picture */
         snprintf(K, sizeof K, R ".right.shapes.%s.%s", scale ? "scale" : "set", sd);
         v_name("read.shape"); pic(v_fmt("read.shape.%d", i), shp, ox, oy); v_region("read.words", LAYER_TYPE);
         snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.trait", B))); say(v_fmt("read.shape.%d.n", i), t, ox + M, oy + v_si(S, v_fmt("%s.nameY", K), 16), "glass.trait", V_ALIGN_LEFT);

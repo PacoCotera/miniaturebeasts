@@ -5,7 +5,8 @@
 import * as S from "../state.mjs";
 import { frameOf, traitState, stampSizing, stampBlocks } from "../genome.mjs";
 import { shapeModel } from "../trait-shapes.mjs";
-import { slotsOf } from "../trait-shape-pictures.mjs";
+import { slotsOf, picSizeOf } from "../trait-shape-pictures.mjs";
+import { cropSpecOf, cropKey } from "../trait-crops.mjs";
 import { fill } from "./words.mjs";
 import { railLanes, railLayout } from "../reading-rail.mjs";
 
@@ -62,10 +63,11 @@ const RADII = { 1: [52, 34, 21], 2: [44, 29, 21], 3: [32, 21, 18], 4: [26, 17, 1
 // A trait drawn in its own shape (trait-shapes.mjs: a scale or a set, from the kind's rules and the pod's genome): the picture by id, its size and the words the face says on it (picture coordinates).
 // `others` are the genomes of the player's other mibis of the kind that have read the chapter: the small faces on a scale, the dots on a card.
 const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id !== p.id && S.speciesOf(x) === sid && x.genome && (x.read ?? []).includes(ch.id)).map((x) => x.genome);
-function shapeOfPlate(req, fr, t, p, others, size) {
-  const model = shapeModel(fr, t, p.genome, others), id = "traitshape:" + fr.species.id + ":" + t.id + ":" + size + ":" + hashOf(JSON.stringify(model));
+function shapeOfPlate(req, fr, t, p, others, want) {
+  const model = shapeModel(fr, t, p.genome, others), art = cropSpecOf(fr.species.id, model), size = want === "large" && art ? "pictured" : want;   // a trait with crops of signed art is drawn at the pictured size (trait-crops.mjs)
+  const id = "traitshape:" + fr.species.id + ":" + t.id + ":" + size + ":" + hashOf(JSON.stringify(model) + (picSizeOf(model, size) ? cropKey(art) : ""));
   const words = model.shape === "scale" ? { ends: model.ends, mid: model.mid } : { looks: model.looks.map((l) => l.look), shows: model.looks.findIndex((l) => l.shows) };   // what the face says on the picture; where is the spec's (shapes)
-  return { pic: req({ kind: "traitshape", id, model, size }), form: model.shape, size, ...words, slots: slotsOf(model, size) };
+  return { pic: req({ kind: "traitshape", id, model, size, species: fr.species.id }), form: model.shape, size, ...words, slots: slotsOf(model, size) };
 }
 const hashOf = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
 

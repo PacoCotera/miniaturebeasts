@@ -62,9 +62,25 @@ test("the spec's shapes table (what the face places the words from) is the pictu
 });
 
 test("the layout: a set's cards stay inside the picture at every look count; no per-size picture is bigger than its plate", () => {
-  for (const n of [1, 2, 3, 5, 6]) for (const size of ["large", "small", "tiny"]) {
+  for (const n of [1, 2, 3, 5, 6]) for (const size of ["large", "pictured", "small", "tiny"]) {
     const L = { cards: cardsOf(n, size), w: SIZES[size][0], h: SIZES[size][1] };
     for (const c of L.cards) assert.ok(c.x >= 0 && c.y >= 0 && c.x + c.w <= L.w && c.y + c.h <= L.h, `${n} cards, ${size}`);
   }
-  assert.ok(SIZES.large[1] <= 156 && SIZES.small[1] <= 104 && SIZES.tiny[1] <= 84 && SIZES.large[0] <= 334, "the read plates (pods.json read1/read3/read4)");
+  assert.ok(SIZES.large[1] <= 156 && SIZES.pictured[1] <= 152 && SIZES.small[1] <= 104 && SIZES.tiny[1] <= 84 && SIZES.large[0] <= 334, "the read plates (pods.json read1/read3/read4)");
+});
+
+test("crops of signed art (build 2): Tint, Shade and Markings of the Loika have them, named from signed masters; the pictured size lays them in and nothing else has art", async () => {
+  const { cropSpecOf, coverWindow, CROPS } = await import("../src/trait-crops.mjs"), { picSizeOf, slotsOf } = await import("../src/trait-shape-pictures.mjs");
+  const idx = JSON.parse(readFileSync(path.resolve(here, "../../ui/assets/masters/index.json"), "utf8")), prov = JSON.parse(readFileSync(path.resolve(here, "../../ui/assets/masters/provenance.json"), "utf8")).masters;
+  const masters = idx.masters ?? idx.files ?? idx;
+  for (const t of ["body-hue", "body-value"]) { const s = cropSpecOf("S01", scaleModel(loika, T(t), genome(1))); assert.equal(s.ends.length, 3); for (const m of s.ends) { assert.ok(masters[m], m + " is placed"); assert.match(prov[m]?.signed ?? "", /art (lead|director)/, m + " is signed"); } }
+  const mk = cropSpecOf("S01", setModel(loika, T("markings"), genome(1))); assert.deepEqual(Object.keys(mk.cards).sort(), T("markings").looks.slice().sort());
+  for (const m of Object.values(mk.cards)) { assert.ok(masters[m], m + " is placed"); assert.match(prov[m]?.signed ?? "", /art (lead|director)/, m + " is signed"); }
+  assert.equal(cropSpecOf("S01", setModel(loika, T("signature-count"), genome(1))), null);   // no art for it: its slots stay named and empty
+  assert.equal(cropSpecOf("S02", scaleModel(loika, T("body-hue"), genome(1))), null);
+  assert.deepEqual(slotsOf(setModel(loika, T("signature-count"), genome(1)), "large").length, 5);
+  assert.deepEqual(slotsOf(scaleModel(loika, T("body-hue"), genome(1)), "pictured"), []);   // a pictured trait has no empty slot
+  assert.equal(picSizeOf(scaleModel(loika, T("head"), genome(1)), "large"), null);
+  assert.deepEqual(coverWindow([20, 150, 270, 120], 92, 32).slice(2), [270, 94]);   // narrowed to the picture's shape, never stretched
+  assert.ok(Object.keys(CROPS).every((k) => /^S\d\d$/.test(k)));
 });
