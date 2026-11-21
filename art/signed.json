@@ -4293,6 +4293,55 @@
    "sha256": "a97c14f90a5e785daaf9093c35e1ea062a22452efc462350c3c14032f0100038"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "750745ac53",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-door-open-1060x1064.png",
+   "sha256": "e807f3b311c5e6a55b600bab68d192972d59837e31416b5f864b7d49ea65bdb3"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "1051c7bfd7",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-door-open-457x459.png",
+   "sha256": "2cd5f4113a7b2da194612741cedf70dd31ec4e4e9055ceef00d115fc995b1731"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "c254cbf9c5",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-door-open-530x532.png",
+   "sha256": "113db6a99d4b02a73e2b855ea95874c5581805023c992fe92590495b677a5bab"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "8154685c4c",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-interior-day-1060x1064.png",
+   "sha256": "10c99d01107547f84030d871cddb0cdc04438f8afca729ae824f5101fa6d14fe"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "3dae1e7327",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-interior-day-530x532.png",
+   "sha256": "bb2e5af718dc4b2213f6e3063c3be6ef8c1dd59ead3020056b22bd2119231f64"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "31cbd43eb0",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-shell-1060x1064.png",
+   "sha256": "0c961fc02936b85de5277d9570d9055340b9c2c051835ae62ee23f42299b8b8a"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "f498c32a82",
+   "path": "prototypes/ui/assets/masters/capsule/capsule-shell-530x532.png",
+   "sha256": "c676ebc580a371ade9de48a76e344197fd89950897b644a156988f7a68c80cc9"
+  },
+  {
    "class": "ui",
    "date": "2026-11-18",
    "id": "8df2f96608",

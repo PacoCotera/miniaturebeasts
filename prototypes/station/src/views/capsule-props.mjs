@@ -4,9 +4,10 @@ import { slotAt as slot } from "./requests.mjs";
 import { RECIPE } from "../relight.mjs";
 export const POD_REF_H = 160;   // the large pod's alpha height: the pod renders at height / 160 of its 144 x 176 layers (about 170 in the room, 147 in the panel, 72 in Create, 27 on Home)
 const SIGNED = "signed (art director, the capsule masters list)";
-const cap = (req, name, [w, h]) => slot(req, `capsule-${name}-${w}x${h}`, [0, 0, w, h], SIGNED);
+const cap = (req, name, [w, h], k = 1) => slot(req, `capsule-${name}-${w * k}x${h * k}`, [0, 0, w, h], SIGNED);   // k: the master is k times its slot (the id is capsule-<name>-<file size>:<slot size>)
+const TWICE = ["interior-day", "shell", "door-open"], TWICE_AT = "530x532";   // the day layers cut at 1060 x 1064 (bug #20): drawn at the room's 530 x 532 slot
 // the layer masters of a view at its size: the names a view uses (the room has every layer; the others the layers the build spec names)
-export function layers(req, size, names) { const o = {}; for (const n of names) o[n] = cap(req, n, size); return o; }
+export function layers(req, size, names) { const o = {}; for (const n of names) o[n] = cap(req, n, size, TWICE.includes(n) && size.join("x") === TWICE_AT ? 2 : 1); return o; }
 // the area a pod of `h` px renders in, with its shadow and blades: wide enough for the shadow, the foot's point (the anchor) at the bottom centre of the figure
 export function podArea(h) { const W = 2 * Math.ceil(0.65 * h) + 2, above = h + 2, below = Math.ceil(0.2 * h) + 2; return { size: [W, above + below], anchor: [W / 2, above] }; }
 // A relit pod picture. variant: "pod" (sealed), "crack1", "crack2" (the renderer's crack layer over the pod) or "opened" (the bowl and the tipped cap). h: the pod's height in px at this view. light: "day" | "dusk". bg: { id, at } the interior the blades come from,
