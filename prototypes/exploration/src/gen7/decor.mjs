@@ -80,17 +80,15 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
   const nG = noiseField(seed, 'g3-grove', GV.noise.scale, 'FBm', GV.noise.octaves);
   const inMap = (x, y) => x >= 0 && y >= 0 && x < land.W && y < land.H;
   // ---- way ups: the cells under them (the lip does not block there) and the zone kept clear round them
-  const wayCell = new Set(), wayZone = new Set();
-  for (const a of land.wayups) {
-    for (let y = a.y; y < a.y + a.h; y++) for (let x = a.x; x < a.x + a.w; x++) wayCell.add(key(x, y));
-    const WZ = PR.wayZone;
-    for (let y = a.y - WZ.up; y <= a.y + a.h - 1 + WZ.down; y++) for (let x = a.x - WZ.left; x <= a.x + a.w - 1 + WZ.right; x++) wayZone.add(key(x, y));
-  }
+  // A land that can name the way ups near a tile (land.wayupsNear, place.mjs) is asked per tile, so the stairs far from the place are never looked for; else the whole list is the same answer.
+  const WZ = PR.wayZone, nearWays = land.wayupsNear || (() => land.wayups);
+  const wayCell = (x, y) => nearWays(x, y).some(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h);
+  const wayZone = (x, y) => nearWays(x, y).some(a => x >= a.x - WZ.left && x <= a.x + a.w - 1 + WZ.right && y >= a.y - WZ.up && y <= a.y + a.h - 1 + WZ.down);
   // ---- tile classes: solid (water, thicket, the cliff's ring, face and flank), path
   const cls = new Map();
   // the cliff's cells by relief.mjs, the one function that names them (cliff spec 4.3, 4.4): the ring and the face (the cell under a south lip cell) are the lip, which keeps the "one clear tile beside a lip" rule's
   // rows free of props and decals; the flank (the leaning side and the end pieces' rock rows) is solid as well; a way up's cells are none of these
-  const land7 = { raised: (x, y) => T(x, y) === CLIFF, low: (x, y) => T(x, y) !== CLIFF, way: (x, y) => wayCell.has(key(x, y)), inside: inMap, memo: new Map() };
+  const land7 = { raised: (x, y) => T(x, y) === CLIFF, low: (x, y) => T(x, y) !== CLIFF, way: wayCell, inside: inMap, memo: new Map() };
   const isLip = (x, y) => { const p = partAt(land7, x, y); return p === PART.RING || p === PART.FACE; };
   const isFlank = (x, y) => partAt(land7, x, y) === PART.FLANK;
   // the rows under a face (land-b3f-foot-1): the 3 rock rows under a south lip (face; an end piece's too, flank) and the foot row below them (the first walkable row, which only the contact shade is drawn on): the face picture is drawn down
@@ -222,7 +220,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     if (fi === 4) return OPEN(t) && plain(x, y) && !near9(x, y, 4) && !hollowNear(x, y, false);
     if (!(OPEN(t) || t === LITTER || (fi === 1 && (t === SAND || t === SCREE)))) return false;
     if (!extentClear(land7, x, y, FAMS[fi])) return false;   // the extent test: no cell under what stands (a tree's crown, with a margin) is a ring, face, flank or way-up cell
-    return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone.has(key(x, y)) && !hollowNear(x, y, fi === 0);
+    return plain(x, y) && !near9(x, y, 1) && !near9(x, y, 2) && !wayZone(x, y) && !hollowNear(x, y, fi === 0);
   };
   // does a ring the places keep clear lie within the reach of this seed's cluster (and the DISP tiles a displaced member may stand beyond it)?
   const maskedNear = (fi, s) => { const R = Math.ceil(s.rmax + DISP); for (let y = s.y - R; y <= s.y + R; y++) for (let x = s.x - R; x <= s.x + R; x++) if (inMap(x, y) && maskAt(x, y) > 0) return true; return false; };
@@ -372,7 +370,7 @@ export function createDecor(seed, land, rules = RULES, presetSites = null) {
     let r = null;
     const GR = inMap(x, y) ? GD[GROUND_OF[G(x, y)]] : null;
     // top-decor-1: a raised top's ground decor keeps one tile clear of the lip (ring and face), as the meadow and the props do
-    if (GR && GR.entries.length && plain(x, y) && !isFoot(x, y) && !(T(x, y) === CLIFF && near9(x, y, 4)) && !wayZone.has(k) && !hollowNear(x, y, false) && maskAt(x, y) < 2) {
+    if (GR && GR.entries.length && plain(x, y) && !isFoot(x, y) && !(T(x, y) === CLIFF && near9(x, y, 4)) && !wayZone(x, y) && !hollowNear(x, y, false) && maskAt(x, y) < 2) {
       let u = U(seed, TAG.GROUND, x, y), c = 0;
       for (const e of GR.entries) { c += e.per100 / 100 * (e.scale || GR.drawScale); if (u < c) { r = e; break; } }
       if (r && r.prop && earlier(5, x, y)) r = null;   // a rock keeps off every other prop
