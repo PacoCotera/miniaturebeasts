@@ -2509,24 +2509,33 @@ function blockWords(lay, x, y, o) {
   return B.rock;
 }
 const RIM_BIT = { up: 1, down: 2, left: 4, right: 8 };   // the steps a ring cell's rim line refuses (lay.rim, adapt7.mjs)
+// The pawn's last 20 steps for a play note (playNoteState): direction, tile before and after, whether it moved, and the check that let it pass or stopped it (STEP_WHY, set where each check decides).
+const STEP_KEEP = 20; let STEP_WHY = '';
 function patchStep(dir, mode) {
+  const P0 = S.exp && S.exp.patch, from = P0 ? [P0.x, P0.y] : null, key0 = P0 && P0.key; STEP_WHY = 'open';
+  try { patchStepRun(dir, mode); } finally {
+    const P1 = S.exp && S.exp.patch;
+    if (from && P1) { RT.steps = RT.steps || []; RT.steps.push({ dir, key: key0, from, to: [P1.x, P1.y], moved: P1.key !== key0 || P1.x !== from[0] || P1.y !== from[1], check: STEP_WHY }); if (RT.steps.length > STEP_KEEP) RT.steps.shift(); }
+  }
+}
+function patchStepRun(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
   const x = P.x + dx, y = P.y + dy;
   if (x < 0 || y < 0 || x >= layout(key).w || y >= layout(key).h) {
-    if (layout(key).cave) { if (mode === 'walk') stopRepeat(); return; }
+    STEP_WHY = 'edge'; if (layout(key).cave) { if (mode === 'walk') stopRepeat(); return; }
     const bump0 = FX.bumpAt; crossEdge(dir);   // an open edge crosses on the first press, held or tapped: no "tap again" (owner note #84); a refused one (cliff, water) bumps and keeps the peek
     if (mode === 'walk' && FX.bumpAt !== bump0) stopRepeat();
     return; }
   { const lay = layout(key), lc = lay.lines && lay.lines.cells.get(y * lay.w + x);   // past a range line or into a closed opening: the reason, nothing spent
-    if (lc) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
-  { const lay = layout(key); if (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[dir])) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(WORDS.block.rock); return; } }   // the step across a drawn rim line (a ring cell walks up to it; bugs #99, #100)
+    if (lc) { STEP_WHY = 'line:' + lc.kind; if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
+  { const lay = layout(key); if (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[dir])) { STEP_WHY = 'rim'; if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(WORDS.block.rock); return; } }   // the step across a drawn rim line (a ring cell walks up to it; bugs #99, #100)
   let o = occupant(key, x, y, 'player');
-  if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
-  if (stepsOver(key, o, x, y)) o = null;   // small things (a cup, a tuft, a fruit, a strike mark) are walked onto; standing on one offers its action
+  if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); STEP_WHY = 'soft'; o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
+  if (stepsOver(key, o, x, y)) { o = null; STEP_WHY = 'over'; }   // small things (a cup, a tuft, a fruit, a strike mark) are walked onto; standing on one offers its action
   if (o && o.type === 'pt') { live.pt.x = P.x; live.pt.y = P.y; }
   else if (o) {
-    FX.bumpAt = NOW;
+    FX.bumpAt = NOW; STEP_WHY = 'blocked:' + o.type + (o.t != null ? ':' + o.t : '');
     if (o.type === 'feat' && o.f.kind === 'g' && !burrowOpen() && !canDig()) gateBump();
     else if (o.type === 'tile' && (o.t === T.DEEP || o.t === T.WATER) && layout(key).coastWater && layout(key).coastWater(x, y)) fxMsg(SHORE_TEXT);   // the coast: wide water, no swimmer crosses it
     else if (o.type === 'tile' && o.t === T.DEEP) swimBump();
@@ -8059,13 +8068,17 @@ function onStateChanged() {
   for (const s of S.log.slice(-8)) { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); }
 }
 // A play note's details from this device (the play page asks with `mb-note-ask`, play/src/notes.mjs): world, place, turn, expedition, carried, map counts and the last 12 events. Never a name or address.
+// The Companion's save for this slot, as stored (what a replay loads); '' when storage cannot be read.
+function playNoteSave() { try { return localStorage.getItem(SAVE_KEY) || ''; } catch (e) { return ''; } }
 function playNoteState() {
   if (!S || RT.readOnly) return { world: 'not loaded' };   // a newer page's save: no world was read
   const ex = S.exp;
   return { seed: S.seed, generator: S.gen || 1, place: whereText(), turn: wTurn(),
     expedition: ex ? ex.n + ' (' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') + '), ' + ex.actions + ' actions, shield ' + ex.shield + '/' + ex.smax : S.expN + ' not started', totalActions: S.totalActions,
     carried: ex ? ex.cargo.e + ' energy, ' + ex.cargo.d + ' data, ' + ex.cargo.s + ' essence, ' + ex.cargo.pods.length + ' pods' : 'nothing', map: mapCounts(), docked: isDocked(),
-    events: S.log.slice(-12) };
+    events: S.log.slice(-12),
+    replay: { v: 1, tier: S.tier, partner: ex && ex.pt ? { sp: ex.pt.sp, name: ex.pt.name } : null, steps: (RT.steps || []).slice(), range: ex ? ex.range : null, start: ex ? ex.start : null, pos: ex ? ex.pos : null, patch: ex && ex.patch ? { key: ex.patch.key, x: ex.patch.x, y: ex.patch.y, dir: ex.patch.dir } : null,
+      save: playNoteSave() } };
 }
 
 // ===================== 18. Boot =====================
