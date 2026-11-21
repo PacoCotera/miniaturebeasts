@@ -24,6 +24,21 @@ export function cliffInfo(ir, terrains) {
   return info;
 }
 
+// The rim line drawn at a ring cell's edge to a low cell (bugs #99, #100; cliff method R5: walking follows what is drawn). A ring cell is drawn as top grass with the dark line on its far edge only, so it walks and the step ACROSS
+// that edge is refused. Returns a Uint8Array of w * h: per cell the steps it may not take, bits RIM.up 1, down 2, left 4, right 8 (both sides of the edge carry the bit; a way up's cells are no rim).
+export const RIM = { up: 1, down: 2, left: 4, right: 8 };
+export function rimSteps(ir, terrains) {
+  const info = cliffInfo(ir, terrains), { w, h } = ir, A = landOf(ir, info), out = new Uint8Array(w * h);
+  for (const c of info.ringCells) {
+    const x = c % w, y = (c / w) | 0;
+    for (const [dx, dy, bit, back] of [[0, -1, RIM.up, RIM.down], [0, 1, RIM.down, RIM.up], [-1, 0, RIM.left, RIM.right], [1, 0, RIM.right, RIM.left]]) {
+      const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h || !A.low(X, Y) || A.way(X, Y)) continue;
+      out[c] |= bit; out[Y * w + X] |= back;
+    }
+  }
+  return out;
+}
+
 // A cell with the dense thicket all round it (the 3 x 3 block), or null: the donor of the closed looks (walk content B8), found in the level itself; terrains: terrain.json's list.
 // `place` is a level IR or a baked place (both carry w, h and a terrain grid).
 export function thicketDonor(place, terrains) {

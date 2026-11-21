@@ -19,7 +19,7 @@ test("a cliff tile is worded as steep rock, never as a stone (bug #45)", () => {
   p.run("newWorld(2668471853); TEST.calm = true; S.tier = 2; startExpedition('weather', G.spawns[0]);");
   const r = p.run(`(() => { const out = { cliff: 0, stone: 0, wrong: 0 };
     for (let c = 0; c < MW * MH; c++) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const lay = layout(String(c));
-      for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { const i = y * lay.w + x; if (lay.tiles[i] !== T.ROCK || lay.press[i] !== 1) continue;
+      for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { const i = y * lay.w + x; if (lay.tiles[i] !== T.ROCK || (lay.press[i] !== 1 && !lay.steep[i])) continue;   // a ring cell walks now (bugs #99, #100): the steep rock left is the face and flank cells, which carry no press
         const w = blockWords(lay, x, y, { type: 'tile', t: T.ROCK }); if (lay.steep[i]) { out.cliff++; if (w !== WORDS.block.rock) out.wrong++; } else { out.stone++; if (w !== WORDS.block.stone) out.wrong++; } } }
     return out; })()`);
   assert.ok(r.cliff > 0, JSON.stringify(r));
