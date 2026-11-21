@@ -20,6 +20,21 @@ import { CH, railLayout } from "./reading-rail.mjs";
 export { CH, CH_TOKEN, railLayout, railLanes } from "./reading-rail.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { lookColours } from "./specimen.mjs";
+import { SIZES, shapePicture, picSizeOf } from "./trait-shape-pictures.mjs";
+import { cropSpecOf, cropPixels, coverWindow, ART } from "./trait-crops.mjs";
+
+// The crops a trait-shape request places (station-build-2): each signed master's window, reduced once to the picture size (the window is narrowed to the picture's shape, never stretched). A master that is not
+// placed gives no picture there (the card or end stays as the code draws it).
+export function cropOf(masterId, window, dw, dh) {
+  const m = assetEntry(masterId); if (!m || m.status === "empty" || !m.file || m.w !== ART[0] || m.h !== ART[1]) return null;
+  const a = assetOf(masterId);
+  return cropPixels({ w: a.w, h: a.h, rgba: a.rgba() }, coverWindow(window, dw, dh), dw, dh, resample);
+}
+function cropPics(r) {
+  const spec = r.species ? cropSpecOf(r.species, r.model) : null, sz = spec ? picSizeOf(r.model, r.size) : null; if (!sz) return null;
+  if (spec.ends) return { ends: spec.ends.map((id) => cropOf(id, spec.window, sz.w, sz.h)) };
+  return { cards: Object.fromEntries(Object.entries(spec.cards).map(([look, id]) => [look, cropOf(id, spec.windows[look] ?? spec.window, sz.w, sz.h)])) };
+}
 
 const MINT = [143, 227, 200], AMBER = [240, 180, 90], CREAM = [239, 233, 220];
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -280,6 +295,7 @@ export function registerReading(r, env) {
   if (hasAsset(r.id)) return;
   const made = (w, h, f) => registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => data ?? (data = f()) }; } });
   switch (r.kind) {
+    case "traitshape": return made(SIZES[r.size][0], SIZES[r.size][1], () => shapePicture(r.model, r.size, { colours: r.colours, pics: cropPics(r) }).rgba);   // a trait's scale or set (trait-shape-pictures.mjs), with its crops of the signed art (trait-crops.mjs)
     case "readchamber": return made(CHAMBER.size[0], CHAMBER.size[1], () => chamberPicture(r, env));
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
