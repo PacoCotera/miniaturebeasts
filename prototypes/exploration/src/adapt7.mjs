@@ -175,7 +175,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const lay = {
     key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter, pieces, stamps: ir.stamps || [], feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
     sdist, trees: {}, shade: false, w, h, openings, clear, compId, compOfSide, mainComp, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
-    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, rim: rimBits, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
+    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, rimSteps: rimBits, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
     strikes, decalNear, coverAt,...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
