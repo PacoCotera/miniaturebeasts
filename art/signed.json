@@ -4386,6 +4386,20 @@
   {
    "class": "cut-of-signed",
    "date": "2026-11-21",
+   "id": "3e6ac597bb",
+   "path": "prototypes/ui/assets/masters/pods/bud-shape-S10-112x112.png",
+   "sha256": "876bd342e205232bb10ef7c81b21c8f9cd584ccccb12f4218ea3affe55a74858"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "f1a585287a",
+   "path": "prototypes/ui/assets/masters/pods/face-S10-24.png",
+   "sha256": "e926ad119a5b4640a8fad9598467b37ac6161f906500a6ce11a2706d4bccc8dc"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
    "id": "52833e1b2d",
    "path": "prototypes/ui/assets/masters/pods/face-S11-24.png",
    "sha256": "60d86dc8e051baba3ddc77f6db6f03517428e759efd87a77b743c95ec0c51335"
@@ -4417,6 +4431,13 @@
    "id": "c52825c821",
    "path": "prototypes/ui/assets/masters/pods/mibi-adult-S01-96x88.png",
    "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "4827180315",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S10-144x152.png",
+   "sha256": "17aba9a47b122995b9f3f9757917fbaa2b8e87a4a342bb9da8b0b04ec5875ce5"
   },
   {
    "class": "cut-of-signed",
@@ -4813,6 +4834,20 @@
   {
    "class": "cut-of-signed",
    "date": "2026-11-21",
+   "id": "790b8fea8a",
+   "path": "prototypes/ui/assets/masters/pods/mibi-halo-S10-128x160-clear.png",
+   "sha256": "f9419c969f36c750188f7ab67dfd6b00e928379fda05acd71463e4c71f945074"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "024fe2dbb8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-halo-S10-128x160-mist.png",
+   "sha256": "34503e6496fb9f0f96d70e561bea16682eda3a9a1e2d68602890b14bdf8cd207"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
    "id": "6227a29baa",
    "path": "prototypes/ui/assets/masters/pods/mibi-halo-S11-128x160-clear.png",
    "sha256": "0dccf4c96b10d9037166240922237758bfb2b50018046d9988186fdb03fa7464"
@@ -4823,6 +4858,13 @@
    "id": "c3e520cc55",
    "path": "prototypes/ui/assets/masters/pods/mibi-halo-S11-128x160-mist.png",
    "sha256": "33045262a04ef6bf9ef641573a55e727f84b4e63131350180df004e80ffccb9e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "e0a63d6038",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S10-104x112.png",
+   "sha256": "96615cc2656698ff7953b9d9cb7baec5caaac8af01a1ee414df0528a646d0360"
   },
   {
    "class": "cut-of-signed",
@@ -5411,6 +5453,13 @@
    "id": "d355000312",
    "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C07-shade.png",
    "sha256": "b95a8423c96b2d21652cb663ca51b87ba8417471c498841f5ef8b1cc3d5643d4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "48e198e1b8",
+   "path": "prototypes/ui/assets/masters/pods/spread-plate-S10-80x96.png",
+   "sha256": "1802094ef15ff8d11bb2f135d4e17abe43813f0e0381360296c7745b6c6c2094"
   },
   {
    "class": "cut-of-signed",
