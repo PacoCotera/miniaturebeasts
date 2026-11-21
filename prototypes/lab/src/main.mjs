@@ -3,6 +3,7 @@
 import { PROTOTYPES } from "../../ui/site-base.mjs";
 import { readOptions } from "../../play/src/options.mjs";
 import { WORDS as W } from "./words.mjs";
+import { labScale } from "./scale.mjs";
 import { newGame, expedition, questionsFor, askWord, startSample, tickBench, previewCross, chanceWord, startCross, openBud, partnersFor, crossCandidates, squareOf, allKnown, goal, TRAIT_ORDER, COST, LANDS, wildLand, valueWord } from "./rules.mjs";
 
 const SAVE_KEY = "mb-save-v8-lab";   // starts with "mb-save-v8": the play page's Start fresh erases it with the rest
@@ -24,6 +25,7 @@ let frame = null, st = null;
 const ui = { screen: "bench", row: 0, col: 0, sIdx: 0, qIdx: 0, A: null, B: null, cf: "A", land: 0, rep: null, msg: null, pending: null };
 const $ = (id) => document.getElementById(id);
 const root = $("screen");
+document.documentElement.style.setProperty("--s", String(labScale(window.devicePixelRatio)));
 
 // ---------------------------------------------------------------- save
 const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(st)); } catch { /* no storage: this page only */ } };
