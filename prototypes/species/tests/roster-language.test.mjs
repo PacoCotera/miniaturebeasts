@@ -139,7 +139,9 @@ test("the frames of version 8 take their fields from the registry: no resembles,
     assert.equal(f.taxonomy.habitat, land.word, `${s.id}: the habitat is the land's player word (the every-land word is an empty slot owed to the copywriter)`);
     assert.equal(f.signature.feature, featureOf(familyOf(LANGUAGE, k.family), k), `${s.id}: the feature line`);
     assert.ok(f.signature.features["anatomy.exterior-eye-presence"] === "on", `${s.id}: the face`);
-    if (!k.anchor) {
+    if (!k.anchor && s.id === "S10") {
+      assert.deepEqual(f.pod.colourPair.map((c) => c.hex), ["#b7747f", "#9a5566"], "S10: the pod is the Igara's pale and deep pink, not the land's colours");
+    } else if (!k.anchor) {
       assert.equal(f.pod.colourPair[0].hex, land.body.hex, `${s.id}: the pod's first colour is the land's body`);
       assert.equal(f.pod.colourPair[1].hex, land.accent.hex, `${s.id}: the pod's second colour is the land's accent`);
     }
