@@ -2410,7 +2410,7 @@ const yieldTurn = () => new Promise(res => setTimeout(res, 0));
 function beginPlaceWait(seed, slot, v, cells, laying) {
   RT.making = true; RT.makingAt = performance.now(); RT.wait = null; RT.pips = 0;   // a new wait starts empty, whatever the last one reached
   RT.placeWait = { seed, slot, v, cells, laying, laid: 0 };
-  readyPlaces(seed, slot, v, cells, { ctx: PL.ctx });
+  readyPlaces(seed, slot, v, cells, { ctx: PL.ctx, first: true });   // first: ahead of the background list in the worker
   return Promise.all(cells.map(c => bakedWhen(seed, slot, v, c)));
 }
 function waitForPlace(key) {

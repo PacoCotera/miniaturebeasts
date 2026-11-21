@@ -60,7 +60,8 @@ async function keep(seed, slot, v, cell, b) {
 // Makes sure these cells are being made: read back from IndexedDB, else asked of the worker (nearest first, in the order given).
 // kit: { ctx: the places kit as the page loaded it ({ ts, terrains, desc }) }; the seed's realm and Hollow Tree sites go to the worker from the page's generator cache.
 export async function readyPlaces(seed, slot, v, cells, kit) {
-  const want = cells.filter(c => !BAKED.has(memKey(seed, slot, v, c)) && !ASKED.has(memKey(seed, slot, v, c)));
+  const first = !!(kit && kit.first);   // the set-out's reach: the player waits for these, so they go ahead of the background list, even a cell already asked there (the worker drops its later copy)
+  const want = cells.filter(c => !BAKED.has(memKey(seed, slot, v, c)) && (first || !ASKED.has(memKey(seed, slot, v, c))));
   for (const c of want) ASKED.add(memKey(seed, slot, v, c));   // held while IndexedDB is read, so a second ask does not repeat it
   if (want.length && typeof indexedDB !== 'undefined') {
     await Promise.all(want.map(async c => { try { const hit = await get(storeKey(seed, slot, v, c)); if (hit && hit.ir && hit.place) { BAKED.set(memKey(seed, slot, v, c), hit); ASKED.delete(memKey(seed, slot, v, c)); } } catch (e) { /* made again */ } }));
@@ -70,7 +71,7 @@ export async function readyPlaces(seed, slot, v, cells, kit) {
     try {
       const w = worker('bake', kit.ctx);
       if (PW_SEED !== seed) { w.postMessage({ op: 'seed', seed, realm: realm7(seed), sites: decorSites(seed), banks: madeBanks(seed) }); PW_SEED = seed; }   // the realm is the page's; of the sites it sends the ones it has made (the worker makes the rest as its places ask, and sends them back with the bake)
-      w.postMessage({ op: 'bake', seed, slot, v, cells: todo });
+      w.postMessage({ op: 'bake', seed, slot, v, cells: todo, first });
     } catch (e) { for (const c of todo) ASKED.delete(memKey(seed, slot, v, c)); console.warn('the places worker did not run', e); }
   } else for (const c of todo) ASKED.delete(memKey(seed, slot, v, c));
   wake();
