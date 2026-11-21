@@ -1,0 +1,139 @@
+set,size,measure,item,value,limit,result
+s01-stand,304x312,input,stand sha256,d23fca6f47704fdf601388c7eb2e59fc546b7ce15d0f45f962cda7650facff59,,info
+s01-stand,304x312,prep,"cut key: body alpha>=200 -> 255, shadow alpha 60..199 from row 290 down kept at <=110 and not warped, rest 0","18309 body, 1023 shadow, 1529 dropped px",,provisional
+s01-stand,304x312,head,mask source,polygon,,info
+s01-stand,304x312,points,picture block stand-304x312,placed,,info
+s01-stand,304x312,head,mask png sha256,b84d60ec655760f166ab200d43d9d5c279f12ddb3ebd10aba49bb87196aab7c9,,info
+s01-stand,304x312,field,down map sha256,b49d4b5c79bb473ccb1cb63c2706d8105fbb03716c9c896fe9ef3435857cc096,,info
+s01-stand,304x312,field,up map sha256,3e0a018e1b147c3e219fd52f67d6cf6014c7f5fb3e21d13be3aa69016fa3e386,,info
+s01-stand,304x312,M3,stand strict counts,"1 comp, 0 holes, 0 orphans",info,
+s01-stand,304x312,M4,stand irregular,441,,info
+s01-stand,304x312,M2,warped-down,0,0,pass
+s01-stand,304x312,M3,warped-down strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s01-stand,304x312,M3,warped-down not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-stand,304x312,M3,"warped-down body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-stand,304x312,M3,warped-down alpha>0 counts,alpha>0 1/12/0 (components/holes/orphans),the unwarped 1/12/0,report
+s01-stand,304x312,M3,warped-down body layer alpha>0 counts,alpha>0 1/12/0 (components/holes/orphans),the unwarped 1/12/0,report
+s01-stand,304x312,M4,warped-down irregular,434,463,pass
+s01-stand,304x312,clamp,"misses (down, final)",0,0,pass
+s01-stand,304x312,feet,"changed pixel values in the feet and shadow rows (row 290 down), warped vs stand (down)",0,0,pass
+s01-stand,304x312,legs,leg strain (max |db| / (z0 - yb)) (down),0.1824,0.2500,pass
+s01-stand,304x312,field,down max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s01-stand,304x312,M5a,down,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s01-stand,304x312,M5,warped-down vs painted,no painted end given,,n/a
+s01-stand,304x312,M2,warped-up,0,0,pass
+s01-stand,304x312,M3,warped-up strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s01-stand,304x312,M3,warped-up not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-stand,304x312,M3,"warped-up body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-stand,304x312,M3,warped-up alpha>0 counts,alpha>0 1/12/0 (components/holes/orphans),the unwarped 1/12/0,report
+s01-stand,304x312,M3,warped-up body layer alpha>0 counts,alpha>0 1/12/0 (components/holes/orphans),the unwarped 1/12/0,report
+s01-stand,304x312,M4,warped-up irregular,442,463,pass
+s01-stand,304x312,clamp,"misses (up, final)",0,0,pass
+s01-stand,304x312,feet,"changed pixel values in the feet and shadow rows (row 290 down), warped vs stand (up)",0,0,pass
+s01-stand,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0.1448,0.2500,pass
+s01-stand,304x312,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s01-stand,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s01-stand,304x312,M5,warped-up vs painted,no painted end given,,n/a
+s01-stand,304x312,M6,only at 104x112 and 144x152,,,n/a
+s01-stand,304x312,M7,warp ms per picture (down; a clock reading),3.0935,,info
+s01-stand,304x312,M7,warp ms per picture (up; a clock reading),2.6229,,info
+s01-stand,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-stand,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-stand,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-stand,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-stand,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s01-stand,304x312,hop,the hop's lift table unchanged,the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it,,satisfied by construction
+s01-stand,304x312,run,status,provisional input prep (no verdict),,no verdict
+s01-stand,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",a79bd1d5cd43,equal,pass
+s01-crouch,304x312,input,stand sha256,2635ea55c604abff63e46902ec788be4fe5e71e90dd2f5e3318e412f86324ad4,,info
+s01-crouch,304x312,prep,"cut key: body alpha>=200 -> 255, shadow alpha 60..199 from row 290 down kept at <=110 and not warped, rest 0","19877 body, 1776 shadow, 1298 dropped px",,provisional
+s01-crouch,304x312,head,mask source,polygon,,info
+s01-crouch,304x312,points,picture block stand-304x312,placed,,info
+s01-crouch,304x312,head,mask png sha256,e76222d7d234fae87eafef9000779030d2cec01ae44d05321146f0b0d64e195d,,info
+s01-crouch,304x312,field,down map sha256,3e655a985a4518c43081037917b896d31020cffd46c0e161f2c72084fefe152a,,info
+s01-crouch,304x312,field,up map sha256,271d72266d777a8570ffeff984bcc78944faf8f36e55a1c716066e1dc28407d5,,info
+s01-crouch,304x312,M3,stand strict counts,"1 comp, 0 holes, 0 orphans",info,
+s01-crouch,304x312,M4,stand irregular,432,,info
+s01-crouch,304x312,M2,warped-down,0,0,pass
+s01-crouch,304x312,M3,warped-down strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s01-crouch,304x312,M3,warped-down not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-crouch,304x312,M3,"warped-down body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 2/0/0 (components/holes/orphans),<= the unwarped 1/0/0,FAIL
+s01-crouch,304x312,M3,warped-down alpha>0 counts,alpha>0 1/18/0 (components/holes/orphans),the unwarped 1/18/0,report
+s01-crouch,304x312,M3,warped-down body layer alpha>0 counts,alpha>0 1/17/0 (components/holes/orphans),the unwarped 1/18/0,report
+s01-crouch,304x312,M4,warped-down irregular,428,453,pass
+s01-crouch,304x312,clamp,"misses (down, final)",0,0,pass
+s01-crouch,304x312,feet,"changed pixel values in the feet and shadow rows (row 290 down), warped vs stand (down)",0,0,pass
+s01-crouch,304x312,legs,leg strain (max |db| / (z0 - yb)) (down),0.2085,0.2500,pass
+s01-crouch,304x312,field,down max |d| px / stretch / shear,3.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s01-crouch,304x312,M5a,down,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s01-crouch,304x312,M5,warped-down vs painted,no painted end given,,n/a
+s01-crouch,304x312,M2,warped-up,0,0,pass
+s01-crouch,304x312,M3,warped-up strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s01-crouch,304x312,M3,warped-up not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-crouch,304x312,M3,"warped-up body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 2/0/0 (components/holes/orphans),<= the unwarped 1/0/0,FAIL
+s01-crouch,304x312,M3,warped-up alpha>0 counts,alpha>0 1/18/0 (components/holes/orphans),the unwarped 1/18/0,report
+s01-crouch,304x312,M3,warped-up body layer alpha>0 counts,alpha>0 1/17/0 (components/holes/orphans),the unwarped 1/18/0,report
+s01-crouch,304x312,M4,warped-up irregular,437,453,pass
+s01-crouch,304x312,clamp,"misses (up, final)",0,0,pass
+s01-crouch,304x312,feet,"changed pixel values in the feet and shadow rows (row 290 down), warped vs stand (up)",0,0,pass
+s01-crouch,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0.1859,0.2500,pass
+s01-crouch,304x312,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s01-crouch,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s01-crouch,304x312,M5,warped-up vs painted,no painted end given,,n/a
+s01-crouch,304x312,M6,only at 104x112 and 144x152,,,n/a
+s01-crouch,304x312,M7,warp ms per picture (down; a clock reading),2.5093,,info
+s01-crouch,304x312,M7,warp ms per picture (up; a clock reading),2.4547,,info
+s01-crouch,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-crouch,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-crouch,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-crouch,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-crouch,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s01-crouch,304x312,hop,the hop's lift table unchanged,the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it,,satisfied by construction
+s01-crouch,304x312,run,status,provisional input prep (no verdict),,no verdict
+s01-crouch,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",df9a59cd5194,equal,pass
+s01-air,304x312,input,stand sha256,f984fc49cb5f1b4ac28053bdb4688ae03248eb12194240c51f5f611381320937,,info
+s01-air,304x312,prep,"cut key: body alpha>=200 -> 255, shadow alpha 60..199 from row 294 down kept at <=110 and not warped, rest 0","20260 body, 1878 shadow, 1698 dropped px",,provisional
+s01-air,304x312,head,mask source,polygon,,info
+s01-air,304x312,points,picture block stand-304x312,placed,,info
+s01-air,304x312,head,mask png sha256,0ccbf9e6f17ebbcd1ea9cf7239a40d86cd184ee22b6fea765b5083f3a8dd6b6c,,info
+s01-air,304x312,field,down map sha256,470272bc77b3cfb8a38db801bc4b1a33447a799aa9b188ed0b7916b184eb4b19,,info
+s01-air,304x312,field,up map sha256,f399bdc81fd07d9906e2b19a3fb132af0b8153fef61787649c477e1148936f56,,info
+s01-air,304x312,M3,stand strict counts,"1 comp, 0 holes, 0 orphans",info,
+s01-air,304x312,M4,stand irregular,535,,info
+s01-air,304x312,M2,warped-down,0,0,pass
+s01-air,304x312,M3,warped-down strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s01-air,304x312,M3,warped-down not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-air,304x312,M3,"warped-down body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 3/0/0 (components/holes/orphans),<= the unwarped 1/0/0,FAIL
+s01-air,304x312,M3,warped-down alpha>0 counts,alpha>0 1/1/0 (components/holes/orphans),the unwarped 1/1/0,report
+s01-air,304x312,M3,warped-down body layer alpha>0 counts,alpha>0 3/1/0 (components/holes/orphans),the unwarped 1/1/0,report
+s01-air,304x312,M4,warped-down irregular,531,561,pass
+s01-air,304x312,clamp,"misses (down, final)",0,0,pass
+s01-air,304x312,feet,"changed pixel values in the feet and shadow rows (row 294 down), warped vs stand (down)",0,0,pass
+s01-air,304x312,legs,leg strain (max |db| / (z0 - yb)) (down),0.2193,0.2500,pass
+s01-air,304x312,field,down max |d| px / stretch / shear,5.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s01-air,304x312,M5a,down,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s01-air,304x312,M5,warped-down vs painted,no painted end given,,n/a
+s01-air,304x312,M2,warped-up,0,0,pass
+s01-air,304x312,M3,warped-up strict counts (head drawn),"1 comp, 0 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s01-air,304x312,M3,warped-up not worse than its own unwarped picture (alpha>110 gates),alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
+s01-air,304x312,M3,"warped-up body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 3/0/0 (components/holes/orphans),<= the unwarped 1/0/0,FAIL
+s01-air,304x312,M3,warped-up alpha>0 counts,alpha>0 1/1/0 (components/holes/orphans),the unwarped 1/1/0,report
+s01-air,304x312,M3,warped-up body layer alpha>0 counts,alpha>0 3/1/0 (components/holes/orphans),the unwarped 1/1/0,report
+s01-air,304x312,M4,warped-up irregular,535,561,pass
+s01-air,304x312,clamp,"misses (up, final)",0,0,pass
+s01-air,304x312,feet,"changed pixel values in the feet and shadow rows (row 294 down), warped vs stand (up)",0,0,pass
+s01-air,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0.1654,0.2500,pass
+s01-air,304x312,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
+s01-air,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
+s01-air,304x312,M5,warped-up vs painted,no painted end given,,n/a
+s01-air,304x312,M6,only at 104x112 and 144x152,,,n/a
+s01-air,304x312,M7,warp ms per picture (down; a clock reading),3.0496,,info
+s01-air,304x312,M7,warp ms per picture (up; a clock reading),2.9644,,info
+s01-air,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-air,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-air,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-air,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
+s01-air,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s01-air,304x312,hop,the hop's lift table unchanged,the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it,,satisfied by construction
+s01-air,304x312,run,status,provisional input prep (no verdict),,no verdict
+s01-air,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",7e8c459ac9a8,equal,pass

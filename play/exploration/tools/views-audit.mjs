@@ -1,0 +1,112 @@
+// The views audit (owner, 2026-11-08: "the map generation is not consistent across its different zoom levels"): the world has ONE truth for each edge of a cell
+// (open, stair, cliff, scree or bank, water, the map's end) and the map, the reach view and the cell itself must all show it. This compares the world's edge with what a cell holds, for every cell of a
+// world, and counts the mismatches by kind. Generator 7 (the page's): auditGen7, on the cell's IR; the generated places of the frozen generators 2 and 5: auditGenerated.
+//   node prototypes/exploration/tools/views-audit-run.mjs [seedFrom seedTo] [--gens 7,2]       the table (a sweep of seeds 1-200 builds 200 realms: allow an hour, or run it in shards)
+import { MW, MH, T, T_BLOCK, L, TERR, sideKind } from "../src/world.mjs";
+
+export const SIDES = ["up", "down", "left", "right"];
+const WET = new Set([T.WATER, T.DEEP, T.ISLE, T.STEP, T.WADE]);
+
+// The world's truth for a side of a cell (world.mjs sideKind): 'mapend', 'open', 'stair', 'cliff', 'scree', 'bank', 'water' (a neighbour nobody walks) or 'wade'.
+export const worldSide = sideKind;
+
+// The border tiles of a side: [index, depth, along] (corners excluded from the drawn-kind counts by the callers).
+const border = (lay, dir, depth) => { const out = [], w = lay.w, h = lay.h;
+  if (dir === "up" || dir === "down") for (let x = 0; x < w; x++) out.push([(dir === "up" ? depth : h - 1 - depth) * w + x, x]);
+  else for (let y = 0; y < h; y++) out.push([y * w + (dir === "left" ? depth : w - 1 - depth), y]);
+  return out; };
+
+// What the layout shows and allows on a side.
+export function layoutSide(lay, dir) {
+  const walk = i => !T_BLOCK[lay.tiles[i]], along = dir === "up" || dir === "down" ? lay.w : lay.h;
+  const exits = border(lay, dir, 0).filter(([i, k]) => k >= 3 && k < along - 3 && walk(i)).map(([, k]) => k);   // the corners belong to two sides: a band's shore at the foot of the next side is not an exit
+  const mid = ([, k]) => k >= 2 && k < along - 2;
+  const kinds = new Set(); for (const d of [0, 1]) for (const [i, k] of border(lay, dir, d)) if (mid([i, k]) && lay.terr && lay.terr[i]) kinds.add(lay.terr[i]);
+  const water = border(lay, dir, 0).filter(mid).filter(([i]) => WET.has(lay.tiles[i])).length, total = border(lay, dir, 0).filter(mid).length;
+  const stair = (lay.stairs || []).find(q => q.dir === dir) || null, cross = (lay.cross || []).find(q => q.dir === dir) || null;
+  const stairTiles = [...kinds].some(k => k === TERR.STAIR || k === TERR.LANDING || k === TERR.FOOT || k === TERR.APRON_TOP);
+  const exitsAt = border(lay, dir, 0).filter(([i, k]) => k >= 3 && k < along - 3 && walk(i)).map(([i]) => [i % lay.w, (i / lay.w) | 0]);
+  return { exits, exitsAt, lip: kinds.has(TERR.LIP) || kinds.has(TERR.FACE) || kinds.has(TERR.SIDE) || kinds.has(TERR.SHADOW), stairTiles, stair, cross, waterShare: total ? water / total : 0,
+    wetTiles: water, soft: [0, 1, 2, 3, 4].some(d => border(lay, dir, d).some(([i]) => lay.tiles[i] === T.SCREE || lay.tiles[i] === T.BANK)) };
+}
+
+// The mismatches of one side: a list of kind names (empty: the views agree).
+export function sideMismatches(G, lay, c, dir) {
+  const w = worldSide(G, c, dir), s = layoutSide(lay, dir), out = [];
+  const stairExit = s.stair ? s.exits.some(k => k === s.stair.s || k === s.stair.s + 1) : false;
+  const linked = !lay.baked || lay.reach[0] === undefined ? true : null;   // a baked place's reach starts at its arrival tile: every way out must be joined to it
+  const joined = (x, y) => linked || lay.reach[y * lay.w + x] === 1;
+  if (w === "open") { if (!s.exits.length) out.push("open: no opening"); else if (!s.exitsAt.some(([x, y]) => joined(x, y))) out.push("open: opening not joined to the place"); if (s.stair) out.push("open: stair drawn"); if (s.lip) out.push("open: lip drawn"); }
+  else if (w === "stair") { if (!s.stair || !s.stairTiles) out.push("stair: not drawn"); else if (!stairExit) out.push("stair: not walkable"); else if (!joined(s.stair.entry.x, s.stair.entry.y)) out.push("stair: entry not joined to the place"); if (!s.lip) out.push("stair: no cliff either side"); }
+  else if (w === "cliff") { if (!s.lip) out.push("cliff: no lip"); if (lay.baked && s.exits.length) out.push("cliff: opening"); if (s.stair) out.push("cliff: stair drawn"); }
+  else if (w === "scree" || w === "bank") { if (!s.cross || !s.soft) out.push(w + ": no crossing"); else if (!joined(s.cross.entry.x, s.cross.entry.y)) out.push(w + ": crossing not joined to the place"); if (!s.lip) out.push(w + ": no lip"); }
+  else if (w === "water" || w === "wade") { if (s.waterShare < 0.5 && !(G.land[c] === L.WATER && s.wetTiles >= 4)) out.push(w + ": water not drawn"); if (lay.baked && s.exits.length) out.push(w + ": opening"); if (s.stair) out.push(w + ": stair drawn"); }
+  else if (w === "mapend") { if (lay.baked && s.exits.length) out.push("mapend: opening"); if (s.stair) out.push("mapend: stair drawn"); }
+  // Walk content B5 (every edge that refuses looks closed, and an open-looking edge never refuses), for a place in the open style (no wall of trees; a 24 x 28 baked place): the whole side, corners included.
+  if (lay.baked && lay.w === 24 && lay.h === 28) {
+    const along = dir === "up" || dir === "down" ? lay.w : lay.h, edge = [0, 1].flatMap(d => border(lay, dir, d).map(([i, k]) => ({ i, k, d })));
+    const rimmed = new Set(lay.rim || []);   // an open side's corner under the next side's band (a deep swimmer's water, a cliff's face) is that band, drawn as it, never an open-looking edge
+    const blockedEdge = edge.filter(e => T_BLOCK[lay.tiles[e.i]] && !rimmed.has(e.i));
+    if (w === "open" && blockedEdge.some(e => e.k >= 2 && e.k < along - 2)) out.push("open: an open-looking edge refuses a step");
+    if (w === "mapend") { const stamped = new Set((lay.closure ? lay.closure.patches : []).map(p => p.y * lay.w + p.x)); if (edge.some(e => !stamped.has(e.i))) out.push("mapend: the edge is not drawn closed (a thicket)"); }
+    if (w === "cliff") { for (const k of [0, 1]) if (border(lay, dir, k).some(([i]) => !T_BLOCK[lay.tiles[i]])) out.push("cliff: the edge rows are not closed"); }
+  }
+  return out;
+}
+
+// Every layout cell of a world: { cell, key } for the cells a place is built for (passable land and fords, islands left out).
+export function placeCells(G) { const out = []; for (let c = 0; c < MW * MH; c++) { if (G.island[c] || G.land[c] === L.CLIFF) continue; if (G.land[c] === L.WATER && G.ford[c] !== 1 && !(G.soft && G.soft.wade[c])) continue; out.push(c); } return out; }
+
+// The table: { 'kind': { baked, generated } } counters, and the first examples.
+export function newTally() { return { cells: 0, sides: 0, bad: 0, byKind: {}, examples: {} }; }
+export function tally(t, mm, tag, info) {
+  t.sides++;
+  for (const k of mm) { t.bad++; const key = k + " [" + tag + "]"; t.byKind[key] = (t.byKind[key] || 0) + 1; (t.examples[key] = t.examples[key] || []).length < 3 && t.examples[key].push(info); }
+}
+
+// Generator 7 on the generator's IR: the world's truth for each side of a land cell (the map's edge kind) against the ways in the cell holds. The cell's terrain is the land itself, so the views
+// agree when an open or stair side has a way in, and a cliff, water or map-end side has none. A side on a region's border is checked against the realm (the region beyond is the same land), and a
+// side the map cuts at a region's border is left out. Returns nothing; it counts into `t`.
+const DIR_OF = { up: "N", down: "S", left: "W", right: "E" };
+export function auditGen7(seed, t, { realm7, cellIR, softGround, bankEdges, ATLAS }) {
+  const R = realm7(seed);
+  for (const G of R.regions) {
+    G.soft = G.soft || softGround(G, seed); G.banks = G.banks || bankEdges(G, seed);
+    const [ax, ay] = G.slot;
+    for (const c of placeCells(G)) {
+      const X = ax * MW + (c % MW), Y = ay * MH + ((c / MW) | 0), ir = cellIR(seed, X, Y); t.cells++;
+      for (const dir of SIDES) {
+        const w = worldSide(G, c, dir), at = DIR_OF[dir], has = ir.openings.some(o => o.side === at), tag = "gen7", info = `seed ${seed} slot ${ax},${ay} cell ${c} ${dir}`;
+        const [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[dir], x = (c % MW) + dx, y = ((c / MW) | 0) + dy;
+        if ((x < 0 || y < 0 || x >= MW || y >= MH)) {   // a region's border: the realm decides, except at the map's own end
+          const nx = ax + (x < 0 ? -1 : x >= MW ? 1 : 0), ny = ay + (y < 0 ? -1 : y >= MH ? 1 : 0);
+          if (nx < 0 || ny < 0 || nx >= ATLAS || ny >= ATLAS) { tally(t, has ? ["mapend: opening"] : [], tag, info); }
+          continue;
+        }
+        const out = [];
+        if (w === "open" && !has) out.push("open: no opening");
+        else if (w === "stair" && !has) out.push("stair: no opening");
+        else if ((w === "cliff" || w === "scree" || w === "bank") && has && w === "cliff") out.push("cliff: opening");
+        else if (w === "water" && has && G.land[c] !== L.WATER) out.push("water: opening");
+        tally(t, out, tag, info);
+      }
+    }
+  }
+}
+
+// Generator 2 and 5 on the world alone (their places are generated).
+export function auditGenerated(G, seed, biome, t) {
+  for (const c of placeCells(G)) {
+    const lay = genPlaceOf(G, seed, c);
+    t.cells++;
+    for (const dir of SIDES) tally(t, sideMismatches(G, lay, c, dir), "generated", `seed ${seed} ${biome} gen ${G.gen} cell ${c} ${dir}`);
+  }
+}
+let genPlaceOf = null;
+export function setGenPlace(f) { genPlaceOf = f; }
+
+export function report(t, title) {
+  const lines = [`${title}: ${t.cells} cells, ${t.sides} sides, ${t.bad} mismatches`];
+  for (const k of Object.keys(t.byKind).sort()) lines.push(`  ${String(t.byKind[k]).padStart(6)}  ${k}   e.g. ${t.examples[k][0]}`);
+  return lines.join("\n");
+}

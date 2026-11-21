@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miniature Beasts: play</title>
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="../ui/tokens/out/tokens.css">
+<link rel="stylesheet" href="../ui/keys.css">
+<link rel="stylesheet" href="options/options.css">
+<style>
+/* The play page: the Station and the Companion as same-origin frames (stacked, or side by side when the window is wide), each with its key tray, the page's bar and the Dock control. Page chrome only; every device draws itself.
+   The faces and their shells are in lp: one lp is --f CSS px (shell.mjs sets it), so every edge lands on a whole physical pixel. The chrome (bar, keys, trays, text) is in CSS px. Colours are the Station's 14 (frame.json colours). */
+@font-face{font-family:"Inter";font-weight:500;src:url("../ui/fonts/inter/src/Inter-Medium-tnum.ttf") format("truetype");font-display:block}
+:root{color-scheme:dark; --f:1; --void:var(--mb-void); --bar:var(--mb-bar); --panel:var(--mb-panel); --hairline:var(--mb-hairline); --bevel:var(--mb-bevel); --ground:var(--mb-ground); --bone:var(--mb-bone); --fog:var(--mb-fog); --mist:var(--mb-mist); --stone:var(--mb-stone); --focus:var(--mb-focus); --mint:var(--mb-mint); --amber:var(--mb-amber)}   /* the page's short names read the tokens (../ui/tokens/out/tokens.css) */
+*{box-sizing:border-box}
+html,body{margin:0; height:100%; background:var(--void); color:var(--fog); font:500 16px/1 "Inter",system-ui,sans-serif; overflow:hidden}
+button{font:inherit; color:inherit; appearance:none; margin:0; cursor:pointer}
+#stage{position:fixed; left:0; right:0; top:0; bottom:0; overflow:clip}   /* the window under the bar: one device's panel centred, nothing scrolls (shell.mjs layout; the stage scrolls only for a size chosen larger than the window) */
+/* the devices, their keys and the bar are controls, not text: a long press never selects words or opens the browser's text menu (fields still take text) */
+#stage,#bar{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+#stage input,#stage textarea,#bar input,#bar textarea{-webkit-user-select:text; user-select:text}
+/* a frame's key cue (mb-keycue, shell.mjs keyCue): the one next step is this key; it rings until pressed and hops on ✓ (the Companion page's own .key.cue / .key.hop, walk-first-lines-1) */
+#rowStation[data-cue~="call"] .fk[data-id="call"],#rowCompanion[data-cue~="call"] .fk[data-id="call"]{outline:3px solid #f2c94c; outline-offset:3px; box-shadow:0 0 0 8px rgba(242,201,76,.35)}
+#rowStation[data-hop~="call"] .fk[data-id="call"],#rowCompanion[data-hop~="call"] .fk[data-id="call"]{animation:keyhop .45s ease-out 2}
+@keyframes keyhop{0%,100%{translate:0 0}40%{translate:0 -9px}}
+@media (prefers-reduced-motion:reduce){#rowStation .fk[data-id="call"],#rowCompanion .fk[data-id="call"]{animation:none !important}}
+#spacer{position:absolute; left:0; width:1px; height:1px; visibility:hidden}
+.abs{position:absolute}
+iframe{border:0; display:block; background:var(--void)}
+/* a device's panel (ui-play-layout-2): its screen and its keys on `panel`, a hairline edge, radius-12; the iframe stands inside at the screen's place */
+.shell{position:absolute; background:var(--panel); box-shadow:inset 0 0 0 1px var(--hairline); border-radius:var(--mb-radius-12)}
+.shell iframe{position:absolute}
+/* the key tray: a transparent box over the panel (under the screen upright; the whole panel on its side and on a laptop); only its keys take a touch */
+.row{position:absolute; z-index:3; pointer-events:none}
+.row .fkz,.row .fkpad{pointer-events:auto}
+#bar{position:fixed; left:0; top:0; right:0; height:52px; background:var(--bar); border-bottom:1px solid var(--hairline); z-index:20}
+.ctl{position:absolute; background:var(--ground); border:1px solid var(--hairline); border-radius:var(--mb-radius-6); color:var(--fog); padding:0; z-index:21; white-space:nowrap; overflow:hidden; text-align:center; font-size:var(--mb-size-web-14)}
+.ctl:hover{border-color:var(--bevel)}
+.ctl:active,.ctl.pressed{background:var(--void)}
+.ctl:active>*,.ctl.pressed>*{transform:translateY(1px)}
+.ctl:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+.ctl.on{background:var(--hairline); border-color:var(--bevel); color:var(--bone)}
+/* the device switch (options/src/switch.jsx, Radix Tabs): two equal halves; the one in view `panel` with `bone` words, the other `mist`; an amber dot after the label of the device out of view when it has news */
+.swtabs{position:absolute; z-index:21}
+.swlist{display:flex; width:100%; height:100%; background:var(--ground); box-shadow:inset 0 0 0 1px var(--hairline); border-radius:var(--mb-radius-8); overflow:hidden}
+.swtab{flex:1 1 0; min-width:0; height:100%; display:flex; align-items:center; justify-content:center; gap:var(--mb-space-8); background:none; border:0; border-radius:var(--mb-radius-8); color:var(--mist); font-size:var(--mb-size-web-14); white-space:nowrap; overflow:hidden}
+.swtab.on{background:var(--panel); color:var(--bone); box-shadow:inset 0 0 0 1px var(--bevel)}
+.swtab:focus-visible{outline:2px solid var(--focus); outline-offset:-2px}
+.swdot{flex:none; width:8px; height:8px; border-radius:50%; background:var(--amber)}
+#dockKey{text-align:left; display:flex; align-items:center; gap:8px; padding:0 12px; font-size:14px}
+#dockKey .mark{flex:none; width:16px; height:24px; image-rendering:pixelated}
+#dockKey .word{flex:1 1 auto; min-width:0; white-space:nowrap}   /* never an ellipsis: the words are picked by the width the key has (shell.mjs layoutDock) */
+#dockKey.markonly{justify-content:center; padding:0}
+#dockKey .hint{flex:none; color:var(--mist); font-size:12px}
+#dockKey.quiet{color:var(--mist)}
+#dockKey.lit{background:var(--amber); border-color:var(--amber); color:var(--void); animation:dockpulse 1.6s ease-in-out infinite}
+#dockKey.lit .hint{color:var(--void)}
+#dockKey.docked{background:var(--amber); border-color:var(--amber); color:var(--void)}
+#dockKey.docked .hint{color:var(--void)}
+@keyframes dockpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,168,63,.55)}50%{box-shadow:0 0 0 6px rgba(255,168,63,0)}}
+@media (prefers-reduced-motion:reduce){#dockKey.lit{animation:none}}
+#dockKey[aria-disabled="true"]{cursor:default; color:var(--stone)}
+#dockKey[aria-disabled="true"] .hint{color:var(--stone)}
+#dockKey[aria-disabled="true"]:hover{border-color:var(--hairline)}
+/* the Station's asleep note (the switch already says "Station · asleep"): the mark and one line, above the panel; on its side it takes the build line's place in the bar */
+#frameNotice{position:fixed; left:8px; right:8px; bottom:8px; z-index:40; padding:8px 12px; text-align:center; background:var(--bar); border:1px solid var(--hairline); border-radius:var(--mb-radius-8); color:var(--mist); font-size:14px; line-height:1.3; overflow-wrap:anywhere}   /* a frame's notice (save failed, page broke), said by the page where the frames' own lines are clipped */
+#frameNotice[hidden]{display:none}
+#pageBroke:not([hidden]){display:flex}
+#asleepStrip{position:absolute; display:flex; align-items:center; gap:10px; padding:0 12px; background:var(--bar); border:1px solid var(--hairline); border-radius:var(--mb-radius-8); color:var(--mist); font-size:12px; line-height:16px; z-index:3}
+#asleepStrip .art-slot{flex:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center}
+#asleepStrip .art-slot img{width:24px; height:16px; image-rendering:pixelated}
+#asleepBar{position:absolute; z-index:21; color:var(--mist); font-size:var(--mb-size-web-12); line-height:44px; text-align:right; white-space:nowrap; overflow:hidden; text-overflow:clip; pointer-events:none}
+#live{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.hidden{display:none !important}
+/* a phone: the bar holds the switch and Options only (everything else is in the Options panel) */
+body.phone #keysBtn,body.phone #devBtn,body.phone #zDown,body.phone #zFit,body.phone #zUp{display:none !important}
+body.phone iframe{image-rendering:pixelated}
+#fStation.pan{transition:transform 220ms ease-out, clip-path 220ms ease-out}   /* the Station's phone window slides to the focus (shell.mjs placeStation) */
+@media (prefers-reduced-motion: reduce){ #fStation.pan{transition:none} }
+.op-lede{padding:2px 0 var(--mb-space-8)}
+/* the dock's screen (options/src/docksheet.jsx, Radix Dialog): a small live picture of the e-paper in a button; opened, a bottom sheet with a scrim on a phone, centred on a laptop */
+.dsmini{display:block; background:#fff; width:92px; height:33px; margin:auto; image-rendering:auto}
+#dockScreenBtn{padding:0; display:flex; align-items:center; justify-content:center}
+#dockScreenBtn .dsdot{position:absolute; right:6px; top:6px; box-shadow:0 0 0 2px var(--ground)}
+.ds-overlay{position:fixed; inset:0; background:rgba(12,10,18,.6); z-index:40}
+.ds-sheet{position:fixed; z-index:41; left:50%; bottom:0; transform:translateX(-50%); width:min(100vw,480px); background:var(--bar); border:1px solid var(--hairline); border-bottom:0; border-radius:var(--mb-radius-12) var(--mb-radius-12) 0 0; padding:16px; display:flex; flex-direction:column; align-items:center; gap:16px; color:var(--fog)}
+.ds-sheet.ds-laptop{bottom:auto; top:50%; transform:translate(-50%,-50%); border:1px solid var(--hairline); border-radius:var(--mb-radius-12)}
+.ds-grab{width:40px; height:4px; border-radius:2px; background:var(--hairline)}
+.ds-sheet.ds-laptop .ds-grab{display:none}
+.dsbig{display:block; background:#fff; border-radius:var(--mb-radius-8)}
+.ds-lamps{display:flex; gap:24px; font-size:12px; line-height:16px; color:var(--mist)}
+.ds-lamp{display:flex; align-items:center; gap:8px}
+.dslamp{width:16px; height:16px; image-rendering:pixelated}
+.ds-done{align-self:flex-end}
+/* the Caddy's own canvas: kept off screen, drawn as the dock's e-paper and copied into the miniature and the sheet */
+#caddyHold{position:absolute; width:0; height:0; overflow:hidden}
+/* the Caddy's recovery print (sandbox): a card at the window's foot while a print waits: the print as the printer set it (1 dot = 1 CSS px, never smoothed), what it is, and the "I have it" button */
+#caddyPrint{position:fixed; left:50%; bottom:8px; transform:translateX(-50%); width:min(560px,calc(100vw - 32px)); max-height:calc(100vh - 68px); max-height:calc(100dvh - 68px); overflow:auto; overscroll-behavior:contain; background:var(--bar); border:1px solid var(--bevel); border-radius:var(--mb-radius-8); z-index:35; display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px; padding:12px; color:var(--fog)}
+#printImg{display:block; flex:none; image-rendering:pixelated; background:#fff; max-width:100%}
+#printText{flex:1 1 200px; min-width:0; display:flex; flex-direction:column; gap:10px}
+#printText p{margin:0; font-size:14px; line-height:20px}
+#printHead{color:var(--bone)}
+#printNote{color:var(--fog)}
+#printStatus{color:var(--amber); min-height:20px}
+#printTaken{align-self:flex-start; height:44px; padding:0 24px; background:var(--ground); border:1px solid var(--hairline); border-radius:6px; color:var(--bone); font-size:16px}
+@media (max-height:479px){#caddyPrint{width:min(820px,calc(100vw - 32px)); flex-wrap:nowrap}#printText{position:sticky; top:0}}
+#printTaken:hover{border-color:var(--bevel)}
+#printTaken:active{background:var(--void)}
+#printTaken:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+#printTaken[aria-disabled="true"]{color:var(--stone); cursor:default}
+#devCaddy{padding:0 0 8px}
+#devCaddy label{display:flex; gap:8px; align-items:center; margin:4px 0; font-size:14px}
+/* the developer drawer or column: the Station's own panel, restyled in the Station palette */
+#dev{position:fixed; background:var(--bar); border:1px solid var(--hairline); z-index:15; padding:16px; overflow:auto; color:var(--fog); --panel:#23292f; --line:#3d434b; --ink:#c6c4d8; --muted:#8d8aa6; --chip:#1d232b; --bg-2:#1d232b}
+#dev.column{border-radius:8px}
+#dev .dev-group{border-top:1px solid var(--line); padding:6px 0}
+#dev .dev-group summary{cursor:pointer; font:500 15px/1.4 system-ui,sans-serif}
+#dev .dev-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0; font-size:14px}
+#dev .dev-row input[type=number]{width:80px} #dev .dev-row textarea{width:min(520px,100%); font:12px/1.4 ui-monospace,Menlo,Consolas,monospace}
+#dev .dev-row select,#dev .dev-row input{font:inherit; color:inherit; background:var(--chip); border:1px solid var(--line); border-radius:6px; padding:3px 6px}
+#dev .dev-note{margin:4px 0 2px; color:var(--muted); font-size:13px}
+#dev .dev-lede{margin:0 0 8px; color:var(--muted); font-size:13px}
+#dev button{background:var(--chip); color:var(--ink); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font:14px system-ui,sans-serif}
+#devStationOut{font:12.5px/1.45 ui-monospace,Menlo,Consolas,monospace; background:var(--bg-2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; white-space:pre-wrap; color:var(--ink); max-height:320px; overflow:auto; margin:8px 0 0}
+#observer{margin:12px 0 0; color:var(--mist); font-size:12px; line-height:1.4}
+/* Keys ? */
+#keysPanel{position:fixed; background:var(--bar); border:1px solid var(--hairline); border-radius:8px; z-index:30; padding:16px; overflow:auto; color:var(--fog)}
+#keysPanel h2{margin:0 0 6px; font-weight:500; font-size:16px; color:var(--bone)}
+#keysPanel p{margin:0 0 10px; color:var(--mist); font-size:12px}
+#keysPanel h3{margin:10px 0 4px; font-weight:500; font-size:12px; color:var(--bone)}
+#keysPanel dl{margin:0; display:grid; grid-template-columns:max-content 1fr; gap:2px 12px; font-size:12px}
+#keysPanel dt{color:var(--mist)} #keysPanel dd{margin:0}
+/* the build stamp: page chrome in the page's bottom margin, right-aligned to the content, under every block */
+#stamp{position:fixed; z-index:21; color:var(--mist); font-size:var(--mb-size-web-12); line-height:12px; text-align:right; white-space:nowrap; pointer-events:none; display:flex; align-items:center; justify-content:flex-end}
+#zDown[aria-disabled="true"],#zUp[aria-disabled="true"]{color:var(--stone); cursor:default}
+.notectl .hint{margin-left:8px; color:var(--mist); font-size:12px}
+#recBox{color:var(--bone); display:flex; align-items:center; justify-content:center; gap:8px; cursor:default}
+#recBox .cap{color:var(--mist); font-size:12px}
+#recBox::before{content:""; width:9px; height:9px; border-radius:50%; background:#ff6a4d; flex:none}
+body.phone .notectl,.notectl.corner{position:fixed; z-index:25}
+#noteToast{position:fixed; z-index:30; left:50%; top:48px; transform:translateX(-50%); background:var(--bar); border:1px solid var(--bevel); border-radius:6px; padding:8px 14px; font-size:14px; color:var(--bone); pointer-events:none; max-width:calc(100vw - 24px)}
+.shell.flashnote{box-shadow:0 0 0 3px var(--mint), inset 0 0 0 1px var(--hairline)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="shell" id="shStation"><iframe id="fStation" title="Station screen" allow="" loading="eager"></iframe></div>
+  <div class="row" id="rowStation"></div>
+  <div class="shell" id="shCompanion"><iframe id="fCompanion" title="Companion screen" allow="" loading="eager"></iframe></div>
+  <div class="row" id="rowCompanion"></div>
+  <!-- the Dock / Lift key (first-ten-front A2): one row under the panel upright, the right key column's foot otherwise; quiet, lit or docked. [art] its mark: today's frame-companion-outline-16x24 until the art director rules -->
+  <div id="dockRoot"></div>   <!-- the Dock key (a Radix Toggle, mounted here as #dockKey by options/src/keytray.jsx) -->
+  <div id="dockScreenRoot"></div>   <!-- the dock's-screen button and its sheet (a Radix Dialog; options/src/docksheet.jsx) -->
+  <!-- the asleep Station (A1): until the first pod is home the Station's panel carries this note above it. [art] slot station-asleep-24 (the mark; empty until the art director rules) -->
+  <div id="frameNotice" role="alert" hidden></div>
+  <div id="asleepStrip" class="hidden" role="status"><span class="art-slot" data-art="station-asleep-24"><img src="../ui/assets/masters/pods/mark-asleep-24x16.png" alt=""></span><span class="aw">It wakes when your first pod comes home.</span></div>
+  <div id="caddyHold" aria-hidden="true"><canvas id="caddyView" width="792" height="272"></canvas></div>
+  <div id="caddyPrint" class="hidden" role="group" aria-labelledby="printHead"><img id="printImg" alt="Your recovery key, as the dock printed it"><div id="printText"><p id="printHead">The dock printed your recovery key</p><p id="printNote">Keep the paper somewhere safe. The dock prints it only once.</p><button type="button" id="printTaken">I have it</button><p id="printStatus" role="status"></p></div></div>
+  <div id="spacer"></div>
+</div>
+  <div id="dev" class="hidden"><div id="devCaddy"><p class="dev-lede">The dock's problems</p><label><input type="checkbox" id="sw-silent"> Companion silent (the Companion holds back its word)</label><label><input type="checkbox" id="sw-quiet"> Station quiet (the Station's link drops)</label><label><input type="checkbox" id="sw-fault"> Dock fault (the dock refuses writes)</label></div><div id="devStation"></div><pre id="devStationOut" hidden></pre><p id="observer">The Companion's Observer is on its own page.<br>Open it there, but play on one page at a time.</p></div>
+<div id="bar">
+  <div id="asleepBar" class="hidden">It wakes when your first pod comes home.</div>   <!-- the asleep note on a phone's side: in the build line's place in the bar -->
+  <div id="stamp" class="hidden">build local</div>   <!-- the build line: the phone's foot, the bar before Options (on its side) or the bar's left end (laptop): shell.mjs places it -->
+  <div id="switchRoot"></div> <!-- the device switch (Radix Tabs; options/src/switch.jsx): Companion, then Station -->
+  <button type="button" class="ctl" id="optionsBtn" aria-haspopup="dialog" title="Playtest waits, developer tools, Start fresh and more">Options</button>
+  <button type="button" class="ctl hidden notectl" id="noteBtn"></button>
+  <button type="button" class="ctl hidden notectl" id="shotBtn"><span id="shotWord"></span><span class="hint" id="shotHint"></span></button>
+  <span class="ctl hidden notectl" id="recBox" role="status"><span id="recWord"></span><span class="cap" id="recCap"></span></span>
+  <button type="button" class="ctl hidden notectl" id="recStop"></button>
+  <button type="button" class="ctl" id="keysBtn">Keys ?</button>
+  <button type="button" class="ctl hidden" id="zDown" aria-label="Smaller" title="Smaller (−)">−</button>
+  <button type="button" class="ctl hidden" id="zFit" aria-pressed="true">fit</button>
+  <button type="button" class="ctl hidden" id="zUp" aria-label="Larger" title="Larger (+)">+</button>
+  <button type="button" class="ctl hidden" id="devBtn" aria-pressed="false">Developer tools</button>
+  <div id="live" aria-live="polite"></div>
+</div>
+<div id="optionsRoot"></div>
+<div id="noteToast" class="hidden" role="status"></div>
+<div id="keysPanel" class="hidden" role="dialog" aria-label="Keys">
+  <h2>Keys</h2>
+  <p>Only the device with the keys hears them. Shift keys belong to the page.</p>
+  <h3>Page (any device, not while typing)</h3>
+  <dl><dt>`</dt><dd>Next device</dd><dt>Shift+`</dt><dd>Previous device</dd><dt>Shift+D</dt><dd>Dock or lift the Companion</dd><dt>Shift+N</dt><dd>Add the whole screen to the note</dd><dt class="hidden" id="helpDevK">Shift+T</dt><dd class="hidden" id="helpDevD">Developer tools</dd><dt>Shift+/ (?)</dt><dd>This panel; Esc or ? closes it</dd><dt class="hidden" id="helpZK">− and = (+)</dt><dd class="hidden" id="helpZD">Smaller and larger (whole pixels); the size control's fit undoes them</dd></dl>
+  <h3>Station</h3>
+  <dl><dt>← ↑ → ↓</dt><dd>Move the ring</dd><dt>Enter, Space</dt><dd>✓, what the bottom line names</dd><dt>Esc, Backspace</dt><dd>← Back one view</dd><dt>C</dt><dd>))) Call: what needs you, and what each key does</dd><dt>H</dt><dd>Home; Home again: rest</dd><dt>R</dt><dd>Pods</dd><dt>B</dt><dd>Vivarium</dd><dt>L</dt><dd>Library</dd></dl>
+  <h3>Companion</h3>
+  <dl><dt>← ↑ → ↓ or W A S D</dt><dd>Tap to step, hold to walk</dd><dt>Enter, Space</dt><dd>✓ Confirm</dd><dt>Esc, Backspace</dt><dd>← Back</dd><dt>C</dt><dd>))) Call; hold to look around</dd></dl>
+</div>
+<p id="pageBroke" hidden style="position:fixed; left:0; right:0; top:52px; bottom:0; margin:0; padding:0 16px; align-items:center; justify-content:center; text-align:center; font:500 16px/1.4 'Inter',system-ui,sans-serif; color:var(--fog); z-index:50"></p>
+<style>html.pagebroke #bar .ctl, html.pagebroke #switchRoot, html.pagebroke #stamp{display:none !important}</style>
+<script>
+// The page itself cannot start (the shell module or one it imports did not load): one plain line with the build, in this page's own DOM, no frame needed. Once the shell runs it
+// sets window.__mbShell and the line stays hidden. "build local" with no build.json.
+(function () { var el = document.getElementById('pageBroke');
+  function show() { if (window.__mbShell) return;
+    fetch('../../build.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (b) { if (window.__mbShell) return; document.documentElement.classList.add('pagebroke'); el.hidden = false; el.textContent = 'build ' + (b.short || String(b.commit || '').slice(0, 7) || 'local'); }); }
+  addEventListener('error', function (e) { if (e.target && e.target.tagName === 'SCRIPT') show(); }, true); })();
+</script>
+<script type="module" src="src/shell.mjs"></script>
+</body>
+</html>

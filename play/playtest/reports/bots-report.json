@@ -1,0 +1,2946 @@
+{
+ "meta": {
+  "games": 6,
+  "turns": 12,
+  "presses": 800,
+  "economy": "strict",
+  "face": "native",
+  "seed0": 1,
+  "policies": [
+   "greedy",
+   "hoarder",
+   "speedrunner"
+  ],
+  "playtest": true,
+  "turnMinutes": 20,
+  "trips": "stub",
+  "stub": "stub trips: Energy 2-4, Data 4-12, Essence 1-3, 0-2 pods of Loika/Tuikis/Untuva a trip, about 1 (assumed, not measured)"
+ },
+ "policies": {
+  "greedy": {
+   "policy": "greedy",
+   "games": 6,
+   "finished": 6,
+   "crashed": [],
+   "presses": {
+    "min": 1812,
+    "median": 2263.5,
+    "max": 2430
+   },
+   "hatched": {
+    "min": 7,
+    "median": 9.5,
+    "max": 10
+   },
+   "firstHatch": {
+    "reached": 6,
+    "of": 6,
+    "turn": {
+     "min": 1,
+     "median": 1,
+     "max": 3
+    },
+    "minutes": {
+     "min": 0,
+     "median": 5,
+     "max": 40
+    },
+    "presses": {
+     "min": 31,
+     "median": 32.5,
+     "max": 92
+    }
+   },
+   "firstElder": {
+    "reached": 6,
+    "of": 6,
+    "turn": {
+     "min": 6,
+     "median": 6,
+     "max": 8
+    },
+    "minutes": {
+     "min": 160,
+     "median": 192.5,
+     "max": 280
+    },
+    "presses": {
+     "min": 639,
+     "median": 681.5,
+     "max": 826
+    }
+   },
+   "loop": {
+    "finished": 6,
+    "of": 6,
+    "steps": {
+     "read": 6,
+     "grown": 6,
+     "hatched": 6,
+     "care": 6,
+     "crossed": 6,
+     "crossHatched": 6,
+     "out": 6
+    },
+    "stoppedAt": {},
+    "turn": {
+     "min": 4,
+     "median": 5,
+     "max": 10
+    },
+    "presses": {
+     "min": 240,
+     "median": 387.5,
+     "max": 1437
+    },
+    "playMinutes": {
+     "min": 6,
+     "median": 9.7,
+     "max": 35.9
+    },
+    "sat": 0,
+    "sittingOpened": 0,
+    "roomAdded": 5,
+    "outAny": 6
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 2,
+      "mean": 3.5,
+      "min": 1,
+      "max": 5
+     },
+     {
+      "turn": 3,
+      "mean": 5.67,
+      "min": 3,
+      "max": 8
+     },
+     {
+      "turn": 4,
+      "mean": 7,
+      "min": 5,
+      "max": 8
+     },
+     {
+      "turn": 5,
+      "mean": 8.17,
+      "min": 5,
+      "max": 10
+     },
+     {
+      "turn": 6,
+      "mean": 7.83,
+      "min": 0,
+      "max": 12
+     },
+     {
+      "turn": 7,
+      "mean": 9.67,
+      "min": 4,
+      "max": 12
+     },
+     {
+      "turn": 8,
+      "mean": 11,
+      "min": 6,
+      "max": 14
+     },
+     {
+      "turn": 9,
+      "mean": 11.17,
+      "min": 6,
+      "max": 16
+     },
+     {
+      "turn": 10,
+      "mean": 11.67,
+      "min": 7,
+      "max": 18
+     },
+     {
+      "turn": 11,
+      "mean": 13,
+      "min": 8,
+      "max": 22
+     },
+     {
+      "turn": 12,
+      "mean": 9.67,
+      "min": 2,
+      "max": 19
+     }
+    ],
+    "peak": 22,
+    "shareOver20": 0.014
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 4.83,
+      "min": 2,
+      "max": 9
+     },
+     {
+      "turn": 2,
+      "mean": 8.17,
+      "min": 0,
+      "max": 19
+     },
+     {
+      "turn": 3,
+      "mean": 15.67,
+      "min": 1,
+      "max": 32
+     },
+     {
+      "turn": 4,
+      "mean": 16.17,
+      "min": 0,
+      "max": 40
+     },
+     {
+      "turn": 5,
+      "mean": 9.67,
+      "min": 0,
+      "max": 20
+     },
+     {
+      "turn": 6,
+      "mean": 4,
+      "min": 0,
+      "max": 18
+     },
+     {
+      "turn": 7,
+      "mean": 0.33,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 8,
+      "mean": 0,
+      "min": 0,
+      "max": 0
+     },
+     {
+      "turn": 9,
+      "mean": 1,
+      "min": 0,
+      "max": 5
+     },
+     {
+      "turn": 10,
+      "mean": 0.33,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 11,
+      "mean": 0.33,
+      "min": 0,
+      "max": 1
+     },
+     {
+      "turn": 12,
+      "mean": 1,
+      "min": 0,
+      "max": 6
+     }
+    ],
+    "peak": 40,
+    "shareOver20": 0.056
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 0.83,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 2,
+      "mean": 1.83,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 3,
+      "mean": 1.5,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 4,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 5,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 6,
+      "mean": 0.83,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 7,
+      "mean": 0.67,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 8,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 9,
+      "mean": 1.17,
+      "min": 1,
+      "max": 2
+     },
+     {
+      "turn": 10,
+      "mean": 1,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 11,
+      "mean": 1.17,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 12,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     }
+    ],
+    "peak": 3,
+    "shareOver20": 0
+   },
+   "pods": {
+    "received": 71,
+    "trips": 72,
+    "perTrip": 0.99,
+    "neverRead": 43,
+    "neverReadShare": 0.606,
+    "grown": 21,
+    "letGo": 0,
+    "heldAtEnd": {
+     "min": 4,
+     "median": 8,
+     "max": 12
+    },
+    "heldPeak": 12
+   },
+   "stuck": {
+    "games": 0,
+    "total": 0,
+    "byKind": {},
+    "byPlace": {},
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "bench",
+     "cargo",
+     "cargo.arrival",
+     "cargo.bay",
+     "cargo.end",
+     "cargo.opening",
+     "create",
+     "cross",
+     "habitat",
+     "home",
+     "incubator",
+     "pods",
+     "pods.inventory",
+     "pods.read",
+     "vivarium"
+    ],
+    "neverReached": [
+     "library",
+     "library.species",
+     "library.family",
+     "sitting",
+     "settings"
+    ]
+   }
+  },
+  "hoarder": {
+   "policy": "hoarder",
+   "games": 6,
+   "finished": 6,
+   "crashed": [],
+   "presses": {
+    "min": 1373,
+    "median": 1480,
+    "max": 1799
+   },
+   "hatched": {
+    "min": 8,
+    "median": 10,
+    "max": 11
+   },
+   "firstHatch": {
+    "reached": 6,
+    "of": 6,
+    "turn": {
+     "min": 1,
+     "median": 1,
+     "max": 3
+    },
+    "minutes": {
+     "min": 5,
+     "median": 5,
+     "max": 45
+    },
+    "presses": {
+     "min": 31,
+     "median": 33,
+     "max": 89
+    }
+   },
+   "firstElder": {
+    "reached": 6,
+    "of": 6,
+    "turn": {
+     "min": 6,
+     "median": 6,
+     "max": 8
+    },
+    "minutes": {
+     "min": 165,
+     "median": 195,
+     "max": 285
+    },
+    "presses": {
+     "min": 462,
+     "median": 563.5,
+     "max": 659
+    }
+   },
+   "loop": {
+    "finished": 6,
+    "of": 6,
+    "steps": {
+     "read": 6,
+     "grown": 6,
+     "hatched": 6,
+     "care": 6,
+     "crossed": 6,
+     "crossHatched": 6,
+     "out": 6
+    },
+    "stoppedAt": {},
+    "turn": {
+     "min": 3,
+     "median": 5,
+     "max": 8
+    },
+    "presses": {
+     "min": 204,
+     "median": 311,
+     "max": 758
+    },
+    "playMinutes": {
+     "min": 5.1,
+     "median": 7.75,
+     "max": 18.9
+    },
+    "sat": 0,
+    "sittingOpened": 0,
+    "roomAdded": 6,
+    "outAny": 6
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 2,
+      "mean": 2.83,
+      "min": 1,
+      "max": 5
+     },
+     {
+      "turn": 3,
+      "mean": 5,
+      "min": 3,
+      "max": 8
+     },
+     {
+      "turn": 4,
+      "mean": 6.67,
+      "min": 4,
+      "max": 8
+     },
+     {
+      "turn": 5,
+      "mean": 7.17,
+      "min": 4,
+      "max": 10
+     },
+     {
+      "turn": 6,
+      "mean": 9.17,
+      "min": 4,
+      "max": 12
+     },
+     {
+      "turn": 7,
+      "mean": 11,
+      "min": 6,
+      "max": 14
+     },
+     {
+      "turn": 8,
+      "mean": 11.33,
+      "min": 4,
+      "max": 14
+     },
+     {
+      "turn": 9,
+      "mean": 11.17,
+      "min": 4,
+      "max": 16
+     },
+     {
+      "turn": 10,
+      "mean": 12.33,
+      "min": 8,
+      "max": 18
+     },
+     {
+      "turn": 11,
+      "mean": 13.33,
+      "min": 10,
+      "max": 22
+     },
+     {
+      "turn": 12,
+      "mean": 13.67,
+      "min": 11,
+      "max": 19
+     }
+    ],
+    "peak": 22,
+    "shareOver20": 0.014
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 4.83,
+      "min": 2,
+      "max": 9
+     },
+     {
+      "turn": 2,
+      "mean": 14,
+      "min": 10,
+      "max": 20
+     },
+     {
+      "turn": 3,
+      "mean": 24,
+      "min": 18,
+      "max": 32
+     },
+     {
+      "turn": 4,
+      "mean": 33.33,
+      "min": 25,
+      "max": 41
+     },
+     {
+      "turn": 5,
+      "mean": 41.17,
+      "min": 35,
+      "max": 50
+     },
+     {
+      "turn": 6,
+      "mean": 48.33,
+      "min": 39,
+      "max": 58
+     },
+     {
+      "turn": 7,
+      "mean": 59,
+      "min": 48,
+      "max": 70
+     },
+     {
+      "turn": 8,
+      "mean": 68.5,
+      "min": 56,
+      "max": 79
+     },
+     {
+      "turn": 9,
+      "mean": 78.83,
+      "min": 69,
+      "max": 92
+     },
+     {
+      "turn": 10,
+      "mean": 88,
+      "min": 75,
+      "max": 97
+     },
+     {
+      "turn": 11,
+      "mean": 97.67,
+      "min": 88,
+      "max": 111
+     },
+     {
+      "turn": 12,
+      "mean": 107.5,
+      "min": 97,
+      "max": 120
+     }
+    ],
+    "peak": 120,
+    "shareOver20": 0.806
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.83,
+      "min": 1,
+      "max": 3
+     },
+     {
+      "turn": 2,
+      "mean": 1.5,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 3,
+      "mean": 2,
+      "min": 0,
+      "max": 6
+     },
+     {
+      "turn": 4,
+      "mean": 2.33,
+      "min": 0,
+      "max": 5
+     },
+     {
+      "turn": 5,
+      "mean": 1,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 6,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 7,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 8,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 9,
+      "mean": 1,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 10,
+      "mean": 0.83,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 11,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 12,
+      "mean": 1.17,
+      "min": 0,
+      "max": 2
+     }
+    ],
+    "peak": 6,
+    "shareOver20": 0
+   },
+   "pods": {
+    "received": 71,
+    "trips": 72,
+    "perTrip": 0.99,
+    "neverRead": 71,
+    "neverReadShare": 1,
+    "grown": 22,
+    "letGo": 0,
+    "heldAtEnd": {
+     "min": 4,
+     "median": 7.5,
+     "max": 12
+    },
+    "heldPeak": 12
+   },
+   "stuck": {
+    "games": 0,
+    "total": 0,
+    "byKind": {},
+    "byPlace": {},
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "cargo",
+     "cargo.arrival",
+     "cargo.bay",
+     "cargo.end",
+     "cargo.opening",
+     "create",
+     "cross",
+     "habitat",
+     "home",
+     "incubator",
+     "pods",
+     "pods.inventory",
+     "pods.read",
+     "vivarium"
+    ],
+    "neverReached": [
+     "library",
+     "library.species",
+     "library.family",
+     "bench",
+     "sitting",
+     "settings"
+    ]
+   }
+  },
+  "speedrunner": {
+   "policy": "speedrunner",
+   "games": 6,
+   "finished": 6,
+   "crashed": [],
+   "presses": {
+    "min": 1127,
+    "median": 1444,
+    "max": 1707
+   },
+   "hatched": {
+    "min": 7,
+    "median": 9.5,
+    "max": 10
+   },
+   "firstHatch": {
+    "reached": 6,
+    "of": 6,
+    "turn": {
+     "min": 1,
+     "median": 1,
+     "max": 3
+    },
+    "minutes": {
+     "min": 0,
+     "median": 5,
+     "max": 40
+    },
+    "presses": {
+     "min": 31,
+     "median": 32.5,
+     "max": 88
+    }
+   },
+   "firstElder": {
+    "reached": 6,
+    "of": 6,
+    "turn": {
+     "min": 6,
+     "median": 6,
+     "max": 8
+    },
+    "minutes": {
+     "min": 160,
+     "median": 192.5,
+     "max": 280
+    },
+    "presses": {
+     "min": 446,
+     "median": 505.5,
+     "max": 640
+    }
+   },
+   "loop": {
+    "finished": 6,
+    "of": 6,
+    "steps": {
+     "read": 6,
+     "grown": 6,
+     "hatched": 6,
+     "care": 6,
+     "crossed": 6,
+     "crossHatched": 6,
+     "out": 6
+    },
+    "stoppedAt": {},
+    "turn": {
+     "min": 3,
+     "median": 5,
+     "max": 10
+    },
+    "presses": {
+     "min": 198,
+     "median": 307.5,
+     "max": 888
+    },
+    "playMinutes": {
+     "min": 5,
+     "median": 7.699999999999999,
+     "max": 22.2
+    },
+    "sat": 0,
+    "sittingOpened": 0,
+    "roomAdded": 5,
+    "outAny": 6
+   },
+   "energy": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 2,
+      "mean": 3.5,
+      "min": 1,
+      "max": 5
+     },
+     {
+      "turn": 3,
+      "mean": 5.67,
+      "min": 3,
+      "max": 8
+     },
+     {
+      "turn": 4,
+      "mean": 7,
+      "min": 5,
+      "max": 8
+     },
+     {
+      "turn": 5,
+      "mean": 8.17,
+      "min": 5,
+      "max": 10
+     },
+     {
+      "turn": 6,
+      "mean": 9.83,
+      "min": 6,
+      "max": 12
+     },
+     {
+      "turn": 7,
+      "mean": 11.67,
+      "min": 8,
+      "max": 16
+     },
+     {
+      "turn": 8,
+      "mean": 13,
+      "min": 10,
+      "max": 18
+     },
+     {
+      "turn": 9,
+      "mean": 13.17,
+      "min": 6,
+      "max": 19
+     },
+     {
+      "turn": 10,
+      "mean": 13.67,
+      "min": 10,
+      "max": 19
+     },
+     {
+      "turn": 11,
+      "mean": 15,
+      "min": 10,
+      "max": 22
+     },
+     {
+      "turn": 12,
+      "mean": 15.67,
+      "min": 11,
+      "max": 21
+     }
+    ],
+    "peak": 22,
+    "shareOver20": 0.028
+   },
+   "data": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 4.83,
+      "min": 2,
+      "max": 9
+     },
+     {
+      "turn": 2,
+      "mean": 14,
+      "min": 10,
+      "max": 20
+     },
+     {
+      "turn": 3,
+      "mean": 24.5,
+      "min": 18,
+      "max": 32
+     },
+     {
+      "turn": 4,
+      "mean": 33.67,
+      "min": 25,
+      "max": 42
+     },
+     {
+      "turn": 5,
+      "mean": 41.33,
+      "min": 35,
+      "max": 50
+     },
+     {
+      "turn": 6,
+      "mean": 49,
+      "min": 40,
+      "max": 59
+     },
+     {
+      "turn": 7,
+      "mean": 59.5,
+      "min": 49,
+      "max": 71
+     },
+     {
+      "turn": 8,
+      "mean": 69.17,
+      "min": 57,
+      "max": 80
+     },
+     {
+      "turn": 9,
+      "mean": 79.67,
+      "min": 70,
+      "max": 93
+     },
+     {
+      "turn": 10,
+      "mean": 88.33,
+      "min": 76,
+      "max": 98
+     },
+     {
+      "turn": 11,
+      "mean": 98.17,
+      "min": 90,
+      "max": 112
+     },
+     {
+      "turn": 12,
+      "mean": 108.67,
+      "min": 101,
+      "max": 121
+     }
+    ],
+    "peak": 121,
+    "shareOver20": 0.819
+   },
+   "essence": {
+    "byTurn": [
+     {
+      "turn": 1,
+      "mean": 0.83,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 2,
+      "mean": 1.83,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 3,
+      "mean": 1.5,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 4,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 5,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 6,
+      "mean": 0.83,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 7,
+      "mean": 0.67,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 8,
+      "mean": 1.17,
+      "min": 0,
+      "max": 3
+     },
+     {
+      "turn": 9,
+      "mean": 1.17,
+      "min": 1,
+      "max": 2
+     },
+     {
+      "turn": 10,
+      "mean": 1,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 11,
+      "mean": 1.17,
+      "min": 0,
+      "max": 2
+     },
+     {
+      "turn": 12,
+      "mean": 1.33,
+      "min": 0,
+      "max": 3
+     }
+    ],
+    "peak": 3,
+    "shareOver20": 0
+   },
+   "pods": {
+    "received": 71,
+    "trips": 72,
+    "perTrip": 0.99,
+    "neverRead": 71,
+    "neverReadShare": 1,
+    "grown": 21,
+    "letGo": 0,
+    "heldAtEnd": {
+     "min": 4,
+     "median": 8,
+     "max": 12
+    },
+    "heldPeak": 12
+   },
+   "stuck": {
+    "games": 0,
+    "total": 0,
+    "byKind": {},
+    "byPlace": {},
+    "softLocks": []
+   },
+   "screens": {
+    "reached": [
+     "cargo",
+     "cargo.arrival",
+     "cargo.bay",
+     "cargo.end",
+     "cargo.opening",
+     "create",
+     "cross",
+     "habitat",
+     "home",
+     "incubator",
+     "pods",
+     "pods.inventory",
+     "pods.read",
+     "vivarium"
+    ],
+    "neverReached": [
+     "library",
+     "library.species",
+     "library.family",
+     "bench",
+     "sitting",
+     "settings"
+    ]
+   }
+  }
+ },
+ "screensNeverReached": [
+  "library",
+  "library.species",
+  "library.family",
+  "sitting",
+  "settings"
+ ],
+ "games": [
+  {
+   "policy": "greedy",
+   "seed": 1,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 2281,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 705,
+    "minutes": 185
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 6,
+    "pods": 847,
+    "pods.inventory": 223,
+    "home": 208,
+    "pods.read": 624,
+    "incubator": 67,
+    "vivarium": 209,
+    "create": 8,
+    "habitat": 900,
+    "cargo.end": 6,
+    "cargo.bay": 12,
+    "cross": 6
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 58,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 80,
+     "minutes": 25
+    },
+    "read": {
+     "turn": 2,
+     "press": 117,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 7,
+     "press": 750,
+     "minutes": 185
+    },
+    "crossed": {
+     "turn": 7,
+     "press": 751,
+     "minutes": 185
+    },
+    "crossHatched": {
+     "turn": 7,
+     "press": 753,
+     "minutes": 205
+    },
+    "out": {
+     "turn": 7,
+     "press": 900,
+     "minutes": 205
+    },
+    "roomAdded": {
+     "turn": 10,
+     "press": 1458,
+     "minutes": 325
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 15,
+    "neverRead": 9,
+    "heldEnd": 11
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "greedy",
+   "seed": 2,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1812,
+   "minutes": 360,
+   "firstHatch": {
+    "turn": 1,
+    "press": 34,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 690,
+    "minutes": 160
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.end": 3,
+    "pods": 704,
+    "pods.inventory": 197,
+    "home": 208,
+    "pods.read": 507,
+    "incubator": 57,
+    "vivarium": 125,
+    "create": 8,
+    "habitat": 666,
+    "cargo.opening": 9,
+    "cargo.bay": 12,
+    "bench": 5,
+    "cross": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 33,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 34,
+     "minutes": 0
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 62,
+     "minutes": 0
+    },
+    "care": {
+     "turn": 2,
+     "press": 81,
+     "minutes": 20
+    },
+    "read": {
+     "turn": 2,
+     "press": 116,
+     "minutes": 20
+    },
+    "crossOpened": {
+     "turn": 10,
+     "press": 1289,
+     "minutes": 240
+    },
+    "crossed": {
+     "turn": 10,
+     "press": 1290,
+     "minutes": 240
+    },
+    "crossHatched": {
+     "turn": 10,
+     "press": 1292,
+     "minutes": 260
+    },
+    "out": {
+     "turn": 10,
+     "press": 1437,
+     "minutes": 260
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 12,
+    "neverRead": 5,
+    "heldEnd": 8
+   },
+   "hatched": 7,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "greedy",
+   "seed": 3,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 2246,
+   "minutes": 400,
+   "firstHatch": {
+    "turn": 1,
+    "press": 34,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 673,
+    "minutes": 200
+   },
+   "screens": {
+    "cargo": 40,
+    "cargo.arrival": 12,
+    "cargo.end": 3,
+    "pods": 531,
+    "pods.inventory": 165,
+    "home": 205,
+    "pods.read": 366,
+    "incubator": 65,
+    "vivarium": 254,
+    "create": 6,
+    "habitat": 1139,
+    "cargo.opening": 9,
+    "cargo.bay": 16,
+    "cross": 6
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 33,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 34,
+     "minutes": 0
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 62,
+     "minutes": 0
+    },
+    "care": {
+     "turn": 2,
+     "press": 81,
+     "minutes": 20
+    },
+    "read": {
+     "turn": 2,
+     "press": 116,
+     "minutes": 20
+    },
+    "crossOpened": {
+     "turn": 4,
+     "press": 275,
+     "minutes": 80
+    },
+    "crossed": {
+     "turn": 4,
+     "press": 276,
+     "minutes": 80
+    },
+    "crossHatched": {
+     "turn": 4,
+     "press": 278,
+     "minutes": 100
+    },
+    "out": {
+     "turn": 4,
+     "press": 348,
+     "minutes": 100
+    },
+    "roomAdded": {
+     "turn": 9,
+     "press": 1383,
+     "minutes": 300
+    }
+   },
+   "pods": {
+    "grown": 3,
+    "letGo": 0,
+    "received": 11,
+    "neverRead": 8,
+    "heldEnd": 8
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "greedy",
+   "seed": 4,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 2319,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 667,
+    "minutes": 205
+   },
+   "screens": {
+    "cargo": 48,
+    "cargo.arrival": 12,
+    "cargo.opening": 10,
+    "pods": 556,
+    "pods.inventory": 156,
+    "home": 206,
+    "pods.read": 400,
+    "incubator": 64,
+    "vivarium": 275,
+    "create": 8,
+    "habitat": 1149,
+    "cargo.bay": 24,
+    "cross": 8,
+    "cargo.end": 2,
+    "bench": 5
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 57,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 75,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 3,
+     "press": 171,
+     "minutes": 65
+    },
+    "crossed": {
+     "turn": 3,
+     "press": 172,
+     "minutes": 65
+    },
+    "crossHatched": {
+     "turn": 3,
+     "press": 174,
+     "minutes": 85
+    },
+    "out": {
+     "turn": 3,
+     "press": 213,
+     "minutes": 85
+    },
+    "read": {
+     "turn": 4,
+     "press": 240,
+     "minutes": 105
+    },
+    "roomAdded": {
+     "turn": 9,
+     "press": 1384,
+     "minutes": 305
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 8,
+    "neverRead": 5,
+    "heldEnd": 4
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "greedy",
+   "seed": 5,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1974,
+   "minutes": 420,
+   "firstHatch": {
+    "turn": 3,
+    "press": 92,
+    "minutes": 40
+   },
+   "firstElder": {
+    "turn": 8,
+    "press": 826,
+    "minutes": 280
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 10,
+    "cargo.bay": 12,
+    "home": 206,
+    "pods": 508,
+    "pods.inventory": 154,
+    "incubator": 63,
+    "vivarium": 227,
+    "pods.read": 354,
+    "create": 8,
+    "habitat": 913,
+    "cross": 8,
+    "cargo.end": 2,
+    "bench": 5
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 3,
+     "press": 69,
+     "minutes": 40
+    },
+    "grown": {
+     "turn": 3,
+     "press": 91,
+     "minutes": 40
+    },
+    "hatched": {
+     "turn": 3,
+     "press": 92,
+     "minutes": 40
+    },
+    "outAny": {
+     "turn": 3,
+     "press": 118,
+     "minutes": 40
+    },
+    "care": {
+     "turn": 4,
+     "press": 136,
+     "minutes": 60
+    },
+    "crossOpened": {
+     "turn": 5,
+     "press": 232,
+     "minutes": 100
+    },
+    "crossed": {
+     "turn": 5,
+     "press": 233,
+     "minutes": 100
+    },
+    "crossHatched": {
+     "turn": 5,
+     "press": 235,
+     "minutes": 120
+    },
+    "read": {
+     "turn": 5,
+     "press": 255,
+     "minutes": 120
+    },
+    "out": {
+     "turn": 5,
+     "press": 303,
+     "minutes": 120
+    },
+    "roomAdded": {
+     "turn": 10,
+     "press": 1281,
+     "minutes": 320
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 11,
+    "neverRead": 7,
+    "heldEnd": 7
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "greedy",
+   "seed": 6,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 2430,
+   "minutes": 385,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 639,
+    "minutes": 185
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 7,
+    "pods": 922,
+    "pods.inventory": 226,
+    "home": 193,
+    "pods.read": 696,
+    "incubator": 59,
+    "vivarium": 204,
+    "create": 4,
+    "habitat": 1003,
+    "cargo.bay": 12,
+    "cargo.end": 5,
+    "cross": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 58,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 76,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 5,
+     "press": 323,
+     "minutes": 105
+    },
+    "crossed": {
+     "turn": 5,
+     "press": 324,
+     "minutes": 105
+    },
+    "crossHatched": {
+     "turn": 5,
+     "press": 326,
+     "minutes": 125
+    },
+    "read": {
+     "turn": 5,
+     "press": 347,
+     "minutes": 125
+    },
+    "out": {
+     "turn": 5,
+     "press": 427,
+     "minutes": 125
+    },
+    "roomAdded": {
+     "turn": 12,
+     "press": 2305,
+     "minutes": 365
+    }
+   },
+   "pods": {
+    "grown": 2,
+    "letGo": 0,
+    "received": 14,
+    "neverRead": 9,
+    "heldEnd": 12
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "hoarder",
+   "seed": 1,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1454,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 538,
+    "minutes": 185
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 6,
+    "pods": 100,
+    "pods.inventory": 76,
+    "home": 193,
+    "pods.read": 24,
+    "incubator": 67,
+    "vivarium": 206,
+    "create": 8,
+    "habitat": 838,
+    "cargo.end": 6,
+    "cargo.bay": 12,
+    "cross": 6
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 55,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 77,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 7,
+     "press": 581,
+     "minutes": 185
+    },
+    "crossed": {
+     "turn": 7,
+     "press": 582,
+     "minutes": 185
+    },
+    "crossHatched": {
+     "turn": 7,
+     "press": 584,
+     "minutes": 205
+    },
+    "out": {
+     "turn": 7,
+     "press": 624,
+     "minutes": 205
+    },
+    "roomAdded": {
+     "turn": 10,
+     "press": 1021,
+     "minutes": 325
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 15,
+    "neverRead": 15,
+    "heldEnd": 11
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "hoarder",
+   "seed": 2,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1373,
+   "minutes": 405,
+   "firstHatch": {
+    "turn": 1,
+    "press": 35,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 545,
+    "minutes": 165
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.end": 3,
+    "pods": 97,
+    "pods.inventory": 73,
+    "home": 193,
+    "pods.read": 24,
+    "incubator": 65,
+    "vivarium": 182,
+    "create": 8,
+    "habitat": 787,
+    "cargo.opening": 9,
+    "cargo.bay": 12,
+    "cross": 5
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 33,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 35,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 58,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 77,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 8,
+     "press": 715,
+     "minutes": 205
+    },
+    "crossed": {
+     "turn": 8,
+     "press": 716,
+     "minutes": 205
+    },
+    "crossHatched": {
+     "turn": 8,
+     "press": 718,
+     "minutes": 225
+    },
+    "out": {
+     "turn": 8,
+     "press": 758,
+     "minutes": 225
+    },
+    "roomAdded": {
+     "turn": 11,
+     "press": 1152,
+     "minutes": 345
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 12,
+    "neverRead": 12,
+    "heldEnd": 8
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "hoarder",
+   "seed": 3,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1799,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 35,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 590,
+    "minutes": 225
+   },
+   "screens": {
+    "cargo": 40,
+    "cargo.arrival": 12,
+    "cargo.end": 3,
+    "pods": 87,
+    "pods.inventory": 66,
+    "home": 193,
+    "pods.read": 21,
+    "incubator": 67,
+    "vivarium": 281,
+    "create": 8,
+    "habitat": 1117,
+    "cargo.opening": 9,
+    "cargo.bay": 16,
+    "cross": 6
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 33,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 35,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 58,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 77,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 3,
+     "press": 169,
+     "minutes": 65
+    },
+    "crossed": {
+     "turn": 3,
+     "press": 170,
+     "minutes": 65
+    },
+    "crossHatched": {
+     "turn": 3,
+     "press": 172,
+     "minutes": 85
+    },
+    "out": {
+     "turn": 3,
+     "press": 209,
+     "minutes": 85
+    },
+    "roomAdded": {
+     "turn": 8,
+     "press": 958,
+     "minutes": 285
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 11,
+    "neverRead": 11,
+    "heldEnd": 7
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "hoarder",
+   "seed": 4,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1745,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 582,
+    "minutes": 205
+   },
+   "screens": {
+    "cargo": 48,
+    "cargo.arrival": 12,
+    "cargo.opening": 10,
+    "pods": 72,
+    "pods.inventory": 54,
+    "home": 184,
+    "pods.read": 18,
+    "incubator": 64,
+    "vivarium": 266,
+    "create": 8,
+    "habitat": 1095,
+    "cargo.bay": 24,
+    "cross": 8,
+    "cargo.end": 2
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 54,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 72,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 3,
+     "press": 164,
+     "minutes": 65
+    },
+    "crossed": {
+     "turn": 3,
+     "press": 165,
+     "minutes": 65
+    },
+    "crossHatched": {
+     "turn": 3,
+     "press": 167,
+     "minutes": 85
+    },
+    "out": {
+     "turn": 3,
+     "press": 204,
+     "minutes": 85
+    },
+    "roomAdded": {
+     "turn": 9,
+     "press": 1104,
+     "minutes": 305
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 8,
+    "neverRead": 8,
+    "heldEnd": 4
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "hoarder",
+   "seed": 5,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1393,
+   "minutes": 445,
+   "firstHatch": {
+    "turn": 3,
+    "press": 89,
+    "minutes": 45
+   },
+   "firstElder": {
+    "turn": 8,
+    "press": 659,
+    "minutes": 285
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 10,
+    "cargo.bay": 12,
+    "home": 193,
+    "pods": 88,
+    "pods.inventory": 64,
+    "incubator": 69,
+    "vivarium": 216,
+    "pods.read": 24,
+    "create": 8,
+    "habitat": 776,
+    "cross": 7,
+    "cargo.end": 2
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 3,
+     "press": 65,
+     "minutes": 40
+    },
+    "grown": {
+     "turn": 3,
+     "press": 87,
+     "minutes": 40
+    },
+    "hatched": {
+     "turn": 3,
+     "press": 89,
+     "minutes": 45
+    },
+    "outAny": {
+     "turn": 3,
+     "press": 112,
+     "minutes": 45
+    },
+    "care": {
+     "turn": 4,
+     "press": 130,
+     "minutes": 65
+    },
+    "crossOpened": {
+     "turn": 5,
+     "press": 222,
+     "minutes": 105
+    },
+    "crossed": {
+     "turn": 5,
+     "press": 223,
+     "minutes": 105
+    },
+    "crossHatched": {
+     "turn": 5,
+     "press": 225,
+     "minutes": 125
+    },
+    "out": {
+     "turn": 5,
+     "press": 268,
+     "minutes": 145
+    },
+    "roomAdded": {
+     "turn": 9,
+     "press": 824,
+     "minutes": 305
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 11,
+    "neverRead": 11,
+    "heldEnd": 7
+   },
+   "hatched": 11,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "hoarder",
+   "seed": 6,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1506,
+   "minutes": 385,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 462,
+    "minutes": 185
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 7,
+    "pods": 72,
+    "pods.inventory": 55,
+    "home": 177,
+    "pods.read": 17,
+    "incubator": 59,
+    "vivarium": 203,
+    "create": 4,
+    "habitat": 946,
+    "cargo.bay": 12,
+    "cargo.end": 5,
+    "cross": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 55,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 73,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 5,
+     "press": 312,
+     "minutes": 105
+    },
+    "crossed": {
+     "turn": 5,
+     "press": 313,
+     "minutes": 105
+    },
+    "crossHatched": {
+     "turn": 5,
+     "press": 315,
+     "minutes": 125
+    },
+    "out": {
+     "turn": 5,
+     "press": 354,
+     "minutes": 125
+    },
+    "roomAdded": {
+     "turn": 12,
+     "press": 1472,
+     "minutes": 365
+    }
+   },
+   "pods": {
+    "grown": 2,
+    "letGo": 0,
+    "received": 14,
+    "neverRead": 14,
+    "heldEnd": 12
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 1,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1408,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 516,
+    "minutes": 185
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 6,
+    "pods": 78,
+    "pods.inventory": 56,
+    "home": 193,
+    "pods.read": 22,
+    "incubator": 67,
+    "vivarium": 206,
+    "create": 8,
+    "habitat": 814,
+    "cargo.end": 6,
+    "cargo.bay": 12,
+    "cross": 6
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 53,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 75,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 7,
+     "press": 557,
+     "minutes": 185
+    },
+    "crossed": {
+     "turn": 7,
+     "press": 558,
+     "minutes": 185
+    },
+    "crossHatched": {
+     "turn": 7,
+     "press": 560,
+     "minutes": 205
+    },
+    "out": {
+     "turn": 7,
+     "press": 598,
+     "minutes": 205
+    },
+    "roomAdded": {
+     "turn": 10,
+     "press": 985,
+     "minutes": 325
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 15,
+    "neverRead": 15,
+    "heldEnd": 11
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 2,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1127,
+   "minutes": 360,
+   "firstHatch": {
+    "turn": 1,
+    "press": 34,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 454,
+    "minutes": 160
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.end": 3,
+    "pods": 79,
+    "pods.inventory": 56,
+    "home": 188,
+    "pods.read": 23,
+    "incubator": 57,
+    "vivarium": 119,
+    "create": 8,
+    "habitat": 637,
+    "cargo.opening": 9,
+    "cargo.bay": 12,
+    "cross": 3
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 33,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 34,
+     "minutes": 0
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 55,
+     "minutes": 0
+    },
+    "care": {
+     "turn": 2,
+     "press": 74,
+     "minutes": 20
+    },
+    "crossOpened": {
+     "turn": 10,
+     "press": 847,
+     "minutes": 240
+    },
+    "crossed": {
+     "turn": 10,
+     "press": 848,
+     "minutes": 240
+    },
+    "crossHatched": {
+     "turn": 10,
+     "press": 850,
+     "minutes": 260
+    },
+    "out": {
+     "turn": 10,
+     "press": 888,
+     "minutes": 260
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 12,
+    "neverRead": 12,
+    "heldEnd": 8
+   },
+   "hatched": 7,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 3,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1624,
+   "minutes": 400,
+   "firstHatch": {
+    "turn": 1,
+    "press": 34,
+    "minutes": 0
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 495,
+    "minutes": 200
+   },
+   "screens": {
+    "cargo": 40,
+    "cargo.arrival": 12,
+    "cargo.end": 3,
+    "pods": 71,
+    "pods.inventory": 51,
+    "home": 194,
+    "pods.read": 20,
+    "incubator": 65,
+    "vivarium": 249,
+    "create": 6,
+    "habitat": 993,
+    "cargo.opening": 9,
+    "cargo.bay": 16,
+    "cross": 6
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 33,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 34,
+     "minutes": 0
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 55,
+     "minutes": 0
+    },
+    "care": {
+     "turn": 2,
+     "press": 74,
+     "minutes": 20
+    },
+    "crossOpened": {
+     "turn": 4,
+     "press": 232,
+     "minutes": 80
+    },
+    "crossed": {
+     "turn": 4,
+     "press": 233,
+     "minutes": 80
+    },
+    "crossHatched": {
+     "turn": 4,
+     "press": 235,
+     "minutes": 100
+    },
+    "out": {
+     "turn": 4,
+     "press": 271,
+     "minutes": 100
+    },
+    "roomAdded": {
+     "turn": 9,
+     "press": 1005,
+     "minutes": 300
+    }
+   },
+   "pods": {
+    "grown": 3,
+    "letGo": 0,
+    "received": 11,
+    "neverRead": 11,
+    "heldEnd": 8
+   },
+   "hatched": 9,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 4,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1707,
+   "minutes": 425,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 570,
+    "minutes": 205
+   },
+   "screens": {
+    "cargo": 48,
+    "cargo.arrival": 12,
+    "cargo.opening": 10,
+    "pods": 58,
+    "pods.inventory": 42,
+    "home": 184,
+    "pods.read": 16,
+    "incubator": 64,
+    "vivarium": 266,
+    "create": 8,
+    "habitat": 1071,
+    "cargo.bay": 24,
+    "cross": 8,
+    "cargo.end": 2
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 52,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 70,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 3,
+     "press": 160,
+     "minutes": 65
+    },
+    "crossed": {
+     "turn": 3,
+     "press": 161,
+     "minutes": 65
+    },
+    "crossHatched": {
+     "turn": 3,
+     "press": 163,
+     "minutes": 85
+    },
+    "out": {
+     "turn": 3,
+     "press": 198,
+     "minutes": 85
+    },
+    "roomAdded": {
+     "turn": 9,
+     "press": 1080,
+     "minutes": 305
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 8,
+    "neverRead": 8,
+    "heldEnd": 4
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 5,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1416,
+   "minutes": 420,
+   "firstHatch": {
+    "turn": 3,
+    "press": 88,
+    "minutes": 40
+   },
+   "firstElder": {
+    "turn": 8,
+    "press": 640,
+    "minutes": 280
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 10,
+    "cargo.bay": 12,
+    "home": 184,
+    "pods": 63,
+    "pods.inventory": 46,
+    "incubator": 63,
+    "vivarium": 224,
+    "pods.read": 17,
+    "create": 8,
+    "habitat": 830,
+    "cross": 8,
+    "cargo.end": 2
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 3,
+     "press": 65,
+     "minutes": 40
+    },
+    "grown": {
+     "turn": 3,
+     "press": 87,
+     "minutes": 40
+    },
+    "hatched": {
+     "turn": 3,
+     "press": 88,
+     "minutes": 40
+    },
+    "outAny": {
+     "turn": 3,
+     "press": 109,
+     "minutes": 40
+    },
+    "care": {
+     "turn": 4,
+     "press": 127,
+     "minutes": 60
+    },
+    "crossOpened": {
+     "turn": 5,
+     "press": 217,
+     "minutes": 100
+    },
+    "crossed": {
+     "turn": 5,
+     "press": 218,
+     "minutes": 100
+    },
+    "crossHatched": {
+     "turn": 5,
+     "press": 220,
+     "minutes": 120
+    },
+    "out": {
+     "turn": 5,
+     "press": 256,
+     "minutes": 120
+    },
+    "roomAdded": {
+     "turn": 10,
+     "press": 986,
+     "minutes": 320
+    }
+   },
+   "pods": {
+    "grown": 4,
+    "letGo": 0,
+    "received": 11,
+    "neverRead": 11,
+    "heldEnd": 7
+   },
+   "hatched": 10,
+   "end": "done",
+   "finished": 12
+  },
+  {
+   "policy": "speedrunner",
+   "seed": 6,
+   "turns": 12,
+   "economy": "strict",
+   "presses": 1472,
+   "minutes": 385,
+   "firstHatch": {
+    "turn": 1,
+    "press": 31,
+    "minutes": 5
+   },
+   "firstElder": {
+    "turn": 6,
+    "press": 446,
+    "minutes": 185
+   },
+   "screens": {
+    "cargo": 36,
+    "cargo.arrival": 12,
+    "cargo.opening": 7,
+    "pods": 62,
+    "pods.inventory": 47,
+    "home": 177,
+    "pods.read": 15,
+    "incubator": 59,
+    "vivarium": 203,
+    "create": 4,
+    "habitat": 922,
+    "cargo.bay": 12,
+    "cargo.end": 5,
+    "cross": 9
+   },
+   "stuck": [],
+   "softLock": null,
+   "loop": {
+    "identified": {
+     "turn": 1,
+     "press": 7,
+     "minutes": 0
+    },
+    "grown": {
+     "turn": 1,
+     "press": 29,
+     "minutes": 0
+    },
+    "hatched": {
+     "turn": 1,
+     "press": 31,
+     "minutes": 5
+    },
+    "outAny": {
+     "turn": 1,
+     "press": 53,
+     "minutes": 5
+    },
+    "care": {
+     "turn": 2,
+     "press": 71,
+     "minutes": 25
+    },
+    "crossOpened": {
+     "turn": 5,
+     "press": 304,
+     "minutes": 105
+    },
+    "crossed": {
+     "turn": 5,
+     "press": 305,
+     "minutes": 105
+    },
+    "crossHatched": {
+     "turn": 5,
+     "press": 307,
+     "minutes": 125
+    },
+    "out": {
+     "turn": 5,
+     "press": 344,
+     "minutes": 125
+    },
+    "roomAdded": {
+     "turn": 12,
+     "press": 1440,
+     "minutes": 365
+    }
+   },
+   "pods": {
+    "grown": 2,
+    "letGo": 0,
+    "received": 14,
+    "neverRead": 14,
+    "heldEnd": 12
+   },
+   "hatched": 8,
+   "end": "done",
+   "finished": 12
+  }
+ ],
+ "notMeasurable": [
+  {
+   "what": "Crosses: refusals by reason, the forecast against the draw, the line over time, samples",
+   "why": "the bots cross and read the line's depth by the Sitting being earned; the refusals are plates the bots read only for the Vivarium being full and the Essence being short"
+  },
+  {
+   "what": "The house and the manager: free places by turn, bonded share, tuck-away and bring-out",
+   "why": "the manager is not built (bot run 6)"
+  },
+  {
+   "what": "Pods in by source and out by exit (grown, let go, dried), turns held, Freshen",
+   "why": "the new Pods screens are not built; only grown and let go through today's screens are counted (bot run 2)"
+  },
+  {
+   "what": "Data per trip by source and the Watch share, trips that hit the ceiling",
+   "why": "the Companion is a stub, so the acts that pay Data are not played (bot run 1)"
+  },
+  {
+   "what": "Holdings with no cap: the time each pile is held and what the Companion's hold of 20 would have lost",
+   "why": "the Station already holds more than 20 (the report counts the share of turns over 20); how long each pile stays and what the Companion's own hold of 20 costs are not measured (bot run 7)"
+  }
+ ]
+}

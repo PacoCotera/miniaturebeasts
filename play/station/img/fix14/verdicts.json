@@ -1,0 +1,342 @@
+{
+ "collection": {
+  "verdict": "ring-only",
+  "differing": 3352
+ },
+ "overview, unidentified": {
+  "verdict": "ring-only",
+  "differing": 2428
+ },
+ "overview, identify warns": {
+  "verdict": "ring-only",
+  "differing": 2428
+ },
+ "chapter page, unread": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "overview, identified, pod focused": {
+  "verdict": "ring-only",
+  "differing": 2428
+ },
+ "overview, kin focused": {
+  "verdict": "ring-only",
+  "differing": 392
+ },
+ "overview, hatch focused": {
+  "verdict": "ring-only",
+  "differing": 612
+ },
+ "overview, a rail tab focused": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "chapter page": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "chapter page, a doing": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "chapter page, sealed": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "compare": {
+  "verdict": "ring-only",
+  "differing": 720
+ },
+ "home-cargo-empty": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-incubator-empty": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-incubator-growing": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-incubator-ready": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-probe-docked": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-probe-away": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-probe-sitting": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-library-empty": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-library-pages": {
+  "verdict": "ring-only",
+  "differing": 1700
+ },
+ "home-knob-focused": {
+  "verdict": "ring-only",
+  "differing": 632
+ },
+ "home-vivarium-focused": {
+  "verdict": "ring-only",
+  "differing": 4696
+ },
+ "home-resident-focused": {
+  "verdict": "ring-only",
+  "differing": 718
+ },
+ "home-sleeper-focused": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "home-moving-asleep": {
+  "verdict": "ring-only",
+  "differing": 663
+ },
+ "create-shape": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-changed": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-clash": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-doing": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-onelook": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-short": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-busy": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-samelook": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-shape-first": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "create-roll-100": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "habitat-rest": {
+  "verdict": "ring-only",
+  "differing": 1304
+ },
+ "habitat-meet": {
+  "verdict": "ring-only",
+  "differing": 1271
+ },
+ "habitat-out": {
+  "verdict": "ring-only",
+  "differing": 504
+ },
+ "habitat-card": {
+  "verdict": "ring-only",
+  "differing": 376
+ },
+ "habitat-plate": {
+  "verdict": "ring-only",
+  "differing": 376
+ },
+ "habitat-door": {
+  "verdict": "ring-only",
+  "differing": 1540
+ },
+ "habitat-door-away": {
+  "verdict": "ring-only",
+  "differing": 1540
+ },
+ "habitat-cross": {
+  "verdict": "ring-only",
+  "differing": 1540
+ },
+ "habitat-portrait": {
+  "verdict": "ring-only",
+  "differing": 996
+ },
+ "habitat-portrait-painting": {
+  "verdict": "ring-only",
+  "differing": 996
+ },
+ "habitat-portrait-portrayed": {
+  "verdict": "ring-only",
+  "differing": 996
+ },
+ "habitat-portrait-pictured": {
+  "verdict": "ring-only",
+  "differing": 996
+ },
+ "habitat-young-night": {
+  "verdict": "ring-only",
+  "differing": 1271
+ },
+ "habitat-tile": {
+  "verdict": "ring-only",
+  "differing": 548
+ },
+ "habitat-twelve": {
+  "verdict": "ring-only",
+  "differing": 1304
+ },
+ "habitat-docked-dawn": {
+  "verdict": "ring-only",
+  "differing": 1304
+ },
+ "habitat-docked-day": {
+  "verdict": "ring-only",
+  "differing": 1304
+ },
+ "habitat-docked-dusk": {
+  "verdict": "ring-only",
+  "differing": 1304
+ },
+ "habitat-docked-night": {
+  "verdict": "ring-only",
+  "differing": 1304
+ },
+ "habitat-namer": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "habitat-namer-typed": {
+  "verdict": "ring-only",
+  "differing": 376
+ },
+ "habitat-namer-accents": {
+  "verdict": "ring-only",
+  "differing": 568
+ },
+ "habitat-namer-refused": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "habitat-namer-empty": {
+  "verdict": "ring-only",
+  "differing": 856
+ },
+ "habitat-namer-full": {
+  "verdict": "ring-only",
+  "differing": 376
+ },
+ "habitat-moment-S01-0": {
+  "verdict": "ring-only",
+  "differing": 1261
+ },
+ "habitat-moment-S01-450": {
+  "verdict": "ring-only",
+  "differing": 1532
+ },
+ "habitat-moment-S01-900": {
+  "verdict": "ring-only",
+  "differing": 1261
+ },
+ "habitat-moment-S01-1350": {
+  "verdict": "ring-only",
+  "differing": 1532
+ },
+ "vivarium-docked": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "vivarium-away": {
+  "verdict": "ring-only",
+  "differing": 718
+ },
+ "vivarium-mibi-out": {
+  "verdict": "ring-only",
+  "differing": 548
+ },
+ "vivarium-tile": {
+  "verdict": "ring-only",
+  "differing": 548
+ },
+ "vivarium-sleeper": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "vivarium-twelve": {
+  "verdict": "ring-only",
+  "differing": 718
+ },
+ "vivarium-docked-dawn": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "vivarium-docked-day": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "vivarium-docked-dusk": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "vivarium-docked-night": {
+  "verdict": "ring-only",
+  "differing": 790
+ },
+ "vivarium-walk-8000ms": {
+  "verdict": "ring-only",
+  "differing": 718
+ },
+ "vivarium-moving-8000ms": {
+  "verdict": "ring-only",
+  "differing": 548
+ },
+ "library-spread": {
+  "verdict": "ring-only",
+  "differing": 28
+ },
+ "library-spread-empty": {
+  "verdict": "ring-only",
+  "differing": 28
+ },
+ "library-spread-complete": {
+  "verdict": "ring-only",
+  "differing": 28
+ },
+ "library-book-shut": {
+  "verdict": "ring-only",
+  "differing": 28
+ },
+ "bench": {
+  "verdict": "ring-only",
+  "differing": 2472
+ },
+ "bench-armed": {
+  "verdict": "ring-only",
+  "differing": 2308
+ },
+ "bench-away": {
+  "verdict": "ring-only",
+  "differing": 1828
+ },
+ "bench-tier2": {
+  "verdict": "ring-only",
+  "differing": 2308
+ }
+}

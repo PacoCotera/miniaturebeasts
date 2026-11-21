@@ -1,0 +1,129 @@
+{
+ "_note": "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the frame after ✓ Skip, the report: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "cargo-bay": {
+   "hash": "aa7decf2",
+   "png": "cargo-bay.png"
+  },
+  "cargo-bay-one": {
+   "hash": "9801e1d2",
+   "png": "cargo-bay-one.png"
+  },
+  "cargo-bay-two": {
+   "hash": "1f00c535",
+   "png": "cargo-bay-two.png"
+  },
+  "cargo-bay-empty": {
+   "hash": "2475f117",
+   "png": "cargo-bay-empty.png"
+  },
+  "cargo-bay-away": {
+   "hash": "90488e01",
+   "png": "cargo-bay-away.png"
+  },
+  "cargo-bay-waiting": {
+   "hash": "fb5c67ea",
+   "png": "cargo-bay-waiting.png"
+  },
+  "cargo-bay-waiting-many": {
+   "hash": "f5d4bf23",
+   "png": "cargo-bay-waiting-many.png"
+  },
+  "cargo-bay-portrait": {
+   "hash": "722d33a6",
+   "png": "cargo-bay-portrait.png"
+  },
+  "cargo-bay-portrait-away": {
+   "hash": "127c27cd",
+   "png": "cargo-bay-portrait-away.png"
+  },
+  "cargo-end": {
+   "hash": "70e55634",
+   "png": "cargo-end.png"
+  },
+  "cargo-end-no-pods": {
+   "hash": "1c92c0bc",
+   "png": "cargo-end-no-pods.png"
+  },
+  "cargo-end-portrait": {
+   "hash": "bfe0152d",
+   "png": "cargo-end-portrait.png"
+  },
+  "cargo-opening-0": {
+   "hash": "9400d552",
+   "png": "cargo-opening-0.png"
+  },
+  "cargo-opening-inside": {
+   "hash": "8a084659",
+   "png": "cargo-opening-inside.png"
+  },
+  "cargo-opening-after": {
+   "hash": "bc13b93b",
+   "png": "cargo-opening-after.png"
+  },
+  "cargo-opening-pod": {
+   "hash": "9d3c76a3",
+   "png": "cargo-opening-pod.png"
+  },
+  "cargo-opening-mat": {
+   "hash": "c77bc9e5",
+   "png": "cargo-opening-mat.png"
+  },
+  "cargo-opening-find": {
+   "hash": "deadd982",
+   "png": "cargo-opening-find.png"
+  },
+  "cargo-opening-swap": {
+   "hash": "84db0231",
+   "png": "cargo-opening-swap.png"
+  },
+  "cargo-opening-done": {
+   "hash": "3892b795",
+   "png": "cargo-opening-done.png"
+  },
+  "cargo-opening-three": {
+   "hash": "fe1cc895",
+   "png": "cargo-opening-three.png"
+  },
+  "cargo-opening-three-second": {
+   "hash": "3264d76e",
+   "png": "cargo-opening-three-second.png"
+  },
+  "cargo-opening-portrait": {
+   "hash": "603c7b07",
+   "png": "cargo-opening-portrait.png"
+  },
+  "cargo-opening-portrait-travel": {
+   "hash": "438bb4c9",
+   "png": "cargo-opening-portrait-travel.png"
+  },
+  "cargo-arrival-2200": {
+   "hash": "e982bebc",
+   "png": "cargo-arrival-2200.png"
+  },
+  "cargo-arrival-choice": {
+   "hash": "92fa2736",
+   "png": "cargo-arrival-choice.png"
+  },
+  "cargo-arrival-empty-trip": {
+   "hash": "0a5790d3",
+   "png": "cargo-arrival-empty-trip.png"
+  },
+  "cargo-opening-first-pod": {
+   "hash": "37c9f21a",
+   "png": "cargo-opening-first-pod.png"
+  },
+  "cargo-opening-first-pod-later": {
+   "hash": "37c9f21a",
+   "png": "cargo-opening-first-pod-later.png"
+  },
+  "cargo-opening-first-pod-taken": {
+   "hash": "debe4ef9",
+   "png": "cargo-opening-first-pod-taken.png"
+  },
+  "cargo-opening-skip": {
+   "hash": "0691c32c",
+   "png": "cargo-opening-skip.png"
+  }
+ }
+}

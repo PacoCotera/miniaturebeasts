@@ -1,0 +1,265 @@
+{
+ "$comment": "The props of the Hatch now | Wait panel (T-20261016-222; panel.json `hatchnow`; the Incubator's confirm state): `overlay` on the Incubator's message while the panel is open, form `hatchnow`. Props name what, never where: the two verbs, the Essence price as the bottom line's price string, the caption, the bar's lit width in pixels, the pictures of the hatched look (left) and the growing look (right) with their sizes, and the focus targets by id. The rectangles are panel.json's.",
+ "type": "object",
+ "required": [
+  "id",
+  "state",
+  "form",
+  "regions",
+  "focus"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "id": {
+   "enum": [
+    "panel"
+   ]
+  },
+  "state": {
+   "enum": [
+    "open"
+   ]
+  },
+  "form": {
+   "enum": [
+    "hatchnow"
+   ]
+  },
+  "regions": {
+   "type": "object",
+   "required": [
+    "cards",
+    "verbs",
+    "price",
+    "caption",
+    "barPx",
+    "left",
+    "right"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cards": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "object",
+      "required": [
+       "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "enum": [
+         "grow",
+         "wait"
+        ]
+       }
+      }
+     }
+    },
+    "verbs": {
+     "type": "object",
+     "required": [
+      "grow",
+      "wait"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "grow": {
+       "type": "string"
+      },
+      "wait": {
+       "type": "string"
+      }
+     }
+    },
+    "price": {
+     "type": "string"
+    },
+    "caption": {
+     "type": "string"
+    },
+    "barPx": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "left": {
+     "type": "object",
+     "required": [
+      "room",
+      "interior",
+      "shell",
+      "door",
+      "bar",
+      "layerSize",
+      "opened",
+      "openedSize",
+      "openedAnchor",
+      "juvenile",
+      "juvenileSize",
+      "juvenileAnchor"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "room": {
+       "type": "string"
+      },
+      "interior": {
+       "type": "string"
+      },
+      "shell": {
+       "type": "string"
+      },
+      "door": {
+       "type": "string"
+      },
+      "bar": {
+       "type": "string"
+      },
+      "layerSize": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "opened": {
+       "type": "string"
+      },
+      "openedSize": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "openedAnchor": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "juvenile": {
+       "type": "string"
+      },
+      "juvenileSize": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "juvenileAnchor": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      }
+     }
+    },
+    "right": {
+     "type": "object",
+     "required": [
+      "room",
+      "interior",
+      "shell",
+      "glass",
+      "bar",
+      "layerSize",
+      "pod",
+      "podSize",
+      "podAnchor"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "room": {
+       "type": "string"
+      },
+      "interior": {
+       "type": "string"
+      },
+      "shell": {
+       "type": "string"
+      },
+      "glass": {
+       "type": "string"
+      },
+      "bar": {
+       "type": "string"
+      },
+      "layerSize": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "pod": {
+       "type": "string"
+      },
+      "podSize": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "podAnchor": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      }
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": [
+    "cur",
+    "targets"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {
+     "enum": [
+      "card.grow",
+      "card.wait"
+     ]
+    },
+    "targets": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "enabled"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "enabled": {
+        "type": "boolean"
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

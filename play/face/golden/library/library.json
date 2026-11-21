@@ -1,0 +1,133 @@
+{
+ "_note": "The Library. Level 1: only the Loika met, a mid-game catalogue (the wish alone on a found species and beside the Loika's face chip), glints and three new looks, the room key (the ring on the last species visited), and the Home to Level 1 dither at its midpoint (motion on, virtual clock). Level 2: the Loika at mid, its Coat lit with its page, a met-only sheet, glints, a wish no one carries, the Untuva with Character shut, the Hiljan, the Kilpo, the Belatz, the Belatz's Coat lit complete, the Blikur and the Loika late (colour chips). Level 3, far: a Loika lineage of two blocks (the ring on Moss) and of one (on Dot); close: on Moss, links leaving every edge, a tree that fits the view, a pan's three steps (motion on, virtual clock) and FAR to CLOSE at the dither's midpoint: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "library-l1-first": {
+   "hash": "6d987aaf",
+   "png": "library-l1-first.png"
+  },
+  "library-l1-mid": {
+   "hash": "9cf3c32c",
+   "png": "library-l1-mid.png"
+  },
+  "library-l1-new": {
+   "hash": "ffc9b9e3",
+   "png": "library-l1-new.png"
+  },
+  "library-l1-roomkey": {
+   "hash": "958acaaf",
+   "png": "library-l1-roomkey.png"
+  },
+  "library-l2-loika-mid": {
+   "hash": "fdc439b9",
+   "png": "library-l2-loika-mid.png"
+  },
+  "library-l2-coat-lit": {
+   "hash": "f15b57ac",
+   "png": "library-l2-coat-lit.png"
+  },
+  "library-l2-met-only": {
+   "hash": "6643b54c",
+   "png": "library-l2-met-only.png"
+  },
+  "library-l2-new": {
+   "hash": "4391fd67",
+   "png": "library-l2-new.png"
+  },
+  "library-l2-wish-uncarried": {
+   "hash": "ece794b7",
+   "png": "library-l2-wish-uncarried.png"
+  },
+  "library-l2-shut": {
+   "hash": "b2aa6973",
+   "png": "library-l2-shut.png"
+  },
+  "library-l2-hiljan": {
+   "hash": "29da6e24",
+   "png": "library-l2-hiljan.png"
+  },
+  "library-l2-kilpo": {
+   "hash": "03b23538",
+   "png": "library-l2-kilpo.png"
+  },
+  "library-l2-belatz": {
+   "hash": "b77a491f",
+   "png": "library-l2-belatz.png"
+  },
+  "library-l2-belatz-coat-lit-complete": {
+   "hash": "55a5ba67",
+   "png": "library-l2-belatz-coat-lit-complete.png"
+  },
+  "library-l2-blikur": {
+   "hash": "70b9ea14",
+   "png": "library-l2-blikur.png"
+  },
+  "library-l2-loika-late": {
+   "hash": "65f9bcf3",
+   "png": "library-l2-loika-late.png"
+  },
+  "library-l3-far": {
+   "hash": "64042f33",
+   "png": "library-l3-far.png"
+  },
+  "library-l3-far-one-family": {
+   "hash": "91fda5a6",
+   "png": "library-l3-far-one-family.png"
+  },
+  "library-l3-close-moss": {
+   "hash": "c6dc0339",
+   "png": "library-l3-close-moss.png"
+  },
+  "library-l3-close-stubs": {
+   "hash": "fd67252b",
+   "png": "library-l3-close-stubs.png"
+  },
+  "library-l3-close-bud": {
+   "hash": "e90d5dd0",
+   "png": "library-l3-close-bud.png"
+  },
+  "library-l3-close-fits": {
+   "hash": "3ff5c3be",
+   "png": "library-l3-close-fits.png"
+  },
+  "library-l3-close-founder": {
+   "hash": "207188c8",
+   "png": "library-l3-close-founder.png"
+  },
+  "library-l3-close-shedpod": {
+   "hash": "54d30247",
+   "png": "library-l3-close-shedpod.png"
+  },
+  "library-l3-compare-dot-moss": {
+   "hash": "b161bb1b",
+   "png": "library-l3-compare-dot-moss.png"
+  },
+  "library-l3-compare-on-held": {
+   "hash": "1509599f",
+   "png": "library-l3-compare-on-held.png"
+  },
+  "library-l3-compare-none": {
+   "hash": "6ec9e563",
+   "png": "library-l3-compare-none.png"
+  },
+  "library-l1-dither": {
+   "hash": "47ad7735",
+   "png": "library-l1-dither.png"
+  },
+  "library-l3-pan-step-1": {
+   "hash": "a988169a",
+   "png": "library-l3-pan-step-1.png"
+  },
+  "library-l3-pan-step-2": {
+   "hash": "d68954c7",
+   "png": "library-l3-pan-step-2.png"
+  },
+  "library-l3-pan-step-3": {
+   "hash": "fd67252b",
+   "png": "library-l3-pan-step-3.png"
+  },
+  "library-l3-zoom-in": {
+   "hash": "15aece0e",
+   "png": "library-l3-zoom-in.png"
+  }
+ }
+}

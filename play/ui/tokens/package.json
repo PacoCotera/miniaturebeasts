@@ -1,0 +1,14 @@
+{
+  "name": "ui-tokens",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The design tokens: tokens.json (W3C Design Tokens format) built with Style Dictionary into out/ (tokens.css for the web layer, station-palette.json for the Station, companion-colors.mjs for the Companion). The outputs are committed, as the Options bundle is.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test tests/tokens.test.mjs"
+  },
+  "devDependencies": {
+    "style-dictionary": "5.8.0"
+  }
+}

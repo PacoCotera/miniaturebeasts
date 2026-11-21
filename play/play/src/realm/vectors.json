@@ -1,0 +1,102 @@
+{
+ "note": "Vectors for the shared realm crypto; the device port in C is checked against the same file. Hex is lowercase; keys and signatures are base64url without padding.",
+ "canonical": [
+  {
+   "json": "{\"b\":1,\"a\":[3,{\"z\":1,\"y\":2}],\"c\":null}",
+   "out": "{\"a\":[3,{\"y\":2,\"z\":1}],\"b\":1,\"c\":null}"
+  },
+  {
+   "json": "{\"n\":-0,\"m\":1.5,\"e\":1e21,\"s\":\"\\u00e9\\n\\\"\\\\\"}",
+   "out": "{\"e\":1e+21,\"m\":1.5,\"n\":0,\"s\":\"é\\n\\\"\\\\\"}"
+  },
+  {
+   "json": "{\"B\":1,\"a\":2,\"\\u00e9\":3,\"10\":4,\"9\":5}",
+   "out": "{\"10\":4,\"9\":5,\"B\":1,\"a\":2,\"é\":3}"
+  },
+  {
+   "json": "[[],{},-0.0,1E2,0.1,[-0]]",
+   "out": "[[],{},0,100,0.1,[0]]"
+  },
+  {
+   "json": "\"\\ud83d\\ude00 \\u2028\"",
+   "out": "\"😀  \""
+  }
+ ],
+ "rfc8032": {
+  "seed": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+  "pubHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+  "message": "",
+  "sigHex": "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"
+ },
+ "companion": {
+  "seed": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "pub": "A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg",
+  "header": {
+   "kind": "mb-realm-sleep",
+   "v": 1,
+   "wid": "w-test-0001",
+   "began": 1793664000000,
+   "slept": 1800000000000,
+   "companion": {
+    "id": "cA",
+    "name": "Companion A",
+    "pub": "A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg"
+   },
+   "recovery": {
+    "kid": "M60H",
+    "pub": "T9CZzNR9eJPf6ewkQU7LDZtUICMqrTDZHEZb4zy-ZcQ"
+   },
+   "save": {
+    "v": 9,
+    "st": 4,
+    "gens": [
+     1,
+     3,
+     4
+    ]
+   },
+   "parts": {
+    "companion": "c989edf18246e9c8cdd647369a4835f7dd9a0f47b8e755d37b16431fc5035981",
+    "station": "9b4ef3e5b7b4d1759cb8f880e34dbd5ea8c3fcd79ce33b89d7357bf64fcbfc91",
+    "caddy": "d6e0ff2b7a534a9750d13545971476557164f72cb92ad74be7f145491ec4acf4"
+   },
+   "body": {
+    "sha256": "230d8358dc8e8890b4c58deeb62912ee2f20357ae92a5cc861b98e68fe31acb5",
+    "bytes": 4
+   },
+   "summary": {
+    "regions": 1,
+    "mibis": 2,
+    "pods": 3,
+    "crates": 0,
+    "d": 0,
+    "e": 0,
+    "s": 0,
+    "turn": 12,
+    "exp": null,
+    "names": [
+     "Pip",
+     "Moss"
+    ]
+   }
+  },
+  "headerLine": "{\"began\":1793664000000,\"body\":{\"bytes\":4,\"sha256\":\"230d8358dc8e8890b4c58deeb62912ee2f20357ae92a5cc861b98e68fe31acb5\"},\"companion\":{\"id\":\"cA\",\"name\":\"Companion A\",\"pub\":\"A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg\"},\"kind\":\"mb-realm-sleep\",\"parts\":{\"caddy\":\"d6e0ff2b7a534a9750d13545971476557164f72cb92ad74be7f145491ec4acf4\",\"companion\":\"c989edf18246e9c8cdd647369a4835f7dd9a0f47b8e755d37b16431fc5035981\",\"station\":\"9b4ef3e5b7b4d1759cb8f880e34dbd5ea8c3fcd79ce33b89d7357bf64fcbfc91\"},\"recovery\":{\"kid\":\"M60H\",\"pub\":\"T9CZzNR9eJPf6ewkQU7LDZtUICMqrTDZHEZb4zy-ZcQ\"},\"save\":{\"gens\":[1,3,4],\"st\":4,\"v\":9},\"slept\":1800000000000,\"summary\":{\"crates\":0,\"d\":0,\"e\":0,\"exp\":null,\"mibis\":2,\"names\":[\"Pip\",\"Moss\"],\"pods\":3,\"regions\":1,\"s\":0,\"turn\":12},\"v\":1,\"wid\":\"w-test-0001\"}",
+  "signed": "MBR1\n{\"began\":1793664000000,\"body\":{\"bytes\":4,\"sha256\":\"230d8358dc8e8890b4c58deeb62912ee2f20357ae92a5cc861b98e68fe31acb5\"},\"companion\":{\"id\":\"cA\",\"name\":\"Companion A\",\"pub\":\"A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg\"},\"kind\":\"mb-realm-sleep\",\"parts\":{\"caddy\":\"d6e0ff2b7a534a9750d13545971476557164f72cb92ad74be7f145491ec4acf4\",\"companion\":\"c989edf18246e9c8cdd647369a4835f7dd9a0f47b8e755d37b16431fc5035981\",\"station\":\"9b4ef3e5b7b4d1759cb8f880e34dbd5ea8c3fcd79ce33b89d7357bf64fcbfc91\"},\"recovery\":{\"kid\":\"M60H\",\"pub\":\"T9CZzNR9eJPf6ewkQU7LDZtUICMqrTDZHEZb4zy-ZcQ\"},\"save\":{\"gens\":[1,3,4],\"st\":4,\"v\":9},\"slept\":1800000000000,\"summary\":{\"crates\":0,\"d\":0,\"e\":0,\"exp\":null,\"mibis\":2,\"names\":[\"Pip\",\"Moss\"],\"pods\":3,\"regions\":1,\"s\":0,\"turn\":12},\"v\":1,\"wid\":\"w-test-0001\"}",
+  "sig": "82aaNzjyVpV_evf8acNwOEGnx2TkZTKFJbRZyV3Kvnn3m_sKQFDd43yW_iK4eS4VyWZnA0Wak9V6oCdUG8WXDA"
+ },
+ "recovery": {
+  "seed": "a0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebf",
+  "text": "MBRK 06GA-38N3-MJJT-D9X8-N6NA-QB5D-NTQV-1CDJ-PETB-BDNQ-Q2WV-NEXW-QPZB-Z1MB",
+  "lines": [
+   "MBRK 06GA-38N3",
+   "MJJT-D9X8",
+   "N6NA-QB5D",
+   "NTQV-1CDJ",
+   "PETB-BDNQ",
+   "Q2WV-NEXW",
+   "QPZB-Z1MB"
+  ],
+  "pub": "T9CZzNR9eJPf6ewkQU7LDZtUICMqrTDZHEZb4zy-ZcQ",
+  "kid": "M60H"
+ }
+}

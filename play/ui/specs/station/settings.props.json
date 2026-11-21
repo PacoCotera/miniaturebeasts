@@ -1,0 +1,45 @@
+{
+ "$comment": "The props of Settings (lvgl-switch.md §2.1; settings.json): what views/settings-props.mjs gives the face, beside the frame's. Props name what, never where: each row's words and whether the sleep row is dimmed, the focused row's detail (its title, its blocks in order and its foot) and the focus targets by id; no rectangle, no colour, no measure.",
+ "$defs": {
+  "row": {"type": "object", "required": ["sub"], "additionalProperties": false, "properties": {"sub": {"type": "string", "minLength": 1}}},
+  "target": {"type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": {"id": {"enum": ["realm", "companion", "sleeping", "sleep"]}, "group": {"enum": ["realm", "companion", "sleeping", "sleep"]}}},
+  "block": {"type": "object", "required": ["kind", "text"], "additionalProperties": false, "properties": {"kind": {"enum": ["para", "facts", "label", "notice"]}, "text": {"type": "string", "minLength": 1}}}
+ },
+ "type": "object",
+ "required": ["state", "regions", "focus"],
+ "additionalProperties": false,
+ "properties": {
+  "state": {"const": "settings"},
+  "regions": {
+   "type": "object",
+   "required": ["realm", "companion", "sleeping", "sleep", "detail"],
+   "additionalProperties": false,
+   "properties": {
+    "realm": {"$ref": "row"},
+    "companion": {"$ref": "row"},
+    "sleeping": {"$ref": "row"},
+    "sleep": {"type": "object", "required": ["sub", "dim"], "additionalProperties": false, "properties": {"sub": {"type": "string", "minLength": 1}, "dim": {"type": "boolean"}}},
+    "detail": {
+     "type": "object",
+     "required": ["key", "title", "blocks", "foot"],
+     "additionalProperties": false,
+     "properties": {
+      "key": {"enum": ["realm", "companion", "sleeping", "sleep"]},
+      "title": {"type": "string", "minLength": 1},
+      "blocks": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "block"}},
+      "foot": {"type": "string"}
+     }
+    }
+   }
+  },
+  "focus": {
+   "type": "object",
+   "required": ["cur", "targets"],
+   "additionalProperties": false,
+   "properties": {
+    "cur": {"enum": ["realm", "companion", "sleeping", "sleep"]},
+    "targets": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "target"}}
+   }
+  }
+ }
+}

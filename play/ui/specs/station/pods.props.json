@@ -1,0 +1,189 @@
+{
+ "$comment": "The props of Pods (the pod picker, its filter tray and Find, the reading room and its trait overlay, Compare) (lvgl-switch.md §2.1): what views/pods-props.mjs gives the face, beside the frame's. Props name what, never where: strings, states, counts, asset ids, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from pods.json and the palette). An asset id names a picture the host has made ready (the view's `requests` list them); a picture the face does not hold draws nothing. Checked by prototypes/station/tests/pods-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum, oneOf).",
+ "$defs": {
+  "id": { "type": "string" },
+  "idOrNull": { "type": ["string", "null"] },
+  "target": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "group": { "type": "string" }, "index": { "type": "integer" }, "enabled": { "type": "boolean" } } },
+  "tab": { "type": "object", "required": ["id", "word", "state", "glint", "emblem"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "state": { "enum": ["unread", "read", "sealed"] }, "glint": { "type": "boolean" }, "emblem": { "type": "string" } } },
+  "cell": { "type": "object", "required": ["well", "name", "lines", "glyphs", "diff", "isNew"], "additionalProperties": false, "properties": { "well": { "type": "string" }, "name": { "type": "string" }, "lines": { "type": "array", "items": { "type": "string" } }, "glyphs": { "type": "array", "items": { "type": "object", "required": ["key", "asset"], "additionalProperties": false, "properties": { "key": { "enum": ["hides", "blend", "only", "asleep", "doing"] }, "asset": { "type": "string" } } } }, "diff": { "type": "boolean" }, "isNew": { "type": "boolean" }, "frost": { "type": "boolean" }, "outline": { "type": ["string", "null"] }, "crop": { "type": "string" }, "doing": { "type": "boolean" } } },
+  "page": { "type": "object", "required": ["region", "chapter", "sealedWell", "heading", "cells", "differs", "count", "sealedFind", "sealedPicture", "newMark", "overflow"], "additionalProperties": false, "properties": {
+   "region": { "type": "string" }, "chapter": { "type": "string" }, "plate": { "type": "string" }, "sealedWell": { "type": "string" },
+   "heading": { "oneOf": [ { "type": "null" }, { "type": "object", "required": ["emblem", "word"], "additionalProperties": false, "properties": { "emblem": { "type": "string" }, "word": { "type": "string" } } }, { "type": "object", "required": ["pod"], "additionalProperties": false, "properties": { "pod": { "type": "string" } } } ] },
+   "cells": { "type": "array", "items": { "$ref": "cell" } }, "differs": { "type": ["string", "null"] }, "count": { "type": "integer" }, "sealedFind": { "type": ["boolean", "null"] }, "sealedPicture": { "type": ["string", "null"] }, "newMark": { "type": ["string", "null"] }, "overflow": { "type": "boolean" } } },
+  "miniLane": {"type": "object", "required": ["ch", "n", "state"], "additionalProperties": false, "properties": {"ch": {"type": "string"}, "n": {"type": "integer"}, "state": {"enum": ["read", "unread", "sealed"]}}},
+  "fresh": {
+   "type": "object",
+   "required": ["left", "life", "amber", "bench"],
+   "additionalProperties": false,
+   "properties": {"left": {"type": "integer"}, "life": {"type": "integer"}, "amber": {"type": "boolean"}, "bench": {"type": "boolean"}}
+  },
+  "card": {
+   "type": "object",
+   "required": ["k", "row", "col", "niche", "shadow", "pod", "star", "isNew", "rail", "lock", "fresh", "name", "worth", "line", "amber"],
+   "additionalProperties": false,
+   "properties": {
+    "k": {"type": "integer"},
+    "row": {"type": "integer"},
+    "col": {"type": "integer"},
+    "niche": {"type": "string"},
+    "shadow": {"type": "string"},
+    "pod": {"type": "string"},
+    "star": {"type": "boolean"},
+    "isNew": {"type": "boolean"},
+    "rail": {"type": "array", "items": {"$ref": "miniLane"}},
+    "lock": {"type": "boolean"},
+    "fresh": {"$ref": "fresh"},
+    "name": {"type": "string"},
+    "worth": {"type": "string"},
+    "line": {"type": "string"},
+    "amber": {"type": "boolean"},
+    "husk": {"type": "boolean"}
+   }
+  },
+  "act": {
+   "type": "object",
+   "required": ["word", "dim", "ask"],
+   "additionalProperties": false,
+   "properties": {"word": {"type": "string"}, "dim": {"type": "boolean"}, "ask": {"type": "boolean"}}
+  },
+  "chip": {
+   "type": "object",
+   "required": ["id", "word", "lit", "dim"],
+   "additionalProperties": false,
+   "properties": {"id": {"type": "string"}, "word": {"type": "string"}, "lit": {"type": "boolean"}, "dim": {"type": "boolean"}}
+  },
+  "plate": {"type": "object", "required": ["word", "dim"], "additionalProperties": false, "properties": {"word": {"type": "string"}, "dim": {"type": "boolean"}}},
+  "band": {
+   "type": "object",
+   "required": ["id", "word", "dim", "reason"],
+   "additionalProperties": false,
+   "properties": {"id": {"type": "string"}, "word": {"type": "string"}, "dim": {"type": "boolean"}, "reason": {"type": "string"}, "chapter": {"type": "integer"}}
+  },
+  "indexRow": {
+   "type": "object",
+   "required": ["name", "mark", "state", "price", "emblem"],
+   "additionalProperties": false,
+   "properties": {
+    "name": {"type": "string"},
+    "mark": {"type": "string"},
+    "state": {"enum": ["read", "unread", "sealed"]},
+    "price": {"type": "string"},
+    "emblem": {"type": "string"}
+   }
+  },
+  "pageRow": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["name"],
+   "properties": {
+    "name": {"type": "string"},
+    "looks": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": ["look", "picture"],
+      "additionalProperties": false,
+      "properties": {"look": {"type": "string"}, "picture": {"type": "string"}}
+     }
+    },
+    "question": {"type": "string"},
+    "isNew": {"type": "boolean"},
+    "newWord": {"type": "string"},
+    "shown": {"type": "string"},
+    "hidden": {"type": "string"},
+    "shownWords": {"type": "string"},
+    "hiddenWords": {"type": "string"},
+    "use": {"type": "string"}
+   }
+  }
+ },
+ "type": "object",
+ "required": ["state", "regions", "focus"],
+ "additionalProperties": false,
+ "properties": {
+  "state": {
+   "enum": ["inventory", "filter", "find", "read", "compare"]
+  },
+  "regions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [],
+   "properties": {
+    "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "type": "string" } } } },
+    "rail": { "type": ["object", "null"], "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": ["integer", "null"] }, "open": { "type": "integer" }, "star": { "type": "string" }, "current": { "type": "integer" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
+    "pageA": { "$ref": "page" },
+    "pageB": { "$ref": "page" },
+    "compare": { "type": "object", "required": ["bench", "sides"], "additionalProperties": false, "properties": {
+     "bench": { "type": "string" },
+     "sides": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "object", "required": ["pod", "title", "which", "rail", "goal", "chapter", "count", "rows", "sealed", "differs", "take"], "additionalProperties": false, "properties": {
+      "pod": { "type": "string" }, "title": { "type": "string" }, "which": { "type": "string" }, "rail": {"oneOf": [{"type": "null"}, {"type": "object", "required": ["pic", "inset", "lanes", "marks"], "additionalProperties": false, "properties": {"pic": {"type": "string"}, "inset": {"type": "string"}, "hand": {"type": "integer"}, "nudge": {"type": "integer"}, "lanes": {"type": "array", "items": {"type": "object", "required": ["id", "n", "state", "marks"], "additionalProperties": false, "properties": {"id": {"type": "string"}, "n": {"type": "integer"}, "state": {"enum": ["read", "unread", "sealed"]}, "marks": {"type": "array", "items": {"enum": ["glint", "goal", "differs"]}}}}}, "marks": {"type": "object"}}}]}, "goal": { "type": "string" }, "chapter": { "type": "string" }, "count": { "type": "string" }, "sealed": { "type": "string" }, "differs": { "type": "string" }, "take": { "type": "string" },
+      "rows": { "type": "array", "maxItems": 6, "items": { "type": "object", "required": ["name", "look", "picture", "differs"], "additionalProperties": false, "properties": { "name": { "type": "string" }, "look": { "type": "string" }, "picture": { "type": "string" }, "differs": { "type": "boolean" } } } } } } } } },
+    "inv": {
+     "type": "object",
+     "required": ["answer", "verbs", "heading", "tools", "grid", "rail", "detail", "empty"],
+     "additionalProperties": false,
+     "properties": {
+      "answer": { "type": "boolean", "$comment": "Call's answer is on: the pods that need you carry a bubble and the others are dimmed (card.dim, card.bubble)" },
+      "verbs": { "type": "array", "items": { "type": "object", "required": ["id", "word", "on"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "word": { "type": "string" }, "on": { "type": "boolean" } } }, "$comment": "the verb line, in order: the caller's verb alone when it fixed one, else those on offer (none with no pods); `on` is the verb the picker is on" },
+      "heading": { "type": "string", "$comment": "the caller's heading beside the lone verb (Choose a pod); empty when the verbs are the player's to choose" },
+      "tools": { "type": "object", "required": ["sort", "filter", "filterAmber", "find", "dim"], "additionalProperties": false, "properties": { "sort": { "type": "string" }, "filter": { "type": "string" }, "filterAmber": { "type": "boolean" }, "find": { "type": "string" }, "dim": { "type": "boolean" } } },
+      "grid": { "type": "object", "required": ["cards", "first"], "additionalProperties": false, "properties": {
+       "cards": { "type": "array", "items": { "type": "object", "required": ["k", "row", "col", "pod", "name", "sealed", "mark", "fade", "held", "dim", "bubble", "bubbleKind"], "additionalProperties": false, "properties": { "k": { "type": "integer" }, "row": { "type": "integer" }, "col": { "type": "integer" }, "pod": { "type": "string" }, "name": { "type": "string" }, "sealed": { "type": "boolean" }, "dial": { "type": ["object", "null"], "properties": { "n": { "type": "integer" }, "m": { "type": "integer" }, "sealed": { "type": "integer" } } }, "dialPic": { "type": "string" }, "mark": { "enum": ["", "star", "drying", "new"] }, "fade": { "type": "boolean" }, "held": { "type": "boolean" }, "dim": { "type": "boolean" }, "bubble": { "type": "string" }, "bubbleKind": { "enum": ["", "goal", "drying", "new"] } } }, "$comment": "the pods of the rows from the one above the first on screen to the one under the second, row counted from the first row on screen; a pod that cannot take the verb is `fade`; the pod held for Compare is `held`" },
+       "first": { "type": "integer" } } },
+      "rail": { "oneOf": [{ "type": "null" }, { "type": "object", "required": ["share", "from"], "additionalProperties": false, "properties": { "share": { "type": "integer" }, "from": { "type": "integer" } } }] },
+      "detail": { "type": "object", "required": ["left", "right", "amber"], "additionalProperties": false, "properties": { "left": { "type": "string" }, "right": { "type": "string" }, "amber": { "type": "boolean" }, "rightDial": { "type": "string" }, "rightSealed": { "type": "boolean" } } },
+      "empty": { "type": "array", "items": { "type": "string" }, "$comment": "no pods, or none matching: the title and the quiet line under it; empty otherwise" }
+     }
+    },
+    "tray": {
+     "type": "object",
+     "required": ["rows"],
+     "additionalProperties": false,
+     "properties": {
+      "rows": {
+       "type": "array",
+       "items": {
+        "type": "object",
+        "required": ["head", "chips"],
+        "additionalProperties": false,
+        "properties": {"head": {"type": "string"}, "chips": {"type": "array", "items": {"$ref": "chip"}}}
+       }
+      }
+     }
+    },
+    "find": {
+     "type": "object",
+     "required": ["recent", "letters", "letter", "words", "first", "head", "recentKeys"],
+     "additionalProperties": false,
+     "properties": {
+      "recent": {"type": "array", "items": {"type": "string"}},
+      "letters": {
+       "type": "array",
+       "items": {"type": "object", "required": ["ch", "lit"], "additionalProperties": false, "properties": {"ch": {"type": "string"}, "lit": {"type": "boolean"}}}
+      },
+      "letter": {"type": ["string", "null"]},
+      "words": {
+       "type": "array",
+       "items": {
+        "type": "object",
+        "required": ["word", "kind", "row"],
+        "additionalProperties": false,
+        "properties": {"word": {"type": "string"}, "kind": {"type": "string"}, "row": {"type": "string"}}
+       }
+      },
+      "first": {"type": "string"},
+      "head": {"type": "string"},
+      "recentKeys": {
+       "type": "array",
+       "items": {"type": "object", "required": ["word", "kind"], "additionalProperties": false, "properties": {"word": {"type": "string"}, "kind": {"type": "string"}}}
+      }
+     }
+    },
+    "read": { "type": "object", "$comment": "the reading screen v2 (views/reading-props.mjs): the pictures by id and what each frame shows; a key that is absent is not shown", "required": ["base", "glyph", "name", "why", "chamber", "marks"], "additionalProperties": false, "properties": {
+     "base": { "type": "string" }, "lamp": { "type": "string" }, "glyph": { "type": "string" }, "name": { "type": "string" }, "why": { "type": "string" }, "chamber": { "type": "string" }, "from": { "type": "string" },
+     "marks": { "type": "object" }, "rail": { "type": "object" }, "right": { "type": "object" }, "reading": { "type": "object" }, "stamp": { "type": "object" } } }
+   }
+  },
+  "focus": { "type": "object", "required": ["cur", "targets", "resolve"], "additionalProperties": false, "properties": { "cur": { "type": ["string", "null"] }, "targets": { "type": "array", "items": { "$ref": "target" } }, "resolve": { "type": "object", "additionalProperties": { "type": ["string", "null"] } } } }
+ }
+}

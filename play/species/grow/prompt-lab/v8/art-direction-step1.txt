@@ -1,0 +1,23 @@
+Image 1 is the part map: structure, proportion and placement only, never the look. Image 2 is the colour key, the authority on colour: one colour an area, unbroken, shaded only by light; no markings it does not show.
+
+Draw HiBit pixel art on a 280×300 grid in the house rendering, which every species obeys whatever its material:
+
+Light: warm key from the upper left at 45 degrees; cool fill a third as strong; one cool rim on the upper right edge.
+
+Shading: per colour a lit tone, two shadow steps, one specular cluster on the highest lit form; occlusion where parts touch.
+
+Contour: no outline of any colour; edges read by value alone.
+
+Eyes: round and wet; the species iris fills the ring around a dark pupil; one soft lid line on top; two glints, large upper left, small lower right.
+
+Surface: the material in the two or three touches the species notes name, where the light falls; elsewhere broad smooth clusters, never texture noise.
+
+Finish: a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm.
+
+Framing: the whole creature, wings and antennae included, spans four fifths of the frame at its larger dimension, centred, feet on a ground line one tenth above the bottom.
+
+Ground: flat #f6f3ec edge to edge; a small soft contact shadow under the feet, nothing else.
+
+Keep every part as Image 1 places it, facing viewer-left. Invent nothing.
+
+Not: dither, panels, vignettes, scene, text.

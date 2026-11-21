@@ -1,0 +1,26 @@
+{
+ "species": 1,
+ "version": 1,
+ "copies": {
+  "appearance.markings": [
+   "P",
+   "p"
+  ],
+  "form.crown": [
+   "C",
+   "c"
+  ],
+  "appearance.rings": [
+   "R",
+   "r"
+  ],
+  "movement.drive": [
+   "M",
+   "m"
+  ],
+  "movement.efficiency": [
+   "E",
+   "e"
+  ]
+ }
+}

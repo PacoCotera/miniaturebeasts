@@ -1,0 +1,169 @@
+{
+ "note": "Recorded by tools/realm-run.mjs on the v10 page (the release: a new realm is generator 5, life by land): 20 expeditions, seed 7, generator 5, no mibis. Retaken once at the release; the digest moves only with the world.",
+ "seed": 7,
+ "gen": 7,
+ "expeditions": 20,
+ "mibis": 0,
+ "dock": 0,
+ "stopMid": false,
+ "presses": 4121,
+ "digest": "6c63b97fd52bee07018a7735881a4d8afb1031e2620699900a24f4c35e1440cd",
+ "steps": [
+  {
+   "n": 1,
+   "presses": 188,
+   "turn": 1,
+   "bay": 0,
+   "d": "de7a1cb42f2de034"
+  },
+  {
+   "n": 2,
+   "presses": 409,
+   "turn": 2,
+   "bay": 1,
+   "d": "46089713d4778251"
+  },
+  {
+   "n": 3,
+   "presses": 643,
+   "turn": 3,
+   "bay": 1,
+   "d": "dc8bc5aeed1cb4f1"
+  },
+  {
+   "n": 4,
+   "presses": 751,
+   "turn": 4,
+   "bay": 1,
+   "d": "73ae6851f60eb5fa"
+  },
+  {
+   "n": 5,
+   "presses": 958,
+   "turn": 5,
+   "bay": 1,
+   "d": "a37cae1454d34411"
+  },
+  {
+   "n": 6,
+   "presses": 1359,
+   "turn": 6,
+   "bay": 1,
+   "d": "e2801591514a8b83"
+  },
+  {
+   "n": 7,
+   "presses": 1494,
+   "turn": 7,
+   "bay": 1,
+   "d": "05bb97db1c27a7ed"
+  },
+  {
+   "n": 8,
+   "presses": 1628,
+   "turn": 8,
+   "bay": 1,
+   "d": "df39200fc781ca03"
+  },
+  {
+   "n": 9,
+   "presses": 1842,
+   "turn": 9,
+   "bay": 1,
+   "d": "01f74cebd79803aa"
+  },
+  {
+   "n": 10,
+   "presses": 2026,
+   "turn": 10,
+   "bay": 1,
+   "d": "a47aa061f40e497f"
+  },
+  {
+   "n": 11,
+   "presses": 2210,
+   "turn": 11,
+   "bay": 1,
+   "d": "a313fba4c2f85d9c"
+  },
+  {
+   "n": 12,
+   "presses": 2401,
+   "turn": 12,
+   "bay": 1,
+   "d": "03b4a2b1db4f7a2b"
+  },
+  {
+   "n": 13,
+   "presses": 2678,
+   "turn": 13,
+   "bay": 1,
+   "d": "3b36b3a7309fa4c7"
+  },
+  {
+   "n": 14,
+   "presses": 2820,
+   "turn": 14,
+   "bay": 1,
+   "d": "6e1d3d0db0a1fe47"
+  },
+  {
+   "n": 15,
+   "presses": 3044,
+   "turn": 15,
+   "bay": 1,
+   "d": "ecb7cd8f4862d93d"
+  },
+  {
+   "n": 16,
+   "presses": 3276,
+   "turn": 16,
+   "bay": 2,
+   "d": "92a5300be653dd18"
+  },
+  {
+   "n": 17,
+   "presses": 3445,
+   "turn": 17,
+   "bay": 2,
+   "d": "7050579e77107590"
+  },
+  {
+   "n": 18,
+   "presses": 3646,
+   "turn": 18,
+   "bay": 2,
+   "d": "c696c374b4e2aed0"
+  },
+  {
+   "n": 19,
+   "presses": 3973,
+   "turn": 19,
+   "bay": 2,
+   "d": "d6b01bb762de0261"
+  },
+  {
+   "n": 20,
+   "presses": 4121,
+   "turn": 20,
+   "bay": 2,
+   "d": "6c63b97fd52bee07"
+  }
+ ],
+ "summary": {
+  "turn": 20,
+  "expN": 21,
+  "gen": 7,
+  "revealed": 125,
+  "visited": 25,
+  "called": 25,
+  "pods": 72,
+  "creatures": 818,
+  "bay": 2,
+  "hold": null,
+  "mibis": 0,
+  "carried": 0,
+  "known": 0,
+  "exp": null
+ }
+}
