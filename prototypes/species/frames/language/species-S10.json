@@ -114,12 +114,12 @@
   "shellPattern": "soft ribs",
   "colourPair": [
    {
-    "pigment": "charcoal",
-    "hex": "#2F6E74"
+    "pigment": "pale-pink",
+    "hex": "#b7747f"
    },
    {
-    "pigment": "cream",
-    "hex": "#C17C4E"
+    "pigment": "deep-pink",
+    "hex": "#9a5566"
    }
   ]
  },

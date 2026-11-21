@@ -332,7 +332,7 @@ export function languageFields(id, clan, species) {
   const pink = id === "S10";   // the Igara's own pinks (catalogue 15, owner 2026-11-20 "pale pink"), not the land's nearest pigment
   const anchor = pink ? "pale-pink" : owns ? clan.anchor : nearestPigment(BODY_PIGMENTS, land.body.hex);
   const second = pink ? "deep-pink" : owns ? clan.second : nearestPigment(SECOND_PIGMENTS, land.marking.hex);
-  const podPair = owns ? null : [{ pigment: pink ? nearestPigment(BODY_PIGMENTS, land.body.hex) : anchor, hex: land.body.hex }, { pigment: nearestPigment(SECOND_PIGMENTS, land.accent.hex), hex: land.accent.hex }];
+  const podPair = owns ? null : pink ? [{ pigment: "pale-pink", hex: "#b7747f" }, { pigment: "deep-pink", hex: "#9a5566" }] : [{ pigment: pink ? nearestPigment(BODY_PIGMENTS, land.body.hex) : anchor, hex: land.body.hex }, { pigment: nearestPigment(SECOND_PIGMENTS, land.accent.hex), hex: land.accent.hex }];
   return { feature, features, finish, anchor, second, podPair, habitat: everyLand ? OWED["land.all"] : land.word };
 }
 
