@@ -42,8 +42,8 @@
  },
  "catalogue": {
   "id": "mb-genome-framework",
-  "version": 12,
-  "digest": "5ad433155a9aac8b9012f9857057b30dd72316c7974ae29532440cc9d61435e1",
+  "version": 15,
+  "digest": "4b5fdc8defb9bbf4331a62ee4865ef5447cd6a685922e258cd400e28c46937fe",
   "parent": {
    "id": "genomic-compositional-source-experiment",
    "version": 6,
@@ -81,8 +81,8 @@
   ]
  },
  "signature": {
-  "anchor": "russet",
-  "second": "peach",
+  "anchor": "pale-pink",
+  "second": "deep-pink",
   "feature": "small ears and a broad tail; the water players",
   "features": {
    "anatomy.exterior-eye-presence": "on",
@@ -117,12 +117,12 @@
   "shellPattern": "soft ribs",
   "colourPair": [
    {
-    "pigment": "russet",
-    "hex": "#ae674d"
+    "pigment": "pale-pink",
+    "hex": "#b7747f"
    },
    {
-    "pigment": "peach",
-    "hex": "#ffd7c5"
+    "pigment": "deep-pink",
+    "hex": "#9a5566"
    }
   ]
  },
@@ -139,12 +139,9 @@
       "appearance.body-palette"
      ],
      "looks": [
-      "russet",
-      "russet and charcoal",
-      "russet and jade",
-      "charcoal",
-      "charcoal and jade",
-      "jade"
+      "pale-pink",
+      "pale-pink and deep-pink",
+      "deep-pink"
      ],
      "nature": "look",
      "shapeable": true,
@@ -187,12 +184,9 @@
       "appearance.underside-palette"
      ],
      "looks": [
-      "peach",
-      "peach and cream",
-      "peach and slate",
-      "cream",
-      "cream and slate",
-      "slate"
+      "deep-pink",
+      "deep-pink and pale-pink",
+      "pale-pink"
      ],
      "nature": "look",
      "shapeable": true,
@@ -425,17 +419,13 @@
    "trait": "colour",
    "shapeable": true,
    "alleles": [
-    "russet",
-    "charcoal",
-    "jade"
+    "pale-pink",
+    "deep-pink"
    ],
    "looks": [
-    "russet",
-    "russet and charcoal",
-    "russet and jade",
-    "charcoal",
-    "charcoal and jade",
-    "jade"
+    "pale-pink",
+    "pale-pink and deep-pink",
+    "deep-pink"
    ],
    "guard": "sketch: the body pigment slot",
    "changedBy": "player"
@@ -452,17 +442,13 @@
    "trait": "second-colour",
    "shapeable": true,
    "alleles": [
-    "peach",
-    "cream",
-    "slate"
+    "deep-pink",
+    "pale-pink"
    ],
    "looks": [
-    "peach",
-    "peach and cream",
-    "peach and slate",
-    "cream",
-    "cream and slate",
-    "slate"
+    "deep-pink",
+    "deep-pink and pale-pink",
+    "pale-pink"
    ],
    "guard": "sketch: the second pigment slot (chains, flaps, ears, tail, belly, masks)",
    "changedBy": "player"
@@ -2080,7 +2066,7 @@
     "traits": 2
    }
   },
-  "fieldGuideLooks": 74,
+  "fieldGuideLooks": 68,
   "stampBitsPerCopy": 31
  },
  "notYet": {
@@ -2113,12 +2099,12 @@
      "high"
     ],
     "appearance.body-palette": [
-     "russet",
-     "russet"
+     "pale-pink",
+     "pale-pink"
     ],
     "appearance.underside-palette": [
-     "peach",
-     "peach"
+     "deep-pink",
+     "deep-pink"
     ],
     "appearance.surface-texture": [
      "ridged",
@@ -2367,9 +2353,8 @@
  },
  "pools": {
   "appearance.body-palette": [
-   "russet",
-   "charcoal",
-   "jade"
+   "pale-pink",
+   "deep-pink"
   ],
   "growth.exterior-eye-size-ratio": [
    "small",
@@ -2425,9 +2410,8 @@
    "high"
   ],
   "appearance.underside-palette": [
-   "peach",
-   "cream",
-   "slate"
+   "deep-pink",
+   "pale-pink"
   ],
   "energy.action-efficiency": [
    "low",

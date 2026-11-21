@@ -14,8 +14,8 @@ const langDir = path.resolve(here, "../frames/language");
 const PIN13_DIGEST = "8d405a729aeb9973c026c9823b316405d91c6c01402b51870f471b9a1c551fd5";
 
 test("catalogue 14 adds one trunk record, form.torso-length, from frame 9, and nothing else", () => {
-  assert.equal(CATALOGUE.version, 14);
-  assert.equal(CATALOGUE.schema, "mb-catalogue/14");
+  assert.equal(CATALOGUE.version, 15);
+  assert.equal(CATALOGUE.schema, "mb-catalogue/15");
   assert.equal(BODY_LENGTH_FRAME, 9);
   assert.deepEqual(CATALOGUE.loci.filter((l) => l.sinceFrame === 9).map((l) => l.id), ["form.torso-length"]);
   const l = LOCI.get("form.torso-length");

@@ -44,7 +44,7 @@ const C20 = A3.filter((r) => r[2] === "C20").map((r) => r[1]);
 const NEW = A3.filter((r) => r[2] === "new" || r[2] === "C20").map((r) => r[1]);
 
 test("pin 12 (pin 11 and the Peplos genome), as pin 13 still sees it at frame 7: 227 records, and a content digest that is the SHA-256 of what a genome rests on", () => {
-  assert.equal(CATALOGUE.version, 14); assert.equal(CATALOGUE.schema, "mb-catalogue/14");   // the language pin (tests/pin13.test.mjs) adds records and alleles that start at frame 8
+  assert.equal(CATALOGUE.version, 15); assert.equal(CATALOGUE.schema, "mb-catalogue/15");   // the language pin (tests/pin13.test.mjs) adds records and alleles that start at frame 8
   assert.equal(CATALOGUE.loci.filter((l) => !(l.sinceFrame > 7)).length, 179 + 48); assert.equal(CATALOGUE.loci.length, 179 + 48 + 7); assert.equal(VALIDATED.length, 173 + 48 + 7);
   assert.match(CATALOGUE.digest, /^[0-9a-f]{64}$/);
   assert.equal(CATALOGUE.digest, digestAt(Infinity)); assert.notEqual(CATALOGUE.digest, digestAt(7), "pin 13 is another content");
@@ -192,7 +192,7 @@ test("the marking layout gains masked, points, spotted and capped after bands an
 const PIN12_FRAME_FILES = {
   "species-S01.json": "18412b5b642a9a22", "species-S02.json": "945dbed534c5ad02", "species-S03.json": "7ac4061184502a4b", "species-S04.json": "a510e9835060832e",
   "species-S05.json": "9199c63a0a07ceb1", "species-S06.json": "1750ed0180346c19", "species-S07.json": "be89135b8b52eecf", "species-S08.json": "2ab99f4732e2ac0d",
-  "species-S09.json": "c0eca214bc2649c9", "species-S10.json": "70b99bc0b8c04733", "species-S11.json": "125473a516f8be50", "species-S12.json": "404dfd949c8d6ab3",
+  "species-S09.json": "c0eca214bc2649c9", "species-S10.json": "4f8d0a3e9acb40fc", "species-S11.json": "125473a516f8be50", "species-S12.json": "404dfd949c8d6ab3",
   "species-S13.json": "fbaa7b8c5f05d8b9", "species-S14.json": "865a1da1273a12e2", "species-S15.json": "bcda13c674438753", "species-S16.json": "5760a85cc0f194de",
   "species-S17.json": "4e28abd429af5d39", "species-S18.json": "983f2a85be0a609a", "species-S19.json": "644468ed27b533e3", "index.json": "9a1a6b6380bea6ff",
 };
@@ -204,7 +204,8 @@ test("every S01 to S19 frame is byte for byte the merge baseline, names pin 12 w
   for (const f of files.filter((x) => x.startsWith("species-"))) {
     const d = JSON.parse(readFileSync(path.join(framesDir, f), "utf8"));
     const fv = d.frameVersion ?? 4;
-    assert.equal(d.catalogue.version, 12, `${d.species.id} names pin 12`); assert.equal(d.catalogue.digest, digestAt(fv), `${d.species.id}: the digest of the content its frame version ${fv} sees`);
+    const pink = d.species.id === "S10";   // catalogue 15: the Igara's frame 5 holds the two pinks
+    assert.equal(d.catalogue.version, pink ? 15 : 12, `${d.species.id} names pin ${pink ? 15 : 12}`); assert.equal(d.catalogue.digest, digestAt(fv, d.species.id), `${d.species.id}: the digest of the content its frame version ${fv} sees`);
     for (const l of d.loci) assert.ok(!(LOCI.get(l.id).sinceFrame > fv), `${d.species.id} lists ${l.id}`);
     for (const a of d.absent) assert.ok(!(LOCI.get(a.id).sinceFrame > fv), `${d.species.id} lists ${a.id} as absent`);
     for (const l of d.loci) for (const a of l.alleles ?? []) assert.ok(LOCI.get(l.id).alleles.some((x) => x.id === a && !(x.sinceFrame > fv)), `${d.species.id} ${l.id}: ${a}`);

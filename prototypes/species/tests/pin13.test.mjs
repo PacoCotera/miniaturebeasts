@@ -20,8 +20,8 @@ const build = (s) => buildFrame(s, { samples: 12 });
 const refusal = (s) => { try { build(s); return null; } catch (e) { return e.message; } };
 
 test("catalogue 13 is the language pin: six new trunk records, each from frame 8", () => {
-  assert.equal(CATALOGUE.version, 14);
-  assert.equal(CATALOGUE.schema, "mb-catalogue/14");
+  assert.equal(CATALOGUE.version, 15);
+  assert.equal(CATALOGUE.schema, "mb-catalogue/15");
   assert.equal(LANGUAGE_FRAME, 8);
   const fresh = CATALOGUE.loci.filter((l) => l.sinceFrame);
   assert.deepEqual(fresh.filter((l) => l.sinceFrame === 8).map((l) => l.id), ["anatomy.eye-count", "appearance.iris-colour", "appearance.attitude", "signature.size", "signature.count", "signature.curl"]);
@@ -164,12 +164,12 @@ test("every form frame of version 7 or older is as at pin 12: schema /2, pin 12 
     const id = f.species.id, fv = f.frameVersion ?? 4;
     assert.ok(fv < LANGUAGE_FRAME);
     assert.equal(f.schema, "mb-species-frame/2", id);
-    assert.equal(f.catalogue.version, 12, `${id}: stamped as built, pin 12`);
-    assert.equal(f.catalogue.digest, digestAt(fv), `${id}: the digest of the content its version sees`);
+    assert.equal(f.catalogue.version, id === "S10" ? 15 : 12, `${id}: stamped as built, pin ${id === "S10" ? 15 : 12} (the Igara holds the pinks of catalogue 15)`);
+    assert.equal(f.catalogue.digest, digestAt(fv, id), `${id}: the digest of the content its version sees`);
     for (const row of f.loci) {
       assert.ok(!(LOCI.get(row.id).sinceFrame > fv), `${id}: ${row.id} starts at a later frame`);
-      for (const a of row.alleles ?? []) assert.ok(alleleIds(row.id, fv).includes(a), `${id}: ${row.id} ${a}`);
-      for (const a of row.copies ?? []) assert.ok(alleleIds(row.id, fv).includes(a), `${id}: ${row.id} ${a}`);
+      for (const a of row.alleles ?? []) assert.ok(alleleIds(row.id, fv, id).includes(a), `${id}: ${row.id} ${a}`);
+      for (const a of row.copies ?? []) assert.ok(alleleIds(row.id, fv, id).includes(a), `${id}: ${row.id} ${a}`);
     }
     assert.ok(!("family" in f) && !("land" in f) && !("part" in f.signature), `${id}: no language header`);
     assert.ok(!f.plan.eyes);
@@ -181,7 +181,7 @@ test("the stamp registry's allele lists for frames older than 8 hold none of cat
   assert.ok(old.length >= 19);
   for (const sf of old) for (const ch of sf.chapters) for (const l of ch.loci) {
     assert.ok(!(LOCI.get(l.id).sinceFrame > sf.version), `${sf.id} v${sf.version}: ${l.id} starts at a later frame`);
-    for (const a of l.alleles) assert.ok(alleleIds(l.id, 7).includes(a), `${sf.id} v${sf.version}: ${l.id} lists ${a}`);
+    for (const a of l.alleles) assert.ok(alleleIds(l.id, 7).includes(a) || (sf.id === "S10" && sf.version === 5 && /-pink$/.test(a)), `${sf.id} v${sf.version}: ${l.id} lists ${a}`);
   }
 });
 
