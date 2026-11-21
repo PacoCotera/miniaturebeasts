@@ -2,7 +2,7 @@
 // the records), without that module's imports of the LDtk reader (Ajv, node:fs), which a browser cannot load; tests/gen7-bake.test.mjs holds the two equal on sample cells. The layer descriptors
 // come from art/gen7/layers.json (tools/gen7-layers.mjs), the tile set from the baked .mbtiles. Pure: no page state.
 import { terrainLayers, packDepth, EMPTY, FILL_CODE, splitCode } from '../../places/src/dualgrid.mjs';
-import { ALT_CODE, applyOpenEdges, cliffInfo } from '../../places/src/bake/openedges.mjs';
+import { ALT_CODE, applyOpenEdges, cliffInfo, rimSteps } from '../../places/src/bake/openedges.mjs';
 import { cliffDecals } from '../../places/src/bake/southruns.mjs';
 
 export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
@@ -49,7 +49,7 @@ export function bakeCell(ir, ctx) {
   const block = new Uint8Array((ir.w * ir.h + 7) >> 3), setBit = i => { block[i >> 3] |= 1 << (i & 7); };
   for (let i = 0; i < ir.w * ir.h; i++) { const pl = playOf.get(ir.terrain[i]); if (pl === 'block' || pl === 'deep') setBit(i); }
   const cl = cliffInfo(ir, terrains);
-  for (const i of cl.blockCells) setBit(i);   // relief: the ring, face and flank cells
+  for (const i of cl.blockCells) if (!cl.ringCells.has(i)) setBit(i);   // relief: the face and flank cells; a ring cell is drawn as top grass and walks, only the step across its rim line is refused (rimSteps, bugs #99, #100)
   for (const cell of footprintCells(ir, ts).keys()) setBit(cell);
   return {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: '',
@@ -59,6 +59,6 @@ export function bakeCell(ir, ctx) {
     landmarks: ir.landmarks.filter(l => l.prop && spriteFor(ts, 'prop', l.prop)).map(l => ({ prop: index('prop', l.prop), x: l.x, y: l.y, label: l.label })),
     openings: ir.openings.map(o => ({ side: o.side, from: o.from, to: o.to })),
     spawns: ir.spawns.map(s => ({ x: s.x, y: s.y, w: s.w, h: s.h, species: s.species, count: s.count })),
-    blockMask: block, top: ir.top || new Uint8Array(0),
+    blockMask: block, rimSteps: rimSteps(ir, terrains), top: ir.top || new Uint8Array(0),
   };
 }

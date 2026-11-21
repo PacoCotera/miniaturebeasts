@@ -2507,6 +2507,7 @@ function blockWords(lay, x, y, o) {
   if (o.t === T.ROCK && lay.press && lay.press[i] === 1 && !(lay.steep && lay.steep[i])) return B.stone;   // a cliff tile is steep rock, not a stone (bug #45: "what stone?")
   return B.rock;
 }
+const RIM_BIT = { up: 1, down: 2, left: 4, right: 8 };   // the steps a ring cell's rim line refuses (lay.rim, adapt7.mjs)
 function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
   P.dir = dir; P.noise = mode;
@@ -2518,6 +2519,7 @@ function patchStep(dir, mode) {
     return; }
   { const lay = layout(key), lc = lay.lines && lay.lines.cells.get(y * lay.w + x);   // past a range line or into a closed opening: the reason, nothing spent
     if (lc) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(lc.text); return; } }
+  { const lay = layout(key); if (lay.rim && (lay.rim[P.y * lay.w + P.x] & RIM_BIT[dir])) { if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(WORDS.block.rock); return; } }   // the step across a drawn rim line (a ring cell walks up to it; bugs #99, #100)
   let o = occupant(key, x, y, 'player');
   if (o && o.type === 'tile' && softTileOpen(layout(key), o.t, x, y)) { noteSureTile(o.t); o = live.pt && live.pt.x === x && live.pt.y === y ? { type: 'pt' } : null; }   // mud, scree or a dug bank, for the partner that crosses it (it may be standing there: you trade places)
   if (stepsOver(key, o, x, y)) o = null;   // small things (a cup, a tuft, a fruit, a strike mark) are walked onto; standing on one offers its action

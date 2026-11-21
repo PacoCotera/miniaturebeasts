@@ -28,6 +28,9 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const b = P(x, y); if (!((place.blockMask[b >> 3] >> (b & 7)) & 1)) continue;
     if (place.terrain[b] === cliffV) { tiles[I(x, y)] = T.ROCK; press[I(x, y)] = 1; steep[I(x, y)] = 1; } else if (!T_BLOCK[tiles[I(x, y)]]) { tiles[I(x, y)] = T.ROCK; steep[I(x, y)] = 1; }
   }
+  const rimBits = new Uint8Array(NP);   // the steps a rim line refuses (openedges.rimSteps, bits up 1, down 2, left 4, right 8): a ring cell walks, the step across its drawn line does not (bugs #99, #100)
+  if (place.rimSteps) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) rimBits[I(x, y)] = place.rimSteps[P(x, y)];
+  const RIM_BIT = { '0,-1': 1, '0,1': 2, '-1,0': 4, '1,0': 8 };
   const propFoot = new Uint8Array(NP);   // the tiles a prop stands on (a steep tile under a prop shows the prop)
   for (const p of place.props) {
     const s = ts.sprites[p.kind], cx = Math.floor(p.x / 48) - 1, cy = Math.floor(p.y / 48) - 1;
@@ -92,7 +95,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
     let id = compId[I(pt.x, pt.y)];
     if (!id) { id = ++nc; const stack = [I(pt.x, pt.y)]; compId[stack[0]] = id;
       while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0;
-        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!compId[j] && !T_BLOCK[tiles[j]]) { compId[j] = id; stack.push(j); } } } }
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!compId[j] && !T_BLOCK[tiles[j]] && !(rimBits[i] & RIM_BIT[dx + ',' + dy])) { compId[j] = id; stack.push(j); } } } }
   }
   const reach = compId.map(v => v ? 1 : 0), size = new Array(nc + 1).fill(0); for (let i = 0; i < NP; i++) size[compId[i]]++;
   let mainComp = 1; for (let k = 1; k <= nc; k++) if (size[k] > size[mainComp]) mainComp = k;   // the biggest ground: where a walk that comes from no side starts
@@ -172,7 +175,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
   const lay = {
     key: o.key, cell: o.cell, cave: false, land: o.land, base: T.GRASS, tiles, shelter, pieces, stamps: ir.stamps || [], feats, terr: new Uint8Array(NP), tmask: new Uint8Array(NP), stairs: [], reach, spawnPt,
     sdist, trees: {}, shade: false, w, h, openings, clear, compId, compOfSide, mainComp, findSlots: finds.map(f => ({ x: f.x, y: f.y, kinds: [f.what], chance: 1 })),
-    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
+    baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, rim: rimBits, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
     strikes, decalNear, coverAt,...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
