@@ -1089,7 +1089,16 @@ function landOf(seed) {
   const S = ctxOf(seed), T = worldTiles(seed);
   const biome = (gx, gy) => S.re.slotBiome[((clamp((gy / CH) | 0, 0, RH - 1) / MH) | 0) * ATLAS + ((clamp((gx / CW) | 0, 0, RW - 1) / MW) | 0)];
   const slots = []; for (let ay = 0; ay < ATLAS; ay++) for (let ax = 0; ax < ATLAS; ax++) slots.push({ ax, ay, biome: S.re.slotBiome[ay * ATLAS + ax], x0: ax * MW * CW, y0: ay * MH * CH, x1: (ax + 1) * MW * CW - 1, y1: (ay + 1) * MH * CH - 1 });
-  return { T, G: worldGround(seed), biome, mask: maskFn(seed), W: WTW, H: WTH, wayups: stairsOf(S).filter(st => st.wayup).map(st => st.wayup), slots };
+  // The way ups are found on first read (findWayup is ~50 ms a stair, 7 s for the realm's 150: the first place waited on them all). wayupsNear(x, y) is the ones of the stairs that could reach the tile: a stair's site
+  // lies from the cell west to the cell east of its cell, from its top row to the cell south of it (levels.mjs siteOf), and the decor's zone round a way up is under 8 tiles; so the stairs of the cells round the
+  // tile's cell are asked, which is a superset of the ones that matter. The same tiles are answered as with the whole list.
+  const stairs = stairsOf(S), by = new Map(), here = new Map();
+  for (const st of stairs) { if (st.kind !== 'south') continue; const X = st.A[0], Y = st.A[1];
+    for (let cy = Y - 1; cy <= Y + 2; cy++) for (let cx = X - 2; cx <= X + 2; cx++) { const k = cy * 1000 + cx; let l = by.get(k); if (!l) by.set(k, l = []); l.push(st); } }
+  const wayupsNear = (gx, gy) => { const k = ((gy / CH) | 0) * 1000 + ((gx / CW) | 0); let r = here.get(k);
+    if (!r) { r = []; for (const st of by.get(k) || []) { const w = st.wayup; if (w) r.push(w); } here.set(k, r); } return r; };
+  let all = null;
+  return { T, G: worldGround(seed), biome, mask: maskFn(seed), W: WTW, H: WTH, get wayups() { return all || (all = stairs.filter(st => st.wayup).map(st => st.wayup)); }, wayupsNear, slots };
 }
 const SITES = new Map();   // the Hollow Tree sites made so far, by seed: 'ax,ay' -> { x, y, slot } or null. The decor of the seed makes into it; a site made off the page (src/realm-worker.mjs) is merged in by presetHollowSites
 const siteCacheOf = seed => { let m = SITES.get(seed); if (!m) { if (SITES.size > 3) SITES.clear(); m = new Map(); SITES.set(seed, m); } return m; };

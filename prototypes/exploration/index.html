@@ -489,7 +489,7 @@ function firstPods(seed, cell, pods) {
   const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
   const ok = c => podSite(c, buried());
   // a first pod lies in a place that holds a pod slot (the find mix gives most places one, not every place): a few picks are tried, one place's layout each
-  const hasSlot = c => !(PL.ready && G.gen === 7) || (layout(String(c)).podSlots || []).length > 0;
+  const hasSlot = c => { if (firstPods.need && !placeHave(String(c))) throw { needCell: c }; return !(PL.ready && G.gen === 7) || (layout(String(c)).podSlots || []).length > 0; };   // need: the set-out asks for exactly the places this reads (startExpedition), never baking one on the page
   const pick = (pools, id, sp) => { let pool = pools.find(a => a.length); for (let n = 0; pool && n < 6; n++) { const c = R.pick(pool); if (!hasSlot(c) && pool.length > 1) { pool = pool.filter(q => q !== c); continue; } out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); break; } };
   const d1 = reach.filter(c => dist(c) === 1);
   // pod A lies in the start's own place when it holds a pod slot (the generator gives every start one: hold.mjs, "a start's guarantees"), so the first Call there can lift it; else at distance 1 as before
@@ -765,6 +765,18 @@ const SIGNS_OWED = new Map();   // cell -> the turn its sign was read at, for a 
 function signsOwe(c) {
   if (SIGNS_OWED.has(c)) return; SIGNS_OWED.set(c, S.turn);
   readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), [c], { ctx: PL.ctx });
+}
+const reachHere = ex => ex.reach.every(c => !passable(c) || G.land[c] === L.WATER || placeHave(String(c)));   // every place chooseWarm and ensureCharge read is here
+let WARM_PAYING = null;
+function warmPay() {   // each frame: the warm stones the set-out owed (its far places were not made yet) are chosen once every place of the reach is here, over the same cells and the same seeds as at set-out. Returns the promise of the payment, or null
+  const ex = S && S.exp; if (!ex || !ex.warmOwed || !reachHere(ex)) return null;
+  if (WARM_PAYING) return WARM_PAYING;
+  const saveId = S.wid;
+  return WARM_PAYING = (async () => {   // each place is laid out in its own turn (no turn holds the page for more than about a frame), then the choice is made at once
+    let t0 = performance.now();
+    for (const c of ex.reach) { if (!passable(c) || G.land[c] === L.WATER) continue; try { layout(String(c)); } catch (e) { /* the choice finds it */ } if (performance.now() - t0 > 12) { await yieldTurn(); t0 = performance.now(); } }
+    if (S && S.wid === saveId && S.exp === ex && ex.warmOwed) { delete ex.warmOwed; chooseWarm(ex); ensureCharge(ex); save(); }
+  })().finally(() => { WARM_PAYING = null; });
 }
 function signsPay() {   // each frame: a cell owed its sign whose place has come is read now (one a frame), at the turn it was reached
   for (const [c, turn] of SIGNS_OWED) { if (!placeHave(String(c))) continue; SIGNS_OWED.delete(c); recordSigns(c, turn); return; }
@@ -2149,10 +2161,10 @@ function ensureCharge(ex) {
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
-function startExpeditionNow(type, cell) {
+function startExpeditionNow(type, cell, firstPodList) {   // firstPodList: the first pods, already worked out by startExpedition (it waited for the places they read)
   flushRipe();
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
-  if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
+  if (firstPlacement()) S.pods.push(...(firstPodList || firstPods(S.seed, cell, S.pods)));   // a new world's first expedition: two pods in reach (X2)
   const sr = shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
   if (sr) { const c = shedCell(cell, tier.range, S.pods, sr.g);
     if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
@@ -2172,7 +2184,7 @@ function startExpeditionNow(type, cell) {
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
   revealAround(cell, 1); S.visited[cell] = 1;
   ex.reach = reachCells(cell, ex.range);
-  chooseWarm(ex); ensureCharge(ex);
+  if (reachHere(ex)) { chooseWarm(ex); ensureCharge(ex); } else { ex.warm = []; ex.warmOwed = true; }   // the places of the far reach are still being made: the warm stones are chosen over all of them when they are here (warmPay), as they always were
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : rd ? ' · ' + CARE_TEXT.riderMenu(rd.name) : '') + ' · tier ' + S.tier + (ex.range > tier.range ? ' · one ring further' : ''));
   meet('flag');   // the map's cell line says "End expedition here" with its flag: no card, the flag joins the Probe
@@ -2415,30 +2427,39 @@ function beginPlaceWait(seed, slot, v, cells, laying) {
   readyPlaces(seed, slot, v, cells, { ctx: PL.ctx, first: true });   // first: ahead of the background list in the worker
   return Promise.all(cells.map(c => bakedWhen(seed, slot, v, c)));
 }
-function waitForPlace(key) {
+function waitForPlace(key, more = []) {   // more: further cells the entry needs (the far reach, while the set-out's warm stones are owed), nearest first after the place itself
   const seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S);
-  beginPlaceWait(seed, R.slot, v, [+key], false).then(() => { RT.making = false; RT.placeWait = null; if (S && S.exp && String(S.exp.pos) === key && !S.exp.patch) enterPatch(); });
+  beginPlaceWait(seed, R.slot, v, [+key, ...more], false).then(() => warmPay()).then(() => { RT.making = false; RT.placeWait = null; if (S && S.exp && String(S.exp.pos) === key && !S.exp.patch) enterPatch(); });
 }
 // The set-out reads the layout of every cell of the reach (the first pods, the warm stones, the signs of the 3 x 3 round the start): a cell the worker has not made is baked on the page, a few hundred milliseconds
 // each, which locked the browser for as long as the reach took. So the reach's places are asked of the worker first, the loading line counts them as they come, and each is laid out in its own turn; the set-out then
 // finds every one made. A page without the worker (the tests) sets out at once, as it always did.
 function startExpedition(type, cell) {
   const tier = tierOf(), live = G.gen === 7 && PL.ready && placesWorker() && !RT.making && !RT.readOnly;
-  const cells = live ? [...new Set([cell, ...reachCells(cell, tier.range + 1), ...[-1, 0, 1].flatMap(dy => [-1, 0, 1].map(dx => { const p = cxy(cell); const x = p.x + dx, y = p.y + dy; return x >= 0 && y >= 0 && x < MW && y < MH ? y * MW + x : -1; }))])].filter(c => c >= 0 && passable(c)) : [];
+  const cells = live ? [...new Set([cell, ...[-1, 0, 1].flatMap(dy => [-1, 0, 1].map(dx => { const p = cxy(cell); const x = p.x + dx, y = p.y + dy; return x >= 0 && y >= 0 && x < MW && y < MH ? y * MW + x : -1; }))])].filter(c => c >= 0 && passable(c)) : [];   // the place the hero starts in and the ones next to it: the map opens on these; the rest of the reach is made after, nearest first (wantPlaces), the warm stones chosen when they are here (warmPay)
   const seed = S && S.regions && S.regions[0].seed, R = live && hereRegion();
   if (!cells.length || !R) { startExpeditionNow(type, cell); return; }
   const v = biomeVersion(S), saveId = S.wid;
   beginPlaceWait(seed, R.slot, v, cells, true).then(async () => {
     let t0 = performance.now();
     for (const c of cells) { try { layout(String(c)); } catch (e) { /* the set-out finds it */ } RT.placeWait.laid++; if (performance.now() - t0 > 12) { await yieldTurn(); t0 = performance.now(); } }   // no turn holds the page for more than about a frame
+    // a new world's first pods are picked among the reach, and read the place of each pick: those places (a few) are waited for, one pick at a time, so the pods are the same ones as with the whole reach made
+    let pods = null;
+    if (S && S.wid === saveId && !S.exp && S.phase === 'place' && firstPlacement()) {
+      for (let n = 0; n < 40 && !pods; n++) {
+        firstPods.need = true;
+        try { pods = firstPods(S.seed, cell, S.pods); } catch (e) { if (!e || e.needCell == null) throw e; await beginPlaceWait(seed, R.slot, v, [e.needCell], false); try { layout(String(e.needCell)); } catch (x) { /* found again */ } } finally { firstPods.need = false; }
+      }
+    }
     RT.making = false; RT.placeWait = null;
-    if (S && S.wid === saveId && !S.exp && S.phase === 'place') startExpeditionNow(type, cell);
+    if (S && S.wid === saveId && !S.exp && S.phase === 'place') startExpeditionNow(type, cell, pods || undefined);
   });
 }
 // A place that takes long to build freezes the page; key presses made meanwhile queue in the browser and would all run in a rush afterwards. They are dropped (STALL: the window they were made in).
 const STALL_MS = 120, STALL = { from: 0, to: 0 }, RESUME_GRACE_MS = 80;   // the grace: the key-ups the freeze held back arrive before a held direction walks on
 const nowMs = () => typeof performance !== 'undefined' ? performance.now() : Date.now();
 function enterPatch() {
+  if (G.gen === 7 && S.exp && S.exp.warmOwed) { const ex = S.exp, p = cxy(ex.pos); waitForPlace(String(ex.pos), ex.reach.filter(c => c !== ex.pos && passable(c) && G.land[c] !== L.WATER && !placeHave(String(c))).sort((a, b) => cheb(cxy(a), p) - cheb(cxy(b), p))); return; }   // walked into a place before the set-out's far reach is made: the warm stones are chosen over all of it first, as they were (the reading look, a moment)
   if (G.gen === 7 && S.exp && !placeHave(String(S.exp.pos))) { waitForPlace(String(S.exp.pos)); return; }   // the worker has not sent this place yet: the page says the Probe is reading the land, and goes down when it is here
   const t0 = nowMs(); try { enterPatchBuilt(); } finally { const t1 = nowMs(); if (t1 - t0 >= STALL_MS) { STALL.from = t0; STALL.to = t1; FX.resume = true; FX.resumeAt = t1 + RESUME_GRACE_MS; } }
 }
@@ -7636,7 +7657,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); keyCues(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); keyCues(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
