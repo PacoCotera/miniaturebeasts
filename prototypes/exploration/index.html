@@ -6669,7 +6669,8 @@ const PIC = {
   fruit: (x, y) => cen(FRUIT2(), x, y),
   'bub!': (x, y) => cen2('bub!', bubbleArt('!'), x, y), 'bub?': (x, y) => cen2('bub?', bubbleArt('?'), x, y),
   bubf: (x, y) => cen2('bubf', bubbleArt('f'), x, y), 'bub…': (x, y) => cen2('bub…', bubbleArt('…'), x, y),
-  tuft: (x, y) => cen2('tuft', ICON.tuft(), x, y), drop: (x, y) => cen2('drop', DROP(), x, y),
+  tuft: (x, y) => { const t = ICON.tuft(); if (t.p) cen2('tuft', t, x, y); else g.drawImage(t.canvas(), x + 16 - t.w, y + 16 - t.h, t.w * 2, t.h * 2); },   // the signed tuft is a loaded picture (no pixel list): drawn at 2× straight (bug #98: upArt threw and stopped the Probe's grid)
+  drop: (x, y) => cen2('drop', DROP(), x, y),
   untuva: (x, y, known) => cen(known ? creatureArt(2, 'idle', 0) : silhouette(2), x, y),
   partner: (x, y, sp) => cen(creatureArt(sgSp(sp), 'idle', 0), x, y),
   'm:t': (x, y) => cen2('paws', PAWS(), x, y), 'm:b': (x, y) => cen(ICON.beat(0), x, y), 'm:k': (x, y) => cen2('bolt', ICON.bolt(), x, y), 'm:kw': (x, y) => cen2('boltH', ICON.boltHollow(), x, y),
