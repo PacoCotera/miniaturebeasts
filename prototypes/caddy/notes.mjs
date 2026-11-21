@@ -10,7 +10,7 @@ import { mkdirSync, writeFileSync, readdirSync, readFileSync, renameSync, exists
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 
-export const LIMITS = { bodyBytes: 20 * 1024 * 1024, shots: 8, clips: 2, textChars: 4000, contextBytes: 16 * 1024, perDayNotes: 200, perDayBytes: 600 * 1024 * 1024 };
+export const LIMITS = { bodyBytes: 20 * 1024 * 1024, shots: 8, clips: 2, textChars: 4000, contextBytes: 512 * 1024, perDayNotes: 200, perDayBytes: 600 * 1024 * 1024 };
 const SHOT_TYPES = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
 const CLIP_TYPES = { "video/mp4": "mp4", "video/webm": "webm" };
 const SOURCE_RE = /^[A-Za-z0-9][A-Za-z0-9 _-]{0,31}$/;
@@ -53,7 +53,7 @@ export function createNotes({ dataDir, now = Date.now, limits = {} }) {
     const text = form.get("text") ?? "", source = form.get("source") ?? "owner", ctxRaw = form.get("context") ?? "{}";
     if (typeof text !== "string" || text.length > L.textChars) return [400, { ok: false, error: "the line is over 4000 characters" }];
     if (typeof source !== "string" || !SOURCE_RE.test(source)) return [400, { ok: false, error: "the source is a short plain name" }];
-    if (typeof ctxRaw !== "string" || Buffer.byteLength(ctxRaw) > L.contextBytes) return [400, { ok: false, error: "the context is over 16 KB" }];
+    if (typeof ctxRaw !== "string" || Buffer.byteLength(ctxRaw) > L.contextBytes) return [400, { ok: false, error: "the context is over 512 KB" }];
     let context; try { context = JSON.parse(ctxRaw); } catch { return [400, { ok: false, error: "the context is not JSON" }]; }
     if (!context || typeof context !== "object" || Array.isArray(context)) return [400, { ok: false, error: "the context is an object" }];
     const files = []; let shots = 0, clips = 0;
