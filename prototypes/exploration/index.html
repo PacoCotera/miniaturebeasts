@@ -453,6 +453,7 @@ function tileSideKnown(a, dir) { const n = stepCell(a, dir); return n < 0 || !G.
 function tileSide(a, dir) {
   if (!tileSideApplies(a, dir)) return null;
   const n = stepCell(a, dir), key = tileSideKey(a, n), known = G.tileSides && G.tileSides.get(key); if (known) return known;
+  if (!placeHave(String(a)) || !placeHave(String(n))) return null;   // a place the worker still owes: not known yet (never baked on the page: a cold decor is seconds of one task); asked again when it has come (PLACES.epoch)
   const lo = Math.min(a, n), hi = Math.max(a, n), la = layout(String(lo)), lb = layout(String(hi)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return null;
   const east = hi - lo === 1, len = east ? la.h : la.w, mask = new Uint8Array(len), ok = new Uint8Array(len);
   for (let k = 0; k < len; k++) {
@@ -465,6 +466,7 @@ function tileSide(a, dir) {
 // A step out of a place over a side the tiles decide: the tile you stand on and the tile beyond (the same row or column, continued) both walk on the same level. Returns the landing tile or null.
 function crossLanding(dir) {
   const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir)) return undefined;
+  if (!placeHave(String(c))) return undefined;   // the place beyond is still owed by the worker: crossEdge waits for it, then asks again
   const la = layout(P.key), lb = layout(String(c)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return undefined;
   const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y;
   if (T_BLOCK[la.tiles[P.y * la.w + P.x]] || T_BLOCK[lb.tiles[y * lb.w + x]] || levelBlocks(la, P.x, P.y, lb, x, y)) return null;
@@ -2820,7 +2822,7 @@ function crossEdge(dir) {
     const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
     FX.crossWait = { key, dir };
     const go = ok => { FX.crossWait = null; if (!ok || !S || !S.exp || S.exp.patch !== at || S.phase !== 'patch') return; FX.crossRetry = true; try { crossEdge(dir); } finally { FX.crossRetry = false; } };   // one retry: a place that still is not here falls to the plain wait of enterPatch
-    readyPlaces(seed, R.slot, v, [+key], { ctx: PL.ctx });
+    readyPlaces(seed, R.slot, v, [+key], { ctx: PL.ctx, first: true });   // the player waits for it: ahead of the background list
     bakedWhen(seed, R.slot, v, +key).then(() => go(true), () => go(false));
     return;
   }
