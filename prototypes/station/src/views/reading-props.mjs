@@ -3,7 +3,9 @@
 // regions.read). Two levels: the pod (the rail and the right frame) and the detail of a read trait; the stamp in progress over the left glass, taught once.
 //   ui.pods: lane (the chapter in hand, a lane of the rail), at ("rail" | "right" | "detail" | "stamp"), plate (the focused plate), trait (the detail's trait), reading ({ pod, chapter, until, cost, newLook, k }), moment ({ pod, block }), shake
 import * as S from "../state.mjs";
-import { frameOf, traitState, traitKind, stampSizing, stampBlocks } from "../genome.mjs";
+import { frameOf, traitState, stampSizing, stampBlocks } from "../genome.mjs";
+import { shapeModel } from "../trait-shapes.mjs";
+import { slotsOf } from "../trait-shape-pictures.mjs";
 import { fill } from "./words.mjs";
 import { railLanes, railLayout } from "../reading-rail.mjs";
 
@@ -57,8 +59,15 @@ export const discReq = (req, sid, t, ch, d, o = {}) => req({ kind: "readdisc", i
 const templateOf = (st, fr, t) => { const all = Array.isArray(t.looks) ? t.looks : S.guideLooks(st, fr.species.id, t.id); return (all.length ? all : ["", "", ""]).slice(0, 3); };
 // the sizes of the right frame's discs by layout (§2.5): shown r, carried r, template chip r
 const RADII = { 1: [52, 34, 21], 2: [44, 29, 21], 3: [32, 21, 18], 4: [26, 17, 14] };
-const READ_R = { 1: [46, 30], 2: [46, 30], 3: [32, 21], 4: [26, 17] };
-export const KIND_LINE = { only: "only", hides: "hides", blend: "blend", asleep: "asleep" };
+// A trait drawn in its own shape (trait-shapes.mjs: a scale or a set, from the kind's rules and the pod's genome): the picture by id, its size and the words the face says on it (picture coordinates).
+// `others` are the genomes of the player's other mibis of the kind that have read the chapter: the small faces on a scale, the dots on a card.
+const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id !== p.id && S.speciesOf(x) === sid && x.genome && (x.read ?? []).includes(ch.id)).map((x) => x.genome);
+function shapeOfPlate(req, fr, t, p, others, size) {
+  const model = shapeModel(fr, t, p.genome, others), id = "traitshape:" + fr.species.id + ":" + t.id + ":" + size + ":" + hashOf(JSON.stringify(model));
+  const words = model.shape === "scale" ? { ends: model.ends, mid: model.mid } : { looks: model.looks.map((l) => l.look), shows: model.looks.findIndex((l) => l.shows) };   // what the face says on the picture; where is the spec's (shapes)
+  return { pic: req({ kind: "traitshape", id, model, size }), form: model.shape, size, ...words, slots: slotsOf(model, size) };
+}
+const hashOf = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
 
 // The reading screen's view. view: the Pods view being built; m: { st, settings, ui, focus, now }; spec: pods.json; req: the requests' collector.
 export function readView(view, m, spec, req) {
@@ -128,22 +137,16 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
     return { ...base, form: "unread", plates, beside: o.sprout ? { sprout: slot(req, "reading-sprout-20x18", [20, 18]), text: Sg.sprout } : { sprout: "", text: "" } };   // no price key: a chapter is read from the pod's Data store (views/store-props.mjs)
   }
   // read: the pair on each plate (shown over carried), the captions, the trait and its kind line; the reward chip after a read that paid for a new look
-  const [r, rc] = READ_R[Math.min(4, n)];
-  const plates = ch.traits.map((t) => { const s = traitState(fr, t, p.genome), two = pair(s), differs = two[1] != null && two[1] !== two[0], goalHere = want[t.id] && s.carried.includes(want[t.id]);
-    return { trait: t.name, kind: Sg.kinds[KIND_LINE[s.kind === "asleep" ? "asleep" : traitKind(fr, t)] ?? "hides"] ?? "",
-      shown: { pic: discReq(req, sid, t, ch, 2 * r, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[0])}` } : { look: two[0] }), caption: String(two[0] ?? "") },
-      carried: { pic: discReq(req, sid, t, ch, 2 * rc, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[1] ?? two[0])}`, veil: 0.28 } : { look: two[1] ?? two[0], veil: 0.28 }), caption: differs ? String(two[1]) : "" },
-      glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere }; });
+  const size = n <= 2 ? "large" : n === 3 ? "small" : "tiny", others = othersOf(st, p, sid, ch);
+  const plates = ch.traits.map((t) => { const s = traitState(fr, t, p.genome), goalHere = want[t.id] && s.carried.includes(want[t.id]);
+    return { trait: t.name, shape: shapeOfPlate(req, fr, t, p, others, size), glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere }; });   // a trait is a scale or a set (trait-shapes.mjs), drawn in its own shape
   return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: dataIcon(req, 13) } : null };
 }
-const pair = (s) => [s.shows, s.hides ?? (s.halves ? (s.halves[0] === s.shows ? s.halves[1] : s.halves[0]) : s.shows)];
 const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
-const lookIndex = (fr, t, look) => { const all = Array.isArray(t.looks) ? t.looks : []; return Math.max(0, all.indexOf(look)) % 3; };
 // The detail of a read trait (§2.6, 5): the pair large, its captions and kind; with a mate at home, the odds of each look its child can show, eight seeds a row
 function detailOf(m, spec, req, p, fr, ch, ti) {
-  const { st, settings } = m, Sg = spec.strings.read, sid = fr.species.id, t = ch.traits[ti], s = traitState(fr, t, p.genome), two = pair(s), differs = two[1] != null && two[1] !== two[0], want = (st.wish[sid] || {})[t.id];
-  const plate = { trait: t.name, kind: Sg.kinds[KIND_LINE[s.kind === "asleep" ? "asleep" : traitKind(fr, t)] ?? "hides"] ?? "", shown: { pic: discReq(req, sid, t, ch, 112, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[0])}` } : { look: two[0] }), caption: String(two[0] ?? "") },
-    carried: { pic: discReq(req, sid, t, ch, 74, t.nature === "doing" ? { glyph: `${glyphOf(t)}${lookIndex(fr, t, two[1] ?? two[0])}`, veil: 0.28 } : { look: two[1] ?? two[0], veil: 0.28 }), caption: differs ? String(two[1]) : "" },
+  const { st, settings } = m, Sg = spec.strings.read, sid = fr.species.id, t = ch.traits[ti], s = traitState(fr, t, p.genome), want = (st.wish[sid] || {})[t.id];
+  const plate = { trait: t.name, shape: shapeOfPlate(req, fr, t, p, othersOf(st, p, sid, ch), "large"),
     glint: !!(p.first && p.first.includes(t.id)), goal: !!(want && s.carried.includes(want)) };
   const kid = { id: "pod:" + p.id, genome: p.genome }, mate = st.mibis.find((x) => !x.released && S.speciesOf(x) === sid && S.isAdult(st, x, settings) && !S.directKinOf(st, kid, x));   // the pod's line is read from its recorded parents: a shed pod shows no odds with its own parent or grandparent
   let odds = null;

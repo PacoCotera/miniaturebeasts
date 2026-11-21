@@ -183,6 +183,26 @@ void word_reading(void) {
     /* the plate: its chapter glow behind, the lit nine-slice */
     { int gsz[2]; if (has(glow) && v_asset_size(glow, gsz) == 0) { int gh = gsz[1] < ph ? gsz[1] : ph; v_name("read.plate"); v_sprite_window(v_fmt("read.plate.%d.glow", i), glow, 0, (gsz[1] - gh) / 2, pxl, py, gsz[0] < pw ? gsz[0] : pw, gh); } }
     if (has(platePic)) { v_name("read.plate"); v_nine(v_fmt("read.plate.%d", i), platePic, pxl, py, pw, ph, ins); }
+    /* a trait in its own shape (build step 1): the logic's picture of the scale or the set, centred on the plate, and the words it names at the spec's baselines (regions.read.right.shapes, the same numbers the
+       picture was composed with): the trait, then a scale's end looks and middle, or a set's card looks. Nothing else is drawn on the plate: no disc, no kind line, no caption. */
+    { char shp[160]; snprintf(shp, sizeof shp, "%s", v_pstr(v_fmt("%s.shape.pic", B)));
+      int sz[2]; if (*shp && has(shp) && v_asset_size(shp, sz) == 0) {
+        int ox = pxl + (pw - sz[0]) / 2, oy = py + (ph - sz[1]) / 2, M = si(R ".right.shapes.margin", 8), w = sz[0]; char sd[16], fm[16], K[96];
+        snprintf(sd, sizeof sd, "%s", v_pstr(v_fmt("%s.shape.size", B))); snprintf(fm, sizeof fm, "%s", v_pstr(v_fmt("%s.shape.form", B))); int scale = strcmp(fm, "scale") == 0, tiny = strcmp(sd, "tiny") == 0, large = strcmp(sd, "large") == 0;
+        snprintf(K, sizeof K, R ".right.shapes.%s.%s", scale ? "scale" : "set", sd);
+        v_name("read.shape"); pic(v_fmt("read.shape.%d", i), shp, ox, oy); v_region("read.words", LAYER_TYPE);
+        snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.trait", B))); say(v_fmt("read.shape.%d.n", i), t, ox + M, oy + v_si(S, v_fmt("%s.nameY", K), 16), "glass.trait", V_ALIGN_LEFT);
+        if (scale && !tiny) { int ey = oy + v_si(S, v_fmt("%s.endsY", K), 60);
+          snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.shape.ends.0", B))); say(v_fmt("read.shape.%d.e0", i), t, ox + M, ey, "glass.quiet", V_ALIGN_LEFT);
+          snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.shape.ends.1", B))); say(v_fmt("read.shape.%d.e1", i), t, ox + w - M, ey, "glass.quiet", V_ALIGN_RIGHT);
+          if (large) { snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.shape.mid", B))); say(v_fmt("read.shape.%d.m", i), t, ox + (w + 1) / 2, ey, "glass.quiet", V_ALIGN_CENTRE); } }
+        if (!scale && large) { int nl = v_plen(v_fmt("%s.shape.looks", B)), cols = nl <= 3 ? (nl > 0 ? nl : 1) : (nl + 1) / 2, gap = v_si(S, v_fmt("%s.gap", K), 6), cw = (w - 2 * M - gap * (cols - 1)) / cols;
+          for (int j = 0; j < nl && j < 12; j++) { snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.shape.looks.%d", B, j)));
+            say(v_fmt("read.shape.%d.c%d", i, j), t, ox + M + (j % cols) * (cw + gap) + (cw + 1) / 2, oy + v_si(S, v_fmt("%s.top", K), 28) + (j / cols) * (v_si(S, v_fmt("%s.cardH", K), 34) + gap) + v_si(S, v_fmt("%s.labelDy", K), 22), "glass.caption", V_ALIGN_CENTRE); } }
+        if (!scale && strcmp(sd, "small") == 0) { int nl = v_plen(v_fmt("%s.shape.looks", B)), s = v_pint(v_fmt("%s.shape.shows", B), -1), gap = v_si(S, v_fmt("%s.gap", K), 5), cw = nl > 0 ? (w - 2 * M - gap * (nl - 1)) / nl : 0;
+          if (s >= 0 && s < nl) { snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.shape.looks.%d", B, s)));
+            say(v_fmt("read.shape.%d.s", i), t, s == 0 ? ox + M : s == nl - 1 ? ox + w - M : ox + M + s * (cw + gap) + (cw + 1) / 2, oy + v_si(S, v_fmt("%s.labelY", K), 62), "glass.caption", s == 0 ? V_ALIGN_LEFT : s == nl - 1 ? V_ALIGN_RIGHT : V_ALIGN_CENTRE); } }
+        continue; } }
     int r0 = v_si(S, v_fmt("%s.r", L), 44), rc = v_si(S, v_fmt("%s.rc", L), 29), cx = v_si(S, v_fmt("%s.cx", L), 706), cy = py + v_si(S, v_fmt("%s.cyOff", L), ph / 2);
     if (strcmp(form, "detail") == 0) { cx = sk(R ".right.layouts.detail.shown", 0); cy = sk(R ".right.layouts.detail.shown", 1); }
     char sp[160], cp[160]; snprintf(sp, sizeof sp, "%s", v_pstr(v_fmt("%s.shown.pic", B))); snprintf(cp, sizeof cp, "%s", v_pstr(v_fmt("%s.carried.pic", B)));

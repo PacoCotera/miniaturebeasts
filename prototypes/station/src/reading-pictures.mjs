@@ -20,6 +20,7 @@ import { CH, railLayout } from "./reading-rail.mjs";
 export { CH, CH_TOKEN, railLayout, railLanes } from "./reading-rail.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { lookColours } from "./specimen.mjs";
+import { SIZES, shapePicture } from "./trait-shape-pictures.mjs";
 
 const MINT = [143, 227, 200], AMBER = [240, 180, 90], CREAM = [239, 233, 220];
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -280,6 +281,7 @@ export function registerReading(r, env) {
   if (hasAsset(r.id)) return;
   const made = (w, h, f) => registerAsset({ id: r.id, w, h, status: "derived", until: null, build: () => { let data = null; return { w, h, rgba: () => data ?? (data = f()) }; } });
   switch (r.kind) {
+    case "traitshape": return made(SIZES[r.size][0], SIZES[r.size][1], () => shapePicture(r.model, r.size, { colours: r.colours }).rgba);   // a trait's scale or set (trait-shape-pictures.mjs)
     case "readchamber": return made(CHAMBER.size[0], CHAMBER.size[1], () => chamberPicture(r, env));
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
