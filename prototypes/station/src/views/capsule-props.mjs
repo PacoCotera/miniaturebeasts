@@ -4,7 +4,7 @@ import { slotAt as slot } from "./requests.mjs";
 import { RECIPE } from "../relight.mjs";
 export const POD_REF_H = 160;   // the large pod's alpha height: the pod renders at height / 160 of its 144 x 176 layers (about 170 in the room, 147 in the panel, 72 in Create, 27 on Home)
 const SIGNED = "signed (art director, the capsule masters list)";
-const cap = (req, name, [w, h]) => slot(req, `capsule-${name}-${w}x${h}`, [0, 0, w, h], SIGNED);
+const cap = (req, name, [w, h]) => slot(req, `capsule-${name}-${w}x${h}`, [0, 0, w, h], SIGNED);   // the master is cut at its slot's size (the face places a master only at exactly its slot's size; the 1060 x 1064 files stay in the index, unused, until the room draws at 2x)
 // the layer masters of a view at its size: the names a view uses (the room has every layer; the others the layers the build spec names)
 export function layers(req, size, names) { const o = {}; for (const n of names) o[n] = cap(req, n, size); return o; }
 // the area a pod of `h` px renders in, with its shadow and blades: wide enough for the shadow, the foot's point (the anchor) at the bottom centre of the figure
