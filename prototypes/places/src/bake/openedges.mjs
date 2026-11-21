@@ -33,6 +33,8 @@ export function rimSteps(ir, terrains) {
     const x = c % w, y = (c / w) | 0;
     for (const [dx, dy, bit, back] of [[0, -1, RIM.up, RIM.down], [0, 1, RIM.down, RIM.up], [-1, 0, RIM.left, RIM.right], [1, 0, RIM.right, RIM.left]]) {
       const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h || !A.low(X, Y) || A.way(X, Y)) continue;
+      // bugs #99/#100 (AD option A): a W or E side drawn as the rim line alone (no face or end piece on either cell) does not refuse the step; a south lip cell (face below it) or a walled low cell keeps the edge
+      if (dy === 0 && !A.low(x, y + 1) && !walled(A, X, Y)) continue;
       out[c] |= bit; out[Y * w + X] |= back;
     }
   }

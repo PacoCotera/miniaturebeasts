@@ -14,9 +14,10 @@ test("seed 20 patch 8,5: he walks up to the drawn rim line and stops at it", () 
   p.run(`newWorld(20); TEST.calm = true; S.tier = 2; startExpedition('weather', G.spawns[0]); S.exp.start = ${CELL}; S.exp.range = 3;`);
   assert.equal(at(p, 4, 0, "down"), "4,1", "#99: tile 4,0 down walks onto the ring cell");
   assert.equal(at(p, 5, 1, "left"), "4,1", "#100: tile 5,1 left walks onto the ring cell");
-  assert.equal(at(p, 4, 1, "left"), "4,1", "the step across the line is refused");
+  assert.equal(at(p, 4, 1, "left"), "4,1", "a drawn face on the cell beside it (3,1 under the lip) still blocks");
   assert.match(p.run(`FX.notes.map(n => n.text).join("|")`), /Steep rock · no way over/, "with the same banner");
-  assert.equal(at(p, 3, 5, "right"), "3,5", "from the low side the step across the line is refused too");
+  assert.equal(at(p, 3, 5, "right"), "4,5", "a W/E side drawn as the line alone (no face on either cell) is crossed (AD option A)");
+  assert.equal(at(p, 3, 0, "down"), "3,0", "a south rim edge (face below) still blocks");
   assert.equal(at(p, 4, 5, "down"), "4,6", "along the line walks");
   assert.equal(at(p, 2, 0, "down"), "2,0", "a drawn face (tiles 1..3, rows 1..3) still blocks");
 });
