@@ -76,6 +76,8 @@ test("the comma form: a two-colour look prints 'a, b'; a look with 'and' as a wo
   const m = layout(model(F.S01, { S01: all(F.S01) })), t = (id) => m.chapters.flatMap((c) => c.traits).find((x) => x.id === id);
   assert.equal(L.printed(t("colour"), "charcoal and russet"), "charcoal, russet");
   assert.equal(L.printed(t("colour"), "ash"), "ash");
+  assert.deepEqual(["greener", "between", "bluer"].map((l) => L.printed({ id: "body-hue", sid: "S10" }, l)), ["coral", "rose", "mauve"], "the Igara's pink Tint names (design 11-21)");
+  assert.equal(L.printed({ id: "body-hue", sid: "S04" }, "greener"), "greener", "other kinds keep the frame's words");
   assert.equal(L.printed(t("markings"), "stripes and patches"), "stripes and patches");
 });
 test("the trait index: the trait names joined ' · ', breaking only at ' · ', at most 2 lines within 132, on every chapter of the 16 species; the Belatz's Coat in 2", () => {

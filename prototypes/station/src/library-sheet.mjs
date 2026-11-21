@@ -92,7 +92,8 @@ const getPx = (px, w, x, y) => { const o = (y * w + x) * 4; return [px[o], px[o 
 const over = (under, ink, a) => under.map((v, i) => v + (ink[i] - v) * a);   // straight "source-over" of an ink at alpha a, unrounded
 
 // ---- the comma form: a two-colour look prints "a, b" (genome.mjs pairSep); any other look, "and" included, verbatim ----
-export function printed(trait, look) { const parts = look.split(" and "); return parts.length === 2 && lookColours(trait, look, 0).length === 2 ? parts.join(", ") : look; }
+const IGARA_TINT_NAMES = { greener: "coral", between: "rose", bluer: "mauve" };   // design 2026-11-21: the Igara's pink coat, plain words for the colours the swatches show; the frame's looks stay as they are
+export function printed(trait, look) { if (trait.sid === "S10" && trait.id === "body-hue" && IGARA_TINT_NAMES[look]) return IGARA_TINT_NAMES[look]; const parts = look.split(" and "); return parts.length === 2 && lookColours(trait, look, 0).length === 2 ? parts.join(", ") : look; }
 
 // ---- the facts of a species: plates, leaders, the mosaic's tier and cells ----
 const wrapA = (a) => ((a + Math.PI) % TAU + TAU) % TAU - Math.PI;

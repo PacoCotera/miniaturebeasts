@@ -79,7 +79,7 @@ const V8_FRAME_DIGESTS = {
   "S07.8": "cbfd8313bb132c60",
   "S08.8": "aafe5fd0656ff4db",
   "S09.8": "b1450c6eb9450052",
-  "S10.8": "dc11164b9e3569dd",
+  "S10.8": "38d47774284e5b9a",   // igara-catalogue-wire-1: the Igara's language frame now holds the pinks (rewritten once, --replace 10.8)
   "S11.8": "81493823b3d5cfc8",
   "S12.8": "6234c6520d1d7080",
   "S13.8": "e5e1f2d6bf86c134",

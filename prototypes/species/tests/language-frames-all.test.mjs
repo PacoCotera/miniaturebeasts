@@ -23,8 +23,8 @@ test("twenty frames, schema /4 on catalogue 13: family, land, eye count and sign
     const f = frames[id], k = kindOf(LANGUAGE, id);
     assert.equal(f.schema, SCHEMA_LANGUAGE, id); assert.equal(f.frameVersion, LANGUAGE_FRAME, id);
     assert.equal(f.family, k.family, id); assert.equal(f.land, k.land, id);
-    assert.deepEqual(f.catalogue, catalogueHeader(LANGUAGE_FRAME), id);
-    assert.equal(f.catalogue.version, 13, `${id}: frames of version 8 name pin 13, though the catalogue is 14`);
+    assert.deepEqual(f.catalogue, catalogueHeader(LANGUAGE_FRAME, id), id);
+    assert.equal(f.catalogue.version, id === "S10" ? 15 : 13, `${id}: frames of version 8 name pin 13 (the Igara's holds the pinks: 15), though the catalogue is 14`);
     assert.equal(f.plan.eyes, id === "S15" ? 3 : 2, `${id}: Lehten three eyes, Belatz and every other kind two`);
     assert.ok(!f.loci.some((l) => l.id === "anatomy.eye-count" && l.kind !== "locked"), `${id}: the eye count is a plan switch, never a row`);
     assert.ok(!f.loci.some((l) => l.id === "form.torso-length"), `${id}: v8 cannot open body length`);
