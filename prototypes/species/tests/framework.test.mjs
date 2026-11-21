@@ -10,6 +10,7 @@ import { RULES } from "../framework/envelope.mjs";
 import { cross, blendRange, forecast, kinship, directKin, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
+import { isDoing } from "../framework/guards.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const framesDir = path.resolve(here, "../frames");
@@ -150,10 +151,14 @@ test("crosses pass one copy from each parent at a switch locus, blend a continuo
     const locus = LOCI.get(l.id);
     if (l.kind === "locked") assert.deepEqual(child.loci[l.id], l.copies);
     else if (isContinuous(locus)) {
-      const [p, q] = child.loci[l.id], va = resolveCopies(locus, a.loci[l.id]), vb = resolveCopies(locus, b.loci[l.id]);
-      assert.equal(typeof p, "number"); assert.equal(p, q, "a blend hides nothing: both copies equal");
-      const [clo, chi] = valueRange(locus), [lo, hi] = valueRange(locus, l.alleles), w = SPREAD * (chi - clo);
-      assert.ok(p >= Math.max(lo, Math.min(va, vb) - w) - 1e-9 && p <= Math.min(hi, Math.max(va, vb) + w) + 1e-9, `${l.id}: ${p} between ${va} and ${vb} ± ${w}, within the pool`);
+      const [p, q] = child.loci[l.id];
+      const [clo, chi] = valueRange(locus), [lo, hi] = valueRange(locus, l.alleles), w = SPREAD * (chi - clo) + (chi - clo) / 32;
+      if (isDoing(l.id)) { assert.equal(typeof p, "number"); assert.equal(p, q, "a doing keeps both copies equal"); continue; }
+      // a look: one copy from each parent (the parent's own number), nudged by at most the spread
+      const near = (c, g) => g.loci[l.id].some((x) => Math.abs(copyValue(locus, c) - copyValue(locus, x)) <= w + 1e-9);
+      assert.ok(near(p, a) || near(p, b), `${l.id}: first copy ${p} is a parent's copy within the nudge`);
+      assert.ok(near(q, a) || near(q, b), `${l.id}: second copy ${q} is a parent's copy within the nudge`);
+      for (const c of [p, q]) assert.ok(copyValue(locus, c) >= lo - 1e-9 && copyValue(locus, c) <= hi + 1e-9, `${l.id}: ${c} within the pool`);
     } else { assert.ok(a.loci[l.id].includes(child.loci[l.id][0])); assert.ok(b.loci[l.id].includes(child.loci[l.id][1])); }
   }
   assert.equal(checkGenome(oc, child).length, 0, "a child is valid against its frame, numbers in the pool's range");
@@ -217,16 +222,18 @@ test("pedigree kinship from recorded parents, genome identity as the fallback, a
   assert.throws(() => cross(f, a, s1, { rng: r, lookup }), /direct kin \(child\)/);
   assert.equal(directKin(s1, h, lookup), null, "half kin cross");
   // the penalty at kinship 1/4, as a studio picture passes it on two unrelated genomes: B surfaces a hidden copy with chance 1/2, A draws the blend at the parents' midpoint
-  const sib1 = { ...a, loci: { ...a.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [0.3, 0.3] } };
-  const sib2 = { ...b, loci: { ...b.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [0.4, 0.4] } };
+  const eyeL = LOCI.get("growth.exterior-eye-size-ratio"), [elo, ehi] = blendRange(f, f.loci.find((l) => l.id === "growth.exterior-eye-size-ratio"));
+  const eyeA = quantize(eyeL, elo + 0.25 * (ehi - elo), [elo, ehi]), eyeB = quantize(eyeL, elo + 0.75 * (ehi - elo), [elo, ehi]); // two copies in the pool, on the blend step
+  const sib1 = { ...a, loci: { ...a.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [eyeA, eyeA] } };
+  const sib2 = { ...b, loci: { ...b.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [eyeB, eyeB] } };
   const fc = forecast(f, sib1, sib2, { lookup, kinship: 0.25 }); const mk = fc.traits.find((t) => t.trait === "markings"), ey = fc.traits.find((t) => t.trait === "eye-rings");
   assert.equal(fc.kinship, 0.25);
   assert.deepEqual(mk.looks, { off: 0.5, on: 0.5 }, "half of the carrier outcomes turn pale: two in four");
-  const eyeMid = quantize(LOCI.get("growth.exterior-eye-size-ratio"), 0.35); // the midpoint, on the blend step
-  assert.deepEqual(ey.range, [eyeMid, eyeMid], "the range narrows to the midpoint");
-  const N = 4000; let pale = 0, mid = 0;
-  for (let i = 0; i < N; i++) { const ch = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup }); if (resolveCopies(LOCI.get("appearance.marking-switch"), ch.loci["appearance.marking-switch"])) pale++; if (ch.loci["growth.exterior-eye-size-ratio"][0] === eyeMid) mid++; }
-  assert.ok(Math.abs(pale / N - 0.5) < 0.03, `pale ${pale / N}`); assert.equal(mid, N, "under A at 1/4 every blend sits on the midpoint");
+  const eyeMid = quantize(eyeL, (eyeA + eyeB) / 2, [elo, ehi]);
+  assert.deepEqual(ey.range, [eyeMid, eyeMid], "the span of the four copy pairings' means: here all the midpoint");
+  const N = 4000; let pale = 0, own = 0;
+  for (let i = 0; i < N; i++) { const ch = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup }); if (resolveCopies(LOCI.get("appearance.marking-switch"), ch.loci["appearance.marking-switch"])) pale++; if (ch.loci["growth.exterior-eye-size-ratio"].every((c) => c === eyeA || c === eyeB)) own++; }
+  assert.ok(Math.abs(pale / N - 0.5) < 0.03, `pale ${pale / N}`); assert.equal(own, N, "under A at 1/4 every copy is a parent's own number (no nudge)");
   const none = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup, penalty: "none" }); assert.equal(none.origin.penalty, "none");
   let paleNone = 0; for (let i = 0; i < N; i++) if (resolveCopies(LOCI.get("appearance.marking-switch"), cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup, penalty: "none" }).loci["appearance.marking-switch"])) paleNone++;
   assert.ok(Math.abs(paleNone / N - 0.25) < 0.03, `without the penalty one in four: ${paleNone / N}`);
@@ -404,10 +411,12 @@ test("C5: the cross draws every blended copy on the blend step, inside the pool,
       for (const l of f.loci) {
         const locus = LOCI.get(l.id);
         if (l.kind === "locked" || !isContinuous(locus)) continue;
-        const [p, q] = child.loci[l.id];
-        assert.equal(p, q);
-        if (typeof p === "string") assert.ok(offStepEnds(locus, blendRange(f, l)).includes(copyValue(locus, p)), `${f.species.id} ${l.id}: ${p} is a pool end off the step`); // a named copy is only ever such an end
-        else assert.ok(stepOf(locus, p) >= 0, `${f.species.id} ${l.id}: ${p} on the step`);
+        const [p0, q0] = child.loci[l.id];
+        if (isDoing(l.id)) assert.equal(p0, q0);
+        for (const p of [p0, q0]) {
+          if (typeof p === "string") assert.ok(offStepEnds(locus, blendRange(f, l)).includes(copyValue(locus, p)), `${f.species.id} ${l.id}: ${p} is a pool end off the step`); // a named copy is only ever such an end
+          else assert.ok(stepOf(locus, p) >= 0, `${f.species.id} ${l.id}: ${p} on the step`);
+        }
       }
       assert.deepEqual(checkGenome(f, child), [], `${f.species.id}: a stepped child is in its pools`);
       for (const t of forecast(f, a, b).traits) if (t.kind === "blend") for (const v of t.range) assert.ok(stepOf(LOCI.get(t.locus), v) >= 0 || offStepEnds(LOCI.get(t.locus), blendRange(f, f.loci.find((l) => l.id === t.locus))).includes(v), `${t.locus} range end ${v}`);
@@ -528,8 +537,8 @@ test("the shed pod: a returned mibi's self cross never equals its parent, always
         const locus = LOCI.get(l.id), p = m.genome.loci[l.id], c = g.loci[l.id];
         if (l.kind === "locked") { assert.deepEqual([...c].sort(), [...l.copies].sort()); continue; }
         if (isContinuous(locus)) {
-          const shown = (valueOf(locus, p[0]) + valueOf(locus, p[1])) / 2, cv = valueOf(locus, c[0]), [lo, hi] = valueRange(locus), reach = SPREAD * (hi - lo) * (1 - 4 * SELF_KINSHIP) + Math.abs(valueOf(locus, p[0]) - valueOf(locus, p[1])) / 2 * (1 - 4 * SELF_KINSHIP) + 1e-6 + (hi - lo) / 32;
-          assert.ok(Math.abs(cv - shown) <= reach, `${m.id} ${l.id}: a blend stays by its parent's (${cv} vs ${shown})`);
+          const [lo, hi] = valueRange(locus), reach = SPREAD * (hi - lo) * (1 - 4 * SELF_KINSHIP) + 1e-6 + (hi - lo) / 32;
+          for (const x of c) assert.ok(p.some((y) => Math.abs(valueOf(locus, x) - valueOf(locus, y)) <= reach) || isDoing(l.id) && Math.abs(valueOf(locus, x) - (valueOf(locus, p[0]) + valueOf(locus, p[1])) / 2) <= reach + Math.abs(valueOf(locus, p[0]) - valueOf(locus, p[1])) / 2, `${m.id} ${l.id}: a blend copy stays by a parent's copy (${x} vs ${p})`);
         } else for (const x of c) assert.ok(p.includes(x), `${m.id} ${l.id}: copy ${x} is one of the parent's (${p})`);
       }
       for (const ch of frame.chapters) for (const t of ch.traits) {

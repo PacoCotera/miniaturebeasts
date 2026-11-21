@@ -47,7 +47,7 @@ const bytes = (f) => JSON.stringify(f, null, 1) + "\n";
 
 // sha256 (first 16 hex) of the version-4 and version-5 frame files as the registry builds them (retaken once at the merge onto catalogue 12: the header names pin 12 and its digest; the renders below did not move), and of the plain renders of the type and the pods of seeds 1 to 12 (the Station's pod
 // draw) at 96 px (companion) and 48 px (tile), taken from the tree before the change.
-const FRAME_BYTES = { 4: "32965bf4262729d1", 5: "0a130364de7ca957" };
+const FRAME_BYTES = { 4: "c098944a754144fa", 5: "8ad4b2a997c90d59" };
 const RENDERS = {
   4: { "1": "9daeeb697588a3de/0139e1d5c34572f7", "2": "e833dc6aed50f670/4898f463b9fe7d82", "3": "6d4728ab48c474bb/9dcd7ed2e8493e35", "4": "00c00ce1900019a8/5f76ed4c474db394", "5": "3564444a9cad5efd/75a3f1f10aa6f100", "6": "3ec020c1da5b5cc8/2493f719a1f121af", "7": "0bceff52722631ac/f922ddd0e9e7a7b3", "8": "f90030404472df0b/89a9c8ea661ec210", "9": "b8c9099ed9cde4e2/8c7b66addc1ffff0", "10": "ef49ceea67726edb/45ecd50804d15c6f", "11": "5094141750c8fc13/3ad1a6f099e386c5", "12": "1b006e8f3059b6a2/fc9c75ee1f4c972d", type: "8fc9bc9592c1a747/98875ee001032825" },
   5: { "1": "9daeeb697588a3de/0139e1d5c34572f7", "2": "c99995be3111684c/33a933df652f5da1", "3": "5f2099674d55a9a3/c5014dcc37e81e8a", "4": "fd9547b4e6ba91ef/ad18f29c2b8945ac", "5": "48f14d64e53446c3/370f799ca43bd745", "6": "2b7d912152922986/9feeebc974067ca5", "7": "0bceff52722631ac/f922ddd0e9e7a7b3", "8": "0b0a0bbbfb9366f9/28b7b6a72de3a90d", "9": "30a5846d5c253b1c/ee494ea94e56168b", "10": "545e05381a268227/3bb46ef52c18bf20", "11": "c7b3d66e4d03f436/82c1ad98b2f20d82", "12": "52fb2102b689838d/f116d3d1ca09db4d", type: "8fc9bc9592c1a747/98875ee001032825" },
