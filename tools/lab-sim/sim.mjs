@@ -1,7 +1,7 @@
 // lab-sim-1: a headless bot plays the Station's lab on the real genetics engine (see engine.mjs).
 // Model per the brief (the samples and the lab's deduction game). Assumptions are listed in ASSUMPTIONS and
 // written into the results.
-import { rng, drawGenome, outcomes, crossChild, podOf, countOn, kinOf, refuses, SELF_KINSHIP, BLENDS } from "./engine.mjs";
+import { rng, drawGenome, outcomes, crossChild, podOf, countOn, kinOf, refuses, SELF_KINSHIP, BLENDS, TRAITS, traitKeys } from "./engine.mjs";
 
 export const CAP_DAYS = 120;
 export const COST = { E: 2, Es: 4 };                         // a cross (brief); a wild one's pod grows at the same price
@@ -70,21 +70,25 @@ export function naturalShare(n = 200) {
 }
 
 // ---------------------------------------------------------------- knowledge (ink)
-const PI = { M: [0.65 * 0.65, 2 * 0.35 * 0.65, 0.35 * 0.35], C: [0.25, 0.5, 0.25] };
+const PI = { M: [0.65 * 0.65, 2 * 0.35 * 0.65, 0.35 * 0.35], C: [0.25, 0.5, 0.25], C2: [0.25, 0.5, 0.25] };
 const HABITS = [
   { id: "shake-dry", kind: "tuft", holds: (w) => w !== "calm" },
   { id: "calm", kind: "track", holds: (w) => w === "calm" },
   { id: "sleep-curled", kind: "bed", holds: (w, dusk) => dusk },
   { id: "feed", kind: "whisker", holds: () => true },
 ];
-const QUESTIONS = { tuft: ["M"], track: ["D"], bed: ["F"], whisker: ["C", "E"] };
+const QUESTIONS = { tuft: ["M"], track: ["D"], bed: ["F"], whisker: ["C", "E"] };   // the test frame adds its second one-copy look to the whisker (newState)
 const wildLand = (w) => (w < 2 ? 0 : 1);
 
 function shownSets(genome) {
-  return { M: countOn(genome, "M") === 2 ? [2] : [0, 1], C: countOn(genome, "C") > 0 ? [1, 2] : [0] };
+  const sh = { M: countOn(genome, "M") === 2 ? [2] : [0, 1] };
+  for (const T of traitKeys()) if (T !== "M") sh[T] = countOn(genome, T) > 0 ? [1, 2] : [0];
+  return sh;
 }
+const allOpen = () => Object.fromEntries(traitKeys().map((T) => [T, [0, 1, 2]]));
 
 export function newState(seed, policyName) {
+  QUESTIONS.whisker = TRAITS.C2 ? ["C", "C2", "E"] : ["C", "E"];
   const world = makeWorld(seed);
   const S = {
     seed, policy: policyName, world, ev: makeEvents(seed), day: 1, turn: 0,
@@ -93,12 +97,13 @@ export function newState(seed, policyName) {
     bench: [], settledDay: {}, firstInk: null, inkCount: 0, dead: 0, days: 0,
     firstSampleMin: null, sessionMin: 0, benchUsed: 0, crossRng: 0,
     metToday: new Set(), prng: rng(`labsim:${seed}:policy:${policyName}`),
+    stats: { turns: 0, minutes: 0, met: 0, metCond: 0, obs: 0, samples: 0, useful: 0, dropSamples: 0, seasonSamples: 0, data: 0 },
   };
   S.lookup = (id) => S.recs.get(id) ?? null;
   for (let i = 0; i < 4; i++) {
     const rec = { id: S.nextId++, genome: world.wild[i], parents: [], k: 0, kind: "wild", slot: i, gen: 0 };
     S.recs.set(rec.id, rec); S.wild.push(rec.id);
-    S.K.set(rec.id, { shown: false, M: [0, 1, 2], C: [0, 1, 2], E: false, D: false, F: false, habits: new Set(), podDone: false, lastSeason: -1, drop: null });
+    S.K.set(rec.id, { shown: false, ...allOpen(), E: false, D: false, F: false, habits: new Set(), podDone: false, lastSeason: -1, drop: null });
   }
   const home = addOwn(S, world.home, [], 0, 0);
   S.adults.push(home.id);
@@ -109,7 +114,7 @@ function addOwn(S, genome, parents, k, gen) {
   const rec = { id: S.nextId++, genome, parents, k, kind: "own", gen };
   S.recs.set(rec.id, rec);
   const sh = shownSets(genome);
-  S.K.set(rec.id, { shown: true, M: sh.M, C: sh.C, E: true, D: true, F: true, habits: new Set(), podDone: true, lastSeason: -1, drop: null });
+  S.K.set(rec.id, { shown: true, ...sh, E: true, D: true, F: true, habits: new Set(), podDone: true, lastSeason: -1, drop: null });
   return rec;
 }
 
@@ -134,7 +139,7 @@ export function propagate(S) {
     for (const c of S.recs.values()) {
       if (c.parents.length !== 2) continue;
       const [p, q] = c.parents, self = p === q;
-      for (const T of ["M", "C"]) {
+      for (const T of traitKeys()) {
         const Kc = S.K.get(c.id)[T], Kp = S.K.get(p)[T], Kq = S.K.get(q)[T];
         const sc = new Set(), sp = new Set(), sq = new Set();
         for (const a of Kp) for (const b of Kq) {
@@ -150,7 +155,7 @@ export function propagate(S) {
   }
   for (const w of S.wild) if (S.settledDay[w] == null && settled(S, w)) S.settledDay[w] = S.day;
 }
-export function settled(S, id) { const K = S.K.get(id); return K.M.length === 1 && K.C.length === 1 && K.E && K.D && K.F; }
+export function settled(S, id) { const K = S.K.get(id); return traitKeys().every((T) => K[T].length === 1) && K.E && K.D && K.F; }
 
 function observe(S, w) {
   const K = S.K.get(w);
@@ -158,7 +163,7 @@ function observe(S, w) {
   K.shown = true;
   const sh = shownSets(S.recs.get(w).genome);
   const keep = [S.inkCount, S.firstInk];                 // a shown look is an observation, not ink
-  setTo(S, w, "M", sh.M); setTo(S, w, "C", sh.C);
+  for (const T of traitKeys()) setTo(S, w, T, sh[T]);
   [S.inkCount, S.firstInk] = keep;
 }
 
@@ -225,7 +230,7 @@ export function candidates(S) {
 }
 function openQ(S, w, q) {
   const K = S.K.get(w);
-  return q === "M" || q === "C" ? K[q].length > 1 : !K[q];
+  return q in TRAITS ? K[q].length > 1 : !K[q];
 }
 
 // ---------------------------------------------------------------- policies
@@ -245,7 +250,7 @@ function informedScore(S, c) {
   if (c.type === "S") {
     const own = S.recs.get(c.wild).kind === "own";
     if (c.q === "M") return entropy("M", S.K.get(c.wild).M) * (own ? 1 : 0.8);
-    if (c.q === "C") return 0.05 * entropy("C", S.K.get(c.wild).C);
+    if (c.q === "C" || c.q === "C2") return 0.05 * entropy(c.q, S.K.get(c.wild)[c.q]);
     return 0.02;
   }
   const v = crossValue(S, c.a, c.b);
@@ -325,22 +330,31 @@ function expedition(S, name) {
   const minutes = S.ev.minutes[t];
   if (S.day === 1) S.sessionMin += minutes;
   let gotSample = false;
+  const st = S.stats;                                    // gdd-bot-round-1: counters only, nothing here changes a draw or a rule
+  st.turns++; st.minutes += minutes;
   for (const w of S.wild) {
     const K = S.K.get(w), slot = S.recs.get(w).slot, inLand = wildLand(slot) === land;
     const met = inLand && S.ev.met[t][slot];
-    if (inLand && K.drop && addSample(S, w, K.drop)) { K.drop = null; gotSample = true; }
+    if (inLand && K.drop && addSample(S, w, K.drop)) { K.drop = null; gotSample = true; st.samples++; st.dropSamples++; }
     if (met) {
       S.metToday.add(w);
       observe(S, w);
       let n = 0;
+      const added = [];
       for (const h of HABITS) {
         if (n >= 2) break;
         if (K.habits.has(h.id) || !h.holds(weather, dusk)) continue;
-        K.habits.add(h.id); n++;
+        K.habits.add(h.id); n++; added.push(h.id);
         if (addSample(S, w, h.kind)) gotSample = true;
+        st.samples++;                                    // found, kept or not (a full pouch loses it)
       }
-      if (season > K.lastSeason && K.lastSeason >= 0 && K.habits.size > 0) { if (addSample(S, w, "tuft")) gotSample = true; }
+      if (season > K.lastSeason && K.lastSeason >= 0 && K.habits.size > 0) { if (addSample(S, w, "tuft")) gotSample = true; st.samples++; st.seasonSamples++; }
       K.lastSeason = season;
+      // design 6.4: a habit already noted gives a sighting and +1 Data once per expedition; a new one a sample and +1 Data
+      const holding = HABITS.filter((h) => h.holds(weather, dusk));
+      const knownWatched = Math.min(holding.filter((h) => !added.includes(h.id)).length, Math.max(0, 2 - added.length));
+      st.met++; if (holding.some((h) => h.id !== "feed")) st.metCond++;
+      st.obs += added.length + knownWatched; st.data += added.length + knownWatched;
     } else if (!K.drop && S.ev.drop[t][slot]) {
       // a drop forms where a habit's conditions held while the player was elsewhere
       const hs = HABITS.filter((h) => h.id !== "feed" && h.holds(weather, dusk));
@@ -399,8 +413,8 @@ function resolveOvernight(S) {
 
 function applyAnswer(S, b) {
   const K = S.K.get(b.wild), g = S.recs.get(b.wild).genome;
-  if (b.q === "M" || b.q === "C") setTo(S, b.wild, b.q, [countOn(g, b.q)]);
-  else K[b.q] = true;
+  if (b.q in TRAITS) { if (setTo(S, b.wild, b.q, [countOn(g, b.q)])) S.stats.useful++; }   // useful: the answer settled a question that was open
+  else { if (!K[b.q]) S.stats.useful++; K[b.q] = true; }
 }
 
 export function goalState(S) {
@@ -420,7 +434,7 @@ export function runGame(seed, name, observer = null, opts = {}) {
   S.incubating = null;
   propagate(S);
   let dead = 0, daysPlayed = 0, result = null;
-  for (let day = 1; day <= CAP_DAYS; day++) {
+  for (let day = 1; day <= (opts.stopDay ?? CAP_DAYS); day++) {
     S.day = day; S.metToday = new Set(); S.benchUsed = 0;
     if (day > 1) resolveOvernight(S);
     const g = goalState(S);
@@ -458,7 +472,9 @@ export function runGame(seed, name, observer = null, opts = {}) {
   result.settled = S.wild.map((w) => S.settledDay[w] ?? null);
   result.firstInk = S.firstInk; result.natural = S.world.natural;
   result.adults = S.adults.length; result.crossCount = S.crossRng;
+  result.stats = S.stats;
+  if (opts.onEnd) opts.onEnd(S);
   return result;
 }
 
-export { RULES, HABITS, QUESTIONS, BLENDS };
+export { RULES, HABITS, QUESTIONS, BLENDS, wildLand, addSample };
