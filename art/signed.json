@@ -4265,6 +4265,13 @@
    "sha256": "d961bd04414473e1aa80cea5b014fa105b60c8cde8674bf5dd34e30c15cf8415"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "52833e1b2d",
+   "path": "prototypes/ui/assets/masters/pods/face-S11-24.png",
+   "sha256": "60d86dc8e051baba3ddc77f6db6f03517428e759efd87a77b743c95ec0c51335"
+  },
+  {
    "class": "ui",
    "date": "2026-11-16",
    "id": "edfc9f6745",
@@ -4291,6 +4298,13 @@
    "id": "c52825c821",
    "path": "prototypes/ui/assets/masters/pods/mibi-adult-S01-96x88.png",
    "sha256": "86dc9356cb60d4c71cbb17e4ffb20076ef159b3ee59905de9da31f8198806542"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "866c31d748",
+   "path": "prototypes/ui/assets/masters/pods/mibi-adult-S11-144x152.png",
+   "sha256": "8235d98c3a2b9f5d9b8a59dca4f514f0c2840d0f8525455ca03f0a93432efb55"
   },
   {
    "class": "cut-of-signed",
@@ -4634,6 +4648,27 @@
    "id": "0f0ea5ca6b",
    "path": "prototypes/ui/assets/masters/pods/mibi-adult-S20-yellower-light-coin-ruffle-304x312.png",
    "sha256": "7e8dff2fef7357d9c132904f6e489b0be53e2e498ab9812cb49eac7eeb961451"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "6227a29baa",
+   "path": "prototypes/ui/assets/masters/pods/mibi-halo-S11-128x160-clear.png",
+   "sha256": "0dccf4c96b10d9037166240922237758bfb2b50018046d9988186fdb03fa7464"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "c3e520cc55",
+   "path": "prototypes/ui/assets/masters/pods/mibi-halo-S11-128x160-mist.png",
+   "sha256": "33045262a04ef6bf9ef641573a55e727f84b4e63131350180df004e80ffccb9e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "3765da60b2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S11-104x112.png",
+   "sha256": "34124c4f872e815e7bf573d787a1f874b6dd592b4be832bbc5dfa3a135f84c91"
   },
   {
    "class": "cut-of-signed",
@@ -5145,6 +5180,13 @@
    "id": "d355000312",
    "path": "prototypes/ui/assets/masters/pods/pod-well-crown-C07-shade.png",
    "sha256": "b95a8423c96b2d21652cb663ca51b87ba8417471c498841f5ef8b1cc3d5643d4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-21",
+   "id": "f4b82a1e96",
+   "path": "prototypes/ui/assets/masters/pods/spread-plate-S11-80x96.png",
+   "sha256": "1a354ec3bcaab7585b1dcf0585f1986643d04acc6f513434b1bc1f7224375236"
   },
   {
    "class": "ui",
