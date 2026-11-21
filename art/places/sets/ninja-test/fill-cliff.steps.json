@@ -11,13 +11,13 @@
    [
     [
      "#82b266",
-     "#8cba68"
+     "#aac46e"
     ]
    ]
   ]
  ],
- "out_sha256": "57d8fc60fcc19c21254b171c609fc7155f035afd9db8a49eb96a7b4628a35086",
- "note": "P5 of the cliff method: the raised top one clear step lighter than the low grass (#74a65d): #82b266 to #8cba68, one colour map",
+ "out_sha256": "44fd6e29070161957cb5b1ac89dd17e53dea596c445517293ff2ec30c34e47cb",
+ "note": "P5 of the cliff method: the raised top one clear step lighter than the low grass (#74a65d): #82b266 to #aac46e, one colour map",
  "earlier_record": {
   "source_sha256": "138ebec0ef9c377bf83a98380476bc66f33c363a30e9e3ab8e2e75444f58e002",
   "parent": {

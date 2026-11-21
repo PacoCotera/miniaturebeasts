@@ -1947,7 +1947,7 @@
       0,
       0
     ],
-    "sha256": "f4a3d9bc0bebd3d72ee414e59edcdff0eac0101a0c33e208a35a175e8074c053"
+    "sha256": "a11b2d0c5f5bfb530b7cc395585a6c02af24f4dc1f179fa41ab1f7b7603b1c3b"
   },
   "cliff-face-2.png": {
     "commit": "local",
@@ -1960,7 +1960,7 @@
       0,
       0
     ],
-    "sha256": "55753772b2f9b521cc4e5785d2cf92822998d59f7cb2bc38a53a7efefe57863d"
+    "sha256": "fb7714e6c3e93885031ecb8a2d31c72e4bbd4795317aa32d55fae4afee5490e6"
   },
   "cliff-face-3.png": {
     "commit": "local",
@@ -1973,7 +1973,7 @@
       0,
       0
     ],
-    "sha256": "5c8bcafee58e7810c8324dcddfd67f4aa8494996f92e6ab6f4497a324b9495a7"
+    "sha256": "39a5cdd47d91d93f320159096d8ebfcc4ab03d1ea5b0769cf545e8f5897b012d"
   },
   "cliff-cap-w.png": {
     "commit": "local",
@@ -1986,7 +1986,7 @@
       0,
       0
     ],
-    "sha256": "a4976de66720db595ec4559e34f01ccfdaccfb6f6409c226bfc8e608f2f9d6ea"
+    "sha256": "6f3a3c3db244061b8624fee29b39fbe856a310c95cc97317dc8f8d7cf6710824"
   },
   "cliff-cap-e.png": {
     "commit": "local",
@@ -1999,7 +1999,7 @@
       0,
       0
     ],
-    "sha256": "aaf7b8ebd12efea7598131e40e35e329f150c93d3e593b19613bd34cbe0aa876"
+    "sha256": "3b55ef50f80951f27061ba9c9ff9179afc8715bf2412a12b6ec0fd9b07a5b83d"
   },
   "cliff-shadow.png": {
     "commit": "local",
@@ -2260,12 +2260,12 @@
   "fill-cliff.png": {
     "commit": "local",
     "from": "art-jobs/2026-11-13-cliff-plateau-raised-1/work/fill-grass-raised-day.png, one colour map to #8cba68 (P5 of the cliff method; the chain is in fill-cliff.steps.json)",
-    "sha256": "57d8fc60fcc19c21254b171c609fc7155f035afd9db8a49eb96a7b4628a35086"
+    "sha256": "44fd6e29070161957cb5b1ac89dd17e53dea596c445517293ff2ec30c34e47cb"
   },
   "over-cliff.png": {
     "commit": "local",
     "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (cut and recoloured; the whole chain is in over-cliff.steps.json)",
-    "sha256": "2538f742d4e1c14a5290ba5c421ce9b111b395dc36c401c6e25a69d9685699e8"
+    "sha256": "2250dcdbb9ec581d3a3a9668929daf481ec0b3613c38809f0b083a7eea6f2bce"
   },
   "tone-grass.png": {
     "commit": "633e4d641",
