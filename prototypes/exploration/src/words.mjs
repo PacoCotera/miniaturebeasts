@@ -85,7 +85,11 @@ export function partOfDay(spent) {
 }
 // [copy] words for the copywriter's round (they say the meaning only)
 export const DAY_TEXT = {
-  nightEnds: 'Night ends the day · the Companion wakes at camp',
+  nightEnds: 'Night ends the day · the Companion wakes at camp',   // the camp path only (a set-out in the night's light); a walk no longer ends at night
+  nightPassed: part => 'Night passed. A new day: ' + part + ' · ' + DAY.light + ' light.',   // [copy] the walk goes on where you stand
+  duskNews: n => 'Dusk: ' + n + ' light left today.',   // [copy]
+  nightSoon: n => 'Night soon: ' + n + ' light left today.',   // [copy]
+  warnAt: 10,   // the light number turns the warning colour from this many left
   newDay: 'A new day · you set out at dawn',   // a set-out in the night's light: the night's end runs first, at the Station
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
 };

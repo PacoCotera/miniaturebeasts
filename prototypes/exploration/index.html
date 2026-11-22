@@ -2240,8 +2240,22 @@ function advance(scope, info) {
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
   if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods fall here', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
-  else if (S.day.spent >= DAY.light && !ex.ending) { ex.ending = 1; fxMsg(DAY_TEXT.nightEnds, 4); lockInput(1100); setTimeout(() => endExpedition('night'), 1100); }   // the night's end: nothing is lost, the hold seals, the world turns
+  else if (S.day.spent >= DAY.light && !ex.ending) nightPasses();   // the night does not end the walk: the world turns, a new day starts where the explorer stands
+  else if (!ex.ending) { const left = DAY.light - S.day.spent;   // dusk and the last light are news, never a threat
+    if (left === DAY.light - DAY.parts.slice(0, -2).reduce((a, p) => a + p[1], 0)) fxMsg(DAY_TEXT.duskNews(left), 3);
+    else if (left === DAY_TEXT.warnAt) fxMsg(DAY_TEXT.nightSoon(left), 3); }
   save();
+}
+// The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
+function nightPasses() {
+  const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
+  S.lastEntered = (ex.entered || []).slice(); RIPE_LATER = []; let turned, ripeLater;
+  try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+  S.day = freshDay(); ex.stormCells = {};   // the trail and the storm marks are spent in this turn
+  RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);
+  const a = turned.arrived; ex.nightNews = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] };
+  fxMsg(DAY_TEXT.nightPassed(partOfDay(0)), 4);
+  for (const l of turned.lines) fxMsg(l, 3);   // the world turn's news, one line at a time in the message box
 }
 function shieldHit(stray) {
   const ex = S.exp; ex.shield--; ex.passWarned = 0; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // one plate a strike (the last one can go); the next stray this pass needs a fresh warned strike first; the lost plate's fill flashes in the top bar
@@ -6704,7 +6718,9 @@ function drawLine(o) {
   const { wx, wsx, mx, r } = lineCtx(o);
   if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 10); }
   if (r) { sep(x + PAD); const k = r.indexOf('\x01'), a = k < 0 ? r : r.slice(0, k), b = k < 0 ? '' : r.slice(k + 1);
-    if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
+    const lm = S.exp && S.day && DAY.light - S.day.spent <= DAY_TEXT.warnAt ? /\d+ light/.exec(a) : null;   // the light number turns the warning colour from 10 left
+    if (a && lm) { const pre = a.slice(0, lm.index); text(pre, mx, ty, C.mist, 2, null, true); const nx = mx + textWT(pre, 2); text(lm[0], nx, ty, C.amber, 2, null, true); text(a.slice(lm.index + lm[0].length), nx + textWT(lm[0], 2), ty, C.mist, 2, null, true); }
+    else if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
 }
 // Short messages stay until the next action.
 // The pod swap chooser: two lines above the bottom line. Hold: each held pod (shell, name, where it came from),
@@ -7721,7 +7737,7 @@ function placeStormWords(c) {
 // The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
 function dayCtx(ctx) {
   if (!S.exp || !S.day) return ctx;
-  const d = dayPart(), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);
+  const d = dayPart() + ' · ' + Math.max(0, DAY.light - S.day.spent) + ' light', alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
 function lineBase() {
@@ -8397,7 +8413,7 @@ window.addEventListener('storage', e => {
   save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
-if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); else if (S.exp && S.day.spent >= DAY.light) endExpedition('night'); if (S.phase === 'station') S.phase = 'setup';
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); else if (S.exp && S.day.spent >= DAY.light) nightPasses(); if (S.phase === 'station') S.phase = 'setup';
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';

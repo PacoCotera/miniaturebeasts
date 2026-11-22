@@ -39,17 +39,24 @@ test("End expedition makes camp: the world does not turn, the day waits, and the
   assert.equal(p.run("S.turn"), turn);
 });
 
-test("the night's end ends the day wherever you are: the hold seals, the world turns once, the next day starts at dawn", () => {
-  const p = start(); const turn = p.run("S.turn");
+test("the night's end does not end the walk: the world turns once, the next day starts at dawn where you stand", () => {
+  const p = start(); const turn = p.run("S.turn"), pos = p.run("S.exp.pos");
   spend(p, 199); assert.ok(p.run("!!S.exp"), "light is left at 199");
   assert.equal(p.run("S.turn"), turn);
   spend(p, 1);
-  assert.equal(p.run("S.exp"), null, "the walk is over");
-  assert.equal(p.run("S.report.reason"), "night");
+  assert.ok(p.run("!!S.exp"), "the walk is still open");
+  assert.equal(p.run("S.exp.pos"), pos);
   assert.equal(p.run("S.turn"), turn + 1, "the world turned once");
   assert.equal(p.run("S.day.spent"), 0, "the next day starts at dawn");
-  assert.equal(p.run("S.day.camps"), 0);
   assert.deepEqual(p.errors, []);
+});
+
+test("dusk and the last light are news; the light number warns from 10 left", () => {
+  const p = start(); p.run("S.day.spent = 149"); p.run("advance('map')");
+  assert.ok(p.run("FX.msg").includes("Dusk: 50 light left today."), p.run("FX.msg"));
+  p.run("FX.notes = []; FX.held = []; FX.msg = ''; S.day.spent = 189"); p.run("advance('map')");
+  assert.ok(p.run("FX.msg").includes("Night soon: 10 light left today."), p.run("FX.msg"));
+  assert.ok(p.run("!!S.exp"));
 });
 
 test("a trip that gains nothing does not turn the world: ten trips of 20 light turn it exactly as often as one of 200", () => {
@@ -76,7 +83,7 @@ test("the part of day is named in the bottom line's middle: morning and dusk", (
   const line = () => p.run("lineBase()");
   assert.ok(ctx(line().ctx)[0].startsWith("morning · "), "morning on the map: " + ctx(line().ctx)[0]);
   p.run("S.day.spent = 160"); assert.ok(ctx(line().ctx)[0].startsWith("dusk · "), "dusk on the map");
-  assert.ok(ctx(line().ctx).includes("dusk"), "the day alone is a form too, so the narrowest line still names it");
+  assert.ok(ctx(line().ctx).includes("dusk · 40 light"), "the day and its light alone are a form too, so the narrowest line still names it");
   p.run("S.exp.pos = S.exp.start; enterPatch(S.exp.pos)"); assert.equal(p.run("S.phase"), "patch");
   assert.ok(ctx(p.run("lineBase()").ctx)[0].startsWith("dusk · "), "dusk in a place");
   p.run("S.day.spent = 5"); assert.ok(ctx(p.run("lineBase()").ctx)[0].startsWith("dawn · "), "dawn");
