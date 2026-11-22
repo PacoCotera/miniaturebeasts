@@ -696,6 +696,18 @@ test("her page state (step 2b): an older mibi keeps what it had read; a hatched 
   assert.ok(widths[0] > widths[1] && widths[1] > widths[2], "the stretch narrows with each sighting");
 });
 
+test("her page: ✓ on a doing chapter with 0 sightings opens it and draws its empty scales (a wide stretch), a foot that says what ✓ does next", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
+  m.page = { looked: [], sights: {} };
+  INTENTS.habitat.intent(h, "plate.0", "confirm"); const di = fr.chapters.indexOf(fr.chapters.find(S.isDoingChapter));
+  h.ui.pods.lane = di; h.ui.pods.at = "rail"; INTENTS.pods.intent(h, "rail", "confirm"); assert.equal(h.ui.pods.at, "right");
+  const v = podsBuild({ st, settings, ui: h.ui.pods, focus: "rail", now: 0 }, podsSpec);
+  const scales = v.requests.filter((r) => r.kind === "traitshape").map((r) => r.model).filter((x) => x.shape === "scale");
+  assert.ok(scales.length && scales.every((x) => x.rough && x.rough[1] - x.rough[0] > 0.6 && x.shows == null), "the empty scales: the widest stretch, nothing of hers");
+  assert.ok(v.read.right.plates.length && v.read.right.plates.every((pl) => pl.shape && pl.shape.pic), "the chapter's plates are drawn");
+  assert.ok(v.line.subject, "the foot says which chapter is in hand");
+});
+
 test("the lens on her page (step 2c): copies and the hidden look stay hidden until the lens is pointed at the trait (✓ in its detail); an old save and a 2b page load with none shown", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
   const old = JSON.parse(JSON.stringify(m)); delete old.page; S.normalize({ ...st, mibis: [old] }); assert.deepEqual(old.page.carried, {}, "an older mibi starts with the lens used nowhere");

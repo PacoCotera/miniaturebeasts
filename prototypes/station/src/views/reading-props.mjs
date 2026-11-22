@@ -149,7 +149,7 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   if (o.at === "detail") return { ...base, ...detailOf(m, spec, req, p, fr, ch, clamp(ui.trait ?? 0, 0, n - 1)), form: "detail" };
   if (p.page && !o.isRead) {   // her page, a chapter not yet read: the chapter's traits in their own shapes with nothing of hers marked (the first look, or watching her, fills it); never the pod's "?" discs and price
     const size = n <= 2 ? "large" : n === 3 ? "small" : "tiny", others = othersOf(st, p, sid, ch);
-    return { ...base, form: "read", plates: ch.traits.map((t) => ({ trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size, true), glint: false, goal: false })), chip: null };
+    return { ...base, form: "read", plates: ch.traits.map((t) => ({ trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size, !isDoings(ch)), glint: false, goal: false })), chip: null };
   }
   if (!o.isRead) {   // unread: the "?" discs on the ghost of the first look, the template chips, the price key and the line beside it
     const [r, rc, rch] = RADII[Math.min(4, n)];
