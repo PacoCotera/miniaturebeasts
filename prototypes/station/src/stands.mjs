@@ -21,12 +21,13 @@ export const coatOf = (species, looks, table = COAT_TRAITS) => {
   const lay = MARKED_PICTURE[looks[t.marking]]; return `${tint}-${shade}${lay ? "+" + lay : ""}`;
 };
 // the master of a coat: the id with the coat after the kind (mibi-adult-S01-304x312 -> mibi-adult-S01-redder-dark-304x312), when that master is placed at the id's own size; the adult's awake stand with a marking takes the marked picture
-// (mibi-adult-S01-redder-dark-lay-spots-304x312); a pose, the asleep and the young show the coat only (no marked versions yet); else the painted master's own id (between-dark is the painted master)
+// (mibi-adult-S01-redder-dark-lay-spots-304x312); the saddle also marks the calm, curl and shake poses; other poses, the asleep and the young show the coat only; else the painted master's own id (between-dark is the painted master)
 export function coatMaster(id, species, coat) {
   if (!coat) return id;
   const [c, lay] = coat.split("+"), m = /-(\d+)x(\d+)$/.exec(id); if (!m) return id;
   const find = (mid) => { const v = id.replace(`-${species}-`, `-${species}-${mid}-`); return v !== id && placedAt(v, +m[1], +m[2]) ? v : null; };
-  return (lay && id === `mibi-adult-${species}-${m[1]}x${m[2]}` && find(`${c}-${lay}`)) || find(c) || id;
+  const marked = id === `mibi-adult-${species}-${m[1]}x${m[2]}` || /^mibi-adult-[^-]+-(calm|curl|shake)-\d+x\d+$/.test(id);   // the awake stand, or one of the three room poses (mibi-adult-S01-<tint>-<shade>-lay-saddle-<calm|curl|shake>-304x312; a pose with no marked file falls back to the plain pose)
+  return (lay && marked && find(`${c}-${lay}`)) || find(c) || id;
 }
 // { stage, size, step }: stage "juvenile" with the juvenile's size when step 2 applies, else the asked stage and size (step 1: the adult stand is placed; step 3: the genome stand-in)
 export function standLook(species, stage, size) {
