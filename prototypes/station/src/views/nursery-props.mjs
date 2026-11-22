@@ -38,7 +38,7 @@ export function nurseryView(view, m, spec, req) {
   const text = (tx, x, base, role, align, w) => { if (tx) texts.push({ text: tx, x: Math.round(x), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
   const from = ui.from && m.frameSpec?.strings?.titles?.[ui.from === "home" ? "vivarium" : ui.from] ? m.frameSpec.strings.titles[ui.from === "home" ? "vivarium" : ui.from] : Sg.crumbHome;
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role, "l");
-  text(fill(Sg.sub, { from, here: Sg.crumb }), Z.crumb.x, Z.crumb.baseline, Z.crumb.role, "l");   // where she is and how she came: ← goes back the way she came
+  text(fill(Sg.sub, { from }), Z.crumb.x, Z.crumb.baseline, Z.crumb.role, "l");   // where she is and how she came: ← goes back the way she came
   // the pill: what is on the shelf and what grows
   const parts = [st.tray.length === 1 ? Sg.podsOne : st.tray.length ? fill(Sg.pods, { n: st.tray.length }) : Sg.podsNone]; if (sum.growing) parts.push(fill(Sg.growing, { n: sum.growing })); if (sum.ready) parts.push(fill(Sg.ready, { n: sum.ready }));
   const pillText = parts.join(" · "), pw = Math.round(pillText.length * Z.chars.M18) + 2 * Z.chars.padX, pill = [Z.pill.rect[0] + Z.pill.rect[2] - pw, Z.pill.rect[1], pw, Z.pill.rect[3], Z.pill.radius];
@@ -63,14 +63,14 @@ export function nurseryView(view, m, spec, req) {
     text(title, fx, y + Sh.title.baseline, Sh.title.role, "l");
     const ws = words(row.words);
     text(row.kind === "pair" ? fill(Sg.canLand, { words: ws }) : ws ? fill(Sg.seen, { words: ws }) : Sg.seenNone, Sh.known.x, y + Sh.known.baseline, row.kind === "pair" ? Sh.known.greenRole : Sh.known.role, "l");
-    text(row.count === 1 ? Sg.pod1 : fill(Sg.podN, { n: row.count }), 0, y + Sh.count.baseline, Sh.count.role, "r", Sh.count.right);
+    text(row.count === 1 ? Sg.pod1 : fill(Sg.podN, { n: row.count }), Sh.count.right, y + Sh.count.baseline, Sh.count.role, "r");
     if (g.tag) text(Sg.newToYou, g.tag[0], y + Sh.tag.baseline + Sh.tag.dy, Sh.tag.role, "c", g.tag[2]);
     return g;
   });
   // the foot: the pad's word (the order, with more than one row) and ✓'s word
   const ok = okOf(st, ring, caps), F = Z.foot;
   if (ring.z === "shelf" && rows.length > 1) text(fill("{o}: {w}", { o: Sg.order, w: order === "parents" ? Sg.orderParents : Sg.orderNewest }), F.pad.x, F.pad.baseline, F.pad.role, "l");
-  if (ok) text(ok === "hatch" ? Sg.hatch : Sg.lookCloser, 0, F.ok.baseline, F.ok.role, "r", F.ok.right);
+  if (ok) text(ok === "hatch" ? Sg.hatch : Sg.lookCloser, F.ok.right, F.ok.baseline, F.ok.role, "r");
   const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], shelfTop: Sh.top - 14, head: { pill }, caps: capPics, rows: rowPics, keys: { pad: ring.z === "shelf" && rows.length > 1 ? F.keys.pad : null, ok: ok ? F.keys.ok : null }, ringBorder: C.ring.border };
   const stage = req({ kind: "nursery", id: `nursery:${hash(JSON.stringify(pic))}`, ...pic });
   view.page = { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
@@ -90,6 +90,7 @@ export function podView(view, m, spec, req) {
   const fr = frameOf(row.species), kind = S.cap(fr?.species.name ?? ""), free = S.capsuleFree(st) >= 0, mins = S.budMinutes(st, 0, settings), when = whenWords(Sg, mins);
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role, "l");
   text(row.kind === "pair" ? fill(Sg.ofPair, { kind }) : row.kind === "line" ? fill(Sg.ofLine, { kind, name: S.cap(row.of ?? "a returned mibi") }) : fill(Sg.ofWild, { kind, where: "at the " + placeOf(row.place) }), Z.origin.x, Z.origin.baseline, Z.origin.role, "l");
+  text(fill(spec.strings.nursery.sub, { from: spec.strings.nursery.crumb }), Z.crumb.x, Z.crumb.baseline, Z.crumb.role, "l");   // how she came: ← goes back to the shelf
   const faces = [], pr = Z.pill.rect; let pill = null;
   if (row.kind === "pair") { const label = fill(Sg.pill, { a: S.cap(row.parents[0]?.name ?? ""), b: S.cap(row.parents[1]?.name ?? "") }), fd = 26, pw = Math.round(label.length * 9.2) + 2 * fd + 40; pill = [pr[0] + pr[2] - pw, pr[1], pw, pr[3], Z.pill.radius];
     row.parents.forEach((q, j) => { const mb = S.mibiById(st, q.id); if (mb) faces.push({ id: faceOf(S.speciesOf(mb), mb, frameOf(S.speciesOf(mb))), x: j ? pill[0] + pw - fd - 10 : pill[0] + 8, y: pill[1] + 2, d: fd }); });
@@ -102,7 +103,7 @@ export function podView(view, m, spec, req) {
   // the one act, and what it costs: a capsule and time, nothing else
   text(free ? Sg.capsule : Sg.noCapsule, Z.say.x, Z.say.baseline, Z.say.role, "l"); if (free) text(fill(Sg.ready, { when }), Z.say.x, Z.say.baseline + Z.say.pitch, Z.say.role, "l");
   const act = ui.act === "letgo" ? "letgo" : "grow";
-  if (free) text(Sg.grow, 0, Z.ok.baseline, Z.ok.role, "r", Z.ok.right);
+  if (free) text(Sg.grow, Z.ok.right, Z.ok.baseline, Z.ok.role, "r");
   text(Sg.letGo, Z.letgo.x + 8, Z.letgo.baseline, Z.letgo.role, "l");
   const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], shelfTop: Z.shelfTop, pod: { id: podId(req, row.species), w: Z.pod.w, cx: Z.pod.cx, foot: Z.pod.foot }, alike: alike ? [...alike, Z.alike.radius] : null, pill: pill ?? [0, 0, 0, 0, 0], faces, ring: null, ok: free ? Z.ok.key : null,
     letgo: [...Z.letgo.rect, Z.letgo.radius], letgoRing: act === "letgo", back: null };

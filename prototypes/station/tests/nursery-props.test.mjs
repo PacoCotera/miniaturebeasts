@@ -68,8 +68,9 @@ test("a gold tag marks the rows that bring something new, and those rows come fi
 
 test("the way back is named on every page: where she is and how she came", () => {
   const { st } = home([podOf(0, "pond", 1)]);
-  assert.ok(texts(props(st, base({ from: "home" }))).some((x) => x.includes("›") && x.includes(Sg.crumb)), "a crumb on the nursery");
+  assert.ok(texts(props(st, base({ from: "home" }))).some((x) => x === "Back goes to the " + frame.strings.titles.vivarium), "the nursery names the screen ← returns to");
   const row = N.shelfRows(st)[0], t = texts(props(st, base({ view: "pod", podKey: row.key })));
+  assert.ok(t.includes("Back goes to the " + Sg.crumb), "the pod's page names the nursery: " + t.join(" | "));
   assert.ok(t.includes(spec.strings.podpage.title) && t.includes(spec.strings.podpage.grow), "the pod's page names itself and its one act: " + t.join(" | "));
 });
 

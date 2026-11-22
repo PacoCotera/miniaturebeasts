@@ -4,7 +4,11 @@
 //   nursery: { size, caps: [{ x, y, w, h, layers, state, progress, bar: [x0, x1], pod: { id, w, cx, foot } | null, ring, badge: [x, y, w, h, tone] }], head: { pill: [x, y, w, h, radius] }, rows: [{ x, y, w, h, radius, ring, isNew, tag: [x, y, w, h],
 //             wood: [x, y, w], pods: [{ id, x, w, foot }], faces: [{ id, x, y, d }] }], keys: { pad: [x, y, w, h] | null, ok: [x, y, w, h] }, back: ids }
 //   podpage: { size, back, shelfTop, pod: { id, w, cx, foot }, alike: [x, y, w, h, radius] | null, pill: [x, y, w, h, radius], faces: [{ id, x, y, d }], ring: [x, y, w, h, radius] | null, ok: [x, y, w, h], letgo: [x, y, w, h, radius, ring] | null }
-import { Pane, pixels, paintPage, rrectSd, sprite, discClip, PAGE_ORANGE, PAGE_INK, PAGE_GOLD } from "./reading-pictures.mjs";
+import { Pane, pixels as masterPixels, paintPage, rrectSd, sprite, discClip, PAGE_ORANGE, PAGE_INK, PAGE_GOLD } from "./reading-pictures.mjs";
+import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
+
+// a master's pixels, or a built picture's (the pod: registered by the same props, made by pictures.mjs); null when it is neither
+const pixels = (id) => { const e = assetEntry(id); if (!e || e.status === "empty") return null; return e.file ? masterPixels(id) : assetOf(id)?.rgba?.() ?? null; };
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const CREAM = [239 / 255, 233 / 255, 220 / 255], INK = [14 / 255, 17 / 255, 24 / 255], FLAT = [27 / 255, 32 / 255, 42 / 255];
