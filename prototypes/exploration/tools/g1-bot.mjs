@@ -34,10 +34,12 @@ export function playDay(seed, policy = 'HONEST') {
     if (S.over || S.L.gone) break;
     const r = rec.appts[a.k] = { cost: null, still: 0, route: null, d: null, noted: false };
     // the route and the stand-off
-    const dBy = rt => fixed || standOff(S, rt, a.t);
+    // (round 3) for calm the honest bot reads where the wary one enters (the forecast) and stands where its notice does not reach: the nearest such stand
+    const unnoticed = (rt, d) => { const q = G.ROUTES[rt][standIdx(S, rt, d)]; return !G.noticeAt({ ...S, light: S.ma }, q.x, q.y).noticed; };
+    const standFor = rt => { const d0 = standOff(S, rt, a.t); if (a.k !== 'calm') return d0; for (let d = d0; d <= 6; d++) if (unnoticed(rt, d)) return d; return 6; };
     const cand = only ? [only] : ['cover', 'open'];
-    const dMin = Math.min(...['cover', 'open'].map(rt => standOff(S, rt, a.t)));
-    let best = null; for (const rt of cand) { const d = fixed || (only ? dMin : standOff(S, rt, a.t)); if (!best || d < best.d) best = { rt, d }; }
+    const dMin = Math.min(...['cover', 'open'].map(rt => standFor(rt)));
+    let best = null; for (const rt of cand) { const d = fixed || (only ? dMin : standFor(rt)); if (!best || d < best.d) best = { rt, d }; }
     const rt = best.rt, d = best.d; r.route = rt; r.d = d;
     if (route && route !== rt) { while (idx > 0 && !S.over && !S.L.gone) { const t = G.ROUTES[route][idx - 1], c = G.ROUTES[route][idx]; if (!move(S, t, c, 'creep')) break; idx--; } route = null; idx = 0; }
     if (!route) { route = rt; idx = 0; }
@@ -69,7 +71,7 @@ export function playDay(seed, policy = 'HONEST') {
         if (S.notes[a.k] && S.notes[a.k].best === 'near') break;
         // closer between beats, when it can: the next tile on the route, if it would not be heard
         const nx = tiles[idx + 1];
-        if (nx && idx < tiles.length - 1 && cheb(nx, S.L) >= 2 && !G.heardAt(S, nx.x, nx.y, 'creep')) { if (move(S, tiles[idx], nx, 'creep')) { idx++; continue; } }
+        if (nx && idx < tiles.length - 1 && cheb(nx, S.L) >= 2 && !G.heardAt(S, nx.x, nx.y, 'creep') && !(a.k === 'calm' && G.noticeAt(S, nx.x, nx.y).noticed)) { if (move(S, tiles[idx], nx, 'creep')) { idx++; continue; } }
         if (st.why === 'dup' || st.why === 'face' || st.why === 'sight') { rec.still++; r.still++; G.wait(S); continue; }
         break;
       }

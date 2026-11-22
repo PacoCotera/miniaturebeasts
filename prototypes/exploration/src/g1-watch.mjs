@@ -38,6 +38,8 @@ function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Ma
 const rngFor = (seed, tag) => { let h = 2166136261 ^ seed; for (const c of tag) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return mulberry(h >>> 0); };
 export const individual = seed => { const r = INDIVIDUALS[((seed - 1) % INDIVIDUALS.length + INDIVIDUALS.length) % INDIVIDUALS.length]; return { wary: r[0], tell: r[1], late: !!r[2] }; };
 
+// where the wary one enters (all within four of her haunt, so it can come near her): north-east sand, east sand, north-west reeds, west reeds
+const MIBI_FROM = [[10, 2], [10, 7], [4, 1], [3, 6]];
 // a day for a seed: the wind of each part, the rain, when the wary one passes, when she beds down. All from the seed.
 export function makeDay(seed) {
   const r = rngFor(seed, 'g1-day'), ind = individual(seed);
@@ -47,15 +49,16 @@ export function makeDay(seed) {
   if (r() < .8) { const s = 20 + Math.floor(r() * 65), len = 15 + Math.floor(r() * 21), e = Math.min(s + len, 120); if (e - s >= 10) rain = { s, e }; }
   const ma = 125 + Math.floor(r() * 16);                                    // the wary one comes near at ma and stays 14 light
   const sleepAt = 150 + (ind.late ? 6 + Math.floor(r() * 5) : Math.floor(r() * 4));   // dusk starts at 150
+  const from = MIBI_FROM[Math.floor(rngFor(seed, 'g1-mibi-from')() * MIBI_FROM.length)];   // where the wary one enters the place: the seed sets it
   return { seed, ind, light: 0, over: false, wind, rain, ma, sleepAt,
     P: { x: START.x, y: START.y, dir: 'up' }, L: { x: HAUNT.x, y: HAUNT.y, ease: 0, quiet: 0, gone: false, habit: null, asleep: false },
-    M: { x: 10, y: 2, here: false }, done: {}, notes: {}, data: 0, samples: [], events: [], lastAt: -1,
+    M: { x: from[0], y: from[1], fx: from[0], fy: from[1], here: false }, done: {}, notes: {}, data: 0, samples: [], events: [], lastAt: -1,
     log: { holds: 0, waits: 0, steps: 0, notes: 0, heard: 0, goneAt: null, lostHabits: 0 } };
 }
 export const raining = (S, l = S.light) => !!S.rain && l >= S.rain.s && l < S.rain.e;
 export const windNow = (S, l = S.light) => S.wind[DAY.parts.findIndex(([n]) => n === partOfDay(l))];
 // the wary one's coming is named to within ten light: mibiFrom is the start of the ten-light window that holds it (its routine fixes it from the seed)
-export const forecast = S => ({ rain: S.rain ? [S.rain.s, S.rain.e] : null, mibiPart: partOfDay(S.ma), mibiFrom: Math.floor(S.ma / 10) * 10, wind: S.wind.slice(), sleepPart: 'dusk' });
+export const forecast = S => ({ rain: S.rain ? [S.rain.s, S.rain.e] : null, mibiPart: partOfDay(S.ma), mibiFrom: Math.floor(S.ma / 10) * 10, mibiAt: { x: S.M.fx, y: S.M.fy }, wind: S.wind.slice(), sleepPart: 'dusk' });
 
 // ---- W3: sight and the carry ----
 // a straight line between two tiles' centres is blocked by a prop or a raised edge on a tile between them
@@ -72,6 +75,14 @@ export function carryAt(S, x, y, gait) {
   return { v: Math.max(1, p.gait + p.ground + p.wind + p.rain + p.wary), parts: p };
 }
 export const heardAt = (S, x, y, gait) => !S.L.gone && cheb({ x, y }, S.L) <= carryAt(S, x, y, gait).v && los({ x, y }, S.L);
+// the wary one's notice (round 3): the same carry table and reach as any wild one, from where it comes in, with its own wariness (the individual's "wary"); a stood or creeping explorer is a creep's carry
+export function noticeAt(S, x, y, gait = 'creep') {
+  const c = tileAt(x, y), o = { x: S.M.fx, y: S.M.fy }, p = { gait: gait === 'walk' ? 4 : 2, ground: c === 't' || c === 'r' ? -1 : c === ',' ? 1 : 0, wind: 0, rain: raining(S) ? -1 : 0, wary: S.ind.wary };
+  const vx = x - o.x, vy = y - o.y, m = Math.hypot(vx, vy);
+  if (m > 0) { const w = WIND[windNow(S)], cos = (w[0] * vx + w[1] * vy) / m; p.wind = cos > .5 ? -1 : cos < -.5 ? 2 : 0; }
+  const v = Math.max(1, p.gait + p.ground + p.wind + p.rain + p.wary);
+  return { v, noticed: cheb({ x, y }, o) <= v && los({ x, y }, o), parts: p };
+}
 export const rangeOf = d => d > 5 ? 'far' : d >= 3 ? 'mid' : 'near';
 const passable = (S, x, y) => !blocksStep(tileAt(x, y)) && !(!S.L.gone && S.L.x === x && S.L.y === y) && !(S.M.here && S.M.x === x && S.M.y === y);
 export const canStep = (S, dir, n = 1) => { const [dx, dy] = DIRS[dir]; return passable(S, S.P.x + dx, S.P.y + dy); };
@@ -101,16 +112,17 @@ function spend(S, heard) {
   if (S.light === 150 && !L.gone) { L.x = BED.x; L.y = BED.y; }   // dusk: she goes to her bed
   if (!L.gone && L.habit) {
     const h = L.habit; if (L.ease >= 2) { S.done[h.k] = 'lost'; L.habit = null; S.log.lostHabits++; S.events.push('lost'); }
-    else { h.n++; if (h.n >= S.ind.tell + 4) { S.done[h.k] = 'played'; L.habit = null; if (h.k === 'sleep') L.asleep = true; S.events.push('end'); } else if (h.n - S.ind.tell === 3 && h.k === 'calm') { S.M.x = 9; S.M.y = 3; } }
+    else { h.n++; if (h.n >= S.ind.tell + 4) { S.done[h.k] = 'played'; L.habit = null; if (h.k === 'sleep') L.asleep = true; S.events.push('end'); } else if (h.n - S.ind.tell === 3 && h.k === 'calm') { S.M.x += Math.sign(L.x - S.M.x); S.M.y += Math.sign(L.y - S.M.y); } }
   }
-  // the wary mibi: it comes near at ma and goes 14 light on
-  if (S.light === S.ma) { S.M.here = true; S.M.x = 10; S.M.y = 2; }
+  // the wary mibi: it comes near at ma and goes 14 light on; while the explorer is inside its notice it does not come near her (calm does not play)
+  if (S.light === S.ma) { S.M.here = true; S.M.x = S.M.fx; S.M.y = S.M.fy; }
+  if (S.M.here && !L.gone && L.habit && L.habit.k === 'calm' && noticeAt(S, S.P.x, S.P.y).noticed) { S.done.calm = 'lost'; L.habit = null; S.log.lostHabits++; S.events.push('lost'); }
   if (S.light === S.ma + 14 || (S.done.calm === 'played' && S.M.here && !L.habit)) { S.M.here = false; if (!S.done.calm) S.done.calm = 'missed'; }
   // a habit starts when its cause is there and she is at ease enough to show it
   if (!L.gone && !L.habit) {
     let k = null;
     if (S.rain && S.light >= S.rain.e && S.light < S.rain.e + 3 && !S.done.shake) k = 'shake';
-    else if (S.M.here && cheb(S.M, L) <= 4 && !S.done.calm) k = 'calm';
+    else if (S.M.here && cheb(S.M, L) <= 4 && !S.done.calm && !noticeAt(S, S.P.x, S.P.y).noticed) k = 'calm';
     else if (S.light >= S.sleepAt && S.light < S.sleepAt + 6 && !S.done.sleep) k = 'sleep';
     if (k && L.ease <= 1) { L.habit = { k, n: 0 }; S.events.push('tell'); }
     else if (k === 'shake' && S.light === S.rain.e + 2) S.done.shake = 'missed';

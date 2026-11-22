@@ -93,6 +93,14 @@ test("the line under her says in words whether the next step would be heard", ()
   assert.match(G.hearLine(S), /creep heard/); S.P.x = 3; S.P.y = 8; S.P.dir = "up"; S.L.x = 7; S.L.y = 4; assert.match(G.hearLine(S), /creep unheard/);
 });
 
+test("the wary one notices the explorer by the carry table: inside its notice calm does not play, beyond it calm plays", () => {
+  const at = (px, py) => { const S = day(7, { wind: 'N' }); S.M.fx = S.M.x = 10; S.M.fy = S.M.y = 2; S.light = S.ma; S.P.x = px; S.P.y = py; return S; };
+  assert.equal(G.noticeAt(at(9, 4), 9, 4).noticed, true);
+  assert.equal(G.noticeAt(at(3, 14), 3, 14).noticed, false);
+  const near = at(9, 4); near.light = near.ma - 1; near.L.ease = 0; for (let i = 0; i < 3; i++) G.wait(near);
+  assert.ok(!near.L.habit || near.L.habit.k !== 'calm', 'no calm with the explorer inside its notice');
+});
+
 test("the bot's days: every HONEST day on seeds 1 to 40 notes something (E3), and a run is repeatable", () => {
   for (let s = 1; s <= 40; s++) { const r = playDay(s, "HONEST"); assert.equal(r.empty, false, "seed " + s + " has a note"); }
   assert.deepEqual(playDay(9, "HONEST"), playDay(9, "HONEST"));
