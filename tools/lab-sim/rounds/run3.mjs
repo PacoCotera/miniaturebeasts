@@ -35,7 +35,11 @@ function b1(F) {
   res.l2 = { seededDays: decisions, bestMoveShareByRule: share, maxShare: Math.max(...Object.values(share)), pass: Math.max(...Object.values(share)) <= 0.7 };
   const T = res.main.TELLS, B = res.main.BYLOOK;
   const cmp = (t, b) => ({ bylook: b, tells: t, fewer: b === INF ? null : 1 - t / b, pass: t !== INF && (b === INF || t <= 0.7 * b) });
-  res.l1 = { gens: cmp(T.gens.median, B.gens.median), hatches: cmp(T.hatches.median, B.hatches.median) };
+  // L1 = plan v6 line 177: "never worse and needs fewer hatches than the one that pairs by look" (no 30%)
+  const hat = cmp(T.hatches.median, B.hatches.median);
+  hat.reachTells = T.reached; hat.reachBylook = B.reached;
+  hat.pass = T.reached >= B.reached && T.hatches.median !== INF && (B.hatches.median === INF || T.hatches.median < B.hatches.median);
+  res.l1 = { gens: cmp(T.gens.median, B.gens.median), hatches: hat };
   return res;
 }
 const res = { round: ROUND, seeds: N, kinds: KINDS, engine: "origin/main 82462ee (E1, PR 469)", frames: {} };
