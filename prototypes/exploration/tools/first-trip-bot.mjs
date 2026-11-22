@@ -1,12 +1,13 @@
 // The first-trip bot (loop audit 3.18, walk slice C16): a fresh save, generator 7, the first walk of a new world, played through the page's keys only (walker.mjs).
 // It plays like a player who follows what the screen offers: pick the first glint, go into the place, Call, take what the Call shows (the pods, the stones, and a ✓ on each strike mark: the Data comes
-// by a reading), leave, step to the nearest cell it has not been into, and repeat. It stops when the Probe holds a pod and the Data the Station asks first.
+// by a reading), leave, step to the nearest cell it has not been into, and repeat. It stops when the Probe holds the Data and Energy the Station asks first (W5: no anonymous pod).
 // What the Station asks first (station/src/state.mjs PRICE): to identify the pod 1 Data, to read its first trait 1 Data; the Probe's tier 2 (12 Energy + 4 Data) is a later goal.
 //   node prototypes/exploration/tools/first-trip-bot.mjs [--from 1] [--to 200] [--calm] [--verbose] [--end]
 // --end: after the trip, walk home and End the expedition, and check the Companion shows the packing screen (packingScreen below); the release check runs one trip so.
 import { newPage, makeWalker } from "./walker.mjs";
 
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+export const WANT_PODS = 0;   // W5: no anonymous pod lies in the land any more; the first Grow's pod is the nursery's waiting pod (Station picture 14), so the first walk is held to its Data and its Energy only
 export const NEXT_DATA = 2;    // Data held at the end of the first walk: identify the pod (1) and read one trait (1)
 const { PRICE } = await import("../../station/src/state.mjs");
 export const GROW_E = PRICE.growE;   // Energy held at the end of the first walk: the first Grow's price today (growCost: PRICE.growE Energy, no Essence for the first mibi, no Data with no trait changed); lock-playtest-world
@@ -27,7 +28,7 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
     for (let g = 0; g < 2 && !p.S.exp; g++) key("confirm");
     return !!p.S.exp;
   };
-  const enough = () => { if (all) return false; const c = cargo(); return c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E; };
+  const enough = () => { if (all) return false; const c = cargo(); return c.pods >= WANT_PODS && c.d >= NEXT_DATA && c.e >= GROW_E; };
   const out = { seed, ok: false, why: "", actions: 0, places: 0, readings: 0, pods: 0, data: 0, energy: 0, firstPodAt: null, firstDataAt: null };
 
   // One place: Call, take what it shows (pods, stones, strike marks: a press on each), and leave. A place is gone into properly (a Call at its four quarters and its middle) or quickly (the way in and the
@@ -38,7 +39,7 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
     key("call"); w.takeShownPods(); takeReadings();
     for (const [fx, fy] of thorough ? THOROUGH : QUICK) { if (enough() || phase() !== "patch" || w.budgetGone()) break; if (!walkTo(fx, fy)) continue; key("call"); w.takeShownPods(); takeReadings(); }
     // A properly-visited place with no pod held yet: Call on over a lattice a Call's reach apart (7 tiles round, so 8 apart) until a pod shows, the stop nearest first.
-    if (thorough && cargo().pods < 1 && phase() === "patch") {
+    if (thorough && WANT_PODS && cargo().pods < 1 && phase() === "patch") {
       const lay = p.run("(() => { const l = layout(S.exp.patch.key); return { w: l.w, h: l.h }; })()"), left = [];
       for (let y = 3; y < lay.h; y += 8) for (let x = 3; x < lay.w; x += 8) left.push([x, Math.min(y, lay.h - 3)]);
       if (lay.w - 1 - left[left.length - 1][0] > 3) for (let y = 3; y < lay.h; y += 8) left.push([lay.w - 3, Math.min(y, lay.h - 3)]);
@@ -103,12 +104,12 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
   if (!p.S.exp && p.S.report && p.S.report.reason === "night") {   // the day's 200 light ran out on the walk: the night sealed the hold into a crate (nothing is lost), and the finds are the crate's
     bankNight(); out.night = true; out.days = days; out.actions = actsBefore;
     out.pods = bank.pods; out.data = bank.d; out.energy = bank.e; out.gathered = bank.pods + bank.e + bank.d + bank.s;
-    out.ok = out.pods >= 1 && out.data >= NEXT_DATA && out.energy >= GROW_E; if (!out.ok) out.why = "the day ended: " + out.pods + " pods, " + out.data + " Data, " + out.energy + " Energy";
+    out.ok = out.pods >= WANT_PODS && out.data >= NEXT_DATA && out.energy >= GROW_E; if (!out.ok) out.why = "the day ended: " + out.pods + " pods, " + out.data + " Data, " + out.energy + " Energy";
     out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false }); Object.defineProperty(out, "walker", { value: w, enumerable: false }); return out; }
   if (!p.S.exp) { out.sealed = true; out.why = "sealed before the walk was done (the Probe's shield ran out)"; return out; }
   const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = actsBefore + acts(); out.days = days;
-  out.ok = c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E; out.gathered = c.pods + c.e + c.d + c.s;
-  if (!out.ok && !out.why) out.why = c.pods < 1 ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : c.d < NEXT_DATA ? "only " + c.d + " Data" : "only " + c.e + " Energy, the first Grow costs " + GROW_E;
+  out.ok = c.pods >= WANT_PODS && c.d >= NEXT_DATA && c.e >= GROW_E; out.gathered = c.pods + c.e + c.d + c.s;
+  if (!out.ok && !out.why) out.why = c.pods < WANT_PODS ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : c.d < NEXT_DATA ? "only " + c.d + " Data" : "only " + c.e + " Energy, the first Grow costs " + GROW_E;
   out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false }); Object.defineProperty(out, "walker", { value: w, enumerable: false });
   return out;
 }
@@ -126,7 +127,7 @@ export function packingScreen(out) {
   if (p.S.phase !== "sealed") return "ending the expedition did not show the packing screen, the phase is " + p.S.phase;
   const r = p.S.report, c = r && r.sealed;
   if (!c || p.S.bay.length !== 1 || p.S.bay[0].id !== c.id) return "the hold was not sealed into a crate in the bay";
-  if (c.pods.length < 1 || c.d < NEXT_DATA) return "the crate lacks the finds: " + c.pods.length + " pods, " + c.d + " Data";
+  if (c.pods.length < WANT_PODS || c.d < NEXT_DATA) return "the crate lacks the finds: " + c.pods.length + " pods, " + c.d + " Data";
   p.pass(800); p.run("drawSealed(" + p.clock.t / 1000 + ")");   // the screen draws, the crate in at its place (a throw fails the check)
   return "";
 }

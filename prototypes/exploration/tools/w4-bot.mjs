@@ -8,7 +8,7 @@ import { makePage } from "../tests/page-harness.mjs";
 import { writeFileSync } from "node:fs";
 
 const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i < 0 ? d : process.argv[i + 1]; };
-const FROM = +arg("from", 1), TO = +arg("to", 200), DAYS = +arg("days", 3), VERBOSE = process.argv.includes("--verbose"), JSON_OUT = arg("json", null), READ_ON = process.argv.includes("--read");   // --read: the bot reads her prints only when the day has nothing yet (W4 round 2)
+const FROM = +arg("from", 1), TO = +arg("to", 200), DAYS = +arg("days", 3), VERBOSE = process.argv.includes("--verbose"), JSON_OUT = arg("json", null), READ_ALL = process.argv.includes("--read-all"), READ_ON = !process.argv.includes("--no-read");   // W5: the bot reads her prints (an empty haunt: a drop, the trail, the routine note) when the day has nothing yet; --no-read plays without
 
 // ---- runs inside the page (its globals: S, advance, patchAction, curLay, ...) ----
 function botPage(A) {
@@ -47,7 +47,7 @@ function botPage(A) {
   const notedBy = k => out.notes.some(n => n.k === k);
   // ---- W4 round 2: reading her prints (the page's own rule: printsToRead / readPrints), only when the day has nothing yet (--read) ----
   const READ = !!A.read; out.reads = []; out.readTries = [];
-  const nothingYet = () => !out.notes.length && !out.reads.length;
+  const nothingYet = () => A.readAll ? !out.reads.length : !out.notes.length && !out.reads.length;   // --read-all: read her prints on every day (a drop a day), not only when the day has nothing
   const unread = () => printsHere().filter(p => !S.day.hab[readKey(p.c.id, p.h)]);
   const tryRead = (why, by, backTo) => {   // go to the nearest unread prints and read them (one light); by: the light the bot must be free again (null: none)
     if (!READ || over()) return false;
@@ -113,6 +113,7 @@ function botPage(A) {
     while (!ok && !over()) { const p0 = dayAt(spent()); let g = 0; while (!over() && dayAt(spent()) === p0 && g++ < 60) wait(); for (let i = 0; i < 6 && !over(); i++) wait(); if (!over()) ok = tryRead('end', null, null); }
   }
   out.spent = spent(); out.samples = ex.cargo.samples.length - out.samples0; out.data = ex.cargo.d - out.d0; out.ended = !!(S.exp && S.exp.ending);
+  out.drops = (S.exp.stats.drops || []).length; out.ownPod = !!(S.own || {})[id]; out.ownPods = S.pods.filter(q => q.how === "own" && q.own === id).length;   // W5: tufts left at empty haunts, her own pod (S.own: once, at her bed)
   out.day = JSON.parse(JSON.stringify(S.day.hab));
   out.calmLog = (S.exp.stats.calmLog || []).filter(w => w.id === id && w.day === S.turn);   // W4 round 2: why calm did or did not play today
   out.learned = Object.fromEntries(Object.entries(S.habits[id] || {}).map(([k, r]) => [k, { got: Object.keys(r.got), best: r.best, sample: !!r.sample }]));
@@ -139,7 +140,7 @@ for (let seed = FROM; seed <= TO; seed++) {
     for (let day = 1; day <= DAYS; day++) {
       p.run(NEWDAY(pick.key, day));
       p.run(`(() => { const l = curLive(); l.strike = null; })()`);
-      const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id, read: READ_ON })})`));
+      const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id, read: READ_ON, readAll: READ_ALL })})`));
       row.days.push(r);
       if (VERBOSE) console.log(seed, "day", day, JSON.stringify({ plan: r.plan, notes: r.notes.map(n => n.k + ":" + n.range + (n.first ? "!" : "") + (n.filled ? "=" : "")), samples: r.samples, data: r.data, gone: r.gone, ev: r.events, hab: r.day, spent: r.spent }));
     }
@@ -159,7 +160,8 @@ const sum = {
   day1OneNoteOneSample: nd(1).filter(r => habitsOn(r, 1) >= 1 && r.days[0].samples >= 1).length,
   goneDays: ok.flatMap(r => r.days).filter(d => d.gone).length, totalDays: ok.flatMap(r => r.days).length,
   e3FailDays: ok.flatMap(r => r.days).filter(d => !d.notes.length).length,   // W4's reading: no habit note
-  e3EmptyDays: ok.flatMap(r => r.days).filter(d => !d.notes.length && !(d.reads || []).length).length,   // the walk design's E3 (a note, sample, drop, trail or routine note): her prints read count
+  e3EmptyDays: ok.flatMap(r => r.days).filter(d => !d.notes.length && !(d.reads || []).length && !d.drops).length,
+  ownPodByDay: [1, 2, 3].filter(d => nd(d).length).map(d => ({ day: d, withOwnPod: nd(d).filter(r => r.days[d - 1].ownPod).length, of: nd(d).length })), dropDays: ok.flatMap(r => r.days).filter(d => d.drops).length,   // the walk design's E3 (a note, sample, drop, trail or routine note): her prints read count
   readDays: ok.flatMap(r => r.days).filter(d => (d.reads || []).length).length,
   calmWhy: ok.flatMap(r => r.days).reduce((m, d) => { for (const w of d.calmLog || []) m[w.why] = (m[w.why] || 0) + 1; return m; }, {}),
 };
