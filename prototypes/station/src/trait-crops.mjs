@@ -5,6 +5,7 @@
 //   cards per set trait: look -> master (Markings: the between-between coat with the look's layout; plain is that coat bare), one wide window of the flank
 // Only the Loika (S01) has them; a trait or a kind with no entry keeps its empty slots (shape-pictures slotsOf).
 export const ART = [304, 312];
+export const CHIP_WINDOW = [20, 36, 88];   // x, y, side of the square window of a 128 x 160 trait chip (the same as layered-stand CHIP_TILE)
 const COAT = (t, s) => `mibi-adult-S01-${t}-${s}-304x312`;
 const LAY = (l) => `mibi-adult-S01-between-between-lay-${l}-304x312`;
 export const CROPS = {
@@ -17,6 +18,8 @@ export const CROPS = {
     round: {
       "body-hue": ["mibi-adult-S01-redder-dark-304x312", "mibi-adult-S01-304x312", "mibi-adult-S01-yellower-dark-304x312"],
       "body-value": ["mibi-adult-S01-304x312", COAT("between", "between"), COAT("between", "light")],
+      // Signature size: the art desk's signed 128 x 160 trait chips (small, the stand, large), the same ones the trait tiles use (layered-stand.mjs chipId)
+      "signature-size": ["trait-S01-signature-size-small-128x160", "trait-S01-signature-size-stand-128x160", "trait-S01-signature-size-large-128x160"],
     },
     cards: {
       // station-build-3 (AD bus 233353): each look is windowed on its marking, on the back (x 20-190, y 100-215); spotted's master faces the other way, so its window is the right flank (x 150-300, y 150-265)
