@@ -1,6 +1,6 @@
 # The cross: how two mibis make a child
 
-> **Superseded in part (owner 2026-11-21, "let's drop the rule"):** the penalty below (B, what hides surfaces, and the looks' nudge) is removed; a look's copy passes exactly and kin costs vigour instead. The rules in force are in [creatures and genomics](../creatures-and-genomics.md).
+> **Superseded in part (the rule was dropped):** the penalty below (B, what hides surfaces, and the looks' nudge) is removed; a look's copy passes exactly and kin costs vigour instead. The rules in force are in [creatures and genomics](../creatures-and-genomics.md).
 
 It gives the minimal cross of the [research loop](research-loop.md) (§5, decision 5) its rules, on the [species frames](species-frames.md) and the [taxonomy](taxonomy.md) (§2 trunk and branch, §4 same-species breeding). Numbers are illustrations unless marked.
 

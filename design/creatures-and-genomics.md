@@ -270,7 +270,7 @@ A child's copies come only from its parents. There is no mutation.
 The child is checked whole. A child that cannot be built never exists; the
 cross is not drawn again.
 
-Close kin has no rule on the copies (owner, 2026-11-21: "let's drop the rule"). A
+Close kin has no rule on the copies (the rule was dropped). A
 look's copy passes exactly or not at all; a hidden copy is never taken twice
 because the parents are kin; the odds are the four pairings of the parents'
 copies, the same for kin and for strangers. Two half siblings' young land at
