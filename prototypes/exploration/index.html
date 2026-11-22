@@ -255,6 +255,8 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
+// G1, the watch in one place: opened only by the test entry ?g1=<seed>; nothing else in the page reads it
+import { makeG1 } from "./src/g1-view.mjs";
 import { WORDS, DAY, DAY_TEXT, partOfDay } from "./src/words.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
@@ -7648,6 +7650,7 @@ function renderFrame(t) {
   if (RT.artHold && artFailed()) { drawArtFailed(); vctx.drawImage(scr, 0, 0); return; }   // a load failed: say so, and offer the reload
   if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // nothing that reads S runs
   if (RT.notice) { drawNotice(); vctx.drawImage(scr, 0, 0); return; }   // the release's notice, until its button is pressed
+  if (RT.g1) { RT.g1.draw(t); return; }   // G1's test place (?g1=<seed>): its own screen, no save
   trackDock(); RT.heroN = 0; RT.heroFn = null; RT.heroLater = false; RT.plScr = null; RT.gridScr = null; RT.litScr = null; RT.softScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1; RT.remap = REMAP;   // the core tables, unless a 48 px place switches
   teachFill();
   switch (S.phase) {
@@ -7915,6 +7918,7 @@ function panRaw(lay, c0, hero, f, d) {
   return { x: f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN), y: 0 };
 }
 function press(k) {
+  if (RT.g1) { RT.g1.press(k); return; }
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual
   if (k === 'call') {
     NOW = performance.now();
@@ -7934,6 +7938,7 @@ function press(k) {
   } else act(k);
 }
 function release(k) {
+  if (RT.g1) { RT.g1.release(k); return; }
   if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) act('call'); return; }   // a short press: Call, fired on release
   if (repeat.dir === k) stopRepeat();
   if (PAN.dir === k) panEnd();
@@ -8260,6 +8265,8 @@ if (!RT.readOnly) SLEEP.start().catch(() => { });   // the key at the first boot
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 if (OPT.dev || new URLSearchParams(location.search).has('observer')) setObserver(true);   // the Developer tools option opens the Observer, the page's developer panel
 fit();
+{ const q = new URLSearchParams(location.search).get('g1');   // G1's test entry (a test-harness flag): ?g1=<seed>, never reached in normal play
+  if (q != null && !RT.readOnly) RT.g1 = makeG1({ R, text, textW, blit, C, ditherFill, creatureArt, playerArt, SCR_W }, Math.max(1, parseInt(q, 10) || 1)); }
 requestAnimationFrame(frame);
 }
 // Start. With a Worker the realm is made (or read back) off the page first, and the loading line shows meanwhile; a saved game of another generator, or none, is a new world with the seed chosen here so its realm can be made at once.
@@ -8270,7 +8277,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { g1: () => (RT.g1 ? RT.g1.state() : null), PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
