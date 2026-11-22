@@ -65,7 +65,7 @@ function postFocus() {
   const pageLit = screen === "library.species" && UI.lib?.state === "lit" && UI.lib.lit && box && box[0] < LIB_PAGE[0];   // phone window, a chapter lit: the window shows its page (the ring is on a plate left of it; the page is what ✓ asked for), not the cut-off edge of it
   if (pageLit) box = LIB_PAGE;
   const plate = !!(FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000));
-  if (plate) box = PLATE_BOX;   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring (the play page puts the window back where it was: `plate` below)
+  if (plate && !(screen === "pods" && (UI.pods?.page != null || UI.pods?.view === "nursery" || UI.pods?.view === "pod"))) box = PLATE_BOX;   // on a page screen the plate is drawn inside the page (frame.plate.page): no pan for it   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring (the play page puts the window back where it was: `plate` below)
   const page = screen === "pods" && (UI.pods?.page != null || UI.pods?.view === "nursery" || UI.pods?.view === "pod");   // her page, the nursery and a pod's page (all the 530 x 600 window): the play page's side form shows them whole (layout.mjs `page`)
   const k = screen + ":" + (box ? box.join(",") : "-") + (page ? ":page" : "") + (plate ? ":plate" : ""); if (k === focusPosted) return; focusPosted = k;
   if (EMBED) parent.postMessage({ t: "mb-focus", screen, box, page, plate }, location.origin);
