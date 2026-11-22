@@ -69,11 +69,15 @@ const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id 
 function pageModel(st, fr, t, p, others, blank) {
   if (blank) return shapeModel(fr, t, null, others);   // her page, a chapter not yet looked at: every possibility, nothing of hers
   const m = p.page ? S.mibiById(st, p.mibi) : null, f = m ? S.pageKnown(m, t) : 1;
-  if (f >= 1) return shapeModel(fr, t, p.genome, others);
+  if (f >= 1) { const full = shapeModel(fr, t, p.genome, others); return !m || S.pageLensed(m, t) ? full : unlensed(full); }
   if (shapeOf(fr, t) !== "scale") return shapeModel(fr, t, null, others);
   const at = scalePlace(fr, t, p.genome)?.shows ?? 0.5, w = 0.7 * (1 - f), off = (parseInt(hashOf(m.id + ":" + t.id).slice(0, 4), 16) % 61) / 100 + 0.2, lo = clamp(at - off * w, 0, 1 - w);
   return { ...shapeModel(fr, t, p.genome, others, [lo, lo + w]), shows: null, copies: null };
 }
+// Until the lens has been pointed at a trait, what she carries there is not shown: a scale's two copies, a set's hidden look (its `none` stays as it was, so the card gives no hint).
+const unlensed = (model) => (model.shape === "scale" ? { ...model, copies: null } : { ...model, looks: model.looks.map((l) => ({ ...l, hidden: false })) });
+// Is what she carries on this trait shown (her page: the lens has been used on it; a pod's screen: always)
+const lensedOn = (st, p, t) => { const m = p.page ? S.mibiById(st, p.mibi) : null; return !m || S.pageLensed(m, t); };
 function shapeOfPlate(req, st, fr, t, p, others, want, blank = false) {
   const model = pageModel(st, fr, t, p, others, blank), art = cropSpecOf(fr.species.id, model), size = want === "large" && art ? "pictured" : want;   // a trait with crops of signed art is drawn at the pictured size (trait-crops.mjs)
   const id = "traitshape:" + fr.species.id + ":" + t.id + ":" + size + ":" + hashOf(JSON.stringify(model) + (picSizeOf(model, size) ? cropKey(art) : ""));
@@ -156,7 +160,7 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   // read: the pair on each plate (shown over carried), the captions, the trait and its kind line; the reward chip after a read that paid for a new look
   const size = n <= 2 ? "large" : n === 3 ? "small" : "tiny", others = othersOf(st, p, sid, ch);
   const plates = ch.traits.map((t) => { const s = traitState(fr, t, p.genome), goalHere = want[t.id] && s.carried.includes(want[t.id]);
-    return { trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size), glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere }; });   // a trait is a scale or a set (trait-shapes.mjs), drawn in its own shape
+    return { trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size), glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere && lensedOn(st, p, t) }; });   // a trait is a scale or a set (trait-shapes.mjs), drawn in its own shape
   return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: dataIcon(req, 13) } : null };
 }
 const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
@@ -164,7 +168,7 @@ const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|w
 function detailOf(m, spec, req, p, fr, ch, ti) {
   const { st, settings } = m, Sg = spec.strings.read, sid = fr.species.id, t = ch.traits[ti], s = traitState(fr, t, p.genome), want = (st.wish[sid] || {})[t.id];
   const plate = { trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, othersOf(st, p, sid, ch), "large"),
-    glint: !!(p.first && p.first.includes(t.id)), goal: !!(want && s.carried.includes(want)) };
+    glint: !!(p.first && p.first.includes(t.id)), goal: !!(want && s.carried.includes(want)) && lensedOn(st, p, t) };
   const kid = { id: "pod:" + p.id, genome: p.genome }, mate = st.mibis.find((x) => !x.released && S.speciesOf(x) === sid && S.isAdult(st, x, settings) && !S.directKinOf(st, kid, x));   // the pod's line is read from its recorded parents: a shed pod shows no odds with its own parent or grandparent
   let odds = null;
   if (mate && mate.genome && t.nature !== "doing") { const rows = childOdds(fr, t, p.genome, mate.genome).slice(0, 2);
@@ -197,7 +201,8 @@ function lineOf(m, spec, out, p, ch, o) {
   const Sg = spec.strings.read, back = p.page ? S.cap(p.name) : spec.strings.room.foot.backPods, R = out.right;
   if (o.moment || o.reading) return { ok: null, back: o.moment ? null : back, subject: "", need: "" };
   if (o.at === "stamp") return { ok: null, back: out.name, subject: "", need: "" };
-  if (o.at === "detail") return { ok: null, back: ch.name, subject: "", need: "" };
+  if (o.at === "detail") { const t = ch.traits[clamp(m.ui.trait ?? 0, 0, ch.traits.length - 1)], pm = p.page ? S.mibiById(m.st, p.mibi) : null;   // her page: the lens is offered on a known trait it has not been pointed at
+    return { ok: pm && S.pageKnown(pm, t) >= 1 && !S.pageLensed(pm, t) ? fill(Sg.lens, { trait: t.name }) : null, back: ch.name, subject: "", need: "" }; }
   if (o.sealed) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && !o.isRead) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && o.isRead) { const i = clamp(m.ui.plate ?? 0, 0, ch.traits.length - 1); return { ok: fill(Sg.closer, { trait: ch.traits[i].name }), back, subject: "", need: "" }; }
