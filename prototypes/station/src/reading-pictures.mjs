@@ -22,6 +22,7 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { lookColours } from "./specimen.mjs";
 import { SIZES, shapePicture, picSizeOf } from "./trait-shape-pictures.mjs";
 import { cropSpecOf, cropPixels, coverWindow, ART, CHIP_WINDOW } from "./trait-crops.mjs";
+import { nurseryPicture, podPagePicture } from "./nursery-pictures.mjs";
 
 // The crops a trait-shape request places (station-build-2): each signed master's window, reduced once to the picture size (the window is narrowed to the picture's shape, never stretched). A master that is not
 // placed gives no picture there (the card or end stays as the code draws it).
@@ -44,8 +45,8 @@ export const PLACES = { overview: { at: [163, 112], s: 0.94 }, close: { at: [142
 export const CHAMBER = { at: [30, 70], size: [548, 356], fade: 22 };
 
 // ---- the layers ----
-const placed = (id) => { const e = assetEntry(id); return !!e && !!e.file && e.status !== "empty"; };
-const pixels = (id) => (placed(id) ? assetOf(id).rgba() : null);
+export const placed = (id) => { const e = assetEntry(id); return !!e && !!e.file && e.status !== "empty"; };
+export const pixels = (id) => (placed(id) ? assetOf(id).rgba() : null);
 const CACHE = new Map();
 function alphaOf(id) { const k = "a:" + id; if (CACHE.has(k)) return CACHE.get(k); const e = assetEntry(id), px = pixels(id); if (!px) return null; const a = new Float32Array(e.w * e.h); for (let i = 0; i < a.length; i++) a[i] = px[i * 4 + 3] / 255; CACHE.set(k, a); return a; }
 // The species' cut layers (the cut tool's): the plain body, the scan, the rim, the face frame and the part masks with their lines; null for a species the tool did not cut.
@@ -90,7 +91,7 @@ const lum = (c) => 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2];
 function setLum(c, l) { const d = l - lum(c); let r = [c[0] + d, c[1] + d, c[2] + d]; const L = lum(r), n = Math.min(...r), x = Math.max(...r); if (n < 0) r = r.map((v) => L + ((v - L) * L) / (L - n)); if (x > 1) r = r.map((v) => L + ((v - L) * (1 - L)) / (x - L)); return r; }
 const softLight = (b, s) => (s <= 0.5 ? b - (1 - 2 * s) * b * (1 - b) : b + (2 * s - 1) * ((b <= 0.25 ? ((16 * b - 12) * b + 4) * b : Math.sqrt(b)) - b));
 const MODES = { normal: (b, s) => s, screen: (b, s) => 1 - (1 - b) * (1 - s), softLight };
-class Pane {
+export class Pane {
   constructor(w, h) { this.w = w; this.h = h; this.c = new Float32Array(w * h * 3); this.a = new Float32Array(w * h); }
   // a source colour (rgb 0..1) at alpha `as` over pixel i, in `mode`
   put(i, s, as, mode = "normal") {
@@ -300,10 +301,10 @@ function qMark(p, d, col, a) {   // the "?" in the chapter colour: a hook and a 
 // body (a 30 px disc with the chapter's 24 x 24 read emblem at 18, nearest), the ring on the chapter in hand (a segmented 70 px chapter mark inside a 88 px orange focus circle), the tag's pill and the two hint keys.
 // The room and her are game masters; the lines, chips, ring, pill and keys are interface drawn by code (rings, bars and keys are UI marks). Text is the face's (v_say), never here.
 // r: { species, size: [w, h], body: { x, y, w }, spots: [{ chapter, at: [x, y], line: [x1, y1, x2, y2], ring: "1,0,..." | "" }], hand, tag: [x, y, w, h], radius, keys: [[x, y, w, h], [x, y, w, h]] }
-const PAGE_CREAM = [246 / 255, 231 / 255, 184 / 255], PAGE_ORANGE = [240 / 255, 122 / 255, 31 / 255], PAGE_INK = [16 / 255, 20 / 255, 28 / 255], PAGE_BLUE = [143 / 255, 208 / 255, 230 / 255], PAGE_GOLD = [1, 201 / 255, 77 / 255];
-const segDist = (px, py, x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, L = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / L)); return Math.hypot(px - x1 - t * dx, py - y1 - t * dy); };
-function paintPage(out, x0, y0, x1, y1, f) { const W = out.w, H = out.h; for (let y = Math.max(0, Math.floor(y0)); y < Math.min(H, Math.ceil(y1)); y++) for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, Math.ceil(x1)); x++) { const r = f(x + 0.5, y + 0.5); if (r && r[1] > 0) out.put(y * W + x, r[0], clamp01(r[1])); } }
-const rrectSd = (px, py, x, y, w, h, r) => { const qx = Math.abs(px - (x + w / 2)) - (w / 2 - r), qy = Math.abs(py - (y + h / 2)) - (h / 2 - r); return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r; };
+export const PAGE_CREAM = [246 / 255, 231 / 255, 184 / 255], PAGE_ORANGE = [240 / 255, 122 / 255, 31 / 255], PAGE_INK = [16 / 255, 20 / 255, 28 / 255], PAGE_BLUE = [143 / 255, 208 / 255, 230 / 255], PAGE_GOLD = [1, 201 / 255, 77 / 255];
+export const segDist = (px, py, x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, L = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / L)); return Math.hypot(px - x1 - t * dx, py - y1 - t * dy); };
+export function paintPage(out, x0, y0, x1, y1, f) { const W = out.w, H = out.h; for (let y = Math.max(0, Math.floor(y0)); y < Math.min(H, Math.ceil(y1)); y++) for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, Math.ceil(x1)); x++) { const r = f(x + 0.5, y + 0.5); if (r && r[1] > 0) out.put(y * W + x, r[0], clamp01(r[1])); } }
+export const rrectSd = (px, py, x, y, w, h, r) => { const qx = Math.abs(px - (x + w / 2)) - (w / 2 - r), qy = Math.abs(py - (y + h / 2)) - (h / 2 - r); return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r; };
 function pageEmblem(out, chapter, cx, cy, px) {   // the chapter's 24 x 24 read emblem, nearest-neighbour at px, centred
   const id = `rail-emblem-${chapter}-read-24x24`, src = pixels(id); if (!src) return;
   for (let y = 0; y < px; y++) for (let x = 0; x < px; x++) { const sx = Math.min(23, Math.floor((x * 24) / px)), sy = Math.min(23, Math.floor((y * 24) / px)), i = (sy * 24 + sx) * 4, a = src[i + 3] / 255, X = Math.round(cx - px / 2) + x, Y = Math.round(cy - px / 2) + y;
@@ -364,7 +365,7 @@ function pageRail(out, q) {
 //   chips: [{ x, y, w, h, on, scale }], ends: [{ cx, cy, d, master }], bar: { x0, x1, y, h, over, grad: [[r, g, b] x 3], ticks: [x..], tick: [y0, y1] }, rough: [x0, x1, y, h] | null, she: { x, y, d } | null,
 //   cop: { xs: [a, b], y, h } | null, link: { x0, x1, y, h } | null, pins: [{ x, top, face, her }], legend: { dot: [x, y] | null, bar: [x, y, w, h] | null } }
 const sample = (rgba, sw, i) => [rgba[i * 4] / 255, rgba[i * 4 + 1] / 255, rgba[i * 4 + 2] / 255, rgba[i * 4 + 3] / 255];
-function roomRGB(W, H, id, zoom, blur) {   // the room covered to the window (centred across, 60 % down), enlarged about the centre and blurred (box passes), as RGB 0..1; null when it is not placed
+export function roomRGB(W, H, id, zoom, blur) {   // the room covered to the window (centred across, 60 % down), enlarged about the centre and blurred (box passes), as RGB 0..1; null when it is not placed
   const bg = pixels(id); if (!bg) return null;
   const s = Math.max(W / 544, H / 408), bw = Math.round(544 * s), bh = Math.round(408 * s), sc = resample(bg, 544, 408, bw, bh), ox = Math.round((W - bw) * 0.5), oy = Math.round((H - bh) * 0.6), c = new Float32Array(W * H * 3);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const X = Math.min(bw - 1, Math.max(0, Math.round((x - W / 2) / zoom + W / 2) - ox)), Y = Math.min(bh - 1, Math.max(0, Math.round((y - H / 2) / zoom + H / 2) - oy)), i = (Y * bw + X) * 4; c.set([sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], (y * W + x) * 3); }
@@ -373,12 +374,12 @@ function roomRGB(W, H, id, zoom, blur) {   // the room covered to the window (ce
     c.set(t); }
   return c;
 }
-function sprite(out, rgba, sw, sh, left, top, w, o = {}) {   // a master placed at (left, top), w wide, through an optional brightness / contrast and a coverage clip (x, y) -> 0..1, in picture pixels
+export function sprite(out, rgba, sw, sh, left, top, w, o = {}) {   // a master placed at (left, top), w wide, through an optional brightness / contrast and a coverage clip (x, y) -> 0..1, in picture pixels
   const h = Math.round((w * sh) / sw), sc = resample(rgba, sw, sh, w, h), br = o.bright ?? 1, ct = o.contrast ?? 1;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const X = Math.round(left) + x, Y = Math.round(top) + y; if (X < 0 || Y < 0 || X >= out.w || Y >= out.h) continue; const [r, g, b, a] = sample(sc, w, y * w + x); if (!a) continue; const cv = o.clip ? o.clip(X + 0.5, Y + 0.5) : 1; if (cv <= 0) continue;
     out.put(Y * out.w + X, [r, g, b].map((v) => clamp01(((v * br - 0.5) * ct) + 0.5)), a * cv); }
 }
-const discClip = (cx, cy, rad) => (x, y) => clamp01(rad + 0.5 - Math.hypot(x - cx, y - cy));
+export const discClip = (cx, cy, rad) => (x, y) => clamp01(rad + 0.5 - Math.hypot(x - cx, y - cy));
 function discRim(out, cx, cy, rad, wid, col, alpha, glow) {   // a ring (wid wide, inside rad), a 2 px dark ring outside it and a soft glow of the same colour
   paintPage(out, cx - rad - 40, cy - rad - 40, cx + rad + 40, cy + rad + 40, (x, y) => { const d = Math.hypot(x - cx, y - cy);
     if (d <= rad - wid) return null; if (d <= rad) return [col, alpha * clamp01(rad + 0.5 - d) * clamp01(d - (rad - wid) + 0.5)];
@@ -506,6 +507,8 @@ export function registerReading(r, env) {
     case "pagestage": return made(r.size[0], r.size[1], () => pageStagePicture(r));
     case "pagescale": return made(r.size[0], r.size[1], () => pageScalePicture(r));
     case "pageboard": return made(r.size[0], r.size[1], () => pageBoardPicture(r));
+    case "nursery": return made(r.size[0], r.size[1], () => nurseryPicture(r));   // the nursery and a pod's page (nursery-pictures.mjs)
+    case "podpage": return made(r.size[0], r.size[1], () => podPagePicture(r));
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
     case "readgather": return made(r.size, r.size, () => gatherPicture(r, env));

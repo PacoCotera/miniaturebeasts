@@ -98,7 +98,7 @@ export function parentScreen(screen) {
 // ---- Pods ----
 // Keep Pods' state valid (the view, the ring on a target of the state; the face moves it, the host keeps it) and return the Pods props body. The panel follows the ring's card and the first row on screen
 // follows the ring (the view says them, the host keeps them); no panel opens over Pods (letting go asks on the button's own face); the reading room's face of the Research key reads in the top bar.
-const POD_VIEWS = ["inventory", "filter", "find", "room", "trait"];
+const POD_VIEWS = ["inventory", "filter", "find", "room", "trait", "nursery", "pod"];
 export function podsBody() {
   const p = UI.pods, F = p.focus;
   if (!POD_VIEWS.includes(p.view)) p.view = SPECS.pods.initial;
