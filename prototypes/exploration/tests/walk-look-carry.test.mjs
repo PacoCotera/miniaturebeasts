@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 import { fixture } from "./walk-fixture.mjs";
 import { decodePng } from "../src/pngdecode.mjs";
 import { setFrames, wildGenome, wildGs, podGenome } from "../../station/src/genome.mjs";
-import { marksShown, drawnLooks } from "../../station/src/looks.mjs";
+import { marksShown, saddleShown, drawnLooks } from "../../station/src/looks.mjs";
 
 const FR = JSON.parse(readFileSync(new URL("../../species/frames/language/species-S01.json", import.meta.url), "utf8"));
 setFrames([FR]);
@@ -59,8 +59,8 @@ test("a scripted day: a marked Loika plain until a mid note reads her coat, sadd
   const seed = 3, f = fixture({ partner: 0, seed });
   const P = f.P(), at = f.spot(3, 5, P), at2 = f.spot(3, 5, P, 1);
   let markedId = 0, plainId = 0;
-  for (let i = 9001; i < 9100 && !(markedId && plainId); i++) { const s = marksShown(FR, { genome: wildGenome(FR, f.run("S.seed"), i), read: ["coat"] }); if (s && !markedId) markedId = i; if (!s && !plainId) plainId = i; }
-  const table = {}; for (let i = 9001; i < 9100; i++) table[i] = marksShown(FR, { genome: wildGenome(FR, f.run("S.seed"), i), read: ["coat"] }) ? 1 : 0;
+  for (let i = 9001; i < 9100 && !(markedId && plainId); i++) { const s = saddleShown(FR, { genome: wildGenome(FR, f.run("S.seed"), i), read: ["coat"] }); if (s && !markedId) markedId = i; if (!s && !plainId) plainId = i; }
+  const table = {}; for (let i = 9001; i < 9100; i++) table[i] = saddleShown(FR, { genome: wildGenome(FR, f.run("S.seed"), i), read: ["coat"] }) ? 1 : 0;
   f.run(`WILD.ok = true; WILD.shows = (seed, id) => (${JSON.stringify(table)})[id] === 1; WILD.partner = id => false`);
   f.run("__nid = " + (markedId - 1)); const m = f.add(0, at.x, at.y, { ind: { hs: [] } });
   assert.equal(m, markedId); f.run(`__nid = ${plainId - 1}`); const u2 = f.add(0, at2.x, at2.y, { ind: { hs: [] } }); assert.equal(u2, plainId);
@@ -85,5 +85,22 @@ test("a scripted day: a marked Loika plain until a mid note reads her coat, sadd
 
 test("the page loads the shared code (the one wildGenome and the Station's marksShown)", () => {
   const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  assert.match(src, /g\.wildGenome\(fr, seed, id\)/); assert.match(src, /L\.marksShown\(fr, m\)/);
+  assert.match(src, /g\.wildGenome\(fr, seed, id\)/); assert.match(src, /L\.saddleShown\(fr, m\)/);
+});
+
+test("only the saddle draws saddled: a spotted or banded marking stays the plain token (walk-look-carry-4)", () => {
+  let other = 0, saddle = 0;
+  for (let i = 0; i < 600; i++) {
+    const m = { genome: wildGenome(FR, 3, 1000 + i), read: ["coat"] }, k = drawnLooks(FR, m).markings;
+    if (saddleShown(FR, m)) { saddle++; assert.equal(k, "saddle"); } else if (marksShown(FR, m)) { other++; assert.notEqual(k, "saddle"); }
+  }
+  assert.ok(saddle > 0 && other > 0, "both kinds occur: " + saddle + " saddle, " + other + " other");
+});
+
+test("shake and alert keep playing on the saddled walk token: their own frames, never the saddled idle swapped in", () => {
+  const f = fixture({ partner: 0 });
+  const px = (pose, fr, sad) => Array.from(f.run(`creatureArt(0, '${pose}', ${fr}, 1, false, ${sad}).p`));
+  const idleSad = px("idle", 0, true);
+  for (const [pose, fr] of [["shake", 0], ["shake", 1], ["approach", 0]]) assert.deepEqual(px(pose, fr, true), px(pose, fr, false), pose + fr + " plays its own frame");
+  for (const [pose, fr] of [["shake", 0], ["shake", 1], ["approach", 0]]) assert.notDeepEqual(px(pose, fr, true), idleSad, pose + fr + " is not the saddled idle");
 });
