@@ -8,6 +8,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { LOCI } from "../../species/framework/catalogue.mjs";
+import { isDoing } from "../../species/framework/guards.mjs";
 import { setFrames, frameOf, frameIds, podGenome, traitState, stampGenome, stampFrameOf, genomeSha, nameCode, sha256, speciesIndex } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 S.useNameList("en-short-1");   // these tests show the archived English names (T-20261027-322): they pin that list; names.test.mjs proves the current one
@@ -179,7 +180,7 @@ test("compare: the traits read on both pods that differ; let a pod go (it pays n
   assert.deepEqual(S.compareDiff(st, a, b), [], "nothing read: nothing differs");
   S.read(st, a, "face", settings); S.read(st, b, "face", settings);
   const d = S.compareDiff(st, a, b);
-  assert.ok(Array.isArray(d)); for (const id of d) assert.ok(["crown", "eye-rings"].includes(id));
+  assert.ok(Array.isArray(d)); for (const id of d) assert.ok(S.frameFor(a).chapters.find((c) => c.id === "face").traits.some((x) => x.id === id), `${id} is a trait of the face chapter`);
   const fr = S.frameFor(a), lineOf = (p, id) => traitState(fr, fr.chapters.flatMap((c) => c.traits).find((x) => x.id === id), p.genome).line;
   for (const id of d) assert.notEqual(lineOf(a, id), lineOf(b, id), `${id}: marked only where the two read differently`);
   const s0 = st.s, r = S.returnPod(st, t, settings, 1);
@@ -349,7 +350,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(st.e, e0 - 2); assert.equal(st.s, s0 - 2);
   const B = st.bud; assert.equal(B.kind, "cross"); assert.equal(B.parents.length, 2); assert.equal(B.parents[0].id, a.id); assert.ok(B.parents[1].genome); assert.equal(B.minutes, 20); assert.equal(B.kinship, 0);
   assert.deepEqual(B.read, S.childKnownChapters(fr, fc), "known only where every trait of the chapter is firm");
-  for (const l of fr.loci) if (l.kind !== "locked") { const [x, y] = B.genome.loci[l.id]; const cont = typeof x === "number"; if (!cont) { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "one copy from each parent at " + l.id); } else assert.equal(x, y, "a blend's copies are equal"); }
+  for (const l of fr.loci) if (l.kind !== "locked") { const [x, y] = B.genome.loci[l.id]; const cont = typeof x === "number"; if (!cont) { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "one copy from each parent at " + l.id); } else if (isDoing(l.id)) assert.equal(x, y, "a doing holds one value on both copies"); else { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "a look: one copy from each parent, exactly, at " + l.id); } }
   assert.match(S.crossBlock(st, null, a, b, settings), /busy/);
   const o = S.openBud(st, null, settings, 1000 + 20 * 60000); assert.equal(o.ok, true); const child = o.mibi;
   assert.equal(child.parents.length, 2); assert.deepEqual(child.read, B.read); assert.equal(S.mibiStage(st, child), "juvenile");

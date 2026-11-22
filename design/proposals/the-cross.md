@@ -1,5 +1,7 @@
 # The cross: how two mibis make a child
 
+> **Superseded in part (the rule was dropped):** the penalty below (B, what hides surfaces, and the looks' nudge) is removed; a look's copy passes exactly and kin costs vigour instead. The rules in force are in [creatures and genomics](../creatures-and-genomics.md).
+
 It gives the minimal cross of the [research loop](research-loop.md) (§5, decision 5) its rules, on the [species frames](species-frames.md) and the [taxonomy](taxonomy.md) (§2 trunk and branch, §4 same-species breeding). Numbers are illustrations unless marked.
 
 Continuous loci **blend** (the child sits between its parents with a small spread); switch loci are **Mendelian** (a dominant copy shows, a recessive one hides, sleeping looks can wake); inheritance is **independent per trait**, because this is a breeding game; **mutation is not in the first build** and may come later as an event during incubation, breeding or exploration; mibis age in turns but **never decline or die**; **the more removed the parents' genomes, the better the cross**, and **inbreeding inflicts a penalty**, whose form is B with A (§5, §8.1).

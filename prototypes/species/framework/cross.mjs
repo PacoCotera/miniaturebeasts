@@ -18,30 +18,31 @@
 // (parents: the parents' records or snapshots with their ids, or their ids) or a bare genome; a bare
 // genome is its own individual (the object), and in kinship it is named by its pedigree name (the
 // digest it was born with: pedigreeName) because a bare genome's recorded parents are digests.
-// Relatedness is pedigree kinship from recorded parents (by id for records, walked three
+// Relatedness is pedigree kinship from recorded parents (by id for records, walked four
 // generations deep through a lookup by id; by origin.parents digests for bare genomes), a wild
 // founder unrelated to every other founder; where a parent is unknown that side counts as a founder,
 // and genome identity (the share of open loci where the pairs match, blends by bin) is the fallback
 // picture, never a penalty.
-// The inbreeding penalty is B with A: at each switch locus where the child would carry one hidden
-// copy, with chance 2 × kinship it takes that hidden copy twice (what hides, surfaces); and the
-// blend's spread and draw narrow by (1 − 4 × kinship), so a line folded back on itself averages
-// itself. The dials (spread, penalty form none | A | B | C | AB, strength) are there so the forms can
-// be looked at side by side; the decided one is AB at strength 1.
+// Close kin has no rule on the copies (owner 2026-11-21, "let's drop the rule"): a look's copy passes exactly or
+// not at all, a hidden copy is never taken twice because the parents are kin, and the fractions are the four
+// pairings of the parents' copies for everyone. Kin counted FOUR generations back gives F, the kinship of her two
+// parents, and F costs vigour (vigour.mjs): a slower pod and a weaker partner skill. The one dial left is A: a
+// doing (a scale held on both copies) still takes its random nudge, narrowed by (1 - 4 x kinship).
 // Direct kin never cross (owner, 2026-11-03): a parent, grandparent or great-grandparent with its line, and two
 // children of the same pair; see directKin. Half kin, cousins and anything further cross with the penalty.
 // The forecast shows quarters for switches (the four pairings of the parents' copies, resolved) and
-// a range for blends (the parents' shown values widened by the spread, clamped, as bins), never a
+// a range for blends (a look: the span of the four pairings' means, exact; a doing: widened by the spread, clamped, as bins), never a
 // promise; a trait where both parents hold the same copies is known for sure before any read.
-import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, offStepEnds, samePair } from "./catalogue.mjs";
+import { LOCI, resolveCopies, isContinuous, copyValue, binFor, valueRange, quantize, offStepEnds, samePair, stepOf } from "./catalogue.mjs";
 import { genomeDigest, frameVersionOf, buildIndividual, FRAME_VERSION } from "./species.mjs";
 import { isDoing } from "./guards.mjs";
 import { streamOf } from "./draws.mjs";
 import { resolveIndividual } from "./resolve.mjs";
 
-export const SPREAD = 0.10;                     // the nudge: up to this share of the locus range either way (decided)
-export const PENALTY = "AB";                    // the decided form: B (what hides surfaces) with A (the narrowing spread)
-export const KINSHIP_DEPTH = 3;                 // generations walked for pedigree kinship
+export const SPREAD = 0.10;                     // the nudge a doing takes: up to this share of the locus range either way (a look takes none)
+export const PENALTY = "A";                     // the one form left: A (a doing's nudge narrows with kinship); B and C are removed
+export const KINSHIP_DEPTH = 4;                 // generations walked for pedigree kinship F (gdd 7.5: four)
+export const DIRECT_KIN_DEPTH = 3;              // generations of a line that may not pair (parent, grandparent, great-grandparent): unchanged
 
 const round6 = (v) => Math.round(v * 1e6) / 1e6;
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -109,7 +110,7 @@ const keyOf = (x) => (idOf(x) != null ? `id:${idOf(x)}` : `g:${pedigreeName(geno
 // link. A parent counts by its recorded id even when its record is gone (its own parents unknown, so
 // the walk stops there); a missing parent matches nothing; a genome is never compared.
 const LINE = ["parent", "grandparent", "great-grandparent"];
-export function directKin(x, y, lookup = () => null, depth = KINSHIP_DEPTH) {
+export function directKin(x, y, lookup = () => null, depth = DIRECT_KIN_DEPTH) {
   const ancestors = (z) => {
     const out = new Map();
     const walk = (n, g) => {
@@ -205,28 +206,17 @@ export function cross(frame, x, y, opts = {}) {
 // The child's copies from two parents' genomes at kinship k (the cross's draw, and the shed pod's).
 function drawLoci(frame, a, b, k, opts) {
   const { rng = Math.random, spread = SPREAD, penalty = PENALTY, strength = 1 } = opts;
-  const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
-  const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;
-  const weaken = penalty.includes("C") ? clamp(k * strength, 0, 1) : 0;
-  const loci = {}, coin = streamOf(rng);   // the coin and the hidden-copy chance are whole-number questions of the core's random module; the blends still read rng() as a share
+  const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;   // a doing's nudge only
+  const loci = {}, coin = streamOf(rng);   // the coin is a whole-number question of the core's random module; a doing's nudge still reads rng() as a share
   for (const l of frame.loci) {
     if (l.kind === "locked") { loci[l.id] = [...l.copies]; continue; }
     const locus = LOCI.get(l.id);
     if (isContinuous(locus) && !isDoing(l.id)) {
-      // a look: two copies, one of each parent's own (like a switch locus); the nudge applies to each copy
-      const [lo, hi] = blendRange(frame, l), [clo, chi] = valueRange(locus);
-      const take = (g, i) => { const c = g.loci[l.id][i]; return typeof c === "number" ? c : copyValue(locus, c); };
-      const nudge = (v) => {
-        if (v < lo - 1e-9 || v > hi + 1e-9) return v; // a mutated copy outside the pool passes on as it is
-        const n = quantize(locus, clamp(v + (rng() * 2 - 1) * spread * (chi - clo) * narrow, lo, hi), [lo, hi]);
-        return n;
-      };
-      const asCopy = (v) => (offStepEnds(locus, [lo, hi]).includes(v) ? l.alleles.find((id) => copyValue(locus, id) === v) ?? v : v);
-      let c0 = nudge(take(a, coin.chance(1, 2) ? 0 : 1)), c1 = nudge(take(b, coin.chance(1, 2) ? 0 : 1));
-      if (c0 !== c1 && surface > 0 && coin.under(Math.ceil(surface * 4294967296))) { // what hides surfaces: one copy twice
-        if (coin.chance(1, 2)) c1 = c0; else c0 = c1;
-      }
-      loci[l.id] = [asCopy(c0), asCopy(c1)];
+      // a look: two copies, one of each parent's own, passed exactly (no nudge, no hidden copy taken twice for kin).
+      // A legacy number off the blend step is set on the step as it passes (the one move; a named copy and a stepped number pass as they are).
+      const [lo, hi] = blendRange(frame, l);
+      const pass = (g, i) => { const c = g.loci[l.id][i]; return typeof c === "number" && stepOf(locus, c) < 0 && !offStepEnds(locus, [lo, hi]).includes(c) ? quantize(locus, c, [lo, hi]) : c; };
+      loci[l.id] = [pass(a, coin.chance(1, 2) ? 0 : 1), pass(b, coin.chance(1, 2) ? 0 : 1)];
       continue;
     }
     if (isContinuous(locus)) {
@@ -234,15 +224,12 @@ function drawLoci(frame, a, b, k, opts) {
       const [lo, hi] = blendRange(frame, l), [clo, chi] = valueRange(locus);
       const mid = (va + vb) / 2;
       let v = mid + (rng() - 0.5) * (vb - va) * narrow + (rng() * 2 - 1) * spread * (chi - clo) * narrow;
-      if (weaken && isDoing(l.id)) v -= weaken * (v - lo); // C: a doing moves toward its weak end, the low end of the pool
       v = quantize(locus, clamp(v, lo, hi), [lo, hi]); // on the blend step, inside the pool
       const end = offStepEnds(locus, [lo, hi]).includes(v) ? l.alleles.find((id) => copyValue(locus, id) === v) : undefined;
       loci[l.id] = end ? [end, end] : [v, v]; // a copy landed on a pool's off-step end is that allele, by name
       continue;
     }
-    const pair = [a.loci[l.id][coin.chance(1, 2) ? 0 : 1], b.loci[l.id][coin.chance(1, 2) ? 0 : 1]];
-    const hidden = hiddenCopy(locus, pair);
-    loci[l.id] = hidden !== null && surface > 0 && coin.under(Math.ceil(surface * 4294967296)) ? [hidden, hidden] : pair;
+    loci[l.id] = [a.loci[l.id][coin.chance(1, 2) ? 0 : 1], b.loci[l.id][coin.chance(1, 2) ? 0 : 1]];
   }
   return loci;
 }
@@ -314,8 +301,7 @@ export function forecast(frame, x, y, opts = {}) {
   const kin = directKin(x, y, lookup);
   if (kin) throw new Error(`direct kin (${kin.rel}): family does not cross`);
   const k = clamp(opts.kinship ?? kinship(x, y, lookup), 0, 0.5);
-  const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;
-  const surface = penalty.includes("B") ? clamp(2 * k * strength, 0, 1) : 0;
+  const narrow = penalty.includes("A") ? Math.max(0, 1 - 4 * k * strength) : 1;   // a doing's nudge only
   const traits = [];
   const asleepIn = (g) => Object.fromEntries(resolveIndividual(frame, g).facts.map((f) => [f.id, f.state === "asleep"]));
   let sleepA = null, sleepB = null;
@@ -336,22 +322,21 @@ export function forecast(frame, x, y, opts = {}) {
       const w = spread * (chi - clo) * narrow;
       let rlo, rhi;
       if (isDoing(lead)) { const mid = (va + vb) / 2, half = Math.abs(vb - va) / 2 * narrow; rlo = mid - half - w; rhi = mid + half + w; }
-      else { // a look: the span of the four copy pairings' means (the parents' copies), nudge included
+      else { // a look: the span of the four copy pairings' means (the parents' copies), exact: no nudge
         const ms = [];
         for (const p of a.loci[lead]) for (const q of b.loci[lead]) ms.push((copyValue(locus, p) + copyValue(locus, q)) / 2);
-        rlo = Math.min(...ms) - w; rhi = Math.max(...ms) + w;
+        rlo = Math.min(...ms); rhi = Math.max(...ms);
       }
-      const range = [quantize(locus, clamp(rlo, lo, hi), [lo, hi]), quantize(locus, clamp(rhi, lo, hi), [lo, hi])]; // on the step, as the child is
+      const range = isDoing(lead) ? [quantize(locus, clamp(rlo, lo, hi), [lo, hi]), quantize(locus, clamp(rhi, lo, hi), [lo, hi])] : [round6(rlo), round6(rhi)]; // a doing is on the step, as the child is; a look is the exact means of the parents' copies, a step or halfway between two
       const bins = [...new Set([binFor(locus, range[0]), binFor(locus, (range[0] + range[1]) / 2), binFor(locus, range[1])])];
       traits.push({ ...base, kind: "blend", parents: [round6(va), round6(vb)], range, bins, firm: false, sure: bins.length === 1, ...asleepOf(t) });
       continue;
     }
-    // the four pairings, each a quarter; under B a carrier pairing turns homozygous hidden with chance 2k
+    // the four pairings, each a quarter, for kin and strangers alike
     const seeds = [];
     for (const x of a.loci[lead]) for (const y of b.loci[lead]) {
-      const pair = [x, y], hidden = hiddenCopy(locus, pair);
-      const pairs = hidden !== null && surface > 0 ? [[pair, 0.25 * (1 - surface)], [[hidden, hidden], 0.25 * surface]] : [[pair, 0.25]];
-      for (const [p, w] of pairs) seeds.push({ copies: p, look: resolveCopies(locus, p), label: lookLabel(locus, p), weight: w, hides: hiddenCopy(locus, p) });
+      const p = [x, y];
+      seeds.push({ copies: p, look: resolveCopies(locus, p), label: lookLabel(locus, p), weight: 0.25, hides: hiddenCopy(locus, p) });
     }
     const looks = {};
     for (const s of seeds) looks[s.label] = round6((looks[s.label] ?? 0) + s.weight);

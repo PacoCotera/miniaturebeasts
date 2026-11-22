@@ -77,14 +77,14 @@ test("the cross carries and crosses a sleeping record copy by copy, as it does a
     for (const id of ["appearance.emblem-place", "appearance.emblem-size", "appearance.marking-rosette", "form.whisker-count", "form.whisker-length"]) assert.ok(Array.isArray(child.loci[id]) && child.loci[id].length === 2, `${id} is carried by the child`);
     for (const c of child.loci["appearance.emblem-place"]) seen.place.add(c);
     const [n1, n2] = child.loci["form.whisker-count"]; assert.ok(n1 >= 0 && n1 <= 1 && n2 >= 0 && n2 <= 1); seen.count.add(`${n1}|${n2}`);
-    // each blend look carries two copies, one from each parent's own number (nudged by the spread), inside the range
+    // each blend look carries two copies, one from each parent's own number (passed exactly, no nudge), inside the range
     const [rs, rs2] = child.loci["appearance.marking-rosette"]; assert.ok(rs >= lo && rs <= hi && rs2 >= lo && rs2 <= hi);
     assert.equal(child.loci["form.whisker-length"].length, 2);
     const built = buildIndividual(FRAME, child); assert.equal(built.validation.status, "valid");
     asleep.push(resolveIndividual(FRAME, child).facts.filter((f) => f.state === "asleep").map((f) => f.id));
   }
   assert.deepEqual([...seen.place].sort(), ["belly", "forehead"], "both of the mother's hidden copies reach her children: a sleeping record is crossed");
-  assert.ok(seen.count.size > 20, "the sleeping whisker count comes from its parents' copies, nudged, child by child, not left at a default");
+  assert.equal(seen.count.size, 1, "the sleeping whisker count is exactly its parents' two copies, one from each, passed with no nudge and not left at a default");
   for (const ids of asleep) for (const id of ["appearance.emblem-place", "appearance.marking-rosette", "form.whisker-count"]) assert.ok(ids.includes(id), `${id} sleeps in every child`);
 });
 

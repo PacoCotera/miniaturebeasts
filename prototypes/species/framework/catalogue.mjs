@@ -464,6 +464,21 @@ export function offStepEnds(locus, bounds) {
   const [lo, hi] = valueRange(locus), s = (hi - lo) / BLEND_STEPS;
   return [...new Set(bounds)].filter((e) => e > lo && e < hi && Math.abs((e - lo) / s - Math.round((e - lo) / s)) * s > 1e-9);
 }
+// The steps the eye can tell apart (gdd 7.3 line 5; engine job E1). A first guess of seven per scale (SCALE_STEPS); the art director sets
+// the real number scale by scale (SCALE_STEPS_BY, locus id -> count) and nothing else changes. Each step is a point of the fine blend step
+// (so the stamp holds it exactly), spread evenly over the pool's range, the pool's own ends included.
+export const SCALE_STEPS = 7;
+export const SCALE_STEPS_BY = {};
+export function scaleSteps(locus, bounds = valueRange(locus)) {
+  const n = Math.max(2, SCALE_STEPS_BY[locus.id] ?? SCALE_STEPS), [lo, hi] = bounds;
+  return [...new Set(Array.from({ length: n }, (_, i) => quantize(locus, lo + (i * (hi - lo)) / (n - 1), bounds)))];
+}
+// The nearest scale step to a value.
+export function onScaleStep(locus, v, bounds = valueRange(locus)) {
+  let best = null;
+  for (const s of scaleSteps(locus, bounds)) if (best === null || Math.abs(s - v) < Math.abs(best - v)) best = s;
+  return best;
+}
 // Two copy pairs carry the same copies, in either order (a pair has no order): the one comparison the
 // frame check and the cross use for a locked pair.
 export const samePair = (p, q) => Array.isArray(p) && Array.isArray(q) && p.length === 2 && q.length === 2 && ((p[0] === q[0] && p[1] === q[1]) || (p[0] === q[1] && p[1] === q[0]));
