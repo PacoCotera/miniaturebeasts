@@ -76,12 +76,28 @@ export function pairView(g, a, b) {
     if (shapeOf(frame, t) === "set") {
       const reachable = seen.get(t.id) ?? new Set(), exact = f.kind === "switch" && t.loci.length === 1;
       const frac = exact ? Object.fromEntries(Object.entries(f.looks).map(([k, v]) => [sortedLabel(k), v])) : null;
-      return { id: t.id, name: t.name, shape: "set", looks: t.looks.map((look) => ({ look, green: reachable.has(look), fraction: frac ? frac[sortedLabel(look)] ?? 0 : null, a: traitState(frame, t, a.genome).shows === look, b: traitState(frame, t, b.genome).shows === look })) };
+      return { id: t.id, name: t.name, shape: "set", looks: t.looks.map((look) => ({ look, green: reachable.has(look), fresh: reachable.has(look) && !shownInGroup(g, t, look), aim: g.aim.set.trait === t.id && g.aim.set.look === look, fraction: frac ? frac[sortedLabel(look)] ?? 0 : null, a: traitState(frame, t, a.genome).shows === look, b: traitState(frame, t, b.genome).shows === look })) };
     }
     const { steps } = stepsOf(frame, t), lo = stepIndex(steps, f.range[0]), hi = stepIndex(steps, f.range[1]);
-    return { id: t.id, name: t.name, shape: "scale", ends: [t.looks[0], t.looks.at(-1)], steps: steps.length, green: [Math.min(lo, hi), Math.max(lo, hi)], a: copySteps(frame, t, a.genome), b: copySteps(frame, t, b.genome) };
+    const am = g.aim.scales.find((s) => s.trait === t.id);
+    return { id: t.id, name: t.name, shape: "scale", ends: [t.looks[0], t.looks.at(-1)], steps: steps.length, green: [Math.min(lo, hi), Math.max(lo, hi)], a: shownStep(frame, t, a.genome), b: shownStep(frame, t, b.genome), aimStep: am ? (am.end === 0 ? 0 : steps.length - 1) : null };
   });
   return { kinship: F, vigour: vigourOfF(Math.min(0.5, F)), traits };
+}
+
+// Is this set look shown by anyone in the group? (a look no one shows is "new to you")
+const shownInGroup = (g, t, look) => g.group.some((m) => traitState(g.frame, t, m.genome).shows === look);
+// A young is new to you when it shows a set look no one in the group shows.
+export function isNew(g, y) { return y.traits.some((r) => r.shape === "set" && !shownInGroup(g, traitsOf(g.frame).find((t) => t.id === r.id), r.shows)); }
+
+// A parent said in plain words: each set's look, each scale's end it leans to.
+export function looksOf(g, m) {
+  const frame = g.frame;
+  return traitsOf(frame).map((t) => {
+    if (shapeOf(frame, t) === "set") return `${t.name} ${traitState(frame, t, m.genome).shows}`;
+    const { steps } = stepsOf(frame, t), s = shownStep(frame, t, m.genome), e = [t.looks[0], t.looks.at(-1)];
+    return `${t.name} ${s <= 1 ? e[0] : s >= steps.length - 2 ? e[1] : "in the middle"}`;
+  });
 }
 
 // The four young they could have: four real crosses, each read trait by trait.
@@ -90,9 +106,9 @@ export function fourYoung(g, a, b, n = YOUNG_SHOWN) {
   const stream = rng(`${g.seed}:four:${g.hatches}:${a.id}:${b.id}`), lookup = lookupIn(g), out = [];
   for (let i = 0; i < n * 4 && out.length < n; i++) {
     const genome = cross(g.frame, a, b, { rng: stream, lookup });
-    if (buildIndividual(g.frame, genome).validation.status === "valid") out.push(readOf(g, genome));
+    if (buildIndividual(g.frame, genome).validation.status === "valid") out.push({ ...readOf(g, genome), genome });
   }
-  return out;
+  return out.map((y) => ({ ...y, fresh: isNew(g, y) }));
 }
 export function readOf(g, genome) {
   const frame = g.frame;
@@ -107,6 +123,17 @@ export function pick(g, id) {
   const has = g.picked.includes(id), picked = has ? g.picked.filter((x) => x !== id) : [...g.picked, id].slice(-2);
   return { ...g, picked };
 }
+// The partner is chosen as in the picture: one is held, the other is changed with left/right through the rest of the group (the first one who is not direct kin comes first).
+export function hold(g, id) {
+  const others = g.group.filter((m) => m.id !== id), held = g.group.find((m) => m.id === id);
+  const first = others.find((m) => !refusal(g, held, m)) ?? others[0];
+  return { ...g, picked: first ? [id, first.id] : [id], last: null };
+}
+export function nextPartner(g, dir) {
+  if (g.picked.length !== 2) return g;
+  const others = g.group.filter((m) => m.id !== g.picked[0]), i = others.findIndex((m) => m.id === g.picked[1]);
+  return { ...g, picked: [g.picked[0], others[(i + dir + others.length) % others.length].id] };
+}
 export const pickedMembers = (g) => g.picked.map((id) => g.group.find((m) => m.id === id));
 
 // Hatch: one real cross of the pair, one young at once; it joins the group. Returns the next state, or the same state with `last` saying why not.
@@ -117,6 +144,8 @@ export function hatch(g) {
   if (why) return { ...g, last: { refused: why } };
   const stream = rng(`${g.seed}:hatch:${g.draws}`), lookup = lookupIn(g);
   let genome = null;
+  const four = fourYoung(g, a, b);   // the hatch is one of the four shown
+  if (four.length) genome = four[Math.floor(rng(`${g.seed}:pick:${g.draws}`)() * four.length)].genome;
   for (let i = 0; i < 24 && !genome; i++) { const c = cross(g.frame, a, b, { rng: stream, lookup }); if (buildIndividual(g.frame, c).validation.status === "valid") genome = c; }
   if (!genome) return { ...g, draws: g.draws + 1, last: { refused: "no young could be built" } };
   const id = "L" + (g.nextId + 1), young = { id, name: "Young " + (g.hatches + 1), genome, parents: [a.id, b.id], gen: Math.max(a.gen, b.gen) + 1 };

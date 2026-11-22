@@ -38,7 +38,7 @@ export const NOTICE_WORDS = { saveFailed: "Can't save · leaving loses your game
 
 // [copy] the grey pairing test page (G2; src/g2.mjs, g2/index.html): the only words it needs, for the copywriter. A test page, never linked from play.
 export const G2_WORDS = {
-  aim: "Aim", generation: "Generation {n}", hatches: "Hatches {n}", pick: "Pick two", pair: "✓ Pair them", pairAgain: "Pick again", met: "aim shown",
-  young: "Four young they could have", green: "Where their young can land", vigour: "Vigour {word}", vigourWords: { full: "full", lower: "a little lower", low: "low", lowest: "lowest" },
+  aim: "Aim", generation: "Generation {n}", hatches: "Hatches {n}", pick: "Pick one, then a partner", pair: "✓ Pair them", pairAgain: "Pick again", met: "aim shown",
+  young: "Young they could have · four examples", fresh: "new to you", aimTag: "aim", noKin: "no kin in common", kin: "kin in common", change: "← → change partner", green: "Where their young can land", vigour: "Vigour {word}", vigourWords: { full: "full", lower: "a little lower", low: "low", lowest: "lowest" },
   hatched: "Hatched", joins: "joins the group", group: "Your Loikas",
 };

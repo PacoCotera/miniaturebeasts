@@ -29,8 +29,10 @@ console.log("url", page.url());
 // which two the engine lets pair, richest in generation (the newest lines first)
 const choose = () => page.evaluate(() => { const { g, G } = window.__g2; let best = null; for (const a of g.group) for (const b of g.group) if (a.id < b.id && !G.refusal(g, a, b)) { const s = a.gen + b.gen + (a.gen === b.gen ? 0.5 : 0); if (!best || s > best.s) best = { s, a: a.id, b: b.id }; } return best; });
 const tap = (id) => page.locator(`.m[data-id="${id}"]`).click();
+// hold the first, then change the partner with the right key until it is the second
+const pickPair = async (c) => { await tap(c.a); for (let i = 0; i < 40 && (await page.evaluate(() => window.__g2.g.picked[1])) !== c.b; i++) await page.keyboard.press("ArrowRight"); };
 let c = await choose();
-await tap(c.a); await tap(c.b);
+await pickPair(c);
 await page.screenshot({ path: path.join(out, "g2-1-pair.png") });
 await page.screenshot({ path: path.join(out, "g2-1-pair-full.png"), fullPage: true });
 await page.locator(".go").click();
@@ -39,7 +41,7 @@ let n = 1;
 while (n < 200) {
   const gen = await page.evaluate(() => window.__g2.g.generation);
   if (gen >= 10) break;
-  c = await choose(); await tap(c.a); await tap(c.b); await page.locator(".go").click(); n++;
+  c = await choose(); await pickPair(c); await page.locator(".go").click(); n++;
 }
 console.log("hatches", n, "generation", await page.evaluate(() => window.__g2.g.generation));
 await page.screenshot({ path: path.join(out, "g2-3-generation-ten.png") });

@@ -66,6 +66,22 @@ test("kin costs vigour: the young of two close relatives is below full", () => {
   assert.ok(seen, "within fourteen hatches two relatives paired and the young's vigour fell");
 });
 
+test("round 2: one held, the partner changes; each parent's shown step; the aim marked; the hatch is one of the four; looks in words", () => {
+  let g = G.hold(G.newGame(frame, "t1"), "L1");
+  assert.equal(g.picked[0], "L1"); assert.equal(g.picked.length, 2);
+  const seen = new Set(); for (let i = 0; i < 5; i++) { g = G.nextPartner(g, 1); seen.add(g.picked[1]); assert.notEqual(g.picked[1], "L1"); }
+  assert.equal(seen.size, 5);
+  const [a, b] = G.pickedMembers(g), v = G.pairView(g, a, b);
+  if (!v.refusal) {
+    for (const t of v.traits.filter((x) => x.shape === "scale")) assert.ok(Number.isInteger(t.a) && Number.isInteger(t.b));
+    assert.equal(v.traits.filter((t) => t.shape === "scale" && t.aimStep !== null).length, 2);
+    assert.equal(v.traits.flatMap((t) => t.looks ?? []).filter((l) => l.aim).length, 1);
+    const four = G.fourYoung(g, a, b), h = G.hatch(g), y = h.group.at(-1);
+    assert.ok(four.some((f) => JSON.stringify(f.genome) === JSON.stringify(y.genome)), "the hatch is one of the four");
+  }
+  assert.ok(G.looksOf(g, a).length >= 5);
+});
+
 test("ten generations can be played: the newest two pair ten times, every step on the engine", () => {
   let g = G.newGame(frame, "t3");
   for (let i = 0; i < 10; i++) {
