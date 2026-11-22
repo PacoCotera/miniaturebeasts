@@ -5504,6 +5504,321 @@
    "sha256": "1a354ec3bcaab7585b1dcf0585f1986643d04acc6f513434b1bc1f7224375236"
   },
   {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "854b5990c7",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-back-spots-104x160.png",
+   "sha256": "88c990d93aab105ce5d437d29e39da71c2da52e88f98f22ac68a564dbf20a563"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "e1e10f29d3",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-back-spots-104x64.png",
+   "sha256": "cb3dd143b604ec6b68c506974329ff23b2b035fa8b39aaf1d2a1f132f62f7d37"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "530d801450",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-back-spots-104x96.png",
+   "sha256": "80f292fdd4ae99a83f178b87873b2d3ebd617d615e0b44e2c8f788680980ef0d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "b0989426a5",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-back-spots-128x160.png",
+   "sha256": "f4de1c2a42dcab4ef750f01310043cf82925e0cd99a4252be5d5df0efae7fbb8"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "43fb5f66e8",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-back-spots-144x176.png",
+   "sha256": "5344c2fb2025d6f40de4dbe709ca75b6b84b136832632ea816e5055de1989846"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "bc20d33a69",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-bands-104x160.png",
+   "sha256": "c0abece8395f67e35393e751e41d242a283a94f0a1ca7785b5a92687a943078d"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "fd51b2147b",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-bands-104x64.png",
+   "sha256": "5b0b28e03cc3fe193b801da209fca483779160d138bb9dc2c31511621080eece"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "1f75bcbe82",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-bands-104x96.png",
+   "sha256": "6a9bbfa25fa398b21572137693e6ec6c525b1752a03318f2143c7487bcfeaa24"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "dfdc5e2f68",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-bands-128x160.png",
+   "sha256": "60eb98e969b8f7b43d9658cf545d86298a1fff0c531077d31f552d9e1a269f4a"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "bd8aeb3d05",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-bands-144x176.png",
+   "sha256": "59f2698d9a024d26ce906cbdc01ba0a10d02db02d3707b85694498c078dfa652"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "a3c50da51d",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-gradient-104x160.png",
+   "sha256": "7fc51e047e78149a2fa437295fc7b589435691b02202e5b2dcca83624e70bd1f"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "a93b06832c",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-gradient-104x64.png",
+   "sha256": "98637ce6f9fdd0464ca16dfa4907ae6d235923317fb2b51c99aae038aa5cb16f"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "53fcb87121",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-gradient-104x96.png",
+   "sha256": "b1c12624133cb5ea93f6398d761a1b4cac1676a86fdbffbd2d622fc02e4ed73b"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "17deddd589",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-gradient-128x160.png",
+   "sha256": "fac9a5d226d0206b74110d56f7198e3fc489c877c151e79a20f528a8039ab8d0"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "ac5821b60c",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-gradient-144x176.png",
+   "sha256": "2dff369987155ab58457fcc7cd3b347c09e0b797659d268481336cbc9f76f6d7"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "0e9943b08f",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-patches-104x160.png",
+   "sha256": "0bc792928e54d5f9c69459fdf971835477b37b42d9a37c0a6756de8657859453"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "cef0f8940c",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-patches-104x64.png",
+   "sha256": "bbd461b679f0e967f3a77043c36d863984eb08f13cacfbab3c0eadfc32e7efc8"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "9966671fa7",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-patches-104x96.png",
+   "sha256": "8024a606547199893118db28f24dc7057005a38d6dbdc80bfbd3535fe6ce96c2"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "0b00e0b0f8",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-patches-128x160.png",
+   "sha256": "517ee14a927361eae39010c7847748a1361d2d923dae934abd98ade588ee5801"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "827fc1a6f6",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-patches-144x176.png",
+   "sha256": "021d5d2b8a2f6ab8d0be3ffab6114ff0010bf13a78086657a810b254bb2da362"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "021b1a459e",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-plain-104x160.png",
+   "sha256": "902cc821e5469e999323231060a4d894715bbcfa679444cad1f5a6043532081f"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "8ecb9a7983",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-plain-104x64.png",
+   "sha256": "83388b908b54af67000093f38c64b4c9f9e39d09c60affd6b6605e829276ed1f"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "98ab9be655",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-plain-104x96.png",
+   "sha256": "e5697d524f619ffbd72f3d820c7aaf756bc878d16de5ee63b4d9c9848e24180e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "bd5029e4ed",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-plain-128x160.png",
+   "sha256": "589592b5ead8eaf62328b384d107718ed7f0f51505d67ad2997eb9525f812f46"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "7cc8ab7f0e",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-plain-144x176.png",
+   "sha256": "d0459a24eabf8f330170712fa9be2c84e466193949c3122bcf5732daddb98a86"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "a2c0c8f4b4",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-saddle-104x160.png",
+   "sha256": "d36562297f6a6c7638bc7fd43ce72681197155f38dacd678ddb84de1d6aaacbc"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "32d3f9e7e2",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-saddle-104x64.png",
+   "sha256": "f557c233d57c83ffc4d83d3d29b32b36581fe68c33494fcc49f005a2c0171f51"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "81413fd91f",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-saddle-104x96.png",
+   "sha256": "56d3d9a9c8e48883e43432897d8a10d9fd0d3fff0d7b4b9388187fd7a7a703b8"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "52bbef38da",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-saddle-128x160.png",
+   "sha256": "42f32b72fa31e53dc0803cb95961cfdfa822c7f660a6b33a4919ac5cbfe686ca"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "00d834ce21",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-markings-saddle-144x176.png",
+   "sha256": "6c27e08e56d0be0f8cfde84b75e27cdef60c32fc6ab6f720b176d7967c077605"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "57f93e98ba",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-large-104x160.png",
+   "sha256": "62b8b31041fbd3876feff760e26f1612e2861f2478d879d89d30ae75cd719025"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "b817ecbc0c",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-large-104x64.png",
+   "sha256": "732b86b988d7b447f674634c44ded660f453a45281f3bb7fdab268116e74c8fe"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "2ab3154f53",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-large-104x96.png",
+   "sha256": "ca875d95d2a1bfdd5a10373a7d29c6308445d71e09b6db676220fb0fd946d908"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "06e17e7b60",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-large-128x160.png",
+   "sha256": "e773055d9367f828c82828b83673102154e77fa7b575e2b44a3207a5f30bbf72"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "a1dd7979f4",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-large-144x176.png",
+   "sha256": "dee4826586b9bcdae01bca2d97769176f39716304148c7a7b85a4f19a0d59026"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "36d5ae178f",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-small-104x160.png",
+   "sha256": "fb7f9efbd4ea5d8a25ac55303618409216e24ba49077b4ff39ebd78e47e0522c"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "c686efcc16",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-small-104x64.png",
+   "sha256": "0675f1716f23ff9785899bf2ef1ae6842d8a393dcaa647a0d7f9d7cafdfea317"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "c3dabd283c",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-small-104x96.png",
+   "sha256": "d97934755462955200d8c0563a4c9a6012478ba2eb3d23d385f09813a061c2fa"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "f7ad7271db",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-small-128x160.png",
+   "sha256": "c01bd1abcda42635cc087e30688618c819e414b2dd6a140eb3cc6c541c6deed0"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "0de5d0dbac",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-small-144x176.png",
+   "sha256": "0d1ecfdf3f7116d6c76d62676572e66a89cdc601dac25b66abcc4bb0bf46ef38"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "8504007b0d",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-stand-104x160.png",
+   "sha256": "f77eaa60e7c8cf585e7db96827609d1f7aba2a5c47e6805f0243b40619e669a2"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "9fb4e99033",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-stand-104x64.png",
+   "sha256": "826d9ed89873e0c3cf490500f74730ddfce5f3daa475ecfe011ba61f4040dc1e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "aecd777fca",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-stand-104x96.png",
+   "sha256": "94219e369e0cd34a6148393261dbf4489891f10bdd548fe5be03f4cbd0a77308"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "55e9cc0745",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-stand-128x160.png",
+   "sha256": "989501d3294bfa5fc6087df6b8be54d1055a2f5d11abb88a54a30132e0fbceb3"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-22",
+   "id": "9514389134",
+   "path": "prototypes/ui/assets/masters/pods/trait-S10-signature-size-stand-144x176.png",
+   "sha256": "257aab285f536d7f15f42583de34d6e92b17043d7df74629e495c2396a08b919"
+  },
+  {
    "class": "ui",
    "date": "2026-11-15",
    "id": "5f94dd5c14",
