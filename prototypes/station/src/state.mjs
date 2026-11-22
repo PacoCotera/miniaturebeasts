@@ -83,11 +83,38 @@ export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 
 // --- the record ------------------------------------------------------------------------------------
 export const START = { e: 4, d: 6, s: 6 };   // fresh-save-amounts-1 (greybox, the owner's to tune): the first pod's reading (identify + a chapter) and the first pairing and growing; a brand-new save only
+// --- the nursery's capsules (station step 5; owner 2026-11-21 15:0x "3 capsules is ok") ------------------------
+// THE count of capsules: one number. A capsule holds nothing (null), a bud (growing, then ready), or a young that hatched and has not been moved yet ({ young: mibiId }: it waits in its capsule and the capsule grows no other pod; nothing makes one until step 7).
+export const CAPSULES = 3;
+// The rules that predate the capsules read and write `st.bud`, the one pod growing. It stays as an accessor (never saved: the save holds `st.caps`) on the capsule being worked (withCapsule), else the first bud, so
+// the hatch and the cross room play as today until their steps. Setting it puts a bud in the working capsule, else the first free one; setting null empties the working capsule, else the first with a bud.
+const WORKING = new WeakMap();
+const isBud = (c) => !!c && !c.young;
+const firstBud = (caps) => caps.findIndex(isBud);
+export function installBud(st) {
+  if (Object.getOwnPropertyDescriptor(st, "bud")?.get) return st;
+  const old = st.bud; delete st.bud;
+  if (!Array.isArray(st.caps)) st.caps = [];
+  st.caps = st.caps.slice(0, CAPSULES); while (st.caps.length < CAPSULES) st.caps.push(null);
+  if (old && typeof old === "object" && !st.caps.some(isBud)) { const i = st.caps.findIndex((c) => !c); st.caps[i >= 0 ? i : 0] = old; }
+  Object.defineProperty(st, "bud", { configurable: true, enumerable: false,
+    get() { const i = WORKING.has(this) ? WORKING.get(this) : firstBud(this.caps); return i >= 0 && isBud(this.caps[i]) ? this.caps[i] : null; },
+    set(v) { const w = WORKING.has(this) ? WORKING.get(this) : null;
+      if (!v) { const i = w ?? firstBud(this.caps); if (i != null && i >= 0) this.caps[i] = null; return; }
+      const i = w ?? this.caps.findIndex((c) => !c); this.caps[i >= 0 ? i : 0] = v; } });
+  return st;
+}
+// Run a rule that speaks of `st.bud` on capsule i.
+export function withCapsule(st, i, fn) { const had = WORKING.has(st), was = WORKING.get(st); WORKING.set(st, i); try { return fn(); } finally { if (had) WORKING.set(st, was); else WORKING.delete(st); } }
+// Make capsule i (or none) the one `st.bud` speaks of until the next call: the Incubator's hatch plays on the capsule the player chose in the nursery.
+export function setWorking(st, i) { if (i == null) WORKING.delete(st); else WORKING.set(st, i); }
+export const capsuleFree = (st) => st.caps.findIndex((c) => !c);   // the first free capsule, -1 when none
+export const capsuleBuds = (st) => st.caps.map((c, i) => (isBud(c) ? i : -1)).filter((i) => i >= 0);
 export function freshSt(wid, turn, now = Date.now()) {
-  return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: START.e, d: START.d, s: START.s,
+  return installBud({ schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: START.e, d: START.d, s: START.s,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, rooms: 1, sheds: [], sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
-    dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [], readingPod: null, dried: [] };
+    dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [], readingPod: null, dried: [] });
 }
 export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
 
@@ -158,6 +185,7 @@ export function migrate(st, now = Date.now(), sv = null) {
 }
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
+  installBud(st);   /* the nursery's capsules (additive, no schema bump): an older save's one bud goes in the first capsule */
   for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
   if (st.waiting.length) { st.tray.push(...st.waiting); st.waiting = []; }   /* no rack: the pods that waited on the mat are at home with the rest, in the order they came (additive, no schema bump) */
   if (st.readingPod === undefined || (st.readingPod != null && !st.tray.some((p) => p.id === st.readingPod))) st.readingPod = null;   /* the pod on the reading-room bench (additive) */
@@ -682,6 +710,7 @@ export const benchPod = (st) => st.tray.find((q) => q.id === st.readingPod) || n
 // st.dried (the species' record for the Library, and the husk the inventory shows once: `shown` false until the screen has shown it). Returns the records made.
 export function dryPods(st) {
   const out = [];
+  return out;   // pods never dry (owner 2026-11-19 13:1x; station step 5: the shelf has no limit and its pods keep for good); the husks below stay for a save that holds some
   for (const p of [...st.tray]) {
     if (onBench(st, p) || turnsLeft(st, p) > 0) continue;
     leavePod(st, p);
@@ -1109,7 +1138,7 @@ export const budMinutes = (st, nChanged, settings = DEFAULT_SETTINGS) => (st.fir
 // What stops Grow, as a key, in the rules' order (unidentified, busy, full, clash, short): null when nothing does, else { key, short } where short is the icons of the materials the price is short of (key "short" only).
 export function growBlockKey(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
   if (!p || !p.idd) return { key: "unidentified", short: null };
-  if (st.bud) return { key: "busy", short: null };
+  if (capsuleFree(st) < 0) return { key: "busy", short: null };
   if (vivFull(st, settings)) return { key: "full", short: null };
   if ((clash ?? clashTraits(p, choices)).length) return { key: "clash", short: null };
   const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { key: "short", short: shortIcons(st, cost.e, cost.d, cost.s), from: shortFrom(st, cost.e, cost.d, cost.s) };
@@ -1137,6 +1166,18 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   leavePod(st, p);
   logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
+}
+// Grow it (station step 5, the nursery's pod page; walk-4 picture 10): the pod goes into a free capsule and grows on the real clock. A pod is never read first (no sample, no price, nothing revealed) and nothing else is
+// spent: no Energy, no Data, no Essence. Refused only for want of a free capsule (the nursery says so in one line). Returns { ok, bud, capsule } or { ok: false, why: "busy" | "gone" }.
+export function growPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!p || !st.tray.includes(p)) return { ok: false, why: "gone" };
+  const i = capsuleFree(st); if (i < 0) return { ok: false, why: "busy" };
+  const fr = frameFor(p); if (!fr) return { ok: false, why: "gone" };
+  const genome = founderGenome(p, {}), sha = genomeSha(genome), minutes = budMinutes(st, 0, settings), first = !!st.firstMibi;
+  st.caps[i] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: p.parents ?? null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read: [...(p.read || [])], shaped: [], early: false };
+  st.firstMibi = false; leavePod(st, p);
+  logEv(st, "Grew " + aAn(fr.species.name) + " pod · capsule " + (i + 1) + " · " + plural(minutes, "minute"));
+  return { ok: true, bud: st.caps[i], capsule: i };
 }
 // A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
 export const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
@@ -1257,7 +1298,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (inStore(a) || inStore(b) || comingOut(st, a) || comingOut(st, b)) return "tucked away";   // it cannot cross until it is back (the put-away rules)
   if (isCarried(st, sv, a) || isCarried(st, sv, b)) return "away";
-  if (st.bud) return "the incubator is busy";
+  if (capsuleFree(st) < 0) return "the incubator is busy";
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
