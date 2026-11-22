@@ -9,6 +9,8 @@ import { fill } from "../views/words.mjs";
 import { openCreate } from "./create.mjs";
 import { openStore } from "./store.mjs";
 import { subjectOf } from "../page.mjs";
+import * as N from "../nursery.mjs";
+import { openNursery, openPodPage, nurseryIntent, podIntent } from "./nursery.mjs";
 
 export const FLASH_MS = 3000, SCROLL_MS = 200;
 const SORTS = ["use", "species", "arrival", "drying"];
@@ -22,6 +24,8 @@ const flash = (h, text) => { pods(h).flash = { text, until: h.now() + FLASH_MS }
 // ---- the ways in ----
 // The inventory (Where the ring starts): on the card it was on when the player last left, else the first; `opts.first` puts it on the first card (from Choose a pod, sorted by use).
 export function openInventory(h, opts = {}) {
+  return openNursery(h, { from: opts.from, pod: opts.pod, last: opts.last });   // the rack is the nursery's shelf now (station step 5): every old way into the inventory lands there; the code below is unreachable and goes with the face's words
+  // eslint-disable-next-line no-unreachable
   const p = pods(h); p.page = null; p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
   p.hold = null; p.waits = !!opts.waits;   // the verb is the caller's on every entry (the pods picker's design B): a verb never sticks from one visit to the next; the Incubator's Grow and the bench's Bring are the only one offered
   p.verb = p.callerVerb = opts.verb ?? (p.choosing ? "bring" : p.from === "incubator" ? "grow" : "read"); p.fixed = p.choosing || p.from === "incubator";
@@ -40,6 +44,8 @@ export function openInventory(h, opts = {}) {
 }
 // The reading screen on the pod on the bench (§2.6, 1): a cut in, the bracket on the recommended lane (the key on an unidentified pod).
 export function openRoom(h, from = "home") {
+  return openNursery(h, { from });   // no reading room (station step 5): the pod's page is the nursery's, and a pod is never read
+  // eslint-disable-next-line no-unreachable
   const p = pods(h), q = S.benchPod(h.st); p.page = null; p.cmp = null; p.view = "room"; p.ask = null; p.roomFrom = from; p.from = from; p.choosing = false;
   enterRead(h, q);
   h.goto("pods");
@@ -48,6 +54,9 @@ export function openRoom(h, from = "home") {
 export function researchKey(h) {
   const p = pods(h), here = h.ui.screen === "pods";
   if (here && p.page != null && p.view === "room") return p.at === "board" ? closeBoard(h) : openBoard(h);   // her page: the blue key opens her board, and shuts it again (station step 3)
+  if (here && p.view === "pod") { const k = N.shelfRows(h.st, p.order ?? "newest").findIndex((r) => r.key === p.podKey); p.view = "nursery"; p.ring = k >= 0 ? { z: "shelf", i: k } : undefined; return; }   // the blue key on a pod's page: back to the shelf, the ring on its row
+  if (here && p.view === "nursery") return;   // the nursery: the blue key stays here (what the pods hold is step 9)
+  if (!here || p.page == null) return openNursery(h, {});   // the blue key is the nursery (station step 5)
   if (here && (p.view === "room" || p.view === "trait")) return backToInventory(h);   // the second face, from anywhere on the reading screen (the detail too): the inventory, the ring on this pod's card
   if (here) return openRoom(h, "home");
   if (S.benchPod(h.st)) return openRoom(h, "home");
@@ -55,6 +64,8 @@ export function researchKey(h) {
 }
 // A pod onto the bench and the room open on it (✓ on a card, "Take to the reading room", "Bring onto the bench"): the old one goes back to its niche, nothing spent.
 export function toRoom(h, q, from = "inventory") {
+  void from; return openPodPage(h, q.id);   // the pod's page (station step 5)
+  // eslint-disable-next-line no-unreachable
   const p = pods(h); S.putOnBench(h.st, q); q.seen = 1; p.lastCard = q.id; h.save();
   p.page = null; p.view = "room"; p.ask = null; p.choosing = false; p.from = "inventory"; p.roomFrom = "inventory"; void from;
   enterRead(h, q);   // a cut in (§2.6, 1)
@@ -65,6 +76,8 @@ function leaveInventory(h) { const p = pods(h); if (S.unshownHusks(h.st).length)
 // ---- ✓ and ← ----
 export function intent(h, target, verb) {
   const p = pods(h);
+  if (p.view === "nursery" && p.page == null) return nurseryIntent(h, target, verb);   // the nursery and a pod's page (intents/nursery.mjs)
+  if (p.view === "pod" && p.page == null) return podIntent(h, target, verb);
   if (p.cmp) return compareIntent(h, target, verb);
   if (p.view === "room" || p.view === "trait") return readIntent(h, target, verb);
   if (p.view === "filter") return trayIntent(h, target, verb);

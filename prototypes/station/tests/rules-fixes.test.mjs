@@ -309,7 +309,7 @@ test("T-219 case 4: refusals keep the rules, with the new words: nothing is spen
   const st = twin(), s0 = [st.e, st.d, st.s]; st.s = 0; const log0 = st.log.length, n0 = st.mibis.length, bud = st.bud;
   const no = S.instantGrow(st, settings, T0 + MIN); assert.equal(no.ok, false); assert.match(no.msg, /^Open now · /); assert.deepEqual([st.s, st.mibis.length, st.bud, st.log.length], [0, n0, bud, log0]); void s0;
   // Incubate with a bud in the chamber
-  const p2 = podOf(st, "S01", ["coat"]); st.s = 99; const busy = S.grow(st, p2, {}, settings, T0); assert.deepEqual([busy.ok, busy.msg], [false, "Incubate · the incubator is busy"]);
+  const p2 = podOf(st, "S01", ["coat"]); st.s = 99; st.caps.fill({ kind: "founder", species: "S01", start: T0, minutes: 5, read: [] }, 1); const busy = S.grow(st, p2, {}, settings, T0); assert.deepEqual([busy.ok, busy.msg], [false, "Incubate · the incubator is busy"]);
   // Incubate with no free place
   const f = fresh(); f.firstMibi = false; S.seedAdults(f, "S01", 5, S.roomCount(f, settings) * S.ROOM, settings); assert.equal(S.vivFull(f, settings), true);
   const p3 = podOf(f, "S01", ["coat"]), nb = S.grow(f, p3, {}, settings, T0); assert.deepEqual([nb.ok, nb.msg], [false, "Incubate · the Vivarium is full"]); assert.equal(f.bud, null);

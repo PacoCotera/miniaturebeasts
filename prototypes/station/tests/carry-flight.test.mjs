@@ -35,55 +35,12 @@ function inPods(motion = true) {
 const key = (h, k) => dispatch(h, { screen: h.ui.screen, target: "x", verb: "room:" + k });
 const press = (h, verb, target = "x") => dispatch(h, { screen: h.ui.screen, target, verb });
 
-test("a carrying key flies first: the screen stays, a flight event plays on the key's room, the carry lands when it ends", () => {
-  const h = inPods(); key(h, "habitat");
-  assert.equal(h.ui.screen, "pods", "the room has not cut in"); assert.ok(h.ui.flight, "a flight is under way"); assert.equal(h.ui.carry, null);
-  assert.deepEqual(h.played.filter((e) => e.kind === "flight").map((e) => [e.target, e.ms]), [["vivarium", 400]], "the first carries of a save take 400 ms");
-  assert.deepEqual(h.timers.map((t) => t.ms), [400]); assert.equal(h.went.length, 0);
-  h.timers[0].fn(); assert.deepEqual([h.ui.screen, h.ui.flight, h.ui.carry?.key], ["create", null, "habitat"]);
-  assert.equal(taughtOf(h.st).carries, 1); assert.ok(h.saved >= 1, "the count of the first carries is saved");
-});
-test("a press during the flight lands the carry at once (and the timer's own landing then does nothing)", () => {
-  const h = inPods(); key(h, "habitat"); assert.equal(landFlight(h), true); assert.equal(h.ui.screen, "create");
-  const n = h.went.length; h.timers[0].fn(); assert.equal(h.went.length, n, "landed once");
-  key(h, "habitat"); assert.equal(h.ui.screen, "vivarium", "a second tap of the key just carried is the room's top");
-});
-test("after three carries the flight is 200 ms", () => {
-  const h = inPods(); taughtOf(h.st).carries = 3; key(h, "habitat"); assert.deepEqual(h.played.filter((e) => e.kind === "flight").map((e) => e.ms), [200]);
-});
-test("no flight with reduced motion, with no picture to send, or in a host that has none: the carry is at once", () => {
-  const a = inPods(false); key(a, "habitat"); assert.deepEqual([a.ui.screen, a.ui.flight], ["create", null]); assert.equal(a.played.some((e) => e.kind === "flight"), false);
-  const b = inPods(); b.flightPic = () => ""; key(b, "habitat"); assert.equal(b.ui.screen, "create");
-  const c = inPods(); delete c.flightPic; key(c, "habitat"); assert.equal(c.ui.screen, "create");
-});
 test("a flight whose screen changed under it (an arrival) carries nothing", () => {
   const h = inPods(); key(h, "habitat"); h.ui.screen = "home"; assert.equal(landFlight(h), false); assert.equal(h.ui.screen, "home"); assert.equal(h.ui.carry, null);
-});
-test("the first time a key has a live cue it hops and its line stands once; never again, and the flags are saved", () => {
-  const h = inPods(); const live = cuesOf(h).map((c) => c.key); assert.ok(live.length >= 1);
-  teachTick(h); const first = live[0];
-  assert.equal(h.ui.teach.key, first); assert.deepEqual(h.played.filter((e) => e.kind === "hop").map((e) => [e.target, e.ms]), [[cuesOf(h)[0].room, 300]]); assert.equal(taughtOf(h.st).carry[first], true); assert.ok(h.saved >= 1);
-  h.t += 6000; teachTick(h); assert.equal(h.ui.teach?.key === first, false, "the line was for 5 s");
-  const n = h.played.length; for (let i = 0; i < 5; i++) teachTick(h); const hops = h.played.slice(n).filter((e) => e.kind === "hop").length; assert.ok(hops <= live.length - 1, "one hop for each key, once: " + hops);
-  const again = inPods(); again.st.taught = JSON.parse(JSON.stringify(h.st.taught)); for (let i = 0; i < 4; i++) teachTick(again); assert.equal(again.played.filter((e) => e.kind === "hop").length, 0, "taught keys do not hop again");
 });
 test("Call's first press is remembered (taught.call) and writes no save; the first-day line is Home's until then", () => {
   const h = inPods(); assert.ok(!taughtOf(h.st).call); const saved = h.saved; INTENTS.frame.call(h, T0); assert.equal(taughtOf(h.st).call, true); assert.equal(h.saved, saved, "Call writes nothing");
   assert.ok(J("frame").regions.cues.callUntilTurn > 0 && J("frame").strings.teach.call.includes("{key:call}") && !/Call/.test(J("frame").strings.teach.call));
-});
-test("item 9: after a carry the carried key's cue is its room's name, second: true (mist), in key order; the others as before; teaching never takes it", () => {
-  const h = inPods(false); key(h, "habitat"); assert.equal(h.ui.carry.key, "habitat");
-  const c = cuesOf(h); assert.deepEqual(c.find((q) => q.key === "habitat"), { key: "habitat", room: "vivarium", word: "Vivarium", second: true });
-  assert.deepEqual(c.map((q) => q.key), [...c.map((q) => q.key)].sort((a, b) => ["research", "habitat", "library"].indexOf(a) - ["research", "habitat", "library"].indexOf(b)), "key order");
-  h.ui.idle = false; teachTick(h); assert.equal(h.ui.teach?.key === "habitat", false, "the second-tap cue is not taught");
-  press(h, "back"); assert.equal(cuesOf(h).some((q) => q.second), false, "← ends the carry: no second-tap cue");
-});
-test("item 7: blue on the reading room's pod is the collection with the ring on that pod, not the reading room again", () => {
-  const h = inPods(); const q = h.st.tray[0]; INTENTS.pods.toRoom ? 0 : 0; toRoom(h, q); assert.equal(h.ui.pods.view, "room");
-  assert.equal(carryPlan(h, "research"), null, "nothing to carry: the key is the room's other face");
-  key(h, "research"); assert.deepEqual([h.ui.screen, h.ui.pods.view, h.ui.carry], ["pods", "inventory", null]); assert.equal(h.ui.pods.focus.cur?.startsWith("card."), true, "the ring is on a card: " + h.ui.pods.focus.cur);
-  assert.equal(listOf(h.st, h.specs.pods, h.ui.pods, h.settings)[+h.ui.pods.focus.cur.slice(5)].p.id, q.id, "the card of the pod that was in the room");
-  assert.equal(h.ui.flight, null, "no flight: it carries nothing");
 });
 test("item 13: the Incubator's growing pod carries for purple (its species page) once the species is met", () => {
   const h = inPods(); h.ui.screen = "incubator"; h.st.bud = { kind: "founder", species: "S01", start: T0, minutes: 5 };

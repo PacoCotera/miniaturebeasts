@@ -191,19 +191,6 @@ test("← during the opening: the current crate finishes as a cut, no further cr
   assert.deepEqual(build(st, sv, h.ui).props.regions.berths.list.map((b) => !!b.crate), [true, true, false], "the next visit opens the two");
   { const s2 = world(), sv2 = sv0([crate(1, 1)]), h2 = opened(s2, sv2); assert.equal(h2.ui.cargo.state, "opening"); h2.went.length = 0; const r = INTENTS.cargo.held(h2, "room:research", (hh, k) => { hh.went.push("room:" + k); return true; }); assert.equal(r, true); assert.deepEqual(h2.went, ["room:research"], "a room key does what ← does, then opens its room"); assert.equal(h2.ui.cargo.state, "bay"); assert.equal(s2.accepted.length, 1); }
 });
-test("the end: any key does what it does and then the bay shows again: ✓ Look at the pods (the jump to Pods, the ring on the newest pod), ← Home, the pad only closes it; no ✓ when no pod came", () => {
-  const mk = () => { const st = world(), sv = sv0([crate(1, 2)]), h = opened(st, sv); h.ui.pods.focus = { cur: null, set(id) { this.cur = id; } }; runTo(h, 1e9); return { st, sv, h }; };
-  { const { st, sv, h } = mk(); const b = build(st, sv, h.ui); assert.equal(h.ui.cargo.state, "end"); assert.deepEqual([b.line.ok, b.line.back, b.line.subject], ["Look at the pods", "Home", ""]); assert.equal(b.props.state, "end"); assert.equal(b.props.regions.berths.list[0].k, 0);
-    INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["pods"]); assert.equal(listOf(st, J("pods.json"), h.ui.pods)[+h.ui.pods.focus.cur.slice(5)].p.id, st.tray.at(-1).id, "the ring on the newest pod's card"); }
-  { const { h } = mk(); INTENTS.cargo.intent(h, "room", "back"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["home"]); }
-  { const { h } = mk(); INTENTS.cargo.intent(h, "room", "pad"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, [], "the pad only closes it"); }
-  { const st = world(), sv = sv0([crate(1, 0)]), h = opened(st, sv); runTo(h, 1e9); const b = build(st, sv, h.ui); assert.equal(b.line.ok, null, "no pod came: no ✓ cap"); INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, []); }
-  { const st = world(); for (let i = 0; i < 6; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0);   // six pods at home already: no rack, the crate's two still come home
-    const sv = sv0([crate(1, 2)]), h = opened(st, sv); runTo(h, 1e9); const b = build(st, sv, h.ui);
-    assert.deepEqual([b.line.ok, b.line.subject], ["Look at the pods", ""], "the pods came home: ✓ Look at the pods; nothing waits");
-    INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(h.ui.cargo.state, "bay"); assert.deepEqual(h.went, ["pods"], "the same target as when a pod came"); }
-  { const st = world(), sv = sv0([crate(1, 1)]), h = opened(st, sv); runTo(h, 1e9); h.ui.screen = "cargo"; INTENTS.frame.intent(h, "room", "room:library"); assert.equal(h.ui.cargo.state, "bay", "a room key closes the end and opens its section"); }
-});
 test("no waiting line in the opening and the end: with no rack every pod comes home to a well, however many are at home", () => {
   const st = world(); for (let i = 0; i < 6; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 30 + i), settings, T0);   // six at home
   const sv = sv0([crate(1, 2)]), h = opened(st, sv); assert.equal(build(st, sv, h.ui).line.subject, ""); runTo(h, 1700 + 600); assert.equal(build(st, sv, h.ui).line.subject, ""); runTo(h, 2000 + 600); assert.equal(build(st, sv, h.ui).line.subject, "");

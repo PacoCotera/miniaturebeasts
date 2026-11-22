@@ -88,30 +88,7 @@ test("freshness: a pod keeps 12 world turns from the turn it came home; the cloc
   trip(st, sv, 14); assert.deepEqual([S.turnsLeft(st, p), S.podFreshness(st, p).words], [1, "dries out next turn"]);
 });
 
-test("a pod that dries is a husk: it leaves home paying nothing, its reads stay on the species, its origin is kept, and it is shown once", () => {
-  const { sv, st } = home(2, 1); st.d = 20; const [a, b] = st.tray; S.identify(st, a, settings); S.read(st, a, "coat", settings);
-  const guide = JSON.stringify(st.guide), s0 = st.s, e0 = st.e;
-  const d = trip(st, sv, 13);
-  assert.deepEqual(d.dried.map((r) => r.id), [a.id, b.id], "both dried as the turn moved"); assert.equal(st.tray.length, 0);
-  assert.equal(st.s, s0, "a dried pod pays nothing"); assert.equal(st.e, e0); assert.equal(JSON.stringify(st.guide), guide, "its reads stay");
-  const rec = st.dried.find((r) => r.id === a.id); assert.deepEqual([rec.species, rec.g, rec.how, rec.read, rec.turn, rec.shown], ["S01", "pond", "calm", ["coat"], 13, false], "the origin and the reads are kept");
-  assert.deepEqual(S.unshownHusks(st).map((r) => r.id), [a.id, b.id], "the husks wait for the screen"); S.husksShown(st); assert.deepEqual(S.unshownHusks(st), [], "shown once, then gone");
-  assert.match(st.log.at(-2), /dried out · its reads stay/);
-});
 
-test("the pod on the reading-room bench does not dry; it keeps its turns while it sits there and they run again from where they stopped when it leaves", () => {
-  const { sv, st } = home(2, 1), [a, b] = st.tray;
-  trip(st, sv, 5); assert.equal(S.turnsLeft(st, a), 8);
-  assert.deepEqual(S.putOnBench(st, a), { ok: true, old: null }); assert.equal(st.readingPod, a.id); assert.equal(S.benchPod(st), a);
-  assert.deepEqual(S.podFreshness(st, a), { left: 8, life: 12, full: false, amber: false, bench: true, words: "kept fresh on the bench" });
-  trip(st, sv, 13); assert.equal(st.tray.includes(a), true, "the bench pod is kept"); assert.equal(st.tray.includes(b), false, "the other dried"); assert.equal(S.turnsLeft(st, a), 8, "paused");
-  trip(st, sv, 20); assert.equal(S.turnsLeft(st, a), 8);
-  const c = S.seedPodFromGenome(st, podGenome(frameOf("S01"), 77), settings, 1000).pod; assert.equal(S.turnsLeft(st, c), 12);
-  assert.deepEqual(S.putOnBench(st, c), { ok: true, old: a.id }, "taking a new pod in sends the old one back"); assert.equal(S.turnsLeft(st, a), 8, "its clock starts again from where it stopped");
-  trip(st, sv, 23); assert.deepEqual([S.turnsLeft(st, a), S.turnsLeft(st, c)], [5, 12]);
-  assert.equal(S.putOnBench(st, c).again, true, "the same pod again: nothing changes");
-  S.returnPod(st, c); assert.equal(st.readingPod, null, "a pod let go leaves the bench bare");
-});
 
 test("freshening: 1 Essence for every 4 turns down, rounded up, the press brings it to full; held when already fresh or Essence is short", () => {
   const { sv, st } = home(1, 1), p = st.tray[0];

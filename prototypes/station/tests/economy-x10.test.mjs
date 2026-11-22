@@ -83,7 +83,7 @@ test("goalKey: both adult, no cross → cross (when Cross is open), a short step
   const st = fresh(); const [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"]); st.dock = { docked: true, at: 1 }; st.e = 9; st.s = 9; st.d = 9;
   assert.equal(S.goalKey(st, sv0(), settings, { cross: true }).key, "cross"); assert.deepEqual(S.goalKey(st, sv0(), settings, { cross: true }).step, { key: "cross" });
   st.e = 1; assert.deepEqual(S.goalKey(st, sv0(), settings, { cross: true }).step, { key: "short", icons: "⚡", from: "field" });
-  st.e = 9; st.bud = { kind: "founder", species: "S03", start: 1000, minutes: 5 };
+  st.e = 9; st.bud = { kind: "founder", species: "S03", start: 1000, minutes: 5 }; st.caps.fill({ kind: "founder", species: "S03", start: 1000, minutes: 5 }, 1);
   const g = S.goalKey(st, sv0(), settings, { cross: true }); assert.equal(g.key, "cross"); assert.equal(g.step.key, "blocked"); assert.match(g.step.why, /busy/);
 });
 test("goalKey while Cross is shut: no doors (or cross false) skips cross and readChild and names the guide; growUp stays; the probe is as without the door", () => {
