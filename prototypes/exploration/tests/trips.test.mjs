@@ -44,16 +44,16 @@ const LAND = [];   // groundName is src/world.mjs's now (the page imports it): h
 const ARRIVED = { pods: [], young: [], bloom: -1, charged: [] };   // what worldTurn hands back for the opening's pips
 function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARRIVED } }) {
   ex = { cargo: { e: 0, d: 0, s: 0, pods: [] }, ...ex };
-  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [] };
+  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [], day: { spent: 9, camps: 0, pend: { trail: [], storm: [] }, camp: null } };
   const turned = [];
-  const t = load(["endExpedition", "holdEmpty", ...TRIP], {
+  const t = load(["endExpedition", "freshDay", "holdEmpty", ...TRIP], {
     S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], emptyLead: () => null,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
     worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
     logEv: () => {}, transition: () => {}, save: () => {},
   });
-  t.endExpedition(ex.reason || "home");
+  t.endExpedition(ex.reason || "night");   // the world turns only at the night's end (walk W1); any other end is a camp
   return { S, turned };
 }
 const expedition = (o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { hearts: 1 }, stormCells: {}, entered: [0], met: [], moments: [], pt: null }, o);
@@ -63,9 +63,13 @@ test("a trip is recorded only when the world turns", () => {
   assert.equal(home.turned.length, 1);
   assert.deepEqual(plain(home.S.trips), [{ v: 1, n: 5, partner: 2, places: ["wood"], storm: false, carried: [] }]);
 
-  const none = ending({ explored: false, trips: [], ex: expedition({ tripPlaces: ["wood"] }) });
+  const none = ending({ explored: false, trips: [], ex: expedition({ tripPlaces: ["wood"], reason: "sent" }) });
   assert.equal(none.turned.length, 0);
   assert.deepEqual(plain(none.S.trips), [], "nothing explored: no record");
+  const camp = ending({ explored: true, trips: [], ex: expedition({ tripPlaces: ["wood"], reason: "sent" }) });
+  assert.equal(camp.turned.length, 0, "a camp does not turn the world (walk W1)");
+  assert.equal(camp.S.trips.length, 1, "but it is a trip for the Station");
+  assert.equal(camp.S.day.camps, 1);
 });
 
 test("the sealed crate carries the world's events beside its lines (specs/world-events.md); the Companion's report keeps its lines", () => {
@@ -166,9 +170,10 @@ test("End expedition while docked at the start", () => {
     mibis: [{ id: 1, name: "Dot", sp: 0, born: 0 }, { id: 2, name: "Moss", sp: 1, born: 0 }], carried: [1], lead: null, carrySeen: 0, carryRefused: [], dockSeen: 0, probeSeen: 0, walkTurn: -1,
     exp: null, phase: "map" }, { now: 1 });
   R.mount(S, "g1");   // a realm of one region, mounted, as the page holds it
+  S.day = { spent: 4, camps: 0, pend: { trail: [], storm: [] }, camp: null };
   const writeSt = () => { store["mb-save-v8"] = JSON.stringify(Object.assign({}, S, { st })); };
   const sv = () => JSON.parse(store["mb-save-v8"]);
-  const t = load(["endExpedition", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
+  const t = load(["endExpedition", "freshDay", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
     "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
     S, window: {}, RT: {}, FX: {}, NOW: 0, noteSet: () => {}, RIPE_PENDING: [], emptyLead: () => null, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 10, serialize: R.serialize, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
@@ -193,7 +198,7 @@ test("End expedition while docked at the start", () => {
 
   t.endExpedition("sent");
   assert.equal(S.exp, null);
-  assert.equal(S.turn, before.turn + 1);
+  assert.equal(S.turn, before.turn, "camp (walk W1): the day waits, the world turns at the night's end");
   assert.equal(sv().trips.length, before.trips + 1);
   assert.equal(S.bay.length, before.bay + 1);
   assert.equal(S.shield, 3, "the shield as mended at the dock");

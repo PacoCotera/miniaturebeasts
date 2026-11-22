@@ -12,9 +12,22 @@ const { PRICE } = await import("../../station/src/state.mjs");
 export const GROW_E = PRICE.growE;   // Energy held at the end of the first walk: the first Grow's price today (growCost: PRICE.growE Energy, no Essence for the first mibi, no Data with no trait changed); lock-playtest-world
 export const BUDGET = 900;      // actions of the first walk before the bot gives up looking: it goes into the start and its eight neighbours properly (about 90 actions a place) and then the rest of the reach
 
-export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET } = {}) {
-  const p = newPage(seed, { calm }), w = makeWalker(p, { budget, verbose, tag: String(seed) }), { key, phase, acts, cargo } = w;
-  const enough = () => { const c = cargo(); return c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E; };
+// all: never stop for having enough, walk the reach until the budget or the night's end (the E6 check's walked day, tools/realm-run.mjs --e6)
+// oneDay: stop at the first night's end; otherwise the walk goes on into the next day, as a player's does (walk W1: the night seals the hold into a crate and the day starts again at dawn): up to MAX_DAYS, the crates' finds added up
+export const MAX_DAYS = 3;
+export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET, all = false, oneDay = false } = {}) {
+  const p = newPage(seed, { calm }), w = makeWalker(p, { budget, verbose, tag: String(seed) }), { key, phase, acts } = w;
+  const bank = { e: 0, d: 0, s: 0, pods: 0 }; let days = 1, actsBefore = 0;   // the finds of the days before, as sealed in their crates
+  const cargo = () => { const c = w.cargo(); return { ...c, e: c.e + bank.e, d: c.d + bank.d, s: c.s + bank.s, pods: c.pods + bank.pods }; };
+  const bankNight = () => { const r = p.S.report, c = r && r.reason === "night" ? r.sealed : null; if (c) { bank.e += c.e; bank.d += c.d; bank.s += c.s; bank.pods += c.pods.length; } actsBefore += p.S.hist[p.S.hist.length - 1].actions; };
+  const nextDay = () => {   // the night ended the day: bank its crate and lift again from the sealed screen (Next expedition, Weather, the first glint)
+    if (!p.S.report || p.S.report.reason !== "night" || oneDay || days >= MAX_DAYS) return false;
+    bankNight(); days++; w.say("night: the day ends, day " + days);
+    if (phase() === "sealed") key("confirm");
+    for (let g = 0; g < 2 && !p.S.exp; g++) key("confirm");
+    return !!p.S.exp;
+  };
+  const enough = () => { if (all) return false; const c = cargo(); return c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E; };
   const out = { seed, ok: false, why: "", actions: 0, places: 0, readings: 0, pods: 0, data: 0, energy: 0, firstPodAt: null, firstDataAt: null };
 
   // One place: Call, take what it shows (pods, stones, strike marks: a press on each), and leave. A place is gone into properly (a Call at its four quarters and its middle) or quickly (the way in and the
@@ -76,6 +89,7 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
   const went = () => { const thorough = stage !== 1; entered.add(p.S.exp.pos); if (thorough) proper.add(p.S.exp.pos); inPlace(thorough); };
   key("confirm"); if (phase() === "patch") went();   // the start cell's own place first
   for (let guard = 0; guard < 80 && !w.budgetGone() && !enough(); guard++) {
+    if (!p.S.exp && !nextDay()) break;   // the night ended the day (walk W1: on to the next day) or the Probe broke
     if (phase() === "map") {
       let way = null, goal = [];
       while (stage < STAGES.length) { goal = cellsInReach().filter(STAGES[stage]); way = goal.length ? w.road(goal) : null; if (way) break; stage++; }
@@ -86,9 +100,14 @@ export function firstTrip(seed, { calm = false, verbose = false, budget = BUDGET
     else key("back");
     const c = cargo(); if (out.firstPodAt == null && c.pods) out.firstPodAt = acts(); if (out.firstDataAt == null && c.d >= NEXT_DATA) out.firstDataAt = acts();
   }
+  if (!p.S.exp && p.S.report && p.S.report.reason === "night") {   // the day's 200 light ran out on the walk: the night sealed the hold into a crate (nothing is lost), and the finds are the crate's
+    bankNight(); out.night = true; out.days = days; out.actions = actsBefore;
+    out.pods = bank.pods; out.data = bank.d; out.energy = bank.e; out.gathered = bank.pods + bank.e + bank.d + bank.s;
+    out.ok = out.pods >= 1 && out.data >= NEXT_DATA && out.energy >= GROW_E; if (!out.ok) out.why = "the day ended: " + out.pods + " pods, " + out.data + " Data, " + out.energy + " Energy";
+    out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false }); Object.defineProperty(out, "walker", { value: w, enumerable: false }); return out; }
   if (!p.S.exp) { out.sealed = true; out.why = "sealed before the walk was done (the Probe's shield ran out)"; return out; }
-  const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = acts();
-  out.ok = c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E;
+  const c = cargo(); out.pods = c.pods; out.data = c.d; out.energy = c.e; out.actions = actsBefore + acts(); out.days = days;
+  out.ok = c.pods >= 1 && c.d >= NEXT_DATA && c.e >= GROW_E; out.gathered = c.pods + c.e + c.d + c.s;
   if (!out.ok && !out.why) out.why = c.pods < 1 ? (c.d < NEXT_DATA ? "no pod, " + c.d + " Data" : "no pod") : c.d < NEXT_DATA ? "only " + c.d + " Data" : "only " + c.e + " Energy, the first Grow costs " + GROW_E;
   out.log = w.log; Object.defineProperty(out, "page", { value: p, enumerable: false }); Object.defineProperty(out, "walker", { value: w, enumerable: false });
   return out;

@@ -173,7 +173,7 @@ test("4. break in flight: the break completes, then the dock's mend applies", ()
 });
 
 // ---- ruling 6, test 5 ----
-test("5. End expedition docked at the start: allowed, the crate sealed, the world turned", () => {
+test("5. End expedition docked at the start: allowed, the crate sealed, the day waits (walk W1: camp)", () => {
   const { p, st } = begin();
   p.key("confirm"); p.run("TEST.exploreHere()"); p.key("back"); p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'leave');"); p.key("confirm");   // the start's heart found, back on the map
   p.run("S.exp.cargo.e += 1;");
@@ -184,7 +184,7 @@ test("5. End expedition docked at the start: allowed, the crate sealed, the worl
   p.key("confirm"); assert.equal(p.S.phase, "cargo"); p.key("confirm");
   assert.equal(p.S.exp, null); assert.equal(p.S.phase, "sealed");
   assert.equal(p.S.bay.length, bay + 1, "a crate sealed");
-  assert.equal(p.S.turn, turn + 1, "the world turned");
+  assert.equal(p.S.turn, turn, "camp: the world turns only at the night's end");
 });
 
 // ---- ruling 6, test 6 ----
