@@ -6497,7 +6497,7 @@ function drawPatchBody(t) {
     RT.heroN = (RT.heroN || 0) + 1;   // the pawn's draws this frame (read by the slide test)
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     const heroRm = spriteRm(P.x, P.y);
-    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm === 2 ? 0 : heroRm);   // through the places' light tables like the walk props, except the night's dark2 step: the explorer keeps its own colours then (outline kept), so it reads on the dark land (GD note 2026-11-16)
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm);   // through the places' light tables like the walk props, the night's dark2 step too (art director 2026-11-22: she goes through the same table as the place at night)
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx + ox, SY(PY(RT.pl) - 6) + oy); };
   // Near a place's edge, and through a crossing slide, the pawn is kept out of the place's picture: the slide layers are pictures of the place, so a pawn in them would show twice. It is drawn once on top instead (after the picture is kept, or by drawSlide riding between its two spots).
   RT.heroFn = heroDraw; RT.heroLater = motion() && (!!FX.slide || nearEdge(P));

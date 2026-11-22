@@ -19,6 +19,13 @@ test("clockLevel: night is dark2 (2), dusk the one-step table (1), the day 0, a 
   assert.equal(p.run("clockLevel({ cave: true })"), 0);
 });
 
+test("she goes through the same table as the place at night (no exception for dark2)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.ok(!/heroRm === 2/.test(src), "no night exception for the explorer");
+  assert.match(src, /playerArt\(P\.dir, pose, f2\)[^\n]*, heroRm\);/);
+});
+
 test("the same place drawn at day, dusk and night is three different pictures, darker as the clock goes", () => {
   const p = start();
   const day = shot(p, 30), dusk = shot(p, 160), night = shot(p, 190);
