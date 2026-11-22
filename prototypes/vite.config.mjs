@@ -21,6 +21,6 @@ export default defineConfig({
     assetsInlineLimit: 0,                   // a picture or a JSON file is a file with a hashed name, never a data: URL
     modulePreload: { polyfill: false },     // modulepreload links for each page's chunks; the browsers that run the sandbox know them
     chunkSizeWarningLimit: 4096,
-    rollupOptions: { input: { station: page("station"), play: page("play"), exploration: page("exploration"), lab: page("lab") } },
+    rollupOptions: { input: { station: page("station"), g2: page("station/g2"), play: page("play"), exploration: page("exploration"), lab: page("lab") } },
   },
 });
