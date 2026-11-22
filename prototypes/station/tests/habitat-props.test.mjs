@@ -89,14 +89,14 @@ test("the card: the species line with the stage word, the story (a founder: wher
   assert.ok(S0.rest.w.st.mibis.length && build(S0.rest.w, S0.rest.sv).requests.some((r) => r.kind === "stamp" && r.mibi === m.id), "the stamp is a request by mibi (the hatch's form)");
 });
 
-test("the plates: one a chapter in ring order, read / unread / sealed; only an unread chapter is a plate target that is enabled; ✓ on it says its price on the bottom line", () => {
+test("the plates: one a chapter in ring order, read / unread / sealed; every plate is an enabled target and ✓ on it opens her page (the paid read of a plate retired in step 2a)", () => {
   const S0 = scenes(), w = S0.rest.w, m = w.st.mibis[0], fr = frameOf("S01"), sealed = fr.chapters.find((c) => c.sealed);
   m.read = fr.chapters.filter((c, i) => i > 0 && !c.sealed).map((c) => c.id);
   const b = build(w, S0.rest.sv, { focus: "plate.0" }), P = b.props.regions.plates.items, T = b.props.focus.targets.filter((t) => t.id.startsWith("plate."));
-  assert.equal(P.length, fr.chapters.length); assert.equal(P[0].state, "unread"); assert.deepEqual(T.map((t) => t.enabled), P.map((p) => p.state === "unread"));
-  assert.match(b.line.ok, /^Read /); assert.equal(typeof b.line.price, "string"); assert.match(b.line.subject, /still a surprise$/);
-  const r1 = build(w, S0.rest.sv, { focus: "plate.1" }); assert.equal(r1.line.ok, null); assert.match(r1.line.subject, /, read$/);
-  if (sealed) { const i = fr.chapters.indexOf(sealed), x = build(w, S0.rest.sv, { focus: "plate." + i }); assert.equal(x.props.regions.plates.items[i].state, "sealed"); assert.match(x.line.subject, /, sealed$/); assert.equal(x.line.ok, null); }
+  assert.equal(P.length, fr.chapters.length); assert.equal(P[0].state, "unread"); assert.deepEqual(T.map((t) => t.enabled), P.map(() => true));
+  assert.match(b.line.ok, /^Open /); assert.match(b.line.subject, /still a surprise$/);
+  const r1 = build(w, S0.rest.sv, { focus: "plate.1" }); assert.match(r1.line.ok, /^Open /); assert.match(r1.line.subject, /, read$/);
+  if (sealed) { const i = fr.chapters.indexOf(sealed), x = build(w, S0.rest.sv, { focus: "plate." + i }); assert.equal(x.props.regions.plates.items[i].state, "sealed"); assert.match(x.line.subject, /, sealed$/); assert.match(x.line.ok, /^Open /); }
 });
 
 test("the Companion module: the set as it will be in its order (an add request waiting shows its lamp), the glyph docked or away; ✓ Take / Bring / Full by the set; the request waiting is read-only", () => {

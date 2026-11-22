@@ -5,7 +5,6 @@
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), habId (the mibi up close), meetId (the new mibi whose meet is on), offline }
 //   sittingSpec: sitting.json, for the Portrait module's ✓ strings.lookPortrait (the portrait, offered while its picture is held)
 import * as S from "../state.mjs";
-import { warnWords } from "./goal-words.mjs";
 import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
@@ -138,14 +137,14 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
   regions.tiles = { glyph: frame.regions.marks.companion.away, glyphDocked: frame.regions.marks.companion.docked, items: tiles };
 
   // the focus: every target of the state in the graph's groups; the plate a chapter still to read is enabled, the door and the modules as their rules say
-  const unread = (p) => p.state === "unread", cost = (p) => S.mibiReadCost(st, shown, p.id, settings);
+
   const { dKind, sitting, look } = mods;
   const targets = [];
   if (state !== "out") targets.push({ id: "resident", group: "resident", enabled: true });
   if (state !== "meet") targets.push({ id: "name", group: "name", enabled: !out });   // held while carried (heldRule)
   targets.push({ id: "species", group: "species", enabled: true });   // ✓ Open the guide: the Library's Level 1 on this species
   targets.push({ id: "family", group: "family", enabled: true, lines: from.of && from.of.length === 2 ? 2 : 1 });   // ✓ See the family: Level 3, close on this mibi; its box is the story's origin lines (the face measures them)
-  plates.forEach((p, i) => targets.push({ id: "plate." + i, group: "plate", enabled: unread(p) }));
+  plates.forEach((p, i) => targets.push({ id: "plate." + i, group: "plate", enabled: true }));   // every chapter opens her page (station step 2a)
   targets.push({ id: "door", group: "top", enabled: dKind === "take" || (dKind === "bring" && (docked || !out)) });   // Bring is live only while docked (the owner, R4b)
   targets.push({ id: "portrait", group: "top", enabled: (!!sitting && doorOpen("sitting")) || look });
   targets.push({ id: "cross", group: "low", enabled: crossState === "adult" && doorOpen("cross") });
@@ -167,9 +166,7 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
   else if (id === "family") line = { ok: Sg.family, subject: "", back: Sg.back, need: null };
   else if (id.startsWith("plate.")) {
     const p = plates[+id.slice(6)], ch = fr.chapters[+id.slice(6)], Chapter = ch.name;
-    if (p.state === "read") line = { ok: null, subject: fill(Sg.plateRead, { Chapter }), back: Sg.back, need: null };
-    else if (p.state === "sealed") line = { ok: null, subject: fill(Sg.plateSealed, { Chapter }), back: Sg.back, need: null };
-    else { const c = cost(p), short = c > st.d ? S.shortIcons(st, 0, c, 0) : ""; line = { ok: fill(Sg.read, { Chapter }), price: c ? "◆ " + c : "", ...(short ? { dim: true, short } : {}), subject: fill(Sg.plateUnread, { Chapter }), back: Sg.back, need: !short && c && frame ? warnWords(st, m.sv, settings, frame, { d: c }, { key: "read", mibi: shown }) : null }; }
+    line = { ok: fill(Sg.openPage, { Chapter }), subject: fill(p.state === "read" ? Sg.plateRead : p.state === "sealed" ? Sg.plateSealed : Sg.plateUnread, { Chapter }), back: Sg.back, need: null };   // ✓ opens her page on this chapter, whatever its state (the paid read of a plate retired with step 2a)
   } else if (id === "door" || id === "portrait" || id === "cross" || id === "wild") {
     // a held row (the house rule): the verb stays, dimmed, and the context gives the reason; otherwise the live rows
     const hr = rows[id], now = docked;
