@@ -59,6 +59,14 @@ export function startLine(F, seed, tag, kinds) {
     let ok = true;
     for (const k of kinds) {
       if (k === "set") { aim.push({ kind: "set", id: SET_ID }); continue; }
+      if (k === "hset") {
+        // round 2 (b): a hidden pair. The aim is a look that hides its copies (the markings set: one copy is a carrier that looks like none).
+        // Founders are redrawn until no one shows it yet and at least two copies of it are carried (else it can never be bred).
+        const on = pop.active.reduce((s, m) => s + m.genome.loci[SET_ID].filter((c) => c === "on").length, 0);
+        if (pop.active.some((m) => m.genome.loci[SET_ID].every((c) => c === "on")) || on < 2) { ok = false; break; }
+        aim.push({ kind: "set", id: SET_ID });
+        continue;
+      }
       const [kind, id] = k.split(":");
       if (kind === "scale") {
         const steps = stepsOf(F, id), held = new Map();
@@ -108,12 +116,20 @@ function lookNear(F, m, t) {
   const target = t.kind === "scale" ? t.step : t.target;
   return 1 - Math.abs(F.shown(m.genome, t.id) - target) / (hi - lo || 1);
 }
-const entropy = (ps) => -ps.filter((p) => p > 0).reduce((s, p) => s + p * Math.log(p), 0);
+// Round 2 (a): BY-LOOK reads the shown look rounded to a whole step of its scale (a halfway value is read as the nearer step).
+function lookNearRound(F, m, t) {
+  if (t.kind !== "scale") return lookNear(F, m, t);
+  const pool = poolOf(F, t.id), steps = stepsOf(F, t.id), v = F.shown(m.genome, t.id);
+  let s = steps[0]; for (const x of steps) if (Math.abs(x - v) < Math.abs(s - v) - 1e-12) s = x;
+  return 1 - Math.abs(s - t.step) / (pool[1] - pool[0] || 1);
+}
+const entropy =(ps) => -ps.filter((p) => p > 0).reduce((s, p) => s + p * Math.log(p), 0);
 
 // Scoring rules. Each returns a number to maximise for a pair p = { a, b, k, od }.
 export const SCORES = {
   // BY-LOOK: pairs the two whose looks are nearest the aim (what the page shows, never the copies behind it)
   BYLOOK: (F, p, aim) => aim.reduce((s, t) => s + lookNear(F, p.a, t) + lookNear(F, p.b, t), 0),
+  BYLOOKR: (F, p, aim) => aim.reduce((s, t) => s + lookNearRound(F, p.a, t) + lookNearRound(F, p.b, t), 0),
   // TELLS: pairs for what the young will tell about the parents' copies (the spread of the printed odds), then for the aim
   // (the chance the young is fixed on each trait, and on all together); the aim leads, the tell breaks ties.
   TELLS: (F, p, aim) => {
@@ -170,6 +186,7 @@ export function playLine(F, seed, tag, opts) {
       const a = list[i], b = list[j];
       if (exclude.has(a.id) || exclude.has(b.id)) continue;
       if (directKin(a, b, pop.lookup) !== null) continue;
+      if (opts.strictPair && slots.some((s) => s && s.pair === `${Math.min(a.id, b.id)}|${Math.max(a.id, b.id)}`)) { st.strictSkips = (st.strictSkips ?? 0) + 1; if (restOk(a, b, now)) st.strictBites = (st.strictBites ?? 0) + 1; continue; }   // round 2 (B3): a pair pairs again only when its last pod hatched
       if (!restOk(a, b, now)) continue;
       const k = kinship(a, b, pop.lookup);
       out.push({ a, b, k, od: odds(F, a, b, k, aim, pop.lookup) });
@@ -196,7 +213,7 @@ export function playLine(F, seed, tag, opts) {
     for (const m of [p.a, p.b]) if (m.kind !== "wild") paired.set(m.id, [...(paired.get(m.id) ?? []), now * 60000].slice(-8));
     const k = child.genome.origin.kinship;
     st.crosses++; if (k > 0) st.kinPairs++;
-    slots[slot] = { child, readyAt: now + podMinutes(20, vigourOfF(k)) };
+    slots[slot] = { child, pair: `${Math.min(p.a.id, p.b.id)}|${Math.max(p.a.id, p.b.id)}`, readyAt: now + podMinutes(20, vigourOfF(k)) };
   };
   let fresh = 0;
   while (t <= cap.days * DAY && st.hatches <= cap.hatches) {

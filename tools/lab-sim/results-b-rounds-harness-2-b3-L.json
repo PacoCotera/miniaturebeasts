@@ -1,0 +1,66 @@
+{
+ "round": "b3",
+ "seeds": 200,
+ "engine": "origin/main 82462ee (E1, PR 469); engine files unchanged on origin/main since",
+ "frames": {
+  "L": {
+   "ONE-ROW": {
+    "gens": {
+     "n": 200,
+     "reached": 172,
+     "median": 9,
+     "p80": 13
+    },
+    "hatches": {
+     "n": 200,
+     "reached": 172,
+     "median": 44,
+     "p80": 73
+    },
+    "hours": {
+     "median": 14.3,
+     "p80": 18.45
+    },
+    "reached": 172,
+    "runs": 200
+   },
+   "RE-PLAN": {
+    "gens": {
+     "n": 200,
+     "reached": 169,
+     "median": 8,
+     "p80": 12
+    },
+    "hatches": {
+     "n": 200,
+     "reached": 169,
+     "median": 48,
+     "p80": 78
+    },
+    "hours": {
+     "median": 14.633333333333333,
+     "p80": 18.966666666666665
+    },
+    "reached": 169,
+    "runs": 200
+   },
+   "hatchChangesPick": {
+    "picksAfterAHatch": 23178,
+    "changed": 3742,
+    "share": 0.16144619898179308,
+    "perSeedMedian": 0.4166666666666667
+   },
+   "lines": {
+    "replanNoMoreHatches": {
+     "pass": false,
+     "replan": 48,
+     "oneRow": 44
+    },
+    "hatchChangesPick": {
+     "pass": false,
+     "share": 0.16144619898179308
+    }
+   }
+  }
+ }
+}
