@@ -4251,6 +4251,48 @@
    "sha256": "048e6cdb93b613b0a3db79f3d90560a5b640e369aa07e5d35673a242846ebae0"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-22",
+   "id": "7cd3958278",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-idle-left-saddled",
+   "sha256": "22f0d38051183e7612e5876ec394d9e556c09d380af940f98ffcea1fa90e987a"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-22",
+   "id": "1de971750a",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-idle-right-saddled",
+   "sha256": "44b4a1e4f6c9d6bfefb180d87bc631dc22226b15d18a3b1da4416c3de656fbbb"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-22",
+   "id": "97eacd398c",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-step-a-left-saddled",
+   "sha256": "22f0d38051183e7612e5876ec394d9e556c09d380af940f98ffcea1fa90e987a"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-22",
+   "id": "43bc5cea7b",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-step-a-right-saddled",
+   "sha256": "44b4a1e4f6c9d6bfefb180d87bc631dc22226b15d18a3b1da4416c3de656fbbb"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-22",
+   "id": "6d8ff94ed8",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-step-b-left-saddled",
+   "sha256": "051eca38a9363895d92944f4f190ed4b091f936a56856ce155454eeaa0890ca3"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-22",
+   "id": "f5a60ab0c3",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-step-b-right-saddled",
+   "sha256": "53d05416014431e7d194af67e648e55a00f1d37e31c58f61b0fddd89ea1976d2"
+  },
+  {
    "class": "ui",
    "date": "2026-11-15",
    "id": "fe2dabe776",
@@ -5740,6 +5782,447 @@
    "id": "c3e520cc55",
    "path": "prototypes/ui/assets/masters/pods/mibi-halo-S11-128x160-mist.png",
    "sha256": "33045262a04ef6bf9ef641573a55e727f84b4e63131350180df004e80ffccb9e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d622b9f1f0",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-104x112.png",
+   "sha256": "b099caf09ed054ae0720651b92ca5ac4ccef912f6a175e050ae207a10e852c08"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "cb4f0585df",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-304x312.png",
+   "sha256": "a2ce739ab5c4415ad188770dacbe7f6dcbac26793b2774dc8a62d4d593eca6ba"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "31bdbb32b3",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-48x48.png",
+   "sha256": "b286823f62acffd0e99bde610b13389286efc9b6209c3e42a19e188acaf384e1"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "1f292511e7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-96x88.png",
+   "sha256": "eba2c1a3af503fc86e5162afa76e9d5e3bbec35dcff8286973975e8c3b41566c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "c404bf492a",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-calm-304x312.png",
+   "sha256": "92b9571f87b98e5cb3d710e2481f529b6f8334a3fa4ada9f7ab8803481521f33"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "bbe06001b7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-curl-304x312.png",
+   "sha256": "8f1f6ae8363f6f9818aafde975222eab2fcdb969369ac4bf4bb097d75b8c77e9"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "eb224982d4",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-shake-304x312.png",
+   "sha256": "3a0387029c84698bb22dc4cb29b1a2c1769e4e3e859693ebaa33ba778497e21f"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "113e7fd9ae",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-104x112.png",
+   "sha256": "61eea23c8620082608dd8ba446ce5da40dd51e2ce2f5a7fcfd3337788a78db80"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "bc6dd15116",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-304x312.png",
+   "sha256": "21cd70e7abea92c1d1587e58acb0a12e3c281b05f2f3f45e0c0a628dc3d06188"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7153b5c715",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-48x48.png",
+   "sha256": "479de08f947d25cbe6d055e9d6e2b0c12a6e97c122e694c6af3ccd71013dad0e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3254a42bde",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-96x88.png",
+   "sha256": "b7e7890f48ceeeca2eba06ad42eafa3f86e8072b6961612f329fbd3c6a9484ee"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "f69ca44796",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-calm-304x312.png",
+   "sha256": "ab743f128b5aa527cadb6159482979837dd24261a54dc97eb674cd881f54ce21"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d49ab3a594",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-curl-304x312.png",
+   "sha256": "f3c04d590f7d650c6513146582bffae3e9a4e06be1a2c64d968c52de7215c726"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "71c493eca3",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-shake-304x312.png",
+   "sha256": "b8f99560df4051838bda413216643f4fde433b11089911172943ba79a1de9961"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "aed230a6c8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-104x112.png",
+   "sha256": "8c3c08465b5767408cd75046928999448c723937274e3cbf605bfdc3ed6dedf3"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "a32dd4b7f7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-304x312.png",
+   "sha256": "54838b351aa3c3928c2998c8ea1d88277a54056e4aaf18f777407f0c84a6f16f"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "890a54450b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-48x48.png",
+   "sha256": "207b7ab9cdf6ebe6820b0e43cfbb66d5d15a882e71a226c6d0cb85e8fac8db95"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "b8bf8dfb80",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-96x88.png",
+   "sha256": "3e7dee3dd65f1f9dd896bfb99c9fc87b6248922054982db2017fac9913f351d4"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "251650e0f1",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-calm-304x312.png",
+   "sha256": "6f4672a2ac3a6b06674487765d7987a343375fefea354e07c925853ca547bc83"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "368e837a1b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-curl-304x312.png",
+   "sha256": "c01a2040479bf1722fe459fbe632d2ab1e69762c9e3cd5c9309b1bf1422d8f9a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "fb46533545",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-shake-304x312.png",
+   "sha256": "519d97900fa0f3fde75c49ff195b280a9eb401449cf550a883b53547fa88f1c9"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7bde2bb0a5",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-104x112.png",
+   "sha256": "50317e58915e36d5db702d53ec0a07a1af675cfeca9506a66ba73602d519e703"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "dce06de8ca",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-304x312.png",
+   "sha256": "2a611df341029e61394ea77f2673a19f415f97089659bf3f8cd1ef49d012dd85"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7317e2efff",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-48x48.png",
+   "sha256": "f8295fe2ad42d68a2b74f0bcbd447441f0620781740976cc4eab974a537dfb62"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "b95c1bf252",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-96x88.png",
+   "sha256": "50f14d31d39f192a129c04ce65d20fda225375c5c8485eb921c383f2a6b716d7"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e2f27d6b68",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-calm-304x312.png",
+   "sha256": "3564f8f56c32f85ffa1e080237821d29e7fe26522cb82ea77add04c44d9877fe"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "8af941bf9b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-curl-304x312.png",
+   "sha256": "03d47bd4d34781f611abf8bb20a88da92969033797128c5eec17141a6c981ec1"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d341ac9cc7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-shake-304x312.png",
+   "sha256": "73040e74a733607aee6e13764ba342dde695284bfdf6090b49b012186ed688ba"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "c56aada14f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-104x112.png",
+   "sha256": "fe90e22923f46b1608a485be3a5628cddc4d85facd1ef31e0742787ec25d323e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "de140b01a8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-304x312.png",
+   "sha256": "2a3b4d710ed3afa99c0a0426beae0a9a2656f8c1aff09f78954ab0d23673b7ea"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "6143c2e31c",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-48x48.png",
+   "sha256": "e11472bb66711cfdece3f32e7648ef542c135a21217fbff61a157ea5f08987cb"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "b975b1ffcc",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-96x88.png",
+   "sha256": "7c50391f5ccd061d6e78002b57ca8754ec68f7631f6c6ad1604f87d14e4cf38a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "0647d38984",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-calm-304x312.png",
+   "sha256": "1be086a5aa4adfbf92c900ba0b5985e372560d37bd14a8a4a8fa0e242de9b6c2"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "55af4bb631",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-curl-304x312.png",
+   "sha256": "fbf6312a3250d99a6f321b5add8a2f75f907f0fc967e7dbcba7a2b1d053a33bc"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d58e9186f9",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-shake-304x312.png",
+   "sha256": "da49eb95edb2cf548e75201bf62664f0255d900eb29161d0111bf994b6379663"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7d4c68f71a",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-104x112.png",
+   "sha256": "1dc761406f52844b703450508a4db59bac20730759bd2f39ae05ae82a6fd2654"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "11bb653960",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-304x312.png",
+   "sha256": "a1e14defd5b57d40dcd4ede221ec4de01db31dc030ca3dff1224004a855aae5a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "2a643a73fe",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-48x48.png",
+   "sha256": "2321945d479a5707f82bec4ec7f6681830aa56ed805c60279ef5416a175f35be"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e593b2e439",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-96x88.png",
+   "sha256": "651e54a48d5714b5b5553f997d02e028e9ce8b284d83aa3cdff737307d69f17e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e41428e68e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-calm-304x312.png",
+   "sha256": "343d1569947c41f34d2395f3bd88b91ea2c94811280edffce3266745eea19c88"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "5878130e3e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-curl-304x312.png",
+   "sha256": "a8031c9f59be8e4a5b905ccb76a561b899f55caa965f526aceb741ed291c8f3d"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "ff93fd794b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-shake-304x312.png",
+   "sha256": "42aacbc5a21def701dd2964ca3d0c332055bc703e986fc9e24d3820dd1ce9f10"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "0708e2ef5f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-104x112.png",
+   "sha256": "5adba39f0688a004fac1eddbd3987b49c703672551b7154bb32a2589ae7ccf8f"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "fff115b0a2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-304x312.png",
+   "sha256": "913c35afa6866ae780941787ddf0aed5798b3251414b2842852fa4522f11d2e4"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3c3342728f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-48x48.png",
+   "sha256": "adb161c9661df701dbb13b4cfb56b5748520dc6153ae71f86caafe2b9d1958ed"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "20aec0fe55",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-96x88.png",
+   "sha256": "d647f826a0b40aeed195bc26143b813d5041b8e49c4037f660bf5e642ef75591"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "f995b220fd",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-calm-304x312.png",
+   "sha256": "4c5dcbf2d9c881e924ada236a629b7c3e926a114da00815604d8c0be1d7f4b28"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "84808eaa32",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-curl-304x312.png",
+   "sha256": "c791f5d64bde76a6b4551fd204197619b1e519ad3f1d4eea8d38ced6c8300b22"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "1ac45ce2d0",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-shake-304x312.png",
+   "sha256": "1c5ae27e3516e8900158490f580289d6a5a1e35e096ec1e1cd8d7894bcd7549a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e06f7b7ed2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-104x112.png",
+   "sha256": "7406097793f0989f5363b52f163b1f5f9e23809f56fc217fc1494489e84f2d19"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "6a64fcbea6",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-304x312.png",
+   "sha256": "85f0067cb97118b8b5a3a94f67507fddf474f232d1229f1ec7116014eb5e5e9d"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "809961cb80",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-48x48.png",
+   "sha256": "4528c7feada2283923f08b54bd19c45371e3e8b5301e74581a4da13fa9f915f9"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "a6ae962dca",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-96x88.png",
+   "sha256": "0652820b62768d44eb21edc41ab6d7e8d0d812508ba111ab484013e31d4c2747"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "156e4b6391",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-calm-304x312.png",
+   "sha256": "22e82c85e210e92d8a5b8b4810d32a4f336a05757a31bfa4f53338293abb6abd"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "a5e07d4e34",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-curl-304x312.png",
+   "sha256": "587ad972f7cc733689c18dc1480bbae53319d543da6e71465debf88d3306ac32"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "8d2739b392",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-shake-304x312.png",
+   "sha256": "ea8d10671aac83b4655064a2c7a635c6354517014deb2a35fe7a3c1b9c7c5660"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3a47b59fea",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-104x112.png",
+   "sha256": "87c3b8d24f5c2858c8f7c0f3b5a7f0a0bc90f1c0fc3181e6e6dfe25f9ef919fa"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "eb1fd417c1",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-304x312.png",
+   "sha256": "0fbad5884987cff2d2683fc4e26de729d326a7a4dc1849ace000f307e3b51e2a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3b8183ec1d",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-48x48.png",
+   "sha256": "8c45e1bb91d4cc898165a709c92fc253af0ca7b778856980c6dc8bde7a29f23a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "46961ec394",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-96x88.png",
+   "sha256": "7dbe613af4b52c38ab67ad3ff482bcfcd2dc5bdb8a3743fbf1ea60fbf83ee399"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "23c8c168ed",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-calm-304x312.png",
+   "sha256": "a8440e5dd06ecf3bbb67e9860f8358e060b21f6d2033bcdea04fb2ae5386fbe3"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "1bae684464",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-curl-304x312.png",
+   "sha256": "bddd5bbbe8bae9d9113418ebb4336d4ef9862c4a5670565c7f4d6ba0a85a197d"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "c88b856ebb",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-shake-304x312.png",
+   "sha256": "407896ec6dc9ea689c8ade4991563eee31114c33635a152f79dfb909143339cc"
   },
   {
    "class": "cut-of-signed",
