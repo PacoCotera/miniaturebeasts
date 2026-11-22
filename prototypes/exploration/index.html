@@ -239,7 +239,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName } from "./src/world7.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, PIPS } from "./src/waitpips.mjs";
@@ -258,7 +258,7 @@ import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS, DAY, DAY_TEXT, partOfDay } from "./src/words.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
-import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
+import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
 import { readOptions } from "./src/options.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
@@ -2351,6 +2351,51 @@ function findSlotFor(lay, key, pod, ent) {
   if (free.length) { const h = ent || lay.spawnPt, d = s => Math.hypot(s.x - h.x, s.y - h.y); return free.reduce((b, s) => d(s) < d(b) ? s : b); }   // the slot nearest where you first come in, so the first Call there lifts the pod (a pod set earlier by the walk keeps its own place)
   return free.length ? { x: free[0].x, y: free[0].y } : null;
 }
+// ---------- Haunts and routines of the wild Loika (walk W2; src/gen7/haunts.mjs) ----------
+// An overlay read from a mounted place, never part of the land: the view of the place's own props and ground, the sites it offers, and for each Loika its doings, three haunts and a bed.
+function hauntView(lay) {
+  const pl = lay.baked && lay.baked.place, sprites = PL.ctx && PL.ctx.ts && PL.ctx.ts.sprites; if (!pl || !sprites) return null;
+  const famOf = k => /^tall-grass/.test(k) ? 'sweeps' : /^tree-/.test(k) ? 'trees' : /^boulder/.test(k) ? 'rocks' : /^reed/.test(k) ? 'reeds' : null;
+  const props = [];
+  for (const q of pl.props) { const s = sprites[q.kind], fam = s && famOf(s.kind); if (fam) props.push({ fam, kind: s.kind, x: Math.floor(q.x / 48) - 1, y: Math.floor(q.y / 48) - 1 }); }
+  for (const f of lay.feats) if (f.tree === 'hollow') props.push({ fam: 'trees', kind: 'tree-hollow', x: f.x, y: f.y });
+  const t = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h ? -1 : lay.tiles[y * lay.w + x];
+  return { w: lay.w, h: lay.h, props, reeds: [], water: (x, y) => t(x, y) === T.WATER || t(x, y) === T.DEEP, land: (x, y) => { const v = t(x, y); return v >= 0 && !T_BLOCK[v] && !NOSTAND(v); } };
+}
+// The ground walked from the place's ways in (every tile along each opening that is not closed, and the place's own start where a walk with no side starts), four-way over every tile that is not blocked ground or a
+// standing feature that is not small (SMALL_FEAT, the leaf cup and the strike mark, are stepped over). Pure of the walk: nothing here depends on where the pawn came from. at(x, y): the tile is reached; solid(x, y): it stops the pawn.
+const OPEN_FROM = { N: 'down', S: 'up', W: 'right', E: 'left' };
+function placeReach(lay, key) {
+  const solid = (x, y) => T_BLOCK[lay.tiles[y * lay.w + x]] || (() => { const f = featAt(lay, key, x, y); return !!f && !SMALL_FEAT.includes(f.kind); })();
+  const reached = new Uint8Array(lay.w * lay.h), ways = (lay.openings || []).filter(o => openingKind(lay, o).kind !== 'closed'), starts = [lay.spawnPt];
+  for (const o of ways) for (let k = o.from - 1; k <= o.to - 1; k++) starts.push(o.side === 'N' ? { x: k, y: 0 } : o.side === 'S' ? { x: k, y: lay.h - 1 } : o.side === 'W' ? { x: 0, y: k } : { x: lay.w - 1, y: k });   // adapt7.mjs runPts
+  const q = [];
+  for (const e of starts) if (e && e.x >= 0 && e.y >= 0 && e.x < lay.w && e.y < lay.h && !reached[e.y * lay.w + e.x] && !solid(e.x, e.y)) { reached[e.y * lay.w + e.x] = 1; q.push([e.x, e.y]); }
+  for (let k = 0; k < q.length; k++) { const [cx, cy] = q[k];
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = cx + dx, Y = cy + dy, i = Y * lay.w + X; if (X < 0 || Y < 0 || X >= lay.w || Y >= lay.h || reached[i] || solid(X, Y)) continue; reached[i] = 1; q.push([X, Y]); } }
+  return { solid, at: (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && !!reached[y * lay.w + x] };
+}
+// a site stands only where the pawn can come to it: its tile or the one beside it is reached from the place's ways in, with a front and a side spot 3 to 5 tiles off (E8)
+const hauntStandable = (lay, key) => { const r = placeReach(lay, key); return (x, y) => r.at(x, y) && !r.solid(x, y); };
+const hauntSitesOf = lay => lay.haunts || (lay.haunts = (() => { const v = lay.cave ? null : hauntView(lay); if (!v) return []; const ok = hauntStandable(lay, lay.key);
+  return hauntSites(v).filter(s => (ok(s.x, s.y) || ok(s.x + 1, s.y) || ok(s.x - 1, s.y) || ok(s.x, s.y + 1) || ok(s.x, s.y - 1)) &&(sp => sp.front && sp.side)(hauntSpots(s, ok))); })());
+// the tile can be stood on and is free now (a place's reach, not blocked ground, no feature, no one there)
+const hauntFree = (lay, key, who) => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !occupant(key, x, y, who) && !lay.feats.some(f => f.x === x && f.y === y);
+// A kind with a routine base is an individual of its land: { doings, hs (water, grass, third, bed), name }. The haunts after S.turn nights are a pure walk from the seed and the id.
+function individualOf(w, lay) {
+  if (!routineBase(w.sp)) return null;
+  const sites = hauntSitesOf(lay); if (!sites.length) return null;
+  const doings = doingsOf(S.seed, w.id), hs = hauntsOn(S.seed, w.id, sites, doings, S.turn);
+  return hs ? { doings, hs, name: loikaName(S.seed, S.cr.filter(q => q.sp === w.sp && q.id < w.id).length) } : null;
+}
+// where its routine says it is, now: the stand tile of the haunt it keeps at this part of day
+const routineSpot = (c, lay, key) => c.ind ? hauntStand(hauntAt(c.ind.hs, c.ind.doings, dayPart()), hauntFree(lay, key, c)) : null;
+function hauntStep(X, c) {   // true when the routine has the creature's action
+  const part = dayPart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
+  const t = c.ind.go.t; if (!t) return false;
+  if (c.x !== t.x || c.y !== t.y) { stepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }
+  return true;
+}
 function ensureLive(key) {
   const ex = S.exp; if (ex.live[key]) return ex.live[key];
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
@@ -2369,11 +2414,12 @@ function ensureLive(key) {
     const mine = own && own.length ? own[mates.indexOf(w.id) % own.length] : null, inOwn = own && own.length ? (x, y) => own.some(q => inArea(q)(x, y)) : null;   // a template's spawn areas
     // bug #16: a herd starts spread, not packed: each creature keeps its distance from the ones already placed (3 tiles, then 2), first inside its area, then in the ground round it (4 tiles out), seeded as before
     const apart = d => (x, y) => live.cr.every(q => cheb({ x, y }, q) >= d), big = mine && S.cr.filter(q => q.c === lay.cell && !!q.cv === lay.cave && q.sp === w.sp).length > 3, wide = big ? { x: Math.max(1, mine.x - 3), y: Math.max(1, mine.y - 3), w: mine.w + 6, h: mine.h + 6 } : null;   // only a herd of more than three may spill past its area, when the area is too small to space it
+    const ind = individualOf(w, lay), at = ind && hauntStand(hauntAt(ind.hs, ind.doings, dayPart()), hauntFree(lay, key, null));   // an individual starts where its routine has it at this part of day
     let spread = null;
-    if (mine) for (const d of [3, 2]) { spread = freeSpot(key, R, 5, (x, y) => inArea(mine)(x, y) && apart(d)(x, y), mine) || (wide && freeSpot(key, R, 5, apart(d), wide)); if (spread) break; }
-    const s = spread || (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (mine && freeSpot(key, R, 2, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
+    if (mine && !at) for (const d of [3, 2]) { spread = freeSpot(key, R, 5, (x, y) => inArea(mine)(x, y) && apart(d)(x, y), mine) || (wide && freeSpot(key, R, 5, apart(d), wide)); if (spread) break; }
+    const s = at || spread || (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (mine && freeSpot(key, R, 2, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
     if (!s) continue;
-    live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
+    live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1, ...(ind ? { ind } : {}),
       // the guaranteed early burrowers are always ready in the first two expeditions; a species not yet known always is
       ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || !S.known.includes(w.sp) || rnd(S.seed, 'ready', w.id, ex.n) < spOf(w.sp).shedP });
   }
@@ -3401,6 +3447,7 @@ function patchTick(info) {
     noise: info.noise || 'act', carry: ex.carry, ptName: ex.pt && ex.pt.name,
     away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
+    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) nm[c.id] = c.ind.name; }   // a name on first note: the one the realm gives it, kept once it has been met
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
   endOfActionHabits(X, info);
@@ -3654,6 +3701,7 @@ function creatureTick(c, X) {
       if (sp.settle && c.calm >= 2) break;   // settling: stays put
       if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
       if (c.home) { if (c.x !== c.home.x || c.y !== c.home.y) stepToward(X, c, c.home, 1); }   // a moment heart's creature stays at its spot
+      else if (c.ind && hauntStep(X, c)) { /* its routine: it goes to the haunt it keeps at this part of day and stays there (walk W2) */ }
       else if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
   }
@@ -7606,7 +7654,10 @@ function lineBase() {
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
       const sv = '\x01' + placeLine(lay, P), svN = '\x01' + placeLine(lay, P, true), land = placeName(lay) + ' · ';
       let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
-      if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
+      if (o && o.type === 'cr' && inSight(f.x, f.y)) { ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
+        const nm = o.c.ind && S.named && S.named[o.c.id];   // a met one is named, and says where it keeps this part of day
+        if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, dayPart()), hw = h && WORDS.haunt[h.k] ? ' · ' + WORDS.haunt[h.k] : '';
+          ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); } }
       if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx);
@@ -8272,7 +8323,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

@@ -18,21 +18,12 @@ import { REALM_BIOME_V } from "../src/regions.mjs";
 export const RING1 = [[2, 1], [3, 2], [2, 3], [1, 2]];   // the four slots round region 1 (slot 2,2)
 export const LIST_FILE = new URL("../src/playtest-seeds.mjs", import.meta.url);
 
-// The scan of the mounted region, in the page: every walkable place with something counted to take.
-const SCAN = `(() => {
-  unveiled = () => true;   // every item counts, seen or not: the check is of the land, not of what a Call has shown
-  S.exp.live = {};
-  const OPEN = { N: 'down', S: 'up', W: 'right', E: 'left' }, D4 = [[1, 0], [-1, 0], [0, 1], [0, -1]], KINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike'];
-  let places = 0, withItems = 0, items = 0; const fails = [];
-  for (let c = 0; c < MW * MH; c++) {
-    if (!G.comp[c] || G.land[c] === L.WATER || G.island[c] || !passable(c)) continue;
-    places++; const key = String(c), lay = layout(key); ensureLive(key);
-    const its = leftItems(c).filter(i => !i.cave); if (!its.length) continue;
-    withItems++; items += its.length;
-    // the ground walked from every way in the pawn can come by (and from where a walk with no side starts)
-    // the ways in: the tile the pawn arrives on from each side (entryPoint) and every tile along each opening that is not closed (a gate takes the partner), as adapt7.mjs floods them
-    // what stops the pawn for good: a blocked tile or a standing feature that is not small (stone, bush, beacon...: SMALL_FEAT, the leaf cup and the strike mark, are stepped over, note 33); a creature,
-    // the partner, a pod, a fruit and a tuft move or are taken in the walk
+// The ground walked from every way in the pawn can come by (and from where a walk with no side starts), in the page: reachOf(lay, key) gives at(x, y), the tile is reached.
+// the ways in: the tile the pawn arrives on from each side (entryPoint) and every tile along each opening that is not closed (a gate takes the partner), as adapt7.mjs floods them
+// what stops the pawn for good: a blocked tile or a standing feature that is not small (stone, bush, beacon...: SMALL_FEAT, the leaf cup and the strike mark, are stepped over, note 33); a creature,
+// the partner, a pod, a fruit and a tuft move or are taken in the walk
+const FLOOD = `const OPEN = { N: 'down', S: 'up', W: 'right', E: 'left' }, D4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  const reachOf = (lay, key) => {
     const solid = (x, y) => T_BLOCK[lay.tiles[y * lay.w + x]] || (() => { const f = featAt(lay, key, x, y); return !!f && !SMALL_FEAT.includes(f.kind); })();
     const reached = new Uint8Array(lay.w * lay.h), ways = (lay.openings || []).filter(o => openingKind(lay, o).kind !== 'closed');
     const starts = [entryPoint(lay, key, undefined), ...ways.map(o => entryPoint(lay, key, OPEN[o.side]))];
@@ -41,7 +32,41 @@ const SCAN = `(() => {
     for (const e of starts) if (e && e.x >= 0 && e.y >= 0 && e.x < lay.w && e.y < lay.h && !reached[e.y * lay.w + e.x] && !(solid(e.x, e.y))) { reached[e.y * lay.w + e.x] = 1; q.push([e.x, e.y]); }
     for (let k = 0; k < q.length; k++) { const [cx, cy] = q[k];
       for (const [dx, dy] of D4) { const X = cx + dx, Y = cy + dy, i = Y * lay.w + X; if (X < 0 || Y < 0 || X >= lay.w || Y >= lay.h || reached[i] || solid(X, Y)) continue; reached[i] = 1; q.push([X, Y]); } }
-    const at = (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && reached[y * lay.w + x];
+    return { solid, at: (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && !!reached[y * lay.w + x] };
+  };`;
+
+// The haunt rows (walk W2, E8): in every place of the scanned region, every haunt site (the page's hauntSitesOf) is reached from the place's ways in (its tile or one beside it) and has a front and a side spot
+// 3 to 5 tiles off that are reached too; and, in the home region, how many Loikas whose three haunts and bed all lie in the first day's reach (the places within 3 cells of the start) there are.
+const HSCAN = `(() => {
+  S.exp.live = {};
+  let places = 0, sites = 0, loikas = 0, firstDay = 0; const fails = [], sp = G.spawns[0], sc = cxy(sp);
+  for (let c = 0; c < MW * MH; c++) {
+    if (!G.comp[c] || G.land[c] === L.WATER || G.island[c] || !passable(c)) continue;
+    places++; const key = String(c), lay = layout(key); ensureLive(key); const S0 = hauntSitesOf(lay), { solid, at } = placeReach(lay, key), stand = (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && at(x, y) && !solid(x, y);
+    for (const s of S0) { sites++;
+      const near = stand(s.x, s.y) || stand(s.x + 1, s.y) || stand(s.x - 1, s.y) || stand(s.x, s.y + 1) || stand(s.x, s.y - 1), spots = hauntSpots(s, stand);
+      if (!near || !spots.front || !spots.side) { fails.push({ cell: c, k: s.k, x: s.x, y: s.y, why: !near ? 'no way from the place\\'s way in reaches the ' + s.k + ' at ' + s.x + ',' + s.y : 'the ' + s.k + ' at ' + s.x + ',' + s.y + ' has no ' + (!spots.front ? 'front' : 'side') + ' spot at 3 to 5 tiles' }); break; } }
+    if (fails.length) break;
+    const cc = cxy(c); if (Math.max(Math.abs(cc.x - sc.x), Math.abs(cc.y - sc.y)) > 3) continue;
+    for (const w of S.cr) { if (w.c !== c || w.sp !== 0) continue; const ind = individualOf(w, lay); if (!ind) continue; loikas++;
+      if (['water', 'grass', 'third', 'bed'].every(k => { const h = ind.hs[k]; return h && (stand(h.x, h.y) || stand(h.x + 1, h.y) || stand(h.x - 1, h.y) || stand(h.x, h.y + 1) || stand(h.x, h.y - 1)); })) firstDay++; }
+  }
+  return { places, sites, loikas, firstDay, fails };
+})`;
+
+// The scan of the mounted region, in the page: every walkable place with something counted to take.
+const SCAN = `(() => {
+  unveiled = () => true;   // every item counts, seen or not: the check is of the land, not of what a Call has shown
+  S.exp.live = {};
+  ${FLOOD}
+  const KINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike'];
+  let places = 0, withItems = 0, items = 0; const fails = [];
+  for (let c = 0; c < MW * MH; c++) {
+    if (!G.comp[c] || G.land[c] === L.WATER || G.island[c] || !passable(c)) continue;
+    places++; const key = String(c), lay = layout(key); ensureLive(key);
+    const its = leftItems(c).filter(i => !i.cave); if (!its.length) continue;
+    withItems++; items += its.length;
+    const { at } = reachOf(lay, key);
     for (const it of its) {
       let why = null;
       if (!KINDS.includes(it.k)) why = 'a counted kind the page does not take: ' + it.k;
@@ -70,7 +95,17 @@ export function checkSeed(seed, { regions = 5, trip: playTrip = true } = {}) {  
     if (r.fails.length) { reach.fail = { region: id, ...r.fails[0] }; break; }   // the first failing region ends the seed's scan
   }
   row.reach = reach;
-  row.ok = row.trip.ok && !reach.fail;
+  // the haunt rows (walk W2, E8): every haunt site reached with a front and a side spot, and a Loika with all three haunts in the first day's reach
+  const haunts = { regions: [], fail: null, loikas: 0, firstDay: 0 };
+  if (!reach.fail) for (const id of ids) {
+    const r = p.run(`inRegion(${JSON.stringify(id)}, ${HSCAN})`);
+    haunts.regions.push({ id, places: r.places, sites: r.sites });
+    if (id === "g1") { haunts.loikas = r.loikas; haunts.firstDay = r.firstDay; }
+    if (r.fails.length) { haunts.fail = { region: id, ...r.fails[0] }; break; }
+  }
+  if (!haunts.fail && !reach.fail && !haunts.firstDay) haunts.fail = { region: "g1", why: `no Loika has its three haunts and its bed in the first day's reach (${haunts.loikas} Loikas within 3 places of the start)` };
+  row.haunts = haunts;
+  row.ok = row.trip.ok && !reach.fail && !haunts.fail;
   return row;
 }
 
@@ -89,7 +124,7 @@ if (import.meta.url === new URL(process.argv[1], "file:").href) {
     const srcs = a.slice(a.indexOf("--list") + 1).flatMap((f) => statSync(f).isDirectory() ? readdirSync(f).filter((n) => /^seed-\d+\.json$/.test(n)).map((n) => join(f, n)) : [f]);
     const rows = srcs.flatMap((f) => [].concat(JSON.parse(readFileSync(f, "utf8")))).sort((x, y) => x.seed - y.seed);
     const ok = rows.filter((r) => r.ok), bad = rows.filter((r) => !r.ok);
-    for (const r of bad) console.log(`seed ${r.seed}: ` + [!r.trip.ok ? "first trip: " + r.trip.why : "", r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : ""].filter(Boolean).join(" | "));
+    for (const r of bad) console.log(`seed ${r.seed}: ` + [!r.trip.ok ? "first trip: " + r.trip.why : "", r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : "", r.haunts && r.haunts.fail ? `haunts, region ${r.haunts.fail.region} place ${r.haunts.fail.cell}: ${r.haunts.fail.why}` : ""].filter(Boolean).join(" | "));
     writeFileSync(LIST_FILE, listText(ok.map((r) => r.seed), rows[0].seed, rows[rows.length - 1].seed));
     console.log(`${ok.length} of ${rows.length} seeds pass; list written to src/playtest-seeds.mjs`);
   } else {
@@ -104,7 +139,7 @@ if (import.meta.url === new URL(process.argv[1], "file:").href) {
       if (file && existsSync(file)) continue;
       if (Date.now() >= stopAt) { console.log(`stopped at the time limit before seed ${s}`); break; }
       const t0 = Date.now(), r = checkSeed(s, { regions: +arg("regions", 5), trip: !a.includes("--no-trip") });
-      console.log(`seed ${s}: ${r.ok ? "ok" : "FAIL"} (${Math.round((Date.now() - t0) / 1000)} s) ${r.trip.ok ? "" : "trip: " + r.trip.why + " "}${r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : ""}`);
+      console.log(`seed ${s}: ${r.ok ? "ok" : "FAIL"} (${Math.round((Date.now() - t0) / 1000)} s) ${r.trip.ok ? "" : "trip: " + r.trip.why + " "}${r.reach.fail ? `region ${r.reach.fail.region} place ${r.reach.fail.cell}: ${r.reach.fail.why}` : ""}${r.haunts.fail ? `haunts, region ${r.haunts.fail.region} place ${r.haunts.fail.cell}: ${r.haunts.fail.why}` : ` haunts: ${r.haunts.regions.reduce((n, g) => n + g.sites, 0)} sites, ${r.haunts.firstDay} of ${r.haunts.loikas} Loikas in the first day's reach`}`);
       if (file) writeFileSync(file, JSON.stringify(r));
     }
   }
