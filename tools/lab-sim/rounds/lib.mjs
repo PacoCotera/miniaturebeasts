@@ -148,10 +148,10 @@ export const SCORES = {
   // TELLS: pairs for what the young will tell about the parents' copies (the spread of the printed odds), then for the aim
   // (the chance the young is fixed on each trait, and on all together); the aim leads, the tell breaks ties.
   TELLS: (F, p, aim) => {
-    const pf = p.od.map((o) => o.pf), all = pf.reduce((x, y) => x * y, 1);
+    const pf = p.od.map((o) => o.pf), all = pf.reduce((x, y) => x * y, 1), n = p.od.length;
     const tell = p.od.reduce((s, o) => s + entropy([o.pf, 1 - o.pf]), 0);
-    const ec = p.od.reduce((s, o) => s + o.ec / 2, 0);   // the printed odds' expected aim copies: a pair that carries the aim but cannot yet fix it still beats one that carries none
-    return pf.reduce((x, y) => x + y, 0) + 2 * all + 0.15 * ec + 0.01 * tell + vigourOfF(p.k);   // tells-bot-kin-1: the household's kin/vigour term (1 - 1.6F, floor 0.5), added unweighted
+    // tells-bot-min-1 (tells-trace-1 section 3): the pair is read by its weaker trait; the two sums over the traits become n x the minimum, every weight and other term unchanged.
+    return n * Math.min(...pf) + 2 * all + 0.15 * n * Math.min(...p.od.map((o) => o.ec / 2)) + 0.01 * tell + vigourOfF(p.k);   // vigourOfF: tells-bot-kin-1's kin/vigour term, unweighted
   },
 };
 // The oracle's value of a move (L2): expected progress of its young per minute of the pod (vigour counted).
