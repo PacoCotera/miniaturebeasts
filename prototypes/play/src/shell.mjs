@@ -70,7 +70,7 @@ let pressed = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
 const SITE = import.meta.env?.PROD ? "/play/" : "../";   // the built game lives under /play/ (its folders: ui/, station/, exploration/); the source tree has them beside play/
 // the Options row "Lab bench (Loikas only)" puts the grey lab bench (prototypes/lab) in the Station's frame
-const stationUrl = SITE + (OPT.lab ? "lab/" : "station/") + "?embed" + (TEST ? "&test" : ""), companionUrl =SITE + "exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "");
+const stationUrl = SITE + (OPT.lab ? "lab/" : "station/") + "?embed" + (TEST ? "&test" : ""), companionUrl =SITE + "exploration/?embed" + (cslot === "A" && SEED != null ? "&seed=" + encodeURIComponent(SEED) : "") + (params.has("g1") ? "&g1=" + encodeURIComponent(params.get("g1") || "1") : "");   // G1's test place (the watch in one place): a test-harness flag, never reached in normal play
 
 // ---- the keys (drawn keys press exactly as the keyboard does) ----
 // The trays are React + Radix (options/src/keytray.jsx); the geometry is keyplan.mjs (one measure a: laptops 44, phones the largest step that fits). A key press is a keydown on the device's frame, its release a keyup.
