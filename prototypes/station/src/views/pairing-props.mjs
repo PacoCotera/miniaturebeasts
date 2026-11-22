@@ -5,6 +5,8 @@ import * as S from "../state.mjs";
 import * as N from "../nursery.mjs";
 import { frameOf } from "../genome.mjs";
 import { faceOf } from "./page-props.mjs";
+import { coatOf, coatMaster, placedAt, MARKED_PICTURE } from "../stands.mjs";
+import { drawnLooks } from "../looks.mjs";
 import { readout } from "../pairing-model.mjs";
 import { fill } from "./words.mjs";
 
@@ -14,49 +16,71 @@ const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h
 // The partners the pad walks (the mibi's own pairable ones: at home, not family), in the Cross room's order.
 export const partnersOf = (st, sv, a, settings) => S.crossPartners(st, sv, a, settings).filter((p) => !p.away && !p.family).map((p) => p.id);
 
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+// What a pick or an example young stands as (station step 8-5): the game's signed per-coat stand (mibi-adult-S01-<tint>-<shade>[-lay-<marking>]-96x88), by its genome with every chapter shown (the screen is about what the
+// coat would look like, read or not); a kind with no such stand shows its face disc (the id is then the face, `disc` true) and is listed in `noStand` for the report.
+const looksOf = (fr, mb) => drawnLooks(fr, { genome: mb.genome, read: fr.chapters.map((c) => c.id) });
+export function standOf(sp, mb, fr) {
+  const looks = looksOf(fr, mb), id = coatMaster(`mibi-adult-${sp}-96x88`, sp, coatOf(sp, looks));
+  return placedAt(id, 96, 88) ? { id, disc: false, looks } : { id: faceOf(sp, mb, fr), disc: true, looks };
+}
+
 export function pairView(view, m, spec, req) {
   const { st, sv, settings, ui } = m, now = m.now || Date.now(), Z = spec.regions.page.pair, Sg = spec.strings.pairing, texts = [], x = ui.pair ?? {};
   const a = S.mibiById(st, x.aId); if (!a) return null;
   const partners = partnersOf(st, sv, a, settings), b = partners.includes(x.bId) ? S.mibiById(st, x.bId) : null;
   const R = readout(st, sv, spec, a, b, settings, now), text = (tx, X, base, role, align = "l", w) => { if (tx) texts.push({ text: tx, x: Math.round(X), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
-  const fr = frameOf(S.speciesOf(a)), W = spec.regions.page.rect[2], F = Z.faces;
+  const sp = S.speciesOf(a), fr = frameOf(sp), W = spec.regions.page.rect[2], T = Z.stand, noStand = [];
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role);
-  const faces = [{ id: faceOf(S.speciesOf(a), a, fr), x: F.ax, y: F.y, d: F.d }], names = [], pw = 120;
-  const side = (mb, f, fx) => { if (!mb) return; const px = fx + Math.round((F.d - pw) / 2), py = F.y + F.d + Z.name.dy - Z.name.h; names.push([px, py, pw, Z.name.h, Z.name.radius]);
-    text((mb === b && partners.length > 1 ? "◀ " : "") + S.cap(mb.name) + (mb === b && partners.length > 1 ? " ▶" : ""), px, Z.name.baseline, Z.name.role, "c", pw);   // the second pick wears ◀ ▶: the pad changes it
-    if (f.rest) text(f.rest, px, Z.rest.baseline, Z.rest.role, "c", pw);   // "resting · n min" on the face, with its time
-    f.counts.forEach((c, i) => text(`${i ? "eyes" : "marking"} ${c}`, px - 15, Z.copies.baseline + (f.rest ? 0 : -14) + i * Z.copies.pitch, Z.copies.role, "c", pw + 30)); };   // one line a trait, under the name
-  side(a, R.a, F.ax);
-  if (b) { faces.push({ id: faceOf(S.speciesOf(b), b, fr), x: F.bx, y: F.y, d: F.d }); side(b, R.b, F.bx); }
+  const stands = [], names = [], N = Z.name;
+  const side = (mb, f, fx) => { if (!mb) return; const st1 = standOf(sp, mb, fr); if (st1.disc) noStand.push(mb.id);
+    stands.push({ id: st1.id, disc: st1.disc, x: fx, y: T.y, w: T.w, h: T.h, tag: null }); names.push([fx, N.baseline - N.up, N.w, N.h, N.radius]);
+    text((mb === b && partners.length > 1 ? "◀ " : "") + S.cap(mb.name) + (mb === b && partners.length > 1 ? " ▶" : ""), fx, N.baseline, N.role, "c", N.w);
+    if (f.rest) text(f.rest, fx, Z.rest.baseline, Z.rest.role, "c", N.w);   // "resting · n min" under the name, with its time
+    f.counts.forEach((c, i) => text(`${i ? "eyes" : "marking"} ${c}`, fx - 15, Z.copies.baseline + (f.rest ? Z.copies.pitch : 0) + i * Z.copies.pitch, Z.copies.role, "c", N.w + 30)); };   // one line a trait, under the name
+  side(a, R.a, T.ax);
+  if (b) side(b, R.b, T.bx);
   text(Sg.plus, Z.plus.cx, Z.plus.baseline, Z.plus.role, "c", 40);
   const kinHead = b ? (R.raw ? S.kinshipWord(S.kinshipOf(st, a, b)) : "") : "";
   if (b && kinHead) text(kinHead, Z.kin.cx - Z.kin.w / 2, Z.kin.baseline, Z.kin.role, "c", Z.kin.w);
-  // the four examples and where the young can land (green): the words the examples show, the ones new to you tagged
-  const young = [], words = [];
+  // the four examples (standing, grown, the ones new to you tagged), and where the young can land: the tint and shade bars with the parents' marks, the marking cards with their new tags (green)
+  const bars = [], cards = [];
   if (b) {
-    const ex = S.exampleYoung(st, a, b), Y = Z.young;
-    ex.forEach((q, i) => { const tag = N.knownWords(q, 4).some((w) => N.newToYou(st, q, w)); young.push({ id: faceOf(S.speciesOf(a), q, fr), x: Y.xs[i], y: Y.y, d: Y.d, tag: tag ? [Y.xs[i] + Math.round((Y.d - Y.tag.w) / 2), Y.y + Y.tag.dy, Y.tag.w, Y.tag.h] : null });
-      if (tag) text(spec.strings.nursery.newToYou, Y.xs[i] + Math.round((Y.d - Y.tag.w) / 2), Y.y + Y.tag.dy + Y.tag.baseline, Y.tag.role, "c", Y.tag.w);
-      for (const w of N.knownWords(q, 4)) if (!words.includes(w.word)) words.push(w.word); });
+    const ex = S.exampleYoung(st, a, b), Y = Z.young, Ld = Z.land, B = Ld.bar, Cd = Ld.cards;
+    ex.forEach((q, i) => { const tg = N_know(q, st), s1 = standOf(sp, q, fr); if (s1.disc) noStand.push("example " + (i + 1));
+      const X0 = Y.xs[i], tagBox = tg ? [X0 + Math.round((Y.w - Y.tag.w) / 2), Y.y + Y.tag.dy, Y.tag.w, Y.tag.h] : null;
+      stands.push({ id: s1.id, disc: s1.disc, x: X0, y: Y.y, w: Y.w, h: Y.h, tag: tagBox });
+      if (tg) text(spec.strings.nursery.newToYou, tagBox[0], tagBox[1] + Y.tag.baseline, Y.tag.role, "c", Y.tag.w); });
     text(Sg.young, Y.head.x, Y.head.baseline, Y.head.role);
-    text(Sg.land, Z.land.head.x, Z.land.head.baseline, Z.land.head.role);
-    text(words.slice(0, Z.land.words.max).join(" · "), Z.land.words.x, Z.land.words.baseline, Z.land.words.role);
+    text(Sg.land, Ld.head.x, Ld.head.baseline, Ld.head.role);
+    const pos = (v) => B.x + clamp(v, 0, 1) * B.w, faceA = faceOf(sp, a, fr), faceB = faceOf(sp, b, fr);
+    B.rows.forEach((row) => { const L = R.land?.[row.label]; if (!L) return;
+      bars.push({ x: B.x, y: row.cy - Math.round(B.h / 2), w: B.w, h: B.h, range: [Math.round(pos(L.range[0])), Math.round(pos(L.range[1]))], marks: [{ id: faceA, cx: Math.round(pos(L.parents[0])) }, { id: faceB, cx: Math.round(pos(L.parents[1])) }], d: B.mark });
+      text(Sg[row.label], B.labelX, row.cy + B.labelBase, B.labelRole); text(Sg[row.label + "Ends"], B.endsX, row.cy + B.endsBase, B.endsRole); });
+    const sa = standOf(sp, a, fr).looks.markings ?? "plain", sb = standOf(sp, b, fr).looks.markings ?? "plain", can = new Map(R.markings.map((q) => [q.word, q]));
+    const coat = "mibi-adult-" + sp + "-between-between", ids = ["plain", ...Object.keys(MARKED_PICTURE)].map((w) => [w, w === "plain" ? `${coat}-48x48` : `${coat}-${MARKED_PICTURE[w]}-48x48`]).filter(([, id]) => placedAt(id, 48, 48));
+    if (ids.length) { text(Sg.markings, Cd.labelX, Cd.labelBase, Cd.labelRole);
+      ids.forEach(([w, id], i) => { const cx = Cd.x0 + i * Cd.pitch, c = can.get(w), tagBox = c?.isNew ? [cx + Math.round((Cd.d - Cd.tag.w) / 2), Cd.y + Cd.tag.dy, Cd.tag.w, Cd.tag.h] : null;
+        cards.push({ id, x: cx, y: Cd.y, d: Cd.d, dim: !c, marks: [sa === w ? faceA : null, sb === w ? faceB : null].filter(Boolean), mark: Cd.mark, tag: tagBox });
+        text(w, cx - 6, Cd.nameBase, c ? Cd.nameRole : "glass.quiet", "c", Cd.d + 12);
+        if (tagBox) text(Sg.newMark, tagBox[0], tagBox[1] + Cd.tag.base, Cd.tag.role, "c", Cd.tag.w); }); }
   }
   // the readout on the aim: the aim (two traits), each pick's copies sit by its face; the pair's chances per trait and both; then the kin and vigour line and the pod's time
   const A = Z.aim;
-  if (R.aim.length) { text(Sg.aimHead, A.head.x, A.head.baseline, A.head.role); R.aim.forEach((w, i) => text(w, A.lines.x, A.lines.top + i * A.lines.pitch, A.lines.role));
-    text(Sg.markingSlot, A.lines.x, A.lines.top + R.aim.length * A.lines.pitch, A.head.role); }   // the marking has no signed picture on the Loika yet: a named empty slot, nothing drawn in code
+  if (R.aim.length) { text(Sg.aimHead, A.head.x, A.head.baseline, A.head.role); R.aim.forEach((w, i) => text(w, A.lines.x, A.lines.top + i * A.lines.pitch, A.lines.role)); }
   else text(R.noAim, A.head.x, A.head.baseline, A.head.role);
-  if (b && R.chances.length) { text(Sg.chanceHead, A.head.x + 250, A.head.baseline, A.head.role); [R.both, ...R.chances].forEach((w, i) => text(w, A.head.x + 250, A.lines.top + i * A.lines.pitch, A.lines.role)); }
+  if (b && R.chances.length) { text(Sg.chanceHead, A.chanceX, A.head.baseline, A.head.role); [R.both, ...R.chances].forEach((w, i) => text(w, A.chanceX, A.lines.top + i * A.lines.pitch, A.lines.role)); }
   if (b) { text(R.kin, Z.kinLine.x, Z.kinLine.baseline, Z.kinLine.role); text(R.pod, Z.kinLine.x, Z.kinLine.baseline + Z.kinLine.pitch, Z.kinLine.role); }
   const block = b ? S.pairBlock(st, sv, a, b, settings) : "", can = !!b && !block;
   if (R.done) text(R.done, Z.done.x, Z.done.baseline, Z.done.role);
   else if (can) text(Sg.pairThem, Z.ok.right, Z.ok.baseline, Z.ok.role, "r");
-  const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], faces, names, young, land: null, ok: can ? Z.ok.key : null };
+  const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], stands, names, bars, cards, ok: can ? Z.ok.key : null };
   const stage = req({ kind: "pairing", id: `pairing:${hash(JSON.stringify(pic))}`, ...pic });
   view.page = { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
   view.line = { ok: can ? Sg.pairThem : null, back: S.cap(a.name), subject: b && R.a.resting ? R.a.rest : "", need: block ? S.cap(block) : !b ? (partners.length ? "" : spec.strings.nursery.empty) : "" };
   view.targets = [{ id: "rail.0", group: "rail", index: 0 }]; view.cur = "rail.0"; view.resolve = {}; view.first = 0;
-  view.pairing = { aId: a.id, bId: b?.id ?? null, partners, can, block, readout: R, W };
+  view.pairing = { aId: a.id, bId: b?.id ?? null, partners, can, block, readout: R, W, noStand };
   return view;
 }
+// an example young is "new to you" when one of its words shows on none of your mibis of the kind
+const N_know = (q, st) => N.knownWords(q, 4).some((w) => N.newToYou(st, q, w));

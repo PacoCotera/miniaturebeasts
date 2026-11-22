@@ -46,6 +46,17 @@ test("the pair view: one stage picture and the words over it; the second pick sh
   assert.ok(both >= 0 && each >= 0 && both < each, "the both-together chance comes first (lead 13:38)");
 });
 
+test("round 2: standing picks and young, the tint and shade bars with the parents' marks, marking cards, the aim in the looks' own words", () => {
+  const { st, a, ps } = world(31), ui = { view: "pair", pair: { aId: a.id, bId: ps[0] } };
+  const v = podsBuild(model(st, ui), pods), req = v.requests.find((r) => r.kind === "pairing"), t = v.page.scale.texts.map((x) => x.text);
+  assert.equal(req.stands.length, 6, "two parents and four young, each a stand"); assert.equal(req.names.length, 2);
+  for (const n of req.names) { const base = v.page.scale.texts.find((x) => x.role === pods.regions.page.pair.name.role && x.base > n[1] && x.base < n[1] + n[3]); assert.ok(base, "a name sits inside its pill"); }
+  assert.ok(req.bars.length >= 1 && req.bars.every((b) => b.marks.length === 2 && b.range[0] <= b.range[1]), "a bar a blend, the parents' two marks");
+  assert.ok(v.pairing.readout.markings.length >= 1);
+  assert.ok(!t.some((x) => /step \d of \d|the on marking/.test(x)), "no raw words: " + t.join(" | "));
+  assert.ok(t.some((x) => /^the \w+ marking$/.test(x)) && t.some((x) => /^eyes: .+/.test(x)), "the marking's name and the eyes' word");
+});
+
 test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and opens the nursery; ← goes to the mibi", () => {
   const { st, a, ps } = world(41), ui = { pods: {}, hab: { id: null }, screen: "habitat" }, { h, said } = fake(st, ui);
   openPair(h, a); assert.equal(ui.pods.view, "pair"); assert.equal(ui.pods.pair.bId, ps[0]); assert.equal(ui.screen, "pods");

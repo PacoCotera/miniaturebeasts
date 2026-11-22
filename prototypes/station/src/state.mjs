@@ -1383,6 +1383,13 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
 // the vivarium or a busy incubator: the pod is in neither). Grow it (growPod) takes it from there. The pod keeps its parents' snapshots, their kinship and the draw's `rest` for the page.
 export function pairBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) { const r = crossBlock(st, sv, a, b, settings); return r === "the incubator is busy" || r === "the Vivarium is full" ? "" : r; }
 // Four examples of the young a pair could have (picture 6): the same draw as Pair them, from a stream seeded by the two ids, so the four stay while the picks stay. Genomes only; nothing is kept or spent.
+// Where a pair's young can land on the coat's two blends (station step 8-5): the engine's own range and the parents' values, 0 to 1 along the catalogue; null where the kind has no such trait. Not read-gated (the pairing screen shows it).
+export function landOf(st, a, b) {
+  const fr = frameFor(a); if (!fr) return null;
+  const full = crossForecast(fr, a, b, { kinship: kinshipOf(st, a, b), lookup: genomeLookup(st) });
+  const pick = (id) => { const t = full.traits.find((q) => q.trait === id); return t && t.kind === "blend" && t.range && t.parents ? { range: t.range, parents: t.parents } : null; };
+  return { tint: pick("body-hue"), shade: pick("body-value") };
+}
 export function exampleYoung(st, a, b, n = 4) {
   const fr = frameFor(a), k = kinshipOf(st, a, b); let h = 2166136261;
   for (const ch of a.id + "|" + b.id) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }

@@ -66,18 +66,38 @@ export function nurseryPicture(r) {
   return out.rgba();
 }
 
-// The pairing screen's stage (station step 8-3; the accepted walk-4 picture 6): the two picks' faces, a name pill under each, the four examples (faces, a gold "new to you" tag) and Pair them's key. The words
-// come over it from the props. The art is the game's own faces, only placed; the pills and the key are interface drawn by code.
-//   pairing: { size, faces: [{ id, x, y, d }], names: [[x, y, w, h, radius]], young: [{ id, x, y, d, tag: [x, y, w, h] | null }], land: [x, y, w, h, radius] | null, ok: [x, y, w, h] | null }
+// The pairing screen's stage (station step 8-5, round 2; the accepted walk-4 picture 6): the two picks and the four example young STANDING (the game's signed per-coat stands, placed; a kind with no stand shows its
+// face disc), a name pill under each parent, the gold "new to you" tags, where the young can land (a bar a blend with the green range and the parents' marks; a card a marking, the ones a young cannot wear dimmed, the
+// parents' marks on the ones they wear, a gold "new" tag) and Pair them's key. The words come over it from the props. The art is the game's own, only placed; the pills, bars, cards and the key are interface drawn by code.
+//   pairing: { size, stands: [{ id, x, y, w, h, disc, tag: [x, y, w, h] | null }], names: [[x, y, w, h, radius]], bars: [{ x, y, w, h, range: [x0, x1] | null, marks: [{ id, cx }], d }],
+//              cards: [{ id, x, y, d, dim, marks: [id], tag: [x, y, w, h] | null, mark: d }], ok: [x, y, w, h] | null }
+function standing(out, s) {
+  if (s.disc) { face(out, { id: s.id, x: s.x + Math.round((s.w - s.h) / 2), y: s.y, d: s.h }); return; }
+  const px = pixels(s.id);
+  if (px) { paintPage(out, s.x + 6, s.y + s.h - 9, s.x + s.w - 6, s.y + s.h + 3, (x, y) => { const t = Math.hypot((x - (s.x + s.w / 2)) / (s.w * 0.4), (y - (s.y + s.h - 3)) / 6); return t < 1 ? [[0.03, 0.03, 0.04], 0.4 * (1 - t) * (1 - t)] : null; });   // a soft shadow under the feet
+    sprite(out, px, s.sw ?? 96, s.sh ?? 88, s.x, s.y, s.w); }
+}
+function tag(out, [x, y, w, h]) { paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [PAGE_GOLD, clamp01(0.5 - rrectSd(px, py, x, y, w, h, h / 2))]); }
 export function pairingPicture(r) {
   const [W, H] = r.size, out = new Pane(W, H);
   backdrop(out, 300);
   paintPage(out, 0, 0, W, 76, (x, y) => [INK, 0.5 * (1 - y / 76)]);
-  paintPage(out, 0, 244, W, H, (x, y) => [INK, clamp01((y - 244) / 40) * 0.97]);
-  for (const f of r.faces) face(out, f);
+  paintPage(out, 0, 200, W, H, (x, y) => [INK, clamp01((y - 200) / 40) * 0.97]);
+  for (const s of r.stands) { standing(out, s); if (s.tag) tag(out, s.tag); }
   for (const n of r.names) pill(out, n);
-  for (const y of r.young) { face(out, y); if (y.tag) { const [x, ty, tw, th] = y.tag; paintPage(out, x - 1, ty - 1, x + tw + 1, ty + th + 1, (px, py) => [PAGE_GOLD, clamp01(0.5 - rrectSd(px, py, x, ty, tw, th, th / 2))]); } }
-  if (r.land) { const [x, y, w, h, rad] = r.land; paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, rad); return sd > 0.5 ? null : [[0.45, 0.8, 0.5], clamp01(0.5 - sd)]; }); }
+  for (const b of r.bars) {
+    paintPage(out, b.x - 1, b.y - 1, b.x + b.w + 1, b.y + b.h + 1, (px, py) => [[1, 1, 1], 0.14 * clamp01(0.5 - rrectSd(px, py, b.x, b.y, b.w, b.h, b.h / 2))]);
+    if (b.range) { const [x0, x1] = b.range; paintPage(out, x0 - 1, b.y - 1, x1 + 1, b.y + b.h + 1, (px, py) => [[0.45, 0.8, 0.5], 0.85 * clamp01(0.5 - rrectSd(px, py, x0, b.y, Math.max(2, x1 - x0), b.h, b.h / 2))]); }
+    for (const m of b.marks) face(out, { id: m.id, x: Math.round(m.cx - b.d / 2), y: Math.round(b.y + b.h / 2 - b.d / 2), d: b.d });
+  }
+  for (const c of r.cards) {
+    const dim = c.dim ? 0.35 : 1, x = c.x, y = c.y, d = c.d;
+    paintPage(out, x - 1, y - 1, x + d + 1, y + d + 1, (px, py) => [[1, 1, 1], (c.dim ? 0.05 : 0.12) * clamp01(0.5 - rrectSd(px, py, x, y, d, d, 8))]);
+    if (!c.dim) ring(out, [x, y, d, d, 8], 2, [0.45, 0.8, 0.5]);
+    const px = pixels(c.id); if (px) sprite(out, px, 48, 48, x + Math.round((d - 40) / 2), y + Math.round((d - 40) / 2), 40, { clip: () => dim });
+    c.marks.forEach((id, i) => face(out, { id, x: x + d - 12 - i * 12, y: y - 7, d: c.mark }));
+    if (c.tag) tag(out, c.tag);
+  }
   keys(out, { pad: null, ok: r.ok });
   return out.rgba();
 }
