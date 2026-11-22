@@ -7,7 +7,7 @@
 
 import { faceOf, rasterFace, createScheduler, lampAt, LAMPS, STATION_LAMPS, REGIONS } from "../../caddy/face.mjs";   // the Caddy's face, shared with the service's tests and renders
 import { baseK, clampZ, Z_MAX } from "./fit.mjs";   // the size control's bounds: z device px per lp
-import { plan as layoutPlan, barPlan, panFor, dockSheet, zCap, form as formOf, BAR } from "./layout.mjs";   // the page's layout: one device in view, its panel centred (pure; tests/layout.test.mjs)
+import { plan as layoutPlan, barPlan, panFor, focusStep, dockSheet, zCap, form as formOf, BAR } from "./layout.mjs";   // the page's layout: one device in view, its panel centred (pure; tests/layout.test.mjs)
 import { padDir, dockWords, KEYBOARD } from "./keyplan.mjs";   // the key trays' geometry: one measure, one family at every size
 import { stampText, aboutText } from "./stamp.mjs";   // the build stamp's line, in Mexico City time
 import { readOptions, writeOptions, OPTIONS_KEY } from "./options.mjs";
@@ -174,7 +174,7 @@ const CTL_LINE = 44;
 // ---- the Station's phone window (layout.mjs ZOOM, view, panFor) ----
 // Where the whole screen would be under x0.6 the Station is drawn at x0.6 in a window (plan.view, in lp) that keeps the focus ring's target whole (the Station posts the ring's box, "mb-focus").
 // The frame is moved under a clip-path that moves with it, both eased over the same time, so the window stays put while the screen slides under it; reduced motion jumps.
-let pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null };
+let pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null }, focusSt = { screen: null, settling: false };
 function placeStation(p) {
   const el = frames.station, xc = p.screen.x - p.panel.x, yc = p.screen.y - p.panel.y;
   el.classList.toggle("pan", !!p.view);
@@ -193,8 +193,9 @@ function tellNarrow(force = false) {
   try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
 }
 function stationFocus(m) {
-  const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null, moved = m.screen !== focusNow.screen;
-  if (moved && !box) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
+  const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null;
+  const r = focusStep(focusSt, m.screen, box); focusSt = r.st;
+  if (r.top) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
   focusNow = { screen: m.screen, box };
   const p = PLAN.station; if (p && p.view) placeStation(p);
 }

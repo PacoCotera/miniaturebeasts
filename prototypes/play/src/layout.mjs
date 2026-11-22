@@ -30,6 +30,13 @@ export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
   return { x: axis(at.x, box[0], box[2], view.w, face[0]), y: axis(at.y, box[1], box[3], view.h, face[1]) };
 }
 
+// One focus message (the screen shown, its ring box or null) against what was last heard, st {screen, settling}: top = the window goes to the screen's top left (a new screen with no ring on it).
+// A new screen's first message can still carry the ring box of the screen before it (the face has not drawn the new one yet), so the empty box that follows is also an arrival: a screen's first two messages count.
+export function focusStep(st, screen, box) {
+  const moved = screen !== st.screen;
+  return { st: { screen, settling: moved }, top: (moved || st.settling) && !box };
+}
+
 // 'up' a phone held upright, 'side' a phone on its side, 'laptop' everything else
 // A coarse pointer on a small screen is a phone. Any other pointer gets the laptop form only where it fits: the Companion at ×1 under the laptop plan, and the bar's controls in one row, apart. Otherwise the phone form for the orientation.
 export function laptopFits(W, H) {
