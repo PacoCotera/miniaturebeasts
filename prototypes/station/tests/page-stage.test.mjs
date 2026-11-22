@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { pageStagePicture } from "../src/reading-pictures.mjs";
+import { pageStagePicture, pageScalePicture } from "../src/reading-pictures.mjs";
 import { cellX } from "../src/views/page-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8")), R = spec.regions.page, C = R.rail.cell;
@@ -33,4 +33,12 @@ test("the rail: six cells space-between, the frame on the chapter in hand only, 
     cells(hand).forEach((c, i) => { const edge = at(px, W, c.x + C.frame.dx + 1, frameY); assert.equal(orange(edge), i === hand, `cell ${i}: frame ${i === hand ? "on" : "off"} when the hand is ${hand}`); }); }
   const px = pageStagePicture(req()), top = at(px, W, 5, R.rail.rect[1] - 2), low = at(px, W, 5, H - 2); assert.ok(low[0] < 30 && low[2] < 40, "the foot of the band is ink");
   const ring = at(px, W, xs[1] + C.w / 2 + 22, R.rail.rect[1] + C.ringCy), plain = at(pageStagePicture(req({ rail: null })), W, xs[1] + C.w / 2 + 22, R.rail.rect[1] + C.ringCy); assert.notDeepEqual(ring, plain, "a ring is drawn in the cell"); void top;
+});
+// Her chapter (station-match-5): the scale picture is one opaque picture of the window's size from the game's masters; the gold rim is at the chapter's place, her mark is on the bar, a set has no bar.
+const scaleReq = (over = {}) => ({ species: "S01", size: R.rect.slice(2), dusk: false, copies: false, body: { left: 6, top: -176, w: 608 }, lens: { cx: 330, cy: 206, d: 108, zoomW: 760, fx: 0.533, fy: 0.612 }, halves: null, tray: { top: 248, h: 352, fade: 26 }, ring: { cx: 46, cy: 304, s: 52, chapter: "coat", petals: "1,c,1" }, chips: [],
+  sc: { ends: [{ cx: 46, cy: 410, d: 76, master: "mibi-adult-S01-304x312" }], bar: { x0: 46, x1: 484, y: 474, h: 16, over: 10, grad: [[0.1, 0.1, 0.1], [0.3, 0.3, 0.3], [0.5, 0.5, 0.5]], ticks: [46], tick: [469, 474] }, rough: null, she: { x: 77, y: 482, d: 26 }, cop: null, link: null, pins: [], legend: { dot: null, bar: null } }, ...over });
+test("the scale picture: opaque, deterministic, the gold lens rim at the chapter's place, her gold mark on the bar; a set draws no bar", () => {
+  const [W, H] = R.rect.slice(2), a = pageScalePicture(scaleReq()), b = pageScalePicture(scaleReq()); assert.equal(a.length, W * H * 4); for (let i = 3; i < a.length; i += 4 * 997) assert.equal(a[i], 255, "opaque"); assert.deepEqual(a, b);
+  const gold = ([r, g, bl]) => r > 200 && g > 150 && g < 230 && bl < 120; assert.ok(gold(at(a, W, 330, 206 - 52)), "the lens rim in gold at its top"); assert.ok(gold(at(a, W, 77, 482)), "her mark is gold on the bar");
+  const none = pageScalePicture(scaleReq({ sc: { ends: [], bar: null, rough: null, she: null, cop: null, link: null, pins: [], legend: { dot: null, bar: null } } })); assert.notDeepEqual(at(none, W, 200, 482), at(a, W, 200, 482), "no bar on a set");
 });

@@ -733,6 +733,23 @@ The live screen is rebuilt to match its accepted picture (the walkthrough pictur
 
 The face has no 34, 17 or 19 px face: the name is `glass.chapter` (SB28), the origin `glass.caption` (R15), the tag and the hints `glass.name` (M18). The origin line says her kind and, when the save knows it, where she came from (the accepted "from the reeds" has no data behind it). The picture is the region's size (530 × 522), not the chamber's 548 × 356, because the accepted picture covers the whole window; the face word is `word_mibiPage` (`word_page` is the chapter page's).
 
+### Her chapter: the scale (station-match-5; accepted walk-4-scale and walk-4-copies)
+
+✓ on a chapter of her page opens it (`ui.pods.at = "scale"`, the trait in hand `ui.pods.trait`; the first look at a chapter about her body is free); ◂▸ move along the traits, ✓ points the lens at the trait in hand (free, once), ← returns to her page. It is the same `page` state: the stage is the `pagescale` picture and `regions.page.scale.texts` are the words over it (`pods.json` regions.page.scale holds every number; T is the tray's top, 600 − 352, or − 366 after the lens).
+
+| Piece | Window lp | Notes |
+|---|---|---|
+| Close up | her master 608 wide, placed so the chapter's place is at about (330, 206) | the ring: a 108 lens of the same master at 760 wide, 1.3 bright; 4 px gold rim, 30 px glow. The Coat's place is the accepted picture's own (`page.mjs closeOf`), the other chapters' the end of their leader on her page |
+| Tray | T = 248, fade 26, ink 92 % to 97 % | the chapter's ring 52 at (46, T + 56) (a petal a trait: in hand orange, lensed blue), the chapter's name at x 84 (SB28), her name at (22, 44) |
+| Chips | 30 high, 6 apart, right edge 510, centred on T + 56 | Tint, Shade, Markings; the one in hand cream (#f6e7b8) with dark text; widths estimated from the word (46 + 9.2 per letter) |
+| The one line | x 20, baseline T + 104 (R15) | "{Trait} is a scale. A {kind} can be anywhere from {low} to {high}." (one weight: the face has no bold 15) |
+| Round portraits | 76 across at x 46, 265, 484; top T + 122 | the kind's coat at each end and the middle (`trait-crops.mjs` `round`), 2 px cream ring; the end words under the ends (R15) |
+| Bar | x 36 to 494, 16 high at T + 226, ticks at the three portraits | gradient from the kind's coats (`grads`); her gold mark 26 across; the mibis' 34 px faces under it with names; "none of yours here yet" in the widest empty stretch when it is wide enough |
+| Legend | baseline 584 | "where she is" (gold dot), "the two she carries: not known yet" (blue bar) |
+| After the lens | room at dusk, her 456 wide, shade 50 %; a 184 lens at (176, 144): the two copies side by side (redder, yellower), a blue bar between | head "She carries two {traits}", no chips; the two blue marks on the bar with a bracket; legend "A young gets one of her two, and one from its other parent." |
+
+A trait that is a set shows its chip and one plain line until the set slice. A kind with no round portraits shows plain discs. The pod's reading screen keeps its own chapter frames; her page no longer reaches them.
+
 ---
 
 ## Home: the panel and the column

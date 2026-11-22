@@ -28,6 +28,12 @@ void word_mibiPage(void) {
   { v_region("page.ground", LAYER_CHROME); v_rect("page.ground", 0, 0, 1024, 600, v_scol("frame", "colours.stageGround")); }   /* her page is the whole screen: no bar above, no line below */
   /* the stage: one picture, the window's size */
   v_srect(S, R ".stage.rect", r); snprintf(a, sizeof a, "%s", v_pstr(R ".stage")); v_name("page.stage"); v_slot("page.stage", a, NULL, r[0], r[1], r[2], r[3], 1);
+  /* her chapter (the scale): the stage is its picture, the words are the props' list, each placed on its baseline; no name, hints or rail */
+  { int ns = v_plen(R ".scale.texts"); if (ns > 0) { v_region("page.scale", LAYER_TYPE);
+      for (int i = 0; i < ns; i++) { char id[40], role[32], al[8]; int x = v_pint(v_fmt(R ".scale.texts.%d.x", i), 0), w = v_pint(v_fmt(R ".scale.texts.%d.w", i), 0), b = v_pint(v_fmt(R ".scale.texts.%d.base", i), 0);
+        snprintf(t, sizeof t, "%s", v_pstr(v_fmt(R ".scale.texts.%d.text", i))); snprintf(role, sizeof role, "%s", v_pstr(v_fmt(R ".scale.texts.%d.role", i))); snprintf(al, sizeof al, "%s", v_pstr(v_fmt(R ".scale.texts.%d.align", i))); snprintf(id, sizeof id, "page.scale.%d", i);
+        if (!*t) continue; if (al[0] == 'c') v_say_in(id, t, x, w, b, V_ANCHOR_BASE, role, "glass"); else say(id, t, x, b, role, al[0] == 'r' ? V_ALIGN_RIGHT : V_ALIGN_LEFT); }
+      return; } }
   /* her name and where she is from */
   v_region("page.name", LAYER_TYPE);
   snprintf(t, sizeof t, "%s", v_pstr(R ".name")); say("page.name", t, v_si(S, R ".name.x", 52), v_si(S, R ".name.baseline", 44), "glass.chapter", V_ALIGN_LEFT);

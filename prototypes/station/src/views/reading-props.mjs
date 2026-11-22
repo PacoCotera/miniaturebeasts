@@ -66,7 +66,7 @@ const RADII = { 1: [52, 34, 21], 2: [44, 29, 21], 3: [32, 21, 18], 4: [26, 17, 1
 const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id !== p.mibi && x.id !== p.id && S.speciesOf(x) === sid && x.genome && (p.page ? S.pageRead(x) : x.read ?? []).includes(ch.id)).map((x) => x.genome);
 // Her page (station step 2b): a trait about what she does is a stretch of its scale (the wide "roughly known") that narrows with each sighting, a mark once PAGE_SIGHTS pin it down; a set of a doing shows no look until then.
 // The stretch holds where she is, placed by a hash of her and the trait so it is not centred on her; her mark and her two copies are left out while it shows.
-function pageModel(st, fr, t, p, others, blank) {
+export function pageModel(st, fr, t, p, others, blank) {
   if (blank) return shapeModel(fr, t, null, others);   // her page, a chapter not yet looked at: every possibility, nothing of hers
   const m = p.page ? S.mibiById(st, p.mibi) : null, f = m ? S.pageKnown(m, t) : 1;
   if (f >= 1) { const full = shapeModel(fr, t, p.genome, others); return !m || S.pageLensed(m, t) ? full : unlensed(full); }

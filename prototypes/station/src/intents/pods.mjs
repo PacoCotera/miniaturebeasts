@@ -239,10 +239,16 @@ function readIntent(h, target, verb) {
     if (verb === "step:up" || verb === "step:down") { const n = boardPages(frameOf(S.speciesOf(q))).length; p.board.page = clamp((p.board?.page ?? 0) + (verb === "step:down" ? 1 : -1), 0, n - 1); }
     return;
   }
+  if (at === "scale") {   // her chapter (views/page-props.mjs scaleScreen): ◂▸ move along the chapter's traits, ✓ points the lens at the one in hand (free, once: what she carries there shows), ← goes back to her page
+    const n = ch.traits.length, tr = ch.traits[clamp(p.trait ?? 0, 0, n - 1)];
+    if (verb === "back") { p.at = "rail"; p.focus.set("rail"); return; }
+    if (verb === "step:left" || verb === "step:right") { p.trait = clamp((p.trait ?? 0) + (verb === "step:right" ? 1 : -1), 0, n - 1); return; }
+    if (verb === "confirm" && S.pageLens(st, S.mibiById(st, p.page), ch.id, tr.id).ok) h.save();
+    return;
+  }
   if (at === "stamp") { if (verb === "back" || verb === "confirm" || verb === "step:down") foldStamp(h, target); return; }
   if (at === "detail") {
     if (verb === "back") return moveTo(h, () => { p.at = "right"; p.plate = p.trait ?? 0; p.focus.set("plate." + p.plate); });   // B up: the pod level, the ring on the trait's plate
-    if (verb === "confirm" && p.page != null) { if (S.pageLens(st, S.mibiById(st, p.page), ch.id, ch.traits[clamp(p.trait ?? 0, 0, ch.traits.length - 1)].id).ok) h.save(); return; }   // her page: the lens on this trait, free: what she carries there shows
     if (verb === "step:up" || verb === "step:down") { p.trait = clamp((p.trait ?? 0) + (verb === "step:down" ? 1 : -1), 0, ch.traits.length - 1); }   // the chapter's next trait (both cut)
     return;
   }
@@ -262,10 +268,9 @@ function readIntent(h, target, verb) {
   }
   if (verb === "step:up") { if (!st.stampTaught || p.page != null) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
   if (verb !== "confirm" || sealed) return;   // a sealed lane gives no ✓: nothing happens
-  if (!isRead && p.page != null) {   // her page: the first look at a chapter about her body is free and opens it; a chapter about what she does is filled by watching her (a sighting), never by a ✓
-    if (S.isDoingChapter(ch)) return moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("rail"); });   // opens to see its empty scales; it fills only by a sighting
-    if (!S.pageLook(h.st, S.mibiById(h.st, p.page), ch.id).ok) return;
-    h.save(); return moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });
+  if (p.page != null) {   // her page: ✓ opens the chapter (the scale, on the first trait). The first look at a chapter about her body is free; a chapter about what she does is filled by watching her (a sighting), never by a ✓, and opens to see its stretches
+    if (!isRead && !S.isDoingChapter(ch)) { if (!S.pageLook(h.st, S.mibiById(h.st, p.page), ch.id).ok) return; h.save(); }
+    p.at = "scale"; p.trait = 0; p.focus.set("rail"); return;
   }
   if (!isRead) return openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)
   moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });   // the chapter opens: the ring crosses to the right frame (Face dithers to the close place)
