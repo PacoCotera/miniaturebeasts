@@ -579,7 +579,9 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
   let r = await hp("habitat", 500); expect(r.u.screen === "vivarium" && r.p.focus.cur === "cell." + child.id, "vivarium-card: the Vivarium key opens the Wall with the ring on the mibi last seen up close: " + JSON.stringify([r.u.screen, r.p.focus.cur]));
   r = await hp("confirm", 300);   // ✓ on a portrait opens its card on the first live plate (Look), in one press
   expect(r.p.focus.cur === "plate.0" && r.p.regions.card.id === String(child.id) && /^Look at /.test(r.p.frame.line.ok ?? ""), "vivarium-card: ✓ to its card's Look plate: " + JSON.stringify([r.p.focus.cur, r.p.regions.card.id, r.p.frame.line.ok]));
-  r = await hp("confirm", 700); expect(r.u.screen === "habitat" && r.p.state === "rest" && r.p.focus.cur === "resident" && r.u.habId === child.id, "vivarium-card: ✓ Look looks at it up close: " + JSON.stringify([r.u.screen, r.p.state, r.p.focus.cur]));
+  r = await hp("confirm", 700); expect(r.u.screen === "pods" && r.p.state === "page" && r.u.habId === child.id, "vivarium-card: ✓ Look opens her page: " + JSON.stringify([r.u.screen, r.p.state]));
+  r = await hp("back", 700); expect(r.u.screen === "vivarium", "vivarium-card: ← from her page is the Vivarium again: " + JSON.stringify([r.u.screen]));
+  await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.hab.f = "resident"; window.__st.goto("habitat"); }, child.id); await page.waitForTimeout(700);   // the habitat close-up is still reached from Home and the Library; the card walk below keeps its ground
   r = await hp("right", 200); r = await hp("right", 200); expect(r.p.focus.cur === "species" && r.p.frame.line.ok === "Open the guide" && /^Every /.test(r.p.frame.line.subject), "vivarium-card: ▶ ▶ is the species word: ✓ Open the guide, every {Species}: " + JSON.stringify([r.p.focus.cur, r.p.frame.line]));
   r = await hp("down", 200); expect(r.p.focus.cur === "family" && r.p.frame.line.ok === "See the family", "vivarium-card: ▼ from the species word is the story's origin lines: ✓ See the family: " + JSON.stringify([r.p.focus.cur, r.p.frame.line]));
   r = await hp("down", 200); for (let i = 0; i < chIndex; i++) r = await hp("right", 200);
@@ -613,7 +615,8 @@ const toLook = async () => { await press("confirm", 300); await press("confirm",
 // the habit watch: a resident on the Vivarium for the dev timer's 5 s sees its first unseen habit and earns +1 Data
 { stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.ST.d = window.__st.ST.d | 0; });
   const watched = await page.evaluate(() => { const st = window.__st.ST, sv = window.__st.SV, c = sv.carried ?? (sv.with != null ? [sv.with] : []), m = st.mibis.find((x) => !x.released && !c.includes(x.id) && (x.habits || []).length < 2); window.__st.UI.hab.id = m.id; window.__st.UI.viv.f = null; window.__st.goto("home"); return m.id; });
-  await said(); await press("habitat", 500); await toLook(); { const u = await ui(), p = await props(); cur.push({ screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, habId: u.habId }); expect(u.screen === "habitat" && u.habId === watched && p.state === "rest", "vivarium-trickle: the Vivarium key, then ✓ Look on its card: up close on the mibi to watch: " + JSON.stringify([u.screen, u.habId, p.state])); }
+  await said(); await press("habitat", 500); await toLook(); await press("back", 700); await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.hab.f = "resident"; window.__st.goto("habitat"); }, watched); await page.waitForTimeout(700);   // ✓ Look opens her page now; the watch runs on the habitat close-up, still reached from Home
+  { const u = await ui(), p = await props(); cur.push({ screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, habId: u.habId }); expect(u.screen === "habitat" && u.habId === watched && p.state === "rest", "vivarium-trickle: the Vivarium key, then ✓ Look on its card: up close on the mibi to watch: " + JSON.stringify([u.screen, u.habId, p.state])); }
   const dW = (await st()).d; await page.waitForTimeout(5800); const after = await st();
   expect(after.d === dW + 1 && after.mibis.find((x) => x.id === watched).habits.length >= 1, "a resident watched for 5 s on the Vivarium sees a habit and earns +1 Data: " + JSON.stringify([dW, after.d]));
   await page.waitForTimeout(1500); expect((await st()).d === after.d, "and no more until the next minute of watching"); }
@@ -658,7 +661,9 @@ const vuntil = async (k, done, n = 12, ms = 200) => { let r = null; for (let i =
 { stepOf("vivarium-whole");
   let r = await vpress("right", 200); r = await vpress("confirm", 200); expect(r.ring === "plate.0" && /^Look at /.test(r.p.frame.line.ok ?? ""), "vivarium-whole: ✓ to the card's Look: " + JSON.stringify([r.ring, r.p.frame.line]));
   r = await vpress("confirm", 700); const mid = (await ui()).habId;
-  expect(r.u.screen === "habitat" && mid != null, "vivarium-whole: ✓ Look looks at that mibi up close: " + JSON.stringify([r.u.screen, mid]));
+  expect(r.u.screen === "pods" && r.p.state === "page" && mid != null, "vivarium-whole: ✓ Look opens her page: " + JSON.stringify([r.u.screen, r.p.state, mid]));
+  r = await vpress("back", 700); expect(r.u.screen === "vivarium" && r.ring === "cell." + mid, "vivarium-whole: ← from her page is the Wall with the ring on her: " + JSON.stringify([r.u.screen, r.ring, mid]));
+  await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.hab.f = "resident"; window.__st.goto("habitat"); }, mid); await page.waitForTimeout(700);   // the habitat close-up, still reached from Home and the Library, keeps its checks
   { const p = await props(); cur.push({ screen: p.screen, state: p.state, ring: p.focus.cur, title: p.frame.top.title, back: p.frame.line.back }); expect(p.screen === "habitat" && p.state === "rest" && p.focus.cur === "resident" && p.frame.top.title === "Vivarium" && p.frame.line.back === "Vivarium", "vivarium-whole: up close is the habitat's own screen: " + JSON.stringify([p.screen, p.state, p.focus.cur, p.frame.line.back])); }
   await frameShot("page-habitat", true);
   r = await vpress("back", 700); expect(r.u.screen === "vivarium" && r.ring === "cell." + mid, "vivarium-whole: ← from up close is the Wall with the ring on that mibi: " + JSON.stringify([r.u.screen, r.ring, mid]));

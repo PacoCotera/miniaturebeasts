@@ -553,10 +553,11 @@ test("the intents are DOM-free, transitively: nothing they import reaches a docu
   }
 });
 
-test("the Vivarium (the collection v2 design): ✓ on a mibi goes to its card's first live plate; ✓ Look opens it up close (held for events.look); ✓ on the room's chip does nothing; ← goes Home with the ring on the panel", () => {
+test("the Vivarium (the collection v2 design): ✓ on a mibi goes to its card's first live plate; ✓ Look opens her page (station-match-10), ← comes back to the Vivarium where she was picked; ✓ on the room's chip does nothing; ← goes Home with the ring on the panel", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); st.dock = { docked: true, at: T0 };
-  const h = host(st), m = st.mibis[1], ev = h.specs.vivarium.events.look;
-  h.ui.viv.f = "plate.0"; h.ui.viv.last = m.id; INTENTS.vivarium.intent(h, "plate.0", "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
+  const h = host(st), m = st.mibis[1];
+  h.ui.viv.f = "plate.0"; h.ui.viv.last = m.id; h.ui.viv.sort = "kind"; INTENTS.vivarium.intent(h, "plate.0", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.pods.page, h.ui.pods.pageBack?.last], ["pods", m.id, m.id], "Look opens her page, not the old habitat close-up");
+  INTENTS.pods.intent(h, "rail", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.page, h.ui.viv.last, h.ui.viv.sort], ["vivarium", null, m.id, "kind"], "← from her page returns to the Vivarium, its view kept");
   const n = h.went.length; INTENTS.vivarium.intent(h, "room.0", "confirm"); INTENTS.vivarium.intent(h, "resident.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to do, nothing happens");
   INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "vivarium"]);
 });

@@ -182,7 +182,8 @@ function placeStation(p) {
   pan = panFor(p.view, focusNow.box, pan);
   const fl = kOf.station / dpr, u = k0 / dpr;   // CSS px per lp on the page, and in the frame before its scale
   placeFrameC(el, xc - pan.x * fl, yc - pan.y * fl, 1024, 600, kOf.station);
-  el.style.clipPath = "inset(" + [pan.y, 1024 - pan.x - p.view.w, 600 - pan.y - p.view.h, pan.x].map((v) => Math.max(0, v) * u + "px").join(" ") + ")";
+  const vw = Math.floor(p.view.w * kOf.station + 1e-6) / kOf.station, vh = Math.floor(p.view.h * kOf.station + 1e-6) / kOf.station;   // the window ends on a whole device pixel: a part pixel at its right or foot edge drew as a dark strip (station-match-10)
+  el.style.clipPath = "inset(" + [pan.y, 1024 - pan.x - vw, 600 - pan.y - vh, pan.x].map((v) => Math.max(0, v) * u + "px").join(" ") + ")";
 }
 // Home's narrow form (home.json narrow): told to the Station whenever the plan says (and when it loads): the phone held upright, the window 530 lp wide
 let sentNarrow = null;

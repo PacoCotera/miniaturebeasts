@@ -2,6 +2,7 @@
 // ✓ on a mibi opens its card's first live plate or a plate's act; ← goes to the opener. The rules are state.mjs's; the field as the props builder last drew it is views/vivarium-props.mjs vivariumBuild's `nav`.
 import * as S from "../state.mjs";
 import { openPanel } from "./panel.mjs";
+import { openPage } from "./pods.mjs";
 import { fill } from "../views/words.mjs";
 import { vivariumBuild, idOf, partnersOf, platesOf, pickHeld, youngWhen } from "../views/vivarium-props.mjs";
 import { walk, wallEntry, firstLive, gridWalk } from "../views/wall-walk.mjs";
@@ -46,7 +47,7 @@ function plateDo(h, target, act = null) {
   const list = platesOf(st, h.sv, m, h.settings, Sg(h), S.docked(st)), p = act ? list.find((x) => x.act === act) : list.find((x) => x.id === target); if (!p) return;
   if (p.held) { heldSay(h, p, m); return; }   // the house rule: ✓ on a held plate plays its message plate
   switch (p.act) {
-    case "look": { h.ui.hab.id = m.id; h.ui.hab.f = S.isCarried(st, h.sv, m) ? "name" : "resident"; v.last = m.id; v.f = null; const ev = h.specs.vivarium.events.look; h.goto("habitat", motion(h) ? ev.hold : 0); return; }
+    case "look": { h.ui.hab.id = m.id; h.ui.hab.f = S.isCarried(st, h.sv, m) ? "name" : "resident"; v.last = m.id; v.f = null; openPage(h, m, 0, "vivarium"); return; }   // Look: her new page; ← comes back here
     case "takeAlong": { const r = S.carryAdd(st, h.sv, m); if (r.ok) h.save(); return; }
     case "bringHome": { const r = S.carryHome(st, h.sv, m); if (r.ok) h.save(); return; }
     case "tuckAway": { const r = S.tuckAway(st, h.sv, m, h.settings, h.now()); if (!r.ok) return; say(h, Mg.tucked, { name: m.name }); h.save(); ringAfterLeaving(h); return; }
