@@ -1,0 +1,235 @@
+{
+ "round": "b1",
+ "seeds": 200,
+ "engine": "origin/main 82462ee (E1, PR 469)",
+ "frames": {
+  "T": {
+   "main": {
+    "BYLOOK": {
+     "gens": {
+      "n": 200,
+      "reached": 185,
+      "median": 8,
+      "p80": 12
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 185,
+      "median": 52,
+      "p80": 73
+     },
+     "days": {
+      "n": 200,
+      "reached": 185,
+      "median": 1,
+      "p80": 1
+     },
+     "hours": {
+      "median": 14.75,
+      "p80": 17.883333333333333
+     },
+     "reached": 185,
+     "runs": 200,
+     "vigourAtAim": {
+      "mean": 0.8374935270270271,
+      "median": 0.8343750000000001
+     },
+     "kinShareOfPairings": 0.6677638870997687,
+     "aimStepIndexMean": 5.185
+    },
+    "TELLS": {
+     "gens": {
+      "n": 200,
+      "reached": 168,
+      "median": 9,
+      "p80": 14
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 168,
+      "median": 52,
+      "p80": 82
+     },
+     "days": {
+      "n": 200,
+      "reached": 168,
+      "median": 1,
+      "p80": 1
+     },
+     "hours": {
+      "median": 15.066666666666666,
+      "p80": 19.316666666666666
+     },
+     "reached": 168,
+     "runs": 200,
+     "vigourAtAim": {
+      "mean": 0.8362791041666665,
+      "median": 0.840625
+     },
+     "kinShareOfPairings": 0.7143276642245298,
+     "aimStepIndexMean": 5.185
+    },
+    "ONEROW": {
+     "gens": {
+      "n": 200,
+      "reached": 161,
+      "median": 10,
+      "p80": 16
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 161,
+      "median": 52,
+      "p80": 116
+     },
+     "days": {
+      "n": 200,
+      "reached": 161,
+      "median": 1,
+      "p80": 2
+     },
+     "hours": {
+      "median": 15.333333333333334,
+      "p80": 32.416666666666664
+     },
+     "reached": 161,
+     "runs": 200,
+     "vigourAtAim": {
+      "mean": 0.8360246739130437,
+      "median": 0.8359380000000001
+     },
+     "kinShareOfPairings": 0.7003835550545046,
+     "aimStepIndexMean": 5.185
+    }
+   },
+   "doing": {
+    "BYLOOK": {
+     "gens": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "days": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "hours": {
+      "median": "inf",
+      "p80": "inf"
+     },
+     "reached": 3,
+     "runs": 200,
+     "vigourAtAim": {
+      "mean": 0.8671875,
+      "median": 0.8375
+     },
+     "kinShareOfPairings": 0.9123948887272499,
+     "aimStepIndexMean": 5.125
+    },
+    "TELLS": {
+     "gens": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "days": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "hours": {
+      "median": "inf",
+      "p80": "inf"
+     },
+     "reached": 3,
+     "runs": 200,
+     "vigourAtAim": {
+      "mean": 0.8609375,
+      "median": 0.875
+     },
+     "kinShareOfPairings": 0.9200401937802875,
+     "aimStepIndexMean": 5.125
+    },
+    "ONEROW": {
+     "gens": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "days": {
+      "n": 200,
+      "reached": 3,
+      "median": "inf",
+      "p80": "inf"
+     },
+     "hours": {
+      "median": "inf",
+      "p80": "inf"
+     },
+     "reached": 3,
+     "runs": 200,
+     "vigourAtAim": {
+      "mean": 0.9130208333333334,
+      "median": 0.9
+     },
+     "kinShareOfPairings": 0.9135618600708364,
+     "aimStepIndexMean": 5.125
+    }
+   },
+   "l2": {
+    "seededDays": 21621,
+    "daysWithTiedBest": 9206,
+    "bestMoveShareByRule": {
+     "nearest looks": 0.4108043106239304,
+     "most aim copies": 0.4397576430322372,
+     "best with its opposite": 0.292678414504417,
+     "least kin": 0.6811895842005458,
+     "most kin": 0.12335229637852088,
+     "oldest pair": 0.2426807270709033,
+     "newest pair": 0.3939225752740391
+    },
+    "maxShare": 0.6811895842005458,
+    "pass": true,
+    "rulesTested": [
+     "nearest looks",
+     "most aim copies",
+     "best with its opposite",
+     "least kin",
+     "most kin",
+     "oldest pair",
+     "newest pair"
+    ]
+   },
+   "l1": {
+    "byLookGensMedian": 8,
+    "tellsGensMedian": 9,
+    "fewer": -0.125,
+    "pass": false
+   }
+  }
+ }
+}

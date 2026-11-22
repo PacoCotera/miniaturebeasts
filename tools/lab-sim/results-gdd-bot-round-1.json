@@ -1,0 +1,720 @@
+{
+ "seeds": 200,
+ "settings": {
+  "VIV": 12,
+  "BROOD": 6,
+  "MAX_ROUNDS": 100,
+  "note": "pooled over each frame's blends; medians and 80th percentiles over seed x blend runs"
+ },
+ "frames": {
+  "LOIKA": {
+   "m1": {
+    "blends": [
+     "E (look)",
+     "D (doing)",
+     "F (doing)"
+    ],
+    "a": {
+     "reachGen": {
+      "n": 600,
+      "median": 12,
+      "p80": 14,
+      "unreached": 0
+     },
+     "holdGen": {
+      "n": 600,
+      "median": 16,
+      "p80": 18,
+      "unreached": 1
+     },
+     "holdCrosses": {
+      "n": 600,
+      "median": 17,
+      "p80": 20,
+      "unreached": 1
+     }
+    },
+    "b": {
+     "days": 9977,
+     "notBest": 128,
+     "share": 0.012829507868096623,
+     "perRunMedianShare": null
+    },
+    "c": {
+     "runs": 200,
+     "peakGen": {
+      "n": 200,
+      "median": 1,
+      "p80": 1,
+      "unreached": 0
+     },
+     "peaksInFirstYoung": 0.89,
+     "firstYoungPastPool": 0.735,
+     "firstYoungShareOfReach": {
+      "median": 0.40676666666666733,
+      "p80": 0.858766666666666
+     },
+     "bestShareOfReach": {
+      "median": 0.40676666666666733,
+      "p80": 0.858766666666666
+     }
+    },
+    "perBlend": {
+     "E": {
+      "role": "look",
+      "holdGen": {
+       "n": 200,
+       "median": 10,
+       "p80": 12,
+       "unreached": 0
+      },
+      "disagreeShare": 0.013025210084033614,
+      "mutations": {
+       "n": 200,
+       "peakGenMedian": 1,
+       "peaksInFirstYoung": 0.89
+      }
+     },
+     "D": {
+      "role": "doing",
+      "holdGen": {
+       "n": 200,
+       "median": 17,
+       "p80": 18,
+       "unreached": 1
+      },
+      "disagreeShare": 0.014575741801145237,
+      "mutations": null
+     },
+     "F": {
+      "role": "doing",
+      "holdGen": {
+       "n": 200,
+       "median": 17,
+       "p80": 18,
+       "unreached": 0
+      },
+      "disagreeShare": 0.010918774966711052,
+      "mutations": null
+     }
+    }
+   },
+   "m2": {
+    "a": {
+     "unrelated": {
+      "kinship": 0,
+      "engineRefusesTheCross": false,
+      "paleShare": 0.25005999999999995,
+      "exactByEngineForecast": 0.25
+     },
+     "half siblings": {
+      "kinship": 0.125,
+      "engineRefusesTheCross": false,
+      "paleShare": 0.37450000000000017,
+      "exactByEngineForecast": 0.375
+     },
+     "full siblings": {
+      "kinship": 0.25,
+      "engineRefusesTheCross": true,
+      "paleShare": 0.49898999999999993,
+      "exactByEngineForecast": 0.5
+     },
+     "parent-child": {
+      "kinship": 0.25,
+      "engineRefusesTheCross": true,
+      "paleShare": 0.5018500000000002,
+      "exactByEngineForecast": 0.5
+     }
+    },
+    "b": {
+     "CLOSE": {
+      "reached": 200,
+      "gens": {
+       "n": 200,
+       "median": 4,
+       "p80": 5,
+       "unreached": 0
+      },
+      "days": {
+       "n": 200,
+       "median": 19,
+       "p80": 25,
+       "unreached": 0
+      },
+      "vigourAtGoal": {
+       "median": 0.9,
+       "p80": 1,
+       "mean": 0.8713124999999999
+      },
+      "meanKinshipOfCrosses": {
+       "median": 0.08238636363636363
+      }
+     },
+     "AVOID": {
+      "reached": 200,
+      "gens": {
+       "n": 200,
+       "median": 2,
+       "p80": 2,
+       "unreached": 0
+      },
+      "days": {
+       "n": 200,
+       "median": 27,
+       "p80": 33,
+       "unreached": 0
+      },
+      "vigourAtGoal": {
+       "median": 1,
+       "p80": 1,
+       "mean": 1
+      },
+      "meanKinshipOfCrosses": {
+       "median": 0
+      }
+     }
+    }
+   },
+   "m3": {
+    "honest": {
+     "turnsPerHour": 3.999762025165839,
+     "metInConditionsPerHour": 3.99440759139721,
+     "metPerHour": 3.99440759139721,
+     "observationsPerHour": 7.98881518279442,
+     "samplesPerHour": 7.716185263408395,
+     "samplesThatSettleAnOpenQuestionPerHour": 0.8290448285093852,
+     "dataPerHour": 7.98881518279442,
+     "samplesPerHourMedianOverSeeds": 7.698412698412699,
+     "samplesPerHourP80OverSeeds": 8.120300751879698,
+     "fromDrops": 4.712794122021596,
+     "fromSeasonTufts": 1.5849123955141744,
+     "expeditionMinutesMean": 15.000892458723785
+    },
+    "farm": {
+     "0.5min": {
+      "turnsPerHour": 120,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 190.85432965463903,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.0708867537257936,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 190.79812206572768,
+      "samplesPerHourP80OverSeeds": 192.65625
+     },
+     "1min": {
+      "turnsPerHour": 60,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 95.33212362792635,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.0708867537257936,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 95.5049786628734,
+      "samplesPerHourP80OverSeeds": 96.43504531722054
+     },
+     "2min": {
+      "turnsPerHour": 30,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 47.549079344320766,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.070011443177934,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 47.608695652173914,
+      "samplesPerHourP80OverSeeds": 48.30945558739255
+     },
+     "5min": {
+      "turnsPerHour": 12,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 18.900233566900233,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.0677344010677343,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 18.88372093023256,
+      "samplesPerHourP80OverSeeds": 19.392
+     }
+    },
+    "benchCapPerHour": 6
+   },
+   "m4": {
+    "homeRaisedMibis": 4641,
+    "showingADominantLook": 2531,
+    "hiddenCopyNeverInkedByDay30": 1619,
+    "share": 0.6396681153694193,
+    "perSeedMedianShare": 0.55,
+    "perSeedP80Share": 0.875,
+    "perTrait": {
+     "C (crown)": {
+      "shown": 2531,
+      "neverInked": 1619,
+      "share": 0.6396681153694193
+     }
+    }
+   },
+   "m5": {
+    "KEPT": {
+     "runs": 600,
+     "reached": 0,
+     "generations": {
+      "n": 600,
+      "median": "inf",
+      "p80": "inf",
+      "unreached": 600
+     },
+     "crosses": {
+      "n": 600,
+      "median": "inf",
+      "p80": "inf",
+      "unreached": 600
+     },
+     "keptParentCrosses": {
+      "n": 600,
+      "median": 4,
+      "p80": 5,
+      "unreached": 0
+     },
+     "meanKinshipOfCrosses": {
+      "median": 0
+     },
+     "freshWildOnesNeeded": {
+      "median": 0,
+      "p80": 0
+     }
+    },
+    "KEPT+WILD": {
+     "runs": 600,
+     "reached": 0,
+     "generations": {
+      "n": 600,
+      "median": "inf",
+      "p80": "inf",
+      "unreached": 600
+     },
+     "crosses": {
+      "n": 600,
+      "median": "inf",
+      "p80": "inf",
+      "unreached": 600
+     },
+     "keptParentCrosses": {
+      "n": 600,
+      "median": 100,
+      "p80": 100,
+      "unreached": 0
+     },
+     "meanKinshipOfCrosses": {
+      "median": 0
+     },
+     "freshWildOnesNeeded": {
+      "median": 96,
+      "p80": 97
+     }
+    },
+    "ROTATE": {
+     "runs": 600,
+     "reached": 593,
+     "generations": {
+      "n": 600,
+      "median": 13,
+      "p80": 15,
+      "unreached": 7
+     },
+     "crosses": {
+      "n": 600,
+      "median": 13,
+      "p80": 15,
+      "unreached": 7
+     },
+     "keptParentCrosses": {
+      "n": 600,
+      "median": 1,
+      "p80": 1,
+      "unreached": 0
+     },
+     "meanKinshipOfCrosses": {
+      "median": 0.07386363636363637
+     },
+     "freshWildOnesNeeded": {
+      "median": 0,
+      "p80": 0
+     }
+    }
+   }
+  },
+  "TEST": {
+   "m1": {
+    "blends": [
+     "eyes (look)",
+     "ears (look)",
+     "crest (look)",
+     "drive (doing)",
+     "efficiency (doing)"
+    ],
+    "a": {
+     "reachGen": {
+      "n": 1000,
+      "median": 2,
+      "p80": 7,
+      "unreached": 0
+     },
+     "holdGen": {
+      "n": 1000,
+      "median": 7,
+      "p80": 10,
+      "unreached": 0
+     },
+     "holdCrosses": {
+      "n": 1000,
+      "median": 10,
+      "p80": 13,
+      "unreached": 0
+     }
+    },
+    "b": {
+     "days": 9900,
+     "notBest": 155,
+     "share": 0.015656565656565657,
+     "perRunMedianShare": null
+    },
+    "c": {
+     "runs": 600,
+     "peakGen": {
+      "n": 600,
+      "median": 1,
+      "p80": 3,
+      "unreached": 0
+     },
+     "peaksInFirstYoung": 0.6466666666666666,
+     "firstYoungPastPool": 0.6016666666666667,
+     "firstYoungShareOfReach": {
+      "median": 0.2090385964912283,
+      "p80": 0.6610333333333341
+     },
+     "bestShareOfReach": {
+      "median": 0.2090385964912283,
+      "p80": 0.6610333333333341
+     }
+    },
+    "perBlend": {
+     "eyes": {
+      "role": "look",
+      "holdGen": {
+       "n": 200,
+       "median": 7,
+       "p80": 10,
+       "unreached": 0
+      },
+      "disagreeShare": 0.012358946802794197,
+      "mutations": {
+       "n": 200,
+       "peakGenMedian": 1,
+       "peaksInFirstYoung": 0.63
+      }
+     },
+     "ears": {
+      "role": "look",
+      "holdGen": {
+       "n": 200,
+       "median": 7,
+       "p80": 10,
+       "unreached": 0
+      },
+      "disagreeShare": 0.01968503937007874,
+      "mutations": {
+       "n": 200,
+       "peakGenMedian": 1,
+       "peaksInFirstYoung": 0.685
+      }
+     },
+     "crest": {
+      "role": "look",
+      "holdGen": {
+       "n": 200,
+       "median": 6,
+       "p80": 9,
+       "unreached": 0
+      },
+      "disagreeShare": 0.016921397379912665,
+      "mutations": {
+       "n": 200,
+       "peakGenMedian": 1,
+       "peaksInFirstYoung": 0.625
+      }
+     },
+     "drive": {
+      "role": "doing",
+      "holdGen": {
+       "n": 200,
+       "median": 8,
+       "p80": 12,
+       "unreached": 0
+      },
+      "disagreeShare": 0.014448336252189142,
+      "mutations": null
+     },
+     "efficiency": {
+      "role": "doing",
+      "holdGen": {
+       "n": 200,
+       "median": 8,
+       "p80": 11,
+       "unreached": 0
+      },
+      "disagreeShare": 0.015384615384615385,
+      "mutations": null
+     }
+    }
+   },
+   "m2": {
+    "a": {
+     "unrelated": {
+      "kinship": 0,
+      "engineRefusesTheCross": false,
+      "paleShare": 0.2511000000000001,
+      "exactByEngineForecast": 0.25
+     },
+     "half siblings": {
+      "kinship": 0.125,
+      "engineRefusesTheCross": false,
+      "paleShare": 0.37441999999999986,
+      "exactByEngineForecast": 0.375
+     },
+     "full siblings": {
+      "kinship": 0.25,
+      "engineRefusesTheCross": true,
+      "paleShare": 0.5032400000000002,
+      "exactByEngineForecast": 0.5
+     },
+     "parent-child": {
+      "kinship": 0.25,
+      "engineRefusesTheCross": true,
+      "paleShare": 0.50098,
+      "exactByEngineForecast": 0.5
+     }
+    },
+    "b": {
+     "CLOSE": {
+      "reached": 200,
+      "gens": {
+       "n": 200,
+       "median": 3,
+       "p80": 4,
+       "unreached": 0
+      },
+      "days": {
+       "n": 200,
+       "median": 18,
+       "p80": 24,
+       "unreached": 0
+      },
+      "vigourAtGoal": {
+       "median": 0.9,
+       "p80": 0.9,
+       "mean": 0.8551250000000004
+      },
+      "meanKinshipOfCrosses": {
+       "median": 0.0875
+      }
+     },
+     "AVOID": {
+      "reached": 200,
+      "gens": {
+       "n": 200,
+       "median": 2,
+       "p80": 2,
+       "unreached": 0
+      },
+      "days": {
+       "n": 200,
+       "median": 27,
+       "p80": 33,
+       "unreached": 0
+      },
+      "vigourAtGoal": {
+       "median": 1,
+       "p80": 1,
+       "mean": 1
+      },
+      "meanKinshipOfCrosses": {
+       "median": 0
+      }
+     }
+    }
+   },
+   "m3": {
+    "honest": {
+     "turnsPerHour": 3.999762025165839,
+     "metInConditionsPerHour": 3.9796828985334805,
+     "metPerHour": 3.9796828985334805,
+     "observationsPerHour": 7.959365797066961,
+     "samplesPerHour": 7.699675759288455,
+     "samplesThatSettleAnOpenQuestionPerHour": 0.8526935776541631,
+     "dataPerHour": 7.959365797066961,
+     "samplesPerHourMedianOverSeeds": 7.698412698412699,
+     "samplesPerHourP80OverSeeds": 8.071748878923767,
+     "fromDrops": 4.70788589106702,
+     "fromSeasonTufts": 1.5742035279769164,
+     "expeditionMinutesMean": 15.000892458723785
+    },
+    "farm": {
+     "0.5min": {
+      "turnsPerHour": 120,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 190.85432965463903,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.0708867537257936,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 190.79812206572768,
+      "samplesPerHourP80OverSeeds": 192.65625
+     },
+     "1min": {
+      "turnsPerHour": 60,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 95.33212362792635,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.0708867537257936,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 95.5049786628734,
+      "samplesPerHourP80OverSeeds": 96.43504531722054
+     },
+     "2min": {
+      "turnsPerHour": 30,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 47.549079344320766,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.070011443177934,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 47.608695652173914,
+      "samplesPerHourP80OverSeeds": 48.30945558739255
+     },
+     "5min": {
+      "turnsPerHour": 12,
+      "metInConditionsPerHour": 0,
+      "metPerHour": 0,
+      "observationsPerHour": 0,
+      "samplesPerHour": 18.900233566900233,
+      "samplesThatSettleAnOpenQuestionPerHour": 1.0677344010677343,
+      "dataPerHour": 0,
+      "samplesPerHourMedianOverSeeds": 18.88372093023256,
+      "samplesPerHourP80OverSeeds": 19.392
+     }
+    },
+    "benchCapPerHour": 6
+   },
+   "m4": {
+    "homeRaisedMibis": 4644,
+    "showingADominantLook": 5408,
+    "hiddenCopyNeverInkedByDay30": 3742,
+    "share": 0.6919378698224852,
+    "perSeedMedianShare": 0.7058823529411765,
+    "perSeedP80Share": 0.8518518518518519,
+    "perTrait": {
+     "C2 (muzzle)": {
+      "shown": 2516,
+      "neverInked": 1738,
+      "share": 0.690779014308426
+     },
+     "C (crown)": {
+      "shown": 2892,
+      "neverInked": 2004,
+      "share": 0.6929460580912863
+     }
+    }
+   },
+   "m5": {
+    "KEPT": {
+     "runs": 1000,
+     "reached": 379,
+     "generations": {
+      "n": 1000,
+      "median": "inf",
+      "p80": "inf",
+      "unreached": 621
+     },
+     "crosses": {
+      "n": 1000,
+      "median": "inf",
+      "p80": "inf",
+      "unreached": 621
+     },
+     "keptParentCrosses": {
+      "n": 1000,
+      "median": 3,
+      "p80": 3,
+      "unreached": 0
+     },
+     "meanKinshipOfCrosses": {
+      "median": 0
+     },
+     "freshWildOnesNeeded": {
+      "median": 0,
+      "p80": 0
+     }
+    },
+    "KEPT+WILD": {
+     "runs": 1000,
+     "reached": 996,
+     "generations": {
+      "n": 1000,
+      "median": 1,
+      "p80": 1,
+      "unreached": 4
+     },
+     "crosses": {
+      "n": 1000,
+      "median": 5,
+      "p80": 17,
+      "unreached": 4
+     },
+     "keptParentCrosses": {
+      "n": 1000,
+      "median": 5,
+      "p80": 17,
+      "unreached": 0
+     },
+     "meanKinshipOfCrosses": {
+      "median": 0
+     },
+     "freshWildOnesNeeded": {
+      "median": 2,
+      "p80": 9
+     }
+    },
+    "ROTATE": {
+     "runs": 1000,
+     "reached": 986,
+     "generations": {
+      "n": 1000,
+      "median": 5,
+      "p80": 9,
+      "unreached": 14
+     },
+     "crosses": {
+      "n": 1000,
+      "median": 6,
+      "p80": 9,
+      "unreached": 14
+     },
+     "keptParentCrosses": {
+      "n": 1000,
+      "median": 1,
+      "p80": 1,
+      "unreached": 0
+     },
+     "meanKinshipOfCrosses": {
+      "median": 0.07118055555555555
+     },
+     "freshWildOnesNeeded": {
+      "median": 0,
+      "p80": 0
+     }
+    }
+   }
+  }
+ }
+}

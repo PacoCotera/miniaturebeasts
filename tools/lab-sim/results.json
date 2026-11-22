@@ -1,0 +1,167 @@
+{
+ "seeds": 200,
+ "cap": 120,
+ "policies": [
+  "BLIND",
+  "INFORMED",
+  "RULE-a",
+  "RULE-b",
+  "RULE-c",
+  "RULE-d",
+  "RULE-e",
+  "RULE-f"
+ ],
+ "summary": {
+  "BLIND": {
+   "reached": 186,
+   "gensMedian": 5,
+   "gensP80": 13,
+   "daysMedian": 26,
+   "daysP80": 54,
+   "unusedMedian": 4,
+   "unusedP80": 4,
+   "deadShare": 0.0047241906349868,
+   "crossesMedian": 19
+  },
+  "INFORMED": {
+   "reached": 194,
+   "gensMedian": 2,
+   "gensP80": 5,
+   "daysMedian": 14,
+   "daysP80": 26,
+   "unusedMedian": 0,
+   "unusedP80": 1,
+   "deadShare": 0.13245033112582782,
+   "crossesMedian": 10
+  },
+  "RULE-a": {
+   "reached": 180,
+   "gensMedian": 6,
+   "gensP80": 12,
+   "daysMedian": 25,
+   "daysP80": 55,
+   "unusedMedian": 0,
+   "unusedP80": 0,
+   "deadShare": 0.18808604522890238,
+   "crossesMedian": 18
+  },
+  "RULE-b": {
+   "reached": 182,
+   "gensMedian": 4,
+   "gensP80": 10,
+   "daysMedian": 25,
+   "daysP80": 62,
+   "unusedMedian": 4,
+   "unusedP80": 4,
+   "deadShare": 0.004452592980618125,
+   "crossesMedian": 19
+  },
+  "RULE-c": {
+   "reached": 181,
+   "gensMedian": 4,
+   "gensP80": 8,
+   "daysMedian": 23,
+   "daysP80": 53,
+   "unusedMedian": 4,
+   "unusedP80": 4,
+   "deadShare": 0.004788732394366197,
+   "crossesMedian": 17
+  },
+  "RULE-d": {
+   "reached": 165,
+   "gensMedian": 6,
+   "gensP80": 10,
+   "daysMedian": 23,
+   "daysP80": 55,
+   "unusedMedian": 4,
+   "unusedP80": 4,
+   "deadShare": 0.004357298474945534,
+   "crossesMedian": 17
+  },
+  "RULE-e": {
+   "reached": 24,
+   "gensMedian": "inf",
+   "gensP80": "inf",
+   "daysMedian": "inf",
+   "daysP80": "inf",
+   "unusedMedian": 0,
+   "unusedP80": 0,
+   "deadShare": 0.002516543946313729,
+   "crossesMedian": 0
+  },
+  "RULE-f": {
+   "reached": 182,
+   "gensMedian": 3,
+   "gensP80": 8,
+   "daysMedian": 29,
+   "daysP80": 72,
+   "unusedMedian": 4,
+   "unusedP80": 4,
+   "deadShare": 0.0041939065005550755,
+   "crossesMedian": 22
+  }
+ },
+ "assumptions": [
+  "Wild alleles drawn at 0.35 (pale) and 0.5 (crest) per copy; the policy's prior is the same.",
+  "Weather per turn: calm, rain, storm 1/3 each (the playtest mix is 12 weather seeds to 6 calm); dusk on 1/3 of turns.",
+  "Haul per expedition: Energy 1 calm / 3 rain / 5 storm (econ-decided-1: median 4.5 on weather walks, scarce on calm); Essence 2 (not measured in the run; assumed). Start Energy 3, Essence 4. No top-up.",
+  "A wild one is met on a turn with chance 0.5 when its land is visited; at most two new habits are watched per meeting (weather habit, dusk bed, feeding in that order).",
+  "Habits: shake-dry (rain, storm) gives a tuft (Markings); calm (calm) a track (Drive); sleep-curled (dusk) a bed (Efficiency); feeding (always) a whisker (Crown or Eyes). One tuft more per wild one per new season.",
+  "Drops: per turn a wild one that is not met and whose weather or dusk habit holds leaves its sample with chance 0.5, one waiting at a time; picked up on the next visit to its land.",
+  "Bench: one sample at a time, 30 minutes (first ever 2); one a day, two on a day with two expeditions. An analysis ends before the next session. Incubator: one cross or pod a day, an adult by the next session.",
+  "Expedition 10-20 minutes (uniform). Session 1 minutes: first ink = end of the expedition that gave the first sample + 2.",
+  "Wild cross: the wild one met that day crosses with one of the player's adults (decided at home, as if on the expedition); the wild one stays wild. A pod of a wild one after 3 habits (once) is the engine's shedPod, grown at a cross's price.",
+  "Vivarium of 8: a new adult at 8 replaces the lowest-scoring adult (pale 3, known carrier 2, else 0; oldest first).",
+  "Goal: two adults that both show pale and may cross (engine: not direct kin). Generations: 0 for home Loika and pods, a cross child is max(parents)+1. Cap 120 days."
+ ],
+ "world": {
+  "ok": 169,
+  "carrier": 183,
+  "atMostOne": 179,
+  "n": 200
+ },
+ "worldResampled": 31,
+ "matches": {
+  "RULE-a": {
+   "allDays": 0.1787531806615776,
+   "choiceDays": 0.17645150827116446
+  },
+  "RULE-b": {
+   "allDays": 0.19020356234096691,
+   "choiceDays": 0.19234511839117743
+  },
+  "RULE-c": {
+   "allDays": 0.16571246819338423,
+   "choiceDays": 0.16736944534544276
+  },
+  "RULE-d": {
+   "allDays": 0.46469465648854963,
+   "choiceDays": 0.4722672721375284
+  },
+  "RULE-e": {
+   "allDays": 0.11991094147582697,
+   "choiceDays": 0.10282192669477781
+  },
+  "RULE-f": {
+   "allDays": 0.08110687022900763,
+   "choiceDays": 0.0810898475510866
+  }
+ },
+ "informedDays": 3144,
+ "informedChoiceDays": 3083,
+ "settle": {
+  "median": 13,
+  "p20": 6,
+  "p80": "inf",
+  "min": 2,
+  "unsettledShare": 0.37125,
+  "perPolicyMedian": {}
+ },
+ "session1": {
+  "inkInSession1": 0.75,
+  "minutesMedian": 17,
+  "minutesP80": 22,
+  "within10": 0
+ },
+ "unusedAtGoalMedianInformed": 0
+}
