@@ -458,6 +458,13 @@ export function pageBoardPicture(r) {
   paintPage(out, 0, 0, W, H, (x, y) => [[12 / 255, 15 / 255, 22 / 255], y < 190 ? 0.5 + (0.38 * y) / 190 : 0.88 + (0.06 * (y - 190)) / (H - 190)]);
   const body = pixels(`mibi-adult-${r.species}-304x312`); if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
   const dashOn = (x, y, cx, cy, per) => ((Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI)) * per % 7 < 4;
+  for (const a of r.alone ?? []) {   // "hers alone": a tile a line, the same marks as the legend (a gold disc: she stands at the end of a scale; a gold square: the look she shows; a dashed blue square: the look she carries)
+    const cx = a.x + a.d / 2, cy = a.y + a.d / 2, R = a.d / 2, rad = a.kind === "scale" ? R : 11;
+    paintPage(out, a.x - 4, a.y - 4, a.x + a.d + 4, a.y + a.d + 4, (px, py) => { const sd = rrectSd(px, py, a.x, a.y, a.d, a.d, rad), e = clamp01(0.5 - sd); if (e <= 0) return null; return sd > -3 ? [a.kind === "carries" ? CREAM : PAGE_GOLD, (a.kind === "carries" ? 0.85 : 1) * e] : [hex6("#141922"), e]; });
+    if (a.kind === "scale") paintPage(out, cx - 9, cy - 9, cx + 9, cy + 9, (px, py) => [PAGE_GOLD, clamp01(9.5 - Math.hypot(px - cx, py - cy))]);
+    else if (a.kind === "shows") paintPage(out, cx - 10, cy - 10, cx + 10, cy + 10, (px, py) => [PAGE_GOLD, clamp01(0.5 - rrectSd(px, py, cx - 9, cy - 9, 18, 18, 3))]);
+    else paintPage(out, a.x - 8, a.y - 8, a.x + a.d + 8, a.y + a.d + 8, (px, py) => { const sd = rrectSd(px, py, a.x - 3.5, a.y - 3.5, a.d + 7, a.d + 7, 14), e = clamp01(1.75 - Math.abs(sd + 1.25)); return e > 0 && dashOn(px, py, cx, cy, 84) ? [PAGE_BLUE, e] : null; });
+  }
   for (const g of r.groups) {
     pageEmblem(out, g.chapter, g.x + 12, g.y + 13, 24);
     if (g.dim) paintPage(out, g.x, g.y, g.x + 24, g.y + 26, () => [[12 / 255, 15 / 255, 22 / 255], 0.4]);

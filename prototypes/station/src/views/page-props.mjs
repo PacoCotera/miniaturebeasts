@@ -109,8 +109,10 @@ function boardScreen(view, m, spec, req, mibi, fr) {
   const rowH = clamp(Math.floor((Bd.foot - Bd.top - groupsIn * (Bd.head + 3 + Bd.gap)) / Math.max(1, rows)), Bd.rowMin, Bd.row);   // a kind with more traits than fit gets slimmer rows, never a second page
   text(S.cap(mibi.name), Bd.who.x, Bd.who.nameBase, Bd.who.nameRole, "l");
   text(S.cap(S.spName(mibi)), Bd.who.x + Bd.who.kindGap + Math.round(mibi.name.length * Bd.who.kindPerChar), Bd.who.nameBase, Bd.who.kindRole, "l");
+  const label = [0, 1].map((c) => Math.max(Bd.label, ...fr.chapters.filter((x) => colOf.get(x.id) === c).flatMap((x) => x.traits.map((t) => Math.ceil(t.name.length * Bd.namePerChar) + Bd.nameGap))));   // a column's label width: no name clipped or touching its row's shape (the longest name sets it)
+  const alone = [];   // what only she has among your mibis (the accepted "HERS ALONE"): a scale she stands at an end of with none of yours near, a look she shows or carries that none of yours has
   fr.chapters.forEach((ch) => {
-    const col = colOf.get(ch.id), C = Bd.cols[col], barW = C.w - Bd.label - Bd.barGap, y0 = colY[col], looked = S.pageRead(mibi).includes(ch.id), doing = isDoings(ch), shutChapter = !looked && !doing;
+    const col = colOf.get(ch.id), C = Bd.cols[col], barW = C.w - label[col] - Bd.barGap, y0 = colY[col], looked = S.pageRead(mibi).includes(ch.id), doing = isDoings(ch), shutChapter = !looked && !doing;
     const others = st.mibis.filter((x) => !x.released && x.id !== mibi.id && S.speciesOf(x) === sid && x.genome && S.pageRead(x).includes(ch.id)).map((x) => x.genome);
     const sights = doing ? Math.min(...ch.traits.map((t) => Math.round(S.pageKnown(mibi, t) * S.PAGE_SIGHTS))) : S.PAGE_SIGHTS;
     const note = shutChapter ? Sg.boardToLook : doing ? (sights <= 0 ? Sg.boardNotSeen : sights === 1 ? Sg.boardSeenOnce : sights < S.PAGE_SIGHTS ? Sg.boardWatch : "") : "";
@@ -118,18 +120,24 @@ function boardScreen(view, m, spec, req, mibi, fr) {
     text(ch.name, C.x + 31, y0 + Bd.headBase, Bd.headRole, "l"); text(note, C.x + C.w - 2, y0 + Bd.headBase, Bd.noteRole, "r");
     const g = { chapter: ch.id, x: C.x, y: y0, dim: quiet, rows: [] }; let y = y0 + Bd.head + 3;
     for (const t of ch.traits) {
-      const model = pageModel(st, fr, t, pod, others, shutChapter), cy = y + rowH / 2, bx = C.x + Bd.label, row = { cy, bx, shut: false, scale: null, set: null };
+      const model = pageModel(st, fr, t, pod, others, shutChapter), cy = y + rowH / 2, bx = C.x + label[col], row = { cy, bx, shut: false, scale: null, set: null };
       if (model.shape === "scale") { row.scale = { w: barW, at: model.shows, rough: model.rough, copies: model.copies, others: model.others }; row.shut = model.shows == null && !model.rough; }
       else { const ls = model.looks, sh = ls.findIndex((l) => l.shows), cr = ls.findIndex((l) => l.hidden); row.set = { n: ls.length, step: Bd.step, found: ls.flatMap((l, k) => (l.others > 0 && !l.shows ? [k] : [])), shows: sh >= 0 ? sh : null, carries: cr >= 0 ? cr : null }; row.shut = sh < 0 && !ls.some((l) => l.others > 0); }
+      if (others.length && !shutChapter) {
+        if (model.shape === "scale" && model.shows != null && !model.rough) { const a = model.shows, end = a <= 0.25 ? model.ends[0] : a >= 0.75 ? model.ends[1] : ""; if (end && model.others.every((o) => Math.abs(o - a) > 0.2)) alone.push({ kind: "scale", text: S.cap(end) }); }
+        else if (model.shape === "set") { const sh = model.looks.find((l) => l.shows && l.others === 0), cr = model.looks.find((l) => l.hidden && l.others === 0);
+          if (sh) alone.push({ kind: "shows", text: S.cap(sh.look) }); if (cr) alone.push({ kind: "carries", text: fill(Sg.boardAloneCarries, { look: (/s$/.test(cr.look) ? "" : "a ") + cr.look }) }); } }
       text(t.name, C.x, cy + Bd.rowBase - 14, row.shut ? Bd.shutRole : Bd.nameRole, "l");
       g.rows.push(row); y += rowH;
     }
     groups.push(g); colY[col] = y + Bd.gap;
   });
+  const Al = Bd.alone, aloneItems = alone.slice(0, Al.max).map((it, k) => ({ kind: it.kind, x: Al.x, y: Al.top + k * Al.pitch, d: Al.d }));
+  if (aloneItems.length) { text(Sg.boardAlone, Al.x, Al.headBase, Al.headRole, "l"); aloneItems.forEach((it, k) => text(alone[k].text, Al.x + Al.d + Al.gap, it.y + Al.base, Al.role, "l")); }
   const Lg = Bd.legend, items = []; let lx = Lg.x;
   for (const [kind, word] of [["scale", Sg.boardLgScale], ["set", Sg.boardLgSet], ["shows", Sg.boardLgShows], ["carries", Sg.boardLgCarries], ["others", Sg.boardLgOthers]]) {
     items.push({ x: lx, kind }); const tx = lx + Lg.glyph[kind] + Lg.glyphGap; text(word, tx, Lg.y + 5, Lg.role, "l"); lx = tx + Math.round(word.length * Lg.perChar) + Lg.gap; }
-  const pic = { species: sid, size: [W, H], body: Bd.body, groups, legend: { y: Lg.y, items } };
+  const pic = { species: sid, size: [W, H], body: Bd.body, alone: aloneItems, groups, legend: { y: Lg.y, items } };
   const stage = req({ kind: "pageboard", id: `pageboard:${sid}:${hash(JSON.stringify(pic))}`, ...pic });
   return { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
 }
