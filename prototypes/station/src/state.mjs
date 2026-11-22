@@ -112,7 +112,7 @@ export const capsuleFree = (st) => st.caps.findIndex((c) => !c);   // the first 
 export const capsuleBuds = (st) => st.caps.map((c, i) => (isBud(c) ? i : -1)).filter((i) => i >= 0);
 export function freshSt(wid, turn, now = Date.now()) {
   return installBud({ schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: START.e, d: START.d, s: START.s,
-    tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
+    tray: [], waiting: [], samples: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, rooms: 1, sheds: [], sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [], readingPod: null, dried: [] });
 }
@@ -186,7 +186,7 @@ export function migrate(st, now = Date.now(), sv = null) {
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
   installBud(st);   /* the nursery's capsules (additive, no schema bump): an older save's one bud goes in the first capsule */
-  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["tray", "waiting", "samples", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
   if (st.waiting.length) { st.tray.push(...st.waiting); st.waiting = []; }   /* no rack: the pods that waited on the mat are at home with the rest, in the order they came (additive, no schema bump) */
   if (st.readingPod === undefined || (st.readingPod != null && !st.tray.some((p) => p.id === st.readingPod))) st.readingPod = null;   /* the pod on the reading-room bench (additive) */
   if (!Array.isArray(st.readHome)) st.readHome = [];   /* chapters read at the last docks, waiting for the Home notice and the reveal (additive, no schema bump) */
@@ -458,6 +458,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
       st.tray.push(pod);   // no rack: every pod comes home
       ids.push(pod.id);
     }
+    for (const q of c.samples || []) { if (!Array.isArray(st.samples)) st.samples = []; st.samples.push({ id: c.id + ":" + q.id, lo: q.lo ?? null, name: q.name ?? null, sp: q.sp ?? null, habit: q.habit, item: q.item, chapter: q.chapter, n: c.n, turn: c.turn | 0 }); }   // W4: the samples a crate brings wait for the bench (a later stage); one per habit of a wild one, tagged with its chapter
     for (const sp of c.met || []) { const id = typeof sp === "string" ? sp : speciesId(sp); if (id && !st.metIds.includes(id)) st.metIds.push(id); }
     const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); const dried = dryPods(st);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
