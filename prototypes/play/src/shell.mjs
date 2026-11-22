@@ -189,9 +189,9 @@ function placeStation(p) {
 let sentNarrow = null;
 function tellNarrow(force = false) {
   const on = !!(PLAN.station && PLAN.station.narrow), win = !!(PLAN.station && PLAN.station.view);   // win: the screen is a window of the face (the phone, upright or sideways): the room view stands bare there
-  const w = win ? Math.floor(PLAN.station.view.w) : 0, key = on + ":" + w;   // w: the window's width in lp: the walkers stay inside it
+  const w = win ? Math.floor(PLAN.station.view.w) : 0, h = win ? Math.floor(PLAN.station.view.h) : 0, key = on + ":" + w + ":" + h;   // w, h: the window's size in lp: the walkers stay inside it
   if (!force && key === sentNarrow) return; sentNarrow = key;
-  try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on, window: win, w }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
+  try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on, window: win, w, h }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
 }
 function stationFocus(m) {
   const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null;

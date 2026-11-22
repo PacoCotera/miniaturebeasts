@@ -150,7 +150,7 @@ function syncPropsNow() {
   const wait = roomsPending();   // a room that must draw before its pictures are in: ask for them (the front of the queue) and keep the face as it is until they are placed (no stand-in is drawn)
   if (wait.length) { for (const r of wait) if (!roomAsked.has(r)) { roomAsked.add(r); ensureRoom(r).then(() => roomAsked.delete(r), (e) => { CORE.renderErrors.push(String(e && e.message || e)); console.error(e); }); } return; }
   const p = screenProps(FX.msg); if (UI.narrow && p.msg && (p.msg.screen === "home" || p.msg.idle === true)) p.msg = { ...p.msg, narrow: true };
-  if (UI.windowW && p.msg && (p.msg.idle === true || p.msg.bare === true)) p.msg = { ...p.msg, windowW: UI.windowW };   // the phone's window (upright or sideways): the mibis walk inside what it shows   // the play page's upright phone window: Home's narrow form (home.json narrow)
+  if (UI.windowW && p.msg && (p.msg.idle === true || p.msg.bare === true)) p.msg = { ...p.msg, windowW: UI.windowW, windowH: UI.windowH };   // the phone's window (upright or sideways): the mibis walk inside what it shows   // the play page's upright phone window: Home's narrow form (home.json narrow)
   const key = JSON.stringify(p.msg);
   CORE.lastOwed = p.owed ?? [];   // the current scene's requests that carry an owed habit key (snapshot): read on every sync, as the same props may be asked with or without it
   queueWarm();   // after the props are built, before the early return: a warm that was held waits for the hold, not for a change of props
