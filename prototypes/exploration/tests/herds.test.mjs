@@ -16,7 +16,7 @@ test("a cell with two spawn areas of two species: each creature lands inside the
       const r = plain(p.run(`(() => { const key = '${c}', lay = layout(key); S.cr = S.cr.filter(w => w.c !== ${c}); const idx = i => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].find(k => spOf(k).name.toLowerCase() === lay.spawns[i].species[0]);
         const plan = [[91001, idx(0), 0], [91002, idx(1), 1], [91003, idx(0), 0]]; S.cr.push(...plan.map(([id, sp]) => ({ id, sp, c: ${c}, cv: 0, b: .5, s: 0 })));
         delete S.exp.live[key]; const live = ensureLive(key); const inside = (w, q) => w.x >= q.x && w.y >= q.y && w.x < q.x + q.w && w.y < q.y + q.h;
-        return { id: lay.baked.id, mine: plan.map(([id, sp, a]) => { const w = live.cr.find(q => q.id === id); return !!w && inside(w, lay.spawns[a]); }) }; })()`));
+        return { id: lay.baked.id, mine: plan.map(([id, sp, a]) => { const w = live.cr.find(q => q.id === id); return !!w && (routineBase(sp) ? true : inside(w, lay.spawns[a])); }) }; })()`));   // a kind with a routine (the Loika, walk W2) starts at the haunt its routine keeps, not in a spawn area
       assert.deepEqual(r.mine, [true, true, true], `seed ${seed} cell ${c} ${r.id}: a creature outside the area of its species`);
     }
   }
