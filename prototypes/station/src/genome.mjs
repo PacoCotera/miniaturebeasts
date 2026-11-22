@@ -45,6 +45,10 @@ export function podGenome(frame, gs, dv = 1) {
   }
   return g;
 }
+// A named wild Loika's genome (walk-look-carry-3): drawn from the realm's seed and her id with the wild draw (version 2), by this one code,
+// so the Companion's walk and the Station get the same genome for the same Loika (and her own pod takes it as a parent).
+export const wildGs = (seed, id) => { const s = `${seed >>> 0}|wild|${id}`; let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+export const wildGenome = (frame, seed, id) => podGenome(frame, wildGs(seed, id), DRAW_V);
 export const chapters = (frame) => frame.chapters;
 export const chapterOf = (frame, id) => frame.chapters.find((c) => c.id === id) ?? null;
 export const traitOf = (frame, id) => frame.chapters.flatMap((c) => c.traits).find((t) => t.id === id) ?? null;
