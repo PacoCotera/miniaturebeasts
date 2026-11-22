@@ -179,7 +179,7 @@ void word_reading(void) {
       if (*v_pstr(v_fmt("%s.head", B))) {
         char hc[24]; chapter_colour(v_pstr(v_fmt("%s.id", B)), hc, sizeof hc); snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.head", B)));
         v_region("read.board.head", LAYER_CHROME); v_rect(v_fmt("read.board.%d.bar", i), pxl + 8, y + 22, 4, 12, hc);
-        v_region("read.words", LAYER_TYPE); say(v_fmt("read.board.%d.head", i), t, pxl + 20, y + 31, "glass.chapter", V_ALIGN_LEFT);
+        v_region("read.words", LAYER_TYPE); say(v_fmt("read.board.%d.head", i), t, pxl + 20, y + 31, "glass.trait", V_ALIGN_LEFT);
         snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.note", B))); say(v_fmt("read.board.%d.note", i), t, pxl + pw - 8, y + 31, "glass.quiet", V_ALIGN_RIGHT);
         continue; }
       if (has(platePic)) { v_name("read.plate"); v_nine(v_fmt("read.board.%d.plate", i), platePic, pxl, y, pw, pitch - 2, ins); }

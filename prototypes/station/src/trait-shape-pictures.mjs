@@ -12,8 +12,8 @@ export const SIZES = { large: [318, 112], pictured: [318, 140], small: [318, 66]
 // and 12 px squares barely read).
 export const LAYOUT = {
   margin: 8,
-  scale: { large: { nameY: 18, barY: 44, barH: 16, endsY: 100, dotsDy: 9 }, pictured: { nameY: 16, barY: 28, barH: 14, endsY: 134, dotsDy: 9, picY: 58, pic: 52 }, small: { nameY: 16, barY: 30, barH: 10, endsY: 62, dotsDy: 7 }, tiny: { nameY: 14, barY: 22, barH: 6, endsY: 0, dotsDy: 7 } },
-  set: { large: { nameY: 18, top: 28, gap: 6, cardH: 34, labelDy: 22 }, pictured: { nameY: 16, top: 24, gap: 6, cardH: 54, labelDy: 50, picH: 32 }, small: { nameY: 16, top: 24, gap: 5, cardH: 26, labelY: 64 }, tiny: { nameY: 14, top: 19, gap: 6, cardH: 18, cardW: 26 } },
+  scale: { large: { nameY: 18, barY: 44, barH: 16, endsY: 100, dotsDy: 9 }, pictured: { nameY: 16, barY: 28, barH: 14, endsY: 134, dotsDy: 9, picY: 58, pic: 52 }, small: { nameY: 16, barY: 30, barH: 10, endsY: 62, dotsDy: 7 }, tiny: { nameY: 17, barY: 25, barH: 6, endsY: 0, dotsDy: 7 } },
+  set: { large: { nameY: 18, top: 28, gap: 6, cardH: 34, labelDy: 22 }, pictured: { nameY: 16, top: 24, gap: 6, cardH: 54, labelDy: 50, picH: 32 }, small: { nameY: 16, top: 24, gap: 5, cardH: 26, labelY: 64 }, tiny: { nameY: 17, top: 21, gap: 6, cardH: 16, cardW: 26 } },
 };
 const GOLD = [240, 192, 96], BLUE = [104, 168, 240], PALE = [214, 222, 230], TRACK = [58, 72, 84], CARD = [36, 48, 56], DARK = [20, 28, 34];
 const M = LAYOUT.margin;
@@ -59,7 +59,7 @@ export function shapePicture(model, size, opts = {}) {
     c.frame(x0 - 1, by - 1, x1 - x0 + 3, bh + 2, 1, DARK);
     if (model.rough) { const a = X(model.rough[0]), b = X(model.rough[1]); c.rect(a, by - 2, b - a + 1, bh + 4, PALE, 0.22); c.frame(a, by - 2, b - a + 1, bh + 4, 1, PALE, 3); }
     const big = size === "large" || size === "pictured";
-    for (const o of model.others) c.disc(X(o), dots, big ? 3 : 2, PALE);
+    if (size !== "tiny") for (const o of model.others) c.disc(X(o), dots, big ? 3 : 2, PALE);   // the board's tiny row draws no dots: they read as noise at phone size (the large and small rows keep them)
     if (model.copies) {
       const bw = big ? 4 : size === "small" ? 3 : 2, bl = big ? 8 : size === "small" ? 6 : 4;
       for (const k of model.copies) { const x = X(k); c.rect(x - (bw >> 1), by - bl, bw, bl, BLUE); }
