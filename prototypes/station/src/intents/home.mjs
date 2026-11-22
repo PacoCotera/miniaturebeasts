@@ -18,7 +18,7 @@ export function doNeed(h, nd) {
   if (!nd) return;
   if (nd.act === "cargo") { h.goto("cargo"); if (nd.key === "crates") openBay(h); }   // the crates need: ✓ Open the bay goes through Cargo on the same key (decision panel spec, cut 1)
   else if (nd.act === "store") openStore(h, "home", { reveal: true });   // chapters read while the Companion was out: the bench, the teaser, then the chapters one by one
-  else if (nd.act === "incubator") { h.goto("incubator"); if (nd.key === "budReady") incubatorIntent(h, "room", "confirm"); }   // the bud-ready need: ✓ Open the bud, the hatch on the same key (cut 2); a growing bud only looks
+  else if (nd.act === "incubator") { S.pickCapsule(h.st, h.settings, h.now()); h.goto("incubator"); if (nd.key === "budReady") incubatorIntent(h, "room", "confirm"); }   // the bud-ready need: ✓ Open the bud, the hatch on the same key (cut 2); a growing bud only looks
   else if (nd.act === "meet") { toVivarium(h, h.ui.meet); }
   else if (nd.act === "cross") { h.ui.hab.id = nd.id; h.ui.hab.f = "cross"; h.goto("habitat"); }   // the pair need: ✓ opens the first up close with the ring on Cross (its ✓ opens the Cross screen)
   else if (nd.act === "pods") { if (nd.key === "drying") toPodsDrying(h); else if (nd.key === "waitingPods") toPodsWaiting(h); else toPods(h); }   // the drying need opens on the first drying pod with Freshen set; the pods that wait on the mat with Let go set (the pods picker, the entry table)
@@ -33,7 +33,7 @@ export function intent(h, target, verb) {
   else if (target === "vivarium") h.goto("vivarium");   // the Vivarium's whole: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.homePanel)
   else if (target === "library") toLibrary(h);
   else if (target === "pods") researchKey(h);
-  else if (target === "incubator") h.goto("incubator");
+  else if (target === "incubator") { S.pickCapsule(h.st, h.settings, h.now()); h.goto("incubator"); }
   else if (target === "companion") { if (S.docked(h.st)) { ui.bench.f = null; h.goto("bench"); } }
   else if (target === "bay") h.goto("cargo");
   else if (target === "settings") { if (h.settings.realmSleep) h.goto("settings"); }   // the Settings knob: behind the developer setting realmSleep until the screen is signed

@@ -101,7 +101,7 @@ export function installBud(st) {
     get() { const i = WORKING.has(this) ? WORKING.get(this) : firstBud(this.caps); return i >= 0 && isBud(this.caps[i]) ? this.caps[i] : null; },
     set(v) { const w = WORKING.has(this) ? WORKING.get(this) : null;
       if (!v) { const i = w ?? firstBud(this.caps); if (i != null && i >= 0) this.caps[i] = null; return; }
-      const i = w ?? this.caps.findIndex((c) => !c); this.caps[i >= 0 ? i : 0] = v; } });
+      const cur = firstBud(this.caps), i = w ?? (cur >= 0 ? cur : this.caps.findIndex((c) => !c)); this.caps[i >= 0 ? i : 0] = v; } });   // a bud that is there is replaced (the old single-bud way); a new bud goes to a free capsule through growPod, grow and doCross, never through this
   return st;
 }
 // Run a rule that speaks of `st.bud` on capsule i.
@@ -763,6 +763,10 @@ export const budMinutesLeft = (st, settings, now) => {
   return scale > 1 && left < 1 ? 0 : Math.max(1, Math.ceil(left - 1e-9));
 };
 export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
+// Several capsules grow at once: the first ready one (its index, -1 for none), whether any is ready, and making the first ready one the capsule the legacy `st.bud` rules (the Incubator screen, Hatch) speak of.
+export const readyCapsule = (st, settings, now) => capsuleBuds(st).find((i) => withCapsule(st, i, () => budReady(st, settings, now))) ?? -1;
+export const anyBudReady = (st, settings, now) => readyCapsule(st, settings, now) >= 0;
+export function pickCapsule(st, settings, now) { const i = readyCapsule(st, settings, now); setWorking(st, i >= 0 ? i : null); return i; }
 // The leaves of the wait, one rule for the Incubator, its intents and Home's chamber: total the bud's minutes (at most max), full the whole minutes passed, rows 0 to rowsOf - 1 of the current leaf (rowsOf whole rows a minute: a row every 3 s at the real pace); rows is 0 once full reaches total.
 export function budLeaves(st, settings, now, max, rowsOf = 20) {
   const B = st.bud; if (!B) return { total: 0, full: 0, rows: 0 };
@@ -782,7 +786,7 @@ const counted = (T, n, max) => (n === 1 ? needLine(T.noticeOne) : needLine(T.not
 // The Vivarium is full and something waits for a place: a ready bud, or a pod that could be incubated now (read, the price in hand).
 export function waitsForPlace(st, settings) {
   if (!vivFull(st, settings)) return false;
-  if (budReady(st, settings)) return true;
+  if (anyBudReady(st, settings)) return true;
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud); if (!grown.length) return false;
   const c = growCost(st, {}, settings); return canPay(st, c.e, 0, c.s);
 }
@@ -798,7 +802,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0
   if (docked(st) && cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
   { const rh = readHomeNeed(st); if (rh) return { text: rh.n === 1 ? needLine(N.readHome.noticeOne, { Species: rh.Species }) : needLine(N.readHome.notice, { N: countWord(rh.n, 6), Species: rh.Species }), act: "store", label: needLine(N.readHome.label) }; }   // chapters read while the Companion was out: after the crates
   if (waitsForPlace(st, settings)) { const add = !addRoomBlock(st, settings); return { text: needLine(N.full.notice), act: "vivarium", ring: add ? "room.new" : "resident", label: needLine(add ? N.full.labelAdd : N.full.labelMake) }; }
-  if (budReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
+  if (anyBudReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
   if (portraits) return { text: needLine(N.portrait.notice), act: "bay", label: needLine(N.portrait.label) };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: needLine(N.meet.notice, { name: m.name }), act: "meet", label: needLine(N.meet.label, { name: m.name }) }; }
   // the pair need (two adults could cross) is Home's line alone, never this frame notice: the Cross screen and the namer would say it over their own words
@@ -828,7 +832,7 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
   if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
   { const rh = readHomeNeed(st); if (rh) return { key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" }; }   // chapters read while the Companion was out: after the crates, before anything else (Home's line carries the kind's name: views/home-props.mjs homeNeeds)
   if (waitsForPlace(st, settings)) return { key: "full", act: "vivarium", ring: addRoomBlock(st, settings) ? "resident" : "room.new" };   // no place is free and something waits for one: add a room (the ring on the new room) or make room (the ring on a resident)
-  if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
+  if (anyBudReady(st, settings)) return { key: "budReady", act: "incubator" };
   const drying = dryingNext(st); if (drying.length) return { key: "drying", n: drying.length, max: 6, act: "pods" };   // the only warning away from Pods before a pod is lost
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
@@ -857,7 +861,7 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
 export function idleKey(st, sv, settings = DEFAULT_SETTINGS) {
   const cs = bayCrates(st, sv);
   if (docked(st) && cs.length) return { key: "crates", n: cs.length };
-  if (budReady(st, settings)) return { key: "budReady" };
+  if (anyBudReady(st, settings)) return { key: "budReady" };
   if (st.bud) return { key: "budGrowing" };
   if (!docked(st)) { const ms = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean); if (ms.length) return { key: "out", n: ms.length, name: ms[0].name }; }
   return null;
@@ -1161,11 +1165,11 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   const first = !!st.firstMibi, minutes = budMinutes(st, changed.length, settings);
   for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
   const read = [...p.read]; for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch && !read.includes(ch.id)) read.push(ch.id); }
-  st.bud = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
+  const slot = Math.max(0, capsuleFree(st)); st.caps[slot] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
   st.firstMibi = false;
   leavePod(st, p);
-  logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
-  return { ok: true, bud: st.bud, cost };
+  logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.caps[slot].code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
+  return { ok: true, bud: st.caps[slot], cost };
 }
 // Grow it (station step 5, the nursery's pod page; walk-4 picture 10): the pod goes into a free capsule and grows on the real clock. A pod is never read first (no sample, no price, nothing revealed) and nothing else is
 // spent: no Energy, no Data, no Essence. Refused only for want of a free capsule (the nursery says so in one line). Returns { ok, bud, capsule } or { ok: false, why: "busy" | "gone" }.
@@ -1368,10 +1372,10 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
   const baseMinutes = budMinutes(st, 0, settings), minutes = podMinutes(baseMinutes, vigourOfF(k));   // close kin costs vigour: a slower pod (gdd 7.6)
   for (const m of [a, b]) m.pairedAt = [...(m.pairedAt || []), now].slice(-8);   // the rest between pairings runs on these (restOf); additive, no schema bump
-  st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
+  const slot = Math.max(0, capsuleFree(st)); st.caps[slot] = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
   st.firstMibi = false;
-  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
-  return { ok: true, bud: st.bud, cost };
+  logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.caps[slot].code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
+  return { ok: true, bud: st.caps[slot], cost };
 }
 // Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.
 export function mibiReadCost(st, m, chapterId, settings = DEFAULT_SETTINGS) { return readCost(st, { ...m, idd: 1, read: m.read }, chapterId, settings); }

@@ -277,7 +277,7 @@ test("Grow: validated and paid once; the first bud ever five minutes, then twent
   assert.equal(r.ok, true); assert.equal(st.e, 18); assert.equal(st.s, 20); assert.equal(st.d, 19);
   assert.equal(st.bud.minutes, 5, "the first bud ever: five minutes"); assert.equal(st.bud.firstEver, true); assert.deepEqual(st.bud.shaped, ["eye-rings"]);
   assert.equal(st.tray.length, 1); assert.deepEqual(st.outbox, [], "Grow paints nothing (decisions 10-11 14:17)"); assert.match(st.bud.code, /^[0-9A-Z]{9}$/);
-  assert.match(S.growBlock(st, b, {}, settings), /busy/);
+  { const keep = st.caps.slice(); st.caps.fill({ kind: "founder" }, 1); assert.match(S.growBlock(st, b, {}, settings), /busy/); st.caps = keep; }
   assert.equal(S.budProgress(st, settings, 1000 + 2.5 * 60000), 0.5); assert.equal(S.budReady(st, settings, 1000 + 5 * 60000), true);
   assert.equal(S.budChapterKnown(st, "coat", settings, 1000), true, "a read chapter is known from the start");
   assert.equal(S.budProgress(st, { ...settings, budScale: 10 }, 1000 + 30000), 1, "the developer's bud scale");
@@ -351,7 +351,7 @@ test("the cross: refusals before cost; a child of two founders with real parents
   const B = st.bud; assert.equal(B.kind, "cross"); assert.equal(B.parents.length, 2); assert.equal(B.parents[0].id, a.id); assert.ok(B.parents[1].genome); assert.equal(B.minutes, 20); assert.equal(B.kinship, 0);
   assert.deepEqual(B.read, S.childKnownChapters(fr, fc), "known only where every trait of the chapter is firm");
   for (const l of fr.loci) if (l.kind !== "locked") { const [x, y] = B.genome.loci[l.id]; const cont = typeof x === "number"; if (!cont) { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "one copy from each parent at " + l.id); } else if (isDoing(l.id)) assert.equal(x, y, "a doing holds one value on both copies"); else { assert.ok(a.genome.loci[l.id].includes(x) && b.genome.loci[l.id].includes(y), "a look: one copy from each parent, exactly, at " + l.id); } }
-  assert.match(S.crossBlock(st, null, a, b, settings), /busy/);
+  { const keep = st.caps.slice(); st.caps.fill({ kind: "founder" }, 1); assert.match(S.crossBlock(st, null, a, b, settings), /busy/); st.caps = keep; }
   const o = S.openBud(st, null, settings, 1000 + 20 * 60000); assert.equal(o.ok, true); const child = o.mibi;
   assert.equal(child.parents.length, 2); assert.deepEqual(child.read, B.read); assert.equal(S.mibiStage(st, child), "juvenile");
   // reading the child: a blended chapter costs as a pod's would, half once read on the species before
@@ -578,7 +578,7 @@ test("growBlockKey names what stops Grow in the rules' order (unidentified, busy
   S.skipIdentify(st, p); st.e = 99; st.d = 99; st.s = 99; assert.equal(S.growBlockKey(st, p, {}, settings), null); assert.equal(S.growBlock(st, p, {}, settings), "");
   st.e = 0; st.s = 0; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "short", short: "⚡ ❀", from: "field" }); assert.equal(S.growBlock(st, p, {}, settings), S.shortText(st, 2, 0, 4));
   const free = { ...settings, economy: "free" }; assert.equal(S.growBlockKey(st, p, {}, free), null, "a free economy is short of nothing");
-  st.bud = { kind: "founder" }; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "busy", short: null }, "busy before short"); assert.equal(S.growBlock(st, p, {}, settings), "the incubator is busy"); st.bud = null;
+  st.bud = { kind: "founder" }; st.caps.fill({ kind: "founder" }, 1); assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "busy", short: null }, "busy before short"); assert.equal(S.growBlock(st, p, {}, settings), "the incubator is busy"); st.caps.fill(null); st.bud = null;
   for (let i = 0; i < 8; i++) st.mibis.push({ id: 100 + i, room: 0, slot: i, bay: i, released: false }); assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "full", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "the Vivarium is full"); st.mibis = [];
   assert.deepEqual(S.growBlockKey(st, p, {}, settings, ["crown"]), { key: "clash", short: null }); assert.match(S.growBlock(st, p, {}, settings, ["crown"]), /^this shape won't grow · /);
   st.e = 1; st.d = 0; st.s = 9; assert.equal(S.shortIcons(st, 2, 1, 4), "⚡ ◆"); assert.equal(S.shortIcons(st, 1, 0, 9), ""); assert.equal(S.shortIcons(st, 0, 0, 10), "❀");
