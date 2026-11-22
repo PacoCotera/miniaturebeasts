@@ -114,7 +114,7 @@ export function readView(view, m, spec, req) {
   // the stamp: the one-time moment at the end of the first read ever, and the stamp view (▲ on the rail) once taught
   const moment = ui.moment && ui.moment.pod === p.id ? ui.moment : null;
   if (moment || at === "stamp" || ui.folding) out.stamp = stampOf(req, st, p, fr, rr, moment ?? (ui.folding?.was === "moment" ? { chapter: null } : null), Sg, settings);
-  view.line = lineOf(m, spec, out, p, ch, { at, isRead, sealed, reading, moment });
+  view.line = lineOf(m, spec, out, p, ch, { at, isRead, sealed, reading, moment }); if (p.page && !view.line.subject) view.line.subject = ch.name + (isRead ? ", read" : ", still a surprise");   // her page: the middle of the foot says the chapter in hand, so the goal line does not stand in it
   view.targets = targetsOf(out, { at, isRead, sealed, reading, moment, ch });
   view.resolve = {}; prune(out);
   return view;
