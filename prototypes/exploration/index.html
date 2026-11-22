@@ -2165,11 +2165,13 @@ function ensureCharge(ex) {
   stones.sort((a, b) => (a.w > 12) - (b.w > 12) || a.d - b.d || a.w - b.w || a.c - b.c);
   if (stones.length) { const o = stones[0]; setFS(o.key, o.f.id, { ws: S.turn }); ex.stats.preCharged = 1; }
 }
-function startExpeditionNow(type, cell, firstPodList) {   // firstPodList: the first pods, already worked out by startExpedition (it waited for the places they read)
-  flushRipe();
+function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: the first pods, already worked out by startExpedition (it waited for the places they read)
+  // a set-out in the night's light (a camp made late in the day) would end seconds in: the night's end runs first, at the Station (dry set-out, then the end), and the lift is at dawn
+  if (!dry && S.day.camp != null && partOfDay(S.day.spent) === DAY.parts[DAY.parts.length - 1][0]) { startExpeditionNow(type, cell, firstPodList, true); endExpedition("night"); startExpeditionNow(type, cell, firstPodList); fxMsg(DAY_TEXT.newDay, 4); return; }
+  if (!dry) flushRipe();
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
-  if (firstPlacement()) S.pods.push(...(firstPodList || firstPods(S.seed, cell, S.pods)));   // a new world's first expedition: two pods in reach (X2)
-  const sr = shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
+  if (!dry && firstPlacement()) S.pods.push(...(firstPodList || firstPods(S.seed, cell, S.pods)));   // a new world's first expedition: two pods in reach (X2)
+  const sr = dry ? null : shedsDue()[0];   // one shed pod an expedition; the rest wait for the next
   if (sr) { const c = shedCell(cell, tier.range, S.pods, sr.g);
     if (c != null) S.pods.push({ id: 's' + sr.id, k: String(c), x: -1, y: -1, sp: sr.sp, h: 0, bur: 0, g: sr.g, how: 'shed', shed: sr.id, of: sr.name, genome: sr.genome }); }
   if (S.report) S.report.news = null;   // the opening's pips on last turn's cells end with the set-out
@@ -2186,6 +2188,7 @@ function startExpeditionNow(type, cell, firstPodList) {   // firstPodList: the f
     stats: { flee: 0, sheds: 0, rev: 0, lit: 0, hits: 0, putFeeds: 0, handFeeds: 0, feedTries: 0, maxLvl: 0, stormActs: 0, openStormActs: 0 },
     supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [] };
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
+  if (dry) return;   // only the carrier of the night's end (see the top)
   revealAround(cell, 1); S.visited[cell] = 1;
   ex.reach = reachCells(cell, ex.range);
   if (reachHere(ex)) { chooseWarm(ex); ensureCharge(ex); } else { ex.warm = []; ex.warmOwed = true; }   // the places of the far reach are still being made: the warm stones are chosen over all of them when they are here (warmPay), as they always were

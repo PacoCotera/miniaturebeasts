@@ -64,5 +64,6 @@ export function partOfDay(spent) {
 // [copy] words for the copywriter's round (they say the meaning only)
 export const DAY_TEXT = {
   nightEnds: 'Night ends the day · the Companion wakes at camp',
+  newDay: 'A new day · you set out at dawn',   // a set-out in the night's light: the night's end runs first, at the Station
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
 };
