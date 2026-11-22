@@ -4,7 +4,7 @@
    the lane's tags filling in a clip, the shine, the lamp lit), the 200 ms dither between places, and the stamp in progress (the rail lifting, the lanes gathering, the fold, the block's ring, the line).
    The face draws only rectangles, text, 1:1 pictures, nine-slices, clips, composed one-pixel line work and the 16-level dither (§2.1): every soft edge is a picture.
    Spec: `pods` regions.read. Props: regions.read { ground, lamp, glyph, name, why, chamber, from, marks { glint, star }, rail { pic, hand, trait, notch, nudge, lanes [{ id, n, state, colour, marks }] },
-   reading { lane, chamber, rail, chip, sweep, shine } | null, right { form, chapter { id, name, colour, marks, tick, lock }, plate, glow, tick, glint, star, lock, badgeGlint, badgeStar, moon,
+   reading { lane, chamber, rail, chip, sweep, shine } | null, right { form (read, unread, detail, sealed, identify, board: her board, rows [{ head, id, note } | { trait, shape }]), chapter { id, name, colour, marks, tick, lock }, plate, glow, tick, glint, star, lock, badgeGlint, badgeStar, moon,
    plates [{ trait, kind, shown { pic, caption }, carried { pic, caption }, chips [], glint, goal }], key { price, state, pic, diamond } | null, beside { sprout, text }, chip { n, pic, diamond } | null,
    mate { name, glyph, rows [{ pic, seeds, odds, goal }] } | null }, stamp { plate, stamp, gather, size, plateSize, blocks [[x, y, w, h]], block, mode, line, veil } | null }.
    Events: read on "read" (the read's 800 ms), dither on "chamber" (200 ms between places), wipe on "nudge" (the bracket's stop) and "keyShake" (the held key), moment on "stamp" (the first read's
@@ -169,6 +169,27 @@ void word_reading(void) {
     if (spec_len("props", P ".right.chip") >= 0 && (!reading || ra.elapsed >= 600)) { int cr[4]; v_srect(S, R ".right.chip.rect", cr); snprintf(a, sizeof a, "%s", v_pstr(P ".right.chip.pic")); v_name("read.chip"); v_slot("read.chip", a, NULL, cr[0], cr[1], cr[2], cr[3], 1);
       v_region("read.chip", LAYER_TYPE); say("read.chip.plus", "+", cr[0] + si(R ".right.chip.plusX", 30), cr[1] + si(R ".right.chip.baseline", 23), "glass.chip", V_ALIGN_LEFT); snprintf(a, sizeof a, "%s", v_pstr(P ".right.chip.diamond")); v_name("read.chip"); pic_c("read.chip.diamond", a, cr[0] + si(R ".right.chip.diamondX", 52), cr[1] + cr[3] / 2);
       snprintf(t, sizeof t, "%d", v_pint(P ".right.chip.n", 1)); v_region("read.chip", LAYER_TYPE); say("read.chip.n", t, cr[0] + si(R ".right.chip.nX", 66), cr[1] + si(R ".right.chip.baseline", 23), "glass.chip", V_ALIGN_LEFT); }
+  }
+  /* her board (station step 3): the right frame is a column of slots at one pitch, each a chapter's head (its name, and "not looked at" or "watch her" on the right) or a trait's tiny shape on its plate with the trait's name */
+  if (strcmp(form, "board") == 0) {
+    int pxl = si(R ".right.plate.x", 648), pw = si(R ".right.plate.w", 334), cs = si(R ".right.plate.corners", 12), ins[4] = { cs, cs, cs, cs }, top = si(R ".right.board.top", 134), pitch = si(R ".right.board.pitch", 40);
+    char platePic[160]; snprintf(platePic, sizeof platePic, "%s", v_pstr(P ".right.plate"));
+    for (int i = 0, nr = v_plen(P ".right.rows"); i < nr && i < 12; i++) {
+      char B[48]; snprintf(B, sizeof B, P ".right.rows.%d", i); int y = top + i * pitch;
+      if (*v_pstr(v_fmt("%s.head", B))) {
+        char hc[24]; chapter_colour(v_pstr(v_fmt("%s.id", B)), hc, sizeof hc); snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.head", B)));
+        v_region("read.board.head", LAYER_CHROME); v_rect(v_fmt("read.board.%d.bar", i), pxl + 8, y + 22, 4, 12, hc);
+        v_region("read.words", LAYER_TYPE); say(v_fmt("read.board.%d.head", i), t, pxl + 20, y + 31, "glass.chapter", V_ALIGN_LEFT);
+        snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.note", B))); say(v_fmt("read.board.%d.note", i), t, pxl + pw - 8, y + 31, "glass.quiet", V_ALIGN_RIGHT);
+        continue; }
+      if (has(platePic)) { v_name("read.plate"); v_nine(v_fmt("read.board.%d.plate", i), platePic, pxl, y, pw, pitch - 2, ins); }
+      { char shp[160]; snprintf(shp, sizeof shp, "%s", v_pstr(v_fmt("%s.shape.pic", B))); int sz[2];
+        if (*shp && has(shp) && v_asset_size(shp, sz) == 0) {
+          int ox = pxl + (pw - sz[0]) / 2, oy = y + (pitch - 2 - sz[1]) / 2, M = si(R ".right.shapes.margin", 8);
+          v_name("read.shape"); pic(v_fmt("read.board.%d.shape", i), shp, ox, oy); v_region("read.words", LAYER_TYPE);
+          snprintf(t, sizeof t, "%s", v_pstr(v_fmt("%s.trait", B))); say(v_fmt("read.board.%d.n", i), t, ox + M, oy + si(R ".right.shapes.scale.tiny.nameY", 14), "glass.trait", V_ALIGN_LEFT); } }
+    }
+    goto key;
   }
   /* the plates of the form's layout: (y, h) each, the shown disc's radius and centre, the carried's radius */
   int n = v_plen(P ".right.plates"); if (n <= 0) goto key;
