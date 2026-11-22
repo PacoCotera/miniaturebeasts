@@ -32,8 +32,7 @@ individuals:
 A Loika that is plain but carries one pale copy looks plain; its pale copy is
 hidden and can pass to a child. For example, two unrelated Loikas that are both
 plain and both carry pale have, on average, one pale-patched child in four.
-Their Eyes blend: each child's eyes fall between its parents', nudged a
-little either way. Drive and Efficiency are doings: they move the Loika, they
+Their Eyes are a look with two copies: each child takes one copy from each parent, exactly, and shows the middle of its two. Drive and Efficiency are doings: they move the Loika, they
 never change its body, and only breeding changes them.
 
 ## Words
@@ -262,7 +261,8 @@ Each heritable locus is crossed on its own, with no linkage between traits:
 | --- | --- |
 | **Switch** | Takes one copy from each parent, at random. The look shows by the locus's rule; the other copy hides and can pass on |
 | **Sleeping** | Crossed copy by copy like a switch, whether or not the parent wears it. It travels with its switch |
-| **Continuous** | Sits between its parents' shown values, nudged by up to 10 percent of the locus range either way, and kept inside the species' pool. The value is stored on a fixed fine step of the locus range. Both copies equal the drawn value, so a blend hides nothing |
+| **Continuous, a look** | Two copies, one from each parent (either of that parent's two, equal chance), each passed exactly as it is: no nudge. She shows the middle of her two copies, so the middle can hide two copies far apart. A wild founder's two copies are drawn apart (each the mean of three uniform draws over the pool) and set on one of the scale's steps (a first guess of seven; the art director sets the number). A legacy copy off the fine step is set on it as it passes |
+| **Continuous, a doing** | One value held on both copies, between the parents' values, nudged by up to 10 percent of the locus range either way (narrower with kinship), kept inside the pool and stored on the fixed fine step. It hides nothing |
 | **Locked** | Takes the frame's pair. It is never crossed |
 
 A child's copies come only from its parents. There is no mutation.
@@ -270,28 +270,34 @@ A child's copies come only from its parents. There is no mutation.
 The child is checked whole. A child that cannot be built never exists; the
 cross is not drawn again.
 
-The more removed the two parents' genomes, the better the cross; inbreeding
-brings a penalty.
+Close kin has no rule on the copies (owner, 2026-11-21: "let's drop the rule"). A
+look's copy passes exactly or not at all; a hidden copy is never taken twice
+because the parents are kin; the odds are the four pairings of the parents'
+copies, the same for kin and for strangers. Two half siblings' young land at
+exactly the strangers' fractions.
 
-**Relatedness** is kinship counted from recorded parents, three generations
+**Relatedness** is kinship counted from recorded parents, four generations
 back. Two wild founders are unrelated (kinship 0). A parent and its child, or
 two full siblings, share a quarter; half siblings an eighth; first cousins a
 sixteenth. A parent that is not on record counts as a wild founder; where that
 happens, how alike the two genomes are is shown as a caution, never as a
-penalty.
+penalty. Who may not pair is unchanged: a parent, grandparent or
+great-grandparent with its line, and two young of one pair.
 
-**The penalty** has two halves, both growing with kinship:
+**What kin costs is vigour** (`species/framework/vigour.mjs`). F is the kinship of
+a mibi's two parents, recorded on her at the cross. Vigour is 1 − 1.6 × F, never
+below 0.5 (a founder or a young of strangers 1.0; half siblings' young 0.8;
+cousins' 0.9). Her pod grows slower: its time is multiplied by (2 − vigour). Her
+partner skill is weaker: its strength is multiplied by her vigour. It never
+changes how she looks, her health or who may pair.
 
-- **What hides, surfaces.** At each switch locus where the child would carry
-  one hidden copy, with a chance of twice the kinship it takes that hidden copy
-  twice instead, so the hidden look shows. Sleeping looks wake with their
-  switch.
-- **The line stops moving.** A blend's draw and its nudge both shrink by four
-  times the kinship. Full siblings (a quarter) have a child at exactly their
-  midpoint: a line bred brother to sister only averages itself.
+**The one dial left on kin** is on a doing, which still takes its random nudge,
+narrowed by four times the kinship.
 
-For example, two full-sibling Loikas that are both plain and carry pale have
-about two pale-patched children in four, where unrelated parents have one.
+**The rest between pairings** runs on the real clock: one length of her last
+pod's growing while her recent pairings are one to four; then that length times
+the count less three; one more length when the two are kin; five at most. It
+refuses nothing.
 
 A child is known before any reading only where its outcome is certain: both
 parents hold the same pair, with both copies equal. A blended trait is never

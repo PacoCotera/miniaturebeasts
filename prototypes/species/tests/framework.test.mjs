@@ -3,11 +3,12 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, offStepEnds, copyValue, stepOf, stepValue, BLEND_STEPS, digestAt } from "../framework/catalogue.mjs";
+import { CATALOGUE, VALIDATED, PLAN_SWITCHES, PART_SWITCHES, LOCI, resolveCopies, isContinuous, valueRange, quantize, offStepEnds, copyValue, stepOf, stepValue, BLEND_STEPS, digestAt, scaleSteps, SCALE_STEPS } from "../framework/catalogue.mjs";
 import { planFacts, rigOf, parsePlanKey } from "../framework/plans.mjs";
 import { buildIndividual, sampleIndividual, typeSpecimen, crossIndividuals, shapeTrait, checkGenome, rng, genomeDigest, findKindOf, FINDS, SELF_CHANGING, SELF_MARK, frameVersionOf } from "../framework/species.mjs";
 import { RULES } from "../framework/envelope.mjs";
-import { cross, blendRange, forecast, kinship, directKin, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY } from "../framework/cross.mjs";
+import { cross, blendRange, forecast, kinship, directKin, identity, relatedness, children, SPREAD, shedPod, SELF_KINSHIP, PENALTY, KINSHIP_DEPTH } from "../framework/cross.mjs";
+import { vigourOfF, vigourOf, podMinutes, partnerStrength, rest, restLeft } from "../framework/vigour.mjs";
 import { silhouetteMask, render, fitCamera } from "../framework/raster.mjs";
 import { validateBody } from "../framework/validate.mjs";
 import { isDoing } from "../framework/guards.mjs";
@@ -199,7 +200,7 @@ test("the forecast's quarters and ranges are honest against ten thousand crosses
   assert.deepEqual(by["eye-rings"].parents, [0.32, 0.38]);
 });
 
-test("pedigree kinship from recorded parents, genome identity as the fallback, and the penalty B with A", () => {
+test("pedigree kinship from recorded parents, genome identity as the fallback, and no kin rule on the copies", () => {
   const f = frameOf("S01");
   const r = rng("kin");
   const book = new Map(); const keep = (g) => { book.set(genomeDigest(g), g); return g; }; const lookup = (d) => book.get(d) ?? null;
@@ -221,19 +222,19 @@ test("pedigree kinship from recorded parents, genome identity as the fallback, a
   assert.throws(() => forecast(f, s1, s2, { lookup }), /direct kin/);
   assert.throws(() => cross(f, a, s1, { rng: r, lookup }), /direct kin \(child\)/);
   assert.equal(directKin(s1, h, lookup), null, "half kin cross");
-  // the penalty at kinship 1/4, as a studio picture passes it on two unrelated genomes: B surfaces a hidden copy with chance 1/2, A draws the blend at the parents' midpoint
+  // kinship 1/4 given to two unrelated genomes (E1, owner 2026-11-21): the fractions are the plain quarters, a copy passes exactly
   const eyeL = LOCI.get("growth.exterior-eye-size-ratio"), [elo, ehi] = blendRange(f, f.loci.find((l) => l.id === "growth.exterior-eye-size-ratio"));
   const eyeA = quantize(eyeL, elo + 0.25 * (ehi - elo), [elo, ehi]), eyeB = quantize(eyeL, elo + 0.75 * (ehi - elo), [elo, ehi]); // two copies in the pool, on the blend step
   const sib1 = { ...a, loci: { ...a.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [eyeA, eyeA] } };
   const sib2 = { ...b, loci: { ...b.loci, "appearance.marking-switch": ["off", "on"], "growth.exterior-eye-size-ratio": [eyeB, eyeB] } };
   const fc = forecast(f, sib1, sib2, { lookup, kinship: 0.25 }); const mk = fc.traits.find((t) => t.trait === "markings"), ey = fc.traits.find((t) => t.trait === "eye-rings");
   assert.equal(fc.kinship, 0.25);
-  assert.deepEqual(mk.looks, { off: 0.5, on: 0.5 }, "half of the carrier outcomes turn pale: two in four");
-  const eyeMid = quantize(eyeL, (eyeA + eyeB) / 2, [elo, ehi]);
+  assert.deepEqual(mk.looks, { off: 0.75, on: 0.25 }, "one in four turns pale, for kin as for strangers");
+  const eyeMid = Math.round(((eyeA + eyeB) / 2) * 1e6) / 1e6;
   assert.deepEqual(ey.range, [eyeMid, eyeMid], "the span of the four copy pairings' means: here all the midpoint");
   const N = 4000; let pale = 0, own = 0;
   for (let i = 0; i < N; i++) { const ch = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup }); if (resolveCopies(LOCI.get("appearance.marking-switch"), ch.loci["appearance.marking-switch"])) pale++; if (ch.loci["growth.exterior-eye-size-ratio"].every((c) => c === eyeA || c === eyeB)) own++; }
-  assert.ok(Math.abs(pale / N - 0.5) < 0.03, `pale ${pale / N}`); assert.equal(own, N, "under A at 1/4 every copy is a parent's own number (no nudge)");
+  assert.ok(Math.abs(pale / N - 0.25) < 0.03, `pale ${pale / N}`); assert.equal(own, N, "every copy is a parent's own number (no nudge)");
   const none = cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup, penalty: "none" }); assert.equal(none.origin.penalty, "none");
   let paleNone = 0; for (let i = 0; i < N; i++) if (resolveCopies(LOCI.get("appearance.marking-switch"), cross(f, sib1, sib2, { kinship: 0.25, rng: r, lookup, penalty: "none" }).loci["appearance.marking-switch"])) paleNone++;
   assert.ok(Math.abs(paleNone / N - 0.25) < 0.03, `without the penalty one in four: ${paleNone / N}`);
@@ -403,7 +404,7 @@ test("C4: a locked pair in either order passes checkGenome and the cross alike",
   assert.throws(() => cross(f, wrong, b, { rng: r }), /locked copy differs/, "and by the cross");
 });
 
-test("C5: the cross draws every blended copy on the blend step, inside the pool, for every species; the forecast's range is on the step too", () => {
+test("C5: the cross draws every blended copy on the blend step, inside the pool, for every species; a doing's forecast range is on the step too", () => {
   for (const f of frames) {
     const r = rng(`c5:${f.species.id}`);
     for (let i = 0; i < 20; i++) {
@@ -419,7 +420,7 @@ test("C5: the cross draws every blended copy on the blend step, inside the pool,
         }
       }
       assert.deepEqual(checkGenome(f, child), [], `${f.species.id}: a stepped child is in its pools`);
-      for (const t of forecast(f, a, b).traits) if (t.kind === "blend") for (const v of t.range) assert.ok(stepOf(LOCI.get(t.locus), v) >= 0 || offStepEnds(LOCI.get(t.locus), blendRange(f, f.loci.find((l) => l.id === t.locus))).includes(v), `${t.locus} range end ${v}`);
+      for (const t of forecast(f, a, b).traits) if (t.kind === "blend" && isDoing(t.locus)) for (const v of t.range) assert.ok(stepOf(LOCI.get(t.locus), v) >= 0 || offStepEnds(LOCI.get(t.locus), blendRange(f, f.loci.find((l) => l.id === t.locus))).includes(v), `${t.locus} range end ${v}`);
     }
   }
   const eye = LOCI.get("growth.exterior-eye-size-ratio"), [lo, hi] = valueRange(eye);
@@ -553,7 +554,7 @@ test("the shed pod: a returned mibi's self cross never equals its parent, always
   }
   assert.ok(surfaced / carriers > 0.4 && surfaced / carriers < 0.75, `carried copies come out doubled about half the time (${surfaced}/${carriers})`);
   assert.throws(() => cross(frames[0], { id: "x", genome: typeSpecimen(frames[0]) }, { id: "x", genome: typeSpecimen(frames[0]) }), /one mibi is not a pair/, "cross(m, m) stays refused");
-  assert.equal(PENALTY, "AB");
+  assert.equal(PENALTY, "A");
 });
 
 test("a shed pod is born on its frame's current version, and a parent born on an older one sheds as it crosses", () => {
@@ -762,8 +763,71 @@ test("a wild founder's two copies of a blend look differ, each the mean of 3 uni
       t.push(a, b); dif.push(a !== b);
     }
   }
-  assert.ok(dif.filter(Boolean).length / dif.length > 0.9, "the copies differ");
+  assert.ok(dif.filter(Boolean).length / dif.length > 0.6, "the copies are drawn apart (on seven steps they still differ most of the time)");
   const mean = t.reduce((s, x) => s + x, 0) / t.length, sd = Math.sqrt(t.reduce((s, x) => s + (x - mean) ** 2, 0) / t.length);
   assert.ok(Math.abs(mean - 0.5) < 0.03, `mean near the middle (${mean})`);
-  assert.ok(sd > 0.14 && sd < 0.19, `spread of a mean of 3 uniforms is 0.167 (${sd})`);
+  assert.ok(sd > 0.14 && sd < 0.20, `spread of a mean of 3 uniforms is 0.167 (${sd})`);
+});
+
+test("E1: a founder's copies sit on the scale's seven steps", () => {
+  const f = frameOf("S01"), r = rng("e1-steps");
+  const looks = f.loci.filter((l) => l.kind !== "locked" && !l.weights && l.alleles.length > 1 && isContinuous(LOCI.get(l.id)) && !isDoing(l.id));
+  for (let i = 0; i < 60; i++) {
+    const g = sampleIndividual(f, r);
+    for (const l of looks) {
+      const locus = LOCI.get(l.id), steps = scaleSteps(locus, blendRange(f, l));
+      assert.ok(steps.length <= SCALE_STEPS && steps.length >= 2, `${l.id}: at most seven steps`);
+      for (const c of g.loci[l.id]) assert.ok(steps.includes(copyValue(locus, c)), `${l.id}: ${c} is one of ${steps}`);
+    }
+  }
+});
+
+test("E1: half siblings' young land at exactly the strangers' fractions (no kin rule)", () => {
+  const f = frameOf("S01"), r = rng("e1-halfsibs");
+  const book = new Map(); const keep = (g) => { book.set(genomeDigest(g), g); return g; }; const lookup = (d) => book.get(d) ?? null;
+  const a = keep(sampleIndividual(f, r)), b = keep(sampleIndividual(f, r)), c = keep(sampleIndividual(f, r));
+  const mk = "appearance.marking-switch";
+  const carrier = (g) => ({ ...g, loci: { ...g.loci, [mk]: ["off", "on"] } });   // recessive marking carried by both
+  const s1 = keep({ ...cross(f, a, b, { rng: r, lookup }) }), h = keep({ ...cross(f, a, c, { rng: r, lookup }) });
+  const x = carrier(s1), y = carrier(h);
+  assert.equal(directKin(x, y, lookup), null, "half siblings may pair");
+  const N = 6000; let kin = 0, strangers = 0;
+  const unrelated = carrier(keep(sampleIndividual(f, r)));
+  for (let i = 0; i < N; i++) {
+    if (resolveCopies(LOCI.get(mk), cross(f, x, y, { rng: r, lookup, kinship: 0.125 }).loci[mk])) kin++;
+    if (resolveCopies(LOCI.get(mk), cross(f, x, unrelated, { rng: r, lookup }).loci[mk])) strangers++;
+  }
+  assert.ok(Math.abs(kin / N - 0.25) < 0.025, `half siblings' young show the recessive card ${kin / N}, the plain one in four`);
+  assert.ok(Math.abs(strangers / N - 0.25) < 0.025, `strangers ${strangers / N}`);
+  const fc = forecast(f, x, y, { lookup, kinship: 0.125 });
+  assert.deepEqual(fc.traits.find((t) => t.locus === mk).looks, forecast(f, x, unrelated).traits.find((t) => t.locus === mk).looks, "the printed fractions are the same");
+});
+
+test("E1: kin's vigour is lower, kinship counts four generations back, and the rest runs on the real clock", () => {
+  assert.equal(vigourOfF(0), 1); assert.equal(vigourOfF(0.125), 0.8); assert.equal(vigourOfF(0.0625), 0.9); assert.equal(vigourOfF(0.25), 0.6); assert.equal(vigourOfF(0.5), 0.5, "never below the floor");
+  assert.ok(vigourOfF(0.125) < vigourOfF(0), "close kin: lower");
+  assert.equal(podMinutes(20, 1), 20); assert.equal(podMinutes(20, 0.8), 24, "a slower pod"); assert.equal(partnerStrength(10, 0.8), 8, "a weaker partner skill");
+  const f = frameOf("S01"), r = rng("e1-vigour");
+  const book = new Map(); const keep = (g) => { book.set(genomeDigest(g), g); return g; }; const lookup = (d) => book.get(d) ?? null;
+  const a = keep(sampleIndividual(f, r)), b = keep(sampleIndividual(f, r)), c = keep(sampleIndividual(f, r));
+  const s1 = keep(cross(f, a, b, { rng: r, lookup })), h = keep(cross(f, a, c, { rng: r, lookup }));
+  const kin = cross(f, s1, h, { rng: r, lookup }), stranger = cross(f, s1, keep(sampleIndividual(f, r)), { rng: r, lookup });
+  assert.equal(kin.origin.kinship, 0.125); assert.equal(stranger.origin.kinship, 0);
+  assert.ok(vigourOf(kin) < vigourOf(stranger), "the young of half siblings is less lively than the young of strangers");
+  assert.equal(vigourOf(a), 1, "a wild founder");
+  // four generations back: a founder paired with her great-great-grandyoung reads as kin (three generations did not)
+  let g = a; const chain = [a];
+  for (let i = 0; i < 4; i++) { g = keep(cross(f, g, keep(sampleIndividual(f, r)), { rng: r, lookup })); chain.push(g); }
+  assert.ok(kinship(a, chain[4], lookup) > 0, "kinship reaches four generations");
+  assert.equal(KINSHIP_DEPTH, 4); assert.equal(directKin(chain[0], chain[4], lookup), null, "who may not pair stays three generations");
+  // the rest, on the real clock: none before a pairing, one length through four, then the count less three, kin one more, five at most
+  const min = 60000, len = 20, now = 1e9;
+  assert.equal(rest({ pairedAt: [], podMinutes: len, now }).minutes, 0);
+  assert.equal(rest({ pairedAt: [now - min], podMinutes: len, now }).lengths, 1);
+  assert.equal(rest({ pairedAt: [1, 2, 3, 4].map((i) => now - i * min), podMinutes: len, now }).lengths, 1);
+  assert.equal(rest({ pairedAt: [1, 2, 3, 4, 5].map((i) => now - i * min), podMinutes: len, now }).lengths, 2);
+  assert.equal(rest({ pairedAt: [1, 2, 3, 4, 5].map((i) => now - i * min), podMinutes: len, kin: true, now }).lengths, 3);
+  assert.equal(rest({ pairedAt: Array.from({ length: 12 }, (_, i) => now - (i + 1) * min), podMinutes: len, kin: true, now }).lengths, 5);
+  const one = rest({ pairedAt: [now - 5 * min], podMinutes: len, now });
+  assert.equal(one.minutes, 20); assert.equal(restLeft(one, now), 15); assert.equal(restLeft(one, now + 16 * min), 0);
 });

@@ -6,7 +6,7 @@
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
-import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, LANGUAGE_FRAME, isContinuous, valueRange, quantize, samePair, lookConflicts } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, LANGUAGE_FRAME, isContinuous, valueRange, quantize, onScaleStep, offStepEnds, copyValue, samePair, lookConflicts } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
 import { rng, streamOf } from "./draws.mjs";
@@ -415,10 +415,11 @@ export function typeSpecimen(frame) {
   }
   return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "type-specimen" } };
 }
-// A wild founder's copy of a blend look: the mean of 3 uniform draws over the pool's range (mostly near the middle, some apart), on the blend step.
+// A wild founder's copy of a blend look: the mean of 3 uniform draws over the pool's range (mostly near the middle, some apart), each of her two copies drawn apart, then set on a scale step (gdd 7.3 lines 5 and 6).
 function blendCopy(locus, l, r) {
   const [lo, hi] = valueRange(locus, l.alleles);
-  return quantize(locus, lo + ((r() + r() + r()) / 3) * (hi - lo), [lo, hi]);
+  const v = onScaleStep(locus, lo + ((r() + r() + r()) / 3) * (hi - lo), [lo, hi]);
+  return offStepEnds(locus, [lo, hi]).includes(v) ? l.alleles.find((id) => copyValue(locus, id) === v) ?? v : v;   // a pool end off the fine step is its allele, by name
 }
 const isBlendLook = (l) => l.kind !== "locked" && !l.weights && l.alleles.length > 1 && isContinuous(LOCI.get(l.id)) && !isDoing(l.id);
 export function sampleIndividual(frame, r, origin = { kind: "random" }) {
