@@ -200,7 +200,7 @@ function stationFocus(m) {
   // A message plate is no focus: its box is placed for the whole 1024 lp room, so it pans the window right of a narrow page. The pan before the plate comes back when the plate goes (station-pan-cause-1); a window that kept the plate's pan showed the page cut left with a dark strip.
   if (m.plate) { if (!platePan) platePan = { ...pan }; } else if (platePan) { pan = platePan; platePan = null; }
   const r = focusStep(focusSt, m.screen, box); focusSt = r.st;
-  if (r.top) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
+  if (r.top || (!box && m.screen === "pods")) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left; the nursery and a pod's page draw their own ring and post none, so after a message plate (Grow it) the window goes back to their left edge, as the standalone page does (owner #18)
   focusNow = { screen: m.screen, box };
   const p = PLAN.station; if (p && p.view) placeStation(p);
 }

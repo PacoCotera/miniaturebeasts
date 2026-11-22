@@ -45,7 +45,7 @@ export function intent(h, target, verb) {
     const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { refused(h, r); return r; }
     startHatch(h, B, r.mibi); return r;
   }
-  if (!h.settings.instantGrowDev) { h.say(h.specs.pods.strings.nursery.plateGrowing); return; }   // no "Open now" (station step 5, walk-4 picture 10: a capsule takes time and nothing else is spent): a growing pod waits its time; the developer panel's own skip (S.skipBud) still ends it
+  if (!h.settings.instantGrowDev) { h.say(h.specs.pods.strings.nursery.plateGrowing.replace("{n}", Math.max(1, S.budMinutesLeft(h.st, h.settings, h.now())))); return; }   // no "Open now" (station step 5, walk-4 picture 10: a capsule takes time and nothing else is spent): a growing pod waits its time; the developer panel's own skip (S.skipBud) still ends it
   if (noPlace(h)) return;   // Open now with no place: the same panel
   const cost = S.instantGrowCost(h.st, h.settings, h.now());
   // first-session scheme item 6: ✓ Open now never spends ❀ in one press: any price asks first, the ring on Wait (a free one, the "free" preset, acts at once)

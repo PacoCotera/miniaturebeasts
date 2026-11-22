@@ -45,7 +45,7 @@ export function nurseryIntent(h, target, verb) {
   if (ring.z === "shelf") { const row = rows[ring.i]; if (row) openPod(h, row); return; }
   const c = caps[ring.i];
   if (c.state === "ready") { S.setWorking(h.st, ring.i); h.goto("incubator"); return incubatorIntent(h, "room", "confirm"); }   // the hatch plays as it does today, on this capsule (until step 7)
-  h.say(c.state === "growing" ? Sg.plateGrowing : c.state === "young" ? Sg.plateYoung : Sg.plateFree);
+  h.say(c.state === "growing" ? fill(Sg.plateGrowing, { n: Math.max(1, c.left) }) : c.state === "young" ? Sg.plateYoung : Sg.plateFree);
 }
 
 export function podIntent(h, target, verb) {
