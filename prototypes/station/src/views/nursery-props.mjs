@@ -47,7 +47,7 @@ export function nurseryView(view, m, spec, req) {
   const C = Z.capsules, capPics = caps.map((c, i) => {
     const x = C.xs[i], on = ring.z === "caps" && ring.i === i, spPod = c.species ? podId(req, c.species) : null;
     const word = c.state === "ready" ? Sg.readyToHatch : c.state === "growing" ? fill(Sg.minLeft, { n: c.left }) : c.state === "young" ? S.cap(S.mibiById(st, c.mibi)?.name ?? "") + " " + Sg.waits : Sg.free;
-    const bw = Math.max(C.badge.minW, Math.round(word.length * Z.chars.R15) + 2 * C.badge.padX), bx = x + Math.round((C.w - bw) / 2), by = C.y + C.badge.dy;
+    const bw = Math.max(C.badge.minW, Math.round(word.length * (c.state === "ready" ? Z.chars.M18 : Z.chars.R15)) + 2 * C.badge.padX), bx = x + Math.round((C.w - bw) / 2), by = C.y + C.badge.dy;
     text(word, bx, by + C.badge.baseline, c.state === "ready" ? C.badge.readyRole : C.badge.role, "c", bw);
     return { x, y: C.y, w: C.w, h: C.h, layers: C.layers, state: c.state, progress: Math.round(c.progress * 1000) / 1000, bar: [C.bar.x0, C.bar.x1], pod: spPod && c.state !== "young" ? { id: spPod, w: C.pod.w, cx: C.pod.cx, foot: C.pod.foot } : null,
       ring: on ? [x - C.ring.pad, C.y - C.ring.pad, C.w + 2 * C.ring.pad, C.h + 2 * C.ring.pad, C.ring.radius] : null, badge: [bx, by, bw, C.badge.h, c.state === "ready" ? "ready" : ""] };

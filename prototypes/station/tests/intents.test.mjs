@@ -55,10 +55,10 @@ test("Home: ✓ goes to the target's screen (Cargo from the Bay, Pods on the pod
   const st = world(); S.seedAdults(st, "S01", 5, 2, settings); st.dock = { docked: true, at: T0 }; pod(st, "S01", [], 5, false);
   const h = host(st), go = (t) => INTENTS.home.intent(h, t, "confirm");
   go("bay"); assert.equal(h.went.at(-1), "cargo"); go("incubator"); assert.equal(h.went.at(-1), "incubator"); go("companion"); assert.deepEqual([h.went.at(-1), h.ui.bench.f], ["bench", null]); setLibrarySpecies(() => "S01"); try { h.ui.lib.l1 = "S05"; go("library"); assert.deepEqual([h.went.at(-1), h.ui.lib.l1], ["library", "S01"]); } finally { setLibrarySpecies(() => null); }
-  go("pods"); assert.equal(h.went.at(-1), "pods"); assert.deepEqual([h.ui.pods.view, h.ui.pods.focus.cur], ["inventory", "card.0"], "Home's Pods station: the Research key's faces (a bare bench: the inventory)");
+  go("pods"); assert.equal(h.went.at(-1), "pods"); assert.equal(h.ui.pods.view, "nursery", "Home's Pods station is the nursery (station step 5)");
   h.ui.hab.id = st.mibis[1].id; go("vivarium"); assert.deepEqual([h.ui.hab.id, h.went.at(-1)], [st.mibis[1].id, "vivarium"], "Home's bezel opens the whole (its ring is the view's: the mibi last seen up close)");
   go("room"); assert.deepEqual([h.went.at(-1), h.ui.hab.id, h.ui.hab.f], ["habitat", st.mibis[0].id, "cross"], "at rest the room's ✓ does the first need: two adults could cross, so Cross, up close, the ring on Cross");
-  st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; go("room"); assert.equal(h.went.at(-1), "pods", "a bud growing leaves no pair: the next need, a new pod"); st.bud = null;
+  st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; go("room"); assert.equal(h.went.at(-1), "habitat", "three capsules (station step 5): one growing bud leaves the pair need standing"); st.bud = null;
   st.dock = { docked: false, at: T0 }; let n = h.went.length; go("companion"); assert.equal(h.went.length, n, "the Companion away: ✓ does nothing (the line says it is on a trip)");
   for (const t of ["vivarium", "library", "pods", "incubator", "companion", "bay"]) { n = h.went.length; INTENTS.home.intent(h, t, "back"); assert.equal(h.went.length, n, "Home is the top: ← does nothing on " + t); } INTENTS.home.intent(h, "room", "back"); assert.equal(h.went.length, n);
   const { st: quiet } = { st: world() }; quiet.dock = { docked: true, at: T0 }; const q = host(quiet); INTENTS.home.intent(q, "room", "confirm"); assert.deepEqual(q.went, [], "at rest with no need ✓ does nothing");
