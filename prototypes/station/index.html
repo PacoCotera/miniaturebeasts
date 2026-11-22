@@ -145,6 +145,7 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
 .dock-ctl:active,.dock-ctl.is-pressed{background:#0c0a12}
 .dock-ctl:active>*,.dock-ctl.is-pressed>*{transform:translateY(1px)}
 .dock-ctl:focus-visible{outline:2px solid #ffe6ad; outline-offset:2px}
+html.smooth .st-bezel canvas{image-rendering:auto}   /* her page shrunk on a phone's side: smooth sampling keeps thin strokes */
 .dock-ctl .mark{position:absolute; left:11px; top:3px; width:16px; height:24px; image-rendering:pixelated}
 .dock-ctl .word{position:absolute; left:35px; top:7px}
 .dock-ctl .hint{position:absolute; right:11px; top:10px; font-size:12px; color:#8d8aa6}

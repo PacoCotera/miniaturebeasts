@@ -5,12 +5,13 @@
 // A second worker renders a place's ground (the pixel work of places/src/ground.mjs, which the page did a frame at a time): groundAsk, groundTake. It is a second one so that a ground is not queued behind the reach.
 import { get, set, del } from 'idb-keyval';
 import { REALM_REV, realm7 } from './gen7/region.mjs';
+import { BAKE_STAGES } from './waitpips.mjs';
 import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
 
 const PLACE_REV = 3, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
 const memKey = (seed, slot, v, cell) => seed + '|' + slot[0] + ',' + slot[1] + '|' + v + '|' + cell;
-const BAKED = new Map(), ASKED = new Set(), GROUNDS = new Map(), GROUND_ASKED = new Set(), WAITERS = [];
+const BAKED = new Map(), ASKED = new Set(), GROUNDS = new Map(), GROUND_ASKED = new Set(), WAITERS = [], STAGES = new Map();
 const W = { bake: null, ground: null }, CTXS = { bake: null, ground: null };   // the workers, and the places kit each was given
 let PW_ON = false, PW_SEED = null, WATCH = null;   // WATCH: the page's call when something arrived (its list of cells to warm is made again)
 const wake = () => { for (let i = WAITERS.length - 1; i >= 0; i--) if (WAITERS[i].ok()) WAITERS.splice(i, 1)[0].resolve(); if (WATCH) WATCH(); };
@@ -19,7 +20,8 @@ export const placesWatch = fn => { WATCH = fn; };
 // The page decides whether the workers run (off for a page served from the source tree).
 export function placesOn(on) { PW_ON = !!on && typeof Worker !== 'undefined'; return PW_ON; }
 export const placesWorker = () => PW_ON;
-export function placesReset() { BAKED.clear(); ASKED.clear(); GROUNDS.clear(); GROUND_ASKED.clear(); PW_SEED = null; wake(); }
+export function placesReset() { BAKED.clear(); STAGES.clear(); ASKED.clear(); GROUNDS.clear(); GROUND_ASKED.clear(); PW_SEED = null; wake(); }
+export const stageOf = (seed, slot, v, cell) => BAKED.has(memKey(seed, slot, v, cell)) ? BAKE_STAGES : STAGES.get(memKey(seed, slot, v, cell)) || 0;   // the real stages of a place done (waitpips.mjs placeWaitPips)
 export const bakedGet = (seed, slot, v, cell) => BAKED.get(memKey(seed, slot, v, cell)) || null;
 export const bakedPut = (seed, slot, v, cell, b) => { BAKED.set(memKey(seed, slot, v, cell), b); };   // made on the page (no worker)
 
@@ -31,7 +33,8 @@ function worker(name, ctx) {
       const m = e.data || {};
       if (m.sites) presetHollowSites(m.seed, m.sites);   // sites the worker made for a place: now the page's too
       if (m.banks && m.banks.length) presetBanks(m.seed, m.banks);   // the Rupar's bank lists the worker made (a region's, once): now the page's too
-      if (m.op === 'baked') {
+      if (m.op === 'stage') { const k = memKey(m.seed, m.slot, m.v, m.cell); if (m.n > (STAGES.get(k) || 0)) STAGES.set(k, m.n); }   // a real stage of the place finished: the wait's pips count it (#104)
+      else if (m.op === 'baked') {
         const mk = memKey(m.seed, m.slot, m.v, m.cell); ASKED.delete(mk);
         if (m.ir) { const b = { ir: m.ir, place: m.place }; BAKED.set(mk, b); keep(m.seed, m.slot, m.v, m.cell, b); } else console.warn('a place was not made in the worker', m.cell, m.error);
       } else if (m.op === 'land') {

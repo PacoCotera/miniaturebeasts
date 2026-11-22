@@ -17,6 +17,7 @@ export const SWITCH_LAPTOP_W = 320;
 export const ZOOM = 0.6, PAN_PAD = 12;
 // The upright phone's window is NARROW_W lp wide at most (530 lp is 318 CSS px at ZOOM: a 390 wide phone's 342 less the panel's own edge): Home draws its narrow form there (home.json "narrow", 530 lp wide), never more of the screen than that form fills.
 export const NARROW_W = 530;
+const PAGE_W_H = [530, 600];   // her page's window of the face (pods.json regions.page.rect), lp
 // The window's top left (lp) that shows `box` (the focus ring's target, [x, y, w, h] in lp) whole with PAN_PAD round it, moving as little as it can from `at`; a box larger than the window keeps its top left in view.
 // box null (no ring on the screen): `at` as it is. Always inside the screen.
 export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
@@ -71,7 +72,7 @@ function laptopScales(W, H, dpr, zSet) {
 // plan({ W, H, dpr, coarse, dev, asleep, zSet }): dev 'companion' | 'station'; asleep: the Station has no pod home yet; zSet: the laptop size control's choice (null = fit)
 // -> { form, W, H, dev, a, scale, bar, panel, screen, tray: { box, layout, plan }, dock, epaper, note, stamp, view, margins, content }
 // scale: CSS px per lp. tray.plan is keyplan's plan for tray.box; dock and epaper are in window CSS px. note and stamp are null where not shown; stamp.where: 'foot', 'bar' (sideways) or 'barLeft' (laptop).
-export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet = null }) {
+export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet = null, page = false }) {
   const f = form(W, H, coarse), st = dev === "station", [fw, fh] = FACE[dev];
   const out = { form: f, W, H, dev, asleep, bar: box(0, 0, W, BAR), note: null, stamp: null, view: null };   // view: the Station's window on a phone (lp), null where the whole screen shows
   if (f === "up") {
@@ -112,6 +113,7 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     if (st && s < ZOOM) { s = ZOOM; sw = Math.min(fw * s, maxW); sh = Math.min(fh * s, maxH); out.view = { w: sw / s, h: sh / s }; }   // the Station's window at ZOOM, as large as the side allows
     else { sw = fw * s; sh = fh * s; }
     bw = LW + sw + RW;
+    if (st && page) { const ps = Math.min(maxH / PAGE_W_H[1], sw / PAGE_W_H[0]); s = ps; out.view = { w: PAGE_W_H[0], h: PAGE_W_H[1] }; out.pageForm = { x: (sw - PAGE_W_H[0] * ps) / 2, w: PAGE_W_H[0] * ps, h: PAGE_W_H[1] * ps }; }   // her page (a 530 x 600 window of the face) on a phone's side: the whole page at the height's fit, as wide as the page itself, centred between the key columns (the panel and its keys stay where they are)
     by = BAR + Math.floor((avail - bh) / 2); bxx = Math.round((W - bw) / 2);
     out.margins = { side: bxx, top: by - BAR, bottom: H - by - bh };
     out.stamp = { box: null, where: "bar" };
@@ -130,7 +132,7 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     out.zFit = sc.zFit;
   }
   out.a = a; out.scale = s; out.panel = box(bxx, by, bw, bh);
-  out.screen = box(bxx + LW, by + (bh - sh) / 2, sw, sh);
+  out.screen = out.pageForm ? box(bxx + LW + out.pageForm.x, by + (bh - out.pageForm.h) / 2, out.pageForm.w, out.pageForm.h) : box(bxx + LW, by + (bh - sh) / 2, sw, sh);
   const kp = keyPlan(dev, "landscape", bw, bh, a);
   out.tray = { box: [bxx, by, bw, bh], layout: "landscape", plan: kp };
   out.dock = bx(abs(kp.dock, bxx, by)); out.epaper = bx(abs(kp.epaper, bxx, by));
