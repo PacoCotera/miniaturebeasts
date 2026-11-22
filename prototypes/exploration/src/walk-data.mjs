@@ -63,3 +63,31 @@ export const WALK_R = 4, WALK_R_HIGH = 6;   // [tune]
 // The map's fog over places: night dots out of 16 on a cell you have never been into, and on one you have been into but not explored. An explored place is clear. [tune]
 // Chosen at 1x on a lime meadow cell and a dark wood cell (6/3 greyed the land; 3/1 left not-been and been 11 luma apart on lime): 4/1 keeps lime olive-green and the three states about 22 luma apart.
 export const FOG_NOT_BEEN = 0, FOG_BEEN = 2;   // night-dot levels of 16: never been into is drawn one step darker (the dark table) with no dots; been in, light dots
+
+// ---------- W3: the carry table (G1's numbers as round 4 tested them; every number *greybox*, the designer's to tune) ----------
+// What a step carries, in tiles: how far a wild one hears it. Cover takes a tile off (the ground row); never below 1 tile.
+export const CARRY = Object.freeze({
+  gait: Object.freeze({ creep: 2, walk: 4 }),
+  ground: Object.freeze({ cover: -1, open: 1, plain: 0 }),    // tall grass and reeds: cover; open sand and shallow water: +1
+  wind: Object.freeze({ down: -1, across: 0, up: 2 }),        // downwind: from it to you; upwind: from you to it
+  rain: -1,
+  fog: -2,                                                    // the Built fog: wild ones see 2 tiles less
+  wary: Object.freeze({ calm: -1, steady: 0, wary: 1 }),      // the wild one's wariness, from its genes
+  partner: Object.freeze({}),                                 // each kind's cost (not yet designed): 0 until the designer fills it
+});
+export const partnerCost = sp => CARRY.partner[sp] || 0;
+// a wariness (the individual's doings.wary, 0 to 1) as its row of the table
+export const wariness = w => (w >= .67 ? 'wary' : w < .34 ? 'calm' : 'steady');
+export const wariness1 = w => CARRY.wary[wariness(w)];
+// the wind blows toward one of four ways; the row is read off the angle between where it blows and the line from the wild one to the explorer
+export const WIND_DIRS = Object.freeze(['N', 'E', 'S', 'W']);
+export const WIND_VEC = Object.freeze({ N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] });
+export const windRow = (dir, from, to) => {   // 'down' | 'across' | 'up' for a step at `to` heard by a wild one at `from`
+  const vx = to.x - from.x, vy = to.y - from.y, m = Math.hypot(vx, vy); if (!m || !dir) return 'across';
+  const w = WIND_VEC[dir], cos = (w[0] * vx + w[1] * vy) / m; return cos > .5 ? 'down' : cos < -.5 ? 'up' : 'across';
+};
+// ground: 'cover' | 'open' | 'plain'; returns { v: tiles, parts }
+export function carryOf({ gait = 'creep', ground = 'plain', wind = 'across', rain = false, fog = false, wary = 0, partner = 0 } = {}) {
+  const p = { gait: CARRY.gait[gait === 'walk' ? 'walk' : 'creep'], ground: CARRY.ground[ground] || 0, wind: CARRY.wind[wind] || 0, rain: rain ? CARRY.rain : 0, fog: fog ? CARRY.fog : 0, wary, partner };
+  return { v: Math.max(1, p.gait + p.ground + p.wind + p.rain + p.fog + p.wary + p.partner), parts: p };
+}

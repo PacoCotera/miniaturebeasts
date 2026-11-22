@@ -52,6 +52,25 @@ export const WORDS = {
 // [copy] The wild Loika's haunts, in the bottom line beside its name (walk W2; the book's page on the Loika's routines: a friend on the walk, never a claim past the sight)
 WORDS.haunt = { reed: 'at the reeds', shore: 'at the water', sweep: 'in the tall grass', grove: 'in the shade', outcrop: 'on the lookout' };
 
+// [copy] W3, ease and the carry (walk-design-1 W3): every line is a working word for the copywriter (placeholders say the meaning only).
+WORDS.ease = {
+  stage: ['grazing', 'ears up', 'watching', 'gone'],   // her four stages, said under her name
+  heard: 'It heard that · it is watching', heardTwice: 'It heard that again · it is going', gone: 'It has gone from here for the day', settled: 'It settles again',
+  // the line under a wild one in sight: whether this step would be heard, by the gait (creep, walk)
+  hear: (creep, walk) => 'creep ' + (creep ? 'heard' : 'unheard') + ' · walk ' + (walk ? 'heard' : 'unheard'),
+  hearCreep: creep => 'creep ' + (creep ? 'heard' : 'unheard'),   // the short form, for a narrow line
+  hearOne: (name, heard) => heard ? name + ' would hear you here' : name + ' would not hear you here',
+  stay: n => n > 0 ? 'lets you stay ' + n + ' light' : 'does not let you stay',
+  stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
+  stayHeard: 'It looked up · you stayed too long',
+  keep: 'Keep still',   // the ✓ label that holds
+  hold: { ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
+  ctx: 'keep still, and see what it does',
+};
+// [copy] the wind of the land, said in the bottom line's conditions slot until the art director signs a mark (rule 18): it blows toward the named way
+WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the south', W: 'wind to the west' };
+WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
+
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
 // Pure: the page and the bots read the same table.
 export const DAY = {
