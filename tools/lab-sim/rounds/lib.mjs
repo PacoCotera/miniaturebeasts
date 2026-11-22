@@ -151,7 +151,7 @@ export const SCORES = {
     const pf = p.od.map((o) => o.pf), all = pf.reduce((x, y) => x * y, 1);
     const tell = p.od.reduce((s, o) => s + entropy([o.pf, 1 - o.pf]), 0);
     const ec = p.od.reduce((s, o) => s + o.ec / 2, 0);   // the printed odds' expected aim copies: a pair that carries the aim but cannot yet fix it still beats one that carries none
-    return pf.reduce((x, y) => x + y, 0) + 2 * all + 0.15 * ec + 0.01 * tell;
+    return pf.reduce((x, y) => x + y, 0) + 2 * all + 0.15 * ec + 0.01 * tell + vigourOfF(p.k);   // tells-bot-kin-1: the household's kin/vigour term (1 - 1.6F, floor 0.5), added unweighted
   },
 };
 // The oracle's value of a move (L2): expected progress of its young per minute of the pod (vigour counted).
