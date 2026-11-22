@@ -4,7 +4,7 @@
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { listOf, trayOf, findOf, compareKin, podsBuild, verbsOf, takeOf } from "../views/pods-props.mjs";
-import { recommendedLane, sealedShut } from "../views/reading-props.mjs";
+import { recommendedLane, sealedShut, boardPages } from "../views/reading-props.mjs";
 import { fill } from "../views/words.mjs";
 import { openCreate } from "./create.mjs";
 import { openStore } from "./store.mjs";
@@ -47,6 +47,7 @@ export function openRoom(h, from = "home") {
 // Home's Research key has two faces (the pods design): the first press opens the bench on its pod, a second turns to the inventory; with nothing on the bench it opens the inventory.
 export function researchKey(h) {
   const p = pods(h), here = h.ui.screen === "pods";
+  if (here && p.page != null && p.view === "room") return p.at === "board" ? closeBoard(h) : openBoard(h);   // her page: the blue key opens her board, and shuts it again (station step 3)
   if (here && (p.view === "room" || p.view === "trait")) return backToInventory(h);   // the second face, from anywhere on the reading screen (the detail too): the inventory, the ring on this pod's card
   if (here) return openRoom(h, "home");
   if (S.benchPod(h.st)) return openRoom(h, "home");
@@ -202,6 +203,9 @@ export function openPage(h, m, lane = 0) {
   enterRead(h, subjectOf(h.st, p)); p.lane = clamp(lane, 0, Math.max(0, frameOf(S.speciesOf(q)).chapters.length - 1));
   h.goto("pods");
 }
+// Her board (station step 3, walk-4 picture 5): every trait of her kind in one tiny row, by chapter, in pages (reading-props.mjs boardPages). The blue key on her page opens it; ← and the blue key return to her page, the ring on the rail.
+export function openBoard(h) { const p = pods(h); if (p.page == null) return; p.at = "board"; p.board = { page: 0 }; p.focus.set("trait"); }
+function closeBoard(h) { const p = pods(h); p.at = "rail"; p.board = null; p.focus.set("rail"); }
 function leavePage(h) { const p = pods(h), id = p.page; p.page = null; p.view = "inventory"; p.at = "rail"; p.from = "home"; h.ui.hab.id = id; h.goto("habitat"); }
 function backToInventory(h) {   // ← on the pod level, or the Research key's second face: the inventory, the ring on this pod's card (its mini rail shows what was just read)
   if (pods(h).page != null) return leavePage(h);   // her page: ← and the Research key go back to her, up close
@@ -230,6 +234,11 @@ function readIntent(h, target, verb) {
   }
   const chs = frameOf(S.speciesOf(q)).chapters, k = clamp(p.lane ?? 0, 0, chs.length - 1), ch = chs[k], sealed = sealedShut(ch, h.settings) && !q.read.includes(ch.id), isRead = q.read.includes(ch.id);
   const at = p.at ?? "rail";
+  if (at === "board") {   // her board: ▲▼ turn its pages, ← returns to her page
+    if (verb === "back") return closeBoard(h);
+    if (verb === "step:up" || verb === "step:down") { const n = boardPages(frameOf(S.speciesOf(q))).length; p.board.page = clamp((p.board?.page ?? 0) + (verb === "step:down" ? 1 : -1), 0, n - 1); }
+    return;
+  }
   if (at === "stamp") { if (verb === "back" || verb === "confirm" || verb === "step:down") foldStamp(h, target); return; }
   if (at === "detail") {
     if (verb === "back") return moveTo(h, () => { p.at = "right"; p.plate = p.trait ?? 0; p.focus.set("plate." + p.plate); });   // B up: the pod level, the ring on the trait's plate

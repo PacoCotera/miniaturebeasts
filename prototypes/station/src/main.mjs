@@ -61,7 +61,7 @@ function postFocus() {
   let box = CORE.face.focusBox(); const screen = UI.idle ? "idle" : UI.screen;
   const pageLit = screen === "library.species" && UI.lib?.state === "lit" && UI.lib.lit && box && box[0] < LIB_PAGE[0];   // phone window, a chapter lit: the window shows its page (the ring is on a plate left of it; the page is what ✓ asked for), not the cut-off edge of it
   if (pageLit) box = LIB_PAGE;
-  if (screen === "pods" && UI.pods.page != null && box) box = UI.pods.at === "right" || UI.pods.at === "detail" ? PAGE_CHAPTER : PAGE_BODY;   // her page, phone window: the body and the rail whole, or the chapter in hand whole (never the chapter's cut-off edge beside the body)
+  if (screen === "pods" && UI.pods.page != null && (box || UI.pods.at === "board")) box = UI.pods.at === "right" || UI.pods.at === "detail" || UI.pods.at === "board" ? PAGE_CHAPTER : PAGE_BODY;   // her page, phone window: the body and the rail whole, or the chapter in hand whole (never the chapter's cut-off edge beside the body)
   const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
   if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
   else { win.focus = { screen, box }; placeWindow(); }   // standalone on a phone: the page's own window follows the ring
@@ -230,7 +230,7 @@ const podsScene = (pods, o = {}) => {
 };
 const podsAt = (o = {}) => {
   const u = UI.pods, st = G.st; u.cmp = null; u.view = o.view ?? "inventory";
-  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "plate", "verb", "fixed", "blocked", "hold", "waits", "peek"]) if (k in o) u[k] = o[k];
+  for (const k of ["sort", "chips", "word", "first", "choosing", "find", "ci", "trait", "lane", "at", "board", "plate", "verb", "fixed", "blocked", "hold", "waits", "peek"]) if (k in o) u[k] = o[k];
   u.now = o.now ? { text: o.now, until: Infinity } : null; if (!("peek" in o)) u.peek = null;   // the scene's preview and "Now" line (dead ends B6)
   u.ask = o.ask == null ? null : typeof o.ask === "number" ? st.tray[o.ask]?.id ?? null : o.ask;
   if (u.hold === "first") u.hold = listOf(st, SPECS.pods, { ...u, hold: null }, G.settings)[0]?.p.id ?? null;   // the scene's held pod: the first card's

@@ -19,6 +19,7 @@ import { arrivePending } from "../src/intents/arrival.mjs";
 import { setLibrarySpecies } from "../src/views/home-props.mjs";
 import { capLine } from "../src/views/words.mjs";
 import { listOf, podsBuild } from "../src/views/pods-props.mjs";
+import { boardPages, BOARD_SLOTS } from "../src/views/reading-props.mjs";
 import { cardsOf } from "../src/views/panel-props.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
 import { openStore } from "../src/intents/store.mjs";
@@ -726,4 +727,21 @@ test("the lens on her page (step 2c): copies and the hidden look stay hidden unt
     INTENTS.pods.intent(h, "trait", "confirm"); assert.equal(m.page.carried[x.t.id], true, "the lens is free and marks the trait");
     const after = find(); if (kind === "set") assert.ok(after.looks.some((l) => l.hidden), "the hidden look lands"); else assert.equal(after.copies.length, 2, "her two copies show");
     assert.equal(build().line.ok, null, "once used, no lens offer"); }
+});
+test("her board (step 3): the blue key on her page opens every trait of her kind in tiny rows by chapter, pages turn with ▲▼, what her page does not know is not shown, ← and the blue key return to her page", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
+  const body = fr.chapters.find((c) => !S.isDoingChapter(c) && !c.sealed); m.page = { looked: [body.id], sights: {}, carried: {} };
+  INTENTS.habitat.intent(h, "plate.0", "confirm"); const build = () => podsBuild({ st, settings, ui: h.ui.pods, focus: h.ui.pods.focus.cur, now: 0 }, podsSpec);
+  INTENTS.frame.roomKey(h, "research"); const u = h.ui.pods; assert.deepEqual([u.at, u.board.page, u.focus.cur, u.page], ["board", 0, "trait", m.id], "the blue key opens her board and keeps her page");
+  const pages = boardPages(fr), seen = [];
+  assert.ok(pages.length > 1 && pages.every((pg) => pg.reduce((n, g) => n + 1 + g.to - g.from, 0) <= BOARD_SLOTS), "the chapters are packed into pages that fit the frame");
+  for (let i = 0; i < pages.length; i++) { const v = build(), R = v.read.right; assert.equal(R.form, "board"); assert.equal([R.page, R.pages].join(), [i, pages.length].join()); assert.match(v.line.subject, /^Page \d+ of \d+$/); assert.equal(v.line.back, S.cap(m.name));
+    for (const r of R.rows) if (r.trait) { seen.push(r.trait); assert.equal(r.shape.size, "tiny"); assert.ok(["scale", "set"].includes(r.shape.form)); const rq = v.requests.find((q) => q.id === r.shape.pic); assert.ok(rq && rq.size === "tiny", "the picture of the row is asked for"); if (rq.model.shape === "scale") assert.equal(rq.model.copies ?? null, null, "nothing she carries before the lens"); }
+    INTENTS.pods.intent(h, "trait", "step:down"); }
+  assert.deepEqual(seen.sort(), fr.chapters.flatMap((c) => c.traits.map((t) => t.name)).sort(), "every trait of her kind is on the board once");
+  assert.equal(u.board.page, pages.length - 1, "▲▼ stop at the ends"); INTENTS.pods.intent(h, "trait", "step:up"); assert.equal(u.board.page, pages.length - 2);
+  const heads = build().read.right.rows.filter((r) => r.head); assert.ok(heads.length >= 1);
+  const first = (() => { u.board.page = 0; return build().read.right.rows; })(); assert.equal(first[0].note, body === fr.chapters[0] ? "" : first[0].note);
+  INTENTS.pods.intent(h, "trait", "back"); assert.deepEqual([u.at, u.board, u.page, u.focus.cur], ["rail", null, m.id, "rail"], "← returns to her page, the ring on the rail");
+  INTENTS.frame.roomKey(h, "research"); assert.equal(u.at, "board"); INTENTS.frame.roomKey(h, "research"); assert.deepEqual([u.at, u.board, u.page], ["rail", null, m.id], "the blue key shuts it again");
 });
