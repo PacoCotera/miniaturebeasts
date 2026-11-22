@@ -79,19 +79,18 @@ test("the grid is per kind: S01 redder / between / yellower with between-dark pa
   assert.deepEqual(s20.tints, ["yellower", "between", "greener"]); assert.equal(s20.painted, "between-between"); assert.equal(s20.coats.length, 9);
   assert.deepEqual(s20.coats.filter((c) => c.startsWith("between-")), ["between-dark", "between-between", "between-light"]);
 });
-test("S20 (rebuilt on its three-quarter stand): all nine coats are placed by the plan, the between-between cell over the old painted master's id, and the placed files are the plan's to the byte", () => {
-  if (!deskPinned()) return;
-  const plan = planCoats({ desk: DESK, index, only: "S20" }), { coats, painted } = coatGrid(DESK, "S20");
-  assert.deepEqual(plan.kinds, ["S20"]); assert.deepEqual(plan.missing, []);
-  assert.deepEqual(plan.painted, [], "a rebuilt kind's painted cell is placed, not proven against the old master");
+test("S20 (rebuilt on its three-quarter stand): all nine coats are placed in this repo, signed, at the stand's size, and each is a picture of its own (reads only this repo's masters and index)", () => {
+  const coats = ["yellower", "between", "greener"].flatMap((t) => ["dark", "between", "light"].map((s) => t + "-" + s)), shas = new Set(), pixels = new Set();
   for (const coat of coats) {
-    const id = coat === painted ? "mibi-adult-S20-304x312" : `mibi-adult-S20-${coat}-304x312`, op = plan.ops.find((o) => o.id === id);
-    assert.ok(op, `${coat}: placed as ${id}`);
-    const src = decodePNG(op.buf), got = decodePNG(readFileSync(path.join(root, M[id].file)));   // the placed file is squeezed (oxipng, lossless): the same pixels, not the same bytes
-    assert.ok(src.width === got.width && src.height === got.height && Buffer.compare(Buffer.from(src.data), Buffer.from(got.data)) === 0, `${id} is the desk's cell as placed`);
+    const id = coat === "between-between" ? "mibi-adult-S20-304x312" : `mibi-adult-S20-${coat}-304x312`, e = M[id];
+    assert.ok(e, `${coat}: placed as ${id}`); assert.ok(typeof e.signed === "string" && e.signed.length > 0, `${id} carries its sign`);
+    const got = decodePNG(readFileSync(path.join(root, e.file)));
+    assert.deepEqual([got.width, got.height, e.w, e.h], [304, 312, 304, 312], `${id} is the stand's size`);
+    shas.add(e.sha256); pixels.add(createHash("sha256").update(Buffer.from(got.data)).digest("hex"));
   }
-  assert.ok(plan.ops.some((o) => o.id === "mibi-adult-S20-between-dark-304x312"), "between-dark is a coat of its own for S20, placed");
-  assert.ok(!plan.ops.some((o) => /S20-redder/.test(o.id)), "no S01 Tint for S20");
+  assert.equal(shas.size, 9, "nine different placed files"); assert.equal(pixels.size, 9, "nine different pictures: the coats are not one picture nine times");
+  assert.ok(M["mibi-adult-S20-between-dark-304x312"], "between-dark is a coat of its own for S20, placed");
+  assert.ok(!Object.keys(M).some((k) => /^mibi-adult-S20-redder/.test(k)), "no S01 Tint for S20");
 });
 test("a kind the game has not placed is skipped (the desk may still be painting it); a named kind is read whole", () => {
   const desk = mkdtempSync(path.join(os.tmpdir(), "coat-desk-")), cfg = path.join(desk, "tools/cfg/S09");

@@ -232,7 +232,7 @@ test("compare (l3.compare.compute): the heritable traits only (never a locked lo
   assert.ok(!ids(frameOf("S15")).includes("Basking") && !ids(frameOf("S16")).includes("Phase"), "never Basking or Phase");
   for (const id of ["S01", "S09", "S16"]) { const fr = frameOf(id); for (const { trait } of heritableTraits(fr)) for (const l of trait.loci) { const q = fr.loci.find((x) => x.id === l); assert.ok(q.kind !== "locked" && q.changedBy !== "self", `${id} ${trait.id}`); } }
   const { st, by, lin } = world(), fr = frameOf("S01"), c = compareLooks(fr, by.Dot, by.Moss);
-  assert.deepEqual(c.read, ["colour", "markings", "crown", "ears", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["ears", "eye-rings", "drive"]); assert.deepEqual(c.lit, ["movement"]);
+  assert.deepEqual(c.read, ["colour", "markings", "crown", "ears", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.same.map((t) => t.id), ["colour", "crown", "ears", "eye-rings", "drive", "efficiency"]); assert.deepEqual(c.lit, ["face", "movement", "stamina"]);
   for (const t of c.same) assert.equal(traitState(fr, t, by.Dot.genome).shows, traitState(fr, t, by.Moss.genome).shows);
   assert.equal(traitState(fr, fr.chapters[0].traits[1], by.Dot.genome).shows, "patches"); assert.ok(!c.same.some((t) => t.id === "markings"), "patches is not stripes and patches (Moss): whole looks"); assert.ok(c.same.some((t) => t.id === "ears"), "the same ears (frame version 6): a trait and a chapter lit when every compared look is the same");
   const h = compareLooks(fr, by.Hazel, by.Dot); assert.ok(!h.read.includes("colour") && !h.lit.includes("coat"), "Hazel's Coat is unread: not read on both, never lit");

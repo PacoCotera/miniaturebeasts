@@ -211,7 +211,7 @@ test("the Add a room? panel rides on the Vivarium: ✓ on Add a room opens it; �
   assert.deepEqual([G.st.rooms, G.st.e, G.st.face.room, UI.viv.f, UI.panel], [2, 95, 1, "room.1", null]); const q = screenProps(""); assert.equal(q.msg.focus.cur, "room.1"); assert.equal(q.msg.state, "empty", "the new room is shown empty");
 });
 test("✓ Look opens one mibi up close and ← comes back to the ring on it; ✓ on a held plate says its message plate and changes nothing; ← at rest goes Home with the ring on the panel", () => {
-  const { h, a, at } = hostRig(); at(0); UI.viv.f = "plate.0"; UI.viv.last = a[0].id; intent(h, "plate.0"); assert.deepEqual([UI.screen, UI.hab.id], ["habitat", a[0].id]); at(1000);   // the look's hold ends
+  const { h, a, at } = hostRig(); at(0); UI.viv.f = "plate.0"; UI.viv.last = a[0].id; intent(h, "plate.0");   /* Look opens her page (PR 470) */ assert.deepEqual([UI.screen, UI.pods.page], ["pods", a[0].id]); at(1000);   // the look's hold ends
   UI.screen = "vivarium"; UI.viv.f = null; const p = screenProps(""); assert.equal(p.msg.focus.cur, "resident." + a[0].id);
   G.st.mibis = [a[0]]; UI.viv.f = "plate.2"; UI.viv.last = a[0].id; const said = []; h.say = (m) => said.push(m); intent(h, "plate.2"); assert.deepEqual(said, ["Your last mibi at home stays"]); assert.ok(!S.inStore(a[0]));
   intent(h, "plate.2", "back"); assert.equal(UI.viv.view, "wall", "← from the look at the room is the Wall"); intent(h, "cell." + a[0].id, "back"); assert.deepEqual([UI.screen, UI.home.f], ["home", "vivarium"]);

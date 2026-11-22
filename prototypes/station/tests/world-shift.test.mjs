@@ -13,12 +13,12 @@ const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.reso
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "loose" };
 
-// The Companion's walk with a Rupar partner that digs the first bank in reach, then ends: the crate it seals.
+// The Companion's walk with a Rupar partner that digs the first bank in reach, then ends at night (only the night's end turns the world; a camp seals no events): the crate it seals.
 function bankCrate() {
   const p = makePage({}), run = p.run;
   run(`newWorld(7); TEST.calm = true; S.turn = 5; S.tier = 2; S.known = [0, 1, 2]; S.mibis = [{ id: 1, name: "Fig", sp: 7, born: 0, outings: 0, notches: 0, bonded: false, care: 0, tends: 0, tendDay: null, grownTurn: null }]; S.carried = [1]; S.lead = 1; startExpedition('weather', G.spawns[0])`);
   const e = JSON.parse(run("JSON.stringify((() => { for (let i = 0; i < 2 * MW * MH; i++) if (G.banks[i]) return i; return -1; })())")), a = e >> 1, dir = e & 1 ? "down" : "right";
-  run(`S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; S.exp.cargo.e = 2; mapStep(${JSON.stringify(dir)}); endExpedition('end')`);
+  run(`S.exp.start = ${a}; S.exp.pos = ${a}; S.exp.range = 4; S.exp.cargo.e = 2; mapStep(${JSON.stringify(dir)}); endExpedition('night')`);
   return JSON.parse(run("JSON.stringify(S.bay[0] || null)"));
 }
 

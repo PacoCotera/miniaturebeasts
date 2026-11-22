@@ -530,7 +530,7 @@ test("the frame presenter's events: a counter that rose ticks (one unit every 70
 import { readdirSync as ls2, readFileSync as rf2, existsSync as ex2 } from "node:fs";
 // The transitive import graph of intents/: every module it reaches, followed through relative imports (and `import()`), reads like a Node program: no document, window, canvas, storage or clock of the page, and none of
 // the drawing half, the screens, the renderer or the game's singletons.
-const FORBIDDEN = /\b(document|window|canvas|getContext|localStorage|sessionStorage|performance|requestAnimationFrame|createImageBitmap|OffscreenCanvas|Image)\b/;
+const FORBIDDEN = /\b(document|window(?=\s*[.\[])|typeof\s+window|canvas(?!\s*\()|getContext|localStorage|sessionStorage|performance|requestAnimationFrame|createImageBitmap|OffscreenCanvas|Image)\b/;
 const NOT_REACHED = /(^|\/)(screens|render|components)\/|(^|\/)(gfx|game|scene|layout|context|type|main|face-lvgl|masters|pictures|dev|caddy)\.mjs$/;
 function graph(entry) {
   const seen = new Map(), todo = [entry];

@@ -10,6 +10,7 @@ import { setFrames } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { wallBuild, orderOf, tickOf, stepOf, SORTS, markOf } from "../src/views/wall-props.mjs";
 import { loadStandSizesFs } from "../tools/stand-layers-fs.mjs";
+import { createFocus } from "../../ui/focus.mjs";
 loadStandSizesFs();
 
 const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station"), framesDir = path.resolve(here, "../../species/frames/language");
@@ -107,7 +108,7 @@ test("the scroll: whole rows, the ring's row always whole and on screen; the tra
 
 // ---- the host's walk: the intents move the ring, refilter, scroll and nudge through wall-walk.mjs ----
 import { INTENTS } from "../src/intents/index.mjs";
-const hostFor = (st) => { const said = [], went = [], ui = { screen: "vivarium", viv: { f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0, pair: null }, hab: { id: null, f: "resident" }, home: { f: "room" }, panel: null };
+const hostFor = (st) => { const said = [], went = [], ui = { screen: "vivarium", viv: { f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0, pair: null }, hab: { id: null, f: "resident" }, pods: { view: null, cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null) }, home: { f: "room" }, panel: null };
   return { st, sv: sv0(), settings: { ...settings, rooms: st.rooms }, ui, specs: { vivarium: spec, frame: frameSpec, home, pods, panel: J("panel.json"), habitat: J("habitat.json") }, said, went, say: (t) => said.push(t), goto: (s) => went.push(s), now: () => T0, save() {}, light: () => "day", showRoom: (i) => { st.face.room = i; }, motion: () => false, play() {}, at() {} }; };
 const press = (h, key) => INTENTS.vivarium.intent(h, h.ui.viv.f, "step:" + key);
 const ring = (h) => { const b = build(h.st, { focus: h.ui.viv.f, last: h.ui.viv.last, sort: h.ui.viv.sort, filter: h.ui.viv.filter, pick: h.ui.viv.pick, row0: h.ui.viv.row0, first: h.ui.viv.first }); return b.props.focus.cur; };
@@ -208,7 +209,7 @@ test("the card's plates act by their act, not their place: Tuck away on the Wall
   const st = world(1); const ms = fillRooms(st, [4]); st.e = 99; const h = hostFor(st), v = h.ui.viv, m = ms[1]; v.last = m.id;
   v.f = "plate.3"; INTENTS.vivarium.intent(h, "plate.3", "confirm"); assert.ok(S.inStore(m), "Tuck away"); assert.match(h.said.at(-1), /is tucked away/);
   const m2 = ms[2]; v.last = m2.id; v.f = "plate.2"; INTENTS.vivarium.intent(h, "plate.2", "confirm"); assert.ok(st.carryReqs.some((x) => x.id === m2.id), "Take along queues the request");
-  const m3 = ms[3]; v.last = m3.id; v.f = "plate.0"; INTENTS.vivarium.intent(h, "plate.0", "confirm"); assert.deepEqual([h.ui.hab.id, h.went.at(-1)], [m3.id, "habitat"], "Look");
+  const m3 = ms[3]; v.last = m3.id; v.f = "plate.0"; INTENTS.vivarium.intent(h, "plate.0", "confirm"); assert.deepEqual([h.ui.pods.page, h.went.at(-1)], [m3.id, "pods"], "Look opens her page (PR 470)");
 });
 
 // ---- the swap into a full room (the collection design §6) ----

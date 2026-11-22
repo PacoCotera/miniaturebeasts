@@ -38,7 +38,7 @@ test("a pair with one unread chapter: its traits are missing, name the parent an
   }
   assert.equal(fc.missing, mine.length, "the count of traits still unknown"); assert.equal(fc.unknown, fc.missing + fc.sealedTraits); assert.equal(fc.identity, null, "no likeness while anything is unknown");
   const others = fc.traits.filter((t) => t.chapter !== h.ch); assert.ok(others.every((t) => t.kind !== "missing"), "the read chapters are shown");
-  for (const hid of h.hides) assert.ok(!JSON.stringify(mine).includes('"' + hid + '"'), "the hidden look " + hid + " does not leak from the unread chapter");
+  for (const hid of h.hides) assert.ok(!JSON.stringify(mine.map(({ known, ...rest }) => rest)).includes('"' + hid + '"'), "the hidden look " + hid + " does not leak from the unread chapter (the reading parent's own copies, known.b, may show it: exact copies, PR 469)");
   // both parents unread: both are named
   b.read = b.read.filter((c) => c !== h.ch); const both = S.forecastOf(st, a, b, settings).traits.find((t) => t.chapter === h.ch); assert.deepEqual(both.missing.map((m) => m.parent), ["a", "b"]);
   // read it: the traits appear again, as the full forecast has them
