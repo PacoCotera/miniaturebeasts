@@ -47,8 +47,16 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
   const read = S.pageRead(mibi).includes(ch.id), petals = ch.traits.map((tr, i) => (S.pageLensed(mibi, tr) ? "g" : i === ti ? "c" : (tr.nature === "doing" ? S.pageKnown(mibi, tr) >= 1 : read) ? "1" : "0")).join(",");
   text(S.cap(mibi.name), R.name.x, R.name.baseline, R.name.role, "l");
   text(copies ? fill(Sg.scaleCopiesHead, { traits: t.name.toLowerCase() + "s" }) : hid ? fill(Sg.setHead, { look: (/s$/.test(hid.look) ? "" : "a ") + hid.look }) : ch.name, Hd.nameX, T + Hd.nameBase, Hd.nameRole, "l");
-  if (hid && shown) text(fill(Sg.setUnder, { look: shown.look }), Z.set.say.right, T + Hd.nameBase, Z.set.say.role, "r");
-  const chips = []; if (!dusk) { let right = Hd.right; for (let i = ch.traits.length - 1; i >= 0; i--) { const tr = ch.traits[i], w = Math.round(Hd.chip.pad + tr.name.length * Hd.chip.perChar), x = right - w;
+  if (hid && shown) {   // "under her amber coat" ends at the right edge on the heading's line; where the two would touch (a long look) it goes under the heading instead
+    const under = fill(Sg.setUnder, { look: shown.look }), head = fill(Sg.setHead, { look: (/s$/.test(hid.look) ? "" : "a ") + hid.look }), S_ = Z.set.say;
+    const touch = Hd.nameX + head.length * Hd.chip.nameChar + S_.gap > S_.right - under.length * Hd.chip.perChar;
+    if (touch) text(under, Hd.nameX, T + Hd.nameBase + S_.wrapDy, S_.role, "l"); else text(under, S_.right, T + Hd.nameBase, S_.role, "r");
+  }
+  // the chips run right to left from Hd.right and never past the chapter's name (a long chapter once ran its first chip off the stage's left edge and under the ring): the open chip and its neighbours that fit, the open chip's right side first
+  const chipW = (tr) => Math.round(Hd.chip.pad + tr.name.length * Hd.chip.perChar), room = Hd.right - (Hd.nameX + Math.round(ch.name.length * Hd.chip.nameChar) + Hd.chip.gap);
+  let c0 = ti, c1 = ti, used = chipW(ch.traits[ti] ?? ch.traits[0]);
+  while (!dusk && (c1 + 1 < ch.traits.length || c0 > 0)) { if (c1 + 1 < ch.traits.length && used + Hd.chip.gap + chipW(ch.traits[c1 + 1]) <= room) { c1++; used += Hd.chip.gap + chipW(ch.traits[c1]); } else if (c0 > 0 && used + Hd.chip.gap + chipW(ch.traits[c0 - 1]) <= room) { c0--; used += Hd.chip.gap + chipW(ch.traits[c0]); } else break; }
+  const chips = []; if (!dusk) { let right = Hd.right; for (let i = c1; i >= c0; i--) { const tr = ch.traits[i], w = chipW(tr), x = right - w;
     chips.unshift({ x, y: T + Hd.cy - Hd.chip.h / 2, w, h: Hd.chip.h, on: i === ti, scale: shapeOf(fr, tr) === "scale" }); text(tr.name, x + 34, T + Hd.cy - Hd.chip.h / 2 + Hd.chip.base, i === ti ? Hd.chip.onRole : Hd.chip.role, "l"); right = x - Hd.chip.gap; } }
   // the one line
   const kindLine = !isScale ? fill(Sg.setKind, { Trait: t.name, n: NUM[model.looks.length] ?? String(model.looks.length), kind: S.cap(S.spName(mibi)) }) : copies ? fill(Sg.scaleCopiesKind, { Trait: t.name }) : fill(Sg.scaleKind, { Trait: t.name, kind: S.cap(S.spName(mibi)), low: model.ends[0], high: model.ends[1] });
