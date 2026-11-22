@@ -762,6 +762,7 @@
   "guide": "Open the guide",
   "family": "See the family",
   "every": "every {Species}",
+  "openPage": "Open {Chapter}",
   "plateRead": "{Chapter}, read",
   "read": "Read {Chapter}",
   "plateUnread": "{Chapter}, still a surprise",

@@ -8,6 +8,7 @@ import { recommendedLane, sealedShut } from "../views/reading-props.mjs";
 import { fill } from "../views/words.mjs";
 import { openCreate } from "./create.mjs";
 import { openStore } from "./store.mjs";
+import { subjectOf } from "../page.mjs";
 
 export const FLASH_MS = 3000, SCROLL_MS = 200;
 const SORTS = ["use", "species", "arrival", "drying"];
@@ -21,7 +22,7 @@ const flash = (h, text) => { pods(h).flash = { text, until: h.now() + FLASH_MS }
 // ---- the ways in ----
 // The inventory (Where the ring starts): on the card it was on when the player last left, else the first; `opts.first` puts it on the first card (from Choose a pod, sorted by use).
 export function openInventory(h, opts = {}) {
-  const p = pods(h); p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
+  const p = pods(h); p.page = null; p.cmp = null; p.view = "inventory"; p.ask = null; p.choosing = !!opts.choosing; p.from = opts.from ?? (p.choosing ? "room" : "home");
   p.hold = null; p.waits = !!opts.waits;   // the verb is the caller's on every entry (the pods picker's design B): a verb never sticks from one visit to the next; the Incubator's Grow and the bench's Bring are the only one offered
   p.verb = p.callerVerb = opts.verb ?? (p.choosing ? "bring" : p.from === "incubator" ? "grow" : "read"); p.fixed = p.choosing || p.from === "incubator";
   p.peek = null; p.now = null;   // a preview and the "Now" line never outlive a visit
@@ -39,7 +40,7 @@ export function openInventory(h, opts = {}) {
 }
 // The reading screen on the pod on the bench (§2.6, 1): a cut in, the bracket on the recommended lane (the key on an unidentified pod).
 export function openRoom(h, from = "home") {
-  const p = pods(h), q = S.benchPod(h.st); p.cmp = null; p.view = "room"; p.ask = null; p.roomFrom = from; p.from = from; p.choosing = false;
+  const p = pods(h), q = S.benchPod(h.st); p.page = null; p.cmp = null; p.view = "room"; p.ask = null; p.roomFrom = from; p.from = from; p.choosing = false;
   enterRead(h, q);
   h.goto("pods");
 }
@@ -54,7 +55,7 @@ export function researchKey(h) {
 // A pod onto the bench and the room open on it (✓ on a card, "Take to the reading room", "Bring onto the bench"): the old one goes back to its niche, nothing spent.
 export function toRoom(h, q, from = "inventory") {
   const p = pods(h); S.putOnBench(h.st, q); q.seen = 1; p.lastCard = q.id; h.save();
-  p.view = "room"; p.ask = null; p.choosing = false; p.from = "inventory"; p.roomFrom = "inventory"; void from;
+  p.page = null; p.view = "room"; p.ask = null; p.choosing = false; p.from = "inventory"; p.roomFrom = "inventory"; void from;
   enterRead(h, q);   // a cut in (§2.6, 1)
 }
 // Leaving the inventory: the husks shown once are gone; the ring's card is kept for the next visit.
@@ -194,7 +195,16 @@ function moveTo(h, change) {   // a change of the pod level that may move the sp
   if (before && after && before !== after && motionOn(h)) { p.fromChamber = before; h.play({ kind: "dither", target: "chamber", from: before, ms: PLACE_MS, hold: 0 }); h.at(PLACE_MS, () => { if (p.fromChamber === before) p.fromChamber = null; }); }
 }
 function enterRead(h, q) { const p = pods(h); p.at = "rail"; p.trait = 0; p.plate = 0; p.reading = null; p.moment = null; p.fromChamber = null; p.nudge = null; p.lane = q && q.idd ? recommendedLane(h.st, q, h.settings) : 0; p.focus.set(q && !q.idd ? "key" : "rail"); }
+// Her page (page.mjs): a hatched mibi on the reading screen, the rail on the chapter asked for (the first when none). ← leaves it for the mibi up close, the Vivarium's closest level.
+export function openPage(h, m, lane = 0) {
+  const p = pods(h), q = S.mibiById(h.st, m.id); if (!q) return;
+  p.cmp = null; p.view = "room"; p.ask = null; p.choosing = false; p.from = "page"; p.roomFrom = "page"; p.page = q.id;
+  enterRead(h, subjectOf(h.st, p)); p.lane = clamp(lane, 0, Math.max(0, frameOf(S.speciesOf(q)).chapters.length - 1));
+  h.goto("pods");
+}
+function leavePage(h) { const p = pods(h), id = p.page; p.page = null; p.view = "inventory"; p.at = "rail"; p.from = "home"; h.ui.hab.id = id; h.goto("habitat"); }
 function backToInventory(h) {   // ← on the pod level, or the Research key's second face: the inventory, the ring on this pod's card (its mini rail shows what was just read)
+  if (pods(h).page != null) return leavePage(h);   // her page: ← and the Research key go back to her, up close
   const p = pods(h), q = S.benchPod(h.st); p.view = "inventory"; p.at = "rail"; p.reading = null; p.moment = null; p.choosing = false; p.from = "home"; p.first = 0;
   const at = q ? cardOf(h, q.id) : null; p.focus.set(at ?? (h.st.tray.length ? "card.0" : "sort")); if (q) { p.panelPod = q.id; p.lastCard = q.id; }
 }
@@ -209,7 +219,7 @@ function foldStamp(h, target) {   // the moment or the view folds back (the mome
   p.focus.set(was === "moment" ? "plate.0" : "rail"); void target;
 }
 function readIntent(h, target, verb) {
-  const p = pods(h), st = h.st, q = S.benchPod(st);
+  const p = pods(h), st = h.st, q = subjectOf(st, p);
   if (!q) { if (verb === "back") backToInventory(h); return; }
   if (p.reading) { endRead(h); return; }   // any key during the read cuts to its end and does nothing else (the face cut the event)
   if (p.moment) { foldStamp(h, target); return; }   // the moment holds until any key; that key is used up
@@ -240,9 +250,9 @@ function readIntent(h, target, verb) {
     if (n < 0 || n >= chs.length) { p.nudge = { dir: d, until: h.now() + NUDGE_MS }; h.play({ kind: "wipe", target: "nudge", ms: NUDGE_MS, hold: 0 }); return; }
     p.lane = n; p.trait = 0; return;   // the part, the right frame and the foot cut to the new chapter on the same frame
   }
-  if (verb === "step:up") { if (!st.stampTaught) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
+  if (verb === "step:up") { if (!st.stampTaught || p.page != null) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
   if (verb !== "confirm" || sealed) return;   // a sealed lane gives no ✓: nothing happens
-  if (!isRead) return openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)
+  if (!isRead) return p.page != null ? undefined : openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)
   moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });   // the chapter opens: the ring crosses to the right frame (Face dithers to the close place)
 }
 

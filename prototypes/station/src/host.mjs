@@ -34,6 +34,7 @@ import { libraryBuild, speciesBuild, sheetAhead, familyBuild } from "./views/lib
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
+import { isPageId, pagePod, PAGE_PREFIX } from "./page.mjs";
 import { incubatorBuild } from "./views/incubator-props.mjs";
 import { sittingBuild } from "./views/sitting-props.mjs";
 import { newSit } from "./intents/sitting.mjs";
@@ -323,7 +324,7 @@ export function screenProps(plate) {
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
     return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
-  const top = topFor(screen), pl = { text: plate || "", timed: true };
+  const top = topFor(screen), pl = { text: plate || "", timed: true }; if (screen === "pods" && UI.pods.page != null) { const pm = mibiById(UI.pods.page); if (pm) top.title = S.cap(pm.name) + "'s page"; }   // her page: the header names her page, not the pods
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;
   if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // no found species shown: as any screen not built
@@ -333,7 +334,7 @@ export function screenProps(plate) {
   const sat = screen === "sitting" ? sittingBody(light) : null; if (screen === "sitting" && !sat) { UI.sit = null; goScreen("habitat"); return screenProps(plate); }
   const body = screen === "sitting" ? sat : screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "library.species" ? speciesBody() : screen === "library.family" ? fam : screen === "bench" ? benchBody() : screen === "settings" ? settingsBody() : screen === "store" ? sto : screen === "cross" ? crs : podsBody(), reqs = [...body.requests, ...iconRequests()];
   const fl = UI.flight ? flightRequest(UI.flight.sub) : null; if (fl) reqs.push(...fl.requests);   // the carry's flight picture goes to the face with this screen's
-  registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
+  registerPictures(reqs, { podById: (id) => (isPageId(id) ? pagePod(G.st, +id.slice(PAGE_PREFIX.length)) : screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids); const dropped = [...droppedPictures()];   // the pictures a newer one superseded (P4): the host drops them on the face before it sends the props' pictures
   const homeCaps = Object.values(SPECS.home.regions.cap?.marks ?? {}); if (screen !== "home" && homeCapsUp) { dropped.push(...homeCaps); homeCapsUp = false; }   // Home's 22 px caps leave the face with Home: they stayed in the picture table on every later screen (the Library's l3 states count them in layer-check's 200)
   if (screen === "vivarium" && UI.viv.prev) for (const id of [UI.viv.prev.base, ...UI.viv.prev.tiles]) if (id) ids.add(id);   // the room the swap's dither starts from stays on the face until the event ends

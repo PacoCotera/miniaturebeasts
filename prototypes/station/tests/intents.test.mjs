@@ -18,7 +18,7 @@ import { openBay } from "../src/intents/cargo.mjs";
 import { arrivePending } from "../src/intents/arrival.mjs";
 import { setLibrarySpecies } from "../src/views/home-props.mjs";
 import { capLine } from "../src/views/words.mjs";
-import { listOf } from "../src/views/pods-props.mjs";
+import { listOf, podsBuild } from "../src/views/pods-props.mjs";
 import { cardsOf } from "../src/views/panel-props.mjs";
 import { openInventory } from "../src/intents/pods.mjs";
 import { openStore } from "../src/intents/store.mjs";
@@ -325,11 +325,18 @@ test("one mibi up close, the meet: the first ✓ opens the namer and ends the me
   h.ui.hab.namer = null; h.ui.meet = a.id; INTENTS.habitat.intent(h, "resident", "back"); assert.equal(h.ui.meet, null); assert.equal(h.went.at(-1), "vivarium");
 });
 
-test("one mibi up close, a chapter plate: ✓ reads an unread chapter (the read event, 300 ms held 300), a read or sealed plate does nothing", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
-  m.read = fr.chapters.filter((c, i) => i > 0 && !c.sealed).map((c) => c.id); const d0 = st.d;
-  INTENTS.habitat.intent(h, "plate.0", "confirm"); assert.ok(m.read.includes(fr.chapters[0].id)); assert.ok(st.d <= d0); assert.deepEqual(h.played.at(-1), { kind: "read", target: "plate.0", ms: 300, hold: 300 });
-  h.played.length = 0; INTENTS.habitat.intent(h, "plate.0", "confirm"); assert.deepEqual(h.played, [], "read: nothing");
+test("one mibi up close, a chapter plate: ✓ opens her page on that chapter (every plate, read or not); her page shows the mibi, the six chapters, the places on her body; ← goes back to her", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true; const d0 = st.d;
+  INTENTS.habitat.intent(h, "plate.2", "confirm"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.page, h.ui.pods.lane, st.d], ["pods", "room", m.id, 2, d0], "her page on the third chapter, nothing spent");
+  const v = podsBuild({ st, settings, ui: h.ui.pods, focus: "rail", now: 0 }, podsSpec), R = v.read;
+  assert.equal(v.mode, "read"); assert.equal(R.name, S.cap(m.name)); assert.equal(R.rail.lanes.length, fr.chapters.length); assert.equal(R.rail.hand, 2);
+  const ch = v.requests.find((r) => r.kind === "readchamber"); assert.ok(ch, "her body in the chamber"); const withPlace = fr.chapters.map((c) => c.id).filter((id) => ["coat", "face", "legs-tail"].includes(id)); assert.deepEqual(ch.marks.map((k) => k[2]).sort(), withPlace.slice().sort(), "a mark for every chapter of the kind that has a place");
+  assert.equal(ch.marks.filter((k) => k[3]).length, 0, "the chapter in hand (Shape) has no place: no mark is the larger one");
+  const rl = v.requests.find((r) => r.kind === "readrail"); assert.deepEqual(rl.lanes.filter((l) => l.place).map((l) => l.id), withPlace, "the rail marks the chapters that have a place");
+  h.ui.pods.lane = 1; const v1 = podsBuild({ st, settings, ui: h.ui.pods, focus: "rail", now: 0 }, podsSpec); assert.equal(v1.requests.find((r) => r.kind === "readchamber").marks.filter((k) => k[3]).map((k) => k[2]).join(), "face", "the face is in hand: its place is the larger mark");
+  assert.equal(v1.line.back, S.cap(m.name), "← names her");
+  INTENTS.pods.intent(h, "rail", "confirm"); assert.equal(h.ui.pods.at, "right", "a read chapter opens"); INTENTS.pods.intent(h, "plate.0", "step:left");
+  h.went.length = 0; INTENTS.pods.intent(h, "rail", "back"); assert.deepEqual([h.went.at(-1), h.ui.hab.id, h.ui.pods.page], ["habitat", m.id, null], "← leaves her page for her, up close");
 });
 
 test("one mibi up close, Cross: only a partner at home can be picked (the first not away); a mibi out with the Companion, or with only away partners, does not open it", () => {

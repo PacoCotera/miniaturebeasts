@@ -9,6 +9,7 @@ import { slotsOf, picSizeOf } from "../trait-shape-pictures.mjs";
 import { cropSpecOf, cropKey } from "../trait-crops.mjs";
 import { fill } from "./words.mjs";
 import { railLanes, railLayout } from "../reading-rail.mjs";
+import { subjectOf, placesOf, bodyPlaceOf } from "../page.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const slot = (req, id, size, until) => req({ kind: "slot", id, master: id, size, until: until ?? "the reading screen's cut (the reading screen spec §3)" });
@@ -33,14 +34,14 @@ export function placeOf(ch, at) { const head = ch && ch.id === "face"; if (at ==
 // The chamber's picture id for a pod, a place, what is read and the chapter in hand (one picture of one size for every place)
 export function chamberReq(req, p, place, read, hand, outline) {
   const sid = S.speciesOf(p), fr = frameOf(sid), ch = fr.chapters.find((c) => c.id === hand) ?? null, part = ch ? partOf(sid, ch, read) : "";
-  const tints = [];
-  const key = `${read.slice().sort().join("+") || "-"}:${hand || "-"}:${part || "-"}:${outline ? "o" : "t"}`;
-  return req({ kind: "readchamber", id: `readchamber:${p.id}:${place}:${railHash(key)}`, species: sid, pod: p.id, place, read: [...read], hand: hand || "", outline: !!outline, part, tints });
+  const tints = [], marks = p.page ? placesOf(sid).filter((pl) => fr.chapters.some((c) => c.id === pl.chapter)).map((pl) => [pl.at[0], pl.at[1], pl.chapter, pl.chapter === hand]) : [];   // her page: the places on her body, the one in hand marked larger
+  const key = `${read.slice().sort().join("+") || "-"}:${hand || "-"}:${part || "-"}:${outline ? "o" : "t"}:${marks.map((k) => k[2] + (k[3] ? "!" : "")).join("")}`;
+  return req({ kind: "readchamber", id: `readchamber:${p.id}:${place}:${railHash(key)}`, species: sid, pod: p.id, place, read: [...read], hand: hand || "", outline: !!outline, part, tints, marks });
 }
-const railKey = (lanes) => lanes.map((l) => l.state[0] + l.traits.map((t) => (t.look ? t.look.join("/") + t.pattern.join("") : t.lv ? t.lv.join("") + t.gait.join("") : t.nature[0] + (t.looks ?? ""))).join(".")).join("|");
+const railKey = (lanes) => lanes.map((l) => l.state[0] + (l.place ? "*" : "") + l.traits.map((t) => (t.look ? t.look.join("/") + t.pattern.join("") : t.lv ? t.lv.join("") + t.gait.join("") : t.nature[0] + (t.looks ?? ""))).join(".")).join("|");
 let railHash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
 export function railReq(req, st, p, settings, read, small = false) {
-  const fr = podFrame(p), lanes = railLanes(st, fr, { ...p, read }, settings, S);
+  const fr = podFrame(p), lanes = railLanes(st, fr, { ...p, read }, settings, S).map((l) => (p.page && bodyPlaceOf(S.speciesOf(p), l.id) ? { ...l, place: true } : l));   // her page: a lane whose chapter has a place on her body carries a dot
   return { id: req({ kind: "readrail", id: `readrail:${S.speciesOf(p)}:${railHash(railKey(lanes))}${small ? ":small" : ""}`, lanes, small, species: S.speciesOf(p) }), lanes };
 }
 // The rail of a pod as the panel and Compare take it (the reading screen spec §4, the same renderer at the small size, 272 x 40 on the dark inset): the picture and, per lane, its chapter, trait count, state and the marks over it:
@@ -73,13 +74,13 @@ const hashOf = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) {
 
 // The reading screen's view. view: the Pods view being built; m: { st, settings, ui, focus, now }; spec: pods.json; req: the requests' collector.
 export function readView(view, m, spec, req) {
-  const { st, settings, ui } = m, Sg = spec.strings.read, p = S.benchPod(st), R = spec.regions.read;
+  const { st, settings, ui } = m, Sg = spec.strings.read, p = subjectOf(st, ui), R = spec.regions.read;
   view.mode = "read"; view.cur = p ? p.id : null;
   const out = { base: slot(req, R.ground.id, R.ground.rect.slice(2)), lamp: "", glyph: slot(req, R.glyph.id, R.glyph.rect.slice(2)), name: "", why: "", chamber: "", from: "", rail: null, right: null, reading: null, stamp: null,
     marks: { glint: slot(req, "reading-glint-11x11", [11, 11]), star: slot(req, "reading-star-11x11", [11, 11]) } };
   view.read = out;
   if (!p) { view.line = { ok: null, back: spec.strings.room.foot.backPods, subject: "", need: "" }; view.targets = []; view.resolve = {}; prune(out); return view; }
-  out.name = p.idd ? S.cap(S.spName(p)) : spec.strings.inv.sealedPod; out.why = typeof p.why === "string" ? p.why : "";   // the pod's reason, when the Companion sent one ("a new species", "you fed it"): drawn if present
+  out.name = p.page ? S.cap(p.name) : p.idd ? S.cap(S.spName(p)) : spec.strings.inv.sealedPod; out.why = typeof p.why === "string" ? p.why : "";   // the pod's reason, when the Companion sent one ("a new species", "you fed it"): drawn if present
   const sid = S.speciesOf(p), fr = podFrame(p), chs = p.idd ? fr.chapters : [];
   // an unidentified pod: the chamber empty under its light, no rail (no stamp yet); the right frame offers Identify on the price key
   if (!p.idd) {
@@ -113,7 +114,7 @@ export function readView(view, m, spec, req) {
   // the stamp: the one-time moment at the end of the first read ever, and the stamp view (▲ on the rail) once taught
   const moment = ui.moment && ui.moment.pod === p.id ? ui.moment : null;
   if (moment || at === "stamp" || ui.folding) out.stamp = stampOf(req, st, p, fr, rr, moment ?? (ui.folding?.was === "moment" ? { chapter: null } : null), Sg, settings);
-  view.line = lineOf(m, spec, out, p, ch, { at, isRead, sealed, reading, moment });
+  view.line = lineOf(m, spec, out, p, ch, { at, isRead, sealed, reading, moment }); if (p.page && !view.line.subject) view.line.subject = ch.name + (isRead ? ", read" : ", still a surprise");   // her page: the middle of the foot says the chapter in hand, so the goal line does not stand in it
   view.targets = targetsOf(out, { at, isRead, sealed, reading, moment, ch });
   view.resolve = {}; prune(out);
   return view;
@@ -179,7 +180,7 @@ function stampOf(req, st, p, fr, rr, moment, Sg, settings) {
 const railLayoutOf = (lanes) => railLayout(lanes.map((l) => l.traits.length));
 // The bottom line (§2.6, §2.9): the verb of what has the ring; ← names its target ("Pods" on the pod level, the chapter in the detail, the pod in the stamp view)
 function lineOf(m, spec, out, p, ch, o) {
-  const Sg = spec.strings.read, back = spec.strings.room.foot.backPods, R = out.right;
+  const Sg = spec.strings.read, back = p.page ? S.cap(p.name) : spec.strings.room.foot.backPods, R = out.right;
   if (o.moment || o.reading) return { ok: null, back: o.moment ? null : back, subject: "", need: "" };
   if (o.at === "stamp") return { ok: null, back: out.name, subject: "", need: "" };
   if (o.at === "detail") return { ok: null, back: ch.name, subject: "", need: "" };

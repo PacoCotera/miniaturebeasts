@@ -6,6 +6,7 @@ import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
 import { openSpecies, openFamily } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
+import { openPage } from "./pods.mjs";
 import { doorOpen } from "../nav.mjs";
 import { modulesOf } from "../views/habitat-props.mjs";
 
@@ -68,9 +69,8 @@ export function intent(h, target, verb) {
     return;   // a room's chip: nothing (the collection v2 design §1: the move mode retires; a mibi moves in the Vivarium)
   }
   else if (target.startsWith("plate.")) {
-    const ch = chapterAt(m, target); if (!ch) return;
-    const r = S.readMibi(h.st, m, ch.id, h.settings);
-    if (r.ok) { play(h, "read", { target }); h.save(); }
+    if (!chapterAt(m, target)) return;
+    openPage(h, m, +target.slice(6));   // ✓ on a chapter: her page, the rail on that chapter (station step 2a); the paid read of a plate retires with it
   }
   else if (target === "door") {   // ✓ takes the resident with you or brings it home, whichever the set as it will be offers; a request for it already waits: nothing
     if (S.pendingCarry(h.st, h.sv).some((r) => r.id === m.id)) return;

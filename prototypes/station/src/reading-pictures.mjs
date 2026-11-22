@@ -166,6 +166,10 @@ export function chamberPicture(r, env) {
     if (r.outline && handL) for (let j = 0; j < tw * th; j++) { const x = j % tw, y = (j / tw) | 0; if (inPane(x, y) && handL[j] > 0) pane.put(at(x, y), c, 0.95 * handL[j]); } }
   // the pane over the chamber's light, fading 22 px to the shelf
   out.over(pane, 0, 0, (xx, yy) => clamp01((H - 0.5 - yy) / CHAMBER.fade));
+  // 7. her page: the places on her body, interface marks drawn by code (a ring and a dot; the one in hand larger, in its chapter's colour), at a fraction of the body's box
+  for (const [fx, fy, chapter, inHand] of r.marks ?? []) { const cx = Math.round(ox + fx * tw), cy = Math.round(oy + fy * th), col = hex(CH[chapter] ?? "#cccccc").map((v) => v / 255), R = inHand ? 13 : 8;
+    for (let y = -R - 2; y <= R + 2; y++) for (let x = -R - 2; x <= R + 2; x++) { const d = Math.hypot(x, y), X = cx + x, Y = cy + y; if (X < 0 || Y < 0 || X >= W || Y >= H) continue;
+      const a = clamp01(1.2 - Math.abs(d - R)) * (inHand ? 0.95 : 0.6) + (d <= (inHand ? 3.5 : 2.5) ? 0.9 : 0); if (a > 0) out.put(Y * W + X, col, clamp01(a)); } }
   return out.rgba();
 }
 
@@ -184,6 +188,7 @@ export function railPicture(r) {
         const edge = rrect(xx, yy + 1, g.w, hh, rad) - rrect(xx - 1, yy, g.w - 2, th, Math.max(0, rad - 1)); pane.put((tagY + yy) * W + x + xx, c, m); if (edge > 0) pane.put((tagY + yy) * W + x + xx, col, 0.45 * clamp01(edge)); }
       lockAt(pane, W, x + g.w / 2, tagY + bh + 2, small); return;
     }
+    if (ln.place && !small) for (let yy = -2; yy <= 2; yy++) for (let xx = -2; xx <= 2; xx++) { const d = Math.hypot(xx, yy); if (d <= 2.3) pane.put((4 + yy) * W + Math.round(x + g.w / 2) + xx, col, clamp01(2.8 - d) * 0.95); }   // her page: this chapter has a place on her body: a dot under its cap (interface, drawn by code)
     ln.traits.forEach((t, k) => { const tx = x + k * (lay.B + lay.gap), tw = lay.B; drawTag(pane, W, tx, tagY, tw, bh, rad, col, ln.state === "read", t.nature === "look" && ln.state === "read" ? { ...t, colour: [colour(ln, t, 0), colour(ln, t, 1)] } : t, small); });
   });
   return pane.rgba();
