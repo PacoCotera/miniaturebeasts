@@ -1226,7 +1226,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 
 // --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
 import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
-import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, directKin, identity as genomeIdentity } from "./genome.mjs";
+import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, directKin, identity as genomeIdentity, vigourOfF, podMinutes, rest as restOfPairings, restLeft } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.crossE, settings), s: price(PRICE.crossS, settings), d: 0 });
 // The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
 // parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
@@ -1260,6 +1260,9 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (vivFull(st, settings)) return "the Vivarium is full";
   return "";
 }
+// The rest between pairings on the real clock (gdd 7.5): { recent, lengths, minutes, until } for one mibi, and the minutes left. Nothing is refused by it; a screen may say it later.
+export const restOf = (st, m, other = null, now = Date.now()) => restOfPairings({ pairedAt: m?.pairedAt || [], podMinutes: budMinutes(st, 0), kin: !!(other && pedigreeKinship(m, other, genomeLookup(st)) > 0), now });
+export const restMinutesLeft = (st, m, other = null, now = Date.now()) => restLeft(restOf(st, m, other, now), now);
 // The partners of an adult or an elder, in place order. A carried partner, docked or away (R4b), is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
 export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => { const kin = directKinOf(st, a, m), away = isCarried(st, sv, m) || inStore(m) || comingOut(st, m); return kin || away ? { ...m, ...(away ? { away: true } : {}), ...(kin ? { family: kin.rel } : {}) } : m; });   // tucked away or on its way back: listed dimmed, never picked (the put-away rules); family: listed, marked with the relation, never picked
 // The first pair at home that could cross now (same species, adults, not family, both at home, a free place, the incubator idle: crossBlock holds nothing back), in mibi id order: { a, b } or null.
@@ -1321,7 +1324,8 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   st.e -= cost.e; st.s -= cost.s;
   const sha = genomeSha(genome), fc = crossForecast(fr, a, b, { kinship: k }), read = childKnownChapters(fr, fc);
   const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
-  const minutes = budMinutes(st, 0, settings);
+  const baseMinutes = budMinutes(st, 0, settings), minutes = podMinutes(baseMinutes, vigourOfF(k));   // close kin costs vigour: a slower pod (gdd 7.6)
+  for (const m of [a, b]) m.pairedAt = [...(m.pairedAt || []), now].slice(-8);   // the rest between pairings runs on these (restOf); additive, no schema bump
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
   st.firstMibi = false;
   logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));

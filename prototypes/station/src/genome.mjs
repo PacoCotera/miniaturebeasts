@@ -11,6 +11,7 @@ import { frameFor as stampFrameFor } from "../../genome-stamp/src/frames.mjs";
 import { sizeFor as stampSizeFor } from "../../genome-stamp/src/codec.mjs";
 import { stampCode as stampCodeOf, decodeStampCode } from "../../genome-stamp/src/codec.mjs";
 
+export { vigourOf, vigourOfF, podMinutes, partnerStrength, rest, restLeft } from "../../species/framework/vigour.mjs";
 export { genomeDigest, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, directKin, relatedness, identity, SPREAD, decodeStampCode };
 
 // The species indexes the Companion page and the saves use: 0 is S01 Loika, 1 is S03 Tuikis, 2 is S02 Untuva (station-build.md §2.2); the other seventeen are appended, so those three keep their numbers.
