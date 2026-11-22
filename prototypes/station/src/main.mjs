@@ -66,7 +66,7 @@ function postFocus() {
   if (FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000)) box = PLATE_BOX;   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring
   const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
   if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
-  else { const r = focusStep(win.st, screen, box); win.st = r.st; win.focus = { screen, box }; placeWindow(r.top); }   // standalone on a phone: the page's own window follows the ring
+  else { const r = focusStep(win.st, screen, box); win.st = r.st; win.focus = { screen, box }; placeWindow(r.top || (!box && screen === "pods" && (UI.pods.view === "nursery" || UI.pods.view === "pod"))); }   // the nursery and a pod's page draw their own ring and no face ring: with no plate up the window rests at their left edge (the whole 530 window)   // standalone on a phone: the page's own window follows the ring
 }
 
 const stationEl = $("station"), stWindow = $("stWindow");
