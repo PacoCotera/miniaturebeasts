@@ -4,7 +4,7 @@
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { listOf, trayOf, findOf, compareKin, podsBuild, verbsOf, takeOf } from "../views/pods-props.mjs";
-import { recommendedLane, sealedShut, boardPages } from "../views/reading-props.mjs";
+import { recommendedLane, sealedShut } from "../views/reading-props.mjs";
 import { fill } from "../views/words.mjs";
 import { openCreate } from "./create.mjs";
 import { openStore } from "./store.mjs";
@@ -203,9 +203,9 @@ export function openPage(h, m, lane = 0) {
   enterRead(h, subjectOf(h.st, p)); p.lane = clamp(lane, 0, Math.max(0, frameOf(S.speciesOf(q)).chapters.length - 1));
   h.goto("pods");
 }
-// Her board (station step 3, walk-4 picture 5): every trait of her kind in one tiny row, by chapter, in pages (reading-props.mjs boardPages). The blue key on her page opens it; ← and the blue key return to her page, the ring on the rail.
-export function openBoard(h) { const p = pods(h); if (p.page == null) return; p.at = "board"; p.board = { page: 0 }; p.focus.set("trait"); }
-function closeBoard(h) { const p = pods(h); p.at = "rail"; p.board = null; p.focus.set("rail"); }
+// Her board (station-match-7, the accepted walk-5-glance): every trait of her kind in one small row, by chapter, on one screen (views/page-props.mjs boardScreen). The blue key on her page opens it; ← and the blue key return to her page, the ring on the rail.
+export function openBoard(h) { const p = pods(h); if (p.page == null) return; p.at = "board"; p.focus.set("trait"); }
+function closeBoard(h) { const p = pods(h); p.at = "rail"; p.focus.set("rail"); }
 function leavePage(h) { const p = pods(h), id = p.page; p.page = null; p.view = "inventory"; p.at = "rail"; p.from = "home"; h.ui.hab.id = id; h.goto("habitat"); }
 function backToInventory(h) {   // ← on the pod level, or the Research key's second face: the inventory, the ring on this pod's card (its mini rail shows what was just read)
   if (pods(h).page != null) return leavePage(h);   // her page: ← and the Research key go back to her, up close
@@ -234,15 +234,17 @@ function readIntent(h, target, verb) {
   }
   const chs = frameOf(S.speciesOf(q)).chapters, k = clamp(p.lane ?? 0, 0, chs.length - 1), ch = chs[k], sealed = sealedShut(ch, h.settings) && !q.read.includes(ch.id), isRead = q.read.includes(ch.id);
   const at = p.at ?? "rail";
-  if (at === "board") {   // her board: ▲▼ turn its pages, ← returns to her page
-    if (verb === "back") return closeBoard(h);
-    if (verb === "step:up" || verb === "step:down") { const n = boardPages(frameOf(S.speciesOf(q))).length; p.board.page = clamp((p.board?.page ?? 0) + (verb === "step:down" ? 1 : -1), 0, n - 1); }
+  if (at === "board") { if (verb === "back") closeBoard(h); return; }   // her board: one screen, ← returns to her page
+  if (at === "scale") {   // her chapter (views/page-props.mjs scaleScreen): ◂▸ move along the chapter's traits, ✓ points the lens at the one in hand (free, once: what she carries there shows), ← goes back to her page
+    const n = ch.traits.length, tr = ch.traits[clamp(p.trait ?? 0, 0, n - 1)];
+    if (verb === "back") { p.at = "rail"; p.focus.set("rail"); return; }
+    if (verb === "step:left" || verb === "step:right") { p.trait = clamp((p.trait ?? 0) + (verb === "step:right" ? 1 : -1), 0, n - 1); return; }
+    if (verb === "confirm" && S.pageLens(st, S.mibiById(st, p.page), ch.id, tr.id).ok) h.save();
     return;
   }
   if (at === "stamp") { if (verb === "back" || verb === "confirm" || verb === "step:down") foldStamp(h, target); return; }
   if (at === "detail") {
     if (verb === "back") return moveTo(h, () => { p.at = "right"; p.plate = p.trait ?? 0; p.focus.set("plate." + p.plate); });   // B up: the pod level, the ring on the trait's plate
-    if (verb === "confirm" && p.page != null) { if (S.pageLens(st, S.mibiById(st, p.page), ch.id, ch.traits[clamp(p.trait ?? 0, 0, ch.traits.length - 1)].id).ok) h.save(); return; }   // her page: the lens on this trait, free: what she carries there shows
     if (verb === "step:up" || verb === "step:down") { p.trait = clamp((p.trait ?? 0) + (verb === "step:down" ? 1 : -1), 0, ch.traits.length - 1); }   // the chapter's next trait (both cut)
     return;
   }
@@ -262,10 +264,9 @@ function readIntent(h, target, verb) {
   }
   if (verb === "step:up") { if (!st.stampTaught || p.page != null) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
   if (verb !== "confirm" || sealed) return;   // a sealed lane gives no ✓: nothing happens
-  if (!isRead && p.page != null) {   // her page: the first look at a chapter about her body is free and opens it; a chapter about what she does is filled by watching her (a sighting), never by a ✓
-    if (S.isDoingChapter(ch)) return moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("rail"); });   // opens to see its empty scales; it fills only by a sighting
-    if (!S.pageLook(h.st, S.mibiById(h.st, p.page), ch.id).ok) return;
-    h.save(); return moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });
+  if (p.page != null) {   // her page: ✓ opens the chapter (the scale, on the first trait). The first look at a chapter about her body is free; a chapter about what she does is filled by watching her (a sighting), never by a ✓, and opens to see its stretches
+    if (!isRead && !S.isDoingChapter(ch)) { if (!S.pageLook(h.st, S.mibiById(h.st, p.page), ch.id).ok) return; h.save(); }
+    p.at = "scale"; p.trait = 0; p.focus.set("rail"); return;
   }
   if (!isRead) return openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)
   moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });   // the chapter opens: the ring crosses to the right frame (Face dithers to the close place)

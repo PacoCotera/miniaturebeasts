@@ -295,6 +295,202 @@ function qMark(p, d, col, a) {   // the "?" in the chapter colour: a hook and a 
     const dot = Math.hypot(x + 0.5 - cx, y + 0.5 - (cy + s * 0.32)); const m = Math.max(clamp01(w / 2 + 0.5 - best), clamp01(w * 0.7 + 0.5 - dot)); if (m > 0) p.put(y * d + x, col, a * m); }
 }
 
+// ---- her page's stage (station-match-3 slice 1a; the accepted walk-3-page) ----
+// One opaque picture of the phone window's size (530 x 600): the room covered to the window (centred across, 60 % down), a radial shade, her adult master at the body box, the four leader lines, the chips on her
+// body (a 30 px disc with the chapter's 24 x 24 read emblem at 18, nearest), the ring on the chapter in hand (a segmented 70 px chapter mark inside a 88 px orange focus circle), the tag's pill and the two hint keys.
+// The room and her are game masters; the lines, chips, ring, pill and keys are interface drawn by code (rings, bars and keys are UI marks). Text is the face's (v_say), never here.
+// r: { species, size: [w, h], body: { x, y, w }, spots: [{ chapter, at: [x, y], line: [x1, y1, x2, y2], ring: "1,0,..." | "" }], hand, tag: [x, y, w, h], radius, keys: [[x, y, w, h], [x, y, w, h]] }
+const PAGE_CREAM = [246 / 255, 231 / 255, 184 / 255], PAGE_ORANGE = [240 / 255, 122 / 255, 31 / 255], PAGE_INK = [16 / 255, 20 / 255, 28 / 255], PAGE_BLUE = [143 / 255, 208 / 255, 230 / 255], PAGE_GOLD = [1, 201 / 255, 77 / 255];
+const segDist = (px, py, x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, L = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / L)); return Math.hypot(px - x1 - t * dx, py - y1 - t * dy); };
+function paintPage(out, x0, y0, x1, y1, f) { const W = out.w, H = out.h; for (let y = Math.max(0, Math.floor(y0)); y < Math.min(H, Math.ceil(y1)); y++) for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, Math.ceil(x1)); x++) { const r = f(x + 0.5, y + 0.5); if (r && r[1] > 0) out.put(y * W + x, r[0], clamp01(r[1])); } }
+const rrectSd = (px, py, x, y, w, h, r) => { const qx = Math.abs(px - (x + w / 2)) - (w / 2 - r), qy = Math.abs(py - (y + h / 2)) - (h / 2 - r); return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r; };
+function pageEmblem(out, chapter, cx, cy, px) {   // the chapter's 24 x 24 read emblem, nearest-neighbour at px, centred
+  const id = `rail-emblem-${chapter}-read-24x24`, src = pixels(id); if (!src) return;
+  for (let y = 0; y < px; y++) for (let x = 0; x < px; x++) { const sx = Math.min(23, Math.floor((x * 24) / px)), sy = Math.min(23, Math.floor((y * 24) / px)), i = (sy * 24 + sx) * 4, a = src[i + 3] / 255, X = Math.round(cx - px / 2) + x, Y = Math.round(cy - px / 2) + y;
+    if (a > 0 && X >= 0 && Y >= 0 && X < out.w && Y < out.h) out.put(Y * out.w + X, [src[i] / 255, src[i + 1] / 255, src[i + 2] / 255], a); }
+}
+function pageRing(out, cx, cy, S, petalStates, chapter) {   // the chapter mark of shared.css/shared.js: a disc and one round-capped petal a trait
+  const n = petalStates.length, w = Math.max(5, S * 0.105), R = S / 2 - w / 2 - 1, COL = { 1: PAGE_CREAM, 0: [1, 1, 1], c: PAGE_ORANGE, g: PAGE_BLUE }, ALPHA = { 1: 1, 0: 0.5, c: 1, g: 1 }, gap = n === 1 ? 0 : 0.34;
+  paintPage(out, cx - S / 2, cy - S / 2, cx + S / 2, cy + S / 2, (x, y) => { const d = Math.hypot(x - cx, y - cy); return d < R - w / 2 - 1 + 0.5 ? [PAGE_INK, 0.8 * clamp01(R - w / 2 - 1 + 0.5 - d)] : null; });
+  petalStates.forEach((s, i) => { const a0 = -Math.PI / 2 + (i * 2 * Math.PI) / n + gap / 2, a1 = -Math.PI / 2 + ((i + 1) * 2 * Math.PI) / n - gap / 2;
+    paintPage(out, cx - S / 2, cy - S / 2, cx + S / 2, cy + S / 2, (x, y) => { const rho = Math.hypot(x - cx, y - cy); let d;
+      if (n === 1) d = Math.abs(rho - R); else { let th = Math.atan2(y - cy, x - cx); while (th < a0 - 1e-9) th += 2 * Math.PI; if (th <= a1) d = Math.abs(rho - R); else d = Math.min(Math.hypot(x - cx - R * Math.cos(a0), y - cy - R * Math.sin(a0)), Math.hypot(x - cx - R * Math.cos(a1), y - cy - R * Math.sin(a1))); }
+      return [COL[s] ?? COL[0], (ALPHA[s] ?? 0.5) * clamp01(w / 2 + 0.5 - d)]; }); });
+  pageEmblem(out, chapter, cx, cy, 24 * Math.max(1, Math.round(((S * 0.42) / 24) * 2) / 2));
+}
+export function pageStagePicture(r) {
+  const [W, H] = r.size, out = new Pane(W, H), bg = pixels("vivarium-near-day-544x408");
+  for (let i = 0; i < W * H; i++) { out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
+  if (bg) { const s = Math.max(W / 544, H / 408), bw = Math.round(544 * s), bh = Math.round(408 * s), sc = resample(bg, 544, 408, bw, bh), ox = Math.round((W - bw) * 0.5), oy = Math.round((H - bh) * 0.6);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const X = x - ox, Y = y - oy; if (X < 0 || Y < 0 || X >= bw || Y >= bh) continue; const i = (Y * bw + X) * 4; out.put(y * W + x, [sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], 1); } }
+  { const cx = W * 0.45, cy = H * 0.45, rx = Math.max(cx, W - cx) * Math.SQRT2, ry = Math.max(cy, H - cy) * Math.SQRT2;   // the shade: clear to 45 % of the ellipse, then 42 % of #080a10 out to the corner
+    paintPage(out, 0, 0, W, H, (x, y) => { const t = Math.hypot((x - cx) / rx, (y - cy) / ry); return t <= 0.45 ? null : [[8 / 255, 10 / 255, 16 / 255], 0.42 * clamp01((t - 0.45) / 0.55)]; }); }
+  const body = pixels(`mibi-adult-${r.species}-304x312`);
+  if (body) { const bw = r.body.w, bh = Math.round((bw * 312) / 304), sc = resample(body, 304, 312, bw, bh);
+    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) { const X = r.body.x + x, Y = r.body.y + y, i = (y * bw + x) * 4; if (X < 0 || Y < 0 || X >= W || Y >= H || !sc[i + 3]) continue; out.put(Y * W + X, [sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], sc[i + 3] / 255); } }
+  for (const s of r.spots) { const [x1, y1, x2, y2] = s.line; paintPage(out, Math.min(x1, x2) - 3, Math.min(y1, y2) - 3, Math.max(x1, x2) + 3, Math.max(y1, y2) + 3, (x, y) => [PAGE_CREAM, 0.85 * clamp01(1.5 - segDist(x, y, x1, y1, x2, y2))]); }
+  for (const s of r.spots) { const [cx, cy] = s.at;
+    if (s.ring) { const R = 44;   // the focus circle (3 px orange, a 4 px halo at 25 %, a soft glow at 40 %) round the chapter mark
+      paintPage(out, cx - R - 26, cy - R - 26, cx + R + 26, cy + R + 26, (x, y) => { const d = Math.hypot(x - cx, y - cy);
+        if (d > R + 26) return null; if (d <= R - 3) return null; if (d <= R) return [PAGE_ORANGE, clamp01(R + 0.5 - d)]; if (d <= R + 4) return [PAGE_ORANGE, 0.25]; const g = clamp01(1 - (d - R - 4) / 22); return [PAGE_ORANGE, 0.4 * g * g * 0.8]; });
+      pageRing(out, cx, cy, 70, s.ring.split(","), s.chapter); }
+    else { paintPage(out, cx - 16, cy - 16, cx + 16, cy + 16, (x, y) => { const d = Math.hypot(x - cx, y - cy); return d <= 15.5 ? (d >= 13 ? [PAGE_CREAM, 0.8 * clamp01(15.5 - d)] : [PAGE_INK, 0.78]) : null; }); pageEmblem(out, s.chapter, cx, cy, 18); } }
+  { const [x, y, w, h] = r.tag; paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [PAGE_INK, 0.84 * clamp01(0.5 - rrectSd(px, py, x, y, w, h, r.radius))]); }
+  { const [x, y, w, h] = r.keys[0];   // the pad key: a rounded square with a 1.5 px edge and the two small triangles
+    paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, 9), a = clamp01(0.5 - sd); return a <= 0 ? null : sd > -1.5 ? [[1, 1, 1], 0.3 * a] : [[43 / 255, 49 / 255, 64 / 255], a]; });
+    const cx = x + w / 2, cy = y + h / 2; paintPage(out, cx - 9, cy - 6, cx + 9, cy + 6, (px, py) => { const u = px - cx, v = Math.abs(py - cy); const left = u < -1 && u > -8 && v < ((u + 8) / 7) * 4.5, right = u > 1 && u < 8 && v < ((8 - u) / 7) * 4.5; return left || right ? [[244 / 255, 239 / 255, 226 / 255], 1] : null; }); }
+  { const [x, y, w, h] = r.keys[1], cx = x + w / 2, cy = y + h / 2;   // the ✓ key: an orange disc with a white check
+    paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [PAGE_ORANGE, clamp01(w / 2 + 0.5 - Math.hypot(px - cx, py - cy))]);
+    const a = [cx - 6.5, cy + 0.5], b = [cx - 2, cy + 5], c = [cx + 7, cy - 5];
+    paintPage(out, cx - 10, cy - 10, cx + 10, cy + 10, (px, py) => [[1, 1, 1], clamp01(1.7 - Math.min(segDist(px, py, a[0], a[1], b[0], b[1]), segDist(px, py, b[0], b[1], c[0], c[1])))]); }
+  if (r.rail) pageRail(out, r.rail);
+  return out.rgba();
+}
+// The rail band along the foot (round2.css .rail): a fade into the ink (clear at the top, 86 % 22 px down, 95 % at the foot), one 50 px chapter ring a cell and the frame on the chapter in hand (a 2.5 px orange border, 12 % orange fill, radius 14).
+// rail: { y, h, ring, cy, grad: { fadeTo, alpha0, alpha1, alpha2 }, frame: { dx, top, bottom, radius, border, fillPct }, w, cells: [{ chapter, x, petals: "1,0,..", hand }] }
+function pageRail(out, q) {
+  const W = out.w, g = q.grad;
+  paintPage(out, 0, q.y, W, q.y + q.h, (x, y) => { const t = y - q.y, a = t < g.fadeTo ? g.alpha0 + ((g.alpha1 - g.alpha0) * t) / g.fadeTo : g.alpha1 + ((g.alpha2 - g.alpha1) * (t - g.fadeTo)) / (q.h - g.fadeTo); return [PAGE_INK, a]; });
+  for (const c of q.cells) if (c.hand) { const f = q.frame, x0 = c.x + f.dx, y0 = q.y + f.top, w = q.w - 2 * f.dx, h = f.bottom - f.top;
+    paintPage(out, x0 - 2, y0 - 2, x0 + w + 2, y0 + h + 2, (x, y) => { const sd = rrectSd(x, y, x0, y0, w, h, f.radius), edge = clamp01(0.5 - sd), inner = clamp01(0.5 - (sd + f.border)); return edge <= 0 ? null : [PAGE_ORANGE, inner > 0.999 ? (f.fillPct / 100) : edge - inner * (1 - f.fillPct / 100)]; }); }
+  for (const c of q.cells) pageRing(out, c.x + q.w / 2, q.cy, q.ring, c.petals.split(","), c.chapter);
+}
+
+// ---- her chapter: the scale (station-match-5; the accepted walk-4-scale and walk-4-copies) ----
+// One opaque picture of the phone window (530 x 600): her close up with the ring on the chapter's place (a lens of the same master, enlarged), or, once the lens has been pointed at the trait, the room at dusk with the
+// two copies she carries side by side in a blue lens; the tray (the chapter's ring, the trait chips with the one in hand lit), the kind's pictured ends and middle as round portraits, the bar, her gold mark, the
+// others' small faces and the legend's marks. Game masters (the room, her coat variants, the 64 px faces) are cut and placed, never drawn; the ring, lens rims, chips, bar and marks are interface drawn by code.
+// Text is the face's. r: { species, size: [w, h], dusk, copies, body: { left, top, w }, lens: { cx, cy, d, zoom }, halves: [master, master] | null, tray: { top, h, fade }, ring: { cx, cy, s, chapter, petals },
+//   chips: [{ x, y, w, h, on, scale }], ends: [{ cx, cy, d, master }], bar: { x0, x1, y, h, over, grad: [[r, g, b] x 3], ticks: [x..], tick: [y0, y1] }, rough: [x0, x1, y, h] | null, she: { x, y, d } | null,
+//   cop: { xs: [a, b], y, h } | null, link: { x0, x1, y, h } | null, pins: [{ x, top, face, her }], legend: { dot: [x, y] | null, bar: [x, y, w, h] | null } }
+const sample = (rgba, sw, i) => [rgba[i * 4] / 255, rgba[i * 4 + 1] / 255, rgba[i * 4 + 2] / 255, rgba[i * 4 + 3] / 255];
+function roomRGB(W, H, id, zoom, blur) {   // the room covered to the window (centred across, 60 % down), enlarged about the centre and blurred (box passes), as RGB 0..1; null when it is not placed
+  const bg = pixels(id); if (!bg) return null;
+  const s = Math.max(W / 544, H / 408), bw = Math.round(544 * s), bh = Math.round(408 * s), sc = resample(bg, 544, 408, bw, bh), ox = Math.round((W - bw) * 0.5), oy = Math.round((H - bh) * 0.6), c = new Float32Array(W * H * 3);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const X = Math.min(bw - 1, Math.max(0, Math.round((x - W / 2) / zoom + W / 2) - ox)), Y = Math.min(bh - 1, Math.max(0, Math.round((y - H / 2) / zoom + H / 2) - oy)), i = (Y * bw + X) * 4; c.set([sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], (y * W + x) * 3); }
+  for (let pass = 0; pass < (blur ? 3 : 0); pass++) for (const horiz of [true, false]) { const t = new Float32Array(c.length), n = horiz ? W : H, m = horiz ? H : W, k = Math.round(blur * 0.55);
+    for (let b = 0; b < m; b++) for (let a = 0; a < n; a++) { let r = 0, g = 0, bl = 0, cnt = 0; for (let d = -k; d <= k; d++) { const q = Math.min(n - 1, Math.max(0, a + d)), j = (horiz ? b * W + q : q * W + b) * 3; r += c[j]; g += c[j + 1]; bl += c[j + 2]; cnt++; } const o = (horiz ? b * W + a : a * W + b) * 3; t[o] = r / cnt; t[o + 1] = g / cnt; t[o + 2] = bl / cnt; }
+    c.set(t); }
+  return c;
+}
+function sprite(out, rgba, sw, sh, left, top, w, o = {}) {   // a master placed at (left, top), w wide, through an optional brightness / contrast and a coverage clip (x, y) -> 0..1, in picture pixels
+  const h = Math.round((w * sh) / sw), sc = resample(rgba, sw, sh, w, h), br = o.bright ?? 1, ct = o.contrast ?? 1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const X = Math.round(left) + x, Y = Math.round(top) + y; if (X < 0 || Y < 0 || X >= out.w || Y >= out.h) continue; const [r, g, b, a] = sample(sc, w, y * w + x); if (!a) continue; const cv = o.clip ? o.clip(X + 0.5, Y + 0.5) : 1; if (cv <= 0) continue;
+    out.put(Y * out.w + X, [r, g, b].map((v) => clamp01(((v * br - 0.5) * ct) + 0.5)), a * cv); }
+}
+const discClip = (cx, cy, rad) => (x, y) => clamp01(rad + 0.5 - Math.hypot(x - cx, y - cy));
+function discRim(out, cx, cy, rad, wid, col, alpha, glow) {   // a ring (wid wide, inside rad), a 2 px dark ring outside it and a soft glow of the same colour
+  paintPage(out, cx - rad - 40, cy - rad - 40, cx + rad + 40, cy + rad + 40, (x, y) => { const d = Math.hypot(x - cx, y - cy);
+    if (d <= rad - wid) return null; if (d <= rad) return [col, alpha * clamp01(rad + 0.5 - d) * clamp01(d - (rad - wid) + 0.5)];
+    if (d <= rad + 2) return [[8 / 255, 12 / 255, 16 / 255], 0.5]; const g = clamp01(1 - (d - rad - 2) / glow); return g > 0 ? [col, 0.45 * g * g] : null; });
+}
+export function pageScalePicture(r) {
+  const [W, H] = r.size, out = new Pane(W, H), roomId = `vivarium-near-${r.dusk ? "dusk" : "day"}-544x408`, room = roomRGB(W, H, roomId, r.dusk ? 1 : 1.5, r.dusk ? 0 : 5), hex6 = (h) => hex(h).map((v) => v / 255);
+  for (let i = 0; i < W * H; i++) { if (room) out.c.set(room.subarray(i * 3, i * 3 + 3), i * 3); else out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
+  const body = pixels(`mibi-adult-${r.species}-304x312`);
+  if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
+  { const q = r.dusk ? 0.5 : 0.16, col = r.dusk ? [6 / 255, 8 / 255, 14 / 255] : [8 / 255, 10 / 255, 16 / 255]; paintPage(out, 0, 0, W, H, () => [col, q]); }
+  const L = r.lens;
+  if (r.dusk && r.halves) {   // the two copies side by side: the room as it is behind, then each master, enlarged and brightened, half a lens each, a blue bar between
+    const roomHi = roomRGB(W, H, roomId, 1, 0), box = [L.cx - L.d / 2, L.cy - L.d / 2], half = r.halves.length === 1 ? L.d : L.d / 2;   // one master (a set's hidden look) fills the lens
+    for (const [k, id] of r.halves.entries()) { const px = pixels(id), x0 = box[0] + k * half, clip = (x, y) => (x >= x0 && x < x0 + half ? discClip(L.cx, L.cy, L.d / 2)(x, y) : 0);
+      if (roomHi) paintPage(out, x0, box[1], x0 + half, box[1] + L.d, (x, y) => { const c = clip(x, y); if (c <= 0) return null; const j = (Math.floor(y) * W + Math.floor(x)) * 3; return [[Math.min(1, roomHi[j] * 1.15), Math.min(1, roomHi[j + 1] * 1.15), Math.min(1, roomHi[j + 2] * 1.15)], c]; });
+      if (px) sprite(out, px, 304, 312, box[0] + (L.ox ?? -63), box[1] + (L.oy ?? -190), L.zoomW, { bright: 1.35, contrast: 1.06, clip }); }
+    if (r.halves.length > 1) paintPage(out, L.cx - 2, L.cy - L.d / 2, L.cx + 2, L.cy + L.d / 2, (x, y) => [PAGE_BLUE, discClip(L.cx, L.cy, L.d / 2)(x, y)]);
+    discRim(out, L.cx, L.cy, L.d / 2, 4, PAGE_BLUE, 1, 30);
+  } else if (!r.dusk) {   // the ring on the chapter's place: a lens of the same master, enlarged and brightened so the fur reads
+    if (body) sprite(out, body, 304, 312, L.cx - L.fx * L.zoomW, L.cy - L.fy * Math.round((L.zoomW * 312) / 304), L.zoomW, { bright: 1.3, contrast: 1.06, clip: discClip(L.cx, L.cy, L.d / 2) });
+    discRim(out, L.cx, L.cy, L.d / 2, 4, PAGE_GOLD, 1, 30);
+  }
+  { const T = r.tray, g = (t) => (t < T.fade ? (0.92 * t) / T.fade : 0.92 + (0.05 * (t - T.fade)) / (T.h - T.fade)); paintPage(out, 0, T.top - 0, W, H, (x, y) => [PAGE_INK, g(y - T.top)]); }
+  { const q = r.ring; pageRing(out, q.cx, q.cy, q.s, q.petals.split(","), q.chapter); }
+  for (const c of r.chips) { paintPage(out, c.x - 1, c.y - 1, c.x + c.w + 1, c.y + c.h + 1, (x, y) => [c.on ? hex6("#f6e7b8") : [1, 1, 1], (c.on ? 1 : 0.07) * clamp01(0.5 - rrectSd(x, y, c.x, c.y, c.w, c.h, 13))]);
+    const gx = c.x + 11 + 5, gy = c.y + c.h / 2, bar = c.on ? [40 / 255, 34 / 255, 22 / 255] : PAGE_CREAM, dot = c.on ? [64 / 255, 50 / 255, 19 / 255] : PAGE_GOLD;
+    if (c.scale) { paintPage(out, gx - 1, gy - 3, gx + 14, gy + 3, (x, y) => [bar, (c.on ? 0.7 : 0.45) * clamp01(2.5 - Math.abs(y - gy)) * clamp01(x - gx + 1) * clamp01(gx + 14 - x)]); paintPage(out, gx + 1, gy - 6, gx + 11, gy + 6, (x, y) => [dot, clamp01(5.5 - Math.hypot(x - gx - 6, y - gy))]); }
+    else for (const [k, col] of [[0, bar], [1, dot], [2, bar]]) paintPage(out, gx + k * 6, gy - 4, gx + k * 6 + 5, gy + 4, () => [col, c.on ? 0.8 : 0.6]); }
+  { const Q = r.set ?? { cards: [], kin: [] }, GOLD = PAGE_GOLD, BLUE = PAGE_BLUE, dash = (x, y, cx, cy, per) => ((Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI)) * per % 10 < 6;   // a set's cards (walk-4-set: .card u, 70 lp, radius 13)
+    for (const c of Q.cards) { const { x, y, s } = c, cx = x + s / 2, cy = y + s / 2, per = 4 * s, own = clamp01, inside = (X, Y) => own(0.5 - rrectSd(X, Y, x, y, s, s, 13));
+      paintPage(out, x - 28, y - 28, x + s + 28, y + s + 28, (px, py) => { const sd = rrectSd(px, py, x, y, s, s, 13);
+        if (c.rim === "gold" && sd > 0) return sd <= 3 ? [GOLD, 0.25 * clamp01(3.5 - sd) + 0.4] : (1 - (sd - 3) / 18) > 0 ? [GOLD, 0.55 * (1 - (sd - 3) / 18) ** 2] : null;
+        if (c.rim === "blue" && sd > 0) return sd > 3.5 && sd <= 7.5 ? (dash(px, py, cx, cy, per + 40) ? [BLUE, clamp01(0.5 - Math.abs(sd - 5.5) + 1.75)] : [BLUE, 0.28 * clamp01(1 - (sd - 7.5) / 12)]) : sd > 7.5 && sd < 22 ? [BLUE, 0.5 * (1 - (sd - 7.5) / 14.5) ** 2] : null;
+        return null; });
+      paintPage(out, x - 1, y - 1, x + s + 1, y + s + 1, (px, py) => [hex6("#141922"), inside(px, py)]);
+      const px0 = c.master ? pixels(c.master) : null; if (px0) { const k = s / c.window[2]; sprite(out, px0, 304, 312, x - c.window[0] * k, y - c.window[1] * k, Math.round(304 * k), { bright: c.bright, clip: inside }); }
+      const wid = c.rim === "gold" ? 4 : c.rim === "dash" ? 2 : c.rim === "blue" ? 2 : 2, col = c.rim === "gold" ? GOLD : PAGE_CREAM, al = c.rim === "gold" ? 1 : c.rim === "dash" ? 0.5 : 0.8;
+      paintPage(out, x - 1, y - 1, x + s + 1, y + s + 1, (px, py) => { const sd = rrectSd(px, py, x, y, s, s, 13), e = clamp01(0.5 - sd) * clamp01(sd + wid + 0.5); if (e <= 0) return null; if (c.rim === "dash" && !dash(px, py, cx, cy, per)) return null; return [col, al * e]; });
+      if (c.pill) { const P = Q.pill, pw = P.w, ph = P.h, pxx = cx - pw / 2, pyy = y + P.dy; paintPage(out, pxx - 1, pyy - 1, pxx + pw + 1, pyy + ph + 1, (px, py) => [c.pill === "blue" ? hex6("#8fd0e6") : GOLD, clamp01(0.5 - rrectSd(px, py, pxx, pyy, pw, ph, 10))]); } }
+    for (const k of Q.kin) { const R = k.d / 2, cx = k.x + R, cy = k.y + R, wr = k.her ? 2 : 1.5, rim = k.her ? GOLD : PAGE_CREAM;   // the small faces: 28 lp discs in a ring (gold for her)
+      paintPage(out, k.x - 1, k.y - 1, k.x + k.d + 1, k.y + k.d + 1, (px, py) => { const d = Math.hypot(px - cx, py - cy); return d <= R - wr + 0.5 ? [hex6("#141922"), clamp01(R - wr + 0.5 - d)] : null; });
+      const f = k.face ? pixels(k.face) : null; if (f) sprite(out, f, 64, 64, k.x, k.y, k.d, { clip: discClip(cx, cy, R - wr) });
+      paintPage(out, k.x - 1, k.y - 1, k.x + k.d + 1, k.y + k.d + 1, (px, py) => { const d = Math.hypot(px - cx, py - cy); return d > R - wr && d <= R + 0.5 ? [rim, (k.her ? 1 : 0.7) * clamp01(R + 0.5 - d) * clamp01(d - (R - wr) + 0.5)] : null; }); } }
+  const S = r.sc;
+  for (const e of S.ends) {   // a round portrait: the kind's coat at that end in a 2 px cream ring on #141922; none placed, the plain disc
+    paintPage(out, e.cx - e.d / 2 - 1, e.cy - e.d / 2 - 1, e.cx + e.d / 2 + 1, e.cy + e.d / 2 + 1, (x, y) => { const d = Math.hypot(x - e.cx, y - e.cy); return d <= e.d / 2 - 2 + 0.5 ? [hex6("#141922"), clamp01(e.d / 2 - 2 + 0.5 - d)] : d <= e.d / 2 + 0.5 ? [PAGE_CREAM, 0.7 * clamp01(e.d / 2 + 0.5 - d) * clamp01(d - (e.d / 2 - 2) + 0.5)] : null; });
+    const px = e.master ? pixels(e.master) : null; if (px) sprite(out, px, 304, 312, e.cx - e.d / 2 + 2 - 3, e.cy - e.d / 2 + 2 - 3, 78, { clip: discClip(e.cx, e.cy, e.d / 2 - 2) }); }
+  const B = S.bar ?? { x0: 0, x1: 1, over: 0, y: -9, h: 1, ticks: [], tick: [0, 0], grad: [[0, 0, 0], [0, 0, 0], [0, 0, 0]] }, bx0 = B.x0 - B.over, bx1 = B.x1 + B.over, gradAt = (t) => grad([[0, B.grad[0]], [0.5, B.grad[1]], [1, B.grad[2]]], t);
+  for (const x of B.ticks) paintPage(out, x - 1, B.tick[0], x + 1, B.tick[1], () => [PAGE_CREAM, 0.55]);
+  if (S.bar) paintPage(out, bx0 - 5, B.y - 5, bx1 + 5, B.y + B.h + 5, (x, y) => { const sd = rrectSd(x, y, bx0, B.y, bx1 - bx0, B.h, B.h / 2), outer = clamp01(0.5 - (sd - 3)), edge = clamp01(0.5 - sd), inner = clamp01(0.5 - (sd + 1.5)); if (outer <= 0) return null;
+    if (edge <= 0) return [PAGE_INK, 0.6 * outer]; return inner > 0.99 ? [gradAt((x - bx0) / (bx1 - bx0)).map((v) => v / 1), 1] : [PAGE_CREAM, 0.75 * edge]; });
+  if (S.rough) { const [x0, x1, y, h] = S.rough; paintPage(out, x0 - 2, y - 2, x1 + 2, y + h + 2, (px, py) => { const sd = rrectSd(px, py, x0, y, x1 - x0, h, h / 2), e = clamp01(0.5 - sd); return e <= 0 ? null : sd > -2 ? [PAGE_GOLD, e] : [PAGE_GOLD, 0.34 * e]; }); }
+  if (S.link) { const { x0, x1, y, h } = S.link; paintPage(out, x0 - 2, y - 1, x1 + 2, y + h + 1, (px, py) => { const sd = rrectSd(px, py, x0, y - 12, x1 - x0, h + 12, 8), e = clamp01(0.5 - sd), i = clamp01(0.5 - (sd + 2)); return py < y || e <= 0 ? null : [PAGE_BLUE, e - i]; }); }
+  if (S.cop) for (const x of S.cop.xs) paintPage(out, x - 8, S.cop.y - S.cop.h / 2 - 3, x + 8, S.cop.y + S.cop.h / 2 + 3, (px, py) => { const sd = rrectSd(px, py, x - 4, S.cop.y - S.cop.h / 2, 8, S.cop.h, 4), e = clamp01(0.5 - sd); if (sd > 8) return null; if (e <= 0) return [PAGE_BLUE, 0.3 * clamp01(1 - sd / 8)]; return [sd > -2 ? hex6("#10202a") : PAGE_BLUE, e]; });
+  for (const p of S.pins) {   // a pin: a 9 px stem, the mibi's 64 px face as a 34 px disc in a ring (gold and 2.5 px for her)
+    paintPage(out, p.x - 1, p.top, p.x + 1, p.top + 9, () => [PAGE_CREAM, 0.6]); const cy = p.top + 9 + 17, wr = p.her ? 2.5 : 1.5, rim = p.her ? PAGE_GOLD : PAGE_CREAM;
+    paintPage(out, p.x - 19, cy - 19, p.x + 19, cy + 19, (x, y) => { const d = Math.hypot(x - p.x, y - cy); return d <= 17 - wr + 0.5 ? [hex6("#141922"), clamp01(17 - wr + 0.5 - d)] : null; });
+    const f = p.face ? pixels(p.face) : null; if (f) sprite(out, f, 64, 64, p.x - 17, cy - 17, 34, { clip: discClip(p.x, cy, 17 - wr) });
+    paintPage(out, p.x - 19, cy - 19, p.x + 19, cy + 19, (x, y) => { const d = Math.hypot(x - p.x, y - cy); return d > 17 - wr && d <= 17.5 ? [rim, (p.her ? 1 : 0.75) * clamp01(17.5 - d) * clamp01(d - (17 - wr) + 0.5)] : null; }); }
+  if (S.she) { const { x, y, d } = S.she, R = d / 2;   // her gold mark: a disc with a dark 3 px ring, a gold outline and a glow
+    paintPage(out, x - R - 22, y - R - 22, x + R + 22, y + R + 22, (px, py) => { const q = Math.hypot(px - x, py - y); if (q <= R - 3) return [PAGE_GOLD, clamp01(R - 3 + 0.5 - q)]; if (q <= R) return [hex6("#1b202a"), 1]; if (q <= R + 2) return [PAGE_GOLD, clamp01(R + 2.5 - q)]; const g = clamp01(1 - (q - R - 2) / 20); return g > 0 ? [PAGE_GOLD, 0.5 * g * g] : null; }); }
+  const lg = S.legend;
+  if (lg.dot) paintPage(out, lg.dot[0] - 12, lg.dot[1] - 12, lg.dot[0] + 12, lg.dot[1] + 12, (x, y) => { const q = Math.hypot(x - lg.dot[0], y - lg.dot[1]); return q <= 6 ? [PAGE_GOLD, clamp01(6.5 - q)] : q < 12 ? [PAGE_GOLD, 0.35 * (1 - (q - 6) / 6)] : null; });
+  if (lg.bar) { const [x, y, w, h] = lg.bar; paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [hex6("#8fd0e6"), clamp01(0.5 - rrectSd(px, py, x, y, w, h, 3))]); }
+  return out.rgba();
+}
+
+// ---- her board (station-match-7; the accepted walk-5-glance): every trait of her kind as one small row in its own shape, grouped by chapter ----
+// One opaque picture of the phone window: the room blurred under a shade, her, a head (emblem) a chapter and a row a trait: a scale is a 124 lp bar with her gold mark, a stretch (a doing seen a few times) or
+// nothing (shut: not looked at), the blue ticks of the two copies once the lens was used and small dots for your others; a set is a row of 21 lp squares (gold hers, dashed blue the one she carries, pale a look one of yours
+// has), then the legend. The words (names, notes, legend) are the face's. r: { species, size, body: { left, top, w }, groups: [{ chapter, x, y, dim, rows: [{ cy, bx, shut, scale: { w, at, rough: [a, b] | null, copies: [a, b] | null, others: [t..] } | null, set: { n, step, found: [i..], shows, carries } | null }] }],
+//   legend: { y, items: [{ x, kind }] } }
+export function pageBoardPicture(r) {
+  const [W, H] = r.size, out = new Pane(W, H), room = roomRGB(W, H, "vivarium-near-day-544x408", 1.2, 6), CREAM = PAGE_CREAM, hex6 = (h) => hex(h).map((v) => v / 255);
+  for (let i = 0; i < W * H; i++) { if (room) out.c.set(room.subarray(i * 3, i * 3 + 3), i * 3); else out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
+  paintPage(out, 0, 0, W, H, (x, y) => [[12 / 255, 15 / 255, 22 / 255], y < 190 ? 0.5 + (0.38 * y) / 190 : 0.88 + (0.06 * (y - 190)) / (H - 190)]);
+  const body = pixels(`mibi-adult-${r.species}-304x312`); if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
+  const dashOn = (x, y, cx, cy, per) => ((Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI)) * per % 7 < 4;
+  for (const a of r.alone ?? []) {   // "hers alone": a tile a line, the same marks as the legend (a gold disc: she stands at the end of a scale; a gold square: the look she shows; a dashed blue square: the look she carries)
+    const cx = a.x + a.d / 2, cy = a.y + a.d / 2, R = a.d / 2, rad = a.kind === "scale" ? R : 11;
+    paintPage(out, a.x - 4, a.y - 4, a.x + a.d + 4, a.y + a.d + 4, (px, py) => { const sd = rrectSd(px, py, a.x, a.y, a.d, a.d, rad), e = clamp01(0.5 - sd); if (e <= 0) return null; return sd > -3 ? [a.kind === "carries" ? CREAM : PAGE_GOLD, (a.kind === "carries" ? 0.85 : 1) * e] : [hex6("#141922"), e]; });
+    if (a.kind === "scale") paintPage(out, cx - 9, cy - 9, cx + 9, cy + 9, (px, py) => [PAGE_GOLD, clamp01(9.5 - Math.hypot(px - cx, py - cy))]);
+    else if (a.kind === "shows") paintPage(out, cx - 10, cy - 10, cx + 10, cy + 10, (px, py) => [PAGE_GOLD, clamp01(0.5 - rrectSd(px, py, cx - 9, cy - 9, 18, 18, 3))]);
+    else paintPage(out, a.x - 8, a.y - 8, a.x + a.d + 8, a.y + a.d + 8, (px, py) => { const sd = rrectSd(px, py, a.x - 3.5, a.y - 3.5, a.d + 7, a.d + 7, 14), e = clamp01(1.75 - Math.abs(sd + 1.25)); return e > 0 && dashOn(px, py, cx, cy, 84) ? [PAGE_BLUE, e] : null; });
+  }
+  for (const g of r.groups) {
+    pageEmblem(out, g.chapter, g.x + 12, g.y + 13, 24);
+    if (g.dim) paintPage(out, g.x, g.y, g.x + 24, g.y + 26, () => [[12 / 255, 15 / 255, 22 / 255], 0.4]);
+    for (const w of g.rows) {
+      const cy = w.cy;
+      if (w.scale) { const q = w.scale, x = (t) => w.bx + 9 + t * (q.w - 18), x0 = w.bx + 3, x1 = w.bx + q.w - 3, open = q.at != null || !!q.rough;
+        paintPage(out, x0 - 2, cy - 6, x1 + 2, cy + 6, (px, py) => { const sd = rrectSd(px, py, x0, cy - 3.5, x1 - x0, 7, 3.5), e = clamp01(0.5 - sd); if (e <= 0) return null; return open ? [CREAM, 0.3 * e] : sd > -1.5 ? [CREAM, 0.42 * e] : null; });
+        for (const t of q.others) paintPage(out, x(t) - 4, cy - 4, x(t) + 4, cy + 4, (px, py) => [CREAM, 0.8 * clamp01(3.7 - Math.hypot(px - x(t), py - cy))]);
+        if (q.rough) { const a = x(q.rough[0]), b = x(q.rough[1]); paintPage(out, a - 2, cy - 9, b + 2, cy + 9, (px, py) => { const sd = rrectSd(px, py, a, cy - 7, b - a, 14, 7), e = clamp01(0.5 - sd); return e <= 0 ? null : sd > -1.5 ? [PAGE_GOLD, e] : [PAGE_GOLD, 0.4 * e]; }); }
+        if (q.copies) { const [a, b] = q.copies.map(x).sort((p, s) => p - s); paintPage(out, a, cy + 9.2, b + 1, cy + 11.7, () => [PAGE_BLUE, 1]);
+          for (const t of q.copies) paintPage(out, x(t) - 3, cy - 10, x(t) + 3, cy + 11, (px, py) => [PAGE_BLUE, clamp01(0.5 - rrectSd(px, py, x(t) - 2, cy - 9, 4, 19, 2))]); }
+        if (q.at != null) paintPage(out, x(q.at) - 9, cy - 9, x(q.at) + 9, cy + 9, (px, py) => { const d = Math.hypot(px - x(q.at), py - cy); return d <= 5.75 ? [PAGE_GOLD, clamp01(6 - d)] : d <= 7.25 ? [hex6("#1b202a"), clamp01(7.5 - d)] : null; }); }
+      if (w.set) { const q = w.set, sx = (i) => w.bx + 13 + i * q.step, sq = (i, h, col, al, edge) => paintPage(out, sx(i) - h - 1, cy - h - 1, sx(i) + h + 1, cy + h + 1, (px, py) => { const sd = rrectSd(px, py, sx(i) - h, cy - h, 2 * h, 2 * h, 2.5), e = clamp01(0.5 - sd); if (e <= 0) return null; return edge ? (sd > -edge ? [col, al * e] : null) : [col, al * e]; });
+        for (let i = 0; i < q.n; i++) { const found = q.found.includes(i); sq(i, 5, hex6("#1a1f29"), 1); if (found) sq(i, 5, CREAM, 0.62); else sq(i, 5, CREAM, 0.42, 1.5); }
+        if (q.shows != null) sq(q.shows, 7, PAGE_GOLD, 1);
+        if (q.carries != null) { const cx = sx(q.carries); paintPage(out, cx - 13, cy - 13, cx + 13, cy + 13, (px, py) => { const sd = rrectSd(px, py, cx - 10.5, cy - 10.5, 21, 21, 5), e = clamp01(1.75 - Math.abs(sd + 1.25)); return e > 0 && dashOn(px, py, cx, cy, 84) ? [PAGE_BLUE, e] : null; }); } } } }
+  const L = r.legend;
+  for (const it of L.items) { const cy = L.y;
+    if (it.kind === "scale") { paintPage(out, it.x, cy - 3, it.x + 22, cy + 3, (px, py) => [CREAM, 0.6 * clamp01(2.5 - Math.abs(py - cy))]); paintPage(out, it.x + 6, cy - 6, it.x + 16, cy + 6, (px, py) => [PAGE_GOLD, clamp01(5.5 - Math.hypot(px - it.x - 11, py - cy))]); }
+    else if (it.kind === "set") for (const [k, col] of [[0, CREAM], [1, PAGE_GOLD], [2, CREAM]]) paintPage(out, it.x + k * 8, cy - 4, it.x + k * 8 + 6, cy + 4, () => [col, k === 1 ? 1 : 0.7]);
+    else if (it.kind === "shows") paintPage(out, it.x, cy - 6, it.x + 12, cy + 6, () => [PAGE_GOLD, 1]);
+    else if (it.kind === "carries") paintPage(out, it.x, cy - 7.5, it.x + 5, cy + 7.5, (px, py) => [PAGE_BLUE, clamp01(0.5 - rrectSd(px, py, it.x, cy - 7.5, 5, 15, 2))]);
+    else if (it.kind === "others") paintPage(out, it.x, cy - 4, it.x + 7, cy + 4, (px, py) => [CREAM, 0.8 * clamp01(3.5 - Math.hypot(px - it.x - 3.5, py - cy))]); }
+  return out.rgba();
+}
+
 // ---- registering (the picture kinds pictures.mjs hands here) ----
 export function registerReading(r, env) {
   if (hasAsset(r.id)) return;
@@ -302,6 +498,9 @@ export function registerReading(r, env) {
   switch (r.kind) {
     case "traitshape": return made(SIZES[r.size][0], SIZES[r.size][1], () => shapePicture(r.model, r.size, { colours: r.colours, pics: cropPics(r) }).rgba);   // a trait's scale or set (trait-shape-pictures.mjs), with its crops of the signed art (trait-crops.mjs)
     case "readchamber": return made(CHAMBER.size[0], CHAMBER.size[1], () => chamberPicture(r, env));
+    case "pagestage": return made(r.size[0], r.size[1], () => pageStagePicture(r));
+    case "pagescale": return made(r.size[0], r.size[1], () => pageScalePicture(r));
+    case "pageboard": return made(r.size[0], r.size[1], () => pageBoardPicture(r));
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
     case "readgather": return made(r.size, r.size, () => gatherPicture(r, env));

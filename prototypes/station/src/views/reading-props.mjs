@@ -66,7 +66,7 @@ const RADII = { 1: [52, 34, 21], 2: [44, 29, 21], 3: [32, 21, 18], 4: [26, 17, 1
 const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id !== p.mibi && x.id !== p.id && S.speciesOf(x) === sid && x.genome && (p.page ? S.pageRead(x) : x.read ?? []).includes(ch.id)).map((x) => x.genome);
 // Her page (station step 2b): a trait about what she does is a stretch of its scale (the wide "roughly known") that narrows with each sighting, a mark once PAGE_SIGHTS pin it down; a set of a doing shows no look until then.
 // The stretch holds where she is, placed by a hash of her and the trait so it is not centred on her; her mark and her two copies are left out while it shows.
-function pageModel(st, fr, t, p, others, blank) {
+export function pageModel(st, fr, t, p, others, blank) {
   if (blank) return shapeModel(fr, t, null, others);   // her page, a chapter not yet looked at: every possibility, nothing of hers
   const m = p.page ? S.mibiById(st, p.mibi) : null, f = m ? S.pageKnown(m, t) : 1;
   if (f >= 1) { const full = shapeModel(fr, t, p.genome, others); return !m || S.pageLensed(m, t) ? full : unlensed(full); }
@@ -141,7 +141,6 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   const base = { chapter: { id: ch.id, name: ch.name, marks, tick: o.isRead, lock: o.sealed }, plate: slot(req, R.plate.id, [40, 40]), glow: slot(req, `reading-plate-glow-${ch.id === "legs-tail" ? "legs" : ch.id === "charge" ? "glow" : ch.id}-200x120`, [200, 120]),
     tick: slot(req, `reading-tick-${ch.id === "legs-tail" ? "legs" : ch.id === "charge" ? "glow" : ch.id}-20x20`, [20, 20]), glint: slot(req, "reading-glint-16x16", [16, 16]), star: slot(req, "reading-star-16x16", [16, 16]), lock: slot(req, "reading-lock-14x16", [14, 16]),
     badgeGlint: slot(req, "reading-badge-glint-20x20", [20, 20]), badgeStar: slot(req, "reading-badge-star-20x20", [20, 20]), moon: slot(req, "reading-moon-8x8", [8, 8]), chip: null, key: null, beside: { sprout: "", text: "" }, mate: null };
-  if (o.at === "board") return { ...base, ...boardOf(st, Sg, req, p, fr, ui.board?.page ?? 0), form: "board" };   // her board: every trait of her kind, tiny, by chapter
   if (o.sealed) {
     const pic = ch.findKind ? req({ kind: "slot", id: `find-${ch.findKind}-112x112`, master: `find-${ch.findKind}-112x112`, size: [112, 112], until: "the find picture" }) : "";
     return { ...base, form: "sealed", plates: [{ trait: "", kind: Sg.sealed, shown: { pic, caption: "" } }] };
@@ -163,32 +162,6 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   const plates = ch.traits.map((t) => { const s = traitState(fr, t, p.genome), goalHere = want[t.id] && s.carried.includes(want[t.id]);
     return { trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size), glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere && lensedOn(st, p, t) }; });   // a trait is a scale or a set (trait-shapes.mjs), drawn in its own shape
   return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: dataIcon(req, 13) } : null };
-}
-// Her board (station step 3, walk-4 picture 5): every trait of her kind as one tiny row in its own shape, grouped by chapter under a head. The right frame holds BOARD_SLOTS lines (a head is one, a row is one),
-// so the chapters are packed into pages (a long chapter is cut at the page's end) and ▲▼ turn them. A row shows what her page knows, as a plate does (pageModel): an unlooked body chapter is every possibility and nothing of hers,
-// a doing chapter its stretch, what she carries only where the lens was used.
-export const BOARD_SLOTS = 9;
-export function boardPages(fr) {
-  const pages = [[]]; let used = 0;
-  for (const ch of fr.chapters) {
-    let at = 0;
-    while (at < ch.traits.length) {
-      const left = ch.traits.length - at;
-      if (BOARD_SLOTS - used - 1 < Math.min(2, left)) { pages.push([]); used = 0; }   // a head needs two rows under it on its own page (a chapter of one, one)
-      const cut = Math.min(left, BOARD_SLOTS - used - 1);
-      pages[pages.length - 1].push({ ch: ch.id, from: at, to: at + cut, first: at === 0 }); used += cut + 1; at += cut;
-    }
-  }
-  return pages.filter((pg) => pg.length);
-}
-function boardOf(st, Sg, req, p, fr, page) {
-  const pages = boardPages(fr), k = clamp(page, 0, pages.length - 1), sid = fr.species.id, rows = [];
-  for (const g of pages[k]) {
-    const ch = fr.chapters.find((c) => c.id === g.ch), isRead = p.read.includes(ch.id), others = othersOf(st, p, sid, ch);
-    rows.push({ head: g.first ? ch.name : fill(Sg.boardMore, { chapter: ch.name }), id: ch.id, note: isRead ? "" : isDoings(ch) ? Sg.boardWatch : Sg.boardUnread });
-    for (const t of ch.traits.slice(g.from, g.to)) rows.push({ trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, "tiny", !isRead && !isDoings(ch)) });
-  }
-  return { rows, page: k, pages: pages.length, chapter: { id: "", name: Sg.board, marks: [], tick: false, lock: false } };
 }
 const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
 // The detail of a read trait (§2.6, 5): the pair large, its captions and kind; with a mate at home, the odds of each look its child can show, eight seeds a row
@@ -228,7 +201,6 @@ function lineOf(m, spec, out, p, ch, o) {
   const Sg = spec.strings.read, back = p.page ? S.cap(p.name) : spec.strings.room.foot.backPods, R = out.right;
   if (o.moment || o.reading) return { ok: null, back: o.moment ? null : back, subject: "", need: "" };
   if (o.at === "stamp") return { ok: null, back: out.name, subject: "", need: "" };
-  if (o.at === "board") return { ok: null, back, subject: fill(Sg.boardFoot, { n: R.page + 1, of: R.pages }), need: "" };   // her board: ← and the blue key go back to her page; ▲▼ turn the pages
   if (o.at === "detail") { const t = ch.traits[clamp(m.ui.trait ?? 0, 0, ch.traits.length - 1)], pm = p.page ? S.mibiById(m.st, p.mibi) : null;   // her page: the lens is offered on a known trait it has not been pointed at
     return { ok: pm && S.pageKnown(pm, t) >= 1 && !S.pageLensed(pm, t) ? fill(Sg.lens, { trait: t.name }) : null, back: ch.name, subject: "", need: "" }; }
   if (o.sealed) return { ok: null, back, subject: "", need: "" };
@@ -241,7 +213,7 @@ function lineOf(m, spec, out, p, ch, o) {
 function targetsOf(out, o) {
   if (o.reading || o.moment) return [{ id: "hold", group: "hold" }];
   if (o.at === "stamp") return [{ id: "stamp", group: "stamp" }];
-  if (o.at === "detail" || o.at === "board") return [{ id: "trait", group: "trait" }];   // the board's ▲▼ are the detail's stepper: no box, the pages turn
+  if (o.at === "detail") return [{ id: "trait", group: "trait" }];
   if (o.at === "right" && o.isRead) return out.right.plates.map((_, i) => ({ id: "plate." + i, group: "plate", index: i }));
   return [{ id: "rail", group: "rail" }];
 }

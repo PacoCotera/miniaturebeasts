@@ -48,7 +48,6 @@ function frame(t) {
 // ?embed: where the focus ring is, for the play page's phone window (it pans to keep the ring's target in view); box null when the screen shows no ring. Posted when it changes.
 let focusPosted = "";
 const LIB_PAGE = [700, 50, 308, 500];
-import { pageBox } from "./page-window.mjs";
 // library.json l2.page.rect: the lit chapter's page, at the screen's right edge
 // The standalone page's phone window (fit() below): view {w, h} in lp while the screen is drawn at ZOOM in a window narrower than it; pan: the window's top left (lp); focus: the ring's last screen and box
 const win = { view: null, pan: { x: 0, y: 0 }, focus: { screen: null, box: null }, shown: null };
@@ -62,7 +61,6 @@ function postFocus() {
   let box = CORE.face.focusBox(); const screen = UI.idle ? "idle" : UI.screen;
   const pageLit = screen === "library.species" && UI.lib?.state === "lit" && UI.lib.lit && box && box[0] < LIB_PAGE[0];   // phone window, a chapter lit: the window shows its page (the ring is on a plate left of it; the page is what ✓ asked for), not the cut-off edge of it
   if (pageLit) box = LIB_PAGE;
-  if (screen === "pods") box = pageBox(UI.pods, box);   // her page, phone window: the body and the rail whole, or the chapter in hand whole (never the chapter's cut-off edge beside the body)
   const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
   if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
   else { win.focus = { screen, box }; placeWindow(); }   // standalone on a phone: the page's own window follows the ring

@@ -715,6 +715,49 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 
 ---
 
+## Pods: her page (a hatched mibi's own screen)
+
+The live screen is rebuilt to match its accepted picture (the walkthrough picture of her page, from its page fragment and its two style sheets). The numbers below are those files', in lp of the accepted picture's screen window (530 × 600). Since station-match-4 the live page IS that window: the frame sends only its plate for her page (as Home does), so there is no top bar and no bottom line, and the page is laid at scale 1 at stage x 0, y 0 (`regions.page.rect`, [0, 0, 530, 600]); the page's ground covers the whole 1024 × 600. Every number in the table is the region's own. The rail band is one picture with the rest of the stage (the fade, a 50 px ring a cell, the frame on the chapter in hand); the names and lines over it are the face's text.
+
+| Piece | Window lp | Notes |
+|---|---|---|
+| Stage | accepted: 0,0 530 × 600; built: the region 530 × 522 | One picture, `pagestage`: the room `vivarium-near-day-544x408` covered to the window and centred at 50 % 60 %, a shade (a radial dark corner: clear to 45 % of the ellipse at 45 % 45 %, then 42 % `#080a10`), the adult master `pods/mibi-adult-S01-304x312` at 384 px wide placed at 52,78, four leader lines (2 px `#f6e7b8` at 85 %, round caps), three emblem spots (30 px disc, 78 % `#10141c`, a 2 px `#f6e7b8` ring at 80 %, the chapter's 24 × 24 read emblem at 18 px) and the ring on the chapter's place |
+| Leader lines | (382,82)→(326,128), (462,232)→(412,258), (98,250)→(140,282), (62,392)→(104,408) | Shape, Face, Coat, Legs & tail |
+| Spots | centres (394,72) Shape, (476,224) Face, (48,388) Legs & tail | the Coat's place carries the ring instead |
+| Ring on the place | centre (72,222) | a 70 px segmented chapter ring (one petal a trait, a gap of 0.34 rad, stroke 0.105 of the size, round caps, seen `#f6e7b8`, not yet 50 % white, the trait in view `#f07a1f`) with the emblem at 0.42 of the size, inside a focus circle of 88 px: a 3 px `#f07a1f` border and a 4 px 25 % halo, shown as the chapter in hand |
+| Name | left 22, top 16, 34 px semibold | line height 1; the origin under it, 7 px down, 17 px medium at 86 % |
+| Tag | right 16, top 18, "All of her" 16 px semibold | a pill, 12 px across and 5 above and 6 below, radius 14, `rgba(16,20,28,.84)` |
+| Hint left | left 22, bottom 122, the pad key (34 px, radius 9, `#2b3140`, a 1.5 px 30 % white edge) and "chapters" | 17 px |
+| Hint right | right 22, bottom 122, the ✓ key (34 px disc `#f07a1f`) and "Look closer" | 19 px |
+| Rail band | 0,488 530 × 112 (`regions.page.rail`) | n cells of 82 px, space-between, 10 px in (x_i = 10 + floor(i (530 - 20 - 82 n) / (n - 1)) + 82 i; the logic process's `cellX` and the face's `cell_x` are this one rule); the fade from clear to 86 % ink 22 px down and 95 % at the foot; ring 50 px, centre 47 down; the chapter in hand framed (2.5 px orange border, 12 % orange fill, radius 14, 3 px in, 13 to 108 down) and that frame is the focus ring (no cream ring on her page); name at 86 down, its line at 103, both R15 (`glass.caption`, `glass.quiet`: the accepted 14 and 12 px have no face); the line is "N to see" (not yet looked at, N unseen), "N seen" (all seen), "watch her" (what she does, not yet filled), "seen"; targets `rail.0` … `rail.n-1`, the ring on `rail.<chapter in hand>`; ◂▸ step the chapter in hand |
+
+The face has no 34, 17 or 19 px face: the name is `glass.chapter` (SB28), the origin `glass.caption` (R15), the tag and the hints `glass.name` (M18). The origin line says her kind and, when the save knows it, where she came from (the accepted "from the reeds" has no data behind it). The picture is the region's size (530 × 522), not the chamber's 548 × 356, because the accepted picture covers the whole window; the face word is `word_mibiPage` (`word_page` is the chapter page's).
+
+### Her chapter: the scale (station-match-5; accepted walk-4-scale and walk-4-copies)
+
+✓ on a chapter of her page opens it (`ui.pods.at = "scale"`, the trait in hand `ui.pods.trait`; the first look at a chapter about her body is free); ◂▸ move along the traits, ✓ points the lens at the trait in hand (free, once), ← returns to her page. It is the same `page` state: the stage is the `pagescale` picture and `regions.page.scale.texts` are the words over it (`pods.json` regions.page.scale holds every number; T is the tray's top, 600 − 352, or − 366 after the lens).
+
+| Piece | Window lp | Notes |
+|---|---|---|
+| Close up | her master 608 wide, placed so the chapter's place is at about (330, 206) | the ring: a 108 lens of the same master at 760 wide, 1.3 bright; 4 px gold rim, 30 px glow. The Coat's place is the accepted picture's own (`page.mjs closeOf`), the other chapters' the end of their leader on her page |
+| Tray | T = 248, fade 26, ink 92 % to 97 % | the chapter's ring 52 at (46, T + 56) (a petal a trait: in hand orange, lensed blue), the chapter's name at x 84 (SB28), her name at (22, 44) |
+| Chips | 30 high, 6 apart, right edge 510, centred on T + 56 | Tint, Shade, Markings; the one in hand cream (#f6e7b8) with dark text; widths estimated from the word (46 + 9.2 per letter) |
+| The one line | x 20, baseline T + 104 (R15) | "{Trait} is a scale. A {kind} can be anywhere from {low} to {high}." (one weight: the face has no bold 15) |
+| Round portraits | 76 across at x 46, 265, 484; top T + 122 | the kind's coat at each end and the middle (`trait-crops.mjs` `round`), 2 px cream ring; the end words under the ends (R15) |
+| Bar | x 36 to 494, 16 high at T + 226, ticks at the three portraits | gradient from the kind's coats (`grads`); her gold mark 26 across; the mibis' 34 px faces under it with names; "none of yours here yet" in the widest empty stretch when it is wide enough |
+| Legend | baseline 584 | "where she is" (gold dot), "the two she carries: not known yet" (blue bar) |
+| After the lens | room at dusk, her 456 wide, shade 50 %; a 184 lens at (176, 144): the two copies side by side (redder, yellower), a blue bar between | head "She carries two {traits}", no chips; the two blue marks on the bar with a bracket; legend "A young gets one of her two, and one from its other parent." |
+
+"none of yours here yet" (`strings.read.scaleNone`) stands in the middle of the widest empty stretch of the bar when that stretch is 0.3 of the bar or wider (`sc.say.min`). The tint locus has three alleles, so a mibi's two copies stand at 0, 0.5 or 1: two blue marks at the very ends are a mibi with a low and a high copy, not a mapping fault.
+
+### Her chapter: a set (station-match-6; accepted walk-4-set)
+
+Tray 296 tall (`regions.page.scale.tray.hSet`), chips as the scale. One 70 lp card a look (`regions.page.scale.set`), space-between from x 20 to 510, tops 145 under the tray's top, the picture a square window of the signed flank (`trait-crops.mjs squareOf`): gold 4 px rim and glow for what she shows (pill "she shows"), a dashed blue rim for the look she carries once the lens has shown it (pill "she carries"), a dashed pale rim for a look none of yours has, a plain rim otherwise; the look's word under it; under that the 28 lp faces of your mibis that show or carry it (hers gold). Words: "{Trait} is one of {n}. A {kind} has exactly one." and "dashed: not found yet" (at the foot: the two do not fit one line on a phone). After the lens: room at dusk, her plain coat, one 196 lens at (176, 190) with the look she carries, head "She carries {a look}" and "under her {look} coat". Code-drawn: rims, pills, lens rim; the pictures are crops of signed masters (`tools/cut-page-crops.mjs` writes them with a manifest).
+
+A kind with no round portraits shows plain discs. The pod's reading screen keeps its own chapter frames; her page no longer reaches them.
+
+---
+
 ## Home: the panel and the column
 
 Home is the Station's face at rest: the Vivarium alive in its panel at the left, and the device's five sections down the right. This section is its detail spec, written from the structure in [Home, the sections and the Vivarium](#home-the-sections-and-the-vivarium) (map 15, wireframe 15a). The numbers live in `prototypes/ui/specs/station/home.json`. Concept: the Station concept board's Home frame (`art/station-masters/pods/concepts/station-board/frame-1-home-v2-1024x600.png`).

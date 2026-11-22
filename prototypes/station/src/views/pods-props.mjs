@@ -11,6 +11,7 @@ import { founderPicture } from "./create-props.mjs";
 import { fill, spell } from "./words.mjs";
 import { req as reqOf, slotAt as slot } from "./requests.mjs";
 import { readView, miniRailProps, discReq } from "./reading-props.mjs";
+import { pageView } from "./page-props.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
@@ -131,11 +132,14 @@ export function rowsOf(list, spec, sort) {
 }
 
 // m: { st, sv, settings, docked, crates, ui: the Pods UI (see intents/pods.mjs), focus: id | null }
-export function podsBuild(m, spec) {
+// The old two-frame page (the pod reading screen fed a mibi shaped like a pod) is no longer reached from the game; its code and tests stay until slice 1c (the pan's removal) and take this entry.
+export const podsBuildTwoFrame = (m, spec) => podsBuild(m, spec, true);
+export function podsBuild(m, spec, twoFrame = false) {
   const { st, ui } = m, requests = [], req = reqOf(requests);
   const mode = ui.cmp ? "compare" : ui.view ?? "inventory";
   const view = { mode, requests, empty: !st.tray.length };
   if (mode === "compare") return compareView(view, m, spec, req);
+  if (!twoFrame && ui.page != null && S.mibiById(st, ui.page)) return pageView({ ...view, mode: "page" }, m, spec, req);   // her page: its own screen (views/page-props.mjs), no longer the pod reading screen
   if (mode === "room" || mode === "trait") return readView(view, m, spec, req);   // the reading screen v2 (views/reading-props.mjs): the reading room, its bench, index, band and overlay retire
   return inventoryView(view, m, spec, req);
 }
@@ -374,6 +378,7 @@ export function podsProps(m, spec, frame) {
   const v = podsBuild({ ...m, frameSpec: frame }, spec), regions = {};
   if (v.mode === "compare") regions.compare = v.compare;
   else if (v.mode === "read") regions.read = v.read;
+  else if (v.mode === "page") regions.page = v.page;
   else {
     regions.inv = v.picker;
     if (m.ui.view === "filter") regions.tray = { rows: trayOf(m, spec) };

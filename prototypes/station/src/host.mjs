@@ -104,6 +104,7 @@ export function podsBody() {
   if (!POD_VIEWS.includes(p.view)) p.view = SPECS.pods.initial;
   const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), crates: S.bayCrates(G.st, G.sv).length, ui: p, focus: F.cur, now: Date.now(), answer: UI.answer });
   let body = podsProps(model(), SPECS.pods, SPECS.frame);
+  if (body.mode === "page" && body.cur && F.cur !== body.cur) { F.cur = body.cur; body = podsProps(model(), SPECS.pods, SPECS.frame); }   // her page: the ring is the frame on the chapter in hand, so it follows ui.pods.lane
   if (!p.cmp && !body.props.focus.targets.some((t) => t.id === F.cur)) { F.cur = null; F.ensure(body.props.focus.targets, body.props.focus.targets[0]?.id ?? null); body = podsProps(model(), SPECS.pods, SPECS.frame); }
   if (body.mode !== "compare" && (body.first !== (p.first ?? 0) || body.panelPod !== (p.panelPod ?? null))) { p.first = body.first; p.panelPod = body.panelPod; body = podsProps(model(), SPECS.pods, SPECS.frame); }
   { const q = body.mode === "inventory" && String(F.cur ?? "").startsWith("card.") ? S.podById(G.st, body.panelPod) : null; if (q && !q.seen && !UI.answer) { q.seen = 1; save(); body = podsProps(model(), SPECS.pods, SPECS.frame); } }   // a card's new mark goes when the ring first lands on it
@@ -343,6 +344,7 @@ export function screenProps(plate) {
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   if (screen === "sitting") for (const id of [UI.sit.prev.glass, UI.sit.prev.resident]) if (id) ids.add(id);   // the pictures the window's dithers start from stay on the face until their events end
   if (screen === "home") { homeCapsUp = true; for (const id of Object.values(SPECS.home.regions.cap?.marks ?? {})) if (assetEntry(id)) ids.add(id); if (!UI.noTeach && !G.st.taught?.call && (G.st.turn | 0) < (SPECS.frame.regions.cues.callUntilTurn ?? 8)) { const cc = SPECS.frame.regions.marks.roomCue?.call; if (cc && assetEntry(cc)) ids.add(cc); } }   // Home's panels wear their 22 px key caps (home.json regions.cap): loaded with Home only
+  if (screen === "pods" && body.props.state === "page") return { msg: { screen, ...body.props, frame: withHold({ plate: pl, ...answerPart({}) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // her page is the whole window (pods.json regions.page): no top bar and no bottom line, as Home's are its own
   if (screen === "home") return { msg: { screen, ...body.props, frame: withHold({ plate: pl, ...answerPart({}) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };   // Home's top bar and line are its own (home.json): the frame sends only the plate
   const line = { ...body.line }; if (line.need == null) line.need = need().text;
   if (UI.keep && holdOn()) { line.subject = SPECS.frame.strings.keep; const kc = SPECS.frame.regions.marks.roomCue?.confirm; if (kc && assetEntry(kc)) ids.add(kc); }   // F5b: ✓ was let go early: "Keep holding [✓ cap]" in the middle slot for hold.keepMs

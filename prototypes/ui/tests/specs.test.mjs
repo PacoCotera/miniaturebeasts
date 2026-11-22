@@ -19,8 +19,8 @@ const run = (n, r = frame.regions.rail) => (n <= r.fullUpTo ? n * r.full : (n - 
 const inside = (a, b) => a[0] >= b[0] && a[1] >= b[1] && a[0] + a[2] <= b[0] + b[2] && a[1] + a[3] <= b[1] + b[3];
 const apart = (a, b) => a[0] + a[2] <= b[0] || b[0] + b[2] <= a[0] || a[1] + a[3] <= b[1] || b[1] + b[3] <= a[1];
 
-test("Pods in five states: the inventory as a pod picker (its tray and Find over it), the reading screen and Compare; the grid of big pods five across, the verb line above it, the detail line under it; the reading screen's two frames (ux-reading-v2.md §2.2)", () => {
-  assert.deepEqual(pods.states, ["inventory", "filter", "find", "read", "compare"]); assert.equal(pods.initial, "inventory");
+test("Pods in five states: the inventory as a pod picker (its tray and Find over it), the reading screen, her page and Compare; the grid of big pods five across, the verb line above it, the detail line under it; the reading screen's two frames (ux-reading-v2.md §2.2)", () => {
+  assert.deepEqual(pods.states, ["inventory", "filter", "find", "read", "page", "compare"]); assert.equal(pods.initial, "inventory");
   const I = pods.regions.inventory, K = I.picker, G = K.grid, stage = [0, 40, 1024, 522];
   assert.deepEqual(K.ground.rect, stage, "the dark ground is the whole stage"); assert.deepEqual(pods.classes.pod.large, [144, 176]); assert.deepEqual(G.pod.slice(2), pods.classes.pod.large, "the pod is the large class, at 1x");
   assert.equal(G.pitch[0] * (G.across - 1) + G.cell[0] <= 1024 - 2 * G.origin[0] + 56 && G.origin[0] + G.pitch[0] * (G.across - 1) + G.cell[0] <= K.rail.rect[0], true, "five cells fit the stage and its scroll rail");
@@ -95,7 +95,7 @@ test("every colour a spec file names is in the palette; every region is on the 8
 });
 
 test("the focus graphs, one per state, name only groups and selectors the screen resolves", () => {
-  const groups = { inventory: ["card", "verb", "sort", "filter", "find", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
+  const groups = { inventory: ["card", "verb", "sort", "filter", "find", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], page: ["rail", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
   const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "verb.down", "sort.left", "sort.down", "filter.down", "find.down", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
     "index.right", "index.open", "trow.up", "trow.down", "band.first", "band.left", "band.right", "band.up", "rail.open"]);
   const isEdge = (x) => typeof x === "string" || (x && typeof x === "object" && "nearestIn" in x);
