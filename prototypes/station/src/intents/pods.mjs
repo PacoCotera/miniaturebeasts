@@ -253,7 +253,8 @@ function readIntent(h, target, verb) {
   if (verb === "step:up") { if (!st.stampTaught || p.page != null) return; p.at = "stamp"; p.focus.set("stamp"); h.play({ kind: "moment", target: "view", ms: Math.round(MOMENT_MS / 2), hold: 0 }); return; }   // ▲ shows the stamp, once taught
   if (verb !== "confirm" || sealed) return;   // a sealed lane gives no ✓: nothing happens
   if (!isRead && p.page != null) {   // her page: the first look at a chapter about her body is free and opens it; a chapter about what she does is filled by watching her (a sighting), never by a ✓
-    if (S.isDoingChapter(ch) || !S.pageLook(h.st, S.mibiById(h.st, p.page), ch.id).ok) return;
+    if (S.isDoingChapter(ch)) return moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("rail"); });   // opens to see its empty scales; it fills only by a sighting
+    if (!S.pageLook(h.st, S.mibiById(h.st, p.page), ch.id).ok) return;
     h.save(); return moveTo(h, () => { p.at = "right"; p.plate = 0; p.focus.set("plate.0"); });
   }
   if (!isRead) return openStore(h, "room");   // an unread chapter is read from the pod's Data store (the bench: put Data in, it reads while the Companion is out)

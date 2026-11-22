@@ -201,7 +201,7 @@ function lineOf(m, spec, out, p, ch, o) {
   if (o.sealed) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && !o.isRead) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && o.isRead) { const i = clamp(m.ui.plate ?? 0, 0, ch.traits.length - 1); return { ok: fill(Sg.closer, { trait: ch.traits[i].name }), back, subject: "", need: "" }; }
-  if (p.page && !o.isRead) return { ok: isDoings(ch) ? null : fill(Sg.pageLook, { chapter: ch.name }), back, subject: "", need: "" };   // her page: the first look is free; a chapter about what she does is filled by watching her
+  if (p.page && !o.isRead) return { ok: isDoings(ch) ? fill(Sg.open, { chapter: ch.name }) : fill(Sg.pageLook, { chapter: ch.name }), back, subject: "", need: "" };   // her page: the first look is free; a chapter about what she does is filled by watching her
   return { ok: fill(Sg.open, { chapter: ch.name }), back, subject: "", need: "" };
 }
 // The targets: the rail (its keys step the bracket: the host's), the plates of a read chapter or the price key of an unread one, the detail's trait, the stamp view; one target while a read or the moment holds

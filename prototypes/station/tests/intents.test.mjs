@@ -686,7 +686,7 @@ test("her page state (step 2b): an older mibi keeps what it had read; a hatched 
   INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual([h.ui.pods.at, m.page.looked, st.d], ["right", [body[0].id], d0], "the first look is free and opens the chapter");
   v = open(ci); assert.equal(v.read.rail.lanes[ci].state, "read"); assert.match(v.line.ok, /^Open /);
   // a chapter about what she does: ✓ looks at nothing; each Greet is a sighting; the stretch narrows, then is a mark
-  const di = fr.chapters.indexOf(doings[0]), tr = doings[0].traits[0]; v = open(di); assert.equal(v.line.ok, null); assert.match(v.line.subject, /watch her/);
+  const di = fr.chapters.indexOf(doings[0]), tr = doings[0].traits[0]; v = open(di); assert.match(v.line.ok, /^Open /); assert.match(v.line.subject, /watch her/);
   INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual(m.page.sights, {}, "a ✓ is not a sighting");
   const widths = []; for (let i = 1; i <= S.PAGE_SIGHTS; i++) {
     INTENTS.habitat.intent(h, "resident", "confirm"); assert.equal(m.page.sights[tr.id], i);
