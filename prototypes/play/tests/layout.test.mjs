@@ -1,7 +1,7 @@
 // The play page's layout (src/layout.mjs): one device in view, the panel inside the window with its margins, no two blocks overlapping, the keys line at one height for both devices, every key at least 44, nothing scrolls.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { plan, barPlan, dockSheet, zCap, form, panFor, BAR, LAPTOP_MAX_W, ZOOM } from "../src/layout.mjs";
+import { plan, barPlan, dockSheet, zCap, form, panFor, focusStep, BAR, LAPTOP_MAX_W, ZOOM } from "../src/layout.mjs";
 
 const WINDOWS = [["390×844@3", 390, 844, 3, true], ["360×780@3", 360, 780, 3, true], ["393×659@3", 393, 659, 3, true], ["375×553@3", 375, 553, 3, true], ["375×667@3", 375, 667, 3, true], ["659×393@3", 659, 393, 3, true],["844×390@3", 844, 390, 3, true], ["932×430@3", 932, 430, 3, true], ["1440×900@1", 1440, 900, 1, false], ["1280×720@1", 1280, 720, 1, false], ["1280×720@1.5", 1280, 720, 1.5, false]];
 const STATES = [["companion", false], ["station", false], ["station", true]];
@@ -127,6 +127,20 @@ test("panFor: the focused target whole with 12 lp round it, the least move, alwa
   const big = panFor({ w: 300, h: 200 }, [100, 100, 400, 300]); assert.deepEqual(big, { x: 88, y: 88 }, "a target larger than the window: its top left in view");
   for (let i = 0; i < 200; i++) { const b = [Math.random() * 900, Math.random() * 500, 20 + Math.random() * 300, 20 + Math.random() * 200], p = panFor(v, b, { x: Math.random() * 494, y: Math.random() * 87 });
     assert.ok(p.x >= 0 && p.x <= 494 && p.y >= 0 && p.y <= 87, "inside the screen"); }
+});
+
+test("focusStep: Look from the Vivarium (the first message of her page still holds the Vivarium's ring) puts the window at the page's top left (station-match-11)", () => {
+  const v = { w: 530, h: 513 }; let st = { screen: null, settling: false }, pan = { x: 0, y: 0 };
+  const hear = (screen, box) => { const r = focusStep(st, screen, box); st = r.st; pan = r.top ? { x: 0, y: 0 } : panFor(v, box, pan); return pan; };
+  hear("vivarium", [201, 88, 88, 120]);
+  assert.deepEqual(hear("vivarium", [718, 244, 278, 34]), { x: 478, y: 0 }, "the pick's ring is at the right: the window follows");
+  hear("pods", [718, 244, 278, 34]);   // her page: the stale ring first ...
+  assert.deepEqual(hear("pods", null), { x: 0, y: 0 }, "... then none: the top left (before the fix it stayed at 478)");
+  assert.deepEqual(hear("pods", null), { x: 0, y: 0 });
+  hear("pods", [718, 244, 278, 34]); assert.deepEqual(pan, { x: 478, y: 0 }, "a ring later on the same screen still pans");
+  assert.deepEqual(hear("pods", null), { x: 478, y: 0 }, "no ring for a moment on the same screen: it stays");
+  assert.deepEqual(focusStep({ screen: "a", settling: false }, "a", null).top, false, "same screen, no ring, settled: no jump");
+  assert.deepEqual(focusStep({ screen: "a", settling: false }, "b", null).top, true, "a new screen with no ring");
 });
 
 test("the bar: 52 tall, controls 44 and apart, inside the window; the laptop's switch is 320 wide and centred where it can be", () => {
