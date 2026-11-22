@@ -29,6 +29,7 @@ void word_inventoryTray(void);
 void word_inventoryFind(void);
 void word_reading(void);
 int reading_target_box(const char *id, int out[4]);
+int page_rail_box(int k, int out[4]);
 
 static int is(const char *state, const char *name) { return strcmp(state, name) == 0; }
 /* a target's box by its id, as the words drew it */
@@ -44,6 +45,7 @@ static void target_box(const char *id, int r[4]) {
   else if (strncmp(id, "letter.", 7) == 0) inv_letter_rect(k, r);
   else if (strncmp(id, "word.", 5) == 0) inv_word_rect(k, r);
   else if (strcmp(id, "takeA") == 0 || strcmp(id, "takeB") == 0) compare_take_rect(id[4] == 'B', r);
+  else if (strncmp(id, "rail.", 5) == 0) page_rail_box(k, r);   /* her page: a chapter's cell in the rail */
   else if (strcmp(id, "key") == 0 || strncmp(id, "plate.", 6) == 0) reading_target_box(id, r);   /* the reading screen: a plate, the price key (the rail, the trait and the stamp are rung by the bracket: no box) */
 }
 /* the spec's target entry whose ring shape a target wears */
@@ -57,7 +59,7 @@ static const char *target_entry(const char *id) {
   return "targets.tool";
 }
 static void focus_ring(const char *state) {
-  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || is(state, "trait") || (is(state, "read") && spec_len("props", "regions.read.stamp") >= 0)) return;
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || is(state, "page") || is(state, "trait") || (is(state, "read") && spec_len("props", "regions.read.stamp") >= 0)) return;
   int r[4]; target_box(cur, r); if (r[2] <= 0 || r[3] <= 0) return;
   v_region("focus", LAYER_CHROME); word_focusRing("focus", S, target_entry(cur), r);
 }
@@ -80,7 +82,8 @@ static void whole_stage(const char *state) {
   static char last[160];
   char key[160]; snprintf(key, sizeof key, "%s|%d|%d|%d|%s|%d", state, v_pint("regions.inv.grid.cards.0.k", -1), v_plen("regions.inv.grid.cards"), v_plen("regions.inv.verbs"), v_pstr(is(state, "page") ? "regions.page.stage" : "regions.read.name"), v_pint("regions.read.rail.hand", -1)); if (is(state, "compare")) { snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.0.chapter")); snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.1.pod")); }
   if (strcmp(key, last) == 0) return;
-  snprintf(last, sizeof last, "%s", key); int r[4]; v_srect("frame", "regions.stage.rect", r); prim_invalidate(r[0], r[1], r[2], r[3]);
+  static int was_page; int page = is(state, "page"), whole = page || was_page; was_page = page;   /* her page is the whole 1024 x 600 screen (no top bar, no bottom line): its coming and going say all of it */
+  snprintf(last, sizeof last, "%s", key); int r[4]; v_srect("frame", "regions.stage.rect", r); if (whole) { r[0] = 0; r[1] = 0; r[2] = 1024; r[3] = 600; } prim_invalidate(r[0], r[1], r[2], r[3]);
 }
 
 void pods_words(void) {

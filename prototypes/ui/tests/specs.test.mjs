@@ -95,7 +95,7 @@ test("every colour a spec file names is in the palette; every region is on the 8
 });
 
 test("the focus graphs, one per state, name only groups and selectors the screen resolves", () => {
-  const groups = { inventory: ["card", "verb", "sort", "filter", "find", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
+  const groups = { inventory: ["card", "verb", "sort", "filter", "find", "none"], filter: ["tchip", "none"], find: ["recent", "letter", "word", "none"], page: ["rail", "none"], read: ["rail", "plate", "key", "trait", "stamp", "hold", "none"], compare: ["takeA", "takeB", "none"] };
   const selectors = new Set(["card.up", "card.down", "card.left", "card.right", "verb.down", "sort.left", "sort.down", "filter.down", "find.down", "tchip.up", "tchip.down", "tchip.left", "tchip.right", "letter.cur", "recent.first", "word.first", "word.up", "word.down", "word.left", "word.right",
     "index.right", "index.open", "trow.up", "trow.down", "band.first", "band.left", "band.right", "band.up", "rail.open"]);
   const isEdge = (x) => typeof x === "string" || (x && typeof x === "object" && "nearestIn" in x);

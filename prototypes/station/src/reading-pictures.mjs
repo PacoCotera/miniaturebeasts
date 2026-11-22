@@ -343,7 +343,17 @@ export function pageStagePicture(r) {
     paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [PAGE_ORANGE, clamp01(w / 2 + 0.5 - Math.hypot(px - cx, py - cy))]);
     const a = [cx - 6.5, cy + 0.5], b = [cx - 2, cy + 5], c = [cx + 7, cy - 5];
     paintPage(out, cx - 10, cy - 10, cx + 10, cy + 10, (px, py) => [[1, 1, 1], clamp01(1.7 - Math.min(segDist(px, py, a[0], a[1], b[0], b[1]), segDist(px, py, b[0], b[1], c[0], c[1])))]); }
+  if (r.rail) pageRail(out, r.rail);
   return out.rgba();
+}
+// The rail band along the foot (round2.css .rail): a fade into the ink (clear at the top, 86 % 22 px down, 95 % at the foot), one 50 px chapter ring a cell and the frame on the chapter in hand (a 2.5 px orange border, 12 % orange fill, radius 14).
+// rail: { y, h, ring, cy, grad: { fadeTo, alpha0, alpha1, alpha2 }, frame: { dx, top, bottom, radius, border, fillPct }, w, cells: [{ chapter, x, petals: "1,0,..", hand }] }
+function pageRail(out, q) {
+  const W = out.w, g = q.grad;
+  paintPage(out, 0, q.y, W, q.y + q.h, (x, y) => { const t = y - q.y, a = t < g.fadeTo ? g.alpha0 + ((g.alpha1 - g.alpha0) * t) / g.fadeTo : g.alpha1 + ((g.alpha2 - g.alpha1) * (t - g.fadeTo)) / (q.h - g.fadeTo); return [PAGE_INK, a]; });
+  for (const c of q.cells) if (c.hand) { const f = q.frame, x0 = c.x + f.dx, y0 = q.y + f.top, w = q.w - 2 * f.dx, h = f.bottom - f.top;
+    paintPage(out, x0 - 2, y0 - 2, x0 + w + 2, y0 + h + 2, (x, y) => { const sd = rrectSd(x, y, x0, y0, w, h, f.radius), edge = clamp01(0.5 - sd), inner = clamp01(0.5 - (sd + f.border)); return edge <= 0 ? null : [PAGE_ORANGE, inner > 0.999 ? (f.fillPct / 100) : edge - inner * (1 - f.fillPct / 100)]; }); }
+  for (const c of q.cells) pageRing(out, c.x + q.w / 2, q.cy, q.ring, c.petals.split(","), c.chapter);
 }
 
 // ---- registering (the picture kinds pictures.mjs hands here) ----
