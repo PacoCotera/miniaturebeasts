@@ -30,7 +30,7 @@ export const cellX = (i, n, W, c) => c.inset + (n > 1 ? Math.floor((i * (W - 2 *
 // A trait that is a set shows its chip and one plain line until the set slice; everything else is the scale.
 const NUM = ["no looks", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 const hexRGB =(h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
-const faceOf = (sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
+export const faceOf = (sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
 const gapSay = (pts, min) => {   // where "none of yours here yet" goes: the middle of the widest empty stretch of the bar (pins are 0.14 wide), if it is wide enough for the words
   const a = [...pts].sort((p, q) => p - q), gaps = [{ mid: ((a[0] ?? 0.5) - 0.07 + 0) / 2, w: (a[0] ?? 1.07) - 0.07 }]; if (!a.length) return 0.5;
   for (let i = 1; i < a.length; i++) gaps.push({ mid: (a[i - 1] + a[i]) / 2, w: a[i] - a[i - 1] - 0.14 }); gaps.push({ mid: (a.at(-1) + 0.07 + 1) / 2, w: 1 - a.at(-1) - 0.07 });

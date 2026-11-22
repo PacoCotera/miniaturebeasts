@@ -158,6 +158,7 @@ export function goScreen(name) {
   if (fresh && inLibrary(name) && !inLibrary(was)) UI.lib.pending = {};   // entering the Library notes nothing: only a species whose sheet is shown is seen
   if (fresh && name === "library.species" && UI.lib.species) UI.lib.pending = { ...(UI.lib.pending ?? {}), ...Lib.seenNote(G.st, G.settings, UI.lib.species) };   // entering Level 2 of a species (from Level 1, from Level 3 by ←, by "Open the guide"): its looks as of this entry, noted, unsaved; a later entry replaces them
   if (fresh && !inLibrary(name) && inLibrary(was) && UI.lib.pending) { S.libRecord(G.st, UI.lib.pending); UI.lib.pending = null; save(); }   // leaving: the note is seen
+  if (fresh && name !== "incubator" && G.st) S.setWorking(G.st, null);   // the capsule the nursery chose for the hatch is the Incubator's only while it is on screen
   if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
   if (name === "habitat" && UI.hab.id != null) S.seeRoom(G.st, S.mibiById(G.st, UI.hab.id));   // one mibi up close: the room the whole last showed is its room

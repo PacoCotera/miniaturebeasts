@@ -7,78 +7,16 @@
     "said": [
      {
       "t": "intent",
-      "screen": "incubator",
-      "target": "room",
+      "screen": "pods",
+      "target": "rail.0",
       "verb": "confirm"
      }
     ],
     "screen": "incubator",
-    "state": "growing",
-    "ok": "Open now",
+    "state": "hatch",
+    "ok": "Meet Moss",
     "price": null,
-    "subject": "Fit the Probe upgrade"
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "panel",
-      "target": "card.grow",
-      "verb": "back"
-     }
-    ],
-    "screen": "incubator",
-    "state": "growing",
-    "ok": "Open now",
-    "price": "❀ 11",
-    "subject": "A Loika"
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "incubator",
-      "target": "room",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "incubator",
-    "state": "growing",
-    "ok": "Open now",
-    "price": null,
-    "subject": "Fit the Probe upgrade"
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "panel",
-      "target": "card.grow",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "incubator",
-    "state": "growing",
-    "ok": "Open now",
-    "price": "❀ 11",
-    "subject": "A Loika"
-   },
-   {
-    "held": [
-     "up",
-     "left",
-     "confirm",
-     "back"
-    ],
-    "said": [],
-    "screen": "incubator"
-   },
-   {
-    "hatch": "hatch",
-    "ok": "Skip"
+    "subject": "Moss lives in the Vivarium now, and grows up on expeditions."
    },
    {
     "held": [
@@ -112,17 +50,15 @@
      }
     ],
     "screen": "pods",
-    "state": "inventory",
-    "ok": "Grow it",
+    "state": "page",
+    "ok": null,
     "price": null,
-    "subject": "Fit the Probe upgrade"
+    "subject": null
    },
    {
     "screen": "pods",
-    "view": "inventory",
-    "sort": "use",
-    "focus": "card.0",
-    "verb": "grow"
+    "view": "nursery",
+    "ring": null
    },
    {
     "key": "back",
@@ -130,18 +66,18 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "card.0",
+      "target": "rail.0",
       "verb": "back"
      }
     ],
-    "screen": "incubator",
-    "state": "empty",
-    "ok": "Choose a pod",
+    "screen": "vivarium",
+    "state": "rest",
+    "ok": "Look closer",
     "price": null,
-    "subject": "Ready for a pod"
+    "subject": "Fit the Probe upgrade"
    },
    {
-    "back": "incubator"
+    "back": "vivarium"
    }
   ]
  }

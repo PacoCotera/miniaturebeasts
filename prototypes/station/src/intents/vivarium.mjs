@@ -42,7 +42,7 @@ function ringAfterLeaving(h) { const v = viv(h); v.f = null; const b = build(h),
 
 function plateDo(h, target, act = null) {
   const v = viv(h), st = h.st, b = build(h), card = b.nav.card, m = card != null ? S.mibiById(st, card) : null, Mg = Sg(h).msg;
-  if (target === "plate.incubator") { h.goto("incubator"); return; }
+  if (target === "plate.incubator") { S.pickCapsule(h.st, h.settings, h.now()); h.goto("incubator"); return; }
   if (!m) return;
   const list = platesOf(st, h.sv, m, h.settings, Sg(h), S.docked(st)), p = act ? list.find((x) => x.act === act) : list.find((x) => x.id === target); if (!p) return;
   if (p.held) { heldSay(h, p, m); return; }   // the house rule: ✓ on a held plate plays its message plate
@@ -93,7 +93,7 @@ function wallConfirm(h, target) {
   const sort = /^sort\.(\w+)$/.exec(cur ?? ""); if (sort) { v.sort = sort[1]; return; }
   if (cur === "pill") { v.pick = v.pick ? null : { on: true, ids: [] }; return; }
   if (cur === "band") { const m = S.mibiById(h.st, n.card); if (m && m.room != null && !S.inStore(m)) { v.view = "room"; v.fromWall = true; v.pin = m.id; h.showRoom ? h.showRoom(m.room) : (h.st.face.room = m.room); v.f = null; } return; }
-  if (/^plate\./.test(cur ?? "")) { const p = n.plates.find((x) => x.id === cur); const m = S.mibiById(h.st, n.card); if (p?.act === "incubator") { h.goto("incubator"); return; } if (!p || !m) return; if (p.held) { heldSay(h, p, m); return; } if (p.act === "incubator") { h.goto("incubator"); return; } if (p.act === "moveTo") { v.move = v.pick?.ids?.length ? { ids: v.pick.ids.slice() } : { id: m.id }; v.moveFirst = 0; v.f = null; return; } if (p.act === "clearPicks") { v.pick = { on: true, ids: [] }; v.f = firstLive(ctx); return; } if (p.act === "tuckAway" && v.pick?.ids?.length) { tuckPicks(h); return; } plateDo(h, cur, p.act); }
+  if (/^plate\./.test(cur ?? "")) { const p = n.plates.find((x) => x.id === cur); const m = S.mibiById(h.st, n.card); if (p?.act === "incubator") { S.pickCapsule(h.st, h.settings, h.now()); h.goto("incubator"); return; } if (!p || !m) return; if (p.held) { heldSay(h, p, m); return; } if (p.act === "incubator") { h.goto("incubator"); return; } if (p.act === "moveTo") { v.move = v.pick?.ids?.length ? { ids: v.pick.ids.slice() } : { id: m.id }; v.moveFirst = 0; v.f = null; return; } if (p.act === "clearPicks") { v.pick = { on: true, ids: [] }; v.f = firstLive(ctx); return; } if (p.act === "tuckAway" && v.pick?.ids?.length) { tuckPicks(h); return; } plateDo(h, cur, p.act); }
 }
 // ✓ on a row of the room list: the free place takes the mibi at once and free (the card returns, the ring stays on it, the wall resorts); here, settling and full say why; Add a room opens its panel and returns here
 function moveConfirm(h, id, b) {

@@ -35,6 +35,17 @@ A new screen is a spec file, a props view, a props schema, the words and a bindi
 6. **The intents.** A key on a focused target arrives as an `intent` from the face and is one rule call in `state.mjs` (new rules land there with tests); its result becomes the next props and `event` messages (`{ kind, target, ms, hold }`), which hold input while they play. No global timestamps.
 7. **The proof.** The words against the JavaScript drawing they replace, scene by scene (`prototypes/face/tests/<screen>-words.test.mjs` over a fixture of props and framebuffer hashes), the keys, the events; then the gate of lvgl-switch.md (the journey on both faces, the goldens once the UI designer and the art director sign, `tools/checks.mjs`), and the review checklist's section 3.
 
+## The nursery, and the sinks that remain (station step 5; plan v6 S1a)
+
+**The nursery** is the blue key's room: capsules at the top (`state.CAPSULES`, one number, three), the shelf below in rows by origin (`nursery.mjs`), a pod's page with one act, Grow it (`state.growPod`). It is drawn on the face's `page` state: one composed picture (`nursery-pictures.mjs`) and the words over it (`views/nursery-props.mjs`, words in `pods.json` `strings.nursery` and `strings.podpage`); its keys are `intents/nursery.mjs`. A pod is never read: no sample, no price, nothing revealed. Growing takes a free capsule and time on the real clock; no Energy, no Data, no Essence is spent and there is no "Open now". A capsule is empty, growing (time left, a lit bar that fills), ready to hatch, or holds a young who has hatched and not been moved yet (nothing makes one until step 7; the hatch plays as before and the young goes to a place). Pods never dry; the shelf has no limit. `st.caps` is the save's capsules; `st.bud` is a compatibility accessor on the capsule being worked (`withCapsule`, `setWorking`), never saved.
+
+**The old prices left with their screens** (unreachable now, their code kept, dead, for the face's words to go with it): identify (1 Data), reading a chapter (1 Data a trait) and the Data store, shaping a trait (1 Data a change), growing (2 Energy, 4 Essence in the table), "Open now" (1 Essence for every 2 minutes left), freshening (1 Essence for 4 turns), pod drying.
+
+**The sinks that remain, per currency, at greybox amounts** (the numbers stay one price sheet, S1b; no new screens carry them):
+- **Energy**: the Shield's plates (patching 3), a pin (Call, 1), a beacon (1), outposts, the Probe's second tier (12), against rooms (the ladder in `rooms-rules.json`) and tucking a mibi away (2). The Shield, pins, beacons and outposts, and the Probe, compete with rooms.
+- **Data**: a sample's answer through the lens (1, step 8) against sharpening the notes on a wild one (1, step 8); the Probe's second tier asks 4.
+- **Essence**: a pairing's young (the pairing costs 2 Essence and 2 Energy today, step 8) against a second pod from the same pairing (2, step 8) against a cassette's copy (2, S6). Built when their screens ship; today only the pairing is on a screen.
+
 ## Keys
 
 The Station's depicted keys, mapped to the keyboard. Routine play uses these only; nothing on the screen is clickable. On the [play page](../play/README.md) the same keys are drawn under the Station's frame and press exactly as the keyboard does, and the keyboard's `D` no longer docks there: the page owns Shift+D.

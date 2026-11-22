@@ -310,10 +310,6 @@ test("scrolling: the ring always sits on a whole card; a ring past the second ro
   assert.ok(v.props.regions.inv.grid.cards.every((c) => c.row >= -1 && c.row <= 2), "the rows on screen and one either side");
   assert.equal(P(model(home(10), {}, "card.0")).regions.inv.rail, null, "two rows: no rail");
 });
-test("a dried pod shows once in the detail line (it dried out, its reads stay), then is gone", () => {
-  const st = home(3); S.putOnBench(st, st.tray[0]); st.turn = 13; S.dryPods(st);
-  assert.equal(inv(model(st, {}, "sort")).detail.right, "2 pods dried out"); S.husksShown(st); assert.equal(inv(model(st, {}, "sort")).detail.right, "1 pod · 1 species", "gone after the visit");
-});
 test("the hold Let go asks: the frame carries it with the ring on a pod under Let go (slower for a pod that carries the goal or is the only of its species, and the line says why); none under any other verb; the tray's Let these go holds too", () => {
   const st = mixed(); ident(st); const on = (focus, over = {}) => podsProps(model(st, over, focus), spec, frameSpec);
   assert.equal(on("card.0").hold, null, "Read: no hold"); assert.deepEqual(on("card.0", { verb: "letgo" }).hold, { ms: 0, why: "" }, "Let go: the frame's own 3 s");

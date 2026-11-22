@@ -104,20 +104,6 @@ test("the trait line: as the pod is, only <look> with the tag, one look, doing w
   assert.equal(make("S01", 3, 0).build().props.regions.traitLine.text, "", "nothingRead: no size, the sentence is the context's"); assert.equal(T.none, "it grows as the pod is");
 });
 
-test("the bottom line: ✓ Incubate and the price with ◆ a change (the first founder no Essence), what stays a surprise, the first block in the rules' order with its notice; ← the pod", () => {
-  const Sg = spec.strings, m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr);
-  let L = m.build().line; assert.deepEqual([L.ok, L.price, L.back, L.subject, L.need], ["Incubate", "⚡ 2 ❀ 4 ⧗ 20 min", "Loika", "two chapters unread", ""]);
-  const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1 ⧗ 21 min", "the wait last: 20 and one a change");
-  m.st.firstMibi = true; assert.match(m.build().line.price, / ⧗ 5 min$/, "the first founder: the wait is 5 whatever is shaped"); m.st.firstMibi = false; assert.ok(!("leaves" in m.build().props.regions), "no leaf grid on Create (fix 6 N1)");
-  assert.equal(make("S01", 3, 0).build().line.subject, Sg.traitLine.none); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina unread"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
-  { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
-  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.ok(["growing", "ready"].includes(k.build().props.regions.dome.state), "the capsule shows the bud (glass and bar while it grows, door open when ready)"); }
-  { const k = make("S01", 3, 2); for (let i = 0; i < 16; i++) k.st.mibis.push({ id: 100 + i, room: i >> 3, slot: i & 7, bay: i, released: false }); L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.full]); assert.equal(Sg.notices.full, "the Vivarium is full", "the rooms words C17: Create's notice, lower case like its others (R6; the keys are renamed from noBay)"); }
-  { const k = make("S01", 3, 2); k.st.s = 1; L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked, L.need], [true, "❀", undefined, "needs ❀: go out or return pods"]); }
-  { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.deepEqual([L.dim, L.short, L.need], [true, "⚡ ❀", "needs more ⚡ ❀: go out"]); }
-  { const k = make("S01", 3, 2); k.cr.f = roll; k.cr.choices = { [list[roll].t.id]: 1 }; k.cr.clash = [list[roll].t.id]; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.clash]); }
-  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, Sg.notices.busy, "busy before short"); assert.equal(k.build().line.short, undefined, "blocked is never beside short"); }
-});
 
 test("the rail: a tab a chapter, the open tab the focused trait's chapter, one mark a tab (a clash cross over a changed diamond, else none; fix 11), no pips and no lift; nothing read opens none", () => {
   const m = make("S01", 3, 2), fr = frameOf("S01"), list = reviewTraits(m.p, fr); m.cr.f = 1; let rail = m.build().props.regions.rail;
@@ -181,12 +167,4 @@ test("fix 5: the context of a sealed chapter still shut: all else read names it 
   const k = make("S02", 3, nSealed - 1).build().line.subject; assert.match(k, /unread$/); assert.ok(!k.includes(sealed.name), "the unread count leaves the shut chapter out"); assert.equal(k, `${fr.chapters[nSealed - 1].name} unread`, "unread and a shut one: the count alone, no combined form");
   const m = make("S02", 3, all); const open = createBuild({ st: m.st, settings: { ...settings, sealedOpen: true }, ui: { create: m.cr } }, spec, pods).line.subject; assert.equal(open, `${sealed.name} unread`, "sealedOpen: the sealed chapter counts as unread");
   assert.equal(make("S01", 3, frameOf("S01").chapters.length).build().line.subject, "A Loika, fully known");
-});
-test("fix 5: the right slot is Create's own and never the frame's notice (empty when nothing blocks, short or warns); busy ranks before the shortfall; the stamp's case ids are Pods'; the cradle front is Create's; no tag plate is requested", () => {
-  const m = make("S01", 3, 2), b = m.build(); assert.equal(b.line.need, "", "nothing to say: empty, never null"); const ids = b.requests.map((r) => r.id);
-  assert.deepEqual([b.props.regions.stamp.case.back, b.props.regions.stamp.case.front], ["room-stamp-case-152x152:152x152", "room-stamp-case-152x152-front:152x152"]);
-  assert.ok(ids.includes("room-stamp-case-152x152:152x152") && ids.includes("room-cradle-front-create-224x96:224x96") && !ids.some((i) => /^plate-name/.test(i)), "the case and the cradle front requested; no plate-name");
-  assert.equal(b.props.regions.cradle.front, "room-cradle-front-create-224x96:224x96");
-  const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, spec.strings.notices.busy, "busy before the shortfall");
-  const n = make("S01", 3, 0).build(); assert.equal(n.props.regions.stamp.case.back, "room-stamp-case-152x152:152x152", "the case in nothingRead too");
 });

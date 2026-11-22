@@ -153,8 +153,8 @@
     ],
     "screen": "pods",
     "focus": "room",
-    "ok": "Take to the reading room",
-    "subject": "▲ Other actions",
+    "ok": null,
+    "subject": null,
     "idle": false
    },
    {
@@ -163,7 +163,7 @@
      {
       "t": "intent",
       "screen": "pods",
-      "target": "card.3",
+      "target": "rail.0",
       "verb": "back"
      }
     ],
