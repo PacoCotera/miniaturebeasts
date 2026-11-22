@@ -8,7 +8,7 @@ import { makePage } from "../tests/page-harness.mjs";
 import { writeFileSync } from "node:fs";
 
 const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i < 0 ? d : process.argv[i + 1]; };
-const FROM = +arg("from", 1), TO = +arg("to", 200), DAYS = +arg("days", 3), VERBOSE = process.argv.includes("--verbose"), JSON_OUT = arg("json", null);
+const FROM = +arg("from", 1), TO = +arg("to", 200), DAYS = +arg("days", 3), VERBOSE = process.argv.includes("--verbose"), JSON_OUT = arg("json", null), READ_ON = process.argv.includes("--read");   // --read: the bot reads her prints only when the day has nothing yet (W4 round 2)
 
 // ---- runs inside the page (its globals: S, advance, patchAction, curLay, ...) ----
 function botPage(A) {
@@ -45,6 +45,22 @@ function botPage(A) {
         for (let i = 0; i < 3 && c.ease > 0 && wait(); i++); if (heardAtTile(c, t.x, t.y, spent())) return; } stepTo(t); } };
   const rec = k => (S.habits[id] || {})[k];
   const notedBy = k => out.notes.some(n => n.k === k);
+  // ---- W4 round 2: reading her prints (the page's own rule: printsToRead / readPrints), only when the day has nothing yet (--read) ----
+  const READ = !!A.read; out.reads = []; out.readTries = [];
+  const nothingYet = () => !out.notes.length && !out.reads.length;
+  const unread = () => printsHere().filter(p => !S.day.hab[readKey(p.c.id, p.h)]);
+  const tryRead = (why, by, backTo) => {   // go to the nearest unread prints and read them (one light); by: the light the bot must be free again (null: none)
+    if (!READ || over()) return false;
+    const c = her(), quiet = c && (c.gone || c.ease >= 3), cand = unread(); let best = null;
+    for (const p of cand) { const path = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, p.stand) <= 1, (x, y) => !!c && !quiet && heardAtTile(c, x, y, spent())); if (path && (!best || path.length < best.path.length)) best = { p, path }; }
+    if (!best) { out.readTries.push(why + ': ' + (cand.length ? 'no way' : 'none left')); return false; }
+    const back = backTo ? cheb(best.p.stand, backTo) + 4 : 0;
+    if (by != null && spent() + best.path.length + 1 + back > by) { out.readTries.push(why + ': no time'); return false; }
+    for (const t of best.path) { if (over()) break; const cc = her(); if (cc && !quiet && heardAtTile(cc, t.x, t.y, spent())) { for (let i = 0; i < 3 && cc.ease > 0 && wait(); i++); if (heardAtTile(cc, t.x, t.y, spent())) break; } stepTo(t); }
+    if (over() || cheb(P, best.p.stand) > 1) { out.readTries.push(why + ': not reached'); return false; }
+    for (const dir of ['up', 'down', 'left', 'right']) { P.dir = dir; const a = patchAction(); if (a.label === WORDS.prints.read) { const n0 = (S.exp.stats.prints || []).length; a.run(); if ((S.exp.stats.prints || []).length > n0) { const r = S.exp.stats.prints[n0]; out.reads.push({ why, part: r.part, yday: r.yday, gone: r.gone, light: spent(), walked: best.path.length }); return true; } } }
+    out.readTries.push(why + ': could not read'); return false;
+  };
   // ---- plan the day's three moments ----
   const c0 = her(); if (!c0) return JSON.stringify({ missing: 1 });
   const win = calmWindow(S.seed, id, S.turn, DAY.parts, routineOf(c0.ind.doings)), rp = rainPlan();
@@ -54,18 +70,22 @@ function botPage(A) {
   { let sl = null; for (let T = 150; T < DAY.light - 6 && sl == null; T++) { const h = hauntAt(c0.ind.hs, c0.ind.doings, dayAt(T)); if (h && h === c0.ind.hs.bed) sl = T; } if (sl != null) events.push({ k: 'sleep', at: sl + 2 }); }
   events.sort((a, b) => a.at - b.at);
   out.plan = events.map(e => e.k + '@' + e.at);
-  for (const e of events) {
+  const freeBy = e => e.at - tellOf(c0.ind.doings) - 12, spotOf = e => { const c = her(); return c ? herSpot(c, e.at) || { x: c.x, y: c.y } : null; };
+  const afterMoment = (nextE) => { if (READ && nothingYet()) tryRead('after a moment', nextE ? freeBy(nextE) : null, nextE ? spotOf(nextE) : null); };   // a moment has gone by with nothing: read what she left, if there is time before the next
+  for (let ei = 0; ei < events.length; ei++) {
+    const e = events[ei], nextE = events[ei + 1];
     if (over()) break;
     const c = her(); if (!c) break; if (c.gone || c.ease >= 3) { out.gone = true; break; }
     const k = e.k, want = habWant(id, k), T = e.at;
     const spot = herSpot(c, T) || { x: c.x, y: c.y };
+    if (READ && ei > 0 && nothingYet()) tryRead('before ' + k, freeBy(e), spot);
     // the range for what the card lacks
     const rng = want === 'face' ? [3, 4] : want === 'coat' ? [3, 5] : (clearAt(T) ? [6, 8] : [3, 5]);
     let path = standFor(c, spot, rng[0], rng[1], T);
     if (!path && want === 'place') path = standFor(c, spot, 3, 5, T);
     if (!path) path = standFor(c, spot, 3, 8, T);
     if (!path) path = bfs({ x: P.x, y: P.y }, (x, y) => { const d = cheb({ x, y }, spot); return d >= 4 && d <= 8; }, () => false);   // no unheard stand: the nearest plain one, and settle on the way
-    if (!path) { out.events.push(k + ': no stand'); continue; }
+    if (!path) { out.events.push(k + ': no stand'); afterMoment(nextE); continue; }
     // set out so as to be there a few light before the tell
     const lead = path.length + 3, startAt = Math.max(spent(), e.at - tellOf(c.ind.doings) - lead - 6);
     while (spent() < startAt && !over()) wait();
@@ -73,7 +93,7 @@ function botPage(A) {
     // wait for the tell
     let guard = 0;
     while (!over() && guard++ < 40) { const cc = her(); if (!cc || cc.gone || cc.ease >= 3) break; if (cc.hb && cc.hb.k === k) break; if (spent() > e.at + 16) break; wait(); }
-    const cc = her(); if (!cc || !cc.hb || cc.hb.k !== k) { out.events.push(k + ': none to see' + (cc && cc.gone ? ' (gone)' : '')); if (cc && cc.gone) out.gone = true; continue; }
+    const cc = her(); if (!cc || !cc.hb || cc.hb.k !== k) { out.events.push(k + ': none to see' + (cc && cc.gone ? ' (gone)' : '')); if (cc && cc.gone) out.gone = true; afterMoment(nextE); continue; }
     // the face wants near: step in on the tell while the steps stay unheard
     if (want === 'face' && cheb(P, cc) > 2) {
       const p2 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, cc) <= 2 && !heardAtTile(cc, x, y, spent()) && stayAtTile(cc, x, y, spent()) >= 5, (x, y) => heardAtTile(cc, x, y, spent()));
@@ -84,11 +104,17 @@ function botPage(A) {
       const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() }); break; } } else wait(); }
     // let the play end
     for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; wait(); }
+    afterMoment(nextE);   // also when the moment played and no note came of it
   }
-  // the rest of the day: wait it out (the next day starts where this ended)
+  // the rest of the day: wait it out (the next day starts where this ended); with nothing yet, look for her prints at the end, and wait for the next part of day to look again
   const cf = her(); if (cf && (cf.gone || cf.ease >= 3)) out.gone = true;
+  if (READ && nothingYet()) {
+    let ok = tryRead('end', null, null);
+    while (!ok && !over()) { const p0 = dayAt(spent()); let g = 0; while (!over() && dayAt(spent()) === p0 && g++ < 60) wait(); for (let i = 0; i < 6 && !over(); i++) wait(); if (!over()) ok = tryRead('end', null, null); }
+  }
   out.spent = spent(); out.samples = ex.cargo.samples.length - out.samples0; out.data = ex.cargo.d - out.d0; out.ended = !!(S.exp && S.exp.ending);
   out.day = JSON.parse(JSON.stringify(S.day.hab));
+  out.calmLog = (S.exp.stats.calmLog || []).filter(w => w.id === id && w.day === S.turn);   // W4 round 2: why calm did or did not play today
   out.learned = Object.fromEntries(Object.entries(S.habits[id] || {}).map(([k, r]) => [k, { got: Object.keys(r.got), best: r.best, sample: !!r.sample }]));
   return JSON.stringify(out);
 }
@@ -105,13 +131,15 @@ for (let seed = FROM; seed <= TO; seed++) {
   const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
   const row = { seed, days: [] };
   try {
+    // speed only (as the design job did, checked day for day against the unchanged bot): a cell the lightning lights on the MAP records its signs, which builds that whole place; they play no part in her place
+    if (!process.argv.includes("--signs")) p.run(`recordSigns = function () {};`);
     p.run(`newWorld(${seed}); startExpedition('weather', G.spawns[0]);`);
     const pick = JSON.parse(p.run(FIND)); if (!pick) { row.skip = "no Loika"; results.push(row); if (VERBOSE) console.log(seed, "skip"); continue; }
     row.company = pick.company; p.run(`S.known = [0, ...S.known.filter(k => k !== 0)];`);
     for (let day = 1; day <= DAYS; day++) {
       p.run(NEWDAY(pick.key, day));
       p.run(`(() => { const l = curLive(); l.strike = null; })()`);
-      const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id })})`));
+      const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id, read: READ_ON })})`));
       row.days.push(r);
       if (VERBOSE) console.log(seed, "day", day, JSON.stringify({ plan: r.plan, notes: r.notes.map(n => n.k + ":" + n.range + (n.first ? "!" : "") + (n.filled ? "=" : "")), samples: r.samples, data: r.data, gone: r.gone, ev: r.events, hab: r.day, spent: r.spent }));
     }
@@ -130,7 +158,10 @@ const sum = {
   samplesPerDay: [1, 2, 3].filter(d => nd(d).length).map(d => ({ day: d, mean: +(nd(d).reduce((a, r) => a + r.days[d - 1].samples, 0) / nd(d).length).toFixed(2), withSample: nd(d).filter(r => r.days[d - 1].samples >= 1).length })),
   day1OneNoteOneSample: nd(1).filter(r => habitsOn(r, 1) >= 1 && r.days[0].samples >= 1).length,
   goneDays: ok.flatMap(r => r.days).filter(d => d.gone).length, totalDays: ok.flatMap(r => r.days).length,
-  e3FailDays: ok.flatMap(r => r.days).filter(d => !d.notes.length).length,
+  e3FailDays: ok.flatMap(r => r.days).filter(d => !d.notes.length).length,   // W4's reading: no habit note
+  e3EmptyDays: ok.flatMap(r => r.days).filter(d => !d.notes.length && !(d.reads || []).length).length,   // the walk design's E3 (a note, sample, drop, trail or routine note): her prints read count
+  readDays: ok.flatMap(r => r.days).filter(d => (d.reads || []).length).length,
+  calmWhy: ok.flatMap(r => r.days).reduce((m, d) => { for (const w of d.calmLog || []) m[w.why] = (m[w.why] || 0) + 1; return m; }, {}),
 };
 const notes = ok.flatMap(r => r.days.flatMap(d => d.notes)), first = notes.filter(n => n.first);
 const share = (l, f) => Object.fromEntries(["far", "mid", "near"].map(g => [g, l.length ? +(l.filter(n => n.range === g).length / l.length * 100).toFixed(1) : 0]));

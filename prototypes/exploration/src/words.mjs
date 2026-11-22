@@ -92,6 +92,15 @@ WORDS.habit = {
   range: { far: 'from far', mid: 'from mid range', near: 'from near' },
   sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
 };
+// [copy] W4 round 2: her prints at a haunt she has left (walk-design-1 3A): working words for the copywriter. The message says when she was there; the label is the ✓ at the prints.
+WORDS.prints = {
+  read: 'Read her prints', readCtx: 'read the prints she left',
+  when: { dawn: 'at first light', morning: 'this morning', midday: 'at midday', afternoon: 'this afternoon', dusk: 'at dusk', night: 'in the night' },
+  whenYday: { dawn: 'at first light yesterday', morning: 'yesterday morning', midday: 'at midday yesterday', afternoon: 'yesterday afternoon', dusk: 'at dusk yesterday', night: 'in the night' },
+  line: (name, when) => name + ' was here ' + when,
+  bolted: name => name + ' was here · she bolted',
+  page: ' · on her page',
+};
 // [copy] the wind of the land, said in the bottom line's conditions slot until the art director signs a mark (rule 18): it blows toward the named way
 WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the south', W: 'wind to the west' };
 WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };

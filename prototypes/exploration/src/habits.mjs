@@ -4,6 +4,7 @@
 //   a habit: shake (after rain, the moment it stops), calm (a wary one comes near her), sleep (curled at her bed, from dusk)
 //   a play: tell (2 to 4 actions, the individual's), then four beats; ✓ facing her in sight during a play is a note
 import { hash, rnd } from './world.mjs';
+import { haunt as hauntOf } from './gen7/haunts.mjs';
 
 export const HABITS = Object.freeze(['shake', 'calm', 'sleep']);
 export const BEATS = 4;
@@ -17,24 +18,38 @@ export const rangeOf = d => d > 5 ? 'far' : d >= 3 ? 'mid' : 'near';
 export const RANK = Object.freeze({ far: 0, mid: 1, near: 2 });
 // the tell comes a few actions before the habit; its length is the individual's: 2 to 4 (a wary one waits longer, a steady one is slower to start)
 export const tellOf = doings => 2 + (doings && doings.wary >= .5 ? 1 : 0) + (doings && doings.drive < 1 ? 1 : 0);
-// clear air: no rain, no fog, before dusk (the range rule 3A)
-export const clearAir = ({ raining, fog, part }) => !raining && !fog && part !== 'dusk' && part !== 'night';
-// what a note gives by range (the range rule 3A): far where she goes in clear air, else the shape only; mid the coat (and where she goes in dim air); near her face, all four beats and the keepsake
+// clear air is weather only: no rain, no fog. Nothing in W4 turns on dusk (no dusk rule ships before its picture; walk-design slip W8)
+export const clearAir = ({ raining, fog }) => !raining && !fog;
+// what a note gives by range (the range rule 3A, with the mid clause out): far where she goes in clear air, else the shape only; mid her coat, in any air; near her face, all four beats and the keepsake
 export function givesAt(range, clear) {
   if (range === 'far') return clear ? ['place'] : [];
-  if (range === 'mid') return clear ? ['coat'] : ['coat', 'place'];
+  if (range === 'mid') return ['coat'];
   return ['face'];
 }
-// the card line for a habit (the range rule 3B): in the realm what is still missing, not a draw. Her face when the Station holds no sample for the habit's chapter (a player with no keepsake is sent close first);
-// otherwise the seed draws among what is not yet got for that habit. null when all three are got.
-export function wantOf(seed, id, k, got, haveSample) {
-  const left = WANTS.filter(w => !(got && got[w]));
-  if (!left.length) return null;
-  if (!haveSample && left.includes('face')) return 'face';
-  return left[Math.floor(rnd(seed, 'want', id, k, left.length) * left.length)];
+// the card line for a habit (the range rule 3B, slip W5): what is still missing, the first want for a wild one being her coat, then her face, then where she goes.
+// Sleep-curled's card asks her coat or her face only until the dew ships (where she goes at first light is the dew's prints, which come with the dusk and dawn pictures). null when nothing is left to ask.
+export function wantOf(seed, id, k, got) {
+  const left = WANTS.filter(w => !(got && got[w]) && !(k === 'sleep' && w === 'place'));
+  return left.length ? ['coat', 'face', 'place'].find(w => left.includes(w)) : null;
 }
-// the vantage a note is taken from: the side she faces is the front (Face), any other is the side (Coat); she faces left (-1) or right (1)
-export const vantageOf = (c, P) => (Math.sign(P.x - c.x) || 0) === (c.face || 1) ? 'front' : 'side';
+
+// ---------- her prints (the walk design, W4 round 2, 3A) ----------
+// A named wild one who leaves a haunt leaves her prints at its stand tile until the end of the next morning. The routine says where she was at each part of day, so the prints are read off it:
+// the haunts she kept earlier today and has moved on from, last night's and yesterday's while the dew's morning lasts, and the haunt she bolted from.
+export const PARTS = Object.freeze(['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night']);
+const sameSite = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y;
+// hs: her haunts; doings: her individual's; part: now; gone: she has bolted. Returns [{ h, part, yday, gone }], the latest leave of each haunt first.
+export function leftHaunts(hs, doings, part, gone) {
+  if (!hs) return [];
+  const now = PARTS.indexOf(part), at = p => hauntOf(hs, doings, p), cur = at(part), out = [];
+  const add = (h, p, yday) => { if (h && !sameSite(h, cur) && !out.some(q => sameSite(q.h, h))) out.push({ h, part: p, yday, gone: false }); };
+  if (gone && cur) out.push({ h: cur, part, yday: false, gone: true });   // she bolted: the haunt she was keeping is the one she left
+  for (let i = now - 1; i >= 0; i--) if (!sameSite(at(PARTS[i]), at(PARTS[i + 1]))) add(at(PARTS[i]), PARTS[i], false);
+  if (now <= 1) for (let i = PARTS.length - 1; i >= 3; i--) if (!sameSite(at(PARTS[i]), at(PARTS[(i + 1) % PARTS.length]))) add(at(PARTS[i]), PARTS[i], true);   // until the end of the next morning: yesterday's afternoon, dusk and night
+  return out;
+}
+// the key of one read: one for each haunt each day
+export const readKey = (id, h) => 'read:' + id + ':' + h.x + ',' + h.y;
 
 // ---------- when a habit comes ----------
 // Rain: the band's core passes a column in so many actions (the same step the page's advance() takes: it crawls .2 a tick while it covers the column, else v). st: { x, w, dir, v }.

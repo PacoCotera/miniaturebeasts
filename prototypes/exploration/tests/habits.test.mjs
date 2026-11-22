@@ -4,24 +4,40 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { rangeOf, givesAt, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, vantageOf, HABITS, SAMPLE, BEATS } from "../src/habits.mjs";
+import { rangeOf, givesAt, clearAir, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, leftHaunts, HABITS, SAMPLE, BEATS } from "../src/habits.mjs";
 import { DAY, WORDS } from "../src/words.mjs";
 import { ROUTINE } from "../src/gen7/haunts.mjs";
 
 test("range: far beyond 5 tiles, mid 3 to 5, near 2 or closer", () => {
   assert.deepEqual([1, 2, 3, 5, 6, 9].map(rangeOf), ["near", "near", "mid", "mid", "far", "far"]);
 });
-test("what a note gives by range (the range rule 3A): far where she goes in clear air, mid the coat (and the place in dim air), near her face", () => {
+test("what a note gives by range (the range rule 3A, mid's clause out): far where she goes in clear air, mid her coat in any air, near her face", () => {
   assert.deepEqual(givesAt("far", true), ["place"]); assert.deepEqual(givesAt("far", false), []);
-  assert.deepEqual(givesAt("mid", true), ["coat"]); assert.deepEqual(givesAt("mid", false), ["coat", "place"]);
+  assert.deepEqual(givesAt("mid", true), ["coat"]); assert.deepEqual(givesAt("mid", false), ["coat"]);
   assert.deepEqual(givesAt("near", true), ["face"]); assert.deepEqual(givesAt("near", false), ["face"]);
 });
-test("the card line (the range rule 3B): her face when the Station holds no sample, else a seeded draw among what is not got; null when all are got", () => {
-  assert.equal(wantOf(7, 3, "shake", {}, false), "face");
-  assert.equal(wantOf(7, 3, "shake", { face: 1 }, false) !== "face", true);
-  const w = wantOf(7, 3, "calm", {}, true); assert.ok(["place", "coat", "face"].includes(w));
-  assert.equal(wantOf(7, 3, "calm", { place: 1, coat: 1, face: 1 }, true), null);
-  assert.equal(wantOf(7, 3, "calm", { place: 1, coat: 1 }, true), "face");
+test("clear air is weather only: no rain, no fog; nothing turns on dusk (slip W8)", () => {
+  assert.equal(clearAir({ raining: false, fog: false, part: "dusk" }), true); assert.equal(clearAir({ raining: false, fog: false, part: "night" }), true);
+  assert.equal(clearAir({ raining: true, fog: false, part: "morning" }), false); assert.equal(clearAir({ raining: false, fog: true, part: "morning" }), false);
+});
+test("the card line (slip W5): her coat first, then her face, then where she goes; sleep-curled asks her coat or her face only; null when nothing is left", () => {
+  assert.equal(wantOf(7, 3, "shake", {}), "coat");
+  assert.equal(wantOf(7, 3, "shake", { coat: 1 }), "face");
+  assert.equal(wantOf(7, 3, "calm", { coat: 1, face: 1 }), "place");
+  assert.equal(wantOf(7, 3, "calm", { place: 1, coat: 1, face: 1 }), null);
+  assert.equal(wantOf(7, 3, "sleep", {}), "coat"); assert.equal(wantOf(7, 3, "sleep", { coat: 1 }), "face");
+  assert.equal(wantOf(7, 3, "sleep", { coat: 1, face: 1 }), null, "no 'where she goes' for sleep-curled until the dew ships");
+});
+test("her prints (3A): the haunts she kept earlier today and has left; yesterday's while the morning lasts; the haunt she bolted from", () => {
+  // an early Loika: dawn water, morning grass, midday third, afternoon grass, dusk and night bed
+  const hs = { water: { x: 1, y: 1 }, grass: { x: 5, y: 1 }, third: { x: 9, y: 1 }, bed: { x: 13, y: 1 } }, early = { wary: 0, drive: 1 };
+  const at = (part, gone) => leftHaunts(hs, early, part, gone).map(q => (q.yday ? "y" : "") + q.part + ":" + q.h.x + (q.gone ? "!" : ""));
+  assert.ok(at("dawn").every(s => s.startsWith("y")), "at dawn nothing of today is left yet");
+  assert.ok(at("morning").includes("dawn:1"), "in the morning the water she left at first light");
+  assert.deepEqual(at("midday").filter(s => !s.startsWith("y")), ["morning:5", "dawn:1"], "midday: the grass and the water she has left");
+  assert.ok(!at("afternoon").some(s => s.startsWith("y")), "yesterday's prints are gone after the morning");
+  assert.equal(at("midday", true)[0], "midday:9!", "a bolt leaves the haunt she was keeping");
+  assert.deepEqual(leftHaunts(null, early, "midday", false), []);
 });
 test("a note fills the line only when it gives the wanted thing; any note counts the habit; the first note is the habit's first", () => {
   const rec = blank(); const a = noteIn(rec, "far", true, "face"); assert.ok(a.first && !a.filled && a.gives[0] === "place");
@@ -92,6 +108,33 @@ for (const seed of [7, 13, 42]) {
     assert.equal(out.samples.length, 1, "the tuft came home with the note"); assert.equal(out.samples[0].item, "tuft"); assert.equal(out.samples[0].chapter, "coat"); assert.equal(out.samples[0].habit, "shake");
     assert.equal(out.dData, 1, "the first note of a habit pays +1 Data");
     assert.ok(out.tuft, "the tuft is on the ground too (Essence)");
+    assert.deepEqual(p.errors, []);
+  });
+}
+
+for (const seed of [7, 13]) {
+  test("on the page, seed " + seed + ": her prints at a haunt she has left are read with one action, once a day, with no Data, sample or habit note", () => {
+    const p = page(); p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
+    const pick = JSON.parse(p.run(find)); assert.ok(pick, "a Loika in a mounted place");
+    const out = JSON.parse(p.run(`(() => {
+      const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); const lay = curLay(), live = curLive(), c = live.cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
+      S.known = [0, ...S.known.filter(k => k !== 0)]; S.day.spent = 95; live.strike = null; S.exp.stray = null;
+      const list = printsHere(); if (!list.length) return JSON.stringify({ none: 1 });
+      const q = list[0], far = q.stand;
+      // she is elsewhere (more than 2 tiles from the prints), the explorer stands beside them facing nothing
+      c.x = Math.min(lay.w - 2, far.x + 6); c.y = far.y; c.gone = null;
+      const side = [[1, 0, 'left'], [-1, 0, 'right'], [0, 1, 'up'], [0, -1, 'down']].find(([dx, dy]) => passable(far.x + dx, far.y + dy));
+      P.x = side ? far.x + side[0] : far.x; P.y = side ? far.y + side[1] : far.y; P.dir = side ? side[2] : 'up';
+      const d0 = S.exp.cargo.d, s0 = S.exp.cargo.samples.length, n0 = (S.exp.stats.noted || []).length, sp0 = S.day.spent;
+      const a = patchAction(); const label = a.label; if (label === WORDS.prints.read) a.run();
+      const a2 = patchAction();
+      return JSON.stringify({ label, after: a2.label, pages: S.pages[c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part });
+    })()`));
+    assert.ok(!out.none, "at midday she has left a haunt of the morning");
+    assert.equal(out.label, WORDS.prints.read, JSON.stringify(out));
+    assert.notEqual(out.after, WORDS.prints.read, "one read for each haunt each day");
+    assert.equal(out.prints.length, 1); assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
+    assert.equal(out.dData, 0); assert.equal(out.dSamples, 0); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
     assert.deepEqual(p.errors, []);
   });
 }
