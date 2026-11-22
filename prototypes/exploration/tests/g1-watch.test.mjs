@@ -33,7 +33,7 @@ test("the carry table: gait, ground, wind, rain, wariness; never below 1", () =>
 });
 
 test("ease in four stages (walk design W3): the first heard step is watching, quiet actions settle one stage, a second heard step while watching sends her away for the day", () => {
-  const S = day(7, { wind: "N" }); S.P.x = 9; S.P.y = 6; S.L.x = 7; S.L.y = 4;
+  const S = day(7, { wind: "N" }); S.P.x = 9; S.P.y = 8; S.L.x = 7; S.L.y = 4;   // 3 tiles out: no stay applies here
   assert.equal(S.L.ease, 0);
   G.step(S, "up", "creep"); assert.equal(S.L.ease, 2, "watching on the first heard step"); assert.equal(S.L.gone, false);
   G.wait(S); G.wait(S); assert.equal(S.L.ease, 2); G.wait(S); assert.equal(S.L.ease, 1, "watching settles to ears up after three quiet");
@@ -99,6 +99,26 @@ test("the wary one notices the explorer by the carry table: inside its notice ca
   assert.equal(G.noticeAt(at(3, 14), 3, 14).noticed, false);
   const near = at(9, 4); near.light = near.ma - 1; near.L.ease = 0; for (let i = 0; i < 3; i++) G.wait(near);
   assert.ok(!near.L.habit || near.L.habit.k !== 'calm', 'no calm with the explorer inside its notice');
+});
+
+test("range rule A and B: far gives her place in clear air, mid the coat (and place in dim air), near her face; the card line fills only when a note gives it", () => {
+  assert.deepEqual(G.givesAt(day(7), "far"), ["place"]); assert.deepEqual(G.givesAt(day(7, { rain: { s: 0, e: 99 } }), "far"), []);
+  assert.deepEqual(G.givesAt(day(7), "mid"), ["coat"]); assert.deepEqual(G.givesAt(day(7, { rain: { s: 0, e: 99 } }), "mid"), ["coat", "place"]);
+  assert.deepEqual(G.givesAt(day(7), "near"), ["face"]);
+  const S = day(7, { wind: "N", rain: { s: 20, e: 40 } }); S.want.shake = "face"; S.light = 39; G.wait(S);
+  assert.match(G.cardLine(S, "shake"), /still to learn: her face/);
+  S.P.x = 3; S.P.y = 4; G.face(S); assert.equal(G.note(S).filled, false);
+  S.P.x = 6; S.P.y = 4; G.face(S); assert.equal(G.note(S).filled, true); assert.match(G.cardLine(S, "shake"), /learned: her face/);
+  assert.ok(["place", "coat", "face"].includes(G.forecast(S).want.calm));
+});
+
+test("range rule C: the stay within 2 tiles is 10 less twice the carry; past it she hears the explorer like a heard step, and beyond 2 tiles the count resets", () => {
+  const S = day(7, { wind: "N" }); S.L.x = 7; S.L.y = 4; S.P.x = 6; S.P.y = 4;   // tall grass: carry 1, stay 8
+  assert.equal(G.stayAt(S, 6, 4), 8);
+  for (let i = 0; i < 8; i++) G.wait(S); assert.equal(S.log.heard, 0, "8 light are quiet");
+  G.wait(S); assert.equal(S.log.heard, 1, "the ninth is heard"); assert.equal(S.L.ease, 2);
+  const T = day(7, { wind: "N" }); T.L.x = 7; T.L.y = 4; T.P.x = 6; T.P.y = 4; for (let i = 0; i < 5; i++) G.wait(T);
+  T.P.x = 3; T.P.y = 4; G.wait(T); assert.equal(T.crowd, 0, "reset beyond 2 tiles");
 });
 
 test("the bot's days: every HONEST day on seeds 1 to 40 notes something (E3), and a run is repeatable", () => {

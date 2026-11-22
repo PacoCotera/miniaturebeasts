@@ -33,19 +33,23 @@ export function playDay(seed, policy = 'HONEST') {
   for (const a of appts) {
     if (S.over || S.L.gone) break;
     const r = rec.appts[a.k] = { cost: null, still: 0, route: null, d: null, noted: false };
+    const V = a.k === 'sleep' ? { ...S, L: { ...S.L, x: G.BED.x, y: G.BED.y } } : S;   // (range rule) she beds down at her bed: stand by where she will be
     // the route and the stand-off
     // (round 3) for calm the honest bot reads where the wary one enters (the forecast) and stands where its notice does not reach: the nearest such stand
-    const unnoticed = (rt, d) => { const q = G.ROUTES[rt][standIdx(S, rt, d)]; return !G.noticeAt({ ...S, light: S.ma }, q.x, q.y).noticed; };
-    const standFor = rt => { const d0 = standOff(S, rt, a.t); if (a.k !== 'calm') return d0; for (let d = d0; d <= 6; d++) if (unnoticed(rt, d)) return d; return 6; };
+    const unnoticed = (rt, d) => { const q = G.ROUTES[rt][standIdx(V, rt, d)]; return !G.noticeAt({ ...S, light: S.ma }, q.x, q.y).noticed; };
+    const standFor = rt => { const d0 = standOff(V, rt, a.t); if (a.k !== 'calm') return d0; for (let d = d0; d <= 6; d++) if (unnoticed(rt, d)) return d; return 6; };
     const cand = only ? [only] : ['cover', 'open'];
     const dMin = Math.min(...['cover', 'open'].map(rt => standFor(rt)));
-    let best = null; for (const rt of cand) { const d = fixed || (only ? dMin : standFor(rt)); if (!best || d < best.d) best = { rt, d }; }
+    const wantK = S.want[a.k], tH = a.k === 'shake' ? fc.rain[1] : a.k === 'calm' ? S.ma : S.sleepAt;
+    const filled = () => !!(S.got[a.k] && S.got[a.k][wantK]);
+    const dWant = rt => { const d0 = standFor(rt), mid = Math.min(6, Math.max(3, d0)); if (wantK === 'place') return G.clearAir(S, tH) ? 6 : mid; if (wantK === 'coat') return mid; return d0 === 2 ? 2 : mid; };
+    let best = null; for (const rt of cand) { const d = fixed || dWant(rt); if (!best || d < best.d) best = { rt, d }; }
     const rt = best.rt, d = best.d; r.route = rt; r.d = d;
     if (route && route !== rt) { while (idx > 0 && !S.over && !S.L.gone) { const t = G.ROUTES[route][idx - 1], c = G.ROUTES[route][idx]; if (!move(S, t, c, 'creep')) break; idx--; } route = null; idx = 0; }
     if (!route) { route = rt; idx = 0; }
-    const tiles = G.ROUTES[route], goal = standIdx(S, route, d);
+    const tiles = G.ROUTES[route], goal = standIdx(V, route, d === 2 ? 3 : d);   // near: wait one tile back (3 tiles), step in when the tell starts
     // leave as late as keeps the arrival at the condition: tiles to go, one light each
-    const startAt = a.by - Math.max(0, goal - idx) - 1, begin = S.light, fromStart = idx === 0;
+    const startAt = a.by - Math.max(0, goal - idx) - 1 - (wantK === 'face' ? 8 : 0), begin = S.light, fromStart = idx === 0;
     while (S.light < startAt && !S.over) G.wait(S);
     let t0 = null;
     const guard = { n: 0 };
@@ -61,9 +65,11 @@ export function playDay(seed, policy = 'HONEST') {
     // at the stand: keep still until the habit starts, then note
     let ahead = 0;
     while (!S.over && !S.L.gone && !tooLate(a) && !S.done[a.k] && !(S.L.habit && S.L.habit.k === a.k) && ahead++ < 200) { rec.still++; r.still++; G.hold(S); }
+    if (d === 2 && S.L.habit && S.L.habit.k === a.k && !S.L.gone) { const g2 = standIdx(V, route, 2); while (idx < g2) { const nx = tiles[idx + 1]; if (policy === 'HONEST' && G.heardAt(S, nx.x, nx.y, 'creep')) break; if (!move(S, tiles[idx], nx, 'creep')) break; idx++; } }
     if (S.L.habit && S.L.habit.k === a.k) {
       let n = 0;
       while (S.L.habit && S.L.habit.k === a.k && !S.over && !S.L.gone && n++ < 12) {
+        if (filled()) break;   // the card line is filled: the bot stops watching this habit
         G.face(S);
         const st = G.noteState(S);
         if (st.ok) { G.note(S); if (!(policy === 'HONEST' || only)) break; continue; }
@@ -82,7 +88,7 @@ export function playDay(seed, policy = 'HONEST') {
   // the rest of the day passes (the bot has nothing more to wait for)
   rec.lastNoteAt = S.lastAt; rec.light = S.light; rec.gone = S.L.gone; rec.goneAt = S.log.goneAt;
   rec.noted = Object.keys(S.notes); rec.data = S.data; rec.samples = S.samples.length; rec.empty = S.log.notes === 0;
-  rec.ind = S.ind; rec.rain = !!S.rain; rec.lost = S.log.lostHabits;
+  rec.got = S.got; rec.want = S.want; rec.crowded = S.log.crowded || 0; rec.ind = S.ind; rec.rain = !!S.rain; rec.lost = S.log.lostHabits;
   return rec;
 }
 // one step along a route, by its two tiles' direction
@@ -108,7 +114,7 @@ export function measure(N = 200) {
   for (const r of P.HONEST) for (const k of Object.keys(r.appts)) if (r.appts[k].noted) first[r.appts[k].first]++;
   const firstN = first.far + first.mid + first.near;
   const bestOf = { far: 0, mid: 0, near: 0, tie: 0, none: 0 };
-  const worth = r => r.noted.length ? Object.values(r.appts).reduce((a, x) => a + (x.noted ? rank[x.best] : 0), 0) : 0;
+  const worth = r => r.noted.reduce((a, k) => a + 1 + (r.got[k] && r.got[k][r.want[k]] ? 2 : 0), 0);
   const perSeed = [];
   for (let i = 0; i < N; i++) {
     const w = { far: worth(P.FAR[i]), mid: worth(P.MID[i]), near: worth(P.NEAR[i]) }, m = Math.max(w.far, w.mid, w.near);

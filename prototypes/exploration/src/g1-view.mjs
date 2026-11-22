@@ -24,7 +24,7 @@ export function makeG1(d, seed = 1) {
   const act = fn => { const from = S.events.length; const r = fn(); say(from); return r; };
   const doNote = () => {
     const r = G.note(S);
-    if (r.ok) msg = G1.note(r.range, r.text) + (r.first ? ' · ' + G1.data(1) : '') + (r.sample ? ' · ' + r.sample : '');
+    if (r.ok) msg = G1.note(r.range, r.text) + (r.filled ? ' · ' + G1.want[S.want[r.k]] + ' learned' : '') + (r.first ? ' · ' + G1.data(1) : '') + (r.sample ? ' · ' + r.sample : '');
     else msg = r.why === 'dup' ? G1.noteDup : (G1.noteNo[r.why] || G1.noteNo.habit);
   };
   function press(k) {
@@ -71,6 +71,10 @@ export function makeG1(d, seed = 1) {
     const part = partOfDay(S.light);
     if (G.raining(S)) ditherFill(X0, Y0, G.W * TS, G.H * TS, 'sky', 3);
     if (NIGHT[part]) ditherFill(X0, Y0, G.W * TS, G.H * TS, 'void', NIGHT[part]);
+    // (range rule B, C) the card: one line per habit, filled when a note gave it; and the stay at the explorer's tile, at the edge of her ring
+    R(X0, Y0, 250, 38, C.ink);
+    ['shake', 'calm', 'sleep'].forEach((k, i) => text(G.cardLine(S, k), X0 + 4, Y0 + 3 + i * 12, S.got[k] && S.got[k][S.want[k]] ? C.gold : C.bone, 1, 'left', true));
+    if (!L.gone) { const [bx, by] = px(L.x, L.y); text(G1.stay(G.stayAt(S, S.P.x, S.P.y)), bx + TS - 2, by - 8, G.cheb(S.P, L) <= 2 ? C.gold : C.fog, 1, 'left', true); }
     // the top strip: the part of day and the light, the wind, Data
     R(0, 0, SCR_W, 32, C.ink);
     text(part + ' · light ' + S.light + ' of ' + DAY.light, 8, 9, C.bone, 2, 'left', true);

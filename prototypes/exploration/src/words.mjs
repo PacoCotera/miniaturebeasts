@@ -89,6 +89,15 @@ export const G1 = {
     calm: { far: 'she has stopped', mid: 'she has turned to a wary one · calm', near: 'all four beats · the wary one’s face' },
     sleep: { far: 'a round shape low in the grass', mid: 'the circle · she is bedding down', near: 'all four beats · the breathing' },
   },
+  // (range rule) what a note gives by range: far where she goes (clear air), mid the coat (and where she goes in dim air), near her face; all [copy] placeholders
+  give: {
+    shake: { place: 'she trots on, toward the reeds', coat: 'the fur flies · her coat, whole', face: 'all four beats · a tuft left behind', shape: 'a shiver, a small grey shape' },
+    calm: { place: 'the wary one goes off along the sand', coat: 'she has turned to a wary one · her coat, whole', face: 'all four beats · the wary one’s face', shape: 'she has stopped' },
+    sleep: { place: 'her bed, in the grass', coat: 'the circle · her coat, whole', face: 'all four beats · the breathing', shape: 'a round shape low in the grass' },
+  },
+  want: { place: 'where she goes', coat: 'her coat', face: 'her face' },   // [copy] what the card still lacks for a habit
+  card: (name, want, filled) => name + ' · ' + (filled ? 'learned: ' : 'still to learn: ') + want,   // [copy] one card line per habit
+  stay: n => 'stay ' + n,   // [copy] the number at the ring's edge: light she lets you stay within 2 tiles
   note: (range, text) => 'Noted · ' + range + ' · ' + text,   // [copy]
   noteDup: 'Already noted from this range',   // [copy]
   noteNo: { habit: 'Nothing to note yet', face: 'Face her to note', sight: 'Something is in the way', gone: 'She is gone' },   // [copy]

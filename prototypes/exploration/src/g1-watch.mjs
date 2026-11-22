@@ -26,7 +26,7 @@ export const GRID = (() => {
 })();
 export const tileAt = (x, y) => (x < 0 || y < 0 || x >= W || y >= H ? '^' : GRID[y][x]);
 const blocksStep = c => c === '#' || c === '^';
-const cheb = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+export const cheb = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
 // the two approach routes, start to her side: through the reeds (cover) and over the sand (open)
 const line = pts => { const out = [{ ...pts[0] }]; for (let i = 1; i < pts.length; i++) { let { x, y } = out[out.length - 1]; const t = pts[i]; while (x !== t.x || y !== t.y) { if (x !== t.x) x += Math.sign(t.x - x); else y += Math.sign(t.y - y); out.push({ x, y }); } } return out; };
 export const ROUTES = {
@@ -50,7 +50,8 @@ export function makeDay(seed) {
   const ma = 125 + Math.floor(r() * 16);                                    // the wary one comes near at ma and stays 14 light
   const sleepAt = 150 + (ind.late ? 6 + Math.floor(r() * 5) : Math.floor(r() * 4));   // dusk starts at 150
   const from = MIBI_FROM[Math.floor(rngFor(seed, 'g1-mibi-from')() * MIBI_FROM.length)];   // where the wary one enters the place: the seed sets it
-  return { seed, ind, light: 0, over: false, wind, rain, ma, sleepAt,
+  const rw = rngFor(seed, 'g1-want'), WANTS = ['place', 'coat', 'face'], want = { shake: WANTS[Math.floor(rw() * 3)], calm: WANTS[Math.floor(rw() * 3)], sleep: WANTS[Math.floor(rw() * 3)] };   // RANGE RULE (scratch): what the card still lacks for each habit
+  return { seed, want, crowd: 0, got: {}, seed0: seed, ind, light: 0, over: false, wind, rain, ma, sleepAt,
     P: { x: START.x, y: START.y, dir: 'up' }, L: { x: HAUNT.x, y: HAUNT.y, ease: 0, quiet: 0, gone: false, habit: null, asleep: false },
     M: { x: from[0], y: from[1], fx: from[0], fy: from[1], here: false }, done: {}, notes: {}, data: 0, samples: [], events: [], lastAt: -1,
     log: { holds: 0, waits: 0, steps: 0, notes: 0, heard: 0, goneAt: null, lostHabits: 0 } };
@@ -58,7 +59,7 @@ export function makeDay(seed) {
 export const raining = (S, l = S.light) => !!S.rain && l >= S.rain.s && l < S.rain.e;
 export const windNow = (S, l = S.light) => S.wind[DAY.parts.findIndex(([n]) => n === partOfDay(l))];
 // the wary one's coming is named to within ten light: mibiFrom is the start of the ten-light window that holds it (its routine fixes it from the seed)
-export const forecast = S => ({ rain: S.rain ? [S.rain.s, S.rain.e] : null, mibiPart: partOfDay(S.ma), mibiFrom: Math.floor(S.ma / 10) * 10, mibiAt: { x: S.M.fx, y: S.M.fy }, wind: S.wind.slice(), sleepPart: 'dusk' });
+export const forecast = S => ({ rain: S.rain ? [S.rain.s, S.rain.e] : null, mibiPart: partOfDay(S.ma), mibiFrom: Math.floor(S.ma / 10) * 10, mibiAt: { x: S.M.fx, y: S.M.fy }, wind: S.wind.slice(), sleepPart: 'dusk', want: { ...S.want } });
 
 // ---- W3: sight and the carry ----
 // a straight line between two tiles' centres is blocked by a prop or a raised edge on a tile between them
@@ -97,8 +98,12 @@ export function hearLine(S) {
 
 // ---- the world's tick: one light spent ----
 const HABITS = ['shake', 'calm', 'sleep'];
+// RANGE RULE (scratch): clear air = no rain and before dusk; the near stay = how many light she lets a still explorer stay within 2 tiles: 10 less twice the carry there
+export const clearAir = (S, l = S.light) => !raining(S, l) && l < 150;
+export const stayAt = (S, x, y) => Math.max(0, 10 - 2 * carryAt(S, x, y, 'creep').v);
 function spend(S, heard) {
   const L = S.L;
+  if (!heard && !L.gone && cheb(S.P, L) <= 2) { S.crowd++; if (S.crowd > stayAt(S, S.P.x, S.P.y)) { heard = true; S.crowd = 0; S.log.crowded = (S.log.crowded || 0) + 1; } } else if (cheb(S.P, L) > 2) S.crowd = 0;
   if (!L.gone) {
     if (heard) { L.ease = L.ease >= 2 ? 3 : 2; L.quiet = 0; S.log.heard++; S.events.push(L.ease >= 3 ? 'gone' : 'heard'); if (L.ease >= 3) { L.gone = true; L.habit = null; L.x = -9; L.y = -9; S.log.goneAt = S.light; } }
     else { L.quiet++; if (L.ease === 1 && L.quiet >= 2) { L.ease = 0; L.quiet = 0; S.events.push('settled'); } else if (L.ease === 2 && L.quiet >= 3) { L.ease = 1; L.quiet = 0; S.events.push('settled'); } }
@@ -176,12 +181,23 @@ export function noteState(S) {
 export function note(S) {
   const st = noteState(S); if (!st.ok) return st;
   const rec = S.notes[st.k] || (S.notes[st.k] = { first: st.range, best: st.range, ranges: {}, at: S.light, sample: null, order: Object.keys(S.notes).length });
+  const gives = givesAt(S, st.range); S.got[st.k] ||= {}; for (const g of gives) S.got[st.k][g] = true;
   const rank = { far: 0, mid: 1, near: 2 }; rec.ranges[st.range] = S.light; if (rank[st.range] > rank[rec.best]) rec.best = st.range;
   const first = Object.keys(rec.ranges).length === 1; if (first) { S.data += 1; S.events.push('note1'); }
   if (st.range === 'near' && !rec.sample) { rec.sample = G1.sample[st.k]; S.samples.push(rec.sample); S.events.push('sample'); }
-  S.log.notes++; S.lastAt = S.light; spend(S, false);
-  return { ...st, first, sample: st.range === 'near' ? rec.sample : null, text: G1.seen[st.k][st.range] };
+  S.log.notes++; S.lastAt = S.light;
+  const text = (gives.length ? gives.map(g => G1.give[st.k][g]) : [G1.give[st.k].shape]).join(' · '), filled = !!S.got[st.k][S.want[st.k]];
+  spend(S, false);
+  return { ...st, first, gives, filled, sample: st.range === 'near' ? rec.sample : null, text };
 }
+// (range rule A) what a note gives: far where she goes in clear air (else the shape only), mid the coat (and where she goes in dim air), near her face
+export function givesAt(S, range) {
+  if (range === 'far') return clearAir(S) ? ['place'] : [];
+  if (range === 'mid') return clearAir(S) ? ['coat'] : ['coat', 'place'];
+  return ['face'];
+}
+// (range rule B) the card line for a habit and whether a note has filled it
+export const cardLine = (S, k) => G1.card(G1.habit[k].name, G1.want[S.want[k]], !!(S.got[k] && S.got[k][S.want[k]]));
 // ✓: a note when she plays a habit in front of you, else keeping still
 export const confirm = S => (noteState(S).ok ? note(S) : hold(S));
 
