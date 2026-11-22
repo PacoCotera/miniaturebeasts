@@ -242,8 +242,8 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, c
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName } from "./src/world7.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
-import { waitPips, fracPips, startPlaceWait, PIPS } from "./src/waitpips.mjs";
-import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
+import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
@@ -8326,7 +8326,7 @@ function drawMaking() {
 // (the realm worker's stages in RT.wait, the loaders' files in FILES) and never go back; with no realm being made the realm part is whole. UI component on the device's screen, drawn in code (rule 18).
 function drawWaitPips() {
   const pw = RT.placeWait;   // waiting for places made in the worker: the pips count the places that are here (and, at the set-out, laid out), nothing else
-  if (pw) RT.pips = Math.max(RT.pips || 0, fracPips(pw.cells.filter(c => bakedGet(pw.seed, pw.slot, pw.v, c)).length + pw.laid, pw.cells.length * (pw.laying ? 2 : 1)));
+  if (pw) RT.pips = Math.max(RT.pips || 0, placeWaitPips(pw.cells.map(c => stageOf(pw.seed, pw.slot, pw.v, c)), pw.laid, pw.laying));   // each place's real stages in the worker count (#104), not only the places made
   else {
     const r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
     // the files are part of this wait only while the art is coming in (a new world's wait has none owed); the bar is never full while the wait is on (the screen goes away when the land is ready)
