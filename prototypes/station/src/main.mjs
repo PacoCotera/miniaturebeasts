@@ -65,8 +65,9 @@ function postFocus() {
   const pageLit = screen === "library.species" && UI.lib?.state === "lit" && UI.lib.lit && box && box[0] < LIB_PAGE[0];   // phone window, a chapter lit: the window shows its page (the ring is on a plate left of it; the page is what ✓ asked for), not the cut-off edge of it
   if (pageLit) box = LIB_PAGE;
   if (FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000)) box = PLATE_BOX;   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring
-  const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
-  if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
+  const page = screen === "pods" && UI.pods?.page != null;   // her page (the 530 x 600 window): the play page's side form shows it whole (layout.mjs `page`)
+  const k = screen + ":" + (box ? box.join(",") : "-") + (page ? ":page" : ""); if (k === focusPosted) return; focusPosted = k;
+  if (EMBED) parent.postMessage({ t: "mb-focus", screen, box, page }, location.origin);
   else { const r = focusStep(win.st, screen, box); win.st = r.st; win.focus = { screen, box }; placeWindow(r.top || (!box && screen === "pods" && (UI.pods.view === "nursery" || UI.pods.view === "pod"))); }   // the nursery and a pod's page draw their own ring and no face ring: with no plate up the window rests at their left edge (the whole 530 window)   // standalone on a phone: the page's own window follows the ring
 }
 
