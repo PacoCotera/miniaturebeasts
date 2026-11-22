@@ -27,6 +27,11 @@ export const WALK = Object.freeze({
 // The field habit each partner kind brings home (the Station's frame habit keys), by species index.
 export const FIELD = Object.freeze({ 0: 'calm', 1: 'dig', 3: 'tiptoe', 4: 'stone-sense', 7: 'bank-dig', 11: 'dew-find', 16: 'beacon-sit', 19: 'hop-down' });
 
+// The routine base per kind (walk W2, by species index): a kind with a row keeps individuals with haunts, a bed and a routine by part of day (src/gen7/haunts.mjs); pace: tiles it walks an action to its haunt.
+// Loikas first; each further kind is its own release (walk-design-1, "more kinds").
+export const ROUTINE_BASE = Object.freeze({ 0: Object.freeze({ haunts: 3, bed: true, pace: 2 }) });
+export const routineBase = sp => ROUTINE_BASE[sp] || null;
+
 // A newer kind's SPECIES fields (S04 and on): the shared default under the kind's own values.
 export const walkRow = sp => ({ ...WALK_DEFAULT, ...(WALK[sp] || {}) });
 
