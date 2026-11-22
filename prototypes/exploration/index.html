@@ -255,7 +255,7 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { WORDS, DAY, DAY_TEXT, partOfDay } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
@@ -1004,6 +1004,7 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null });
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
+const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
 // Send points: the expedition's start, or a lit depot in reach. "Start · 2 cells" names the nearest one.
@@ -2202,7 +2203,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
 
 // One tick of the field clock. Everything in the world moves only here.
 function advance(scope, info) {
-  const ex = S.exp; ex.actions++; S.totalActions++; S.day.spent++;   // every action spends one light of the day, Wait and Call too
+  const ex = S.exp; ex.actions++; S.totalActions++; const part0 = dayPart(); S.day.spent += (info && info.clock) || 1;   // every action moves the clock one, Wait and Call too; a step on the map moves it DAY.mapStep (info.clock)
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
   // It was marked on the Probe's tile or cell: it hits only if the Probe still stands there, in the open, under rain; otherwise it lands on the empty tile.
@@ -2241,9 +2242,9 @@ function advance(scope, info) {
   }
   if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods fall here', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
   else if (S.day.spent >= DAY.light && !ex.ending) nightPasses();   // the night does not end the walk: the world turns, a new day starts where the explorer stands
-  else if (!ex.ending) { const left = DAY.light - S.day.spent;   // dusk and the last light are news, never a threat
-    if (left === DAY.light - DAY.parts.slice(0, -2).reduce((a, p) => a + p[1], 0)) fxMsg(DAY_TEXT.duskNews(left), 3);
-    else if (left === DAY_TEXT.warnAt) fxMsg(DAY_TEXT.nightSoon(left), 3); }
+  else if (!ex.ending) { const part1 = dayPart();   // dusk and night are news, never a threat: once each, when the clock crosses into them
+    if (part1 !== part0 && part1 === 'dusk') fxMsg(DAY_TEXT.duskNews(untilNext()), 3);
+    else if (part1 !== part0 && part1 === 'night') fxMsg(DAY_TEXT.nightNews(untilNext()), 3); }
   save();
 }
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
@@ -2310,7 +2311,7 @@ function mapStep(dir, viaTiles) {   // viaTiles: a step out of a place that cros
   if (canSure() && cheb(cxy(c), cxy(ex.start)) === ex.range) ex.abUsed = 1;   // Tuliko's first step into its one extra ring is its ability used
   if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
-  advance('map');
+  advance('map', { clock: DAY.mapStep });
 }
 // Call on the map: pin your cell for 1 Energy, or remove your own pin for free. Gate pins stay free and automatic.
 function callMap() {
@@ -2949,7 +2950,7 @@ function crossRegion(dir, sw) {
   ex.pos = sw.cell; ex.lastDir = dir; ex.face = dir; S.visited[sw.cell] = 1; revealAround(sw.cell, 1);
   if (ex.trail[ex.trail.length - 1] !== sw.cell) ex.trail.push(sw.cell);
   RT.behind = null; RT.behindKey = null;
-  advance('map');   // the step costs the one map action it costs between places
+  advance('map', { clock: DAY.mapStep });   // a step across the map moves the clock like any other
   if (ex.ending) return;
   ALONG = { key: String(sw.cell), k: alongOf(dir, P0) };   // the pawn keeps its line over the seam too
   enterPatch();
@@ -6718,9 +6719,7 @@ function drawLine(o) {
   const { wx, wsx, mx, r } = lineCtx(o);
   if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 10); }
   if (r) { sep(x + PAD); const k = r.indexOf('\x01'), a = k < 0 ? r : r.slice(0, k), b = k < 0 ? '' : r.slice(k + 1);
-    const lm = S.exp && S.day && DAY.light - S.day.spent <= DAY_TEXT.warnAt ? /\d+ light/.exec(a) : null;   // the light number turns the warning colour from 10 left
-    if (a && lm) { const pre = a.slice(0, lm.index); text(pre, mx, ty, C.mist, 2, null, true); const nx = mx + textWT(pre, 2); text(lm[0], nx, ty, C.amber, 2, null, true); text(a.slice(lm.index + lm[0].length), nx + textWT(lm[0], 2), ty, C.mist, 2, null, true); }
-    else if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
+    if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
 }
 // Short messages stay until the next action.
 // The pod swap chooser: two lines above the bottom line. Hold: each held pod (shell, name, where it came from),
@@ -7737,7 +7736,7 @@ function placeStormWords(c) {
 // The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
 function dayCtx(ctx) {
   if (!S.exp || !S.day) return ctx;
-  const d = dayPart() + ' · ' + Math.max(0, DAY.light - S.day.spent) + ' light', alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
+  const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
 function lineBase() {
