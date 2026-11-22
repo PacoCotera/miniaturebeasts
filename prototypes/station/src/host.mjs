@@ -315,6 +315,7 @@ const withHold = (frame) => (holdOn() ? { ...frame, hold: { on: 1, ...(holdNow?.
 const answerPart = (line) => (UI.answer ? { answer: answerOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }, line) } : {});   // Call's answer: a tag over each key (carry.mjs answerOf)
 export function screenProps(plate) {
   holdNow = null;
+  if (UI.screen === "home" && !UI.idle) goScreen("home");   // Home as doors is gone (station step 4): a screen that is still Home (a fresh start, a saved one) when the Station wakes is the room
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
   const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it

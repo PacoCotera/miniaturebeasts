@@ -1292,6 +1292,7 @@
   },
   "foot": {
    "pickUp": "Pick up {name}",
+   "lookCloser": "Look closer",
    "setDown": "Set {name} down",
    "swap": "Swap {a} and {b}",
    "tuck": "Tuck {name} away ⚡{p}",

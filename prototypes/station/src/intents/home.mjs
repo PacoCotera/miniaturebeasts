@@ -38,6 +38,18 @@ export function intent(h, target, verb) {
   else if (target === "bay") h.goto("cargo");
   else if (target === "settings") { if (h.settings.realmSleep) h.goto("settings"); }   // the Settings knob: behind the developer setting realmSleep until the screen is signed
 }
+// The Home key (station step 4, Home as doors is gone): from anywhere it opens the room with the ring on one who lives in it. In the room it does what Idle's one line says is waiting (the crates: Cargo and the bay; a pod ready to hatch or a growing one: the
+// Incubator), else with the Companion docked its Probe bench, else the Station rests. These are the old Home's Bay, Incubator and Companion stations, now from the key and the line.
+export function homeKey(h) {
+  const ui = h.ui;
+  if (!(ui.screen === "vivarium" && ui.viv.view === "room" && !ui.idle)) { h.goto("home"); return true; }
+  const k = S.idleKey(h.st, h.sv, h.settings);
+  if (k?.key === "crates") { doNeed(h, { act: "cargo", key: "crates" }); return true; }
+  if (k?.key === "budReady") { doNeed(h, { act: "incubator", key: "budReady" }); return true; }
+  if (k?.key === "budGrowing") { h.goto("incubator"); return true; }
+  if (S.docked(h.st)) { ui.bench.f = null; h.goto("bench"); return true; }
+  rest(h); return true;
+}
 // The Home room key pressed at rest: the Station rests (events.rest: the ring is already gone, then the 180 ms dither to Idle, which holds 380); with reduced motion it is a cut and Idle shows on the frame of the key.
 export function rest(h) {
   const ui = h.ui, ev = h.specs.home.events.rest, step = ev.steps[1];

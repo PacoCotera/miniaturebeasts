@@ -25,7 +25,7 @@ export function roomKey(h, key) {
   ui.create = null; ui.cross = null; ui.sit = null; ui.hab.namer = null; ui.panel = null;   // a room key closes the namer and a panel, writing nothing
   leaveCargo(h);    // a room key on Cargo finishes an opening as a cut, or closes the end, and opens its section
   endArrival(h);    // a room key on the arrival is Later, and then it acts
-  if (key === "home") { if (ui.screen === "home" && !ui.idle) { if (ui.home.f !== "room") ui.home.f = "room"; else { home.rest(h); return true; } return true; } ui.home.f = "room"; }   // Home with the ring on Home: the ring back to rest; at rest, the Station rests; from any other screen Home opens at rest, so a second press rests
+  if (key === "home") return home.homeKey(h);   // the room (station step 4): from anywhere the room with the ring on one of its own; in the room what the Idle line says waits, the Probe bench when docked, else rest
   else if (key === "research") { researchKey(h); return true; }   // two faces (the pods design): the reading room on its pod, a second press the inventory
   else if (key === "habitat") { ui.viv.f = null; ui.viv.view = "wall"; ui.viv.page = 0; ui.viv.pick = null; }   // the Vivarium key: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.vivariumKey)
   h.goto(SCREEN_OF[key]);
@@ -120,7 +120,7 @@ export function enterIdle(h) {
   h.at(ev.ms, () => { h.ui.entering = false; h.ui.resting = false; h.pendingRoom = null; h.ui.idle = true; });
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.
-export function wake(h, verb) { h.ui.idle = false; return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }
+export function wake(h, verb) { h.ui.idle = false; if (verb !== "dock") h.goto("home", 0, { cut: true }); return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }   // any key wakes the room (station step 4): the ring on one who lives in it
 // The verbs a face intent carries to the frame's functions: "room:<key>" | "wake". The Dock key is not a face verb: the host calls dock(h) itself.
 export function intent(h, target, verb) {
   if (verb && verb.startsWith("room:")) return roomKey(h, verb.slice(5));

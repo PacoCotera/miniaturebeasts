@@ -9,7 +9,7 @@ import { walk, wallEntry, firstLive, gridWalk } from "../views/wall-walk.mjs";
 import { wallBuild } from "../views/wall-props.mjs";
 import { doorOpen } from "../nav.mjs";
 
-export const newViv = () => ({ f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0, pair: null });
+export const newViv = () => ({ f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0, pair: null, fromWall: false });
 const viv = (h) => { const v = h.ui.viv; for (const [k, d] of Object.entries(newViv())) if (!(k in v)) v[k] = d; return v; };
 const Sg = (h) => h.specs.vivarium.strings;
 const say = (h, lines, vals = {}) => h.say((Array.isArray(lines) ? lines : [lines]).map((l) => fill(l, vals)).join("\n"));
@@ -92,7 +92,7 @@ function wallConfirm(h, target) {
   if (rail) { if (rail[1] === "add") { const row = b.props.regions.rail.rows.find((x) => x.id === "add"); if (!row) return; if (!row.live) { heldAdd(h, row); return; } openPanel(h, "vivarium", "addRoom"); return; } const to = wallEntry(ctx); if (to) landOn(v, to); else v.nudge = "right"; return; }
   const sort = /^sort\.(\w+)$/.exec(cur ?? ""); if (sort) { v.sort = sort[1]; return; }
   if (cur === "pill") { v.pick = v.pick ? null : { on: true, ids: [] }; return; }
-  if (cur === "band") { const m = S.mibiById(h.st, n.card); if (m && m.room != null && !S.inStore(m)) { v.view = "room"; v.pin = m.id; h.showRoom ? h.showRoom(m.room) : (h.st.face.room = m.room); v.f = null; } return; }
+  if (cur === "band") { const m = S.mibiById(h.st, n.card); if (m && m.room != null && !S.inStore(m)) { v.view = "room"; v.fromWall = true; v.pin = m.id; h.showRoom ? h.showRoom(m.room) : (h.st.face.room = m.room); v.f = null; } return; }
   if (/^plate\./.test(cur ?? "")) { const p = n.plates.find((x) => x.id === cur); const m = S.mibiById(h.st, n.card); if (p?.act === "incubator") { h.goto("incubator"); return; } if (!p || !m) return; if (p.held) { heldSay(h, p, m); return; } if (p.act === "incubator") { h.goto("incubator"); return; } if (p.act === "moveTo") { v.move = v.pick?.ids?.length ? { ids: v.pick.ids.slice() } : { id: m.id }; v.moveFirst = 0; v.f = null; return; } if (p.act === "clearPicks") { v.pick = { on: true, ids: [] }; v.f = firstLive(ctx); return; } if (p.act === "tuckAway" && v.pick?.ids?.length) { tuckPicks(h); return; } plateDo(h, cur, p.act); }
 }
 // ✓ on a row of the room list: the free place takes the mibi at once and free (the card returns, the ring stays on it, the wall resorts); here, settling and full say why; Add a room opens its panel and returns here
@@ -158,12 +158,12 @@ export function intent(h, target, verb) {
     if (verb === "confirm") { wallConfirm(h, target); return; }
     return;
   }
-  if (v.view === "room" && verb === "back") { v.view = "wall"; v.f = null; return; }
-  if (verb === "back") { h.ui.home.f = "vivarium"; h.goto("home"); return; }
+  if (v.view === "room" && verb === "back") { if (v.fromWall) { v.view = "wall"; v.fromWall = false; v.f = null; } return; }   // the room is the top (station step 4): ← goes back only to the list it was opened from
+  if (verb === "back") { h.goto("home"); return; }
   if (verb !== "confirm") return;
   if (target === "room.new") { if (S.roomPrice(h.st, h.settings) !== null) openPanel(h, "vivarium", "addRoom"); return; }   // the panel opens short of Energy too, its Add card dimmed
   if (/^plate\./.test(target ?? "")) { plateDo(h, target); return; }
-  const m = S.mibiById(h.st, idOf(target)); if (m) { const held = pickHeld(h.st, h.sv, m, h.settings, Sg(h), S.docked(h.st)); if (held) heldSay(h, held, m); else { v.last = m.id; const b = build(h); v.f = b.props.focus.targets.find((t) => t.group === "plate" && !b.nav.plates.find((p) => p.id === t.id)?.held)?.id ?? v.f; } }   // ✓ on a mibi: its card's first live plate
+  const m = S.mibiById(h.st, idOf(target)); if (m) { const held = pickHeld(h.st, h.sv, m, h.settings, Sg(h), S.docked(h.st)); if (held) heldSay(h, held, m); else { h.ui.hab.id = m.id; h.ui.hab.f = "resident"; v.last = m.id; openPage(h, m, 0, "vivarium"); } }   // ✓ on a mibi in the room: look closer, her page (station step 2); ← comes back to the room with the ring on her. Take along, Tuck away, Breed and Return stay on the list's card (the green key)
 }
 // The Add the room card's act (panel.json addRoom): the rule spends ⚡ and adds the room, the room view shows the new room empty with the ring on its chip, and the plate says it is ready.
 export function addRoomNow(h) {

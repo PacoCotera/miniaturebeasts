@@ -49,7 +49,7 @@ test("the door is open: the screen is built, Habitat's Portrait ✓ opens the po
   const { h, mb } = rig(); assert.equal(isBuilt("sitting"), true); assert.ok(DROPS_ON_ROOM_KEY.includes("sitting"));
   onFaceMessage(h, { t: "intent", seq: 1, screen: "habitat", target: "portrait", verb: "confirm" }); assert.equal(UI.screen, "sitting", "the door is open"); assert.deepEqual(UI.sit, { ...newSit("habitat", "pose"), focus: UI.sit.focus });
   const p = screenProps("").msg; assert.deepEqual([p.screen, p.state, p.focus.cur], ["sitting", "pose", "card.0"]); assert.equal(p.frame.line.back, "Dot");
-  onFaceMessage(h, { t: "intent", seq: 1, screen: "sitting", target: "card.0", verb: "room:home" }); assert.equal(UI.sit, null, "the room key drops the visit"); assert.equal(UI.screen, "home");
+  onFaceMessage(h, { t: "intent", seq: 1, screen: "sitting", target: "card.0", verb: "room:home" }); assert.equal(UI.sit, null, "the room key drops the visit"); assert.equal(UI.screen, "vivarium");
 });
 
 test("Habitat's Portrait ✓ on a portrayed mibi opens the portrait only while its picture is held; with none held it stays on Habitat", () => {

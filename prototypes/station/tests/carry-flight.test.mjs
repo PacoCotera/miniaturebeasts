@@ -97,7 +97,7 @@ test("item 13: the Incubator's growing pod carries for purple (its species page)
 test("item 14: the first key on Idle only wakes the screen: no carry, no flight, no room", () => {
   const h = inPods(); h.ui.idle = true; const before = [h.ui.screen, h.ui.pods.view];
   const r = INTENTS.frame.intent(h, "x", "wake"); assert.equal(h.ui.idle, false); assert.equal(r.woke, true);
-  assert.deepEqual([h.ui.screen, h.ui.pods.view], before); assert.equal(h.ui.carry, null); assert.equal(h.ui.flight, null); assert.equal(h.timers.length, 0); assert.equal(h.went.length, 0);
+  assert.deepEqual(h.went, ["home"], "any key wakes the room (station step 4)"); void before; assert.equal(h.ui.carry, null); assert.equal(h.ui.flight, null); assert.equal(h.timers.length, 0);
   h.ui.idle = true; assert.deepEqual(cuesOf(h), [], "no cues on Idle"); assert.equal(carryPlan(h, "habitat"), null, "and a key on Idle carries nothing");
 });
 test("the teaching words are the frame's, one for each key", () => { const T = J("frame").strings.teach; assert.ok(T.research && T.habitat && T.library && T.call); });
