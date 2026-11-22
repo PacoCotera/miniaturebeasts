@@ -6,7 +6,7 @@ import { clock, motion } from "./pixels.mjs";
 import { G, FX, UI, SPECS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, saveKey, probeStorage, switchCompanion, activeCompanion } from "./game.mjs";
 import * as S from "./state.mjs";
 import { readOptions } from "../../play/src/options.mjs";
-import { ZOOM, panFor } from "../../play/src/layout.mjs";   // the phone window: the play page's x0.6 and its pan to the focus ring
+import { ZOOM, panFor, focusStep } from "../../play/src/layout.mjs";   // the phone window: the play page's x0.6 and its pan to the focus ring
 import * as Lib from "./library.mjs";
 import { startScene, endScene, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { frameOf, frameIds, stampGenome, podGenome, genomeSha, nameCode, chapterLooks } from "./genome.mjs";
@@ -52,10 +52,10 @@ const LIB_PAGE = [700, 50, 308, 500];
 const PLATE_BOX = [262, 440, 500, 110];
 // library.json l2.page.rect: the lit chapter's page, at the screen's right edge
 // The standalone page's phone window (fit() below): view {w, h} in lp while the screen is drawn at ZOOM in a window narrower than it; pan: the window's top left (lp); focus: the ring's last screen and box
-const win = { view: null, pan: { x: 0, y: 0 }, focus: { screen: null, box: null }, shown: null };
-function placeWindow() {
-  const f = win.focus, moved = f.screen !== win.shown; win.shown = f.screen;
-  win.pan = panFor(win.view, f.box, moved && !f.box ? { x: 0, y: 0 } : win.pan);   // a new screen with no ring on it: its top left (as the play page's window)
+const win = { view: null, pan: { x: 0, y: 0 }, focus: { screen: null, box: null }, st: { screen: null, settling: false } };
+function placeWindow(top = false) {
+  const f = win.focus;
+  win.pan = panFor(win.view, f.box, top ? { x: 0, y: 0 } : win.pan);   // a new screen with no ring on it: its top left (as the play page's window; a new screen's first two messages count, focusStep)
   vis.style.marginLeft = -win.pan.x * ZOOM + "px"; vis.style.marginTop = -win.pan.y * ZOOM + "px";
 }
 function postFocus() {
@@ -66,7 +66,7 @@ function postFocus() {
   if (FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000)) box = PLATE_BOX;   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring
   const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
   if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
-  else { win.focus = { screen, box }; placeWindow(); }   // standalone on a phone: the page's own window follows the ring
+  else { const r = focusStep(win.st, screen, box); win.st = r.st; win.focus = { screen, box }; placeWindow(r.top); }   // standalone on a phone: the page's own window follows the ring
 }
 
 const stationEl = $("station"), stWindow = $("stWindow");

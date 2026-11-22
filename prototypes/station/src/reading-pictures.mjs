@@ -21,7 +21,7 @@ export { CH, CH_TOKEN, railLayout, railLanes } from "./reading-rail.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { lookColours } from "./specimen.mjs";
 import { SIZES, shapePicture, picSizeOf } from "./trait-shape-pictures.mjs";
-import { cropSpecOf, cropPixels, coverWindow, ART } from "./trait-crops.mjs";
+import { cropSpecOf, cropPixels, coverWindow, ART, CHIP_WINDOW } from "./trait-crops.mjs";
 
 // The crops a trait-shape request places (station-build-2): each signed master's window, reduced once to the picture size (the window is narrowed to the picture's shape, never stretched). A master that is not
 // placed gives no picture there (the card or end stays as the code draws it).
@@ -426,7 +426,9 @@ export function pageScalePicture(r) {
   const S = r.sc;
   for (const e of S.ends) {   // a round portrait: the kind's coat at that end in a 2 px cream ring on #141922; none placed, the plain disc
     paintPage(out, e.cx - e.d / 2 - 1, e.cy - e.d / 2 - 1, e.cx + e.d / 2 + 1, e.cy + e.d / 2 + 1, (x, y) => { const d = Math.hypot(x - e.cx, y - e.cy); return d <= e.d / 2 - 2 + 0.5 ? [hex6("#141922"), clamp01(e.d / 2 - 2 + 0.5 - d)] : d <= e.d / 2 + 0.5 ? [PAGE_CREAM, 0.7 * clamp01(e.d / 2 + 0.5 - d) * clamp01(d - (e.d / 2 - 2) + 0.5)] : null; });
-    const px = e.master ? pixels(e.master) : null; if (px) sprite(out, px, 304, 312, e.cx - e.d / 2 + 2 - 3, e.cy - e.d / 2 + 2 - 3, 78, { clip: discClip(e.cx, e.cy, e.d / 2 - 2) }); }
+    const px = e.master ? pixels(e.master) : null, en = e.master ? assetEntry(e.master) : null;
+    if (px && en.w === ART[0] && en.h === ART[1]) sprite(out, px, 304, 312, e.cx - e.d / 2 + 2 - 3, e.cy - e.d / 2 + 2 - 3, 78, { clip: discClip(e.cx, e.cy, e.d / 2 - 2) });
+    else if (px) { const [wx, wy, ww] = CHIP_WINDOW, sq = cropPixels({ w: en.w, h: en.h, rgba: px }, [wx, wy, ww, ww], ww, ww, (c) => c); sprite(out, sq.rgba, ww, ww, e.cx - e.d / 2 + 2 - 3, e.cy - e.d / 2 + 2 - 3, 78, { clip: discClip(e.cx, e.cy, e.d / 2 - 2) }); } }   // a signed 128 x 160 trait chip (Signature size): the square window of it, as the trait tiles take it
   const B = S.bar ?? { x0: 0, x1: 1, over: 0, y: -9, h: 1, ticks: [], tick: [0, 0], grad: [[0, 0, 0], [0, 0, 0], [0, 0, 0]] }, bx0 = B.x0 - B.over, bx1 = B.x1 + B.over, gradAt = (t) => grad([[0, B.grad[0]], [0.5, B.grad[1]], [1, B.grad[2]]], t);
   for (const x of B.ticks) paintPage(out, x - 1, B.tick[0], x + 1, B.tick[1], () => [PAGE_CREAM, 0.55]);
   if (S.bar) paintPage(out, bx0 - 5, B.y - 5, bx1 + 5, B.y + B.h + 5, (x, y) => { const sd = rrectSd(x, y, bx0, B.y, bx1 - bx0, B.h, B.h / 2), outer = clamp01(0.5 - (sd - 3)), edge = clamp01(0.5 - sd), inner = clamp01(0.5 - (sd + 1.5)); if (outer <= 0) return null;
