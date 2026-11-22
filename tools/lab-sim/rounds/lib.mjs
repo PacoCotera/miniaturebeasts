@@ -68,6 +68,21 @@ export function startLine(F, seed, tag, kinds) {
         continue;
       }
       const [kind, id] = k.split(":");
+      if (kind === "hscale") {
+        // round 3: a hidden scale step. The aim step is shown by the mean of two copies, so a pair of unequal copies can show it without holding it.
+        // The step is the highest (never below the 4th of the seven) that at least two founder copies hold and that no founder holds on both copies.
+        const steps = stepsOf(F, id), held = new Map(), both = new Set();
+        for (const m of pop.active) {
+          const vs = m.genome.loci[id].map((c) => copyValue(LOCI.get(id), c));
+          for (const v of vs) held.set(v, (held.get(v) ?? 0) + 1);
+          if (Math.abs(vs[0] - vs[1]) < 1e-7) both.add(vs[0]);
+        }
+        let best = null;
+        steps.forEach((s, i) => { if ((held.get(s) ?? 0) >= 2 && i >= 3 && !both.has(s)) best = { step: s, idx: i }; });
+        if (!best) { ok = false; break; }
+        aim.push({ kind: "scale", id, step: best.step, idx: best.idx, of: steps.length });
+        continue;
+      }
       if (kind === "scale") {
         const steps = stepsOf(F, id), held = new Map();
         for (const m of pop.active) for (const c of m.genome.loci[id]) { const v = copyValue(LOCI.get(id), c); held.set(v, (held.get(v) ?? 0) + 1); }
