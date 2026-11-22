@@ -4,7 +4,7 @@
 //   ui.pods: lane (the chapter in hand, a lane of the rail), at ("rail" | "right" | "detail" | "stamp"), plate (the focused plate), trait (the detail's trait), reading ({ pod, chapter, until, cost, newLook, k }), moment ({ pod, block }), shake
 import * as S from "../state.mjs";
 import { frameOf, traitState, stampSizing, stampBlocks } from "../genome.mjs";
-import { shapeModel } from "../trait-shapes.mjs";
+import { shapeModel, shapeOf, scalePlace } from "../trait-shapes.mjs";
 import { slotsOf, picSizeOf } from "../trait-shape-pictures.mjs";
 import { cropSpecOf, cropKey } from "../trait-crops.mjs";
 import { fill } from "./words.mjs";
@@ -63,9 +63,19 @@ const templateOf = (st, fr, t) => { const all = Array.isArray(t.looks) ? t.looks
 const RADII = { 1: [52, 34, 21], 2: [44, 29, 21], 3: [32, 21, 18], 4: [26, 17, 14] };
 // A trait drawn in its own shape (trait-shapes.mjs: a scale or a set, from the kind's rules and the pod's genome): the picture by id, its size and the words the face says on it (picture coordinates).
 // `others` are the genomes of the player's other mibis of the kind that have read the chapter: the small faces on a scale, the dots on a card.
-const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id !== p.id && S.speciesOf(x) === sid && x.genome && (x.read ?? []).includes(ch.id)).map((x) => x.genome);
-function shapeOfPlate(req, fr, t, p, others, want) {
-  const model = shapeModel(fr, t, p.genome, others), art = cropSpecOf(fr.species.id, model), size = want === "large" && art ? "pictured" : want;   // a trait with crops of signed art is drawn at the pictured size (trait-crops.mjs)
+const othersOf = (st, p, sid, ch) => st.mibis.filter((x) => !x.released && x.id !== p.mibi && x.id !== p.id && S.speciesOf(x) === sid && x.genome && (p.page ? S.pageRead(x) : x.read ?? []).includes(ch.id)).map((x) => x.genome);
+// Her page (station step 2b): a trait about what she does is a stretch of its scale (the wide "roughly known") that narrows with each sighting, a mark once PAGE_SIGHTS pin it down; a set of a doing shows no look until then.
+// The stretch holds where she is, placed by a hash of her and the trait so it is not centred on her; her mark and her two copies are left out while it shows.
+function pageModel(st, fr, t, p, others, blank) {
+  if (blank) return shapeModel(fr, t, null, others);   // her page, a chapter not yet looked at: every possibility, nothing of hers
+  const m = p.page ? S.mibiById(st, p.mibi) : null, f = m ? S.pageKnown(m, t) : 1;
+  if (f >= 1) return shapeModel(fr, t, p.genome, others);
+  if (shapeOf(fr, t) !== "scale") return shapeModel(fr, t, null, others);
+  const at = scalePlace(fr, t, p.genome)?.shows ?? 0.5, w = 0.7 * (1 - f), off = (parseInt(hashOf(m.id + ":" + t.id).slice(0, 4), 16) % 61) / 100 + 0.2, lo = clamp(at - off * w, 0, 1 - w);
+  return { ...shapeModel(fr, t, p.genome, others, [lo, lo + w]), shows: null, copies: null };
+}
+function shapeOfPlate(req, st, fr, t, p, others, want, blank = false) {
+  const model = pageModel(st, fr, t, p, others, blank), art = cropSpecOf(fr.species.id, model), size = want === "large" && art ? "pictured" : want;   // a trait with crops of signed art is drawn at the pictured size (trait-crops.mjs)
   const id = "traitshape:" + fr.species.id + ":" + t.id + ":" + size + ":" + hashOf(JSON.stringify(model) + (picSizeOf(model, size) ? cropKey(art) : ""));
   const words = model.shape === "scale" ? { ends: model.ends, mid: model.mid } : { looks: model.looks.map((l) => l.look), shows: model.looks.findIndex((l) => l.shows) };   // what the face says on the picture; where is the spec's (shapes)
   return { pic: req({ kind: "traitshape", id, model, size, species: fr.species.id }), form: model.shape, size, ...words, slots: slotsOf(model, size) };
@@ -114,7 +124,7 @@ export function readView(view, m, spec, req) {
   // the stamp: the one-time moment at the end of the first read ever, and the stamp view (▲ on the rail) once taught
   const moment = ui.moment && ui.moment.pod === p.id ? ui.moment : null;
   if (moment || at === "stamp" || ui.folding) out.stamp = stampOf(req, st, p, fr, rr, moment ?? (ui.folding?.was === "moment" ? { chapter: null } : null), Sg, settings);
-  view.line = lineOf(m, spec, out, p, ch, { at, isRead, sealed, reading, moment }); if (p.page && !view.line.subject) view.line.subject = ch.name + (isRead ? ", read" : ", still a surprise");   // her page: the middle of the foot says the chapter in hand, so the goal line does not stand in it
+  view.line = lineOf(m, spec, out, p, ch, { at, isRead, sealed, reading, moment }); if (p.page && !view.line.subject) view.line.subject = fill(Sg[isRead ? "pageKnown" : isDoings(ch) ? "pageWatch" : "pageSurprise"], { chapter: ch.name });   // her page: the middle of the foot says the chapter in hand, so the goal line does not stand in it
   view.targets = targetsOf(out, { at, isRead, sealed, reading, moment, ch });
   view.resolve = {}; prune(out);
   return view;
@@ -133,6 +143,10 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   }
   const n = ch.traits.length, want = st.wish[sid] || {};
   if (o.at === "detail") return { ...base, ...detailOf(m, spec, req, p, fr, ch, clamp(ui.trait ?? 0, 0, n - 1)), form: "detail" };
+  if (p.page && !o.isRead) {   // her page, a chapter not yet read: the chapter's traits in their own shapes with nothing of hers marked (the first look, or watching her, fills it); never the pod's "?" discs and price
+    const size = n <= 2 ? "large" : n === 3 ? "small" : "tiny", others = othersOf(st, p, sid, ch);
+    return { ...base, form: "read", plates: ch.traits.map((t) => ({ trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size, true), glint: false, goal: false })), chip: null };
+  }
   if (!o.isRead) {   // unread: the "?" discs on the ghost of the first look, the template chips, the price key and the line beside it
     const [r, rc, rch] = RADII[Math.min(4, n)];
     const plates = ch.traits.map((t) => ({ trait: t.name, kind: "", shown: { pic: discReq(req, sid, t, ch, 2 * r, { q: true, look: templateOf(st, fr, t)[0] || null }), caption: "" }, carried: { pic: discReq(req, sid, t, ch, 2 * rc, { q: true, carried: true }), caption: "" },
@@ -142,14 +156,14 @@ function rightOf(m, spec, req, p, fr, ch, k, o) {
   // read: the pair on each plate (shown over carried), the captions, the trait and its kind line; the reward chip after a read that paid for a new look
   const size = n <= 2 ? "large" : n === 3 ? "small" : "tiny", others = othersOf(st, p, sid, ch);
   const plates = ch.traits.map((t) => { const s = traitState(fr, t, p.genome), goalHere = want[t.id] && s.carried.includes(want[t.id]);
-    return { trait: t.name, shape: shapeOfPlate(req, fr, t, p, others, size), glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere }; });   // a trait is a scale or a set (trait-shapes.mjs), drawn in its own shape
+    return { trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, others, size), glint: !!(p.first && p.first.includes(t.id)), goal: !!goalHere }; });   // a trait is a scale or a set (trait-shapes.mjs), drawn in its own shape
   return { ...base, form: "read", plates, chip: o.reading && o.reading.reward ? { n: o.reading.reward, pic: slot(req, "reading-chip-86x32", [86, 32]), diamond: dataIcon(req, 13) } : null };
 }
 const glyphOf = (t) => (/^body-(hue|value)$/.test(t.id) ? "bar" : /pace|stride|weave|drive|turning|flap/.test(t.id) ? "gait" : /hind|haunch/.test(t.id) ? "haunch" : /build|body|roundness/.test(t.id) ? "build" : /back-line|topline/.test(t.id) ? "topline" : /eye/.test(t.id) ? "eyes" : "bar");
 // The detail of a read trait (§2.6, 5): the pair large, its captions and kind; with a mate at home, the odds of each look its child can show, eight seeds a row
 function detailOf(m, spec, req, p, fr, ch, ti) {
   const { st, settings } = m, Sg = spec.strings.read, sid = fr.species.id, t = ch.traits[ti], s = traitState(fr, t, p.genome), want = (st.wish[sid] || {})[t.id];
-  const plate = { trait: t.name, shape: shapeOfPlate(req, fr, t, p, othersOf(st, p, sid, ch), "large"),
+  const plate = { trait: t.name, shape: shapeOfPlate(req, st, fr, t, p, othersOf(st, p, sid, ch), "large"),
     glint: !!(p.first && p.first.includes(t.id)), goal: !!(want && s.carried.includes(want)) };
   const kid = { id: "pod:" + p.id, genome: p.genome }, mate = st.mibis.find((x) => !x.released && S.speciesOf(x) === sid && S.isAdult(st, x, settings) && !S.directKinOf(st, kid, x));   // the pod's line is read from its recorded parents: a shed pod shows no odds with its own parent or grandparent
   let odds = null;
@@ -187,6 +201,7 @@ function lineOf(m, spec, out, p, ch, o) {
   if (o.sealed) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && !o.isRead) return { ok: null, back, subject: "", need: "" };
   if (o.at === "right" && o.isRead) { const i = clamp(m.ui.plate ?? 0, 0, ch.traits.length - 1); return { ok: fill(Sg.closer, { trait: ch.traits[i].name }), back, subject: "", need: "" }; }
+  if (p.page && !o.isRead) return { ok: isDoings(ch) ? fill(Sg.open, { chapter: ch.name }) : fill(Sg.pageLook, { chapter: ch.name }), back, subject: "", need: "" };   // her page: the first look is free; a chapter about what she does is filled by watching her
   return { ok: fill(Sg.open, { chapter: ch.name }), back, subject: "", need: "" };
 }
 // The targets: the rail (its keys step the bracket: the host's), the plates of a read chapter or the price key of an unread one, the detail's trait, the stamp view; one target while a read or the moment holds

@@ -8,7 +8,7 @@ export const isPageId = (id) => typeof id === "string" && id.startsWith(PAGE_PRE
 // The mibi as the reading screen takes a pod: identified, every field the screen reads kept by reference. Its id is the page's picture key ("mibi:<id>"), never a pod's.
 export function pagePod(st, mibiId) {
   const m = S.mibiById(st, mibiId); if (!m || m.released) return null;
-  return { ...m, id: PAGE_PREFIX + m.id, mibi: m.id, idd: true, first: [], page: true };
+  return { ...m, id: PAGE_PREFIX + m.id, mibi: m.id, idd: true, first: [], page: true, read: S.pageRead(m) };   // what her page shows as read is her page's own state (state.mjs pageOf), not the game's read-at-birth
 }
 // The page's subject for a Pods UI: her page when open, else the pod on the bench.
 export const subjectOf = (st, ui) => (ui && ui.page != null ? pagePod(st, ui.page) : S.benchPod(st));
