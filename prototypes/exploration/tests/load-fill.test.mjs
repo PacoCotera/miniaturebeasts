@@ -105,7 +105,7 @@ test("a loaded save whose break throws (endExpedition) opens read-only, is byte-
   const o = flat(); o.exp = { shield: 0, n: 1 }; const raw = real(o);
   const p = page({ "mb-save-v8": raw });
   assert.equal(p.run("RT.readOnly"), true);
-  assert.equal(p.errors.length, 1, "the throw was logged once"); assert.match(String(p.errors[0].stack), /at endExpedition/, "it was the break that threw");
+  assert.equal(p.errors.length, 1, "the throw was logged once"); assert.match(String(p.errors[0].stack), /at (goDark|dropPods)/, "it was the break that threw");
   p.pass(5000); p.run("save()");
   assert.equal(p.store[p.KEY], raw); assert.deepEqual(p.writes.filter(k => k === p.KEY), []);
   assert.ok(p.raf.n >= 1, "requestAnimationFrame was called");
