@@ -25,7 +25,7 @@ const crate = (n, pods, extra = {}) => ({ id: "x" + n, n, turn: n, at: 0, e: 3, 
 const loikaPod = (i, gs) => ({ id: "p" + i, sp: 0, g: "meadow", how: "calm", gs, k: null });
 function world(crates) {
   const sv = { v: 8, seed: 7, wid: "w7", turn: 3, bay: crates, mibis: [], with: null, tier: 1, shield: 3 };
-  const st = S.freshSt("w7", 3, 1000);
+  const st = S.freshSt("w7", 3, 1000); st.e = 0; st.d = 0; st.s = 0;   // these tests count what a crate brings, from nothing
   return { sv, st };
 }
 function stocked(crates, docked = true) {

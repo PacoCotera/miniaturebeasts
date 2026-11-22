@@ -17,7 +17,7 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "loose" }, decided = { ...S.D
 const crate = (n, pods, extra = {}) => ({ id: "x" + n, n, turn: n, at: 0, e: 2, d: 2, s: 0, pods, met: [], explored: 5, of: 20, lines: [], ...extra });
 const loikaPod = (i, gs, sp = 0) => ({ id: "p" + i, sp, g: "meadow", how: "calm", gs, k: null });
 const sv0 = (crates = []) => ({ v: 8, seed: 7, wid: "w7", turn: 3, bay: crates, mibis: [], carried: [], tier: 1, shield: 3 });
-const fresh = () => { const st = S.freshSt("w7", 3, 1000); S.normalize(st); return st; };
+const fresh = () => { const st = S.freshSt("w7", 3, 1000); S.normalize(st); st.e = 0; st.d = 0; st.s = 0; return st; };
 const dock = (st, sv, set = settings) => { S.dockKey(st, sv, set, 1000); return S.openBay(st, sv, set, 1000); };
 const adults = (st, n, seed = 31) => S.seedAdults(st, "S01", seed, n, settings).mibis;
 

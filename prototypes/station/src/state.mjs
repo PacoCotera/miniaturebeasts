@@ -82,8 +82,9 @@ export const aAn =(w) => (/^[aeiou]/i.test(w) ? "an " : "a ") + w;
 export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 
 // --- the record ------------------------------------------------------------------------------------
+export const START = { e: 4, d: 6, s: 6 };   // fresh-save-amounts-1 (greybox, the owner's to tune): the first pod's reading (identify + a chapter) and the first pairing and growing; a brand-new save only
 export function freshSt(wid, turn, now = Date.now()) {
-  return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
+  return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: START.e, d: START.d, s: START.s,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, rooms: 1, sheds: [], sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [], readingPod: null, dried: [] };

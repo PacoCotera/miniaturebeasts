@@ -17,7 +17,7 @@ setFrames(withSeals(readdirSync(framesDir).filter((f) => f.startsWith("species-"
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sittingWait: "hours" };
 const H = 3600000, T0 = 1000000;
 const sv = (mibis, turn = 4, trips = []) => ({ v: 8, seed: 7, wid: "w1", turn, bay: [], mibis, trips, with: null, tier: 1, shield: 3 });   // the Companion's save part, as a dock reads it
-const world = (n = 2) => { const st = S.freshSt("w1", 3, T0); S.normalize(st); S.seedAdults(st, "S01", 7, n, settings); return st; };
+const world = (n = 2) => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 0; st.d = 0; st.s = 0; S.seedAdults(st, "S01", 7, n, settings); return st; };
 const walked = (st, m, habit = "calm", place = "wood") => { T.recordHabit(st, m, habit); T.recordWalk(st, m, place); return m; };
 const money = (st) => [st.e, st.d, st.s];
 
