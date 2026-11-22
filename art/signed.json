@@ -4195,6 +4195,34 @@
    "sha256": "888850aca7fe0e96faacd0e3c0150fd483adf79f725d94d4bcb94b62d5c31855"
   },
   {
+   "class": "ui",
+   "date": "2026-11-22",
+   "id": "168f002e9a",
+   "path": "prototypes/exploration/art/ui/wind-E.png",
+   "sha256": "c92429526a01c645baf49bed07512fbfa3d0dd4cd74748293f0f0872409e2e30"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-22",
+   "id": "de68462419",
+   "path": "prototypes/exploration/art/ui/wind-N.png",
+   "sha256": "eca42abbc90964dd8038e66a19ac6845b771770f2bae8320da8d594d620765ca"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-22",
+   "id": "18ed5b20dd",
+   "path": "prototypes/exploration/art/ui/wind-S.png",
+   "sha256": "c1e225c87292dc0a6751e83d69851a71478601ddf254d64acffb3ad615680b9a"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-22",
+   "id": "5a36858092",
+   "path": "prototypes/exploration/art/ui/wind-W.png",
+   "sha256": "9d39f35974e43a19c410618fd56e4136f4345e8ca197b37ca5c7def407c4dd14"
+  },
+  {
    "class": "derivative",
    "date": "2026-11-19",
    "id": "eb379d98b4",

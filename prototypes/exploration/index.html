@@ -6657,7 +6657,7 @@ function drawGoalBand() {
 // The conditions cluster for the bottom line's middle: storm bolts (1–3) with its heading, the fog bank with its drift.
 // The wind mark (walk W3, rule 18; art note from the art director): a 16 x 16 arrow with two short streaks, pointing the way the wind blows, one file a way (art/ui/wind-N|E|S|W.png: the east one drawn as a UI
 // component, the other three its exact 90-degree turns). It stands in the conditions slot beside the storm's bolt ONLY once the art director has signed the four files: until then `signed` is false and the slot says the wind in words.
-const WIND_MARK = { signed: false, img: {} };
+const WIND_MARK = { signed: true, img: {} };
 function windMarkImg(dir) {
   if (!WIND_MARK.signed) return null;
   if (!(dir in WIND_MARK.img)) { WIND_MARK.img[dir] = null; loadImg(vurl('./art/ui/wind-' + dir + '.png')).then(im => { WIND_MARK.img[dir] = im; }).catch(() => { WIND_MARK.img[dir] = false; }); }
