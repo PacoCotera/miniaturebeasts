@@ -17,7 +17,7 @@ test("Loika: the nine coat_main hexes of the ruling, beside the cream", () => {
 test("every kind's Tint looks are three different colours of its own land, and the table matches the frames", () => {
   for (const f of readdirSync(lang).filter((f) => /^species-S\d\d\.json$/.test(f))) {
     const fr = JSON.parse(readFileSync(path.join(lang, f), "utf8")), tint = fr.chapters.flatMap((c) => c.traits).find((t) => t.id === "body-hue");
-    assert.equal(LAND_OF[fr.species.id], fr.land, fr.species.id + " land"); assert.ok(LAND_BODY[fr.land]);
+    if (fr.land !== "all") assert.equal(LAND_OF[fr.species.id], fr.land, fr.species.id + " land"); assert.ok(LAND_BODY[LAND_OF[fr.species.id]], fr.species.id + " has a land body colour");   // land "all" (engine PRs 451/469) has no one land: the table keeps the kind's own
     const cols = tint.looks.map((l) => lookColours({ id: "body-hue", sid: fr.species.id, chapterId: "coat" }, l, 0)[0]);
     assert.equal(new Set(cols).size, 3, `${fr.species.id}: ${cols}`);
     assert.notEqual(cols[0], "#bf9157", fr.species.id + " is not the chapter's one tan");

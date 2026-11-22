@@ -72,14 +72,14 @@ test("the rack pod's status is the least final of the five base layers and the p
 test("the pod's crown: the clan's crown stands over the pod in the second colour, the lit seed and lantern keep their own colour, the unknown pod has none", () => {
   const classes = ["large", "medium", "small", "collection", "well", "opened-cap"], dir = path.resolve(here, "../../ui/assets/masters"), put2 = (sub, id) => { const p = decodePNG(readFileSync(path.join(dir, sub, id + ".png"))); placeMaster({ id, w: p.width, h: p.height, file: sub + "/" + id + ".png", hash: "ab", status: "master" }, { w: p.width, h: p.height, rgba: () => new Uint8ClampedArray(p.data) }); loaded.push(id); return p; };
   const ids = []; for (const cls of classes) { const sub = cls === "opened-cap" ? "capsule" : "pods"; for (const l of ["shade", "mask-body", "mask-accent"]) put2(sub, `pod-${cls}-${l}`); for (const clan of ["C01", "C03", "C20"]) for (const l of ["shade", "mask", "glow"]) { const id = `pod-${cls}-crown-${clan}-${l}`; if (existsSync(path.join(dir, sub, id + ".png"))) { put2(sub, id); ids.push(id); } } }
-  const pair = ["#465459", "#fff0b8"];   // charcoal, butter
+  const pair = ["#465459", "#fff0b8"], PLAIN_LIDS = ["C01", "C07"];   // charcoal, butter; C01 and C07 have a plain lid since PR 363 (their marks read as handguns): their crown layers are empty
   for (const cls of classes) {
     const bare = podFromLayers(cls, pair, "", {}, false), none = podFromLayers(cls, pair, "", {}, false, null).rgba(), b = bare.rgba();
     assert.deepEqual([...none], [...b], cls + ": no clan, no crown");
     for (const clan of ["C01", "C03", "C20"]) {
       const crowned = podFromLayers(cls, pair, "", {}, false, clan), c = crowned.rgba(); let changed = 0, above = 0;
       for (let i = 0; i < c.length; i += 4) if (c[i] !== b[i] || c[i + 1] !== b[i + 1] || c[i + 2] !== b[i + 2] || c[i + 3] !== b[i + 3]) { changed++; if (b[i + 3] === 0) above++; }
-      assert.ok(changed > 0, `${cls} ${clan}: the lid is drawn`);
+      if (PLAIN_LIDS.includes(clan)) assert.equal(changed, 0, `${cls} ${clan}: a plain lid, no mark (PR 363)`); else assert.ok(changed > 0, `${cls} ${clan}: the lid is drawn`);
       assert.deepEqual([crowned.w, crowned.h], [bare.w, bare.h], cls + ": the crown keeps the pod's box");
       assert.equal(ids.includes(`pod-${cls}-crown-${clan}-glow`), clan !== "C01", `${cls} ${clan}: only the lit clans carry a glow layer`);
     }
