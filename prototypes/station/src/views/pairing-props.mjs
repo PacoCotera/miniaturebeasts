@@ -63,7 +63,8 @@ export function pairView(view, m, spec, req) {
     const sa = standOf(sp, a, fr).looks.markings ?? "plain", sb = standOf(sp, b, fr).looks.markings ?? "plain", can = new Map(R.markings.map((q) => [q.word, q]));
     const coat = "mibi-adult-" + sp + "-between-between", ids = ["plain", ...Object.keys(MARKED_PICTURE)].map((w) => [w, w === "plain" ? `${coat}-48x48` : `${coat}-${MARKED_PICTURE[w]}-48x48`]).filter(([, id]) => placedAt(id, 48, 48));
     // station step 8-6 (AD 14:28): each card is the signed Markings back-crop her page uses (trait-crops.mjs), cut live from the lay-<marking> 304s; a kind with no crops keeps the whole 48s
-    const mc = CROPS[sp]?.cards?.markings, cropIds = mc ? Object.entries(mc.masters).map(([w, id]) => [w, id, mc.windows?.[w] ?? mc.window]).filter(([, id]) => placedAt(id, 304, 312)) : [];
+    // station step 8-7 (AD 14:48): the SQUARE window her page's set cards use (page-card-markings-<marking>-66x66), so the pattern fills the card
+    const mc = CROPS[sp]?.cards?.markings, cropIds = mc?.square ? Object.entries(mc.masters).map(([w, id]) => [w, id, mc.squares?.[w] ?? mc.square]).filter(([, id]) => placedAt(id, 304, 312)) : [];
     if (cropIds.length) { ids.length = 0; cropIds.forEach(([w, id, win]) => ids.push([w, id, win])); }
     if (ids.length) { text(Sg.markings, Cd.labelX, Cd.labelBase, Cd.labelRole);
       ids.forEach(([w, id, win], i) => { const cx = Cd.x0 + i * Cd.pitch, c = can.get(w), tagBox = c?.isNew ? [cx + Math.round((Cd.d - Cd.tag.w) / 2), Cd.y + Cd.tag.dy, Cd.tag.w, Cd.tag.h] : null;

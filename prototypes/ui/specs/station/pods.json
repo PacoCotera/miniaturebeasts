@@ -1203,7 +1203,7 @@
     "kin": {"cx": 265, "baseline": 110, "role": "glass.caption", "w": 150},
     "name": {"baseline": 166, "role": "glass.name", "h": 24, "radius": 12, "w": 120, "up": 17},
     "rest": {"baseline": 184, "role": "glass.caption"},
-    "copies": {"baseline": 194, "pitch": 16, "role": "glass.caption", "plate": {"dy": 6, "h": 36, "radius": 10}},
+    "copies": {"baseline": 189, "pitch": 14, "role": "glass.caption", "plate": {"dy": 2, "h": 32, "radius": 10}},
     "young": {"head": {"x": 22, "baseline": 226, "role": "glass.caption"}, "y": 238, "w": 88, "h": 81, "xs": [38, 160, 282, 404], "tag": {"w": 92, "h": 18, "dy": -8, "baseline": 13, "role": "glass.caption"}},
     "land": {"head": {"x": 22, "baseline": 342, "role": "glass.green"},
       "bar": {"x": 112, "w": 262, "h": 12, "rows": [{"cy": 368, "label": "tint"}, {"cy": 398, "label": "shade"}], "labelX": 22, "labelBase": 5, "labelRole": "glass.name", "endsX": 388, "endsBase": 5, "endsRole": "glass.caption", "mark": 22},

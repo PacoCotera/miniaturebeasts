@@ -23,6 +23,10 @@ function pill(out, [x, y, w, h, r], col = PAGE_INK, a = 0.84) { paintPage(out, x
 function ring(out, [x, y, w, h, r], border, col = PAGE_ORANGE) {   // a rounded frame (border wide) with a faint fill and a soft halo
   paintPage(out, x - 12, y - 12, x + w + 12, y + h + 12, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, r); if (sd > 8) return null; if (sd <= -border) return [col, 0.1 * clamp01(0.5 - sd)]; if (sd <= 0.5) return [col, clamp01(0.5 - sd) * clamp01(sd + border + 0.5)]; return [col, 0.3 * clamp01(1 - sd / 8)]; });
 }
+function dashed(out, x, y, d, border, dash, col) {   // a dashed rounded-square rim (dash lp on, dash lp off), as her page draws "no look of yours has this"
+  paintPage(out, x - 2, y - 2, x + d + 2, y + d + 2, (px, py) => { const sd = rrectSd(px, py, x, y, d, d, 8); if (sd > 0.5 || sd < -border) return null;
+    const along = Math.abs(px - (x + d / 2)) > Math.abs(py - (y + d / 2)) ? py - y : px - x; return Math.floor(along / dash) % 2 === 0 ? [col, 0.95 * clamp01(0.5 - sd) * clamp01(sd + border + 0.5)] : null; });
+}
 function face(out, f) { const px = pixels(f.id), cx = f.x + f.d / 2, cy = f.y + f.d / 2;
   paintPage(out, f.x - 3, f.y - 3, f.x + f.d + 3, f.y + f.d + 3, (x, y) => [CREAM, 0.95 * clamp01(f.d / 2 + 2.5 - Math.hypot(x - cx, y - cy))]);
   if (px) sprite(out, px, 64, 64, f.x, f.y, f.d, { clip: discClip(cx, cy, f.d / 2 - 1.5) }); else paintPage(out, f.x, f.y, f.x + f.d, f.y + f.d, (x, y) => [FLAT, clamp01(f.d / 2 - 1.5 - Math.hypot(x - cx, y - cy))]); }
@@ -93,10 +97,13 @@ export function pairingPicture(r) {
   }
   for (const c of r.cards) {
     const dim = c.dim ? 0.35 : 1, x = c.x, y = c.y, d = c.d;
-    paintPage(out, x - 1, y - 1, x + d + 1, y + d + 1, (px, py) => [[1, 1, 1], (c.dim ? 0.05 : 0.12) * clamp01(0.5 - rrectSd(px, py, x, y, d, d, 8))]);
+    paintPage(out, x - 1, y - 1, x + d + 1, y + d + 1, (px, py) => [[1, 1, 1], 0.12 * clamp01(0.5 - rrectSd(px, py, x, y, d, d, 8))]);
     if (!c.dim) ring(out, [x, y, d, d, 8], 2, [0.45, 0.8, 0.5]);
-    if (c.crop) { const cr = cropOf(c.id, c.crop, 42, 22); if (cr) sprite(out, cr.rgba, 42, 22, x + Math.round((d - 42) / 2), y + Math.round((d - 22) / 2), 42, { clip: () => (c.dim ? 0.65 : 1) }); }   // a marking the pair cannot give stays readable (the pattern is the point of the card)
-    else { const px = pixels(c.id); if (px) sprite(out, px, 48, 48, x + Math.round((d - 40) / 2), y + Math.round((d - 40) / 2), 40, { clip: () => dim }); }
+    // station step 8-7 (AD 14:48): the signed SQUARE page card her page uses (page-card-markings-<marking>-66x66: the square window of the lay master) fills the card inside a 2 lp rim, whole at full strength;
+    // a marking the pair cannot give is marked as her page marks a look none of yours has: a dashed pale rim, the picture unchanged
+    if (c.crop) { const i = d - 4, cr = cropOf(c.id, c.crop, i, i); if (cr) sprite(out, cr.rgba, i, i, x + 2, y + 2, i, { clip: (px, py) => clamp01(0.5 - rrectSd(px, py, x + 2, y + 2, i, i, 6)) }); }
+    else { const px = pixels(c.id); if (px) sprite(out, px, 48, 48, x + Math.round((d - 40) / 2), y + Math.round((d - 40) / 2), 40, { clip: () => (c.dim ? 0.85 : 1) }); }
+    if (c.dim) dashed(out, x, y, d, 2, 4, [0.85, 0.88, 0.95]);
     c.marks.forEach((id, i) => face(out, { id, x: x + d - 12 - i * 12, y: y - 7, d: c.mark }));
     if (c.tag) tag(out, c.tag);
   }
