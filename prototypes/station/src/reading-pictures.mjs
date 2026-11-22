@@ -447,6 +447,43 @@ export function pageScalePicture(r) {
   return out.rgba();
 }
 
+// ---- her board (station-match-7; the accepted walk-5-glance): every trait of her kind as one small row in its own shape, grouped by chapter ----
+// One opaque picture of the phone window: the room blurred under a shade, her, a head (emblem) a chapter and a row a trait: a scale is a 124 lp bar with her gold mark, a stretch (a doing seen a few times) or
+// nothing (shut: not looked at), the blue ticks of the two copies once the lens was used and small dots for your others; a set is a row of 21 lp squares (gold hers, dashed blue the one she carries, pale a look one of yours
+// has), then the legend. The words (names, notes, legend) are the face's. r: { species, size, body: { left, top, w }, groups: [{ chapter, x, y, dim, rows: [{ cy, bx, shut, scale: { w, at, rough: [a, b] | null, copies: [a, b] | null, others: [t..] } | null, set: { n, step, found: [i..], shows, carries } | null }] }],
+//   legend: { y, items: [{ x, kind }] } }
+export function pageBoardPicture(r) {
+  const [W, H] = r.size, out = new Pane(W, H), room = roomRGB(W, H, "vivarium-near-day-544x408", 1.2, 6), CREAM = PAGE_CREAM, hex6 = (h) => hex(h).map((v) => v / 255);
+  for (let i = 0; i < W * H; i++) { if (room) out.c.set(room.subarray(i * 3, i * 3 + 3), i * 3); else out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
+  paintPage(out, 0, 0, W, H, (x, y) => [[12 / 255, 15 / 255, 22 / 255], y < 190 ? 0.5 + (0.38 * y) / 190 : 0.88 + (0.06 * (y - 190)) / (H - 190)]);
+  const body = pixels(`mibi-adult-${r.species}-304x312`); if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
+  const dashOn = (x, y, cx, cy, per) => ((Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI)) * per % 7 < 4;
+  for (const g of r.groups) {
+    pageEmblem(out, g.chapter, g.x + 12, g.y + 13, 24);
+    if (g.dim) paintPage(out, g.x, g.y, g.x + 24, g.y + 26, () => [[12 / 255, 15 / 255, 22 / 255], 0.4]);
+    for (const w of g.rows) {
+      const cy = w.cy;
+      if (w.scale) { const q = w.scale, x = (t) => w.bx + 9 + t * (q.w - 18), x0 = w.bx + 3, x1 = w.bx + q.w - 3, open = q.at != null || !!q.rough;
+        paintPage(out, x0 - 2, cy - 6, x1 + 2, cy + 6, (px, py) => { const sd = rrectSd(px, py, x0, cy - 3.5, x1 - x0, 7, 3.5), e = clamp01(0.5 - sd); if (e <= 0) return null; return open ? [CREAM, 0.3 * e] : sd > -1.5 ? [CREAM, 0.42 * e] : null; });
+        for (const t of q.others) paintPage(out, x(t) - 4, cy - 4, x(t) + 4, cy + 4, (px, py) => [CREAM, 0.8 * clamp01(3.7 - Math.hypot(px - x(t), py - cy))]);
+        if (q.rough) { const a = x(q.rough[0]), b = x(q.rough[1]); paintPage(out, a - 2, cy - 9, b + 2, cy + 9, (px, py) => { const sd = rrectSd(px, py, a, cy - 7, b - a, 14, 7), e = clamp01(0.5 - sd); return e <= 0 ? null : sd > -1.5 ? [PAGE_GOLD, e] : [PAGE_GOLD, 0.4 * e]; }); }
+        if (q.copies) { const [a, b] = q.copies.map(x).sort((p, s) => p - s); paintPage(out, a, cy + 9.2, b + 1, cy + 11.7, () => [PAGE_BLUE, 1]);
+          for (const t of q.copies) paintPage(out, x(t) - 3, cy - 10, x(t) + 3, cy + 11, (px, py) => [PAGE_BLUE, clamp01(0.5 - rrectSd(px, py, x(t) - 2, cy - 9, 4, 19, 2))]); }
+        if (q.at != null) paintPage(out, x(q.at) - 9, cy - 9, x(q.at) + 9, cy + 9, (px, py) => { const d = Math.hypot(px - x(q.at), py - cy); return d <= 5.75 ? [PAGE_GOLD, clamp01(6 - d)] : d <= 7.25 ? [hex6("#1b202a"), clamp01(7.5 - d)] : null; }); }
+      if (w.set) { const q = w.set, sx = (i) => w.bx + 13 + i * q.step, sq = (i, h, col, al, edge) => paintPage(out, sx(i) - h - 1, cy - h - 1, sx(i) + h + 1, cy + h + 1, (px, py) => { const sd = rrectSd(px, py, sx(i) - h, cy - h, 2 * h, 2 * h, 2.5), e = clamp01(0.5 - sd); if (e <= 0) return null; return edge ? (sd > -edge ? [col, al * e] : null) : [col, al * e]; });
+        for (let i = 0; i < q.n; i++) { const found = q.found.includes(i); sq(i, 5, hex6("#1a1f29"), 1); if (found) sq(i, 5, CREAM, 0.62); else sq(i, 5, CREAM, 0.42, 1.5); }
+        if (q.shows != null) sq(q.shows, 7, PAGE_GOLD, 1);
+        if (q.carries != null) { const cx = sx(q.carries); paintPage(out, cx - 13, cy - 13, cx + 13, cy + 13, (px, py) => { const sd = rrectSd(px, py, cx - 10.5, cy - 10.5, 21, 21, 5), e = clamp01(1.75 - Math.abs(sd + 1.25)); return e > 0 && dashOn(px, py, cx, cy, 84) ? [PAGE_BLUE, e] : null; }); } } } }
+  const L = r.legend;
+  for (const it of L.items) { const cy = L.y;
+    if (it.kind === "scale") { paintPage(out, it.x, cy - 3, it.x + 22, cy + 3, (px, py) => [CREAM, 0.6 * clamp01(2.5 - Math.abs(py - cy))]); paintPage(out, it.x + 6, cy - 6, it.x + 16, cy + 6, (px, py) => [PAGE_GOLD, clamp01(5.5 - Math.hypot(px - it.x - 11, py - cy))]); }
+    else if (it.kind === "set") for (const [k, col] of [[0, CREAM], [1, PAGE_GOLD], [2, CREAM]]) paintPage(out, it.x + k * 8, cy - 4, it.x + k * 8 + 6, cy + 4, () => [col, k === 1 ? 1 : 0.7]);
+    else if (it.kind === "shows") paintPage(out, it.x, cy - 6, it.x + 12, cy + 6, () => [PAGE_GOLD, 1]);
+    else if (it.kind === "carries") paintPage(out, it.x, cy - 7.5, it.x + 5, cy + 7.5, (px, py) => [PAGE_BLUE, clamp01(0.5 - rrectSd(px, py, it.x, cy - 7.5, 5, 15, 2))]);
+    else if (it.kind === "others") paintPage(out, it.x, cy - 4, it.x + 7, cy + 4, (px, py) => [CREAM, 0.8 * clamp01(3.5 - Math.hypot(px - it.x - 3.5, py - cy))]); }
+  return out.rgba();
+}
+
 // ---- registering (the picture kinds pictures.mjs hands here) ----
 export function registerReading(r, env) {
   if (hasAsset(r.id)) return;
@@ -456,6 +493,7 @@ export function registerReading(r, env) {
     case "readchamber": return made(CHAMBER.size[0], CHAMBER.size[1], () => chamberPicture(r, env));
     case "pagestage": return made(r.size[0], r.size[1], () => pageStagePicture(r));
     case "pagescale": return made(r.size[0], r.size[1], () => pageScalePicture(r));
+    case "pageboard": return made(r.size[0], r.size[1], () => pageBoardPicture(r));
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
     case "readgather": return made(r.size, r.size, () => gatherPicture(r, env));

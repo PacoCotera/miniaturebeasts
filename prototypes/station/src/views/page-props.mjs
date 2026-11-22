@@ -98,11 +98,48 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
   return { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
 }
 
+// Her board (station-match-7; the accepted walk-5-glance): "All of her" and the blue key open it (ui.pods.at "board"). The stage is the `pageboard` picture and `page.scale.texts` the words over it (the same list her chapters use),
+// each placed from pods.json regions.page.board. Every trait of her kind is one small row in its own shape, a chapter a head; what a row shows comes from pageModel (an unlooked body chapter is shut, a doing a stretch, what she carries only after the lens).
+function boardScreen(view, m, spec, req, mibi, fr) {
+  const { st } = m, R = spec.regions.page, Bd = R.board, Sg = spec.strings.read, sid = S.speciesOf(mibi), [W, H] = R.rect.slice(2), texts = [], pod = pagePod(st, mibi.id), groups = [], colY = [Bd.top, Bd.top];
+  const text = (tx, x, base, role, align, w) => { if (tx) texts.push({ text: tx, x: Math.round(x), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
+  const bodyN = fr.chapters.filter((c) => !isDoings(c)).length;   // the columns: the first half of the chapters about her body left, the rest right; those about what she does alternate, left first
+  let nDo = 0; const colOf = new Map(fr.chapters.map((c, k) => [c.id, isDoings(c) ? nDo++ % 2 : k < Math.ceil(bodyN / 2) ? 0 : 1]));
+  const rows = Math.max(...[0, 1].map((c) => fr.chapters.filter((x) => colOf.get(x.id) === c).reduce((n, ch) => n + ch.traits.length, 0))), groupsIn = Math.max(...[0, 1].map((c) => fr.chapters.filter((x) => colOf.get(x.id) === c).length));
+  const rowH = clamp(Math.floor((Bd.foot - Bd.top - groupsIn * (Bd.head + 3 + Bd.gap)) / Math.max(1, rows)), Bd.rowMin, Bd.row);   // a kind with more traits than fit gets slimmer rows, never a second page
+  text(S.cap(mibi.name), Bd.who.x, Bd.who.nameBase, Bd.who.nameRole, "l");
+  text(S.cap(S.spName(mibi)), Bd.who.x + Bd.who.kindGap + Math.round(mibi.name.length * Bd.who.kindPerChar), Bd.who.nameBase, Bd.who.kindRole, "l");
+  fr.chapters.forEach((ch) => {
+    const col = colOf.get(ch.id), C = Bd.cols[col], barW = C.w - Bd.label - Bd.barGap, y0 = colY[col], looked = S.pageRead(mibi).includes(ch.id), doing = isDoings(ch), shutChapter = !looked && !doing;
+    const others = st.mibis.filter((x) => !x.released && x.id !== mibi.id && S.speciesOf(x) === sid && x.genome && S.pageRead(x).includes(ch.id)).map((x) => x.genome);
+    const sights = doing ? Math.min(...ch.traits.map((t) => Math.round(S.pageKnown(mibi, t) * S.PAGE_SIGHTS))) : S.PAGE_SIGHTS;
+    const note = shutChapter ? Sg.boardToLook : doing ? (sights <= 0 ? Sg.boardNotSeen : sights === 1 ? Sg.boardSeenOnce : sights < S.PAGE_SIGHTS ? Sg.boardWatch : "") : "";
+    const quiet = shutChapter || (doing && sights <= 0);
+    text(ch.name, C.x + 31, y0 + Bd.headBase, Bd.headRole, "l"); text(note, C.x + C.w - 2, y0 + Bd.headBase, Bd.noteRole, "r");
+    const g = { chapter: ch.id, x: C.x, y: y0, dim: quiet, rows: [] }; let y = y0 + Bd.head + 3;
+    for (const t of ch.traits) {
+      const model = pageModel(st, fr, t, pod, others, shutChapter), cy = y + rowH / 2, bx = C.x + Bd.label, row = { cy, bx, shut: false, scale: null, set: null };
+      if (model.shape === "scale") { row.scale = { w: barW, at: model.shows, rough: model.rough, copies: model.copies, others: model.others }; row.shut = model.shows == null && !model.rough; }
+      else { const ls = model.looks, sh = ls.findIndex((l) => l.shows), cr = ls.findIndex((l) => l.hidden); row.set = { n: ls.length, step: Bd.step, found: ls.flatMap((l, k) => (l.others > 0 && !l.shows ? [k] : [])), shows: sh >= 0 ? sh : null, carries: cr >= 0 ? cr : null }; row.shut = sh < 0 && !ls.some((l) => l.others > 0); }
+      text(t.name, C.x, cy + Bd.rowBase - 14, row.shut ? Bd.shutRole : Bd.nameRole, "l");
+      g.rows.push(row); y += rowH;
+    }
+    groups.push(g); colY[col] = y + Bd.gap;
+  });
+  const Lg = Bd.legend, items = []; let lx = Lg.x;
+  for (const [kind, word] of [["scale", Sg.boardLgScale], ["set", Sg.boardLgSet], ["shows", Sg.boardLgShows], ["carries", Sg.boardLgCarries], ["others", Sg.boardLgOthers]]) {
+    items.push({ x: lx, kind }); const tx = lx + Lg.glyph[kind] + Lg.glyphGap; text(word, tx, Lg.y + 5, Lg.role, "l"); lx = tx + Math.round(word.length * Lg.perChar) + Lg.gap; }
+  const pic = { species: sid, size: [W, H], body: Bd.body, groups, legend: { y: Lg.y, items } };
+  const stage = req({ kind: "pageboard", id: `pageboard:${sid}:${hash(JSON.stringify(pic))}`, ...pic });
+  return { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
+}
+
 // The page's view: { mode: "page", page: {...}, line, targets, cur, requests }
 export function pageView(view, m, spec, req) {
   const { st, ui } = m, Sg = spec.strings.read, mibi = S.mibiById(st, ui.page);
   if (!mibi || mibi.released) return { ...view, mode: "inventory", broken: true };
   { const fr0 = frameOf(S.speciesOf(mibi)), chs0 = fr0 ? fr0.chapters : [], ch0 = chs0[clamp(ui.lane ?? 0, 0, Math.max(0, chs0.length - 1))];
+    if (ui.at === "board" && fr0) { view.page = boardScreen(view, m, spec, req, mibi, fr0); view.line = { ok: null, back: S.cap(mibi.name), subject: "", need: "" }; view.targets = [{ id: "trait", group: "trait" }]; view.cur = "trait"; view.resolve = {}; return view; }
     if (ui.at === "scale" && ch0) { view.page = scaleScreen(view, m, spec, req, mibi, fr0, ch0); const hand = chs0.indexOf(ch0); view.line = { ok: null, back: S.cap(mibi.name), subject: "", need: "" }; view.targets = chs0.map((c, i) => ({ id: "rail." + i, group: "rail", index: i })); view.cur = "rail." + hand; view.resolve = {}; return view; } }
   const R = spec.regions.page, C = R.rail.cell, sid = S.speciesOf(mibi), fr = frameOf(sid), chs = fr ? fr.chapters : [], hand = clamp(ui.lane ?? 0, 0, Math.max(0, chs.length - 1)), ch = chs[hand] ?? null;
   const spots = pageSpotsOf(sid).filter((s) => chs.some((c) => c.id === s.chapter)).map((s) => ({ chapter: s.chapter, at: s.at, line: s.line, ring: ch && s.chapter === ch.id ? petalsOf(mibi, ch) : "" }));
