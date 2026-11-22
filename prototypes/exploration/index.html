@@ -239,7 +239,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
@@ -258,6 +258,7 @@ import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
+import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
@@ -1002,7 +1003,7 @@ const OUTPOST_TURNS = 3;
 const wTurn = () => S.turn + 1;
 // The realm's day (walk W1): light spent since dawn (the day's 200 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
 // A save from before the day has none: its day starts at dawn.
-const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null });
+const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
@@ -1535,7 +1536,7 @@ function urlSeed() { try { const v = new URLSearchParams(location.search).get('s
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
 // They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
-  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], day: freshDay(), revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, pages: {}, day: freshDay(), revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
     bay: [], hold: null, wid: wid || 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
@@ -1554,7 +1555,7 @@ const NEW_MAP_ONLY = new Set(['v', 'seed', 'regions', 'here', 'phase', 'ui', 'ex
 function keepOfGame(old) {
   const o = serialize(old), keep = {};
   for (const k of Object.keys(o)) if (!NEW_MAP_ONLY.has(k)) keep[k] = o[k];
-  const ex = old.exp, cargo = ex && ex.cargo && (ex.cargo.e | 0 || ex.cargo.d | 0 || ex.cargo.s | 0 || (ex.cargo.pods || []).length) ? ex.cargo : null;
+  const ex = old.exp, cargo = ex && ex.cargo && (ex.cargo.e | 0 || ex.cargo.d | 0 || ex.cargo.s | 0 || (ex.cargo.pods || []).length || (ex.cargo.samples || []).length) ? ex.cargo : null;
   const hold = cargo || old.hold; if (hold) keep.hold = hold;
   const k2 = JSON.parse(JSON.stringify(keep));
   k2.carried = []; k2.lead = null;   // the mibis with you come home
@@ -2182,7 +2183,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
   const pm = type === 'deep' ? digger() : partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // Deep ground: the grown digger with you goes (S.lead is left alone). No partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormAt() : null;   // the one storm the opening showed, the first one two columns later (so a new player can drain a stone first)
   S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range + (pm && spOf(pm.sp).ab === 'sure' ? 1 : 0), dug: [], hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
-    cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold) } : { e: 0, d: 0, s: 0, pods: [] }, carry: null, storm,
+    cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold), samples: (S.hold.samples || []).slice(0, SATCHEL) } : { e: 0, d: 0, s: 0, pods: [], samples: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
     pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0 } : null,
@@ -2457,8 +2458,8 @@ function hearLineOf(c) {
 // the candidates for the bottom line under a wild one in sight, longest first (the line takes the first that fits): its ease, whether this step would be heard creeping and walking, how long it lets you stay
 function wildCtx(c, nm) {
   const hl = hearLineOf(c); if (!hl) return null;
-  const E = WORDS.ease, who = nm || spName(c.sp), es = E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · ");
-  return [j(who, es, full, st), j(who, full, st), j(who, full), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
+  const E = WORDS.ease, who = nm || spName(c.sp), es = E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c);   // W4: the card line, what is still to learn
+  return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
 function indInSight() {
@@ -2468,12 +2469,182 @@ function indInSight() {
 }
 // Keeping still as one act (✓ facing a named Loika): Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light have gone; each Wait spends its light.
 function keepStill(c) {
-  const ex = S.exp, live = curLive(), HABIT = ['shake', 'glow', 'full', 'curl'], sig = () => live.cr.filter(q => HABIT.includes(q.st)).map(q => q.id).join(','), rainNow = () => { const l = curLay(); return !!(S.exp && !l.cave && stormRain(l.cell % MW)); };
+  const ex = S.exp, live = curLive(), HABIT = ['shake', 'glow', 'full', 'curl', 'hab'], sig = () => live.cr.filter(q => HABIT.includes(q.st)).map(q => q.id).join(','), rainNow = () => { const l = curLay(); return !!(S.exp && !l.cave && stormRain(l.cell % MW)); };
   const e5 = ex.stats.e5 || (ex.stats.e5 = { notes: {}, circles: 0, backsOff: 0, heard: 0, gone: 0, settled: 0, crowded: 0, holds: 0 }); e5.holds++;
+  if (live.cr.some(q => q.hb && !q.hide)) { waitTick('patch'); ex.stats.holdLight = (ex.stats.holdLight || 0) + 1; ex.lastHold = { n: 1, why: 'habit' }; return ex.lastHold; }   // while she plays a habit a hold is one beat (W4)
   const r = holdRun(() => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sig(); waitTick('patch'); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sig() !== sig0 }; }, () => c.ease | 0);
   ex.stats.holdLight = (ex.stats.holdLight || 0) + r.n; ex.lastHold = r;
   if (S.exp) fxMsg(WORDS.ease.hold[r.why], 2);
   return r;
+}
+// ---------- W4: habits that play, notes by range, the card line, samples (src/habits.mjs; walk-design-1 W4) ----------
+// A named Loika's habit plays at its haunt when its condition comes in its routine's part of day, after its tell, over four beats: c.hb = { k, n, tell, pose, v (calm: the wary one's id), notes: { front|side: range } }.
+// While it plays c.st is 'hab' (she holds still); a heard step (ease 2 or more) loses the play. Each habit plays at most once a day for each Loika: S.day.hab['id:habit'] = 'played' | 'lost' | 'missed'.
+const habDay = () => (S.day.hab || (S.day.hab = {}));
+const habKey = (c, k) => c.id + ':' + k;
+const habName = c => (S.named && S.named[c.id]) || (c.ind && c.ind.name) || 'A Loika';
+const hbVisible = (c, X) => !X.away(c) && inSight(c.x, c.y);
+// the card line for a habit: what is still missing (her coat first, then her face; sleep-curled asks no further until the dew ships); null when nothing is left to ask
+const habWant = (id, k) => { const rec = ((S.habits || {})[id] || {})[k]; return wantOf(S.seed, id, k, rec && rec.got); };
+const habCard = (id, k) => { const w = habWant(id, k), nm = WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, WORDS.habit.rooms[w], false) : WORDS.habit.cardKnown(nm); };
+// the first habit of hers that still lacks something, as one card line; null when she is fully known
+const habCardNext = c => { for (const k of HABITS) if (habWant(c.id, k)) return habCard(c.id, k); return null; };
+const hbStorm = () => S.exp && S.exp.storm;
+const hbCore = X => !X.lay.cave && stormOff(X.lay.cell % MW) < 1.5;   // the band's core is over this place (a lull included)
+function habitDue(c, X) {
+  const ind = c.ind, hd = habDay(), part = dayPart(), tell = tellOf(ind.doings), col = X.lay.cell % MW;
+  if (X.lay.cave) return null;
+  const t = ind.go && ind.go.part === part ? ind.go.t : null, here = !!t && cheb(c, t) <= 1;
+  // shake: after rain; the tell comes before the rain stops (her nose lifts), the beats as it has stopped
+  if (!hd[habKey(c, 'shake')] && c.wet) {
+    const r = rainEndsIn(hbStorm(), col, tell);
+    if (r > 0 && r <= tell && here) return { k: 'shake', n: tell - r };
+    if (!hbCore(X)) { if (here) return { k: 'shake', n: 0 }; if ((c.wetFor = (c.wetFor || 0) + 1) > 14) { hd[habKey(c, 'shake')] = 'missed'; c.wet = 0; c.wetFor = 0; } }
+  }
+  // sleep: curled at her bed, from dusk
+  if (!hd[habKey(c, 'sleep')] && sleepPart(part) && here && ind.hs && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed) return { k: 'sleep', n: 0 };
+  // calm: a wary one has come near her (the window of the day, habitWorld)
+  const v = c.visitor && X.live.cr.find(q => q.id === c.visitor);
+  if (!hd[habKey(c, 'calm')] && v && !v.hide && ['idle', 'seek', 'watch'].includes(v.st) && cheb(v, c) <= 4 && here) return { k: 'calm', n: 0, v: v.id };
+  return null;
+}
+function habitTick(c, X) {   // true when the habit has her action
+  const hd = habDay(), W = WORDS.habit;
+  const end = (state) => { const h = c.hb; hd[habKey(c, h.k)] = state; if (h.k === 'shake') c.wet = 0; c.hb = null; c.st = 'idle'; c.t = 0; if (h.k === 'calm') c.visitor = 0; };
+  if (c.hb) {
+    const h = c.hb, v = h.k === 'calm' ? X.live.cr.find(q => q.id === h.v) : null;
+    if (c.gone || (c.ease | 0) >= 2 || (h.k === 'calm' && (!v || v.hide || ['flee', 'alert', 'dive', 'hidden'].includes(v.st)))) { end('lost'); if (hbVisible(c, X)) fxMsg(W.lost, 2); return false; }
+    h.n++; const b = h.n - h.tell;
+    if (b >= BEATS) { end('played'); return false; }
+    c.st = 'hab';
+    if (b < 0) h.pose = 'alert';
+    else {
+      h.pose = h.k === 'shake' && b <= 2 ? 'shake' : h.k === 'calm' ? (b < 2 ? 'alert' : 'idle') : 'idle';
+      if (h.k === 'shake' && b === 2) { const w = c.ind.hs && c.ind.hs.water; if (w) c.face = Math.sign(w.x - c.x) || c.face; }   // the shake turns her to the water
+      if (h.k === 'shake' && b === 3) { const d = habDay(), tk = 'tuft:' + c.id; if (!d[tk]) { d[tk] = 1; dropTuft(c, X, true); } }   // the tuft she leaves, once a day
+      if (h.k === 'calm' && v) { if (b === 0 && v.x !== c.x) c.face = Math.sign(v.x - c.x) || c.face; if (b === 3 && cheb(v, c) > 1) stepToward(X, v, c, 1); }
+      if (h.k === 'sleep' && b === 0) c.face = -(c.face || 1);   // the small circle
+      if (hbVisible(c, X)) fxMsg(W.beat[h.k][Math.min(3, b)], 1);
+    }
+    return true;
+  }
+  if (c.gone || (c.ease | 0) >= 2 || ['flee', 'alert', 'approach', 'watch'].includes(c.st)) return false;
+  const due = habitDue(c, X); if (!due) return false;
+  c.hb = { k: due.k, n: due.n, tell: tellOf(c.ind.doings), v: due.v, notes: {}, pose: 'alert' }; c.st = 'hab';
+  if (hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), 2);
+  return true;
+}
+// the calm window of the day: a wary one (another wild creature of the place) is drawn toward her haunt for twelve light; at the window's first light the nearest idle one is chosen
+const isWary = q => q.ind ? q.ind.doings.wary >= .5 : (q.b || 0) <= .55;   // a wary one: another named Loika that is wary, or any other kind that is not bold
+// W4 round 2 (slip W4): a place with no wary one at all gets one from the next cell, in at the edge nearest her haunt (as G1 did it); null when no neighbour has one
+function edgeVisitor(X, c) {
+  const lay = X.lay, free = hauntFree(lay, X.key, null), spot = c.ind.go && c.ind.go.t || c; let at = null, bd = 99;
+  for (let y = 1; y < lay.h - 1; y++) for (let x = 1; x < lay.w - 1; x++) { if (x > 1 && x < lay.w - 2 && y > 1 && y < lay.h - 2) continue; if (!free(x, y)) continue; const d = cheb({ x, y }, spot); if (d < bd) { bd = d; at = { x, y }; } }
+  if (!at) return null;
+  for (const dir of Object.keys(DIRS)) { const nc = stepCell(lay.cell, dir); if (nc < 0) continue;
+    const w = S.cr.find(q => q.c === nc && !q.cv && q.sp !== 0 && (q.b || 0) <= .55); if (!w) continue;
+    const v = { id: 1e6 + w.id, sp: w.sp, x: at.x, y: at.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1, ready: false, edgeIn: 1 }; X.live.cr.push(v); return v; }
+  return null;
+}
+const calmWhy = { played: 'played', lost: 'she heard you and the calm was lost', none: 'the place has no wary one', drawn: 'the wary one did not come within its window', busy: 'the wary one was hidden or heard when the window came', away: 'she was hidden or gone when the window came', off: 'the wary one came and was kept off by the explorer\'s stand', came: 'the wary one came and she was not at her haunt', win: 'she has no free part of day for it' };
+function calmLog(c, win, hd) {   // the calm window is over: say why calm did or did not play (the day's log; the bot counts them by cause)
+  const lk = 'calm-logged:' + c.id; if (hd[lk]) return; if (win && S.day.spent < win.to + 10) return; hd[lk] = 1;
+  const st = hd[habKey(c, 'calm')], why = !win ? 'win' : st === 'played' || st === 'lost' ? st : hd['cw:' + c.id] === 'off' ? 'off' : hd['cwc:' + c.id] ? 'came' : hd['cw:' + c.id] || 'away';
+  (S.exp.stats.calmLog || (S.exp.stats.calmLog = [])).push({ id: c.id, day: S.turn, why, say: calmWhy[why] });
+}
+function habitWorld(X) {
+  if (X.lay.cave) return;
+  const hd = habDay();
+  for (const c of X.live.cr) {
+    if (!c.ind) continue;
+    const win = calmWindow(S.seed, c.id, S.turn, DAY.parts, routineOf(c.ind.doings));
+    calmLog(c, win, hd);
+    if (c.hide || c.gone) continue;
+    if (!win || S.day.spent < win.from || S.day.spent >= win.to) { if (c.visitor && S.day.spent >= (win ? win.to + 10 : 0)) c.visitor = 0; continue; }   // drawn in the window; it has ten light more to arrive
+    if (c.visitor) continue;
+    let best = null, bd = 99, any = false;
+    for (const q of X.live.cr) {   // a wary one not already drawn to someone, not in a habit of its own
+      if (q.id === c.id || !isWary(q)) continue; any = true;
+      if (q.hide || q.visit || q.visitor || q.hb || !['idle', 'seek', 'watch'].includes(q.st) || (q.ease | 0) >= 2) continue;
+      const d = cheb(q, c); if (d < bd) { bd = d; best = q; } }
+    if (!best && !any && !hd['cw:' + c.id]) best = edgeVisitor(X, c);   // the places with no wary one: one comes in at the edge
+    if (best) { c.visitor = best.id; best.visit = { id: c.id, until: win.to + 10 }; hd['cw:' + c.id] = 'drawn'; }
+    else if (!hd['cw:' + c.id]) hd['cw:' + c.id] = any ? 'busy' : 'none';   // none: no wary one in the place and none to come in from the next cell; busy: there is one, but it was hidden, heard or in a habit of its own
+  }
+}
+// the visitor walks to within two tiles of her, and stays there while it is calm
+function habitVisit(c, X) {
+  const v = c.visit; if (!v) return false;
+  const her = X.live.cr.find(q => q.id === v.id);
+  if (her && cheb(c, her) <= 4) habDay()['cwc:' + her.id] = 1;   // it has come
+  if (!her || her.gone || S.day.spent >= v.until || ['flee', 'alert', 'dive', 'hidden'].includes(c.st)) { if (her && S.day.spent < v.until && !habDay()[habKey(her, 'calm')]) habDay()['cw:' + her.id] = 'off'; c.visit = null; return false; }   // kept off: it fled or hid while drawn
+  if (cheb(c, her) > 2 || c.st === 'seek') { if (cheb(c, her) > 2) stepToward(X, c, her, 1); }
+  return true;
+}
+// ✓ facing her in sight while she plays a habit: the one she is playing nearest in front of the pawn (a cone as in G1: ahead, within one tile of the line per tile of distance)
+function noteTarget() {
+  const ex = S.exp; if (!ex || !ex.patch || curLay().cave) return null; const P = ex.patch, [fx, fy] = DIRS[P.dir]; let best = null, bd = 99;
+  for (const c of curLive().cr) {
+    if (!c.hb || c.hide || !c.ind || !seenFromPlayer(P.key, c.x, c.y)) continue;
+    const dx = c.x - P.x, dy = c.y - P.y, fwd = dx * fx + dy * fy, lat = Math.abs(dx * fy - dy * fx);
+    if (!(fwd > 0 && lat <= fwd + 1)) continue;
+    const d = cheb(c, P); if (d < bd) { bd = d; best = c; } }
+  return best;
+}
+// ---------- W4 round 2: her prints at a haunt she has left (walk-design-1 3A) ----------
+// NAMED SLOT PAWS-ON-TILE: the built paw sign drawn on the stand tile. The art director passes it in whole-place stills at walking zoom (rules 17, 18a); if it does not read, set this false:
+// the slot stays named and empty and the read works from the message box alone (design 3F).
+const PAWS_ON_TILE = true;
+// Her prints lie at the stand tile of a haunt her routine has moved her on from (or she bolted from), until the end of the next morning; the routine says where she was, so they are read off it (src/habits.mjs leftHaunts).
+// ✓ within one tile of them, with her more than 2 tiles from them: one action, one light. It says when she was there, goes on her page (S.pages) and into the day's count; no Data, no sample, no Essence, and no habit note.
+// The tile the print is drawn on: the free tile nearest the stand (within 4) with no decor on it (no flower clump, bush or crown: a pale print among white flowers is not seen at 1x); none: the print is not drawn, the read still works.
+function printMark(lay, stand, free) {
+  const ds = (lay.baked && lay.baked.place && lay.baked.place.decals) || [], on = new Set(ds.map(d => (Math.floor(d.y / 48) - 1) * lay.w + Math.floor(d.x / 48) - 1));   // a decal (flower clump, tuft, stone) stands on the tile its foot is on
+  const clear = (x, y) => free(x, y) && !(lay.coverAt && lay.coverAt(x, y)) && !on.has(y * lay.w + x);
+  for (let r = 0; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && clear(stand.x + dx, stand.y + dy)) return { x: stand.x + dx, y: stand.y + dy };
+  return null;
+}
+function printsHere() {
+  const ex = S.exp; if (!ex || !ex.patch) return []; const lay = curLay(); if (lay.cave) return [];
+  const live = curLive(), key = ex.patch.key, part = dayPart(), out = [];
+  for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = hauntFree(lay, key, c), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
+  return out;
+}
+function printsToRead() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
+  const hd = habDay();
+  return printsHere().find(p => !hd[readKey(p.c.id, p.h)] && cheb(P, p.mark || p.stand) <= 1 && (p.c.gone || p.c.hide || cheb(p.c, p.stand) > 2)) || null;
+}
+function readPrints(p) {
+  const ex = S.exp, W = WORDS.prints, c = p.c, name = habName(c);
+  habDay()[readKey(c.id, p.h)] = 1;
+  const pg = (S.pages || (S.pages = {})), mine = pg[c.id] || (pg[c.id] = {}); mine[p.part] = { x: p.h.x, y: p.h.y };   // her page: that haunt at that part of day
+  fxMsg((p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part])) + W.page, 3);
+  (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
+  waitTick('patch');   // a read spends one light, as a note does
+}
+function noteHabit(c) {
+  const ex = S.exp, h = c.hb, W = WORDS.habit; if (!h) return;
+  const P = ex.patch, range = habRange(cheb(c, P)), k = h.k, name = habName(c);
+  if (h.notes[range]) { fxMsg(W.dup, 2); FX.bumpAt = NOW; return; }   // one note for each range in a play: nothing is spent
+  h.notes[range] = range;
+  const lay = curLay(), rec = habRecord(S.habits || (S.habits = {}), c.id, k), want = habWant(c.id, k);
+  const r = habNote(rec, range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), want);
+  const said = r.gives.length ? r.gives.map(g => W.rooms[g]).join(' · ') : W.shape[k];
+  let tail = '';
+  const hd = habDay();
+  if (r.first) { if (addMat('d', 1, c.x, c.y)) tail += W.first; }
+  else if (!hd['sight:' + c.id]) { hd['sight:' + c.id] = 1; if (addMat('d', 1, c.x, c.y)) tail += W.sighting; }
+  if (range === 'near' && !rec.sample) {
+    const sm = (ex.cargo.samples || (ex.cargo.samples = []));
+    if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
+    else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); }
+  }
+  const filled = want ? rec.got[want] : 0;
+  fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(W.rooms[habWant(c.id, k)], false) : W.cardTail(W.rooms[want], true)) : ''), 3);
+  ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent });
+  waitTick('patch');   // a note spends one light, as a Wait does
 }
 function hauntStep(X, c) {   // true when the routine has the creature's action
   if (c.gone) { const t = c.gone.t; if (!t) return false; if (c.x !== t.x || c.y !== t.y) { stepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; } return true; }   // gone: its next haunt for the rest of the day
@@ -3064,6 +3235,8 @@ function patchAction() {
   let f = frontOf(P), o = occupant(key, f.x, f.y, 'player');
   if (!o && ex.carry !== 'fruit') { const here = standingOn(key, P); if (here) { o = here; f = { x: P.x, y: P.y }; } }   // facing nothing, standing on a small thing: its action
   ACT_AT = f;
+  { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => noteHabit(nt) }; } }   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
+  if (!o) { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // W4 round 2: her prints at a haunt she has left
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
@@ -3535,6 +3708,7 @@ function patchTick(info) {
   const X = Object.assign({ lay, live, key, P, raining, fog, strike, ring: info.ring || null, pulse: !!info.pulse, reach: info.reach || 7, call: !!info.call, moved: !!info.moved,
     noise: info.noise || 'act', prevP: info.prevP || null, ease: easeEnvOf(lay, raining, fog), carry: ex.carry, ptName: ex.pt && ex.pt.name,
     away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
+  habitWorld(X);
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
     if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) nm[c.id] = c.ind.name; }   // a name on first note: the one the realm gives it, kept once it has been met
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
@@ -3661,8 +3835,8 @@ function shedPod(c, X) {
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why && !(how === 'grab' && why === 'bond') ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
 // A Loika shaking dry leaves a tuft of fur on the ground (Essence), once per Loika per expedition.
-function dropTuft(c, X) {
-  if (c.tufted) return; c.tufted = 1;
+function dropTuft(c, X, again) {   // again: a named Loika leaves one each day it shakes (W4)
+  if (c.tufted && !again) return; c.tufted = 1;
   const p = freeAround(X.key, c.x, c.y, null); if (p) X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });
 }
 // An eater closes in on fruit quickly from across the view, then slows near it: about 4 quiet actions.
@@ -3712,6 +3886,7 @@ function creatureTick(c, X) {
   c.cue = calm && walking && d <= notice && d > notice - 2;   // would have noticed you without the partner: drives the cue
   if (calm) notice -= 2;
   if (c.ind) easeLoika(c, X);   // walk W3: a named Loika hears by the carry table, never by its kind's notice
+  if (c.ind && habitTick(c, X)) return;   // walk W4: her habit plays (the tell, then four beats), or is lost to a heard step
   const threat = !c.ind && X.moved && c.st !== 'eat' && (walking ? d <= notice : (!X.fog && d <= creepRange(sp) && !calm && !curious));
   const sheltered = !!X.lay.shelter[c.y * X.lay.w + c.x];
   if (c.st === 'shake' || c.st === 'full' || c.st === 'glow') {
@@ -3727,7 +3902,8 @@ function creatureTick(c, X) {
     else if (curious || calm) { c.st = 'approach'; c.t = 3; }
     else { c.st = 'alert'; c.t = 2; c.go = 1; } }   // wary: "!" for one action, then it hides
   // Weather.
-  if (X.raining) {
+  if (c.ind) { if (X.raining) c.wet = 1; }   // a named Loika is wet in rain wherever she keeps; she shakes dry as a habit (W4), never runs for shelter
+  else if (X.raining) {
     if (!sheltered) { c.wet = 1; if (!['flee', 'dive', 'eat'].includes(c.st)) c.st = 'shelter'; }
     else if (c.wet && c.sp === 0 && c.st !== 'flee') { c.st = 'shake'; return; }
     // a wet Tuikis curls up in shelter; after three curled actions it may drop a pod
@@ -3740,6 +3916,7 @@ function creatureTick(c, X) {
   }
   if (!X.raining && c.st === 'curl') { c.st = 'idle'; c.curl = 0; }
   if (!X.raining && (c.st === 'shelter' || c.st === 'huddle')) c.st = 'idle';
+  if (c.visit && !threat && ['idle', 'seek', 'watch'].includes(c.st) && habitVisit(c, X)) return;   // W4: a wary one drawn to her haunt for the calm window
   // The player: a creature shows "!" for one action before it flees, so you can stop.
   if (threat && ['idle', 'seek', 'watch', 'alert', 'approach'].includes(c.st)) {
     if (c.st === 'alert') { if (curious && X.carry && sp.eats) { c.st = 'approach'; c.t = 2; } else { c.go = 0; hideOrFlee(X, c); } }
@@ -3861,7 +4038,7 @@ function needText(e, s, d, full) {
   const parts = []; if (e > 0) parts.push(e + ' Energy'); if (s > 0) parts.push(s + ' Essence'); if (d > 0) parts.push(d + ' Data');
   return (full ? 'costs ' + full + ' · ' : '') + 'short ' + parts.join(' + ');
 }
-const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length));
+const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length) && !(h.samples && h.samples.length));
 const exploredAny = ex => (ex.entered || []).length > 0;   // the walk turns the world when it entered at least one place (or dug a bank): a walk that went into no place changes nothing
 // The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
 // oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
@@ -3962,7 +4139,7 @@ function endExpedition(reason) {
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
-    else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
+    else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, ...((ex.cargo.samples || []).length ? { samples: ex.cargo.samples.map(q => ({ ...q })) } : {}),
         pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
@@ -6015,7 +6192,7 @@ function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; l
     const q = RGB[pick(x, y) ? far(c, x, y) : near(c, x, y)]; u[o] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
 const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
-const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
+const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle', hab: 'idle' };
 // The place camera: today's centred camera for a generated place; for a baked place the half-screen steps of places/src/camera.mjs (page pixels).
 // live (drawPatch only) steps the kept state RT.ca on the explorer's tile; every other caller reads what the view would be (a copy of the state),
 // at (px, py) in place pixels. At the reveal's spot the view also holds the heart.
@@ -6295,12 +6472,14 @@ function drawPatchBody(t) {
   // (the 2 x 1 heart slab, sp.w tiles wide, sorted on its foot row: the named empty slot heart-slab draws nothing until its art is signed)
   for (const sp of lay.pieces || []) { const pc = propPiece(sp.piece), sw = sp.w || 1; if (pc && pc.w > 1 && (see(sp.x, sp.y) || (sw > 1 && see(sp.x + 1, sp.y)))) { const x = sp.x * ts, y = sp.y * ts; items.push({ y: y + 1, d: () => blit(pc, SX(x) + ((ts * sw - pc.w) >> 1), SY(y) + ts - pc.h, spriteRm(sp.x, sp.y)) }); } }
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
-  for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16, findRm(f.x, f.y)) }); }
+  for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (the AD's note on PR 489: it read as a lilac gem)
+  // W4 round 2: her prints at a haunt she has left, the built paw sign on the stand tile (a new placement: the art director passes it in whole-place stills; the slot is named PAWS-ON-TILE)
+  if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => blit(PAWS(), SX(x) + ((ts - 16) >> 1), SY(y) + ((ts - 15) >> 1), findRm(p.mark.x, p.mark.y)) }); }
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
     const pose = c.sp === 1 && c.st === 'curl' ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 6 ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 3 ? 'settle'
-      : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
+      : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : c.st === 'hab' ? (c.hb && c.hb.pose) || 'idle' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
     const half = CR_MOVING.includes(c.st) ? stepHalf(nr) : -1;
@@ -8454,7 +8633,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
