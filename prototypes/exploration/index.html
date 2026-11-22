@@ -255,7 +255,7 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { WORDS } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, partOfDay } from "./src/words.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN } from "./src/walk-data.mjs";
@@ -999,6 +999,10 @@ const OUTPOST_TURNS = 3;
 // World turns are shown counting from 1 (turn 1 = the first expedition's world); S.turn keeps counting from 0 inside,
 // so the world's random draws and every save stay as they were and no save needs migrating.
 const wTurn = () => S.turn + 1;
+// The realm's day (walk W1): light spent since dawn (the day's 200 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
+// A save from before the day has none: its day starts at dawn.
+const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null });
+const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
 // Send points: the expedition's start, or a lit depot in reach. "Start · 2 cells" names the nearest one.
@@ -1529,7 +1533,7 @@ function urlSeed() { try { const v = new URLSearchParams(location.search).get('s
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
 // They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
-  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], day: freshDay(), revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
     bay: [], hold: null, wid: wid || 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
@@ -2194,7 +2198,7 @@ function startExpeditionNow(type, cell, firstPodList) {   // firstPodList: the f
 
 // One tick of the field clock. Everything in the world moves only here.
 function advance(scope, info) {
-  const ex = S.exp; ex.actions++; S.totalActions++;
+  const ex = S.exp; ex.actions++; S.totalActions++; S.day.spent++;   // every action spends one light of the day, Wait and Call too
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
   // It was marked on the Probe's tile or cell: it hits only if the Probe still stands there, in the open, under rain; otherwise it lands on the empty tile.
@@ -2232,6 +2236,7 @@ function advance(scope, info) {
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
   if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods fall here', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
+  else if (S.day.spent >= DAY.light && !ex.ending) { ex.ending = 1; fxMsg(DAY_TEXT.nightEnds, 4); lockInput(1100); setTimeout(() => endExpedition('night'), 1100); }   // the night's end: nothing is lost, the hold seals, the world turns
   save();
 }
 function shieldHit(stray) {
@@ -3750,7 +3755,7 @@ function dropPods(ex, rep) {
 }
 function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
-  const broke = reason === 'break'; S.ui.lastPos = ex.pos;
+  const broke = reason === 'break', night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is (walk W1)
   const explored = exploredAny(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
@@ -3768,24 +3773,32 @@ function endExpedition(reason) {
   if (ex.carry === 'fruit') ex.carry = null;
   if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
   else S.shield = ex.shield;
-  const pending = { trail: [...new Set(ex.trail)], storm: Object.keys(ex.stormCells).map(Number) };
+  // what the day's trips left for the night's turn: the camps' trails and charged stones wait in the day and join this trip's
+  const pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
+  const tripOfDay = S.day.camps;   // 0 for the first trip of the day: a later trip's crate id carries it (the expedition number holds until the world turns)
+  if (!night) { S.day.pend = pending; S.day.camp = ex.pos; S.day.camps++; }
   S.hist.push({ n: ex.n, reason, actions: ex.actions, e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, pods: ex.cargo.pods.length, rev: ex.stats.rev, lit: ex.stats.lit,
     hits: ex.stats.hits, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
     warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
-  if (!explored && !(ex.dug && ex.dug.length)) {   // nothing explored (and no bank dug: a dug bank shifts back, so that walk turns the world): nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
+  if (!explored && !(ex.dug && ex.dug.length) && !night) {   // nothing explored: nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
-  S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
-  RIPE_LATER = []; let turned, ripeLater; try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+  if (explored || (ex.dug && ex.dug.length)) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
+  RIPE_LATER = []; let turned, ripeLater;
+  if (night) {   // the night's end: the world turns, once for the day's light; the pawn wakes at the last camp and the next day starts at dawn
+    try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
+    if (S.day.camp != null) S.ui.lastPos = S.day.camp;
+    S.day = freshDay();
+  } else { turned = { lines: [], ev: [], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; ripeLater = []; RIPE_LATER = null; }   // a camp: the day waits, the world does not turn
   const worldLines = turned.lines; rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
   RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);   // after the sealed screen's first frames, a step at a time; the next set-out finishes what is left
   { const a = turned.arrived; rep.news = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] }; }   // where it happened: the opening puts a pip on these cells until the next set-out
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
-    else { const c = { id: 'x' + S.wid + '-' + ex.n, ...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
+    else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
         pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
@@ -7563,6 +7576,12 @@ function placeStormWords(c) {
   if (S.ui.type === 'deep') return ''; const st = stormAt(); if (!st) return '';
   const q = stormGap(st, c); return q.in ? 'in the storm' : q.behind ? 'storm moving away' : q.actions === 1 ? 'storm here in 1 action' : 'storm here in ' + q.actions + ' actions';
 }
+// The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
+function dayCtx(ctx) {
+  if (!S.exp || !S.day) return ctx;
+  const d = dayPart(), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);
+  return alts.map(c => d + ' · ' + c).concat([d], alts);
+}
 function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 29 ? ok.slice(0, 28) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
@@ -7576,7 +7595,7 @@ function lineBase() {
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go in', mapContext(), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
+      return L1('Go in', dayCtx(mapContext()), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
     case 'patch': {
       if (RT.view) { const v = RT.view; return v.kind === 'look' ? L1('', '', VIEW_TEXT.close) : L1('', '', ''); }   // a view over the place: its own line
       const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
@@ -7588,6 +7607,7 @@ function lineBase() {
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
+      ctx = dayCtx(ctx);
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close', fieldFrozen());
@@ -7597,7 +7617,7 @@ function lineBase() {
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
-    case 'cargo': return S.exp ? (canSend() ? L1('End expedition', S.bay.length >= BAY ? 'finds stay in the hold' : ['seals a crate · the world turns', 'seals a crate'], 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
+    case 'cargo': return S.exp ? (canSend() ? L1('End expedition', S.bay.length >= BAY ? 'finds stay in the hold' : DAY_TEXT.campHint, 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
       if (!m) { if (S.exp) return L1('', S.exp.pt ? CARE_TEXT.leadsThisExp : CARE_TEXT.noOneGrown, bk);   // the Lead card: read-only mid-expedition; no partner leads one without a grown mibi
@@ -8230,7 +8250,7 @@ window.addEventListener('storage', e => {
   save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
-if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup';
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); else if (S.exp && S.day.spent >= DAY.light) endExpedition('night'); if (S.phase === 'station') S.phase = 'setup';
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';

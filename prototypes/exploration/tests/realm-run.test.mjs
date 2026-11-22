@@ -26,8 +26,8 @@ test("1. the golden run: twice over, the same digest, and the one on file", () =
   assert.deepEqual(a.steps, GOLDEN.steps, "expedition by expedition");
   assert.deepEqual(a.summary, GOLDEN.summary);
   assert.equal(GOLDEN.expeditions, 20); assert.equal(GOLDEN.gen, 7); assert.equal(GOLDEN.seed, 7);
-  // 20 expeditions; the world turns only after a walk that entered a place; the bot does in every expedition, so a turn each
-  assert.equal(a.page.S.turn, GOLDEN.summary.turn); assert.ok(GOLDEN.summary.turn >= 8 && GOLDEN.summary.turn <= 20, "turns " + GOLDEN.summary.turn);
+  // 20 expeditions; the world turns only at the night's end (walk W1): one turn for every 200 light spent, never for a trip taken
+  assert.equal(a.page.S.turn, GOLDEN.summary.turn); assert.equal(GOLDEN.summary.turn, Math.floor(a.page.S.totalActions / 200), "a turn for every 200 light");
 });
 
 test("2. a different seed or generator gives a different digest (the digest sees the world)", () => {

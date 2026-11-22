@@ -158,12 +158,53 @@ export function paceRun(seed, { places = 1, verbose = false, calm = true } = {})
 }
 export const PACE_SEEDS = [7, 13, 42];
 
+// ---- E6 (walk W1): the world turns by light spent, never by trips taken ----
+// Over seeds, two bots spend the same light (LIGHT, five days) on the page's own advance / startExpedition / endExpedition: one makes camp after every find-sized trip (CAMP_EVERY actions, then End expedition at the
+// flag), the other walks whole days (the night ends each). World turns per 1,000 light must agree within 5%. And a day spent on Wait alone gathers less than a day walked (first-trip-bot's walk over the whole reach), on every seed.
+//   node tools/realm-run.mjs --e6 [--from 1] [--to 200]
+export const E6 = { light: 1000, campEvery: 12 };
+export function e6Turns(seed, mode) {
+  const p = newPage(seed, { calm: true });
+  const open = () => { if (!p.S.exp) p.run("startExpedition('weather', G.spawns[0])"); };
+  const spend = () => { p.run("advance('map')"); p.pass(1200); };   // the night's end ends the walk on a timer: let it run
+  let sinceCamp = 0;
+  while (p.S.totalActions < E6.light) {
+    open();
+    spend(); sinceCamp++;
+    if (mode === "camp" && p.S.exp && sinceCamp >= E6.campEvery) { p.run("S.ui.lastPos = S.exp.pos; endExpedition('sent')"); sinceCamp = 0; }
+  }
+  if (p.S.exp) p.run("endExpedition('sent')");
+  return { turns: p.S.turn, light: p.S.totalActions };
+}
+export function e6WaitVsWalk(seed) {
+  const p = newPage(seed, { calm: true });
+  p.run("startExpedition('weather', G.spawns[0])");
+  while (p.S.exp) { p.run("waitTick('map')"); p.pass(1200); }   // a day of Waits alone: the night ends it
+  const r = p.S.report, c = r && r.sealed, waited = c ? c.pods.length + c.e + c.d + c.s : 0;
+  return { waited, light: p.S.totalActions, turn: p.S.turn };
+}
+
 const GOLDEN = new URL("../tests/realm-run.golden.json", import.meta.url);
 export const RUN = { seed: 7, gen: 7, expeditions: 20, mibis: 0, dock: 0 };   // the golden run
 
 if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const a = process.argv.slice(2), arg = (k, d) => { const i = a.indexOf("--" + k); return i < 0 ? d : +a[i + 1]; };
   const opts = { seed: arg("seed", RUN.seed), gen: arg("gen", RUN.gen), expeditions: arg("exp", RUN.expeditions), mibis: arg("mibis", 0), dock: arg("dock", 0), stopMid: a.includes("--stop-mid") };
+  if (a.includes("--e6")) {
+    const { firstTrip } = await import("./first-trip-bot.mjs");
+    const from = arg("from", 1), to = arg("to", 200); let tc = 0, tw = 0, lc = 0, lw = 0, worstDev = 0, bad = [];
+    for (let s = from; s <= to; s++) {
+      const c = e6Turns(s, "camp"), d = e6Turns(s, "day"); tc += c.turns; tw += d.turns; lc += c.light; lw += d.light;
+      const rc = c.turns / c.light * 1000, rd = d.turns / d.light * 1000, dev = Math.abs(rc - rd) / Math.max(rc, rd, 1e-9); worstDev = Math.max(worstDev, dev);
+      const wv = e6WaitVsWalk(s), wk = firstTrip(s, { calm: true, all: true, budget: 200, oneDay: true }), walked = wk.gathered || 0;
+      if (!(wv.waited < walked)) bad.push(`seed ${s}: waited ${wv.waited}, walked ${walked}`);
+      console.log(`seed ${s}: camp ${c.turns} turns / ${c.light} light, day ${d.turns} / ${d.light}, dev ${(dev * 100).toFixed(1)}%; wait-only ${wv.waited}, walked ${walked}`);
+    }
+    const rc = tc / lc * 1000, rd = tw / lw * 1000;
+    console.log(`E6 seeds ${from}-${to}: camp bot ${rc.toFixed(3)} world turns per 1,000 light, whole-day bot ${rd.toFixed(3)}, difference ${(Math.abs(rc - rd) / Math.max(rc, rd) * 100).toFixed(2)}% (worst seed ${(worstDev * 100).toFixed(1)}%); wait-only below walked on every seed: ${bad.length === 0}`);
+    for (const b of bad) console.log("  FAIL " + b);
+    process.exit(bad.length || Math.abs(rc - rd) / Math.max(rc, rd) > 0.05 ? 1 : 0);
+  }
   if (a.includes("--pace")) {   // node tools/realm-run.mjs --pace [--seeds 7,13,42] [--verbose]: the 3-minute shape (one place and home) and the 15-minute shape (four places and home)
     const si = a.indexOf("--seeds"), seeds = si < 0 ? PACE_SEEDS : a[si + 1].split(",").map(Number), verbose = a.includes("--verbose");
     for (const seed of seeds) for (const [name, places] of [["3-minute", 1], ["15-minute", 4]]) {

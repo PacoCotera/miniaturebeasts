@@ -48,3 +48,21 @@ export const WORDS = {
   // the world turn's rule, said at End expedition when no place was entered
   waits: 'Nothing explored · the world waits',
 };
+
+// The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
+// Pure: the page and the bots read the same table.
+export const DAY = {
+  light: 200,
+  parts: [['dawn', 20], ['morning', 50], ['midday', 40], ['afternoon', 40], ['dusk', 25], ['night', 25]],   // lengths in light; they add up to `light`
+};
+// the part of day after `spent` light is gone (0 at dawn); the day's last light is night
+export function partOfDay(spent) {
+  let left = Math.max(0, spent | 0);
+  for (const [name, len] of DAY.parts) { if (left < len) return name; left -= len; }
+  return DAY.parts[DAY.parts.length - 1][0];
+}
+// [copy] words for the copywriter's round (they say the meaning only)
+export const DAY_TEXT = {
+  nightEnds: 'Night ends the day · the Companion wakes at camp',
+  campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
+};
