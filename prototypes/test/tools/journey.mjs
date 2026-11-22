@@ -120,12 +120,12 @@ if (!SMALL) for (const m of MENU) {
   await page.keyboard.press("Escape"); await page.waitForTimeout(150);
   eq(await page.evaluate(() => window.__tp.rect("menuPanel")), null, "B: Esc closes the menu"); eq(await said(), [], "B: Esc does not reach the face");
   await open_(); await page.mouse.click(330, 480); await page.waitForTimeout(250);   // on the Confirm key
-  eq(await page.evaluate(() => window.__tp.rect("menuPanel")), null, "B: a tap outside closes the menu"); eq(await said(), [], "B: and fires no device key"); eq(await screen(), "home", "B: the Station stays on Home");
+  eq(await page.evaluate(() => window.__tp.rect("menuPanel")), null, "B: a tap outside closes the menu"); eq(await said(), [], "B: and fires no device key"); eq(await screen(), "vivarium", "B: the Station stays on Home (the Vivarium room)");
   await open_(); await page.keyboard.press("m"); await page.waitForTimeout(150); eq(await page.evaluate(() => window.__tp.rect("menuPanel")), null, "B: M closes the menu");
   await page.keyboard.press("m"); await page.waitForTimeout(150); expect(!!(await page.evaluate(() => window.__tp.rect("menuPanel"))), "B: M opens the menu");
   eq(await st().evaluate(() => JSON.stringify(window.__st.props?.focus ?? null)), focus0, "B: the face's focus does not change when the menu opens or closes");
   const rr = await page.evaluate(() => window.__tp.rect("menu-research")); await page.mouse.move(rr[0] + 20, rr[1] + 20); await page.mouse.down(); await page.waitForTimeout(100);
-  eq(await screen(), "home", "B: a room key acts on release, not on press"); await page.mouse.up(); await page.waitForTimeout(500);
+  eq(await screen(), "vivarium", "B: a room key acts on release, not on press"); await page.mouse.up(); await page.waitForTimeout(500);
   eq(await screen(), "pods", "B: the Research key in the menu goes to the Station's Pods"); eq(await page.evaluate(() => window.__tp.rect("menuPanel")), null, "B: and the menu closes");
   await ctx.close();
 }
