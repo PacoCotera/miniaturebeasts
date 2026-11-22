@@ -717,6 +717,18 @@ test("the lens on her page (step 2c): copies and the hidden look stay hidden unt
   const after = pic(); assert.equal(after.copies, true, "the room at dusk, the two copies in the blue lens"); assert.equal(after.sc.cop.xs.length, 2, "her two copies show as two marks"); assert.ok(after.sc.link, "and the bracket between them"); assert.equal(after.chips.length, 0);
   INTENTS.pods.intent(h, "rail", "confirm"); assert.equal(pic().id, after.id, "a second ✓ changes nothing");
 });
+test("her chapter, a set (station-match-6): one card a look with her word and the gold rim on what she shows; after the lens the look she carries has the dashed blue rim, the room at dusk and one lens", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
+  INTENTS.habitat.intent(h, "plate.0", "confirm");
+  const ci = fr.chapters.findIndex((c) => !S.isDoingChapter(c) && !c.sealed && c.traits.some((t) => shapeOf(fr, t) === "set")), ti = fr.chapters[ci].traits.findIndex((t) => shapeOf(fr, t) === "set"), tid = fr.chapters[ci].traits[ti].id;
+  m.page.looked.push(fr.chapters[ci].id); h.ui.pods.lane = ci; h.ui.pods.at = "scale"; h.ui.pods.trait = ti;
+  const build = () => podsBuild({ st, settings, ui: h.ui.pods, focus: "rail", now: 0 }, podsSpec), pic = () => build().requests.find((r) => r.kind === "pagescale"), n = fr.chapters[ci].traits[ti].looks.length;
+  const before = pic(); assert.equal(before.set.cards.length, n, "one card a look"); assert.equal(before.set.cards.filter((c) => c.rim === "gold").length, 1, "gold on the one she shows"); assert.ok(!before.set.cards.some((c) => c.rim === "blue"), "what she carries is hidden before the lens"); assert.equal(before.dusk, false);
+  INTENTS.pods.intent(h, "rail", "confirm"); assert.equal(m.page.carried[tid], true);
+  const after = pic(), hid = after.set.cards.filter((c) => c.rim === "blue"); assert.ok(hid.length <= 1);
+  if (hid.length) { assert.equal(after.dusk, true, "the room at dusk"); assert.equal(after.halves.length, 1, "one lens, the look she carries"); }
+  const w = build().page.scale.texts.map((t) => t.text); assert.ok(w.includes(podsSpec.strings.read.setNote), "the note on the dashed rims");
+});
 test("her board (step 3): the blue key on her page opens every trait of her kind in tiny rows by chapter, pages turn with ▲▼, what her page does not know is not shown, ← and the blue key return to her page", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
   const body = fr.chapters.find((c) => !S.isDoingChapter(c) && !c.sealed); m.page = { looked: [body.id], sights: {}, carried: {} };

@@ -7,8 +7,8 @@ import { frameOf } from "../genome.mjs";
 import { pageSpotsOf, PAGE_BODY_BOX, closeOf, pagePod } from "../page.mjs";
 import { coatOf, PAINTED_COAT } from "../stands.mjs";
 import { drawnLooks } from "../looks.mjs";
-import { shapeOf, scalePlace } from "../trait-shapes.mjs";
-import { roundOf } from "../trait-crops.mjs";
+import { shapeOf, scalePlace, shapeModel } from "../trait-shapes.mjs";
+import { roundOf, squareOf } from "../trait-crops.mjs";
 import { pageModel } from "./reading-props.mjs";
 import { fill } from "./words.mjs";
 
@@ -28,7 +28,8 @@ export const cellX = (i, n, W, c) => c.inset + (n > 1 ? Math.floor((i * (W - 2 *
 // Her chapter (station-match-5; the accepted walk-4-scale and walk-4-copies): ✓ on a chapter of her page opens it (ui.pods.at "scale"), the trait in hand is ui.pods.trait. It is the same `page` state: the stage is the
 // `pagescale` picture and `page.scale.texts` are the words over it, each placed from pods.json regions.page.scale. The trait is read from pageModel (her page's own rule: a doing trait a stretch, a mark after the lens).
 // A trait that is a set shows its chip and one plain line until the set slice; everything else is the scale.
-const hexRGB = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+const NUM = ["no looks", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+const hexRGB =(h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 const faceOf = (sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
 const gapSay = (pts, min) => {   // where "none of yours here yet" goes: the middle of the widest empty stretch of the bar (pins are 0.14 wide), if it is wide enough for the words
   const a = [...pts].sort((p, q) => p - q), gaps = [{ mid: ((a[0] ?? 0.5) - 0.07 + 0) / 2, w: (a[0] ?? 1.07) - 0.07 }]; if (!a.length) return 0.5;
@@ -39,16 +40,18 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
   const { st, ui } = m, R = spec.regions.page, Z = R.scale, Sg = spec.strings.read, sid = S.speciesOf(mibi), [W, H] = R.rect.slice(2), ti = clamp(ui.trait ?? 0, 0, ch.traits.length - 1), t = ch.traits[ti];
   const others = st.mibis.filter((x) => !x.released && x.id !== mibi.id && S.speciesOf(x) === sid && x.genome && S.pageRead(x).includes(ch.id));
   const model = pageModel(st, fr, t, pagePod(st, mibi.id), others.map((x) => x.genome), false), isScale = model.shape === "scale", copies = isScale && !!model.copies;
-  const trayH = copies ? Z.tray.hCopies : Z.tray.h, T = H - trayH, top = T + Z.sc.top, X = (s) => Math.round(Z.x0 + s * (Z.x1 - Z.x0)), Hd = Z.head, texts = [];
+  const hid = !isScale ? model.looks.find((l) => l.hidden) : null, shown = !isScale ? model.looks.find((l) => l.shows) : null, dusk = copies || !!hid;   // a set after the lens: the look she carries in one blue lens
+  const trayH = copies ? Z.tray.hCopies : !isScale ? Z.tray.hSet : Z.tray.h, T = H - trayH, top = T + Z.sc.top, X = (s) => Math.round(Z.x0 + s * (Z.x1 - Z.x0)), Hd = Z.head, texts = [];
   const text = (tx, x, base, role, align, w) => { if (tx) texts.push({ text: tx, x: Math.round(x), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
   // the head: the chapter's ring (one petal a trait: the one in hand orange, the one the lens has been pointed at blue), its name, and the chips
   const read = S.pageRead(mibi).includes(ch.id), petals = ch.traits.map((tr, i) => (S.pageLensed(mibi, tr) ? "g" : i === ti ? "c" : (tr.nature === "doing" ? S.pageKnown(mibi, tr) >= 1 : read) ? "1" : "0")).join(",");
   text(S.cap(mibi.name), R.name.x, R.name.baseline, R.name.role, "l");
-  text(copies ? fill(Sg.scaleCopiesHead, { traits: t.name.toLowerCase() + "s" }) : ch.name, Hd.nameX, T + Hd.nameBase, Hd.nameRole, "l");
-  const chips = []; if (!copies) { let right = Hd.right; for (let i = ch.traits.length - 1; i >= 0; i--) { const tr = ch.traits[i], w = Math.round(Hd.chip.pad + tr.name.length * Hd.chip.perChar), x = right - w;
+  text(copies ? fill(Sg.scaleCopiesHead, { traits: t.name.toLowerCase() + "s" }) : hid ? fill(Sg.setHead, { look: (/s$/.test(hid.look) ? "" : "a ") + hid.look }) : ch.name, Hd.nameX, T + Hd.nameBase, Hd.nameRole, "l");
+  if (hid && shown) text(fill(Sg.setUnder, { look: shown.look }), Z.set.say.right, T + Hd.nameBase, Z.set.say.role, "r");
+  const chips = []; if (!dusk) { let right = Hd.right; for (let i = ch.traits.length - 1; i >= 0; i--) { const tr = ch.traits[i], w = Math.round(Hd.chip.pad + tr.name.length * Hd.chip.perChar), x = right - w;
     chips.unshift({ x, y: T + Hd.cy - Hd.chip.h / 2, w, h: Hd.chip.h, on: i === ti, scale: shapeOf(fr, tr) === "scale" }); text(tr.name, x + 34, T + Hd.cy - Hd.chip.h / 2 + Hd.chip.base, i === ti ? Hd.chip.onRole : Hd.chip.role, "l"); right = x - Hd.chip.gap; } }
   // the one line
-  const kindLine = !isScale ? fill(Sg.setKind, { Trait: t.name }) : copies ? fill(Sg.scaleCopiesKind, { Trait: t.name }) : fill(Sg.scaleKind, { Trait: t.name, kind: S.cap(S.spName(mibi)), low: model.ends[0], high: model.ends[1] });
+  const kindLine = !isScale ? fill(Sg.setKind, { Trait: t.name, n: NUM[model.looks.length] ?? String(model.looks.length), kind: S.cap(S.spName(mibi)) }) : copies ? fill(Sg.scaleCopiesKind, { Trait: t.name }) : fill(Sg.scaleKind, { Trait: t.name, kind: S.cap(S.spName(mibi)), low: model.ends[0], high: model.ends[1] });
   text(kindLine, Z.kind.x, T + Z.kind.base, Z.kind.role, "l");
   // the scale: the kind's pictured ends and middle, the bar, her mark, the others' faces
   const sc = { ends: [], bar: null, rough: null, she: null, cop: null, link: null, pins: [], legend: { dot: null, bar: null } };
@@ -69,12 +72,28 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
     else { if (model.shows != null) { sc.legend.dot = [Lg.dotX, Lg.base + Lg.dotDy]; text(Sg.scaleHere, Lg.x + 20, Lg.base, Lg.role, "l"); }
       const u = Sg.scaleUnknown, w = Math.round(u.length * Lg.perChar); sc.legend.bar = [Lg.right - w - Lg.barGap - Lg.barW, Lg.base - 15, Lg.barW, Lg.barH]; text(u, Lg.right, Lg.base, Lg.blueRole, "r"); }
   }
-  // the picture: her close up with the ring on the chapter's place; after the lens the room at dusk with the two copies in one blue lens
+  // a set: one card a look (gold what she shows, a dashed blue rim the look she carries once the lens showed it, a dashed pale rim a look none of yours has), its word, and the small faces of yours that show or carry it
+  const set = { cards: [], kin: [], pill: { w: Z.set.pill.w, h: Z.set.pill.h, dy: Z.set.pill.dy } };
+  if (!isScale) {
+    const Q = Z.set, n = model.looks.length, top = T + Q.top, theirs = others.map((o) => ({ o, looks: shapeModel(fr, t, o.genome).looks }));
+    text(Sg.setNote, Q.say.right, T + Q.say.base, Q.say.role, "r");   // the accepted note shares the one line with the kind line; at a phone size the two do not fit, so it stands at the foot
+    model.looks.forEach((l, i) => {
+      const x = Q.x0 + (n > 1 ? Math.round((i * (Q.x1 - Q.x0 - Q.card)) / (n - 1)) : 0), rim = l.shows ? "gold" : l.hidden ? "blue" : l.none ? "dash" : "solid", sq = squareOf(sid, t.id, l.look), kin = [];
+      set.cards.push({ x, y: top, s: Q.card, rim, master: sq?.master ?? null, window: sq?.window ?? null, bright: l.hidden ? 1.25 : 1, pill: l.shows ? "gold" : l.hidden ? "blue" : "" });
+      if (l.shows || l.hidden) text(l.shows ? Sg.setShows : Sg.setCarries, x + Q.card / 2 - Q.pill.w / 2, top + Q.pill.dy + Q.pill.base, Q.pill.role, "c", Q.pill.w);
+      text(l.look, x - 7, top + Q.label.base, Q.label[l.shows ? "shows" : l.hidden ? "carries" : l.none ? "none" : "role"] ?? Q.label.role, "c", Q.card + 14);
+      if (l.shows) kin.push({ face: faceOf(sid, mibi, fr), her: true });
+      for (const q of theirs) if (q.looks[i]?.shows || q.looks[i]?.hidden) kin.push({ face: faceOf(sid, q.o, fr), her: false });
+      const K = Q.kin, w = kin.length * K.d + Math.max(0, kin.length - 1) * K.gap; kin.forEach((k, j) => set.kin.push({ ...k, x: Math.round(x + Q.card / 2 - w / 2 + j * (K.d + K.gap)), y: top + K.dy - K.d / 2, d: K.d }));
+    });
+  }
+  // the picture: her close up with the ring on the chapter's place; after the lens the room at dusk with the two copies (a set: the look she carries) in one blue lens
   let body, lens, halves = null;
-  if (copies) { const C = Z.copies, mast = roundOf(sid, t.id); body = { left: C.bodyLeft, top: C.bodyTop, w: C.bodyW }; lens = { cx: C.cx, cy: C.cy, d: C.d, zoomW: C.zoomW }; halves = mast ? model.copies.map((c) => mast[c < 0.5 ? 0 : 2]) : null; }
+  if (hid) { const C = Z.set.lens, sq = squareOf(sid, t.id, hid.look); body = { left: C.bodyLeft, top: C.bodyTop, w: C.bodyW }; lens = { cx: C.cx, cy: C.cy, d: C.d, zoomW: C.zoomW, ox: C.ox, oy: C.oy }; halves = sq ? [sq.master] : null; }
+  else if (copies) { const C = Z.copies, mast = roundOf(sid, t.id); body = { left: C.bodyLeft, top: C.bodyTop, w: C.bodyW }; lens = { cx: C.cx, cy: C.cy, d: C.d, zoomW: C.zoomW }; halves = mast ? model.copies.map((c) => mast[c < 0.5 ? 0 : 2]) : null; }
   else { const C = Z.close, bh = Math.round((C.bodyW * 312) / 304), [fx, fy] = closeOf(sid, ch.id), left = clamp(Math.round(C.cx - fx * C.bodyW), C.left[0], C.left[1]), bt = clamp(Math.round(C.cy - fy * bh), C.tray - bh, 0);
     body = { left, top: bt, w: C.bodyW }; lens = { cx: left + Math.round(fx * C.bodyW), cy: bt + Math.round(fy * bh), d: C.d, zoomW: C.zoomW, fx, fy }; }
-  const pic = { species: sid, size: [W, H], dusk: copies, copies, body, lens, halves, tray: { top: T, h: trayH, fade: Z.tray.fade }, ring: { cx: Hd.cx, cy: T + Hd.cy, s: Hd.ring, chapter: ch.id, petals }, chips, sc };
+  const pic = { species: sid, size: [W, H], dusk, copies, body, lens, halves, tray: { top: T, h: trayH, fade: Z.tray.fade }, ring: { cx: Hd.cx, cy: T + Hd.cy, s: Hd.ring, chapter: ch.id, petals }, chips, sc, set };
   const stage = req({ kind: "pagescale", id: `pagescale:${sid}:${hash(JSON.stringify(pic))}`, ...pic });
   return { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
 }

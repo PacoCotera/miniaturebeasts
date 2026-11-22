@@ -20,7 +20,9 @@ export const CROPS = {
     },
     cards: {
       // station-build-3 (AD bus 233353): each look is windowed on its marking, on the back (x 20-190, y 100-215); spotted's master faces the other way, so its window is the right flank (x 150-300, y 150-265)
-      markings: { window: [30, 125, 118, 80], windows: { spotted: [150, 160, 140, 80] }, masters: { plain: COAT("between", "between"), spotted: LAY("spots"), saddle: LAY("saddle"), shaded: LAY("gradient"), bands: LAY("bands"), patches: LAY("patches") } },
+      markings: { window: [30, 125, 118, 80], windows: { spotted: [150, 160, 140, 80] }, masters: { plain: COAT("between", "between"), spotted: LAY("spots"), saddle: LAY("saddle"), shaded: LAY("gradient"), bands: LAY("bands"), patches: LAY("patches") },
+        // her chapter's square cards (station-match-6; the accepted walk-4-set): the same signed masters, a square window of the flank (spotted's faces the other way)
+        square: [25, 90, 135, 135], squares: { spotted: [173, 125, 135, 135] } },
     },
   },
 };
@@ -32,6 +34,10 @@ export function cropSpecOf(species, model) {
 }
 // The masters of a scale's round portraits on her chapter: [low, middle, high], or null for a kind or trait with none (a plain disc stands in)
 export const roundOf = (species, traitId) => CROPS[species]?.round?.[traitId] ?? null;
+// A set card's master and square window on her chapter: { master, window }, or null for a kind, trait or look with none
+export function squareOf(species, traitId, look) {
+  const c = CROPS[species]?.cards?.[traitId], master = c?.masters?.[look]; return c?.square && master ? { master, window: c.squares?.[look] ?? c.square } : null;
+}
 // A window of a master's pixels ({ w, h, rgba }), reduced once to dw x dh with `resample` (layered-stand.mjs); a window past the art is clipped (transparent beyond).
 export function cropPixels(src, window, dw, dh, resample) {
   const [x, y, w, h] = window, crop = new Uint8ClampedArray(w * h * 4);

@@ -748,7 +748,13 @@ The face has no 34, 17 or 19 px face: the name is `glass.chapter` (SB28), the or
 | Legend | baseline 584 | "where she is" (gold dot), "the two she carries: not known yet" (blue bar) |
 | After the lens | room at dusk, her 456 wide, shade 50 %; a 184 lens at (176, 144): the two copies side by side (redder, yellower), a blue bar between | head "She carries two {traits}", no chips; the two blue marks on the bar with a bracket; legend "A young gets one of her two, and one from its other parent." |
 
-A trait that is a set shows its chip and one plain line until the set slice. A kind with no round portraits shows plain discs. The pod's reading screen keeps its own chapter frames; her page no longer reaches them.
+"none of yours here yet" (`strings.read.scaleNone`) stands in the middle of the widest empty stretch of the bar when that stretch is 0.3 of the bar or wider (`sc.say.min`). The tint locus has three alleles, so a mibi's two copies stand at 0, 0.5 or 1: two blue marks at the very ends are a mibi with a low and a high copy, not a mapping fault.
+
+### Her chapter: a set (station-match-6; accepted walk-4-set)
+
+Tray 296 tall (`regions.page.scale.tray.hSet`), chips as the scale. One 70 lp card a look (`regions.page.scale.set`), space-between from x 20 to 510, tops 145 under the tray's top, the picture a square window of the signed flank (`trait-crops.mjs squareOf`): gold 4 px rim and glow for what she shows (pill "she shows"), a dashed blue rim for the look she carries once the lens has shown it (pill "she carries"), a dashed pale rim for a look none of yours has, a plain rim otherwise; the look's word under it; under that the 28 lp faces of your mibis that show or carry it (hers gold). Words: "{Trait} is one of {n}. A {kind} has exactly one." and "dashed: not found yet" (at the foot: the two do not fit one line on a phone). After the lens: room at dusk, her plain coat, one 196 lens at (176, 190) with the look she carries, head "She carries {a look}" and "under her {look} coat". Code-drawn: rims, pills, lens rim; the pictures are crops of signed masters (`tools/cut-page-crops.mjs` writes them with a manifest).
+
+A kind with no round portraits shows plain discs. The pod's reading screen keeps its own chapter frames; her page no longer reaches them.
 
 ---
 
