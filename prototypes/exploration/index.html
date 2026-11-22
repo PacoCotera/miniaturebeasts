@@ -2542,11 +2542,14 @@ function habitWorld(X) {
   for (const c of X.live.cr) {
     if (!c.ind || c.hide || c.gone) continue;
     const win = calmWindow(S.seed, c.id, S.turn, DAY.parts, routineOf(c.ind.doings));
-    if (!win || S.day.spent < win.from || S.day.spent >= win.to) { if (c.visitor && S.day.spent >= (win ? win.to : 0)) c.visitor = 0; continue; }
+    if (!win || S.day.spent < win.from || S.day.spent >= win.to) { if (c.visitor && S.day.spent >= (win ? win.to + 10 : 0)) c.visitor = 0; continue; }   // drawn in the window; it has ten light more to arrive
     if (c.visitor) continue;
     let best = null, bd = 99;
-    for (const q of X.live.cr) { if (q.ind || q.hide || q.id === c.id || !['idle', 'seek', 'watch'].includes(q.st)) continue; const d = cheb(q, c); if (d < bd) { bd = d; best = q; } }
-    if (best) { c.visitor = best.id; best.visit = { id: c.id, until: win.to }; }
+    for (const q of X.live.cr) {   // a wary one: another named Loika that is wary, or any other kind that is not bold; not already drawn to someone, not in a habit of its own
+      if (q.id === c.id || q.hide || q.visit || q.visitor || q.hb || !['idle', 'seek', 'watch'].includes(q.st) || (q.ease | 0) >= 2) continue;
+      if (q.ind ? q.ind.doings.wary < .5 : (q.b || 0) > .55) continue;
+      const d = cheb(q, c); if (d < bd) { bd = d; best = q; } }
+    if (best) { c.visitor = best.id; best.visit = { id: c.id, until: win.to + 10 }; }
   }
 }
 // the visitor walks to within two tiles of her, and stays there while it is calm
@@ -2585,7 +2588,7 @@ function noteHabit(c) {
     else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); }
   }
   const filled = want ? rec.got[want] : 0;
-  fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + habCard(c.id, k) : ''), 3);
+  fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(W.rooms[habWant(c.id, k)], false) : W.cardTail(W.rooms[want], true)) : ''), 3);
   ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, v, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent });
   waitTick('patch');   // a note spends one light, as a Wait does
 }
@@ -8568,7 +8571,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { curLay, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

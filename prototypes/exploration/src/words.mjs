@@ -81,13 +81,13 @@ WORDS.habit = {
   noteCtx: 'note what you see of her now',
   // what a note says, by range: the shape only when the sight gives no more (a far note never claims more)
   shape: { shake: 'a small grey shape shivering', calm: 'she has stopped', sleep: 'a round shape low in the grass' },
-  give: { place: n => n + ' · where she goes', coat: n => n + ' · her coat', face: n => n + ' · her face' },
   noted: (name, habit, range, said) => name + ' · ' + habit + ' · ' + range + ' · ' + said,
   first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
   dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
   // the card line, one per habit, on the forecast line: what the Station still lacks
   card: (habit, want, filled) => habit + ' · ' + (filled ? 'learned: ' : 'still to learn: ') + want,
+  cardTail: (want, filled) => (filled ? 'learned: ' : 'still to learn: ') + want,   // the card line's tail, after a note says the habit already
   cardKnown: habit => habit + ' · learned',
   range: { far: 'from far', mid: 'from mid range', near: 'from near' },
   sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
