@@ -10,6 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, traitState } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+import { pageBox, PAGE_CHAPTER, PAGE_BODY } from "../src/page-window.mjs";
 import * as Lib from "../src/library.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
@@ -707,6 +708,10 @@ test("her page: ✓ on a doing chapter with 0 sightings opens it and draws its e
   assert.ok(scales.length && scales.every((x) => x.rough && x.rough[1] - x.rough[0] > 0.6 && x.shows == null), "the empty scales: the widest stretch, nothing of hers");
   assert.ok(v.read.right.plates.length && v.read.right.plates.every((pl) => pl.shape && pl.shape.pic), "the chapter's plates are drawn");
   assert.ok(v.line.subject, "the foot says which chapter is in hand");
+  // the pan: the phone window goes to the chapter though the ring has no box on it (the focus stays on the rail at 0 sightings)
+  assert.equal(pageBox(h.ui.pods, null), PAGE_CHAPTER, "the window pans to the open chapter with no ring box");
+  assert.equal(pageBox(h.ui.pods, [1, 2, 3, 4]), PAGE_CHAPTER);
+  h.ui.pods.at = "rail"; assert.equal(pageBox(h.ui.pods, null), null, "on the rail with no box it stays where it is"); assert.equal(pageBox(h.ui.pods, [1, 2, 3, 4]), PAGE_BODY);
 });
 
 test("the lens on her page (step 2c): copies and the hidden look stay hidden until the lens is pointed at the trait (✓ in its detail); an old save and a 2b page load with none shown", () => {
