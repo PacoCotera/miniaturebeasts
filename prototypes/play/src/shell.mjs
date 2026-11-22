@@ -190,9 +190,9 @@ function placeStation(p) {
 let sentNarrow = null;
 function tellNarrow(force = false) {
   const on = !!(PLAN.station && PLAN.station.narrow), win = !!(PLAN.station && PLAN.station.view);   // win: the screen is a window of the face (the phone, upright or sideways): the room view stands bare there
-  const w = win ? Math.floor(PLAN.station.view.w) : 0, h = win ? Math.floor(PLAN.station.view.h) : 0, key = on + ":" + w + ":" + h;   // w, h: the window's size in lp: the walkers stay inside it
+  const w = win ? Math.floor(PLAN.station.view.w) : 0, h = win ? Math.floor(PLAN.station.view.h) : 0, smooth = !!(PLAN.station && PLAN.station.pageForm), key = on + ":" + w + ":" + h + ":" + smooth;   // w, h: the window's size in lp: the walkers stay inside it; smooth: her page on a phone's side is drawn below x0.5, where nearest-pixel sampling dropped a thin stem (the "d" of "field")
   if (!force && key === sentNarrow) return; sentNarrow = key;
-  try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on, window: win, w, h }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
+  try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on, window: win, w, h, smooth }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
 }
 function stationFocus(m) {
   if (!!m.page !== pageForm) { pageForm = !!m.page; layout(); }
