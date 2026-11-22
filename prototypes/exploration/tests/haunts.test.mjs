@@ -1,4 +1,4 @@
-// The wild Loika's haunts, routines and names (walk-design-1 W2; canon: editorial's loika-routines.md): the pure overlay (src/gen7/haunts.mjs), and the page's use of it.
+// The wild Loika's haunts, routines and names (walk-design-1 W2; canon: the book's page on the wild Loika's routines): the pure overlay (src/gen7/haunts.mjs), and the page's use of it.
 //   node --test prototypes/exploration/tests/haunts.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";

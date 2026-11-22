@@ -49,7 +49,7 @@ export const WORDS = {
   waits: 'Nothing explored · the world waits',
 };
 
-// [copy] The wild Loika's haunts, in the bottom line beside its name (walk W2; editorial's loika-routines.md: a friend on the walk, never a claim past the sight)
+// [copy] The wild Loika's haunts, in the bottom line beside its name (walk W2; the book's page on the Loika's routines: a friend on the walk, never a claim past the sight)
 WORDS.haunt = { reed: 'at the reeds', shore: 'at the water', sweep: 'in the tall grass', grove: 'in the shade', outcrop: 'on the lookout' };
 
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.

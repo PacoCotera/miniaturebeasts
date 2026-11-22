@@ -1,4 +1,4 @@
-// Haunts and routines of the wild Loika (walk-design-1 W2; canon: editorial's loika-routines.md, taken as given). Pure: everything here is a function of the realm seed, a place's
+// Haunts and routines of the wild Loika (walk-design-1 W2; canon: the book's page on the wild Loika's routines, taken as given). Pure: everything here is a function of the realm seed, a place's
 // layout (as a plain view) and the ids given; nothing is stored and nothing is drawn. The land freeze holds: this is an overlay read after a place is mounted, it never touches the land's own lists.
 //
 //   a view of a place (what the page builds from its layout): { w, h, props: [{ fam, kind, x, y }] (tiles of the layout), reeds: [{ x, y, w, h }], water(x, y), land(x, y) }
