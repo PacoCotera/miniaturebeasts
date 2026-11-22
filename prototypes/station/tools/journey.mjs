@@ -277,7 +277,7 @@ s = await st();
   expect(u.view === "nursery" && ring?.z === "caps" && ring.i === 0 && cs[0].state === "growing" && cs[1].state === "free" && cs[2].state === "free" && t.includes(sN.minLeft.replace("{n}", cs[0].left)) && t.some((x) => x.includes(sN.growing.replace("{n}", 1))), "back on the nursery: the ring on the capsule growing with its minutes left, the pill says one grows: " + JSON.stringify([u.view, ring, cs.map((c) => c.state), t])); }
 await frameShot("nursery-growing");
 { const u0 = await page.evaluate(() => window.__st.msg); expect(/^In a capsule\. It will be ready in about /.test(u0), "the page says it is in a capsule and when it will be ready: " + u0); }
-await press("confirm", 300); expect((await page.evaluate(() => window.__st.msg)) === sN.plateGrowing.replace("{n}", String(Math.max(1, cs[0].left))), "✓ on a growing capsule says it is still growing: " + (await page.evaluate(() => window.__st.msg)));
+const csG = await capsules(); await press("confirm", 300); expect((await page.evaluate(() => window.__st.msg)) === sN.plateGrowing.replace("{n}", String(Math.max(1, csG[0].left))), "✓ on a growing capsule says it is still growing: " + (await page.evaluate(() => window.__st.msg)));
 // Grow paints nothing (decisions 10-11 14:17): the mibi is drawn from its layers, nothing joins the outbox and no job reaches the Caddy service
 s = await st(); expect(s.outbox.length === 0, "Grow leaves the outbox empty: " + JSON.stringify(s.outbox));
 expect(caddy.state.jobs.length === 0 && caddyGrowCalls === 0, "no job and no /grow call reached the Caddy service");
