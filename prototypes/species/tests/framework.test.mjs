@@ -748,3 +748,22 @@ test("ruling 5: how many of the pool ends off the step a bred copy can now reach
   console.log(`off-step pool ends: ${n}, reachable: ${reach}`);
   assert.equal(reach, n);
 });
+
+test("a wild founder's two copies of a blend look differ, each the mean of 3 uniform draws over the pool", () => {
+  const f = frameOf("S01"), r = rng("mid3-founders");
+  const looks = f.loci.filter((l) => l.kind !== "locked" && !l.weights && l.alleles.length > 1 && isContinuous(LOCI.get(l.id)) && !isDoing(l.id));
+  assert.ok(looks.length > 0, "the frame has blend looks");
+  const t = [], dif = [];
+  for (let i = 0; i < 300; i++) {
+    const g = sampleIndividual(f, r);
+    for (const l of looks) {
+      const locus = LOCI.get(l.id), [lo, hi] = valueRange(locus, l.alleles);
+      const [a, b] = g.loci[l.id].map((c) => (copyValue(locus, c) - lo) / (hi - lo));
+      t.push(a, b); dif.push(a !== b);
+    }
+  }
+  assert.ok(dif.filter(Boolean).length / dif.length > 0.9, "the copies differ");
+  const mean = t.reduce((s, x) => s + x, 0) / t.length, sd = Math.sqrt(t.reduce((s, x) => s + (x - mean) ** 2, 0) / t.length);
+  assert.ok(Math.abs(mean - 0.5) < 0.03, `mean near the middle (${mean})`);
+  assert.ok(sd > 0.14 && sd < 0.19, `spread of a mean of 3 uniforms is 0.167 (${sd})`);
+});

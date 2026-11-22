@@ -6,7 +6,7 @@
 // else by seed and opens its traits by tier. Individuals vary only at the open loci, from the
 // species' pools. The three authored frames (the files hopper, puffcap and glowtail in frames.py, here S01, S02
 // and S03: Loika, Untuva and Tuikis) keep their open traits and fixed values.
-import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, LANGUAGE_FRAME, isContinuous, valueRange, samePair, lookConflicts } from "./catalogue.mjs";
+import { CATALOGUE, LOCI, inClan, VALIDATED, DRAFTS, V1_DEFAULTS, PART_SWITCHES, PLAN_SWITCHES, BODY_PIGMENTS, SECOND_PIGMENTS, resolveCopies, looksFor, alleleIds, catalogueHeader, LANGUAGE_FRAME, isContinuous, valueRange, quantize, samePair, lookConflicts } from "./catalogue.mjs";
 import { poolBound } from "./envelope.mjs";
 import { cross } from "./cross.mjs";
 import { rng, streamOf } from "./draws.mjs";
@@ -415,9 +415,15 @@ export function typeSpecimen(frame) {
   }
   return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin: { kind: "type-specimen" } };
 }
+// A wild founder's copy of a blend look: the mean of 3 uniform draws over the pool's range (mostly near the middle, some apart), on the blend step.
+function blendCopy(locus, l, r) {
+  const [lo, hi] = valueRange(locus, l.alleles);
+  return quantize(locus, lo + ((r() + r() + r()) / 3) * (hi - lo), [lo, hi]);
+}
+const isBlendLook = (l) => l.kind !== "locked" && !l.weights && l.alleles.length > 1 && isContinuous(LOCI.get(l.id)) && !isDoing(l.id);
 export function sampleIndividual(frame, r, origin = { kind: "random" }) {
   const loci = {};
-  for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : l.weights ? (l.draw === "alike" ? (() => { const a = pickWeighted(r, l.alleles, l.weights); return [a, a]; })() : [pickWeighted(r, l.alleles, l.weights), pickWeighted(r, l.alleles, l.weights)]) : [pick(r, l.alleles), pick(r, l.alleles)];
+  for (const l of frame.loci) loci[l.id] = l.kind === "locked" ? [...l.copies] : isBlendLook(l) ? [blendCopy(LOCI.get(l.id), l, r), blendCopy(LOCI.get(l.id), l, r)] : l.weights ? (l.draw === "alike" ? (() => { const a = pickWeighted(r, l.alleles, l.weights); return [a, a]; })() : [pickWeighted(r, l.alleles, l.weights), pickWeighted(r, l.alleles, l.weights)]) : [pick(r, l.alleles), pick(r, l.alleles)];
   return { schema: "mb-genome/2", species: frame.species.id, frameVersion: frameVersionOf(frame), loci, origin };
 }
 // The cross (the-cross.md, decided 2026-10-08) lives in cross.mjs: blends for continuous loci,

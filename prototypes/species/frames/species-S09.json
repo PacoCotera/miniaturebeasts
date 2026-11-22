@@ -12,7 +12,7 @@
   "resembles": "an upright body on two legs, wings tucked in",
   "moves": "strides, soars",
   "habitat": "meadow, rock field",
-  "gate": "Weather expeditions",
+  "gate": null,
   "diet": "fruit, seeds",
   "ability": "scouts from above: reveals the cells around",
   "character": "watchful, lordly",
@@ -2735,8 +2735,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 191,
-  "crossedBuilt": 191,
+  "crossed": 193,
+  "crossedBuilt": 193,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },

@@ -5,14 +5,14 @@
   "name": "Untuva",
   "plural": "Untuva",
   "order": 2,
-  "summary": "A radial, capped plan: a round furred body, a face, a cap on top, no legs. It waddles."
+  "summary": "A fleece loaf on four stub feet, with round ears and a fan of rose felt lobes on its head; no other kind wears one. It trundles from fruit to fruit and noses out what's buried."
  },
  "taxonomy": {
   "code": "S02",
   "resembles": "a puff with a face and stub feet",
-  "moves": "waddles",
+  "moves": "trundles from fruit to fruit",
   "habitat": "wood, meadow, pond",
-  "gate": "Character sealed (a crystal)",
+  "gate": null,
   "diet": "fruit",
   "ability": "sniffs out buried pods; sheds after a full meal",
   "character": "a sleepy glutton nothing startles",
@@ -2001,8 +2001,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 192,
-  "crossedBuilt": 192,
+  "crossed": 190,
+  "crossedBuilt": 190,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },

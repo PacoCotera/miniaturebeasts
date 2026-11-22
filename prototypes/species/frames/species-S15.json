@@ -10,11 +10,11 @@
  "taxonomy": {
   "code": "S15",
   "resembles": "an upright body, broad below, on two short legs",
-  "moves": "walks on its roots",
+  "moves": "walks slowly, stops in any gap of sun",
   "habitat": "wood",
-  "gate": "sealed chapter",
+  "gate": null,
   "diet": "light and dew",
-  "ability": "roots for a turn; a bush grows where it stood",
+  "ability": "finds the gaps in the fog: the map keeps clearing",
   "character": "patient, faintly wise",
   "clanName": "Phyllaxa",
   "clanNumber": 15,
@@ -97,7 +97,7 @@
  ],
  "habits": [
   "light-lean",
-  "root-down",
+  "fog-wait",
   "sleep-curled"
  ],
  "pod": {
@@ -2071,8 +2071,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 195,
-  "crossedBuilt": 195,
+  "crossed": 193,
+  "crossedBuilt": 193,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },

@@ -20,9 +20,9 @@
   "habitat": "Ferns",
   "gate": null,
   "diet": "fruit, leaves",
-  "ability": "draft: to be set by the game designer",
-  "character": "draft: gentle, curious",
-  "clanName": null,
+  "ability": "waves wild mibis over to settle beside it",
+  "character": "gentle, curious",
+  "clanName": "Helikta",
   "clanNumber": 19,
   "member": 1,
   "speciesNumber": 609,
@@ -2381,8 +2381,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 190,
-  "crossedBuilt": 190,
+  "crossed": 188,
+  "crossedBuilt": 188,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },

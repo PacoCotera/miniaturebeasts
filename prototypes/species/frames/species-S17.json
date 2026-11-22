@@ -25,9 +25,9 @@
   "habitat": "Reeds",
   "gate": null,
   "diet": "dew",
-  "ability": null,
+  "ability": "glows to light the way in fog",
   "character": "calm, a little dreamy",
-  "clanName": null,
+  "clanName": "Pyrsaga",
   "clanNumber": 17,
   "member": 1,
   "speciesNumber": 545,
@@ -2183,8 +2183,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 198,
-  "crossedBuilt": 198,
+  "crossed": 192,
+  "crossedBuilt": 192,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
