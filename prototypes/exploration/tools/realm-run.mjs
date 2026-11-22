@@ -158,7 +158,7 @@ export function paceRun(seed, { places = 1, verbose = false, calm = true } = {})
 }
 export const PACE_SEEDS = [7, 13, 42];
 
-// ---- E6 (walk W1, walk.md 12): the world turns by light spent, never by trips taken ----
+// ---- E6 (walk W1): the world turns by light spent, never by trips taken ----
 // Over seeds, two bots spend the same light (LIGHT, five days) on the page's own advance / startExpedition / endExpedition: one makes camp after every find-sized trip (CAMP_EVERY actions, then End expedition at the
 // flag), the other walks whole days (the night ends each). World turns per 1,000 light must agree within 5%. And a day spent on Wait alone gathers less than a day walked (first-trip-bot's walk over the whole reach), on every seed.
 //   node tools/realm-run.mjs --e6 [--from 1] [--to 200]
