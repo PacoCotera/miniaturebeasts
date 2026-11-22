@@ -4,7 +4,7 @@
 //   nursery: { size, caps: [{ x, y, w, h, layers, state, progress, bar: [x0, x1], pod: { id, w, cx, foot } | null, ring, badge: [x, y, w, h, tone] }], head: { pill: [x, y, w, h, radius] }, rows: [{ x, y, w, h, radius, ring, isNew, tag: [x, y, w, h],
 //             wood: [x, y, w], pods: [{ id, x, w, foot }], faces: [{ id, x, y, d }] }], keys: { pad: [x, y, w, h] | null, ok: [x, y, w, h] }, back: ids }
 //   podpage: { size, back, shelfTop, pod: { id, w, cx, foot }, alike: [x, y, w, h, radius] | null, pill: [x, y, w, h, radius], faces: [{ id, x, y, d }], ring: [x, y, w, h, radius] | null, ok: [x, y, w, h], letgo: [x, y, w, h, radius, ring] | null }
-import { Pane, pixels as masterPixels, paintPage, rrectSd, sprite, discClip, PAGE_ORANGE, PAGE_INK, PAGE_GOLD } from "./reading-pictures.mjs";
+import { cropOf, Pane, pixels as masterPixels, paintPage, rrectSd, sprite, discClip, PAGE_ORANGE, PAGE_INK, PAGE_GOLD } from "./reading-pictures.mjs";
 import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
 
 // a master's pixels, or a built picture's (the pod: registered by the same props, made by pictures.mjs); null when it is neither
@@ -85,6 +85,7 @@ export function pairingPicture(r) {
   paintPage(out, 0, 200, W, H, (x, y) => [INK, clamp01((y - 200) / 40) * 0.97]);
   for (const s of r.stands) { standing(out, s); if (s.tag) tag(out, s.tag); }
   for (const n of r.names) pill(out, n);
+  for (const n of r.plates ?? []) pill(out, n);   // the copies lines' own dark plate under each name
   for (const b of r.bars) {
     paintPage(out, b.x - 1, b.y - 1, b.x + b.w + 1, b.y + b.h + 1, (px, py) => [[1, 1, 1], 0.14 * clamp01(0.5 - rrectSd(px, py, b.x, b.y, b.w, b.h, b.h / 2))]);
     if (b.range) { const [x0, x1] = b.range; paintPage(out, x0 - 1, b.y - 1, x1 + 1, b.y + b.h + 1, (px, py) => [[0.45, 0.8, 0.5], 0.85 * clamp01(0.5 - rrectSd(px, py, x0, b.y, Math.max(2, x1 - x0), b.h, b.h / 2))]); }
@@ -94,7 +95,8 @@ export function pairingPicture(r) {
     const dim = c.dim ? 0.35 : 1, x = c.x, y = c.y, d = c.d;
     paintPage(out, x - 1, y - 1, x + d + 1, y + d + 1, (px, py) => [[1, 1, 1], (c.dim ? 0.05 : 0.12) * clamp01(0.5 - rrectSd(px, py, x, y, d, d, 8))]);
     if (!c.dim) ring(out, [x, y, d, d, 8], 2, [0.45, 0.8, 0.5]);
-    const px = pixels(c.id); if (px) sprite(out, px, 48, 48, x + Math.round((d - 40) / 2), y + Math.round((d - 40) / 2), 40, { clip: () => dim });
+    if (c.crop) { const cr = cropOf(c.id, c.crop, 42, 22); if (cr) sprite(out, cr.rgba, 42, 22, x + Math.round((d - 42) / 2), y + Math.round((d - 22) / 2), 42, { clip: () => (c.dim ? 0.65 : 1) }); }   // a marking the pair cannot give stays readable (the pattern is the point of the card)
+    else { const px = pixels(c.id); if (px) sprite(out, px, 48, 48, x + Math.round((d - 40) / 2), y + Math.round((d - 40) / 2), 40, { clip: () => dim }); }
     c.marks.forEach((id, i) => face(out, { id, x: x + d - 12 - i * 12, y: y - 7, d: c.mark }));
     if (c.tag) tag(out, c.tag);
   }

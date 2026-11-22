@@ -7,6 +7,7 @@ import { frameOf } from "../genome.mjs";
 import { faceOf } from "./page-props.mjs";
 import { coatOf, coatMaster, placedAt, MARKED_PICTURE } from "../stands.mjs";
 import { drawnLooks } from "../looks.mjs";
+import { CROPS } from "../trait-crops.mjs";
 import { readout } from "../pairing-model.mjs";
 import { fill } from "./words.mjs";
 
@@ -32,12 +33,14 @@ export function pairView(view, m, spec, req) {
   const R = readout(st, sv, spec, a, b, settings, now), text = (tx, X, base, role, align = "l", w) => { if (tx) texts.push({ text: tx, x: Math.round(X), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
   const sp = S.speciesOf(a), fr = frameOf(sp), W = spec.regions.page.rect[2], T = Z.stand, noStand = [];
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role);
-  const stands = [], names = [], N = Z.name;
+  const stands = [], names = [], plates = [], N = Z.name;
   const side = (mb, f, fx) => { if (!mb) return; const st1 = standOf(sp, mb, fr); if (st1.disc) noStand.push(mb.id);
     stands.push({ id: st1.id, disc: st1.disc, x: fx, y: T.y, w: T.w, h: T.h, tag: null }); names.push([fx, N.baseline - N.up, N.w, N.h, N.radius]);
     text((mb === b && partners.length > 1 ? "◀ " : "") + S.cap(mb.name) + (mb === b && partners.length > 1 ? " ▶" : ""), fx, N.baseline, N.role, "c", N.w);
-    if (f.rest) text(f.rest, fx, Z.rest.baseline, Z.rest.role, "c", N.w);   // "resting · n min" under the name, with its time
-    f.counts.forEach((c, i) => text(`${i ? "eyes" : "marking"} ${c}`, fx - 15, Z.copies.baseline + (f.rest ? Z.copies.pitch : 0) + i * Z.copies.pitch, Z.copies.role, "c", N.w + 30)); };   // one line a trait, under the name
+    // station step 8-6 (AD 14:28): the copies lines sit below the pill, a line apart, on a dark plate of their own (the pale backdrop gave them no contrast); "resting · n min" is the plate's first line
+    const C = Z.copies, lines = [...(f.rest ? [f.rest] : []), ...f.counts.map((c, i) => `${i ? "eyes" : "marking"} ${c}`)], pitch = lines.length > 2 ? C.pitch - 1 : C.pitch;
+    if (lines.length) plates.push([fx, N.baseline - N.up + N.h + C.plate.dy, N.w, C.plate.h + (lines.length > 2 ? 12 : 0), C.plate.radius]);
+    lines.forEach((tx, i) => text(tx, fx, C.baseline + i * pitch, C.role, "c", N.w)); };   // one line a trait, under the name
   side(a, R.a, T.ax);
   if (b) side(b, R.b, T.bx);
   text(Sg.plus, Z.plus.cx, Z.plus.baseline, Z.plus.role, "c", 40);
@@ -59,9 +62,12 @@ export function pairView(view, m, spec, req) {
       text(Sg[row.label], B.labelX, row.cy + B.labelBase, B.labelRole); text(Sg[row.label + "Ends"], B.endsX, row.cy + B.endsBase, B.endsRole); });
     const sa = standOf(sp, a, fr).looks.markings ?? "plain", sb = standOf(sp, b, fr).looks.markings ?? "plain", can = new Map(R.markings.map((q) => [q.word, q]));
     const coat = "mibi-adult-" + sp + "-between-between", ids = ["plain", ...Object.keys(MARKED_PICTURE)].map((w) => [w, w === "plain" ? `${coat}-48x48` : `${coat}-${MARKED_PICTURE[w]}-48x48`]).filter(([, id]) => placedAt(id, 48, 48));
+    // station step 8-6 (AD 14:28): each card is the signed Markings back-crop her page uses (trait-crops.mjs), cut live from the lay-<marking> 304s; a kind with no crops keeps the whole 48s
+    const mc = CROPS[sp]?.cards?.markings, cropIds = mc ? Object.entries(mc.masters).map(([w, id]) => [w, id, mc.windows?.[w] ?? mc.window]).filter(([, id]) => placedAt(id, 304, 312)) : [];
+    if (cropIds.length) { ids.length = 0; cropIds.forEach(([w, id, win]) => ids.push([w, id, win])); }
     if (ids.length) { text(Sg.markings, Cd.labelX, Cd.labelBase, Cd.labelRole);
-      ids.forEach(([w, id], i) => { const cx = Cd.x0 + i * Cd.pitch, c = can.get(w), tagBox = c?.isNew ? [cx + Math.round((Cd.d - Cd.tag.w) / 2), Cd.y + Cd.tag.dy, Cd.tag.w, Cd.tag.h] : null;
-        cards.push({ id, x: cx, y: Cd.y, d: Cd.d, dim: !c, marks: [sa === w ? faceA : null, sb === w ? faceB : null].filter(Boolean), mark: Cd.mark, tag: tagBox });
+      ids.forEach(([w, id, win], i) => { const cx = Cd.x0 + i * Cd.pitch, c = can.get(w), tagBox = c?.isNew ? [cx + Math.round((Cd.d - Cd.tag.w) / 2), Cd.y + Cd.tag.dy, Cd.tag.w, Cd.tag.h] : null;
+        cards.push({ id, crop: win ?? null, x: cx, y: Cd.y, d: Cd.d, dim: !c, marks: [sa === w ? faceA : null, sb === w ? faceB : null].filter(Boolean), mark: Cd.mark, tag: tagBox });
         text(w, cx - 6, Cd.nameBase, c ? Cd.nameRole : "glass.quiet", "c", Cd.d + 12);
         if (tagBox) text(Sg.newMark, tagBox[0], tagBox[1] + Cd.tag.base, Cd.tag.role, "c", Cd.tag.w); }); }
   }
@@ -74,7 +80,7 @@ export function pairView(view, m, spec, req) {
   const block = b ? S.pairBlock(st, sv, a, b, settings) : "", can = !!b && !block;
   if (R.done) text(R.done, Z.done.x, Z.done.baseline, Z.done.role);
   else if (can) text(Sg.pairThem, Z.ok.right, Z.ok.baseline, Z.ok.role, "r");
-  const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], stands, names, bars, cards, ok: can ? Z.ok.key : null };
+  const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], stands, names, plates, bars, cards, ok: can ? Z.ok.key : null };
   const stage = req({ kind: "pairing", id: `pairing:${hash(JSON.stringify(pic))}`, ...pic });
   view.page = { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
   view.line = { ok: can ? Sg.pairThem : null, back: S.cap(a.name), subject: b && R.a.resting ? R.a.rest : "", need: block ? S.cap(block) : !b ? (partners.length ? "" : spec.strings.nursery.empty) : "" };
