@@ -22,7 +22,7 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { lookColours } from "./specimen.mjs";
 import { SIZES, shapePicture, picSizeOf } from "./trait-shape-pictures.mjs";
 import { cropSpecOf, cropPixels, coverWindow, ART, CHIP_WINDOW } from "./trait-crops.mjs";
-import { nurseryPicture, podPagePicture } from "./nursery-pictures.mjs";
+import { nurseryPicture, podPagePicture, pairingPicture } from "./nursery-pictures.mjs";
 
 // The crops a trait-shape request places (station-build-2): each signed master's window, reduced once to the picture size (the window is narrowed to the picture's shape, never stretched). A master that is not
 // placed gives no picture there (the card or end stays as the code draws it).
@@ -509,6 +509,7 @@ export function registerReading(r, env) {
     case "pageboard": return made(r.size[0], r.size[1], () => pageBoardPicture(r));
     case "nursery": return made(r.size[0], r.size[1], () => nurseryPicture(r));   // the nursery and a pod's page (nursery-pictures.mjs)
     case "podpage": return made(r.size[0], r.size[1], () => podPagePicture(r));
+    case "pairing": return made(r.size[0], r.size[1], () => pairingPicture(r));   // the pairing screen (station step 8-3)
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
     case "readgather": return made(r.size, r.size, () => gatherPicture(r, env));

@@ -1382,6 +1382,14 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
 // Pair them (station step 8-2; walk-4 picture 6: "the pod goes to the nursery's shelf"): the same draw and the same price as doCross, but the young is a POD on the shelf (never a capsule, never held back by room in
 // the vivarium or a busy incubator: the pod is in neither). Grow it (growPod) takes it from there. The pod keeps its parents' snapshots, their kinship and the draw's `rest` for the page.
 export function pairBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) { const r = crossBlock(st, sv, a, b, settings); return r === "the incubator is busy" || r === "the Vivarium is full" ? "" : r; }
+// Four examples of the young a pair could have (picture 6): the same draw as Pair them, from a stream seeded by the two ids, so the four stay while the picks stay. Genomes only; nothing is kept or spent.
+export function exampleYoung(st, a, b, n = 4) {
+  const fr = frameFor(a), k = kinshipOf(st, a, b); let h = 2166136261;
+  for (const ch of a.id + "|" + b.id) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const rng = () => { h = (h + 0x6d2b79f5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const out = []; for (let i = 0; i < n; i++) { const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) }); if (!genomeProblems(fr, genome).length) out.push({ sp: a.sp, species: fr.species.id, genome, read: [] }); }
+  return out;
+}
 export function pairPod(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now(), rng = Math.random) {
   const block = pairBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Pair them · " + block };
   const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Pair them · " + shortText(st, cost.e, cost.d, cost.s) };

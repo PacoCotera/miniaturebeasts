@@ -66,6 +66,22 @@ export function nurseryPicture(r) {
   return out.rgba();
 }
 
+// The pairing screen's stage (station step 8-3; the accepted walk-4 picture 6): the two picks' faces, a name pill under each, the four examples (faces, a gold "new to you" tag) and Pair them's key. The words
+// come over it from the props. The art is the game's own faces, only placed; the pills and the key are interface drawn by code.
+//   pairing: { size, faces: [{ id, x, y, d }], names: [[x, y, w, h, radius]], young: [{ id, x, y, d, tag: [x, y, w, h] | null }], land: [x, y, w, h, radius] | null, ok: [x, y, w, h] | null }
+export function pairingPicture(r) {
+  const [W, H] = r.size, out = new Pane(W, H);
+  backdrop(out, 300);
+  paintPage(out, 0, 0, W, 76, (x, y) => [INK, 0.5 * (1 - y / 76)]);
+  paintPage(out, 0, 244, W, H, (x, y) => [INK, clamp01((y - 244) / 40) * 0.97]);
+  for (const f of r.faces) face(out, f);
+  for (const n of r.names) pill(out, n);
+  for (const y of r.young) { face(out, y); if (y.tag) { const [x, ty, tw, th] = y.tag; paintPage(out, x - 1, ty - 1, x + tw + 1, ty + th + 1, (px, py) => [PAGE_GOLD, clamp01(0.5 - rrectSd(px, py, x, ty, tw, th, th / 2))]); } }
+  if (r.land) { const [x, y, w, h, rad] = r.land; paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, rad); return sd > 0.5 ? null : [[0.45, 0.8, 0.5], clamp01(0.5 - sd)]; }); }
+  keys(out, { pad: null, ok: r.ok });
+  return out.rgba();
+}
+
 export function podPagePicture(r) {
   const [W, H] = r.size, out = new Pane(W, H);
   backdrop(out, r.shelfTop + 20);
