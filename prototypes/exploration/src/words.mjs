@@ -97,5 +97,7 @@ export const DAY_TEXT = {
   duskNews: n => 'Dusk. Night in ' + n + '.',   // [copy] once a day, in the message box
   nightNews: n => 'Night. Dawn in ' + n + '.',   // [copy]
   newDay: 'A new day · you set out at dawn',   // a set-out in the night's light: the night's end runs first, at the Station
+  arrive: (place, part) => '→ ' + place + ' · arrive ' + part,   // [copy] the map's bottom line: the part of day a step toward that cell lands you in (the step's DAY.mapStep after now)
+  strikeThere: 'Strike warned there',   // [copy] a map step stops once at a strike warned on the cell (or one action ahead); a second press crosses
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
 };

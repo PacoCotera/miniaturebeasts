@@ -68,6 +68,33 @@ test("a scripted four-cell crossing moves the clock 40", () => {
   assert.equal(p.run("S.test_n"), 4, "four cells crossed"); assert.equal(p.run("S.day.spent"), 40, "ten a cell");
 });
 
+test("the map's bottom line says the part of day a step lands in, before each press of a four-cell crossing", () => {
+  const p = start(); const ctx = () => { const c = p.run("lineBase()").ctx; return Array.isArray(c) ? c : [c]; };
+  p.run("S.day.spent = 105");
+  let n = 0, seen = [];
+  for (let i = 0; i < 60 && n < 4; i++) {
+    const dir = ["right", "down", "left", "up"][i % 4]; p.run(`S.exp.face = ${JSON.stringify(dir)}`);
+    const was = p.run("S.exp.pos"), spent = p.run("S.day.spent"), steppable = p.run("canStep(S.exp.pos, S.exp.face) && inRange(aheadCell())");
+    if (steppable) { const want = spent + 10 >= 110 ? "afternoon" : "midday"; assert.ok(ctx()[0].startsWith("→ ") && ctx()[0].endsWith(" · arrive " + want), ctx()[0]); seen.push(ctx()[0]); }
+    p.run("mapStep(S.exp.face)"); if (p.run("S.exp.pos") !== was) { n++; assert.equal(p.run("S.day.spent"), spent + 10); }
+  }
+  assert.equal(n, 4); assert.equal(seen.length >= 4, true); assert.equal(p.run("S.day.spent"), 145);
+});
+
+test("a step stops once at a warned strike on the cell ahead; the second press crosses", () => {
+  const p = start(); let dir = null;
+  for (const d of ["right", "down", "left", "up"]) { p.run(`S.exp.face = ${JSON.stringify(d)}`); if (p.run("canStep(S.exp.pos, S.exp.face) && inRange(aheadCell())")) { dir = d; break; } }
+  assert.ok(dir, "a steppable neighbour");
+  const was = p.run("S.exp.pos"), ahead = p.run("aheadCell()");
+  p.run(`S.exp.mstrike = { c: ${ahead}, at: S.exp.actions + 1 }`);
+  p.run(`mapStep(${JSON.stringify(dir)})`);
+  assert.equal(p.run("S.exp.pos"), was, "the first press does not cross"); assert.equal(p.run("S.day.spent"), 0);
+  assert.ok(p.run("FX.msg").includes("Strike warned there"), p.run("FX.msg"));
+  const c = p.run("lineBase()").ctx; assert.ok((Array.isArray(c) ? c : [c])[0].includes("Strike warned there"), JSON.stringify(c));
+  p.run(`mapStep(${JSON.stringify(dir)})`);
+  assert.equal(p.run("S.exp.pos"), ahead, "the second press crosses"); assert.equal(p.run("S.day.spent"), 10);
+});
+
 test("the bottom line at each of the six parts: the part and how far the night is", () => {
   const p = start(); const ctx = c => (Array.isArray(c) ? c : [c]);
   const want = [[0, "dawn · night in 175"], [30, "morning · night in 145"], [80, "midday · night in 95"], [115, "afternoon · night in 60"], [160, "dusk · night in 15"], [180, "night · dawn in 20"]];
@@ -97,8 +124,9 @@ test("the part of day is named in the bottom line's middle: morning and dusk", (
   const p = start(); p.run("S.day.spent = 30");
   const ctx = c => (Array.isArray(c) ? c : [c]);
   const line = () => p.run("lineBase()");
-  assert.ok(ctx(line().ctx)[0].startsWith("morning · "), "morning on the map: " + ctx(line().ctx)[0]);
-  p.run("S.day.spent = 160"); assert.ok(ctx(line().ctx)[0].startsWith("dusk · "), "dusk on the map");
+  const day = () => ctx(line().ctx).find(c => !c.startsWith("→ ") && !c.startsWith("arrive "));   // the arrival form leads on the map when a neighbour can be stepped into
+  assert.ok(day().startsWith("morning · "), "morning on the map: " + day());
+  p.run("S.day.spent = 160"); assert.ok(day().startsWith("dusk · "), "dusk on the map");
   assert.ok(ctx(line().ctx).includes("dusk · night in 15"), "the day and its night alone are a form too, so the narrowest line still names it");
   p.run("S.exp.pos = S.exp.start; enterPatch(S.exp.pos)"); assert.equal(p.run("S.phase"), "patch");
   assert.ok(ctx(p.run("lineBase()").ctx)[0].startsWith("dusk · "), "dusk in a place");

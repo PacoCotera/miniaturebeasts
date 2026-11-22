@@ -2307,6 +2307,9 @@ function mapStep(dir, viaTiles) {   // viaTiles: a step out of a place that cros
     save(); return; }   // land you can't stand on, or a steep edge between
   const ei = edgeIndex(ex.pos, dir);
   if (canBank() && G.banks && G.banks[ei] && !canStepIn(G, ex.pos, dir, { bank: new Set(ex.dug || []) })) { if (!digBank(ei, ex.pos, c)) return; }   // an earth bank: the first crossing of a walk is the dig
+  if (viaTiles === undefined && ex.mstrike && ex.mstrike.c === c) {   // a press on the map (not a walk off a place's edge): a warned strike there stops the first press, as keeping still stops at a tell; the second crosses
+    const w = ex.stepWarn; if (!w || w.c !== c || w.at !== ex.actions) { ex.stepWarn = { c, at: ex.actions }; FX.bumpAt = NOW; fxMsg(DAY_TEXT.strikeThere, 3); return; } }
+  ex.stepWarn = null;
   noteSure(ex.pos, dir, c);
   if (canSure() && cheb(cxy(c), cxy(ex.start)) === ex.range) ex.abUsed = 1;   // Tuliko's first step into its one extra ring is its ability used
   if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
@@ -7755,6 +7758,13 @@ function dayCtx(ctx) {
   const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
+// On the map the line leads with where a step toward the faced cell lands you in the day (the step's clock is DAY.mapStep), and, after a press stopped at a warned strike, that it is warned.
+function arriveCtx(ctx) {
+  const ex = S.exp, a = aheadCell(); if (!ex || !S.day || a < 0 || !inRange(a) || !canStep(ex.pos, ex.face || 'down')) return ctx;
+  const at = S.day.spent + DAY.mapStep, part = at >= DAY.light ? partOfDay(0) : partOfDay(at);
+  const arrive = DAY_TEXT.arrive(S.revealed[a] ? landWord(a) : 'fog', part), warned = ex.stepWarn && ex.stepWarn.c === a && ex.stepWarn.at === ex.actions;
+  return (warned ? [arrive + ' · ' + DAY_TEXT.strikeThere, DAY_TEXT.strikeThere] : []).concat([arrive, 'arrive ' + part], Array.isArray(ctx) ? ctx : [ctx]);
+}
 function lineBase() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 29 ? ok.slice(0, 28) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
@@ -7768,7 +7778,7 @@ function lineBase() {
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go in', dayCtx(mapContext()), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
+      return L1('Go in', arriveCtx(dayCtx(mapContext())), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
     case 'patch': {
       if (RT.view) { const v = RT.view; return v.kind === 'look' ? L1('', '', VIEW_TEXT.close) : L1('', '', ''); }   // a view over the place: its own line
       const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
