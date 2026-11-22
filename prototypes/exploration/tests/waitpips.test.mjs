@@ -1,7 +1,20 @@
 // The first-load wait's pips (src/waitpips.mjs): 0 to 10 from the real steps, never past 10, never backwards by itself being fed more.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { waitPips, fracPips, startPlaceWait, PIPS } from "../src/waitpips.mjs";
+import { waitPips, fracPips, startPlaceWait, placeWaitPips, BAKE_STAGES, PIPS } from "../src/waitpips.mjs";
+
+// #104 part 2: the first place of a set-out takes seconds in the worker; its real stages (terrain window, IR, bake) move the pips before the place is made.
+test("a place's real stages light the pips before any place is made; never full while on; never fewer for more stages", () => {
+  const cells = 9, none = Array(cells).fill(0), at = (first, others = 0) => [first, ...Array(cells - 1).fill(others)];
+  assert.equal(placeWaitPips(none, 0, true), 0);
+  assert.equal(placeWaitPips(at(1), 0, true), 0, "the first stage alone is under a pip");
+  assert.ok(placeWaitPips(at(BAKE_STAGES >> 1), 0, true) >= 2, "half the first place's stages, no place made yet: pips are lit (his case sat at 0 here)");
+  assert.equal(placeWaitPips(Array(cells).fill(BAKE_STAGES), cells, true), PIPS - 1, "all made and laid out: still not full");
+  assert.equal(placeWaitPips([BAKE_STAGES], 1, true), PIPS - 1, "one place, made and laid out: not full");
+  assert.ok(placeWaitPips([1], 0, false) === 0 && placeWaitPips([BAKE_STAGES >> 1], 0, false) === 4, "a one-place wait moves with its stages");
+  let prev = 0;
+  for (let k = 0; k <= cells * BAKE_STAGES; k++) { const st = Array.from({ length: cells }, (_, i) => Math.max(0, Math.min(BAKE_STAGES, k - i * BAKE_STAGES))); const p = placeWaitPips(st, Math.floor(k / BAKE_STAGES), true); assert.ok(p >= prev, "never fewer"); prev = p; }
+});
 
 test("a one-thing wait (the reach's places): empty at the start, a pip a tenth, never full while the wait is on", () => {
   assert.equal(fracPips(0, 40), 0);

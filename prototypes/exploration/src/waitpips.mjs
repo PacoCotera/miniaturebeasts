@@ -14,6 +14,17 @@ export function startPlaceWait(RT, wait, now) {
   RT.making = true; RT.makingAt = now; RT.wait = null; RT.pips = 0; RT.placeWait = wait;
   return true;
 }
+// A place is made in BAKE_STAGES real stages in the worker: the terrain window's WINDOW_STAGES (place.mjs windowOf's own labelled stages), its IR, its bake. The worker tells each (op 'stage') as it finishes and the pips
+// count them (#104: the first place took ~8 s of a 12 s wait and told nothing). The first place of a wait does the one-time work (the seed's terrain context, land and decor), the rest are cached after it: it is
+// FIRST_SHARE of the bar when there are others (measured, seed 45 set out at 5,14: ~8 s of 12.4 s; a later build may re-measure), the whole bar when it is the only place.
+// placeWaitPips(stages, laid, laying): stages = the stages done of each cell asked, in the order asked (0..BAKE_STAGES), laid = cells laid out, laying = the wait also lays each out.
+export const WINDOW_STAGES = 15, BAKE_STAGES = WINDOW_STAGES + 2, FIRST_SHARE = 0.6;
+export function placeWaitPips(stages, laid, laying) {
+  const n = stages.length, frac = s => Math.min(BAKE_STAGES, s) / BAKE_STAGES, first = frac(stages[0] || 0);
+  if (n <= 1) return fracPips((first + laid) / (laying ? 2 : 1), 1);
+  const rest = (stages.slice(1).reduce((a, s) => a + frac(s), 0) + laid) / ((n - 1) + (laying ? n : 0));
+  return fracPips(FIRST_SHARE * first + (1 - FIRST_SHARE) * rest, 1);
+}
 export function waitPips(realmDone, realmOf, filesDone, filesOf) {
   const f = REALM_SHARE * part(realmDone, realmOf) + (1 - REALM_SHARE) * part(filesDone, filesOf);
   return Math.min(PIPS, Math.floor(f * PIPS + 1e-9));

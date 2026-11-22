@@ -12,6 +12,7 @@ import { paintLand } from './landpaint.mjs';
 import { realm7, setRealm7 } from './gen7/region.mjs';
 import { decorOf, presetHollowSites, banksOfRegion, madeBanks, presetBanks } from './gen7/place.mjs';
 import { bakedCell, sectorOfRegion } from './world7.mjs';
+import { BAKE_STAGES, WINDOW_STAGES } from './waitpips.mjs';
 import { renderGround, PlaceGroundCache, wholeScale } from '../../places/src/ground.mjs';
 
 let CTX = null, SEEDED = null;
@@ -55,11 +56,15 @@ self.onmessage = e => {
     }
     if (m.op === 'bake') {
       enqueue(seed, m.cells.map(cell => ({ key: seed + '|' + slot + '|' + m.v + '|' + cell, run: () => {
+        // each real stage but the last (the baked reply is that) is told to the page, for the wait's pips (#104): the terrain window's own labelled stages (place.mjs F6_STAGE, a window already made tells none), then the IR
+        let win = 0; const tell = n => self.postMessage({ op: 'stage', seed, slot, v: m.v, cell, n }), was = globalThis.F6_STAGE;
+        globalThis.F6_STAGE = label => { if (label !== 'start' && win < WINDOW_STAGES) tell(++win); };
         try {
-          const b = bakedCell(CTX, seed, slot, cell, m.v);
+          const b = bakedCell(CTX, seed, slot, cell, m.v, n => { if (n < BAKE_STAGES) tell(n); });
           KEEP.delete(b.place.id); KEEP.set(b.place.id, b.place); while (KEEP.size > KEEP_MAX) KEEP.delete(KEEP.keys().next().value);
           self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, ir: b.ir, place: b.place, sites: newSites(seed), banks: newBanks(seed) });
         } catch (err) { self.postMessage({ op: 'baked', seed, slot, v: m.v, cell, error: String((err && err.message) || err) }); }
+        finally { globalThis.F6_STAGE = was; }
       } })), !!m.first);
       return;
     }
