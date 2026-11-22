@@ -265,7 +265,7 @@ export function registerPictures(reqs, env) {
           const p = r.kind === "lineagefar" ? farPicture(r.input, SPECS.library, { rgb, ground: sheetGround() }) : miniPicture(r.input, SPECS.library, { rgb }); console.log(`# lineage ${r.id}: rendered in ${p.ms.toFixed(1)} ms`); return (data = p.rgba); } }; } });
         break;
       }
-      case "traitshape": case "readchamber": case "readrail": case "readdisc": case "readgather": case "readstamp": case "readplate": registerReading(r, env); break;   // the reading screen v2's composed pictures (reading-pictures.mjs)
+      case "pagestage": case "traitshape": case "readchamber": case "readrail": case "readdisc": case "readgather": case "readstamp": case "readplate": registerReading(r, env); break;   // the reading screen v2's composed pictures (reading-pictures.mjs)
       default: throw new Error("unknown picture kind " + r.kind);
     }
   }

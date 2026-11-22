@@ -40,7 +40,8 @@ void word_inventory(void);       /* the pod inventory: the ground, the cabinet o
 void word_inventoryTray(void);   /* the filter tray over the cabinet */
 void word_inventoryFind(void);   /* the Find panel over the cabinet */
 void word_reading(void);         /* the reading screen v2: the frames, the chamber, the rail, the right frame's plates, the key, the read and the stamp (vocab/station/reading.c) */
-void word_compare(void);         /* Compare in the reading room's look: the bench, two cream papers, their trait rows and Take to the reading room (vocab/station/compare.c) */
+void word_mibiPage(void);            /* her page, a hatched mibi's own screen: the stage as one picture, her name and origin, the tag and the two hints over it (vocab/station/page_screen.c) */
+void word_compare(void);        /* Compare in the reading room's look: the bench, two cream papers, their trait rows and Take to the reading room (vocab/station/compare.c) */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
 int kit_glint_level(const char *spec, const char *path, uint32_t elapsed_ms, int motion);   /* a fading glint's dither level, 0 to <path>.levels: in over the first half of <path>.ms, out over the second; motion 0: the top level (contract header in station/glint.c) */
 void kit_glint(const char *id, const char *asset, int cx, int cy, int w, int h, int level);   /* one glint: the asset dithered in from clear at the level, centred on (cx, cy); its layer is the asset's */

@@ -17,7 +17,7 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided" };
 
 // the masters' own sizes; any other request is its size (a crop, a slot), an emblem 24, a star 12, else 16
 const SIZE = { "reading-bench-1024x520": [1024, 520] };
-export const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "dial" ? dialSize(r.sealed) : r.kind === "readchamber" ? [548, 356] : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "traitshape" ? SHAPE_SIZES[r.size] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);
+export const sizeOf = (r) => SIZE[r.id] ?? (r.kind === "dial" ? dialSize(r.sealed) : r.kind === "readchamber" ? [548, 356] : r.kind === "pagestage" ? r.size : r.kind === "readrail" ? (r.small ? [272, 40] : [526, 71]) : r.kind === "readdisc" ? [r.d + 8, r.d + 8] : r.kind === "traitshape" ? SHAPE_SIZES[r.size] : r.kind === "emblem" ? [24, 24] : r.kind === "star" ? [12, 12] : Array.isArray(r.size) ? r.size : r.size ? [r.size, r.size] : [16, 16]);
 // the frame's own pictures: the material icons and the companion
 const FRAME_PICTURES = [...["energy", "data", "essence"].map((id) => ({ id: `icon:${id}:16`, w: 16, h: 16 })), ...["frame-companion-outline-16x24", "frame-companion-solid-16x24"].map((id) => ({ id, w: 16, h: 24 }))];
 
@@ -42,6 +42,7 @@ export function podsCases() {
   { const st = tray([["S01", 51, 0, 0], ["S01", 52, 1, 0]]); S.putOnBench(st, st.tray[0]); out.push(scene("read", "a sealed pod", st, { view: "room" }, "key")); }
   { const st = tray([["S01", 61, 1, 1], ["S01", 62, 1, 0]]); S.putOnBench(st, st.tray[0]); out.push(scene("read", "the rail", st, { view: "room", lane: 1 }, "rail")); out.push(scene("read", "an unread chapter open", st, { view: "room", lane: 1, at: "right" }, "key"));
     out.push(scene("read", "a read chapter open", st, { view: "room", lane: 0, at: "right" }, "plate.0")); out.push(scene("read", "the read", st, { view: "room", lane: 0, at: "right", reading: { pod: st.tray[0].id, chapter: "coat", read: [], reward: 0, cost: 2 } }, "hold")); out.push(scene("read", "the detail", st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")); st.stampTaught = true; out.push(scene("read", "the stamp view", st, { view: "room", lane: 0, at: "stamp" }, "stamp")); }
+  { const st = tray([]); S.seedAdults(st, "S01", 5, 1, settings); out.push(scene("page", "her page", st, { view: "room", page: st.mibis[0].id, lane: 0 }, "rail")); }
   { const st = tray([["S02", 71, 1, 3], ["S02", 72, 1, 0]]); S.putOnBench(st, st.tray[0]); out.push(scene("read", "a sealed chapter", st, { view: "room", lane: 3 }, "rail")); }
   return out;
 }

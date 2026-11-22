@@ -295,6 +295,57 @@ function qMark(p, d, col, a) {   // the "?" in the chapter colour: a hook and a 
     const dot = Math.hypot(x + 0.5 - cx, y + 0.5 - (cy + s * 0.32)); const m = Math.max(clamp01(w / 2 + 0.5 - best), clamp01(w * 0.7 + 0.5 - dot)); if (m > 0) p.put(y * d + x, col, a * m); }
 }
 
+// ---- her page's stage (station-match-3 slice 1a; the accepted walk-3-page) ----
+// One opaque picture of the phone window's size (530 x 600): the room covered to the window (centred across, 60 % down), a radial shade, her adult master at the body box, the four leader lines, the chips on her
+// body (a 30 px disc with the chapter's 24 x 24 read emblem at 18, nearest), the ring on the chapter in hand (a segmented 70 px chapter mark inside a 88 px orange focus circle), the tag's pill and the two hint keys.
+// The room and her are game masters; the lines, chips, ring, pill and keys are interface drawn by code (rings, bars and keys are UI marks). Text is the face's (v_say), never here.
+// r: { species, size: [w, h], body: { x, y, w }, spots: [{ chapter, at: [x, y], line: [x1, y1, x2, y2], ring: "1,0,..." | "" }], hand, tag: [x, y, w, h], radius, keys: [[x, y, w, h], [x, y, w, h]] }
+const PAGE_CREAM = [246 / 255, 231 / 255, 184 / 255], PAGE_ORANGE = [240 / 255, 122 / 255, 31 / 255], PAGE_INK = [16 / 255, 20 / 255, 28 / 255];
+const segDist = (px, py, x1, y1, x2, y2) => { const dx = x2 - x1, dy = y2 - y1, L = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / L)); return Math.hypot(px - x1 - t * dx, py - y1 - t * dy); };
+function paintPage(out, x0, y0, x1, y1, f) { const W = out.w, H = out.h; for (let y = Math.max(0, Math.floor(y0)); y < Math.min(H, Math.ceil(y1)); y++) for (let x = Math.max(0, Math.floor(x0)); x < Math.min(W, Math.ceil(x1)); x++) { const r = f(x + 0.5, y + 0.5); if (r && r[1] > 0) out.put(y * W + x, r[0], clamp01(r[1])); } }
+const rrectSd = (px, py, x, y, w, h, r) => { const qx = Math.abs(px - (x + w / 2)) - (w / 2 - r), qy = Math.abs(py - (y + h / 2)) - (h / 2 - r); return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r; };
+function pageEmblem(out, chapter, cx, cy, px) {   // the chapter's 24 x 24 read emblem, nearest-neighbour at px, centred
+  const id = `rail-emblem-${chapter}-read-24x24`, src = pixels(id); if (!src) return;
+  for (let y = 0; y < px; y++) for (let x = 0; x < px; x++) { const sx = Math.min(23, Math.floor((x * 24) / px)), sy = Math.min(23, Math.floor((y * 24) / px)), i = (sy * 24 + sx) * 4, a = src[i + 3] / 255, X = Math.round(cx - px / 2) + x, Y = Math.round(cy - px / 2) + y;
+    if (a > 0 && X >= 0 && Y >= 0 && X < out.w && Y < out.h) out.put(Y * out.w + X, [src[i] / 255, src[i + 1] / 255, src[i + 2] / 255], a); }
+}
+function pageRing(out, cx, cy, S, petalStates, chapter) {   // the chapter mark of shared.css/shared.js: a disc and one round-capped petal a trait
+  const n = petalStates.length, w = Math.max(5, S * 0.105), R = S / 2 - w / 2 - 1, COL = { 1: PAGE_CREAM, 0: [1, 1, 1], c: PAGE_ORANGE }, ALPHA = { 1: 1, 0: 0.5, c: 1 }, gap = n === 1 ? 0 : 0.34;
+  paintPage(out, cx - S / 2, cy - S / 2, cx + S / 2, cy + S / 2, (x, y) => { const d = Math.hypot(x - cx, y - cy); return d < R - w / 2 - 1 + 0.5 ? [PAGE_INK, 0.8 * clamp01(R - w / 2 - 1 + 0.5 - d)] : null; });
+  petalStates.forEach((s, i) => { const a0 = -Math.PI / 2 + (i * 2 * Math.PI) / n + gap / 2, a1 = -Math.PI / 2 + ((i + 1) * 2 * Math.PI) / n - gap / 2;
+    paintPage(out, cx - S / 2, cy - S / 2, cx + S / 2, cy + S / 2, (x, y) => { const rho = Math.hypot(x - cx, y - cy); let d;
+      if (n === 1) d = Math.abs(rho - R); else { let th = Math.atan2(y - cy, x - cx); while (th < a0 - 1e-9) th += 2 * Math.PI; if (th <= a1) d = Math.abs(rho - R); else d = Math.min(Math.hypot(x - cx - R * Math.cos(a0), y - cy - R * Math.sin(a0)), Math.hypot(x - cx - R * Math.cos(a1), y - cy - R * Math.sin(a1))); }
+      return [COL[s] ?? COL[0], (ALPHA[s] ?? 0.5) * clamp01(w / 2 + 0.5 - d)]; }); });
+  pageEmblem(out, chapter, cx, cy, 24 * Math.max(1, Math.round(((S * 0.42) / 24) * 2) / 2));
+}
+export function pageStagePicture(r) {
+  const [W, H] = r.size, out = new Pane(W, H), bg = pixels("vivarium-near-day-544x408");
+  for (let i = 0; i < W * H; i++) { out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
+  if (bg) { const s = Math.max(W / 544, H / 408), bw = Math.round(544 * s), bh = Math.round(408 * s), sc = resample(bg, 544, 408, bw, bh), ox = Math.round((W - bw) * 0.5), oy = Math.round((H - bh) * 0.6);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const X = x - ox, Y = y - oy; if (X < 0 || Y < 0 || X >= bw || Y >= bh) continue; const i = (Y * bw + X) * 4; out.put(y * W + x, [sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], 1); } }
+  { const cx = W * 0.45, cy = H * 0.45, rx = Math.max(cx, W - cx) * Math.SQRT2, ry = Math.max(cy, H - cy) * Math.SQRT2;   // the shade: clear to 45 % of the ellipse, then 42 % of #080a10 out to the corner
+    paintPage(out, 0, 0, W, H, (x, y) => { const t = Math.hypot((x - cx) / rx, (y - cy) / ry); return t <= 0.45 ? null : [[8 / 255, 10 / 255, 16 / 255], 0.42 * clamp01((t - 0.45) / 0.55)]; }); }
+  const body = pixels(`mibi-adult-${r.species}-304x312`);
+  if (body) { const bw = r.body.w, bh = Math.round((bw * 312) / 304), sc = resample(body, 304, 312, bw, bh);
+    for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) { const X = r.body.x + x, Y = r.body.y + y, i = (y * bw + x) * 4; if (X < 0 || Y < 0 || X >= W || Y >= H || !sc[i + 3]) continue; out.put(Y * W + X, [sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], sc[i + 3] / 255); } }
+  for (const s of r.spots) { const [x1, y1, x2, y2] = s.line; paintPage(out, Math.min(x1, x2) - 3, Math.min(y1, y2) - 3, Math.max(x1, x2) + 3, Math.max(y1, y2) + 3, (x, y) => [PAGE_CREAM, 0.85 * clamp01(1.5 - segDist(x, y, x1, y1, x2, y2))]); }
+  for (const s of r.spots) { const [cx, cy] = s.at;
+    if (s.ring) { const R = 44;   // the focus circle (3 px orange, a 4 px halo at 25 %, a soft glow at 40 %) round the chapter mark
+      paintPage(out, cx - R - 26, cy - R - 26, cx + R + 26, cy + R + 26, (x, y) => { const d = Math.hypot(x - cx, y - cy);
+        if (d > R + 26) return null; if (d <= R - 3) return null; if (d <= R) return [PAGE_ORANGE, clamp01(R + 0.5 - d)]; if (d <= R + 4) return [PAGE_ORANGE, 0.25]; const g = clamp01(1 - (d - R - 4) / 22); return [PAGE_ORANGE, 0.4 * g * g * 0.8]; });
+      pageRing(out, cx, cy, 70, s.ring.split(","), s.chapter); }
+    else { paintPage(out, cx - 16, cy - 16, cx + 16, cy + 16, (x, y) => { const d = Math.hypot(x - cx, y - cy); return d <= 15.5 ? (d >= 13 ? [PAGE_CREAM, 0.8 * clamp01(15.5 - d)] : [PAGE_INK, 0.78]) : null; }); pageEmblem(out, s.chapter, cx, cy, 18); } }
+  { const [x, y, w, h] = r.tag; paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [PAGE_INK, 0.84 * clamp01(0.5 - rrectSd(px, py, x, y, w, h, r.radius))]); }
+  { const [x, y, w, h] = r.keys[0];   // the pad key: a rounded square with a 1.5 px edge and the two small triangles
+    paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, 9), a = clamp01(0.5 - sd); return a <= 0 ? null : sd > -1.5 ? [[1, 1, 1], 0.3 * a] : [[43 / 255, 49 / 255, 64 / 255], a]; });
+    const cx = x + w / 2, cy = y + h / 2; paintPage(out, cx - 9, cy - 6, cx + 9, cy + 6, (px, py) => { const u = px - cx, v = Math.abs(py - cy); const left = u < -1 && u > -8 && v < ((u + 8) / 7) * 4.5, right = u > 1 && u < 8 && v < ((8 - u) / 7) * 4.5; return left || right ? [[244 / 255, 239 / 255, 226 / 255], 1] : null; }); }
+  { const [x, y, w, h] = r.keys[1], cx = x + w / 2, cy = y + h / 2;   // the ✓ key: an orange disc with a white check
+    paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => [PAGE_ORANGE, clamp01(w / 2 + 0.5 - Math.hypot(px - cx, py - cy))]);
+    const a = [cx - 6.5, cy + 0.5], b = [cx - 2, cy + 5], c = [cx + 7, cy - 5];
+    paintPage(out, cx - 10, cy - 10, cx + 10, cy + 10, (px, py) => [[1, 1, 1], clamp01(1.7 - Math.min(segDist(px, py, a[0], a[1], b[0], b[1]), segDist(px, py, b[0], b[1], c[0], c[1])))]); }
+  return out.rgba();
+}
+
 // ---- registering (the picture kinds pictures.mjs hands here) ----
 export function registerReading(r, env) {
   if (hasAsset(r.id)) return;
@@ -302,6 +353,7 @@ export function registerReading(r, env) {
   switch (r.kind) {
     case "traitshape": return made(SIZES[r.size][0], SIZES[r.size][1], () => shapePicture(r.model, r.size, { colours: r.colours, pics: cropPics(r) }).rgba);   // a trait's scale or set (trait-shape-pictures.mjs), with its crops of the signed art (trait-crops.mjs)
     case "readchamber": return made(CHAMBER.size[0], CHAMBER.size[1], () => chamberPicture(r, env));
+    case "pagestage": return made(r.size[0], r.size[1], () => pageStagePicture(r));
     case "readrail": return made(r.small ? 272 : 526, r.small ? 40 : 71, () => railPicture(r));
     case "readdisc": return made(r.d + 8, r.d + 8, () => discPicture(r, env));
     case "readgather": return made(r.size, r.size, () => gatherPicture(r, env));

@@ -63,6 +63,7 @@ function scenes() {
     ident(st); out.push([`${id}: the rail, unread`, model(st, { view: "room", lane: 0 }, "rail")], [`${id}: an unread chapter open`, model(st, { view: "room", lane: 0, at: "right" }, "key")]);
     read(st, 0, 1); out.push([`${id}: a read chapter open`, model(st, { view: "room", lane: 0, at: "right" }, "plate.0")], [`${id}: the detail`, model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")], [`${id}: the stamp view`, model(st, { view: "room", lane: 0, at: "stamp" }, "stamp")]);
     const sealedI = frameOf(id).chapters.findIndex((c) => c.sealed); if (sealedI >= 0) out.push([`${id}: a sealed lane`, model(st, { view: "room", lane: sealedI }, "rail")]);
+    { const sp = home(0); S.seedAdults(sp, id, 5, 1, settings); const m = sp.mibis[0], last = Math.max(0, frameOf(id).chapters.length - 1); out.push([`${id}: her page`, model(sp, { view: "room", page: m.id, lane: 0 }, "rail")], [`${id}: her page, the last chapter`, model(sp, { view: "room", page: m.id, lane: last }, "rail")]); }
     read(st, 1); out.push([`${id}: Compare`, model(st, { cmp: { a: st.tray[0].id, b: st.tray[1].id, ci: 0, from: "inventory" } }, null)]);
   }
   { const st = home(0); out.push(["the bare bench, no pods", model(st, { view: "room" }, null)]); }
@@ -149,6 +150,18 @@ test("the reading screen (ux-reading-v2.md): the ground, the chamber of its plac
   assert.equal(rd.props.regions.read.right.form, "read"); assert.ok(rd.props.regions.read.right.plates.every((p) => p.shape && p.shape.pic && p.shape.form), "the read form: every trait in its own shape (a scale or a set)"); assert.equal(rd.line.ok, "Closer look at Colour");
   const dt = body(model(st, { view: "room", lane: 0, at: "detail", trait: 0 }, "trait")); assert.equal(dt.props.regions.read.right.form, "detail"); assert.equal(dt.props.regions.read.rail.trait, 0); assert.equal(dt.line.back, "Coat"); assert.equal(dt.line.ok, null);
   st.tray[0].why = "a new species"; assert.equal(P(model(st, { view: "room" }, "rail")).regions.read.why, "a new species", "the pod's reason when it carries one");
+});
+test("her page (station-match-3 slice 1a): her own state, not the pod reading screen: name, origin, the tag, ONE stage picture with the chips on her body and the ring on the chapter in hand, the two hints, an empty rail", () => {
+  const st = home(0); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), v = body(model(st, { view: "room", page: m.id, lane: 0 }, "rail")), R = v.props.regions;
+  assert.equal(v.props.state, "page"); assert.deepEqual(Object.keys(R), ["page"], "only her page's region: no read, no chamber, no two frames");
+  assert.equal(R.page.name, S.cap(m.name)); assert.ok(R.page.origin.startsWith(S.cap(S.spName(m)))); assert.equal(R.page.tag, spec.strings.read.board); assert.deepEqual(R.page.hints, { chapters: spec.strings.read.pageHintChapters, look: spec.strings.read.pageHintLook });
+  assert.deepEqual(R.page.rail, { cells: [] }, "the rail is slice 1b");
+  const stage = v.requests.filter((r) => r.kind === "pagestage"); assert.equal(stage.length, 1, "the stage is one picture"); assert.equal(stage[0].id, R.page.stage); assert.deepEqual(stage[0].size, spec.regions.page.rect.slice(2));
+  assert.equal(stage[0].hand, fr.chapters[0].id); const ring = stage[0].spots.filter((s) => s.ring); assert.equal(ring.length, 1, "the ring stands on the chapter in hand only"); assert.equal(ring[0].chapter, fr.chapters[0].id); assert.equal(ring[0].ring.split(",").length, fr.chapters[0].traits.length, "a petal a trait");
+  assert.equal(v.requests.filter((r) => r.kind === "readchamber").length, 0, "no chamber picture on her page");
+  const v2 = body(model(st, { view: "room", page: m.id, lane: 3 }, "rail")); assert.notEqual(v2.props.regions.page.stage, R.page.stage, "the picture is another when the chapter in hand is another");
+  assert.deepEqual(body(model(st, { view: "room", page: m.id, lane: 0 }, "rail")).props.regions.page, R.page, "the same state gives the same props");
+  assert.equal(body(model(st, { view: "inventory" }, "sort")).props.state, "inventory", "no page open: the cabinet");
 });
 test("the reading room's mate: a shed pod shows no odds with its own parent, and takes an adult that is not its direct kin", () => {
   const st = home(2); S.putOnBench(st, st.tray[0]); ident(st); st.d = 40; read(st, 0, 1); st.firstMibi = false;

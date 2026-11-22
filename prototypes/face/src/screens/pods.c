@@ -78,7 +78,7 @@ int pods_focus(focus_target_t *out, int cap) {
 /* a change of the whole stage (the state, the cabinet's scroll, the pods shown, the pod on the bench or the chapter open): the stage is said as one area first (prim_invalidate) */
 static void whole_stage(const char *state) {
   static char last[160];
-  char key[160]; snprintf(key, sizeof key, "%s|%d|%d|%d|%s|%d", state, v_pint("regions.inv.grid.cards.0.k", -1), v_plen("regions.inv.grid.cards"), v_plen("regions.inv.verbs"), v_pstr("regions.read.name"), v_pint("regions.read.rail.hand", -1)); if (is(state, "compare")) { snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.0.chapter")); snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.1.pod")); }
+  char key[160]; snprintf(key, sizeof key, "%s|%d|%d|%d|%s|%d", state, v_pint("regions.inv.grid.cards.0.k", -1), v_plen("regions.inv.grid.cards"), v_plen("regions.inv.verbs"), v_pstr(is(state, "page") ? "regions.page.stage" : "regions.read.name"), v_pint("regions.read.rail.hand", -1)); if (is(state, "compare")) { snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.0.chapter")); snprintf(key + strlen(key), sizeof key - strlen(key), "|%.40s", v_pstr("regions.compare.sides.1.pod")); }
   if (strcmp(key, last) == 0) return;
   snprintf(last, sizeof last, "%s", key); int r[4]; v_srect("frame", "regions.stage.rect", r); prim_invalidate(r[0], r[1], r[2], r[3]);
 }
@@ -88,6 +88,7 @@ void pods_words(void) {
   whole_stage(state);
   if (is(state, "compare")) word_compare();
   else if (is(state, "read")) word_reading();
+  else if (is(state, "page")) word_mibiPage();
   else {
     inv_scroll(1);   /* the 200 ms scroll: the rows and the ring ride the grid's wipe */
     word_inventory();

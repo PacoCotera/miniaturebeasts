@@ -715,6 +715,26 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 
 ---
 
+## Pods: her page (a hatched mibi's own screen)
+
+The live screen is rebuilt to match its accepted picture (the walkthrough picture of her page, from its page fragment and its two style sheets). The numbers below are those files', in lp of the accepted picture's screen window (530 × 600, which it shows with no top bar and no foot line). The live Pods frame keeps its top bar (stage y 0 to 40) and its foot line (from y 562), so the page is laid in the 530 × 522 between them, at stage x 0, y 40 (`regions.page.rect`, [0, 40, 530, 522]): the accepted composition scaled 0.87 and moved 34 across (`regions.page.scale`: x' = x × 0.87 + 34, y' = y × 0.87 for the body box, the chips and the leaders; the keys, the tag, the text and the rail band are laid directly in the region, with the accepted window's offsets from its edges). Slice 1a draws everything but the rail; the rail band is an empty region (`regions.page.rail`, [0, 450, 530, 112]).
+
+| Piece | Window lp | Notes |
+|---|---|---|
+| Stage | accepted: 0,0 530 × 600; built: the region 530 × 522 | One picture, `pagestage`: the room `vivarium-near-day-544x408` covered to the window and centred at 50 % 60 %, a shade (a radial dark corner: clear to 45 % of the ellipse at 45 % 45 %, then 42 % `#080a10`), the adult master `pods/mibi-adult-S01-304x312` at 384 px wide placed at 52,78, four leader lines (2 px `#f6e7b8` at 85 %, round caps), three emblem spots (30 px disc, 78 % `#10141c`, a 2 px `#f6e7b8` ring at 80 %, the chapter's 24 × 24 read emblem at 18 px) and the ring on the chapter's place |
+| Leader lines | (382,82)→(326,128), (462,232)→(412,258), (98,250)→(140,282), (62,392)→(104,408) | Shape, Face, Coat, Legs & tail |
+| Spots | centres (394,72) Shape, (476,224) Face, (48,388) Legs & tail | the Coat's place carries the ring instead |
+| Ring on the place | centre (72,222) | a 70 px segmented chapter ring (one petal a trait, a gap of 0.34 rad, stroke 0.105 of the size, round caps, seen `#f6e7b8`, not yet 50 % white, the trait in view `#f07a1f`) with the emblem at 0.42 of the size, inside a focus circle of 88 px: a 3 px `#f07a1f` border and a 4 px 25 % halo, shown as the chapter in hand |
+| Name | left 22, top 16, 34 px semibold | line height 1; the origin under it, 7 px down, 17 px medium at 86 % |
+| Tag | right 16, top 18, "All of her" 16 px semibold | a pill, 12 px across and 5 above and 6 below, radius 14, `rgba(16,20,28,.84)` |
+| Hint left | left 22, bottom 122, the pad key (34 px, radius 9, `#2b3140`, a 1.5 px 30 % white edge) and "chapters" | 17 px |
+| Hint right | right 22, bottom 122, the ✓ key (34 px disc `#f07a1f`) and "Look closer" | 19 px |
+| Rail band | accepted 0,488 530 × 112; built 0,410 in the region (stage y 450) | six cells of 82 px, space-between, 10 px in; built in slice 1b |
+
+The face has no 34, 17 or 19 px face: the name is `glass.chapter` (SB28), the origin `glass.caption` (R15), the tag and the hints `glass.name` (M18). The origin line says her kind and, when the save knows it, where she came from (the accepted "from the reeds" has no data behind it). The picture is the region's size (530 × 522), not the chamber's 548 × 356, because the accepted picture covers the whole window; the face word is `word_mibiPage` (`word_page` is the chapter page's).
+
+---
+
 ## Home: the panel and the column
 
 Home is the Station's face at rest: the Vivarium alive in its panel at the left, and the device's five sections down the right. This section is its detail spec, written from the structure in [Home, the sections and the Vivarium](#home-the-sections-and-the-vivarium) (map 15, wireframe 15a). The numbers live in `prototypes/ui/specs/station/home.json`. Concept: the Station concept board's Home frame (`art/station-masters/pods/concepts/station-board/frame-1-home-v2-1024x600.png`).

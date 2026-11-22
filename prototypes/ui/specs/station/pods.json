@@ -1171,6 +1171,20 @@
    "flash": {"rect": [528, 48, 480, 36], "role": "quiet", "ms": 3000},
    "focus": {"shape": {"rect": 6}}
   },
+  "page": {
+   "note": "Her page, a hatched mibi's own screen (station-match-3 slice 1a; design/style-guide/station-layouts.md, Pods: her page; the accepted walk-3-page): the Station's screen window on the stage, x 0 to 530 and y 40 to 562 (the frame keeps its top bar above and its foot line below), one picture for the stage and text over it with v_say. Stage coordinates. The accepted composition (a 530 x 600 window) is scaled 0.87 and moved 34 across to fit the 522 px; the rail band is empty until slice 1b.",
+   "rect": [0, 40, 530, 522],
+   "scale": {"k": 0.87, "dx": 34, "note": "the accepted walk-3-page's window lp to this region's: x' = x * k + dx, y' = y * k (the props place the picture's marks; the numbers in the layouts doc are the accepted ones)"},
+   "stage": {"rect": [0, 40, 530, 522], "note": "the `pagestage` picture, the region's size: the room, the shade, her, the chips and leaders, the ring on the chapter in hand, the tag's pill and the two hint keys"},
+   "name": {"x": 22, "baseline": 84, "role": "glass.chapter"},
+   "origin": {"x": 22, "baseline": 111, "role": "glass.caption"},
+   "tag": {"rect": [410, 58, 104, 30], "baseline": 79, "role": "glass.name", "radius": 14},
+   "hints": {
+    "chapters": {"key": [22, 406, 34, 34], "x": 66, "baseline": 429, "role": "glass.name", "glyph": "pad"},
+    "look": {"key": [474, 406, 34, 34], "right": 464, "baseline": 429, "role": "glass.name", "glyph": "ok"}
+   },
+   "rail": {"rect": [0, 450, 530, 112], "note": "the band of six chapter cells (slice 1b); an empty region in slice 1a"}
+  },
   "read": {
    "note": "The reading screen v2 (ux-reading-v2.md, joint sign-off 2026-10-29; it replaces regions.room): two moulded frames on one ground, the chamber with the specimen and the gene-tag rail on its shelf (left), the chapter in hand as field-guide plates (right). Every soft, glowing or blended piece is a picture (ui/tools/readinstrument5cuts.py; the logic process composes the chamber with the specimen, the rail and the stamp: station/src/reading-pictures.mjs); the face draws rectangles, text, 1:1 pictures, nine-slices, clips, composed line work and the 16-level dither",
    "ground": {"id": "reading-ground-1024x522", "rect": [0, 40, 1024, 522], "note": "chassis, both moulded frames (K 0.10), both glasses, the shelf with its rule (y 522) and dots (y 526), both lamps unlit, the wave; no label"},
@@ -1456,7 +1470,7 @@
   }
  },
  "strings": {
-  "read": {"open": "Open {chapter}", "read": "Read {chapter}", "pageLook": "Look at {chapter}", "board": "All of her", "boardFoot": "Page {n} of {of}", "boardMore": "{chapter}, more", "boardUnread": "not looked at", "boardWatch": "watch her", "pageWatch": "{chapter}, watch her", "pageSurprise": "{chapter}, still a surprise", "pageKnown": "{chapter}, read", "closer": "Closer look at {trait}", "lens": "Lens on {trait}", "needs": "needs ◆ {n} · you have ◆ {have}", "dataGrows": "Data comes as your mibis grow", "sprout": "free when it grows", "sealed": "opens with a find", "stampLine": "Each read fills its stamp", "kinds": {"only": "one copy is enough", "hides": "needs both copies", "blend": "a blend of both", "asleep": "can wake in a child"}, "odds": "{a} in {b}", "oddsAll": "every one", "identify": "Identify", "identifyHead": "A sealed pod", "identifyLine": "identify it to read it", "note": "ux-reading-v2.md §2.9: the copywriter settles the kind lines, the odds and the identify words (the builder's: no state of the signed six shows them)"},
+  "read": {"open": "Open {chapter}", "read": "Read {chapter}", "pageLook": "Look at {chapter}", "pageHintChapters": "chapters", "pageHintLook": "Look closer", "board": "All of her", "boardFoot": "Page {n} of {of}", "boardMore": "{chapter}, more", "boardUnread": "not looked at", "boardWatch": "watch her", "pageWatch": "{chapter}, watch her", "pageSurprise": "{chapter}, still a surprise", "pageKnown": "{chapter}, read", "closer": "Closer look at {trait}", "lens": "Lens on {trait}", "needs": "needs ◆ {n} · you have ◆ {have}", "dataGrows": "Data comes as your mibis grow", "sprout": "free when it grows", "sealed": "opens with a find", "stampLine": "Each read fills its stamp", "kinds": {"only": "one copy is enough", "hides": "needs both copies", "blend": "a blend of both", "asleep": "can wake in a child"}, "odds": "{a} in {b}", "oddsAll": "every one", "identify": "Identify", "identifyHead": "A sealed pod", "identifyLine": "identify it to read it", "note": "ux-reading-v2.md §2.9: the copywriter settles the kind lines, the odds and the identify words (the builder's: no state of the signed six shows them)"},
   "toCreate": "Create from this pod",
   "unknownPod": "Unknown",
   "newSpecies": "New species",
@@ -1712,7 +1726,7 @@
  "bottomLine": {
   "need": "Pods' own line, the first that holds: the shortfall (needMoreFrom/needMore), a blocked reason, the pre-spend warning (frame.json goalWarn), glintHere, glintPod, Compare's three, the empty rack's three. None: empty (\"\"), no text and no lamp. The frame's station-wide notice (state.mjs need()) is never shown on Pods (fix 5 P8; station-layouts.md Words on Pods)"
  },
- "states": ["inventory", "filter", "find", "read", "compare"],
+ "states": ["inventory", "filter", "find", "read", "page", "compare"],
  "initial": "inventory",
  "podLayers": {
   "order": [
