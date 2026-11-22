@@ -51,9 +51,7 @@
    "small": {"font": "R14", "pitch": 18, "colour": {"field": "bone", "pane": "bone", "band": "bone"}, "variants": {"quiet": "fog", "full": "amber", "why": {"pitch": 20}}, "note": "the mibi collection's 14 px (vivarium.json): the chips' names and counts, the card's looks, state and why lines, the house bands' names"},
    "plate": {"font": "R15", "colour": {"pane": "bone"}, "variants": {"held": "fog"}, "note": "the mibi collection's 15 px plate verbs (vivarium.json regions.card.plates): live bone, held fog"}
   },
-  "clearance": { "enforced": [], "exceptions": [
-   { "screen": "create", "node": "rail.tab", "rule": "T4", "reason": "Create's tab word is centred above the 12 px mark that ends at the tab's foot (cap top 49), not in the full 40", "by": "UI/UX" }
-  ] }
+  "clearance": { "enforced": [], "exceptions": [] }
  },
  "hold": { "size": 96, "centre": [512, 292], "width": 8, "track": "tealD", "fill": "mint", "ms": 3000, "emptyMs": 600, "tick": { "w": 2, "colour": "bone", "note": "a 2 px bone tick at twelve o'clock across the band, always drawn until the ring is full (F5b): where the fill must come back round to" }, "keepMs": 2500, "quarters": 4, "key": "confirm", "intent": "confirm:held", "note": "The hold: a held ✓ that fills a ring and does something only when the ring is full. The ring is 96 px at the centre of the plate (192, 72, 640, 440), a band 8 px thick, the track whole in tealD and the fill in mint (the Progress colours), clockwise from twelve o'clock. Fills over ms while ✓ is held, empties over emptyMs (600, so the fill is seen) when it is let go early, and the middle slot then says strings.keep for keepMs (the face says `confirm:early`; a full ring says nothing); at ms the face says the intent once. With reduced motion the fill steps in quarters (a quarter every ms / quarters) and the emptying is a cut. A full ring stays full when ✓ is let go, until the frame stops sending `hold`. Drawn only when the frame props carry `hold`; the host sends it only on a plate that holds, and while the developer setting realmSleep is on. The words are common/holdRing.c, the state anim/hold.c." },
  "focus": { "ring": {
