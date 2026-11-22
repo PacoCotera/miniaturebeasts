@@ -1749,7 +1749,7 @@ function syncStation() {
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     const rg = S.regions.some(q => q.id === r.rg) ? r.rg : 'g1';   // a returned pod goes back to its own region (none named: region 1)
     const id = 'r' + (S.nextId++);   // the realm counts the ids, whichever region the pod lands in
-    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); logEv('A returned pod is back ' + (G.soft && G.soft.wade[+key] ? 'in the muddy water' : (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]])); }); }
+    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), ...(r.dv ? { dv: r.dv } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); logEv('A returned pod is back ' + (G.soft && G.soft.wade[+key] ? 'in the muddy water' : (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]])); }); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -3296,8 +3296,8 @@ function takePod(p, leave) {
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p), ...whyOf(p) });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...shedOf(p), ...whyOf(p) });
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -3945,7 +3945,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
