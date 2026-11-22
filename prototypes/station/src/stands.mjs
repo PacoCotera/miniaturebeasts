@@ -26,7 +26,7 @@ export function coatMaster(id, species, coat) {
   if (!coat) return id;
   const [c, lay] = coat.split("+"), m = /-(\d+)x(\d+)$/.exec(id); if (!m) return id;
   const find = (mid) => { const v = id.replace(`-${species}-`, `-${species}-${mid}-`); return v !== id && placedAt(v, +m[1], +m[2]) ? v : null; };
-  const marked = id === `mibi-adult-${species}-${m[1]}x${m[2]}` || /^mibi-adult-[^-]+-(calm|curl|shake)-\d+x\d+$/.test(id);   // the awake stand, or one of the three room poses (mibi-adult-S01-<tint>-<shade>-lay-saddle-<calm|curl|shake>-304x312; a pose with no marked file falls back to the plain pose)
+  const marked = [`mibi-adult-${species}-${m[1]}x${m[2]}`, `mibi-juvenile-${species}-${m[1]}x${m[2]}`].includes(id) || /^mibi-(adult|juvenile)-[^-]+-(calm|curl|shake)-\d+x\d+$/.test(id);   // the awake stand, or one of the three room poses, adult or young (mibi-<adult|juvenile>-S01-<tint>-<shade>-lay-saddle-<calm|curl|shake>-304x312; a pose with no marked file falls back to the plain pose)
   return (lay && marked && find(`${c}-${lay}`)) || find(c) || id;
 }
 // { stage, size, step }: stage "juvenile" with the juvenile's size when step 2 applies, else the asked stage and size (step 1: the adult stand is placed; step 3: the genome stand-in)

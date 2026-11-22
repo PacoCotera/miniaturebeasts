@@ -39,6 +39,9 @@ test("coatMaster: the coat's master where it is placed, the marked picture for t
   assert.equal(coatMaster("mibi-adult-S01-curl-304x312", "S01", "redder-dark+lay-spots"), "mibi-adult-S01-redder-dark-curl-304x312", "asleep: the coat only");
   assert.equal(coatMaster("mibi-adult-S01-shake-304x312", "S01", "redder-dark+lay-spots"), "mibi-adult-S01-redder-dark-shake-304x312", "a habit pose: the coat only");
   assert.equal(coatMaster("mibi-juvenile-S01-304x312", "S01", "redder-dark+lay-spots"), "mibi-juvenile-S01-redder-dark-304x312", "the young: the coat only");
+  put("mibi-juvenile-S01-redder-dark-lay-saddle-304x312"); put("mibi-juvenile-S01-redder-dark-lay-saddle-calm-304x312"); put("mibi-juvenile-S01-redder-dark-calm-304x312");
+  assert.equal(coatMaster("mibi-juvenile-S01-304x312", "S01", "redder-dark+lay-saddle"), "mibi-juvenile-S01-redder-dark-lay-saddle-304x312", "the saddled young stand");
+  assert.equal(coatMaster("mibi-juvenile-S01-calm-304x312", "S01", "redder-dark+lay-saddle"), "mibi-juvenile-S01-redder-dark-lay-saddle-calm-304x312", "the saddled young calm pose");
   assert.equal(coatMaster(painted, "S01", "between-dark+lay-bands"), painted, "between-dark's bands picture is not registered in this test: the painted master shows");
   assert.equal(coatMaster("mibi-adult-S02-304x312", "S02", "redder-dark"), "mibi-adult-S02-304x312", "a kind with no coat masters");
 });
