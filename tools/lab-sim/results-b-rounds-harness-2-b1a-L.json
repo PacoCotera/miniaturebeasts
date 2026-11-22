@@ -1,0 +1,73 @@
+{
+ "round": "b1a",
+ "seeds": 200,
+ "engine": "origin/main 82462ee (E1, PR 469); engine files unchanged on origin/main since",
+ "frames": {
+  "L": {
+   "main": {
+    "BYLOOKR": {
+     "gens": {
+      "n": 200,
+      "reached": 178,
+      "median": 9,
+      "p80": 12
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 178,
+      "median": 52,
+      "p80": 78
+     },
+     "hours": {
+      "median": 14.833333333333334,
+      "p80": 18.166666666666668
+     },
+     "reached": 178,
+     "runs": 200
+    },
+    "TELLS": {
+     "gens": {
+      "n": 200,
+      "reached": 165,
+      "median": 8,
+      "p80": 13
+     },
+     "hatches": {
+      "n": 200,
+      "reached": 165,
+      "median": 48,
+      "p80": 83
+     },
+     "hours": {
+      "median": 14.516666666666667,
+      "p80": 19.033333333333335
+     },
+     "reached": 165,
+     "runs": 200
+    }
+   },
+   "l2": {
+    "seededDays": 22338,
+    "bestMoveShareByRule": {
+     "nearest looks": 0.3507476049780643,
+     "most aim copies": 0.396633539260453,
+     "best with its opposite": 0.2570955322768377,
+     "least kin": 0.6861849762736145,
+     "most kin": 0.1153191870355448,
+     "oldest pair": 0.20959799444892113,
+     "newest pair": 0.4146745456173337
+    },
+    "maxShare": 0.6861849762736145,
+    "pass": true
+   },
+   "l1": {
+    "BYLOOKR": {
+     "bylookGensMedian": 9,
+     "tellsGensMedian": 8,
+     "fewer": 0.11111111111111116,
+     "pass": false
+    }
+   }
+  }
+ }
+}

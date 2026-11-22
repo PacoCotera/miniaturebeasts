@@ -1,0 +1,171 @@
+{
+ "round": "b2",
+ "seeds": 200,
+ "engine": "origin/main 82462ee (E1, PR 469)",
+ "frames": {
+  "L": {
+   "KIN-ONLY": {
+    "gens": {
+     "n": 200,
+     "reached": 167,
+     "median": 9,
+     "p80": 14
+    },
+    "hatches": {
+     "n": 200,
+     "reached": 167,
+     "median": 55,
+     "p80": 82
+    },
+    "days": {
+     "n": 200,
+     "reached": 167,
+     "median": 1,
+     "p80": 1
+    },
+    "hours": {
+     "median": 15.1,
+     "p80": 19
+    },
+    "reached": 167,
+    "runs": 200,
+    "vigourAtAim": {
+     "mean": 0.8361127544910189,
+     "median": 0.8375
+    },
+    "kinShareOfPairings": 0.7044831372429025,
+    "aimStepIndexMean": 5.1,
+    "wildMetMean": 0,
+    "wildUsedMean": 0,
+    "expeditionsMean": 0
+   },
+   "WILD": {
+    "gens": {
+     "n": 200,
+     "reached": 189,
+     "median": 8,
+     "p80": 11
+    },
+    "hatches": {
+     "n": 200,
+     "reached": 189,
+     "median": 51,
+     "p80": 83
+    },
+    "days": {
+     "n": 200,
+     "reached": 189,
+     "median": 1,
+     "p80": 1
+    },
+    "hours": {
+     "median": 15.8,
+     "p80": 20.516666666666666
+    },
+    "reached": 189,
+    "runs": 200,
+    "vigourAtAim": {
+     "mean": 0.8509629497354498,
+     "median": 0.8562495
+    },
+    "kinShareOfPairings": 0.6348612201253644,
+    "aimStepIndexMean": 5.1,
+    "wildMetMean": 13.775,
+    "wildUsedMean": 12.975,
+    "expeditionsMean": 26.76
+   },
+   "line": {
+    "pass": true,
+    "kinOnlySoonerInMedianDays": false,
+    "kinOnlySoonerInMedianMinutes": true,
+    "kinOnlyFirstOnSeedsShare": 0.6,
+    "kinOnlyDaysMedian": 1,
+    "wildDaysMedian": 1,
+    "kinOnlyHoursMedian": 15.1,
+    "wildHoursMedian": 15.8
+   }
+  },
+  "T": {
+   "KIN-ONLY": {
+    "gens": {
+     "n": 200,
+     "reached": 160,
+     "median": 10,
+     "p80": "inf"
+    },
+    "hatches": {
+     "n": 200,
+     "reached": 160,
+     "median": 54,
+     "p80": "inf"
+    },
+    "days": {
+     "n": 200,
+     "reached": 160,
+     "median": 1,
+     "p80": "inf"
+    },
+    "hours": {
+     "median": 15.283333333333333,
+     "p80": "inf"
+    },
+    "reached": 160,
+    "runs": 200,
+    "vigourAtAim": {
+     "mean": 0.8365403968750005,
+     "median": 0.8437494999999999
+    },
+    "kinShareOfPairings": 0.7346382781794629,
+    "aimStepIndexMean": 5.15,
+    "wildMetMean": 0,
+    "wildUsedMean": 0,
+    "expeditionsMean": 0
+   },
+   "WILD": {
+    "gens": {
+     "n": 200,
+     "reached": 183,
+     "median": 9,
+     "p80": 12
+    },
+    "hatches": {
+     "n": 200,
+     "reached": 183,
+     "median": 55,
+     "p80": 99
+    },
+    "days": {
+     "n": 200,
+     "reached": 183,
+     "median": 1,
+     "p80": 1
+    },
+    "hours": {
+     "median": 16.433333333333334,
+     "p80": 21.8
+    },
+    "reached": 183,
+    "runs": 200,
+    "vigourAtAim": {
+     "mean": 0.8562156803278688,
+     "median": 0.8593745
+    },
+    "kinShareOfPairings": 0.6483573233965773,
+    "aimStepIndexMean": 5.15,
+    "wildMetMean": 18.63,
+    "wildUsedMean": 17.93,
+    "expeditionsMean": 37.865
+   },
+   "line": {
+    "pass": true,
+    "kinOnlySoonerInMedianDays": false,
+    "kinOnlySoonerInMedianMinutes": true,
+    "kinOnlyFirstOnSeedsShare": 0.56,
+    "kinOnlyDaysMedian": 1,
+    "wildDaysMedian": 1,
+    "kinOnlyHoursMedian": 15.283333333333333,
+    "wildHoursMedian": 16.433333333333334
+   }
+  }
+ }
+}

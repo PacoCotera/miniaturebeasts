@@ -1,0 +1,397 @@
+{
+ "round": "b0",
+ "seeds": 200,
+ "engine": "origin/main 82462ee (E1, PR 469)",
+ "frames": {
+  "L": {
+   "cells": {
+    "strangers|appearance.marking-switch": {
+     "pairs": 200,
+     "checks": 262,
+     "within95": 0.9618320610687023,
+     "unlisted": 0,
+     "maxPooledGap": 0.0008250000000000757
+    },
+    "strangers|anatomy.crown-presence": {
+     "pairs": 200,
+     "checks": 296,
+     "within95": 0.9662162162162162,
+     "unlisted": 0,
+     "maxPooledGap": 0.00020000000000003348
+    },
+    "strangers|growth.exterior-eye-size-ratio": {
+     "pairs": 200,
+     "checks": 595,
+     "within95": 0.9294117647058824,
+     "unlisted": 0,
+     "maxPooledGap": 0.0013374999999999915
+    },
+    "strangers|growth.auricular-length-ratio": {
+     "pairs": 200,
+     "checks": 551,
+     "within95": 0.9546279491833031,
+     "unlisted": 0,
+     "maxPooledGap": 0.001850000000000046
+    },
+    "half kin|appearance.marking-switch": {
+     "pairs": 200,
+     "checks": 275,
+     "within95": 0.9709090909090909,
+     "unlisted": 0,
+     "maxPooledGap": 0.0014875000000000027
+    },
+    "half kin|anatomy.crown-presence": {
+     "pairs": 200,
+     "checks": 299,
+     "within95": 0.9531772575250836,
+     "unlisted": 0,
+     "maxPooledGap": 0.0020874999999999644
+    },
+    "half kin|growth.exterior-eye-size-ratio": {
+     "pairs": 200,
+     "checks": 555,
+     "within95": 0.9405405405405406,
+     "unlisted": 0,
+     "maxPooledGap": 0.0012125000000000052
+    },
+    "half kin|growth.auricular-length-ratio": {
+     "pairs": 200,
+     "checks": 546,
+     "within95": 0.9523809523809523,
+     "unlisted": 0,
+     "maxPooledGap": 0.001025000000000012
+    },
+    "first cousins|appearance.marking-switch": {
+     "pairs": 200,
+     "checks": 266,
+     "within95": 0.9548872180451128,
+     "unlisted": 0,
+     "maxPooledGap": 0.0005249999999999977
+    },
+    "first cousins|anatomy.crown-presence": {
+     "pairs": 200,
+     "checks": 303,
+     "within95": 0.9603960396039604,
+     "unlisted": 0,
+     "maxPooledGap": 0.0007749999999999702
+    },
+    "first cousins|growth.exterior-eye-size-ratio": {
+     "pairs": 200,
+     "checks": 590,
+     "within95": 0.9440677966101695,
+     "unlisted": 0,
+     "maxPooledGap": 0.0010749999999999926
+    },
+    "first cousins|growth.auricular-length-ratio": {
+     "pairs": 200,
+     "checks": 554,
+     "within95": 0.9476534296028881,
+     "unlisted": 0,
+     "maxPooledGap": 0.001487499999999864
+    }
+   },
+   "landing": {
+    "looks": {
+     "copies": 960000,
+     "copiesOnStep": 960000,
+     "shown": 480000,
+     "shownOnStep": 230017,
+     "halfStep": 249983
+    },
+    "doings": {
+     "values": 480000,
+     "onSevenSteps": 65588
+    }
+   },
+   "pairKinship": {
+    "strangers": {
+     "kinship": 0,
+     "min": 0,
+     "max": 0,
+     "engineRefuses": 0
+    },
+    "half kin": {
+     "kinship": 0.125,
+     "min": 0.125,
+     "max": 0.125,
+     "engineRefuses": 0
+    },
+    "first cousins": {
+     "kinship": 0.0625,
+     "min": 0.0625,
+     "max": 0.0625,
+     "engineRefuses": 0
+    }
+   },
+   "summary": {
+    "youngPerPair": 400,
+    "checks": 5092,
+    "within95": 0.9501178318931658,
+    "unlisted": 0,
+    "worstPooledGap": 0.0020874999999999644,
+    "byPairKind": {
+     "strangers": 0.948943661971831,
+     "half kin": 0.9516417910447761,
+     "first cousins": 0.9497956800934034
+    }
+   },
+   "lines": {
+    "agree": {
+     "pass": true,
+     "within95": 0.9501178318931658,
+     "unlisted": 0
+    },
+    "stepsCopies": {
+     "pass": true,
+     "share": 1
+    },
+    "stepsShown": {
+     "pass": false,
+     "share": 0.4792020833333333,
+     "halfStep": 249983
+    },
+    "stepsDoings": {
+     "pass": false,
+     "share": 0.13664166666666666
+    }
+   }
+  },
+  "T": {
+   "cells": {
+    "strangers|appearance.marking-switch": {
+     "pairs": 200,
+     "checks": 251,
+     "within95": 0.9760956175298805,
+     "unlisted": 0,
+     "maxPooledGap": 0.0002250000000003638
+    },
+    "strangers|anatomy.crown-presence": {
+     "pairs": 200,
+     "checks": 298,
+     "within95": 0.9798657718120806,
+     "unlisted": 0,
+     "maxPooledGap": 0.0001500000000000945
+    },
+    "strangers|anatomy.muzzle-presence": {
+     "pairs": 200,
+     "checks": 292,
+     "within95": 0.9794520547945206,
+     "unlisted": 0,
+     "maxPooledGap": 0.00033749999999996283
+    },
+    "strangers|appearance.marking-layout": {
+     "pairs": 200,
+     "checks": 397,
+     "within95": 0.9445843828715366,
+     "unlisted": 0,
+     "maxPooledGap": 0.0024500000000000077
+    },
+    "strangers|anatomy.crown-form": {
+     "pairs": 200,
+     "checks": 295,
+     "within95": 0.9525423728813559,
+     "unlisted": 0,
+     "maxPooledGap": 0.00031249999999999334
+    },
+    "strangers|growth.exterior-eye-size-ratio": {
+     "pairs": 200,
+     "checks": 559,
+     "within95": 0.924865831842576,
+     "unlisted": 0,
+     "maxPooledGap": 0.002537499999999998
+    },
+    "strangers|growth.auricular-length-ratio": {
+     "pairs": 200,
+     "checks": 553,
+     "within95": 0.9330922242314648,
+     "unlisted": 0,
+     "maxPooledGap": 0.00122499999999999
+    },
+    "strangers|growth.crown-height-ratio": {
+     "pairs": 200,
+     "checks": 593,
+     "within95": 0.9595278246205734,
+     "unlisted": 0,
+     "maxPooledGap": 0.0014124999999999277
+    },
+    "half kin|appearance.marking-switch": {
+     "pairs": 200,
+     "checks": 265,
+     "within95": 0.9924528301886792,
+     "unlisted": 0,
+     "maxPooledGap": 0.0007500000000000284
+    },
+    "half kin|anatomy.crown-presence": {
+     "pairs": 200,
+     "checks": 295,
+     "within95": 0.9728813559322034,
+     "unlisted": 0,
+     "maxPooledGap": 0.00006250000000029843
+    },
+    "half kin|anatomy.muzzle-presence": {
+     "pairs": 200,
+     "checks": 289,
+     "within95": 0.9515570934256056,
+     "unlisted": 0,
+     "maxPooledGap": 0.0011875000000000635
+    },
+    "half kin|appearance.marking-layout": {
+     "pairs": 200,
+     "checks": 382,
+     "within95": 0.9685863874345549,
+     "unlisted": 0,
+     "maxPooledGap": 0.0020499999999999408
+    },
+    "half kin|anatomy.crown-form": {
+     "pairs": 200,
+     "checks": 295,
+     "within95": 0.9593220338983051,
+     "unlisted": 0,
+     "maxPooledGap": 0.0010375000000000245
+    },
+    "half kin|growth.exterior-eye-size-ratio": {
+     "pairs": 200,
+     "checks": 586,
+     "within95": 0.9522184300341296,
+     "unlisted": 0,
+     "maxPooledGap": 0.0022625000000000006
+    },
+    "half kin|growth.auricular-length-ratio": {
+     "pairs": 200,
+     "checks": 582,
+     "within95": 0.9621993127147767,
+     "unlisted": 0,
+     "maxPooledGap": 0.0010249999999999981
+    },
+    "half kin|growth.crown-height-ratio": {
+     "pairs": 200,
+     "checks": 584,
+     "within95": 0.958904109589041,
+     "unlisted": 0,
+     "maxPooledGap": 0.0018499999999999628
+    },
+    "first cousins|appearance.marking-switch": {
+     "pairs": 200,
+     "checks": 256,
+     "within95": 0.984375,
+     "unlisted": 0,
+     "maxPooledGap": 0.0011250000000000426
+    },
+    "first cousins|anatomy.crown-presence": {
+     "pairs": 200,
+     "checks": 286,
+     "within95": 0.972027972027972,
+     "unlisted": 0,
+     "maxPooledGap": 0.00040000000000006697
+    },
+    "first cousins|anatomy.muzzle-presence": {
+     "pairs": 200,
+     "checks": 302,
+     "within95": 0.9271523178807947,
+     "unlisted": 0,
+     "maxPooledGap": 0.0024000000000001243
+    },
+    "first cousins|appearance.marking-layout": {
+     "pairs": 200,
+     "checks": 422,
+     "within95": 0.943127962085308,
+     "unlisted": 0,
+     "maxPooledGap": 0.0013250000000000761
+    },
+    "first cousins|anatomy.crown-form": {
+     "pairs": 200,
+     "checks": 303,
+     "within95": 0.966996699669967,
+     "unlisted": 0,
+     "maxPooledGap": 0.0019249999999999823
+    },
+    "first cousins|growth.exterior-eye-size-ratio": {
+     "pairs": 200,
+     "checks": 588,
+     "within95": 0.9370748299319728,
+     "unlisted": 0,
+     "maxPooledGap": 0.002012499999999945
+    },
+    "first cousins|growth.auricular-length-ratio": {
+     "pairs": 200,
+     "checks": 570,
+     "within95": 0.9491228070175438,
+     "unlisted": 0,
+     "maxPooledGap": 0.001712499999999978
+    },
+    "first cousins|growth.crown-height-ratio": {
+     "pairs": 200,
+     "checks": 574,
+     "within95": 0.9407665505226481,
+     "unlisted": 0,
+     "maxPooledGap": 0.0013999999999999846
+    }
+   },
+   "landing": {
+    "looks": {
+     "copies": 1440000,
+     "copiesOnStep": 1440000,
+     "shown": 720000,
+     "shownOnStep": 256766,
+     "halfStep": 463234
+    },
+    "doings": {
+     "values": 480000,
+     "onSevenSteps": 51851
+    }
+   },
+   "pairKinship": {
+    "strangers": {
+     "kinship": 0,
+     "min": 0,
+     "max": 0,
+     "engineRefuses": 0
+    },
+    "half kin": {
+     "kinship": 0.125,
+     "min": 0.125,
+     "max": 0.125,
+     "engineRefuses": 0
+    },
+    "first cousins": {
+     "kinship": 0.0625,
+     "min": 0.0625,
+     "max": 0.0625,
+     "engineRefuses": 0
+    }
+   },
+   "summary": {
+    "youngPerPair": 400,
+    "checks": 9817,
+    "within95": 0.9544667413670164,
+    "unlisted": 0,
+    "worstPooledGap": 0.002537499999999998,
+    "byPairKind": {
+     "strangers": 0.9515132798023471,
+     "half kin": 0.9627821842586943,
+     "first cousins": 0.9491063314147228
+    }
+   },
+   "lines": {
+    "agree": {
+     "pass": true,
+     "within95": 0.9544667413670164,
+     "unlisted": 0
+    },
+    "stepsCopies": {
+     "pass": true,
+     "share": 1
+    },
+    "stepsShown": {
+     "pass": false,
+     "share": 0.35661944444444443,
+     "halfStep": 463234
+    },
+    "stepsDoings": {
+     "pass": false,
+     "share": 0.10802291666666666
+    }
+   }
+  }
+ }
+}
