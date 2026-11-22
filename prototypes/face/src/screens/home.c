@@ -35,6 +35,7 @@ static int g_rlo, g_rhi;   /* the rows the feet may take: Home's own band, or th
 static int g_lx;   /* the window's left edge (the clip): a rester walks off past it (R4b) */
 static int g_stw;   /* regions.resident.walk.startWiden (Home's home.json, Idle's frame.json idle and the Vivarium's vivarium.json): a start whose ink box meets a shown resident's ink box widened this many px each side is drawn again (up to eight draws); R4b-1b */
 static int g_trmax, g_rdiv, g_lvin, g_spd[3][2], g_nres;   /* vivarium.json rules.travel.max, rules.walk.raisedDiv and .levelOneIn and .speed[stage] = [px, ticks]; the residents shown (the raised cap's N) */
+#define NARROW_W 530   /* the upright phone's window, lp (play/src/layout.mjs NARROW_W) */
 static void walk_load(void) {
   int bed = *v_pstr("regions.bed.state") != 0;   /* the room has a bed (Roots only, the rooms design): the sleepers' keep-out applies only then */
   if (g_viv) {   /* the room view (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 8..680 (the clamp: the ink 8 px inside the window), and the keep-out is the spec's, a foot-point rect over the bed */
@@ -49,6 +50,7 @@ static void walk_load(void) {
     g_kx = away ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1) - 1;
     g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
+  if (g_viv || g_idle) { int ww = v_pint("windowW", v_pbool("narrow", 0) ? NARROW_W : 0); if (ww > 0 && g_xhi > ww - 8) g_xhi = ww - 8; }   /* the phone's window shows windowW lp of the room (530 upright): every mibi walks inside it, none is cut by its edge */
   g_stw = g_home || g_idle || g_viv ? v_si(sp(), hp("regions.resident.walk.startWiden"), 0) : 0;
   g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3); g_lx = v_sk(sp(), hp("regions.glass.rect"), 0);
   /* the room of this window: the window's offset from the painting, derived from the specs' own values (the whole: window.rect.y less painting.rows[0]; Home: window.rect.x less painting.cx and window.rect.y less painting.rows[0]; Idle: none) */
@@ -58,6 +60,7 @@ static void walk_load(void) {
     room_view_mode(g_viv); room_select(v_pstr("regions.room.id"), dx, dy, g_home); }
   /* the feet band: the union of the room's levels in the window's coordinates (the levels set it); Home keeps its own band, and so does a window with no room */
   if (g_home || !room_have()) { g_rlo = g_flo; g_rhi = g_flo + g_fn - 1; } else { g_rlo = -(1 << 20); g_rhi = 1 << 20; }
+  if (g_viv || g_idle) { int wh = v_pint("windowH", 0); int low = wh - (v_pbool("bare", 0) ? 42 : 6); if (wh > 0 && g_rhi > low) g_rhi = low; }   /* in the bare room view room is left under the feet for the name label (24) and the circle */   /* the phone's window shows windowH lp of the room's height (a sideways phone's is shorter than the room): the feet stay above its bottom edge, every mibi whole */
   g_trmax = v_pint("regions.travel.max", v_si("vivarium", "rules.travel.max", 3)); g_rdiv = v_si("vivarium", "rules.walk.raisedDiv", 3); g_lvin = v_si("vivarium", "rules.walk.levelOneIn", 4); if (g_rdiv < 1) g_rdiv = 1; if (g_lvin < 1) g_lvin = 1;
   for (int s = 0; s < 3; s++) { static const char *nm[3] = { "juvenile", "adult", "elder" }; g_spd[s][0] = v_si("vivarium", v_fmt("rules.walk.speed.%s.0", nm[s]), 1); g_spd[s][1] = v_si("vivarium", v_fmt("rules.walk.speed.%s.1", nm[s]), 1); if (g_spd[s][0] < 1) g_spd[s][0] = 1; if (g_spd[s][1] < 1) g_spd[s][1] = 1; }
 }
@@ -798,13 +801,20 @@ static int ent_focused(const ent_t *e, const char *cur) { return !e->hidden && s
    In the asleep form the ring is the feet form on the ink box [fx − 48, feet − 88, 96, 88] and the lamp sits on the ink box's top right; the lift is 0. In the walker form, focused and stopped, the picture rises 4 px. ---- */
 /* the cell of a moving resident whose footprint its ring takes (architect, fix 14): curl in the asleep form; shadow on a hop's air tick that shows shadow-75 (the ring stays on the ground, on the contact shadow's ink); else stand, "-m" when the shown cell is the mirrored one (facing against native) */
 static const char *foot_cell(const mv_t *m, int asleep) { return asleep ? "curl" : m->sh75 ? "shadow" : m->facing != m->native ? "stand-m" : "stand"; }
+/* The picked one in the phone window's room view: the accepted picture's orange circle round the figure (walk-2-pick), not the white foot ring. A diagram, code-drawn: one 2 px orange ring on a circle 1.3 x the figure's longer side, centred on the figure's body, kept inside the window. */
+static void viv_circle(const int fig[4]) {
+  int d = (fig[2] > fig[3] ? fig[2] : fig[3]) * 13 / 10 + 8, cx = fig[0] + fig[2] / 2, cy = fig[1] + fig[3] / 2; char ops[96];
+  snprintf(ops, sizeof ops, "[[\"ring\",\"round\",0,0,%d,%d,3,%d,\"orange\"]]", d, d, d / 2);
+  v_composed("focus.circle", cx - d / 2, cy - d / 2, d, d, ops);
+}
 static void mv_draw(const ent_t *e, int focused, int lift) {
   const mv_t *m = &g_m[e->mv]; const mv_stage_t *S = m->S; int asleep = mv_in_asleep_form(m);
   int up = focused && !asleep && m->clip != C_HOP && m->clip != C_WALK ? lift : 0;
   int b[4]; mv_box(m, b); b[1] -= up;
   if (has(m->shadow)) { v_name("resident.shadow"); v_sprite_window(v_fmt("g.%s.s", e->id), m->shadow, 1 + (m->sh75 ? 1 : 0) * S->sww, 0, m->x - m->fdx, m->feet - m->bo + m->h - S->swh, S->sww, S->swh); }
   if (focused) { int rb[4] = { m->x - m->fdx, m->feet - m->bo, m->w, m->h }; v_region("focus", LAYER_CHROME);
-    if (m->hasfig && !asleep) word_focusRingFigure("focus", sp(), "focus.targets.resident", m->walk, m->x + m->fw / 2, m->feet, m->fw);   /* held still on the figure's feet while the cells animate; a hop keeps its F */
+    if (g_viv && v_pbool("bare", 0)) { int fg[4] = { m->x, m->feet - m->bo, m->fw, m->h }; viv_circle(fg); }
+    else if (m->hasfig && !asleep) word_focusRingFigure("focus", sp(), "focus.targets.resident", m->walk, m->x + m->fw / 2, m->feet, m->fw);   /* held still on the figure's feet while the cells animate; a hop keeps its F */
     else word_focusRingFootprint("focus", sp(), "focus.targets.resident", m->walk, foot_cell(m, asleep), rb); }   /* the footprint on the ground, not lifted */
   v_name("resident");
   if (m->dl) {
@@ -1015,7 +1025,8 @@ static void glass_group(const char *cur) {
       int sil = it[k].ent == ce && it[k].kind == 0;   /* the carried one, the hand elsewhere: its 1 px fog silhouette at the point it left */
       int up = it[k].kind == 2 && !e->sleeper && !e->curled ? (it[k].ent == ce ? cl : lift) : 0, y = e->draw[1] - up, ly = e->box[1] - up;
       if (it[k].kind == 2) { v_region("focus", LAYER_CHROME);
-        if (e->hasfig) word_focusRingFigure("focus", sp(), "focus.targets.resident", e->pic, e->box[0] + e->box[2] / 2 + g_vnudge[0], e->box[1] + e->box[3] - 1 - (it[k].ent == ce ? cl : 0) + g_vnudge[1], e->box[2]);   /* the ring on the figure's feet, never lifted (raised with a carried one) */
+        if (g_viv && v_pbool("bare", 0)) { int fg[4]; ent_figrect(e, fg); viv_circle(fg); }
+        else if (e->hasfig) word_focusRingFigure("focus", sp(), "focus.targets.resident", e->pic, e->box[0] + e->box[2] / 2 + g_vnudge[0], e->box[1] + e->box[3] - 1 - (it[k].ent == ce ? cl : 0) + g_vnudge[1], e->box[2]);   /* the ring on the figure's feet, never lifted (raised with a carried one) */
         else { int rb[4]; memcpy(rb, e->draw, sizeof rb); rb[0] += g_vnudge[0]; rb[1] += g_vnudge[1]; word_focusRingFootprint("focus", sp(), "focus.targets.resident", e->pic, "", rb); } }
       v_name(e->sleeper ? "bed.sleepers" : sil ? "carry.from" : "resident"); v_sprite(v_fmt("g.%s", e->id), sil ? outl : e->pic, e->draw[0], y, e->draw[2], e->draw[3]);   /* a slot is a picture and its waiting lamp, the same two nodes every draw */
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%s.lamp", e->id), e->box[0] + e->box[2] - 12, ly, e->waiting);
@@ -1103,6 +1114,26 @@ void home_window(void) {
   g_home = 0;
 }
 
+/* The room view in the upright phone window (props `bare`, the accepted pictures walk-1-idle and walk-2-pick): every mibi is labelled under its feet with its name; the one the ring is on is labelled over its head with its name and its kind. Each tag its own node ids. */
+static int box_hit(const int a[4], const int b[4]) { return a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3]; }
+static void viv_labels(const char *cur) {
+  const char *fill = v_scol("vivarium", "colours.nameTag.fill"), *edge = v_scol("vivarium", "colours.nameTag.edge"); int gy = v_sk("vivarium", "regions.window.rect", 1), gh = v_sk("vivarium", "regions.window.rect", 3);
+  int obs[2 * MAXRES + 2][4], no = 0, pi = -1;   /* the others' figures and tags: the picked one's plate keeps clear of them */
+  for (int i = 0; i < g_ne; i++) { ent_t *e = &g_e[i]; if (e->hidden) continue;
+    if (ent_focused(e, cur) && !e->sleeper && !e->curled && !e->asleep) { pi = i; continue; }
+    char pf[16]; snprintf(pf, sizeof pf, "t%d.", i); nametag_idprefix(pf); ent_tag(e, "regions.window");
+    if (no < 2 * MAXRES) { ent_figrect(e, obs[no++]); int t[4]; nametag_last(t); if (t[2] > 0 && no < 2 * MAXRES + 2) memcpy(obs[no++], t, sizeof t); } }
+  if (pi >= 0) { ent_t *e = &g_e[pi]; char pf[16]; snprintf(pf, sizeof pf, "t%d.", pi); nametag_idprefix(pf);
+    char kind[32] = ""; for (int q = 0, m = v_plen("regions.residents"); q < m; q++) if (!strcmp(v_pstr(v_fmt("regions.residents.%d.id", q)), e->id)) { snprintf(kind, sizeof kind, "%s", v_pstr(v_fmt("regions.residents.%d.kind", q))); break; }
+    char text[96]; if (*kind) snprintf(text, sizeof text, "%s \xc2\xb7 %s", e->name, kind); else snprintf(text, sizeof text, "%s", e->name);
+    int fr[4], tag[4], m[4]; ent_figrect(e, fr); int anc[4] = { fr[0] + fr[2] / 2 - 1, fr[1], 2, fr[3] };
+    int ya = fr[1] - 24 - 12; if (ya < gy + 2) ya = gy + 2; int yb = fr[1] + fr[3] + 4; { int wh = v_pint("windowH", 0), bot = wh > 0 && wh < gy + gh ? wh : gy + gh; if (yb + 24 > bot - 2) yb = bot - 2 - 24; }
+    int y = ya, hit = 0; nametag_measure("vivarium", "regions.window", text, anc, ya, m); for (int k = 0; k < no; k++) if (box_hit(m, obs[k])) hit = 1;
+    if (hit) { nametag_measure("vivarium", "regions.window", text, anc, yb, m); int hit2 = 0; for (int k = 0; k < no; k++) if (box_hit(m, obs[k])) hit2 = 1; if (!hit2) y = yb; }   /* above would cover a neighbour: below, when that is clear */
+    kit_nameTag("vivarium", "regions.window", text, anc, y, y, KIT_TAG_OVER, 0, fill, edge, NULL, tag); }
+  nametag_idprefix("");
+}
+
 /* ---- The Vivarium's whole (vivarium.json, station-layouts.md "The Vivarium: the whole"): the living window edge to edge (its flat plates only while the whole's painting is not placed), every mibi at home walking in it, the with-you bed and its
    sleepers, the focused one's name tag, and the two slate panes along the foot (build_rooms, build_places: the room chips and the eight places of the room shown); no card, no module, no word in the window but the name tag. The same code as Home's
    glass and Idle's painting on the spec's own rectangles. The empty state (no mibi housed in the room shown) is the window, the rooms pane, the places pane's free places and the frame. While the room shown changes (events.swap, the dither of target
@@ -1119,6 +1150,7 @@ void home_viv_room(const char *cur) {   /* the room view's field (screens/vivari
     if (hd.ok && hd.self && ce >= 0) ent_tag(&g_e[ce], "regions.window");
     else if (hd.ok) { ent_t t; memset(&t, 0, sizeof t); snprintf(t.name, sizeof t.name, "%s", v_pstr("regions.carry.name")); int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.carry.figure.%d", q), 0);
       t.box[0] = hd.fx - f[2] / 2; t.box[1] = hd.feet + 1 - f[3] - carry_lift(); t.box[2] = f[2]; t.box[3] = f[3]; t.hasfig = 1; ent_tag(&t, "regions.window"); } }
+  else if (v_pbool("bare", 0)) viv_labels(cur);
   else for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.window");
   { int k = -1; for (int q = 0; q < g_nres2; q++) if (strncmp(cur, "resident.", 9) == 0 && !strcmp(g_res[q].id, cur + 9)) k = q;   /* the ring on a reserved silhouette: its box's ring and its tag */
     if (k >= 0) { v_region("focus", LAYER_CHROME); int rb[4]; memcpy(rb, g_res[k].box, sizeof rb); rb[0] += g_vnudge[0]; rb[1] += g_vnudge[1]; word_focusRingFigure("focus", "vivarium", "focus.targets.resident", g_res[k].pic, rb[0] + rb[2] / 2, rb[1] + rb[3] - 1, rb[2]);

@@ -53,45 +53,29 @@
       "verb": "back"
      }
     ],
-    "screen": "home",
+    "screen": "vivarium",
     "focus": "room",
-    "ok": "Open the Bay",
-    "subject": "",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 1 of 8",
     "idle": false
    },
    {
     "arrival": true,
-    "bay": {
-     "state": "waiting",
-     "berths": 3,
-     "crates": 2,
-     "pictures": {
-      "shut": "berth-shut-26x24:26x24",
-      "crate": "berth-crate-26x24:26x24",
-      "portrait": "berth-portrait-18x24:18x24"
-     },
-     "line1": "2 crates in",
-     "line2": "from the last trip",
-     "lamp": "needsYou"
-    },
     "companion": {
-     "state": "docked",
-     "line1": "Dot at home",
-     "line2": "",
-     "lamp": "off",
-     "name": "Dot",
-     "picture": "companion-upright-docked-28x46:28x46",
-     "plates": {
-      "count": 3,
-      "whole": 3,
-      "wholePicture": "home-shield-whole-12x24:12x24",
-      "lostPicture": "home-shield-lost-12x24:12x24"
-     }
+     "docked": true,
+     "withMibi": "loika"
     },
     "line": {
-     "needs": [
-      "Open the Bay",
-      "A new pod in the case"
+     "ok": "Open Dot",
+     "subject": "Dot · Roots 1 of 8",
+     "back": "Vivarium",
+     "need": "Two crates wait in the Bay",
+     "keys": [
+      {
+       "key": "library",
+       "room": "library",
+       "word": "Family"
+      }
      ]
     },
     "plate": ""
@@ -99,134 +83,33 @@
   ],
   "home-bay": [
    {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "pods"
-     }
-    ],
-    "screen": "home",
-    "focus": "pods",
-    "ok": "Go to Pods",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "incubator"
-     }
-    ],
-    "screen": "home",
-    "focus": "incubator",
-    "ok": "Go to the Incubator",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "companion"
-     }
-    ],
-    "screen": "home",
-    "focus": "companion",
-    "ok": "Go to the Companion",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "right",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "bay"
-     }
-    ],
-    "screen": "home",
-    "focus": "bay",
-    "ok": "Open the Bay",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
+    "key": "home",
     "said": [
      {
       "t": "intent",
-      "screen": "home",
-      "target": "bay",
-      "verb": "confirm"
+      "screen": "vivarium",
+      "target": "cell.1",
+      "verb": "room:home"
      }
     ],
-    "screen": "cargo",
-    "focus": "bay",
-    "ok": "Open them all",
+    "screen": "vivarium",
+    "focus": "room",
+    "ok": null,
     "subject": "Open the Bay",
     "idle": false
    },
    {
-    "key": "down",
-    "said": [],
-    "screen": "cargo",
-    "focus": "bay",
-    "ok": "Open them all",
-    "subject": "Open the Bay",
-    "idle": false
-   },
-   {
-    "key": "back",
+    "key": "home",
     "said": [
      {
       "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "bay",
-    "ok": "Open the Bay",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "bay",
-      "verb": "confirm"
+      "screen": "vivarium",
+      "target": "room.0",
+      "verb": "room:home"
      }
     ],
     "screen": "cargo",
-    "focus": "bay",
-    "ok": "Open them all",
-    "subject": "Open the Bay",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "cargo",
-    "focus": "bay",
+    "focus": "room",
     "ok": "Skip",
     "subject": "Open the Bay",
     "idle": false
@@ -235,7 +118,7 @@
     "key": "down",
     "said": [],
     "screen": "cargo",
-    "focus": "bay",
+    "focus": "room",
     "ok": "Skip",
     "subject": "Open the Bay",
     "idle": false
@@ -269,7 +152,7 @@
      }
     ],
     "screen": "pods",
-    "focus": "bay",
+    "focus": "room",
     "ok": "Take to the reading room",
     "subject": "▲ Other actions",
     "idle": false
@@ -284,287 +167,71 @@
       "verb": "back"
      }
     ],
-    "screen": "home",
-    "focus": "bay",
-    "ok": "Open the Bay",
-    "subject": "",
+    "screen": "vivarium",
+    "focus": "room",
+    "ok": null,
+    "subject": "Identify the Loika pod",
     "idle": false
    }
   ],
-  "home-pad": [
+  "home-room": [
    {
-    "key": "up",
+    "room": "roots",
+    "card": "mibi",
+    "look": "Look",
+    "line": {
+     "ok": null,
+     "subject": "Identify the Loika pod",
+     "back": "Home",
+     "need": "Three new pods"
+    }
+   },
+   {
+    "key": "confirm",
     "said": [
      {
-      "t": "focus",
-      "screen": "home",
-      "target": "vivarium"
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "plate.0",
+      "verb": "confirm"
      }
     ],
-    "screen": "home",
-    "focus": "vivarium",
-    "ok": "Go to the Vivarium",
-    "subject": "",
+    "screen": "pods",
+    "focus": "room",
+    "ok": null,
+    "subject": null,
     "idle": false
    },
    {
-    "key": "right",
+    "key": "back",
     "said": [
      {
-      "t": "focus",
-      "screen": "home",
-      "target": "library"
+      "t": "intent",
+      "screen": "pods",
+      "target": "rail.0",
+      "verb": "back"
      }
     ],
-    "screen": "home",
-    "focus": "library",
-    "ok": "Go to the Library",
-    "subject": "",
+    "screen": "vivarium",
+    "focus": "room",
+    "ok": null,
+    "subject": "Identify the Loika pod",
     "idle": false
-   },
-   {
-    "key": "right",
-    "said": [],
-    "screen": "home",
-    "focus": "library",
-    "ok": "Go to the Library",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "bay"
-     }
-    ],
-    "screen": "home",
-    "focus": "bay",
-    "ok": "Open the Bay",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "companion"
-     }
-    ],
-    "screen": "home",
-    "focus": "companion",
-    "ok": "Go to the Companion",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "incubator"
-     }
-    ],
-    "screen": "home",
-    "focus": "incubator",
-    "ok": "Go to the Incubator",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "left",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "pods"
-     }
-    ],
-    "screen": "home",
-    "focus": "pods",
-    "ok": "Go to Pods",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "left",
-    "said": [],
-    "screen": "home",
-    "focus": "pods",
-    "ok": "Go to Pods",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "up",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "vivarium"
-     }
-    ],
-    "screen": "home",
-    "focus": "vivarium",
-    "ok": "Go to the Vivarium",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "down",
-    "said": [
-     {
-      "t": "focus",
-      "screen": "home",
-      "target": "pods"
-     }
-    ],
-    "screen": "home",
-    "focus": "pods",
-    "ok": "Go to Pods",
-    "subject": "",
-    "idle": false
-   },
+   }
+  ],
+  "home-key": [
    {
     "key": "home",
     "said": [
      {
       "t": "intent",
-      "screen": "home",
-      "target": "pods",
+      "screen": "vivarium",
+      "target": "room.0",
       "verb": "room:home"
      }
     ],
-    "screen": "home",
-    "focus": "room",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [],
-    "screen": "home",
-    "focus": "room",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   }
-  ],
-  "home-rack": [
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "incubator",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "incubator",
-    "focus": "incubator",
-    "ok": "Choose a pod",
-    "subject": "Ready for a pod",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "incubator",
-      "target": "room",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "incubator",
-    "ok": "Go to the Incubator",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "library",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "library",
-    "focus": "library",
-    "ok": "Open Loika",
-    "subject": "New looks",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "library",
-      "target": "cell.S01",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "library",
-    "ok": "Go to the Library",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "bay",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "cargo",
-    "focus": "bay",
-    "ok": null,
-    "subject": "Identify the Loika pod",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "bay",
-    "ok": "Open the Bay",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "companion",
-      "verb": "confirm"
-     }
-    ],
     "screen": "bench",
-    "focus": "companion",
+    "focus": "room",
     "ok": "Switch off",
     "subject": "Two free, the rest ⚡ 1 each",
     "idle": false
@@ -579,174 +246,10 @@
       "verb": "back"
      }
     ],
-    "screen": "home",
-    "focus": "companion",
-    "ok": "Go to the Companion",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "vivarium",
-      "verb": "confirm"
-     }
-    ],
     "screen": "vivarium",
-    "focus": "vivarium",
-    "ok": "Open Dot",
-    "subject": "Dot · Roots 1 of 8",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "vivarium",
-      "target": "cell.1",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "vivarium",
-    "ok": "Go to the Vivarium",
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "pods",
-      "verb": "confirm"
-     }
-    ],
-    "screen": "pods",
-    "focus": "pods",
-    "ok": "Take to the reading room",
-    "subject": "▲ Other actions",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "pods",
-      "target": "card.3",
-      "verb": "back"
-     }
-    ],
-    "screen": "home",
-    "focus": "pods",
-    "ok": "Go to Pods",
-    "subject": "",
-    "idle": false
-   }
-  ],
-  "home-lamp": [
-   {
-    "key": "home",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "room",
-      "verb": "room:home"
-     }
-    ],
-    "screen": "home",
-    "focus": "room",
+    "focus": "companion",
     "ok": null,
-    "subject": null,
-    "idle": true
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "idle",
-      "verb": "wake"
-     }
-    ],
-    "screen": "home",
-    "focus": "room",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   }
-  ],
-  "home-rest-hold": [
-   {
-    "key": "home",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "room",
-      "verb": "room:home"
-     }
-    ],
-    "screen": "home",
-    "focus": "room",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "research",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "room",
-      "verb": "room:research"
-     }
-    ],
-    "screen": "home",
-    "focus": "room",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "research",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "idle",
-      "verb": "wake"
-     }
-    ],
-    "screen": "home",
-    "focus": "room",
-    "ok": null,
-    "subject": "",
-    "idle": false
-   },
-   {
-    "key": "research",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "home",
-      "target": "room",
-      "verb": "room:research"
-     }
-    ],
-    "screen": "pods",
-    "focus": "room",
-    "ok": "Take to the reading room",
-    "subject": "▲ Other actions",
+    "subject": "Identify the Loika pod",
     "idle": false
    }
   ],
@@ -756,15 +259,15 @@
     "said": [
      {
       "t": "intent",
-      "screen": "home",
+      "screen": "vivarium",
       "target": "idle",
       "verb": "wake"
      }
     ],
-    "screen": "home",
+    "screen": "vivarium",
     "focus": "room",
     "ok": null,
-    "subject": "",
+    "subject": "Identify the Loika pod",
     "idle": false
    },
    {
@@ -772,8 +275,8 @@
     "said": [],
     "screen": "pods",
     "focus": "pods",
-    "ok": "Take to the reading room",
-    "subject": "▲ Other actions",
+    "ok": "Read",
+    "subject": "▼ Choose a pod",
     "idle": false
    },
    {
@@ -795,19 +298,26 @@
       "verb": "confirm"
      }
     ],
-    "screen": "home",
+    "screen": "vivarium",
     "focus": "room",
-    "ok": null,
-    "subject": "",
+    "ok": "Open Dot",
+    "subject": "Dot · Roots 1 of 8",
     "idle": false
    },
    {
     "key": "back",
-    "said": [],
-    "screen": "home",
-    "focus": "room",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "cell.1",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "vivarium",
     "ok": null,
-    "subject": "",
+    "subject": "Identify the Loika pod",
     "idle": false
    }
   ]

@@ -112,6 +112,24 @@ static void edge_words(const char *cur) {
   v_region("edge", LAYER_CHROME); fill("edge", e, "bone");
 }
 
+/* The room view in the upright phone window (props `bare`; the accepted pictures walk-1-idle and walk-2-pick): no chip row, no card; the two cues at the top, over the room: the pad (left and right) to choose, ✓ to look closer. Strings are the spec's (strings.foot.choose, .lookCloser); the pad is a diagram (code may draw diagrams), the ✓ is the frame's 16 px cap. */
+static void bare_cues(void) {
+  const int right = v_pbool("narrow", 0) ? 522 : 680, y = 52; char ops[480]; int n = 0;
+  v_region("cues", LAYER_CHROME);
+  { int g[4] = { 0, 0, 1024, 88 }, f[4] = { 0, 562, 1024, 38 }; fill("cues.ground.top", g, v_scol(V, "colours.stageGround")); fill("cues.ground.foot", f, v_scol(V, "colours.stageGround")); }   /* no top bar and no bottom line: the stage's ground runs the whole screen */
+  n += snprintf(ops + n, sizeof ops - (size_t)n, "[[\"rrect\",0,0,24,18,4,\"%s\",\"%s\"]", v_scol(V, "colours.card.fill"), v_scol(V, "colours.card.bevel"));
+  for (int k = 0; k < 7; k++) { static const int dy[7] = { 0, -1, 1, -2, 2, -3, 3 }, dl[7] = { 5, 4, 4, 3, 3, 2, 2 }, dx[7] = { 0, 1, 1, 2, 2, 3, 3 };
+    n += snprintf(ops + n, sizeof ops - (size_t)n, ",[\"h\",%d,%d,%d,\"bone\"],[\"h\",%d,%d,%d,\"bone\"]", 4 + dx[k], 9 + dy[k], dl[k], 19 - dx[k] - dl[k] + 1, 9 + dy[k], dl[k]); }
+  snprintf(ops + n, sizeof ops - (size_t)n, "]");
+  v_region("cues", LAYER_CHROME); v_composed("cue.pad", 16, y, 24, 18, ops);
+  char choose[32]; spec_str(V, "strings.foot.choose", choose, sizeof choose);
+  v_region("cues", LAYER_TYPE); v_say("cue.choose", choose, 48, y + 1, V_ANCHOR_LINE, "label", "field", V_ALIGN_LEFT);
+  const char *look = v_pstr("regions.cues.look"); char lb[48]; snprintf(lb, sizeof lb, "%s", look); int w = v_role_width(lb, "label");
+  char mk[96]; spec_str("frame", "regions.marks.roomCue.confirm", mk, sizeof mk);
+  if (has(mk)) { v_name("cues"); pic("cue.check", mk, right - w - 20, y + 1, 16, 16); }
+  v_region("cues", LAYER_TYPE); v_say("cue.look", lb, right - w, y + 1, V_ANCHOR_LINE, "label", "field", V_ALIGN_LEFT);
+}
+
 void vivarium_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   kit_stage(V, "regions.stage.rect", v_scol(V, "colours.stageGround"), "stage", "stage.ground", NULL, NULL);
@@ -119,6 +137,7 @@ void vivarium_words(void) {
   if (wall_view()) { wall_words_all(cur); return; }
   home_viv_room(cur);
   home_viv_nudge(0, 0);
+  if (v_pbool("bare", 0)) { bare_cues(); return; }   /* the phone window's room view: the room, its labels and the two cues, nothing else */
   int lit[4]; chips_words(cur, lit);
   card_words(cur);
   edge_words(cur);

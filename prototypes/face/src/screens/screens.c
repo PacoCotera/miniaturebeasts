@@ -31,7 +31,7 @@ static void build_idleLine(void) {
   if (!v_spec_rect("frame", "idle.regions.strip.rect", s) || !v_spec_rect("frame", "idle.regions.line.rect", l)) return;
   v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); kit_hairline("idle.strip.rule", s[0], s[1], s[2], rule, 0, NULL);
   const char *text = v_pstr("frame.idle.line"); int px = spec_int("frame", "idle.regions.line.px", 16);
-  if (*text) { v_region("idle.line", LAYER_TYPE); v_line_at("idle.line", text, spec_int("frame", "idle.regions.line.centre", 512), spec_int("frame", "idle.regions.line.middle", 584), V_ANCHOR_MID, px, line, V_ALIGN_CENTRE); }
+  if (*text) { v_region("idle.line", LAYER_TYPE); v_line_at("idle.line", text, spec_int("props", "windowW", spec_bool("props", "narrow", 0) ? 530 : 0) > 0 ? spec_int("props", "windowW", 530) / 2 : spec_int("frame", "idle.regions.line.centre", 512), spec_int("frame", "idle.regions.line.middle", 584), V_ANCHOR_MID, px, line, V_ALIGN_CENTRE); }
 }
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */

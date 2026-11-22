@@ -315,6 +315,7 @@ const withHold = (frame) => (holdOn() ? { ...frame, hold: { on: 1, ...(holdNow?.
 const answerPart = (line) => (UI.answer ? { answer: answerOf({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }, line) } : {});   // Call's answer: a tag over each key (carry.mjs answerOf)
 export function screenProps(plate) {
   holdNow = null;
+  if (UI.screen === "home" && !UI.idle) goScreen("home");   // Home as doors is gone (station step 4): a screen that is still Home (a fresh start, a saved one) when the Station wakes is the room
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
   const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it
@@ -353,6 +354,11 @@ export function screenProps(plate) {
   { const back = originWord({ st: G.st, sv: G.sv, settings: G.settings, ui: UI, specs: SPECS }); if (back && line.back) line.back = back; }   // after a carry ← goes back to where it started: the way back names that place
   for (const k of ["ok", "subject", "need"]) if (typeof line[k] === "string") line[k] = capLine(line[k]);   // each of the line's three is a line and takes its capital, once, here (views/words.mjs capLine)
   if (body.top?.readout) top.readout = body.top.readout;   // the top bar's readout after the title (the Library's levels)
+  if (screen === "vivarium" && UI.window && body.props.view === "room") {   // the room view in the upright phone window, as the accepted pictures show it (walk-1-idle, walk-2-pick): the room with a label under every mibi and the picked one's name and kind over her, the two cues at the top; no header, counters, chips, card or bottom line (the face reads `bare`)
+    const rs = body.props.regions, kc = SPECS.frame.regions.marks.roomCue?.confirm; if (kc && assetEntry(kc)) ids.add(kc);
+    const props = { ...body.props, bare: true, narrow: !!UI.narrow, regions: { ...rs, residents: rs.residents.map((p) => ({ ...p, kind: S.spName(mibiById(+p.id)) })), cues: { look: SPECS.vivarium.strings.foot.lookCloser } }, focus: { ...body.props.focus, targets: body.props.focus.targets.filter((t) => t.group === "resident") } };
+    return { msg: { screen, ...props, frame: withHold({ plate: pl, ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
+  }
   return { msg: { screen, ...body.props, frame: withHold({ top, line, plate: pl, ...(fl ? { flight: { pic: fl.id, room: UI.flight.room } } : {}), ...answerPart(line) }) }, ids: [...ids], light, lit: litOf(reqs), owed: owedOf(reqs), dropped };
 }
 // The goal now (first-ten-front A3): goalKey's aim and step in words, for the header's middle slot on every room and for the dock state the Companion reads. null when the ladder is empty.

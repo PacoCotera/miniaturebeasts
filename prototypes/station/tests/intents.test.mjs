@@ -72,13 +72,28 @@ test("Home: ✓ goes to the target's screen (Cargo from the Bay, Pods on the pod
   for (const t of ["vivarium", "library", "pods", "incubator", "companion", "bay"]) { n = h.went.length; INTENTS.home.intent(h, t, "back"); assert.equal(h.went.length, n, "Home is the top: ← does nothing on " + t); } INTENTS.home.intent(h, "room", "back"); assert.equal(h.went.length, n);
   const { st: quiet } = { st: world() }; quiet.dock = { docked: true, at: T0 }; const q = host(quiet); INTENTS.home.intent(q, "room", "confirm"); assert.deepEqual(q.went, [], "at rest with no need ✓ does nothing");
 });
-test("Home: the Home key with the ring on a target puts the ring back at rest; at rest the Station rests (events.rest: the ring is gone, the dither at 200 and Idle at 380 are scheduled, not waited for; reduced motion: a cut); from any other screen Home opens at rest, so a second press rests", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); st.dock = { docked: true, at: T0 }; const h = host(st), ev = h.specs.home.events.rest;
-  h.ui.home.f = "pods"; INTENTS.frame.roomKey(h, "home"); assert.equal(h.ui.home.f, "room"); assert.deepEqual([h.went, h.played, h.ui.idle], [[], [], false], "the ring goes back to rest: nothing rests yet");
-  INTENTS.frame.roomKey(h, "home"); assert.deepEqual(h.played.at(-1), { kind: "rest", target: "home", ms: ev.ms, hold: ev.hold }); assert.equal(h.ui.resting, true); assert.equal(h.ui.idle, false, "Idle comes at the end of the hold, on the host's own clock"); assert.deepEqual(h.timers.map((t) => t.ms), [ev.steps[1].at, ev.hold]);
-  h.timers.at(-1).fn(); assert.equal(h.ui.idle, true); assert.equal(h.ui.resting, false); assert.deepEqual(h.went, [], "the screen stays Home");
-  h.ui.idle = false; h.motion = () => false; INTENTS.frame.roomKey(h, "home"); assert.equal(h.ui.idle, true, "reduced motion: a cut, Idle at once");
-  const o = host(st); o.ui.screen = "pods"; o.ui.home.f = "bay"; INTENTS.frame.roomKey(o, "home"); assert.deepEqual([o.went, o.ui.home.f, o.played], [["home"], "room", []], "from another screen: Home at rest"); o.ui.screen = "home"; INTENTS.frame.roomKey(o, "home"); assert.equal(o.played.at(-1).kind, "rest", "a second press rests");
+test("Home key (station step 4: Home as doors is gone): from another screen it opens the room; in the room it does what Idle's line says waits (crates: Cargo; a growing pod: the Incubator), else the Probe bench while docked, else the Station rests (events.rest; reduced motion: a cut)", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); st.dock = { docked: false, at: T0 }; const h = host(st), ev = h.specs.home.events.rest;
+  h.ui.screen = "pods"; INTENTS.frame.roomKey(h, "home"); assert.deepEqual([h.went, h.played], [["home"], []], "from another screen: the room (the page's goto turns Home into the room)");
+  const inRoom = (x) => { x.ui.screen = "vivarium"; x.ui.viv = { f: "resident.1", view: "room" }; x.ui.idle = false; };
+  inRoom(h); INTENTS.frame.roomKey(h, "home"); assert.deepEqual(h.played.at(-1), { kind: "rest", target: "home", ms: ev.ms, hold: ev.hold }, "in the room, nothing waits, the Companion away: the Station rests"); assert.equal(h.ui.resting, true);
+  h.timers.at(-1).fn(); assert.equal(h.ui.idle, true); h.ui.idle = false; h.motion = () => false; INTENTS.frame.roomKey(h, "home"); assert.equal(h.ui.idle, true, "reduced motion: a cut, Idle at once");
+  const b = host(st); inRoom(b); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; INTENTS.frame.roomKey(b, "home"); assert.equal(b.went.at(-1), "incubator", "a pod growing: the Incubator"); st.bud = null;
+  const d = host(st); st.dock = { docked: true, at: T0 }; inRoom(d); INTENTS.frame.roomKey(d, "home"); assert.deepEqual([d.went.at(-1), d.ui.bench.f], ["bench", null], "docked, nothing waits: the Companion's Probe bench");
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [{ id: "c1", n: 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }], mibis: [], carried: [], tier: 1, shield: 3 };
+  const c = host(st, sv); inRoom(c); INTENTS.frame.roomKey(c, "home"); assert.equal(c.went.at(-1), "cargo", "a crate waits in the Bay: Cargo");
+});
+test("the room (station step 4): ✓ on a mibi is Look closer (her page) and ← does nothing at the top, but returns to the list the room was opened from; the room line says Look closer", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const h = host(st), m = st.mibis[0];
+  h.ui.screen = "vivarium"; h.ui.hab = { id: null, f: null }; h.ui.viv = { f: "resident." + m.id, view: "room" }; h.ui.pods.pageBack = null;
+  INTENTS.vivarium.intent(h, "resident." + m.id, "confirm"); assert.equal(h.ui.pods.page, m.id, "her page is open"); assert.equal(h.ui.hab.id, m.id);
+  h.ui.viv = { f: "resident." + m.id, view: "room", fromWall: false }; const n = h.went.length; INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.length, h.ui.viv.view], [n, "room"], "← at the top of the room does nothing");
+  h.ui.viv.fromWall = true; INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.equal(h.ui.viv.view, "wall", "opened from the list: ← goes back to it");
+});
+test("a place holds a mibi: everyone in a room stands on a place of their own, and no pod is among them", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); pod(st, "S01", [], 5, false); const here = S.inRoom(st, 0);
+  assert.ok(here.length >= 2 && here.every((x) => st.mibis.includes(x) && !("podId" in x) && x.genome), "the room holds mibis only");
+  assert.equal(new Set(here.map((x) => x.slot)).size, here.length, "one mibi to a place"); assert.ok(st.tray.length >= 1 && !here.some((x) => st.tray.includes(x)), "the pod stays in the rack");
 });
 test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key plays the arrival over Home (the show: one arrival event of 3500 ms held and skippable), Later returns to Home", () => {
   const st = world(); st.dock = { docked: false, at: T0 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [{ id: "c1", n: 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }, { id: "c2", n: 2, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }], mibis: [], carried: [], tier: 1, shield: 3 };

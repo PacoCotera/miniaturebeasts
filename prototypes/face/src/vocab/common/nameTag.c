@@ -16,7 +16,21 @@
 #include <stdio.h>
 #include <string.h>
 
+static int g_last[4];   /* the box of the tag drawn last (the room view in a phone window places the picked one's plate clear of its neighbours' tags) */
+static char g_pfx[32];   /* the room view in a phone window draws a tag under every mibi: each its own node ids, `<prefix>nameTag...` (empty: the one tag, as always) */
+void nametag_idprefix(const char *prefix) { snprintf(g_pfx, sizeof g_pfx, "%s", prefix ? prefix : ""); memset(g_last, 0, sizeof g_last); }
+void nametag_last(int out[4]) { memcpy(out, g_last, sizeof g_last); }
+/* the box a tag of this name would take (x, w as kit_nameTag draws it; y, h given), nothing drawn */
+void nametag_measure(const char *spec, const char *glass, const char *name, const int anchor[4], int y, int out[4]) {
+  int h = v_si(spec, "regions.nameTag.h", 24), px = v_si(spec, "regions.nameTag.px", 16); char sr[40]; spec_str(spec, "regions.nameTag.role", sr, sizeof sr);
+  const char *role = *sr ? sr : NULL; int sized = !role && px != prim_font_px(v_role_font("nameTag")); if (!role) role = "nameTag";
+  int tw = sized ? v_measure(name, px) : v_role_width(name, role), w = layout_plate_width(spec, "regions.nameTag", tw);
+  int gx = v_sk(spec, v_fmt("%s.rect", glass), 0), gw = v_sk(spec, v_fmt("%s.rect", glass), 2), x = anchor[0] + anchor[2] / 2 - w / 2;
+  if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
+  out[0] = x; out[1] = y; out[2] = w; out[3] = h;
+}
 void kit_nameTag(const char *spec, const char *glass, const char *name, const int anchor[4], int yBelow, int yOver, int rule, int slot, const char *fill, const char *edge, const char *role, int out[4]) {
+  char idp[48], idt[48]; snprintf(idp, sizeof idp, "%snameTag", g_pfx); snprintf(idt, sizeof idt, "%snameTag.text", g_pfx);
   int h = v_si(spec, "regions.nameTag.h", 24), px = v_si(spec, "regions.nameTag.px", 16);
   char sr[40]; spec_str(spec, "regions.nameTag.role", sr, sizeof sr);
   if (!role) role = *sr ? sr : NULL;
@@ -27,11 +41,11 @@ void kit_nameTag(const char *spec, const char *glass, const char *name, const in
   int x = anchor[0] + anchor[2] / 2 - w / 2, y = yBelow;
   if (rule == KIT_TAG_OVER || (rule == KIT_TAG_AUTO && y + h > gy + gh - 8)) y = yOver;
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
-  out[0] = x; out[1] = y; out[2] = w; out[3] = h;
+  out[0] = x; out[1] = y; out[2] = w; out[3] = h; memcpy(g_last, out, sizeof g_last);
   int lt = spec_int(spec, "regions.nameTag.lineTop", 0);
-  v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, fill, slot ? NULL : edge, NULL, slot);
+  v_region("nameTag", LAYER_CHROME); kit_panel(idp, x, y, w, h, fill, slot ? NULL : edge, NULL, slot);
   int ty = lt > 0 ? y + (lt - v_sk(spec, "regions.nameTag.rect", 1)) : y + 5, an = lt > 0 ? V_ANCHOR_LINE : V_ANCHOR_CAP;
   v_region("nameTag", LAYER_TYPE);
-  if (sized) v_line_at("nameTag.text", slot ? "" : name, x + v_half(w - tw), ty, an, px, v_scol(spec, "colours.nameTag.text"), V_ALIGN_LEFT);
-  else v_say("nameTag.text", slot ? "" : name, x + v_half(w - tw), ty, an, role, ground, V_ALIGN_LEFT);
+  if (sized) v_line_at(idt, slot ? "" : name, x + v_half(w - tw), ty, an, px, v_scol(spec, "colours.nameTag.text"), V_ALIGN_LEFT);
+  else v_say(idt, slot ? "" : name, x + v_half(w - tw), ty, an, role, ground, V_ALIGN_LEFT);
 }

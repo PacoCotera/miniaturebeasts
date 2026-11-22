@@ -131,7 +131,7 @@ test("the focus at rest (§3): the room view's targets are the present mibis in 
   assert.equal(b.props.focus.cur, "resident." + m[0].id); assert.equal(build(w, sv, { seen: m[3].id }).props.focus.cur, "resident." + m[3].id);
   const r = b.props.focus.resolve; assert.deepEqual([r["plate.first"], r["room.lit"], r["card.of"]], ["plate.0", "room.0", "resident." + m[0].id], "Look is the first live plate");
   assert.equal(build(w, sv, { focus: "plate.2", last: m[2].id }).props.regions.card.name, m[2].name, "the ring on a plate keeps the card on its mibi");
-  assert.equal(b.line.ok, "Pick up " + m[0].name); assert.equal(b.line.back, "Home"); assert.equal(b.line.subject, "", "no context line");
+  assert.equal(b.line.ok, "Look closer"); assert.equal(b.line.back, "Home"); assert.equal(b.line.subject, "", "no context line");
   assert.equal(build(w, sv, { focus: "plate.0" }).line.ok, "Look at " + m[0].name); assert.equal(build(w, sv, { focus: "plate.2" }).line.ok, "Tuck " + m[0].name + " away ⚡2");
   assert.equal(build(w, sv, { focus: "room.0" }).line.ok, null, "a room's chip has no ✓ cap");
   { const { w: e, sv: s2 } = scenes().twelve; e.st.face.room = 0; e.st.rooms = 2; const x = inRoom(e, 1, 0); void x; e.st.mibis.forEach((q) => { if (q.room === 1) q.room = 0; }); }
@@ -214,7 +214,7 @@ test("✓ Look opens one mibi up close and ← comes back to the ring on it; ✓
   const { h, a, at } = hostRig(); at(0); UI.viv.f = "plate.0"; UI.viv.last = a[0].id; intent(h, "plate.0");   /* Look opens her page (PR 470) */ assert.deepEqual([UI.screen, UI.pods.page], ["pods", a[0].id]); at(1000);   // the look's hold ends
   UI.screen = "vivarium"; UI.viv.f = null; const p = screenProps(""); assert.equal(p.msg.focus.cur, "resident." + a[0].id);
   G.st.mibis = [a[0]]; UI.viv.f = "plate.2"; UI.viv.last = a[0].id; const said = []; h.say = (m) => said.push(m); intent(h, "plate.2"); assert.deepEqual(said, ["Your last mibi at home stays"]); assert.ok(!S.inStore(a[0]));
-  intent(h, "plate.2", "back"); assert.equal(UI.viv.view, "wall", "← from the look at the room is the Wall"); intent(h, "cell." + a[0].id, "back"); assert.deepEqual([UI.screen, UI.home.f], ["home", "vivarium"]);
+  intent(h, "plate.2", "back"); assert.equal(UI.viv.view, "room", "← at the top of the room does nothing (station step 4)"); UI.viv.fromWall = true; intent(h, "plate.2", "back"); assert.equal(UI.viv.view, "wall", "← from the room opened from the list is the Wall"); intent(h, "cell." + a[0].id, "back"); assert.deepEqual([UI.screen, UI.viv.view, UI.viv.f], ["vivarium", "room", "resident." + a[0].id], "← at the list is the room (Home as doors is gone), the ring on one who lives in it");
 });
 
 // ---- R4b: where the resters rest (vivarium.json rules.show.where, the owner's cats) ----

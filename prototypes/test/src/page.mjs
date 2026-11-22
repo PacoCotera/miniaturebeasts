@@ -365,7 +365,7 @@ const base = { station: null, companion: null };
 // the device's own state, not its pixels: the Station's screen, its state and its overlay; the Companion's phase
 function fingerprint(d) {
   try {
-    if (d === "station") { const p = win("station").__st.props; if (!p) return null; const lit = Object.entries(p.regions ?? {}).filter(([, r]) => r && r.lamp === "needsYou").map(([k]) => k).sort().join(","); return [p.screen, p.state ?? null, p.overlay?.id ?? null, lit].join("|"); }
+    if (d === "station") { const p = win("station").__st.props; if (!p) return null; const lit = Object.entries(p.regions ?? {}).filter(([, r]) => r && r.lamp === "needsYou").map(([k]) => k).sort().join(","); return [p.screen, p.state ?? null, p.overlay?.id ?? null, lit, p.frame?.line?.need ?? ""].join("|"); }   // Home is the Vivarium room (station step 4): what waits on the Station is the need in its line, where the Bay's lamp was
     return win("companion").__mb.S.phase ?? null;
   } catch { return null; }
 }

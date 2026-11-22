@@ -144,7 +144,15 @@ export const registerScreen = (name, screen) => { for (const k of ["draw", "node
 export const screenOf = (name) => SCREENS[name];
 // The Library is the screen `library` and its levels `library.*`: entering it from outside takes the visit note, leaving it records the note as seen (library.json seen).
 export const inLibrary = (name) => name === "library" || (typeof name === "string" && name.startsWith("library."));
+// The room is home (station step 4, station-walk-4 pictures 1 and 2): Home as a screen of doors is gone, and every way that named it lands here: the Vivarium's room view with the ring on the first one who lives in the room shown.
+// A place holds a mibi (inRoom is mibis only); with nobody in the room the ring is on its chip.
+function roomPick() {
+  const v = UI.viv, room = G.st.face?.room ?? 0, first = S.inRoom(G.st, room)[0];
+  Object.assign(v, { view: "room", pick: null, pair: null, move: null, nudge: null, page: 0, pin: first ? first.id : null, f: first ? "resident." + first.id : "room." + room, fromWall: false });
+  if (first) { v.last = first.id; UI.hab.id = first.id; }
+}
 export function goScreen(name) {
+  const toRoom = name === "home"; if (toRoom) name = "vivarium";
   const fresh = UI.screen !== name, was = UI.screen; if (fresh) FX.transAt = clock.now;
   UI.screen = name;
   if (fresh && inLibrary(name) && !inLibrary(was)) UI.lib.pending = {};   // entering the Library notes nothing: only a species whose sheet is shown is seen
@@ -156,6 +164,7 @@ export function goScreen(name) {
   if (fresh && name === "vivarium") UI.viv.f = null;
   if (fresh && name === "settings") UI.settings.f = null;   // Settings opens with the ring on the first row
   if (fresh && name === "vivarium" && was !== "habitat" && was !== "cross") { Object.assign(UI.viv, { view: "wall", page: 0, pin: null, last: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0, pair: null }); }   // from anywhere the room view (the collection v2 design §1); back from up close or the pair screen, the view it left   // the way in reads only st.face.room; the ring on the mibi last seen up close if it is in that room, else the room's first resident, else its chip (vivarium.json focus.entry)
+  if (toRoom) roomPick();
   if (fresh) UI.viv.prev = null;   // a swap's old room leaves with the screen
   if (fresh) { UI.panel = null; UI.arrival = null; UI.answer = false; }   // Call's answer lasts only on the screen it was asked on   // a panel closes with its screen, nothing spent; the arrival's ← lasts only on the screen it landed on
   if (fresh && name !== "habitat") { UI.hab.namer = null; UI.hab.prev = null; UI.hab.prevRoom = null; }   // the namer closes with the level (writing nothing)

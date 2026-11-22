@@ -214,7 +214,7 @@ function lineOf({ st, sv, settings, Sg, cur, plates, card, pods }) {
   if (cur === "plate.incubator") { line.ok = F.plate.incubator; return line; }
   const p = plates.find((x) => x.id === cur);
   if (p) { if (p.held) return line; const key = { look: "look", takeAlong: "takealong", bringHome: "bringhome", tuckAway: "tuck", bringOut: "out", breed: "breed", return: "return" }[p.act]; line.ok = fill(F.plate[p.free ? key + "Free" : key], { name: card.name, p: priceFig(p.price) }); return line; }
-  const o = S.mibiById(st, idOf(cur)); if (o && !pickHeld(st, sv, o, settings, Sg, S.docked(st))) line.ok = fill(F.pickUp, { name: o.name });   // held (a traveller, one coming out): no ✓, the message plate
+  const o = S.mibiById(st, idOf(cur)); if (o && !pickHeld(st, sv, o, settings, Sg, S.docked(st))) line.ok = fill(F.lookCloser, { name: o.name });   // held (a traveller, one coming out): no ✓, the message plate
   return line;
 }
 const priceFig = (s) => String(s ?? "").replace(/[^0-9]/g, "");
