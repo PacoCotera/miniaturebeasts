@@ -197,16 +197,20 @@ function moveTo(h, change) {   // a change of the pod level that may move the sp
 }
 function enterRead(h, q) { const p = pods(h); p.at = "rail"; p.trait = 0; p.plate = 0; p.reading = null; p.moment = null; p.fromChamber = null; p.nudge = null; p.lane = q && q.idd ? recommendedLane(h.st, q, h.settings) : 0; p.focus.set(q && !q.idd ? "key" : "rail"); }
 // Her page (page.mjs): a hatched mibi on the reading screen, the rail on the chapter asked for (the first when none). ← leaves it for the mibi up close, the Vivarium's closest level.
-export function openPage(h, m, lane = 0) {
+export function openPage(h, m, lane = 0, back = "habitat") {
   const p = pods(h), q = S.mibiById(h.st, m.id); if (!q) return;
-  p.cmp = null; p.view = "room"; p.ask = null; p.choosing = false; p.from = "page"; p.roomFrom = "page"; p.page = q.id;
+  p.cmp = null; p.view = "room"; p.ask = null; p.choosing = false; p.from = "page"; p.roomFrom = "page"; p.page = q.id; p.pageBack = back === "vivarium" ? { ...h.ui.viv } : null;
   enterRead(h, subjectOf(h.st, p)); p.lane = clamp(lane, 0, Math.max(0, frameOf(S.speciesOf(q)).chapters.length - 1));
   h.goto("pods");
 }
 // Her board (station-match-7, the accepted walk-5-glance): every trait of her kind in one small row, by chapter, on one screen (views/page-props.mjs boardScreen). The blue key on her page opens it; ← and the blue key return to her page, the ring on the rail.
 export function openBoard(h) { const p = pods(h); if (p.page == null) return; p.at = "board"; p.focus.set("trait"); }
 function closeBoard(h) { const p = pods(h); p.at = "rail"; p.focus.set("rail"); }
-function leavePage(h) { const p = pods(h), id = p.page; p.page = null; p.view = "inventory"; p.at = "rail"; p.from = "home"; h.ui.hab.id = id; h.goto("habitat"); }
+function leavePage(h) {   // ← from her page: the Vivarium where she was picked (view, room and pick kept) when Look opened it, else her up close
+  const p = pods(h), id = p.page, back = p.pageBack; p.page = null; p.pageBack = null; p.view = "inventory"; p.at = "rail"; p.from = "home"; h.ui.hab.id = id;
+  if (back) { h.goto("vivarium"); Object.assign(h.ui.viv, back, { f: null }); return; }
+  h.goto("habitat");
+}
 function backToInventory(h) {   // ← on the pod level, or the Research key's second face: the inventory, the ring on this pod's card (its mini rail shows what was just read)
   if (pods(h).page != null) return leavePage(h);   // her page: ← and the Research key go back to her, up close
   const p = pods(h), q = S.benchPod(h.st); p.view = "inventory"; p.at = "rail"; p.reading = null; p.moment = null; p.choosing = false; p.from = "home"; p.first = 0;

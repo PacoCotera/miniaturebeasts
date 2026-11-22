@@ -124,15 +124,15 @@ function boardScreen(view, m, spec, req, mibi, fr) {
       if (model.shape === "scale") { row.scale = { w: barW, at: model.shows, rough: model.rough, copies: model.copies, others: model.others }; row.shut = model.shows == null && !model.rough; }
       else { const ls = model.looks, sh = ls.findIndex((l) => l.shows), cr = ls.findIndex((l) => l.hidden); row.set = { n: ls.length, step: Bd.step, found: ls.flatMap((l, k) => (l.others > 0 && !l.shows ? [k] : [])), shows: sh >= 0 ? sh : null, carries: cr >= 0 ? cr : null }; row.shut = sh < 0 && !ls.some((l) => l.others > 0); }
       if (others.length && !shutChapter) {
-        if (model.shape === "scale" && model.shows != null && !model.rough) { const a = model.shows, end = a <= 0.25 ? model.ends[0] : a >= 0.75 ? model.ends[1] : ""; if (end && model.others.every((o) => Math.abs(o - a) > 0.2)) alone.push({ kind: "scale", text: S.cap(end) }); }
+        if (model.shape === "scale" && model.shows != null && !model.rough) { const a = model.shows, end = a <= 0.25 ? model.ends[0] : a >= 0.75 ? model.ends[1] : ""; if (end && model.others.every((o) => Math.abs(o - a) > 0.2)) alone.push({ kind: "scale", text: S.cap(end), master: roundOf(sid, t.id)?.[a <= 0.25 ? 0 : 2] ?? null }); }   // the signed round portrait of that coat end where one maps, else the code mark
         else if (model.shape === "set") { const sh = model.looks.find((l) => l.shows && l.others === 0), cr = model.looks.find((l) => l.hidden && l.others === 0);
-          if (sh) alone.push({ kind: "shows", text: S.cap(sh.look) }); if (cr) alone.push({ kind: "carries", text: fill(Sg.boardAloneCarries, { look: (/s$/.test(cr.look) ? "" : "a ") + cr.look }) }); } }
+          if (sh) alone.push({ kind: "shows", text: S.cap(sh.look), card: squareOf(sid, t.id, sh.look) }); if (cr) alone.push({ kind: "carries", text: fill(Sg.boardAloneCarries, { look: (/s$/.test(cr.look) ? "" : "a ") + cr.look }), card: squareOf(sid, t.id, cr.look) }); } }
       text(t.name, C.x, cy + Bd.rowBase - 14, row.shut ? Bd.shutRole : Bd.nameRole, "l");
       g.rows.push(row); y += rowH;
     }
     groups.push(g); colY[col] = y + Bd.gap;
   });
-  const Al = Bd.alone, aloneItems = alone.slice(0, Al.max).map((it, k) => ({ kind: it.kind, x: Al.x, y: Al.top + k * Al.pitch, d: Al.d }));
+  const Al = Bd.alone, aloneItems = alone.slice(0, Al.max).map((it, k) => ({ kind: it.kind, x: Al.x, y: Al.top + k * Al.pitch, d: Al.d, master: it.master ?? it.card?.master ?? null, window: it.card?.window ?? null }));
   if (aloneItems.length) { text(Sg.boardAlone, Al.x, Al.headBase, Al.headRole, "l"); aloneItems.forEach((it, k) => text(alone[k].text, Al.x + Al.d + Al.gap, it.y + Al.base, Al.role, "l")); }
   const Lg = Bd.legend, items = []; let lx = Lg.x;
   for (const [kind, word] of [["scale", Sg.boardLgScale], ["set", Sg.boardLgSet], ["shows", Sg.boardLgShows], ["carries", Sg.boardLgCarries], ["others", Sg.boardLgOthers]]) {
