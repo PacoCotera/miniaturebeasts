@@ -6254,7 +6254,19 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     if (!S.revealed[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); continue; }
     const cs = Math.max(r.w, r.h); g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, cs, 0).canvas(0), r.x, r.y); g.restore();
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore();
+    if (G.land[c] === L.WATER && !dx !== !dy) peekWaterVeil(r, dx, dy);
   }
+}
+// water-edge-2 (owner #110: "that transition between shallow water and deep water needs improvement"): the wide water beside the place is a flat block, so it met the place's shallows in one straight
+// line the height of the view. The signed edge strip (places/veil, the page's own veil.mjs) is laid on the block's near edge, dense on the line, so the veil's ragged fall-off crosses it and the
+// place's own edge veil (dense at the place's edge) meets it: the cloud's core lies over both sides of the line. Nothing else on the water changes.
+const PEEK_VEIL = new Map();
+function peekWaterVeil(r, dx, dy) {
+  if (!PL.veil || !PL.veilMod) return;
+  const side = dx > 0 ? 'W' : dx < 0 ? 'E' : dy > 0 ? 'N' : 'S', night = stormCovers(+S.exp.patch.key % MW) ? 1 : 0, key = [r.w, r.h, side, night].join('|');
+  let cv = PEEK_VEIL.get(key);
+  if (!cv) { cv = PL.mk(r.w, r.h); const L = dx ? r.h : r.w; PL.veilMod.paintVeil(cv.getContext('2d'), night ? PL.veil.night : PL.veil.day, { runs: [{ side, a0: 0, a1: L }], pieces: [] }, r.w, r.h); PEEK_VEIL.set(key, cv); }
+  g.imageSmoothingEnabled = false; g.drawImage(cv, r.x, r.y);
 }
 // The map's unseen land (src/landpaint.mjs): ink under sparse night dots, the Bayer matrix on the screen's pixels, so cells of unlike sizes join with no seam.
 function peekFog(x, y, w, h) { R(x, y, w, h, C.ink); ditherFill(x, y, w, h, 'night', 3); }
