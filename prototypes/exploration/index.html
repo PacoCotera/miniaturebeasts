@@ -242,7 +242,7 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, c
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV } from "./src/world7.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
-import { waitPips, fracPips, PIPS } from "./src/waitpips.mjs";
+import { waitPips, fracPips, startPlaceWait, PIPS } from "./src/waitpips.mjs";
 import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
@@ -2427,8 +2427,7 @@ function placePartnerNear(key, P) {
 // The wait for places made in the worker (the set-out's reach, a cell entered before its place is here): the page stays live and the loading line's pips count the places that are here (RT.placeWait; drawWaitPips).
 const yieldTurn = () => new Promise(res => setTimeout(res, 0));
 function beginPlaceWait(seed, slot, v, cells, laying) {
-  RT.making = true; RT.makingAt = performance.now(); RT.wait = null; RT.pips = 0;   // a new wait starts empty, whatever the last one reached
-  RT.placeWait = { seed, slot, v, cells, laying, laid: 0 };
+  startPlaceWait(RT, { seed, slot, v, cells, laying, laid: 0 }, performance.now());   // a new wait starts empty, whatever the last one reached; one asked inside a set-out's wait goes on under its pips (#104)
   readyPlaces(seed, slot, v, cells, { ctx: PL.ctx, first: true });   // first: ahead of the background list in the worker
   return Promise.all(cells.map(c => bakedWhen(seed, slot, v, c)));
 }
