@@ -16,7 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 
+static char g_pfx[32];   /* the room view in a phone window draws a tag under every mibi: each its own node ids, `<prefix>nameTag...` (empty: the one tag, as always) */
+void nametag_idprefix(const char *prefix) { snprintf(g_pfx, sizeof g_pfx, "%s", prefix ? prefix : ""); }
 void kit_nameTag(const char *spec, const char *glass, const char *name, const int anchor[4], int yBelow, int yOver, int rule, int slot, const char *fill, const char *edge, const char *role, int out[4]) {
+  char idp[48], idt[48]; snprintf(idp, sizeof idp, "%snameTag", g_pfx); snprintf(idt, sizeof idt, "%snameTag.text", g_pfx);
   int h = v_si(spec, "regions.nameTag.h", 24), px = v_si(spec, "regions.nameTag.px", 16);
   char sr[40]; spec_str(spec, "regions.nameTag.role", sr, sizeof sr);
   if (!role) role = *sr ? sr : NULL;
@@ -29,9 +32,9 @@ void kit_nameTag(const char *spec, const char *glass, const char *name, const in
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   int lt = spec_int(spec, "regions.nameTag.lineTop", 0);
-  v_region("nameTag", LAYER_CHROME); kit_panel("nameTag", x, y, w, h, fill, slot ? NULL : edge, NULL, slot);
+  v_region("nameTag", LAYER_CHROME); kit_panel(idp, x, y, w, h, fill, slot ? NULL : edge, NULL, slot);
   int ty = lt > 0 ? y + (lt - v_sk(spec, "regions.nameTag.rect", 1)) : y + 5, an = lt > 0 ? V_ANCHOR_LINE : V_ANCHOR_CAP;
   v_region("nameTag", LAYER_TYPE);
-  if (sized) v_line_at("nameTag.text", slot ? "" : name, x + v_half(w - tw), ty, an, px, v_scol(spec, "colours.nameTag.text"), V_ALIGN_LEFT);
-  else v_say("nameTag.text", slot ? "" : name, x + v_half(w - tw), ty, an, role, ground, V_ALIGN_LEFT);
+  if (sized) v_line_at(idt, slot ? "" : name, x + v_half(w - tw), ty, an, px, v_scol(spec, "colours.nameTag.text"), V_ALIGN_LEFT);
+  else v_say(idt, slot ? "" : name, x + v_half(w - tw), ty, an, role, ground, V_ALIGN_LEFT);
 }

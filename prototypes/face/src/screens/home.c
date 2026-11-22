@@ -35,6 +35,7 @@ static int g_rlo, g_rhi;   /* the rows the feet may take: Home's own band, or th
 static int g_lx;   /* the window's left edge (the clip): a rester walks off past it (R4b) */
 static int g_stw;   /* regions.resident.walk.startWiden (Home's home.json, Idle's frame.json idle and the Vivarium's vivarium.json): a start whose ink box meets a shown resident's ink box widened this many px each side is drawn again (up to eight draws); R4b-1b */
 static int g_trmax, g_rdiv, g_lvin, g_spd[3][2], g_nres;   /* vivarium.json rules.travel.max, rules.walk.raisedDiv and .levelOneIn and .speed[stage] = [px, ticks]; the residents shown (the raised cap's N) */
+#define NARROW_W 530   /* the upright phone's window, lp (play/src/layout.mjs NARROW_W) */
 static void walk_load(void) {
   int bed = *v_pstr("regions.bed.state") != 0;   /* the room has a bed (Roots only, the rooms design): the sleepers' keep-out applies only then */
   if (g_viv) {   /* the room view (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 8..680 (the clamp: the ink 8 px inside the window), and the keep-out is the spec's, a foot-point rect over the bed */
@@ -49,6 +50,7 @@ static void walk_load(void) {
     g_kx = away ? v_sk(sp(), hp("regions.resident.walk.keepOut"), 0) : 1 << 20; g_ky = v_sk(sp(), hp("regions.resident.walk.keepOut"), 1) - 1;
     g_xlo = v_sk(sp(), hp("regions.resident.walk.ground"), 0); g_xhi = g_xlo + v_sk(sp(), hp("regions.resident.walk.ground"), 2);
   }
+  if (g_viv || g_idle) { int ww = v_pint("windowW", v_pbool("narrow", 0) ? NARROW_W : 0); if (ww > 0 && g_xhi > ww - 8) g_xhi = ww - 8; }   /* the phone's window shows windowW lp of the room (530 upright): every mibi walks inside it, none is cut by its edge */
   g_stw = g_home || g_idle || g_viv ? v_si(sp(), hp("regions.resident.walk.startWiden"), 0) : 0;
   g_flo = v_sk(sp(), hp("regions.resident.walk.ground"), 1); g_fn = v_sk(sp(), hp("regions.resident.walk.ground"), 3); g_lx = v_sk(sp(), hp("regions.glass.rect"), 0);
   /* the room of this window: the window's offset from the painting, derived from the specs' own values (the whole: window.rect.y less painting.rows[0]; Home: window.rect.x less painting.cx and window.rect.y less painting.rows[0]; Idle: none) */
@@ -1103,6 +1105,23 @@ void home_window(void) {
   g_home = 0;
 }
 
+/* The room view in the upright phone window (props `bare`, the accepted pictures walk-1-idle and walk-2-pick): every mibi is labelled under its feet with its name; the one the ring is on is labelled over its head with its name and its kind. Each tag its own node ids. */
+static void viv_labels(const char *cur) {
+  const char *fill = v_scol("vivarium", "colours.nameTag.fill"), *edge = v_scol("vivarium", "colours.nameTag.edge"); int gy = v_sk("vivarium", "regions.window.rect", 1);
+  for (int pass = 0; pass < 2; pass++) for (int i = 0; i < g_ne; i++) {   /* the others first, the picked one's tag last: it stands on top where two meet */
+    ent_t *e = &g_e[i]; if (e->hidden) continue;
+    int pick = ent_focused(e, cur) && !e->sleeper && !e->curled && !e->asleep; if (pick != pass) continue;
+    char pf[16]; snprintf(pf, sizeof pf, "t%d.", i); nametag_idprefix(pf);
+    if (pick) {
+      char kind[32] = ""; for (int q = 0, m = v_plen("regions.residents"); q < m; q++) if (!strcmp(v_pstr(v_fmt("regions.residents.%d.id", q)), e->id)) { snprintf(kind, sizeof kind, "%s", v_pstr(v_fmt("regions.residents.%d.kind", q))); break; }
+      char text[96]; if (*kind) snprintf(text, sizeof text, "%s \xc2\xb7 %s", e->name, kind); else snprintf(text, sizeof text, "%s", e->name);
+      int fr[4], tag[4]; ent_figrect(e, fr); int y = fr[1] - 24 - 12; if (y < gy + 2) y = gy + 2; int anc[4] = { fr[0] + fr[2] / 2 - 1, fr[1], 2, fr[3] };
+      kit_nameTag("vivarium", "regions.window", text, anc, y, y, KIT_TAG_OVER, 0, fill, edge, NULL, tag);
+    } else ent_tag(e, "regions.window");
+  }
+  nametag_idprefix("");
+}
+
 /* ---- The Vivarium's whole (vivarium.json, station-layouts.md "The Vivarium: the whole"): the living window edge to edge (its flat plates only while the whole's painting is not placed), every mibi at home walking in it, the with-you bed and its
    sleepers, the focused one's name tag, and the two slate panes along the foot (build_rooms, build_places: the room chips and the eight places of the room shown); no card, no module, no word in the window but the name tag. The same code as Home's
    glass and Idle's painting on the spec's own rectangles. The empty state (no mibi housed in the room shown) is the window, the rooms pane, the places pane's free places and the frame. While the room shown changes (events.swap, the dither of target
@@ -1119,6 +1138,7 @@ void home_viv_room(const char *cur) {   /* the room view's field (screens/vivari
     if (hd.ok && hd.self && ce >= 0) ent_tag(&g_e[ce], "regions.window");
     else if (hd.ok) { ent_t t; memset(&t, 0, sizeof t); snprintf(t.name, sizeof t.name, "%s", v_pstr("regions.carry.name")); int f[4]; for (int q = 0; q < 4; q++) f[q] = v_pint(v_fmt("regions.carry.figure.%d", q), 0);
       t.box[0] = hd.fx - f[2] / 2; t.box[1] = hd.feet + 1 - f[3] - carry_lift(); t.box[2] = f[2]; t.box[3] = f[3]; t.hasfig = 1; ent_tag(&t, "regions.window"); } }
+  else if (v_pbool("bare", 0)) viv_labels(cur);
   else for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) ent_tag(&g_e[i], "regions.window");
   { int k = -1; for (int q = 0; q < g_nres2; q++) if (strncmp(cur, "resident.", 9) == 0 && !strcmp(g_res[q].id, cur + 9)) k = q;   /* the ring on a reserved silhouette: its box's ring and its tag */
     if (k >= 0) { v_region("focus", LAYER_CHROME); int rb[4]; memcpy(rb, g_res[k].box, sizeof rb); rb[0] += g_vnudge[0]; rb[1] += g_vnudge[1]; word_focusRingFigure("focus", "vivarium", "focus.targets.resident", g_res[k].pic, rb[0] + rb[2] / 2, rb[1] + rb[3] - 1, rb[2]);
