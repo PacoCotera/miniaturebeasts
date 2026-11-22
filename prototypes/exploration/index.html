@@ -2252,7 +2252,7 @@ function nightPasses() {
   const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
   S.lastEntered = (ex.entered || []).slice(); RIPE_LATER = []; let turned, ripeLater;
   try { turned = worldTurn(pending); } finally { ripeLater = RIPE_LATER || []; RIPE_LATER = null; }
-  S.day = freshDay(); ex.stormCells = {};   // the trail and the storm marks are spent in this turn
+  S.day = freshDay(); ex.stormCells = {}; ex.nights = (ex.nights || 0) + 1;   // the trail and the storm marks are spent in this turn; the end card counts the days
   RIPE_PENDING.push(...ripeLater); if (ripeLater.length) setTimeout(ripeLoop, 250);
   const a = turned.arrived; ex.nightNews = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] };
   fxMsg(DAY_TEXT.nightPassed(partOfDay(0)), 4);
@@ -3944,7 +3944,8 @@ function endExpedition(reason) {
     hits: ex.stats.hits, reach: rc, putFeeds: ex.stats.putFeeds, handFeeds: ex.stats.handFeeds, maxLvl: ex.stats.maxLvl, openStormActs: ex.stats.openStormActs, moments: ex.moments.length,
     warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
-  if (!explored && !(ex.dug && ex.dug.length) && !night) {   // nothing explored: nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
+  rep.days = (ex.nights || 0) + 1; rep.places = (ex.entered || []).length; rep.habits = Object.keys(ex.habits || {}).length;   // what the days gave, for the end card
+  if (!explored && !(ex.dug && ex.dug.length) && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
@@ -7594,12 +7595,16 @@ function drawNewWorld() {
 }
 // Expedition ended: the hold sealed into the bay (or why not), the world turn, and the way on. The Station opens the crates
 // only when the Companion is docked (the Station page).
+const WHY_ENDED = 'You ended the expedition.';   // [copy]
 function drawSealed(t) {
   const r = S.report; viewBg(); drawTop(r ? 'Expedition ' + r.n + ' ended' : 'Expedition ended', goalForms());
   if (!r) return;
   // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
   let y = 46, last = 46;
   const L = (s, col) => { text(clipText(s, 410, 2), 22, y, col); last = y; y += 24; };
+  if (r.reason === 'sent') { L(WHY_ENDED, C.mist);   // why it ended: his choice; then what the days gave   [copy]
+    const g = []; if (r.days) g.push(r.days + (r.days === 1 ? ' day' : ' days')); if (r.places) g.push(r.places + (r.places === 1 ? ' place' : ' places')); if (r.habits) g.push(r.habits + (r.habits === 1 ? ' habit noted' : ' habits noted'));
+    if (g.length) L(g.join(' · '), C.mist); y += 4; }
   if (r.reason === 'break') { text(clipText('The Probe broke', 410, 3), 22, y, C.coral, 3); y += 34;
     L(r.dropped ? numWord(r.dropped).replace(/^./, c => c.toUpperCase()) + ' pod' + (r.dropped === 1 ? ' lies' : 's lie') + ' where it broke.' : 'Nothing was in the hold.', C.bone);
     L('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), C.peach);
