@@ -212,6 +212,23 @@ function drawLoci(frame, a, b, k, opts) {
   for (const l of frame.loci) {
     if (l.kind === "locked") { loci[l.id] = [...l.copies]; continue; }
     const locus = LOCI.get(l.id);
+    if (isContinuous(locus) && !isDoing(l.id)) {
+      // a look: two copies, one of each parent's own (like a switch locus); the nudge applies to each copy
+      const [lo, hi] = blendRange(frame, l), [clo, chi] = valueRange(locus);
+      const take = (g, i) => { const c = g.loci[l.id][i]; return typeof c === "number" ? c : copyValue(locus, c); };
+      const nudge = (v) => {
+        if (v < lo - 1e-9 || v > hi + 1e-9) return v; // a mutated copy outside the pool passes on as it is
+        const n = quantize(locus, clamp(v + (rng() * 2 - 1) * spread * (chi - clo) * narrow, lo, hi), [lo, hi]);
+        return n;
+      };
+      const asCopy = (v) => (offStepEnds(locus, [lo, hi]).includes(v) ? l.alleles.find((id) => copyValue(locus, id) === v) ?? v : v);
+      let c0 = nudge(take(a, coin.chance(1, 2) ? 0 : 1)), c1 = nudge(take(b, coin.chance(1, 2) ? 0 : 1));
+      if (c0 !== c1 && surface > 0 && coin.under(Math.ceil(surface * 4294967296))) { // what hides surfaces: one copy twice
+        if (coin.chance(1, 2)) c1 = c0; else c0 = c1;
+      }
+      loci[l.id] = [asCopy(c0), asCopy(c1)];
+      continue;
+    }
     if (isContinuous(locus)) {
       const va = shownValue(locus, a.loci[l.id]), vb = shownValue(locus, b.loci[l.id]);
       const [lo, hi] = blendRange(frame, l), [clo, chi] = valueRange(locus);
@@ -316,8 +333,15 @@ export function forecast(frame, x, y, opts = {}) {
     if (isContinuous(locus)) {
       const va = shownValue(locus, a.loci[lead]), vb = shownValue(locus, b.loci[lead]);
       const [lo, hi] = blendRange(frame, row), [clo, chi] = valueRange(locus);
-      const w = spread * (chi - clo) * narrow, mid = (va + vb) / 2, half = Math.abs(vb - va) / 2 * narrow;
-      const range = [quantize(locus, clamp(mid - half - w, lo, hi), [lo, hi]), quantize(locus, clamp(mid + half + w, lo, hi), [lo, hi])]; // on the step, as the child is
+      const w = spread * (chi - clo) * narrow;
+      let rlo, rhi;
+      if (isDoing(lead)) { const mid = (va + vb) / 2, half = Math.abs(vb - va) / 2 * narrow; rlo = mid - half - w; rhi = mid + half + w; }
+      else { // a look: the span of the four copy pairings' means (the parents' copies), nudge included
+        const ms = [];
+        for (const p of a.loci[lead]) for (const q of b.loci[lead]) ms.push((copyValue(locus, p) + copyValue(locus, q)) / 2);
+        rlo = Math.min(...ms) - w; rhi = Math.max(...ms) + w;
+      }
+      const range = [quantize(locus, clamp(rlo, lo, hi), [lo, hi]), quantize(locus, clamp(rhi, lo, hi), [lo, hi])]; // on the step, as the child is
       const bins = [...new Set([binFor(locus, range[0]), binFor(locus, (range[0] + range[1]) / 2), binFor(locus, range[1])])];
       traits.push({ ...base, kind: "blend", parents: [round6(va), round6(vb)], range, bins, firm: false, sure: bins.length === 1, ...asleepOf(t) });
       continue;

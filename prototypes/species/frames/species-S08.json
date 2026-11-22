@@ -2441,8 +2441,8 @@
  "viability": {
   "sampled": 200,
   "constructed": 200,
-  "crossed": 186,
-  "crossedBuilt": 186,
+  "crossed": 197,
+  "crossedBuilt": 197,
   "failures": [],
   "rule": "random copies from the species pools at every open locus, and children of crosses between members (their blends on the step between the named alleles); built by the rig and validated against the compositional contract"
  },
