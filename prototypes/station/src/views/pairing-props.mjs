@@ -23,7 +23,7 @@ export function pairView(view, m, spec, req) {
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role);
   const faces = [{ id: faceOf(S.speciesOf(a), a, fr), x: F.ax, y: F.y, d: F.d }], names = [], pw = 120;
   const side = (mb, f, fx) => { if (!mb) return; const px = fx + Math.round((F.d - pw) / 2), py = F.y + F.d + Z.name.dy - Z.name.h; names.push([px, py, pw, Z.name.h, Z.name.radius]);
-    text(S.cap(mb.name), px, Z.name.baseline, Z.name.role, "c", pw);
+    text((mb === b && partners.length > 1 ? "◀ " : "") + S.cap(mb.name) + (mb === b && partners.length > 1 ? " ▶" : ""), px, Z.name.baseline, Z.name.role, "c", pw);   // the second pick wears ◀ ▶: the pad changes it
     if (f.rest) text(f.rest, px, Z.rest.baseline, Z.rest.role, "c", pw);   // "resting · n min" on the face, with its time
     f.counts.forEach((c, i) => text(`${i ? "eyes" : "marking"} ${c}`, px - 15, Z.copies.baseline + (f.rest ? 0 : -14) + i * Z.copies.pitch, Z.copies.role, "c", pw + 30)); };   // one line a trait, under the name
   side(a, R.a, F.ax);
@@ -44,7 +44,8 @@ export function pairView(view, m, spec, req) {
   }
   // the readout on the aim: the aim (two traits), each pick's copies sit by its face; the pair's chances per trait and both; then the kin and vigour line and the pod's time
   const A = Z.aim;
-  if (R.aim.length) { text(Sg.aimHead, A.head.x, A.head.baseline, A.head.role); R.aim.forEach((w, i) => text(w, A.lines.x, A.lines.top + i * A.lines.pitch - (b ? 0 : 0), A.lines.role)); }
+  if (R.aim.length) { text(Sg.aimHead, A.head.x, A.head.baseline, A.head.role); R.aim.forEach((w, i) => text(w, A.lines.x, A.lines.top + i * A.lines.pitch, A.lines.role));
+    text(Sg.markingSlot, A.lines.x, A.lines.top + R.aim.length * A.lines.pitch, A.head.role); }   // the marking has no signed picture on the Loika yet: a named empty slot, nothing drawn in code
   else text(R.noAim, A.head.x, A.head.baseline, A.head.role);
   if (b && R.chances.length) { text(Sg.chanceHead, A.head.x + 250, A.head.baseline, A.head.role); [R.both, ...R.chances].forEach((w, i) => text(w, A.head.x + 250, A.lines.top + i * A.lines.pitch, A.lines.role)); }
   if (b) { text(R.kin, Z.kinLine.x, Z.kinLine.baseline, Z.kinLine.role); text(R.pod, Z.kinLine.x, Z.kinLine.baseline + Z.kinLine.pitch, Z.kinLine.role); }
