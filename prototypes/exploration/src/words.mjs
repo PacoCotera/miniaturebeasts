@@ -67,10 +67,10 @@ WORDS.ease = {
   hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
   ctx: 'keep still, and see what it does',
 };
-// [copy] W4, habits that play and the notes they give (walk-design-1 W4; range.md 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
+// [copy] W4, habits that play and the notes they give (walk-design-1 W4; the range rule 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
 WORDS.habit = {
   name: { shake: 'shaking dry', calm: 'calming a wary one', sleep: 'curling up to sleep' },
-  // the tell, then the four beats (editorial's page loika-habits.md section 1)
+  // the tell, then the four beats (editorial's page the editorial page on her habits section 1)
   tell: { shake: 'her nose lifts · the rain is thinning', calm: 'she stops · ears up, her head turns', sleep: 'she walks a small circle' },
   beat: {
     shake: ['a shiver runs from her head back', 'the fur flies', 'she turns to the water and trots on', 'a tuft is left where she stood'],

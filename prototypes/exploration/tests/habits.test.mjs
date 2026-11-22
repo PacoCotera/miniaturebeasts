@@ -1,4 +1,4 @@
-// W4 on the live realm: habits that play (tell, four beats), notes by range, the card line, the sample (walk-design-1 W4; G1's range rule, range.md 3A and 3B).
+// W4 on the live realm: habits that play (tell, four beats), notes by range, the card line, the sample (walk-design-1 W4; G1's range rule, the range rule 3A and 3B).
 //   node --test prototypes/exploration/tests/habits.test.mjs
 // A scripted rain on seeds 7, 13 and 42: the nose lifts before the rain stops, the shake plays, a near note gives the tuft.
 import { test } from "node:test";
@@ -11,12 +11,12 @@ import { ROUTINE } from "../src/gen7/haunts.mjs";
 test("range: far beyond 5 tiles, mid 3 to 5, near 2 or closer", () => {
   assert.deepEqual([1, 2, 3, 5, 6, 9].map(rangeOf), ["near", "near", "mid", "mid", "far", "far"]);
 });
-test("what a note gives by range (range.md 3A): far where she goes in clear air, mid the coat (and the place in dim air), near her face", () => {
+test("what a note gives by range (the range rule 3A): far where she goes in clear air, mid the coat (and the place in dim air), near her face", () => {
   assert.deepEqual(givesAt("far", true), ["place"]); assert.deepEqual(givesAt("far", false), []);
   assert.deepEqual(givesAt("mid", true), ["coat"]); assert.deepEqual(givesAt("mid", false), ["coat", "place"]);
   assert.deepEqual(givesAt("near", true), ["face"]); assert.deepEqual(givesAt("near", false), ["face"]);
 });
-test("the card line (range.md 3B): her face when the Station holds no sample, else a seeded draw among what is not got; null when all are got", () => {
+test("the card line (the range rule 3B): her face when the Station holds no sample, else a seeded draw among what is not got; null when all are got", () => {
   assert.equal(wantOf(7, 3, "shake", {}, false), "face");
   assert.equal(wantOf(7, 3, "shake", { face: 1 }, false) !== "face", true);
   const w = wantOf(7, 3, "calm", {}, true); assert.ok(["place", "coat", "face"].includes(w));

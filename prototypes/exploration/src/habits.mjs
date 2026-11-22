@@ -1,31 +1,31 @@
-// W4: the wild Loika's habits that play, the note a habit gives by range, the card line, the sample (walk-design-1 W4; plan v6 S3 Release A; canon: book/plan/loika-habits.md).
+// W4: the wild Loika's habits that play, the note a habit gives by range, the card line, the sample (walk-design-1 W4; plan v6 S3 Release A; canon: the editorial page on her habits).
 // Pure: everything here is a function of its arguments; the page keeps the state (c.hb on the live creature, S.habits per named Loika, S.day.hab per day).
-// The range rule is G1's as round 4 tested it (runs/g1-range-design-2/range.md 3 A and B); every number is *greybox* (the designer's to tune).
+// The range rule is G1's as round 4 tested it (the range rule 3 A and B); every number is *greybox* (the designer's to tune).
 //   a habit: shake (after rain, the moment it stops), calm (a wary one comes near her), sleep (curled at her bed, from dusk)
 //   a play: tell (2 to 4 actions, the individual's), then four beats; ✓ facing her in sight during a play is a note
 import { hash, rnd } from './world.mjs';
 
 export const HABITS = Object.freeze(['shake', 'calm', 'sleep']);
 export const BEATS = 4;
-// what each habit leaves when she is watched from near, and the Station chapter it answers (walk.md section 8: a tuft is the Coat's, a whisker the Face's, a shed claw the Legs & Tail's)
+// what each habit leaves when she is watched from near, and the Station chapter it answers (the walk design, section 8: a tuft is the Coat's, a whisker the Face's, a shed claw the Legs & Tail's)
 export const SAMPLE = Object.freeze({ shake: Object.freeze({ item: 'tuft', chapter: 'coat' }), calm: Object.freeze({ item: 'whisker', chapter: 'face' }), sleep: Object.freeze({ item: 'claw', chapter: 'legs-tail' }) });
-export const WANTS = Object.freeze(['place', 'coat', 'face']);   // the three things a note can give (range.md 2): where she goes, her coat, her face
-export const SATCHEL = 8;                                         // satchel slots for samples, drops, packs, materials and food (walk.md section 8)
+export const WANTS = Object.freeze(['place', 'coat', 'face']);   // the three things a note can give (the range rule 2): where she goes, her coat, her face
+export const SATCHEL = 8;                                         // satchel slots for samples, drops, packs, materials and food (the walk design, section 8)
 
 // far: more than 5 tiles; mid: 3 to 5; near: 2 or closer
 export const rangeOf = d => d > 5 ? 'far' : d >= 3 ? 'mid' : 'near';
 export const RANK = Object.freeze({ far: 0, mid: 1, near: 2 });
 // the tell comes a few actions before the habit; its length is the individual's: 2 to 4 (a wary one waits longer, a steady one is slower to start)
 export const tellOf = doings => 2 + (doings && doings.wary >= .5 ? 1 : 0) + (doings && doings.drive < 1 ? 1 : 0);
-// clear air: no rain, no fog, before dusk (range.md 3A)
+// clear air: no rain, no fog, before dusk (the range rule 3A)
 export const clearAir = ({ raining, fog, part }) => !raining && !fog && part !== 'dusk' && part !== 'night';
-// what a note gives by range (range.md 3A): far where she goes in clear air, else the shape only; mid the coat (and where she goes in dim air); near her face, all four beats and the keepsake
+// what a note gives by range (the range rule 3A): far where she goes in clear air, else the shape only; mid the coat (and where she goes in dim air); near her face, all four beats and the keepsake
 export function givesAt(range, clear) {
   if (range === 'far') return clear ? ['place'] : [];
   if (range === 'mid') return clear ? ['coat'] : ['coat', 'place'];
   return ['face'];
 }
-// the card line for a habit (range.md 3B): in the realm what is still missing, not a draw. Her face when the Station holds no sample for the habit's chapter (a player with no keepsake is sent close first);
+// the card line for a habit (the range rule 3B): in the realm what is still missing, not a draw. Her face when the Station holds no sample for the habit's chapter (a player with no keepsake is sent close first);
 // otherwise the seed draws among what is not yet got for that habit. null when all three are got.
 export function wantOf(seed, id, k, got, haveSample) {
   const left = WANTS.filter(w => !(got && got[w]));
