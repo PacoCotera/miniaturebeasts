@@ -3,7 +3,6 @@
 // the model's (pairing-model.mjs). A room key leaves it as every Pods view does.
 import * as S from "../state.mjs";
 import { partnersOf } from "../views/pairing-props.mjs";
-import { fill } from "../views/words.mjs";
 import { openNursery } from "./nursery.mjs";
 
 const pods = (h) => h.ui.pods;
@@ -25,6 +24,6 @@ export function pairIntent(h, target, verb) {
   const b = S.mibiById(h.st, x.bId); if (!b || !ps.includes(b.id)) { h.say(h.specs.pods.strings.nursery.empty); return; }
   const r = S.pairPod(h.st, h.sv, a, b, h.settings, h.now()); if (!r.ok) { h.say(r.msg); return; }
   h.save(); p.pair = null; openNursery(h, { from: "habitat", pod: r.pod.id });
-  h.say(fill(h.specs.pods.strings.pairing.crossed, { A: a.name, B: b.name }));
+  // No message plate here: a plate over a `page` screen leaves the page's window shifted and clipped in the real shell (seen in the step 8-3 stills); the pod on the shelf, with its green, is the answer. The words `crossed` wait.
 }
 export function focus() {}

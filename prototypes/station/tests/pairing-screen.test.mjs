@@ -40,8 +40,10 @@ test("the pair view: one stage picture and the words over it; the second pick sh
   const two = podsBuild(model(st, ui), pods), t2 = two.page.scale.texts.map((t) => t.text);
   assert.equal(two.line.ok, "Pair them"); assert.ok(two.page.scale.texts.some((t) => t.text === "Pair them" && t.role === pods.regions.page.pair.ok.role)); assert.ok(t2.some((t) => t.includes("both aims together")));
   assert.ok(t2.some((t) => /No kin in common|vigour/.test(t))); assert.ok(t2.some((t) => /^Its pod grows in/.test(t)));
-  assert.ok(t2.some((t) => /^marking \d of 2 · eyes \d of 2$/.test(t)), "the copies on the faces");
+  assert.ok(t2.some((t) => /^marking \d of 2$/.test(t)) && t2.some((t) => /^eyes \d of 2$/.test(t)), "the copies on the faces");
   assert.equal(two.pairing.readout.chances.length, 2);
+  const at = (re) => two.page.scale.texts.findIndex((t) => re.test(t.text)), both = at(/both aims together/), each = at(/^the .* marking: /);
+  assert.ok(both >= 0 && each >= 0 && both < each, "the both-together chance comes first (lead 13:38)");
 });
 
 test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and opens the nursery; ← goes to the mibi", () => {
@@ -49,6 +51,6 @@ test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and o
   openPair(h, a); assert.equal(ui.pods.view, "pair"); assert.equal(ui.pods.pair.bId, ps[0]); assert.equal(ui.screen, "pods");
   if (ps.length > 1) { pairIntent(h, "rail.0", "step:right"); assert.equal(ui.pods.pair.bId, ps[1]); pairIntent(h, "rail.0", "step:left"); assert.equal(ui.pods.pair.bId, ps[0]); }
   const e0 = st.e; pairIntent(h, "rail.0", "confirm");
-  assert.equal(st.tray.length, 1); assert.ok(st.e < e0); assert.equal(ui.pods.view, "nursery"); assert.match(said.at(-1), /on the nursery's shelf/);
+  assert.equal(st.tray.length, 1); assert.ok(st.e < e0); assert.equal(ui.pods.view, "nursery"); assert.equal(said.length, 0, "no plate over a page screen");
   openPair(h, a); pairIntent(h, "rail.0", "back"); assert.equal(ui.screen, "habitat"); assert.equal(ui.hab.id, a.id);
 });

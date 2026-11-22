@@ -10,6 +10,7 @@ import { fill } from "./words.mjs";
 
 const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
 
+// The readout lists "both aims together" FIRST, then each trait (lead 13:38, bus 8e6908): a player reading it picks the pair by its weaker trait.
 // The partners the pad walks (the mibi's own pairable ones: at home, not family), in the Cross room's order.
 export const partnersOf = (st, sv, a, settings) => S.crossPartners(st, sv, a, settings).filter((p) => !p.away && !p.family).map((p) => p.id);
 
@@ -20,12 +21,11 @@ export function pairView(view, m, spec, req) {
   const R = readout(st, sv, spec, a, b, settings, now), text = (tx, X, base, role, align = "l", w) => { if (tx) texts.push({ text: tx, x: Math.round(X), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
   const fr = frameOf(S.speciesOf(a)), W = spec.regions.page.rect[2], F = Z.faces;
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role);
-  text(fill(spec.strings.nursery.sub, { from: S.cap(a.name) }), Z.title.x, Z.crumb.baseline, Z.crumb.role);
   const faces = [{ id: faceOf(S.speciesOf(a), a, fr), x: F.ax, y: F.y, d: F.d }], names = [], pw = 120;
   const side = (mb, f, fx) => { if (!mb) return; const px = fx + Math.round((F.d - pw) / 2), py = F.y + F.d + Z.name.dy - Z.name.h; names.push([px, py, pw, Z.name.h, Z.name.radius]);
     text(S.cap(mb.name), px, Z.name.baseline, Z.name.role, "c", pw);
     if (f.rest) text(f.rest, px, Z.rest.baseline, Z.rest.role, "c", pw);   // "resting · n min" on the face, with its time
-    if (f.counts.length) text(f.counts.map((c, i) => `${i ? "eyes" : "marking"} ${c}`).join(" · "), fx - 20, Z.copies.baseline + (f.rest ? 0 : -10), Z.copies.role, "c", F.d + 40); };
+    f.counts.forEach((c, i) => text(`${i ? "eyes" : "marking"} ${c}`, px - 15, Z.copies.baseline + (f.rest ? 0 : -14) + i * Z.copies.pitch, Z.copies.role, "c", pw + 30)); };   // one line a trait, under the name
   side(a, R.a, F.ax);
   if (b) { faces.push({ id: faceOf(S.speciesOf(b), b, fr), x: F.bx, y: F.y, d: F.d }); side(b, R.b, F.bx); }
   text(Sg.plus, Z.plus.cx, Z.plus.baseline, Z.plus.role, "c", 40);
@@ -46,7 +46,7 @@ export function pairView(view, m, spec, req) {
   const A = Z.aim;
   if (R.aim.length) { text(Sg.aimHead, A.head.x, A.head.baseline, A.head.role); R.aim.forEach((w, i) => text(w, A.lines.x, A.lines.top + i * A.lines.pitch - (b ? 0 : 0), A.lines.role)); }
   else text(R.noAim, A.head.x, A.head.baseline, A.head.role);
-  if (b && R.chances.length) { text(Sg.chanceHead, A.head.x + 250, A.head.baseline, A.head.role); [...R.chances, R.both].forEach((w, i) => text(w, A.head.x + 250, A.lines.top + i * A.lines.pitch, A.lines.role)); }
+  if (b && R.chances.length) { text(Sg.chanceHead, A.head.x + 250, A.head.baseline, A.head.role); [R.both, ...R.chances].forEach((w, i) => text(w, A.head.x + 250, A.lines.top + i * A.lines.pitch, A.lines.role)); }
   if (b) { text(R.kin, Z.kinLine.x, Z.kinLine.baseline, Z.kinLine.role); text(R.pod, Z.kinLine.x, Z.kinLine.baseline + Z.kinLine.pitch, Z.kinLine.role); }
   const block = b ? S.pairBlock(st, sv, a, b, settings) : "", can = !!b && !block;
   if (R.done) text(R.done, Z.done.x, Z.done.baseline, Z.done.role);
