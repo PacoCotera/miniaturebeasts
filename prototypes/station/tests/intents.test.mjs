@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
+import { setFrames, frameOf, podGenome, traitState } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as Lib from "../src/library.mjs";
 import { createFocus } from "../../ui/focus.mjs";
@@ -694,4 +694,24 @@ test("her page state (step 2b): an older mibi keeps what it had read; a hatched 
     const mod = v.requests.filter((r) => r.kind === "traitshape").map((r) => r.model).find((x) => x.id === tr.id);
     if (i < S.PAGE_SIGHTS) { assert.ok(mod.rough, "a stretch"); assert.equal(mod.shows, null); assert.equal(mod.copies, null); widths.push(mod.rough[1] - mod.rough[0]); } else { assert.equal(mod.rough, null); assert.equal(typeof mod.shows, "number", "pinned down: a mark"); } }
   assert.ok(widths[0] > widths[1] && widths[1] > widths[2], "the stretch narrows with each sighting");
+});
+
+test("the lens on her page (step 2c): copies and the hidden look stay hidden until the lens is pointed at the trait (✓ in its detail); an old save and a 2b page load with none shown", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
+  const old = JSON.parse(JSON.stringify(m)); delete old.page; S.normalize({ ...st, mibis: [old] }); assert.deepEqual(old.page.carried, {}, "an older mibi starts with the lens used nowhere");
+  m.page = { looked: [], sights: {} }; S.pageOf(m); assert.deepEqual(m.page.carried, {}, "a 2b page gains an empty carried");
+  INTENTS.habitat.intent(h, "plate.0", "confirm");
+  const build = () => podsBuild({ st, settings, ui: h.ui.pods, focus: "rail", now: 0 }, podsSpec), models = (v) => v.requests.filter((r) => r.kind === "traitshape").map((r) => r.model);
+  let set = null, scale = null;
+  for (const [ci, ch] of fr.chapters.entries()) { if (S.isDoingChapter(ch) || ch.sealed) continue; m.page.looked.push(ch.id); h.ui.pods.lane = ci; h.ui.pods.at = "right";
+    const ms = models(build()); ch.traits.forEach((t, ti) => { const md = ms.find((x) => x.id === t.id); if (!md) return;
+      if (md.shape === "set" && !set && traitState(fr, t, m.genome).hides) set = { ci, ti, t }; if (md.shape === "scale" && !scale) scale = { ci, ti, t }; }); }
+  assert.ok(set && scale, "a set that hides a look and a scale exist on her");
+  for (const [kind, x] of [["set", set], ["scale", scale]]) {
+    h.ui.pods.lane = x.ci; h.ui.pods.at = "right"; const find = () => models(build()).find((y) => y.id === x.t.id);
+    const before = find(); if (kind === "set") assert.ok(before.looks.every((l) => !l.hidden), "no hidden look before the lens"); else assert.equal(before.copies, null, "no copies before the lens");
+    h.ui.pods.at = "detail"; h.ui.pods.trait = x.ti; const dv = build(); assert.equal(dv.read.right.form, "detail"); assert.match(dv.line.ok, /^Lens on /);
+    INTENTS.pods.intent(h, "trait", "confirm"); assert.equal(m.page.carried[x.t.id], true, "the lens is free and marks the trait");
+    const after = find(); if (kind === "set") assert.ok(after.looks.some((l) => l.hidden), "the hidden look lands"); else assert.equal(after.copies.length, 2, "her two copies show");
+    assert.equal(build().line.ok, null, "once used, no lens offer"); }
 });

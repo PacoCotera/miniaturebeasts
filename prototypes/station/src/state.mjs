@@ -1179,7 +1179,7 @@ function hatchBud(st, settings, now, line) {
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
   const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now, growAt: now + GROW_UP_MS } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
-  m.page = { looked: [], sights: {} };   // her page starts empty: a chapter about her body fills at its first look, one about what she does by watching her (pageLook, pageSight)
+  m.page = { looked: [], sights: {}, carried: {} };   // her page starts empty: a chapter about her body fills at its first look, one about what she does by watching her (pageLook, pageSight)
   st.mibis.push(m); st.bud = null;
   logEv(st, line(m, fr.species.name, roomName(st, place.room)));
   return { ok: true, mibi: m };
@@ -1347,11 +1347,19 @@ export const mibiFullyRead = (m, settings = DEFAULT_SETTINGS) => { const fr = fr
 // An older save holds none: a mibi that exists keeps what it had (every chapter it had read is looked, every doing trait of those fully sighted); only a mibi hatched from now on starts empty (hatchBud).
 export const PAGE_SIGHTS = 4;
 export const isDoingChapter = (ch) => ch.traits.length > 0 && ch.traits.every((t) => t.nature === "doing");
+// Step 2c adds `carried: { trait id: true }`, the traits the lens has been pointed at. A mibi saved before it (an older save, a 2b page) starts with none: the copies and the hidden look were never a thing she had shown.
 export function pageOf(m) {
-  if (m.page && Array.isArray(m.page.looked) && m.page.sights && typeof m.page.sights === "object") return m.page;
+  if (m.page && Array.isArray(m.page.looked) && m.page.sights && typeof m.page.sights === "object") { if (!m.page.carried || typeof m.page.carried !== "object") m.page.carried = {}; return m.page; }
   const fr = frameFor(m), looked = [], sights = {};
   for (const ch of fr ? fr.chapters : []) if ((m.read || []).includes(ch.id)) { looked.push(ch.id); for (const t of ch.traits) if (t.nature === "doing") sights[t.id] = PAGE_SIGHTS; }
-  return (m.page = { looked, sights });
+  return (m.page = { looked, sights, carried: {} });
+}
+// The lens: has it been pointed at this trait of hers (what she carries there is shown), and the act (free, once per trait; a trait about what she does must be pinned down first, a chapter not looked at has nothing to sample).
+export const pageLensed = (m, t) => !!pageOf(m).carried[t.id];
+export function pageLens(st, m, chapterId, traitId) {
+  const fr = frameFor(m), ch = fr && chapterOf(fr, chapterId), t = ch && ch.traits.find((x) => x.id === traitId), pg = pageOf(m);
+  if (!t || pg.carried[t.id] || !pageRead(m).includes(ch.id) || pageKnown(m, t) < 1) return { ok: false };
+  pg.carried[t.id] = true; logEv(st, "Lens on " + m.name + "'s " + t.name + " · free"); return { ok: true, trait: t };
 }
 const sightsOf = (m, t) => Math.max(0, Math.min(PAGE_SIGHTS, pageOf(m).sights[t.id] | 0));
 // The chapters of her page that are read: the looked ones, and a doing chapter with a sighting on any trait.

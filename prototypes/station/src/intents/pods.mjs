@@ -233,6 +233,7 @@ function readIntent(h, target, verb) {
   if (at === "stamp") { if (verb === "back" || verb === "confirm" || verb === "step:down") foldStamp(h, target); return; }
   if (at === "detail") {
     if (verb === "back") return moveTo(h, () => { p.at = "right"; p.plate = p.trait ?? 0; p.focus.set("plate." + p.plate); });   // B up: the pod level, the ring on the trait's plate
+    if (verb === "confirm" && p.page != null) { if (S.pageLens(st, S.mibiById(st, p.page), ch.id, ch.traits[clamp(p.trait ?? 0, 0, ch.traits.length - 1)].id).ok) h.save(); return; }   // her page: the lens on this trait, free: what she carries there shows
     if (verb === "step:up" || verb === "step:down") { p.trait = clamp((p.trait ?? 0) + (verb === "step:down" ? 1 : -1), 0, ch.traits.length - 1); }   // the chapter's next trait (both cut)
     return;
   }
