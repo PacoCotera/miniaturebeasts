@@ -1,7 +1,6 @@
 // G1, the watch in one place (plan v6 3a; owner 2026-11-22 07:3x). One hand-made place, one Loika with her three habits, one day of light (W1): W3's rules (the carry table, ease in four stages,
 // sight blocked by props and raised edges, wind per part of day, keeping still as one act) and W4's (a note carries its range; the first note of a habit pays +1 Data and, near, a sample) here only.
-// Pure and headless: the page draws this state and the bot (tools/g1-bot.mjs) plays it. Every number is *greybox* (the designer's to tune). Canon: loika-habits.md (editorial, 2026-11-22).
-// Nothing here brings a habit on: a habit plays when its cause comes in her day (rain stops, a wary one comes near, dusk). No way to bring one on is designed (loika-habits.md 5.1).
+// Pure and headless: the page draws this state and the bot (tools/g1-bot.mjs) plays it. Every number is *greybox* (the designer's to tune).// Nothing here brings a habit on: a habit plays when its cause comes in her day (rain stops, a wary one comes near, dusk). No way to bring one on is designed.
 import { DAY, partOfDay, G1 } from "./words.mjs";
 import { INDIVIDUALS } from "./g1-individuals.mjs";
 
@@ -55,7 +54,8 @@ export function makeDay(seed) {
 }
 export const raining = (S, l = S.light) => !!S.rain && l >= S.rain.s && l < S.rain.e;
 export const windNow = (S, l = S.light) => S.wind[DAY.parts.findIndex(([n]) => n === partOfDay(l))];
-export const forecast = S => ({ rain: S.rain ? [S.rain.s, S.rain.e] : null, mibiPart: partOfDay(S.ma), wind: S.wind.slice(), sleepPart: 'dusk' });
+// the wary one's coming is named to within ten light: mibiFrom is the start of the ten-light window that holds it (its routine fixes it from the seed)
+export const forecast = S => ({ rain: S.rain ? [S.rain.s, S.rain.e] : null, mibiPart: partOfDay(S.ma), mibiFrom: Math.floor(S.ma / 10) * 10, wind: S.wind.slice(), sleepPart: 'dusk' });
 
 // ---- W3: sight and the carry ----
 // a straight line between two tiles' centres is blocked by a prop or a raised edge on a tile between them
@@ -89,7 +89,7 @@ const HABITS = ['shake', 'calm', 'sleep'];
 function spend(S, heard) {
   const L = S.L;
   if (!L.gone) {
-    if (heard) { L.ease++; L.quiet = 0; S.log.heard++; S.events.push(L.ease >= 3 ? 'gone' : 'heard'); if (L.ease >= 3) { L.gone = true; L.habit = null; L.x = -9; L.y = -9; S.log.goneAt = S.light; } }
+    if (heard) { L.ease = L.ease >= 2 ? 3 : 2; L.quiet = 0; S.log.heard++; S.events.push(L.ease >= 3 ? 'gone' : 'heard'); if (L.ease >= 3) { L.gone = true; L.habit = null; L.x = -9; L.y = -9; S.log.goneAt = S.light; } }
     else { L.quiet++; if (L.ease === 1 && L.quiet >= 2) { L.ease = 0; L.quiet = 0; S.events.push('settled'); } else if (L.ease === 2 && L.quiet >= 3) { L.ease = 1; L.quiet = 0; S.events.push('settled'); } }
   }
   S.light++;

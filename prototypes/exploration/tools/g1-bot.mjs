@@ -25,7 +25,7 @@ export function playDay(seed, policy = 'HONEST') {
   const fixed = { FAR: 6, MID: 4, NEAR: 2 }[policy], only = policy === 'COVER' ? 'cover' : policy === 'OPEN' ? 'open' : null;
   const appts = [];
   if (fc.rain) appts.push({ k: 'shake', by: fc.rain[1], t: fc.rain[1] - 1, end: fc.rain[1] + 3 });
-  appts.push({ k: 'calm', by: partStart(fc.mibiPart), t: partStart(fc.mibiPart), end: S.ma + 15 });
+  appts.push({ k: 'calm', by: fc.mibiFrom, t: fc.mibiFrom, end: S.ma + 15 });
   appts.push({ k: 'sleep', by: 150, t: 150, end: S.sleepAt + 8 });
   let route = null, idx = 0;   // where the bot stands on its route (index into the route's tiles); null: at the start
   const stillMark = {};
@@ -99,7 +99,8 @@ export function measure(N = 200) {
   const out = { seeds: N };
   // line 1: keep-still acts per habit noted
   const stills = []; for (const r of P.HONEST) for (const k of Object.keys(r.appts)) if (r.appts[k].noted) stills.push(r.appts[k].still);
-  out.keepStill = { habitsNoted: stills.length, median: pct(stills, .5), p80: pct(stills, .8), mean: Math.round(10 * stills.reduce((a, b) => a + b, 0) / Math.max(1, stills.length)) / 10, line: 'under three', pass: pct(stills, .5) < 3 && pct(stills, .8) < 3 };
+  out.keepStill = { habitsNoted: stills.length, median: pct(stills, .5), p80: pct(stills, .8), mean: Math.round(10 * stills.reduce((a, b) => a + b, 0) / Math.max(1, stills.length)) / 10, line: 'under three (read at p80)', pass: pct(stills, .8) < 3, medianPass: pct(stills, .5) < 3 };
+  out.keepStill.perHabit = {}; for (const k of ['shake', 'calm', 'sleep']) { const v = []; for (const r of P.HONEST) if (r.appts[k] && r.appts[k].noted) v.push(r.appts[k].still); out.keepStill.perHabit[k] = { n: v.length, median: pct(v, .5), p80: pct(v, .8) }; }
   // line 2: the range at the first note, and which range is best per seed
   const first = { far: 0, mid: 0, near: 0 }, rank = { far: 1, mid: 2, near: 3 };
   for (const r of P.HONEST) for (const k of Object.keys(r.appts)) if (r.appts[k].noted) first[r.appts[k].first]++;

@@ -32,14 +32,14 @@ test("the carry table: gait, ground, wind, rain, wariness; never below 1", () =>
   assert.equal(at(9, 4, "creep", { wind: "N", rain: { s: 0, e: 50 } }), 2, "rain -1");
 });
 
-test("ease in four stages: a heard step raises it, quiet actions lower it, a third heard step sends her away for the day", () => {
+test("ease in four stages (walk design W3): the first heard step is watching, quiet actions settle one stage, a second heard step while watching sends her away for the day", () => {
   const S = day(7, { wind: "N" }); S.P.x = 9; S.P.y = 6; S.L.x = 7; S.L.y = 4;
   assert.equal(S.L.ease, 0);
-  G.step(S, "up", "creep"); assert.equal(S.L.ease, 1, "ears up"); assert.equal(S.L.gone, false);
-  G.wait(S); assert.equal(S.L.ease, 1); G.wait(S); assert.equal(S.L.ease, 0, "two quiet actions settle ears up");
-  G.step(S, "left", "creep"); G.step(S, "up", "creep"); assert.equal(S.L.ease, 2, "watching");
-  G.wait(S); G.wait(S); assert.equal(S.L.ease, 2); G.wait(S); assert.equal(S.L.ease, 1, "watching settles after three");
-  G.step(S, "down", "creep"); assert.equal(S.L.ease, 2); G.step(S, "left", "creep"); assert.equal(S.L.ease, 3, "gone"); assert.equal(S.L.gone, true);
+  G.step(S, "up", "creep"); assert.equal(S.L.ease, 2, "watching on the first heard step"); assert.equal(S.L.gone, false);
+  G.wait(S); G.wait(S); assert.equal(S.L.ease, 2); G.wait(S); assert.equal(S.L.ease, 1, "watching settles to ears up after three quiet");
+  G.wait(S); G.wait(S); assert.equal(S.L.ease, 0, "ears up settles after two quiet");
+  G.step(S, "left", "creep"); assert.equal(S.L.ease, 2, "watching again");
+  G.step(S, "down", "creep"); assert.equal(S.L.ease, 3, "gone on the second heard step"); assert.equal(S.L.gone, true);
   assert.ok(S.log.goneAt !== null);
 });
 
@@ -62,7 +62,7 @@ test("keeping still is ONE act: it runs until her ease changes, a tell starts, t
   assert.equal(h.n, 10); assert.equal(h.why, "ten"); assert.equal(S.light, 10, "ten Waits, ten light"); assert.equal(S.log.holds, 1); assert.equal(S.log.waits, 10);
   const T = day(7, { wind: "N" }); T.light = 15; const hp = G.hold(T); assert.equal(hp.why, "part"); assert.equal(hp.n, 5, "dawn turns at 20");
   const R = day(7, { wind: "N", rain: { s: 30, e: 60 } }); R.light = 25; const hr = G.hold(R); assert.equal(hr.why, "weather"); assert.equal(R.light, 30, "rain began");
-  const E = day(7, { wind: "N" }); E.P.x = 9; E.P.y = 5; G.step(E, "up", "creep"); assert.equal(E.L.ease, 1); const he = G.hold(E); assert.equal(he.why, "ease"); assert.equal(he.n, 2);
+  const E = day(7, { wind: "N" }); E.P.x = 9; E.P.y = 5; G.step(E, "up", "creep"); assert.equal(E.L.ease, 2); const he = G.hold(E); assert.equal(he.why, "ease"); assert.equal(he.n, 3);
   const D = day(7, { wind: "N" }); D.light = 151; D.sleepAt = 154; const hd = G.hold(D); assert.equal(hd.why, "tell"); assert.equal(D.L.habit.k, "sleep");
 });
 

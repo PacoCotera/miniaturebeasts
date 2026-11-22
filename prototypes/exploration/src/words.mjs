@@ -67,7 +67,7 @@ export const DAY_TEXT = {
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
 };
 
-// G1, the watch in one place (plan v6 3a; W3's and W4's rules in the test place only). Every line is [copy]: placeholders say the meaning only, in the page's words for the habits (editorial's loika-habits.md).
+// G1, the watch in one place (plan v6 3a; W3's and W4's rules in the test place only). Every line is [copy]: placeholders say the meaning only, in the page's words for the habits.
 export const G1 = {
   title: 'The watch · test place',
   ease: ['grazing', 'ears up', 'watching', 'gone'],   // [copy] her four stages, said under her

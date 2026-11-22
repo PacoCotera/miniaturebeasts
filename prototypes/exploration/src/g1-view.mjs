@@ -12,7 +12,7 @@ const WIND_WORD = { N: 'north', E: 'east', S: 'south', W: 'west' };
 export function makeG1(d, seed = 1) {
   const { R, text, textW, blit, C, ditherFill, creatureArt, playerArt, SCR_W } = d;
   let S = G.makeDay(seed), msg = '', held = null, timer = null, frame = 0;
-  const fc = G.forecast(S); msg = G1.forecast(fc.rain, fc.mibiPart);
+  const fc = G.forecast(S); msg = G1.forecast(fc.rain, fc.mibiFrom + ' to ' + (fc.mibiFrom + 10));
   const say = from => {
     const ev = S.events.slice(from); let m = '';
     for (const e of ev) {
