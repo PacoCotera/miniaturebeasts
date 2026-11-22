@@ -3125,14 +3125,14 @@ function freeAround(key, x, y, prefer, clearOnly = false) {
   const lw = layout(key).w, ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
   if (prefer) ds.sort((a, b) => man({ x: x + a[0], y: y + a[1] }, prefer) - man({ x: x + b[0], y: y + b[1] }, prefer));
   const lay = layout(key), seen = (X, Y) => !!lay.reach[Y * lw + X] && !(lay.lines && lay.lines.cells.has(Y * lw + X)) && !(lay.decalNear && lay.decalNear(X, Y)) && !(clearOnly && lay.coverAt && lay.coverAt(X, Y));   // reachable ground, clear of the haze and of any decor that would cover it (clearOnly, a dropped fruit: and of any prop's picture)
-  const ok = (X, Y) => !occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]);
+  const ok = (X, Y) => !occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && !rimRefuses(lay, x, y, X, Y);   // not across a drawn rim line (#107)
   for (const [dx, dy] of ds) if (ok(x + dx, y + dy) && seen(x + dx, y + dy)) return { x: x + dx, y: y + dy };
   if (clearOnly) for (let r = 2; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {   // no clear tile beside it: the nearest clear one within four tiles (owner note #41)
     if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
     const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= lw || Y >= lay.h) continue;
     if (ok(X, Y) && seen(X, Y)) return { x: X, y: Y };
   }
-  for (const strict of [false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
+  for (const strict of [false]) for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(lay.tiles[Y * lw + X]) && !rimRefuses(lay, x, y, X, Y) && (!strict || seen(X, Y))) return { x: X, y: Y }; }
   return null;
 }
 // Materials carried cap at 20 each. Returns how much was taken.
@@ -3550,7 +3550,13 @@ function pickStrike(X) {
 }
 
 // ===================== 8. Creatures and the partner =====================
+function rimRefuses(lay, fx, fy, tx, ty) {   // the one rim check: the orthogonal step from (fx,fy) to (tx,ty) crosses a drawn rim line (as the explorer's step does; bug #107). A mibi already on the far side keeps its level: only the step across is refused.
+  if (!lay.rimSteps || fx < 0 || fy < 0 || fx >= lay.w || fy >= lay.h) return false;
+  const dx = tx - fx, dy = ty - fy; if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
+  return !!(lay.rimSteps[fy * lay.w + fx] & RIM_BIT[dy < 0 ? 'up' : dy > 0 ? 'down' : dx < 0 ? 'left' : 'right']);
+}
 function canStand(X, x, y, who) {
+  if (who && who.x != null && rimRefuses(X.lay, who.x, who.y, x, y)) return false;
   if (who && who === X.live.pt && x >= 0 && y >= 0 && x < X.lay.w && y < X.lay.h) { const t = bankTile(X.lay, x, y) ? T.BANK : X.lay.tiles[y * X.lay.w + x];   // the partner follows across what it can cross: Tuliko on mud and scree, Rupar on its dug bank
     if ((t === T.WADE || t === T.SCREE || t === T.BANK) && softTileOpen(X.lay, t, x, y)) return !X.live.cr.some(c => !c.hide && c.x === x && c.y === y) && !(X.P.x === x && X.P.y === y); }
   return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * X.lay.w + x]); }
@@ -3730,8 +3736,9 @@ function creatureTick(c, X) {
     case 'watch': if (c.x !== P.x) c.face = Math.sign(P.x - c.x); if (c.ind && c.ease === 2) break; if (!threat && --c.t <= 0) c.st = 'idle'; break;   // a named Loika's watching ends by its ease (W3)   // back to routine after 3 quiet actions
     case 'dive': {
       const h = c.tgt; if (!h) { c.st = 'flee'; c.t = 2; c.fl = null; break; }
-      if (man(c, h) <= 1) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
-      else stepToward(X, c, h, 2);
+      if (man(c, h) <= 1 && !rimRefuses(X.lay, c.x, c.y, h.x, h.y)) { c.x = h.x; c.y = h.y; c.hide = X.raining ? 6 : 4; c.st = 'hidden'; }
+      else if (man(c, h) > 1) stepToward(X, c, h, 2);
+      else { c.st = 'flee'; c.t = 2; c.fl = null; }   // the hole is across a rim line: it runs instead
       break; }
     case 'shelter': stepShelter(X, c); if (X.lay.shelter[c.y * X.lay.w + c.x]) c.st = 'huddle'; break;
     case 'huddle': break;
