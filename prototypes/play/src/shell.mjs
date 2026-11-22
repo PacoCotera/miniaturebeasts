@@ -196,7 +196,7 @@ function tellNarrow(force = false) {
 function stationFocus(m) {
   const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null;
   const r = focusStep(focusSt, m.screen, box); focusSt = r.st;
-  if (r.top) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
+  if (r.top || (!box && m.screen === "pods")) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left; the nursery and a pod's page draw their own ring and post none, so after a message plate (Grow it) the window goes back to their left edge, as the standalone page does (owner #18)
   focusNow = { screen: m.screen, box };
   const p = PLAN.station; if (p && p.view) placeStation(p);
 }
