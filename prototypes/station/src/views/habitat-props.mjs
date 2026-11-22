@@ -102,9 +102,9 @@ export function habitatBuild(m, spec, frame, home, sittingSpec = null, pods = nu
   };
 
   // the plates, one a chapter in ring order: read, unread (readable at home or out) or sealed
-  const sealedShut = (c) => !!c.sealed && !settings.sealedOpen && !(shown.read || []).includes(c.id);
+  const sealedShut = (c) => !!c.sealed && !settings.sealedOpen && !S.pageRead(shown).includes(c.id);
   const plates = (fr?.chapters ?? []).slice(0, R.plates.places.max).map((c) => {
-    const st2 = (shown.read || []).includes(c.id) ? "read" : sealedShut(c) ? "sealed" : "unread";
+    const st2 = S.pageRead(shown).includes(c.id) ? "read" : sealedShut(c) ? "sealed" : "unread";
     return { id: c.id, state: st2, ground: slotAt(req, `chapter-plate-${st2}-40x40`, [0, 0, 40, 40], "the chapter plate master (AD P1)"), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
   });
   regions.plates = { items: plates };

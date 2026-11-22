@@ -57,6 +57,7 @@ export function intent(h, target, verb) {
   a.f = target;
   if (target === "resident" || target.startsWith("tile.")) {
     if (meet) { openNamer(h, m, "meet"); return; }
+    if (S.pageSight(h.st, m).ok) h.save();   // she was seen doing something: a sighting of each trait about what she does (her page's stretch narrows; state.mjs pageSight)
     const g = { asleep: !!h.ui.hab.asleep }, ms = h.specs.habitat.events.moment.heart?.greetShowMs ?? 2500; h.ui.hab.greet = g; h.at(ms, () => { if (h.ui.hab.greet === g) h.ui.hab.greet = null; });   // F5a: the heart and "{Name} greets you back" for greetShowMs; the line is the props'
     if (h.ui.hab.asleep) { const e = h.specs.habitat.events.moment, a = e.asleep; h.play({ kind: e.kind, target: e.target, ms: a.ms, hold: h.motion() ? a.hold : 0, ...(a.cut ? { cut: true } : {}) }); }   // a sleeper's Greet (Station M1 §2.4): wake, the hops, curl again
     else play(h, "moment");   // Greet: the species' moment (its moving set's hops, or the placeholder's two until a set lands); nothing rewarded, nothing said

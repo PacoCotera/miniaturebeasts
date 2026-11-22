@@ -668,3 +668,30 @@ test("Pods from the Incubator: Grow is fixed while a pod can take it; when none 
   { const st = world(); pod(st, "S01", chapters("S01"), 5); st.bud = { minutes: 5 }; const h = host(st); h.specs.incubator = incubatorSpec; h.ui.screen = "pods"; openInventory(h, { from: "incubator" });
     assert.deepEqual([h.ui.pods.verb, h.ui.pods.fixed], ["read", false]); assert.match(h.ui.pods.blocked, /busy/i); h.went.length = 0; INTENTS.pods.intent(h, "card.0", "back"); assert.equal(h.went.at(-1), "incubator"); }
 });
+
+test("her page state (step 2b): an older mibi keeps what it had read; a hatched one starts empty; the first look of a body chapter is free and once; a doing chapter fills by sightings, its stretch narrowing to a mark", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
+  const doings = fr.chapters.filter(S.isDoingChapter), body = fr.chapters.filter((c) => !S.isDoingChapter(c) && !c.sealed);
+  assert.ok(doings.length && body.length);
+  // an old save: no page in the mibi; the load gives it what it had (every chapter it had read is looked, every doing of those fully sighted)
+  const old = JSON.parse(JSON.stringify(m)); delete old.page; const back = { ...st, mibis: [old] }; S.normalize(back);
+  assert.deepEqual(old.page.looked.slice().sort(), m.read.slice().sort(), "an older mibi keeps its read chapters"); assert.ok(doings.every((c) => c.traits.every((t) => old.page.sights[t.id] === S.PAGE_SIGHTS)), "its doings are pinned down");
+  assert.deepEqual(S.pageRead(old).slice().sort(), m.read.slice().sort());
+  // a hatched mibi: nothing looked, nothing sighted
+  m.page = { looked: [], sights: {} }; assert.deepEqual(S.pageRead(m), []);
+  const open = (lane) => { h.ui.pods.lane = lane; h.ui.pods.at = "rail"; return podsBuild({ st, settings, ui: h.ui.pods, focus: "rail", now: 0 }, podsSpec); };
+  INTENTS.habitat.intent(h, "plate.0", "confirm"); const ci = fr.chapters.indexOf(body[0]), d0 = st.d;
+  let v = open(ci); assert.deepEqual(v.read.rail.lanes.map((l) => l.state).filter((s) => s === "read"), [], "no chapter is read on her page yet"); assert.match(v.line.ok, /^Look at /);
+  assert.equal(v.read.right.form, "read", "the unread chapter is drawn in her shapes, not the pod's ? discs"); assert.equal(v.requests.filter((r) => r.kind === "traitshape").every((r) => r.model.shows == null || r.model.looks?.every((l) => !l.shows)), true, "nothing of hers is marked");
+  INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual([h.ui.pods.at, m.page.looked, st.d], ["right", [body[0].id], d0], "the first look is free and opens the chapter");
+  v = open(ci); assert.equal(v.read.rail.lanes[ci].state, "read"); assert.match(v.line.ok, /^Open /);
+  // a chapter about what she does: ✓ looks at nothing; each Greet is a sighting; the stretch narrows, then is a mark
+  const di = fr.chapters.indexOf(doings[0]), tr = doings[0].traits[0]; v = open(di); assert.equal(v.line.ok, null); assert.match(v.line.subject, /watch her/);
+  INTENTS.pods.intent(h, "rail", "confirm"); assert.deepEqual(m.page.sights, {}, "a ✓ is not a sighting");
+  const widths = []; for (let i = 1; i <= S.PAGE_SIGHTS; i++) {
+    INTENTS.habitat.intent(h, "resident", "confirm"); assert.equal(m.page.sights[tr.id], i);
+    v = open(di); assert.equal(v.read.rail.lanes[di].state, "read", "one sighting opens the chapter");
+    const mod = v.requests.filter((r) => r.kind === "traitshape").map((r) => r.model).find((x) => x.id === tr.id);
+    if (i < S.PAGE_SIGHTS) { assert.ok(mod.rough, "a stretch"); assert.equal(mod.shows, null); assert.equal(mod.copies, null); widths.push(mod.rough[1] - mod.rough[0]); } else { assert.equal(mod.rough, null); assert.equal(typeof mod.shows, "number", "pinned down: a mark"); } }
+  assert.ok(widths[0] > widths[1] && widths[1] > widths[2], "the stretch narrows with each sighting");
+});

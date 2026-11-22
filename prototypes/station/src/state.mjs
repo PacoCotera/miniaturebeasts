@@ -178,6 +178,7 @@ export function normalize(st, now = Date.now()) {
     if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
     if (!(m.growAt > 0) && m.grownTurn == null && (st.turn | 0) - (m.born || 0) < JUVENILE_TURNS && now >= GOOD_CLOCK) m.growAt = now + GROW_UP_MS;   /* a young mibi in a save with no hatch clock counts its two hours from this load (additive, no schema bump) */
     m.plays = m.plays > 0 ? m.plays | 0 : m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;   /* plays: the Companion's Play together count; an older save back-fills it once from its tends, which stay unread (additive, no schema bump) */ }
+  for (const m of st.mibis) pageOf(m);   /* her page's state: an older mibi keeps what it had read (looked, doings fully sighted); additive, no schema bump */
   if (!Array.isArray(st.roomMeta)) st.roomMeta = []; if (!Array.isArray(st.finds)) st.finds = [];   /* each room's theme and settling, and the themed finds held at home (rooms-rules.json; additive, no schema bump): a room with no entry is the i-th theme, settled */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
   delete st.bench;   /* the bench's day ledger is gone (2026-11-03): an older save's copy is dropped, nothing else changes */
@@ -1178,6 +1179,7 @@ function hatchBud(st, settings, now, line) {
   const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
   const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, ...(now >= GOOD_CLOCK ? { since: now, roomSince: now, growAt: now + GROW_UP_MS } : {}), from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, room: place.room, slot: place.slot, bay: place.room * ROOM + place.slot, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
+  m.page = { looked: [], sights: {} };   // her page starts empty: a chapter about her body fills at its first look, one about what she does by watching her (pageLook, pageSight)
   st.mibis.push(m); st.bud = null;
   logEv(st, line(m, fr.species.name, roomName(st, place.room)));
   return { ok: true, mibi: m };
@@ -1339,6 +1341,38 @@ export function readMibi(st, m, chapterId, settings = DEFAULT_SETTINGS) {
   return { ok: true, cost, first, chapter: ch, newLooks };
 }
 export const mibiFullyRead = (m, settings = DEFAULT_SETTINGS) => { const fr = frameFor(m); return !fr || fr.chapters.every((c) => m.read.includes(c.id) || (c.sealed && !settings.sealedOpen)); };
+// --- her page (station step 2b): what the player has seen of her, per mibi -----------------------------------------------------------------------------------------------------------------
+// m.page = { looked: [chapter ids she has had her first look in (free)], sights: { trait id: how many times she was seen doing it } }. A chapter about her body is read once looked at; a chapter about what
+// she does (every trait a doing) is read once any of its traits has a sighting, and each trait stays a stretch of its scale until PAGE_SIGHTS sightings pin it down (tuning: the design leaves the number open).
+// An older save holds none: a mibi that exists keeps what it had (every chapter it had read is looked, every doing trait of those fully sighted); only a mibi hatched from now on starts empty (hatchBud).
+export const PAGE_SIGHTS = 4;
+export const isDoingChapter = (ch) => ch.traits.length > 0 && ch.traits.every((t) => t.nature === "doing");
+export function pageOf(m) {
+  if (m.page && Array.isArray(m.page.looked) && m.page.sights && typeof m.page.sights === "object") return m.page;
+  const fr = frameFor(m), looked = [], sights = {};
+  for (const ch of fr ? fr.chapters : []) if ((m.read || []).includes(ch.id)) { looked.push(ch.id); for (const t of ch.traits) if (t.nature === "doing") sights[t.id] = PAGE_SIGHTS; }
+  return (m.page = { looked, sights });
+}
+const sightsOf = (m, t) => Math.max(0, Math.min(PAGE_SIGHTS, pageOf(m).sights[t.id] | 0));
+// The chapters of her page that are read: the looked ones, and a doing chapter with a sighting on any trait.
+export function pageRead(m) {
+  const fr = frameFor(m), pg = pageOf(m); if (!fr) return [];
+  return fr.chapters.filter((c) => (isDoingChapter(c) ? c.traits.some((t) => sightsOf(m, t) > 0) : pg.looked.includes(c.id))).map((c) => c.id);
+}
+// How well a doing trait is known: 0 (not seen) .. 1 (pinned down, a mark); a stretch of the scale in between (trait-shapes `rough`).
+export const pageKnown = (m, t) => (t.nature === "doing" ? sightsOf(m, t) / PAGE_SIGHTS : 1);
+// The first look at a chapter about her body: free, once, no wait. A chapter about what she does cannot be looked at (she is watched).
+export function pageLook(st, m, chapterId) {
+  const fr = frameFor(m), ch = fr && chapterOf(fr, chapterId), pg = pageOf(m);
+  if (!ch || isDoingChapter(ch) || pg.looked.includes(ch.id)) return { ok: false };
+  pg.looked.push(ch.id); logEv(st, "Looked at " + m.name + "'s " + ch.name + " · free"); return { ok: true, chapter: ch };
+}
+// She was seen doing something (a Greet in her room): one sighting of each trait about what she does.
+export function pageSight(st, m) {
+  const fr = frameFor(m), pg = pageOf(m); if (!fr) return { ok: false };
+  let any = false; for (const ch of fr.chapters) for (const t of ch.traits) if (t.nature === "doing" && sightsOf(m, t) < PAGE_SIGHTS) { pg.sights[t.id] = sightsOf(m, t) + 1; any = true; }
+  return { ok: any };
+}
 // Developer: two siblings of two unrelated adults, born adult.
 export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
   const r = seedAdults(st, species, seed, 2, settings); if (!r.ok || r.mibis.length < 2) return { ok: false, msg: r.msg };
