@@ -48,6 +48,8 @@ function frame(t) {
 // ?embed: where the focus ring is, for the play page's phone window (it pans to keep the ring's target in view); box null when the screen shows no ring. Posted when it changes.
 let focusPosted = "";
 const LIB_PAGE = [700, 50, 308, 500];
+// frame.json regions.plate: the message plate is centred on x 512 (maxWidth 640) and stands over y 440 to 550; a box 500 wide on the centre keeps the usual plate whole in the 530 lp window
+const PLATE_BOX = [262, 440, 500, 110];
 // library.json l2.page.rect: the lit chapter's page, at the screen's right edge
 // The standalone page's phone window (fit() below): view {w, h} in lp while the screen is drawn at ZOOM in a window narrower than it; pan: the window's top left (lp); focus: the ring's last screen and box
 const win = { view: null, pan: { x: 0, y: 0 }, focus: { screen: null, box: null }, shown: null };
@@ -61,6 +63,7 @@ function postFocus() {
   let box = CORE.face.focusBox(); const screen = UI.idle ? "idle" : UI.screen;
   const pageLit = screen === "library.species" && UI.lib?.state === "lit" && UI.lib.lit && box && box[0] < LIB_PAGE[0];   // phone window, a chapter lit: the window shows its page (the ring is on a plate left of it; the page is what ✓ asked for), not the cut-off edge of it
   if (pageLit) box = LIB_PAGE;
+  if (FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000)) box = PLATE_BOX;   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring
   const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
   if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
   else { win.focus = { screen, box }; placeWindow(); }   // standalone on a phone: the page's own window follows the ring

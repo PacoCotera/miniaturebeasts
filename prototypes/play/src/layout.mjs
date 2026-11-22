@@ -22,7 +22,8 @@ export const NARROW_W = 530;
 export function panFor(view, box, at = { x: 0, y: 0 }, face = FACE.station) {
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v)), axis = (p, b0, bl, vl, fl) => {
     const lo = b0 - PAN_PAD, hi = b0 + bl + PAN_PAD;
-    if (hi - lo > vl) p = lo; else if (lo < p) p = lo; else if (hi > p + vl) p = hi - vl;
+    if (hi - lo > vl) p = lo; else if (hi <= vl) p = 0;   /* the target fits from the screen's own edge: the window rests there, never part way across a screen whose left side then shows cut (the partner list opened at the pan the screen before it left) */
+    else if (lo < p) p = lo; else if (hi > p + vl) p = hi - vl;
     return clamp(Math.round(p), 0, Math.max(0, fl - vl));
   };
   if (!view) return { x: 0, y: 0 };

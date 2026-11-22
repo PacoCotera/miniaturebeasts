@@ -123,7 +123,9 @@ test("panFor: the focused target whole with 12 lp round it, the least move, alwa
   assert.deepEqual(panFor(v, null, { x: 300, y: 40 }), { x: 300, y: 40 }, "no ring: it stays");
   assert.deepEqual(panFor(v, [20, 60, 450, 300]), { x: 0, y: 0 }, "a target in view: no move");
   assert.deepEqual(panFor(v, [800, 60, 200, 300]), { x: 482, y: 0 }, "a target to the right: the window's right edge at its right + 12"); assert.deepEqual(panFor(v, [900, 60, 120, 300]), { x: 494, y: 0 }, "at the screen's edge: held inside (1024 − 530)");
-  assert.deepEqual(panFor(v, [36, 500, 200, 80], { x: 300, y: 0 }), { x: 24, y: 79 }, "down and left: its left − 12, its bottom + 12");
+  assert.deepEqual(panFor(v, [36, 500, 200, 80], { x: 300, y: 0 }), { x: 0, y: 79 }, "down and left: a target that fits from the screen's left edge rests the window there (ui-text-cut-1: none of the left side cut), its bottom + 12");
+  assert.deepEqual(panFor(v, [600, 60, 200, 300], { x: 300, y: 0 }), { x: 300, y: 0 }, "a target in view part way across: no move");
+  assert.deepEqual(panFor(v, [400, 60, 200, 300], { x: 494, y: 0 }), { x: 388, y: 0 }, "a target not at the edge: its left − 12");
   const big = panFor({ w: 300, h: 200 }, [100, 100, 400, 300]); assert.deepEqual(big, { x: 88, y: 88 }, "a target larger than the window: its top left in view");
   for (let i = 0; i < 200; i++) { const b = [Math.random() * 900, Math.random() * 500, 20 + Math.random() * 300, 20 + Math.random() * 200], p = panFor(v, b, { x: Math.random() * 494, y: Math.random() * 87 });
     assert.ok(p.x >= 0 && p.x <= 494 && p.y >= 0 && p.y <= 87, "inside the screen"); }
