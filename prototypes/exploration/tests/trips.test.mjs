@@ -237,6 +237,14 @@ test("?embed shows the screen alone, fit() stands aside and the scale follows a 
     assert.deepEqual(set, { "--embed-s": want }, "dpr " + dpr);
   }
 
+  // a viewport smaller than the 450x600 frame shrinks the whole frame to fit (390x844 phone, 844x390 landscape), so the message box stays inside
+  for (const [w, h, want] of [[390, 844, String(390 / 450)], [844, 390, String(390 / 600)], [450, 600, "1"], [1000, 900, "1"]]) {
+    const set = {};
+    const t = load(["setEmbedS"], { window: { devicePixelRatio: 1, innerWidth: w, innerHeight: h }, document: { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } } });
+    t.setEmbedS();
+    assert.deepEqual(set, { "--embed-s": want }, w + "x" + h);
+  }
+
   // a dpr change with no resize: the query for the old dpr fires, the scale follows, the old listener goes and a new query is armed
   const set = [], queries = [], win = { devicePixelRatio: 1 };
   win.matchMedia = q => {
