@@ -60,7 +60,11 @@ static void walk_load(void) {
     room_view_mode(g_viv); room_select(v_pstr("regions.room.id"), dx, dy, g_home); }
   /* the feet band: the union of the room's levels in the window's coordinates (the levels set it); Home keeps its own band, and so does a window with no room */
   if (g_home || !room_have()) { g_rlo = g_flo; g_rhi = g_flo + g_fn - 1; } else { g_rlo = -(1 << 20); g_rhi = 1 << 20; }
-  if (g_viv || g_idle) { int wh = v_pint("windowH", 0); int low = wh - (v_pbool("bare", 0) ? 42 : 6); if (wh > 0 && g_rhi > low) g_rhi = low; }   /* in the bare room view room is left under the feet for the name label (24) and the circle */   /* the phone's window shows windowH lp of the room's height (a sideways phone's is shorter than the room): the feet stay above its bottom edge, every mibi whole */
+  if (g_viv || g_idle) { int wh = v_pint("windowH", 0); int low = wh - (v_pbool("bare", 0) ? 42 : 6); if (wh > 0 && g_rhi > low) g_rhi = low; }
+  if (g_viv && v_pbool("bare", 0)) {   /* the picked one's orange circle (viv_circle: 1.3 x the figure's longer side + 8, up to 31 lp past the widest figure's sides and 27 past its feet and head) and its plate (24 under the feet, 4 clear) stay wholly inside the room: the places keep that much of the room's edge (left, right, top, bottom) */
+    int gy = v_sk("vivarium", "regions.window.rect", 1), gh = v_sk("vivarium", "regions.window.rect", 3), wh = v_pint("windowH", 0), ww = v_pint("windowW", v_pbool("narrow", 0) ? NARROW_W : 0), bot = wh > 0 && wh < gy + gh ? wh : gy + gh;
+    if (g_xlo < 8 + 32) g_xlo = 8 + 32; if (ww > 0 && g_xhi > ww - 8 - 32) g_xhi = ww - 8 - 32;
+    if (g_rhi > bot - 32) g_rhi = bot - 32; if (g_rlo < gy + 152 + 30) g_rlo = gy + 152 + 30; }   /* in the bare room view room is left under the feet for the name label (24) and the circle */   /* the phone's window shows windowH lp of the room's height (a sideways phone's is shorter than the room): the feet stay above its bottom edge, every mibi whole */
   g_trmax = v_pint("regions.travel.max", v_si("vivarium", "rules.travel.max", 3)); g_rdiv = v_si("vivarium", "rules.walk.raisedDiv", 3); g_lvin = v_si("vivarium", "rules.walk.levelOneIn", 4); if (g_rdiv < 1) g_rdiv = 1; if (g_lvin < 1) g_lvin = 1;
   for (int s = 0; s < 3; s++) { static const char *nm[3] = { "juvenile", "adult", "elder" }; g_spd[s][0] = v_si("vivarium", v_fmt("rules.walk.speed.%s.0", nm[s]), 1); g_spd[s][1] = v_si("vivarium", v_fmt("rules.walk.speed.%s.1", nm[s]), 1); if (g_spd[s][0] < 1) g_spd[s][0] = 1; if (g_spd[s][1] < 1) g_spd[s][1] = 1; }
 }
