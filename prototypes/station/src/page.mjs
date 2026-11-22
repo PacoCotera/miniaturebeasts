@@ -16,7 +16,7 @@ export const subjectOf = (st, ui) => (ui && ui.page != null ? pagePod(st, ui.pag
 // Places on her body, per kind (data, Loika first; a kind with no entry has no place, and the page marks nothing): the chapter that has a place, and where on her body it is as a fraction of the body's box
 // (x from the left, y from the top). A mark is interface drawn by code (a ring), never art; a place's own picture would be an [art] slot.
 export const PLACES = {
-  S01: { face: { at: [0.5, 0.2], name: "head" }, coat: { at: [0.5, 0.5], name: "flank" }, "legs-tail": { at: [0.5, 0.86], name: "legs" } },
+  S01: { face: { at: [0.7, 0.38], name: "head" }, coat: { at: [0.46, 0.6], name: "flank" }, "legs-tail": { at: [0.5, 0.86], name: "legs" } },
 };
 export const bodyPlaceOf = (species, chapterId) => PLACES[species]?.[chapterId] ?? null;
 export const placesOf = (species) => Object.entries(PLACES[species] ?? {}).map(([chapter, p]) => ({ chapter, ...p }));
