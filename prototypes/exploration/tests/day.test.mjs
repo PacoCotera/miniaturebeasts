@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { DAY, partOfDay } from "../src/words.mjs";
+import { DAY, DAY_TEXT, partOfDay, clockToNext } from "../src/words.mjs";
 
 const page = store => makePage({ gen: 7, store, console: "collect", els: true, canvas: true, raf: "count" });
 const start = () => { const p = page({}); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);"); return p; };
@@ -18,7 +18,7 @@ test("six parts of day add up to the day's 200 light, and name the part of every
     ["dawn", "dawn", "morning", "morning", "midday", "midday", "afternoon", "afternoon", "dusk", "dusk", "night", "night"]);
 });
 
-test("every action spends one light: a step, a Wait, a Call", () => {
+test("every action moves the clock one: a step in a place, a Wait, a Call", () => {
   const p = start();
   assert.equal(p.run("S.day.spent"), 0, "the day starts at dawn");
   p.run("advance('map')"); assert.equal(p.run("S.day.spent"), 1);
@@ -39,17 +39,40 @@ test("End expedition makes camp: the world does not turn, the day waits, and the
   assert.equal(p.run("S.turn"), turn);
 });
 
-test("the night's end ends the day wherever you are: the hold seals, the world turns once, the next day starts at dawn", () => {
-  const p = start(); const turn = p.run("S.turn");
+test("the night's end does not end the walk: the world turns once, the next day starts at dawn where you stand", () => {
+  const p = start(); const turn = p.run("S.turn"), pos = p.run("S.exp.pos");
   spend(p, 199); assert.ok(p.run("!!S.exp"), "light is left at 199");
   assert.equal(p.run("S.turn"), turn);
   spend(p, 1);
-  assert.equal(p.run("S.exp"), null, "the walk is over");
-  assert.equal(p.run("S.report.reason"), "night");
+  assert.ok(p.run("!!S.exp"), "the walk is still open");
+  assert.equal(p.run("S.exp.pos"), pos);
   assert.equal(p.run("S.turn"), turn + 1, "the world turned once");
   assert.equal(p.run("S.day.spent"), 0, "the next day starts at dawn");
-  assert.equal(p.run("S.day.camps"), 0);
   assert.deepEqual(p.errors, []);
+});
+
+test("dusk and night are news once each, in terms of the night: no amount left, no warning", () => {
+  const p = start(); p.run("S.day.spent = 149"); p.run("advance('map')");
+  assert.ok(p.run("FX.msg").includes("Dusk. Night in 25."), p.run("FX.msg"));
+  p.run("FX.notes = []; FX.held = []; FX.msg = ''; S.day.spent = 170"); p.run("advance('map', { clock: 10 })");
+  assert.ok(p.run("FX.msg").includes("Night. Dawn in 20."), p.run("FX.msg"));
+  p.run("FX.notes = []; FX.held = []; FX.msg = ''"); p.run("advance('map')");
+  assert.ok(!/Dusk|Night\./.test(p.run("FX.msg")), "once each a day: " + p.run("FX.msg"));
+  assert.ok(!/light/i.test(DAY_TEXT.duskNews(25) + DAY_TEXT.nightNews(25) + DAY_TEXT.nightPassed("dawn") + DAY_TEXT.line("night", 5)), "no word of light spent or left");
+  assert.ok(p.run("!!S.exp"));
+});
+
+test("a scripted four-cell crossing moves the clock 40", () => {
+  const p = start(); assert.equal(p.run("S.day.spent"), 0);
+  p.run("{ let n = 0; for (let i = 0; i < 40 && n < 4; i++) { const was = S.exp.pos; mapStep(Object.keys(DIRS)[i % 4]); if (S.exp.pos !== was) n++; } S.test_n = n; }");
+  assert.equal(p.run("S.test_n"), 4, "four cells crossed"); assert.equal(p.run("S.day.spent"), 40, "ten a cell");
+});
+
+test("the bottom line at each of the six parts: the part and how far the night is", () => {
+  const p = start(); const ctx = c => (Array.isArray(c) ? c : [c]);
+  const want = [[0, "dawn · night in 175"], [30, "morning · night in 145"], [80, "midday · night in 95"], [115, "afternoon · night in 60"], [160, "dusk · night in 15"], [180, "night · dawn in 20"]];
+  for (const [spent, text] of want) { p.run("S.day.spent = " + spent); assert.ok(ctx(p.run("lineBase()").ctx).includes(text), text + " in " + JSON.stringify(p.run("lineBase()").ctx)); }
+  assert.equal(clockToNext(175), 25);
 });
 
 test("a trip that gains nothing does not turn the world: ten trips of 20 light turn it exactly as often as one of 200", () => {
@@ -76,7 +99,7 @@ test("the part of day is named in the bottom line's middle: morning and dusk", (
   const line = () => p.run("lineBase()");
   assert.ok(ctx(line().ctx)[0].startsWith("morning · "), "morning on the map: " + ctx(line().ctx)[0]);
   p.run("S.day.spent = 160"); assert.ok(ctx(line().ctx)[0].startsWith("dusk · "), "dusk on the map");
-  assert.ok(ctx(line().ctx).includes("dusk"), "the day alone is a form too, so the narrowest line still names it");
+  assert.ok(ctx(line().ctx).includes("dusk · night in 15"), "the day and its night alone are a form too, so the narrowest line still names it");
   p.run("S.exp.pos = S.exp.start; enterPatch(S.exp.pos)"); assert.equal(p.run("S.phase"), "patch");
   assert.ok(ctx(p.run("lineBase()").ctx)[0].startsWith("dusk · "), "dusk in a place");
   p.run("S.day.spent = 5"); assert.ok(ctx(p.run("lineBase()").ctx)[0].startsWith("dawn · "), "dawn");

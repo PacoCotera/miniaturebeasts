@@ -8,7 +8,7 @@ const page = () => makePage({ gen: 7, store: {}, console: "collect", els: true, 
 const start = () => { const p = page(); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);"); return p; };
 const spend = (p, n) => { for (let i = 0; i < n && p.run("!!S.exp"); i++) { p.run("advance('map')"); p.pass(1200); } };
 // actions the new set-out gets before the night's end ends it
-const runLength = p => { const n0 = p.run("S.exp.actions"), turn = p.run("S.turn"); let n = 0; while (p.run("!!S.exp") && n < 400) { spend(p, 1); n++; } return { n, turned: p.run("S.turn") > turn }; };
+const runLength = (p, max = 400) => { const turn = p.run("S.turn"); let n = 0; while (p.run("!!S.exp") && n < max) { spend(p, 1); n++; } return { n, turned: p.run("S.turn") > turn }; };
 
 test("a camp made late in the day: the next set-out runs the night's end first and has a whole day", () => {
   const p = start(); const turn = p.run("S.turn");
@@ -26,15 +26,14 @@ test("a camp made late in the day: the next set-out runs the night's end first a
   assert.deepEqual(p.errors, []);
 });
 
-test("after a night's end the next set-out runs at least 30 actions before any night's end", () => {
-  const p = start(); spend(p, 200);
-  assert.equal(p.run("S.exp"), null); assert.equal(p.run("S.report.reason"), "night");
-  const turn = p.run("S.turn");
-  p.run("startExpedition('weather', G.spawns[0])");
-  assert.ok(p.run("!!S.exp")); assert.equal(p.run("S.turn"), turn, "no second night's end");
-  const r = runLength(p);
-  assert.ok(r.n >= 30, "ran " + r.n + " actions");
-  assert.deepEqual(p.errors, []);
+test("the night does not end the walk: it stays open, the world turned once, a new day at the same place", () => {
+  const p = start(); const turn = p.run("S.turn"), pos = p.run("S.exp.pos");
+  spend(p, 200);
+  assert.ok(p.run("!!S.exp"), "the walk is still open"); assert.equal(p.run("S.turn"), turn + 1);
+  assert.equal(p.run("S.day.spent"), 0); assert.equal(p.run("S.exp.pos"), pos);
+  assert.ok(p.run("FX.msg").includes("Night passed. A new day: dawn."), p.run("FX.msg"));
+  const r = runLength(p, 60);
+  assert.equal(r.n, 60, "no end on its own"); assert.deepEqual(p.errors, []);
 });
 
 test("a camp made in the afternoon sets out again at the same light, with no night's end", () => {

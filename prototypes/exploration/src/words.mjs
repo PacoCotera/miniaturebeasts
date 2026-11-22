@@ -75,6 +75,7 @@ WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
 // Pure: the page and the bots read the same table.
 export const DAY = {
   light: 200,
+  mapStep: 10,   // *greybox*: a step across the map moves the clock this far (a step in a place, a Wait and keeping still move it 1)
   parts: [['dawn', 20], ['morning', 50], ['midday', 40], ['afternoon', 40], ['dusk', 25], ['night', 25]],   // lengths in light; they add up to `light`
 };
 // the part of day after `spent` light is gone (0 at dawn); the day's last light is night
@@ -83,9 +84,18 @@ export function partOfDay(spent) {
   for (const [name, len] of DAY.parts) { if (left < len) return name; left -= len; }
   return DAY.parts[DAY.parts.length - 1][0];
 }
+// how far the clock is from the night (before it starts) or from dawn (at night)
+export function clockToNext(spent) {
+  const s = Math.max(0, spent | 0), nightAt = DAY.light - DAY.parts[DAY.parts.length - 1][1];
+  return s < nightAt ? nightAt - s : Math.max(0, DAY.light - s);
+}
 // [copy] words for the copywriter's round (they say the meaning only)
 export const DAY_TEXT = {
-  nightEnds: 'Night ends the day · the Companion wakes at camp',
+  nightEnds: 'Night ends the day · the Companion wakes at camp',   // the camp path only (a set-out in the night's light); a walk no longer ends at night
+  line: (part, n) => part + ' · ' + (part === 'night' ? 'dawn in ' : 'night in ') + n,   // [copy] the bottom line: the part of day and how far the night (or dawn) is
+  nightPassed: part => 'Night passed. A new day: ' + part + '.',   // [copy] the walk goes on where you stand
+  duskNews: n => 'Dusk. Night in ' + n + '.',   // [copy] once a day, in the message box
+  nightNews: n => 'Night. Dawn in ' + n + '.',   // [copy]
   newDay: 'A new day · you set out at dawn',   // a set-out in the night's light: the night's end runs first, at the Station
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
 };
