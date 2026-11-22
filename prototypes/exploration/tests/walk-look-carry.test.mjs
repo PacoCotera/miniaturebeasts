@@ -13,7 +13,7 @@ import { marksShown, drawnLooks } from "../../station/src/looks.mjs";
 const FR = JSON.parse(readFileSync(new URL("../../species/frames/language/species-S01.json", import.meta.url), "utf8"));
 setFrames([FR]);
 const DIR = new URL("../../../art/walk-token-saddle-2/frames/", import.meta.url);
-// the art desk's ledger (mibi-art boards/signed.jsonl, walk-token-saddle-3): sha256 of each signed frame
+// the signed ledger's sha256 of each frame (walk-token-saddle-3)
 const LEDGER = {
   "loika-s01-idle-right-saddled.png": "44b4a1e4f6c9d6bfefb180d87bc631dc22226b15d18a3b1da4416c3de656fbbb",
   "loika-s01-step-a-right-saddled.png": "44b4a1e4f6c9d6bfefb180d87bc631dc22226b15d18a3b1da4416c3de656fbbb",
