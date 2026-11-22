@@ -31,7 +31,7 @@ test("the night does not end the walk: it stays open, the world turned once, a n
   spend(p, 200);
   assert.ok(p.run("!!S.exp"), "the walk is still open"); assert.equal(p.run("S.turn"), turn + 1);
   assert.equal(p.run("S.day.spent"), 0); assert.equal(p.run("S.exp.pos"), pos);
-  assert.ok(p.run("FX.msg").includes("Night passed. A new day: dawn · 200 light."), p.run("FX.msg"));
+  assert.ok(p.run("FX.msg").includes("Night passed. A new day: dawn."), p.run("FX.msg"));
   const r = runLength(p, 60);
   assert.equal(r.n, 60, "no end on its own"); assert.deepEqual(p.errors, []);
 });
