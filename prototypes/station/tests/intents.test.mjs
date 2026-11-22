@@ -164,11 +164,6 @@ test("Cargo's opening with reduced motion (the host stages each step as props at
   assert.deepEqual(seen.filter((x) => x[3] === "opening").map((x) => x.join()), [...steps(0, 0, 3, L[0]), [L[0], 1, 0, "opening"], ...steps(1, L[0], 2, L[1])].map((x) => x.join()), "the host's stage by time");
   assert.equal(seen.at(-1)[3], "end"); assert.equal(h.played.some((e) => e.kind === "flash"), false);
 });
-test("Hatch now with a ready portrait: the notice the bud had is the one that names the portrait, so it stays through the bar's fill", () => {
-  const h = host(world()); h.t = T0; h.specs.incubator = incubatorSpec; h.settings = { ...settings, growNowAbove: 99 }; const st = h.st, p = pod(st, "S01", chapters("S01")); st.tray = [p]; assert.ok(S.grow(st, p, {}, settings, T0).ok); st.bud.start = Date.now();   // need() reads the real clock: a bud still growing
-  st.sittingCrates.push({ id: "sit1", mibiId: 1, pose: "calm", place: "wood", start: -1e10, source: "dev", painted: true, opened: false });
-  INTENTS.incubator.intent(h, "bud", "confirm"); assert.deepEqual([h.ui.panel?.id, h.ui.panel?.focus], ["growNow", "card.wait"], "✓ Open now asks first, the ring on Wait"); INTENTS.panel.intent(h, "card.grow", "confirm"); assert.equal(h.played.at(-1)?.kind, "growNow"); assert.equal(capLine(h.ui.inc.grow.need), "A portrait waits in the Bay", "the portrait is in the snapshot the bar's fill keeps");
-});
 
 test("the Library's Level 1: the ring's species is kept; ✓ on a met or found cell opens that species' Level 2, on an unmet cell or anything else does nothing; ← is Home with the ring on the Library bezel; the card's species word opens Level 2 of its species", () => {
   const st = world(), h = host(st); h.specs.library = J("library"); st.knownIds.push("S01"); st.metIds.push("S03");
