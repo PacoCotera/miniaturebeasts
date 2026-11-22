@@ -2597,17 +2597,24 @@ function noteTarget() {
 const PAWS_ON_TILE = true;
 // Her prints lie at the stand tile of a haunt her routine has moved her on from (or she bolted from), until the end of the next morning; the routine says where she was, so they are read off it (src/habits.mjs leftHaunts).
 // ✓ within one tile of them, with her more than 2 tiles from them: one action, one light. It says when she was there, goes on her page (S.pages) and into the day's count; no Data, no sample, no Essence, and no habit note.
+// The tile the print is drawn on: the free tile nearest the stand (within 4) with no decor on it (no flower clump, bush or crown: a pale print among white flowers is not seen at 1x); none: the print is not drawn, the read still works.
+function printMark(lay, stand, free) {
+  const ds = (lay.baked && lay.baked.place && lay.baked.place.decals) || [], on = new Set(ds.map(d => (Math.floor(d.y / 48) - 1) * lay.w + Math.floor(d.x / 48) - 1));   // a decal (flower clump, tuft, stone) stands on the tile its foot is on
+  const clear = (x, y) => free(x, y) && !(lay.coverAt && lay.coverAt(x, y)) && !on.has(y * lay.w + x);
+  for (let r = 0; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && clear(stand.x + dx, stand.y + dy)) return { x: stand.x + dx, y: stand.y + dy };
+  return null;
+}
 function printsHere() {
   const ex = S.exp; if (!ex || !ex.patch) return []; const lay = curLay(); if (lay.cave) return [];
   const live = curLive(), key = ex.patch.key, part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
-    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const stand = hauntStand(q.h, hauntFree(lay, key, c)); if (stand) out.push({ c, ...q, stand }); } }
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = hauntFree(lay, key, c), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
 }
 function printsToRead() {
   const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
   const hd = habDay();
-  return printsHere().find(p => !hd[readKey(p.c.id, p.h)] && cheb(P, p.stand) <= 1 && (p.c.gone || p.c.hide || cheb(p.c, p.stand) > 2)) || null;
+  return printsHere().find(p => !hd[readKey(p.c.id, p.h)] && cheb(P, p.mark || p.stand) <= 1 && (p.c.gone || p.c.hide || cheb(p.c, p.stand) > 2)) || null;
 }
 function readPrints(p) {
   const ex = S.exp, W = WORDS.prints, c = p.c, name = habName(c);
@@ -3229,7 +3236,7 @@ function patchAction() {
   if (!o && ex.carry !== 'fruit') { const here = standingOn(key, P); if (here) { o = here; f = { x: P.x, y: P.y }; } }   // facing nothing, standing on a small thing: its action
   ACT_AT = f;
   { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => noteHabit(nt) }; } }   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
-  if (!o) { const pr = printsToRead(); if (pr) { ACT_AT = { x: pr.stand.x, y: pr.stand.y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // W4 round 2: her prints at a haunt she has left
+  if (!o) { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // W4 round 2: her prints at a haunt she has left
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
@@ -6466,7 +6473,7 @@ function drawPatchBody(t) {
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (the AD's note on PR 489: it read as a lilac gem)
   // W4 round 2: her prints at a haunt she has left, the built paw sign on the stand tile (a new placement: the art director passes it in whole-place stills; the slot is named PAWS-ON-TILE)
-  if (PAWS_ON_TILE) for (const p of printsHere()) { const x = p.stand.x * ts, y = p.stand.y * ts; if (vis2(x, y) && see(p.stand.x, p.stand.y)) items.push({ y: y + 1, d: () => blit(PAWS(), SX(x) + ((ts - 16) >> 1), SY(y) + ((ts - 15) >> 1), findRm(p.stand.x, p.stand.y)) }); }
+  if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => blit(PAWS(), SX(x) + ((ts - 16) >> 1), SY(y) + ((ts - 15) >> 1), findRm(p.mark.x, p.mark.y)) }); }
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)

@@ -76,12 +76,12 @@ async function prints(spent, tag, phone) {
     const m = window.__mb, S = m.S; S.exp.pos = key; m.enterPatch(key); const lay = m.curLay(), live = m.curLive(), c = live.cr.find(q => q.id === id), P = S.exp.patch;
     S.known = [0, ...S.known.filter(k => k !== 0)]; S.day.spent = spent; live.strike = null; S.exp.stray = null; S.exp.storm = null;
     const list = m.printsHere(); if (!list.length) return { none: 1, part: m.dayPart(), hs: !!c.ind.hs, gone: !!c.gone, cave: !!lay.cave, n: live.cr.length };
-    const q = list[0], far = q.stand, tryX = [far.x + 7, far.x - 7].find(x => x > 1 && x < lay.w - 2 && m.passable(x, far.y)) ?? far.x + 7;
+    const q = list[0], far = q.mark || q.stand, tryX = [far.x + 7, far.x - 7].find(x => x > 1 && x < lay.w - 2 && m.passable(x, far.y)) ?? far.x + 7;
     c.x = tryX; c.y = far.y; c.gone = null; c.ease = 0; c.st = "idle"; c.ind.go = { part: m.dayPart(), t: { x: c.x, y: c.y } };
     const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(far.x + dx, far.y + dy));
     m.unveil(key, far.x, far.y, 7); P.x = side ? far.x + side[0] * 2 : far.x; P.y = side ? far.y + side[1] * 2 : far.y; P.dir = side ? side[2] : "up";
-    window.__pr = { stand: far, part: q.part, yday: q.yday, side: side && side.slice(0, 2) };
-    return { stand: far, part: q.part, id }; }, { ...pick, spent });
+    window.__pr = { mark: q.mark, st0: q.stand, stand: far, part: q.part, yday: q.yday, side: side && side.slice(0, 2) };
+    return { stand: far, st0: q.stand, mark: q.mark, part: q.part, id }; }, { ...pick, spent });
   if (!r || r.none) { log["prints-" + tag] = "no prints " + JSON.stringify(r); await page.context().close(); return; }
   await page.waitForTimeout(600);
   // one step toward the prints: the pawn stands next to them, facing the stand tile
