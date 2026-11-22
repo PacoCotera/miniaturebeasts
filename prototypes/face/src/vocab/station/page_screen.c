@@ -47,8 +47,15 @@ void word_mibiPage(void) {
   { int y = v_sk(S, R ".rail.rect", 1), w = v_si(S, R ".rail.cell.w", 82), nb = v_si(S, R ".rail.cell.nameBase", 86), sb = v_si(S, R ".rail.cell.subBase", 103), n = v_plen(R ".rail.cells"); char id[40], nr[32], sr[32];
     snprintf(nr, sizeof nr, "%s", v_sstr(S, R ".rail.cell.nameRole")); snprintf(sr, sizeof sr, "%s", v_sstr(S, R ".rail.cell.subRole"));
     v_region("page.rail", LAYER_TYPE);
-    for (int i = 0; i < n; i++) { int x = cell_x(i, n);
-      snprintf(t, sizeof t, "%s", v_pstr(v_fmt(R ".rail.cells.%d.name", i))); snprintf(id, sizeof id, "page.rail.%d.name", i); if (*t) v_say_in(id, t, x, w, y + nb, V_ANCHOR_BASE, nr, "glass");
+    /* seven cells of 82 on 530 overlap (cell_x's gap is negative), so two neighbouring names can touch ("Legs & tail", "Movement"): each name keeps its ring's centre where it can, and neighbours are pushed apart until 10 lp of clear space lies between them (never past 4 lp of the stage's edge); no word changes */
+    int cx[16], hw[16], nn = n < 16 ? n : 16;
+    for (int i = 0; i < nn; i++) { snprintf(t, sizeof t, "%s", v_pstr(v_fmt(R ".rail.cells.%d.name", i))); hw[i] = (v_role_width(t, nr) + 1) / 2; cx[i] = cell_x(i, n) + w / 2; }
+    for (int it = 0; it < 40; it++) { int moved = 0;
+      for (int i = 0; i + 1 < nn; i++) { int o = hw[i] + hw[i + 1] + 10 -(cx[i + 1] - cx[i]); if (o > 0) { cx[i] -= o / 2; cx[i + 1] += o - o / 2; moved = 1; } }
+      for (int i = 0; i < nn; i++) { int W = v_sk(S, R ".rect", 2); if (cx[i] - hw[i] < 4) cx[i] = 4 + hw[i]; if (cx[i] + hw[i] > W - 4) cx[i] = W - 4 - hw[i]; }
+      if (!moved) break; }
+    for (int i = 0; i < n; i++) { int x = cell_x(i, n), nx = i < nn ? cx[i] - w / 2 : x;
+      snprintf(t, sizeof t, "%s", v_pstr(v_fmt(R ".rail.cells.%d.name", i))); snprintf(id, sizeof id, "page.rail.%d.name", i); if (*t) v_say_in(id, t, nx, w, y + nb, V_ANCHOR_BASE, nr, "glass");
       snprintf(t, sizeof t, "%s", v_pstr(v_fmt(R ".rail.cells.%d.sub", i))); snprintf(id, sizeof id, "page.rail.%d.sub", i); if (*t) v_say_in(id, t, x, w, y + sb, V_ANCHOR_BASE, sr, "glass"); } }
 }
 

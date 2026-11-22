@@ -15,6 +15,7 @@
 import { assetEntry, asset as assetOf, registerAsset, hasAsset, registerSlot } from "../../ui/assets.mjs";
 import { layeredStand, composeStand, resample } from "./layered-stand.mjs";
 import { drawnLooks } from "./looks.mjs";
+import { coatMaster } from "./stands.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { CH, railLayout } from "./reading-rail.mjs";
 export { CH, CH_TOKEN, railLayout, railLanes } from "./reading-rail.mjs";
@@ -326,7 +327,7 @@ export function pageStagePicture(r) {
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const X = x - ox, Y = y - oy; if (X < 0 || Y < 0 || X >= bw || Y >= bh) continue; const i = (Y * bw + X) * 4; out.put(y * W + x, [sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], 1); } }
   { const cx = W * 0.45, cy = H * 0.45, rx = Math.max(cx, W - cx) * Math.SQRT2, ry = Math.max(cy, H - cy) * Math.SQRT2;   // the shade: clear to 45 % of the ellipse, then 42 % of #080a10 out to the corner
     paintPage(out, 0, 0, W, H, (x, y) => { const t = Math.hypot((x - cx) / rx, (y - cy) / ry); return t <= 0.45 ? null : [[8 / 255, 10 / 255, 16 / 255], 0.42 * clamp01((t - 0.45) / 0.55)]; }); }
-  const body = pixels(`mibi-adult-${r.species}-304x312`);
+  const body = pixels(coatMaster(`mibi-adult-${r.species}-304x312`, r.species, r.coat));
   if (body) { const bw = r.body.w, bh = Math.round((bw * 312) / 304), sc = resample(body, 304, 312, bw, bh);
     for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) { const X = r.body.x + x, Y = r.body.y + y, i = (y * bw + x) * 4; if (X < 0 || Y < 0 || X >= W || Y >= H || !sc[i + 3]) continue; out.put(Y * W + X, [sc[i] / 255, sc[i + 1] / 255, sc[i + 2] / 255], sc[i + 3] / 255); } }
   for (const s of r.spots) { const [x1, y1, x2, y2] = s.line; paintPage(out, Math.min(x1, x2) - 3, Math.min(y1, y2) - 3, Math.max(x1, x2) + 3, Math.max(y1, y2) + 3, (x, y) => [PAGE_CREAM, 0.85 * clamp01(1.5 - segDist(x, y, x1, y1, x2, y2))]); }
@@ -388,7 +389,7 @@ function discRim(out, cx, cy, rad, wid, col, alpha, glow) {   // a ring (wid wid
 export function pageScalePicture(r) {
   const [W, H] = r.size, out = new Pane(W, H), roomId = `vivarium-near-${r.dusk ? "dusk" : "day"}-544x408`, room = roomRGB(W, H, roomId, r.dusk ? 1 : 1.5, r.dusk ? 0 : 5), hex6 = (h) => hex(h).map((v) => v / 255);
   for (let i = 0; i < W * H; i++) { if (room) out.c.set(room.subarray(i * 3, i * 3 + 3), i * 3); else out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
-  const body = pixels(`mibi-adult-${r.species}-304x312`);
+  const body = pixels(coatMaster(`mibi-adult-${r.species}-304x312`, r.species, r.coat));
   if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
   { const q = r.dusk ? 0.5 : 0.16, col = r.dusk ? [6 / 255, 8 / 255, 14 / 255] : [8 / 255, 10 / 255, 16 / 255]; paintPage(out, 0, 0, W, H, () => [col, q]); }
   const L = r.lens;
@@ -459,7 +460,7 @@ export function pageBoardPicture(r) {
   const [W, H] = r.size, out = new Pane(W, H), room = roomRGB(W, H, "vivarium-near-day-544x408", 1.2, 6), CREAM = PAGE_CREAM, hex6 = (h) => hex(h).map((v) => v / 255);
   for (let i = 0; i < W * H; i++) { if (room) out.c.set(room.subarray(i * 3, i * 3 + 3), i * 3); else out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
   paintPage(out, 0, 0, W, H, (x, y) => [[12 / 255, 15 / 255, 22 / 255], y < 190 ? 0.5 + (0.38 * y) / 190 : 0.88 + (0.06 * (y - 190)) / (H - 190)]);
-  const body = pixels(`mibi-adult-${r.species}-304x312`); if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
+  const body = pixels(coatMaster(`mibi-adult-${r.species}-304x312`, r.species, r.coat)); if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
   const dashOn = (x, y, cx, cy, per) => ((Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI)) * per % 7 < 4;
   for (const a of r.alone ?? []) {   // "hers alone": a tile a line, the same marks as the legend (a gold disc: she stands at the end of a scale; a gold square: the look she shows; a dashed blue square: the look she carries)
     const cx = a.x + a.d / 2, cy = a.y + a.d / 2, R = a.d / 2, rad = a.kind === "scale" ? R : 11;

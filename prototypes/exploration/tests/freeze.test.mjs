@@ -159,15 +159,17 @@ test("4. break in flight: the break completes, then the dock's mend applies", ()
   const { p, st } = begin();
   p.run("S.exp.cargo.pods.push({ id: 'p1', sp: 0, g: 0, how: 'ground', gs: 7 }); S.exp.shield = 0;");
   p.key("back"); p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'wait');"); p.key("confirm");   // the action that finds the Shield at 0: the break is under way (1100 ms)
-  assert.equal(p.S.exp.ending, 1);
-  const r = dock(p, st);
-  assert.equal(r.mend.broke, true, "the Station mends a break free");
-  assert.ok(p.S.exp, "the break is still in flight");
-  assert.equal(p.S.probeSeen || 0, 0, "the Probe from the dock waits for the break");
-  p.pass(1200);
+  // night step 1: the break ends nothing. The Probe goes dark where it stands; the expedition goes on until the player ends it.
+  assert.equal(p.S.exp.dark, 1); assert.ok(!p.S.exp.ending, "no ending is under way");
+  assert.equal(p.S.exp.cargo.pods.length, 0); assert.ok(Object.keys(p.S.skulls || {}).length, "a skull where it went dark");
+  assert.equal(p.S.report, null, "no ended card");
+  p.run("endExpedition('sent')");   // End expedition at the flag, dark
   assert.equal(p.S.exp, null);
   assert.equal(p.S.report.reason, "break");
-  assert.equal(p.S.report.dropped, 1); assert.ok(Object.keys(p.S.skulls || {}).length, "a skull where it broke");
+  assert.equal(p.S.report.dropped, 1);
+  assert.equal(p.S.shield, 0, "the Probe stays at no plates until the Station mends it");
+  const r = dockKey(st, p.sv()); assert.ok(r.ok && r.docked, "docked"); p.writeSt(st); p.pass(1200);
+  assert.equal(r.mend.broke, true, "the Station mends a break free");
   assert.equal(p.S.shield, st.probe.shield, "mended, as the Station shows it");
   assert.equal(p.S.probeSeen, st.probe.seq);
 });

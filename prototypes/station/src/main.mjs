@@ -64,9 +64,11 @@ function postFocus() {
   let box = CORE.face.focusBox(); const screen = UI.idle ? "idle" : UI.screen;
   const pageLit = screen === "library.species" && UI.lib?.state === "lit" && UI.lib.lit && box && box[0] < LIB_PAGE[0];   // phone window, a chapter lit: the window shows its page (the ring is on a plate left of it; the page is what ✓ asked for), not the cut-off edge of it
   if (pageLit) box = LIB_PAGE;
-  if (FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000)) box = PLATE_BOX;   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring
-  const k = screen + ":" + (box ? box.join(",") : "-"); if (k === focusPosted) return; focusPosted = k;
-  if (EMBED) parent.postMessage({ t: "mb-focus", screen, box }, location.origin);
+  const plate = !!(FX.msg && clock.now - FX.msgAt < (FX.msgMs || 4000));
+  if (plate && !(screen === "pods" && (UI.pods?.page != null || UI.pods?.view === "nursery" || UI.pods?.view === "pod"))) box = PLATE_BOX;   // on a page screen the plate is drawn inside the page (frame.plate.page): no pan for it   // a message plate is up: the window shows it whole (it is centred on the screen), then goes back to the ring (the play page puts the window back where it was: `plate` below)
+  const page = screen === "pods" && (UI.pods?.page != null || UI.pods?.view === "nursery" || UI.pods?.view === "pod");   // her page, the nursery and a pod's page (all the 530 x 600 window): the play page's side form shows them whole (layout.mjs `page`)
+  const k = screen + ":" + (box ? box.join(",") : "-") + (page ? ":page" : "") + (plate ? ":plate" : ""); if (k === focusPosted) return; focusPosted = k;
+  if (EMBED) parent.postMessage({ t: "mb-focus", screen, box, page, plate }, location.origin);
   else { const r = focusStep(win.st, screen, box); win.st = r.st; win.focus = { screen, box }; placeWindow(r.top || (!box && screen === "pods" && (UI.pods.view === "nursery" || UI.pods.view === "pod"))); }   // the nursery and a pod's page draw their own ring and no face ring: with no plate up the window rests at their left edge (the whole 530 window)   // standalone on a phone: the page's own window follows the ring
 }
 
@@ -155,7 +157,7 @@ if (EMBED) window.addEventListener("message", (e) => {   // the play page's shel
     postCaddy(true);
   }
   else if (m.t === "mb-dev") showDev(!!m.on);
-  else if (m.t === "mb-view") { UI.narrow = !!m.narrow; UI.window = !!m.window; UI.windowW = m.w | 0; UI.windowH = m.h | 0; }   // the phone held upright (a 530 lp window): Home's narrow form; the next frame sends the props again
+  else if (m.t === "mb-view") { UI.narrow = !!m.narrow; UI.window = !!m.window; UI.windowW = m.w | 0; UI.windowH = m.h | 0; document.documentElement.classList.toggle("smooth", !!m.smooth); }   // the phone held upright (a 530 lp window): Home's narrow form; the next frame sends the props again
   else if (m.t === "mb-note-ask") {   // a play note's details from this device: its screen and its store (answered to the page; no name, no address)
     const c = G.ready ? caddyState() : null;   // before the Station has loaded its save there is no state to read
     parent.postMessage({ t: "mb-note-state", id: m.id, state: c ? { screen: UI.idle ? "idle" : UI.screen, store: c.ledger, crates: c.crates, podHome: c.podHome, docked: c.docked } : { screen: "boot" } }, location.origin);

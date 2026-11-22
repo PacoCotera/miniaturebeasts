@@ -242,8 +242,8 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, c
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName } from "./src/world7.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
-import { waitPips, fracPips, startPlaceWait, PIPS } from "./src/waitpips.mjs";
-import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
+import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
@@ -255,7 +255,7 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { WORDS, DAY, DAY_TEXT, partOfDay } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
@@ -1004,6 +1004,7 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null });
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
+const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
 // Send points: the expedition's start, or a lit depot in reach. "Start · 2 cells" names the nearest one.
@@ -1737,7 +1738,7 @@ function syncStation() {
     q.since = m.since ?? null; q.sinceFloor = !!m.sinceFloor;  // the real time the mibi has been the player's: the Station's clock at its hatch (or when first seen), shown on the mibi's page
     q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
   if (st.probe && st.probe.seq > (S.probeSeen || 0) && !(S.exp && S.exp.ending)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
-    if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; frozen while docked; resumes at Lift as it was
+    if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax); if (S.exp && S.exp.dark && S.exp.shield > 0) delete S.exp.dark;   // docked mid-expedition: the cradle mends it (a dark Probe lights again; its pods stay fallen); frozen while docked; resumes at Lift as it was
     if (S.tier > was) fxMsg(S.exp ? DOCK_TEXT.tierMid : 'Tier 2 · reaches further, carries 3 pods', 3); }   // an upgrade mid-expedition applies from the next one
   if (!S.exp) for (const r of carryApply(S, st)) { const m = mibiById(r.id), n = m ? m.name : 'a mibi';   // mid-expedition the requests wait
     if (r.op === 'home') { fxMsg(CARE_TEXT.left(n), 3); logEv(n + ' stays home (from the Station)'); }
@@ -1771,7 +1772,7 @@ function addStrikeFeats(lay) {   // the generated marks, and the fresh ones the 
 // What a press on a strike mark would add now: the worth of the place it lies in (2 / 3 / 4 / 5), whole. 0: the whole worth does not fit the hold and a press is not offered.
 function strikeWorth(lay = curLay()) { return STRIKE_DATA[placeTier(lay)] || STRIKE_DATA[1]; }
 function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay) - (f ? fs(lay.key, f.id).took || 0 : 0); return Math.max(0, Math.min(left, CAP - ex.cargo.d)); }   // what fits: a mark that does not fit whole is read in part, the rest stays on the mark (owner 11-13)
-function readStrike(f) {
+function readStrike(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, put = strikeGain(ex, curLay(), f);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
   const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
@@ -2202,13 +2203,13 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
 
 // One tick of the field clock. Everything in the world moves only here.
 function advance(scope, info) {
-  const ex = S.exp; ex.actions++; S.totalActions++; S.day.spent++;   // every action spends one light of the day, Wait and Call too
+  const ex = S.exp; ex.actions++; S.totalActions++; const part0 = dayPart(); S.day.spent += (info && info.clock) || 1;   // every action moves the clock one, Wait and Call too; a step on the map moves it DAY.mapStep (info.clock)
   const col = cxy(ex.pos).x;
   // A stray strike rolled last action lands now, if you are still in the open under rain.
   // It was marked on the Probe's tile or cell: it hits only if the Probe still stands there, in the open, under rain; otherwise it lands on the empty tile.
   if (ex.stray && ex.stray.at <= ex.actions) { const sk = ex.stray; ex.stray = null;
     const there = sk.scope === scope && sk.cell === ex.pos && (scope !== 'patch' || (ex.patch && ex.patch.x === sk.x && ex.patch.y === sk.y));
-    if (there && stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope);
+    if (there && !ex.dark && stormRain(col) && !sheltered() && !depotShelter() && !inFog(ex.pos)) strayHit(scope);
     else strayMiss(sk); }
   if (!stormRain(col)) ex.passWarned = 0;   // a new pass over you starts with a warned strike before any stray
   if (ex.storm) {
@@ -2232,18 +2233,18 @@ function advance(scope, info) {
   const lvl = stormLevel(); ex.stats.maxLvl = Math.max(ex.stats.maxLvl, lvl);
   if (lvl >= 2) { ex.stats.stormActs++; if (!sheltered()) ex.stats.openStormActs++; }
   // Roll the next action's stray strike now, so a keen partner can feel it coming. The first walk of a world takes one stray strike at most (the plates are met, the Probe never breaks before it has a pod: loop audit 3.18).
-  if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= SAFE_AFTER_HIT && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
+  if (!ex.stray && !ex.dark && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= SAFE_AFTER_HIT && (ex.n !== 1 || ex.stats.hits < 1) && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
     const inPatch = scope === 'patch' && ex.patch;
     ex.stray = { at: ex.actions + 1, scope: inPatch ? 'patch' : 'map', cell: ex.pos, x: inPatch ? ex.patch.x : 0, y: inPatch ? ex.patch.y : 0 };   // aimed at the Probe's own tile (place) or cell (map), shown one action ahead
     fxSign('warn', inPatch ? { key: ex.patch.key, x: ex.patch.x, y: ex.patch.y } : { c: ex.pos });
     const pt = ex.pt, keen = pt && (pt.elder || spOf(pt.sp).ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
-  if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods fall here', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
-  else if (S.day.spent >= DAY.light && !ex.ending) nightPasses();   // the night does not end the walk: the world turns, a new day starts where the explorer stands
-  else if (!ex.ending) { const left = DAY.light - S.day.spent;   // dusk and the last light are news, never a threat
-    if (left === DAY.light - DAY.parts.slice(0, -2).reduce((a, p) => a + p[1], 0)) fxMsg(DAY_TEXT.duskNews(left), 3);
-    else if (left === DAY_TEXT.warnAt) fxMsg(DAY_TEXT.nightSoon(left), 3); }
+  if (ex.shield <= 0 && !ex.dark) goDark(ex);   // the break ends nothing (owner 11-22 "expeditions do not end until the player says so"): the Probe goes dark where you stand
+  if (S.day.spent >= DAY.light && !ex.ending) nightPasses();   // the night does not end the walk: the world turns, a new day starts where the explorer stands
+  else if (!ex.ending) { const part1 = dayPart();   // dusk and night are news, never a threat: once each, when the clock crosses into them
+    if (part1 !== part0 && part1 === 'dusk') fxMsg(DAY_TEXT.duskNews(untilNext()), 3);
+    else if (part1 !== part0 && part1 === 'night') fxMsg(DAY_TEXT.nightNews(untilNext()), 3); }
   save();
 }
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
@@ -2310,10 +2311,10 @@ function mapStep(dir, viaTiles) {   // viaTiles: a step out of a place that cros
   if (canSure() && cheb(cxy(c), cxy(ex.start)) === ex.range) ex.abUsed = 1;   // Tuliko's first step into its one extra ring is its ability used
   if (G.level && G.level[c] < G.level[ex.pos] && (edgeKind(ex.pos, dir) === EDGE.RAMP || softKind(ex.pos, dir) === 'scree')) fieldHabit('hop-down');   // a step down across a stair or a scree edge
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
-  advance('map');
+  advance('map', { clock: DAY.mapStep });
 }
 // Call on the map: pin your cell for 1 Energy, or remove your own pin for free. Gate pins stay free and automatic.
-function callMap() {
+function callMap() { if (darkRefuse()) return;
   const ex = S.exp, c = ex.pos, own = ownPin(c);
   if (own) { S.pins = S.pins.filter(p => p !== own); const back = own.exp === ex.n; if (back) ex.cargo.e += PRICE.pin;
     fxMsg(back ? 'Pin removed · 1 Energy back' : 'Pin removed'); logEv('Pin removed' + (back ? ' · +1 Energy' : '')); save(); return; }
@@ -2949,7 +2950,7 @@ function crossRegion(dir, sw) {
   ex.pos = sw.cell; ex.lastDir = dir; ex.face = dir; S.visited[sw.cell] = 1; revealAround(sw.cell, 1);
   if (ex.trail[ex.trail.length - 1] !== sw.cell) ex.trail.push(sw.cell);
   RT.behind = null; RT.behindKey = null;
-  advance('map');   // the step costs the one map action it costs between places
+  advance('map', { clock: DAY.mapStep });   // a step across the map moves the clock like any other
   if (ex.ending) return;
   ALONG = { key: String(sw.cell), k: alongOf(dir, P0) };   // the pawn keeps its line over the seam too
   enterPatch();
@@ -3152,7 +3153,7 @@ function freeAround(key, x, y, prefer, clearOnly = false) {
 // Materials carried cap at 20 each. Returns how much was taken.
 const MAT = { e: 'Energy', d: 'Data', s: 'Essence' };
 function addMat(k, n, x, y, keeps, ownLine) {   // keeps: what the source keeps when part of a take did not fit ('the stone keeps the rest'); ownLine: the caller says the shortfall itself
-  const ex = S.exp, got = Math.max(0, Math.min(n, CAP - ex.cargo[k]));
+  const ex = S.exp, got = ex.dark ? 0 : Math.max(0, Math.min(n, CAP - ex.cargo[k]));   // a dark Probe takes nothing: no Data, no sample
   ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
   if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
   if (got < n && !ownLine) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
@@ -3196,19 +3197,19 @@ function grabFruit(live, fr) {
   for (const c of live.cr) { if (spOf(c.sp).shed !== 'grab' || c.hide || ['flee', 'dive', 'hidden', 'eat', 'full'].includes(c.st) || cheb(c, fr) > 4) continue; const d = man(c, fr); if (d < bd) { bd = d; best = c; } }
   if (best) { best.st = 'seek'; best.fid = fr.id; best.grab = 1; }
 }
-function shakeBush(f) {
+function shakeBush(f) { if (darkRefuse()) return;
   const key = S.exp.patch.key, live = curLive(); setFS(key, f.id, f.tree ? { ripe: 0 } : { bare: 1 });
   const p = freeAround(key, f.x, f.y, S.exp.patch, true); if (p) live.fr.push({ id: live.fid++, x: p.x, y: p.y });   // a shake drops one fruit
   if (p) { fxMsg('A fruit drops · ' + eatersHere(live), 2); grabFruit(live, live.fr[live.fr.length - 1]); }
   advance('patch', { noise: 'act', ring: { x: f.x, y: f.y, r: 2 } });
 }
-function pickUp(fr) {
+function pickUp(fr) { if (darkRefuse()) return;
   const live = curLive(); live.fr = live.fr.filter(q => q !== fr); S.exp.carry = 'fruit';
   fxSign('fruit');
   advance('patch', { noise: 'act' });
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
-function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
+function pressFruit(at) { if (darkRefuse()) return;   // at: the stone or tree pressed on (the +2 floats up from it); the explorer's own tile when called without
   const ex = S.exp, P = at || ex.patch;
   if (ex.cargo.s >= CAP) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // refused only at the cap (owner note #15)
   const part = CAP - ex.cargo.s < 2;   // room for 1: fills to the cap, the extra is lost, and the line says so
@@ -3217,7 +3218,7 @@ function pressFruit(at) {   // at: the stone or tree pressed on (the +2 floats u
   if (part) fxMsg(WORDS.pressLost(CAP), 2);
   advance('patch', { noise: 'act' });
 }
-function takeTuft(tf) {
+function takeTuft(tf) { if (darkRefuse()) return;
   if (S.exp.cargo.s >= CAP) { fxMsg(WORDS.refuse.tuft(CAP), 2); return; }   // a full hold takes nothing and no turn passes
   const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
@@ -3240,32 +3241,32 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
     if (tx < 1 || ty < 1 || tx >= lay.w - 1 || ty >= lay.h - 1 || sx < 0 || sy < 0 || sx >= lay.w || sy >= lay.h) return false;
     if (occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(lay.tiles[ty * lay.w + tx])) return false;
     const o = occupant(key, sx, sy, 'player'); return !o || o.type === 'pt' || o.type === 'cr' || (P && P.key === key && P.x === sx && P.y === sy); }); }
-function takeDew(f) {
+function takeDew(f) { if (darkRefuse()) return;
   const ex = S.exp;
   if (ex.cargo.s >= CAP) { fxMsg(WORDS.refuse.dew(CAP), 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
   setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
-function takeCharge(f) {
+function takeCharge(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
   if (ex.cargo.e >= CAP) { fxMsg(WORDS.refuse.charge(CAP), 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
   const got = addMat('e', ch, f.x, f.y, WORDS.stoneKeeps);
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxSign('warm'); }
   advance('patch', { noise: 'act' });
 }
-function lightDepot(f, relight) {
+function lightDepot(f, relight) { if (darkRefuse()) return;
   if (relight && !S.ui.depotArm) { S.ui.depotArm = 1; fxMsg('Relight the ' + DEPOT_NAME + ' · 1 Energy · ✓ again to confirm', 3); return; }   // relighting takes two presses
   const ex = S.exp, key = ex.patch.key; S.ui.depotArm = 0; ex.cargo.e -= PRICE.depot; setFS(key, f.id, { lightT: S.turn + OUTPOST_TURNS }); fxFloat(f.x, f.y, '-' + PRICE.depot, 'energy');
   logEv((relight ? 'Relit' : 'Lit') + ' the ' + DEPOT_NAME + ' · −1 Energy · lit ' + OUTPOST_TURNS + ' turns');
   fxMsg('The ' + DEPOT_NAME + ' is lit for ' + numWord(OUTPOST_TURNS) + ' turns · end an expedition, mend and shelter here', 3); advance('patch', { noise: 'act' });
 }
 // Mending at a lit depot: 1 Energy a bar, two presses (the first arms it).
-function depotMend() {
+function depotMend() { if (darkRefuse()) return;
   const ex = S.exp; if (!S.ui.depotArm) { S.ui.depotArm = 1; fxMsg('Mend one bar · 1 Energy · ✓ again to confirm', 3); return; }
   S.ui.depotArm = 0; ex.cargo.e -= PRICE.depotMend; ex.shield = Math.min(ex.smax, ex.shield + 1); logEv('Mended at the ' + DEPOT_NAME + ' · −1 Energy');
   fxMsg('Plate mended at the outpost', 3); advance('patch', { noise: 'act' });
 }
 // Shelter: within 3 tiles of a lit depot in its place, no stray strikes.
 function depotShelter() { const ex = S.exp, P = ex && ex.patch; if (!P || P.key[0] === 'c') return false; const f = depotOf(+P.key); return !!f && outpostLeft(P.key, f) > 0 && cheb(f, P) <= 3; }
-function lightBeacon(f) {
+function lightBeacon(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, cell = layout(key).cell, before = ex.stats.rev; setFS(key, f.id, { up: 1 });
   ex.cargo.e -= PRICE.beacon; fxFloat(f.x, f.y, '-' + PRICE.beacon, 'energy');
   const was = S.revealed.slice(); revealAround(cell, 3); const n = ex.stats.rev - before;
@@ -3290,7 +3291,7 @@ function podTagOf(p, short) {
 // Confirm on a pod with a full hold opens the chooser: pad picks which held pod to leave, ✓ swaps, ← keeps.
 function swapState() { const ex = S.exp, sw = S.ui.swap; if (!ex || !ex.patch || !sw) return null; const p = S.pods.find(q => q.id === sw.id); if (!p) return null;
   return { p, held: ex.cargo.pods, sel: clamp(sw.sel, 0, ex.cargo.pods.length - 1) }; }
-function takePod(p, leave) {
+function takePod(p, leave) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, full = ex.cargo.pods.length >= ex.hold;
   if (full && leave == null) { S.ui.swap = { id: p.id, sel: 0 }; return; }   // choose first; nothing is spent
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
@@ -3323,7 +3324,7 @@ function awardMoment(c, kind, X) {
   const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
   fxMsg(got ? '+' + got + ' Data · ' + what : cap(what) + ' · ' + WORDS.creature.holdFull, 2);
 }
-function offer(c) {
+function offer(c) { if (darkRefuse()) return;
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
   ex.stats.feedTries++;
   if (!spOf(c.sp).eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
@@ -3381,7 +3382,7 @@ function nextDoorFinds(P, lay, reach, cue) {
 // Call in a place: the pulse. It lifts the veil CALL_R tiles around you (a round ring; 4 in a fog bank unless a glowing partner is along).
 // Hidden finds there glint and stay outlined; curious creatures come, wary ones hide; your partner comes and digs a burrow it can handle.
 // It reports the heart (found, or its tell) and what is still there to take.
-function callPlace() {
+function callPlace() { if (darkRefuse()) return;
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
   const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = lay.cave ? CALL_R_CAVE : fogged ? (glow ? CALL_R_FOG_GLOW : CALL_R_FOG) : CALL_R;
   let found = 0; const cue = [];   // the finds this Call lights, for their edge tabs
@@ -3481,7 +3482,7 @@ function routineStep(a) {
   if (!opts.length) return; opts.sort((p, q) => man(p, P) - man(q, P)); const q = man(opts[0], P) > 1 ? opts[0] : opts[opts.length - 1];
   if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
 }
-function probeDeep() {
+function probeDeep() { if (darkRefuse()) return;
   if (S.tier >= 2) {
     const lay = curLay(), f = lay.feats.find(q => q.kind === 'd');
     if (!S.deepRead) { S.deepRead = 1; S.pins = S.pins.filter(p => p.k !== 'deep');
@@ -3899,9 +3900,24 @@ function dropPods(ex, rep) {
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
 }
+// The Probe's last plate is gone: it goes dark where you stand and the expedition goes on (night step 1). The pods fall here under the skull, the unsealed supplies are lost, sealed crates are untouched.
+// While ex.dark: no Call, nothing taken or carried, no strike marks read, no storm strike; walking, seeing, keeping still, a habit noted and End expedition at the flag all work.
+function goDark(ex) {
+  const rep = {}; ex.dark = 1; S.shield = 0;
+  dropPods(ex, rep); ex.darkRep = { dropped: rep.dropped, lost: ['e', 'd', 's'].filter(k => ex.cargo[k]).map(k => ({ k, text: ex.cargo[k] + ' ' + { e: 'Energy', d: 'Data', s: 'Essence' }[k] })) };   // the end card at the flag says what the break cost
+  ex.cargo.e = ex.cargo.d = ex.cargo.s = 0; if (ex.carry) ex.carry = null; S.hold = null;
+  logEv('Probe dark · carried supplies lost');
+  if (typeof stopRepeat === 'function') stopRepeat();
+  fxMsg(DARK_TEXT.goes, 4);
+}
+const DARK_TEXT = { goes: 'The Probe goes dark. Your pods fall here. Walk back to the flag.', refuse: 'The Probe is dark · walk back to the flag', line: 'Probe dark' };   // [copy]
+const isDark = () => !!(S && S.exp && S.exp.dark);
+// A dark Probe refuses what needs it: says so, spends nothing. True when refused.
+function darkRefuse() { if (!isDark()) return false; FX.bumpAt = NOW; fxMsg(DARK_TEXT.refuse, 3); return true; }
 function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
-  const broke = reason === 'break', night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is (walk W1)
+  if (ex.dark && reason !== 'night') reason = 'break';   // a dark Probe's end is the break's card at the flag
+  const broke = reason === 'break' || !!ex.dark, night = reason === 'night'; S.ui.lastPos = ex.pos;   // any end but the night's is making camp: the day waits where it is (walk W1)
   const explored = exploredAny(ex), rc = reachCounts();
   let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}, mud = c => !!(G.soft && G.soft.wade[c]);   // a wade the partner crossed counts as 'mud', apart from a ford (both are L.WATER)
@@ -3917,7 +3933,8 @@ function endExpedition(reason) {
     logEv('Walk Data · ' + (ex.dField || 0) + ' from strike marks · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · plus ' + (ex.dAct || 0) + ' from creature acts'); }
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (ex.carry === 'fruit') ex.carry = null;
-  if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
+  if (ex.dark && ex.darkRep) { rep.dropped = ex.darkRep.dropped; rep.lost = ex.darkRep.lost.slice(); S.shield = 0; S.hold = null; }   // already dropped and lost where the Probe went dark
+  else if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
   else S.shield = ex.shield;
   // what the day's trips left for the night's turn: the camps' trails and charged stones wait in the day and join this trip's
   const pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
@@ -6702,7 +6719,7 @@ function lineCtx(o) {
   if (o.ok) x += textW('✓', 2) + 5 + textWT(o.ok, 2);
   if (o.back) { if (o.ok) x += 7 + textW('·', 2) + 7; x += textW('←', 2) + 2 + textWT(o.back, 2); }
   const wx = lineWx(), aw = textW('◀', 2), ww = wx ? (wx.lvl ? wx.lvl * 13 + (wx.fog ? 20 : aw) : 0) + (wx.fog ? 14 + aw : 0) + (wx.wind ? (wx.lvl || wx.fog ? 8 : 0) + (windMarkImg(wx.wind) ? 22 : textW(WORDS.windShort[wx.wind], 2)) : 0) : 0, wsx = wx ? SCR_W - PAD - ww - PAD : SCR_W;   // the conditions section and its divider
-  const mx = x + PAD + 1 + PAD, avail = wsx - PAD - mx, cands = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''], tw = c => textWT(c.replace('\x01', ''), 2);
+  const mx = x + PAD + 1 + PAD, avail = wsx - PAD - mx, cands0 = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''], cands = isDark() && S.phase !== 'cargo' ? cands0.map(c => DARK_TEXT.line + (c ? ' · ' + c : '')).concat(DARK_TEXT.line) : cands0, tw = c => textWT(c.replace('\x01', ''), 2);
   let r = cands.find(c => tw(c) <= avail);
   if (r == null) { r = cands[cands.length - 1]; while (tw(r) > avail && r.includes(' · ')) r = r.slice(0, r.lastIndexOf(' · ')); if (tw(r) > avail) r = ''; }
   return { x, wx, wsx, mx, avail, r };
@@ -6718,9 +6735,7 @@ function drawLine(o) {
   const { wx, wsx, mx, r } = lineCtx(o);
   if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 10); }
   if (r) { sep(x + PAD); const k = r.indexOf('\x01'), a = k < 0 ? r : r.slice(0, k), b = k < 0 ? '' : r.slice(k + 1);
-    const lm = S.exp && S.day && DAY.light - S.day.spent <= DAY_TEXT.warnAt ? /\d+ light/.exec(a) : null;   // the light number turns the warning colour from 10 left
-    if (a && lm) { const pre = a.slice(0, lm.index); text(pre, mx, ty, C.mist, 2, null, true); const nx = mx + textWT(pre, 2); text(lm[0], nx, ty, C.amber, 2, null, true); text(a.slice(lm.index + lm[0].length), nx + textWT(lm[0], 2), ty, C.mist, 2, null, true); }
-    else if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
+    if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
 }
 // Short messages stay until the next action.
 // The pod swap chooser: two lines above the bottom line. Hold: each held pod (shell, name, where it came from),
@@ -7737,7 +7752,7 @@ function placeStormWords(c) {
 // The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
 function dayCtx(ctx) {
   if (!S.exp || !S.day) return ctx;
-  const d = dayPart() + ' · ' + Math.max(0, DAY.light - S.day.spent) + ' light', alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
+  const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
 function lineBase() {
@@ -8327,7 +8342,7 @@ function drawMaking() {
 // (the realm worker's stages in RT.wait, the loaders' files in FILES) and never go back; with no realm being made the realm part is whole. UI component on the device's screen, drawn in code (rule 18).
 function drawWaitPips() {
   const pw = RT.placeWait;   // waiting for places made in the worker: the pips count the places that are here (and, at the set-out, laid out), nothing else
-  if (pw) RT.pips = Math.max(RT.pips || 0, fracPips(pw.cells.filter(c => bakedGet(pw.seed, pw.slot, pw.v, c)).length + pw.laid, pw.cells.length * (pw.laying ? 2 : 1)));
+  if (pw) RT.pips = Math.max(RT.pips || 0, placeWaitPips(pw.cells.map(c => stageOf(pw.seed, pw.slot, pw.v, c)), pw.laid, pw.laying));   // each place's real stages in the worker count (#104), not only the places made
   else {
     const r = RT.wait || (RT.making ? { done: 0, of: 1 } : { done: 1, of: 1 });
     // the files are part of this wait only while the art is coming in (a new world's wait has none owed); the bar is never full while the wait is on (the screen goes away when the land is ready)
@@ -8413,7 +8428,8 @@ window.addEventListener('storage', e => {
   save(false, true);   // takes the Station's part and syncs, and writes nothing: a write here would wake the other tab's handler, and two tabs would rewrite the save without end (audit A5)
 });
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
-if (ld === true) { try { if (S.exp && S.exp.shield <= 0) endExpedition('break'); else if (S.exp && S.day.spent >= DAY.light) nightPasses(); if (S.phase === 'station') S.phase = 'setup';
+if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark (night step 1), never on the ended card
+  if (S.exp && S.day.spent >= DAY.light) nightPasses(); if (S.phase === 'station') S.phase = 'setup';
   if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
