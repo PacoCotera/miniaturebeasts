@@ -2,7 +2,7 @@
 // host (the shell): getCanvas() the played device's #screen, context() -> details to send, source() -> noteFrom, say(key, vars), flash() the brief outline round the screen.
 import * as idb from "idb-keyval";
 import { LIMITS, canAdd, isClip, isEmpty, createQueue } from "../../src/notes.mjs";
-import { shot, pageShot, createTap, canClip, canRecordAny } from "../../src/clip.mjs";
+import { shot, createTap, canClip, canRecordAny } from "../../src/clip.mjs";
 
 let uid = 0;
 const urlOf = (b) => URL.createObjectURL(b);
@@ -14,10 +14,7 @@ export function createController(host) {
   const subs = new Set();
   const emit = (p) => { st = { ...st, ...p }; for (const f of subs) f(); };
   let recTimer = 0, held = null;   // held: the whole-screen shot taken when Options opened
-  const shotOf = async (kind) => {   // the whole page (frame, panels, buttons, the canvas in it); the canvas alone if the page cannot be drawn
-    if (host.page) { try { const p = await Promise.race([pageShot(document), new Promise((_, no) => setTimeout(() => no(new Error("page picture too slow")), 8000))]); return { id: ++uid, kind, blob: p.blob, url: urlOf(p.blob), w: p.w, h: p.h }; } catch { /* the canvas below */ } }
-    const c = host.getCanvas(); if (!c) return null; const blob = await shot(c); return { id: ++uid, kind, blob, url: urlOf(blob), w: c.width, h: c.height };
-  };
+  const shotOf = async (kind) => { const c = host.getCanvas(); if (!c) return null; const blob = await shot(c); return { id: ++uid, kind, blob, url: urlOf(blob), w: c.width, h: c.height }; };
   const drop = (it) => { if (it && it.url) URL.revokeObjectURL(it.url); };
   const has = () => st.items.length > 0 || st.text.trim() !== "";
   const api = {
@@ -27,12 +24,10 @@ export function createController(host) {
     tapStart: () => tap.start(), tapStop: () => tap.stop(),
     canClip, canRecordAny,
     // Options opened: take the played device's screen now and hold it (it is what the note starts with)
-    // The panel never waits for it (the page picture can take seconds, or never end on a slow browser): New note waits for it, not Options.
-    hold() { held = shotOf("whole").catch(() => null); return held; },
+    async hold() { try { held = await shotOf("whole"); } catch { held = null; } },
     async newNote() {   // New note: the held screen goes in first; an open note carries on
-      const h = held ? await held : null; held = null;
-      if (!has()) { for (const it of st.items) drop(it); emit({ items: h ? [h] : [], text: "", at: Date.now(), from: host.source() }); }
-      else if (h) drop(h);
+      if (!has()) { for (const it of st.items) drop(it); emit({ items: held ? [held] : [], text: "", at: Date.now(), from: host.source() }); held = null; }
+      else if (held) { drop(held); held = null; }
       emit({ open: true, full: "" }); api.refreshContext();
     },
     async refreshContext() { try { emit({ ctx: await host.context() }); } catch { /* the details wait */ } },
