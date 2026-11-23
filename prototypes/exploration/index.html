@@ -3837,7 +3837,9 @@ function stepToward(X, who, tgt, n) {
 }
 // Routine walks (bug #121): a short path search inside the place. The walking distance to the target is found once per place and target (BFS over the walkable tiles, rims respected, one step costs one) and each turn takes the neighbour that is nearer by it, so a wall or a bay in the way no longer holds her. A creature on the way: the search is run again with the tiles creatures stand on closed (a way round); with none she waits, and after 3 waits stepToward's sidestep and back-step take over (as in PR 532).
 const PATH_FIELDS = new WeakMap();
-function pathField(lay, t, shut) {   // shut(x, y): a tile closed for this run only (never cached)
+// A tile nothing walks onto whatever stands there (a trunk, a rock, a stone or other feature): the same ones canStand refuses by occupant(), so the field and the step agree (bug #121: the field ran through a trunk, step one followed it and step two, on the creature-shut field, turned back).
+const staticShut = (lay, key, x, y) => T_BLOCK[bankTile(lay, x, y) ? T.BANK : lay.tiles[y * lay.w + x]] || !!featAt(lay, key, x, y);
+function pathField(lay, t, shut, key) {   // shut(x, y): a tile closed for this run only (never cached); key: the place, for its features
   let m = PATH_FIELDS.get(lay); if (!m) { m = new Map(); PATH_FIELDS.set(lay, m); }
   const k = t.x + ',' + t.y; let d = shut ? null : m.get(k); if (d) return d;
   const w = lay.w, h = lay.h; d = new Int16Array(w * h).fill(-1);
@@ -3845,7 +3847,7 @@ function pathField(lay, t, shut) {   // shut(x, y): a tile closed for this run o
   const q = [t.x + t.y * w]; d[q[0]] = 0;
   for (let i = 0; i < q.length; i++) { const cx = q[i] % w, cy = (q[i] / w) | 0;
     for (const [dx, dy] of Object.values(DIRS)) { const ax = cx + dx, ay = cy + dy;
-      if (ax < 0 || ay < 0 || ax >= w || ay >= h || d[ay * w + ax] >= 0 || NOSTAND(lay.tiles[ay * w + ax]) || rimRefuses(lay, ax, ay, cx, cy) || (shut && shut(ax, ay))) continue;
+      if (ax < 0 || ay < 0 || ax >= w || ay >= h || d[ay * w + ax] >= 0 || NOSTAND(lay.tiles[ay * w + ax]) || rimRefuses(lay, ax, ay, cx, cy) || staticShut(lay, key, ax, ay) || (shut && shut(ax, ay))) continue;
       d[ay * w + ax] = d[q[i]] + 1; q.push(ay * w + ax); } }
   if (!shut) { if (m.size > 40) m.clear(); m.set(k, d); }
   return d;
@@ -3857,16 +3859,26 @@ function pathNext(X, who, d) {   // the neighbour nearer the target by field d t
     const v = d[y * w + x]; if (v >= 0 && v < bd && canStand(X, x, y, who)) { bd = v; best = { x, y, dx }; } }
   return best;
 }
+function standers(X) {   // the tiles something that moves or lies on the ground stands on (creatures, partner, pods, fruit, tufts, the player): the ones a way round must go round
+  const w = X.lay.w, s = new Set(), L = X.live;
+  for (const c of L.cr) if (!c.hide) s.add(c.y * w + c.x);
+  if (L.pt) s.add(L.pt.y * w + L.pt.x);
+  for (const p of S.pods) if (p.k === X.key && !p.h && p.x >= 0) s.add(p.y * w + p.x);
+  for (const q of L.fr) s.add(q.y * w + q.x);
+  for (const q of L.tf) s.add(q.y * w + q.x);
+  const P = S.exp && S.exp.patch; if (P && P.key === X.key) s.add(P.y * w + P.x);
+  return s;
+}
 function pathStepToward(X, who, tgt, n) {
-  let dyn = false;
   for (let k = 0; k < (n || 1); k++) {
     if (who.x === tgt.x && who.y === tgt.y) return;
     if (tgt.tree) { stepToward(X, who, tgt, 1); continue; }
-    const w = X.lay.w, d = pathField(X.lay, tgt);
-    if (d[who.y * w + who.x] < 0) { stepToward(X, who, tgt, 1); continue; }   // no route inside the place: the greedy step, as before
-    let best = dyn ? null : pathNext(X, who, d);
-    if (!best) { const d2 = pathField(X.lay, tgt, (x, y) => (x !== tgt.x || y !== tgt.y) && (x !== who.x || y !== who.y) && !canStand(X, x, y, null));
-      if (dyn || d2[who.y * w + who.x] <= d[who.y * w + who.x] + 4) { best = pathNext(X, who, d2); dyn = !!best; } }   // a short way round only; a long detour is worse than waiting
+    const w = X.lay.w, d = pathField(X.lay, tgt, null, X.key), here = d[who.y * w + who.x];
+    if (here < 0) { stepToward(X, who, tgt, 1); continue; }   // no route inside the place: the greedy step, as before
+    // every step goes by the same field (bug #121: step one by the open field and step two by the creature-shut one turned her back): the creature-shut field when its way round is short (<= +4), else the open one, and she waits for what stands in it
+    const occ = standers(X); occ.delete(who.y * w + who.x); occ.delete(tgt.y * w + tgt.x);
+    let f = d; if (occ.size) { const d2 = pathField(X.lay, tgt, (x, y) => occ.has(y * w + x), X.key); if (d2[who.y * w + who.x] >= 0 && d2[who.y * w + who.x] <= here + 4) f = d2; }
+    const best = pathNext(X, who, f);
     if (!best) { who.held = (who.held || 0) + 1; if (who.held >= 3) stepToward(X, who, tgt, 1); return; }   // a creature in the only way: she waits
     who.held = 0; who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
   }
