@@ -19,6 +19,7 @@ export async function loadBaked(fetchBytes, base, id) {
 }
 
 const PLANT_PIECE = /^(sc-|shrub|bush|clump|tuft|flower|dry-tufts)/;   // the set's plant pieces (decals and props): walked through, at any height
+const NIGHT_LEVEL = LEVELS.indexOf('night'), CROWN_NIGHT_LEVEL = LEVELS.indexOf('dark2');   // the clock's night (5) and dark2 (2)
 const FEET_REACH = 8;   // a plant's base more than this above the explorer's feet is behind him (feetItem)
 const FEET_MIN_H48 = 12, FEET_SHARE = 0.5;   // a plant 12 px tall or more (the sprites are in screen pixels) covers the explorer's feet: its lower half is drawn again over them
 const same = (a, b) => { if (!a || a.length !== b.length) return false; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
@@ -189,7 +190,8 @@ export class BakedView {
     const cutAt = cutOut(48, local), draw = (kind, x, y) => {
       const cx = Math.floor(x / 48), cy = Math.floor(y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!visible(px, py)) return;
-      const s = this.ts.sprites[kind], frame = walkFrame(s, clockMs), lv = level(px, py);
+      // owner bug #120: the night table sends every crown green to the night grass, so a crown drawn through it vanishes into the ground; at night a crown takes dark2 (level 2: two steps down, its own greens kept), the ground and the trunks keep the night table
+      const s = this.ts.sprites[kind], frame = walkFrame(s, clockMs), lv = level(px, py) === NIGHT_LEVEL ? CROWN_NIGHT_LEVEL : level(px, py);
       const left = x - s.anchor48[0], top = y - s.anchor48[1];
       let cut = null;
       if (cutAt && local.some((q) => q.x > left - 22 && q.x < left + s.w48 + 22 && q.y > top - 22 && q.y < top + s.h48 + 22)) cut = (dx, dy) => cutAt(dx + left, dy + top);
