@@ -64,7 +64,9 @@ WORDS.ease = {
   stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
   stayHeard: 'It looked up · you stayed too long',
   keep: 'Keep still',   // the ✓ label that holds
-  hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
+  hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends', warn: 'Kept still · lightning is warned', plate: 'Kept still · a plate was lost' },
+  keepTo: part => 'Keep still · until ' + part,   // [copy] at camp by day a hold runs to the next part of day
+  waitTo: part => 'Wait · until ' + part,   // [copy] the menu's Wait at camp by day
   ctx: 'keep still, and see what it does',
   wildKind: kind => 'a wild ' + kind,   // owner note #111: a named wild one, her kind not yet identified: the bar says what the name is
 };
@@ -128,6 +130,12 @@ export function partOfDay(spent) {
   let left = Math.max(0, spent | 0);
   for (const [name, len] of DAY.parts) { if (left < len) return name; left -= len; }
   return DAY.parts[DAY.parts.length - 1][0];
+}
+// rest at camp (rest-at-camp-1): from dawn through the afternoon, the next part of day and the light left until its first light; null from dusk on (a hold is ten there)
+export function restTarget(spent) {
+  const s = Math.max(0, spent | 0); let at = 0;
+  for (let i = 0; i < DAY.parts.length - 2; i++) { at += DAY.parts[i][1]; if (s < at) return { name: DAY.parts[i + 1][0], left: at - s }; }
+  return null;
 }
 // how far the clock is from the night (before it starts) or from dawn (at night)
 export function clockToNext(spent) {
