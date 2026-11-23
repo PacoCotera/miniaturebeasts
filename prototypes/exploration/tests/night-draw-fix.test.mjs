@@ -11,7 +11,7 @@ const shot = (p, spent) => { p.run(`S.day.spent = ${spent}; scr.px().fill(-1); R
 const darker = (p, a, b) => { const lum = i => { const h = p.run(`RGB[${i}]`); return Array.isArray(h) || ArrayBuffer.isView(h) ? h[0] + h[1] + h[2] : 0; };
   let n = 0, d = 0; for (let i = 0; i < a.length; i++) if (a[i] >= 0 && b[i] >= 0 && a[i] !== b[i]) { n++; if (lum(b[i]) <= lum(a[i])) d++; } return [n, d]; };
 
-test("clockLevel: night is the night table (5), dusk the one-step table (1), the day 0, a cave 0", () => {
+test("clockLevel: night is the night table (5), dusk the one-step table (6), the day 0, a cave 0", () => {
   const p = start();
   p.run("S.day.spent = 30"); assert.equal(p.run("clockLevel({ cave: false })"), 0);
   p.run("S.day.spent = 160"); assert.equal(p.run("clockLevel({ cave: false })"), 6);   // 6: the one-step dark table, not the storm table (at 48 px that steps the land as far as dark2)
@@ -24,7 +24,7 @@ test("at night she draws through the dusk table (one step), not the night table"
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
   assert.ok(!/heroRm === 2/.test(src), "no dark2 exception for the explorer");
-  assert.match(src, /heroRm = heroRm0 === 5 \? 1 : heroRm0/);
+  assert.match(src, /heroRm = heroRm0 === 5 \? 6 : heroRm0/);
   assert.match(src, /playerArt\(P\.dir, pose, f2\)[^\n]*, heroRm\);/);
 });
 

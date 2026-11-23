@@ -605,7 +605,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
         if (!lut && !(veil && pt)) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
         const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
-        const dim = lut && !veil && (rm === 1 || rm === 2 || rm === 5) ? STONE_DIM.get(k) : null;   // the storm's and the night's own colour for a stone's warm top and amber veins
+        const dim = lut && !veil && (rm === 1 || rm === 2 || rm === 5 || rm === 6) ? STONE_DIM.get(k) : null;   // the storm's and the night's own colour for a stone's warm top and amber veins
         if (dim) { im.data[p] = dim >> 16; im.data[p + 1] = dim >> 8 & 255; im.data[p + 2] = dim & 255; im.data[p + 3] = 255; continue; }
         if (n === undefined) { let bd = 1e9; n = 0; for (let j = 1; j < pt.rgb.length; j++) { const q = pt.rgb[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
         let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : pt.tabs.dark[c];
@@ -6554,7 +6554,7 @@ function drawPatchBody(t) {
   const heroDraw = (ox = 0, oy = 0) => {
     RT.heroN = (RT.heroN || 0) + 1;   // the pawn's draws this frame (read by the slide test)
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    const heroRm0 = spriteRm(P.x, P.y), heroRm = heroRm0 === 5 ? 1 : heroRm0;   // at night she draws through the dusk table (one step), not the night table, so she does not vanish (art director 2026-11-22 18:06); beasts and props stay on night
+    const heroRm0 = spriteRm(P.x, P.y), heroRm = heroRm0 === 5 ? 6 : heroRm0;   // at night she draws through the dusk table (one step), not the night table, so she does not vanish (art director 2026-11-22 18:06); beasts and props stay on night
     blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm);
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx + ox, SY(PY(RT.pl) - 6) + oy); };
   // Near a place's edge, and through a crossing slide, the pawn is kept out of the place's picture: the slide layers are pictures of the place, so a pawn in them would show twice. It is drawn once on top instead (after the picture is kept, or by drawSlide riding between its two spots).

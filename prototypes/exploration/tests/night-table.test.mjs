@@ -21,7 +21,7 @@ test("night table: the page's REMAP_PLACE carries it at 5, one entry per colour,
 
 test("night grass is a cool dark green (about 26,50,56): darker than dark2 grass, cooler, and below dusk", () => {
   const p = page();
-  const rgb = get(p, "RGB"), night = get(p, "REMAP_PLACE[5]"), dusk = get(p, "REMAP_PLACE[1]"), dark2 = get(p, "DARK2");
+  const rgb = get(p, "RGB"), night = get(p, "REMAP_PLACE[5]"), dusk = get(p, "REMAP_PLACE[6]"), dark2 = get(p, "DARK2");
   const grass = rgb.findIndex(c => c.join() === "92,187,76");   // the page's meadow grass (day)
   assert.ok(grass > 0);
   const n = rgb[night[grass]], d = rgb[dark2[grass]], u = rgb[dusk[grass]];
@@ -33,7 +33,7 @@ test("night grass is a cool dark green (about 26,50,56): darker than dark2 grass
 
 test("every colour is darker at night than at dusk and than by day; the lightest stay the lightest", () => {
   const p = page();
-  const rgb = get(p, "RGB"), night = get(p, "REMAP_PLACE[5]"), dusk = get(p, "REMAP_PLACE[1]");
+  const rgb = get(p, "RGB"), night = get(p, "REMAP_PLACE[5]"), dusk = get(p, "REMAP_PLACE[6]");
   // (the palette's darkest night colour, #141b1b, is the floor: the storm table's own near-black ink for the darkest colours is not a colour night can match)
   let worse = 0; for (let i = 1; i < rgb.length; i++) if (lum(rgb[night[i]]) > 26 && (lum(rgb[night[i]]) > lum(rgb[dusk[i]]) + 0.5 || lum(rgb[night[i]]) > lum(rgb[i]) + 0.5)) worse++;
   assert.equal(worse, 0);
