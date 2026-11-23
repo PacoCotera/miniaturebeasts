@@ -50,7 +50,7 @@ try {
   // the clip as a frame strip: ~30 actions across the dusk change (light 140 -> 170) at 390, one frame at rest after each action, then one Wait caught every ~100 ms mid-glide
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, hasTouch: true });
   const page = await ctx.newPage(); const f = await setup(page); mkdirSync(`${out}/frames`, { recursive: true });
-  const clip = { x: 36, y: 106, width: 317, height: 30 };
+  const clip = { x: 36, y: 100, width: 317, height: 42 };
   await f.evaluate(() => { window.__mb.S.day.spent = 140; }); await page.waitForTimeout(1000);
   await page.screenshot({ path: `${out}/frames/a-00.png`, clip });
   for (let i = 1; i <= 30; i++) { await f.evaluate(() => window.__mb.waitTick("map")); await page.waitForTimeout(700); await page.screenshot({ path: `${out}/frames/a-${String(i).padStart(2, "0")}.png`, clip }); }

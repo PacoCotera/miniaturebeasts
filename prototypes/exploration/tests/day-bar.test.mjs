@@ -34,3 +34,16 @@ test("reduced motion: the strip is instant", () => {
   assert.equal(p.run("dayBarPos()"), 40);
   assert.equal(p.run("DB.dur"), 0);
 });
+
+test("day-bar-2: the current part swaps at the glide's midpoint (130 ms of 260); instant with reduced motion", () => {
+  const p = start();
+  p.run("RM.matches = false; S.day.spent = 19; DB.pos = null; NOW = 1000; dayBarPos();");
+  assert.equal(p.run("partOfDay(DB.shown)"), "dawn");
+  p.run("S.day.spent = 20; NOW = 2000;"); p.run("dayBarPos()");
+  assert.equal(p.run("DB.dur"), 260);
+  assert.equal(p.run("partOfDay(DB.shown)"), "dawn", "at the start of the glide the old part is still current");
+  p.run("NOW = 2100;"); p.run("dayBarPos()"); assert.equal(p.run("partOfDay(DB.shown)"), "dawn", "100 ms: before the midpoint");
+  p.run("NOW = 2131;"); p.run("dayBarPos()"); assert.equal(p.run("partOfDay(DB.shown)"), "morning", "after the midpoint: the new part");
+  p.run("NOW = 3000; dayBarPos(); RM.matches = true; S.day.spent = 75; NOW = 3001;"); p.run("dayBarPos()");
+  assert.equal(p.run("DB.shown"), 75, "reduced motion: instant");
+});
