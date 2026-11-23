@@ -256,7 +256,7 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
@@ -2488,10 +2488,37 @@ function keepStill(c) {
   const ex = S.exp, live = curLive(), HABIT = ['shake', 'glow', 'full', 'curl', 'hab'], sig = () => live.cr.filter(q => HABIT.includes(q.st)).map(q => q.id).join(','), rainNow = () => { const l = curLay(); return !!(S.exp && !l.cave && stormRain(l.cell % MW)); };
   const e5 = ex.stats.e5 || (ex.stats.e5 = { notes: {}, circles: 0, backsOff: 0, heard: 0, gone: 0, settled: 0, crowded: 0, holds: 0 }); e5.holds++;
   if (live.cr.some(q => q.hb && !q.hide)) { waitTick('patch'); ex.stats.holdLight = (ex.stats.holdLight || 0) + 1; ex.lastHold = { n: 1, why: 'habit' }; return ex.lastHold; }   // while she plays a habit a hold is one beat (W4)
+  const camp = campRest();
+  if (camp) return campHold(camp, () => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sig(), sh0 = ex.shield; waitTick('patch'); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sig() !== sig0, warn: !!S.exp && isWarned(), plate: !!S.exp && ex.shield < sh0 }; }, () => c.ease | 0);
   const r = holdRun(() => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sig(); waitTick('patch'); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sig() !== sig0 }; }, () => c.ease | 0);
   ex.stats.holdLight = (ex.stats.holdLight || 0) + r.n; ex.lastHold = r;
   if (S.exp) fxMsg(WORDS.ease.hold[r.why], 2);
   return r;
+}
+// Rest at camp (rest-at-camp-1): at the flag or a lit outpost, from dawn through the afternoon, a hold runs to the next part's first light; { name, left } or null (dusk, night and away from camp: ten as built)
+function campRest() { return S.exp && !S.exp.ending && canSend() ? restTarget(S.day.spent) : null; }
+const campLabel = (plain, to) => { const c = campRest(); return c ? to(c.name) : plain; };   // the label at camp by day names where the hold runs to
+// a strike warned in the place or on the map cell (marked an action ahead)
+function isWarned() { const ex = S.exp, live = ex.patch ? curLive() : null; return !!((live && live.strike) || ex.mstrike || ex.stray); }
+// the menu's Wait: at camp by day it holds like keeping still, with no wild one to face; each light is one built Wait
+function menuWait(scope) {
+  const ex = S.exp, camp = campRest(); if (!camp) return waitTick(scope);
+  const rainNow = () => { if (!S.exp) return false; const l = S.exp.patch ? curLay() : null; return !!(!(l && l.cave) && stormRain(cxy(S.exp.pos).x)); };
+  const sigNow = () => { const lv = S.exp.patch ? curLive() : null; return lv ? lv.cr.filter(q => ['shake', 'glow', 'full', 'curl', 'hab'].includes(q.st)).map(q => q.id).join(',') : ''; };
+  return campHold(camp, () => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sigNow(), sh0 = ex.shield; waitTick(scope); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sigNow() !== sig0, warn: !!S.exp && isWarned(), plate: !!S.exp && ex.shield < sh0 }; }, () => 0);
+}
+// A hold at camp is its Waits, run in slices of restSlice while the day bar glides, input locked until it ends (a whole part is 150 Waits: more than 200 ms of one task on a phone, measured in final.md).
+let restSlice = 10;
+function campHold(camp, wait, easeOf) {
+  const ex = S.exp; let total = 0, why = 'ten';
+  const finish = r => { ex.stats.holdLight = (ex.stats.holdLight || 0) + total; why = r.why; ex.lastHold = { n: total, why }; FX.lockUntil = 0; if (S.exp) fxMsg(WORDS.ease.hold[r.why], 2); };
+  const slice = () => {
+    if (S.exp !== ex) { FX.lockUntil = 0; return; }
+    const r = holdRun(wait, easeOf, Math.min(restSlice, camp.left - total)); total += r.n;
+    if (r.why === 'ten' && total < camp.left) { FX.lockUntil = performance.now() + 200; setTimeout(slice, 16); } else finish(r);
+  };
+  slice();
+  return { n: total, why };
 }
 // ---------- W4: habits that play, notes by range, the card line, samples (src/habits.mjs; walk-design-1 W4) ----------
 // A named Loika's habit plays at its haunt when its condition comes in its routine's part of day, after its tell, over four beats: c.hb = { k, n, tell, pose, v (calm: the wary one's id), notes: { front|side: range } }.
@@ -3329,7 +3356,7 @@ function patchAction() {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp) && !o.c.ind) return { label: 'Unknown creature', run: null };
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
-    if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: WORDS.ease.keep, run: () => keepStill(o.c) };
+    if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
     if (!S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };   // a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
@@ -3381,7 +3408,7 @@ function patchAction() {
     return { label: WORDS.press.dim, dim: true, run: () => { FX.bumpAt = NOW; fxMsg(WORDS.press.bump, 2); } };   // [copy]
   }
   const idle = idleAct(P, lay), wild = idle === NOTHING && !fruit ? indInSight() : null;
-  return wild ? { label: NOTHING.label, run: () => keepStill(wild) } : idle;   // walk W3: keeping still with a named Loika in sight is the one act that holds
+  return wild ? { label: campLabel(NOTHING.label, WORDS.ease.keepTo), run: () => keepStill(wild) } : idle;   // walk W3: keeping still with a named Loika in sight is the one act that holds
 }
 // What the facing tile offers a fruit to be pressed on: 'stone' (a storm stone, a stone prop, a cliff face, a cave wall), 'tree' (a trunk, a fruit tree), or null.
 // Never read from T.ROCK: the adapter stamps it on every blocking prop, bush and closed side. The mask is lay.press (1 stone, 2 tree).
@@ -7650,8 +7677,8 @@ function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
-  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz)]).concat(base);
-  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
+  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)]).concat(base);
+  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'sealed' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   if (from === 'setup' && !S.exp) return (openAlone() ? [] : [{ id: 'mibis', label: 'Mibis' }]).concat([{ id: 'worldmap', label: 'Full map' }, { id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
@@ -8476,10 +8503,10 @@ function act(k, mode) {
       break;
     case 'menu': { const items = menuItems(), n = items.length; if (k !== 'confirm') S.ui.nwArm = 0;
       // while waiting the menu is folded to the bottom strip: Confirm waits again, Back or the pad bring the full menu back
-      if (S.ui.waiting) { if (k === 'confirm') { waitTick(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; } else S.ui.waiting = 0; break; }
+      if (S.ui.waiting) { if (k === 'confirm') { menuWait(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; } else S.ui.waiting = 0; break; }
       if (k === 'up' || k === 'down') { const d = k === 'up' ? n - 1 : 1; do S.ui.menuSel = (S.ui.menuSel + d) % n; while (items[S.ui.menuSel].dis); }   // a dimmed row keeps its place but focus skips it
       else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
-        if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
+        if (id === 'wait') { menuWait(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'look') { S.phase = 'patch'; startView('look', curLay()); }   // Look over the place: spends no action; ← closes
         else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }

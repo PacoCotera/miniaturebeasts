@@ -54,7 +54,7 @@ export const stayLeft = (env, c, P) => (c.ease >= 3 || cheb(P, c) > STAY_NEAR ? 
 
 // Keeping still as one act (hold ✓): Waits run until her ease changes, a tell starts, the weather or the part of day turns, or ten light have gone. `wait()` spends one light and returns what turned:
 // { tell, weather, part, over }. Returns { n, why }.
-export function holdRun(wait, easeOf) {
+export function holdRun(wait, easeOf, max = HOLD_MAX) {
   const e0 = easeOf(); let n = 0;
   for (;;) {
     const r = wait() || {}; n++;
@@ -63,6 +63,8 @@ export function holdRun(wait, easeOf) {
     if (r.tell) return { n, why: 'tell' };
     if (r.weather) return { n, why: 'weather' };
     if (r.part) return { n, why: 'part' };
-    if (n >= HOLD_MAX) return { n, why: 'ten' };
+    if (r.warn) return { n, why: 'warn' };   // rest at camp: a strike warned in the place or on the map cell
+    if (r.plate) return { n, why: 'plate' };   // rest at camp: a plate was lost
+    if (n >= max) return { n, why: 'ten' };
   }
 }
