@@ -46,6 +46,7 @@ jobs:
             hardware
             v1/native/vendor
             art/companion-48
+            art/day-dial
             art/places
             art/device-buttons
             art/station-masters
@@ -241,6 +242,7 @@ jobs:
             hardware
             v1/native/vendor
             art/companion-48
+            art/day-dial
             art/places
             art/device-buttons
             art/station-masters
