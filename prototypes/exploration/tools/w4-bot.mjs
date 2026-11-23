@@ -69,9 +69,11 @@ function botPage(A) {
   if (win) events.push({ k: 'calm', at: win.from + 4 });
   { let sl = null; for (let T = 150; T < DAY.light - 6 && sl == null; T++) { const h = hauntAt(c0.ind.hs, c0.ind.doings, dayAt(T)); if (h && h === c0.ind.hs.bed) sl = T; } if (sl != null) events.push({ k: 'sleep', at: sl + 2 }); }
   events.sort((a, b) => a.at - b.at);
+  // a careful player's first act: leave her dawn spot at once (six tiles off), before waiting anywhere (seed 90: idling at the spawn within 2 tiles of her haunt was a heard step, then gone)
+  { const rp0 = bfs({ x: P.x, y: P.y }, (x, y) => { const cc = her(); return cc && cheb({ x, y }, cc) >= 6; }, () => false); if (rp0) { out.events.push('retreat ' + rp0.length); for (const t of rp0) { if (over()) break; stepTo(t); } } }
   out.plan = events.map(e => e.k + '@' + e.at);
   const freeBy = e => e.at - tellOf(c0.ind.doings) - 12, spotOf = e => { const c = her(); return c ? herSpot(c, e.at) || { x: c.x, y: c.y } : null; };
-  const afterMoment = (nextE) => { if (READ && nothingYet()) tryRead('after a moment', nextE ? freeBy(nextE) : null, nextE ? spotOf(nextE) : null); };   // a moment has gone by with nothing: read what she left, if there is time before the next
+  const afterMoment =(nextE) => { if (READ && nothingYet()) tryRead('after a moment', nextE ? freeBy(nextE) : null, nextE ? spotOf(nextE) : null); };   // a moment has gone by with nothing: read what she left, if there is time before the next
   for (let ei = 0; ei < events.length; ei++) {
     const e = events[ei], nextE = events[ei + 1];
     if (over()) break;
@@ -99,9 +101,10 @@ function botPage(A) {
       const p2 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, cc) <= 2 && !heardAtTile(cc, x, y, spent()) && stayAtTile(cc, x, y, spent()) >= 5, (x, y) => heardAtTile(cc, x, y, spent()));
       if (p2 && p2.length <= 4) for (const t of p2) { if (!cc.hb) break; stepTo(t); }
     }
-    // note it, in front of her
-    for (let n = 0; n < 6 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; faceHer(hc);
-      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() }); break; } } else wait(); }
+    // note it, in front of her (she is not always where the haunt was read to be: when the note is not offered, step one unheard tile nearer, as a player would; seed 159 day 2)
+    const closeIn = hc => { const want2 = Math.max(3, cheb(P, hc) - 1), p3 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, hc) <= want2 && !heardAtTile(hc, x, y, spent()), (x, y) => heardAtTile(hc, x, y, spent())); if (!p3 || !p3.length || cheb(P, hc) <= 3) return false; return stepTo(p3[0]); };
+    for (let n = 0; n < 10 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; faceHer(hc);
+      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() }); break; } } else if (!closeIn(hc)) wait(); }
     // let the play end
     for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; wait(); }
     afterMoment(nextE);   // also when the moment played and no note came of it
