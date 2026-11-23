@@ -4293,6 +4293,118 @@
    "sha256": "53d05416014431e7d194af67e648e55a00f1d37e31c58f61b0fddd89ea1976d2"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "aefcfd2a07",
+   "path": "prototypes/exploration/index.html#dayPic/afternoon",
+   "sha256": "5038067d74bbf58014fb8eef481c74e5a7af1c5fd3a82593b3156cc6ffdc9af5"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "b842e156ba",
+   "path": "prototypes/exploration/index.html#dayPic/afternoon",
+   "sha256": "6bb481cffc02e3874d44ac5d39d08b102d08a89e392792debbf2155ecad5aba9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "d0f6911e75",
+   "path": "prototypes/exploration/index.html#dayPic/dawn",
+   "sha256": "8184343a2214d9c7b0e8daa1bcbc6866e5a83f1b92654a4d8ba7d382c0a5c895"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "be14733cf5",
+   "path": "prototypes/exploration/index.html#dayPic/dawn",
+   "sha256": "85ef4c1038cfe0f18d611935d1f3f869393d908b96f838b2f1887f5e9bb6a6ab"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "44c846e058",
+   "path": "prototypes/exploration/index.html#dayPic/dusk",
+   "sha256": "50430f7728c3ae010e06ea019b56e06139efcae1d383e378804abbcd9c25f0c9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "c5e1c25f6e",
+   "path": "prototypes/exploration/index.html#dayPic/dusk",
+   "sha256": "89505937f7aa5aa88c53cbf5669968076f6603c66ae7cde100d5c25bdbbf8098"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "e888a73ecb",
+   "path": "prototypes/exploration/index.html#dayPic/midday",
+   "sha256": "021e7d17b64679c80c9440b96278fbc23babdedcaadc9b73cb1948284497c48b"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "bf2e2840b7",
+   "path": "prototypes/exploration/index.html#dayPic/midday",
+   "sha256": "e1f7deefe239d69b0c9bff80bf585dd4e0332f091e8aba476c3c218baa2db128"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "0dca3108bd",
+   "path": "prototypes/exploration/index.html#dayPic/morning",
+   "sha256": "194042856c5eee726e1d1ad4ac76a5acdc24fcd8a36d8665375cc7e1f87de461"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "cab85581e9",
+   "path": "prototypes/exploration/index.html#dayPic/morning",
+   "sha256": "5de6d58b78604254cdfea509a7516c2d5a280b0f0b1754f736df19c0d9b299dd"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "ba19e2e9d6",
+   "path": "prototypes/exploration/index.html#dayPic/night",
+   "sha256": "2f7cdbbd98139e6bf84d9ee06429b15cf0bf5cb1434dcc37f099327f29fbf568"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "c41026351e",
+   "path": "prototypes/exploration/index.html#dayPic/night",
+   "sha256": "e61a8ed322f0dcbf910ab6555b293668a98d6626a33fb312bc18dd0811dc1fe6"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "5487091ba2",
+   "path": "prototypes/exploration/index.html#waterEdge/inner",
+   "sha256": "3bada6a573b5b17eededa74a8be6ed0431c39522b753765b3c9b164fc8ff3725"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "9197e178fe",
+   "path": "prototypes/exploration/index.html#waterEdge/outer",
+   "sha256": "0b80544e7a1125ae62c234641366460b59c89101f3e0c8ca2d56453ea57e1181"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "6d4259b3f1",
+   "path": "prototypes/exploration/index.html#waterEdge/run_a",
+   "sha256": "0e62be5ec036e922edbbb485f2e66060ebe603732a21173858808e963ebe9d10"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "82c8c57c63",
+   "path": "prototypes/exploration/index.html#waterEdge/run_b",
+   "sha256": "4c3fa53808fa2ef88adeaa26581109078088d485e06eb827f2c520beee71e42a"
+  },
+  {
    "class": "ui",
    "date": "2026-11-15",
    "id": "fe2dabe776",
