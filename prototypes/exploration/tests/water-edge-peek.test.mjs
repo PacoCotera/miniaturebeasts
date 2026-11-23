@@ -48,7 +48,7 @@ test("the wide water beside a place meets the place's shallows in an irregular f
     for (let y = 70; y < 500; y += 6) { let f = -1; for (let x = x0; x < img.w; x++) if (deep(x, y)) { f = x; break; } if (f >= 0) firsts.push(f); }
     assert.ok(firsts.length > 40, "the deep is found in most rows: " + firsts.length);
     assert.ok(new Set(firsts).size >= 3, "the front takes at least 3 different depths over the rows: " + [...new Set(firsts)].join(","));
-    assert.ok(Math.max(...firsts) - Math.min(...firsts) >= 3, "the front is irregular, not straight: " + Math.min(...firsts) + ".." + Math.max(...firsts));
+    assert.ok(Math.max(...firsts) - Math.min(...firsts) >= 40, "water-edge-5: the front wanders by at least a tile (48 px), not a fringe on one axis: " + Math.min(...firsts) + ".." + Math.max(...firsts));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });
