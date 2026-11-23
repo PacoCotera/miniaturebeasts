@@ -2620,17 +2620,25 @@ function printMark(lay, stand, free) {
   for (let r = 0; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && clear(stand.x + dx, stand.y + dy)) return { x: stand.x + dx, y: stand.y + dy };
   return null;
 }
+// bug #119: the print's tile is chosen on the ground alone (no one standing there): hauntFree skips the tile the pawn or a creature stands on, so the mark jumped as they moved
+const printFree = lay => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !lay.feats.some(f => f.x === x && f.y === y);
 function printsHere() {
   const ex = S.exp; if (!ex || !ex.patch) return []; const lay = curLay(); if (lay.cave) return [];
   const live = curLive(), key = ex.patch.key, part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
-    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = hauntFree(lay, key, c), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
 }
 function printsToRead() {
   const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
   const hd = habDay();
   return printsHere().find(p => !hd[readKey(p.c.id, p.h)] && cheb(P, p.mark || p.stand) <= 1 && (p.c.gone || p.c.hide || cheb(p.c, p.stand) > 2)) || null;
+}
+const printsLine = p => { const W = WORDS.prints, name = habName(p.c); return p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part]); };
+// bug #122: prints already read stay on the ground; ✓ beside them says again when she was there (no light spent), never a Wait
+function printsReadNear() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
+  return printsHere().find(p => p.mark && cheb(P, p.mark) <= 1) || null;
 }
 function readPrints(p) {
   const ex = S.exp, W = WORDS.prints, c = p.c, name = habName(c);
@@ -2643,7 +2651,7 @@ function readPrints(p) {
     if (sm.length >= SATCHEL) drop = WORDS.w5.dropFull;
     else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1 }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
   }
-  fxMsg((p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part])) + drop + W.page, 3);
+  fxMsg(printsLine(p) + drop + W.page, 3);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
 }
@@ -3294,6 +3302,7 @@ function patchAction() {
   ACT_AT = f;
   { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => noteHabit(nt) }; } }   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
   if (!o) { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // W4 round 2: her prints at a haunt she has left
+  if (!o) { const pr = printsReadNear(); if (pr) { ACT_AT = { x: pr.mark.x, y: pr.mark.y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => fxMsg(printsLine(pr), 3) }; } }   // bug #122: a print already read shows its line again, free
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
