@@ -4897,8 +4897,8 @@ function stoneArt(lit, cave, fr, warm, small, tall, body) {
   return propPiece(lit ? 'crystals-lit' : 'crystals-dim');   // the cave's crystals: the painted dim and lit pictures
 }
 // The ground shadow under a field stone in the walk (bug #30): art/stone/stone-shadow@48.png, the signed stone squeezed flat by recorded steps (runs/rock-shade-4/make-shadow.py), drawn before the stone, whose own picture is unchanged.
-// Its foot sits STONE_SHADOW_DY below the file's own foot offset: the stone's last 2 art rows hide its top, the lower 2 show under the base. In the storm and at night (rm) it takes the night green #36603a.
-const STONE_SHADOW_DY = 6, STONE_SHADOW_NIGHT = new Map();
+// Its foot sits STONE_SHADOW_DY below the file's own foot offset: the stone's body hides its top, the lower rows show under the base (3, not 6: at 6 the shade sat a row clear of the body and the stone floated, owner bug #126). In the storm and at night (rm) it takes the night green #36603a.
+const STONE_SHADOW_DY = 3, STONE_SHADOW_NIGHT = new Map();
 function stoneShadow(x, y, rm) {
   const p = STONE_PIECES.get('stone-shadow@48'); if (!p) return;
   let c = p.canvas(0);
