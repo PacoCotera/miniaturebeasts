@@ -1,0 +1,6 @@
+# embed-text-wrap-1: the standalone embed now fits its frame to the viewport (PR: see below)
+Cause: ?embed draws the screen as a fixed 450x600 canvas (setEmbedS scaled only for dpr), so a 390 px viewport clipped the right 60 px, message box text included ("on her p"); at 844x390 the 600 px height was clipped. The text wrap itself (400 px inside the 450 frame) was right; the frame was cut. Inside /play the host scales the frame, so it never showed there.
+Fix: setEmbedS in prototypes/exploration/index.html multiplies the scale by min(1, innerWidth/450, innerHeight/600). A viewport of 450x600 or more is untouched (the /play frame is exactly that). Test added in prototypes/exploration/tests/trips.test.mjs (390x844, 844x390, 450x600, 1000x900); that file's ?embed test passes.
+Stills (2x): tools/credit-runner/runs/embed-text-wrap-1/stills/{390x844,844x390}-{before,after}.png. The seeded start screen was used (no "Nettle" print state); it shows the frame whole after, the right edge cut before. Not shown: the exact "on her page" box; the whole frame now fits, so its text does too.
+Not checked: 844x390 leaves the frame at the left (390 px high, 292 px wide); centering was not asked for.
+Draft PR 505 with `hold` (branch build/embed-text-wrap-1, pushed); the scale moves what the embed draws, so the art director needs the stills.
