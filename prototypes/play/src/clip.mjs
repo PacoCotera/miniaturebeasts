@@ -4,6 +4,7 @@
 //                          last() packs the ring into an MP4, record()/stop() make a manual clip (up to 15 s). With no WebCodecs (Firefox on Android) only
 //                          record works, through canvas.captureStream() + MediaRecorder (a WebM clip).
 import { Output, Mp4OutputFormat, BufferTarget, EncodedVideoPacketSource, EncodedPacket } from "mediabunny";
+import { domToCanvas } from "modern-screenshot";
 import { ClipRing, LIMITS } from "./notes.mjs";
 import { webCodecsOk } from "./engine.mjs";
 
@@ -12,6 +13,24 @@ export const canRecordAny = () => canClip() || (typeof MediaRecorder !== "undefi
 
 export function shot(canvas) {
   return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("no picture"))), "image/png"));
+}
+
+// The whole page as a PNG (owner bug #123: a layout bug could not be sent, the note's picture was the canvas only): the page's DOM (frame, panels, buttons) drawn by modern-screenshot with the
+// frames left out, then each frame's own canvas pixels drawn where that canvas sits on the page. CSS pixels (scale 1), so a note stays small.
+export async function pageShot(doc, win = window) {
+  const w = win.innerWidth, h = win.innerHeight;
+  const base = await domToCanvas(doc.body, { width: w, height: h, scale: 1, backgroundColor: "#000", filter: (n) => n.tagName !== "IFRAME" && !(n.classList && (n.classList.contains("op-overlay") || n.classList.contains("op-panel"))) && !(n.hasAttribute && n.hasAttribute("data-radix-popper-content-wrapper")) });   // the Options panel opens beside the shot, so it is left out of it
+  const cv = doc.createElement("canvas"); cv.width = w; cv.height = h;
+  const g = cv.getContext("2d"); g.drawImage(base, 0, 0, w, h);
+  for (const fr of doc.querySelectorAll("iframe")) {
+    try {
+      const r = fr.getBoundingClientRect(), s = fr.contentWindow.innerWidth ? r.width / fr.contentWindow.innerWidth : 1, c = fr.contentDocument.getElementById("screen");
+      if (!c || !r.width || getComputedStyle(fr).visibility === "hidden") continue;
+      const cr = c.getBoundingClientRect();
+      g.drawImage(c, r.left + cr.left * s, r.top + cr.top * s, cr.width * s, cr.height * s);
+    } catch { /* a frame that is not ready is left out */ }
+  }
+  return new Promise((res, rej) => cv.toBlob((b) => (b ? res({ blob: b, w, h }) : rej(new Error("no picture"))), "image/png"));
 }
 
 const FPS = 30, KEY_EVERY = FPS;   // a key frame every second
