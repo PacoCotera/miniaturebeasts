@@ -578,7 +578,7 @@ async function loadVeilKit(base) {
 const STONE_COLOURS = [], STONE_PIECES = new Map();
 // The places' light tables, the one set the walk's props read (a prop in a dark, stormy or foggy place goes through the table its place's ground goes through, so the walk and the places never disagree):
 // the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
-const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
+const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'dark'], PT = { ts: null, rgb: null, tabs: null };
 function placeTables() {
   const ts = PL.ts; if (!ts) return null;
   if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
@@ -1010,7 +1010,7 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
-const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 2, dusk: 1 }[dayPart()] || 0;   // the place's light from the clock: night draws through dark2, dusk through the one-step table (a cave keeps its own light)
+const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 2, dusk: 5 }[dayPart()] || 0;   // the place's light from the clock: night draws through dark2, dusk through the one-step table (a cave keeps its own light)
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
@@ -4449,12 +4449,13 @@ function buildShadeWash() {
 function nearestCore(r, g, b, n = PALETTE.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
 buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
-const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
+const REMAP = [null, DARK, DARK2, FOGLUT, FADE, DARK];   // 5: the clock's dusk, the one-step dark table. A level of its own: at 48 px the place's storm table steps the greens as far as dark2, so dusk through it drew the same land as night
+const stormGrade = lv => lv === 5 ? 1 : Math.max(1, lv);   // under a storm the land takes the storm table, a dusk or night clock never lighter than it
 // The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
 const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
-const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE];
+const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, DARK];
 // The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
-const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE];
+const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, DARK];
 REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
@@ -6406,8 +6407,8 @@ function drawPatchBody(t) {
   const see = (x, y) => inS(x, y) && shown(x, y);   // the veil hides what stands on a tile until a Call
   // a tile's light without the fog: 1 under the storm or inside the approaching band's columns, else 0 (the fog edge's clear side takes this)
   const clockLv = clockLevel(lay);
-  const clearLight = (tx, ty) => { if (overcast) return Math.max(1, clockLv);
-    if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? Math.max(1, clockLv) : clockLv; } return clockLv; };
+  const clearLight = (tx, ty) => { if (overcast) return stormGrade(clockLv);
+    if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : clockLv;
@@ -7093,8 +7094,8 @@ function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyon
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
     if (gap >= 0 && gap < 3) { darkW = (ts === 48 ? stormCols48(Math.round((3 - gap) * 20)) : Math.ceil((3 - gap) * STORM_K[ts])) * ts; darkLeft = st.dir > 0; } }   // as drawPatch counts the columns
   const clockLv = clockLevel(lay);
-  const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return Math.max(1, clockLv);
-    if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? Math.max(1, clockLv) : clockLv; } return clockLv; };
+  const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return stormGrade(clockLv);
+    if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
   return { ts, light, inS, see: (x, y) => inS(x, y) && unveiled(P.key, x, y) };
 }
 function warnPicPlace(x0, y0, a) {

@@ -14,7 +14,8 @@ const darker = (p, a, b) => { const lum = i => { const h = p.run(`RGB[${i}]`); r
 test("clockLevel: night is dark2 (2), dusk the one-step table (1), the day 0, a cave 0", () => {
   const p = start();
   p.run("S.day.spent = 30"); assert.equal(p.run("clockLevel({ cave: false })"), 0);
-  p.run("S.day.spent = 160"); assert.equal(p.run("clockLevel({ cave: false })"), 1);
+  p.run("S.day.spent = 160"); assert.equal(p.run("clockLevel({ cave: false })"), 5);   // 5: the one-step dark table, not the storm table (at 48 px that steps the land as far as dark2)
+  assert.equal(p.run("stormGrade(5)"), 1); assert.equal(p.run("stormGrade(2)"), 2); assert.equal(p.run("stormGrade(0)"), 1);
   p.run("S.day.spent = 190"); assert.equal(p.run("clockLevel({ cave: false })"), 2);
   assert.equal(p.run("clockLevel({ cave: true })"), 0);
 });

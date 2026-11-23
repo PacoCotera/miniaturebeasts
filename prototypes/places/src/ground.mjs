@@ -7,7 +7,7 @@ import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } fr
 import { BAYER4, eighthGrid, coverE, stormStep } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade.
-export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'];
+export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'dark'];
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]]; // N, NE, E, SE, S, SW, W, NW (view.mjs's order)
 
 const tableCache = new WeakMap();
