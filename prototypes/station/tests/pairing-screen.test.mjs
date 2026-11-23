@@ -85,6 +85,12 @@ test("item 7: her page shows the young's copies, a line a trait, as words only (
   const y = st.mibis.find((m) => m.id !== a.id), h = podsBuild(model(st, { page: y.id }), pods); assert.ok(/marking \d of 2 · eyes \d of 2$/.test(h.page.origin), "a mibi from the pairing reads the same way");
 });
 
+test("a pick with no one to pair with says so on the page (not 'No pods yet')", () => {
+  const { st, a } = world(31), alone = { ...st, mibis: st.mibis.filter((m) => m.id === a.id) };
+  const v = podsBuild(model(alone, { view: "pair", pair: { aId: a.id, bId: null } }), pods), t = v.page.scale.texts.map((x) => x.text);
+  assert.ok(t.includes("No partner at home yet."), t.join(" | ")); assert.equal(v.line.need, "No partner at home yet.");
+});
+
 test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and opens the nursery; ← goes to the mibi", () => {
   const { st, a, ps } = world(41), ui = { pods: {}, hab: { id: null }, screen: "habitat" }, { h, said } = fake(st, ui);
   openPair(h, a); assert.equal(ui.pods.view, "pair"); assert.equal(ui.pods.pair.bId, ps[0]); assert.equal(ui.screen, "pods");

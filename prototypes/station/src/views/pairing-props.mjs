@@ -48,6 +48,7 @@ export function pairView(view, m, spec, req) {
   text(Sg.plus, Z.plus.cx, Z.plus.baseline, Z.plus.role, "c", 40);
   const kinHead = b ? (R.raw ? S.kinshipWord(S.kinshipOf(st, a, b)) : "") : "";
   if (b && kinHead) text(kinHead, Z.kin.cx - Z.kin.w / 2, Z.kin.baseline, Z.kin.role, "c", Z.kin.w);
+  if (!b && !partners.length) text(Sg.noPartner, Z.kin.cx - Z.kin.w / 2, Z.kin.baseline, Z.kin.role, "c", Z.kin.w);   // round 2: a pick with no one to pair with (a young not yet grown) says so on the page, which has no foot line
   restLines.forEach((tx, i) => text(tx, Z.kin.cx - Z.kin.w / 2, Z.kin.baseline + 20 + i * Z.copies.pitch, Z.kin.role, "c", Z.kin.w));
   // the four examples (standing, grown, the ones new to you tagged), and where the young can land: the tint and shade bars with the parents' marks, the marking cards with their new tags (green)
   const bars = [], cards = [];
@@ -87,7 +88,7 @@ export function pairView(view, m, spec, req) {
   const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], stands, names, plates, bars, cards, ok: can ? Z.ok.key : null };
   const stage = req({ kind: "pairing", id: `pairing:${hash(JSON.stringify(pic))}`, ...pic });
   view.page = { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
-  view.line = { ok: can ? Sg.pairThem : null, back: S.cap(a.name), subject: b && R.a.resting ? R.a.rest : "", need: block ? S.cap(block) : x.refused ? S.cap(x.refused) : !b ? (partners.length ? "" : spec.strings.nursery.empty) : "" };
+  view.line = { ok: can ? Sg.pairThem : null, back: S.cap(a.name), subject: b && R.a.resting ? R.a.rest : "", need: block ? S.cap(block) : x.refused ? S.cap(x.refused) : !b ? (partners.length ? "" : Sg.noPartner) : "" };
   view.targets = [{ id: "rail.0", group: "rail", index: 0 }]; view.cur = "rail.0"; view.resolve = {}; view.first = 0;
   view.pairing = { aId: a.id, bId: b?.id ?? null, partners, can, block, readout: R, W, noStand };
   return view;
