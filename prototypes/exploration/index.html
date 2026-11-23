@@ -6275,10 +6275,10 @@ function peekWaterFront(r, dx, dy, Tp, key) {
     // the shallow tile's pixels in the place's own teal (the place's shallows read teal, the page's 32 px tile is river blue): river -> teal, sky -> aqua; the dark-teal shading is the palette's tealD,
     // then the deep is the block's own dark sea
     const shallow = buildTile(T.WATER, 0, 0, 0, 0), teal = c => c === C.river ? C.teal : c === C.sky ? C.aqua : c, deep = DARK[C.sea];
-    const mk = (mix, to, from) => { const cv = document.createElement('canvas'); cv.width = cv.height = Tp; const cg = cv.getContext('2d'), id = cg.createImageData(Tp, Tp), u = new Uint32Array(id.data.buffer);
+    const mk = (mix, to, from) => { const pb = new PB(Tp, Tp);
       for (let y = 0; y < Tp; y++) for (let x = 0; x < Tp; x++) { const c = shallow.p[((y * 32 / Tp) | 0) * 32 + ((x * 32 / Tp) | 0)]; if (c < 0) continue;
-        const q = RGB[mix && BAYER[(y & 3) * 4 + (x & 3)] < mix ? to : from == null ? teal(c) : from]; u[y * Tp + x] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
-      cg.putImageData(id, 0, 0); return cv; };
+        pb.set(x, y, mix && BAYER[(y & 3) * 4 + (x & 3)] < mix ? to : from == null ? teal(c) : from); }
+      return pb.canvas(0); };
     tiles = { shallow: mk(0), mid1: mk(7, C.tealD), mid2: mk(9, deep, C.tealD) }; PEEK_FRONT.set(ck, tiles);
   }
   g.imageSmoothingEnabled = false;
