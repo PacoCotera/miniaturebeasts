@@ -1,3 +1,4 @@
+// water-edge-4: the front is now the art director's signed 12 px edge pieces (art/water-edge/) laid on the place's last shallow column: a wavy lip up to 7 px deep, so the test asks for a few px of change, not tiles.
 // water-edge-3 (owner #110): holding an arrow against wide water east of a place slides the view over the water cell beyond. That cell is a flat block; its near edge is a shore-like front of the existing
 // shallow water tile (1 to 3 tiles deep, row by row by seed) into the deep, so the shallow-to-deep edge is not one straight line. Real Chromium (PW_DIR names the folder holding node_modules/playwright; without it the test is skipped).
 import test from "node:test";
@@ -47,7 +48,7 @@ test("the wide water beside a place meets the place's shallows in an irregular f
     for (let y = 70; y < 500; y += 6) { let f = -1; for (let x = x0; x < img.w; x++) if (deep(x, y)) { f = x; break; } if (f >= 0) firsts.push(f); }
     assert.ok(firsts.length > 40, "the deep is found in most rows: " + firsts.length);
     assert.ok(new Set(firsts).size >= 3, "the front takes at least 3 different depths over the rows: " + [...new Set(firsts)].join(","));
-    assert.ok(Math.max(...firsts) - Math.min(...firsts) >= 20, "the front is irregular, not straight: " + Math.min(...firsts) + ".." + Math.max(...firsts));
+    assert.ok(Math.max(...firsts) - Math.min(...firsts) >= 3, "the front is irregular, not straight: " + Math.min(...firsts) + ".." + Math.max(...firsts));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });

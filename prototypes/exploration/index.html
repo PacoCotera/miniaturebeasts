@@ -6254,39 +6254,61 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     if (!S.revealed[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); continue; }
     const cs = Math.max(r.w, r.h); g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, cs, 0).canvas(0), r.x, r.y); g.restore();
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore();
-    if (G.land[c] === L.WATER && !dx !== !dy) { g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); peekWaterFront(r, dx, dy, Tp, key); g.restore(); }
   }
 }
-// water-edge-3 (owner #110: "that transition between shallow water and deep water needs improvement"): the wide water beside the place was a flat block that met the place's shallows in one straight line
-// the height of the view. Now its near edge is a shore-like front made of the existing water tile: row by row (one row = one tile of the peek) the shallow water tile (buildTile T.WATER, in the place's
-// teal) runs 1 to 3 tiles into the block, then two tiles that dither (the page's 4x4 Bayer) through the palette's dark teal into the deep (the block itself). The depth is a seeded walk of the cell's key
-// that never moves more than one tile between rows, so the front reads as a bank and not as noise. Drawn over the block's night rectangle; the shallow tiles take a lighter night than the deep.
-const PEEK_FRONT = new Map();
-function peekFrontDepths(key, n) {   // n rows: depth 1..3, one tile at most from the row before
-  const d = []; let cur = 1 + hash('peekfront', key, 0) % 3;
-  for (let k = 0; k < n; k++) { const s = hash('peekfront', key, k + 1) % 3; cur = Math.max(1, Math.min(3, cur + (s === 0 ? -1 : s === 1 ? 0 : 1))); d.push(cur); }
-  return d;
+// water-edge-4 (owner #110: "that transition between shallow water and deep water needs improvement"): where the place's shallows meet wide water beside it, the art director's four signed 12 px edge pieces
+// (art/water-edge/, mibi-art ledger 6d4259b3f1 run_a, 82c8c57c63 run_b, 5487091ba2 inner, 9197e178fe outer; byte for byte) lie ON the place's last shallow column, 12 screen px at a time at the signed mock's offset
+// (7 px inside the place, 5 over the block): run_a / run_b mixed by seed, the corner pieces where the edge turns. Only the pieces' flat shallow body (#1f9d8f) is left clear, so the place's own water shows under them,
+// and their deep (#142650) over the block, so the block's own water shows there. Nothing else on the water changes.
+const WATER_EDGE_FILES = ['run_a', 'run_b', 'inner', 'outer'], WATER_EDGE = { a: {}, b: {} }, WATER_EDGE_ORI = new Map();
+async function loadWaterEdgeArt() {
+  try {
+    if (typeof Image === 'undefined') return;
+    await Promise.all(WATER_EDGE_FILES.map(n => pixelsOf(vurl(new URL('./art/water-edge/', location.href).href + n + '.png')).then(async px => {
+      for (const v of ['a', 'b']) {
+        const d = new Uint8ClampedArray(px.data);
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i] === 0x1f && d[i + 1] === 0x9d && d[i + 2] === 0x8f) d[i + 3] = 0;   // the flat shallow body: the place's water shows
+          else if (v === 'b' && d[i] === 0x14 && d[i + 1] === 0x26 && d[i + 2] === 0x50) d[i + 3] = 0;   // the deep, where it lies over the block: the block's water shows
+        }
+        const c = document.createElement('canvas'); c.width = px.width; c.height = px.height;
+        c.getContext('2d').drawImage(await createImageBitmap(new ImageData(d, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+        WATER_EDGE[v][n] = c;
+      } })));
+  } catch (e) { console.warn('the water edge pieces did not load', e); }
 }
-function peekWaterFront(r, dx, dy, Tp, key) {
-  const along = dx ? r.h : r.w, n = Math.ceil(along / Tp), depth = peekFrontDepths(key, n);
-  const ck = ['pf', Tp, RT.remap.id].join('|');
-  let tiles = PEEK_FRONT.get(ck);
-  if (!tiles) {
-    // the shallow tile's pixels in the place's own teal (the place's shallows read teal, the page's 32 px tile is river blue): river -> teal, sky -> aqua; the dark-teal shading is the palette's tealD,
-    // then the deep is the block's own dark sea
-    const shallow = buildTile(T.WATER, 0, 0, 0, 0), teal = c => c === C.river ? C.teal : c === C.sky ? C.aqua : c, deep = DARK[C.sea];
-    const mk = (mix, to, from) => { const pb = new PB(Tp, Tp);
-      for (let y = 0; y < Tp; y++) for (let x = 0; x < Tp; x++) { const c = shallow.p[((y * 32 / Tp) | 0) * 32 + ((x * 32 / Tp) | 0)]; if (c < 0) continue;
-        pb.set(x, y, mix && BAYER[(y & 3) * 4 + (x & 3)] < mix ? to : from == null ? teal(c) : from); }
-      return pb.canvas(0); };
-    tiles = { shallow: mk(0), mid1: mk(7, C.tealD), mid2: mk(9, deep, C.tealD) }; PEEK_FRONT.set(ck, tiles);
+// a piece turned for its side: the files have the shallows west, the deep east; tr swaps x and y, fx / fy mirror (whole pixels)
+function weOriented(v, name, fx, fy, tr) {
+  const k = v + name + (fx ? 'x' : '') + (fy ? 'y' : '') + (tr ? 't' : ''); let c = WATER_EDGE_ORI.get(k);
+  if (!c) { const src = WATER_EDGE[v][name], n = src.width; c = document.createElement('canvas'); c.width = c.height = n;
+    const q = c.getContext('2d'); q.imageSmoothingEnabled = false; q.translate(fx ? n : 0, fy ? n : 0); q.scale(fx ? -1 : 1, fy ? -1 : 1); if (tr) q.transform(0, 1, 1, 0, 0, 0); q.drawImage(src, 0, 0);
+    WATER_EDGE_ORI.set(k, c); }
+  return c;
+}
+// ox, oy: the place picture's origin (bk.ox, bk.oy tiles in from the cell's), Tp: the screen px of one tile (12 in the peek, 48 in the walking view). Call it after the place's ground is drawn and before its props.
+function peekWaterEdge(lay, bk, ox, oy, Tp) {
+  const A = WATER_EDGE.a, B = WATER_EDGE.b;
+  if (Tp % 12 || !A.run_a || !A.run_b || !A.inner || !A.outer) return;
+  const cx = lay.cell % MW, cy = (lay.cell / MW) | 0, key = String(lay.cell), x0 = ox, y0 = oy, k = Tp / 12, nbx = bk.place.w * k, nby = bk.place.h * k;   // the place's picture (its apron tile included): its outer edge is where the block starts
+  const tileAt = (bx, by) => lay.tiles[Math.max(0, Math.min(lay.h - 1, ((by / k) | 0) + bk.oy)) * lay.w + Math.max(0, Math.min(lay.w - 1, ((bx / k) | 0) + bk.ox))];   // the apron takes its edge tile's kind
+  const deep = (ax, ay) => { const X = cx + ax, Y = cy + ay; if (X < 0 || Y < 0 || X >= MW || Y >= MH) return false; const c = Y * MW + X; return !!S.revealed[c] && !passable(c) && G.land[c] === L.WATER; };
+  const jobs = [];
+  for (let by = 0; by < nby; by++) for (let bx = 0; bx < nbx; bx++) {
+    const ex = bx === nbx - 1 ? 1 : bx === 0 ? -1 : 0, ey = by === nby - 1 ? 1 : by === 0 ? -1 : 0;
+    if ((!ex && !ey) || tileAt(bx, by) !== T.WATER) continue;
+    const dE = ex && deep(ex, 0), dV = ey && deep(0, ey), dD = ex && ey && deep(ex, ey);
+    const east = ex > 0 ? x0 + nbx * 12 - 7 : x0 - 5, south = ey > 0 ? y0 + nby * 12 - 7 : y0 - 5, mix = (hash('wedge', key, ex ? by : bx) % 2 ? 'run_b' : 'run_a');
+    if (dE && dV) jobs.push(['outer', ex < 0, ey < 0, false, east, south]);   // the shallows only in the corner, deep round the other two sides
+    else if (dE) jobs.push([mix, ex < 0, false, false, east, y0 + by * 12]);   // a column at the east or west: the files as they are, or mirrored
+    else if (dV) jobs.push([mix, false, ey < 0, true, x0 + bx * 12, south]);   // a row at the north or south: turned
+    else if (dD) jobs.push(['inner', ex < 0, ey < 0, false, east, south]);   // deep only past the corner
   }
-  g.imageSmoothingEnabled = false;
-  for (let k = 0; k < n; k++) for (let j = 0; j <= depth[k] + 1; j++) {
-    const px = dx > 0 ? r.x + j * Tp : dx < 0 ? r.x + r.w - (j + 1) * Tp : r.x + k * Tp, py = dy > 0 ? r.y + j * Tp : dy < 0 ? r.y + r.h - (j + 1) * Tp : r.y + k * Tp;
-    g.drawImage(j < depth[k] ? tiles.shallow : j === depth[k] ? tiles.mid1 : tiles.mid2, px, py);
-    if (j < depth[k]) { g.save(); g.globalAlpha = .2; R(px, py, Tp, Tp, C.night); g.restore(); }
-  }
+  if (!jobs.length) return;
+  g.save(); g.imageSmoothingEnabled = false; g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip();
+  for (const [n, fx, fy, tr, x, y] of jobs) g.drawImage(weOriented('b', n, fx, fy, tr), x, y);   // everywhere: the lip and band, the block's own water left clear
+  g.beginPath(); g.rect(x0, y0, nbx * 12, nby * 12); g.clip();
+  for (const [n, fx, fy, tr, x, y] of jobs) g.drawImage(weOriented('a', n, fx, fy, tr), x, y);   // over the place: the deep of the piece too
+  g.restore();
 }
 // The map's unseen land (src/landpaint.mjs): ink under sparse night dots, the Bayer matrix on the screen's pixels, so cells of unlike sizes join with no seam.
 function peekFog(x, y, w, h) { R(x, y, w, h, C.ink); ditherFill(x, y, w, h, 'night', 3); }
@@ -6306,7 +6328,7 @@ function drawWhole(t) {
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  if (wide) { clipView(); try { drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); } finally { g.restore(); } }
+  if (wide) { clipView(); try { drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); peekWaterEdge(lay, bk, ox, oy, Tp); } finally { g.restore(); } }
   else g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
@@ -6424,7 +6446,7 @@ function drawPatchBody(t) {
   // the edge peek (bug #58): the neighbours, as the call-hold draws them (veiled as they stand), on the view outside the place's picture. The ground is put with putImageData, which writes
   // transparent over anything under it, so the neighbours go after it and are clipped to outside the picture; the place, its props and the pawn slide with the same camera.
   if (bk && (po.x || po.y)) { g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.rect(bOrg.x, bOrg.y, bk.place.w * 48, bk.place.h * 48); g.clip('evenodd');
-    try { drawPeekNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, bOrg.x, bOrg.y, lay.w * 48, lay.h * 48, 48); } finally { g.restore(); } }
+    try { drawPeekNeighbours(RT.pkv && RT.pkv.key === P.key ? RT.pkv : (RT.pkv = { key: P.key, nb: new Map() }), lay, bOrg.x, bOrg.y, lay.w * 48, lay.h * 48, 48); } finally { g.restore(); } peekWaterEdge(lay, bk, bOrg.x, bOrg.y, 48); }
   if (!bk) for (let ty = r.ty0; ty <= r.ty1; ty++) for (let tx = r.tx0; tx <= r.tx1; tx++) {
     if (tx < 0 || ty < 0 || tx >= lay.w || ty >= lay.h) { R(W(tx * ts), H(ty * ts), ts, ts, C.void); continue; }
     if (lightAt) { const i = ty * lay.w + tx, L = lvAt(tx, ty);
@@ -8620,6 +8642,7 @@ const startLoads = () => {
   loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
   loadMomentArt();   // the art desk's painted stands for the care moments
   loadCareArt();   // the pixel desk's painted hearts for the bond
+  loadWaterEdgeArt();   // the art director's signed shallow-to-deep edge pieces (owner #110)
   loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 };
 if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page the release number is read first, so every fetch carries it
