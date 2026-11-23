@@ -20,8 +20,8 @@ for (const [n, want] of Object.entries(SIGNED)) {
 }
 
 test("the signed shas equal the ledger's (when the ledger is here)", (t) => {
-  const ledger = process.env.MB_LEDGER || "/home/mb/mb/mibi-art/boards/signed.jsonl";
-  if (!existsSync(ledger)) { t.skip("no ledger"); return; }
+  const ledger = process.env.MB_LEDGER;
+  if (!ledger || !existsSync(ledger)) { t.skip("no ledger here (set MB_LEDGER to the signed-pieces ledger file to run this check)"); return; }
   const rows = readFileSync(ledger, "utf8").split("\n").filter((l) => l.includes("#waterEdge/")).map((l) => JSON.parse(l));
   for (const n of Object.keys(SIGNED)) { const r = rows.filter((x) => x.slot === n).pop(); assert.ok(r, n + " is in the ledger"); assert.equal(r.sha256, SIGNED[n]); }
 });
