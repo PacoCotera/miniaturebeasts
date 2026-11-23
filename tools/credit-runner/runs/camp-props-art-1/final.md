@@ -1,0 +1,4 @@
+camp-props-art-1 (pixel, 0 MXN, hand pixel art by script, no model): frames camp-a-unlit, camp-b-lit, camp-c-lit (32x16) and bedroll (21x9) in runs/camp-props-art-1/frames/; sheet.png (1x and x4 beside the beacon) and placed.png (meadow/sand, day/dusk/night at x2). Branch build/camp-props-art-1, no PR, no game code.
+Night: the build darkens all pixels except the flame's three colours #e46d3a #e9a73c #ffad5d (the beacon's flame colours; cloth/lamp use none of them), frames B/C only; lamp glow stays a code effect.
+Not done: placed stills are composited swatches (flag stand-in drawn like the code icon; the signed flag is a code icon in index.html, not a file), NOT real /play stills at 390/522: no browser run here. Art desk to judge; the build step can shoot real stills.
+Scripts (tools-camp-*.py) replay the frames. No notes file existed for this job.
