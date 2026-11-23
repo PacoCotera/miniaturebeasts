@@ -100,7 +100,7 @@ WORDS.prints = {
   whenYday: { dawn: 'at first light yesterday', morning: 'yesterday morning', midday: 'at midday yesterday', afternoon: 'yesterday afternoon', dusk: 'at dusk yesterday', night: 'in the night' },
   line: (name, when) => name + ' was here ' + when,
   bolted: name => name + ' was here · she bolted',
-  page: ' · on her page',
+  page: '',   // bug #118: no screen shows a wild one's page yet (W6c); the old ' · on her page' returns with it
 };
 // [copy] W5 (walk-design-1): an empty haunt's drop, a wild one's own pod, the end of anonymous pods: working words for the copywriter.
 WORDS.w5 = {
