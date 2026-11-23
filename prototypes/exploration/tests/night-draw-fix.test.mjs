@@ -11,11 +11,11 @@ const shot = (p, spent) => { p.run(`S.day.spent = ${spent}; scr.px().fill(-1); R
 const darker = (p, a, b) => { const lum = i => { const h = p.run(`RGB[${i}]`); return Array.isArray(h) || ArrayBuffer.isView(h) ? h[0] + h[1] + h[2] : 0; };
   let n = 0, d = 0; for (let i = 0; i < a.length; i++) if (a[i] >= 0 && b[i] >= 0 && a[i] !== b[i]) { n++; if (lum(b[i]) <= lum(a[i])) d++; } return [n, d]; };
 
-test("clockLevel: night is dark2 (2), dusk the one-step table (1), the day 0, a cave 0", () => {
+test("clockLevel: night is the night table (5), dusk the one-step table (1), the day 0, a cave 0", () => {
   const p = start();
   p.run("S.day.spent = 30"); assert.equal(p.run("clockLevel({ cave: false })"), 0);
   p.run("S.day.spent = 160"); assert.equal(p.run("clockLevel({ cave: false })"), 1);
-  p.run("S.day.spent = 190"); assert.equal(p.run("clockLevel({ cave: false })"), 2);
+  p.run("S.day.spent = 190"); assert.equal(p.run("clockLevel({ cave: false })"), 5);
   assert.equal(p.run("clockLevel({ cave: true })"), 0);
 });
 

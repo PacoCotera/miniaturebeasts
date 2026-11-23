@@ -240,6 +240,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
+import { nightTable } from "./src/night.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
@@ -573,10 +574,11 @@ async function loadVeilKit(base) {
 const STONE_COLOURS = [], STONE_PIECES = new Map();
 // The places' light tables, the one set the walk's props read (a prop in a dark, stormy or foggy place goes through the table its place's ground goes through, so the walk and the places never disagree):
 // the screen colour at each index (the core 47 from the page, then the set's own) and the tile set's tables by name (storm, dark2, fog, fade, dark). Null until the places have loaded.
-const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'], PT = { ts: null, rgb: null, tabs: null };
+const PLACE_LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night'], PT = { ts: null, rgb: null, tabs: null };
 function placeTables() {
   const ts = PL.ts; if (!ts) return null;
-  if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map])); }
+  if (PT.ts !== ts) { PT.ts = ts; PT.rgb = RGB.slice(0, 48).map(c => c.slice()); ts.palette.forEach(c => PT.rgb.push([(c >> 16) & 255, (c >> 8) & 255, c & 255])); PT.tabs = Object.fromEntries(ts.lightTables.map(r => [r.name, r.map]));
+    const nm = nightTable(PT.rgb); while (nm.length < 256) nm.push(nm.length); PT.tabs.night = nm; ts.nightMap = nm; }   // the night's own colour table (places/src/lighttables.mjs nightTable), for the props and the baked places' ground
   return PT;
 }
 // The warm top of a warm stone goes to a dark warm in the storm and at night; the amber veins of a charged stone keep one lit step (the stone itself takes the places' grey-blue stone tones, lighttables STONE_TONES).
@@ -598,7 +600,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = (y * w + (flip ? w - 1 - x : x)) * 4, p = (y * w + x) * 4; if (!data[o + 3] || (chk && (x + y) % 2)) continue;
         if (!lut && !(veil && pt)) { im.data[p] = data[o]; im.data[p + 1] = data[o + 1]; im.data[p + 2] = data[o + 2]; im.data[p + 3] = 255; continue; }   // a thinned picture with no table keeps its own colours
         const k = data[o] << 16 | data[o + 1] << 8 | data[o + 2]; let n = near.get(k);
-        const dim = lut && !veil && (rm === 1 || rm === 2) ? STONE_DIM.get(k) : null;   // the storm's and the night's own colour for a stone's warm top and amber veins
+        const dim = lut && !veil && (rm === 1 || rm === 2 || rm === 5) ? STONE_DIM.get(k) : null;   // the storm's and the night's own colour for a stone's warm top and amber veins
         if (dim) { im.data[p] = dim >> 16; im.data[p + 1] = dim >> 8 & 255; im.data[p + 2] = dim & 255; im.data[p + 3] = 255; continue; }
         if (n === undefined) { let bd = 1e9; n = 0; for (let j = 1; j < pt.rgb.length; j++) { const q = pt.rgb[j], d = (q[0] - data[o]) ** 2 + (q[1] - data[o + 1]) ** 2 + (q[2] - data[o + 2]) ** 2; if (d < bd) { bd = d; n = j; } } near.set(k, n); }
         let c = lut ? lut[n] : n; if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : pt.tabs.dark[c];
@@ -677,7 +679,7 @@ function extendWithSet() {
   const dk = tab('dark'), lt = tab('light'), d2 = tab('dark2'), fg = tab('fog'), fd = tab('fade'), st = tab('storm');
   for (const [p, s] of fresh) { const at = t => t ? (t[s] > 0 ? pageOf(t[s]) : p) : p;
     DARK[p] = at(dk); LIGHT[p] = at(lt); DARK2[p] = at(d2); FOGLUT[p] = at(fg); FADE[p] = at(fd); PLACE_STORM[p] = at(st); PLACE_FOG[p] = FOGLUT[p]; PLACE_FADE[p] = FADE[p]; }
-  buildShadeWash(); SHADE_MOSS = null; DARK_RGB = null;
+  buildShadeWash(); buildNight(); SHADE_MOSS = null; DARK_RGB = null;
 }
 // The page's old core 51 is no art palette now. Its first 48 are the set's own core; its sage three (48-50) stay for the creatures' fog and wash (not art), and the one art exception is the split stone's found marks
 // (mark-splitstone-*) and the partner marks of the sage kinds (look-partner-*), which still hold the three sage tones: the art desk repaints those on the set, and the exception goes with them.
@@ -1005,7 +1007,7 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
-const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 2, dusk: 1 }[dayPart()] || 0;   // the place's light from the clock: night draws through dark2, dusk through the one-step table (a cave keeps its own light)
+const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 5, dusk: 1 }[dayPart()] || 0;   // the place's light from the clock: night draws through the night table (5, darker and cooler than dark2), dusk through the one-step table (a cave keeps its own light)
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
@@ -4404,12 +4406,15 @@ function buildShadeWash() {
 function nearestCore(r, g, b, n = PALETTE.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
 buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
-const REMAP = [null, DARK, DARK2, FOGLUT, FADE];
+const NIGHT = [];   // the night table (owner bug #113), over every colour in play: rebuilt with them (buildNight)
+const REMAP = [null, DARK, DARK2, FOGLUT, FADE, NIGHT];
 // The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
 const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
-const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE];
+const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, NIGHT];
 // The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
-const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE];
+const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, NIGHT];
+const buildNight = () => { NIGHT.length = 0; NIGHT.push(...nightTable(RGB)); PT.ts = null; };   // (PT.ts null: the props' set-space table is read again)
+buildNight();
 REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
 const lite = (c, n) => { for (let i = 0; i < (n || 1); i++) c = LIGHT[c]; return c; };
@@ -5382,7 +5387,7 @@ function atlasInstall(list, table, levelTone) {
   for (let i = 0; i < RGB.length; i++) { PLACE_STORM[i] = table && table.placeStorm ? table.placeStorm[i] : DARK[i]; PLACE_FOG[i] = table && table.placeFog ? table.placeFog[i] : FOGLUT[i]; PLACE_FADE[i] = table && table.placeFade ? table.placeFade[i] : FADE[i]; }
   PLACE_STORM.length = PLACE_FOG.length = PLACE_FADE.length = RGB.length;
   extendWithSet(); if (WART.src) walkRead(WART.src);   // the set's colours go back on after the atlas' own, and the walk art is read again on the new entries
-  buildShadeWash();   // the wash over every colour now in play
+  buildShadeWash(); buildNight();   // the wash and the night table over every colour now in play
   ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
   for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
   EDGE_TILE.clear();   // the edge canvases repeat their keys when a layer signature repeats; the place set (set.id 1) is fixed for the page's life, so a reinstall starts clean
@@ -6585,7 +6590,7 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   if (stepping && stepFr === 1 && HOPPER_SP.includes(c.sp)) dy -= 1;   // a hopper's step frame rises 1 px higher (art desk note)
   const a = stepping ? creatureArt(c.sp, 'step', stepFr) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0);   // the Tuliko airing its scales is its idle with the shake's jiggle
   blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
-  if (rm === 2) return;
+  if (rm === 2 || rm === 5) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
   if (b) blit(bubbleArt(b === 'fs' ? 'f' : b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
   if (b === '…') { const n = Math.min(4, Math.floor(c.calm / 2)); // four pips under it fill as it settles (8 quiet actions)
