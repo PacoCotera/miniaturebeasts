@@ -23474,7 +23474,7 @@ function shot(canvas) {
 }
 async function pageShot(doc, win = window) {
   const w = win.innerWidth, h2 = win.innerHeight;
-  const base = await domToCanvas(doc.body, { width: w, height: h2, scale: 1, backgroundColor: "#000", filter: (n2) => n2.tagName !== "IFRAME" });
+  const base = await domToCanvas(doc.body, { width: w, height: h2, scale: 1, backgroundColor: "#000", filter: (n2) => n2.tagName !== "IFRAME" && !(n2.classList && (n2.classList.contains("op-overlay") || n2.classList.contains("op-panel"))) && !(n2.hasAttribute && n2.hasAttribute("data-radix-popper-content-wrapper")) });
   const cv = doc.createElement("canvas");
   cv.width = w;
   cv.height = h2;
@@ -23688,7 +23688,7 @@ function createController(host) {
   const shotOf = async (kind) => {
     if (host.page) {
       try {
-        const p2 = await pageShot(document);
+        const p2 = await Promise.race([pageShot(document), new Promise((_, no) => setTimeout(() => no(new Error("page picture too slow")), 8e3))]);
         return { id: ++uid2, kind, blob: p2.blob, url: urlOf(p2.blob), w: p2.w, h: p2.h };
       } catch {
       }
@@ -23716,22 +23716,18 @@ function createController(host) {
     canClip,
     canRecordAny,
     // Options opened: take the played device's screen now and hold it (it is what the note starts with)
-    async hold() {
-      try {
-        held = await shotOf("whole");
-      } catch {
-        held = null;
-      }
+    // The panel never waits for it (the page picture can take seconds, or never end on a slow browser): New note waits for it, not Options.
+    hold() {
+      held = shotOf("whole").catch(() => null);
+      return held;
     },
     async newNote() {
+      const h2 = held ? await held : null;
+      held = null;
       if (!has()) {
         for (const it of st.items) drop(it);
-        emit({ items: held ? [held] : [], text: "", at: Date.now(), from: host.source() });
-        held = null;
-      } else if (held) {
-        drop(held);
-        held = null;
-      }
+        emit({ items: h2 ? [h2] : [], text: "", at: Date.now(), from: host.source() });
+      } else if (h2) drop(h2);
       emit({ open: true, full: "" });
       api.refreshContext();
     },
@@ -33479,7 +33475,8 @@ function mountOptions(root, cfg) {
     /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(SectionDialog, { c: notes })
   ] }));
   cfg.trigger.addEventListener("click", () => {
-    notes.hold().then(() => api.open());
+    notes.hold();
+    api.open();
   });
   return notes;
 }

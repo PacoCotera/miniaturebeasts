@@ -19,7 +19,7 @@ export function shot(canvas) {
 // frames left out, then each frame's own canvas pixels drawn where that canvas sits on the page. CSS pixels (scale 1), so a note stays small.
 export async function pageShot(doc, win = window) {
   const w = win.innerWidth, h = win.innerHeight;
-  const base = await domToCanvas(doc.body, { width: w, height: h, scale: 1, backgroundColor: "#000", filter: (n) => n.tagName !== "IFRAME" });
+  const base = await domToCanvas(doc.body, { width: w, height: h, scale: 1, backgroundColor: "#000", filter: (n) => n.tagName !== "IFRAME" && !(n.classList && (n.classList.contains("op-overlay") || n.classList.contains("op-panel"))) && !(n.hasAttribute && n.hasAttribute("data-radix-popper-content-wrapper")) });   // the Options panel opens beside the shot, so it is left out of it
   const cv = doc.createElement("canvas"); cv.width = w; cv.height = h;
   const g = cv.getContext("2d"); g.drawImage(base, 0, 0, w, h);
   for (const fr of doc.querySelectorAll("iframe")) {

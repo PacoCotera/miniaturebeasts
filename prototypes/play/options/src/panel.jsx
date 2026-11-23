@@ -12,7 +12,7 @@ export function mountOptions(root, cfg) {
   const notes = createController(cfg.host), api = { ...cfg, notes, open: () => {} };
   const css = document.createElement("style"); css.textContent = cropCss; document.head.appendChild(css);
   createRoot(root).render(<><Panel api={api} /><NoteDialog c={notes} /><SectionDialog c={notes} /></>);
-  cfg.trigger.addEventListener("click", () => { notes.hold().then(() => api.open()); });   // the screen as it was when Options opened is held for the note
+  cfg.trigger.addEventListener("click", () => { notes.hold(); api.open(); });   // the screen as it was when Options opened is held for the note; the panel opens at once, the page picture (seconds) is taken beside it, never before it
   return notes;
 }
 export { T };
