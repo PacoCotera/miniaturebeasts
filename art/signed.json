@@ -4330,6 +4330,13 @@
   {
    "class": "pixel",
    "date": "2026-11-23",
+   "id": "0928ab9c1e",
+   "path": "prototypes/exploration/index.html#dayPic/dusk",
+   "sha256": "5dd2718a626a3d4f8ca61e7e445209009a0d2d88b2ae80ccbbefb65b95fd2598"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
    "id": "c5e1c25f6e",
    "path": "prototypes/exploration/index.html#dayPic/dusk",
    "sha256": "89505937f7aa5aa88c53cbf5669968076f6603c66ae7cde100d5c25bdbbf8098"
