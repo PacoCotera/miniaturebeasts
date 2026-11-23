@@ -2666,14 +2666,24 @@ let MARKED = { key: '', ids: [] };
 // start-reach-1: the start places offered on the first set-out: each has a named Loika (a place with haunt sites) in tier 1's reach. A glint without one is not offered
 // (none qualify in a realm: all are offered as before). The places are not in yet: all of G.spawns.
 let STARTS = { key: '', list: [] };
-const namedAt = q => { try { return !!individualOf(q, layout(String(q.c))); } catch (e) { return false; } };
+let OWED_AT = new Set();   // boot-bake-1: cells a check below needed whose place the worker still owes (never baked on the page: one place is seconds of one task); asked of the worker, the check is made again when they come (PLACES.epoch)
+const namedAt = q => { try { const k = String(q.c); if (!placeHave(k)) { OWED_AT.add(+q.c); return false; } return !!individualOf(q, layout(k)); } catch (e) { return false; } };
+function askOwedAt() {   // the owed cells go to the worker, ahead of the background list; false when none is owed
+  if (!OWED_AT.size) return false;
+  const cells = [...OWED_AT]; OWED_AT = new Set();
+  readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), cells, { ctx: PL.ctx, first: true });
+  return true;
+}
 function startPlaces() {
   if (!PL.ready || !G || !G.spawns) return G ? G.spawns : [];
   const key = S.seed + '|' + S.cr.length + '|' + G.spawns.join(','); if (STARTS.key === key) return STARTS.list;
+  if (STARTS.owedKey === key && STARTS.owedEp === PLACES.epoch) return G.spawns.slice();   // asked, nothing new has come
   const wild = S.cr.filter(q => q.sp === 0 && !q.cv);
   const had = new Set(layoutCache.keys());   // a layout is cached with what the expedition shuts at that moment: the places built here for the check are dropped again
+  OWED_AT = new Set();
   const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c)) && namedAt(q)); });
   for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
+  if (OWED_AT.size) { askOwedAt(); STARTS.owedKey = key; STARTS.owedEp = PLACES.epoch; return G.spawns.slice(); }   // places still owed: all of G.spawns for now (not kept), made again when they come
   STARTS = { key, list: ok.length ? ok : G.spawns.slice() }; return STARTS.list;
 }
 function markedCandidates() {
@@ -2681,9 +2691,12 @@ function markedCandidates() {
   if (!PL.ready) return all.map(q => q.id);   // the places are not in yet: not kept
   const sp0 = startPlaces()[0];   // start-reach-2: the first OFFERED start, not G.spawns[0] (a dropped glint, as on seed 45, has no Loika in reach)
   const key = S.seed + '|' + S.cr.length + '|' + sp0; if (MARKED.key === key) return MARKED.ids;
+  if (MARKED.owedKey === key && MARKED.owedEp === PLACES.epoch) return all.map(q => q.id);   // asked, nothing new has come
+  OWED_AT = new Set();
   for (const t of [1, 2]) { if (ids.length || sp0 == null) break;   // tier 1's reach (days 1-2), then tier 2's if the first holds no named Loika
     const reach = new Set(reachCells(sp0, TIER[t].range, {}).map(String));
-    ids = all.filter(q => { if (!reach.has(String(q.c))) return false; try { return !!individualOf(q, layout(String(q.c))); } catch (e) { return false; } }).map(q => q.id); }
+    ids = all.filter(q => { if (!reach.has(String(q.c))) return false; return namedAt(q); }).map(q => q.id); }
+  if (OWED_AT.size) { askOwedAt(); MARKED.owedKey = key; MARKED.owedEp = PLACES.epoch; return all.map(q => q.id); }   // places still owed: all for now (not kept), made again when they come
   MARKED = { key, ids: ids.length ? ids : all.map(q => q.id) }; return MARKED.ids;
 }
 function wildMarked(c) {
