@@ -8478,7 +8478,7 @@ if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS)
 
 const footEl = document.getElementById('buildFoot');
 import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json(); g.setFrames([fr]);
-  WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id), read: ['coat'] });   // the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
+  WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id, g.markedLoika(seed, S.cr.filter(q => q.sp === 0 && !q.cv).map(q => q.id))), read: ['coat'] });   // one Loika of the realm shows it (wild-marking-named-2); the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
   WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && L.saddleShown(fr, m); };   // the Station's own drawnLooks on the partner: shown and read
   WILD.ok = true; }).catch(() => { });   // a failed load leaves every token plain and the walk goes on
 import('../play/src/footer.mjs').then(m => { window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl: '../../build.json' });   // the notice line: a save that cannot be written, a land that changed, a page that broke (the head's script saw it first)

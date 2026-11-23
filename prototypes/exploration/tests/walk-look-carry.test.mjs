@@ -85,7 +85,7 @@ test("a scripted day: a marked Loika plain until a mid note reads her coat, sadd
 
 test("the page loads the shared code (the one wildGenome and the Station's marksShown)", () => {
   const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  assert.match(src, /g\.wildGenome\(fr, seed, id\)/); assert.match(src, /L\.saddleShown\(fr, m\)/);
+  assert.match(src, /g\.wildGenome\(fr, seed, id, g\.markedLoika\(/); assert.match(src, /L\.saddleShown\(fr, m\)/);
 });
 
 test("only the saddle draws saddled: a spotted or banded marking stays the plain token (walk-look-carry-4)", () => {
