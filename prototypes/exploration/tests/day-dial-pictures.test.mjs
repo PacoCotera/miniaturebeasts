@@ -7,12 +7,12 @@ import { createHash } from "node:crypto";
 import { DAY, partOfDay } from "../src/words.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const SIGNED = { dawn: "85ef4c1038cfe0f18d611935d1f3f869393d908b96f838b2f1887f5e9bb6a6ab", morning: "5de6d58b78604254cdfea509a7516c2d5a280b0f0b1754f736df19c0d9b299dd",
-  midday: "e1f7deefe239d69b0c9bff80bf585dd4e0332f091e8aba476c3c218baa2db128", afternoon: "5038067d74bbf58014fb8eef481c74e5a7af1c5fd3a82593b3156cc6ffdc9af5",
-  dusk: "50430f7728c3ae010e06ea019b56e06139efcae1d383e378804abbcd9c25f0c9", night: "e61a8ed322f0dcbf910ab6555b293668a98d6626a33fb312bc18dd0811dc1fe6" };
+const SIGNED = { dawn: "8184343a2214d9c7b0e8daa1bcbc6866e5a83f1b92654a4d8ba7d382c0a5c895", morning: "194042856c5eee726e1d1ad4ac76a5acdc24fcd8a36d8665375cc7e1f87de461",
+  midday: "021e7d17b64679c80c9440b96278fbc23babdedcaadc9b73cb1948284497c48b", afternoon: "6bb481cffc02e3874d44ac5d39d08b102d08a89e392792debbf2155ecad5aba9",
+  dusk: "89505937f7aa5aa88c53cbf5669968076f6603c66ae7cde100d5c25bdbbf8098", night: "2f7cdbbd98139e6bf84d9ee06429b15cf0bf5cb1434dcc37f099327f29fbf568" };
 const sha = f => createHash("sha256").update(readFileSync(new URL("../../../art/day-dial/frames/" + f, import.meta.url))).digest("hex");
 
-test("each picture's sha256 is the signed one (ledger ids be14733cf5, cab85581e9, bf2e2840b7, aefcfd2a07, 44c846e058, c41026351e)", () => {
+test("each picture's sha256 is the signed one (14x14, ledger ids d0f6911e75, 0dca3108bd, e888a73ecb, b842e156ba, c5e1c25f6e, ba19e2e9d6)", () => {
   for (const [part, h] of Object.entries(SIGNED)) assert.equal(sha("day-" + part + ".png"), h, part);
   const ledger = "/home/mb/mb/mibi-art/boards/signed.jsonl";   // where the ledger is on the dev machine; CI has the pinned hashes above
   if (existsSync(ledger)) {
@@ -26,6 +26,6 @@ test("the bar loads those six files and draws the one partOfDay names, as loaded
   assert.deepEqual(DAY.parts.map(p => partOfDay(p === DAY.parts[0] ? 0 : DAY.parts.slice(0, DAY.parts.indexOf(p)).reduce((s, q) => s + q[1], 0))), DAY.parts.map(p => p[0]));
   assert.match(PAGE, /'day-' \+ n \+ '\.png'/, "the file is day-<part>.png");
   assert.match(PAGE, /const part = S\.exp && S\.day \? dayPart\(\) : null;/, "on a walk the part comes from dayPart; at the Station none");
-  assert.match(PAGE, /const pic = part && DAY_ART\[part\];\n\s+if \(pic\) g\.drawImage\(pic, x - 14, 10\); else blit\(art\('i-sun'/, "the picture by part, else the sun");
+  assert.match(PAGE, /const pic = part && DAY_ART\[part\];\n\s+if \(pic\) g\.drawImage\(pic, x - 17, 9\); else blit\(art\('i-sun'/, "the picture by part, else the sun");
   assert.ok(!/function dayPic|i-day-/.test(PAGE), "the greybox is gone");
 });
