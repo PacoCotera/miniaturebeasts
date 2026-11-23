@@ -144,6 +144,8 @@ export class BakedView {
   }
   // ---- sprites as cached canvases ----
   spriteCanvas(kind, frame, level, cut, cutKey) {
+    // owner bug #120 (AD's nit): the page installs the night table after the first sprites may be cached; a trunk cached before it stayed on dark2's brown while its neighbour drew the night table's navy
+    if (this.nightSeen !== this.ts.nightMap) { this.sprites.clear(); this.nightSeen = this.ts.nightMap; }
     const key = `${kind}|${frame}|${level}`;
     if (!cut && this.sprites.has(key)) return this.sprites.get(key);
     const s = this.ts.sprites[kind], T = tablesOf(this.ts), remap = level ? T[LEVELS[level]] : null;
@@ -164,7 +166,9 @@ export class BakedView {
     for (const p of cut ? cut.props : this.place.props) {
       const cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!this.landmarks.has(cy * w + cx) && !visible(px, py)) continue;
-      const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), lv = level(px, py);
+      const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), l0 = level(px, py);
+      // owner bug #120 round 2 (AD): a tree's trunk draws through the same dark2 level as its crown at night (one object, one light); other props keep the night table
+      const lv = l0 === NIGHT_LEVEL && s.canopy >= 0 ? CROWN_NIGHT_LEVEL : l0;
       items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv, null, undefined), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
     }
     return items;
