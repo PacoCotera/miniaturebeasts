@@ -173,7 +173,7 @@ export function deskLayers() {
       fill: { sheets: [fillFrom(MEADOW1, 'layers/grass-over.png', 'fill-grass.png')] },
       over: [
         { kind: 'bank', lowers: ['deep', 'water'], sheets: [signedSheet('over-grass-bank.png', `${MEADOW1.dir}/layers/grass-over.png`)] },
-        { kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path'], sheets: [place(MEADOW2, 'layers/grass-flat.png', 'over-grass-flat.png')] },
+        { kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path'], sheets: [rec({ commit: 'local' }, 'over-grass-flat.png', `${MEADOW2.dir}/layers/grass-flat.png (slots 3, 5 and 7 redrawn by hand, bug #116, signed by the art director, mibi-art ledger 35c04f589; the set folder's own file, never re-read from the desk's older one)`, readFileSync(path.join(SET_DIR, 'over-grass-flat.png')))] },
       ],
     },
     // the biome grounds, each a flat patch over the grass (and the other low ground)

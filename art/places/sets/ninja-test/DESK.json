@@ -2167,9 +2167,9 @@
     "sha256": "6f4479f6d25290a5f40329d68bfdf7a84ea0bcccc64b11464fae88224f6f6b11"
   },
   "over-grass-flat.png": {
-    "commit": "633e4d641",
-    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-flat.png",
-    "sha256": "185a7e7f130c5a36b32406969be915c804f2a23f1a53cc26d12057c8c1d70b55"
+    "commit": "local",
+    "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-flat.png (slots 3, 5 and 7 redrawn by hand, bug #116, signed by the art director, mibi-art ledger 35c04f589; the set folder's own file, never re-read from the desk's older one)",
+    "sha256": "7bd0344cd265ef44573170f24fef0c3c84e1189e36bc4eafd8a7672078f5d402"
   },
   "fill-drygrass.png": {
     "commit": "8c0ddc470",
