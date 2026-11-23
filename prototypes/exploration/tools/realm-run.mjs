@@ -162,16 +162,21 @@ export const PACE_SEEDS = [7, 13, 42];
 // Over seeds, two bots spend the same light (LIGHT, five days) on the page's own advance / startExpedition / endExpedition: one makes camp after every find-sized trip (CAMP_EVERY actions, then End expedition at the
 // flag), the other walks whole days (the night ends each). World turns per 1,000 light must agree within 5%. And a day spent on Wait alone gathers less than a day walked (first-trip-bot's walk over the whole reach), on every seed.
 //   node tools/realm-run.mjs --e6 [--from 1] [--to 200]
-export const E6 = { light: 1000, campEvery: 12 };
-export function e6Turns(seed, mode) {
-  const p = newPage(seed, { calm: true });
+export const E6 = { light: 1000, campEvery: 12, budgetMs: 150000, progressEvery: 100 };
+// A seed is capped at a wall-clock budget (E6.budgetMs per bot, default 150 s): past it the bot stops and returns unfinished:true with its turns and light so far, and the run logs and counts it.
+// Progress (seed, mode, light, turns, elapsed) goes to stderr every E6.progressEvery actions, so a long run shows it is alive.
+const e6Log = line => { process.stderr.write(line + "\n"); };
+export function e6Turns(seed, mode, { budgetMs = E6.budgetMs, log = e6Log } = {}) {
+  const p = newPage(seed, { calm: true }), t0 = Date.now();
   const open = () => { if (!p.S.exp) p.run("startExpedition('weather', G.spawns[0])"); };
-  const spend = () => { p.run("advance('map')"); p.pass(1200); };   // the night's end ends the walk on a timer: let it run
-  let sinceCamp = 0;
+  const spend = () => { p.run("advance('map')"); p.pass(1200); };   // the night no longer ends the walk (it goes on into the next day)
+  let sinceCamp = 0, n = 0;
   while (p.S.totalActions < E6.light) {
     open();
-    spend(); sinceCamp++;
+    spend(); sinceCamp++; n++;
     if (mode === "camp" && p.S.exp && sinceCamp >= E6.campEvery) { p.run("S.ui.lastPos = S.exp.pos; endExpedition('sent')"); sinceCamp = 0; }
+    if (n % E6.progressEvery === 0) log(`  e6 seed ${seed} ${mode}: light ${p.S.totalActions}/${E6.light}, world turns ${p.S.turn}, ${((Date.now() - t0) / 1000).toFixed(0)} s`);
+    if (Date.now() - t0 > budgetMs) return { turns: p.S.turn, light: p.S.totalActions, unfinished: true };
   }
   if (p.S.exp) p.run("endExpedition('sent')");
   return { turns: p.S.turn, light: p.S.totalActions };
@@ -179,8 +184,10 @@ export function e6Turns(seed, mode) {
 export function e6WaitVsWalk(seed) {
   const p = newPage(seed, { calm: true });
   p.run("startExpedition('weather', G.spawns[0])");
-  while (p.S.exp) { p.run("waitTick('map')"); p.pass(1200); }   // a day of Waits alone: the night ends it
-  const r = p.S.report, c = r && r.sealed, waited = c ? c.pods.length + c.e + c.d + c.s : 0;
+  // a day of Waits alone: the day's light (DAY.light) ends it. The night no longer ends the walk (owner 11-22: an expedition ends only when the player says so), so the loop stops when the first night has passed
+  // (ex.nights) instead of waiting for the walk to end, which it never does (it ran for ever: e6-overnight-1); a cap on the loop is a second guard
+  for (let i = 0; p.S.exp && !(p.S.exp.nights >= 1) && i < 2000; i++) { p.run("waitTick('map')"); p.pass(1200); }
+  const r = p.S.report, c = (r && r.sealed) || (p.S.exp && p.S.exp.cargo), waited = c ? (c.pods ? c.pods.length : 0) + c.e + c.d + c.s : 0;
   return { waited, light: p.S.totalActions, turn: p.S.turn };
 }
 
@@ -192,16 +199,19 @@ if (import.meta.url === new URL(process.argv[1], "file:").href) {
   const opts = { seed: arg("seed", RUN.seed), gen: arg("gen", RUN.gen), expeditions: arg("exp", RUN.expeditions), mibis: arg("mibis", 0), dock: arg("dock", 0), stopMid: a.includes("--stop-mid") };
   if (a.includes("--e6")) {
     const { firstTrip } = await import("./first-trip-bot.mjs");
-    const from = arg("from", 1), to = arg("to", 200); let tc = 0, tw = 0, lc = 0, lw = 0, worstDev = 0, bad = [];
+    const from = arg("from", 1), to = arg("to", 200); let tc = 0, tw = 0, lc = 0, lw = 0, worstDev = 0, bad = [], unfinished = [];
     for (let s = from; s <= to; s++) {
-      const c = e6Turns(s, "camp"), d = e6Turns(s, "day"); tc += c.turns; tw += d.turns; lc += c.light; lw += d.light;
+      const c = e6Turns(s, "camp"), d = e6Turns(s, "day");
+      if (c.unfinished || d.unfinished) { const row = `seed ${s}: unfinished (camp ${c.turns} turns / ${c.light} light${c.unfinished ? " cut" : ""}, day ${d.turns} / ${d.light}${d.unfinished ? " cut" : ""}): wall-clock budget ${E6.budgetMs / 1000} s`; unfinished.push(row); console.log(row); continue; }
+      tc += c.turns; tw += d.turns; lc += c.light; lw += d.light;
       const rc = c.turns / c.light * 1000, rd = d.turns / d.light * 1000, dev = Math.abs(rc - rd) / Math.max(rc, rd, 1e-9); worstDev = Math.max(worstDev, dev);
       const wv = e6WaitVsWalk(s), wk = firstTrip(s, { calm: true, all: true, budget: 200, oneDay: true }), walked = wk.gathered || 0;
       if (!(wv.waited < walked)) bad.push(`seed ${s}: waited ${wv.waited}, walked ${walked}`);
       console.log(`seed ${s}: camp ${c.turns} turns / ${c.light} light, day ${d.turns} / ${d.light}, dev ${(dev * 100).toFixed(1)}%; wait-only ${wv.waited}, walked ${walked}`);
     }
     const rc = tc / lc * 1000, rd = tw / lw * 1000;
-    console.log(`E6 seeds ${from}-${to}: camp bot ${rc.toFixed(3)} world turns per 1,000 light, whole-day bot ${rd.toFixed(3)}, difference ${(Math.abs(rc - rd) / Math.max(rc, rd) * 100).toFixed(2)}% (worst seed ${(worstDev * 100).toFixed(1)}%); wait-only below walked on every seed: ${bad.length === 0}`);
+    console.log(`E6 unfinished seeds: ${unfinished.length} of ${to - from + 1}`);
+    console.log(`E6 seeds ${from}-${to}:camp bot ${rc.toFixed(3)} world turns per 1,000 light, whole-day bot ${rd.toFixed(3)}, difference ${(Math.abs(rc - rd) / Math.max(rc, rd) * 100).toFixed(2)}% (worst seed ${(worstDev * 100).toFixed(1)}%); wait-only below walked on every seed: ${bad.length === 0}`);
     for (const b of bad) console.log("  FAIL " + b);
     process.exit(bad.length || Math.abs(rc - rd) / Math.max(rc, rd) > 0.05 ? 1 : 0);
   }
