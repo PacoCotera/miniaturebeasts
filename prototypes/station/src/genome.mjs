@@ -33,13 +33,14 @@ export const framesLoaded = () => FRAMES.size > 0;
 // moment the walk takes it; a pod or save without dv keeps the old draw, so an old save's Loikas are exactly the same.
 export const P_MARKING_ON = 0.35;
 export const DRAW_V = 2;
-const MARKING = "appearance.marking-switch";
+const MARKING = "appearance.marking-switch", LAYOUT = "appearance.marking-layout";
 export function podGenome(frame, gs, dv = 1, mark = false) {
   const r = rng(`pod:${frame.species.id}:${gs >>> 0}`);
   let g = null;
   for (let i = 0; i < 24; i++) {
     g = sampleIndividual(frame, r, { kind: "pod", seed: gs >>> 0 });
     if (dv >= 2 && frame.species.id === "S01" && g.loci[MARKING]) g.loci[MARKING] = [r() < P_MARKING_ON || mark ? "on" : "off", r() < P_MARKING_ON || mark ? "on" : "off"];
+    if (mark && dv >= 2 && g.loci[LAYOUT]) g.loci[LAYOUT] = ["saddle", "saddle"];   // wild-marking-named-3: the marked one shows the saddle, the walk's only token
     if (checkGenome(frame, g).length) continue;
     try { if (buildIndividual(frame, g).validation.status === "valid") return g; } catch { /* the next draw */ }
   }
