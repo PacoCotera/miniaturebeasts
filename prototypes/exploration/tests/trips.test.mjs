@@ -237,6 +237,14 @@ test("?embed shows the screen alone, fit() stands aside and the scale follows a 
     assert.deepEqual(set, { "--embed-s": want }, "dpr " + dpr);
   }
 
+  // owner #123: the play page's frame is 450 x k / dpr CSS px wide (300 x 400 at 1.5, 409 x 545 at 2.2): the screen fills it, not shrunk a second time
+  for (const [dpr, w, h, want] of [[1.5, 300, 400, "0.6666666666666666"], [2.2, 409, 545, String(2 / 2.2)]]) {
+    const set = {};
+    const t = load(["setEmbedS"], { window: { devicePixelRatio: dpr, innerWidth: w, innerHeight: h }, document: { documentElement: { style: { setProperty: (k, v) => { set[k] = v; } } } } });
+    t.setEmbedS();
+    assert.deepEqual(set, { "--embed-s": want }, "frame at dpr " + dpr);
+  }
+
   // a viewport smaller than the 450x600 frame shrinks the whole frame to fit (390x844 phone, 844x390 landscape), so the message box stays inside
   for (const [w, h, want] of [[390, 844, String(390 / 450)], [844, 390, String(390 / 600)], [450, 600, "1"], [1000, 900, "1"]]) {
     const set = {};
