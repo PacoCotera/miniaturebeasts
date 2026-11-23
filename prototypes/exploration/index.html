@@ -2139,7 +2139,7 @@ function stormFor(cell) { const col = cxy(cell).x, w = 3, fromWest = col >= MW /
 // One storm per expedition, set before the pick: its anchor is your flag, or on a first trip the first glint. The opening, the start screen and the expedition all use this one
 // storm (the cursor moves only the brackets and the last words of the bottom line); the first expedition's storm comes two columns later.
 function stormAt() {
-  const a = S.ui.lastPos != null ? S.ui.lastPos : G.spawns[0]; if (a == null) return null;
+  const a = S.ui.lastPos != null ? S.ui.lastPos : startPlaces()[0]; if (a == null) return null;
   const st = stormFor(a); if (S.expN === 1) st.x -= 2 * st.dir; return st;
 }
 // How far the storm is from a cell, for the start pick's line: { in: bool, behind: bool, actions: n }. The gap is the columns between the cell and the band's leading edge; the band moves .25 a action.
@@ -2652,6 +2652,19 @@ const coatRead = id => Object.values((S.habits || {})[id] || {}).some(r => r && 
 // wild-marking-named-3: the realm's marked Loika is one the player can meet: a named Loika (her place has haunt sites) in the places the first Probe reaches (tier 1's range from the first spawn, nothing special crossed).
 // None such (a realm that offers no named Loika there): any Loika of the realm, as in round 2. Kept for the realm in hand.
 let MARKED = { key: '', ids: [] };
+// start-reach-1: the start places offered on the first set-out: each has a named Loika (a place with haunt sites) in tier 1's reach. A glint without one is not offered
+// (none qualify in a realm: all are offered as before). The places are not in yet: all of G.spawns.
+let STARTS = { key: '', list: [] };
+const namedAt = q => { try { return !!individualOf(q, layout(String(q.c))); } catch (e) { return false; } };
+function startPlaces() {
+  if (!PL.ready || !G || !G.spawns) return G ? G.spawns : [];
+  const key = S.seed + '|' + S.cr.length + '|' + G.spawns.join(','); if (STARTS.key === key) return STARTS.list;
+  const wild = S.cr.filter(q => q.sp === 0 && !q.cv);
+  const had = new Set(layoutCache.keys());   // a layout is cached with what the expedition shuts at that moment: the places built here for the check are dropped again
+  const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c)) && namedAt(q)); });
+  for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
+  STARTS = { key, list: ok.length ? ok : G.spawns.slice() }; return STARTS.list;
+}
 function markedCandidates() {
   const key = S.seed + '|' + S.cr.length + '|' + G.spawns[0]; if (MARKED.key === key) return MARKED.ids;
   const all = S.cr.filter(q => q.sp === 0 && !q.cv); let ids = [];
@@ -6167,7 +6180,7 @@ function drawMap(mode, t) {
     for (let xx = x0; xx <= x1; xx += 6) { R(xx, y0, 3, 2, C.amber); R(xx, y1, 3, 2, C.amber); }
     for (let yy = y0; yy <= y1; yy += 6) { R(x0, yy, 2, 3, C.amber); R(x1, yy, 2, 3, C.amber); } }
   if (mode === 'place') {
-    if (firstPlacement()) for (const c of G.spawns) { const p = cxy(c), big = motion() ? (Math.floor(t * 3 + c) % 2) : 1, a = sparkArt(big), px = ox + p.x * CELL, py = oy + p.y * CELL;
+    if (firstPlacement()) for (const c of startPlaces()) { const p = cxy(c), big = motion() ? (Math.floor(t * 3 + c) % 2) : 1, a = sparkArt(big), px = ox + p.x * CELL, py = oy + p.y * CELL;
       blit(a, px + 13 - Math.floor(a.w / 2), py + 13 - Math.floor(a.h / 2));
       const sg = spawnSign(c); if (sg) { const ty = Math.max(VIEW_Y + 2, py - 12); panel(px + 14, ty, 26, 20, C.ink, C.stone);   // held at y 34 on the top row
         if (sg === 'b') blit(ICON.beat(fr), px + 16, ty + 2); else { blit(ICON.paw('bone'), px + 17, ty + 6); blit(ICON.paw('bone'), px + 25, ty + 2); } } }
@@ -7433,13 +7446,13 @@ const openRect = () => openAlone() ? { ...OPEN_FRAME_BASE, h: 430 } : OPEN_FRAME
 function openFrame() {
   const F = openRect(), WX = F.x + 2, WY = F.y + 2, WW = F.w - 4, WH = F.h - 4, first = firstPlacement();
   let x0 = MW, y0 = MH, x1 = -1, y1 = -1;
-  if (first) for (const c of G.spawns) { const p = cxy(c); x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y); }
+  if (first) for (const c of startPlaces()) { const p = cxy(c); x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y); }
   else { const s = cxy(S.ui.lastPos != null ? S.ui.lastPos : G.spawns[0]), r = tierOf().range; x0 = s.x - r; x1 = s.x + r; y0 = s.y - r; y1 = s.y + r; }
   const bw = x1 - x0 + 2, bh = y1 - y0 + 2, cs = Math.max(1, Math.min(72, Math.floor(Math.min(WW / bw, WH / bh))));
   let px0 = Math.round((x0 + x1 + 1) / 2 * cs - WW / 2), py0 = Math.round((y0 + y1 + 1) / 2 * cs - WH / 2);
   px0 = MW * cs > WW ? clamp(px0, 0, MW * cs - WW) : Math.round((MW * cs - WW) / 2); py0 = MH * cs > WH ? clamp(py0, 0, MH * cs - WH) : Math.round((MH * cs - WH) / 2);
   const X0 = Math.floor(px0 / cs), Y0 = Math.floor(py0 / cs), ox = WX - (px0 - X0 * cs), oy = WY - (py0 - Y0 * cs);
-  return { first, WX, WY, WW, WH, cs, X0, Y0, ox, oy, glimpse: first ? G.spawns.slice() : null, at: c => { const p = cxy(c); return { x: ox + (p.x - X0) * cs, y: oy + (p.y - Y0) * cs }; } };
+  return { first, WX, WY, WW, WH, cs, X0, Y0, ox, oy, glimpse: first ? startPlaces().slice() : null, at: c => { const p = cxy(c); return { x: ox + (p.x - X0) * cs, y: oy + (p.y - Y0) * cs }; } };
 }
 // The opening's painting is made a slice (about 8 ms) each frame and drawn when whole, so the first screen never stalls on its painting. A cached painting comes back at once.
 const OPEN_JOB = { sig: '', it: null };
@@ -7491,7 +7504,7 @@ function drawOpenLand(t, fr) {
       if (inF(s.x, s.y, a.w, a.h)) blit(a, s.x, s.y); n++; }
   }
   // the first walk: the five lights, each with its sign (tracks or a slow beat) beside it
-  if (q.first) for (const c of G.spawns) { const p = q.at(c), a = sparkArt(motion() ? Math.floor(t * 3 + c) % 2 : 1), sx = p.x + (cs >> 1) - (a.w >> 1), sy = p.y + (cs >> 1) - (a.h >> 1); blit(a, sx, sy);
+  if (q.first) for (const c of startPlaces()) { const p = q.at(c), a = sparkArt(motion() ? Math.floor(t * 3 + c) % 2 : 1), sx = p.x + (cs >> 1) - (a.w >> 1), sy = p.y + (cs >> 1) - (a.h >> 1); blit(a, sx, sy);
     const sg = ready && spawnSign(c); if (sg) { const tx = Math.min(WX + WW - 28, p.x + (cs >> 1) + 8), ty = Math.max(WY + 2, p.y + (cs >> 1) - 22); panel(tx, ty, 26, 20, C.ink, C.stone);
       if (sg === 'b') blit(ICON.beat(fr), tx + 2, ty + 2); else { blit(ICON.paw('bone'), tx + 3, ty + 6); blit(ICON.paw('bone'), tx + 11, ty + 2); } } }
   // the start flag (2× at 48 px cells and up)
@@ -8066,7 +8079,7 @@ function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() 
 
 // ===================== 15. Screen dispatch =====================
 function firstPlacement() { return !S.revealed.some(v => v); }
-function placeValid(c) { if (firstPlacement()) return G.spawns.includes(c); return !!S.revealed[c] && passable(c) && !G.island[c] && (!G.gen || !!G.comp[c]); }   // never on a sealed plateau
+function placeValid(c) { if (firstPlacement()) return startPlaces().includes(c); return !!S.revealed[c] && passable(c) && !G.island[c] && (!G.gen || !!G.comp[c]); }   // never on a sealed plateau
 function placeReason(c) {
   if (firstPlacement()) return 'Pick a glint';
   if (!S.revealed[c]) return 'Not seen yet';
@@ -8305,7 +8318,7 @@ function chooseType() {
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
-  if (first) cur = G.spawns[0];
+  if (first) cur = startPlaces()[0];
   else if (S.ui.type === 'deep') { revealCell(G.gate); addPin(G.gate, 'burrow'); cur = G.gate; }   // Deep ground starts at the burrow under the cliff
   else if (cur == null || !placeValid(cur)) { cur = 0; for (let c = 0; c < MW * MH; c++) if (placeValid(c)) { cur = c; break; } }
   S.ui.cur = cur; S.phase = 'place'; transition();
@@ -8314,7 +8327,7 @@ function moveCursor(dir) {
   const [dx, dy] = DIRS[dir], p = cxy(S.ui.cur);
   if (firstPlacement()) { // hop between the glints
     let best = null, bd = 1e9;
-    for (const c of G.spawns) { const q = cxy(c), vx = q.x - p.x, vy = q.y - p.y, along = vx * dx + vy * dy; if (along <= 0) continue;
+    for (const c of startPlaces()) { const q = cxy(c), vx = q.x - p.x, vy = q.y - p.y, along = vx * dx + vy * dy; if (along <= 0) continue;
       const d = along + Math.abs(vx * dy + vy * dx) * 2; if (d < bd) { bd = d; best = c; } }
     if (best != null) S.ui.cur = best; else FX.bumpAt = NOW; return;
   }
