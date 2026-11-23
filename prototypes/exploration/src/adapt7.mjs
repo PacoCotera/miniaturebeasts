@@ -157,6 +157,23 @@ export function adaptCell(place, ir, ts, terrains, o) {
     if (best) { feats.push({ ...s, ...best }); taken.add(best.y * w + best.x); }
   }
   for (const s of specials) { const f = feats.find(q => q.id === s.id); if (f) used.add(I(f.x, f.y)); }
+  // a cup stands where the pawn can come to it: its tile or one beside it is on the walk round the standing features (a hollow or a stone beside it can shut it in with the blocked ground); else it moves to the nearest tile that is
+  {
+    const solidF = new Set(feats.filter(f => f.kind !== 'u').map(f => I(f.x, f.y))), walked = new Uint8Array(NP), wq = [];
+    for (const op of openings) for (const pt of runPts(op)) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && !solidF.has(i) && !walked[i]) { walked[i] = 1; wq.push(i); } }
+    for (let k = 0; k < wq.length; k++) { const x = wq[k] % w, y = (wq[k] / w) | 0;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!walked[j] && !solidF.has(j) && !T_BLOCK[tiles[j]]) { walked[j] = 1; wq.push(j); } } }
+    const came = (x, y) => [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X >= 0 && Y >= 0 && X < w && Y < h && walked[I(X, Y)]; });
+    for (const f of feats) {
+      if (f.kind !== 'u' || came(f.x, f.y)) continue;
+      let to = null;
+      for (let r = 1; r <= 8 && !to; r++) for (let dy = -r; dy <= r && !to; dy++) for (let dx = -r; dx <= r && !to; dx++) {
+        const X = f.x + dx, Y = f.y + dy; if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || !okAt(X, Y, false) || !walked[I(X, Y)]) continue; to = { x: X, y: Y }; }
+      if (!to) continue;
+      const fi = finds.find(q => q.what === 'dew' && q.x === f.x && q.y === f.y); if (fi) { fi.x = to.x; fi.y = to.y; }
+      f.x = to.x; f.y = to.y; used.add(I(to.x, to.y)); taken.add(I(to.x, to.y));
+    }
+  }
   // strike marks: ground decals, on open walkable ground off every crown (note 29), and on a tile no find holds
   const strikes = ir.strikes.map((m, i) => { const at = settle(m.x - 1, m.y - 1, true); return at ? { id: 'm' + i, x: at.x, y: at.y, age: m.age, glass: !!m.glass } : null; }).filter(Boolean);
   // decor keeps a one-tile gap round a find, and none stands on the foot of one below it that its picture would cover (notes 8, 25, 32)
