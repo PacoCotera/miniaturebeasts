@@ -67,8 +67,8 @@ async function own() {
     const rec = r => ({ ranges: { [r]: 1 }, got: {}, best: r, plays: 1, sample: null, sights: 0 }); S.habits = { [id]: { shake: rec("far"), calm: rec("mid"), sleep: rec("near") } };
     m.advance("patch", { noise: "act" });
     const pod = S.pods.find(q => q.how === "own"); if (!pod) return { none: 1 };
-    m.unveil(key, pod.x, pod.y, 7); const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(pod.x + dx * 2, pod.y + dy * 2));
-    P.x = pod.x + (side ? side[0] * 2 : 2); P.y = pod.y + (side ? side[1] * 2 : 0); P.dir = side ? side[2] : "left"; m.advance("patch", { noise: "creep", moved: true });
+    m.unveil(key, pod.x, pod.y, 7); const side = [[1, 0, "left"], [-1, 0, "right"], [0, 1, "up"], [0, -1, "down"]].find(([dx, dy]) => m.passable(pod.x + dx, pod.y + dy));
+    P.x = pod.x + (side ? side[0] : 1); P.y = pod.y + (side ? side[1] : 0); P.dir = side ? side[2] : "left"; m.advance("patch", { noise: "creep", moved: true });
     return { pod: { x: pod.x, y: pod.y, how: pod.how, of: pod.of, gs: pod.gs }, tag: m.podTagOf(pod) }; }, pick);
   if (!r || r.none) { log.own = "no own pod " + JSON.stringify(r); await page.context().close(); return; }
   await page.waitForTimeout(600);

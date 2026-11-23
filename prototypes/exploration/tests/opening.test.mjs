@@ -38,7 +38,7 @@ const stands = (p, pb, x, y) => { const px = p.run("scr").px(), W = p.run("SCR_W
 test("B1: a fresh world draws one tab and the pod, its three lines and the dark line; no strip, no counts, no world inset", () => {
   const p = opening(), t = said(p);
   assert.ok(t.includes("Weather") && !t.includes("Deep ground"), "Weather alone: " + t);
-  assert.equal(t.filter(s => /^(Your first (walk|expedition)|Find a pod and bring it home\.|The Station grows it\.)$/.test(s)).length, 0, "no partner card on a first save"); assert.ok(t.includes("Press ✓ to set out"), "the one line under the land teaches the key: " + t);
+  assert.equal(t.filter(s => /^(Your first (walk|expedition)|Find a pod and bring it home\.|Find a pod · bring it home|Press \)\)\) to Call|The Station grows it\.)$/.test(s)).length, 0, "no partner card on a first save"); assert.ok(t.includes("Press ✓ to set out"), "the one line under the land teaches the key: " + t);
   assert.ok(t.includes("storms charge stones"), "the Weather tab's first-time line");
   for (const s of t) assert.ok(!/Probe tier|World ·|fog|of \d+ places|Seen|Your world|last start|hatch|egg|born|No partner/i.test(s), "no such line: " + s);
   assert.ok(!t.some(s => /Signs in the dark/.test(s)), "the first-time line is gone: the teaching line says it");
