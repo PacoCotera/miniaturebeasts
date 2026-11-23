@@ -59,7 +59,9 @@ export function readout(st, sv, spec, a, b, settings, now = Date.now()) {
   out.pod = fill(Sg.growsIn, { when: whenWords(Sg, mins) });
   if (aim) {
     const c = P.chances(aim, a, b);
-    out.chances = aim.traits.map((t, i) => fill(Sg.chanceLine, { trait: traitWords(Sg, aim, t, i, looks), chance: chanceWords(Sg, c.each[i]) }));
+    // item 3 (AD 15:03): the odds name the marking only when the pair can give it (its card has no dashed rim); a look only another mibi of the household carries is "a marking"
+    const can = new Set(markingsOf(st, a, b)), pairLooks = looks && c.each[0] > 0 && !can.has(looks.marking) ?{ ...looks, marking: "" } : looks;
+    out.chances = aim.traits.map((t, i) => fill(Sg.chanceLine, { trait: i === 0 && pairLooks && !pairLooks.marking ? Sg.aimMarkingAny : traitWords(Sg, aim, t, i, pairLooks), chance: chanceWords(Sg, c.each[i]) }));
     out.both = fill(Sg.chanceLine, { trait: Sg.chanceBoth, chance: chanceWords(Sg, c.both) });
     out.raw = c;
   }

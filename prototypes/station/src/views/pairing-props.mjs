@@ -68,7 +68,7 @@ export function pairView(view, m, spec, req) {
     if (cropIds.length) { ids.length = 0; cropIds.forEach(([w, id, win]) => ids.push([w, id, win])); }
     if (ids.length) { text(Sg.markings, Cd.labelX, Cd.labelBase, Cd.labelRole);
       ids.forEach(([w, id, win], i) => { const cx = Cd.x0 + i * Cd.pitch, c = can.get(w), tagBox = c?.isNew ? [cx + Math.round((Cd.d - Cd.tag.w) / 2), Cd.y + Cd.tag.dy, Cd.tag.w, Cd.tag.h] : null;
-        cards.push({ id, crop: win ?? null, x: cx, y: Cd.y, d: Cd.d, dim: !c, marks: [sa === w ? faceA : null, sb === w ? faceB : null].filter(Boolean), mark: Cd.mark, tag: tagBox });
+        cards.push({ id, word: w, crop: win ?? null, x: cx, y: Cd.y, d: Cd.d, dim: !c, marks: [sa === w ? faceA : null, sb === w ? faceB : null].filter(Boolean), mark: Cd.mark, tag: tagBox });
         text(w, cx - 6, Cd.nameBase, c ? Cd.nameRole : "glass.quiet", "c", Cd.d + 12);
         if (tagBox) text(Sg.newMark, tagBox[0], tagBox[1] + Cd.tag.base, Cd.tag.role, "c", Cd.tag.w); }); }
   }
