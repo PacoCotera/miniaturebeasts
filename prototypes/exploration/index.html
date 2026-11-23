@@ -3817,6 +3817,11 @@ function stepToward(X, who, tgt, n) {
     if (!best) { // sidestep around a blocker
       for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && !(who.px === x && who.py === y)) { best = { x, y, dx }; break; } }
     }
+    if (!best && who.ind) { // bug #121: a named Loika walking her routine in a one-tile way (cliff either side) is held by another Loika resting in it: the two trade tiles, so neither is held there for good
+      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) >= man(who, tgt)) continue;
+        const o = X.live.cr.find(q => q !== who && q.sp === who.sp && q.x === x && q.y === y && !q.hide && !q.gone);
+        if (o && !rimRefuses(X.lay, who.x, who.y, x, y) && !rimRefuses(X.lay, x, y, who.x, who.y)) { o.px = o.x; o.py = o.y; o.x = who.x; o.y = who.y; best = { x, y, dx }; break; } }
+    }
     if (!best) return;
     who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
   }
