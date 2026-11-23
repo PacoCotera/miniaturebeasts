@@ -7004,7 +7004,7 @@ function podSlot(x, y, pod) {
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
 const STATUS_W = 30;
 // The part of day in the top bar: the art director's six signed 14 px pictures (art/day-dial/frames/), drawn as the files came, never redrawn. Until they load (or if they fail) the sun stands.
-const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {};
+const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {}, DAY_DIM = {};
 async function loadDayArt() {
   try {
     if (typeof Image === 'undefined') return;
@@ -7012,8 +7012,11 @@ async function loadDayArt() {
     await Promise.all(DAY_PARTS.map(n => pixelsOf(vurl(new URL('../../art/day-dial/frames/', location.href).href + 'day-' + n + '.png')).then(async px => {
       if (px.width !== 14 || px.height !== 14) throw new Error('day art ' + n);
       const c = document.createElement('canvas'); c.width = 14; c.height = 14; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 14, 14), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
-      DAY_ART[n] = c; fileGot(); })));
-  } catch (e) { for (const n of DAY_PARTS) delete DAY_ART[n]; console.warn('the part-of-day pictures did not load; the sun stands', e); }
+      const dd = new Uint8ClampedArray(px.data);   // the same picture through the place's night table (PR 513's), colour by colour: dimmer, still palette
+      for (let i = 0; i < dd.length; i += 4) if (dd[i + 3]) { const k = nearestPal(dd[i], dd[i + 1], dd[i + 2]), q = RGB[NIGHT[k] != null ? NIGHT[k] : k]; dd[i] = q[0]; dd[i + 1] = q[1]; dd[i + 2] = q[2]; }
+      const dc = document.createElement('canvas'); dc.width = 14; dc.height = 14; dc.getContext('2d').drawImage(await createImageBitmap(new ImageData(dd, 14, 14), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+      DAY_DIM[n] = dc; DAY_ART[n] = c; fileGot(); })));
+  } catch (e) { for (const n of DAY_PARTS) { delete DAY_ART[n]; delete DAY_DIM[n]; } console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
 // The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per light, so the picture under the fixed marker is dayPart() and the next one enters the right end ~25 light before the change.
 // Each action glides the strip its true spent distance (ease-out cubic, 260 ms; n actions min(600, 260+16(n-1)); Wait 450 ms; forward only, mod the loop); reduced motion is instant; nothing moves when idle.
@@ -7034,15 +7037,7 @@ function dayBarPos() {
   return DB.pos;
 }
 // The pictures that are not the current part go through the place's night table (PR 513's): clearly dimmer, still palette. Made once per picture and per night table.
-const DAY_DIM = {};
-function dayDim(name) {
-  const src = DAY_ART[name]; if (!src) return null;
-  const hit = DAY_DIM[name]; if (hit && hit.src === src && hit.n === NIGHT.length) return hit.c;
-  const c = document.createElement('canvas'); c.width = 14; c.height = 14;
-  const id = src.getContext('2d').getImageData(0, 0, 14, 14), d = id.data;
-  for (let i = 0; i < d.length; i += 4) if (d[i + 3]) { const k = nearestPal(d[i], d[i + 1], d[i + 2]), q = RGB[NIGHT[k] != null ? NIGHT[k] : k]; d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2]; }
-  c.getContext('2d').putImageData(id, 0, 0); DAY_DIM[name] = { src, n: NIGHT.length, c }; return c;
-}
+const dayDim = name => DAY_DIM[name] || null;   // (made in loadDayArt)
 function drawDayBar(x0, y0) {
   const W = DB.W, L = DAY.light, pos = ((dayBarPos() % L) + L) % L, ix = x0 + 1, cx = ix + W / 2, cur = partOfDay(DB.shown);
   R(x0, y0, W + 2, 17, C.stone); R(ix, y0 + 1, W, 16 - 1, C.ink);   // frame and glass
