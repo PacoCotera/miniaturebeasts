@@ -12,7 +12,7 @@ const runLength = (p, max = 400) => { const turn = p.run("S.turn"); let n = 0; w
 
 test("a camp made late in the day: the next set-out runs the night's end first and has a whole day", () => {
   const p = start(); const turn = p.run("S.turn");
-  p.run("S.day.spent = 190; S.ui.lastPos = S.exp.pos; endExpedition('sent')");
+  p.run("S.day.spent = 590; S.ui.lastPos = S.exp.pos; endExpedition('sent')");
   assert.equal(p.run("S.turn"), turn, "the camp turns nothing");
   p.run("startExpedition('weather', G.spawns[0])");
   assert.ok(p.run("!!S.exp"), "the set-out lifts");
@@ -28,7 +28,7 @@ test("a camp made late in the day: the next set-out runs the night's end first a
 
 test("the night does not end the walk: it stays open, the world turned once, a new day at the same place", () => {
   const p = start(); const turn = p.run("S.turn"), pos = p.run("S.exp.pos");
-  spend(p, 200);
+  spend(p, 600);
   assert.ok(p.run("!!S.exp"), "the walk is still open"); assert.equal(p.run("S.turn"), turn + 1);
   assert.equal(p.run("S.day.spent"), 0); assert.equal(p.run("S.exp.pos"), pos);
   assert.ok(p.run("FX.msg").includes("Night passed. A new day: dawn."), p.run("FX.msg"));
@@ -38,7 +38,7 @@ test("the night does not end the walk: it stays open, the world turned once, a n
 
 test("a camp made in the afternoon sets out again at the same light, with no night's end", () => {
   const p = start(); const turn = p.run("S.turn");
-  p.run("S.day.spent = 100; S.ui.lastPos = S.exp.pos; endExpedition('sent')");
+  p.run("S.day.spent = 400; S.ui.lastPos = S.exp.pos; endExpedition('sent')");
   p.run("startExpedition('weather', G.spawns[0])");
-  assert.equal(p.run("S.day.spent"), 100); assert.equal(p.run("S.turn"), turn);
+  assert.equal(p.run("S.day.spent"), 400); assert.equal(p.run("S.turn"), turn);
 });

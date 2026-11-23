@@ -69,7 +69,7 @@ test("the size cap: at 1440 × 900 a chosen ×2 stays at ×1 (a ×2 Companion is
 
 test("the first-view numbers of the signed design (390 × 844, 1440 × 900)", () => {
   const c = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" });
-  assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 604]); assert.equal(Math.round(c.screen.w), 318); assert.equal(Math.round(c.margins.top), 44);
+  assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 580]); assert.equal(Math.round(c.screen.w), 300);   // play-scale-1: ×2 device px per lp (900 of the 1170 device px), not the 0.703 fit (318)
   const l = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "companion" }); assert.deepEqual([l.panel.w, l.panel.h, l.margins.side], [770, 624, 335]);
   const s = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "station" }); assert.deepEqual([s.panel.w, Math.round(s.panel.h), s.margins.side], [1040, 446, 200]);
 });
@@ -88,7 +88,9 @@ test("a short phone upright (Safari with its bars): the Companion is drawn whole
     assert.ok(p.panel.y >= BAR + 16 - 1, tag + ": the panel keeps its gap under the bar");
   }
   // where the height is enough nothing changes: the width's fit, the screen at full height, as before
-  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }); assert.ok(Math.abs(p.scale - (W - 72) / 450) < 1e-9 && p.screen.x === 36, `${W}×${H}: the width's fit, the screen at the panel's left edge + 12`); }
+  // (play-scale-1: the width's fit rounded down to a whole number of device pixels per lp, centred in the panel)
+  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }), z = p.scale * 3; assert.ok(Math.abs(z - Math.round(z)) < 1e-9 && z === Math.floor((W - 72) / 450 * 3 + 1e-6), `${W}×${H}: the width's fit as a whole multiple of device pixels`); }
+  for (const dpr of [2, 3]) for (const [W, H] of [[390, 844], [522, 935], [360, 740]]) { const p = plan({ W, H, dpr, coarse: true, dev: "companion" }), z = p.scale * dpr; assert.ok(Math.abs(z - Math.round(z)) < 1e-9, `${W}×${H} ×${dpr}: a whole multiple`); }
   // the smaller the window the smaller the Companion, never the keys
   let last = 1; for (let H = 800; H >= 480; H -= 20) { const p = plan({ W: 375, H, dpr: 3, coarse: true, dev: "companion" }); assert.ok(p.scale <= last + 1e-9 && p.a === 44, `375×${H}: the scale only shrinks, the keys stay at their signed size`); last = p.scale; }
 });

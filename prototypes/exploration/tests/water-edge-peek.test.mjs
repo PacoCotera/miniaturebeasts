@@ -35,7 +35,7 @@ test("the wide water beside a place meets the place's shallows in an irregular f
       const c = 27; S.exp.pos = String(c); m.enterPatch(String(c)); const lay = m.curLay(), P = S.exp.patch, T = m.T;
       const wet = (t) => t === T.WATER || t === T.DEEP || t === T.STEP || t === T.WADE;
       let best = null; for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) if (m.passable(x, y) && !wet(lay.tiles[y * lay.w + x]) && (!best || x > best.x)) best = { x, y };
-      S.revealed[c + 1] = 1; S.exp.range = 50; S.day.spent = 164; P.x = best.x; P.y = best.y; m.unveil(String(c), best.x, best.y, 3);
+      S.revealed[c + 1] = 1; S.exp.range = 50; S.day.spent = 520; P.x = best.x; P.y = best.y; m.unveil(String(c), best.x, best.y, 3);
       return { land: m.G.land[c + 1] === m.L.WATER, coast: !!(m.G.coast && m.G.coast[c + 1]) };
     });
     assert.ok(at.land && !at.coast, "the east neighbour is inland wide water");

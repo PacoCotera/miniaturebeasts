@@ -1008,7 +1008,7 @@ const OUTPOST_TURNS = 3;
 // World turns are shown counting from 1 (turn 1 = the first expedition's world); S.turn keeps counting from 0 inside,
 // so the world's random draws and every save stay as they were and no save needs migrating.
 const wTurn = () => S.turn + 1;
-// The realm's day (walk W1): light spent since dawn (the day's 200 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
+// The realm's day (walk W1): light spent since dawn (the day's 600 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
@@ -2621,17 +2621,25 @@ function printMark(lay, stand, free) {
   for (let r = 0; r <= 4; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r && clear(stand.x + dx, stand.y + dy)) return { x: stand.x + dx, y: stand.y + dy };
   return null;
 }
+// bug #119: the print's tile is chosen on the ground alone (no one standing there): hauntFree skips the tile the pawn or a creature stands on, so the mark jumped as they moved
+const printFree = lay => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !lay.feats.some(f => f.x === x && f.y === y);
 function printsHere() {
   const ex = S.exp; if (!ex || !ex.patch) return []; const lay = curLay(); if (lay.cave) return [];
   const live = curLive(), key = ex.patch.key, part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
-    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = hauntFree(lay, key, c), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
 }
 function printsToRead() {
   const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
   const hd = habDay();
   return printsHere().find(p => !hd[readKey(p.c.id, p.h)] && cheb(P, p.mark || p.stand) <= 1 && (p.c.gone || p.c.hide || cheb(p.c, p.stand) > 2)) || null;
+}
+const printsLine = p => { const W = WORDS.prints, name = habName(p.c); return p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part]); };
+// bug #122: prints already read stay on the ground; ✓ beside them says again when she was there (no light spent), never a Wait
+function printsReadNear() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
+  return printsHere().find(p => p.mark && cheb(P, p.mark) <= 1) || null;
 }
 function readPrints(p) {
   const ex = S.exp, W = WORDS.prints, c = p.c, name = habName(c);
@@ -2644,7 +2652,9 @@ function readPrints(p) {
     if (sm.length >= SATCHEL) drop = WORDS.w5.dropFull;
     else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1 }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
   }
-  fxMsg((p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part])) + drop + W.page, 3);
+  // bug #122 (tuft-3): in addition, a tuft of hers lies on the print's tile as an ordinary tuft (Essence pickup); once per Loika; gives no sample
+  if (!rec.tuft && !ex.dark) { const at = p.mark || p.stand; rec.tuft = 1; const live = curLive(); live.tf.push({ id: live.fid++, x: at.x, y: at.y }); }
+  fxMsg(printsLine(p) + drop + W.page, 3);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
 }
@@ -2657,28 +2667,42 @@ let MARKED = { key: '', ids: [] };
 // start-reach-1: the start places offered on the first set-out: each has a named Loika (a place with haunt sites) in tier 1's reach. A glint without one is not offered
 // (none qualify in a realm: all are offered as before). The places are not in yet: all of G.spawns.
 let STARTS = { key: '', list: [] };
-const namedAt = q => { try { return !!individualOf(q, layout(String(q.c))); } catch (e) { return false; } };
+let OWED_AT = new Set();   // boot-bake-1: cells a check below needed whose place the worker still owes (never baked on the page: one place is seconds of one task); asked of the worker, the check is made again when they come (PLACES.epoch)
+const namedAt = q => { try { const k = String(q.c); if (!placeHave(k)) { OWED_AT.add(+q.c); return false; } return !!individualOf(q, layout(k)); } catch (e) { return false; } };
+function askOwedAt() {   // the owed cells go to the worker, ahead of the background list; false when none is owed
+  if (!OWED_AT.size) return false;
+  const cells = [...OWED_AT]; OWED_AT = new Set();
+  readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), cells, { ctx: PL.ctx, first: true });
+  return true;
+}
 function startPlaces() {
   if (!PL.ready || !G || !G.spawns) return G ? G.spawns : [];
   const key = S.seed + '|' + S.cr.length + '|' + G.spawns.join(','); if (STARTS.key === key) return STARTS.list;
+  if (STARTS.owedKey === key && STARTS.owedEp === PLACES.epoch) return G.spawns.slice();   // asked, nothing new has come
   const wild = S.cr.filter(q => q.sp === 0 && !q.cv);
   const had = new Set(layoutCache.keys());   // a layout is cached with what the expedition shuts at that moment: the places built here for the check are dropped again
+  OWED_AT = new Set();
   const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c)) && namedAt(q)); });
   // w5-day1-start-1: the FIRST glint is a named Loika's own place whose morning haunt is not her dawn one (she comes there from light 20), within tier 1's reach of a spawn; chosen from the seed. None such: the list as it was.
   const inReach = new Set(); for (const s of G.spawns) for (const k of reachCells(s, TIER[1].range, {})) inReach.add(+k);
   const homes = [...new Set(wild.filter(q => inReach.has(+q.c) && passable(+q.c) && !G.island[+q.c] && (!G.gen || !!G.comp[+q.c]) && (() => { try { const ind = individualOf(q, layout(String(q.c))); if (!ind) return false; const d = hauntAt(ind.hs, ind.doings, 'dawn'), m = hauntAt(ind.hs, ind.doings, 'morning'); return !!m && (!d || d.x !== m.x || d.y !== m.y); } catch (e) { return false; } })()).map(q => +q.c))].sort((x, y) => x - y);
   for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
+  if (OWED_AT.size) { askOwedAt(); STARTS.owedKey = key; STARTS.owedEp = PLACES.epoch; return G.spawns.slice(); }   // places still owed: all of G.spawns for now (not kept), made again when they come
   const home = homes.length ? homes[Math.abs(S.seed | 0) % homes.length] : null, base = ok.length ? ok : G.spawns.slice();
   STARTS = { key, home, list: home == null ? base : [home, ...base.filter(c => c !== home)] }; return STARTS.list;
 }
 const homeStart = () => { startPlaces(); return STARTS.home == null ? -1 : STARTS.home; };   // the first glint when it is a Loika's morning place (its line says so)
 function markedCandidates() {
-  const key = S.seed + '|' + S.cr.length + '|' + G.spawns[0]; if (MARKED.key === key) return MARKED.ids;
   const all = S.cr.filter(q => q.sp === 0 && !q.cv); let ids = [];
   if (!PL.ready) return all.map(q => q.id);   // the places are not in yet: not kept
-  for (const t of [1, 2]) { if (ids.length || G.spawns[0] == null) break;   // tier 1's reach (days 1-2), then tier 2's if the first holds no named Loika
-    const reach = new Set(reachCells(G.spawns[0], TIER[t].range, {}).map(String));
-    ids = all.filter(q => { if (!reach.has(String(q.c))) return false; try { return !!individualOf(q, layout(String(q.c))); } catch (e) { return false; } }).map(q => q.id); }
+  const sp0 = startPlaces()[0];   // start-reach-2: the first OFFERED start, not G.spawns[0] (a dropped glint, as on seed 45, has no Loika in reach)
+  const key = S.seed + '|' + S.cr.length + '|' + sp0; if (MARKED.key === key) return MARKED.ids;
+  if (MARKED.owedKey === key && MARKED.owedEp === PLACES.epoch) return all.map(q => q.id);   // asked, nothing new has come
+  OWED_AT = new Set();
+  for (const t of [1, 2]) { if (ids.length || sp0 == null) break;   // tier 1's reach (days 1-2), then tier 2's if the first holds no named Loika
+    const reach = new Set(reachCells(sp0, TIER[t].range, {}).map(String));
+    ids = all.filter(q => { if (!reach.has(String(q.c))) return false; return namedAt(q); }).map(q => q.id); }
+  if (OWED_AT.size) { askOwedAt(); MARKED.owedKey = key; MARKED.owedEp = PLACES.epoch; return all.map(q => q.id); }   // places still owed: all for now (not kept), made again when they come
   MARKED = { key, ids: ids.length ? ids : all.map(q => q.id) }; return MARKED.ids;
 }
 function wildMarked(c) {
@@ -3299,6 +3323,9 @@ function patchAction() {
   ACT_AT = f;
   { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => noteHabit(nt) }; } }   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
   if (!o) { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // W4 round 2: her prints at a haunt she has left
+  if (!o) { const pr = printsReadNear(); if (pr) { ACT_AT = { x: pr.mark.x, y: pr.mark.y };
+    const tf = live.tf.find(q => q.x === pr.mark.x && q.y === pr.mark.y); if (tf) return { label: 'Pick up the tuft', run: () => takeTuft(tf) };   // bug #122 (tuft-2): she left a tuft here; once read, ✓ on the print picks it up through the Essence pickup (a full hold says why, takes no turn)
+    return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => fxMsg(printsLine(pr), 3) }; } }   // bug #122: a print already read shows its line again, free
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
@@ -3699,7 +3726,7 @@ function waitChanges(a, b, scope) {
   return out.concat(crs.slice(0, 2));
 }
 function waitTick(scope) {
-  const ex = S.exp, a = waitSnap(scope), notes = FX.notes.length; FX.waitAt = NOW;   // a light ripple passes over the view: time went by
+  const ex = S.exp, a = waitSnap(scope), notes = FX.notes.length; FX.waitAt = NOW; DB.wait = 1;   // the day bar glides a Wait over 450 ms   // a light ripple passes over the view: time went by
   if (scope === 'patch') advance('patch', { noise: 'wait' }); else advance('map');
   if (!S.exp || S.exp.ending) return;
   if (scope === 'patch' && ex.patch) routineStep(a);
@@ -3820,9 +3847,10 @@ function stepToward(X, who, tgt, n) {
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
       const d = man({ x, y }, tgt); if (d < bd && canStand(X, x, y, who)) { bd = d; best = { x, y, dx }; } }
     if (!best) { // sidestep around a blocker
-      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && !(who.px === x && who.py === y)) { best = { x, y, dx }; break; } }
+      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && (!(who.px === x && who.py === y) || who.held >= 3)) { best = { x, y, dx }; break; } }   // bug #121: after 3 turns with no step she may turn round, the back-step refused above
     }
-    if (!best) return;
+    if (!best) { who.held = (who.held || 0) + 1; return; }
+    who.held = 0;
     who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
   }
 }
@@ -7011,7 +7039,7 @@ function podSlot(x, y, pod) {
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
 const STATUS_W = 30;
 // The part of day in the top bar: the art director's six signed 14 px pictures (art/day-dial/frames/), drawn as the files came, never redrawn. Until they load (or if they fail) the sun stands.
-const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {};
+const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {}, DAY_DIM = {};
 async function loadDayArt() {
   try {
     if (typeof Image === 'undefined') return;
@@ -7019,8 +7047,52 @@ async function loadDayArt() {
     await Promise.all(DAY_PARTS.map(n => pixelsOf(vurl(new URL('../../art/day-dial/frames/', location.href).href + 'day-' + n + '.png')).then(async px => {
       if (px.width !== 14 || px.height !== 14) throw new Error('day art ' + n);
       const c = document.createElement('canvas'); c.width = 14; c.height = 14; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 14, 14), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
-      DAY_ART[n] = c; fileGot(); })));
-  } catch (e) { for (const n of DAY_PARTS) delete DAY_ART[n]; console.warn('the part-of-day pictures did not load; the sun stands', e); }
+      const dd = new Uint8ClampedArray(px.data);   // the same picture through the place's night table (PR 513's), colour by colour: dimmer, still palette
+      for (let i = 0; i < dd.length; i += 4) if (dd[i + 3]) { const k = nearestPal(dd[i], dd[i + 1], dd[i + 2]), q = RGB[NIGHT[k] != null ? NIGHT[k] : k]; dd[i] = q[0]; dd[i + 1] = q[1]; dd[i + 2] = q[2]; }
+      const dc = document.createElement('canvas'); dc.width = 14; dc.height = 14; dc.getContext('2d').drawImage(await createImageBitmap(new ImageData(dd, 14, 14), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+      DAY_DIM[n] = dc; DAY_ART[n] = c; fileGot(); })));
+  } catch (e) { for (const n of DAY_PARTS) { delete DAY_ART[n]; delete DAY_DIM[n]; } console.warn('the part-of-day pictures did not load; the sun stands', e); }
+}
+// The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per 3 light (K = 200 / DAY.light: the loop stays 200 px), so the picture under the fixed marker is dayPart() and the next one enters the right end ~75 light before the change.
+// Each action glides the strip its true spent distance (ease-out cubic, 260 ms; n actions min(600, 260+16(n-1)); Wait 450 ms; forward only, mod the loop); reduced motion is instant; nothing moves when idle.
+const DB = { W: 64, K: 200 / DAY.light, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, wait: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: glass width, K: px per light
+function dayBarPos() {
+  const sp = S.day.spent, L = DAY.light;
+  if (DB.pos == null) { DB.pos = DB.from = DB.tgt = sp; DB.last = sp; DB.dur = 0; DB.prev = null; DB.shown = sp; }
+  if (sp !== DB.last) {
+    const n = ((sp - DB.last) % L + L) % L; DB.last = sp;   // forward only; the day's end wraps to 0 and the strip loops
+    DB.prev = DB.shown; DB.from = DB.pos; DB.tgt = DB.pos + n; DB.t0 = NOW;
+    DB.dur = !motion() ? 0 : DB.wait && n === 1 ? 450 : Math.min(600, 260 + 16 * (n - 1));
+  }
+  DB.wait = 0;
+  const t = DB.dur ? Math.min(1, (NOW - DB.t0) / DB.dur) : 1;
+  DB.shown = t < 0.5 && DB.prev != null ? DB.prev : sp;   // the current part changes at the glide's midpoint (no crossfade); instant with reduced motion (dur 0 gives t 1)
+  DB.pos =DB.from + (DB.tgt - DB.from) * DB.ease(t);
+  if (t >= 1) { DB.pos = DB.from = DB.tgt = DB.tgt % L; }   // at rest: keep the number small
+  return DB.pos;
+}
+// The pictures that are not the current part go through the place's night table (PR 513's): clearly dimmer, still palette. Made once per picture and per night table.
+const dayDim = name => DAY_DIM[name] || null;   // (made in loadDayArt)
+function drawDayBar(x0, y0) {
+  const W = DB.W, L = DAY.light, pos = ((dayBarPos() % L) + L) % L, ix = x0 + 1, cx = ix + W / 2, cur = partOfDay(DB.shown);
+  R(x0, y0, W + 2, 17, C.stone); R(ix, y0 + 1, W, 16 - 1, C.ink);   // frame and glass
+  R(cx - 1, y0 - 2, 3, 1, C.cream); R(cx, y0 - 1, 1, 1, C.cream); R(cx, y0 + 17, 1, 1, C.cream); R(cx - 1, y0 + 18, 3, 1, C.cream);   // the marker's notch outside the frame, top and bottom, pointing in: a 3 px row then a 1 px row (the window reads 66x21)
+  R(ix, y0 + 1, W, 1, C.mist);   // the light along the top inside edge
+  let at = 0;
+  g.save(); g.beginPath(); g.rect(ix, y0 + 1, W, 15); g.clip();   // nothing of the strip leaves the glass
+  const px = a => Math.round(cx + ((a - pos) * DB.K));
+  for (let lap = -1; lap <= 1; lap++) { at = 0; for (const [name, len] of DAY.parts) {
+    const a0 = at + lap * L, a1 = a0 + len, c = px((a0 + a1) / 2), bx = px(a0);
+    if (name === cur) R(bx + 1, y0 + 2, px(a1) - bx - 1, 14, C.night);   // the current part's plate: the glass one step lighter between its two border ticks
+    if (bx > ix && bx < ix + W) { R(bx, y0 + 2, 1, 2, C.slate); R(bx, y0 + 14, 1, 2, C.slate); }   // a part border: two small ticks, top and bottom
+    const pic = name === cur ? DAY_ART[name] : dayDim(name); if (pic && c + 7 > ix && c - 7 < ix + W) g.drawImage(pic, c - 7, y0 + 2);
+    at += len; } }
+  g.restore();
+  for (let r = 1; r < 16; r++) { R(ix, y0 + r, 1, 1, C.ink); R(ix + W - 1, y0 + r, 1, 1, C.ink);   // the glass ends fade into the ink: 3 px, solid then two dither steps
+    if ((r + 1) % 2 === 0) { R(ix + 1, y0 + r, 1, 1, C.ink); R(ix + W - 2, y0 + r, 1, 1, C.ink); }
+    if (r % 4 === 0) { R(ix + 2, y0 + r, 1, 1, C.ink); R(ix + W - 3, y0 + r, 1, 1, C.ink); } }
+  R(ix, y0 + 1, W, 1, C.mist); R(ix, y0 + 1, 1, 1, C.ink); R(ix + W - 1, y0 + 1, 1, 1, C.ink);
+  R(cx, y0, 1, 2, C.cream); R(cx, y0 + 16, 1, 1, C.cream);   // the fixed centre tick: notch top and bottom, never over a picture
 }
 // The world-turn clock, left of battery and radio: a small sun and "T7"; it flashes when the world turns.
 function drawClock(right) {
@@ -7030,7 +7102,9 @@ function drawClock(right) {
   if (fl) panel(x - 18, 6, w + 22, 20, C.amber);
   const part = S.exp && S.day ? dayPart() : null;   // on a walk the picture is the part of day; at the Station it stays the sun
   const pic = part && DAY_ART[part];
-  if (pic) g.drawImage(pic, x - 17, 9); else blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
+  if (pic) { const wx = x - 4 - (DB.W + 2); drawDayBar(wx, 7); text(lbl, x, 9, fl ? C.ink : C.fog); return wx - 4; }   // the day bar: a 66x17 window (glass 64)
+  DB.pos = null;   // off a walk the strip forgets its place, so it never glides on the way back in
+  blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
   text(lbl, x, 9, fl ? C.ink : C.fog); return x - 22;
 }
 function drawStatus(right) {
@@ -8650,7 +8724,7 @@ function fit() {
 window.addEventListener('resize', fit);
 // ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
 // One function sets the screen's scale (a whole-pixel screen scaled by a transform); a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
-const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-s', String(k / d * Math.min(1, (window.innerWidth || 450) / 450, (window.innerHeight || 600) / 600))); };   // a viewport smaller than the 450×600 frame (a phone opening the embed itself) shrinks the whole frame to fit, so the message box and its text stay inside; the play page's frame is 450 wide and untouched
+const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)), fw = Math.floor(450 * k / d), fh = Math.floor(600 * k / d); document.documentElement.style.setProperty('--embed-s', String(k / d * Math.min(1, (window.innerWidth || fw) / fw, (window.innerHeight || fh) / fh))); };   // fw, fh: the play page's frame in CSS px, under 450 wide at a fractional pixel ratio (it was shrunk twice there: owner #123); a viewport smaller than the 450×600 frame (a phone opening the embed itself) shrinks the whole frame to fit, so the message box and its text stay inside; the play page's frame is 450 wide and untouched
 let dprQuery = null;
 function armDpr() {
   if (dprQuery) dprQuery.removeEventListener('change', onDpr);

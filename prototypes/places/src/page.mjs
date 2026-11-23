@@ -19,6 +19,7 @@ export async function loadBaked(fetchBytes, base, id) {
 }
 
 const PLANT_PIECE = /^(sc-|shrub|bush|clump|tuft|flower|dry-tufts)/;   // the set's plant pieces (decals and props): walked through, at any height
+const NIGHT_LEVEL = LEVELS.indexOf('night'), CROWN_NIGHT_LEVEL = LEVELS.indexOf('dark2');   // the clock's night (5) and dark2 (2)
 const FEET_REACH = 8;   // a plant's base more than this above the explorer's feet is behind him (feetItem)
 const FEET_MIN_H48 = 12, FEET_SHARE = 0.5;   // a plant 12 px tall or more (the sprites are in screen pixels) covers the explorer's feet: its lower half is drawn again over them
 const same = (a, b) => { if (!a || a.length !== b.length) return false; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
@@ -143,6 +144,8 @@ export class BakedView {
   }
   // ---- sprites as cached canvases ----
   spriteCanvas(kind, frame, level, cut, cutKey) {
+    // owner bug #120 (AD's nit): the page installs the night table after the first sprites may be cached; a trunk cached before it stayed on dark2's brown while its neighbour drew the night table's navy
+    if (this.nightSeen !== this.ts.nightMap) { this.sprites.clear(); this.nightSeen = this.ts.nightMap; }
     const key = `${kind}|${frame}|${level}`;
     if (!cut && this.sprites.has(key)) return this.sprites.get(key);
     const s = this.ts.sprites[kind], T = tablesOf(this.ts), remap = level ? T[LEVELS[level]] : null;
@@ -163,7 +166,9 @@ export class BakedView {
     for (const p of cut ? cut.props : this.place.props) {
       const cx = Math.floor(p.x / 48), cy = Math.floor(p.y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!this.landmarks.has(cy * w + cx) && !visible(px, py)) continue;
-      const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), lv = level(px, py);
+      const s = this.ts.sprites[p.kind], frame = walkFrame(s, clockMs), l0 = level(px, py);
+      // owner bug #120 round 2 (AD): a tree's trunk draws through the same dark2 level as its crown at night (one object, one light); other props keep the night table
+      const lv = l0 === NIGHT_LEVEL && s.canopy >= 0 ? CROWN_NIGHT_LEVEL : l0;
       items.push({ y: this.oy * 48 + p.sortY - 43, d: () => g.drawImage(this.spriteCanvas(p.kind, frame, lv, null, undefined), org.x + p.x - s.anchor48[0], org.y + p.y - s.anchor48[1]) });
     }
     return items;
@@ -189,7 +194,8 @@ export class BakedView {
     const cutAt = cutOut(48, local), draw = (kind, x, y) => {
       const cx = Math.floor(x / 48), cy = Math.floor(y / 48), px = cx + this.ox, py = cy + this.oy;
       if (!visible(px, py)) return;
-      const s = this.ts.sprites[kind], frame = walkFrame(s, clockMs), lv = level(px, py);
+      // owner bug #120: the night table sends every crown green to the night grass, so a crown drawn through it vanishes into the ground; at night a crown takes dark2 (level 2: two steps down, its own greens kept), the ground and the trunks keep the night table
+      const s = this.ts.sprites[kind], frame = walkFrame(s, clockMs), lv = level(px, py) === NIGHT_LEVEL ? CROWN_NIGHT_LEVEL : level(px, py);
       const left = x - s.anchor48[0], top = y - s.anchor48[1];
       let cut = null;
       if (cutAt && local.some((q) => q.x > left - 22 && q.x < left + s.w48 + 22 && q.y > top - 22 && q.y < top + s.h48 + 22)) cut = (dx, dy) => cutAt(dx + left, dy + top);

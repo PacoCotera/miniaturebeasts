@@ -39,7 +39,7 @@ const FLOOD = `const OPEN = { N: 'down', S: 'up', W: 'right', E: 'left' }, D4 = 
 // 3 to 5 tiles off that are reached too; and, in the home region, how many Loikas whose three haunts and bed all lie in the first day's reach (the places within 3 cells of the start) there are.
 const HSCAN = `(() => {
   S.exp.live = {};
-  let places = 0, sites = 0, loikas = 0, firstDay = 0; const fails = [], sp = G.spawns[0], sc = cxy(sp);
+  let places = 0, sites = 0, loikas = 0, firstDay = 0; const fails = [], sp = startPlaces()[0], sc = cxy(sp);   // the first offered start (start-reach-2), not G.spawns[0]
   for (let c = 0; c < MW * MH; c++) {
     if (!G.comp[c] || G.land[c] === L.WATER || G.island[c] || !passable(c)) continue;
     places++; const key = String(c), lay = layout(key); ensureLive(key); const S0 = hauntSitesOf(lay), { solid, at } = placeReach(lay, key), stand = (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && at(x, y) && !solid(x, y);

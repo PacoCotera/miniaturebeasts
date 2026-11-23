@@ -62,7 +62,10 @@ const loadHome = () => { try { return localStorage.getItem(HOME_KEY) === "1"; } 
 const saveHome = (v) => { try { if (v) localStorage.setItem(HOME_KEY, "1"); else localStorage.removeItem(HOME_KEY); } catch { /* no storage: the Station's word is heard again at every load */ } };
 const NEWBIE = !TEST || params.has("new");   // test pages keep today's page (the Station awake) unless a test asks for the new player's (`?test&new`: test-harness flag only)
 let podHome = NEWBIE ? loadHome() : true;
-const START_OWNER = OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station";   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld
+const TAB_KEY = "mb-play-tab";   // the tab in view (Companion or Station), kept so a reload opens on it (owner bug 2026-11-23); no value = a first visit
+const loadTab = () => { try { const v = localStorage.getItem(TAB_KEY); return v === "station" || v === "companion" ? v : null; } catch { return null; } };
+const saveTab = (v) => { try { localStorage.setItem(TAB_KEY, v); } catch { /* no storage: the tab lasts the visit */ } };
+const START_OWNER = loadTab() || (OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station");   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld; a kept tab wins
 let owner = START_OWNER, devOpen = false, keysOpen = false;   // owner: the device in view, which has the keys
 let wokeNews = false;   // the Station woke while it was out of view: the switch's dot, until it comes into view
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
@@ -241,7 +244,7 @@ function setOwner(d, opts = {}) {
   const focus = opts.focus !== false, changed = d !== owner;
   if (d === "station") wokeNews = false;
   if (!changed && !opts.force) { if (d === "station") layout(); if (focus) giveKeys(d); return; }
-  owner = d; layout(); if (focus) giveKeys(d);
+  owner = d; saveTab(d); layout(); if (focus) giveKeys(d);
 }
 const order = ["companion", "station"];
 const cycle = (dir) => setOwner(order[(order.indexOf(owner) + dir + order.length) % order.length]);
