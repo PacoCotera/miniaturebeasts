@@ -27,5 +27,6 @@ test("the bar loads those six files and draws the one partOfDay names, as loaded
   assert.match(PAGE, /'day-' \+ n \+ '\.png'/, "the file is day-<part>.png");
   assert.match(PAGE, /const part = S\.exp && S\.day \? dayPart\(\) : null;/, "on a walk the part comes from dayPart; at the Station none");
   assert.match(PAGE, /const pic = part && DAY_ART\[part\];\n\s+if \(pic\) g\.drawImage\(pic, x - 17, 9\); else blit\(art\('i-sun'/, "the picture by part, else the sun");
+  assert.match(PAGE, /px\.width !== 14 \|\| px\.height !== 14/, "the loader takes 14 x 14 pictures");
   assert.ok(!/function dayPic|i-day-/.test(PAGE), "the greybox is gone");
 });
