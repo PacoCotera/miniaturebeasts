@@ -17,7 +17,8 @@ export function shot(canvas) {
 
 // The whole page as a PNG (owner bug #123: a layout bug could not be sent, the note's picture was the canvas only): the page's DOM (frame, panels, buttons) drawn by modern-screenshot with the
 // frames left out, then each frame's own canvas pixels drawn where that canvas sits on the page. CSS pixels (scale 1), so a note stays small.
-export async function pageShot(doc, win = window) {
+export async function pageShot(doc, win = window, canvasBlob = null) {   // canvasBlob: the canvas picture held at Options open, placed in the game's rect (else the frame's live canvas)
+  const held = canvasBlob ? await createImageBitmap(canvasBlob).catch(() => null) : null;
   const w = win.innerWidth, h = win.innerHeight;
   const base = await domToCanvas(doc.body, { width: w, height: h, scale: 1, backgroundColor: "#000", filter: (n) => n.tagName !== "IFRAME" && !(n.classList && (n.classList.contains("op-overlay") || n.classList.contains("op-panel"))) && !(n.hasAttribute && n.hasAttribute("data-radix-popper-content-wrapper")) });   // the Options panel opens beside the shot, so it is left out of it
   const cv = doc.createElement("canvas"); cv.width = w; cv.height = h;
@@ -27,7 +28,7 @@ export async function pageShot(doc, win = window) {
       const r = fr.getBoundingClientRect(), s = fr.contentWindow.innerWidth ? r.width / fr.contentWindow.innerWidth : 1, c = fr.contentDocument.getElementById("screen");
       if (!c || !r.width || getComputedStyle(fr).visibility === "hidden") continue;
       const cr = c.getBoundingClientRect();
-      g.drawImage(c, r.left + cr.left * s, r.top + cr.top * s, cr.width * s, cr.height * s);
+      g.drawImage(held || c, r.left + cr.left * s, r.top + cr.top * s, cr.width * s, cr.height * s);
     } catch { /* a frame that is not ready is left out */ }
   }
   return new Promise((res, rej) => cv.toBlob((b) => (b ? res({ blob: b, w, h }) : rej(new Error("no picture"))), "image/png"));

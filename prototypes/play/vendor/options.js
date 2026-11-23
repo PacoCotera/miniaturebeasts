@@ -23472,7 +23472,8 @@ var canRecordAny = () => canClip() || typeof MediaRecorder !== "undefined" && ty
 function shot(canvas) {
   return new Promise((res, rej) => canvas.toBlob((b) => b ? res(b) : rej(new Error("no picture")), "image/png"));
 }
-async function pageShot(doc, win = window) {
+async function pageShot(doc, win = window, canvasBlob = null) {
+  const held = canvasBlob ? await createImageBitmap(canvasBlob).catch(() => null) : null;
   const w = win.innerWidth, h2 = win.innerHeight;
   const base = await domToCanvas(doc.body, { width: w, height: h2, scale: 1, backgroundColor: "#000", filter: (n2) => n2.tagName !== "IFRAME" && !(n2.classList && (n2.classList.contains("op-overlay") || n2.classList.contains("op-panel"))) && !(n2.hasAttribute && n2.hasAttribute("data-radix-popper-content-wrapper")) });
   const cv = doc.createElement("canvas");
@@ -23485,7 +23486,7 @@ async function pageShot(doc, win = window) {
       const r2 = fr.getBoundingClientRect(), s2 = fr.contentWindow.innerWidth ? r2.width / fr.contentWindow.innerWidth : 1, c = fr.contentDocument.getElementById("screen");
       if (!c || !r2.width || getComputedStyle(fr).visibility === "hidden") continue;
       const cr = c.getBoundingClientRect();
-      g2.drawImage(c, r2.left + cr.left * s2, r2.top + cr.top * s2, cr.width * s2, cr.height * s2);
+      g2.drawImage(held || c, r2.left + cr.left * s2, r2.top + cr.top * s2, cr.width * s2, cr.height * s2);
     } catch {
     }
   }
@@ -23686,17 +23687,19 @@ function createController(host) {
   };
   let recTimer = 0, held = null;
   const shotOf = async (kind) => {
-    if (host.page) {
-      try {
-        const p2 = await Promise.race([pageShot(document), new Promise((_, no) => setTimeout(() => no(new Error("page picture too slow")), 8e3))]);
-        return { id: ++uid2, kind, blob: p2.blob, url: urlOf(p2.blob), w: p2.w, h: p2.h };
-      } catch {
-      }
-    }
     const c = host.getCanvas();
     if (!c) return null;
     const blob = await shot(c);
     return { id: ++uid2, kind, blob, url: urlOf(blob), w: c.width, h: c.height };
+  };
+  const pageOf = async (kind, h2) => {
+    if (!host.page) return h2;
+    try {
+      const p2 = await Promise.race([pageShot(document, window, h2 && h2.blob), new Promise((_, no) => setTimeout(() => no(new Error("page picture too slow")), 8e3))]);
+      return { id: ++uid2, kind, blob: p2.blob, url: urlOf(p2.blob), w: p2.w, h: p2.h };
+    } catch {
+      return h2;
+    }
   };
   const drop = (it) => {
     if (it && it.url) URL.revokeObjectURL(it.url);
@@ -23716,18 +23719,20 @@ function createController(host) {
     canClip,
     canRecordAny,
     // Options opened: take the played device's screen now and hold it (it is what the note starts with)
-    // The panel never waits for it (the page picture can take seconds, or never end on a slow browser): New note waits for it, not Options.
+    // Only the cheap canvas picture here; nothing heavy runs at the click (the page picture is taken at New note).
     hold() {
       held = shotOf("whole").catch(() => null);
       return held;
     },
     async newNote() {
-      const h2 = held ? await held : null;
+      const c = held ? await held : null;
       held = null;
       if (!has()) {
+        const h2 = await pageOf("whole", c);
+        if (h2 && h2 !== c) drop(c);
         for (const it of st.items) drop(it);
         emit({ items: h2 ? [h2] : [], text: "", at: Date.now(), from: host.source() });
-      } else if (h2) drop(h2);
+      } else if (c) drop(c);
       emit({ open: true, full: "" });
       api.refreshContext();
     },
