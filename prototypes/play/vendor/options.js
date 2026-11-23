@@ -28,9 +28,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/scheduler/cjs/scheduler.production.js
+// play/options/node_modules/scheduler/cjs/scheduler.production.js
 var require_scheduler_production = __commonJS({
-  "node_modules/scheduler/cjs/scheduler.production.js"(exports) {
+  "play/options/node_modules/scheduler/cjs/scheduler.production.js"(exports) {
     "use strict";
     function push(heap, node) {
       var index4 = heap.length;
@@ -301,9 +301,9 @@ var require_scheduler_production = __commonJS({
   }
 });
 
-// node_modules/scheduler/index.js
+// play/options/node_modules/scheduler/index.js
 var require_scheduler = __commonJS({
-  "node_modules/scheduler/index.js"(exports, module) {
+  "play/options/node_modules/scheduler/index.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_scheduler_production();
@@ -313,9 +313,9 @@ var require_scheduler = __commonJS({
   }
 });
 
-// node_modules/react/cjs/react.production.js
+// play/options/node_modules/react/cjs/react.production.js
 var require_react_production = __commonJS({
-  "node_modules/react/cjs/react.production.js"(exports) {
+  "play/options/node_modules/react/cjs/react.production.js"(exports) {
     "use strict";
     var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
     var REACT_PORTAL_TYPE = Symbol.for("react.portal");
@@ -765,9 +765,9 @@ var require_react_production = __commonJS({
   }
 });
 
-// node_modules/react/index.js
+// play/options/node_modules/react/index.js
 var require_react = __commonJS({
-  "node_modules/react/index.js"(exports, module) {
+  "play/options/node_modules/react/index.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_react_production();
@@ -777,9 +777,9 @@ var require_react = __commonJS({
   }
 });
 
-// node_modules/react-dom/cjs/react-dom.production.js
+// play/options/node_modules/react-dom/cjs/react-dom.production.js
 var require_react_dom_production = __commonJS({
-  "node_modules/react-dom/cjs/react-dom.production.js"(exports) {
+  "play/options/node_modules/react-dom/cjs/react-dom.production.js"(exports) {
     "use strict";
     var React45 = require_react();
     function formatProdErrorMessage(code) {
@@ -934,9 +934,9 @@ var require_react_dom_production = __commonJS({
   }
 });
 
-// node_modules/react-dom/index.js
+// play/options/node_modules/react-dom/index.js
 var require_react_dom = __commonJS({
-  "node_modules/react-dom/index.js"(exports, module) {
+  "play/options/node_modules/react-dom/index.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -960,9 +960,9 @@ var require_react_dom = __commonJS({
   }
 });
 
-// node_modules/react-dom/cjs/react-dom-client.production.js
+// play/options/node_modules/react-dom/cjs/react-dom-client.production.js
 var require_react_dom_client_production = __commonJS({
-  "node_modules/react-dom/cjs/react-dom-client.production.js"(exports) {
+  "play/options/node_modules/react-dom/cjs/react-dom-client.production.js"(exports) {
     "use strict";
     var Scheduler = require_scheduler();
     var React45 = require_react();
@@ -14506,9 +14506,9 @@ var require_react_dom_client_production = __commonJS({
   }
 });
 
-// node_modules/react-dom/client.js
+// play/options/node_modules/react-dom/client.js
 var require_client = __commonJS({
-  "node_modules/react-dom/client.js"(exports, module) {
+  "play/options/node_modules/react-dom/client.js"(exports, module) {
     "use strict";
     function checkDCE() {
       if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
@@ -14532,9 +14532,9 @@ var require_client = __commonJS({
   }
 });
 
-// node_modules/react/cjs/react-jsx-runtime.production.js
+// play/options/node_modules/react/cjs/react-jsx-runtime.production.js
 var require_react_jsx_runtime_production = __commonJS({
-  "node_modules/react/cjs/react-jsx-runtime.production.js"(exports) {
+  "play/options/node_modules/react/cjs/react-jsx-runtime.production.js"(exports) {
     "use strict";
     var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
     var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -14562,9 +14562,9 @@ var require_react_jsx_runtime_production = __commonJS({
   }
 });
 
-// node_modules/react/jsx-runtime.js
+// play/options/node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS({
-  "node_modules/react/jsx-runtime.js"(exports, module) {
+  "play/options/node_modules/react/jsx-runtime.js"(exports, module) {
     "use strict";
     if (true) {
       module.exports = require_react_jsx_runtime_production();
@@ -14574,13 +14574,13 @@ var require_jsx_runtime = __commonJS({
   }
 });
 
-// src/panel.jsx
+// play/options/src/panel.jsx
 var import_client4 = __toESM(require_client(), 1);
 
-// node_modules/react-image-crop/dist/ReactCrop.css
+// play/options/node_modules/react-image-crop/dist/ReactCrop.css
 var ReactCrop_default = '@keyframes marching-ants{0%{background-position:0 0,0 100%,0 0,100% 0}to{background-position:20px 0,-20px 100%,0 -20px,100% 20px}}:root{--rc-drag-handle-size:12px;--rc-drag-handle-mobile-size:24px;--rc-drag-handle-bg-colour:#0003;--rc-drag-bar-size:6px;--rc-border-color:#ffffffb3;--rc-focus-color:#08f}.ReactCrop{cursor:crosshair;max-width:100%;display:inline-block;position:relative}.ReactCrop *,.ReactCrop :before,.ReactCrop :after{box-sizing:border-box}.ReactCrop--disabled,.ReactCrop--locked{cursor:inherit}.ReactCrop__child-wrapper{max-height:inherit;overflow:hidden}.ReactCrop__child-wrapper>img,.ReactCrop__child-wrapper>video{max-width:100%;max-height:inherit;display:block}.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>img,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__child-wrapper>video,.ReactCrop:not(.ReactCrop--disabled) .ReactCrop__crop-selection{touch-action:none}.ReactCrop__crop-mask{pointer-events:none;width:calc(100% + .5px);height:calc(100% + .5px);position:absolute;inset:0}.ReactCrop__crop-selection{cursor:move;position:absolute;top:0;left:0;transform:translate(0,0)}.ReactCrop--disabled .ReactCrop__crop-selection{cursor:inherit}.ReactCrop--circular-crop .ReactCrop__crop-selection{border-radius:50%}.ReactCrop--circular-crop .ReactCrop__crop-selection:after{pointer-events:none;content:"";border:1px solid var(--rc-border-color);opacity:.3;position:absolute;inset:-1px}.ReactCrop--no-animate .ReactCrop__crop-selection{outline:1px dashed #fff}.ReactCrop__crop-selection:not(.ReactCrop--no-animate .ReactCrop__crop-selection){color:#fff;background-image:linear-gradient(90deg,#fff 50%,#444 50%),linear-gradient(90deg,#fff 50%,#444 50%),linear-gradient(#fff 50%,#444 50%),linear-gradient(#fff 50%,#444 50%);background-position:0 0,0 100%,0 0,100% 0;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;background-size:10px 1px,10px 1px,1px 10px,1px 10px;animation:1s linear infinite marching-ants}.ReactCrop__crop-selection:focus{outline:2px solid var(--rc-focus-color);outline-offset:-1px}.ReactCrop--invisible-crop .ReactCrop__crop-mask,.ReactCrop--invisible-crop .ReactCrop__crop-selection{display:none}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after,.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{content:"";background-color:#fff6;display:block;position:absolute}.ReactCrop__rule-of-thirds-vt:before,.ReactCrop__rule-of-thirds-vt:after{width:1px;height:100%}.ReactCrop__rule-of-thirds-vt:before{left:33.3333%}.ReactCrop__rule-of-thirds-vt:after{left:66.6667%}.ReactCrop__rule-of-thirds-hz:before,.ReactCrop__rule-of-thirds-hz:after{width:100%;height:1px}.ReactCrop__rule-of-thirds-hz:before{top:33.3333%}.ReactCrop__rule-of-thirds-hz:after{top:66.6667%}.ReactCrop__drag-handle{width:var(--rc-drag-handle-size);height:var(--rc-drag-handle-size);background-color:var(--rc-drag-handle-bg-colour);border:1px solid var(--rc-border-color);position:absolute}.ReactCrop__drag-handle:focus{background:var(--rc-focus-color)}.ReactCrop .ord-nw{cursor:nw-resize;top:0;left:0;transform:translate(-50%,-50%)}.ReactCrop .ord-n{cursor:n-resize;top:0;left:50%;transform:translate(-50%,-50%)}.ReactCrop .ord-ne{cursor:ne-resize;top:0;right:0;transform:translate(50%,-50%)}.ReactCrop .ord-e{cursor:e-resize;top:50%;right:0;transform:translate(50%,-50%)}.ReactCrop .ord-se{cursor:se-resize;bottom:0;right:0;transform:translate(50%,50%)}.ReactCrop .ord-s{cursor:s-resize;bottom:0;left:50%;transform:translate(-50%,50%)}.ReactCrop .ord-sw{cursor:sw-resize;bottom:0;left:0;transform:translate(-50%,50%)}.ReactCrop .ord-w{cursor:w-resize;top:50%;left:0;transform:translate(-50%,-50%)}.ReactCrop__disabled .ReactCrop__drag-handle{cursor:inherit}.ReactCrop__drag-bar{position:absolute}.ReactCrop__drag-bar.ord-n{width:100%;height:var(--rc-drag-bar-size);top:0;left:0;transform:translateY(-50%)}.ReactCrop__drag-bar.ord-e{width:var(--rc-drag-bar-size);height:100%;top:0;right:0;transform:translate(50%)}.ReactCrop__drag-bar.ord-s{width:100%;height:var(--rc-drag-bar-size);bottom:0;left:0;transform:translateY(50%)}.ReactCrop__drag-bar.ord-w{width:var(--rc-drag-bar-size);height:100%;top:0;left:0;transform:translate(-50%)}.ReactCrop--new-crop .ReactCrop__drag-bar,.ReactCrop--new-crop .ReactCrop__drag-handle,.ReactCrop--fixed-aspect .ReactCrop__drag-bar,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-n,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-e,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-s,.ReactCrop--fixed-aspect .ReactCrop__drag-handle.ord-w{display:none}@media (pointer:coarse){.ReactCrop .ord-n,.ReactCrop .ord-e,.ReactCrop .ord-s,.ReactCrop .ord-w{display:none}.ReactCrop__drag-handle{width:var(--rc-drag-handle-mobile-size);height:var(--rc-drag-handle-mobile-size)}}\n/*$vite$:1*/';
 
-// node_modules/idb-keyval/dist/index.js
+// play/options/node_modules/idb-keyval/dist/index.js
 function promisifyRequest(request) {
   return new Promise((resolve, reject) => {
     request.oncomplete = request.onsuccess = () => resolve(request.result);
@@ -14645,7 +14645,7 @@ function keys(customStore = defaultGetStore()) {
   });
 }
 
-// ../src/notes.mjs
+// play/src/notes.mjs
 var NOTE_ROUTE = "/caddy-api/v1/notes";
 var LIMITS = Object.freeze({ shots: 8, clips: 2, bytes: 20 * 1024 * 1024, textChars: 4e3, clipMs: 15e3, ringMs: 1e4 });
 var fmt = (s2, v = {}) => String(s2).replace(/\{(\w+)(?::ss)?\}/g, (m2, k) => m2.endsWith(":ss}") ? mss(v[k]) : v[k] ?? "");
@@ -14769,7 +14769,7 @@ var ClipRing = class {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/misc.js
+// play/options/node_modules/mediabunny/dist/modules/src/misc.js
 function assert(x) {
   if (!x) {
     throw new Error("Assertion failed.");
@@ -15239,7 +15239,7 @@ var isRecordStringString = (value) => {
   return value !== null && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype && Object.values(value).every((x) => typeof x === "string");
 };
 
-// node_modules/mediabunny/dist/modules/src/logging.js
+// play/options/node_modules/mediabunny/dist/modules/src/logging.js
 var LogLevel;
 (function(LogLevel2) {
   LogLevel2[LogLevel2["Silent"] = 0] = "Silent";
@@ -15293,7 +15293,7 @@ var Logging = class _Logging {
 Logging._level = LogLevel.Info;
 Logging._emitterInstance = null;
 
-// node_modules/mediabunny/dist/modules/src/metadata.js
+// play/options/node_modules/mediabunny/dist/modules/src/metadata.js
 var RichImageData = class {
   /** Creates a new {@link RichImageData}. */
   constructor(data, mimeType) {
@@ -15434,7 +15434,7 @@ var validateTrackDisposition = (disposition) => {
   }
 };
 
-// node_modules/mediabunny/dist/modules/shared/bitstream.js
+// play/options/node_modules/mediabunny/dist/modules/shared/bitstream.js
 var Bitstream = class _Bitstream {
   constructor(bytes2) {
     this.bytes = bytes2;
@@ -15506,7 +15506,7 @@ var Bitstream = class _Bitstream {
   }
 };
 
-// node_modules/mediabunny/dist/modules/shared/aac-misc.js
+// play/options/node_modules/mediabunny/dist/modules/shared/aac-misc.js
 var aacFrequencyTable = [
   96e3,
   88200,
@@ -15578,18 +15578,18 @@ var findAacFrequencyIndex = (sampleRate) => {
   return index4 === -1 ? 15 : index4;
 };
 
-// node_modules/mediabunny/dist/modules/shared/ac3-misc.js
+// play/options/node_modules/mediabunny/dist/modules/shared/ac3-misc.js
 var AC3_SAMPLE_RATES = [48e3, 44100, 32e3];
 var EAC3_REDUCED_SAMPLE_RATES = [24e3, 22050, 16e3];
 
-// node_modules/mediabunny/dist/modules/shared/truehd-misc.js
+// play/options/node_modules/mediabunny/dist/modules/shared/truehd-misc.js
 var TRUEHD_MAJOR_SYNC_WORD = 4168249274;
 
-// node_modules/mediabunny/dist/modules/src/version.js
+// play/options/node_modules/mediabunny/dist/modules/src/version.js
 var VERSION = "1.65.2";
 var VERSIONED_NAME = `Mediabunny v${VERSION}`;
 
-// node_modules/mediabunny/dist/modules/src/codec-data.js
+// play/options/node_modules/mediabunny/dist/modules/src/codec-data.js
 var AvcNalUnitType;
 (function(AvcNalUnitType2) {
   AvcNalUnitType2[AvcNalUnitType2["NON_IDR_SLICE"] = 1] = "NON_IDR_SLICE";
@@ -17171,7 +17171,7 @@ var buildDtsSpecificBox = (frameInfo) => {
   return bytes2;
 };
 
-// node_modules/mediabunny/dist/modules/src/subtitles.js
+// play/options/node_modules/mediabunny/dist/modules/src/subtitles.js
 var inlineTimestampRegex = /<(?:(\d{2}):)?(\d{2}):(\d{2}).(\d{3})>/g;
 var formatSubtitleTimestamp = (timestamp) => {
   const hours = Math.floor(timestamp / (60 * 60 * 1e3));
@@ -17181,7 +17181,7 @@ var formatSubtitleTimestamp = (timestamp) => {
   return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0") + "." + milliseconds.toString().padStart(3, "0");
 };
 
-// node_modules/mediabunny/dist/modules/src/packet.js
+// play/options/node_modules/mediabunny/dist/modules/src/packet.js
 var PLACEHOLDER_DATA = /* @__PURE__ */ new Uint8Array(0);
 var EncodedPacket = class _EncodedPacket {
   /** Creates a new {@link EncodedPacket} from raw bytes and timing information. */
@@ -17342,7 +17342,7 @@ var EncodedPacket = class _EncodedPacket {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-misc.js
+// play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-misc.js
 var TIMESTAMP_OFFSET = 2082844800;
 var buildIsobmffMimeType = (info) => {
   const base = info.hasVideo ? "video/" : info.hasAudio ? "audio/" : "application/";
@@ -17354,7 +17354,7 @@ var buildIsobmffMimeType = (info) => {
   return string;
 };
 
-// node_modules/mediabunny/dist/modules/src/adts/adts-reader.js
+// play/options/node_modules/mediabunny/dist/modules/src/adts/adts-reader.js
 var MIN_ADTS_FRAME_HEADER_SIZE = 7;
 var MAX_ADTS_FRAME_HEADER_SIZE = 9;
 var readAdtsFrameHeader = (slice) => {
@@ -17415,7 +17415,7 @@ var readAdtsFrameHeader = (slice) => {
   };
 };
 
-// node_modules/mediabunny/dist/modules/src/reader.js
+// play/options/node_modules/mediabunny/dist/modules/src/reader.js
 var FileSlice = class _FileSlice {
   constructor(bytes2, view2, offset4, start, end) {
     this.bytes = bytes2;
@@ -17470,11 +17470,11 @@ var readU16Be = (slice) => {
   return value;
 };
 
-// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-reader.js
+// play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-reader.js
 var MIN_BOX_HEADER_SIZE = 8;
 var MAX_BOX_HEADER_SIZE = 16;
 
-// node_modules/mediabunny/dist/modules/src/media-source.js
+// play/options/node_modules/mediabunny/dist/modules/src/media-source.js
 var MediaSource = class {
   constructor() {
     this._connectedTrack = null;
@@ -17606,7 +17606,7 @@ var SubtitleSource = class extends MediaSource {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/codec.js
+// play/options/node_modules/mediabunny/dist/modules/src/codec.js
 var VIDEO_CODECS = [
   "avc",
   "hevc",
@@ -18017,7 +18017,7 @@ var validateSubtitleMetadata = (metadata) => {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/muxer.js
+// play/options/node_modules/mediabunny/dist/modules/src/muxer.js
 var Muxer = class {
   constructor(output) {
     this.mutex = new AsyncMutex();
@@ -18068,7 +18068,7 @@ var PacketOrderValidator = class {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-boxes.js
+// play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-boxes.js
 var IsobmffBoxWriter = class {
   constructor(writer) {
     this.writer = writer;
@@ -19924,7 +19924,7 @@ var getLanguageCodeInt = (code) => {
   return language;
 };
 
-// node_modules/mediabunny/dist/modules/src/writer.js
+// play/options/node_modules/mediabunny/dist/modules/src/writer.js
 var Writer = class {
   constructor(target, isMonotonic) {
     this.finalized = false;
@@ -20016,7 +20016,7 @@ var Writer = class {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/target.js
+// play/options/node_modules/mediabunny/dist/modules/src/target.js
 var Target = class extends EventEmitter {
   constructor() {
     super(...arguments);
@@ -20183,7 +20183,7 @@ var PathedTarget = class {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/isobmff/isobmff-muxer.js
+// play/options/node_modules/mediabunny/dist/modules/src/isobmff/isobmff-muxer.js
 var GLOBAL_TIMESCALE = 57600;
 var MIN_CHUNK_DURATION = 0.5;
 var getTrackMetadata = (trackData) => {
@@ -21294,7 +21294,7 @@ var IsobmffMuxer = class extends Muxer {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/output-format.js
+// play/options/node_modules/mediabunny/dist/modules/src/output-format.js
 var OutputFormat = class {
   /**
    * Whether this output format supports video rotation metadata.
@@ -21497,7 +21497,7 @@ var MovOutputFormat = class extends IsobmffOutputFormat {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/output.js
+// play/options/node_modules/mediabunny/dist/modules/src/output.js
 var ALL_TRACK_TYPES = ["video", "audio", "subtitle"];
 var OutputTrack = class _OutputTrack {
   /** @internal */
@@ -22036,1460 +22036,22 @@ var Output = class extends EventEmitter {
   }
 };
 
-// node_modules/mediabunny/dist/modules/src/index.js
+// play/options/node_modules/mediabunny/dist/modules/src/index.js
 var MEDIABUNNY_LOADED_SYMBOL = Symbol.for("mediabunny loaded");
 if (globalThis[MEDIABUNNY_LOADED_SYMBOL]) {
   Logging._error("[WARNING]\nMediabunny was loaded twice. This will likely cause Mediabunny not to work correctly. Check if multiple dependencies are importing different versions of Mediabunny, or if something is being bundled incorrectly.");
 }
 globalThis[MEDIABUNNY_LOADED_SYMBOL] = true;
 
-// node_modules/modern-screenshot/dist/index.mjs
-var _P = "p".charCodeAt(0);
-var _H = "H".charCodeAt(0);
-var _Y = "Y".charCodeAt(0);
-var _S = "s".charCodeAt(0);
-var PREFIX = "[modern-screenshot]";
-var IN_BROWSER = typeof window !== "undefined";
-var SUPPORT_WEB_WORKER = IN_BROWSER && "Worker" in window;
-var SUPPORT_ATOB = IN_BROWSER && "atob" in window;
-var SUPPORT_BTOA = IN_BROWSER && "btoa" in window;
-var USER_AGENT = IN_BROWSER ? window.navigator?.userAgent : "";
-var IN_CHROME = USER_AGENT.includes("Chrome");
-var IN_SAFARI = USER_AGENT.includes("AppleWebKit") && !IN_CHROME;
-var IN_FIREFOX = USER_AGENT.includes("Firefox");
-var isContext = (value) => value && "__CONTEXT__" in value;
-var isCssFontFaceRule = (rule) => rule.constructor.name === "CSSFontFaceRule";
-var isCSSImportRule = (rule) => rule.constructor.name === "CSSImportRule";
-var isLayerBlockRule = (rule) => rule.constructor.name === "CSSLayerBlockRule";
-var isElementNode = (node) => node.nodeType === 1;
-var isSVGElementNode = (node) => typeof node.className === "object";
-var isSVGImageElementNode = (node) => node.tagName === "image";
-var isSVGUseElementNode = (node) => node.tagName === "use";
-var isHTMLElementNode = (node) => isElementNode(node) && typeof node.style !== "undefined" && !isSVGElementNode(node);
-var isCommentNode = (node) => node.nodeType === 8;
-var isTextNode = (node) => node.nodeType === 3;
-var isImageElement = (node) => node.tagName === "IMG";
-var isVideoElement = (node) => node.tagName === "VIDEO";
-var isCanvasElement = (node) => node.tagName === "CANVAS";
-var isTextareaElement = (node) => node.tagName === "TEXTAREA";
-var isInputElement = (node) => node.tagName === "INPUT";
-var isStyleElement = (node) => node.tagName === "STYLE";
-var isScriptElement = (node) => node.tagName === "SCRIPT";
-var isSelectElement = (node) => node.tagName === "SELECT";
-var isSlotElement = (node) => node.tagName === "SLOT";
-var isIFrameElement = (node) => node.tagName === "IFRAME";
-var consoleWarn = (...args) => console.warn(PREFIX, ...args);
-function supportWebp(ownerDocument) {
-  const canvas = ownerDocument?.createElement?.("canvas");
-  if (canvas) {
-    canvas.height = canvas.width = 1;
-  }
-  return Boolean(canvas) && "toDataURL" in canvas && Boolean(canvas.toDataURL("image/webp").includes("image/webp"));
-}
-var isDataUrl = (url2) => url2.startsWith("data:");
-function resolveUrl(url2, baseUrl) {
-  if (url2.match(/^[a-z]+:\/\//i))
-    return url2;
-  if (IN_BROWSER && url2.match(/^\/\//))
-    return window.location.protocol + url2;
-  if (url2.match(/^[a-z]+:/i))
-    return url2;
-  if (!IN_BROWSER)
-    return url2;
-  const doc = getDocument().implementation.createHTMLDocument();
-  const base = doc.createElement("base");
-  const a2 = doc.createElement("a");
-  doc.head.appendChild(base);
-  doc.body.appendChild(a2);
-  if (baseUrl)
-    base.href = baseUrl;
-  a2.href = url2;
-  return a2.href;
-}
-function getDocument(target) {
-  return (target && isElementNode(target) ? target?.ownerDocument : target) ?? window.document;
-}
-var XMLNS = "http://www.w3.org/2000/svg";
-function createSvg(width, height, ownerDocument) {
-  const svg = getDocument(ownerDocument).createElementNS(XMLNS, "svg");
-  svg.setAttributeNS(null, "width", width.toString());
-  svg.setAttributeNS(null, "height", height.toString());
-  svg.setAttributeNS(null, "viewBox", `0 0 ${width} ${height}`);
-  return svg;
-}
-function svgToDataUrl(svg, removeControlCharacter) {
-  let xhtml = new XMLSerializer().serializeToString(svg);
-  if (removeControlCharacter) {
-    xhtml = xhtml.replace(/[\u0000-\u0008\v\f\u000E-\u001F\uD800-\uDFFF\uFFFE\uFFFF]/gu, "");
-  }
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(xhtml)}`;
-}
-function readBlob(blob, type) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(reader.error);
-    reader.onabort = () => reject(new Error(`Failed read blob to ${type}`));
-    if (type === "dataUrl") {
-      reader.readAsDataURL(blob);
-    } else if (type === "arrayBuffer") {
-      reader.readAsArrayBuffer(blob);
-    }
-  });
-}
-var blobToDataUrl = (blob) => readBlob(blob, "dataUrl");
-function createImage(url2, ownerDocument) {
-  const img = getDocument(ownerDocument).createElement("img");
-  img.decoding = "sync";
-  img.loading = "eager";
-  img.src = url2;
-  return img;
-}
-function loadMedia(media, options) {
-  return new Promise((resolve) => {
-    const { timeout, ownerDocument, onError: userOnError, onWarn } = options ?? {};
-    const node = typeof media === "string" ? createImage(media, getDocument(ownerDocument)) : media;
-    let timer = null;
-    let removeEventListeners = null;
-    function onResolve() {
-      resolve(node);
-      timer && clearTimeout(timer);
-      removeEventListeners?.();
-    }
-    if (timeout) {
-      timer = setTimeout(onResolve, timeout);
-    }
-    if (isVideoElement(node)) {
-      const currentSrc = node.currentSrc || node.src;
-      if (!currentSrc) {
-        if (node.poster) {
-          return loadMedia(node.poster, options).then(resolve);
-        }
-        return onResolve();
-      }
-      if (node.readyState >= 2) {
-        return onResolve();
-      }
-      const onLoadeddata = onResolve;
-      const onError = (error) => {
-        onWarn?.(
-          "Failed video load",
-          currentSrc,
-          error
-        );
-        userOnError?.(error);
-        onResolve();
-      };
-      removeEventListeners = () => {
-        node.removeEventListener("loadeddata", onLoadeddata);
-        node.removeEventListener("error", onError);
-      };
-      node.addEventListener("loadeddata", onLoadeddata, { once: true });
-      node.addEventListener("error", onError, { once: true });
-    } else {
-      const currentSrc = isSVGImageElementNode(node) ? node.href.baseVal : node.currentSrc || node.src;
-      if (!currentSrc) {
-        return onResolve();
-      }
-      const onLoad = async () => {
-        if (isImageElement(node) && "decode" in node) {
-          try {
-            await node.decode();
-          } catch (error) {
-            onWarn?.(
-              "Failed to decode image, trying to render anyway",
-              node.dataset.originalSrc || currentSrc,
-              error
-            );
-          }
-        }
-        onResolve();
-      };
-      const onError = (error) => {
-        onWarn?.(
-          "Failed image load",
-          node.dataset.originalSrc || currentSrc,
-          error
-        );
-        onResolve();
-      };
-      if (isImageElement(node) && node.complete) {
-        return onLoad();
-      }
-      removeEventListeners = () => {
-        node.removeEventListener("load", onLoad);
-        node.removeEventListener("error", onError);
-      };
-      node.addEventListener("load", onLoad, { once: true });
-      node.addEventListener("error", onError, { once: true });
-    }
-  });
-}
-async function waitUntilLoad(node, options) {
-  if (isHTMLElementNode(node)) {
-    if (isImageElement(node) || isVideoElement(node)) {
-      await loadMedia(node, options);
-    } else {
-      await Promise.all(
-        ["img", "video"].flatMap((selectors) => {
-          return Array.from(node.querySelectorAll(selectors)).map((el) => loadMedia(el, options));
-        })
-      );
-    }
-  }
-}
-var uuid = /* @__PURE__ */ (function uuid2() {
-  let counter = 0;
-  const random = () => `0000${(Math.random() * 36 ** 4 << 0).toString(36)}`.slice(-4);
-  return () => {
-    counter += 1;
-    return `u${random()}${counter}`;
-  };
-})();
-function splitFontFamily(fontFamily) {
-  return fontFamily?.split(",").map((val) => val.trim().replace(/"|'/g, "").toLowerCase()).filter(Boolean);
-}
-var uid = 0;
-function createLogger(debug) {
-  const prefix = `${PREFIX}[#${uid}]`;
-  uid++;
-  return {
-    // eslint-disable-next-line no-console
-    time: (label) => debug && console.time(`${prefix} ${label}`),
-    // eslint-disable-next-line no-console
-    timeEnd: (label) => debug && console.timeEnd(`${prefix} ${label}`),
-    warn: (...args) => debug && consoleWarn(...args)
-  };
-}
-function getDefaultRequestInit(bypassingCache) {
-  return {
-    cache: bypassingCache ? "no-cache" : "force-cache"
-  };
-}
-async function orCreateContext(node, options) {
-  return isContext(node) ? node : createContext(node, { ...options, autoDestruct: true });
-}
-async function createContext(node, options) {
-  const { scale = 1, workerUrl, workerNumber = 1 } = options || {};
-  const debug = Boolean(options?.debug);
-  const features = options?.features ?? true;
-  const ownerDocument = node.ownerDocument ?? (IN_BROWSER ? window.document : void 0);
-  const ownerWindow = node.ownerDocument?.defaultView ?? (IN_BROWSER ? window : void 0);
-  const requests = /* @__PURE__ */ new Map();
-  const context = {
-    // Options
-    width: 0,
-    height: 0,
-    quality: 1,
-    type: "image/png",
-    scale,
-    backgroundColor: null,
-    style: null,
-    filter: null,
-    maximumCanvasSize: 0,
-    timeout: 3e4,
-    progress: null,
-    debug,
-    fetch: {
-      requestInit: getDefaultRequestInit(options?.fetch?.bypassingCache),
-      placeholderImage: "data:image/png;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-      bypassingCache: false,
-      ...options?.fetch
-    },
-    fetchFn: null,
-    font: {},
-    drawImageInterval: 100,
-    workerUrl: null,
-    workerNumber,
-    onCloneEachNode: null,
-    onCloneNode: null,
-    onEmbedNode: null,
-    onCreateForeignObjectSvg: null,
-    includeStyleProperties: null,
-    autoDestruct: false,
-    ...options,
-    // InternalContext
-    __CONTEXT__: true,
-    log: createLogger(debug),
-    node,
-    ownerDocument,
-    ownerWindow,
-    dpi: scale === 1 ? null : 96 * scale,
-    svgStyleElement: createStyleElement(ownerDocument),
-    svgDefsElement: ownerDocument?.createElementNS(XMLNS, "defs"),
-    svgStyles: /* @__PURE__ */ new Map(),
-    defaultComputedStyles: /* @__PURE__ */ new Map(),
-    workers: [
-      ...Array.from({
-        length: SUPPORT_WEB_WORKER && workerUrl && workerNumber ? workerNumber : 0
-      })
-    ].map(() => {
-      try {
-        const worker = new Worker(workerUrl);
-        worker.onmessage = async (event) => {
-          const { url: url2, result } = event.data;
-          if (result) {
-            requests.get(url2)?.resolve?.(result);
-          } else {
-            requests.get(url2)?.reject?.(new Error(`Error receiving message from worker: ${url2}`));
-          }
-        };
-        worker.onmessageerror = (event) => {
-          const { url: url2 } = event.data;
-          requests.get(url2)?.reject?.(new Error(`Error receiving message from worker: ${url2}`));
-        };
-        return worker;
-      } catch (error) {
-        context.log.warn("Failed to new Worker", error);
-        return null;
-      }
-    }).filter(Boolean),
-    fontFamilies: /* @__PURE__ */ new Map(),
-    fontCssTexts: /* @__PURE__ */ new Map(),
-    acceptOfImage: `${[
-      supportWebp(ownerDocument) && "image/webp",
-      "image/svg+xml",
-      "image/*",
-      "*/*"
-    ].filter(Boolean).join(",")};q=0.8`,
-    requests,
-    drawImageCount: 0,
-    tasks: [],
-    features,
-    isEnable: (key) => {
-      if (key === "restoreScrollPosition") {
-        return typeof features === "boolean" ? false : features[key] ?? false;
-      }
-      if (typeof features === "boolean") {
-        return features;
-      }
-      return features[key] ?? true;
-    },
-    shadowRoots: []
-  };
-  context.log.time("wait until load");
-  await waitUntilLoad(node, { timeout: context.timeout, onWarn: context.log.warn });
-  context.log.timeEnd("wait until load");
-  const { width, height } = resolveBoundingBox(node, context);
-  context.width = width;
-  context.height = height;
-  return context;
-}
-function createStyleElement(ownerDocument) {
-  if (!ownerDocument)
-    return void 0;
-  const style = ownerDocument.createElement("style");
-  const cssText = style.ownerDocument.createTextNode(`
-.______background-clip--text {
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-`);
-  style.appendChild(cssText);
-  return style;
-}
-function resolveBoundingBox(node, context) {
-  let { width, height } = context;
-  if (isElementNode(node) && (!width || !height)) {
-    const box2 = node.getBoundingClientRect();
-    width = width || box2.width || Number(node.getAttribute("width")) || 0;
-    height = height || box2.height || Number(node.getAttribute("height")) || 0;
-  }
-  return { width, height };
-}
-async function imageToCanvas(image, context) {
-  const {
-    log,
-    timeout,
-    drawImageCount,
-    drawImageInterval
-  } = context;
-  log.time("image to canvas");
-  const loaded = await loadMedia(image, { timeout, onWarn: context.log.warn });
-  const { canvas, context2d } = createCanvas(image.ownerDocument, context);
-  const drawImage = () => {
-    try {
-      context2d?.drawImage(loaded, 0, 0, canvas.width, canvas.height);
-    } catch (error) {
-      context.log.warn("Failed to drawImage", error);
-    }
-  };
-  drawImage();
-  if (context.isEnable("fixSvgXmlDecode")) {
-    for (let i2 = 0; i2 < drawImageCount; i2++) {
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          context2d?.clearRect(0, 0, canvas.width, canvas.height);
-          drawImage();
-          resolve();
-        }, i2 + drawImageInterval);
-      });
-    }
-  }
-  context.drawImageCount = 0;
-  log.timeEnd("image to canvas");
-  return canvas;
-}
-function createCanvas(ownerDocument, context) {
-  const { width, height, scale, backgroundColor, maximumCanvasSize: max2 } = context;
-  const canvas = ownerDocument.createElement("canvas");
-  canvas.width = Math.floor(width * scale);
-  canvas.height = Math.floor(height * scale);
-  canvas.style.width = `${width}px`;
-  canvas.style.height = `${height}px`;
-  if (max2) {
-    if (canvas.width > max2 || canvas.height > max2) {
-      if (canvas.width > max2 && canvas.height > max2) {
-        if (canvas.width > canvas.height) {
-          canvas.height *= max2 / canvas.width;
-          canvas.width = max2;
-        } else {
-          canvas.width *= max2 / canvas.height;
-          canvas.height = max2;
-        }
-      } else if (canvas.width > max2) {
-        canvas.height *= max2 / canvas.width;
-        canvas.width = max2;
-      } else {
-        canvas.width *= max2 / canvas.height;
-        canvas.height = max2;
-      }
-    }
-  }
-  const context2d = canvas.getContext("2d");
-  if (context2d && backgroundColor) {
-    context2d.fillStyle = backgroundColor;
-    context2d.fillRect(0, 0, canvas.width, canvas.height);
-  }
-  return { canvas, context2d };
-}
-function cloneCanvas(canvas, context) {
-  if (canvas.ownerDocument) {
-    try {
-      const dataURL = canvas.toDataURL();
-      if (dataURL !== "data:,") {
-        return createImage(dataURL, canvas.ownerDocument);
-      }
-    } catch (error) {
-      context.log.warn("Failed to clone canvas", error);
-    }
-  }
-  const cloned = canvas.cloneNode(false);
-  const ctx = canvas.getContext("2d");
-  const clonedCtx = cloned.getContext("2d");
-  try {
-    if (ctx && clonedCtx) {
-      clonedCtx.putImageData(
-        ctx.getImageData(0, 0, canvas.width, canvas.height),
-        0,
-        0
-      );
-    }
-    return cloned;
-  } catch (error) {
-    context.log.warn("Failed to clone canvas", error);
-  }
-  return cloned;
-}
-function cloneIframe(iframe, context) {
-  try {
-    if (iframe?.contentDocument?.documentElement) {
-      return cloneNode(iframe.contentDocument.documentElement, context);
-    }
-  } catch (error) {
-    context.log.warn("Failed to clone iframe", error);
-  }
-  return iframe.cloneNode(false);
-}
-function cloneImage(image) {
-  const cloned = image.cloneNode(false);
-  if (image.currentSrc && image.currentSrc !== image.src) {
-    cloned.src = image.currentSrc;
-    cloned.srcset = "";
-  }
-  if (cloned.loading === "lazy") {
-    cloned.loading = "eager";
-  }
-  return cloned;
-}
-async function cloneVideo(video, context) {
-  if (video.ownerDocument && !video.currentSrc && video.poster) {
-    return createImage(video.poster, video.ownerDocument);
-  }
-  const cloned = video.cloneNode(false);
-  cloned.crossOrigin = "anonymous";
-  if (video.currentSrc && video.currentSrc !== video.src) {
-    cloned.src = video.currentSrc;
-  }
-  const ownerDocument = cloned.ownerDocument;
-  if (ownerDocument) {
-    let canPlay = true;
-    await loadMedia(cloned, { onError: () => canPlay = false, onWarn: context.log.warn });
-    if (!canPlay) {
-      if (video.poster) {
-        return createImage(video.poster, video.ownerDocument);
-      }
-      return cloned;
-    }
-    cloned.currentTime = video.currentTime;
-    await new Promise((resolve) => {
-      cloned.addEventListener("seeked", resolve, { once: true });
-    });
-    const canvas = ownerDocument.createElement("canvas");
-    canvas.width = video.offsetWidth;
-    canvas.height = video.offsetHeight;
-    try {
-      const ctx = canvas.getContext("2d");
-      if (ctx)
-        ctx.drawImage(cloned, 0, 0, canvas.width, canvas.height);
-    } catch (error) {
-      context.log.warn("Failed to clone video", error);
-      if (video.poster) {
-        return createImage(video.poster, video.ownerDocument);
-      }
-      return cloned;
-    }
-    return cloneCanvas(canvas, context);
-  }
-  return cloned;
-}
-function cloneElement(node, context) {
-  if (isCanvasElement(node)) {
-    return cloneCanvas(node, context);
-  }
-  if (isIFrameElement(node)) {
-    return cloneIframe(node, context);
-  }
-  if (isImageElement(node)) {
-    return cloneImage(node);
-  }
-  if (isVideoElement(node)) {
-    return cloneVideo(node, context);
-  }
-  return node.cloneNode(false);
-}
-function getSandBox(context) {
-  let sandbox = context.sandbox;
-  if (!sandbox) {
-    const { ownerDocument } = context;
-    try {
-      if (ownerDocument) {
-        sandbox = ownerDocument.createElement("iframe");
-        sandbox.id = `__SANDBOX__${uuid()}`;
-        sandbox.width = "0";
-        sandbox.height = "0";
-        sandbox.style.visibility = "hidden";
-        sandbox.style.position = "fixed";
-        ownerDocument.body.appendChild(sandbox);
-        sandbox.srcdoc = '<!DOCTYPE html><meta charset="UTF-8"><title></title><body>';
-        context.sandbox = sandbox;
-      }
-    } catch (error) {
-      context.log.warn("Failed to getSandBox", error);
-    }
-  }
-  return sandbox;
-}
-var ignoredStyles = [
-  "width",
-  "height",
-  "-webkit-text-fill-color"
-];
-var includedAttributes = [
-  "stroke",
-  "fill"
-];
-function getDefaultStyle(node, pseudoElement, context) {
-  const { defaultComputedStyles } = context;
-  const nodeName = node.nodeName.toLowerCase();
-  const isSvgNode = isSVGElementNode(node) && nodeName !== "svg";
-  const attributes = isSvgNode ? includedAttributes.map((name) => [name, node.getAttribute(name)]).filter(([, value]) => value !== null) : [];
-  const key = [
-    isSvgNode && "svg",
-    nodeName,
-    attributes.map((name, value) => `${name}=${value}`).join(","),
-    pseudoElement
-  ].filter(Boolean).join(":");
-  if (defaultComputedStyles.has(key))
-    return defaultComputedStyles.get(key);
-  const sandbox = getSandBox(context);
-  const sandboxWindow = sandbox?.contentWindow;
-  if (!sandboxWindow)
-    return /* @__PURE__ */ new Map();
-  const sandboxDocument = sandboxWindow?.document;
-  let root;
-  let el;
-  if (isSvgNode) {
-    root = sandboxDocument.createElementNS(XMLNS, "svg");
-    el = root.ownerDocument.createElementNS(root.namespaceURI, nodeName);
-    attributes.forEach(([name, value]) => {
-      el.setAttributeNS(null, name, value);
-    });
-    root.appendChild(el);
-  } else {
-    root = el = sandboxDocument.createElement(nodeName);
-  }
-  el.textContent = " ";
-  sandboxDocument.body.appendChild(root);
-  const computedStyle = sandboxWindow.getComputedStyle(el, pseudoElement);
-  const styles = /* @__PURE__ */ new Map();
-  for (let len = computedStyle.length, i2 = 0; i2 < len; i2++) {
-    const name = computedStyle.item(i2);
-    if (ignoredStyles.includes(name))
-      continue;
-    styles.set(name, computedStyle.getPropertyValue(name));
-  }
-  sandboxDocument.body.removeChild(root);
-  defaultComputedStyles.set(key, styles);
-  return styles;
-}
-function getDiffStyle(style, defaultStyle, includeStyleProperties) {
-  const diffStyle = /* @__PURE__ */ new Map();
-  const prefixs = [];
-  const prefixTree = /* @__PURE__ */ new Map();
-  if (includeStyleProperties) {
-    for (const name of includeStyleProperties) {
-      applyTo(name);
-    }
-  } else {
-    for (let len = style.length, i2 = 0; i2 < len; i2++) {
-      const name = style.item(i2);
-      applyTo(name);
-    }
-  }
-  for (let len = prefixs.length, i2 = 0; i2 < len; i2++) {
-    prefixTree.get(prefixs[i2])?.forEach((value, name) => diffStyle.set(name, value));
-  }
-  function applyTo(name) {
-    const value = style.getPropertyValue(name);
-    const priority = style.getPropertyPriority(name);
-    const subIndex = name.lastIndexOf("-");
-    const prefix = subIndex > -1 ? name.substring(0, subIndex) : void 0;
-    if (prefix) {
-      let map = prefixTree.get(prefix);
-      if (!map) {
-        map = /* @__PURE__ */ new Map();
-        prefixTree.set(prefix, map);
-      }
-      map.set(name, [value, priority]);
-    }
-    if (defaultStyle.get(name) === value && !priority)
-      return;
-    if (prefix) {
-      prefixs.push(prefix);
-    } else {
-      diffStyle.set(name, [value, priority]);
-    }
-  }
-  return diffStyle;
-}
-function copyCssStyles(node, cloned, isRoot, context) {
-  const { ownerWindow, includeStyleProperties, currentParentNodeStyle } = context;
-  const clonedStyle = cloned.style;
-  const computedStyle = ownerWindow.getComputedStyle(node);
-  const defaultStyle = getDefaultStyle(node, null, context);
-  currentParentNodeStyle?.forEach((_, key) => {
-    defaultStyle.delete(key);
-  });
-  const style = getDiffStyle(computedStyle, defaultStyle, includeStyleProperties);
-  style.delete("transition-property");
-  style.delete("all");
-  style.delete("d");
-  style.delete("content");
-  if (isRoot) {
-    style.delete("position");
-    style.delete("margin-top");
-    style.delete("margin-right");
-    style.delete("margin-bottom");
-    style.delete("margin-left");
-    style.delete("margin-block-start");
-    style.delete("margin-block-end");
-    style.delete("margin-inline-start");
-    style.delete("margin-inline-end");
-    style.set("box-sizing", ["border-box", ""]);
-  }
-  if (style.get("background-clip")?.[0] === "text") {
-    cloned.classList.add("______background-clip--text");
-  }
-  if (IN_CHROME) {
-    if (!style.has("font-kerning"))
-      style.set("font-kerning", ["normal", ""]);
-    if ((style.get("overflow-x")?.[0] === "hidden" || style.get("overflow-y")?.[0] === "hidden") && style.get("text-overflow")?.[0] === "ellipsis" && node.scrollWidth === node.clientWidth) {
-      style.set("text-overflow", ["clip", ""]);
-    }
-  }
-  for (let len = clonedStyle.length, i2 = 0; i2 < len; i2++) {
-    clonedStyle.removeProperty(clonedStyle.item(i2));
-  }
-  style.forEach(([value, priority], name) => {
-    clonedStyle.setProperty(name, value, priority);
-  });
-  return style;
-}
-function copyInputValue(node, cloned) {
-  if (isTextareaElement(node) || isInputElement(node) || isSelectElement(node)) {
-    cloned.setAttribute("value", node.value);
-  }
-}
-var pseudoClasses = [
-  "::before",
-  "::after"
-  // '::placeholder', TODO
-];
-var scrollbarPseudoClasses = [
-  "::-webkit-scrollbar",
-  "::-webkit-scrollbar-button",
-  // '::-webkit-scrollbar:horizontal', TODO
-  "::-webkit-scrollbar-thumb",
-  "::-webkit-scrollbar-track",
-  "::-webkit-scrollbar-track-piece",
-  // '::-webkit-scrollbar:vertical', TODO
-  "::-webkit-scrollbar-corner",
-  "::-webkit-resizer"
-];
-function copyPseudoClass(node, cloned, copyScrollbar, context, addWordToFontFamilies) {
-  const { ownerWindow, svgStyleElement, svgStyles, currentNodeStyle } = context;
-  if (!svgStyleElement || !ownerWindow)
-    return;
-  function copyBy(pseudoClass) {
-    const computedStyle = ownerWindow.getComputedStyle(node, pseudoClass);
-    let content = computedStyle.getPropertyValue("content");
-    if (!content || content === "none")
-      return;
-    addWordToFontFamilies?.(content);
-    content = content.replace(/(')|(")|(counter\(.+\))/g, "");
-    const klasses = [uuid()];
-    const defaultStyle = getDefaultStyle(node, pseudoClass, context);
-    currentNodeStyle?.forEach((_, key) => {
-      defaultStyle.delete(key);
-    });
-    const style = getDiffStyle(computedStyle, defaultStyle, context.includeStyleProperties);
-    style.delete("content");
-    style.delete("-webkit-locale");
-    if (style.get("background-clip")?.[0] === "text") {
-      cloned.classList.add("______background-clip--text");
-    }
-    const cloneStyle = [
-      `content: '${content}';`
-    ];
-    style.forEach(([value, priority], name) => {
-      cloneStyle.push(`${name}: ${value}${priority ? " !important" : ""};`);
-    });
-    if (cloneStyle.length === 1)
-      return;
-    try {
-      cloned.className = [cloned.className, ...klasses].join(" ");
-    } catch (err) {
-      context.log.warn("Failed to copyPseudoClass", err);
-      return;
-    }
-    const cssText = cloneStyle.join("\n  ");
-    let allClasses = svgStyles.get(cssText);
-    if (!allClasses) {
-      allClasses = [];
-      svgStyles.set(cssText, allClasses);
-    }
-    allClasses.push(`.${klasses[0]}${pseudoClass}`);
-  }
-  pseudoClasses.forEach(copyBy);
-  if (copyScrollbar)
-    scrollbarPseudoClasses.forEach(copyBy);
-}
-var excludeParentNodes = /* @__PURE__ */ new Set([
-  "symbol"
-  // test/fixtures/svg.symbol.html
-]);
-async function appendChildNode(node, cloned, child, context, addWordToFontFamilies) {
-  if (isElementNode(child) && (isStyleElement(child) || isScriptElement(child)))
-    return;
-  if (context.filter && !context.filter(child))
-    return;
-  if (excludeParentNodes.has(cloned.nodeName) || excludeParentNodes.has(child.nodeName)) {
-    context.currentParentNodeStyle = void 0;
-  } else {
-    context.currentParentNodeStyle = context.currentNodeStyle;
-  }
-  const childCloned = await cloneNode(child, context, false, addWordToFontFamilies);
-  if (context.isEnable("restoreScrollPosition")) {
-    restoreScrollPosition(node, childCloned);
-  }
-  cloned.appendChild(childCloned);
-}
-async function cloneChildNodes(node, cloned, context, addWordToFontFamilies) {
-  let firstChild = node.firstChild;
-  if (isElementNode(node)) {
-    if (node.shadowRoot) {
-      firstChild = node.shadowRoot?.firstChild;
-      context.shadowRoots.push(node.shadowRoot);
-    }
-  }
-  for (let child = firstChild; child; child = child.nextSibling) {
-    if (isCommentNode(child))
-      continue;
-    if (isElementNode(child) && isSlotElement(child) && typeof child.assignedNodes === "function") {
-      const nodes = child.assignedNodes();
-      for (let i2 = 0; i2 < nodes.length; i2++) {
-        await appendChildNode(node, cloned, nodes[i2], context, addWordToFontFamilies);
-      }
-    } else {
-      await appendChildNode(node, cloned, child, context, addWordToFontFamilies);
-    }
-  }
-}
-function restoreScrollPosition(node, chlidCloned) {
-  if (!isHTMLElementNode(node) || !isHTMLElementNode(chlidCloned))
-    return;
-  const { scrollTop, scrollLeft } = node;
-  if (!scrollTop && !scrollLeft) {
-    return;
-  }
-  const { transform } = chlidCloned.style;
-  const matrix = new DOMMatrix(transform);
-  const { a: a2, b, c, d: d2 } = matrix;
-  matrix.a = 1;
-  matrix.b = 0;
-  matrix.c = 0;
-  matrix.d = 1;
-  matrix.translateSelf(-scrollLeft, -scrollTop);
-  matrix.a = a2;
-  matrix.b = b;
-  matrix.c = c;
-  matrix.d = d2;
-  chlidCloned.style.transform = matrix.toString();
-}
-function applyCssStyleWithOptions(cloned, context) {
-  const { backgroundColor, width, height, style: styles } = context;
-  const clonedStyle = cloned.style;
-  if (backgroundColor)
-    clonedStyle.setProperty("background-color", backgroundColor, "important");
-  if (width)
-    clonedStyle.setProperty("width", `${width}px`, "important");
-  if (height)
-    clonedStyle.setProperty("height", `${height}px`, "important");
-  if (styles) {
-    for (const name in styles) clonedStyle[name] = styles[name];
-  }
-}
-var NORMAL_ATTRIBUTE_RE = /^[\w-:]+$/;
-async function cloneNode(node, context, isRoot = false, addWordToFontFamilies) {
-  const { ownerDocument, ownerWindow, fontFamilies, onCloneEachNode } = context;
-  if (ownerDocument && isTextNode(node)) {
-    if (addWordToFontFamilies && /\S/.test(node.data)) {
-      addWordToFontFamilies(node.data);
-    }
-    return ownerDocument.createTextNode(node.data);
-  }
-  if (ownerDocument && ownerWindow && isElementNode(node) && (isHTMLElementNode(node) || isSVGElementNode(node))) {
-    const cloned2 = await cloneElement(node, context);
-    if (context.isEnable("removeAbnormalAttributes")) {
-      const names = cloned2.getAttributeNames();
-      for (let len = names.length, i2 = 0; i2 < len; i2++) {
-        const name = names[i2];
-        if (!NORMAL_ATTRIBUTE_RE.test(name)) {
-          cloned2.removeAttribute(name);
-        }
-      }
-    }
-    const style = context.currentNodeStyle = copyCssStyles(node, cloned2, isRoot, context);
-    if (isRoot)
-      applyCssStyleWithOptions(cloned2, context);
-    let copyScrollbar = false;
-    if (context.isEnable("copyScrollbar")) {
-      const overflow = [
-        style.get("overflow-x")?.[0],
-        style.get("overflow-y")?.[0]
-      ];
-      copyScrollbar = overflow.includes("scroll") || (overflow.includes("auto") || overflow.includes("overlay")) && (node.scrollHeight > node.clientHeight || node.scrollWidth > node.clientWidth);
-    }
-    const textTransform = style.get("text-transform")?.[0];
-    const families = splitFontFamily(style.get("font-family")?.[0]);
-    const addWordToFontFamilies2 = families ? (word) => {
-      if (textTransform === "uppercase") {
-        word = word.toUpperCase();
-      } else if (textTransform === "lowercase") {
-        word = word.toLowerCase();
-      } else if (textTransform === "capitalize") {
-        word = word[0].toUpperCase() + word.substring(1);
-      }
-      families.forEach((family) => {
-        let fontFamily = fontFamilies.get(family);
-        if (!fontFamily) {
-          fontFamilies.set(family, fontFamily = /* @__PURE__ */ new Set());
-        }
-        word.split("").forEach((text) => fontFamily.add(text));
-      });
-    } : void 0;
-    copyPseudoClass(
-      node,
-      cloned2,
-      copyScrollbar,
-      context,
-      addWordToFontFamilies2
-    );
-    copyInputValue(node, cloned2);
-    if (!isVideoElement(node)) {
-      await cloneChildNodes(
-        node,
-        cloned2,
-        context,
-        addWordToFontFamilies2
-      );
-    }
-    await onCloneEachNode?.(cloned2);
-    return cloned2;
-  }
-  const cloned = node.cloneNode(false);
-  await cloneChildNodes(node, cloned, context);
-  await onCloneEachNode?.(cloned);
-  return cloned;
-}
-function destroyContext(context) {
-  context.ownerDocument = void 0;
-  context.ownerWindow = void 0;
-  context.svgStyleElement = void 0;
-  context.svgDefsElement = void 0;
-  context.svgStyles.clear();
-  context.defaultComputedStyles.clear();
-  if (context.sandbox) {
-    try {
-      context.sandbox.remove();
-    } catch (err) {
-      context.log.warn("Failed to destroyContext", err);
-    }
-    context.sandbox = void 0;
-  }
-  context.workers = [];
-  context.fontFamilies.clear();
-  context.fontCssTexts.clear();
-  context.requests.clear();
-  context.tasks = [];
-  context.shadowRoots = [];
-}
-function baseFetch(options) {
-  const { url: url2, timeout, responseType, ...requestInit } = options;
-  const controller = new AbortController();
-  const timer = timeout ? setTimeout(() => controller.abort(), timeout) : void 0;
-  return fetch(url2, { signal: controller.signal, ...requestInit }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Failed fetch, not 2xx response", { cause: response });
-    }
-    switch (responseType) {
-      case "arrayBuffer":
-        return response.arrayBuffer();
-      case "dataUrl":
-        return response.blob().then(blobToDataUrl);
-      case "text":
-      default:
-        return response.text();
-    }
-  }).finally(() => clearTimeout(timer));
-}
-function contextFetch(context, options) {
-  const { url: rawUrl, requestType = "text", responseType = "text", imageDom } = options;
-  let url2 = rawUrl;
-  const {
-    timeout,
-    acceptOfImage,
-    requests,
-    fetchFn,
-    fetch: {
-      requestInit,
-      bypassingCache,
-      placeholderImage
-    },
-    font,
-    workers,
-    fontFamilies
-  } = context;
-  if (requestType === "image" && (IN_SAFARI || IN_FIREFOX)) {
-    context.drawImageCount++;
-  }
-  let request = requests.get(rawUrl);
-  if (!request) {
-    if (bypassingCache) {
-      if (bypassingCache instanceof RegExp && bypassingCache.test(url2)) {
-        url2 += (/\?/.test(url2) ? "&" : "?") + (/* @__PURE__ */ new Date()).getTime();
-      }
-    }
-    const canFontMinify = requestType.startsWith("font") && font && font.minify;
-    const fontTexts = /* @__PURE__ */ new Set();
-    if (canFontMinify) {
-      const families = requestType.split(";")[1].split(",");
-      families.forEach((family) => {
-        if (!fontFamilies.has(family))
-          return;
-        fontFamilies.get(family).forEach((text) => fontTexts.add(text));
-      });
-    }
-    const needFontMinify = canFontMinify && fontTexts.size;
-    const baseFetchOptions = {
-      url: url2,
-      timeout,
-      responseType: needFontMinify ? "arrayBuffer" : responseType,
-      headers: requestType === "image" ? { accept: acceptOfImage } : void 0,
-      ...requestInit
-    };
-    request = {
-      type: requestType,
-      resolve: void 0,
-      reject: void 0,
-      response: null
-    };
-    request.response = (async () => {
-      if (fetchFn && requestType === "image") {
-        const result = await fetchFn(rawUrl);
-        if (result)
-          return result;
-      }
-      if (!IN_SAFARI && rawUrl.startsWith("http") && workers.length) {
-        return new Promise((resolve, reject) => {
-          const worker = workers[requests.size & workers.length - 1];
-          worker.postMessage({ rawUrl, ...baseFetchOptions });
-          request.resolve = resolve;
-          request.reject = reject;
-        });
-      }
-      return baseFetch(baseFetchOptions);
-    })().catch((error) => {
-      requests.delete(rawUrl);
-      if (requestType === "image" && placeholderImage) {
-        context.log.warn("Failed to fetch image base64, trying to use placeholder image", url2);
-        return typeof placeholderImage === "string" ? placeholderImage : placeholderImage(imageDom);
-      }
-      throw error;
-    });
-    requests.set(rawUrl, request);
-  }
-  return request.response;
-}
-async function replaceCssUrlToDataUrl(cssText, baseUrl, context, isImage) {
-  if (!hasCssUrl(cssText))
-    return cssText;
-  for (const [rawUrl, url2] of parseCssUrls(cssText, baseUrl)) {
-    try {
-      const dataUrl = await contextFetch(
-        context,
-        {
-          url: url2,
-          requestType: isImage ? "image" : "text",
-          responseType: "dataUrl"
-        }
-      );
-      cssText = cssText.replace(toRE(rawUrl), `$1${dataUrl}$3`);
-    } catch (error) {
-      context.log.warn("Failed to fetch css data url", rawUrl, error);
-    }
-  }
-  return cssText;
-}
-function hasCssUrl(cssText) {
-  return /url\((['"]?)([^'"]+?)\1\)/.test(cssText);
-}
-var URL_RE = /url\((['"]?)([^'"]+?)\1\)/g;
-function parseCssUrls(cssText, baseUrl) {
-  const result = [];
-  cssText.replace(URL_RE, (raw, quotation, url2) => {
-    result.push([url2, resolveUrl(url2, baseUrl)]);
-    return raw;
-  });
-  return result.filter(([url2]) => !isDataUrl(url2));
-}
-function toRE(url2) {
-  const escaped = url2.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
-  return new RegExp(`(url\\(['"]?)(${escaped})(['"]?\\))`, "g");
-}
-var properties = [
-  "background-image",
-  "border-image-source",
-  "-webkit-border-image",
-  "-webkit-mask-image",
-  "list-style-image"
-];
-function embedCssStyleImage(style, context) {
-  return properties.map((property) => {
-    const value = style.getPropertyValue(property);
-    if (!value || value === "none") {
-      return null;
-    }
-    if (IN_SAFARI || IN_FIREFOX) {
-      context.drawImageCount++;
-    }
-    return replaceCssUrlToDataUrl(value, null, context, true).then((newValue) => {
-      if (!newValue || value === newValue)
-        return;
-      style.setProperty(
-        property,
-        newValue,
-        style.getPropertyPriority(property)
-      );
-    });
-  }).filter(Boolean);
-}
-function embedImageElement(cloned, context) {
-  if (isImageElement(cloned)) {
-    const originalSrc = cloned.currentSrc || cloned.src;
-    if (!isDataUrl(originalSrc)) {
-      return [
-        contextFetch(context, {
-          url: originalSrc,
-          imageDom: cloned,
-          requestType: "image",
-          responseType: "dataUrl"
-        }).then((url2) => {
-          if (!url2)
-            return;
-          cloned.srcset = "";
-          cloned.dataset.originalSrc = originalSrc;
-          cloned.src = url2 || "";
-        })
-      ];
-    }
-    if (IN_SAFARI || IN_FIREFOX) {
-      context.drawImageCount++;
-    }
-  } else if (isSVGElementNode(cloned) && !isDataUrl(cloned.href.baseVal)) {
-    const originalSrc = cloned.href.baseVal;
-    return [
-      contextFetch(context, {
-        url: originalSrc,
-        imageDom: cloned,
-        requestType: "image",
-        responseType: "dataUrl"
-      }).then((url2) => {
-        if (!url2)
-          return;
-        cloned.dataset.originalSrc = originalSrc;
-        cloned.href.baseVal = url2 || "";
-      })
-    ];
-  }
-  return [];
-}
-function embedSvgUse(cloned, context) {
-  const { ownerDocument, svgDefsElement } = context;
-  const href = cloned.getAttribute("href") ?? cloned.getAttribute("xlink:href");
-  if (!href)
-    return [];
-  const [svgUrl, id] = href.split("#");
-  if (id) {
-    const query = `#${id}`;
-    const definition = context.shadowRoots.reduce(
-      (res, root) => {
-        return res ?? root.querySelector(`svg ${query}`);
-      },
-      ownerDocument?.querySelector(`svg ${query}`)
-    );
-    if (svgUrl) {
-      cloned.setAttribute("href", query);
-    }
-    if (svgDefsElement?.querySelector(query))
-      return [];
-    if (definition) {
-      svgDefsElement?.appendChild(definition.cloneNode(true));
-      return [];
-    } else if (svgUrl) {
-      return [
-        contextFetch(context, {
-          url: svgUrl,
-          responseType: "text"
-        }).then((svgData) => {
-          svgDefsElement?.insertAdjacentHTML("beforeend", svgData);
-        })
-      ];
-    }
-  }
-  return [];
-}
-function embedNode(cloned, context) {
-  const { tasks } = context;
-  if (isElementNode(cloned)) {
-    if (isImageElement(cloned) || isSVGImageElementNode(cloned)) {
-      tasks.push(...embedImageElement(cloned, context));
-    }
-    if (isSVGUseElementNode(cloned)) {
-      tasks.push(...embedSvgUse(cloned, context));
-    }
-  }
-  if (isHTMLElementNode(cloned)) {
-    tasks.push(...embedCssStyleImage(cloned.style, context));
-  }
-  cloned.childNodes.forEach((child) => {
-    embedNode(child, context);
-  });
-}
-async function embedWebFont(clone, context) {
-  const {
-    ownerDocument,
-    svgStyleElement,
-    fontFamilies,
-    fontCssTexts,
-    tasks,
-    font
-  } = context;
-  if (!ownerDocument || !svgStyleElement || !fontFamilies.size) {
-    return;
-  }
-  if (font && font.cssText) {
-    const cssText = filterPreferredFormat(font.cssText, context);
-    svgStyleElement.appendChild(ownerDocument.createTextNode(`${cssText}
-`));
-  } else {
-    const styleSheets = Array.from(ownerDocument.styleSheets).filter((styleSheet) => {
-      try {
-        return "cssRules" in styleSheet && Boolean(styleSheet.cssRules.length);
-      } catch (error) {
-        context.log.warn(`Error while reading CSS rules from ${styleSheet.href}`, error);
-        return false;
-      }
-    });
-    const tempDoc = ownerDocument.implementation.createHTMLDocument("");
-    const tempStyleEl = tempDoc.createElement("style");
-    tempDoc.head.appendChild(tempStyleEl);
-    const tempStyleSheet = tempStyleEl.sheet;
-    await Promise.all(
-      styleSheets.flatMap((styleSheet) => {
-        return Array.from(styleSheet.cssRules).map(async (cssRule) => {
-          if (isCSSImportRule(cssRule)) {
-            const baseUrl = cssRule.href;
-            let cssText = "";
-            try {
-              cssText = await contextFetch(context, {
-                url: baseUrl,
-                requestType: "text",
-                responseType: "text"
-              });
-            } catch (error) {
-              context.log.warn(`Error fetch remote css import from ${baseUrl}`, error);
-            }
-            const replacedCssText = cssText.replace(
-              URL_RE,
-              (raw, quotation, url2) => raw.replace(url2, resolveUrl(url2, baseUrl))
-            );
-            for (const rule of parseCss(replacedCssText)) {
-              try {
-                tempStyleSheet.insertRule(rule, tempStyleSheet.cssRules.length);
-              } catch (error) {
-                context.log.warn("Error inserting rule from remote css import", { rule, error });
-              }
-            }
-          }
-        });
-      })
-    );
-    if (tempStyleSheet.cssRules.length)
-      styleSheets.push(tempStyleSheet);
-    const cssRules = [];
-    styleSheets.forEach((sheet) => {
-      unwrapCssLayers(sheet.cssRules, cssRules);
-    });
-    cssRules.filter((cssRule) => isCssFontFaceRule(cssRule) && hasCssUrl(cssRule.style.getPropertyValue("src")) && splitFontFamily(cssRule.style.getPropertyValue("font-family"))?.some((val) => fontFamilies.has(val))).forEach((value) => {
-      const rule = value;
-      const cssText = fontCssTexts.get(rule.cssText);
-      if (cssText) {
-        svgStyleElement.appendChild(ownerDocument.createTextNode(`${cssText}
-`));
-      } else {
-        tasks.push(
-          replaceCssUrlToDataUrl(
-            rule.cssText,
-            rule.parentStyleSheet ? rule.parentStyleSheet.href : null,
-            context
-          ).then((cssText2) => {
-            cssText2 = filterPreferredFormat(cssText2, context);
-            fontCssTexts.set(rule.cssText, cssText2);
-            svgStyleElement.appendChild(ownerDocument.createTextNode(`${cssText2}
-`));
-          })
-        );
-      }
-    });
-  }
-}
-var COMMENTS_RE = /(\/\*[\s\S]*?\*\/)/g;
-var KEYFRAMES_RE = /((@.*?keyframes [\s\S]*?){([\s\S]*?}\s*?)})/gi;
-function parseCss(source) {
-  if (source == null)
-    return [];
-  const result = [];
-  let cssText = source.replace(COMMENTS_RE, "");
-  while (true) {
-    const matches = KEYFRAMES_RE.exec(cssText);
-    if (!matches)
-      break;
-    result.push(matches[0]);
-  }
-  cssText = cssText.replace(KEYFRAMES_RE, "");
-  const IMPORT_RE = /@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi;
-  const UNIFIED_RE = new RegExp(
-    // eslint-disable-next-line
-    "((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})",
-    "gi"
-  );
-  while (true) {
-    let matches = IMPORT_RE.exec(cssText);
-    if (!matches) {
-      matches = UNIFIED_RE.exec(cssText);
-      if (!matches) {
-        break;
-      } else {
-        IMPORT_RE.lastIndex = UNIFIED_RE.lastIndex;
-      }
-    } else {
-      UNIFIED_RE.lastIndex = IMPORT_RE.lastIndex;
-    }
-    result.push(matches[0]);
-  }
-  return result;
-}
-var URL_WITH_FORMAT_RE = /url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g;
-var FONT_SRC_RE = /src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g;
-function filterPreferredFormat(str, context) {
-  const { font } = context;
-  const preferredFormat = font ? font?.preferredFormat : void 0;
-  return preferredFormat ? str.replace(FONT_SRC_RE, (match) => {
-    while (true) {
-      const [src, , format] = URL_WITH_FORMAT_RE.exec(match) || [];
-      if (!format)
-        return "";
-      if (format === preferredFormat)
-        return `src: ${src};`;
-    }
-  }) : str;
-}
-function unwrapCssLayers(rules, out = []) {
-  for (const rule of Array.from(rules)) {
-    if (isLayerBlockRule(rule)) {
-      out.push(...unwrapCssLayers(rule.cssRules));
-    } else if ("cssRules" in rule) {
-      unwrapCssLayers(rule.cssRules, out);
-    } else {
-      out.push(rule);
-    }
-  }
-  return out;
-}
-var SVG_EXTERNAL_RESOURCE_REGEX = /\bx?link:?href\s*=\s*["'](?!data:)[^"']+["']/i;
-function svgHasExternalResources(svg) {
-  return SVG_EXTERNAL_RESOURCE_REGEX.test(svg.innerHTML);
-}
-async function domToForeignObjectSvg(node, options) {
-  const context = await orCreateContext(node, options);
-  if (isElementNode(context.node) && isSVGElementNode(context.node) && !svgHasExternalResources(context.node))
-    return context.node;
-  const {
-    ownerDocument,
-    log,
-    tasks,
-    svgStyleElement,
-    svgDefsElement,
-    svgStyles,
-    font,
-    progress,
-    autoDestruct,
-    onCloneNode,
-    onEmbedNode,
-    onCreateForeignObjectSvg
-  } = context;
-  log.time("clone node");
-  const clone = await cloneNode(context.node, context, true);
-  if (svgStyleElement && ownerDocument) {
-    let allCssText = "";
-    svgStyles.forEach((klasses, cssText) => {
-      allCssText += `${klasses.join(",\n")} {
-  ${cssText}
-}
-`;
-    });
-    svgStyleElement.appendChild(ownerDocument.createTextNode(allCssText));
-  }
-  log.timeEnd("clone node");
-  await onCloneNode?.(clone);
-  if (font !== false && isElementNode(clone)) {
-    log.time("embed web font");
-    await embedWebFont(clone, context);
-    log.timeEnd("embed web font");
-  }
-  log.time("embed node");
-  embedNode(clone, context);
-  const count3 = tasks.length;
-  let current = 0;
-  const runTask = async () => {
-    while (true) {
-      const task = tasks.pop();
-      if (!task)
-        break;
-      try {
-        await task;
-      } catch (error) {
-        context.log.warn("Failed to run task", error);
-      }
-      progress?.(++current, count3);
-    }
-  };
-  progress?.(current, count3);
-  await Promise.all([...Array.from({ length: 4 })].map(runTask));
-  log.timeEnd("embed node");
-  await onEmbedNode?.(clone);
-  const svg = createForeignObjectSvg(clone, context);
-  svgDefsElement && svg.insertBefore(svgDefsElement, svg.children[0]);
-  svgStyleElement && svg.insertBefore(svgStyleElement, svg.children[0]);
-  autoDestruct && destroyContext(context);
-  await onCreateForeignObjectSvg?.(svg);
-  return svg;
-}
-function createForeignObjectSvg(clone, context) {
-  const { width, height } = context;
-  const svg = createSvg(width, height, clone.ownerDocument);
-  const foreignObject = svg.ownerDocument.createElementNS(svg.namespaceURI, "foreignObject");
-  foreignObject.setAttributeNS(null, "x", "0%");
-  foreignObject.setAttributeNS(null, "y", "0%");
-  foreignObject.setAttributeNS(null, "width", "100%");
-  foreignObject.setAttributeNS(null, "height", "100%");
-  foreignObject.append(clone);
-  svg.appendChild(foreignObject);
-  return svg;
-}
-async function domToCanvas(node, options) {
-  const context = await orCreateContext(node, options);
-  const svg = await domToForeignObjectSvg(context);
-  const dataUrl = svgToDataUrl(svg, context.isEnable("removeControlCharacter"));
-  if (!context.autoDestruct) {
-    context.svgStyleElement = createStyleElement(context.ownerDocument);
-    context.svgDefsElement = context.ownerDocument?.createElementNS(XMLNS, "defs");
-    context.svgStyles.clear();
-  }
-  const image = createImage(dataUrl, svg.ownerDocument);
-  return await imageToCanvas(image, context);
-}
-
-// ../src/engine.mjs
+// play/src/engine.mjs
 var isWebKit2 = (ua = typeof navigator !== "undefined" && navigator.userAgent || "") => /AppleWebKit\//.test(ua) && !/(Chrome|Chromium|Edg|OPR)\//.test(ua);
 var webCodecsOk = (ua, g2 = globalThis) => !isWebKit2(ua) && typeof g2.VideoEncoder !== "undefined" && typeof g2.VideoFrame !== "undefined";
 
-// ../src/clip.mjs
+// play/src/clip.mjs
 var canClip = () => webCodecsOk();
 var canRecordAny = () => canClip() || typeof MediaRecorder !== "undefined" && typeof HTMLCanvasElement !== "undefined" && "captureStream" in HTMLCanvasElement.prototype;
 function shot(canvas) {
   return new Promise((res, rej) => canvas.toBlob((b) => b ? res(b) : rej(new Error("no picture")), "image/png"));
-}
-async function pageShot(doc, win = window) {
-  const w = win.innerWidth, h2 = win.innerHeight;
-  const base = await domToCanvas(doc.body, { width: w, height: h2, scale: 1, backgroundColor: "#000", filter: (n2) => n2.tagName !== "IFRAME" });
-  const cv = doc.createElement("canvas");
-  cv.width = w;
-  cv.height = h2;
-  const g2 = cv.getContext("2d");
-  g2.drawImage(base, 0, 0, w, h2);
-  for (const fr of doc.querySelectorAll("iframe")) {
-    try {
-      const r2 = fr.getBoundingClientRect(), s2 = fr.contentWindow.innerWidth ? r2.width / fr.contentWindow.innerWidth : 1, c = fr.contentDocument.getElementById("screen");
-      if (!c || !r2.width || getComputedStyle(fr).visibility === "hidden") continue;
-      const cr = c.getBoundingClientRect();
-      g2.drawImage(c, r2.left + cr.left * s2, r2.top + cr.top * s2, cr.width * s2, cr.height * s2);
-    } catch {
-    }
-  }
-  return new Promise((res, rej) => cv.toBlob((b) => b ? res({ blob: b, w, h: h2 }) : rej(new Error("no picture")), "image/png"));
 }
 var FPS = 30;
 var KEY_EVERY = FPS;
@@ -23672,8 +22234,8 @@ function createTap(getCanvas, win = window) {
   };
 }
 
-// src/controller.js
-var uid2 = 0;
+// play/options/src/controller.js
+var uid = 0;
 var urlOf = (b) => URL.createObjectURL(b);
 function createController(host) {
   const queue = createQueue({ get, set, del, keys });
@@ -23686,17 +22248,10 @@ function createController(host) {
   };
   let recTimer = 0, held = null;
   const shotOf = async (kind) => {
-    if (host.page) {
-      try {
-        const p2 = await pageShot(document);
-        return { id: ++uid2, kind, blob: p2.blob, url: urlOf(p2.blob), w: p2.w, h: p2.h };
-      } catch {
-      }
-    }
     const c = host.getCanvas();
     if (!c) return null;
     const blob = await shot(c);
-    return { id: ++uid2, kind, blob, url: urlOf(blob), w: c.width, h: c.height };
+    return { id: ++uid, kind, blob, url: urlOf(blob), w: c.width, h: c.height };
   };
   const drop = (it) => {
     if (it && it.url) URL.revokeObjectURL(it.url);
@@ -23825,7 +22380,7 @@ function createController(host) {
           emit({ full: w });
           return;
         }
-        emit({ items: [...st.items, { id: ++uid2, kind: "last", blob: r2.blob, url: urlOf(r2.blob), ms: r2.ms }], full: "" });
+        emit({ items: [...st.items, { id: ++uid, kind: "last", blob: r2.blob, url: urlOf(r2.blob), ms: r2.ms }], full: "" });
       } finally {
         emit({ busy: "" });
       }
@@ -23839,7 +22394,7 @@ function createController(host) {
       const ok = tap.record((r2) => {
         clearInterval(recTimer);
         emit({ recording: false, recMs: 0 });
-        if (r2 && !canAdd(st.items, "clip", r2.blob.size)) emit({ items: [...st.items, { id: ++uid2, kind: "clip", blob: r2.blob, url: urlOf(r2.blob), ms: r2.ms }] });
+        if (r2 && !canAdd(st.items, "clip", r2.blob.size)) emit({ items: [...st.items, { id: ++uid, kind: "clip", blob: r2.blob, url: urlOf(r2.blob), ms: r2.ms }] });
       });
       if (!ok) {
         emit({ full: "note.add.lastMissing" });
@@ -23895,10 +22450,10 @@ function createController(host) {
   return api;
 }
 
-// src/note-ui.jsx
+// play/options/src/note-ui.jsx
 var import_react7 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
 var dist_exports3 = {};
 __export(dist_exports3, {
   AccessibleIcon: () => AccessibleIcon,
@@ -23906,7 +22461,7 @@ __export(dist_exports3, {
 });
 var React5 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var dist_exports2 = {};
 __export(dist_exports2, {
   Root: () => VisuallyHidden,
@@ -23915,14 +22470,14 @@ __export(dist_exports2, {
 });
 var React4 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-primitive/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
 var React3 = __toESM(require_react(), 1);
 var ReactDOM = __toESM(require_react_dom(), 1);
 
-// node_modules/@radix-ui/react-slot/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
 var React2 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
 var React = __toESM(require_react(), 1);
 var __defProp2 = Object.defineProperty;
 var __name = (target, value) => __defProp2(target, "name", { value, configurable: true });
@@ -23964,7 +22519,7 @@ function useComposedRefs(...refs) {
 }
 __name(useComposedRefs, "useComposedRefs");
 
-// node_modules/@radix-ui/react-slot/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-slot/dist/index.mjs
 var __defProp3 = Object.defineProperty;
 var __name2 = (target, value) => __defProp3(target, "name", { value, configurable: true });
 // @__NO_SIDE_EFFECTS__
@@ -24117,7 +22672,7 @@ var createSlottableError = /* @__PURE__ */ __name2((ownerName) => {
 }, "createSlottableError");
 var use = React2[" use ".trim().toString()];
 
-// node_modules/@radix-ui/react-primitive/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-primitive/dist/index.mjs
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
 var __defProp4 = Object.defineProperty;
 var __name3 = (target, value) => __defProp4(target, "name", { value, configurable: true });
@@ -24158,7 +22713,7 @@ function dispatchDiscreteCustomEvent(target, event) {
 }
 __name3(dispatchDiscreteCustomEvent, "dispatchDiscreteCustomEvent");
 
-// node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-visually-hidden/dist/index.mjs
 var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
 var __defProp5 = Object.defineProperty;
 var __name4 = (target, value) => __defProp5(target, "name", { value, configurable: true });
@@ -24188,7 +22743,7 @@ var VisuallyHidden = /* @__PURE__ */ React4.forwardRef(
   }, "VisuallyHidden")
 );
 
-// node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-accessible-icon/dist/index.mjs
 var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
 var __defProp6 = Object.defineProperty;
 var __name5 = (target, value) => __defProp6(target, "name", { value, configurable: true });
@@ -24205,13 +22760,13 @@ var AccessibleIcon = /* @__PURE__ */ __name5(({ children, label }) => {
   ] });
 }, "AccessibleIcon");
 
-// node_modules/@radix-ui/react-context/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-context/dist/index.mjs
 var React6 = __toESM(require_react(), 1);
 var import_jsx_runtime4 = __toESM(require_jsx_runtime(), 1);
 var __defProp7 = Object.defineProperty;
 var __name6 = (target, value) => __defProp7(target, "name", { value, configurable: true });
 // @__NO_SIDE_EFFECTS__
-function createContext22(rootComponentName, defaultContext) {
+function createContext2(rootComponentName, defaultContext) {
   const Context = React6.createContext(defaultContext);
   Context.displayName = rootComponentName + "Context";
   const Provider = /* @__PURE__ */ __name6((props) => {
@@ -24231,7 +22786,7 @@ function createContext22(rootComponentName, defaultContext) {
   __name6(useContext22, "useContext");
   return [Provider, useContext22];
 }
-__name6(createContext22, "createContext");
+__name6(createContext2, "createContext");
 // @__NO_SIDE_EFFECTS__
 function createContextScope(scopeName, createContextScopeDeps = []) {
   let defaultContexts = [];
@@ -24298,17 +22853,17 @@ function composeContextScopes(...scopes) {
 }
 __name6(composeContextScopes, "composeContextScopes");
 
-// node_modules/@radix-ui/react-collection/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
 var React8 = __toESM(require_react(), 1);
 var import_jsx_runtime5 = __toESM(require_jsx_runtime(), 1);
 var React22 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs
 var React7 = __toESM(require_react(), 1);
 var useLayoutEffect2 = globalThis?.document ? React7.useLayoutEffect : () => {
 };
 
-// node_modules/@radix-ui/react-collection/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-collection/dist/index.mjs
 var import_jsx_runtime6 = __toESM(require_jsx_runtime(), 1);
 var __defProp8 = Object.defineProperty;
 var __name7 = (target, value) => __defProp8(target, "name", { value, configurable: true });
@@ -24936,7 +23491,7 @@ function getChildListObserver(callback) {
 }
 __name7(getChildListObserver, "getChildListObserver");
 
-// node_modules/@radix-ui/primitive/dist/index.mjs
+// play/options/node_modules/@radix-ui/primitive/dist/index.mjs
 var __defProp9 = Object.defineProperty;
 var __name8 = (target, value) => __defProp9(target, "name", { value, configurable: true });
 var canUseDOM = !!(typeof window !== "undefined" && window.document && window.document.createElement);
@@ -24988,16 +23543,16 @@ function isFrame(element) {
 }
 __name8(isFrame, "isFrame");
 
-// node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var React10 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/primitive/dist/internal/is-development.false.mjs
+// play/options/node_modules/@radix-ui/primitive/dist/internal/is-development.false.mjs
 var IS_DEVELOPMENT = false;
 
-// node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var React23 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-effect-event/dist/index.mjs
 var React9 = __toESM(require_react(), 1);
 var __defProp10 = Object.defineProperty;
 var __name9 = (target, value) => __defProp10(target, "name", { value, configurable: true });
@@ -25023,7 +23578,7 @@ function useEffectEvent(callback) {
 }
 __name9(useEffectEvent, "useEffectEvent");
 
-// node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs
 var __defProp11 = Object.defineProperty;
 var __name10 = (target, value) => __defProp11(target, "name", { value, configurable: true });
 var useInsertionEffect = React10[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
@@ -25155,7 +23710,7 @@ function useControllableStateReducer(reducer, userArgs, initialArg, init) {
 }
 __name10(useControllableStateReducer, "useControllableStateReducer");
 
-// node_modules/@radix-ui/react-presence/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-presence/dist/index.mjs
 var React24 = __toESM(require_react(), 1);
 var React11 = __toESM(require_react(), 1);
 var __defProp12 = Object.defineProperty;
@@ -25334,7 +23889,7 @@ function getElementRef2(element) {
 }
 __name11(getElementRef2, "getElementRef");
 
-// node_modules/@radix-ui/react-id/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-id/dist/index.mjs
 var React12 = __toESM(require_react(), 1);
 var __defProp13 = Object.defineProperty;
 var __name12 = (target, value) => __defProp13(target, "name", { value, configurable: true });
@@ -25349,7 +23904,7 @@ function useId(deterministicId) {
 }
 __name12(useId, "useId");
 
-// node_modules/@radix-ui/react-direction/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-direction/dist/index.mjs
 var React13 = __toESM(require_react(), 1);
 var import_jsx_runtime7 = __toESM(require_jsx_runtime(), 1);
 var __defProp14 = Object.defineProperty;
@@ -25365,7 +23920,7 @@ function useDirection(localDir) {
 }
 __name13(useDirection, "useDirection");
 
-// node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var dist_exports5 = {};
 __export(dist_exports5, {
   Action: () => AlertDialogAction,
@@ -25390,7 +23945,7 @@ __export(dist_exports5, {
 });
 var React30 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-dialog/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
 var dist_exports4 = {};
 __export(dist_exports4, {
   Close: () => DialogClose,
@@ -25414,10 +23969,10 @@ __export(dist_exports4, {
 });
 var React29 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
 var React15 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs
 var React14 = __toESM(require_react(), 1);
 var __defProp15 = Object.defineProperty;
 var __name14 = (target, value) => __defProp15(target, "name", { value, configurable: true });
@@ -25437,7 +23992,7 @@ function useCallbackRef(callback) {
 }
 __name14(useCallbackRef, "useCallbackRef");
 
-// node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
 var import_jsx_runtime8 = __toESM(require_jsx_runtime(), 1);
 var __defProp16 = Object.defineProperty;
 var __name15 = (target, value) => __defProp16(target, "name", { value, configurable: true });
@@ -25770,7 +24325,7 @@ function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
 }
 __name15(handleAndDispatchCustomEvent, "handleAndDispatchCustomEvent");
 
-// node_modules/@radix-ui/react-focus-scope/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-focus-scope/dist/index.mjs
 var React16 = __toESM(require_react(), 1);
 var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
 var __defProp17 = Object.defineProperty;
@@ -26043,7 +24598,7 @@ function removeLinks(items) {
 }
 __name16(removeLinks, "removeLinks");
 
-// node_modules/@radix-ui/react-portal/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-portal/dist/index.mjs
 var React17 = __toESM(require_react(), 1);
 var ReactDOM2 = __toESM(require_react_dom(), 1);
 var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
@@ -26059,7 +24614,7 @@ var Portal = /* @__PURE__ */ React17.forwardRef(
   }, "Portal")
 );
 
-// node_modules/@radix-ui/react-focus-guards/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-focus-guards/dist/index.mjs
 var React18 = __toESM(require_react(), 1);
 var __defProp19 = Object.defineProperty;
 var __name18 = (target, value) => __defProp19(target, "name", { value, configurable: true });
@@ -26106,7 +24661,7 @@ function createFocusGuard() {
 }
 __name18(createFocusGuard, "createFocusGuard");
 
-// node_modules/tslib/tslib.es6.mjs
+// play/options/node_modules/tslib/tslib.es6.mjs
 var __assign = function() {
   __assign = Object.assign || function __assign2(t2) {
     for (var s2, i2 = 1, n2 = arguments.length; i2 < n2; i2++) {
@@ -26138,19 +24693,19 @@ function __spreadArray(to, from, pack) {
   return to.concat(ar || Array.prototype.slice.call(from));
 }
 
-// node_modules/react-remove-scroll/dist/es2015/Combination.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
 var React28 = __toESM(require_react());
 
-// node_modules/react-remove-scroll/dist/es2015/UI.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
 var React21 = __toESM(require_react());
 
-// node_modules/react-remove-scroll-bar/dist/es2015/constants.js
+// play/options/node_modules/react-remove-scroll-bar/dist/es2015/constants.js
 var zeroRightClassName = "right-scroll-bar-position";
 var fullWidthClassName = "width-before-scroll-bar";
 var noScrollbarsClassName = "with-scroll-bars-hidden";
 var removedBarSizeVariable = "--removed-body-scroll-bar-size";
 
-// node_modules/use-callback-ref/dist/es2015/assignRef.js
+// play/options/node_modules/use-callback-ref/dist/es2015/assignRef.js
 function assignRef(ref, value) {
   if (typeof ref === "function") {
     ref(value);
@@ -26160,7 +24715,7 @@ function assignRef(ref, value) {
   return ref;
 }
 
-// node_modules/use-callback-ref/dist/es2015/useRef.js
+// play/options/node_modules/use-callback-ref/dist/es2015/useRef.js
 var import_react = __toESM(require_react());
 function useCallbackRef2(initialValue, callback) {
   var ref = (0, import_react.useState)(function() {
@@ -26188,7 +24743,7 @@ function useCallbackRef2(initialValue, callback) {
   return ref.facade;
 }
 
-// node_modules/use-callback-ref/dist/es2015/useMergeRef.js
+// play/options/node_modules/use-callback-ref/dist/es2015/useMergeRef.js
 var React19 = __toESM(require_react());
 var useIsomorphicLayoutEffect = typeof window !== "undefined" ? React19.useLayoutEffect : React19.useEffect;
 var currentValues = /* @__PURE__ */ new WeakMap();
@@ -26220,7 +24775,7 @@ function useMergeRefs(refs, defaultValue) {
   return callbackRef;
 }
 
-// node_modules/use-sidecar/dist/es2015/medium.js
+// play/options/node_modules/use-sidecar/dist/es2015/medium.js
 function ItoI(a2) {
   return a2;
 }
@@ -26306,7 +24861,7 @@ function createSidecarMedium(options) {
   return medium;
 }
 
-// node_modules/use-sidecar/dist/es2015/exports.js
+// play/options/node_modules/use-sidecar/dist/es2015/exports.js
 var React20 = __toESM(require_react());
 var SideCar = function(_a) {
   var sideCar = _a.sideCar, rest = __rest(_a, ["sideCar"]);
@@ -26325,10 +24880,10 @@ function exportSidecar(medium, exported) {
   return SideCar;
 }
 
-// node_modules/react-remove-scroll/dist/es2015/medium.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/medium.js
 var effectCar = createSidecarMedium();
 
-// node_modules/react-remove-scroll/dist/es2015/UI.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/UI.js
 var nothing = function() {
   return;
 };
@@ -26360,16 +24915,16 @@ RemoveScroll.classNames = {
   zeroRight: zeroRightClassName
 };
 
-// node_modules/react-remove-scroll/dist/es2015/SideEffect.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
 var React27 = __toESM(require_react());
 
-// node_modules/react-remove-scroll-bar/dist/es2015/component.js
+// play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
 var React26 = __toESM(require_react());
 
-// node_modules/react-style-singleton/dist/es2015/hook.js
+// play/options/node_modules/react-style-singleton/dist/es2015/hook.js
 var React25 = __toESM(require_react());
 
-// node_modules/get-nonce/dist/es2015/index.js
+// play/options/node_modules/get-nonce/dist/es2015/index.js
 var currentNonce;
 var getNonce = function() {
   if (currentNonce) {
@@ -26381,7 +24936,7 @@ var getNonce = function() {
   return void 0;
 };
 
-// node_modules/react-style-singleton/dist/es2015/singleton.js
+// play/options/node_modules/react-style-singleton/dist/es2015/singleton.js
 function makeStyleTag() {
   if (!document)
     return null;
@@ -26427,7 +24982,7 @@ var stylesheetSingleton = function() {
   };
 };
 
-// node_modules/react-style-singleton/dist/es2015/hook.js
+// play/options/node_modules/react-style-singleton/dist/es2015/hook.js
 var styleHookSingleton = function() {
   var sheet = stylesheetSingleton();
   return function(styles, isDynamic) {
@@ -26440,7 +24995,7 @@ var styleHookSingleton = function() {
   };
 };
 
-// node_modules/react-style-singleton/dist/es2015/component.js
+// play/options/node_modules/react-style-singleton/dist/es2015/component.js
 var styleSingleton = function() {
   var useStyle = styleHookSingleton();
   var Sheet = function(_a) {
@@ -26451,7 +25006,7 @@ var styleSingleton = function() {
   return Sheet;
 };
 
-// node_modules/react-remove-scroll-bar/dist/es2015/utils.js
+// play/options/node_modules/react-remove-scroll-bar/dist/es2015/utils.js
 var zeroGap = {
   left: 0,
   top: 0,
@@ -26486,7 +25041,7 @@ var getGapWidth = function(gapMode) {
   };
 };
 
-// node_modules/react-remove-scroll-bar/dist/es2015/component.js
+// play/options/node_modules/react-remove-scroll-bar/dist/es2015/component.js
 var Style = styleSingleton();
 var lockAttribute = "data-scroll-locked";
 var getStyles = function(_a, allowRelative, gapMode, important) {
@@ -26526,7 +25081,7 @@ var RemoveScrollBar = function(_a) {
   return React26.createElement(Style, { styles: getStyles(gap, !noRelative, gapMode, !noImportant ? "!important" : "") });
 };
 
-// node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js
 var passiveSupported = false;
 if (typeof window !== "undefined") {
   try {
@@ -26545,7 +25100,7 @@ if (typeof window !== "undefined") {
 var options;
 var nonPassive = passiveSupported ? { passive: false } : false;
 
-// node_modules/react-remove-scroll/dist/es2015/handleScroll.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/handleScroll.js
 var alwaysContainsScroll = function(node) {
   return node.tagName === "TEXTAREA";
 };
@@ -26645,7 +25200,7 @@ var handleScroll = function(axis, endTarget, event, sourceDelta, noOverscroll) {
   return shouldCancelScroll;
 };
 
-// node_modules/react-remove-scroll/dist/es2015/SideEffect.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/SideEffect.js
 var getTouchXY = function(event) {
   return "changedTouches" in event ? [event.changedTouches[0].clientX, event.changedTouches[0].clientY] : [0, 0];
 };
@@ -26816,17 +25371,17 @@ function getOutermostShadowParent(node) {
   return shadowParent;
 }
 
-// node_modules/react-remove-scroll/dist/es2015/sidecar.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/sidecar.js
 var sidecar_default = exportSidecar(effectCar, RemoveScrollSideCar);
 
-// node_modules/react-remove-scroll/dist/es2015/Combination.js
+// play/options/node_modules/react-remove-scroll/dist/es2015/Combination.js
 var ReactRemoveScroll = React28.forwardRef(function(props, ref) {
   return React28.createElement(RemoveScroll, __assign({}, props, { ref, sideCar: sidecar_default }));
 });
 ReactRemoveScroll.classNames = RemoveScroll.classNames;
 var Combination_default = ReactRemoveScroll;
 
-// node_modules/aria-hidden/dist/es2015/index.js
+// play/options/node_modules/aria-hidden/dist/es2015/index.js
 var getDefaultParent = function(originalTarget) {
   if (typeof document === "undefined") {
     return null;
@@ -26947,7 +25502,7 @@ var hideOthers = function(originalTarget, parentNode, markerName) {
   return applyAttributeToOthers(targets, activeParentNode, markerName, "aria-hidden");
 };
 
-// node_modules/@radix-ui/react-dialog/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-dialog/dist/index.mjs
 var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
 var __defProp20 = Object.defineProperty;
 var __name19 = (target, value) => __defProp20(target, "name", { value, configurable: true });
@@ -27259,7 +25814,7 @@ function getState(open) {
 }
 __name19(getState, "getState");
 
-// node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-alert-dialog/dist/index.mjs
 var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
 var __defProp21 = Object.defineProperty;
 var __name20 = (target, value) => __defProp21(target, "name", { value, configurable: true });
@@ -27349,7 +25904,7 @@ var AlertDialogCancel = React30.forwardRef(
   }, "AlertDialogCancel")
 );
 
-// node_modules/@radix-ui/react-use-size/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-size/dist/index.mjs
 var React31 = __toESM(require_react(), 1);
 var __defProp22 = Object.defineProperty;
 var __name21 = (target, value) => __defProp22(target, "name", { value, configurable: true });
@@ -27396,10 +25951,10 @@ function useSize(element) {
 }
 __name21(useSize, "useSize");
 
-// node_modules/@radix-ui/react-popper/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
 var React34 = __toESM(require_react(), 1);
 
-// node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
+// play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs
 var sides = ["top", "right", "bottom", "left"];
 var min = Math.min;
 var max = Math.max;
@@ -27528,7 +26083,7 @@ function rectToClientRect(rect) {
   };
 }
 
-// node_modules/@floating-ui/core/dist/floating-ui.core.mjs
+// play/options/node_modules/@floating-ui/core/dist/floating-ui.core.mjs
 function computeCoordsFromPlacement(_ref, placement, rtl) {
   let {
     reference,
@@ -28226,7 +26781,7 @@ var size = function(options) {
   };
 };
 
-// node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
+// play/options/node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs
 function hasWindow() {
   return typeof window !== "undefined";
 }
@@ -28382,7 +26937,7 @@ function getFrameElement(win) {
   return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
 }
 
-// node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
+// play/options/node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs
 function getCssDimensions(element) {
   const css = getComputedStyle2(element);
   let width = parseFloat(css.width) || 0;
@@ -28991,7 +27546,7 @@ var computePosition2 = (reference, floating, options) => {
   });
 };
 
-// node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
+// play/options/node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs
 var React32 = __toESM(require_react(), 1);
 var import_react2 = __toESM(require_react(), 1);
 var ReactDOM3 = __toESM(require_react_dom(), 1);
@@ -29302,7 +27857,7 @@ var arrow3 = (options, deps) => {
   };
 };
 
-// node_modules/@radix-ui/react-arrow/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-arrow/dist/index.mjs
 var React33 = __toESM(require_react(), 1);
 var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
 var __defProp23 = Object.defineProperty;
@@ -29325,7 +27880,7 @@ var Arrow = /* @__PURE__ */ React33.forwardRef(
   }, "Arrow")
 );
 
-// node_modules/@radix-ui/react-popper/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-popper/dist/index.mjs
 var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
 var __defProp24 = Object.defineProperty;
 var __name23 = (target, value) => __defProp24(target, "name", { value, configurable: true });
@@ -29664,10 +28219,10 @@ function getSideAndAlignFromPlacement(placement) {
 }
 __name23(getSideAndAlignFromPlacement, "getSideAndAlignFromPlacement");
 
-// node_modules/@radix-ui/react-roving-focus/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-roving-focus/dist/index.mjs
 var React36 = __toESM(require_react(), 1);
 
-// node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-use-is-hydrated/dist/index.mjs
 var React210 = __toESM(require_react(), 1);
 var React35 = __toESM(require_react(), 1);
 var __defProp25 = Object.defineProperty;
@@ -29700,7 +28255,7 @@ function useIsHydratedModern() {
 __name24(useIsHydratedModern, "useIsHydratedModern");
 var useIsHydrated2 = typeof useReactSyncExternalStore === "function" ? useIsHydratedModern : useIsHydrated;
 
-// node_modules/@radix-ui/react-roving-focus/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-roving-focus/dist/index.mjs
 var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
 var __defProp26 = Object.defineProperty;
 var __name25 = (target, value) => __defProp26(target, "name", { value, configurable: true });
@@ -29937,7 +28492,7 @@ function wrapArray(array, startIndex) {
 }
 __name25(wrapArray, "wrapArray");
 
-// node_modules/@radix-ui/number/dist/index.mjs
+// play/options/node_modules/@radix-ui/number/dist/index.mjs
 var __defProp27 = Object.defineProperty;
 var __name26 = (target, value) => __defProp27(target, "name", { value, configurable: true });
 function clamp3(value, [min2, max2]) {
@@ -29945,7 +28500,7 @@ function clamp3(value, [min2, max2]) {
 }
 __name26(clamp3, "clamp");
 
-// node_modules/@radix-ui/react-select/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-select/dist/index.mjs
 var dist_exports7 = {};
 __export(dist_exports7, {
   Arrow: () => SelectArrow,
@@ -31216,7 +29771,7 @@ function wrapArray2(array, startIndex) {
 }
 __name27(wrapArray2, "wrapArray");
 
-// node_modules/@radix-ui/react-switch/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-switch/dist/index.mjs
 var dist_exports9 = {};
 __export(dist_exports9, {
   Root: () => Switch,
@@ -31508,7 +30063,7 @@ function getState2(checked) {
 }
 __name28(getState2, "getState");
 
-// node_modules/@radix-ui/react-tabs/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-tabs/dist/index.mjs
 var dist_exports10 = {};
 __export(dist_exports10, {
   Content: () => TabsContent,
@@ -31706,7 +30261,7 @@ function makeContentId(baseId, value) {
 }
 __name29(makeContentId, "makeContentId");
 
-// node_modules/@radix-ui/react-toggle/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-toggle/dist/index.mjs
 var dist_exports12 = {};
 __export(dist_exports12, {
   Root: () => Toggle,
@@ -31745,7 +30300,7 @@ var Toggle = /* @__PURE__ */ React40.forwardRef(
   }, "Toggle")
 );
 
-// node_modules/@radix-ui/react-tooltip/dist/index.mjs
+// play/options/node_modules/@radix-ui/react-tooltip/dist/index.mjs
 var dist_exports13 = {};
 __export(dist_exports13, {
   Arrow: () => TooltipArrow,
@@ -32260,7 +30815,7 @@ function concatAriaDescribedby3(...values) {
 }
 __name31(concatAriaDescribedby3, "concatAriaDescribedby");
 
-// node_modules/@babel/runtime/helpers/esm/extends.js
+// play/options/node_modules/@babel/runtime/helpers/esm/extends.js
 function _extends() {
   return _extends = Object.assign ? Object.assign.bind() : function(n2) {
     for (var e2 = 1; e2 < arguments.length; e2++) {
@@ -32271,7 +30826,7 @@ function _extends() {
   }, _extends.apply(null, arguments);
 }
 
-// node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+// play/options/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
 function _objectWithoutPropertiesLoose(r2, e2) {
   if (null == r2) return {};
   var t2 = {};
@@ -32282,17 +30837,17 @@ function _objectWithoutPropertiesLoose(r2, e2) {
   return t2;
 }
 
-// node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
+// play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
 var React44 = __toESM(require_react());
 
-// node_modules/use-latest/dist/use-latest.esm.js
+// play/options/node_modules/use-latest/dist/use-latest.esm.js
 var import_react4 = __toESM(require_react());
 
-// node_modules/use-isomorphic-layout-effect/dist/use-isomorphic-layout-effect.browser.esm.js
+// play/options/node_modules/use-isomorphic-layout-effect/dist/use-isomorphic-layout-effect.browser.esm.js
 var import_react3 = __toESM(require_react());
 var index2 = import_react3.useLayoutEffect;
 
-// node_modules/use-latest/dist/use-latest.esm.js
+// play/options/node_modules/use-latest/dist/use-latest.esm.js
 var useLatest = function useLatest2(value) {
   var ref = import_react4.default.useRef(value);
   index2(function() {
@@ -32301,7 +30856,7 @@ var useLatest = function useLatest2(value) {
   return ref;
 };
 
-// node_modules/use-composed-ref/dist/use-composed-ref.esm.js
+// play/options/node_modules/use-composed-ref/dist/use-composed-ref.esm.js
 var import_react5 = __toESM(require_react());
 var updateRef = function updateRef2(ref, value) {
   if (typeof ref === "function") {
@@ -32325,7 +30880,7 @@ var useComposedRef = function useComposedRef2(libRef, userRef) {
   }, [userRef]);
 };
 
-// node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
+// play/options/node_modules/react-textarea-autosize/dist/react-textarea-autosize.browser.esm.js
 var HIDDEN_TEXTAREA_STYLE = {
   "min-height": "0",
   "max-height": "none",
@@ -32532,7 +31087,7 @@ var TextareaAutosize = function TextareaAutosize2(_ref, userRef) {
 };
 var index3 = /* @__PURE__ */ React44.forwardRef(TextareaAutosize);
 
-// node_modules/react-image-crop/dist/index.js
+// play/options/node_modules/react-image-crop/dist/index.js
 var import_react6 = __toESM(require_react(), 1);
 var r = {
   x: 0,
@@ -32934,7 +31489,7 @@ var h = class s extends import_react6.PureComponent {
 };
 var g = Math.PI / 180;
 
-// ../src/note-strings.json
+// play/src/note-strings.json
 var note_strings_default = {
   "options.note.label": "Send a note",
   "options.note.line": "A picture of the game as you left it goes in first. Add a few words, more pictures or a clip.",
@@ -32986,7 +31541,7 @@ var note_strings_default = {
   "keys.whole.line": "Add the whole screen to the note"
 };
 
-// src/note-ui.jsx
+// play/options/src/note-ui.jsx
 var import_jsx_runtime21 = __toESM(require_jsx_runtime(), 1);
 var T = (key, vars) => fmt(note_strings_default[key] ?? key, vars);
 var useNote = (c) => (0, import_react7.useSyncExternalStore)(c.subscribe, c.getState);
@@ -33093,7 +31648,7 @@ function SectionDialog({ c }) {
   ] }) });
 }
 
-// src/parts.jsx
+// play/options/src/parts.jsx
 var import_react8 = __toESM(require_react(), 1);
 var import_jsx_runtime22 = __toESM(require_jsx_runtime(), 1);
 var NONE = "__none";
@@ -33191,7 +31746,7 @@ function Panel({ api }) {
   ] }) });
 }
 
-// src/keytray.jsx
+// play/options/src/keytray.jsx
 var import_react9 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 var import_client = __toESM(require_client(), 1);
@@ -33349,7 +31904,7 @@ function mountDockKey(host, cfg) {
   } };
 }
 
-// src/switch.jsx
+// play/options/src/switch.jsx
 var import_react_dom3 = __toESM(require_react_dom(), 1);
 var import_client2 = __toESM(require_client(), 1);
 var import_jsx_runtime24 = __toESM(require_jsx_runtime(), 1);
@@ -33373,7 +31928,7 @@ function mountSwitch(host, cfg) {
   } };
 }
 
-// src/docksheet.jsx
+// play/options/src/docksheet.jsx
 var import_react10 = __toESM(require_react(), 1);
 var import_react_dom4 = __toESM(require_react_dom(), 1);
 var import_client3 = __toESM(require_client(), 1);
@@ -33465,7 +32020,7 @@ function mountDockScreen(host, cfg) {
   };
 }
 
-// src/panel.jsx
+// play/options/src/panel.jsx
 var import_jsx_runtime26 = __toESM(require_jsx_runtime(), 1);
 function mountOptions(root, cfg) {
   const notes = createController(cfg.host), api = { ...cfg, notes, open: () => {
@@ -33479,7 +32034,8 @@ function mountOptions(root, cfg) {
     /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(SectionDialog, { c: notes })
   ] }));
   cfg.trigger.addEventListener("click", () => {
-    notes.hold().then(() => api.open());
+    notes.hold();
+    api.open();
   });
   return notes;
 }
