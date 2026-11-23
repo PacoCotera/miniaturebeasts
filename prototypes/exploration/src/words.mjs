@@ -66,6 +66,7 @@ WORDS.ease = {
   keep: 'Keep still',   // the ✓ label that holds
   hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
   ctx: 'keep still, and see what it does',
+  wildKind: kind => 'a wild ' + kind,   // owner note #111: a named wild one, her kind not yet identified: the bar says what the name is
 };
 // [copy] W4, habits that play and the notes they give (walk-design-1 W4; the range rule 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
 WORDS.habit = {
