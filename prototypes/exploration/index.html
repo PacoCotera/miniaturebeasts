@@ -2667,11 +2667,12 @@ function startPlaces() {
   STARTS = { key, list: ok.length ? ok : G.spawns.slice() }; return STARTS.list;
 }
 function markedCandidates() {
-  const key = S.seed + '|' + S.cr.length + '|' + G.spawns[0]; if (MARKED.key === key) return MARKED.ids;
   const all = S.cr.filter(q => q.sp === 0 && !q.cv); let ids = [];
   if (!PL.ready) return all.map(q => q.id);   // the places are not in yet: not kept
-  for (const t of [1, 2]) { if (ids.length || G.spawns[0] == null) break;   // tier 1's reach (days 1-2), then tier 2's if the first holds no named Loika
-    const reach = new Set(reachCells(G.spawns[0], TIER[t].range, {}).map(String));
+  const sp0 = startPlaces()[0];   // start-reach-2: the first OFFERED start, not G.spawns[0] (a dropped glint, as on seed 45, has no Loika in reach)
+  const key = S.seed + '|' + S.cr.length + '|' + sp0; if (MARKED.key === key) return MARKED.ids;
+  for (const t of [1, 2]) { if (ids.length || sp0 == null) break;   // tier 1's reach (days 1-2), then tier 2's if the first holds no named Loika
+    const reach = new Set(reachCells(sp0, TIER[t].range, {}).map(String));
     ids = all.filter(q => { if (!reach.has(String(q.c))) return false; try { return !!individualOf(q, layout(String(q.c))); } catch (e) { return false; } }).map(q => q.id); }
   MARKED = { key, ids: ids.length ? ids : all.map(q => q.id) }; return MARKED.ids;
 }
