@@ -63,8 +63,18 @@ test("item 6: a refused Pair them reads on the screen's line, with no plate and 
   const before = podsBuild(model(st, ui.pods), pods).line; assert.equal(before.ok, "Pair them"); assert.ok(!before.need, "no reason before the press");
   pairIntent(h, "rail.0", "confirm");
   assert.deepEqual([st.e, st.d, st.s, st.tray.length], was, "nothing spent, no pod"); assert.equal(said.length, 0, "no message plate over a page screen"); assert.equal(ui.pods.view, "pair");
+  const shown = podsBuild(model(st, ui.pods), pods).page.scale.texts.map((t) => t.text); assert.ok(shown.includes("Needs 2 Energy more") && !shown.some((t) => /⚡/.test(t)), "the page says why where the word Pair them was: " + shown.filter((t) => /Needs|Pair/.test(t)).join(" | "));
   const after = podsBuild(model(st, ui.pods), pods).line; assert.match(after.need, /\S/, "the reason is on the line"); pairIntent(h, "rail.0", "step:right"); assert.ok(!podsBuild(model(st, ui.pods), pods).line.need, "a new pick clears it"); console.log("refusal line: " + after.need);
 });
+
+test("item 4: a resting parent says so in the middle column and the copies plate stays two lines, clear of the YOUNG THEY COULD HAVE line", () => {
+  const { st, a, ps } = world(31), ui = { view: "pair", pair: { aId: a.id, bId: ps[0] } }, Z = pods.regions.page.pair;
+  a.pairedAt = [5_000_000 - 60_000];
+  const v = podsBuild(model(st, ui), pods), req = v.requests.find((r) => r.kind === "pairing"), t = v.page.scale.texts;
+  const rest = t.find((x) => /resting · \d+ min$/.test(x.text)); assert.ok(rest, "the resting line is said"); assert.ok(rest.text.startsWith(S.cap(a.name)), "with the name: " + rest.text);
+  assert.ok(rest.x > Z.stand.ax + Z.name.w && rest.x + rest.w < Z.stand.bx, "in the middle column, between the two parents");
+  const head = t.find((x) => x.text.startsWith("YOUNG THEY COULD HAVE")), plate = Math.max(...req.plates.map((p) => p[1] + p[3]));
+  assert.ok(req.plates.every((p) => p[3] === Z.copies.plate.h), "every copies plate is two lines"); assert.ok(head.base - 10 - plate >= 4, `the plate ends ${head.base - 10 - plate} lp above the young line`);});
 
 test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and opens the nursery; ← goes to the mibi", () => {
   const { st, a, ps } = world(41), ui = { pods: {}, hab: { id: null }, screen: "habitat" }, { h, said } = fake(st, ui);

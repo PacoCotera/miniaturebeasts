@@ -33,19 +33,22 @@ export function pairView(view, m, spec, req) {
   const R = readout(st, sv, spec, a, b, settings, now), text = (tx, X, base, role, align = "l", w) => { if (tx) texts.push({ text: tx, x: Math.round(X), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
   const sp = S.speciesOf(a), fr = frameOf(sp), W = spec.regions.page.rect[2], T = Z.stand, noStand = [];
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role);
-  const stands = [], names = [], plates = [], N = Z.name;
+  const stands = [], names = [], plates = [], restLines = [], N = Z.name;
   const side = (mb, f, fx) => { if (!mb) return; const st1 = standOf(sp, mb, fr); if (st1.disc) noStand.push(mb.id);
     stands.push({ id: st1.id, disc: st1.disc, x: fx, y: T.y, w: T.w, h: T.h, tag: null }); names.push([fx, N.baseline - N.up, N.w, N.h, N.radius]);
     text((mb === b && partners.length > 1 ? "◀ " : "") + S.cap(mb.name) + (mb === b && partners.length > 1 ? " ▶" : ""), fx, N.baseline, N.role, "c", N.w);
     // station step 8-6 (AD 14:28): the copies lines sit below the pill, a line apart, on a dark plate of their own (the pale backdrop gave them no contrast); "resting · n min" is the plate's first line
-    const C = Z.copies, lines = [...(f.rest ? [f.rest] : []), ...f.counts.map((c, i) => `${i ? "eyes" : "marking"} ${c}`)], pitch = lines.length > 2 ? C.pitch - 1 : C.pitch;
-    if (lines.length) plates.push([fx, N.baseline - N.up + N.h + C.plate.dy, N.w, C.plate.h + (lines.length > 2 ? 12 : 0), C.plate.radius]);
-    lines.forEach((tx, i) => text(tx, fx, C.baseline + i * pitch, C.role, "c", N.w)); };   // one line a trait, under the name
+    // round 2 (item 4): "resting · n min" no longer rides on this plate (three lines ran into the YOUNG THEY COULD HAVE line); it is said in the middle column, under the kin word, with the mibi's name
+    const C = Z.copies, lines = f.counts.map((c, i) => `${i ? "eyes" : "marking"} ${c}`);
+    if (f.rest) restLines.push(`${S.cap(mb.name)} ${f.rest}`);
+    if (lines.length) plates.push([fx, N.baseline - N.up + N.h + C.plate.dy, N.w, C.plate.h, C.plate.radius]);
+    lines.forEach((tx, i) => text(tx, fx, C.baseline + i * C.pitch, C.role, "c", N.w)); };   // one line a trait, under the name
   side(a, R.a, T.ax);
   if (b) side(b, R.b, T.bx);
   text(Sg.plus, Z.plus.cx, Z.plus.baseline, Z.plus.role, "c", 40);
   const kinHead = b ? (R.raw ? S.kinshipWord(S.kinshipOf(st, a, b)) : "") : "";
   if (b && kinHead) text(kinHead, Z.kin.cx - Z.kin.w / 2, Z.kin.baseline, Z.kin.role, "c", Z.kin.w);
+  restLines.forEach((tx, i) => text(tx, Z.kin.cx - Z.kin.w / 2, Z.kin.baseline + 20 + i * Z.copies.pitch, Z.kin.role, "c", Z.kin.w));
   // the four examples (standing, grown, the ones new to you tagged), and where the young can land: the tint and shade bars with the parents' marks, the marking cards with their new tags (green)
   const bars = [], cards = [];
   if (b) {
@@ -80,7 +83,7 @@ export function pairView(view, m, spec, req) {
   if (b) { text(R.kin, Z.kinLine.x, Z.kinLine.baseline, Z.kinLine.role); text(R.pod, Z.kinLine.x, Z.kinLine.baseline + Z.kinLine.pitch, Z.kinLine.role); }
   const block = b ? S.pairBlock(st, sv, a, b, settings) : "", can = !!b && !block;
   if (R.done) text(R.done, Z.done.x, Z.done.baseline, Z.done.role);
-  else if (can) text(Sg.pairThem, Z.ok.right, Z.ok.baseline, Z.ok.role, "r");
+  else if (can) text(x.refused ? S.cap(x.refused.replace(/^Pair them · /, "").replace(/⚡ (\d+)/, (_, n) => fill(Sg.shortEnergy, { n })).replace(/❀ (\d+)/, (_, n) => fill(Sg.shortEssence, { n }))) : Sg.pairThem, Z.ok.right, Z.ok.baseline, Z.ok.role, "r");   // item 6: a refused ✓ says why where its word was (the page screens have no foot line)
   const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], stands, names, plates, bars, cards, ok: can ? Z.ok.key : null };
   const stage = req({ kind: "pairing", id: `pairing:${hash(JSON.stringify(pic))}`, ...pic });
   view.page = { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
