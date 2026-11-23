@@ -190,3 +190,20 @@ test("on the page, facing a named Loika, ✓ keeps still and runs Waits until a 
   assert.ok(["N", "E", "S", "W"].includes(out.wind), "the conditions slot carries the wind");
   assert.deepEqual(p.errors, []);
 });
+
+test("owner note 111: a named wild one of an unidentified kind reads Keep still and 'Name · a wild Loika'; an unnamed one stays Unknown creature", () => {
+  const p = page(); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);");
+  const pick = JSON.parse(p.run(find)); assert.ok(pick);
+  const out = JSON.parse(p.run(`(() => { const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); S.exp.storm = null; const live = curLive(), c = live.cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
+    S.known = S.known.filter(k => k !== c.sp); S.named = S.named || {}; S.named[c.id] = 'Kestrel';
+    c.ease = 0; c.quiet = 0; c.hide = 0; c.st = 'idle';
+    const f = frontOf(P); c.x = f.x; c.y = f.y; c.ind.go = { part: dayPart(), t: { x: c.x, y: c.y } }; S.day.spent = 1;
+    const a = patchAction(), ln = lineBase(); const ind = c.ind; c.ind = null; const a2 = patchAction(); c.ind = ind;
+    return JSON.stringify({ label: a.label, run: !!a.run, ctx: ln.ctx, label2: a2.label, kind: spOf(c.sp).name }); })()`));
+  assert.equal(out.label, WORDS.ease.keep, "✓ is Keep still");
+  assert.ok(out.run, "and it works");
+  const ctx = [].concat(out.ctx).filter(s => /Kestrel/.test(s));
+  assert.ok(ctx.length && ctx.every(s => s.includes("a wild " + out.kind) && !/Unknown|eats|drinks|Data/.test(s)), "the context names her as a wild kind, no diet or act: " + JSON.stringify(out.ctx));
+  assert.equal(out.label2, "Unknown creature", "an unnamed creature of an unidentified kind");
+  assert.deepEqual(p.errors, []);
+});
