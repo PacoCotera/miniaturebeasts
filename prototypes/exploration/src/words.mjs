@@ -64,8 +64,53 @@ WORDS.ease = {
   stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
   stayHeard: 'It looked up · you stayed too long',
   keep: 'Keep still',   // the ✓ label that holds
-  hold: { ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
+  hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
   ctx: 'keep still, and see what it does',
+  wildKind: kind => 'a wild ' + kind,   // owner note #111: a named wild one, her kind not yet identified: the bar says what the name is
+};
+// [copy] W4, habits that play and the notes they give (walk-design-1 W4; the range rule 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
+WORDS.habit = {
+  name: { shake: 'shaking dry', calm: 'calming a wary one', sleep: 'curling up to sleep' },
+  // the tell, then the four beats (editorial's page the editorial page on her habits section 1)
+  tell: { shake: 'her nose lifts · the rain is thinning', calm: 'she stops · ears up, her head turns', sleep: 'she walks a small circle' },
+  beat: {
+    shake: ['a shiver runs from her head back', 'the fur flies', 'she turns to the water and trots on', 'a tuft is left where she stood'],
+    calm: ['she stops and looks', 'she sits a little lower', 'the wary one\'s startle drops', 'it comes closer'],
+    sleep: ['she goes round once', 'she folds her legs', 'her nose goes under her tail', 'her breathing slows'],
+  },
+  note: 'Note it',                      // the ✓ label while she plays a habit in sight
+  noteCtx: 'note what you see of her now',
+  // what a note says, by range: the shape only when the sight gives no more (a far note never claims more)
+  shape: { shake: 'a small grey shape shivering', calm: 'she has stopped', sleep: 'a round shape low in the grass' },
+  noted: (name, habit, range, said) => name + ' · ' + habit + ' · ' + range + ' · ' + said,
+  first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
+  dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
+  rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
+  // the card line, one per habit, on the forecast line: what the Station still lacks
+  card: (habit, want, filled) => habit + ' · ' + (filled ? 'learned: ' : 'still to learn: ') + want,
+  cardTail: (want, filled) => (filled ? 'learned: ' : 'still to learn: ') + want,   // the card line's tail, after a note says the habit already
+  cardKnown: habit => habit + ' · learned',
+  range: { far: 'from far', mid: 'from mid range', near: 'from near' },
+  sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
+};
+// [copy] W4 round 2: her prints at a haunt she has left (walk-design-1 3A): working words for the copywriter. The message says when she was there; the label is the ✓ at the prints.
+WORDS.prints = {
+  read: 'Read her prints', readCtx: 'read the prints she left',
+  when: { dawn: 'at first light', morning: 'this morning', midday: 'at midday', afternoon: 'this afternoon', dusk: 'at dusk', night: 'in the night' },
+  whenYday: { dawn: 'at first light yesterday', morning: 'yesterday morning', midday: 'at midday yesterday', afternoon: 'yesterday afternoon', dusk: 'at dusk yesterday', night: 'in the night' },
+  line: (name, when) => name + ' was here ' + when,
+  bolted: name => name + ' was here · she bolted',
+  page: '',   // bug #118: no screen shows a wild one's page yet (W6c); the old ' · on her page' returns with it
+};
+// [copy] W5 (walk-design-1): an empty haunt's drop, a wild one's own pod, the end of anonymous pods: working words for the copywriter.
+WORDS.w5 = {
+  dropTuft: name => ' · she left a tuft here' + (name ? ' · ' + name + "'s" : ''),   // the empty haunt's drop (a tuft of hers: the Coat's keepsake)
+  dropFull: ' · the satchel is full, the tuft stays',
+  ownPod: name => name + ' has young · a pod at her bed',
+  ownPodAway: 'A pod lies at a bed nearby',
+  ownTag: name => name + "'s young",
+  shedTuft: verb => ' · it left a tuft',
+  shedAway: 'Something left a tuft',
 };
 // [copy] the wind of the land, said in the bottom line's conditions slot until the art director signs a mark (rule 18): it blows toward the named way
 WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the south', W: 'wind to the west' };

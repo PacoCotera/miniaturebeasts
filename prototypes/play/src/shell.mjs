@@ -62,7 +62,10 @@ const loadHome = () => { try { return localStorage.getItem(HOME_KEY) === "1"; } 
 const saveHome = (v) => { try { if (v) localStorage.setItem(HOME_KEY, "1"); else localStorage.removeItem(HOME_KEY); } catch { /* no storage: the Station's word is heard again at every load */ } };
 const NEWBIE = !TEST || params.has("new");   // test pages keep today's page (the Station awake) unless a test asks for the new player's (`?test&new`: test-harness flag only)
 let podHome = NEWBIE ? loadHome() : true;
-const START_OWNER = OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station";   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld
+const TAB_KEY = "mb-play-tab";   // the tab in view (Companion or Station), kept so a reload opens on it (owner bug 2026-11-23); no value = a first visit
+const loadTab = () => { try { const v = localStorage.getItem(TAB_KEY); return v === "station" || v === "companion" ? v : null; } catch { return null; } };
+const saveTab = (v) => { try { localStorage.setItem(TAB_KEY, v); } catch { /* no storage: the tab lasts the visit */ } };
+const START_OWNER = loadTab() || (OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station");   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld; a kept tab wins
 let owner = START_OWNER, devOpen = false, keysOpen = false;   // owner: the device in view, which has the keys
 let wokeNews = false;   // the Station woke while it was out of view: the switch's dot, until it comes into view
 let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
@@ -175,7 +178,7 @@ const CTL_LINE = 44;
 // ---- the Station's phone window (layout.mjs ZOOM, view, panFor) ----
 // Where the whole screen would be under x0.6 the Station is drawn at x0.6 in a window (plan.view, in lp) that keeps the focus ring's target whole (the Station posts the ring's box, "mb-focus").
 // The frame is moved under a clip-path that moves with it, both eased over the same time, so the window stays put while the screen slides under it; reduced motion jumps.
-let pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null }, focusSt = { screen: null, settling: false };
+let platePan = null, pan = { x: 0, y: 0 }, focusNow = { screen: null, box: null }, focusSt = { screen: null, settling: false };
 function placeStation(p) {
   const el = frames.station, xc = p.screen.x - p.panel.x, yc = p.screen.y - p.panel.y;
   el.classList.toggle("pan", !!p.view);
@@ -197,8 +200,10 @@ function tellNarrow(force = false) {
 function stationFocus(m) {
   if (!!m.page !== pageForm) { pageForm = !!m.page; layout(); }
   const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null;
+  // A message plate is no focus: its box is placed for the whole 1024 lp room, so it pans the window right of a narrow page. The pan before the plate comes back when the plate goes (station-pan-cause-1); a window that kept the plate's pan showed the page cut left with a dark strip.
+  if (m.plate) { if (!platePan) platePan = { ...pan }; } else if (platePan) { pan = platePan; platePan = null; }
   const r = focusStep(focusSt, m.screen, box); focusSt = r.st;
-  if (r.top) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left
+  if (r.top || (!box && m.screen === "pods")) pan = { x: 0, y: 0 };   // a new screen with no ring on it: its top left; the nursery and a pod's page draw their own ring and post none, so after a message plate (Grow it) the window goes back to their left edge, as the standalone page does (owner #18)
   focusNow = { screen: m.screen, box };
   const p = PLAN.station; if (p && p.view) placeStation(p);
 }
@@ -239,7 +244,7 @@ function setOwner(d, opts = {}) {
   const focus = opts.focus !== false, changed = d !== owner;
   if (d === "station") wokeNews = false;
   if (!changed && !opts.force) { if (d === "station") layout(); if (focus) giveKeys(d); return; }
-  owner = d; layout(); if (focus) giveKeys(d);
+  owner = d; saveTab(d); layout(); if (focus) giveKeys(d);
 }
 const order = ["companion", "station"];
 const cycle = (dir) => setOwner(order[(order.indexOf(owner) + dir + order.length) % order.length]);

@@ -24,6 +24,32 @@ export const TRANSFORMS = {
 // the tree crowns and bushes (the leaf ramp) go to no lighter a green than the night grass; the sunlit grass tone goes to the next green a touch lighter than the night grass. Anything else (pinks, whites,
 // the core's blues and purples) goes to the nearest colour of the whole palette as before.
 export const NIGHT_TABLES = ['dark2'];
+
+// ---- the night colour table (owner bug #113; art director: night must be darker AND cooler than dark2 and tell from dusk) ----
+// Hand-set look: grass about (26,50,56); every colour steps down toward the cool night greys, reds, oranges and creams lose most of their warmth, light things stay the lightest.
+// A colour keeps 40% of its own chroma (the rest goes to its grey), is scaled by the night's red, green, blue factors and lifted a little in blue, then takes the nearest colour of the palette
+// (the set holds no spare index: every colour of the night table is a colour already there). dark2, the storm and the veil are untouched; this is the table the place draws through at night.
+export const NIGHT_LOOK = { keep: 0.4, scale: [0.22, 0.31, 0.36], blueLift: 14, grass: [26, 50, 56], grassLum: 146 };   // grass: the night grass (the day grass's luminance is grassLum)
+export function nightTable(rgb) {
+  const L = (c) => 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
+  const pool = [];
+  rgb.forEach((c, i) => { if (i > 0 && !Object.values(STONE_TONES).some((t) => Object.values(t).some((v) => v[0] === c[0] && v[1] === c[1] && v[2] === c[2]))) pool.push([i, c]); });
+  const { keep, scale, blueLift } = NIGHT_LOOK;
+  const isGreen = (c) => c[1] >= c[0] && c[1] >= c[2] && c[1] - Math.min(c[0], c[2]) > 8;   // green leads (a blue-grey that family() calls teal is not)
+  const greens = pool.filter(([, c]) => isGreen(c) && lumOf(c) < 90);
+  const map = new Array(rgb.length).fill(0);
+  for (let i = 1; i < rgb.length; i++) {
+    const c = rgb[i], g = L(c), m = c.map((v) => g + (v - g) * keep);
+    const t = [m[0] * scale[0], m[1] * scale[1], m[2] * scale[2] + blueLift];
+    // a green (grass, leaves, olives) stays a green-teal: its target is the night grass anchor, lighter or darker as the day colour is, and it takes the nearest green or teal of the palette
+    const green = isGreen(c) && c[1] - Math.min(c[0], c[2]) > 25 && g > 60, anchorK = Math.min(1.9, Math.max(0.45, g / NIGHT_LOOK.grassLum)) ** 0.4;
+    const aim = green ? NIGHT_LOOK.grass.map((v) => v * anchorK) : t, from = green ? greens : pool;
+    let best = i, bd = Infinity;
+    for (const [j, q] of from) { const d = 3 * (q[0] - aim[0]) ** 2 + 4 * (q[1] - aim[1]) ** 2 + 2 * (q[2] - aim[2]) ** 2; if (d < bd) { bd = d; best = j; } }
+    map[i] = best;
+  }
+  return map;
+}
 export function family(rgb) {
   const [r, g, b] = rgb, mx = Math.max(r, g, b), mn = Math.min(r, g, b);
   if (mx - mn <= 30 && r >= b - 4) return 'grey';

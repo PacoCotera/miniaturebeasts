@@ -27,7 +27,7 @@ export const PAGE_SPOTS = {
 export const pageSpotsOf = (species) => Object.entries(PAGE_SPOTS[species] ?? {}).map(([chapter, s]) => ({ chapter, ...s }));
 // Her chapter's close up (station-match-5; the accepted walk-4-scale): where the ring stands on her body, as a fraction of her body's picture (x from the left, y from the top). The Coat's is the accepted picture's own (where her
 // dark coat meets her cream); the others are the end of each chapter's leader on her page (PAGE_SPOTS), a kind with none puts it in the middle.
-const CLOSE_OWN = { S01: { coat: [0.533, 0.612] } };
+const CLOSE_OWN = { S01: { coat: [0.30, 0.52] } };   // loika-page-coat-1: on her back, where the saddle lies (was [0.533, 0.612], the neck and chest, where the dark meets the cream, off the saddle)
 export function closeOf(species, chapterId) {
   const own = CLOSE_OWN[species]?.[chapterId]; if (own) return own;
   const s = PAGE_SPOTS[species]?.[chapterId]; return s ? [(s.line[2] - PAGE_BODY_BOX.x) / PAGE_BODY_BOX.w, (s.line[3] - PAGE_BODY_BOX.y) / ((PAGE_BODY_BOX.w * 312) / 304)] : [0.5, 0.5];

@@ -55,7 +55,8 @@ export function nurseryPicture(r) {
     if (c.pod) { const px = pixels(c.pod.id); if (px) sprite(out, px, 144, 176, Math.round(c.x + c.pod.cx - c.pod.w / 2), Math.round(c.y + c.pod.foot - (c.pod.w * 176) / 144), c.pod.w); }
     if (c.state === "young") at(L.door); else at(L.glass);
     at(L.shell);
-    if (c.state === "growing" || c.state === "ready") { const x1 = c.bar[0] + Math.round((c.bar[1] - c.bar[0]) * c.progress); at(L.bar, { clip: (X) => (X - c.x < x1 ? 1 : 0) }); }
+    if (c.state === "growing" || c.state === "ready") { const x1 = c.bar[0] + Math.max(1, Math.round((c.bar[1] - c.bar[0]) * c.progress));   // from its first pixel, as the Incubator's bar (owner #18: a growing pod shows it grows)
+    at(L.bar, { clip: (X) => (X - c.x < x1 ? 1 : 0) }); }
     if (c.ring) ring(out, c.ring, r.ringBorder ?? 3);
     if (c.badge) { const [x, y, w, h, tone] = c.badge; pill(out, [x, y, w, h, h / 2], PAGE_INK, tone === "ready" ? 0.92 : 0.8); if (tone === "ready") paintPage(out, x, y, x + w, y + h, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, h / 2); return sd > -1.5 ? [PAGE_GOLD, clamp01(0.5 - sd)] : null; }); }
   }

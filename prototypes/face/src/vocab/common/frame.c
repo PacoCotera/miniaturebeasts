@@ -300,6 +300,7 @@ void word_messagePlate(void) {
   if (spec_bool(P, "frame.plate.timed", 0) && !anim_get(ANIM_PLATE, "msg", NULL)) return;   /* a timed plate is shown while its `plate` event plays (4 s) */
   char prole[24], pg[24]; snprintf(prole, sizeof prole, "%s", v_sstr(F, "regions.plate.role")); snprintf(pg, sizeof pg, "%s", v_sstr(F, "regions.plate.ground"));
   int maxW = v_si(F, "regions.plate.maxWidth", 0), pad = v_si(F, "regions.plate.pad", 0), centre = v_si(F, "regions.plate.centre", 0), lead = v_si(F, "regions.plate.lead", 0), line = v_si(F, "regions.plate.line", 0);
+  if (spec_len(P, "frame.plate.page") == 2) { int px = spec_int(P, "frame.plate.page.0", 0), pw = spec_int(P, "frame.plate.page.1", 0); if (pw > 0) { centre = px + pw / 2; if (maxW > pw) maxW = pw; } }   /* a page screen (props frame.plate.page [x, w]): the plate stands inside the page's width, centred on it, its words wrapped to fit */
   char buf[V_STR * 4]; int n = 0, widest = 0, bo = 0; const char *l = buf;
   for (const char *seg = s;;) {   /* a hard line break ("\n", R4b-1b: the held plate's two lines in one plate) ends a line; each part wraps by itself, eight lines in all */
     const char *nl = strchr(seg, '\n'); char part[V_STR]; size_t pl = nl ? (size_t)(nl - seg) : strlen(seg); if (pl >= sizeof part) pl = sizeof part - 1; memcpy(part, seg, pl); part[pl] = 0;

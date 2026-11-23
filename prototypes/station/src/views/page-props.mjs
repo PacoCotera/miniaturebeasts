@@ -30,7 +30,9 @@ export const cellX = (i, n, W, c) => c.inset + (n > 1 ? Math.floor((i * (W - 2 *
 // A trait that is a set shows its chip and one plain line until the set slice; everything else is the scale.
 const NUM = ["no looks", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 const hexRGB =(h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
-export const faceOf = (sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
+// her own coat and marking ("<tint>-<shade>+<lay picture>"), from the chapters she has read, as the room picks it; {} for a kind with no coat traits or an unread coat (the base picture)
+export const coatProp = (sp, mb, fr) => { const c = fr ? coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) : null; return c ? { coat: c } : {}; };
+export const faceOf =(sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
 const gapSay = (pts, min) => {   // where "none of yours here yet" goes: the middle of the widest empty stretch of the bar (pins are 0.14 wide), if it is wide enough for the words
   const a = [...pts].sort((p, q) => p - q), gaps = [{ mid: ((a[0] ?? 0.5) - 0.07 + 0) / 2, w: (a[0] ?? 1.07) - 0.07 }]; if (!a.length) return 0.5;
   for (let i = 1; i < a.length; i++) gaps.push({ mid: (a[i - 1] + a[i]) / 2, w: a[i] - a[i - 1] - 0.14 }); gaps.push({ mid: (a.at(-1) + 0.07 + 1) / 2, w: 1 - a.at(-1) - 0.07 });
@@ -101,7 +103,7 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
   else if (copies) { const C = Z.copies, mast = roundOf(sid, t.id); body = { left: C.bodyLeft, top: C.bodyTop, w: C.bodyW }; lens = { cx: C.cx, cy: C.cy, d: C.d, zoomW: C.zoomW }; halves = mast ? model.copies.map((c) => mast[c < 0.5 ? 0 : 2]) : null; }
   else { const C = Z.close, bh = Math.round((C.bodyW * 312) / 304), [fx, fy] = closeOf(sid, ch.id), left = clamp(Math.round(C.cx - fx * C.bodyW), C.left[0], C.left[1]), bt = clamp(Math.round(C.cy - fy * bh), C.tray - bh, 0);
     body = { left, top: bt, w: C.bodyW }; lens = { cx: left + Math.round(fx * C.bodyW), cy: bt + Math.round(fy * bh), d: C.d, zoomW: C.zoomW, fx, fy }; }
-  const pic = { species: sid, size: [W, H], dusk, copies, body, lens, halves, tray: { top: T, h: trayH, fade: Z.tray.fade }, ring: { cx: Hd.cx, cy: T + Hd.cy, s: Hd.ring, chapter: ch.id, petals }, chips, sc, set };
+  const pic = { species: sid, ...coatProp(sid, mibi, fr), size: [W, H], dusk, copies, body, lens, halves, tray: { top: T, h: trayH, fade: Z.tray.fade }, ring: { cx: Hd.cx, cy: T + Hd.cy, s: Hd.ring, chapter: ch.id, petals }, chips, sc, set };
   const stage = req({ kind: "pagescale", id: `pagescale:${sid}:${hash(JSON.stringify(pic))}`, ...pic });
   return { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
 }
@@ -145,7 +147,7 @@ function boardScreen(view, m, spec, req, mibi, fr) {
   const Lg = Bd.legend, items = []; let lx = Lg.x;
   for (const [kind, word] of [["scale", Sg.boardLgScale], ["set", Sg.boardLgSet], ["shows", Sg.boardLgShows], ["carries", Sg.boardLgCarries], ["others", Sg.boardLgOthers]]) {
     items.push({ x: lx, kind }); const tx = lx + Lg.glyph[kind] + Lg.glyphGap; text(word, tx, Lg.y + 5, Lg.role, "l"); lx = tx + Math.round(word.length * Lg.perChar) + Lg.gap; }
-  const pic = { species: sid, size: [W, H], body: Bd.body, alone: aloneItems, groups, legend: { y: Lg.y, items } };
+  const pic = { species: sid, ...coatProp(sid, mibi, fr), size: [W, H], body: Bd.body, alone: aloneItems, groups, legend: { y: Lg.y, items } };
   const stage = req({ kind: "pageboard", id: `pageboard:${sid}:${hash(JSON.stringify(pic))}`, ...pic });
   return { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
 }
@@ -164,8 +166,8 @@ export function pageView(view, m, spec, req) {
     const sub = isDoings(c) ? (left ? Sg.railWatch : Sg.railDone) : fill(left ? Sg.railToSee : Sg.railSeen, { n: left || c.traits.length });
     return { id: c.id, name: c.name, sub, x, petals: p, hand: i === hand };
   });
-  const key = hash(spots.map((s) => `${s.chapter}:${s.ring}`).join("|") + "|" + cells.map((c) => `${c.id}:${c.petals}`).join("|") + "|" + (ch ? ch.id : "-"));
-  const stage = req({ kind: "pagestage", id: `pagestage:${sid}:${key}`, species: sid, size: R.rect.slice(2), body: { x: PAGE_BODY_BOX.x, y: PAGE_BODY_BOX.y, w: PAGE_BODY_BOX.w }, spots, hand: ch ? ch.id : "", tag: R.tag.rect, radius: R.tag.radius, keys: [R.hints.chapters.key, R.hints.look.key],
+  const cp = coatProp(sid, mibi, fr), key = hash((cp.coat ?? "") + "|" + spots.map((s) => `${s.chapter}:${s.ring}`).join("|") + "|" + cells.map((c) => `${c.id}:${c.petals}`).join("|") + "|" + (ch ? ch.id : "-"));
+  const stage = req({ kind: "pagestage", id: `pagestage:${sid}:${key}`, species: sid, ...cp, size: R.rect.slice(2), body: { x: PAGE_BODY_BOX.x, y: PAGE_BODY_BOX.y, w: PAGE_BODY_BOX.w }, spots, hand: ch ? ch.id : "", tag: R.tag.rect, radius: R.tag.radius, keys: [R.hints.chapters.key, R.hints.look.key],
     rail: { y: R.rail.rect[1], h: R.rail.rect[3], ring: C.ring, cy: R.rail.rect[1] + C.ringCy, grad: C.gradient, frame: C.frame, w: C.w, cells: cells.map((c) => ({ chapter: c.id, x: c.x, petals: c.petals, hand: c.hand })) } });
   const name = S.cap(mibi.name);
   view.page = { name, origin: originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };

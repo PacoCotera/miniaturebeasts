@@ -326,7 +326,9 @@ export function screenProps(plate) {
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
     return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
-  const top = topFor(screen), pl = { text: plate || "", timed: true }; if (screen === "pods" && UI.pods.page != null) { const pm = mibiById(UI.pods.page); if (pm) top.title = S.cap(pm.name) + "'s page"; }   // her page: the header names her page, not the pods
+  const top = topFor(screen), pl = { text: plate || "", timed: true };
+  if (screen === "pods" && (UI.pods.page != null || UI.pods.view === "nursery" || UI.pods.view === "pod")) pl.page = [0, 530];   // a page screen (the 530 x 600 window): the plate is drawn inside the page's width, centred on it, wrapped to fit (frame.c word_messagePlate), so the window never pans for it
+  if (screen === "pods" && UI.pods.page != null) { const pm = mibiById(UI.pods.page); if (pm) top.title = S.cap(pm.name) + "'s page"; }   // her page: the header names her page, not the pods
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;
   if (screen === "library.family" && !fam) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // no found species shown: as any screen not built

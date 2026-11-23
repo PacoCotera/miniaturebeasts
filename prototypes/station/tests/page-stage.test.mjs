@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { pageStagePicture, pageScalePicture } from "../src/reading-pictures.mjs";
 import { cellX } from "../src/views/page-props.mjs";
+import { placeMaster } from "../../ui/assets.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), spec = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8")), R = spec.regions.page, C = R.rail.cell;
 const cells = (hand) => [0, 1, 2, 3, 4, 5].map((i) => ({ chapter: ["coat", "face", "shape", "legs-tail", "movement", "stamina"][i], x: cellX(i, 6, R.rect[2], C), petals: i === 0 ? "0,0,0" : "1,1", hand: i === hand }));
@@ -41,4 +42,13 @@ test("the scale picture: opaque, deterministic, the gold lens rim at the chapter
   const [W, H] = R.rect.slice(2), a = pageScalePicture(scaleReq()), b = pageScalePicture(scaleReq()); assert.equal(a.length, W * H * 4); for (let i = 3; i < a.length; i += 4 * 997) assert.equal(a[i], 255, "opaque"); assert.deepEqual(a, b);
   const gold = ([r, g, bl]) => r > 200 && g > 150 && g < 230 && bl < 120; assert.ok(gold(at(a, W, 330, 206 - 52)), "the lens rim in gold at its top"); assert.ok(gold(at(a, W, 77, 482)), "her mark is gold on the bar");
   const none = pageScalePicture(scaleReq({ sc: { ends: [], bar: null, rough: null, she: null, cop: null, link: null, pins: [], legend: { dot: null, bar: null } } })); assert.notDeepEqual(at(none, W, 200, 482), at(a, W, 200, 482), "no bar on a set");
+});
+
+// Her own coat (loika-page-coat-1): the stage draws the master of her coat and marking, as the room does, not the species base; a coat with no master keeps the base. Flat stand-in masters, one colour a coat.
+const flat = (r, g, b) => ({ w: 304, h: 312, rgba: () => { const a = new Uint8Array(304 * 312 * 4); for (let i = 0; i < a.length; i += 4) a.set([r, g, b, 255], i); return a; } });
+for (const [n, c] of [["", [200, 200, 200]], ["redder-between-", [200, 40, 40]], ["between-between-lay-saddle-", [40, 40, 200]]]) { const id = `mibi-adult-S01-${n}304x312`; placeMaster({ id, w: 304, h: 312, file: `${id}.png`, hash: "t" }, flat(...c)); }
+test("the stage draws her coat and marking master, the base without one", () => {
+  const [W] = R.rect.slice(2), mid = (px) => at(px, W, 52 + 192, 78 + 200).slice(0, 3);
+  assert.deepEqual(mid(pageStagePicture(req())), [200, 200, 200], "no coat: the base"); assert.deepEqual(mid(pageStagePicture(req({ coat: "redder-between" }))), [200, 40, 40], "her coat");
+  assert.deepEqual(mid(pageStagePicture(req({ coat: "between-between+lay-saddle" }))), [40, 40, 200], "her marking"); assert.deepEqual(mid(pageStagePicture(req({ coat: "no-such-coat" }))), [200, 200, 200], "an unplaced coat keeps the base");
 });

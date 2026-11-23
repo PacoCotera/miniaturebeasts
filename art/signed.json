@@ -1843,6 +1843,13 @@
    "sha256": "185a7e7f130c5a36b32406969be915c804f2a23f1a53cc26d12057c8c1d70b55"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "e5719a89b9",
+   "path": "art/places/sets/ninja-test/over-grass-flat.png",
+   "sha256": "7bd0344cd265ef44573170f24fef0c3c84e1189e36bc4eafd8a7672078f5d402"
+  },
+  {
    "class": "paint",
    "date": "2026-11-16",
    "id": "7ee8bdd6f7",
@@ -4294,6 +4301,664 @@
   },
   {
    "class": "ui",
+   "date": "2026-11-23",
+   "id": "cb98739e1e",
+   "path": "prototypes/exploration/index.html#carryRing/1-26-f0",
+   "sha256": "78921423d1ed7bc94742024126063fabf2eba7b791cb3d40f4d5c19f98545cde"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "b9414e59c0",
+   "path": "prototypes/exploration/index.html#carryRing/1-26-f1",
+   "sha256": "97f99b82efc6fe8093ad8465586dbaa6a7e6de4de0abedc9f51486de04e1a244"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "1264ae56c2",
+   "path": "prototypes/exploration/index.html#carryRing/1-26-f2",
+   "sha256": "422d13e7935789c984245983fe74b20e92f8d94fd02b1f06a90804f3c0f41ba9"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "4093fd389d",
+   "path": "prototypes/exploration/index.html#carryRing/1-26-heard",
+   "sha256": "1969810cbb15341c575f203c6d31631cdf1e6221bd7e7cba3a0a3c9f250a7e60"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "ee6d0288d3",
+   "path": "prototypes/exploration/index.html#carryRing/1-48-f0",
+   "sha256": "59876b808ef3b3c98b33dd733b31594849dfa20dc81d4f71c36adbc19142da89"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "1631eebb0a",
+   "path": "prototypes/exploration/index.html#carryRing/1-48-f1",
+   "sha256": "2907de04d69c3b0dddef5e86041c04449bc8e9dd4089d07281f56d6177e5d23b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2f5e5eea2b",
+   "path": "prototypes/exploration/index.html#carryRing/1-48-f2",
+   "sha256": "186cdd5410364f87c14f317052a05015e8ff11f6521cbddd3433f0a291d207c5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "b032fd01d7",
+   "path": "prototypes/exploration/index.html#carryRing/1-48-heard",
+   "sha256": "323d740c92748ad16be3962efdb6d9e08621794e769b38aefd3e44b706d9352f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "b34d2651c5",
+   "path": "prototypes/exploration/index.html#carryRing/2-26-f0",
+   "sha256": "9a7a05e2e088185ea6c132cbed54a06664821314a81ad0c8f368efea5c8148f8"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "74a1b63af8",
+   "path": "prototypes/exploration/index.html#carryRing/2-26-f1",
+   "sha256": "b41f1d682ec7b77f8bfe18ab6ba438dffc133f50c0eac880ef5e86cbe953f71f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "84af9a0826",
+   "path": "prototypes/exploration/index.html#carryRing/2-26-f2",
+   "sha256": "f7cbeb336a3fdeeed368384e357f6e42eedd35a09b74004f150933c0455c5b7d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "7f85f0f14b",
+   "path": "prototypes/exploration/index.html#carryRing/2-26-heard",
+   "sha256": "31f73e337740f71189d3b294f3e724bae9cc5a55cd8aaa3611f80e57cdfc0d20"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "8d83c0ae43",
+   "path": "prototypes/exploration/index.html#carryRing/2-48-f0",
+   "sha256": "a72d7bf7e7bea64b4371af0f32a9410c33b4e3718ca9a604bda650a54c2a4155"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "fc2c4818fc",
+   "path": "prototypes/exploration/index.html#carryRing/2-48-f1",
+   "sha256": "753e809d74d24f39e3d13e1bc76b047d520b10c849dbd503e35405ca57bc363b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "430422a2b5",
+   "path": "prototypes/exploration/index.html#carryRing/2-48-f2",
+   "sha256": "68c2ddf1cda9d4b34090424e516334b988f62b2c6a563ceea0734346b2bccd2a"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "8ab69f375b",
+   "path": "prototypes/exploration/index.html#carryRing/2-48-heard",
+   "sha256": "8619cb877f93a24cdc387236d0ae33f7f091de9c04f512f32687fe68073f73b2"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "c5a8f58fed",
+   "path": "prototypes/exploration/index.html#carryRing/3-26-f0",
+   "sha256": "038a56b791997a166970e834b6d25fb97a5585c03527e2d9872713e3f36fea15"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "13aae502d4",
+   "path": "prototypes/exploration/index.html#carryRing/3-26-f1",
+   "sha256": "3da43de520358e8f9b205b1b2120f74108de8ef65df4b033d01b177fa2ae9ba5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2cb4d31e48",
+   "path": "prototypes/exploration/index.html#carryRing/3-26-f2",
+   "sha256": "6f48f9889f50cc6e026e4ead086340d20aed0643abcee9b1b63214e23708c925"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "206e632ff1",
+   "path": "prototypes/exploration/index.html#carryRing/3-26-heard",
+   "sha256": "8136003dc158708e5c640a6b0fe10b664dee8e465c1f0a2e880256a00eb00da9"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "59559666ec",
+   "path": "prototypes/exploration/index.html#carryRing/3-48-f0",
+   "sha256": "abd246d5092fb4ad37e48f0bde999aaf678f02a9b33f86f7dabe8899a67f4c0d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "47229e9e25",
+   "path": "prototypes/exploration/index.html#carryRing/3-48-f1",
+   "sha256": "1c93f3626c7b56a0afdadbaaedb7abb6fc38ae58047961013899c07dd7591699"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "fdfdb92378",
+   "path": "prototypes/exploration/index.html#carryRing/3-48-f2",
+   "sha256": "819be77b605fc67147228dc4725b21fc7fa800d7d5b0e6b0305f36cdab96bb24"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2b550e038d",
+   "path": "prototypes/exploration/index.html#carryRing/3-48-heard",
+   "sha256": "8255858953c5d14db64132bbd3342bc49aa5e9732574f1ed56a5fb25e1a4178c"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "0788e2aeb1",
+   "path": "prototypes/exploration/index.html#carryRing/4-26-f0",
+   "sha256": "6b0ab6945929c00eacc7f5ca9c6f87df151b79df0f7c1a8fd9f7e7aa4d5c616b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "d67cd7a020",
+   "path": "prototypes/exploration/index.html#carryRing/4-26-f1",
+   "sha256": "dd1907772cb2b4fa8665903799183547f0dad14f521daf7a5ab52aea4dd68f70"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "177ba85b8d",
+   "path": "prototypes/exploration/index.html#carryRing/4-26-f2",
+   "sha256": "5a0fb339be8b329ddef8107ecf45723120ac19c0077d19d036ab4f3b1fcfcbbd"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "06b6177504",
+   "path": "prototypes/exploration/index.html#carryRing/4-26-heard",
+   "sha256": "0a4e3e2410308896d576f735e14a171272119bff206c5a1ebe1d20442fd39e69"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "45d8c43d81",
+   "path": "prototypes/exploration/index.html#carryRing/4-48-f0",
+   "sha256": "9c0c45c7062934aae11bd90e9c0271e786634a0f37ea597b0329f7ec5ac6d90f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "31493df884",
+   "path": "prototypes/exploration/index.html#carryRing/4-48-f1",
+   "sha256": "a3f51c7c5714ae1cfd23af61a3f0f5aa5a84712ad02375a527d08de32afa793e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "a56a07cf56",
+   "path": "prototypes/exploration/index.html#carryRing/4-48-f2",
+   "sha256": "dca45538e740db5a5f4ebd4da9d85e629ffbfc25245147b1068b442788a8779e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "85c377ae76",
+   "path": "prototypes/exploration/index.html#carryRing/4-48-heard",
+   "sha256": "5cb66f3081ba35fd111ee86979771cc2da876ccf596767aeaa12bea2b8998eba"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "fc042f90ac",
+   "path": "prototypes/exploration/index.html#carryRing/5-26-f0",
+   "sha256": "2019dd6776af8e262723e8aa0e373d452757d3ae000cf5a3b17be4c48f3a13d6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "a0ba1961c0",
+   "path": "prototypes/exploration/index.html#carryRing/5-26-f1",
+   "sha256": "4dac38116d05a95e382d6e1f0ee4e64f254c2e40ad37a194669d7d7c64f399e1"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "6cffd7532c",
+   "path": "prototypes/exploration/index.html#carryRing/5-26-f2",
+   "sha256": "56d626c3dee2d6dd2a4fe0c9ef6e7d417926ea9c219a6e6f737a50d968f84e2c"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "9047b1668b",
+   "path": "prototypes/exploration/index.html#carryRing/5-26-heard",
+   "sha256": "dbe1f54efb0c1e5dda268b192d56ce677c53f75b6538b237c1af54430f1aeca2"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "95ceb4e8fb",
+   "path": "prototypes/exploration/index.html#carryRing/5-48-f0",
+   "sha256": "92f97784e34ac76d71f6838935f09d0bf6a1abd1364675645ebf6f3536da35e8"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2e6bf182ef",
+   "path": "prototypes/exploration/index.html#carryRing/5-48-f1",
+   "sha256": "1ea45a4d81b9539732350123b7a33bf7a5134cdb5c67ac90eb4e9b9db85441f8"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "932ad4f097",
+   "path": "prototypes/exploration/index.html#carryRing/5-48-f2",
+   "sha256": "43502d041a6b1eff923ebc28aad98f1ae7d3853d4fcf1d905ac8b204a3bf322f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "e129590724",
+   "path": "prototypes/exploration/index.html#carryRing/5-48-heard",
+   "sha256": "78e4f2d69c090d36dfce9bb25e7217a3d28078b9012b26808b86098cee4cb984"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "ac0f848fc9",
+   "path": "prototypes/exploration/index.html#carryRing/6-26-f0",
+   "sha256": "33c3710aea3ab3ecb890d3364146b75e19dcaec8c8977eba5d9691e81b369764"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "41a5ad4efe",
+   "path": "prototypes/exploration/index.html#carryRing/6-26-f1",
+   "sha256": "c04220332332748fc63fb194528db4a41066de00e948eb3a813e0fb6b6034bfe"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2fa715e4d7",
+   "path": "prototypes/exploration/index.html#carryRing/6-26-f2",
+   "sha256": "005324d827b32c7ebb53d922a74cb7ff089ec14d536dcea6b68ff47926509ab8"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "a83698c2a2",
+   "path": "prototypes/exploration/index.html#carryRing/6-26-heard",
+   "sha256": "2f546aa61253fe375b45d71886641b93dc4282388feedcda5e636772663c3c8e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2e37fd740e",
+   "path": "prototypes/exploration/index.html#carryRing/6-48-f0",
+   "sha256": "37118c7334db0cd46d2c33aac6a8ff6599d171d5dc02fa5debeb6bc21653e09d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "65e20e16f7",
+   "path": "prototypes/exploration/index.html#carryRing/6-48-f1",
+   "sha256": "58e28995a9d2a3a1aee0966b964c374b5b85511e8cac9a1c1ea1eebebe8bab80"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "f7f6e5c9fe",
+   "path": "prototypes/exploration/index.html#carryRing/6-48-f2",
+   "sha256": "4ad8b332010bbc8a8033acedbf138c0eccdc009ddc980f51058c8b18772ad587"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "c5f6679d31",
+   "path": "prototypes/exploration/index.html#carryRing/6-48-heard",
+   "sha256": "7eca7c62a968c2b2789f489477f1c409df0a77db102e40eda774a1e18e30c853"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "a2c426b562",
+   "path": "prototypes/exploration/index.html#carryRing/7-26-f0",
+   "sha256": "ce2eaec62edf4c645fa60ddbe09328c9a024589741885404771f66eda051d4c6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "4676172c0b",
+   "path": "prototypes/exploration/index.html#carryRing/7-26-f1",
+   "sha256": "2cbe6b3e184f4d161857b69017f1e0b2b0dd218097014dd198c53c7a649d157c"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "92dffe92bc",
+   "path": "prototypes/exploration/index.html#carryRing/7-26-f2",
+   "sha256": "4e24e494d8f3f324d753e7ebb46d0cdd1db52d993152594231165d064e8a737c"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "bbce1ccfbe",
+   "path": "prototypes/exploration/index.html#carryRing/7-26-heard",
+   "sha256": "e0e9f60da6875d685b2a359f9bcc57d8051a503ca6424903feac67a28b3c409b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "588b8317b9",
+   "path": "prototypes/exploration/index.html#carryRing/7-48-f0",
+   "sha256": "ba2cb8ffee6b02ab2ca7e52060af0503e510992e47da3c1d9d95e0bf745b5fcb"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "7b71360243",
+   "path": "prototypes/exploration/index.html#carryRing/7-48-f1",
+   "sha256": "7497f725a4a74d368c9c62059288d24bcbcc7bd9f1e61adcb304a399161a1b66"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "b92afb7361",
+   "path": "prototypes/exploration/index.html#carryRing/7-48-f2",
+   "sha256": "23aed5b20c55555b73c2c784039ea2659b15ffd00bdf8a47fac4efce9ccd3cdd"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "cca72ba195",
+   "path": "prototypes/exploration/index.html#carryRing/7-48-heard",
+   "sha256": "11d4e860722cd791e40668d68f4d3a3ee246ca6f16a5601b230ac804b9dd5a5b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "dfb7d6fe32",
+   "path": "prototypes/exploration/index.html#carryRing/8-26-f0",
+   "sha256": "741fa72826c4579c29f0db780b7d87334a75e8fbda7f28f6997c6a603711cc81"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "19a0dc88c1",
+   "path": "prototypes/exploration/index.html#carryRing/8-26-f1",
+   "sha256": "efb7602ad6e1667157d18225a17f8b921afe315cf3cfd97a552568215ce5ec19"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "ab4fa47de6",
+   "path": "prototypes/exploration/index.html#carryRing/8-26-f2",
+   "sha256": "568fc624ba5e888fddd28ada8deb3eef14246d9fd36b32bdef29abfe3cd5b606"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "414794a875",
+   "path": "prototypes/exploration/index.html#carryRing/8-26-heard",
+   "sha256": "672147b2d691564782781fc333a35e3a374b820d2698b30a1c116573d04ec6f6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "88566c582d",
+   "path": "prototypes/exploration/index.html#carryRing/8-48-f0",
+   "sha256": "ab2fcc226d05763f88d8b262443a555decd8529b11c0367621b054f5bbb8d4c9"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "60bdaa525e",
+   "path": "prototypes/exploration/index.html#carryRing/8-48-f1",
+   "sha256": "28a917d702cdf81614c9dc80c9df5830764dcd1325da193d1824456ed6639ed5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "ad5c27a1d3",
+   "path": "prototypes/exploration/index.html#carryRing/8-48-f2",
+   "sha256": "42444590f89c6bd387cd35bf8cc0d0ee8049cc606557ecb39d70b9ed777cb337"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "66d222e251",
+   "path": "prototypes/exploration/index.html#carryRing/8-48-heard",
+   "sha256": "f5604551093bbe586f94c32ad1870d6175c6c1f54f6180f6e0605130432f4060"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "aefcfd2a07",
+   "path": "prototypes/exploration/index.html#dayPic/afternoon",
+   "sha256": "5038067d74bbf58014fb8eef481c74e5a7af1c5fd3a82593b3156cc6ffdc9af5"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "b842e156ba",
+   "path": "prototypes/exploration/index.html#dayPic/afternoon",
+   "sha256": "6bb481cffc02e3874d44ac5d39d08b102d08a89e392792debbf2155ecad5aba9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "d0f6911e75",
+   "path": "prototypes/exploration/index.html#dayPic/dawn",
+   "sha256": "8184343a2214d9c7b0e8daa1bcbc6866e5a83f1b92654a4d8ba7d382c0a5c895"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "be14733cf5",
+   "path": "prototypes/exploration/index.html#dayPic/dawn",
+   "sha256": "85ef4c1038cfe0f18d611935d1f3f869393d908b96f838b2f1887f5e9bb6a6ab"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "44c846e058",
+   "path": "prototypes/exploration/index.html#dayPic/dusk",
+   "sha256": "50430f7728c3ae010e06ea019b56e06139efcae1d383e378804abbcd9c25f0c9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "0928ab9c1e",
+   "path": "prototypes/exploration/index.html#dayPic/dusk",
+   "sha256": "5dd2718a626a3d4f8ca61e7e445209009a0d2d88b2ae80ccbbefb65b95fd2598"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "c5e1c25f6e",
+   "path": "prototypes/exploration/index.html#dayPic/dusk",
+   "sha256": "89505937f7aa5aa88c53cbf5669968076f6603c66ae7cde100d5c25bdbbf8098"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "e888a73ecb",
+   "path": "prototypes/exploration/index.html#dayPic/midday",
+   "sha256": "021e7d17b64679c80c9440b96278fbc23babdedcaadc9b73cb1948284497c48b"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "bf2e2840b7",
+   "path": "prototypes/exploration/index.html#dayPic/midday",
+   "sha256": "e1f7deefe239d69b0c9bff80bf585dd4e0332f091e8aba476c3c218baa2db128"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "0dca3108bd",
+   "path": "prototypes/exploration/index.html#dayPic/morning",
+   "sha256": "194042856c5eee726e1d1ad4ac76a5acdc24fcd8a36d8665375cc7e1f87de461"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "cab85581e9",
+   "path": "prototypes/exploration/index.html#dayPic/morning",
+   "sha256": "5de6d58b78604254cdfea509a7516c2d5a280b0f0b1754f736df19c0d9b299dd"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "ba19e2e9d6",
+   "path": "prototypes/exploration/index.html#dayPic/night",
+   "sha256": "2f7cdbbd98139e6bf84d9ee06429b15cf0bf5cb1434dcc37f099327f29fbf568"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "c41026351e",
+   "path": "prototypes/exploration/index.html#dayPic/night",
+   "sha256": "e61a8ed322f0dcbf910ab6555b293668a98d6626a33fb312bc18dd0811dc1fe6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "34953a8098",
+   "path": "prototypes/exploration/index.html#hudLight/lit0",
+   "sha256": "41b3fea82a116bcc7bca7eb527712075984634e04feda924903060758db217c5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "6842e9a90e",
+   "path": "prototypes/exploration/index.html#hudLight/lit1",
+   "sha256": "2a8edff2008232ca38e530af71fef57847d319faa6dd053b8843e1700cf15028"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "608db08b8f",
+   "path": "prototypes/exploration/index.html#hudLight/lit2",
+   "sha256": "6c1957135a29c151c50052eaa8b04644cc2570fec9e6ae2a571580c8517f2657"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "6b874002c1",
+   "path": "prototypes/exploration/index.html#hudLight/lit3",
+   "sha256": "8d71d650c0e893e696d4331ac9eabb6ac50590164bd30ed8e4c355c7500ab4ad"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "188fd5daea",
+   "path": "prototypes/exploration/index.html#hudLight/lit4",
+   "sha256": "291732aab451ae467cbde73b4d607be836c0ae53f9ce445eb3008badc326292e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "c8074f608e",
+   "path": "prototypes/exploration/index.html#hudLight/lit5",
+   "sha256": "5953e813d415d0869bf5384b1d1479ee12de3a732c1caffd16b8fe24d14c56aa"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "4b46b41b3b",
+   "path": "prototypes/exploration/index.html#hudLight/lit6",
+   "sha256": "0c77d36545f4405beaab024db37c8252ebc0c0ab8d0b873e070e20ba736bdc3f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "969fef67de",
+   "path": "prototypes/exploration/index.html#hudLight/spend1",
+   "sha256": "0f47916ff29762c3903521e000df16b60a1e5b417e29c2db42277f36a4171a5d"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "80c6c1a2a5",
+   "path": "prototypes/exploration/index.html#hudLight/spend2",
+   "sha256": "0593dc808da633eab16cfa2de87ba9b657ffc2a1fff61280c5b0b5f89e63b429"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "2fe3defca9",
+   "path": "prototypes/exploration/index.html#hudLight/spend3",
+   "sha256": "468e5d0570883681e60ecc3624989b88f52625d9d0e9570c24ce4736e6d7e5c8"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "30898520ed",
+   "path": "prototypes/exploration/index.html#hudLight/spend4",
+   "sha256": "6b7c3284dc0cfad052c5009f2943b152cacce7dc92b6dae292e9200e0b8afaf4"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "a09dacd894",
+   "path": "prototypes/exploration/index.html#hudLight/spend5",
+   "sha256": "11050c5f52467fa104de6ab42e2686815c8472d50d4cf3c7341723b756fcd4f5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-23",
+   "id": "e1085df4e6",
+   "path": "prototypes/exploration/index.html#hudLight/spend6",
+   "sha256": "d0715c753976eb139b75bef35a61a310a7dd2b510695b1613c1f525a968bd907"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "5487091ba2",
+   "path": "prototypes/exploration/index.html#waterEdge/inner",
+   "sha256": "3bada6a573b5b17eededa74a8be6ed0431c39522b753765b3c9b164fc8ff3725"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "9197e178fe",
+   "path": "prototypes/exploration/index.html#waterEdge/outer",
+   "sha256": "0b80544e7a1125ae62c234641366460b59c89101f3e0c8ca2d56453ea57e1181"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "6d4259b3f1",
+   "path": "prototypes/exploration/index.html#waterEdge/run_a",
+   "sha256": "0e62be5ec036e922edbbb485f2e66060ebe603732a21173858808e963ebe9d10"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-23",
+   "id": "82c8c57c63",
+   "path": "prototypes/exploration/index.html#waterEdge/run_b",
+   "sha256": "4c3fa53808fa2ef88adeaa26581109078088d485e06eb827f2c520beee71e42a"
+  },
+  {
+   "class": "ui",
    "date": "2026-11-15",
    "id": "fe2dabe776",
    "path": "prototypes/exploration/shell/cap-back-10mm.png",
@@ -5782,6 +6447,447 @@
    "id": "c3e520cc55",
    "path": "prototypes/ui/assets/masters/pods/mibi-halo-S11-128x160-mist.png",
    "sha256": "33045262a04ef6bf9ef641573a55e727f84b4e63131350180df004e80ffccb9e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d622b9f1f0",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-104x112.png",
+   "sha256": "b099caf09ed054ae0720651b92ca5ac4ccef912f6a175e050ae207a10e852c08"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "cb4f0585df",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-304x312.png",
+   "sha256": "a2ce739ab5c4415ad188770dacbe7f6dcbac26793b2774dc8a62d4d593eca6ba"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "31bdbb32b3",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-48x48.png",
+   "sha256": "b286823f62acffd0e99bde610b13389286efc9b6209c3e42a19e188acaf384e1"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "1f292511e7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-96x88.png",
+   "sha256": "eba2c1a3af503fc86e5162afa76e9d5e3bbec35dcff8286973975e8c3b41566c"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "c404bf492a",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-calm-304x312.png",
+   "sha256": "92b9571f87b98e5cb3d710e2481f529b6f8334a3fa4ada9f7ab8803481521f33"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "bbe06001b7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-curl-304x312.png",
+   "sha256": "8f1f6ae8363f6f9818aafde975222eab2fcdb969369ac4bf4bb097d75b8c77e9"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-22",
+   "id": "eb224982d4",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-between-lay-saddle-shake-304x312.png",
+   "sha256": "3a0387029c84698bb22dc4cb29b1a2c1769e4e3e859693ebaa33ba778497e21f"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "113e7fd9ae",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-104x112.png",
+   "sha256": "61eea23c8620082608dd8ba446ce5da40dd51e2ce2f5a7fcfd3337788a78db80"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "bc6dd15116",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-304x312.png",
+   "sha256": "21cd70e7abea92c1d1587e58acb0a12e3c281b05f2f3f45e0c0a628dc3d06188"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7153b5c715",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-48x48.png",
+   "sha256": "479de08f947d25cbe6d055e9d6e2b0c12a6e97c122e694c6af3ccd71013dad0e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3254a42bde",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-96x88.png",
+   "sha256": "b7e7890f48ceeeca2eba06ad42eafa3f86e8072b6961612f329fbd3c6a9484ee"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "f69ca44796",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-calm-304x312.png",
+   "sha256": "ab743f128b5aa527cadb6159482979837dd24261a54dc97eb674cd881f54ce21"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d49ab3a594",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-curl-304x312.png",
+   "sha256": "f3c04d590f7d650c6513146582bffae3e9a4e06be1a2c64d968c52de7215c726"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "71c493eca3",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-dark-lay-saddle-shake-304x312.png",
+   "sha256": "b8f99560df4051838bda413216643f4fde433b11089911172943ba79a1de9961"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "aed230a6c8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-104x112.png",
+   "sha256": "8c3c08465b5767408cd75046928999448c723937274e3cbf605bfdc3ed6dedf3"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "a32dd4b7f7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-304x312.png",
+   "sha256": "54838b351aa3c3928c2998c8ea1d88277a54056e4aaf18f777407f0c84a6f16f"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "890a54450b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-48x48.png",
+   "sha256": "207b7ab9cdf6ebe6820b0e43cfbb66d5d15a882e71a226c6d0cb85e8fac8db95"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "b8bf8dfb80",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-96x88.png",
+   "sha256": "3e7dee3dd65f1f9dd896bfb99c9fc87b6248922054982db2017fac9913f351d4"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "251650e0f1",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-calm-304x312.png",
+   "sha256": "6f4672a2ac3a6b06674487765d7987a343375fefea354e07c925853ca547bc83"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "368e837a1b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-curl-304x312.png",
+   "sha256": "c01a2040479bf1722fe459fbe632d2ab1e69762c9e3cd5c9309b1bf1422d8f9a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "fb46533545",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-between-light-lay-saddle-shake-304x312.png",
+   "sha256": "519d97900fa0f3fde75c49ff195b280a9eb401449cf550a883b53547fa88f1c9"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7bde2bb0a5",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-104x112.png",
+   "sha256": "50317e58915e36d5db702d53ec0a07a1af675cfeca9506a66ba73602d519e703"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "dce06de8ca",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-304x312.png",
+   "sha256": "2a611df341029e61394ea77f2673a19f415f97089659bf3f8cd1ef49d012dd85"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7317e2efff",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-48x48.png",
+   "sha256": "f8295fe2ad42d68a2b74f0bcbd447441f0620781740976cc4eab974a537dfb62"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "b95c1bf252",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-96x88.png",
+   "sha256": "50f14d31d39f192a129c04ce65d20fda225375c5c8485eb921c383f2a6b716d7"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e2f27d6b68",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-calm-304x312.png",
+   "sha256": "3564f8f56c32f85ffa1e080237821d29e7fe26522cb82ea77add04c44d9877fe"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "8af941bf9b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-curl-304x312.png",
+   "sha256": "03d47bd4d34781f611abf8bb20a88da92969033797128c5eec17141a6c981ec1"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d341ac9cc7",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-between-lay-saddle-shake-304x312.png",
+   "sha256": "73040e74a733607aee6e13764ba342dde695284bfdf6090b49b012186ed688ba"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "c56aada14f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-104x112.png",
+   "sha256": "fe90e22923f46b1608a485be3a5628cddc4d85facd1ef31e0742787ec25d323e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "de140b01a8",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-304x312.png",
+   "sha256": "2a3b4d710ed3afa99c0a0426beae0a9a2656f8c1aff09f78954ab0d23673b7ea"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "6143c2e31c",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-48x48.png",
+   "sha256": "e11472bb66711cfdece3f32e7648ef542c135a21217fbff61a157ea5f08987cb"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "b975b1ffcc",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-96x88.png",
+   "sha256": "7c50391f5ccd061d6e78002b57ca8754ec68f7631f6c6ad1604f87d14e4cf38a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "0647d38984",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-calm-304x312.png",
+   "sha256": "1be086a5aa4adfbf92c900ba0b5985e372560d37bd14a8a4a8fa0e242de9b6c2"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "55af4bb631",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-curl-304x312.png",
+   "sha256": "fbf6312a3250d99a6f321b5add8a2f75f907f0fc967e7dbcba7a2b1d053a33bc"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "d58e9186f9",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-dark-lay-saddle-shake-304x312.png",
+   "sha256": "da49eb95edb2cf548e75201bf62664f0255d900eb29161d0111bf994b6379663"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "7d4c68f71a",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-104x112.png",
+   "sha256": "1dc761406f52844b703450508a4db59bac20730759bd2f39ae05ae82a6fd2654"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "11bb653960",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-304x312.png",
+   "sha256": "a1e14defd5b57d40dcd4ede221ec4de01db31dc030ca3dff1224004a855aae5a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "2a643a73fe",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-48x48.png",
+   "sha256": "2321945d479a5707f82bec4ec7f6681830aa56ed805c60279ef5416a175f35be"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e593b2e439",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-96x88.png",
+   "sha256": "651e54a48d5714b5b5553f997d02e028e9ce8b284d83aa3cdff737307d69f17e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e41428e68e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-calm-304x312.png",
+   "sha256": "343d1569947c41f34d2395f3bd88b91ea2c94811280edffce3266745eea19c88"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "5878130e3e",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-curl-304x312.png",
+   "sha256": "a8031c9f59be8e4a5b905ccb76a561b899f55caa965f526aceb741ed291c8f3d"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "ff93fd794b",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-redder-light-lay-saddle-shake-304x312.png",
+   "sha256": "42aacbc5a21def701dd2964ca3d0c332055bc703e986fc9e24d3820dd1ce9f10"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "0708e2ef5f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-104x112.png",
+   "sha256": "5adba39f0688a004fac1eddbd3987b49c703672551b7154bb32a2589ae7ccf8f"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "fff115b0a2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-304x312.png",
+   "sha256": "913c35afa6866ae780941787ddf0aed5798b3251414b2842852fa4522f11d2e4"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3c3342728f",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-48x48.png",
+   "sha256": "adb161c9661df701dbb13b4cfb56b5748520dc6153ae71f86caafe2b9d1958ed"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "20aec0fe55",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-96x88.png",
+   "sha256": "d647f826a0b40aeed195bc26143b813d5041b8e49c4037f660bf5e642ef75591"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "f995b220fd",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-calm-304x312.png",
+   "sha256": "4c5dcbf2d9c881e924ada236a629b7c3e926a114da00815604d8c0be1d7f4b28"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "84808eaa32",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-curl-304x312.png",
+   "sha256": "c791f5d64bde76a6b4551fd204197619b1e519ad3f1d4eea8d38ced6c8300b22"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "1ac45ce2d0",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-between-lay-saddle-shake-304x312.png",
+   "sha256": "1c5ae27e3516e8900158490f580289d6a5a1e35e096ec1e1cd8d7894bcd7549a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "e06f7b7ed2",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-104x112.png",
+   "sha256": "7406097793f0989f5363b52f163b1f5f9e23809f56fc217fc1494489e84f2d19"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "6a64fcbea6",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-304x312.png",
+   "sha256": "85f0067cb97118b8b5a3a94f67507fddf474f232d1229f1ec7116014eb5e5e9d"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "809961cb80",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-48x48.png",
+   "sha256": "4528c7feada2283923f08b54bd19c45371e3e8b5301e74581a4da13fa9f915f9"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "a6ae962dca",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-96x88.png",
+   "sha256": "0652820b62768d44eb21edc41ab6d7e8d0d812508ba111ab484013e31d4c2747"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "156e4b6391",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-calm-304x312.png",
+   "sha256": "22e82c85e210e92d8a5b8b4810d32a4f336a05757a31bfa4f53338293abb6abd"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "a5e07d4e34",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-curl-304x312.png",
+   "sha256": "587ad972f7cc733689c18dc1480bbae53319d543da6e71465debf88d3306ac32"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "8d2739b392",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-dark-lay-saddle-shake-304x312.png",
+   "sha256": "ea8d10671aac83b4655064a2c7a635c6354517014deb2a35fe7a3c1b9c7c5660"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3a47b59fea",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-104x112.png",
+   "sha256": "87c3b8d24f5c2858c8f7c0f3b5a7f0a0bc90f1c0fc3181e6e6dfe25f9ef919fa"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "eb1fd417c1",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-304x312.png",
+   "sha256": "0fbad5884987cff2d2683fc4e26de729d326a7a4dc1849ace000f307e3b51e2a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "3b8183ec1d",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-48x48.png",
+   "sha256": "8c45e1bb91d4cc898165a709c92fc253af0ca7b778856980c6dc8bde7a29f23a"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "46961ec394",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-96x88.png",
+   "sha256": "7dbe613af4b52c38ab67ad3ff482bcfcd2dc5bdb8a3743fbf1ea60fbf83ee399"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "23c8c168ed",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-calm-304x312.png",
+   "sha256": "a8440e5dd06ecf3bbb67e9860f8358e060b21f6d2033bcdea04fb2ae5386fbe3"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "1bae684464",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-curl-304x312.png",
+   "sha256": "bddd5bbbe8bae9d9113418ebb4336d4ef9862c4a5670565c7f4d6ba0a85a197d"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-22",
+   "id": "c88b856ebb",
+   "path": "prototypes/ui/assets/masters/pods/mibi-juvenile-S01-yellower-light-lay-saddle-shake-304x312.png",
+   "sha256": "407896ec6dc9ea689c8ade4991563eee31114c33635a152f79dfb909143339cc"
   },
   {
    "class": "cut-of-signed",

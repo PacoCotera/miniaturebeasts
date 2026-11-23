@@ -112,7 +112,7 @@ export const capsuleFree = (st) => st.caps.findIndex((c) => !c);   // the first 
 export const capsuleBuds = (st) => st.caps.map((c, i) => (isBud(c) ? i : -1)).filter((i) => i >= 0);
 export function freshSt(wid, turn, now = Date.now()) {
   return installBud({ schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: START.e, d: START.d, s: START.s,
-    tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
+    tray: [], waiting: [], samples: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, libSeen: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, rooms: 1, sheds: [], sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: false, returned: [], log: [], readingPod: null, dried: [] });
 }
@@ -186,7 +186,7 @@ export function migrate(st, now = Date.now(), sv = null) {
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
   installBud(st);   /* the nursery's capsules (additive, no schema bump): an older save's one bud goes in the first capsule */
-  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["tray", "waiting", "samples", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
   if (st.waiting.length) { st.tray.push(...st.waiting); st.waiting = []; }   /* no rack: the pods that waited on the mat are at home with the rest, in the order they came (additive, no schema bump) */
   if (st.readingPod === undefined || (st.readingPod != null && !st.tray.some((p) => p.id === st.readingPod))) st.readingPod = null;   /* the pod on the reading-room bench (additive) */
   if (!Array.isArray(st.readHome)) st.readHome = [];   /* chapters read at the last docks, waiting for the Home notice and the reveal (additive, no schema bump) */
@@ -202,7 +202,7 @@ export function normalize(st, now = Date.now()) {
   st.dock = st.dock || { docked: false, at: now };
   if (!(st.face.room >= 0 && st.face.room < ROOMS_MAX)) st.face.room = 0;   /* the room the whole last showed (additive, no schema bump) */
   for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
-  for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); if (!Number.isInteger(p.dryAt)) p.dryAt = (st.turn | 0) + POD_LIFE;   /* a pod from before freshness keeps a full life from now (additive, no schema bump) */ if (p.id === st.readingPod && !Number.isInteger(p.keep)) p.keep = Math.max(1, p.dryAt - (st.turn | 0)); }
+  for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0, p.dv); if (!Number.isInteger(p.dryAt)) p.dryAt = (st.turn | 0) + POD_LIFE;   /* a pod from before freshness keeps a full life from now (additive, no schema bump) */ if (p.id === st.readingPod && !Number.isInteger(p.keep)) p.keep = Math.max(1, p.dryAt - (st.turn | 0)); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
     if (!Number.isInteger(m.since) || m.since <= 0) { delete m.since; delete m.sinceFloor; if (now >= GOOD_CLOCK) { m.since = now; m.sinceFloor = true; } }   /* an older save holds no clock for the mibi: it has been yours for at least this long, written once and never again (additive, no schema bump); an unset clock writes nothing and the first good one does */
     if (!(m.growAt > 0) && m.grownTurn == null && (st.turn | 0) - (m.born || 0) < JUVENILE_TURNS && now >= GOOD_CLOCK) m.growAt = now + GROW_UP_MS;   /* a young mibi in a save with no hatch clock counts its two hours from this load (additive, no schema bump) */
@@ -453,11 +453,12 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     for (const q of c.pods || []) {
       const species = q.species ?? speciesId(q.sp), fr = frameOf(species);
       if (!fr) { skipped.push(q.id); continue; }   // a malformed record never breaks the bay; it is named, never dropped silently
-      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, ...(c.rg ? { rg: c.rg } : {}), n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
+      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, ...(c.rg ? { rg: c.rg } : {}), n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, ...(q.dv ? { dv: q.dv } : {}), genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0, q.dv), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
       if (q.shed != null) { const rec = (st.sheds || []).find((r) => r.id === q.shed); if (rec) rec.state = "found"; }   // a shed pod opened: its record is kept for the Library
       st.tray.push(pod);   // no rack: every pod comes home
       ids.push(pod.id);
     }
+    for (const q of c.samples || []) { if (!Array.isArray(st.samples)) st.samples = []; st.samples.push({ id: c.id + ":" + q.id, lo: q.lo ?? null, name: q.name ?? null, sp: q.sp ?? null, habit: q.habit, item: q.item, chapter: q.chapter, n: c.n, turn: c.turn | 0 }); }   // W4: the samples a crate brings wait for the bench (a later stage); one per habit of a wild one, tagged with its chapter
     for (const sp of c.met || []) { const id = typeof sp === "string" ? sp : speciesId(sp); if (id && !st.metIds.includes(id)) st.metIds.push(id); }
     const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0); const dried = dryPods(st);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
@@ -644,7 +645,7 @@ export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;
 export function returnPod(st, p) {
   if (!st.tray.includes(p)) return { ok: false };
   leavePod(st, p);
-  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null, ...(p.rg ? { rg: p.rg } : {}), ...(p.shed != null ? { shed: p.shed, of: p.of ?? null, genome: structuredClone(p.genome) } : {}) }); if (st.returned.length > 30) st.returned.shift();
+  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, ...(p.dv ? { dv: p.dv } : {}), k: p.k || null, ...(p.rg ? { rg: p.rg } : {}), ...(p.shed != null ? { shed: p.shed, of: p.of ?? null, genome: structuredClone(p.genome) } : {}) }); if (st.returned.length > 30) st.returned.shift();
   logEv(st, "Let " + aAn(podName(p)) + " pod go · its reads stay in the field guide");
   return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · its reads stay in the field guide" };
 }

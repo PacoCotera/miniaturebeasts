@@ -46,7 +46,7 @@ export function nurseryView(view, m, spec, req) {
   // the capsules and their three states: ready to hatch, growing with its time left, a young waiting
   const C = Z.capsules, capPics = caps.map((c, i) => {
     const x = C.xs[i], on = ring.z === "caps" && ring.i === i, spPod = c.species ? podId(req, c.species) : null;
-    const word = c.state === "ready" ? Sg.readyToHatch : c.state === "growing" ? fill(Sg.minLeft, { n: c.left }) : c.state === "young" ? S.cap(S.mibiById(st, c.mibi)?.name ?? "") + " " + Sg.waits : Sg.free;
+    const word = c.state === "ready" ? Sg.readyToHatch : c.state === "growing" ? fill(Sg.minLeft, { n: Math.max(1, c.left) }) : c.state === "young" ? S.cap(S.mibiById(st, c.mibi)?.name ?? "") + " " + Sg.waits : Sg.free;
     const bw = Math.max(C.badge.minW, Math.round(word.length * (c.state === "ready" ? Z.chars.M18 : Z.chars.R15)) + 2 * C.badge.padX), bx = x + Math.round((C.w - bw) / 2), by = C.y + C.badge.dy;
     text(word, bx, by + C.badge.baseline, c.state === "ready" ? C.badge.readyRole : C.badge.role, "c", bw);
     return { x, y: C.y, w: C.w, h: C.h, layers: C.layers, state: c.state, progress: Math.round(c.progress * 1000) / 1000, bar: [C.bar.x0, C.bar.x1], pod: spPod && c.state !== "young" ? { id: spPod, w: C.pod.w, cx: C.pod.cx, foot: C.pod.foot } : null,

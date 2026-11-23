@@ -132,6 +132,11 @@
           "kind": "bank",
           "lowers": ["deep", "water"],
           "sheets": ["over-path.png"]
+        },
+        {
+          "kind": "flat",
+          "lowers": ["sand"],
+          "sheets": ["over-path.png"]
         }
       ]
     },
@@ -139,7 +144,7 @@
       "drawAs": "path"
     },
     "ford-ground": {
-      "drawAs": "path"
+      "drawAs": "sand"
     },
     "bridge": {
       "drawAs": "path"

@@ -14,7 +14,7 @@ import { roomRegion, shownRoom } from "./room-props.mjs";
 export function idleLine(m, I) {
   const T = I.strings, k = S.idleKey(m.st, m.sv, m.settings); if (!k) return T.none;
   if (k.key === "crates") return k.n > 3 ? T.crates.many : T.crates[k.n];
-  if (k.key === "budGrowing") { const n = N.soonest(m.st, m.settings, m.now ?? Date.now()); return n ? fill(T.budGrowing, { when: n === 1 ? "a minute" : n <= 12 ? spell(n) + " minutes" : "a while" }) : T.budGrowing.replace(/,? ?\{when\} left/, "");   // a growing capsule's time left, in words (no digits on this line); the same here or away: it is the capsule's own clock
+  if (k.key === "budGrowing") { const n = N.soonest(m.st, m.settings, m.now ?? Date.now()); return n !== null ? fill(T.budGrowing, { n: Math.max(1, n) }) : T.budGrowing.replace(/ · \{n\} min/, "");   // the soonest growing capsule's minutes left, the capsule's own words ("N min"); the same here or away: it is the capsule's own clock (owner #18)
   }
   if (k.key === "out") return k.n === 1 ? fill(T.out["1"], { name: k.name }) : T.out[String(Math.min(k.n, 3))];
   return T[k.key];
