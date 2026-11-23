@@ -2659,8 +2659,10 @@ const namedAt = q => { try { return !!individualOf(q, layout(String(q.c))); } ca
 function startPlaces() {
   if (!PL.ready || !G || !G.spawns) return G ? G.spawns : [];
   const key = S.seed + '|' + S.cr.length + '|' + G.spawns.join(','); if (STARTS.key === key) return STARTS.list;
-  const wild = S.cr.filter(q => q.sp === 0 && !q.cv && namedAt(q));
-  const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c))); });
+  const wild = S.cr.filter(q => q.sp === 0 && !q.cv);
+  const had = new Set(layoutCache.keys());   // a layout is cached with what the expedition shuts at that moment: the places built here for the check are dropped again
+  const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c)) && namedAt(q)); });
+  for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
   STARTS = { key, list: ok.length ? ok : G.spawns.slice() }; return STARTS.list;
 }
 function markedCandidates() {
