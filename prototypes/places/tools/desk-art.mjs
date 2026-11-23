@@ -165,9 +165,9 @@ export function deskLayers() {
       ],
     },
     mud: { fill: { sheets: [place(SAND, 'layers/fill-mud.png', 'fill-mud.png')] }, over: [{ kind: 'flat', lowers: ['deep', 'water', 'earth', 'sand'], sheets: [place(SAND, 'layers/mud-over.png', 'over-mud.png')] }] },
-    path: { fill: { sheets: [fillFrom(MEADOW2, 'layers/path-over.png', 'fill-path.png')] }, over: [{ kind: 'bank', lowers: ['deep', 'water'], sheets: [place(MEADOW2, 'layers/path-over.png', 'over-path.png')] }] },
+    path: { fill: { sheets: [fillFrom(MEADOW2, 'layers/path-over.png', 'fill-path.png')] }, over: [{ kind: 'bank', lowers: ['deep', 'water'], sheets: [place(MEADOW2, 'layers/path-over.png', 'over-path.png')] }, { kind: 'flat', lowers: ['sand'], sheets: [place(MEADOW2, 'layers/path-over.png', 'over-path.png')] }] },
     'path-top': { drawAs: 'path' },
-    'ford-ground': { drawAs: 'path' },
+    'ford-ground': { drawAs: 'sand' },   // bug #114: a ford over water takes the sand's own beach edge, not the path's brown bank
     bridge: { drawAs: 'path' },
     grass: {
       fill: { sheets: [fillFrom(MEADOW1, 'layers/grass-over.png', 'fill-grass.png')] },
