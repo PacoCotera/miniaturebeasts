@@ -1,0 +1,10 @@
+import { chromium } from "/home/mb/pw156/node_modules/playwright/index.mjs";
+const b = await chromium.launch();
+const p = await (await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 })).newPage();
+p.on("console", m => console.log("console", m.type(), m.text().slice(0, 200)));
+p.on("pageerror", e => console.log("pageerror", String(e).slice(0, 300)));
+p.on("requestfailed", r => console.log("failed", r.url()));
+await p.goto("http://127.0.0.1:8765/prototypes/exploration/index.html?embed");
+await p.waitForTimeout(3000);
+console.log(await p.evaluate(() => { const s = document.getElementById("screen"); const r = s.getBoundingClientRect(); return JSON.stringify([r.width, r.height, getComputedStyle(document.documentElement).getPropertyValue("--embed-s"), s.width, s.height]); }));
+await b.close();

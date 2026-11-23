@@ -28,16 +28,27 @@ export const framesLoaded = () => FRAMES.size > 0;
 
 // A pod's genome from its genome seed: sampled from the species' pools with the species's own stream,
 // and resampled from the same stream until the body builds, so a pod keeps its identity across loads.
-export function podGenome(frame, gs) {
+// Draw version 2 (wild-marking-draw-1): a newly drawn wild Loika's marking switch is two copies, each "on" with chance P_MARKING_ON
+// (the rate the rounds drew, signed by the designer): about 12% show it, 45% carry it hidden, 42% none. A pod carries dv: 2 from the
+// moment the walk takes it; a pod or save without dv keeps the old draw, so an old save's Loikas are exactly the same.
+export const P_MARKING_ON = 0.35;
+export const DRAW_V = 2;
+const MARKING = "appearance.marking-switch";
+export function podGenome(frame, gs, dv = 1) {
   const r = rng(`pod:${frame.species.id}:${gs >>> 0}`);
   let g = null;
   for (let i = 0; i < 24; i++) {
     g = sampleIndividual(frame, r, { kind: "pod", seed: gs >>> 0 });
+    if (dv >= 2 && frame.species.id === "S01" && g.loci[MARKING]) g.loci[MARKING] = [r() < P_MARKING_ON ? "on" : "off", r() < P_MARKING_ON ? "on" : "off"];
     if (checkGenome(frame, g).length) continue;
     try { if (buildIndividual(frame, g).validation.status === "valid") return g; } catch { /* the next draw */ }
   }
   return g;
 }
+// A named wild Loika's genome (walk-look-carry-3): drawn from the realm's seed and her id with the wild draw (version 2), by this one code,
+// so the Companion's walk and the Station get the same genome for the same Loika (and her own pod takes it as a parent).
+export const wildGs = (seed, id) => { const s = `${seed >>> 0}|wild|${id}`; let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; };
+export const wildGenome = (frame, seed, id) => podGenome(frame, wildGs(seed, id), DRAW_V);
 export const chapters = (frame) => frame.chapters;
 export const chapterOf = (frame, id) => frame.chapters.find((c) => c.id === id) ?? null;
 export const traitOf = (frame, id) => frame.chapters.flatMap((c) => c.traits).find((t) => t.id === id) ?? null;

@@ -113,7 +113,7 @@ for (const seed of [7, 13, 42]) {
 }
 
 for (const seed of [7, 13]) {
-  test("on the page, seed " + seed + ": her prints at a haunt she has left are read with one action, once a day, with no Data, sample or habit note", () => {
+  test("on the page, seed " + seed + ": her prints at a haunt she has left are read with one action, once a day, with no Data and no habit note, and the empty haunt's drop (W5)", () => {
     const p = page(); p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
     const pick = JSON.parse(p.run(find)); assert.ok(pick, "a Loika in a mounted place");
     const out = JSON.parse(p.run(`(() => {
@@ -134,7 +134,7 @@ for (const seed of [7, 13]) {
     assert.equal(out.label, WORDS.prints.read, JSON.stringify(out));
     assert.notEqual(out.after, WORDS.prints.read, "one read for each haunt each day");
     assert.equal(out.prints.length, 1); assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
-    assert.equal(out.dData, 0); assert.equal(out.dSamples, 0); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
+    assert.equal(out.dData, 0); assert.equal(out.dSamples, 1, "W5: an empty haunt gives a drop, her tuft, once for her (a sample, no Data, no habit note)"); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
     assert.deepEqual(p.errors, []);
   });
 }

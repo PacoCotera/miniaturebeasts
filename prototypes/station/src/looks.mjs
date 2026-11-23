@@ -19,6 +19,11 @@ export function drawnLooks(frame, mibi) {
   return out;
 }
 
+// Does this mibi's marking draw? Both copies on AND the coat chapter read (the one rule: a look draws only once its chapter is read). The walk uses it for the wild Loika (her coat read by a mid note) and for the partner.
+export function marksShown(frame, mibi) { const v = drawnLooks(frame, mibi).markings; return v != null && v !== "plain"; }
+// Does this mibi's marking draw AS THE SADDLE? The walk has a saddled token only; every other marking (spotted, bands, shaded, patches) stays the plain token until its own frames exist.
+export function saddleShown(frame, mibi) { return drawnLooks(frame, mibi).markings === "saddle"; }
+
 // The variant key of a stand: its species and the sorted `trait=look` pairs of the traits the stand carries. Two mibis with these looks are the same picture, whoever they are.
 export const standKey = (species, traits, looks) => species + "~" + traits.filter((t) => looks[t] != null).sort().map((t) => `${t}=${looks[t]}`).join(",");
 // A short, stable name for a key, for picture ids (FNV-1a 32, hex): the id never carries spaces or the looks' words
