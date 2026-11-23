@@ -6773,19 +6773,17 @@ function podSlot(x, y, pod) {
 }
 // Device status, far right of every top bar: battery and connectivity. Static placeholders for now.
 const STATUS_W = 30;
-// *greybox* (art director to replace): the part of day as an 11 px picture, drawn in code like the sun it replaces.
-// Sun height over a ground line (row 9): dawn on the line, morning low, midday high, afternoon lower, dusk half below in a deeper colour, night a crescent.
-function dayPic(part) {
-  const pb = new PB(11, 11), LINE = 9;
-  if (part === 'night') {
-    for (let y = 0; y < 11; y++) for (let x = 0; x < 11; x++) { const dx = x + .5 - 5.5, dy = y + .5 - 5.5, ex = x + .5 - 7.6, ey = y + .5 - 4.1; pb.set(x, y, dx * dx + dy * dy <= 4.6 * 4.6 && ex * ex + ey * ey > 3.9 * 3.9 ? C.fog : -1); }
-    pb.set(9, 1, C.mist); pb.set(1, 8, C.mist); return pb;
-  }
-  const cy = { dawn: 8.2, morning: 6.5, midday: 3.5, afternoon: 5.5, dusk: 9.6 }[part], dusk = part === 'dusk', body = dusk ? C.orange : C.amber, ray = dusk ? C.coral : C.yellow, r = 3;
-  for (let y = 0; y < LINE; y++) for (let x = 0; x < 11; x++) { const dx = x + .5 - 5.5, dy = y + .5 - cy; if (dx * dx + dy * dy <= r * r + .4) pb.set(x, y, body); }
-  if (!dusk) for (const [dx, dy] of [[0, -4], [-3, -3], [3, -3], [-4, 0], [4, 0]]) { const x = 5 + dx, y = Math.round(cy - .5) + dy; if (y >= 0 && y < LINE - 1) pb.set(x, y, ray); }
-  pb.rect(0, LINE, 11, 1, dusk ? C.red : C.mist);
-  return pb;
+// The part of day in the top bar: the art director's six signed 11 px pictures (art/day-dial/frames/), drawn as the files came, never redrawn. Until they load (or if they fail) the sun stands.
+const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {};
+async function loadDayArt() {
+  try {
+    if (typeof Image === 'undefined') return;
+    fileOwe(DAY_PARTS.length);
+    await Promise.all(DAY_PARTS.map(n => pixelsOf(vurl(new URL('../../art/day-dial/frames/', location.href).href + 'day-' + n + '.png')).then(async px => {
+      if (px.width !== 11 || px.height !== 11) throw new Error('day art ' + n);
+      const c = document.createElement('canvas'); c.width = 11; c.height = 11; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 11, 11), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+      DAY_ART[n] = c; fileGot(); })));
+  } catch (e) { for (const n of DAY_PARTS) delete DAY_ART[n]; console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
 // The world-turn clock, left of battery and radio: a small sun and "T7"; it flashes when the world turns.
 function drawClock(right) {
@@ -6794,7 +6792,8 @@ function drawClock(right) {
   const fl = NOW - (RT.turnFlash || -1e9) < 900 && Math.floor((NOW - RT.turnFlash) / 150) % 2 === 0;
   if (fl) panel(x - 18, 6, w + 22, 20, C.amber);
   const part = S.exp && S.day ? dayPart() : null;   // on a walk the picture is the part of day; at the Station it stays the sun
-  blit(part ? art('i-day-' + part, () => dayPic(part)) : art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
+  const pic = part && DAY_ART[part];
+  if (pic) g.drawImage(pic, x - 14, 10); else blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
   text(lbl, x, 9, fl ? C.ink : C.fog); return x - 22;
 }
 function drawStatus(right) {
@@ -8603,6 +8602,7 @@ const startLoads = () => {
   loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
   loadMomentArt();   // the art desk's painted stands for the care moments
   loadCareArt();   // the pixel desk's painted hearts for the bond
+  loadDayArt();   // the six part-of-day pictures for the top bar
   loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 };
 if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page the release number is read first, so every fetch carries it
