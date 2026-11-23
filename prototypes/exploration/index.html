@@ -7015,6 +7015,39 @@ async function loadDayArt() {
       DAY_ART[n] = c; fileGot(); })));
   } catch (e) { for (const n of DAY_PARTS) delete DAY_ART[n]; console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
+// DESIGN STILL (day-bar-design-1): the day bar, a window on a looping strip of the six signed pictures. Throwaway; the numbers are in the motion note.
+const DB = { W: 40, K: 0.8, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: inner window width, K: px per action of light
+function dayBarPos() {
+  const sp = S.day.spent, L = DAY.light;
+  if (DB.pos == null) { DB.pos = DB.from = DB.tgt = sp; DB.last = sp; }
+  if (sp !== DB.last) {
+    const n = ((sp - DB.last) % L + L) % L; DB.last = sp;   // forward only; the night's end wraps to 0 and the strip loops
+    const cur = DB.pos; DB.from = cur; DB.tgt = cur + n; DB.t0 = NOW; DB.dur = n === 1 ? 260 : Math.min(600, 260 + 16 * (n - 1));
+    if (!motion() || window.__dayBarWait) DB.dur = motion() ? 450 : 0;
+  }
+  const t = DB.dur ? Math.min(1, (NOW - DB.t0) / DB.dur) : 1;
+  DB.pos = DB.from + (DB.tgt - DB.from) * DB.ease(t);
+  return DB.pos;
+}
+function drawDayBar(x0, y0) {
+  const W = DB.W, L = DAY.light, loop = L * DB.K, pos = dayBarPos(), ix = x0 + 1, cx = ix + W / 2;
+  R(x0, y0, W + 2, 17, C.stone); R(ix, y0 + 1, W, 16 - 1, C.ink);   // frame and glass
+  R(ix, y0 + 1, W, 1, C.mist);   // the light along the top inside edge
+  let at = 0;
+  g.save(); g.beginPath(); g.rect(ix, y0 + 1, W, 15); g.clip();   // nothing of the strip leaves the glass
+  const px = a => Math.round(cx + ((a - pos) * DB.K));
+  for (let lap = -1; lap <= 1; lap++) { at = 0; for (const [name, len] of DAY.parts) {
+    const a0 = at + lap * L, a1 = a0 + len, c = px((a0 + a1) / 2), bx = px(a0);
+    if (bx > ix && bx < ix + W) { R(bx, y0 + 2, 1, 2, C.slate); R(bx, y0 + 14, 1, 2, C.slate); }   // a part border: two small ticks, top and bottom
+    const pic = DAY_ART[name]; if (pic && c + 7 > ix && c - 7 < ix + W) g.drawImage(pic, c - 7, y0 + 2);
+    at += len; } }
+  g.restore();
+  for (let r = 1; r < 16; r++) { R(ix, y0 + r, 1, 1, C.ink); R(ix + W - 1, y0 + r, 1, 1, C.ink);   // the glass ends fade into the ink: 3 px, solid then two dither steps
+    if ((r + 1) % 2 === 0) { R(ix + 1, y0 + r, 1, 1, C.ink); R(ix + W - 2, y0 + r, 1, 1, C.ink); }
+    if (r % 4 === 0) { R(ix + 2, y0 + r, 1, 1, C.ink); R(ix + W - 3, y0 + r, 1, 1, C.ink); } }
+  R(ix, y0 + 1, W, 1, C.mist); R(ix, y0 + 1, 1, 1, C.ink); R(ix + W - 1, y0 + 1, 1, 1, C.ink);
+  R(cx, y0, 1, 2, C.cream); R(cx, y0 + 16, 1, 1, C.cream);   // the fixed centre tick: notch top and bottom, never over a picture
+}
 // The world-turn clock, left of battery and radio: a small sun and "T7"; it flashes when the world turns.
 function drawClock(right) {
   const lbl = 'T' + wTurn(), w = textW(lbl, 2), x = right - w;
@@ -7023,6 +7056,7 @@ function drawClock(right) {
   if (fl) panel(x - 18, 6, w + 22, 20, C.amber);
   const part = S.exp && S.day ? dayPart() : null;   // on a walk the picture is the part of day; at the Station it stays the sun
   const pic = part && DAY_ART[part];
+  if (pic && window.__dayBar !== false) { const wx = x - 4 - DB.W - 2; drawDayBar(wx, 7); text(lbl, x, 9, fl ? C.ink : C.fog); return wx - 4; }   // DESIGN STILL (day-bar-design-1), throwaway: window.__dayBar = false draws the live single picture
   if (pic) g.drawImage(pic, x - 17, 9); else blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
   text(lbl, x, 9, fl ? C.ink : C.fog); return x - 22;
 }
