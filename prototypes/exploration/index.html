@@ -2514,8 +2514,9 @@ function habitDue(c, X) {
   // shake: after rain; the tell comes before the rain stops (her nose lifts), the beats as it has stopped
   if (!hd[habKey(c, 'shake')] && c.wet) {
     const r = rainEndsIn(hbStorm(), col, tell);
-    if (r > 0 && r <= tell && here) return { k: 'shake', n: tell - r };
-    if (!hbCore(X)) { if (here) return { k: 'shake', n: 0 }; if ((c.wetFor = (c.wetFor || 0) + 1) > 14) { hd[habKey(c, 'shake')] = 'missed'; c.wet = 0; c.wetFor = 0; } }
+    // W5 day 1: the shake plays where she stands (a shake-off ties to no spot); the other habits keep their spot rule
+    if (r > 0 && r <= tell) return { k: 'shake', n: tell - r };
+    if (!hbCore(X)) return { k: 'shake', n: 0 };
   }
   // sleep: curled at her bed, from dusk
   if (!hd[habKey(c, 'sleep')] && sleepPart(part) && here && ind.hs && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed) return { k: 'sleep', n: 0 };
