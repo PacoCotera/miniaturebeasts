@@ -6371,7 +6371,7 @@ function peekFrontDepths(key, n) {   // n rows: depth 1..3 tiles, one tile at mo
 // drawn by its own view (bk.drawGround, the same light table as the place: none by day, the clear light's table under a storm cover) from a shallow cell of the place with shallow all round it;
 // the land strip ends in the place's own shore lip: a south-facing lip window cut from the same ground (land above, water below), turned to face this side. Nothing is drawn in code.
 function frontSources(lay, bk, Tp) {
-  const clock = motion() ? NOW : 0, lvl = warmLightLevel(lay) || 0, ck = ['pf6', lay.key, Tp, bk.cache.frameKey(clock), lvl].join('|');
+  const clock = motion() ? NOW : 0, wl = warmLightLevel(lay), cl = clockLevel(lay), lvl = wl ? stormGrade(cl) : cl, ck = ['pf6', lay.key, Tp, bk.cache.frameKey(clock), lvl].join('|');
   let s = PEEK_FRONT.get(ck); if (s) return s;
   const at = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h ? -1 : lay.tiles[y * lay.w + x], wat = (x, y) => at(x, y) === T.WATER, wet = t => t === T.WATER || t === T.DEEP || t === T.STEP || t === T.WADE || t === -1;
   const keepLast = bk.last, keepState = bk.state, light = bk.lightFor({ veiled: () => false, foggedFar: () => false, level: () => lvl }, 'front|' + lay.key), lightV = bk.lightFor({ veiled: () => true, foggedFar: () => false, level: () => lvl }, 'frontV|' + lay.key); bk.state = keepState;   // lightV: where the place's own edge is still under the survey veil, the front takes the veil too
