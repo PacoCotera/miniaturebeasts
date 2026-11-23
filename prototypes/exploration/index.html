@@ -6319,6 +6319,141 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     if (!S.revealed[c] || passable(c)) { peekFog(r.x, r.y, r.w, r.h); continue; }
     const cs = Math.max(r.w, r.h); g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); g.drawImage(landPatchPB(c, cs, 0).canvas(0), r.x, r.y); g.restore();
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore();
+    if (G.land[c] === L.WATER && !dx !== !dy) { const ap = dx > 0 ? bkc.place.w + bkc.ox - lay.w : dx < 0 ? -bkc.ox : dy > 0 ? bkc.place.h + bkc.oy - lay.h : -bkc.oy; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); peekWaterFront(r, dx, dy, Tp, key, Math.max(0, ap), lay, bkc, ox, oy); g.restore(); }   // water-edge-5: the seeded front with the signed pieces as its lip; water-edge-6: its shallows are the place's own
+  }
+}
+// water-edge-4 (owner #110: "that transition between shallow water and deep water needs improvement"): where the place's shallows meet wide water beside it, the art director's four signed 12 px edge pieces
+// (art/water-edge/, mibi-art ledger 6d4259b3f1 run_a, 82c8c57c63 run_b, 5487091ba2 inner, 9197e178fe outer; byte for byte) lie ON the place's last shallow column, 12 screen px at a time at the signed mock's offset
+// (7 px inside the place, 5 over the block): run_a / run_b mixed by seed, the corner pieces where the edge turns. Only the pieces' flat shallow body (#1f9d8f) is left clear, so the place's own water shows under them,
+// and their deep (#142650) over the block, so the block's own water shows there. Nothing else on the water changes.
+const WATER_EDGE_FILES = ['run_a', 'run_b', 'inner', 'outer'], WATER_EDGE = { a: {}, b: {} }, WATER_EDGE_ORI = new Map();
+async function loadWaterEdgeArt() {
+  try {
+    if (typeof Image === 'undefined') return;
+    await Promise.all(WATER_EDGE_FILES.map(n => pixelsOf(vurl(new URL('./art/water-edge/', location.href).href + n + '.png')).then(async px => {
+      for (const v of ['b']) {
+        const d = new Uint8ClampedArray(px.data);
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i] === 0x1f && d[i + 1] === 0x9d && d[i + 2] === 0x8f) d[i + 3] = 0;   // the flat shallow body: the place's water shows
+          else if (v === 'b' && d[i] === 0x14 && d[i + 1] === 0x26 && d[i + 2] === 0x50) d[i + 3] = 0;   // the deep, where it lies over the block: the block's water shows
+        }
+        const c = document.createElement('canvas'); c.width = px.width; c.height = px.height;
+        c.getContext('2d').drawImage(await createImageBitmap(new ImageData(d, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+        WATER_EDGE[v][n] = c;
+      } })));
+  } catch (e) { console.warn('the water edge pieces did not load', e); }
+}
+// a piece turned for its side: the files have the shallows west, the deep east; tr swaps x and y, fx / fy mirror (whole pixels)
+function weOriented(v, name, fx, fy, tr) {
+  const k = v + name + (fx ? 'x' : '') + (fy ? 'y' : '') + (tr ? 't' : ''); let c = WATER_EDGE_ORI.get(k);
+  if (!c) { const src = WATER_EDGE[v][name], n = src.width; c = document.createElement('canvas'); c.width = c.height = n;
+    const q = c.getContext('2d'); q.imageSmoothingEnabled = false; q.translate(fx ? n : 0, fy ? n : 0); q.scale(fx ? -1 : 1, fy ? -1 : 1); if (tr) q.transform(0, 1, 1, 0, 0, 0); q.drawImage(src, 0, 0);
+    WATER_EDGE_ORI.set(k, c); }
+  return c;
+}
+// water-edge-5 (owner #110, AD: "big wander from the front, soft lip from the pieces"): the wide water beside the place begins with a seeded front. Row by row (one row = one tile of the view) the place's shallow water
+// tile runs 1 to 3 tiles in over the block (a seeded walk of the cell's key, at most one tile change between rows), and the signed pieces are its lip: run_a / run_b on the straight stretches, inner and outer
+// corners where the front steps. The pieces are laid on a 12 px grid whatever the view's tile (48 walking pan, 12 Call peek, 8 large-place peek), 7 px inside the shallows and 5 over the deep, as in the signed mock.
+// The land strip's straight cut at the same block ends in the same front: the front starts at the picture's edge whatever lies there. Nothing else on the water changes.
+const PEEK_FRONT = new Map();
+function peekFrontDepths(key, n) {   // n rows: depth 1..3 tiles, one tile at most from the row before
+  const d = []; let cur = 1 + hash('peekfront', key, 0) % 3;
+  for (let k = 0; k < n; k++) { const s = hash('peekfront', key, k + 1) % 3; cur = Math.max(1, Math.min(3, cur + (s === 0 ? -1 : s === 1 ? 0 : 1))); d.push(cur); }
+  return d;
+}
+// water-edge-6 (AD: "draw the front's shallows with the place's own shallow-water tile; end the land strip with the place's own shore lip"): the front's shallows are the place's own ground,
+// drawn by its own view (bk.drawGround, the same light table as the place: none by day, the clear light's table under a storm cover) from a shallow cell of the place with shallow all round it;
+// the land strip ends in the place's own shore lip: a south-facing lip window cut from the same ground (land above, water below), turned to face this side. Nothing is drawn in code.
+function frontSources(lay, bk, Tp) {
+  const clock = motion() ? NOW : 0, lvl = warmLightLevel(lay) || 0, ck = ['pf6', lay.key, Tp, bk.cache.frameKey(clock), lvl].join('|');
+  let s = PEEK_FRONT.get(ck); if (s) return s;
+  const at = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h ? -1 : lay.tiles[y * lay.w + x], wat = (x, y) => at(x, y) === T.WATER, wet = t => t === T.WATER || t === T.DEEP || t === T.STEP || t === T.WADE || t === -1;
+  const keepLast = bk.last, keepState = bk.state, light = bk.lightFor({ veiled: () => false, foggedFar: () => false, level: () => lvl }, 'front|' + lay.key), lightV = bk.lightFor({ veiled: () => true, foggedFar: () => false, level: () => lvl }, 'frontV|' + lay.key); bk.state = keepState;   // lightV: where the place's own edge is still under the survey veil, the front takes the veil too
+  const cut = (wx, wy, veil) => { const c = document.createElement('canvas'), tmp = document.createElement('canvas'); c.width = c.height = Tp; tmp.width = tmp.height = 48;
+    bk.drawGround(tmp.getContext('2d'), 0, 0, { x: wx, y: wy, w: 48, h: 48 }, clock, veil ? lightV : light); bk.last = keepLast;
+    const q = c.getContext('2d'); q.imageSmoothingEnabled = false; q.drawImage(tmp, 0, 0, 48, 48, 0, 0, Tp, Tp); return c; };
+  s = { water: [], waterV: [], lip: null, ck };
+  for (let y = 1; y < lay.h - 1 && s.water.length < 4; y++) for (let x = 1; x < lay.w - 1 && s.water.length < 4; x++) {
+    let all = true; for (let j = -1; j <= 1 && all; j++) for (let i = -1; i <= 1; i++) if (!wat(x + i, y + j)) { all = false; break; }
+    if (all && (x + 2 * y) % 3 === 0) { s.water.push(cut((x - bk.ox) * 48, (y - bk.oy) * 48)); s.waterV.push(cut((x - bk.ox) * 48, (y - bk.oy) * 48, true)); } }
+  for (let y = 1; y < lay.h - 1 && !s.lip; y++) for (let x = 1; x < lay.w - 1 && !s.lip; x++) {
+    if (!wet(at(x, y)) && !wet(at(x - 1, y)) && !wet(at(x, y - 1)) && !wet(at(x - 1, y - 1)) && wat(x, y + 1) && wat(x - 1, y + 1)) s.lip = cut((x - bk.ox) * 48 - 24, (y + 1 - bk.oy) * 48 - 24); }
+  PEEK_FRONT.set(ck, s); return s;
+}
+// water-edge-7 (AD / lead: "the veil's dither and the cloud shadows stop on a straight line at the old place edge"): in the walking view the front's shallows carry the place's own veil on: the place's last 3 tiles
+// beside the front, taken as its own view draws them, are turned about the picture's edge. Where the place's ground is under the survey veil (its light with the veil and without it differ) the front's
+// veiled shallow tile (same picture pixel grid, so the dither dots continue) shows; the edge veil's cloud shadow (the place's own veil picture) is laid over the same band. Only the shallows; nothing is drawn in code.
+function frontVeil(lay, bk, dx, dy, src, pox, poy, x0, y0) {
+  const F = RT.frontFns; if (!F || F.key !== lay.key || !src.water.length) return null;
+  const keepState = bk.state, keepLast = bk.last, real = bk.lightFor(F, lay.key), side = (dx ? 'x' : 'y') + (dx > 0 || dy > 0 ? 'p' : 'n');
+  const B = 144, PW = bk.place.w * 48, PH = bk.place.h * 48, east = dx > 0, south = dy > 0;
+  const win = dx ? { x: east ? PW - B : 0, y: 0, w: B, h: PH } : { x: 0, y: south ? PH - B : 0, w: PW, h: B };
+  const flip = q => { if (dx) { q.translate(B, 0); q.scale(-1, 1); } else { q.translate(0, B); q.scale(1, -1); } };
+  const mk = () => { const c = document.createElement('canvas'); c.width = win.w; c.height = win.h; return c; };
+  const lc = real.we7 || (real.we7 = {});
+  let M = lc['m' + side];
+  if (!M) {
+    const clr = bk.lightFor(Object.assign({}, F, { veiled: () => false }), 'frontC|' + lay.key); bk.state = keepState;
+    const ca = mk(), cc = mk(), qa = ca.getContext('2d'), qc = cc.getContext('2d');
+    bk.drawGround(qa, 0, 0, win, 0, real); bk.drawGround(qc, 0, 0, win, 0, clr); bk.last = keepLast;
+    const da = qa.getImageData(0, 0, win.w, win.h), dc = qc.getImageData(0, 0, win.w, win.h), a = da.data, c = dc.data;
+    M = mk(); const qm = M.getContext('2d');   // the mask: the ground's own (opaque) pixels wherever the veil changed it, copied in runs along each row; only its alpha is used
+    for (let y = 0; y < win.h; y++) for (let x = 0, run = -1; x <= win.w; x++) {
+      const i = (y * win.w + x) * 4, d = x < win.w && (a[i] !== c[i] || a[i + 1] !== c[i + 1] || a[i + 2] !== c[i + 2]);
+      if (d && run < 0) run = x; else if (!d && run >= 0) { qm.drawImage(ca, run, y, x - run, 1, run, y, x - run, 1); run = -1; } }
+    lc['m' + side] = M;
+  }
+  const ok = ['o', side, src.ck, bk.veilKey || ''].join('|'); let O = lc[ok];
+  if (!O) {
+    const ox_ = dx ? (east ? x0 : x0 - B) : pox, oy_ = dx ? poy : (south ? y0 : y0 - B), cv = mk(), q = cv.getContext('2d'); q.imageSmoothingEnabled = false;
+    for (let ty = Math.floor((oy_ - poy) / 48); ty * 48 + poy < oy_ + win.h; ty++) for (let tx = Math.floor((ox_ - pox) / 48); tx * 48 + pox < ox_ + win.w; tx++) q.drawImage(src.waterV[hash('wfront', lay.key, tx, ty) % src.water.length], pox + tx * 48 - ox_, poy + ty * 48 - oy_);
+    q.globalCompositeOperation = 'destination-in'; q.save(); flip(q); q.drawImage(M, 0, 0); q.restore();
+    q.globalCompositeOperation = 'source-over';
+    if (bk.veilPlan && bk.veilCv && bk.veilKey) { q.save(); flip(q); q.drawImage(bk.veilCv, win.x, win.y, win.w, win.h, 0, 0, win.w, win.h); q.restore(); }
+    O = lc[ok] = { cv, x: ox_, y: oy_ };
+  }
+  return O;
+}
+// r: the water cell's rectangle in the view, (dx, dy): which side of the place it lies, Tp: the view's tile, ap: tiles of the place's picture past its cell on this side (the apron), lay / bk: the place and its view, (pox, poy): the picture's top-left in the view
+function peekWaterFront(r, dx, dy, Tp, key, ap, lay, bk, pox, poy) {
+  const B = WATER_EDGE.b; if (!B.run_a || !B.run_b || !B.inner || !B.outer) return;
+  const U = 12, along = dx ? r.h : r.w, n = Math.ceil(along / Tp), nv = Math.ceil(along / U), dep = peekFrontDepths(key, n);
+  const D = []; for (let v = 0; v < nv; v++) D.push(Math.round(dep[Math.min(n - 1, Math.floor(v * U / Tp))] * Tp / U));   // the front's depth in 12 px units, row by row
+  const dAt = v => D[Math.max(0, Math.min(nv - 1, v))];
+  const src = frontSources(lay, bk, Tp); if (!src.water.length) return;
+  // the front's start: the place picture's edge on this side (u = 0), growing away from the place
+  const sx = Math.sign(dx), sy = Math.sign(dy), x0 = dx > 0 ? r.x + ap * Tp : dx < 0 ? r.x + r.w - ap * Tp : r.x, y0 = dy > 0 ? r.y + ap * Tp : dy < 0 ? r.y + r.h - ap * Tp : r.y;
+  const cellAt = (u, v) => ({ x: dx > 0 ? x0 + u * U : dx < 0 ? x0 - (u + 1) * U : x0 + v * U, y: dy > 0 ? y0 + u * U : dy < 0 ? y0 - (u + 1) * U : y0 + v * U });
+  g.imageSmoothingEnabled = false;
+  const VL = Tp === 48 ? frontVeil(lay, bk, dx, dy, src, pox, poy, x0, y0) : null;   // the walking view: the place's own veil and cloud shadow carried over the shallows (the peeks keep the tile's veil)
+  for (let v = 0; v < nv; v++) {   // the shallows: the tile, laid to the front's depth in this row
+    const a = cellAt(0, v), w = D[v] * U, bx = dx > 0 ? a.x : dx < 0 ? a.x + U - w : a.x, by = dy > 0 ? a.y : dy < 0 ? a.y + U - w : a.y;
+    g.save(); g.beginPath(); g.rect(bx, by, dx ? w : U, dy ? w : U); g.clip();
+    const ex = dx ? w : U, ey = dy ? w : U;
+    for (let ty = Math.floor((by - poy) / Tp); ty * Tp + poy < by + ey; ty++) for (let tx = Math.floor((bx - pox) / Tp); tx * Tp + pox < bx + ex; tx++) { const t = dx ? ty : tx, ex = dx > 0 ? bk.place.w - 1 : 0, ey = dy > 0 ? bk.place.h - 1 : 0, lx = Math.max(0, Math.min(lay.w - 1, (dx ? ex : t) + bk.ox)), ly = Math.max(0, Math.min(lay.h - 1, (dy ? ey : t) + bk.oy));
+      g.drawImage((!VL && !unveiled(lay.key, lx, ly) ? src.waterV : src.water)[hash('wfront', lay.key, tx, ty) % src.water.length], pox + tx * Tp, poy + ty * Tp); }   // the place's own shallow tile, on the picture's tile grid; under the survey veil where the place's own edge is
+    if (VL) g.drawImage(VL.cv, VL.x, VL.y);
+    g.restore();
+  }
+  if (src.lip) {   // the land strip's end: where the place's own edge cell is land, its shore lip (turned to face this side) ends it, a tile along the strip
+    const nA = dx ? bk.place.h : bk.place.w, landAt = t => { const ex = dx > 0 ? bk.place.w - 1 : 0, ey = dy > 0 ? bk.place.h - 1 : 0;
+      const lx = Math.max(0, Math.min(lay.w - 1, (dx ? ex : t) + bk.ox)), ly = Math.max(0, Math.min(lay.h - 1, (dy ? ey : t) + bk.oy)), tt = lay.tiles[ly * lay.w + lx]; return !(tt === T.WATER || tt === T.DEEP || tt === T.STEP || tt === T.WADE); };
+    const o = document.createElement('canvas'); o.width = o.height = Tp; const q = o.getContext('2d'); q.imageSmoothingEnabled = false;
+    if (dy < 0) { q.translate(0, Tp); q.scale(1, -1); } else if (dx) { if (dx < 0) { q.translate(Tp, 0); q.scale(-1, 1); } q.transform(0, 1, 1, 0, 0, 0); }
+    q.drawImage(src.lip, 0, 0);
+    for (let t = 0; t < nA; t++) if (landAt(t)) g.drawImage(o, dx > 0 ? x0 : dx < 0 ? x0 - Tp : pox + t * Tp, dy > 0 ? y0 : dy < 0 ? y0 - Tp : poy + t * Tp);
+  }
+  const place = (name, fx, fy, tr, x, y) => g.drawImage(weOriented('b', name, fx, fy, tr), x, y);
+  for (let v = 0; v < nv; v++) for (let u = 0; u < D[v]; u++) {   // the lip: the pieces on the front's last cells, by which of the cell's sides lie in the deep
+    const eU = u + 1 >= D[v], lo = u >= dAt(v - 1), hi = u >= dAt(v + 1), dgLo = u + 1 >= dAt(v - 1), dgHi = u + 1 >= dAt(v + 1);
+    if (!eU && !lo && !hi && !dgLo && !dgHi) continue;
+    const a = cellAt(u, v), mix = hash('wedge', key, v) % 2 ? 'run_b' : 'run_a', side = lo ? -1 : 1;   // side: toward lower or higher rows along the front
+    const vx = dy ? side : 0, vy = dx ? side : 0;   // the deep's direction when it lies to the side, as a vector in the view
+    const off = (s) => s > 0 ? 5 : s < 0 ? -5 : 0;
+    if (eU && (lo || hi)) place('outer', (dx ? sx : vx) < 0, (dx ? vy : sy) < 0, false, a.x + off(dx ? sx : vx), a.y + off(dx ? vy : sy));   // the shallows only in the corner, deep round the other two sides
+    else if (eU) place(mix, sx < 0, sy < 0, !!dy, a.x + off(sx), a.y + off(sy));   // a straight stretch facing the deep: the files as they are, mirrored, or turned
+    else if (lo || hi) place(mix, vx < 0, vy < 0, !!dx, a.x + off(vx), a.y + off(vy));   // the front's step: a run along it
+    else { const dgs = dgLo ? -1 : 1; place('inner', (dx ? sx : dgs) < 0, (dx ? dgs : sy) < 0, false, a.x + off(dx ? sx : dgs), a.y + off(dx ? dgs : sy)); }   // deep only past the corner
   }
 }
 // The map's unseen land (src/landpaint.mjs): ink under sparse night dots, the Bayer matrix on the screen's pixels, so cells of unlike sizes join with no seam.
@@ -6450,7 +6585,8 @@ function drawPatchBody(t) {
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
   if (bk) { hazeSync(lay); const vp = veilPlanOf(lay); bk.setVeil(vp && vp.plan, vp ? vp.id : ''); }   // the edge veil: the coast and the sides past the Probe's reach
-  if (bk) bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor({ veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }, lay.key));
+  if (bk) { const lfns = { veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }; RT.frontFns = Object.assign({ key: lay.key }, lfns);   // water-edge-7: the front beside the place takes this same light (its veil dither) and the edge veil's cloud shadow
+    bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor(lfns, lay.key)); }
   if (bk && lay.rim && lay.rim.length && ART48.ready) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are; one blit of the cached picture
     const cv = rimCanvas(lay, fr, tileLight, uvAt), x0 = Math.max(0, r.tx0), y0 = Math.max(0, r.ty0), x1 = Math.min(lay.w - 1, r.tx1), y1 = Math.min(lay.h - 1, r.ty1);
     if (x1 >= x0 && y1 >= y0) g.drawImage(cv, x0 * 48, y0 * 48, (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48, W(x0 * 48), H(y0 * 48), (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48); }
@@ -8681,6 +8817,7 @@ const startLoads = () => {
   loadOpenArt(walkArtLoaded);   // the art desk's opening mist and pod
   loadMomentArt();   // the art desk's painted stands for the care moments
   loadCareArt();   // the pixel desk's painted hearts for the bond
+  loadWaterEdgeArt();   // the art director's signed shallow-to-deep edge pieces (owner #110)
   loadDayArt();   // the six part-of-day pictures for the top bar
   loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 };
