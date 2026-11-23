@@ -1204,7 +1204,7 @@
     "name": {"baseline": 166, "role": "glass.name", "h": 24, "radius": 12, "w": 120, "up": 17},
     "rest": {"baseline": 184, "role": "glass.caption"},
     "copies": {"baseline": 189, "pitch": 14, "role": "glass.caption", "plate": {"dy": 2, "h": 32, "radius": 10}},
-    "young": {"head": {"x": 22, "baseline": 226, "role": "glass.caption"}, "y": 238, "w": 88, "h": 81, "xs": [38, 160, 282, 404], "tag": {"w": 92, "h": 18, "dy": -8, "baseline": 13, "role": "glass.caption"}},
+    "young": {"head": {"x": 22, "baseline": 226, "role": "glass.caption"}, "y": 238, "w": 88, "h": 81, "xs": [38, 160, 282, 404], "tag": {"w": 92, "h": 18, "dy": -8, "baseline": 13, "role": "glass.ink"}},
     "land": {"head": {"x": 22, "baseline": 342, "role": "glass.green"},
       "bar": {"x": 112, "w": 262, "h": 12, "rows": [{"cy": 368, "label": "tint"}, {"cy": 398, "label": "shade"}], "labelX": 22, "labelBase": 5, "labelRole": "glass.name", "endsX": 388, "endsBase": 5, "endsRole": "glass.caption", "mark": 22},
       "cards": {"labelX": 22, "labelBase": 460, "labelRole": "glass.name", "x0": 114, "pitch": 56, "y": 420, "d": 44, "nameBase": 486, "nameRole": "glass.caption", "tag": {"w": 30, "h": 14, "dy": -9, "base": 11, "role": "glass.caption"}, "mark": 18}},
