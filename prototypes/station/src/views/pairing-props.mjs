@@ -84,7 +84,7 @@ export function pairView(view, m, spec, req) {
   const pic = { size: [spec.regions.page.rect[2], spec.regions.page.rect[3]], stands, names, plates, bars, cards, ok: can ? Z.ok.key : null };
   const stage = req({ kind: "pairing", id: `pairing:${hash(JSON.stringify(pic))}`, ...pic });
   view.page = { name: "", origin: "", tag: "", stage, hints: { chapters: "", look: "" }, rail: { cells: [] }, scale: { texts } };
-  view.line = { ok: can ? Sg.pairThem : null, back: S.cap(a.name), subject: b && R.a.resting ? R.a.rest : "", need: block ? S.cap(block) : !b ? (partners.length ? "" : spec.strings.nursery.empty) : "" };
+  view.line = { ok: can ? Sg.pairThem : null, back: S.cap(a.name), subject: b && R.a.resting ? R.a.rest : "", need: block ? S.cap(block) : x.refused ? S.cap(x.refused) : !b ? (partners.length ? "" : spec.strings.nursery.empty) : "" };
   view.targets = [{ id: "rail.0", group: "rail", index: 0 }]; view.cur = "rail.0"; view.resolve = {}; view.first = 0;
   view.pairing = { aId: a.id, bId: b?.id ?? null, partners, can, block, readout: R, W, noStand };
   return view;

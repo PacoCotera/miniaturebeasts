@@ -57,6 +57,15 @@ test("round 2: standing picks and young, the tint and shade bars with the parent
   assert.ok(t.some((x) => /^the \w+ marking$/.test(x)) && t.some((x) => /^eyes: .+/.test(x)), "the marking's name and the eyes' word");
 });
 
+test("item 6: a refused Pair them reads on the screen's line, with no plate and nothing spent (short of Energy)", () => {
+  const { st, a, ps } = world(41), ui = { pods: {}, hab: { id: null }, screen: "habitat" }, { h, said } = fake(st, ui);
+  openPair(h, a); st.e = 0; const was = [st.e, st.d, st.s, st.tray.length];
+  const before = podsBuild(model(st, ui.pods), pods).line; assert.equal(before.ok, "Pair them"); assert.ok(!before.need, "no reason before the press");
+  pairIntent(h, "rail.0", "confirm");
+  assert.deepEqual([st.e, st.d, st.s, st.tray.length], was, "nothing spent, no pod"); assert.equal(said.length, 0, "no message plate over a page screen"); assert.equal(ui.pods.view, "pair");
+  const after = podsBuild(model(st, ui.pods), pods).line; assert.match(after.need, /\S/, "the reason is on the line"); pairIntent(h, "rail.0", "step:right"); assert.ok(!podsBuild(model(st, ui.pods), pods).line.need, "a new pick clears it"); console.log("refusal line: " + after.need);
+});
+
 test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and opens the nursery; ← goes to the mibi", () => {
   const { st, a, ps } = world(41), ui = { pods: {}, hab: { id: null }, screen: "habitat" }, { h, said } = fake(st, ui);
   openPair(h, a); assert.equal(ui.pods.view, "pair"); assert.equal(ui.pods.pair.bId, ps[0]); assert.equal(ui.screen, "pods");

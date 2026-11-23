@@ -19,10 +19,10 @@ export function pairIntent(h, target, verb) {
   const p = pods(h), x = p.pair, a = x && S.mibiById(h.st, x.aId); if (!a) { if (verb === "back") leave(h); return; }
   if (verb === "back") return leave(h);
   const ps = partnersOf(h.st, h.sv, a, h.settings);
-  if (verb === "step:left" || verb === "step:right") { if (!ps.length) return; const i = Math.max(0, ps.indexOf(x.bId)); x.bId = ps[(i + (verb === "step:right" ? 1 : ps.length - 1)) % ps.length]; return; }
+  if (verb === "step:left" || verb === "step:right") { delete x.refused; if (!ps.length) return;const i = Math.max(0, ps.indexOf(x.bId)); x.bId = ps[(i + (verb === "step:right" ? 1 : ps.length - 1)) % ps.length]; return; }
   if (verb !== "confirm") return;
   const b = S.mibiById(h.st, x.bId); if (!b || !ps.includes(b.id)) { h.say(h.specs.pods.strings.nursery.empty); return; }
-  const r = S.pairPod(h.st, h.sv, a, b, h.settings, h.now()); if (!r.ok) { h.say(r.msg); return; }
+  const r = S.pairPod(h.st, h.sv, a, b, h.settings, h.now()); if (!r.ok) { x.refused = r.msg; return; }   // item 6: the refusal is read on the screen's own line (a plate over a page screen shifts and clips it), nothing spent
   h.save(); p.pair = null; openNursery(h, { from: "habitat", pod: r.pod.id });
   // No message plate here: a plate over a `page` screen leaves the page's window shifted and clipped in the real shell (seen in the step 8-3 stills); the pod on the shelf, with its green, is the answer. The words `crossed` wait.
 }
