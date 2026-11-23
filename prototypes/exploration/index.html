@@ -1536,7 +1536,7 @@ function urlSeed() { try { const v = new URLSearchParams(location.search).get('s
 // A new world's fields, before its life is placed: newRealm starts from them, and load() fills from them what a save lacks.
 // They are the fields as the page uses them, with the region in use mounted on S (src/regions.mjs); the save on disk (v9) keeps each region's map in regions[].map.
 function worldFields(seed, gen, wid) {
-  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, pages: {}, day: freshDay(), revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+  return { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], habits: {}, looks: {}, pages: {}, day: freshDay(), revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
     bay: [], hold: null, wid: wid || 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
@@ -1751,7 +1751,7 @@ function syncStation() {
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     const rg = S.regions.some(q => q.id === r.rg) ? r.rg : 'g1';   // a returned pod goes back to its own region (none named: region 1)
     const id = 'r' + (S.nextId++);   // the realm counts the ids, whichever region the pod lands in
-    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); logEv('A returned pod is back ' + (G.soft && G.soft.wade[+key] ? 'in the muddy water' : (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]])); }); }
+    inRegion(rg, () => { S.pods.push({ id, k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), ...(r.dv ? { dv: r.dv } : {}), h: 1, bur: 1, g: r.g, how: 'ground', ...(r.shed != null ? { shed: r.shed, of: r.of, genome: r.genome } : {}) }); logEv('A returned pod is back ' + (G.soft && G.soft.wade[+key] ? 'in the muddy water' : (G.land[+key] === L.WATER ? 'at' : 'in') + ' the ' + LAND_NAME[G.land[+key]])); }); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -2186,7 +2186,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
     cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold), samples: (S.hold.samples || []).slice(0, SATCHEL) } : { e: 0, d: 0, s: 0, pods: [], samples: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
-    pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0 } : null,
+    pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0, mk: pm.sp === 0 && WILD.partner(pm.id) ? 1 : 0 } : null,   // mk: the Station's drawn marking (shown and read) handed over for her token
     rider: rd ? { id: rd.id, name: rd.name, sp: rd.sp } : null,   // shown in the HUD and named at set-out; never the partner, no field token, no ability
     stats: { flee: 0, sheds: 0, rev: 0, lit: 0, hits: 0, putFeeds: 0, handFeeds: 0, feedTries: 0, maxLvl: 0, stormActs: 0, openStormActs: 0 },
     supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [] };
@@ -2624,6 +2624,15 @@ function readPrints(p) {
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
 }
+// Her coat is read once a mid note (or a nearer one) has given it on any of her habits (the range rule: from mid her coat). Kept on S.habits, which the lift carries home and back.
+const coatRead = id => Object.values((S.habits || {})[id] || {}).some(r => r && r.got && r.got.coat);
+// Whether a named wild Loika shows her marking AS THE SADDLE (the only one the walk has a token for), kept as 0|1 on S.looks (never her copies; a carrier stays unknown on the walk). Not known (the shared code not loaded): plain.
+function wildMarked(c) {
+  const L = S.looks || (S.looks = {}); let r = L[c.id];
+  if (r === undefined) { if (!WILD.ok) return false; try { r = L[c.id] = WILD.shows(S.seed, c.id) ? 1 : 0; } catch (e) { return false; } }
+  return !!r;
+}
+const wildSaddled = c => !!c.ind && c.sp === 0 && coatRead(c.id) && wildMarked(c);   // the token is plain until her coat is read, then it shows what she has
 function noteHabit(c) {
   const ex = S.exp, h = c.hb, W = WORDS.habit; if (!h) return;
   const P = ex.patch, range = habRange(cheb(c, P)), k = h.k, name = habName(c);
@@ -3470,8 +3479,8 @@ function takePod(p, leave) { if (darkRefuse()) return;
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key, ...shedOf(p), ...whyOf(p) });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...shedOf(p), ...whyOf(p) });
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -4140,7 +4149,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, ...((ex.cargo.samples || []).length ? { samples: ex.cargo.samples.map(q => ({ ...q })) } : {}),
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -4722,6 +4731,12 @@ const STEP_ART = []; Object.assign(STEP_ART, {
   16: { adult: ['.48m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.18m12om.19m12.22m9.24m3.2m2.12', '.16m4.27mK4m2.24mK6nm.22mK3o2K2n2m.21mK2o2n2on2m.20mK3o2mn4m.20mK4m2n3m.20mK6m4.21mKoK4m.24mKo2K4m.22mKo2K6m.21mKo2K7m.20mKoK3J2K2Jm.19mo3K2J7m.18mo3K3INJ2INm.17mo4K3N2J2N2Jm.16mo4K5J3K2m.16mo3K4JmJ2mJKm.16mo3K6m2K3m.15m2o4K11m.14m4oK12m.14m4oK2oK9m.14m4oK2oK9m.14m4oKo2K9m.14m7o2K6o2m.15m7o3Ko4m.17m6o7m.19m12.22m9.24m3.2m2.76'], juvenile: ['.239m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.24m8.25m3.2m.13', '.207m3.28mK3m.26mK2mKm.25mK3m2.26mK3m.28mK3m2.25mK6m.23moK7m.21mo2K3J2KJ2m.20mo2K2J6m.19mo3K4J2K2m.19mo3K3INJINKm.17mKo3K3N2KN2Km.17mKm2oK9m.17mKmo2K4m2K4m.16m3K11m.17m3K12m.16m3oK11m.16m3o2moK8m.17m5o3K3o2m.18m6o6m.20m11.22m9.25m3.2m.77'] },   // S17 (hopper)
   19: { adult: ['.211C2.C2.24C3J2CJ2C3.18C3J2CJ5CJ2C.16CJ2CJ12C.14CKJ15KC.12CK18C.12Cxyxwxyxwxw9C.10C2xyxyxyxyxw11C.8Cwxyxwxyxwxyw11C.7Cyxyxyxyxyxyw12C.6Cwxyxwxyxwxyw5ICw3ICwC.6Cxyxyxyxyxyw6C2w3C2wC.6Cyxwxyxwxw16C.5Cyxyxyxyw12yw2yw2C.4Cyxwxw17y2w3C.3Cyxyw24C.2Cxw11H13w2xC.2C2x2w7H15wxC.5C2x3w4H14wxC.8C3x5H12x2C.12Cx9Cx7C.14Cw2xC2y2C.Cy2C2w2xC.13Cw2xC2y2C.Cy2C2w2xC.13CwxyC2y2C.Cy2C2wxyC.13Cx2yC.C2.3C2.Cx2yC.14C3.11C3.5', '.179C2.C2.24C3J2CJ2C3.18C3J2CJ5CJ2C.16CJ2CJ12C.14CKJ15KC.12CK18C.12Cxyxwxyxwxw9C.10C2xyxyxyxyxw11C.8Cwxyxwxyxwxyw11C.7Cyxyxyxyxyxyw12C.6Cwxyxwxyxwxyw5ICw3ICwC.6Cxyxyxyxyxyw6C2w3C2wC.6Cyxwxyxwxw16C.5Cyxyxyxyw12yw2yw2C.4Cyxwxw17y2w3C.3Cyxyw24C.2Cxw11H13w2xC.2C2x2w7H15wxC.5C2x3w4H14wxC.8C3x5H12x2C.12C2x7C2x3C2x2C.15Cw2xCyC.Cy2C.2Cw2C2.13Cw2xCyC.Cy2C.2Cw2xC.13Cw2xCyC.Cy2C.2Cw2xC.13CwxyCyC.Cy2C.2CwxyC.13Cx2yC2.3C2.3Cx2yC.14C3.11C3.4'], juvenile: ['.370C2.27C3J2C3.23CJ2CJ2CJ2C.20C2J9KC.16C3K12C.14C2xwxyxwxw9C2.11Cyxyxyxyxw12C.9Cyxwxyxwxw14C.8Cxyxyxyxw7ICw3ICwC.7Cxwxyxw10C2w3C2wC.6Cxyxyxw19C.4C2xwxw16yw2yw2C.4C2xw8H10wy2w2xC.6C2x2w4H14wxC.9C2x4H13x2C.12Cx9Cx7C.14Cw2xC2y2C.Cy2C2w2xC.13Cw2xC2y2C.Cy2C2w2xC.13CwxyC2y2C.Cy2C2wxyC.13Cx2yC.C2.3C2.Cx2yC.14C3.11C3.6', '.338C2.27C3J2C3.23CJ2CJ2CJ2C.20C2J9KC.16C3K12C.14C2xwxyxwxw9C2.11Cyxyxyxyxw12C.9Cyxwxyxwxw14C.8Cxyxyxyxw7ICw3ICwC.7Cxwxyxw10C2w3C2wC.6Cxyxyxw19C.4C2xwxw16yw2yw2C.4C2xw8H10wy2w2xC.6C2x2w4H14wxC.9C2x4H13x2C.12C2x7C2x3C2x2C.15Cw2xCyC.Cy2C.2Cw2C2.13Cw2xCyC.Cy2C.2Cw2xC.13Cw2xCyC.Cy2C.2Cw2xC.13CwxyCyC.Cy2C.2CwxyC.13Cx2yC2.3C2.3Cx2yC.14C3.11C3.5'] },   // S20
 }); STEP_ART.length = 20;
+// walk-look-carry-3: the Loika's signed saddled walk token (signed by the art director, walk-token-saddle-3): the right-facing idle and step frames (the step's first frame is the idle);
+// the left frames are these flipped at draw time, as every token is. Shown when her marking draws: a wild named Loika who shows it and whose coat a mid note has read, or a partner whose marking the Station draws.
+const SADDLED_ART = ['.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3K2C3LD4C3KA2LA.9A2K7CL2IAD2C2DK2L2A.7AK9CL2A2D2CD3L3A.6AK10CL5DC3DK3A.6AK10CL4D2L3K4A.5AK11C5L5K3A.6AL2K9C4L8A.7AC2L2K7C2P2L7A.8AC4L2K5C2P2L6A.8ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.17A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3K2C3LD4C3KA2LA.9A2K7CL2IAD2C2DK2L2A.7AK9CL2A2D2CD3L3A.6AK10CL5DC3DK3A.6AK10CL4D2L3K4A.5AK11C5L5K3A.6AL2K9C4L8A.7AC2L2K7C2P2L7A.8AC4L2K5C2P2L6A.8ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5A2C5D4A3C3D3A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.78'];
+// What the walk knows of a wild Loika's look: her genome is drawn here by the Station's one code (wildGenome) from the realm seed and her id, kept only as whether the marking shows (S.looks[id] = 0|1, never her copies).
+// If the shared code or the frame does not load, WILD stays not ok and every token is the plain one.
+const WILD = { ok: false, shows: () => false, partner: () => false };
 const HOPPER_SP = [0, 1, 16];   // S01, S03, S17: their step frame rises 1 px inside the 32 box, so the game draws it 1 px higher for the full 2 px hop
 function tokenPB(rle, w) {
   const pb = new PB(w, w); let i = 0;
@@ -4731,7 +4746,8 @@ function tokenPB(rle, w) {
 // The signed token for a species and pose (fr: the shake and eat frames), or null where the masters have no picture of it:
 // approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
 // juvenile: its own picture where the species has one, else the adult's.
-function tokenOf(sp, pose, fr, juv) {
+function tokenOf(sp, pose, fr, juv, sad) {
+  if (sad && sp === 0 && !juv && (pose === 'step' || pose === 'idle' || pose === 'glow' || pose === 'nest')) return art('tsad' + (pose === 'step' && fr ? 1 : 0), () => tokenPB(SADDLED_ART[pose === 'step' && fr ? 1 : 0], 32));   // her marking draws: the saddled idle and step frames (shake, alert and eat have no 32px Loika frames: creatureArt falls back to HER idle, this saddled one when she is saddled)
   if (pose === 'step') { const e = stepFrames(STEP_ART[sp], juv); if (e) return art('ts' + (juv ? 'j' : '') + sp + (fr ? 1 : 0), () => tokenPB(e[fr ? 1 : 0], 32)); }   // the step's frames, when the desk has painted both
   const t = SPECIES_ART[sp]; if (!t) return sp >= 3 && sp < SPECIES.length ? standIn(32) : null;   // a kind without a token yet (the art release adds them) shows a plain stand-in
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
@@ -4743,7 +4759,7 @@ const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.
 function standIn(n) { return art('stand' + n, () => { const pb = new PB(n, n), e = Math.max(1, n / 12 | 0); pb.ell(n / 2, n * .6, n * .38, n * .3, C.slate); pb.rect(Math.floor(n * .38), Math.floor(n * .5), e, e, C.bone); pb.rect(Math.floor(n * .58), Math.floor(n * .5), e, e, C.bone); return pb; }); }
 
 // A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
-function creatureArt(sp, pose, fr, s, juv) { const t = tokenOf(sp, pose, fr, juv) || tokenOf(sp, 'idle', 0, juv); return (s || 1) === 1 ? t : upArt('tk' + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
+function creatureArt(sp, pose, fr, s, juv, sad) { sad = !!sad && sp === 0 && !juv; const t = tokenOf(sp, pose, fr, juv, sad) || tokenOf(sp, 'idle', 0, juv, sad); return (s || 1) === 1 ? t : upArt('tk' + (sad ? 's' : '') + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
 
 // The explorer is the art desk's painted pawn (art/props/pawn-*, nine 32 x 32 frames signed in mibi-art 9c1bf9ece: stand and step per view, three creeps; feet on row 30, one shared scale, drawn at 1x).
 // Right is the left frame mirrored at draw time. A prop, so the night, fog and storm tables act on it as on the walk props. No explorer is drawn in code.
@@ -6581,7 +6597,8 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   if (pose === 'shake' || c.st === 'full' || pose === 'glow') dx = m ? (Math.floor(t * 16) % 2 ? 1 : -1) : 0;
   else if ((pose === 'idle' || pose === 'nest') && !stepping) dy = fr;
   if (stepping && stepFr === 1 && HOPPER_SP.includes(c.sp)) dy -= 1;   // a hopper's step frame rises 1 px higher (art desk note)
-  const a = stepping ? creatureArt(c.sp, 'step', stepFr) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0);   // the Tuliko airing its scales is its idle with the shake's jiggle
+  const sad = c.sp === 0 && wildSaddled(c);   // her marking shows and her coat is read
+  const a = stepping ? creatureArt(c.sp, 'step', stepFr, 1, false, sad) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0, 1, false, sad);   // the Tuliko airing its scales is its idle with the shake's jiggle
   blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
@@ -6596,8 +6613,9 @@ function drawPartner(sp, pt, x, y, t, stepFr = -1) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
   const stepping = stepFr >= 0 && pt.st === 'follow' && !!stepFrames(STEP_ART[sp], false);
   const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' && !stepping ? fr : 0;
-  if (stepping) mibiSprite(sp, 'step', stepFr, x, y + dy - (stepFr === 1 && HOPPER_SP.includes(sp) ? 1 : 0), 1, (pt.face || 1) < 0); else
-  mibiSprite(sp, pose, 0, x, y + dy, 1, (pt.face || 1) < 0);
+  const sad = sp === 0 && !!(S.exp && S.exp.pt && S.exp.pt.mk);   // the Station's drawn marking, handed over at set-out
+  if (stepping) mibiSprite(sp, 'step', stepFr, x, y + dy - (stepFr === 1 && HOPPER_SP.includes(sp) ? 1 : 0), 1, (pt.face || 1) < 0, false, sad); else
+  mibiSprite(sp, pose, 0, x, y + dy, 1, (pt.face || 1) < 0, false, sad);
   const f = pt.face || 1;
   if (pt.st === 'sniff') for (let i = 0; i < 3; i++) R(f > 0 ? x + 30 + i * 3 : x - 2 - i * 3, y + 14 - i * 2 - ((fr + i) % 2), 2, 2, C.bone);
   if (pt.st === 'dig') for (let i = 0; i < 5; i++) { const a = ((t * 6) + i / 5) % 1; R(f > 0 ? x + 4 - a * 12 : x + 26 + a * 12, y + 20 - Math.round(Math.sin(a * Math.PI) * 10), 2, 2, C.clay); }
@@ -7548,8 +7566,8 @@ function placeholderPlate(id, x, y, k, sp, fr, juv) {
 // The bond's heart at k× (pixel for pixel): the painted file once it is in, else its plate.
 function heartAt(id, x, y, k) { const a = CARE_ART[id]; k = k || 1; if (a) g.drawImage(a.canvas(), Math.round(x), Math.round(y), a.w * k, a.h * k); else placeholderPlate(id, x, y, k); }
 // A mibi's sprite at k× (1 field, 2 cards, BIG the stage); a species the Companion has no art for is its labelled plate in the same rect.
-function mibiSprite(sp, pose, fr, x, y, k, flip, juv) {
-  if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(k > 2 ? bigArt(sp, pose, fr, juv) : creatureArt(sp, pose, fr, k, juv), x, y, 0, flip);
+function mibiSprite(sp, pose, fr, x, y, k, flip, juv, sad) {
+  if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(k > 2 ? bigArt(sp, pose, fr, juv) : creatureArt(sp, pose, fr, k, juv, sad), x, y, 0, flip);
 }
 // The 12 px partner mini (the HUD, the field marker); a species with no art is its labelled plate.
 function miniOf(sp, x, y, juv) { if (spOf(sp).other) placeholderPlate('c-mini-other-12', x, y); else blit(ICON.mini(sp, juv), x, y); }
@@ -8403,6 +8421,10 @@ function onDpr() { setEmbedS(); armDpr(); }
 if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }
 
 const footEl = document.getElementById('buildFoot');
+import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json(); g.setFrames([fr]);
+  WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id), read: ['coat'] });   // the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
+  WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && L.saddleShown(fr, m); };   // the Station's own drawnLooks on the partner: shown and read
+  WILD.ok = true; }).catch(() => { });   // a failed load leaves every token plain and the walk goes on
 import('../play/src/footer.mjs').then(m => { window.__mbNotice = NOTE.ui = m.mountNotice(document.getElementById('notice'), WORDS.notice, { buildUrl: '../../build.json' });   // the notice line: a save that cannot be written, a land that changed, a page that broke (the head's script saw it first)
   for (const k of Object.keys(NOTE.flags)) if (NOTE.flags[k]) NOTE.ui.set(k, true);
   if (window.__mbBroke) noteSet('pageBroke', true);
@@ -8633,7 +8655,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { WILD, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
