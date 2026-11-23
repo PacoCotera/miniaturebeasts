@@ -1010,6 +1010,7 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
+const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 2, dusk: 1 }[dayPart()] || 0;   // the place's light from the clock: night draws through dark2, dusk through the one-step table (a cave keeps its own light)
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
@@ -6404,12 +6405,13 @@ function drawPatchBody(t) {
   const shown = (x, y) => unveiled(P.key, x, y) && !(pu && pu.lifted.has(y * lay.w + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
   const see = (x, y) => inS(x, y) && shown(x, y);   // the veil hides what stands on a tile until a Call
   // a tile's light without the fog: 1 under the storm or inside the approaching band's columns, else 0 (the fog edge's clear side takes this)
-  const clearLight = (tx, ty) => { if (overcast) return 1;
-    if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
+  const clockLv = clockLevel(lay);
+  const clearLight = (tx, ty) => { if (overcast) return Math.max(1, clockLv);
+    if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? Math.max(1, clockLv) : clockLv; } return clockLv; };
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
-  const spriteRm = (x, y) => lightAt ? lightAt(x, y) : 0;
-  const findRm = (x, y) => lightAt ? lightAt(x, y) : bakedView(lay) ? clearLight(x, y) : 0;   // things to act on (finds, marks, fruit, pods) take the world's storm grade, not a pasted full-colour sprite
+  const spriteRm = (x, y) => lightAt ? lightAt(x, y) : clockLv;
+  const findRm = (x, y) => lightAt ? lightAt(x, y) : bakedView(lay) ? clearLight(x, y) : clockLv;   // things to act on (finds, marks, fruit, pods) take the world's storm grade, not a pasted full-colour sprite
   // overlays (canopies, roofs) take the veil like the tiles under them; beyond fog sight the fog table
   const overlay = (pb, x, y, tx, ty) => { const rm = lightAt ? lightAt(tx, ty) : tileLight(tx, ty), vl = !lightAt && rm !== 3 && !unveiled(P.key, tx, ty);
     g.drawImage(pb.canvas(rm, false, false, vl), Math.round(x), Math.round(y)); };
@@ -6547,7 +6549,7 @@ function drawPatchBody(t) {
     RT.heroN = (RT.heroN || 0) + 1;   // the pawn's draws this frame (read by the slide test)
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
     const heroRm = spriteRm(P.x, P.y);
-    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm === 2 ? 0 : heroRm);   // through the places' light tables like the walk props, except the night's dark2 step: the explorer keeps its own colours then (outline kept), so it reads on the dark land (GD note 2026-11-16)
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx + ox, SY(PY(RT.pl)) + oy, heroRm);   // through the places' light tables like the walk props, the night's dark2 step too (art director 2026-11-22: she goes through the same table as the place at night)
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx + ox, SY(PY(RT.pl) - 6) + oy); };
   // Near a place's edge, and through a crossing slide, the pawn is kept out of the place's picture: the slide layers are pictures of the place, so a pawn in them would show twice. It is drawn once on top instead (after the picture is kept, or by drawSlide riding between its two spots).
   RT.heroFn = heroDraw; RT.heroLater = motion() && (!!FX.slide || nearEdge(P));
@@ -7090,8 +7092,9 @@ function placeLightFn(P, lay) {   // the place's own light for a tile (fog beyon
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
     if (gap >= 0 && gap < 3) { darkW = (ts === 48 ? stormCols48(Math.round((3 - gap) * 20)) : Math.ceil((3 - gap) * STORM_K[ts])) * ts; darkLeft = st.dir > 0; } }   // as drawPatch counts the columns
-  const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return 1;
-    if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? 1 : 0; } return 0; };
+  const clockLv = clockLevel(lay);
+  const light = (tx, ty) => { if (fogged && !inS(tx, ty)) return 3; if (overcast) return Math.max(1, clockLv);
+    if (darkW) { const cx = tx * ts + (ts >> 1) - cam.x; return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? Math.max(1, clockLv) : clockLv; } return clockLv; };
   return { ts, light, inS, see: (x, y) => inS(x, y) && unveiled(P.key, x, y) };
 }
 function warnPicPlace(x0, y0, a) {
