@@ -8,7 +8,7 @@ import { makePage } from "../tests/page-harness.mjs";
 import { writeFileSync } from "node:fs";
 
 const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i < 0 ? d : process.argv[i + 1]; };
-const FROM = +arg("from", 1), TO = +arg("to", 200), DAYS = +arg("days", 3), VERBOSE = process.argv.includes("--verbose"), JSON_OUT = arg("json", null), READ_ALL = process.argv.includes("--read-all"), READ_ON = !process.argv.includes("--no-read");   // W5: the bot reads her prints (an empty haunt: a drop, the trail, the routine note) when the day has nothing yet; --no-read plays without
+const FROM = +arg("from", 1), TO = +arg("to", 200), DAYS = +arg("days", 3), VERBOSE = process.argv.includes("--verbose"), JSON_OUT = arg("json", null), READ_ALL = process.argv.includes("--read-all"), READ_ON = !process.argv.includes("--no-read"), NO_GLINT = process.argv.includes("--no-glint");   // --no-glint: the old start (the bot lifts into the Loika's place at once; default: it starts at the first glint offered and walks the map to her, as a player does). W5: the bot reads her prints (an empty haunt: a drop, the trail, the routine note) when the day has nothing yet; --no-read plays without
 
 // ---- runs inside the page (its globals: S, advance, patchAction, curLay, ...) ----
 function botPage(A) {
@@ -123,13 +123,19 @@ function botPage(A) {
   return JSON.stringify(out);
 }
 
-const FIND = `(() => { let best = null, tried = 0; for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))]) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c), lay = layout(key), live = ensureLive(key);
+const FIND = glint => `(() => { const GL = ${glint ? 1 : 0}; let best = null, tried = 0; for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))].filter(c => !GL || S.exp.reach.includes(c)).sort((a, b) => !GL ? 0 : cdist(a, S.exp.start) - cdist(b, S.exp.start) || a - b)) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c), lay = layout(key), live = ensureLive(key);
   const ls = live.cr.filter(q => q.sp === 0 && q.ind); if (!ls.length) { delete S.exp.live[key]; continue; } tried++;
   const company = live.cr.filter(q => q.id !== ls[0].id && !q.hide && (q.ind ? q.ind.doings.wary >= .5 : (q.b || 0) <= .55)).length;   // a wary one to calm
   if (!best || (company > 0 && !best.company)) best = { key, id: ls[0].id, company }; if (best.company || tried >= 4) break; }
   return best ? JSON.stringify(best) : 'null'; })()`;
 const NEWDAY = (key, day) => `(() => { const ex = S.exp; S.day = freshDay(); S.turn = ${day - 1}; ex.ending = 0; ex.live = {}; ex.storm = stormFor(+${JSON.stringify(key)}); if (${day} === 1) ex.storm.x -= 2 * ex.storm.dir; ex.stray = null; ex.shield = ex.smax; S.exp.pos = ${JSON.stringify(key)}; enterPatch(${JSON.stringify(key)}); unveil(${JSON.stringify(key)}, 15, 15, 40); return 1; })()`;
 
+// day 1 as a player plays it: out of the start place onto the map, along the page's own steps (canStep, range) to the Loika's place, and in
+const TRAVEL = key => `(() => { const ex = S.exp, goal = +${JSON.stringify(key)}, from = ex.pos, seen = new Map([[from, null]]), q = [from]; let way = [];
+  if (from !== goal) { for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break; for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d) || !inRange(stepCell(c, d))) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t)) continue; seen.set(t, [c, d]); q.push(t); } }
+    if (!seen.has(goal)) return JSON.stringify({ noRoad: 1, from, goal }); for (let k = goal; seen.get(k); k = seen.get(k)[0]) way.unshift(seen.get(k)[1]);
+    leavePatch(); for (const d of way) { if (!S.exp || S.exp.ending) break; mapStep(d); } if (S.exp && !S.exp.ending && S.exp.pos === goal) enterPatch(); }
+  return JSON.stringify({ from, goal, steps: way.length, light: S.day.spent, at: S.exp ? S.exp.pos : null, phase: S.phase }); })()`;
 const results = [];
 for (let seed = FROM; seed <= TO; seed++) {
   const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
@@ -137,11 +143,12 @@ for (let seed = FROM; seed <= TO; seed++) {
   try {
     // speed only (as the design job did, checked day for day against the unchanged bot): a cell the lightning lights on the MAP records its signs, which builds that whole place; they play no part in her place
     if (!process.argv.includes("--signs")) p.run(`recordSigns = function () {};`);
-    p.run(`newWorld(${seed}); startExpedition('weather', G.spawns[0]);`);
-    const pick = JSON.parse(p.run(FIND)); if (!pick) { row.skip = "no Loika"; results.push(row); if (VERBOSE) console.log(seed, "skip"); continue; }
+    p.run(NO_GLINT ? `newWorld(${seed}); startExpedition('weather', G.spawns[0]);` : `newWorld(${seed}); startExpedition('weather', startPlaces()[0]);`);   // as a player: the first glint offered
+    const pick = JSON.parse(p.run(FIND(!NO_GLINT))); if (!pick) { row.skip = "no Loika"; results.push(row); if (VERBOSE) console.log(seed, "skip"); continue; }
     row.company = pick.company; p.run(`S.known = [0, ...S.known.filter(k => k !== 0)];`);
     for (let day = 1; day <= DAYS; day++) {
-      p.run(NEWDAY(pick.key, day));
+      if (!NO_GLINT && day === 1) { p.run(NEWDAY(String(p.run(`S.exp.start`)), 1)); row.travel = JSON.parse(p.run(TRAVEL(pick.key))); if (row.travel.noRoad) { row.skip = "no road to her"; break; } }   // day 1 starts in the glint's place; the walk to her spends the light a player spends
+      else p.run(NEWDAY(pick.key, day));
       p.run(`(() => { const l = curLive(); l.strike = null; })()`);
       const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id, read: READ_ON, readAll: READ_ALL })})`));
       row.days.push(r);
