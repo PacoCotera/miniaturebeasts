@@ -1,0 +1,3 @@
+loika-curl-token-1: 4 curl frames (plain and saddled, 2 breathing frames each) built by script on the signed 32 px palette; frames/, rle.txt (page strings) and sheet.png in runs/loika-curl-token-1/ on branch build/loika-curl-token-1; 0 MXN, no game code.
+Stills: meadow and wood, 390 and 522, day/dusk/night (the page copy served to the harness was swapped; nothing in the game changed). Caveat: at night the dark coat nearly vanishes on night ground; the saddle still reads. Her curl is a loaf with head forward on the paws, as the room pose; the "head on flank" wording was not followed. Art director to judge; draft shapes are rough.
+Next: AD look; night step 5 places the rle strings (plain = SPECIES_ART[0] curl, saddled = SADDLED_ART style). Posting to desk:art follows.
