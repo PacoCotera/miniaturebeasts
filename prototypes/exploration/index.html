@@ -3828,9 +3828,10 @@ function stepToward(X, who, tgt, n) {
     for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy;
       const d = man({ x, y }, tgt); if (d < bd && canStand(X, x, y, who)) { bd = d; best = { x, y, dx }; } }
     if (!best) { // sidestep around a blocker
-      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && !(who.px === x && who.py === y)) { best = { x, y, dx }; break; } }
+      for (let i = 0; i < 4; i++) { const [dx, dy] = ds[(i + r) % 4], x = who.x + dx, y = who.y + dy; if (man({ x, y }, tgt) <= man(who, tgt) + 1 && canStand(X, x, y, who) && (!(who.px === x && who.py === y) || who.held >= 3)) { best = { x, y, dx }; break; } }   // bug #121: after 3 turns with no step she may turn round, the back-step refused above
     }
-    if (!best) return;
+    if (!best) { who.held = (who.held || 0) + 1; return; }
+    who.held = 0;
     who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
   }
 }
