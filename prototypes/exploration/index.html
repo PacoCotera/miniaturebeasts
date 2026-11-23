@@ -6332,10 +6332,10 @@ function frontVeil(lay, bk, dx, dy, src, pox, poy, x0, y0) {
     const ca = mk(), cc = mk(), qa = ca.getContext('2d'), qc = cc.getContext('2d');
     bk.drawGround(qa, 0, 0, win, 0, real); bk.drawGround(qc, 0, 0, win, 0, clr); bk.last = keepLast;
     const da = qa.getImageData(0, 0, win.w, win.h), dc = qc.getImageData(0, 0, win.w, win.h), a = da.data, c = dc.data;
-    M = mk(); const qm = M.getContext('2d'); qm.fillStyle = '#000';   // the mask: a solid pixel wherever the veil changed the ground, in runs along each row
+    M = mk(); const qm = M.getContext('2d');   // the mask: the ground's own (opaque) pixels wherever the veil changed it, copied in runs along each row; only its alpha is used
     for (let y = 0; y < win.h; y++) for (let x = 0, run = -1; x <= win.w; x++) {
       const i = (y * win.w + x) * 4, d = x < win.w && (a[i] !== c[i] || a[i + 1] !== c[i + 1] || a[i + 2] !== c[i + 2]);
-      if (d && run < 0) run = x; else if (!d && run >= 0) { qm.fillRect(run, y, x - run, 1); run = -1; } }
+      if (d && run < 0) run = x; else if (!d && run >= 0) { qm.drawImage(ca, run, y, x - run, 1, run, y, x - run, 1); run = -1; } }
     lc['m' + side] = M;
   }
   const ok = ['o', side, src.ck, bk.veilKey || ''].join('|'); let O = lc[ok];
