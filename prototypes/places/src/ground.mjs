@@ -6,15 +6,20 @@ import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
 import { BAYER4, eighthGrid, coverE, stormStep } from '../../exploration/src/view.mjs';
 
-// Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade.
-export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade'];
+// Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
+export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dark'];
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]]; // N, NE, E, SE, S, SW, W, NW (view.mjs's order)
 
 const tableCache = new WeakMap();
-// The tile set's light tables by name: { dark, light, dark2, fog, fade, storm, veil } -> Uint8Array(256).
+// The tile set's light tables by name: { dark, light, dark2, fog, fade, storm, veil, night } -> Uint8Array(256).
 export function tablesOf(ts) {
   let t = tableCache.get(ts);
-  if (!t) { t = Object.fromEntries(ts.lightTables.map((r) => [r.name, Uint8Array.from(r.map)])); tableCache.set(ts, t); }
+  if (!t || t.nm !== ts.nightMap) {
+    t = Object.fromEntries(ts.lightTables.map((r) => [r.name, Uint8Array.from(r.map)]));
+    if (!t.night) t.night = ts.nightMap ? Uint8Array.from(ts.nightMap) : t.dark2;
+    Object.defineProperty(t, 'nm', { value: ts.nightMap, enumerable: false });
+    tableCache.set(ts, t);
+  }
   return t;
 }
 
