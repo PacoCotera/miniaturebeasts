@@ -36,7 +36,7 @@ export function makeWalker(p, { budget = 1e9, verbose = false, tag = "" } = {}) 
   const phase = () => p.S.phase, acts = () => (p.S.exp ? p.S.exp.actions : 0), next = p.run("(" + NEXT_STEP + ")");
   const log = [], say = (m) => { if (verbose) console.log(`  [${tag}] a${acts()} ${m}`); log.push(m); };
   let presses = 0;
-  const key = (k) => { if (++presses > 20000) throw new Error("runaway: phase " + phase()); p.key(k); };
+  const key = (k) => { if (++presses > 20000) throw new Error("runaway: phase " + phase()); p.key(k); if (globalThis.__goalWatch) globalThis.__goalWatch(p); };
   const budgetGone = () => acts() >= budget;
   const cargo = () => p.run("(S.exp ? { e: S.exp.cargo.e, d: S.exp.cargo.d, s: S.exp.cargo.s, pods: S.exp.cargo.pods.length, hold: S.exp.hold } : { e: 0, d: 0, s: 0, pods: 0, hold: 0 })");
   const room = () => !!p.run("S.exp") && p.run("S.exp.hold - S.exp.cargo.pods.length") > 0;

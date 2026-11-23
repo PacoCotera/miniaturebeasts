@@ -9,7 +9,7 @@ import { createHash } from "node:crypto";
 import { makePage } from "./page-harness.mjs";
 
 
-const page = (store = {}) => makePage({ store }).run;
+const page = (store = {}) => makePage({ store, anonPods: true }).run;
 const plain = x => JSON.parse(JSON.stringify(x));
 
 // The creatures each open place loads on expedition n, as (species, ready): the expedition's live places are dropped between loads, so each load rolls afresh.

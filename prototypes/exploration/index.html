@@ -486,8 +486,13 @@ function genLife(seed, region) { return genLifeIn(G, seed, G.gen >= 5 ? hereKind
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
 // its own seed, so genLife's seven world pods stay where they are. startExpedition adds them on the first placement only.
 function podSite(c, buried) { return !G.spawns.includes(c) && c !== G.gate && c !== G.deep && c !== G.swim && !G.island[c] && G.land[c] !== L.WATER && G.comp[c] === 1 && passable(c) && !buried.some(p => p.k === String(c)); }
+// W5: the end of anonymous pods (walk-design-1 W5; plan v6 S3). A pod has a known parent: the world's buried ground pods, the first expedition's two and the night's arrivals are not made; a pod now comes from a wild
+// one's own young (ownPodCheck), a returned mibi's line, or the land's slab and deep finds. ANON_PODS = true brings the old buried pods back (the tests that still exercise the old route).
+let ANON_PODS = false;   // a let so the tests of the old route can set it (makePage anonPods)
+const noAnon = pods => ANON_PODS ? pods : pods.filter(p => p.how !== 'ground');
 function firstPods(seed, cell, pods) {
-  const R = makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
+  if (!ANON_PODS) return [];
+  const R =makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
   const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
   const ok = c => podSite(c, buried());
   // a first pod lies in a place that holds a pod slot (the find mix gives most places one, not every place): a few picks are tried, one place's layout each
@@ -517,7 +522,7 @@ function shedKnown(id) {
   const has = a => (a || []).some(p => p.shed === id);
   return has(S.pods) || has(S.hold && S.hold.pods) || S.bay.some(c => has(c.pods)) || has(S.exp && S.exp.cargo && S.exp.cargo.pods);
 }
-const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : {};   // a shed pod keeps its line wherever it is copied
+const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : p.own != null ? { own: p.own, of: p.of } : {};   // a shed pod keeps its line, a wild one's own pod its mother, wherever it is copied
 function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state === 'due' && S.turn >= r.due && !shedKnown(r.id)); }
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
@@ -1074,12 +1079,13 @@ function settleOnce() {
 // ===================== The first ten minutes, the walk side =====================
 // [copy] placeholders: the copywriter picks the final words. All the player strings of the first walk are in this one table.
 const FIRST_TEXT = {
-  goal: { find: 'Find a pod · bring it home', home: 'Bring it home · back to the start', dock: 'Dock the Companion · the pod goes home' },   // F1, F2, F3
-  teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Press ✓ to go into this place', call: 'Press ))) to Call · buried finds show', pod: 'Go to the glint · ✓ takes the pod',
+  goal: { find: 'Find a Loika · learn her ways', ways: (name, n, of) => name + ' · her ways ' + n + ' of ' + of, pod: name => name + ' left a pod · at her bed', home: 'Bring it home · back to the start',
+    dock: 'Dock the Companion · the pod goes home', dockFinds: 'Dock the Companion · your finds go home' },   // F1-F3; [copy] find, ways, pod, dockFinds (w5-first-goal-1)
+  teach: { setOut: 'Press ✓ to set out', place: 'Start at a glint · ✓ starts there', go: 'Press ✓ to go into this place', pod: 'Go to the glint · ✓ takes the pod',
     stone: 'A charged stone · ✓ takes its Energy', end: '← then End · your finds go in a crate', dock: 'Dock: the key below',
-    endHere: '← End · your finds go in a crate', noPod: dir => 'No pod in reach. Its beat is ' + dir + ': walk that way, then Call again.' },   // [copy] walk-first-lines-1
-  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', callFirst: '))) Call first', turn: dir => 'Turn ' + dir },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
-  empty: { head: 'Your pod still waits', later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of where you set out' : 'where you set out') + '.',   // [copy]
+    endHere: '← End · your finds go in a crate' },
+  face: { still: 'Keep still', beat: 'Face the beat', pod: 'Face the pod', stone: 'Face the stone', turn: dir => 'Turn ' + dir },   // the ✓ words on the walk, facing nothing (the way back is SEND_TXT.way)
+  empty: { later: 'A pod waits', look: 'Still looking', rock: 'Pods sleep in woods and rock', where: (land, dir) => 'In the ' + land + ', ' + (dir ? dir + ' of where you set out' : 'where you set out') + '.',   // [copy]
     start: 'Start there and press ))) Call.', back: 'Back to the pod' },
 };
 const GOAL_MARK = { slot: 'goal-mark-12', w: 12 };   // [art] the goal line's mark, an empty named slot: the art director's piece fills it (nothing is drawn in it)
@@ -1130,21 +1136,6 @@ function leadWay(P, lay) {
   }
   RT.lead = { sig, way }; RT.leadPin = way ? { key: P.key, calls: ex.stats.calls, pods: S.pods.length, held: ex.cargo.pods.length, way } : null; return way;
 }
-// First walk, standing in a place with no pod shown and no Call made here yet: the Call is the next step (its key rings, ✓ hops it).
-function callFirst() {
-  const ex = S.exp, P = ex && S.phase === 'patch' && ex.patch;
-  return !!P && firstWalk() && !S.ui.swap && !RT.view && !ex.cargo.pods.length && !(ex.callsAt && ex.callsAt[layout(P.key).cell]) && !podShown(P.key);
-}
-// The Call key's ring and hop: on this page's own key, and (on /play, where the shell draws the keys) as a `mb-keycue` message the shell can place (the UI desk's).
-let CUE_SENT = null;
-function keyCues() {
-  const on = !!(S && S.exp && callFirst()), k = document.querySelector('.key[data-key="call"]'); if (k) k.classList.toggle('cue', on);
-  if (EMBED && on !== CUE_SENT) { CUE_SENT = on; try { parent.postMessage({ t: 'mb-keycue', key: 'call', ring: on }, location.origin); } catch (e) { } }
-}
-function hopCall() {   // ✓ "Call first": the Call key hops once; no action is spent
-  if (EMBED) try { parent.postMessage({ t: 'mb-keycue', key: 'call', hop: 1 }, location.origin); } catch (e) { }
-  const k = document.querySelector('.key[data-key="call"]'); if (!k) return; k.classList.remove('hop'); void k.offsetWidth; k.classList.add('hop');
-}
 function teachStep() {
   const T = FIRST_TEXT.teach, ex = S.exp;
   if (isDocked() || RT.view || (S.phase === 'patch' && S.ui.swap)) return '';
@@ -1152,9 +1143,10 @@ function teachStep() {
   if (S.phase === 'place') return T.place;
   if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
-  if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod; if (!(ex.callsAt && ex.callsAt[layout(P.key).cell])) return T.call;
-    const w = beatWay(P); return w ? T.noPod(w.dir) : T.call; }
+  if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
+    const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
+  if (!ex.cargo.pods.length) return '';   // nothing to take home yet: no line asks for the end
   return T.end;
 }
 // The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
@@ -1163,10 +1155,30 @@ function teachFill() {
   const t = firstWalk() && !(S.phase === 'setup' && !S.exp && openAlone()) ? teachStep() : ''; FX.msg = t; FX.teachMsg = t; FX.sign = null;   // on a first save the opening draws its one teaching line under the land itself
 }
 // The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
+// W5 (first walk): the Loika the player has noted most, on a tie the last met; { id, name, n } or null when none is met. n counts her habits as her page does (a habit with a note at any range).
+const waysOf = id => { const h = S.habits && S.habits[id]; return h ? HABITS.filter(k => h[k] && Object.keys(h[k].ranges).length).length : 0; };
+function metBest() {
+  const nm = S.named || {}, order = (S.metIds || []).filter(id => nm[id]);
+  for (const id of Object.keys(nm)) if (!order.includes(id)) order.push(id);   // a save from before the met order: by id
+  let best = null; for (const id of order) { const n = waysOf(id); if (!best || n >= best.n) best = { id, name: nm[id], n }; }
+  return best;
+}
+const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
+// The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in W4's words.
+function loikaTeach() {
+  const pr = printsToRead(); if (pr) return habName(pr.c) + ' · ' + WORDS.prints.read;
+  const c = indInSight(), cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
+}
+const waysLine = b => b ? FIRST_TEXT.goal.ways(b.name, b.n, HABITS.length) : FIRST_TEXT.goal.find;
+const dockHasPod = () => S.bay.some(c => (c.pods || []).length) || !!(S.report && S.report.sealed && (S.report.sealed.pods || []).length) || !!(S.hold && (S.hold.pods || []).length);
+// The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
 function goalLine() {
   if (!S || RT.readOnly) return '';
   if (firstWalk()) { const G1 = FIRST_TEXT.goal, ex = S.exp;
-    return ex ? (ex.cargo.pods.length ? G1.home : G1.find) : S.bay.length || (S.phase === 'sealed' && S.report && S.report.sealed) ? G1.dock : G1.find; }
+    if (!ex && (S.bay.length || (S.phase === 'sealed' && S.report && S.report.sealed))) return dockHasPod() ? G1.dock : G1.dockFinds;
+    if (ex && ex.cargo.pods.length) return G1.home;
+    const op = ownPodLying(); if (op) return G1.pod(op.of);
+    return waysLine(metBest()); }
   // after the first expedition only the Station's Companion part shows; a Station step gives no line, and no band (note 10)
   const g = RT.caddy && RT.caddy.goal; if (!g) return ''; if (typeof g === 'string') return g; return g.companion ? g.companion.text || '' : '';
 }
@@ -1568,7 +1580,7 @@ function newRealm(seed, gen = NEW_GEN, wid, keep) {   // a new realm takes the n
   const carry = RESET_CARRY; RESET_CARRY = null;   // a realm that follows the release's reset: it says where it came from, and takes the world id the Station wrote if the Station reset first
   S = worldFields(seed, gen, wid ?? (carry && carry.wid) ?? undefined);
   if (carry && carry.resetFrom != null) S.resetFrom = carry.resetFrom;
-  const life = genLife(seed, { n: 1, biome: 'mixed' }); S.cr = life.cr; S.pods = life.pods;   // region 1, the Meadows: the three starters
+  const life = genLife(seed, { n: 1, biome: 'mixed' }); S.cr = life.cr; S.pods = noAnon(life.pods);   // region 1, the Meadows: the three starters
   if (keep) {   // the game stays: its fields over the new world's, its world id and the Station's part with it; a pod of the new land never takes the id of a kept one
     const taken = idsIn(keep); Object.assign(S, keep); S.wid = keep.wid || S.wid;
     for (const p of S.pods) if (taken.has(p.id)) p.id = 'r' + (S.nextId++);
@@ -1615,7 +1627,7 @@ function inRegion(id, fn) {
 // A new home region in a free slot: its kind and generator by the realm's rule (src/regions.mjs openHome), its own life; the hand is put back.
 function openRegion(slot) {
   const rec = openHome(S, slot); S.regions.push(rec);
-  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = prefixPods(life.pods, rec.n); indexCreatures(); });
+  inRegion(rec.id, () => { const life = genLife(S.seed); S.cr = life.cr; S.pods = noAnon(prefixPods(life.pods, rec.n)); indexCreatures(); });
   return rec.id;
 }
 // Crates and the expedition under way name their region; none means region 1, so a realm of one region writes nothing new.
@@ -1698,7 +1710,7 @@ function load() {
     const held = id => ids.some(x => x === id || x.endsWith(':' + id));
     const nw = worldFields(S.seed, gen); delete nw.gen; for (const k of Object.keys(nw)) if (!Object.hasOwn(S, k)) S[k] = nw[k];
     layoutCache.clear(); G = worldOfRegion(S.regions.find(r => r.id === S.here)); try { wantSector(hereRegion()); } catch (e) { console.error('the sector was not asked for', e); }   // the mounted region's kind; its sector is asked of the worker (a failure here only leaves the maps on the cell labels, never the save unread)
-    if (noPods) S.pods = prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n).filter(p => !held(p.id));
+    if (noPods) S.pods = noAnon(prefixPods(genLife(S.seed).pods, S.regions.find(r => r.id === S.here).n)).filter(p => !held(p.id));
     if (badNext) S.nextId = 1 + [...idsIn(S)].reduce((a, id) => { const m = /^[rpbn](\d+)$/.exec(id); return m ? Math.max(a, +m[1]) : a; }, 0);
     if (typeof S.realmRev !== 'number') S.realmRev = REALM_REV;   // a save from before the land freeze: the land of REALM_REV 9 is the one it was made on (the generator's output did not change)
     noteSet('landChanged', S.realmRev !== REALM_REV);   // a save made on another land than this build makes: it keeps the number it was made on, and the page says so (WORDS.notice.landChanged)
@@ -2620,7 +2632,14 @@ function readPrints(p) {
   const ex = S.exp, W = WORDS.prints, c = p.c, name = habName(c);
   habDay()[readKey(c.id, p.h)] = 1;
   const pg = (S.pages || (S.pages = {})), mine = pg[c.id] || (pg[c.id] = {}); mine[p.part] = { x: p.h.x, y: p.h.y };   // her page: that haunt at that part of day
-  fxMsg((p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part])) + W.page, 3);
+  // W5: an empty haunt always gives: a drop first (a tuft of hers, her Coat's keepsake, once per Loika), then the prints and when she was here (W4 round 2: the trail and the routine note)
+  let drop = ''; const rec = habRecord(S.habits || (S.habits = {}), c.id, 'shake');
+  if (!rec.sample && !ex.dark) {
+    const sm = (ex.cargo.samples || (ex.cargo.samples = []));
+    if (sm.length >= SATCHEL) drop = WORDS.w5.dropFull;
+    else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1 }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
+  }
+  fxMsg((p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part])) + drop + W.page, 3);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
 }
@@ -3232,7 +3251,6 @@ function faceThing(P, t) {
   if (t.kind !== 'flag' && !t.virt) fxGlint(t.x, t.y, 0);   // the one glint pulse; the explorer does not move and no action is spent
 }
 function idleAct(P, lay) {
-  if (callFirst()) return { label: FIRST_TEXT.face.callFirst, run: hopCall };   // first walk, before the first Call: the Call key is the one next step
   const first = firstWalk() && !S.exp.cargo.pods.length, t0 = nextThing(P, lay);   // on the first walk the pod or its beat outranks "Keep still"
   const near = !(first && t0 && (t0.kind === 'pod' || t0.kind === 'beat')) && curLive().cr.some(c => { if (c.hide || !inSight(c.x, c.y)) return false; const b = bubbleOf(c, S.exp.carry); return b === '!' || b === '…'; });
   const t = near ? null : t0;
@@ -3468,7 +3486,7 @@ const podInSentence = p => S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown';
 const HOW_SHORT = { grab: 'grabbing fruit', warm: 'warm stone', dig: 'in a fresh hole', fog: 'in a fog bank', still: 'keeping still', air: 'airing scales' };
 function podTagOf(p, short) {
   if (short && HOW_SHORT[p.how]) return HOW_SHORT[p.how];
-  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line" }[p.how];
+  const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal', grab: 'shed, grabbing fruit', warm: 'by a warm stone', dig: 'in a fresh hole', fog: 'shed in a fog bank', still: 'shed, keeping still', air: 'shed, airing scales', shed: "of {of}'s line", own: WORDS.w5.ownTag('{of}') }[p.how];
   return how ? how.replace('{of}', p.of) : (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
 }
 // Confirm on a pod with a full hold opens the chooser: pad picks which held pod to leave, ✓ swaps, ← keeps.
@@ -3720,7 +3738,7 @@ function patchTick(info) {
     away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
   habitWorld(X);
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
-    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) nm[c.id] = c.ind.name; }   // a name on first note: the one the realm gives it, kept once it has been met
+    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); } }   // a name on first note: the one the realm gives it, kept once it has been met
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
   endOfActionHabits(X, info);
@@ -3835,12 +3853,14 @@ function shedPod(c, X) {
   const p = freeAround(X.key, c.x, c.y, null) || { x: c.x, y: c.y };
   const id = 'p' + (S.nextId++);
   const why = !S.known.includes(c.sp) ? 'new' : bonded(c) ? 'bond' : null;
-  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
+  if (ANON_PODS) S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how, ...(why ? { why } : {}) });
+  else X.live.tf.push({ id: X.live.fid++, x: p.x, y: p.y });   // W5: the moment leaves a tuft, not an anonymous pod
   if (how === 'dig') (X.live.holes = X.live.holes || []).push({ x: p.x, y: p.y, g: groundName(X.lay.land, X.lay.cave), at: NOW });   // the Rupar's fresh hole stays for the expedition
   const w = crById.get(c.id) || c.stub; if (w) w.s = S.exp.n;
   S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', fog: 'settled', still: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal', grab: 'grabbed a falling fruit', warm: 'settled by a warm stone', dig: 'dug a fresh hole', air: 'aired its scales' }[how];
+  if (!ANON_PODS) { if (X.away(p)) fxMsg(WORDS.w5.shedAway + ' ' + whereWord(X, p.x, p.y), 1); else fxMsg('The ' + spName(c.sp) + ' ' + verb + WORDS.w5.shedTuft(), 1); return; }
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
   else fxMsg('The ' + spName(c.sp) + ' ' + verb + ' · a pod rolled loose' + (why && !(how === 'grab' && why === 'bond') ? ' · ' + (why === 'bond' && !actDone(S.exp, c, 'eat') ? WHY_SETTLE : WHY_WORD[why]) : ''), 1);
 }
@@ -3875,9 +3895,23 @@ function watchTail(c) {
 }
 // A warm stone (kind 'k', warm, not storm-charged) within a tile of the creature, or null.
 function warmStoneNear(X, c) { for (const f of X.lay.feats) if (f.kind === 'k' && cheb(f, c) <= 1 && stormCharge(X.key, f) <= 0 && stoneWarm(X.key, f)) return f; return null; }
+// W5: a fully known wild one (all three habits noted, from any range) leaves its own pod, once, at its bed: its young by a wild mate (owner 2026-11-19 12:4x: "no two mibis share one genome, unless by luck").
+// The pod's genome seed is drawn from the realm seed and her id, so the Station draws it as any pairing; the pod names her (of), and the mate is a wild one nobody meets.
+const fullyKnown = id => { const h = S.habits && S.habits[id]; return !!h && HABITS.every(k => h[k] && Object.keys(h[k].ranges).length); };
+function ownPodCheck(c, X) {
+  if (!c.ind || !c.ind.hs || !c.ind.hs.bed || !fullyKnown(c.id)) return;
+  const own = S.own || (S.own = {}); if (own[c.id]) return;
+  const free = hauntFree(X.lay, X.key, c), stand = hauntStand(c.ind.hs.bed, free), p = stand && freeAround(X.key, stand.x, stand.y, null, true); if (!p) return;
+  const id = 'o' + (S.nextId++), name = habName(c); own[c.id] = id;
+  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how: 'own', of: name, own: c.id, out: 1, gs: hash(S.seed, 'own', c.id) >>> 0 });   // out: the dotted outline every found pod keeps until taken, so it reads on grass
+  logEv(name + ' left a pod at her bed'); fxGlint(p.x, p.y, 200);
+  (S.exp.stats.ownPods || (S.exp.stats.ownPods = [])).push({ id: c.id, light: S.day.spent });
+  fxMsg(X.away(p) ? WORDS.w5.ownPodAway : WORDS.w5.ownPod(name), 3);
+}
 function creatureTick(c, X) {
   const sp = spOf(c.sp), P = X.P;
   if (c.snub) c.snub--;
+  ownPodCheck(c, X);
   if (c.hide > 0) {
     c.hide--; if (X.raining) c.hide = Math.max(c.hide, 1);
     if (c.hide === 0) { const p = freeAround(X.key, c.x, c.y, null); if (p) { c.x = p.x; c.y = p.y; c.st = 'idle'; c.wet = 0; } else c.hide = 1; }
@@ -4316,9 +4350,10 @@ function regionTurn(R, t, pending, farFromPlayer) {
     if (RIPE_LATER) RIPE_LATER.push(ctr); else ripenBloom(ctr); }   // the fruit trees' part builds every place in reach: at an expedition's end it waits until the sealed screen is up (ripenBloom)
   // New arrivals, away from where the player just was.
   const occupied = [...new Set(S.cr.filter(w => !w.cv && G.comp[w.c] && farFromPlayer(w.c)).map(w => w.c))];
-  const nPods = 2 + rng.int(2);
+  const nPods = 2 + rng.int(2);   // W5: the draws stay (the turn's other draws keep their place); no anonymous pod is made
   for (let i = 0; i < nPods && occupied.length; i++) { const c = rng.pick(occupied), here = S.cr.filter(w => w.c === c && !w.cv);
-    S.pods.push({ id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); newPods.push(c); }
+    const pod = { id: 'n' + (S.nextId++), k: String(c), x: -1, y: -1, sp: rng.pick(here).sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' };
+    if (ANON_PODS) { S.pods.push(pod); newPods.push(c); } }
   const families = occupied.filter(c => kinds.some(sp => S.cr.filter(w => w.c === c && w.sp === sp && !w.cv).length >= 2));
   const nYoung = 1 + rng.int(2);
   let nextCr = S.cr.reduce((m, w) => Math.max(m, w.id), 0) + 1;
@@ -7825,8 +7860,12 @@ function drawSealed(t) {
   else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + sealedWords(r.sealed, ' and ', 'supplies'), C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
   else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
   else { const E = FIRST_TEXT.empty, ld = r.lead;   // an empty walk: one headline and one line that point on, never "nothing"
-    text(clipText(!ld ? E.look : ld.pod ? (ld.first ? E.head : E.later) : E.rock, 410, 3), 22, y, C.bone, 3); y += 34;
-    if (ld) { L(E.where(ld.land, ld.dir), C.fog); if (ld.pod) L(E.start, C.fog); } else L(E.rock + '.', C.fog);
+    if (firstWalk()) {   // W5: until the first pod is home the card points at her, never at a pod that is not there
+      const op = ownPodLying(); text(clipText(op ? FIRST_TEXT.goal.pod(op.of) : waysLine(metBest()), 410, 3), 22, y, C.bone, 3); y += 34;
+      if (op && ld && ld.pod) L(E.where(ld.land, ld.dir), C.fog); }
+    else {
+    text(clipText(!ld ? E.look : ld.pod ? E.later : E.rock, 410, 3), 22, y, C.bone, 3); y += 34;
+    if (ld) { L(E.where(ld.land, ld.dir), C.fog); if (ld.pod) L(E.start, C.fog); } else L(E.rock + '.', C.fog); }
     y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(cutLine(CARE_TEXT.notch(r.notch.name, r.notch.ab, r.notch.n), 374, 2), 54, top, C.bone); y += 28; }
@@ -8030,7 +8069,7 @@ function lineBase() {
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, 'Mibis', !canSwap() || S.carried.length >= CARRY_MAX); }
     case 'newworld': return L1(S.ui.nw ? 'New world, keep mibis' : 'Keep this world', '', 'close');
     case 'worldmap': return L1('', 'the whole map', 'close');
-    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && !blk ? FIRST_TEXT.empty.back : 'Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
+    case 'sealed': { const r = S.report, blk = startBlock(); return L1(r && r.empty && r.lead && r.lead.pod && !blk ? FIRST_TEXT.empty.back : 'Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
   }
   return L1('', '', '');
 }
@@ -8074,7 +8113,7 @@ function frame(t) {
   if (TEST.clock != null) t = TEST.clock;   // test hook: the page's clock held, so a frame is a still picture
   NOW = t;
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
-  try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); keyCues(); } catch (e) { if (RT.err++ < 3) console.error(e); }
+  try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
@@ -8673,7 +8712,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { WILD, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { podTagOf, WILD, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,

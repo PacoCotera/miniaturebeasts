@@ -123,7 +123,7 @@ export function makePage(opts = {}) {
     requestAnimationFrame: () => opts.raf === "count" ? ++raf.n : (++raf.n, opts.raf || 0),
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { writes.push(k); store[k] = String(v); if (opts.onSet) opts.onSet(k); }, removeItem: k => { writes.push(k); delete store[k]; } } };
-  run = loadPage(ctx);
+  run = loadPage(ctx); if (opts.anonPods) run("ANON_PODS = true");   // W5: the tests of the old buried-pod route switch it back on
   let KEY; try { KEY = run("SAVE_KEY"); } catch { KEY = undefined; }
   const p = { run, ctx, store, clock, els, writes, errors, raf, KEY,
     get S() { return run("S"); },
