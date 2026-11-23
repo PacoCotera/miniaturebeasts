@@ -1012,7 +1012,8 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
-const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 5, dusk: 6 }[dayPart()] || 0;   // the place's light from the clock: night draws through the night table (5, darker and cooler than dark2), dusk through the one-step table (6) (a cave keeps its own light)
+const dawnFirstHalf = () => S.day.spent < DAY.parts[0][1] / 2;   // bug #117: the night does not jump to full day; the first half of the dawn is the dusk's one-step table
+const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 5, dusk: 6, dawn: dawnFirstHalf() ? 6 : 0 }[dayPart()] || 0;   // the place's light from the clock: night draws through the night table (5, darker and cooler than dark2), dusk through the one-step table (6) (a cave keeps its own light)
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
 const outpostLeft = (key, f) => { const st = fs(key, f.id); return st.lightT ? Math.max(0, st.lightT - S.turn) : 0; };
 const depotLit = c => { const f = depotOf(c); return !!f && outpostLeft(String(c), f) > 0; };
