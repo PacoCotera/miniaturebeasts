@@ -144,6 +144,8 @@ export class BakedView {
   }
   // ---- sprites as cached canvases ----
   spriteCanvas(kind, frame, level, cut, cutKey) {
+    // owner bug #120 (AD's nit): the page installs the night table after the first sprites may be cached; a trunk cached before it stayed on dark2's brown while its neighbour drew the night table's navy
+    if (this.nightSeen !== this.ts.nightMap) { this.sprites.clear(); this.nightSeen = this.ts.nightMap; }
     const key = `${kind}|${frame}|${level}`;
     if (!cut && this.sprites.has(key)) return this.sprites.get(key);
     const s = this.ts.sprites[kind], T = tablesOf(this.ts), remap = level ? T[LEVELS[level]] : null;
