@@ -6,7 +6,7 @@ import { frameOf, genomeDigest } from "../genome.mjs";
 import { movingIds, playable, movingFigure } from "../moving.mjs";
 import { standLook, placedAt, coatOf, coatMaster, COAT_TRAITS } from "../stands.mjs";
 import { asset as assetOf, manifest } from "../../../ui/assets.mjs";
-import { drawnLooks } from "../looks.mjs";
+import { ownLooks } from "../looks.mjs";
 import { layeredStand, standPictureId, standFigure, standVariant, curlFactor, curlPicture, curlOfStand, viewFigureHeight, viewFactor, factorPlace, factorPicture, inkBox } from "../layered-stand.mjs";
 import { keyToken } from "../looks.mjs";
 import { sceneFactor, sittingKindScale, SCENE_OF_VIEW } from "../scale.mjs";
@@ -39,10 +39,10 @@ export const lookOf = (st, mb, size, settings) => standLook(S.speciesOf(mb), S.m
 // A pose (layered-stand.mjs poseFor) is the pose's name, or poseFor's { pose, owed } itself; the anchor by default. A pose that is not the anchor is part of the stand's variant, so of the id.
 const poseName = (pose) => (typeof pose === "string" ? pose : pose?.pose ?? "anchor");
 // the coat a mibi is drawn in (stands.mjs coatOf), or null for the painted coat; the kinds with no coat trait never read the looks
-const coatFor = (sp, mb) => (COAT_TRAITS[sp] ? coatOf(sp, drawnLooks(frameOf(sp), mb)) : null);
+const coatFor = (sp, mb) => (COAT_TRAITS[sp] ? coatOf(sp, ownLooks(frameOf(sp), mb)) : null);
 export const mibiPictureOf = (st, mb, size, settings, light = "day", view = "default", pose = "anchor", k = 1) => {
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
-  if (stand) { const looks = drawnLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
+  if (stand) { const looks = ownLooks(frameOf(sp), mb); return { id: standPictureId(stand, looks, light), stage: grown, size: [...stand.size], looks }; }
   const sf = sceneFit(sp, grown, size, view, poseName(pose), coatFor(sp, mb)); if (sf) return { id: sf.id + (light === "day" ? "" : ":" + light), stage: sf.stage, size: sf.size, factor: sf.f, master: sf.master };
   const pf = poseFit(sp, grown, size, poseName(pose), k, coatFor(sp, mb)); if (pf) return { id: pf.id + (light === "day" ? "" : ":" + light), stage: pf.stage, size: [...size], factor: pf.f, master: pf.master };
   const fac = factorOf(sp, grown, size, view, coatFor(sp, mb)); if (fac) return { id: fac.id + (light === "day" ? "" : ":" + light), stage: fac.stage, size: [...size], factor: fac.f, master: fac.master };
@@ -90,7 +90,7 @@ export const figureOf = (st, mb, size, settings, view = "default", pose = "ancho
   const sp = S.speciesOf(mb), grown = mb.stage ?? S.mibiStage(st, mb, settings), stand = layeredStand(sp, grown, size, view, poseName(pose));
   if (!stand) { const sf = sceneFit(sp, grown, size, view, poseName(pose), coatFor(sp, mb)); if (sf) return factorPicture(assetOf(sf.master), sf.f, sf.size, sf.id).figure;
     const fac = poseFit(sp, grown, size, poseName(pose), k, coatFor(sp, mb)) ?? factorOf(sp, grown, size, view, coatFor(sp, mb)); return fac ? factorPicture(assetOf(fac.master), fac.f, size, fac.id).figure : null; }   // a factor view's reduced master: the ink of the same reduction
-  return standFigure(stand, drawnLooks(frameOf(sp), mb));
+  return standFigure(stand, ownLooks(frameOf(sp), mb));
 };
 // A sleeper's curl at the stand's scale (the owner's full-size ruling), with its own shadow: { id, figure, request }, or null when no curl master is placed. A species with a layered stand composes its `curl` pose in the mibi's own looks at the
 // stand's scale; every other species reduces its 304 curl master by the factor its standing picture gets, look.size[0] / 304 × viewH / slot[1] (0.168 adult, 0.122 juvenile). `nap` is the nap pose's ink box, no longer read here.
@@ -102,7 +102,7 @@ export function curlOfMibi(st, mb, nap, slot, settings, light, view) {
   }
   const look = lookOf(st, mb, viewFactor(view) ? [304, 312] : slot, settings); if (look.step === 3) return null;   // a factor view reduces the 304 cut: its stand is the 304's
   const sp = S.speciesOf(mb), ms = look.stage === "juvenile" ? "juvenile" : "adult", master = coatMaster(`mibi-${ms}-${sp}-curl-304x312`, sp, coatFor(sp, mb)), vh = viewFigureHeight(look.stage, view); if (!vh && !viewFactor(view)) return null;
-  const lay = layeredStand(sp, look.stage, [304, 312], view, "curl"), looks = lay && drawnLooks(frameOf(sp), mb);
+  const lay = layeredStand(sp, look.stage, [304, 312], view, "curl"), looks = lay && ownLooks(frameOf(sp), mb);
   const src = lay ? curlOfStand(lay, looks) : assetOf(master); if (!src) return null;
   const f = lay ? 1 : viewFactor(view) ?? look.size[0] / 304 * vh / slot[1], tag = lay ? standVariant(lay, looks).key : master;   // a factor view: the curl master at the view's factor, as its stand
   const pic = curlPicture(src, sp, look.stage, f, view, `${tag}|${look.stage}`); if (!pic.figure) return null;

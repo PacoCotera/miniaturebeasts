@@ -9,7 +9,7 @@ import { mibiReq, mibiRequest, mibiVariantReq, figureOf, restOf, hash } from "./
 import { roomData, withLight } from "./room-props.mjs";
 import { req as reqOf, slot as slotOf } from "./requests.mjs";
 import { frameOf } from "../genome.mjs";
-import { drawnLooks } from "../looks.mjs";
+import { ownLooks } from "../looks.mjs";
 import { fill } from "./words.mjs";
 import { platesOf, stateWords, breatherLeft, breatherWords, breatherAfter, youngWhen } from "./vivarium-props.mjs";
 
@@ -43,7 +43,7 @@ export function markOf(st, sv, m, settings, asleep = false) {
 export function looksOf(st, m, Sg) {
   const sp = S.speciesOf(m), fr = frameOf(sp), kin = living(st).filter((x) => S.speciesOf(x) === sp);
   if (kin.length < 2) return [fill(Sg.card.only, { Species: S.spName(m) })];
-  const mine = drawnLooks(fr, m), all = kin.map((x) => drawnLooks(fr, x)), out = [];
+  const mine = ownLooks(fr, m), all = kin.map((x) => ownLooks(fr, x)), out = [];
   for (const t of Object.keys(mine)) if (all.some((l) => l[t] !== mine[t])) out.push(String(mine[t]));
   return out;
 }
