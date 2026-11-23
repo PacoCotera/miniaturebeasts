@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makePage } from "./page-harness.mjs";
-import { rangeOf, givesAt, clearAir, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, leftHaunts, HABITS, SAMPLE, BEATS } from "../src/habits.mjs";
+import { rangeOf, givesAt, clearAir, wantOf, tellOf, rainEndsIn, calmWindow, noteIn, blank, leftHaunts, dewLies, HABITS, SAMPLE, BEATS } from "../src/habits.mjs";
 import { DAY, WORDS } from "../src/words.mjs";
 import { ROUTINE } from "../src/gen7/haunts.mjs";
 
@@ -26,7 +26,25 @@ test("the card line (slip W5): her coat first, then her face, then where she goe
   assert.equal(wantOf(7, 3, "calm", { coat: 1, face: 1 }), "place");
   assert.equal(wantOf(7, 3, "calm", { place: 1, coat: 1, face: 1 }), null);
   assert.equal(wantOf(7, 3, "sleep", {}), "coat"); assert.equal(wantOf(7, 3, "sleep", { coat: 1 }), "face");
-  assert.equal(wantOf(7, 3, "sleep", { coat: 1, face: 1 }), null, "no 'where she goes' for sleep-curled until the dew ships");
+  assert.equal(wantOf(7, 3, "sleep", { coat: 1, face: 1 }), "place", "night step 4: sleep-curled's last line is where she goes at first light");
+  assert.equal(wantOf(7, 3, "sleep", { coat: 1, face: 1, place: 1 }), null);
+});
+test("a far note at dusk or night gives the habit's shape only; clear air stays weather only (night step 4)", () => {
+  assert.deepEqual(givesAt("far", true, true), ["place"]); assert.deepEqual(givesAt("far", true, false), []); assert.deepEqual(givesAt("far", false, true), []);
+  assert.deepEqual(givesAt("mid", true, false), ["coat"], "mid does not change"); assert.deepEqual(givesAt("near", true, false), ["face"], "near does not change");
+  const rec = blank(); assert.deepEqual(noteIn(rec, "far", true, "coat", false).gives, []); assert.ok(!rec.got.place);
+});
+test("the dew's prints point: at dusk her afternoon haunt leads to her bed; in the morning her bed leads to where she is, and not after the dew dries", () => {
+  const hs = { water: { x: 1, y: 1 }, grass: { x: 5, y: 1 }, third: { x: 9, y: 1 }, bed: { x: 13, y: 1 } }, early = { wary: 0, drive: 1 };
+  const at = (part, p) => leftHaunts(hs, early, part, false, DAY.parts).find(q => q.part === p && !q.yday);
+  const dusk = at("dusk", "afternoon"); assert.ok(dusk && dusk.to && dusk.to.x === 13 && dusk.toPart === "dusk", "dusk: the afternoon haunt points to her bed");
+  const morn = leftHaunts(hs, early, "morning", false, DAY.parts).find(q => q.yday && q.part === "night");
+  assert.ok(morn && morn.to && morn.to.x === 1, "morning: her bed points to the water she is at");
+  const dawn = at("morning", "dawn"); assert.ok(dawn && dawn.to && dawn.to.x === 5, "in the morning the water she left at first light points to the grass");
+  for (const q of leftHaunts(hs, early, "midday", false, DAY.parts)) assert.equal(q.to, null, "by dry day the prints read as today and do not point");
+  for (const q of leftHaunts(hs, early, "afternoon", false, DAY.parts)) assert.equal(q.to, null);
+  assert.equal(leftHaunts(hs, early, "dusk", true, DAY.parts).find(q => q.gone).to, null, "a bolt points nowhere");
+  assert.ok(dewLies("dusk", DAY.parts) && dewLies("night", DAY.parts) && dewLies("dawn", DAY.parts) && dewLies("morning", DAY.parts) && !dewLies("midday", DAY.parts) && !dewLies("afternoon", DAY.parts));
 });
 test("her prints (3A): the haunts she kept earlier today and has left; yesterday's while the morning lasts; the haunt she bolted from", () => {
   // an early Loika: dawn water, morning grass, midday third, afternoon grass, dusk and night bed
