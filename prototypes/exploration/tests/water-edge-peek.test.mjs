@@ -1,5 +1,5 @@
-// water-edge-2 (owner #110): holding an arrow against wide water east of a place slides the view over the water cell beyond. That cell is a flat block; the signed edge strip is laid dense on its near
-// edge, so the block does not meet the place's shallows in one flat straight line. Real Chromium (PW_DIR names the folder holding node_modules/playwright; without it the test is skipped).
+// water-edge-3 (owner #110): holding an arrow against wide water east of a place slides the view over the water cell beyond. That cell is a flat block; its near edge is a shore-like front of the existing
+// shallow water tile (1 to 3 tiles deep, row by row by seed) into the deep, so the shallow-to-deep edge is not one straight line. Real Chromium (PW_DIR names the folder holding node_modules/playwright; without it the test is skipped).
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -15,7 +15,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const skip = !chromium && "playwright is not installed (set PW_DIR)";
 
-test("the wide water beside a place carries the veil strip on its near edge, dense on the line", { skip }, async (t) => {
+test("the wide water beside a place meets the place's shallows in an irregular front, not one straight line", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const server = createServer((req, res) => {
     let p = path.join(root, decodeURIComponent(req.url.split("?")[0]));
@@ -41,13 +41,13 @@ test("the wide water beside a place carries the veil strip on its near edge, den
     await page.waitForTimeout(400); await page.keyboard.down("ArrowRight"); await page.waitForTimeout(700);
     const img = decodePng(Buffer.from((await page.evaluate(() => window.__mb.capture())).split(",")[1], "base64"));
     await page.keyboard.up("ArrowRight");
-    // the line is where the block starts (the place's picture ends); find it as the column after which the rows are the block's navy, then compare the block's first columns with its far columns
-    const lum = (x, y) => { const q = (y * img.w + x) * 4; return img.data[q] + img.data[q + 1] + img.data[q + 2]; };
-    const mean = (x0, x1) => { let s = 0, n = 0; for (let x = x0; x < x1; x++) for (let y = 60; y < 560; y++) { s += lum(x, y); n++; } return s / n; };
-    const far = mean(400, 440); let line = 200; for (let x = 201; x < 350; x++) if (Math.abs(mean(x, x + 1) - mean(x - 1, x)) > Math.abs(mean(line, line + 1) - mean(line - 1, line))) line = x;
-    assert.ok(line > 100 && line < 400, "the block's near edge is found at x " + line);
-    const near = mean(line + 1, line + 9);
-    assert.ok(near - far > 25, "the strip lies dense on the block's near edge: near " + near.toFixed(1) + " vs far " + far.toFixed(1));
+    // per row of the view, the first column (right of the place's picture) where the water is the deep's dark blue (blue well above green); teal shallows and the dark teal shading are not
+    const deep = (x, y) => { const q = (y * img.w + x) * 4; return img.data[q + 2] - img.data[q + 1] > 25 && img.data[q + 2] > 50; };
+    const x0 = Math.floor(img.w * 0.58), firsts = [];
+    for (let y = 70; y < 500; y += 6) { let f = -1; for (let x = x0; x < img.w; x++) if (deep(x, y)) { f = x; break; } if (f >= 0) firsts.push(f); }
+    assert.ok(firsts.length > 40, "the deep is found in most rows: " + firsts.length);
+    assert.ok(new Set(firsts).size >= 3, "the front takes at least 3 different depths over the rows: " + [...new Set(firsts)].join(","));
+    assert.ok(Math.max(...firsts) - Math.min(...firsts) >= 20, "the front is irregular, not straight: " + Math.min(...firsts) + ".." + Math.max(...firsts));
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });
