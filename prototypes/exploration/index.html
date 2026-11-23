@@ -6424,7 +6424,14 @@ function frontVeil(lay, bk, dx, dy, src, pox, poy, x0, y0) {
 function peekWaterFront(r, dx, dy, Tp, key, ap, lay, bk, pox, poy) {
   const B = WATER_EDGE.b; if (!B.run_a || !B.run_b || !B.inner || !B.outer) return;
   const U = 12, along = dx ? r.h : r.w, n = Math.ceil(along / Tp), nv = Math.ceil(along / U), dep = peekFrontDepths(key, n);
-  const D = []; for (let v = 0; v < nv; v++) D.push(Math.round(dep[Math.min(n - 1, Math.floor(v * U / Tp))] * Tp / U));   // the front's depth in 12 px units, row by row
+  // water-edge-9 (AD #115: "step the front on the signed pieces' 12 px grid, at most one piece per row; the mean line drifts 1-4 tiles off the place edge"): the depth in 12 px units is a seeded walk of
+  // one row = one unit, at most one unit in or out between rows, kept between 1 and 4 tiles; a slow target (one per 3 tiles, from the tile depths of the cell's key) leads it, so the mean line drifts along the run.
+  const lo = Math.max(1, Math.round(Tp / U)), hi = Math.max(lo + 1, Math.round(4 * Tp / U)), D = []; let cur = Math.round(dep[0] * Tp / U);
+  for (let v = 0; v < nv; v++) {
+    const tgt = Math.max(lo, Math.min(hi, Math.round((1 + (dep[Math.min(n - 1, Math.floor(v * U / Tp / 3) * 3)] - 1) * 1.5) * Tp / U)));   // a target of 1, 2.5 or 4 tiles
+    const r = hash('wfront9', key, v) % 4, s = cur < tgt ? (r === 0 ? 0 : 1) : cur > tgt ? (r === 0 ? 0 : -1) : (r === 0 ? 1 : r === 1 ? -1 : 0);
+    cur = Math.max(lo, Math.min(hi, cur + s)); D.push(cur);
+  }
   const dAt = v => D[Math.max(0, Math.min(nv - 1, v))];
   const src = frontSources(lay, bk, Tp); if (!src.water.length) return;
   // the front's start: the place picture's edge on this side (u = 0), growing away from the place
