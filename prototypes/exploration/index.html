@@ -8705,7 +8705,7 @@ function fit() {
 window.addEventListener('resize', fit);
 // ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
 // One function sets the screen's scale (a whole-pixel screen scaled by a transform); a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
-const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-s', String(k / d * Math.min(1, (window.innerWidth || 450) / 450, (window.innerHeight || 600) / 600))); };   // a viewport smaller than the 450×600 frame (a phone opening the embed itself) shrinks the whole frame to fit, so the message box and its text stay inside; the play page's frame is 450 wide and untouched
+const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)), fw = Math.floor(450 * k / d), fh = Math.floor(600 * k / d); document.documentElement.style.setProperty('--embed-s', String(k / d * Math.min(1, (window.innerWidth || fw) / fw, (window.innerHeight || fh) / fh))); };   // fw, fh: the play page's frame in CSS px, under 450 wide at a fractional pixel ratio (it was shrunk twice there: owner #123); a viewport smaller than the 450×600 frame (a phone opening the embed itself) shrinks the whole frame to fit, so the message box and its text stay inside; the play page's frame is 450 wide and untouched
 let dprQuery = null;
 function armDpr() {
   if (dprQuery) dprQuery.removeEventListener('change', onDpr);
