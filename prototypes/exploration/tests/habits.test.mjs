@@ -125,16 +125,16 @@ for (const seed of [7, 13]) {
       c.x = Math.min(lay.w - 2, far.x + 6); c.y = far.y; c.gone = null;
       const side = [[1, 0, 'left'], [-1, 0, 'right'], [0, 1, 'up'], [0, -1, 'down']].find(([dx, dy]) => passable(far.x + dx, far.y + dy));
       P.x = side ? far.x + side[0] : far.x; P.y = side ? far.y + side[1] : far.y; P.dir = side ? side[2] : 'up';
-      const d0 = S.exp.cargo.d, s0 = S.exp.cargo.samples.length, n0 = (S.exp.stats.noted || []).length, sp0 = S.day.spent;
+      const d0 = S.exp.cargo.d, s0 = S.exp.cargo.samples.length, t0 = curLive().tf.length, n0 = (S.exp.stats.noted || []).length, sp0 = S.day.spent;
       const a = patchAction(); const label = a.label; if (label === WORDS.prints.read) a.run();
       const a2 = patchAction();
-      return JSON.stringify({ label, after: a2.label, pages: S.pages[c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part });
+      return JSON.stringify({ label, after: a2.label, pages: S.pages[c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dTufts: curLive().tf.length - t0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part });
     })()`));
     assert.ok(!out.none, "at midday she has left a haunt of the morning");
     assert.equal(out.label, WORDS.prints.read, JSON.stringify(out));
     assert.notEqual(out.after, WORDS.prints.read, "one read for each haunt each day");
     assert.equal(out.prints.length, 1); assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
-    assert.equal(out.dData, 0); assert.equal(out.dSamples, 1, "W5: an empty haunt gives a drop, her tuft, once for her (a sample, no Data, no habit note)"); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
+    assert.equal(out.dData, 0); assert.equal(out.dSamples, 1, "W5: an empty haunt gives a drop, her tuft keepsake, once for her (a sample, no Data, no habit note)"); assert.equal(out.dTufts, 1, "bug #122: one tuft left on the ground, once for her"); assert.equal(out.after, "Pick up the tuft", "bug #122: once read, ✓ picks the tuft up"); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
     assert.deepEqual(p.errors, []);
   });
 }
