@@ -2,7 +2,7 @@
 // host (the shell): getCanvas() the played device's #screen, context() -> details to send, source() -> noteFrom, say(key, vars), flash() the brief outline round the screen.
 import * as idb from "idb-keyval";
 import { LIMITS, canAdd, isClip, isEmpty, createQueue } from "../../src/notes.mjs";
-import { shot, createTap, canClip, canRecordAny } from "../../src/clip.mjs";
+import { shot, pageShot, createTap, canClip, canRecordAny } from "../../src/clip.mjs";
 
 let uid = 0;
 const urlOf = (b) => URL.createObjectURL(b);
@@ -14,7 +14,10 @@ export function createController(host) {
   const subs = new Set();
   const emit = (p) => { st = { ...st, ...p }; for (const f of subs) f(); };
   let recTimer = 0, held = null;   // held: the whole-screen shot taken when Options opened
-  const shotOf = async (kind) => { const c = host.getCanvas(); if (!c) return null; const blob = await shot(c); return { id: ++uid, kind, blob, url: urlOf(blob), w: c.width, h: c.height }; };
+  const shotOf = async (kind) => {   // the whole page (frame, panels, buttons, the canvas in it); the canvas alone if the page cannot be drawn
+    if (host.page) { try { const p = await pageShot(document); return { id: ++uid, kind, blob: p.blob, url: urlOf(p.blob), w: p.w, h: p.h }; } catch { /* the canvas below */ } }
+    const c = host.getCanvas(); if (!c) return null; const blob = await shot(c); return { id: ++uid, kind, blob, url: urlOf(blob), w: c.width, h: c.height };
+  };
   const drop = (it) => { if (it && it.url) URL.revokeObjectURL(it.url); };
   const has = () => st.items.length > 0 || st.text.trim() !== "";
   const api = {
