@@ -134,7 +134,7 @@ for (const seed of [7, 13]) {
     assert.equal(out.label, WORDS.prints.read, JSON.stringify(out));
     assert.notEqual(out.after, WORDS.prints.read, "one read for each haunt each day");
     assert.equal(out.prints.length, 1); assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
-    assert.equal(out.dData, 0); assert.equal(out.dSamples, 0, "bug #122: her tuft lies on the print's tile, not in the satchel"); assert.equal(out.dTufts, 1, "bug #122: one tuft left on the ground, once for her"); assert.equal(out.after, "Pick up the tuft", "bug #122: once read, ✓ picks the tuft up"); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
+    assert.equal(out.dData, 0); assert.equal(out.dSamples, 1, "W5: an empty haunt gives a drop, her tuft keepsake, once for her (a sample, no Data, no habit note)"); assert.equal(out.dTufts, 1, "bug #122: one tuft left on the ground, once for her"); assert.equal(out.after, "Pick up the tuft", "bug #122: once read, ✓ picks the tuft up"); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
     assert.deepEqual(p.errors, []);
   });
 }
