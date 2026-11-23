@@ -97,10 +97,13 @@ test("only the saddle draws saddled: a spotted or banded marking stays the plain
   assert.ok(saddle > 0 && other > 0, "both kinds occur: " + saddle + " saddle, " + other + " other");
 });
 
-test("shake and alert keep playing on the saddled walk token: their own frames, never the saddled idle swapped in", () => {
+test("shake, alert and eat have no 32px Loika frames: the fallback is HER idle, saddled when she is saddled (walk-look-carry-5)", () => {
   const f = fixture({ partner: 0 });
   const px = (pose, fr, sad) => Array.from(f.run(`creatureArt(0, '${pose}', ${fr}, 1, false, ${sad}).p`));
-  const idleSad = px("idle", 0, true);
-  for (const [pose, fr] of [["shake", 0], ["shake", 1], ["approach", 0]]) assert.deepEqual(px(pose, fr, true), px(pose, fr, false), pose + fr + " plays its own frame");
-  for (const [pose, fr] of [["shake", 0], ["shake", 1], ["approach", 0]]) assert.notDeepEqual(px(pose, fr, true), idleSad, pose + fr + " is not the saddled idle");
+  const idleSad = px("idle", 0, true), idlePlain = px("idle", 0, false);
+  assert.notDeepEqual(idleSad, idlePlain, "the saddled idle differs from the plain one");
+  for (const [pose, fr] of [["shake", 0], ["shake", 1], ["approach", 0], ["eat", 0], ["eat", 1]]) {
+    assert.deepEqual(px(pose, fr, true), idleSad, pose + fr + " keeps her saddle");
+    assert.deepEqual(px(pose, fr, false), idlePlain, pose + fr + " plain stays plain");
+  }
 });

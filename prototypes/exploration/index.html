@@ -4747,7 +4747,7 @@ function tokenPB(rle, w) {
 // approach is the alert pose; glow and nest are the idle pose (no halo); a pose no picture covers is null. juv: the mibi is a
 // juvenile: its own picture where the species has one, else the adult's.
 function tokenOf(sp, pose, fr, juv, sad) {
-  if (sad && sp === 0 && !juv && (pose === 'step' || pose === 'idle' || pose === 'glow' || pose === 'nest')) return art('tsad' + (pose === 'step' && fr ? 1 : 0), () => tokenPB(SADDLED_ART[pose === 'step' && fr ? 1 : 0], 32));   // her marking draws: the saddled idle and step frames (shake, alert and eat have no signed saddled token yet: they play their own plain frames, never the idle swapped in)
+  if (sad && sp === 0 && !juv && (pose === 'step' || pose === 'idle' || pose === 'glow' || pose === 'nest')) return art('tsad' + (pose === 'step' && fr ? 1 : 0), () => tokenPB(SADDLED_ART[pose === 'step' && fr ? 1 : 0], 32));   // her marking draws: the saddled idle and step frames (shake, alert and eat have no 32px Loika frames: creatureArt falls back to HER idle, this saddled one when she is saddled)
   if (pose === 'step') { const e = stepFrames(STEP_ART[sp], juv); if (e) return art('ts' + (juv ? 'j' : '') + sp + (fr ? 1 : 0), () => tokenPB(e[fr ? 1 : 0], 32)); }   // the step's frames, when the desk has painted both
   const t = SPECIES_ART[sp]; if (!t) return sp >= 3 && sp < SPECIES.length ? standIn(32) : null;   // a kind without a token yet (the art release adds them) shows a plain stand-in
   const n = pose === 'approach' ? 'alert' : pose === 'glow' || pose === 'nest' ? 'idle' : pose === 'shake' || pose === 'eat' ? pose + (fr ? 1 : 0) : pose;
@@ -4759,7 +4759,7 @@ const miniArt = (sp, juv) => { const j = juv && JUVENILE_ART[sp]; return j && j.
 function standIn(n) { return art('stand' + n, () => { const pb = new PB(n, n), e = Math.max(1, n / 12 | 0); pb.ell(n / 2, n * .6, n * .38, n * .3, C.slate); pb.rect(Math.floor(n * .38), Math.floor(n * .5), e, e, C.bone); pb.rect(Math.floor(n * .58), Math.floor(n * .5), e, e, C.bone); return pb; }); }
 
 // A mibi's picture at s× (1 field, 2 cards): the signed token (an unlisted pose shows the idle), each pixel a whole block above 1×.
-function creatureArt(sp, pose, fr, s, juv, sad) { sad = !!sad && sp === 0 && !juv; const t = tokenOf(sp, pose, fr, juv, sad) || tokenOf(sp, 'idle', 0, juv); return (s || 1) === 1 ? t : upArt('tk' + (sad ? 's' : '') + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
+function creatureArt(sp, pose, fr, s, juv, sad) { sad = !!sad && sp === 0 && !juv; const t = tokenOf(sp, pose, fr, juv, sad) || tokenOf(sp, 'idle', 0, juv, sad); return (s || 1) === 1 ? t : upArt('tk' + (sad ? 's' : '') + (juv ? 'j' : '') + sp + pose + (fr ? 1 : 0), t, s); }
 
 // The explorer is the art desk's painted pawn (art/props/pawn-*, nine 32 x 32 frames signed in mibi-art 9c1bf9ece: stand and step per view, three creeps; feet on row 30, one shared scale, drawn at 1x).
 // Right is the left frame mirrored at draw time. A prop, so the night, fog and storm tables act on it as on the walk props. No explorer is drawn in code.
