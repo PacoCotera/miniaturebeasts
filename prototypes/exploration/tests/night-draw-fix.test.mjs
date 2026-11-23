@@ -20,10 +20,11 @@ test("clockLevel: night is the night table (5), dusk the one-step table (1), the
   assert.equal(p.run("clockLevel({ cave: true })"), 0);
 });
 
-test("she goes through the same table as the place at night (no exception for dark2)", async () => {
+test("at night she draws through the dusk table (one step), not the night table", async () => {
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  assert.ok(!/heroRm === 2/.test(src), "no night exception for the explorer");
+  assert.ok(!/heroRm === 2/.test(src), "no dark2 exception for the explorer");
+  assert.match(src, /heroRm = heroRm0 === 5 \? 1 : heroRm0/);
   assert.match(src, /playerArt\(P\.dir, pose, f2\)[^\n]*, heroRm\);/);
 });
 
