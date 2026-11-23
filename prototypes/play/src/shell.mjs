@@ -541,7 +541,7 @@ function noteSay(key, vars) {
   const t = T(key, vars); toast.textContent = t; toast.classList.remove("hidden"); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.add("hidden"), 3000); say(t);
 }
 function noteFlash() { const el = owner === "station" ? shS : shC; el.classList.add("flashnote"); setTimeout(() => el.classList.remove("flashnote"), 450); }
-const noteHost = { getCanvas: () => { try { return frames[owner].contentDocument.getElementById("screen"); } catch { return null; } }, context: noteContext, source: () => sourceOf(readOptions()), say: noteSay, flash: noteFlash };
+const noteHost = { page: true, getCanvas: () => { try { return frames[owner].contentDocument.getElementById("screen"); } catch { return null; } }, context: noteContext, source: () => sourceOf(readOptions()), say: noteSay, flash: noteFlash };
 function syncNote() {   // the bar's two controls (or the recording strip); layout() places them
   if (!notes) return;
   const s = notes.getState(), n = s.items.length, show = (n > 0 || s.text.trim() !== "") && !s.recording;
