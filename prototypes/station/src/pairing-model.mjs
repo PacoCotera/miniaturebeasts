@@ -80,4 +80,9 @@ export function youngLine(st, spec, m) {
   const Sg = spec.strings.pairing, aim = aimOf(st, S.speciesOf(m)); if (!aim || !m?.genome) return "";
   return fill(Sg.youngCopies, { line: P.countsOf(aim, m).map((n, i) => `${i ? "eyes" : "marking"} ${fill(Sg.copies, { n })}`).join(" · ") });
 }
+// The same, a line a trait, as her page shows them (round 2 item 7): "marking 1 of 2", "eyes 2 of 2"; none while the household has no aim.
+export function youngLines(st, spec, m) {
+  const Sg = spec.strings.pairing, aim = m?.genome ? aimOf(st, S.speciesOf(m)) : null; if (!aim) return [];
+  return P.countsOf(aim, m).map((n, i) => `${i ? "eyes" : "marking"} ${fill(Sg.copies, { n })}`);
+}
 export { vigourOfF };

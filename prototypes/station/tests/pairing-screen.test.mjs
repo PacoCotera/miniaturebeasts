@@ -76,6 +76,15 @@ test("item 4: a resting parent says so in the middle column and the copies plate
   const head = t.find((x) => x.text.startsWith("YOUNG THEY COULD HAVE")), plate = Math.max(...req.plates.map((p) => p[1] + p[3]));
   assert.ok(req.plates.every((p) => p[3] === Z.copies.plate.h), "every copies plate is two lines"); assert.ok(head.base - 10 - plate >= 4, `the plate ends ${head.base - 10 - plate} lp above the young line`);});
 
+test("item 7: her page shows the young's copies, a line a trait, as words only (the stage picture is the same bytes with or without them)", () => {
+  const { st, a } = world(31), aim = aimOf(st, "S01");
+  const v = podsBuild(model(st, { page: a.id }), pods), want = P.countsOf(aim, a).map((n, i) => `${i ? "eyes" : "marking"} ${n} of 2`);
+  assert.equal(v.page.origin, S.cap(S.spName(a)) + " · " + want.join(" · ")); assert.equal(v.page.scale, undefined, "her page keeps its own texts");
+  const bare = podsBuild(model({ ...st, aim: {}, mibis: st.mibis.filter((m) => m.id === a.id) }, { page: a.id }), pods);
+  assert.ok(!/marking \d of 2/.test(bare.page.origin), "no aim: no line"); assert.equal(bare.page.stage, v.page.stage, "the picture is the same: the copies are not on the creature");
+  const y = st.mibis.find((m) => m.id !== a.id), h = podsBuild(model(st, { page: y.id }), pods); assert.ok(/marking \d of 2 · eyes \d of 2$/.test(h.page.origin), "a mibi from the pairing reads the same way");
+});
+
 test("◀ ▶ pick the second mibi; ✓ Pair them makes a pod on the shelf and opens the nursery; ← goes to the mibi", () => {
   const { st, a, ps } = world(41), ui = { pods: {}, hab: { id: null }, screen: "habitat" }, { h, said } = fake(st, ui);
   openPair(h, a); assert.equal(ui.pods.view, "pair"); assert.equal(ui.pods.pair.bId, ps[0]); assert.equal(ui.screen, "pods");
