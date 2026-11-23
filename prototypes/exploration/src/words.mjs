@@ -119,9 +119,9 @@ WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
 // Pure: the page and the bots read the same table.
 export const DAY = {
-  light: 200,
+  light: 600,   // day-pace-build-1 (owner 2026-11-23: "yes on the 600 action day"; night shorter than the rest): a whole place is walked in one long part
   mapStep: 10,   // *greybox*: a step across the map moves the clock this far (a step in a place, a Wait and keeping still move it 1)
-  parts: [['dawn', 20], ['morning', 50], ['midday', 40], ['afternoon', 40], ['dusk', 25], ['night', 25]],   // lengths in light; they add up to `light`
+  parts: [['dawn', 50], ['morning', 150], ['midday', 150], ['afternoon', 150], ['dusk', 50], ['night', 50]],   // lengths in light; they add up to `light`
 };
 // the part of day after `spent` light is gone (0 at dawn); the day's last light is night
 export function partOfDay(spent) {
