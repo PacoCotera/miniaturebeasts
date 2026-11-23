@@ -99,14 +99,14 @@ test("on the page a Loika is at its routine's haunt at dawn and somewhere else a
       delete S.exp.live[key]; } return 'null'; })()`));
   assert.ok(pick, "a Loika with a dawn haunt and a dusk haunt apart");
   const at = (day, part) => JSON.parse(p.run(`(() => { S.day.spent = ${day}; delete S.exp.live[${JSON.stringify(pick.key)}]; const c = ensureLive(${JSON.stringify(pick.key)}).cr.find(q => q.id === ${pick.id}); const h = hauntAt(c.ind.hs, c.ind.doings, ${JSON.stringify(part)}); return JSON.stringify({ x: c.x, y: c.y, h: { x: h.x, y: h.y, k: h.k } }); })()`));
-  const dawn = at(0, "dawn"), dusk = at(150, "dusk");
+  const dawn = at(0, "dawn"), dusk = at(DAY.light - 100, "dusk");
   assert.ok(dist(dawn, dawn.h) <= 3, "at dawn it is at its haunt: " + JSON.stringify(dawn));
   assert.ok(dist(dusk, dusk.h) <= 3, "at dusk it is at its dusk haunt");
   assert.ok(dist(dawn, dusk) >= 3, "somewhere else at dusk");
   // and the routine moves it: from the dawn place to the dusk haunt by ticks of the day
   p.run(`S.exp.live = {}; S.day.spent = 0; ensureLive(${JSON.stringify(pick.key)}); S.exp.pos = ${JSON.stringify(pick.key)}; enterPatch(S.exp.pos);`);
   const before = JSON.parse(p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}); return JSON.stringify({ x: c.x, y: c.y }); })()`));
-  p.run("S.day.spent = 150;");
+  p.run("S.day.spent = " + (DAY.light - 100) + ";");
   for (let i = 0; i < 15; i++) { p.run("advance('patch', { noise: 'act' })"); p.pass(1200); if (!p.run("!!S.exp")) break; }
   const after = JSON.parse(p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}); return c ? JSON.stringify({ x: c.x, y: c.y }) : 'null'; })()`));
   assert.ok(after && dist(after, dusk.h) <= 2, "the routine brought it to its dusk haunt");

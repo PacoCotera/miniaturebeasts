@@ -13,10 +13,10 @@ const darker = (p, a, b) => { const lum = i => { const h = p.run(`RGB[${i}]`); r
 
 test("clockLevel: night is the night table (5), dusk the one-step table (6), the day 0, a cave 0", () => {
   const p = start();
-  p.run("S.day.spent = 30"); assert.equal(p.run("clockLevel({ cave: false })"), 0);
-  p.run("S.day.spent = 160"); assert.equal(p.run("clockLevel({ cave: false })"), 6);   // 6: the one-step dark table, not the storm table (at 48 px that steps the land as far as dark2)
+  p.run("S.day.spent = 80"); assert.equal(p.run("clockLevel({ cave: false })"), 0);
+  p.run("S.day.spent = 520"); assert.equal(p.run("clockLevel({ cave: false })"), 6);   // 6: the one-step dark table, not the storm table (at 48 px that steps the land as far as dark2)
   assert.equal(p.run("stormGrade(6)"), 1); assert.equal(p.run("stormGrade(5)"), 5); assert.equal(p.run("stormGrade(0)"), 1);
-  p.run("S.day.spent = 190"); assert.equal(p.run("clockLevel({ cave: false })"), 5);
+  p.run("S.day.spent = 590"); assert.equal(p.run("clockLevel({ cave: false })"), 5);
   assert.equal(p.run("clockLevel({ cave: true })"), 0);
 });
 
@@ -30,7 +30,7 @@ test("at night she draws through the dusk table (one step), not the night table"
 
 test("the same place drawn at day, dusk and night is three different pictures, darker as the clock goes", () => {
   const p = start();
-  const day = shot(p, 30), dusk = shot(p, 160), night = shot(p, 190);
+  const day = shot(p, 80), dusk = shot(p, 520), night = shot(p, 590);
   const [n1, d1] = darker(p, day, dusk), [n2, d2] = darker(p, dusk, night);
   assert.ok(n1 > 500, "dusk differs from the day: " + n1); assert.ok(d1 / n1 > .95, "dusk is darker: " + d1 + "/" + n1);
   assert.ok(n2 > 500, "night differs from dusk: " + n2); assert.ok(d2 / n2 > .95, "night is darker: " + d2 + "/" + n2);

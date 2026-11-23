@@ -53,7 +53,7 @@ test("warm colours lose their warmth at night (red above blue by day, blue at le
 test("the place at night draws through it: the grass pixel is the night grass, and the clock level is 5", () => {
   const p = page();
   const top = s => { p.run(`S.day.spent = ${s}; scr.px().fill(-1); RT.key = null; drawPatch(1);`); const n = new Map(); Array.from(p.run("scr.px()")).forEach(v => { if (v >= 0) n.set(v, (n.get(v) || 0) + 1); }); return [...n].sort((a, b) => b[1] - a[1])[0][0]; };
-  const day = top(30), nt = top(190), night = get(p, "REMAP_PLACE[5]");   // (read after the drawing: the page's colours and tables settle as its art loads)
+  const day = top(80), nt = top(590), night = get(p, "REMAP_PLACE[5]");   // (read after the drawing: the page's colours and tables settle as its art loads)
   assert.notEqual(nt, day);
   const rgb = get(p, "RGB"); assert.ok(lum(rgb[nt]) < lum(rgb[day]) - 20, "the ground at night is far darker than by day: " + rgb[nt] + " vs " + rgb[day]);
   assert.ok(rgb[nt][2] > rgb[nt][0], "and cool: " + rgb[nt]); assert.equal(night.length, rgb.length);

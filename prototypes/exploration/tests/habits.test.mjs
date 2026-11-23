@@ -55,7 +55,7 @@ test("the rain's end, read ahead with the page's own step", () => {
 test("the calm window lies in a part she is not at her bed, ten-odd light long, from the seed", () => {
   for (const id of [1, 2, 3, 4]) for (const day of [0, 1, 2]) {
     const w = calmWindow(7, id, day, DAY.parts, ROUTINE.early), w2 = calmWindow(7, id, day, DAY.parts, ROUTINE.early);
-    assert.deepEqual(w, w2); assert.ok(w && w.to - w.from === 12 && w.from >= 0 && w.to <= DAY.light - 25, JSON.stringify(w)); }
+    assert.deepEqual(w, w2); assert.ok(w && w.to - w.from === 12 && w.from >= 0 && w.to <= DAY.light - DAY.parts[DAY.parts.length - 1][1], JSON.stringify(w)); }
 });
 test("a sample answers a chapter: tuft Coat, whisker Face, shed claw Legs & Tail", () => {
   assert.deepEqual(HABITS.map(k => SAMPLE[k].chapter), ["coat", "face", "legs-tail"]);
@@ -118,7 +118,7 @@ for (const seed of [7, 13]) {
     const pick = JSON.parse(p.run(find)); assert.ok(pick, "a Loika in a mounted place");
     const out = JSON.parse(p.run(`(() => {
       const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); const lay = curLay(), live = curLive(), c = live.cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
-      S.known = [0, ...S.known.filter(k => k !== 0)]; S.day.spent = 95; live.strike = null; S.exp.stray = null;
+      S.known = [0, ...S.known.filter(k => k !== 0)]; S.day.spent = 250; live.strike = null; S.exp.stray = null;
       const list = printsHere(); if (!list.length) return JSON.stringify({ none: 1 });
       const q = list[0], far = q.stand;
       // she is elsewhere (more than 2 tiles from the prints), the explorer stands beside them facing nothing

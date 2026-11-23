@@ -1008,7 +1008,7 @@ const OUTPOST_TURNS = 3;
 // World turns are shown counting from 1 (turn 1 = the first expedition's world); S.turn keeps counting from 0 inside,
 // so the world's random draws and every save stay as they were and no save needs migrating.
 const wTurn = () => S.turn + 1;
-// The realm's day (walk W1): light spent since dawn (the day's 200 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
+// The realm's day (walk W1): light spent since dawn (the day's 600 actions), the camps made in it, what the trips of the day left for the night's turn (their trails and charged stones), and where the last camp is.
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
@@ -7047,9 +7047,9 @@ async function loadDayArt() {
       DAY_DIM[n] = dc; DAY_ART[n] = c; fileGot(); })));
   } catch (e) { for (const n of DAY_PARTS) { delete DAY_ART[n]; delete DAY_DIM[n]; } console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
-// The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per light, so the picture under the fixed marker is dayPart() and the next one enters the right end ~25 light before the change.
+// The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per 3 light (K = 200 / DAY.light: the loop stays 200 px), so the picture under the fixed marker is dayPart() and the next one enters the right end ~75 light before the change.
 // Each action glides the strip its true spent distance (ease-out cubic, 260 ms; n actions min(600, 260+16(n-1)); Wait 450 ms; forward only, mod the loop); reduced motion is instant; nothing moves when idle.
-const DB = { W: 64, K: 1, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, wait: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: glass width, K: px per light
+const DB = { W: 64, K: 200 / DAY.light, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, wait: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: glass width, K: px per light
 function dayBarPos() {
   const sp = S.day.spent, L = DAY.light;
   if (DB.pos == null) { DB.pos = DB.from = DB.tgt = sp; DB.last = sp; DB.dur = 0; DB.prev = null; DB.shown = sp; }

@@ -47,7 +47,7 @@ function botPage(A) {
   const events = [];
   if (rp && rp.to < DAY.light - 20) events.push({ k: 'shake', at: rp.to - tellOf(c0.ind.doings) });
   if (win) events.push({ k: 'calm', at: win.from + 4 });
-  { let sl = null; for (let T = 150; T < DAY.light - 6 && sl == null; T++) { const h = hauntAt(c0.ind.hs, c0.ind.doings, dayAt(T)); if (h && h === c0.ind.hs.bed) sl = T; } if (sl != null) events.push({ k: 'sleep', at: sl + 2 }); }
+  { let sl = null; for (let T = DAY.parts.slice(0, 4).reduce((s, q) => s + q[1], 0); T < DAY.light - 6 && sl == null; T++) { const h = hauntAt(c0.ind.hs, c0.ind.doings, dayAt(T)); if (h && h === c0.ind.hs.bed) sl = T; } if (sl != null) events.push({ k: 'sleep', at: sl + 2 }); }
   events.sort((a, b) => a.at - b.at);
   { const rp0 = bfs({ x: P.x, y: P.y }, (x, y) => { const cc = her(); return cc && cheb({ x, y }, cc) >= 6; }, () => false); if (rp0) { out.events.push('retreat ' + rp0.length); for (const t of rp0) { if (over()) break; stepTo(t); } } }
   out.plan = events.map(e => e.k + '@' + e.at);
