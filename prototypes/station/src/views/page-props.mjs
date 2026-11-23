@@ -6,7 +6,7 @@ import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { pageSpotsOf, PAGE_BODY_BOX, closeOf, pagePod } from "../page.mjs";
 import { coatOf, PAINTED_COAT } from "../stands.mjs";
-import { drawnLooks } from "../looks.mjs";
+import { ownLooks } from "../looks.mjs";
 import { shapeOf, scalePlace, shapeModel } from "../trait-shapes.mjs";
 import { roundOf, squareOf } from "../trait-crops.mjs";
 import { pageModel } from "./reading-props.mjs";
@@ -31,8 +31,8 @@ export const cellX = (i, n, W, c) => c.inset + (n > 1 ? Math.floor((i * (W - 2 *
 const NUM = ["no looks", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 const hexRGB =(h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 // her own coat and marking ("<tint>-<shade>+<lay picture>"), from the chapters she has read, as the room picks it; {} for a kind with no coat traits or an unread coat (the base picture)
-export const coatProp = (sp, mb, fr) => { const c = fr ? coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) : null; return c ? { coat: c } : {}; };
-export const faceOf =(sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
+export const coatProp = (sp, mb, fr) => { const c = fr ? coatOf(sp, ownLooks(fr, mb)) : null; return c ? { coat: c } : {}; };
+export const faceOf =(sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, ownLooks(fr, mb)) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
 const gapSay = (pts, min) => {   // where "none of yours here yet" goes: the middle of the widest empty stretch of the bar (pins are 0.14 wide), if it is wide enough for the words
   const a = [...pts].sort((p, q) => p - q), gaps = [{ mid: ((a[0] ?? 0.5) - 0.07 + 0) / 2, w: (a[0] ?? 1.07) - 0.07 }]; if (!a.length) return 0.5;
   for (let i = 1; i < a.length; i++) gaps.push({ mid: (a[i - 1] + a[i]) / 2, w: a[i] - a[i - 1] - 0.14 }); gaps.push({ mid: (a.at(-1) + 0.07 + 1) / 2, w: 1 - a.at(-1) - 0.07 });

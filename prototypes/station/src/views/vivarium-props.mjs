@@ -7,7 +7,7 @@ import * as S from "../state.mjs";
 import { livingOf, mibiReq, mibiRequest, mibiVariantReq, figureOf } from "./home-props.mjs";
 import { roomRegion, roomData, roomName, withLight } from "./room-props.mjs";
 import { frameOf } from "../genome.mjs";
-import { drawnLooks } from "../looks.mjs";
+import { ownLooks } from "../looks.mjs";
 import { fill } from "./words.mjs";
 import { growIn } from "../age-words.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf } from "./requests.mjs";
@@ -39,7 +39,7 @@ export function markOf(st, sv, m, settings, house = false) {
 export function looksLine(st, m, Sg) {
   const sp = S.speciesOf(m), fr = frameOf(sp), kin = living(st).filter((x) => S.speciesOf(x) === sp);
   if (kin.length < 2) return [fill(Sg.card.only, { Species: S.spName(m) })];
-  const mine = drawnLooks(fr, m), all = kin.map((x) => drawnLooks(fr, x)), out = [];
+  const mine = ownLooks(fr, m), all = kin.map((x) => ownLooks(fr, x)), out = [];
   for (const t of Object.keys(mine)) if (all.some((l) => l[t] !== mine[t])) { out.push(String(mine[t])); if (out.length === 3) break; }
   return out;
 }
