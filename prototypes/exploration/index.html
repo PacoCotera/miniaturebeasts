@@ -2663,9 +2663,14 @@ function startPlaces() {
   const wild = S.cr.filter(q => q.sp === 0 && !q.cv);
   const had = new Set(layoutCache.keys());   // a layout is cached with what the expedition shuts at that moment: the places built here for the check are dropped again
   const ok = G.spawns.filter(s => { const reach = new Set(reachCells(s, TIER[1].range, {}).map(String)); return wild.some(q => reach.has(String(q.c)) && namedAt(q)); });
+  // w5-day1-start-1: the FIRST glint is a named Loika's own place whose morning haunt is not her dawn one (she comes there from light 20), within tier 1's reach of a spawn; chosen from the seed. None such: the list as it was.
+  const inReach = new Set(); for (const s of G.spawns) for (const k of reachCells(s, TIER[1].range, {})) inReach.add(+k);
+  const homes = [...new Set(wild.filter(q => inReach.has(+q.c) && passable(+q.c) && !G.island[+q.c] && (!G.gen || !!G.comp[+q.c]) && (() => { try { const ind = individualOf(q, layout(String(q.c))); if (!ind) return false; const d = hauntAt(ind.hs, ind.doings, 'dawn'), m = hauntAt(ind.hs, ind.doings, 'morning'); return !!m && (!d || d.x !== m.x || d.y !== m.y); } catch (e) { return false; } })()).map(q => +q.c))].sort((x, y) => x - y);
   for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
-  STARTS = { key, list: ok.length ? ok : G.spawns.slice() }; return STARTS.list;
+  const home = homes.length ? homes[Math.abs(S.seed | 0) % homes.length] : null, base = ok.length ? ok : G.spawns.slice();
+  STARTS = { key, home, list: home == null ? base : [home, ...base.filter(c => c !== home)] }; return STARTS.list;
 }
+const homeStart = () => { startPlaces(); return STARTS.home == null ? -1 : STARTS.home; };   // the first glint when it is a Loika's morning place (its line says so)
 function markedCandidates() {
   const key = S.seed + '|' + S.cr.length + '|' + G.spawns[0]; if (MARKED.key === key) return MARKED.ids;
   const all = S.cr.filter(q => q.sp === 0 && !q.cv); let ids = [];
@@ -8199,7 +8204,7 @@ function lineBase() {
       return L1(OPEN_TEXT.setOut, bayLine() || (S.ui.sel === 1 ? OPEN_TEXT.deepLeads(digger().name) : 'Weather'), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const tail = placeStormWords(c), wx = tail ? ' · ' + tail : '';   // the storm stands still; the cursor changes only this last part (note 14)
-      if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
+      if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (c === homeStart() ? ' · ' + WORDS.startMorning : sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), tail ? [base + wx, tail, base] : base, 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? (tail ? [base + wx, tail, base] : base) : tail, 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
       return L1('Go in', dayCtx(mapContext()), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed

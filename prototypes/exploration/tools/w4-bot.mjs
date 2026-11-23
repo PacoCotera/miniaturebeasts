@@ -132,7 +132,7 @@ const NEWDAY = (key, day) => `(() => { const ex = S.exp; S.day = freshDay(); S.t
 
 // day 1 as a player plays it: out of the start place onto the map, along the page's own steps (canStep, range) to the Loika's place, and in
 const TRAVEL = key => `(() => { const ex = S.exp, goal = +${JSON.stringify(key)}, from = ex.pos, seen = new Map([[from, null]]), q = [from]; let way = [];
-  if (from !== goal) { for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break; for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d) || !inRange(stepCell(c, d))) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t)) continue; seen.set(t, [c, d]); q.push(t); } }
+  if (String(from) !== String(goal)) { for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break; for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d) || !inRange(stepCell(c, d))) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t)) continue; seen.set(t, [c, d]); q.push(t); } }
     if (!seen.has(goal)) return JSON.stringify({ noRoad: 1, from, goal }); for (let k = goal; seen.get(k); k = seen.get(k)[0]) way.unshift(seen.get(k)[1]);
     leavePatch(); for (const d of way) { if (!S.exp || S.exp.ending) break; mapStep(d); } if (S.exp && !S.exp.ending && S.exp.pos === goal) enterPatch(); }
   return JSON.stringify({ from, goal, steps: way.length, light: S.day.spent, at: S.exp ? S.exp.pos : null, phase: S.phase }); })()`;

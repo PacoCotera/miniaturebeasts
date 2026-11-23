@@ -26,6 +26,7 @@ export const WORDS = {
   // until a save works again; landChanged while the save names a land (REALM_REV) other than the one this build makes; pageBroke when the page breaks, given the build number from build.json (an empty slot still shows it).
   notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
+  startMorning: 'A Loika comes here in the morning',   // [copy] the first glint of the first set-out: a named Loika's own place (w5-day1-start-1)
   creature: { holdFull: 'Data full (20 of 20)' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
   // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line
   strike: {
