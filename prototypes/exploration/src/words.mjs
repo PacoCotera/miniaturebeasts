@@ -65,7 +65,9 @@ WORDS.ease = {
   stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
   stayHeard: 'It looked up · you stayed too long',
   keep: 'Keep still',   // the ✓ label that holds
-  hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends' },
+  hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends', warn: 'Kept still · lightning is warned', plate: 'Kept still · a plate was lost' },
+  keepTo: part => 'Keep still · until ' + part,   // [copy] at camp by day a hold runs to the next part of day
+  waitTo: part => 'Wait · until ' + part,   // [copy] the menu's Wait at camp by day
   ctx: 'keep still, and see what it does',
   wildKind: kind => 'a wild ' + kind,   // owner note #111: a named wild one, her kind not yet identified: the bar says what the name is
 };
@@ -87,6 +89,7 @@ WORDS.habit = {
   first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
   dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
+  sleepPlace: 'where she goes at first light',   // night step 4 [copy]: sleep-curled's last card line, which the dew's prints at her bed give
   // the card line, one per habit, on the forecast line: what the Station still lacks
   card: (habit, want, filled) => habit + ' · ' + (filled ? 'learned: ' : 'still to learn: ') + want,
   cardTail: (want, filled) => (filled ? 'learned: ' : 'still to learn: ') + want,   // the card line's tail, after a note says the habit already
@@ -101,6 +104,10 @@ WORDS.prints = {
   whenYday: { dawn: 'at first light yesterday', morning: 'yesterday morning', midday: 'at midday yesterday', afternoon: 'yesterday afternoon', dusk: 'at dusk yesterday', night: 'in the night' },
   line: (name, when) => name + ' was here ' + when,
   bolted: name => name + ' was here · she bolted',
+  // night step 4 [copy]: the dew's prints point, and the words name where she went and when she left
+  went: (place, at) => ' and left for ' + place + ' ' + at, bed: 'her bed', placeAny: 'another haunt',
+  place: { reed: 'the reed bank', shore: 'the shore', sweep: 'the tall grass', grove: 'the grove', outcrop: 'the rocks' },
+  leftAt: { dawn: 'at first light', morning: 'in the morning', midday: 'at midday', afternoon: 'in the afternoon', dusk: 'at dusk', night: 'at nightfall' },
   page: '',   // bug #118: no screen shows a wild one's page yet (W6c); the old ' · on her page' returns with it
 };
 // [copy] W5 (walk-design-1): an empty haunt's drop, a wild one's own pod, the end of anonymous pods: working words for the copywriter.
@@ -130,12 +137,20 @@ export function partOfDay(spent) {
   for (const [name, len] of DAY.parts) { if (left < len) return name; left -= len; }
   return DAY.parts[DAY.parts.length - 1][0];
 }
+// rest at camp (rest-at-camp-1): from dawn through the afternoon, the next part of day and the light left until its first light; null from dusk on (a hold is ten there)
+export function restTarget(spent) {
+  const s = Math.max(0, spent | 0); let at = 0;
+  for (let i = 0; i < DAY.parts.length - 2; i++) { at += DAY.parts[i][1]; if (s < at) return { name: DAY.parts[i + 1][0], left: at - s }; }
+  return null;
+}
 // how far the clock is from the night (before it starts) or from dawn (at night)
 export function clockToNext(spent) {
   const s = Math.max(0, spent | 0), nightAt = DAY.light - DAY.parts[DAY.parts.length - 1][1];
   return s < nightAt ? nightAt - s : Math.max(0, DAY.light - s);
 }
 // [copy] words for the copywriter's round (they say the meaning only)
+// night step 4 [copy]: the three cards' words (the art director's paintings carry them when signed; until then the message-box lines stay)
+export const CARD_TEXT = { dusk: ['Dusk', 'Dusk. The wild ones are going to their beds.'], night: ['Night', 'Night falls.'], dawn: ['Dawn', ''] };
 export const DAY_TEXT = {
   nightEnds: 'Night ends the day · the Companion wakes at camp',   // the camp path only (a set-out in the night's light); a walk no longer ends at night
   line: (part, n) => part + ' · ' + (part === 'night' ? 'dawn in ' : 'night in ') + n,   // [copy] the bottom line: the part of day and how far the night (or dawn) is

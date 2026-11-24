@@ -244,7 +244,7 @@ import { nightTable } from "./src/night.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
-import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
@@ -256,7 +256,7 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
@@ -365,7 +365,7 @@ const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans t
 const CALL_R = CALL_R_PLACE, CALL_R_FOG = CALL_R_FOG_PLACE,   // the Call's range in a place: a round 7 tiles (4 in a fog bank, 6 with a glowing partner); its ring IS the unveil
       CALL_R_CAVE = 11;   // the cave behind the burrow keeps today's Call
 // Sight inside a fog bank, in tiles (a glowing partner widens it).
-const SIGHT_FOG = 4, SIGHT_GLOW = 6;
+const SIGHT_FOG = 4, SIGHT_GLOW = 6, SIGHT_NIGHT = 3;   // night sight is the lamp's three tiles, on any ground (night step 4, *greybox*)
 
 // Three wild species. notice = [creep, walk] distance in tiles at which they notice you.
 // how = the shed trigger; ab = what a partner of this species can do.
@@ -551,9 +551,11 @@ async function loadPlaces() {
     fileOwe(3);   // the tile set, the terrain table, the layer descriptors (the veil's files are owed when its kit starts)
     const base = new URL('../places/', location.href).href, bytes = async u => { const b = new Uint8Array(await (await fetchOk(vurl(u))).arrayBuffer()); fileGot(); return b; };
     const pm = await import(vurl(base + 'src/page.mjs')), rd = await import(vurl(base + 'src/format/read.mjs'));
-    PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles')); setArrived();
-    PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
+    const tsB = await bytes(base + 'baked/' + SET7 + '.mbtiles'), terB = await bytes(base + 'baked/terrain.json'), layB = await bytes(new URL('./art/gen7/layers.json', location.href).href);
+    placesTagSet(placesTag(tsB, terB, layB));   // the cached places' key carries these files' hash (place-store.mjs)
+    PL.ts = rd.readTileSet(tsB); setArrived();
+    PL.terrains = JSON.parse(new TextDecoder().decode(terB)).terrains;
+    PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(layB)));
     PL.ctx = { ts: PL.ts, terrains: PL.terrains, desc: PL.desc };
     PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
@@ -1012,6 +1014,10 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
+// by day: before dusk (a far note's where-she-goes is a by-day, clear-air note); the hour is read from the DAY table
+const byDay = () => DAY.parts.findIndex(q => q[0] === dayPart()) < DAY.parts.findIndex(q => q[0] === 'dusk');
+// the lamp's night: the part of day named night, in an expedition's place (night step 4)
+const nightNow = () => !!S.exp && !!S.day && dayPart() === 'night';
 const dawnFirstHalf = () => S.day.spent < DAY.parts[0][1] / 2;   // bug #117: the night does not jump to full day; the first half of the dawn is the dusk's one-step table
 const clockLevel = lay => lay.cave || !S.day ? 0 : { night: 5, dusk: 6, dawn: dawnFirstHalf() ? 6 : 0 }[dayPart()] || 0;   // the place's light from the clock: night draws through the night table (5, darker and cooler than dark2), dusk through the one-step table (6) (a cave keeps its own light)
 const untilNext = () => clockToNext(S.day ? S.day.spent : 0);
@@ -2260,10 +2266,15 @@ function advance(scope, info) {
   if (ex.shield <= 0 && !ex.dark) goDark(ex);   // the break ends nothing (owner 11-22 "expeditions do not end until the player says so"): the Probe goes dark where you stand
   if (S.day.spent >= DAY.light && !ex.ending) nightPasses();   // the night does not end the walk: the world turns, a new day starts where the explorer stands
   else if (!ex.ending) { const part1 = dayPart();   // dusk and night are news, never a threat: once each, when the clock crosses into them
-    if (part1 !== part0 && part1 === 'dusk') fxMsg(DAY_TEXT.duskNews(untilNext()), 3);
-    else if (part1 !== part0 && part1 === 'night') fxMsg(DAY_TEXT.nightNews(untilNext()), 3); }
+    if (part1 !== part0 && part1 === 'dusk') { if (!cardShow('dusk')) fxMsg(DAY_TEXT.duskNews(untilNext()), 3); }
+    else if (part1 !== part0 && part1 === 'night') { if (!cardShow('night')) fxMsg(DAY_TEXT.nightNews(untilNext()), 3); } }
   save();
 }
+// night step 4: the dusk, night and dawn cards. Each is the art director's signed painting (night-camp pieces 1 to 3), passed by any press, once a day each.
+// NAMED EMPTY SLOTS: none is signed and in the art set yet, so a slot stays empty ("dusk card: picture to come"), the message-box line stays in its place and nothing is drawn in code.
+// When a painting is signed, its file goes in here and cardShow draws it on the Companion's frame; the PR stays draft + hold until all three are.
+const NIGHT_CARDS = { dusk: { slot: 'dusk card: picture to come', file: null }, night: { slot: 'night card: picture to come', file: null }, dawn: { slot: 'dawn card: picture to come', file: null } };
+function cardShow(k) { return false; }   // false while the slot (NIGHT_CARDS[k].file) is empty: the caller keeps the message-box line
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
   const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
@@ -2488,10 +2499,37 @@ function keepStill(c) {
   const ex = S.exp, live = curLive(), HABIT = ['shake', 'glow', 'full', 'curl', 'hab'], sig = () => live.cr.filter(q => HABIT.includes(q.st)).map(q => q.id).join(','), rainNow = () => { const l = curLay(); return !!(S.exp && !l.cave && stormRain(l.cell % MW)); };
   const e5 = ex.stats.e5 || (ex.stats.e5 = { notes: {}, circles: 0, backsOff: 0, heard: 0, gone: 0, settled: 0, crowded: 0, holds: 0 }); e5.holds++;
   if (live.cr.some(q => q.hb && !q.hide)) { waitTick('patch'); ex.stats.holdLight = (ex.stats.holdLight || 0) + 1; ex.lastHold = { n: 1, why: 'habit' }; return ex.lastHold; }   // while she plays a habit a hold is one beat (W4)
+  const camp = campRest();
+  if (camp) return campHold(camp, () => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sig(), sh0 = ex.shield; waitTick('patch'); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sig() !== sig0, warn: !!S.exp && isWarned(), plate: !!S.exp && ex.shield < sh0 }; }, () => c.ease | 0);
   const r = holdRun(() => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sig(); waitTick('patch'); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sig() !== sig0 }; }, () => c.ease | 0);
   ex.stats.holdLight = (ex.stats.holdLight || 0) + r.n; ex.lastHold = r;
   if (S.exp) fxMsg(WORDS.ease.hold[r.why], 2);
   return r;
+}
+// Rest at camp (rest-at-camp-1): at the flag or a lit outpost, from dawn through the afternoon, a hold runs to the next part's first light; { name, left } or null (dusk, night and away from camp: ten as built)
+function campRest() { return S.exp && !S.exp.ending && canSend() ? restTarget(S.day.spent) : null; }
+const campLabel = (plain, to) => { const c = campRest(); return c ? to(c.name) : plain; };   // the label at camp by day names where the hold runs to
+// a strike warned in the place or on the map cell (marked an action ahead)
+function isWarned() { const ex = S.exp, live = ex.patch ? curLive() : null; return !!((live && live.strike) || ex.mstrike || ex.stray); }
+// the menu's Wait: at camp by day it holds like keeping still, with no wild one to face; each light is one built Wait
+function menuWait(scope) {
+  const ex = S.exp, camp = campRest(); if (!camp) return waitTick(scope);
+  const rainNow = () => { if (!S.exp) return false; const l = S.exp.patch ? curLay() : null; return !!(!(l && l.cave) && stormRain(cxy(S.exp.pos).x)); };
+  const sigNow = () => { const lv = S.exp.patch ? curLive() : null; return lv ? lv.cr.filter(q => ['shake', 'glow', 'full', 'curl', 'hab'].includes(q.st)).map(q => q.id).join(',') : ''; };
+  return campHold(camp, () => { const part0 = dayPart(), rain0 = rainNow(), sig0 = sigNow(), sh0 = ex.shield; waitTick(scope); return { over: !S.exp || S.exp.ending, part: dayPart() !== part0, weather: rainNow() !== rain0, tell: sigNow() !== sig0, warn: !!S.exp && isWarned(), plate: !!S.exp && ex.shield < sh0 }; }, () => 0);
+}
+// A hold at camp is its Waits, run in slices of restSlice while the day bar glides, input locked until it ends (a whole part is 150 Waits: more than 200 ms of one task on a phone, measured in final.md).
+let restSlice = 10;
+function campHold(camp, wait, easeOf) {
+  const ex = S.exp; let total = 0, why = 'ten';
+  const finish = r => { ex.stats.holdLight = (ex.stats.holdLight || 0) + total; why = r.why; ex.lastHold = { n: total, why }; FX.lockUntil = 0; if (S.exp) fxMsg(WORDS.ease.hold[r.why], 2); };
+  const slice = () => {
+    if (S.exp !== ex) { FX.lockUntil = 0; return; }
+    const r = holdRun(wait, easeOf, Math.min(restSlice, camp.left - total)); total += r.n;
+    if (r.why === 'ten' && total < camp.left) { FX.lockUntil = performance.now() + 200; setTimeout(slice, 16); } else finish(r);
+  };
+  slice();
+  return { n: total, why };
 }
 // ---------- W4: habits that play, notes by range, the card line, samples (src/habits.mjs; walk-design-1 W4) ----------
 // A named Loika's habit plays at its haunt when its condition comes in its routine's part of day, after its tell, over four beats: c.hb = { k, n, tell, pose, v (calm: the wary one's id), notes: { front|side: range } }.
@@ -2502,7 +2540,8 @@ const habName = c => (S.named && S.named[c.id]) || (c.ind && c.ind.name) || 'A L
 const hbVisible = (c, X) => !X.away(c) && inSight(c.x, c.y);
 // the card line for a habit: what is still missing (her coat first, then her face; sleep-curled asks no further until the dew ships); null when nothing is left to ask
 const habWant = (id, k) => { const rec = ((S.habits || {})[id] || {})[k]; return wantOf(S.seed, id, k, rec && rec.got); };
-const habCard = (id, k) => { const w = habWant(id, k), nm = WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, WORDS.habit.rooms[w], false) : WORDS.habit.cardKnown(nm); };
+const roomWord = (k, w) => k === 'sleep' && w === 'place' ? WORDS.habit.sleepPlace : WORDS.habit.rooms[w];   // sleep-curled's last line is where she goes at first light
+const habCard = (id, k) => { const w = habWant(id, k), nm = WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, roomWord(k, w), false) : WORDS.habit.cardKnown(nm); };
 // the first habit of hers that still lacks something, as one card line; null when she is fully known
 const habCardNext = c => { for (const k of HABITS) if (habWant(c.id, k)) return habCard(c.id, k); return null; };
 const hbStorm = () => S.exp && S.exp.storm;
@@ -2623,11 +2662,13 @@ function printMark(lay, stand, free) {
 }
 // bug #119: the print's tile is chosen on the ground alone (no one standing there): hauntFree skips the tile the pawn or a creature stands on, so the mark jumped as they moved
 const printFree = lay => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !lay.feats.some(f => f.x === x && f.y === y);
-function printsHere() {
-  const ex = S.exp; if (!ex || !ex.patch) return []; const lay = curLay(); if (lay.cave) return [];
-  const live = curLive(), key = ex.patch.key, part = dayPart(), out = [];
+function printsHere(at) {   // at: a place's key, to read the prints of a place the explorer is not in (the map's turned sign); none given: the place in hand
+  const ex = S.exp; if (!ex || (!ex.patch && !at)) return [];
+  if (at && !(ex.patch && ex.patch.key === at) && !(placeHave(at) && ex.live && ex.live[at])) return [];
+  const here = !at || (ex.patch && ex.patch.key === at), lay = here ? curLay() : layout(at); if (lay.cave) return [];
+  const live = here ? curLive() : ex.live[at], key = at || ex.patch.key, part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
-    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone, DAY.parts)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
 }
 function printsToRead() {
@@ -2635,7 +2676,11 @@ function printsToRead() {
   const hd = habDay();
   return printsHere().find(p => !hd[readKey(p.c.id, p.h)] && cheb(P, p.mark || p.stand) <= 1 && (p.c.gone || p.c.hide || cheb(p.c, p.stand) > 2)) || null;
 }
-const printsLine = p => { const W = WORDS.prints, name = habName(p.c); return p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part]); };
+// night step 4: the dew's prints point; the words name where she went and when (a bed when the part she went at is dusk or night)
+const dewWent = p => { const W = WORDS.prints; return p.to && p.toPart ? W.went(sleepPart(p.toPart) ? W.bed : W.place[p.to.k] || W.placeAny, W.leftAt[p.toPart]) : ''; };
+const printsLine = p => { const W = WORDS.prints, name = habName(p.c); return p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part]) + dewWent(p); };
+// the way the turned sign points: from her print toward where she went, as the nearest of four headings (0 north, 1 east, 2 south, 3 west); null when it does not point
+const dewDir = p => { if (!p.to) return null; const at = p.mark || p.stand, dx = p.to.x - at.x, dy = p.to.y - at.y; return dx || dy ? { h: Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0) } : null; };
 // bug #122: prints already read stay on the ground; ✓ beside them says again when she was there (no light spent), never a Wait
 function printsReadNear() {
   const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
@@ -2654,7 +2699,9 @@ function readPrints(p) {
   }
   // bug #122 (tuft-3): in addition, a tuft of hers lies on the print's tile as an ordinary tuft (Essence pickup); once per Loika; gives no sample
   if (!rec.tuft && !ex.dark) { const at = p.mark || p.stand; rec.tuft = 1; const live = curLive(); live.tf.push({ id: live.fid++, x: at.x, y: at.y }); }
-  fxMsg(printsLine(p) + drop + W.page, 3);
+  let learned = '';   // night step 4: read at her bed in the dew, her prints give where she goes for sleep-curled
+  if (p.to && sleepPart(p.part) && !p.gone) { const sr = habRecord(S.habits || (S.habits = {}), c.id, 'sleep'); if (!sr.got.place) { sr.got.place = 1; learned = ' · ' + WORDS.habit.cardTail(WORDS.habit.sleepPlace, true); } }
+  fxMsg(printsLine(p) + drop + W.page + learned, 3);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
 }
@@ -2717,8 +2764,8 @@ function noteHabit(c) {
   if (h.notes[range]) { fxMsg(W.dup, 2); FX.bumpAt = NOW; return; }   // one note for each range in a play: nothing is spent
   h.notes[range] = range;
   const lay = curLay(), rec = habRecord(S.habits || (S.habits = {}), c.id, k), want = habWant(c.id, k);
-  const r = habNote(rec, range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), want);
-  const said = r.gives.length ? r.gives.map(g => W.rooms[g]).join(' · ') : W.shape[k];
+  const r = habNote(rec, range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), want, byDay());
+  const said = r.gives.length ? r.gives.map(g => roomWord(k, g)).join(' · ') : W.shape[k];
   let tail = '';
   const hd = habDay();
   if (r.first) { if (addMat('d', 1, c.x, c.y)) tail += W.first; }
@@ -2729,7 +2776,7 @@ function noteHabit(c) {
     else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); }
   }
   const filled = want ? rec.got[want] : 0;
-  fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(W.rooms[habWant(c.id, k)], false) : W.cardTail(W.rooms[want], true)) : ''), 3);
+  fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
   ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent });
   waitTick('patch');   // a note spends one light, as a Wait does
 }
@@ -2899,7 +2946,7 @@ function leavePatch() {
 }
 function frontOf(P) { const [dx, dy] = DIRS[P.dir]; return { x: P.x + dx, y: P.y + dy }; }
 // Sight in a place: everything, except inside a fog bank (4 tiles, 6 with a glowing partner along).
-function sightR(lay) { if (lay.cave || !inFog(lay.cell)) return 99; const pt = S.exp.pt; return pt && pt.sp === 1 ? SIGHT_GLOW : SIGHT_FOG; }
+function sightR(lay) { if (lay.cave) return 99; const night = nightNow(); if (!inFog(lay.cell)) return night ? SIGHT_NIGHT : 99; const pt = S.exp.pt, f = pt && pt.sp === 1 ? SIGHT_GLOW : SIGHT_FOG; return night ? Math.min(f, SIGHT_NIGHT) : f; }
 function inSight(x, y) { const P = S.exp.patch, r = sightR(layout(P.key)); return r >= 99 || Math.hypot(x - P.x, y - P.y) <= r + .5; }
 function seenFromPlayer(key, x, y) { return unveiled(key, x, y) && inSight(x, y); }
 function canDig() { const pt = S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === 'dig'; }
@@ -3335,7 +3382,7 @@ function patchAction() {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp) && !o.c.ind) return { label: 'Unknown creature', run: null };
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
-    if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: WORDS.ease.keep, run: () => keepStill(o.c) };
+    if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
     if (!S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };   // a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
@@ -3387,7 +3434,7 @@ function patchAction() {
     return { label: WORDS.press.dim, dim: true, run: () => { FX.bumpAt = NOW; fxMsg(WORDS.press.bump, 2); } };   // [copy]
   }
   const idle = idleAct(P, lay), wild = idle === NOTHING && !fruit ? indInSight() : null;
-  return wild ? { label: NOTHING.label, run: () => keepStill(wild) } : idle;   // walk W3: keeping still with a named Loika in sight is the one act that holds
+  return wild ? { label: campLabel(NOTHING.label, WORDS.ease.keepTo), run: () => keepStill(wild) } : idle;   // walk W3: keeping still with a named Loika in sight is the one act that holds
 }
 // What the facing tile offers a fruit to be pressed on: 'stone' (a storm stone, a stone prop, a cliff face, a cave wall), 'tree' (a trunk, a fruit tree), or null.
 // Never read from T.ROCK: the adapter stamps it on every blocking prop, bush and closed side. The mask is lay.press (1 stone, 2 tree).
@@ -3647,7 +3694,7 @@ function nextDoorFinds(P, lay, reach, cue) {
 // It reports the heart (found, or its tell) and what is still there to take.
 function callPlace() { if (darkRefuse()) return;
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
-  const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = lay.cave ? CALL_R_CAVE : fogged ? (glow ? CALL_R_FOG_GLOW : CALL_R_FOG) : CALL_R;
+  const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = lay.cave ? CALL_R_CAVE : (fogged || nightNow()) ? (glow ? CALL_R_FOG_GLOW : CALL_R_FOG) : CALL_R;   // at night a Call reaches as in a fog bank (night step 4)
   let found = 0; const cue = [];   // the finds this Call lights, for their edge tabs
   for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); cue.push({ x: p.x, y: p.y }); found++; }
   for (const f of lay.feats) {
@@ -4903,8 +4950,8 @@ function stoneArt(lit, cave, fr, warm, small, tall, body) {
   return propPiece(lit ? 'crystals-lit' : 'crystals-dim');   // the cave's crystals: the painted dim and lit pictures
 }
 // The ground shadow under a field stone in the walk (bug #30): art/stone/stone-shadow@48.png, the signed stone squeezed flat by recorded steps (runs/rock-shade-4/make-shadow.py), drawn before the stone, whose own picture is unchanged.
-// Its foot sits STONE_SHADOW_DY below the file's own foot offset: the stone's last 2 art rows hide its top, the lower 2 show under the base. In the storm and at night (rm) it takes the night green #36603a.
-const STONE_SHADOW_DY = 6, STONE_SHADOW_NIGHT = new Map();
+// Its foot sits STONE_SHADOW_DY below the file's own foot offset: the stone's body hides its top, the lower rows show under the base (3, not 6: at 6 the shade sat a row clear of the body and the stone floated, owner bug #126). In the storm and at night (rm) it takes the night green #36603a.
+const STONE_SHADOW_DY = 3, STONE_SHADOW_NIGHT = new Map();
 function stoneShadow(x, y, rm) {
   const p = STONE_PIECES.get('stone-shadow@48'); if (!p) return;
   let c = p.canvas(0);
@@ -5721,6 +5768,23 @@ function ditherFill(x, y, w, h, col, level) {
   for (let ty = Math.floor(y / 64) * 64; ty < y + h; ty += 64) for (let tx = Math.floor(x / 64) * 64; tx < x + w; tx += 64) g.drawImage(cv, tx, ty);
   g.restore();
 }
+// The lamp's circle (night step 4, AD 11-23 18:48): the night ground as it is inside; outside, the same ground under a 62% void dither (the palette's darkest, so darker than the ground; its shapes still there), round by pixel,
+// the dither growing from nothing to 50% over one tile at the rim (no rim line). cx, cy: the lamp on the screen; r: its reach; band: one tile. The overlay is the dither's ink pixels only.
+let LAMP = null;
+function lampCircle(cx, cy, r, band) {
+  const x0 = 0, y0 = VIEW_Y, w = SCR_W, h = VIEW_H, key = Math.round(cx) + ',' + Math.round(cy) + ',' + r;
+  if (!LAMP || LAMP.key !== key) {
+    const cv = LAMP ? LAMP.cv : document.createElement('canvas'); cv.width = w; cv.height = h;
+    const c2 = cv.getContext('2d'), img = c2.createImageData(w, h), u = new Uint32Array(img.data.buffer), hex = HEX[C.void], ink = (255 << 24) | (parseInt(hex.slice(5, 7), 16) << 16) | (parseInt(hex.slice(3, 5), 16) << 8) | parseInt(hex.slice(1, 3), 16);
+    const lx = Math.round(cx), ly = Math.round(cy) - y0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const t = Math.min(1, Math.max(0, (Math.hypot(x + .5 - lx, y + .5 - ly) - (r - band)) / band));
+      if (t > 0 && BAYER[(y & 3) * 4 + (x & 3)] < t * 10) u[y * w + x] = ink;
+    }
+    c2.putImageData(img, 0, 0); LAMP = { key, cv };
+  }
+  g.drawImage(LAMP.cv, x0, y0);
+}
 function clipView() { g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip(); }
 function shakeOff() {
   const a = NOW - FX.hitAt; if (a < 0 || a > 260 || !motion()) return [0, 0];
@@ -5782,6 +5846,7 @@ function mapSigns() {
   const out = new Map(), add = (c, kind, pri, extra) => { let e = out.get(c); if (!e) { e = { c, pri: 0, list: [] }; out.set(c, e); } if (e.list.some(q => q.kind === kind)) return; e.list.push(Object.assign({ kind }, extra || {})); e.pri = Math.max(e.pri, pri); };
   // a found place has nothing hidden left to sign; a located pod shows as a pip, not a sign
   const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
+  if (PAWS_ON_TILE && S.exp) { const k = S.exp.patch ? S.exp.patch.key : String(S.exp.pos), dp = printsHere(k).find(q => dewDir(q)); if (dp) add(+k, 't', 10, { dew: dewDir(dp) }); }   // night step 4: the dew's prints in this place, turned on the map
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
@@ -5803,7 +5868,8 @@ function mapSigns() {
 function signsAt(c) { const e = mapSigns().find(q => q.c === c); return e ? e.list.map(q => q.kind) : []; }
 function drawSign(kind, s, px, py, fr) {
   if (kind === 'pod') { blit(podArt('bone', 1), px + 1, py + 1, s.rm); return; }
-  if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
+  if (kind === 't' && s.dew) { const pb = PAWS_TURNED(s.dew.h); blit(pb, px + ((CELL - pb.w) >> 1), py + ((CELL - pb.h) >> 1), s.rm); }   // night step 4: the dew's prints, turned
+  else if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
   else if (kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
   else if (kind === 'k') blit(ICON.bolt(), px + 13, py + 2, s.rm);
   else if (kind === 'kw') blit(ICON.boltHollow(), px + 11, py + 1);
@@ -6205,6 +6271,10 @@ function drawMap(mode, t) {
     // the trail is no longer drawn (its data stays for the world turn); the start shows a flag
     const s0 = cxy(ex.start); blit(ICON.flag(), ox + s0.x * CELL + 7, oy + s0.y * CELL + 2);
   }
+  // night step 4: on the map at night only your own cell, the flag and the lit outposts show (the night veil over every other cell), a lamp dot for the flag and each lit outpost; nothing new is found from afar
+  if (ex && nightNow()) { const lamps = new Set([ex.start, ...[...depotCells(S.seed)].filter(depotLit)]), keep = new Set([ex.pos, ...lamps]);
+    for (let c = 0; c < MW * MH; c++) { if (keep.has(c)) continue; const p = cxy(c); R(ox + p.x * CELL, oy + p.y * CELL, CELL, CELL, C.night); }
+    for (const c of lamps) { const p = cxy(c); R(ox + p.x * CELL + CELL - 8, oy + p.y * CELL + 3, 4, 4, C.yellow); } }
   for (const pin of S.pins) if (pin.k === 'own') { const p = cxy(pin.c); blit(ICON.pin(), ox + p.x * CELL + 5, oy + p.y * CELL - 2); }
   // the Probe's range: a dotted square around the start
   // (call-probe-marks-1, owner #64) while picking the start, the same square round the chosen cell, moving with it; its size is the range the expedition would have (the tier, and a rambler's extra ring)
@@ -6609,6 +6679,7 @@ function drawPatchBody(t) {
   const lightAt = lay.cave ? caveLight(lay, live, P) : null;
   // fog bank: sight is 4 tiles (6 with a glowing partner); beyond it the land takes the fog table and nothing else shows
   const sight = sightR(lay), inS = (x, y) => sight >= 99 || Math.hypot(x - P.x, y - P.y) <= sight + .5;
+  const lampDark = !lay.cave && nightNow();   // night step 4: beyond the lamp the ground takes the night veil (the cave light's method outdoors: the veil's 4x4 dither edge)
   const pu = FX.pulse && FX.pulse.key === P.key && FX.pulse.lifted && motion() && NOW - FX.pulse.at < CALL_MS ? FX.pulse : null, puR = pu ? pu.r * (NOW - pu.at) / CALL_MS : 0;
   const shown = (x, y) => unveiled(P.key, x, y) && !(pu && pu.lifted.has(y * lay.w + x) && (x - pu.x) ** 2 + (y - pu.y) ** 2 > (puR + .5) ** 2);
   const see = (x, y) => inS(x, y) && shown(x, y);   // the veil hides what stands on a tile until a Call
@@ -6688,6 +6759,7 @@ function drawPatchBody(t) {
       if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
     g.drawImage(tileFor(i, L0 === 3).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
+  if (lampDark) lampCircle(RT.plScr.x, RT.plScr.y, (SIGHT_NIGHT + .5) * ts, ts);   // night step 4: the lamp's circle over the ground, before the creatures
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
   for (const f of lay.feats) {
@@ -6737,7 +6809,7 @@ function drawPatchBody(t) {
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (the AD's note on PR 489: it read as a lilac gem)
   // W4 round 2: her prints at a haunt she has left, the built paw sign on the stand tile (a new placement: the art director passes it in whole-place stills; the slot is named PAWS-ON-TILE)
-  if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => blit(PAWS(), SX(x) + ((ts - 16) >> 1), SY(y) + ((ts - 15) >> 1), findRm(p.mark.x, p.mark.y)) }); }
+  if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => { const dd = dewDir(p), pb = dd ? PAWS_TURNED(dd.h) : PAWS(); blit(pb, SX(x) + ((ts - pb.w) >> 1), SY(y) + ((ts - pb.h) >> 1), findRm(p.mark.x, p.mark.y)); } }); }
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
@@ -7332,6 +7404,9 @@ const SHELTER_ROWS = [
 ];
 const SHELTER = () => art('sg-shelter', () => { const pb = new PB(32, 32); SHELTER_ROWS.forEach((r, y) => { for (let x = 0; x < 32; x++) if (r[x] !== '.') pb.set(x, y, r.charCodeAt(x) - 48); }); return pb; });
 const PAWS = () => art('sg-paws', () => { const pb = new PB(16, 15); pb.blit(ICON.paw('bone'), 0, 6); pb.blit(ICON.paw('bone'), 7, 0); return pb; });
+// night step 4: the same signed sign turned the way she left (the dew's prints; a new drawing of a signed picture, on the art director's list): its own pixels turned in quarter turns, toes toward where she went (0 north: as built, 1 east, 2 south, 3 west)
+const rotPB = (pb, k) => { let o = pb; for (let i = 0; i < k; i++) { const n = new PB(o.h, o.w); for (let y = 0; y < o.h; y++) for (let x = 0; x < o.w; x++) n.p[x * n.w + (o.h - 1 - y)] = o.p[y * o.w + x]; o = n; } return o; };
+const PAWS_TURNED = h => h ? art('sg-paws-t' + h, () => rotPB(PAWS(), h)) : PAWS();
 const sgSp = sp => Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? sp : 0;
 // Is the tile (x, y) inside the place view when the player stands on P? (the camera clamps at the place's edges)
 function tileInView(px, py, x, y) {
@@ -7656,8 +7731,8 @@ function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
-  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz)]).concat(base);
-  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
+  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)]).concat(base);
+  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'sealed' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   if (from === 'setup' && !S.exp) return (openAlone() ? [] : [{ id: 'mibis', label: 'Mibis' }]).concat([{ id: 'worldmap', label: 'Full map' }, { id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
@@ -8482,10 +8557,10 @@ function act(k, mode) {
       break;
     case 'menu': { const items = menuItems(), n = items.length; if (k !== 'confirm') S.ui.nwArm = 0;
       // while waiting the menu is folded to the bottom strip: Confirm waits again, Back or the pad bring the full menu back
-      if (S.ui.waiting) { if (k === 'confirm') { waitTick(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; } else S.ui.waiting = 0; break; }
+      if (S.ui.waiting) { if (k === 'confirm') { menuWait(S.ui.from); if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; } else S.ui.waiting = 0; break; }
       if (k === 'up' || k === 'down') { const d = k === 'up' ? n - 1 : 1; do S.ui.menuSel = (S.ui.menuSel + d) % n; while (items[S.ui.menuSel].dis); }   // a dimmed row keeps its place but focus skips it
       else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
-        if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
+        if (id === 'wait') { menuWait(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'look') { S.phase = 'patch'; startView('look', curLay()); }   // Look over the place: spends no action; ← closes
         else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
