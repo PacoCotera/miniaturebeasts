@@ -7973,14 +7973,14 @@ function logDays() {
   return days.sort((a, b) => a.d - b.d);
 }
 // A row's heading: 'T9 · morning · the Meadow' (an old record with no turn: 'morning · the Meadow'). Too wide for the page (x 68..430): turn and part stay on the line, the place wraps to the next.
-function logHead(r) {
+function logHead(r, maxW) {   // maxW: 360 (x 68..430), 288 on a row with a picture at its right edge (the same width as its lines)
   const full = WORDS.book.head(r.part, r.t, r.place);
-  if (textW(full, 2) <= 360) return [full];
+  if (textW(full, 2) <= maxW) return [full];
   const pl = WORDS.book.place(r.place);
-  return [full.slice(0, full.length - pl.length).replace(/ · $/, ''), ...wrapText(pl, 360, 2)];
+  return [full.slice(0, full.length - pl.length).replace(/ · $/, ''), ...wrapText(pl, maxW, 2)];
 }
 function logLay(r) {
-  const pic = r.kind === 'prints' || r.kind === 'met' || (r.kind === 'find' && r.item === 'tuft'), ls = wrapText(r.text, pic ? 288 : 362, 2).slice(0, 3), hd = logHead(r);
+  const pic = r.kind === 'prints' || r.kind === 'met' || (r.kind === 'find' && r.item === 'tuft'), ls = wrapText(r.text, pic ? 288 : 362, 2).slice(0, 3), hd = logHead(r, pic ? 288 : 360);
   return { r, pic, ls, hd, h: 48 + 24 * (ls.length + hd.length - 1) };
 }
 function logFitTop(day) { let y = 0, i = day.rows.length; while (i > 0) { const h = logLay(day.rows[i - 1]).h; if (y + h > LOG_Y1 - LOG_Y0) break; y += h; i--; } return i; }

@@ -39,7 +39,9 @@ test("a record with no turn keeps today's heading; a long place wraps under turn
   const lay = plain(f.run("logLay({ kind: 'prints', part: 'afternoon', t: 12, place: 'Old Flooded Rock Garden of the Quiet Beasts', text: 'a' })"));
   assert.equal(lay.hd[0], "T12 · afternoon");
   assert.ok(lay.hd.length >= 2 && lay.hd.slice(1).join(" ") === "the Old Flooded Rock Garden of the Quiet Beasts");
-  for (const l of lay.hd) assert.ok(f.run(`textW(${JSON.stringify(l)}, 2)`) <= 360, "fits x 68..430: " + l);
+  for (const l of lay.hd) assert.ok(f.run(`textW(${JSON.stringify(l)}, 2)`) <= 288, "fits x 68..356, clear of the row's picture: " + l);
+  const plain2 = plain(f.run("logLay({ kind: 'habit', part: 'afternoon', t: 12, place: 'Old Flooded Rock Garden of the Quiet Beasts', text: 'a' })"));
+  for (const l of plain2.hd) assert.ok(f.run(`textW(${JSON.stringify(l)}, 2)`) <= 360, "fits x 68..430: " + l);
   assert.equal(lay.h, 48 + 24 * (lay.ls.length + lay.hd.length - 1), "row height grows with the heading");
 });
 
