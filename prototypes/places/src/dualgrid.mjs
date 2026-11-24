@@ -122,7 +122,10 @@ export function terrainLayers(level, terrains, layers, tone = null) {
       const onTop = pathOnTop && T === grass ? d.kinds.findIndex((k) => k.kind === 'flat-top') : -1;
       // bug #148: the cliff rim where every raised corner is a trail's top (the lip of a gap): its raised quadrants are the path, so the trail runs on into the gap
       const rimTop = cliff && T === cliff.value && pathTopAs !== undefined && cs.some((c, k) => c === cliff.value && gs[k] === pathTopAs) && cs.every((c, k) => c !== cliff.value || gs[k] === pathTopAs) ? d.kinds.findIndex((k) => k.kind === 'path-top') : -1;
-      const kind = rimTop >= 0 ? rimTop : onTop >= 0 ? onTop : mixed >= 0 ? mixed : d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
+      // bug #148 (lip): the same rim where the two raised corners are the top row of the tile and one is the trail's top, the other the grass top: the half-trail piece (-w: grass on the west)
+      const lipKind = cliff && T === cliff.value && pathTopAs !== undefined && mask === (NW | NE) && cs[0] === cliff.value && cs[1] === cliff.value && (gs[0] === pathTopAs) !== (gs[1] === pathTopAs)
+        ? d.kinds.findIndex((k) => k.kind === (gs[1] === pathTopAs ? 'lip-w' : 'lip-e')) : -1;
+      const kind = lipKind >= 0 ? lipKind : rimTop >= 0 ? rimTop : onTop >= 0 ? onTop : mixed >= 0 ? mixed : d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
       layerOf(T)[idx] = KIND_STRIDE * kind + mask;
     }
     if (toneLayer) {
