@@ -81,6 +81,12 @@ test("cover and sight: a prop or a raised edge between you blocks sight, so the 
   assert.equal(los(blocked, { x: HER.x + 3, y: HER.y + 4 }, HER), true, "round the prop");
 });
 
+test("heard is round like the drawn ring: a straight step at the carry is heard, a diagonal outside the circle is not", () => {
+  const e = env("N", "open"), v = carryAt(e, HER, HER.x, HER.y + 4, "creep", 0).v;
+  assert.equal(heardAt(e, HER, HER.x, HER.y + v, "creep", 0), true, "straight at the carry");
+  assert.equal(heardAt(e, HER, HER.x + v, HER.y + v, "creep", 0), false, "the corner of the square is outside the circle");
+});
+
 test("wind: per land per part of day from the seed, steady through a part, deterministic, four ways", () => {
   for (const seed of SEEDS) for (const land of [0, 5, 77]) {
     const row = DAY.parts.map(([n]) => windOf(seed, land, n));
