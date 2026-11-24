@@ -3709,8 +3709,8 @@ function offer(c) { if (darkRefuse()) return;
 // (S.veilPre[key], one bit per tile as S.veil) because S.veil's presence means "been in this place" to the map; takeCallVeil merges them when the player enters (walkLift and checkWalked
 // then run as usual, so "explored" counts them). Needs no layout: a place not made yet is taken to be this place's size, as nextDoorFinds does.
 function nextDoorVeil(P, lay, reach) {
-  const ex = S.exp; if (!ex || !ex.reach || lay.cave) return;
-  const c = cxy(lay.cell); S.veilPre = S.veilPre || {};
+  const ex = S.exp; if (!ex || !ex.reach || lay.cave) return false;
+  const c = cxy(lay.cell); S.veilPre = S.veilPre || {}; let reached = false;   // returns whether the circle lifted anything next door (the message line says so)
   for (const [dx, dy] of PEEK_DIRS) {
     const X = c.x + dx, Y = c.y + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
     const nc = Y * MW + X;
@@ -3722,8 +3722,9 @@ function nextDoorVeil(P, lay, reach) {
     let any = false;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inCall(P, x + ox, y + oy, reach)) { v[y] = (v[y] | (1 << x)) >>> 0; any = true; }
     if (any && !S.veil[nk]) S.veilPre[nk] = v;   // nothing is kept for a place the circle does not touch
-    if (any) revealCell(nc);   // the lifted cells show only on a revealed map cell (the hold view draws an unrevealed one as fog): reveal it (owner #97)
+    if (any) { revealCell(nc); reached = true; }   // the lifted cells show only on a revealed map cell (the hold view draws an unrevealed one as fog): reveal it (owner #97)
   }
+  return reached;
 }
 function takeCallVeil(key, lay) {
   const pre = S.veilPre && S.veilPre[key]; if (!pre) return;
@@ -3759,8 +3760,9 @@ function callPlace() { if (darkRefuse()) return;
     if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'g' && !burrowOpen()) fxGlint(f.x, f.y, 350);
   }
-  if (!lay.cave) nextDoorVeil(P, lay, reach);   // and lifts the veil of the strip it covers there (the finds below read it)
-  if (!lay.cave) found += nextDoorFinds(P, lay, reach, cue);   // the wave goes on past the place's edge, cut only by the Probe's reach (owner #49)
+  let nextDoor = false, nextFound = 0;
+  if (!lay.cave) nextDoor = nextDoorVeil(P, lay, reach);   // and lifts the veil of the strip it covers there (the finds below read it)
+  if (!lay.cave) { nextFound = nextDoorFinds(P, lay, reach, cue); found += nextFound; }   // the wave goes on past the place's edge, cut only by the Probe's reach (owner #49)
   let lifted = null;
   if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); checkWalked(); }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
@@ -3777,7 +3779,7 @@ function callPlace() { if (darkRefuse()) return;
     const lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
     if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
     for (const q of S.pods) if (q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y)) q.out = 1;   // announced pods keep the dotted outline until taken
-    { const rep = callReport(lay, P); if (rep) fxMsg(rep, found ? 1 : 2); }
+    { const rep = nextDoor ? WORDS.callNextDoor(nextFound) : callReport(lay, P); if (rep) fxMsg(rep, found ? 1 : 2); }   // a Call that reached next door says so (editor 11-24, #143)
   }
   if (digNow && !ex.ending) dig();
 }
@@ -8913,14 +8915,7 @@ function peekStart() {
 }
 function peekEnd() { clearTimeout(peek.timer); peek.timer = null; if (peek.on && RT.view && RT.view.kind === 'peek') RT.view = null; peek.on = false; }
 // A quick press of Call is the Call only; the whole-place view opens only on a long press (owner 2026-11-20: "if i quick press C, it takes me to the zoomed out map, that should only happen with a long press").
-// The one exception is a Call on a place's edge tile (owner #91, #136): it shows the land next door for TAP_PEEK_MS (corner: every side), then it ends by itself; any key ends it at once and acts as usual.
-const TAP_PEEK_MS = 1500;   // [tune]
-function tapPeekAtEdge() {
-  const P = S && S.phase === 'patch' && S.exp && S.exp.patch; if (!P || RT.view || !peekable()) return;
-  const lay = layout(P.key); if (lay.cave) return;
-  if (P.x > 0 && P.y > 0 && P.x < lay.w - 1 && P.y < lay.h - 1) return;
-  RT.view = { kind: 'peek', key: P.key, at: performance.now(), until: performance.now() + TAP_PEEK_MS };
-}
+// No exception: a short Call is ALWAYS a Call, on every tile, edge or not (owner #143: "hero position has nothing to do with the behavior of a call"); the zoom-out is the long press, always.
 // The edge peek (bug #58): an arrow held PANPEEK_WAIT ms against a step that is refused slides the view that way, as far as the call-hold view reaches (the place and half of the
 // neighbour), holds while the key is held, and eases back on release. Free: nothing in S changes, no turn passes, the pawn stays on its tile, the veil is never lifted
 // (the neighbours draw as the call-hold draws them, veiled as they stand). Another key ends it, then acts as usual. Reduced motion: a cut out and a cut back.
@@ -8983,7 +8978,7 @@ function press(k) {
   } else act(k);
 }
 function release(k) {
-  if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) { act('call'); tapPeekAtEdge(); } return; }   // a short press: Call, fired on release
+  if (k === 'call' && peek.held) { const was = peek.on; peek.held = false; peekEnd(); if (!was) act('call'); return; }   // a short press: Call, fired on release
   if (repeat.dir === k) stopRepeat();
   if (PAN.dir === k) panEnd();
 }
