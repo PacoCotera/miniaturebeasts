@@ -1794,6 +1794,13 @@
    "sha256": "dbcdf60d2e080fd3963d3d2b9e63cb4db97a286e6dd5e992af021cf0709ca158"
   },
   {
+   "class": "recolour-of-signed",
+   "date": "2026-11-24",
+   "id": "7baef4e497",
+   "path": "art/places/sets/ninja-test/over-cliff-path-top.png",
+   "sha256": "31f4764984bb504b58a87b114a852fce6179a27b6c57199ae466398ee4454652"
+  },
+  {
    "class": "derivative",
    "date": "2026-11-20",
    "id": "0cb34d8979",
