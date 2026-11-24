@@ -18,18 +18,19 @@ export const rangeOf = d => d > 5 ? 'far' : d >= 3 ? 'mid' : 'near';
 export const RANK = Object.freeze({ far: 0, mid: 1, near: 2 });
 // the tell comes a few actions before the habit; its length is the individual's: 2 to 4 (a wary one waits longer, a steady one is slower to start)
 export const tellOf = doings => 2 + (doings && doings.wary >= .5 ? 1 : 0) + (doings && doings.drive < 1 ? 1 : 0);
-// clear air is weather only: no rain, no fog. Nothing in W4 turns on dusk (no dusk rule ships before its picture; walk-design slip W8)
+// clear air is weather only: no rain, no fog; the hour is tested apart (givesAt's byDay)
 export const clearAir = ({ raining, fog }) => !raining && !fog;
 // what a note gives by range (the range rule 3A, with the mid clause out): far where she goes in clear air, else the shape only; mid her coat, in any air; near her face, all four beats and the keepsake
-export function givesAt(range, clear) {
-  if (range === 'far') return clear ? ['place'] : [];
+// byDay: false from dusk on (night step 4: a far note's "where she goes" is a clear-air, by-day note; her leave has not happened yet at dusk). The hour is its own test, clear air stays weather only.
+export function givesAt(range, clear, byDay = true) {
+  if (range === 'far') return clear && byDay ? ['place'] : [];
   if (range === 'mid') return ['coat'];
   return ['face'];
 }
 // the card line for a habit (the range rule 3B, slip W5): what is still missing, the first want for a wild one being her coat, then her face, then where she goes.
-// Sleep-curled's card asks her coat or her face only until the dew ships (where she goes at first light is the dew's prints, which come with the dusk and dawn pictures). null when nothing is left to ask.
+// Sleep-curled's last line is where she goes at first light, which the dew's prints at her bed give in the morning (night step 4). null when nothing is left to ask.
 export function wantOf(seed, id, k, got) {
-  const left = WANTS.filter(w => !(got && got[w]) && !(k === 'sleep' && w === 'place'));
+  const left = WANTS.filter(w => !(got && got[w]));
   return left.length ? ['coat', 'face', 'place'].find(w => left.includes(w)) : null;
 }
 
@@ -38,12 +39,18 @@ export function wantOf(seed, id, k, got) {
 // the haunts she kept earlier today and has moved on from, last night's and yesterday's while the dew's morning lasts, and the haunt she bolted from.
 export const PARTS = Object.freeze(['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night']);
 const sameSite = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y;
+// The dew lies from the start of dusk to the end of the morning (parts: DAY.parts, [name, length]; read from the table, never typed).
+export function dewLies(part, parts) {
+  const names = parts.map(p => p[0]), i = names.indexOf(part);
+  return i >= names.indexOf('dusk') || i <= names.indexOf('morning');
+}
 // hs: her haunts; doings: her individual's; part: now; gone: she has bolted. Returns [{ h, part, yday, gone }], the latest leave of each haunt first.
-export function leftHaunts(hs, doings, part, gone) {
+// parts (optional): DAY.parts; with it each entry also says `to`: the haunt she went to, when the print was made in the dew and still lies in it (the dew's prints point); null by dry day or after a bolt.
+export function leftHaunts(hs, doings, part, gone, parts) {
   if (!hs) return [];
-  const now = PARTS.indexOf(part), at = p => hauntOf(hs, doings, p), cur = at(part), out = [];
-  const add = (h, p, yday) => { if (h && !sameSite(h, cur) && !out.some(q => sameSite(q.h, h))) out.push({ h, part: p, yday, gone: false }); };
-  if (gone && cur) out.push({ h: cur, part, yday: false, gone: true });   // she bolted: the haunt she was keeping is the one she left
+  const now = PARTS.indexOf(part), at = p => hauntOf(hs, doings, p), cur = at(part), out = [], dewNow = !!parts && dewLies(part, parts);
+  const add = (h, p, yday) => { if (h && !sameSite(h, cur) && !out.some(q => sameSite(q.h, h))) { const nx = PARTS[(PARTS.indexOf(p) + 1) % PARTS.length], to = dewNow && dewLies(nx, parts) ? at(nx) : null; out.push({ h, part: p, yday, gone: false, to: to && !sameSite(to, h) ? to : null, toPart: to && !sameSite(to, h) ? nx : null }); } };
+  if (gone && cur) out.push({ h: cur, part, yday: false, gone: true, to: null });   // she bolted: the haunt she was keeping is the one she left
   for (let i = now - 1; i >= 0; i--) if (!sameSite(at(PARTS[i]), at(PARTS[i + 1]))) add(at(PARTS[i]), PARTS[i], false);
   if (now <= 1) for (let i = PARTS.length - 1; i >= 3; i--) if (!sameSite(at(PARTS[i]), at(PARTS[(i + 1) % PARTS.length]))) add(at(PARTS[i]), PARTS[i], true);   // until the end of the next morning: yesterday's afternoon, dusk and night
   return out;
@@ -77,8 +84,8 @@ export const sleepPart = part => part === 'dusk' || part === 'night';
 export const blank = () => ({ ranges: {}, got: {}, best: null, plays: 0, sample: null, sights: 0 });
 export function record(H, id, k) { const o = H[id] || (H[id] = {}); return o[k] || (o[k] = blank()); }
 // a note taken: returns what it gave, whether it was the habit's first, and whether the card's wanted thing is filled
-export function noteIn(rec, range, clear, want) {
-  const first = !Object.keys(rec.ranges).length, gives = givesAt(range, clear), newly = gives.filter(g => !rec.got[g]);
+export function noteIn(rec, range, clear, want, byDay = true) {
+  const first = !Object.keys(rec.ranges).length, gives = givesAt(range, clear, byDay), newly = gives.filter(g => !rec.got[g]);
   rec.ranges[range] = (rec.ranges[range] || 0) + 1;
   if (!rec.best || RANK[range] > RANK[rec.best]) rec.best = range;
   for (const g of gives) rec.got[g] = 1;
