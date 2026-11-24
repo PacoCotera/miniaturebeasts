@@ -249,7 +249,7 @@ import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/w
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, FOG_BAND_PX, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { readPixels } from "./src/pngdecode.mjs";
 // Every exact-colour read of a picture goes through the file's own bytes (src/pngdecode.mjs), never a canvas read-back a browser may colour-manage or farble (bug 68).
@@ -6471,6 +6471,12 @@ function veilEdgeTile(pbKey, pb, L, mask) {
 // SE, S, SW, W, NW).
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
 // A 48 px edge canvas: each opaque pixel through near(c, x, y) or far(c, x, y), by the coverage of mask m9 (or by pick for the storm step).
+let FOGBAND_CV = null;
+function fogBandTile(pb, pick, near, far) { const cv = FOGBAND_CV || (FOGBAND_CV = document.createElement('canvas')); cv.width = cv.height = 48;
+  const cg = cv.getContext('2d'), id = cg.createImageData(48, 48), u = new Uint32Array(id.data.buffer);
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const o = y * 48 + x, c = pb.p[o]; if (c < 0) continue;
+    const q = RGB[pick(x, y) ? far(c, x, y) : near(c, x, y)]; u[o] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
+  cg.putImageData(id, 0, 0); return cv; }
 function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; let cv = EDGE_TILE.get(k); if (cv) return cv;
   cv = document.createElement('canvas'); cv.width = cv.height = 48;
   const cg = cv.getContext('2d'), id = cg.createImageData(48, 48), u = new Uint32Array(id.data.buffer);
@@ -6787,7 +6793,9 @@ function drawPatchBody(t) {
     if (darkW && bandOn) { const px = tx * ts + (ts >> 1), py = ty * ts + (ts >> 1), sx = W(px), ds = darkLeft ? sx : SCR_W - 1 - sx;   // a sprite takes the table of the pixel it stands on (the soft edge, #149)
       return stormBandHit(ds, py, px, darkW, stormSeed) ? stormGrade(clockLv) : clockLv; }
     if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
-  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
+  // the fog sight's soft edge (#153), baked places at 48: drawn per world pixel from the true sight radius, so every in-sight tile centre stays clear; the rule (inS) is unchanged
+  const fogBk = bakedView(lay), fogEdge = fogged && !lightAt && sight < 99 && ts === 48 ? { cx: (P.x - (fogBk ? fogBk.ox : 0)) * 48 + 24, cy: (P.y - (fogBk ? fogBk.oy : 0)) * 48 + 24, r: Math.round((sight + .5) * 48), seed: Math.imul(lay.cell, 2654435761) } : null, fogOx = fogBk ? fogBk.ox : 0, fogOy = fogBk ? fogBk.oy : 0;
+  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) { if (fogEdge) return fogBandHit((tx - fogOx) * 48 + 24, (ty - fogOy) * 48 + 24, fogEdge) ? 3 : clearLight(tx, ty); return 3; } return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : clockLv;
   const findRm = (x, y) => lightAt ? lightAt(x, y) : bakedView(lay) ? clearLight(x, y) : clockLv;   // things to act on (finds, marks, fruit, pods) take the world's storm grade, not a pasted full-colour sprite
@@ -6818,7 +6826,7 @@ function drawPatchBody(t) {
   if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
   if (bk) { hazeSync(lay); const vp = veilPlanOf(lay); bk.setVeil(vp && vp.plan, vp ? vp.id : ''); }   // the edge veil: the coast and the sides past the Probe's reach
   if (bk) { const lfns = { veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => bandOn ? clockLv : clearLight(x, y) }; RT.frontFns = Object.assign({ key: lay.key }, lfns);   // water-edge-7: the front beside the place takes this same light (its veil dither) and the edge veil's cloud shadow
-    const ls = bk.lightFor(lfns, lay.key); ls.storm = bandOn ? { darkW, left: darkLeft, seed: stormSeed, level: stormGrade(clockLv) } : null;   // the soft edge: per pixel, in the ground's light pass
+    const ls = bk.lightFor(lfns, lay.key); ls.storm = bandOn ? { darkW, left: darkLeft, seed: stormSeed, level: stormGrade(clockLv) } : null; ls.fogEdge = fogEdge;   // the soft edge: per pixel, in the ground's light pass
     bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, ls); }
   if (bk && lay.rim && lay.rim.length && ART48.ready) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are; one blit of the cached picture
     const cv = rimCanvas(lay, fr, tileLight, uvAt), x0 = Math.max(0, r.tx0), y0 = Math.max(0, r.ty0), x1 = Math.min(lay.w - 1, r.tx1), y1 = Math.min(lay.h - 1, r.ty1);
@@ -6839,7 +6847,10 @@ function drawPatchBody(t) {
     const L0 = tileLight(tx, ty), i = ty * lay.w + tx, uv = uvAt(tx, ty);
     if (ts === 48) {   // coverage fades for the fog and the veil, the 6 px storm step beside the band
       const pb = tileFor(i), key = keyFor(i), set = RT.remap;
-      if (fogged) { const fb = blockE(fogE, tx, ty);
+      if (fogEdge) { const dc = Math.hypot((tx - fogOx) * 48 + 24 - fogEdge.cx, (ty - fogOy) * 48 + 24 - fogEdge.cy);   // the fog sight's soft edge (#153): per world pixel, no cache (it moves with the hero)
+        if (dc + 34 >= fogEdge.r && dc - 34 <= fogEdge.r + 48 + FOG_BAND_PX) { const nl = clearLight(tx, ty), lcm = set[nl];
+          g.drawImage(fogBandTile(pb, (x, y) => fogBandHit((tx - fogOx) * 48 + x, (ty - fogOy) * 48 + y, fogEdge), (c, x, y) => { const lc = lcm ? lcm[c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
+      if (fogged && !fogEdge) { const fb = blockE(fogE, tx, ty);
         if (fb) { const nl = clearLight(tx, ty), f = pickE(fb.ms);
           g.drawImage(edge48('F' + key + '|' + fb.key + '|' + nl + (uv ? '' : 'v'), pb, f, (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
       if (L0 !== 3) { const vb = blockE(veilE, tx, ty);
