@@ -174,6 +174,9 @@ export function deskLayers() {
       over: [
         { kind: 'bank', lowers: ['deep', 'water'], sheets: [signedSheet('over-grass-bank.png', `${MEADOW1.dir}/layers/grass-over.png`)] },
         { kind: 'flat', lowers: ['earth', 'sand', 'mud', 'path'], sheets: [rec({ commit: 'local' }, 'over-grass-flat.png', `${MEADOW2.dir}/layers/grass-flat.png (slots 3, 5 and 7 redrawn by hand, bug #116, signed by the art director, mibi-art ledger 35c04f589; the set folder's own file, never re-read from the desk's older one)`, readFileSync(path.join(SET_DIR, 'over-grass-flat.png')))] },
+        // bug #131: the brown bank's end where water meets sand under grass (one paid paint, bank-end-1 raw bank-end-a.png; the east piece is its flip; the chains are in <name>.steps.json)
+        { kind: 'bank-end-w', late: true, lowers: [], mix: { sw: ['deep', 'water'], se: ['sand'] }, sheets: [signedSheet('over-grass-bank-end-w.png', 'bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image)')] },
+        { kind: 'bank-end-e', late: true, lowers: [], mix: { sw: ['sand'], se: ['deep', 'water'] }, sheets: [signedSheet('over-grass-bank-end-e.png', 'bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image), flipped')] },
       ],
     },
     // the biome grounds, each a flat patch over the grass (and the other low ground)

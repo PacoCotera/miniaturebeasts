@@ -1823,6 +1823,20 @@
   },
   {
    "class": "paint",
+   "date": "2026-11-24",
+   "id": "f87c5ddfd0",
+   "path": "art/places/sets/ninja-test/over-grass-bank-end-e.png",
+   "sha256": "92e837b1c29aacc66b607f5836867cd93a1c556f1450ad5f3620b84f642d9bb3"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "8ebfb2f8f8",
+   "path": "art/places/sets/ninja-test/over-grass-bank-end-w.png",
+   "sha256": "bdbb294bc0da5693492c6b4041ee4f1013059e0f619eebae8ba256375c85668f"
+  },
+  {
+   "class": "paint",
    "date": "2026-11-19",
    "id": "9c3911b0ae",
    "path": "art/places/sets/ninja-test/over-grass-bank.png",
@@ -2688,6 +2702,41 @@
    "id": "edfc9f6745",
    "path": "art/station-masters/home-hand/slices/heart-full-24.png",
    "sha256": "d1d035c63eb20684869b922bdbe38209c26e81810ceafb2d50eb2f97143f93e7"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "db4abfb44f",
+   "path": "book/art/layers/stands/lehten-master.png",
+   "sha256": "b1bf31a016c5c471849380e36a4bfa0648361d4f974674e7347cadf0901afc68"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "cbc27e02a3",
+   "path": "book/art/lehten-plate/lehten-plate-a-placed.png",
+   "sha256": "e5f92af7023c7dd48af233ae213e495d863f650034ae376734d9c94933a61a45"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "d2d5188bc7",
+   "path": "book/scribus/img/art/cut150-lehten.png",
+   "sha256": "3c54650323934559009c786d3694f6b4f47ed1ae01e0e5f39d8c8cde6f849619"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "87012d5ac1",
+   "path": "book/scribus/img/art/face174-lehten.png",
+   "sha256": "a6c26355b237caafd8d125b8d6002899df8073d38280213078b7e5e1a32542d6"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "e357f60928",
+   "path": "book/scribus/img/art/stand-lehten.png",
+   "sha256": "774852301d841343175fe8e2600f48b261702faecf870a4ba36211bd4090467f"
   },
   {
    "class": "pixel",
@@ -17192,6 +17241,13 @@
    "id": "556e25425b",
    "path": "website/assets/plate-lehten-720.webp",
    "sha256": "615194770d04884f4447f66924b9fe5f0f6f2dcb5d428fe05575c7b65d9dafac"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "d8ce2afabe",
+   "path": "website/assets/plate-lehten-720.webp",
+   "sha256": "e06ce1905449453a3bdab68e3cd7595ee4e80263e0285c5b10ef4aa2e4f046f7"
   },
   {
    "class": "cut-of-signed",

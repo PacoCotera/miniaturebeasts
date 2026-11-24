@@ -90,6 +90,8 @@ test("a short phone upright (Safari with its bars): the Companion is drawn whole
   // where the height is enough nothing changes: the width's fit, the screen at full height, as before
   // (play-scale-1: the width's fit rounded down to a whole number of device pixels per lp, centred in the panel)
   for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }), z = p.scale * 3; assert.ok(Math.abs(z - Math.round(z)) < 1e-9 && z === Math.floor((W - 72) / 450 * 3 + 1e-6), `${W}×${H}: the width's fit as a whole multiple of device pixels`); }
+  // bug 134: a fit just under a whole multiple (1.98 at 412 wide, dpr 2.625) takes the multiple, not one device pixel per lp
+  for (const [W, H, dpr] of [[412, 915, 2.625], [411, 914, 2.625], [393, 851, 2.75]]) { const p = plan({ W, H, dpr, coarse: true, dev: "companion" }); assert.ok(Math.abs(p.scale * dpr - 2) < 1e-9 && Math.abs(p.screen.w - 450 * p.scale) < 1e-6, `${W}×${H} ×${dpr}: two device pixels per lp, the whole screen`); }
   for (const dpr of [2, 3]) for (const [W, H] of [[390, 844], [522, 935], [360, 740]]) { const p = plan({ W, H, dpr, coarse: true, dev: "companion" }), z = p.scale * dpr; assert.ok(Math.abs(z - Math.round(z)) < 1e-9, `${W}×${H} ×${dpr}: a whole multiple`); }
   // the smaller the window the smaller the Companion, never the keys
   let last = 1; for (let H = 800; H >= 480; H -= 20) { const p = plan({ W: 375, H, dpr: 3, coarse: true, dev: "companion" }); assert.ok(p.scale <= last + 1e-9 && p.a === 44, `375×${H}: the scale only shrinks, the keys stay at their signed size`); last = p.scale; }

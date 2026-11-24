@@ -163,7 +163,7 @@ test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.j
   assert.equal(d.layers.get(v('scrub')).kinds[0].rows.variants.length, 3);
   assert.equal(d.layers.get(v('scrub')).kinds[0].fullCount, 4);
   assert.equal(d.layers.get(v('mud')).fillCount, 5);
-  assert.deepEqual(d.layers.get(v('grass')).kinds.map((k) => k.kind), ['bank', 'flat'], 'bank is listed first, so it wins over flat');
+  assert.deepEqual(d.layers.get(v('grass')).kinds.map((k) => k.kind), ['bank', 'flat', 'bank-end-w', 'bank-end-e'], 'bank is listed first, so it wins over flat; the two bank ends (#131) hold no lowers and are picked only by their `mix` (grass above, water one side and sand the other)');
   assert.deepEqual([...d.layers.get(v('grass')).kinds[1].lowers].sort(), ['earth', 'sand', 'mud', 'path'].map(v).sort());
   assert.deepEqual(d.tone, { of: v('grass'), also: [v('cliff')], row: layerRows(set).findIndex((r) => r.type === 'tone'), rowRaised: layerRows(set).findIndex((r) => r.type === 'toneraised') });
   assert.equal(d.layers.get(v('sand')).kinds[0].rows.looks, undefined, 'the beach has no reed look: the reeds are sprites');
@@ -171,10 +171,12 @@ test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.j
 
 test('layers: the baked rows list fills and kinds first, then the extras, then the tone row', () => {
   const rows = layerRows(set);
+  const late = Object.values(set.layers).flatMap((l) => l.over || []).filter((k) => k.late).length;   // `late` kinds (bug #131 bank ends) sit after every other row, so no earlier row moves
   assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'tone', 'toneraised', 'littertop']);
   assert.equal(rows.filter((r) => r.type === 'fill').length, Object.values(set.layers).filter((l) => l.fill).length);
   assert.equal(rows.filter((r) => r.type === 'over').length, Object.values(set.layers).flatMap((l) => l.over || []).length);
-  assert.deepEqual(rows.slice(-4).map((r) => r.type), ['tone', 'toneraised', 'littertop', 'littertop']);   // then the raised litter top's over cases and fill cells
+  assert.deepEqual(rows.slice(-4 - late, rows.length - late).map((r) => r.type), ['tone', 'toneraised', 'littertop', 'littertop']);   // then the raised litter top's over cases and fill cells
+  assert.deepEqual(rows.slice(rows.length - late).map((r) => r.kind), ['bank-end-w', 'bank-end-e']);
 });
 
 test('sprites: every rect lies inside the sprite sheet and every canopy named exists', () => {

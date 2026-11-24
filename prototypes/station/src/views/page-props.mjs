@@ -6,11 +6,12 @@ import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { pageSpotsOf, PAGE_BODY_BOX, closeOf, pagePod } from "../page.mjs";
 import { coatOf, PAINTED_COAT } from "../stands.mjs";
-import { drawnLooks } from "../looks.mjs";
+import { ownLooks } from "../looks.mjs";
 import { shapeOf, scalePlace, shapeModel } from "../trait-shapes.mjs";
 import { roundOf, squareOf } from "../trait-crops.mjs";
 import { pageModel } from "./reading-props.mjs";
 import { fill } from "./words.mjs";
+import { youngLines } from "../pairing-model.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
@@ -31,8 +32,8 @@ export const cellX = (i, n, W, c) => c.inset + (n > 1 ? Math.floor((i * (W - 2 *
 const NUM = ["no looks", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 const hexRGB =(h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 // her own coat and marking ("<tint>-<shade>+<lay picture>"), from the chapters she has read, as the room picks it; {} for a kind with no coat traits or an unread coat (the base picture)
-export const coatProp = (sp, mb, fr) => { const c = fr ? coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) : null; return c ? { coat: c } : {}; };
-export const faceOf =(sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, drawnLooks(fr, { genome: mb.genome, read: S.pageRead(mb) })) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
+export const coatProp = (sp, mb, fr) => { const c = fr ? coatOf(sp, ownLooks(fr, mb)) : null; return c ? { coat: c } : {}; };
+export const faceOf =(sp, mb, fr) => `mibi-face-${sp}-${(coatOf(sp, ownLooks(fr, mb)) ?? "").split("+")[0] || PAINTED_COAT[sp] || "between-dark"}-64x64`;
 const gapSay = (pts, min) => {   // where "none of yours here yet" goes: the middle of the widest empty stretch of the bar (pins are 0.14 wide), if it is wide enough for the words
   const a = [...pts].sort((p, q) => p - q), gaps = [{ mid: ((a[0] ?? 0.5) - 0.07 + 0) / 2, w: (a[0] ?? 1.07) - 0.07 }]; if (!a.length) return 0.5;
   for (let i = 1; i < a.length; i++) gaps.push({ mid: (a[i - 1] + a[i]) / 2, w: a[i] - a[i - 1] - 0.14 }); gaps.push({ mid: (a.at(-1) + 0.07 + 1) / 2, w: 1 - a.at(-1) - 0.07 });
@@ -170,7 +171,10 @@ export function pageView(view, m, spec, req) {
   const stage = req({ kind: "pagestage", id: `pagestage:${sid}:${key}`, species: sid, ...cp, size: R.rect.slice(2), body: { x: PAGE_BODY_BOX.x, y: PAGE_BODY_BOX.y, w: PAGE_BODY_BOX.w }, spots, hand: ch ? ch.id : "", tag: R.tag.rect, radius: R.tag.radius, keys: [R.hints.chapters.key, R.hints.look.key],
     rail: { y: R.rail.rect[1], h: R.rail.rect[3], ring: C.ring, cy: R.rail.rect[1] + C.ringCy, grad: C.gradient, frame: C.frame, w: C.w, cells: cells.map((c) => ({ chapter: c.id, x: c.x, petals: c.petals, hand: c.hand })) } });
   const name = S.cap(mibi.name);
-  view.page = { name, origin: originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };
+  // round 2 item 7: the copies on the line's two traits, in words on her origin line (a page's own text has that one line; `scale` would replace the page's texts); never on the creature
+  // the one line is kind and copies: the place gives way while they show, or the line runs under the chip
+  const copies = youngLines(st, spec, mibi).join(" · ");
+  view.page = { name, origin: copies ? S.cap(S.spName(mibi)) + " · " + copies : originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };
   view.line = { ok: ch ? fill(isDoings(ch) ? Sg.open : Sg.pageLook, { chapter: ch.name }) : null, back: name, subject: ch ? fill(Sg[S.pageRead(mibi).includes(ch.id) ? "pageKnown" : isDoings(ch) ? "pageWatch" : "pageSurprise"], { chapter: ch.name }) : "", need: "" };   // not drawn on her page (no foot line); the intents and tests still read it
   view.targets = cells.map((c, i) => ({ id: "rail." + i, group: "rail", index: i }));   // the cells; the frame on the chapter in hand is the ring
   view.cur = hand < cells.length ? "rail." + hand : null; view.resolve = {};
