@@ -2574,7 +2574,7 @@ function campHold(camp, wait, easeOf) {
 // While it plays c.st is 'hab' (she holds still); a heard step (ease 2 or more) loses the play. Each habit plays at most once a day for each Loika: S.day.hab['id:habit'] = 'played' | 'lost' | 'missed'.
 const habDay = () => (S.day.hab || (S.day.hab = {}));
 const habKey = (c, k) => c.id + ':' + k;
-const habName = c => (S.named && S.named[c.id]) || (c.ind && c.ind.name) || 'A Loika';
+const habName = c => (S.named && S.named[c.id]) || 'a Loika';   // owner note 156: her name comes on first sight (S.named); before she is met she is "a Loika", never the realm's name
 const hbVisible = (c, X) => !X.away(c) && inSight(c.x, c.y);
 // Night step 5: a SLEEPER is a named Loika at her bed from dusk through the night whose bedding-down is over (played, missed or lost by a heard step) and who is at ease again or only stirred. She can still be noted (one action, once a day for each range).
 function atBedNow(c) { const ind = c.ind, part = dayPart(), t = ind && ind.go && ind.go.part === part ? ind.go.t : null; return !!t && !!ind.hs && cheb(c, t) <= 1 && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed; }
@@ -3019,7 +3019,7 @@ function standingOn(key, P) { const o = occupant(key, P.x, P.y, 'player'); retur
 // The short reason a step in a place is refused (the HUD line; [copy] slots in words.mjs WORDS.block). o is what occupant() found on the tile.
 function blockWords(lay, x, y, o) {
   const B = WORDS.block, i = y * lay.w + x;
-  if (o.type === 'cr') return B.mibi;
+  if (o.type === 'cr') return o.c.ind ? ((S.named && S.named[o.c.id]) || 'a Loika').replace(/^a/, 'A') + ' is there' : B.mibi;   // owner note 156 (designer): a named one met says her name, one not yet met 'A Loika is there'; only an unnamed creature keeps the generic line
   if (o.type === 'pt' || o.type === 'player') return B.partner;
   if (o.type === 'pod') return B.pod;
   if (o.type === 'feat') return o.f.kind === 's' ? B.slab : o.f.kind === 'k' ? B.stone : B.thing;
@@ -3439,7 +3439,7 @@ function patchAction() {
     if (!S.known.includes(o.c.sp) && !o.c.ind) return { label: 'Unknown creature', run: null };
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
     if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
-    if (!S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };   // a named one of a kind not yet identified, with no keep still open: still no diet leak
+    if (!S.known.includes(o.c.sp)) { const nmd = S.named && S.named[o.c.id]; return { label: nmd ? nmd + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name) : 'Unknown creature', run: null }; }   // owner note 156: a named one is never "Unknown creature"; a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
