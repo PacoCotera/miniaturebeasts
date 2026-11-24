@@ -2,7 +2,7 @@
 // ImageData through the page's palette, props and canopy as cached canvases (the page's usual sprite path), and the camera.
 // The page owns the creatures, the partner, the explorer and the overlays; this module never draws them.
 import { readPlace, readTileSet } from './format/read.mjs';
-import { PlaceGroundCache, GroundCache, duskOf, applyLight, lightState, tablesOf, LEVELS, renderHalfView, renderViewSteps, wholeScale } from './ground.mjs';
+import { PlaceGroundCache, GroundCache, duskOf, duskLitOf, applyLight, lightState, tablesOf, LEVELS, renderHalfView, renderViewSteps, wholeScale } from './ground.mjs';
 import { BAYER4 } from '../../exploration/src/view.mjs';
 import { cutOut, scaleTo, walkFrame } from './sprites.mjs';
 import { blitRle } from './blit.mjs';
@@ -36,7 +36,9 @@ export class BakedView {
     const rgb = (r, g, b) => (255 << 24) | (b << 16) | (g << 8) | r;
     for (let i = 1; i < 48; i++) this.lut[i] = rgb(...core[i]);
     ts.palette.forEach((c, k) => { this.lut[48 + k] = rgb((c >> 16) & 255, (c >> 8) & 255, c & 255); });
+    const rgbOf = Array.from(this.lut, (v, i) => (i && v ? [v & 255, (v >> 8) & 255, (v >> 16) & 255] : undefined));
     ts.duskMap = duskOf(Array.from(this.lut, (v, i) => (i && v ? [v & 255, (v >> 8) & 255, (v >> 16) & 255] : undefined)), tablesOf(ts).dark);   // the dusk table over the page's colours
+    ts.duskLitMap = duskLitOf(rgbOf, ts.duskMap, tablesOf(ts).dark);   // the seen land's own step at dusk (dusk-mesh-fix-3)
     this.colours = [...new Set(this.lut.slice(1, 48 + ts.palette.length))].map((v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255]);
     this.state = null; this.states = new Map(); this.last = null; this.sprites = new Map(); this.scratch = null;
     this.landmarks = new Set(place.landmarks.map((l) => l.y * place.w + l.x));

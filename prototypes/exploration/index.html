@@ -4617,8 +4617,9 @@ const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, NIGHT, DUS
 const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, NIGHT, DUSK];
 const buildNight = () => { NIGHT.length = 0; NIGHT.push(...nightTable(RGB)); PT.ts = null; buildDusk(); };   // (PT.ts null: the props' set-space table is read again)
 // The dusk table: each colour's one-step dark (the signed dusk table) leaned 18% toward the dark table's amber, then the nearest palette colour: a flat warm tone shift, no dither, no colour outside the palette (dusk-mesh-fix-2).
-const DUSK_LEAN = 0.1;
-function buildDusk() { DUSK.length = 0; const w = RGB[DARK[C.amber]]; for (let i = 0; i < RGB.length; i++) { const d = RGB[DARK[i]]; DUSK.push(nearestPal(d[0] + (w[0] - d[0]) * DUSK_LEAN, d[1] + (w[1] - d[1]) * DUSK_LEAN, d[2] + (w[2] - d[2]) * DUSK_LEAN, i < FIRST_N ? FIRST_N : RGB.length)); } }
+const DUSK_LEAN = 0.1, DUSK_LIT_STEP = 0.35, DUSKLIT = [];   // DUSKLIT: the seen land at dusk takes DUSK_LIT_STEP of the way on to its own one-step dark, flat, still lighter than the unseen land (dusk-mesh-fix-3)
+function buildDusk() { DUSK.length = 0; DUSKLIT.length = 0; const w = RGB[DARK[C.amber]]; for (let i = 0; i < RGB.length; i++) { const d = RGB[DARK[i]]; DUSK.push(nearestPal(d[0] + (w[0] - d[0]) * DUSK_LEAN, d[1] + (w[1] - d[1]) * DUSK_LEAN, d[2] + (w[2] - d[2]) * DUSK_LEAN, i < FIRST_N ? FIRST_N : RGB.length)); }
+  for (let i = 0; i < RGB.length; i++) { const a = RGB[DUSK[i]], b = RGB[DARK[DUSK[i]]]; DUSKLIT.push(nearestPal(a[0] + (b[0] - a[0]) * DUSK_LIT_STEP, a[1] + (b[1] - a[1]) * DUSK_LIT_STEP, a[2] + (b[2] - a[2]) * DUSK_LIT_STEP, i < FIRST_N ? FIRST_N : RGB.length)); } }
 buildNight();
 REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
@@ -4680,7 +4681,7 @@ class PB {
     const set = RT.remap, key = (rm || 0) * 4 + (flip ? 2 : 0) + (chk ? 1 : 0) + (veil ? 100 : 0) + set.id * 1000; let cv = this.cache.get(key);
     if (cv) return cv;
     cv = document.createElement('canvas'); cv.width = this.w; cv.height = this.h;
-    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h), lut = set[rm || 0];
+    const g = cv.getContext('2d'), id = g.createImageData(this.w, this.h), lut = rm === 6 && !veil && set[6] === DUSK ? DUSKLIT : set[rm || 0];   // the seen land at dusk: its own step, the veil keeps DUSK (dusk-mesh-fix-3)
     for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) {
       let c = this.p[y * this.w + (flip ? this.w - 1 - x : x)]; if (c < 0 || (chk && (x + y) % 2)) continue;
       if (lut) c = lut[c];

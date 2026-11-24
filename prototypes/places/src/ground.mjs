@@ -20,6 +20,16 @@ export function duskOf(rgb, dark) {   // rgb[i] = [r, g, b] of palette index i (
   return out;
 }
 
+// The seen land at dusk (dusk-mesh-fix-3): the dusk table taken DUSK_LIT_STEP of the way on to its own one-step dark, then the nearest palette colour: still flat, still lighter than the unseen land (which keeps dark[dusk]).
+const DUSK_LIT_STEP = 0.35;
+export function duskLitOf(rgb, dusk, dark) {
+  const have = []; for (let i = 1; i < rgb.length; i++) if (rgb[i]) have.push(i);
+  const near = (c) => { let best = 0, bd = Infinity; for (const i of have) { const d = 3 * (rgb[i][0] - c[0]) ** 2 + 4 * (rgb[i][1] - c[1]) ** 2 + 2 * (rgb[i][2] - c[2]) ** 2; if (d < bd) { bd = d; best = i; } } return best; };
+  const out = new Uint8Array(256);
+  for (let i = 1; i < 256; i++) { const a = rgb[dusk[i]], b = rgb[dark[dusk[i]]]; out[i] = a && b ? near([a[0] + (b[0] - a[0]) * DUSK_LIT_STEP, a[1] + (b[1] - a[1]) * DUSK_LIT_STEP, a[2] + (b[2] - a[2]) * DUSK_LIT_STEP]) : dusk[i]; }
+  return out;
+}
+
 const tableCache = new WeakMap();
 // The tile set's light tables by name: { dark, light, dark2, fog, fade, storm, veil, night } -> Uint8Array(256).
 export function tablesOf(ts) {
@@ -31,6 +41,7 @@ export function tablesOf(ts) {
     tableCache.set(ts, t);
   }
   t.dusk = ts.duskMap || t.dark;   // set by the view from the page's colours (BakedView); until then the one-step dark
+  t.duskLit = ts.duskLitMap || t.dusk;
   return t;
 }
 
@@ -107,12 +118,12 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
       if (c === 0) continue;
       const k = (((py - ey * eb) * 12 / eb) | 0) * 12 + (((px - ex * eb) * 12 / eb) | 0);
       if (mF === 511 || (cF && cF[k])) { buf[o] = T.fog[c]; continue; }
-      let base = tL ? tL[c] : c;
+      let base = L === 6 ? T.duskLit[c] : tL ? tL[c] : c;
       if (side) {
         const lx = (px - cx * size) * (48 / size);
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
-      buf[o] = mV === 511 || (cV && cV[k]) ? (L === 6 ? T.dark[base] : veilPx(base, px, py, T.dark, night)) : base;   // dusk (6): the veil is a flat tone shift, no dither dots over the land and sea (dusk-mesh-fix-1)
+      buf[o] = mV === 511 || (cV && cV[k]) ? (L === 6 ? T.dark[T.dusk[c]] : veilPx(base, px, py, T.dark, night)) : base;   // dusk (6): the veil is a flat tone shift, no dither dots over the land and sea (dusk-mesh-fix-1)
     }
   }
   return buf;
