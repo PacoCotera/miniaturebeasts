@@ -2479,6 +2479,7 @@ function easeLoika(c, X) {
   if (X.moved && c.st !== 'eat') heard = easeHeardAt(env, c, P.x, P.y, X.noise === 'walk' ? 'walk' : 'creep', w);
   if (!heard && stayTick(env, c, P)) { heard = true; e5.crowded++; }
   else if (heard && easeCheb(P, c) > 2) c.crowd = 0;
+  if (heard) RT.ringHeard = NOW;   // W6a: the carry ring turns to its heard frame for a beat
   // the circle and the back-off of E5: a step made with her in sight within 5 tiles that keeps the distance round her, or lengthens it
   if (X.moved && X.prevP && easeCheb(P, c) <= 5 && easeLos(env, P, c)) { const d0 = easeCheb(X.prevP, c), d1 = easeCheb(P, c); if (d1 > d0) e5.backsOff++; else if (d1 === d0) e5.circles++; }
   const ev = easeTick(c, heard);
@@ -2491,6 +2492,25 @@ function easeLoika(c, X) {
   return ev;
 }
 const easeEnvNow = () => { const lay = curLay(); return easeEnvOf(lay, !lay.cave && stormRain(lay.cell % MW), !lay.cave && inFog(lay.cell)); };
+// The carry ring (W6a): how far her steps carry now, in tiles, the number the rule uses to decide heard (easeHeardAt: carryAt, src/ease.mjs, the table in src/walk-data.mjs), for her tile and her gait (P.noise).
+// The wind row and the wariness belong to the wild one that hears her, so the ring is drawn for the nearest named wild one she can see; with none in sight it is the table's plain row (wind across, steady) on her ground.
+// Clamped to 1..8 tiles, the strips' range (the table gives 1 to 8: creep 2 or walk 4, sand +1, upwind +2, wary +1, never below 1). Returns { tiles, c } or null off a place.
+function carryRing() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch') return null;
+  const lay = curLay(); if (lay.cave) return null;
+  let c = null, bd = 99;
+  for (const q of curLive().cr) { if (!q.ind || q.hide || (q.ease | 0) >= 3 || !seenFromPlayer(P.key, q.x, q.y)) continue; const d = easeCheb(q, P); if (d < bd) { bd = d; c = q; } }
+  const v = easeCarryAt(easeEnvNow(), c || { x: P.x, y: P.y }, P.x, P.y, P.noise === 'walk' ? 'walk' : 'creep', c ? wariness1(c.ind.doings.wary) : 0).v;
+  return { tiles: Math.max(1, Math.min(8, v)), c };
+}
+// drawn under her, the wild ones and the finds, clipped to the place view (the message box is drawn above the view); only at the 48 px zoom, the strips' 26 and 48
+function drawCarryRing(ts) {
+  if (!HUD.ok || ts !== 48 || RT.view) return;
+  const r = carryRing(); if (!r) return;
+  const heard = NOW - (RT.ringHeard || -1e9) < HUD_BEAT, f = heard ? 'heard' : 'f' + (motion() ? Math.floor(NOW / 250) % 3 : 0), im = HUD_ART['ring-' + r.tiles + '-' + ts + '-' + f]; if (!im) return;
+  g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip();
+  g.drawImage(im, Math.round(RT.plScr.x) - (im.width >> 1), Math.round(RT.plScr.y) - (im.height >> 1)); g.restore();
+}
 // The line under a wild one in sight (a named Loika): whether the step in front would be heard, creeping and walking, and within 2 tiles how long she lets you stay ([copy] words)
 function hearLineOf(c) {
   const P = S.exp.patch, lay = curLay(), env = easeEnvNow(), w = wariness1(c.ind.doings.wary); if ((c.ease | 0) >= 3) return null;
@@ -2502,6 +2522,7 @@ function hearLineOf(c) {
 function wildCtx(c, nm) {
   const hl = hearLineOf(c); if (!hl) return null;
   const E = WORDS.ease, who = nm || spName(c.sp), es = E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c);   // W4: the card line, what is still to learn
+  if (HUD.ok) return [...(st ? [j(who, es, st), j(who, st)] : []), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, es), who];   // W6a: the carry ring says whether a step would be heard (rule 21); the stay stays, and the stand-in "creep heard · walk unheard" goes
   return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
@@ -3867,6 +3888,7 @@ function patchTick(info) {
   habitWorld(X);
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
     if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); } }   // a name on first note: the one the realm gives it, kept once it has been met
+    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) (S.seenAt || (S.seenAt = {}))[String(c.id)] = { k: key, x: c.x, y: c.y, sp: c.sp, t: S.turn };   // W6a: where she was last seen, and on which day: the target line's arrow points here, never at her live place
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
   endOfActionHabits(X, info);
@@ -6829,6 +6851,7 @@ function drawPatchBody(t) {
   }
   if (lampDark) lampCircle(RT.plScr.x, RT.plScr.y, (SIGHT_NIGHT + .5) * ts, ts);   // night step 4: the lamp's circle over the ground, before the creatures
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
+  drawCarryRing(ts);   // W6a: the carry ring, over the ground and under every sprite, find and mark
   // ground decals
   for (const f of lay.feats) {
     if (f.tree) continue;   // a tree's feature is drawn by its tree
@@ -7202,6 +7225,35 @@ async function loadDayArt() {
       DAY_DIM[n] = dc; DAY_ART[n] = c; fileGot(); })));
   } catch (e) { for (const n of DAY_PARTS) { delete DAY_ART[n]; delete DAY_DIM[n]; } console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
+// W6a (Release B): the art director's signed HUD frames (art/hud/), drawn whole with drawImage at 1x as the files came: never redrawn or recoloured. Until they load nothing of W6a shows.
+//   light-lit0..6 / light-spend1..6 (74 x 14, the top bar's light), ring-<tiles>-<26|48>-<f0|f1|f2|heard> (the carry ring), target-dir-<n|ne|e|se|s|sw|w|nw|here>-<seen|last> (the target line's arrow)
+const HUD_DIRS = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'here'];
+const HUD_NAMES = [...[0, 1, 2, 3, 4, 5, 6].map(i => 'light-lit' + i), ...[1, 2, 3, 4, 5, 6].map(i => 'light-spend' + i),
+  ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(t => [26, 48].flatMap(z => ['f0', 'f1', 'f2', 'heard'].map(f => 'ring-' + t + '-' + z + '-' + f))),
+  ...['seen', 'last'].flatMap(k => HUD_DIRS.map(d => 'target-dir-' + d + '-' + k))];
+const HUD_ART = {}, HUD = { ok: false };
+async function loadHudArt() {
+  try {
+    if (typeof Image === 'undefined') return;
+    fileOwe(HUD_NAMES.length);
+    await Promise.all(HUD_NAMES.map(n => pixelsOf(vurl(new URL('./art/hud/', location.href).href + n + '.png')).then(async px => {
+      const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+      HUD_ART[n] = c; fileGot(); })));
+    HUD.ok = true;
+  } catch (e) { for (const n of HUD_NAMES) delete HUD_ART[n]; HUD.ok = false; console.warn('the W6a HUD frames did not load; the light, the ring and the target line stay out', e); }
+}
+// The HUD light (W6a): the part of day the light spent falls in, part i of DAY.parts: lit(6 - i) at rest; spend(6 - i) for one beat (HUD_BEAT ms) after an act that spent light; lit0 once the day's light is spent. [copy] none: a picture.
+const HUD_BEAT = 500, LIGHT_W = 74, LIGHT_H = 14, LIGHT_SPEND = { last: null, at: -1e9, part: 0 };
+function lightFrame(spent, nowMs) {
+  const L = LIGHT_SPEND, s = Math.max(0, spent | 0), idx = p => Math.max(0, DAY.parts.findIndex(([n]) => n === p));
+  if (L.last != null && s > L.last) { L.at = nowMs; L.part = idx(partOfDay(L.last)); }   // light was spent: the part the first spent light belonged to goes half dark for a beat
+  L.last = s;
+  if (s >= DAY.light) return 'light-lit0';
+  if (nowMs - L.at < HUD_BEAT) return 'light-spend' + (6 - L.part);
+  return 'light-lit' + (6 - idx(partOfDay(s)));
+}
+function drawLight(x, y) { const im = HUD_ART[lightFrame(S.day.spent, NOW)]; if (im) g.drawImage(im, x, y); }
+const lightOn = () => HUD.ok && !!S.day;
 // The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per 3 light (K = 200 / DAY.light: the loop stays 200 px), so the picture under the fixed marker is dayPart() and the next one enters the right end ~75 light before the change.
 // Each action glides the strip its true spent distance (ease-out cubic, 260 ms; n actions min(600, 260+16(n-1)); Wait 450 ms; forward only, mod the loop); reduced motion is instant; nothing moves when idle.
 const DB = { W: 64, K: 200 / DAY.light, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, wait: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: glass width, K: px per light
@@ -7318,6 +7370,7 @@ function drawHUD() {
   const lvl = 0, fogW = 0, stormW = 0;   // conditions (storm, fog bank) live on the bottom line now
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
+  if (lightOn()) { rx -= LIGHT_W; drawLight(rx, 9); rx -= 4; }   // W6a: the light, left of the counters (the partner's name gives way first)
   if (S.phase === 'patch' && WARM.queue.length && !WARM.cold && !document.hidden && TEST.clock == null && TEST.at == null) { drawProbePulse(rx - 8, 16); rx -= 18; }   // the Probe is reading the next places (note 19; words: PROBE_READING_TEXT, placed by the copywriter)
   // docked mid-expedition: the chip after the pods and crate count (the crate count gives way when it would not fit); the partner moves after it
   const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
@@ -7339,11 +7392,33 @@ function drawTop(title, right, cs) {
 const GOAL_BAND_H = 24;
 const goalForms = () => { const g = goalLine(); return g ? [g, g.split(' · ')[0]] : ''; };
 const goalBandOn = () => !!S && (S.phase === 'map' || (S.phase === 'patch' && !S.ui.swap && !RT.view)) && !!S.exp && !S.exp.beaconView && !S.ui.mapFull && !!goalLine();
+// The target line (W6a): when the walk's goal names a wild one the player has met (the first walk's "her ways" goal, metBest), the row shows her mini on its slate chip, the words, and an arrow
+// to where the player last saw her: 8-way from the explorer's cell, cream when that sight was today, mist when it was on an earlier day, "here" when that cell is the explorer's. Never her live place.
+// Until the goal names one the player has seen, the row keeps the goal's words and draws no mini and no arrow. null then.
+const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 'se', 'south': 's', 'south-west': 'sw', 'west': 'w', 'north-west': 'nw' };
+function targetLine() {
+  if (!HUD.ok || !S || !S.exp || RT.readOnly || !firstWalk()) return null;
+  const ex = S.exp; if (ex.cargo.pods.length || ownPodLying()) return null;
+  const b = metBest(), rec = b && S.seenAt && S.seenAt[String(b.id)]; if (!rec) return null;
+  const numeric = k => /^\d+$/.test(String(k)), P = S.phase === 'patch' ? ex.patch : null;
+  let dx = null, dy = null;
+  if (P && rec.k === P.key) { dx = rec.x - P.x; dy = rec.y - P.y; }
+  else if (numeric(rec.k) && (P ? numeric(P.key) : true)) { const a = cxy(+rec.k), c = cxy(P ? +P.key : ex.pos); dx = a.x - c.x; dy = a.y - c.y; }
+  const here = dx === 0 && dy === 0, word = dx == null || here ? null : dirWord(dx, dy, Math.hypot(dx, dy)), dir = here ? 'here' : word ? DIR_ABBR[word] : null;
+  const lay = layoutCache.get(String(rec.k)), where = lay && !lay.cave ? placeName(lay) : '';
+  return { sp: rec.sp, dir, seen: rec.t === S.turn, text: WORDS.target.line(b.name, where, dir), id: b.id };
+}
 function drawGoalBand() {
   if (!goalBandOn()) return;
-  const y = VIEW_Y, g = goalLine(); R(0, y, SCR_W, GOAL_BAND_H, C.ink); R(0, y + GOAL_BAND_H - 1, SCR_W, 1, C.night);
+  const y = VIEW_Y, gl = goalLine(); R(0, y, SCR_W, GOAL_BAND_H, C.ink); R(0, y + GOAL_BAND_H - 1, SCR_W, 1, C.night);
+  const tl = targetLine();
+  if (tl) {   // the mini on its 16 x 16 slate chip (the top bar's panel), the words, the signed arrow at the right end (strip 3: mini at 8, words at 28, arrow 9 x 9 at 433)
+    panel(6, y + 4, 16, 16, C.night, C.slate); miniOf(tl.sp, 8, y + 6);
+    text(clipText(tl.text, SCR_W - 28 - 8 - 9 - 4, 2), 28, y + 4, C.bone);
+    const im = tl.dir && HUD_ART['target-dir-' + tl.dir + '-' + (tl.seen ? 'seen' : 'last')]; if (im) g.drawImage(im, SCR_W - 8 - 9, y + 7);
+    return; }
   // GOAL_MARK.slot (goal-mark-12): the mark's place, left empty for the art director's piece
-  text(clipText(g, SCR_W - 16 - GOAL_MARK.w - 8, 2), 8 + GOAL_MARK.w + 8, y + 4, C.bone);
+  text(clipText(gl, SCR_W - 16 - GOAL_MARK.w - 8, 2), 8 + GOAL_MARK.w + 8, y + 4, C.bone);
 }
 // The bottom line: [✓ what Confirm does · ← where Back goes] | where you are | conditions.
 // Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
@@ -8475,9 +8550,10 @@ function placeStormWords(c) {
   const q = stormGap(st, c); return q.in ? 'in the storm' : q.behind ? 'storm moving away' : q.actions === 1 ? 'storm here in 1 action' : 'storm here in ' + q.actions + ' actions';
 }
 // The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
+// W6a: the HUD's light (the top bar) replaces the day words here; the bottom line's middle is the place alone. Until the light's frames have loaded, the words stay.
 function dayCtx(ctx) {
-  if (!S.exp || !S.day) return ctx;
-  const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);   // the light left, always (the HUD's light replaces it in Release B)
+  if (!S.exp || !S.day || lightOn()) return ctx;
+  const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
 function lineBase() {
@@ -9142,6 +9218,7 @@ const startLoads = () => {
   loadWaterEdgeArt();   // the art director's signed shallow-to-deep edge pieces (owner #110)
   loadLogSketch();
   loadDayArt();   // the six part-of-day pictures for the top bar
+  loadHudArt();   // W6a: the light, the carry ring and the target line's signed frames
   loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 };
 if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page the release number is read first, so every fetch carries it
@@ -9187,7 +9264,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { HUD, HUD_ART, lightFrame, carryRing, targetLine, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
