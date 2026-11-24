@@ -286,7 +286,7 @@ test("note 12a: a first save has no partner row, the land takes its room, ↓ bu
   const p = opening(); p.run("S.phase = 'setup'; S.exp = null;");
   assert.equal(p.run("openAlone()"), true); assert.equal(p.run("openRect().h"), 430); assert.equal(p.run("openFrame().WH"), 426);
   p.run("S.ui.sel = 0; FX.bumpAt = 0; act('down');"); assert.equal(p.run("S.ui.sel"), 0, "↓ stays on the way out"); assert.ok(p.run("FX.bumpAt") > 0, "and bumps");
-  p.run("S.ui.from = 'setup'"); assert.ok(!p.run("menuItems()").some(i => i.id === "mibis"), "no Mibis in the menu while there is no mibi");
+  p.run("S.ui.from = 'setup'"); assert.ok(!p.run("menuItems()").some(i => i.id === "riding"), "no Riding in the menu while there is no mibi");
   const q = returning(); assert.equal(q.run("openAlone()"), false); assert.equal(q.run("openRect().h"), 320);
 });
 
