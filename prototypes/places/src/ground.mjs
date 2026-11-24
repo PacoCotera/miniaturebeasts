@@ -108,6 +108,7 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
       if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, py, px, sb.darkW, sb.seed)) base = tS[c]; }
+      if (fc === 2) { buf[o] = base; continue; }   // the fog band mixes only the pixel's clear and fog tables: no veil dots (dark violet) in the band
       buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
     }
   }

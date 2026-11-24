@@ -81,3 +81,15 @@ test("(d) the fog band dithers at the storm band's dot size: one 4 x 4 Bayer cel
   // one matrix, 4 x 4
   assert.equal(V.BAYER4.length, 16);
 });
+
+test("(e) over a VEILED place the band mixes only the pixel's clear and fog tables: no veil dots (dark table / night) inside the band", () => {
+  const place = { w: 40, h: 40 }, st = lightState(place, { veil: new Uint8Array(40 * 40).fill(1) }); st.fogEdge = E;
+  const tsLike = { lightTables: [{ name: "fog", map: Array.from({ length: 256 }, (_, i) => (i ? 1 : 0)) }, { name: "dark", map: Array.from({ length: 256 }, (_, i) => (i ? 9 : 0)) }, { name: "dark2", map: Array.from({ length: 256 }, (_, i) => i) }] };
+  const win = { x: 20 * 48 + 24 + 150, y: 20 * 48 + 24 - 100, w: 200, h: 200 }, b = new Uint8Array(200 * 200).fill(5); applyLight(b, win, 48, tsLike, st);
+  let band = 0;
+  for (let y = 0; y < 200; y++) for (let x = 0; x < 200; x++) {
+    const d = V.fogDepth(win.x + x, win.y + y, E);
+    if (d > 0 && d < V.FOG_BAND_PX) { band++; assert.ok(b[y * 200 + x] === 5 || b[y * 200 + x] === 1, "band pixel " + b[y * 200 + x]); }
+  }
+  assert.ok(band > 1000);
+});
