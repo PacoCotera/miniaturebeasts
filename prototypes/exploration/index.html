@@ -1366,6 +1366,8 @@ function bookEv(kind, c, text, item) {
   const bk = S.book || (S.book = []); bk.push(rec);
   while (bk.length && bk[0].d < ex.n - (BOOK_DAYS - 1)) bk.shift();
 }
+// Where and when a thing in the hold was taken (companion-case-build-1): day, part of day and place name (the Log's own), written by the calls that add it; the crate keeps it. A thing from an old save has none.
+function gotNow() { const ex = S && S.exp; return ex && ex.patch && S.day ? { got: { d: ex.n, part: dayPart(), place: placeName(curLay()) } } : {}; }
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // ---- Care and the carried set (the care save shape, C0) ----
 // The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
@@ -2712,7 +2714,7 @@ function readPrints(p) {
   if (!rec.sample && !ex.dark) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
     if (sm.length >= SATCHEL) drop = WORDS.w5.dropFull;
-    else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1 }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); bookEv('find', c, WORDS.book.find(name, WORDS.habit.sampleName[s.item]), s.item); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
+    else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1, ...gotNow() }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); bookEv('find', c, WORDS.book.find(name, WORDS.habit.sampleName[s.item]), s.item); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
   }
   // bug #122 (tuft-3): in addition, a tuft of hers lies on the print's tile as an ordinary tuft (Essence pickup); once per Loika; gives no sample
   if (!rec.tuft && !ex.dark) { const at = p.mark || p.stand; rec.tuft = 1; const live = curLive(); live.tf.push({ id: live.fid++, x: at.x, y: at.y }); }
@@ -2792,7 +2794,7 @@ function noteHabit(c) {
   if (range === 'near' && !rec.sample) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
     if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
-    else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); }
+    else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn, ...gotNow() }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); }
   }
   const filled = want ? rec.got[want] : 0;
   fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
@@ -3434,7 +3436,7 @@ function patchAction() {
         const litCtx = cap(DEPOT_NAME) + ' · lit ' + left + ' more turn' + (left === 1 ? '' : 's');
         if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: litCtx, run: () => depotMend() }
           : { label: 'Mend a bar · 1 Energy', ctx: litCtx + ' · you have 0 Energy', dim: true, run: () => { fxMsg('Mending costs 1 Energy a bar · you have 0'); FX.bumpAt = NOW; } };
-        return { label: 'End expedition here', ctx: litCtx, run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
+        return { label: 'End expedition here', ctx: litCtx, run: () => { S.ui.from = 'patch'; openCase(true); } }; }
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
         : { label: 'Light beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
@@ -3626,7 +3628,7 @@ function takePod(p, leave) { if (darkRefuse()) return;
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...shedOf(p), ...whyOf(p) });
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...gotNow(), ...shedOf(p), ...whyOf(p) });
   if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
@@ -4361,7 +4363,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; rep.lead = emptyLead(ex.start); }   // an empty walk ends with a direction (first-ten B5)
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n + (tripOfDay ? 'c' + tripOfDay : ''),...(ex.rg ? { rg: ex.rg } : {}), n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s, ...((ex.cargo.samples || []).length ? { samples: ex.cargo.samples.map(q => ({ ...q })) } : {}),
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), ...(q.dv ? { dv: q.dv } : {}), k: q.k || null, ...(q.got ? { got: q.got } : {}), ...shedOf(q), ...whyOf(q) })), met: ex.met.slice(), explored: rc.found, of: rc.total, lines: worldLines.slice(), world: { v: 1, turn: S.turn, ev: turned.ev } };   // the crate carries the world's lines and, beside them, the events they say (specs/world-events.md)
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -7806,7 +7808,7 @@ function digger() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'd
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
-  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: 'End expedition' };
+  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: WORDS.case.title }, { id: 'mibis', label: 'Mibis' }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
   if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)]).concat(base);
@@ -7867,20 +7869,28 @@ function openLog() { const days = logDays(); S.ui.logDay = Math.max(0, days.leng
 function logKey(k) {
   const days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di];
   if (k === 'back') { S.phase = S.ui.from || 'setup'; transition(); return; }
+  if (k === 'right') { openCase(false); return; }   // the next page: the Case
   if (k === 'up') { if (day && S.ui.logTop > 0) S.ui.logTop--; else if (di > 0) { S.ui.logDay = di - 1; S.ui.logTop = logFitTop(days[di - 1]); } else FX.bumpAt = NOW; }
   else if (k === 'down') { if (day && S.ui.logTop < logFitTop(day)) S.ui.logTop++; else if (di < days.length - 1) { S.ui.logDay = di + 1; S.ui.logTop = logFitTop(days[di + 1]); } else FX.bumpAt = NOW; }
 }
-function drawLog() {
-  const W = WORDS.book, days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di], ink = C.soil, soft = C.bark, faint = C.clay;
+// The frame every Companion face shares (the Log and the Case; Riding and Together come with their builds): the top bar with the face's title, the part of day and the battery,
+// the tabs of the built faces (the open one raised on the paper), and the paper page with its bound edge.
+const FACES = [() => WORDS.book.title, () => WORDS.case.title];
+function faceFrame(active) {
   R(0, 0, SCR_W, SCR_H, C.ink);
-  // the top bar: the title; the part of day (its signed picture at 1x, then the word) and the battery on the right
-  R(0, HUD_H - 1, SCR_W, 1, C.night); text(W.title, 10, 9, C.bone);
+  R(0, HUD_H - 1, SCR_W, 1, C.night); text(FACES[active](), 10, 9, C.bone);
   const part = S.exp && S.day ? dayPart() : (S.book && S.book.length ? S.book[S.book.length - 1].part : null);
   blit(battArt(), SCR_W - 6 - 27, 11);
   if (part) { const tw = textW(part, 2); text(part, 404, 9, C.mist, 2, 'right'); if (DAY_ART[part]) g.drawImage(DAY_ART[part], 404 - tw - 20, 9); }
-  // the tab (only the faces that are built) and the paper page with its bound edge
-  panel(12, 36, textW(W.title, 2) + 26, 30, C.paper); text(W.title, 25, 43, ink);
+  let x = 12;
+  FACES.forEach((f, i) => { const nm = f(), w = textW(nm, 2) + 26;
+    if (i === active) { panel(x, 36, w, 30, C.paper); text(nm, x + 13, 43, C.soil); } else { panel(x, 40, w, 22, C.night); text(nm, x + 13, 44, C.mist); }
+    x += w + 6; });
   panel(6, 62, 438, 496, C.paper); R(6, 66, 2, 488, C.sand);
+}
+function drawLog() {
+  const W = WORDS.book, days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di], ink = C.soil, soft = C.bark, faint = C.clay;
+  faceFrame(0);
   if (day) { text(W.day(day.d), 22, 74, ink, 3); if (day.from) text(day.from, 430, 80, soft, 2, 'right'); }
   R(16, 104, 418, 2, C.clay);
   for (let y = 136; y <= 544; y += 24) R(16, y, 418, 1, C.sand);
@@ -7975,19 +7985,6 @@ function probeMove(k) {
   const n = metTiles().length, f = probeFocus(), to = f + ({ left: -1, right: 1, up: -9, down: 9 })[k];
   if (to < 0 || to >= n) { FX.bumpAt = NOW; return; } S.ui.pf = to;
 }
-// The hold as pictures: an icon and its count at 3×; the cap (CAP) shows only once it is close, from 16 up; for Data, the one material whose hold is the limit of a trip, it always shows.
-function drawMats(c, y) {
-  [['energy', c.e], ['data', c.d], ['essence', c.s]].forEach(([ic, v], i) => { const x = 24 + i * 144;
-    panel(x, y, 114, 40, C.ink, C.slate); blit(ICON[ic](), x + 8, y + 13); text(String(v), x + 28, y + 10, C.bone, 3);
-    if (ic === 'data') text(WORDS.hold.data(v, CAP), x + 28 + textW(String(v), 3) + 4, y + 16, v >= CAP ? C.amber : C.slate);
-    else if (v >= 16) text(WORDS.hold.data(v, CAP), x + 28 + textW(String(v), 3) + 4, y + 16, C.amber); });
-}
-// The pods held: each a pod at 2× in a 122×52 slot, with its species beside it when known; an empty slot is a dashed outline.
-function drawPods(pods, n, y) {
-  for (let i = 0; i < n; i++) { const p = pods[i], x = 24 + i * 130; panel(x, y, 122, 52, C.ink, C.slate);
-    if (p) { blit(podArt(POD_SHELL[p.g] || 'bone', 2), x + 8, y + 6); text(clipText(S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown', 122 - 46 - 4, 2), x + 46, y + 19, C.bone); }
-    else dashedRect(x + 8, y + 6, 32, 40, C.stone); }
-}
 // A crate in the bay (read-only): its expedition number and its contents as icons.
 function crateIcon(x, y, c, w) {
   w = w || 130; if (!c) { dashedRect(x, y, w, 66, C.slate); return; }   // an empty crate place is a dashed outline
@@ -7999,24 +7996,108 @@ function crateIcon(x, y, c, w) {
   let px = x + 34; for (const q of (c.pods || []).slice(0, 3)) { podSlot(px, y + 2, q); px += 18; }
   let mx = x + 6; for (const [k, v] of [['energy', c.e], ['data', c.d], ['essence', c.s]]) { blit(ICON[k](), mx, y + 32); text(String(v | 0), mx + 16, y + 32, C.paper); mx += 16 + textW(String(v | 0), 2) + 6; }
 }
-function drawBay(x, y) { for (let i = 0; i < BAY; i++) crateIcon(x + i * 140, y, S.bay[i], 130); }
-function drawCargo(t) {
-  const ex = S.exp; viewBg(); drawTop('Cargo', ex ? 'expedition ' + ex.n : 'between expeditions');
-  if (ex) {
-    drawMats(ex.cargo, 42); drawPods(ex.cargo.pods, ex.hold, 94);
-    ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 160, 42, 42, C.ink, C.slate);
-      if (S.known.includes(sp)) blit(creatureArt(sp, 'idle', 0), x + 5, 164); else { blit(silhouette(sp), x + 5, 164); text('?', x + 16, 174, C.bone); }
-      if (ex.newMet.includes(sp)) R(x + 33, 164, 5, 5, C.amber); });
-    reachDots(24, 214, ex.range); text('Reach', 24 + (ex.range * 2 + 1) * 8 - 2 + 10, 214, C.mist);   // how many places in reach have their heart found, as in the Probe
-    if (canSend()) { card(95, 268, 260, 50, true, true); R(98, 271, 254, 44, C.orange); text('End expedition', SCR_W / 2, 282, C.bone, 3, 'center'); }
-    else { card(95, 268, 260, 50, false, false); text('End expedition', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 300, C.fog, 2, 'center'); }
-    { const l = sealPreview()[0]; if (l) { R(40, 338, 4, 4, C.orange); text(clipText(l, 384, 2), 54, 332, C.bone); } }   // an empty hold seals nothing: no line
-    text('The sealed bay', 24, 406, C.mist); drawBay(24, 428);
-  } else {
-    const h = S.hold || { e: 0, d: 0, s: 0, pods: [] };   // between expeditions: the hold, the pods and the sealed bay, nothing else (the bay line is the bottom line's)
-    drawMats(h, 42); drawPods(h.pods, Math.max(tierOf().hold, h.pods.length), 94);
-    text('The sealed bay', 24, 166, C.mist); drawBay(24, 190);
+// ---- The Case face (companion-case-build-1), built to the accepted companion-device-2 mock (shots-1x/05-case.png). Phase 'cargo' keeps its name; the menu row, the title and the face are the Case. ----
+// A field case lying open: in the lid the crates sealed for home, in the tray the pod cradles, the three supplies and the satchel's 8 places; a corner bracket over one thing and its label under the tray.
+// It reads the hold and the bay and writes nothing: opening it spends no light and the world does not move. Wood rim, brass, cradles, dotted places and the label are UI by code (rule 18);
+// every picture is a signed file (the pod and the tuft; a whisker and a claw have none yet: their places stay empty, named [art]).
+function openCase(end) { S.ui.caseEnd = end ? 1 : 0; S.ui.caseSel = null; S.phase = 'cargo'; transition(); }
+function caseHold() { return S.exp ? S.exp.cargo : (S.hold || { e: 0, d: 0, s: 0, pods: [], samples: [] }); }
+function caseCells() {
+  const h = caseHold(), np = S.exp ? S.exp.hold : Math.max(tierOf().hold, (h.pods || []).length), cells = [], r = np > 2 ? 22 : 30;
+  for (let i = 0; i < BAY; i++) cells.push({ k: 'crate', i, x: 36 + i * 60, y: 114, w: 48, h: 36 });
+  for (let i = 0; i < np; i++) cells.push({ k: 'pod', i, x: 40 + i * (2 * r + 12), y: 228 - r, w: 2 * r, h: 2 * r, r });
+  ['e', 'd', 's'].forEach((s, i) => cells.push({ k: 'sup', s, x: 222 + i * 66, y: 198, w: 56, h: 60 }));
+  for (let i = 0; i < SATCHEL; i++) cells.push({ k: 'smp', i, x: 36 + (i % 4) * 96, y: 270 + Math.floor(i / 4) * 68, w: 88, h: 60 });
+  return cells;
+}
+const caseKeyOf = c => c.k + ':' + (c.k === 'sup' ? c.s : c.i);
+function caseSel(cells) {
+  let c = cells.find(q => caseKeyOf(q) === S.ui.caseSel); if (c) return c;
+  const h = caseHold();
+  c = (h.samples || []).length ? cells.find(q => q.k === 'smp' && q.i === 0) : (h.pods || []).length ? cells.find(q => q.k === 'pod' && q.i === 0) : cells.find(q => q.k === 'sup');
+  return c || cells[0];
+}
+// the Log's entry for a sample: the find written when it was taken (the last 3 days are kept; a pod has none)
+function caseEntry(s) {
+  if (!s || !s.got) return null;
+  const days = logDays(), di = days.findIndex(d => d.d === s.got.d); if (di < 0) return null;
+  const ri = days[di].rows.findIndex(r => r.kind === 'find' && r.id === s.lo && r.item === s.item); return ri < 0 ? null : { di, ri };
+}
+function caseThing(c) {   // what is under the bracket: { name, how, took, forS, thing }
+  const W = WORDS.case, h = caseHold();
+  if (c.k === 'crate') { const b = S.bay[c.i];
+    if (!b) return { name: W.crateFree, how: W.crateFreeHow };
+    return { name: W.crateName(b.n), how: W.crateWhen(b.n), forS: b.none ? W.crateNone : W.crateHas(b) }; }
+  if (c.k === 'pod') { const p = (h.pods || [])[c.i]; if (!p) return { name: W.cradleFree, how: W.cradleFreeHow };
+    return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.atStation(W.podFor), thing: p }; }
+  if (c.k === 'sup') return { name: W.supply[c.s], how: W.supplyLine(h[c.s] | 0) };
+  const s = (h.samples || [])[c.i]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };
+  return { name: s.name + '’s ' + WORDS.habit.sampleName[s.item], how: W.sampleHow[s.habit] || '', took: s.got, forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };
+}
+function caseMove(k) {
+  const cells = caseCells(), cur = caseSel(cells), cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2; let best = null, bs = 1e9;
+  for (const q of cells) { if (q === cur) continue; const dx = q.x + q.w / 2 - cx, dy = q.y + q.h / 2 - cy;
+    const along = k === 'left' ? -dx : k === 'right' ? dx : k === 'up' ? -dy : dy, across = k === 'left' || k === 'right' ? Math.abs(dy) : Math.abs(dx);
+    if (along <= 4) continue; const sc = along + across * 2; if (sc < bs) { bs = sc; best = q; } }
+  if (best) S.ui.caseSel = caseKeyOf(best);
+  else if (k === 'left') { openLog(); transition(); }   // off the left edge: the page before (the Log)
+  else FX.bumpAt = NOW;   // ▶: Riding and Together come with their builds
+}
+function caseKey(k) {
+  const end = S.exp && S.ui.caseEnd;
+  if (k === 'back') { if (end || !S.ui.from) S.phase = end ? 'menu' : 'setup'; else S.phase = S.ui.from; transition(); }
+  else if (k === 'up' || k === 'down' || k === 'left' || k === 'right') caseMove(k);
+  else if (k === 'confirm') {
+    if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
+    else { const t = caseThing(caseSel(caseCells())), en = caseEntry(t.thing); if (en) { S.ui.logDay = en.di; S.ui.logTop = en.ri; S.phase = 'log'; transition(); } }   // its page in the Log, opened on that entry
   }
+}
+function caseLine() {   // the bottom line: only what works here
+  const W = WORDS.case;
+  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: '', back: W.field, dim: false } : { ok: '', ctx: '', back: W.field, dim: false };
+  return { ok: caseEntry(caseThing(caseSel(caseCells())).thing) ? W.page : '', ctx: W.pages, back: W.field, dim: false };
+}
+const caseBrass = (x, y, w, h) => { R(x, y, w, h, C.gold); R(x, y, w, 1, C.yellow); R(x, y, 1, h, C.yellow); R(x, y + h - 1, w, 1, C.rust); R(x + w - 1, y, 1, h, C.rust); };
+function caseHalf(x, y, w, h) {   // one half of the case: its shadow on the page, a wooden rim lit from the top left, the lining
+  ditherFill(x + 4, y + h, w - 2, 4, 'clay', 8); ditherFill(x + w, y + 4, 4, h, 'clay', 8);
+  panel(x, y, w, h, C.soil); panel(x + 2, y + 2, w - 4, h - 4, C.bark);
+  R(x + 4, y + 2, w - 8, 1, C.clay); R(x + 2, y + 4, 1, h - 8, C.clay);
+  R(x + 8, y + 8, w - 16, h - 16, C.soil); R(x + 10, y + 10, w - 18, h - 18, C.sand); ditherFill(x + 10, y + 10, w - 18, h - 18, 'paper', 3);
+}
+function caseHollow(x, y, w, h) { panel(x, y, w, h, C.clay); panel(x + 2, y + 2, w - 2, h - 2, C.bone); panel(x + 2, y + 2, w - 4, h - 4, C.paper); }
+function caseCradle(cx, cy, r) {
+  for (let yy = -r; yy <= r; yy++) for (let xx = -r; xx <= r; xx++) { const d = Math.hypot(xx + .5, yy + .5); if (d <= r) R(cx + xx, cy + yy, 1, 1, d > r - 3 ? (xx + yy < 0 ? C.clay : C.bone) : C.paper); }
+}
+function caseString(ax, ay, bx, by, col) { const d = Math.hypot(bx - ax, by - ay); for (let t = 0; t < d; t += 4) R(Math.round(ax + (bx - ax) * t / d), Math.round(ay + (by - ay) * t / d), 2, 2, col); }
+function drawCargo(t) {
+  const W = WORDS.case, h = caseHold(), cells = caseCells(), cur = caseSel(cells), end = !!(S.exp && S.ui.caseEnd);
+  faceFrame(1);
+  // the lid: the crates sealed for home; an empty place is dotted
+  caseHalf(16, 72, 418, 100); text(W.sealed, 36, 90, C.bark);
+  for (let i = 0; i < BAY; i++) { const x = 36 + i * 60, y = 114;
+    if (S.bay[i]) { R(x, y, 48, 36, C.clay); R(x, y, 48, 10, C.bark); R(x + 20, y, 8, 36, C.paper); R(x, y + 35, 48, 1, C.bark); } else dashedRect(x, y, 48, 36, C.bark); }
+  text(W.goesHome[0], 414, 112, C.bark, 2, 'right'); text(W.goesHome[1], 414, 134, C.bark, 2, 'right');
+  // the tray, the hinges between them, the corners, the clasp
+  caseHalf(16, 180, 418, 370);
+  caseBrass(70, 166, 40, 20); R(70, 175, 40, 2, C.rust); caseBrass(340, 166, 40, 20); R(340, 175, 40, 2, C.rust);
+  for (const [x, y] of [[16, 72], [422, 72], [16, 538], [422, 538]]) { caseBrass(x, y, 12, 12); R(x + 5, y + 5, 2, 2, C.soil); }
+  caseBrass(209, 542, 32, 12); R(221, 546, 8, 4, C.soil);
+  // the pod cradles (a pod in each that holds one, its signed picture at 2x), the three supplies (the top bar's own counter pictures at 2x), the satchel's 8 places
+  for (const c of cells) {
+    if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); }
+    else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
+    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const s = (h.samples || [])[c.i]; if (s && s.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
+  }
+  brackets(cur.x - 4, cur.y - 4, cur.w + 8, cur.h + 8, C.orange);
+  // the label of the thing under the brackets, tied to it by its string; from End expedition the seal preview takes its place
+  if (end) { const ls = canSend() ? sealPreview() : [sendHint()]; panel(36, 412, 378, 88, C.bone, C.clay); wrapText(ls.slice(0, 2).join(' · '), 350, 2).slice(0, 3).forEach((l, i) => text(l, 50, 424 + i * 22, C.soil)); return; }
+  const th = caseThing(cur); if (cur.k !== 'crate') caseString(30, cur.y + cur.h / 2, 30, 432, C.soil);
+  caseString(30, 432, 50, 432, C.soil);
+  panel(36, 412, 378, 88, C.bone, C.clay); R(46, 428, 8, 8, C.clay); R(48, 430, 4, 4, C.sand);
+  text(clipText(th.name, 340, 3), 66, 422, C.soil, 3);
+  const l2 = th.took ? W.took(th.how, W.place(th.took.place), th.took.d) : th.how;
+  if (l2) text(clipText(l2, 340, 2), 66, 452, C.bark);
+  if (th.forS) text(clipText(th.forS, 340, 2), 66, 474, C.bark);
 }
 // The top bar between expeditions: Energy, then battery and connectivity, then what Call does.
 function drawHomeTop(title) {
@@ -8520,10 +8601,10 @@ function lineBase() {
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
-    case 'log': return L1('', logCanMove() ? WORDS.book.moves + ' ' + WORDS.book.earlier : '', WORDS.book.field);
+    case 'log': return L1('', (logCanMove() ? WORDS.book.moves + ' ' + WORDS.book.earlier + ' · ' : '') + '▶ ' + WORDS.case.title, WORDS.book.field);
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
-    case 'cargo': return S.exp ? (canSend() ? L1('End expedition', S.bay.length >= BAY ? 'finds stay in the hold' : DAY_TEXT.campHint, 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
+    case 'cargo': { const c = caseLine(); return L1(c.ok, c.ctx, c.back, c.dim); }
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
       if (!m) { if (S.exp) return L1('', S.exp.pt ? CARE_TEXT.leadsThisExp : CARE_TEXT.noOneGrown, bk);   // the Lead card: read-only mid-expedition; no partner leads one without a grown mibi
@@ -8577,7 +8658,7 @@ function renderFrame(t) {
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
-  if (!(RT.view && S.phase === 'patch') && S.phase !== 'log') drawMessage();   // the Log is a page: no message box over it
+  if (!(RT.view && S.phase === 'patch') && S.phase !== 'log' && !(S.phase === 'cargo' && !(S.exp && S.ui.caseEnd))) drawMessage();   // the Log and the Case are pages: no message box over them (the End refusal is the exception)
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
 }
 function frame(t) {
@@ -8701,7 +8782,8 @@ function act(k, mode) {
         if (id === 'wait') { menuWait(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
         else if (id === 'look') { S.phase = 'patch'; startView('look', curLay()); }   // Look over the place: spends no action; ← closes
-        else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
+        else if (id === 'cargo') openCase(false);   // the Case: reads the hold and the bay, writes nothing
+        else if (id === 'send') { if (canSend()) openCase(true); else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
@@ -8718,11 +8800,7 @@ function act(k, mode) {
       else if (k === 'confirm' && !S.ui.patchArm) S.ui.patchArm = 1;   // the arm shows once, on the bottom line
       else if (k === 'confirm') { const ex = S.exp; S.ui.patchArm = 0; ex.cargo.e -= PRICE.patch; ex.shield++; logEv('Patched the shield (3 Energy)'); fxMsg('Shield patched'); }
       else if (k === 'back') { S.ui.patchArm = 0; S.phase = 'menu'; } else { S.ui.patchArm = 0; if (isDir) probeMove(k); } break;
-    case 'cargo':
-      if (k === 'back') S.phase = 'menu';
-      else if (k === 'confirm' && S.exp && canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }
-      else if (k === 'confirm' && S.exp) { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; }
-      break;
+    case 'cargo': caseKey(k); break;
     case 'mibis': { const m = rosterAt(S.ui.rSel);
       if (k === 'up' || k === 'down') S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, rosterCount() - 1);
       else if (k === 'back') { if (!S.exp && S.ui.rFrom === 'active') { S.phase = 'active'; openMenu(); } else if (!S.exp && S.ui.rFrom === 'setup') S.phase = 'setup'; else S.phase = 'menu'; }
@@ -9187,7 +9265,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
