@@ -15,7 +15,7 @@ function botPage(A) {
   const ex = S.exp, key = ex.patch.key, lay = curLay(), P = ex.patch, col = lay.cell % MW, id = A.id;
   const live = () => curLive(), her = () => live().cr.find(q => q.id === id), spent = () => S.day.spent, dayAt = n => partOfDay(n);
   const DIRN = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-  const okTile = (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !occupant(key, x, y, 'player') && !lay.feats.some(f => f.x === x && f.y === y);
+  const okTile = (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !occupant(key, x, y, 'player') && !lay.feats.some(f => f.x === x && f.y === y);
   const out = { notes: [], gone: false, steps: 0, waits: 0, heard: 0, samples0: ex.cargo.samples.length, d0: ex.cargo.d, events: [], lost: [] };
   const over = () => !S.exp || S.exp.ending || spent() >= DAY.light - 1;
   const wait = () => { if (over()) return false; out.waits++; waitTick('patch'); return true; };
@@ -52,12 +52,12 @@ function botPage(A) {
   const tryRead = (why, by, backTo) => {   // go to the nearest unread prints and read them (one light); by: the light the bot must be free again (null: none)
     if (!READ || over()) return false;
     const c = her(), quiet = c && (c.gone || c.ease >= 3), cand = unread(); let best = null;
-    for (const p of cand) { const path = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, p.stand) <= 1, (x, y) => !!c && !quiet && heardAtTile(c, x, y, spent())); if (path && (!best || path.length < best.path.length)) best = { p, path }; }
+    for (const p of cand) { const path = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, p.mark || p.stand) <= 1, (x, y) => !!c && !quiet && heardAtTile(c, x, y, spent())); if (path && (!best || path.length < best.path.length)) best = { p, path }; }
     if (!best) { out.readTries.push(why + ': ' + (cand.length ? 'no way' : 'none left')); return false; }
-    const back = backTo ? cheb(best.p.stand, backTo) + 4 : 0;
+    const back = backTo ? cheb(best.p.mark || best.p.stand, backTo) + 4 : 0;
     if (by != null && spent() + best.path.length + 1 + back > by) { out.readTries.push(why + ': no time'); return false; }
     for (const t of best.path) { if (over()) break; const cc = her(); if (cc && !quiet && heardAtTile(cc, t.x, t.y, spent())) { for (let i = 0; i < 3 && cc.ease > 0 && wait(); i++); if (heardAtTile(cc, t.x, t.y, spent())) break; } stepTo(t); }
-    if (over() || cheb(P, best.p.stand) > 1) { out.readTries.push(why + ': not reached'); return false; }
+    if (over() || cheb(P, best.p.mark || best.p.stand) > 1) { out.readTries.push(why + ': not reached'); return false; }
     for (const dir of ['up', 'down', 'left', 'right']) { P.dir = dir; const a = patchAction(); if (a.label === WORDS.prints.read) { const n0 = (S.exp.stats.prints || []).length; a.run(); if ((S.exp.stats.prints || []).length > n0) { const r = S.exp.stats.prints[n0]; out.reads.push({ why, part: r.part, yday: r.yday, gone: r.gone, light: spent(), walked: best.path.length }); return true; } } }
     out.readTries.push(why + ': could not read'); return false;
   };
