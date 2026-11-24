@@ -8197,6 +8197,13 @@
    "id": "a9f298a731",
    "path": "website/assets/site-top-felted-6-2400.webp",
    "sha256": "a49a5ee7b074e428f6cc3b63ed27ac1e0a68e3d01eeee34143ee9c8141970d44"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "d8ce2afabe",
+   "path": "website/assets/plate-lehten-720.webp",
+   "sha256": "e06ce1905449453a3bdab68e3cd7595ee4e80263e0285c5b10ef4aa2e4f046f7"
   }
  ]
 }
