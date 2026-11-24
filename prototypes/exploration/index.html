@@ -3331,6 +3331,8 @@ function crossEdge(dir) {
   { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
   let why = crossReason(ex.pos, dir, true);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
+  if (why === SCREE_BUMP && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // owner note #159: the map edge is scree, but the place draws scree only on its two crossing tiles: anywhere else along the side is the cliff, and says so
+    if (!q || (k !== q.s && k !== q.s + 1)) why = cliffPlaceWords(dir); }
   const land = why ? undefined : crossLanding(dir);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
   if (land === null) why = crossBlockWords(dir);
   if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
