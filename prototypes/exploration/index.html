@@ -2684,7 +2684,7 @@ function printsHere(at) {   // at: a place's key, to read the prints of a place 
   const here = !at || (ex.patch && ex.patch.key === at), lay = here ? curLay() : layout(at); if (lay.cave) return [];
   const live = here ? curLive() : ex.live[at], key = at || ex.patch.key, part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
-    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone, DAY.parts)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
+    for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone, DAY.parts, ex.n === 1)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
 }
 function printsToRead() {
