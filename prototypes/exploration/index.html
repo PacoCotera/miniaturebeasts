@@ -3927,6 +3927,7 @@ function patchTick(info) {
 function stirStep(c, X, bx, by) {
   if (X.noise === 'wait' || c.hide > 0 || c.st !== 'idle' || c.x !== bx || c.y !== by || c.home || c.visit || c.warm >= 1 || (spOf(c.sp).settle && c.calm >= 1)) return;
   if (X.away(c) || !inSight(c.x, c.y)) return;
+  { const ddx = c.x - X.P.x, ddy = c.y - X.P.y, hr = (X.carry || 0) + 1; if (ddx * ddx + ddy * ddy <= hr * hr) return; }   // round 2: within one tile outside the hearing ring it holds its tile
   const live = X.live, sa = live.sa || (live.sa = {});
   const anchor = c.ind ? (c.gone ? c.gone.t : routineSpot(c, X.lay, X.key)) : (sa[c.id] && man(sa[c.id], c) <= 1 ? sa[c.id] : (sa[c.id] = { x: c.x, y: c.y }));
   if (!anchor || man(anchor, c) > 1) return;
