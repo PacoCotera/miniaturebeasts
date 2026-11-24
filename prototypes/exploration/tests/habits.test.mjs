@@ -106,7 +106,7 @@ for (const seed of [7, 13, 42]) {
         if (c.hb && !closed) { closed = 1; P.x = c.x + vec[0] * 2; P.y = c.y + vec[1] * 2; }   // the tell is the moment to step in
         live.strike = null; S.exp.stray = null;   // no lightning in the script: a strike near her would startle her
         const a = patchAction();
-        if (a.label === WORDS.habit.note && !noted) { a.run(); noted = { range: S.exp.stats.noted[0].range, gives: S.exp.stats.noted[0].gives, first: S.exp.stats.noted[0].first }; }
+        if (a.label === WORDS.habit.note && !noted) { a.run(); if (S.phase === 'watch') { watchKey('confirm'); S.phase = 'patch'; } noted = { range: S.exp.stats.noted[0].range, gives: S.exp.stats.noted[0].gives, first: S.exp.stats.noted[0].first }; }
         else advance('patch', { noise: 'act' });
         const h = c.hb;
         if (h && tellRain == null) tellRain = stormRain(col);

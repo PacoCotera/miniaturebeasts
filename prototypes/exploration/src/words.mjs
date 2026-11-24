@@ -100,6 +100,18 @@ WORDS.habit = {
   range: { far: 'from far', mid: 'from mid range', near: 'from near' },
   sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
 };
+// [copy] W6b: the watch view and the field card (picture 04 and 05, the rule gives by range): working words for the copywriter.
+WORDS.watch = {
+  head: name => 'Watching ' + name,
+  tiles: n => n + (n === 1 ? ' tile' : ' tiles'),
+  gives: { shape: 'the shape only', place: 'where she goes', coat: 'her coat', face: 'her face and the keepsake' },
+  strip: (habit, n) => habit + '|beat ' + n + ' of 4', tell: 'the tell',
+  note: 'Note', leave: 'leave', nearer: 'nearer',   // the bottom line: ✓ Note, ← leave, ▲▼ nearer
+  card: 'Field note', keep: 'Keep', back: 'watch', data: '+1 Data',
+  sampleTaken: item => 'A ' + item + ' for the Station', sampleNone: 'No sample', sampleCome: 'come within 2 tiles to take one',
+  onPage: name => 'on ' + name + '’s page',
+  cardLine: 'the note, in the Log',
+};
 // [copy] W4 round 2: her prints at a haunt she has left (walk-design-1 3A): working words for the copywriter. The message says when she was there; the label is the ✓ at the prints.
 WORDS.prints = {
   read: 'Read her prints', readCtx: 'read the prints she left',
