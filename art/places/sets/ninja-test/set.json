@@ -183,6 +183,12 @@
             "se": ["deep", "water"]
           },
           "sheets": ["over-grass-bank-end-e.png"]
+        },
+        {
+          "kind": "flat-top",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-grass-flat-top.png"]
         }
       ]
     },

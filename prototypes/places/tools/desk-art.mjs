@@ -177,6 +177,8 @@ export function deskLayers() {
         // bug #131: the brown bank's end where water meets sand under grass (one paid paint, bank-end-1 raw bank-end-a.png; the east piece is its flip; the chains are in <name>.steps.json)
         { kind: 'bank-end-w', late: true, lowers: [], mix: { sw: ['deep', 'water'], se: ['sand'] }, sheets: [signedSheet('over-grass-bank-end-w.png', 'bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image)')] },
         { kind: 'bank-end-e', late: true, lowers: [], mix: { sw: ['sand'], se: ['deep', 'water'] }, sheets: [signedSheet('over-grass-bank-end-e.png', 'bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image), flipped')] },
+        // bug #148: the same edge with its grass in the raised top's tones (a palette map of over-grass-flat, over-grass-flat-top.steps.json); drawn over the path on a raised top, in place of the fill-grass edge
+        { kind: 'flat-top', late: true, lowers: [], sheets: [signedSheet('over-grass-flat-top.png', 'over-grass-flat.png, palette map to the fill-cliff tones')] },
       ],
     },
     // the biome grounds, each a flat patch over the grass (and the other low ground)
