@@ -1,4 +1,4 @@
-"""The Companion's pictures, cut from signed masters (no paint, no model call; 0 MXN).
+"""The Companion's pictures, cut from signed masters (no paint, no model call).
 The screen is 8-bit indexed with no alpha and no anti-aliasing, so a mibi on it is a cut of her signed master:
   228 x 234: the signed 304 x 312 stand at x0.75, body alpha hard (0 or 255), the painted contact shadow dropped (the page draws its own dither),
              colours cut to one small palette (median cut, nearest entry, no dither).
