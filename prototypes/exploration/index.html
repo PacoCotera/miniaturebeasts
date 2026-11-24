@@ -2274,9 +2274,8 @@ function advance(scope, info) {
 // NAMED EMPTY SLOTS: none is signed and in the art set yet, so a slot stays empty ("dusk card: picture to come"), the message-box line stays in its place and nothing is drawn in code.
 // When a painting is signed, its file goes in here and cardShow draws it on the Companion's frame; the PR stays draft + hold until all three are.
 const NIGHT_CARDS = { dusk: { slot: 'dusk card: picture to come', file: null }, night: { slot: 'night card: picture to come', file: null }, dawn: { slot: 'dawn card: picture to come', file: null } };
-// [art] night step 5, a named empty slot: her curled token on her bed (night-camp piece 11, 32 px, plain and saddled). Not signed, not in the game's art set: file stays null and her idle token shows (tokenOf falls back to it); nothing is drawn in code.
-// When the art director signs it, set file and tokenOf's curled pose for the Loika (curledNow(c) says when she shows it).
-const CURLED_LOIKA = { slot: WORDS.habit.curledSlot, file: null };
+// [art] night step 5: her curled token on her bed (night-camp piece 11, 32 px, plain and saddled, 2 breathing frames), signed by the art director (round 4, ledger de7f1e763). drawCreature shows it when curledNow(c) says she is asleep on her bed.
+const CURLED_LOIKA = { slot: WORDS.habit.curledSlot, file: 'art/walk/loika-curl-loika-s01-idle-right-{plain,saddled}-curl-{0,1}.png', plain: [".488A10.21AD10A.19AD8C3DA.17AD2C11DA.15AD2C13DA.13AD2C15DA.12AD2C13AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37", ".457A8.22A2D8A2.19AD8C2D2A.17AD3C10DA.15AD2C13DA.14AD2C14A.13AD2C15DA.12AD2C13AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37"], saddled: [".488A10.21AK7D3A.19AK9C2DA.17AK6C3K2C2DA.15ADK4C10DA.13AD2K3C12DA.12AD2CK2C10AQ2A.12AD2C2KC8A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37", ".457A8.22A2K6D2A2.19AK9CD2A.17AK6C3K2C2DA.15ADK4C10DA.14ADK3C12A.13AD2CK2C12DA.12AD2C2KC10AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37"] };   // signed round 4 (AD, ledger de7f1e763): the four frames as the walk tokens' own row text, byte-for-byte the pictures in art/walk/
 function cardShow(k) { return false; }   // false while the slot (NIGHT_CARDS[k].file) is empty: the caller keeps the message-box line
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
@@ -6980,7 +6979,8 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   if (stepping && stepFr === 1 && HOPPER_SP.includes(c.sp)) dy -= 1;   // a hopper's step frame rises 1 px higher (art desk note)
   const sad = c.sp === 0 && wildSaddled(c);   // her marking shows and her coat is read
   const a = stepping ? creatureArt(c.sp, 'step', stepFr, 1, false, sad) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0, 1, false, sad);   // the Tuliko airing its scales is its idle with the shake's jiggle
-  blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
+  const cu = c.sp === 0 && curledNow(c) ? art('curl' + (sad ? 's' : 'p') + fr, () => tokenPB(CURLED_LOIKA[sad ? 'saddled' : 'plain'][fr], 32)) : null;   // asleep on her bed: the signed curled token
+  blit(cu || a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2 || rm === 5) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
   if (b) blit(bubbleArt(b === 'fs' ? 'f' : b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
