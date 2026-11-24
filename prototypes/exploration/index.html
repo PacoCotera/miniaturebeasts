@@ -8111,9 +8111,15 @@ function drawCard() {
   drawPoseAt(coat, cd.pose, (SCR_W - 228) >> 1, 114, drawsCut(cd.range, cd.clear));
   if (en) wrapText(en.text, 380, 2).slice(0, 3).forEach((l, i) => text(l, 30, 358 + i * 24, C.soil));
   R(26, 438, 398, 1, C.sand); panel(26, 452, 398, 90, C.paper, C.sand);
-  if (fe) { text(W.sampleTaken(WORDS.habit.sampleName[cd.sample]), 40, 466, C.bark); wrapText(fe.text, 360, 2).slice(0, 2).forEach((l, i) => text(l, 40, 492 + i * 24, C.clay)); }
-  else if (cd.noRoom) wrapText(WORDS.habit.noRoom, 360, 2).slice(0, 2).forEach((l, i) => text(l, 40, 466 + i * 24, C.bark));
-  else { text(W.sampleNone, 40, 466, C.clay); if (cd.range !== 'near') wrapText(W.sampleCome, 360, 2).slice(0, 2).forEach((l, i) => text(l, 40, 492 + i * 24, C.clay)); }
+  cardSampleLines(cd, W).forEach((ln, i) => text(ln[0], 40, 466 + i * 24, ln[1]));
+}
+// the sample box's lines, [text, colour]: each wrapped to 360, three at most in all (y 466, 490, 514), the find entry losing lines first
+function cardSampleLines(cd, W) {
+  const wr = s => wrapText(s, 360, 2), fe = cd.findEntry;
+  if (fe) { const t = wr(W.sampleTaken(WORDS.habit.sampleName[cd.sample])).slice(0, 2); return t.map(l => [l, C.bark]).concat(wr(fe.text).slice(0, 3 - t.length).map(l => [l, C.clay])); }
+  if (cd.noRoom) return wr(WORDS.habit.noRoom).slice(0, 3).map(l => [l, C.bark]);
+  const none = wr(W.sampleNone).slice(0, 3);
+  return none.map(l => [l, C.clay]).concat(cd.range !== 'near' ? wr(W.sampleCome).slice(0, 3 - none.length).map(l => [l, C.clay]) : []);
 }
 function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
