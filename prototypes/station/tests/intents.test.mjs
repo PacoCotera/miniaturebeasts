@@ -292,7 +292,7 @@ test("one mibi up close, a chapter plate: ✓ opens her page on that chapter (ev
 
 test("one mibi up close, Cross: only a partner at home can be picked (the first not away); a mibi out with the Companion, or with only away partners, does not open it", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); const [a, b, c] = st.mibis, sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [b.id], tier: 1, shield: 3 }, h = host(st, sv); h.specs.habitat = habitatSpec; st.dock = { docked: false, at: T0 };
-  h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.equal(h.went.at(-1), "cross", "the door is open: ✓ opens the Cross"); assert.equal(h.ui.cross.bId, c.id, "b is out: the first partner not away");
+  h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.equal(h.went.at(-1), "pods", "the door is open: ✓ opens the pairing screen (step 8-3)"); assert.equal(h.ui.pods.view, "pair"); assert.equal(h.ui.pods.pair.bId, c.id, "b is out: the first partner not away");
   h.went.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "the shown mibi is out: it cannot cross until it docks");
   sv.carried = [b.id, c.id]; h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "only away partners: refused");
   st.dock = { docked: true, at: T0 }; INTENTS.habitat.openCross(h, a); assert.equal(h.went.at(-1), "cross", "docked, the carried mibi crosses as any adult");

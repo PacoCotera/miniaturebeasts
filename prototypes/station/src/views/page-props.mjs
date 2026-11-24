@@ -11,6 +11,7 @@ import { shapeOf, scalePlace, shapeModel } from "../trait-shapes.mjs";
 import { roundOf, squareOf } from "../trait-crops.mjs";
 import { pageModel } from "./reading-props.mjs";
 import { fill } from "./words.mjs";
+import { youngLines } from "../pairing-model.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
@@ -170,7 +171,10 @@ export function pageView(view, m, spec, req) {
   const stage = req({ kind: "pagestage", id: `pagestage:${sid}:${key}`, species: sid, ...cp, size: R.rect.slice(2), body: { x: PAGE_BODY_BOX.x, y: PAGE_BODY_BOX.y, w: PAGE_BODY_BOX.w }, spots, hand: ch ? ch.id : "", tag: R.tag.rect, radius: R.tag.radius, keys: [R.hints.chapters.key, R.hints.look.key],
     rail: { y: R.rail.rect[1], h: R.rail.rect[3], ring: C.ring, cy: R.rail.rect[1] + C.ringCy, grad: C.gradient, frame: C.frame, w: C.w, cells: cells.map((c) => ({ chapter: c.id, x: c.x, petals: c.petals, hand: c.hand })) } });
   const name = S.cap(mibi.name);
-  view.page = { name, origin: originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };
+  // round 2 item 7: the copies on the line's two traits, in words on her origin line (a page's own text has that one line; `scale` would replace the page's texts); never on the creature
+  // the one line is kind and copies: the place gives way while they show, or the line runs under the chip
+  const copies = youngLines(st, spec, mibi).join(" · ");
+  view.page = { name, origin: copies ? S.cap(S.spName(mibi)) + " · " + copies : originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };
   view.line = { ok: ch ? fill(isDoings(ch) ? Sg.open : Sg.pageLook, { chapter: ch.name }) : null, back: name, subject: ch ? fill(Sg[S.pageRead(mibi).includes(ch.id) ? "pageKnown" : isDoings(ch) ? "pageWatch" : "pageSurprise"], { chapter: ch.name }) : "", need: "" };   // not drawn on her page (no foot line); the intents and tests still read it
   view.targets = cells.map((c, i) => ({ id: "rail." + i, group: "rail", index: i }));   // the cells; the frame on the chapter in hand is the ring
   view.cur = hand < cells.length ? "rail." + hand : null; view.resolve = {};

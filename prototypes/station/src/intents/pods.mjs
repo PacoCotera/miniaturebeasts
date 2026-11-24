@@ -11,6 +11,7 @@ import { openStore } from "./store.mjs";
 import { subjectOf } from "../page.mjs";
 import * as N from "../nursery.mjs";
 import { openNursery, openPodPage, nurseryIntent, podIntent } from "./nursery.mjs";
+import { pairIntent } from "./pairing.mjs";
 
 export const FLASH_MS = 3000, SCROLL_MS = 200;
 const SORTS = ["use", "species", "arrival", "drying"];
@@ -76,6 +77,7 @@ function leaveInventory(h) { const p = pods(h); if (S.unshownHusks(h.st).length)
 // ---- ✓ and ← ----
 export function intent(h, target, verb) {
   const p = pods(h);
+  if (p.view === "pair" && p.page == null) return pairIntent(h, target, verb);   // the pairing screen (intents/pairing.mjs)
   if (p.view === "nursery" && p.page == null) return nurseryIntent(h, target, verb);   // the nursery and a pod's page (intents/nursery.mjs)
   if (p.view === "pod" && p.page == null) return podIntent(h, target, verb);
   if (p.cmp) return compareIntent(h, target, verb);

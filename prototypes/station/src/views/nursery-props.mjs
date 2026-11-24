@@ -61,8 +61,8 @@ export function nurseryView(view, m, spec, req) {
     const k = first + j, g = rowGeometry(req, spec, Z, row, k, first, ring, { st }), y = g.y, kind = frameOf(row.species)?.species.name ?? "", fx = g.faces.length ? Sh.faces.x + g.faces.length * (Sh.faces.d + Sh.faces.gap) + 2 : Sh.title.x;
     const title = row.kind === "pair" ? row.parents.map((q) => S.cap(q.name)).join(" + ") : row.kind === "line" ? fill(Sg.lineOf, { name: S.cap(row.of ?? "a returned mibi") }) : fill(Sg.fromWild, { Kind: S.cap(kind), place: placeOf(row.place) });
     text(title, fx, y + Sh.title.baseline, Sh.title.role, "l");
-    const ws = words(row.words);
-    text(row.kind === "pair" ? fill(Sg.canLand, { words: ws }) : ws ? fill(Sg.seen, { words: ws }) : Sg.seenNone, Sh.known.x, y + Sh.known.baseline, row.kind === "pair" ? Sh.known.greenRole : Sh.known.role, "l");
+    const fit = (list) => { let l = list; while (l.length > 1 && row.kind === "pair" && fill(Sg.canLand, { words: words(l) }).length * 7.6 > Sh.pods.x - fx - 6) l = l.slice(0, -1); return l; }, ws = words(fit(row.words));   // the green words end before the pod picture (station step 8-5)
+    text(row.kind === "pair" ? fill(Sg.canLand, { words: ws }) : ws ? fill(Sg.seen, { words: ws }) : Sg.seenNone, g.faces.length ? fx : Sh.known.x, y + Sh.known.baseline, row.kind === "pair" ? Sh.known.greenRole : Sh.known.role, "l");
     text(row.count === 1 ? Sg.pod1 : fill(Sg.podN, { n: row.count }), Sh.count.right, y + Sh.count.baseline, Sh.count.role, "r");
     if (g.tag) text(Sg.newToYou, g.tag[0], y + Sh.tag.baseline + Sh.tag.dy, Sh.tag.role, "c", g.tag[2]);
     return g;
