@@ -103,23 +103,20 @@ export function coverE(m9e) {
 export function stormStep(d, x, y) { return d < 6 && BAYER4[(y & 3) * 4 + (x & 3)] * 7 < (6 - d) * 16; }
 
 // The storm's soft edge in the place view (#149). The storm side keeps its reach `darkW` px from the screen side it comes from; its leading edge is a band
-// BAND_PX (3 tiles) wide, dithered by the 4 × 4 Bayer matrix in steps of 25, 50 and 75 percent storm (full storm beyond it), per WORLD pixel (px, py are the
-// place's pixel coordinates, never snapped per tile, so nothing crawls with the camera). The edge is not a straight line: each tile row shifts it by a seeded
-// wobble of -1, 0, 1 or 2 tiles, stable between frames (a function of the row and the seed only).
+// BAND_PX (3 tiles) wide. Per WORLD pixel (px, py are the place's pixel coordinates, never snapped per tile, so nothing crawls with the camera) the pixel's own
+// depth inside the band (0 at the day side, BAND_PX at the storm side) is compared with the house 4 x 4 Bayer matrix: the storm share falls evenly 100 > 75 > 50 > 25 > 0
+// with no step lines. The edge is not a straight line: it moves per pixel row by a smooth seeded noise of 1 to 2 tiles (two octaves, periods 5 and 2 tiles), a function of
+// the row and the seed only (stable between frames).
 export const BAND_PX = 144;
-export function stormWobble(row, seed) {
-  let h = (Math.imul(row + 1, 0x9E3779B1) ^ Math.imul(seed | 0, 0x85EBCA6B)) >>> 0;
-  h = Math.imul(h ^ (h >>> 15), 0x2C1B3C6D) >>> 0; h = (h ^ (h >>> 12)) >>> 0;
-  return (h & 3) - 1; }
-// Storm steps for a pixel: 0 day, 1..3 the band (25, 50, 75 percent), 4 full storm. ds: the pixel's distance in px from the screen side the storm comes from (0 at that side).
-export function stormBandStep(ds, row, darkW, seed) {
-  const d = darkW + 48 * stormWobble(row, seed) - ds;   // px the pixel stands inside the leading edge
-  if (d <= 0) return 0;
-  if (d >= BAND_PX) return 4;
-  return 1 + Math.floor(d / 48); }
-export function stormBandHit(ds, row, px, py, darkW, seed) {
-  const k = stormBandStep(ds, row, darkW, seed);
-  return k === 4 || (k > 0 && BAYER4[(py & 3) * 4 + (px & 3)] < k * 4); }
+const lat = (i, seed) => { let h = (Math.imul(i + 7919, 0x9E3779B1) ^ Math.imul(seed | 0, 0x85EBCA6B)) >>> 0; h = Math.imul(h ^ (h >>> 15), 0x2C1B3C6D) >>> 0; h = (h ^ (h >>> 12)) >>> 0; return (h & 0xffff) / 32767.5 - 1; };
+const vnoise = (y, period, seed) => { const t = y / period, i = Math.floor(t), f = t - i, u = f * f * (3 - 2 * f); return lat(i, seed) * (1 - u) + lat(i + 1, seed) * u; };
+// the edge's offset in px for a pixel row (within +-96: 1 to 2 tiles)
+export function stormWobble(py, seed) { return Math.round(vnoise(py, 240, seed) * 72 + vnoise(py, 96, seed ^ 0x5bd1e995) * 24); }
+// px the pixel stands inside the leading edge: <= 0 day, >= BAND_PX full storm. ds: the pixel's distance in px from the screen side the storm comes from.
+export function stormBandDepth(ds, py, darkW, seed) { return darkW + stormWobble(py, seed) - ds; }
+export function stormBandHit(ds, py, px, darkW, seed) {
+  const d = stormBandDepth(ds, py, darkW, seed);
+  return d >= BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * BAND_PX < d * 16); }
 
 // The band's dark columns at 48 for a gap still to close: n = 20·(3 − gap) in twentieths of a column (gap < 3, a multiple of 0.05);
 // STORM_K[48] = 7/5 so columns = ceil(7n/100). 32 px keeps main's float rule in the page.

@@ -6785,7 +6785,7 @@ function drawPatchBody(t) {
   const stormSeed = ex.storm ? Math.imul(lay.cell, 7919) ^ (ex.storm.w * 131 + ex.storm.dir) : 0;
   const clearLight = (tx, ty) => { if (overcast) return stormGrade(clockLv);
     if (darkW && bandOn) { const px = tx * ts + (ts >> 1), py = ty * ts + (ts >> 1), sx = W(px), ds = darkLeft ? sx : SCR_W - 1 - sx;   // a sprite takes the table of the pixel it stands on (the soft edge, #149)
-      return stormBandHit(ds, ty, px, py, darkW, stormSeed) ? stormGrade(clockLv) : clockLv; }
+      return stormBandHit(ds, py, px, darkW, stormSeed) ? stormGrade(clockLv) : clockLv; }
     if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)

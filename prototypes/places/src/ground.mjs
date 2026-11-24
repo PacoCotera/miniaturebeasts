@@ -89,7 +89,7 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
     if (lvl && L === 0) side = cx > 0 && lvl[cy * pw + cx - 1] === 1 ? 'W' : cx < pw - 1 && lvl[cy * pw + cx + 1] === 1 ? 'E' : null;
     // the approaching storm's soft edge (state.storm = { darkW, left, seed, level }): per pixel, screen-side distance, world-anchored dither
     const bx0 = Math.max(ex * eb, win.x) - win.x, bx1 = Math.min(ex * eb + eb, win.x + win.w) - win.x;
-    const sb = state.storm && (state.storm.left ? bx0 < state.storm.darkW + 96 : bx1 > win.w - state.storm.darkW - 96) ? state.storm : null;
+    const sb = state.storm && (state.storm.left ? bx0 < state.storm.darkW + 97 : bx1 > win.w - state.storm.darkW - 97) ? state.storm : null;
     if (!L && !mV && !mF && !side && !sb) continue;
     const tL = L ? T[LEVELS[L]] : null, tS = sb ? T[LEVELS[sb.level]] : null;
     const cV = mV && mV !== 511 ? coverE(mV) : null, cF = mF && mF !== 511 ? coverE(mF) : null;
@@ -104,7 +104,7 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
         const lx = (px - cx * size) * (48 / size);
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
-      if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, (py / size) | 0, px, py, sb.darkW, sb.seed)) base = tS[c]; }
+      if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, py, px, sb.darkW, sb.seed)) base = tS[c]; }
       buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
     }
   }
