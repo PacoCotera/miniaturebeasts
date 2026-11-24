@@ -56,6 +56,7 @@ test("her prints (3A): the haunts she kept earlier today and has left; yesterday
   assert.ok(!at("afternoon").some(s => s.startsWith("y")), "yesterday's prints are gone after the morning");
   assert.equal(at("midday", true)[0], "midday:9!", "a bolt leaves the haunt she was keeping");
   assert.deepEqual(leftHaunts(null, early, "midday", false), []);
+  assert.ok(!leftHaunts(hs, early, "dawn", false, undefined, true).some(q => q.yday) && at("dawn").length > 0, "day 1 has no yesterday: no yesterday's prints");
 });
 test("a note fills the line only when it gives the wanted thing; any note counts the habit; the first note is the habit's first", () => {
   const rec = blank(); const a = noteIn(rec, "far", true, "face"); assert.ok(a.first && !a.filled && a.gives[0] === "place");

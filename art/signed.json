@@ -4300,6 +4300,13 @@
    "sha256": "888850aca7fe0e96faacd0e3c0150fd483adf79f725d94d4bcb94b62d5c31855"
   },
   {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "0a2463371d",
+   "path": "prototypes/exploration/art/ui/log-sketch-loika-48.png",
+   "sha256": "9c1add31646df2e37f4bfed5fdf69b01fded9056338bb2b3973e5fc1420a3562"
+  },
+  {
    "class": "ui",
    "date": "2026-11-22",
    "id": "168f002e9a",

@@ -46,13 +46,14 @@ export function dewLies(part, parts) {
 }
 // hs: her haunts; doings: her individual's; part: now; gone: she has bolted. Returns [{ h, part, yday, gone }], the latest leave of each haunt first.
 // parts (optional): DAY.parts; with it each entry also says `to`: the haunt she went to, when the print was made in the dew and still lies in it (the dew's prints point); null by dry day or after a bolt.
-export function leftHaunts(hs, doings, part, gone, parts) {
+// first: day 1, there is no yesterday, so no yesterday's prints.
+export function leftHaunts(hs, doings, part, gone, parts, first) {
   if (!hs) return [];
   const now = PARTS.indexOf(part), at = p => hauntOf(hs, doings, p), cur = at(part), out = [], dewNow = !!parts && dewLies(part, parts);
   const add = (h, p, yday) => { if (h && !sameSite(h, cur) && !out.some(q => sameSite(q.h, h))) { const nx = PARTS[(PARTS.indexOf(p) + 1) % PARTS.length], to = dewNow && dewLies(nx, parts) ? at(nx) : null; out.push({ h, part: p, yday, gone: false, to: to && !sameSite(to, h) ? to : null, toPart: to && !sameSite(to, h) ? nx : null }); } };
   if (gone && cur) out.push({ h: cur, part, yday: false, gone: true, to: null });   // she bolted: the haunt she was keeping is the one she left
   for (let i = now - 1; i >= 0; i--) if (!sameSite(at(PARTS[i]), at(PARTS[i + 1]))) add(at(PARTS[i]), PARTS[i], false);
-  if (now <= 1) for (let i = PARTS.length - 1; i >= 3; i--) if (!sameSite(at(PARTS[i]), at(PARTS[(i + 1) % PARTS.length]))) add(at(PARTS[i]), PARTS[i], true);   // until the end of the next morning: yesterday's afternoon, dusk and night
+  if (now <= 1 && !first) for (let i = PARTS.length - 1; i >= 3; i--) if (!sameSite(at(PARTS[i]), at(PARTS[(i + 1) % PARTS.length]))) add(at(PARTS[i]), PARTS[i], true);   // until the end of the next morning: yesterday's afternoon, dusk and night
   return out;
 }
 // the key of one read: one for each haunt each day
