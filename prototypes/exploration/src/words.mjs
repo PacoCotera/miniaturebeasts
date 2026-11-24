@@ -173,7 +173,7 @@ WORDS.case = {
 // Riding (companion-riding-build-2): the Companion's third face, who is with you. [copy] WORKING WORDS: the copywriter's job replaces every string here.
 // Her kind, stage and what she does are the game's own words (CARE_TEXT, SPECIES); no trait value, range or hidden trait is said here. No word for tiredness (owner 2026-11-22).
 WORDS.riding = {
-  title: 'Riding', also: 'also riding', leads: 'leads the Probe', who: 'who rides', pages: '◀ ▶ pages', field: 'field', home: 'home', more: n => '+' + n,
+  title: 'Riding', also: 'also riding', leads: 'leads the Probe', who: 'who rides', pages: '◀ ▶ pages', field: 'field', more: n => '+' + n,
   rested: 'rested · she slept at camp',   // a fact, shown only when it happened (night-step-6-1); absent until then
   empty: 'No one rides', emptyHow: 'A mibi rides with you once it is home.',
 };

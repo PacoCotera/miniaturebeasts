@@ -8350,7 +8350,8 @@ function drawRiding(t) {
   row.slots.forEach((s, i) => { const x0 = 124 + i * 102;
     if (s.free) { dashedRect(x0 + 21, 462, 60, 60, C.clay); return; }
     shadowAt(x0 + 51, 527, 30, 3); const q = ownCut(s.q, 'row'); if (q) g.drawImage(q, x0 + 3, 440);
-    text(clipText(s.q.name + ' · ' + (s.home ? W.home : STAGE_WORD[mibiStage(s.q)]), 100, 2), x0 + 51, 532, C.bark, 2, 'center'); });
+    const full = s.q.name + ' · ' + STAGE_WORD[mibiStage(s.q)];   // "name · stage" where the place is wide enough, else the name; one at home is the name alone, fainter
+    text(s.home || textW(full, 2) > 100 ? clipText(s.q.name, 100, 2) : full, x0 + 51, 532, s.home ? C.clay : C.bark, 2, 'center'); });
   if (row.more) text(W.more(row.more), 430, 440, C.clay, 2, 'right');
 }
 // Call between expeditions: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
