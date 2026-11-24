@@ -154,7 +154,7 @@ WORDS.book = {
   atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,
   prints: (name, when) => 'Prints in the grass. ' + name + ' was here ' + when + '.',
   met: name => 'Met her. She is ' + name + ' now.',
-  habit: (name, hab, range, said) => name + ', ' + hab + ', ' + range + '. ' + said + '.',
+  habit: (name, hab, range, said) => name + ', ' + hab + ', ' + range + ': ' + said + '.',
   near: name => 'Crept to two steps from ' + name + '.',
   find: (name, item) => name + ' left a ' + item + '. In the case.',
 };
