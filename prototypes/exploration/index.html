@@ -249,7 +249,7 @@ import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/w
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { readPixels } from "./src/pngdecode.mjs";
 // Every exact-colour read of a picture goes through the file's own bytes (src/pngdecode.mjs), never a canvas read-back a browser may colour-manage or farble (bug 68).
@@ -5817,8 +5817,9 @@ function fogEdgeArt(m) { return art('fe' + m, () => { const pb = new PB(CELL, CE
 const BAYER = BAYER4;
 function ditherArt(w, h, col, level) { return art('dz' + w + 'x' + h + col + level, () => { const pb = new PB(w, h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < level) pb.set(x, y, C[col]); return pb; }); }
-function puffArt(level) { return art('puff' + level, () => { const pb = new PB(96, 48);
-  for (let y = 0; y < 48; y++) for (let x = 0; x < 96; x++) { const d = ((x - 48) / 48) ** 2 + ((y - 24) / 24) ** 2; if (d < 1 && BAYER[(y & 3) * 4 + (x & 3)] < (d < .4 ? level : level / 2)) pb.set(x, y, C.white); }
+// A fog puff (#154): a seeded blob of the fog table's lightest tone (PUFF_TONE), its dots on the SCREEN's Bayer grid: baked per phase of its origin (px & 3, py & 3), so the dots stay put as the outline drifts.
+function puffArt(i, px, py) { const ax = px & 3, ay = py & 3; return art('puff' + i + '_' + ax + ay, () => { const { w, h } = puffSize(i), pb = new PB(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (BAYER[((y + ay) & 3) * 4 + ((x + ax) & 3)] < puffShare(i, x, y)) pb.set(x, y, C[PUFF_TONE]);
   return pb; }); }
 
 // ===================== 11. The frame: 450×600 offscreen, 1:1 device pixels =====================
@@ -7015,7 +7016,8 @@ function drawPatchBody(t) {
     for (let i = 0; i < 110; i++) { const h = hash(7, i), x = h % SCR_W, sp = 300 + (h >>> 22) % 160, y = ((h >>> 10) % VIEW_H + (motion() ? Math.floor(t * sp) : 0)) % VIEW_H; g.drawImage(cv, x, VIEW_Y + y); } }
   if (fogged) { const d = motion() ? Math.floor(t * 9) : 0, pl = RT.plScr, keep = (sightR(lay) + 1.5) * ts;   // drifting texture on the fogged area only, never over what you see
     for (let i = 0; i < 6; i++) { const h = hash(9, i), px = ((h % 600) + d * (1 + i % 2)) % 600 - 96, py = VIEW_Y + 20 + (h >>> 12) % 460;
-      if (pl && Math.max(Math.abs(px + 48 - pl.x) - 48, 0) ** 2 + Math.max(Math.abs(py + 24 - pl.y) - 24, 0) ** 2 < keep * keep) continue; blit(puffArt(i % 2 ? 3 : 2), px, py); } }
+      const sz = puffSize(i);
+      if (pl && Math.max(Math.abs(px + sz.w / 2 - pl.x) - sz.w / 2, 0) ** 2 + Math.max(Math.abs(py + sz.h / 2 - pl.y) - sz.h / 2, 0) ** 2 < keep * keep) continue; blit(puffArt(i, px, py), px, py); } }
   g.restore(); RT.remap = REMAP;
 }
 // Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.

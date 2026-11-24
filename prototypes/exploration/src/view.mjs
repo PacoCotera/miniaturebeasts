@@ -132,6 +132,19 @@ export function fogBandHit(px, py, e) {
   const d = fogDepth(px, py, e);
   return d >= FOG_BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * FOG_BAND_PX < d * 16); }
 
+// The fog's drifting puffs (#154): a seeded irregular blob, 2 to 4 tiles wide and 1 to 2 tall (at 48), no straight sides, dense at the centre and thinning to nothing at the rim
+// by the same 4 x 4 Bayer as the fog band, on SCREEN pixels: the dots stay where they are while the puff's outline drifts over them. Colour: the fog table's lightest tone (bone, never white).
+export const PUFF_TONE = 'bone';
+export function puffSize(seed) { const w = 96 + 48 * (Math.abs(lat(1, seed)) * 2.99 | 0); return { w, h: Math.min(96, w / 2 + (lat(2, seed) > 0 ? 24 : 0)) }; }
+// Dot share 0..12 (sixteenths) at a pixel (x, y) relative to the puff's origin; 0 outside the blob.
+export function puffShare(seed, x, y) {
+  const { w, h } = puffSize(seed), ph = (k) => (lat(k + 10, seed) + 1) * Math.PI, dx = x + .5 - w / 2, dy = y + .5 - h / 2, th = Math.atan2(dy / h, dx / w);
+  const r = 0.82 + 0.09 * Math.sin(2 * th + ph(1)) + 0.07 * Math.sin(3 * th + ph(2)) + 0.06 * Math.sin(5 * th + ph(3)) + 0.04 * Math.sin(7 * th + ph(4)),
+    d = Math.hypot(dx / (w / 2), dy / (h / 2)) / r;
+  return d >= 1 ? 0 : Math.min(12, Math.ceil(13 * (1 - d))); }
+// Is the screen pixel (sx, sy) a dot of the puff whose origin is (ox, oy)?
+export function puffHit(seed, ox, oy, sx, sy) { const s = puffShare(seed, sx - ox, sy - oy); return s > 0 && BAYER4[(sy & 3) * 4 + (sx & 3)] < s; }
+
 // The survey veil across the band: a pixel that stays clear keeps the veil only where a second 4 x 4 Bayer test (the same matrix, shifted 2 px) at the same share also says veil,
 // so the veil thins out with the clear ground and is gone where the fog takes over (no tile step, no new table).
 export function fogVeilKeep(px, py, e) {
