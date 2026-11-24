@@ -249,7 +249,7 @@ import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/w
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { readPixels } from "./src/pngdecode.mjs";
 // Every exact-colour read of a picture goes through the file's own bytes (src/pngdecode.mjs), never a canvas read-back a browser may colour-manage or farble (bug 68).
@@ -6782,7 +6782,10 @@ function drawPatchBody(t) {
   const see = (x, y) => inS(x, y) && shown(x, y);   // the veil hides what stands on a tile until a Call
   // a tile's light without the fog: 1 under the storm or inside the approaching band's columns, else 0 (the fog edge's clear side takes this)
   const clockLv = clockLevel(lay);
+  const stormSeed = ex.storm ? Math.imul(lay.cell, 7919) ^ (ex.storm.w * 131 + ex.storm.dir) : 0;
   const clearLight = (tx, ty) => { if (overcast) return stormGrade(clockLv);
+    if (darkW && bandOn) { const px = tx * ts + (ts >> 1), py = ty * ts + (ts >> 1), sx = W(px), ds = darkLeft ? sx : SCR_W - 1 - sx;   // a sprite takes the table of the pixel it stands on (the soft edge, #149)
+      return stormBandHit(ds, py, px, darkW, stormSeed) ? stormGrade(clockLv) : clockLv; }
     if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
   const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
@@ -6810,12 +6813,13 @@ function drawPatchBody(t) {
     const ms = []; for (let j = 1; j <= 4; j++) for (let i = 1; i <= 4; i++) { let m = b[j * 6 + i] ? 256 : 0; NB9.forEach(([dx, dy], k) => { if (b[(j + dy) * 6 + i + dx]) m |= 1 << k; }); ms.push(m); }
     return { key: own.toString(36) + '.' + ring.toString(36), ms }; };
   const pickE = ms => { const cv = ms.map(coverE); return (x, y) => cv[((y / 12) | 0) * 4 + ((x / 12) | 0)][(y % 12) * 12 + x % 12]; };
-  const bk = bakedView(lay), bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
+  const bk = bakedView(lay), bandOn = !!bk && ts === 48 && darkW > 0, bclk = motion() ? NOW : 0, bOrg = bk ? { x: bk.ox * 48 - camX, y: VIEW_Y + bk.oy * 48 - camY } : null;   // a baked place: the ground, props and canopy come from places/src/page.mjs
   const fogE = ts === 48 && fogged && !bk ? eighths('F', (x, y) => !inSG(x, y)) : null, veilE = ts === 48 && !bk ? eighths('V', (x, y) => !uvAt(x, y)) : null;
   if (bk) bk.setPatches([...(lay.lines ? lay.lines.patches : []), ...(lay.closure ? lay.closure.patches : [])], (lay.lines ? lay.lines.id : '') + (lay.closure ? '|' + lay.closure.id : ''));   // a closed opening's path drawn as grass; the map's end a thicket
   if (bk) { hazeSync(lay); const vp = veilPlanOf(lay); bk.setVeil(vp && vp.plan, vp ? vp.id : ''); }   // the edge veil: the coast and the sides past the Probe's reach
-  if (bk) { const lfns = { veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => clearLight(x, y) }; RT.frontFns = Object.assign({ key: lay.key }, lfns);   // water-edge-7: the front beside the place takes this same light (its veil dither) and the edge veil's cloud shadow
-    bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, bk.lightFor(lfns, lay.key)); }
+  if (bk) { const lfns = { veiled: (x, y) => !uvAt(x, y), foggedFar: (x, y) => fogged && !inSG(x, y), level: (x, y) => bandOn ? clockLv : clearLight(x, y) }; RT.frontFns = Object.assign({ key: lay.key }, lfns);   // water-edge-7: the front beside the place takes this same light (its veil dither) and the edge veil's cloud shadow
+    const ls = bk.lightFor(lfns, lay.key); ls.storm = bandOn ? { darkW, left: darkLeft, seed: stormSeed, level: stormGrade(clockLv) } : null;   // the soft edge: per pixel, in the ground's light pass
+    bk.drawGround(g, 0, VIEW_Y, { x: camX - bk.ox * 48, y: camY - bk.oy * 48, w: SCR_W, h: VIEW_H }, bclk, ls); }
   if (bk && lay.rim && lay.rim.length && ART48.ready) {   // the world's edges over the baked ground: lips, faces, stairs, water bands, crossings (rimTile), lit as the props are; one blit of the cached picture
     const cv = rimCanvas(lay, fr, tileLight, uvAt), x0 = Math.max(0, r.tx0), y0 = Math.max(0, r.ty0), x1 = Math.min(lay.w - 1, r.tx1), y1 = Math.min(lay.h - 1, r.ty1);
     if (x1 >= x0 && y1 >= y0) g.drawImage(cv, x0 * 48, y0 * 48, (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48, W(x0 * 48), H(y0 * 48), (x1 - x0 + 1) * 48, (y1 - y0 + 1) * 48); }
