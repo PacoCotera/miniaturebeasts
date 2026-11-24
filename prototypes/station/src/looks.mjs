@@ -19,6 +19,13 @@ export function drawnLooks(frame, mibi) {
   return out;
 }
 
+// A HOME mibi is drawn as herself, read or not (owner 2026-11-23: "my own companion is all known"): her coat and marking come from her genome with every chapter treated as read. The lens and hidden copies are untouched (traitState still decides what shows).
+// Wild mibis, pods and founders keep drawnLooks and their unknown states.
+export function ownLooks(frame, mibi) {
+  if (!frame || !mibi?.genome) return {};
+  return drawnLooks(frame, { ...mibi, read: frame.chapters.map((c) => c.id) });
+}
+
 // Does this mibi's marking draw? Both copies on AND the coat chapter read (the one rule: a look draws only once its chapter is read). The walk uses it for the wild Loika (her coat read by a mid note) and for the partner.
 export function marksShown(frame, mibi) { const v = drawnLooks(frame, mibi).markings; return v != null && v !== "plain"; }
 // Does this mibi's marking draw AS THE SADDLE? The walk has a saddled token only; every other marking (spotted, bands, shaded, patches) stays the plain token until its own frames exist.

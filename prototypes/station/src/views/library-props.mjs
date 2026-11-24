@@ -6,7 +6,7 @@
 import * as S from "../state.mjs";
 import * as Lib from "../library.mjs";
 import { frameIds, frameOf, stampSizing, stampBlocks } from "../genome.mjs";
-import { drawnLooks, keyToken } from "../looks.mjs";
+import { ownLooks, keyToken } from "../looks.mjs";
 import { specimenInput, newLooksOf, sheetInput } from "./specimen-props.mjs";
 import { fill, spell, capLine } from "./words.mjs";
 import { ageTurns, stageNote, growIn, turnsFor, turnsUntil, yoursLine } from "../age-words.mjs";
@@ -56,7 +56,7 @@ export function libraryBuild(m, spec, frame) {
 }
 // A Library face request (library.json faces): the mibi's face at a size, faded when released; the stage is the one its portrait was made at, else its stage now (the art director, F4: the id names the mibi and the size).
 function faceReq(st, settings, fm, species, size) {
-  return { kind: "face", id: faceId(fm.id, size, !!fm.released), mibi: fm.id, species, stage: fm.portrait?.stage ?? S.mibiStage(st, fm, settings), looks: drawnLooks(frameOf(species), fm), size: [size, size], faded: !!fm.released };
+  return { kind: "face", id: faceId(fm.id, size, !!fm.released), mibi: fm.id, species, stage: fm.portrait?.stage ?? S.mibiStage(st, fm, settings), looks: ownLooks(frameOf(species), fm), size: [size, size], faded: !!fm.released };
 }
 
 // ---- Level 2 (library.json l2: the screen library.species) ----
