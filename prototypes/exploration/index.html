@@ -8047,9 +8047,12 @@ function crateIcon(x, y, c, w) {
 // every picture is a signed file (the pod and the tuft; a whisker and a claw have none yet: their places stay empty, named [art]).
 function openCase(end) { S.ui.caseEnd = end ? 1 : 0; S.ui.caseSel = null; S.phase = 'cargo'; transition(); }
 function caseHold() { return S.exp ? S.exp.cargo : (S.hold || { e: 0, d: 0, s: 0, pods: [], samples: [] }); }
+// the places the Companion can carry: the Probe's hold (TIER: 2, 3 with the upgrade); the 'Sealed for home' row shows as many (never fewer than the crates already sealed)
+function caseSlots() { return S.exp ? S.exp.hold : Math.max(tierOf().hold, (caseHold().pods || []).length); }
+function caseSealedSlots() { return Math.min(BAY, Math.max(caseSlots(), S.bay.length)); }
 function caseCells() {
-  const h = caseHold(), np = S.exp ? S.exp.hold : Math.max(tierOf().hold, (h.pods || []).length), cells = [], r = np > 2 ? 22 : 30;
-  for (let i = 0; i < BAY; i++) cells.push({ k: 'crate', i, x: 36 + i * 60, y: 114, w: 48, h: 36 });
+  const h = caseHold(), np = caseSlots(), ns = caseSealedSlots(), cells = [], r = np > 2 ? 22 : 30;
+  for (let i = 0; i < ns; i++) cells.push({ k: 'crate', i, x: 36 + i * 60, y: 114, w: 48, h: 36 });
   for (let i = 0; i < np; i++) cells.push({ k: 'pod', i, x: 40 + i * (2 * r + 12), y: 228 - r, w: 2 * r, h: 2 * r, r });
   ['e', 'd', 's'].forEach((s, i) => cells.push({ k: 'sup', s, x: 222 + i * 66, y: 198, w: 56, h: 60 }));
   for (let i = 0; i < SATCHEL; i++) cells.push({ k: 'smp', i, x: 36 + (i % 4) * 96, y: 270 + Math.floor(i / 4) * 68, w: 88, h: 60 });
@@ -8120,7 +8123,7 @@ function drawCargo(t) {
   faceFrame(1);
   // the lid: the crates sealed for home; an empty place is dotted
   caseHalf(16, 72, 418, 100); text(W.sealed, 36, 90, C.bark);
-  for (let i = 0; i < BAY; i++) { const x = 36 + i * 60, y = 114;
+  for (let i = 0; i < caseSealedSlots(); i++) { const x = 36 + i * 60, y = 114;
     if (S.bay[i]) { R(x, y, 48, 36, C.clay); R(x, y, 48, 10, C.bark); R(x + 20, y, 8, 36, C.paper); R(x, y + 35, 48, 1, C.bark); } else dashedRect(x, y, 48, 36, C.bark); }
   text(W.goesHome[0], 414, 112, C.bark, 2, 'right'); text(W.goesHome[1], 414, 134, C.bark, 2, 'right');
   // the tray, the hinges between them, the corners, the clasp
