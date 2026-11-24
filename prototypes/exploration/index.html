@@ -256,7 +256,7 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
-import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
+import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
 import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
@@ -2273,8 +2273,30 @@ function advance(scope, info) {
 // night step 4: the dusk, night and dawn cards. Each is the art director's signed painting (night-camp pieces 1 to 3), passed by any press, once a day each.
 // NAMED EMPTY SLOTS: none is signed and in the art set yet, so a slot stays empty ("dusk card: picture to come"), the message-box line stays in its place and nothing is drawn in code.
 // When a painting is signed, its file goes in here and cardShow draws it on the Companion's frame; the PR stays draft + hold until all three are.
-const NIGHT_CARDS = { dusk: { slot: 'dusk card: picture to come', file: null }, night: { slot: 'night card: picture to come', file: null }, dawn: { slot: 'dawn card: picture to come', file: null } };
-function cardShow(k) { return false; }   // false while the slot (NIGHT_CARDS[k].file) is empty: the caller keeps the message-box line
+// The dusk card is in (the art director's signed take 1, sha 53624a5e73b7); night and dawn stay empty.
+const NIGHT_CARDS = { dusk: { slot: 'dusk card', file: 'art/cards/dusk-card-450x600.png' }, night: { slot: 'night card: picture to come', file: null }, dawn: { slot: 'dawn card: picture to come', file: null } };
+const CARD_ART = {};   // kind -> the file's canvas, as loaded (450 x 600: the Companion's whole frame, drawn 1:1 and never redrawn)
+async function loadCardArt() {
+  try {
+    if (typeof Image === 'undefined') return;
+    for (const [k, c] of Object.entries(NIGHT_CARDS)) {
+      if (!c.file) continue;
+      const px = await pixelsOf(vurl(new URL(c.file, location.href).href));
+      if (px.width !== 450 || px.height !== 600) throw new Error('card art ' + k);
+      const cv = document.createElement('canvas'); cv.width = 450; cv.height = 600;
+      cv.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 450, 600), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
+      CARD_ART[k] = cv;
+    }
+  } catch (e) { for (const k in CARD_ART) delete CARD_ART[k]; console.warn('a card did not load; the message-box line stays', e); }
+}
+// true when the card is up (the caller then skips its message-box line); false while the slot is empty or the picture is not in
+function cardShow(k) {
+  if (!NIGHT_CARDS[k] || !NIGHT_CARDS[k].file || !CARD_ART[k]) return false;
+  FX.card = { k, at: NOW }; stopRepeat(); return true;
+}
+// Any press passes the card (and is spent on it); its line goes to the message box then.
+function cardPass() { const k = FX.card.k; FX.card = null; const t = CARD_TEXT[k]; if (t && t[1]) fxMsg(t[1], 3); }
+function drawCard() { const c = FX.card && CARD_ART[FX.card.k]; if (c) { g.imageSmoothingEnabled = false; g.drawImage(c, 0, 0); } }
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
   const ex = S.exp, pending = { trail: [...new Set([...S.day.pend.trail, ...ex.trail])], storm: [...new Set([...S.day.pend.storm, ...Object.keys(ex.stormCells).map(Number)])] };
@@ -8490,6 +8512,7 @@ function renderFrame(t) {
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
   if (!(RT.view && S.phase === 'patch')) drawMessage();
+  drawCard();   // a night-step-4 card, when one is up: the whole frame, over everything
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
 }
 function frame(t) {
@@ -8734,6 +8757,7 @@ function panRaw(lay, c0, hero, f, d) {
   return { x: f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN), y: 0 };
 }
 function press(k) {
+  if (FX.card) { cardPass(); return; }   // a card is up: any press passes it, and is spent on that
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual
   if (k === 'call') {
     NOW = performance.now();
@@ -9051,6 +9075,7 @@ const startLoads = () => {
   loadCareArt();   // the pixel desk's painted hearts for the bond
   loadWaterEdgeArt();   // the art director's signed shallow-to-deep edge pieces (owner #110)
   loadDayArt();   // the six part-of-day pictures for the top bar
+  loadCardArt();   // the signed dusk card (night step 4)
   loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 };
 if (RT.artHold) REL.ready.then(startLoads); else startLoads();   // in the page the release number is read first, so every fetch carries it
@@ -9097,7 +9122,7 @@ requestAnimationFrame(frame);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
-  act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
+  FX, CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
