@@ -4680,7 +4680,7 @@ class PB {
     for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) {
       let c = this.p[y * this.w + (flip ? this.w - 1 - x : x)]; if (c < 0 || (chk && (x + y) % 2)) continue;
       if (lut) c = lut[c];
-      if (veil) c = BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
+      if (veil) c = rm === 6 ? DARK[c] : BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];   // dusk (6): the veil is a flat tone shift, no dither dots (dusk-mesh-fix-1)
       const rgb = RGB[c], o = (y * this.w + x) * 4; id.data[o] = rgb[0]; id.data[o + 1] = rgb[1]; id.data[o + 2] = rgb[2]; id.data[o + 3] = 255;
     }
     g.putImageData(id, 0, 0); this.cache.set(key, cv); return cv;
@@ -6428,7 +6428,7 @@ function edge48(key, pb, pick, near, far) { const k = key + '|' + RT.remap.id; l
   for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const o = y * 48 + x, c = pb.p[o]; if (c < 0) continue;
     const q = RGB[pick(x, y) ? far(c, x, y) : near(c, x, y)]; u[o] = ((255 << 24) | (q[2] << 16) | (q[1] << 8) | q[0]) >>> 0; }
   cg.putImageData(id, 0, 0); EDGE_TILE.set(k, cv); return cv; }
-const veilPx = (c, x, y) => BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
+const veilPx = (c, x, y, rm) => rm === 6 ? DARK[c] : BAYER[(y & 3) * 4 + (x & 3)] < 4 ? C.night : DARK[c];
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle', hab: 'idle' };
 // The place camera: today's centred camera for a generated place; for a baked place the half-screen steps of places/src/camera.mjs (page pixels).
 // live (drawPatch only) steps the kept state RT.ca on the explorer's tile; every other caller reads what the view would be (a copy of the state),
@@ -6791,7 +6791,7 @@ function drawPatchBody(t) {
           g.drawImage(edge48('F' + key + '|' + fb.key + '|' + nl + (uv ? '' : 'v'), pb, f, (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
       if (L0 !== 3) { const vb = blockE(veilE, tx, ty);
         if (vb) { const f = pickE(vb.ms), lut = set[L0];
-          g.drawImage(edge48('V' + key + '|' + vb.key + '|' + L0, pb, f, c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y)), W(tx * ts), H(ty * ts)); continue; } }
+          g.drawImage(edge48('V' + key + '|' + vb.key + '|' + L0, pb, f, c => lut ? lut[c] : c, (c, x, y) => veilPx(lut ? lut[c] : c, x, y, L0)), W(tx * ts), H(ty * ts)); continue; } }
       if (darkW && L0 === 0) { const side = tileLight(tx - 1, ty) === 1 ? 'W' : tileLight(tx + 1, ty) === 1 ? 'E' : null;
         if (side) { g.drawImage(edge48('S' + key + '|' + side + (uv ? '' : 'v'), pb, (x, y) => stormStep(side === 'W' ? x : 47 - x, x, y),
           (c, x, y) => uv ? c : veilPx(c, x, y), (c, x, y) => uv ? set[1][c] : veilPx(set[1][c], x, y)), W(tx * ts), H(ty * ts)); continue; } }

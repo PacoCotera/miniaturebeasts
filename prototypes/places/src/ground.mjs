@@ -101,7 +101,7 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
         const lx = (px - cx * size) * (48 / size);
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
-      buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
+      buf[o] = mV === 511 || (cV && cV[k]) ? (L === 6 ? T.dark[base] : veilPx(base, px, py, T.dark, night)) : base;   // dusk (6): the veil is a flat tone shift, no dither dots over the land and sea (dusk-mesh-fix-1)
     }
   }
   return buf;
