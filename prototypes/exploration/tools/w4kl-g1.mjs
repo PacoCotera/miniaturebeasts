@@ -37,7 +37,7 @@ export function playDayOn(S, policy, dusk, pos) {
   const appts = [];
   if (fc.rain) appts.push({ k: 'shake', by: fc.rain[1], t: fc.rain[1] - 1, end: fc.rain[1] + 3 });
   appts.push({ k: 'calm', by: fc.mibiFrom, t: fc.mibiFrom, end: S.ma + 15 });
-  appts.push({ k: 'sleep', by: 150, t: 150, end: S.sleepAt + 8 });
+  appts.push({ k: 'sleep', by: G0.DUSK, t: G0.DUSK, end: S.sleepAt + 8 });
   let route = pos.route, idx = pos.idx;
   const tooLate = a => S.light > a.end;
   for (const a of appts) {

@@ -26,7 +26,7 @@ export function playDay(seed, policy = 'HONEST') {
   const appts = [];
   if (fc.rain) appts.push({ k: 'shake', by: fc.rain[1], t: fc.rain[1] - 1, end: fc.rain[1] + 3 });
   appts.push({ k: 'calm', by: fc.mibiFrom, t: fc.mibiFrom, end: S.ma + 15 });
-  appts.push({ k: 'sleep', by: 150, t: 150, end: S.sleepAt + 8 });
+  appts.push({ k: 'sleep', by: G.DUSK, t: G.DUSK, end: S.sleepAt + 8 });
   let route = null, idx = 0;   // where the bot stands on its route (index into the route's tiles); null: at the start
   const stillMark = {};
   const tooLate = a => S.light > a.end;
@@ -134,7 +134,7 @@ export function measure(N = 200) {
       const cc = c.noted && c.cost !== null ? c.cost : Infinity, oc = o.noted && o.cost !== null ? o.cost : Infinity;
       if (cc === Infinity && oc === Infinity) continue;
       reach++;
-      if (cc <= oc) { coverCheapest++; if (cc === oc) equal++; const wind = (() => { const S = G.makeDay(i + 1); const tt = k === 'shake' ? (S.rain ? S.rain.e - 1 : 0) : k === 'calm' ? 110 : 150; return G.windNow(S, tt); })(); if (wind === 'W') coverDownCheapest++; } else openCheapest++;
+      if (cc <= oc) { coverCheapest++; if (cc === oc) equal++; const wind = (() => { const S = G.makeDay(i + 1); const tt = k === 'shake' ? (S.rain ? S.rain.e - 1 : 0) : k === 'calm' ? partStart('afternoon') : G.DUSK; return G.windNow(S, tt); })(); if (wind === 'W') coverDownCheapest++; } else openCheapest++;
     }
   }
   out.cover = { approachesReachingANote: reach, coverCheapest: share(coverCheapest, reach), ofWhichTied: equal, coverCheapestAndDownwind: share(coverDownCheapest, reach), openCheapest: share(openCheapest, reach), line: 'no more than 70%', pass: share(coverCheapest, reach) <= 70 };

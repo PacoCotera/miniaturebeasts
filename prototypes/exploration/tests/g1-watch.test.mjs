@@ -60,10 +60,10 @@ test("the wind turns by part of day, from the seed", () => {
 test("keeping still is ONE act: it runs until her ease changes, a tell starts, the weather or the part turns, or ten light; each Wait spends light", () => {
   const S = day(7, { wind: "N" }); const h = G.hold(S);
   assert.equal(h.n, 10); assert.equal(h.why, "ten"); assert.equal(S.light, 10, "ten Waits, ten light"); assert.equal(S.log.holds, 1); assert.equal(S.log.waits, 10);
-  const T = day(7, { wind: "N" }); T.light = 15; const hp = G.hold(T); assert.equal(hp.why, "part"); assert.equal(hp.n, 5, "dawn turns at 20");
+  const T = day(7, { wind: "N" }); T.light = G.partStart("morning") - 5; const hp = G.hold(T); assert.equal(hp.why, "part"); assert.equal(hp.n, 5, "dawn turns at the morning's first light");
   const R = day(7, { wind: "N", rain: { s: 30, e: 60 } }); R.light = 25; const hr = G.hold(R); assert.equal(hr.why, "weather"); assert.equal(R.light, 30, "rain began");
   const E = day(7, { wind: "N" }); E.P.x = 9; E.P.y = 5; G.step(E, "up", "creep"); assert.equal(E.L.ease, 2); const he = G.hold(E); assert.equal(he.why, "ease"); assert.equal(he.n, 3);
-  const D = day(7, { wind: "N" }); D.light = 151; D.sleepAt = 154; const hd = G.hold(D); assert.equal(hd.why, "tell"); assert.equal(D.L.habit.k, "sleep");
+  const D = day(7, { wind: "N" }); D.light = G.DUSK + 1; D.sleepAt = G.DUSK + 4; const hd = G.hold(D); assert.equal(hd.why, "tell"); assert.equal(D.L.habit.k, "sleep");
 });
 
 test("a habit plays on its cause: rain then the moment it stops, a wary one near, dusk; and a heard step in a habit loses it", () => {

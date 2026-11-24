@@ -41,15 +41,20 @@ export const individual = seed => { const r = INDIVIDUALS[((seed - 1) % INDIVIDU
 
 // where the wary one enters (all within four of her haunt, so it can come near her): north-east sand, east sand, north-west reeds, west reeds
 const MIBI_FROM = [[10, 2], [10, 7], [4, 1], [3, 6]];
+// The day table (DAY in words.mjs) sets every hour here: a part's first light, and an hour inside a part as a share of that part, so it keeps its place when the table's lengths change.
+// Nothing below types the day's size. What is counted in actions (the rain's 15 to 35 light, the wary one's 14, her bedding down, a hold of ten) is a length, not an hour, and stays as it is.
+export const partStart = name => { let t = 0; for (const [n, len] of DAY.parts) { if (n === name) return t; t += len; } return t; };
+export const partLen = name => (DAY.parts.find(([n]) => n === name) || [name, 0])[1];
+export const DUSK = partStart('dusk');   // dusk's first light
 // a day for a seed: the wind of each part, the rain, when the wary one passes, when she beds down. All from the seed.
 export function makeDay(seed) {
   const r = rngFor(seed, 'g1-day'), ind = individual(seed);
   const wind = []; let w = Math.floor(r() * 4);
   for (let i = 0; i < DAY.parts.length; i++) { if (i && r() < .35) w = (w + 1 + Math.floor(r() * 3)) % 4; wind.push(WIND_KEYS[w]); }
-  let rain = null;
-  if (r() < .8) { const s = 20 + Math.floor(r() * 65), len = 15 + Math.floor(r() * 21), e = Math.min(s + len, 120); if (e - s >= 10) rain = { s, e }; }
-  const ma = 125 + Math.floor(r() * 16);                                    // the wary one comes near at ma and stays 14 light
-  const sleepAt = 150 + (ind.late ? 6 + Math.floor(r() * 5) : Math.floor(r() * 4));   // dusk starts at 150
+  let rain = null;   // the rain starts in the morning or the first three eighths of midday, and is over a quarter into the afternoon at the latest
+  if (r() < .8) { const s = partStart('morning') + Math.floor(r() * (partLen('morning') + 3 / 8 * partLen('midday'))), len = 15 + Math.floor(r() * 21), e = Math.min(s + len, partStart('afternoon') + Math.floor(partLen('afternoon') / 4)); if (e - s >= 10) rain = { s, e }; }
+  const ma = partStart('afternoon') + Math.floor(partLen('afternoon') * (3 / 8 + r() * 2 / 5));   // the wary one comes near at ma, three eighths to just past three quarters of the way through the afternoon, and stays 14 light
+  const sleepAt = DUSK + (ind.late ? 6 + Math.floor(r() * 5) : Math.floor(r() * 4));   // she beds down a few light into dusk
   const from = MIBI_FROM[Math.floor(rngFor(seed, 'g1-mibi-from')() * MIBI_FROM.length)];   // where the wary one enters the place: the seed sets it
   const rw = rngFor(seed, 'g1-want'), WANTS = ['place', 'coat', 'face'], want = { shake: WANTS[Math.floor(rw() * 3)], calm: WANTS[Math.floor(rw() * 3)], sleep: WANTS[Math.floor(rw() * 3)] };   // RANGE RULE (scratch): what the card still lacks for each habit
   if (globalThis.KL && globalThis.KL.sleepTwo && want.sleep === 'place') want.sleep = rngFor(seed, 'g1-want-sleep')() < .5 ? 'coat' : 'face';   // KILL LINES (scratch): until the dew's prints ship, sleep-curled's card asks her coat or her face only
@@ -101,7 +106,7 @@ export function hearLine(S) {
 // ---- the world's tick: one light spent ----
 const HABITS = ['shake', 'calm', 'sleep'];
 // RANGE RULE (scratch): clear air = no rain and before dusk; the near stay = how many light she lets a still explorer stay within 2 tiles: 10 less twice the carry there
-export const clearAir = (S, l = S.light) => !raining(S, l) && l < 150;
+export const clearAir = (S, l = S.light) => !raining(S, l) && l < DUSK;
 export const stayAt = (S, x, y) => Math.max(0, 10 - 2 * carryAt(S, x, y, 'creep').v);
 function spend(S, heard) {
   const L = S.L;
@@ -116,7 +121,7 @@ function spend(S, heard) {
   if (raining(S) !== raining(S, was)) S.events.push('weather');
   if (partOfDay(S.light) !== partOfDay(was)) S.events.push('part');
   // her day
-  if (S.light === 150 && !L.gone) { L.x = BED.x; L.y = BED.y; }   // dusk: she goes to her bed
+  if (S.light === DUSK && !L.gone) { L.x = BED.x; L.y = BED.y; }   // dusk: she goes to her bed
   if (!L.gone && L.habit) {
     const h = L.habit; if (L.ease >= 2) { S.done[h.k] = 'lost'; L.habit = null; S.log.lostHabits++; S.events.push('lost'); }
     else { h.n++; if (h.n >= S.ind.tell + 4) { S.done[h.k] = 'played'; L.habit = null; if (h.k === 'sleep') L.asleep = true; S.events.push('end'); } else if (h.n - S.ind.tell === 3 && h.k === 'calm') { S.M.x += Math.sign(L.x - S.M.x); S.M.y += Math.sign(L.y - S.M.y); } }
