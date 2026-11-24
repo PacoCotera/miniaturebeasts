@@ -1363,7 +1363,7 @@ function bookFrom(ex) {
 }
 function bookEv(kind, c, text, item) {
   const ex = S && S.exp; if (!ex || !ex.patch || !S.day || !text) return null;
-  const rec = { d: ex.n, part: dayPart(), place: placeName(curLay()), from: bookFrom(ex), id: c ? c.id : null, who: c ? habName(c) : '', kind, text, at: S.day.spent };
+  const rec = { d: ex.n, part: dayPart(), place: placeName(curLay()), from: bookFrom(ex), t: wTurn(), id: c ? c.id : null, who: c ? habName(c) : '', kind, text, at: S.day.spent };
   if (item) rec.item = item;
   const bk = S.book || (S.book = []); bk.push(rec);
   while (bk.length && bk[0].d < ex.n - (BOOK_DAYS - 1)) bk.shift();
@@ -7972,9 +7972,16 @@ function logDays() {
   if (S.exp && S.exp.patch && S.day) { let d = days.find(x => x.d === S.exp.n); if (!d) days.push(d = { d: S.exp.n, rows: [], from: '' }); d.from = bookFrom(S.exp); }   // today's page: where you stand now
   return days.sort((a, b) => a.d - b.d);
 }
+// A row's heading: 'T9 · morning · the Meadow' (an old record with no turn: 'morning · the Meadow'). Too wide for the page (x 68..430): turn and part stay on the line, the place wraps to the next.
+function logHead(r) {
+  const full = WORDS.book.head(r.part, r.t, r.place);
+  if (textW(full, 2) <= 360) return [full];
+  const pl = WORDS.book.place(r.place);
+  return [full.slice(0, full.length - pl.length).replace(/ · $/, ''), ...wrapText(pl, 360, 2)];
+}
 function logLay(r) {
-  const pic = r.kind === 'prints' || r.kind === 'met' || (r.kind === 'find' && r.item === 'tuft'), ls = wrapText(r.text, pic ? 288 : 362, 2).slice(0, 3);
-  return { r, pic, ls, h: 48 + 24 * ls.length };
+  const pic = r.kind === 'prints' || r.kind === 'met' || (r.kind === 'find' && r.item === 'tuft'), ls = wrapText(r.text, pic ? 288 : 362, 2).slice(0, 3), hd = logHead(r);
+  return { r, pic, ls, hd, h: 48 + 24 * (ls.length + hd.length - 1) };
 }
 function logFitTop(day) { let y = 0, i = day.rows.length; while (i > 0) { const h = logLay(day.rows[i - 1]).h; if (y + h > LOG_Y1 - LOG_Y0) break; y += h; i--; } return i; }
 function logCanMove() { const days = logDays(); return days.length > 1 || (days.length === 1 && logFitTop(days[0]) > 0); }   // the bottom line names ▲▼ only when they do something
@@ -8014,8 +8021,8 @@ function drawLog() {
     for (let i = clamp(S.ui.logTop | 0, 0, day.rows.length - 1); i < day.rows.length; i++) {
       const L = logLay(day.rows[i]), r = L.r; if (y + L.h > LOG_Y1) break;
       if (DAY_ART[r.part]) g.drawImage(DAY_ART[r.part], 22, y, 28, 28);   // the signed 14 px day picture, in the margin at 2x
-      text(r.part + ' · ' + W.place(r.place), 68, y + 2, soft);
-      L.ls.forEach((l, j) => text(l, 68, y + 26 + j * 24, ink));
+      L.hd.forEach((l, j) => text(l, 68, y + 2 + j * 24, soft));
+      L.ls.forEach((l, j) => text(l, 68, y + 26 + (L.hd.length - 1) * 24 + j * 24, ink));
       if (r.kind === 'prints') { blitScaled(ICON.paw('clay'), 372, y + 10, 2); blitScaled(ICON.paw('bark'), 396, y + 22, 2); blitScaled(ICON.paw('bark'), 380, y + 40, 2); }   // the map's own paw sign at 2x
       else if (r.kind === 'find' && r.item === 'tuft') { R(380, y + 22, 48, 40, C.bone); R(392, y + 16, 24, 10, C.sand); R(392, y + 16, 24, 1, C.clay); blitScaled(ICON.tuft(), 390, y + 34, 2); }   // the find's own picture at 2x, on a slip
       else if (r.kind === 'met' && LOG_SKETCH) g.drawImage(LOG_SKETCH, 378, y + 8);   // her signed 48 x 48 game cut at 1x (the kind's base: the log row keeps no coat)

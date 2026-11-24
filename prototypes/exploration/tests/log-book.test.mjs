@@ -24,6 +24,25 @@ test("the last 3 days are kept; an old save has no book and shows no page", () =
   assert.equal(f.run("logDays()[0].rows.length"), 0);
 });
 
+test("an entry records the turn the top bar shows; its heading says turn, part and place", () => {
+  const f = fixture({ partner: 0 });
+  f.run("S.turn = 8; delete S.book; bookEv('prints', null, 'a')");
+  const r = plain(f.run("S.book[0]"));
+  assert.equal(r.t, 9); assert.equal(r.t, f.run("wTurn()"));
+  assert.equal(f.run("logLay(S.book[0]).hd.join('|')"), "T9 · " + r.part + " · the " + r.place);
+  assert.equal(f.run("WORDS.book.head('morning', 9, 'Meadow')"), "T9 · morning · the Meadow");
+});
+
+test("a record with no turn keeps today's heading; a long place wraps under turn and part inside the page", () => {
+  const f = fixture({ partner: 0 });
+  assert.equal(f.run("logLay({ kind: 'prints', part: 'morning', place: 'Meadow', text: 'a' }).hd.join('|')"), "morning · the Meadow");
+  const lay = plain(f.run("logLay({ kind: 'prints', part: 'afternoon', t: 12, place: 'Old Flooded Rock Garden of the Quiet Beasts', text: 'a' })"));
+  assert.equal(lay.hd[0], "T12 · afternoon");
+  assert.ok(lay.hd.length >= 2 && lay.hd.slice(1).join(" ") === "the Old Flooded Rock Garden of the Quiet Beasts");
+  for (const l of lay.hd) assert.ok(f.run(`textW(${JSON.stringify(l)}, 2)`) <= 360, "fits x 68..430: " + l);
+  assert.equal(lay.h, 48 + 24 * (lay.ls.length + lay.hd.length - 1), "row height grows with the heading");
+});
+
 test("opening and closing the Log leaves light, clock, the wild ones and the place as they were", () => {
   const f = fixture({ partner: 0 }), at = f.spot(3, 3, f.P());
   f.add(0, at.x, at.y, { ind: { name: "Nettle" } });
