@@ -180,3 +180,41 @@ test("a quick press of Call inside the place is the Call only: no zoomed-out vie
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 });
+
+// owner #136 round 2 and #142: the edge Call lifted the place next door (S.veilPre) but the peek DREW it only when that place was never walked; his place was "visited" with no veil record of its own, so it drew dark fog.
+// On every edge (left, right, top, bottom) the strip must be DRAWN: the peek with the lifted rows differs from the same peek without them.
+for (const how of ["never walked (a fresh game)", "visited, with no veil record of its own (his save)"]) {
+  test("the edge Call's peek draws the strip it lifted next door, on every edge: " + how + " (owner #136, #142)", { skip }, async (t) => {
+    let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
+    const { server, url } = await serve();
+    try {
+      const { page, errors } = await enter(browser, url, 7, false);
+      const visited = how.startsWith("visited");
+      const tested = [];
+      for (const side of ["up", "down", "left", "right"]) {
+        const nb = await page.evaluate(([side, visited]) => {   // stand on that edge; the place next door must be land with a place to draw
+          const m = window.__mb, P = m.S.exp.patch, lay = m.layout(P.key), [dx, dy] = m.DIRS[side], k = P.key * 1 + dx + dy * m.MW, X = (P.key * 1 % m.MW) + dx;
+          if (X < 0 || X >= m.MW || k < 0 || !m.passable(k)) return null;
+          P.x = dx < 0 ? 0 : dx > 0 ? lay.w - 1 : 4; P.y = dy < 0 ? 0 : dy > 0 ? lay.h - 1 : 4; m.S.exp.reach = [...new Set([...(m.S.exp.reach || []), k])];
+          delete m.S.veilPre?.[k]; delete m.S.veil[k]; if (visited) m.S.visited[k] = 1; else delete m.S.visited[k]; m.S.revealed[k] = 0; m.RT.view = null; return k; }, [side, visited]);
+        if (nb == null) continue;
+        await page.waitForTimeout(1600);   // the last peek ended, the place next door is made
+        await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
+        assert.equal((await st(page)).view, "peek", side + ": a quick Call at the edge opens the peek");
+        await page.waitForTimeout(700);
+        const lifted = await still(page);
+        assert.equal(await page.evaluate((k) => !!(window.__mb.S.veilPre && window.__mb.S.veilPre[k]) && !!window.__mb.S.revealed[k], nb), true, side + ": the place next door is lifted and its map cell revealed");
+        await page.evaluate((k) => { delete window.__mb.S.veilPre[k]; }, nb);
+        await page.waitForTimeout(300);
+        assert.equal((await st(page)).view, "peek", side + ": still in the peek");
+        const bare = await still(page);
+        const box = diffBox(lifted, bare);
+        assert.ok(box && box.w >= 12 && box.h >= 12, side + ": the lifted strip is drawn next door (differs from the peek without it), got " + JSON.stringify(box));
+        tested.push(side);
+      }
+      assert.ok(tested.length >= 2, "at least two edges have land next door in this world, got " + tested);
+      assert.deepEqual(errors, []);
+    } finally { await browser.close(); server.close(); }
+  });
+}
+
