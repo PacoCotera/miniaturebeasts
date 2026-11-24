@@ -1800,6 +1800,7 @@ function readStrike(f) { if (darkRefuse()) return;
 }
 // Fresh marks from the turn's storm: one in each cell the storm struck on the map, on a bare tile if the place has one.
 function freshStrike(key, lay, t, rng) {
+  if (!lay.baked) return;   // a cell whose place is not made yet is a stand-in layout (no baked): no mark there, no throw
   const W = lay.baked.place.w, bare = new Set([3, 5, 7]), taken = new Set(lay.feats.map(f => f.y * lay.w + f.x));   // sand, path, earth
   const pool = [], any = [];
   for (let i = 0; i < lay.w * lay.h; i++) { if (!lay.reach[i] || taken.has(i) || T_BLOCK[lay.tiles[i]]) continue; any.push(i); if (bare.has(lay.baked.place.terrain[((i / lay.w | 0) + 1) * W + (i % lay.w) + 1])) pool.push(i); }
