@@ -4,7 +4,7 @@
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
-import { BAYER4, eighthGrid, coverE, stormStep } from '../../exploration/src/view.mjs';
+import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
 export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dark'];
@@ -79,7 +79,7 @@ const veilPx = (c, x, y, dark, night) => (BAYER4[(y & 3) * 4 + (x & 3)] < 4 ? ni
 // Per pixel: beyond fog sight -> the fog table; else the cell's clear light; the 6 px storm step beside a storm column; the veil's dots where veiled.
 export function applyLight(buf, win, size, ts, state, opts = {}) {
   const gV = gridOf(state, 'veil'), gF = gridOf(state, 'fog'), lvl = state.level;
-  if (!gV && !gF && !lvl) return buf;
+  if (!gV && !gF && !lvl && !state.storm) return buf;
   const T = tablesOf(ts), night = opts.nightIndex ?? 2, eb = size >> 2, pw = state.w, EW = 4 * state.w, EH = 4 * state.h;
   const ebx0 = Math.floor(win.x / eb), ebx1 = Math.floor((win.x + win.w - 1) / eb), eby0 = Math.floor(win.y / eb), eby1 = Math.floor((win.y + win.h - 1) / eb);
   for (let ey = Math.max(0, eby0); ey <= Math.min(EH - 1, eby1); ey++) for (let ex = Math.max(0, ebx0); ex <= Math.min(EW - 1, ebx1); ex++) {
@@ -87,8 +87,11 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
     const mV = gV ? m9(gV, EW, EH, ex, ey) : 0, mF = gF ? m9(gF, EW, EH, ex, ey) : 0;
     let side = null;
     if (lvl && L === 0) side = cx > 0 && lvl[cy * pw + cx - 1] === 1 ? 'W' : cx < pw - 1 && lvl[cy * pw + cx + 1] === 1 ? 'E' : null;
-    if (!L && !mV && !mF && !side) continue;
-    const tL = L ? T[LEVELS[L]] : null;
+    // the approaching storm's soft edge (state.storm = { darkW, left, seed, level }): per pixel, screen-side distance, world-anchored dither
+    const bx0 = Math.max(ex * eb, win.x) - win.x, bx1 = Math.min(ex * eb + eb, win.x + win.w) - win.x;
+    const sb = state.storm && (state.storm.left ? bx0 < state.storm.darkW + 96 : bx1 > win.w - state.storm.darkW - 96) ? state.storm : null;
+    if (!L && !mV && !mF && !side && !sb) continue;
+    const tL = L ? T[LEVELS[L]] : null, tS = sb ? T[LEVELS[sb.level]] : null;
     const cV = mV && mV !== 511 ? coverE(mV) : null, cF = mF && mF !== 511 ? coverE(mF) : null;
     const px0 = Math.max(ex * eb, win.x), px1 = Math.min(ex * eb + eb, win.x + win.w), py0 = Math.max(ey * eb, win.y), py1 = Math.min(ey * eb + eb, win.y + win.h);
     for (let py = py0; py < py1; py++) for (let px = px0; px < px1; px++) {
@@ -101,6 +104,7 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
         const lx = (px - cx * size) * (48 / size);
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
+      if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, (py / size) | 0, px, py, sb.darkW, sb.seed)) base = tS[c]; }
       buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
     }
   }
