@@ -974,6 +974,9 @@ function windowOf(S, X, Y) {
     } }
   tidyStreams();
   if (stg) stg('gaps+spurs');
+  // the lip between a trail's top and its gap (owner bug #148): a raised tile with a trail top on one side and low path on the other is laid as the trail's top too, so the dirt runs from the top into the gap
+  { const lips = []; for (let y = 1; y + 1 < H; y++) for (let x = 1; x + 1 < W; x++) { const k = y * W + x; if (t[k] !== TV.CLIFF || pathTop[k]) continue; const n4 = [k - W, k + W, k - 1, k + 1]; if (n4.some(c => pathTop[c] && t[c] === TV.CLIFF) && n4.some(c => t[c] === TV.PATH)) lips.push(k); }
+    for (const k of lips) pathTop[k] = 1; }
   const topLayer = topsOf(t, recipe, W, H, pathTop); if (stg) stg('tops');
   return { t, W, H, gx0, gy0, wayups, gaps, falls: fallsSlots, banks, top: topLayer };
 }

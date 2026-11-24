@@ -123,7 +123,7 @@ export const GROUND_PAIRS = [
   ['grass', 'turf'], ['thicket', 'turf'], ['scrub', 'turf'], ['grass', 'scree'], ['sand', 'scree'], ['thicket', 'scree'], ['scrub', 'scree'], ['water', 'scree'],
   ['litter', 'drygrass'], ['litter', 'turf'], ['litter', 'scree'], ['scrub', 'litter'], ['drygrass', 'turf'], ['drygrass', 'scree'], ['turf', 'scree'],
   ['cliff', 'litter'], ['cliff', 'drygrass'], ['cliff', 'turf'], ['cliff', 'scree'],
-  ['path-top', 'grass'],
+  ['path-top', 'grass'], ['path-top', 'path'],   // bug #148: the trail's top meets the gap's low path (both drawn as the path)
   ['ford-ground', 'water'], ['ford-ground', 'deep'], ['ford-ground', 'grass'], ['ford-ground', 'path'], ['bridge', 'water'], ['bridge', 'deep'], ['bridge', 'grass'], ['bridge', 'path'],   // a ford and a bridge: walkable runs over water, drawn as the path until painted   // a trail over a raised top: the path on the top's grass, drawn as the path until the pixel desk paints its own
 ];
 
@@ -206,7 +206,9 @@ export function deskLayers() {
     cliff: {
       fill: { sheets: [rec({ commit: 'local' }, 'fill-cliff.png', `${RAISED.dir}/fill-grass-raised-day.png, one colour map to #8cba68 (P5 of the cliff method; the chain is in fill-cliff.steps.json)`, readFileSync(path.join(SET_DIR, 'fill-cliff.png')))] },   // the raised top: one clear step lighter than the low grass
       // P1: the rim sheet, the cliff layer's 14-slot over sheet (the raised quadrants filled with the top's colour, the outline and crest on their edge), drawn by the dual grid over every lower it lists
-      over: [{ kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [rec({ commit: 'local' }, 'over-cliff.png', `${CLIFF_FROM} (cut and recoloured; the whole chain is in over-cliff.steps.json)`, readFileSync(path.join(SET_DIR, 'over-cliff.png')))] }],
+      over: [{ kind: 'bank', lowers: ['earth', 'sand', 'path', 'grass', 'litter', 'drygrass', 'turf', 'scree'], sheets: [rec({ commit: 'local' }, 'over-cliff.png', `${CLIFF_FROM} (cut and recoloured; the whole chain is in over-cliff.steps.json)`, readFileSync(path.join(SET_DIR, 'over-cliff.png')))] },
+        // bug #148: the same rim with the raised quadrants as path (a palette map of over-cliff, over-cliff-path-top.steps.json); drawn where the raised corners are a trail's top, so the trail runs on from the top into the gap
+        { kind: 'path-top', late: true, lowers: [], sheets: [rec({ commit: 'local' }, 'over-cliff-path-top.png', 'over-cliff.png, palette map of the raised fill and rim to the path tones (the signed sheet; the whole chain is in over-cliff-path-top.steps.json)', readFileSync(path.join(SET_DIR, 'over-cliff-path-top.png')))] }],
     },
   };
   // the tone layer: the desk's signed lipless grass tone, one colour map (its dark #5e9357 to the sunlit #82b266: a patch is lighter than the grass, never a hollow)
