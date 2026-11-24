@@ -54,8 +54,8 @@ test("#41 a fruit that drops lands on the nearest clear tile, never a covered on
   assert.equal(r.d, 2, "the nearest clear ring: " + JSON.stringify(r));
 });
 
-// #77: the dotted reach square is for the start pick; the plain map of a walk does not draw it
-test("#77 the reach square is not drawn on the map of a walk, and is on the start pick", () => {
+// #77: the plain map of a walk does not draw the dotted reach square (#140: nor does the start pick); the held Call view does
+test("#77 the reach square is not drawn on the map of a walk or the start pick, and is on the held Call view", () => {
   const p = makePage({ console: "silent", canvas: true });
   p.run("TEST.calm = true; newWorld(7, 2); ensureMap();");
   const amber = p.run("HEX.indexOf(HEX[C.amber])");
@@ -70,6 +70,6 @@ test("#77 the reach square is not drawn on the map of a walk, and is on the star
   p.run("peek.on = true; scr.px().fill(-1); drawReachView(0); peek.on = false;");
   const held = countAmber();
   assert.ok(held > reach + 40, `the reach view draws its dotted square only while the Call is held: ${reach} plain, ${held} held`);
-  assert.ok(pick > 40, "the start pick draws the dashed square: " + pick);
-  assert.ok(walk < pick / 2, "the map of a walk does not: " + walk + " against " + pick);
+  // #140: the start pick no longer draws the dashed square either (rings-off.test.mjs); the map of a walk still does not
+  assert.ok(pick < 40 && walk < 40, `neither the start pick nor the map of a walk draws the dashed square: ${pick}, ${walk}`);
 });

@@ -6,26 +6,6 @@ import { makePage } from "./page-harness.mjs";
 
 const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); RT.caddy = { podHome: true };";
 const fresh = () => { const p = makePage({ console: "silent", canvas: true }); p.run(SETUP); return p; };
-const px = (p, x, y) => p.run("scr").px()[y * p.run("scr").width + x];
-
-test("#64 the start pick draws the Probe's reach round the chosen cell, and it moves with it", () => {
-  const p = makePage({ console: "silent", canvas: true });
-  p.run("TEST.calm = true; newWorld(7, 2); ensureMap();");
-  const at = (cur) => {
-    p.run(`S.ui.cur = ${cur}; S.ui.type = 'weather'; scr.px().fill(-1); drawMap('place', 0);`);
-    return p.run(`(() => { const s0 = cxy(${cur}), r = TIER[S.tier].range; return { x0: MAP_X + (s0.x - r) * CELL, y0: MAP_Y + (s0.y - r) * CELL, x1: MAP_X + (s0.x + r + 1) * CELL - 2, r, amber: HEX.indexOf(HEX[C.amber]) }; })()`);
-  };
-  const cells = p.run("[...Array(MW * MH).keys()].filter(c => { const q = cxy(c); return q.x >= 3 && q.y >= 3 && q.x < MW - 3 && q.y < MH - 3; }).slice(0, 40)");
-  const a = cells[0], b = cells.find(c => c !== a && Math.abs(c % 1000 - a % 1000) > 0 && p.run(`cxy(${c}).x !== cxy(${a}).x`));
-  const A = at(a), amberOf = (g) => p.run(`HEX.indexOf('${p.run("HEX[C.amber]")}')`);
-  const am = amberOf();
-  const topLeft = (g) => px(p, g.x0, g.y0), topRight = (g) => px(p, g.x1, g.y0);
-  assert.equal(topLeft(A), am, "the dashed square's corner stands at the chosen cell's range");
-  const B = at(b);
-  assert.equal(px(p, B.x0, B.y0), am, "after moving the pick, the square stands round the new cell");
-  assert.notEqual(A.x0, B.x0, "the two squares are in different places");
-  void topRight;
-});
 
 test("#60 the held view's reach line is the walk's dashed bark line on the sides facing ground past the range", () => {
   const p = fresh();

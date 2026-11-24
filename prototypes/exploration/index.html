@@ -2509,14 +2509,6 @@ function carryRing() {
   const v = easeCarryAt(easeEnvNow(), c || { x: P.x, y: P.y }, P.x, P.y, P.noise === 'walk' ? 'walk' : 'creep', c ? wariness1(c.ind.doings.wary) : 0).v;
   return { tiles: Math.max(1, Math.min(8, v)), c };
 }
-// drawn under her, the wild ones and the finds, clipped to the place view (the message box is drawn above the view); only at the 48 px zoom, the strips' 26 and 48
-function drawCarryRing(ts) {
-  if (!HUD.ok || ts !== 48 || RT.view) return;
-  const r = carryRing(); if (!r) return;
-  const heard = NOW - (RT.ringHeard || -1e9) < HUD_BEAT, f = heard ? 'heard' : 'f' + (motion() ? Math.floor(NOW / 250) % 3 : 0), im = HUD_ART['ring-' + r.tiles + '-' + ts + '-' + f]; if (!im) return;
-  g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip();
-  g.drawImage(im, Math.round(RT.plScr.x) - (im.width >> 1), Math.round(RT.plScr.y) - (im.height >> 1)); g.restore();
-}
 // The line under a wild one in sight (a named Loika): whether the step in front would be heard, creeping and walking, and within 2 tiles how long she lets you stay ([copy] words)
 function hearLineOf(c) {
   const P = S.exp.patch, lay = curLay(), env = easeEnvNow(), w = wariness1(c.ind.doings.wary); if ((c.ease | 0) >= 3) return null;
@@ -6382,14 +6374,6 @@ function drawMap(mode, t) {
     for (let c = 0; c < MW * MH; c++) { if (keep.has(c)) continue; const p = cxy(c); R(ox + p.x * CELL, oy + p.y * CELL, CELL, CELL, C.night); }
     for (const c of lamps) { const p = cxy(c); R(ox + p.x * CELL + CELL - 8, oy + p.y * CELL + 3, 4, 4, C.yellow); } }
   for (const pin of S.pins) if (pin.k === 'own') { const p = cxy(pin.c); blit(ICON.pin(), ox + p.x * CELL + 5, oy + p.y * CELL - 2); }
-  // the Probe's range: a dotted square around the start
-  // (call-probe-marks-1, owner #64) while picking the start, the same square round the chosen cell, moving with it; its size is the range the expedition would have (the tier, and a rambler's extra ring)
-  const pickR = !ex && mode === 'place' ? TIER[S.tier].range + (S.ui.type !== 'deep' && partnerMibi() && spOf(partnerMibi().sp).ab === 'sure' ? 1 : 0) : 0;
-  // owner note #77: the square shows only on this start pick and in the held Call view (peekReachLine), not on the plain map of a walk
-  if (pickR) { const s0 = cxy(ex ? ex.start : S.ui.cur), r = ex ? ex.range : pickR, x0 = ox + Math.max(0, s0.x - r) * CELL + (s0.x - r < 0 ? 2 : 0), y0 = oy + Math.max(0, s0.y - r) * CELL + (s0.y - r < 0 ? 2 : 0),
-      x1 = ox + Math.min(MW, s0.x + r + 1) * CELL - (s0.x + r + 1 > MW ? 4 : 2), y1 = oy + Math.min(MH, s0.y + r + 1) * CELL - (s0.y + r + 1 > MH ? 4 : 2);
-    for (let xx = x0; xx <= x1; xx += 6) { R(xx, y0, 3, 2, C.amber); R(xx, y1, 3, 2, C.amber); }
-    for (let yy = y0; yy <= y1; yy += 6) { R(x0, yy, 2, 3, C.amber); R(x1, yy, 2, 3, C.amber); } }
   if (mode === 'place') {
     if (firstPlacement()) for (const c of startPlaces()) { const p = cxy(c), big = motion() ? (Math.floor(t * 3 + c) % 2) : 1, a = sparkArt(big), px = ox + p.x * CELL, py = oy + p.y * CELL;
       blit(a, px + 13 - Math.floor(a.w / 2), py + 13 - Math.floor(a.h / 2));
@@ -6867,7 +6851,6 @@ function drawPatchBody(t) {
   }
   if (lampDark) lampCircle(RT.plScr.x, RT.plScr.y, (SIGHT_NIGHT + .5) * ts, ts);   // night step 4: the lamp's circle over the ground, before the creatures
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
-  drawCarryRing(ts);   // W6a: the carry ring, over the ground and under every sprite, find and mark
   // ground decals
   for (const f of lay.feats) {
     if (f.tree) continue;   // a tree's feature is drawn by its tree
