@@ -70,12 +70,12 @@ const CTX = new Map();
 function ctxOf(seed) {
   let S = CTX.get(seed); if (S) return S;
   const R = realm7(seed), re = R.realm, N = RW * RH;
-  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), chunks: new Map(), secC: new Map(), cells: new Map(), stairs: null, trails: null };
+  S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), fordC: new Uint8Array(N), chunks: new Map(), secC: new Map(), cells: new Map(), stairs: null, trails: null };
   for (const G of R.regions) {
     const [ax, ay] = G.slot;
     for (let c = 0; c < NC; c++) {
       const w = (ay * MH + ((c / MW) | 0)) * RW + ax * MW + (c % MW), land = G.land[c], F = re.F[w], M = re.M[w], K = re.K[w];
-      S.landC[w] = land; S.lvC[w] = G.level[c];
+      S.landC[w] = land; S.lvC[w] = G.level[c]; S.fordC[w] = G.ford[c] ? 1 : 0;
       // the cell values the place reads (the region's label keeps the picture and the map in step)
       S.forestC[w] = land === L.WOOD ? Math.max(F, 0.86) : land === L.MEADOW ? Math.min(F * 0.75, 0.46) : land === L.ROCK ? 0.32 : land === L.POND ? 0.42 : 0;
       S.wetC[w] = land === L.WATER ? (G.ford[c] ? 0.8 : 1.05) : land === L.POND ? 0.88 : 0.12 + 0.12 * M;
@@ -588,7 +588,25 @@ function windowOf(S, X, Y) {
     t[i] = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < sandEnd ? TV.SAND : d < sandEnd + 4 ? TV.GRASS : t[i];
   }
   if (stg) stg('coast');
-  const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
+  // owner #141: a place beside wide water (a map cell of water that is no ford) meets it with a shore: the place's own edge band on that side, 1 or 2 tiles by the seeded noise (in runs of 3 along the edge), is sand,
+  // where the ground is plain land (what walks stays what walks: sand walks as grass does). A function of the world tile alone, so every view lays the same land; a place with no wide-water neighbour is untouched.
+  { const wideAt = (cx, cy) => cx >= 0 && cy >= 0 && cx < RW && cy < RH && S.landC[cy * RW + cx] === L.WATER && !S.fordC[cy * RW + cx];
+    const PLAIN = new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCRUB, TV.SCREE]);
+    for (let i = 0; i < N; i++) {
+      if (!PLAIN.has(t[i])) continue;
+      const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), cx = Math.floor(gx / CW), cy = Math.floor(gy / CH), tx = gx - cx * CW, ty = gy - cy * CH;
+      if (inlandOf(gx, gy) < COAST_REACH) continue;   // the coast band is its own
+      const own = S.landC[clamp(cy, 0, RH - 1) * RW + clamp(cx, 0, RW - 1)] === L.WATER;   // a tile of a water cell: only its edge tile touching a land place is shore (AD on #141: no grass verge between the sea and the sand)
+      const sides = [[tx, -1, 0, ty], [CW - 1 - tx, 1, 0, ty], [ty, 0, -1, tx], [CH - 1 - ty, 0, 1, tx]];   // [tiles from the edge, the neighbour's step, along]
+      for (const [d, sx, sy, along] of sides) {
+        if (own) { const nx = cx + sx, ny = cy + sy; if (d === 0 && wideAt(cx, cy) && nx >= 0 && ny >= 0 && nx < RW && ny < RH && S.landC[ny * RW + nx] !== L.WATER) { t[i] = TV.SAND; break; } continue; }
+        if (d > 2 || !wideAt(cx + sx, cy + sy)) continue;
+        const band = 2 + (S.nS(Math.floor(along / 3) * 3 + 0.5, (sx + 2 * sy + 5) * 37 + cx * 11 + cy * 7) > 0.2 ? 1 : 0);   // 2 tiles, or 3 where the noise rises (a strip under 2 wide is taken back by the ground passes)
+        if (d < band) { t[i] = TV.SAND; break; }
+      }
+    }
+  }
+  if (stg) stg('wide-water shore');  const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
   const LVL = levelsOf(S.re);
