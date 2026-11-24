@@ -2552,9 +2552,9 @@ function pageBed(c, X) { if (!c.ind || !hbVisible(c, X) || !sleepPart(dayPart())
 // the card line for a habit: what is still missing (her coat first, then her face; sleep-curled asks no further until the dew ships); null when nothing is left to ask
 const habWant = (id, k) => { const rec = ((S.habits || {})[id] || {})[k]; return wantOf(S.seed, id, k, rec && rec.got); };
 const roomWord = (k, w) => k === 'sleep' && w === 'place' ? WORDS.habit.sleepPlace : WORDS.habit.rooms[w];   // sleep-curled's last line is where she goes at first light
-const habCard = (id, k) => { const w = habWant(id, k), nm = WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, roomWord(k, w), false) : WORDS.habit.cardKnown(nm); };
-// the first habit of hers that still lacks something, as one card line; null when she is fully known
-const habCardNext = c => { for (const k of HABITS) if (habWant(c.id, k)) return habCard(c.id, k); return null; };
+const habCard = (id, k, sl) => { const w = habWant(id, k), nm = sl ? WORDS.habit.asleep : WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, roomWord(k, w), false) : WORDS.habit.cardKnown(nm); };
+// the first habit of hers that still lacks something, as one card line; null when she is fully known. A curled sleeper is read as asleep (her sleep card), never as shaking dry.
+const habCardNext = c => { const sl = sleeperOf(c); for (const k of sl ? ['sleep'] : HABITS) if (habWant(c.id, k)) return habCard(c.id, k, sl); return null; };
 const hbStorm = () => S.exp && S.exp.storm;
 const hbCore = X => !X.lay.cave && stormOff(X.lay.cell % MW) < 1.5;   // the band's core is over this place (a lull included)
 function habitDue(c, X) {
