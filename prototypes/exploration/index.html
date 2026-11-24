@@ -244,7 +244,7 @@ import { nightTable } from "./src/night.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
-import { placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
@@ -551,9 +551,11 @@ async function loadPlaces() {
     fileOwe(3);   // the tile set, the terrain table, the layer descriptors (the veil's files are owed when its kit starts)
     const base = new URL('../places/', location.href).href, bytes = async u => { const b = new Uint8Array(await (await fetchOk(vurl(u))).arrayBuffer()); fileGot(); return b; };
     const pm = await import(vurl(base + 'src/page.mjs')), rd = await import(vurl(base + 'src/format/read.mjs'));
-    PL.ts = rd.readTileSet(await bytes(base + 'baked/' + SET7 + '.mbtiles')); setArrived();
-    PL.terrains = JSON.parse(new TextDecoder().decode(await bytes(base + 'baked/terrain.json'))).terrains;
-    PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(await bytes(new URL('./art/gen7/layers.json', location.href).href))));
+    const tsB = await bytes(base + 'baked/' + SET7 + '.mbtiles'), terB = await bytes(base + 'baked/terrain.json'), layB = await bytes(new URL('./art/gen7/layers.json', location.href).href);
+    placesTagSet(placesTag(tsB, terB, layB));   // the cached places' key carries these files' hash (place-store.mjs)
+    PL.ts = rd.readTileSet(tsB); setArrived();
+    PL.terrains = JSON.parse(new TextDecoder().decode(terB)).terrains;
+    PL.desc = reviveLayers(JSON.parse(new TextDecoder().decode(layB)));
     PL.ctx = { ts: PL.ts, terrains: PL.terrains, desc: PL.desc };
     PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
