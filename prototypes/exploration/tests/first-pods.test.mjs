@@ -296,17 +296,16 @@ test("the Probe's marks say what they are (plan 3.17 B3): Reach has its count, a
   assert.ok(said().includes("1 of " + p.run("S.exp.reach.length") + " explored"), "an explored place counts: " + said());
 });
 
-test("Cargo shows the hold as pictures: no 'empty', no cap below 16, no explored-count line", () => {
+test("the Case shows the hold as pictures and counts: no 'empty', no cap text, no explored-count line, no Reach (the Probe has it)", () => {
   const p = page();
   p.run("newWorld(3); startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   const said = () => p.run("__t = []; drawCargo(0); __t.join('|')");
   let t = said();
-  assert.ok(!/empty|Explored|creature moment|In the hold/.test(t), t);
-  const caps = s => s.split("of 20").length - 1;
-  assert.equal(caps(t), 1, "Data always shows its cap; Energy and Essence do not below 16");
-  p.run("S.exp.cargo.e = 16;"); assert.equal(caps(said()), 2, "the Energy cap shows from 16, in the same form");
+  assert.ok(!/empty|Explored|creature moment|In the hold|Reach|of 20/.test(t), t);
+  assert.ok(t.includes("Sealed for home") && t.includes("It all goes home"), t);
+  p.run("S.exp.cargo.e = 16;"); assert.ok(said().split("|").includes("16"), "the Energy count");
   p.run("S.exp = null; S.phase = 'cargo'; S.hold = { e: 0, d: 0, s: 0, pods: [] };"); t = said();
-  assert.ok(!/empty|In the hold/.test(t), t);
+  assert.ok(!/empty|In the hold|Reach/.test(t), t);
 });
 
 test("control hints lead the bottom line's middle and are spent once it shows them", () => {
@@ -399,17 +398,15 @@ test("the Probe's Energy is the Energy held; the patch is shown with a plate gon
   // between expeditions: no offer
   p.run("S.exp = null; S.phase = 'probe'; S.shield = 1;"); assert.ok(!/mends a bar/.test(drawn())); assert.equal(ctx().ok, "");
 });
-test("an empty pod slot is a dashed outline; the fruit is at 2x; Cargo between expeditions is pictures only", () => {
+test("an empty pod slot is a dashed outline; the fruit is at 2x; the Case between expeditions is pictures only", () => {
   const p = page();
   p.run("newWorld(3); globalThis.__t = []; text = (o => function (s, ...a) { __t.push(String(s)); return o.call(this, s, ...a); })(text);");
   assert.ok(!/Math\.cos/.test(p.run("podSlot.toString()")) && /dashedRect/.test(p.run("podSlot.toString()")), "no hollow oval");
   assert.ok(/FRUIT2\(\)/.test(p.run("PIC.fruit.toString()")) && p.run("FRUIT().w === 12 && FRUIT2().w === 24 && FRUIT2().h === 24"), "the 12x12 fruit is drawn 24x24");
   p.run("S.phase = 'cargo'; S.bay = [{ id: 1, n: 1, pods: [], e: 1, d: 0, s: 0 }]; __t = []; drawCargo(0);");
-  const t = p.run("__t.join('|')"); assert.ok(!/Away|Docked|accepts|Probe tier|World turn|Nothing sealed/.test(t), t); assert.ok(t.includes("The sealed bay"));
-  assert.equal(p.run("lineFor().ctx"), "1 crate sealed · dock to transfer", "the bay line is the bottom line's, once");
-  p.run("S.bay = []"); assert.equal(p.run("lineFor().ctx"), "");
+  const t = p.run("__t.join('|')"); assert.ok(!/Away|Docked|accepts|Probe tier|World turn|Nothing sealed/.test(t), t); assert.ok(t.includes("Sealed for home"));
   assert.equal(p.run("Math.max(tierOf().hold, 0)"), 2, "tier 1: two pod slots");
-  p.run("startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; __t = []; drawCargo(0);"); assert.ok(p.run("__t").includes("Reach"), "the Reach caption on Cargo");
+  p.run("startExpedition('weather', G.spawns[0]); S.phase = 'cargo'; __t = []; drawCargo(0);"); assert.ok(!p.run("__t").includes("Reach"), "no Reach caption on the Case");
 });
 
 test("S5: the card shows the lit tile as the view draws it (a stone only where the view draws one), never covers it, and fires only in view; the Probe tile has no stone", () => {

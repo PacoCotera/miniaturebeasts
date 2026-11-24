@@ -5693,6 +5693,2652 @@
    "sha256": "d961bd04414473e1aa80cea5b014fa105b60c8cde8674bf5dd34e30c15cf8415"
   },
   {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e78d6925cc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-228x234.png",
+   "sha256": "5b486e99df362fa5d2f8c9628e700203c9a2ce53c41ce8efbb3c2c8b654dde8e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "fb4acd791b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-96x88.png",
+   "sha256": "b1cd1d3b83f3cad4fabda8eaf406a298058ec4915f720defceeeabe5d0777547"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "aded46e4f3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-228x234.png",
+   "sha256": "f2432d7225e98fea39819841f39e9d951f6f2e9931b054b74d9d615d3c713a70"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b543f4693e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-96x88.png",
+   "sha256": "aa65bf5e49ac10723f7487c39e8b560ad1d9bc7d83d0f461a0af3789b5a9636a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7373218ed8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-bands-228x234.png",
+   "sha256": "2460cad60065bb4d1c81827968aa0131ebabbf697229c3d10d8de2601890bde2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6719b46303",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-bands-96x88.png",
+   "sha256": "72abcb97763da54a7c85969bc996dd27c01e56f2f1320aa32e00bc5b2a6731d7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "845bd3d20e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-gradient-228x234.png",
+   "sha256": "3f94b2c3b76fa48af491948955877fab5b31629f28289f2462312c792d15f3b2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "dd4d9f899e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-gradient-96x88.png",
+   "sha256": "26abb660b58794cdc88eaa75ec7fd3164f285ba072a966bd07488dcbd0d1725e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6f631b54b0",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-patches-228x234.png",
+   "sha256": "239a1bece0e1b768decd77f3e0dfa4882c154be3e34f689438bb56b8985e8edf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "72e37479a2",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-patches-96x88.png",
+   "sha256": "ca016eac4ae5dc14081da2de11d14e09bd033081b20a20bde0409689d12097ed"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "8f7911ed55",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-saddle-228x234.png",
+   "sha256": "816c8a2e74f363aad411acdbb8b9e3eb36ac66383d7ec05185dcb9a1b3e6d943"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "675b5533c6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-saddle-96x88.png",
+   "sha256": "921045cfe9b883d8ec4cc6e0f22dc3e925c2978a28b3a4dcf81adde9e15c138e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "af5846c69d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-spots-228x234.png",
+   "sha256": "b19873a38af612f48f151d27e465bbb7accdc71eaf8ba13ce5d1ca89d112b45e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "782e809557",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-between-lay-spots-96x88.png",
+   "sha256": "0845fa8bb75f04e8cb6ce6cbc95a4f4106e9ddd564e1f3da30f8a12dfeb8369a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d095d24877",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-bands-228x234.png",
+   "sha256": "abe598133bc01105c4f030f11d828b7bf41c991af4e8c7327c6ec6fea4407b07"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "131ba5c9e9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-bands-96x88.png",
+   "sha256": "ac8c776cd671de3366e6e94dddc6564ebf662cdf2934b3d987af22b9eb58ff89"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ea604f3aff",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-gradient-228x234.png",
+   "sha256": "904bf7336e6bae1ed102652ccf4bb12a9113a5fda7a91d7ad108bc7cf44da7d1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9e72ae85eb",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-gradient-96x88.png",
+   "sha256": "e9037690d9c62474f13aa5b943643e8ec1b33dbf01a0b80bdb0c39656aea6d7a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1b93f73368",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-patches-228x234.png",
+   "sha256": "c1bc6bf94f2a612a49d79583b4264f6948cb60e5042eb27b42cbb50a1040787b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a1dcd3244c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-patches-96x88.png",
+   "sha256": "3c5bc80972fba9759cbcb4aba908a3b64bcf9fc8158aa3b764e13c0709b3d1ba"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "86de57d292",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-saddle-228x234.png",
+   "sha256": "6ad4c6d787fd57849319487b8c8d6190dc3ebdbe8f071ce1fb9e7a02effde79b"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "92ca7b0032",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-saddle-96x88.png",
+   "sha256": "b9b09d925f3f8b91bf88cd463c1bfd8a927817cd82ed16cdc4c2ae7ceaa83e3a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "69e08f623e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-spots-228x234.png",
+   "sha256": "a96d4cf4e81645e453bf6b496566267a787cbc8a3392c2450ceae164e5dc07e4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "12086a3d86",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-dark-lay-spots-96x88.png",
+   "sha256": "8ded3bd024dc7da88babe7c43180b8c9f7a08934b82a1a7d5348276265301d6a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2786c86421",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-228x234.png",
+   "sha256": "238d3c3ede839fb4b93bc67a4eec17e66d3527d8ae39f81c50ca6dffb9c12c70"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "83c29cf66d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-96x88.png",
+   "sha256": "95e6329de12892ef2e41afb9faa291dfdf0a5955bb6861f9e3802c200a51391b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "57a3004238",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-bands-228x234.png",
+   "sha256": "574f4d8ed1627debb023fae8c4c1ea7ab1c57bbed370faace701e13249680bb3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "31d704f776",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-bands-96x88.png",
+   "sha256": "e74e6d08265ec6ecfe95d08f52d60afa806d68049b451693ca9ce653fa4c5b9a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6d602176a8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-gradient-228x234.png",
+   "sha256": "a6abce5c7268831c8a5c2c17107ee3e6bdde87ae7c53ca7e2239d9b59454955e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "63c474faa3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-gradient-96x88.png",
+   "sha256": "bc30017b79d6a0663abb29eda78999b2253b3a31bd2878faebdfd70636750bc6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1ef6c72530",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-patches-228x234.png",
+   "sha256": "b2da37f098ffc92938a9d00592324aa0e4209230bb8e3f0ddeae891748dd5ac7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "91d54e4bbd",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-patches-96x88.png",
+   "sha256": "f3dc6ae1e0dcb893560167c51343bf18fc6c9ac4abc1c289d900cdd9dc7392a4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "aa85f7ecab",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-saddle-228x234.png",
+   "sha256": "8104997d1d4770875ebd96095b78c49d36ef02750996d927da8e63c6dca49cfb"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "ae75ddea60",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-saddle-96x88.png",
+   "sha256": "7ef9c3d31b599f20a136ff96ecd406774725ae0786042026d3820bd5f4921bbc"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1c470b997f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-spots-228x234.png",
+   "sha256": "40aa4c6cbd65bce5a4799d9263cd905f69db539c4287962f50cd26bd8de23248"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "38b266c711",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-between-light-lay-spots-96x88.png",
+   "sha256": "73eb2b6de965c633ee32059b85c84c727a1fca104ae85a806e4d009f55d9908a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a4cf467089",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-228x234.png",
+   "sha256": "0f1942ac485ebadeec4fd37ef7569f20cd9973aac029c90714e7423f9267ac2f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "069ec57292",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-96x88.png",
+   "sha256": "2c9245f7aec3d144ad3c366fe40eb7a07035e18a0fefacb9532ea3914045e293"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "edc0bfab1a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-bands-228x234.png",
+   "sha256": "05aff77918d3481e85196a1ed1afd596b017d8f54488fec2bc807519292fe749"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "51179a997c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-bands-96x88.png",
+   "sha256": "723e748c0e147e4d0f24930163b6f3ecd6347f700eb39890295d91f9fd09e919"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "38b52a67bc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-gradient-228x234.png",
+   "sha256": "d682c323f22bffcf7464a41fbbdbdea44dc30f5a34af4d2be19433381d3803db"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "616540b249",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-gradient-96x88.png",
+   "sha256": "d50fd6c2783d761ecf18433825c8b4af3d51542499281f29b5e57ae5c2df70c9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7b5ac7e808",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-patches-228x234.png",
+   "sha256": "d0ef41502d1ece0a95d5557aec0f0c7e8afe8973132869f1a51bfd513e175be2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0b15c6a178",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-patches-96x88.png",
+   "sha256": "2ac7b4f6d8475027a55e0862677a509daae283ea2e63592aff29ffc334097cf4"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "3bcaf80b36",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-saddle-228x234.png",
+   "sha256": "4349d1c5e40722f4cc07af3d0efb009e9d3569edd070d6c24280a2e5cf64ae63"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "05b270f68d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-saddle-96x88.png",
+   "sha256": "3302e765b14e3fecfdd1b985e961b875037f13815e6106f90af6d966f27ab1d7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a463a5d1f3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-spots-228x234.png",
+   "sha256": "5a2ddf7c521581de9354fa0e912a97e53e3a885a959398d061f53fe0be89aa3b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f4071fa0b5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-between-lay-spots-96x88.png",
+   "sha256": "4ff9266417351d973f08152d9bce55ceca894aa4ccb37a9f7ef83b577a85dc9c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "116239f1dc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-228x234.png",
+   "sha256": "d66375768a10ae974efb1534f9d28c7a2ff451842b31802f8b42c927fa8bfbc4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "baa2d9a974",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-96x88.png",
+   "sha256": "9541b7fa00180b313e4d70dc43d30e614cc3b3e74459122c25d4dc3c5be0e139"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d7e833dc22",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-bands-228x234.png",
+   "sha256": "de009538d7f72ed9de89add2fdbe7be669c16c9fce9625f8c00e35774e60019f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "49eeadfa2f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-bands-96x88.png",
+   "sha256": "8822baacb36603d2b33f9de60b512285972d4d83bac2dc8b5a93b60e18b88271"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0c8aa75a66",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-gradient-228x234.png",
+   "sha256": "1ad39d820796275f277aa9f2f4aff0fa1815131d9584ab9799f370b36f20f355"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9cb63c3399",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-gradient-96x88.png",
+   "sha256": "0df3fa55f679f2dc828d8812bfc97825d5fec2457c9dd6bfbdc59bb7f8a8934b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "54c19735c4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-patches-228x234.png",
+   "sha256": "6454c85e23d67b9afe23bda180f9b6b37261ec5bdffb081ccfb099f6e03cbe39"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2a230b8517",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-patches-96x88.png",
+   "sha256": "a2e00fb79cff9a826298a7f6da1676cedce65ea7bcd3a6b8bd880e4b91533380"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "0945d1e811",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-saddle-228x234.png",
+   "sha256": "9ede395b3897a46ad5cf5b4712f1b3d46f9e013a969e2c14adc5ef8f3e2b9345"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "377d52d152",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-saddle-96x88.png",
+   "sha256": "e3b5dafc620bbe49f50e3b230599f1819b1b46c4bcde2a5e654fd9dd0782a26d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "daf9189491",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-spots-228x234.png",
+   "sha256": "7996f57e83d8ae9ab98fb4dcff6e6ebd8ea8078f97feb092ab525d7bddab3222"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1d7111981d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-dark-lay-spots-96x88.png",
+   "sha256": "3efddd26b9814ec7b9ed30d6e78491a34aea37b012266d5ba27d45d01cf6b2d5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a59f56b9fe",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-228x234.png",
+   "sha256": "ce640614d39bebca9e10bf9e333cc5bc86932750f3e8b77f9bac10d22d08e840"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a70baf2507",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-96x88.png",
+   "sha256": "f1317f995e16102dc3724a5dfc99b2618b853fbb3238c6662b7525f8d5652e74"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0636d2bb62",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-bands-228x234.png",
+   "sha256": "b6c2b35b7e97413733082e88f97f7a13ae2851ffba552db2833d975fdc1744fa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "93e3d9b679",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-bands-96x88.png",
+   "sha256": "41227ef5f96087d5bad5b13bceef4c42d38d2709d44d748c41245b5579b97123"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "79fb26482b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-gradient-228x234.png",
+   "sha256": "890247824857dd1b76ecc1f015799c22afb37ead9a5b5387fd8a33127df6d85f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "af25edcb85",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-gradient-96x88.png",
+   "sha256": "1ae97b1cae4fe4c2585cb052bd6b1a5055cf502fd1ec8184e4916374f75d41a5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1dab55e5fc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-patches-228x234.png",
+   "sha256": "fd420e6d6a550eb61fc7bf76a2026eab6cc28f126a838d61d3b68fac1ab61aa9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2b14a412dd",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-patches-96x88.png",
+   "sha256": "f9a791e68d62415134b7e6bcfee5f292295519b20585b6e98e18e54d889fc574"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "b5607ccf22",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-saddle-228x234.png",
+   "sha256": "8c692347090103fcd350bad4052f104819756551b2751b29b39c8f94becae984"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "52ad712ce9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-saddle-96x88.png",
+   "sha256": "3ee4bfe803dc62d6fefb501ce75a639bbd263c122a352ae4bcb0b1d13e7efe8c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a6cb321321",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-spots-228x234.png",
+   "sha256": "2d7c7e5ae84937530b49879b8b098d511634eb956d5b64db1f1370adf05184d8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d2979b0f73",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-redder-light-lay-spots-96x88.png",
+   "sha256": "3985cb5955a5828222f02f288dccfcb35d082636d9ad0f5716d2b6bee8506254"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3968548e30",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-228x234.png",
+   "sha256": "c73830086ca5bb23dda943bf26c4180354bd69af5c409d80b127d76ed2c06bdf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a09c640fda",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-96x88.png",
+   "sha256": "deff4949f60b36ad0ae544a86a48d1d2ce5a274a49e4fc930729593011bcbac9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c1cc1476fe",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-bands-228x234.png",
+   "sha256": "61bf021265d611dc8094ee199d77af25fb5014be4acebe43e993da42665ac56b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d52955b340",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-bands-96x88.png",
+   "sha256": "21c016c305e23e55eb45c71b7b97f9c162db8eec67aa0d3366074a7389ddb64e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "82f5e180c9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-gradient-228x234.png",
+   "sha256": "4f90f981f319631a8d72b8e160ef27cf55a3b150cb54d374690529594bfff861"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "07a120a3ea",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-gradient-96x88.png",
+   "sha256": "dfa7f4b5a5e1cf2a33376768ea73f51ef372c5b368682b8af786c5fbdf95512a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4ae49f18a6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-patches-228x234.png",
+   "sha256": "a23643914a5b23efd7e6eb8be243b222a3c23e1673e22d5bcfaf6a7a84b5edaa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4b0aee677a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-patches-96x88.png",
+   "sha256": "1f775a7674bfa24b418202fd411fc5f2cc3928731b03d34bc8cc2bfb929186aa"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "4ee9625f50",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-saddle-228x234.png",
+   "sha256": "aab3e502926a7b01a5cc1205451d113c03233d4ae59ae8e118d8dee4ada17fbd"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "bda3132828",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-saddle-96x88.png",
+   "sha256": "36f8df80f7bd9c22481684aa663c54aa22f1ea549a58cd02ed0b15981fb3736e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5d34bed930",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-spots-228x234.png",
+   "sha256": "8d4f44a4868cc8a4531bc100ebfa43051afb3c862d8e5af3977259fe06fc6906"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1d4e784554",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-between-lay-spots-96x88.png",
+   "sha256": "0ef0a8e4cbdd092e63e2602403375850c31d929256247d43645201ce159caf3d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ed4e384e98",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-228x234.png",
+   "sha256": "76cf9caccbdf1cd4c407227dbbd29900f7c3c6bfde941c9aebb40cd686828fbd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e3569722b1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-96x88.png",
+   "sha256": "82b3cef5db986f9238520ac46298be1bd0e0f7c1e7efd4f0398c520d6b2496a0"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a5aab2643c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-bands-228x234.png",
+   "sha256": "bb1c542730d5bdcd56862cde0fbb86ef9350a8556a18e64985480fd1d2999e19"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "445be7e172",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-bands-96x88.png",
+   "sha256": "04ef1b5f5a49e69958f8f3293096e3fc3de5fcca8d59168487b09e4613692f20"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6adeaa1b55",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-gradient-228x234.png",
+   "sha256": "cbd61197e31b911a42b19bac99ea578c627db1a226149db09ea3126fc597520e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f69ef1a59f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-gradient-96x88.png",
+   "sha256": "ca59c4aff6badea154a05825913aa909e9209f82439223780b629cb1225e6634"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2f7ec43193",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-patches-228x234.png",
+   "sha256": "e8337d05d054746a5042212a3e486b6fc7a0dd05132711d4d9b2793b56319924"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "32cbb0e6f6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-patches-96x88.png",
+   "sha256": "e250bb3bb34f8ecdfaa705d00fdce7ee9aa38a87ea3f95dd70792335e43af898"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "97cea04e84",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-saddle-228x234.png",
+   "sha256": "7eaee825c53a06c4fce12f0fd0d19262b1de66a66ffbe32820e7d66fc0718a7b"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "efae03f50f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-saddle-96x88.png",
+   "sha256": "b142b5bd84ad2c4e23783180ac15016b5fa03d4c053abab9600bd75c38a8feb6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d87bb862e7",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-spots-228x234.png",
+   "sha256": "4645dab4edd20501ed8987d35a7616ca28af5f91cfcfdd71ce3d893a7afc7b64"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3225366891",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-dark-lay-spots-96x88.png",
+   "sha256": "0afd8a957bdd2e2a9cfb9bde1f319c1c5a2a47b23b6bcfe8b20eeb500cc31569"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "35a067e59b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-228x234.png",
+   "sha256": "605092a2cb157fb53bb82a6a2de9b6261efb30ba19a935364d738bcc07ae37ec"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6c53ae12b7",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-96x88.png",
+   "sha256": "56592fe600366170d12c7a3220f496551308ba3c2f025c40f99011b65d5e06c4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7caf6bdf2b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-bands-228x234.png",
+   "sha256": "cd556a11bc03ad966357289dbb0a176f60c7c729c7291dd839162103b11ca535"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "44e369d138",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-bands-96x88.png",
+   "sha256": "6564a9b317ecf7dc80bd68ebefd5fc9e67e52a52ad18d95c79901d2d939b51c5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "590f7cb46e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-gradient-228x234.png",
+   "sha256": "5f7acdf77554ee757a93b6c06a67872328459c6e5a0c54786e3b4b5317a7d8da"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9e60228b08",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-gradient-96x88.png",
+   "sha256": "20ba0d7bff4003a190d834bed4855a55ae9e1c4acb5b3fe13c8149fbfbf3c0be"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "741ef7b52a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-patches-228x234.png",
+   "sha256": "7af70291b49624bd6f1e0f4feb5a91b0f175eb1ec086aebf6b5bc0baae7077bb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d2f509fa24",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-patches-96x88.png",
+   "sha256": "6ebc08f2a25196b93aa35a6f0c5bbb857de159b17bf399f3f2771f238a98de24"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "add538d382",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-saddle-228x234.png",
+   "sha256": "766487ebf59af3584391169e2cbdc8a307b3b3bfe2397775333bf491f376a6c8"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "0ee06177af",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-saddle-96x88.png",
+   "sha256": "650297708e649bf486dbe12848cdadd2f9c5e4fcec07b411d6b4087cfea617cc"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "99a8a92897",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-spots-228x234.png",
+   "sha256": "7561648453b2428c53ddf3cca787c59d706a6f531918f5be9334831a30bbc198"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f4a5c122ad",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S01-yellower-light-lay-spots-96x88.png",
+   "sha256": "e2b53bdfa039b34eb4572ef9618f353c7601ea8fec6c58a9485ce26dc7f29d04"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3a1a1382fa",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S02-228x234.png",
+   "sha256": "ab4183f7055167928db0216a3cb976fa68c7b4c6d8b178b0b5241ac0a450c8d4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b7dabaeaf1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S02-96x88.png",
+   "sha256": "852d8c46d36a431f18dbea078c71c330f0f34775596936f967df16bb23900599"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a0a62f6330",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-228x234.png",
+   "sha256": "e551cb1960c2737fcae0a6d840e37a0c67cf497d5f46b9c619cfe5b87f9e0277"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1a46d545c8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-96x88.png",
+   "sha256": "7a3086ed52b81d92922b23cd5e6ce8e81268f24b53111db86b7306cc773085bf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4483128fc4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-bands-228x234.png",
+   "sha256": "1db1e79ef05aeafb1274b2c56d9b48d6bd75446cd7b31780ab9fa4ed0b731aad"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b9dfa44a06",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-bands-96x88.png",
+   "sha256": "ee919b977366c12f1d4673dcb4c016774d71b8c055ee098177fcee7583c3337b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "38791a9551",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-gradient-228x234.png",
+   "sha256": "9a6edab46c7bf8fb79d6acff7ea3b6984d27923428e1960c01699650b188f61e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7b0def0785",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-gradient-96x88.png",
+   "sha256": "20f78595357e21efd3090b69f3cb063552c747a672382e19fd7d822f04f393bb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "473cde5338",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-patches-228x234.png",
+   "sha256": "25a0bdddd22fd85e487acdf78212840dfa027c097a8122e98edc7b8869a4708a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "59259afc92",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-patches-96x88.png",
+   "sha256": "4884f484d1e8487b4e9fc6d54256a6f5a5e88a63057cbd027013a7d598677bc9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cb8b09f130",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-saddle-228x234.png",
+   "sha256": "975afa033e587a8d88c5f90226cc9ee56c2af667aea7c7cc616f46cb416581ef"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "64a61df159",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-between-lay-saddle-96x88.png",
+   "sha256": "6b991435de250a11d4c45b79f465569535c8b4c1a772fcb9e46c0c07cdc0dc4d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cc46e9e818",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-228x234.png",
+   "sha256": "a395bdcf844db393a6087ae7c38656b29f4db6b69334660175524015c883d21b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "261e382042",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-96x88.png",
+   "sha256": "8dade329aa909a7b1365a43d824da6aebf38e39b12906d2826d94d2d6a4cf8ff"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e1cd100fba",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-bands-228x234.png",
+   "sha256": "3df38e3642fe1c8687c3120f8cc28bb01d0311a481ce36fb7686662ed8c16bcb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6f12c7fa0a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-bands-96x88.png",
+   "sha256": "876b0adf8257bb4f4ce3e5bc7522836147f10975c224fbdc9fb2a01d10ec7252"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "03bd187a4d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-gradient-228x234.png",
+   "sha256": "6ea6bb75db0ac7253b127c6e2cf6545040e25c510528ebda451286f51f5c33f7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a0cebec021",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-gradient-96x88.png",
+   "sha256": "dea2d3b0a053bf0103760df8cfc087d2642209a3ebe19a6203cc94b019c2cc28"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9c466588d5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-patches-228x234.png",
+   "sha256": "84605194ccb4bd36fc2fa9d65ad4beca5e7d0f19e19f6efb63bb75e23b118efb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e1f116c61d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-patches-96x88.png",
+   "sha256": "e694e261e9acef1cfcc0ad7cbd7d86548006e6d54ad3cfe4301eea7763134820"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3311b4f608",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-saddle-228x234.png",
+   "sha256": "089c41d535040eb95d7bcf6fe8c9bd857c9f3d45f3cb5917f0a61195386fef17"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "12e80312c9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-dark-lay-saddle-96x88.png",
+   "sha256": "5d997f1faf89fe28c13cc56912aa9bf084c175281a4b2b4704c78eb3d27e3792"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "bb383be2ed",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-228x234.png",
+   "sha256": "007cc75a20689eae1dd837374c6b1c8050b0480c0b6d16f82fe138bd0178cc73"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "fbd0506239",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-96x88.png",
+   "sha256": "21cd1f1bdcda545af711ccfdc4e29bc0805e3a976003b4944e093ceb85c3aa7a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b9ba67c60f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-bands-228x234.png",
+   "sha256": "851354afd6b755e5b0cadf6227f72588968a4b3c2f5dd532fa16138a7eb0f9b2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "377b69727b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-bands-96x88.png",
+   "sha256": "37dd6e64d852540dc18933632952ad59ac77f357d54e7c98082c6e754906b0af"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ba4d47c15d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-gradient-228x234.png",
+   "sha256": "95511d43befcffe2ab1d30cc1a3f6fbaff60cbb00fbfc6343b5af9b9dc12f29a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "88b392491c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-gradient-96x88.png",
+   "sha256": "e9ec74323dd0ae3bd2e3438a4e3db6aa2af65ef3eb74093fda842e45d5436920"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c228df035c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-patches-228x234.png",
+   "sha256": "4d3a5a9ac5069ce39545afd755179c4842bde3513b80eab94aafb4da4c32475f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "23ba4e6284",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-patches-96x88.png",
+   "sha256": "01689ae7df4d5232f5b9abda23cc01ebc4c74ca2c571f0cac3057664b6ca7f3e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a461185e0c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-saddle-228x234.png",
+   "sha256": "2f2938615ad86e52a3a3fd0e205fbd33270ebda4bfd5f96b999c81ef362bfb48"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "22f802508c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-between-light-lay-saddle-96x88.png",
+   "sha256": "f02e8325b56eecd49e0cdf0991e8f7e040741a5b91b4a86bc22e648579daa01a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5bdc582396",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-228x234.png",
+   "sha256": "f6587cdac1d315eefebb2f0068882a0be3f98a8db291f08cf982a45a92ea2fa0"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3a7eacd610",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-96x88.png",
+   "sha256": "27867cf47dc76eac99a3623acee12d8c68e2cd0da7e66cbce6c35a3ef3cca2aa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b7b12f6624",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-bands-228x234.png",
+   "sha256": "2633513a729352a6156b0e34643f1d02ee78e63820165a115ad9d5fd73a15d88"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "68047f1241",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-bands-96x88.png",
+   "sha256": "062565ed59a559b59afae882a86bad25dc53ffd77a7bcea67663c3b7ebfe6cb6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9e69273ce5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-gradient-228x234.png",
+   "sha256": "7cb8c1ab5a31ad0729c8818d1d72b163a9eb9856a1e3f1095d0bdeab9964ab34"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f779176d9d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-gradient-96x88.png",
+   "sha256": "159f70423f37f92712de3f575e56b6a8b4575c2157012a23880a0df5d67f9dc1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1a5d0b09a1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-patches-228x234.png",
+   "sha256": "4ac2b908470e2f787c88ae3d855a034ddc9f6318723a09355fff3de178773f6e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8b22f6ba69",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-patches-96x88.png",
+   "sha256": "31150aa73ea46bd7cfb7a190560a62ef11586d1526ed732314c10d6f25f38581"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5d7780d4cf",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-saddle-228x234.png",
+   "sha256": "e166b866a5a3e0c2df735b94c33a283c1c688e287ac675de307a4c846c3873cd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "117edadf32",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-between-lay-saddle-96x88.png",
+   "sha256": "d40cc31175bd36052821c8656f1128b12752e1c72fa755416d0375c54caab99b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "295b8cbb0b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-228x234.png",
+   "sha256": "a661c752c5efe8056f6898f2edf7ac0899d86b81a8dfb9005aa4f5299ef41058"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "842f552a6a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-96x88.png",
+   "sha256": "1e59f6972ce46c6a7aefe6731f8f09c56aa982f4689bba8ae3f9526beba48c40"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "94bff9d508",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-bands-228x234.png",
+   "sha256": "8a64d9cdb790507f721f86117be2c019f46e1a642704a356fb6d425d6930d837"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0970e60a04",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-bands-96x88.png",
+   "sha256": "b02e12c323cd286800dd72bed68f3c2a0bb1f94dd9883b2d63165bc6eda75887"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5635599d72",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-gradient-228x234.png",
+   "sha256": "07323a15bf903d2355f9ca894a6ddb71292902663196ebfbc1ad8bf1a696bb88"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4deaa41b7b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-gradient-96x88.png",
+   "sha256": "1b3b40920a95d78004705214f88c8ffe4eec0af9d5d722e4601b83290635e712"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5037e8c6d8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-patches-228x234.png",
+   "sha256": "3d568d359f3d8d69f78a4d20a41d85aaff85cb3fc48c2dca5fbfae9df4705e39"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f7cf1f4568",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-patches-96x88.png",
+   "sha256": "9e67102f3616483052dcc7538eac815ec41babd9cdb4994d4af6fbbda42ca060"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1b833dbe82",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-saddle-228x234.png",
+   "sha256": "ebe2cbee3ef314dc2802798dd274d62ce1b7ccff7e92e4c46025ccb71d4cb8cb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ad6743db06",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-dark-lay-saddle-96x88.png",
+   "sha256": "ae5931e6bb910e7e148164d78964f50287759fd87ceb3b802147a43a1132e1a4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a2351714d8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-228x234.png",
+   "sha256": "c925f22b0a52a6d469a3aa8641e2b64f2b5ba34373561dde0be723fa3eeb7ff9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d8f9eafe03",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-96x88.png",
+   "sha256": "cab8e35aac9d08f32a4b57a7d6e046e20192105d26f38d4f080645e030d0773e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "435b37c3d4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-bands-228x234.png",
+   "sha256": "d65d9f7cbda34ad551dc5f3344728b6c285957af9b0ce9caf7be5262db42e6f1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "68bf94b3fd",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-bands-96x88.png",
+   "sha256": "331ec5a6da13d80055ef29745067af113d7bc6a444c7800db1b2ff6ecfe71eb7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "679ec0d030",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-gradient-228x234.png",
+   "sha256": "caa5a2e5a2f871dd89c620f7ffa582eaff275929fd086311efc9f56927ee2c7e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "785c509120",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-gradient-96x88.png",
+   "sha256": "c2a5a0e8678649365cb2b1090fa84a0f95b3905a12f047697dd2d05e8f158be5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "87cd160970",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-patches-228x234.png",
+   "sha256": "8f7d4e1bb314285143a863c04e70a320eb78f62794ed59d2a0fe15414b4bcb68"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "807970fc59",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-patches-96x88.png",
+   "sha256": "3df9defb74264123c3c782f4c23afe90e71e5f25ff42fc91c90bd700459d8da9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d3492acb91",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-saddle-228x234.png",
+   "sha256": "94d5deddbbd29269d5626a94340ed326c47abf7d1a620bb2d1152151a2be9b30"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "54852d0d65",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-redder-light-lay-saddle-96x88.png",
+   "sha256": "ab38f71084c115cac5c34cbe8d3106c59882fe101ab61dda2a61e65471035a00"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d1b1625960",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-228x234.png",
+   "sha256": "d9df9b92148bb171f37d577f0cd46e2135321e438ffb5aa71c0116ff1a2adadd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "09998f7f0f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-96x88.png",
+   "sha256": "878366d4c5b17ac12e806d0b152ea933961196e7ca7dcb8bce333b2380d36032"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2a49448fdf",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-bands-228x234.png",
+   "sha256": "da017841a8430d7dafd31be6fa353a5b56e432cb672f05192c63e5234487c87f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e20106d837",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-bands-96x88.png",
+   "sha256": "d11715ed11cdfed145ea6e7bffc4c93173324f9f21b3d54d30f1e48a691c21f8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "975d89c56a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-gradient-228x234.png",
+   "sha256": "58582770317983c212665706fd85b72eadaea2aac2d8e2dd49568a8174b60bd3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d4e6a6eef3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-gradient-96x88.png",
+   "sha256": "8247e44c82551f2e0ce9d5d946adcf676c1c8f1828418637b6ffea5eeb63598b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5e86c42ba5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-patches-228x234.png",
+   "sha256": "ae08bd3ed62af7b8048bb0d4f51fe2c60ff4c560643a4675b7b6ebe615cf6d85"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7c3ef8da00",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-patches-96x88.png",
+   "sha256": "466190230484aa61787ddcdc5513a1dcf0ab1b441068e41095c25f05ef79cb23"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "22449ccaa3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-saddle-228x234.png",
+   "sha256": "c1a093f76ccd9c3f057f1a53e76483e128e7b576ae1b9c5b3064930a85dd6011"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "29c5bb8f42",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-between-lay-saddle-96x88.png",
+   "sha256": "a437848734c15c2ab5a36ac04d2b0312a2befad7c580afd69023d85e9aba6a9b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2c7c6c2c3a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-228x234.png",
+   "sha256": "2a18b9fc54ea3f3ec6fd565fddf93154dfc69976a9177260cd7af993fb8fc129"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ffe359271a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-96x88.png",
+   "sha256": "ac67dc9e612dcdd0e0a4a877ac4997aed487ee6816a042aec746a18ee354ef7d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "634ad2758b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-bands-228x234.png",
+   "sha256": "70b103d58a3fccbbfb48a1563cbe7e1ed6f8f0414af0a55905540bb5c1afd55d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1c2a7fe668",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-bands-96x88.png",
+   "sha256": "a1ad3e081e6596d41774aa8ddd5c24b009ff1769318737916c4237816a90ad39"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c966d95e5d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-gradient-228x234.png",
+   "sha256": "5105b3dd7e54f8e65706c6e48cbc10878aa5b3575d872ccf3b683e1ec1ce4a75"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e793919a61",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-gradient-96x88.png",
+   "sha256": "bcc4bc108f12d4632ecd3296b68abb542e608397bdfb072b7c6c3bdc33391d37"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c34e48ec1e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-patches-228x234.png",
+   "sha256": "fb2ef548ac3cd976a6f03447f7acd4bef89c5b45a062ee8df4e7bab216b6bb47"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b125abaa7c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-patches-96x88.png",
+   "sha256": "63441b2cec53b3182af438fd8c6bcb24830d625c5c98088b1c6aebbb296e6e4d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7cffbef733",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-saddle-228x234.png",
+   "sha256": "4e0244a96c9d185fc189fd6d35ea8f969f7ffe0edfa1852870be7d4b573a783b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b87532a9ed",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-dark-lay-saddle-96x88.png",
+   "sha256": "7a21c427ab12db265521385401e5a37ab63f30880eaa373892402cd4e7f2c3b1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a508218235",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-228x234.png",
+   "sha256": "9827b48e0e814cf31a8b2c2a8b3d8ad2885d7fe13ff74df61305dbc47e73ecbb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0c2abb2361",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-96x88.png",
+   "sha256": "71f2b2bd4e7847672d6255cc74e01ea42a1ca312ad6f2ae95aa5045a7025f336"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "43058b2184",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-bands-228x234.png",
+   "sha256": "3a9fc07cb91edd00c7b9045fd16a989f2ce60eb3c2da1b0efb7ad446f3b1edc0"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d6b1b46f5b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-bands-96x88.png",
+   "sha256": "8826e9c589bc83f0cc0917c29470099444e6a5443f826453361f02a8240d06c2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "59c406f3c7",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-gradient-228x234.png",
+   "sha256": "55d91cc6f2a1378efe2f79a5620479a89639fcc5cc344fe4c3043efcb48ca509"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "708ed57c40",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-gradient-96x88.png",
+   "sha256": "aec766e66cafabfd682850fc62b0c1e48037ec2757ce77578e4099b9e4ab2ccc"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "379a449c3c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-patches-228x234.png",
+   "sha256": "db936f14365e2fac0baf9114700c4633eb2336e7037b9e5c3f00789048180ae8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "42403326d8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-patches-96x88.png",
+   "sha256": "18e48b36025bfd54d0bd4aca06dd8ab925fc33c88034f2604ca3801d7cf61fee"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7fb5102126",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-saddle-228x234.png",
+   "sha256": "88de08b1916eb9a496cf4a368125c800d155760aafd2ad57759263e8a190b58d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2adabd3bc6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S03-yellower-light-lay-saddle-96x88.png",
+   "sha256": "0052a196e4c6cf1f1fb58728f97ee6991f734b181a58f11ddc51ba8363e821b5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "91d9ec9033",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-228x234.png",
+   "sha256": "68b580ea1052887949e411237c4fbd3c371947a4deb22dcdc181f521902290eb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c41209ad96",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-96x88.png",
+   "sha256": "c9df1cf9f39233820825c7752b3c0ed3062846f3d79679112c263f4656329203"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6ca99ee26f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-bands-228x234.png",
+   "sha256": "87262dc2cc6b50a42a2a4d40019ed82472171f16a950e5231d56441322da0553"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0e89484fac",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-bands-96x88.png",
+   "sha256": "a9e519e871f7bf5378ecf4a6910c20ce1ab28f5967c249214049ecc1f04b1b00"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "43978bddd4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-gradient-228x234.png",
+   "sha256": "dc412e2c0d199493cb98cc15026c2ac1841d2c6961d58133274b3f5cbbdc4faf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "20d229ad46",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-gradient-96x88.png",
+   "sha256": "8e3d7c2f21af0ed8243c6e6c5064dfc16447252da31c8374bbb8103c7a5d4872"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "052f8afff1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-patches-228x234.png",
+   "sha256": "3714608cdb7002c855e40865c62d77ff547b8b8d31826124f0994e81b4e753d3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "20ac0cc6d3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-patches-96x88.png",
+   "sha256": "372705cea3158a79d81915163a03ddc6576c8880d94eec4e051513480816dc17"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "df2421ca6e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-spots-228x234.png",
+   "sha256": "6494f425b3b1d031655e92afe2a73ac851dbc9424903aa1e62adca9ecb60ae76"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9d0bc4a673",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-between-lay-spots-96x88.png",
+   "sha256": "2433e8505057ffcd475e46e438a661ba8b250f5a93f8182ac0ceb3881ab4a09b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c94b564981",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-228x234.png",
+   "sha256": "e833c940532ae26ee8a92692439e30adacd0f41325cdbacc04f02024daa35d0a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "19cb8071d3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-96x88.png",
+   "sha256": "1d07df5d6d78f35f9d3881d855409fc942b702c36474f532bf0bd6845b7359e8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "409293869a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-bands-228x234.png",
+   "sha256": "2da7d44a2157db79dda9c3053473d008a9475bcb6a22382408f9840c3a50be96"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "567a57fee5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-bands-96x88.png",
+   "sha256": "0af37fcb53beff5fc3b1e0497471c75a4bf8328d9737041b1665cdfa1b010fe3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "79f3673eb9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-gradient-228x234.png",
+   "sha256": "7001a0ceb9c0311a446a368caadbf3014737b5773320a631a418a4c4150abd81"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c592ae5c7f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-gradient-96x88.png",
+   "sha256": "d534139f26fec3fdb38cf9466a135462f6acc300440f37b776b2395a5478c189"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5d5960a55d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-patches-228x234.png",
+   "sha256": "ae8e1bf9748950302a5c8c84960504985d719d4082c806191955133f90863da4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2ed6b6bb3c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-patches-96x88.png",
+   "sha256": "5cbbc683e0b8f7c25aa806df64b0da03ae519e63fb5d9896a9b5a2e847ce76dd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4ed7ed30fe",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-spots-228x234.png",
+   "sha256": "1cca3605ddfd548084c97be61cc89300ed8a3d2179beea925c566d69f8cec82e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "09bd9ba804",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-dark-lay-spots-96x88.png",
+   "sha256": "c4eb2d4101abddeec89aba1ef708a8841b369c80ec9a7df07ed5748ad2c8749e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f8def8f2f5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-228x234.png",
+   "sha256": "c5e7bf403c0ca74b9965a355b90c2ef929fedf51a0bcdc4641dc675623489571"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ec95edc21f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-96x88.png",
+   "sha256": "328afd66874a13849c2451efa214555a7017cd78faae2d0deaa7896a04cd0b62"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7ca02f4ea9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-bands-228x234.png",
+   "sha256": "c65b9687da1483ccdfb489cc6a35316086059060bd0c037d091ff21ae6226d3d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f54e7fe6c6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-bands-96x88.png",
+   "sha256": "b4a4d288e63a5cae717b72db6e5f570c02bfd224fd8ec9a18c2403fdc8eb1fdf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "45cf0ea9af",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-gradient-228x234.png",
+   "sha256": "a305183eec50839daa3a97af2f79f4262c622a10347ea30148ccf2d3786b73a4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "aeec4e1d95",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-gradient-96x88.png",
+   "sha256": "31381974aed7deb564cae688ea294e4bc64885abe827c704d77397c61ae93560"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "faf4d1e756",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-patches-228x234.png",
+   "sha256": "79c16266700b52d36670f6b17f7b1a3b72afa6ee43c519af0c1b634b28320f29"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cf8846c19d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-patches-96x88.png",
+   "sha256": "80f528fd3c84b03edc6f7473d01325e38ba4752dc4398141c3e6678850f5f92c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "faeea97f65",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-spots-228x234.png",
+   "sha256": "52fdd500b400963b8d8ee2de7ce2e20d14a04f27e318e5f7ee8e9d53f570ea65"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "784c983854",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-between-light-lay-spots-96x88.png",
+   "sha256": "a217490840949efbe4ec11fd5fbe5467d36954391efd09e748dc3242596e879f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "bdb715d2d0",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-228x234.png",
+   "sha256": "781ca48917751021e622b396e25c304c7b6173492bd6434dd2b0677d4f8fef0b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "34e8b259c1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-96x88.png",
+   "sha256": "3736a1006325fcd6182523569f3429e28ff0b15efe0e9a107e51d29741a2693c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2c6c5e617d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-bands-228x234.png",
+   "sha256": "0b677150632495b25ca85cec96063453d82c578aeceb4671f8eda8eae8d879f7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cb13b4fded",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-bands-96x88.png",
+   "sha256": "13ea63ce19d0a57fb3d5ae82f6fede4cac2cb5b64decb00e1232cb67ce0e33ee"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e9f3558d69",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-gradient-228x234.png",
+   "sha256": "20b81348556e04d5be9dc0621f7d9d0eaad38aba858c19125c76bbcf066ff682"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d20d6fe858",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-gradient-96x88.png",
+   "sha256": "16a59b44ce0e691dca2e997afd486a92d82a6e47c3f2a67e0259b68f035224aa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "33592180e2",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-patches-228x234.png",
+   "sha256": "2f557aec7120982442c0630422ebe66d8d2a1bccc5d8f96b4231a39dcde36af0"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0072cb45af",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-patches-96x88.png",
+   "sha256": "414a7112805ef663878a5bd189d5b4be204c72d60407bcbb7b4d27420ea578f6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b0f208fa3f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-spots-228x234.png",
+   "sha256": "708ce90df2014e3fc3ac65e684d139d0dae3a01b33c98908d12b5e7b5f54394f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "91004ea3bb",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-between-lay-spots-96x88.png",
+   "sha256": "73b0169b3191e89b7f8e93bea4dfabfb7a11b2ea0d9eb70902fcdf904fc8d903"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "35c7a62256",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-228x234.png",
+   "sha256": "9fa0f89083100cb05052a85185b073369a39c6cbe7f47eaf8e83aafae4c64853"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e25aa0528a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-96x88.png",
+   "sha256": "26267fe64a29ca5251cee4520bec14aba3a1696c278327f70674435a7afa3da8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "98a741655b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-bands-228x234.png",
+   "sha256": "4f1b01663b098dcd4fe31bca1ecb6d4951211ccfc477f52222c0003055618ea5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "51c572689b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-bands-96x88.png",
+   "sha256": "43b852568e64db649968643894555460ad74dca14d5bb60022aafdd0a9f91319"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "08e6283067",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-gradient-228x234.png",
+   "sha256": "daae2ec9c0dd61abd3e2544dcce9427f190c9dbe54bd581aaf765e0b2f759b3e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "74637e9bf9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-gradient-96x88.png",
+   "sha256": "e2373d387ee0974d34420797ae337bcd6f4543f8d6786b112e7f29892584d47d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "06fab9ab1f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-patches-228x234.png",
+   "sha256": "06b202805311257411129c590de00e7137af4961c319c65951ea090475669070"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f457312b23",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-patches-96x88.png",
+   "sha256": "43c22b29ad0aa3724093211d7c9ad22dbd65605e804b736d53ac32c6ce8d4529"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4d8d643e19",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-spots-228x234.png",
+   "sha256": "596cfacbe456406654a8b55654b8033b67395ff61a80715badb0ec9459c6e889"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f3bf538665",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-dark-lay-spots-96x88.png",
+   "sha256": "32d8bbe46c2f43ecf5769d1e498c24c0c2fb939a63fa784bc6f3c3acace16815"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1561187f37",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-228x234.png",
+   "sha256": "6694ff0ea8258940860b0d4de95cbeb7c0aca53a2c9f8269a92efb2f4f4002b7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e4b6e34b2e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-96x88.png",
+   "sha256": "f7407e64244fdd3ef890b67482ab2b9729180be02ce4285f6d74a9f3c870c52b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1a56f1c12d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-bands-228x234.png",
+   "sha256": "50e863e2e88e65a0e7251af2c60e2cbb1ff0eae03ce8a24ae042eb63d7fe14dd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f56cd2d837",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-bands-96x88.png",
+   "sha256": "414c9b9aab73546d5aa9e45e83d86ee8e54a5effc5bbd28c273a25fd12f869d8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0d334bdc76",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-gradient-228x234.png",
+   "sha256": "c40ecf18c31b5347f483de0e4232eedf1053d1f0c8599a2cab58c453f88730ba"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "16c81b4abe",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-gradient-96x88.png",
+   "sha256": "d3735f8eaaf0d231d90852be87a6188b59690e63d18493dd1dbe385452007dd6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b917996acc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-patches-228x234.png",
+   "sha256": "c5a38b68e45f5b6314566d92535265ae08d5358018c172379ca937cb3da7e751"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d88088aa36",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-patches-96x88.png",
+   "sha256": "8b96a7f252f1ae75c0155c545d3ac79e730aee7f5cb038c25c8e71b854b3a799"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "91e4050f9d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-spots-228x234.png",
+   "sha256": "30a7308c5029380422caca1ac1d7e0acd795e3d21d1e1ca918c3e37523afb98e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f9209bf2e1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-greener-light-lay-spots-96x88.png",
+   "sha256": "024ccb4afd70431f1ede47c20b006b936b70037151cf064fb395e336593c06eb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "36667fdc0e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-228x234.png",
+   "sha256": "e7075e89609c1735f1524d662a8bc816474e12e2a7b55c4479562a137078cb79"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b33319181f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-96x88.png",
+   "sha256": "dc518e4fef27da075f3c64d3712fae878aa51c00220adbb5c91c1582dbf8d25f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ea7e2e24e9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-bands-228x234.png",
+   "sha256": "0aeab00be7851b2ad853c3fc0f5d18d38183e04b4bca9b5cb5d08b642185b41e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cb2f1426c6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-bands-96x88.png",
+   "sha256": "b91ff3a176472ec86512b223b2e6a648c677d63382e5cc9d302b9ae5b179af9d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3be342cf75",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-gradient-228x234.png",
+   "sha256": "96853a30003b9be1c358758a119120cbd7c84e57ffa677b7708befb8cd42e5fc"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "62faa4b201",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-gradient-96x88.png",
+   "sha256": "a55c67d977dc0c4d7c8c5176b3cc80596ac587130ab6e7825da842341af14419"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "42b830c8b6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-patches-228x234.png",
+   "sha256": "a7936fa8090ee685f797f47451eb6dd5cde65be1212e8bc0406f8ad58ffcaa7a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2cf6890282",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-patches-96x88.png",
+   "sha256": "78972031b5dec67bbc1f4971eb4be29f141a3bdc20dd1b7522d30dab4f223ee5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "56fcb8a2d3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-spots-228x234.png",
+   "sha256": "d741c8fb74bb41e39a668376200642aeb6259e01cf21e3f3d38d46ac2d5f898e"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8d4c351e84",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-between-lay-spots-96x88.png",
+   "sha256": "62107951593d50d180ec65153a875c933e9d2f722f78f28a87317e02bed115dc"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "134d0549f6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-228x234.png",
+   "sha256": "9f3a28ae434b3619029196a1f48d87c2b683d3cb70e9828e665e09bcd1db7c66"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6153dee185",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-96x88.png",
+   "sha256": "16c32d5b88b6086492fa9ba529a7f838be95387f2669755decb452c546d0bd06"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "da6837db1a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-bands-228x234.png",
+   "sha256": "4c7987e5696cb9fe7db008582544bfa7d13cee6e078ba0c814bd2f9265c49d0d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3ebffba9d7",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-bands-96x88.png",
+   "sha256": "c91f782114f8c145db4a8df9d0a0c090e86724a9d42b23488dcce47f2a33dccb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8ee4e0879c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-gradient-228x234.png",
+   "sha256": "56b7b4df7f1b9090dd5ef5a1bf907a35fc95144fa60269349df0a9924f060929"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d7a85224a9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-gradient-96x88.png",
+   "sha256": "e77014990398440fa66f68fc6bd10bb5975f988e24f2401df199df5cf502f3eb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "81556811e9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-patches-228x234.png",
+   "sha256": "ffb76173cb511e14a9a5bb448ba99342c6c4f1c24115fa25bf312a736ac4eea3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3664f462ab",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-patches-96x88.png",
+   "sha256": "627ba3b58c9e1aca7d5a390d3d28e26fe43a23adf05ca989207c577ea663098d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e0f3d3ef03",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-spots-228x234.png",
+   "sha256": "160b57f0fb3723546abd6ff4c286a28c8414edf2361a8f67ec2cd479da0b4787"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cb93f22120",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-dark-lay-spots-96x88.png",
+   "sha256": "bad649948ec3cb859367a1a24849a4ff607de6ada0299e0bc637663a5747a59b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "632d28b691",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-228x234.png",
+   "sha256": "b1832a7802fd9a149c0a7de1b37dd4024be71979ee75a3e5b1899044a29312cd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8d3b80df23",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-96x88.png",
+   "sha256": "f008f6306c0cf70fbb837ad3e6614bf75a846598d1a6dadfc53853c8d212571d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ed05d99748",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-bands-228x234.png",
+   "sha256": "974f3407c7d030d28bd40a1a0672d6aba7041c0cb6672ff5dba7de9e2a567aa6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f94dfc6044",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-bands-96x88.png",
+   "sha256": "5792846373de516dd0822e97f8fe86ab751247fd20f0de142e16197653357008"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7964f873dc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-gradient-228x234.png",
+   "sha256": "3b6cbe3c6409d55a9b3936c17f7cbb5eda5e2ae5dfdf7d9b226b719194542daa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b098d67d8e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-gradient-96x88.png",
+   "sha256": "a4dfd747defcfa0f03fd3e02947902994dd00e515e3adef229f5824ab60a6f86"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1308b1642f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-patches-228x234.png",
+   "sha256": "143412c9e6bc13c087dc191ba907f28c3a8b87ef67e5041d8e77512ef23c0912"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3695c24a81",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-patches-96x88.png",
+   "sha256": "689a4f371fc7bf5c4f976d20896b9c690b2a12fd7512b9f00a02d866c6be2e2f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "af6d388dd4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-spots-228x234.png",
+   "sha256": "d593ddf145b54c41392370c1afb60b63c2e850a66f3025fc12c6ee4029bbcbed"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "62c198e022",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S04-yellower-light-lay-spots-96x88.png",
+   "sha256": "4bc5a43dd7f471173b962c23ac06e4a273024c14da17e4052269d12acf819bd1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8eee97e374",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-228x234.png",
+   "sha256": "daf5e992942a9db0f6d5918dddebc109f96b4abdc97de6b4b828d83fdc7706c5"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5a6acdabe7",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-96x88.png",
+   "sha256": "864f269fa799a4ed9a8e44c15d2a95addeb2c6a6c56206667e64ded6b5e906c1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "466f217661",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-bands-228x234.png",
+   "sha256": "e6838070d18b198fff7ed85e86b7472c15fa09d90e8ca10f0d09b5d79c0cd45d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "eeec9c5fb0",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-bands-96x88.png",
+   "sha256": "320d992dbf3c3ebaffa9b9e501bf9811d479833bb6fa44056aec5a76b874f4a3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "29deb4440b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-gradient-228x234.png",
+   "sha256": "0daacbedc6224f18c9cd9f225d7cd85f95015e677007cfac645e9e0e4135ccef"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f1210d0c83",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-gradient-96x88.png",
+   "sha256": "3cbfbc1aaa62d6b109d70b8772c31b32779738d8b34ec5e04450da0a8f7bbdf3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9dfda55e1c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-saddle-228x234.png",
+   "sha256": "0d91b100febae5ad99e9afa298a6026fef8676ead029a830cd9b46abd3cea420"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "479183d617",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-saddle-96x88.png",
+   "sha256": "b8fcdc4145b59e7ea5993fb1e606b85ec1df6ae1b8dc02a43b978418e004a8aa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a2e1125282",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-spots-228x234.png",
+   "sha256": "e9031e1e1be5a3144ae2979aaf863fcda857a5aa95324355636db9f03eb866b8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e355263a3e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-between-lay-spots-96x88.png",
+   "sha256": "89ab77024e62b5bd8814bd5f8b58e9f432393556a179fd6f7f1c576911673c13"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "720991eb31",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-228x234.png",
+   "sha256": "e3f6b3e7488db59d7dcb40a8cbe8324ddd8c8a9f0af47854cb81eb6aec4b60a8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a5517e7c56",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-96x88.png",
+   "sha256": "e83760c598a6bdae9a714aa07fbb53321f96a291c2d019d886d00f9936d515f1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "944311e8c0",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-bands-228x234.png",
+   "sha256": "0ee40e88ab09deceb4228e919a85c50c3711b7b60b5e0c67a60e16987deeb1ea"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8c99f8a07b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-bands-96x88.png",
+   "sha256": "bea027ecab13ab8d4c6d6aa53dde57e1bee7053962d03973c435a2ce46b582a8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4f1a9e1ad4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-gradient-228x234.png",
+   "sha256": "b185f232715d02956531cefe62b8e7e9a036d817b8f88385701aaeeb408c723d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "22a65a3374",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-gradient-96x88.png",
+   "sha256": "b2419dffb8277c716510112039668ad3d502f92d69eb25493f902ec61231b1a2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3d1af4a46b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-saddle-228x234.png",
+   "sha256": "1cd994390ea146bdeff1251ed044eeb27ae688bdb78c69c5f02b1da25c79e79c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7b9e2cb779",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-saddle-96x88.png",
+   "sha256": "6193992f1e86f37e15daf8ed675fbd0ce85ed6e6e6138848c42d6bfb80f9cbe2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "947724d20a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-spots-228x234.png",
+   "sha256": "9914e1021ab7021d07874616beb0ec526b9b74453ccfd820345185b3dc075c0c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "44bf6c8dcc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-dark-lay-spots-96x88.png",
+   "sha256": "587334ee15469bf2d8e629ea214c5a60ed348d99e7a306c1ba7354a10fe64234"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "22ad8eda6b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-228x234.png",
+   "sha256": "727067b907509a3e4ceedaae32e10e71617b97a1f36a23dbc4d53b9943f25c44"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cce0bd37c7",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-96x88.png",
+   "sha256": "578492990b2ebddf79ade40f06efa8f0d1b281715c3f7a922311ed4ac37ae5f1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0de58521bc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-bands-228x234.png",
+   "sha256": "cecfa186d1be8b2ce8d904d969ad4cb587ff359f450e816affe44ddfcb2d361f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a13ec66126",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-bands-96x88.png",
+   "sha256": "96fdb817e45e6473c1cd0fbd72f38407a8df8fbff32da05467260d4ca2659035"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "78515dd8cc",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-gradient-228x234.png",
+   "sha256": "675e5c62a65148618812a27b7a2d9e23bebf3bddcc7f91ed832a81b7cd4ba8e3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ff70d092ac",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-gradient-96x88.png",
+   "sha256": "b9c013d3535bda7e6d3ac99b8be113eedc0a1080f2816148fcbc8b3f4acbe5d3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9c832aff97",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-saddle-228x234.png",
+   "sha256": "fb620f92105193220c7bc5be6a001a039646287dbc3f9173d6e28012a50bdafb"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ef7ed07bf6",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-saddle-96x88.png",
+   "sha256": "267d13c05a125071125db0b29907dc5bb0f2a4a68d359d8ff3566f1ff4dfbff1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c53325ff74",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-spots-228x234.png",
+   "sha256": "22e76833a1d9f5075d488ee930419ae2af1aa3b83f09eaa5111896f50ec078e7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f2223266d4",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-between-light-lay-spots-96x88.png",
+   "sha256": "341b9c8cdd7df68b957673cd0a54ba56142d62759d3bc9019f195ea1ecb7e89a"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1069a5e24c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-228x234.png",
+   "sha256": "aea98a8aaeae2ec32907fc453ff0b619f06ec70384ebe84a492d0596088707ae"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6a44ee07e0",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-96x88.png",
+   "sha256": "f0279c93e8931e7a48281324231d17c4dedafe58cf2e77fd495df840fbdefc98"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2b3101cf03",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-bands-228x234.png",
+   "sha256": "68b1dea53c6c6727c364eef9e5f9ce891c88caf8ac9f45d63db645ca77d863a7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2315051917",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-bands-96x88.png",
+   "sha256": "707a21daad86e16c43e4c5322bc94501b72f98054fc8086f4a4fccf5178817a4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a562940cca",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-gradient-228x234.png",
+   "sha256": "a0cab7898aa40ca4a9121f0eb360b799c1c38152aa7c533bb984b021c42233e6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "decfb708c2",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-gradient-96x88.png",
+   "sha256": "cf975df121df4b95396968c496077f17fcf125e6f19745993aeec31077182f5f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3f5f03ce0e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-saddle-228x234.png",
+   "sha256": "ddad3898b313268c437982f98a3d9d35dfac844ed43cbefdf9de01f753f847e2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0cdc5b7906",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-saddle-96x88.png",
+   "sha256": "48e67efc91b55b0760cd5f5046ce38f569d2202f192906bb848302b9c1cecaaa"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "209816947f",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-spots-228x234.png",
+   "sha256": "205ed6cd0bdabc6fbdc20b3e8f20ba7c214ba1a453bee928588d35686ef280a7"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4804137dab",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-between-lay-spots-96x88.png",
+   "sha256": "03c156be4452e46b247ada1a3200386f55e56c3c1851deb4d40f168bf07e39ae"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "81a972c3fe",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-228x234.png",
+   "sha256": "21def604fe9df62c34171cade683c690775b756bf90abdedc09b0995364ea810"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "716581e071",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-96x88.png",
+   "sha256": "b19cda616de07677ab53badf6177e2acdb4674e99798cc30fb7b7aa1537ccc48"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "1e4e979f1b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-bands-228x234.png",
+   "sha256": "75b26f78e590c1c27406464c6afcc16354087b10bbf6697b4f8b731f426aba3c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2f05e5cccb",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-bands-96x88.png",
+   "sha256": "8b1882af1c5a34d6da76acf0b2b33c36ce00e94c194030a8bce8c2e9138747c9"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d79294e366",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-gradient-228x234.png",
+   "sha256": "e2dc3c96920e654a4587a75ef822b5fd1b67a57dbd2a44156ce6f8a4ae1af9c1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e33231d3c9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-gradient-96x88.png",
+   "sha256": "c7e3889fd537270fe73ec51db34895f77c6e03fef3258fde90a079d8a740ee32"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "fab16823ef",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-saddle-228x234.png",
+   "sha256": "7c32ae1698e6930bb3558174eb34c1e523f53a73f2381f70c902f6a3ca84e722"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "46a0553aec",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-saddle-96x88.png",
+   "sha256": "7fc4580324c48c669444fa232f5057ec0ec555abe9523905c7a3e6db19432298"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "4f7e950488",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-spots-228x234.png",
+   "sha256": "ce3217f1f1ca698c59498cd7daa1128717bc53cd34a9b9f7a9f56136042f0f30"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b0de4b49d9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-dark-lay-spots-96x88.png",
+   "sha256": "dba1cc2a0519d60c51e22406c7292e96a111cf16f09f10261bbdf6abc0c82c86"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d788e97533",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-228x234.png",
+   "sha256": "a80d96a216aa928a40f5cb1f713ce1e6e7eb23b961eb727ee5e60be8e7d82b2d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "0eb2bdedc1",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-96x88.png",
+   "sha256": "f1f54373f79d86ed64083916f8df35087aa802336a8ffc3970a0b6beadc189b3"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "444763354d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-bands-228x234.png",
+   "sha256": "4b9f769430682adf694eb5a1d8df9959aa51e6d3c4a25db3762b367953f6764d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5fee1304be",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-bands-96x88.png",
+   "sha256": "2a4de92b1dd8883473f1d9c9be3cd6486e5584d4b61ffa0f2de1925a8514dc05"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "eda23cb37a",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-gradient-228x234.png",
+   "sha256": "0f57b3f3bb6d3593c2d2c6bff140ddabd7581e1135657d5b819d951b04323e59"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "822c774b0c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-gradient-96x88.png",
+   "sha256": "ca17bca4bac23047e01b9329ac1094f361d66f8c426520c83350fafe06b136d0"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "909b147f9e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-saddle-228x234.png",
+   "sha256": "fd72f0ab7f147daccb742e6791ad8b341345f72c005937ae65aa3da418bf563d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ea8b30e04b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-saddle-96x88.png",
+   "sha256": "afccb52ac0c495c96106538a3b458160c74fdb130bdde2a680a0f4ebe7e814d6"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "3667458667",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-spots-228x234.png",
+   "sha256": "8945576b2fd9a081d1e79db8a1abbbdcda30b6dca26dec0e94ff16958a01abcd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "fb8a1b1328",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-redder-light-lay-spots-96x88.png",
+   "sha256": "bf9fd8ffca8dc2a55bd1ed5e9fe548776b829759415c9c25c4bc6f6b509e6220"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "2db08e1b62",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-228x234.png",
+   "sha256": "fe4b158bb87f23bb270962b54e7f85d50643e1201f6abf7ff55c7294ddf356d2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6554ad6d94",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-96x88.png",
+   "sha256": "c4b60b99588306ae55601da8c3afafd477c4442166189b3e681306d2f3a69d1d"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7ef834884e",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-bands-228x234.png",
+   "sha256": "903c9b17e70aefd9ee1e837646102ab711516d7f5e1d4fa980ef33181ca2ea63"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "9a3ada2cea",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-bands-96x88.png",
+   "sha256": "34b55a20839af3838710a37c6510ad3167b3367b791b46d4104e33e1ed50c27b"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5c748590a9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-gradient-228x234.png",
+   "sha256": "2d0ac204eb2ee4f6948c39b9952ab631d068ca551fd577b34eadd01311f34b3c"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7f62f48d9c",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-gradient-96x88.png",
+   "sha256": "8deda1ef3ed25b5febaa9467b0d1bfb041d9b7a89fc467e3901944adfdb51c28"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "155f2a58df",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-saddle-228x234.png",
+   "sha256": "de55ad899afa856a1b21c9ddd8bc02944db1911f25b17899fab6b9728fc63346"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "03e89422b5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-saddle-96x88.png",
+   "sha256": "00b70527b25990244a4e433c0efd5ceef0ec6aeb5ff69caa8ed5029a58fea4ae"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b4638d9268",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-spots-228x234.png",
+   "sha256": "96d36ed5eeb6b28b29f5b2305019b3c65ab421ed331d8112ffca2a35354bc51f"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b7844979b5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-between-lay-spots-96x88.png",
+   "sha256": "3003df555f10f5932f507c106ff5c4ddda574d43ad12eaeec9a234d0d259c8a4"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "a68c1244b0",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-228x234.png",
+   "sha256": "f689ead24218d3f1164b69dff294b14f004f34d86647811c245fdb3e2e94b874"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "ea4fcf76c9",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-96x88.png",
+   "sha256": "57de69610f2bd74e214664f2d2e55ec4aabceb8c106fbc6caa01bbe9104f7dd8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d146211373",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-bands-228x234.png",
+   "sha256": "5e2dbe025d940d5e7db76bbd7e56867791be7bcfa851477b5d6b781a97336258"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d809e7bfbd",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-bands-96x88.png",
+   "sha256": "d5dc1df5eb471866bb5d66601c9fa343dfc425838763354d7bd295a5f069ceef"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "d7f7e1dbf5",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-gradient-228x234.png",
+   "sha256": "d1cc82e6224e837a28fb49278064692cc7ba6ad33a67b5bc1f5bf208b268cd97"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "6bf55a2deb",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-gradient-96x88.png",
+   "sha256": "125e6d23945bb686854677d2d366fdbb5e56680780c0db8dbfe325649ab112b8"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "984def40c8",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-saddle-228x234.png",
+   "sha256": "27cfcf01141b73312244895f8f18dd3ba82d4bcd342817c5e8f521c2684818e1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7e35273df3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-saddle-96x88.png",
+   "sha256": "92812080bff6ab009c506c9a6efda52ff8e17f042e8c573c5b7ad38d62775acf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "567a2d1315",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-spots-228x234.png",
+   "sha256": "c362de26ae353683a6d49fd869441f5c3870da839ceeda4c8dec3a27e396cd39"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "95e22eca66",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-dark-lay-spots-96x88.png",
+   "sha256": "e11ddf522594cad9ec0a21bad5ca038f42fda9c4262e1e90f62dd716be2008a2"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "fcb3a02f68",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-228x234.png",
+   "sha256": "6b223f4edfda40a79b12d8b11ee76ea98d9a0b11e8e9027ddd97cd72766bb8fd"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "c3dc4b5091",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-96x88.png",
+   "sha256": "e3e44149962e250757bcf743ac647bb3aac6a68292e7f76e956a5164441fff73"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "8ce499baa3",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-lay-bands-228x234.png",
+   "sha256": "8202be5029d25462e38365f431d5e099f54a6825624d3a3e2c3c14f5fdb26462"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "f66f3b9529",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-lay-bands-96x88.png",
+   "sha256": "2dd95e72a9b46036c05fd5271f44cfc72b7376b41ef4ca9e85276c9a42f92824"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "e13dec1038",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-lay-gradient-228x234.png",
+   "sha256": "65781b64fac527d19f671ed5aa762aac52286c4b62f621af16ad37340829a4cf"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cf0475980d",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-lay-gradient-96x88.png",
+   "sha256": "7def8d7090038d2a51bbd3e566758ad62a1fff714646ed1d0c51d896af077203"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "5e5f74850b",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-lay-saddle-228x234.png",
+   "sha256": "65556758ac366a208da8e55804b20d0fcfa05a02dbdc03dbeb8cdd0699d943df"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "b6cd39d5ef",
+   "path": "prototypes/ui/assets/masters/cuts/cut-adult-S05-yellower-light-lay-saddle-96x88.png",
+   "sha256": "8c338b17fdb4d22fb8d039e9ceb7d86165d9336e8081a343641db23e3d3601a7"
+  },
+  {
    "class": "cut-of-signed",
    "date": "2026-11-21",
    "id": "3e6ac597bb",

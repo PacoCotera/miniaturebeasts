@@ -65,7 +65,7 @@ test("1. freeze hash: docked mid-expedition, every refused press, a held walk an
   p.run("S.phase = 'map';");
   assert.equal(field(p), h, "the map");
   // Cargo, Mibis, the active page, Call a mibi
-  p.run("openMenu(); S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo"); p.key("back");
+  p.run("openMenu(); S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo"); p.key("back"); p.run("openMenu();");   // the Case's ← goes to the field, as the Log's
   p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'mibis');"); p.key("confirm"); assert.equal(p.S.phase, "mibis");
   p.key("call"); p.key("right"); assert.equal(p.S.phase, "active"); p.key("call"); p.key("back"); p.key("back"); p.key("back");
   assert.equal(p.S.phase, "map");
@@ -357,7 +357,7 @@ test("docked: no one-time hint shows or is spent; after Lift a step shows no Cal
   dock(p, st);
   p.key("back"); assert.equal(p.S.phase, "menu");
   p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo");
-  p.key("back"); p.key("back"); assert.equal(p.S.phase, "patch");
+  p.key("back"); assert.equal(p.S.phase, "patch");   // the Case's ← goes to the field, as the Log's
   assert.equal(p.S.found.includes("callintro"), false, "not spent while docked");
   assert.notEqual(p.run("FX.msg"), CALL, "the Call hint does not show while docked");
   p.key("call"); assert.notEqual(p.run("FX.msg"), CALL, "a Call press while docked shows no Call sign"); assert.equal(p.S.found.includes("callintro"), false, "and spends nothing");

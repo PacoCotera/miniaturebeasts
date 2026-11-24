@@ -161,6 +161,18 @@ WORDS.book = {
   near: name => 'Crept to two steps from ' + name + '.',
   find: (name, item) => name + ' left a ' + item + '. In the case.',
 };
+// The Case (companion-case-build-1): the Companion's second face. [copy] WORKING WORDS: the copywriter's job replaces every string here.
+// A label tells only what the player was shown: a pod's species when known, never a trait value; "at the Station" names only the chapter the sample is for.
+WORDS.case = {
+  title: 'Case', sealed: 'Sealed for home', goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: '◀ Log', end: 'End expedition',
+  pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
+  place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
+  podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
+  forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'at the Station: ' + w,
+  podFor: 'the nursery', crateFree: 'A free place', crateFreeHow: 'End expedition seals a crate here', crateName: n => 'Crate ' + n, crateWhen: n => 'sealed · day ' + n,
+  crateHas: b => { const p = (b.pods || []).length, bits = [p ? p + ' pod' + (p === 1 ? '' : 's') : '', b.e ? b.e + ' Energy' : '', b.d ? b.d + ' Data' : '', b.s ? b.s + ' Essence' : ''].filter(Boolean); return bits.join(' · '); },
+  cradleFree: 'Empty cradle', cradleFreeHow: 'room for a pod', placeFree: 'Empty place', placeFreeHow: 'nothing here yet',
+};
 // [copy] words for the copywriter's round (they say the meaning only)
 // night step 4 [copy]: the three cards' words (the art director's paintings carry them when signed; until then the message-box lines stay)
 export const CARD_TEXT = { dusk: ['Dusk', 'Dusk. The wild ones are going to their beds.'], night: ['Night', 'Night falls.'], dawn: ['Dawn', ''] };
