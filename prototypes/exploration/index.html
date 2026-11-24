@@ -7113,7 +7113,8 @@ const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is readin
 function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
   const bk = lay.baked; if (!bk || lay.cave || !lay.openings) return [];
   const out = [];
-  for (const o of lay.openings) { const k = openingKind(lay, o), whole = k.kind === 'range'; if (k.kind !== 'open' && !whole) continue;
+  const opened = new Set(lay.openings.map(o => o.side)), bare = Object.keys(SIDE_DIR).filter(side => !opened.has(side)).map(side => ({ side }));   // a side the range square shuts has its line whether or not the place lists an opening on it (owner #157; the walk blocks it the same way, applyLines)
+  for (const o of [...lay.openings, ...bare]) { const k = openingKind(lay, o), whole = k.kind === 'range'; if (k.kind !== 'open' && !whole) continue; if (o.from === undefined && !whole) continue;
     const a = whole ? 0 : o.from, b = whole ? (o.side === 'N' || o.side === 'S' ? bk.w : bk.h) - 1 : o.to;
     const ns = o.side === 'N' || o.side === 'S', a0 = a + (ns ? bk.ox : bk.oy), a1 = b + 1 + (ns ? bk.ox : bk.oy);   // along the side, in the place's tiles; the side itself is the place's own edge (the baked apron lies outside it)
     out.push({ o, k, x0: ns ? a0 : o.side === 'W' ? 0 : lay.w, x1: ns ? a1 : o.side === 'W' ? 0 : lay.w, y0: !ns ? a0 : o.side === 'N' ? 0 : lay.h, y1: !ns ? a1 : o.side === 'N' ? 0 : lay.h }); }
