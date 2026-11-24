@@ -129,7 +129,13 @@ function warmLibraryOne() {
 }
 function queueWarm() {
   if (warmAt != null || !G.ready || (mastersOnDemand() && CORE.lastProps == null)) return;   // on the page (masters on demand), not before the first screen's props are out: the warm is about a second of the main thread (four on a phone) and the first draw does not wait for it; test mode keeps its timing
-  warmAt = hooks.defer(() => { warmAt = null; const H = CORE.host; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { if (!holdOn(e)) CORE.renderErrors.push("specimen: " + e.message); } try { warmLibraryOne(); } catch (e) { if (!holdOn(e)) CORE.renderErrors.push("library: " + e.message); } }) ?? 0;
+  // The specimen (~0.5 s on a laptop) and the Library's one picture (the boot idle's paper, ~0.75 s) are two ticks, not one task of about 1.3 s that holds the page's input (boot-task-2).
+  warmAt = hooks.defer(() => { warmAt = null; const H = CORE.host; if (H && H.holding()) return; try { warmLibrary(G.st, G.settings); } catch (e) { if (!holdOn(e)) CORE.renderErrors.push("specimen: " + e.message); } warmOneAt(); }) ?? 0;
+}
+let oneAt = null;
+function warmOneAt() {
+  if (oneAt != null) return;
+  oneAt = hooks.defer(() => { oneAt = null; const H = CORE.host; if (H && H.holding()) return; try { warmLibraryOne(); } catch (e) { if (!holdOn(e)) CORE.renderErrors.push("library: " + e.message); } }) ?? 0;
 }
 const roomAsked = new Set();
 // A picture the screen needs whose file has not arrived (MasterPending, ui/assets.mjs): the face keeps what it shows, the file goes to the front of the queue with the rest of the screen's group (one round of requests, not one a picture), and the next frame asks again.
