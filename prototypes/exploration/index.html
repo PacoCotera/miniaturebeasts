@@ -8275,6 +8275,17 @@ function shadowAt(cx, cy, w, h) {   // a contact shadow: an ellipse set pixel by
   for (let j = 0; j < h; j++) { const ry = (j + .5) / (h / 2) - 1, half = Math.round(w / 2 * Math.sqrt(Math.max(0, 1 - ry * ry)));
     for (let i = -half; i < half; i++) { const x = cx + i, y = cy + j; if (RIDE_BAYER[(y & 3) * 4 + (x & 3)] < 7) R(x, y, 1, 1, C.sand); } }
 }
+// The mock's contact shadow (06-riding.html, lib/device.js shadow()): whole pixels, an ellipse of rx x ry, the middle clay on every other pixel, the rim sand on every other pixel. It is as wide as the cut's feet:
+// footSpan() is the width of the lowest rows of her cut (not the cut's width); the mock's 96 x 8 stands for a foot span of 192, so rx is half the span and ry is rx / 12.
+function footSpan(c) {
+  if (c.footSpan != null) return c.footSpan;
+  const h = c.height, band = Math.min(h, 12), d = c.getContext('2d').getImageData(0, h - band, c.width, band).data; let lo = c.width, hi = -1;
+  for (let y = 0; y < band; y++) for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 0) { if (x < lo) lo = x; if (x > hi) hi = x; }
+  return (c.footSpan = hi < lo ? c.width : hi - lo + 1);
+}
+function mockShadow(cx, cy, rx, ry) {
+  for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) { const q = (x / rx) ** 2 + (y / ry) ** 2; if (q <= 1 && (q < .6 || ((x + y) & 1) === 0)) R(cx + x, cy + y, 1, 1, q < .35 && ((x + y) & 1) === 0 ? C.clay : C.sand); }
+}
 const ridingLead = () => S.exp ? (S.exp.pt ? mibiById(S.exp.pt.id) : null) : partnerMibi();
 // A fact line under her name, shown only when it happened: she rode through a night slept in camp (night-step-6-1). Until that is live there is none. It is a fact, never a state, and changes nothing in play (owner 2026-11-22: no tiredness).
 const ridingFact = m => null;
@@ -8334,8 +8345,8 @@ function drawRiding(t) {
   let hop = 0;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0; if (a >= d && a - d < 600) hop = Math.round(Math.abs(Math.sin((a - d) / 600 * Math.PI)) * 30); }   // Call: she hops (the wrong way first, a young one)
   else if (mom && mo) hop = Math.round(Math.abs(Math.sin((NOW - mom.at) / 300 * Math.PI)) * 10);   // Play together: she bounces
-  shadowAt(225, 292, 96, 8);
-  const pic = ownCut(m, 'big', st === 'juvenile' ? 'juvenile' : 'adult'); if (pic) g.drawImage(pic, 111, 72 - hop);
+  const pic = ownCut(m, 'big', st === 'juvenile' ? 'juvenile' : 'adult');
+  if (pic) { const srx = Math.round(footSpan(pic) / 2); mockShadow(225, 292, srx, Math.max(2, Math.round(srx / 12))); g.drawImage(pic, 111, 72 - hop); }
   if (h && !h.quiet && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(330 + i * 8, 110 - i * 10, 10 - i * 2, 4, C.amber);   // a chirp
   if ((mom || (bond != null && bond >= 0 && bond < 900)) && m.sp === 1) for (const [sx, sy] of [[130, 110], [318, 120], [150, 250], [300, 240]]) blit(sparkArt(true), sx, sy);
   if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; heartAt('c-heart-24', 300, mo ? 150 - 20 * Math.min(4, Math.floor(k / 150)) : 90, 2); }   // the bond's heart rises
