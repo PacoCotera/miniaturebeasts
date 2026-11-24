@@ -9,7 +9,14 @@ import { BAKE_STAGES } from './waitpips.mjs';
 import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
 
 const PLACE_REV = 3, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
-const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
+// TAG: a hash of the files the tile set and the layers are read from (placesTag, set when the page has loaded them), so a changed tile set never meets a place baked from an older one (owner bugs #127-#129).
+let TAG = '';
+export function placesTag(...parts) {   // FNV-1a over the bytes of each part (Uint8Arrays), in order
+  let h = 0x811c9dc5; for (const p of parts) { for (let i = 0; i < p.length; i++) h = Math.imul(h ^ p[i], 0x01000193) >>> 0; h = Math.imul(h ^ 0xff, 0x01000193) >>> 0; }
+  return h.toString(16);
+}
+export const placesTagSet = t => { TAG = t ? String(t) : ''; };
+export const storeKey = (seed, slot, v, cell) => `place7:${REALM_REV}.${PLACE_REV}${TAG ? '.' + TAG : ''}:${seed}:${slot[0]},${slot[1]}:${v}:${cell}`;
 const memKey = (seed, slot, v, cell) => seed + '|' + slot[0] + ',' + slot[1] + '|' + v + '|' + cell;
 const BAKED = new Map(), ASKED = new Set(), GROUNDS = new Map(), GROUND_ASKED = new Set(), WAITERS = [], STAGES = new Map();
 const W = { bake: null, ground: null }, CTXS = { bake: null, ground: null };   // the workers, and the places kit each was given
