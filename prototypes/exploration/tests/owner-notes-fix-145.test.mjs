@@ -18,6 +18,9 @@ test("his save: Hazel stands on land, can step off, and is at her next haunt onc
   assert.ok(first.free >= 1, "she can step off it");
   let last = first;
   for (let s = 157 + 25; s < 420; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'creep' })`); p.pass(1200); last = me(); }
+  assert.equal(last.part, "afternoon");
+  assert.deepEqual([last.x, last.y], [last.want.x, last.want.y], "she is at her afternoon haunt");
+  assert.notDeepEqual([last.x, last.y], [15, 2], "she is no longer on her midday tile");
   assert.equal(last.gone, false, "the day-time gone has ended");   // first.part is morning; midday's haunt is her own tile 15,2 (#145 follow-up: released at the midday turn, so by the afternoon the player's noise is heard again and she may be alert)
 });
 
