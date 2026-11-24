@@ -121,7 +121,8 @@ export function layerDescriptors(loaded, terrains) {
       const variants = mine('variant'); if (variants.length) r.variants = variants.map(([, i]) => i);
       const back = mine('back'); if (back.length) r.back = { row: back[0][1], slots: Object.keys(back[0][0].slots).map(Number) };
       const wayup = mine('wayup'); if (wayup.length) r.wayup = Object.fromEntries(wayup.map(([row, i]) => [row.lower, i]));
-      return { kind: k.kind, lowers: new Set(k.lowers.map((x) => val(x, `${id}/${k.kind} lowers`))), fullCount: k.full ? loaded.png(k.full).w / set.sourceTile : 0, rows: r };
+      const mix = k.mix ? { sw: new Set((k.mix.sw || []).map((x) => val(x, `${id}/${k.kind} mix`))), se: new Set((k.mix.se || []).map((x) => val(x, `${id}/${k.kind} mix`))) } : undefined;
+      return { kind: k.kind, lowers: new Set(k.lowers.map((x) => val(x, `${id}/${k.kind} lowers`))), ...(mix ? { mix } : {}), fullCount: k.full ? loaded.png(k.full).w / set.sourceTile : 0, rows: r };
     });
     layers.set(value, {
       z: byId.get(id).z, fillCount: l.fill ? loaded.png(l.fill.sheets[0]).w / set.sourceTile : 0, fillRow: at((x) => x.type === 'fill' && x.terrain === id), kinds,

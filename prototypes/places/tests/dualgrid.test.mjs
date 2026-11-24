@@ -31,7 +31,8 @@ const LAYERS = {
   sand: { fillCount: 1, kinds: [{ kind: 'beach', lowers: set(['deep', 'water']), fullCount: 0 }, { kind: 'flat', lowers: set(['earth']), fullCount: 0 }] },
   mud: { fillCount: 5, kinds: [{ kind: 'flat', lowers: set(['deep', 'water', 'earth', 'sand']), fullCount: 0 }] },
   path: { fillCount: 1, kinds: [{ kind: 'bank', lowers: set(['deep', 'water']), fullCount: 0 }] },
-  grass: { fillCount: 5, kinds: [{ kind: 'bank', lowers: set(['deep', 'water']), fullCount: 0 }, { kind: 'flat', lowers: set(['earth', 'sand', 'mud', 'path']), fullCount: 0 }] },
+  grass: { fillCount: 5, kinds: [{ kind: 'bank', lowers: set(['deep', 'water']), fullCount: 0 }, { kind: 'flat', lowers: set(['earth', 'sand', 'mud', 'path']), fullCount: 0 },
+    { kind: 'bank-end-w', lowers: set([]), mix: { sw: set(['deep', 'water']), se: set(['sand']) }, fullCount: 0 }, { kind: 'bank-end-e', lowers: set([]), mix: { sw: set(['sand']), se: set(['deep', 'water']) }, fullCount: 0 }] },
   scrub: { drawAs: TV.grass },
   thicket: { fillCount: 4, kinds: [{ kind: 'rim', lowers: set(['earth', 'sand', 'mud', 'path', 'grass', 'scrub']), fullCount: 0 }] },
   cliff: { fillCount: 1, kinds: [{ kind: 'bank', lowers: set(['earth', 'sand', 'path', 'grass']), fullCount: 0 }] },
@@ -49,6 +50,14 @@ test('terrain layers corner A: grass / sand / water draws water fill, sand slot 
   assert.deepEqual(splitCode(at(r, 'grass', 1, 1)), { kind: 0, slot: NW }, 'bank is listed first and wins over the flat sand edge');
   assert.equal(packDepth(r.layers, r.w1, r.h1).length, 3);
   assert.equal(packDepth(r.layers, r.w1, r.h1).map((l) => l[1 * r.w1 + 1]).filter((c) => c !== EMPTY).length, 3);
+});
+
+test('terrain layers bank end (#131): grass above, water under one bottom corner and sand under the other picks the bank-end kind of that side; water or sand alone keeps bank / flat', () => {
+  const grassAt = (rows, i, j) => splitCode(at(terrainLayers(lv('E', rows, { g: 'grass', s: 'sand', w: 'water' }), T10, toMap(LAYERS)), 'grass', i, j));
+  assert.deepEqual(grassAt(['gggg', 'gggg', 'wwss', 'wwss'], 2, 2), { kind: 2, slot: NW | NE }, 'water left, sand right: bank-end-w');
+  assert.deepEqual(grassAt(['gggg', 'gggg', 'ssww', 'ssww'], 2, 2), { kind: 3, slot: NW | NE }, 'sand left, water right: bank-end-e');
+  assert.deepEqual(grassAt(['gggg', 'gggg', 'wwww', 'wwww'], 2, 2), { kind: 0, slot: NW | NE }, 'all water: bank');
+  assert.deepEqual(grassAt(['gggg', 'gggg', 'ssss', 'ssss'], 2, 2), { kind: 1, slot: NW | NE }, 'all sand: flat');
 });
 
 test('terrain layers corner B: cliff / grass / path draws path fill, grass 14 (flat), cliff 12 (bank); the tile above is the cliff fill', () => {

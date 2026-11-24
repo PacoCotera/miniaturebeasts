@@ -163,7 +163,7 @@ test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.j
   assert.equal(d.layers.get(v('scrub')).kinds[0].rows.variants.length, 3);
   assert.equal(d.layers.get(v('scrub')).kinds[0].fullCount, 4);
   assert.equal(d.layers.get(v('mud')).fillCount, 5);
-  assert.deepEqual(d.layers.get(v('grass')).kinds.map((k) => k.kind), ['bank', 'flat'], 'bank is listed first, so it wins over flat');
+  assert.deepEqual(d.layers.get(v('grass')).kinds.map((k) => k.kind), ['bank', 'flat', 'bank-end-w', 'bank-end-e'], 'bank is listed first, so it wins over flat; the two bank ends (#131) hold no lowers and are picked only by their `mix` (grass above, water one side and sand the other)');
   assert.deepEqual([...d.layers.get(v('grass')).kinds[1].lowers].sort(), ['earth', 'sand', 'mud', 'path'].map(v).sort());
   assert.deepEqual(d.tone, { of: v('grass'), also: [v('cliff')], row: layerRows(set).findIndex((r) => r.type === 'tone'), rowRaised: layerRows(set).findIndex((r) => r.type === 'toneraised') });
   assert.equal(d.layers.get(v('sand')).kinds[0].rows.looks, undefined, 'the beach has no reed look: the reeds are sprites');

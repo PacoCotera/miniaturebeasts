@@ -4,8 +4,8 @@
     {
       "id": "ninja-test",
       "file": "ninja-test.mbtiles",
-      "bytes": 1150656,
-      "sha256": "2c4ac2c0af234a827fd7d888165b23a9d6c9a8c375448bdae0550902f44418af"
+      "bytes": 1156592,
+      "sha256": "485c7e3f16f2ab256f901df21cba2a281baa45d21526d3abc91b4dba38c1d2da"
     }
   ],
   "places": [
@@ -17,7 +17,7 @@
       "set": "ninja-test",
       "mirrorOf": "",
       "bytes": 7612,
-      "sha256": "046cdb8d04d4e91ad26b86de778c0eebb8d30df444fb5fe8f25d082cc9349891"
+      "sha256": "460f68a5e52c5703252b4fb91a0c09d29795004bd659d00bdd8c97e940420797"
     },
     {
       "id": "HollowTree~x",
@@ -27,7 +27,7 @@
       "set": "ninja-test",
       "mirrorOf": "HollowTree",
       "bytes": 7624,
-      "sha256": "198acf382dfe483428fc3c8fce21661ddbac3eeafa4a5ed857c113b5867a549e"
+      "sha256": "079cb7188d8e66635cf65569463f298a2c560dc0d8aa635a7efa21eec5ebbda2"
     },
     {
       "id": "Reedpool",
@@ -37,7 +37,7 @@
       "set": "ninja-test",
       "mirrorOf": "",
       "bytes": 7644,
-      "sha256": "604fd6f6895c0756fabbee927bc0df39859bde34695a1805a9dd6dd4128a8737"
+      "sha256": "193439d1e7439d56c6d925ed2d994776fd176d3ed5717aeb8f897cadf9c5627b"
     },
     {
       "id": "Reedpool~x",
@@ -47,7 +47,7 @@
       "set": "ninja-test",
       "mirrorOf": "Reedpool",
       "bytes": 7668,
-      "sha256": "5a01a106caeee5dd34a09b111da310758f96aa6bf969add43252fad9249eba57"
+      "sha256": "4f3478f483763d6cae66697135ea5a62af4c76c16ec70f6067ff34e61e679cba"
     },
     {
       "id": "SplitStone",
@@ -57,7 +57,7 @@
       "set": "ninja-test",
       "mirrorOf": "",
       "bytes": 8016,
-      "sha256": "74eff01a299141ff1a3a42a4b7d2d08dc3b596bf6cbaf47745e243d982095ae1"
+      "sha256": "047d233fcdd95b053baa04a85098b1276aeac7ff2e84501747223ca9ae324fad"
     },
     {
       "id": "SplitStone~x",
@@ -67,7 +67,7 @@
       "set": "ninja-test",
       "mirrorOf": "SplitStone",
       "bytes": 8028,
-      "sha256": "a81174d1ba7d0867ab2361a08296542b510c18f91344fa790d97fd232a703fc5"
+      "sha256": "7946c18ccbef70380497ee6d2408d46e8d5c221983dbb1df5003af4b9062f070"
     },
     {
       "id": "Test_AllCases",

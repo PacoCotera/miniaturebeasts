@@ -2171,6 +2171,16 @@
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-flat.png (slots 3, 5 and 7 redrawn by hand, bug #116, signed by the art director, mibi-art ledger 35c04f589; the set folder's own file, never re-read from the desk's older one)",
     "sha256": "7bd0344cd265ef44573170f24fef0c3c84e1189e36bc4eafd8a7672078f5d402"
   },
+  "over-grass-bank-end-w.png": {
+    "commit": "local",
+    "from": "bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image) (the signed sheet; the whole chain is in over-grass-bank-end-w.steps.json)",
+    "sha256": "932b89f5642c29f93f80b07941e9fe792d1bf7295482600583a1a603bb6f9526"
+  },
+  "over-grass-bank-end-e.png": {
+    "commit": "local",
+    "from": "bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image), flipped (the signed sheet; the whole chain is in over-grass-bank-end-e.steps.json)",
+    "sha256": "041725dd651dbdcb7dc719738a56aa1c90c331366355c368e268478b7eaa29d3"
+  },
   "fill-drygrass.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v1.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
