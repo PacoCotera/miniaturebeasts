@@ -6527,8 +6527,9 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     if (nbk) { w = nl.w * Tp; h = nl.h * Tp; }
     const r = rect(w, h); g.imageSmoothingEnabled = false;
     if (nbk) {
-      const pre = !S.visited[c] && S.veilPre && S.veilPre[key];   // the strip a Call from next door lifted there (owner #85; #377 kept it apart in S.veilPre)
-      const veil = placeVeil(nl); if (!S.visited[c]) unwalkedVeil(veil, nl, pre, dx, dy);   // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
+      const own = S.visited[c] && !!S.veil[key];   // a place with its own veil record; a visited place with none (an old save, or the Call lifted it first) is still unwalked here (owner #136)
+      const pre = !own && S.veilPre && S.veilPre[key];   // the strip a Call from next door lifted there (owner #85; #377 kept it apart in S.veilPre)
+      const veil = placeVeil(nl); if (!own) unwalkedVeil(veil, nl, pre, dx, dy);   // a place never walked is wholly veiled, save the strip a Call lifted there, its unreachable border band too (that band is lit in a place's own view and would draw a grid of green strips between the cells)
       const wk = wholeKeyOf(nl, veil); let cvn = WHOLE.get(wk) || (e && e.wk === wk ? e.cv : null);
       if (!cvn) {
         if (!e || e.wk !== wk) { e = { wk, it: nbk.overviewSteps(veil, 0, nl.cut), cv: null }; nb.set(key, e); }
