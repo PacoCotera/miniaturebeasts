@@ -4,7 +4,7 @@
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
-import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit } from '../../exploration/src/view.mjs';
+import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
 export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dark'];
@@ -78,8 +78,8 @@ const veilPx = (c, x, y, dark, night) => (BAYER4[(y & 3) * 4 + (x & 3)] < 4 ? ni
 // Applies the light in place to a ground buffer covering win. opts.nightIndex: the core palette's night colour (2).
 // Per pixel: beyond fog sight -> the fog table; else the cell's clear light; the 6 px storm step beside a storm column; the veil's dots where veiled.
 export function applyLight(buf, win, size, ts, state, opts = {}) {
-  const gV = gridOf(state, 'veil'), gF = gridOf(state, 'fog'), lvl = state.level;
-  if (!gV && !gF && !lvl && !state.storm) return buf;
+  const fe = state.fogEdge || null, gV = gridOf(state, 'veil'), gF = fe ? null : gridOf(state, 'fog'), lvl = state.level;   // fe: the fog sight's soft edge (state.fogEdge = { cx, cy, r, seed }), drawn per pixel instead of the fog grid
+  if (!gV && !gF && !fe && !lvl && !state.storm) return buf;
   const T = tablesOf(ts), night = opts.nightIndex ?? 2, eb = size >> 2, pw = state.w, EW = 4 * state.w, EH = 4 * state.h;
   const ebx0 = Math.floor(win.x / eb), ebx1 = Math.floor((win.x + win.w - 1) / eb), eby0 = Math.floor(win.y / eb), eby1 = Math.floor((win.y + win.h - 1) / eb);
   for (let ey = Math.max(0, eby0); ey <= Math.min(EH - 1, eby1); ey++) for (let ex = Math.max(0, ebx0); ex <= Math.min(EW - 1, ebx1); ex++) {
@@ -90,7 +90,10 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
     // the approaching storm's soft edge (state.storm = { darkW, left, seed, level }): per pixel, screen-side distance, world-anchored dither
     const bx0 = Math.max(ex * eb, win.x) - win.x, bx1 = Math.min(ex * eb + eb, win.x + win.w) - win.x;
     const sb = state.storm && (state.storm.left ? bx0 < state.storm.darkW + 97 : bx1 > win.w - state.storm.darkW - 97) ? state.storm : null;
-    if (!L && !mV && !mF && !side && !sb) continue;
+    // the fog edge's block class: 0 all clear, 1 all fog, 2 mixed (per pixel); the wobble keeps the band's start within r .. r + 48
+    let fc = 0;
+    if (fe) { const bcx = ex * eb + eb / 2 - fe.cx, bcy = ey * eb + eb / 2 - fe.cy, dc = Math.hypot(bcx, bcy), hb = eb * 0.71; fc = dc + hb < fe.r ? 0 : dc - hb > fe.r + 48 + FOG_BAND_PX ? 1 : 2; }
+    if (!L && !mV && !mF && !side && !sb && !fc) continue;
     const tL = L ? T[LEVELS[L]] : null, tS = sb ? T[LEVELS[sb.level]] : null;
     const cV = mV && mV !== 511 ? coverE(mV) : null, cF = mF && mF !== 511 ? coverE(mF) : null;
     const px0 = Math.max(ex * eb, win.x), px1 = Math.min(ex * eb + eb, win.x + win.w), py0 = Math.max(ey * eb, win.y), py1 = Math.min(ey * eb + eb, win.y + win.h);
@@ -98,14 +101,15 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
       const o = (py - win.y) * win.w + (px - win.x), c = buf[o];
       if (c === 0) continue;
       const k = (((py - ey * eb) * 12 / eb) | 0) * 12 + (((px - ex * eb) * 12 / eb) | 0);
-      if (mF === 511 || (cF && cF[k])) { buf[o] = T.fog[c]; continue; }
+      if (mF === 511 || (cF && cF[k]) || fc === 1 || (fc === 2 && fogBandHit(px, py, fe))) { buf[o] = T.fog[c]; continue; }
       let base = tL ? tL[c] : c;
       if (side) {
         const lx = (px - cx * size) * (48 / size);
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
       if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, py, px, sb.darkW, sb.seed)) base = tS[c]; }
-      buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
+      // in the fog band the veil thins out with the clear ground (a second Bayer test at the band's share), gone where the fog takes over
+      buf[o] = (mV === 511 || (cV && cV[k])) && (fc !== 2 || fogVeilKeep(px, py, fe)) ? veilPx(base, px, py, T.dark, night) : base;
     }
   }
   return buf;

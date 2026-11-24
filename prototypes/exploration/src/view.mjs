@@ -118,6 +118,26 @@ export function stormBandHit(ds, py, px, darkW, seed) {
   const d = stormBandDepth(ds, py, darkW, seed);
   return d >= BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * BAND_PX < d * 16); }
 
+// The fog sight's soft edge (#153). Fog sight stays the round rule (sightR, per tile); only the DRAWING of its edge changes: the fog table comes in over FOG_BAND_PX
+// (2.5 tiles at 48) past a start radius at the sight radius (every in-sight tile centre stays clear), by the same per-world-pixel 4 x 4 Bayer step as the storm band (25/50/75 percent fog).
+// The start radius wobbles with the angle round the hero, 0 to 1 tile, by a seeded sum of three sines (periodic, so there is no seam), a function of angle and seed only.
+export const FOG_BAND_PX = 120;
+export function fogWobble(theta, seed) {
+  const ph = (k) => (lat(k, seed) + 1) * Math.PI;
+  return Math.max(0, Math.round(48 * (0.5 + 0.3 * Math.sin(2 * theta + ph(1)) + 0.2 * Math.sin(3 * theta + ph(2)) + 0.15 * Math.sin(5 * theta + ph(3))) / 1.15));
+}
+// depth in px past the start radius; fog = 1 when the pixel takes the fog table. e = { cx, cy, r, seed } in the drawn size's place pixels (48 here).
+export function fogDepth(px, py, e) { const dx = px - e.cx, dy = py - e.cy; return Math.hypot(dx, dy) - e.r - fogWobble(Math.atan2(dy, dx), e.seed); }
+export function fogBandHit(px, py, e) {
+  const d = fogDepth(px, py, e);
+  return d >= FOG_BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * FOG_BAND_PX < d * 16); }
+
+// The survey veil across the band: a pixel that stays clear keeps the veil only where a second 4 x 4 Bayer test (the same matrix, shifted 2 px) at the same share also says veil,
+// so the veil thins out with the clear ground and is gone where the fog takes over (no tile step, no new table).
+export function fogVeilKeep(px, py, e) {
+  const d = fogDepth(px, py, e);
+  return d <= 0 || (d < FOG_BAND_PX && BAYER4[((py + 2) & 3) * 4 + ((px + 2) & 3)] * FOG_BAND_PX >= d * 16); }
+
 // The band's dark columns at 48 for a gap still to close: n = 20·(3 − gap) in twentieths of a column (gap < 3, a multiple of 0.05);
 // STORM_K[48] = 7/5 so columns = ceil(7n/100). 32 px keeps main's float rule in the page.
 export function stormCols48(n) { return Math.floor((7 * n + 99) / 100); }
