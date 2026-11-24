@@ -102,7 +102,8 @@ export function terrainLayers(level, terrains, layers, tone = null) {
     for (const T of order.slice(1)) {
       const d = lay.get(T), zT = z(T), ec = cliff && T === cliff.value ? cs : gs;   // every layer but the cliff's reads the corners as the ground they stand on
       // a trail's path on a raised top (the ground `path-top`, drawn as the path): on a tile of four cliff corners the cliff's own fill would cover it, so the fill is left off where the path shows
-      if (cliff && T === cliff.value && pathTopAs !== undefined && gs.includes(pathTopAs) && cs.every((c) => c === cliff.value)) continue;
+      const pathOnTop = cliff && pathTopAs !== undefined && gs.includes(pathTopAs) && cs.every((c) => c === cliff.value);
+      if (pathOnTop && T === cliff.value) continue;
       let mask = 0;
       [NW, NE, SW, SE].forEach((bit, k) => { if (z(ec[k]) >= zT) mask |= bit; });
       if (mask === 0) continue;
@@ -117,7 +118,11 @@ export function terrainLayers(level, terrains, layers, tone = null) {
       for (const c of lowers) if (!d.kinds.some((k) => k.lowers.has(c))) throw new DualGridError('no-edge', `${id}: ${cellName(i, j)}: ${byValue.get(T).id} has no edge over ${byValue.get(c).id}`, { level: id, cell: { i, j }, terrains: [byValue.get(c).id, byValue.get(T).id] });
       // grass above, one lower under each bottom corner (water one side, sand the other): the kind whose `mix` names that pair, a bank end that turns into the sand edge (#131); else the first kind holding any lower
       const mixed = mask === (NW | NE) ? d.kinds.findIndex((k) => k.mix && k.mix.sw.has(ec[2]) && k.mix.se.has(ec[3])) : -1;
-      const kind = mixed >= 0 ? mixed : d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
+      // bug #148: the grass over the path on a raised top takes the edge in the raised top's tones (kind `flat-top`), so the ring beside the path matches the fill-cliff around it
+      const onTop = pathOnTop && T === grass ? d.kinds.findIndex((k) => k.kind === 'flat-top') : -1;
+      // bug #148: the cliff rim where every raised corner is a trail's top (the lip of a gap): its raised quadrants are the path, so the trail runs on into the gap
+      const rimTop = cliff && T === cliff.value && pathTopAs !== undefined && cs.some((c, k) => c === cliff.value && gs[k] === pathTopAs) && cs.every((c, k) => c !== cliff.value || gs[k] === pathTopAs) ? d.kinds.findIndex((k) => k.kind === 'path-top') : -1;
+      const kind = rimTop >= 0 ? rimTop : onTop >= 0 ? onTop : mixed >= 0 ? mixed : d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
       layerOf(T)[idx] = KIND_STRIDE * kind + mask;
     }
     if (toneLayer) {

@@ -2181,6 +2181,11 @@
     "from": "bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image), flipped (the signed sheet; the whole chain is in over-grass-bank-end-e.steps.json)",
     "sha256": "92e837b1c29aacc66b607f5836867cd93a1c556f1450ad5f3620b84f642d9bb3"
   },
+  "over-grass-flat-top.png": {
+    "commit": "local",
+    "from": "over-grass-flat.png, palette map to the fill-cliff tones (the signed sheet; the whole chain is in over-grass-flat-top.steps.json)",
+    "sha256": "bd0665fb6169b4e25884a72a60e29403eb50ca1855be0bbe61621e0720d7d39d"
+  },
   "fill-drygrass.png": {
     "commit": "8c0ddc470",
     "from": "art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v1.png + art-jobs/2026-11-10-art-biome-drygrass/out/tiles/fill-drygrass~v2.png as the strip 0 1 0 1 0 1 0 2 (layout)",
@@ -2276,6 +2281,11 @@
     "commit": "local",
     "from": "ninja-adventure/files/Ninja Adventure - Asset Pack/Backgrounds/Tilesets/TilesetRelief.png (cut and recoloured; the whole chain is in over-cliff.steps.json)",
     "sha256": "2250dcdbb9ec581d3a3a9668929daf481ec0b3613c38809f0b083a7eea6f2bce"
+  },
+  "over-cliff-path-top.png": {
+    "commit": "local",
+    "from": "over-cliff.png, palette map of the raised fill and rim to the path tones (the signed sheet; the whole chain is in over-cliff-path-top.steps.json)",
+    "sha256": "31f4764984bb504b58a87b114a852fce6179a27b6c57199ae466398ee4454652"
   },
   "tone-grass.png": {
     "commit": "633e4d641",
