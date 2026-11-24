@@ -259,7 +259,7 @@ import { makeSleeper } from "./src/sleeper.mjs";
 import { WORDS, DAY, DAY_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
-import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
+import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
@@ -2292,6 +2292,8 @@ function advance(scope, info) {
 // NAMED EMPTY SLOTS: none is signed and in the art set yet, so a slot stays empty ("dusk card: picture to come"), the message-box line stays in its place and nothing is drawn in code.
 // When a painting is signed, its file goes in here and cardShow draws it on the Companion's frame; the PR stays draft + hold until all three are.
 const NIGHT_CARDS = { dusk: { slot: 'dusk card: picture to come', file: null }, night: { slot: 'night card: picture to come', file: null }, dawn: { slot: 'dawn card: picture to come', file: null } };
+// [art] night step 5: her curled token on her bed (night-camp piece 11, 32 px, plain and saddled, 2 breathing frames), signed by the art director (round 4, ledger de7f1e763). drawCreature shows it when curledNow(c) says she is asleep on her bed.
+const CURLED_LOIKA = { slot: WORDS.habit.curledSlot, file: 'art/walk/loika-curl-loika-s01-idle-right-{plain,saddled}-curl-{0,1}.png', plain: [".488A10.21AD10A.19AD8C3DA.17AD2C11DA.15AD2C13DA.13AD2C15DA.12AD2C13AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37", ".457A8.22A2D8A2.19AD8C2D2A.17AD3C10DA.15AD2C13DA.14AD2C14A.13AD2C15DA.12AD2C13AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37"], saddled: [".488A10.21AK7D3A.19AK9C2DA.17AK6C3K2C2DA.15ADK4C10DA.13AD2K3C12DA.12AD2CK2C10AQ2A.12AD2C2KC8A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37", ".457A8.22A2K6D2A2.19AK9CD2A.17AK6C3K2C2DA.15ADK4C10DA.14ADK3C12A.13AD2CK2C12DA.12AD2C2KC10AQ2A.12AD2C11A2Q5A.10AD2C10APQ2PQ3PA.9AD2C9A2P2QP6A.8AD4C7ALAD8C.9ADC2DC6AL2AD5C3.9AD2C2D3C4A2C5AC2A.10ADLDC8AC2A2C2AL2.11A2L3D2C3A2C4L5.13A8.2AL8.37"] };   // signed round 4 (AD, ledger de7f1e763): the four frames as the walk tokens' own row text, byte-for-byte the pictures in art/walk/
 function cardShow(k) { return false; }   // false while the slot (NIGHT_CARDS[k].file) is empty: the caller keeps the message-box line
 // The day's light is spent: the world turns once (as the night's end did), a fresh day starts, and the walk goes on in the same place with everything as it was.
 function nightPasses() {
@@ -2483,13 +2485,14 @@ function easeLoika(c, X) {
   else if (heard && easeCheb(P, c) > 2) c.crowd = 0;
   // the circle and the back-off of E5: a step made with her in sight within 5 tiles that keeps the distance round her, or lengthens it
   if (X.moved && X.prevP && easeCheb(P, c) <= 5 && easeLos(env, P, c)) { const d0 = easeCheb(X.prevP, c), d1 = easeCheb(P, c); if (d1 > d0) e5.backsOff++; else if (d1 === d0) e5.circles++; }
-  const ev = easeTick(c, heard);
+  const ev = easeTick(c, heard, sleeperOf(c));   // night step 5: a sleeper's first heard step only stirs her
   for (const e of ev) {
-    if (e === 'heard') { e5.heard++; c.st = 'alert'; c.t = 2; c.go = 1; c.fl = null; }
-    else if (e === 'gone') { e5.gone++; e5.heard++; c.go = 0; c.st = 'flee'; c.fl = fleeTiles(spOf(c.sp)); c.t = Math.ceil(c.fl / 2); const h = nextHaunt(c.ind, dayPart()); c.gone = { t: hauntStand(h, hauntFree(X.lay, X.key, c)) }; logEv((c.ind.name || 'A Loika') + ' went to its next haunt for the day'); }
+    if (e === 'stirred') { e5.stirred = (e5.stirred || 0) + 1; c.st = 'alert'; c.t = 1; c.go = 0; c.fl = null; }
+    else if (e === 'heard') { e5.heard++; c.st = 'alert'; c.t = 2; c.go = 1; c.fl = null; }
+    else if (e === 'gone') { e5.gone++; e5.heard++; c.go = 0; c.st = 'flee'; c.fl = fleeTiles(spOf(c.sp)); c.t = Math.ceil(c.fl / 2); const h = nextHaunt(c.ind, dayPart()); c.gone = { t: hauntStand(h, hauntFree(X.lay, X.key, c)), night: sleepPart(dayPart()) ? S.turn : null }; logEv((c.ind.name || 'A Loika') + ' went to its next haunt for the day'); }
     else if (e === 'settled') { e5.settled++; if (c.ease === 1) { c.st = 'alert'; c.t = 1; c.go = 0; } else { c.st = 'idle'; c.t = 0; } }
   }
-  if (ev.length && !X.away(c) && inSight(c.x, c.y)) fxMsg(ev.includes('gone') ? WORDS.ease.gone : ev.includes('heard') ? (heard && !X.moved ? WORDS.ease.stayHeard : WORDS.ease.heard) : WORDS.ease.settled, ev.includes('gone') ? 3 : 2);
+  if (ev.length && !X.away(c) && inSight(c.x, c.y)) fxMsg(ev.includes('gone') ? WORDS.ease.gone : ev.includes('stirred') ? WORDS.ease.stirred : ev.includes('heard') ? (heard && !X.moved ? WORDS.ease.stayHeard : WORDS.ease.heard) : WORDS.ease.settled, ev.includes('gone') ? 3 : 2);
   return ev;
 }
 const easeEnvNow = () => { const lay = curLay(); return easeEnvOf(lay, !lay.cave && stormRain(lay.cell % MW), !lay.cave && inFog(lay.cell)); };
@@ -2556,12 +2559,20 @@ const habDay = () => (S.day.hab || (S.day.hab = {}));
 const habKey = (c, k) => c.id + ':' + k;
 const habName = c => (S.named && S.named[c.id]) || (c.ind && c.ind.name) || 'A Loika';
 const hbVisible = (c, X) => !X.away(c) && inSight(c.x, c.y);
+// Night step 5: a SLEEPER is a named Loika at her bed from dusk through the night whose bedding-down is over (played, missed or lost by a heard step) and who is at ease again or only stirred. She can still be noted (one action, once a day for each range).
+function atBedNow(c) { const ind = c.ind, part = dayPart(), t = ind && ind.go && ind.go.part === part ? ind.go.t : null; return !!t && !!ind.hs && cheb(c, t) <= 1 && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed; }
+const sleeperOf = c => !!c.ind && !c.hide && !!S.day && isSleeper({ part: dayPart(), atBed: atBedNow(c), played: !!habDay()[habKey(c, 'sleep')], hasPlay: !!c.hb, gone: !!c.gone, ease: c.ease });
+const curledNow = c => sleeperOf(c) && !(c.ease >= 1);   // asleep and grazing: her curled token; ears up (stirred) shows her idle
+const sleepKey = (c, range) => 'sn:' + c.id + ':' + range;   // one sleep-curled note for each range a day, in her bedding-down or asleep
+const sleeperDup = (c, d) => !!habDay()[sleepKey(c, habRange(d))];
+// her bed goes on her page from any sighting of her in it (N3): at her bed from dusk, seen from anywhere in sight
+function pageBed(c, X) { if (!c.ind || !hbVisible(c, X) || !sleepPart(dayPart()) || !atBedNow(c)) return; const pg = (S.pages || (S.pages = {})), mine = pg[c.id] || (pg[c.id] = {}); if (!mine.bed) mine.bed = { x: c.ind.hs.bed.x, y: c.ind.hs.bed.y }; }
 // the card line for a habit: what is still missing (her coat first, then her face; sleep-curled asks no further until the dew ships); null when nothing is left to ask
 const habWant = (id, k) => { const rec = ((S.habits || {})[id] || {})[k]; return wantOf(S.seed, id, k, rec && rec.got); };
 const roomWord = (k, w) => k === 'sleep' && w === 'place' ? WORDS.habit.sleepPlace : WORDS.habit.rooms[w];   // sleep-curled's last line is where she goes at first light
-const habCard = (id, k) => { const w = habWant(id, k), nm = WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, roomWord(k, w), false) : WORDS.habit.cardKnown(nm); };
-// the first habit of hers that still lacks something, as one card line; null when she is fully known
-const habCardNext = c => { for (const k of HABITS) if (habWant(c.id, k)) return habCard(c.id, k); return null; };
+const habCard = (id, k, sl) => { const w = habWant(id, k), nm = sl ? WORDS.habit.asleep : WORDS.habit.name[k]; return w ? WORDS.habit.card(nm, roomWord(k, w), false) : WORDS.habit.cardKnown(nm); };
+// the first habit of hers that still lacks something, as one card line; null when she is fully known. A curled sleeper is read as asleep (her sleep card), never as shaking dry.
+const habCardNext = c => { const sl = sleeperOf(c); for (const k of sl ? ['sleep'] : HABITS) if (habWant(c.id, k)) return habCard(c.id, k, sl); return null; };
 const hbStorm = () => S.exp && S.exp.storm;
 const hbCore = X => !X.lay.cave && stormOff(X.lay.cell % MW) < 1.5;   // the band's core is over this place (a lull included)
 function habitDue(c, X) {
@@ -2583,7 +2594,7 @@ function habitDue(c, X) {
   return null;
 }
 function habitTick(c, X) {   // true when the habit has her action
-  const hd = habDay(), W = WORDS.habit;
+  const hd = habDay(), W = WORDS.habit; pageBed(c, X);
   const end = (state) => { const h = c.hb; hd[habKey(c, h.k)] = state; if (h.k === 'shake') c.wet = 0; c.hb = null; c.st = 'idle'; c.t = 0; if (h.k === 'calm') c.visitor = 0; };
   if (c.hb) {
     const h = c.hb, v = h.k === 'calm' ? X.live.cr.find(q => q.id === h.v) : null;
@@ -2659,7 +2670,8 @@ function habitVisit(c, X) {
 function noteTarget() {
   const ex = S.exp; if (!ex || !ex.patch || curLay().cave) return null; const P = ex.patch, [fx, fy] = DIRS[P.dir]; let best = null, bd = 99;
   for (const c of curLive().cr) {
-    if (!c.hb || c.hide || !c.ind || !seenFromPlayer(P.key, c.x, c.y)) continue;
+    if ((!c.hb && !sleeperOf(c)) || c.hide || !c.ind || !seenFromPlayer(P.key, c.x, c.y)) continue;   // night step 5: a sleeper can be noted too
+    if (!c.hb && sleeperDup(c, cheb(c, P))) continue;   // a sleeper already noted from this range today: ✓ keeps still instead
     const dx = c.x - P.x, dy = c.y - P.y, fwd = dx * fx + dy * fy, lat = Math.abs(dx * fy - dy * fx);
     if (!(fwd > 0 && lat <= fwd + 1)) continue;
     const d = cheb(c, P); if (d < bd) { bd = d; best = c; } }
@@ -2778,30 +2790,31 @@ function wildMarked(c) {
 }
 const wildSaddled = c => !!c.ind && c.sp === 0 && coatRead(c.id) && wildMarked(c);   // the token is plain until her coat is read, then it shows what she has
 function noteHabit(c) {
-  const ex = S.exp, h = c.hb, W = WORDS.habit; if (!h) return;
-  const P = ex.patch, range = habRange(cheb(c, P)), k = h.k, name = habName(c);
-  if (h.notes[range]) { fxMsg(W.dup, 2); FX.bumpAt = NOW; return; }   // one note for each range in a play: nothing is spent
-  h.notes[range] = range;
-  const lay = curLay(), rec = habRecord(S.habits || (S.habits = {}), c.id, k), want = habWant(c.id, k);
-  const r = habNote(rec, range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), want, byDay());
-  const said = r.gives.length ? r.gives.map(g => roomWord(k, g)).join(' · ') : W.shape[k];
+  const ex = S.exp, W = WORDS.habit, sl = !c.hb && sleeperOf(c), h = c.hb || (sl ? { k: 'sleep', notes: {} } : null); if (!h) return;   // night step 5: a sleeper is noted like a play
+  const P = ex.patch, range = habRange(cheb(c, P)), k = h.k, name = habName(c), hd = habDay(), stirred = sl && (c.ease | 0) >= 1;
+  if (h.notes[range] || (k === 'sleep' && hd[sleepKey(c, range)])) { fxMsg(W.dup, 2); FX.bumpAt = NOW; return; }   // one note for each range in a play (and for sleep-curled each range a day): nothing is spent
+  h.notes[range] = range; if (k === 'sleep' && !(stirred && range === 'near')) hd[sleepKey(c, range)] = 1;   // a stirred sleeper's near note gives no keepsake: it does not use up the range
+  const lay = curLay(), rec = habRecord(S.habits || (S.habits = {}), c.id, k), want = habWant(c.id, k), sg = sl ? sleeperGives(range, dayPart(), stirred) : null;
+  const r = habNote(rec, range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), want, byDay(), sg && sg.gives);
+  const said = r.gives.length ? r.gives.map(g => roomWord(k, g)).join(' · ') : W.shape[k], keepsake = sg ? sg.keepsake : range === 'near';
   if (range !== 'near') bookEv('habit', c, WORDS.book.habit(name, W.name[k], W.range[range], said));   // the note's own words: what the player was shown
   else bookEv('near', c, WORDS.book.near(name));
   let tail = '';
-  const hd = habDay();
   if (r.first) { if (addMat('d', 1, c.x, c.y)) tail += W.first; }
   else if (!hd['sight:' + c.id]) { hd['sight:' + c.id] = 1; if (addMat('d', 1, c.x, c.y)) tail += W.sighting; }
-  if (range === 'near' && !rec.sample) {
+  if (stirred && range === 'near') tail += W.asleepStirred;
+  if (keepsake && !rec.sample) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
     if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
     else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn, ...gotNow() }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); }
   }
   const filled = want ? rec.got[want] : 0;
-  fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
-  ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent });
+  fxMsg(name + ' · ' + (sl ? W.asleep : W.name[k]) + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
+  ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent, asleep: sl, stirred, part: dayPart(), keepsake: !!(keepsake && rec.sample) });
   waitTick('patch');   // a note spends one light, as a Wait does
 }
 function hauntStep(X, c) {   // true when the routine has the creature's action
+  if (c.gone && c.gone.night != null && c.gone.night !== S.turn) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; }   // night step 5: gone from her bed at night, she is at her dawn haunt next morning and the day is not lost
   if (c.gone) { const t = c.gone.t; if (!t) return false; if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; } return true; }   // gone: its next haunt for the rest of the day
   const part = dayPart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
   const t = c.ind.go.t; if (!t) return false;
@@ -6988,7 +7001,8 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   if (stepping && stepFr === 1 && HOPPER_SP.includes(c.sp)) dy -= 1;   // a hopper's step frame rises 1 px higher (art desk note)
   const sad = c.sp === 0 && wildSaddled(c);   // her marking shows and her coat is read
   const a = stepping ? creatureArt(c.sp, 'step', stepFr, 1, false, sad) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0, 1, false, sad);   // the Tuliko airing its scales is its idle with the shake's jiggle
-  blit(a, x + dx, y + dy, rm, (c.face || 1) < 0);
+  const cu = c.sp === 0 && curledNow(c) ? art('curl' + (sad ? 's' : 'p') + fr, () => tokenPB(CURLED_LOIKA[sad ? 'saddled' : 'plain'][fr], 32)) : null;   // asleep on her bed: the signed curled token
+  blit(cu || a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2 || rm === 5) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
   if (b) blit(bubbleArt(b === 'fs' ? 'f' : b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);
@@ -9265,7 +9279,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
