@@ -110,8 +110,19 @@ WORDS.watch = {
   note: 'Note', leave: 'leave', nearer: 'closer',   // the bottom line: ✓ Note, ← leave, ▲▼ closer
   card: 'Field note', keep: 'Keep', back: 'back to her', data: '+1 Data',
   sampleTaken: item => 'You took a ' + item + ' · it goes home in the Case', sampleNone: 'No sample', sampleCome: 'get within 2 tiles for a sample',
-  onPage: name => 'on ' + name + '’s page',   // unused: her page is W6c; never shown until it exists (owner bug #118)
+  onPage: name => 'on ' + name + '’s page',   // the field card's line, back now her page exists (her-page-ui-1; withheld by owner bug #118 until then)
   cardLine: 'Kept in the Log',
+};
+// [copy] her page (her-page-ui-1): the editor's final strings, her-page-canon-1 section 2. Every row shows only what he has been shown.
+WORDS.her = {
+  row: name => name + ' · her page', back: 'her page', backShort: 'menu', logOk: 'Her page', open: 'Her page',
+  watchLine: ['▲▼ closer · ▶ her page', '▶ her page'], others: '◀▶ others met', backTo: 'back',
+  count: (i, n) => i + ' of ' + n, kind: 'a wild Loika', turn: t => 'T' + t,
+  met: (d, part, t) => 'Met day ' + d + ' · ' + (t ? WORDS.her.turn(t) + ' · ' : '') + part,
+  seen: (today, t, place) => ['Last seen ' + (today ? 'today' : 'on an earlier day') + (t ? ' · ' + WORDS.her.turn(t) : ''), place ? 'the ' + place : ''],   // two lines: when, then where
+  ways: (n, of) => 'Her ways · ' + n + ' of ' + of, unseen: n => n === 1 ? 'One way not yet seen' : n + ' ways not yet seen',
+  inCase: 'in the Case', home: 'gone home', pod: where => 'Her young · a pod ' + where, podBed: 'at her bed',
+  keeps: 'Where she keeps', bed: 'her bed',
 };
 // [copy] W4 round 2: her prints at a haunt she has left (walk-design-1 3A): working words for the copywriter. The message says when she was there; the label is the ✓ at the prints.
 WORDS.prints = {
