@@ -1823,6 +1823,20 @@
   },
   {
    "class": "paint",
+   "date": "2026-11-24",
+   "id": "f87c5ddfd0",
+   "path": "art/places/sets/ninja-test/over-grass-bank-end-e.png",
+   "sha256": "92e837b1c29aacc66b607f5836867cd93a1c556f1450ad5f3620b84f642d9bb3"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
+   "id": "8ebfb2f8f8",
+   "path": "art/places/sets/ninja-test/over-grass-bank-end-w.png",
+   "sha256": "bdbb294bc0da5693492c6b4041ee4f1013059e0f619eebae8ba256375c85668f"
+  },
+  {
+   "class": "paint",
    "date": "2026-11-19",
    "id": "9c3911b0ae",
    "path": "art/places/sets/ninja-test/over-grass-bank.png",
