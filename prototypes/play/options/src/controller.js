@@ -33,7 +33,18 @@ export function createController(host) {
     hold() { held = shotOf("whole").catch(() => null); return held; },
     async newNote() {   // New note: the held screen goes in first; an open note carries on
       const c = held ? await held : null; held = null;
-      if (!has()) { const h = await pageOf("whole", c); if (h && h !== c) drop(c); for (const it of st.items) drop(it); emit({ items: h ? [h] : [], text: "", at: Date.now(), from: host.source() }); }
+      if (!has()) {   // the note opens at once with the canvas picture; the page picture replaces it when it arrives (if that item is still untouched)
+        for (const it of st.items) drop(it);
+        const at = Date.now();
+        emit({ items: c ? [c] : [], text: "", at, from: host.source() });
+        pageOf("whole", c).then((h) => {
+          if (!h || h === c) return;
+          const first = st.items[0];
+          const same = c ? first === c : st.items.length === 0;
+          if (st.at !== at || !same) { drop(h); return; }   // sent, discarded or changed meanwhile
+          drop(c); emit({ items: [h, ...st.items.slice(1)] });
+        });
+      }
       else if (c) drop(c);
       emit({ open: true, full: "" }); api.refreshContext();
     },
