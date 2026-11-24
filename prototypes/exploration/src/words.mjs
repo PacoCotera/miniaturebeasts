@@ -56,6 +56,7 @@ WORDS.haunt = { reed: 'at the reeds', shore: 'at the water', sweep: 'in the tall
 // [copy] W3, ease and the carry (walk-design-1 W3): every line is a working word for the copywriter (placeholders say the meaning only).
 WORDS.ease = {
   stage: ['grazing', 'ears up', 'watching', 'gone'],   // her four stages, said under her name
+  stirred: 'She stirred · ears up, still curled',   // [copy] night step 5: a sleeper's first heard step only stirs her
   heard: 'It heard that · it is watching', heardTwice: 'It heard that again · it is going', gone: 'It has gone from here for the day', settled: 'It settles again',
   // the line under a wild one in sight: whether this step would be heard, by the gait (creep, walk)
   hear: (creep, walk) => 'creep ' + (creep ? 'heard' : 'unheard') + ' · walk ' + (walk ? 'heard' : 'unheard'),
@@ -89,6 +90,8 @@ WORDS.habit = {
   first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
   dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
+  asleep: 'asleep, curled up', asleepStirred: ' · she is stirring · no keepsake until she settles',   // [copy] night step 5: a sleeper's note (name, and the tail while she is stirred)
+  curledSlot: 'Loika asleep: picture to come',   // [art] night step 5: the named empty slot of her curled token (night-camp piece 11), not signed yet
   sleepPlace: 'where she goes at first light',   // night step 4 [copy]: sleep-curled's last card line, which the dew's prints at her bed give
   // the card line, one per habit, on the forecast line: what the Station still lacks
   card: (habit, want, filled) => habit + ' · ' + (filled ? 'learned: ' : 'still to learn: ') + want,
@@ -159,6 +162,25 @@ WORDS.book = {
   habit: (name, hab, range, said) => name + ', ' + hab + ', ' + range + ': ' + said + '.',
   near: name => 'Crept to two steps from ' + name + '.',
   find: (name, item) => name + ' left a ' + item + '. In the case.',
+};
+// The Case (companion-case-build-1): the Companion's second face. [copy] WORKING WORDS: the copywriter's job replaces every string here.
+// A label tells only what the player was shown: a pod's species when known, never a trait value; "at the Station" names only the chapter the sample is for.
+WORDS.case = {
+  title: 'Case', sealed: 'Sealed for home', goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: '◀ Log · ▶ Riding', end: 'End expedition',
+  pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
+  place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
+  podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
+  forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'at the Station: ' + w,
+  podFor: 'the nursery', crateFree: 'A free place', crateFreeHow: 'End expedition seals a crate here', crateName: n => 'Crate ' + n, crateWhen: n => 'sealed · day ' + n,
+  crateHas: b => { const p = (b.pods || []).length, bits = [p ? p + ' pod' + (p === 1 ? '' : 's') : '', b.e ? b.e + ' Energy' : '', b.d ? b.d + ' Data' : '', b.s ? b.s + ' Essence' : ''].filter(Boolean); return bits.join(' · '); },
+  cradleFree: 'Empty cradle', cradleFreeHow: 'room for a pod', placeFree: 'Empty place', placeFreeHow: 'nothing here yet',
+};
+// Riding (companion-riding-build-2): the Companion's third face, who is with you. [copy] WORKING WORDS: the copywriter's job replaces every string here.
+// Her kind, stage and what she does are the game's own words (CARE_TEXT, SPECIES); no trait value, range or hidden trait is said here. No word for tiredness (owner 2026-11-22).
+WORDS.riding = {
+  title: 'Riding', also: 'also riding', leads: 'leads the Probe', who: 'who rides', pages: '◀ ▶ pages', field: 'field', more: n => '+' + n,
+  rested: 'rested · she slept at camp',   // a fact, shown only when it happened (night-step-6-1); absent until then
+  empty: 'No one rides', emptyHow: 'A mibi rides with you once it is home.',
 };
 // [copy] words for the copywriter's round (they say the meaning only)
 // night step 4 [copy]: the three cards' words (the art director's paintings carry them when signed; until then the message-box lines stay)
