@@ -143,15 +143,36 @@ test("hold Call marks the finds: a pod and a tuft get a take mark; a fruit and a
   } finally { await browser.close(); server.close(); }
 });
 
-test("a quick press of Call on an edge tile is the Call only: no zoomed-out view (owner 2026-11-20)", { skip }, async (t) => {
+test("a quick Call on the top edge tile lifts the place above and shows it for about 1.5 s; a key ends it at once (owner #136, #91)", { skip }, async (t) => {
   let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
   const { server, url } = await serve();
   try {
     const { page, errors } = await enter(browser, url, 7, true);
-    await page.evaluate(() => { const P = window.__mb.S.exp.patch; P.x = 0; P.y = 4; });
+    await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch; P.x = 4; P.y = 0; const up = String(P.key * 1 - m.MW); m.S.exp.reach = [...new Set([...(m.S.exp.reach || []), P.key * 1 - m.MW])]; delete m.S.veilPre?.[up]; });
+    const n0 = (await st(page)).calls;
     await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
-    assert.equal((await st(page)).view, null, "a quick press at the edge: no zoomed-out view");
-    assert.equal((await st(page)).calls > 0, true, "and the Call was made");
+    assert.equal((await st(page)).view, "peek", "a quick Call at the edge: the land next door");
+    assert.equal((await st(page)).calls > n0, true, "and the Call was made");
+    assert.equal(await page.evaluate(() => { const m = window.__mb, P = m.S.exp.patch, k = String(P.key * 1 - m.MW), v = m.S.veilPre && m.S.veilPre[k], h = m.layout(k).h; return !!(v && (v[h - 1] >>> 4 & 1)); }), true, "the place above is lifted at the player's column");
+    await page.waitForTimeout(900); assert.equal((await st(page)).view, "peek", "still there before 1.5 s");
+    await page.waitForTimeout(900); assert.equal((await st(page)).view, null, "back to the walk by itself");
+    await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
+    assert.equal((await st(page)).view, "peek");
+    await page.evaluate(() => window.__mb.act("down")); assert.equal((await st(page)).view, null, "a key ends it");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); server.close(); }
+});
+
+test("a quick press of Call inside the place is the Call only: no zoomed-out view (owner 2026-11-20)", { skip }, async (t) => {
+  let browser; try { browser = await chromium.launch(); } catch (e) { t.skip("no Chromium"); return; }
+  const { server, url } = await serve();
+  try {
+    const { page, errors } = await enter(browser, url, 7, true);
+    await page.evaluate(() => { const P = window.__mb.S.exp.patch; P.x = 4; P.y = 4; });
+    const n0 = (await st(page)).calls;
+    await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
+    assert.equal((await st(page)).view, null, "a quick press inside the place: no zoomed-out view");
+    assert.equal((await st(page)).calls > n0, true, "and the Call was made");
     await page.waitForTimeout(600); assert.equal((await st(page)).view, null, "nor later");
     await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(600);
     assert.equal((await st(page)).view, "peek", "a long press still opens the view");
