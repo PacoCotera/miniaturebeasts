@@ -3902,7 +3902,8 @@ function patchTick(info) {
     noise: info.noise || 'act', prevP: info.prevP || null, ease: easeEnvOf(lay, raining, fog), carry: ex.carry, ptName: ex.pt && ex.pt.name,
     away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
   habitWorld(X);
-  for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
+  for (const c of live.cr) { const was = c.st, bx = c.x, by = c.y; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
+    stirStep(c, X, bx, by);
     if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); } }   // a name on first note: the one the realm gives it, kept once it has been met
     if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) (S.seenAt || (S.seenAt = {}))[String(c.id)] = { k: key, x: c.x, y: c.y, sp: c.sp, t: S.turn };   // W6a: where she was last seen, and on which day: the target line's arrow points here, never at her live place
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
@@ -3920,6 +3921,22 @@ function patchTick(info) {
     if (live.strike) { live.strike.peak = peak; if (tileInView(P.x, P.y, live.strike.x, live.strike.y)) fxSign('warn', { key: P.key, x: live.strike.x, y: live.strike.y }); }
   }
   if (!raining) live.strike = null;
+}
+// A place in sight is alive while you walk (issue #138): an idle wild one may take one small step, at most one tile from its stand, never toward you while you walk,
+// about one action in three (seeded). Not a habit, tell or beat; a Wait or Keep still leaves routineStep as built.
+function stirStep(c, X, bx, by) {
+  if (X.noise === 'wait' || c.hide > 0 || c.st !== 'idle' || c.x !== bx || c.y !== by || c.home || c.visit || c.warm >= 1 || (spOf(c.sp).settle && c.calm >= 1)) return;
+  if (X.away(c) || !inSight(c.x, c.y)) return;
+  const live = X.live, sa = live.sa || (live.sa = {});
+  const anchor = c.ind ? (c.gone ? c.gone.t : routineSpot(c, X.lay, X.key)) : (sa[c.id] && man(sa[c.id], c) <= 1 ? sa[c.id] : (sa[c.id] = { x: c.x, y: c.y }));
+  if (!anchor || man(anchor, c) > 1) return;
+  const ex = S.exp; if (rnd(S.seed, c.id, ex.actions, 'stir') >= 1 / 3) return;
+  const walking = !!X.moved, P = X.P;   // any step of the explorer, walk or creep
+  const opts = Object.values(DIRS).map(([dx, dy]) => ({ x: c.x + dx, y: c.y + dy })).filter(q => man(q, anchor) <= 1 && q.x >= 0 && q.y >= 0 && q.x < X.lay.w && q.y < X.lay.h
+    && canStand(X, q.x, q.y, c) && !(q.x === P.x && q.y === P.y) && !X.lay.shelter[q.y * X.lay.w + q.x] === !X.lay.shelter[c.y * X.lay.w + c.x] && !(walking && cheb(q, P) !== cheb(c, P)) && inSight(q.x, q.y));
+  if (!opts.length) return;
+  const q = opts[Math.floor(rnd(S.seed, c.id, ex.actions, 'stirdir') * opts.length)];
+  if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
 }
 // Lightning prefers stones; otherwise a random open tile near you, never the one you stand on.
 function pickStrike(X) {
