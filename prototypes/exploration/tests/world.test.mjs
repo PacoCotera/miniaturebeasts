@@ -1375,27 +1375,18 @@ for (const ts of [32, 48]) {
     assert.equal(p.run("S.pods.find(q => q.id === 'fp').h"), 1, "and it stays hidden");
   });
 
-  test(`cues at ${ts}: the Call's hold draws ice dashes on the view's edge inside the reach, each with its dark shadow on the outer side`, () => {
+  test(`cues at ${ts}: after a Call, once CALL_MS has passed, no ice contour on the Call's range and no ice dashes on the view's edge; during the Call the moving ring is drawn (#140)`, () => {
     const p = cuePlace(ts), C = p.run("C");
-    p.run("var HD = holdDashes;");
     for (const r of [6, 11]) {
-      p.run(`FX.pulse = { x: 14, y: 13, at: NOW - CALL_MS - 100, r: ${r}, key: S.exp.patch.key, lifted: new Set() }; holdDashes = HD;`);
-      const f = frameOf(p).slice(), maxR = (2 * r + 1) * ts >> 1, pl = js(p, "RT.plScr"), cx = pl.x, cy = pl.y;
-      p.run("holdDashes = () => {};"); const bare = frameOf(p).slice(); p.run("holdDashes = HD;");
-      const near = (x, y, w, h) => (2 * x + w - 2 * cx) ** 2 + (2 * y + h - 2 * cy) ** 2 <= 4 * maxR * maxR;
-      const mine = new Set(); let on = 0, off = 0;
-      const check = (x, y, w, h, sx, sy, sw, sh) => { if (!near(x, y, w, h)) { off++; return; } on++;
-        for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { assert.equal(at(f, x + i, y + j), C.ice, `dash (${x + i}, ${y + j})`); mine.add((y + j) * 450 + x + i); }
-        for (let j = 0; j < sh; j++) for (let i = 0; i < sw; i++) { assert.equal(at(f, sx + i, sy + j), C.void, `its shadow (${sx + i}, ${sy + j})`); mine.add((sy + j) * 450 + sx + i); } };
-      for (let x = 4; x <= 444; x += 8) { check(x, 34, 4, 2, x, 33, 4, 1); check(x, 560, 4, 2, x, 562, 4, 1); }
-      for (let y = 36; y <= 556; y += 8) { check(2, y, 2, 4, 1, y, 1, 4); check(446, y, 2, 4, 448, y, 1, 4); }
-      for (let k = 0; k < f.length; k++) if (f[k] !== bare[k]) assert.ok(mine.has(k), `nothing else drawn (${k % 450}, ${Math.floor(k / 450)})`);
-      for (const k of mine) { const y = Math.floor(k / 450), x = k % 450; assert.ok(y >= 32 && y <= 563 && x >= 0 && x <= 449, "inside rows 32–563"); }
-      if (ts === 48 && r === 11) assert.equal(off, 0, "r 11 at 48: the whole frame");
-      if (ts === 48 && r === 6) { assert.ok(!near(4, 34, 4, 2) && !near(444, 560, 4, 2), "fog reach at 48: the corners drop out"); assert.ok(near(220, 34, 4, 2) && near(2, 300, 2, 4), "and the middles stay"); }
-      if (r === 11) assert.ok(on > 0);
+      p.run(`FX.pulse = { x: 14, y: 13, at: NOW - CALL_MS - 100, r: ${r}, key: S.exp.patch.key, lifted: new Set() };`);
+      const after = frameOf(p).slice(); p.run("FX.pulse = null"); const bare = frameOf(p).slice();
+      assert.deepEqual(after, bare, `r ${r}: after the Call nothing is drawn for it (no contour, no dashes)`);
+      p.run(`FX.pulse = { x: 14, y: 13, at: NOW - CALL_MS / 2, r: ${r}, key: S.exp.patch.key, lifted: new Set() };`);
+      p.run("RM.matches = false"); const mid = frameOf(p).slice(); p.run("RM.matches = true"); let ice = 0;
+      for (let k = 0; k < mid.length; k++) if (mid[k] !== bare[k] && mid[k] === C.ice) ice++;
+      assert.ok(ice > 0, `r ${r}: during the Call the moving ring is still drawn`);
     }
-    p.run("FX.pulse.at = NOW - CALL_MS - 401"); const a = frameOf(p).slice(); p.run("holdDashes = () => {};"); assert.deepEqual(a, frameOf(p).slice(), "after the hold: none");
+    p.run("FX.pulse = null");
   });
 
   test(`cues at ${ts}: the name tag takes position 1 below, then right, then left, refusing creatures, the warned cell and the tabs`, () => {

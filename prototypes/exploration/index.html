@@ -7002,7 +7002,7 @@ function drawPatchBody(t) {
     const a = sparkArt(!motion() || Math.floor(age / 120) % 2 === 0); blit(a, W(r.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(r.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); }
   if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * ts + (ts >> 1)), cy = H(FX.pulse.y * ts + (ts >> 1)), maxR = (2 * FX.pulse.r + 1) * ts >> 1;   // the range's edge
     if (motion() && age < CALL_MS) circ(cx, cy, 8 + (maxR - 8) * age / CALL_MS, C.ice);            // the leading edge: the veil lifts behind it
-    else if (age < CALL_MS + 400) { circ(cx, cy, maxR, C.ice, true); holdDashes(cx, cy, maxR); } }  // then the final contour: exactly the Call's range, and the view's edge inside it
+  }   // no final contour and no view-edge dashes after the Call (#140: the owner said remove the call range and the probe view range)
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * ts + (ts >> 1)), y = H(FX.dig.y * ts + ts - 6);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
@@ -7154,13 +7154,6 @@ function drawEdgeCues(t) {
     if (!isFind) for (const [x, y, w, h] of tabPointer(tb)) R(x, y, w, h, col); }
   for (const k of [...seen.keys()]) if (!keep.has(k)) seen.delete(k);   // a tab that goes and comes back flashes again
   g.restore();
-}
-// The Call's hold, on the view's edge wherever the edge lies inside its reach: ice dashes every 8 px, each with a 1 px dark shadow on its outer side.
-const DASH = { col: 'ice', shadow: 'void' };
-function holdDashes(cx, cy, maxR) {
-  const r2 = 4 * maxR * maxR, near = (x, y, w, h) => (2 * x + w - 2 * cx) ** 2 + (2 * y + h - 2 * cy) ** 2 <= r2, c = C[DASH.col], sh = C[DASH.shadow];   // the dash's centre, doubled
-  for (let x = 4; x <= 444; x += 8) { if (near(x, 34, 4, 2)) { R(x, 33, 4, 1, sh); R(x, 34, 4, 2, c); } if (near(x, 560, 4, 2)) { R(x, 562, 4, 1, sh); R(x, 560, 4, 2, c); } }
-  for (let y = 36; y <= 556; y += 8) { if (near(2, y, 2, 4)) { R(1, y, 1, 4, sh); R(2, y, 2, 4, c); } if (near(446, y, 2, 4)) { R(448, y, 1, 4, sh); R(446, y, 2, 4, c); } }
 }
 // The partner's name tag: a 20 px ink panel with an aqua border and a 2×5 (5×2 sideways) aqua pointer on the side facing the partner.
 // Its clear zone is the cell, the ring's foot rows below it, and a 4 px margin that stays empty; the pointer sits just outside the margin.
