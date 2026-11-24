@@ -1350,6 +1350,22 @@ function logEv(text) {
   if (!S) return; const tag = S.exp ? 'E' + S.exp.n : 'T' + wTurn();
   S.log.push(tag + ' · ' + text); if (S.log.length > 40) S.log.splice(0, S.log.length - 40);
 }
+// ---- The Log (companion-device-build-1): S.book keeps a record for each thing that happened on a walk, written by the same calls that write S.log, at the moment it happens. ----
+// { d: the day (the expedition's number), part: the part of day, place: the place's name, from: where from the flag, id/who: the wild one it is about (or none), kind, text, item }
+// kinds: prints (read), met (met and named), habit (a habit noted, far or mid), near (crept to two steps), find (a find taken). The last 3 days are kept; S.log's 40 lines stay for the observer panel. An old save has no S.book: nothing is shown.
+const BOOK_DAYS = 3;
+function bookFrom(ex) {
+  const a = cxy(ex.pos), b = cxy(ex.start), dx = a.x - b.x, dy = a.y - b.y, W = WORDS.book;
+  if (!dx && !dy) return W.atFlag;
+  return W.fromFlag(Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'east' : 'west') : (dy > 0 ? 'south' : 'north'));
+}
+function bookEv(kind, c, text, item) {
+  const ex = S && S.exp; if (!ex || !ex.patch || !S.day || !text) return;
+  const rec = { d: ex.n, part: dayPart(), place: placeName(curLay()), from: bookFrom(ex), id: c ? c.id : null, who: c ? habName(c) : '', kind, text, at: S.day.spent };
+  if (item) rec.item = item;
+  const bk = S.book || (S.book = []); bk.push(rec);
+  while (bk.length && bk[0].d < ex.n - (BOOK_DAYS - 1)) bk.shift();
+}
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // ---- Care and the carried set (the care save shape, C0) ----
 // The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
@@ -2695,12 +2711,13 @@ function readPrints(p) {
   if (!rec.sample && !ex.dark) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
     if (sm.length >= SATCHEL) drop = WORDS.w5.dropFull;
-    else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1 }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
+    else { const s = SAMPLE.shake, id = sampleId(S.seed, c.id, 'shake'); sm.push({ id, lo: c.id, name, sp: c.sp, habit: 'shake', item: s.item, chapter: s.chapter, turn: S.turn, drop: 1 }); rec.sample = id; drop = WORDS.w5.dropTuft(); logEv('A tuft left by ' + name + ' at a haunt'); bookEv('find', c, WORDS.book.find(name, WORDS.habit.sampleName[s.item]), s.item); (ex.stats.drops || (ex.stats.drops = [])).push({ id: c.id, light: S.day.spent }); }
   }
   // bug #122 (tuft-3): in addition, a tuft of hers lies on the print's tile as an ordinary tuft (Essence pickup); once per Loika; gives no sample
   if (!rec.tuft && !ex.dark) { const at = p.mark || p.stand; rec.tuft = 1; const live = curLive(); live.tf.push({ id: live.fid++, x: at.x, y: at.y }); }
   let learned = '';   // night step 4: read at her bed in the dew, her prints give where she goes for sleep-curled
   if (p.to && sleepPart(p.part) && !p.gone) { const sr = habRecord(S.habits || (S.habits = {}), c.id, 'sleep'); if (!sr.got.place) { sr.got.place = 1; learned = ' · ' + WORDS.habit.cardTail(WORDS.habit.sleepPlace, true); } }
+  bookEv('prints', c, WORDS.book.prints(name, (p.yday ? W.whenYday : W.when)[p.part]));
   fxMsg(printsLine(p) + drop + W.page + learned, 3);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
@@ -2766,6 +2783,8 @@ function noteHabit(c) {
   const lay = curLay(), rec = habRecord(S.habits || (S.habits = {}), c.id, k), want = habWant(c.id, k);
   const r = habNote(rec, range, habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }), want, byDay());
   const said = r.gives.length ? r.gives.map(g => roomWord(k, g)).join(' · ') : W.shape[k];
+  if (range !== 'near') bookEv('habit', c, WORDS.book.habit(name, W.name[k], W.range[range], said));   // the note's own words: what the player was shown
+  else bookEv('near', c, WORDS.book.near(name));
   let tail = '';
   const hd = habDay();
   if (r.first) { if (addMat('d', 1, c.x, c.y)) tail += W.first; }
@@ -2773,7 +2792,7 @@ function noteHabit(c) {
   if (range === 'near' && !rec.sample) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
     if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
-    else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); }
+    else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); }
   }
   const filled = want ? rec.got[want] : 0;
   fxMsg(name + ' · ' + W.name[k] + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
@@ -3847,7 +3866,7 @@ function patchTick(info) {
     away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
   habitWorld(X);
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
-    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); } }   // a name on first note: the one the realm gives it, kept once it has been met
+    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); } }   // a name on first note: the one the realm gives it, kept once it has been met
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);
   endOfActionHabits(X, info);
@@ -7227,9 +7246,10 @@ function drawClock(right) {
   blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
   text(lbl, x, 9, fl ? C.ink : C.fog); return x - 22;
 }
+const battArt = () => art('i-batt', () => { const pb = new PB(15, 9); pb.rect(0, 0, 13, 9, C.mist); pb.rect(1, 1, 11, 7, C.ink); pb.rect(13, 3, 2, 3, C.mist); pb.rect(2, 2, 3, 5, C.mint); pb.rect(6, 2, 3, 5, C.mint); return pb; });
 function drawStatus(right) {
   blit(art('i-radio', () => { const pb = new PB(9, 9); [3, 5, 8].forEach((h, i) => pb.rect(i * 3, 9 - h, 2, h, i < 2 ? C.mist : C.stone)); return pb; }), right - 9, 11);
-  blit(art('i-batt', () => { const pb = new PB(15, 9); pb.rect(0, 0, 13, 9, C.mist); pb.rect(1, 1, 11, 7, C.ink); pb.rect(13, 3, 2, 3, C.mist); pb.rect(2, 2, 3, 5, C.mint); pb.rect(6, 2, 3, 5, C.mint); return pb; }), right - 27, 11);
+  blit(battArt(), right - 27, 11);
   return drawClock(right - STATUS_W - 6) - 4;
 }
 // The reach grid, top-left corner: one dot per reachable cell in the Probe's range (5×5 at tier 1, 9×9 at tier 2).
@@ -7776,7 +7796,7 @@ function digger() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'd
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
-  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'End expedition' };
+  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
   if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)]).concat(base);
@@ -7792,6 +7812,7 @@ function menuIcon(id, x, y) {
   else if (id === 'mibis') blit(art('m-comp', () => { const pb = new PB(28, 28); pb.ell(14, 18, 8, 6.5, C.slate); for (const [a, b] of [[5, 9], [11, 5], [17, 5], [23, 9]]) pb.ell(a, b, 3, 3.2, C.slate); return pb; }), x, y);
   else if (id === 'wait') blit(art('m-wait', () => { const pb = new PB(28, 28); pb.ell(14, 14, 12.5, 12.5, C.bone, { sh: [C.white, C.fog] }); pb.line(14, 14, 14, 6, C.ink, 2); pb.line(14, 14, 19, 17, C.ink, 2); pb.outline(() => C.stone); return pb; }), x, y);
   else if (id === 'leave' || id === 'next') blit(art('m-leave', () => { const pb = new PB(28, 28); pb.poly([[4, 14], [14, 4], [14, 10], [24, 10], [24, 18], [14, 18], [14, 24]], C.sky); pb.outline(() => C.sea); return pb; }), x, y);
+  else if (id === 'log') { /* [art] the Log row's icon: a named empty slot, drawn by the art desk */ }
   else blit(art('m-world', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.grass, { sh: [C.sprout, C.leaf] }); pb.ell(18, 18, 7, 6, C.river, { clip: (x2, y2) => Math.hypot(x2 + .5 - 14, y2 + .5 - 14) < 13 }); pb.outline(); return pb; }), x, y);
 }
 function drawMenu(t) {
@@ -7814,6 +7835,58 @@ function drawMenu(t) {
     const col = it.dis || it.far || it.frz ? C.mist : it.id === 'newworld' ? C.rust : C.ink, ls = wrapText(it.label, w - 64 - 14, sc);   // a long label (Wait · until afternoon) wraps inside the panel
     if (ls.length < 2) text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), col, sc);
     else ls.forEach((l, k) => text(l, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8) - 8 + k * 16, col, sc)); });
+}
+// ---- The Log face (companion-device-build-1), built to the accepted companion-device-2 mock (shots-1x/03-log.png). On the Companion's grid: type at 2x (3x for the day), pictures at 1x or 2x of their own pixels. ----
+// Reading it spends no light and moves nothing: it only reads S.book. Paper, rules, the tab and the panel are UI by code (rule 18); her sketch (48 x 48, on a met entry) is a named empty slot: [art] one painted piece per kind, nothing drawn.
+const LOG_Y0 = 114, LOG_Y1 = 520;
+function logDays() {
+  const days = [];
+  for (const r of S.book || []) { let d = days.find(x => x.d === r.d); if (!d) days.push(d = { d: r.d, rows: [], from: '' }); d.rows.push(r); d.from = r.from; }
+  if (S.exp && S.exp.patch && S.day) { let d = days.find(x => x.d === S.exp.n); if (!d) days.push(d = { d: S.exp.n, rows: [], from: '' }); d.from = bookFrom(S.exp); }   // today's page: where you stand now
+  return days.sort((a, b) => a.d - b.d);
+}
+function logLay(r) {
+  const pic = r.kind === 'prints' || r.kind === 'met' || (r.kind === 'find' && r.item === 'tuft'), ls = wrapText(r.text, pic ? 288 : 362, 2).slice(0, 3);
+  return { r, pic, ls, h: 48 + 24 * ls.length };
+}
+function logFitTop(day) { let y = 0, i = day.rows.length; while (i > 0) { const h = logLay(day.rows[i - 1]).h; if (y + h > LOG_Y1 - LOG_Y0) break; y += h; i--; } return i; }
+function openLog() { const days = logDays(); S.ui.logDay = Math.max(0, days.length - 1); S.ui.logTop = days.length ? logFitTop(days[S.ui.logDay]) : 0; S.phase = 'log'; }
+function logKey(k) {
+  const days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di];
+  if (k === 'back') { S.phase = S.ui.from || 'setup'; transition(); return; }
+  if (k === 'up') { if (day && S.ui.logTop > 0) S.ui.logTop--; else if (di > 0) { S.ui.logDay = di - 1; S.ui.logTop = logFitTop(days[di - 1]); } else FX.bumpAt = NOW; }
+  else if (k === 'down') { if (day && S.ui.logTop < logFitTop(day)) S.ui.logTop++; else if (di < days.length - 1) { S.ui.logDay = di + 1; S.ui.logTop = logFitTop(days[di + 1]); } else FX.bumpAt = NOW; }
+}
+function drawLog() {
+  const W = WORDS.book, days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di], ink = C.soil, soft = C.bark, faint = C.clay;
+  R(0, 0, SCR_W, SCR_H, C.ink);
+  // the top bar: the title; the part of day (its signed picture at 1x, then the word) and the battery on the right
+  R(0, HUD_H - 1, SCR_W, 1, C.night); text(W.title, 10, 9, C.bone);
+  const part = S.exp && S.day ? dayPart() : (S.book && S.book.length ? S.book[S.book.length - 1].part : null);
+  blit(battArt(), SCR_W - 6 - 27, 11);
+  if (part) { const tw = textW(part, 2); text(part, 404, 9, C.mist, 2, 'right'); if (DAY_ART[part]) g.drawImage(DAY_ART[part], 404 - tw - 20, 9); }
+  // the tab (only the faces that are built) and the paper page with its bound edge
+  panel(12, 36, textW(W.title, 2) + 26, 30, C.paper); text(W.title, 25, 43, ink);
+  panel(6, 62, 438, 496, C.paper); R(6, 66, 2, 488, C.sand);
+  if (day) { text(W.day(day.d), 22, 74, ink, 3); if (day.from) text(day.from, 430, 80, soft, 2, 'right'); }
+  R(16, 104, 418, 2, C.clay);
+  for (let y = 136; y <= 544; y += 24) R(16, y, 418, 1, C.sand);
+  R(58, 116, 1, 434, C.peach);   // the red margin
+  if (!day || !day.rows.length) text(W.empty, 68, 128, soft);
+  else {
+    let y = LOG_Y0; g.imageSmoothingEnabled = false;
+    for (let i = clamp(S.ui.logTop | 0, 0, day.rows.length - 1); i < day.rows.length; i++) {
+      const L = logLay(day.rows[i]), r = L.r; if (y + L.h > LOG_Y1) break;
+      if (DAY_ART[r.part]) g.drawImage(DAY_ART[r.part], 22, y, 28, 28);   // the signed 14 px day picture, in the margin at 2x
+      text(r.part + ' · ' + W.place(r.place), 68, y + 2, soft);
+      L.ls.forEach((l, j) => text(l, 68, y + 26 + j * 24, ink));
+      if (r.kind === 'prints') { blitScaled(ICON.paw('clay'), 372, y + 10, 2); blitScaled(ICON.paw('bark'), 396, y + 22, 2); blitScaled(ICON.paw('bark'), 380, y + 40, 2); }   // the map's own paw sign at 2x
+      else if (r.kind === 'find' && r.item === 'tuft') { R(380, y + 22, 48, 40, C.bone); R(392, y + 16, 24, 10, C.sand); R(392, y + 16, 24, 1, C.clay); blitScaled(ICON.tuft(), 390, y + 34, 2); }   // the find's own picture at 2x, on a slip
+      /* met: her sketch's 48 x 48 slot at (378, y + 8) stays empty: [art] */
+      y += L.h;
+    }
+  }
+  if (di > 0) text('▲ ' + W.earlier, 430, 526, faint, 2, 'right');
 }
 function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
@@ -8434,6 +8507,7 @@ function lineBase() {
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'mibis' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
+    case 'log': return L1('', logDays().length > 1 ? WORDS.book.moves + ' ' + WORDS.book.earlier : '', WORDS.book.field);
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', S.bay.length >= BAY ? 'finds stay in the hold' : DAY_TEXT.campHint, 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
@@ -8477,6 +8551,7 @@ function renderFrame(t) {
     case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
       if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
+    case 'log': drawLog(); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
     case 'mibis': drawMibis(t); break;
@@ -8617,11 +8692,13 @@ function act(k, mode) {
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
+        else if (id === 'log') { openLog(); transition(); }   // the Log: reads S.book, writes nothing; light, clock and the wild ones stay as they are
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorldLive(); }
           else { S.ui.nwArm = 1; fxMsg('Only the map changes. Your mibis and everything else stay · Confirm again' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : ''), 3); } }
         else { S.phase = id; S.ui.nw = 0; S.ui.rSel = carriedMibis().length ? 1 : 0; S.ui.rFrom = 'menu'; } }   // Mibis from the menu: the first mibi with you
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
+    case 'log': logKey(k); break;
     case 'probe':   // patching spends Energy: two presses, the first only arms it
       if (k === 'confirm' && !patchShown()) { }   // no offer, no press
       else if (k === 'confirm' && !patchOn()) { S.ui.patchArm = 0; FX.bumpAt = NOW; }   // shown but short of Energy: a refusal bump, nothing arms
