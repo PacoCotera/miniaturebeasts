@@ -2659,9 +2659,11 @@ function printMark(lay, stand, free) {
 }
 // bug #119: the print's tile is chosen on the ground alone (no one standing there): hauntFree skips the tile the pawn or a creature stands on, so the mark jumped as they moved
 const printFree = lay => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !lay.feats.some(f => f.x === x && f.y === y);
-function printsHere() {
-  const ex = S.exp; if (!ex || !ex.patch) return []; const lay = curLay(); if (lay.cave) return [];
-  const live = curLive(), key = ex.patch.key, part = dayPart(), out = [];
+function printsHere(at) {   // at: a place's key, to read the prints of a place the explorer is not in (the map's turned sign); none given: the place in hand
+  const ex = S.exp; if (!ex || (!ex.patch && !at)) return [];
+  if (at && !(ex.patch && ex.patch.key === at) && !(placeHave(at) && ex.live && ex.live[at])) return [];
+  const here = !at || (ex.patch && ex.patch.key === at), lay = here ? curLay() : layout(at); if (lay.cave) return [];
+  const live = here ? curLive() : ex.live[at], key = at || ex.patch.key, part = dayPart(), out = [];
   for (const c of live.cr) { if (!c.ind || !c.ind.hs) continue;
     for (const q of leftHaunts(c.ind.hs, c.ind.doings, part, !!c.gone, DAY.parts)) { const free = printFree(lay), stand = hauntStand(q.h, free); if (stand) out.push({ c, ...q, stand, mark: printMark(lay, stand, free) }); } }
   return out;
@@ -2674,8 +2676,8 @@ function printsToRead() {
 // night step 4: the dew's prints point; the words name where she went and when (a bed when the part she went at is dusk or night)
 const dewWent = p => { const W = WORDS.prints; return p.to && p.toPart ? W.went(sleepPart(p.toPart) ? W.bed : W.place[p.to.k] || W.placeAny, W.leftAt[p.toPart]) : ''; };
 const printsLine = p => { const W = WORDS.prints, name = habName(p.c); return p.gone ? W.bolted(name) : W.line(name, (p.yday ? W.whenYday : W.when)[p.part]) + dewWent(p); };
-// the way the turned sign points: from her print toward where she went (a diagonal, as the built sign is): sx -1 left, 1 right; sy -1 up, 1 down; null when it does not point
-const dewDir = p => { if (!p.to) return null; const at = p.mark || p.stand, dx = p.to.x - at.x, dy = p.to.y - at.y; return dx || dy ? { sx: dx < 0 ? -1 : 1, sy: dy > 0 ? 1 : -1 } : null; };
+// the way the turned sign points: from her print toward where she went, as the nearest of four headings (0 north, 1 east, 2 south, 3 west); null when it does not point
+const dewDir = p => { if (!p.to) return null; const at = p.mark || p.stand, dx = p.to.x - at.x, dy = p.to.y - at.y; return dx || dy ? { h: Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0) } : null; };
 // bug #122: prints already read stay on the ground; ✓ beside them says again when she was there (no light spent), never a Wait
 function printsReadNear() {
   const ex = S.exp, P = ex && ex.patch; if (!P || ex.carry === 'fruit') return null;
@@ -5819,7 +5821,7 @@ function mapSigns() {
   const out = new Map(), add = (c, kind, pri, extra) => { let e = out.get(c); if (!e) { e = { c, pri: 0, list: [] }; out.set(c, e); } if (e.list.some(q => q.kind === kind)) return; e.list.push(Object.assign({ kind }, extra || {})); e.pri = Math.max(e.pri, pri); };
   // a found place has nothing hidden left to sign; a located pod shows as a pip, not a sign
   const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
-  if (PAWS_ON_TILE && S.exp && S.exp.patch) { const dp = printsHere().find(q => dewDir(q)); if (dp) add(+S.exp.patch.key, 't', 10, { dew: dewDir(dp) }); }   // night step 4: the dew's prints in this place, turned on the map
+  if (PAWS_ON_TILE && S.exp) { const k = S.exp.patch ? S.exp.patch.key : String(S.exp.pos), dp = printsHere(k).find(q => dewDir(q)); if (dp) add(+k, 't', 10, { dew: dewDir(dp) }); }   // night step 4: the dew's prints in this place, turned on the map
   for (const p of S.pins) add(p.c, p.k === 'own' ? 'pin' : p.k, 10);
   if (gatedCell(G.gate)) add(G.gate, 'burrow', 10);
   for (const k in (S.skulls || {})) add(+k, 'skull', 11);   // where the Probe broke; the pods lie there until you come back
@@ -5841,7 +5843,8 @@ function mapSigns() {
 function signsAt(c) { const e = mapSigns().find(q => q.c === c); return e ? e.list.map(q => q.kind) : []; }
 function drawSign(kind, s, px, py, fr) {
   if (kind === 'pod') { blit(podArt('bone', 1), px + 1, py + 1, s.rm); return; }
-  if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone', d = s.dew || { sx: 1, sy: -1 }; blit(ICON.paw(col), px + (d.sx > 0 ? 2 : 8), py + (d.sy < 0 ? 15 : 9), s.rm); blit(ICON.paw(col), px + (d.sx > 0 ? 8 : 2), py + (d.sy < 0 ? 9 : 15), s.rm); }
+  if (kind === 't' && s.dew) { const pb = PAWS_TURNED(s.dew.h); blit(pb, px + ((CELL - pb.w) >> 1), py + ((CELL - pb.h) >> 1), s.rm); }   // night step 4: the dew's prints, turned
+  else if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
   else if (kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
   else if (kind === 'k') blit(ICON.bolt(), px + 13, py + 2, s.rm);
   else if (kind === 'kw') blit(ICON.boltHollow(), px + 11, py + 1);
@@ -6780,7 +6783,7 @@ function drawPatchBody(t) {
   for (const f of live.fr) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && (see(f.x, f.y) || (f.put && inS(f.x, f.y)))) items.push({ y: y + 3, d: () => blit(FRUIT(), SX(x) + 10, SY(y) + 14, findRm(f.x, f.y)) }); }
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (the AD's note on PR 489: it read as a lilac gem)
   // W4 round 2: her prints at a haunt she has left, the built paw sign on the stand tile (a new placement: the art director passes it in whole-place stills; the slot is named PAWS-ON-TILE)
-  if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => { const dd = dewDir(p); blit(dd ? PAWS_TURNED(dd.sx, dd.sy) : PAWS(), SX(x) + ((ts - 16) >> 1), SY(y) + ((ts - 15) >> 1), findRm(p.mark.x, p.mark.y)); } }); }
+  if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => { const dd = dewDir(p), pb = dd ? PAWS_TURNED(dd.h) : PAWS(); blit(pb, SX(x) + ((ts - pb.w) >> 1), SY(y) + ((ts - pb.h) >> 1), findRm(p.mark.x, p.mark.y)); } }); }
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
@@ -7375,8 +7378,9 @@ const SHELTER_ROWS = [
 ];
 const SHELTER = () => art('sg-shelter', () => { const pb = new PB(32, 32); SHELTER_ROWS.forEach((r, y) => { for (let x = 0; x < 32; x++) if (r[x] !== '.') pb.set(x, y, r.charCodeAt(x) - 48); }); return pb; });
 const PAWS = () => art('sg-paws', () => { const pb = new PB(16, 15); pb.blit(ICON.paw('bone'), 0, 6); pb.blit(ICON.paw('bone'), 7, 0); return pb; });
-// night step 4: the same two paws turned the way she left (the dew's prints; a new drawing of the signed sign, on the art director's list): the older print first, the newer toward where she went
-const PAWS_TURNED = (sx, sy) => art('sg-paws' + sx + sy, () => { const pb = new PB(16, 15); pb.blit(ICON.paw('bone'), sx > 0 ? 0 : 7, sy < 0 ? 6 : 0); pb.blit(ICON.paw('bone'), sx > 0 ? 7 : 0, sy < 0 ? 0 : 6); return pb; });
+// night step 4: the same signed sign turned the way she left (the dew's prints; a new drawing of a signed picture, on the art director's list): its own pixels turned in quarter turns, toes toward where she went (0 north: as built, 1 east, 2 south, 3 west)
+const rotPB = (pb, k) => { let o = pb; for (let i = 0; i < k; i++) { const n = new PB(o.h, o.w); for (let y = 0; y < o.h; y++) for (let x = 0; x < o.w; x++) n.p[x * n.w + (o.h - 1 - y)] = o.p[y * o.w + x]; o = n; } return o; };
+const PAWS_TURNED = h => h ? art('sg-paws-t' + h, () => rotPB(PAWS(), h)) : PAWS();
 const sgSp = sp => Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? sp : 0;
 // Is the tile (x, y) inside the place view when the player stands on P? (the camera clamps at the place's edges)
 function tileInView(px, py, x, y) {
