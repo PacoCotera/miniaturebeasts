@@ -82,14 +82,23 @@ test("(d) the fog band dithers at the storm band's dot size: one 4 x 4 Bayer cel
   assert.equal(V.BAYER4.length, 16);
 });
 
-test("(e) over a VEILED place the band mixes only the pixel's clear and fog tables: no veil dots (dark table / night) inside the band", () => {
+test("(e) over a VEILED place the veil fades across the band: full on the clear side, thinning with depth, none where the fog takes over, same on two frames", () => {
   const place = { w: 40, h: 40 }, st = lightState(place, { veil: new Uint8Array(40 * 40).fill(1) }); st.fogEdge = E;
   const tsLike = { lightTables: [{ name: "fog", map: Array.from({ length: 256 }, (_, i) => (i ? 1 : 0)) }, { name: "dark", map: Array.from({ length: 256 }, (_, i) => (i ? 9 : 0)) }, { name: "dark2", map: Array.from({ length: 256 }, (_, i) => i) }] };
-  const win = { x: 20 * 48 + 24 + 150, y: 20 * 48 + 24 - 100, w: 200, h: 200 }, b = new Uint8Array(200 * 200).fill(5); applyLight(b, win, 48, tsLike, st);
-  let band = 0;
-  for (let y = 0; y < 200; y++) for (let x = 0; x < 200; x++) {
-    const d = V.fogDepth(win.x + x, win.y + y, E);
-    if (d > 0 && d < V.FOG_BAND_PX) { band++; assert.ok(b[y * 200 + x] === 5 || b[y * 200 + x] === 1, "band pixel " + b[y * 200 + x]); }
+  const win = { x: 20 * 48 + 24 - 600, y: 20 * 48 + 24 - 600, w: 1200, h: 1200 }, W = 1200;
+  const run = () => { const b = new Uint8Array(W * W).fill(5); applyLight(b, win, 48, tsLike, st); return b; };
+  const b = run(), b2 = run();
+  assert.deepEqual(b, b2, "two frames identical");
+  const rings = [[-60, 0], [0, 30], [30, 60], [60, 90], [90, 120]], veil = rings.map(() => 0), tot = rings.map(() => 0);
+  for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+    const d = V.fogDepth(win.x + x, win.y + y, E), v = b[y * W + x], i = rings.findIndex(([lo, hi]) => d >= lo && d < hi);
+    if (d >= V.FOG_BAND_PX) { assert.equal(v, 1, "beyond the band: fog only"); continue; }
+    assert.ok(v === 5 || v === 1 || v === 9 || v === 2, "only clear, fog or veil values: " + v);
+    if (i >= 0) { tot[i]++; if (v === 9 || v === 2) veil[i]++; }
   }
-  assert.ok(band > 1000);
+  const share = veil.map((n, i) => n / tot[i]);
+  console.log("veil share by ring (clear side, 0-30, 30-60, 60-90, 90-120 px):", share.map((s, i) => `${veil[i]}/${tot[i]}=${s.toFixed(2)}`).join("  "));
+  assert.ok(share[0] > .99, "clear side: full veil");
+  for (let i = 1; i < share.length; i++) assert.ok(share[i] < share[i - 1], "thins with depth " + i);
+  assert.ok(share[4] < .25, "nearly gone by the band's far end");
 });

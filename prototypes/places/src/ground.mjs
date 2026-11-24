@@ -4,7 +4,7 @@
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
-import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, FOG_BAND_PX } from '../../exploration/src/view.mjs';
+import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
 export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dark'];
@@ -108,8 +108,8 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
       if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, py, px, sb.darkW, sb.seed)) base = tS[c]; }
-      if (fc === 2) { buf[o] = base; continue; }   // the fog band mixes only the pixel's clear and fog tables: no veil dots (dark violet) in the band
-      buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
+      // in the fog band the veil thins out with the clear ground (a second Bayer test at the band's share), gone where the fog takes over
+      buf[o] = (mV === 511 || (cV && cV[k])) && (fc !== 2 || fogVeilKeep(px, py, fe)) ? veilPx(base, px, py, T.dark, night) : base;
     }
   }
   return buf;

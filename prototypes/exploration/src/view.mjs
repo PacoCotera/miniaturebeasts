@@ -132,6 +132,12 @@ export function fogBandHit(px, py, e) {
   const d = fogDepth(px, py, e);
   return d >= FOG_BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * FOG_BAND_PX < d * 16); }
 
+// The survey veil across the band: a pixel that stays clear keeps the veil only where a second 4 x 4 Bayer test (the same matrix, shifted 2 px) at the same share also says veil,
+// so the veil thins out with the clear ground and is gone where the fog takes over (no tile step, no new table).
+export function fogVeilKeep(px, py, e) {
+  const d = fogDepth(px, py, e);
+  return d <= 0 || (d < FOG_BAND_PX && BAYER4[((py + 2) & 3) * 4 + ((px + 2) & 3)] * FOG_BAND_PX >= d * 16); }
+
 // The band's dark columns at 48 for a gap still to close: n = 20·(3 − gap) in twentieths of a column (gap < 3, a multiple of 0.05);
 // STORM_K[48] = 7/5 so columns = ceil(7n/100). 32 px keeps main's float rule in the page.
 export function stormCols48(n) { return Math.floor((7 * n + 99) / 100); }

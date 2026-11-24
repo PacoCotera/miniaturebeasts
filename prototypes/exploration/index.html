@@ -249,7 +249,7 @@ import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/w
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, FOG_BAND_PX, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
 import { readPixels } from "./src/pngdecode.mjs";
 // Every exact-colour read of a picture goes through the file's own bytes (src/pngdecode.mjs), never a canvas read-back a browser may colour-manage or farble (bug 68).
@@ -6845,7 +6845,7 @@ function drawPatchBody(t) {
       const pb = tileFor(i), key = keyFor(i), set = RT.remap;
       if (fogEdge) { const dc = Math.hypot((tx - fogOx) * 48 + 24 - fogEdge.cx, (ty - fogOy) * 48 + 24 - fogEdge.cy);   // the fog sight's soft edge (#153): per world pixel, no cache (it moves with the hero)
         if (dc + 34 >= fogEdge.r && dc - 34 <= fogEdge.r + 48 + FOG_BAND_PX) { const nl = clearLight(tx, ty), lcm = set[nl];
-          g.drawImage(fogBandTile('G' + tx + ',' + ty, pb, (x, y) => fogBandHit((tx - fogOx) * 48 + x, (ty - fogOy) * 48 + y, fogEdge), (c, x, y) => lcm ? lcm[c] : c, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }   // the band mixes only the clear and fog tables: no veil dots
+          g.drawImage(fogBandTile('G' + tx + ',' + ty, pb, (x, y) => fogBandHit((tx - fogOx) * 48 + x, (ty - fogOy) * 48 + y, fogEdge), (c, x, y) => { const lc = lcm ? lcm[c] : c; return uv || !fogVeilKeep((tx - fogOx) * 48 + x, (ty - fogOy) * 48 + y, fogEdge) ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }   // the band mixes the clear and fog tables; the veil thins out with the clear ground
       if (fogged && !fogEdge) { const fb = blockE(fogE, tx, ty);
         if (fb) { const nl = clearLight(tx, ty), f = pickE(fb.ms);
           g.drawImage(edge48('F' + key + '|' + fb.key + '|' + nl + (uv ? '' : 'v'), pb, f, (c, x, y) => { const lc = set[nl] ? set[nl][c] : c; return uv ? lc : veilPx(lc, x, y); }, c => set[3][c]), W(tx * ts), H(ty * ts)); continue; } }
