@@ -23,7 +23,7 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 import { lookColours } from "./specimen.mjs";
 import { SIZES, shapePicture, picSizeOf } from "./trait-shape-pictures.mjs";
 import { cropSpecOf, cropPixels, coverWindow, ART, CHIP_WINDOW } from "./trait-crops.mjs";
-import { nurseryPicture, podPagePicture, pairingPicture } from "./nursery-pictures.mjs";
+import { nurseryPicture, podPagePicture, pairingPicture, keys as paintKeys } from "./nursery-pictures.mjs";
 
 // The crops a trait-shape request places (station-build-2): each signed master's window, reduced once to the picture size (the window is narrowed to the picture's shape, never stretched). A master that is not
 // placed gives no picture there (the card or end stays as the code draws it).
@@ -460,11 +460,13 @@ export function pageBoardPicture(r) {
   const [W, H] = r.size, out = new Pane(W, H), room = roomRGB(W, H, "vivarium-near-day-544x408", 1.2, 6), CREAM = PAGE_CREAM, hex6 = (h) => hex(h).map((v) => v / 255);
   for (let i = 0; i < W * H; i++) { if (room) out.c.set(room.subarray(i * 3, i * 3 + 3), i * 3); else out.c.set([27 / 255, 32 / 255, 42 / 255], i * 3); out.a[i] = 1; }
   paintPage(out, 0, 0, W, H, (x, y) => [[12 / 255, 15 / 255, 22 / 255], y < 190 ? 0.5 + (0.38 * y) / 190 : 0.88 + (0.06 * (y - 190)) / (H - 190)]);
-  const body = pixels(coatMaster(`mibi-adult-${r.species}-304x312`, r.species, r.coat)); if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
+  const body = r.body ? pixels(coatMaster(`mibi-adult-${r.species}-304x312`, r.species, r.coat)) : null; if (body) sprite(out, body, 304, 312, r.body.left, r.body.top, r.body.w);
+  const GREEN = [0.45, 0.8, 0.5];   // the shelf's board (station step 9-1) adds green (where the young of your pods can land) and dashed white (seen from afar); no other new mark
+  if (r.pod) { const px = pixels(r.pod.id) ?? assetOf(r.pod.id)?.rgba?.() ?? null; if (px) sprite(out, px, 144, 176, r.pod.x, r.pod.y, r.pod.w); }   // the kind's pod: a built picture (pictures.mjs), as the nursery draws it
   const dashOn = (x, y, cx, cy, per) => ((Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI)) * per % 7 < 4;
   for (const a of r.alone ?? []) {   // "hers alone": a tile a line, the same marks as the legend (a gold disc: she stands at the end of a scale; a gold square: the look she shows; a dashed blue square: the look she carries)
     const cx = a.x + a.d / 2, cy = a.y + a.d / 2, R = a.d / 2, rad = a.kind === "scale" ? R : 11;
-    paintPage(out, a.x - 4, a.y - 4, a.x + a.d + 4, a.y + a.d + 4, (px, py) => { const sd = rrectSd(px, py, a.x, a.y, a.d, a.d, rad), e = clamp01(0.5 - sd); if (e <= 0) return null; return sd > -3 ? [a.kind === "carries" ? CREAM : PAGE_GOLD, (a.kind === "carries" ? 0.85 : 1) * e] : [hex6("#141922"), e]; });
+    paintPage(out, a.x - 4, a.y - 4, a.x + a.d + 4, a.y + a.d + 4, (px, py) => { const sd = rrectSd(px, py, a.x, a.y, a.d, a.d, rad), e = clamp01(0.5 - sd); if (e <= 0) return null; if (a.rim === "seen") return sd > -3 && dashOn(px, py, cx, cy, 84) ? [CREAM, 0.9 * e] : [hex6("#141922"), e]; return sd > -3 ? [a.rim === "green" ? GREEN : a.kind === "carries" ? CREAM : PAGE_GOLD, (a.kind === "carries" ? 0.85 : 1) * e] : [hex6("#141922"), e]; });
     const mpx = a.master ? pixels(a.master) : null;   // the signed crop where a look maps (a coat end: the whole round master as the portrait discs; a look: the card's square window), inside the tile's 3 px rim
     if (mpx && a.kind === "scale") { const k = a.d / 76; sprite(out, mpx, 304, 312, Math.round(cx - a.d / 2 + (2 - 3) * k), Math.round(cy - a.d / 2 + (2 - 3) * k), Math.round(78 * k), { clip: discClip(cx, cy, R - 3) }); }
     else if (mpx && a.window) { const k = (a.d - 6) / a.window[2], inX = a.x + 3, inY = a.y + 3, inD = a.d - 6; sprite(out, mpx, 304, 312, inX - a.window[0] * k, inY - a.window[1] * k, Math.round(304 * k), { bright: a.kind === "carries" ? 1.25 : 1, clip: (X, Y) => clamp01(0.5 - rrectSd(X, Y, inX, inY, inD, inD, 8)) }); }
@@ -477,8 +479,11 @@ export function pageBoardPicture(r) {
     if (g.dim) paintPage(out, g.x, g.y, g.x + 24, g.y + 26, () => [[12 / 255, 15 / 255, 22 / 255], 0.4]);
     for (const w of g.rows) {
       const cy = w.cy;
-      if (w.scale) { const q = w.scale, x = (t) => w.bx + 9 + t * (q.w - 18), x0 = w.bx + 3, x1 = w.bx + q.w - 3, open = q.at != null || !!q.rough;
+      if (w.gold != null) paintPage(out, w.gold - 12, cy - 12, w.gold + 12, cy + 12, (px, py) => { const d = Math.hypot(px - w.gold, cy - py); return d <= 5 ? [PAGE_GOLD, clamp01(5.5 - d)] : d < 12 ? [PAGE_GOLD, 0.3 * (1 - (d - 5) / 7)] : null; });
+      if (w.scale) { const q = w.scale, x = (t) => w.bx + 9 + t * (q.w - 18), x0 = w.bx + 3, x1 = w.bx + q.w - 3, open = q.at != null || !!q.rough || !!q.open;
         paintPage(out, x0 - 2, cy - 6, x1 + 2, cy + 6, (px, py) => { const sd = rrectSd(px, py, x0, cy - 3.5, x1 - x0, 7, 3.5), e = clamp01(0.5 - sd); if (e <= 0) return null; return open ? [CREAM, 0.3 * e] : sd > -1.5 ? [CREAM, 0.42 * e] : null; });
+        const stretch = (g, seen) => { const a = Math.min(x(g[0]), x(g[1]) - 10), b = Math.max(x(g[1]), a + 10); paintPage(out, a - 2, cy - 9, b + 2, cy + 9, (px, py) => { const sd = rrectSd(px, py, a, cy - 7, b - a, 14, 7), e = clamp01(0.5 - sd); if (e <= 0) return null; if (seen) return sd > -1.5 && Math.floor(px / 4) % 2 === 0 ? [CREAM, 0.95 * e] : null; return sd > -1.5 ? [GREEN, e] : [GREEN, 0.45 * e]; }); };
+        for (const g of q.green ?? []) stretch(g, false); for (const g of q.seen ?? []) stretch(g, true);
         for (const t of q.others) paintPage(out, x(t) - 4, cy - 4, x(t) + 4, cy + 4, (px, py) => [CREAM, 0.8 * clamp01(3.7 - Math.hypot(px - x(t), py - cy))]);
         if (q.rough) { const a = x(q.rough[0]), b = x(q.rough[1]); paintPage(out, a - 2, cy - 9, b + 2, cy + 9, (px, py) => { const sd = rrectSd(px, py, a, cy - 7, b - a, 14, 7), e = clamp01(0.5 - sd); return e <= 0 ? null : sd > -1.5 ? [PAGE_GOLD, e] : [PAGE_GOLD, 0.4 * e]; }); }
         if (q.copies) { const [a, b] = q.copies.map(x).sort((p, s) => p - s); paintPage(out, a, cy + 9.2, b + 1, cy + 11.7, () => [PAGE_BLUE, 1]);
@@ -486,14 +491,21 @@ export function pageBoardPicture(r) {
         if (q.at != null) paintPage(out, x(q.at) - 9, cy - 9, x(q.at) + 9, cy + 9, (px, py) => { const d = Math.hypot(px - x(q.at), py - cy); return d <= 5.75 ? [PAGE_GOLD, clamp01(6 - d)] : d <= 7.25 ? [hex6("#1b202a"), clamp01(7.5 - d)] : null; }); }
       if (w.set) { const q = w.set, sx = (i) => w.bx + 13 + i * q.step, sq = (i, h, col, al, edge) => paintPage(out, sx(i) - h - 1, cy - h - 1, sx(i) + h + 1, cy + h + 1, (px, py) => { const sd = rrectSd(px, py, sx(i) - h, cy - h, 2 * h, 2 * h, 2.5), e = clamp01(0.5 - sd); if (e <= 0) return null; return edge ? (sd > -edge ? [col, al * e] : null) : [col, al * e]; });
         for (let i = 0; i < q.n; i++) { const found = q.found.includes(i); sq(i, 5, hex6("#1a1f29"), 1); if (found) sq(i, 5, CREAM, 0.62); else sq(i, 5, CREAM, 0.42, 1.5); }
+        const rim = (i, col, dash) => paintPage(out, sx(i) - 10, cy - 10, sx(i) + 10, cy + 10, (px, py) => { const sd = rrectSd(px, py, sx(i) - 8, cy - 8, 16, 16, 4), e = clamp01(0.5 - sd); return e > 0 && sd > -2 && (!dash || dashOn(px, py, sx(i), cy, 40)) ? [col, e] : null; });
+        for (const i of q.green ?? []) rim(i, GREEN, false); for (const i of q.seen ?? []) if (!(q.green ?? []).includes(i)) rim(i, CREAM, true);
         if (q.shows != null) sq(q.shows, 7, PAGE_GOLD, 1);
         if (q.carries != null) { const cx = sx(q.carries); paintPage(out, cx - 13, cy - 13, cx + 13, cy + 13, (px, py) => { const sd = rrectSd(px, py, cx - 10.5, cy - 10.5, 21, 21, 5), e = clamp01(1.75 - Math.abs(sd + 1.25)); return e > 0 && dashOn(px, py, cx, cy, 84) ? [PAGE_BLUE, e] : null; }); } } } }
+  if (r.ring) { const [x, y, w, h] = r.ring; paintPage(out, x - 3, y - 3, x + w + 3, y + h + 3, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, 9); return sd <= 0.5 && sd > -2.2 ? [PAGE_ORANGE, clamp01(0.5 - sd)] : sd <= -2.2 ? [PAGE_ORANGE, 0.06] : null; }); }
+  if (r.ok) paintKeys(out, { pad: null, ok: r.ok });
   const L = r.legend;
-  for (const it of L.items) { const cy = L.y;
+  for (const it of L.items) { const cy = it.y ?? L.y;
     if (it.kind === "scale") { paintPage(out, it.x, cy - 3, it.x + 22, cy + 3, (px, py) => [CREAM, 0.6 * clamp01(2.5 - Math.abs(py - cy))]); paintPage(out, it.x + 6, cy - 6, it.x + 16, cy + 6, (px, py) => [PAGE_GOLD, clamp01(5.5 - Math.hypot(px - it.x - 11, py - cy))]); }
     else if (it.kind === "set") for (const [k, col] of [[0, CREAM], [1, PAGE_GOLD], [2, CREAM]]) paintPage(out, it.x + k * 8, cy - 4, it.x + k * 8 + 6, cy + 4, () => [col, k === 1 ? 1 : 0.7]);
     else if (it.kind === "shows") paintPage(out, it.x, cy - 6, it.x + 12, cy + 6, () => [PAGE_GOLD, 1]);
     else if (it.kind === "carries") paintPage(out, it.x, cy - 7.5, it.x + 5, cy + 7.5, (px, py) => [PAGE_BLUE, clamp01(0.5 - rrectSd(px, py, it.x, cy - 7.5, 5, 15, 2))]);
+    else if (it.kind === "green") paintPage(out, it.x, cy - 6, it.x + 24, cy + 6, (px, py) => { const sd = rrectSd(px, py, it.x, cy - 5, 24, 10, 5), e = clamp01(0.5 - sd); return e <= 0 ? null : sd > -1.5 ? [GREEN, e] : [GREEN, 0.45 * e]; });
+    else if (it.kind === "seen") paintPage(out, it.x, cy - 6, it.x + 24, cy + 6, (px, py) => { const sd = rrectSd(px, py, it.x, cy - 5, 24, 10, 5), e = clamp01(0.5 - sd); return e > 0 && sd > -1.5 && Math.floor(px / 4) % 2 === 0 ? [CREAM, e] : null; });
+    else if (it.kind === "gold") paintPage(out, it.x - 2, cy - 7, it.x + 12, cy + 7, (px, py) => [PAGE_GOLD, clamp01(5.5 - Math.hypot(px - it.x - 5, py - cy))]);
     else if (it.kind === "others") paintPage(out, it.x, cy - 4, it.x + 7, cy + 4, (px, py) => [CREAM, 0.8 * clamp01(3.5 - Math.hypot(px - it.x - 3.5, py - cy))]); }
   return out.rgba();
 }

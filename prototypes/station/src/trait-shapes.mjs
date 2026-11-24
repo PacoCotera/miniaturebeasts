@@ -28,6 +28,9 @@ function rangeOf(frame, trait) {
 }
 const at = (lo, hi, v) => (hi > lo ? clamp01((v - lo) / (hi - lo)) : 0.5);
 
+// A raw catalogue value (what the cross forecast gives: a pair's land range and its parents) as a place on the kind's bar, 0..1 (the same mapping the dots use).
+export function scaleAt(frame, trait, value) { const { lo, hi } = rangeOf(frame, trait); return at(lo, hi, value); }
+
 // Where a genome stands on a scale: its two copies and their mean (0..1 of the kind's range).
 export function scalePlace(frame, trait, genome) {
   const { locus, lo, hi } = rangeOf(frame, trait), cs = genome.loci[trait.loci[0]];

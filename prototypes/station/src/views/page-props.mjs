@@ -12,6 +12,7 @@ import { roundOf, squareOf } from "../trait-crops.mjs";
 import { pageModel } from "./reading-props.mjs";
 import { fill } from "./words.mjs";
 import { youngLines } from "../pairing-model.mjs";
+import { boardColumns } from "../nursery-board.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
@@ -114,8 +115,7 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
 function boardScreen(view, m, spec, req, mibi, fr) {
   const { st } = m, R = spec.regions.page, Bd = R.board, Sg = spec.strings.read, sid = S.speciesOf(mibi), [W, H] = R.rect.slice(2), texts = [], pod = pagePod(st, mibi.id), groups = [], colY = [Bd.top, Bd.top];
   const text = (tx, x, base, role, align, w) => { if (tx) texts.push({ text: tx, x: Math.round(x), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
-  const bodyN = fr.chapters.filter((c) => !isDoings(c)).length;   // the columns: the first half of the chapters about her body left, the rest right; those about what she does alternate, left first
-  let nDo = 0; const colOf = new Map(fr.chapters.map((c, k) => [c.id, isDoings(c) ? nDo++ % 2 : k < Math.ceil(bodyN / 2) ? 0 : 1]));
+  const colOf = boardColumns(fr.chapters);   // the columns: the first half of the chapters about her body left, the rest right; those about what she does alternate, left first (nursery-board.mjs, shared with the shelf's board)
   const rows = Math.max(...[0, 1].map((c) => fr.chapters.filter((x) => colOf.get(x.id) === c).reduce((n, ch) => n + ch.traits.length, 0))), groupsIn = Math.max(...[0, 1].map((c) => fr.chapters.filter((x) => colOf.get(x.id) === c).length));
   const rowH = clamp(Math.floor((Bd.foot - Bd.top - groupsIn * (Bd.head + 3 + Bd.gap)) / Math.max(1, rows)), Bd.rowMin, Bd.row);   // a kind with more traits than fit gets slimmer rows, never a second page
   text(S.cap(mibi.name), Bd.who.x, Bd.who.nameBase, Bd.who.nameRole, "l");
