@@ -38,8 +38,9 @@ export class BakedView {
     ts.palette.forEach((c, k) => { this.lut[48 + k] = rgb((c >> 16) & 255, (c >> 8) & 255, c & 255); });
     const rgbOf = Array.from(this.lut, (v, i) => (i && v ? [v & 255, (v >> 8) & 255, (v >> 16) & 255] : undefined));
     ts.duskMap = duskOf(Array.from(this.lut, (v, i) => (i && v ? [v & 255, (v >> 8) & 255, (v >> 16) & 255] : undefined)), tablesOf(ts).dark);   // the dusk table over the page's colours
-    ts.duskLitMap = duskLitOf(rgbOf, ts.duskMap, tablesOf(ts).dark);   // the seen land's own step at dusk (dusk-mesh-fix-3)
-    this.colours = [...new Set(this.lut.slice(1, 48 + ts.palette.length))].map((v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255]);
+    const litExtra = [];
+    ts.duskLitMap = duskLitOf(rgbOf, ts.duskMap, tablesOf(ts).dark, litExtra);   // the seen land at dusk: one colour-to-colour map, each colour its own new colour (dusk-mesh-fix-4)
+    for (const e of litExtra) this.lut[e.index] = rgb(...e.rgb);    this.colours = [...new Set(this.lut.slice(1))].filter((v) => v).map((v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255]);
     this.state = null; this.states = new Map(); this.last = null; this.sprites = new Map(); this.scratch = null;
     this.landmarks = new Set(place.landmarks.map((l) => l.y * place.w + l.x));
   }

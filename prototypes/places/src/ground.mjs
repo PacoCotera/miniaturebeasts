@@ -21,12 +21,18 @@ export function duskOf(rgb, dark) {   // rgb[i] = [r, g, b] of palette index i (
 }
 
 // The seen land at dusk (dusk-mesh-fix-3): the dusk table taken DUSK_LIT_STEP of the way on to its own one-step dark, then the nearest palette colour: still flat, still lighter than the unseen land (which keeps dark[dusk]).
-const DUSK_LIT_STEP = 0.35;
-export function duskLitOf(rgb, dusk, dark) {
-  const have = []; for (let i = 1; i < rgb.length; i++) if (rgb[i]) have.push(i);
-  const near = (c) => { let best = 0, bd = Infinity; for (const i of have) { const d = 3 * (rgb[i][0] - c[0]) ** 2 + 4 * (rgb[i][1] - c[1]) ** 2 + 2 * (rgb[i][2] - c[2]) ** 2; if (d < bd) { bd = d; best = i; } } return best; };
-  const out = new Uint8Array(256);
-  for (let i = 1; i < 256; i++) { const a = rgb[dusk[i]], b = rgb[dark[dusk[i]]]; out[i] = a && b ? near([a[0] + (b[0] - a[0]) * DUSK_LIT_STEP, a[1] + (b[1] - a[1]) * DUSK_LIT_STEP, a[2] + (b[2] - a[2]) * DUSK_LIT_STEP]) : dusk[i]; }
+const DUSK_LIT_STEP = 0.2;   // the share each lit colour is darkened, before the lean to the amber (dusk-mesh-fix-4)
+// Round 4: one colour-to-colour map, no nearest-match: each source colour i goes to its own new colour (its RGB taken DUSK_LIT_STEP of the way to its one-step dark, leaned DUSK_LEAN to the amber), so the same colour is the same on every tile and two greens stay two greens.
+// `extra` receives { index, rgb } for each new colour (the page adds them to its colour table). Out of free indices: that colour keeps the dusk table's colour.
+export function duskLitOf(rgb, dusk, dark, extra = []) {
+  const out = new Uint8Array(256); let next = 1; for (let i = 1; i < rgb.length; i++) if (rgb[i]) next = i + 1;
+  const amber = rgb[dark[[...rgb.keys()].filter((i) => rgb[i]).reduce((b, i) => (Math.abs(rgb[i][0] - 255) + Math.abs(rgb[i][1] - 168) + Math.abs(rgb[i][2] - 63) < Math.abs(rgb[b][0] - 255) + Math.abs(rgb[b][1] - 168) + Math.abs(rgb[b][2] - 63) ? i : b), 1)]];
+  for (let i = 1; i < 256; i++) {
+    const a = rgb[i], b = rgb[dark[i]];
+    if (!a || !b || next > 255) { out[i] = dusk[i]; continue; }
+    const m = a.map((v) => v * (1 - DUSK_LIT_STEP)), c = m.map((v, k) => Math.round(v + (amber[k] - v) * DUSK_LEAN));
+    out[i] = next; extra.push({ index: next, rgb: c }); next++;
+  }
   return out;
 }
 
