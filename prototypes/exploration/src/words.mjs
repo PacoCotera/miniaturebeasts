@@ -57,14 +57,14 @@ WORDS.haunt = { reed: 'at the reeds', shore: 'at the water', sweep: 'in the tall
 WORDS.ease = {
   stage: ['grazing', 'ears up', 'watching', 'gone'],   // her four stages, said under her name
   stirred: 'She stirred · ears up, still curled',   // [copy] night step 5: a sleeper's first heard step only stirs her
-  heard: 'It heard that · it is watching', heardTwice: 'It heard that again · it is going', gone: 'It has gone from here for the day', settled: 'It settles again',
+  heard: n => n ? n + ' heard that · she is watching' : 'It heard that · it is watching', heardTwice: n => n ? n + ' heard that again · she is going' : 'It heard that again · it is going', gone: n => n ? n + ' has gone from here for the day' : 'It has gone from here for the day', settled: n => n ? n + ' settles again' : 'It settles again',
   // the line under a wild one in sight: whether this step would be heard, by the gait (creep, walk)
   hear: (creep, walk) => 'creep ' + (creep ? 'heard' : 'unheard') + ' · walk ' + (walk ? 'heard' : 'unheard'),
   hearCreep: creep => 'creep ' + (creep ? 'heard' : 'unheard'),   // the short form, for a narrow line
   hearOne: (name, heard) => heard ? name + ' would hear you here' : name + ' would not hear you here',
   stay: n => n > 0 ? 'lets you stay ' + n + ' light' : 'does not let you stay',
   stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
-  stayHeard: 'It looked up · you stayed too long',
+  stayHeard: n => n ? n + ' looked up · you stayed too long' : 'It looked up · you stayed too long',
   keep: 'Keep still',   // the ✓ label that holds
   hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends', warn: 'Kept still · lightning is warned', plate: 'Kept still · a plate was lost' },
   keepTo: part => 'Keep still · until ' + part,   // [copy] at camp by day a hold runs to the next part of day
