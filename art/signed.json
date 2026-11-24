@@ -2774,6 +2774,321 @@
    "sha256": "53624a5e73b76a4c4c9ade8521462b5edbd5d762e2851c8719cb34e521d8ad0a"
   },
   {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "b08764ef31",
+   "path": "prototypes/exploration/art/hud/light-lit0.png",
+   "sha256": "a52ff6aab0a3dc6126a16e3cc6a44a3cee0c9f417ca2e8a187ed44099e05cf40"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "5a21d36b83",
+   "path": "prototypes/exploration/art/hud/light-lit1.png",
+   "sha256": "516b0ef5e8cd07a767f937cb07c6df6d0b96159c4c02af2416605ff5142b6c0e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "8b67393356",
+   "path": "prototypes/exploration/art/hud/light-lit2.png",
+   "sha256": "448275dfcf041b0af9ff517c306718fa034de3c8d84d11c62c2eec6638044283"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "8c95701ebb",
+   "path": "prototypes/exploration/art/hud/light-lit3.png",
+   "sha256": "3c36c39ef0289271f2a00fdc1b17e4e9390337569c00df65fb5273aa805f42a8"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "e2c3c99450",
+   "path": "prototypes/exploration/art/hud/light-lit4.png",
+   "sha256": "b0df5d1b40d36a7a542e096cbacedf47b80f1551f26e611ac64cca639d6d639a"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "6fba6895dd",
+   "path": "prototypes/exploration/art/hud/light-lit5.png",
+   "sha256": "a3f944fda470cbfebb04fa422c9351b4314b9d0444863e695581c61e21ebf776"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "dbcc37ebd1",
+   "path": "prototypes/exploration/art/hud/light-lit6.png",
+   "sha256": "94578adcf12fccda28bee81f57bb7ea2f2d3259cc7455975a94eb83472d7d5ea"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "2d10ff5f24",
+   "path": "prototypes/exploration/art/hud/light-spend1.png",
+   "sha256": "5e462f29c20c03582f3b6a3d4a3cd0e3f5dcd8ccbca7d6db59ec821fde8e0953"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "56042cee7f",
+   "path": "prototypes/exploration/art/hud/light-spend2.png",
+   "sha256": "b71a73f4fffe3bc55f7857e83e26b991bc776dd92eba6840eb1e32518c68ca56"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "c3daa24090",
+   "path": "prototypes/exploration/art/hud/light-spend3.png",
+   "sha256": "3e79c7e1489e8e90b7badfb51ada7331b41a6e8d7e2606755f74d0244f30d110"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "473249c47f",
+   "path": "prototypes/exploration/art/hud/light-spend4.png",
+   "sha256": "9d991f61a2c505c2742b989a32796038c8e78fa5986989ee6d0200463d3bb7cb"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "c0a012d3f2",
+   "path": "prototypes/exploration/art/hud/light-spend5.png",
+   "sha256": "fe95336fd1362a8e7f08cc8ff48a5c667a06d1729c50b8ee8cf5b7b80af4e3b6"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "ef91592211",
+   "path": "prototypes/exploration/art/hud/light-spend6.png",
+   "sha256": "7e80f3cde8469c03979942b18a2c73db4eaf6abc69093f4d636e00d8cb34a5db"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "f648576674",
+   "path": "prototypes/exploration/art/hud/ring-1-32-f0.png",
+   "sha256": "ba313f55cfc7bf70af4b40d02c1319c5dc2c4e9ba3def5e6e8ef2a737340a076"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "6e53c2a961",
+   "path": "prototypes/exploration/art/hud/ring-1-32-f1.png",
+   "sha256": "e058cdd730deebf88986a92ca2ee9605f0af6dbd64791f08091dc5adabd0fa75"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "24ae211c9e",
+   "path": "prototypes/exploration/art/hud/ring-1-32-f2.png",
+   "sha256": "0df697a7dfb11ecc878728a19d35ca6bb3abbb5e257120393e42f6f4a974b40c"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "cf0f76a991",
+   "path": "prototypes/exploration/art/hud/ring-1-32-heard.png",
+   "sha256": "a7a96f49cf02e021f2d88a48e50a2fa7c18585fe4ecddb058bc46180f23c42b5"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "861bf4c567",
+   "path": "prototypes/exploration/art/hud/ring-2-32-f0.png",
+   "sha256": "6a1b2c25475e7ba04d63b69fdc4b7b2ecc540476a745a70838c2545dfa628478"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "515a8ec131",
+   "path": "prototypes/exploration/art/hud/ring-2-32-f1.png",
+   "sha256": "cc9bf6133bb61b16d51d957a202369b8320eac334ddb32301bda83dfa22bc844"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "30b83092d4",
+   "path": "prototypes/exploration/art/hud/ring-2-32-f2.png",
+   "sha256": "64d7189365508034f290ec05c72c333ed545aee1413dc4e4e9da3755345c8485"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "8120136b8e",
+   "path": "prototypes/exploration/art/hud/ring-2-32-heard.png",
+   "sha256": "6c07912eb1ddbe48880043b5a04f88479d9e230e81df76040deab35a7ac90007"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "ecf0dbb7fb",
+   "path": "prototypes/exploration/art/hud/ring-3-32-f0.png",
+   "sha256": "a72d7bf7e7bea64b4371af0f32a9410c33b4e3718ca9a604bda650a54c2a4155"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "8e97d46f07",
+   "path": "prototypes/exploration/art/hud/ring-3-32-f1.png",
+   "sha256": "753e809d74d24f39e3d13e1bc76b047d520b10c849dbd503e35405ca57bc363b"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "9033032a86",
+   "path": "prototypes/exploration/art/hud/ring-3-32-f2.png",
+   "sha256": "68c2ddf1cda9d4b34090424e516334b988f62b2c6a563ceea0734346b2bccd2a"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "e6ad960de5",
+   "path": "prototypes/exploration/art/hud/ring-3-32-heard.png",
+   "sha256": "8619cb877f93a24cdc387236d0ae33f7f091de9c04f512f32687fe68073f73b2"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "79a0aad21e",
+   "path": "prototypes/exploration/art/hud/ring-4-32-f0.png",
+   "sha256": "af23e0383bb2afd0b4eba9937ad3d66fda36b513ec6a76985549f0bc8db1a621"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "0d813e49b5",
+   "path": "prototypes/exploration/art/hud/ring-4-32-f1.png",
+   "sha256": "9b1f5c5d3cc4cfdbbd239bff48d58b12e36c25232e1dddbe3514b82a1e8ad7a7"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "7e2e2d1af9",
+   "path": "prototypes/exploration/art/hud/ring-4-32-f2.png",
+   "sha256": "3425ced18a078093d1cfdb2181ade6876700a482cd83e2280f416003df9879db"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "0b833fae39",
+   "path": "prototypes/exploration/art/hud/ring-4-32-heard.png",
+   "sha256": "4633462a1f6530b33de4af2ab2059e203222f37f25a1e6e4b1ba7583a5820f08"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "2caa61936a",
+   "path": "prototypes/exploration/art/hud/ring-5-32-f0.png",
+   "sha256": "769f854946449a470670019606fb5bb87e8fd121cf9d8e3468bf49e04a7e7661"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "be629ad120",
+   "path": "prototypes/exploration/art/hud/ring-5-32-f1.png",
+   "sha256": "3c2c84024260a800aba7a4ab0fe9b7daca9e7d36f1ce847235106eb88bc90e04"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "9a52b0b579",
+   "path": "prototypes/exploration/art/hud/ring-5-32-f2.png",
+   "sha256": "0b4dd8201fed0739a8c886341e784ba5dc914dec51a2661f26a79d22d557022a"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "df9a1093f3",
+   "path": "prototypes/exploration/art/hud/ring-5-32-heard.png",
+   "sha256": "9ffc0c1b4453fd3ef4b8063e07194d92e3edb87b1975b26cb611642665c4e7ea"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "80dbebfb79",
+   "path": "prototypes/exploration/art/hud/ring-6-32-f0.png",
+   "sha256": "9c0c45c7062934aae11bd90e9c0271e786634a0f37ea597b0329f7ec5ac6d90f"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "dc10527217",
+   "path": "prototypes/exploration/art/hud/ring-6-32-f1.png",
+   "sha256": "a3f51c7c5714ae1cfd23af61a3f0f5aa5a84712ad02375a527d08de32afa793e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "f4b407852c",
+   "path": "prototypes/exploration/art/hud/ring-6-32-f2.png",
+   "sha256": "dca45538e740db5a5f4ebd4da9d85e629ffbfc25245147b1068b442788a8779e"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "4dd7592111",
+   "path": "prototypes/exploration/art/hud/ring-6-32-heard.png",
+   "sha256": "5cb66f3081ba35fd111ee86979771cc2da876ccf596767aeaa12bea2b8998eba"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "17c4b62fd1",
+   "path": "prototypes/exploration/art/hud/ring-7-32-f0.png",
+   "sha256": "11ae16461003a67df77991d6f4f21e472e594dec4353eb25c65457771d15dbd1"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "bfc7325c22",
+   "path": "prototypes/exploration/art/hud/ring-7-32-f1.png",
+   "sha256": "e25f849cf2738c283b32907916e3f707aaaeec85ad2cce7e58e5c78bc41621d7"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "2969c85f11",
+   "path": "prototypes/exploration/art/hud/ring-7-32-f2.png",
+   "sha256": "ae78a160ef7bdcb78fedd0249b86c5b409fecd6e578e748cd94adb8c61a4f975"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "a43608d377",
+   "path": "prototypes/exploration/art/hud/ring-7-32-heard.png",
+   "sha256": "0906997cde227a8a737a449f99d06a0317c3d478ec0055377c490ee5a2b40e86"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "512d424f64",
+   "path": "prototypes/exploration/art/hud/ring-8-32-f0.png",
+   "sha256": "57b6990a7b3c6dc4ea5fb15d92c8fcc17d403a5fc6b6f00b2065ffbc95bfe8df"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "f256a61a08",
+   "path": "prototypes/exploration/art/hud/ring-8-32-f1.png",
+   "sha256": "9e5460a7f897f8a71dc2b1fb8b4b6381fb2cc8e95874a0f99daf419fc2502475"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "36885aac4d",
+   "path": "prototypes/exploration/art/hud/ring-8-32-f2.png",
+   "sha256": "a11756ed8aa06e7ecca1bfbeb3e4efe0a4fb7598532586ceabfc18f4075f7153"
+  },
+  {
+   "class": "ui",
+   "date": "2026-11-24",
+   "id": "169bb40d34",
+   "path": "prototypes/exploration/art/hud/ring-8-32-heard.png",
+   "sha256": "4268abef7f0559cb1737d6af3d36d20243044f8d1268eadecc2152940d8ce98c"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "891e1b7a47",

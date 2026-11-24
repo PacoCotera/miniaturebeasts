@@ -85,7 +85,8 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     const zone = stampY - 12 - BAR, trayC = portraitTrayH("companion", a), fitH = (zone - 2 * GAP - GAP - DOCK_H - EDGE - trayC - 1e-6) / FACE.companion[1];
     const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? Math.max(ZOOM, fitOf(d)) : wholeUp(d)), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
     // bug 134: a whole multiple that misses the panel's inner width by a few px (1.98 device px per lp at 412 wide, dpr 2.625) may use half the panel's edge each side, not drop to one device px per lp (a third of the width)
-    const wholeUp = (d) => { const wide = Math.max(1 / 16, Math.min((bw - EDGE) / FACE[d][0], fitH)); return Math.floor(wide * dpr + 1e-6) >= 1 ? wholeC(wide, dpr) : Math.max(1 / 16, Math.min(fitOf(d), fitH)); };
+    // bug 135: where the whole multiple is under 95% of the fit (522 x 935, dpr 3: 2 of a possible 2.73 device px per lp, 300 of 410 CSS px; 390 x 844: 300 of 330), the screen takes the fit (the pixelated iframe stays sharp at a fraction)
+    const wholeUp = (d) => { const wide = Math.max(1 / 16, Math.min((bw - EDGE) / FACE[d][0], fitH)); if (Math.floor(wide * dpr + 1e-6) < 1) return Math.max(1 / 16, Math.min(fitOf(d), fitH)); const w = wholeC(wide, dpr); return w < 0.95 * wide ? wide : w; };
     const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((zone - group) / 2) + bhC, dockY = bodyBottom + GAP;
     const s = scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - (st ? 2 : 1) * EDGE, st ? NARROW_W * s : Infinity);   // the Station's window is never wider than the narrow Home (centred in the panel when the phone is wider)
     // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter. The Companion's screen is always whole.

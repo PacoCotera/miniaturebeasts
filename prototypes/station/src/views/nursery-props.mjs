@@ -9,7 +9,7 @@ import { fill } from "./words.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
-const podId = (req, sp) => req({ kind: "pod", id: `pod:${sp}:s:144x176`, species: sp, state: "sealed", size: [144, 176] });
+export const podId = (req, sp) => req({ kind: "pod", id: `pod:${sp}:s:144x176`, species: sp, state: "sealed", size: [144, 176] });
 const placeOf = (g) => S.PLACE_WORD[g] ?? "wild";
 export const words = (ws) => ws.map((w) => w.word).join(", ");
 
@@ -34,9 +34,9 @@ function rowGeometry(req, spec, Z, row, k, first, ring, fr) {
 // The nursery. view: the pods view being built; m: { st, settings, ui, now, frameSpec }; spec: pods.json; req: the request collector.
 export function nurseryView(view, m, spec, req) {
   const { st, settings, ui } = m, now = m.now || Date.now(), Z = spec.regions.page.nursery, Sg = spec.strings.nursery, texts = [], order = ui.order ?? "newest";
-  const rows = N.shelfRows(st, order), caps = N.capsulesOf(st, settings, now), sum = N.summary(st, settings, now), ring = ringOf(st, ui, rows), first = firstFor(ring, ui.first, Z.shelf.visible, rows.length);
+  const rows = N.shelfRows(st, order, ui.only?.keys), caps = N.capsulesOf(st, settings, now), sum = N.summary(st, settings, now), ring = ringOf(st, ui, rows), first = firstFor(ring, ui.first, Z.shelf.visible, rows.length);
   const text = (tx, x, base, role, align, w) => { if (tx) texts.push({ text: tx, x: Math.round(x), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
-  const from = ui.from && m.frameSpec?.strings?.titles?.[ui.from === "home" ? "vivarium" : ui.from] ? m.frameSpec.strings.titles[ui.from === "home" ? "vivarium" : ui.from] : Sg.crumbHome;
+  const from = ui.only ? Sg.holds.crumb : ui.from && m.frameSpec?.strings?.titles?.[ui.from === "home" ? "vivarium" : ui.from] ? m.frameSpec.strings.titles[ui.from === "home" ? "vivarium" : ui.from] : Sg.crumbHome;   // after "Show the pods" ← returns to the board
   text(Sg.title, Z.title.x, Z.title.baseline, Z.title.role, "l");
   text(fill(Sg.sub, { from }), Z.crumb.x, Z.crumb.baseline, Z.crumb.role, "l");   // where she is and how she came: ← goes back the way she came
   // the pill: what is on the shelf and what grows
@@ -55,14 +55,14 @@ export function nurseryView(view, m, spec, req) {
   // the shelf: a head line (or the one line that says three young wait), then the rows in view
   const Sh = Z.shelf;
   if (sum.allYoung) text(Sg.allYoung, Sh.line.x, Sh.line.baseline, Sh.line.role, "l");
-  else { text(Sg.onShelf, Sh.head.x, Sh.head.baseline, Sh.head.role, "l"); text(Sg.keep, Sh.head.noteX, Sh.head.baseline, Sh.head.noteRole, "l"); }
+  else { text(Sg.onShelf, Sh.head.x, Sh.head.baseline, Sh.head.role, "l"); text(ui.only ? fill(Sg.holds.only, { trait: ui.only.name.toLowerCase() }) : Sg.keep, Sh.head.noteX, Sh.head.baseline, Sh.head.noteRole, "l"); }
   if (!rows.length) text(Sg.empty, Sh.empty.x, Sh.empty.baseline, Sh.empty.role, "l");
   const shown = rows.slice(first, first + Sh.visible), rowPics = shown.map((row, j) => {
     const k = first + j, g = rowGeometry(req, spec, Z, row, k, first, ring, { st }), y = g.y, kind = frameOf(row.species)?.species.name ?? "", fx = g.faces.length ? Sh.faces.x + g.faces.length * (Sh.faces.d + Sh.faces.gap) + 2 : Sh.title.x;
     const title = row.kind === "pair" ? row.parents.map((q) => S.cap(q.name)).join(" + ") : row.kind === "line" ? fill(Sg.lineOf, { name: S.cap(row.of ?? "a returned mibi") }) : fill(Sg.fromWild, { Kind: S.cap(kind), place: placeOf(row.place) });
     text(title, fx, y + Sh.title.baseline, Sh.title.role, "l");
-    const ws = words(row.words);
-    text(row.kind === "pair" ? fill(Sg.canLand, { words: ws }) : ws ? fill(Sg.seen, { words: ws }) : Sg.seenNone, Sh.known.x, y + Sh.known.baseline, row.kind === "pair" ? Sh.known.greenRole : Sh.known.role, "l");
+    const fit = (list) => { let l = list; while (l.length > 1 && row.kind === "pair" && fill(Sg.canLand, { words: words(l) }).length * 7.6 > Sh.pods.x - fx - 6) l = l.slice(0, -1); return l; }, ws = words(fit(row.words));   // the green words end before the pod picture (station step 8-5)
+    text(row.kind === "pair" ? fill(Sg.canLand, { words: ws }) : ws ? fill(Sg.seen, { words: ws }) : Sg.seenNone, g.faces.length ? fx : Sh.known.x, y + Sh.known.baseline, row.kind === "pair" ? Sh.known.greenRole : Sh.known.role, "l");
     text(row.count === 1 ? Sg.pod1 : fill(Sg.podN, { n: row.count }), Sh.count.right, y + Sh.count.baseline, Sh.count.role, "r");
     if (g.tag) text(Sg.newToYou, g.tag[0], y + Sh.tag.baseline + Sh.tag.dy, Sh.tag.role, "c", g.tag[2]);
     return g;

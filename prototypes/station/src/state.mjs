@@ -1178,7 +1178,9 @@ export function growPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!p || !st.tray.includes(p)) return { ok: false, why: "gone" };
   const i = capsuleFree(st); if (i < 0) return { ok: false, why: "busy" };
   const fr = frameFor(p); if (!fr) return { ok: false, why: "gone" };
-  const genome = founderGenome(p, {}), sha = genomeSha(genome), minutes = budMinutes(st, 0, settings), first = !!st.firstMibi;
+  const genome = founderGenome(p, {}), sha = genomeSha(genome), pair = p.kinship != null && Array.isArray(p.parents), minutes = pair ? p.minutes : budMinutes(st, 0, settings), first = !!st.firstMibi;
+  if (pair) { st.caps[i] = { kind: "cross", species: fr.species.id, sp: p.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: p.parents, kinship: p.kinship, from: { n: 0, g: p.g, how: "cross", podId: null, of: p.parents.map((q) => q.name) }, read: [...(p.read || [])], shaped: [], early: false };   // a pod of your own pair grows as a cross did: its vigour sets its time
+    st.firstMibi = false; leavePod(st, p); logEv(st, "Grew a pod of " + p.parents.map((q) => q.name).join(" + ") + " · capsule " + (i + 1) + " · " + plural(minutes, "minute")); return { ok: true, bud: st.caps[i], capsule: i }; }
   st.caps[i] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: p.parents ?? null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read: [...(p.read || [])], shaped: [], early: false };
   st.firstMibi = false; leavePod(st, p);
   logEv(st, "Grew " + aAn(fr.species.name) + " pod · capsule " + (i + 1) + " · " + plural(minutes, "minute"));
@@ -1377,6 +1379,55 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   st.firstMibi = false;
   logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.caps[slot].code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.caps[slot], cost };
+}
+// Pair them (station step 8-2; walk-4 picture 6: "the pod goes to the nursery's shelf"): the same draw and the same price as doCross, but the young is a POD on the shelf (never a capsule, never held back by room in
+// the vivarium or a busy incubator: the pod is in neither). Grow it (growPod) takes it from there. The pod keeps its parents' snapshots, their kinship and the draw's `rest` for the page.
+export function pairBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) { const r = crossBlock(st, sv, a, b, settings); return r === "the incubator is busy" || r === "the Vivarium is full" ? "" : r; }
+// Four examples of the young a pair could have (picture 6): the same draw as Pair them, from a stream seeded by the two ids, so the four stay while the picks stay. Genomes only; nothing is kept or spent.
+// Where a pair's young can land on the coat's two blends (station step 8-5): the engine's own range and the parents' values, 0 to 1 along the catalogue; null where the kind has no such trait. Not read-gated (the pairing screen shows it).
+export function landOf(st, a, b) {
+  const all = landAllOf(st, a, b); if (!all) return null;
+  return { tint: all.blends["body-hue"] ?? null, shade: all.blends["body-value"] ?? null };
+}
+// Where a pair's young can land on EVERY trait of the kind (station step 9-1, the shelf's board; the same forecast as landOf, which is this function's two blends): blends[traitId] = { range, parents } as landOf gives it
+// (raw catalogue values), sets[traitId] = the looks a young can wear, in the order of the trait's looks (the four pairings of the lead locus, with every pairing of the trait's other loci the parents carry).
+export function landAllOf(st, a, b) {
+  const fr = frameFor(a); if (!fr) return null;
+  const full = crossForecast(fr, a, b, { kinship: kinshipOf(st, a, b), lookup: genomeLookup(st) }), blends = {}, sets = {};
+  for (const q of full.traits) {
+    if (q.kind === "blend" && q.range && q.parents) { blends[q.trait] = { range: q.range, parents: q.parents }; continue; }
+    if (q.kind !== "switch" || !q.seeds) continue;
+    const t = fr.chapters.flatMap((c) => c.traits).find((x) => x.id === q.trait); if (!t) continue;
+    let combos = [{}];
+    for (const id of t.loci.filter((x) => x !== q.locus)) { const prs = (a.genome.loci[id] ?? []).flatMap((x) => (b.genome.loci[id] ?? []).map((y) => [x, y])); if (prs.length) combos = combos.flatMap((c) => prs.map((p) => ({ ...c, [id]: p }))); }
+    const got = new Set();
+    for (const s of q.seeds) for (const c of combos) { const sh = traitState(fr, t, { ...a.genome, loci: { ...a.genome.loci, [q.locus]: s.copies, ...c } })?.shows; if (sh != null) got.add(String(sh)); }
+    sets[q.trait] = (t.looks ?? []).filter((l) => got.has(String(l)));
+  }
+  return { blends, sets };
+}
+export function exampleYoung(st, a, b, n = 4) {
+  const fr = frameFor(a), k = kinshipOf(st, a, b); let h = 2166136261;
+  for (const ch of a.id + "|" + b.id) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const rng = () => { h = (h + 0x6d2b79f5) >>> 0; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const out = []; for (let i = 0; i < n; i++) { const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) }); if (!genomeProblems(fr, genome).length) out.push({ sp: a.sp, species: fr.species.id, genome, read: [] }); }
+  return out;
+}
+export function pairPod(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now(), rng = Math.random) {
+  const block = pairBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Pair them · " + block };
+  const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Pair them · " + shortText(st, cost.e, cost.d, cost.s) };
+  const fr = frameFor(a), k = kinshipOf(st, a, b);
+  const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) });
+  const problems = genomeProblems(fr, genome);
+  if (problems.length) return { ok: false, msg: "This pairing would not build · nothing spent" };
+  st.e -= cost.e; st.s -= cost.s;
+  const sha = genomeSha(genome), fc = crossForecast(fr, a, b, { kinship: k }), read = childKnownChapters(fr, fc), n = (st.pairN = (st.pairN || 0) + 1);
+  const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
+  for (const m of [a, b]) m.pairedAt = [...(m.pairedAt || []), now].slice(-8);
+  const pod = { id: "pair-" + n + ":" + sha, sp: a.sp, species: fr.species.id, g: a.from?.g ?? "meadow", how: "cross", gs: parseInt(String(sha).slice(-8), 16) >>> 0, k: null, n: 0, idd: 0, newSp: 0, read, fresh: 1, homeTurn: st.turn | 0, genome, sha, parents: [snap(a), snap(b)], kinship: k, minutes: podMinutes(budMinutes(st, 0, settings), vigourOfF(k)) };
+  st.tray.push(pod);
+  logEv(st, "Paired " + a.name + " + " + b.name + " · a pod on the shelf · kinship " + Math.round(k * 1000) / 1000 + " · " + spendText(cost.e, cost.d, cost.s));
+  return { ok: true, pod, cost };
 }
 // Reading a child (or any mibi with chapters still unread): the same prices as a pod's chapters.
 export function mibiReadCost(st, m, chapterId, settings = DEFAULT_SETTINGS) { return readCost(st, { ...m, idd: 1, read: m.read }, chapterId, settings); }

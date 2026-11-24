@@ -11,6 +11,8 @@ import { openStore } from "./store.mjs";
 import { subjectOf } from "../page.mjs";
 import * as N from "../nursery.mjs";
 import { openNursery, openPodPage, nurseryIntent, podIntent } from "./nursery.mjs";
+import { pairIntent } from "./pairing.mjs";
+import { openHolds, closeHolds, backToHolds, holdsIntent } from "./holds.mjs";
 
 export const FLASH_MS = 3000, SCROLL_MS = 200;
 const SORTS = ["use", "species", "arrival", "drying"];
@@ -54,8 +56,9 @@ export function openRoom(h, from = "home") {
 export function researchKey(h) {
   const p = pods(h), here = h.ui.screen === "pods";
   if (here && p.page != null && p.view === "room") return p.at === "board" ? closeBoard(h) : openBoard(h);   // her page: the blue key opens her board, and shuts it again (station step 3)
-  if (here && p.view === "pod") { const k = N.shelfRows(h.st, p.order ?? "newest").findIndex((r) => r.key === p.podKey); p.view = "nursery"; p.ring = k >= 0 ? { z: "shelf", i: k } : undefined; return; }   // the blue key on a pod's page: back to the shelf, the ring on its row
-  if (here && p.view === "nursery") return;   // the nursery: the blue key stays here (what the pods hold is step 9)
+  if (here && p.view === "pod") { const k = N.shelfRows(h.st, p.order ?? "newest", p.only?.keys).findIndex((r) => r.key === p.podKey); p.view = "nursery"; p.ring = k >= 0 ? { z: "shelf", i: k } : undefined; return; }   // the blue key on a pod's page: back to the shelf, the ring on its row
+  if (here && p.view === "holds") return closeHolds(h);   // what the pods hold: the blue key returns to the shelf, the ring where it was (station step 9-1)
+  if (here && p.view === "nursery") return p.only ? backToHolds(h) : openHolds(h);   // the nursery: the blue key opens what the pods hold; on the shelf "Show the pods" left, it returns to the board
   if (!here || p.page == null) return openNursery(h, {});   // the blue key is the nursery (station step 5)
   if (here && (p.view === "room" || p.view === "trait")) return backToInventory(h);   // the second face, from anywhere on the reading screen (the detail too): the inventory, the ring on this pod's card
   if (here) return openRoom(h, "home");
@@ -76,6 +79,8 @@ function leaveInventory(h) { const p = pods(h); if (S.unshownHusks(h.st).length)
 // ---- ✓ and ← ----
 export function intent(h, target, verb) {
   const p = pods(h);
+  if (p.view === "pair" && p.page == null) return pairIntent(h, target, verb);   // the pairing screen (intents/pairing.mjs)
+  if (p.view === "holds" && p.page == null) return holdsIntent(h, target, verb);   // what the pods hold (intents/holds.mjs)
   if (p.view === "nursery" && p.page == null) return nurseryIntent(h, target, verb);   // the nursery and a pod's page (intents/nursery.mjs)
   if (p.view === "pod" && p.page == null) return podIntent(h, target, verb);
   if (p.cmp) return compareIntent(h, target, verb);

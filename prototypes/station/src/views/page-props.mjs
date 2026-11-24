@@ -11,6 +11,8 @@ import { shapeOf, scalePlace, shapeModel } from "../trait-shapes.mjs";
 import { roundOf, squareOf } from "../trait-crops.mjs";
 import { pageModel } from "./reading-props.mjs";
 import { fill } from "./words.mjs";
+import { youngLines } from "../pairing-model.mjs";
+import { boardColumns } from "../nursery-board.mjs";
 
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16).padStart(8, "0"); };
@@ -113,8 +115,7 @@ function scaleScreen(view, m, spec, req, mibi, fr, ch) {
 function boardScreen(view, m, spec, req, mibi, fr) {
   const { st } = m, R = spec.regions.page, Bd = R.board, Sg = spec.strings.read, sid = S.speciesOf(mibi), [W, H] = R.rect.slice(2), texts = [], pod = pagePod(st, mibi.id), groups = [], colY = [Bd.top, Bd.top];
   const text = (tx, x, base, role, align, w) => { if (tx) texts.push({ text: tx, x: Math.round(x), ...(w ? { w } : {}), base: Math.round(base), role, align }); };
-  const bodyN = fr.chapters.filter((c) => !isDoings(c)).length;   // the columns: the first half of the chapters about her body left, the rest right; those about what she does alternate, left first
-  let nDo = 0; const colOf = new Map(fr.chapters.map((c, k) => [c.id, isDoings(c) ? nDo++ % 2 : k < Math.ceil(bodyN / 2) ? 0 : 1]));
+  const colOf = boardColumns(fr.chapters);   // the columns: the first half of the chapters about her body left, the rest right; those about what she does alternate, left first (nursery-board.mjs, shared with the shelf's board)
   const rows = Math.max(...[0, 1].map((c) => fr.chapters.filter((x) => colOf.get(x.id) === c).reduce((n, ch) => n + ch.traits.length, 0))), groupsIn = Math.max(...[0, 1].map((c) => fr.chapters.filter((x) => colOf.get(x.id) === c).length));
   const rowH = clamp(Math.floor((Bd.foot - Bd.top - groupsIn * (Bd.head + 3 + Bd.gap)) / Math.max(1, rows)), Bd.rowMin, Bd.row);   // a kind with more traits than fit gets slimmer rows, never a second page
   text(S.cap(mibi.name), Bd.who.x, Bd.who.nameBase, Bd.who.nameRole, "l");
@@ -170,7 +171,10 @@ export function pageView(view, m, spec, req) {
   const stage = req({ kind: "pagestage", id: `pagestage:${sid}:${key}`, species: sid, ...cp, size: R.rect.slice(2), body: { x: PAGE_BODY_BOX.x, y: PAGE_BODY_BOX.y, w: PAGE_BODY_BOX.w }, spots, hand: ch ? ch.id : "", tag: R.tag.rect, radius: R.tag.radius, keys: [R.hints.chapters.key, R.hints.look.key],
     rail: { y: R.rail.rect[1], h: R.rail.rect[3], ring: C.ring, cy: R.rail.rect[1] + C.ringCy, grad: C.gradient, frame: C.frame, w: C.w, cells: cells.map((c) => ({ chapter: c.id, x: c.x, petals: c.petals, hand: c.hand })) } });
   const name = S.cap(mibi.name);
-  view.page = { name, origin: originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };
+  // round 2 item 7: the copies on the line's two traits, in words on her origin line (a page's own text has that one line; `scale` would replace the page's texts); never on the creature
+  // the one line is kind and copies: the place gives way while they show, or the line runs under the chip
+  const copies = youngLines(st, spec, mibi).join(" · ");
+  view.page = { name, origin: copies ? S.cap(S.spName(mibi)) + " · " + copies : originOf(mibi), tag: Sg.board, stage, hints: { chapters: Sg.pageHintChapters, look: Sg.pageHintLook }, rail: { cells: cells.map((c) => ({ id: c.id, name: c.name, sub: c.sub, hand: c.hand })) } };
   view.line = { ok: ch ? fill(isDoings(ch) ? Sg.open : Sg.pageLook, { chapter: ch.name }) : null, back: name, subject: ch ? fill(Sg[S.pageRead(mibi).includes(ch.id) ? "pageKnown" : isDoings(ch) ? "pageWatch" : "pageSurprise"], { chapter: ch.name }) : "", need: "" };   // not drawn on her page (no foot line); the intents and tests still read it
   view.targets = cells.map((c, i) => ({ id: "rail." + i, group: "rail", index: i }));   // the cells; the frame on the chapter in hand is the ring
   view.cur = hand < cells.length ? "rail." + hand : null; view.resolve = {};

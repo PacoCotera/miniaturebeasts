@@ -13,6 +13,8 @@ import { req as reqOf, slotAt as slot } from "./requests.mjs";
 import { readView, miniRailProps, discReq } from "./reading-props.mjs";
 import { pageView } from "./page-props.mjs";
 import { nurseryView, podView } from "./nursery-props.mjs";
+import { holdsView } from "./holds-props.mjs";
+import { pairView } from "./pairing-props.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
@@ -140,6 +142,8 @@ export function podsBuild(m, spec, twoFrame = false) {
   const mode = ui.cmp ? "compare" : ui.view ?? "inventory";
   const view = { mode, requests, empty: !st.tray.length };
   if (mode === "compare") return compareView(view, m, spec, req);
+  if (!twoFrame && ui.page == null && ui.view === "pair") { const v = pairView({ ...view, mode: "page" }, m, spec, req); if (v) return v; }   // the pairing screen (views/pairing-props.mjs); a pick gone falls to the nursery below
+  if (!twoFrame && ui.page == null && ui.view === "holds") return holdsView({ ...view, mode: "page" }, m, spec, req);   // what the pods hold (views/holds-props.mjs): the blue key in the nursery
   if (!twoFrame && ui.page == null && (ui.view === "nursery" || ui.view === "pod")) return (ui.view === "pod" ? podView : nurseryView)({ ...view, mode: "page" }, m, spec, req);   // the nursery and a pod's page (views/nursery-props.mjs): the shelf in rows, the capsules, Grow it
   if (!twoFrame && ui.page != null && S.mibiById(st, ui.page)) return pageView({ ...view, mode: "page" }, m, spec, req);   // her page: its own screen (views/page-props.mjs), no longer the pod reading screen
   if (mode === "room" || mode === "trait") return readView(view, m, spec, req);   // the reading screen v2 (views/reading-props.mjs): the reading room, its bench, index, band and overlay retire

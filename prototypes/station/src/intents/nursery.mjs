@@ -5,17 +5,18 @@ import * as N from "../nursery.mjs";
 import { ringOf, firstFor } from "../views/nursery-props.mjs";
 import { fill } from "../views/words.mjs";
 import { intent as incubatorIntent } from "./incubator.mjs";
+import { backToHolds } from "./holds.mjs";
 
 const pods = (h) => h.ui.pods;
 const strings = (h) => h.specs.pods.strings;
-const rowsOf = (h) => N.shelfRows(h.st, pods(h).order ?? "newest");
+const rowsOf = (h) => N.shelfRows(h.st, pods(h).order ?? "newest", pods(h).only?.keys);
 const visible = (h) => h.specs.pods.regions.page.nursery.shelf.visible;
 const MINUTES = (Sg, n) => (n >= 60 ? Sg.hour : n <= 1 ? Sg.minOne : fill(Sg.min, { n }));
 
 // The ways in: the blue key, Home's pod modules, the walk's arrival, Create's and the Incubator's old doors. `from` is the screen ← returns to (Home is the Vivarium room); `pod` opens that pod's row, `last` puts the ring on the last row.
 export function openNursery(h, opts = {}) {
   const p = pods(h), from = opts.from ?? (h.ui.screen !== "pods" ? h.ui.screen : p.from ?? "home");
-  p.page = null; p.cmp = null; p.view = "nursery"; p.from = from === "pods" ? "home" : from; p.podKey = null; p.act = "grow"; p.askGo = false; p.order = p.order ?? "newest";
+  p.page = null; p.cmp = null; p.view = "nursery"; p.only = null; p.from = from === "pods" ? "home" : from; p.podKey = null; p.act = "grow"; p.askGo = false; p.order = p.order ?? "newest";
   const rows = rowsOf(h), k = opts.pod ? rows.findIndex((r) => r.ids.includes(opts.pod)) : -1;
   p.ring = k >= 0 ? { z: "shelf", i: k } : opts.last && rows.length ? { z: "shelf", i: rows.length - 1 } : undefined; p.first = 0;
   h.goto("pods");
@@ -27,6 +28,7 @@ export const openPodPage = (h, podId, from) => openNursery(h, { from, pod: podId
 
 export function nurseryIntent(h, target, verb) {
   const p = pods(h), rows = rowsOf(h), caps = N.capsulesOf(h.st, h.settings, h.now()), ring = ringOf(h.st, p, rows), set = (r) => { p.ring = r; p.first = firstFor(r, p.first, visible(h), rows.length); };
+  if (verb === "back" && p.only) return backToHolds(h);   // "Show the pods": ← returns to the board, on the same row
   if (verb === "back") { const to = p.from && p.from !== "pods" ? p.from : "home"; p.view = "nursery"; h.goto(to === "habitat" || to === "create" || to === "incubator" || to === "store" ? "home" : to); return; }   // ← the way the player came
   if (verb && verb.startsWith("step:")) {
     const d = verb.slice(5);

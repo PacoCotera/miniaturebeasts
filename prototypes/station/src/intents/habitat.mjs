@@ -8,6 +8,7 @@ import { openSpecies, openFamily } from "./library.mjs";
 import { openPanel } from "./panel.mjs";
 import { openPage } from "./pods.mjs";
 import { doorOpen } from "../nav.mjs";
+import { openPair } from "./pairing.mjs";
 import { modulesOf } from "../views/habitat-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -83,7 +84,7 @@ export function intent(h, target, verb) {
   else if (target === "cross") {
     if (heldModule(h, m, "cross")) return;   // no breeding while carried (the owner); young, alone, partners away: the house rule
     if (!doorOpen("cross") || !S.isAdult(h.st, m, h.settings)) return;
-    if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away && !p.family)) openCross(h, m);   // only partners at home, and not family, can be picked
+    if (S.crossPartners(h.st, h.sv, m, h.settings).some((p) => !p.away && !p.family)) openPair(h, m);   // the pairing screen (picture 6; the Cross room stays until its removal job); only partners at home, and not family, can be picked
   }
   else if (target === "wild") {
     if (heldModule(h, m, "wild")) return;   // no freeing while carried (the owner); bonded, going at the next dock: the house rule, never silent

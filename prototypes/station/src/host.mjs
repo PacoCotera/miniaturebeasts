@@ -98,7 +98,7 @@ export function parentScreen(screen) {
 // ---- Pods ----
 // Keep Pods' state valid (the view, the ring on a target of the state; the face moves it, the host keeps it) and return the Pods props body. The panel follows the ring's card and the first row on screen
 // follows the ring (the view says them, the host keeps them); no panel opens over Pods (letting go asks on the button's own face); the reading room's face of the Research key reads in the top bar.
-const POD_VIEWS = ["inventory", "filter", "find", "room", "trait", "nursery", "pod"];
+const POD_VIEWS = ["inventory", "filter", "find", "room", "trait", "nursery", "pod", "pair", "holds"];
 export function podsBody() {
   const p = UI.pods, F = p.focus;
   if (!POD_VIEWS.includes(p.view)) p.view = SPECS.pods.initial;
@@ -327,7 +327,7 @@ export function screenProps(plate) {
     return { msg: { screen, ...body.props }, ids: [...ids], light, lit: litOf(body.requests), owed: owedOf(body.requests) };
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
-  if (screen === "pods" && (UI.pods.page != null || UI.pods.view === "nursery" || UI.pods.view === "pod")) pl.page = [0, 530];   // a page screen (the 530 x 600 window): the plate is drawn inside the page's width, centred on it, wrapped to fit (frame.c word_messagePlate), so the window never pans for it
+  if (screen === "pods" && (UI.pods.page != null || UI.pods.view === "nursery" || UI.pods.view === "pod" || UI.pods.view === "holds")) pl.page = [0, 530];   // a page screen (the 530 x 600 window): the plate is drawn inside the page's width, centred on it, wrapped to fit (frame.c word_messagePlate), so the window never pans for it
   if (screen === "pods" && UI.pods.page != null) { const pm = mibiById(UI.pods.page); if (pm) top.title = S.cap(pm.name) + "'s page"; }   // her page: the header names her page, not the pods
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: withHold({ top, line: notBuiltLine(screen), plate: pl }) }, ids: [], light };   // Level 2 (library.species) among them: not built yet, ← reads Library
   const fam = screen === "library.family" ? familyBody() : null;

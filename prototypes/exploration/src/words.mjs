@@ -151,6 +151,16 @@ export function clockToNext(spent) {
   const s = Math.max(0, spent | 0), nightAt = DAY.light - DAY.parts[DAY.parts.length - 1][1];
   return s < nightAt ? nightAt - s : Math.max(0, DAY.light - s);
 }
+// The Log (companion-device-build-1): the Companion's notebook. [copy] WORKING WORDS: the copywriter's job replaces every string here.
+WORDS.book = {
+  title: 'Log', day: n => 'Day ' + n, earlier: 'earlier pages', field: 'field', moves: '▲▼', empty: 'Nothing written yet.',
+  atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,
+  prints: (name, when) => 'Prints in the grass. ' + name + ' was here ' + when + '.',
+  met: name => 'Met her. She is ' + name + ' now.',
+  habit: (name, hab, range, said) => name + ', ' + hab + ', ' + range + ': ' + said + '.',
+  near: name => 'Crept to two steps from ' + name + '.',
+  find: (name, item) => name + ' left a ' + item + '. In the case.',
+};
 // [copy] words for the copywriter's round (they say the meaning only)
 // night step 4 [copy]: the three cards' words (the art director's paintings carry them when signed; until then the message-box lines stay)
 export const CARD_TEXT = { dusk: ['Dusk', 'Dusk. The wild ones are going to their beds.'], night: ['Night', 'Night falls.'], dawn: ['Dawn', ''] };
