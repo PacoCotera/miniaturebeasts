@@ -242,7 +242,7 @@ import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, c
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
-import { beatOf, poseOf, stripPoses, chipOf, givesNow } from "./src/watch.mjs";
+import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/watch.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
@@ -2835,7 +2835,7 @@ function noteHabit(c, viaView) {   // viaView: the watch view takes the note and
     else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn, ...gotNow() }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); findEntry = bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); gotSample = s.item; }
   }
   const filled = want ? rec.got[want] : 0;
-  const hbNow = c.hb, card = { id: c.id, k, range, entry, findEntry, data: gotData, sample: gotSample, noRoom, pose: poseOf(k, hbNow ? beatOf(hbNow) : 0), saddled: wildSaddled(c) };   // the field card is drawn from these entries, the Log's own records
+  const hbNow = c.hb, card = { id: c.id, k, range, entry, findEntry, data: gotData, sample: gotSample, noRoom, pose: poseOf(k, hbNow ? beatOf(hbNow) : 0), saddled: wildSaddled(c), clear: airClear() };   // the field card is drawn from these entries, the Log's own records
   if (!viaView) fxMsg(name + ' · ' + (sl ? W.asleep : W.name[k]) + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
   ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent, asleep: sl, stirred, part: dayPart(), keepsake: !!(keepsake && rec.sample) });
   waitTick('patch');   // a note spends one light, as a Wait does
@@ -8039,13 +8039,13 @@ function poseCut(coat, pose) {
 }
 // a pose as a one-colour silhouette (a diagram: the cut's own mask, scaled to a quarter by nearest pixel, filled with one palette colour)
 const POSE_MASK = new Map();
-function poseMask(coat, pose, col) {
+function poseMask(coat, pose, col, sh = 2) {   // sh: the shift, 2 = a quarter (the strip), 0 = the cut's own size (far or unclear air: her shape in the view)
   if (!poseCut(coat, pose)) return null;
-  const key = coat + pose + col, e = POSE_MASK.get(key); if (e) return e.c;
+  const key = coat + pose + col + sh, e = POSE_MASK.get(key); if (e) return e.c;
   const px = POSE_CUT.get('loika-' + coat + '-' + pose + '-228x234.png').px; if (!px) return null;
   POSE_MASK.set(key, { c: null }); if (typeof createImageBitmap === 'undefined') return null;
-  const w = px.width >> 2, h = px.height >> 2, rgb = HEX[col].slice(1).match(/../g).map(v => parseInt(v, 16)), d = new Uint8ClampedArray(w * h * 4);   // the cut's own mask at a quarter by nearest pixel (its alpha is 0 or 255), one palette colour
-  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (px.data[(((j << 2) + 2) * px.width + (i << 2) + 2) * 4 + 3] >= 128) { const o = (j * w + i) * 4; d[o] = rgb[0]; d[o + 1] = rgb[1]; d[o + 2] = rgb[2]; d[o + 3] = 255; }
+  const w = px.width >> sh, h = px.height >> sh, o2 = sh ? 2 : 0, rgb = HEX[col].slice(1).match(/../g).map(v => parseInt(v, 16)), d = new Uint8ClampedArray(w * h * 4);   // the cut's own mask at a quarter by nearest pixel (its alpha is 0 or 255), one palette colour
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (px.data[(((j << sh) + o2) * px.width + (i << sh) + o2) * 4 + 3] >= 128) { const o = (j * w + i) * 4; d[o] = rgb[0]; d[o + 1] = rgb[1]; d[o + 2] = rgb[2]; d[o + 3] = 255; }
   const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
   createImageBitmap(new ImageData(d, w, h), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }).then(bm => { cv.getContext('2d').drawImage(bm, 0, 0); POSE_MASK.get(key).c = cv; });
   return null;
@@ -8072,7 +8072,9 @@ function cardKey(k) {
   if (k === 'confirm') { S.ui.card = null; S.phase = 'patch'; transition(); }   // Keep: back to the field
   else if (k === 'back') { S.ui.card = null; if (watchHer()) { S.phase = 'watch'; transition(); } else watchClose(); }   // back to the view (the play may be over)
 }
-function drawPoseAt(coat, pose, x, y) { const cv = poseCut(coat, pose); if (cv) { g.imageSmoothingEnabled = false; g.drawImage(cv, x, y); } }
+// cut: mid or near in clear air draws the signed cut; far, or rain or fog, draws only her shape (the cut's own mask at 1x in one palette colour: no face, no coat)
+function drawPoseAt(coat, pose, x, y, cut = true) { poseCut(coat, pose); const cv = cut ? poseCut(coat, pose) : poseMask(coat, pose, C.stone, 0); if (cv) { g.imageSmoothingEnabled = false; g.drawImage(cv, x, y); } }
+const airClear = () => { const lay = curLay(); return habClear({ raining: !lay.cave && stormRain(lay.cell % MW), fog: !lay.cave && inFog(lay.cell), part: dayPart() }); };
 function drawWatch() {
   const c = watchHer(); if (!c) return;
   const ex = S.exp, P = ex.patch, h = c.hb, W = WORDS.watch, name = habName(c), range = habRange(cheb(c, P)), lay = curLay(), b = beatOf(h), coat = wildSaddled(c) ? 'saddle' : 'plain';
@@ -8089,7 +8091,7 @@ function drawWatch() {
     circ(cx, cy, 2 * T8, C.stone, true); circ(cx, cy, 5 * T8, C.slate, true);
     const px = clamp(P.x - c.x, -5, 5), py = clamp(P.y - c.y, -5, 5); R(cx + px * T8 - 3, cy + py * T8 - 3, 6, 6, C.amber); R(cx - 3, cy - 3, 6, 6, C.bone); }
   // her picture at the beat's pose, 1x
-  const pose = poseOf(h.k, b); drawPoseAt(coat, pose, (SCR_W - 228) >> 1, 140);
+  const pose = poseOf(h.k, b); drawPoseAt(coat, pose, (SCR_W - 228) >> 1, 140, drawsCut(range, airClear()));
   // the words of the beat (the message the play gives, or the note's own refusal); the box never covers the strip
   if (FX.msg) wrapText(FX.msg, 410, 2).slice(0, 2).forEach((l, i) => text(l, SCR_W / 2, 392 + i * 22, C.fog, 2, 'center'));
   // the strip: the habit, the beat, the four poses with the current one bracketed
@@ -8106,7 +8108,7 @@ function drawCard() {
   text(clipText(name + ' · ' + WORDS.habit.name[cd.k], 400, 2), 26, 56, C.soil);
   panel(26, 82, textW(cd.range, 2) + 16, 24, C.teal); text(cd.range, 34, 87, C.bone);
   if (cd.data) { const dw = textW(W.data, 2) + 20; panel(424 - dw, 82, dw, 24, C.sand); text(W.data, 424 - dw + 10, 87, C.soil); }
-  drawPoseAt(coat, cd.pose, (SCR_W - 228) >> 1, 114);
+  drawPoseAt(coat, cd.pose, (SCR_W - 228) >> 1, 114, drawsCut(cd.range, cd.clear));
   if (en) wrapText(en.text, 380, 2).slice(0, 3).forEach((l, i) => text(l, 30, 358 + i * 24, C.soil));
   R(26, 438, 398, 1, C.sand); panel(26, 452, 398, 90, C.paper, C.sand);
   if (fe) { text(W.sampleTaken(WORDS.habit.sampleName[cd.sample]), 40, 466, C.bark); wrapText(fe.text, 360, 2).slice(0, 2).forEach((l, i) => text(l, 40, 492 + i * 24, C.clay)); }

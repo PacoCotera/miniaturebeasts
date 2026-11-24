@@ -26,3 +26,6 @@ export function chipOf({ range, tiles, gives, left }) {
 }
 // what the view says it gives at a range, from the rule itself
 export const givesNow = (range, clear, byDay) => givesAt(range, clear, byDay);
+// design 2026-11-24 12:03: the eye never hands over what the range withholds. At far, and whenever the air is not clear (rain, fog), the view draws her shape
+// (the strip's silhouette from the cut's mask, 1x); mid and near, in clear air, draw the signed cut.
+export const drawsCut = (range, clear) => range !== 'far' && !!clear;
