@@ -34,10 +34,12 @@ export const windAt = (seed, land, spent) => windOf(seed, land, partOfDay(spent)
 
 // One light goes by for a wild one: `heard` is a heard step (or the stay running out). Mutates `c` (ease, quiet) and returns the events: 'heard' (to watching), 'gone', 'settled'.
 // Two quiet actions in a row lower ears up to grazing; three lower watching to ears up (the built settle); a first heard step is watching, a second is gone.
-export function easeTick(c, heard) {
+// Night step 5: `asleep` (curled at her bed, grazing): the first heard step only stirs her (ears up, ev 'stirred'); after that she is heard as awake, so the next wakes her and she watches, the next she is gone.
+export function easeTick(c, heard, asleep = false) {
   const ev = [];
   if (c.ease >= 3) return ev;
-  if (heard) { c.ease = c.ease >= 2 ? 3 : 2; c.quiet = 0; ev.push(c.ease >= 3 ? 'gone' : 'heard'); }
+  if (heard && asleep && !(c.ease >= 1)) { c.ease = 1; c.quiet = 0; ev.push('stirred'); }
+  else if (heard) { c.ease = c.ease >= 2 ? 3 : 2; c.quiet = 0; ev.push(c.ease >= 3 ? 'gone' : 'heard'); }
   else { c.quiet = (c.quiet || 0) + 1; if (c.ease === 1 && c.quiet >= 2) { c.ease = 0; c.quiet = 0; ev.push('settled'); } else if (c.ease === 2 && c.quiet >= 3) { c.ease = 1; c.quiet = 0; ev.push('settled'); } }
   return ev;
 }

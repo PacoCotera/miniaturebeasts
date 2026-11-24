@@ -27,6 +27,15 @@ export function givesAt(range, clear, byDay = true) {
   if (range === 'mid') return ['coat'];
   return ['face'];
 }
+// night step 5: what a note on a SLEEPER (curled at her bed, from dusk through the night) gives (w4-kill-lines-design-1 section 5, slip N3 and N4). The habit is always noted (it counts once a day for each Loika).
+// Never her face (her nose is under her tail); her coat from mid while it is still dusk, never by night (lamplight takes the colour); never "where she sleeps" as the card's line (her bed goes on her page from any sighting).
+// The keepsake from near (2 tiles or closer), by dusk and by night; not while she is stirred (N4: near is not the easy range). part: 'dusk' | 'night'; stirred: her ease is ears up.
+export function sleeperGives(range, part, stirred = false) {
+  return { gives: part === 'dusk' && range !== 'far' ? ['coat'] : [], keepsake: range === 'near' && !stirred };
+}
+// a sleeper at her bed: her bedding-down was played, missed or lost (the day holds a state for it) and she is at ease again or only stirred; not gone, not mid-play
+export const isSleeper = ({ part, atBed, played, hasPlay, gone, ease }) => !!atBed && sleepPart(part) && !!played && !hasPlay && !gone && (ease | 0) <= 1;
+
 // the card line for a habit (the range rule 3B, slip W5): what is still missing, the first want for a wild one being her coat, then her face, then where she goes.
 // Sleep-curled's last line is where she goes at first light, which the dew's prints at her bed give in the morning (night step 4). null when nothing is left to ask.
 export function wantOf(seed, id, k, got) {
@@ -84,8 +93,8 @@ export const sleepPart = part => part === 'dusk' || part === 'night';
 export const blank = () => ({ ranges: {}, got: {}, best: null, plays: 0, sample: null, sights: 0 });
 export function record(H, id, k) { const o = H[id] || (H[id] = {}); return o[k] || (o[k] = blank()); }
 // a note taken: returns what it gave, whether it was the habit's first, and whether the card's wanted thing is filled
-export function noteIn(rec, range, clear, want, byDay = true) {
-  const first = !Object.keys(rec.ranges).length, gives = givesAt(range, clear, byDay), newly = gives.filter(g => !rec.got[g]);
+export function noteIn(rec, range, clear, want, byDay = true, given = null) {   // given: what a sleeper's note gives (sleeperGives), in place of the range rule's
+  const first = !Object.keys(rec.ranges).length, gives = given || givesAt(range, clear, byDay), newly = gives.filter(g => !rec.got[g]);
   rec.ranges[range] = (rec.ranges[range] || 0) + 1;
   if (!rec.best || RANK[range] > RANK[rec.best]) rec.best = range;
   for (const g of gives) rec.got[g] = 1;
