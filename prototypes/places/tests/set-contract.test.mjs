@@ -171,10 +171,12 @@ test('layers: every lowers, ground, drawAs and tone id is a terrain in terrain.j
 
 test('layers: the baked rows list fills and kinds first, then the extras, then the tone row', () => {
   const rows = layerRows(set);
+  const late = Object.values(set.layers).flatMap((l) => l.over || []).filter((k) => k.late).length;   // `late` kinds (bug #131 bank ends) sit after every other row, so no earlier row moves
   assert.deepEqual(rows.map((r) => r.type).filter((t, i, a) => a.indexOf(t) === i), ['fill', 'over', 'variant', 'tone', 'toneraised', 'littertop']);
   assert.equal(rows.filter((r) => r.type === 'fill').length, Object.values(set.layers).filter((l) => l.fill).length);
   assert.equal(rows.filter((r) => r.type === 'over').length, Object.values(set.layers).flatMap((l) => l.over || []).length);
-  assert.deepEqual(rows.slice(-4).map((r) => r.type), ['tone', 'toneraised', 'littertop', 'littertop']);   // then the raised litter top's over cases and fill cells
+  assert.deepEqual(rows.slice(-4 - late, rows.length - late).map((r) => r.type), ['tone', 'toneraised', 'littertop', 'littertop']);   // then the raised litter top's over cases and fill cells
+  assert.deepEqual(rows.slice(rows.length - late).map((r) => r.kind), ['bank-end-w', 'bank-end-e']);
 });
 
 test('sprites: every rect lies inside the sprite sheet and every canopy named exists', () => {

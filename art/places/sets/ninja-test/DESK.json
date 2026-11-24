@@ -2174,12 +2174,12 @@
   "over-grass-bank-end-w.png": {
     "commit": "local",
     "from": "bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image) (the signed sheet; the whole chain is in over-grass-bank-end-w.steps.json)",
-    "sha256": "932b89f5642c29f93f80b07941e9fe792d1bf7295482600583a1a603bb6f9526"
+    "sha256": "bdbb294bc0da5693492c6b4041ee4f1013059e0f619eebae8ba256375c85668f"
   },
   "over-grass-bank-end-e.png": {
     "commit": "local",
     "from": "bug131-bank-end-1 bank-end-a.png (Gemini 3 Pro Image), flipped (the signed sheet; the whole chain is in over-grass-bank-end-e.steps.json)",
-    "sha256": "041725dd651dbdcb7dc719738a56aa1c90c331366355c368e268478b7eaa29d3"
+    "sha256": "92e837b1c29aacc66b607f5836867cd93a1c556f1450ad5f3620b84f642d9bb3"
   },
   "fill-drygrass.png": {
     "commit": "8c0ddc470",

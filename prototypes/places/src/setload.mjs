@@ -87,7 +87,7 @@ export function layerRows(set) {
   const rows = [], layers = set.layers || {};
   for (const [id, l] of Object.entries(layers)) {
     if (l.fill) rows.push({ type: 'fill', terrain: id, sheets: l.fill.sheets });
-    (l.over || []).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));
+    (l.over || []).filter((k) => !k.late).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));
   }
   for (const [id, l] of Object.entries(layers)) {
     for (const k of l.over || []) {
@@ -100,6 +100,7 @@ export function layerRows(set) {
   if (set.tone) rows.push({ type: 'tone', terrain: 'tone', sheets: set.tone.sheets });
   if (set.tone && set.tone.raised) rows.push({ type: 'toneraised', terrain: 'tone', sheets: [set.tone.raised] });   // the tone on the raised ground, a sheet of its own
   if (set.litterTop) { rows.push({ type: 'littertop', part: 'over', terrain: 'litter', sheets: [set.litterTop.over] }); rows.push({ type: 'littertop', part: 'fill', terrain: 'litter', sheets: [set.litterTop.fill] }); }   // the raised litter top: over cases, then fill variants (cells 1 to 3)
+  for (const [id, l] of Object.entries(layers)) (l.over || []).filter((k) => k.late).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));   // `late` kinds (bug #131 bank ends): last, so no earlier row or tile id moves
   return rows;
 }
 

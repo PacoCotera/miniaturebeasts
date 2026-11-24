@@ -166,6 +166,7 @@
         },
         {
           "kind": "bank-end-w",
+          "late": true,
           "lowers": [],
           "mix": {
             "sw": ["deep", "water"],
@@ -175,6 +176,7 @@
         },
         {
           "kind": "bank-end-e",
+          "late": true,
           "lowers": [],
           "mix": {
             "sw": ["sand"],
