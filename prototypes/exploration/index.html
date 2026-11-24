@@ -798,7 +798,11 @@ function wantPlaces() {   // each frame: if the reach, the region or the walked 
   if (!PL.ready || !S || RT.readOnly || RT.making || !G || G.gen !== 7 || !placesWorker()) return;
   if (SIGNS_OWED.size) signsPay();
   const R = hereRegion(); if (!R) return;
-  if (PLACES.warmSeed !== S.regions[0].seed) { PLACES.warmSeed = S.regions[0].seed; warmPlaces(PLACES.warmSeed, { ctx: PL.ctx }); }   // the worker builds the world's decor while the player is on the Station's screens
+  if (PLACES.warmSeed !== S.regions[0].seed) {
+    PLACES.warmSeed = S.regions[0].seed; const wseed = PLACES.warmSeed, warm = () => warmPlaces(wseed, { ctx: PL.ctx });   // the worker builds the world's decor while the player is on the Station's screens
+    if (S.exp) readyPlaces(wseed, R.slot, biomeVersion(S), [S.exp.pos, ...S.exp.reach].filter(c => passable(c)), { ctx: PL.ctx, first: true }).then(warm, warm);   // a page loaded straight into an expedition: the place and its reach are baked ahead of the decor warm (the neighbours' strips need them)
+    else warm();
+  }
   const seed = S.regions[0].seed, ex = S.exp, v = biomeVersion(S), visited = [...Object.keys(S.visited || {}), ...Object.keys(S.cells || {})].map(Number);   // (a cell with state of its own is asked too: the map's beacon signs read its place)
   const sig = seed + '|' + R.id + '|' + v + '|' + (ex ? ex.pos + ':' + ex.reach.length : '-') + '|' + visited.length;
   if (sig === PLACES.sig) return; PLACES.sig = sig;
