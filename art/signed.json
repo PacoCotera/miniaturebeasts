@@ -2699,6 +2699,13 @@
   {
    "class": "paint",
    "date": "2026-11-24",
+   "id": "cbc27e02a3",
+   "path": "book/art/lehten-plate/lehten-plate-a-placed.png",
+   "sha256": "e5f92af7023c7dd48af233ae213e495d863f650034ae376734d9c94933a61a45"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-24",
    "id": "d2d5188bc7",
    "path": "book/scribus/img/art/cut150-lehten.png",
    "sha256": "3c54650323934559009c786d3694f6b4f47ed1ae01e0e5f39d8c8cde6f849619"

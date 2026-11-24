@@ -94,7 +94,9 @@ function botPage(A) {
     walk(path, e.at + 8);
     // wait for the tell
     let guard = 0;
-    while (!over() && guard++ < 40) { const cc = her(); if (!cc || cc.gone || cc.ease >= 3) break; if (cc.hb && cc.hb.k === k) break; if (spent() > e.at + 16) break; wait(); }
+    // W5: wait to the real tell (the plan's light is a forecast, not the tell), up to the next moment's own set-out; never give up at plan+16
+    const waitUntil = nextE ? Math.max(e.at + 16, freeBy(nextE)) : DAY.light - 2;
+    while (!over() && guard++ < 200) { const cc = her(); if (!cc || cc.gone || cc.ease >= 3) break; if (cc.hb && cc.hb.k === k) break; if (spent() > waitUntil) break; wait(); }
     const cc = her(); if (!cc || !cc.hb || cc.hb.k !== k) { out.events.push(k + ': none to see' + (cc && cc.gone ? ' (gone)' : '')); if (cc && cc.gone) out.gone = true; afterMoment(nextE); continue; }
     // the face wants near: step in on the tell while the steps stay unheard
     if (want === 'face' && cheb(P, cc) > 2) {
@@ -104,9 +106,15 @@ function botPage(A) {
     // note it, in front of her (she is not always where the haunt was read to be: when the note is not offered, step one unheard tile nearer, as a player would; seed 159 day 2)
     const closeIn = hc => { const want2 = Math.max(3, cheb(P, hc) - 1), p3 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, hc) <= want2 && !heardAtTile(hc, x, y, spent()), (x, y) => heardAtTile(hc, x, y, spent())); if (!p3 || !p3.length || cheb(P, hc) <= 3) return false; return stepTo(p3[0]); };
     for (let n = 0; n < 10 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; faceHer(hc);
-      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() }); break; } } else if (!closeIn(hc)) wait(); }
+      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() });
+        // W5: a sample needs a note at near; after a mid/far note step in unheard to near inside the same play and note again (the page allows one note per range)
+        if (nn[nn.length - 1].range !== 'near') { const h1 = her(); if (h1 && h1.hb && cheb(P, h1) > 2) {
+          const p4 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, h1) <= 2 && !heardAtTile(h1, x, y, spent()), (x, y) => heardAtTile(h1, x, y, spent()));
+          if (p4 && p4.length <= 6) { for (const t of p4) { if (!her() || !her().hb) break; stepTo(t); }
+            const h2 = her(); if (h2 && h2.hb) { faceHer(h2); const a2 = patchAction(); if (a2.label === WORDS.habit.note) { const b2 = (S.exp.stats.noted || []).length; a2.run(); const n2 = (S.exp.stats.noted || []); if (n2.length > b2) out.notes.push({ ...n2[n2.length - 1], want, T: spent(), step: 1 }); } } } } }
+        break; } } else if (!closeIn(hc)) wait(); }
     // let the play end
-    for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; wait(); }
+    for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; if (nextE && spent() >= freeBy(nextE) + 4) break; wait(); }   // W5: no sitting out the next moment while this one plays out
     afterMoment(nextE);   // also when the moment played and no note came of it
   }
   // the rest of the day: wait it out (the next day starts where this ended); with nothing yet, look for her prints at the end, and wait for the next part of day to look again
@@ -132,7 +140,7 @@ const NEWDAY = (key, day) => `(() => { const ex = S.exp; S.day = freshDay(); S.t
 
 // day 1 as a player plays it: out of the start place onto the map, along the page's own steps (canStep, range) to the Loika's place, and in
 const TRAVEL = key => `(() => { const ex = S.exp, goal = +${JSON.stringify(key)}, from = ex.pos, seen = new Map([[from, null]]), q = [from]; let way = [];
-  if (from !== goal) { for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break; for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d) || !inRange(stepCell(c, d))) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t)) continue; seen.set(t, [c, d]); q.push(t); } }
+  if (String(from) !== String(goal)) { for (let i = 0; i < q.length; i++) { const c = q[i]; if (c === goal) break; for (const d of ['up', 'right', 'down', 'left']) { if (!canStep(c, d) || !inRange(stepCell(c, d))) continue; const t = stepCell(c, d); if (t < 0 || seen.has(t)) continue; seen.set(t, [c, d]); q.push(t); } }
     if (!seen.has(goal)) return JSON.stringify({ noRoad: 1, from, goal }); for (let k = goal; seen.get(k); k = seen.get(k)[0]) way.unshift(seen.get(k)[1]);
     leavePatch(); for (const d of way) { if (!S.exp || S.exp.ending) break; mapStep(d); } if (S.exp && !S.exp.ending && S.exp.pos === goal) enterPatch(); }
   return JSON.stringify({ from, goal, steps: way.length, light: S.day.spent, at: S.exp ? S.exp.pos : null, phase: S.phase }); })()`;
