@@ -5760,6 +5760,23 @@ function ditherFill(x, y, w, h, col, level) {
   for (let ty = Math.floor(y / 64) * 64; ty < y + h; ty += 64) for (let tx = Math.floor(x / 64) * 64; tx < x + w; tx += 64) g.drawImage(cv, tx, ty);
   g.restore();
 }
+// The lamp's circle (night step 4, AD 11-23 18:48): the night ground as it is inside; outside, the same ground under a 50% ink dither (its shapes still there), round by pixel,
+// the dither growing from nothing to 50% over one tile at the rim (no rim line). cx, cy: the lamp on the screen; r: its reach; band: one tile. The overlay is the dither's ink pixels only.
+let LAMP = null;
+function lampCircle(cx, cy, r, band) {
+  const x0 = 0, y0 = VIEW_Y, w = SCR_W, h = VIEW_H, key = Math.round(cx) + ',' + Math.round(cy) + ',' + r;
+  if (!LAMP || LAMP.key !== key) {
+    const cv = LAMP ? LAMP.cv : document.createElement('canvas'); cv.width = w; cv.height = h;
+    const c2 = cv.getContext('2d'), img = c2.createImageData(w, h), u = new Uint32Array(img.data.buffer), hex = HEX[C.ink], ink = (255 << 24) | (parseInt(hex.slice(5, 7), 16) << 16) | (parseInt(hex.slice(3, 5), 16) << 8) | parseInt(hex.slice(1, 3), 16);
+    const lx = Math.round(cx), ly = Math.round(cy) - y0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const t = Math.min(1, Math.max(0, (Math.hypot(x + .5 - lx, y + .5 - ly) - (r - band)) / band));
+      if (t > 0 && BAYER[(y & 3) * 4 + (x & 3)] < t * 8) u[y * w + x] = ink;
+    }
+    c2.putImageData(img, 0, 0); LAMP = { key, cv };
+  }
+  g.drawImage(LAMP.cv, x0, y0);
+}
 function clipView() { g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip(); }
 function shakeOff() {
   const a = NOW - FX.hitAt; if (a < 0 || a > 260 || !motion()) return [0, 0];
@@ -6662,7 +6679,7 @@ function drawPatchBody(t) {
   const clockLv = clockLevel(lay);
   const clearLight = (tx, ty) => { if (overcast) return stormGrade(clockLv);
     if (darkW) { const cx = W(tx * ts + (ts >> 1)); return (darkLeft ? cx < darkW : cx > SCR_W - darkW) ? stormGrade(clockLv) : clockLv; } return clockLv; };
-  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; if (lampDark && !inS(tx, ty)) return 2; return clearLight(tx, ty); };
+  const tileLight = (tx, ty) => { if (lightAt) return lightAt(tx, ty); if (fogged && !inS(tx, ty)) return 3; return clearLight(tx, ty); };
   // (the approaching storm darkens whole tile columns on the side it comes from)
   const spriteRm = (x, y) => lightAt ? lightAt(x, y) : clockLv;
   const findRm = (x, y) => lightAt ? lightAt(x, y) : bakedView(lay) ? clearLight(x, y) : clockLv;   // things to act on (finds, marks, fruit, pods) take the world's storm grade, not a pasted full-colour sprite
@@ -6674,7 +6691,7 @@ function drawPatchBody(t) {
   const r = visTiles(v, cam);
   const sgGrid = new Map(), inSG = (x, y) => { const k = y * lay.w + x; let v = sgGrid.get(k); if (v === undefined) { v = inS(x, y); sgGrid.set(k, v); } return v; };
   // unveiled, per tile, read once per frame (off the place counts as unveiled, so edges never fade into the border)
-  const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= lay.w || y >= lay.h) return true; const k = y * lay.w + x; let v = uvGrid.get(k); if (v === undefined) { v = shown(x, y) && (!lampDark || inSG(x, y)); uvGrid.set(k, v); } return v; };
+  const uvGrid = new Map(), uvAt = (x, y) => { if (x < 0 || y < 0 || x >= lay.w || y >= lay.h) return true; const k = y * lay.w + x; let v = uvGrid.get(k); if (v === undefined) { v = shown(x, y); uvGrid.set(k, v); } return v; };
   const lvGrid = new Map(), lvAt = (x, y) => { const k = (y + 2) * 64 + x + 2; let v = lvGrid.get(k); if (v === undefined) { v = lightAt(x, y); lvGrid.set(k, v); } return v; };
   // eighth grids (48 px only): the place's tile far bits opened by eighthGrid, rebuilt only when the bits change, kept on the layout. Drawing only: built from
   // the rule's per-tile result, never fed back. For a tile, blockE gives its edge canvas key and the 16 masks of its eighths, or null when its 6 × 6 block is all near or all far.
@@ -6734,6 +6751,7 @@ function drawPatchBody(t) {
       if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
     g.drawImage(tileFor(i, L0 === 3).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
+  if (lampDark) lampCircle(RT.plScr.x, RT.plScr.y, (SIGHT_NIGHT + .5) * ts, ts);   // night step 4: the lamp's circle over the ground, before the creatures
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
   for (const f of lay.feats) {
