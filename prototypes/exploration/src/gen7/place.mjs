@@ -595,9 +595,11 @@ function windowOf(S, X, Y) {
     for (let i = 0; i < N; i++) {
       if (!PLAIN.has(t[i])) continue;
       const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), cx = Math.floor(gx / CW), cy = Math.floor(gy / CH), tx = gx - cx * CW, ty = gy - cy * CH;
-      if (inlandOf(gx, gy) < COAST_REACH || S.landC[clamp(cy, 0, RH - 1) * RW + clamp(cx, 0, RW - 1)] === L.WATER) continue;   // the coast band is its own; a tile of a water cell is no land's shore
+      if (inlandOf(gx, gy) < COAST_REACH) continue;   // the coast band is its own
+      const own = S.landC[clamp(cy, 0, RH - 1) * RW + clamp(cx, 0, RW - 1)] === L.WATER;   // a tile of a water cell: only its edge tile touching a land place is shore (AD on #141: no grass verge between the sea and the sand)
       const sides = [[tx, -1, 0, ty], [CW - 1 - tx, 1, 0, ty], [ty, 0, -1, tx], [CH - 1 - ty, 0, 1, tx]];   // [tiles from the edge, the neighbour's step, along]
       for (const [d, sx, sy, along] of sides) {
+        if (own) { const nx = cx + sx, ny = cy + sy; if (d === 0 && wideAt(cx, cy) && nx >= 0 && ny >= 0 && nx < RW && ny < RH && S.landC[ny * RW + nx] !== L.WATER) { t[i] = TV.SAND; break; } continue; }
         if (d > 2 || !wideAt(cx + sx, cy + sy)) continue;
         const band = 2 + (S.nS(Math.floor(along / 3) * 3 + 0.5, (sx + 2 * sy + 5) * 37 + cx * 11 + cy * 7) > 0.2 ? 1 : 0);   // 2 tiles, or 3 where the noise rises (a strip under 2 wide is taken back by the ground passes)
         if (d < band) { t[i] = TV.SAND; break; }
