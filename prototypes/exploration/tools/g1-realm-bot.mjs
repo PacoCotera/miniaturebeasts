@@ -129,10 +129,10 @@ export function measure(rows0) {
   const stillOf = days => { const st = [], miss = new Set(); for (const r of H) for (const d of r.days.slice(0, days)) for (const e of d.ev) if (e.noted) { st.push(e.still); if (e.still >= 3) miss.add(r.seed); } return { st, miss: [...miss].sort((a, b) => a - b) }; };
   for (const [nm, days] of [['keepStillDay1', 1], ['keepStillAllDays', 99]]) { const { st, miss } = stillOf(days);
     out[nm] = { habitsNoted: st.length, median: pct(st, .5), p80: pct(st, .8), mean: Math.round(10 * st.reduce((a, b) => a + b, 0) / Math.max(1, st.length)) / 10, line: 'median under three and p80 under three', pass: pct(st, .5) < 3 && pct(st, .8) < 3, seedsWithAHabitOfThreeOrMoreHolds: miss.length, seeds: miss.slice(0, 60) }; }
-  // line 2: range at the first note, and the best range per seed (probes; worth far 1, mid 2, near 3)
+  // line 2: range at the first note, and the best range per seed (probes; a note is worth 1, and 2 more when it fills the card's line, as g1-bot's worth)
   const first = { far: 0, mid: 0, near: 0 }; for (const r of H) for (const d of r.days) for (const n of d.notes) if (n.first) first[n.range]++;
-  const firstN = first.far + first.mid + first.near, rank = { far: 1, mid: 2, near: 3 }, bestOf = { far: 0, mid: 0, near: 0, tie: 0, none: 0 }, notNear = [];
-  const worth = (pol, seed) => { const r = by[pol].get(seed); return r ? r.days[0].notes.reduce((a, n) => a + rank[n.range], 0) : null; };
+  const firstN = first.far + first.mid + first.near, bestOf = { far: 0, mid: 0, near: 0, tie: 0, none: 0 }, notNear = [];
+  const worth = (pol, seed) => { const r = by[pol].get(seed); return r ? r.days[0].notes.reduce((a, n) => a + 1 + (n.filled ? 2 : 0), 0) : null; };
   const common = [...by.FAR.keys()].filter(s => by.MID.has(s) && by.NEAR.has(s)).sort((a, b) => a - b);
   for (const s of common) { const w = { far: worth('FAR', s), mid: worth('MID', s), near: worth('NEAR', s) }, m = Math.max(w.far, w.mid, w.near), wins = Object.keys(w).filter(k => w[k] === m), res = m === 0 ? 'none' : wins.length === 1 ? wins[0] : 'tie'; bestOf[res]++; if (res !== 'near') notNear.push(s + ':' + res); }
   const uniq = bestOf.far + bestOf.mid + bestOf.near, bestShare = Math.max(bestOf.far, bestOf.mid, bestOf.near) / Math.max(1, uniq);
