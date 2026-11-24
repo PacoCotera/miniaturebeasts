@@ -7180,6 +7180,15 @@ function podSlot(x, y, pod) {
 const STATUS_W = 30;
 // The part of day in the top bar: the art director's six signed 14 px pictures (art/day-dial/frames/), drawn as the files came, never redrawn. Until they load (or if they fail) the sun stands.
 const DAY_PARTS = ['dawn', 'morning', 'midday', 'afternoon', 'dusk', 'night'], DAY_ART = {}, DAY_DIM = {};
+let LOG_SKETCH = null;   // the Log's sketch of a met Loika: her signed 48 x 48 base cut (art/ui/log-sketch-loika-48.png, the file as signed in ui/assets/masters/pods/mibi-adult-S01-48x48.png)
+async function loadLogSketch() {
+  try {
+    if (typeof Image === 'undefined') return;
+    fileOwe(1); const px = await pixelsOf(vurl(new URL('./art/ui/', location.href).href + 'log-sketch-loika-48.png'));
+    if (px.width !== 48 || px.height !== 48) throw new Error('log sketch');
+    const c = document.createElement('canvas'); c.width = 48; c.height = 48; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, 48, 48), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0); LOG_SKETCH = c; fileGot();
+  } catch (e) { LOG_SKETCH = null; console.warn('the Log sketch did not load; the slot stays empty', e); }
+}
 async function loadDayArt() {
   try {
     if (typeof Image === 'undefined') return;
@@ -7813,7 +7822,9 @@ function menuIcon(id, x, y) {
   else if (id === 'mibis') blit(art('m-comp', () => { const pb = new PB(28, 28); pb.ell(14, 18, 8, 6.5, C.slate); for (const [a, b] of [[5, 9], [11, 5], [17, 5], [23, 9]]) pb.ell(a, b, 3, 3.2, C.slate); return pb; }), x, y);
   else if (id === 'wait') blit(art('m-wait', () => { const pb = new PB(28, 28); pb.ell(14, 14, 12.5, 12.5, C.bone, { sh: [C.white, C.fog] }); pb.line(14, 14, 14, 6, C.ink, 2); pb.line(14, 14, 19, 17, C.ink, 2); pb.outline(() => C.stone); return pb; }), x, y);
   else if (id === 'leave' || id === 'next') blit(art('m-leave', () => { const pb = new PB(28, 28); pb.poly([[4, 14], [14, 4], [14, 10], [24, 10], [24, 18], [14, 18], [14, 24]], C.sky); pb.outline(() => C.sea); return pb; }), x, y);
-  else if (id === 'log') { /* [art] the Log row's icon: a named empty slot, drawn by the art desk */ }
+  else if (id === 'log') blit(art('m-log', () => { const pb = new PB(28, 28);   // a small closed notebook, three-quarter front: bone paper block, clay spine on the left, the page's peach margin line, two sand ruled lines, a stone outline
+    pb.rect(3, 3, 20, 22, C.bone); pb.rect(23, 5, 2, 21, C.sand); pb.rect(5, 25, 20, 1, C.sand); pb.rect(3, 3, 5, 22, C.clay); pb.rect(11, 5, 1, 18, C.peach);
+    pb.rect(14, 10, 7, 1, C.sand); pb.rect(14, 16, 7, 1, C.sand); pb.outline(() => C.stone); return pb; }), x, y);
   else blit(art('m-world', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.grass, { sh: [C.sprout, C.leaf] }); pb.ell(18, 18, 7, 6, C.river, { clip: (x2, y2) => Math.hypot(x2 + .5 - 14, y2 + .5 - 14) < 13 }); pb.outline(); return pb; }), x, y);
 }
 function drawMenu(t) {
@@ -7884,7 +7895,7 @@ function drawLog() {
       L.ls.forEach((l, j) => text(l, 68, y + 26 + j * 24, ink));
       if (r.kind === 'prints') { blitScaled(ICON.paw('clay'), 372, y + 10, 2); blitScaled(ICON.paw('bark'), 396, y + 22, 2); blitScaled(ICON.paw('bark'), 380, y + 40, 2); }   // the map's own paw sign at 2x
       else if (r.kind === 'find' && r.item === 'tuft') { R(380, y + 22, 48, 40, C.bone); R(392, y + 16, 24, 10, C.sand); R(392, y + 16, 24, 1, C.clay); blitScaled(ICON.tuft(), 390, y + 34, 2); }   // the find's own picture at 2x, on a slip
-      /* met: her sketch's 48 x 48 slot at (378, y + 8) stays empty: [art] */
+      else if (r.kind === 'met' && LOG_SKETCH) g.drawImage(LOG_SKETCH, 378, y + 8);   // her signed 48 x 48 game cut at 1x (the kind's base: the log row keeps no coat)
       y += L.h;
     }
   }
@@ -9129,6 +9140,7 @@ const startLoads = () => {
   loadMomentArt();   // the art desk's painted stands for the care moments
   loadCareArt();   // the pixel desk's painted hearts for the bond
   loadWaterEdgeArt();   // the art director's signed shallow-to-deep edge pieces (owner #110)
+  loadLogSketch();
   loadDayArt();   // the six part-of-day pictures for the top bar
   loadPlaces();   // the places kit: the tile set, the terrain layers and the edge veil that generator 7's cells are drawn with
 };
