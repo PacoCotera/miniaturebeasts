@@ -63,3 +63,21 @@ test("(c) the start radius varies round the hero, never clears into fog on the i
   assert.ok(maxJump <= 3, "smooth: " + maxJump);
   assert.equal(V.fogWobble(-Math.PI, E.seed), V.fogWobble(Math.PI, E.seed), "no seam where the angle wraps");
 });
+
+test("(d) the fog band dithers at the storm band's dot size: one 4 x 4 Bayer cell per world pixel (period 4 in x and y, same matrix), on every pixel", () => {
+  // both edges, over a 16 x 16 block of world pixels at a mid-band depth: a pixel is dotted exactly when BAYER4[(y&3)*4 + (x&3)] * BAND < depth * 16 (the page's baked and generated paths both call these)
+  const darkW = 200, seed = 5;
+  for (let py = 96; py < 112; py++) for (let px = 500; px < 516; px++) {
+    const e = { cx: 0, cy: py, r: 1e7, seed }, fx = Math.round(e.r + V.fogWobble(0, seed) + 60);   // a pixel 60 px past the start (half the 120 px band) on the pixel's own row
+    const dF = V.fogDepth(fx, py, e), bayF = V.BAYER4[(py & 3) * 4 + (px & 3)];
+    // the fog pixel's x sets the depth, so compare the lookup on the same cell: shift the pixel by whole cells (multiples of 4) in x and y, the answer is the same
+    assert.equal(V.fogBandHit(fx, py, e), V.fogBandHit(fx, py, { ...e, cy: py + 0 }));
+    assert.equal(V.fogBandHit(fx, py + 4, { ...e, cy: py + 4 }), V.fogBandHit(fx, py, e), "period 4 in y");
+    assert.equal(V.fogBandHit(fx, py, e), V.BAYER4[(py & 3) * 4 + (fx & 3)] * V.FOG_BAND_PX < dF * 16, "fog: the Bayer cell indexes by the pixel (x&3, y&3)");
+    const dS = V.stormBandDepth(darkW + V.stormWobble(py, seed) - 72, py, darkW, seed);   // 72 px inside the 144 px storm band (half)
+    assert.equal(V.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px, darkW, seed), bayF * V.BAND_PX < dS * 16, "storm: the same indexing");
+    assert.equal(V.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px + 4, darkW, seed), V.stormBandHit(darkW + V.stormWobble(py, seed) - 72, py, px, darkW, seed), "period 4 in x");
+  }
+  // one matrix, 4 x 4
+  assert.equal(V.BAYER4.length, 16);
+});
