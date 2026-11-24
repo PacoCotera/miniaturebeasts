@@ -20,7 +20,7 @@ export function los(env, a, b) {
 export function carryAt(env, from, x, y, gait, wary = 0, sp) {
   return carryOf({ gait, ground: env.ground(x, y), wind: windRow(env.wind, from, { x, y }), rain: !!env.rain, fog: !!env.fog, wary, partner: sp == null ? 0 : partnerCost(sp) });
 }
-export const heardAt = (env, from, x, y, gait, wary = 0) => cheb({ x, y }, from) <= carryAt(env, from, x, y, gait, wary).v && los(env, { x, y }, from);
+export const heardAt = (env, from, x, y, gait, wary = 0) => { const v = carryAt(env, from, x, y, gait, wary).v, dx = x - from.x, dy = y - from.y; return dx * dx + dy * dy <= v * v && los(env, { x, y }, from); };   // round, like the drawn carry ring (radius v tiles from the tile's centre)
 export const stayAt = (env, from, x, y, wary = 0) => Math.max(0, STAY - 2 * carryAt(env, from, x, y, 'creep', wary).v);
 
 // the wind of a land for a part of day, from the realm seed: steady through a part, it may turn at the next (the day strip shows it). A tiny hash of its own, so the land's freeze is untouched.

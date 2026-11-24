@@ -126,6 +126,8 @@ WORDS.w5 = {
 // [copy] the wind of the land, said in the bottom line's conditions slot until the art director signs a mark (rule 18): it blows toward the named way
 WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the south', W: 'wind to the west' };
 WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
+// [copy] WORKING WORDS (W6a): the target line in the walk's top row: her name, the place she was last seen in, and the way to it (NE; "here" when it is where the explorer stands). The copywriter's job replaces them.
+WORDS.target = { line: (name, where, dir) => [name, where, dir ? (dir === 'here' ? 'here' : dir.toUpperCase()) : ''].filter(Boolean).join(' · ') };
 
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
 // Pure: the page and the bots read the same table.
