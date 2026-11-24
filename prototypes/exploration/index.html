@@ -3880,6 +3880,16 @@ function dig() {
 const DIG_MS = 900;
 function digDone() { const ex = S && S.exp; if (!ex || !ex.caveDue) return; delete ex.caveDue; FX.dig = null; if (ex.patch) enterCave(); }
 
+// owner note 156 (#156-2): a named one in view is named at once (S.named, S.metIds, the Log's met), on entering a place and whenever the view is drawn, not only after an action
+function nameInSight() {
+  const ex = S && S.exp, P = ex && ex.patch; if (!P) return;
+  const live = ex.live && ex.live[P.key]; if (!live || !live.cr) return;
+  for (const c of live.cr) {
+    if (!c.ind || c.hide || Math.abs(c.x - P.x) > 6 || Math.abs(c.y - P.y) > 7 || !inSight(c.x, c.y)) continue;
+    const nm = S.named || (S.named = {});
+    if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); }
+  }
+}
 function patchTick(info) {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key];
   const raining = !lay.cave && stormRain(lay.cell % MW);
@@ -8820,7 +8830,7 @@ function renderFrame(t) {
     case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
       if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
-    case 'patch': if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
+    case 'patch': nameInSight(); if (WARM.cold && warmLanding()) { drawHUD(); drawSwap(); break; }   // entered before the land was warm: built a step a frame, the controls live
       if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'log': drawLog(); break;
