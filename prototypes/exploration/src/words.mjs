@@ -100,17 +100,17 @@ WORDS.habit = {
   range: { far: 'from far', mid: 'from mid range', near: 'from near' },
   sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
 };
-// [copy] W6b: the watch view and the field card (picture 04 and 05, the rule gives by range): working words for the copywriter.
+// [copy] signed 11-24 (the editor, bus 20c7828214): the watch view and the field card (picture 04 and 05, the rule gives by range).
 WORDS.watch = {
   head: name => 'Watching ' + name,
   tiles: n => n + (n === 1 ? ' tile' : ' tiles'),
-  gives: { shape: 'the shape only', place: 'where she goes', coat: 'her coat', face: 'her face and the keepsake' },
-  strip: (habit, n) => habit + '|beat ' + n + ' of 4', tell: 'the tell',
-  note: 'Note', leave: 'leave', nearer: 'nearer',   // the bottom line: ✓ Note, ← leave, ▲▼ nearer
-  card: 'Field note', keep: 'Keep', back: 'watch', data: '+1 Data',
-  sampleTaken: item => 'A ' + item + ' for the Station', sampleNone: 'No sample', sampleCome: 'come within 2 tiles to take one',
-  onPage: name => 'on ' + name + '’s page',
-  cardLine: 'the note, in the Log',
+  gives: { shape: 'only her shape from here', place: 'where she goes', coat: 'her coat', face: 'her face, and a sample' },
+  strip: (habit, n) => habit + '|' + n + ' of 4', tell: 'the sign',
+  note: 'Note', leave: 'leave', nearer: 'closer',   // the bottom line: ✓ Note, ← leave, ▲▼ closer
+  card: 'Field note', keep: 'Keep', back: 'back to her', data: '+1 Data',
+  sampleTaken: item => 'You took a ' + item + ' · it goes home in the Case', sampleNone: 'No sample', sampleCome: 'get within 2 tiles for a sample',
+  onPage: name => 'on ' + name + '’s page',   // unused: her page is W6c; never shown until it exists (owner bug #118)
+  cardLine: 'Kept in the Log',
 };
 // [copy] W4 round 2: her prints at a haunt she has left (walk-design-1 3A): working words for the copywriter. The message says when she was there; the label is the ✓ at the prints.
 WORDS.prints = {

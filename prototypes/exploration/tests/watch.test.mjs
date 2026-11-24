@@ -23,9 +23,9 @@ test("the pose of each beat: shake-dry shakes for three beats and stands, calm s
 test("the chip says the range, the tiles and what this range gives now", () => {
   assert.equal(chipOf({ range: "mid", tiles: 4, gives: givesNow("mid", true, true), left: null }).text, "mid · 4 tiles · her coat");
   assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", true, true), left: null }).text, "far · 7 tiles · where she goes");
-  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", false, true), left: null }).gives, "the shape only", "rain or fog");
-  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", true, false), left: null }).gives, "the shape only", "from dusk");
+  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", false, true), left: null }).gives, "only her shape from here", "rain or fog");
+  assert.equal(chipOf({ range: "far", tiles: 7, gives: givesNow("far", true, false), left: null }).gives, "only her shape from here", "from dusk");
   const near = chipOf({ range: "near", tiles: 1, gives: givesNow("near", true, true), left: 6 });
-  assert.equal(near.tiles, "1 tile"); assert.equal(near.stay, "stay 6"); assert.equal(near.text, "near · 1 tile · her face and the keepsake · stay 6");
-  assert.equal(giveWords([]), "the shape only");
+  assert.equal(near.tiles, "1 tile"); assert.equal(near.stay, "stay 6"); assert.equal(near.text, "near · 1 tile · her face, and a sample · stay 6");
+  assert.equal(giveWords([]), "only her shape from here");
 });
