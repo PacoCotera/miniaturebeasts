@@ -1850,6 +1850,13 @@
    "sha256": "837306db3d923bde3e9adb2dd550188b295a479e1c50902c804038f560fa2073"
   },
   {
+   "class": "recolour-of-signed",
+   "date": "2026-11-24",
+   "id": "f05affb803",
+   "path": "art/places/sets/ninja-test/over-grass-flat-top.png",
+   "sha256": "bd0665fb6169b4e25884a72a60e29403eb50ca1855be0bbe61621e0720d7d39d"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "6c7ece4447",
