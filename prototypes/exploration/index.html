@@ -3045,6 +3045,7 @@ function patchStepRun(dir, mode) {
   const x = P.x + dx, y = P.y + dy;
   if (x < 0 || y < 0 || x >= layout(key).w || y >= layout(key).h) {
     STEP_WHY = 'edge'; if (layout(key).cave) { if (mode === 'walk') stopRepeat(); return; }
+    { const lay = layout(key); if (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[dir])) { STEP_WHY = 'rim'; if (mode === 'walk') stopRepeat(); FX.bumpAt = NOW; fxMsg(WORDS.block.rock); return; } }   // the step off the place across a drawn rim line at its edge is refused too, not only the steps inside (owner note #146: a ring cell at the edge walked out through the cliff's side line)
     const bump0 = FX.bumpAt; crossEdge(dir);   // an open edge crosses on the first press, held or tapped: no "tap again" (owner note #84); a refused one (cliff, water) bumps and keeps the peek
     if (mode === 'walk' && FX.bumpAt !== bump0) stopRepeat();
     return; }
