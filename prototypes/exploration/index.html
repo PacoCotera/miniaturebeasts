@@ -4607,14 +4607,18 @@ function nearestCore(r, g, b, n = PALETTE.length) { let best = 0, bd = 1e9; for 
 buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const NIGHT = [];   // the night table (owner bug #113), over every colour in play: rebuilt with them (buildNight)
-const REMAP = [null, DARK, DARK2, FOGLUT, FADE, NIGHT, DARK];   // 5: the clock's night, the night table; 6: the clock's dusk, the one-step dark table. Dusk is a level of its own: at 48 px the place's storm table steps the greens as far as dark2, so dusk through it drew the same land as night
+const DUSK = [];   // the clock's dusk (6): the one-step dark table with a flat warm lean, each colour a palette colour already (buildDusk)
+const REMAP = [null, DARK, DARK2, FOGLUT, FADE, NIGHT, DUSK];   // 5: the clock's night, the night table; 6: the clock's dusk, the one-step dark table. Dusk is a level of its own: at 48 px the place's storm table steps the greens as far as dark2, so dusk through it drew the same land as night
 const stormGrade = lv => lv === 6 ? 1 : Math.max(1, lv);   // under a storm the land takes the storm table, a dusk or night clock never lighter than it
 // The place view's own set at 48 px: a biome palette may override the storm, fog and fade tables (they default to the core's).
 const PLACE_STORM = DARK.slice(), PLACE_FOG = FOGLUT.slice(), PLACE_FADE = FADE.slice();
-const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, NIGHT, DARK];
+const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, NIGHT, DUSK];
 // The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
-const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, NIGHT, DARK];
-const buildNight = () => { NIGHT.length = 0; NIGHT.push(...nightTable(RGB)); PT.ts = null; };   // (PT.ts null: the props' set-space table is read again)
+const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, NIGHT, DUSK];
+const buildNight = () => { NIGHT.length = 0; NIGHT.push(...nightTable(RGB)); PT.ts = null; buildDusk(); };   // (PT.ts null: the props' set-space table is read again)
+// The dusk table: each colour's one-step dark (the signed dusk table) leaned 18% toward the dark table's amber, then the nearest palette colour: a flat warm tone shift, no dither, no colour outside the palette (dusk-mesh-fix-2).
+const DUSK_LEAN = 0.1;
+function buildDusk() { DUSK.length = 0; const w = RGB[DARK[C.amber]]; for (let i = 0; i < RGB.length; i++) { const d = RGB[DARK[i]]; DUSK.push(nearestPal(d[0] + (w[0] - d[0]) * DUSK_LEAN, d[1] + (w[1] - d[1]) * DUSK_LEAN, d[2] + (w[2] - d[2]) * DUSK_LEAN, i < FIRST_N ? FIRST_N : RGB.length)); } }
 buildNight();
 REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };
