@@ -35,7 +35,7 @@ function layersToTileIds(dg, ts, desc) {
   });
 }
 // art/gen7/layers.json's { layers: [[value, descriptor]], tone } as the dual grid takes it (the lowers back to Sets)
-export const reviveLayers = j => ({ layers: new Map(j.layers.map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: new Set(k.lowers) })) }])), tone: j.tone });
+export const reviveLayers = j => ({ layers: new Map(j.layers.map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: new Set(k.lowers), ...(k.mix ? { mix: { sw: new Set(k.mix.sw), se: new Set(k.mix.se) } } : {}) })) }])), tone: j.tone });
 
 // ctx: { terrains, ts (the baked tile set), desc (reviveLayers' output) }. Returns the Place object the page reads (not serialised).
 export function bakeCell(ir, ctx) {

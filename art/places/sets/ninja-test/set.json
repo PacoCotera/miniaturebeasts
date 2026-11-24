@@ -163,6 +163,26 @@
           "kind": "flat",
           "lowers": ["earth", "sand", "mud", "path"],
           "sheets": ["over-grass-flat.png"]
+        },
+        {
+          "kind": "bank-end-w",
+          "late": true,
+          "lowers": [],
+          "mix": {
+            "sw": ["deep", "water"],
+            "se": ["sand"]
+          },
+          "sheets": ["over-grass-bank-end-w.png"]
+        },
+        {
+          "kind": "bank-end-e",
+          "late": true,
+          "lowers": [],
+          "mix": {
+            "sw": ["sand"],
+            "se": ["deep", "water"]
+          },
+          "sheets": ["over-grass-bank-end-e.png"]
         }
       ]
     },

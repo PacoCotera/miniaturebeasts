@@ -87,7 +87,7 @@ export function layerRows(set) {
   const rows = [], layers = set.layers || {};
   for (const [id, l] of Object.entries(layers)) {
     if (l.fill) rows.push({ type: 'fill', terrain: id, sheets: l.fill.sheets });
-    (l.over || []).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));
+    (l.over || []).filter((k) => !k.late).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));
   }
   for (const [id, l] of Object.entries(layers)) {
     for (const k of l.over || []) {
@@ -100,6 +100,7 @@ export function layerRows(set) {
   if (set.tone) rows.push({ type: 'tone', terrain: 'tone', sheets: set.tone.sheets });
   if (set.tone && set.tone.raised) rows.push({ type: 'toneraised', terrain: 'tone', sheets: [set.tone.raised] });   // the tone on the raised ground, a sheet of its own
   if (set.litterTop) { rows.push({ type: 'littertop', part: 'over', terrain: 'litter', sheets: [set.litterTop.over] }); rows.push({ type: 'littertop', part: 'fill', terrain: 'litter', sheets: [set.litterTop.fill] }); }   // the raised litter top: over cases, then fill variants (cells 1 to 3)
+  for (const [id, l] of Object.entries(layers)) (l.over || []).filter((k) => k.late).forEach((k) => rows.push({ type: 'over', terrain: id, kind: k.kind, sheets: k.sheets || [] }));   // `late` kinds (bug #131 bank ends): last, so no earlier row or tile id moves
   return rows;
 }
 
@@ -121,7 +122,8 @@ export function layerDescriptors(loaded, terrains) {
       const variants = mine('variant'); if (variants.length) r.variants = variants.map(([, i]) => i);
       const back = mine('back'); if (back.length) r.back = { row: back[0][1], slots: Object.keys(back[0][0].slots).map(Number) };
       const wayup = mine('wayup'); if (wayup.length) r.wayup = Object.fromEntries(wayup.map(([row, i]) => [row.lower, i]));
-      return { kind: k.kind, lowers: new Set(k.lowers.map((x) => val(x, `${id}/${k.kind} lowers`))), fullCount: k.full ? loaded.png(k.full).w / set.sourceTile : 0, rows: r };
+      const mix = k.mix ? { sw: new Set((k.mix.sw || []).map((x) => val(x, `${id}/${k.kind} mix`))), se: new Set((k.mix.se || []).map((x) => val(x, `${id}/${k.kind} mix`))) } : undefined;
+      return { kind: k.kind, lowers: new Set(k.lowers.map((x) => val(x, `${id}/${k.kind} lowers`))), ...(mix ? { mix } : {}), fullCount: k.full ? loaded.png(k.full).w / set.sourceTile : 0, rows: r };
     });
     layers.set(value, {
       z: byId.get(id).z, fillCount: l.fill ? loaded.png(l.fill.sheets[0]).w / set.sourceTile : 0, fillRow: at((x) => x.type === 'fill' && x.terrain === id), kinds,

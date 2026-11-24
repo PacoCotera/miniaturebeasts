@@ -12,7 +12,7 @@ for (const [a, b] of JSON.parse(readFileSync(new URL('../../../art/places/sets/n
   const [hi, lo] = z.get(va) > z.get(vb) ? [va, vb] : [vb, va];
   if (!desc.layers.get(hi)?.kinds.some(k => k.lowers.has(lo))) throw new Error(`groundPairs: ${name.get(hi)} has no edge over ${name.get(lo)} in the set's layers`);
 }
-const out = { set: SET, layers: [...desc.layers].map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: [...k.lowers] })) }]), tone: desc.tone };
+const out = { set: SET, layers: [...desc.layers].map(([v, l]) => [v, { ...l, kinds: l.kinds.map(k => ({ ...k, lowers: [...k.lowers], ...(k.mix ? { mix: { sw: [...k.mix.sw], se: [...k.mix.se] } } : {}) })) }]), tone: desc.tone };
 mkdirSync(new URL('../art/gen7/', import.meta.url), { recursive: true });
 writeFileSync(new URL('../art/gen7/layers.json', import.meta.url), JSON.stringify(out) + '\n');
 console.log('layers', out.layers.length);

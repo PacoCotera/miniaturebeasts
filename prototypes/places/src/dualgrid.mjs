@@ -115,7 +115,9 @@ export function terrainLayers(level, terrains, layers, tone = null) {
       }
       const lowers = ec.filter((c) => z(c) < zT);
       for (const c of lowers) if (!d.kinds.some((k) => k.lowers.has(c))) throw new DualGridError('no-edge', `${id}: ${cellName(i, j)}: ${byValue.get(T).id} has no edge over ${byValue.get(c).id}`, { level: id, cell: { i, j }, terrains: [byValue.get(c).id, byValue.get(T).id] });
-      const kind = d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
+      // grass above, one lower under each bottom corner (water one side, sand the other): the kind whose `mix` names that pair, a bank end that turns into the sand edge (#131); else the first kind holding any lower
+      const mixed = mask === (NW | NE) ? d.kinds.findIndex((k) => k.mix && k.mix.sw.has(ec[2]) && k.mix.se.has(ec[3])) : -1;
+      const kind = mixed >= 0 ? mixed : d.kinds.findIndex((k) => lowers.some((c) => k.lowers.has(c)));
       layerOf(T)[idx] = KIND_STRIDE * kind + mask;
     }
     if (toneLayer) {
