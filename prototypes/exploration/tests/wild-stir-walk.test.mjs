@@ -50,3 +50,22 @@ test("heard, or the stay counting: no stir", () => {
   assert.equal(run(1), 0, "heard: no stir");
   assert.equal(run(2), 0, "stay counting: no stir");
 });
+
+// Round 4 (designer, bus 07b13c410b): she stirs only while more than three tiles outside the real hearing ring, at ease 0; ease 3 (gone) never stirs.
+test("ring+3 and ease 3: no stir inside ring+3, stir beyond it, gone never", () => {
+  const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
+  p.store[p.KEY] = raw;
+  const q = makePage({ gen: 7, store: { ...p.store }, console: "collect", els: true, canvas: true, raf: "count" });
+  // off: the explorer's distance from her; ease: her ease; returns how many of 90 actions stirred some Loika in sight
+  const run = (off, ease) => q.run(`(() => { const ex = S.exp, live = curLive(), P = ex.patch; let n = 0;
+    const X = Object.assign({ lay: curLay(), live, key: P.key, P, carry: ex.carry, ease: easeEnvOf(curLay(), false, false), noise: 'walk', moved: true, away: () => false }, ptCtx());
+    for (let a = 0; a < 90; a++) { ex.actions = 1000 + a;
+      for (const c of live.cr) { if (c.sp !== 0 || c.hide || !inSight(c.x, c.y)) continue; c.st = 'idle'; c.ease = ${ease}; c.crowd = 0;
+        X.P = { x: c.x + ${off}, y: c.y, key: P.key };
+        const bx = c.x, by = c.y; stirStep(c, X, bx, by); if (c.x !== bx || c.y !== by) n++; } }
+    return n; })()`);
+  assert.ok(run(9, 0) > 0, "control: ease 0 far beyond ring+3 stirs on a walk step");
+  assert.equal(run(1, 0), 0, "inside ring+3: no stir");
+  assert.equal(run(3, 0), 0, "three tiles off: still inside ring+3");
+  assert.equal(run(9, 3), 0, "ease 3 (gone) never stirs");
+});
