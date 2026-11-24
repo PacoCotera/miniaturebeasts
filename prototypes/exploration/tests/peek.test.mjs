@@ -228,9 +228,11 @@ for (const how of ["never walked (a fresh game)", "visited, with no veil record 
           delete m.S.veilPre?.[k]; delete m.S.veil[k]; if (visited) m.S.visited[k] = 1; else delete m.S.visited[k]; m.S.revealed[k] = 0; m.RT.view = null; return k; }, [side, visited]);
         if (nb == null) continue;
         await page.waitForTimeout(1600);   // the last peek ended, the place next door is made
-        await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });
-        assert.equal((await st(page)).view, "peek", side + ": a quick Call at the edge opens the peek");
-        await page.waitForTimeout(700);
+        await page.evaluate(() => { window.__mb.press("call"); window.__mb.release("call"); });   // a short Call: the Call only (owner #143), it lifts the strip next door
+        assert.equal((await st(page)).view, null, side + ": a short Call at the edge stays in the walking view");
+        await page.waitForTimeout(300);
+        await page.evaluate(() => window.__mb.press("call")); await page.waitForTimeout(700);   // a long press: the zoom-out, which must draw that strip
+        assert.equal((await st(page)).view, "peek", side + ": a long press at the edge opens the peek");
         const lifted = await still(page);
         assert.equal(await page.evaluate((k) => !!(window.__mb.S.veilPre && window.__mb.S.veilPre[k]) && !!window.__mb.S.revealed[k], nb), true, side + ": the place next door is lifted and its map cell revealed");
         await page.evaluate((k) => { delete window.__mb.S.veilPre[k]; }, nb);
@@ -239,6 +241,7 @@ for (const how of ["never walked (a fresh game)", "visited, with no veil record 
         const bare = await still(page);
         const box = diffBox(lifted, bare);
         assert.ok(box && box.w >= 12 && box.h >= 12, side + ": the lifted strip is drawn next door (differs from the peek without it), got " + JSON.stringify(box));
+        await page.evaluate(() => window.__mb.release("call"));
         tested.push(side);
       }
       assert.ok(tested.length >= 2, "at least two edges have land next door in this world, got " + tested);
