@@ -107,6 +107,9 @@ function playSeed(seed, pol) {
     p.run(`newWorld(${seed}); startExpedition('weather', G.spawns[0]);`);
     const pick = JSON.parse(p.run(FIND)); if (!pick) { row.skip = "no Loika"; return row; }
     p.run(`S.known = [0, ...S.known.filter(k => k !== 0)];`);
+    // The realm's card asks her coat first, then her face, then where she goes (habits.mjs wantOf), so a fresh Loika's day-1 card is always the coat and only the mid stand fills it.
+    // The probes (FIXED) play the card a Loika is on at day 1 + seed mod 3, so the three cards are all met across the seeds (the model draws each card's want at random).
+    if (FIXED[pol] && !process.argv.includes("--day1-card")) { const st = seed % 3; p.run(`(() => { const id = ${JSON.stringify(pick.id)}, H = S.habits || (S.habits = {}); for (const k of ['shake', 'calm', 'sleep']) { const r = (H[id] || (H[id] = {}))[k] = { ranges: {}, got: {}, best: null, plays: 0, sample: null, sights: 0 }; if (${st} >= 1) r.got.coat = 1; if (${st} >= 2) r.got.face = 1; } })()`); }
     const nDays = pol === 'HONEST' ? DAYS : 1;
     for (let day = 1; day <= nDays; day++) {
       p.run(NEWDAY(pick.key, day));
