@@ -7243,9 +7243,9 @@ async function loadDayArt() {
   } catch (e) { for (const n of DAY_PARTS) { delete DAY_ART[n]; delete DAY_DIM[n]; } console.warn('the part-of-day pictures did not load; the sun stands', e); }
 }
 // W6a (Release B): the art director's signed HUD frames (art/hud/), drawn whole with drawImage at 1x as the files came: never redrawn or recoloured. Until they load nothing of W6a shows.
-//   light-lit0..6 / light-spend1..6 (74 x 14, the top bar's light), ring-<tiles>-<26|48>-<f0|f1|f2|heard> (the carry ring), target-dir-<n|ne|e|se|s|sw|w|nw|here>-<seen|last> (the target line's arrow)
+//   ring-<tiles>-<26|48>-<f0|f1|f2|heard> (the carry ring), target-dir-<n|ne|e|se|s|sw|w|nw|here>-<seen|last> (the target line's arrow). The HUD light strip was cut (owner 11-22: one clock only; the day bar is the clock).
 const HUD_DIRS = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'here'];
-const HUD_NAMES = [...[0, 1, 2, 3, 4, 5, 6].map(i => 'light-lit' + i), ...[1, 2, 3, 4, 5, 6].map(i => 'light-spend' + i),
+const HUD_NAMES = [
   ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(t => [26, 48].flatMap(z => ['f0', 'f1', 'f2', 'heard'].map(f => 'ring-' + t + '-' + z + '-' + f))),
   ...['seen', 'last'].flatMap(k => HUD_DIRS.map(d => 'target-dir-' + d + '-' + k))];
 const HUD_ART = {}, HUD = { ok: false };
@@ -7257,20 +7257,9 @@ async function loadHudArt() {
       const c = document.createElement('canvas'); c.width = px.width; c.height = px.height; c.getContext('2d').drawImage(await createImageBitmap(new ImageData(px.data, px.width, px.height), { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }), 0, 0);
       HUD_ART[n] = c; fileGot(); })));
     HUD.ok = true;
-  } catch (e) { for (const n of HUD_NAMES) delete HUD_ART[n]; HUD.ok = false; console.warn('the W6a HUD frames did not load; the light, the ring and the target line stay out', e); }
+  } catch (e) { for (const n of HUD_NAMES) delete HUD_ART[n]; HUD.ok = false; console.warn('the W6a HUD frames did not load; the ring and the target line stay out', e); }
 }
-// The HUD light (W6a): the part of day the light spent falls in, part i of DAY.parts: lit(6 - i) at rest; spend(6 - i) for one beat (HUD_BEAT ms) after an act that spent light; lit0 once the day's light is spent. [copy] none: a picture.
-const HUD_BEAT = 500, LIGHT_W = 74, LIGHT_H = 14, LIGHT_SPEND = { last: null, at: -1e9, part: 0 };
-function lightFrame(spent, nowMs) {
-  const L = LIGHT_SPEND, s = Math.max(0, spent | 0), idx = p => Math.max(0, DAY.parts.findIndex(([n]) => n === p));
-  if (L.last != null && s > L.last) { L.at = nowMs; L.part = idx(partOfDay(L.last)); }   // light was spent: the part the first spent light belonged to goes half dark for a beat
-  L.last = s;
-  if (s >= DAY.light) return 'light-lit0';
-  if (nowMs - L.at < HUD_BEAT) return 'light-spend' + (6 - L.part);
-  return 'light-lit' + (6 - idx(partOfDay(s)));
-}
-function drawLight(x, y) { const im = HUD_ART[lightFrame(S.day.spent, NOW)]; if (im) g.drawImage(im, x, y); }
-const lightOn = () => HUD.ok && !!S.day;
+const HUD_BEAT = 500;   // how long the carry ring shows its heard frame
 // The day bar (owner 11-23): a window on a looping strip of the six signed pictures. 1 px per 3 light (K = 200 / DAY.light: the loop stays 200 px), so the picture under the fixed marker is dayPart() and the next one enters the right end ~75 light before the change.
 // Each action glides the strip its true spent distance (ease-out cubic, 260 ms; n actions min(600, 260+16(n-1)); Wait 450 ms; forward only, mod the loop); reduced motion is instant; nothing moves when idle.
 const DB = { W: 64, K: 200 / DAY.light, pos: null, from: 0, tgt: 0, t0: 0, dur: 0, last: 0, wait: 0, ease: t => 1 - Math.pow(1 - t, 3) };   // W: glass width, K: px per light
@@ -7387,7 +7376,6 @@ function drawHUD() {
   const lvl = 0, fogW = 0, stormW = 0;   // conditions (storm, fog bank) live on the bottom line now
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
-  if (lightOn()) { rx -= LIGHT_W; drawLight(rx, 9); rx -= 4; }   // W6a: the light, left of the counters (the partner's name gives way first)
   if (S.phase === 'patch' && WARM.queue.length && !WARM.cold && !document.hidden && TEST.clock == null && TEST.at == null) { drawProbePulse(rx - 8, 16); rx -= 18; }   // the Probe is reading the next places (note 19; words: PROBE_READING_TEXT, placed by the copywriter)
   // docked mid-expedition: the chip after the pods and crate count (the crate count gives way when it would not fit); the partner moves after it
   const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
@@ -8651,9 +8639,9 @@ function placeStormWords(c) {
   const q = stormGap(st, c); return q.in ? 'in the storm' : q.behind ? 'storm moving away' : q.actions === 1 ? 'storm here in 1 action' : 'storm here in ' + q.actions + ' actions';
 }
 // The part of day, in words, in the bottom line's middle while an expedition is out ("morning · Meadow · ..."); each longer form first, the day alone last before the old forms (walk W1, until the HUD's light is drawn).
-// W6a: the HUD's light (the top bar) replaces the day words here; the bottom line's middle is the place alone. Until the light's frames have loaded, the words stay.
+// W6a: the day bar (the top bar) is the one clock, so the day words leave the bottom line's middle: it is the place alone. Until the W6a frames have loaded, the words stay.
 function dayCtx(ctx) {
-  if (!S.exp || !S.day || lightOn()) return ctx;
+  if (!S.exp || !S.day || HUD.ok) return ctx;
   const d = DAY_TEXT.line(dayPart(), untilNext()), alts = (Array.isArray(ctx) ? ctx : [ctx || '']).filter(Boolean);
   return alts.map(c => d + ' · ' + c).concat([d], alts);
 }
@@ -9334,7 +9322,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { HUD, HUD_ART, lightFrame, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
