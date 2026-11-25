@@ -241,6 +241,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
+import { duskTable, duskLitRgb } from "./src/dusk.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
 import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/watch.mjs";
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
@@ -4791,11 +4792,11 @@ const REMAP_PLACE = [null, PLACE_STORM, DARK2, PLACE_FOG, PLACE_FADE, NIGHT, DUS
 // The Shade place's set: the same, with its own fog table (the wash) and its own id, so no canvas cache mixes the two.
 const REMAP_SHADE = [null, PLACE_STORM, DARK2, SHADE_WASH, PLACE_FADE, NIGHT, DUSK];
 const buildNight = () => { NIGHT.length = 0; NIGHT.push(...nightTable(RGB)); PT.ts = null; buildDusk(); };   // (PT.ts null: the props' set-space table is read again)
-// The dusk table: each colour's one-step dark (the signed dusk table) leaned 18% toward the dark table's amber, then the nearest palette colour: a flat warm tone shift, no dither, no colour outside the palette (dusk-mesh-fix-2).
-const DUSK_LEAN = 0.1, DUSK_LIT_STEP = 0.2, DUSKLIT = [], DUSKLIT_RGB = [];   // DUSKLIT: the seen land at dusk takes DUSK_LIT_STEP of the way on to its own one-step dark, flat, still lighter than the unseen land (dusk-mesh-fix-3)
-function buildDusk() { DUSK.length = 0; DUSKLIT.length = 0; DUSKLIT_RGB.length = 0; const w = RGB[DARK[C.amber]]; for (let i = 0; i < RGB.length; i++) { const d = RGB[DARK[i]]; DUSK.push(nearestPal(d[0] + (w[0] - d[0]) * DUSK_LEAN, d[1] + (w[1] - d[1]) * DUSK_LEAN, d[2] + (w[2] - d[2]) * DUSK_LEAN, i < FIRST_N ? FIRST_N : RGB.length)); }
-  // dusk-mesh-fix-4: the seen land's one colour-to-colour map, made from the source colour itself (one step, not the dusk table's snapped colour taken on again): its colour taken DUSK_LIT_STEP of the way to its one-step dark, leaned like the dusk table toward the amber.
-  for (let i = 0; i < RGB.length; i++) { const a = RGB[i], m = a.map(v => v * (1 - DUSK_LIT_STEP)); const e = m.map((v, k) => Math.round(v + (w[k] - v) * DUSK_LEAN)); DUSKLIT_RGB.push(e); DUSKLIT.push(nearestPal(e[0], e[1], e[2], i < FIRST_N ? FIRST_N : RGB.length)); } }   // DUSKLIT_RGB: the exact colour (no nearest-match), what the seen land is drawn with; DUSKLIT: its nearest palette index, only a flag and a fallback
+// The dusk table and the seen land's map: one source, ./src/dusk.mjs (the places view reads the same file): the unseen land is each colour's one-step dark leaned 10% toward the amber's dark, snapped to the nearest palette colour (flat, no dither); the seen land (DUSKLIT_RGB) is each colour itself darkened 20% and leaned the same, an exact colour, never snapped.
+const DUSKLIT = [], DUSKLIT_RGB = [];   // DUSKLIT_RGB: the exact colour the seen land is drawn with; DUSKLIT: its nearest palette index, only a flag and a fallback
+function buildDusk() { DUSK.length = 0; DUSKLIT.length = 0; DUSKLIT_RGB.length = 0; const w = RGB[DARK[C.amber]], lim = i => i < FIRST_N ? FIRST_N : RGB.length;
+  DUSK.push(...duskTable(RGB.length, DARK, i => RGB[i], w, (i, c) => nearestPal(c[0], c[1], c[2], lim(i))));
+  for (let i = 0; i < RGB.length; i++) { const e = duskLitRgb(RGB[i], w); DUSKLIT_RGB.push(e); DUSKLIT.push(nearestPal(e[0], e[1], e[2], lim(i))); } }
 buildNight();
 REMAP.id = 0; REMAP_PLACE.id = 1; REMAP_SHADE.id = 11;
 const shade = (c, n) => { for (let i = 0; i < (n || 1); i++) c = DARK[c]; return c; };

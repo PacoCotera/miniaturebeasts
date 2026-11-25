@@ -4,25 +4,24 @@
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
+import { duskTable, duskLitRgb } from '../../exploration/src/dusk.mjs';
 import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
 export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dusk'];
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]]; // N, NE, E, SE, S, SW, W, NW (view.mjs's order)
 
-// The dusk table (level 6), as the page's DUSK: each colour's one-step dark leaned 18% toward the dark table's amber, then the nearest colour of the set's palette (a flat warm tone shift, no new colour; dusk-mesh-fix-2).
-const DUSK_LEAN = 0.1;
-export function duskOf(rgb, dark) {   // rgb[i] = [r, g, b] of palette index i (core 1..47, then the set's), or undefined
+// The dusk tables (level 6) come from the one shared source, exploration/src/dusk.mjs (the page's buildDusk reads it too): the lean (10%), the lit step (20%) and the palette rule are stated there.
+// duskOf: the unseen land's table over the set's palette, each colour snapped to the nearest colour of the set (rgb[i] = [r, g, b] of palette index i: core 1..47, then the set's, or undefined).
+export function duskOf(rgb, dark) {
   const have = []; for (let i = 1; i < rgb.length; i++) if (rgb[i]) have.push(i);
   const near = (c) => { let best = 0, bd = Infinity; for (const i of have) { const d = 3 * (rgb[i][0] - c[0]) ** 2 + 4 * (rgb[i][1] - c[1]) ** 2 + 2 * (rgb[i][2] - c[2]) ** 2; if (d < bd) { bd = d; best = i; } } return best; };
-  const amber = near([255, 168, 63]), w = rgb[dark[amber]] || rgb[amber], out = new Uint8Array(256);
-  for (let i = 1; i < 256; i++) { const dk = dark[i], d = rgb[dk]; out[i] = d ? near([d[0] + (w[0] - d[0]) * DUSK_LEAN, d[1] + (w[1] - d[1]) * DUSK_LEAN, d[2] + (w[2] - d[2]) * DUSK_LEAN]) : dk; }
+  const amber = near([255, 168, 63]), w = rgb[dark[amber]] || rgb[amber], out = Uint8Array.from(duskTable(256, dark, (i) => rgb[i], w, (i, c) => near(c)));
+  out[0] = 0;
   return out;
 }
 
-// The seen land at dusk (dusk-mesh-fix-3): the dusk table taken DUSK_LIT_STEP of the way on to its own one-step dark, then the nearest palette colour: still flat, still lighter than the unseen land (which keeps dark[dusk]).
-const DUSK_LIT_STEP = 0.2;   // the share each lit colour is darkened, before the lean to the amber (dusk-mesh-fix-4)
-// Round 4: one colour-to-colour map, no nearest-match: each source colour i goes to its own new colour (its RGB taken DUSK_LIT_STEP of the way to its one-step dark, leaned DUSK_LEAN to the amber), so the same colour is the same on every tile and two greens stay two greens.
+// The seen land at dusk: one colour-to-colour map, no nearest-match: each source colour i goes to its own new colour (duskLitRgb), so the same colour is the same on every tile and two greens stay two greens.
 // `extra` receives { index, rgb } for each new colour (the page adds them to its colour table). Out of free indices: that colour keeps the dusk table's colour.
 export function duskLitOf(rgb, dusk, dark, extra = []) {
   const out = new Uint8Array(256); let next = 1; for (let i = 1; i < rgb.length; i++) if (rgb[i]) next = i + 1;
@@ -30,8 +29,7 @@ export function duskLitOf(rgb, dusk, dark, extra = []) {
   for (let i = 1; i < 256; i++) {
     const a = rgb[i], b = rgb[dark[i]];
     if (!a || !b || next > 255) { out[i] = dusk[i]; continue; }
-    const m = a.map((v) => v * (1 - DUSK_LIT_STEP)), c = m.map((v, k) => Math.round(v + (amber[k] - v) * DUSK_LEAN));
-    out[i] = next; extra.push({ index: next, rgb: c }); next++;
+    out[i] = next; extra.push({ index: next, rgb: duskLitRgb(a, amber) }); next++;
   }
   return out;
 }
