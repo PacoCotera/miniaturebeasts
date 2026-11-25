@@ -6613,7 +6613,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
   // walking view does), or each border would show a doubled green strip. Only the current place keeps its apron, drawn over the meeting. Land that is not drawn is the veil's dark, never the map's paper.
   // (call-zoom-wide-4) a picture's x is the cell's x minus the view's ox (page.mjs: px = x + ox), so the cell stands -ox tiles into it (the apron is the ox = -1 tile before it)
   const bkc = bakedView(lay), cw = lay.w * Tp, ch = lay.h * Tp, cx0 = ox - bkc.ox * Tp, cy0 = oy - bkc.oy * Tp;
-  ensureMap(); const nb = v.nb || (v.nb = new Map()), cx = lay.cell % MW, cy = (lay.cell / MW) | 0, end = performance.now() + PEEK_NB_MS; let asked = 0;
+  ensureMap(); const nb = v.nb || (v.nb = new Map()), cx = lay.cell % MW, cy = (lay.cell / MW) | 0, end = performance.now() + PEEK_NB_MS; let asked = 0, owed = false;
   // (call-zoom-wide-4) the backdrop is the map's fog all the way to the view's sides, past the realm's edge too: no empty band, no black, no flat block anywhere. What the cells draw lies over it.
   peekFog(0, VIEW_Y, SCR_W, VIEW_H);
   for (const [dx, dy] of PEEK_DIRS) {
@@ -6621,6 +6621,8 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     const rect = (nw, nh) => ({ x: dx < 0 ? cx0 - nw : dx > 0 ? cx0 + cw : cx0 + ((cw - nw) >> 1), y: dy < 0 ? cy0 - nh : dy > 0 ? cy0 + ch : cy0 + ((ch - nh) >> 1), w: nw, h: nh });
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;   // past the realm's edge: the fog stands
     const c = Y * MW + X, key = String(c); let nl = null, e = nb.get(key);
+    if (S.revealed[c] && passable(c) && G.gen === 7 && !placeHave(key) && ((S.veilPre && S.veilPre[key]) || (S.veil[key] && S.visited[c]))) {   // a Call lifted land there and its place is not here: ask for it now, once for this view, and say so (owner #136); never layout()
+      owed = true; if (!v.owedAsked) v.owedAsked = new Set(); if (!v.owedAsked.has(key)) { v.owedAsked.add(key); readyPlaces(S.regions[0].seed, hereRegion().slot, biomeVersion(S), [c], { ctx: PL.ctx, first: true }); } }
     if (S.revealed[c] && passable(c) && G.gen === 7 && PL.ready && placeHave(key)) {
       nl = layoutCache.get(key); if (!nl && asked < 1) { asked++; nl = layout(key); }   // made at most one a frame, and only from a place that is here
       if (nl && !(nl.baked && !nl.cave)) nl = null;
@@ -6647,6 +6649,7 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
     g.save(); g.globalAlpha = .55; R(r.x, r.y, r.w, r.h, C.night); g.restore();
     if (G.land[c] === L.WATER && !dx !== !dy) { const ap = dx > 0 ? bkc.place.w + bkc.ox - lay.w : dx < 0 ? -bkc.ox : dy > 0 ? bkc.place.h + bkc.oy - lay.h : -bkc.oy; g.save(); g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip(); peekWaterFront(r, dx, dy, Tp, key, Math.max(0, ap), lay, bkc, ox, oy); g.restore(); }   // water-edge-5: the seeded front with the signed pieces as its lip; water-edge-6: its shallows are the place's own
   }
+  return owed;   // some neighbour holds a Call's lift and its place is still owed: the caller says the land is coming
 }
 // water-edge-4 (owner #110: "that transition between shallow water and deep water needs improvement"): where the place's shallows meet wide water beside it, the art director's four signed 12 px edge pieces
 // (art/water-edge/, mibi-art ledger 6d4259b3f1 run_a, 82c8c57c63 run_b, 5487091ba2 inner, 9197e178fe outer; byte for byte) lie ON the place's last shallow column, 12 screen px at a time at the signed mock's offset
@@ -6807,7 +6810,7 @@ function drawWhole(t) {
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  if (wide) { clipView(); try { drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); } finally { g.restore(); } }
+  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); if (owed) text(LAND_COMING, SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
   else g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
