@@ -2947,7 +2947,9 @@ function ensureLive(key) {
     const mine = own && own.length ? own[mates.indexOf(w.id) % own.length] : null, inOwn = own && own.length ? (x, y) => own.some(q => inArea(q)(x, y)) : null;   // a template's spawn areas
     // bug #16: a herd starts spread, not packed: each creature keeps its distance from the ones already placed (3 tiles, then 2), first inside its area, then in the ground round it (4 tiles out), seeded as before
     const apart = d => (x, y) => live.cr.every(q => cheb({ x, y }, q) >= d), big = mine && S.cr.filter(q => q.c === lay.cell && !!q.cv === lay.cave && q.sp === w.sp).length > 3, wide = big ? { x: Math.max(1, mine.x - 3), y: Math.max(1, mine.y - 3), w: mine.w + 6, h: mine.h + 6 } : null;   // only a herd of more than three may spill past its area, when the area is too small to space it
-    const ind = individualOf(w, lay), at = ind && hauntStand(hauntAt(ind.hs, ind.doings, dayPart()), hauntFree(lay, key, null));   // an individual starts where its routine has it at this part of day
+    const ind = individualOf(w, lay);
+    if (routineBase(w.sp) && !ind) continue;   // 156-3: a wild Loika is always an individual; a place that cannot give her haunts does not hold her (the place's next kind is drawn)
+    const at = ind && hauntStand(hauntAt(ind.hs, ind.doings, dayPart()), hauntFree(lay, key, null));   // an individual starts where its routine has it at this part of day
     let spread = null;
     if (mine && !at) for (const d of [3, 2]) { spread = freeSpot(key, R, 5, (x, y) => inArea(mine)(x, y) && apart(d)(x, y), mine) || (wide && freeSpot(key, R, 5, apart(d), wide)); if (spread) break; }
     const s = at || spread || (mine && freeSpot(key, R, 5, inArea(mine), mine)) || (mine && freeSpot(key, R, 2, inArea(mine), mine)) || (inOwn && freeSpot(key, R, 5, inOwn)) || freeSpot(key, R, 5, nest ? (x, y) => cheb({ x, y }, nest) <= 3 : null) || freeSpot(key, R, 4);
