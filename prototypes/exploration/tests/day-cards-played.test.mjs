@@ -56,8 +56,14 @@ for (const [w, h] of [[412, 915], [522, 935]]) {
       assert.equal(await cardNow(), null, "gone after one press");
       await setSpent(DAY.light - 1);
       assert.equal(await playUntil("dawn"), "dawn", "the dawn card is up when the night passes");
+      // the world turn's news (nightPassed + turned.lines: pods, young, bloom) is queued before the card covers the frame
+      const newsBefore = await page.evaluate(() => window.__mb.FX.notes.map((n) => n.text));
+      assert.ok(newsBefore.length >= 1 && newsBefore.some((t) => /dawn/i.test(t)), "the night-passed line is queued behind the card: " + JSON.stringify(newsBefore));
       await page.evaluate(() => window.__mb.press("back")); await page.waitForTimeout(300);
       assert.equal(await cardNow(), null, "gone after one press");
+      // after the press that passes the dawn card, every news line is still in the message box (shown, or held for the next action)
+      const newsAfter = await page.evaluate(() => { const m = window.__mb, FX = m.FX; return { msg: FX.msg || "", notes: FX.notes.map((n) => n.text), held: (FX.held || []).map((n) => n.text) }; });
+      for (const t of newsBefore) assert.ok(newsAfter.msg.includes(t) || newsAfter.notes.includes(t) || newsAfter.held.includes(t), "morning news kept after the press: " + t + " in " + JSON.stringify(newsAfter));
       assert.deepEqual(errors, []);
     } finally { await browser.close(); server.close(); }
   });
