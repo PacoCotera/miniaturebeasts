@@ -14,10 +14,11 @@ import { openingsOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
 import { ROCK_KINDS } from './decor.mjs';
 import { RULES } from './rules.mjs';
+import { keeperKindAt, seatKeeper, isRoadEnd, roadTips } from './keepers.mjs';
 import { PART, partAt } from '../../../places/src/bake/relief.mjs';
 import STAMPS from './stamps.json' with { type: 'json' };
 
-const TV = { DEEP: 1, WATER: 2, SAND: 3, PATH: 5, GRASS: 6, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14 };
+const TV = { DEEP: 1, WATER: 2, SAND: 3, PATH: 5, GRASS: 6, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 19, FORD: 20, BRIDGE: 21 };
 const WALKT = new Uint8Array(32); for (const t of [TV.SAND, TV.PATH, TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCREE, TV.SCRUB, TV.CLIFF, 20, 21]) WALKT[t] = 1;   // 20, 21: the ford and the bridge (F6)
 export const ZM = 4;                         // the zone's margin round the frame, tiles
 export const QUIET = 3;                      // no tall scenery within this many tiles of a spot
@@ -272,9 +273,36 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
       if (hc.length) { const b = hc[0]; addSpot(instantiate(nk, b.sx, b.sy, { role: 'spot', entryDist: +dent[I(b.cx, b.cy)].toFixed(1), spineDist: +dsp[I(b.cx, b.cy)].toFixed(1), candidates: hc.length })); }
     }
   }
+  // ---- 2b. the keepers' place (keepers.mjs): where the road ends or forks, seated against the road's last tile; its box and yard are kept clear and its block rects go to the bake's block mask ----
+  { const kind = keeperKindAt(seed, X, Y);
+    if (kind) { const r = seatKeeper(kind, { w, h, cw: CW, ch: CH, terrain, solid: plan.solid, spine: plan.spine, cliff: plan.cliff, spots: plan.spots, roadTop: Uint8Array.from(ct.top, v => (v === TV.PATHTOP ? 1 : 0)), topGrass: plan.topGrass, edgeKeep: 2 }, { PATH: TV.PATH, FAMILY: new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF]) }, isRoadEnd(seed, X, Y));
+      if (r.why) plan.keepersWhy = r.why; else plan.keepers = r;
+      if (r.end) plan.roadEnd = r.end; }
+    // every other thin end of the road gets a road-rest (the empty 3x3 slot), one at a time: each seated box is a spot to the next, so they never overlap (paths-gen-build-3)
+    { const TVs = { PATH: TV.PATH, FORD: TV.FORD, BRIDGE: TV.BRIDGE, FAMILY: new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF]) }, A = { w, h, cw: CW, ch: CH, terrain, solid: plan.solid, spine: plan.spine, cliff: plan.cliff, spots: plan.spots.slice(), roadTop: Uint8Array.from(ct.top, v => (v === TV.PATHTOP ? 1 : 0)), topGrass: plan.topGrass, edgeKeep: 2 };
+      const yards = () => (plan.keepers ? [plan.keepers.yard] : []).concat((plan.rests || []).map(r => r.yard));
+      for (const k of [plan.keepers].concat(plan.rests || [])) if (k) A.spots.push({ x: k.x, y: k.y, w: k.w, h: k.h });
+      const left = []; plan.restsLeft = left;
+      for (let n = 0; n < 8; n++) {
+        const tip = roadTips(A, TVs, yards().concat(plan.spots)).find(t => !left.some(l => l[0] === t[0] && l[1] === t[1])); if (!tip) break;
+        const r = seatKeeper('road-rest', A, TVs, false, tip);
+        if (r.why) { left.push([tip[0], tip[1], r.why]); continue; }
+        (plan.rests || (plan.rests = [])).push(r); A.spots.push({ x: r.x, y: r.y, w: r.w, h: r.h }); }
+      if (!left.length) delete plan.restsLeft; }
+    // the old bridges' decks (the trail's own BRIDGE tiles): each connected run's box, for the draw job to span bank to bank
+    const br = [], seenB = new Uint8Array(N);
+    for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) { if (terrain[I(x, y)] !== 21 || seenB[I(x, y)]) continue;
+      let x0b = x, y0b = y, x1b = x, y1b = y; const st = [[x, y]]; seenB[I(x, y)] = 1;
+      for (let i = 0; i < st.length; i++) { const [sx, sy] = st[i]; x0b = Math.min(x0b, sx); x1b = Math.max(x1b, sx); y0b = Math.min(y0b, sy); y1b = Math.max(y1b, sy);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = sx + dx, ny = sy + dy; if (nx >= 1 && ny >= 1 && nx <= CW && ny <= CH && terrain[I(nx, ny)] === 21 && !seenB[I(nx, ny)]) { seenB[I(nx, ny)] = 1; st.push([nx, ny]); } } }
+      br.push({ x: x0b, y: y0b, w: x1b - x0b + 1, h: y1b - y0b + 1 }); }
+    if (br.length) plan.bridges = br; }
   // ---- 3. the zone the scenery keeps off: 2 = nothing at all (a spot, one tile round it, the spine); 1 = nothing tall (three tiles round a spot, the heart's sight line and a tile either side) ----
   const zw = w + 2 * ZM, zh = h + 2 * ZM, zone = new Uint8Array(zw * zh), Z = (x, y) => (y + ZM) * zw + x + ZM;
   const mark = (x, y, v) => { if (x < -ZM || y < -ZM || x >= w + ZM || y >= h + ZM) return; const k = Z(x, y); if (zone[k] < v) zone[k] = v; };
+  for (const k of (plan.keepers ? [plan.keepers] : []).concat(plan.rests || [])) {
+    for (let y = k.y - QUIET; y < k.y + k.h + QUIET; y++) for (let x = k.x - QUIET; x < k.x + k.w + QUIET; x++) mark(x, y, 1);
+    for (let y = k.yard.y; y < k.yard.y + k.yard.h; y++) for (let x = k.yard.x; x < k.yard.x + k.yard.w; x++) mark(x, y, 2); }
   for (const s of plan.spots) {
     for (let y = s.y - QUIET; y < s.y + s.h + QUIET; y++) for (let x = s.x - QUIET; x < s.x + s.w + QUIET; x++) mark(x, y, 1);
     for (let y = s.y - 1; y <= s.y + s.h; y++) for (let x = s.x - 1; x <= s.x + s.w; x++) mark(x, y, 2);
@@ -350,8 +378,12 @@ function patchOf(plan, seed, s) {
 // ---- what a plan adds to a cell's IR: the wall props, pieces, shelter tiles and find slots (hold.mjs reads this) ----
 const WALL = { meadow: ROCK_KINDS, rock: ROCK_KINDS, pond: ROCK_KINDS.filter(k => /^boulder-d/.test(k)), wood: ['stump'] };
 export function contentOf(plan, seed) {
-  const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], patches: [], landmark: null, spots: [] };
+  const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], patches: [], landmark: null, spots: [], keepers: null };
   if (!plan) return out;
+  if (plan.keepers) out.keepers = plan.keepers;
+  if (plan.roadEnd) out.roadEnd = plan.roadEnd;
+  if (plan.bridges) out.bridges = plan.bridges;
+  if (plan.rests) out.rests = plan.rests;
   const word = plan.land, kinds = WALL[word] && WALL[word].length ? WALL[word] : ROCK_KINDS, rank = { p: 0, k: 1, m: 2, c: 3 };
   for (const s of plan.spots) {
     out.spots.push({ id: s.id, kind: s.kind, role: s.role, x: s.x, y: s.y, w: s.w, h: s.h, tier: s.tier, entryDist: s.entryDist, spineDist: s.spineDist, seenFrom: s.seenFrom || null, cells: s.cells.map(c => [c.x, c.y, c.k]) });

@@ -51,6 +51,8 @@ export function bakeCell(ir, ctx) {
   const cl = cliffInfo(ir, terrains);
   for (const i of cl.blockCells) if (!cl.ringCells.has(i)) setBit(i);   // relief: the face and flank cells; a ring cell is drawn as top grass and walks, only the step across its rim line is refused (rimSteps, bugs #99, #100)
   for (const cell of footprintCells(ir, ts).keys()) setBit(cell);
+  // the keepers' place (gen7/keepers.mjs FOOTPRINTS): its block rects go through this one mask, the footprint of a piece like any prop's; the baked cell carries the place itself for the Companion to draw
+  if (ir.keepers) for (const [bx, by, bw, bh] of ir.keepers.block) for (let y = by; y < by + bh; y++) for (let x = bx; x < bx + bw; x++) if (x >= 0 && y >= 0 && x < ir.w && y < ir.h) setBit(y * ir.w + x);
   return {
     id: ir.id, formatVersion: FORMAT_VERSION, set: ir.tileset, w: ir.w, h: ir.h, type: ir.type, names: ir.names, mirrorOf: '',
     terrain: ir.terrain, ground, decals: cliffDecals(ir, cliffInfo(ir, terrains)).map(d => ({ kind: index('decal', d.kind), x: d.x, y: d.y, sortY: d.y })).concat(ir.decals.map(placed('decal'))), props: ir.props.map(placed('prop')), canopy: ir.canopy.map(placed('canopy')),
@@ -60,5 +62,6 @@ export function bakeCell(ir, ctx) {
     openings: ir.openings.map(o => ({ side: o.side, from: o.from, to: o.to })),
     spawns: ir.spawns.map(s => ({ x: s.x, y: s.y, w: s.w, h: s.h, species: s.species, count: s.count })),
     blockMask: block, rimSteps: rimSteps(ir, terrains), top: ir.top || new Uint8Array(0),
+    ...(ir.keepers ? { keepers: ir.keepers } : {}), ...(ir.roadEnd ? { roadEnd: ir.roadEnd } : {}), ...(ir.rests ? { rests: ir.rests } : {}), ...(ir.bridges ? { bridges: ir.bridges } : {}),   // frame tiles (the apron's index): the keepers' place, the road's last tile (and where it came from) and the bridges' decks, for the draw job
   };
 }

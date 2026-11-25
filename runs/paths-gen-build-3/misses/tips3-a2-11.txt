@@ -1,0 +1,9 @@
+bad 11 45 45 tip 13 13 realmEnd true want road-rest seated false no-room 
+bad 11 45 53 tip 10 16 realmEnd true want road-rest seated false no-room 
+bad 11 41 55 tip 13 18 realmEnd true want road-rest seated false no-room 
+{"seed":11,"tips":16,"bad":3,"loose":4}
+{"seed":12,"tips":13,"bad":0,"loose":5}
+{"seed":13,"tips":15,"bad":0,"loose":2}
+{"seed":14,"tips":19,"bad":0,"loose":1}
+{"seed":15,"tips":18,"bad":0,"loose":4}
+{"seeds":5,"places":0,"tips":81,"atYard":72,"atCrossing":1,"atPort":5,"bad":3,"loose":16,"keepersSeated":69,"keepersWanted":80,"bad_noKeeper_realmEnd":0,"bad_wantedNotSeated":3,"bad_other":0}

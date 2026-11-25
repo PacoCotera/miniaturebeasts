@@ -1,0 +1,63 @@
+bad 16 36 40 tip 10 20 realmEnd false want undefined seated false null 
+bad 16 32 42 tip 11 9 realmEnd false want undefined seated false null 
+bad 16 32 42 tip 18 8 realmEnd false want undefined seated false null 
+bad 16 46 44 tip 11 17 realmEnd true want road-rest seated false no-path 
+bad 16 41 45 tip 7 19 realmEnd false want undefined seated false null 
+bad 16 40 46 tip 12 23 realmEnd false want undefined seated false null 
+bad 16 44 47 tip 15 20 realmEnd false want undefined seated false null 
+bad 16 46 47 tip 16 9 realmEnd false want undefined seated false null 
+bad 16 43 51 tip 13 8 realmEnd false want undefined seated false null 
+bad 16 38 56 tip 20 9 realmEnd false want undefined seated false null 
+bad 16 38 56 tip 11 22 realmEnd false want undefined seated false null 
+bad 16 38 57 tip 4 5 realmEnd false want undefined seated false null 
+bad 16 38 57 tip 6 5 realmEnd false want undefined seated false null 
+bad 16 38 57 tip 14 4 realmEnd false want undefined seated false null 
+bad 16 38 57 tip 14 6 realmEnd false want undefined seated false null 
+{"seed":16,"tips":21,"bad":15,"loose":4}
+bad 17 33 40 tip 14 25 realmEnd false want undefined seated false null 
+bad 17 33 42 tip 21 9 realmEnd false want undefined seated false null 
+bad 17 33 44 tip 14 5 realmEnd false want outpost seated true undefined {"x":4,"y":8,"w":6,"h":5}
+bad 17 33 45 tip 14 13 realmEnd true want hut seated false no-room 
+bad 17 39 51 tip 5 21 realmEnd false want undefined seated false null 
+bad 17 35 56 tip 13 14 realmEnd false want undefined seated false null 
+bad 17 35 56 tip 14 20 realmEnd false want undefined seated false null 
+bad 17 33 57 tip 12 9 realmEnd false want undefined seated false null 
+bad 17 37 58 tip 12 10 realmEnd false want undefined seated false null 
+bad 17 37 58 tip 19 10 realmEnd false want undefined seated false null 
+{"seed":17,"tips":13,"bad":10,"loose":4}
+bad 18 36 40 tip 17 14 realmEnd false want undefined seated false null 
+bad 18 36 40 tip 18 18 realmEnd false want undefined seated false null 
+bad 18 39 41 tip 13 18 realmEnd true want outpost seated false no-room 
+bad 18 41 43 tip 5 7 realmEnd false want undefined seated false null 
+bad 18 34 49 tip 16 14 realmEnd false want undefined seated false null 
+bad 18 35 51 tip 11 13 realmEnd false want undefined seated false null 
+bad 18 35 51 tip 10 18 realmEnd false want undefined seated false null 
+bad 18 35 52 tip 21 24 realmEnd false want outpost seated true undefined {"x":16,"y":10,"w":6,"h":5}
+bad 18 35 53 tip 21 15 realmEnd false want undefined seated false null 
+bad 18 36 53 tip 5 16 realmEnd false want undefined seated false null 
+bad 18 42 58 tip 17 13 realmEnd false want undefined seated false null 
+bad 18 42 58 tip 16 18 realmEnd false want undefined seated false null 
+bad 18 44 58 tip 13 14 realmEnd true want house seated false no-room 
+{"seed":18,"tips":17,"bad":13,"loose":4}
+bad 19 33 45 tip 9 14 realmEnd false want undefined seated false null 
+bad 19 33 45 tip 9 20 realmEnd false want undefined seated false null 
+bad 19 45 45 tip 12 8 realmEnd false want undefined seated false null 
+bad 19 45 46 tip 14 15 realmEnd false want undefined seated false null 
+bad 19 45 46 tip 9 14 realmEnd false want undefined seated false null 
+bad 19 45 47 tip 20 14 realmEnd false want undefined seated false null 
+bad 19 46 47 tip 17 11 realmEnd false want undefined seated false null 
+bad 19 38 50 tip 18 7 realmEnd false want undefined seated false null 
+bad 19 38 50 tip 8 14 realmEnd false want undefined seated false null 
+bad 19 38 50 tip 8 16 realmEnd false want undefined seated false null 
+bad 19 39 50 tip 11 10 realmEnd false want outpost seated true undefined {"x":3,"y":17,"w":6,"h":5}
+bad 19 44 50 tip 19 15 realmEnd false want outpost seated true undefined {"x":17,"y":7,"w":6,"h":5}
+bad 19 32 56 tip 9 20 realmEnd false want undefined seated false null 
+{"seed":19,"tips":17,"bad":13,"loose":2}
+bad 64 32 44 tip 5 21 realmEnd false want undefined seated false null 
+bad 64 45 52 tip 5 12 realmEnd false want undefined seated false null 
+bad 64 45 52 tip 5 20 realmEnd false want undefined seated false null 
+bad 64 34 53 tip 10 15 realmEnd false want undefined seated false null 
+bad 64 47 54 tip 4 18 realmEnd false want undefined seated false null 
+bad 64 37 58 tip 17 15 realmEnd true want house seated false no-path 
+{"seed":64,"tips":10,"bad":6,"loose":3}
+{"seeds":5,"places":0,"tips":78,"atYard":15,"atCrossing":3,"atPort":3,"bad":57,"loose":17,"keepersSeated":56,"keepersWanted":69,"bad_noKeeper_realmEnd":0,"bad_wantedNotSeated":5,"bad_other":52}
