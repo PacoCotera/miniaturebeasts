@@ -54,9 +54,11 @@ export async function packageUse(seed, slot, v, kv = null, pollMs = 2000) {
   try {
     const P = await import('./package-store.mjs'); kv = kv || (typeof indexedDB !== 'undefined' ? await P.idbKv() : null);
     if (!kv) return 'none';
-    const meta = { seed, slot, v, tag: TAG }, head = await P.findPackage(kv, meta);
+    // the package the Companion holds (taken at a seat) is the one it plays, whatever the generator revs of this page; none held: the one of this page's revs (as before)
+    const meta = { seed, slot, v, tag: TAG }, held = await P.heldOf(kv, { seed, slot }), hh = held && held.id !== P.packageId(meta) && held.realmRev === REALM_REV && held.placeRev === PLACE_REV && (held.tag || '') === TAG ? await P.readHeader(kv, held.id) : null;
+    const id = hh && hh.format === P.PACKAGE_FORMAT ? held.id : P.packageId(meta), head = hh && id === held.id ? hh : await P.findPackage(kv, meta);
     if (!head) { PKG.key = ''; PKG.state = 'none'; return 'none'; }
-    Object.assign(PKG, { key: pkgKey(seed, slot, v), state: 'part', kv, id: P.packageId(meta), got: new Set(), meta, mod: P });
+    Object.assign(PKG, { key: pkgKey(seed, slot, v), state: 'part', kv, id, got: new Set(), meta, mod: P });
     await packageRead();
     if (PKG.state === 'part' && pollMs) { const t = PKG.timer = setInterval(() => { packageRead().then(() => { if (PKG.state === 'whole' && PKG.timer === t) { clearInterval(t); PKG.timer = 0; } }, () => {}); }, pollMs); }
     return PKG.state;
