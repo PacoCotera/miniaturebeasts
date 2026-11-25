@@ -239,7 +239,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
 import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/watch.mjs";
@@ -2498,7 +2498,10 @@ function placeReach(lay, key) {
 // a site stands only where the pawn can come to it: its tile or the one beside it is reached from the place's ways in, with a front and a side spot 3 to 5 tiles off (E8)
 const hauntStandable = (lay, key) => { const r = placeReach(lay, key); return (x, y) => r.at(x, y) && !r.solid(x, y); };
 const hauntSitesOf = lay => lay.haunts || (lay.haunts = (() => { const v = lay.cave ? null : hauntView(lay); if (!v) return []; const ok = hauntStandable(lay, lay.key);
-  return hauntSites(v).filter(s => (ok(s.x, s.y) || ok(s.x + 1, s.y) || ok(s.x - 1, s.y) || ok(s.x, s.y + 1) || ok(s.x, s.y - 1)) &&(sp => sp.front && sp.side)(hauntSpots(s, ok))); })());
+  // a spare land site (#145) must lie on the walkable ground she walks (a path from it reaches most of the place), never in a pocket she could not leave
+  let reachN = 0; for (let i = 0; i < lay.reach.length; i++) if (lay.reach[i]) reachN++;
+  const roomy = s => { if (s.k !== 'land') return true; const d = pathField(lay, s, null, lay.key); let n = 0; for (let i = 0; i < d.length; i++) if (d[i] >= 0 && lay.reach[i]) n++; return n >= .6 * reachN; };
+  return hauntSites(v).filter(s => roomy(s) && (ok(s.x, s.y) || ok(s.x + 1, s.y) || ok(s.x - 1, s.y) || ok(s.x, s.y + 1) || ok(s.x, s.y - 1)) &&(sp => sp.front && sp.side)(hauntSpots(s, ok))); })());
 // the tile can be stood on and is free now (a place's reach, not blocked ground, no feature, no one there)
 const hauntFree = (lay, key, who) => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !occupant(key, x, y, who) && !lay.feats.some(f => f.x === x && f.y === y);
 // A kind with a routine base is an individual of its land: { doings, hs (water, grass, third, bed), name }. The haunts after S.turn nights are a pure walk from the seed and the id.
@@ -2895,8 +2898,14 @@ function hauntStep(X, c) {   // true when the routine has the creature's action
   if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }
   return true;
 }
+// #145: haunts a save holds that break the 3-tile rule are chosen again by the same seeded walk (hers only; the others stand)
+function keepHaunts(live, key) {
+  for (const c of live.cr) { if (!c.ind || !c.ind.hs || hauntsApart(c.ind.hs)) continue;
+    const sites = hauntSitesOf(layout(key)), hs = sites.length ? hauntsKept(S.seed, c.id, sites, c.ind.doings, S.turn, c.ind.hs) : c.ind.hs;
+    if (hs !== c.ind.hs) { c.ind.hs = hs; delete c.ind.go; } }
+}
 function ensureLive(key) {
-  const ex = S.exp; if (ex.live[key]) return ex.live[key];
+  const ex = S.exp; if (ex.live[key]) { keepHaunts(ex.live[key], key); return ex.live[key]; }
   const lay = layout(key), R = makeRng(hash(S.seed, 'live', key, ex.n));
   const live = { key, cr: [], fr: [], tf: [], strike: null, seen: {}, fid: 1, pt: null, rainOn: 0, stormShed: {}, calmShed: 0, noted: {} };
   ex.live[key] = live;
@@ -3960,7 +3969,7 @@ function nameInSight() {
   for (const c of live.cr) nameSeen(c, o => awayFrom(o, P));
 }
 function patchTick(info) {
-  const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key];
+  const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key]; keepHaunts(live, key);
   const raining = !lay.cave && stormRain(lay.cell % MW);
   const fog = !lay.cave && inFog(lay.cell);
   const peak = !lay.cave && stormPeak(lay.cell % MW);
