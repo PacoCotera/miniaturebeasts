@@ -1135,8 +1135,8 @@ function leadWay(P, lay) {
   if (way) way.kind = 'beat';
   else {
     let best = null;   // anything to take seen in a place already made in this reach
-    for (const c of ex.reach) { if (c === lay.cell || !S.visited[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { d, dx: q.x - here.x, dy: q.y - here.y }; }
-    if (best) way = toWay(best.dx, best.dy, 'take');
+    for (const c of ex.reach) { if (c === lay.cell || !S.visited[c] || !layoutCache.has(String(c)) || !leftItems(c).length) continue; const q = cxy(c), d = Math.max(Math.abs(q.x - here.x), Math.abs(q.y - here.y)); if (!best || d < best.d) best = { c, d, dx: q.x - here.x, dy: q.y - here.y }; }
+    if (best) { way = toWay(best.dx, best.dy, 'take'); if (way) { way.cell = best.c; (RT.pointed = RT.pointed || {})[best.c] = 1; } }   // owner-notes-fix-160: the tab promised a find there; that place glints it (and keeps its tab) until it is taken
     if (!way) {   // the nearest side of this place that leads on to a cell of the reach not walked yet
       let out = null;
       for (const o of lay.openings || []) { if (openingKind(lay, o).kind !== 'open') continue; const [dx, dy] = SIDE_VEC[o.side], c = (here.y + dy) * MW + here.x + dx;
@@ -6983,7 +6983,7 @@ function drawPatchBody(t) {
       const read = strikeIsRead(P.key, f);
       if (!read && motion() && (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400) { const a = sparkArt(false); blit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2)); } }
     // once the place is explored, every takeable still in view glints: the sparkle for 400 ms every 1.6 s, staggered by position; none under reduced motion
-    if (walkedCell(lay.cell) && motion()) {
+    if ((walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell])) && motion()) {   // (or a place a tab pointed at: its finds glint on arrival, owner-notes-fix-160)
       for (const it of leftItems(lay.cell)) { if (it.cave || it.k === 'strike' || !vis2(it.x * ts, it.y * ts)) continue;
         if ((NOW + hash(it.x, it.y, 7) % 1600) % 1600 >= 400) continue;
         const a = sparkArt(false); blit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); } } }
@@ -7084,6 +7084,7 @@ function edgeTabs() {
     const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?' || b === 'fs') add(b === 'fs' ? '?' : b, c.x, c.y, 'c' + c.id); }
   const q = FX.cue, callLive = !!q && q.key === P.key && ex.actions < q.until;
   if (callLive) { const w = leadWay(P, lay); if (w) add('find', w.tx ?? P.x + w.vx * 60, w.ty ?? P.y + w.vy * 60, 'beat'); }   // only for the Call's own time (owner #80): never on the plain map; one tab on the edge toward the nearest thing to take or explore (call-probe-marks-1)
+  if (RT.pointed && RT.pointed[lay.cell]) { const left = leftItems(lay.cell).filter(i => !i.cave && i.k !== 'strike'); if (!left.length) delete RT.pointed[lay.cell]; for (const i of left) add('find', i.x, i.y, 'p' + i.x + ',' + i.y); }   // owner-notes-fix-160: a find a tab pointed at keeps its tab in its own place until taken
   if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
     if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
     add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }
