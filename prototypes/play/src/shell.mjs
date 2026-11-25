@@ -130,7 +130,7 @@ function layout() {
   document.body.classList.toggle("phone", phone);
   for (const dv of ["station", "companion"]) {
     const st = dv === "station", p = layoutPlan({ W: CW, H: CH, dpr, coarse: coarseNow(), dev: dv, asleep: st && !podHome, zSet, page: st && pageForm, whole: st && wholeForm });
-    PLAN[dv] = p; kOf[dv] = Math.floor(p.scale * dpr * 64 + 1e-6) / 64;
+    PLAN[dv] = p; kOf[dv] = p.scale * dpr;   // layout.mjs floors the scale to 1/64 device px once
   }
   k = kOf[owner]; f = k / dpr;
   document.documentElement.style.setProperty("--f", String(f));

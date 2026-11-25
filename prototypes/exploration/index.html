@@ -9408,17 +9408,11 @@ function fit() {
   deviceEl.style.transform = `scale(${s})`;
 }
 window.addEventListener('resize', fit);
-// ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
-// One function sets the screen's scale (a whole-pixel screen scaled by a transform); a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
-const setEmbedS = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)), fw = Math.floor(450 * k / d), fh = Math.floor(600 * k / d); document.documentElement.style.setProperty('--embed-s', String(k / d * Math.min(1, (window.innerWidth || fw) / fw, (window.innerHeight || fh) / fh))); };   // fw, fh: the play page's frame in CSS px, under 450 wide at a fractional pixel ratio (it was shrunk twice there: owner #123); a viewport smaller than the 450×600 frame (a phone opening the embed itself) shrinks the whole frame to fit, so the message box and its text stay inside; the play page's frame is 450 wide and untouched
-let dprQuery = null;
-function armDpr() {
-  if (dprQuery) dprQuery.removeEventListener('change', onDpr);
-  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
-  dprQuery.addEventListener('change', onDpr);
-}
-function onDpr() { setEmbedS(); armDpr(); }
-if (EMBED) { setEmbedS(); armDpr(); window.addEventListener('resize', setEmbedS); }
+// ?embed (the play page's frame): the screen alone; the class is set in <head>. The size of the Companion on /play is decided once, in play/src/layout.mjs (plan().screen); the shell gives this page a frame 450 x k0 / dpr CSS px wide
+// and scales the frame by k / k0 as a whole. The screen here fills the frame exactly: scale = the frame's width over 450, no snapping, no min (one scale function, code-audit step 6; owner #27, #123, #134, #135).
+// A dpr change makes the shell resize the frame, so the resize event is the only trigger.
+const setEmbedS = () => { document.documentElement.style.setProperty('--embed-s', String((window.innerWidth || 450) / 450)); };
+if (EMBED) { setEmbedS(); window.addEventListener('resize', setEmbedS); }
 
 const footEl = document.getElementById('buildFoot');
 import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json();
