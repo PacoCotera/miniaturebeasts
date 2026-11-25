@@ -27,7 +27,7 @@ test("seated: the Companion goes to the lead's page by itself (no key), the crat
   for (const n of [0, 1, 3]) {
     const { p, st } = world(n); assert.equal(p.run("FX.seated || null"), null, "nothing on load");
     seat(p, st);
-    assert.equal(p.S.phase, "active", n + " crates: a cut to the active page"); assert.equal(p.S.ui.aId, 1);
+    assert.equal(p.S.phase, "riding", n + " crates: a cut to the active page"); assert.equal(p.S.ui.aId, 1);
     assert.equal(flashes(p, n), n, n + " crates: " + n + " flashes");
     if (n) { assert.equal(p.run("crateFlashOn(1, 499)"), false); assert.equal(p.run("crateFlashOn(1, 500)"), true); assert.equal(p.run("crateFlashOn(1, 619)"), true); assert.equal(p.run("crateFlashOn(1, 620)"), false); }
     if (n === 3) assert.deepEqual([500, 833, 1166].map((a) => p.run(`crateFlashOn(3, ${a})`)), [true, true, true], "one every 333 ms");
@@ -51,12 +51,12 @@ test("seated mid-expedition is unchanged: no frame, no cut", () => {
   assert.equal(p.S.phase, "map"); assert.equal(p.run("FX.seated || null"), null);
 });
 test("lifted on the active page: 'Off we go' for 1500 ms from 0.2 s and one quiet hop; off it, nothing", () => {
-  const { p, st } = world(0); seat(p, st); assert.equal(p.S.phase, "active");
+  const { p, st } = world(0); seat(p, st); assert.equal(p.S.phase, "riding");
   lift(p, st);
   assert.equal(p.run("FX.lifted.at"), 20000); assert.deepEqual(JSON.parse(p.run("JSON.stringify({ id: FX.callMibi.id, at: FX.callMibi.at, quiet: FX.callMibi.quiet, wrong: FX.callMibi.wrong })")), { id: 1, at: 20200, quiet: true, wrong: false });
   assert.equal(p.run("NOW = 20100; callAnim(mibiById(1))"), null, "the hop starts at 0.2 s");
   assert.ok(p.run("NOW = 20300; callAnim(mibiById(1))").a === 100);
-  const q = world(0); seat(q.p, q.st); q.p.run("S.phase = 'mibis'"); lift(q.p, q.st);
+  const q = world(0); seat(q.p, q.st); q.p.run("S.phase = 'log'"); lift(q.p, q.st);
   assert.equal(q.p.run("FX.lifted || null"), null, "on another screen only the Shield flash plays, as built"); assert.equal(q.p.run("FX.callMibi || null"), null);
 });
 test("a dock with no mibi with you stays on its screen; no key is needed anywhere", () => {
@@ -65,13 +65,13 @@ test("a dock with no mibi with you stays on its screen; no key is needed anywher
 test("the ended expedition's screen goes home when docked, with or without a mibi (bug #50)", () => {
   for (const withMibi of [true, false]) {
     const { p, st } = world(1, withMibi); p.run("S.phase = 'sealed'"); seat(p, st);
-    assert.equal(p.S.phase, "active", (withMibi ? "with" : "without") + " a mibi: home on seating");
-    lift(p, st); assert.equal(p.S.phase, "active", "and still home after the lift");
+    assert.equal(p.S.phase, "riding", (withMibi ? "with" : "without") + " a mibi: home on seating");
+    lift(p, st); assert.equal(p.S.phase, "riding", "and still home after the lift");
   }
 });
 test("a page opened while seated on the ended expedition's screen goes home on the lift (bug #50)", () => {
   const { p, st } = world(1, false); dockKey(st, p.sv()); p.writeSt(st); p.run("RT.dockPrev = null; trackDock(); S.phase = 'sealed'");
-  lift(p, st); assert.equal(p.S.phase, "active");
+  lift(p, st); assert.equal(p.S.phase, "riding");
 });
 
 const region2 = (seed) => JSON.stringify(regionRecord({ n: 2, kind: "home", biome: "woods", slot: [2, 1], seed: hash(seed, "region", 2), gen: 3, opened: 1, map: blankMap() }));

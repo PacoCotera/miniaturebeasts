@@ -43,6 +43,8 @@ function botPage(A) {
   };
   const walk = (path, untilLight) => { for (const t of path) { if (over() || spent() >= untilLight) return; const c = her(); if (c && heardAtTile(c, t.x, t.y, spent())) { // would be heard: let her settle first, then try the step once
         for (let i = 0; i < 3 && c.ease > 0 && wait(); i++); if (heardAtTile(c, t.x, t.y, spent())) return; } stepTo(t); } };
+  // the note action opens the watch view (PR 575); take the note there as a player does (✓), put the card away, and be back in the field
+  const runNote = a => { a.run(); if (S.phase === 'watch') { watchKey('confirm'); if (S.phase === 'card') cardKey('confirm'); if (S.phase === 'watch' || S.phase === 'card') watchClose(); } };
   const rec = k => (S.habits[id] || {})[k];
   const notedBy = k => out.notes.some(n => n.k === k);
   // ---- W4 round 2: reading her prints (the page's own rule: printsToRead / readPrints), only when the day has nothing yet (--read) ----
@@ -106,12 +108,12 @@ function botPage(A) {
     // note it, in front of her (she is not always where the haunt was read to be: when the note is not offered, step one unheard tile nearer, as a player would; seed 159 day 2)
     const closeIn = hc => { const want2 = Math.max(3, cheb(P, hc) - 1), p3 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, hc) <= want2 && !heardAtTile(hc, x, y, spent()), (x, y) => heardAtTile(hc, x, y, spent())); if (!p3 || !p3.length || cheb(P, hc) <= 3) return false; return stepTo(p3[0]); };
     for (let n = 0; n < 10 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; faceHer(hc);
-      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() });
+      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; runNote(a); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() });
         // W5: a sample needs a note at near; after a mid/far note step in unheard to near inside the same play and note again (the page allows one note per range)
         if (nn[nn.length - 1].range !== 'near') { const h1 = her(); if (h1 && h1.hb && cheb(P, h1) > 2) {
           const p4 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, h1) <= 2 && !heardAtTile(h1, x, y, spent()), (x, y) => heardAtTile(h1, x, y, spent()));
           if (p4 && p4.length <= 6) { for (const t of p4) { if (!her() || !her().hb) break; stepTo(t); }
-            const h2 = her(); if (h2 && h2.hb) { faceHer(h2); const a2 = patchAction(); if (a2.label === WORDS.habit.note) { const b2 = (S.exp.stats.noted || []).length; a2.run(); const n2 = (S.exp.stats.noted || []); if (n2.length > b2) out.notes.push({ ...n2[n2.length - 1], want, T: spent(), step: 1 }); } } } } }
+            const h2 = her(); if (h2 && h2.hb) { faceHer(h2); const a2 = patchAction(); if (a2.label === WORDS.habit.note) { const b2 = (S.exp.stats.noted || []).length; runNote(a2); const n2 = (S.exp.stats.noted || []); if (n2.length > b2) out.notes.push({ ...n2[n2.length - 1], want, T: spent(), step: 1 }); } } } } }
         break; } } else if (!closeIn(hc)) wait(); }
     // let the play end
     for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; if (nextE && spent() >= freeBy(nextE) + 4) break; wait(); }   // W5: no sitting out the next moment while this one plays out

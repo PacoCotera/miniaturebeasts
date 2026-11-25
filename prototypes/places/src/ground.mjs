@@ -4,11 +4,35 @@
 import { blitTile } from './blit.mjs';
 import { sixteenOf } from './sixteen.mjs';
 import { blitPlaced, propItems, sortItems, drawItems, canopyPass, walkFrame } from './sprites.mjs';
-import { BAYER4, eighthGrid, coverE, stormStep } from '../../exploration/src/view.mjs';
+import { duskTable, duskLitRgb } from '../../exploration/src/dusk.mjs';
+import { BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX } from '../../exploration/src/view.mjs';
 
 // Light levels per cell, as the page numbers them (REMAP_PLACE): 0 clear, 1 storm, 2 dark2, 3 fog, 4 fade, 5 night (the clock's night: the page gives the set its nightMap; none given, it is dark2), 6 dark (the clock's dusk, the one-step table).
-export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dark'];
+export const LEVELS = [null, 'storm', 'dark2', 'fog', 'fade', 'night', 'dusk'];
 const NB9 = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]]; // N, NE, E, SE, S, SW, W, NW (view.mjs's order)
+
+// The dusk tables (level 6) come from the one shared source, exploration/src/dusk.mjs (the page's buildDusk reads it too): the lean (10%), the lit step (20%) and the palette rule are stated there.
+// duskOf: the unseen land's table over the set's palette, each colour snapped to the nearest colour of the set (rgb[i] = [r, g, b] of palette index i: core 1..47, then the set's, or undefined).
+export function duskOf(rgb, dark) {
+  const have = []; for (let i = 1; i < rgb.length; i++) if (rgb[i]) have.push(i);
+  const near = (c) => { let best = 0, bd = Infinity; for (const i of have) { const d = 3 * (rgb[i][0] - c[0]) ** 2 + 4 * (rgb[i][1] - c[1]) ** 2 + 2 * (rgb[i][2] - c[2]) ** 2; if (d < bd) { bd = d; best = i; } } return best; };
+  const amber = near([255, 168, 63]), w = rgb[dark[amber]] || rgb[amber], out = Uint8Array.from(duskTable(256, dark, (i) => rgb[i], w, (i, c) => near(c)));
+  out[0] = 0;
+  return out;
+}
+
+// The seen land at dusk: one colour-to-colour map, no nearest-match: each source colour i goes to its own new colour (duskLitRgb), so the same colour is the same on every tile and two greens stay two greens.
+// `extra` receives { index, rgb } for each new colour (the page adds them to its colour table). Out of free indices: that colour keeps the dusk table's colour.
+export function duskLitOf(rgb, dusk, dark, extra = []) {
+  const out = new Uint8Array(256); let next = 1; for (let i = 1; i < rgb.length; i++) if (rgb[i]) next = i + 1;
+  const amber = rgb[dark[[...rgb.keys()].filter((i) => rgb[i]).reduce((b, i) => (Math.abs(rgb[i][0] - 255) + Math.abs(rgb[i][1] - 168) + Math.abs(rgb[i][2] - 63) < Math.abs(rgb[b][0] - 255) + Math.abs(rgb[b][1] - 168) + Math.abs(rgb[b][2] - 63) ? i : b), 1)]];
+  for (let i = 1; i < 256; i++) {
+    const a = rgb[i], b = rgb[dark[i]];
+    if (!a || !b || next > 255) { out[i] = dusk[i]; continue; }
+    out[i] = next; extra.push({ index: next, rgb: duskLitRgb(a, amber) }); next++;
+  }
+  return out;
+}
 
 const tableCache = new WeakMap();
 // The tile set's light tables by name: { dark, light, dark2, fog, fade, storm, veil, night } -> Uint8Array(256).
@@ -20,6 +44,8 @@ export function tablesOf(ts) {
     Object.defineProperty(t, 'nm', { value: ts.nightMap, enumerable: false });
     tableCache.set(ts, t);
   }
+  t.dusk = ts.duskMap || t.dark;   // set by the view from the page's colours (BakedView); until then the one-step dark
+  t.duskLit = ts.duskLitMap || t.dusk;
   return t;
 }
 
@@ -78,8 +104,8 @@ const veilPx = (c, x, y, dark, night) => (BAYER4[(y & 3) * 4 + (x & 3)] < 4 ? ni
 // Applies the light in place to a ground buffer covering win. opts.nightIndex: the core palette's night colour (2).
 // Per pixel: beyond fog sight -> the fog table; else the cell's clear light; the 6 px storm step beside a storm column; the veil's dots where veiled.
 export function applyLight(buf, win, size, ts, state, opts = {}) {
-  const gV = gridOf(state, 'veil'), gF = gridOf(state, 'fog'), lvl = state.level;
-  if (!gV && !gF && !lvl) return buf;
+  const fe = state.fogEdge || null, gV = gridOf(state, 'veil'), gF = fe ? null : gridOf(state, 'fog'), lvl = state.level;   // fe: the fog sight's soft edge (state.fogEdge = { cx, cy, r, seed }), drawn per pixel instead of the fog grid
+  if (!gV && !gF && !fe && !lvl && !state.storm) return buf;
   const T = tablesOf(ts), night = opts.nightIndex ?? 2, eb = size >> 2, pw = state.w, EW = 4 * state.w, EH = 4 * state.h;
   const ebx0 = Math.floor(win.x / eb), ebx1 = Math.floor((win.x + win.w - 1) / eb), eby0 = Math.floor(win.y / eb), eby1 = Math.floor((win.y + win.h - 1) / eb);
   for (let ey = Math.max(0, eby0); ey <= Math.min(EH - 1, eby1); ey++) for (let ex = Math.max(0, ebx0); ex <= Math.min(EW - 1, ebx1); ex++) {
@@ -87,21 +113,30 @@ export function applyLight(buf, win, size, ts, state, opts = {}) {
     const mV = gV ? m9(gV, EW, EH, ex, ey) : 0, mF = gF ? m9(gF, EW, EH, ex, ey) : 0;
     let side = null;
     if (lvl && L === 0) side = cx > 0 && lvl[cy * pw + cx - 1] === 1 ? 'W' : cx < pw - 1 && lvl[cy * pw + cx + 1] === 1 ? 'E' : null;
-    if (!L && !mV && !mF && !side) continue;
-    const tL = L ? T[LEVELS[L]] : null;
+    // the approaching storm's soft edge (state.storm = { darkW, left, seed, level }): per pixel, screen-side distance, world-anchored dither
+    const bx0 = Math.max(ex * eb, win.x) - win.x, bx1 = Math.min(ex * eb + eb, win.x + win.w) - win.x;
+    const sb = state.storm && (state.storm.left ? bx0 < state.storm.darkW + 97 : bx1 > win.w - state.storm.darkW - 97) ? state.storm : null;
+    // the fog edge's block class: 0 all clear, 1 all fog, 2 mixed (per pixel); the wobble keeps the band's start within r .. r + 48
+    let fc = 0;
+    if (fe) { const bcx = ex * eb + eb / 2 - fe.cx, bcy = ey * eb + eb / 2 - fe.cy, dc = Math.hypot(bcx, bcy), hb = eb * 0.71; fc = dc + hb < fe.r ? 0 : dc - hb > fe.r + 48 + FOG_BAND_PX ? 1 : 2; }
+    if (!L && !mV && !mF && !side && !sb && !fc) continue;
+    const tL = L ? T[LEVELS[L]] : null, tS = sb ? T[LEVELS[sb.level]] : null;
     const cV = mV && mV !== 511 ? coverE(mV) : null, cF = mF && mF !== 511 ? coverE(mF) : null;
     const px0 = Math.max(ex * eb, win.x), px1 = Math.min(ex * eb + eb, win.x + win.w), py0 = Math.max(ey * eb, win.y), py1 = Math.min(ey * eb + eb, win.y + win.h);
     for (let py = py0; py < py1; py++) for (let px = px0; px < px1; px++) {
       const o = (py - win.y) * win.w + (px - win.x), c = buf[o];
       if (c === 0) continue;
       const k = (((py - ey * eb) * 12 / eb) | 0) * 12 + (((px - ex * eb) * 12 / eb) | 0);
-      if (mF === 511 || (cF && cF[k])) { buf[o] = T.fog[c]; continue; }
-      let base = tL ? tL[c] : c;
+      if (mF === 511 || (cF && cF[k]) || fc === 1 || (fc === 2 && fogBandHit(px, py, fe))) { buf[o] = T.fog[c]; continue; }
+      let base = L === 6 ? T.duskLit[c] : tL ? tL[c] : c;
       if (side) {
         const lx = (px - cx * size) * (48 / size);
         if (stormStep(side === 'W' ? lx : 47 - lx, px, py)) base = T.storm[c];
       }
-      buf[o] = mV === 511 || (cV && cV[k]) ? veilPx(base, px, py, T.dark, night) : base;
+      if (sb) { const sx = px - win.x; if (stormBandHit(sb.left ? sx : win.w - 1 - sx, py, px, sb.darkW, sb.seed)) base = tS[c]; }
+      // in the fog band the veil thins out with the clear ground (a second Bayer test at the band's share), gone where the fog takes over
+      // dusk (6): the veil is a flat tone shift, no dither dots over the land and sea (dusk-mesh-fix-1)
+      buf[o] = (mV === 511 || (cV && cV[k])) && (fc !== 2 || fogVeilKeep(px, py, fe)) ? (L === 6 ? T.dark[T.dusk[c]] : veilPx(base, px, py, T.dark, night)) : base;
     }
   }
   return buf;

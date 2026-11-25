@@ -38,7 +38,7 @@ export function newToYou(st, p, w) {
   });
 }
 // The shelf: rows, the new ones first, then the order the pad chose. A row: { key, kind: wild | pair | line, species, place, count, ids, words: [{ word, trait, kind, isNew }], parents: [{ id, name }], isNew, newest, title }
-export function shelfRows(st, order = "newest") {
+export function shelfRows(st, order = "newest", only = null) {   // only: the row keys "Show the pods" on the board keeps (station step 9-1); null shows every row
   const by = new Map();
   st.tray.forEach((p, i) => {
     const key = originKey(p); let r = by.get(key);
@@ -53,7 +53,7 @@ export function shelfRows(st, order = "newest") {
     return { key: r.key, kind: r.kind, species: r.species, place: r.place, count: r.count, ids: r.ids, newest: r.newest, words, parents, isNew: words.some((w) => w.isNew), title, sample: r.pod.id };
   });
   const by2 = order === "parents" ? (a, b) => a.title.localeCompare(b.title) || b.newest - a.newest : (a, b) => b.newest - a.newest;
-  return rows.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || by2(a, b));
+  return rows.filter((r) => !only || only.includes(r.key)).sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0) || by2(a, b));
 }
 // One capsule: { i, state: free | growing | ready | young, species, progress (0..1), left (minutes), mibi (id of a young waiting) }. Growing shows the same whether the Companion is here or away: it runs on the real clock.
 export function capsuleOf(st, i, settings = S.DEFAULT_SETTINGS, now = Date.now()) {

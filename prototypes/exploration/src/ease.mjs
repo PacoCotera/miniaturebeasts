@@ -20,7 +20,7 @@ export function los(env, a, b) {
 export function carryAt(env, from, x, y, gait, wary = 0, sp) {
   return carryOf({ gait, ground: env.ground(x, y), wind: windRow(env.wind, from, { x, y }), rain: !!env.rain, fog: !!env.fog, wary, partner: sp == null ? 0 : partnerCost(sp) });
 }
-export const heardAt = (env, from, x, y, gait, wary = 0) => cheb({ x, y }, from) <= carryAt(env, from, x, y, gait, wary).v && los(env, { x, y }, from);
+export const heardAt = (env, from, x, y, gait, wary = 0) => { const v = carryAt(env, from, x, y, gait, wary).v, dx = x - from.x, dy = y - from.y; return dx * dx + dy * dy <= v * v && los(env, { x, y }, from); };   // round, like the drawn carry ring (radius v tiles from the tile's centre)
 export const stayAt = (env, from, x, y, wary = 0) => Math.max(0, STAY - 2 * carryAt(env, from, x, y, 'creep', wary).v);
 
 // the wind of a land for a part of day, from the realm seed: steady through a part, it may turn at the next (the day strip shows it). A tiny hash of its own, so the land's freeze is untouched.
@@ -34,10 +34,12 @@ export const windAt = (seed, land, spent) => windOf(seed, land, partOfDay(spent)
 
 // One light goes by for a wild one: `heard` is a heard step (or the stay running out). Mutates `c` (ease, quiet) and returns the events: 'heard' (to watching), 'gone', 'settled'.
 // Two quiet actions in a row lower ears up to grazing; three lower watching to ears up (the built settle); a first heard step is watching, a second is gone.
-export function easeTick(c, heard) {
+// Night step 5: `asleep` (curled at her bed, grazing): the first heard step only stirs her (ears up, ev 'stirred'); after that she is heard as awake, so the next wakes her and she watches, the next she is gone.
+export function easeTick(c, heard, asleep = false) {
   const ev = [];
   if (c.ease >= 3) return ev;
-  if (heard) { c.ease = c.ease >= 2 ? 3 : 2; c.quiet = 0; ev.push(c.ease >= 3 ? 'gone' : 'heard'); }
+  if (heard && asleep && !(c.ease >= 1)) { c.ease = 1; c.quiet = 0; ev.push('stirred'); }
+  else if (heard) { c.ease = c.ease >= 2 ? 3 : 2; c.quiet = 0; ev.push(c.ease >= 3 ? 'gone' : 'heard'); }
   else { c.quiet = (c.quiet || 0) + 1; if (c.ease === 1 && c.quiet >= 2) { c.ease = 0; c.quiet = 0; ev.push('settled'); } else if (c.ease === 2 && c.quiet >= 3) { c.ease = 1; c.quiet = 0; ev.push('settled'); } }
   return ev;
 }

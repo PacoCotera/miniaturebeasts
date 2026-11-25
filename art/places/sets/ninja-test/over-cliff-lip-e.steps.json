@@ -1,0 +1,1 @@
+{"parents": [{"file": "over-cliff-path-top.png", "slot": 12}, {"file": "over-grass-flat-top.png", "slot": 5, "rows": "0-7, opaque pixels"}], "script": "tools/credit-runner/runs/bug148-lip-1/compose-lip.py", "out_sha256": "f0cd6404650a062bdce696fbb82a89fa1f659c59e0831320d25e5efc5fbfe244"}

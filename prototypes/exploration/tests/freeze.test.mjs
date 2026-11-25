@@ -65,9 +65,9 @@ test("1. freeze hash: docked mid-expedition, every refused press, a held walk an
   p.run("S.phase = 'map';");
   assert.equal(field(p), h, "the map");
   // Cargo, Mibis, the active page, Call a mibi
-  p.run("openMenu(); S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo"); p.key("back");
-  p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'mibis');"); p.key("confirm"); assert.equal(p.S.phase, "mibis");
-  p.key("call"); p.key("right"); assert.equal(p.S.phase, "active"); p.key("call"); p.key("back"); p.key("back"); p.key("back");
+  p.run("openMenu(); S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo"); p.key("back"); p.run("openMenu();");   // the Case's ← goes to the field, as the Log's
+  p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'riding');"); p.key("confirm"); assert.equal(p.S.phase, "riding");
+  p.key("call"); p.key("down"); p.key("call"); p.key("back");   // Riding: Call, who rides, Call; ← goes to the field
   assert.equal(p.S.phase, "map");
   assert.equal(field(p), h, "the views");
   // 5 s of real time
@@ -281,7 +281,7 @@ test("docked: the menu dims Wait and Leave and keeps End expedition; ✓ is dimm
   const l = p.run("lineFor()"); assert.equal(l.dim, true); assert.equal(l.back, "menu");
   p.key("back");
   const items = p.run("menuItems().map(i => i.id + (i.frz ? '*' : ''))");
-  assert.deepEqual([...items], ["leave*", "send", "wait*", "probe", "cargo", "mibis"]);
+  assert.deepEqual([...items], ["leave*", "send", "wait*", "probe", "cargo", "riding"]);
   assert.equal(p.run("S.ui.menuSel"), 1, "focus on the first row not frozen: End expedition");
   p.run("S.ui.menuSel = 0;"); assert.equal(p.run("lineFor().dim"), true);
   p.key("back"); assert.equal(p.S.phase, "patch"); p.key("back"); assert.equal(p.S.phase, "menu");
@@ -357,7 +357,7 @@ test("docked: no one-time hint shows or is spent; after Lift a step shows no Cal
   dock(p, st);
   p.key("back"); assert.equal(p.S.phase, "menu");
   p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo");
-  p.key("back"); p.key("back"); assert.equal(p.S.phase, "patch");
+  p.key("back"); assert.equal(p.S.phase, "patch");   // the Case's ← goes to the field, as the Log's
   assert.equal(p.S.found.includes("callintro"), false, "not spent while docked");
   assert.notEqual(p.run("FX.msg"), CALL, "the Call hint does not show while docked");
   p.key("call"); assert.notEqual(p.run("FX.msg"), CALL, "a Call press while docked shows no Call sign"); assert.equal(p.S.found.includes("callintro"), false, "and spends nothing");
@@ -386,7 +386,7 @@ test("C2a: rendering changes nothing: 600 frames in the reach view, a place, the
     frozenBy(p, "the beacon sweep"); p.pass(1800); assert.equal(p.S.exp.beaconView, undefined, "the sweep's own timer still brings the view back"); }
   { const p = page(); p.run(`newWorld(${SEED}); S.mibis.push({ id: 1, name: 'Dot', sp: 0, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null },
       { id: 2, name: 'Pip', sp: 1, born: -9, outings: 0, notches: 0, bonded: false, plays: 0, grownTurn: null }); S.carried = [1, 2];
-      S.phase = 'active'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
+      S.phase = 'riding'; S.ui.aId = 1; S.ui.aIdx = 5; FX.cuts = [{ kind: 'bond', id: 2, at: NOW + 100, done: 0 }];`);
     frozenBy(p, "the active screen with a cut due"); }
 });
 
