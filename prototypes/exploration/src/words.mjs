@@ -88,6 +88,8 @@ WORDS.habit = {
   },
   note: 'Note it',                      // the ✓ label while she plays a habit in sight
   noteCtx: 'note what you see of her now',
+  turn: 'Face her',                     // the ✓ label while she plays a habit in sight and the explorer faces away: it turns him to her (no light spent); the next ✓ is Note it
+  turnCtx: 'she is playing a habit: turn to her to note it',
   // what a note says, by range: the shape only when the sight gives no more (a far note never claims more)
   shape: { shake: 'a small grey shape shivering', calm: 'she has stopped', sleep: 'a round shape low in the grass' },
   noted: (name, habit, range, said) => name + ' · ' + habit + ' · ' + range + ' · ' + said,
