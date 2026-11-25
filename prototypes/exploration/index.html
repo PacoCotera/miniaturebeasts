@@ -2884,7 +2884,7 @@ function noteHabit(c, viaView) {   // viaView: the watch view takes the note and
 }
 function hauntStep(X, c) {   // true when the routine has the creature's action
   if (c.gone && c.gone.night != null && c.gone.night !== S.turn) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; }   // night step 5: gone from her bed at night, she is at her dawn haunt next morning and the day is not lost
-  if (c.gone && c.gone.night == null) { if (c.gone.part == null) c.gone.part = dayPart(); else if (c.gone.part !== dayPart()) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; } }   // bug #145: a day-time gone lasts to the next part of day, then her routine has her again (it kept her on one tile for the whole day)
+  if (c.gone && c.gone.night == null) { if (c.gone.part == null || c.gone.part !== dayPart()) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; } }   // bug #145: a day-time gone lasts to the next part of day, then her routine has her again (it kept her on one tile for the whole day)
   if (c.gone) { const t = c.gone.t; if (!t) return false; if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; } return true; }   // gone: its next haunt for the rest of the day
   const part = dayPart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
   const t = c.ind.go.t; if (!t) return false;

@@ -17,8 +17,38 @@ test("his save: Hazel stands on land, can step off, and is at her next haunt onc
   assert.deepEqual([first.x, first.y, first.tile], [15, 2, true], "she stands on a grass tile");
   assert.ok(first.free >= 1, "she can step off it");
   let last = first;
-  for (let s = 157 + 25; s < 420; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'act' })`); p.pass(1200); last = me(); }
+  for (let s = 157 + 25; s < 420; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'creep' })`); p.pass(1200); last = me(); }
   assert.equal(last.part, "afternoon");
-  assert.equal(last.gone, false, "the day-time gone has ended");
   assert.deepEqual([last.x, last.y], [last.want.x, last.want.y], "she is at her afternoon haunt");
+  assert.notDeepEqual([last.x, last.y], [15, 2], "she is no longer on her midday tile");
+  assert.equal(last.gone, false, "the day-time gone has ended");   // first.part is morning; midday's haunt is her own tile 15,2 (#145 follow-up: released at the midday turn, so by the afternoon the player's noise is heard again and she may be alert)
+});
+
+// Follow-up (#145, 2): the gone ends at the FIRST part-of-day turn after the bolt, not one part later.
+const hazel = p => JSON.parse(p.run(`JSON.stringify((c => ({ part: dayPart(), x: c.x, y: c.y, gone: !!c.gone, gp: c.gone ? c.gone.part : null }))(curLive().cr.find(c => c.ind && c.ind.name === 'Hazel')))`));
+const load = () => makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count", store: { "mb-save-v8": raw } });
+const setGone = (p, part) => p.run(`curLive().cr.find(c => c.ind && c.ind.name === 'Hazel').gone = { t: { x: 15, y: 2 }, night: null${part ? `, part: '${part}'` : ""} }`);
+const upTo = (p, part) => { let h = hazel(p); for (let s = 182; h.part !== part && s < 420; s += 5) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'act' })`); p.pass(1200); h = hazel(p); } return h; };
+test("his save (a gone with no part) is released at the midday turn", () => {
+  const p = load();
+  setGone(p, null);
+  const h = upTo(p, "midday");
+  assert.equal(h.part, "midday");
+  assert.equal(h.gone, false, "released at the midday turn");
+});
+test("bolted in the morning: released at the midday turn, not held through it", () => {
+  const p = load();
+  setGone(p, "morning");
+  assert.equal(hazel(p).gone, true);
+  const h = upTo(p, "midday");
+  assert.equal(h.gone, false, "released at the midday turn");
+});
+test("bolted at midday: still gone within midday, released at the afternoon turn", () => {
+  const p = load();
+  upTo(p, "midday");
+  setGone(p, "midday");
+  p.run(`advance('patch', { noise: 'act' })`); p.pass(1200);
+  assert.equal(hazel(p).gone, true, "held within midday");
+  const h = upTo(p, "afternoon");
+  assert.equal(h.gone, false, "released at the afternoon turn");
 });
