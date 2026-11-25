@@ -9294,7 +9294,7 @@ function panRaw(lay, c0, hero, f, d) {
   return { x: f * cap(lay.w * 48 - SCR_W / 2 - c0.x, hero.x - PAN_MARGIN), y: 0 };
 }
 function press(k) {
-  if (FX.card) { cardPass(); return; }   // a card is up: any press passes it, and is spent on that
+  if (FX.card) { if (k === 'confirm') cardPass(); return; }   // a card is up (dusk, night, dawn): only ✓ passes it (owner 11-25, #169); the pad, ← and other keys do nothing
   if (PAN.dir && k !== PAN.dir) panEnd();   // another key ends the peek, then acts as usual
   if (k === 'call') {
     NOW = performance.now();
