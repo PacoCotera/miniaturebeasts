@@ -9,6 +9,8 @@ const start = (seed = 13) => {
   const p = makePage({ gen: 7, store: {}, console: "collect", els: true, canvas: true, raf: "count" });
   p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]); HUD.ok = true; enterPatch(String(S.exp.pos)); S.phase = 'patch'; S.known = [0];
     globalThis.DRAWN = []; { const t0 = text; text = (s, x, y, col, sc, al) => { DRAWN.push({ s: String(s), x, y, sc: sc || 2, al }); return t0(s, x, y, col, sc, al); }; }`);
+  // since #591 a wild one in sight is named at once: these tests start with none named or in sight (every wild one hidden, as in a place with none), then meet() brings one back
+  p.run("{ for (const c of curLive().cr) c.hide = 1; S.named = {}; S.metIds = []; S.book = []; S.pages = {}; }");
   return p;
 };
 // her at the front of the explorer, met (named)
