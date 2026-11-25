@@ -2773,6 +2773,13 @@ function noteTarget() {
     const d = cheb(c, P); if (d < bd) { bd = d; best = c; } }
   return best;
 }
+// pods-owner-2: the nearest named Loika playing a habit in sight that ✓ cannot note because the explorer faces away from her (noteTarget is null); null otherwise
+function habTurnTarget(P) {
+  const ex = S.exp; if (!ex || ex.carry === 'fruit' || curLay().cave || noteTarget()) return null;
+  let best = null, bd = 99;
+  for (const c of curLive().cr) { if (!c.hb || c.hide || !c.ind || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d > 0 && d < bd) { bd = d; best = c; } }
+  return best;
+}
 // ---------- W4 round 2: her prints at a haunt she has left (walk-design-1 3A) ----------
 // NAMED SLOT PAWS-ON-TILE: the built paw sign drawn on the stand tile. The art director passes it in whole-place stills at walking zoom (rules 17, 18a); if it does not read, set this false:
 // the slot stays named and empty and the read works from the message box alone (design 3F).
@@ -3523,6 +3530,8 @@ function patchAction() {
   if (!o && ex.carry !== 'fruit') { const here = standingOn(key, P); if (here) { o = here; f = { x: P.x, y: P.y }; } }   // facing nothing, standing on a small thing: its action
   ACT_AT = f;
   { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => { if (nt.hb) openWatch(nt); else noteHabit(nt); } }; } }   // w6b: during a play ✓ opens the watch view, where ✓ Note takes the note; a sleeper (no play) is noted here as before   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
+  // pods-owner-2: a Loika plays a habit in sight but the explorer faces away (✓ was "Face the stone"): ✓ turns him to her, the next ✓ is Note it. A turn spends no light (as faceThing).
+  if (!o || o.type === 'tile') { const ht = habTurnTarget(P); if (ht) { ACT_AT = { x: ht.x, y: ht.y }; return { label: WORDS.habit.turn, ctx: WORDS.habit.turnCtx, face: 1, run: () => { const fd = faceDirOf(P, ht); if (fd) { P.dir = fd; followFront(); } } }; } }
   if (!o || o.type === 'tile') { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // QA verify-live-134 item 6: a blocked tile in front has no action of its own, so ✓ reads the prints the bottom line names. W4 round 2: her prints at a haunt she has left
   // first-walk-teach-approach-1 (4): while a named Loika is in sight within her stay (2 tiles) or plays her habit, ✓ is hers (keep still, Note it); a tuft or her read prints wait until she is gone or out of the stay
   const hn = ex.carry !== 'fruit' && live.cr.find(c => c.ind && !c.hide && (c.ease | 0) < 3 && inSight(c.x, c.y) && (c.hb || cheb(c, P) <= 2)) || null;
