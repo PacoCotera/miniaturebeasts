@@ -102,7 +102,7 @@ test("a short phone upright (Safari with its bars): the Companion is drawn whole
 test("the Station on a phone: x0.6 in a window (view) where the whole screen would be smaller; the whole screen wherever x0.6 fits; no turn hint", () => {
   for (const [W, H] of [[390, 844], [360, 780], [844, 390], [932, 430]]) for (const asleep of [false, true]) {
     const p = plan({ W, H, dpr: 3, coarse: true, dev: "station", asleep }), tag = `${W}×${H}${asleep ? " asleep" : ""}`;
-    assert.equal(p.scale, ZOOM, tag + ": x0.6"); assert.ok(p.view && p.view.w < 1024 && p.view.h <= 600, tag + ": a window on part of the screen");
+    assert.ok(ZOOM - p.scale >= 0 && ZOOM - p.scale < 1 / 64 / 3 + 1e-9, tag + ": x0.6, floored to 1/64 device px (one scale, code-audit step 6: the plan says what is drawn)"); assert.ok(p.view && p.view.w < 1024 && p.view.h <= 600, tag + ": a window on part of the screen");
     assert.ok(Math.abs(p.screen.w - p.view.w * p.scale) < 1e-6 && Math.abs(p.screen.h - p.view.h * p.scale) < 1e-6, tag + ": the window is the view at x0.6");
     assert.ok(!("hint" in p) || p.hint == null, tag + ": no turn hint");
     if (p.note) assert.ok(p.note.y >= BAR + 16 - 1e-9 && p.note.y + p.note.h + 16 <= p.panel.y + 1e-9, tag + ": the asleep note under the bar, above the panel");
@@ -117,7 +117,7 @@ test("Home's narrow form (the `narrow` the page tells the Station): only the Sta
     assert.equal(p.form, "up"); assert.equal(p.narrow, true, tag + ": narrow upright"); assert.ok(p.view.w <= 530 + 1e-6, tag + ": the window is at most 530 lp wide");
     assert.ok(p.screen.x >= p.panel.x - 1e-9 && p.screen.x + p.screen.w <= p.panel.x + p.panel.w + 1e-9, tag + ": the window stays inside the panel");
   }
-  { const p = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "390×844: the window is 530 lp wide, 1:1 at x0.6"); assert.equal(p.view.h, 600); assert.ok(Math.abs(p.screen.w - 318) < 1e-6, "318 CSS px"); }
+  { const p = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "390×844: the window is 530 lp wide, 1:1 at x0.6"); assert.equal(p.view.h, 600); assert.ok(Math.abs(p.screen.w - 318) < 0.7, "318 CSS px (530 lp at the 1/64-floored x0.6)"); }
   { const p = plan({ W: 430, H: 932, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "a wider phone: still 530 lp, not more of the screen"); assert.ok(Math.abs((p.screen.x - p.panel.x) - (p.panel.x + p.panel.w - p.screen.x - p.screen.w)) < 1e-6, "centred in the panel"); }
   for (const [W, H, dpr, coarse] of [[844, 390, 3, true], [932, 430, 3, true], [1440, 900, 1, false], [1280, 720, 1, false]]) assert.ok(!plan({ W, H, dpr, coarse, dev: "station" }).narrow, `${W}×${H}: not narrow`);
   assert.ok(!plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" }).narrow, "the Companion is never narrow");

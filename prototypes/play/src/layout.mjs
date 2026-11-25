@@ -75,6 +75,8 @@ function laptopScales(W, H, dpr, zSet) {
 // -> { form, W, H, dev, a, scale, bar, panel, screen, tray: { box, layout, plan }, dock, epaper, note, stamp, view, margins, content }
 // scale: CSS px per lp. tray.plan is keyplan's plan for tray.box; dock and epaper are in window CSS px. note and stamp are null where not shown; stamp.where: 'foot', 'bar' (sideways) or 'barLeft' (laptop).
 export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet = null, page = false, whole = false }) {   // whole: the Station's Bay (Cargo) screen, 1024 lp across with no narrow form: the upright phone shows it whole at the width's fit, not in the x0.6 window (QA verify-live-144: the Dock screen was cut off at 412 wide)
+  // the one 1/64 floor (code-audit step 6): every scale is a whole number of 1/64 device px per lp, so plan().screen.w is what the shell draws (it takes p.scale * dpr as given)
+  const snap64 = (v) => Math.floor(v * dpr * 64 + 1e-6) / 64 / dpr;
   const f = form(W, H, coarse), st = dev === "station", [fw, fh] = FACE[dev];
   const out = { form: f, W, H, dev, asleep, bar: box(0, 0, W, BAR), note: null, stamp: null, view: null };   // view: the Station's window on a phone (lp), null where the whole screen shows
   if (f === "up") {
@@ -83,14 +85,13 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     // The Companion is drawn whole at the width's fit, or smaller where the height runs short (ui-short-phone-1): the group (panel, GAP, dock row) then fills the zone between the bar and the build line less GAP at each end,
     // so its panel keeps the GAP under the bar, the dock row ends GAP above the build line, and the keys (signed sizes) never meet the screen. Where the height is enough nothing changes.
     const zone = stampY - 12 - BAR, trayC = portraitTrayH("companion", a), fitH = (zone - 2 * GAP - GAP - DOCK_H - EDGE - trayC - 1e-6) / FACE.companion[1];
-    const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? Math.max(ZOOM, fitOf(d)) : wholeUp(d)), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
+    const fitOf = (d) => (bw - 2 * EDGE) / FACE[d][0], scOf = (d) => (d === "station" ? snap64(Math.max(ZOOM, fitOf(d))) : wholeUp(d)), bhOf = (d) => EDGE + FACE[d][1] * scOf(d) + portraitTrayH(d, a);
     // bug 134: a whole multiple that misses the panel's inner width by a few px (1.98 device px per lp at 412 wide, dpr 2.625) may use half the panel's edge each side, not drop to one device px per lp (a third of the width)
     // bug 135: where the whole multiple is under 95% of the fit (522 x 935, dpr 3: 2 of a possible 2.73 device px per lp, 300 of 410 CSS px; 390 x 844: 300 of 330), the screen takes the fit (the pixelated iframe stays sharp at a fraction)
     // one scale (code-audit step 6, owner #27/#134/#135): out.screen.w is what is drawn. The shell draws the frame at the scale floored to 1/64 device px per lp (shell.mjs kOf), so the plan says that scale: never 2 CSS px more than the screen shows (2.2 asked, 2.1875 drawn, at 390 wide).
-    const snap64 = (v) => Math.floor(v * dpr * 64 + 1e-6) / 64 / dpr;
     const wholeUp = (d) => snap64(wholeUp0(d)), wholeUp0 = (d) => { const wide = Math.max(1 / 16, Math.min((bw - EDGE) / FACE[d][0], fitH)); if (Math.floor(wide * dpr + 1e-6) < 1) return Math.max(1 / 16, Math.min(fitOf(d), fitH)); const w = wholeC(wide, dpr); return w < 0.95 * wide ? wide : w; };
     const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((zone - group) / 2) + bhC, dockY = bodyBottom + GAP;
-    const s = st && whole ? fitOf(dev) : scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - (st ? 2 : 1) * EDGE, st && !whole ? NARROW_W * s : Infinity);   // the Station's window is never wider than the narrow Home (centred in the panel when the phone is wider)
+    const s = st && whole ? snap64(fitOf(dev)) : scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - (st ? 2 : 1) * EDGE, st && !whole ? NARROW_W * s : Infinity);   // the Station's window is never wider than the narrow Home (centred in the panel when the phone is wider)
     // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter. The Companion's screen is always whole.
     const topMin = BAR + GAP + (st && asleep ? NOTE_H + GAP : 0), sh = st ? Math.max(0, Math.min(fh * s, Math.floor(bodyBottom - trayH - EDGE - topMin))) : fh * s;
     const bh = EDGE + sh + trayH, by = bodyBottom - bh;
@@ -117,18 +118,18 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     bh = EDGE + leftH + EDGE;
     const maxW = W - 2 * M - LW - RW, maxH = bh - 2 * EDGE;
     s = Math.min(maxW / fw, maxH / fh);
-    if (!st) s = wholeC(s, dpr);
-    if (st && s < ZOOM) { s = ZOOM; sw = Math.min(fw * s, maxW); sh = Math.min(fh * s, maxH); out.view = { w: sw / s, h: sh / s }; }   // the Station's window at ZOOM, as large as the side allows
+    s = st ? snap64(s) : snap64(wholeC(s, dpr));
+    if (st && s < snap64(ZOOM)) { s = snap64(ZOOM); sw = Math.min(fw * s, maxW); sh = Math.min(fh * s, maxH); out.view = { w: sw / s, h: sh / s }; }   // the Station's window at ZOOM, as large as the side allows
     else { sw = fw * s; sh = fh * s; }
     bw = LW + sw + RW;
-    if (st && page) { const ps = Math.min(maxH / PAGE_W_H[1], sw / PAGE_W_H[0]); s = ps; out.view = { w: PAGE_W_H[0], h: PAGE_W_H[1] }; out.pageForm = { x: (sw - PAGE_W_H[0] * ps) / 2, w: PAGE_W_H[0] * ps, h: PAGE_W_H[1] * ps }; }   // her page (a 530 x 600 window of the face) on a phone's side: the whole page at the height's fit, as wide as the page itself, centred between the key columns (the panel and its keys stay where they are)
+    if (st && page) { const ps = snap64(Math.min(maxH / PAGE_W_H[1], sw / PAGE_W_H[0])); s = ps; out.view = { w: PAGE_W_H[0], h: PAGE_W_H[1] }; out.pageForm = { x: (sw - PAGE_W_H[0] * ps) / 2, w: PAGE_W_H[0] * ps, h: PAGE_W_H[1] * ps }; }   // her page (a 530 x 600 window of the face) on a phone's side: the whole page at the height's fit, as wide as the page itself, centred between the key columns (the panel and its keys stay where they are)
     by = BAR + Math.floor((avail - bh) / 2); bxx = Math.round((W - bw) / 2);
     out.margins = { side: bxx, top: by - BAR, bottom: H - by - bh };
     out.stamp = { box: null, where: "bar" };
     if (st && asleep) out.note = null;   // no room above the panel: the note takes the build line's place in the bar (shell.mjs)
   } else {
     const sc = laptopScales(W, H, dpr, zSet), avail = H - BAR;
-    s = st ? sc.station : sc.companion; sw = fw * s; sh = fh * s;
+    s = snap64(st ? sc.station : sc.companion); sw = fw * s; sh = fh * s;
     bh = Math.max(sh, leftH) + 2 * EDGE; bw = LW + sw + RW;
     const lift = st && asleep ? NOTE_H + GAP : 0, blockH = bh + lift;
     const y0 = BAR + Math.max(LAPTOP_TOP, Math.floor((avail - blockH) / 2));
