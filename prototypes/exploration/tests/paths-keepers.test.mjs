@@ -47,6 +47,18 @@ test("a seated keepers' place stands on grass off the road, its block rects lie 
   assert.ok(seated > 10, "places were seated: " + seated);
 });
 
+test("the pixel desk's note: a road's last tile and the tile it came from are carried (the run END piece), and a bridge's deck box (bank to bank)", () => {
+  let ends = 0, bridges = 0;
+  for (const seed of SEEDS) for (const [k] of keeperKinds(seed)) {
+    const [X, Y] = k.split(",").map(Number), p = planOf(seed, X, Y); if (!p || !p.roadEnd) continue;
+    const ct = cellTerrain(seed, X, Y), e = p.roadEnd; ends++;
+    assert.equal(ct.terrain[e.y * ct.w + e.x], TV.PATH, "the road's last tile is road");
+    if (e.from) assert.equal(Math.abs(e.from[0] - e.x) + Math.abs(e.from[1] - e.y), 1, "it came from the tile beside it");
+  }
+  for (const seed of [64]) for (let X = 36; X < 44; X++) for (let Y = 40; Y < 44; Y++) { const p = planOf(seed, X, Y); if (!p || !p.bridges) continue; const ct = cellTerrain(seed, X, Y); for (const b of p.bridges) { bridges++; assert.equal(ct.terrain[b.y * ct.w + b.x], 21); } }
+  assert.ok(ends > 5, "road ends carried: " + ends); void bridges;   // bridges are checked where a place in the window holds one
+});
+
 test("the baked cell's block mask carries the footprint and the IR the place (one cell, seed 64)", () => {
   const [ax, ay] = CENTER;
   for (const [k] of keeperKinds(64)) {

@@ -126,6 +126,8 @@ function holdOn(a, pick) {
     if (p.x >= 0 && p.y >= 0 && p.x < w && p.y < h && p.fam === 'rocks') { occ[p.y * w + p.x] = 1; }   // a wall takes its tile but adds no pod or stone supply: the set pieces give finds from the place's count, never more supply
   }
   for (const p of content.pieces) for (let i = 0; i < (p.w || 1); i++) if (p.x + i >= 0 && p.y >= 0 && p.x + i < w && p.y < h) occ[p.y * w + p.x + i] = 1;
+  if (content.roadEnd) out.roadEnd = content.roadEnd;
+  if (content.bridges) out.bridges = content.bridges;
   if (content.keepers) { const k = content.keepers; out.keepers = k; for (let y = k.y; y < k.y + k.h; y++) for (let x = k.x; x < k.x + k.w; x++) if (x >= 0 && y >= 0 && x < w && y < h) occ[y * w + x] = 1; }   // the keepers' box takes its tiles: no find, pod or mark lies on it
   out.patches = content.patches; out.setProps = drawnSetProps; out.pieces = content.pieces; out.shelter = content.shelter; out.stamps = content.spots;
   // The cell's MAIN ground: the biggest part of the free ground that a way in leads to (the page floods from each opening's middle tile, as adapt7 does). Everything the cell holds lies on it, so no find,

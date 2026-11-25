@@ -62,6 +62,6 @@ export function bakeCell(ir, ctx) {
     openings: ir.openings.map(o => ({ side: o.side, from: o.from, to: o.to })),
     spawns: ir.spawns.map(s => ({ x: s.x, y: s.y, w: s.w, h: s.h, species: s.species, count: s.count })),
     blockMask: block, rimSteps: rimSteps(ir, terrains), top: ir.top || new Uint8Array(0),
-    ...(ir.keepers ? { keepers: ir.keepers } : {}),
+    ...(ir.keepers ? { keepers: ir.keepers } : {}), ...(ir.roadEnd ? { roadEnd: ir.roadEnd } : {}), ...(ir.bridges ? { bridges: ir.bridges } : {}),   // frame tiles (the apron's index): the keepers' place, the road's last tile (and where it came from) and the bridges' decks, for the draw job
   };
 }

@@ -91,6 +91,9 @@ export function seatKeeper(kind, a, TVs, atEnd) {
     const far = pts.filter(p => dist.has(p[1] * w + p[0])).sort((p, r) => dist.get(r[1] * w + r[0]) - dist.get(p[1] * w + p[0]) || p[1] - r[1] || p[0] - r[0])[0];
     if (!far) return { why: 'no-port' }; M = far;
   }
+  // the road's last tile and the tile it came from: where the signed run's END piece goes (pixel desk's note: the end piece where a road ends, its open side back along the road)
+  const dM = dist.get(M[1] * w + M[0]), back = atEnd ? [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [M[0] + dx, M[1] + dy]).find(([x, y]) => dist.get(y * w + x) === dM - 1) : null;
+  const end = atEnd ? { x: M[0], y: M[1], from: back || null } : null;
   const ok = (x, y) => x >= EDGE_KEEP && y >= EDGE_KEEP && x <= cw + 1 - EDGE_KEEP && y <= ch + 1 - EDGE_KEEP && TVs.FAMILY.has(terrain[I(x, y)]) && !solid[I(x, y)] && !cliff[I(x, y)];   // the spine (the shortest walks between the ways in) may pass under it: a block is one to three rows, the yard is walkable all round
   const nearSpot = (x, y) => spots.some(s => x >= s.x - 1 && x < s.x + s.w + 1 && y >= s.y - 1 && y < s.y + s.h + 1);
   const onSpot = (x, y) => spots.some(s => x >= s.x && x < s.x + s.w && y >= s.y && y < s.y + s.h);
@@ -110,7 +113,7 @@ export function seatKeeper(kind, a, TVs, atEnd) {
     if (!free(x0, y0, mode)) continue;
     const touches = near.some(([px, py]) => px >= x0 - 1 && px <= x0 + bw && py >= y0 - 1 && py <= y0 + bh);
     if (!touches) continue;
-    return { kind, piece: fp.piece, x: x0, y: y0, w: bw, h: bh, block: fp.block.map(([x, y, bw2, bh2]) => [x0 + x, y0 + y, bw2, bh2]), yard: { x: x0 - fp.yard, y: y0 - fp.yard, w: bw + 2 * fp.yard, h: bh + 2 * fp.yard }, meet: M };
+    return { kind, piece: fp.piece, x: x0, y: y0, w: bw, h: bh, block: fp.block.map(([x, y, bw2, bh2]) => [x0 + x, y0 + y, bw2, bh2]), yard: { x: x0 - fp.yard, y: y0 - fp.yard, w: bw + 2 * fp.yard, h: bh + 2 * fp.yard }, meet: M, end };
   }
-  return { why: 'no-room' };
+  return { why: 'no-room', end };
 }

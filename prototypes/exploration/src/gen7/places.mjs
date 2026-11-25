@@ -276,7 +276,16 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
   // ---- 2b. the keepers' place (keepers.mjs): where the road ends or forks, seated against the road's last tile; its box and yard are kept clear and its block rects go to the bake's block mask ----
   { const kind = keeperKindAt(seed, X, Y);
     if (kind) { const r = seatKeeper(kind, { w, h, cw: CW, ch: CH, terrain, solid: plan.solid, spine: plan.spine, cliff: plan.cliff, spots: plan.spots }, { PATH: TV.PATH, FAMILY: new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF]) }, isRoadEnd(seed, X, Y));
-      if (r.why) plan.keepersWhy = r.why; else plan.keepers = r; } }
+      if (r.why) plan.keepersWhy = r.why; else plan.keepers = r;
+      if (r.end) plan.roadEnd = r.end; }
+    // the old bridges' decks (the trail's own BRIDGE tiles): each connected run's box, for the draw job to span bank to bank
+    const br = [], seenB = new Uint8Array(N);
+    for (let y = 1; y <= CH; y++) for (let x = 1; x <= CW; x++) { if (terrain[I(x, y)] !== 21 || seenB[I(x, y)]) continue;
+      let x0b = x, y0b = y, x1b = x, y1b = y; const st = [[x, y]]; seenB[I(x, y)] = 1;
+      for (let i = 0; i < st.length; i++) { const [sx, sy] = st[i]; x0b = Math.min(x0b, sx); x1b = Math.max(x1b, sx); y0b = Math.min(y0b, sy); y1b = Math.max(y1b, sy);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = sx + dx, ny = sy + dy; if (nx >= 1 && ny >= 1 && nx <= CW && ny <= CH && terrain[I(nx, ny)] === 21 && !seenB[I(nx, ny)]) { seenB[I(nx, ny)] = 1; st.push([nx, ny]); } } }
+      br.push({ x: x0b, y: y0b, w: x1b - x0b + 1, h: y1b - y0b + 1 }); }
+    if (br.length) plan.bridges = br; }
   // ---- 3. the zone the scenery keeps off: 2 = nothing at all (a spot, one tile round it, the spine); 1 = nothing tall (three tiles round a spot, the heart's sight line and a tile either side) ----
   const zw = w + 2 * ZM, zh = h + 2 * ZM, zone = new Uint8Array(zw * zh), Z = (x, y) => (y + ZM) * zw + x + ZM;
   const mark = (x, y, v) => { if (x < -ZM || y < -ZM || x >= w + ZM || y >= h + ZM) return; const k = Z(x, y); if (zone[k] < v) zone[k] = v; };
@@ -361,6 +370,8 @@ export function contentOf(plan, seed) {
   const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], patches: [], landmark: null, spots: [], keepers: null };
   if (!plan) return out;
   if (plan.keepers) out.keepers = plan.keepers;
+  if (plan.roadEnd) out.roadEnd = plan.roadEnd;
+  if (plan.bridges) out.bridges = plan.bridges;
   const word = plan.land, kinds = WALL[word] && WALL[word].length ? WALL[word] : ROCK_KINDS, rank = { p: 0, k: 1, m: 2, c: 3 };
   for (const s of plan.spots) {
     out.spots.push({ id: s.id, kind: s.kind, role: s.role, x: s.x, y: s.y, w: s.w, h: s.h, tier: s.tier, entryDist: s.entryDist, spineDist: s.spineDist, seenFrom: s.seenFrom || null, cells: s.cells.map(c => [c.x, c.y, c.k]) });
