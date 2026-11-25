@@ -18,6 +18,10 @@ test("his save: ten walk steps, the Loikas in sight stir within one tile, never 
   // round 3: on his save every Loika in sight has already heard him (ease 3), and a heard one holds her tile; the walk is read with them unaware (grazing), as at a fresh meeting
   q.run(`curLive().cr.forEach(c => { if (c.sp === 0 && Math.max(Math.abs(c.x - S.exp.patch.x), Math.abs(c.y - S.exp.patch.y)) >= 5) { c.ease = 0; c.quiet = 0; c.crowd = 0; } })`);   // the far ones only: the near ones keep the hearing and routine moves of the old rules
   const snap = () => JSON.parse(q.run(`JSON.stringify({ P: { x: S.exp.patch.x, y: S.exp.patch.y }, cr: curLive().cr.filter(c => c.sp === 0 && !c.hide && inSight(c.x, c.y) && c.ease === 0).map(c => ({ id: c.id, x: c.x, y: c.y })) })`));
+  // 138-9: #145's load re-chooses his save's stored haunts, so on load these Loikas walk to their new stands; that routine walk is not a stir. Settle first (Waits, he does not move) until every one in sight stands within a tile of her routine stand, then take the baseline.
+  const settled = () => q.run(`curLive().cr.filter(c => c.sp === 0 && !c.hide && inSight(c.x, c.y) && c.ease === 0).every(c => { const a = c.ind ? routineSpot(c, curLay(), S.exp.patch.key) : null; return !a || man(a, c) <= 1; })`);
+  for (let i = 0; i < 60 && !settled(); i++) q.run("waitTick('patch')");
+  assert.ok(settled(), "his Loikas reach their routine stands before the walk");
   const start = snap(); assert.ok(start.cr.length, "a Loika is in sight at his spot");
   const home = new Map(start.cr.map(c => [c.id, c])), moved = new Set(), toward = [], far = [];
   for (const d of ["left", "right", "up", "down", "left", "right", "up", "down", "left", "right"]) {
@@ -31,6 +35,24 @@ test("his save: ten walk steps, the Loikas in sight stir within one tile, never 
   assert.ok(moved.size >= 1, "at least one Loika in sight changed tile");
   assert.deepEqual(far, [], "none ends more than one tile from its stand");
   assert.deepEqual(toward, [], "none steps toward him");
+});
+
+// 138-6 (QA verify-live-110: 20 of 76 stir moves ended nearer): 200 walk steps on his save; every stir is checked where he stands after his step.
+test("200 walk steps: no stir ends nearer to him, none ends within ring+3", () => {
+  const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
+  p.store[p.KEY] = raw;
+  const q = makePage({ gen: 7, store: { ...p.store }, console: "collect", els: true, canvas: true, raf: "count" });
+  q.run(`curLive().cr.forEach(c => { if (c.sp === 0) { c.ease = 0; c.quiet = 0; c.crowd = 0; } }); window.__stirs = []; const __orig = stirStep;
+    stirStep = function (c, X, bx, by) { const was = { x: c.x, y: c.y }; __orig(c, X, bx, by);
+      if (c.x !== was.x || c.y !== was.y) { const hr = easeCarryAt(X.ease, c, X.P.x, X.P.y, X.noise === 'walk' ? 'walk' : 'creep', c.wary || 0).v + 3;
+        window.__stirs.push({ walk: !!X.moved, ch0: Math.max(Math.abs(was.x - X.P.x), Math.abs(was.y - X.P.y)), ch1: Math.max(Math.abs(c.x - X.P.x), Math.abs(c.y - X.P.y)),
+          r0: (was.x - X.P.x) ** 2 + (was.y - X.P.y) ** 2, r1: (c.x - X.P.x) ** 2 + (c.y - X.P.y) ** 2, hr2: hr * hr }); } };`);
+  const dirs = ["left", "right", "up", "down"];
+  for (let i = 0; i < 200; i++) { q.run("curLive().cr.forEach(c => { if (c.sp === 0 && !c.hide && !c.home && !c.visit && c.st !== 'flee') { c.st = 'idle'; c.ease = 0; c.quiet = 0; c.crowd = 0; } })"); q.key(dirs[(i >> 1) % 4]); q.pass(1200); }
+  const st = JSON.parse(q.run("JSON.stringify(window.__stirs)")).filter(s => s.walk);
+  assert.ok(st.length >= 1, "control: some stirs happen");
+  assert.deepEqual(st.filter(s => s.ch1 < s.ch0 || s.r1 < s.r0), [], "none ends nearer");
+  assert.deepEqual(st.filter(s => s.r1 <= s.hr2), [], "none ends within ring+3");
 });
 
 // Round 3 (designer, bus 431735): she stirs only while unaware: once heard (ease up) or while the stay counts, she holds her tile.
