@@ -265,6 +265,8 @@ import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir a
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
+// the rules the Station's map room shares (map-room build): reach, where a start may go, the marks
+import { TIER, reachCellsIn, firstPlacementOf, placeValidIn, SIGN_ORDER, signBook } from "./src/map-rules.mjs";
 import { readOptions } from "./src/options.mjs";
 const OPT = readOptions();   // the Options panel's settings (play/src/options.mjs): playtest, Developer tools, the Companion slot
 /* =====================================================================
@@ -342,8 +344,7 @@ function keepCompanion() {
 }
 const BAY = 3;   // the sealed bay holds three consignments, one per expedition
 // Probe tiers: range in cells from the expedition's start, pods carried, shield bars. Sweep is one ring at both.
-const TIER = { 1: { range: 2, hold: 2, shield: 3 }, 2: { range: 4, hold: 3, shield: 4 } };
-const CAP = 20;                                   // each material caps at 20 carried
+const CAP = 20;                                  // each material caps at 20 carried
 // Data from a strike mark is fixed by the tier of the place it lies in: 2 / 3 / 4 / 5 (starter / early / mid / late); the hold (CAP) is the
 // only limit on a trip. A place's tier follows its land: meadow and pond edge are starter places (1), wood and rock field mid places (3),
 // the cave behind the burrow a late place (4, behind a gate); no land in this prototype is an early place (2) yet.
@@ -2157,13 +2158,7 @@ function hiddenIn(c) {
 }
 function inRange(c) { const ex = S.exp; return !!ex && cheb(cxy(c), cxy(ex.start)) <= ex.range; }
 // The cells an expedition can reach on foot without leaving the range square.
-function reachCells(start, range, opts = abOpts()) {   // opts: what the partner can cross (the partner's own by default)
-  const s0 = cxy(start), seen = new Set([start]), q = [start];
-  while (q.length) { const c = q.shift(), p = cxy(c);
-    for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const d = y * MW + x; if (seen.has(d) || !canStepIn(G, c, dir, opts) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
-  return [...seen];
-}
+function reachCells(start, range, opts = abOpts()) { return reachCellsIn(G, start, range, opts); }   // opts: what the partner can cross (the partner's own by default); the walk is src/map-rules.mjs, shared with the Station
 // The one place the map's numbers are counted.
 function cellCounts(cells) {
   const o = { visited: 0, found: 0, seen: 0, fog: 0, total: 0 };
@@ -6065,7 +6060,7 @@ const SIGN_WORD = { b: 'slow beat', t: 'tracks' };
 // (narrow hole, fast water, deep ?). Signs on cleared cells and inside a fog bank are not drawn.
 // Pins and gates always show; then beats, charge and the strongest tracks, up to about 40% of revealed cells.
 function mapSigns() {
-  const out = new Map(), add = (c, kind, pri, extra) => { let e = out.get(c); if (!e) { e = { c, pri: 0, list: [] }; out.set(c, e); } if (e.list.some(q => q.kind === kind)) return; e.list.push(Object.assign({ kind }, extra || {})); e.pri = Math.max(e.pri, pri); };
+  const book = signBook(), out = book.out, add = book.add;   // the book, the merge of kinds and the cap are src/map-rules.mjs
   // a found place has nothing hidden left to sign; a located pod shows as a pip, not a sign
   const hide = c => placeDone(c) || (S.exp && inFog(c));   // a buried pod keeps its slow beat until found
   if (PAWS_ON_TILE && S.exp) { const k = S.exp.patch ? S.exp.patch.key : String(S.exp.pos), dp = printsHere(k).find(q => dewDir(q)); if (dp) add(+k, 't', 10, { dew: dewDir(dp) }); }   // night step 4: the dew's prints in this place, turned on the map
@@ -6083,9 +6078,7 @@ function mapSigns() {
   for (const sp of S.known) { const n = {}; for (const w of S.cr) if (w.sp === sp && !w.cv && S.revealed[w.c] && !hide(w.c)) n[w.c] = (n[w.c] || 0) + 1;
     Object.keys(n).filter(c => n[c] >= 2).sort((a, b) => n[b] - n[a] || a - b).slice(0, 3).forEach(c => add(+c, 't', 4, { sp })); }
   { const ge = out.get(G.gate); if (ge && gatedCell(G.gate)) ge.list = ge.list.filter(q => q.kind === 'burrow'); }   // a gated cell shows its gate, on top of everything
-  const revealed = S.revealed.reduce((a, v) => a + v, 0), cap = Math.max(3, Math.floor(revealed * .4));
-  const all = [...out.values()].sort((a, b) => b.pri - a.pri || a.c - b.c);
-  return all.filter((e, i) => e.pri >= 9 || i < cap);
+  return book.pick(S.revealed.reduce((a, v) => a + v, 0));
 }
 function signsAt(c) { const e = mapSigns().find(q => q.c === c); return e ? e.list.map(q => q.kind) : []; }
 function drawSign(kind, s, px, py, fr) {
@@ -8769,8 +8762,8 @@ function outpostLights() { const out = []; for (const c of depotCells(S.seed)) {
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
 
 // ===================== 15. Screen dispatch =====================
-function firstPlacement() { return !S.revealed.some(v => v); }
-function placeValid(c) { if (firstPlacement()) return startPlaces().includes(c); return !!S.revealed[c] && passable(c) && !G.island[c] && (!G.gen || !!G.comp[c]); }   // never on a sealed plateau
+function firstPlacement() { return firstPlacementOf(S.revealed); }
+function placeValid(c) { return placeValidIn({ G, revealed: S.revealed, passable, starts: firstPlacement() ? startPlaces() : null }, c); }   // src/map-rules.mjs: never on a sealed plateau
 function placeReason(c) {
   if (firstPlacement()) return 'Pick a glint';
   if (!S.revealed[c]) return 'Not seen yet';
@@ -8778,7 +8771,6 @@ function placeReason(c) {
   if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
-const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'soft', 'bank', 'deep'];
 function signWords(c) { const e = mapSigns().find(q => q.c === c), list = e ? e.list : [];
   return SIGN_ORDER.map(k => list.find(q => q.kind === k)).filter(Boolean).map(q => q.kind === 'depot' ? DEPOT_NAME + (q.lit ? ' · lit ' + q.lit + ' turn' + (q.lit === 1 ? '' : 's') : ' (dark)') : q.kind === 'beacon' ? 'beacon' + (q.lit ? ' (lit)' : ' (unlit)') : SIGN_NAME[q.kind]); }
 // A place's name: its landmark's, as editorial wrote it, once you have been in; else the land's words (the IR's pond is the pond edge, its rock the rock field).
