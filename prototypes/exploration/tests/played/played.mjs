@@ -276,5 +276,28 @@ for (const size of SIZES) {
       assert.ok(waited.n >= hero.n * 0.75, `the hero is on screen after one Wait (${waited.n} of ${hero.n} pixels)`);
     } finally { await g.ctx.close(); }
   });
+
+  // OWNER #156 (11-24): "so now we have named a wild loika, how do i keep track of the mibis that i've already seen"; QA reopened it: a wild Loika beside him read "Unknown creature" (g5, 412x915).
+  // DESIGN RULING (11-25 09:33): "a wild Loika is always an individual (her name, her bed, her day). A place that cannot give her haunts does not hold her."
+  it(`s6 no 'Unknown creature' beside a Loika (#156, his save 152): walking up to a wild Loika, the bottom line never reads Unknown creature [${tag}]`, async () => {
+    const g = await open(size, "152");
+    try {
+      const m = (fn, ...a) => g.page.evaluate(([f, args]) => { const mb = window.__play.frames.companion.contentWindow.__mb, S = mb.S, e = S.exp, P = e.patch, live = e.live[P.key]; return new Function("mb", "S", "e", "P", "live", "a", f)(mb, S, e, P, live, args); }, [fn, a]);
+      // read only to say the case is reached: every Loika standing in this place is an individual
+      const all = await m("return live.cr.filter(c => mb.individualOf && c.sp === 0).map(c => ({ id: c.id, ind: !!c.ind }))");
+      console.log(`# s6 ${tag}: Loikas in the place ${JSON.stringify(all)}`);
+      assert.ok(all.every((c) => c.ind), "the case is reached: every Loika in his place is an individual");
+      // press toward the nearest Loika until she is next to him; every press is the d-pad
+      for (let i = 0; i < 60; i++) {
+        const s = await m("const c = live.cr.filter(c => c.sp === 0 && !c.hide).sort((p, q) => Math.abs(p.x - P.x) + Math.abs(p.y - P.y) - Math.abs(q.x - P.x) - Math.abs(q.y - P.y))[0]; return c ? { dx: c.x - P.x, dy: c.y - P.y } : null");
+        if (!s || Math.max(Math.abs(s.dx), Math.abs(s.dy)) <= 1) break;
+        await g.press(Math.abs(s.dx) >= Math.abs(s.dy) ? (s.dx > 0 ? "right" : "left") : (s.dy > 0 ? "down" : "up"), 100, 450);
+      }
+      await g.shot(`s6-${tag}-beside`);
+      const label = await m("return mb.patchAction().label");
+      console.log(`# s6 ${tag}: bottom line reads "${label}"`);
+      assert.ok(!/Unknown creature/.test(label), `the bottom line beside a Loika is not 'Unknown creature' (reads "${label}")`);
+    } finally { await g.ctx.close(); }
+  });
 }
 });
