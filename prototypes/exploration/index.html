@@ -2608,9 +2608,9 @@ function wildCtx(c, nm) {
   return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
-function indInSight() {
+function indInSight(anyKind) {   // anyKind: skip the known-kind check (herNamed asks whether any one is in sight)
   const P = S.exp.patch; let best = null, bd = 99;
-  for (const c of curLive().cr) { if (!c.ind || c.hide || (c.ease | 0) >= 3 || !S.known.includes(c.sp) || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d <= 10 && d < bd) { bd = d; best = c; } }
+  for (const c of curLive().cr) { if (!c.ind || c.hide || (c.ease | 0) >= 3 || (!anyKind && !S.known.includes(c.sp)) || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d <= 10 && d < bd) { bd = d; best = c; } }
   return best;
 }
 // Keeping still as one act (✓ facing a named Loika): Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light have gone; each Wait spends its light.
@@ -7063,7 +7063,7 @@ function drawPatchBody(t) {
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
-    if (herTag && String(c.id) === herTag) RT.tagW = { x: SX(PX(nr)) + 16, y: SY(PY(nr)), name: S.named[c.id], sp: c.sp, wild: true };
+    if (herTag && String(c.id) === herTag) RT.tagW = { x: SX(PX(nr)) + 16, y: SY(PY(nr)), name: S.named[c.id], sp: c.sp, wild: true, id: c.id };
     const pose = c.sp === 1 && c.st === 'curl' ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 6 ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 3 ? 'settle'
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : c.st === 'hab' ? (c.hb && c.hb.pose) || 'idle' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
@@ -7314,7 +7314,7 @@ function tagSpot(tg, k) {
   // what a tag may not cover: other creatures' and the pawn's clear zones, the finds' zones, the warned cell, the message box, the edge tabs
   const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
   const block = [];
-  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(k.PX(r)), k.H(k.PY(r)), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
+  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y) || (tg.wild && c.id === tg.id)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(k.PX(r)), k.H(k.PY(r)), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
   block.push(zone(k.W(k.PX(RT.pl)), k.H(k.PY(RT.pl)), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
   // a find the view draws (a pod, a stone, the crack, a lime pod, fruit on the ground): its cell, its pixels outside the cell, and the margin; the seen crack's ring reaches past the cell
   const fz = (x, y, seenCrack) => block.push(seenCrack ? (ts === 48 ? zone(k.W(x * ts), k.H(y * ts), 0, 0, ts, 55) : zone(k.W(x * ts), k.H(y * ts), -6, -6, 39, 39)) : zone(k.W(x * ts), k.H(y * ts), 0, 0, ts, ts));
@@ -8121,15 +8121,19 @@ function logLay(r) {
   return { r, pic, ls, hd, h: 48 + 24 * (ls.length + hd.length - 1) };
 }
 function logFitTop(day) { let y = 0, i = day.rows.length; while (i > 0) { const h = logLay(day.rows[i - 1]).h; if (y + h > LOG_Y1 - LOG_Y0) break; y += h; i--; } return i; }
-function logCanMove() { const days = logDays(); return days.length > 1 || (days.length === 1 && logFitTop(days[0]) > 0); }   // the bottom line names ▲▼ only when they do something
-function openLog() { const days = logDays(); S.ui.logDay = Math.max(0, days.length - 1); S.ui.logTop = days.length ? logFitTop(days[S.ui.logDay]) : 0; S.phase = 'log'; }
+function logCanMove() { const days = logDays(); return days.length > 1 || (days.length === 1 && days[0].rows.length > 1); }   // the bottom line names ▲▼ only when they do something
+function openLog() { const days = logDays(); S.ui.logDay = Math.max(0, days.length - 1); S.ui.logTop = days.length ? logFitTop(days[S.ui.logDay]) : 0; S.ui.logMark = null; S.phase = 'log'; }
+// The mark is its own entry (S.ui.logMark, the first one drawn until ▲▼ move it); the page's top follows it so it is always in view (#156 QA: the mark was the page's top, so ▼ at the foot never moved it)
+const logMarkAt = day => day && day.rows.length ? clamp(S.ui.logMark == null ? S.ui.logTop | 0 : S.ui.logMark, 0, day.rows.length - 1) : 0;
+const logFits = (day, t, m) => { let y = 0; for (let i = t; i <= m; i++) y += logLay(day.rows[i]).h; return y <= LOG_Y1 - LOG_Y0; };
 function logKey(k) {
   const days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di];
   if (k === 'back') { S.phase = S.ui.from || 'setup'; transition(); return; }
   if (k === 'right') { openCase(false); return; }   // the next page: the Case
   if (k === 'confirm') { const id = logMarked(); if (id) openHer(id, 'log'); else FX.bumpAt = NOW; return; }   // ✓ on the marked entry opens the page of the wild one it is about
-  if (k === 'up') { if (day && S.ui.logTop > 0) S.ui.logTop--; else if (di > 0) { S.ui.logDay = di - 1; S.ui.logTop = logFitTop(days[di - 1]); } else FX.bumpAt = NOW; }
-  else if (k === 'down') { if (day && S.ui.logTop < logFitTop(day)) S.ui.logTop++; else if (di < days.length - 1) { S.ui.logDay = di + 1; S.ui.logTop = logFitTop(days[di + 1]); } else FX.bumpAt = NOW; }
+  const m = logMarkAt(day);
+  if (k === 'up') { if (day && m > 0) { S.ui.logMark = m - 1; S.ui.logTop = Math.min(S.ui.logTop | 0, m - 1); } else if (di > 0) { S.ui.logDay = di - 1; S.ui.logTop = logFitTop(days[di - 1]); S.ui.logMark = null; } else FX.bumpAt = NOW; }
+  else if (k === 'down') { if (day && m < day.rows.length - 1) { S.ui.logMark = m + 1; let t = Math.min(S.ui.logTop | 0, m + 1); while (t < m + 1 && !logFits(day, t, m + 1)) t++; S.ui.logTop = t; } else if (di < days.length - 1) { S.ui.logDay = di + 1; S.ui.logTop = logFitTop(days[di + 1]); S.ui.logMark = null; } else FX.bumpAt = NOW; }
 }
 // The frame every Companion face shares (the Log and the Case; Riding and Together come with their builds): the top bar with the face's title, the part of day and the battery,
 // the tabs of the built faces (the open one raised on the paper), and the paper page with its bound edge.
@@ -8158,7 +8162,7 @@ function drawLog() {
     let y = LOG_Y0; g.imageSmoothingEnabled = false;
     for (let i = clamp(S.ui.logTop | 0, 0, day.rows.length - 1); i < day.rows.length; i++) {
       const L = logLay(day.rows[i]), r = L.r; if (y + L.h > LOG_Y1) break;
-      if (i === clamp(S.ui.logTop | 0, 0, day.rows.length - 1)) brackets(62, y - 4, 372, L.h - 16, C.orange);   // the mark ▲▼ move from entry to entry
+      if (i === logMarkAt(day)) brackets(62, y - 4, 372, L.h - 16, C.orange);   // the mark ▲▼ move from entry to entry
       if (DAY_ART[r.part]) g.drawImage(DAY_ART[r.part], 22, y, 28, 28);   // the signed 14 px day picture, in the margin at 2x
       L.hd.forEach((l, j) => text(l, 68, y + 2 + j * 24, soft));
       L.ls.forEach((l, j) => text(l, 68, y + 26 + (L.hd.length - 1) * 24 + j * 24, ink));
@@ -8182,11 +8186,12 @@ function herInSight() {
   const w = indInSight(); return w && S.named[w.id] ? String(w.id) : null;
 }
 // The one the screen names: in sight, else the top line's target
-function herNamed() { const a = herInSight(); if (a) return a; const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
+function herNamed() { const a = herInSight(); if (a) return a; if (S && S.exp && S.exp.patch && S.named && !curLay().cave && indInSight(true)) return null;   // one in sight that the line does not name (her kind is not known yet, so herInSight is null): no page to offer, never the top line's name (#156 R145-07)
+  const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
 // The menu's first row, and the ← word: "her page" while her name stands on the line, the short word where the ✓ label squeezes her name out (measured with the line's own fit)
 function herBack(o) {
   const id = herNamed(); if (!id) return null; const nm = S.named[id];
-  if (herInSight() && !lineCtx(Object.assign({}, o, { back: WORDS.her.back })).r.includes(nm)) return WORDS.her.backShort;
+  if (herInSight() && !lineCtx(Object.assign({}, o, { back: WORDS.her.back })).r.includes(nm)) return null;   // her name is not on the line: ← reads what it read before the page (#156 QA)
   return WORDS.her.back;
 }
 function openHer(id, from) { if (id == null) { FX.bumpAt = NOW; return; } S.ui.her = { id: String(id), from: from || S.phase }; S.phase = 'her'; transition(); }
@@ -8197,7 +8202,7 @@ function herKey(k) {
   FX.bumpAt = NOW;
 }
 // The Log's marked entry: its wild one when she is met ("A Loika was here" is about one not met: no ✓)
-function logMarked() { const days = logDays(), day = days[clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1))], r = day && day.rows.length ? day.rows[clamp(S.ui.logTop | 0, 0, day.rows.length - 1)] : null; return r && r.id != null && S.named && S.named[r.id] ? String(r.id) : null; }
+function logMarked() { const days = logDays(), day = days[clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1))], r = day && day.rows.length ? day.rows[logMarkAt(day)] : null; return r && r.id != null && S.named && S.named[r.id] ? String(r.id) : null; }
 // Where she keeps: one line for each haunt, the parts of day she was noted there (S.pages[id][part] = { x, y, k }), her bed once seen in it; nothing for a part not noted
 function herKeeps(id) {
   const pg = (S.pages && S.pages[id]) || {}, rows = [];
@@ -8479,7 +8484,7 @@ function caseKey(k) {
   else if (k === 'up' || k === 'down' || k === 'left' || k === 'right') caseMove(k);
   else if (k === 'confirm') {
     if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
-    else { const t = caseThing(caseSel(caseCells())), en = caseEntry(t.thing); if (en) { S.ui.logDay = en.di; S.ui.logTop = en.ri; S.phase = 'log'; transition(); } }   // its page in the Log, opened on that entry
+    else { const t = caseThing(caseSel(caseCells())), en = caseEntry(t.thing); if (en) { S.ui.logDay = en.di; S.ui.logTop = en.ri; S.ui.logMark = null; S.phase = 'log'; transition(); } }   // its page in the Log, opened on that entry
   }
 }
 function caseLine() {   // the bottom line: only what works here
