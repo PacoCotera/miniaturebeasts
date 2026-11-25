@@ -147,7 +147,7 @@ export function createApp(opts = {}) {
       // the dock: a seat is a state (a repeat changes nothing); 400 on a wrong world, cradle or seated; 503 when it cannot be stored (nothing changed)
       if (req.method === "POST" && p === "/dock/seat") {
         let body; try { body = JSON.parse(await readBody(req) || "{}"); } catch { return json(res, 400, { ok: false, error: "the body is not JSON" }); }
-        const r = dock.seat(body.world, body.cradle, body.seated, body.companion);
+        const r = dock.seat(body.world, body.cradle, body.seated, body.companion, body.package);
         return r.ok ? json(res, 200, r) : json(res, r.status, { ok: false, error: r.error, fault: !!r.fault });
       }
       if (req.method === "GET" && p === "/dock") {

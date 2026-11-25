@@ -17,8 +17,56 @@ test("his save: Hazel stands on land, can step off, and is at her next haunt onc
   assert.deepEqual([first.x, first.y, first.tile], [15, 2, true], "she stands on a grass tile");
   assert.ok(first.free >= 1, "she can step off it");
   let last = first;
-  for (let s = 157 + 25; s < 420; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'act' })`); p.pass(1200); last = me(); }
+  for (let s = 157 + 25; s < 480; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'creep' })`); p.pass(1200); last = me(); }   // her afternoon haunt is now across the place (#145-4): the loop runs on into the afternoon so she arrives
   assert.equal(last.part, "afternoon");
-  assert.equal(last.gone, false, "the day-time gone has ended");
   assert.deepEqual([last.x, last.y], [last.want.x, last.want.y], "she is at her afternoon haunt");
+  assert.notDeepEqual([last.x, last.y], [15, 2], "she is no longer on her midday tile");
+  assert.equal(last.gone, false, "the day-time gone has ended");   // first.part is morning; midday's haunt is her own tile 15,2 (#145 follow-up: released at the midday turn, so by the afternoon the player's noise is heard again and she may be alert)
+});
+
+// Follow-up (#145, 2): the gone ends at the FIRST part-of-day turn after the bolt, not one part later.
+const hazel = p => JSON.parse(p.run(`JSON.stringify((c => ({ part: dayPart(), x: c.x, y: c.y, gone: !!c.gone, gp: c.gone ? c.gone.part : null }))(curLive().cr.find(c => c.ind && c.ind.name === 'Hazel')))`));
+const load = () => makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count", store: { "mb-save-v8": raw } });
+const setGone = (p, part) => p.run(`curLive().cr.find(c => c.ind && c.ind.name === 'Hazel').gone = { t: { x: 15, y: 2 }, night: null${part ? `, part: '${part}'` : ""} }`);
+const upTo = (p, part) => { let h = hazel(p); for (let s = 182; h.part !== part && s < 420; s += 5) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'act' })`); p.pass(1200); h = hazel(p); } return h; };
+test("his save (a gone with no part) is released at the midday turn", () => {
+  const p = load();
+  setGone(p, null);
+  const h = upTo(p, "midday");
+  assert.equal(h.part, "midday");
+  assert.equal(h.gone, false, "released at the midday turn");
+});
+test("bolted in the morning: released at the midday turn, not held through it", () => {
+  const p = load();
+  setGone(p, "morning");
+  assert.equal(hazel(p).gone, true);
+  const h = upTo(p, "midday");
+  assert.equal(h.gone, false, "released at the midday turn");
+});
+test("bolted at midday: still gone within midday, released at the afternoon turn", () => {
+  const p = load();
+  upTo(p, "midday");
+  setGone(p, "midday");
+  p.run(`advance('patch', { noise: 'act' })`); p.pass(1200);
+  assert.equal(hazel(p).gone, true, "held within midday");
+  const h = upTo(p, "afternoon");
+  assert.equal(h.gone, false, "released at the afternoon turn");
+});
+
+// #145-6: with the hero kept at 17,0 (2 tiles away) and Waiting, every Wait is heard and she stayed alert/watching, so her routine never ran.
+// At the part-of-day turn she is let go to her routine: she leaves 15,2 within 3 Waits of the midday turn and is 3+ tiles from it by midday's end.
+test("his save, hero kept at 17,0 and Waiting: she leaves 15,2 within 3 Waits of the midday turn", () => {
+  const p = load();
+  const at = () => JSON.parse(p.run(`JSON.stringify((c => ({ part: dayPart(), x: c.x, y: c.y, st: c.st, px: S.exp.patch.x, py: S.exp.patch.y }))(curLive().cr.find(c => c.ind && c.ind.name === 'Hazel')))`));
+  let h = at(), n = 0;
+  assert.deepEqual([h.px, h.py], [17, 0]);
+  while (h.part === "morning" && n++ < 60) { p.run(`waitTick('patch')`); p.pass(1200); h = at(); }
+  assert.equal(h.part, "midday");
+  let left = -1;
+  for (let w = 1; w <= 3 && left < 0; w++) { p.run(`waitTick('patch')`); p.pass(1200); h = at(); if (h.x !== 15 || h.y !== 2) left = w; }
+  assert.ok(left > 0, "she left 15,2 within 3 Waits of the turn");
+  n = 0;
+  while (h.part === "midday" && n++ < 80) { p.run(`waitTick('patch')`); p.pass(1200); h = at(); }
+  assert.ok(Math.max(Math.abs(h.x - 15), Math.abs(h.y - 2)) >= 3, `3+ tiles from 15,2 by midday's end (at ${h.x},${h.y})`);
+  assert.deepEqual([h.px, h.py], [17, 0]);
 });
