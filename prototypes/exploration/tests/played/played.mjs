@@ -23,6 +23,10 @@ const SIZES = [{ w: 412, h: 915, dpr: 2.625 }, { w: 522, h: 935, dpr: 3 }];   //
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".wasm": "application/wasm", ".ttf": "font/ttf", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".webp": "image/webp" };
 function assemble() {
   const site = mkdtempSync(path.join(process.env.TMPDIR || tmpdir(), "mb-played-site-"));
+  // the copy is ~1.3 GB: remove it however the run ends (failure in assemble/before, Ctrl-C, kill), not only in after()
+  const drop = () => rmSync(site, { recursive: true, force: true });
+  process.on("exit", drop);
+  for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => process.exit(1));
   cpSync(path.join(repo, "website"), site, { recursive: true, dereference: true });
   mkdirSync(path.join(site, "play"), { recursive: true });
   for (const n of readdirSync(path.join(repo, "prototypes"))) {
