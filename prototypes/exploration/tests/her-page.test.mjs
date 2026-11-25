@@ -156,3 +156,12 @@ test("the worst case fits 450 x 600: three ways, her pod, four haunt lines, no c
   for (const d of rows.filter(r => r.y < 558)) assert.ok(d.y + 14 <= bottom - 2, `"${d.s}" at y ${d.y} runs past the page (${bottom})`);
   assert.equal(p.errors.length, 0, String(p.errors));
 });
+
+test("named on arrival has a met record: a wild one named at once on entering the place has S.pages[id].met with the turn", () => {
+  const p = makePage({ gen: 7, store: {}, console: "collect", els: true, canvas: true, raf: "count" });
+  p.run("newWorld(13); TEST.calm = true; startExpedition('weather', G.spawns[0]); HUD.ok = true; enterPatch(String(S.exp.pos)); S.phase = 'patch'; S.known = [0];");
+  const ids = p.run("Object.keys(S.named || {})");
+  assert.ok(ids.length > 0, "someone is named on arrival");
+  for (const id of ids) { const m = p.run(`S.pages && S.pages[${JSON.stringify(id)}] && S.pages[${JSON.stringify(id)}].met`); assert.ok(m && m.d != null && m.place && m.t != null, "met record for " + id + ": " + JSON.stringify(m)); }
+  assert.equal(p.errors.length, 0, String(p.errors));
+});

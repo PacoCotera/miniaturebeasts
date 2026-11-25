@@ -43,6 +43,8 @@ export function sitesOf(view) {
     if (nearReed(x, y) || (n++ % 5)) continue;
     out.push({ k: 'shore', x, y });
   }
+  // plain land (#145): a spare site every third tile on land that is not water, for a place whose own sites run out; haunts take one only when no site of a kind has room (k 'land', last in the order)
+  for (let y = 2; y < h - 2; y += 3) for (let x = 2; x < w - 2; x += 3) if (view.land(x, y) && !view.water(x, y) && !out.some(s => Math.abs(s.x - x) <= 1 && Math.abs(s.y - y) <= 1)) out.push({ k: 'land', x, y });
   return out.map((s, i) => ({ ...s, i }));
 }
 
@@ -71,6 +73,11 @@ export const isRestless = d => d.drive >= 1;
 export const isWary = d => d.wary >= .5;
 
 const byKind = (sites, ...ks) => sites.filter(s => ks.includes(s.k));
+// #145 (design f1cf4262ae): haunts whose tiles lie within 2 tiles of each other are one haunt: a Loika's day moves, so her four stand at least 3 tiles apart.
+export const HAUNT_GAP = 3;
+const gap = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
+const clear = (s, others) => others.every(o => !o || gap(s, o) >= HAUNT_GAP);
+export const hauntsApart = hs => !hs || (a => a.every((x, i) => a.every((y, j) => i >= j || !x || !y || gap(x, y) >= HAUNT_GAP)))([hs.water, hs.grass, hs.third, hs.bed]);
 const pick = (list, seed, id, tag) => list.length ? list[Math.floor(rnd(seed, 'pick', id, tag) * list.length)] : null;
 const farthest = (list, from, restless, seed, id, tag) => {   // a restless one takes the far ones, a homebody the near ones
   if (!list.length) return null; const d = s => Math.hypot(s.x - from.x, s.y - from.y);
@@ -81,15 +88,22 @@ const farthest = (list, from, restless, seed, id, tag) => {   // a restless one 
 // Three haunts and a bed, on day 0: the water (a reed bank, or a shore), the grass (a tall-grass sweep), and a third: the lookout (an outcrop) for a wary one that has one, else the shade (a grove).
 // The bed is a grove or a sweep, a hollow before any other, never the third haunt. A land short of a kind takes the nearest it has, so a Loika always has three.
 export function haunts0(seed, id, sites, doings) {
-  const water = byKind(sites, 'reed', 'shore'), reeds = byKind(sites, 'reed');
-  const w = pick(reeds.length ? reeds : water, seed, id, 'water') || pick(sites, seed, id, 'water');
+  const real = sites.filter(s => s.k !== 'land'), spare = sites.filter(s => s.k === 'land');
+  const water = byKind(real, 'reed', 'shore'), reeds = byKind(real, 'reed');
+  const w = pick(reeds.length ? reeds : water, seed, id, 'water') || pick(real, seed, id, 'water');
   if (!w) return null;
-  const near = (list, tag, not) => farthest(list.filter(s => !not.includes(s)), w, isRestless(doings), seed, id, tag);
-  const pool = (kinds, not) => { const l = byKind(sites, ...kinds).filter(s => !not.includes(s)); return l.length ? l : sites.filter(s => !not.includes(s)); };
-  const g = near(pool(['sweep'], [w]), 'grass', [w]) || w;
-  const third = (isWary(doings) && byKind(sites, 'outcrop').length ? near(pool(['outcrop'], [w, g]), 'third', [w, g]) : near(pool(['grove'], [w, g]), 'third', [w, g])) || g;
-  const strict = byKind(sites, 'grove', 'sweep').filter(s => s !== third && s !== w && s !== g), bedPool = strict.length ? strict : byKind(sites, 'grove', 'sweep').filter(s => s !== third && s !== w), hol = bedPool.filter(s => s.hollow);
-  const bed = pick(hol.length ? hol : bedPool, seed, id, 'bed') || pick(sites.filter(s => s !== third), seed, id, 'bed') || third;
+  const chosen = [w];
+  // a slot takes a site of its kind with room round it, else any site with room, else plain land with room
+  const room = (kinds, not, tag, from) => {
+    const has = l => l.filter(s => !not.includes(s) && clear(s, chosen)), kind = has(byKind(real, ...kinds)), any = has(real), land = has(spare);
+    const list = kind.length ? kind : any.length ? any : land;
+    return list.length ? farthest(list, from, isRestless(doings), seed, id, tag) : null;
+  };
+  const g = room(['sweep'], [w], 'grass', w) || w; chosen.push(g);
+  const third = room(isWary(doings) && byKind(real, 'outcrop').length ? ['outcrop'] : ['grove'], [w, g], 'third', w) || g; chosen.push(third);
+  const strictAll = byKind(real, 'grove', 'sweep').filter(s => s !== third && s !== w && s !== g), spaced = strictAll.filter(s => clear(s, chosen)), spareBed = spare.filter(s => clear(s, chosen));
+  const bedPool = spaced.length ? spaced : spareBed.length ? spareBed : (strictAll.length ? strictAll : byKind(real, 'grove', 'sweep').filter(s => s !== third && s !== w)), hol = bedPool.filter(s => s.hollow);
+  const bed = pick(hol.length ? hol : bedPool, seed, id, 'bed') || pick(real.filter(s => s !== third), seed, id, 'bed') || third;
   return { water: w, grass: g, third, bed };
 }
 
@@ -99,11 +113,11 @@ export function nightStep(seed, id, hs, sites, night) {
   const order = slots.slice().sort((a, b) => rnd(seed, 'ord', id, night, a) - rnd(seed, 'ord', id, night, b));
   const kinds = { water: ['reed', 'shore'], grass: ['sweep'], third: [hs.third && hs.third.k === 'outcrop' ? 'outcrop' : 'grove'] };
   for (const slot of order.slice(0, nChange)) {
-    const used = [out.water, out.grass, out.third, out.bed], cands = byKind(sites, ...kinds[slot]).filter(s => !used.includes(s));
+    const used = [out.water, out.grass, out.third, out.bed], others = ['water', 'grass', 'third', 'bed'].filter(k => k !== slot).map(k => out[k]), cands = byKind(sites, ...kinds[slot]).filter(s => !used.includes(s) && clear(s, others));
     const c = pick(cands, seed, id, 'n' + night + slot); if (c) out[slot] = c;
   }
   if (rnd(seed, 'bedchg', id, night) < .25) {
-    const used = [out.water, out.grass, out.third, out.bed], cands = byKind(sites, 'grove', 'sweep').filter(s => !used.includes(s)), hol = cands.filter(s => s.hollow), c = pick(hol.length ? hol : cands, seed, id, 'nb' + night);
+    const used = [out.water, out.grass, out.third, out.bed], cands = byKind(sites, 'grove', 'sweep').filter(s => !used.includes(s) && clear(s, [out.water, out.grass, out.third])), hol = cands.filter(s => s.hollow), c = pick(hol.length ? hol : cands, seed, id, 'nb' + night);
     if (c) out.bed = c;
   }
   return out;
@@ -113,6 +127,12 @@ export function hauntsOn(seed, id, sites, doings, night) {
   let hs = haunts0(seed, id, sites, doings); if (!hs) return null;
   for (let n = 1; n <= night; n++) hs = nightStep(seed, id, hs, sites, n);
   return hs;
+}
+
+// A stored set of haunts (a save) that breaks the rule is chosen again by the same seeded walk; one that keeps it is returned as it is.
+export function hauntsKept(seed, id, sites, doings, night, stored) {
+  if (stored && hauntsApart(stored)) return stored;
+  return hauntsOn(seed, id, sites, doings, night) || stored;
 }
 
 // ---------- the routine ----------

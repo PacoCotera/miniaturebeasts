@@ -2,7 +2,7 @@
 // touching the page. Pure data and small pure functions. "Heart" is never player text; dew is never water and never refills; a storm is never a gift or a danger.
 export const WORDS = {
   // where you are (bottom line, Call report, band, map line, Probe tile)
-  callNextDoor: n => n === 0 ? 'The Call reached next door · nothing there' : 'The Call reached next door · ' + n + (n === 1 ? ' find' : ' finds'),   // editor, signed 11-24 (bus 2d227c3460); shown only when the Call reached next door
+  callNextDoor: n => n === 0 ? 'The Call lifted the land next door · no finds' : 'The Call lifted the land next door · ' + n + (n === 1 ? ' find' : ' finds'),   // design b699da, editorial 365ae9 (owner #136): never 'nothing there' when land was lifted
   explored: 'explored', left: 'nothing left to take', leftN: n => n + ' to take', moreN: n => n + ' more to take',
   nothingSeen: 'nothing in sight to take',
   band: { unexplored: 'not explored yet', podWaits: n => n === 1 ? '1 pod waits there' : n + ' pods wait there' },
@@ -28,6 +28,9 @@ export const WORDS = {
   notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
   startMorning: 'A Loika comes here in the morning',   // [copy] the first glint of the first set-out: a named Loika's own place (w5-day1-start-1)
+  // [copy] the first walk's teaching line on coming near a named Loika (first-walk-teach-approach-1)
+  teachWalk: { where: (land, dir) => 'A Loika keeps to the ' + land + ', ' + dir, herePlace: 'She comes here in the morning · wait where you can see',
+    near: 'Step slowly near her · ✓ keeps still', tell: 'Keep still · a sign comes first, then ✓ notes it', heard: 'She heard you · keep still and she settles' },
   creature: { holdFull: 'Data full (20 of 20)' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
   // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line
   strike: {
