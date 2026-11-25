@@ -3196,6 +3196,7 @@ function hazeDepth(lay, side) {
   const n = Math.floor((NOW - a.t0) / HAZE_STEP_MS); return a.dir < 0 ? Math.max(0, LINE_DEPTH - n) : Math.min(LINE_DEPTH, n);
 }
 function hazeSync(lay) {
+  if (!lay.lines && lay.baked && !lay.cave) applyLines(lay);   // a place the game resumed in (a reload) never went through enterPatch: its blocks stood nowhere, so the hero crossed the reach line and was stopped only at the place's edge (owner #157)
   if (!lay.lines || !lay.baked) return;
   const anim = lay.hazeAnim || (lay.hazeAnim = {});
   for (const [side, a] of Object.entries(anim)) if (NOW - a.t0 >= LINE_DEPTH * HAZE_STEP_MS) { delete anim[side]; if (a.dir < 0) applyLines(lay); }   // the drawn-back side opens
