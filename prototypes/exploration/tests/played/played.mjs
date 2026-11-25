@@ -262,13 +262,20 @@ for (const size of SIZES) {
       const at = await g.where();
       assert.deepEqual([at.phase, at.x, at.y], ["patch", 9, 0], "the case is reached: he stands at the edge of his note");
       const r = await g.region();
+      // the strip above the hero's place: the band of the screen between the HUD (to 6% of the game screen) and the top of the hero's own place (from 27%), 10% to 26% of the screen; the sliver of his own place and the HUD's green icon are not the place above. Veiled it is dark dither; seen it is the land (grass, sand, water), which is bright and not the dark ground.
+      const strip = { x: r.x, y: r.y + Math.round(r.h * 0.10), w: r.w, h: Math.round(r.h * 0.16) };
+      const seen = (im) => colour(im, strip, ([R, G, B]) => G > 140 && G > B + 30).n;
+      const top = [0, 0.10, 1, 0.16];
+      // the reference strip is taken BEFORE the Call: the held view with the place above still veiled, then released
+      await g.hold("call"); await wait(1500);
+      const before = await g.shot(`s2-${tag}-before`);
+      await g.release(); await wait(900);
+      const veiled = seen(before), share = veiled / (strip.w * strip.h);
+      console.log(`# s2 ${tag}: reference strip ${veiled} land pixels (${(share * 100).toFixed(2)}% of the strip)`);
+      assert.ok(share < 0.005, `the case is not reached: the reference strip is already mostly seen before the Call (${veiled} land pixels, ${(share * 100).toFixed(2)}% of the strip; it must be under 0.50%)`);
       await g.press("call", 100, 1200);                     // the Call at the edge
-      // the strip above the hero's place: the top quarter of the screen. Veiled it is dark dither; seen it is the land (grass, sand, water), which is bright and not the dark ground.
-      const seen = (im) => colour(im, { x: r.x, y: r.y, w: r.w, h: Math.round(r.h * 0.25) }, ([R, G, B]) => G > 140 && G > B + 30).n;
-      const top = [0, 0, 1, 0.25];
       await g.hold("call"); await wait(1500);               // the held view again; the land next door is asked for ("The Probe is reading the land") and drawn when it comes
-      const before = await g.shot(`s2-${tag}-before`);      // the held view as it first draws: the land next door is owed, the strip is dark
-      let after = before, waited = 1.5, t0 = Date.now();
+      let after = await g.shot(), waited = 1.5, t0 = Date.now();
       for (let i = 0; i < 40 && seen(after) < seen(before) + 3000; i++) { await wait(1000); after = await g.shot(); waited = (Date.now() - t0) / 1000 + 1.5; }
       console.log(`# s2 ${tag}: the strip was seen after ${waited.toFixed(1)} s held`);
       after = await g.shot(`s2-${tag}-after`);
