@@ -95,7 +95,10 @@ async function open(size, saveName) {
   };
   // reading state is ONLY to assert the case is reached; it never decides a verdict
   const where = () => page.evaluate(() => { const S = window.__play.frames.companion.contentWindow.__mb.S, e = S.exp; return { phase: S.phase, x: e && e.patch && e.patch.x, y: e && e.patch && e.patch.y, key: e && e.patch && e.patch.key }; });
-  return { ctx, page, press, hold, release, region, shot, clip, quick, record, where };
+  // the menu's selected row and the day's light spent: read only to assert the case is reached
+  const menuRow = () => page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[m.S.ui.menuSel]; return it && it.id; });
+  const spent = () => page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.day.spent);
+  return { ctx, page, press, hold, release, region, shot, clip, quick, record, where, menuRow, spent };
 }
 
 // ---- judging by the screen: pixels in a region of a screenshot
@@ -184,7 +187,10 @@ for (const size of SIZES) {
       console.log(`# s3 ${tag}: hero ${hero.n} px, menu ${menu.n}`);
       assert.ok(menu.n >= hero.n * 0.6, `the hero is on screen with the menu open (${menu.n} of ${hero.n} pixels)`);
       for (let i = 0; i < 4; i++) await g.press("down");    // Her page, Leave, Look around, End expedition, Wait
+      assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
+      const spent0 = await g.spent();
       await g.press("confirm", 100, 2500);                  // Wait, once
+      assert.ok(await g.spent() > spent0, "the case is reached: Wait spent light (S.day.spent grew)");
       const wshot = await g.shot(`s3-${tag}-wait`), waited = colour(wshot, r, HERO, hb);
       console.log(`# s3 ${tag}: after Wait ${waited.n}`);
       assert.ok(waited.n >= hero.n * 0.75, `the hero is on screen after one Wait (${waited.n} of ${hero.n} pixels)`);
