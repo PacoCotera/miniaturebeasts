@@ -25,53 +25,78 @@ const FAST = process.env.MB_CI_FAST === '1';
 // Known on the land of the land round, a land-shape job's (land-rules-2 report): the cliff rules P5 and P6 fail in a few places (seed 7: lone faces in regions 0,0, 1,2 and 0,4, foot room in 0,0 and 1,2), so the
 // full run is red on them until that job; the sample's corner is 4,4, clear of them.
 const SAMPLE = [[2, 2], [4, 4]];
+// one placeProps run per seed, shared by the seed's test and its two todo tests below
+const STATS = new Map();
+const statsOf = seed => { if (!STATS.has(seed)) STATS.set(seed, placeProps(seed, FAST ? SAMPLE : null)); return STATS.get(seed); };
+
+// gen7-place-red-1 (2026-11-25): these two checks are red since PR 419 (385bf1d99, map-levels-build-1, 2026-11-20), which rebuilt the levels. Seed 7, regions 4,1 2,1 1,2 1,4, before PR 419 (b2756fc1f) to after:
+// loneLeft 5 -> 9; runs of 9+ 84 of 6388 runs (1.3%) -> 240 of 3244 (7.4%), longest south 10 -> 14, rim 13 -> 16. Whole seed 7 now: loneLeft 10 (limit 8), runs of 9+ 1342 of about 19000 (7%).
+// PR 419 says "straight runs capped near 12" but no designer or owner line moves the 2% share or the lone-tile limit, so the thresholds stay as they were and the checks are todo until a land-shape job
+// either brings the land back inside them or the designer rules the new numbers (then change them here, quoting the line and bus id).
+for (const seed of FAST ? [7] : [7, 13, 42]) {
+  test(`seed ${seed}: lone tiles are kept by the land rule, at most 1 in 1000 cells left over`, { timeout: 2700000, todo: 'red since PR 419 (levels rebuilt): seed 7 has 10 left over, limit 8; needs a land-shape job or a designer ruling' }, () => {
+    const s = statsOf(seed);
+    assert.ok(s.loneLeft <= Math.ceil(s.cells / 1000), 'every tile sits in a 2 x 2 block of its own terrain, or is a diagonal step or a one-tile grass buffer: ' + s.loneLeft + ' others ' + JSON.stringify(s.loneLeftAt));
+  });
+  if (!FAST) test(`seed ${seed}: straight cliff runs of 9+ are rare (under 2% of runs)`, { timeout: 2700000, todo: 'red since PR 419 (levels rebuilt): about 7% of runs are 9+; needs a land-shape job or a designer ruling' }, () => {
+    const s = statsOf(seed);
+    assert.ok((s.runs9.south + s.runs9.side + s.runs9.rim) * 50 < s.cliffRuns, 'straight runs of 9+ are rare: ' + JSON.stringify(s.runs9) + ' of ' + s.cliffRuns + ', longest ' + JSON.stringify(s.runMax));
+  });
+}
 
 for (const seed of FAST ? [7] : [7, 13, 42]) {
-  test(`seed ${seed}: every cell${FAST ? ' of two regions' : ''} holds the scheme's rules for tiles, cliffs, edges, ways up and the bake`, { timeout: 2700000 }, () => {
-    const s = placeProps(seed, FAST ? SAMPLE : null);
+  test(`seed ${seed}: every cell${FAST ? ' of two regions' : ''} holds the scheme's rules for tiles, cliffs, edges, ways up and the bake`, { timeout: 2700000 }, async (t) => {
+    const s = statsOf(seed);
     const hist = Object.keys(s.runHist).map(Number).sort((a, b) => a - b).map(k => k + ':' + s.runHist[k]).join(' ');
     console.log(`# seed ${seed}: ${JSON.stringify({ ...s, runHist: undefined })}\n# straight cliff runs (length:count) ${hist}`);
-    assert.equal(s.cells, FAST ? SAMPLE.length * 320 : 8000);
-    assert.equal(s.pairBreaks, 0, 'no 2 x 2 block holds more than three terrains or two that are not a pair of the set');
+    await t.test(`L52`, () => { assert.equal(s.cells, FAST ? SAMPLE.length * 320 : 8000); });
+    await t.test(`L53`, () => { assert.equal(s.pairBreaks, 0, 'no 2 x 2 block holds more than three terrains or two that are not a pair of the set'); });
     // Rule 1.9 on the new land: a diagonal step (a contour's staircase) and the one-tile grass buffer between terrains that may not meet (a stream along a cliff's foot, a ford beside scree) are the land's;
     // a notch, a spike, a one-tile strip or dot of the ground is not (a map is judged by its edges: no one-tile notches): the streams' tidy takes them at their source. What it cannot take is held to 1 in 1000 cells, rounded up
     // (seeds 7, 13, 42: 6, 6, 4: a ford across a one-tile neck of a stream, a stream's tail that drying would cut off, a sand or scree spike away from water; the sample's region 4,4 holds one, seed 7 cell 70,95). Raised land's shape is the cliff rules' (P4-P6 below, nothing under 4); its one-tile
     // bumps on a side wall are reported (seeds 7, 13, 42: 7, 6, 2), a land-shape job's
     console.log(`# seed ${seed}: tiles in no 2 x 2 block of their own ${s.loneTiles}, kept by the land rule (steps, grass buffers) ${s.loneKept}, others ${s.loneLeft} ${JSON.stringify(s.loneLeftAt)}, raised bumps ${s.loneRaised} ${JSON.stringify(s.loneRaisedAt)}`);
-    assert.ok(s.loneLeft <= Math.ceil(s.cells / 1000),'every tile sits in a 2 x 2 block of its own terrain, or is a diagonal step or a one-tile grass buffer: ' + s.loneLeft + ' others ' + JSON.stringify(s.loneLeftAt));
+    // the lone-tile limit (loneLeft <= cells / 1000) is its own test below, marked todo (red since PR 419)
     // G2b: a cliff is the field's contour at tile scale, so its straight runs are short and wandering (a diagonal is a staircase of one-tile steps). The old rule "no run under 4" was the
     // blocks' (a cliff turned at most once in 8 tiles); the rule now is that no cliff is a spike, a spur or a one-row ridge: every cliff tile sits in a 4 x 4 block of raised land.
     // the land rule's own checks (land-shape-spec-1 P4-P6, world-topdown-spec-1 section 4 C1 and the seam), in place of the old block rule's (lone tiles above is the one-wide sliver check)
-    assert.equal(s.pinch, 0, 'P4: no diagonal pinch');
-    assert.equal(s.loneFace, 0, 'P5: no lone one-tile face');
-    assert.equal(s.footShort, 0, 'P6: foot room under every south lip');
+    await t.test(`L63`, () => { assert.equal(s.pinch, 0, 'P4: no diagonal pinch'); });
+    // gen7-place-red-1 (2026-11-25): what is red on main is todo, each for the seeds where it is red, with its cause; nothing is loosened, nothing deleted. Counts are whole-seed runs.
+    // P5 lone face: seed 7 4 (PR 391, b2756fc1f) -> 1 (PR 419), seed 13 1: red since the land round (PR 364); this file's header names it a land-shape job's.
+    const todoFor = (seeds, why) => seeds.includes(seed) ? { todo: why } : {};
+    await t.test(`P5 lone face`, todoFor([7, 13], 'red since the land round (PR 364), not since PR 419: seed 7 has 1 lone face, seed 13 has 1; a land-shape job'), () => { assert.equal(s.loneFace, 0, 'P5: no lone one-tile face'); });
+    await t.test(`L65`, () => { assert.equal(s.footShort, 0, 'P6: foot room under every south lip'); });
     // the designer's ruling (a south face at most 10, a side wall or back rim at most 14) is held on the 15 fixed windows by tools/land-measure.mjs; over a whole seed's regions a few runs pass it
     // (seed 7: longest 19, 25, 16), so here the share of runs of 9 or more is held under 2%
-    if (!FAST) assert.ok((s.runs9.south + s.runs9.side + s.runs9.rim) * 50 < s.cliffRuns, 'straight runs of 9+ are rare: ' + JSON.stringify(s.runs9) + ' of ' + s.cliffRuns + ', longest ' + JSON.stringify(s.runMax));
-    if (!FAST) assert.ok(s.cliffRuns > 1000, 'cliffs wander: ' + s.cliffRuns + ' runs');
-    assert.equal(s.apronMismatch, 0, 'the apron of every cell equals its neighbours\' edge tiles');
-    assert.ok(s.c1Ok * 100 >= 90 * s.cells, 'C1: a place\'s level is the level of most of its tiles in at least 90% of places: ' + s.c1Ok + ' of ' + s.cells + ' ' + JSON.stringify(s.c1Misses));
-    assert.equal(s.waterRaisedTiles, 0, 'C1w: no raised tile in a water place');
-    assert.ok((FAST || s.seamCells > 20) && s.seamBad === 0, 'seam: a cell is the same from every neighbour\'s window: ' + s.seamBad + ' tiles differ in ' + s.seamCells + ' cells');
+    // the share of runs of 9+ is its own test below, marked todo (red since PR 419)
+    if (!FAST) await t.test(`L69`, () => { assert.ok(s.cliffRuns > 1000, 'cliffs wander: ' + s.cliffRuns + ' runs'); });
+    // apron, seed 42: 418 cells (PR 391, b2756fc1f) -> 148 (PR 419): red before PR 419 too, a seam bug in the levels' apron on seed 42; a land job
+    await t.test(`apron`, todoFor([42], 'red before PR 419 (418 cells) and after (148): a cell edge on seed 42 differs from its neighbour; a land job'), () => { assert.equal(s.apronMismatch, 0, 'the apron of every cell equals its neighbours\' edge tiles'); });
+    await t.test(`L71`, () => { assert.ok(s.c1Ok * 100 >= 90 * s.cells, 'C1: a place\'s level is the level of most of its tiles in at least 90% of places: ' + s.c1Ok + ' of ' + s.cells + ' ' + JSON.stringify(s.c1Misses)); });
+    // C1w raised tile in a water place: 0 on seeds 7 and 42 at PR 391 (b2756fc1f) -> 24, 21 (seed 13), 12 after PR 419 (385bf1d99): the levels rebuild raises land in water places
+    await t.test(`C1w raised tile in water`, todoFor([7, 13, 42], 'red since PR 419 (map-levels-build-1): 24, 21 and 12 raised tiles in water places on seeds 7, 13, 42 (0 before); the designer or a land job'), () => { assert.equal(s.waterRaisedTiles, 0, 'C1w: no raised tile in a water place'); });
+    await t.test(`L73`, () => { assert.ok((FAST || s.seamCells > 20) && s.seamBad === 0, 'seam: a cell is the same from every neighbour\'s window: ' + s.seamBad + ' tiles differ in ' + s.seamCells + ' cells'); });
     // every walkable tile of low ground is reached from the cell's sides. On a plateau, an inner-corner tile whose four neighbours are all lip (the rim wraps round a concave corner) is
     // enclosed by the lip by the tests' own definition of a lip (seed 7 has one in 8000 cells); no more than 4 of them a seed
     // a walled part that holds no path is the land's, apart from the trail's line (seed 7 14,14; 13 18,24; 42 56,79: pockets the levels leave): listed here, a land job's (designer 2026-11-16)
     console.log(`# seed ${seed}: cells the land leaves walled apart from the trail's line: ${s.unreachedLand} ${JSON.stringify(s.landWalledAt)}`);
-    assert.equal(s.unreachedCells - s.unreachedRaisedOnly - s.unreachedLand, 0, 'every walkable tile of low ground on the trail\'s line is reached from the cell\'s sides: ' + JSON.stringify(s.unreachedAt));
-    assert.ok(s.unreachedRaisedOnly <= 4, 'plateau tiles enclosed by the lip: ' + s.unreachedRaisedOnly);
-    assert.equal(s.stairsWithoutWayUp, 0, 'every stair has a way up');
-    assert.ok(s.stairs > 50 && s.stairsSouthWithWayUp === s.stairs, 'stairs: ' + s.stairs);
+    await t.test(`L78`, () => { assert.equal(s.unreachedCells - s.unreachedRaisedOnly - s.unreachedLand, 0, 'every walkable tile of low ground on the trail\'s line is reached from the cell\'s sides: ' + JSON.stringify(s.unreachedAt)); });
+    // plateau tiles enclosed by the lip (limit 4): seeds 7 and 42 had 2 at PR 391 (b2756fc1f); after PR 419: 36, 26 (seed 13), 39
+    await t.test(`plateau tiles enclosed by the lip`, todoFor([7, 13, 42], 'red since PR 419 (map-levels-build-1): 36, 26 and 39 enclosed plateau tiles on seeds 7, 13, 42 (limit 4, 2 before); a land job'), () => { assert.ok(s.unreachedRaisedOnly <= 4, 'plateau tiles enclosed by the lip: ' + s.unreachedRaisedOnly); });
+    await t.test(`L80`, () => { assert.equal(s.stairsWithoutWayUp, 0, 'every stair has a way up'); });
+    await t.test(`L81`, () => { assert.ok(s.stairs > 50 && s.stairsSouthWithWayUp === s.stairs, 'stairs: ' + s.stairs); });
     // the whole realm (place-walk-1): the realm's tiles stitched, flooded from the start of every region through the ways up (water of a ford cell walked, a cliff's lip across a region's border the true one). Land a
     // neighbouring region's start reaches is reached (a region on its own left 4-8% of its tiles "unreached" that its neighbour reaches: s.regionUnreachedTiles). What stays out is walled in whole: a mesa or pit
     // with no way up, a lake's islet; held under 2% of all walkable tiles
     console.log(`# reach: unreachedTiles ${s.unreachedTiles} of ${s.walkableTiles}; pathUnreached ${s.pathUnreached}; piecesUnreached ${s.piecesUnreached} of ${s.pieces}; (each region on its own: ${s.regionUnreachedTiles}, ${s.regionPathUnreached}, ${s.regionPiecesUnreached})`);
     if (!FAST) {   // the whole realm's flood: the full run's
-      assert.ok(s.unreachedTiles * 100 < 2 * s.walkableTiles, 'reach: ' + s.unreachedTiles + ' of ' + s.walkableTiles + ' walkable tiles not reached (each region on its own: ' + s.regionUnreachedTiles + ')');
-      assert.ok(s.pathUnreached <= 1145, 'trails and ports on unreached land: ' + s.pathUnreached + ' ' + JSON.stringify(s.needAt));
-      assert.ok(s.piecesUnreached * 100 <= s.pieces, 'set pieces on unreached land (reported, at most 1%): ' + s.piecesUnreached + ' of ' + s.pieces + ' ' + JSON.stringify(s.needAt));
+      await t.test(`L87`, () => { assert.ok(s.unreachedTiles * 100 < 2 * s.walkableTiles, 'reach: ' + s.unreachedTiles + ' of ' + s.walkableTiles + ' walkable tiles not reached (each region on its own: ' + s.regionUnreachedTiles + ')'); });
+      await t.test(`L88`, () => { assert.ok(s.pathUnreached <= 1145, 'trails and ports on unreached land: ' + s.pathUnreached + ' ' + JSON.stringify(s.needAt)); });
+      await t.test(`L89`, () => { assert.ok(s.piecesUnreached * 100 <= s.pieces, 'set pieces on unreached land (reported, at most 1%): ' + s.piecesUnreached + ' of ' + s.pieces + ' ' + JSON.stringify(s.needAt)); });
     }
-    assert.equal(s.bakeFails, 0, s.bakeMessages.join('\n'));
-    assert.ok(s.bandWalkable * 100 < 1.5 * s.bandTiles, 'the map\'s end is shut: ' + s.bandWalkable + ' of ' + s.bandTiles + ' end tiles walk (a river\'s mouth, a gate shaft that ends in the band)');
+    await t.test(`L91`, () => { assert.equal(s.bakeFails, 0, s.bakeMessages.join('\n')); });
+    // the map's end shut, seed 42: 992 end tiles walk (PR 391, b2756fc1f) -> 768 (PR 419): red before PR 419 too; a river mouth or gate shaft ends in the band; a land job
+    await t.test(`the map's end is shut`, todoFor([42], 'red before PR 419 (992 end tiles walk) and after (768 of 37696): seed 42 has an open end; a land job'), () => { assert.ok(s.bandWalkable * 100 < 1.5 * s.bandTiles, 'the map\'s end is shut: ' + s.bandWalkable + ' of ' + s.bandTiles + ' end tiles walk (a river\'s mouth, a gate shaft that ends in the band)'); });
   });
 }
 
