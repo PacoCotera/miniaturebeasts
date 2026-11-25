@@ -1,4 +1,4 @@
-// The Station bakes the Companion's region (baked-package-1; scope: build-desk boards/build/baked-package-scope.md): when the Companion's world is known (its save, same origin) and no current package exists for its
+// The Station bakes the Companion's region: when the Companion's world is known (its save, same origin) and no current package exists for its
 // region and revs, the realm's places worker (exploration/src/realm-worker.mjs, the one the Companion bakes with) makes the cells in the order of package-store.mjs bakeOrder (the start place, its reach, the ring, the rest
 // nearest first) and each is written to the package as it lands. The page's thread only receives a cell, hashes it and hands it to IndexedDB: the bake is the worker's.
 // Nothing here changes a place: the cell kept is the cell the worker made, from the same seed, slot and v.

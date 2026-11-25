@@ -1,4 +1,4 @@
-// The baked package (design da117b78df, scope: build-desk boards/build/baked-package-scope.md; worldgen scheme §7): one region's baked places kept as ONE unit in the browser's IndexedDB, in its own database
+// The baked package: one region's baked places kept as ONE unit in the browser's IndexedDB, in its own database
 // (never the place store's LRU, PLACE_KEEP never touches it). The Station makes it (station/src/package-baker.mjs); a later step has the Companion read it.
 //   header   { format, id, seed, slot, v, realmRev, placeRev, tag, order: [cells in bake order], floor: n, done, whole, sha: { cell: sha256 hex }, ms: { floor, whole } }
 //   a cell   { ir, place }: exactly what the Companion's layout() reads from a baked place today (world7.mjs bakedCell), the same object place-store.mjs keeps
