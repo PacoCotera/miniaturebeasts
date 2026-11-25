@@ -227,10 +227,11 @@ const DOCK_BAY = 3;   // the sealed bay's three crates: the Companion's `BAY` (e
 function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or null when it is not shown
   const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, touch = window.matchMedia("(pointer: coarse)").matches;
   // [copy] placeholders: the scheme's section 7 item 4; the short words are the long ones cut down ("Dock", "Lift")
-  const full = d ? "Docked · Lift to go out" : crates ? "Dock · " + c.crates + " of " + DOCK_BAY + " crates aboard" : "Dock the Companion", short = d ? "Lift" : "Dock";   // lit: n from the hold, 3 the bay (UI + editorial 11-25); docking is not tied to an expedition
+  let full = d ? "Docked · Lift to go out" : crates ? "Dock · " + c.crates + " of " + DOCK_BAY + " crates aboard" : "Dock the Companion", short = d ? "Lift" : "Dock";   // lit: n from the hold, 3 the bay (UI + editorial 11-25); docking is not tied to an expedition
+  const litSteps = crates ? [full, "Dock · " + c.crates + " of " + DOCK_BAY + " crates", "Dock · " + c.crates + "/" + DOCK_BAY] : [full];   // lit, widest first (editorial 70f85b33bb): the count is never cut, only the words round it
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
-  if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; if (dockNeed(full, false) > box[2]) mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis
+  if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; const fit = litSteps.find((t) => dockNeed(t, false) <= box[2]); if (fit) full = fit; else mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis; lit falls through the middle forms, which keep the count, before "Dock"
   Object.assign(dockState, { box: box ? snapBox(box) : null, docked: d, lit: crates, quiet: !d && !crates, pressed: pressed || c.pending, disabled: !c.canDock, label, title, mark: SITE + "ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png", mode, full, short, hint });
   dockUi.update(dockState);
 }
