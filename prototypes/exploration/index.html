@@ -445,10 +445,10 @@ function passable(c) { return passableIn(G, c); }
 function canStep(a, dir) { const ts = tileSide(a, dir); return ts ? ts.open : canStepIn(G, a, dir, abOpts()); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair (or, for the partner that can, scree, an earth bank, a wade); between two land cells the tiles decide (tileSide)
 // Land shape B1: a side between two land cells (summary open or a plain cliff; a stair, scree, a bank or a wade keep their own rules) is OPEN where its tiles hold a run of 2+ walkable pairs on the
 // same level, CLOSED otherwise. Worked out from both cells' layouts when asked, kept per world (G.tileSides), the same from either cell. `mask`: one byte a tile along the side (west to east, or north to south), 1 where open.
-function tileSideApplies(a, dir) {
+function tileSideApplies(a, dir, scree) {   // scree: a step from a tile that is not one of the two scree crossing tiles: the tiles decide that edge too (#159); a bank edge keeps its own rule
   if (G.gen !== 7 || !S.exp || !PL.ready) return false;
   const n = stepCell(a, dir); if (n < 0) return false;
-  const k = edgeKind(a, dir); if (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir))) return false;   // a stair edge is tile-decided too: a generator 7 place lists no stairs of its own (adapt7 stairs: []), so the old stair-only crossing refused the whole side over open grass (bugs #95, #96)
+  const k = edgeKind(a, dir); if (k === EDGE.CLIFF && softEdge(edgeIndex(a, dir)) && !(scree && softKind(a, dir) === 'scree')) return false;   // a stair edge is tile-decided too: a generator 7 place lists no stairs of its own (adapt7 stairs: []), so the old stair-only crossing refused the whole side over open grass (bugs #95, #96)
   return passable(a) && passable(n) && !G.island[a] && !G.island[n] && G.land[a] !== L.WATER && G.land[n] !== L.WATER;
 }
 // A change of level between two tiles across a border stops a step only where a cliff is drawn on both sides (a cliff drawn on one side only is not seen from the other, so it is a slope); with none drawn it is a slope and walks (design 2026-11-18, bugs #45 #67).
@@ -469,8 +469,8 @@ function tileSide(a, dir) {
   (G.tileSides || (G.tileSides = new Map())).set(key, st); return st;
 }
 // A step out of a place over a side the tiles decide: the tile you stand on and the tile beyond (the same row or column, continued) both walk on the same level. Returns the landing tile or null.
-function crossLanding(dir) {
-  const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir)) return undefined;
+function crossLanding(dir, scree) {
+  const ex = S.exp, P = ex.patch, c = stepCell(ex.pos, dir); if (c < 0 || !tileSideApplies(ex.pos, dir, scree)) return undefined;
   if (!placeHave(String(c))) return undefined;   // the place beyond is still owed by the worker: crossEdge waits for it, then asks again
   const la = layout(P.key), lb = layout(String(c)); if (!la.tiles || !lb.tiles || !la.raisedFn || !lb.raisedFn) return undefined;
   const x = dir === 'right' ? 0 : dir === 'left' ? lb.w - 1 : P.x, y = dir === 'down' ? 0 : dir === 'up' ? lb.h - 1 : P.y;
@@ -3135,13 +3135,13 @@ function seamCross(a, dir) {
   if (!passableIn(g, c2) || g.island[c2] || (g.coast && g.coast[c2]) || (g.level && G.level && g.level[c2] !== G.level[a])) return null;
   return { id: R.id, cell: c2 };
 }
-function crossReason(a, dir, base) {   // base: the side's own kind only, never the tiles (a layout is made against this; the tiles need the layouts)
+function crossReason(a, dir, base, tiles) {   // base: the side's own kind only, never the tiles (a layout is made against this; the tiles need the layouts); tiles: a scree edge stepped from open ground, which crossLanding decides
   const c = stepCell(a, dir);
   if (c < 0) return seamSlot(dir) ? (seamCross(a, dir) ? null : seamWords(dir)) : borderCliff(a) ? 'High cliffs · no way past' : SHORE_TEXT;
   if (G.coast && G.coast[c]) return SHORE_TEXT;   // the realm's border ring: wide water, nobody crosses
   if (!inRange(c)) return RANGE_TEXT();
   const sk = softKind(a, dir);
-  if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : !tileSideApplies(a, dir) ? cliffMapWords(a, dir) : base ? null : (tileSide(a, dir) || {}).open ? null : cliffMapWords(a, dir);   // between two land cells the tiles decide
+  if (edgeKind(a, dir) === EDGE.CLIFF) return sk === 'scree' ? (canSure() || tiles ? null : SCREE_BUMP) : sk === 'bank' ? (canBank() ? null : BANK_BUMP) : !tileSideApplies(a, dir) ? cliffMapWords(a, dir) : base ? null : (tileSide(a, dir) || {}).open ? null : cliffMapWords(a, dir);   // between two land cells the tiles decide
   if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : sk === 'wade' ? (canSure() ? null : WADE_BUMP) : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
   if (!base) { const ts = tileSide(a, dir); if (ts && !ts.open) return cliffMapWords(a, dir); }
   return null;
@@ -3330,15 +3330,21 @@ function crossBlockWords(dir) {
   if (!T_BLOCK[lb.tiles[i]] || (lb.steep && lb.steep[i]) || ![T.TRUNK, T.WATER, T.DEEP, T.ROCK].includes(lb.tiles[i])) return cliffPlaceWords(dir);
   return blockWords(lb, x, y, { type: 'tile', t: lb.tiles[i] });
 }
+function screeOpen(dir) {   // true: stepping dir over a scree edge from a tile that is not one of its two crossing tiles
+  const ex = S.exp, P = ex.patch; if (!P || softKind(ex.pos, dir) !== 'scree') return false;
+  const lay = layout(P.key), q = lay && crossingAt(lay, P.x, P.y);
+  return !(q && !q.bank && q.dir === dir);
+}
 function crossEdge(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
   { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
-  let why = crossReason(ex.pos, dir, true);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
+  const scr = screeOpen(dir);   // #159: on a scree edge, off its two crossing tiles, the tiles decide: open ground both sides crosses
+  let why = crossReason(ex.pos, dir, true, scr);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
-  const land = why ? undefined : crossLanding(dir);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
+  const land = why ? undefined : crossLanding(dir, scr);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
   if (land === null) why = crossBlockWords(dir);
   if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
-  if (land === undefined && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
+  if (land === undefined && !scr && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
     if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
     if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
