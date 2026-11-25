@@ -1794,6 +1794,27 @@
    "sha256": "dbcdf60d2e080fd3963d3d2b9e63cb4db97a286e6dd5e992af021cf0709ca158"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "b3c91b4341",
+   "path": "art/places/sets/ninja-test/over-cliff-lip-e.png",
+   "sha256": "f0cd6404650a062bdce696fbb82a89fa1f659c59e0831320d25e5efc5fbfe244"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "9bb6f102b7",
+   "path": "art/places/sets/ninja-test/over-cliff-lip-w.png",
+   "sha256": "fdf0c699f64d6386ce3a2c8e220cf988efbb5128c21955f79229602e25e19c8e"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-24",
+   "id": "7baef4e497",
+   "path": "art/places/sets/ninja-test/over-cliff-path-top.png",
+   "sha256": "31f4764984bb504b58a87b114a852fce6179a27b6c57199ae466398ee4454652"
+  },
+  {
    "class": "derivative",
    "date": "2026-11-20",
    "id": "0cb34d8979",
@@ -1848,6 +1869,13 @@
    "id": "028d8e204b",
    "path": "art/places/sets/ninja-test/over-grass-bank.png",
    "sha256": "837306db3d923bde3e9adb2dd550188b295a479e1c50902c804038f560fa2073"
+  },
+  {
+   "class": "recolour-of-signed",
+   "date": "2026-11-24",
+   "id": "f05affb803",
+   "path": "art/places/sets/ninja-test/over-grass-flat-top.png",
+   "sha256": "bd0665fb6169b4e25884a72a60e29403eb50ca1855be0bbe61621e0720d7d39d"
   },
   {
    "class": "legacy-paint",
@@ -3388,6 +3416,27 @@
    "id": "6721478b1e",
    "path": "prototypes/exploration/art/look/look-take-charge-still.png",
    "sha256": "75ea26f74b3c2ca5750dffc353f01b032a5c1473e4a79944dfe2fd6b6ad9a067"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "18d3601e2b",
+   "path": "prototypes/exploration/art/look/look-take-fruit-1.png",
+   "sha256": "9e8b41675ea4ddcee877f11611f05b65a3e7794ea6c35b4fdf30f9f9e2ced029"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "1444181a17",
+   "path": "prototypes/exploration/art/look/look-take-fruit-2.png",
+   "sha256": "94a32ed0201f1ed62f90bb1b9d467a896dbe123b0254f585876908db46c74bf9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "843118db0f",
+   "path": "prototypes/exploration/art/look/look-take-fruit-still.png",
+   "sha256": "94a32ed0201f1ed62f90bb1b9d467a896dbe123b0254f585876908db46c74bf9"
   },
   {
    "class": "legacy-paint",
@@ -12453,6 +12502,62 @@
    "id": "851f6041ab",
    "path": "prototypes/ui/assets/masters/cuts/cut-juvenile-S20-yellower-light-96x88.png",
    "sha256": "bc8f9cc030ff167baf9380860e4c760f2dc43b41c40cc77a3af04f0922343ac1"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "cba4280467",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-plain-calm-228x234.png",
+   "sha256": "de75e71e85e3bd45ba2d9a2b7f4b29d7a5be309d3077f279ef5f5c907278af65"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "bc897b7c4f",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-plain-curl-228x234.png",
+   "sha256": "9cf6e4b2428514af164232817e0705d2fe955659280d47cabc0facabab66ed73"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "7ea603bc24",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-plain-shake-228x234.png",
+   "sha256": "76cd00ad73338744e3c860db1788c206dcfe6fd4d7ad32f4d771e8f1182e3741"
+  },
+  {
+   "class": "cut-of-shipped",
+   "date": "2026-11-24",
+   "id": "fec67c7856",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-plain-stand-228x234.png",
+   "sha256": "5b486e99df362fa5d2f8c9628e700203c9a2ce53c41ce8efbb3c2c8b654dde8e"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "a9d43dead3",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-saddle-calm-228x234.png",
+   "sha256": "9f7a983b6e48780b8a2ed7cf29d25db79bbfa634431d4c752ed39d0190fbcbca"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "b667b35c0e",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-saddle-curl-228x234.png",
+   "sha256": "f6683e365c65a9564000694e71399af563755aacb857ada22b7d9fe9a2026418"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "f137ff331e",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-saddle-shake-228x234.png",
+   "sha256": "e431f43e6754884f69765508c814ec6da3ffc25382d349e6764ffdd7e0d7e3d0"
+  },
+  {
+   "class": "cut-of-signed",
+   "date": "2026-11-24",
+   "id": "9d20fba77b",
+   "path": "prototypes/ui/assets/masters/cuts/pose/loika-saddle-stand-228x234.png",
+   "sha256": "816c8a2e74f363aad411acdbb8b9e3eb36ac66383d7ec05185dcb9a1b3e6d943"
   },
   {
    "class": "cut-of-signed",

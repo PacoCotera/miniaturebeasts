@@ -95,7 +95,7 @@ export class BakedView {
     if (x1 > x0 && y1 > y0) g.drawImage(this.veilCv, x0, y0, x1 - x0, y1 - y0, sx + x0 - win.x, sy + y0 - win.y, x1 - x0, y1 - y0);
   }
   drawGround(g, sx, sy, win, clockMs, light) {
-    const key = `${win.x},${win.y},${win.w},${win.h}|${this.cache.frameKey(clockMs)}|${light ? light.id ?? (light.id = (this.nextId = (this.nextId || 0) + 1)) : 0}|${this.patchId || ''}`;
+    const key = `${win.x},${win.y},${win.w},${win.h}|${this.cache.frameKey(clockMs)}|${light ? light.id ?? (light.id = (this.nextId = (this.nextId || 0) + 1)) : 0}|${this.patchId || ''}|${light && light.storm ? `${light.storm.darkW},${light.storm.left},${light.storm.seed},${light.storm.level}` : ''}|${light && light.fogEdge ? `${light.fogEdge.cx},${light.fogEdge.cy},${light.fogEdge.r},${light.fogEdge.seed}` : ''}`;
     if (!this.last || this.last.key !== key) {
       const buf = this.cache.get(win, clockMs);   // a fresh copy of the window, so the light can be applied in place
       for (const p of this.patches || []) {

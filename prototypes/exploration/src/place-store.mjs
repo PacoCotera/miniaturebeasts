@@ -8,7 +8,7 @@ import { REALM_REV, realm7 } from './gen7/region.mjs';
 import { BAKE_STAGES } from './waitpips.mjs';
 import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
 
-const PLACE_REV = 3, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
+const PLACE_REV = 4, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 // TAG: a hash of the files the tile set and the layers are read from (placesTag, set when the page has loaded them), so a changed tile set never meets a place baked from an older one (owner bugs #127-#129).
 let TAG = '';
 export function placesTag(...parts) {   // FNV-1a over the bytes of each part (Uint8Arrays), in order
@@ -57,13 +57,19 @@ function worker(name, ctx) {
   if (CTXS[name] !== ctx) { w.postMessage({ op: 'init', ctx }); CTXS[name] = ctx; }
   return w;
 }
+const REACH = new Set();   // store keys of the cells asked `first` (the current reach): never the ones evicted
+// The index after adding k (newest first): the reach cells stay, the PLACE_KEEP cap applies to the background list.
+export function keptIndex(seen, k, reach, cap = PLACE_KEEP) {
+  const next = [k, ...seen.filter(s => s !== k)], bg = next.filter(s => !reach.has(s)).slice(0, cap), bgSet = new Set(bg);
+  return next.filter(s => reach.has(s) || bgSet.has(s));
+}
 async function keep(seed, slot, v, cell, b) {
   if (typeof indexedDB === 'undefined') return;
   try {
     const k = storeKey(seed, slot, v, cell); await set(k, b);
-    const seen = (await get(PLACE_INDEX)) || [], next = [k, ...seen.filter(s => s !== k)];
-    for (const old of next.slice(PLACE_KEEP)) await del(old);
-    await set(PLACE_INDEX, next.slice(0, PLACE_KEEP));
+    const seen = (await get(PLACE_INDEX)) || [], was = new Set(seen).add(k), next = keptIndex(seen, k, REACH), now = new Set(next);
+    for (const old of was) if (!now.has(old)) await del(old);
+    await set(PLACE_INDEX, next);
   } catch (e) { /* kept for this visit only */ }
 }
 
@@ -71,6 +77,7 @@ async function keep(seed, slot, v, cell, b) {
 // kit: { ctx: the places kit as the page loaded it ({ ts, terrains, desc }) }; the seed's realm and Hollow Tree sites go to the worker from the page's generator cache.
 export async function readyPlaces(seed, slot, v, cells, kit) {
   const first = !!(kit && kit.first);   // the set-out's reach: the player waits for these, so they go ahead of the background list, even a cell already asked there (the worker drops its later copy)
+  if (first) for (const c of cells) REACH.add(storeKey(seed, slot, v, c));
   const want = cells.filter(c => !BAKED.has(memKey(seed, slot, v, c)) && (first || !ASKED.has(memKey(seed, slot, v, c))));
   for (const c of want) ASKED.add(memKey(seed, slot, v, c));   // held while IndexedDB is read, so a second ask does not repeat it
   if (want.length && typeof indexedDB !== 'undefined') {

@@ -213,3 +213,36 @@ test("owner note 111: a named wild one of an unidentified kind reads Keep still 
   assert.equal(out.label2, "Unknown creature", "an unnamed creature of an unidentified kind");
   assert.deepEqual(p.errors, []);
 });
+
+test("owner note 156: a named wild one never reads 'Unknown creature' beside her name (any ease); before she is met her prints and bump say 'a Loika'", () => {
+  const p = page(); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);");
+  const pick = JSON.parse(p.run(find)); assert.ok(pick);
+  const out = JSON.parse(p.run(`(() => { const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); S.exp.storm = null; const live = curLive(), c = live.cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
+    S.known = S.known.filter(k => k !== c.sp); S.named = S.named || {}; S.named[c.id] = 'Drizzle';
+    c.quiet = 0; c.hide = 0; c.st = 'idle'; const f = frontOf(P); c.x = f.x; c.y = f.y; c.ind.go = { part: dayPart(), t: { x: c.x, y: c.y } }; S.day.spent = 1;
+    const labels = [0, 1, 2, 3].map(e => { c.ease = e; return patchAction().label; });
+    const o = occupant(P.key, f.x, f.y, 'player'), lay = curLay(), met = blockWords(lay, f.x, f.y, o);
+    delete S.named[c.id]; const before = habName(c), bump = blockWords(lay, f.x, f.y, o), rn = c.ind.name;
+    const ind = c.ind; c.ind = null; const unnamed = blockWords(lay, f.x, f.y, o); c.ind = ind;
+    return JSON.stringify({ labels, met, before, bump, unnamed, rn }); })()`));
+  for (const l of out.labels) assert.ok(!/Unknown creature/.test(l), "no Unknown creature beside a name: " + l);
+  assert.equal(out.labels[3], "Drizzle · a wild Loika", "keep still not open: her name line, nothing to run");
+  assert.equal(out.met, "Drizzle is there", "a met one says her name");
+  assert.equal(out.before, "a Loika", "not yet met: a Loika, never the realm's name " + out.rn);
+  assert.equal(out.bump, "A Loika is there");
+  assert.equal(out.unnamed, "A mibi is there", "only an unnamed creature keeps the generic line");
+  assert.deepEqual(p.errors, []);
+});
+
+test("owner note 156-2: a named one in view is named at once, on drawing the view, with no action", () => {
+  const p = page(); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);");
+  const pick = JSON.parse(p.run(find)); assert.ok(pick);
+  const out = JSON.parse(p.run(`(() => { const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); S.exp.storm = null; const live = curLive(), c = live.cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
+    c.quiet = 0; c.hide = 0; const f = frontOf(P); c.x = f.x; c.y = f.y; S.named = {}; S.metIds = [];
+    const before = habName(c); nameInSight(); const after = habName(c);
+    return JSON.stringify({ before, after, rn: c.ind.name, met: S.metIds.includes(String(c.id)) }); })()`));
+  assert.equal(out.before, "a Loika");
+  assert.equal(out.after, out.rn, "named at once");
+  assert.ok(out.met, "in the Log's met list");
+  assert.deepEqual(p.errors, []);
+});

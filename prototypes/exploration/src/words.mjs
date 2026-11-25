@@ -2,6 +2,7 @@
 // touching the page. Pure data and small pure functions. "Heart" is never player text; dew is never water and never refills; a storm is never a gift or a danger.
 export const WORDS = {
   // where you are (bottom line, Call report, band, map line, Probe tile)
+  callNextDoor: n => n === 0 ? 'The Call reached next door · nothing there' : 'The Call reached next door · ' + n + (n === 1 ? ' find' : ' finds'),   // editor, signed 11-24 (bus 2d227c3460); shown only when the Call reached next door
   explored: 'explored', left: 'nothing left to take', leftN: n => n + ' to take', moreN: n => n + ' more to take',
   nothingSeen: 'nothing in sight to take',
   band: { unexplored: 'not explored yet', podWaits: n => n === 1 ? '1 pod waits there' : n + ' pods wait there' },
@@ -27,6 +28,9 @@ export const WORDS = {
   notice: { saveFailed: "Can't save · leaving loses your game", landChanged: '', pageBroke: build => '' },
   hold: { data: (n, cap) => 'of ' + cap },   // [copy] the cap beside a count held (Data, Energy, Essence): "12 of 20"
   startMorning: 'A Loika comes here in the morning',   // [copy] the first glint of the first set-out: a named Loika's own place (w5-day1-start-1)
+  // [copy] the first walk's teaching line on coming near a named Loika (first-walk-teach-approach-1)
+  teachWalk: { where: (land, dir) => 'A Loika keeps to the ' + land + ', ' + dir, herePlace: 'She comes here in the morning · wait where you can see',
+    near: 'Step slowly near her · ✓ keeps still', tell: 'Keep still · a sign comes first, then ✓ notes it', heard: 'She heard you · keep still and she settles' },
   creature: { holdFull: 'Data full (20 of 20)' },   // [copy] a creature act with the hold full: the creature eats, no Data comes in
   // strike marks: the press, what it adds (the tier of the place sets it), and the hold-full line
   strike: {
@@ -57,14 +61,14 @@ WORDS.haunt = { reed: 'at the reeds', shore: 'at the water', sweep: 'in the tall
 WORDS.ease = {
   stage: ['grazing', 'ears up', 'watching', 'gone'],   // her four stages, said under her name
   stirred: 'She stirred · ears up, still curled',   // [copy] night step 5: a sleeper's first heard step only stirs her
-  heard: 'It heard that · it is watching', heardTwice: 'It heard that again · it is going', gone: 'It has gone from here for the day', settled: 'It settles again',
+  heard: n => n ? n + ' heard that · she is watching' : 'It heard that · it is watching', heardTwice: n => n ? n + ' heard that again · she is going' : 'It heard that again · it is going', gone: n => n ? n + ' has gone from here for the day' : 'It has gone from here for the day', settled: n => n ? n + ' settles again' : 'It settles again',
   // the line under a wild one in sight: whether this step would be heard, by the gait (creep, walk)
   hear: (creep, walk) => 'creep ' + (creep ? 'heard' : 'unheard') + ' · walk ' + (walk ? 'heard' : 'unheard'),
   hearCreep: creep => 'creep ' + (creep ? 'heard' : 'unheard'),   // the short form, for a narrow line
   hearOne: (name, heard) => heard ? name + ' would hear you here' : name + ' would not hear you here',
   stay: n => n > 0 ? 'lets you stay ' + n + ' light' : 'does not let you stay',
   stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
-  stayHeard: 'It looked up · you stayed too long',
+  stayHeard: n => n ? n + ' looked up · you stayed too long' : 'It looked up · you stayed too long',
   keep: 'Keep still',   // the ✓ label that holds
   hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends', warn: 'Kept still · lightning is warned', plate: 'Kept still · a plate was lost' },
   keepTo: part => 'Keep still · until ' + part,   // [copy] at camp by day a hold runs to the next part of day
@@ -99,6 +103,18 @@ WORDS.habit = {
   cardKnown: habit => habit + ' · learned',
   range: { far: 'from far', mid: 'from mid range', near: 'from near' },
   sampleName: { tuft: 'tuft', whisker: 'whisker', claw: 'shed claw' },
+};
+// [copy] signed 11-24 (the editor, bus 20c7828214): the watch view and the field card (picture 04 and 05, the rule gives by range).
+WORDS.watch = {
+  head: name => 'Watching ' + name,
+  tiles: n => n + (n === 1 ? ' tile' : ' tiles'),
+  gives: { shape: 'only her shape from here', place: 'where she goes', coat: 'her coat', face: 'her face, and a sample' },
+  strip: (habit, n) => habit + '|' + n + ' of 4', tell: 'the sign',
+  note: 'Note', leave: 'leave', nearer: 'closer',   // the bottom line: ✓ Note, ← leave, ▲▼ closer
+  card: 'Field note', keep: 'Keep', back: 'back to her', data: '+1 Data',
+  sampleTaken: item => 'You took a ' + item + ' · it goes home in the Case', sampleNone: 'No sample', sampleCome: 'get within 2 tiles for a sample',
+  onPage: name => 'on ' + name + '’s page',   // unused: her page is W6c; never shown until it exists (owner bug #118)
+  cardLine: 'Kept in the Log',
 };
 // [copy] W4 round 2: her prints at a haunt she has left (walk-design-1 3A): working words for the copywriter. The message says when she was there; the label is the ✓ at the prints.
 WORDS.prints = {
@@ -157,6 +173,7 @@ export function clockToNext(spent) {
 WORDS.book = {
   title: 'Log', day: n => 'Day ' + n, earlier: 'earlier pages', field: 'field', moves: '▲▼', empty: 'Nothing written yet.',
   atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,
+  head: (part, turn, place) => (turn ? 'T' + turn + ' · ' : '') + part + ' · ' + WORDS.book.place(place),   // the editor's heading (bus 74d0ebc9f4): 'T9 · morning · the Meadow'; no turn (an old save): 'morning · the Meadow'
   prints: (name, when) => 'Prints in the grass. ' + name + ' was here ' + when + '.',
   met: name => 'Met her. She is ' + name + ' now.',
   habit: (name, hab, range, said) => name + ', ' + hab + ', ' + range + ': ' + said + '.',

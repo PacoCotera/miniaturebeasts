@@ -102,6 +102,55 @@ export function coverE(m9e) {
 // the storm table when d < 6 and BAYER·7 < (6 − d)·16.
 export function stormStep(d, x, y) { return d < 6 && BAYER4[(y & 3) * 4 + (x & 3)] * 7 < (6 - d) * 16; }
 
+// The storm's soft edge in the place view (#149). The storm side keeps its reach `darkW` px from the screen side it comes from; its leading edge is a band
+// BAND_PX (3 tiles) wide. Per WORLD pixel (px, py are the place's pixel coordinates, never snapped per tile, so nothing crawls with the camera) the pixel's own
+// depth inside the band (0 at the day side, BAND_PX at the storm side) is compared with the house 4 x 4 Bayer matrix: the storm share falls evenly 100 > 75 > 50 > 25 > 0
+// with no step lines. The edge is not a straight line: it moves per pixel row by a smooth seeded noise of 1 to 2 tiles (two octaves, periods 5 and 2 tiles), a function of
+// the row and the seed only (stable between frames).
+export const BAND_PX = 144;
+const lat = (i, seed) => { let h = (Math.imul(i + 7919, 0x9E3779B1) ^ Math.imul(seed | 0, 0x85EBCA6B)) >>> 0; h = Math.imul(h ^ (h >>> 15), 0x2C1B3C6D) >>> 0; h = (h ^ (h >>> 12)) >>> 0; return (h & 0xffff) / 32767.5 - 1; };
+const vnoise = (y, period, seed) => { const t = y / period, i = Math.floor(t), f = t - i, u = f * f * (3 - 2 * f); return lat(i, seed) * (1 - u) + lat(i + 1, seed) * u; };
+// the edge's offset in px for a pixel row (within +-96: 1 to 2 tiles)
+export function stormWobble(py, seed) { return Math.round(vnoise(py, 240, seed) * 72 + vnoise(py, 96, seed ^ 0x5bd1e995) * 24); }
+// px the pixel stands inside the leading edge: <= 0 day, >= BAND_PX full storm. ds: the pixel's distance in px from the screen side the storm comes from.
+export function stormBandDepth(ds, py, darkW, seed) { return darkW + stormWobble(py, seed) - ds; }
+export function stormBandHit(ds, py, px, darkW, seed) {
+  const d = stormBandDepth(ds, py, darkW, seed);
+  return d >= BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * BAND_PX < d * 16); }
+
+// The fog sight's soft edge (#153). Fog sight stays the round rule (sightR, per tile); only the DRAWING of its edge changes: the fog table comes in over FOG_BAND_PX
+// (2.5 tiles at 48) past a start radius at the sight radius (every in-sight tile centre stays clear), by the same per-world-pixel 4 x 4 Bayer step as the storm band (25/50/75 percent fog).
+// The start radius wobbles with the angle round the hero, 0 to 1 tile, by a seeded sum of three sines (periodic, so there is no seam), a function of angle and seed only.
+export const FOG_BAND_PX = 120;
+export function fogWobble(theta, seed) {
+  const ph = (k) => (lat(k, seed) + 1) * Math.PI;
+  return Math.max(0, Math.round(48 * (0.5 + 0.3 * Math.sin(2 * theta + ph(1)) + 0.2 * Math.sin(3 * theta + ph(2)) + 0.15 * Math.sin(5 * theta + ph(3))) / 1.15));
+}
+// depth in px past the start radius; fog = 1 when the pixel takes the fog table. e = { cx, cy, r, seed } in the drawn size's place pixels (48 here).
+export function fogDepth(px, py, e) { const dx = px - e.cx, dy = py - e.cy; return Math.hypot(dx, dy) - e.r - fogWobble(Math.atan2(dy, dx), e.seed); }
+export function fogBandHit(px, py, e) {
+  const d = fogDepth(px, py, e);
+  return d >= FOG_BAND_PX || (d > 0 && BAYER4[(py & 3) * 4 + (px & 3)] * FOG_BAND_PX < d * 16); }
+
+// The fog's drifting puffs (#154): a seeded irregular blob, 2 to 4 tiles wide and 1 to 2 tall (at 48), no straight sides, dense at the centre and thinning to nothing at the rim
+// by the same 4 x 4 Bayer as the fog band, on SCREEN pixels: the dots stay where they are while the puff's outline drifts over them. Colour: the fog table's lightest tone (bone, never white).
+export const PUFF_TONE = 'bone';
+export function puffSize(seed) { const w = 96 + 48 * (Math.abs(lat(1, seed)) * 2.99 | 0); return { w, h: Math.min(96, w / 2 + (lat(2, seed) > 0 ? 24 : 0)) }; }
+// Dot share 0..12 (sixteenths) at a pixel (x, y) relative to the puff's origin; 0 outside the blob.
+export function puffShare(seed, x, y) {
+  const { w, h } = puffSize(seed), ph = (k) => (lat(k + 10, seed) + 1) * Math.PI, dx = x + .5 - w / 2, dy = y + .5 - h / 2, th = Math.atan2(dy / h, dx / w);
+  const r = 0.82 + 0.09 * Math.sin(2 * th + ph(1)) + 0.07 * Math.sin(3 * th + ph(2)) + 0.06 * Math.sin(5 * th + ph(3)) + 0.04 * Math.sin(7 * th + ph(4)),
+    d = Math.hypot(dx / (w / 2), dy / (h / 2)) / r;
+  return d >= 1 ? 0 : Math.min(12, Math.ceil(13 * (1 - d))); }
+// Is the screen pixel (sx, sy) a dot of the puff whose origin is (ox, oy)?
+export function puffHit(seed, ox, oy, sx, sy) { const s = puffShare(seed, sx - ox, sy - oy); return s > 0 && BAYER4[(sy & 3) * 4 + (sx & 3)] < s; }
+
+// The survey veil across the band: a pixel that stays clear keeps the veil only where a second 4 x 4 Bayer test (the same matrix, shifted 2 px) at the same share also says veil,
+// so the veil thins out with the clear ground and is gone where the fog takes over (no tile step, no new table).
+export function fogVeilKeep(px, py, e) {
+  const d = fogDepth(px, py, e);
+  return d <= 0 || (d < FOG_BAND_PX && BAYER4[((py + 2) & 3) * 4 + ((px + 2) & 3)] * FOG_BAND_PX >= d * 16); }
+
 // The band's dark columns at 48 for a gap still to close: n = 20·(3 − gap) in twentieths of a column (gap < 3, a multiple of 0.05);
 // STORM_K[48] = 7/5 so columns = ceil(7n/100). 32 px keeps main's float rule in the page.
 export function stormCols48(n) { return Math.floor((7 * n + 99) / 100); }
