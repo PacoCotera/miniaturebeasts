@@ -1,0 +1,12 @@
+bad 1 35 52 tip 11 11 realmEnd false want undefined seated false undefined 
+bad 1 39 54 tip 11 18 realmEnd true want road-rest seated false no-room 
+{"seed":1,"tips":24,"bad":2,"loose":5}
+bad 2 40 49 tip 6 16 realmEnd false want undefined seated false undefined 
+bad 2 47 59 tip 12 12 realmEnd true want house seated false no-room 
+{"seed":2,"tips":18,"bad":2,"loose":2}
+{"seed":3,"tips":12,"bad":0,"loose":2}
+bad 4 44 56 tip 8 25 realmEnd false want undefined seated false undefined 
+{"seed":4,"tips":12,"bad":1,"loose":2}
+bad 5 44 48 tip 20 19 realmEnd false want undefined seated false undefined 
+{"seed":5,"tips":21,"bad":1,"loose":6}
+{"seeds":5,"places":0,"tips":87,"atYard":78,"atCrossing":0,"atPort":3,"bad":6,"loose":17,"keepersSeated":74,"keepersWanted":81,"bad_noKeeper_realmEnd":0,"bad_wantedNotSeated":2,"bad_other":4}
