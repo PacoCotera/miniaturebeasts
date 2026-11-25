@@ -18,6 +18,10 @@ test("his save: ten walk steps, the Loikas in sight stir within one tile, never 
   // round 3: on his save every Loika in sight has already heard him (ease 3), and a heard one holds her tile; the walk is read with them unaware (grazing), as at a fresh meeting
   q.run(`curLive().cr.forEach(c => { if (c.sp === 0 && Math.max(Math.abs(c.x - S.exp.patch.x), Math.abs(c.y - S.exp.patch.y)) >= 5) { c.ease = 0; c.quiet = 0; c.crowd = 0; } })`);   // the far ones only: the near ones keep the hearing and routine moves of the old rules
   const snap = () => JSON.parse(q.run(`JSON.stringify({ P: { x: S.exp.patch.x, y: S.exp.patch.y }, cr: curLive().cr.filter(c => c.sp === 0 && !c.hide && inSight(c.x, c.y) && c.ease === 0).map(c => ({ id: c.id, x: c.x, y: c.y })) })`));
+  // 138-9: #145's load re-chooses his save's stored haunts, so on load these Loikas walk to their new stands; that routine walk is not a stir. Settle first (Waits, he does not move) until every one in sight stands within a tile of her routine stand, then take the baseline.
+  const settled = () => q.run(`curLive().cr.filter(c => c.sp === 0 && !c.hide && inSight(c.x, c.y) && c.ease === 0).every(c => { const a = c.ind ? routineSpot(c, curLay(), S.exp.patch.key) : null; return !a || man(a, c) <= 1; })`);
+  for (let i = 0; i < 60 && !settled(); i++) q.run("waitTick('patch')");
+  assert.ok(settled(), "his Loikas reach their routine stands before the walk");
   const start = snap(); assert.ok(start.cr.length, "a Loika is in sight at his spot");
   const home = new Map(start.cr.map(c => [c.id, c])), moved = new Set(), toward = [], far = [];
   for (const d of ["left", "right", "up", "down", "left", "right", "up", "down", "left", "right"]) {
