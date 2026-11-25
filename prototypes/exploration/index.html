@@ -6850,7 +6850,7 @@ function drawWhole(t) {
   const T = bk.wholeSize();   // 16 for a place larger than 18 x 22 (the kit's own pixel), 24 for today's places
   // The peek (call-zoom-wide-1) shows the place at half the whole picture's tile (12 or 8 px: a 2:1 step of the 24 / 16 px picture, no smoothing), so it and half of each
   // neighbour fill the view: twice the place in each direction. Look keeps the whole place at T.
-  const wide = v.kind === 'peek', Tp = wide ? T >> 1 : T;
+  const wide = v.kind === 'peek' || v.kind === 'look', Tp = wide ? T >> 1 : T;   // (#168) Look around frames the place and half of each neighbour, as the hold does
   // (call-zoom-wide-3) the peek centres on the CELL (lay.w x lay.h), not on the picture with its apron, so half of each neighbour shows on all four sides
   const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * Tp, H = bk.place.h * Tp,
     ox = wide ? Math.round(SCR_W / 2 - (lay.w / 2 - bk.ox) * Tp) : (SCR_W - W) >> 1, oy = wide ? VIEW_Y + Math.round(VIEW_H / 2 - (lay.h / 2 - bk.oy) * Tp) : VIEW_Y + ((VIEW_H - H) >> 1);   // (call-zoom-wide-4) the cell's middle stands (w/2 - ox) tiles into the picture, ox being the apron's -1
