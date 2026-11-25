@@ -249,6 +249,7 @@ import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, packageOwes, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
+import { makeMapPaint } from "./src/map-paint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { fetchOk, loadImg } from "./src/fetchretry.mjs";
@@ -6251,23 +6252,10 @@ function landStand(spec) {
 }
 function landPixels(cv, u) { const cg = cv.getContext('2d'), id = cg.createImageData(cv.width, cv.height); new Uint32Array(id.data.buffer).set(u); cg.putImageData(id, 0, 0); }   // a painting's pixels onto its canvas
 function landImage(spec) { return landTry(spec) || landStand(spec); }
-// The opening's painting as a generator (a screen waits for it across frames): each next() is one frame of waiting; the last returns the canvas.
-function* landPaint(spec) { let cv; while (!(cv = landTry(spec))) yield; return cv; }
-// A place's mark on the land at its landmark's real spot in the cell (a mirrored place puts it on the other side); been in: the slate silhouette, found: full colour; never been in: none.
-// (fx, fy): the spot as fractions of the cell. Returns { mk, x, y } for a cell at (cx, cy) of size cs, or null.
-function cellMark(c, cx, cy, cs, size, open) {   // open: the opening screen draws them between expeditions
-  if ((!S.exp && !open) || !S.revealed[c] || !passable(c) || G.land[c] === L.WATER) return null;
-  const found = walkedCell(c), been = !!S.veil[String(c)]; if (!found && !been) return null;
-  if (!placeHave(String(c))) return null;   // its place is still being made: no mark yet
-  const lay = layout(String(c)), bk = lay.baked; if (!bk || !lay.landmark) return null;   // a mark stands only at a landmark: the land holds few
-  const lm = { x: lay.landmark.x - bk.ox, y: lay.landmark.y - bk.oy }, mk = walkPB(`mark-${LM_MARK[lay.landmark.kind]}-${found ? 'found' : 'been'}-${size}`, size, size), pad = 2;
-  return { mk, x: Math.round(Math.max(cx + pad, Math.min(cx + cs - mk.w - pad, cx + (lm.x + .5) / bk.w * cs - mk.w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - mk.h - pad, cy + (lm.y + .5) / bk.h * cs - mk.h / 2))) };
-}
-// A sign's spot in its cell: at the heart's spot in the place (the others beside it), not in corner slots.
-function cellSignAt(c, cx, cy, cs, w, h, n) {
-  const pad = 2, fx = .5 + n * .3, fy = .5;
-  return { x: Math.round(Math.max(cx + pad, Math.min(cx + cs - w - pad, cx + fx * cs - w / 2))), y: Math.round(Math.max(cy + pad, Math.min(cy + cs - h - pad, cy + fy * cs - h / 2))) };
-}
+// landPaint, cellMark, cellSignAt and openFrame are src/map-paint.mjs; the page's state is handed in as getters (read each time, never copied).
+const { landPaint, cellMark, cellSignAt, openFrame } = makeMapPaint({
+  get S() { return S; }, get G() { return G; }, landTry: spec => landTry(spec), passable: c => passable(c), walkedCell: c => walkedCell(c), placeHave: k => placeHave(k),
+  layout: k => layout(k), walkPB: (n, w, h) => walkPB(n, w, h), get LM_MARK() { return LM_MARK; }, openRect: () => openRect(), firstPlacement: () => firstPlacement(), startPlaces: () => startPlaces(), tierOf: () => tierOf() });
 function drawReachView(t) {
   if (S.exp.beaconView || S.ui.mapFull) { drawMap('map', t); return; }   // the whole map, when chosen in the menu (it stays chosen)
   ensureMap();
@@ -6850,7 +6838,7 @@ function drawWhole(t) {
   const T = bk.wholeSize();   // 16 for a place larger than 18 x 22 (the kit's own pixel), 24 for today's places
   // The peek (call-zoom-wide-1) shows the place at half the whole picture's tile (12 or 8 px: a 2:1 step of the 24 / 16 px picture, no smoothing), so it and half of each
   // neighbour fill the view: twice the place in each direction. Look keeps the whole place at T.
-  const wide = v.kind === 'peek', Tp = wide ? T >> 1 : T;
+  const wide = v.kind === 'peek' || v.kind === 'look', Tp = wide ? T >> 1 : T;   // (#168) Look around frames the place and half of each neighbour, as the hold does
   // (call-zoom-wide-3) the peek centres on the CELL (lay.w x lay.h), not on the picture with its apron, so half of each neighbour shows on all four sides
   const el = TEST.at != null ? TEST.at : NOW - v.at, W = bk.place.w * Tp, H = bk.place.h * Tp,
     ox = wide ? Math.round(SCR_W / 2 - (lay.w / 2 - bk.ox) * Tp) : (SCR_W - W) >> 1, oy = wide ? VIEW_Y + Math.round(VIEW_H / 2 - (lay.h / 2 - bk.oy) * Tp) : VIEW_Y + ((VIEW_H - H) >> 1);   // (call-zoom-wide-4) the cell's middle stands (w/2 - ox) tiles into the picture, ox being the apron's -1
@@ -7951,19 +7939,6 @@ const OPEN_FRAME_BASE = { x: 8, y: 38, w: 434, h: 320 }, OPEN_PY = 450, OPEN_PH 
 // With no mibi at all there is no partner row, and the land takes its room (434 x 430); from the first mibi on the row is back.
 const openAlone = () => !liveMibis().length && !carriedMibis().length;
 const openRect = () => openAlone() ? { ...OPEN_FRAME_BASE, h: 430 } : OPEN_FRAME_BASE;
-// The land you know, as the frame holds it (430 × 316 at (10, 40) inside the panel): the Probe's reach round the last start plus half a cell each side (the first time, the five lights and half a cell round them),
-// at the largest whole cell size up to 72 that fits, centred and clamped to the world.
-function openFrame() {
-  const F = openRect(), WX = F.x + 2, WY = F.y + 2, WW = F.w - 4, WH = F.h - 4, first = firstPlacement();
-  let x0 = MW, y0 = MH, x1 = -1, y1 = -1;
-  if (first) for (const c of startPlaces()) { const p = cxy(c); x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y); }
-  else { const s = cxy(S.ui.lastPos != null ? S.ui.lastPos : G.spawns[0]), r = tierOf().range; x0 = s.x - r; x1 = s.x + r; y0 = s.y - r; y1 = s.y + r; }
-  const bw = x1 - x0 + 2, bh = y1 - y0 + 2, cs = Math.max(1, Math.min(72, Math.floor(Math.min(WW / bw, WH / bh))));
-  let px0 = Math.round((x0 + x1 + 1) / 2 * cs - WW / 2), py0 = Math.round((y0 + y1 + 1) / 2 * cs - WH / 2);
-  px0 = MW * cs > WW ? clamp(px0, 0, MW * cs - WW) : Math.round((MW * cs - WW) / 2); py0 = MH * cs > WH ? clamp(py0, 0, MH * cs - WH) : Math.round((MH * cs - WH) / 2);
-  const X0 = Math.floor(px0 / cs), Y0 = Math.floor(py0 / cs), ox = WX - (px0 - X0 * cs), oy = WY - (py0 - Y0 * cs);
-  return { first, WX, WY, WW, WH, cs, X0, Y0, ox, oy, glimpse: first ? startPlaces().slice() : null, at: c => { const p = cxy(c); return { x: ox + (p.x - X0) * cs, y: oy + (p.y - Y0) * cs }; } };
-}
 // The opening's painting is made a slice (about 8 ms) each frame and drawn when whole, so the first screen never stalls on its painting. A cached painting comes back at once.
 const OPEN_JOB = { sig: '', it: null };
 function openPainting(spec) {
@@ -8106,7 +8081,7 @@ function menuIcon(id, x, y) {
 }
 function drawMenu(t) {
   const items = menuItems(), overField = S.exp && (S.ui.from === 'patch' && S.exp.patch || S.ui.from === 'map');
-  if (S.ui.from === 'patch' && S.exp && S.exp.patch) drawPatch(t); else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'sealed') drawSealed(t); else if (S.ui.from === 'riding') drawRiding(t); else drawSetup(t);
+  if (S.ui.from === 'patch' && S.exp && S.exp.patch) { drawPatch(t); drawHeroLater(); } else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'sealed') drawSealed(t); else if (S.ui.from === 'riding') drawRiding(t); else drawSetup(t);
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
