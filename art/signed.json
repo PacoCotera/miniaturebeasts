@@ -3642,6 +3642,20 @@
    "sha256": "4d2fb93783e91499301133412c167463c8c7245932250eb7cdb525c6e19a5c27"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-25",
+   "id": "f413d6b25c",
+   "path": "prototypes/exploration/art/props/crate-sealed-icon.png",
+   "sha256": "07f49b19282579ab29f87d3f593978b444dbd52f87a50a91b08c0eeb7f2fdc8f"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-25",
+   "id": "186a7014ed",
+   "path": "prototypes/exploration/art/props/crate-sealed-lid.png",
+   "sha256": "10ccb51e1f9e11043345ad08e23f6832bf43a50b42d95a30c00b807d262c2bdb"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "f968e3ed6c",
@@ -12574,11 +12588,39 @@
    "sha256": "816c8a2e74f363aad411acdbb8b9e3eb36ac66383d7ec05185dcb9a1b3e6d943"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-25",
+   "id": "a8a3e17e57",
+   "path": "prototypes/ui/assets/masters/home/cradle-hold-176x104.png",
+   "sha256": "c58c10aa9562afd1acd63cb4bb522a4b2264c7ca3cb382443821981b633c6ab7"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-25",
+   "id": "7466571589",
+   "path": "prototypes/ui/assets/masters/home/cradle-hold-88x52.png",
+   "sha256": "6aea26a5a988fd0c680bb297ec0617b4b2321d304b3c169de4c1a1de43944238"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-25",
+   "id": "fefa8b89f4",
+   "path": "prototypes/ui/assets/masters/home/cradle-hold-front-lip-176x104.png",
+   "sha256": "eddb77f9538c51b8634dffb71258f90a5ebfb01f5f2169a9b72975b10dc1eeba"
+  },
+  {
    "class": "cut-of-signed",
    "date": "2026-11-21",
    "id": "3e6ac597bb",
    "path": "prototypes/ui/assets/masters/pods/bud-shape-S10-112x112.png",
    "sha256": "876bd342e205232bb10ef7c81b21c8f9cd584ccccb12f4218ea3affe55a74858"
+  },
+  {
+   "class": "paint",
+   "date": "2026-11-25",
+   "id": "79ecb90575",
+   "path": "prototypes/ui/assets/masters/pods/crate-open-1104x960.png",
+   "sha256": "8ca0ffe9b31feda70a7574199e312d8a1757a7bd295820d32166f25cb0a27f26"
   },
   {
    "class": "cut-of-signed",
