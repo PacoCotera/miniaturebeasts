@@ -1170,7 +1170,7 @@ function irOf(seed, id, x0, y0, w, h, terrain, wayups, cell = null, top = null, 
   return { origin: { x: x0, y: y0 }, seed, id, w, h, type: 'meadow', names: hold ? hold.names : [], tileset: 'ninja-test', mirror: false, mood: '', terrain, ...(top && top.some(v => v) ? { top } : {}), ...(land ? { land } : {}), props, decals: d.decals, canopy: [], hearts: [], clues: [],
     finds: hold ? hold.finds : [], landmarks: hold ? hold.landmarks : [], openings: hold ? hold.openings : [], spawns: hold ? hold.spawns : [], wayups, reedbanks: d.reedbanks, tone,
     inner: hold ? hold.inner : null, ground: hold ? hold.ground || null : null, signs: hold ? hold.signs : [], traces: hold ? hold.traces : [], strikes: hold ? hold.strikes : [],
-    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [], soft: hold ? hold.soft : null, falls, ...(banks && banks.length ? { banks } : {}) };   // falls: the empty slot `falls`, 2 face columns each ({ x, y, w: 2, h: 1 } world tiles of the lip row)
+    pieces: hold ? hold.pieces : [], shelter: hold ? hold.shelter : [], stamps: hold ? hold.stamps : [], soft: hold ? hold.soft : null, ...(hold && hold.keepers ? { keepers: hold.keepers } : {}), falls, ...(banks && banks.length ? { banks } : {}) };   // falls: the empty slot `falls`, 2 face columns each ({ x, y, w: 2, h: 1 } world tiles of the lip row)
 }
 // the bare tiles (sand, scree, leaf litter, path, raised land) of a cell's own tiles: where strike marks lie (hostsStrike picks the cell with the most within one of a start)
 function bareTiles(seed, X, Y) {

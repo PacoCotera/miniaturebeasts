@@ -40,6 +40,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
       if (x >= 0 && y >= 0 && x < w && y < h) { propFoot[I(x, y)] = 1; tiles[I(x, y)] = s.canopy >= 0 ? T.TRUNK : T.ROCK; if (PRESS_PROPS.includes(s.kind)) press[I(x, y)] = 1; else if (String(s.kind).startsWith('tree-')) press[I(x, y)] = 2; }
     }
   }
+  // the keepers' place's block rects (gen7/keepers.mjs; the bake set them in the block mask, which made them steep rock above): a piece's own footprint, a rock to the pawn and never worded as steep rock
+  if (place.keepers) for (const [bx, by, bw, bh] of place.keepers.block) for (let y = by; y < by + bh; y++) for (let x = bx; x < bx + bw; x++) { const lx = x - 1, ly = y - 1; if (lx >= 0 && ly >= 0 && lx < w && ly < h) { propFoot[I(lx, ly)] = 1; tiles[I(lx, ly)] = T.ROCK; } }
   // scree the Tuliko crosses (hold.mjs softOf): two lines of tiles from the cell's border inwards over the steep rock to the first ground that walks, the same pair of lines from either cell of the edge.
   // lay.cross is what the page reads (crossingAt, entryPoint, crossEdge): the side, the first line, the tile just inside.
   const cross = [];
@@ -195,7 +197,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
     baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, rimSteps: rimBits, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
-    strikes, decalNear, coverAt,...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
+    strikes, decalNear, coverAt,...(place.keepers ? { keepers: { ...place.keepers, x: place.keepers.x - 1, y: place.keepers.y - 1, block: place.keepers.block.map(([x, y, bw, bh]) => [x - 1, y - 1, bw, bh]), yard: { ...place.keepers.yard, x: place.keepers.yard.x - 1, y: place.keepers.yard.y - 1 } } } : {}), ...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;

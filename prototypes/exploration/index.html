@@ -247,6 +247,7 @@ import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/wa
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
+import { movePodsOffBlocks } from "./src/pods-off-blocks.mjs";
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, packageOwes, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
@@ -839,7 +840,7 @@ function layout(key) {   // a land cell's layout from the generator (cached); a 
     const seed = S.regions[0].seed, slot = hereRegion().slot, v = biomeVersion(S);
     let b = bakedGet(seed, slot, v, +key);   // the cell as the places worker made it; only a page without a worker (or a cell asked for past the reach) bakes it here, with the same function
     if (!b) { b = bakedCell7(PL.ctx, seed, slot, +key, v); bakedPut(seed, slot, v, +key, b); PLACES.inline++; }
-    lay = layout7In(PL.ctx, G, seed, slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side], true), v, b); lay.shutSig = shutSig(key); addStrikeFeats(lay); layoutCache.set(key, lay);
+    lay = layout7In(PL.ctx, G, seed, slot, key, side => !!S.exp && !!crossReason(+key, SIDE_DIR[side], true), v, b); lay.shutSig = shutSig(key); addStrikeFeats(lay); if (lay.keepers) movePodsOffBlocks(S.pods, lay, t => T_BLOCK[t]); layoutCache.set(key, lay);   // paths-gen-build-2: a pod left where a keepers' place now stands moves to the nearest free tile, once (the save's own tile list)
     for (const dir of ['up', 'down', 'left', 'right']) { const n = stepCell(+key, dir); if (n >= 0 && layoutCache.has(String(n))) tileSide(+key, dir); } }   // a side is worked out when the second of its two cells has a layout
   if (!lay) { lay = genPlace(G, S.seed, key); if (G.biome === 'fells') { lay.fells = true; lay.scree = G.land[lay.cell] === L.ROCK; } placeTrees(G, S.seed, lay); lay.shade = !lay.cave && !!(G.shade && G.shade[lay.cell]); layoutCache.set(key, lay); }   // generator 4's Fells: a rock place has grey scree for its ground, and the stairs climb
   return lay;

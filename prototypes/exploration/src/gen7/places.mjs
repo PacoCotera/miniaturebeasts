@@ -14,6 +14,7 @@ import { openingsOf } from './hold.mjs';
 import { landmarksOf } from './landmarks.mjs';
 import { ROCK_KINDS } from './decor.mjs';
 import { RULES } from './rules.mjs';
+import { keeperKindAt, seatKeeper, isRoadEnd } from './keepers.mjs';
 import { PART, partAt } from '../../../places/src/bake/relief.mjs';
 import STAMPS from './stamps.json' with { type: 'json' };
 
@@ -272,9 +273,16 @@ function build(seed, X, Y) {  const R = realm7(seed), G = R.regions[Math.floor(Y
       if (hc.length) { const b = hc[0]; addSpot(instantiate(nk, b.sx, b.sy, { role: 'spot', entryDist: +dent[I(b.cx, b.cy)].toFixed(1), spineDist: +dsp[I(b.cx, b.cy)].toFixed(1), candidates: hc.length })); }
     }
   }
+  // ---- 2b. the keepers' place (keepers.mjs): where the road ends or forks, seated against the road's last tile; its box and yard are kept clear and its block rects go to the bake's block mask ----
+  { const kind = keeperKindAt(seed, X, Y);
+    if (kind) { const r = seatKeeper(kind, { w, h, cw: CW, ch: CH, terrain, solid: plan.solid, spine: plan.spine, cliff: plan.cliff, spots: plan.spots }, { PATH: TV.PATH, FAMILY: new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF]) }, isRoadEnd(seed, X, Y));
+      if (r.why) plan.keepersWhy = r.why; else plan.keepers = r; } }
   // ---- 3. the zone the scenery keeps off: 2 = nothing at all (a spot, one tile round it, the spine); 1 = nothing tall (three tiles round a spot, the heart's sight line and a tile either side) ----
   const zw = w + 2 * ZM, zh = h + 2 * ZM, zone = new Uint8Array(zw * zh), Z = (x, y) => (y + ZM) * zw + x + ZM;
   const mark = (x, y, v) => { if (x < -ZM || y < -ZM || x >= w + ZM || y >= h + ZM) return; const k = Z(x, y); if (zone[k] < v) zone[k] = v; };
+  if (plan.keepers) { const k = plan.keepers;
+    for (let y = k.y - QUIET; y < k.y + k.h + QUIET; y++) for (let x = k.x - QUIET; x < k.x + k.w + QUIET; x++) mark(x, y, 1);
+    for (let y = k.yard.y; y < k.yard.y + k.yard.h; y++) for (let x = k.yard.x; x < k.yard.x + k.yard.w; x++) mark(x, y, 2); }
   for (const s of plan.spots) {
     for (let y = s.y - QUIET; y < s.y + s.h + QUIET; y++) for (let x = s.x - QUIET; x < s.x + s.w + QUIET; x++) mark(x, y, 1);
     for (let y = s.y - 1; y <= s.y + s.h; y++) for (let x = s.x - 1; x <= s.x + s.w; x++) mark(x, y, 2);
@@ -350,8 +358,9 @@ function patchOf(plan, seed, s) {
 // ---- what a plan adds to a cell's IR: the wall props, pieces, shelter tiles and find slots (hold.mjs reads this) ----
 const WALL = { meadow: ROCK_KINDS, rock: ROCK_KINDS, pond: ROCK_KINDS.filter(k => /^boulder-d/.test(k)), wood: ['stump'] };
 export function contentOf(plan, seed) {
-  const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], patches: [], landmark: null, spots: [] };
+  const out = { setProps: [], pieces: [], shelter: [], slots: [], roof: [], bare: [], patches: [], landmark: null, spots: [], keepers: null };
   if (!plan) return out;
+  if (plan.keepers) out.keepers = plan.keepers;
   const word = plan.land, kinds = WALL[word] && WALL[word].length ? WALL[word] : ROCK_KINDS, rank = { p: 0, k: 1, m: 2, c: 3 };
   for (const s of plan.spots) {
     out.spots.push({ id: s.id, kind: s.kind, role: s.role, x: s.x, y: s.y, w: s.w, h: s.h, tier: s.tier, entryDist: s.entryDist, spineDist: s.spineDist, seenFrom: s.seenFrom || null, cells: s.cells.map(c => [c.x, c.y, c.k]) });
