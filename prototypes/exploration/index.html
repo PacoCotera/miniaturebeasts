@@ -2979,6 +2979,7 @@ function enterPatchBuilt() {
   WARM.cold = TEST.clock == null && TEST.at == null && !warmReady(key) ? { key, at: NOW, signed: false } : null;   // not warm yet: the rest is built a step a frame (warmLanding)
   if (!S.found.includes('callintro')) { if (!lay.cave) fxSign('call'); }   // the Call sign has two moments: entering a place (a cave has no veil), and a Call press in a place
   if (firstIn && !lay.cave && !(firstWalk() && teachStep())) placeNamed(lay);   // on the first walk the teaching line comes first; the name is already in the bottom bar   // owner note #24: the place you step into is named once, in the message line; after that its name leads the bottom bar
+  nameInSight();   // owner note 156: a Loika in view on arrival is named at once
   save();
 }
 // The place's name fills the message line for PLACE_NAME_MS (one note, priority 1: any real note outranks it), then the line is clear again.
@@ -3891,6 +3892,19 @@ function dig() {
 const DIG_MS = 900;
 function digDone() { const ex = S && S.exp; if (!ex || !ex.caveDue) return; delete ex.caveDue; FX.dig = null; if (ex.patch) enterCave(); }
 
+// owner note 156 (#156-2): a named one in view is named at once (S.named, S.metIds, the Log's met), on entering a place and whenever the view is drawn, not only after an action
+// one function, patchTick's own condition (not hidden, not away, in sight); called where the state changes (a step, entering a place), never from the draw, and never on a read-only view
+const awayFrom = (o, P) => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7;
+function nameSeen(c, away) {
+  if (RT.readOnly || !c.ind || c.hide || away(c) || !inSight(c.x, c.y)) return;
+  const nm = S.named || (S.named = {});
+  if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); }
+}
+function nameInSight() {
+  const ex = S && S.exp, P = ex && ex.patch; if (!P) return;
+  const live = ex.live && ex.live[P.key]; if (!live || !live.cr) return;
+  for (const c of live.cr) nameSeen(c, o => awayFrom(o, P));
+}
 function patchTick(info) {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key];
   const raining = !lay.cave && stormRain(lay.cell % MW);
@@ -3913,10 +3927,10 @@ function patchTick(info) {
   const pc = ptCtx();
   const X = Object.assign({ lay, live, key, P, raining, fog, strike, ring: info.ring || null, pulse: !!info.pulse, reach: info.reach || 7, call: !!info.call, moved: !!info.moved,
     noise: info.noise || 'act', prevP: info.prevP || null, ease: easeEnvOf(lay, raining, fog), carry: ex.carry, ptName: ex.pt && ex.pt.name,
-    away: o => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7 }, pc);
+    away: o => awayFrom(o, P) }, pc);
   habitWorld(X);
   for (const c of live.cr) { const was = c.st; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
-    if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) { const nm = S.named || (S.named = {}); if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); } }   // a name on first note: the one the realm gives it, kept once it has been met
+    nameSeen(c, X.away);   // a name on first note: the one the realm gives it, kept once it has been met
     if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) (S.seenAt || (S.seenAt = {}))[String(c.id)] = { k: key, x: c.x, y: c.y, sp: c.sp, t: S.turn };   // W6a: where she was last seen, and on which day: the target line's arrow points here, never at her live place
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
   partnerTick(X);

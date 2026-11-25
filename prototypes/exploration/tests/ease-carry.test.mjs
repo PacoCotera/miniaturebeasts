@@ -233,3 +233,16 @@ test("owner note 156: a named wild one never reads 'Unknown creature' beside her
   assert.equal(out.unnamed, "A mibi is there", "only an unnamed creature keeps the generic line");
   assert.deepEqual(p.errors, []);
 });
+
+test("owner note 156-2: a named one in view is named at once, on drawing the view, with no action", () => {
+  const p = page(); p.run("newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);");
+  const pick = JSON.parse(p.run(find)); assert.ok(pick);
+  const out = JSON.parse(p.run(`(() => { const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); S.exp.storm = null; const live = curLive(), c = live.cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
+    c.quiet = 0; c.hide = 0; const f = frontOf(P); c.x = f.x; c.y = f.y; S.named = {}; S.metIds = [];
+    const before = habName(c); nameInSight(); const after = habName(c);
+    return JSON.stringify({ before, after, rn: c.ind.name, met: S.metIds.includes(String(c.id)) }); })()`));
+  assert.equal(out.before, "a Loika");
+  assert.equal(out.after, out.rn, "named at once");
+  assert.ok(out.met, "in the Log's met list");
+  assert.deepEqual(p.errors, []);
+});
