@@ -5,7 +5,8 @@
 // Pure parts take their world from the caller (a test gives its own worker, store and realm); `startPackage` is the page's wiring.
 
 // What the save names: the region a package is for, and where its order starts. null: no generator 7 world in the save.
-export function wantOf(sv, biomeVersion) {
+const biomeV = (sv) => (sv && sv.biomeV != null ? sv.biomeV : 1);   // the realm's kind version, as the Companion reads it (exploration/src/regions.mjs biomeVersion), so this check imports no generator
+export function wantOf(sv, biomeVersion = biomeV) {
   const regions = sv && Array.isArray(sv.regions) ? sv.regions : [], R = regions.find(r => r && r.id === sv.here) || regions[0];
   if (!R || R.gen !== 7 || !regions[0] || typeof regions[0].seed !== 'number' || !Array.isArray(R.slot)) return null;
   const ex = sv.exp && Array.isArray(sv.exp.reach) && Number.isInteger(sv.exp.pos) ? sv.exp : null;
@@ -17,9 +18,10 @@ export function wantOf(sv, biomeVersion) {
 export async function bakePackage(want, deps) {
   const P = deps.store, { kv, kit } = deps, meta = { seed: want.seed, slot: want.slot, v: want.v, tag: kit.tag };
   if (!deps.limit) { const had = await P.findPackage(kv, meta); if (had && had.whole) return { header: had, whole: true, how: 'current' }; }
-  await deps.realm(want.seed);
-  const W = deps.world, G = W.genWorld7(want.seed, want.slot), from = want.exp ? { pos: want.exp.pos, reach: want.exp.reach } : { start: G.spawns[0], tier: want.tier };
-  const order = P.bakeOrder(G, from), h = await P.openPackage(kv, meta, order, deps.now);
+  const T = (name, f) => { const t = deps.now(), r = f(); if (deps.mark) deps.mark(name, Math.round(deps.now() - t)); return r; };   // the page's own thread work, by step (the report's "what the page does")
+  { const t = deps.now(); await deps.realm(want.seed); if (deps.mark) deps.mark('realm (wait, worker)', Math.round(deps.now() - t)); }
+  const W = deps.world, G = T('genWorld7', () => W.genWorld7(want.seed, want.slot)), from = want.exp ? { pos: want.exp.pos, reach: want.exp.reach } : { start: G.spawns[0], tier: want.tier };
+  const order = T('bakeOrder', () => P.bakeOrder(G, from)), h = await P.openPackage(kv, meta, order, deps.now);
   const todo = deps.limit ? h.todo.filter(c => order.cells.indexOf(c) < deps.limit) : h.todo;
   if (todo.length) await new Promise((resolve, reject) => {
     const w = deps.makeWorker(); let left = todo.length, chain = Promise.resolve(), failed = 0;
@@ -40,7 +42,7 @@ export async function bakePackage(want, deps) {
       if (--left === 0) fin();
     };
     w.postMessage({ op: 'init', ctx: kit.ctx });
-    w.postMessage({ op: 'seed', seed: want.seed, realm: W.realm7(want.seed), sites: W.decorSites(want.seed), banks: W.madeBanks(want.seed) });
+    w.postMessage(T('seed message', () => ({ op: 'seed', seed: want.seed, realm: W.realm7(want.seed), sites: W.decorSites(want.seed), banks: W.madeBanks(want.seed) })));
     w.postMessage({ op: 'bake', seed: want.seed, slot: want.slot, v: want.v, cells: todo, first: false });
   });
   const whole = deps.limit ? false : await P.finishPackage(h);
@@ -59,7 +61,7 @@ async function loadKit(mods) {
   return { ctx: { ts: rd.readTileSet(tsB), terrains: JSON.parse(new TextDecoder().decode(terB)).terrains, desc: mods.world7.reviveLayers(JSON.parse(new TextDecoder().decode(layB))) }, tag: mods.places.placesTag(tsB, terB, layB) };
 }
 let RUNNING = null, DONE_KEY = '';
-export const packageState = { phase: 'idle', done: 0, of: 0, floor: 0, whole: false, error: null, header: null, longestTaskMs: 0 };
+export const packageState = { phase: 'idle', done: 0, of: 0, floor: 0, whole: false, error: null, header: null, steps: {} };
 // The save is known: bake its region if no current package is there. Idempotent: the same world and place are not started twice; a different one waits for the run in hand.
 export function startPackage(sv, opts = {}) {
   if (typeof Worker === 'undefined' || typeof indexedDB === 'undefined' || typeof document === 'undefined' || document.querySelector('script[type="importmap"]')) return null;   // as the Companion's workers: only a bundled page
@@ -67,15 +69,17 @@ export function startPackage(sv, opts = {}) {
   if (RUNNING || key === DONE_KEY) return RUNNING;
   RUNNING = (async () => {
     try {
-      const [world7, regions, realmStore, place, realm, places, store] = await Promise.all([import('../../exploration/src/world7.mjs'), import('../../exploration/src/regions.mjs'), import('../../exploration/src/realm-store.mjs'), import('../../exploration/src/gen7/place.mjs'), import('../../exploration/src/gen7/region.mjs'), import('../../exploration/src/place-store.mjs'), import('../../exploration/src/package-store.mjs')]);
-      const want = wantOf(sv, regions.biomeVersion); if (!want) { packageState.phase = 'none'; return null; }
-      const kit = await loadKit({ world7, places }), kv = await store.idbKv(), t0 = performance.now();
-      packageState.phase = 'baking';
+      const want = wantOf(sv); if (!want) { packageState.phase = 'none'; DONE_KEY = key; return null; }
+      packageState.startedAt = performance.now(); const tI = packageState.startedAt;
+      const [world7, realmStore, place, realm, places, store] = await Promise.all([import('../../exploration/src/world7.mjs'), import('../../exploration/src/realm-store.mjs'), import('../../exploration/src/gen7/place.mjs'), import('../../exploration/src/gen7/region.mjs'), import('../../exploration/src/place-store.mjs'), import('../../exploration/src/package-store.mjs')]);
+      const tk = performance.now(), kit = await loadKit({ world7, places }), kv = await store.idbKv(), t0 = performance.now();
+      packageState.steps = { imports: Math.round(tk - tI), kit: Math.round(t0 - tk) }; packageState.phase = 'baking';
       const r = await bakePackage(want, {
         store, kv, kit, now: () => performance.now(), limit: opts.limit,
         makeWorker: () => new Worker(new URL('../../exploration/src/realm-worker.mjs', import.meta.url), { type: 'module' }),
         realm: seed => realmStore.readyRealm(seed),
         world: { genWorld7: world7.genWorld7, realm7: realm.realm7, decorSites: place.decorSites, madeBanks: place.madeBanks },
+        mark: (name, ms) => { packageState.steps[name] = ms; },
         yieldTurn: () => new Promise(res => setTimeout(res, 0)),   // a turn between cells: the page's frames and keys are read before the next one is written
         onProgress: h => { Object.assign(packageState, { done: h.done, of: h.order.length, floor: h.floor, header: h }); },
       });

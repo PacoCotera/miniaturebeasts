@@ -202,7 +202,7 @@ const ready = Promise.all([loadFrames(), bootAssets({ test: TEST, onProgress: (d
   loadRoomsInBackground();   // the other rooms, now that the first screen can draw (the room after the shown one first; 16 in flight)
   buildDevPanel((inShell && parent.document.getElementById("devStation")) || $("devPanel"), { changed: refreshDev, openCrates: () => { CORE.host.goto("cargo"); cargo.openBay(CORE.host); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
-  setTimeout(() => startPackage(G.sv), 2000);   // the baked package (package-baker.mjs): after the first screen, in the places worker, when the Companion's world has no current package
+  setTimeout(() => startPackage(G.sv), 6000);   // the baked package (package-baker.mjs): once the first screen and its pictures are settled, in the places worker, when the Companion's world has no current package
   if (EMBED) { caddyKey = ""; updateCaddy(); postCaddy(true); setInterval(() => postCaddy(true), 5000); }   // the shell hears the Caddy's state at ready, and again every 5 s: the Station's heartbeat for the Caddy's link
   if (OPT.dev) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
