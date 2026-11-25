@@ -194,6 +194,36 @@ for (const size of SCALE_SIZES) {
       assert.ok(edge(reg.x) <= 3 && edge(reg.x + reg.w - 3) <= 3, `no light word-pixels touch the window's edges (left ${edge(reg.x)}, right ${edge(reg.x + reg.w - 3)})`);
     } finally { await g.ctx.close(); }
   });
+  // QA verify-live-155 (412x915-S3-home-after, 390x844-S1): back on Station Home after the Bay the words at the left are cut ("et", "pen the Bay"). Played as QA did, by presses, on his #166 save: Dock, the Bay, ← back to Home.
+  it(`s5b Station Home after the Bay (QA verify-live-155): no word cut at the window's left or right edge [${tag}]`, { todo: "red, cause found (home-cut-s5b-1): ← from the Bay lands on the Vivarium screen (not Home's narrow form), drawn 1024 wide in the 530 lp window; its focus target plate.0 is at [718,244,278,34], right of the window, so panFor pans to x 478 and the left column is cut (9-12 light px at the left edge, 9-10 at the right). The face's narrow form is UI's: reported to UI" }, async () => {
+    const g = await open(size, "166");
+    try {
+      const dock = g.page.getByRole("button", { name: /Dock the Companion/ }).first();
+      console.log(`# s5b ${tag}: dock control "${await dock.getAttribute("aria-label", { timeout: 5000 }).catch(() => "?")}", caddy ${JSON.stringify(await g.page.evaluate(() => window.__play.caddy))}`);
+      const bb = await dock.boundingBox({ timeout: 5000 });
+      assert.ok(bb, "the case is reached: the Dock control is on screen");
+      await g.page.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); await wait(3000);
+      assert.equal(await g.page.evaluate(() => window.__play.owner), "station", "the case is reached: the Station is in view after Dock");
+      const state = () => g.page.evaluate(() => ({ pan: window.__play.pan, focus: window.__play.focus, plan: window.__play.plan }));
+      const bay = await state();
+      console.log(`# s5b ${tag}: in the Bay: pan ${JSON.stringify(bay.pan)} focus ${JSON.stringify(bay.focus)}`);
+      for (let i = 1; i <= 3; i++) {                        // ← back to Home (the screen read after each press, only to say where the case stands)
+        await g.press("back", 100, 2000);
+        const s = await state(); console.log(`# s5b ${tag}: after ← x${i}: screen ${s.focus.screen} pan ${JSON.stringify(s.pan)} focus ${JSON.stringify(s.focus)} view ${JSON.stringify(s.plan.view)}`);
+        if (s.focus.screen !== "cargo") break;
+      }
+      const st = await state(), plan = st.plan, d = size.dpr, sc = plan.screen;
+      const fp = await g.page.evaluate(() => { try { const p = window.__play.frames.station.contentWindow.__st.props; return p && p.focus ? { cur: p.focus.cur, narrow: p.narrow, screen: p.screen, ids: p.focus.targets.map((t) => t.id) } : null; } catch (e) { return String(e); } });
+      console.log(`# s5b ${tag}: the face's focus (props): ${JSON.stringify(fp)}`);
+      const im = await g.shot(`s5b-${tag}-home`);
+      const reg = { x: Math.round(sc.x * d), y: Math.round(sc.y * d), w: Math.round(sc.w * d), h: Math.round(sc.h * d) };
+      const light = ([R, G, B]) => R > 200 && G > 200 && B > 190;
+      const edge = (x0) => colour(im, reg, light, { x: x0, y: reg.y, w: 3, h: reg.h }).n;
+      const all = colour(im, reg, light), lp = (x) => Math.round(st.pan.x + (x - reg.x) / d / 0.6);   // device px on the shot -> lp on the face
+      console.log(`# s5b ${tag}: Home: screen ${JSON.stringify(sc)} view ${JSON.stringify(plan.view)} narrow ${plan.narrow} (NARROW_W 530); pan ${JSON.stringify(st.pan)}; focus ${JSON.stringify(st.focus)}; light words span lp ${all.box ? lp(all.box.x) + ".." + lp(all.box.x + all.box.w - 1) : "none"}; light px at the left edge ${edge(reg.x)}, at the right ${edge(reg.x + reg.w - 3)}`);
+      assert.ok(edge(reg.x) <= 3 && edge(reg.x + reg.w - 3) <= 3, `no light word-pixels touch the window's edges (left ${edge(reg.x)}, right ${edge(reg.x + reg.w - 3)})`);
+    } finally { await g.ctx.close(); }
+  });
 }
    // each test has its own browser context; the machine has the cores, and the land next door takes a while to draw
 for (const size of SIZES) {
