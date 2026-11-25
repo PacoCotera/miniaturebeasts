@@ -9,6 +9,7 @@
 import { REALM_REV } from './gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
 import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
+import { reachCellsIn, tierOf } from './map-rules.mjs';
 import { writePlace } from '../../places/src/format/write.mjs';
 
 import { PACKAGE_FORMAT, PKG, heldOf, packageSummary, offerOf, takePackage } from './package-dock.mjs';
@@ -18,18 +19,8 @@ const headKey = id => id + '#head', regionKey = id => id + '#region', cellKey = 
 const regionPrefix = ({ seed, slot }) => `:${seed}:${slot[0]},${slot[1]}:`;   // the part of an id that names the region, whatever its revs
 
 // The reach of a cell on foot (the page's reachCells, index.html: within `range` rings of the start, never past a shut edge or onto an island). opts as canStepIn's.
-export function reachOf(G, start, range, opts = {}) {
-  const s0 = cxy(start), seen = new Set([start]), q = [start];
-  while (q.length) {
-    const c = q.shift(), p = cxy(c);
-    for (const [dir, [dx, dy]] of Object.entries(DIRS)) {
-      const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const d = y * MW + x; if (seen.has(d) || !canStepIn(G, c, dir, opts) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d);
-    }
-  }
-  return [...seen];
-}
-const TIER_RANGE = { 1: 2, 2: 4 };   // the Companion's TIER (index.html): the range of a first and a second tier set-out
+// Kept under its old name for its callers; the rule itself lives in map-rules.mjs, one copy.
+export const reachOf = reachCellsIn;
 
 // The order the cells are baked in: the start place (the Companion's current place when it is out), its reach, the ring of cells next to the reach, then the rest of the region's passable cells nearest first.
 // G: the region's world (world7.mjs genWorld7). from: { pos, reach } of an expedition, or { start, tier } of a world at rest (its first start, the reach counted at its tier's range).
@@ -37,7 +28,7 @@ const TIER_RANGE = { 1: 2, 2: 4 };   // the Companion's TIER (index.html): the r
 export function bakeOrder(G, from) {
   const pass = c => passableIn(G, c), head = from.pos != null ? from.pos : from.start;
   const dist = c => cheb(cxy(c), cxy(head)), byNear = (a, b) => dist(a) - dist(b) || a - b;
-  const reachList = (from.pos != null && Array.isArray(from.reach) ? from.reach : reachOf(G, head, TIER_RANGE[from.tier] || 2)).filter(c => c !== head && pass(c));
+  const reachList = (from.pos != null && Array.isArray(from.reach) ? from.reach : reachOf(G, head, tierOf(from.tier).range)).filter(c => c !== head && pass(c));
   const reach = [...new Set(reachList)].sort(byNear), inFloor = new Set([head, ...reach]), ring = new Set();
   for (const c of inFloor) { const p = cxy(c); for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue; const d = y * MW + x; if (!inFloor.has(d) && pass(d)) ring.add(d); } }
   const ringL = [...ring].sort(byNear), taken = new Set([...inFloor, ...ring]), rest = [];
