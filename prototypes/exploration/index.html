@@ -1164,10 +1164,22 @@ function teachStep() {
 }
 // first-walk-teach-approach-1: the cells of the reach that hold a named Loika (made places only; layouts built for the check are dropped again), kept per reach and place count
 function namedCells() {
-  const ex = S.exp, key = S.seed + '|' + S.cr.length + '|' + ex.reach.length + '|' + PLACES.epoch; if (RT.namedCells && RT.namedCells.key === key) return RT.namedCells.list;
-  const had = new Set(layoutCache.keys()), reach = new Set(ex.reach.map(Number)), list = [];
-  for (const q of S.cr) { if (q.sp !== 0 || q.cv || !reach.has(+q.c) || list.includes(+q.c)) continue; try { if (placeHave(String(q.c)) && individualOf(q, layout(String(q.c)))) list.push(+q.c); } catch (e) { } }
-  for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
+  // round 2: not keyed on PLACES.epoch (it climbs with every place the worker delivers); keyed on the reach and on how many of the Loika's reach cells have their place, and a cell is checked once (memo) when its place arrives
+  const ex = S.exp, reach = new Set(ex.reach.map(Number)), cand = [];
+  for (const q of S.cr) { if (q.sp !== 0 || q.cv || !reach.has(+q.c) || cand.some(x => x.c === +q.c)) continue; cand.push({ c: +q.c, q }); }
+  const have = cand.filter(x => placeHave(String(x.c))).length, key = S.seed + '|' + S.cr.length + '|' + ex.reach.length + '|' + have;
+  if (RT.namedCells && RT.namedCells.key === key) return RT.namedCells.list;
+  const memo = (RT.namedMemo && RT.namedMemo.seed === S.seed) ? RT.namedMemo : (RT.namedMemo = { seed: S.seed, m: new Map() }), list = [];
+  for (const x of cand) {
+    if (!placeHave(String(x.c))) continue;
+    if (!memo.m.has(x.c)) {
+      const had = layoutCache.has(String(x.c)); let ok = false;
+      try { ok = !!individualOf(x.q, layout(String(x.c))); } catch (e) { }
+      if (!had) layoutCache.delete(String(x.c));
+      memo.m.set(x.c, ok);
+    }
+    if (memo.m.get(x.c)) list.push(x.c);
+  }
   RT.namedCells = { key, list }; return list;
 }
 // the first walk's pointers: in a place with no named Loika, the nearest place of the reach that has one (by its direction and land); in her place before she comes, where to wait
