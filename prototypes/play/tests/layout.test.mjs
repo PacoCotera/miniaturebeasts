@@ -170,3 +170,14 @@ test("the dock's sheet: a bottom sheet on a phone, centred on a laptop, the e-pa
   const p = dockSheet(390, 844, true); assert.equal(p.y + p.h, 844); assert.ok(Math.abs(p.epaper.w / p.epaper.h - 808 / 288) < 1e-9);
   const l = dockSheet(1440, 900, false); assert.ok(l.y > 0 && l.y + l.h < 900 && l.x > 0);
 });
+
+// QA verify-live-144 (Dock cut off): the Bay screen is 1024 lp across with no narrow form, so on the upright phone it is shown whole at the width fit, never in the x0.6 window; the whole screen is inside the panel and Home is unchanged
+test("the Station's Bay screen on an upright phone: the whole 1024 lp screen inside the panel (412, 390, 522 wide)", () => {
+  for (const [W, H, dpr] of [[412, 915, 2], [390, 844, 3], [522, 935, 3]]) {
+    const p = plan({ W, H, dpr, coarse: true, dev: "station", whole: true }), h = plan({ W, H, dpr, coarse: true, dev: "station" }), tag = W + "x" + H;
+    assert.equal(p.view, null, tag + ": no window on the Bay screen");
+    assert.ok(Math.abs(p.screen.w - 1024 * p.scale) < 1e-6, tag + ": the screen shows all 1024 lp");
+    assert.ok(p.screen.x >= p.panel.x - 1e-9 && p.screen.x + p.screen.w <= p.panel.x + p.panel.w + 1e-9, tag + ": the screen right edge is inside the panel");
+    assert.ok(h.view && h.narrow, tag + ": Home keeps its window and narrow form");
+  }
+});
