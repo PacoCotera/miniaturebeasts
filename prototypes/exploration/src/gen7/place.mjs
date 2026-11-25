@@ -285,23 +285,26 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
 // 2 or 3 tiles and every second stretch stands one tile further out into the land: water only ever takes plain ground. `sea(i)` says the tile at index i is of the wandering line's sea (shore7.mjs), so a stream or a pond is no bank of it.
 function breakBanks(t, W, H, sea) {
   const conv = v => v === TV.GRASS || v === TV.SAND || v === TV.LITTER || v === TV.DRY || v === TV.TURF || v === TV.SCRUB || v === TV.SCREE, wat = v => v === TV.WATER || v === TV.DEEP;
-  for (const vert of [true, false]) {
-    const nA = vert ? W - 1 : H - 1, nB = vert ? H : W, idx = (a, b) => vert ? b * W + a : a * W + b;
-    for (let a = 0; a < nA; a++) for (const east of [true, false]) {
-      const here = b => { const i = idx(a, b), j = idx(a + 1, b); return (east ? wat(t[i]) && !wat(t[j]) : !wat(t[i]) && wat(t[j])) && (sea(i) || sea(j)); };
-      for (let b = 0; b < nB; ) {
-        if (!here(b)) { b++; continue; }
-        let e = b; while (e + 1 < nB && here(e + 1)) e++;
-        const L = e - b + 1;
-        if (L > 3) {
-          const m = Math.ceil(L / 3), base = Math.floor(L / m), extra = L % m; let pos = b;
-          for (let k = 0; k < m; k++) {
-            const len = base + (k < extra ? 1 : 0);
-            if (k % 2 === 1) for (let q = pos; q < pos + len; q++) { const c = east ? idx(a + 1, q) : idx(a, q); if (conv(t[c])) t[c] = TV.WATER; }
-            pos += len;
+  for (let round = 0, changed = true; changed && round < 4; round++) {   // a stretch moved out across one axis can join a run of the other, so the two passes go round again until none is left
+    changed = false;
+    for (const vert of [true, false]) {
+      const nA = vert ? W - 1 : H - 1, nB = vert ? H : W, idx = (a, b) => vert ? b * W + a : a * W + b;
+      for (let a = 0; a < nA; a++) for (const east of [true, false]) {
+        const here = b => { const i = idx(a, b), j = idx(a + 1, b); return (east ? wat(t[i]) && !wat(t[j]) : !wat(t[i]) && wat(t[j])) && (sea(i) || sea(j)); };
+        for (let b = 0; b < nB; ) {
+          if (!here(b)) { b++; continue; }
+          let e = b; while (e + 1 < nB && here(e + 1)) e++;
+          const L = e - b + 1;
+          if (L > 3) {
+            const m = Math.ceil(L / 3), base = Math.floor(L / m), extra = L % m; let pos = b;
+            for (let k = 0; k < m; k++) {
+              const len = base + (k < extra ? 1 : 0);
+              if (k % 2 === 1) for (let q = pos; q < pos + len; q++) { const c = east ? idx(a + 1, q) : idx(a, q); if (conv(t[c])) { t[c] = TV.WATER; changed = true; } }
+              pos += len;
+            }
           }
+          b = e + 1;
         }
-        b = e + 1;
       }
     }
   }
