@@ -181,6 +181,7 @@ export function clockToNext(spent) {
 WORDS.book = {
   title: 'Log', day: n => 'Day ' + n, earlier: 'earlier pages', field: 'field', moves: '▲▼', empty: 'Nothing written yet.',
   atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,
+  head: (part, turn, place) => (turn ? 'T' + turn + ' · ' : '') + part + ' · ' + WORDS.book.place(place),   // the editor's heading (bus 74d0ebc9f4): 'T9 · morning · the Meadow'; no turn (an old save): 'morning · the Meadow'
   prints: (name, when) => 'Prints in the grass. ' + name + ' was here ' + when + '.',
   met: name => 'Met her. She is ' + name + ' now.',
   habit: (name, hab, range, said) => name + ', ' + hab + ', ' + range + ': ' + said + '.',

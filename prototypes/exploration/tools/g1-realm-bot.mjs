@@ -18,6 +18,7 @@ function botPage(A) {
   const DIRN = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   const okTile = (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !occupant(key, x, y, 'player') && !lay.feats.some(f => f.x === x && f.y === y);
   const out = { notes: [], gone: false, steps: 0, events: [], ev: [] };
+  const runNote = a => { a.run(); if (S.phase === 'watch') { watchKey('confirm'); if (S.phase === 'card') cardKey('confirm'); if (S.phase === 'watch' || S.phase === 'card') watchClose(); } };   // the note action opens the watch view (PR 575): take the note there, back to the field
   const over = () => !S.exp || S.exp.ending || spent() >= DAY.light - 1;
   const quiet = () => { if (over()) return false; waitTick('patch'); return true; };   // time passing before the approach: not a keep-still act
   let cur = null;   // the event being played: its keep-still acts are counted here
@@ -81,7 +82,7 @@ function botPage(A) {
     }
     const closeIn = hc => { if (fixed) return false; const want2 = Math.max(3, cheb(P, hc) - 1), p3 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, hc) <= want2 && !heardAtTile(hc, x, y, spent()), (x, y) => heardAtTile(hc, x, y, spent())); if (!p3 || !p3.length || cheb(P, hc) <= 3) return false; return stepTo(p3[0]); };
     for (let n = 0; n < 10 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; faceHer(hc);
-      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; a.run(); const nn = (S.exp.stats.noted || []); if (nn.length > before) { const nt = nn[nn.length - 1]; out.notes.push({ ...nt, want, T: spent() }); rec.noted = nt.range; rec.first = !!nt.first; rec.cost = rec.reached ? rec.arrive : null; break; } } else if (!closeIn(hc)) hold(); }
+      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; runNote(a); const nn = (S.exp.stats.noted || []); if (nn.length > before) { const nt = nn[nn.length - 1]; out.notes.push({ ...nt, want, T: spent() }); rec.noted = nt.range; rec.first = !!nt.first; rec.cost = rec.reached ? rec.arrive : null; break; } } else if (!closeIn(hc)) hold(); }
     cur = null;
     for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; quiet(); }
   }
