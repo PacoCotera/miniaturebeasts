@@ -63,9 +63,18 @@ async function open(size, saveName) {
   await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000);
   const id = await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
   await p1.close();
-  await ctx.addInitScript(([i, s]) => { localStorage.setItem("mb-save-v8@" + i, s); }, [id, raw]);
+  await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
   const page = await ctx.newPage();
   await page.goto(site.url); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
+  // the page may open on the Station: press the 'Companion' tab as a player would, then assert the Companion is the device in view and not docked, before any shot is read
+  console.log(`# opened on the ${await page.evaluate(() => window.__play.owner)} (${size.w}x${size.h})`);
+  await page.getByRole("tab", { name: "Companion" }).click();
+  await page.waitForFunction(() => window.__play.owner === "companion", null, { timeout: 10000 });
+  await wait(2500);
+  const view = await page.evaluate(() => { const f = window.__play.frames.companion.getBoundingClientRect(); return { owner: window.__play.owner, docked: window.__play.caddy.docked, l: f.left, t: f.top, r: f.right, b: f.bottom, w: innerWidth, h: innerHeight }; });
+  assert.equal(view.owner, "companion", "the case is reached: the Companion is the device in view");
+  assert.equal(view.docked, false, "the case is reached: the Companion is not docked");
+  assert.ok(view.l >= -1 && view.t >= -1 && view.r <= view.w + 1 && view.b <= view.h + 1 && view.r - view.l > 100, `the case is reached: the Companion's frame is on screen (${JSON.stringify(view)})`);
   const sel = (l) => (["up", "down", "left", "right"].includes(l) ? "button.cpad." + l + ":visible" : '.fkz[data-zone="' + l + '"]:visible');
   const box = async (l) => { const b = await page.locator(sel(l)).first().boundingBox({ timeout: 5000 }); assert.ok(b, "no button " + l); return b; };
   // a press on the on-screen button: down, held for `hold` ms, up; settle ms after (0 = the screenshot follows at once)
