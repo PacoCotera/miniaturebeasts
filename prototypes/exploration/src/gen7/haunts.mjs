@@ -139,8 +139,8 @@ export function hauntsKept(seed, id, sites, doings, night, stored) {
 // Where she is by part of day (canon 2): W water, G grass, S the third haunt, B her bed. An early one is up and bedded before the dusk is done; a late one wakes slow and walks to her bed in the dusk.
 // Never the same haunt at the same part for the two (night: both at their own beds).
 export const ROUTINE = Object.freeze({
-  early: Object.freeze({ dawn: 'W', morning: 'G', midday: 'S', afternoon: 'G', dusk: 'B', night: 'B' }),
-  late:  Object.freeze({ dawn: 'B', morning: 'W', midday: 'B', afternoon: 'S', dusk: 'W', night: 'B' }),
+  early: Object.freeze({ dawn: 'W', morning: 'G', midday: 'S', afternoon: 'G', dusk: 'B', dusk2: 'B', night: 'B' }),
+  late:  Object.freeze({ dawn: 'B', morning: 'W', midday: 'B', afternoon: 'S', dusk: 'W', dusk2: 'B', night: 'B' }),   // dusk2: the last 20 light of dusk, a late one beds down at her bed (sleep-dusk-build-1)
 });
 const SLOT = { W: 'water', G: 'grass', S: 'third', B: 'bed' };
 export const routineOf = d => ROUTINE[isLate(d) ? 'late' : 'early'];
