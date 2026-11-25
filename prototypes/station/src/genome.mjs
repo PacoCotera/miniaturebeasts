@@ -53,6 +53,13 @@ export const wildGs = (seed, id) => { const s = `${seed >>> 0}|wild|${id}`; let 
 // markedLoika(seed, ids) picks it from the realm's seed among the realm's Loika ids (same seed, same Loika); the others keep the P_MARKING_ON draw.
 export const markedLoika = (seed, ids) => (ids && ids.length ? [...ids].sort((a, b) => a - b)[wildGs(seed, "marked") % ids.length] : null);
 export const wildGenome = (frame, seed, id, markedId = null) => podGenome(frame, wildGs(seed, id), DRAW_V, markedId != null && id === markedId);
+// pod-young-fix-1: a wild Loika's own pod is her young by a wild mate (owner 2026-11-19 12:4x): the engine's own cross of her wildGenome with a wild mate
+// nobody meets (drawn by the wild draw from the realm seed and her id), the child's copies drawn from a stream seeded by the pod's gs, so the same young on every load.
+export function ownPodGenome(frame, seed, motherId, markedId, gs) {
+  const mother = wildGenome(frame, seed, motherId, markedId), mate = wildGenome(frame, seed, "mate:" + motherId);
+  const r = rng(`ownpod:${frame.species.id}:${gs >>> 0}`);
+  return cross(frame, mother, mate, { rng: r });
+}
 export const chapters = (frame) => frame.chapters;
 export const chapterOf = (frame, id) => frame.chapters.find((c) => c.id === id) ?? null;
 export const traitOf = (frame, id) => frame.chapters.flatMap((c) => c.traits).find((t) => t.id === id) ?? null;

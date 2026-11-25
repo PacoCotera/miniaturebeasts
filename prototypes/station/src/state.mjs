@@ -15,7 +15,7 @@ import FRAME from "../../ui/specs/station/frame.json" with { type: "json" };
 import HABITAT from "../../ui/specs/station/habitat.json" with { type: "json" };
 import VIVARIUM from "../../ui/specs/station/vivarium.json" with { type: "json" };
 import ROOM_RULES from "../../ui/specs/station/rooms-rules.json" with { type: "json" };
-import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
+import { frameOf, frameIds, speciesIndex, speciesId, podGenome, ownPodGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 4;
 // The save is v10 (a realm of regions, written by the Companion; the release's reset starts every older save over, game.mjs readStored). The Station writes only `st`, keeps every other byte, and never writes over a save whose v is above SAVE_V.
@@ -70,7 +70,7 @@ export function drawName(st, pool = {}) {
 export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock field", wood: "wood", cave: "cave" };
 // The origin line is one sentence: "Found <where>, <what happened>." Each half is at most 24 characters with its comma or full stop, so the sentence breaks after the comma (design/style-guide/station-layouts.md, Pods, Origin).
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
-export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", grab: "after a grab for fruit", warm: "as {who} warmed up", dig: "in a fresh hole", fog: "in a fog bank", still: "as {who} settled", air: "as {who} aired out", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
+export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", grab: "after a grab for fruit", warm: "as {who} warmed up", dig: "in a fresh hole", fog: "in a fog bank", still: "as {who} settled", air: "as {who} aired out", slab: "it lay under a slab", ground: "it lay buried", own: "{name} left it, its mother", deep: "it lay deep below", cave: "it lay buried", shed: "of {name}'s line" };   // shed: a returned mibi's pod; the words are a placeholder until the copywriter's C18 lands (owed)
 // Developer settings (their own key, never in the shared save). The economy is "decided" by default: the playtest runs on the decided prices with no free top-up on each crate (owner 2026-11-18 13:3x). "loose" stays as a developer choice; a saved "loose" the developer never chose (no economyChosen) is dropped on load (game.mjs loadSettings).
 export const DEFAULT_SETTINGS = { jump: "arrival", light: null, economy: "decided", topUp: { e: 2, d: 3, s: 4 }, sealedOpen: false, rooms: null, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, elderTurns: ELDER_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule", watchMs: 60000, realmSleep: false };
 
@@ -440,6 +440,11 @@ export function readWorldEv(c) {
   return ev.filter((e) => Array.isArray(e) && e.length === 4 && WORLD_EV_KINDS.includes(e[0]) && (e[1] === null || typeof e[1] === "string") && (e[2] === null || Number.isInteger(e[2])) && Number.isInteger(e[3]))
     .map(([kind, place, who, n]) => ({ kind, place, who, n }));
 }
+// A wild one's own pod (the crate record carries own = her id, os = the realm seed, om = the realm's marked Loika): her young by a wild mate, null when the record lacks what the draw needs (an older crate) or the cross fails.
+function ownYoung(fr, q) {
+  if (q.own == null || q.os == null) return null;
+  try { const g = ownPodGenome(fr, q.os, q.own, q.om ?? null, q.gs >>> 0); return checkGenome(fr, g).length ? null : g; } catch { return null; }
+}
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
 export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
 // The same for the crates named (a run opens them one at a time, T-20261016-216: the crates not yet opened stay sealed in the bay when the player leaves).
@@ -454,7 +459,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     for (const q of c.pods || []) {
       const species = q.species ?? speciesId(q.sp), fr = frameOf(species);
       if (!fr) { skipped.push(q.id); continue; }   // a malformed record never breaks the bay; it is named, never dropped silently
-      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, ...(c.rg ? { rg: c.rg } : {}), n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, ...(q.dv ? { dv: q.dv } : {}), genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0, q.dv), shed: q.shed ?? null, ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
+      const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, ...(c.rg ? { rg: c.rg } : {}), n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, homeTurn: home, dryAt: home + POD_LIFE, ...(q.dv ? { dv: q.dv } : {}), genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : ownYoung(fr, q) ?? podGenome(fr, q.gs >>> 0, q.dv), shed: q.shed ?? null, ...(q.own != null ? { own: q.own, of: q.of ?? null } : {}), ...(q.shed != null ? { of: q.of ?? (st.sheds || []).find((r) => r.id === q.shed)?.name ?? null } : {}), ...(q.why === "new" || q.why === "bond" ? { why: q.why } : {}) };   // why a shed pod is special (the Companion says it: a new species, you fed it); the card that shows it is not built
       if (q.shed != null) { const rec = (st.sheds || []).find((r) => r.id === q.shed); if (rec) rec.state = "found"; }   // a shed pod opened: its record is kept for the Library
       st.tray.push(pod);   // no rack: every pod comes home
       ids.push(pod.id);
@@ -1167,7 +1172,7 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   const first = !!st.firstMibi, minutes = budMinutes(st, changed.length, settings);
   for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
   const read = [...p.read]; for (const id of changed) { const ch = fr.chapters.find((c) => c.traits.some((t) => t.id === id)); if (ch && !read.includes(ch.id)) read.push(ch.id); }
-  const slot = Math.max(0, capsuleFree(st)); st.caps[slot] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
+  const slot = Math.max(0, capsuleFree(st)); st.caps[slot] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id, ...(p.own != null ? { own: p.own, mother: p.of ?? null } : {}) }, read, shaped: changed, early: false };
   st.firstMibi = false;
   leavePod(st, p);
   logEv(st, "Incubated " + aAn(fr.species.name) + " founder · " + st.caps[slot].code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
@@ -1182,7 +1187,7 @@ export function growPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const genome = founderGenome(p, {}), sha = genomeSha(genome), pair = p.kinship != null && Array.isArray(p.parents), minutes = pair ? p.minutes : budMinutes(st, 0, settings), first = !!st.firstMibi;
   if (pair) { st.caps[i] = { kind: "cross", species: fr.species.id, sp: p.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: p.parents, kinship: p.kinship, from: { n: 0, g: p.g, how: "cross", podId: null, of: p.parents.map((q) => q.name) }, read: [...(p.read || [])], shaped: [], early: false };   // a pod of your own pair grows as a cross did: its vigour sets its time
     st.firstMibi = false; leavePod(st, p); logEv(st, "Grew a pod of " + p.parents.map((q) => q.name).join(" + ") + " · capsule " + (i + 1) + " · " + plural(minutes, "minute")); return { ok: true, bud: st.caps[i], capsule: i }; }
-  st.caps[i] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: p.parents ?? null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read: [...(p.read || [])], shaped: [], early: false };
+  st.caps[i] = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: p.parents ?? null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id, ...(p.own != null ? { own: p.own, mother: p.of ?? null } : {}) }, read: [...(p.read || [])], shaped: [], early: false };
   st.firstMibi = false; leavePod(st, p);
   logEv(st, "Grew " + aAn(fr.species.name) + " pod · capsule " + (i + 1) + " · " + plural(minutes, "minute"));
   return { ok: true, bud: st.caps[i], capsule: i };

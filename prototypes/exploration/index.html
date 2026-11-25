@@ -528,7 +528,7 @@ function shedKnown(id) {
   const has = a => (a || []).some(p => p.shed === id);
   return has(S.pods) || has(S.hold && S.hold.pods) || S.bay.some(c => has(c.pods)) || has(S.exp && S.exp.cargo && S.exp.cargo.pods);
 }
-const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : p.own != null ? { own: p.own, of: p.of } : {};   // a shed pod keeps its line, a wild one's own pod its mother, wherever it is copied
+const shedOf = p => p.shed != null ? { shed: p.shed, of: p.of, genome: p.genome } : p.own != null ? { own: p.own, of: p.of, ...(p.os != null ? { os: p.os, om: p.om ?? null } : {}) } : {};   // a shed pod keeps its line, a wild one's own pod its mother, wherever it is copied
 function shedsDue() { return ((stPart() || {}).sheds || []).filter(r => r.state === 'due' && S.turn >= r.due && !shedKnown(r.id)); }
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
@@ -4256,7 +4256,7 @@ function ownPodCheck(c, X) {
   const own = S.own || (S.own = {}); if (own[c.id]) return;
   const free = hauntFree(X.lay, X.key, c), stand = hauntStand(c.ind.hs.bed, free), p = stand && freeAround(X.key, stand.x, stand.y, null, true); if (!p) return;
   const id = 'o' + (S.nextId++), name = habName(c); own[c.id] = id;
-  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how: 'own', of: name, own: c.id, out: 1, gs: hash(S.seed, 'own', c.id) >>> 0 });   // out: the dotted outline every found pod keeps until taken, so it reads on grass
+  S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how: 'own', of: name, own: c.id, os: S.seed, om: WILD.ok && WILD.marked ? WILD.marked(S.seed) : null, out: 1, gs: hash(S.seed, 'own', c.id) >>> 0 });   // out: the dotted outline every found pod keeps until taken, so it reads on grass
   logEv(name + ' left a pod at her bed'); fxGlint(p.x, p.y, 200);
   (S.exp.stats.ownPods || (S.exp.stats.ownPods = [])).push({ id: c.id, light: S.day.spent });
   fxMsg(X.away(p) ? WORDS.w5.ownPodAway : WORDS.w5.ownPod(name), 3);
@@ -9418,6 +9418,7 @@ const footEl = document.getElementById('buildFoot');
 import('../station/src/genome.mjs').then(async g => { const L = await import('../station/src/looks.mjs'), fr = await (await fetch('../species/frames/language/species-S01.json')).json();
   { const SD = await import('../station/src/stands.mjs'), more = await Promise.all(Object.keys(SD.COAT_TRAITS).filter(k => k !== 'S01').map(async k => { try { return await (await fetch('../species/frames/language/species-' + k + '.json')).json(); } catch (e) { return null; } }));   // a frame that fails leaves that kind on its painted cut; Riding draws a home mibi in her own coat: the frames of the kinds that have coats
     g.setFrames([fr, ...more.filter(Boolean)]); RIDE.coatOf = SD.coatOf; RIDE.ownLooks = L.ownLooks; RIDE.frameOf = g.frameOf; }
+  WILD.marked = seed => g.markedLoika(seed, markedCandidates());
   WILD.shows = (seed, id) => L.saddleShown(fr, { genome: g.wildGenome(fr, seed, id, g.markedLoika(seed, markedCandidates())), read: ['coat'] });   // one Loika of the realm shows it (wild-marking-named-2); the wild Loika's marking, her coat taken as read (the walk keeps the read apart)
   WILD.partner = id => { const st = stPart(), m = st && (st.mibis || []).find(q => q.id === id); return !!m && !!m.genome && m.species === 'S01' && L.saddleShown(fr, m); };   // the Station's own drawnLooks on the partner: shown and read
   WILD.ok = true; }).catch(() => { });   // a failed load leaves every token plain and the walk goes on
