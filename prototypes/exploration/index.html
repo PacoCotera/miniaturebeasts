@@ -8496,7 +8496,7 @@ function caseKey(k) {
 }
 function caseLine() {   // the bottom line: only what works here
   const W = WORDS.case;
-  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: '', back: W.field, dim: false } : { ok: '', ctx: '', back: W.field, dim: false };
+  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: W.pages, back: W.field, dim: false } : { ok: '', ctx: W.pages, back: W.field, dim: false };   // the end-of-walk Case names the Log too: his named ones' pages are found there (owner 11-25 "couldnt see their details")
   return { ok: caseEntry(caseThing(caseSel(caseCells())).thing) ? W.page : '', ctx: W.pages, back: W.field, dim: false };
 }
 const caseBrass = (x, y, w, h) => { R(x, y, w, h, C.gold); R(x, y, w, 1, C.yellow); R(x, y, 1, h, C.yellow); R(x, y + h - 1, w, 1, C.rust); R(x + w - 1, y, 1, h, C.rust); };

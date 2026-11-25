@@ -317,5 +317,19 @@ for (const size of SIZES) {
       assert.ok(waited.n >= hero.n * 0.75, `the hero is on screen after one Wait (${waited.n} of ${hero.n} pixels)`);
     } finally { await g.ctx.close(); }
   });
+  it(`s6 a named Loika's page (his newest save #172, end-of-walk Case): ← reaches the Log and ✓ opens her page; the Case's bottom line shows it [${tag}]`, async () => {
+    const g = await open(size, "172");
+    try {
+      const phase = async () => (await g.where()).phase;
+      assert.equal(await phase(), "cargo", "the case is reached: the end-of-walk Case");
+      await g.shot(`s6-${tag}-1-case`);              // read by eye: the bottom line names ◀ Log, her pages
+      for (let i = 0; i < 6 && await phase() !== "log"; i++) await g.press("left");
+      assert.equal(await phase(), "log", "← from the Case reaches the Log");
+      await g.shot(`s6-${tag}-2-log`);
+      await g.press("confirm");
+      assert.equal(await phase(), "her", "✓ on the marked entry opens her page");
+      await g.shot(`s6-${tag}-3-her`);
+    } finally { await g.ctx.close(); }
+  });
 }
 });
