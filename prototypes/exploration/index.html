@@ -8081,7 +8081,7 @@ function menuIcon(id, x, y) {
 }
 function drawMenu(t) {
   const items = menuItems(), overField = S.exp && (S.ui.from === 'patch' && S.exp.patch || S.ui.from === 'map');
-  if (S.ui.from === 'patch' && S.exp && S.exp.patch) drawPatch(t); else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'sealed') drawSealed(t); else if (S.ui.from === 'riding') drawRiding(t); else drawSetup(t);
+  if (S.ui.from === 'patch' && S.exp && S.exp.patch) { drawPatch(t); drawHeroLater(); } else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'sealed') drawSealed(t); else if (S.ui.from === 'riding') drawRiding(t); else drawSetup(t);
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
