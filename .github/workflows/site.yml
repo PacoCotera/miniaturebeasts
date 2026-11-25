@@ -321,3 +321,8 @@ jobs:
         timeout-minutes: 10   # measured about 4 minutes
         # .github/release-check.sh: the Companion's first expedition, the Station's journey and layer checks, the play page's dock round trip, the test page's switch and dock. It prints the seconds each took.
         run: sh .github/release-check.sh
+      - name: The played-game tests (the shipped page at his two phone sizes, his saves, buttons only, judged by the screen)
+        if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
+        timeout-minutes: 8   # measured under 5 minutes
+        # prototypes/exploration/tests/played/played.mjs (owner 2026-11-25, code-audit step 1). It builds the bundle with ops/sandbox/bundle-pages.sh itself and serves it. The glob is quoted: Node 22 takes a directory argument as a file.
+        run: node --test "prototypes/exploration/tests/played/*.mjs"

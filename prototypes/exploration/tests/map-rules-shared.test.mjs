@@ -49,7 +49,7 @@ test("the last start crosses the save as the region's map.lastPos", async () => 
   assert.equal(mapOf(sv).lastPos, p.run(`G.spawns[0]`));
 });
 
-test("the place screen's cursor rests on the planned start; with no plan, or a plan that cannot be planted, it rests as built", async () => {
+test("the place screen's cursor rests as built: the last start, even when a save still holds an old plan field", async () => {
   const p = makePage({ console: "silent", els: true, raf: 1, anonPods: true, gen: 7 });
   await new Promise(r => setTimeout(r, 200));
   p.run(`newWorld(9)`);
@@ -60,11 +60,7 @@ test("the place screen's cursor rests on the planned start; with no plan, or a p
   p.run(`S.ui.lastPos = ${last}; chooseType()`);
   assert.equal(p.run(`S.ui.cur`), last, "no plan: the last start, as built");
   p.run(`S.st = { wid: S.wid, plan: { region: S.here, start: ${planned}, aim: null, expN: 1 } }; chooseType()`);
-  assert.equal(p.run(`S.ui.cur`), planned, "the planned start");
-  p.run(`S.st.plan.start = 0; while (placeValid(S.st.plan.start)) S.st.plan.start++; chooseType()`);
-  assert.equal(p.run(`S.ui.cur`), last, "a planned cell that is not a start now: as built");
-  p.run(`S.st.plan.region = 'other'; S.st.plan.start = ${planned}; chooseType()`);
-  assert.equal(p.run(`S.ui.cur`), last, "a plan for another region: as built");
+  assert.equal(p.run(`S.ui.cur`), last, "an old plan field in the save is ignored: as built");
 });
 
 test("the marks: one kind at a cell is said once, in the page's order, and the cap keeps every mark of priority 9 and up", () => {
