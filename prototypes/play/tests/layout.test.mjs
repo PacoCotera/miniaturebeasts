@@ -69,7 +69,7 @@ test("the size cap: at 1440 × 900 a chosen ×2 stays at ×1 (a ×2 Companion is
 
 test("the first-view numbers of the signed design (390 × 844, 1440 × 900)", () => {
   const c = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" });
-  assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 620]); assert.equal(Math.round(c.screen.w), 330);   // bug 135: the width's fit (330), not the whole ×2 (300, 91% of it)
+  assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 618]); assert.ok(c.screen.w > 328 && c.screen.w <= 330);   // bug 135 ("screen is tiny"), one scale (code-audit step 6): the width's fit (330) floored to 1/64 device px per lp, which is what the shell draws, so the plan says what is drawn; not the whole ×2 (300, 91% of it)
   const l = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "companion" }); assert.deepEqual([l.panel.w, l.panel.h, l.margins.side], [770, 624, 335]);
   const s = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "station" }); assert.deepEqual([s.panel.w, Math.round(s.panel.h), s.margins.side], [1040, 446, 200]);
 });
@@ -90,7 +90,7 @@ test("a short phone upright (Safari with its bars): the Companion is drawn whole
   // where the height is enough nothing changes: the width's fit, the screen at full height, as before
   // (play-scale-1: the width's fit rounded down to a whole number of device pixels per lp, centred in the panel)
   // bug 135: where that multiple is under 95% of the width's fit (inner width W - 60), the screen takes the fit; the height still caps it
-  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }), z = p.scale * 3, fit = (W - 60) / 450 * 3, whole = Math.floor(fit + 1e-6); assert.ok(Math.abs(z - (whole < 0.95 * fit ? fit : whole)) < 1e-6, `${W}×${H}: the whole multiple, or the fit where the multiple is under 95% of it`); }
+  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }), z = p.scale * 3, fit = (W - 60) / 450 * 3, whole = Math.floor(fit + 1e-6); assert.ok(Math.abs(z - (whole < 0.95 * fit ? fit : whole)) < 1 / 64 + 1e-6 && z <= (whole < 0.95 * fit ? fit : whole) + 1e-6, `${W}×${H}: the whole multiple, or the fit where the multiple is under 95% of it`); }
   { const p = plan({ W: 522, H: 935, dpr: 3, coarse: true, dev: "companion" }); assert.ok(p.screen.w > 405 && p.screen.w < 412 && p.screen.y + p.screen.h <= p.tray.box[1], "522×935: the screen takes the height's fit (410 of 462 CSS px), not 300"); }
   // bug 134: a fit just under a whole multiple (1.98 at 412 wide, dpr 2.625) takes the multiple, not one device pixel per lp
   for (const [W, H, dpr] of [[412, 915, 2.625], [411, 914, 2.625], [393, 851, 2.75]]) { const p = plan({ W, H, dpr, coarse: true, dev: "companion" }); assert.ok(Math.abs(p.scale * dpr - 2) < 1e-9 && Math.abs(p.screen.w - 450 * p.scale) < 1e-6, `${W}×${H} ×${dpr}: two device pixels per lp, the whole screen`); }

@@ -7,3 +7,4 @@ These play the game that ships: no page-harness, no generator 5, no calls into g
 - The verdict is read off the screenshot (pixels in a region, a region against a shot from the same test). Reading state only asserts the case is reached.
 - Each test's first comment quotes the ruling it holds. Run: `PW_DIR=<dir with node_modules/playwright> node --test "prototypes/exploration/tests/played/*.mjs"` (quote the glob; Node 22 reads a bare directory as a file). `PLAYED_SHOTS=<dir>` keeps the shots of s2.
 - The machine's load stretches s2 (the land next door takes 20 s or more to draw); it waits up to 40 s.
+- s4/s5 (one scale, code-audit step 6) also open 390x844 (dpr 3). s5 needs the Station face: copy a built prototypes/face/dist (face.mjs, face.wasm, metrics.json) into the tree first; CI has it from the face build.
