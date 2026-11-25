@@ -9277,7 +9277,7 @@ const SLEEP = makeSleeper({ store: LS, rt: RT, keyStore: () => KEY_STORE, compan
   onPub: pub => { if (COMPANION.pub !== pub) { COMPANION = { ...COMPANION, pub }; tellShell(true); } } });
 function tellShell(force) {
   if (!SHELL || shellSilent) return;
-  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, region: S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() ? { seed: S.regions[0].seed, slot: hereRegion().slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
   const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
   try { SHELL.postMessage(m, location.origin); } catch (e) { }
 }

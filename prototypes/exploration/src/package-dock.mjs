@@ -19,10 +19,11 @@ export async function packageSummary(header) {
   const h = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)));
   return { id: header.id, seed: header.seed, slot: header.slot, v: header.v, realmRev: header.realmRev, placeRev: header.placeRev, tag: header.tag || '', done: header.done, total: header.order.length, whole: !!header.whole, sha: Array.from(h, x => x.toString(16).padStart(2, '0')).join('') };
 }
-// The Station's newest package (by the time its header was made) as a summary, or null when it has none.
-export async function offerOf(kv) {
+// The Station's newest package (by the time its header was made) of the seating Companion's save region (seed + slot + v) as a summary, or null when it has none (another world's or region's package is never offered).
+export async function offerOf(kv, region) {
   let best = null;
-  for (const k of await kv.keys()) { if (typeof k !== 'string' || !k.startsWith(PKG) || !k.endsWith('#head')) continue; const h = await kv.get(k); if (h && h.format === PACKAGE_FORMAT && (!best || (h.at || 0) > (best.at || 0))) best = h; }
+  if (!region || !Array.isArray(region.slot)) return null;
+  for (const k of await kv.keys()) { if (typeof k !== 'string' || !k.startsWith(PKG) || !k.endsWith('#head')) continue; const h = await kv.get(k); if (h && h.format === PACKAGE_FORMAT && h.seed === region.seed && h.v === region.v && Array.isArray(h.slot) && h.slot[0] === region.slot[0] && h.slot[1] === region.slot[1] && (!best || (h.at || 0) > (best.at || 0))) best = h; }
   return best ? packageSummary(best) : null;
 }
 export async function takePackage(kv, summary) { await kv.set(heldKey(summary), summary); return summary; }
