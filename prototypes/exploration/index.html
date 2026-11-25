@@ -1749,7 +1749,7 @@ function migrate7(o) {
   s.v = 8; s.wid = wid; s.bay = []; s.hold = null; s.walkTurn = -1; s.withSeen = 0; s.probeSeen = 0; s.retSeen = []; s.dockSeen = 0; s.st = st;
   if (s.exp && s.exp.cargo) s.exp.cargo.pods.forEach((p, i) => { if (p.gs == null) p.gs = hash(o.seed, 'gs7c', String(p.id), i, p.sp); });   // pods in flight get their own genomes
   if (s.phase === 'station') s.phase = 'setup';
-  if (s.phase === 'watch' || s.phase === 'card') { s.phase = s.exp && s.exp.patch ? 'patch' : 'setup'; if (s.ui) { s.ui.watch = null; s.ui.card = null; } }   // w6b: the watch view and the card are not kept across a reload
+  if (s.phase === 'watch' || s.phase === 'card' || s.phase === 'her') { s.phase = s.exp && s.exp.patch ? 'patch' : 'setup'; if (s.ui) { s.ui.watch = null; s.ui.card = null; s.ui.her = null; } }   // w6b: the watch view and the card are not kept across a reload; nor is her page
   if (s.phase === 'mibis' || s.phase === 'active') s.phase = 'riding';   // an old save opens on Riding, with its riders
   if (s.ui && (s.ui.from === 'mibis' || s.ui.from === 'active')) s.ui.from = 'riding';
   return s;
@@ -2816,7 +2816,7 @@ function printsReadNear() {
 function readPrints(p) {
   const ex = S.exp, W = WORDS.prints, c = p.c, name = habName(c);
   habDay()[readKey(c.id, p.h)] = 1;
-  const pg = (S.pages || (S.pages = {})), mine = pg[c.id] || (pg[c.id] = {}); mine[p.part] = { x: p.h.x, y: p.h.y };   // her page: that haunt at that part of day
+  if (S.named && S.named[c.id]) { const pg = (S.pages || (S.pages = {})), bd = c.ind.hs.bed, mine = pg[c.id] || (pg[c.id] = {}); mine[p.part] = { x: p.h.x, y: p.h.y, k: p.h.k, bed: bd && bd.x === p.h.x && bd.y === p.h.y ? 1 : 0 }; }   // her page: that haunt (its kind) at that part of day, written only once she is named: prints read before she is met are not hers
   bookEv('prints', c, WORDS.book.prints(name, (p.yday ? W.whenYday : W.when)[p.part]));   // the prints first, then the tuft she left
   // W5: an empty haunt always gives: a drop first (a tuft of hers, her Coat's keepsake, once per Loika), then the prints and when she was here (W4 round 2: the trail and the routine note)
   let drop = ''; const rec = habRecord(S.habits || (S.habits = {}), c.id, 'shake');
@@ -3988,7 +3988,7 @@ const awayFrom = (o, P) => Math.abs(o.x - P.x) > 6 || Math.abs(o.y - P.y) > 7;
 function nameSeen(c, away) {
   if (RT.readOnly || !c.ind || c.hide || away(c) || !inSight(c.x, c.y)) return;
   const nm = S.named || (S.named = {});
-  if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); bookEv('met', c, WORDS.book.met(c.ind.name)); }
+  if (!nm[c.id]) { nm[c.id] = c.ind.name; (S.metIds || (S.metIds = [])).push(String(c.id)); const mr = bookEv('met', c, WORDS.book.met(c.ind.name)); if (mr) { const pg = (S.pages || (S.pages = {})); (pg[c.id] || (pg[c.id] = {})).met = { d: mr.d, part: mr.part, place: mr.place, from: mr.from, t: wTurn() }; } }   // her page keeps the four fields of the Log's met entry (the Log drops it after three days), and the turn
 }
 function nameInSight() {
   const ex = S && S.exp, P = ex && ex.patch; if (!P) return;
@@ -7071,9 +7071,11 @@ function drawPatchBody(t) {
   for (const f of live.tf) { const x = f.x * ts, y = f.y * ts; if (vis2(x, y) && see(f.x, f.y)) items.push({ y: y + 2, d: () => blit(ICON.tuft(), SX(x) + 9, SY(y) + 16) }); }   // the signed tuft at its signed size and palette: no light table over it (the AD's note on PR 489: it read as a lilac gem)
   // W4 round 2: her prints at a haunt she has left, the built paw sign on the stand tile (a new placement: the art director passes it in whole-place stills; the slot is named PAWS-ON-TILE)
   if (PAWS_ON_TILE) for (const p of printsHere()) { if (!p.mark) continue; const x = p.mark.x * ts, y = p.mark.y * ts; if (vis2(x, y) && see(p.mark.x, p.mark.y)) items.push({ y: y + 1, d: () => { const dd = dewDir(p), ag = printAge(p), pb = PAWS_AGED(dd ? PAWS_TURNED(dd.h) : PAWS(), ag, dd ? "sg-paws-t" + dd.h : "sg-paws"); blit(pb, SX(x) + ((ts - pb.w) >> 1), SY(y) + ((ts - pb.h) >> 1), findRm(p.mark.x, p.mark.y)); } }); }
+  const herTag = herInSight(); RT.tagW = null;   // her-page-ui-1: the wild one the bottom line names carries her name
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
+    if (herTag && String(c.id) === herTag) RT.tagW = { x: SX(PX(nr)) + 16, y: SY(PY(nr)), name: S.named[c.id], sp: c.sp, wild: true };
     const pose = c.sp === 1 && c.st === 'curl' ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 6 ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 3 ? 'settle'
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : c.st === 'hab' ? (c.hb && c.hb.pose) || 'idle' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
@@ -7106,6 +7108,7 @@ function drawPatchBody(t) {
   if (!heroDrawn && !RT.heroLater) { try { heroDraw(); } catch (e) { if (RT.err++ < 3) console.error(e); } }
   if (TEST.boom === 2) throw new Error('test: the place view throws after its sprites');   // test hook only
   if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, see, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
+  if (RT.tagW) drawTag(tagSpot(RT.tagW, { W, H, o, ts, inS, see, PX, PY }));   // her name on the same tag component, bone, placed by the same rule (refuses the pawn, finds and the message box)
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   if (bk) bk.drawCanopy(g, bOrg, bclk, [{ x: RT.pl.rx + 24, y: RT.pl.ry + 24 }].concat(RT.pt ? [{ x: RT.pt.rx + 24, y: RT.pt.ry + 24 }] : []), (x, y) => shown(x, y), (x, y) => tileLight(x, y), lay.cut);   // the crowns, cut away round the explorer and the partner
@@ -7322,9 +7325,10 @@ function tagSpot(tg, k) {
   const X = tg.x - 16 - o.x, Y = tg.y - o.y;   // the partner's cell on screen
   const zx1 = Math.max(ts - 1, o.x + 29) + M, zy1 = Math.max(ts - 1, o.y + 33) + M;   // the zone's far column and row (the ring is 28×11 at sprite + (2, 23))
   const at = (px, py, pw, ph, nx, ny) => ({ ptr: { x: X + px, y: Y + py, w: pw, h: ph }, panel: { x: X + nx, y: Y + ny, w, h: TAG.h } });
-  const below = d => at(h2 - 1, zy1 + 1, 2, n, h2 - (w >> 1) + d, zy1 + 1 + n), H0 = o.y + tagTop(ex.pt.sp);
+  const below = d => at(h2 - 1, zy1 + 1, 2, n, h2 - (w >> 1) + d, zy1 + 1 + n), H0 = o.y + tagTop(tg.sp != null ? tg.sp : ex.pt.sp);
   const spots = [below(0), at(zx1 + 1, h2 - 1, n, 2, zx1 + 1 + n, h2 - (TAG.h >> 1)), at(-M - n, h2 - 1, n, 2, -M - n - w, h2 - (TAG.h >> 1)),
     at(h2 - 1, H0 - M - n, 2, n, h2 - (w >> 1), H0 - M - n - TAG.h)];
+  if (tg.wild && TAG.view.x1 - (X + zx1) < w + n + M) spots.splice(1, 2, spots[2], spots[1]);   // her page's tag (AD, PR 597): within a tag's width of the right edge it stands on her left first, so it never clips
   for (let d = TAG.slide; d <= (w >> 1) - TAG.slideIn; d += TAG.slide) spots.push(below(d), below(-d));
   // what a tag may not cover: other creatures' and the pawn's clear zones, the finds' zones, the warned cell, the message box, the edge tabs
   const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
@@ -7343,10 +7347,11 @@ function tagSpot(tg, k) {
   for (const t of edgeTabs()) block.push(tabRect(t));
   const V = TAG.view, inView = r => r.x >= V.x0 && r.y >= V.y0 && r.x + r.w - 1 <= V.x1 && r.y + r.h - 1 <= V.y1;
   const s = spots.find(s => inView(s.ptr) && inView(s.panel) && !block.some(b => rectsMeet(b, s.ptr) || rectsMeet(b, s.panel)));
-  return s ? Object.assign({ name: tg.name }, s) : null;
+  return s ? Object.assign({ name: tg.name, wild: !!tg.wild }, s) : null;
 }
-function drawTag(s) { if (!s) return; const p = s.ptr, q = s.panel;
-  R(p.x, p.y, p.w, p.h, C.aqua); panel(q.x, q.y, q.w, q.h, C.ink, C.aqua); text(s.name, q.x + 5, q.y + 3, C.mint); }
+// aqua and mint for the partner, bone for a wild one (her-page-ui-1: the one the bottom line names)
+function drawTag(s) { if (!s) return; const p = s.ptr, q = s.panel, edge = s.wild ? C.bone : C.aqua;
+  R(p.x, p.y, p.w, p.h, edge); panel(q.x, q.y, q.w, q.h, C.ink, edge); text(s.name, q.x + 5, q.y + 3, s.wild ? C.bone : C.mint); }
 
 // ===================== 14. HUD, bottom line, mode screens =====================
 // Call's meaning right now, for the top-right slot. Empty where Call does nothing.
@@ -7928,7 +7933,11 @@ function ownCutName(m, size, stage) { return cutName(kindId(m, KIND_INFO), stage
 // her cut as a canvas, or null until it is in
 function ownCut(m, size, stage) {
   if (!RIDE.have) { loadRidingIndex(); return null; }
-  const n = ownCutName(m, size, stage); if (!n) return null;
+  return cutByName(ownCutName(m, size, stage));
+}
+// a signed cut by its file name as a canvas, or null until it is in (or for no name)
+function cutByName(n) {
+  if (!n) return null;
   const e = RIDE.img.get(n); if (e) return e.c || null;
   RIDE.img.set(n, { c: null });
   if (typeof Image === 'undefined') return null;
@@ -8083,13 +8092,14 @@ function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: WORDS.case.title }, { id: 'riding', label: WORDS.riding.title }, { id: 'log', label: WORDS.book.title }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
-  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)]).concat(base);
+  if (from === 'patch' && S.exp && S.exp.patch) return (herNamed() ? [{ id: 'her', label: WORDS.her.row(S.named[herNamed()]) }] : []).concat([Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz)].concat(lookable() ? [{ id: 'look', label: VIEW_TEXT.look }] : [], [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz)])).concat(base);
   if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: campLabel('Wait', WORDS.ease.waitTo) }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'sealed' || from === 'riding') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   if (from === 'setup' && !S.exp) return (openAlone() ? [] : [{ id: 'riding', label: WORDS.riding.title }]).concat([{ id: 'worldmap', label: 'Full map' }, { id: 'newworld', label: 'New world', sep: 1 }]);
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
 }
 function menuIcon(id, x, y) {
+  if (id === 'her') { panel(x + 4, y + 4, 20, 20, C.night, C.slate); miniOf(0, x + 8, y + 8); return; }   // her mini on its slate chip (the target line's own)
   if (id === 'probe') blit(art('m-probe', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.sky); pb.ell(14, 14, 11, 11, C.paper); pb.ell(14, 14, 7, 7, C.sky); pb.ell(14, 14, 5, 5, C.paper); pb.line(14, 14, 23, 6, C.sea, 2); pb.rect(18, 17, 3, 3, C.orange); return pb; }), x, y);
   else if (id === 'cargo') blit(art('m-cargo', () => { const pb = new PB(28, 28); pb.rect(2, 7, 24, 18, C.clay); pb.rect(2, 7, 24, 5, C.bark); pb.rect(12, 7, 4, 18, C.paper); pb.outline(); return pb; }), x, y);
   else if (id === 'send') blit(art('m-send', () => { const pb = new PB(28, 28); pb.rect(2, 11, 20, 14, C.clay); pb.rect(2, 11, 20, 4, C.bark); pb.poly([[14, 9], [22, 1], [22, 6], [27, 6], [27, 12], [22, 12], [22, 17]], C.orange); pb.outline(); return pb; }), x, y);
@@ -8149,6 +8159,7 @@ function logKey(k) {
   const days = logDays(), di = clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1)), day = days[di];
   if (k === 'back') { S.phase = S.ui.from || 'setup'; transition(); return; }
   if (k === 'right') { openCase(false); return; }   // the next page: the Case
+  if (k === 'confirm') { const id = logMarked(); if (id) openHer(id, 'log'); else FX.bumpAt = NOW; return; }   // ✓ on the marked entry opens the page of the wild one it is about
   if (k === 'up') { if (day && S.ui.logTop > 0) S.ui.logTop--; else if (di > 0) { S.ui.logDay = di - 1; S.ui.logTop = logFitTop(days[di - 1]); } else FX.bumpAt = NOW; }
   else if (k === 'down') { if (day && S.ui.logTop < logFitTop(day)) S.ui.logTop++; else if (di < days.length - 1) { S.ui.logDay = di + 1; S.ui.logTop = logFitTop(days[di + 1]); } else FX.bumpAt = NOW; }
 }
@@ -8179,6 +8190,7 @@ function drawLog() {
     let y = LOG_Y0; g.imageSmoothingEnabled = false;
     for (let i = clamp(S.ui.logTop | 0, 0, day.rows.length - 1); i < day.rows.length; i++) {
       const L = logLay(day.rows[i]), r = L.r; if (y + L.h > LOG_Y1) break;
+      if (i === clamp(S.ui.logTop | 0, 0, day.rows.length - 1)) brackets(62, y - 4, 372, L.h - 16, C.orange);   // the mark ▲▼ move from entry to entry
       if (DAY_ART[r.part]) g.drawImage(DAY_ART[r.part], 22, y, 28, 28);   // the signed 14 px day picture, in the margin at 2x
       L.hd.forEach((l, j) => text(l, 68, y + 2 + j * 24, soft));
       L.ls.forEach((l, j) => text(l, 68, y + 26 + (L.hd.length - 1) * 24 + j * 24, ink));
@@ -8189,6 +8201,78 @@ function drawLog() {
     }
   }
   if (di > 0) text('▲ ' + W.earlier, 430, 526, faint, 2, 'right');
+}
+// ---- Her page (her-page-ui-1), built to her-page-design-1 sections 2 and 3. One page of the Log's own frame for each wild one met; it only reads the save and writes nothing: light, clock, wild ones and S.log stay as they are. ----
+// Only what he has been shown is on it: a way appears with its first note, her marking with her coat read, her pod once she has left it, a haunt line for a part noted after she was met.
+// NAMED SLOT HER-PICTURE: the art director names the cut for her page (rule 17). Until then the page shows the walk's own signed token of her at 2x (plain until her coat is read, then her marking), never a stand-in.
+const metOrder = () => { const nm = S.named || {}, o = (S.metIds || []).map(String).filter(id => nm[id]); for (const id of Object.keys(nm)) if (!o.includes(id)) o.push(id); return o; };   // the order met; a save from before the met order: by id
+// The wild one the bottom line names now: the one faced, else the nearest in sight (the line's own pick); null when none
+function herInSight() {
+  const ex = S && S.exp; if (!ex || !ex.patch || !S.named || (S.phase !== 'patch' && !(S.phase === 'menu' && S.ui.from === 'patch'))) return null; const lay = curLay(); if (lay.cave) return null;
+  const P = ex.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
+  if (o && o.type === 'cr' && o.c.ind && S.named[o.c.id] && inSight(f.x, f.y)) return String(o.c.id);
+  const w = indInSight(); return w && S.named[w.id] ? String(w.id) : null;
+}
+// The one the screen names: in sight, else the top line's target
+function herNamed() { const a = herInSight(); if (a) return a; const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
+// The menu's first row, and the ← word: "her page" while her name stands on the line, the short word where the ✓ label squeezes her name out (measured with the line's own fit)
+function herBack(o) {
+  const id = herNamed(); if (!id) return null; const nm = S.named[id];
+  if (herInSight() && !lineCtx(Object.assign({}, o, { back: WORDS.her.back })).r.includes(nm)) return WORDS.her.backShort;
+  return WORDS.her.back;
+}
+function openHer(id, from) { if (id == null) { FX.bumpAt = NOW; return; } S.ui.her = { id: String(id), from: from || S.phase }; S.phase = 'her'; transition(); }
+function herKey(k) {
+  const h = S.ui.her, o = metOrder(), i = h ? o.indexOf(h.id) : -1;
+  if (k === 'back' || !h) { const fr = h && h.from; S.ui.her = null; S.phase = fr === 'watch' && watchHer() ? 'watch' : fr === 'log' ? 'log' : (S.exp && S.exp.patch ? 'patch' : 'setup'); transition(); return; }
+  if ((k === 'left' || k === 'right') && o.length > 1) { h.id = o[(i + (k === 'right' ? 1 : o.length - 1)) % o.length]; return; }
+  FX.bumpAt = NOW;
+}
+// The Log's marked entry: its wild one when she is met ("A Loika was here" is about one not met: no ✓)
+function logMarked() { const days = logDays(), day = days[clamp(S.ui.logDay | 0, 0, Math.max(0, days.length - 1))], r = day && day.rows.length ? day.rows[clamp(S.ui.logTop | 0, 0, day.rows.length - 1)] : null; return r && r.id != null && S.named && S.named[r.id] ? String(r.id) : null; }
+// Where she keeps: one line for each haunt, the parts of day she was noted there (S.pages[id][part] = { x, y, k }), her bed once seen in it; nothing for a part not noted
+function herKeeps(id) {
+  const pg = (S.pages && S.pages[id]) || {}, rows = [];
+  for (const [part] of DAY.parts) { const q = pg[part]; if (!q || !q.k) continue; const word = q.bed ? WORDS.her.bed : WORDS.haunt[q.k]; if (!word) continue; let r = rows.find(z => z.word === word); if (!r) rows.push(r = { word, parts: [] }); r.parts.push(part); }
+  if (pg.bed && !rows.some(r => r.word === WORDS.her.bed)) rows.push({ word: WORDS.her.bed, parts: [] });
+  return rows;
+}
+function drawHer() {
+  const h = S.ui.her; if (!h) return; const id = h.id, name = (S.named || {})[id] || '', o = metOrder(), ink = C.soil, soft = C.bark, faint = C.clay, W = WORDS.her;
+  faceFrame(0);
+  text(clipText(name, o.length > 1 ? 300 : 400, 3), 22, 74, ink, 3); if (o.length > 1) text(W.count(o.indexOf(id) + 1, o.length), 430, 80, soft, 2, 'right');
+  R(16, 104, 418, 2, C.clay);
+  const sa = S.seenAt && S.seenAt[id], sad = coatRead(id) && wildMarked({ id });
+  // her picture: the signed Companion 96 x 88 cut at 1x (AD, PR 597): the plain cut until her coat is read, then the cut with her marking; an unloaded cut leaves the slot empty
+  if (!RIDE.have) loadRidingIndex();
+  const hk = kindId({ sp: sa && sa.sp != null ? sa.sp : 0 }, KIND_INFO), pic = RIDE.have ? cutByName(cutName(hk, 'adult', sad ? 'between-between+saddle' : null, 'row', RIDE.have)) : null;
+  panel(22, 114, 96, 88, C.bone, C.clay); g.imageSmoothingEnabled = false; if (pic) g.drawImage(pic, 22, 114);
+  const nw = textW(name, 3), kx = 22 + nw + 16; if (kx + textW(W.kind, 2) <= (o.length > 1 ? 340 : 430)) text(W.kind, kx, 80, soft, 2); else text(W.kind, 134, 116, soft);   // her kind beside her name; under it where the name is long
+  let y = 116; const tx = 134, tw = 296, put = s => { for (const l of wrapText(s, tw, 2)) { text(l, tx, y, soft); y += 24; } };
+  if (kx + textW(W.kind, 2) > (o.length > 1 ? 340 : 430)) y += 24;
+  const met = (S.pages && S.pages[id] && S.pages[id].met) || (S.book || []).find(r => r.kind === 'met' && String(r.id) === id);
+  if (met) { put(W.met(met.d, met.part, met.t)); put(WORDS.book.place(met.place) + ' · ' + met.from); }
+  if (sa) { const lay = layoutCache.get(String(sa.k)), ws = W.seen(sa.t === S.turn, sa.t + 1, lay && !lay.cave ? placeName(lay) : ''); put(ws[0]); if (ws[1]) put(ws[1]); }
+  // her ways: one block for each way seen; a way not yet seen is counted, never named
+  y = Math.max(214, y + 2); const H = (S.habits && S.habits[id]) || {};
+  text(W.ways(waysOf(id), HABITS.length), 22, y, soft); R(16, y + 22, 418, 1, C.sand); y += 28;
+  let unseen = 0;
+  for (const k of HABITS) { const rec = H[k]; if (!rec || !Object.keys(rec.ranges).length) { unseen++; continue; }
+    text(WORDS.habit.name[k], 22, y, ink);
+    if (rec.sample) { const s = SAMPLE[k], held = !!(S.exp && (S.exp.cargo.samples || []).some(q => q.id === rec.sample)), lbl = WORDS.habit.sampleName[s.item] + ' · ' + (held ? W.inCase : W.home);
+      text(lbl, 430, y, soft, 2, 'right'); if (s.item === 'tuft') blit(ICON.tuft(), 430 - textW(lbl, 2) - 20, y + 2); }
+    let x = 30; for (const w of ['place', 'coat', 'face']) { const got = !!rec.got[w], word = WORDS.habit.rooms[w];
+      if (got) R(x, y + 26, 10, 10, C.teal); else { R(x, y + 26, 10, 10, C.clay); R(x + 2, y + 28, 6, 6, C.paper); }
+      text(word, x + 16, y + 22, got ? ink : faint); x += 16 + textW(word, 2) + 18; }
+    y += 46; }
+  if (unseen) { text(W.unseen(unseen), 22, y, faint); y += 26; }
+  // her own pod, once she has left it
+  const ownId = S.own && S.own[id]; if (ownId) { const lying = S.pods.find(p => p.id === ownId && !p.h), held = S.exp && S.exp.cargo.pods.some(p => p.id === ownId);
+    circ(30, y + 9, 7, C.clay); text(W.pod(lying ? W.podBed : held ? W.inCase : W.home), 46, y, ink); y += 26; }
+  const rows = herKeeps(id);
+  if (rows.length) { text(W.keeps, 22, y, soft); R(16, y + 22, 418, 1, C.sand); y += 28;
+    for (const r of rows) { if (y > 542) break; if (r.parts.length && DAY_ART[r.parts[0]]) g.drawImage(DAY_ART[r.parts[0]], 22, y - 4, 28, 28);
+      text(clipText(r.parts.length ? r.parts.join(', ') + ' · ' + r.word : r.word, 330, 2), 58, y, ink); if (r.parts.length) blitScaled(ICON.paw('bark'), 408, y - 2, 2); y += 24; } }
 }
 // ---- The watch view and the field card (w6b-build-1), built to walk-pictures-2 04 and 05. On the Companion's grid: type at 2x, her picture at 1x of its own 228 x 234 pixels (tools/loika-pose-cuts.py, cut from the signed masters). ----
 // ✓ facing a named wild one in sight while her habit plays opens the view (no other way in). It closes by itself when the play ends, she is gone or out of sight, and on ←.
@@ -8231,6 +8315,7 @@ function watchKey(k) {
   if (k === 'up' || k === 'down') {   // nearer / farther: real steps, the field's own (carry, the stay, the heard step)
     const to = dirToward(P, c); patchStep(k === 'up' ? to : OPP[to], 'creep'); if (S.exp && S.exp.patch) S.exp.patch.dir = to;   // backing off keeps her in front of you
     return; }
+  if (k === 'right') { openHer(c.id, 'watch'); return; }   // ▶ turns to her page; nothing is spent: no light, no beat
   FX.bumpAt = NOW;
 }
 function cardKey(k) {
@@ -8274,7 +8359,8 @@ function drawCard() {
   panel(26, 82, textW(cd.range, 2) + 16, 24, C.teal); text(cd.range, 34, 87, C.bone);
   if (cd.data) { const dw = textW(W.data, 2) + 20; panel(424 - dw, 82, dw, 24, C.sand); text(W.data, 424 - dw + 10, 87, C.soil); }
   drawPoseAt(coat, cd.pose, (SCR_W - 228) >> 1, 114, drawsCut(cd.range, cd.clear));
-  if (en) wrapText(en.text, 380, 2).slice(0, 3).forEach((l, i) => text(l, 30, 358 + i * 24, C.soil));
+  if (en) { const ls = wrapText(en.text, 380, 2).slice(0, 3); ls.forEach((l, i) => text(l, 30, 358 + i * 24, C.soil));
+    if (ls.length < 3) text(clipText(W.onPage(name), 380, 2), 30, 358 + ls.length * 24, C.clay); }   // the page is one turn away: her name stands on the card
   R(26, 438, 398, 1, C.sand); panel(26, 452, 398, 90, C.paper, C.sand);
   cardSampleLines(cd, W).forEach((ln, i) => text(ln[0], 40, 466 + i * 24, ln[1]));
 }
@@ -8945,14 +9031,17 @@ function lineBase() {
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
-      return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
+      const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim), hb = lay.cave ? null : herBack(lv);   // ← names the menu's top row: her page while a wild one met is named
+      return hb ? Object.assign(lv, { back: hb }) : lv; }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close', fieldFrozen());
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
+      if (it.id === 'her') return L1(WORDS.her.open, '', 'close');
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'New world, keep mibis' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [reachLine(), 'shows what it does'] : it.id === 'riding' && S.exp && !S.exp.pt && S.exp.rider ? CARE_TEXT.riderMenu(S.exp.rider.name) : '', 'close'); }
-    case 'log': return L1('', (logCanMove() ? WORDS.book.moves + ' ' + WORDS.book.earlier + ' · ' : '') + '▶ ' + WORDS.case.title, WORDS.book.field);
-    case 'watch': return L1(WORDS.watch.note, '▲▼ ' + WORDS.watch.nearer, WORDS.watch.leave);
+    case 'log': return L1(logMarked() ? WORDS.her.logOk : '', (logCanMove() ? WORDS.book.moves + ' ' + WORDS.book.earlier + ' · ' : '') + '▶ ' + WORDS.case.title, WORDS.book.field);
+    case 'her': return L1('', metOrder().length > 1 ? WORDS.her.others : '', WORDS.her.backTo);
+    case 'watch': return L1(WORDS.watch.note, WORDS.her.watchLine, WORDS.watch.leave);
     case 'card': return L1(WORDS.watch.keep, '', watchHer() ? WORDS.watch.back : 'field');
     case 'probe': { const tl = metTiles()[probeFocus()], ctx = tl ? (tl.id === 'storm' ? [stormOdds(), stormOddsShort()] : []).concat(lineOf(tl.name), lineOf(tl.short)) : '';   // the focused sign: name · gist, then the name alone
       patchGuard(); return patchShown() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', ctx, 'close', !patchOn()) : L1('', ctx, 'close'); }   // read-only: one way out
@@ -8989,6 +9078,7 @@ function renderFrame(t) {
       if (RT.view) drawWhole(t); if (!RT.view) { drawPatch(t); drawEdgeCues(t); keepEdgeView(); drawHeroLater(); drawInkIn(); drawSlide(); } drawHUD(); drawSwap(); break;   // a view over the place (Look, the peek) has the whole view
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'log': drawLog(); break;
+    case 'her': drawHer(); break;
     case 'watch': drawWatch(); break;
     case 'card': drawCard(); break;
     case 'probe': drawProbe(t); break;
@@ -9002,7 +9092,7 @@ function renderFrame(t) {
   hitFrame();
   { const wa = NOW - (FX.waitAt || -1e9); if (wa >= 0 && wa < 220 && motion() && S.exp) { const by = VIEW_Y + Math.round(wa / 220 * (VIEW_H - 24)); ditherFill(0, by, SCR_W, 24, 'cream', 3); ditherFill(0, by + 6, SCR_W, 12, 'cream', 5); } }   // Wait's ripple
   drawLine(lineFor());
-  if (!(RT.view && S.phase === 'patch') && S.phase !== 'log' && S.phase !== 'watch' && S.phase !== 'card' && !(S.phase === 'cargo' && !(S.exp && S.ui.caseEnd))) drawMessage();   // the Log and the Case are pages: no message box over them (the End refusal is the exception)
+  if (!(RT.view && S.phase === 'patch') && S.phase !== 'log' && S.phase !== 'her' && S.phase !== 'watch' && S.phase !== 'card' && !(S.phase === 'cargo' && !(S.exp && S.ui.caseEnd))) drawMessage();   // the Log and the Case are pages: no message box over them (the End refusal is the exception)
   drawDuskCard();   // a night-step-4 card, when one is up: the whole frame, over everything
   const ta = NOW - FX.transAt; if (ta < 200 && ta >= 0 && motion()) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 16 - Math.floor(ta / 200 * 16));
 }
@@ -9137,10 +9227,12 @@ function act(k, mode) {
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorldLive(); }
           else { S.ui.nwArm = 1; fxMsg('Only the map changes. Your mibis and everything else stay · Confirm again' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : ''), 3); } }
         else if (id === 'riding') openRiding();   // Riding: who is with you; reads only, light and clock stay as they are
+        else if (id === 'her') openHer(herNamed(), 'patch');
         else { S.phase = id; S.ui.nw = 0; } }
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
     case 'log': logKey(k); break;
+    case 'her': herKey(k); break;
     case 'watch': if (!mode || mode === 'creep') watchKey(k); break;   // a held arrow is one press: the repeat does not walk on (each press is one light and one beat)
     case 'card': cardKey(k); break;
     case 'probe':   // patching spends Energy: two presses, the first only arms it
@@ -9600,7 +9692,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, openWatch, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { openHer, herInSight, herNamed, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, openWatch, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
