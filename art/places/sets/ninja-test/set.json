@@ -53,6 +53,7 @@
     ["cliff", "turf"],
     ["cliff", "scree"],
     ["path-top", "grass"],
+    ["path-top", "path"],
     ["ford-ground", "water"],
     ["ford-ground", "deep"],
     ["ford-ground", "grass"],
@@ -183,6 +184,12 @@
             "se": ["deep", "water"]
           },
           "sheets": ["over-grass-bank-end-e.png"]
+        },
+        {
+          "kind": "flat-top",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-grass-flat-top.png"]
         }
       ]
     },
@@ -284,6 +291,24 @@
           "kind": "bank",
           "lowers": ["earth", "sand", "path", "grass", "litter", "drygrass", "turf", "scree"],
           "sheets": ["over-cliff.png"]
+        },
+        {
+          "kind": "path-top",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-cliff-path-top.png"]
+        },
+        {
+          "kind": "lip-w",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-cliff-lip-w.png"]
+        },
+        {
+          "kind": "lip-e",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-cliff-lip-e.png"]
         }
       ]
     }

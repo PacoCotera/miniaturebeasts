@@ -1386,10 +1386,25 @@ export function pairBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) { const r =
 // Four examples of the young a pair could have (picture 6): the same draw as Pair them, from a stream seeded by the two ids, so the four stay while the picks stay. Genomes only; nothing is kept or spent.
 // Where a pair's young can land on the coat's two blends (station step 8-5): the engine's own range and the parents' values, 0 to 1 along the catalogue; null where the kind has no such trait. Not read-gated (the pairing screen shows it).
 export function landOf(st, a, b) {
+  const all = landAllOf(st, a, b); if (!all) return null;
+  return { tint: all.blends["body-hue"] ?? null, shade: all.blends["body-value"] ?? null };
+}
+// Where a pair's young can land on EVERY trait of the kind (station step 9-1, the shelf's board; the same forecast as landOf, which is this function's two blends): blends[traitId] = { range, parents } as landOf gives it
+// (raw catalogue values), sets[traitId] = the looks a young can wear, in the order of the trait's looks (the four pairings of the lead locus, with every pairing of the trait's other loci the parents carry).
+export function landAllOf(st, a, b) {
   const fr = frameFor(a); if (!fr) return null;
-  const full = crossForecast(fr, a, b, { kinship: kinshipOf(st, a, b), lookup: genomeLookup(st) });
-  const pick = (id) => { const t = full.traits.find((q) => q.trait === id); return t && t.kind === "blend" && t.range && t.parents ? { range: t.range, parents: t.parents } : null; };
-  return { tint: pick("body-hue"), shade: pick("body-value") };
+  const full = crossForecast(fr, a, b, { kinship: kinshipOf(st, a, b), lookup: genomeLookup(st) }), blends = {}, sets = {};
+  for (const q of full.traits) {
+    if (q.kind === "blend" && q.range && q.parents) { blends[q.trait] = { range: q.range, parents: q.parents }; continue; }
+    if (q.kind !== "switch" || !q.seeds) continue;
+    const t = fr.chapters.flatMap((c) => c.traits).find((x) => x.id === q.trait); if (!t) continue;
+    let combos = [{}];
+    for (const id of t.loci.filter((x) => x !== q.locus)) { const prs = (a.genome.loci[id] ?? []).flatMap((x) => (b.genome.loci[id] ?? []).map((y) => [x, y])); if (prs.length) combos = combos.flatMap((c) => prs.map((p) => ({ ...c, [id]: p }))); }
+    const got = new Set();
+    for (const s of q.seeds) for (const c of combos) { const sh = traitState(fr, t, { ...a.genome, loci: { ...a.genome.loci, [q.locus]: s.copies, ...c } })?.shows; if (sh != null) got.add(String(sh)); }
+    sets[q.trait] = (t.looks ?? []).filter((l) => got.has(String(l)));
+  }
+  return { blends, sets };
 }
 export function exampleYoung(st, a, b, n = 4) {
   const fr = frameFor(a), k = kinshipOf(st, a, b); let h = 2166136261;

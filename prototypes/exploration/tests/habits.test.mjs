@@ -56,6 +56,7 @@ test("her prints (3A): the haunts she kept earlier today and has left; yesterday
   assert.ok(!at("afternoon").some(s => s.startsWith("y")), "yesterday's prints are gone after the morning");
   assert.equal(at("midday", true)[0], "midday:9!", "a bolt leaves the haunt she was keeping");
   assert.deepEqual(leftHaunts(null, early, "midday", false), []);
+  assert.ok(!leftHaunts(hs, early, "dawn", false, undefined, true).some(q => q.yday) && at("dawn").length > 0, "day 1 has no yesterday: no yesterday's prints");
 });
 test("a note fills the line only when it gives the wanted thing; any note counts the habit; the first note is the habit's first", () => {
   const rec = blank(); const a = noteIn(rec, "far", true, "face"); assert.ok(a.first && !a.filled && a.gives[0] === "place");
@@ -105,7 +106,7 @@ for (const seed of [7, 13, 42]) {
         if (c.hb && !closed) { closed = 1; P.x = c.x + vec[0] * 2; P.y = c.y + vec[1] * 2; }   // the tell is the moment to step in
         live.strike = null; S.exp.stray = null;   // no lightning in the script: a strike near her would startle her
         const a = patchAction();
-        if (a.label === WORDS.habit.note && !noted) { a.run(); noted = { range: S.exp.stats.noted[0].range, gives: S.exp.stats.noted[0].gives, first: S.exp.stats.noted[0].first }; }
+        if (a.label === WORDS.habit.note && !noted) { a.run(); if (S.phase === 'watch') { watchKey('confirm'); S.phase = 'patch'; } noted = { range: S.exp.stats.noted[0].range, gives: S.exp.stats.noted[0].gives, first: S.exp.stats.noted[0].first }; }
         else advance('patch', { noise: 'act' });
         const h = c.hb;
         if (h && tellRain == null) tellRain = stormRain(col);

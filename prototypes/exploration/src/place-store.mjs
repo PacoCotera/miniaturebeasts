@@ -8,7 +8,8 @@ import { REALM_REV, realm7 } from './gen7/region.mjs';
 import { BAKE_STAGES } from './waitpips.mjs';
 import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
 
-const PLACE_REV = 3, PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
+export const PLACE_REV = 4;   // exported for the baked package's id (package-store.mjs); the number and its rule are the same
+const PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 // TAG: a hash of the files the tile set and the layers are read from (placesTag, set when the page has loaded them), so a changed tile set never meets a place baked from an older one (owner bugs #127-#129).
 let TAG = '';
 export function placesTag(...parts) {   // FNV-1a over the bytes of each part (Uint8Arrays), in order
@@ -27,9 +28,43 @@ export const placesWatch = fn => { WATCH = fn; };
 // The page decides whether the workers run (off for a page served from the source tree).
 export function placesOn(on) { PW_ON = !!on && typeof Worker !== 'undefined'; return PW_ON; }
 export const placesWorker = () => PW_ON;
-export function placesReset() { BAKED.clear(); STAGES.clear(); ASKED.clear(); GROUNDS.clear(); GROUND_ASKED.clear(); PW_SEED = null; wake(); }
+export function placesReset() { packageDrop(); BAKED.clear(); STAGES.clear(); ASKED.clear(); GROUNDS.clear(); GROUND_ASKED.clear(); PW_SEED = null; wake(); }
 export const stageOf = (seed, slot, v, cell) => BAKED.has(memKey(seed, slot, v, cell)) ? BAKE_STAGES : STAGES.get(memKey(seed, slot, v, cell)) || 0;   // the real stages of a place done (waitpips.mjs placeWaitPips)
 export const bakedGet = (seed, slot, v, cell) => BAKED.get(memKey(seed, slot, v, cell)) || null;
+
+// The baked package (package-store.mjs, made by the Station): the Companion reads its region's places from it and bakes nothing. State of the region it is on:
+//   'none' no package: today's path (the worker bakes, IndexedDB's place list keeps)   'part' the Station is still baking it: a cell not in it is "not on the Companion yet", never asked of a worker   'whole' every cell is in
+// A cell in the package is in memory (BAKED) once packageUse has read it, so placeHave and layout find it at once. While the package grows, a poll reads the cells that landed since.
+const PKG = { key: '', state: 'none', kv: null, id: '', timer: 0, got: new Set(), meta: null, mod: null };
+const pkgKey = (seed, slot, v) => seed + '|' + slot[0] + ',' + slot[1] + '|' + v;
+export const packageState = (seed, slot, v) => PKG.key === pkgKey(seed, slot, v) ? PKG.state : 'none';
+export const packageOwes = (seed, slot, v, cell) => packageState(seed, slot, v) === 'part' && !BAKED.has(memKey(seed, slot, v, cell));   // in a package still being made, not in it yet
+async function packageRead() {   // the cells of the header not yet in memory, and the region's sites and banks; the state follows the header
+  const P = PKG.mod, { kv, id, meta } = PKG, head = await P.readHeader(kv, id);
+  if (!head || head.format !== P.PACKAGE_FORMAT) return;
+  const reg = await P.readRegion(kv, id); if (reg) { if (reg.sites && reg.sites.length) presetHollowSites(meta.seed, reg.sites); if (reg.banks && reg.banks.length) presetBanks(meta.seed, reg.banks); }
+  const cells = Object.keys(head.sha).map(Number).filter(c => !PKG.got.has(c));
+  await Promise.all(cells.map(async c => { const b = await P.readCell(kv, id, c); if (b && b.ir && b.place) { BAKED.set(memKey(meta.seed, meta.slot, meta.v, c), b); PKG.got.add(c); ASKED.delete(memKey(meta.seed, meta.slot, meta.v, c)); } }));
+  PKG.state = head.whole && head.done >= head.order.length && PKG.got.size >= head.order.length ? 'whole' : 'part';
+  if (cells.length) wake();
+}
+// Opens the package of this region at these revs (the tag is the page's tile set hash: set placesTagSet first). Returns the state. kv: a test gives its own store.
+export async function packageUse(seed, slot, v, kv = null, pollMs = 2000) {
+  clearInterval(PKG.timer); PKG.timer = 0;
+  try {
+    const P = await import('./package-store.mjs'); kv = kv || (typeof indexedDB !== 'undefined' ? await P.idbKv() : null);
+    if (!kv) return 'none';
+    // the package the Companion holds (taken at a seat) is the one it plays, whatever the generator revs of this page; none held: the one of this page's revs (as before)
+    const meta = { seed, slot, v, tag: TAG }, held = await P.heldOf(kv, { seed, slot }), hh = held && held.id !== P.packageId(meta) && held.realmRev === REALM_REV && held.placeRev === PLACE_REV && (held.tag || '') === TAG ? await P.readHeader(kv, held.id) : null;
+    const id = hh && hh.format === P.PACKAGE_FORMAT ? held.id : P.packageId(meta), head = hh && id === held.id ? hh : await P.findPackage(kv, meta);
+    if (!head) { PKG.key = ''; PKG.state = 'none'; return 'none'; }
+    Object.assign(PKG, { key: pkgKey(seed, slot, v), state: 'part', kv, id, got: new Set(), meta, mod: P });
+    await packageRead();
+    if (PKG.state === 'part' && pollMs) { const t = PKG.timer = setInterval(() => { packageRead().then(() => { if (PKG.state === 'whole' && PKG.timer === t) { clearInterval(t); PKG.timer = 0; } }, () => {}); }, pollMs); }
+    return PKG.state;
+  } catch (e) { console.warn('the baked package could not be read', e); PKG.key = ''; PKG.state = 'none'; return 'none'; }
+}
+export function packageDrop() { clearInterval(PKG.timer); PKG.timer = 0; PKG.key = ''; PKG.state = 'none'; PKG.got = new Set(); }
 export const bakedPut = (seed, slot, v, cell, b) => { BAKED.set(memKey(seed, slot, v, cell), b); };   // made on the page (no worker)
 
 function worker(name, ctx) {
@@ -57,13 +92,19 @@ function worker(name, ctx) {
   if (CTXS[name] !== ctx) { w.postMessage({ op: 'init', ctx }); CTXS[name] = ctx; }
   return w;
 }
+const REACH = new Set();   // store keys of the cells asked `first` (the current reach): never the ones evicted
+// The index after adding k (newest first): the reach cells stay, the PLACE_KEEP cap applies to the background list.
+export function keptIndex(seen, k, reach, cap = PLACE_KEEP) {
+  const next = [k, ...seen.filter(s => s !== k)], bg = next.filter(s => !reach.has(s)).slice(0, cap), bgSet = new Set(bg);
+  return next.filter(s => reach.has(s) || bgSet.has(s));
+}
 async function keep(seed, slot, v, cell, b) {
   if (typeof indexedDB === 'undefined') return;
   try {
     const k = storeKey(seed, slot, v, cell); await set(k, b);
-    const seen = (await get(PLACE_INDEX)) || [], next = [k, ...seen.filter(s => s !== k)];
-    for (const old of next.slice(PLACE_KEEP)) await del(old);
-    await set(PLACE_INDEX, next.slice(0, PLACE_KEEP));
+    const seen = (await get(PLACE_INDEX)) || [], was = new Set(seen).add(k), next = keptIndex(seen, k, REACH), now = new Set(next);
+    for (const old of was) if (!now.has(old)) await del(old);
+    await set(PLACE_INDEX, next);
   } catch (e) { /* kept for this visit only */ }
 }
 
@@ -71,6 +112,8 @@ async function keep(seed, slot, v, cell, b) {
 // kit: { ctx: the places kit as the page loaded it ({ ts, terrains, desc }) }; the seed's realm and Hollow Tree sites go to the worker from the page's generator cache.
 export async function readyPlaces(seed, slot, v, cells, kit) {
   const first = !!(kit && kit.first);   // the set-out's reach: the player waits for these, so they go ahead of the background list, even a cell already asked there (the worker drops its later copy)
+  if (first) for (const c of cells) REACH.add(storeKey(seed, slot, v, c));
+  if (packageState(seed, slot, v) === 'part') { wake(); return; }   // the Station is still baking this region's package: a cell not in it is waited for, never made here
   const want = cells.filter(c => !BAKED.has(memKey(seed, slot, v, c)) && (first || !ASKED.has(memKey(seed, slot, v, c))));
   for (const c of want) ASKED.add(memKey(seed, slot, v, c));   // held while IndexedDB is read, so a second ask does not repeat it
   if (want.length && typeof indexedDB !== 'undefined') {
@@ -116,7 +159,7 @@ export function readyBanks(seed, slots, kit) {
 }
 // A promise that resolves once the cell is in memory, or is no longer owed (the worker is gone); the caller then asks bakedGet.
 export const bakedWhen = (seed, slot, v, cell) => new Promise(resolve => {
-  const k = memKey(seed, slot, v, cell), ok = () => BAKED.has(k) || !ASKED.has(k);
+  const k = memKey(seed, slot, v, cell), ok = () => BAKED.has(k) || (!ASKED.has(k) && !packageOwes(seed, slot, v, cell));
   if (ok()) resolve(); else WAITERS.push({ ok, resolve });
 });
 

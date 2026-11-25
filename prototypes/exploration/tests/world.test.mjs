@@ -1507,14 +1507,14 @@ test("the send hint in a place names the way, never a count, at all seven sites;
     p.run("S.ui.from = S.exp.patch ? 'patch' : 'map'; S.phase = 'menu'; S.ui.menuSel = menuItems().findIndex(i => i.id === 'send'); FX.lockUntil = 0;");
     o.menuRow = p.run("lineFor().ctx");
     p.run("act('confirm')"); o.menuRefusal = p.run("FX.msg"); p.run("FX.msg = ''; FX.notes = [];");
-    p.run("S.phase = 'cargo'; TXT = []; drawCargo(0)"); o.cargoCard = p.run("TXT").find(t => t.startsWith(name + " · ")); o.cargoLine = p.run("lineFor().ctx");
+    p.run("S.phase = 'cargo'; S.ui.caseEnd = 1; TXT = []; drawCargo(0)"); o.cargoCard = p.run("TXT").find(t => t.startsWith(name + " · "));
     p.run("FX.lockUntil = 0; act('confirm')"); o.cargoRefusal = p.run("FX.msg"); p.run("FX.msg = ''; FX.notes = [];");
     o.headBack = p.run("headBack()");
     p.run("S.exp.cargo.pods = Array.from({ length: S.exp.hold }, () => ({ g: 0, sp: 0 })); FX.notes = []; delete (S.exp.once || {}).holdfull;");
     o.headBackHold = p.run("'Hold full · swap, or ' + headBack()");
     return o; };
   const inPlace = sites();
-  const want = { menuRow: `${name} · ${dir}`, menuRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, cargoCard: `${name} · ${dir}`, cargoLine: `End expedition: ${name} · ${dir}`,
+  const want = { menuRow: `${name} · ${dir}`, menuRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, cargoCard: `${name} · ${dir}`,
     cargoRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, headBack: `head back ${dir} to the ${name === "Start" ? "start" : "outpost"}` };
   for (const k of Object.keys(want)) { assert.equal(inPlace[k], want[k], k); assert.doesNotMatch(inPlace[k], DIG, k + ": no digit"); }
   assert.doesNotMatch(inPlace.headBackHold, DIG);
@@ -1522,7 +1522,7 @@ test("the send hint in a place names the way, never a count, at all seven sites;
   p.run("S.phase = 'patch'; FX.lockUntil = 0; openMenu(); S.ui.menuSel = 0; act('confirm');"); assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.patch"), null);
   p.run("S.exp.cargo.pods = [];");
   const n = p.run("nearestSend().n"), cnt = `${name} · about ${n} cell${n === 1 ? "" : "s"}`, onMap = sites();
-  assert.equal(onMap.menuRow, cnt); assert.equal(onMap.cargoCard, cnt); assert.equal(onMap.cargoLine, "End expedition: " + cnt);
+  assert.equal(onMap.menuRow, cnt); assert.equal(onMap.cargoCard, cnt);
   assert.equal(onMap.menuRefusal, "End it only at the start or a lit outpost: " + cnt); assert.equal(onMap.cargoRefusal, "End it only at the start or a lit outpost: " + cnt);
   assert.equal(onMap.headBack, `head back to the ${name === "Start" ? "start" : "outpost"} (about ${n} cell${n === 1 ? "" : "s"})`);
   // and the reach band keeps the count
@@ -1656,15 +1656,12 @@ test("shell: the Back and Confirm icons are the signed masters, byte for byte", 
   }
 });
 
-test("Cargo's bottom line: a crate with room, the finds in the hold with the bay full; the menu's End row says what it does", () => {
+test("the Case from End expedition: the bottom line is ✓ End expedition and ←field; the label place shows what it seals (as Cargo showed it)", () => {
   const p = world(); p.key("confirm"); p.key("confirm"); assert.ok(p.run("S.exp"), "an expedition");
-  p.run("S.exp.pos = S.exp.start; S.phase = 'cargo';");
+  p.run("S.exp.pos = S.exp.start; S.phase = 'cargo'; S.ui.caseEnd = 1;");
   assert.equal(p.run("canSend()"), true);
-  const L = p.run("lineFor()"); assert.equal(L.ok, "End expedition");
-  assert.deepEqual(JSON.parse(JSON.stringify(L.ctx)), ["seals a crate · makes camp", "seals a crate"]);   // End expedition is making camp: the day waits (walk W1)
-  assert.ok(p.run("textWT('seals a crate', 2)") <= 223, "the short form fits the slot");
-  p.run("S.bay = [{}, {}, {}]"); assert.equal(p.run("lineFor().ctx"), "finds stay in the hold");
-  assert.ok(p.run("textWT('finds stay in the hold', 2)") <= 223, "fits whole");
+  const L = p.run("lineFor()"); assert.equal(L.ok, "End expedition"); assert.equal(L.ctx, ""); assert.equal(L.back, "field");
+  p.run("S.bay = [{}, {}, {}]"); assert.ok(p.run("sealPreview()[0]"), "a seal line for the label place");
   assert.doesNotMatch(PAGE, /seals the hold · the world turns|shows what it seals/);
   assert.match(PAGE, /'shows what it does'/);
 });

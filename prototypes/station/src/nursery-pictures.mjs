@@ -34,7 +34,7 @@ function face(out, f) { const px = pixels(f.id), cx = f.x + f.d / 2, cy = f.y + 
 function plank(out, x, y, w, rows = 12) { const px = pixels("cabinet-strip-672x228"), k = w / 672;
   if (px) sprite(out, px, 672, 228, x, y - Math.round(30 * k), w, { clip: (X, Y) => (Y >= y && Y < y + rows ? clamp01(Math.min(Y - y + 1, y + rows - Y)) : 0) });
   else paintPage(out, x, y, x + w, y + rows, () => [[0.52, 0.32, 0.2], 1]); }
-function keys(out, K) {
+export function keys(out, K) {
   if (K.pad) { const [x, y, w, h] = K.pad;
     paintPage(out, x - 1, y - 1, x + w + 1, y + h + 1, (px, py) => { const sd = rrectSd(px, py, x, y, w, h, 9), a = clamp01(0.5 - sd); return a <= 0 ? null : sd > -1.5 ? [[1, 1, 1], 0.3 * a] : [[43 / 255, 49 / 255, 64 / 255], a]; });
     const cx = x + w / 2, cy = y + h / 2; paintPage(out, cx - 9, cy - 6, cx + 9, cy + 6, (px, py) => { const u = px - cx, v = Math.abs(py - cy); const l = u < -1 && u > -8 && v < ((u + 8) / 7) * 4.5, r = u > 1 && u < 8 && v < ((8 - u) / 7) * 4.5; return l || r ? [[244 / 255, 239 / 255, 226 / 255], 1] : null; }); }
