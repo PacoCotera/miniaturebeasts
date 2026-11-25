@@ -2608,9 +2608,9 @@ function wildCtx(c, nm) {
   return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
-function indInSight() {
+function indInSight(anyKind) {   // anyKind: skip the known-kind check (herNamed asks whether any one is in sight)
   const P = S.exp.patch; let best = null, bd = 99;
-  for (const c of curLive().cr) { if (!c.ind || c.hide || (c.ease | 0) >= 3 || !S.known.includes(c.sp) || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d <= 10 && d < bd) { bd = d; best = c; } }
+  for (const c of curLive().cr) { if (!c.ind || c.hide || (c.ease | 0) >= 3 || (!anyKind && !S.known.includes(c.sp)) || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d <= 10 && d < bd) { bd = d; best = c; } }
   return best;
 }
 // Keeping still as one act (✓ facing a named Loika): Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light have gone; each Wait spends its light.
@@ -8186,7 +8186,7 @@ function herInSight() {
   const w = indInSight(); return w && S.named[w.id] ? String(w.id) : null;
 }
 // The one the screen names: in sight, else the top line's target
-function herNamed() { const a = herInSight(); if (a) return a; if (S && S.exp && S.exp.patch && S.named && !curLay().cave && curLive().cr.some(c => c.ind && !c.hide && (c.ease | 0) < 3 && cheb(c, S.exp.patch) <= 10 && seenFromPlayer(S.exp.patch.key, c.x, c.y))) return null;   // one in sight that the line does not name (her kind is not known yet, so herInSight is null): no page to offer, never the top line's name (#156 R145-07)
+function herNamed() { const a = herInSight(); if (a) return a; if (S && S.exp && S.exp.patch && S.named && !curLay().cave && indInSight(true)) return null;   // one in sight that the line does not name (her kind is not known yet, so herInSight is null): no page to offer, never the top line's name (#156 R145-07)
   const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
 // The menu's first row, and the ← word: "her page" while her name stands on the line, the short word where the ✓ label squeezes her name out (measured with the line's own fit)
 function herBack(o) {
