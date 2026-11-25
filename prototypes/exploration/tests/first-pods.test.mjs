@@ -563,10 +563,12 @@ test("the first walk: one teaching line per deed, signs and hints held unspent, 
   assert.equal(p.run("typeof callFirst"), "undefined", "the Call lesson is gone: Call stays a key");
   assert.doesNotMatch(p.run("teachStep()") + p.run("patchAction().label"), /Call|pod/i, "no Call lesson and no pod line on the first walk");
   p.run("S.named = { 5: 'Bramble', 9: 'Fern' }; S.metIds = ['5', '9']; S.habits = { 5: { shake: { ranges: { far: 1 }, got: {} } }, 9: {} };");
-  assert.equal(p.run("goalLine()"), "Bramble · her ways 1 of 3", "F1b: the one noted most");
+  assert.equal(p.run("goalLine()"), "Bramble · her ways 1 of 3", "F1b: the first met, until he faces, watches or notes another (owner note 167)");
   p.run("S.habits[9] = { calm: { ranges: { near: 1 }, got: {} } };");
-  assert.equal(p.run("goalLine()"), "Fern · her ways 1 of 3", "on a tie the last met");
-  p.run("S.habits[5].calm = { ranges: { mid: 1 }, got: {} }; S.habits[5].sleep = { ranges: { far: 1 }, got: {} };");
+  assert.equal(p.run("goalLine()"), "Bramble · her ways 1 of 3", "a note kept on another does not move it");
+  p.run("S.follow = '9';");
+  assert.equal(p.run("goalLine()"), "Fern · her ways 1 of 3", "the one he last faced, watched or noted");
+  p.run("S.follow = '5'; S.habits[5].calm = { ranges: { mid: 1 }, got: {} }; S.habits[5].sleep = { ranges: { far: 1 }, got: {} };");
   assert.equal(p.run("goalLine()"), "Bramble · her ways 3 of 3");
   p.run("S.pods.push({ id: 'o1', k: curLay().key, x: S.exp.patch.x + 1, y: S.exp.patch.y, sp: 0, h: 0, how: 'own', of: 'Bramble', own: '5' });");
   assert.equal(p.run("goalLine()"), "Bramble left a pod · at her bed", "F1c: her own pod lies at her bed");

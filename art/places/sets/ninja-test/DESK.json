@@ -2287,6 +2287,16 @@
     "from": "over-cliff.png, palette map of the raised fill and rim to the path tones (the signed sheet; the whole chain is in over-cliff-path-top.steps.json)",
     "sha256": "31f4764984bb504b58a87b114a852fce6179a27b6c57199ae466398ee4454652"
   },
+  "over-cliff-lip-w.png": {
+    "commit": "local",
+    "from": "over-cliff-path-top.png slot 12 + over-grass-flat-top.png top half (tools/credit-runner/runs/bug148-lip-1/compose-lip.py)",
+    "sha256": "fdf0c699f64d6386ce3a2c8e220cf988efbb5128c21955f79229602e25e19c8e"
+  },
+  "over-cliff-lip-e.png": {
+    "commit": "local",
+    "from": "over-cliff-path-top.png slot 12 + over-grass-flat-top.png top half (tools/credit-runner/runs/bug148-lip-1/compose-lip.py)",
+    "sha256": "f0cd6404650a062bdce696fbb82a89fa1f659c59e0831320d25e5efc5fbfe244"
+  },
   "tone-grass.png": {
     "commit": "633e4d641",
     "from": "art-jobs/2026-11-10-art-recolour-map-palette/out/applied/art-paint-terrain-meadow/out/layers/grass-tone.png sunlit (#5e9357 to #82b266)",

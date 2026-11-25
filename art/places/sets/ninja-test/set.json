@@ -297,6 +297,18 @@
           "late": true,
           "lowers": [],
           "sheets": ["over-cliff-path-top.png"]
+        },
+        {
+          "kind": "lip-w",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-cliff-lip-w.png"]
+        },
+        {
+          "kind": "lip-e",
+          "late": true,
+          "lowers": [],
+          "sheets": ["over-cliff-lip-e.png"]
         }
       ]
     }

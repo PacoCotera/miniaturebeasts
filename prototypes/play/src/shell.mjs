@@ -306,9 +306,12 @@ async function seatCradle(want) {
   if (sw.fault) { fault = true; sense(want, at); pressed = false; cradleChanged(want); return; }   // the Caddy fault: the write is refused, nothing is taken, the marks as sensed
   let ok = false;
   try {
+    let offer, pk = null, pkv = null;   // the Station's baked package, offered at a seat (baked-package-3); a page with none, or no storage, seats as before
+    if (want) { try { pk = await import("../../exploration/src/package-dock.mjs"); pkv = await pk.idbKv(); offer = (comp && comp.region && await pk.offerOf(pkv, comp.region)) || undefined; } catch { offer = undefined; } }
     const ac = new AbortController(), t = setTimeout(() => ac.abort(), 1000);   // a page never sits pressed for more than a second with no answer
-    const r = await fetch(API + "/dock/seat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ world, cradle: "companion", seated: want, companion: comp ? { id: comp.id, name: comp.name } : undefined }), signal: ac.signal });
+    const r = await fetch(API + "/dock/seat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ world, cradle: "companion", seated: want, companion: comp ? { id: comp.id, name: comp.name } : undefined, package: offer }), signal: ac.signal });
     clearTimeout(t); const body = await r.json().catch(() => null);
+    if (r.ok && body && body.took && offer && pk) { try { await pk.takePackage(pkv, offer); } catch { /* the record stands; the marker is written at the next seat */ } }   // the Companion takes it (on the web a no-op copy: the marker it plays from)
     if (r.status === 503 && body && body.fault) { svc.up = true; fault = true; sense(want, at); ok = true; }
     else if (r.ok && body && body.snapshot) { svc.up = true; fault = false; takeSnap(body.snapshot); connect(world); ok = true; }
   } catch { /* no service */ }

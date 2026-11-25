@@ -1794,6 +1794,20 @@
    "sha256": "dbcdf60d2e080fd3963d3d2b9e63cb4db97a286e6dd5e992af021cf0709ca158"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "b3c91b4341",
+   "path": "art/places/sets/ninja-test/over-cliff-lip-e.png",
+   "sha256": "f0cd6404650a062bdce696fbb82a89fa1f659c59e0831320d25e5efc5fbfe244"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-24",
+   "id": "9bb6f102b7",
+   "path": "art/places/sets/ninja-test/over-cliff-lip-w.png",
+   "sha256": "fdf0c699f64d6386ce3a2c8e220cf988efbb5128c21955f79229602e25e19c8e"
+  },
+  {
    "class": "recolour-of-signed",
    "date": "2026-11-24",
    "id": "7baef4e497",

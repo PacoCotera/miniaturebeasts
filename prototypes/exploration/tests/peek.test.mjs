@@ -163,7 +163,7 @@ for (const side of ["up", "down", "left", "right"]) {
       assert.equal(s.view, null, "a short Call at the edge never opens the hold or the zoom-out");
       assert.equal(s.calls, n0 + 1, "the Call was made");
       assert.equal(await page.evaluate((nk) => { const v = (window.__mb.S.veilPre || {})[nk] || window.__mb.S.veil[nk]; return !!v && v.some((r) => r !== 0); }, nk), true, "the place next door has lifted tiles");
-      assert.match(await page.evaluate(() => window.__mb.FX.msg), /^The Call reached next door · (nothing there|\d+ finds?)$/, "the message box says the Call reached next door");
+      assert.match(await page.evaluate(() => window.__mb.FX.msg), /^The Call lifted the land next door · (no finds|\d+ finds?)$/, "the message box says the Call lifted the land next door");
       await page.waitForTimeout(1900); assert.equal((await st(page)).view, null, "and no view opens later either");
       assert.deepEqual(errors, []);
     } finally { await browser.close(); server.close(); }
@@ -172,9 +172,9 @@ for (const side of ["up", "down", "left", "right"]) {
 
 test("the next-door message line: nothing, one find, several (words.mjs, editor 11-24)", async () => {
   const { WORDS } = await import("../src/words.mjs");
-  assert.equal(WORDS.callNextDoor(0), "The Call reached next door · nothing there");
-  assert.equal(WORDS.callNextDoor(1), "The Call reached next door · 1 find");
-  assert.equal(WORDS.callNextDoor(3), "The Call reached next door · 3 finds");
+  assert.equal(WORDS.callNextDoor(0), "The Call lifted the land next door · no finds");
+  assert.equal(WORDS.callNextDoor(1), "The Call lifted the land next door · 1 find");
+  assert.equal(WORDS.callNextDoor(3), "The Call lifted the land next door · 3 finds");
 });
 
 test("a long press opens the zoom-out on an edge tile as on an inner one, and release ends it (owner #143)", { skip }, async (t) => {
