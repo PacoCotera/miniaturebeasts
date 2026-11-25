@@ -33,6 +33,24 @@ test("his save: ten walk steps, the Loikas in sight stir within one tile, never 
   assert.deepEqual(toward, [], "none steps toward him");
 });
 
+// 138-6 (QA verify-live-110: 20 of 76 stir moves ended nearer): 200 walk steps on his save; every stir is checked where he stands after his step.
+test("200 walk steps: no stir ends nearer to him, none ends within ring+3", () => {
+  const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
+  p.store[p.KEY] = raw;
+  const q = makePage({ gen: 7, store: { ...p.store }, console: "collect", els: true, canvas: true, raf: "count" });
+  q.run(`curLive().cr.forEach(c => { if (c.sp === 0) { c.ease = 0; c.quiet = 0; c.crowd = 0; } }); window.__stirs = []; const __orig = stirStep;
+    stirStep = function (c, X, bx, by) { const was = { x: c.x, y: c.y }; __orig(c, X, bx, by);
+      if (c.x !== was.x || c.y !== was.y) { const hr = easeCarryAt(X.ease, c, X.P.x, X.P.y, X.noise === 'walk' ? 'walk' : 'creep', c.wary || 0).v + 3;
+        window.__stirs.push({ walk: !!X.moved, ch0: Math.max(Math.abs(was.x - X.P.x), Math.abs(was.y - X.P.y)), ch1: Math.max(Math.abs(c.x - X.P.x), Math.abs(c.y - X.P.y)),
+          r0: (was.x - X.P.x) ** 2 + (was.y - X.P.y) ** 2, r1: (c.x - X.P.x) ** 2 + (c.y - X.P.y) ** 2, hr2: hr * hr }); } };`);
+  const dirs = ["left", "right", "up", "down"];
+  for (let i = 0; i < 200; i++) { q.run("curLive().cr.forEach(c => { if (c.sp === 0 && !c.hide && !c.home && !c.visit && c.st !== 'flee') { c.st = 'idle'; c.ease = 0; c.quiet = 0; c.crowd = 0; } })"); q.key(dirs[(i >> 1) % 4]); q.pass(1200); }
+  const st = JSON.parse(q.run("JSON.stringify(window.__stirs)")).filter(s => s.walk);
+  assert.ok(st.length >= 1, "control: some stirs happen");
+  assert.deepEqual(st.filter(s => s.ch1 < s.ch0 || s.r1 < s.r0), [], "none ends nearer");
+  assert.deepEqual(st.filter(s => s.r1 <= s.hr2), [], "none ends within ring+3");
+});
+
 // Round 3 (designer, bus 431735): she stirs only while unaware: once heard (ease up) or while the stay counts, she holds her tile.
 test("heard, or the stay counting: no stir", () => {
   const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
