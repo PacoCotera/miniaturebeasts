@@ -2351,8 +2351,8 @@ function advance(scope, info) {
 // night step 4: the dusk, night and dawn cards. Each is the art director's signed painting (night-camp pieces 1 to 3), passed by any press, once a day each.
 // NAMED EMPTY SLOTS: none is signed and in the art set yet, so a slot stays empty ("dusk card: picture to come"), the message-box line stays in its place and nothing is drawn in code.
 // When a painting is signed, its file goes in here and cardShow draws it on the Companion's frame; the PR stays draft + hold until all three are.
-// The dusk card is in (the art director's signed take 1, sha 53624a5e73b7); night and dawn stay empty.
-const NIGHT_CARDS = { dusk: { slot: 'dusk card', file: 'art/cards/dusk-card-450x600.png' }, night: { slot: 'night card: picture to come', file: null }, dawn: { slot: 'dawn card: picture to come', file: null } };
+// All three cards are in: dusk (sha 53624a5e73b7), night (9454ad7228bf) and dawn (af6e535dac7b), each the art director's signed cut.
+const NIGHT_CARDS = { dusk: { slot: 'dusk card', file: 'art/cards/dusk-card-450x600.png' }, night: { slot: 'night card', file: 'art/cards/night-card-450x600.png' }, dawn: { slot: 'dawn card', file: 'art/cards/dawn-card-450x600.png' } };
 const CARD_ART = {};   // kind -> the file's canvas, as loaded (450 x 600: the Companion's whole frame, drawn 1:1 and never redrawn)
 async function loadCardArt() {
   try {
@@ -2387,6 +2387,7 @@ function nightPasses() {
   const a = turned.arrived; ex.nightNews = { cells: [...new Set([...a.pods, ...a.young, ...(a.bloom >= 0 ? [a.bloom] : []), ...a.charged])] };
   fxMsg(DAY_TEXT.nightPassed(partOfDay(0)), 4);
   for (const l of turned.lines) fxMsg(l, 3);   // the world turn's news, one line at a time in the message box
+  cardShow('dawn');   // the new day starts at dawn: its card, once a day, passed by any press
 }
 function shieldHit(stray) {
   const ex = S.exp; ex.shield--; ex.passWarned = 0; FX.hitAt = NOW; ex.hitAt = ex.actions; ex.stats.hits++; FX.plateLost = { i: ex.shield, at: NOW };   // one plate a strike (the last one can go); the next stray this pass needs a fresh warned strike first; the lost plate's fill flashes in the top bar
