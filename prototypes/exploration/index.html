@@ -2966,7 +2966,9 @@ let ALONG = null;   // where along the edge a step out of a place left from (cro
 const alongOf = (dir, P) => dir === 'left' || dir === 'right' ? P.y : P.x;   // the coordinate along the edge that a step in dir crosses
 function entryPoint(lay, key, dir, guess) {   // guess: where the pawn will most likely arrive, asked before the place is live (nothing stands anywhere yet)
   const occ = (x, y) => !guess && occupant(key, x, y, 'player');
-  if (LAND && LAND.key === key && !occ(LAND.x, LAND.y)) return { x: LAND.x, y: LAND.y };
+  // bug #171 (rule 16b): the tile straight across a tile-decided side is the landing only if it lies on the ground the way in leads to; a tile cut off from it (a pocket, no reach) never is the landing, the nearest standable tile below is
+  const landOk = !!LAND && LAND.key === key && (!lay.reach || (!!lay.reach[LAND.y * lay.w + LAND.x] && (!lay.compOfSide || !dir || lay.compId[LAND.y * lay.w + LAND.x] === ((lay.compOfSide[{ up: 'S', down: 'N', left: 'E', right: 'W' }[dir]]) ?? lay.mainComp))));
+  if (landOk && !occ(LAND.x, LAND.y)) return { x: LAND.x, y: LAND.y };
   // bug #37: the pawn keeps its line of the map: the row (a sideways step) or column (up or down) it left on, over the edge shared with the place it came from
   const keep = !dir ? null : guess ? (S.exp && S.exp.patch ? alongOf(dir, S.exp.patch) : null) : ALONG && ALONG.key === key ? ALONG.k : null;
   const onLine = (e, s) => keep == null || (keep !== s && keep !== s + 1) ? e : dir === 'up' || dir === 'down' ? { x: keep, y: e.y } : { x: e.x, y: keep };   // a two-tile crossing (stair, scree, bank): the tile of the pair the pawn crossed on
@@ -3121,7 +3123,21 @@ function blockWords(lay, x, y, o) {
 const RIM_BIT = { up: 1, down: 2, left: 4, right: 8 };   // the steps a ring cell's rim line refuses (lay.rim, adapt7.mjs)
 // The pawn's last 20 steps for a play note (playNoteState): direction, tile before and after, whether it moved, and the check that let it pass or stopped it (STEP_WHY, set where each check decides).
 const STEP_KEEP = 20; let STEP_WHY = '';
+// bug #171 (rule 16b): a save that stores the explorer on a tile cut off from every way out of the place (no reach, or a pocket no side leads to) moves him to the nearest standable tile on the place's main ground. Returns true when he was moved.
+function groundSnap() {
+  const ex = S && S.exp, P = ex && ex.patch; if (!P || G.gen !== 7 || !PL.ready || !placeHave(P.key)) return false;
+  const lay = layout(P.key); if (!lay || lay.cave || !lay.reach || !lay.compId || !lay.tiles) return false;
+  const i = P.y * lay.w + P.x, id = lay.compId[i], ok = id && (id === lay.mainComp || Object.values(lay.compOfSide || {}).includes(id));
+  if (ok || !lay.mainComp) return false;
+  let best = null, bd = 1e9; ensureLive(P.key);
+  for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) { const j = y * lay.w + x;
+    if (lay.compId[j] !== lay.mainComp || NOSTAND(lay.tiles[j]) || occupant(P.key, x, y, 'player')) continue;
+    const d = (x - P.x) ** 2 + (y - P.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } }
+  if (!best) return false;
+  P.x = best.x; P.y = best.y; return true;
+}
 function patchStep(dir, mode) {
+  if (S.exp && S.exp.patch && groundSnap()) save();
   const P0 = S.exp && S.exp.patch, from = P0 ? [P0.x, P0.y] : null, key0 = P0 && P0.key; STEP_WHY = 'open';
   try { patchStepRun(dir, mode); } finally {
     const P1 = S.exp && S.exp.patch; followFront();
@@ -9637,7 +9653,7 @@ window.addEventListener('storage', e => {
 // A loaded save's boot corrections and one draw of its screen: if any of them throws, the save opens read-only and is never written.
 if (ld === true) { try { if (S.exp && S.exp.shield <= 0 && !S.exp.dark) goDark(S.exp);   // an old save with no plates opens in the realm, dark (night step 1), never on the ended card
   if (S.exp && S.day.spent >= DAY.light) nightPasses(); if (S.phase === 'station') S.phase = 'setup';
-  if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; render(NOW / 1000); }
+  if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup'; if (S.phase === 'patch') groundSnap(); render(NOW / 1000); }
   catch (e) { console.error(e); readOnlyBroken(); } }
 else if (!RT.readOnly && S.phase === 'station') S.phase = 'setup';
 SLEEP.holdAtBoot();   // a sleep still pending keeps this page from writing
