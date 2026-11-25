@@ -52,3 +52,21 @@ test("bolted at midday: still gone within midday, released at the afternoon turn
   const h = upTo(p, "afternoon");
   assert.equal(h.gone, false, "released at the afternoon turn");
 });
+
+// #145-6: with the hero kept at 17,0 (2 tiles away) and Waiting, every Wait is heard and she stayed alert/watching, so her routine never ran.
+// At the part-of-day turn she is let go to her routine: she leaves 15,2 within 3 Waits of the midday turn and is 3+ tiles from it by midday's end.
+test("his save, hero kept at 17,0 and Waiting: she leaves 15,2 within 3 Waits of the midday turn", () => {
+  const p = load();
+  const at = () => JSON.parse(p.run(`JSON.stringify((c => ({ part: dayPart(), x: c.x, y: c.y, st: c.st, px: S.exp.patch.x, py: S.exp.patch.y }))(curLive().cr.find(c => c.ind && c.ind.name === 'Hazel')))`));
+  let h = at(), n = 0;
+  assert.deepEqual([h.px, h.py], [17, 0]);
+  while (h.part === "morning" && n++ < 60) { p.run(`waitTick('patch')`); p.pass(1200); h = at(); }
+  assert.equal(h.part, "midday");
+  let left = -1;
+  for (let w = 1; w <= 3 && left < 0; w++) { p.run(`waitTick('patch')`); p.pass(1200); h = at(); if (h.x !== 15 || h.y !== 2) left = w; }
+  assert.ok(left > 0, "she left 15,2 within 3 Waits of the turn");
+  n = 0;
+  while (h.part === "midday" && n++ < 80) { p.run(`waitTick('patch')`); p.pass(1200); h = at(); }
+  assert.ok(Math.max(Math.abs(h.x - 15), Math.abs(h.y - 2)) >= 3, `3+ tiles from 15,2 by midday's end (at ${h.x},${h.y})`);
+  assert.deepEqual([h.px, h.py], [17, 0]);
+});
