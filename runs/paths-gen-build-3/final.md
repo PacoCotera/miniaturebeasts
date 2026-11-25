@@ -1,4 +1,4 @@
-# paths-gen-build-3: 205 of 296 tips ending at nothing is now 18; 200-seed pod run finished (144 = 144 against main). PR 618 draft + hold, branch build/paths-gen-build-1; 0 MXN
+# paths-gen-build-3: 205 of 296 tips ending at nothing is now 18; 200-seed pod run finished (144 = 144 against main). PR 618 draft + hold, branch build/paths-gen-build-1
 Serves OWNER #161 (2026-11-25): "the roads lead nowhere, end abruptly..."
 
 1. **PR change from the build desk:** the 12 scratch scripts moved to runs/paths-gen-build-2/scratch-paths/ (out of the PR). PR body has the line: movePodsOffBlocks writes S.pods inside layout(), which read-only views also call; deterministic and idempotent.
