@@ -74,9 +74,9 @@ export const keeperKindAt =(seed, X, Y) => keeperKinds(seed).get(X + ',' + Y) ||
 // longer where a road stops. The box lies on plain grass, off the spine and every set piece, and its door row faces the road when it can (the pieces are front-on, door down).
 // a: { w, h, cw, ch, terrain, solid, spine, cliff, spots }, TVs: { PATH, FAMILY: Set }. Returns the place or null (nothing drawn to meet, or no room); `why` says which.
 const EDGE_KEEP = 4;
-export function seatKeeper(kind, a, TVs, atEnd) {
+export function seatKeeper(kind, a, TVs, atEnd, at) {
   const fp = FOOTPRINTS[kind], { w, h, cw, ch, terrain, solid, spine, cliff, spots } = a, I = (x, y) => y * w + x, [bw, bh] = fp.box;
-  const inner = (x, y) => x >= 1 && y >= 1 && x <= cw && y <= ch, isPath = (x, y) => inner(x, y) && terrain[I(x, y)] === TVs.PATH;
+  const inner = (x, y) => x >= 1 && y >= 1 && x <= cw && y <= ch, isPath = (x, y) => inner(x, y) && (terrain[I(x, y)] === TVs.PATH || (a.roadTop && a.roadTop[I(x, y)] === 1));
   const pts = []; for (let y = 1; y <= ch; y++) for (let x = 1; x <= cw; x++) if (isPath(x, y)) pts.push([x, y]);
   if (!pts.length) return { why: 'no-path' };
   // distance over the trail from the frame's ports
@@ -84,7 +84,8 @@ export function seatKeeper(kind, a, TVs, atEnd) {
   for (const [x, y] of pts) if (x === 1 || y === 1 || x === cw || y === ch) { dist.set(y * w + x, 0); q.push([x, y]); }
   for (let i = 0; i < q.length; i++) { const [x, y] = q[i], d = dist.get(y * w + x); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy, k = Y * w + X; if (isPath(X, Y) && !dist.has(k)) { dist.set(k, d + 1); q.push([X, Y]); } } }
   let M;
-  if (!atEnd) {   // at a fork the trail's middle: the path tile nearest the cell's centroid of path
+  if (at) M = at;   // a leftover tip of the road (roadTips): the box is seated at that tile
+  else if (!atEnd) {   // at a fork the trail's middle: the path tile nearest the cell's centroid of path
     const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length, cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
     M = pts.slice().sort((p, r) => Math.hypot(p[0] - cx, p[1] - cy) - Math.hypot(r[0] - cx, r[1] - cy) || p[1] - r[1] || p[0] - r[0])[0];
   } else {
@@ -92,9 +93,10 @@ export function seatKeeper(kind, a, TVs, atEnd) {
     if (!far) return { why: 'no-port' }; M = far;
   }
   // the road's last tile and the tile it came from: where the signed run's END piece goes (pixel desk's note: the end piece where a road ends, its open side back along the road)
-  const dM = dist.get(M[1] * w + M[0]), back = atEnd ? [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [M[0] + dx, M[1] + dy]).find(([x, y]) => dist.get(y * w + x) === dM - 1) : null;
-  const end = atEnd ? { x: M[0], y: M[1], from: back || null } : null;
-  const ok = (x, y) => x >= EDGE_KEEP && y >= EDGE_KEEP && x <= cw + 1 - EDGE_KEEP && y <= ch + 1 - EDGE_KEEP && TVs.FAMILY.has(terrain[I(x, y)]) && !solid[I(x, y)] && !cliff[I(x, y)];   // the spine (the shortest walks between the ways in) may pass under it: a block is one to three rows, the yard is walkable all round
+  const dM = dist.get(M[1] * w + M[0]), back = atEnd || at ? [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [M[0] + dx, M[1] + dy]).find(([x, y]) => dist.get(y * w + x) === dM - 1) : null;
+  const end = atEnd || at ? { x: M[0], y: M[1], from: back || null } : null;
+  const EK = a.edgeKeep || EDGE_KEEP, tipTop = !!(a.roadTop && a.roadTop[I(M[0], M[1])] === 1);   // a tip on a cliff top seats its box on the top's own grass (a.topGrass), never across the cliff
+  const ok = (x, y) => x >= EK && y >= EK && x <= cw + 1 - EK && y <= ch + 1 - EK && (tipTop ? a.topGrass[I(x, y)] === 1 && !a.roadTop[I(x, y)] : TVs.FAMILY.has(terrain[I(x, y)]) && !cliff[I(x, y)]) && !solid[I(x, y)];   // the spine (the shortest walks between the ways in) may pass under it: a block is one to three rows, the yard is walkable all round
   const nearSpot = (x, y) => spots.some(s => x >= s.x - 1 && x < s.x + s.w + 1 && y >= s.y - 1 && y < s.y + s.h + 1);
   const onSpot = (x, y) => spots.some(s => x >= s.x && x < s.x + s.w && y >= s.y && y < s.y + s.h);
   // mode 0: a clear yard of walkable ground all round and a tile off every set piece; mode 1: the box alone clear of the set pieces' tiles and their walls (the yard may lie against water or a cliff)
@@ -108,7 +110,7 @@ export function seatKeeper(kind, a, TVs, atEnd) {
   const R = bw + bh, rest = []; for (let y0 = M[1] - bh - R; y0 <= M[1] + R; y0++) for (let x0 = M[0] - bw - R; x0 <= M[0] + R; x0++) rest.push([x0, y0]);
   const anchor = [M[0] - c, M[1] - bh]; rest.sort((p, r) => Math.hypot(p[0] - anchor[0], p[1] - anchor[1]) - Math.hypot(r[0] - anchor[0], r[1] - anchor[1]) || p[1] - r[1] || p[0] - r[0]);
   cands.push(...rest);                                                                            // anywhere else that touches the road, nearest the door spot first
-  const near = atEnd ? pts.filter(([px, py]) => Math.max(Math.abs(px - M[0]), Math.abs(py - M[1])) <= 1) : pts;   // at an end, the road's last tiles (the brush is two wide): the box meets these, never another stretch; at a fork, the box meets the trail anywhere in the place
+  const near = atEnd || at ? pts.filter(([px, py]) => Math.max(Math.abs(px - M[0]), Math.abs(py - M[1])) <= 1) : pts;   // at an end, the road's last tiles (the brush is two wide): the box meets these, never another stretch; at a fork, the box meets the trail anywhere in the place
   for (const mode of [0, 1]) for (const [x0, y0] of cands) {
     if (!free(x0, y0, mode)) continue;
     const touches = near.some(([px, py]) => px >= x0 - 1 && px <= x0 + bw && py >= y0 - 1 && py <= y0 + bh);
@@ -116,4 +118,36 @@ export function seatKeeper(kind, a, TVs, atEnd) {
     return { kind, piece: fp.piece, x: x0, y: y0, w: bw, h: bh, block: fp.block.map(([x, y, bw2, bh2]) => [x0 + x, y0 + y, bw2, bh2]), yard: { x: x0 - fp.yard, y: y0 - fp.yard, w: bw + 2 * fp.yard, h: bh + 2 * fp.yard }, meet: M, end };
   }
   return { why: 'no-room', end };
+}
+
+// ---- every thin end of the road is a destination (paths-gen-build-3, OWNER #161: "the roads lead nowhere, end abruptly") ----
+// A tip is the far end of a piece of road in the place: a path tile whose distance over the trail from the frame's ports is a local maximum, at least 4 from a port, with 10 or fewer road tiles within 3 tiles of it
+// (a thin end, not the wobble of a bend). It is covered when a yard or a set piece (bed, nook, pool: the plan's spots) (a tile round it), a ford or bridge, or the frame's edge (a port, 3 tiles) lies within a tile of it. Returns the uncovered tips as [x, y];
+// a piece of road that touches no port is a loose piece, not an end, and is not listed. covered: [{ x, y, w, h }] the yards already seated.
+export function roadTips(a, TVs, covered) {
+  const { w, cw, ch, terrain } = a, I = (x, y) => y * w + x, inner = (x, y) => x >= 1 && y >= 1 && x <= cw && y <= ch, isPath = (x, y) => inner(x, y) && (terrain[I(x, y)] === TVs.PATH || (a.roadTop && a.roadTop[I(x, y)] === 1));
+  const seen = new Uint8Array(w * a.h), tips = [], N4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  for (let y0 = 1; y0 <= ch; y0++) for (let x0 = 1; x0 <= cw; x0++) {
+    if (seen[I(x0, y0)] || !isPath(x0, y0)) continue;
+    const tiles = [[x0, y0]]; seen[I(x0, y0)] = 1;
+    for (let i = 0; i < tiles.length; i++) for (const [dx, dy] of N4) { const x = tiles[i][0] + dx, y = tiles[i][1] + dy; if (isPath(x, y) && !seen[I(x, y)]) { seen[I(x, y)] = 1; tiles.push([x, y]); } }
+    const dist = new Map(), q = []; for (const [x, y] of tiles) if (x === 1 || y === 1 || x === cw || y === ch) { dist.set(I(x, y), 0); q.push([x, y]); }
+    if (!q.length) continue;
+    for (let i = 0; i < q.length; i++) { const [x, y] = q[i]; for (const [dx, dy] of N4) { const X = x + dx, Y = y + dy; if (isPath(X, Y) && !dist.has(I(X, Y))) { dist.set(I(X, Y), dist.get(I(x, y)) + 1); q.push([X, Y]); } } }
+    const inComp = new Set(tiles.map(([x, y]) => I(x, y)));
+    const maxima = tiles.filter(([x, y]) => { const d = dist.get(I(x, y)); if (!(d > 1)) return false; return N4.every(([dx, dy]) => !(dist.get(I(x + dx, y + dy)) > d)); });
+    const mk = new Set(maxima.map(([x, y]) => I(x, y))), done = new Set();
+    for (const [mx, my] of maxima) {
+      if (done.has(I(mx, my))) continue; const st = [[mx, my]]; done.add(I(mx, my));
+      for (let i = 0; i < st.length; i++) for (const [dx, dy] of N4) { const x = st[i][0] + dx, y = st[i][1] + dy; if (mk.has(I(x, y)) && !done.has(I(x, y))) { done.add(I(x, y)); st.push([x, y]); } }
+      const cx = Math.round(st.reduce((s, t) => s + t[0], 0) / st.length), cy = Math.round(st.reduce((s, t) => s + t[1], 0) / st.length); let n7 = 0;
+      for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) if (inComp.has(I(cx + dx, cy + dy)) && inner(cx + dx, cy + dy)) n7++;
+      if (n7 > 10 || dist.get(I(st[0][0], st[0][1])) < 4) continue;
+      const ok = st.some(([x, y]) => covered.some(c => x >= c.x - 1 && x <= c.x + c.w && y >= c.y - 1 && y <= c.y + c.h)
+        || [-1, 0, 1].some(dy => [-1, 0, 1].some(dx => { const v = terrain[I(x + dx, y + dy)]; return v === TVs.FORD || v === TVs.BRIDGE; }))
+        || x <= 3 || x >= cw - 2 || y <= 3 || y >= ch - 2);
+      if (!ok) tips.push(st.slice().sort((p, r) => dist.get(I(r[0], r[1])) - dist.get(I(p[0], p[1])) || p[1] - r[1] || p[0] - r[0])[0]);
+    }
+  }
+  return tips.sort((p, r) => p[1] - r[1] || p[0] - r[0]);
 }

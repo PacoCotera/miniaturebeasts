@@ -40,7 +40,7 @@ test("a seated keepers' place stands on grass off the road, its block rects lie 
     assert.equal(q.kind, kind);
     for (const [bx, by, bw, bh] of q.block) assert.ok(bx >= q.x && by >= q.y && bx + bw <= q.x + q.w && by + bh <= q.y + q.h);
     const ct = cellTerrain(seed, X, Y); let meets = false;
-    for (let y = q.y - 1; y <= q.y + q.h; y++) for (let x = q.x - 1; x <= q.x + q.w; x++) if (ct.terrain[y * ct.w + x] === TV.PATH) meets = true;
+    for (let y = q.y - 1; y <= q.y + q.h; y++) for (let x = q.x - 1; x <= q.x + q.w; x++) if (ct.terrain[y * ct.w + x] === TV.PATH || ct.top[y * ct.w + x] === TV.PATHTOP) meets = true;
     assert.ok(meets, "a tile of the road lies within one tile of the box (its yard)");
     for (let y = q.y; y < q.y + q.h; y++) for (let x = q.x; x < q.x + q.w; x++) assert.notEqual(ct.terrain[y * ct.w + x], TV.PATH, "the box stands off the road");
   }
@@ -52,7 +52,7 @@ test("the pixel desk's note: a road's last tile and the tile it came from are ca
   for (const seed of SEEDS) for (const [k] of keeperKinds(seed)) {
     const [X, Y] = k.split(",").map(Number), p = planOf(seed, X, Y); if (!p || !p.roadEnd) continue;
     const ct = cellTerrain(seed, X, Y), e = p.roadEnd; ends++;
-    assert.equal(ct.terrain[e.y * ct.w + e.x], TV.PATH, "the road's last tile is road");
+    assert.ok(ct.terrain[e.y * ct.w + e.x] === TV.PATH || ct.top[e.y * ct.w + e.x] === TV.PATHTOP, "the road last tile is road (ground or cliff top)");
     if (e.from) assert.equal(Math.abs(e.from[0] - e.x) + Math.abs(e.from[1] - e.y), 1, "it came from the tile beside it");
   }
   for (const seed of [64]) for (let X = 36; X < 44; X++) for (let Y = 40; Y < 44; Y++) { const p = planOf(seed, X, Y); if (!p || !p.bridges) continue; const ct = cellTerrain(seed, X, Y); for (const b of p.bridges) { bridges++; assert.equal(ct.terrain[b.y * ct.w + b.x], 21); } }

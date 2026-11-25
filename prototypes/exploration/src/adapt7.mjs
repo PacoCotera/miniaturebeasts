@@ -197,7 +197,7 @@ export function adaptCell(place, ir, ts, terrains, o) {
     baked: { id: place.id, ox: -1, oy: -1, w: place.w, h: place.h, place }, rimSteps: rimBits, press, steep: steep.map((v, i) => v && !propFoot[i] ? 1 : 0), heart: null,   // steep: the cliff and the rock under its lip (drawn as the cliff, worded as steep rock, never "Stone": bugs #45, #67)
     name: lm ? lm.name : (ir.names[0] || ''), landmark: lm ? { kind: lm.kind, name: lm.name, slot: lm.slot, x: lm.x - 1, y: lm.y - 1 } : null,
     podSlots, spawns: ir.spawns.map(s => ({ x: s.x - 1, y: s.y - 1, w: s.w, h: s.h, species: s.species, count: s.count })),
-    strikes, decalNear, coverAt,...(place.keepers ? { keepers: { ...place.keepers, x: place.keepers.x - 1, y: place.keepers.y - 1, block: place.keepers.block.map(([x, y, bw, bh]) => [x - 1, y - 1, bw, bh]), yard: { ...place.keepers.yard, x: place.keepers.yard.x - 1, y: place.keepers.yard.y - 1 } } } : {}), ...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
+    strikes, decalNear, coverAt,...(place.keepers ? { keepers: { ...place.keepers, x: place.keepers.x - 1, y: place.keepers.y - 1, block: place.keepers.block.map(([x, y, bw, bh]) => [x - 1, y - 1, bw, bh]), yard: { ...place.keepers.yard, x: place.keepers.yard.x - 1, y: place.keepers.yard.y - 1 } } } : {}), ...(place.rests ? { rests: place.rests.map(r => ({ ...r, x: r.x - 1, y: r.y - 1, yard: { ...r.yard, x: r.yard.x - 1, y: r.yard.y - 1 } })) } : {}), ...(cross.length ? { cross } : {}), ...(rim.length ? { rim } : {}),
     signs: ir.signs, traces: ir.traces.map(t => ({ kind: t.kind, x: t.x - 1, y: t.y - 1 })),
   };
   if (G && G.land[o.cell] === L.WOOD) lay.base = T.DARK; else if (G && G.land[o.cell] === L.ROCK) lay.base = T.SAND;
