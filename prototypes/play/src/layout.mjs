@@ -74,7 +74,7 @@ function laptopScales(W, H, dpr, zSet) {
 // plan({ W, H, dpr, coarse, dev, asleep, zSet }): dev 'companion' | 'station'; asleep: the Station has no pod home yet; zSet: the laptop size control's choice (null = fit)
 // -> { form, W, H, dev, a, scale, bar, panel, screen, tray: { box, layout, plan }, dock, epaper, note, stamp, view, margins, content }
 // scale: CSS px per lp. tray.plan is keyplan's plan for tray.box; dock and epaper are in window CSS px. note and stamp are null where not shown; stamp.where: 'foot', 'bar' (sideways) or 'barLeft' (laptop).
-export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet = null, page = false }) {
+export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet = null, page = false, whole = false }) {   // whole: the Station's Bay (Cargo) screen, 1024 lp across with no narrow form: the upright phone shows it whole at the width's fit, not in the x0.6 window (QA verify-live-144: the Dock screen was cut off at 412 wide)
   const f = form(W, H, coarse), st = dev === "station", [fw, fh] = FACE[dev];
   const out = { form: f, W, H, dev, asleep, bar: box(0, 0, W, BAR), note: null, stamp: null, view: null };   // view: the Station's window on a phone (lp), null where the whole screen shows
   if (f === "up") {
@@ -88,11 +88,11 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     // bug 135: where the whole multiple is under 95% of the fit (522 x 935, dpr 3: 2 of a possible 2.73 device px per lp, 300 of 410 CSS px; 390 x 844: 300 of 330), the screen takes the fit (the pixelated iframe stays sharp at a fraction)
     const wholeUp = (d) => { const wide = Math.max(1 / 16, Math.min((bw - EDGE) / FACE[d][0], fitH)); if (Math.floor(wide * dpr + 1e-6) < 1) return Math.max(1 / 16, Math.min(fitOf(d), fitH)); const w = wholeC(wide, dpr); return w < 0.95 * wide ? wide : w; };
     const bhC = bhOf("companion"), group = bhC + GAP + DOCK_H, bodyBottom = BAR + Math.floor((zone - group) / 2) + bhC, dockY = bodyBottom + GAP;
-    const s = scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - (st ? 2 : 1) * EDGE, st ? NARROW_W * s : Infinity);   // the Station's window is never wider than the narrow Home (centred in the panel when the phone is wider)
+    const s = st && whole ? fitOf(dev) : scOf(dev), trayH = portraitTrayH(dev, a), sw = Math.min(fw * s, bw - (st ? 2 : 1) * EDGE, st && !whole ? NARROW_W * s : Infinity);   // the Station's window is never wider than the narrow Home (centred in the panel when the phone is wider)
     // the Station's window: as tall as the screen at s, or what is left under the bar (and the asleep note) above the keys; the window pans up and down when it is shorter. The Companion's screen is always whole.
     const topMin = BAR + GAP + (st && asleep ? NOTE_H + GAP : 0), sh = st ? Math.max(0, Math.min(fh * s, Math.floor(bodyBottom - trayH - EDGE - topMin))) : fh * s;
     const bh = EDGE + sh + trayH, by = bodyBottom - bh;
-    out.a = a; out.scale = s; out.panel = box(M, by, bw, bh);
+    out.a = a; out.scale = s; out.whole = !!(st && whole); out.panel = box(M, by, bw, bh);
     out.screen = box(M + EDGE + (bw - 2 * EDGE - sw) / 2, by + EDGE, sw, sh);   // centred in the panel when it is narrower than the panel (the Companion on a short phone)
     out.view = sw < fw * s - 1e-6 || sh < fh * s - 1e-6 ? { w: sw / s, h: sh / s } : null;
     out.narrow = !!(st && out.view && out.view.w <= NARROW_W + 1e-6);   // Home's narrow form: only the upright phone's window (sideways and the laptop never)
