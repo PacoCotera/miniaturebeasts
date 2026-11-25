@@ -47,3 +47,19 @@ test("his save through one day: her stand changes at every part's turn from dawn
   assert.ok(parts.length >= 3, "morning to dusk seen: " + order);
   for (let i = 1; i < parts.length; i++) assert.ok(cheb(lastOf[parts[i - 1]], lastOf[parts[i]]) >= 3, `${parts[i - 1]} -> ${parts[i]}: ${JSON.stringify([lastOf[parts[i - 1]], lastOf[parts[i]]])}`);
 });
+
+test("a place whose haunts cannot be made 3 apart is tried once a night per creature, not every tick", () => {
+  const p = load();
+  p.run(`curLive()`);
+  // every site on one tile: no set of four can stand 3 apart, so hauntsKept returns a set that still fails
+  p.run(`(function () { const lay = layout(S.exp.patch.key); lay.haunts = [{ k: 'reed', x: 5, y: 5 }, { k: 'shore', x: 5, y: 5 }]; globalThis.__calls = 0; const orig = hauntsKept; hauntsKept = function () { globalThis.__calls++; return orig.apply(this, arguments); }; })()`);
+  const n = () => +p.run(`globalThis.__calls`);
+  p.run(`for (let i = 0; i < 40; i++) keepHaunts(curLive(), S.exp.patch.key)`);
+  const first = n(), cr = +p.run(`curLive().cr.filter(c => c.ind && c.ind.hs && !hauntsApart(c.ind.hs)).length`);
+  assert.ok(cr > 0, "some creature still breaks the rule in the small place");
+  assert.ok(first > 0 && first <= cr, `rebuilt once per creature, not 40 times: ${first} calls for ${cr} creatures`);
+  p.run(`for (let i = 0; i < 40; i++) keepHaunts(curLive(), S.exp.patch.key)`);
+  assert.equal(n(), first, "no more calls the same night");
+  p.run(`S.turn++; for (let i = 0; i < 40; i++) keepHaunts(curLive(), S.exp.patch.key)`);
+  assert.ok(n() > first && n() <= first * 2, "tried again the next night, once");
+});

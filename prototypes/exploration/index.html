@@ -2900,7 +2900,8 @@ function hauntStep(X, c) {   // true when the routine has the creature's action
 }
 // #145: haunts a save holds that break the 3-tile rule are chosen again by the same seeded walk (hers only; the others stand)
 function keepHaunts(live, key) {
-  for (const c of live.cr) { if (!c.ind || !c.ind.hs || hauntsApart(c.ind.hs)) continue;
+  for (const c of live.cr) { if (!c.ind || !c.ind.hs || hauntsApart(c.ind.hs) || c.ind.hsTried === S.turn) continue;
+    c.ind.hsTried = S.turn; // one try a night per creature, kept or not (a small place may not fit 3 apart)
     const sites = hauntSitesOf(layout(key)), hs = sites.length ? hauntsKept(S.seed, c.id, sites, c.ind.doings, S.turn, c.ind.hs) : c.ind.hs;
     if (hs !== c.ind.hs) { c.ind.hs = hs; delete c.ind.go; } }
 }
