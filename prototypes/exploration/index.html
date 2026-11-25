@@ -4296,6 +4296,8 @@ function creatureTick(c, X) {
     if (c.st === 'alert') { if (curious && X.carry && sp.eats) { c.st = 'approach'; c.t = 2; } else { c.go = 0; hideOrFlee(X, c); } }
     else if (!(c.st === 'approach' && curious)) { c.st = 'alert'; c.t = 2; }
   }
+  // #145: at a part-of-day turn a named Loika who is alert or watching is let go to her routine (as the gone is at the turn): hauntStep sets the new part's haunt; the hearing model takes her again on the way, the ease is kept
+  if (c.ind && !c.gone && (c.st === 'alert' || c.st === 'watch') && c.ind.go && c.ind.go.part !== dayPart()) { c.st = 'idle'; c.t = 0; c.go = 0; }
   // Act on the current state.
   switch (c.st) {
     case 'flee': { const n = Math.min(2, c.fl == null ? (c.t >= 2 ? 2 : 1) : c.fl); stepAway(X, c, P, n); if (c.fl != null) c.fl -= n; } if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
