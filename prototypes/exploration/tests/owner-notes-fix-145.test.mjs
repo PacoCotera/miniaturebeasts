@@ -17,7 +17,7 @@ test("his save: Hazel stands on land, can step off, and is at her next haunt onc
   assert.deepEqual([first.x, first.y, first.tile], [15, 2, true], "she stands on a grass tile");
   assert.ok(first.free >= 1, "she can step off it");
   let last = first;
-  for (let s = 157 + 25; s < 420; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'creep' })`); p.pass(1200); last = me(); }
+  for (let s = 157 + 25; s < 480; s += 25) { p.run(`S.day.spent = ${s}; advance('patch', { noise: 'creep' })`); p.pass(1200); last = me(); }   // her afternoon haunt is now across the place (#145-4): the loop runs on into the afternoon so she arrives
   assert.equal(last.part, "afternoon");
   assert.deepEqual([last.x, last.y], [last.want.x, last.want.y], "she is at her afternoon haunt");
   assert.notDeepEqual([last.x, last.y], [15, 2], "she is no longer on her midday tile");
