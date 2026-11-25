@@ -1812,6 +1812,9 @@ function load() {
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
+// The plan the Station's map room wrote (st.plan: { region, start, aim, expN }), read only; null with no plan or one for another region.
+const planOfStation = () => { const p = stPart() && stPart().plan; return p && p.region === S.here ? p : null; };
+const plannedStart = () => { const p = planOfStation(); return p && Number.isInteger(p.start) ? p.start : null; };
 function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.docked); }
 // Docked mid-expedition the field is frozen: nothing that reaches advance(), moves you or spends is taken, and the
 // expedition resumes at Lift as it was (game designer's dock-freeze ruling). Field input only; views still open.
@@ -9001,6 +9004,7 @@ function chooseType() {
   if (first) cur = startPlaces()[0];
   else if (S.ui.type === 'deep') { revealCell(G.gate); addPin(G.gate, 'burrow'); cur = G.gate; }   // Deep ground starts at the burrow under the cliff
   else if (cur == null || !placeValid(cur)) { cur = 0; for (let c = 0; c < MW * MH; c++) if (placeValid(c)) { cur = c; break; } }
+  if (!first && S.ui.type !== 'deep') { const ps = plannedStart(); if (ps != null && placeValid(ps)) cur = ps; }   // the map room's plan: the cursor rests on the planned start (✓ plants it, the pad moves it as ever)
   S.ui.cur = cur; S.phase = 'place'; transition();
 }
 function moveCursor(dir) {

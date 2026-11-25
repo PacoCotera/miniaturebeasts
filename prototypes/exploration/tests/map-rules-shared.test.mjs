@@ -49,6 +49,24 @@ test("the last start crosses the save as the region's map.lastPos", async () => 
   assert.equal(mapOf(sv).lastPos, p.run(`G.spawns[0]`));
 });
 
+test("the place screen's cursor rests on the planned start; with no plan, or a plan that cannot be planted, it rests as built", async () => {
+  const p = makePage({ console: "silent", els: true, raf: 1, anonPods: true, gen: 7 });
+  await new Promise(r => setTimeout(r, 200));
+  p.run(`newWorld(9)`);
+  p.run(`(() => { const s = cxy(G.spawns[0]); for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (Math.abs(x - s.x) <= 4 && Math.abs(y - s.y) <= 4) S.revealed[y * MW + x] = 1; S.ui.sel = 0; })()`);
+  const cells = p.run(`(() => { const o = []; for (let c = 0; c < MW * MH; c++) if (placeValid(c)) o.push(c); return o; })()`);
+  assert.ok(cells.length > 4);
+  const last = cells[0], planned = cells[cells.length - 1];
+  p.run(`S.ui.lastPos = ${last}; chooseType()`);
+  assert.equal(p.run(`S.ui.cur`), last, "no plan: the last start, as built");
+  p.run(`S.st = { wid: S.wid, plan: { region: S.here, start: ${planned}, aim: null, expN: 1 } }; chooseType()`);
+  assert.equal(p.run(`S.ui.cur`), planned, "the planned start");
+  p.run(`S.st.plan.start = 0; while (placeValid(S.st.plan.start)) S.st.plan.start++; chooseType()`);
+  assert.equal(p.run(`S.ui.cur`), last, "a planned cell that is not a start now: as built");
+  p.run(`S.st.plan.region = 'other'; S.st.plan.start = ${planned}; chooseType()`);
+  assert.equal(p.run(`S.ui.cur`), last, "a plan for another region: as built");
+});
+
 test("the marks: one kind at a cell is said once, in the page's order, and the cap keeps every mark of priority 9 and up", () => {
   const b = signBook();
   b.add(4, "pin", 10); b.add(4, "pin", 10); b.add(4, "skull", 11); b.add(5, "t", 3); b.add(6, "t", 3); b.add(7, "t", 3); b.add(8, "t", 3);
