@@ -126,7 +126,25 @@ function colour(im, r, test, box) {
   for (let y = b.y; y < b.y + b.h; y++) for (let x = b.x; x < b.x + b.w; x++) { if (test(px(im, x, y))) { n++; x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } }
   return { n, box: n ? { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 } : null };
 }
-const HERO = ([r, g, b]) => r > 130 && r > g * 1.8 && g > b * 2 && b < 100;   // the hero's jacket, orange (242,103,27 by day; the light tints it as the day turns)
+// the connected blobs of a colour in the region, biggest first: { n, box }. Lets a count say which shape it counted (the menu's selection bar is a second orange shape)
+function blobs(im, r, test) {
+  const seen = new Uint8Array(im.width * im.height), out = [];
+  for (let y0 = r.y; y0 < r.y + r.h; y0++) for (let x0 = r.x; x0 < r.x + r.w; x0++) {
+    if (seen[y0 * im.width + x0] || !test(px(im, x0, y0))) continue;
+    let n = 0, bx0 = x0, by0 = y0, bx1 = x0, by1 = y0; const st = [[x0, y0]]; seen[y0 * im.width + x0] = 1;
+    while (st.length) {
+      const [x, y] = st.pop(); n++; bx0 = Math.min(bx0, x); by0 = Math.min(by0, y); bx1 = Math.max(bx1, x); by1 = Math.max(by1, y);
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < r.x || ny < r.y || nx >= r.x + r.w || ny >= r.y + r.h || seen[ny * im.width + nx] || !test(px(im, nx, ny))) continue;
+        seen[ny * im.width + nx] = 1; st.push([nx, ny]);
+      }
+    }
+    out.push({ n, box: { x: bx0, y: by0, w: bx1 - bx0 + 1, h: by1 - by0 + 1 } });
+  }
+  return out.sort((a, b) => b.n - a.n);
+}
+const HERO =([r, g, b]) => r > 130 && r > g * 1.8 && g > b * 2 && b < 100;   // the hero's jacket, orange (242,103,27 by day; the light tints it as the day turns)
 const RING =([r, g, b]) => b > 200 && g > 190 && r < 190 && b - r > 50;   // the Call's ring, light blue
 
 describe("the played game", { concurrency: 6 }, () => {   // each test has its own browser context; the machine has the cores, and the land next door takes a while to draw
@@ -188,19 +206,24 @@ for (const size of SIZES) {
       const at = await g.where();
       assert.deepEqual([at.phase, at.x, at.y], ["patch", 21, 0], "the case is reached: he stands at the top edge");
       const r = await g.region(), base = await g.shot();
-      const hero = colour(base, r, HERO);
-      assert.ok(hero.n > 300, `the reference shows the hero (${hero.n} pixels)`);
+      // the hero is the biggest orange blob of the play field (below the HUD strip); the menu's orange selection bar and the HUD icons are other blobs and are never counted
+      const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
+      const hero = blobs(base, field, HERO)[0];
+      assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
       const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
       await g.press("back");                                // ← opens the menu
-      const menu = colour(await g.shot(), r, HERO, hb);
-      console.log(`# s3 ${tag}: hero ${hero.n} px, menu ${menu.n}`);
+      const menuBlobs = blobs(await g.shot(`s3-${tag}-menu`), hb, HERO), menu = menuBlobs[0] || { n: 0, box: null };
+      console.log(`# s3 ${tag}: hero ${hero.n} px, menu ${menu.n} (${menuBlobs.length} blob(s) at his place)`);
       assert.ok(menu.n >= hero.n * 0.6, `the hero is on screen with the menu open (${menu.n} of ${hero.n} pixels)`);
-      for (let i = 0; i < 4; i++) await g.press("down");    // Her page, Leave, Look around, End expedition, Wait
+      assert.ok(menu.n <= hero.n * 1.2, `the orange counted with the menu open is the hero's, not the menu's selection bar (${menu.n} of ${hero.n} pixels)`);
+      assert.ok(menu.box && Math.abs(menu.box.x - hero.box.x) <= 4 && Math.abs(menu.box.y - hero.box.y) <= 4 && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange blob with the menu open sits where the hero stands (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+      const rows = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.menuItems().length);
+      for (let i = 0; i < rows && await g.menuRow() !== "wait"; i++) await g.press("down");   // the rows differ by save ('Her page' only when a Loika is named): press Down until the row is Wait
       assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
       const spent0 = await g.spent();
       await g.press("confirm", 100, 2500);                  // Wait, once
       assert.ok(await g.spent() > spent0, "the case is reached: Wait spent light (S.day.spent grew)");
-      const wshot = await g.shot(`s3-${tag}-wait`), waited = colour(wshot, r, HERO, hb);
+      const wshot = await g.shot(`s3-${tag}-wait`), waited = blobs(wshot, hb, HERO)[0] || { n: 0 };
       console.log(`# s3 ${tag}: after Wait ${waited.n}`);
       assert.ok(waited.n >= hero.n * 0.75, `the hero is on screen after one Wait (${waited.n} of ${hero.n} pixels)`);
     } finally { await g.ctx.close(); }
