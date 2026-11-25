@@ -299,43 +299,6 @@ export const reachBand = (c) => { const of = c.of | 0, x = c.explored | 0; retur
 export const hasWorld = (sv) => !!(sv && sv.wid && typeof sv.seed === "number");
 export const docked = (st) => !!(st.dock && st.dock.docked);
 
-// --- the plan (the map room; station-map-room-build-1) ------------------------------------------------------------------------------
-// The Station's part of the save holds one plan: { region, start, aim, expN }. region: the region id the plan is for; start: a cell or null; aim: { kind: "wild", id } or { kind: "mark", c, mark } or null;
-// expN: the expedition number the plan was written in (the Companion's: its running one while one is under way, else the next to set out). A plan binds nothing and spends nothing.
-// The land, the marks and the wild ones are the Companion's: this part only reads them (map-read.mjs). `valid(c)` is the Companion's own rule for where a start may go (map-rules.mjs placeValidIn).
-export const planOf = (st) => (st && st.plan && typeof st.plan === "object" ? st.plan : null);
-export const expeditionUnderWay = (sv) => !!(sv && sv.exp && Number.isInteger(sv.exp.pos));   // docked mid-expedition: the flag is planted
-const expNOf = (sv) => (expeditionUnderWay(sv) && Number.isInteger(sv.exp.n) ? sv.exp.n : sv && Number.isInteger(sv.expN) ? sv.expN : 1);
-const sameAim = (a, b) => !!a && !!b && a.kind === b.kind && (a.kind === "wild" ? a.id === b.id : a.c === b.c && a.mark === b.mark);
-function keepPlan(st, sv, region, next) {   // a plan with neither a start nor an aim is no plan
-  if (next.start == null && !next.aim) { st.plan = null; return null; }
-  st.plan = { region, start: next.start, aim: next.aim, expN: planOf(st) && planOf(st).region === region ? planOf(st).expN : expNOf(sv) };
-  return st.plan;
-}
-// ✓ on a cell where a start may go: sets the start; ✓ on the planned start clears it; a new one replaces. With an expedition under way the flag is planted and only the aim can change.
-export function planStart(st, sv, { region, cell, valid }) {
-  if (expeditionUnderWay(sv)) return { ok: false, why: "afield" };
-  const was = planOf(st), mine = was && was.region === region ? was : null;
-  if (mine && mine.start === cell) { keepPlan(st, sv, region, { start: null, aim: mine.aim }); return { ok: true, cleared: true }; }
-  if (!valid(cell)) return { ok: false, why: "invalid" };
-  keepPlan(st, sv, region, { start: cell, aim: mine ? mine.aim : null });
-  return { ok: true, start: cell };
-}
-// ✓ on a list row: sets the aim (a named wild one's id, or a mark); ✓ on the aim again clears it; a new one replaces.
-export function planAim(st, sv, { region, aim }) {
-  if (!aim || (aim.kind !== "wild" && aim.kind !== "mark")) return { ok: false, why: "invalid" };
-  const was = planOf(st), mine = was && was.region === region ? was : null;
-  if (mine && sameAim(mine.aim, aim)) { keepPlan(st, sv, region, { start: mine.start, aim: null }); return { ok: true, cleared: true }; }
-  keepPlan(st, sv, region, { start: mine ? mine.start : null, aim });
-  return { ok: true, aim };
-}
-// The plan lapses when the expedition it rode on has been ended and docked: the Companion is seated, nothing is under way and its running number has moved past the plan's. Never before.
-// Called wherever the Station reads the Companion's save. Returns true when it lapsed.
-export function planLapse(st, sv) {
-  const p = planOf(st); if (!p) return false;
-  if (docked(st) && !expeditionUnderWay(sv) && sv && Number.isInteger(sv.expN) && sv.expN > p.expN) { st.plan = null; return true; }
-  return false;
-}
 export const bayCrates = (st, sv) => (sv && Array.isArray(sv.bay) ? sv.bay : []).concat(st.devBay).filter((c) => !st.accepted.includes(c.id));
 export const mibiById = (st, id) => st.mibis.find((m) => m.id === id) || null;
 export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
