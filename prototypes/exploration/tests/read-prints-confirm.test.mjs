@@ -24,7 +24,7 @@ for (const blocked of [false, true]) test("✓ on Read her prints runs it (facin
     press('confirm');
     return JSON.stringify({ label: act.label, before, read: !!habDay()[readKey(c.id, pr.h)], book: (S.book || []).filter(b => b.kind === 'prints').length, msg: FX.msg });
   })()`));
-  if (out.none) return;   // this seed has no such spot
+  assert.ok(!out.none, "the spot must be found on this seed (else the test proves nothing)");
   assert.match(out.before.teach, /Read her prints/, "the bottom line names the prints");
   assert.equal(out.before.read, false);
   assert.equal(out.label, "Read her prints", "✓ is the read: " + JSON.stringify(out));
