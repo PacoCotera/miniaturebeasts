@@ -65,6 +65,11 @@ function botPage(A) {
   };
   // ---- plan the day's three moments ----
   const c0 = her(); if (!c0) return JSON.stringify({ missing: 1 });
+  { const hs = c0.ind.hs, bs = hs && hs.bed ? hauntStand(hs.bed, (x, y) => okTile(x, y) || (x === c0.x && y === c0.y)) : null;   // own-pod test: is her bed reachable on foot from her day haunts and from a way in (the player's start of the day)?
+    const reachFrom = f => !!bs && !!bfs({ x: f.x, y: f.y }, (x, y) => cheb({ x, y }, bs) <= 8, () => false);   // a tile the bot can stand on within 8 of her bed (the widest range it stands at); the stand she lies on may not be one the player can stand on
+    const stands = DAY.parts.map(q => hauntAt(hs, c0.ind.doings, q[0])).filter((h, i, a) => h && h !== hs.bed && a.indexOf(h) === i).map(h => hauntStand(h, (x, y) => okTile(x, y) || (x === c0.x && y === c0.y))).filter(Boolean);
+    out.bed = { has: !!bs, fromStart: reachFrom(P), fromHaunts: stands.filter(reachFrom).length, haunts: stands.length }; }
+  if (A.diag) return JSON.stringify(out);
   const win = calmWindow(S.seed, id, S.turn, DAY.parts, routineOf(c0.ind.doings)), rp = rainPlan();
   const events = [];
   if (rp && rp.to < DAY.light - 20) events.push({ k: 'shake', at: rp.to - tellOf(c0.ind.doings) });
@@ -91,7 +96,7 @@ function botPage(A) {
     if (!path) path = bfs({ x: P.x, y: P.y }, (x, y) => { const d = cheb({ x, y }, spot); return d >= 4 && d <= 8; }, () => false);   // no unheard stand: the nearest plain one, and settle on the way
     if (!path) { out.events.push(k + ': no stand'); afterMoment(nextE); continue; }
     // set out so as to be there a few light before the tell
-    const lead = path.length + 3, startAt = Math.max(spent(), e.at - tellOf(c.ind.doings) - lead - 6);
+    const lead = path.length + 3, startAt = Math.max(spent(), (k === 'sleep' && !Object.keys((rec('sleep') || {}).ranges || {}).length ? Math.min(e.at - tellOf(c.ind.doings) - 6, 500) : e.at - tellOf(c.ind.doings) - 6) - lead);   // own-pod test: the way she lacks is sleep: in sight of her bed by light 500 (dusk), not 552
     while (spent() < startAt && !over()) wait();
     walk(path, e.at + 8);
     // wait for the tell
@@ -108,12 +113,13 @@ function botPage(A) {
     // note it, in front of her (she is not always where the haunt was read to be: when the note is not offered, step one unheard tile nearer, as a player would; seed 159 day 2)
     const closeIn = hc => { const want2 = Math.max(3, cheb(P, hc) - 1), p3 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, hc) <= want2 && !heardAtTile(hc, x, y, spent()), (x, y) => heardAtTile(hc, x, y, spent())); if (!p3 || !p3.length || cheb(P, hc) <= 3) return false; return stepTo(p3[0]); };
     for (let n = 0; n < 10 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; faceHer(hc);
-      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; runNote(a); const nn = (S.exp.stats.noted || []); if (nn.length > before) { out.notes.push({ ...nn[nn.length - 1], want, T: spent() });
+      const a = patchAction(); if (a.label === WORDS.habit.note) { const before = (S.exp.stats.noted || []).length; runNote(a); const nn = (S.exp.stats.noted || []); if (nn.length > before) { if (nn[nn.length - 1].id === id) out.notes.push({ ...nn[nn.length - 1], want, T: spent() });   // own-pod test: only a note on the target counts (a neighbour's note is not hers)
+
         // W5: a sample needs a note at near; after a mid/far note step in unheard to near inside the same play and note again (the page allows one note per range)
         if (nn[nn.length - 1].range !== 'near') { const h1 = her(); if (h1 && h1.hb && cheb(P, h1) > 2) {
           const p4 = bfs({ x: P.x, y: P.y }, (x, y) => cheb({ x, y }, h1) <= 2 && !heardAtTile(h1, x, y, spent()), (x, y) => heardAtTile(h1, x, y, spent()));
           if (p4 && p4.length <= 6) { for (const t of p4) { if (!her() || !her().hb) break; stepTo(t); }
-            const h2 = her(); if (h2 && h2.hb) { faceHer(h2); const a2 = patchAction(); if (a2.label === WORDS.habit.note) { const b2 = (S.exp.stats.noted || []).length; runNote(a2); const n2 = (S.exp.stats.noted || []); if (n2.length > b2) out.notes.push({ ...n2[n2.length - 1], want, T: spent(), step: 1 }); } } } } }
+            const h2 = her(); if (h2 && h2.hb) { faceHer(h2); const a2 = patchAction(); if (a2.label === WORDS.habit.note) { const b2 = (S.exp.stats.noted || []).length; runNote(a2); const n2 = (S.exp.stats.noted || []); if (n2.length > b2 && n2[n2.length - 1].id === id) out.notes.push({ ...n2[n2.length - 1], want, T: spent(), step: 1 }); } } } } }
         break; } } else if (!closeIn(hc)) wait(); }
     // let the play end
     for (let n = 0; n < 12 && !over(); n++) { const hc = her(); if (!hc || !hc.hb) break; if (nextE && spent() >= freeBy(nextE) + 4) break; wait(); }   // W5: no sitting out the next moment while this one plays out
@@ -160,7 +166,7 @@ for (let seed = FROM; seed <= TO; seed++) {
       if (!NO_GLINT && day === 1) { p.run(NEWDAY(String(p.run(`S.exp.start`)), 1)); row.travel = JSON.parse(p.run(TRAVEL(pick.key))); if (row.travel.noRoad) { row.skip = "no road to her"; break; } }   // day 1 starts in the glint's place; the walk to her spends the light a player spends
       else p.run(NEWDAY(pick.key, day));
       p.run(`(() => { const l = curLive(); l.strike = null; })()`);
-      const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id, read: READ_ON, readAll: READ_ALL })})`));
+      const r = JSON.parse(p.run(`(${botPage.toString()})(${JSON.stringify({ id: pick.id, read: READ_ON, readAll: READ_ALL, diag: process.argv.includes('--diag-only') })})`));
       row.days.push(r);
       if (VERBOSE) console.log(seed, "day", day, JSON.stringify({ plan: r.plan, notes: r.notes.map(n => n.k + ":" + n.range + (n.first ? "!" : "") + (n.filled ? "=" : "")), samples: r.samples, data: r.data, gone: r.gone, ev: r.events, hab: r.day, spent: r.spent }));
     }
