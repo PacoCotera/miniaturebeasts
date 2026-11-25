@@ -246,7 +246,7 @@ import { beatOf, poseOf, stripPoses, chipOf, givesNow, drawsCut } from "./src/wa
 import { PLAYTEST_SEEDS } from "./src/playtest-seeds.mjs";
 import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
-import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
+import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, packageOwes, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
@@ -562,6 +562,7 @@ async function loadPlaces() {
     PL.View = pm.BakedView; PL.mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadVeilKit(base);
+    if (S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() && hereRegion().gen === 7) await packageUse(S.regions[0].seed, hereRegion().slot, biomeVersion(S));   // the Station's baked package for this region: read before the first frame, so its places are here at once
     PL.ready = true; layoutCache.clear(); RT.key = null;
   } catch (e) { console.warn('the places did not load', e); artWhy('places', e); } finally { ART_DONE.places = true; }
 }
@@ -773,7 +774,9 @@ function freshLayout(key) {
 // shut now. A page without a worker (the test sandbox, a page served from the source tree) bakes the cell itself, on the spot, with the same function; `inline` counts the cells the page baked.
 const PLACES = { inline: 0, seed: null, sig: '', epoch: 0 };
 placesWatch(() => { PLACES.epoch++; });
-const placeHave = key => key[0] === 'c' || !G || G.gen !== 7 || !PL.ready || !placesWorker() || !!bakedGet(S.regions[0].seed, hereRegion().slot, biomeVersion(S), +key);   // nothing owed for this cell: its baked place is here (or the page makes it)
+const pkgOf = () => S && S.regions && hereRegion() ? packageState(S.regions[0].seed, hereRegion().slot, biomeVersion(S)) : 'none';   // the baked package of this region (place-store.mjs packageUse): 'none' | 'part' (the Station is still baking) | 'whole'
+const placeHave = key => key[0] === 'c' || !G || G.gen !== 7 || !PL.ready || (!placesWorker() && pkgOf() === 'none') || !!bakedGet(S.regions[0].seed, hereRegion().slot, biomeVersion(S), +key);   // nothing owed for this cell: its baked place is here (or the page makes it); with a package, only what is in it
+const landLine = () => pkgOf() === 'part' ? NOT_ON_COMPANION : LAND_COMING;   // what the page says of land it is waiting for: not in the package yet (editorial), or the Probe reading it (no package)
 const SIGNS_OWED = new Map();   // cell -> the turn its sign was read at, for a cell whose place the worker still owes (cellSigns)
 function signsOwe(c) {
   if (SIGNS_OWED.has(c)) return; SIGNS_OWED.set(c, S.turn);
@@ -845,6 +848,7 @@ function layout(key) {   // a land cell's layout from the generator (cached); a 
 // warm is finished a step a frame behind the transition, the controls live, its paper sketch stands meanwhile, and past WARM_SIGN_MS (1.5 s) a calm line says the land is coming. The pictures live in the place's view
 // (one per template, at most eight), so memory stays flat however far the walk goes.
 const LAND_COMING = 'The Probe is reading the land';
+const NOT_ON_COMPANION = 'This land is not on the Companion yet';   // editorial 11-24 22:25: a place the Station has not put in the package yet (a Call or a walk into it)
 const WARM_SIGN_MS = 1500, WARM_DONE = 3, RIM_STEP_MS = 3, WARM_EAGER_MS = 10;
 const WARM = { queue: [], first: null, firstDir: null, sig: '', cb: 0, cold: null, steps: 0, hit: 0, miss: 0 };   // hit, miss: the arrival pictures found warm, and built on the spot
 const warmOf = bk => bk.warm || (bk.warm = { st: 0, kinds: null, i: 0 });
@@ -3403,6 +3407,7 @@ function crossEdge(dir) {
     if (FX.crossWait) return;
     const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
     FX.crossWait = { key, dir };
+    if (pkgOf() === 'part') fxMsg(NOT_ON_COMPANION, 4);   // the package does not hold that place yet: said once, the crossing is made when it is in
     const go = ok => { FX.crossWait = null; if (!ok || !S || !S.exp || S.exp.patch !== at || S.phase !== 'patch') return; FX.crossRetry = true; try { crossEdge(dir); } finally { FX.crossRetry = false; } };   // one retry: a place that still is not here falls to the plain wait of enterPatch
     readyPlaces(seed, R.slot, v, [+key], { ctx: PL.ctx, first: true });   // the player waits for it: ahead of the background list
     bakedWhen(seed, R.slot, v, +key).then(() => go(true), () => go(false));
@@ -6810,7 +6815,7 @@ function drawWhole(t) {
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); if (owed) text(LAND_COMING, SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
+  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); if (owed) text(landLine(), SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
   else g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
@@ -9431,7 +9436,7 @@ placesOn(OFF_PAGE);   // the same page that has the realm's worker has the place
 function drawMaking() {
   R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
   viewBg();
-  text(LAND_COMING, 225, 289, C.bone, 2, 'center');
+  text(RT.placeWait && pkgOf() === 'part' ? NOT_ON_COMPANION : LAND_COMING, 225, 289, C.bone, 2, 'center');
   drawWaitPips();
   drawLine({ ok: '', ctx: '', back: '' });
 }
@@ -9550,7 +9555,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, openWatch, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteTarget, noteHabit, openWatch, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
