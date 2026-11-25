@@ -133,7 +133,9 @@ function tileField(S, land, X, Y, tx, ty, wild, rockiness) {
   let forest = fr(0.55 * wild + 0.45 * bil(S.forestC) + 0.12 * S.nF(gx, gy)), rock = fr(0.3 * rockiness + 0.7 * bil(S.rockC) + 0.12 * S.nR(gx, gy)), wet = fr(bil(S.wetC) + 0.22 * S.nW(gx, gy)), push = 0;
   if (S.nearC[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))] && !S.fordC[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))]) {   // owner #141: beside wide water the shore is the wandering line of shore7.mjs, never the bilinear blend of the cell labels along the seam
     const sv = shoreValue(S.seed, S.shoreCells, gx, gy), bl = (A) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
-    wet = fr((sv !== null && sv > 0 ? 1.05 : bl(S.wetL)) + 0.22 * S.nW(gx, gy)); }
+    wet = fr((sv !== null && sv > 0 ? 1.05 : bl(S.wetL)) + 0.22 * S.nW(gx, gy));
+    // design's seam rule (#141): a pond cell's wet field is the larger of its own pond's field (the pond's body at its centre, a bump that falls to nothing before the cell's edge) and the wide water's field fading in from the seam (the shape above)
+    if (land === L.POND) wet = Math.max(wet, fr(bl(S.wetL) + 0.22 * S.nW(gx, gy) + 0.3 * Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10)))); }
   const scrub = fr(S.nS(gx, gy));
   // the map's land kind shows at the cell's middle whatever its neighbours are: a rock cell is stony and a wood cell has its floor there (a bump that falls to nothing before the cell's edge, so no seam)
   const bump = Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10));
