@@ -57,6 +57,18 @@ test('20 seeds: no straight bank over 3 tiles along a seam of wide water, and th
   assert.ok(n >= 20, 'seams read ' + n);
 });
 
+// owner #141 (his 'water is not a box' spot, round 6): water that reaches a seam continues to the water it runs into; no bank, sand, grass or ford is drawn between a stream and the wide water it meets.
+test('seed 7: the stream from the 28|29 seam runs to the lake in 29,14 (every tile water), and the 29,13 pond stays closed', () => {
+  const T = worldTiles(7), seam = 29 * CW, y = 14 * CH + 14;
+  assert.ok(isWater(T(seam - 1, y)), 'the stream stands at the seam');
+  for (let x = seam - 1; x <= seam + 10; x++) assert.ok(isWater(T(x, y)), `tile ${x},${y} is ${T(x, y)}, not water`);
+  const x0 = 29 * CW, y0 = 13 * CH, seen = new Set(), key = (x, y) => y * 100000 + x, q = [[x0 + CW / 2, y0 + CH / 2]];
+  assert.ok(isWater(T(...q[0])), 'the pond has water at its centre');
+  seen.add(key(...q[0]));
+  for (let h = 0; h < q.length; h++) { const [x, y] = q[h]; assert.ok(x >= x0 && x < x0 + CW && y >= y0 && y < y0 + CH, `the pond reaches ${x},${y}, outside its cell`);
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const n = [x + dx, y + dy]; if (seen.has(key(...n)) || !isWater(T(...n))) continue; seen.add(key(...n)); q.push(n); } }
+});
+
 test('both sides of a seam agree tile for tile (his seam and 20 seeds)', () => {
   const pairs = [[64, [43, 50], [44, 50]]];
   for (const seed of SEEDS) { const s = seamOf(seed, true) || seamOf(seed, false); if (s) pairs.push([seed, s[0], s[1]]); }

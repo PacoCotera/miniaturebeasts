@@ -994,6 +994,7 @@ function windowOf(S, X, Y) {
         if (order.some(u => tryTidy([k], v, u))) { n++; continue; }
         for (const j of [k - 1, k + 1, k - W, k + W]) if (t[j] === v && band[j] && order.some(u => tryTidy([k, j], v, u))) { n++; break; } }
       if (!n) { if (!guardOn) break; pass = 5; } } };
+  const seaNear = k => { const x = gx0 + (k % W), y = gy0 + ((k / W) | 0); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const v = shoreValue(seed, S.shoreCells, x + dx, y + dy); if (v !== null && v > 0) return true; } return false; };   // the tile is within 2 of the wandering line's sea (shore7.mjs)
   for (const { p, tiles } of streamRuns) {
     if (!(p.in && p.out) || tiles.length < 6) continue;
     const m = tiles.length >> 1, fordTiles = [];
@@ -1014,7 +1015,7 @@ function windowOf(S, X, Y) {
         for (let h = 0; h < q.length; h++) { const i = q[h], ix = i % W, iy = (i / W) | 0; for (const d of DIRS) { const j = i + d, jx = ix + (d === 1 ? 1 : d === -1 ? -1 : 0), jy = iy + (d === W ? 1 : d === -W ? -1 : 0); if (!own(jx, jy) || lab[j] >= 0 || !WALKV.has(t[j])) continue; lab[j] = id; q.push(j); } }
         sizes.push(q.length); }
       return { lab, sizes }; };
-    const wetStream = k => t[k] === TV.WATER && streamMask[k];
+    const wetStream = k => t[k] === TV.WATER && streamMask[k] && !(S.anyNear && seaNear(k));   // owner #141: the stream water that runs into wide water is no ford's to cut (the same rule as the strip above)
     const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]], bad = new Set();
     for (let round = 0; round < 6; round++) {
       const { lab, sizes } = comps(); const big = sizes.map((n, id) => [n, id]).filter(([n, id]) => n >= 10 && !bad.has(id)).sort((a, b) => a[0] - b[0]);
