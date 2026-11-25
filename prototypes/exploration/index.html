@@ -8186,7 +8186,8 @@ function herInSight() {
   const w = indInSight(); return w && S.named[w.id] ? String(w.id) : null;
 }
 // The one the screen names: in sight, else the top line's target
-function herNamed() { const a = herInSight(); if (a) return a; const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
+function herNamed() { const a = herInSight(); if (a) return a; if (S && S.exp && S.exp.patch && S.named && !curLay().cave && curLive().cr.some(c => c.ind && !c.hide && (c.ease | 0) < 3 && cheb(c, S.exp.patch) <= 10 && seenFromPlayer(S.exp.patch.key, c.x, c.y))) return null;   // one in sight that the line does not name (her kind is not known yet, so herInSight is null): no page to offer, never the top line's name (#156 R145-07)
+  const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
 // The menu's first row, and the ← word: "her page" while her name stands on the line, the short word where the ✓ label squeezes her name out (measured with the line's own fit)
 function herBack(o) {
   const id = herNamed(); if (!id) return null; const nm = S.named[id];
