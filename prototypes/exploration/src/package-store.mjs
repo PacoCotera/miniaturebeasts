@@ -11,7 +11,8 @@ import { PLACE_REV } from './place-store.mjs';
 import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
 import { writePlace } from '../../places/src/format/write.mjs';
 
-export const PACKAGE_FORMAT = 1, PKG = 'pkg7:';
+import { PACKAGE_FORMAT, PKG, heldOf, packageSummary, offerOf, takePackage } from './package-dock.mjs';
+export { PACKAGE_FORMAT };
 export const packageId = ({ seed, slot, v, tag = '' }) => `${PKG}${REALM_REV}.${PLACE_REV}${tag ? '.' + tag : ''}:${seed}:${slot[0]},${slot[1]}:${v}`;
 const headKey = id => id + '#head', regionKey = id => id + '#region', cellKey = (id, c) => id + '#c' + c;
 const regionPrefix = ({ seed, slot }) => `:${seed}:${slot[0]},${slot[1]}:`;   // the part of an id that names the region, whatever its revs
@@ -103,6 +104,8 @@ export async function finishPackage(h) {
   return h.header.whole;
 }
 export async function dropOthers(kv, keepId, region) {
-  const mid = regionPrefix(region);
-  for (const k of await kv.keys()) { if (typeof k !== 'string' || !k.startsWith(PKG) || k.startsWith(keepId + '#')) continue; const id = k.slice(0, k.indexOf('#')); if (id !== keepId && id.includes(mid)) await kv.del(k); }
+  const mid = regionPrefix(region), held = await heldOf(kv, region);   // the package the Companion holds stays until it takes the new one at a seat
+  for (const k of await kv.keys()) { if (typeof k !== 'string' || !k.startsWith(PKG) || k.startsWith(keepId + '#')) continue; const id = k.slice(0, k.indexOf('#')); if (id !== keepId && id.includes(mid) && !(held && held.id === id)) await kv.del(k); }
 }
+
+export { heldOf, packageSummary, offerOf, takePackage };   // the dock record's page side lives in package-dock.mjs (no imports, so the play shell can read it)
