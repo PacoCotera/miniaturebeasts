@@ -1158,13 +1158,45 @@ function teachStep() {
   if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
     const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
+  { const wl = whereTeach(P); if (wl) return wl; }   // first-walk-teach-approach-1: where she comes, in a place with none
   if (!ex.cargo.pods.length) return '';   // nothing to take home yet: no line asks for the end
   return T.end;
+}
+// first-walk-teach-approach-1: the cells of the reach that hold a named Loika (made places only; layouts built for the check are dropped again), kept per reach and place count
+function namedCells() {
+  const ex = S.exp, key = S.seed + '|' + S.cr.length + '|' + ex.reach.length + '|' + PLACES.epoch; if (RT.namedCells && RT.namedCells.key === key) return RT.namedCells.list;
+  const had = new Set(layoutCache.keys()), reach = new Set(ex.reach.map(Number)), list = [];
+  for (const q of S.cr) { if (q.sp !== 0 || q.cv || !reach.has(+q.c) || list.includes(+q.c)) continue; try { if (placeHave(String(q.c)) && individualOf(q, layout(String(q.c)))) list.push(+q.c); } catch (e) { } }
+  for (const k of [...layoutCache.keys()]) if (!had.has(k)) layoutCache.delete(k);
+  RT.namedCells = { key, list }; return list;
+}
+// the first walk's pointers: in a place with no named Loika, the nearest place of the reach that has one (by its direction and land); in her place before she comes, where to wait
+function whereTeach(P) {
+  if (!firstWalk() || !S.exp.patch || S.phase !== 'patch') return '';
+  const W = WORDS.teachWalk, lay = curLay(); if (lay.cave) return '';
+  const list = namedCells(), here = +P.key;
+  if (list.includes(here)) return !indInSight() && !curLive().cr.some(q => q.ind && (q.gone || (q.ease | 0) >= 3)) ? W.herePlace : '';
+  const h = cxy(here); let best = null;
+  for (const c of list) { const q = cxy(c), d = Math.max(Math.abs(q.x - h.x), Math.abs(q.y - h.y)); if (!best || d < best.d) best = { d, c, dx: q.x - h.x, dy: q.y - h.y }; }
+  const dir = best && dirWord(best.dx, best.dy, Math.hypot(best.dx, best.dy));
+  return dir ? W.where(LAND_NAME[G.land[best.c]], dir) : '';
+}
+// the approach lines, each once per save: a named Loika in sight that has not heard you, and the first time she hears you (the flag is spent when the line is left)
+const APPROACH_ONCE = { near: 'teach:near', heard: 'teach:heard', tell: 'teach:tell' };
+function approachTeach(c) {
+  const W = WORDS.teachWalk, e = c.ease | 0;
+  if (e >= 1 && e < 3 && !S.found.includes(APPROACH_ONCE.heard)) return { k: 'heard', t: W.heard };
+  if (e === 0 && !c.hb && c.st === 'idle' && habRange(cheb(c, S.exp.patch)) === 'mid' && !S.found.includes(APPROACH_ONCE.tell)) return { k: 'tell', t: W.tell };   // (5) mid range and still: her tell comes first
+  if (e === 0 && cheb(c, S.exp.patch) > 2 && !S.found.includes(APPROACH_ONCE.near)) return { k: 'near', t: W.near };
+  return null;
 }
 // The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
 function teachFill() {
   if (FX.msg && FX.msg !== FX.teachMsg) return;
-  const t = firstWalk() && !(S.phase === 'setup' && !S.exp && openAlone()) ? teachStep() : ''; FX.msg = t; FX.teachMsg = t; FX.sign = null;   // on a first save the opening draws its one teaching line under the land itself
+  const prevUp = RT.approachUp; RT.approachUp = null;
+  const t = firstWalk() && !(S.phase === 'setup' && !S.exp && openAlone()) ? teachStep() : '';
+  if (prevUp && !(RT.approachUp && RT.approachUp.k === prevUp.k) && !S.found.includes(APPROACH_ONCE[prevUp.k])) S.found.push(APPROACH_ONCE[prevUp.k]);   // each approach line once per save, spent when it is left
+  FX.msg = t; FX.teachMsg = t; FX.sign = null;   // on a first save the opening draws its one teaching line under the land itself
 }
 // The goal line: F1-F3 before the first pod is home, then the Station's goal as the dock state carries it. '' when there is none to show.
 // W5 (first walk): the Loika the player has noted most, on a tie the last met; { id, name, n } or null when none is met. n counts her habits as her page does (a habit with a note at any range).
@@ -1179,7 +1211,8 @@ const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
 // The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in W4's words.
 function loikaTeach() {
   const pr = printsToRead(); if (pr) return habName(pr.c) + ' · ' + WORDS.prints.read;
-  const c = indInSight(), cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
+  const c = indInSight(), ap = c && firstWalk() ? approachTeach(c) : null; if (ap) { RT.approachUp = ap; return ap.t; }   // first-walk-teach-approach-1
+  const cd = c && habCardNext(c); return cd ? habName(c) + ' · ' + cd : '';
 }
 const waysLine = b => b ? FIRST_TEXT.goal.ways(b.name, b.n, HABITS.length) : FIRST_TEXT.goal.find;
 const dockHasPod = () => S.bay.some(c => (c.pods || []).length) || !!(S.report && S.report.sealed && (S.report.sealed.pods || []).length) || !!(S.hold && (S.hold.pods || []).length);
@@ -3426,7 +3459,10 @@ function patchAction() {
   ACT_AT = f;
   { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => { if (nt.hb) openWatch(nt); else noteHabit(nt); } }; } }   // w6b: during a play ✓ opens the watch view, where ✓ Note takes the note; a sleeper (no play) is noted here as before   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
   if (!o) { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // W4 round 2: her prints at a haunt she has left
-  if (!o) { const pr = printsReadNear(); if (pr) { ACT_AT = { x: pr.mark.x, y: pr.mark.y };
+  // first-walk-teach-approach-1 (4): while a named Loika is in sight within her stay (2 tiles) or plays her habit, ✓ is hers (keep still, Note it); a tuft or her read prints wait until she is gone or out of the stay
+  const hn = ex.carry !== 'fruit' && live.cr.find(c => c.ind && !c.hide && (c.ease | 0) < 3 && inSight(c.x, c.y) && (c.hb || cheb(c, P) <= 2)) || null;
+  const hers = c => ({ label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) });
+  if (!o) { const pr = printsReadNear(); if (pr && hn) return hers(hn); if (pr) { ACT_AT = { x: pr.mark.x, y: pr.mark.y };
     const tf = live.tf.find(q => q.x === pr.mark.x && q.y === pr.mark.y); if (tf) return { label: 'Pick up the tuft', run: () => takeTuft(tf) };   // bug #122 (tuft-2): she left a tuft here; once read, ✓ on the print picks it up through the Essence pickup (a full hold says why, takes no turn)
     return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => fxMsg(printsLine(pr), 3) }; } }   // bug #122: a print already read shows its line again, free
   const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
@@ -3447,7 +3483,7 @@ function patchAction() {
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
-  if (o && o.type === 'tuft') return { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
+  if (o && o.type === 'tuft') return hn ? hers(hn) : { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? SWAP_TEXT.swapTitle : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return idleAct(P, lay);
   if (o && o.type === 'tile' && o.t === T.DEEP && !(lay.coastWater && lay.coastWater(f.x, f.y))) return { label: 'Needs a swimmer', run: swimBump };
