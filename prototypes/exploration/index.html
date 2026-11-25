@@ -1220,9 +1220,12 @@ const waysOf = id => { const h = S.habits && S.habits[id]; return h ? HABITS.fil
 function metBest() {
   const nm = S.named || {}, order = (S.metIds || []).filter(id => nm[id]);
   for (const id of Object.keys(nm)) if (!order.includes(id)) order.push(id);   // a save from before the met order: by id
-  let best = null; for (const id of order) { const n = waysOf(id); if (!best || n >= best.n) best = { id, name: nm[id], n }; }
-  return best;
+  // owner note 167 (rule 47a): the one he follows is the named Loika he last faced, watched or noted (S.follow); before any of those the first named one he met; a Loika newly seen never takes it
+  const id = S.follow && nm[S.follow] ? S.follow : order[0]; return id ? { id, name: nm[id], n: waysOf(id) } : null;
 }
+// owner note 167: facing, watching or noting a named Loika makes her the one followed
+function followSet(c) { if (RT.readOnly || !c || !c.ind || !S.named || !S.named[c.id]) return; S.follow = String(c.id); }
+function followFront() { const ex = S && S.exp, P = ex && ex.patch; if (!P) return; const f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player'); if (o && o.type === 'cr') followSet(o.c); }
 const ownPodLying = () => S.pods.find(p => p.how === 'own' && !p.h) || null;
 // The teaching line in a place: a named Loika's prints to read, or her next want (coat first, then face), both in W4's words.
 function loikaTeach() {
@@ -2856,6 +2859,7 @@ function wildMarked(c) {
 }
 const wildSaddled = c => !!c.ind && c.sp === 0 && coatRead(c.id) && wildMarked(c);   // the token is plain until her coat is read, then it shows what she has
 function noteHabit(c, viaView) {   // viaView: the watch view takes the note and the field card says it, so the message box does not repeat it; returns the card's record, or null when nothing was noted
+  followSet(c);
   const ex = S.exp, W = WORDS.habit, sl = !c.hb && sleeperOf(c), h = c.hb || (sl ? { k: 'sleep', notes: {} } : null); if (!h) return;   // night step 5: a sleeper is noted like a play
   const P = ex.patch, range = habRange(cheb(c, P)), k = h.k, name = habName(c), hd = habDay(), stirred = sl && (c.ease | 0) >= 1;
   if (h.notes[range] || (k === 'sleep' && hd[sleepKey(c, range)])) { fxMsg(W.dup, 2); FX.bumpAt = NOW; return; }   // one note for each range in a play (and for sleep-curled each range a day): nothing is spent
@@ -3086,7 +3090,7 @@ const STEP_KEEP = 20; let STEP_WHY = '';
 function patchStep(dir, mode) {
   const P0 = S.exp && S.exp.patch, from = P0 ? [P0.x, P0.y] : null, key0 = P0 && P0.key; STEP_WHY = 'open';
   try { patchStepRun(dir, mode); } finally {
-    const P1 = S.exp && S.exp.patch;
+    const P1 = S.exp && S.exp.patch; followFront();
     if (from && P1) { RT.steps = RT.steps || []; RT.steps.push({ dir, key: key0, from, to: [P1.x, P1.y], moved: P1.key !== key0 || P1.x !== from[0] || P1.y !== from[1], check: STEP_WHY }); if (RT.steps.length > STEP_KEEP) RT.steps.shift(); }
   }
 }
@@ -3468,6 +3472,7 @@ function nextThing(P, lay) {
 const faceDirOf = (P, t) => { const dx = t.x - P.x, dy = t.y - P.y; return dx || dy ? (Math.abs(dx) >= Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down')) : null; };
 function faceThing(P, t) {
   const fd = faceDirOf(P, t); if (fd) P.dir = fd;
+  followFront();
   if (t.kind !== 'flag' && !t.virt) fxGlint(t.x, t.y, 0);   // the one glint pulse; the explorer does not move and no action is spent
 }
 function idleAct(P, lay) {
@@ -8145,7 +8150,7 @@ function watchHer() {
   const w = S.ui && S.ui.watch, ex = S.exp, live = ex && ex.patch && curLive(), c = w && live && live.cr.find(q => q.id === w.id);
   return c && c.hb && !c.hide && !c.gone && seenFromPlayer(ex.patch.key, c.x, c.y) && !fieldFrozen() ? c : null;
 }
-function openWatch(c) { S.ui.watch = { id: c.id }; S.phase = 'watch'; transition(); }
+function openWatch(c) { followSet(c); S.ui.watch = { id: c.id }; S.phase = 'watch'; transition(); }
 function watchClose() { if (S.ui) S.ui.watch = null; if (S.phase === 'watch' || S.phase === 'card') S.phase = S.exp && S.exp.patch ? 'patch' : 'setup'; transition(); }
 const OPP = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const dirToward = (P, c) => { const dx = c.x - P.x, dy = c.y - P.y; return Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'); };
