@@ -2796,10 +2796,24 @@
   },
   {
    "class": "pixel",
+   "date": "2026-11-25",
+   "id": "bb912bacde",
+   "path": "prototypes/exploration/art/cards/dawn-card-450x600.png",
+   "sha256": "af6e535dac7b8909891408a73fac13b61c3bfa979080ff56926b1c7641e45a55"
+  },
+  {
+   "class": "pixel",
    "date": "2026-11-24",
    "id": "95e19fa901",
    "path": "prototypes/exploration/art/cards/dusk-card-450x600.png",
    "sha256": "53624a5e73b76a4c4c9ade8521462b5edbd5d762e2851c8719cb34e521d8ad0a"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-25",
+   "id": "b61ad6b8bb",
+   "path": "prototypes/exploration/art/cards/night-card-450x600.png",
+   "sha256": "9454ad7228bf6f47b4147feaeaf0d4b7af29c3c034531d74493d19af097f1292"
   },
   {
    "class": "ui",

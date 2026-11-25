@@ -118,6 +118,7 @@ const switchUi = mountSwitch($("switchRoot"), { onPick: (d) => setOwner(d) });
 // the dock's screen: a live miniature of the e-paper in a button; the Radix Dialog shows it whole
 const dockScreen = mountDockScreen($("dockScreenRoot"), { onOpenChange: (open) => { if (!open) giveKeys(owner); } });
 const zDown = $("zDown"), zFit = $("zFit"), zUp = $("zUp"), stamp = $("stamp");
+let wholeForm = false;   // the Station shows its Bay (Cargo) screen: on the upright phone the whole 1024 lp screen at the width's fit (layout.mjs `whole`)
 let pageForm = false;   // the Station shows her page (a 530 x 600 window), told by its focus message: on a phone's side the screen is then the page whole, as wide as the page (layout.mjs `page`)
 const geom = { station: null, companion: null, bar: null };   // the devices' panels in window CSS px, for the checks
 const arr = (b) => (b ? [b.x, b.y, b.w, b.h] : null);
@@ -128,7 +129,7 @@ function layout() {
   metrics();
   document.body.classList.toggle("phone", phone);
   for (const dv of ["station", "companion"]) {
-    const st = dv === "station", p = layoutPlan({ W: CW, H: CH, dpr, coarse: coarseNow(), dev: dv, asleep: st && !podHome, zSet, page: st && pageForm });
+    const st = dv === "station", p = layoutPlan({ W: CW, H: CH, dpr, coarse: coarseNow(), dev: dv, asleep: st && !podHome, zSet, page: st && pageForm, whole: st && wholeForm });
     PLAN[dv] = p; kOf[dv] = Math.floor(p.scale * dpr * 64 + 1e-6) / 64;
   }
   k = kOf[owner]; f = k / dpr;
@@ -193,12 +194,12 @@ function placeStation(p) {
 let sentNarrow = null;
 function tellNarrow(force = false) {
   const on = !!(PLAN.station && PLAN.station.narrow), win = !!(PLAN.station && PLAN.station.view);   // win: the screen is a window of the face (the phone, upright or sideways): the room view stands bare there
-  const w = win ? Math.floor(PLAN.station.view.w) : 0, h = win ? Math.floor(PLAN.station.view.h) : 0, smooth = !!(PLAN.station && PLAN.station.pageForm), key = on + ":" + w + ":" + h + ":" + smooth;   // w, h: the window's size in lp: the walkers stay inside it; smooth: her page on a phone's side is drawn below x0.5, where nearest-pixel sampling dropped a thin stem (the "d" of "field")
+  const w = win ? Math.floor(PLAN.station.view.w) : 0, h = win ? Math.floor(PLAN.station.view.h) : 0, smooth = !!(PLAN.station && (PLAN.station.pageForm || PLAN.station.whole)), key = on + ":" + w + ":" + h + ":" + smooth;   // w, h: the window's size in lp: the walkers stay inside it; smooth: her page on a phone's side is drawn below x0.5, where nearest-pixel sampling dropped a thin stem (the "d" of "field")
   if (!force && key === sentNarrow) return; sentNarrow = key;
   try { frames.station.contentWindow.postMessage({ t: "mb-view", narrow: on, window: win, w, h, smooth }, location.origin); } catch { sentNarrow = null; /* not loaded: its load event tells it */ }
 }
 function stationFocus(m) {
-  if (!!m.page !== pageForm) { pageForm = !!m.page; layout(); }
+  if (!!m.page !== pageForm || (m.screen === "cargo") !== wholeForm) { pageForm = !!m.page; wholeForm = m.screen === "cargo"; layout(); }
   const box = Array.isArray(m.box) && m.box.length === 4 ? m.box.map(Number) : null;
   // A message plate is no focus: its box is placed for the whole 1024 lp room, so it pans the window right of a narrow page. The pan before the plate comes back when the plate goes (station-pan-cause-1); a window that kept the plate's pan showed the page cut left with a dark strip.
   if (m.plate) { if (!platePan) platePan = { ...pan }; } else if (platePan) { pan = platePan; platePan = null; }
