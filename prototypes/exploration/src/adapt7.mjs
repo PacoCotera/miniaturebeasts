@@ -8,6 +8,7 @@ export const DRAWN_PIECES = new Set();   // the set pieces the page draws with a
 export const INNER ={ w: 24, h: 28 };
 export const BANK_EI = 1 << 20, BANK_ROWS = 4;   // a tile bank's id base (index.html keeps it in step) and its rows: the lip and the three face rows
 const PRESS_PROPS = ['boulder-a', 'boulder-a-m', 'split-stone'];   // the props fruit may be pressed on besides every tree's trunk (places/src/adapter.mjs PRESS_PROPS)
+const SLAB_EVERY = 5;   // about one place in five lays a slab
 const RING_DEPTH = 2;   // tiles in from a side the range haze or a closed side's thicket takes (the page's LINE_DEPTH 3 counts the apron)
 const CROWN_MARGIN = 6;  // pixels at 48 px round a crown's box that still count as under it
 const SIDE_STEP = { N: 'up', S: 'down', W: 'left', E: 'right' };
@@ -157,6 +158,23 @@ export function adaptCell(place, ir, ts, terrains, o) {
     if (best) { feats.push({ ...s, ...best }); taken.add(best.y * w + best.x); }
   }
   for (const s of specials) { const f = feats.find(q => q.id === s.id); if (f) used.add(I(f.x, f.y)); }
+  // slabs-gen7-build-1: about one place in five lays one pushable slab (feat kind 's'), under the old rule (world.mjs finishLayout): a free tile beyond, a tile to stand on, water or cliff on at most one side.
+  // What lies under is seeded by the land and never empty: a pod about one time in three, else a material (Essence) or a find (Data). The page's pushSlab says it.
+  if (hash(o.seed, 'slab7', o.cell) % SLAB_EVERY === 0) {
+    const wetT = t => t === T.WATER || t === T.DEEP || t === T.CLIFF || t === T.CWALL || t === T.ISLE || t === T.WADE;
+    const free = (x, y) => x >= 1 && y >= 1 && x < w - 1 && y < h - 1 && !T_BLOCK[tiles[I(x, y)]] && tiles[I(x, y)] !== T.STEP && !taken.has(I(x, y)) && !podSlots.some(q => q.x === x && q.y === y);
+    const standOn = (x, y) => x >= 0 && y >= 0 && x < w && y < h && ground[I(x, y)] && !T_BLOCK[tiles[I(x, y)]] && !taken.has(I(x, y));
+    const fits = (x, y) => x >= 2 && y >= 2 && x < w - 2 && y < h - 2 && okAt(x, y, true) && Math.abs(x - spawnPt.x) + Math.abs(y - spawnPt.y) >= 4
+      && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => wetT(tiles[I(x + dx, y + dy)])).length <= 1
+      && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => free(x + dx, y + dy) && standOn(x - dx, y - dy));
+    let best = null, bs = -1;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { if (!fits(x, y)) continue; const sc = hash(o.seed, 'slab7at', o.cell, x, y); if (sc > bs) { bs = sc; best = { x, y }; } }
+    if (best) {
+      const u = hash(o.seed, 'slab7under', o.cell) % 3;
+      feats.push({ id: 's0', kind: 's', x: best.x, y: best.y, under: u === 0 ? 'pod' : hash(o.seed, 'slab7mat', o.cell) % 2 ? 'mat' : 'find' });
+      used.add(I(best.x, best.y)); taken.add(I(best.x, best.y));
+    }
+  }
   // a cup stands where the pawn can come to it: its tile or one beside it is on the walk round the standing features (a hollow or a stone beside it can shut it in with the blocked ground); else it moves to the nearest tile that is
   {
     const solidF = new Set(feats.filter(f => f.kind !== 'u').map(f => I(f.x, f.y))), walked = new Uint8Array(NP), wq = [];
