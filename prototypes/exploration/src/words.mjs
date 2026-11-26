@@ -118,7 +118,7 @@ WORDS.watch = {
 };
 // [copy] her page (her-page-ui-1): the editor's final strings, her-page-canon-1 section 2. Every row shows only what he has been shown.
 WORDS.her = {
-  row: name => name + ' · her page', back: 'her page', backShort: 'menu', logOk: 'Her page', open: 'Her page',
+  row: name => name + ' · her page', logOk: 'Her page', open: 'Her page',
   watchLine: ['▲▼ closer · ▶ her page', '▶ her page'], others: '◀▶ others met', backTo: 'back',
   count: (i, n) => i + ' of ' + n, kind: 'a wild Loika', turn: t => 'T' + t,
   met: (d, part, t) => 'Met day ' + d + ' · ' + (t ? WORDS.her.turn(t) + ' · ' : '') + part,

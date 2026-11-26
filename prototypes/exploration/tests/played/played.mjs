@@ -363,6 +363,38 @@ for (const size of SIZES) {
     });
   }
 
+  // OWNER #156 (11-24 15:5x): "you should be able to select it and see it log if there's anything." QA's case: a habit's beat line and ✓ Keep still only for a Loika on the walk screen (PR 652).
+  // Seed 42's dusk save, played twice with the d-pad only. Near: he stands 3 tiles from her curled at her bed (light 549): the bottom bar reads ✓ Keep still. Far: he walked off up the place so she is off the screen: the bar reads something else.
+  // State only asserts each case is reached; the verdict is the bar's label pixels: the far label is not the near one, and the near label is the same one a step later.
+  if (size.w === 412) it(`s10 Keep still only on screen (#156, seed 42 at dusk): 3 tiles from her curled at her bed the bottom bar offers Keep still; off the screen it does not [${tag}]`, async () => {
+    const LABEL = [0.06, 0.955, 0.18, 0.035];
+    let herId = 0;
+    const st = (g) => g.page.evaluate((id) => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, cs = m.curLive().cr.filter((q) => q.sp === 0 && q.ind), c = id ? cs.find((q) => q.id === id) : cs.sort((a, b) => Math.max(Math.abs(a.x - P.x), Math.abs(a.y - P.y)) - Math.max(Math.abs(b.x - P.x), Math.abs(b.y - P.y)))[0]; return { at: [P.x, P.y], herAt: c && [c.x, c.y], spent: m.S.day.spent, atBed: !!c && m.atBedNow(c), curled: !!c && m.sleeperOf(c), on: !!c && m.onScreen(c.x, c.y), id: c && c.id }; }, herId);
+    let near1, near2, far, r;
+    const a = await open(size, "sleep-dusk-42");
+    try {
+      let s = await st(a); herId = s.id;                  // the Loika beside him at the start: her bed is 3 tiles left of him
+      for (let i = 0; i < 40 && s.spent < 549; i++) { await a.press(i % 2 ? "left" : "right", 100, 450); s = await st(a); }
+      assert.ok(s.curled && s.atBed && s.on && s.spent < 552, `the case is reached: she is curled at her bed, on the screen, light under 552 (${JSON.stringify(s)})`);
+      r = await a.region(); near1 = await a.shot("s10-near-1");
+      await wait(600); s = await st(a);                   // a moment later: the same case
+      assert.ok(s.curled && s.on, `the case is reached: still curled and on the screen a moment later (${JSON.stringify(s)})`);
+      near2 = await a.shot("s10-near-2");
+    } finally { await a.ctx.close(); }
+    const b = await open(size, "sleep-dusk-42");
+    try {
+      let s = await st(b);
+      for (let i = 0; i < 14 && s.on; i++) { const was = s.at.join(); await b.press("up", 100, 450); s = await st(b); if (s.at.join() === was) { await b.press(i % 2 ? "left" : "right", 100, 450); s = await st(b); } }   // walk up, away from her bed (sidestep when a bush blocks)
+      for (let i = 0; i < 40 && (s.spent < 549 || (s.on && s.spent < 551)); i++) { const was = s.at.join(); await b.press(s.on ? "up" : i % 2 ? "left" : "right", 100, 450); s = await st(b); if (s.on && s.at.join() === was) { await b.press(i % 2 ? "left" : "right", 100, 450); s = await st(b); } }   // keep away from her until her bedtime
+      assert.ok(s.curled && s.atBed && !s.on && s.spent >= 549 && s.spent < 552, `the case is reached: she is curled at her bed, off the screen, light under 552 (${JSON.stringify(s)})`);
+      far = await b.shot("s10-far");
+    } finally { await b.ctx.close(); }
+    const same = changed(near1, near2, r, LABEL), diff = changed(near1, far, r, LABEL);
+    console.log(`# s10 ${tag}: label pixels changed near to a moment later ${same.n}, near to far ${diff.n} (of ${same.of})`);
+    assert.ok(same.n < 40, `the bar reads the same Keep still a moment later (${same.n} label pixels changed)`);
+    assert.ok(diff.n > 150, `off the screen the bar's label is not Keep still (${diff.n} label pixels differ from the near bar's)`);
+  });
+
   it(`s6 a named Loika's page (his newest save #172, end-of-walk Case): ← reaches the Log and ✓ opens her page; the Case's bottom line shows it [${tag}]`, async () => {
     const g = await open(size, "172");
     try {
@@ -375,6 +407,193 @@ for (const size of SIZES) {
       await g.press("confirm");
       assert.equal(await phase(), "her", "✓ on the marked entry opens her page");
       await g.shot(`s6-${tag}-3-her`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #156 (11-24): "you should be able to select it and see it log if there's anything." QA verify-live-639, his #145 save: Hazel (met, her kind not known yet) stands in sight; ← then offers her page as the first row.
+  it(`s7 Hazel's page (#156, his save #145): d-pad left x7 then ←, the menu's first row is Hazel's page and ✓ opens it [${tag}]`, async () => {
+    const g = await open(size, "145");
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      for (let i = 0; i < 7; i++) await g.press("left", 100, 500);
+      const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, dir: t && t.dir, sight: m.herInSight() }; });
+      assert.ok(top.text && top.text.startsWith("Juniper") && top.dir === "e" && top.sight !== null, `the case is reached: the top line is the goal's, Juniper · E, while Hazel stands in sight (${JSON.stringify(top)})`);
+      await g.shot(`s7-${tag}-0-top`);                      // read by eye: top line 'Juniper · E'
+      await g.press("back");                                // ← opens the menu
+      const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
+      const first = await row();
+      assert.deepEqual([first.phase, first.label, first.sel], ["menu", "Hazel · her page", 0], "the case is reached: the menu's first row reads Hazel · her page, selected");
+      const r = await g.region(), menu = await g.shot(`s7-${tag}-1-menu`);
+      await g.press("confirm", 100, 1500);                  // ✓ on the first row
+      const page = await g.shot(`s7-${tag}-2-her`);
+      assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
+      assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #156 (11-24), his own save (note mwv7x4xtaf3d27): Drizzle stands beside him; ← then offers her page as the first row, and ✓ opens it.
+  it(`s8 Drizzle's page (#156, his own save): ← at once, the menu's first row is Drizzle's page and ✓ opens it [${tag}]`, async () => {
+    const g = await open(size, "156");
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      await g.press("back");                                // ← opens the menu
+      const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
+      const first = await row();
+      assert.deepEqual([first.phase, first.label, first.sel], ["menu", "Drizzle · her page", 0], "the case is reached: the menu's first row reads Drizzle · her page, selected");
+      const r = await g.region(), menu = await g.shot(`s8-${tag}-1-menu`);
+      await g.press("confirm", 100, 1500);                  // ✓ on the first row
+      const page = await g.shot(`s8-${tag}-2-her`);
+      assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
+      assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #177 (11-26 15:05): "the screen reads "<- her page", however that action was already removed." His #156 save: Drizzle stands in sight, named. The bottom line's ← word is Leave, the same word as
+  // where no Loika is named (Hazel, saves/145, unnamed, in sight); ← then opens the menu and its first row is her page. State only asserts the reach; the verdict is the ← word's pixels on the screen.
+  it(`s14 the ← word with a named Loika in sight (#177, his #156 save): the bottom line's ← word is the Leave word, not her page; ← opens the menu, its first row reads Drizzle · her page [${tag}]`, async () => {
+    const FOG = ([R, G, B]) => Math.abs(R - 198) < 24 && Math.abs(G - 196) < 24 && Math.abs(B - 216) < 24 && B > R + 8;   // the line's ← and its word
+    const back = (im, r) => {   // the ← with its word: the first run of fog columns in the line (the ✓ label is another colour); its pixels as rows of 0/1
+      const u = r.w / 450, y0 = r.y + Math.round(r.h * 0.94), y1 = r.y + r.h, x1 = r.x + Math.round(r.w * 0.8);
+      const cols = []; for (let x = r.x; x < x1; x++) { let on = false; for (let y = y0; y < y1 && !on; y++) on = FOG(px(im, x, y)); if (on) cols.push(x); }
+      assert.ok(cols.length, "the ← and its word are on the bottom line");
+      let end = 0; while (end + 1 < cols.length && cols[end + 1] - cols[end] <= 4 * u) end++;
+      // sampled once per game pixel, at its centre: the page is scaled by a fraction, so the same word drawn at another x lands on other device pixels
+      const rows = [], gw = Math.round((cols[end] - cols[0] + 1) / u), gh = Math.round((y1 - y0) / u);
+      for (let gy = 0; gy < gh; gy++) { let s = ""; for (let gx = 0; gx < gw; gx++) s += FOG(px(im, Math.round(cols[0] + (gx + 0.5) * u), Math.round(y0 + (gy + 0.5) * u))) ? "1" : "0"; rows.push(s); }
+      return { w: cols[end] - cols[0] + 1, rows: rows.join("\n") };
+    };
+    // the reference: where no Loika is named (Hazel, met, unnamed, in sight; 7 presses left) the ← word is Leave
+    const ref = await open(size, "145");
+    let leave;
+    try {
+      for (let i = 0; i < 7; i++) await ref.press("left", 100, 500);
+      const hz = await ref.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { phase: m.S.phase, sight: m.herInSight(), named: m.herNamed() }; });
+      assert.ok(hz.phase === "patch" && hz.sight !== null, `the case is reached: Hazel stands in sight (${JSON.stringify(hz)})`);
+      leave = back(await ref.shot(`s14-${tag}-0-leave`), await ref.region());
+    } finally { await ref.ctx.close(); }
+    const g = await open(size, "156");
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      const named = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, id = m.herInSight(); return id != null && !!m.S.named[id]; });
+      assert.ok(named, "the case is reached: Drizzle is in sight and named");
+      const word = back(await g.shot(`s14-${tag}-1-line`), await g.region());
+      console.log(`# s14 ${tag}: ← word ${word.w} px wide with Drizzle named, ${leave.w} px wide as Leave`);
+      assert.ok(leave.w > 20, `the reference is a word (${leave.w} px wide)`);
+      assert.equal(word.rows, leave.rows, "the bottom line's ← word is the Leave word, pixel for pixel, not her page");
+      await g.press("back");                                // ← opens the menu
+      const first = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label }; });
+      assert.deepEqual([first.phase, first.label], ["menu", "Drizzle · her page"], "the case is reached: the menu's first row reads Drizzle · her page");
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER 2026-11-24 15:5x on #156: "in the wild you should be able to see the name". QA verify-live-649, seed 14 (saves/14.save, made from a fresh seed-14 game by QA's presses C-01..C-13: ✓ x3 to set out, ← twice, right x3):
+  // Burr stands under a tree crown and her bone name tag was clipped to "r" (412x915-C-13-right). The verdict is the tag's pixels on the shot: the bone frame whole, all four sides, with the name inside.
+  it(`s12 a wild name tag over a crown (#156, seed 14): Burr's bone tag is whole on the screen, a crown never hides part of it [${tag}]`, async () => {
+    const g = await open(size, "14");
+    try {
+      const at = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp.patch, her = m.herInSight(); return { phase: S.phase, x: P && P.x, y: P && P.y, her, name: her != null ? S.named[her] : null }; });
+      assert.deepEqual([at.phase, at.x, at.y, at.name], ["patch", 15, 25, "Burr"], `the case is reached: he walks the patch with Burr in sight (${JSON.stringify(at)})`);
+      const r = await g.region(), im = await g.shot(`s12-${tag}`), u = r.w / 450;   // device px per game px
+      const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: Math.round(r.h * 0.76) };
+      // the tag's frame is the one bone-coloured outline in the field about 20 game px high; flowers and stones are other bone blobs and are told apart by their size
+      const BONE = ([R, G, B]) => Math.abs(R - 241) < 14 && Math.abs(G - 235) < 14 && Math.abs(B - 223) < 14;
+      const blob = blobs(im, field, BONE).find((b) => b.box.h >= 17 * u && b.box.h <= 30 * u && b.box.w >= 24 * u);   // the frame with its 5 game px pointer
+      console.log(`# s12 ${tag}: bone blobs ${JSON.stringify(blobs(im, field, BONE).slice(0, 4))}`);
+      assert.ok(blob, "the bone frame of a name tag is on the screen");
+      // the frame's own rows and columns: those where bone runs nearly the whole way (the pointer is a thin stub, the name's letters are short runs)
+      const run = (x, y, w, h) => colour(im, r, BONE, { x, y, w, h }).n;
+      const B = blob.box, rows = [], cols = [];
+      for (let y = B.y; y < B.y + B.h; y++) if (run(B.x, y, B.w, 1) >= 0.8 * B.w) rows.push(y);
+      assert.ok(rows.length >= 2, "the frame has a top and a bottom side on the screen");
+      const b = { y: rows[0], h: rows[rows.length - 1] - rows[0] + 1 };
+      for (let x = B.x; x < B.x + B.w; x++) if (run(x, b.y, 1, b.h) >= 0.8 * b.h) cols.push(x);
+      b.x = cols[0]; b.w = cols[cols.length - 1] - cols[0] + 1;
+      const t = Math.max(1, Math.floor(u * 0.8)), side = (x, y, w, h) => { [x, y, w, h] = [x, y, w, h].map(Math.round); return run(x, y, w, h) / (w * h); };
+      const sides = { top: side(b.x + 2 * u, b.y, b.w - 4 * u, t), bottom: side(b.x + 2 * u, b.y + b.h - t, b.w - 4 * u, t), left: side(b.x, b.y + 2 * u, t, b.h - 4 * u), right: side(b.x + b.w - t, b.y + 2 * u, t, b.h - 4 * u) };
+      console.log(`# s12 ${tag}: tag frame ${JSON.stringify(b)} (${(b.w / u).toFixed(1)} x ${(b.h / u).toFixed(1)} game px), sides ${JSON.stringify(sides)}`);
+      assert.ok(b.h >= 17 * u && b.h <= 23 * u && b.w >= 24 * u, `the frame is a whole tag, about 20 game px high (${(b.h / u).toFixed(1)} x ${(b.w / u).toFixed(1)})`);
+      for (const [k, v] of Object.entries(sides)) assert.ok(v >= 0.85, `the tag's ${k} side is whole on the screen (${(v * 100).toFixed(0)}% bone)`);
+      const inside = { x: b.x + Math.round(2 * u), y: b.y + Math.round(2 * u), w: b.w - Math.round(4 * u), h: b.h - Math.round(4 * u) };
+      const ink = colour(im, r, ([R, G, B]) => R < 50 && G < 45 && B < 60, inside).n / (inside.w * inside.h), name = colour(im, r, BONE, inside).n;
+      assert.ok(ink >= 0.4 && name >= 30 * u, `the name stands inside the frame on its dark panel (${(ink * 100).toFixed(0)}% dark, ${name} name pixels)`);
+      // reached: the tag stands over a tree crown (the crown's light green round it); a tag on open ground would pass without the case
+      const CROWN = ([R, G, B]) => Math.abs(R - 139) < 10 && Math.abs(G - 146) < 10 && Math.abs(B - 96) < 10;
+      const around = { x: Math.round(b.x - 3 * u), y: Math.round(b.y - 12 * u), w: Math.round(b.w + 6 * u), h: Math.round(b.h + 14 * u) };
+      const crown = colour(im, r, CROWN, around).n;
+      console.log(`# s12 ${tag}: ${crown} crown pixels round the tag`);
+      assert.ok(crown >= 150 * u * u, `the case is reached: the tag stands over a tree crown (${crown} crown pixels round it)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // QA verify-live-639, seed 63 (saves/63.save, made from a fresh seed-63 game: ✓ three times, right 8, down 8, the Call twice, ←): Cinder is off screen and the top line names her; no one is in sight, so the menu's first row is her page.
+  it(`s9 Cinder's page (seed 63, a fresh game's save): none in sight, the top line names Cinder, the menu's first row is her page and ✓ opens it [${tag}]`, async () => {
+    const g = await open(size, "63");
+    try {
+      assert.equal((await g.where()).phase, "menu", "the case is reached: the save is where QA left it, the menu open (← pressed)");
+      const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, sight: m.herInSight() }; });
+      assert.ok(top.text && top.text.startsWith("Cinder") && top.sight === null, `the case is reached: the top line names Cinder, no one is in sight (${JSON.stringify(top)})`);
+      const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
+      const first = await row();
+      assert.deepEqual([first.phase, first.label, first.sel], ["menu", "Cinder · her page", 0], "the case is reached: the menu's first row reads Cinder · her page, selected");
+      const r = await g.region(), menu = await g.shot(`s9-${tag}-1-menu`);
+      await g.press("confirm", 100, 1500);                  // ✓ on the first row
+      const page = await g.shot(`s9-${tag}-2-her`);
+      assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
+      assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #176 (11-26): "when you leave an active place and go to the overview sector, and enter again the same sector, the hero must be teleported to the last location where it was standing, rather than moved to the spawn point of the place."
+  // His replay.save (saves/176.save): patch 178, tile 23,14, facing left. By presses: ← opens the menu, down to Leave this place, ✓ (the map), ✓ (back into 178). The verdict is the screenshot: the hero drawn on the same tile as before the map, facing left.
+  it(`s11 back into the place he left (#176, his save, patch 178 tile 23,14): the hero stands on the same tile, facing left; one more place entered lands as today [${tag}]`, async () => {
+    const g = await open(size, "176");
+    try {
+      const at = await g.where();
+      assert.deepEqual([at.phase, at.key, at.x, at.y], ["patch", "178", 23, 14], "the case is reached: he stands at the tile of his note, in patch 178");
+      const r = await g.region(), base = await g.shot(`s11-${tag}-before`);
+      const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
+      const hero = blobs(base, field, HERO)[0];
+      assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
+      const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
+      // ← leaves a finished place in one press, and opens the menu in any other (then down to Leave this place, ✓)
+      const leave = async () => {
+        await g.press("back", 100, 2500);
+        if ((await g.where()).phase === "menu") {
+          for (let i = 0; i < 10 && await g.menuRow() !== "leave"; i++) await g.press("down");
+          assert.equal(await g.menuRow(), "leave", "the case is reached: the selected row is Leave this place");
+          await g.press("confirm", 100, 2500);
+        }
+      };
+      await leave();
+      assert.equal((await g.where()).phase, "map", "the case is reached: he left 178 for the map");
+      await g.press("confirm", 100, 4000);                  // ✓: back down into the same place
+      const back = await g.where();
+      assert.deepEqual([back.phase, back.key], ["patch", "178"], "the case is reached: he is back in patch 178");
+      await wait(2500);                                     // the place's name and the arrival settle
+      const im = await g.shot(`s11-${tag}-after`);
+      const again = blobs(im, field, HERO)[0];
+      assert.ok(again && again.n > 300, `the hero is on the screen after going back (${again ? again.n : 0} pixels)`);
+      console.log(`# s11 ${tag}: hero before ${JSON.stringify(hero.box)} ${hero.n} px, after ${JSON.stringify(again.box)} ${again.n} px`);
+      assert.ok(Math.abs(again.box.x - hero.box.x) <= 4 && Math.abs(again.box.y - hero.box.y) <= 4, `the hero is drawn on the same tile as before the map (${JSON.stringify(again.box)} vs ${JSON.stringify(hero.box)})`);
+      assert.ok(changed(base, im, r, [(hb.x - r.x) / r.w, (hb.y - r.y) / r.h, hb.w / r.w, hb.h / r.h]).frac < 0.15, "and he is drawn as he was, facing left");
+      const moved = changed(base, im, r, [0, 0.12, 1, 0.76]).frac;   // the camera follows him: on another tile the whole ground around him is drawn shifted
+      console.log(`# s11 ${tag}: ${moved.toFixed(3)} of the field differs from before the map`);
+      assert.ok(moved < 0.3, `and the ground around him is the same ground (${moved.toFixed(2)} of the field differs)`);
+      // one more place entered lands as today: out again, one cell over on the map, ✓ down into it
+      await leave();
+      assert.equal((await g.where()).phase, "map", "the case is reached: he left for the map again");
+      const pos0 = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.exp.pos);
+      let other = null;
+      for (const dir of ["right", "left", "down", "up"]) {
+        await g.press(dir, 100, 1500);
+        other = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.exp.pos);
+        if (other !== pos0) break;
+      }
+      assert.notEqual(other, pos0, "the case is reached: the map cursor is on another place");
+      await g.press("confirm", 100, 5000);
+      const next = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, e = m.S.exp; return { phase: m.S.phase, key: e.patch && e.patch.key, x: e.patch && e.patch.x, y: e.patch && e.patch.y, spot: e.spot || null }; });
+      assert.ok(next.phase === "patch" && next.key !== "178" && next.spot === null, `the case is reached: he is down in another place (${JSON.stringify(next)})`);
+      assert.ok(!(next.x === 23 && next.y === 14), `another place is entered at its own way in, not at the tile he left 178 on (${JSON.stringify(next)})`);
     } finally { await g.ctx.close(); }
   });
 }

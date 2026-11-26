@@ -44,19 +44,9 @@ for (const [w, h] of [[412, 915], [522, 935]]) {
       const { page, errors } = await load(browser, url, fx("owner-note-145-hazel.save.json"), w, h);
       for (let i = 0; i < 7; i++) { await page.evaluate(() => window.__mb.act("left")); await page.waitForTimeout(500); }
       const r = await arrow(page);
-      assert.equal(r.sight, null, "the line does not name the one in sight");
-      assert.equal(r.back, "Leave", "the arrow reads Leave: " + JSON.stringify(r));
-      assert.deepEqual(errors, []);
-    } finally { await browser.close(); server.close(); }
-  });
-  test(`#156 (${w}x${h}): Drizzle named and in sight: the arrow still reads her page`, { skip }, async (t) => {
-    let browser; try { browser = await chromium.launch(); } catch { t.skip("no Chromium"); return; }
-    const { server, url } = await serve();
-    try {
-      const { page, errors } = await load(browser, url, fx("owner-note-156-drizzle.save.json"), w, h);
-      const r = await arrow(page);
-      assert.ok(r.sight, "Drizzle is in sight and named: " + JSON.stringify(r));
-      assert.equal(r.back, "her page", JSON.stringify(r));
+      assert.equal(r.sight, "70", "Hazel (met) is the one in sight");
+      assert.equal(r.named, "70", "and the one named: " + JSON.stringify(r));
+      assert.equal(r.back, "Leave", "her name is not on the line (the pod action leads it), so the arrow keeps its word: " + JSON.stringify(r));
       assert.deepEqual(errors, []);
     } finally { await browser.close(); server.close(); }
   });

@@ -30,9 +30,8 @@ test("a named Loika in sight: the bottom line names her, her name stands under h
   assert.equal(p.run("herInSight()"), "36");
   const backs = new Set(); for (const sp of [0, 400, 800, 1200, 1600]) { p.run(`S.day.spent = ${sp}`); const o = p.run("lineFor()"); backs.add(o.back);
     assert.ok([].concat(o.ctx).some(c => c.includes("Cinder")), "the line names her: " + JSON.stringify(o.ctx));
-    if (o.back === "her page") assert.ok(p.run("lineCtx(lineFor()).r").includes("Cinder"), "← says her page only while her name stands on the line, at light spent " + sp);
-    else assert.equal(o.back, "Leave", "her name off the line: ← reads what it read before"); }
-  p.run("S.day.spent = 0"); assert.ok(backs.has("her page") || backs.has("Leave"), [...backs].join());
+    assert.equal(o.back, "Leave", "#177: ← never says her page on the bottom line, light spent " + sp); }
+  p.run("S.day.spent = 0"); assert.deepEqual([...backs], ["Leave"]);
   assert.equal(p.run("menuItems = menuItems, (S.ui.from = 'patch', menuItems()[0].id)"), "her", "the first row while she is named");
   assert.equal(p.run("menuItems()[0].label"), "Cinder · her page");
   assert.equal(p.errors.length, 0, String(p.errors));
@@ -43,14 +42,6 @@ test("not in sight and no top-line target: no row, ← says Leave", () => {
   assert.equal(p.run("herNamed()"), null);
   assert.equal(p.run("(S.ui.from = 'patch', menuItems()[0].id)"), "leave");
   assert.equal(p.run("lineFor().back"), "Leave");
-});
-
-test("a long ✓ label squeezes her name out: ← falls back to menu, never her name", () => {
-  const p = start(13); meet(p);
-  const long = p.run("(() => { const o = { ok: 'Keep still · until midday', ctx: ['Cinder · a wild Loika · grazing', 'Cinder'], back: 'Leave', dim: false }; return herBack(o); })()");
-  assert.ok(long === "her page" || long === null);
-  const squeezed = p.run("(() => { const o = { ok: 'Offer fruit · Loika fruit eater more', ctx: ['Cinder · a wild Loika · grazing', 'Cinder'], back: 'Leave', dim: false }; return herBack(o); })()");
-  assert.equal(squeezed, null, "her name is not on the line: ← keeps what it read before (#156 QA)");
 });
 
 test("her page from the field, with ✓ in the menu: no light, no beat, nothing moves; ← comes back", () => {
