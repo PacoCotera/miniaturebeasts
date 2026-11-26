@@ -30,9 +30,8 @@ test("a named Loika in sight: the bottom line names her, her name stands under h
   assert.equal(p.run("herInSight()"), "36");
   const backs = new Set(); for (const sp of [0, 400, 800, 1200, 1600]) { p.run(`S.day.spent = ${sp}`); const o = p.run("lineFor()"); backs.add(o.back);
     assert.ok([].concat(o.ctx).some(c => c.includes("Cinder")), "the line names her: " + JSON.stringify(o.ctx));
-    if (o.back === "her page") assert.ok(p.run("lineCtx(lineFor()).r").includes("Cinder"), "← says her page only while her name stands on the line, at light spent " + sp);
-    else assert.equal(o.back, "Leave", "her name off the line: ← reads what it read before"); }
-  p.run("S.day.spent = 0"); assert.ok(backs.has("her page") || backs.has("Leave"), [...backs].join());
+    assert.equal(o.back, "Leave", "#177: ← never says her page on the bottom line, light spent " + sp); }
+  p.run("S.day.spent = 0"); assert.deepEqual([...backs], ["Leave"]);
   assert.equal(p.run("menuItems = menuItems, (S.ui.from = 'patch', menuItems()[0].id)"), "her", "the first row while she is named");
   assert.equal(p.run("menuItems()[0].label"), "Cinder · her page");
   assert.equal(p.errors.length, 0, String(p.errors));
@@ -45,19 +44,11 @@ test("not in sight and no top-line target: no row, ← says Leave", () => {
   assert.equal(p.run("lineFor().back"), "Leave");
 });
 
-test("a long ✓ label squeezes her name out: ← falls back to menu, never her name", () => {
-  const p = start(13); meet(p);
-  const long = p.run("(() => { const o = { ok: 'Keep still · until midday', ctx: ['Cinder · a wild Loika · grazing', 'Cinder'], back: 'Leave', dim: false }; return herBack(o); })()");
-  assert.ok(long === "her page" || long === null);
-  const squeezed = p.run("(() => { const o = { ok: 'Offer fruit · Loika fruit eater more', ctx: ['Cinder · a wild Loika · grazing', 'Cinder'], back: 'Leave', dim: false }; return herBack(o); })()");
-  assert.equal(squeezed, null, "her name is not on the line: ← keeps what it read before (#156 QA)");
-});
-
 test("her page from the field, with ✓ in the menu: no light, no beat, nothing moves; ← comes back", () => {
   const p = start(13); meet(p);
   const before = snap(p);
   key(p, "back"); assert.equal(p.run("S.phase"), "menu"); key(p, "confirm"); assert.equal(p.run("S.phase"), "her");
-  assert.ok(haveRow(p, /^Cinder$/) && haveRow(p, /a wild Loika/) && haveRow(p, /Met day 1 · T1 · morning/) && haveRow(p, /Her ways · 0 of 3/) && haveRow(p, /Last seen today/));
+  assert.ok(haveRow(p, /^Cinder$/) && haveRow(p, /a wild Loika/) && haveRow(p, /Met day 1 · T1 · morning/) && haveRow(p, /Last seen today/) && !haveRow(p, /ways/i));
   key(p, "back"); assert.equal(p.run("S.phase"), "patch");
   assert.equal(snap(p), before, "light, turn, wild ones, log and hold unchanged");
   assert.equal(p.errors.length, 0, String(p.errors));
@@ -69,7 +60,7 @@ test("✓ facing her in the field is still keep still, never her page", () => {
   assert.equal(p.run("S.phase"), "patch"); assert.ok(p.run("S.day.spent") > s0, "keep still spends its light as on main");
 });
 
-test("just met: her name, kind, where and when, last seen and her ways 0 of 3, and nothing else", () => {
+test("just met: her name, kind, where and when, last seen, and nothing else (no count of ways)", () => {
   const p = start(13); meet(p); p.run("openHer('36', 'patch')");
   const rows = say(p).filter(s => s !== "Log" && s !== "Case" && s !== "Riding");
   for (const bad of [/Where she keeps/, /Her young/, /shake|glow|full|curl|calm/i, /tuft|whisker|claw/]) assert.ok(!rows.some(s => bad.test(s)), String(bad) + " in " + rows.join(" | "));
@@ -82,7 +73,7 @@ test("a way appears once it has a note, her marking once her coat is read, her p
   p.run("openHer('36', 'patch')");
   const plain0 = p.run("coatRead('36')"); assert.equal(plain0, false);
   p.run("{ const r = habRecord(S.habits || (S.habits = {}), '36', 'shake'); r.ranges.mid = 1; r.got.place = 1; r.got.coat = 1; }");
-  let rows = say(p); assert.ok(rows.includes("Her ways · 1 of 3") && rows.some(s => /^2 ways not yet seen$/.test(s)), rows.join(" | "));
+  let rows = say(p); assert.ok(rows.includes("shaking dry") && !rows.some(s => /ways/i.test(s)), rows.join(" | "));
   assert.ok(p.run("coatRead('36')"), "her coat is read from a mid note");
   p.run("S.own = { '36': 'ownpod' }; S.pods.push({ id: 'ownpod', k: S.exp.patch.key, x: 3, y: 3, h: 0, how: 'own', g: 0 })"); rows = say(p);
   assert.ok(rows.some(s => /Her young · a pod at her bed/.test(s)), rows.join(" | "));
@@ -113,7 +104,7 @@ test("a wild one met four days ago with no Log entry is reached by ◀ ▶, in t
 test("an old save opens: a missing pages, met or seenAt shows nothing and throws nothing", () => {
   const p = start(13); meet(p);
   p.run("delete S.pages; delete S.seenAt; S.book = []; openHer('36', 'patch')");
-  const rows = say(p); assert.ok(rows.includes("Cinder") && rows.includes("Her ways · 0 of 3"), rows.join(" | "));
+  const rows = say(p); assert.ok(rows.includes("Cinder") && !rows.some(s => /ways/i.test(s)), rows.join(" | "));
   assert.ok(!rows.some(s => /Met day|Last seen/.test(s)), "no empty rows");
   p.run("S.pages = { '36': { morning: { x: 1, y: 1 } } }"); assert.ok(!say(p).includes("Where she keeps"), "a part with no haunt kind shows nothing");
   assert.equal(p.errors.length, 0, String(p.errors));

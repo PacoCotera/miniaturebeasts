@@ -30,14 +30,16 @@ function world({ crates = 2, mibis = 3, mend = { free: 1, paid: 0, broke: false 
   st.knownIds = known; st.probe = { shield, smax: 3, tier: 1, seq: 1 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: Array.from({ length: crates }, (_, i) => crate(i + 1, i === 1 ? "S02" : "S01")), mibis: [], carried: [], tier: 1, shield: 3 };
   st.carryReqs = reqs.map((r, i) => ({ seq: i + 1, ...r })); st.carrySeq = reqs.length;
+  S.crossCrates(st, sv);   // the crates cross at the dock (16b): arrivalOf reads the Station-held list, not the Companion's hold
   return { st, sv, r: { ok: true, docked: true, home: [], mend } };
 }
 const ui = (arrival, extra = {}) => ({ cargo: { state: "arrival", crate: 0, at: 0, mend: null, run: null, shown: null, drawn: null, arrival, ...extra }, meet: null, skip: null });
 const build = (w, a, extra) => cargoBuild({ st: w.st, sv: w.sv, settings, docked: true, light: "day", ui: ui(a, extra) }, cargo, home, frame);
 
 test("arrivalOf: the crates in the bay (the first three drawn), the one holding a species new to the player, the Probe's plates and the mend, who came home and who leaves", () => {
-  const w = world({ crates: 4, reqs: [] }); w.sv.bay = [crate(1), crate(2, "S02"), crate(3), crate(4)];
-  let a = arrivalOf(w.st, w.sv, w.r); assert.deepEqual([a.crates, a.shown, a.newCrates], [4, 3, [false, true, false]], "more than three: all counted, three drawn; S02 is new, S01 is known");
+  const w = world({ crates: 3, reqs: [] }); w.sv.bay = [crate(1), crate(2, "S02"), crate(3), crate(4)]; w.st.bayHeld = []; const x = S.crossCrates(w.st, w.sv);
+  assert.deepEqual([x.crossed, x.aboard], [3, 1], "OWNER 07:1x three sealed crates: the Bay takes three, the fourth stays aboard");
+  let a = arrivalOf(w.st, w.sv, w.r); assert.deepEqual([a.crates, a.shown, a.newCrates], [3, 3, [false, true, false]], "the three in the Bay are counted and drawn; S02 is new, S01 is known");
   assert.equal(holdsNewSpecies(w.st, w.sv.bay[0]), false); assert.equal(holdsNewSpecies(w.st, w.sv.bay[1]), true);
   assert.deepEqual(a.plates, { max: 3, whole: 1, mended: 1 }, "shield 2 after the dock's mend of 1: one whole before it");
   a = arrivalOf(w.st, w.sv, { ...w.r, mend: { free: 3, paid: 0, broke: true } }); assert.deepEqual([a.broke, a.plates.mended], [true, 3]);
@@ -73,7 +75,7 @@ test("the choice has no card: ✓ Open the crate, ← Later in the bottom line, 
   const fa = { ...arrivalOf(f.st, f.sv, f.r), phase: "choice", from: "home", choice: true }; assert.equal(fa.firstPod, true);
   b = build(f, fa); assert.deepEqual([b.line.ok, b.line.back, b.line.subject], ["Open the crate", "Later", "Your first pod is inside"]);
   assert.deepEqual(validate(b.props, schema, schema), [], "the props validate");
-  const e = world({ crates: 1, reqs: [] }); e.sv.bay[0].pods = []; assert.deepEqual(arrivalOf(e.st, e.sv, e.r).podCrates, [false], "a crate with no pod does not beat");
+  const e = world({ crates: 1, reqs: [] }); e.st.bayHeld[0].pods = []; assert.deepEqual(arrivalOf(e.st, e.sv, e.r).podCrates, [false], "a crate with no pod does not beat");
 });
 test("the beats' times come from the spec: the crates' stagger, the mibis' dither and hop, the mend, the end at 3500 (an empty trip closes at 2500)", () => {
   const w = world({ reqs: [] }), a = { ...arrivalOf(w.st, w.sv, w.r), back: [1, 2, 3] }, T = timesOf(cargo, a);

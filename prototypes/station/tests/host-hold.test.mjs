@@ -77,7 +77,7 @@ test("an arrival is tracked by the host (the idle timer waits for the end of Hom
 });
 test("Cargo's opening on the host: a one-crate opening of materials only is 600 (the inside view) + 600 (the supply's travel) + 300 (the tail) = 1500 ms (arrival B, cargo.json events.opening) and holds 20 ms longer; ✓ in it is Skip (the last crate: the end), a room key ends it at once and opens its section, and a Dock key waits for the end", () => {
   const mk = () => { const r = rig(); const crate = { id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] };
-    G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.skip = null; r.h.pendingDock = false; r.at(0); return r; };
+    G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; S.crossCrates(G.st, G.sv); UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.skip = null; r.h.pendingDock = false; r.at(0); return r; };
   { const { h, sent, at } = mk(); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" });
     assert.equal(UI.cargo.state, "opening"); assert.equal(h.holding(), true); assert.deepEqual(sent.find((m) => m.kind === "arrival" && m.target === "crate"), { t: "event", kind: "arrival", target: "crate", ms: 1500, hold: 1520, skip: true });
     h.pendingDock = true;   // main.mjs act: a Dock key in Cargo's opening waits
@@ -98,7 +98,7 @@ test("the Dock during a hold: kept and acting when the hold ends, before a kept 
 });
 test("two Dock presses during Cargo's opening leave the dock unchanged at its end (1520 ms); a Dock on Cargo leaves no plate", () => {
   const { h, at } = rig(); const crate = { id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] };
-  G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false; at(0);
+  G.sv.bay = [crate]; G.st.dock = { docked: true, at: 0 }; S.crossCrates(G.st, G.sv); UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false; at(0);
   onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); h.pendingDock = !h.pendingDock; h.pendingDock = !h.pendingDock; at(1520); assert.equal(G.st.dock.docked, true);
   const said = []; h.say = (m) => said.push(m); G.st.dock = { docked: false, at: 0 }; UI.cargo.state = "bay"; INTENTS.frame.dock(h); assert.deepEqual(said, [], "no plate on Cargo"); assert.equal(G.st.dock.docked, true);
 });
@@ -115,7 +115,7 @@ test("the idle timer counts 60 s from the last press, not during a hold, an arri
 test("the Dock key from Idle with crates in the bay plays the arrival over Home: the show event is held and skippable, and the host tracks it", () => {
   const { h, sent, at } = rig(); at(0); G.sv.mibis = []; UI.screen = "pods"; UI.idle = true; G.st.dock = { docked: false, at: 0 };
   G.sv.bay = [{ id: "c1", n: 1, turn: 2, at: 0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }];
-  assert.ok(S.bayCrates(G.st, G.sv).length > 0, "the rig has a crate in the bay");
+  assert.ok(S.aboardCrates(G.st, G.sv).length > 0, "the rig has a crate aboard: the dock crosses it into the Bay");
   INTENTS.frame.dock(h, true); assert.equal(UI.screen, "cargo"); assert.equal(UI.cargo.arrival.from, "vivarium");
   assert.deepEqual(sent.filter((m) => m.kind === "arrival").map((m) => [m.target, m.ms, m.hold, m.skip]), [["show", 3500, 3500, true]]); assert.equal(h.arriving(), true); assert.equal(h.holding(), true);
   at(3499); assert.equal(UI.cargo.arrival.phase, "show"); at(3500); assert.equal(UI.cargo.arrival.phase, "choice"); assert.equal(h.holding(), false, "the show's hold ends with the show");
@@ -223,7 +223,7 @@ const skipOf = (screen, target) => ({ t: "intent", seq: 9, screen, target, verb:
 const heldKey = (verb) => ({ t: "intent", seq: 9, screen: "cargo", target: "room", verb });
 const cargoRig = () => {
   const r = rig(); const crate = (id, n, turn) => ({ id, n, turn, at: 0, e: 3, d: 2, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
-  G.sv.bay = [crate("c1", 1, 2), crate("c2", 2, 3)]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.skip = null; r.h.pendingDock = false; r.at(0);
+  G.sv.bay = [crate("c1", 1, 2), crate("c2", 2, 3)]; G.st.dock = { docked: true, at: 0 }; S.crossCrates(G.st, G.sv); UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.skip = null; r.h.pendingDock = false; r.at(0);
   onFaceMessage(r.h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); return r;
 };
 const cargoEnd = () => ({ state: UI.cargo.state, shown: UI.cargo.shown, e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn, accepted: [...G.st.accepted], screen: UI.screen });

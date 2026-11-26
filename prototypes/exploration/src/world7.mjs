@@ -13,6 +13,7 @@ import { adaptCell } from './adapt7.mjs';
 
 export { realm7, CW, CH, REALM_REV };
 // The wild Loika's haunts and routines (walk W2): an overlay read from a mounted place, never part of the land (src/gen7/haunts.mjs)
+export { makeHauntWalk } from './gen7/haunt-walk.mjs';
 export { sitesOf as hauntSites, spotsFor as hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, haunt as hauntAt, standAt as hauntStand, nameOf as loikaName, isWary, routineOf } from './gen7/haunts.mjs';   // CW x CH: the tiles of a cell; the page's PW x PH is the place with its apron
 // The sector of a region (place.mjs sectorOf, every place of it, made from the realm alone: no place is built): per cell 4 x 4 blocks of ground class and level bit, and the realm's lines, marks,
 // destinations and stairs by cell. Plain data, so the places worker can make it and send it. { cls, lv: Uint8Array(NC * 16), lines: [{ c, k, pts }], marks: [{ c, k, x, y, ax }], dest: [{ c, kind }], ramps: [{ c, dir, x, y, hiA }] };

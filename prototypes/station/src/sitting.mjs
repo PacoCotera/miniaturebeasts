@@ -192,7 +192,7 @@ export function landPortrait(st, crateId) { const c = st.sittingCrates.find((x) 
 export const readyCrates = (st, settings, now) => st.sittingCrates.filter((c) => crateState(c, settings, now) === "ready");
 // Home's bay: the walk crates (when docked) and the sittings' crates that are ready; amber when anything waits.
 export function bayState(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const walk = docked(st) ? bayCrates(st, sv).length : 0, sitting = readyCrates(st, settings, now).length, total = walk + sitting;
+  const walk = bayCrates(st).length, sitting = readyCrates(st, settings, now).length, total = walk + sitting;
   return { walk, sitting, total, amber: total > 0, label: total ? "Open the bay" : "" };
 }
 export function openSittingCrate(st, crateId, settings = DEFAULT_SETTINGS, now = Date.now()) {

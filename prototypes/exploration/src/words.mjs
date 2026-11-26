@@ -9,6 +9,7 @@ export const WORDS = {
   reachLine: (n, total, tail) => 'Explored ' + n + ' of ' + total + (tail || ' in reach'), worldLine: (n, all) => 'Explored ' + n + ' of ' + all + ' places',
   // taking things (✓ labels, at most 24 characters)
   takeDew: 'Take the dew',
+  slabTake: { mat: 'Pick up the Essence', find: 'Pick up the find' },   // [copy] editorial (bus b3562f, row slab.take): ✓ on the old tile of a pushed slab, what lay under it; 19 characters max
   // refusals and counts against the cap (the thing stays where it is, nothing is spent)
   refuse: {
     dew: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the cup keeps its dew', charge: cap => 'Your Energy is full (' + cap + ' of ' + cap + ') · the stone keeps its charge',   // [copy] owner notes #75 #76: the 20 is his hold, not the stone's
@@ -59,6 +60,7 @@ WORDS.haunt = { reed: 'at the reeds', shore: 'at the water', sweep: 'in the tall
 
 // [copy] W3, ease and the carry (walk-design-1 W3): every line is a working word for the copywriter (placeholders say the meaning only).
 WORDS.ease = {
+  fed: 'fed',   // her stage word once he has fed her today (habits-out-build-1)
   stage: ['grazing', 'ears up', 'watching', 'gone'],   // her four stages, said under her name
   stirred: 'She stirred · ears up, still curled',   // [copy] night step 5: a sleeper's first heard step only stirs her
   heard: n => n ? n + ' heard that · she is watching' : 'It heard that · it is watching', heardTwice: n => n ? n + ' heard that again · she is going' : 'It heard that again · it is going', gone: n => n ? n + ' has gone from here for the day' : 'It has gone from here for the day', settled: n => n ? n + ' settles again' : 'It settles again',
@@ -78,23 +80,20 @@ WORDS.ease = {
 };
 // [copy] W4, habits that play and the notes they give (walk-design-1 W4; the range rule 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
 WORDS.habit = {
-  name: { shake: 'shaking dry', calm: 'calming a wary one', sleep: 'curling up to sleep' },
+  name: { shake: 'shaking dry', calm: 'calming a wary one', sleep: 'curling up to sleep', still: 'keeping still' },   // still [copy]: a note of her with no habit in play (habits-out-build-1); editorial's wording to confirm
   // the tell, then the four beats (editorial's page the editorial page on her habits section 1)
   tell: { shake: 'her nose lifts · the rain is thinning', calm: 'she stops · ears up, her head turns', sleep: 'she walks a small circle' },
   beat: {
-    shake: ['a shiver runs from her head back', 'the fur flies', 'she turns to the water and trots on', 'a tuft is left where she stood'],
+    shake: ['a shiver runs from her head back', 'the fur flies', 'she turns to the water and trots on', 'the drops settle where she stood'],   // [copy] last beat: no tuft is left (habits-out-build-1); editorial's wording to confirm
     calm: ['she stops and looks', 'she sits a little lower', 'the wary one\'s startle drops', 'it comes closer'],
     sleep: ['she goes round once', 'she folds her legs', 'her nose goes under her tail', 'her breathing slows'],
   },
-  note: 'Note it',                      // the ✓ label while she plays a habit in sight
-  noteCtx: 'note what you see of her now',
-  turn: 'Face her',                     // the ✓ label while she plays a habit in sight and the explorer faces away: it turns him to her (no light spent); the next ✓ is Note it
-  turnCtx: 'she is playing a habit: turn to her to note it',
   // what a note says, by range: the shape only when the sight gives no more (a far note never claims more)
-  shape: { shake: 'a small grey shape shivering', calm: 'she has stopped', sleep: 'a round shape low in the grass' },
+  shape: { shake: 'a small grey shape shivering', calm: 'she has stopped', sleep: 'a round shape low in the grass', still: 'a small shape in the grass' },
   noted: (name, habit, range, said) => name + ' · ' + habit + ' · ' + range + ' · ' + said,
   first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
   dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
+  fed: 'fed · tonight she sleeps in her pod',   // editorial's line, said when he feeds a named Loika (habits-out-build-1)
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
   asleep: 'asleep, curled up', asleepStirred: ' · she is stirring · no keepsake until she settles',   // [copy] night step 5: a sleeper's note (name, and the tail while she is stirred)
   curledSlot: 'Loika asleep: picture to come',   // [art] night step 5: the named empty slot of her curled token (night-camp piece 11), not signed yet
@@ -120,12 +119,11 @@ WORDS.watch = {
 };
 // [copy] her page (her-page-ui-1): the editor's final strings, her-page-canon-1 section 2. Every row shows only what he has been shown.
 WORDS.her = {
-  row: name => name + ' · her page', back: 'her page', backShort: 'menu', logOk: 'Her page', open: 'Her page',
+  row: name => name + ' · her page', logOk: 'Her page', open: 'Her page',
   watchLine: ['▲▼ closer · ▶ her page', '▶ her page'], others: '◀▶ others met', backTo: 'back',
   count: (i, n) => i + ' of ' + n, kind: 'a wild Loika', turn: t => 'T' + t,
   met: (d, part, t) => 'Met day ' + d + ' · ' + (t ? WORDS.her.turn(t) + ' · ' : '') + part,
   seen: (today, t, place) => ['Last seen ' + (today ? 'today' : 'on an earlier day') + (t ? ' · ' + WORDS.her.turn(t) : ''), place ? 'the ' + place : ''],   // two lines: when, then where
-  ways: (n, of) => 'Her ways · ' + n + ' of ' + of, unseen: n => n === 1 ? 'One way not yet seen' : n + ' ways not yet seen',
   inCase: 'in the Case', home: 'gone home', pod: where => 'Her young · a pod ' + where, podBed: 'at her bed',
   keeps: 'Where she keeps', bed: 'her bed',
 };
@@ -140,14 +138,10 @@ WORDS.prints = {
   went: (place, at) => ' and left for ' + place + ' ' + at, bed: 'her bed', placeAny: 'another haunt',
   place: { reed: 'the reed bank', shore: 'the shore', sweep: 'the tall grass', grove: 'the grove', outcrop: 'the rocks' },
   leftAt: { dawn: 'at first light', morning: 'in the morning', midday: 'at midday', afternoon: 'in the afternoon', dusk: 'at dusk', night: 'at nightfall' },
-  page: '',   // bug #118: no screen shows a wild one's page yet (W6c); the old ' · on her page' returns with it
+  page: ' · her page has it',   // editorial's key (approved still p-5b): the read is on her page
 };
 // [copy] W5 (walk-design-1): an empty haunt's drop, a wild one's own pod, the end of anonymous pods: working words for the copywriter.
 WORDS.w5 = {
-  dropTuft: name => ' · she left a tuft here' + (name ? ' · ' + name + "'s" : ''),   // the empty haunt's drop (a tuft of hers: the Coat's keepsake)
-  dropFull: ' · the satchel is full, the tuft stays',
-  ownPod: name => name + ' has young · a pod at her bed',
-  ownPodAway: 'A pod lies at a bed nearby',
   ownTag: name => name + "'s young",
   shedTuft: verb => ' · it left a tuft',
   shedAway: 'Something left a tuft',
