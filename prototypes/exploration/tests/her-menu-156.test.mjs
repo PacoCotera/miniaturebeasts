@@ -43,15 +43,21 @@ for (const [w, h] of [[412, 915], [522, 935]]) {
     const { server, url } = await serve();
     try {
       const { page, errors } = await load(browser, url, fx("owner-note-145-hazel.save.json"), w, h);
-      const r0 = await page.evaluate(() => { const m = window.__mb; m.act("back"); const it = m.menuItems()[0]; const o = JSON.stringify({ id: it.id, label: it.label, inSight: m.indInSight(true) ? 1 : 0 }); m.act("back"); return o; }).then(JSON.parse);   // as loaded: Hazel stands 2 tiles off, settled
-      assert.equal(r0.inSight, 1, "as loaded, an unnamed one is in view: " + JSON.stringify(r0));
-      assert.ok(!/her page/.test(r0.label) && !/Juniper/.test(r0.label), "as loaded: " + JSON.stringify(r0));
+      const her0 = await page.evaluate(() => window.__mb.herInSight());   // as loaded: Hazel (met, kind not known yet, settled) stands 2 tiles off; the line itself keeps the pod action ("3 to take"), which leads it
+      assert.equal(her0, "70", "the one the screen names is Hazel");
+      const r0 = await page.evaluate(() => { const m = window.__mb; m.act("back"); const it = m.menuItems()[0]; const o = JSON.stringify({ id: it.id, label: it.label, inSight: m.indInSight(true) ? 1 : 0 }); return o; }).then(JSON.parse);
+      assert.equal(r0.inSight, 1, "as loaded, she is in view: " + JSON.stringify(r0));
+      assert.equal(r0.label, "Hazel · her page", "as loaded: " + JSON.stringify(r0));
+      await page.evaluate(() => window.__mb.act("confirm")); await page.waitForTimeout(500);
+      const o0 = await page.evaluate(() => JSON.stringify({ phase: window.__mb.S.phase, name: window.__mb.S.named[window.__mb.S.ui.her && window.__mb.S.ui.her.id] })).then(JSON.parse);
+      assert.deepEqual(o0, { phase: "her", name: "Hazel" }, "✓ opens Hazel's page");
+      await page.evaluate(() => window.__mb.act("back")); await page.waitForTimeout(500);
       await page.waitForTimeout(500);
       for (let i = 0; i < 7; i++) { await page.evaluate(() => window.__mb.act("left")); await page.waitForTimeout(500); }
       const r = await menuRow(page);
       assert.equal(r.phase, "menu", JSON.stringify(r));
-      assert.equal(r.inSight, 1, "an unnamed one is in view: " + JSON.stringify(r));
-      assert.ok(!/her page/.test(r.label) && r.id !== "her", "no page offered: " + JSON.stringify(r));
+      assert.equal(r.inSight, 1, "she is still in view: " + JSON.stringify(r));
+      assert.equal(r.label, "Hazel · her page", "her page is the first row: " + JSON.stringify(r));
       assert.ok(!/Juniper/.test(r.label), JSON.stringify(r));
       assert.deepEqual(errors, []);
     } finally { await browser.close(); server.close(); }
