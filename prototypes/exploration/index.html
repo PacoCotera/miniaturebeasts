@@ -1064,15 +1064,23 @@ const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], rings: 
 let NOW = 0;
 const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
-function fxMsg(text, pri) { FX.notes.push({ text, pri: pri == null ? 2 : pri }); composeMsg(); }
+const OWN_HOLD_MS = 2000;   // a line his own ✓ just caused keeps the box this long; a sign that arrives meanwhile waits (slab-full-1)
+function fxMsg(text, pri) { const n = { text, pri: pri == null ? 2 : pri }; if (FX.ownRun) { n.own = 1; FX.ownUntil = NOW + OWN_HOLD_MS; } FX.notes.push(n); composeMsg(); }
 function composeMsg() {
   const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = ''; FX.held = []; FX.sign = null;
   // A sign (one picture, one line) stands alone: it never joins another sign or a note. The best sign shows when no plain note
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
   // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
   const keep = firstWalk() ? n.filter(x => !x.once || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
-  const sg = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign))[0], plain = keep.filter(x => !x.sign);
-  if (sg && !plain.some(x => x.pri > sg.pri)) { FX.sign = sg; FX.msg = sg.text; for (const x of plain) if (!x.once) FX.held.push(x); return; }
+  // slab-full-1: a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
+  // steering (design, 11-26): a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
+  const ownHold = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
+  const hz = ownHold ? signs.find(x => FIRST_HAZARD.includes(x.sign)) : null, holding = ownHold && !hz;
+  if (hz) { signs.splice(signs.indexOf(hz), 1); signs.unshift(hz); }
+  FX.deferred = holding && signs[0] ? signs[0] : null;
+  if (FX.deferred && !FX.deferTimer) { const seq = FX.careSeq || 0; FX.deferTimer = setTimeout(() => { FX.deferTimer = 0; if ((FX.careSeq || 0) !== seq || !S) return; NOW = performance.now(); composeMsg(); if (!fieldFrozen()) settleOnce(); save(); }, Math.max(0, FX.ownUntil - NOW) + 30); }
+  const sg = holding ? null : signs[0], plain = keep.filter(x => !x.sign);
+  if (sg && (hz || !plain.some(x => x.pri > sg.pri))) { FX.sign = sg; FX.msg = sg.text; for (const x of plain) if (!x.once) FX.held.push(x); return; }
   // one line at a time: a second note never joins the first with " · "; it waits for the next action (the one-time lines wait, unspent, for their own trigger)
   for (const x of plain) { if (out.includes(x.text)) continue; if (out) { if (!x.once) FX.held.push(x); continue; } out = x.text; }
   FX.msg = out;
@@ -2471,6 +2479,7 @@ function occupant(key, x, y, ignore) {
   if (live.pt && live.pt !== ignore && live.pt.x === x && live.pt.y === y) return { type: 'pt' };
   const f = featAt(lay, key, x, y); if (f) return { type: 'feat', f };
   const p = podAt(key, x, y); if (p) return { type: 'pod', p };
+  const sl = lay.feats.find(f => f.kind === 's' && f.x === x && f.y === y && fs(key, f.id).left > 0); if (sl) return { type: 'slabLeft', f: sl };   // slab-full-1: what did not fit when the slab was pushed stays where it lay
   const fr = live.fr.find(q => q.x === x && q.y === y); if (fr) return { type: 'fruit', fr };
   const tf = live.tf.find(q => q.x === x && q.y === y); if (tf) return { type: 'tuft', tf };
   if (P && P.key === key && P.x === x && P.y === y && ignore !== 'player') return { type: 'player' };
@@ -3522,6 +3531,7 @@ function patchAction() {
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
+  if (o && o.type === 'slabLeft') return { label: o.f.under === 'mat' ? WORDS.slabTake.mat : WORDS.slabTake.find, run: () => takeSlabLeft(o.f) };
   if (o && o.type === 'tuft') return hn ? hers(hn) : { label: 'Pick up the tuft', run: () => takeTuft(o.tf) };
   if (o && o.type === 'pod') return { label: ex.cargo.pods.length >= ex.hold ? SWAP_TEXT.swapTitle : o.p.bur ? 'Dig up the pod' : 'Take the pod', run: () => takePod(o.p) };
   if (o && o.type === 'pt') return idleAct(P, lay);
@@ -3673,13 +3683,22 @@ function pushSlab(f) {
     S.pods.push({ id: 's:' + key + ':' + f.id, k: key, x: f.x, y: f.y, sp, h: 0, g: groundName(lay.land, lay.cave), how: 'slab' });
     fxGlint(f.x, f.y); logEv('A pod was under the slab');
   } else if (first && (f.under === 'mat' || f.under === 'find')) { // a material or a find lay under it (slabs-gen7-build-1; the words are editorial's slot)
-    const k = f.under === 'mat' ? 's' : 'd', got = addMat(k, f.under === 'mat' ? 2 : 1, f.x, f.y, null, true);
+    const k = f.under === 'mat' ? 's' : 'd', n = f.under === 'mat' ? 2 : 1, fits = !ex.dark && CAP - ex.cargo[k] >= n;
+    const got = addMat(k, n, ex.dark || ex.cargo[k] >= CAP ? null : f.x, f.y, null, fits);   // nothing fits: no "+0" floats up   // what fits goes in through the one take path; with the hold full addMat says so itself (its own full line)
     fxGlint(f.x, f.y); logEv('A slab · +' + got + ' ' + MAT[k]);   // the editor's slab lines (bus ba780e173d)
-    fxMsg(f.under === 'mat' ? 'Pushed · +' + got + ' Essence · it feeds the Station' : 'Pushed · +' + got + ' Data · it reads traits at home', 2);
+    if (fits) fxMsg(slabLine(f, got), 2);
+    else setFS(key, f.id, { left: n - got });   // slab-full-1: the rest lies on the old tile, takeable once there is room
   }
   advance('patch', { noise: 'act', ring: { x: tx, y: ty, r: 2 } });
   if (S.exp && S.exp.patch && !slabPushable(key, f)) fxOnce('wedged', 'The slab is wedged', 2);
 }
+// slab-full-1: ✓ on the old tile of a pushed slab takes what did not fit, through addMat; a full hold says so and takes no turn
+const slabLine = (f, got) => f.under === 'mat' ? 'Pushed · +' + got + ' Essence · it feeds the Station' : 'Pushed · +' + got + ' Data · it reads traits at home';   // the editor's slab lines (bus ba780e173d), said again when the rest is taken
+function takeSlabLeft(f) { if (darkRefuse()) return;
+  const ex = S.exp, key = ex.patch.key, k = f.under === 'mat' ? 's' : 'd', left = fs(key, f.id).left | 0;
+  if (ex.cargo[k] >= CAP) { fxMsg(WORDS.full(MAT[k], CAP), 2); return; }
+  const got = addMat(k, left, f.x, f.y, null); setFS(key, f.id, { left: left - got });
+  logEv('A slab · +' + got + ' ' + MAT[k]); if (got >= left) fxMsg(slabLine(f, got), 2); advance('patch', { noise: 'act' }); }
 // Can a slab still be pushed some way (a free tile beyond it, a free tile to stand on opposite)?
 function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), P = S.exp && S.exp.patch;
   return Object.values(DIRS).some(([dx, dy]) => { const tx = pos.x + dx, ty = pos.y + dy, sx = pos.x - dx, sy = pos.y - dy;
@@ -9085,7 +9104,7 @@ function act(k, mode) {
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (RT.view && S.phase === 'patch') { if (!viewPress(k)) return; }   // a view over the place (arrival look, Look) takes the press: consumed, never queued, no action spent
   if (k === 'call' && !['setup', 'map', 'patch', 'riding'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
-  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.careSeq = (FX.careSeq || 0) + 1; FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
+  if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.careSeq = (FX.careSeq || 0) + 1; FX.msg = ''; FX.sign = null; FX.hintNote = null; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; if (FX.deferred) { FX.notes.push(FX.deferred); FX.deferred = null; } FX.ownUntil = 0; if (FX.deferTimer) { clearTimeout(FX.deferTimer); FX.deferTimer = 0; } if (FX.notes.length) composeMsg(); }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
   switch (S.phase) {
     case 'setup':
@@ -9115,7 +9134,7 @@ function act(k, mode) {
         else if (k === 'back') { S.ui.swap = null; fxMsg(SWAP_TEXT.kept); }
         break; }
       if (isDir) patchStep(k, mode || 'creep');
-      else if (k === 'confirm') { const a = patchAction(); if (a.run) a.run(); else { FX.bumpAt = NOW; return; } }   // "Nothing here": no action spent
+      else if (k === 'confirm') { const a = patchAction(); if (a.run) { FX.ownRun = 1; try { a.run(); } finally { FX.ownRun = 0; } } else { FX.bumpAt = NOW; return; } }   // "Nothing here": no action spent
       else if (k === 'back') { if (doneEmpty() && !fieldFrozen()) leavePatch(); else openMenu(); }   // "← Leave": one press out of a finished place (docked: the menu)
       else if (k === 'call') callPlace();
       break;
