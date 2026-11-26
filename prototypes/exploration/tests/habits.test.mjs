@@ -148,12 +148,14 @@ for (const seed of [7, 13]) {
       const d0 = S.exp.cargo.d, s0 = S.exp.cargo.samples.length, t0 = curLive().tf.length, n0 = (S.exp.stats.noted || []).length, sp0 = S.day.spent;
       S.named = S.named || {}; S.named[q.c.id] = q.c.ind.name;   // she is met: her page takes the haunt
       const a = patchAction(); const label = a.label; if (label === WORDS.prints.read) a.run(); const line = FX.msg;
-      const a2 = patchAction();
-      return JSON.stringify({ label, after: a2.label, pages: S.pages[q.c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dTufts: curLive().tf.length - t0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part, line });
+      const a2 = patchAction(); const spent1 = S.day.spent, n1 = S.exp.stats.prints.length; if (a2.label === WORDS.prints.read) a2.run();   // #122's free re-view keeps the label; otherwise another action is offered and is not run
+      const again = { prints: S.exp.stats.prints.length - n1, light: S.day.spent - spent1 };
+      return JSON.stringify({ label, after: a2.label, again, pages: S.pages[q.c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dTufts: curLive().tf.length - t0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part, line });
     })()`));
     assert.ok(!out.none, "at midday she has left a haunt of the morning");
     assert.equal(out.label, WORDS.prints.read, JSON.stringify(out));
-    assert.equal(out.prints.length, 1, "one read for each haunt each day");
+    assert.equal(out.prints.length, 1, "one read for each haunt each day: a second run of the action leaves the one read");
+    assert.equal(out.again.prints, 0, "the second run adds no read"); assert.equal(out.again.light, 0, "the second run spends no light: " + JSON.stringify(out));
     assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
     assert.equal(out.dData, 0); assert.equal(out.dSamples, 0, "habits-out-build-1: the prints give no keepsake"); assert.equal(out.dTufts, 0, "no tuft is left"); assert.ok(out.line.endsWith(" · her page has it"), out.line); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
     assert.deepEqual(p.errors, []);
