@@ -9,7 +9,7 @@ import { haunt as hauntOf } from './gen7/haunts.mjs';
 export const HABITS = Object.freeze(['shake', 'calm', 'sleep']);
 export const BEATS = 4;
 // what each habit leaves when she is watched from near, and the Station chapter it answers (the walk design, section 8: a tuft is the Coat's, a whisker the Face's, a shed claw the Legs & Tail's)
-export const SAMPLE = Object.freeze({ shake: Object.freeze({ item: 'tuft', chapter: 'coat' }), calm: Object.freeze({ item: 'whisker', chapter: 'face' }), sleep: Object.freeze({ item: 'claw', chapter: 'legs-tail' }) });
+export const SAMPLE = Object.freeze({ calm: Object.freeze({ item: 'whisker', chapter: 'face' }), sleep: Object.freeze({ item: 'claw', chapter: 'legs-tail' }) });
 export const WANTS = Object.freeze(['place', 'coat', 'face']);   // the three things a note can give (the range rule 2): where she goes, her coat, her face
 export const SATCHEL = 8;                                         // satchel slots for samples, drops, packs, materials and food (the walk design, section 8)
 
