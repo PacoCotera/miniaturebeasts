@@ -164,7 +164,7 @@ test("a painted portrait is a second wait: with the wait over and the painting n
 
 test("open the crate: the portrait is delivered, the crate leaves the bay, the mibi may not sit again, and a walk crate and a sitting crate share the lamp", () => {
   const st = world(1), m = walked(st, st.mibis[0]); T.devGrantSitting(st, T0); const c = T.beginSitting(st, m, "calm", "wood", settings, T0).crate;
-  st.dock = { docked: true, at: T0 }; const sv = { bay: [{ id: "x1", n: 1, turn: 3, pods: [] }] };
+  st.dock = { docked: true, at: T0 }; const sv = { bay: [{ id: "x1", n: 1, turn: 3, pods: [] }] }; st.bayHeld = sv.bay.slice();   // crossed at the dock
   assert.equal(T.bayState(st, sv, settings, T0 + 4 * H).total, 2, "one walk crate and one sitting crate");
   const r = T.openSittingCrate(st, c.id, settings, T0 + 4 * H); assert.ok(r.ok); assert.equal(r.ribbon, m.name + "'s portrait"); assert.equal(m.portrait.state, "delivered"); assert.equal(m.portrait.at, T0 + 4 * H);
   assert.deepEqual(st.sittingCrates, []); assert.equal(T.bayState(st, sv, settings, T0 + 4 * H).total, 1);

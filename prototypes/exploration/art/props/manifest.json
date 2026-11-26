@@ -12,6 +12,8 @@
   "nest": {"file": "out/prop-nest.png", "size": [32, 32], "content": [30, 23], "frames": 1, "model": "same, sheet A", "slot_in_game": "NEST()"},
   "crack": {"file": "out/prop-crack.png", "size": [32, 32], "content": [30, 25], "frames": 1, "model": "same, sheet A", "slot_in_game": "CRACK()"},
   "exit": {"file": "out/prop-exit.png", "size": [32, 32], "content": [32, 24], "frames": 1, "note": "frame 2 (swayed tufts) not painted; waits for the AD's sign-off of this exit", "model": "fal Nano Banana Pro paint on magenta with a signed tuft as reference (phase 2c)", "calls": 1, "mxn": 3, "slot_in_game": "exitArt(fr)"},
+  "sealed crate lid": {"file": "crate-sealed-lid.png", "size": [48, 36], "frames": 1, "model": "code-drawn in the game palette (pixel desk, rule 18b), bug 172; make_crate.py in tools/credit-runner/runs/bug172-crate-1/scripts", "calls": 0, "mxn": 0, "slot_in_game": "drawCargo (the Case lid)"},
+  "sealed crate icon": {"file": "crate-sealed-icon.png", "size": [16, 14], "frames": 1, "model": "code-drawn in the game palette (pixel desk, rule 18b), bug 172", "calls": 0, "mxn": 0, "slot_in_game": "crateArt() (the top bar's bay count)"},
   "fruit": {"file": "out/prop-fruit.png", "size": [12, 12], "content": [11, 12], "frames": 1, "model": "Retro Diffusion rd_pro__topdown, sheet B (128x128) cut", "slot_in_game": "FRUIT()"},
   "hole": {"file": "out/prop-hole0.png", "size": [32, 32], "content": [30, 25], "frames": 1, "model": "same, sheet B", "slot_in_game": "holeArt(0)"},
   "hole with glint": {"file": "out/prop-hole1.png", "size": [32, 32], "content": [30, 25], "frames": 1, "model": "same, sheet B (two yellow eyes painted in)", "slot_in_game": "holeArt(1)"},
