@@ -20,6 +20,21 @@ test("seed 1: slabs stand pushable with something under, and a push takes what l
   }
 });
 
+// slabs-gen7-build-5: seed 16 cell 167 once laid its slab on a tile that cut 1 walked tile off from the ways in; the slab tile shut, every walked tile is still reached
+test("seed 16 cell 167: the slab tile solid leaves the walk whole from the ways in", () => {
+  const p = makePage({ gen: 7, console: "silent" });
+  p.run("newWorld(16);");
+  const r = JSON.parse(p.run(`(() => { const lay = layout7In(PL.ctx, G, 16, G.slot, '167', () => false, biomeVersion(S)), f = lay.feats.find(q => q.kind === 's'), w = lay.w, h = lay.h, slabI = f.y * w + f.x, RB = { '0,-1': 1, '0,1': 2, '-1,0': 4, '1,0': 8 };
+    const seen = new Uint8Array(w * h), st = [], walk = (x, y) => x >= 0 && y >= 0 && x < w && y < h && !T_BLOCK[lay.tiles[y * w + x]] && y * w + x !== slabI;
+    const starts = [lay.spawnPt]; for (const op of lay.openings) for (let k = op.from - 1; k <= op.to - 1; k++) starts.push(op.side === 'N' ? { x: k, y: 0 } : op.side === 'S' ? { x: k, y: h - 1 } : op.side === 'W' ? { x: 0, y: k } : { x: w - 1, y: k });
+    for (const s of starts) if (walk(s.x, s.y) && !seen[s.y * w + s.x]) { seen[s.y * w + s.x] = 1; st.push(s.y * w + s.x); }
+    while (st.length) { const i = st.pop(), x = i % w, y = (i / w) | 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (!walk(X, Y)) continue; const j = Y * w + X; if (!seen[j] && !(lay.rimSteps[i] & RB[dx + ',' + dy])) { seen[j] = 1; st.push(j); } } }
+    let lost = 0; for (let i = 0; i < w * h; i++) if (lay.compId[i] && i !== slabI && !seen[i]) lost++;
+    return JSON.stringify({ x: f.x, y: f.y, lost }); })()`));
+  assert.equal(r.lost, 0, "no walked tile is cut off by the slab");
+  assert.ok(!(r.x === 12 && r.y === 18), "the slab is not on the tile that split the walk");
+});
+
 // the Companion's path: a cell { ir, place } as the package holds it lays the same slab as the generator, and no strike tile is a slab's
 test("seed 1: the baked cell the Companion reads gives the same slab as the generator, and a slab never takes a strike's tile", () => {
   const p = makePage({ gen: 7, console: "silent" });

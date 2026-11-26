@@ -168,8 +168,19 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const fits = (x, y) => x >= 2 && y >= 2 && x < w - 2 && y < h - 2 && okAt(x, y, true) && !strikeAt.has(I(x, y)) &&Math.abs(x - spawnPt.x) + Math.abs(y - spawnPt.y) >= 4
       && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => wetT(tiles[I(x + dx, y + dy)])).length <= 1
       && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => free(x + dx, y + dy) && standOn(x - dx, y - dy));
-    let best = null, bs = -1;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { if (!fits(x, y)) continue; const sc = hash(o.seed, 'slab7at', o.cell, x, y); if (sc > bs) { bs = sc; best = { x, y }; } }
+    // slabs-gen7-build-5: fits() also needs "the slab tile solid leaves compId's reach whole" (a slab in a one-wide way would split the walk from a way in): the same flood as compId's, the slab tile shut.
+    const wholeWith = (sx, sy) => {
+      const seen = new Uint8Array(NP), stack = [], shut = I(sx, sy);
+      for (const pt of [spawnPt, ...openings.flatMap(runPts)]) { const i = I(pt.x, pt.y); if (walks(pt.x, pt.y) && i !== shut && !seen[i]) { seen[i] = 1; stack.push(i); } }
+      while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= w || Y >= h) continue; const j = I(X, Y); if (!seen[j] && j !== shut && !T_BLOCK[tiles[j]] && !(rimBits[i] & RIM_BIT[dx + ',' + dy])) { seen[j] = 1; stack.push(j); } } }
+      for (let i = 0; i < NP; i++) if (compId[i] && i !== shut && !seen[i]) return false;
+      return true;
+    };
+    const cands = [];   // the flood runs for the best-scoring tiles only, in order: the next best tile when one fails
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { if (!fits(x, y)) continue; cands.push({ x, y, sc: hash(o.seed, 'slab7at', o.cell, x, y) }); }
+    cands.sort((a, b) => b.sc - a.sc);
+    const best = cands.find(c => wholeWith(c.x, c.y)) || null;
     if (best) {
       const u = hash(o.seed, 'slab7under', o.cell) % 3;
       feats.push({ id: 's0', kind: 's', x: best.x, y: best.y, under: u === 0 ? 'pod' : hash(o.seed, 'slab7mat', o.cell) % 2 ? 'mat' : 'find' });
