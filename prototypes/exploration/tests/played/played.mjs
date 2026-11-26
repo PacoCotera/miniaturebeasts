@@ -340,6 +340,29 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 
+  // OWNER 11-25 ("ok" to the sleep rule): a late Loika beds down at her bed in the last light of dusk. Arranged saves (sleep-dusk-<seed>): the hero stands 2 tiles right of her bed, the clock at light 525.
+  // Played by the d-pad only (right, left, ...) until the light passes 549. State only asserts the case is reached (her at her bed, the light under 552); the verdict is her bed tile on the shot: a curled Loika is dark against the meadow.
+  for (const [seed, away] of [[7, 2], [42, 3], [21, 2]]) {
+    it(`s7 dusk bed (seed ${seed}): a late Loika is curled at her bed before light 552 [${tag}]`, async () => {
+      const g = await open(size, `sleep-dusk-${seed}`);
+      try {
+        assert.ok((await g.where()).phase === "patch" && await g.spent() === 525, "the case is reached: he stands in the place at light 525");
+        for (let i = 0; i < 40 && await g.spent() < 549; i++) await g.press(i % 2 ? "left" : "right", 100, 450);
+        const at = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { spent: m.S.day.spent, atBed: m.curLive().cr.some((c) => c.sp === 0 && m.atBedNow(c)) }; });
+        assert.ok(at.spent >= 549 && at.spent < 552 && at.atBed, `the case is reached: her at her bed with the light under 552 (${JSON.stringify(at)})`);
+        const r = await g.region(), tile = 48 * r.w / 450, im = await g.shot(`s7-${tag}-${seed}`);
+        const hero = blobs(im, { x: r.x, y: r.y + Math.round(r.h * 0.06), w: r.w, h: Math.round(r.h * 0.88) }, HERO)[0];
+        assert.ok(hero && hero.n > 100, "the hero is on the shot");
+        const cx = hero.box.x + hero.box.w / 2 - away * tile, cy = hero.box.y + hero.box.h / 2;   // her bed: `away` tiles left of the hero, on his row
+        const bed = { x: Math.round(cx - tile / 2), y: Math.round(cy - tile / 2), w: Math.round(tile), h: Math.round(tile) };
+        const dark = colour(im, r, ([R, G, B]) => R + G + B < 150, bed).n;
+        const beside = { ...bed, x: Math.round(hero.box.x + hero.box.w / 2 + tile / 2), y: bed.y }, bare = colour(im, r, ([R, G, B]) => R + G + B < 150, beside).n;   // the meadow on his other side, for the shot's own measure of 'no Loika'
+        console.log(`# s7 ${tag} seed ${seed}: ${dark} dark pixels in her bed tile, ${bare} in the meadow beside him (of ${bed.w * bed.h})`);
+        assert.ok(dark >= bed.w * bed.h * 0.04 && dark >= bare * 4 + 100, `her bed tile holds a curled Loika (${dark} dark pixels; the meadow beside him ${bare}; of ${bed.w * bed.h})`);
+      } finally { await g.ctx.close(); }
+    });
+  }
+
   it(`s6 a named Loika's page (his newest save #172, end-of-walk Case): ← reaches the Log and ✓ opens her page; the Case's bottom line shows it [${tag}]`, async () => {
     const g = await open(size, "172");
     try {

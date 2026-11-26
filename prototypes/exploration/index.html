@@ -1027,6 +1027,8 @@ const wTurn = () => S.turn + 1;
 // A save from before the day has none: its day starts at dawn.
 const freshDay = () => ({ spent: 0, camps: 0, pend: { trail: [], storm: [] }, camp: null, hab: {} });   // hab: W4, what each named Loika's habits did today ('played' | 'lost' | 'missed') and the sightings paid
 const dayPart = () => partOfDay(S.day ? S.day.spent : 0);
+const BED_LIGHT = 20, hpart = () => { const p = dayPart(); return p === "dusk" && S.day && S.day.spent >= DAY.light - DAY.parts[DAY.parts.length - 1][1] - BED_LIGHT ? "dusk2" : p; };   // the part her ROUTINE reads: the last 20 light of dusk is "dusk2" (a late one beds down then); dayPart() stays the clock's
+const hintWord = (c, h) => { const w = h && (hpart() === "dusk2" && h === c.ind.hs.bed ? WORDS.her.bed : WORDS.haunt[h.k]); return w ? " · " + w : ""; };   // the hint under a wild one: her haunt's word; at dusk's end, at her bed, "her bed"
 // by day: before dusk (a far note's where-she-goes is a by-day, clear-air note); the hour is read from the DAY table
 const byDay = () => DAY.parts.findIndex(q => q[0] === dayPart()) < DAY.parts.findIndex(q => q[0] === 'dusk');
 // the lamp's night: the part of day named night, in an expedition's place (night step 4)
@@ -2510,7 +2512,7 @@ function individualOf(w, lay) {
   return hs ? { doings, hs, name: loikaName(S.seed, S.cr.filter(q => q.sp === w.sp && q.id < w.id).length) } : null;
 }
 // where its routine says it is, now: the stand tile of the haunt it keeps at this part of day
-const routineSpot = (c, lay, key) => c.ind ? hauntStand(hauntAt(c.ind.hs, c.ind.doings, dayPart()), hauntFree(lay, key, c)) : null;
+const routineSpot = (c, lay, key) => c.ind ? hauntStand(hauntAt(c.ind.hs, c.ind.doings, hpart()), hauntFree(lay, key, c)) : null;
 // ---------- Ease and the carry of the wild Loika (walk W3; src/ease.mjs, src/walk-data.mjs CARRY) ----------
 // The place as the carry reads it: ground (reeds and tall grass are cover; sand, scree and shallow water are open), and what blocks sight (a raised edge, a rock or a tree prop). A view over the place, never part of the land.
 const EASE_BLOCKS = new Set([T.ROCK, T.TRUNK, T.CLIFF, T.CWALL, T.FACE, T.LIP]);
@@ -2634,7 +2636,7 @@ const habKey = (c, k) => c.id + ':' + k;
 const habName = c => (S.named && S.named[c.id]) || 'a Loika';   // owner note 156: her name comes on first sight (S.named); before she is met she is "a Loika", never the realm's name
 const hbVisible = (c, X) => !X.away(c) && inSight(c.x, c.y);
 // Night step 5: a SLEEPER is a named Loika at her bed from dusk through the night whose bedding-down is over (played, missed or lost by a heard step) and who is at ease again or only stirred. She can still be noted (one action, once a day for each range).
-function atBedNow(c) { const ind = c.ind, part = dayPart(), t = ind && ind.go && ind.go.part === part ? ind.go.t : null; return !!t && !!ind.hs && cheb(c, t) <= 1 && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed; }
+function atBedNow(c) { const ind = c.ind, part = hpart(), t = ind && ind.go && ind.go.part === part ? ind.go.t : null; return !!t && !!ind.hs && cheb(c, t) <= 1 && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed; }
 const sleeperOf = c => !!c.ind && !c.hide && !!S.day && isSleeper({ part: dayPart(), atBed: atBedNow(c), played: !!habDay()[habKey(c, 'sleep')], hasPlay: !!c.hb, gone: !!c.gone, ease: c.ease });
 const curledNow = c => sleeperOf(c) && !(c.ease >= 1);   // asleep and grazing: her curled token; ears up (stirred) shows her idle
 const sleepKey = (c, range) => 'sn:' + c.id + ':' + range;   // one sleep-curled note for each range a day, in her bedding-down or asleep
@@ -2649,7 +2651,7 @@ const habCardNext = c => { const sl = sleeperOf(c); for (const k of sl ? ['sleep
 const hbStorm = () => S.exp && S.exp.storm;
 const hbCore = X => !X.lay.cave && stormOff(X.lay.cell % MW) < 1.5;   // the band's core is over this place (a lull included)
 function habitDue(c, X) {
-  const ind = c.ind, hd = habDay(), part = dayPart(), tell = tellOf(ind.doings), col = X.lay.cell % MW;
+  const ind = c.ind, hd = habDay(), part = hpart(), tell = tellOf(ind.doings), col = X.lay.cell % MW;
   if (X.lay.cave) return null;
   const t = ind.go && ind.go.part === part ? ind.go.t : null, here = !!t && cheb(c, t) <= 1;
   // shake: after rain; the tell comes before the rain stops (her nose lifts), the beats as it has stopped
@@ -2660,7 +2662,7 @@ function habitDue(c, X) {
     if (!hbCore(X)) return { k: 'shake', n: 0 };
   }
   // sleep: curled at her bed, from dusk
-  if (!hd[habKey(c, 'sleep')] && sleepPart(part) && here && ind.hs && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed) return { k: 'sleep', n: 0 };
+  if (!hd[habKey(c, 'sleep')] && sleepPart(dayPart()) && here && ind.hs && hauntAt(ind.hs, ind.doings, part) === ind.hs.bed) return { k: 'sleep', n: 0 };
   // calm: a wary one has come near her (the window of the day, habitWorld)
   const v = c.visitor && X.live.cr.find(q => q.id === c.visitor);
   if (!hd[habKey(c, 'calm')] && v && !v.hide && ['idle', 'seek', 'watch'].includes(v.st) && cheb(v, c) <= 4 && here) return { k: 'calm', n: 0, v: v.id };
@@ -2875,7 +2877,7 @@ function hauntStep(X, c) {   // true when the routine has the creature's action
   if (c.gone && c.gone.night != null && c.gone.night !== S.turn) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; }   // night step 5: gone from her bed at night, she is at her dawn haunt next morning and the day is not lost
   if (c.gone && c.gone.night == null) { if (c.gone.part == null || c.gone.part !== dayPart()) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; } }   // bug #145: a day-time gone lasts to the next part of day, then her routine has her again (it kept her on one tile for the whole day)
   if (c.gone) { const t = c.gone.t; if (!t) return false; if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; } return true; }   // gone: its next haunt for the rest of the day
-  const part = dayPart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
+  const part = hpart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
   const t = c.ind.go.t; if (!t) return false;
   if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }
   return true;
@@ -4244,7 +4246,7 @@ function creatureTick(c, X) {
     else if (!(c.st === 'approach' && curious)) { c.st = 'alert'; c.t = 2; }
   }
   // #145: at a part-of-day turn a named Loika who is alert or watching is let go to her routine (as the gone is at the turn): hauntStep sets the new part's haunt; the hearing model takes her again on the way, the ease is kept
-  if (c.ind && !c.gone && (c.st === 'alert' || c.st === 'watch') && c.ind.go && c.ind.go.part !== dayPart()) { c.st = 'idle'; c.t = 0; c.go = 0; }
+  if (c.ind && !c.gone && (c.st === 'alert' || c.st === 'watch') && c.ind.go && c.ind.go.part !== hpart()) { c.st = 'idle'; c.t = 0; c.go = 0; }
   // Act on the current state.
   switch (c.st) {
     case 'flee': { const n = Math.min(2, c.fl == null ? (c.t >= 2 ? 2 : 1) : c.fl); stepAway(X, c, P, n); if (c.fl != null) c.fl -= n; } if (--c.t <= 0) { c.st = 'watch'; c.t = 3; } break;
@@ -8911,9 +8913,9 @@ function lineBase() {
       let wild = null; let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) { ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
         const nm = o.c.ind && S.named && S.named[o.c.id];   // a met one is named, and says where it keeps this part of day
-        if (nm && !S.known.includes(o.c.sp)) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, dayPart()), hw = h && WORDS.haunt[h.k] ? ' · ' + WORDS.haunt[h.k] : '', wk = nm + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name);   // her kind unidentified: her name and what she is, no diet, no act tag
+        if (nm && !S.known.includes(o.c.sp)) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h), wk = nm + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name);   // her kind unidentified: her name and what she is, no diet, no act tag
           ctx = [wk + hw, wk]; }   // her name is never alone, and the diet fallbacks are not appended
-        else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, dayPart()), hw = h && WORDS.haunt[h.k] ? ' · ' + WORDS.haunt[h.k] : '';
+        else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h);
           ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
         if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nm + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm)) : w; } }   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
       if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
