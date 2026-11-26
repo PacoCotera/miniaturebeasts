@@ -239,7 +239,7 @@ html.embed.raw #screen{transform:none}   /* ?embed&raw: the frame holds the scre
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, ROSTER, HERD, groundName, genLife as genLifeIn, passableIn, canStepIn, edgeKindIn, edgeIndex, softGround, bankEdges, EDGE, STAIR, TERR, genWorld, genPlace, placeTrees, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf } from "./src/world7.mjs";
+import { genWorld7, layout7 as layout7In, bakedCell as bakedCell7, reviveLayers, realm7, sectorReady, sectorNow as sectorMake, CW as OCW, CH as OCH, REALM_REV, hauntSites, hauntSpots, hauntsOn, hauntsKept, hauntsApart, doingsOf, hauntAt, hauntStand, loikaName, routineOf, makeHauntWalk } from "./src/world7.mjs";
 import { nightTable } from "./src/night.mjs";
 import { duskTable, duskLitRgb } from "./src/dusk.mjs";
 import { cutName, kindId, CUT_DIR } from "./src/riding-cut.mjs";
@@ -2496,35 +2496,11 @@ function findSlotFor(lay, key, pod, ent) {
 }
 // ---------- Haunts and routines of the wild Loika (walk W2; src/gen7/haunts.mjs) ----------
 // An overlay read from a mounted place, never part of the land: the view of the place's own props and ground, the sites it offers, and for each Loika its doings, three haunts and a bed.
-function hauntView(lay) {
-  const pl = lay.baked && lay.baked.place, sprites = PL.ctx && PL.ctx.ts && PL.ctx.ts.sprites; if (!pl || !sprites) return null;
-  const famOf = k => /^tall-grass/.test(k) ? 'sweeps' : /^tree-/.test(k) ? 'trees' : /^boulder/.test(k) ? 'rocks' : /^reed/.test(k) ? 'reeds' : null;
-  const props = [];
-  for (const q of pl.props) { const s = sprites[q.kind], fam = s && famOf(s.kind); if (fam) props.push({ fam, kind: s.kind, x: Math.floor(q.x / 48) - 1, y: Math.floor(q.y / 48) - 1 }); }
-  for (const f of lay.feats) if (f.tree === 'hollow') props.push({ fam: 'trees', kind: 'tree-hollow', x: f.x, y: f.y });
-  const t = (x, y) => x < 0 || y < 0 || x >= lay.w || y >= lay.h ? -1 : lay.tiles[y * lay.w + x];
-  return { w: lay.w, h: lay.h, props, reeds: [], water: (x, y) => t(x, y) === T.WATER || t(x, y) === T.DEEP, land: (x, y) => { const v = t(x, y); return v >= 0 && !T_BLOCK[v] && !NOSTAND(v); } };
-}
-// The ground walked from the place's ways in (every tile along each opening that is not closed, and the place's own start where a walk with no side starts), four-way over every tile that is not blocked ground or a
-// standing feature that is not small (SMALL_FEAT, the leaf cup and the strike mark, are stepped over). Pure of the walk: nothing here depends on where the pawn came from. at(x, y): the tile is reached; solid(x, y): it stops the pawn.
+// The haunt walk (hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField) is src/gen7/haunt-walk.mjs; the page's runtime state is handed in here, read each time, never copied.
+const { hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField } = makeHauntWalk({
+  get PL() { return PL; }, featAt: (lay, key, x, y) => featAt(lay, key, x, y), openingKind: (lay, o) => openingKind(lay, o), rimRefuses: (lay, fx, fy, tx, ty) => rimRefuses(lay, fx, fy, tx, ty),
+  bankTile: (lay, x, y) => bankTile(lay, x, y), get NOSTAND() { return NOSTAND; }, get SMALL_FEAT() { return SMALL_FEAT; } });
 const OPEN_FROM = { N: 'down', S: 'up', W: 'right', E: 'left' };
-function placeReach(lay, key) {
-  const solid = (x, y) => T_BLOCK[lay.tiles[y * lay.w + x]] || (() => { const f = featAt(lay, key, x, y); return !!f && !SMALL_FEAT.includes(f.kind); })();
-  const reached = new Uint8Array(lay.w * lay.h), ways = (lay.openings || []).filter(o => openingKind(lay, o).kind !== 'closed'), starts = [lay.spawnPt];
-  for (const o of ways) for (let k = o.from - 1; k <= o.to - 1; k++) starts.push(o.side === 'N' ? { x: k, y: 0 } : o.side === 'S' ? { x: k, y: lay.h - 1 } : o.side === 'W' ? { x: 0, y: k } : { x: lay.w - 1, y: k });   // adapt7.mjs runPts
-  const q = [];
-  for (const e of starts) if (e && e.x >= 0 && e.y >= 0 && e.x < lay.w && e.y < lay.h && !reached[e.y * lay.w + e.x] && !solid(e.x, e.y)) { reached[e.y * lay.w + e.x] = 1; q.push([e.x, e.y]); }
-  for (let k = 0; k < q.length; k++) { const [cx, cy] = q[k];
-    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = cx + dx, Y = cy + dy, i = Y * lay.w + X; if (X < 0 || Y < 0 || X >= lay.w || Y >= lay.h || reached[i] || solid(X, Y)) continue; reached[i] = 1; q.push([X, Y]); } }
-  return { solid, at: (x, y) => x >= 0 && y >= 0 && x < lay.w && y < lay.h && !!reached[y * lay.w + x] };
-}
-// a site stands only where the pawn can come to it: its tile or the one beside it is reached from the place's ways in, with a front and a side spot 3 to 5 tiles off (E8)
-const hauntStandable = (lay, key) => { const r = placeReach(lay, key); return (x, y) => r.at(x, y) && !r.solid(x, y); };
-const hauntSitesOf = lay => lay.haunts || (lay.haunts = (() => { const v = lay.cave ? null : hauntView(lay); if (!v) return []; const ok = hauntStandable(lay, lay.key);
-  // a spare land site (#145) must lie on the walkable ground she walks (a path from it reaches most of the place), never in a pocket she could not leave
-  let reachN = 0; for (let i = 0; i < lay.reach.length; i++) if (lay.reach[i]) reachN++;
-  const roomy = s => { if (s.k !== 'land') return true; const d = pathField(lay, s, null, lay.key); let n = 0; for (let i = 0; i < d.length; i++) if (d[i] >= 0 && lay.reach[i]) n++; return n >= .6 * reachN; };
-  return hauntSites(v).filter(s => roomy(s) && (ok(s.x, s.y) || ok(s.x + 1, s.y) || ok(s.x - 1, s.y) || ok(s.x, s.y + 1) || ok(s.x, s.y - 1)) &&(sp => sp.front && sp.side)(hauntSpots(s, ok))); })());
 // the tile can be stood on and is free now (a place's reach, not blocked ground, no feature, no one there)
 const hauntFree = (lay, key, who) => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1 && y < lay.h - 1 && !!lay.reach[y * lay.w + x] && !T_BLOCK[lay.tiles[y * lay.w + x]] && !NOSTAND(lay.tiles[y * lay.w + x]) && !occupant(key, x, y, who) && !lay.feats.some(f => f.x === x && f.y === y);
 // A kind with a routine base is an individual of its land: { doings, hs (water, grass, third, bed), name }. The haunts after S.turn nights are a pure walk from the seed and the id.
@@ -4103,23 +4079,6 @@ function stepToward(X, who, tgt, n) {
     who.held = 0;
     who.px = who.x; who.py = who.y; who.x = best.x; who.y = best.y; if (best.dx) who.face = best.dx;
   }
-}
-// Routine walks (bug #121): a short path search inside the place. The walking distance to the target is found once per place and target (BFS over the walkable tiles, rims respected, one step costs one) and each turn takes the neighbour that is nearer by it, so a wall or a bay in the way no longer holds her. A creature on the way: the search is run again with the tiles creatures stand on closed (a way round); with none she waits, and after 3 waits stepToward's sidestep and back-step take over (as in PR 532).
-const PATH_FIELDS = new WeakMap();
-// A tile nothing walks onto whatever stands there (a trunk, a rock, a stone or other feature): the same ones canStand refuses by occupant(), so the field and the step agree (bug #121: the field ran through a trunk, step one followed it and step two, on the creature-shut field, turned back).
-const staticShut = (lay, key, x, y) => T_BLOCK[bankTile(lay, x, y) ? T.BANK : lay.tiles[y * lay.w + x]] || !!featAt(lay, key, x, y);
-function pathField(lay, t, shut, key) {   // shut(x, y): a tile closed for this run only (never cached); key: the place, for its features
-  let m = PATH_FIELDS.get(lay); if (!m) { m = new Map(); PATH_FIELDS.set(lay, m); }
-  const k = t.x + ',' + t.y; let d = shut ? null : m.get(k); if (d) return d;
-  const w = lay.w, h = lay.h; d = new Int16Array(w * h).fill(-1);
-  if (t.x < 0 || t.y < 0 || t.x >= w || t.y >= h) return d;
-  const q = [t.x + t.y * w]; d[q[0]] = 0;
-  for (let i = 0; i < q.length; i++) { const cx = q[i] % w, cy = (q[i] / w) | 0;
-    for (const [dx, dy] of Object.values(DIRS)) { const ax = cx + dx, ay = cy + dy;
-      if (ax < 0 || ay < 0 || ax >= w || ay >= h || d[ay * w + ax] >= 0 || NOSTAND(lay.tiles[ay * w + ax]) || rimRefuses(lay, ax, ay, cx, cy) || staticShut(lay, key, ax, ay) || (shut && shut(ax, ay))) continue;
-      d[ay * w + ax] = d[q[i]] + 1; q.push(ay * w + ax); } }
-  if (!shut) { if (m.size > 40) m.clear(); m.set(k, d); }
-  return d;
 }
 function pathNext(X, who, d) {   // the neighbour nearer the target by field d that she can stand on
   const w = X.lay.w, here = d[who.y * w + who.x]; let best = null, bd = here;
