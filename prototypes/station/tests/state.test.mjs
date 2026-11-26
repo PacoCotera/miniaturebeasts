@@ -236,8 +236,8 @@ test("need: crates, then new pods, then glints, then unread pods", () => {
 test("developer seeds go through the same rules: a seeded crate arrives at the dock, a pasted genome is checked whole", () => {
   const { sv, st } = world([]); S.normalize(st);
   assert.equal(S.seedCrate(st, "S05", 3, 42).ok, true);
-  assert.equal(S.bayCrates(st, sv).length, 1);
-  S.dockKey(st, sv, settings, 1); S.openBay(st, sv, settings, 1);
+  assert.equal(S.aboardCrates(st, sv).length, 1, "the crate waits aboard until the dock"); assert.equal(S.bayCrates(st).length, 0);
+  S.dockKey(st, sv, settings, 1); assert.equal(S.bayCrates(st).length, 1, "the dock took it across"); S.openBay(st, sv, settings, 1);
   assert.equal(st.tray.length, 3); assert.equal(st.tray[0].species, "S05"); assert.equal(st.tray[0].sp, 4, "S05 Tepor is the fifth place of the species list the Companion and the saves use (release 21a: all twenty are carried)");
   assert.equal(S.identify(st, st.tray[0], settings).newSp, true);
   assert.deepEqual(st.known, [4], "the Companion's known list carries every species of the list");
@@ -773,17 +773,17 @@ test("rooms: need() and needKey() say full after the docked crates and ahead of 
   st.e = 0; assert.deepEqual(S.needKey(st, sv, settings), { key: "full", act: "vivarium", ring: "resident" }); n = S.need(st, sv, settings); assert.deepEqual([n.label, n.ring], ["Make room", "resident"]);
   st.rooms = 4; st.e = 99; assert.equal(S.needKey(st, sv, { ...settings, rooms: 4 }).key, "budReady", "four rooms are not full with eight");
   const full = { ...settings, rooms: 1 }; st.rooms = 4; assert.equal(S.needKey(st, sv, full).ring, "resident", "no room can be added at four rooms");
-  const cs = [crate(1, [])]; sv.bay = cs; st.dock = { docked: true, at: 0 }; assert.equal(S.needKey(st, sv, full).key, "crates"); assert.equal(S.need(st, sv, full).act, "bay", "the docked crates come first");
+  const cs = [crate(1, [])]; sv.bay = cs; st.dock = { docked: true, at: 0 }; S.crossCrates(st, sv); assert.equal(S.needKey(st, sv, full).key, "crates"); assert.equal(S.need(st, sv, full).act, "bay", "the docked crates come first");
   const q = { id: "q1", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 3, k: null, shed: 5 }; const st2 = S.freshSt("w", 4, 1); S.normalize(st2); st2.dock = { docked: true, at: 0 };
   st2.sheds.push({ id: 5, name: "Dot", sp: 0, species: "S01", g: "meadow", due: 3, kinship: 0.125, genome: null, state: "due" });
-  S.openCrates(st2, svOf({ bay: [crate(1, [q])] }), settings, 1); assert.equal(st2.tray[0].shed, 5); assert.equal(st2.sheds[0].state, "found");
-  const p = { ...q, id: "q2", shed: undefined }; S.openCrates(st2, svOf({ bay: [crate(2, [p])] }), settings, 2); assert.equal(st2.tray.at(-1).shed, null);
+  S.openCrates(st2, null, settings, 1, [crate(1, [q])]); assert.equal(st2.tray[0].shed, 5); assert.equal(st2.sheds[0].state, "found");
+  const p = { ...q, id: "q2", shed: undefined }; S.openCrates(st2, null, settings, 2, [crate(2, [p])]); assert.equal(st2.tray.at(-1).shed, null);
 });
 
 test("R6 (C18, owed): a shed pod reads of {name}'s line where the tray names its find, the name from the record when the crate has none", () => {
   const q = { id: "q1", sp: 0, species: "S01", g: "meadow", how: "shed", gs: 3, k: null, shed: 5 }, st2 = S.freshSt("w", 4, 1); S.normalize(st2); st2.dock = { docked: true, at: 0 };
   st2.sheds.push({ id: 5, name: "Dot", sp: 0, species: "S01", g: "meadow", due: 3, kinship: 0.125, genome: null, state: "due" });
-  S.openCrates(st2, svOf({ bay: [crate(1, [q])] }), settings, 1); const p = st2.tray[0]; assert.deepEqual([p.how, p.shed, p.of], ["shed", 5, "Dot"]);
+  S.openCrates(st2, null, settings, 1, [crate(1, [q])]); const p = st2.tray[0]; assert.deepEqual([p.how, p.shed, p.of], ["shed", 5, "Dot"]);
   assert.deepEqual(S.podOriginLines(p), ["Found in the meadow,", "of Dot's line."], "the placeholder until the copywriter's C18");
   assert.deepEqual(S.podOriginLines({ ...p, of: "Fig", idd: 1 }), ["Found in the meadow,", "of Fig's line."]);
 });
@@ -791,7 +791,7 @@ test("R6 (C18, owed): a shed pod reads of {name}'s line where the tray names its
 test("fewer pods: a crate pod's why ('new' or 'bond') rides into the Station's pod; a plain pod, or an unknown why, carries none", () => {
   const st = S.freshSt("w", 4, 1); S.normalize(st); st.dock = { docked: true, at: 0 };
   const q = (id, why) => ({ id, sp: 0, species: "S01", g: "meadow", how: "meal", gs: 3, k: null, ...(why ? { why } : {}) });
-  S.openCrates(st, svOf({ bay: [crate(1, [q("a", "new"), q("b", "bond"), q("c"), q("d", "odd")])] }), settings, 1);
+  S.openCrates(st, null, settings, 1, [crate(1, [q("a", "new"), q("b", "bond"), q("c"), q("d", "odd")])]);
   assert.deepEqual(st.tray.map((p) => p.why ?? null), ["new", "bond", null, null]);
   assert.deepEqual(JSON.parse(JSON.stringify(st)).tray.map((p) => p.why ?? null), ["new", "bond", null, null], "kept in the save");
 });
@@ -807,4 +807,14 @@ test("R2: a crate pod with shed and genome opens into the tray with that genome 
   const landed = st.tray.concat(st.waiting).find((t) => t.id === o.plays[0].ids[0]);
   assert.deepEqual(landed.genome, genome, "the mibi's own line"); assert.equal(landed.shed, rec.id);
   assert.equal(st.sheds.find((r) => r.id === rec.id).state, "found");
+});
+
+test("the crossing (16b): at the dock the sealed crates leave the hold for the Bay, three at most; the fourth stays aboard; opening takes from the Bay list and a lift leaves them there", () => {
+  const pods = [loikaPod(1, 11)], { sv, st } = world([crate(1, pods), crate(2, pods), crate(3, pods), crate(4, pods)]); S.normalize(st);
+  assert.equal(S.aboardCrates(st, sv).length, 4); assert.equal(S.bayCrates(st).length, 0, "nothing waits at the Bay before the dock");
+  const r = S.dockKey(st, sv, settings, 1000); assert.deepEqual([r.crossed, r.aboard], [3, 1]);
+  assert.deepEqual(S.bayCrates(st).map((c) => c.id), ["x1", "x2", "x3"], "their order is kept"); assert.deepEqual(S.aboardCrates(st, sv).map((c) => c.id), ["x4"], "the one that did not fit stays aboard");
+  S.dockKey(st, sv, settings, 2000); assert.equal(S.bayCrates(st).length, 3, "a lift leaves the crates at the Bay"); S.dockKey(st, sv, settings, 3000); assert.equal(S.bayCrates(st).length, 3, "a second dock changes nothing");
+  const o = S.openCrates(st, sv, settings, 3000, [S.bayCrates(st)[0]]); assert.equal(o.ok, true); assert.equal(st.e, 3, "its supplies are counted when opened"); assert.deepEqual(S.bayCrates(st).map((c) => c.id), ["x2", "x3"]);
+  S.dockKey(st, sv, settings, 4000); S.dockKey(st, sv, settings, 5000); assert.deepEqual(S.bayCrates(st).map((c) => c.id), ["x2", "x3", "x4"], "room again: the crate aboard crosses at the next dock");
 });

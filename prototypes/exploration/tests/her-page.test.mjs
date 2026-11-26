@@ -128,6 +128,13 @@ test("the Log: ✓ Her page on an entry about a wild one met, none on one about 
   assert.equal(snap(p), before);
 });
 
+test("the end-of-walk Case: its bottom line names the Log and her pages, so he knows where a named one's details are", () => {
+  const p = start(13);
+  p.run("S.ui.caseEnd = 1; S.phase = 'cargo'");
+  const ctx = p.run("lineFor().ctx"); assert.ok(String(ctx).includes("Log, her pages"), String(ctx));
+  assert.equal(p.errors.length, 0, String(p.errors));
+});
+
 test("the watch view: ▶ opens her page with no light and no beat; ← comes back to the view", () => {
   const p = start(13); meet(p);
   p.run("{ const c = curLive().cr.find(q => q.id === 36); const P = S.exp.patch; c.x = P.x; c.y = P.y - 3; c.st = 'hab'; c.hb = { k: 'shake', n: 4, tell: 3, notes: {} }; }");

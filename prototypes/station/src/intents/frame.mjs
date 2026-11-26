@@ -98,7 +98,7 @@ export function dock(h, fromIdle = false, keysElsewhere = false) {
 export function sendOff(h) {
   const P = h.specs.frame.navigation.dock.plates;
   const lines = [];
-  if (S.bayCrates(h.st, h.sv).length) lines.push(P.crates);
+  if (S.aboardCrates(h.st, h.sv).length) lines.push(P.crates);
   for (const q of S.pendingCarry(h.st, h.sv)) { const m = S.mibiById(h.st, q.id); if (m && !m.released) lines.push(P.goes.replace("{Name}", m.name)); }
   if (lines.length) { h.say(lines[0], P.ms); lines.slice(1, 2).forEach((t) => h.at(P.ms, () => h.say(t, P.ms))); }
 }

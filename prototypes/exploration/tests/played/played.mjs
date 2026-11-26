@@ -198,6 +198,36 @@ for (const size of SCALE_SIZES) {
       assert.ok(edge(reg.x) <= 3 && edge(reg.x + reg.w - 3) <= 3, `no light word-pixels touch the window's edges (left ${edge(reg.x)}, right ${edge(reg.x + reg.w - 3)})`);
     } finally { await g.ctx.close(); }
   });
+  // QA verify-live-155 (412x915-S3-home-after, 390x844-S1): back on Station Home after the Bay the words at the left are cut ("et", "pen the Bay"). Played as QA did, by presses, on his #166 save: Dock, the Bay, ← back to Home.
+  it(`s5b Station Home after the Bay (QA verify-live-155): no word cut at the window's left or right edge [${tag}]`, { todo: "red, cause found (home-cut-s5b-1): ← from the Bay lands on the Vivarium screen (not Home's narrow form), drawn 1024 wide in the 530 lp window; its focus target plate.0 is at [718,244,278,34], right of the window, so panFor pans to x 478 and the left column is cut (9-12 light px at the left edge, 9-10 at the right). The face's narrow form is UI's: reported to UI" }, async () => {
+    const g = await open(size, "166");
+    try {
+      const dock = g.page.getByRole("button", { name: /Dock the Companion/ }).first();
+      console.log(`# s5b ${tag}: dock control "${await dock.getAttribute("aria-label", { timeout: 5000 }).catch(() => "?")}", caddy ${JSON.stringify(await g.page.evaluate(() => window.__play.caddy))}`);
+      const bb = await dock.boundingBox({ timeout: 5000 });
+      assert.ok(bb, "the case is reached: the Dock control is on screen");
+      await g.page.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); await wait(3000);
+      assert.equal(await g.page.evaluate(() => window.__play.owner), "station", "the case is reached: the Station is in view after Dock");
+      const state = () => g.page.evaluate(() => ({ pan: window.__play.pan, focus: window.__play.focus, plan: window.__play.plan }));
+      const bay = await state();
+      console.log(`# s5b ${tag}: in the Bay: pan ${JSON.stringify(bay.pan)} focus ${JSON.stringify(bay.focus)}`);
+      for (let i = 1; i <= 3; i++) {                        // ← back to Home (the screen read after each press, only to say where the case stands)
+        await g.press("back", 100, 2000);
+        const s = await state(); console.log(`# s5b ${tag}: after ← x${i}: screen ${s.focus.screen} pan ${JSON.stringify(s.pan)} focus ${JSON.stringify(s.focus)} view ${JSON.stringify(s.plan.view)}`);
+        if (s.focus.screen !== "cargo") break;
+      }
+      const st = await state(), plan = st.plan, d = size.dpr, sc = plan.screen;
+      const fp = await g.page.evaluate(() => { try { const p = window.__play.frames.station.contentWindow.__st.props; return p && p.focus ? { cur: p.focus.cur, narrow: p.narrow, screen: p.screen, ids: p.focus.targets.map((t) => t.id) } : null; } catch (e) { return String(e); } });
+      console.log(`# s5b ${tag}: the face's focus (props): ${JSON.stringify(fp)}`);
+      const im = await g.shot(`s5b-${tag}-home`);
+      const reg = { x: Math.round(sc.x * d), y: Math.round(sc.y * d), w: Math.round(sc.w * d), h: Math.round(sc.h * d) };
+      const light = ([R, G, B]) => R > 200 && G > 200 && B > 190;
+      const edge = (x0) => colour(im, reg, light, { x: x0, y: reg.y, w: 3, h: reg.h }).n;
+      const all = colour(im, reg, light), lp = (x) => Math.round(st.pan.x + (x - reg.x) / d / 0.6);   // device px on the shot -> lp on the face
+      console.log(`# s5b ${tag}: Home: screen ${JSON.stringify(sc)} view ${JSON.stringify(plan.view)} narrow ${plan.narrow} (NARROW_W 530); pan ${JSON.stringify(st.pan)}; focus ${JSON.stringify(st.focus)}; light words span lp ${all.box ? lp(all.box.x) + ".." + lp(all.box.x + all.box.w - 1) : "none"}; light px at the left edge ${edge(reg.x)}, at the right ${edge(reg.x + reg.w - 3)}`);
+      assert.ok(edge(reg.x) <= 3 && edge(reg.x + reg.w - 3) <= 3, `no light word-pixels touch the window's edges (left ${edge(reg.x)}, right ${edge(reg.x + reg.w - 3)})`);
+    } finally { await g.ctx.close(); }
+  });
 }
    // each test has its own browser context; the machine has the cores, and the land next door takes a while to draw
 for (const size of SIZES) {
@@ -285,6 +315,43 @@ for (const size of SIZES) {
       const wshot = await g.shot(`s3-${tag}-wait`), waited = blobs(wshot, hb, HERO)[0] || { n: 0 };
       console.log(`# s3 ${tag}: after Wait ${waited.n}`);
       assert.ok(waited.n >= hero.n * 0.75, `the hero is on screen after one Wait (${waited.n} of ${hero.n} pixels)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // QA repro-unknown-creature-1 (bus 351527b9ce), design 11-25: beside an unmet Untuva (sp 2, no individual) the bottom line read '✓ Unknown creature' and ✓ did nothing. It reads Keep still and ✓ waits.
+  // The case is set up by putting the creature on the tile he faces (a wild one's spawn is not ours to steer); the verdict is the light spent by pressing ✓ and the bottom line's pixels changing.
+  it(`s6 a dead ✓ (156-4, his save, patch 0,8): beside an unmet creature that is no individual, ✓ reads Keep still and spends light [${tag}]`, async () => {
+    const g = await open(size, "152");
+    try {
+      const put = await g.page.evaluate(() => {
+        const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp.patch, live = m.curLive();
+        S.known = S.known.filter((s) => s !== 2);
+        const f = m.frontOf(P);
+        live.cr.push({ id: 9e6, sp: 2, x: f.x, y: f.y, st: "idle", t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: 0.5, face: 1, ready: false, edgeIn: 1 });
+        return { label: m.patchAction().label, ind: live.cr.find((c) => c.id === 9e6).ind || null, known: S.known.includes(2) };
+      });
+      console.log(`# s6 ${tag}: before the press the line reads ${JSON.stringify(put.label)}`);
+      assert.equal(put.known, false, "the case is reached: he has not met the kind (an Untuva, sp 2)");
+      assert.equal(put.ind, null, "the case is reached: the creature is no individual");
+      assert.equal(put.label, "Keep still", "the bottom line beside it reads Keep still, not Unknown creature");
+      const spent0 = await g.spent();
+      await g.press("confirm", 100, 2500);
+      assert.ok(await g.spent() > spent0, `✓ spent light beside it (${spent0} -> ${await g.spent()})`);
+    } finally { await g.ctx.close(); }
+  });
+
+  it(`s6 a named Loika's page (his newest save #172, end-of-walk Case): ← reaches the Log and ✓ opens her page; the Case's bottom line shows it [${tag}]`, async () => {
+    const g = await open(size, "172");
+    try {
+      const phase = async () => (await g.where()).phase;
+      assert.equal(await phase(), "cargo", "the case is reached: the end-of-walk Case");
+      await g.shot(`s6-${tag}-1-case`);              // read by eye: the bottom line names ◀ Log, her pages
+      for (let i = 0; i < 6 && await phase() !== "log"; i++) await g.press("left");
+      assert.equal(await phase(), "log", "← from the Case reaches the Log");
+      await g.shot(`s6-${tag}-2-log`);
+      await g.press("confirm");
+      assert.equal(await phase(), "her", "✓ on the marked entry opens her page");
+      await g.shot(`s6-${tag}-3-her`);
     } finally { await g.ctx.close(); }
   });
 }
