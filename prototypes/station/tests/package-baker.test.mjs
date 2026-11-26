@@ -53,7 +53,8 @@ for (const [name, sv] of Object.entries(saves)) {
       const have = await store.readCell(kv, id, c), today = W7.bakedCell(kit.ctx, want.seed, want.slot, c, want.v);   // what the Companion bakes for itself
       const mine = store.bytesOfCell(want.seed, c, today.ir, today.place);   // baked-package-8: the cell is the .mbplace bytes (format 2) of what the worker makes, and its sha is theirs
       assert.ok(have instanceof Uint8Array, "cell " + c + " is bytes");
-      assert.deepStrictEqual(have, mine, "cell " + c);
+      assert.ok(have.length < mine.length, "cell " + c + " is kept deflated (baked-package-9)");
+      assert.deepStrictEqual(await store.inflateCell(have), mine, "cell " + c + " after the inflate");
       assert.equal(r.header.sha[c], await store.shaOfBytes(mine), "sha of cell " + c);
     }
   });

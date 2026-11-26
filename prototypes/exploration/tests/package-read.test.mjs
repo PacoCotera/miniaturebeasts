@@ -3,7 +3,7 @@
 //   node --test prototypes/exploration/tests/package-read.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { memKv, openPackage, putCell, putRegion, finishPackage, bytesOfCell, cellOfBytes } from "../src/package-store.mjs";
+import { memKv, deflateCell, openPackage, putCell, putRegion, finishPackage, bytesOfCell, cellOfBytes } from "../src/package-store.mjs";
 import { PLACES } from "./page-harness.mjs";
 import { bakedCell } from "../src/world7.mjs";
 
@@ -18,7 +18,7 @@ test("a cell in the package is here on the first read; one not in it yet is owed
   t.after(() => store.placesReset());
   store.placesOn(true);
   const kv = memKv(), h = await openPackage(kv, meta, order);
-  for (const c of [89, 90, 73]) await putCell(h, c, cellOf(c), "sha" + c);
+  for (const c of [89, 90, 73]) await putCell(h, c, await deflateCell(cellOf(c)), "sha" + c);
   await putRegion(h, [], []);
   assert.equal(store.packageState(seed, slot, v), "none", "before the page opens it");
   assert.equal(await store.packageUse(seed, slot, v, kv, 20), "part");
@@ -31,7 +31,7 @@ test("a cell in the package is here on the first read; one not in it yet is owed
   assert.deepEqual(asked, [], "nothing is asked of a worker for a region with a package");
   let came = false; const w = store.bakedWhen(seed, slot, v, 74).then(() => { came = true; });
   await new Promise((r) => setTimeout(r, 60)); assert.equal(came, false, "a wait for an owed cell does not end on its own");
-  await putCell(h, 74, cellOf(74), "sha74"); await putCell(h, 75, cellOf(75), "sha75");
+  await putCell(h, 74, await deflateCell(cellOf(74)), "sha74"); await putCell(h, 75, await deflateCell(cellOf(75)), "sha75");
   await w; assert.deepEqual(store.bakedGet(seed, slot, v, 74), expectOf(74), "74 came in from the package");
   await finishPackage(h);
   await new Promise((r) => setTimeout(r, 60));
@@ -51,7 +51,7 @@ test("no package for the region: today's path (nothing owed, the worker is asked
 
 test("a package of another region or version is not this one's", async (t) => {
   t.after(() => store.placesReset());
-  const kv = memKv(), h = await openPackage(kv, { ...meta, v: 9 }, order); await putCell(h, 73, cellOf(73), "s");
+  const kv = memKv(), h = await openPackage(kv, { ...meta, v: 9 }, order); await putCell(h, 73, await deflateCell(cellOf(73)), "s");
   assert.equal(await store.packageUse(seed, slot, v, kv, 0), "none");
   assert.equal(store.bakedGet(seed, slot, v, 73), null);
 });
@@ -69,8 +69,8 @@ test("baked-package-8: a package of format 1 (the object record) is another id a
   // a format 2 header whose cell record is an object (never bytes) or the bytes of another cell is not read
   const h = await openPackage(kv, meta, order);
   await kv.set(packageId(meta) + "#c73", { ir: { c: 73 }, place: { c: 73 } });
-  await putCell(h, 73, cellOf(73), "s73"); await kv.set(packageId(meta) + "#c73", { ir: { c: 73 }, place: { c: 73 } });
-  await putCell(h, 74, cellOf(73), "s74");   // the bytes of cell 73 where cell 74 stands
+  await putCell(h, 73, await deflateCell(cellOf(73)), "s73"); await kv.set(packageId(meta) + "#c73", { ir: { c: 73 }, place: { c: 73 } });
+  await putCell(h, 74, await deflateCell(cellOf(73)), "s74");   // the bytes of cell 73 where cell 74 stands
   assert.equal(await store.packageUse(seed, slot, v, kv, 0), "part");
   assert.equal(store.bakedGet(seed, slot, v, 73), null, "an object record is not read");
   assert.equal(store.bakedGet(seed, slot, v, 74), null, "bytes of another cell are not read");

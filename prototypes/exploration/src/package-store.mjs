@@ -1,7 +1,7 @@
 // The baked package: one region's baked places kept as ONE unit in the browser's IndexedDB, in its own database
 // (never the place store's LRU, PLACE_KEEP never touches it). The Station makes it (station/src/package-baker.mjs); a later step has the Companion read it.
 //   header   { format, id, seed, slot, v, realmRev, placeRev, tag, order: [cells in bake order], floor: n, done, whole, sha: { cell: sha256 hex }, ms: { floor, whole } }
-//   a cell   the .mbplace bytes (a Uint8Array, place format 2: the place and the bake's hold outputs, places/src/format/baked.mjs). The Station writes them; the Companion reads them through readBaked into the
+//   a cell   the .mbplace bytes DEFLATED (baked-package-9, a zlib stream; deflateCell / inflateCell below; the header's sha is of the inflated bytes) (a Uint8Array, place format 2: the place and the bake's hold outputs, places/src/format/baked.mjs). The Station writes them; the Companion reads them through readBaked into the
 //            { ir, place } object that layout() (adapt7.mjs) reads (place-store.mjs packageRead), the one read path. The header's sha256 of a cell is the bytes' own.
 //   region   { sites, banks }: the Hollow Tree sites and earth banks the worker sends with its cells
 // The unit is the REGION: the cells are written in bake order as they land (a package is usable while it grows: `done` of `order`), and a package of another rev or tile set is another id, removed once the new one is whole.
@@ -43,6 +43,12 @@ export async function shaOfBytes(bytes) {
   const h = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));
   return Array.from(h, x => x.toString(16).padStart(2, '0')).join('');
 }
+
+// baked-package-9: each cell is KEPT deflated (a zlib stream, RFC 1950: zlib on the Station, miniz's tinfl on the Companion). The sha is of the INFLATED .mbplace bytes, so it does not depend on the deflater.
+// deflateCell(bytes) -> the record the package stores; inflateCell(record) -> the .mbplace bytes cellOfBytes reads.
+const pipe = async (bytes, stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
+export const deflateCell = (bytes) => pipe(bytes, new CompressionStream('deflate'));
+export const inflateCell = (record) => pipe(record, new DecompressionStream('deflate'));
 
 // The browser's store: its own IndexedDB database, so nothing of the place store's list can evict it. kv: { get, set, del, keys }; tests give a Map-backed one.
 export async function idbKv() {

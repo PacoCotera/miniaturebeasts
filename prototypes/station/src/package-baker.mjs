@@ -33,7 +33,7 @@ export async function bakePackage(want, deps) {
       if (!m.ir) { failed++; console.warn('a place was not made for the package', m.cell, m.error); if (--left === 0) fin(); return; }
       chain = chain.then(async () => {
         const bytes = P.bytesOfCell(want.seed, m.cell, m.ir, m.place), sha = await P.shaOfBytes(bytes);   // the .mbplace bytes (format 2), the Station's write; the header's sha is theirs
-        await P.putCell(h, m.cell, bytes, sha);
+        await P.putCell(h, m.cell, await P.deflateCell(bytes), sha);   // baked-package-9: kept deflated; the sha is of the bytes
         await P.putRegion(h, m.sites, m.banks);
         if (deps.onProgress) deps.onProgress(h.header);
         if (deps.yieldTurn) await deps.yieldTurn();
