@@ -172,6 +172,8 @@ function drawnX(im, r, y0, y1) {
   return { lo, hi, w: hi - lo + 1 };
 }
 
+const frac = (x, y, w, h) => [x / 900, y / 1200, w / 900, h / 1200];   // s15: a box in pixels of the 412x915 game screen (900x1200), as fractions of it
+const F_CARD = frac(9, 9, 350, 50), F_CRATE = frac(49, 367, 60, 40), F_TOP = frac(9, 9, 240, 50);   // the card's "Expedition 1 ended", the crate's E1, the set-out's "Expedition 2"
 describe("the played game", { concurrency: 6 }, () => {
 for (const size of SCALE_SIZES) {
   const tag = `${size.w}x${size.h}`;
@@ -594,6 +596,41 @@ for (const size of SIZES) {
       const next = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, e = m.S.exp; return { phase: m.S.phase, key: e.patch && e.patch.key, x: e.patch && e.patch.x, y: e.patch && e.patch.y, spot: e.spot || null }; });
       assert.ok(next.phase === "patch" && next.key !== "178" && next.spot === null, `the case is reached: he is down in another place (${JSON.stringify(next)})`);
       assert.ok(!(next.x === 23 && next.y === 14), `another place is entered at its own way in, not at the tile he left 178 on (${JSON.stringify(next)})`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER 2025-10-25 22:19 (his rule): "an expedition is one Probe outing that seals one crate". Save exp-number-7 (seed 7, first expedition, one Energy taken from the stone in the first place, standing at the flag on the map), made by presses.
+  // Played: ← opens the menu, End expedition, ✓ (the Cargo preview), ✓ (sealed): the card reads "Expedition 1 ended" with crate E1; ✓ on to the next set-out: its top line reads "Expedition 2" (a camp, not night: the day waits).
+  // State only asserts the case is reached (phase, S.report.n, S.day.camps); the verdict is the pixels of those words against a shot of each (saves/exp-number-*.png: the card's line, the crate's label, the top line).
+  if (size.w === 412) it(`s15 expedition number (PR 658, seed 7): End expedition reads "Expedition 1 ended" with crate E1, and the next set-out's top line reads "Expedition 2" [${tag}]`, async () => {
+    const g = await open(size, "exp-number-7");
+    const m = (f) => g.page.evaluate(f);
+    const same = (im, name, f) => {
+      const r = g.r, ref = decodePNG(readFileSync(path.join(savesDir, name + ".png"))), x0 = r.x + Math.round(r.w * f[0]), y0 = r.y + Math.round(r.h * f[1]), w = Math.round(r.w * f[2]), h = Math.round(r.h * f[3]);
+      assert.deepEqual([ref.width, ref.height], [w, h], name + ": the shot of the words is the size of the region");
+      let n = 0; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = px(im, x0 + x, y0 + y), q = px(ref, x, y); if (p[0] !== q[0] || p[1] !== q[1] || p[2] !== q[2]) n++; }
+      return n;
+    };
+    try {
+      assert.equal((await g.where()).phase, "map", "the case is reached: he stands on the map");
+      assert.deepEqual(await m(() => { const S = window.__play.frames.companion.contentWindow.__mb.S; return [S.exp.n, S.exp.pos === S.exp.start, S.exp.cargo.e]; }), [1, true, 1], "the case is reached: expedition 1, at the flag, one Energy held");
+      await g.press("back", 100, 1500);
+      assert.equal(await g.menuRow(), "send", "the case is reached: the menu's selected row is End expedition");
+      await g.press("confirm", 100, 1500);                  // the Cargo preview of what End expedition will do
+      await g.press("confirm", 100, 3000);                  // seal
+      const card = await m(() => { const S = window.__play.frames.companion.contentWindow.__mb.S; return { phase: S.phase, n: S.report && S.report.n, camps: S.day.camps }; });
+      assert.deepEqual(card, { phase: "sealed", n: 1, camps: 1 }, "the case is reached: the sealed card of expedition 1, at a camp");
+      g.r = await g.region();      const im1 = await g.shot(`s15-${tag}-card`);
+      const word1 = same(im1, "exp-number-card-1", F_CARD), crate1 = same(im1, "exp-number-crate-e1", F_CRATE);
+      console.log(`# s15 ${tag}: the card's words differ from the shot by ${word1} pixels, the crate's label by ${crate1}`);
+      assert.equal(word1, 0, "the card reads Expedition 1 ended");
+      assert.equal(crate1, 0, "the crate on the screen is E1");
+      await g.press("confirm", 100, 4000);                  // ✓ on to the next set-out
+      assert.equal((await g.where()).phase, "setup", "the case is reached: the next set-out (✓ Set out)");
+      const im2 = await g.shot(`s15-${tag}-setout`);
+      const top2 = same(im2, "exp-number-top-2", F_TOP);
+      console.log(`# s15 ${tag}: the top line differs from the shot of "Expedition 2" by ${top2} pixels`);
+      assert.equal(top2, 0, "the set-out's top line reads Expedition 2");
     } finally { await g.ctx.close(); }
   });
 }
