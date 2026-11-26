@@ -10,7 +10,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
-import { decodePNG } from "../../../ui/png.mjs";
+import { decodePNG, encodePNG } from "../../../ui/png.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
@@ -406,7 +406,12 @@ for (const size of SIZES) {
     const g = await open(size, "slab-full-warn");
     try {
       const warned = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { phase: m.S.phase, strike: !!m.curLive().strike }; });
+      // The verdict compares the box to two stored crops of the box (saves/s18-warn-box.png: "Lightning strikes here next"; saves/s18-push-box.png: the push line), so the other order (push line first, warning after the next press) fails.
+      // The rain moves under the text: the same line differs by hundreds of pixels, a different line by tens of thousands.
       const r = await g.region(), before = await g.shot("s18-before");
+      const boxOf = (im) => { const x0 = r.x + Math.round(r.w * MSGBOX[0]), y0 = r.y + Math.round(r.h * MSGBOX[1]), w = Math.round(r.w * MSGBOX[2]), h = Math.round(r.h * MSGBOX[3]); const d = new Uint8Array(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = ((y0 + y) * im.width + x0 + x) * 4, j = (y * w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: w, height: h, data: d }; };
+      const stored = (name, im) => { const f = path.join(savesDir, name); if (process.env.PLAYED_WRITE_CROPS) { const b = boxOf(im); writeFileSync(f, encodePNG(b.width, b.height, b.data)); } return decodePNG(readFileSync(f)); };
+      const differ = (im, ref) => { const b = boxOf(im); let n = 0; for (let i = 0; i < b.data.length; i += 4) if (b.data[i] !== ref.data[i] || b.data[i + 1] !== ref.data[i + 1] || b.data[i + 2] !== ref.data[i + 2]) n++; return n; };
       await g.press("confirm", 100, 250);
       const push = await g.shot("s18-push");
       assert.deepEqual(await warned(), { phase: "patch", strike: true }, "the case is reached: a strike is warned for this place after the push");
@@ -414,11 +419,12 @@ for (const size of SIZES) {
       const later = await g.shot("s18-later");
       await g.press("confirm", 100, 400);
       const next = await g.shot("s18-next");
-      const a = changed(before, push, r, MSGBOX), b = changed(push, later, r, MSGBOX), c = changed(later, next, r, MSGBOX);
-      console.log(`# s18 ${tag}: box pixels changed by the push ${a.n}, push to 2.4 s later ${b.n}, warning to the next press ${c.n} (of ${a.of})`);
-      assert.ok(a.n > 400, `the warning is in the box right after the push (${a.n} pixels changed)`);
-      assert.ok(b.n < 5000, `the box holds the same warning 2 s later (${b.n} pixels changed: the rain moves under it, a new line is tens of thousands)`);
-      assert.ok(c.n > 20000,`the next press shows the push line after the warning (${c.n} pixels changed)`);
+      const warnBox = stored("s18-warn-box.png", later), pushBox = stored("s18-push-box.png", next);
+      const a = differ(push, warnBox), a2 = differ(push, pushBox), b = differ(later, warnBox), c = differ(next, pushBox), c2 = differ(next, warnBox);
+      console.log(`# s18 ${tag}: box right after the push: from the warning crop ${a}, from the push-line crop ${a2}; 2.4 s later from the warning ${b}; after the next press from the push-line crop ${c}, from the warning crop ${c2}`);
+      assert.ok(a < 5000 && a2 > 20000, `right after the push the box shows "Lightning strikes here next" (${a} pixels from that line, ${a2} from the push line)`);
+      assert.ok(b < 5000, `the box holds the same warning 2 s later (${b} pixels differ)`);
+      assert.ok(c < 5000 && c2 > 20000, `after the next press the box shows the push line (${c} pixels from the push line, ${c2} from the warning)`);
     } finally { await g.ctx.close(); }
   });
 
