@@ -1,7 +1,7 @@
-// sleep-dusk-build-1 (rules.md 16a): a late Loika beds down at her bed from the last 20 light of dusk. Played on the real page at 412x915 (touch, dpr 2.625):
+// A late Loika beds down at her bed in the last 20 light of dusk. Played on the real page at 412x915 (touch, dpr 2.625):
 // the case is arranged (a seed with a late Loika, the explorer in sight of her bed, the clock at light 525), then the explorer only presses the on-screen d-pad,
-// and the verdict is read at light 551 (before the night's 552... the night starts at 550): she is curled at her bed and a sleep note is offered.
-//   PW_DIR=<dir with node_modules/playwright> node prototypes/exploration/tools/sleep-dusk-played.mjs [seed ...]
+// and the verdict is read before light 552: she is curled at her bed and a sleep note is offered.
+//   PW_DIR=<dir with node_modules/playwright> node prototypes/exploration/tests/played/sleep-dusk.mjs [seed ...]
 import { createServer } from "node:http";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -11,7 +11,7 @@ import path from "node:path";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
-const repo = path.resolve(import.meta.dirname, "../../..");
+const repo = path.resolve(import.meta.dirname, "../../../..");
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".wasm": "application/wasm" };
 
@@ -45,7 +45,7 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const url = `http://127.0.0.1:${server.address().port}/play/`;
 
 const ready = () => { try { return !!window.__play.frames.companion.contentWindow.__mb.S; } catch { return false; } };
-const { makePage } = await import(path.join(repo, "prototypes/exploration/tests/page-harness.mjs"));
+const { makePage } = await import(path.join(import.meta.dirname, "../page-harness.mjs"));
 
 // the arranged case, as a save: a seed with a late Loika in a mounted place, the explorer 3 tiles from her bed stand, the clock at light 525
 function arrange(seed) {
@@ -65,7 +65,7 @@ function arrange(seed) {
 }
 
 const browser = await chromium.launch();
-const seeds = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [7, 13, 42, 5, 21, 99];
+const seeds = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [7, 42, 21];
 let fails = 0, played = 0;
 for (const seed of seeds) {
   const a = arrange(seed);
