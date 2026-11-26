@@ -19,3 +19,20 @@ test("seed 1: slabs stand pushable with something under, and a push takes what l
     assert.ok(r.ok, `cell ${cell}: the slab can be pushed some way`);
   }
 });
+
+// the Companion's path: a cell { ir, place } as the package holds it lays the same slab as the generator, and no strike tile is a slab's
+test("seed 1: the baked cell the Companion reads gives the same slab as the generator, and a slab never takes a strike's tile", () => {
+  const p = makePage({ gen: 7, console: "silent" });
+  p.run("newWorld(1);");
+  for (const [cell, under] of Object.entries(CELLS)) {
+    const r = JSON.parse(p.run(`(() => { const v = biomeVersion(S), slab = l => (l.feats || []).filter(q => q.kind === 's').map(q => [q.x, q.y, q.under]);
+      const fresh = layout7In(PL.ctx, G, 1, G.slot, '${cell}', () => false, v), b = bakedCell7(PL.ctx, 1, G.slot, ${cell}, v),
+        held = layout7In(PL.ctx, G, 1, G.slot, '${cell}', () => false, v, b);
+      const onStrike = slab(held).some(([x, y]) => b.ir.strikes.some(m => m.x - 1 === x && m.y - 1 === y));
+      return JSON.stringify({ a: slab(fresh), b: slab(held), onStrike }); })()`));
+    assert.equal(r.a.length, 1);
+    assert.deepEqual(r.b, r.a, `cell ${cell}: the held cell lays the same slab`);
+    assert.equal(r.b[0][2], under);
+    assert.equal(r.onStrike, false);
+  }
+});

@@ -164,7 +164,8 @@ export function adaptCell(place, ir, ts, terrains, o) {
     const wetT = t => t === T.WATER || t === T.DEEP || t === T.CLIFF || t === T.CWALL || t === T.ISLE || t === T.WADE;
     const free = (x, y) => x >= 1 && y >= 1 && x < w - 1 && y < h - 1 && !T_BLOCK[tiles[I(x, y)]] && tiles[I(x, y)] !== T.STEP && !taken.has(I(x, y)) && !podSlots.some(q => q.x === x && q.y === y);
     const standOn = (x, y) => x >= 0 && y >= 0 && x < w && y < h && ground[I(x, y)] && reach[I(x, y)] && !T_BLOCK[tiles[I(x, y)]] && !taken.has(I(x, y));
-    const fits = (x, y) => x >= 2 && y >= 2 && x < w - 2 && y < h - 2 && okAt(x, y, true) && Math.abs(x - spawnPt.x) + Math.abs(y - spawnPt.y) >= 4
+    const strikeAt = new Set(ir.strikes.map(m => I(m.x - 1, m.y - 1)));   // a strike's tile is never a slab's: no strike or meteor mark moves (design 11-26)
+    const fits = (x, y) => x >= 2 && y >= 2 && x < w - 2 && y < h - 2 && okAt(x, y, true) && !strikeAt.has(I(x, y)) &&Math.abs(x - spawnPt.x) + Math.abs(y - spawnPt.y) >= 4
       && [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(([dx, dy]) => wetT(tiles[I(x + dx, y + dy)])).length <= 1
       && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => free(x + dx, y + dy) && standOn(x - dx, y - dy));
     let best = null, bs = -1;
