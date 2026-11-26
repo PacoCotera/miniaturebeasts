@@ -631,7 +631,7 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // The art desk's walk props (art/props/, signed in mibi-art 942489c99 on art/desk; the job's manifest.json is beside the files): the bush (full, bare), the fruit, the nest, the crack, the hole (plain, with a glint),
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
-const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'crate-sealed-lid': 0, 'crate-sealed-icon': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
   // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
@@ -640,7 +640,7 @@ const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 
     // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
     ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
+const PROP_SIZE = { 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'crate-sealed-lid': [48, 36], 'crate-sealed-icon': [16, 14], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
@@ -2773,6 +2773,13 @@ function noteTarget() {
     const d = cheb(c, P); if (d < bd) { bd = d; best = c; } }
   return best;
 }
+// pods-owner-2: the nearest named Loika playing a habit in sight that ✓ cannot note because the explorer faces away from her (noteTarget is null); null otherwise
+function habTurnTarget(P) {
+  const ex = S.exp; if (!ex || ex.carry === 'fruit' || curLay().cave || noteTarget()) return null;
+  let best = null, bd = 99;
+  for (const c of curLive().cr) { if (!c.hb || c.hide || !c.ind || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d > 0 && d < bd) { bd = d; best = c; } }
+  return best;
+}
 // ---------- W4 round 2: her prints at a haunt she has left (walk-design-1 3A) ----------
 // NAMED SLOT PAWS-ON-TILE: the built paw sign drawn on the stand tile. The art director passes it in whole-place stills at walking zoom (rules 17, 18a); if it does not read, set this false:
 // the slot stays named and empty and the read works from the message box alone (design 3F).
@@ -3523,6 +3530,8 @@ function patchAction() {
   if (!o && ex.carry !== 'fruit') { const here = standingOn(key, P); if (here) { o = here; f = { x: P.x, y: P.y }; } }   // facing nothing, standing on a small thing: its action
   ACT_AT = f;
   { const nt = ex.carry !== 'fruit' && noteTarget(); if (nt) { ACT_AT = { x: nt.x, y: nt.y }; return { label: WORDS.habit.note, ctx: WORDS.habit.noteCtx, run: () => { if (nt.hb) openWatch(nt); else noteHabit(nt); } }; } }   // w6b: during a play ✓ opens the watch view, where ✓ Note takes the note; a sleeper (no play) is noted here as before   // walk W4: ✓ facing her in sight during a habit notes it; the amber frame stands on her, not on the tile in front of the pawn (the AD's note on PR 489)
+  // pods-owner-2: a Loika plays a habit in sight but the explorer faces away (✓ was "Face the stone"): ✓ turns him to her, the next ✓ is Note it. A turn spends no light (as faceThing).
+  if (!o || o.type === 'tile') { const ht = habTurnTarget(P); if (ht) { ACT_AT = { x: ht.x, y: ht.y }; return { label: WORDS.habit.turn, ctx: WORDS.habit.turnCtx, face: 1, run: () => { const fd = faceDirOf(P, ht); if (fd) { P.dir = fd; followFront(); } } }; } }
   if (!o || o.type === 'tile') { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // QA verify-live-134 item 6: a blocked tile in front has no action of its own, so ✓ reads the prints the bottom line names. W4 round 2: her prints at a haunt she has left
   // first-walk-teach-approach-1 (4): while a named Loika is in sight within her stay (2 tiles) or plays her habit, ✓ is hers (keep still, Note it); a tuft or her read prints wait until she is gone or out of the stay
   const hn = ex.carry !== 'fruit' && live.cr.find(c => c.ind && !c.hide && (c.ease | 0) < 3 && inSight(c.x, c.y) && (c.hb || cheb(c, P) <= 2)) || null;
@@ -8487,7 +8496,7 @@ function caseKey(k) {
 }
 function caseLine() {   // the bottom line: only what works here
   const W = WORDS.case;
-  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: '', back: W.field, dim: false } : { ok: '', ctx: '', back: W.field, dim: false };
+  if (S.exp && S.ui.caseEnd) return canSend() ? { ok: W.end, ctx: W.pages, back: W.field, dim: false } : { ok: '', ctx: W.pages, back: W.field, dim: false };   // the end-of-walk Case names the Log too: his named ones' pages are found there (owner 11-25 "couldnt see their details")
   return { ok: caseEntry(caseThing(caseSel(caseCells())).thing) ? W.page : '', ctx: W.pages, back: W.field, dim: false };
 }
 const caseBrass = (x, y, w, h) => { R(x, y, w, h, C.gold); R(x, y, w, 1, C.yellow); R(x, y, 1, h, C.yellow); R(x, y + h - 1, w, 1, C.rust); R(x + w - 1, y, 1, h, C.rust); };
@@ -8508,7 +8517,7 @@ function drawCargo(t) {
   // the lid: the crates sealed for home; an empty place is dotted
   caseHalf(16, 72, 418, 100); text(W.sealed, 36, 90, C.bark);
   for (let i = 0; i < BAY; i++) { const x = 36 + i * 60, y = 114;
-    if (S.bay[i]) { R(x, y, 48, 36, C.clay); R(x, y, 48, 10, C.bark); R(x + 20, y, 8, 36, C.paper); R(x, y + 35, 48, 1, C.bark); } else dashedRect(x, y, 48, 36, C.bark); }
+    if (S.bay[i]) blit(propPiece('crate-sealed-lid'), x, y); else dashedRect(x, y, 48, 36, C.bark); }
   text(W.goesHome[0], 414, 112, C.bark, 2, 'right'); text(W.goesHome[1], 414, 134, C.bark, 2, 'right');
   // the tray, the hinges between them, the corners, the clasp
   caseHalf(16, 180, 418, 370);
@@ -8542,7 +8551,7 @@ function drawHomeTop(title) {
   drawCallSlot(callSlot(), drawStatus(SCR_W - 6));
 }
 // The bay in the top bar: a crate with the count of sealed consignments.
-const crateArt = () => art('i-crate', () => { const pb = new PB(16, 14); pb.rect(0, 2, 16, 12, C.clay); pb.rect(0, 2, 16, 3, C.bark); pb.rect(7, 2, 2, 12, C.paper); pb.outline(); return pb; });
+const crateArt = () => propPiece('crate-sealed-icon');   // the signed sealed-crate picture (art/props/crate-sealed-icon.png, 16 x 14)
 function drawCrateCount(x) {
   const n = bayShown(); if (!n) return x;
   const sd = FX.seated; if (sd && crateFlashOn(sd.crates, NOW - sd.at)) R(x - 2, 7, 20, 18, C.cream);   // seated: one cream flash a sealed crate, behind the icon
