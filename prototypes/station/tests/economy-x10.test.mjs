@@ -61,7 +61,7 @@ test("goalKey, loops 1 to 3 as named: firstPod, firstMibi with the pod chain, pa
   let g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.deepEqual(g.step, { key: "openBay" });
   S.openBay(t, sv1, settings, 1000); g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.deepEqual(g.step, { key: "identify", species: null }, "a fresh game: the goal names no species before the first Identify");
   assert.equal(S.identify(t, t.tray[0], settings).ok, true); assert.deepEqual(S.goalKey(t, sv1).step, { key: "grow", species: "S01" }, "identified: the species is known and named");
-  t.d = 0; const u = fresh(); S.dockKey(u, sv0([crate(1, [loikaPod(1, 11)])]), settings, 1000); u.tray.push({ id: "q", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 5, k: null, n: 0, idd: 0, read: [], fresh: 1 }); u.d = 0;
+  t.d = 0; const u = fresh(); S.dockKey(u, sv0([crate(1, [loikaPod(1, 11)])]), settings, 1000); u.bayHeld = []; u.tray.push({ id: "q", sp: 0, species: "S01", g: "meadow", how: "calm", gs: 5, k: null, n: 0, idd: 0, read: [], fresh: 1 }); u.d = 0;
   assert.deepEqual(S.goalKey(u, sv0()).step, { key: "short", icons: "◆", from: "bench" }, "Identify short: the bench's Data");
   assert.equal(S.grow(t, t.tray[0], {}, settings, 1000).ok, true); g = S.goalKey(t, sv1); assert.equal(g.key, "firstMibi"); assert.equal(g.step.key, "bud");
 });

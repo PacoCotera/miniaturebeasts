@@ -1819,15 +1819,14 @@ function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.do
 // expedition resumes at Lift as it was (game designer's dock-freeze ruling). Field input only; views still open.
 const fieldFrozen = () => !!(S && S.exp) && isDocked();
 const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
-  tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' sealed · ready for the Station',
-  sealed: 'Docked · open the Station\'s Bay', sealedEmpty: 'Docked' };
+  tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' aboard · the Bay is full',
+  sealed: 'Docked · the Bay is full', sealedEmpty: 'Docked' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
   const st = stPart(); if (!st) return;
-  const acc = st.accepted || [], gone = S.bay.filter(c => acc.includes(c.id));
-  if (gone.length) { S.bay = S.bay.filter(c => !acc.includes(c.id)); const n = gone.reduce((a, c) => a + (c.pods || []).length, 0);
-    if (isDocked() && RT.dockPrev != null && !S.exp) FX.crateDown = { at: NOW, total: gone.length };   // the count steps down as the Station confirms each crate
+  const acc = st.accepted || [], held = (st.bayHeld || []).map(c => c.id), gone = S.bay.filter(c => acc.includes(c.id) || held.includes(c.id));   // the Station's dock rule took the crates (st.bayHeld); this only reads
+  if (gone.length) { S.bay = S.bay.filter(c => !acc.includes(c.id) && !held.includes(c.id)); const n = gone.reduce((a, c) => a + (c.pods || []).length, 0);
     fxMsg('The Station has them · ' + (n ? n + ' pod' + (n === 1 ? '' : 's') : 'the supplies'), 3); logEv('Transferred ' + gone.length + ' crate' + (gone.length === 1 ? '' : 's') + ' at the dock'); }
   // what the dock carries applies once per dock (st.dockN), even if this page only reads the save after the Companion was lifted
   if (!isDocked() && !((st.dockN || 0) > (S.dockSeen || 0))) return;
@@ -4468,7 +4467,7 @@ function sealPreview() {
   if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
   else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
   else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
-    out.push('The Station opens it when you dock'); }
+    out.push('The Station takes it when you dock'); }
   if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
 }
@@ -7829,7 +7828,7 @@ const silhouette = sp => art('sil' + sp, () => { const a = tokenOf(sp, 'idle', 0
 const OPEN_TEXT = {
   stormFromEast: 'Storm in the east · moving west ◀', stormFromWest: 'Storm in the west · moving east ▶', stormFromEastShort: 'From the east ◀', stormFromWestShort: 'From the west ▶', chargeStones: 'storms charge stones',   // the Weather tab's line: where the storm is, then which way it moves (the short forms beside Deep ground)
   digs: n => n + ' digs', needsTuikis: 'needs a Tuikis',   // the Deep ground tab's line
-  flat: 'Flat world · New world has stairs', docked: 'Docked · lift to explore',   // a generator 1 world's line; the docked band
+  flat: 'Flat world · New world has stairs', docked: 'Docked · ready to go out',   // a generator 1 world's line; the docked band
   setOut: 'Set out', needsLabel: 'Needs a Tuikis', deepLeads: n => 'Deep ground · ' + n + ' leads',   // the ✓ labels and the bottom line's middle on the opening
 };
 // The art desk's two opening pieces (art/open/, signed in mibi-art a23ee74f6; manifest.json there): the night mist under the first-time frame (three seamless 96 px variants a, b, c, picked per 96 px block of world pixels by a hash,
@@ -8553,8 +8552,8 @@ function drawHomeTop(title) {
 // The bay in the top bar: a crate with the count of sealed consignments.
 const crateArt = () => propPiece('crate-sealed-icon');   // the signed sealed-crate picture (art/props/crate-sealed-icon.png, 16 x 14)
 function drawCrateCount(x) {
-  const n = bayShown(); if (!n) return x;
-  const sd = FX.seated; if (sd && crateFlashOn(sd.crates, NOW - sd.at)) R(x - 2, 7, 20, 18, C.cream);   // seated: one cream flash a sealed crate, behind the icon
+  const sd = FX.seated, n = S.bay.length || (sd && NOW - sd.at < SEAT.start + sd.crates * SEAT.beat ? sd.crates : 0); if (!n) return x;   // the crates cross at the dock (the Station's rule): the count is what the hold holds, with the crossing's flashes still showing
+  if (sd && crateFlashOn(sd.crates, NOW - sd.at)) R(x - 2, 7, 20, 18, C.cream);   // seated: one cream flash a sealed crate, behind the icon
   blit(crateArt(), x, 9); text(String(n), x + 19, 9, C.sand); return x + 19 + textW(String(n), 2) + 6; }
 function emptyPod(cx, cy) { for (let a = 0; a < 6.28; a += .1) R(cx + Math.round(Math.cos(a) * 34), cy + Math.round(Math.sin(a) * 44), 2, 2, C.stone); }
 function drawNoMibi() {
@@ -8630,7 +8629,6 @@ const MOMENT_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment
 // ---- The dock frames (specs/companion-dock-frames-spec.md, T-20261016-93): "home" when the Companion is seated and "Off we go" when it is lifted. A show: no press is asked for.
 // Read from the shared save's dock flag (isDocked), once per change, so it plays from whatever moves the Dock (the play page's control, the Station's own key).
 const SEAT = { start: 500, on: 120, beat: 333 };            // the crate flashes: from 0.5 s, 120 ms on, one a Station beat (333 ms)
-const CRATE_STEP = { perCrate: 3000, confirm: 800 };         // the Station's opening (cargo.json events.opening): a crate every 3000 ms, confirmed at +800: the count steps down then
 const OFF = { at: 200, ms: 1500 };                            // "Off we go": from 0.2 s, for 1500 ms; the hop starts with it
 function trackDock() {
   const d = isDocked(); if (RT.dockPrev == null) { RT.dockPrev = d; return; }
@@ -8644,18 +8642,11 @@ function dockSeated() {
   if (lead && S.phase !== 'newworld') { S.phase = 'riding'; S.ui.from = 'setup'; S.ui.aId = lead.id; }   // a mibi with you: Riding, as a cut
 }
 function dockLifted() {
-  FX.seated = null; FX.crateDown = null;
+  FX.seated = null;
   if (S.phase === 'sealed' && !S.exp) { S.phase = 'riding'; S.ui.from = 'setup'; }   // a page opened while seated: lifting from the ended expedition's screen goes home too (bug #50)
   if (S.phase !== 'riding') return;   // on any other screen only the Shield flash plays, as built
   const m = shownMibi(); FX.lifted = { at: NOW };
   if (m && isCarried(m)) FX.callMibi = { id: m.id, at: NOW + OFF.at, wrong: false, quiet: true };   // the existing hop, no chirp
-}
-// The crates the count shows: those in the bay, plus (as the Station opens them) those it has not yet confirmed.
-function bayShown() {
-  const cd = FX.crateDown; if (!cd) return S.bay.length;
-  const a = NOW - cd.at, done = a < CRATE_STEP.confirm ? 0 : Math.min(cd.total, Math.floor((a - CRATE_STEP.confirm) / CRATE_STEP.perCrate) + 1);
-  if (done >= cd.total) { FX.crateDown = null; return S.bay.length; }
-  return S.bay.length + cd.total - done;
 }
 // A crate flash is on at ms `a` after seating: crate k flashes at 0.5 s + k × 333 ms for 120 ms; with reduced motion the flashes are steady for their span.
 function crateFlashOn(n, a) {
@@ -8671,9 +8662,16 @@ function darkenRect(x, y, w, h) {
   for (let i = 0; i < d.length; i += 4) { const to = DARK_RGB.get((d[i] << 16) | (d[i + 1] << 8) | d[i + 2]); if (to) { d[i] = to[0]; d[i + 1] = to[1]; d[i + 2] = to[2]; } }
   g.putImageData(id, x, y);
 }
-// The dock frames' cue (specs/companion-dock-frames-spec.md): "Docked · lift to explore" while seated, "Off we go" for 1500 ms after the lift. On the Riding face it sits in the top bar, between the title and the part of day.
+// The docked state in words (bay-design-1 2.6, bay-words-1): unloading while the crates cross; crates still aboard because the Bay is full; else the hold is empty. It never tells the walk ("lift to explore" is gone).
+function dockState() {
+  const sd = FX.seated, n = S.bay.length;
+  if (n) return 'Docked · ' + n + ' crate' + (n === 1 ? ' waits' : 's wait') + ' at the Bay';
+  if (sd && sd.crates > 0 && NOW - sd.at < SEAT.start + sd.crates * SEAT.beat) return 'Docked · unloading';
+  return sd && sd.crates > 0 ? 'Unloaded · ready to go out' : 'Docked · ready to go out';
+}
+// The dock frames' cue (specs/companion-dock-frames-spec.md): the docked state while seated, "Off we go" for 1500 ms after the lift. On the Riding face it sits in the top bar, between the title and the part of day.
 function dockCue() {
-  if (isDocked() && !S.exp) { text('Docked · lift to explore', 78, 9, C.mint); return; }
+  if (isDocked() && !S.exp) { text(dockState(), 78, 9, C.mint); return; }
   const lf = FX.lifted, a = lf ? NOW - lf.at : -1;
   if (lf && a >= OFF.at && a < OFF.at + OFF.ms) text('Off we go', 78, 9, C.bone);
 }
@@ -8844,7 +8842,7 @@ function drawSealed(t) {
   const dk = isDocked();   // docked: the Companion is in the Caddy, and the crates are ready for the Station
   if (S.bay.length) {   // an empty bay says nothing ("The bay is empty" and "Nothing to transfer" are gone)
     text(clipText(dk ? DOCK_TEXT.bay(S.bay.length) : bayLine(), 410, 2), 22, y, C.amber); y += 24;
-    text(clipText(dk ? DOCK_TEXT.sealed : 'The Station opens them when you dock', 410, 2), 22, y, C.mist); y += 34; }
+    text(clipText(dk ? DOCK_TEXT.sealed : 'The Station takes them when you dock', 410, 2), 22, y, C.mist); y += 34; }
   else if (dk) { text(clipText(DOCK_TEXT.sealedEmpty, 410, 2), 22, y, C.mist); y += 34; }
   else y += 10;
   if (!r.waited) drawTurnLines(r, y);
@@ -9392,7 +9390,7 @@ const SLEEP = makeSleeper({ store: LS, rt: RT, keyStore: () => KEY_STORE, compan
   onPub: pub => { if (COMPANION.pub !== pub) { COMPANION = { ...COMPANION, pub }; tellShell(true); } } });
 function tellShell(force) {
   if (!SHELL || shellSilent) return;
-  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, region: S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() ? { seed: S.regions[0].seed, slot: hereRegion().slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, seat: shellSeat };
+  const m = { t: 'mb-companion', id: COMPANION.id, name: COMPANION.name, slot: COMPANION.slot, pub: COMPANION.pub || null, wid: S && !RT.readOnly ? S.wid : null, region: S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() ? { seed: S.regions[0].seed, slot: hereRegion().slot, v: biomeVersion(S) } : null, crates: S && Array.isArray(S.bay) ? S.bay.length : 0, bay: BAY, seat: shellSeat };
   const k = JSON.stringify(m); if (!force && k === shellSaid) return; shellSaid = k;
   try { SHELL.postMessage(m, location.origin); } catch (e) { }
 }

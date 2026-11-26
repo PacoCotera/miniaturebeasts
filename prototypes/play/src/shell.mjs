@@ -68,7 +68,7 @@ const saveTab = (v) => { try { localStorage.setItem(TAB_KEY, v); } catch { /* no
 const START_OWNER = loadTab() || (OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station");   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld; a kept tab wins
 let owner = START_OWNER, devOpen = false, keysOpen = false;   // owner: the device in view, which has the keys
 let wokeNews = false;   // the Station woke while it was out of view: the switch's dot, until it comes into view
-let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
+let caddy = { canDock: false, docked: false, crates: 0, bay: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
 const SITE = import.meta.env?.PROD ? "/play/" : "../";   // the built game lives under /play/ (its folders: ui/, station/, exploration/); the source tree has them beside play/
@@ -222,13 +222,12 @@ function setZ(v) {   // v: a z, or null for fit; the choice is kept per browser,
   zSet = v == null ? null : clampZ(v); saveZ(zSet); layout();
 }
 const zStep = (d) => { if (TEST || form !== "laptop") return; const z = Math.round(kOf.companion), n = Math.min(clampZ(z + d), zCap(CW, CH, dpr)); if (n !== z) setZ(n); };
-const DOCK_BAY = 3;   // the sealed bay's three crates: the Companion's `BAY` (exploration/index.html), which the unbundled shell cannot import
 // The Dock / Lift key (first-ten-front A2): quiet until the walk ends with a sealed crate, then lit; docked, it says how to go out. One press asks for the same dock or lift as Shift+D.
 function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or null when it is not shown
   const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, touch = window.matchMedia("(pointer: coarse)").matches;
   // [copy] placeholders: the scheme's section 7 item 4; the short words are the long ones cut down ("Dock", "Lift")
-  let full = d ? "Docked · Lift to go out" : crates ? "Dock · " + c.crates + " of " + DOCK_BAY + " crates aboard" : "Dock the Companion", short = d ? "Lift" : "Dock";   // lit: n from the hold, 3 the bay (UI + editorial 11-25); docking is not tied to an expedition
-  const litSteps = crates ? [full, "Dock · " + c.crates + " of " + DOCK_BAY + " crates", "Dock · " + c.crates + "/" + DOCK_BAY] : [full];   // lit, widest first (editorial 70f85b33bb): the count is never cut, only the words round it
+  let full = d ? "Docked · Lift to go out" : crates ? "Dock · " + c.crates + " of " + c.bay + " crates aboard" : "Dock the Companion", short = d ? "Lift" : "Dock";   // lit: n from the hold, 3 the bay (UI + editorial 11-25); docking is not tied to an expedition
+  const litSteps = crates ? [full, "Dock · " + c.crates + " of " + c.bay + " crates", "Dock · " + c.crates + "/" + c.bay] : [full];   // lit, widest first (editorial 70f85b33bb): the count is never cut, only the words round it
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
   if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; const fit = litSteps.find((t) => dockNeed(t, false) <= box[2]); if (fit) full = fit; else mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis; lit falls through the middle forms, which keep the count, before "Dock"
@@ -296,7 +295,7 @@ const seatedNow = () => cradles().companion.state === "seated";
 const activeHere = () => !!heard && !!comp && !!heard.companion && heard.companion.id === comp.id;   // the Companion in the frame is the one the Station shows
 function derive() {
   const crates = comp && !activeHere() ? comp.crates | 0 : heard ? heard.crates | 0 : 0;
-  return { canDock: !!(comp && comp.wid) || !!(heard && heard.canDock), docked: seatedNow(), crates, pending: !!(heard && heard.pending), opened: heard?.opened ?? null, partner: heard?.partner ?? null };
+  return { canDock: !!(comp && comp.wid) || !!(heard && heard.canDock), docked: seatedNow(), crates, bay: comp ? comp.bay | 0 : 0, pending: !!(heard && heard.pending), opened: heard?.opened ?? null, partner: heard?.partner ?? null };
 }
 function dockPress() {
   if (!caddy.canDock || pressed) return;

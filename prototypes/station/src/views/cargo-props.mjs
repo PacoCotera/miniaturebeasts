@@ -14,7 +14,7 @@ import { portraitOffered } from "./sitting-props.mjs";
 import { req as reqOf, slot as slotOf, ph as phOf, slotAt } from "./requests.mjs";
 
 // The crates ready to open in the bay: the walk crates while docked.
-export const walkCrates = (st, sv, docked) => (docked ? S.bayCrates(st, sv) : []);
+export const walkCrates = (st) => S.bayCrates(st);
 
 // Cargo's end (keys.confirm.end): the mibi whose sitting crate this run opened, while sitting.json regions.portrait.offeredFrom lists cargo-end and its 528×392 opening is kept (sitting-props portraitOffered:
 // portrait-source.mjs portraitOpening); else null, and ✓ is Look at the pods. With no sitting spec, null.
