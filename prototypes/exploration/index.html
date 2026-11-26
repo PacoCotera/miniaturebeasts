@@ -2574,6 +2574,8 @@ function hearLineOf(c) {
   const cr = easeHeardAt(env, c, x, y, 'creep', w), wk = easeHeardAt(env, c, x, y, 'walk', w), left = stayLeft(env, { ...c, wary: w }, P);
   return { c: cr, w: wk, left };
 }
+// a met one whose kind is not yet identified is named with what she is, never alone: "Hazel · Loika" (the one place that builds it)
+function nameKind(nm, sp) { return nm + ' · ' + WORDS.ease.wildKind(spOf(sp).name); }
 // the candidates for the bottom line under a wild one in sight, longest first (the line takes the first that fits): its ease, whether this step would be heard creeping and walking, how long it lets you stay
 function wildCtx(c, nm) {
   const hl = hearLineOf(c); if (!hl) return null;
@@ -3501,7 +3503,7 @@ function patchAction() {
     if (!S.known.includes(o.c.sp) && !o.c.ind) return !fruit && inSight(f.x, f.y) && (o.c.ease | 0) < 3 ? { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) } : { label: 'Unknown creature', run: null };   // ui-dead-check-156-4: beside one he has not met and that is no individual, ✓ keeps still as beside a Loika (keepStill reads no ind), never a ✓ that does nothing
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
     if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
-    if (!S.known.includes(o.c.sp)) { const nmd = S.named && S.named[o.c.id]; return { label: nmd ? nmd + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name) : 'Unknown creature', run: null }; }   // owner note 156: a named one is never "Unknown creature"; a named one of a kind not yet identified, with no keep still open: still no diet leak
+    if (!S.known.includes(o.c.sp)) { const nmd = S.named && S.named[o.c.id]; return { label: nmd ? nameKind(nmd, o.c.sp) : 'Unknown creature', run: null }; }   // owner note 156: a named one is never "Unknown creature"; a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
       const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
@@ -8103,15 +8105,22 @@ function drawLog() {
 // NAMED SLOT HER-PICTURE: the art director names the cut for her page (rule 17). Until then the page shows the walk's own signed token of her at 2x (plain until her coat is read, then her marking), never a stand-in.
 const metOrder = () => { const nm = S.named || {}, o = (S.metIds || []).map(String).filter(id => nm[id]); for (const id of Object.keys(nm)) if (!o.includes(id)) o.push(id); return o; };   // the order met; a save from before the met order: by id
 // The wild one the bottom line names now: the one faced, else the nearest in sight (the line's own pick); null when none
-function herInSight() {
-  const ex = S && S.exp; if (!ex || !ex.patch || !S.named || (S.phase !== 'patch' && !(S.phase === 'menu' && S.ui.from === 'patch'))) return null; const lay = curLay(); if (lay.cave) return null;
-  const P = ex.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
-  if (o && o.type === 'cr' && o.c.ind && S.named[o.c.id] && inSight(f.x, f.y)) return String(o.c.id);
-  const w = indInSight(); return w && S.named[w.id] ? String(w.id) : null;
+// The one source for "the Loika the screen names": the met one in sight (faced, else the nearest, whatever her kind or ease), else the one the walk follows (metBest).
+// { id, c, view }: c is her creature and view true when she is in sight; null when none is met. The top line, her page, the menu's first row and the not-faced bottom line read only this.
+function screenLoika() {
+  if (!S || !S.named) return null;
+  const ex = S.exp, inPlace = ex && ex.patch && (S.phase === 'patch' || (S.phase === 'menu' && S.ui.from === 'patch')) && !curLay().cave;
+  if (inPlace) {
+    const P = ex.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
+    const c = o && o.type === 'cr' && o.c.ind && S.named[o.c.id] && inSight(f.x, f.y) ? o.c : indInSight(true);
+    if (c && S.named[c.id]) return { id: String(c.id), c, view: true };
+  }
+  const b = metBest(); return b ? { id: String(b.id), c: null, view: false } : null;
 }
+// The wild one in sight that the screen names; null when she is not in sight
+function herInSight() { const s = screenLoika(); return s && s.view ? s.id : null; }
 // The one the screen names: in sight, else the top line's target
-function herNamed() { const a = herInSight(); if (a) return a; if (S && S.exp && S.exp.patch && S.named && !curLay().cave && indInSight(true)) return null;   // one in sight that the line does not name (her kind is not known yet, so herInSight is null): no page to offer, never the top line's name (#156 R145-07)
-  const tl = S && S.exp && S.named ? targetLine() : null; return tl && S.named[tl.id] ? String(tl.id) : null; }
+function herNamed() { const s = S && S.exp ? screenLoika() : null; return s && (s.view || targetLine()) ? s.id : null; }   // not in sight: only while the top line shows her
 // The menu's first row, and the ← word: "her page" while her name stands on the line, the short word where the ✓ label squeezes her name out (measured with the line's own fit)
 function herBack(o) {
   const id = herNamed(); if (!id) return null; const nm = S.named[id];
@@ -8913,13 +8922,13 @@ function lineBase() {
       let wild = null; let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) { ctx = [dietLine(o.c.sp, true) + actTag(o.c), dietLine(o.c.sp, false) + actTag(o.c), dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
         const nm = o.c.ind && S.named && S.named[o.c.id];   // a met one is named, and says where it keeps this part of day
-        if (nm && !S.known.includes(o.c.sp)) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h), wk = nm + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name);   // her kind unidentified: her name and what she is, no diet, no act tag
+        if (nm && !S.known.includes(o.c.sp)) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h), wk = nameKind(nm, o.c.sp);   // her kind unidentified: her name and what she is, no diet, no act tag
           ctx = [wk + hw, wk]; }   // her name is never alone, and the diet fallbacks are not appended
         else if (nm) { const h = hauntAt(o.c.ind.hs, o.c.ind.doings, hpart()), hw = hintWord(o.c, h);
           ctx = [nm + hw + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + ' · ' + dietLine(o.c.sp, false) + actTag(o.c), nm + hw, nm].concat(ctx); }
-        if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nm + ' · ' + WORDS.ease.wildKind(spOf(o.c.sp).name) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm)) : w; } }   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
+        if (o.c.ind) { const w = wildCtx(o.c, nm && !S.known.includes(o.c.sp) ? nameKind(nm, o.c.sp) : nm); if (w) wild = nm && !S.known.includes(o.c.sp) ? w.filter(s => s.includes(nm)) : w; } }   // her kind unidentified: the name is never alone   // walk W3: the line under a wild one in sight: its ease, whether this step would be heard, how long it lets you stay
       if (S.ui.swap) { const sw = swapState(); return L1(SWAP_TEXT.take, sw ? SWAP_TEXT.leaveCtx(podInSentence(sw.held[sw.sel])) : '', SWAP_TEXT.leave, fieldFrozen()); }
-      if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const w2 = indInSight(); if (w2) wild = wildCtx(w2, S.named && S.named[w2.id]); }   // not faced, but in sight: the same line
+      if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
@@ -9577,7 +9586,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { openHer, herInSight, herNamed, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { openHer, herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
