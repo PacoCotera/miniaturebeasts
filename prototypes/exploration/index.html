@@ -4760,9 +4760,8 @@ FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs t
 const SHADE_WASH = [];
 function buildShadeWash() {
   const [tr, tg, tb] = RGB[C.bone], cool = [C.sky, C.ice, C.river, C.aqua, C.mint]; SHADE_WASH.length = 0;
-  RGB.forEach(([r, g, b], k) => { const q = nearestCore(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48, k < FIRST_N ? FIRST_N : PALETTE.length); SHADE_WASH.push(cool.includes(q) ? C.mist : q); });
+  RGB.forEach(([r, g, b], k) => { const q = nearestPal(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48, k < FIRST_N ? FIRST_N : PALETTE.length); SHADE_WASH.push(cool.includes(q) ? C.mist : q); });
 }
-function nearestCore(r, g, b, n = PALETTE.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
 buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const NIGHT = [];   // the night table (owner bug #113), over every colour in play: rebuilt with them (buildNight)
