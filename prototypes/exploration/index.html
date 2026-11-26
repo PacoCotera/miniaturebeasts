@@ -2871,7 +2871,7 @@ function readPrints(p) {
   if (p.to && sleepPart(p.part) && !p.gone) { const sr = habRecord(S.habits || (S.habits = {}), c.id, 'sleep'); if (!sr.got.place) { sr.got.place = 1; learned = ' · ' + WORDS.habit.cardTail(WORDS.habit.sleepPlace, true); } }
   fxMsg(printsLine(p) + drop + W.page + learned, 3); fxJuice('prints', (p.mark || p.stand || p.h).x, (p.mark || p.stand || p.h).y, 0);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
-  waitTick('patch');   // a read spends one light, as a note does
+  waitTick('patch', true);   // a read spends one light, as a note does
 }
 // Her coat is read once a mid note (or a nearer one) has given it on any of her habits (the range rule: from mid her coat). Kept on S.habits, which the lift carries home and back.
 const coatRead = id => Object.values((S.habits || {})[id] || {}).some(r => r && r.got && r.got.coat);
@@ -3976,8 +3976,8 @@ function waitChanges(a, b, scope) {
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
 }
-function waitTick(scope) {
-  const ex = S.exp, a = waitSnap(scope), notes = FX.notes.length; FX.waitAt = NOW; DB.wait = 1;   // the day bar glides a Wait over 450 ms   // a light ripple passes over the view: time went by
+function waitTick(scope, noRipple) {   // noRipple: a read of prints spends the light without the Wait's sweep over the view (juice-build-2)
+  const ex = S.exp, a = waitSnap(scope), notes = FX.notes.length; if (!noRipple) FX.waitAt = NOW; DB.wait = 1;   // the day bar glides a Wait over 450 ms   // a light ripple passes over the view: time went by
   if (scope === 'patch') advance('patch', { noise: 'wait' }); else advance('map');
   if (!S.exp || S.exp.ending) return;
   if (scope === 'patch' && ex.patch) routineStep(a);
@@ -7192,8 +7192,9 @@ function drawPatchBody(t) {
     circ(x, y, r, fr < 2 ? C.cream : C.amber, fr >= 2);
     for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; R(Math.round(x + Math.cos(a) * (r + 4)) - 1, Math.round(y + Math.sin(a) * (r + 4)) - 1, 2, 2, fr < 2 ? C.white : C.amber); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
+    if (motion() && age > 960 && Math.floor(age / 80) % 2) continue;   // juice-build-2: it fades out (palette only, so it blinks out) after rising about 12 px (720 ms)
     const ic = f.icon === 'pod' ? podArt('bone') : ICON[f.icon](), tw = f.text ? textW(f.text, 2) + 6 : 0, w = ic.w + tw + 14;
-    const x = W(f.x * ts + (ts >> 1)), y = H(f.y * ts) - 6 - (motion() ? Math.floor(age / 60) : 8);
+    const x = W(f.x * ts + (ts >> 1)), y = Math.max(VIEW_Y + 14, H(f.y * ts) - 6 - (motion() ? Math.min(12, Math.floor(age / 60)) : 8));   // never above the view's top edge
     panel(x - w / 2, y - 12, w, 24, C.ink, C.slate);
     blit(ic, x - w / 2 + 7, y - Math.floor(ic.h / 2));
     if (f.text) text(f.text, x - w / 2 + 7 + ic.w + 6, y - 7, C.bone, 2); }
