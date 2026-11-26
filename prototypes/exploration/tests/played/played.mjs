@@ -363,6 +363,62 @@ for (const size of SIZES) {
     });
   }
 
+  // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
+  // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
+  // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
+  const MSGBOX = [0.02, 0.80, 0.96, 0.10];   // the message box, as fractions of the Companion's frame (the game screen's lower part)
+  if (size.w === 412) it(`s15 a slab pushed with a full hold (QA verify-live-651 a): the push says the hold is full, the hold stays 20, the Essence under it is not lost [${tag}]`, async () => {
+    const g = await open(size, "slab-full-hold");
+    try {
+      const hold = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { s: m.S.exp.cargo.s, phase: m.S.phase }; });
+      assert.deepEqual(await hold(), { s: 20, phase: "patch" }, "the case is reached: in the place with 20 Essence");
+      const r = await g.region(), before = await g.shot("s15-before");
+      await g.press("confirm", 100, 400);
+      const pushed = await g.shot("s15-push");
+      assert.equal((await hold()).s, 20, "the case is reached: the hold is still 20 after the push");
+      await g.press("confirm", 100, 400);   // ✓ again on the tile the slab left: with the hold full this says the same full line, and takes nothing
+      const again = await g.shot("s15-again");
+      const shown = changed(before, pushed, r, MSGBOX), same = changed(pushed, again, r, MSGBOX);
+      console.log(`# s15 ${tag}: box pixels changed by the push ${shown.n}, between the push line and the full line of the old tile ${same.n} (of ${shown.of})`);
+      assert.ok(shown.n > 400, `the push puts a line in the box (${shown.n} pixels changed)`);
+      assert.ok(same.n < 30, `the push line is the full line (${same.n} pixels differ from that line said by the old tile)`);
+      assert.equal((await hold()).s, 20, "the hold is still 20");
+    } finally { await g.ctx.close(); }
+  });
+  if (size.w === 412) it(`s16 the Essence under a pushed slab is takeable once there is room (QA verify-live-651 a): ✓ on the old tile takes it and the box says so [${tag}]`, async () => {
+    const g = await open(size, "slab-full-room");
+    try {
+      const hold = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { s: m.S.exp.cargo.s, phase: m.S.phase }; });
+      assert.deepEqual(await hold(), { s: 0, phase: "patch" }, "the case is reached: in the place with room in the hold");
+      const r = await g.region(), before = await g.shot("s16-before");
+      await g.press("confirm", 100, 400);
+      const took = await g.shot("s16-take");
+      assert.equal((await hold()).s, 2, "the case is reached: the hold rose by what was under the slab");
+      const shown = changed(before, took, r, MSGBOX);
+      console.log(`# s16 ${tag}: box pixels changed by the take ${shown.n} (of ${shown.of})`);
+      assert.ok(shown.n > 400, `the take puts its line in the box (${shown.n} pixels changed)`);
+      await g.press("confirm", 100, 400);
+      assert.equal((await hold()).s, 2, "nothing more lies there: a second ✓ takes nothing");
+    } finally { await g.ctx.close(); }
+  });
+  // OWNER 11-25 (QA verify-live-651 b, design bus 56ccb3): "the strike warning waits until the push line has shown (about 2 s), then shows as today: delayed, never dropped."
+  if (size.w === 412) it(`s17 the push line is seen (QA verify-live-651 b): the push line shows first, then "Lightning strikes here next" after about 2 s [${tag}]`, async () => {
+    const g = await open(size, "slab-full-warn");
+    try {
+      const warned = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { phase: m.S.phase, strike: !!m.curLive().strike }; });
+      const r = await g.region(), before = await g.shot("s17-before");
+      await g.press("confirm", 100, 250);
+      const push = await g.shot("s17-push");
+      assert.deepEqual(await warned(), { phase: "patch", strike: true }, "the case is reached: a strike is warned for this place after the push");
+      await wait(2400);
+      const warn = await g.shot("s17-warn");
+      const a = changed(before, push, r, MSGBOX), b = changed(push, warn, r, MSGBOX);
+      console.log(`# s17 ${tag}: box pixels changed by the push ${a.n}, push line to the warning ${b.n} (of ${a.of})`);
+      assert.ok(a.n > 400, `the push line is in the box right after the push (${a.n} pixels changed)`);
+      assert.ok(b.n > 400, `about 2 s later the box reads another line, the warning (${b.n} pixels changed)`);
+    } finally { await g.ctx.close(); }
+  });
+
   // OWNER #156 (11-24 15:5x): "you should be able to select it and see it log if there's anything." QA's case: a habit's beat line and ✓ Keep still only for a Loika on the walk screen (PR 652).
   // Seed 42's dusk save, played twice with the d-pad only. Near: he stands 3 tiles from her curled at her bed (light 549): the bottom bar reads ✓ Keep still. Far: he walked off up the place so she is off the screen: the bar reads something else.
   // State only asserts each case is reached; the verdict is the bar's label pixels: the far label is not the near one, and the near label is the same one a step later.
