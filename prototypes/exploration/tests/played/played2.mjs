@@ -88,6 +88,29 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 
+  // OWNER #146 (11-24), the open side of the same edge: tile 0,3 is open ground beside the ring cell's cliff; Left there slides into the next place (cell 107), even when that place is not baked yet.
+  it(`s5b the open ground beside the cliff (#146, his save): Left at tile 0,3 leaves the west edge into the next place, not a bump [${tag}]`, async () => {
+    const g = await open(size, "146");
+    try {
+      const at = await g.where();
+      assert.deepEqual([at.phase, at.x, at.y], ["patch", 1, 7], "the case is reached: he stands at the spot of his note");
+      const r = await g.region();
+      for (let i = 0; i < 4; i++) await g.press("up", 100, 700);
+      await g.press("left", 100, 900);
+      const w = await g.where();
+      assert.deepEqual([w.x, w.y], [0, 3], "the case is reached: he stands on tile 0,3 before the press");
+      const held = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.placeHave("107"));
+      console.log(`# s5b ${tag}: place 107 held at the press: ${held}`);
+      const before = await g.shot(`s5b-${tag}-before`);
+      await g.press("left", 100, 1500);
+      let after = before;
+      for (let i = 0; i < 40 && !(heroX(after, r) >= 0.5); i++) { await wait(1000); after = await g.shot(); }
+      after = await g.shot(`s5b-${tag}-after`);
+      assert.ok(heroX(before, r) < 0.3 && heroX(after, r) >= 0.5, `the screen slid into the next place: the hero stood at ${heroX(before, r).toFixed(2)} of the screen's width and now at ${heroX(after, r).toFixed(2)}`);
+      assert.ok((await g.where()).key !== at.key, "the case is reached: he is in another place now");
+    } finally { await g.ctx.close(); }
+  });
+
   // OWNER #159 (11-24 22:51): "can't move to the right, nothing is blocking me" (seed 64, cell 283, tile 23,10: open grass drawn to the east edge, refused with 'Loose scree · needs a rambler')
   it(`s6 an invisible wall (#159, his save, tile 23,10): grass drawn to the east edge walks out of the place [${tag}]`, async () => {
     const g = await open(size, "159");
