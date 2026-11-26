@@ -3672,6 +3672,10 @@ function pushSlab(f) {
     const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : (k => k[hash(S.seed, 'slab', key) % k.length].sp)(hereKinds());
     S.pods.push({ id: 's:' + key + ':' + f.id, k: key, x: f.x, y: f.y, sp, h: 0, g: groundName(lay.land, lay.cave), how: 'slab' });
     fxGlint(f.x, f.y); logEv('A pod was under the slab');
+  } else if (first && (f.under === 'mat' || f.under === 'find')) { // a material or a find lay under it (slabs-gen7-build-1; the words are editorial's slot)
+    const k = f.under === 'mat' ? 's' : 'd', got = addMat(k, f.under === 'mat' ? 2 : 1, f.x, f.y, null, true);
+    fxGlint(f.x, f.y); logEv('A slab · +' + got + ' ' + MAT[k]);   // the editor's slab lines (bus ba780e173d)
+    fxMsg(f.under === 'mat' ? 'Pushed · +' + got + ' Essence · it feeds the Station' : 'Pushed · +' + got + ' Data · it reads traits at home', 2);
   }
   advance('patch', { noise: 'act', ring: { x: tx, y: ty, r: 2 } });
   if (S.exp && S.exp.patch && !slabPushable(key, f)) fxOnce('wedged', 'The slab is wedged', 2);
