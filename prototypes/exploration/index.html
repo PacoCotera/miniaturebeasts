@@ -2865,7 +2865,7 @@ function noteHabit(c) {
   if (r.first) { if (addMat('d', 1, c.x, c.y)) tail += W.first; }
   else if (!hd['sight:' + c.id]) { hd['sight:' + c.id] = 1; if (addMat('d', 1, c.x, c.y)) tail += W.sighting; }
   if (stirred && range === 'near') tail += W.asleepStirred;
-  const sk = k === 'still' ? HABITS.find(q => !habRecord(S.habits, c.id, q).sample) : k, srec = sk && habRecord(S.habits, c.id, sk);   // a keepsake of a plain sight is the first she has not yet given
+  const sk = k === 'still' ? HABITS.find(q => SAMPLE[q] && !habRecord(S.habits, c.id, q).sample) : k, srec = sk && SAMPLE[sk] && habRecord(S.habits, c.id, sk);   // a keepsake of a plain sight is the first she has not yet given (the shake gives none)
   if (keepsake && srec && !srec.sample) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
     if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
@@ -8172,7 +8172,7 @@ function drawHer() {
   y = Math.max(214, y + 2); const H = (S.habits && S.habits[id]) || {};
   for (const k of HABITS) { const rec = H[k]; if (!rec || !Object.keys(rec.ranges).length) continue;
     text(WORDS.habit.name[k], 22, y, ink);
-    if (rec.sample) { const s = SAMPLE[k], held = !!(S.exp && (S.exp.cargo.samples || []).some(q => q.id === rec.sample)), lbl = WORDS.habit.sampleName[s.item] + ' · ' + (held ? W.inCase : W.home);
+    if (rec.sample && SAMPLE[k]) { const s = SAMPLE[k], held = !!(S.exp && (S.exp.cargo.samples || []).some(q => q.id === rec.sample)), lbl = WORDS.habit.sampleName[s.item] + ' · ' + (held ? W.inCase : W.home);
       text(lbl, 430, y, soft, 2, 'right'); if (s.item === 'tuft') blit(ICON.tuft(), 430 - textW(lbl, 2) - 20, y + 2); }
     let x = 30; for (const w of ['place', 'coat', 'face']) { const got = !!rec.got[w], word = WORDS.habit.rooms[w];
       if (got) R(x, y + 26, 10, 10, C.teal); else { R(x, y + 26, 10, 10, C.clay); R(x + 2, y + 28, 6, 6, C.paper); }
