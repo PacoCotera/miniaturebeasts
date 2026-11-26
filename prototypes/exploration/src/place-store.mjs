@@ -44,7 +44,8 @@ async function packageRead() {   // the cells of the header not yet in memory, a
   if (!head || head.format !== P.PACKAGE_FORMAT) return;
   const reg = await P.readRegion(kv, id); if (reg) { if (reg.sites && reg.sites.length) presetHollowSites(meta.seed, reg.sites); if (reg.banks && reg.banks.length) presetBanks(meta.seed, reg.banks); }
   const cells = Object.keys(head.sha).map(Number).filter(c => !PKG.got.has(c));
-  await Promise.all(cells.map(async c => { const b = await P.readCell(kv, id, c); if (b && b.ir && b.place) { BAKED.set(memKey(meta.seed, meta.slot, meta.v, c), b); PKG.got.add(c); ASKED.delete(memKey(meta.seed, meta.slot, meta.v, c)); } }));
+  await Promise.all(cells.map(async c => { const bytes = await P.readCell(kv, id, c); let b = null; if (bytes instanceof Uint8Array) { try { b = P.cellOfBytes(bytes); if (b.seed !== meta.seed || b.cell !== c) b = null; } catch (e) { console.warn('a package cell could not be read', c, e); } }   // .mbplace bytes only: an object record (format 1) is never read
+    if (b && b.ir && b.place) { BAKED.set(memKey(meta.seed, meta.slot, meta.v, c), b); PKG.got.add(c); ASKED.delete(memKey(meta.seed, meta.slot, meta.v, c)); } }));
   PKG.state = head.whole && head.done >= head.order.length && PKG.got.size >= head.order.length ? 'whole' : 'part';
   if (cells.length) wake();
 }

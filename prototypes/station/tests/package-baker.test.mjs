@@ -51,8 +51,10 @@ for (const [name, sv] of Object.entries(saves)) {
     const meta = { seed: want.seed, slot: want.slot, v: want.v, tag: kit.tag }, id = store.packageId(meta);
     for (const c of order.cells.slice(0, order.floor)) {
       const have = await store.readCell(kv, id, c), today = W7.bakedCell(kit.ctx, want.seed, want.slot, c, want.v);   // what the Companion bakes for itself
-      assert.deepStrictEqual(have, { ir: today.ir, place: today.place }, "cell " + c);
-      assert.equal(r.header.sha[c], await store.shaOfPlace(today.place), "sha of cell " + c);
+      const mine = store.bytesOfCell(want.seed, c, today.ir, today.place);   // baked-package-8: the cell is the .mbplace bytes (format 2) of what the worker makes, and its sha is theirs
+      assert.ok(have instanceof Uint8Array, "cell " + c + " is bytes");
+      assert.deepStrictEqual(have, mine, "cell " + c);
+      assert.equal(r.header.sha[c], await store.shaOfBytes(mine), "sha of cell " + c);
     }
   });
 }
@@ -60,14 +62,14 @@ for (const [name, sv] of Object.entries(saves)) {
 test("the package is written as the cells land, resumes where it was, and the old revision goes once the new one is whole", async () => {
   const kv = memKv(), sv = saves["a fresh world (seed 7, at rest)"], want = wantOf(sv, biomeVersion);
   const old = { ...want, v: want.v }, oldMeta = { seed: want.seed, slot: want.slot, v: want.v, tag: "oldtag" }, oldId = store.packageId(oldMeta);
-  await kv.set(oldId + "#head", { id: oldId, whole: true }); await kv.set(oldId + "#c5", { ir: 1, place: 1 });
+  await kv.set(oldId + "#head", { id: oldId, whole: true }); await kv.set(oldId + "#c5", new Uint8Array([1]));
   await kv.set("pkg7:1.1:99:2,2:3#head", { id: "pkg7:1.1:99:2,2:3", whole: true });   // another world's package is not this one's to remove
   realm7(want.seed);
   const part = await bakePackage(want, deps(kv, { limit: 2 }));
   assert.equal(part.header.done, 2); assert.equal(part.header.whole, false); assert.ok(await kv.get(oldId + "#head"), "the old one stays while the new one grows");
   const G = W7.genWorld7(want.seed, want.slot), order = store.bakeOrder(G, { start: G.spawns[0], tier: 1 }), h = await store.openPackage(kv, { seed: want.seed, slot: want.slot, v: want.v, tag: kit.tag }, order);
   assert.equal(h.header.done, 2, "a second run keeps the cells in"); assert.equal(h.todo.length, order.cells.length - 2); assert.deepEqual(h.todo, order.cells.slice(2));
-  for (const c of h.todo) await store.putCell(h, c, { ir: {}, place: {} }, "x");
+  for (const c of h.todo) await store.putCell(h, c, new Uint8Array([1]), "x");
   assert.equal(await store.finishPackage(h), true);
   assert.equal(await kv.get(oldId + "#head"), undefined, "the old revision is removed"); assert.equal(await kv.get(oldId + "#c5"), undefined);
   assert.ok(await kv.get("pkg7:1.1:99:2,2:3#head"), "another world's package stays");

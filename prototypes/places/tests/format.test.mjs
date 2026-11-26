@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadSet, layerRows } from '../src/setload.mjs';
 import { bakeTileSet, halve } from '../src/bakeset.mjs';
-import { writeTileSet, writePlace, FORMAT_VERSION } from '../src/format/write.mjs';
+import { writeTileSet, writePlace, TILESET_VERSION } from '../src/format/write.mjs';
 import { readTileSet, readPlace } from '../src/format/read.mjs';
 import { paletteOf } from '../src/indexed.mjs';
 import { decodeRle } from '../src/blit.mjs';
@@ -38,7 +38,7 @@ test('a tile set written and read back is the same, field by field', () => {
   sameFields(back, tileset, 'tile set');
   assert.equal(back.tile, 48);
   assert.equal(back.half, 24);
-  assert.equal(back.formatVersion, FORMAT_VERSION);
+  assert.equal(back.formatVersion, TILESET_VERSION);
   assert.equal(back.atlas48.length, back.atlas24.length * 4, 'one 24 px tile for every 48 px tile');
   assert.equal(back.lightTables.length, 7);
   assert.equal(back.licence.spdx, 'CC0-1.0');
@@ -87,8 +87,8 @@ test('a blob with the wrong identifier or version is refused', () => {
   const t = writeTileSet(tileset), p = writePlace(place);
   assert.throws(() => readPlace(t), /not a place/);
   assert.throws(() => readTileSet(p), /not a tile set/);
-  const bad = writePlace({ ...place, formatVersion: 2 });
-  assert.throws(() => readPlace(bad), /format version 2/);
+  const bad = writePlace({ ...place, formatVersion: 3 });
+  assert.throws(() => readPlace(bad), /format version 3/);
 });
 
 test('the committed reader is what flatc and esbuild generate from place.fbs', async (t) => {

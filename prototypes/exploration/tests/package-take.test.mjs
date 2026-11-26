@@ -2,13 +2,17 @@
 //   node --test prototypes/exploration/tests/package-take.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { memKv, openPackage, putCell, finishPackage } from "../src/package-store.mjs";
+import { memKv, openPackage, putCell, finishPackage, bytesOfCell, cellOfBytes } from "../src/package-store.mjs";
+import { PLACES } from "./page-harness.mjs";
+import { bakedCell } from "../src/world7.mjs";
 import { offerOf, takePackage, heldOf } from "../src/package-dock.mjs";
 
 const asked = [];
 globalThis.Worker = class { constructor() { asked.push("worker made"); } postMessage(m) { asked.push(m.op); } terminate() {} };
 const store = await import("../src/place-store.mjs");
-const seed = 36, slot = [2, 2], v = 3, region = { seed, slot, v }, cellOf = (c, k) => ({ ir: { c, k }, place: { c, k } }), order = { cells: [89, 90], floor: 1 };
+const seed = 36, slot = [2, 2], v = 3, region = { seed, slot, v }, REAL = new Map(), real = (c) => REAL.get(c) || (REAL.set(c, bakedCell(PLACES.ctx, seed, slot, c, v)), REAL.get(c));
+// a package cell is .mbplace bytes (baked-package-8): a real cell's, its name made k so the packages of one test tell apart
+const cellOf = (c, k) => bytesOfCell(seed, c, real(c).ir, { ...real(c).place, names: [k] }), expectOf = (c, k) => cellOfBytes(cellOf(c, k)), order = { cells: [89, 90], floor: 1 };
 const sameMeta = { seed, slot, v, tag: "" }, otherTag = { seed, slot, v, tag: "old" };   // another tile-set tag stands for a rev bump: another id
 
 async function bake(kv, meta, k) { const h = await openPackage(kv, meta, order); for (const c of order.cells) await putCell(h, c, cellOf(c, k), "sha" + k + c); await finishPackage(h); return h; }
@@ -32,10 +36,10 @@ test("a held package of another rev or tag is not played; the page's own package
   assert.ok((await kv.keys()).some((k) => k.startsWith(old.id + "#c")), "the held package is kept in the store");
   store.placesOn(true);
   assert.equal(await store.packageUse(seed, slot, v, kv, 0), "whole");
-  assert.deepEqual(store.bakedGet(seed, slot, v, 89), cellOf(89, "new"), "a held package of another tag is not played");
+  assert.deepEqual(store.bakedGet(seed, slot, v, 89), expectOf(89, "new"), "a held package of another tag is not played");
   assert.deepEqual(asked, [], "it baked nothing itself");
   store.placesReset(); const o2 = await offerOf(kv, region); await takePackage(kv, o2);
   assert.equal(await store.packageUse(seed, slot, v, kv, 0), "whole");
-  assert.deepEqual(store.bakedGet(seed, slot, v, 89), cellOf(89, "new"), "a held package of the page's revs is played");
+  assert.deepEqual(store.bakedGet(seed, slot, v, 89), expectOf(89, "new"), "a held package of the page's revs is played");
   assert.deepEqual(asked, [], "still nothing baked on the Companion");
 });

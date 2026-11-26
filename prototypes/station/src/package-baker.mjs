@@ -1,7 +1,7 @@
 // The Station bakes the Companion's region: when the Companion's world is known (its save, same origin) and no current package exists for its
 // region and revs, the realm's places worker (exploration/src/realm-worker.mjs, the one the Companion bakes with) makes the cells in the order of package-store.mjs bakeOrder (the start place, its reach, the ring, the rest
 // nearest first) and each is written to the package as it lands. The page's thread only receives a cell, hashes it and hands it to IndexedDB: the bake is the worker's.
-// Nothing here changes a place: the cell kept is the cell the worker made, from the same seed, slot and v.
+// Nothing here changes a place: the cell kept is the cell the worker made, from the same seed, slot and v, as .mbplace bytes (place format 2).
 // Pure parts take their world from the caller (a test gives its own worker, store and realm); `startPackage` is the page's wiring.
 
 // What the save names: the region a package is for, and where its order starts. null: no generator 7 world in the save.
@@ -32,8 +32,8 @@ export async function bakePackage(want, deps) {
       const m = e.data || {}; if (m.op !== 'baked') return;
       if (!m.ir) { failed++; console.warn('a place was not made for the package', m.cell, m.error); if (--left === 0) fin(); return; }
       chain = chain.then(async () => {
-        const sha = await P.shaOfPlace(m.place);
-        await P.putCell(h, m.cell, { ir: m.ir, place: m.place }, sha);
+        const bytes = P.bytesOfCell(want.seed, m.cell, m.ir, m.place), sha = await P.shaOfBytes(bytes);   // the .mbplace bytes (format 2), the Station's write; the header's sha is theirs
+        await P.putCell(h, m.cell, bytes, sha);
         await P.putRegion(h, m.sites, m.banks);
         if (deps.onProgress) deps.onProgress(h.header);
         if (deps.yieldTurn) await deps.yieldTurn();
