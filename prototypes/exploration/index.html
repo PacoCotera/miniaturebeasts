@@ -2605,9 +2605,9 @@ function wildCtx(c, nm) {
   return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
-function indInSight(anyKind) {   // anyKind: skip the known-kind check (herNamed asks whether any one is in sight)
+function indInSight(anyKind) {   // anyKind: skip the known-kind and the settled check: any one standing in view (herNamed asks whether any one is in sight)
   const P = S.exp.patch; let best = null, bd = 99;
-  for (const c of curLive().cr) { if (!c.ind || c.hide || (c.ease | 0) >= 3 || (!anyKind && !S.known.includes(c.sp)) || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d <= 10 && d < bd) { bd = d; best = c; } }
+  for (const c of curLive().cr) { if (!c.ind || c.hide || (!anyKind && (c.ease | 0) >= 3) || (!anyKind && !S.known.includes(c.sp)) || !seenFromPlayer(P.key, c.x, c.y)) continue; const d = cheb(c, P); if (d <= 10 && d < bd) { bd = d; best = c; } }
   return best;
 }
 // Keeping still as one act (✓ facing a named Loika): Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light have gone; each Wait spends its light.
