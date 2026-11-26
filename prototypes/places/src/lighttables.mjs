@@ -35,7 +35,7 @@ export function nightTable(rgb) {
   const pool = [];
   rgb.forEach((c, i) => { if (i > 0 && !Object.values(STONE_TONES).some((t) => Object.values(t).some((v) => v[0] === c[0] && v[1] === c[1] && v[2] === c[2]))) pool.push([i, c]); });
   const { keep, scale, blueLift } = NIGHT_LOOK;
-  const isGreen = (c) => c[1] >= c[0] && c[1] >= c[2] && c[1] - Math.min(c[0], c[2]) > 8;   // green leads (a blue-grey that family() calls teal is not)
+  const isGreen = (c) => c[1] >= c[0] && c[1] >= c[2] && c[1] - Math.min(c[0], c[2]) > 8 && c[2] < 0.8 * c[1];   // green leads (a blue-grey that family() calls teal is not: the water's teals, #3a8785 and the like, took the night grass at night, so water read as ground; bug #171)
   const greens = pool.filter(([, c]) => isGreen(c) && lumOf(c) < 90);
   const map = new Array(rgb.length).fill(0);
   for (let i = 1; i < rgb.length; i++) {

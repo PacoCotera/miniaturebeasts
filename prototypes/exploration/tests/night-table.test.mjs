@@ -50,6 +50,20 @@ test("warm colours lose their warmth at night (red above blue by day, blue at le
   assert.ok(warm > 20 && cooled / warm > 0.95, cooled + "/" + warm);
 });
 
+test("bug #171: water's teals do not take the night grass; water reads as water at night (bluer than the grass)", () => {
+  const p = page();
+  const rgb = get(p, "RGB"), night = get(p, "REMAP_PLACE[5]");
+  const grass = rgb.findIndex(c => c.join() === "92,187,76");
+  const teals = [[58, 135, 133], [74, 159, 154], [122, 198, 187], [31, 157, 143]];   // the meadow set's water teals and the core's teal
+  for (const t of teals) {
+    const i = rgb.findIndex(c => c.join() === t.join()); if (i < 0) continue;
+    const w = rgb[night[i]], g = rgb[night[grass]];
+    assert.notDeepEqual(w, g, "teal " + t + " at night is not the night grass " + g);
+    assert.ok(w[2] >= w[1], "and it is a blue, not a green: " + w);
+  }
+  assert.ok(teals.some(t => rgb.findIndex(c => c.join() === t.join()) >= 0), "at least one teal is in the table");
+});
+
 test("the place at night draws through it: the grass pixel is the night grass, and the clock level is 5", () => {
   const p = page();
   const top = s => { p.run(`S.day.spent = ${s}; scr.px().fill(-1); RT.key = null; drawPatch(1);`); const n = new Map(); Array.from(p.run("scr.px()")).forEach(v => { if (v >= 0) n.set(v, (n.get(v) || 0) + 1); }); return [...n].sort((a, b) => b[1] - a[1])[0][0]; };
