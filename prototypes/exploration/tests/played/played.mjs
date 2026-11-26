@@ -468,12 +468,12 @@ for (const size of SIZES) {
 
   // OWNER #176 (11-26): "when you leave an active place and go to the overview sector, and enter again the same sector, the hero must be teleported to the last location where it was standing, rather than moved to the spawn point of the place."
   // His replay.save (saves/176.save): patch 178, tile 23,14, facing left. By presses: ← opens the menu, down to Leave this place, ✓ (the map), ✓ (back into 178). The verdict is the screenshot: the hero drawn on the same tile as before the map, facing left.
-  it(`s10 back into the place he left (#176, his save, patch 178 tile 23,14): the hero stands on the same tile, facing left; one more place entered lands as today [${tag}]`, async () => {
+  it(`s11 back into the place he left (#176, his save, patch 178 tile 23,14): the hero stands on the same tile, facing left; one more place entered lands as today [${tag}]`, async () => {
     const g = await open(size, "176");
     try {
       const at = await g.where();
       assert.deepEqual([at.phase, at.key, at.x, at.y], ["patch", "178", 23, 14], "the case is reached: he stands at the tile of his note, in patch 178");
-      const r = await g.region(), base = await g.shot(`s10-${tag}-before`);
+      const r = await g.region(), base = await g.shot(`s11-${tag}-before`);
       const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
       const hero = blobs(base, field, HERO)[0];
       assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
@@ -493,14 +493,14 @@ for (const size of SIZES) {
       const back = await g.where();
       assert.deepEqual([back.phase, back.key], ["patch", "178"], "the case is reached: he is back in patch 178");
       await wait(2500);                                     // the place's name and the arrival settle
-      const im = await g.shot(`s10-${tag}-after`);
+      const im = await g.shot(`s11-${tag}-after`);
       const again = blobs(im, field, HERO)[0];
       assert.ok(again && again.n > 300, `the hero is on the screen after going back (${again ? again.n : 0} pixels)`);
-      console.log(`# s10 ${tag}: hero before ${JSON.stringify(hero.box)} ${hero.n} px, after ${JSON.stringify(again.box)} ${again.n} px`);
+      console.log(`# s11 ${tag}: hero before ${JSON.stringify(hero.box)} ${hero.n} px, after ${JSON.stringify(again.box)} ${again.n} px`);
       assert.ok(Math.abs(again.box.x - hero.box.x) <= 4 && Math.abs(again.box.y - hero.box.y) <= 4, `the hero is drawn on the same tile as before the map (${JSON.stringify(again.box)} vs ${JSON.stringify(hero.box)})`);
       assert.ok(changed(base, im, r, [(hb.x - r.x) / r.w, (hb.y - r.y) / r.h, hb.w / r.w, hb.h / r.h]).frac < 0.15, "and he is drawn as he was, facing left");
       const moved = changed(base, im, r, [0, 0.12, 1, 0.76]).frac;   // the camera follows him: on another tile the whole ground around him is drawn shifted
-      console.log(`# s10 ${tag}: ${moved.toFixed(3)} of the field differs from before the map`);
+      console.log(`# s11 ${tag}: ${moved.toFixed(3)} of the field differs from before the map`);
       assert.ok(moved < 0.3, `and the ground around him is the same ground (${moved.toFixed(2)} of the field differs)`);
       // one more place entered lands as today: out again, one cell over on the map, ✓ down into it
       await leave();
