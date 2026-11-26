@@ -32,7 +32,7 @@ test("it does not take long: the walk's 90th percentile is within 450 actions an
   assert.ok(rows.every((r) => r.places <= 12), "places " + Math.max(...rows.map((r) => r.places)));
 });
 
-// W5 (walk-design-1): the end of anonymous pods. A new world has no buried pod and a new expedition makes none; a shed moment leaves a tuft; a pod comes from a known wild one's own young.
+// W5 (walk-design-1): the end of anonymous pods. A new world has no buried pod and a new expedition makes none; a shed moment leaves a tuft; her pod is earned by feeding her and the night (habits-out-build-1: three ways noted give none).
 test("no anonymous pod: a new world's first expedition lies on no buried pod, and the world turn makes none", () => {
   for (const seed of [1, 7, 13, 42]) {
     const p = makePage({ gen: 7, console: "silent" });
@@ -40,23 +40,6 @@ test("no anonymous pod: a new world's first expedition lies on no buried pod, an
     assert.equal(p.run(`S.pods.filter(q => q.how === 'ground').length`), 0, `seed ${seed}: a buried pod lies in the world`);
     assert.equal(p.run(`S.pods.length`), 0, `seed ${seed}: a pod lies in the world`);
   }
-});
-
-test("a fully known wild one leaves its own pod at its bed, once: how 'own', her name, a genome seed of the realm and her id", () => {
-  const p = makePage({ gen: 7, console: "silent" });
-  p.run(`newWorld(7); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
-  const pick = JSON.parse(p.run(`(() => { for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))]) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c); layout(key); const live = ensureLive(key); const l = live.cr.find(q => q.sp === 0 && q.ind && q.ind.hs && q.ind.hs.bed); if (l) { S.exp.pos = key; enterPatch(key); return JSON.stringify({ key, id: l.id }); } } return 'null'; })()`));
-  assert.ok(pick, "a named Loika with a bed in reach of seed 7");
-  p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}); S.habits = {}; habRecord(S.habits, c.id, 'shake').ranges.far = 1; habRecord(S.habits, c.id, 'calm').ranges.mid = 1; })()`);
-  p.run(`advance('patch')`);
-  assert.equal(p.run(`S.pods.filter(q => q.how === 'own').length`), 0, "two habits known: no pod yet");
-  p.run(`habRecord(S.habits, ${pick.id}, 'sleep').ranges.near = 1; advance('patch');`);
-  const pods = JSON.parse(p.run(`JSON.stringify(S.pods.filter(q => q.how === 'own'))`));
-  assert.equal(pods.length, 1, "all three habits known: one own pod");
-  assert.equal(pods[0].own, pick.id); assert.ok(pods[0].of && pods[0].gs > 0 && pods[0].h === 0);
-  assert.equal(p.run(`podTagOf(S.pods.find(q => q.how === 'own'))`), pods[0].of + "'s young");
-  p.run(`advance('patch'); advance('patch');`);
-  assert.equal(p.run(`S.pods.filter(q => q.how === 'own').length`), 1, "once only");
 });
 
 // The storm nerf: a Probe standing still in the open is struck at most once a pass, a strike takes one plate, and the strikes are 24+ actions apart.
