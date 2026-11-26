@@ -16,7 +16,7 @@ export const neverStoredPod = (st) => !st.tray.length && !st.waiting.length && !
 
 // The crates that ✓ opens, in the order they open: the walk crates while docked, then the portrait crate, one at a time (build spec 8.5: the oldest ready, by start).
 export function readyList(st, sv, settings, now) {
-  const walk = S.docked(st) ? S.bayCrates(st, sv).map((c) => ({ kind: "walk", id: c.id, c })) : [];
+  const walk = S.bayCrates(st).map((c) => ({ kind: "walk", id: c.id, c }));
   const sit = T.readyCrates(st, settings, now).slice().sort((a, b) => a.start - b.start)[0];
   return sit ? [...walk, { kind: "sitting", id: sit.id, sc: sit }] : walk;
 }

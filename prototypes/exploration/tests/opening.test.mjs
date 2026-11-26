@@ -196,7 +196,7 @@ test("B2: the lost-plates chip only when a plate is lost; the docked band when d
   const p = returning(); p.run("globalThis.__s = 0; shieldBars = (o => function (...a) { __s++; return o.apply(this, a); })(shieldBars);");
   p.run("S.shield = null; drawSetup(0);"); assert.equal(p.run("__s"), 0, "whole: no plates on this screen");
   p.run("S.shield = 1; drawSetup(0);"); assert.equal(p.run("__s"), 1, "one lost: the chip");
-  p.run("S.shield = null; isDocked = () => true;"); assert.ok(said(p).includes("Docked · lift to explore"), "docked: the band");
+  p.run("S.shield = null; isDocked = () => true;"); assert.ok(said(p).includes("Docked · ready to go out"), "docked: the band");
 });
 
 // ---- The stills and the marks, in real Chromium (PW_DIR; skipped without it): the marks need the baked places' views, which only a browser has ----

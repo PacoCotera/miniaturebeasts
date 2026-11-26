@@ -333,7 +333,7 @@ export function homeBuild(m, spec, frame) {
     return { state: docked ? "docked" : "away", line1: mb ? fill(docked ? C.docked : C.away, { name: mb.name }) : docked ? C.dockedNoName : C.awayNoName, line2: "", lamp: "off", ...(mb ? { name: mb.name } : {}), picture: slot(`companion-upright-${docked ? "docked" : "away"}-28x46`, spec.regions.companion.picture), ...(plates ? { plates } : {}) };
   })();
   const bay = (() => {
-    const cs = docked ? S.bayCrates(st, sv) : [], bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
+    const cs = S.bayCrates(st), bs = bayState(st, sv, settings, now), B = T.bay, trips = new Set(cs.map((c) => c.turn)).size;   // bayState: the walk crates while docked and the portrait crates that are ready; amber when anything waits
     const waiting = cs.length > 0 || bs.sitting > 0, rc0 = readyCrates(st, settings, now)[0], pname = rc0 ? S.mibiById(st, rc0.mibiId)?.name ?? "" : "";
     return { state: waiting ? "waiting" : "clear", berths: bs.sitting ? 4 : 3, crates: Math.min(cs.length, 3), pictures: { shut: slot("berth-shut-26x24", [26, 24]), crate: slot("berth-crate-26x24", [26, 24]), portrait: slot("berth-portrait-18x24", [18, 24]) }, line1: cs.length ? fill(plural(cs.length, B.waitingOne, B.waiting), { n: cs.length }) : bs.sitting ? B.portrait : B.clear, line2: cs.length ? (trips <= 1 ? B.lastTrip : fill(B.trips, { n: trips })) : bs.sitting ? (pname ? fill(B.portraitName, { name: pname }) : B.portraitNoName) : "", lamp: bs.amber ? "needsYou" : "off" };
   })();

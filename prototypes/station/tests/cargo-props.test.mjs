@@ -44,9 +44,11 @@ const crate = (n, pods = 2, extra = {}) => ({ id: "c" + n, n, turn: n * 2, at: T
 const sitting = (st, over = {}) => { const m = S.seedAdults(st, "S01", 5, 1, settings).mibis[0]; st.sittingCrates.push({ id: "sc1", mibiId: m.id, start: -1e10, painted: true, ...over }); m.portrait = { state: "painting", crate: "sc1", ...(over.digest ? { digest: over.digest } : {}) }; return m; };
 const sv0 = (bay = []) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay, mibis: [], carried: [], tier: 1, shield: 3 });
 const cargoUI = (over = {}) => ({ cargo: { state: "bay", crate: 0, at: 0, run: null, shown: null, ...over }, meet: null });
-const build = (st, sv, ui = cargoUI(), sit = sittingSpec) => cargoBuild({ st, sv, settings, docked: S.docked(st), ui, now: T0 }, spec, home, frameSpec, sit);
+const cross = (st, sv) => { if (S.docked(st)) S.crossCrates(st, sv); return st; };   // the dock rule: the sealed crates leave the hold for the Bay
+const build = (st, sv, ui = cargoUI(), sit = sittingSpec) => cargoBuild({ st: cross(st, sv), sv, settings, docked: S.docked(st), ui, now: T0 }, spec, home, frameSpec, sit);
 // the opening through the real intent, on a recording host (no clock: the timers are read, not run)
 function opened(st, sv, motion = true) {
+  cross(st, sv);
   const ui = { screen: "cargo", home: { f: "room" }, hab: {}, viv: {}, lib: {}, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: { set() {}, cur: null } }, ...cargoUI() };
   const h = { st, sv, settings, ui, specs: { cargo: spec, home, frame: frameSpec, sitting: sittingSpec, pods: J("pods.json") }, played: [], timers: [], said: [], went: [], entered: [], t: 0, now: () => T0, motion: () => motion, say: (t) => h.said.push(t), goto: (s) => h.went.push(s), play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms: h.t + ms, fn }), skip: () => true, save() {},
     enterSitting: (m, o) => { h.entered.push([m.id, o]); h.went.push("sitting"); return true; } };
@@ -137,7 +139,7 @@ test("the times: an ordinary crate (the inside view 600) with a pod, a find or a
 
 test("the plan: the run played on a copy of the state names each pod's well (no rack: every pod comes home, nothing goes to the mat); the real state is untouched until a crate starts", () => {
   const st = world(); for (let i = 0; i < 5; i++) S.seedPodFromGenome(st, podGenome(frameOf("S01"), 20 + i), settings, T0);   // five pods at home
-  const sv = sv0([crate(1, 2, { finds: ["crystal"] }), crate(2, 1)]), before = JSON.stringify(st), plan = planRun(st, sv, settings, T0, readyList(st, sv, settings, T0));
+  const sv = sv0([crate(1, 2, { finds: ["crystal"] }), crate(2, 1)]); cross(st, sv); const before = JSON.stringify(st), plan = planRun(st, sv, settings, T0, readyList(st, sv, settings, T0));
   assert.equal(JSON.stringify(st), before, "the real state is untouched"); assert.deepEqual(plan.items.map((it) => it.pods.map((p) => [p.well, p.mat])), [[[5, -1], [6, -1]], [[7, -1]]], "each pod takes its place at home, in order; none waits");
   assert.deepEqual(plan.items[0].finds, ["crystal"]); assert.deepEqual(plan.items[0].mats.map((m) => [m.name, m.amount]), [["energy", 3], ["data", 3], ["essence", 4]]); assert.ok(plan.items.every((it) => it.pods.every((p) => p.isNew)), "S01 is new to this player");
   const h = opened(st, sv), run = h.ui.cargo.run; assert.equal(run.items.length, 2); assert.equal(st.accepted.length, 1, "the first crate's rule was applied at its start; the second waits"); assert.deepEqual(st.tray.length, 7); assert.equal(st.waiting.length, 0, "nothing waits");
@@ -198,7 +200,7 @@ test("no waiting line in the opening and the end: with no rack every pod comes h
   assert.deepEqual(build(st, sv, h.ui).props.regions.hatch.wells.filter((w) => w.from).length, 2, "the two came to wells");
 });
 test("at most the plays that fit the hold's ceiling are played; the rest are taken in by the rule when the run ends", () => {
-  const st = world(), sv = sv0(Array.from({ length: 9 }, (_, i) => crate(i + 1, 4))), h = opened(st, sv), run = h.ui.cargo.run, ar = h.played.find((e) => e.kind === "arrival");
+  const st = world(), sv = sv0(); st.bayHeld = Array.from({ length: 9 }, (_, i) => crate(i + 1, 4)); const h = opened(st, sv), run = h.ui.cargo.run, ar = h.played.find((e) => e.kind === "arrival");
   assert.ok(ar.hold <= 30000 && run.items.length <= 9 && run.items.length >= 1, `${run.items.length} crates play, hold ${ar.hold}`); assert.equal(run.rest.length, 9 - run.items.length); runTo(h, 1e9); assert.equal(st.accepted.length, 9, "every crate is taken in by the end"); assert.equal(h.ui.cargo.state, "end");
 });
 
