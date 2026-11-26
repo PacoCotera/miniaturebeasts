@@ -7514,7 +7514,7 @@ const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 
 function targetLine() {
   if (!HUD.ok || !S || !S.exp || RT.readOnly || !firstWalk()) return null;
   const ex = S.exp; if (ex.cargo.pods.length || ownPodLying()) return null;
-  const sl = screenLoika(), b = sl && { id: sl.id, name: S.named[sl.id] }, rec = b && S.seenAt && S.seenAt[String(b.id)]; if (!rec) return null;
+  const b = metBest(), rec = b && S.seenAt && S.seenAt[String(b.id)]; if (!rec) return null;
   const numeric = k => /^\d+$/.test(String(k)), P = S.phase === 'patch' ? ex.patch : null;
   let dx = null, dy = null;
   if (P && rec.k === P.key) { dx = rec.x - P.x; dy = rec.y - P.y; }

@@ -361,6 +361,9 @@ for (const size of SIZES) {
     try {
       assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
       for (let i = 0; i < 7; i++) await g.press("left", 100, 500);
+      const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, dir: t && t.dir, sight: m.herInSight() }; });
+      assert.ok(top.text && top.text.startsWith("Juniper") && top.dir === "e" && top.sight !== null, `the case is reached: the top line is the goal's, Juniper · E, while Hazel stands in sight (${JSON.stringify(top)})`);
+      await g.shot(`s7-${tag}-0-top`);                      // read by eye: top line 'Juniper · E'
       await g.press("back");                                // ← opens the menu
       const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
       const first = await row();
