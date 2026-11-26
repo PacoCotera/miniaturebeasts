@@ -161,7 +161,7 @@ test("Cargo's end after a run that opened Dot's sitting crate: ✓ See the portr
     const { h, mb, say, at } = rig({ motion: false, held: false }), DG = "0123456789abcdef0011223344556677";
     G.st.sittingCrates.push({ id: "sit1", mibiId: mb.id, pose: "sleep-curled", place: "wood", start: -1e10, source: "dev", painted: true, opened: false });
     mb.portrait = { state: "painting", pose: "sleep-curled", place: "wood", crate: "sit1", start: 0, digest: DG }; if (held) assert.equal(injectPortraitSource(DG, ART()).ok, true);
-    G.sv.bay = [{ id: "c1", n: 1, turn: 2, at: T0, e: 3, d: 3, s: 4, met: [], explored: 5, of: 20, lines: [], pods: [{ id: "p0", species: "S01", sp: 0, g: "meadow", how: "calm", gs: 11, k: null }] }]; G.st.dock = { docked: true, at: T0 };
+    G.sv.bay = [{ id: "c1", n: 1, turn: 2, at: T0, e: 3, d: 3, s: 4, met: [], explored: 5, of: 20, lines: [], pods: [{ id: "p0", species: "S01", sp: 0, g: "meadow", how: "calm", gs: 11, k: null }] }]; G.st.dock = { docked: true, at: T0 }; S.crossCrates(G.st, G.sv);
     UI.screen = "cargo"; UI.cargo = { state: "bay", crate: 0, at: 0, run: null, shown: null, arrival: null };
     dispatch(h, { screen: "cargo", target: "room", verb: "confirm" }); assert.equal(UI.cargo.state, "opening"); at(60000); assert.equal(UI.cargo.state, "end", held + ": the end"); assert.equal(mb.portrait.state, "delivered");
     const p = screenProps("").msg; assert.equal(p.frame.line.ok, held ? "See the portrait" : "Look at the pods", held + ": the line");
@@ -179,10 +179,11 @@ test("the frame's notice counts a ready portrait apart, docked or away: a portra
   G.st.dock = { docked: true, at: T0 }; assert.equal(need("vivarium"), "", "nothing: no notice");
   G.st.sittingCrates.push({ id: "sit1", mibiId: mb.id, pose: "calm", place: "wood", start: Date.now() - 1e10, source: "dev", painted: true, opened: false });
   assert.equal(need("vivarium"), "A portrait waits in the Bay", "a ready portrait alone");
-  G.sv.bay = [crate(1)]; assert.equal(need("vivarium"), "Bay: a crate and a portrait");
-  G.sv.bay = [crate(1), crate(2), crate(3)]; assert.equal(need("vivarium"), "Bay: three crates and a portrait");
-  G.st.dock = { docked: false, at: T0 }; assert.equal(need("vivarium"), "A portrait waits in the Bay", "away: the walk crates are not counted, the portrait still waits");
-  G.st.dock = { docked: true, at: T0 }; G.sv.bay = [crate(1)]; G.st.sittingCrates[0].start = Date.now() + 1e9; assert.equal(need("vivarium"), "A crate waits in the Bay", "a portrait still filling is not counted");
+  const bay = (cs) => { G.st.bayHeld = []; G.sv.bay = cs; S.crossCrates(G.st, G.sv); };   // the crates cross at the dock (16b): the notice counts the Station-held list
+  bay([crate(1)]); assert.equal(need("vivarium"), "Bay: a crate and a portrait");
+  bay([crate(1), crate(2), crate(3)]); assert.equal(need("vivarium"), "Bay: three crates and a portrait");
+  G.st.bayHeld = []; G.st.dock = { docked: false, at: T0 }; assert.equal(need("vivarium"), "A portrait waits in the Bay", "away (the crates still aboard, none crossed): the walk crates are not counted, the portrait still waits");
+  G.st.dock = { docked: true, at: T0 }; bay([crate(1)]); G.st.sittingCrates[0].start = Date.now() + 1e9; assert.equal(need("vivarium"), "A crate waits in the Bay", "a portrait still filling is not counted");
 });
 
 test("the both-at-once notice fits the frame's notice zone in every form it takes (a crate, two, three, the count dropped): the notice role's width with the lamp and its gap within the zone, and within the word limit", () => {

@@ -191,20 +191,20 @@ test("need(): the words are frame.json strings.needs; counts spelled out, droppe
   st.tray = []; for (const n of [1, 3, 7]) { st.waiting = fake(n); assert.equal(S.need(st, sv, settings).text, "The Pods rack is full", "waiting " + n + ": no count"); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
   st.waiting = [];
   st.docked = true; st.dock = { docked: true, at: 0 };
-  const crates = (n) => { sv.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] })); };
+  const crates = (n) => { st.bayHeld = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] })); };
   for (const [n, want] of [[1, "A crate waits in the Bay"], [2, "Two crates wait in the Bay"], [3, "Three crates wait in the Bay"], [4, "Crates wait in the Bay"]]) { crates(n); const r = S.need(st, sv, settings); assert.equal(r.text, want, "crates " + n); assert.equal(r.label, "Open the Bay"); }
 });
 test("need(): a ready portrait is counted apart from the walk crates: alone, the Bay's notice; with walk crates, both in one; away, alone; a ready bud first of the two", () => {
   const st = fresh(); st.firstMibi = false; st.docked = true; st.dock = { docked: true, at: 0 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
-  const crates = (n) => { sv.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] })); };
+  const crates = (n) => { st.bayHeld = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] })); };
   const frame = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")), W = frame.strings.needs.crates.withPortrait, P = frame.strings.needs.portrait;
   crates(0); { const r = S.need(st, sv, settings, {}, 1); assert.deepEqual([r.text, r.act, r.label], ["A portrait waits in the Bay", "bay", "Open the Bay"], "a portrait alone"); assert.equal(r.text, P.notice, "the spec's words"); assert.equal(S.need(st, sv, settings, {}, 2).text, "A portrait waits in the Bay", "counted apart: two ready portraits read as one"); }
   assert.equal(S.need(st, sv, settings, {}, 0).text, "", "none: nothing needs the player"); assert.equal(S.need(st, sv, settings).text, "");
   for (const [n, want] of [[1, "Bay: a crate and a portrait"], [2, "Bay: two crates and a portrait"], [3, "Bay: three crates and a portrait"], [4, "Bay: crates and a portrait"]]) { crates(n); const r = S.need(st, sv, settings, {}, 1); assert.deepEqual([r.text, r.act, r.label], [want, "bay", "Open the Bay"], "crates " + n + " and a portrait: the Bay is the room"); }
   { crates(1); assert.equal(S.need(st, sv, settings, {}, 1).text, W.noticeOne); crates(2); assert.equal(S.need(st, sv, settings, {}, 1).text, W.notice.replace("{count}", "two")); crates(4); assert.equal(S.need(st, sv, settings, {}, 1).text, W.notice.replace("{count} ", ""), "above three the count is dropped"); }
   for (const n of [1, 2, 3, 4]) { crates(n); assert.equal(S.need(st, sv, settings, {}, 0).text, S.need(st, sv, settings).text, "no portrait: the crates notice as built"); assert.equal(S.need(st, sv, settings).label, "Open the Bay", "crates alone: the same label"); }
-  crates(0); st.dock = { docked: false, at: 0 }; assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "away: a portrait still waits"); crates(2); assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "away the walk crates are not counted");
+  crates(0); st.dock = { docked: false, at: 0 }; assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "away: a portrait still waits"); crates(2); assert.equal(S.need(st, sv, settings, {}, 1).text, "Bay: two crates and a portrait", "away the crates that crossed at the dock still wait at the Bay");
   st.dock = { docked: true, at: 0 }; crates(0); st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e8, minutes: 5 }; assert.equal(S.need(st, sv, settings, {}, 1).text, "A mibi waits to come out", "a ready bud before a portrait"); st.bud = null;
   const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: "x" + i, idd: 0, read: [], g: "meadow" })); st.tray = fake(2); assert.equal(S.need(st, sv, settings, {}, 1).text, "A portrait waits in the Bay", "a portrait before the pods"); st.tray = [];
   for (const w of [W.notice, W.noticeOne, P.notice]) assert.ok(!/\d/.test(w) && w.split(" ").length <= 8, w);

@@ -317,5 +317,42 @@ for (const size of SIZES) {
       assert.ok(waited.n >= hero.n * 0.75, `the hero is on screen after one Wait (${waited.n} of ${hero.n} pixels)`);
     } finally { await g.ctx.close(); }
   });
+
+  // QA repro-unknown-creature-1 (bus 351527b9ce), design 11-25: beside an unmet Untuva (sp 2, no individual) the bottom line read '✓ Unknown creature' and ✓ did nothing. It reads Keep still and ✓ waits.
+  // The case is set up by putting the creature on the tile he faces (a wild one's spawn is not ours to steer); the verdict is the light spent by pressing ✓ and the bottom line's pixels changing.
+  it(`s6 a dead ✓ (156-4, his save, patch 0,8): beside an unmet creature that is no individual, ✓ reads Keep still and spends light [${tag}]`, async () => {
+    const g = await open(size, "152");
+    try {
+      const put = await g.page.evaluate(() => {
+        const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp.patch, live = m.curLive();
+        S.known = S.known.filter((s) => s !== 2);
+        const f = m.frontOf(P);
+        live.cr.push({ id: 9e6, sp: 2, x: f.x, y: f.y, st: "idle", t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: 0.5, face: 1, ready: false, edgeIn: 1 });
+        return { label: m.patchAction().label, ind: live.cr.find((c) => c.id === 9e6).ind || null, known: S.known.includes(2) };
+      });
+      console.log(`# s6 ${tag}: before the press the line reads ${JSON.stringify(put.label)}`);
+      assert.equal(put.known, false, "the case is reached: he has not met the kind (an Untuva, sp 2)");
+      assert.equal(put.ind, null, "the case is reached: the creature is no individual");
+      assert.equal(put.label, "Keep still", "the bottom line beside it reads Keep still, not Unknown creature");
+      const spent0 = await g.spent();
+      await g.press("confirm", 100, 2500);
+      assert.ok(await g.spent() > spent0, `✓ spent light beside it (${spent0} -> ${await g.spent()})`);
+    } finally { await g.ctx.close(); }
+  });
+
+  it(`s6 a named Loika's page (his newest save #172, end-of-walk Case): ← reaches the Log and ✓ opens her page; the Case's bottom line shows it [${tag}]`, async () => {
+    const g = await open(size, "172");
+    try {
+      const phase = async () => (await g.where()).phase;
+      assert.equal(await phase(), "cargo", "the case is reached: the end-of-walk Case");
+      await g.shot(`s6-${tag}-1-case`);              // read by eye: the bottom line names ◀ Log, her pages
+      for (let i = 0; i < 6 && await phase() !== "log"; i++) await g.press("left");
+      assert.equal(await phase(), "log", "← from the Case reaches the Log");
+      await g.shot(`s6-${tag}-2-log`);
+      await g.press("confirm");
+      assert.equal(await phase(), "her", "✓ on the marked entry opens her page");
+      await g.shot(`s6-${tag}-3-her`);
+    } finally { await g.ctx.close(); }
+  });
 }
 });
