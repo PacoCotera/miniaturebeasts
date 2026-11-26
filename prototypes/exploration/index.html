@@ -3484,7 +3484,7 @@ function patchAction() {
   ACT_AT = f;
   const hers = c => ({ label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) });
   // habits-out-build-1: a habit in play is something to see: no prompt, no facing. A named Loika in sight playing one or curled asleep: ✓ keeps still (the amber frame stands on her), and keeping still is a note.
-  { const pl = ex.carry !== 'fruit' && !curLay().cave && live.cr.find(c => c.ind && !c.hide && (c.ease | 0) < 3 && (c.hb || sleeperOf(c)) && seenFromPlayer(key, c.x, c.y)); if (pl && (!o || o.type === 'tile')) { ACT_AT = { x: pl.x, y: pl.y }; return hers(pl); } }
+  { const pl = !curLay().cave && live.cr.find(c => c.ind && !c.hide && (c.ease | 0) < 3 && (c.hb || sleeperOf(c)) && seenFromPlayer(key, c.x, c.y)); if (pl && (!o || o.type === 'tile')) { ACT_AT = { x: pl.x, y: pl.y }; return hers(pl); } }
   if (!o || o.type === 'tile') { const pr = printsToRead(); if (pr) { ACT_AT = { x: (pr.mark || pr.stand).x, y: (pr.mark || pr.stand).y }; return { label: WORDS.prints.read, ctx: WORDS.prints.readCtx, run: () => readPrints(pr) }; } }   // QA verify-live-134 item 6: a blocked tile in front has no action of its own, so ✓ reads the prints the bottom line names. W4 round 2: her prints at a haunt she has left
   // first-walk-teach-approach-1 (4): while a named Loika is in sight within her stay (2 tiles) or plays her habit, ✓ is hers (keep still, Note it); a tuft or her read prints wait until she is gone or out of the stay
   const hn = ex.carry !== 'fruit' && live.cr.find(c => c.ind && !c.hide && (c.ease | 0) < 3 && inSight(c.x, c.y) && (c.hb || cheb(c, P) <= 2)) || null;
@@ -3758,23 +3758,25 @@ function awardMoment(c, kind, X) {
   fxMsg(got ? '+' + got + ' Data · ' + what : cap(what) + ' · ' + WORDS.creature.holdFull, 2);
 }
 // her-fruit-build-1: a named wild Loika takes fruit from the hand while she grazes (ease 0), is not in a habit or asleep, and the stay has light left. Her ease, quiet, crowd and habits never move for it. (The partner's calm on her, once w7-build-1 is on main, is not built here.)
+// her-fruit-build-2 (design): in her habit or asleep ✓ stays "Keep still" (the note) with fruit in hand; the fruit is neither offered nor shown. Ears up and watching: dimmed with its reason.
+const herTakes = c => !!c.ind && (c.ease | 0) === 0 && !c.hb && !sleeperOf(c) && (hearLineOf(c) || {}).left > 0;
 function herFruitAction(c) {
-  const ok = (c.ease | 0) === 0 && !c.hb && !sleeperOf(c) && (hearLineOf(c) || {}).left > 0;
-  if (ok) return { label: WORDS.fruit.offer, run: () => herOffer(c) };
+  if (c.hb || sleeperOf(c)) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) };
+  if (herTakes(c)) return { label: WORDS.fruit.offer, run: () => offer(c) };
   return { label: WORDS.fruit.refuse, dim: true, run: () => { FX.bumpAt = NOW; } };   // nothing is spent: no light, no fruit
-}
-function herOffer(c) {
-  if (darkRefuse()) return;
-  const ex = S.exp, e = c.ease, q = c.quiet, w = c.crowd;
-  ex.stats.feedTries++; ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
-  awardMoment(c, 'eat', ptCtx());
-  advance('patch', { noise: 'act' });
-  c.ease = e; c.quiet = q; c.crowd = w;   // the offer is no heard step and no crowding: her ease, quiet count and stay are as they were
 }
 function offer(c) { if (darkRefuse()) return;
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
   ex.stats.feedTries++;
   if (!spOf(c.sp).eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
+  if (herTakes(c)) {   // her-fruit-build-1: a named Loika grazing with the stay left takes it; no heard step and no crowding, so her ease, quiet count and stay are as they were
+    const e = c.ease, q = c.quiet, w = c.crowd;
+    ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
+    awardMoment(c, 'eat', X);
+    advance('patch', { noise: 'act' });
+    c.ease = e; c.quiet = q; c.crowd = w;
+    return;
+  }
   const fog = !lay.cave && inFog(lay.cell);
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
     if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch when the expedition ends

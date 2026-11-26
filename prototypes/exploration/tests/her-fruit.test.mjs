@@ -50,9 +50,29 @@ test("ears up, or watching: ✓ is dimmed with the refusal, and pressing spends 
   }
 });
 
-test("in her habit: dimmed, nothing spent", () => {
-  const p = start(); setup(p); p.run("curLive().cr.find(q => q.id === 36).hb = 1");
-  assert.equal(p.run("patchAction().dim"), true);
+test("in her habit with fruit in hand: ✓ stays Keep still (the note); the fruit is not offered, not spent", () => {
+  const p = start(); setup(p); p.run("curLive().cr.find(q => q.id === 36).hb = { k: 'shake', n: 4, tell: 3, notes: {} }");
+  const a =p.run("(() => { const a = patchAction(); return { label: a.label, dim: !!a.dim }; })()");
+  assert.ok(a.label.startsWith("Keep still")); assert.equal(a.dim, false);
+  p.run("patchAction().run()");
+  assert.equal(p.run("S.exp.carry"), "fruit", "fruit in hand never takes the note away, and is not given");
+  assert.equal(p.run("S.book.filter(r => r.kind === 'fed').length"), 0);
+});
+
+test("asleep with fruit in hand: ✓ stays Keep still; the fruit is not offered", () => {
+  const p = makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
+  p.run("newWorld(13); TEST.calm = true; startExpedition('weather', G.spawns[0]);");
+  const nightAt = 5 + p.run("DAY.parts.slice(0, -1).reduce((a, q) => a + q[1], 0)");
+  const pick = JSON.parse(p.run(`(() => { for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))]) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c), live = ensureLive(key);
+    for (const q of live.cr) if (q.sp === 0 && q.ind) return JSON.stringify({ key, id: q.id }); delete S.exp.live[key]; } return 'null'; })()`));
+  p.run(`(() => { const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); S.exp.storm = null; S.exp.fog = null; const lay = curLay(), live = curLive(), c = live.cr.find(q => q.id === ${pick.id});
+    S.known = [0]; S.day.spent = ${nightAt}; live.strike = null; S.exp.stray = null; lay.easeG = { cov: new Set(), blk: new Set() }; c.ind.doings.late = 0;
+    c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.gone = null; c.hide = 0; c.hb = null; delete c.wary;
+    const bed = hauntStand(hauntAt(c.ind.hs, c.ind.doings, dayPart()), hauntFree(lay, key, null)); c.x = bed.x; c.y = bed.y; c.ind.go = { part: dayPart(), t: { x: c.x, y: c.y } };
+    habDay()[habKey(c, 'sleep')] = 'played'; S.exp.carry = 'fruit'; })()`);
+  assert.equal(p.run(`sleeperOf(curLive().cr.find(q => q.id === ${pick.id}))`), true, "she sleeps");
+  assert.ok(p.run(`herFruitAction(curLive().cr.find(q => q.id === ${pick.id})).label`).startsWith("Keep still"));
+  assert.equal(p.run(`!!herFruitAction(curLive().cr.find(q => q.id === ${pick.id})).dim`), false);
 });
 
 test("a nameless creature writes no Log entry of its own kind", () => {
