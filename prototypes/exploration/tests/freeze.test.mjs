@@ -319,8 +319,8 @@ test("Expedition ended, docked: the bay lines say the Companion is in the Caddy"
   p.run("S.exp = null; S.report = { reason: 'home', n: 1, empty: true, lines: [], items: [], lost: [] }; S.phase = 'sealed'; S.bay = [{ id: 'a', n: 1, pods: [] }]; save();");
   dockKey(st, p.sv()); p.writeSt(st); assert.equal(p.run("isDocked()"), true);
   p.run("__t = []; drawSealed(0);");
-  assert.ok(p.run("__t").includes("1 crate sealed · ready for the Station"));
-  assert.ok(p.run("__t").includes("Docked · open the Station's Bay"));
+  assert.ok(p.run("__t").includes("1 crate aboard · the Bay is full"));
+  assert.ok(p.run("__t").includes("Docked · the Bay is full"));
   p.run("S.bay = []; __t = []; drawSealed(0);");
   assert.ok(p.run("__t").includes("Docked"), "an empty bay: Docked alone");
 });

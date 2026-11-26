@@ -62,7 +62,7 @@ const rig = () => {
   G.st = S.freshSt("w1", 1, 1000); S.normalize(G.st); G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st: G.st }; UI.idle = false; UI.resting = false; UI.caddyOpened = null; UI.skip = null;
   let t = 0; const h = createHost({ send: () => {}, nowMs: () => t, light: () => "day", motion: () => true }); h.save = () => {};
   const crate = (id, n) => ({ id, n, turn: 2, at: 0, e: 3, d: 2, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
-  G.sv.bay = [crate("c1", 1), crate("c2", 2)]; G.st.dock = { docked: true, at: 0 }; UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false;
+  G.sv.bay = [crate("c1", 1), crate("c2", 2)]; G.st.dock = { docked: true, at: 0 }; S.crossCrates(G.st, G.sv); UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false;
   return { h, at: (ms) => { t = ms; h.frame(); } };
 };
 test("the opening's end records what it brought for the Caddy (crates opened, new pods), ✓ Skip included; the next dock or lift clears it", () => {

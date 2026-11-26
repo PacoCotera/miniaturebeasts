@@ -75,9 +75,8 @@ test("F2: Idle shows the room of the mibi being met (st.face.room 0, a mibi hous
   assert.deepEqual(validate(at.props, schema), []); assert.equal(r.residents.length, st.mibis.filter((m) => m.room === 1).length, "room 1's residents");
 });
 test("the line: the first that holds of crates (docked), the bud ready, the bud growing, out with the Companion (away, mibis carried); none, empty; six words or fewer and no digits", () => {
-  const L = (st, sv) => idleLine({ st, sv, settings, docked: S.docked(st) }, frame.idle);
+  const L = (st, sv) => { st.bayHeld = sv.bay.slice(); return idleLine({ st, sv, settings, docked: S.docked(st) }, frame.idle); };
   { const st = world(); assert.equal(L(st, sv0()), "", "nothing: empty"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "A crate waits in the Bay"); assert.equal(L(st, sv0({ bay: [crate(1), crate(2)] })), "Two crates wait in the Bay"); assert.equal(L(st, sv0({ bay: [1, 2, 3, 4].map(crate) })), "Crates wait in the Bay", "more than three: the count is dropped"); }
-  { const st = world(); st.dock = { docked: false, at: T0 }; assert.equal(L(st, sv0({ bay: [crate(1)] })), "", "crates only while docked"); }
   { const st = world(); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.equal(L(st, sv0()), "A pod grows · 5 min"); st.bud.start = Date.now() - 1e9; assert.equal(L(st, sv0()), "A pod is ready to hatch"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "A crate waits in the Bay", "the crates come first"); }
   { const st = world(); adults(st, 3); st.dock = { docked: false, at: T0 }; const one = L(st, sv0({ carried: [st.mibis[0].id] })); assert.equal(one, `${st.mibis[0].name} is out with the Companion`);
     assert.equal(L(st, sv0({ carried: [st.mibis[0].id, st.mibis[1].id] })), "Two mibis are with the Companion"); assert.equal(L(st, sv0({ carried: st.mibis.map((m) => m.id) })), "Three mibis are with the Companion");
@@ -86,8 +85,8 @@ test("the line: the first that holds of crates (docked), the bud ready, the bud 
 });
 test("the line's one fact comes from the rule (state.mjs idleKey) and its order is frame.json's: crates, budReady, budGrowing, out", () => {
   const order = frame.idle.strings.order, st = world(); adults(st, 3); st.dock = { docked: true, at: T0 }; st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e9, minutes: 5 };
-  const seen = [], sv = sv0({ bay: [crate(1)], carried: [st.mibis[0].id] });
-  seen.push(S.idleKey(st, sv, settings).key); sv.bay = []; seen.push(S.idleKey(st, sv, settings).key); st.bud.start = Date.now(); seen.push(S.idleKey(st, sv, settings).key); st.bud = null; st.dock = { docked: false, at: T0 }; seen.push(S.idleKey(st, sv, settings).key);
+  const seen = [], sv = sv0({ bay: [crate(1)], carried: [st.mibis[0].id] }); st.bayHeld = sv.bay.slice();
+  seen.push(S.idleKey(st, sv, settings).key); sv.bay = []; st.bayHeld = []; seen.push(S.idleKey(st, sv, settings).key); st.bud.start = Date.now(); seen.push(S.idleKey(st, sv, settings).key); st.bud = null; st.dock = { docked: false, at: T0 }; seen.push(S.idleKey(st, sv, settings).key);
   assert.deepEqual(seen, order, "each key shows only when the ones before it do not hold"); assert.deepEqual(S.idleKey(st, sv0(), settings), null);
   assert.deepEqual(S.idleKey(st, sv, settings), { key: "out", n: 1, name: st.mibis[0].name });
 });

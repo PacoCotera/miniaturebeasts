@@ -177,6 +177,7 @@ export const lineFor = () => (UI.idle ? {} : SCREENS[UI.screen].line());
 export const docked = () => S.docked(G.st);
 export const hasWorld = () => S.hasWorld(G.sv) || !!G.st.devWorld;
 export const bayCrates = () => S.bayCrates(G.st, G.sv);
+export const aboardCrates = () => S.aboardCrates(G.st, G.sv);   // still in the Companion's hold: the dock control's count (the crossed ones wait at the Bay)
 export const carriedIds = () => S.carriedIds(G.st, G.sv);
 export const projectCarried = () => S.projectCarried(G.st, G.sv);
 export const homeMibis = () => S.homeMibis(G.st, G.sv);
