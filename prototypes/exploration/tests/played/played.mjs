@@ -363,6 +363,38 @@ for (const size of SIZES) {
     });
   }
 
+  // OWNER #156 (11-24 15:5x): "you should be able to select it and see it log if there's anything." QA's case: a habit's beat line and ✓ Keep still only for a Loika on the walk screen (PR 652).
+  // Seed 42's dusk save, played twice with the d-pad only. Near: he stands 3 tiles from her curled at her bed (light 549): the bottom bar reads ✓ Keep still. Far: he walked off up the place so she is off the screen: the bar reads something else.
+  // State only asserts each case is reached; the verdict is the bar's label pixels: the far label is not the near one, and the near label is the same one a step later.
+  if (size.w === 412) it(`s10 Keep still only on screen (#156, seed 42 at dusk): 3 tiles from her curled at her bed the bottom bar offers Keep still; off the screen it does not [${tag}]`, async () => {
+    const LABEL = [0.06, 0.955, 0.18, 0.035];
+    let herId = 0;
+    const st = (g) => g.page.evaluate((id) => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, cs = m.curLive().cr.filter((q) => q.sp === 0 && q.ind), c = id ? cs.find((q) => q.id === id) : cs.sort((a, b) => Math.max(Math.abs(a.x - P.x), Math.abs(a.y - P.y)) - Math.max(Math.abs(b.x - P.x), Math.abs(b.y - P.y)))[0]; return { at: [P.x, P.y], herAt: c && [c.x, c.y], spent: m.S.day.spent, atBed: !!c && m.atBedNow(c), curled: !!c && m.sleeperOf(c), on: !!c && m.onScreen(c.x, c.y), id: c && c.id }; }, herId);
+    let near1, near2, far, r;
+    const a = await open(size, "sleep-dusk-42");
+    try {
+      let s = await st(a); herId = s.id;                  // the Loika beside him at the start: her bed is 3 tiles left of him
+      for (let i = 0; i < 40 && s.spent < 549; i++) { await a.press(i % 2 ? "left" : "right", 100, 450); s = await st(a); }
+      assert.ok(s.curled && s.atBed && s.on && s.spent < 552, `the case is reached: she is curled at her bed, on the screen, light under 552 (${JSON.stringify(s)})`);
+      r = await a.region(); near1 = await a.shot("s10-near-1");
+      await wait(600); s = await st(a);                   // a moment later: the same case
+      assert.ok(s.curled && s.on, `the case is reached: still curled and on the screen a moment later (${JSON.stringify(s)})`);
+      near2 = await a.shot("s10-near-2");
+    } finally { await a.ctx.close(); }
+    const b = await open(size, "sleep-dusk-42");
+    try {
+      let s = await st(b);
+      for (let i = 0; i < 14 && s.on; i++) { const was = s.at.join(); await b.press("up", 100, 450); s = await st(b); if (s.at.join() === was) { await b.press(i % 2 ? "left" : "right", 100, 450); s = await st(b); } }   // walk up, away from her bed (sidestep when a bush blocks)
+      for (let i = 0; i < 40 && (s.spent < 549 || (s.on && s.spent < 551)); i++) { const was = s.at.join(); await b.press(s.on ? "up" : i % 2 ? "left" : "right", 100, 450); s = await st(b); if (s.on && s.at.join() === was) { await b.press(i % 2 ? "left" : "right", 100, 450); s = await st(b); } }   // keep away from her until her bedtime
+      assert.ok(s.curled && s.atBed && !s.on && s.spent >= 549 && s.spent < 552, `the case is reached: she is curled at her bed, off the screen, light under 552 (${JSON.stringify(s)})`);
+      far = await b.shot("s10-far");
+    } finally { await b.ctx.close(); }
+    const same = changed(near1, near2, r, LABEL), diff = changed(near1, far, r, LABEL);
+    console.log(`# s10 ${tag}: label pixels changed near to a moment later ${same.n}, near to far ${diff.n} (of ${same.of})`);
+    assert.ok(same.n < 40, `the bar reads the same Keep still a moment later (${same.n} label pixels changed)`);
+    assert.ok(diff.n > 150, `off the screen the bar's label is not Keep still (${diff.n} label pixels differ from the near bar's)`);
+  });
+
   it(`s6 a named Loika's page (his newest save #172, end-of-walk Case): ← reaches the Log and ✓ opens her page; the Case's bottom line shows it [${tag}]`, async () => {
     const g = await open(size, "172");
     try {
@@ -470,6 +502,60 @@ for (const size of SIZES) {
       const page = await g.shot(`s9-${tag}-2-her`);
       assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
       assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #176 (11-26): "when you leave an active place and go to the overview sector, and enter again the same sector, the hero must be teleported to the last location where it was standing, rather than moved to the spawn point of the place."
+  // His replay.save (saves/176.save): patch 178, tile 23,14, facing left. By presses: ← opens the menu, down to Leave this place, ✓ (the map), ✓ (back into 178). The verdict is the screenshot: the hero drawn on the same tile as before the map, facing left.
+  it(`s11 back into the place he left (#176, his save, patch 178 tile 23,14): the hero stands on the same tile, facing left; one more place entered lands as today [${tag}]`, async () => {
+    const g = await open(size, "176");
+    try {
+      const at = await g.where();
+      assert.deepEqual([at.phase, at.key, at.x, at.y], ["patch", "178", 23, 14], "the case is reached: he stands at the tile of his note, in patch 178");
+      const r = await g.region(), base = await g.shot(`s11-${tag}-before`);
+      const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
+      const hero = blobs(base, field, HERO)[0];
+      assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
+      const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
+      // ← leaves a finished place in one press, and opens the menu in any other (then down to Leave this place, ✓)
+      const leave = async () => {
+        await g.press("back", 100, 2500);
+        if ((await g.where()).phase === "menu") {
+          for (let i = 0; i < 10 && await g.menuRow() !== "leave"; i++) await g.press("down");
+          assert.equal(await g.menuRow(), "leave", "the case is reached: the selected row is Leave this place");
+          await g.press("confirm", 100, 2500);
+        }
+      };
+      await leave();
+      assert.equal((await g.where()).phase, "map", "the case is reached: he left 178 for the map");
+      await g.press("confirm", 100, 4000);                  // ✓: back down into the same place
+      const back = await g.where();
+      assert.deepEqual([back.phase, back.key], ["patch", "178"], "the case is reached: he is back in patch 178");
+      await wait(2500);                                     // the place's name and the arrival settle
+      const im = await g.shot(`s11-${tag}-after`);
+      const again = blobs(im, field, HERO)[0];
+      assert.ok(again && again.n > 300, `the hero is on the screen after going back (${again ? again.n : 0} pixels)`);
+      console.log(`# s11 ${tag}: hero before ${JSON.stringify(hero.box)} ${hero.n} px, after ${JSON.stringify(again.box)} ${again.n} px`);
+      assert.ok(Math.abs(again.box.x - hero.box.x) <= 4 && Math.abs(again.box.y - hero.box.y) <= 4, `the hero is drawn on the same tile as before the map (${JSON.stringify(again.box)} vs ${JSON.stringify(hero.box)})`);
+      assert.ok(changed(base, im, r, [(hb.x - r.x) / r.w, (hb.y - r.y) / r.h, hb.w / r.w, hb.h / r.h]).frac < 0.15, "and he is drawn as he was, facing left");
+      const moved = changed(base, im, r, [0, 0.12, 1, 0.76]).frac;   // the camera follows him: on another tile the whole ground around him is drawn shifted
+      console.log(`# s11 ${tag}: ${moved.toFixed(3)} of the field differs from before the map`);
+      assert.ok(moved < 0.3, `and the ground around him is the same ground (${moved.toFixed(2)} of the field differs)`);
+      // one more place entered lands as today: out again, one cell over on the map, ✓ down into it
+      await leave();
+      assert.equal((await g.where()).phase, "map", "the case is reached: he left for the map again");
+      const pos0 = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.exp.pos);
+      let other = null;
+      for (const dir of ["right", "left", "down", "up"]) {
+        await g.press(dir, 100, 1500);
+        other = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.exp.pos);
+        if (other !== pos0) break;
+      }
+      assert.notEqual(other, pos0, "the case is reached: the map cursor is on another place");
+      await g.press("confirm", 100, 5000);
+      const next = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, e = m.S.exp; return { phase: m.S.phase, key: e.patch && e.patch.key, x: e.patch && e.patch.x, y: e.patch && e.patch.y, spot: e.spot || null }; });
+      assert.ok(next.phase === "patch" && next.key !== "178" && next.spot === null, `the case is reached: he is down in another place (${JSON.stringify(next)})`);
+      assert.ok(!(next.x === 23 && next.y === 14), `another place is entered at its own way in, not at the tile he left 178 on (${JSON.stringify(next)})`);
     } finally { await g.ctx.close(); }
   });
 }
