@@ -1073,11 +1073,14 @@ function composeMsg() {
   // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
   const keep = firstWalk() ? n.filter(x => !x.once || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
   // slab-full-1: a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
-  const holding = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
+  // steering (design, 11-26): a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
+  const ownHold = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
+  const hz = ownHold ? signs.find(x => FIRST_HAZARD.includes(x.sign)) : null, holding = ownHold && !hz;
+  if (hz) { signs.splice(signs.indexOf(hz), 1); signs.unshift(hz); }
   FX.deferred = holding && signs[0] ? signs[0] : null;
   if (FX.deferred && !FX.deferTimer) { const seq = FX.careSeq || 0; FX.deferTimer = setTimeout(() => { FX.deferTimer = 0; if ((FX.careSeq || 0) !== seq || !S) return; NOW = performance.now(); composeMsg(); if (!fieldFrozen()) settleOnce(); save(); }, Math.max(0, FX.ownUntil - NOW) + 30); }
   const sg = holding ? null : signs[0], plain = keep.filter(x => !x.sign);
-  if (sg && !plain.some(x => x.pri > sg.pri)) { FX.sign = sg; FX.msg = sg.text; for (const x of plain) if (!x.once) FX.held.push(x); return; }
+  if (sg && (hz || !plain.some(x => x.pri > sg.pri))) { FX.sign = sg; FX.msg = sg.text; for (const x of plain) if (!x.once) FX.held.push(x); return; }
   // one line at a time: a second note never joins the first with " · "; it waits for the next action (the one-time lines wait, unspent, for their own trigger)
   for (const x of plain) { if (out.includes(x.text)) continue; if (out) { if (!x.once) FX.held.push(x); continue; } out = x.text; }
   FX.msg = out;

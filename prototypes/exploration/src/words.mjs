@@ -9,7 +9,7 @@ export const WORDS = {
   reachLine: (n, total, tail) => 'Explored ' + n + ' of ' + total + (tail || ' in reach'), worldLine: (n, all) => 'Explored ' + n + ' of ' + all + ' places',
   // taking things (✓ labels, at most 24 characters)
   takeDew: 'Take the dew',
-  slabTake: { mat: 'Take the Essence', find: 'Take the Data' },   // [copy] SLOT for editorial (slab-full-1): ✓ on the old tile of a pushed slab, what lay under it; working words, editorial writes the final ones before merge
+  slabTake: { mat: 'Pick up the Essence', find: 'Pick up the find' },   // [copy] editorial (bus b3562f, row slab.take): ✓ on the old tile of a pushed slab, what lay under it; 19 characters max
   // refusals and counts against the cap (the thing stays where it is, nothing is spent)
   refuse: {
     dew: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the cup keeps its dew', charge: cap => 'Your Energy is full (' + cap + ' of ' + cap + ') · the stone keeps its charge',   // [copy] owner notes #75 #76: the 20 is his hold, not the stone's

@@ -367,55 +367,58 @@ for (const size of SIZES) {
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
   const MSGBOX = [0.02, 0.80, 0.96, 0.10];   // the message box, as fractions of the Companion's frame (the game screen's lower part)
-  if (size.w === 412) it(`s15 a slab pushed with a full hold (QA verify-live-651 a): the push says the hold is full, the hold stays 20, the Essence under it is not lost [${tag}]`, async () => {
+  if (size.w === 412) it(`s16 a slab pushed with a full hold (QA verify-live-651 a): the push says the hold is full, the hold stays 20, the Essence under it is not lost [${tag}]`, async () => {
     const g = await open(size, "slab-full-hold");
     try {
       const hold = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { s: m.S.exp.cargo.s, phase: m.S.phase }; });
       assert.deepEqual(await hold(), { s: 20, phase: "patch" }, "the case is reached: in the place with 20 Essence");
-      const r = await g.region(), before = await g.shot("s15-before");
+      const r = await g.region(), before = await g.shot("s16-before");
       await g.press("confirm", 100, 400);
-      const pushed = await g.shot("s15-push");
+      const pushed = await g.shot("s16-push");
       assert.equal((await hold()).s, 20, "the case is reached: the hold is still 20 after the push");
       await g.press("confirm", 100, 400);   // ✓ again on the tile the slab left: with the hold full this says the same full line, and takes nothing
-      const again = await g.shot("s15-again");
+      const again = await g.shot("s16-again");
       const shown = changed(before, pushed, r, MSGBOX), same = changed(pushed, again, r, MSGBOX);
-      console.log(`# s15 ${tag}: box pixels changed by the push ${shown.n}, between the push line and the full line of the old tile ${same.n} (of ${shown.of})`);
+      console.log(`# s16 ${tag}: box pixels changed by the push ${shown.n}, between the push line and the full line of the old tile ${same.n} (of ${shown.of})`);
       assert.ok(shown.n > 400, `the push puts a line in the box (${shown.n} pixels changed)`);
       assert.ok(same.n < 30, `the push line is the full line (${same.n} pixels differ from that line said by the old tile)`);
       assert.equal((await hold()).s, 20, "the hold is still 20");
     } finally { await g.ctx.close(); }
   });
-  if (size.w === 412) it(`s16 the Essence under a pushed slab is takeable once there is room (QA verify-live-651 a): ✓ on the old tile takes it and the box says so [${tag}]`, async () => {
+  if (size.w === 412) it(`s17 the Essence under a pushed slab is takeable once there is room (QA verify-live-651 a): ✓ on the old tile takes it and the box says so [${tag}]`, async () => {
     const g = await open(size, "slab-full-room");
     try {
       const hold = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { s: m.S.exp.cargo.s, phase: m.S.phase }; });
       assert.deepEqual(await hold(), { s: 0, phase: "patch" }, "the case is reached: in the place with room in the hold");
-      const r = await g.region(), before = await g.shot("s16-before");
+      const r = await g.region(), before = await g.shot("s17-before");
       await g.press("confirm", 100, 400);
-      const took = await g.shot("s16-take");
+      const took = await g.shot("s17-take");
       assert.equal((await hold()).s, 2, "the case is reached: the hold rose by what was under the slab");
       const shown = changed(before, took, r, MSGBOX);
-      console.log(`# s16 ${tag}: box pixels changed by the take ${shown.n} (of ${shown.of})`);
+      console.log(`# s17 ${tag}: box pixels changed by the take ${shown.n} (of ${shown.of})`);
       assert.ok(shown.n > 400, `the take puts its line in the box (${shown.n} pixels changed)`);
       await g.press("confirm", 100, 400);
       assert.equal((await hold()).s, 2, "nothing more lies there: a second ✓ takes nothing");
     } finally { await g.ctx.close(); }
   });
-  // OWNER 11-25 (QA verify-live-651 b, design bus 56ccb3): "the strike warning waits until the push line has shown (about 2 s), then shows as today: delayed, never dropped."
-  if (size.w === 412) it(`s17 the push line is seen (QA verify-live-651 b): the push line shows first, then "Lightning strikes here next" after about 2 s [${tag}]`, async () => {
+  // OWNER 11-25 (QA verify-live-651 b); design's final word 11-26 (bus fa9c1ce856): a hazard sign is never held: the warning shows at once after the push, the push line waits one action and shows after the next press. Other signs keep the 2 s hold.
+  if (size.w === 412) it(`s18 the warning is seen at once (QA verify-live-651 b): the push shows "Lightning strikes here next" with no wait, the push line comes after the next press [${tag}]`, async () => {
     const g = await open(size, "slab-full-warn");
     try {
       const warned = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { phase: m.S.phase, strike: !!m.curLive().strike }; });
-      const r = await g.region(), before = await g.shot("s17-before");
+      const r = await g.region(), before = await g.shot("s18-before");
       await g.press("confirm", 100, 250);
-      const push = await g.shot("s17-push");
+      const push = await g.shot("s18-push");
       assert.deepEqual(await warned(), { phase: "patch", strike: true }, "the case is reached: a strike is warned for this place after the push");
       await wait(2400);
-      const warn = await g.shot("s17-warn");
-      const a = changed(before, push, r, MSGBOX), b = changed(push, warn, r, MSGBOX);
-      console.log(`# s17 ${tag}: box pixels changed by the push ${a.n}, push line to the warning ${b.n} (of ${a.of})`);
-      assert.ok(a.n > 400, `the push line is in the box right after the push (${a.n} pixels changed)`);
-      assert.ok(b.n > 400, `about 2 s later the box reads another line, the warning (${b.n} pixels changed)`);
+      const later = await g.shot("s18-later");
+      await g.press("confirm", 100, 400);
+      const next = await g.shot("s18-next");
+      const a = changed(before, push, r, MSGBOX), b = changed(push, later, r, MSGBOX), c = changed(later, next, r, MSGBOX);
+      console.log(`# s18 ${tag}: box pixels changed by the push ${a.n}, push to 2.4 s later ${b.n}, warning to the next press ${c.n} (of ${a.of})`);
+      assert.ok(a.n > 400, `the warning is in the box right after the push (${a.n} pixels changed)`);
+      assert.ok(b.n < 5000, `the box holds the same warning 2 s later (${b.n} pixels changed: the rain moves under it, a new line is tens of thousands)`);
+      assert.ok(c.n > 20000,`the next press shows the push line after the warning (${c.n} pixels changed)`);
     } finally { await g.ctx.close(); }
   });
 
