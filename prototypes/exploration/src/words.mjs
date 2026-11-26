@@ -176,6 +176,8 @@ export function clockToNext(spent) {
   return s < nightAt ? nightAt - s : Math.max(0, DAY.light - s);
 }
 // The Log (companion-device-build-1): the Companion's notebook. [copy] WORKING WORDS: the copywriter's job replaces every string here.
+// [copy] her-fruit-build-1 (editorial's canon-her-page strings): the fruit from the hand of a named wild Loika
+WORDS.fruit = { offer: 'Offer fruit', refuse: 'Not while her ears are up', log: name => name + ' took fruit from your hand.' };
 WORDS.book = {
   title: 'Log', day: n => 'Day ' + n, earlier: 'earlier pages', field: 'field', moves: '▲▼', empty: 'Nothing written yet.',
   atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,

@@ -172,3 +172,13 @@ test("named on arrival has a met record: a wild one named at once on entering th
   for (const id of ids) { const m = p.run(`S.pages && S.pages[${JSON.stringify(id)}] && S.pages[${JSON.stringify(id)}].met`); assert.ok(m && m.d != null && m.place && m.t != null, "met record for " + id + ": " + JSON.stringify(m)); }
   assert.equal(p.errors.length, 0, String(p.errors));
 });
+
+test("a Loika named on arrival has a met record (the one naming path, nameSeen)", () => {
+  const p = start(13);
+  p.run("{ const P = S.exp.patch, c = curLive().cr.find(q => q.id === 36); c.x = P.x; c.y = P.y - 1; c.hide = 0; S.named = {}; S.metIds = []; S.book = []; S.pages = {}; nameInSight(); }");
+  assert.ok(p.run("S.named[36]"), "she is named at once");
+  assert.equal(p.run("S.book.filter(r => r.kind === \"met\" && String(r.id) === \"36\").length"), 1, "one met entry");
+  assert.ok(p.run("S.pages[36] && S.pages[36].met && S.pages[36].met.part"), "her page holds the met record");
+  p.run("nameInSight()"); assert.equal(p.run("S.book.filter(r => r.kind === \"met\").length"), 1, "naming again writes nothing more");
+  assert.equal(p.errors.length, 0, String(p.errors));
+});
