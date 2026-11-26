@@ -8058,7 +8058,6 @@ function drawMenu(t) {
     const spots = [[xs[0], top], [xs[1], top], [xs[0], tb], [xs[1], tb]], ok = spots.find(([bx, by]) => !hit(bx, by));
     if (ok) { x = ok[0]; top = ok[1]; left = x < SCR_W / 2; }
   }
-  RT.menuBox = { x, y: top, w, h: items.length * rowH + 20 };   // read by the menu-side-hero test
   if (!overField) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10); else if (S.ui.from === 'map') ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 5);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);
   panel(x, top, w, items.length * rowH + 20, C.paper, C.ink);
