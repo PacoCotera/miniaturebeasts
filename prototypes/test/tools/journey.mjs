@@ -167,7 +167,8 @@ if (!SMALL) for (const m of MENU) {
   await page.waitForTimeout(8500);
   eq(await page.evaluate(() => document.getElementById("swDot").hidden), true, "C: the idle Station, hidden, never lights the dot on its own animation");
   // a need set on the hidden Station (a crate waiting in the Bay) lights its lamp and so the dot on the Station half
-  await st().evaluate(() => { window.__st.seedCrate("S01", 2, 4101); window.__st.ST.dock.docked = true; });   // the Bay shows its crates only while docked
+  // OWNER 2025-11-25 07:1x: "you have space for three sealed crates in the companion that get unloaded at dock": dock first, then seed, so the crate crosses into the Bay (a crate seeded while away stays aboard)
+  await st().evaluate(() => { window.__st.ST.dock.docked = true; window.__st.seedCrate("S01", 2, 4101); });
   const t1 = Date.now(); await page.waitForFunction(() => !document.getElementById("swDot").hidden, null, { timeout: 1000 }).catch(() => {});
   expect(!(await page.evaluate(() => document.getElementById("swDot").hidden)), `C: a need set on the Station (a crate in the Bay) shows the dot on the Station half within 1 s (${Date.now() - t1} ms)`);
   await ctx.close();
