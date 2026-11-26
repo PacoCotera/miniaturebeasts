@@ -354,5 +354,23 @@ for (const size of SIZES) {
       await g.shot(`s6-${tag}-3-her`);
     } finally { await g.ctx.close(); }
   });
+
+  // OWNER #156 (11-24): "you should be able to select it and see it log if there's anything." QA verify-live-639, his #145 save: Hazel (met, her kind not known yet) stands in sight; ← then offers her page as the first row.
+  it(`s7 Hazel's page (#156, his save #145): d-pad left x7 then ←, the menu's first row is Hazel's page and ✓ opens it [${tag}]`, async () => {
+    const g = await open(size, "145");
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      for (let i = 0; i < 7; i++) await g.press("left", 100, 500);
+      await g.press("back");                                // ← opens the menu
+      const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
+      const first = await row();
+      assert.deepEqual([first.phase, first.label, first.sel], ["menu", "Hazel · her page", 0], "the case is reached: the menu's first row reads Hazel · her page, selected");
+      const r = await g.region(), menu = await g.shot(`s7-${tag}-1-menu`);
+      await g.press("confirm", 100, 1500);                  // ✓ on the first row
+      const page = await g.shot(`s7-${tag}-2-her`);
+      assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
+      assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
 }
 });
