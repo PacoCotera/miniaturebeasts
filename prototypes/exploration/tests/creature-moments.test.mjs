@@ -115,7 +115,7 @@ test("Rupar: after a meal it goes full as the Untuva does and may shed in a fres
   f.ticks(3); assert.deepEqual(f.pods(), []); assert.equal(f.cr(id).st, "idle");
 });
 
-test("Tuliko: after rain it airs its scales through the Loika's shake path, no tuft; once a place per storm; the Loika still leaves its tuft", () => {
+test("Tuliko: after rain it airs its scales through the Loika's shake path, no tuft; once a place per storm; the Loika's shake leaves no tuft (habits-out-build-1)", () => {
   const f = fixture({ partner: null }), at = f.spot(4, 6), id = f.add(19, at.x, at.y, { wet: 1 });
   f.tick(); assert.equal(f.cr(id).st, "shake");
   f.tick(); assert.deepEqual(podsHow(f), ["air"]); assert.ok(said(f, /^The Tuliko aired its scales · a pod rolled loose/), f.msgs().join(" | "));
@@ -123,7 +123,7 @@ test("Tuliko: after rain it airs its scales through the Loika's shake path, no t
   const u = f.spot(4, 6, null, 3), id2 = f.add(19, u.x, u.y, { wet: 1 }); f.run("S.exp.stats.sheds = 0"); f.ticks(3);
   assert.equal(f.pods().length, 1, "the storm's moment for the Tuliko is spent in this place"); assert.equal(f.cr(id2).st, "idle");
   const g = fixture({ partner: null }), lp = g.spot(4, 6), lid = g.add(0, lp.x, lp.y, { wet: 1 });
-  g.tick(); assert.equal(g.cr(lid).st, "shake"); g.tick(); assert.deepEqual(podsHow(g), ["shake"]); assert.equal(g.run("curLive().tf.length"), 1, "the Loika's tuft");
+  g.tick(); assert.equal(g.cr(lid).st, "shake"); g.tick(); assert.deepEqual(podsHow(g), ["shake"]); assert.equal(g.run("curLive().tf.length"), 0, "the Loika's shake leaves no tuft");
 });
 
 test("Tuliko: still wet under the rain it stays in the shelter's path, and only the rain ending sends it to shake", () => {

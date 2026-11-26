@@ -75,16 +75,16 @@ for (const seed of [7, 13, 42]) {
 
   test("seed " + seed + ": a sleeper whose bedding-down was missed can be noted by night: from 3 tiles the habit only, from 2 the keepsake; never her coat, never her face", () => {
     const p = page(), pick = start(p); setup(p, pick, nightAt);
-    const run = d => { if (!stand(p, pick, d)) return null; return JSON.parse(p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}), t = noteTarget(); if (!t) return JSON.stringify({ target: false }); if (t.id !== c.id) return JSON.stringify({ target: false, other: t.id }); const rec = () => (S.habits[c.id] || {}).sleep || { got: {}, ranges: {}, sample: null };
-      const n0 = (S.exp.stats.notes || 0); noteHabit(t); const r = rec(); return JSON.stringify({ target: true, got: r.got, ranges: r.ranges, sample: r.sample, notes: (S.exp.stats.notes || 0) - n0, last: S.exp.stats.noted.slice(-1)[0] }); })()`)); };
+    const run = d => { if (!stand(p, pick, d)) return null; return JSON.parse(p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}); const rec = () => (S.habits[c.id] || {}).sleep || { got: {}, ranges: {}, sample: null };
+      const n0 = (S.exp.stats.notes || 0); if (!noteHabit(c)) return JSON.stringify({ target: false }); const r = rec(); return JSON.stringify({ target: true, got: r.got, ranges: r.ranges, sample: r.sample, notes: (S.exp.stats.notes || 0) - n0, last: S.exp.stats.noted.slice(-1)[0] }); })()`)); };
     const at3 = run(3);
     if (!at3) return;   // no straight line of 3 free tiles from her bed in this place
-    assert.ok(at3.target, "✓ facing a sleeper in the lamp notes her: " + JSON.stringify(at3)); assert.equal(at3.notes, 1, "one action");
+    assert.ok(at3.target, "keeping still in sight of a sleeper in the lamp notes her: " + JSON.stringify(at3)); assert.equal(at3.notes, 1, "one action");
     assert.equal(at3.ranges.mid, 1, "the habit counts"); assert.ok(!at3.sample, "from 3 tiles no keepsake"); assert.ok(!at3.got.coat && !at3.got.face && !at3.got.place, "nothing else by night");
     assert.ok(at3.last.asleep && at3.last.part === "night");
     const at2 = run(2);
     if (at2) { assert.ok(at2.target); assert.ok(at2.sample, "from 2 tiles the keepsake"); assert.ok(!at2.got.coat && !at2.got.face, "never her coat, never her face by night"); assert.ok(at2.last.keepsake); }
-    const again = run(3); assert.ok(!again || !again.target, "once a day for each range: ✓ no longer notes her from 3");
+    const again = run(3); assert.ok(!again || !again.target, "once a day for each range: keeping still no longer notes her from 3");
     assert.deepEqual(p.errors, []);
   });
 
@@ -92,8 +92,8 @@ for (const seed of [7, 13, 42]) {
     const p = page(), pick = start(p); setup(p, pick, nightAt);
     if (!stand(p, pick, 2)) return;
     const out = JSON.parse(p.run(`(() => { const c = curLive().cr.find(q => q.id === ${pick.id}), rec = () => (S.habits[c.id] || {}).sleep || { got: {}, ranges: {}, sample: null };
-      c.ease = 1; c.quiet = 0; const t = noteTarget(); if (!t) return JSON.stringify({ target: false }); noteHabit(t); const stirred = { sample: rec().sample, last: S.exp.stats.noted.slice(-1)[0] };
-      c.ease = 0; const t2 = noteTarget(); if (!t2) return JSON.stringify({ target: true, again: false, stirred }); noteHabit(t2); const settled = { sample: rec().sample };
+      c.ease = 1; c.quiet = 0; if (!noteHabit(c)) return JSON.stringify({ target: false }); const stirred = { sample: rec().sample, last: S.exp.stats.noted.slice(-1)[0] };
+      c.ease = 0; if (!noteHabit(c)) return JSON.stringify({ target: true, again: false, stirred }); const settled = { sample: rec().sample };
       return JSON.stringify({ target: true, again: true, stirred, settled }); })()`));
     assert.ok(out.target && out.again, "a stirred sleeper can be noted, and again once she has settled: " + JSON.stringify(out));
     assert.ok(!out.stirred.sample, "no keepsake while she is stirred"); assert.ok(out.stirred.last.stirred && !out.stirred.last.keepsake);
