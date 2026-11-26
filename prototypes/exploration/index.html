@@ -1058,7 +1058,7 @@ function headBack() { if (canSend()) return '← End expedition'; const w = send
 
 // ===================== 5. State, persistence, effects hooks =====================
 // FX holds presentation-only events the renderer reads; rules write to it but never read it.
-const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
+const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], bursts: [], pops: {}, rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
 let NOW = 0;
 const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
@@ -1352,6 +1352,40 @@ const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // spe
 const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
+// ===== JUICE (juice-build-1): every act that takes or gives something answers at once, from this one table, through fxJuice. =====
+// A row says: snd, the sound (WebAudio blips: [Hz, ms] notes, no files); line, what it moved him toward (the canon strings, core-loop-canon-1; null = the act's own line
+// stays); the burst at the thing (about 4 frames of 80 ms, palette only, off under reduced motion). The +N rising over the thing and the HUD counter's bracket belong to
+// a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
+const JUICE = {
+  stone:   { snd: [[330, 60], [660, 90]],  line: n => '+' + n + ' Energy · it goes home in the crate' },   // a stone's charge
+  cup:     { snd: [[520, 60], [660, 70]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // a cup of dew
+  tuft:    { snd: [[440, 60], [550, 70]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // a tuft on the ground
+  press:   { snd: [[392, 60], [588, 90]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // fruit pressed at a stone
+  fruit:   { snd: [[500, 70]],             line: () => '+1 fruit · in your hand for her' },               // fruit picked up
+  pod:     { snd: [[262, 80], [392, 80], [523, 110]], line: () => 'A pod · it goes home in the crate' },
+  slab:    { snd: [[130, 110], [98, 90]],  line: null },    // the push's own lines say what lay under it
+  prints:  { snd: [[600, 50], [450, 70]],  line: null },    // her prints line stays
+  note:    { snd: [[600, 60], [800, 90]],  line: null },    // the note's own line stays
+  feed:    { snd: [[500, 70], [700, 70]],  line: null },    // the feeding's own line stays
+  strike:  { snd: [[700, 50], [900, 80]],  line: null }     // a strike mark's own line stays
+};
+const JUICE_BURST_MS = 320;   // 4 frames of 80 ms
+let AC = null;
+function juiceSound(notes) {
+  if (OPT.mute || typeof AudioContext === 'undefined') return;
+  try {
+    AC = AC || new AudioContext(); if (AC.state === 'suspended') AC.resume();
+    let t = AC.currentTime;
+    for (const [hz, ms] of notes) { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'square'; o.frequency.value = hz; g.gain.setValueAtTime(0.04, t); g.gain.linearRampToValueAtTime(0, t + ms / 1000); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + ms / 1000); t += ms / 1000 * 0.8; }
+  } catch (e) { /* no audio here: the act still answers on the screen */ }
+}
+// x, y: the tile of the thing (patch coordinates); n: how much it moved, for the line.
+function fxJuice(act, x, y, n) {
+  const row = JUICE[act]; if (!row) return;
+  if (x != null && motion()) FX.bursts.push({ x, y, at: NOW });
+  juiceSound(row.snd);
+  if (row.line && n !== 0) fxMsg(row.line(n), 2);
+}
 const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
 // A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
@@ -1879,7 +1913,7 @@ function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay
 function readStrike(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, put = strikeGain(ex, curLay(), f);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
-  const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
+  const got = addMat('d', put, f.x, f.y); fxJuice('strike', f.x, f.y, got); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
   const took = (fs(key, f.id).took || 0) + got;
   setFS(key, f.id, took >= strikeWorth() ? { took, read: S.turn } : { took });   // read only once all its worth is taken
   fxSign('strike'); fxMsg(WORDS.strike.press(got), 2); logEv('Read a strike mark · +' + got + ' Data (' + ex.cargo.d + ' of ' + CAP + ' in the hold)');
@@ -2835,7 +2869,7 @@ function readPrints(p) {
   if (!rec.tuft && !ex.dark) { const at = p.mark || p.stand; rec.tuft = 1; const live = curLive(); live.tf.push({ id: live.fid++, x: at.x, y: at.y }); }
   let learned = '';   // night step 4: read at her bed in the dew, her prints give where she goes for sleep-curled
   if (p.to && sleepPart(p.part) && !p.gone) { const sr = habRecord(S.habits || (S.habits = {}), c.id, 'sleep'); if (!sr.got.place) { sr.got.place = 1; learned = ' · ' + WORDS.habit.cardTail(WORDS.habit.sleepPlace, true); } }
-  fxMsg(printsLine(p) + drop + W.page + learned, 3);
+  fxMsg(printsLine(p) + drop + W.page + learned, 3); fxJuice('prints', (p.mark || p.stand || p.h).x, (p.mark || p.stand || p.h).y, 0);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
   waitTick('patch');   // a read spends one light, as a note does
 }
@@ -2913,6 +2947,7 @@ function noteHabit(c, viaView) {   // viaView: the watch view takes the note and
     if (sm.length >= SATCHEL) { tail += ' · ' + W.noRoom; noRoom = true; }
     else { const s = SAMPLE[k], id = sampleId(S.seed, c.id, k); sm.push({ id, lo: c.id, name, sp: c.sp, habit: k, item: s.item, chapter: s.chapter, turn: S.turn, ...gotNow() }); rec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); findEntry = bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); gotSample = s.item; }
   }
+  fxJuice('note', c.x, c.y, 0);
   const filled = want ? rec.got[want] : 0;
   const hbNow = c.hb, card = { id: c.id, k, range, entry, findEntry, data: gotData, sample: gotSample, noRoom, pose: poseOf(k, hbNow ? beatOf(hbNow) : 0), saddled: wildSaddled(c), clear: airClear() };   // the field card is drawn from these entries, the Log's own records
   if (!viaView) fxMsg(name + ' · ' + (sl ? W.asleep : W.name[k]) + ' · ' + W.range[range] + ' · ' + said + tail + (want ? ' · ' + (habWant(c.id, k) ? W.cardTail(roomWord(k, habWant(c.id, k)), false) : W.cardTail(roomWord(k, want), true)) : ''), 3);
@@ -3632,6 +3667,7 @@ function addMat(k, n, x, y, keeps, ownLine) {   // keeps: what the source keeps 
   const ex = S.exp, got = ex.dark ? 0 : Math.max(0, Math.min(n, CAP - ex.cargo[k]));   // a dark Probe takes nothing: no Data, no sample
   ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
   if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
+  if (got) FX.pops[k] = NOW;   // the HUD counter's bracket, about 1 s (drawCounter)
   if (got < n && !ownLine) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
   return got;
 }
@@ -3681,7 +3717,7 @@ function shakeBush(f) { if (darkRefuse()) return;
 }
 function pickUp(fr) { if (darkRefuse()) return;
   const live = curLive(); live.fr = live.fr.filter(q => q !== fr); S.exp.carry = 'fruit';
-  fxSign('fruit');
+  fxJuice('fruit', fr.x, fr.y, 1); fxSign('fruit');
   advance('patch', { noise: 'act' });
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
@@ -3690,23 +3726,23 @@ function pressFruit(at) { if (darkRefuse()) return;   // at: the stone or tree p
   if (ex.cargo.s >= CAP) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // refused only at the cap (owner note #15)
   const part = CAP - ex.cargo.s < 2;   // room for 1: fills to the cap, the extra is lost, and the line says so
   ex.carry = null;
-  const got = addMat('s', 2, P.x, P.y, null, part); fxSign('press');
+  const got = addMat('s', 2, P.x, P.y, null, part); fxJuice('press', P.x, P.y, got); fxSign('press');
   if (part) fxMsg(WORDS.pressLost(CAP), 2);
   advance('patch', { noise: 'act' });
 }
 function takeTuft(tf) { if (darkRefuse()) return;
   if (S.exp.cargo.s >= CAP) { fxMsg(WORDS.refuse.tuft(CAP), 2); return; }   // a full hold takes nothing and no turn passes
-  const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
+  const live = curLive(); live.tf = live.tf.filter(q => q !== tf); fxJuice('tuft', tf.x, tf.y, addMat('s', 1, tf.x, tf.y)); fxSign('tuft'); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, { w: lw, h: lh } = layout(key), pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
   if (tx < 1 || ty < 1 || tx >= lw - 1 || ty >= lh - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(layout(key).tiles[ty * lw + tx])) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
   const first = !fs(key, f.id).moved;
-  setFS(key, f.id, { moved: 1, x: tx, y: ty });
+  setFS(key, f.id, { moved: 1, x: tx, y: ty }); fxJuice('slab', tx, ty, 0);
   if (first && f.under === 'pod') { // something was hiding under it
     const lay = layout(key), here = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave);
     const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : (k => k[hash(S.seed, 'slab', key) % k.length].sp)(hereKinds());
     S.pods.push({ id: 's:' + key + ':' + f.id, k: key, x: f.x, y: f.y, sp, h: 0, g: groundName(lay.land, lay.cave), how: 'slab' });
-    fxGlint(f.x, f.y); logEv('A pod was under the slab');
+    fxGlint(f.x, f.y); fxMsg('Pushed · a pod lay under it', 2); logEv('A pod was under the slab');
   }
   advance('patch', { noise: 'act', ring: { x: tx, y: ty, r: 2 } });
   if (S.exp && S.exp.patch && !slabPushable(key, f)) fxOnce('wedged', 'The slab is wedged', 2);
@@ -3720,11 +3756,11 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
 function takeDew(f) { if (darkRefuse()) return;
   const ex = S.exp;
   if (ex.cargo.s >= CAP) { fxMsg(WORDS.refuse.dew(CAP), 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
-  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
+  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); fxJuice('cup', f.x, f.y, addMat('s', 1, f.x, f.y)); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
 function takeCharge(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
   if (ex.cargo.e >= CAP) { fxMsg(WORDS.refuse.charge(CAP), 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
-  const got = addMat('e', ch, f.x, f.y, WORDS.stoneKeeps);
+  const got = addMat('e', ch, f.x, f.y, WORDS.stoneKeeps); fxJuice('stone', f.x, f.y, got);
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxSign('warm'); }
   advance('patch', { noise: 'act' });
 }
@@ -3776,7 +3812,7 @@ function takePod(p, leave) { if (darkRefuse()) return;
   ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...gotNow(), ...shedOf(p), ...whyOf(p) });
   if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
-  fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
+  fxFloat(p.x, p.y, out ? 'swap' : '', 'pod'); if (!out) fxJuice('pod', p.x, p.y, 1); else fxJuice('pod', p.x, p.y, 0);
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
   if (!out && ex.cargo.pods.length >= ex.hold) fxSign('full');   // ("Pods open at the Station" is gone: the goal line says it)
   advance('patch', { noise: 'act' });
@@ -3808,7 +3844,7 @@ function offer(c) { if (darkRefuse()) return;
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
     if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch when the expedition ends
     ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
-    awardMoment(c, 'eat', X);
+    awardMoment(c, 'eat', X); fxJuice('feed', c.x, c.y, 0);
   } else { c.st = 'alert'; c.t = 1; c.go = 1; fxSign('bubbleNotice'); }
   advance('patch', { noise: 'act' });
 }
@@ -7151,6 +7187,10 @@ function drawPatchBody(t) {
   }   // no final contour and no view-edge dashes after the Call (#140: the owner said remove the call range and the probe view range)
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * ts + (ts >> 1)), y = H(FX.dig.y * ts + ts - 6);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
+  for (const b of FX.bursts) { const age = NOW - b.at; if (age < 0 || age >= JUICE_BURST_MS) continue;   // the burst: 4 frames, a cream ring, then a dashed amber one, with eight ticks
+    const fr = Math.floor(age / 80), x = W(b.x * ts + (ts >> 1)), y = H(b.y * ts + (ts >> 1)), r = 8 + fr * 7;
+    circ(x, y, r, fr < 2 ? C.cream : C.amber, fr >= 2);
+    for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; R(Math.round(x + Math.cos(a) * (r + 4)) - 1, Math.round(y + Math.sin(a) * (r + 4)) - 1, 2, 2, fr < 2 ? C.white : C.amber); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
     const ic = f.icon === 'pod' ? podArt('bone') : ICON[f.icon](), tw = f.text ? textW(f.text, 2) + 6 : 0, w = ic.w + tw + 14;
     const x = W(f.x * ts + (ts >> 1)), y = H(f.y * ts) - 6 - (motion() ? Math.floor(age / 60) : 8);
@@ -7501,6 +7541,8 @@ function drawCounter(x, key, icon, value) {
   else if (value > st.v && NOW - st.last >= 90) { st.v++; st.last = NOW; st.fl = NOW; }
   const shown = String(st.v), fl = NOW - st.fl < 260;
   blit(ICON[icon](), x, 9);
+  { const pk = FX.pops[key.slice(1)], pa = pk == null ? 1e9 : NOW - pk;   // the bracket round the counter that just rose: about 1 s, steady
+    if (pa >= 0 && pa < 1000) { const bw = counterW(st.v) + 2; R(x - 3, 5, 3, 2, C.cream); R(x - 3, 5, 2, 22, C.cream); R(x - 3, 25, 3, 2, C.cream); R(x + bw - 2, 5, 3, 2, C.cream); R(x + bw - 1, 5, 2, 22, C.cream); R(x + bw - 2, 25, 3, 2, C.cream); } }
   if (fl) panel(x + 15, 7, textW(shown, 2) + 6, 18, C.amber);
   text(shown, x + 18, 9, fl ? C.ink : C.bone);
   return x + counterW(st.v);
@@ -9082,7 +9124,7 @@ function frame(t) {
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
   try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
-  FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
+  FX.bursts = FX.bursts.filter(b => NOW - b.at < JUICE_BURST_MS); FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
   if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
   if (FX.dig && NOW - FX.dig.at > 900) FX.dig = null;
