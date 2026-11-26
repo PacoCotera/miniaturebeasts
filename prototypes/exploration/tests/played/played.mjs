@@ -372,5 +372,41 @@ for (const size of SIZES) {
       assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
     } finally { await g.ctx.close(); }
   });
+
+  // OWNER #156 (11-24), his own save (note mwv7x4xtaf3d27): Drizzle stands beside him; ← then offers her page as the first row, and ✓ opens it.
+  it(`s8 Drizzle's page (#156, his own save): ← at once, the menu's first row is Drizzle's page and ✓ opens it [${tag}]`, async () => {
+    const g = await open(size, "156");
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      await g.press("back");                                // ← opens the menu
+      const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
+      const first = await row();
+      assert.deepEqual([first.phase, first.label, first.sel], ["menu", "Drizzle · her page", 0], "the case is reached: the menu's first row reads Drizzle · her page, selected");
+      const r = await g.region(), menu = await g.shot(`s8-${tag}-1-menu`);
+      await g.press("confirm", 100, 1500);                  // ✓ on the first row
+      const page = await g.shot(`s8-${tag}-2-her`);
+      assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
+      assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
+
+  // QA verify-live-639, seed 63 (an arranged save, saves/63.save: his #156 world, the walker alone in a quiet place): Cinder is off screen and the top line names her; no one is in sight, so the menu's first row is her page.
+  it(`s9 Cinder's page (seed 63, arranged save): none in sight, the top line names Cinder, the menu's first row is her page and ✓ opens it [${tag}]`, async () => {
+    const g = await open(size, "63");
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, sight: m.herInSight() }; });
+      assert.ok(top.text && top.text.startsWith("Cinder") && top.sight === null, `the case is reached: the top line names Cinder, no one is in sight (${JSON.stringify(top)})`);
+      await g.press("back");                                // ← opens the menu
+      const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
+      const first = await row();
+      assert.deepEqual([first.phase, first.label, first.sel], ["menu", "Cinder · her page", 0], "the case is reached: the menu's first row reads Cinder · her page, selected");
+      const r = await g.region(), menu = await g.shot(`s9-${tag}-1-menu`);
+      await g.press("confirm", 100, 1500);                  // ✓ on the first row
+      const page = await g.shot(`s9-${tag}-2-her`);
+      assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
+      assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
+    } finally { await g.ctx.close(); }
+  });
 }
 });
