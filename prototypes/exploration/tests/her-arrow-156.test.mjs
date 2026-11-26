@@ -50,15 +50,4 @@ for (const [w, h] of [[412, 915], [522, 935]]) {
       assert.deepEqual(errors, []);
     } finally { await browser.close(); server.close(); }
   });
-  test(`#156 (${w}x${h}): Drizzle named and in sight: the arrow still reads her page`, { skip }, async (t) => {
-    let browser; try { browser = await chromium.launch(); } catch { t.skip("no Chromium"); return; }
-    const { server, url } = await serve();
-    try {
-      const { page, errors } = await load(browser, url, fx("owner-note-156-drizzle.save.json"), w, h);
-      const r = await arrow(page);
-      assert.ok(r.sight, "Drizzle is in sight and named: " + JSON.stringify(r));
-      assert.equal(r.back, "her page", JSON.stringify(r));
-      assert.deepEqual(errors, []);
-    } finally { await browser.close(); server.close(); }
-  });
 }

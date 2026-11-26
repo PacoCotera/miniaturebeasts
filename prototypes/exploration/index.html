@@ -8132,12 +8132,6 @@ function screenLoika() {
 function herInSight() { const s = screenLoika(); return s && s.view ? s.id : null; }
 // The one the screen names: in sight, else the top line's target
 function herNamed() { const s = S && S.exp ? screenLoika() : null; return s && (s.view || targetLine()) ? s.id : null; }   // not in sight: only while the top line shows her
-// The menu's first row, and the ← word: "her page" while her name stands on the line, the short word where the ✓ label squeezes her name out (measured with the line's own fit)
-function herBack(o) {
-  const id = herNamed(); if (!id) return null; const nm = S.named[id];
-  if (herInSight() && !lineCtx(Object.assign({}, o, { back: WORDS.her.back })).r.includes(nm)) return null;   // her name is not on the line: ← reads what it read before the page (#156 QA)
-  return WORDS.her.back;
-}
 function openHer(id, from) { if (id == null) { FX.bumpAt = NOW; return; } S.ui.her = { id: String(id), from: from || S.phase }; S.phase = 'her'; transition(); }
 function herKey(k) {
   const h = S.ui.her, o = metOrder(), i = h ? o.indexOf(h.id) : -1;
@@ -8943,8 +8937,8 @@ function lineBase() {
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
-      const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim), hb = lay.cave ? null : herBack(lv);   // ← names the menu's top row: her page while a wild one met is named
-      return hb ? Object.assign(lv, { back: hb }) : lv; }
+      const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
+      return lv; }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close', fieldFrozen());
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
       if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
