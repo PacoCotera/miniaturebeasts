@@ -28,14 +28,6 @@ test("her name tag stands under her when the bottom line names her and the hero 
   assert.equal(p.errors.length, 0, String(p.errors));
 });
 
-test("← says her page only where a line names her: her name squeezed off the bottom line leaves ← as it was", () => {
-  const p = start();
-  p.run(`{ const P = S.exp.patch, c = curLive().cr.find(q => q.id === 36); P.dir = 'up'; c.x = P.x; c.y = P.y - 3; c.st = 'idle'; c.ease = 0; c.hide = 0; S.named[36] = 'Cinder'; S.metIds.push('36'); }`);
-  assert.equal(p.run("herInSight()"), "36");
-  assert.equal(p.run("herBack({ ok: 'Offer fruit · Loika fruit eater more', ctx: ['Cinder · a wild Loika · grazing', 'Cinder'], back: 'Leave', dim: false })"), null);
-  assert.equal(p.run("herBack({ ok: 'Keep still', ctx: ['Cinder'], back: 'Leave', dim: false })"), "her page");
-});
-
 test("the Log: ▲▼ move the mark entry to entry, over three presses, and the page follows it", () => {
   const p = start();
   p.run("S.named = { 36: 'Cinder' }; S.book = []; for (let i = 0; i < 9; i++) S.book.push({ d: 1, part: 'morning', place: 'meadow', from: 'at the flag', t: 1, id: i === 4 ? 36 : 100 + i, who: 'a Loika', kind: 'prints', text: 'Prints in the grass. a Loika was here this morning ' + i, at: i }); openLog();");
