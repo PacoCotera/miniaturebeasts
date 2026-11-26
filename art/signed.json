@@ -4062,6 +4062,13 @@
    "sha256": "aeabaa5cd1bce627f1d06aff74826c2c33a8ede55be69d3cba2ab1e49592c4c4"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-26",
+   "id": "58f436573e",
+   "path": "prototypes/exploration/art/props/strike-mark-read.png",
+   "sha256": "cf4d7a750840d2360fcf83cdf79a130536325f035195a1c3cd1a714fffb515c4"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "5f7316f6f3",
@@ -4076,6 +4083,13 @@
    "sha256": "9354f456bab288cbc29208b2e28838e0d241af535b47549e07b9c94f4c0214f4"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-26",
+   "id": "4073057c6d",
+   "path": "prototypes/exploration/art/props/strike-mark-unread-1.png",
+   "sha256": "cf4d7a750840d2360fcf83cdf79a130536325f035195a1c3cd1a714fffb515c4"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "755973f661",
@@ -4088,6 +4102,13 @@
    "id": "3a0dcd0b22",
    "path": "prototypes/exploration/art/props/strike-mark-unread-2.png",
    "sha256": "be2d1704e61d576f17ded5b9264b57106f483bc88d93a82c38447a6b1977dda7"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-26",
+   "id": "dbc28c762c",
+   "path": "prototypes/exploration/art/props/strike-mark-unread-2.png",
+   "sha256": "cf4d7a750840d2360fcf83cdf79a130536325f035195a1c3cd1a714fffb515c4"
   },
   {
    "class": "legacy-paint",
