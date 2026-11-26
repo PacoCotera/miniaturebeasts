@@ -139,7 +139,7 @@ function postCaddy(force = false) {
   if (parent !== window) parent.postMessage({ t: "mb-caddy", ...m }, location.origin);
 }
 function updateCaddy() {
-  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]) + ":" + c.podHome + ":" + JSON.stringify(c.goal); if (key === caddyKey) return; caddyKey = key;
+  const d = docked(), c = caddyState(), key = d + ":" + bayCrates().length + ":" + c.crates + ":" + hasWorld() + ":" + (G.st.dock && G.st.dock.at) + ":" + c.pending + ":" + c.canDock + ":" + JSON.stringify(c.opened) + ":" + c.partner + ":" + c.world + ":" + JSON.stringify([c.companion, c.ledger, c.along]) + ":" + c.podHome + ":" + JSON.stringify(c.goal); if (key === caddyKey) return; caddyKey = key;
   if (EMBED) { postCaddy(); return; }
   caddyEl.classList.toggle("lifted", !d);
   dockMark.src = "../ui/assets/masters/pods/frame-companion-" + (d ? "solid" : "outline") + "-16x24.png"; dockWord.textContent = d ? "Lift" : "Dock";
