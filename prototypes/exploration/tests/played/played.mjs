@@ -601,6 +601,48 @@ for (const size of SIZES) {
       assert.ok(off < 20, `no glint on the old tile over 1.6 s after the take (${off} pixels)`);
     } finally { await g.ctx.close(); }
   });
+  // OWNER 2026-11-24 12:1x (via the lead): "stop breaking things or telling me that you fixed or shipped something just to find at the first interaction that the game is still utterly broken." QA verify-live-664 case D: after taking the pushed slab's Essence, the lightning-warning card threw "Cannot read properties of null (reading 'x')" (PIC.warn drew the place picture with no place under him).
+  // Played on QA's room.save (= slab-mark-room) as QA's D: down x3, up x3, ✓ takes the Essence, then ← and ✓ as QA pressed them; every press waits for its effect. The page's own console errors are the reach: none across the steps.
+  // The verdict on the screen: any shot in which the warning card is up shows its picture slot as the outline form (the Probe's flat grass in a yellow outline); that slot against a crop of it (saves/s32-warn-card-outline.png). PLAYED_WRITE_CROPS=1 rewrites the crop.
+  if (size.w === 412) it(`s32 the warned tile's card has no place picture while he is not in a place (QA verify-live-664 D): no page error after the take, the card shows the outline form [${tag}]`, async () => {
+    const g = await open(size, "slab-mark-room");
+    const errs = [];
+    g.page.on("pageerror", (e) => errs.push(e.message)); g.page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errs.push("console: " + m.text()); });   // a missing file on the test server is no script error
+    try {
+      const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp && S.exp.patch; return [S.phase, p && p.key, p && p.x, p && p.y, S.exp && S.exp.cargo && S.exp.cargo.s, S.ui && S.ui.menuSel, S.ui && S.ui.menu, S.ui && S.ui.mapFull, m.FX.msg].join("|"); });
+      const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } return now; };   // the effect: the state changes, then holds still for 400 ms
+      const r = await g.region(), k = r.w / 450;
+      const card = (im) => {   // the picture slot of the warning card: the 32x32 yellow outline, found by its colour in the lower part of the screen and the top
+        const Y = ([a, b, c]) => a > 200 && b > 195 && c < 130 && a - c > 100;
+        const hits = blobs(im, r, Y).filter((q) => Math.abs(q.box.w - 32 * k) < 4 && Math.abs(q.box.h - 32 * k) < 4);
+        return hits[0] ? hits[0].box : null;
+      };
+      const crop = (im, b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+      const log = [];
+      const seen = [];   // the warning card's slot on each shot where it is up
+      const look = async (what) => { const im = await g.shot("s32-" + what), b = card(im), w = await g.where(); log.push(`${what}: ${await sig()} card=${b ? JSON.stringify(b) : "none"}`); if (b) seen.push({ what, im, b, inPlace: !!w.key }); };
+      for (let i = 0; i < 3; i++) await step("down");
+      for (let i = 0; i < 3; i++) await step("up");
+      assert.equal((await g.where()).phase, "patch", "the case is reached: in the place");
+      await look("before-take");
+      await step("confirm");   // ✓ takes the Essence; the strike is warned
+      await look("after-take"); await wait(3000); await look("after-3s");
+      await step("back"); await look("after-menu");
+      await step("confirm"); await look("after-map");
+      await step("back"); await look("after-back");
+      console.log("# s32 " + tag + "\n#   " + log.join("\n#   "));
+      assert.deepEqual(errs, [], "no page error in the console across the steps");
+      assert.ok(seen.length > 0, "the case is reached: the warning card is on the screen in some step");
+      const outsidePlace = seen.filter((s) => !s.inPlace);   // the shots taken while he is in no place: the card there must be the outline form
+      const f = path.join(savesDir, "s32-warn-card-outline.png");
+      if (process.env.PLAYED_WRITE_CROPS && outsidePlace[0]) { const c = crop(outsidePlace[0].im, outsidePlace[0].b); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+      assert.ok(outsidePlace.length > 0, "the case is reached: the card is up in a step where he is in no place (the throwing case)");
+      const ref = decodePNG(readFileSync(f));
+      for (const s of outsidePlace) { const c = crop(s.im, { x: s.b.x, y: s.b.y, w: ref.width, h: ref.height }); let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++;
+        console.log(`# s32 ${tag}: ${s.what}: the card's slot differs from the outline crop by ${n} of ${ref.width * ref.height}`);
+        assert.ok(n < ref.width * ref.height * 0.1, `${s.what}: the card shows the outline form (${n} pixels differ from its crop)`); }
+    } finally { await g.ctx.close(); }
+  });
 
   // QA verify-live-154 (bus e96853af12), his #166 save: "the menu box can still COVER the hero: 412x915-B-left-edge has him on the rock at x~410 of the view, B-left-menu puts the box on the right half over him, so he reads as gone. The box should take the side he is not on." (menu-side-hero-1)
   // QA's walk by presses (runB.mjs): up, right, down, left, each until he stops; then ← opens the menu. State only asserts the case is reached (the place, the pawn on the view in the 192-258 band); the verdict is the shot: the hero's orange pixels whole, as many as before the menu, on the same spot.
