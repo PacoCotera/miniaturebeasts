@@ -2152,7 +2152,7 @@ function bandCell() {
 // What can still be taken in a place, counting only what you can see (unveiled): the pips on the map and
 // the tail of a Call's report ("1 dew, 1 fruit left").
 // leftItemsAll is everything left (fruit and unlit beacons too), for the pacing bot only; leftItems is the finds: pod, charge, warm, dew, tuft.
-const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike'];
+const FINDS = ['pod', 'charge', 'warm', 'dew', 'tuft', 'strike', 'slab'];
 function leftItems(c) { return leftItemsAll(c).filter(i => FINDS.includes(i.k)); }
 // A thing counts as left to take only if the explorer can stand on its tile or beside it: a reachable tile that is not under the range haze or a closed side's band (its own guard, notes 26-28).
 function reachableTile(lay, x, y) {
@@ -2166,15 +2166,16 @@ function leftItemsAll(c) {
   for (const f of lay0.feats) { if (!see(f.x, f.y)) continue;
     if (f.kind === 'k') { if (stormCharge(key, f) > 0) out.push({ k: 'charge', x: f.x, y: f.y }); else if (stoneWarm(key, f)) out.push({ k: 'warm', x: f.x, y: f.y }); }
     if (f.kind === 'q' && !strikeFaded(f) && !strikeIsRead(key, f) && S.exp && strikeGain(S.exp, lay0, f) > 0) out.push({ k: 'strike', x: f.x, y: f.y });   // counted only while a press can read it now: none once its whole worth no longer fits the hold
+    if (f.kind === 's' && fs(key, f.id).left > 0) out.push({ k: 'slab', x: f.x, y: f.y });   // slab-mark-1: what lay under a pushed slab stays a takeable on its old tile until taken
     if (f.kind === 'u' && cupFull(key, f)) out.push({ k: 'dew', x: f.x, y: f.y }); if (f.kind === 'b' && bushFull(key, f)) out.push({ k: 'fruit', x: f.x, y: f.y }); if (f.kind === 'j' && !fs(key, f.id).up) out.push({ k: 'beacon', x: f.x, y: f.y }); }
   if (live) { for (const q of live.fr) if (see(q.x, q.y) || q.put) out.push({ k: 'fruit', x: q.x, y: q.y }); for (const q of live.tf) if (see(q.x, q.y)) out.push({ k: 'tuft', x: q.x, y: q.y }); }
   return out;
 }
-function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0, strike: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
+function leftCounts(c) { const n = { pod: 0, charge: 0, warm: 0, dew: 0, tuft: 0, strike: 0, slab: 0 }; for (const it of leftItems(c)) n[it.k]++; return n; }
 function leftTotal(c) { const n = leftCounts(c); return Object.values(n).reduce((a, b) => a + b, 0); }
 function pipsOf(c) { return Math.min(3, leftTotal(c)); }
 // What is left, each kind with the way to its nearest one from where you stand: "a pod east, a warm stone north-west".
-const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'], strike: WORDS.strike.left };   // [copy]
+const LEFT_WORDS = { pod: ['a pod', 'pods'], charge: ['a charged stone', 'charged stones'], warm: ['a warm stone', 'warm stones'], dew: ['a full cup', 'full cups'], tuft: ['a tuft', 'tufts'], strike: WORDS.strike.left, slab: ['a pushed slab', 'pushed slabs'] };   // [copy] slab: editorial, bus 3d8754
 // The way to one takeable from where you stand: " close by", " west", " in the cave".
 function wayTo(near, P) { const dx = near.x - P.x, dy = near.y - P.y;
   return near.cave ? ' in the cave' : cheb(near, P) <= 2 ? ' close by' : ' ' + (dirWord(dx, dy, Math.max(Math.abs(dx), Math.abs(dy))) || 'close by'); }
