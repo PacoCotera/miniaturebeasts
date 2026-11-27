@@ -7182,7 +7182,7 @@ function drawPatchBody(t) {
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
     const nt = isNightPod(p), bob = fr && (p.x + p.y) % 2 ? 1 : 0;   // her night pod is the 32 x 32 tile at the cell's top-left; the others sit in their box
-    blit(nt ? podPic(p, 1, 'tile') : podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + (nt ? 0 : 8), SY(y) + (nt ? 0 : 8) + bob, findRm(p.x, p.y)); }
+    blit(nt ? podPic(p, 1, 'tile') : podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + (nt ? 0 : 8), SY(y) + (nt ? 0 : 8) + bob, nt ? 0 : findRm(p.x, p.y)); }
   // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge; a strike mark stands in the art desk's slot with the Probe's glint on it while unread (kit light)
   if (!lay.cave) {
     for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0) continue;
