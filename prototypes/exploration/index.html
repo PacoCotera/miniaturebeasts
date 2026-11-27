@@ -8495,6 +8495,7 @@ function caseThing(c) {   // what is under the bracket: { name, how, took, forS,
     return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.atStation(W.podFor), thing: p }; }
   if (c.k === 'sup') return { name: W.supply[c.s], how: W.supplyLine(h[c.s] | 0) };
   const st = sampleStacks(h.samples)[c.i], s = st && st.list[st.list.length - 1]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };   // a stack shows its latest find
+  if (st.list.length > 1) return { name: W.stackName[s.item] + ' · ' + st.list.length, how: W.stackFrom([...new Set(st.list.map(q => q.name))]), forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };   // a stack: the kind, the count, who they are from
   return { name: s.name + '’s ' + WORDS.habit.sampleName[s.item], how: W.sampleHow[s.habit] || '', took: s.got, forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };
 }
 function caseMove(k) {
@@ -8550,7 +8551,7 @@ function drawCargo(t) {
   for (const c of cells) {
     if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); }
     else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
-    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
+    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); else if (st) text(W.slotWord[st.item], c.x + c.w / 2, c.y + 14, C.soil, 2, 'center'); if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
   }
   brackets(cur.x - 4, cur.y - 4, cur.w + 8, cur.h + 8, C.orange);
   // the label of the thing under the brackets, tied to it by its string; from End expedition the seal preview takes its place

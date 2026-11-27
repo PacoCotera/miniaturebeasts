@@ -368,13 +368,14 @@ for (const size of SIZES) {
   // OWNER 11-25 16:3x ("collecting materials is cool too, but you fill up too fast your inventory."; satchel-stack-build-1): one satchel slot holds one kind, up to 9; the Case shows the count on the slot.
   // A copy of a save in the place; the satchel is arranged (state is set only to reach the case), the Case is opened and the verdict is the pixels of the slot: 1 claw, then 9 (the 10th staying is in satchel-stack-page.test.mjs).
   if (size.w === 412) it(`s19 the Case shows one slot per kind with its count: 1 claw reads differently from 9 [${tag}]`, async () => {
-    const g = await open(size, "slab-full-room");
+    const g = await open(size, "172");   // his save 172 (satchel-stack-build-2); the count is staged, the pickups are played in satchel-stack-page.test.mjs
     try {
       const mb = (f, a) => g.page.evaluate(([src, arg]) => { const m = window.__play.frames.companion.contentWindow.__mb; return new Function("m", "arg", src)(m, arg); }, [f, a]);
-      const claws = (n) => mb("m.S.exp.cargo.samples = Array.from({ length: arg }, (_, i) => ({ id: 'old' + i, lo: 900 + i, name: 'Old', sp: 0, habit: 'sleep', item: 'claw', chapter: 'legs-tail', turn: 1 })); m.openCase(0); return m.caseCells().filter(c => c.k === 'smp').length;", n);
+      const claws = (n) => mb("const nm = ['Old', 'Elm', 'Ash', 'Fen', 'Oak', 'Ivy', 'Rue', 'Bay', 'Yew']; if (!m.S.exp) throw new Error('no expedition in this save'); m.S.exp.cargo.samples = Array.from({ length: arg }, (_, i) => ({ id: 'old' + i, lo: 900 + i, name: nm[i], sp: 0, habit: 'sleep', item: 'claw', chapter: 'legs-tail', turn: 1 })); m.openCase(0); return m.caseCells().filter(c => c.k === 'smp').length;", n);
       assert.equal(await claws(1), 8, "the case is reached: the Case has the satchel's 8 places");
       await wait(1500); const r = await g.region(), one = await g.shot("s19-case-1");
-      await claws(9); await wait(1500); const nine = await g.shot("s19-case-9");
+      await claws(9); await wait(1500); const nine = await g.shot("s19-case-9");   // the first slot is under the brackets: its line reads 'Shed claws · 9' / 'from Old, Elm and 7 more'
+      await claws(2); await wait(1500); await g.shot("s19-case-2-line");
       const SLOT = [0.06, 0.43, 0.22, 0.12];   // the first satchel place, as fractions of the Companion's frame (36,270 88x60 of 450x~832)
       const a = changed(one, nine, r, SLOT);
       console.log(`# s19 ${tag}: slot pixels changed 1 -> 9: ${a.n} (of ${a.of})`);

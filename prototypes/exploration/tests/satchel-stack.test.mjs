@@ -29,3 +29,9 @@ test("an old save merges like kinds and keeps no stack over 9", () => {
   const out = capStacks(old), st = stacks(out);
   assert.deepEqual(st.map(q => [q.item, q.list.length]), [["whisker", 9], ["claw", 2]]);
 });
+
+test("the stack line: names, then and k more (editorial 11-26)", async () => {
+  const { WORDS } = await import("../src/words.mjs"), f = WORDS.case.stackFrom;
+  assert.equal(f(["Old", "Elm"]), "from Old and Elm"); assert.equal(f(["Old", "Elm", "Ash"]), "from Old, Elm and Ash");
+  assert.equal(f(["Old", "Elm", "Ash", "Fen", "Oak", "Ivy", "Rue", "Bay", "Yew"]), "from Old, Elm and 7 more"); assert.equal(f(["Old"]), "from Old");
+});
