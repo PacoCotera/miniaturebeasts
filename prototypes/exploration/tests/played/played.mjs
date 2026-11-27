@@ -413,6 +413,8 @@ for (const size of SIZES) {
 
   // OWNER 2026-11-24 18:5x ("you just can pick the pod at night"); 2026-11-26 05:2x: "you're making it too complicated, it's a cozy game": no flag limit, he takes her up wherever she sleeps.
   // pod-sleep-dusk-13 was made by presses (her-fruit-13: ✓ feeds Maple, then held ✓ keeping still, ~170 presses, to light 528; she walks to her bed on her own). Played by held ✓ (keeping still), the d-pad and ✓ only.
+  // pod-sleep-night-a / -b (pod-sleep-fix-6) are saves made by presses on that same chain so each case starts near its moment: -a after held ✓ from 528 to light 545 (a few lights before nightfall, s22 and s22b);
+  // -b after held ✓ to nightfall, then right x2 and up x10 to two tiles below her pod and left/right steps to light 596 (a few lights before first light, s23).
   // State only asserts each case is reached (the light, her pod on the ground, the Case); the verdicts are the shots: her pod's tile and the Case's slot in the top bar, each against a shot from the same test.
   const PODTILE = [0.43, 0.328, 0.067, 0.0525], CTLTILE = [0.2, 0.328, 0.067, 0.0525], CASESLOT = [0.13, 0.015, 0.06, 0.04], ASKBOX = [0.02, 0.1, 0.96, 0.2];   // as fractions of the Companion's frame, hero standing on the tile below her pod (412x915)
   const podState = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S; return { spent: S.day.spent, phase: S.phase, pods: S.pods.filter((p) => p.how === "night").length, cased: S.exp ? S.exp.cargo.pods.filter((p) => p.how === "night").length : 0, slept: S.cr.filter((w) => w.slept).length, up: m.curLive().cr.some((c) => c.id === 35) }; });
@@ -422,10 +424,10 @@ for (const size of SIZES) {
   const holdUntil = async (g, test) => { for (let i = 0; i < 80 && !test(await podState(g)); i++) await podStep(g, "confirm", 1500); return podState(g); };
   const walkToPod = async (g) => { for (const d of ["right", "right"]) await podStep(g, d); for (let i = 0; i < 11; i++) await podStep(g, "up"); };
   if (size.w === 412) it(`s22 night pod (OWNER 11-24): fed at dusk, she is closed into her pod at nightfall; ✓ takes her up (the confirm, then ✓): her pod is off the ground and in the Case [${tag}]`, async () => {
-    const g = await open(size, "pod-sleep-dusk-13");
+    const g = await open(size, "pod-sleep-night-a");
     try {
       let s = await podState(g);
-      assert.ok(s.phase === "patch" && s.spent >= 520 && s.spent < 550 && s.pods === 0 && s.slept === 0, "the case is reached: dusk, fed, nothing asleep yet " + JSON.stringify(s));
+      assert.ok(s.phase === "patch" && s.spent >= 540 && s.spent < 550 && s.pods === 0 && s.slept === 0, "the case is reached: dusk, fed, nothing asleep yet " + JSON.stringify(s));
       s = await holdUntil(g, (q) => q.spent >= 551);
       assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
       await walkToPod(g);
@@ -465,7 +467,7 @@ for (const size of SIZES) {
     return { ...best, n: pts.length };
   };
   it(`s22b her night pod is the signed picture: the land tile at nightfall, the Case's cut once she is taken up [${tag}]`, async () => {
-    const g = await open(size, "pod-sleep-dusk-13");
+    const g = await open(size, "pod-sleep-night-a");
     try {
       let s = await holdUntil(g, (q) => q.spent >= 551);
       assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
@@ -475,6 +477,15 @@ for (const size of SIZES) {
       const m = matchPiece(at, r, tile, r.x + r.w * (0.43 + 0.0335) - 16 * k, r.y + r.h * (0.328 + 0.02625) - 16 * k, Math.round(k * 20), 2);   // PODTILE's centre, the 32x32 piece's top-left from it
       console.log(`# s22b ${tag}: her tile against the signed 32x32 file: r ${m.r.toFixed(3)} over ${m.n} pixels, at offset ${m.x},${m.y}`);
       if (size.w === 412) assert.ok(m.r >= 0.8, `her pod's tile on the land shows the signed night pod (correlation ${m.r.toFixed(3)})`);
+      if (size.w === 412) {   // LEAD 11-27 06:53: on this screen Ash stands tagged in sight, so the line says what he sees ("heard that again · she is going"), never "has gone from here for the day". The verdict is the box's pixels against a crop of it (saves/s22b-ash-line.png; PLAYED_WRITE_CROPS=1 cuts it).
+        const BX = 200, BY = 1388, BW = 680, BH = 46;
+        const cropFile = path.join(savesDir, "s22b-ash-line.png");
+        if (process.env.PLAYED_WRITE_CROPS) { const d = new Uint8Array(BW * BH * 4); for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) { const p = px(at, BX + x, BY + y), j = (y * BW + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } writeFileSync(cropFile, encodePNG(BW, BH, d)); }
+        const ref = decodePNG(readFileSync(cropFile)); let low = Infinity;
+        for (let dy = -8; dy <= 8; dy++) for (let dx = -8; dx <= 8; dx++) { let bad = 0; for (let j = 0; j < ref.height && bad < low; j++) for (let i = 0; i < ref.width; i++) { const p = px(at, BX + dx + i, BY + dy + j), k = (j * ref.width + i) * 4; if (p[0] !== ref.data[k] || p[1] !== ref.data[k + 1] || p[2] !== ref.data[k + 2]) bad++; } if (bad < low) low = bad; }
+        console.log(`# s22b ${tag}: the box line against its crop differs by ${low} of ${ref.width * ref.height} pixels`);
+        assert.ok(low < ref.width * ref.height * 0.02, "Ash is in sight, tagged: the line is 'heard that again · she is going', not 'has gone from here for the day'");
+      }
       await g.press("confirm", 100, 0);
       await wait(1500); await g.shot(`s22b-${tag}-confirm`);
       await g.press("confirm", 100, 0);
@@ -492,12 +503,10 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
   if (size.w === 412) it(`s23 first light with her pod on the ground (OWNER 11-24): she wakes up on her bed, her pod gone from its tile [${tag}]`, async () => {
-    const g = await open(size, "pod-sleep-dusk-13");
+    const g = await open(size, "pod-sleep-night-b");   // made by presses on the same chain: night, her pod on the ground, the hero two tiles below it (✓ here would be the keep-still, not the take-up), light 596
     try {
-      let s = await holdUntil(g, (q) => q.spent >= 551);
-      assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
-      for (const d of ["right", "right"]) await podStep(g, d);
-      for (let i = 0; i < 10; i++) await podStep(g, "up");   // two tiles below her pod: ✓ here would be the keep-still, not the take-up
+      let s = await podState(g);
+      assert.ok(s.pods === 1 && s.slept === 1 && s.spent >= 590, "the case is reached: night, her pod on the ground " + JSON.stringify(s));
       const r = await g.region(), night = await g.shot("s23-night");
       for (let i = 0; i < 80 && (await podState(g)).spent >= 500; i++) await podStep(g, i % 2 ? "left" : "right");   // each step waits for the light to move
       s = await podState(g);

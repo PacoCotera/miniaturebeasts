@@ -2659,7 +2659,7 @@ function easeLoika(c, X) {
     else if (e === 'gone') { e5.gone++; e5.heard++; c.go = 0; c.st = 'flee'; c.fl = fleeTiles(spOf(c.sp)); c.t = Math.ceil(c.fl / 2); const h = nextHaunt(c.ind, dayPart()); c.gone = { t: hauntStand(h, hauntFree(X.lay, X.key, c)), night: sleepPart(dayPart()) ? S.turn : null, part: dayPart() }; logEv(c.ind.name ? c.ind.name + ' went to her next haunt for the day' : 'A Loika went to its next haunt for the day'); }
     else if (e === 'settled') { e5.settled++; if (c.ease === 1) { c.st = 'alert'; c.t = 1; c.go = 0; } else { c.st = 'idle'; c.t = 0; } }
   }
-  if (ev.length && !X.away(c) && inSight(c.x, c.y)) fxMsg(ev.includes('gone') ? WORDS.ease.gone(c.ind && c.ind.name) : ev.includes('stirred') ? WORDS.ease.stirred : ev.includes('heard') ? (heard && !X.moved ? WORDS.ease.stayHeard(c.ind && c.ind.name) : WORDS.ease.heard(c.ind && c.ind.name)) : WORDS.ease.settled(c.ind && c.ind.name),ev.includes('gone') ? 3 : 2);
+  if (ev.length && !X.away(c) && inSight(c.x, c.y)) fxMsg(ev.includes('gone') ? WORDS.ease.heardTwice(c.ind && c.ind.name) : ev.includes('stirred') ? WORDS.ease.stirred : ev.includes('heard') ? (heard && !X.moved ? WORDS.ease.stayHeard(c.ind && c.ind.name) : WORDS.ease.heard(c.ind && c.ind.name)) : WORDS.ease.settled(c.ind && c.ind.name),ev.includes('gone') ? 3 : 2);
   return ev;
 }
 const easeEnvNow = () => { const lay = curLay(); return easeEnvOf(lay, !lay.cave && stormRain(lay.cell % MW), !lay.cave && inFog(lay.cell)); };
