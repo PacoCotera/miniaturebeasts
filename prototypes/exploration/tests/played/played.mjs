@@ -1729,4 +1729,46 @@ if (SIZES[0].w === 412) it(`s35 a map step lifts the 5x5 ring (reveal-build-1, s
     assert.ok(bad < box.w * box.h * 0.03, `the ring is lifted: the reach view is the crop (${bad} pixels differ)`);
   } finally { await g.ctx.close(); }
 });
+// OWNER 2025-11-25 16:3x (as above), 11-27 13:5x "ok"; lead's ruling 11-27 14:32 (reveal-fix-2): the bracket shows on the find at the new ring's edge; the line shows only when that find is on screen; both clear after about 1 s; no line when the find is off view.
+// A fresh seed 13 at 412x915, presses only. Each step is read at once: a line without a find in view is the failure; the first step that has a find on screen is shot (the bracket is judged by pixels against saves/s36-reveal-edge.png, cut once with PLAYED_WRITE_CROPS=1) and shot again after 1.5 s: line and bracket gone.
+if (SIZES[0].w === 412) it(`s36 the ring's find on screen is bracketed and said about 1 s, then both clear; no line for a find off view (reveal-fix-2, seed 13) [412x915]`, async () => {
+  const size = SIZES[0];
+  const g = await open(size, { seed: 13 });
+  const m = (f) => g.page.evaluate(f);
+  const read = () => m(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { edge: m.FX.edge && performance.now() - m.FX.edge.at < 1000 ? m.FX.edge.cs.length : 0, said: m.FX.msg === m.WORDS.reveal.find, pos: m.S.exp.pos }; });
+  const orange = (im, box) => { let n = 0; for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y); if (p[0] > 200 && p[1] > 90 && p[1] < 170 && p[2] < 80) n++; } return n; };
+  try {
+    for (let i = 0; i < 8 && (await g.where()).phase !== "map"; i++) await g.press("confirm", 100, 2500);   // ✓ to set out
+    assert.equal((await g.where()).phase, "map", "the case is reached: he is on the map");
+    const r = await g.region(), box = { x: r.x + Math.round(r.w * 0.04), y: r.y + Math.round(r.h * 0.12), w: Math.round(r.w * 0.92), h: Math.round(r.h * 0.5) };
+    let hit = null, silent = 0;
+    for (const d of ["right", "right", "down", "down", "left", "left", "left", "up", "up", "up", "right", "right", "right", "right", "down", "down", "down", "down", "left", "left", "left", "left", "up", "up", "up", "up"]) {
+      await g.press(d, 100, 150);
+      const s = await read();
+      if (s.said) assert.ok(s.edge > 0, `the line shows only for a find on screen (step ${d} at ${s.pos})`);
+      if (!s.said && s.edge === 0) silent++;
+      if (s.edge > 0 && !hit) { hit = { s, im: await g.shot("s36-edge") }; break; }
+      await wait(1100);
+    }
+    console.log(`# s36: ${silent} steps with no find on screen said nothing; first find on screen: ${hit ? JSON.stringify(hit.s) : "none"}`);
+    assert.ok(hit, "the case is reached: a step ends its ring on a find that is on screen");
+    assert.ok(hit.s.said, "the line is said with the find");
+    const f = path.join(savesDir, "s36-reveal-edge.png");
+    if (process.env.PLAYED_WRITE_CROPS) {
+      const d = new Uint8Array(box.w * box.h * 4);
+      for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(hit.im, box.x + x, box.y + y), j = (y * box.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+      writeFileSync(f, encodePNG(box.w, box.h, d));
+    }
+    const ref = decodePNG(readFileSync(f));
+    assert.deepEqual([ref.width, ref.height], [box.w, box.h], "the crop is the size of the reach view's box");
+    let bad = 0; for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(hit.im, box.x + x, box.y + y), k = (y * box.w + x) * 4; if (Math.abs(p[0] - ref.data[k]) + Math.abs(p[1] - ref.data[k + 1]) + Math.abs(p[2] - ref.data[k + 2]) > 30) bad++; }
+    console.log(`# s36: the reach view with the bracket differs from its crop by ${bad} pixels`);
+    assert.ok(bad < box.w * box.h * 0.01, `the bracket shows on the find: the reach view is the crop (${bad} pixels differ)`);
+    await wait(1500);
+    const after = await read(), im2 = await g.shot("s36-after");
+    console.log(`# s36: after 1.5 s: ${JSON.stringify(after)}; orange pixels ${orange(hit.im, box)} then ${orange(im2, box)}`);
+    assert.ok(!after.said && after.edge === 0, "the line and the bracket are gone after about 1 s");
+    assert.ok(orange(hit.im, box) - orange(im2, box) >= 30, "the bracket's pixels are gone from the screen");
+  } finally { await g.ctx.close(); }
+});
 });
