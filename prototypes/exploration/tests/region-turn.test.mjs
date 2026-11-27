@@ -68,7 +68,7 @@ test("4. the world turn of the region in hand: region turn, then realm turn, the
   p.run("mountRegion('g2'); S.expN = 10");
   const out = plain(p.run("worldTurn({ trail: [], storm: [] })"));
   assert.deepEqual(calls(), [["g2", 10, 0, 0]], "one region turn, at the realm's turn");
-  assert.equal(p.run("S.turn"), 11); assert.equal(p.run("S.expN"), 11); assert.equal(p.run("S.regions[1].turnSeen"), 11);
+  assert.equal(p.run("S.turn"), 11); assert.equal(p.run("S.expN"), 10, "the world turn does not count an expedition"); assert.equal(p.run("S.regions[1].turnSeen"), 11);
   assert.ok(out.lines.length >= 1 && out.lines.length <= 3);
   assert.equal(p.run("S.regions[0].turnSeen"), 10, "region 1 was away: it will catch up");
   p.run("mountRegion('g1')"); assert.deepEqual(calls().map(c => c[1]), [10, 10], "g1 missed turn 10 only"); assert.equal(p.run("S.regions[0].turnSeen"), 11);
@@ -77,7 +77,7 @@ test("4. the world turn of the region in hand: region turn, then realm turn, the
 test("4b. the page's source: the region turn writes no line and no log, and does not count the turn; the realm turn does", () => {
   const body = name => { const i = PAGE.indexOf("function " + name + "("); return PAGE.slice(i, PAGE.indexOf("\n}\n", i)); };
   assert.ok(!/logEv\(|say\(|S\.turn\+\+|S\.expN\+\+/.test(body("regionTurn") + body("surfaceMissing") + body("catchUp")), "no lines, no counters in the region turn");
-  assert.ok(/S\.turn\+\+; S\.expN\+\+/.test(body("realmTurn")) && /logEv\(/.test(body("realmTurn")));
+  assert.ok(/S\.turn\+\+;/.test(body("realmTurn")) && !/S\.expN\+\+/.test(body("realmTurn")) && /S\.expN\+\+/.test(body("endExpedition")) && /logEv\(/.test(body("realmTurn")));
   assert.ok(/regionTurn\(/.test(body("worldTurn")) && /realmTurn\(/.test(body("worldTurn")) && /turnSeen = S\.turn/.test(body("worldTurn")));
 });
 
