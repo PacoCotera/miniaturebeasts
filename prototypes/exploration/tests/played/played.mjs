@@ -202,7 +202,7 @@ for (const size of SCALE_SIZES) {
     } finally { await g.ctx.close(); }
   });
   // QA verify-live-155 (412x915-S3-home-after, 390x844-S1): back on Station Home after the Bay the words at the left are cut ("et", "pen the Bay"). Played as QA did, by presses, on his #166 save: Dock, the Bay, ← back to Home.
-  it(`s5b Station Home after the Bay (QA verify-live-155): no word cut at the window's left or right edge [${tag}]`, { todo: "red, cause found (home-cut-s5b-1): ← from the Bay lands on the Vivarium screen (not Home's narrow form), drawn 1024 wide in the 530 lp window; its focus target plate.0 is at [718,244,278,34], right of the window, so panFor pans to x 478 and the left column is cut (9-12 light px at the left edge, 9-10 at the right). The face's narrow form is UI's: reported to UI" }, async () => {
+  it(`s5b Station Home after the Bay (QA verify-live-155): no word cut at the window's left or right edge [${tag}]`, async () => {
     const g = await open(size, "166");
     try {
       const dock = g.page.getByRole("button", { name: /Dock the Companion/ }).first();
@@ -229,6 +229,73 @@ for (const size of SCALE_SIZES) {
       const all = colour(im, reg, light), lp = (x) => Math.round(st.pan.x + (x - reg.x) / d / 0.6);   // device px on the shot -> lp on the face
       console.log(`# s5b ${tag}: Home: screen ${JSON.stringify(sc)} view ${JSON.stringify(plan.view)} narrow ${plan.narrow} (NARROW_W 530); pan ${JSON.stringify(st.pan)}; focus ${JSON.stringify(st.focus)}; light words span lp ${all.box ? lp(all.box.x) + ".." + lp(all.box.x + all.box.w - 1) : "none"}; light px at the left edge ${edge(reg.x)}, at the right ${edge(reg.x + reg.w - 3)}`);
       assert.ok(edge(reg.x) <= 3 && edge(reg.x + reg.w - 3) <= 3, `no light word-pixels touch the window's edges (left ${edge(reg.x)}, right ${edge(reg.x + reg.w - 3)})`);
+    } finally { await g.ctx.close(); }
+  });
+  // bay-build-2 (owner 2026-11-25 09:2x, "a played test of a three-crate dock at 412"): his #166 save with THREE sealed crates aboard the Companion (saves/bay-three.save: 5 pods, 54 Energy, 60 Data, 39 Essence in all). Played by presses as a player does: Dock;
+  // the Bay shows the crates the dock crossed (the first on the table, two on the ledge) and the Companion's hold reads empty; ✓ opens the crate in hand, ✓ puts it away: its pods stand on the Nursery's shelf and the counters rise. The verdicts are read off the screen:
+  // the shelf's and the counters' panels change with each put away, the ledge empties, the Bay's words are whole in the window. State is read only to say the case is reached and the figures the screen must agree with.
+  it(`s20 the Bay (bay-build-2): a three-crate dock, ✓ and ✓ for each crate, ▼ All at once, a fourth crate stays aboard, ← is Home [${tag}]`, async () => {
+    const lp = (plan, pan, r) => { const d = size.dpr, s = plan.scale * d, sc = plan.screen; return { x: Math.round(sc.x * d + (r[0] - pan.x) * s), y: Math.round(sc.y * d + (r[1] - pan.y) * s), w: Math.round(r[2] * s), h: Math.round(r[3] * s) }; };
+    const diff = (a, b, box) => { let n = 0; for (let y = box.y; y < box.y + box.h; y++) for (let x = box.x; x < box.x + box.w; x++) { const p = px(a, x, y), q = px(b, x, y); if (p[0] !== q[0] || p[1] !== q[1] || p[2] !== q[2]) n++; } return n; };
+    const run = async (all) => {
+      const g = await open(size, "bay-three");
+      try {
+        const dock = g.page.getByRole("button", { name: /Dock the Companion/ }).first(), bb = await dock.boundingBox({ timeout: 5000 });
+        assert.ok(bb, "the case is reached: the Dock control is on screen");
+        const stt = () => g.page.evaluate(() => { const S = window.__play.frames.station.contentWindow.__st; return { screen: S.UI.screen, held: (S.ST.bayHeld || []).length, accepted: S.ST.accepted.length, tray: S.ST.tray.length, e: S.ST.e, d: S.ST.d, s: S.ST.s, open: S.UI.cargo.open, aboard: S.ST.devBay.length, bay: window.__play.frames.station.contentWindow.__st.bayAboard ?? null, caddy: window.__play.caddy }; });
+        const s0 = await stt(); await g.page.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); await wait(3500);
+        assert.equal(await g.page.evaluate(() => window.__play.owner), "station", "the case is reached: the Station is in view after Dock");
+        const s1 = await stt(), plan = await g.page.evaluate(() => window.__play.plan), pan = await g.page.evaluate(() => window.__play.pan);
+        console.log(`# s20 ${tag}: Dock: ${JSON.stringify(s1)} plan view ${JSON.stringify(plan.view)} narrow ${plan.narrow} pan ${JSON.stringify(pan)}`);
+        assert.equal(s1.screen, "cargo", "the Bay shows over whatever the Station was on"); assert.equal(s1.held, 3, "the three crates crossed at the dock"); assert.equal(s1.accepted, s0.accepted, "none opened by the dock");
+        assert.ok(plan.narrow && plan.view && plan.view.w <= 530 + 1e-6 && !plan.whole, "the Bay is Home's narrow window, no whole-screen flag"); assert.ok(pan.x < 1, "the window is not panned off the Bay's left edge");
+        const im0 = await g.shot(`s20-${tag}-dock`), shelf = lp(plan, pan, [16, 438, 286, 116]), counters = lp(plan, pan, [310, 438, 204, 116]), ledge = lp(plan, pan, [16, 48, 498, 76]), table = lp(plan, pan, [16, 132, 498, 300]);
+        // the Bay's words are whole and readable: the light words stand inside the window and none touches its edges
+        const light = ([R, G, B]) => R > 200 && G > 200 && B > 190, sc = plan.screen, d = size.dpr, reg = { x: Math.round(sc.x * d), y: Math.round(sc.y * d), w: Math.round(sc.w * d), h: Math.round(sc.h * d) };
+        const edge = (im, x0) => colour(im, reg, light, { x: x0, y: reg.y, w: 3, h: reg.h }).n;
+        assert.ok(edge(im0, reg.x) <= 3 && edge(im0, reg.x + reg.w - 3) <= 3, `no word of the Bay touches the window's edges (left ${edge(im0, reg.x)}, right ${edge(im0, reg.x + reg.w - 3)})`);
+        console.log(`# s20 ${tag}: a 20 lp word is ${(20 * plan.scale).toFixed(1)} CSS px, a 16 lp word ${(16 * plan.scale).toFixed(1)} CSS px`);
+        // the Companion's hold reads empty (the crates crossed): its device shows no crate aboard
+        assert.equal(s1.caddy.crates ?? 0, 0, "the Companion's hold reads empty after the dock");
+        const amounts = { e: 3 * 18, d: 3 * 20, s: 3 * 13 }; let prev = im0, pods = 0;
+        const crates = [2, 2, 1];
+        if (all) {
+          await g.press("down", 100, 1500); const imA = await g.shot(`s20-${tag}-all`), sA = await stt();
+          assert.ok(diff(prev, imA, shelf) > 200 && diff(prev, imA, counters) > 100 && diff(prev, imA, ledge) > 200, "▼ All at once: the shelf and the counters changed and the ledge emptied");
+          assert.deepEqual([sA.accepted - s0.accepted, sA.tray, sA.held, sA.e - s0.e, sA.d - s0.d, sA.s - s0.s], [3, 5, 0, amounts.e, amounts.d, amounts.s], "▼: three crates, five pods on the shelf, each counter up by its crates' amounts");
+          return;
+        }
+        for (let k = 0; k < 3; k++) {
+          await g.press("confirm", 100, 900); const imO = await g.shot(`s20-${tag}-open${k}`), sO = await stt();
+          assert.equal(sO.open, true, "✓ opens crate " + k); assert.ok(diff(prev, imO, table) > 500, "the table shows the open crate: its panel changed");
+          await g.press("confirm", 100, 900); const imP = await g.shot(`s20-${tag}-away${k}`), sP = await stt(); pods += crates[k];
+          assert.equal(sP.tray, pods, `✓ Put away: each pod of crate ${k} is on the shelf`); assert.ok(diff(imO, imP, shelf) > 100, "the shelf shows the new pods: its panel changed"); assert.ok(diff(imO, imP, counters) > 50, "the counters changed");
+          assert.deepEqual([sP.e - s0.e, sP.d - s0.d, sP.s - s0.s], [18 * (k + 1), 20 * (k + 1), 13 * (k + 1)], "each counter rose by its crate's amount");
+          prev = imP;
+        }
+        const sE = await stt(); assert.deepEqual([sE.accepted - s0.accepted, sE.held, sE.tray], [3, 0, 5], "the same end as ▼");
+      } finally { await g.ctx.close(); }
+    };
+    await run(false); await run(true);
+  });
+  it(`s20b the Bay full (bay-build-2): a fourth crate while three wait stays aboard and the Companion says the Bay is full; ← from the Bay is Home, uncut [${tag}]`, async () => {
+    const g = await open(size, "bay-four");
+    try {
+      // saves/bay-four.save: the same Companion with a fourth sealed crate aboard
+      const dock = g.page.getByRole("button", { name: /Dock the Companion/ }).first(), bb = await dock.boundingBox({ timeout: 5000 });
+      await g.page.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); await wait(3500);
+      const S = () => g.page.evaluate(() => { const s = window.__play.frames.station.contentWindow.__st; return { screen: s.UI.screen, held: (s.ST.bayHeld || []).length }; });
+      assert.deepEqual(await S(), { screen: "cargo", held: 3 }, "three crossed, the Bay is full");
+      const caddy = await g.page.evaluate(() => window.__play.caddy); console.log(`# s20b ${tag}: caddy ${JSON.stringify(caddy)}`);
+      assert.equal(caddy.crates, 1, "the fourth crate stays aboard the Companion");
+      const plan = await g.page.evaluate(() => window.__play.plan), d = size.dpr, sc = plan.screen, reg = { x: Math.round(sc.x * d), y: Math.round(sc.y * d), w: Math.round(sc.w * d), h: Math.round(sc.h * d) };
+      await g.shot(`s20b-${tag}-full`);
+      for (let i = 1; i <= 3; i++) { await g.press("back", 100, 2000); if ((await S()).screen !== "cargo") break; }
+      const s2 = await g.page.evaluate(() => ({ focus: window.__play.focus, pan: window.__play.pan, plan: window.__play.plan }));
+      assert.notEqual(s2.focus.screen, "cargo", "← left the Bay"); assert.equal(s2.focus.screen, "home", "← from the Bay lands on Home, never on the Vivarium screen");
+      const im = await g.shot(`s20b-${tag}-home`), light = ([R, G, B]) => R > 200 && G > 200 && B > 190, sc2 = s2.plan.screen, reg2 = { x: Math.round(sc2.x * d), y: Math.round(sc2.y * d), w: Math.round(sc2.w * d), h: Math.round(sc2.h * d) };
+      const edge = (x0) => colour(im, reg2, light, { x: x0, y: reg2.y, w: 3, h: reg2.h }).n; void reg;
+      assert.ok(edge(reg2.x) <= 3 && edge(reg2.x + reg2.w - 3) <= 3, `Home after the Bay is uncut (left ${edge(reg2.x)}, right ${edge(reg2.x + reg2.w - 3)})`);
     } finally { await g.ctx.close(); }
   });
 }

@@ -31,11 +31,17 @@ void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, 
   v_layer(LAYER_ART); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, width, c);
   v_composed(id, x, y, w, h, b);
 }
+/* Where the counters centre in the top bar: the frame's 512, or on the Bay's narrow form (the phone's 530 lp window) the spec's narrowCentre, so all three stay inside the window (bay-design-1 design.md 2.1) */
+static int bar_centre(void) {
+  char sc[32] = ""; spec_str(P, "screen", sc, sizeof sc);
+  if (spec_bool(P, "narrow", 0) && strcmp(sc, "cargo") == 0) return v_si(F, "regions.materials.narrowCentre", v_si(F, "regions.materials.centre", 0));
+  return v_si(F, "regions.materials.centre", 0);
+}
 /* The centre of a counter's icon in the top bar (i: 0 Energy, 1 Data, 2 Essence), as word_topBar lays them out (the figures as shown now, a tick counting up included): the place a Cargo material travels to. 1 when the bar has the props, else 0. */
 int frame_material_centre(int i, int out[2]) {
   if (i < 0 || i > 2 || !spec_has(P) || !spec_has(F)) return 0;
   static const char K[3] = { 'e', 'd', 's' };
-  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0), mrect[4]; v_srect(F, "regions.materials.rect", mrect);
+  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = bar_centre(), mrect[4]; v_srect(F, "regions.materials.rect", mrect);
   char mrole[24]; snprintf(mrole, sizeof mrole, "%s", v_sstr(F, "regions.materials.role"));
   int widths[3], total = 0;
   for (int q = 0; q < 3; q++) {
@@ -88,7 +94,7 @@ void word_topBar(void) {
   v_inline_end();   /* the title's group closes after its readout (T8: title → readout 12) */
   /* what you hold, centred on 512 */
   static const char K[3] = { 'e', 'd', 's' }; static const char *ICON[3] = { "energy", "data", "essence" };
-  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = v_si(F, "regions.materials.centre", 0);
+  int M_icon = v_si(F, "regions.materials.icon", 0), M_gap = v_si(F, "regions.materials.gap", 0), M_between = v_si(F, "regions.materials.between", 0), M_centre = bar_centre();
   int mrect[4]; v_srect(F, "regions.materials.rect", mrect); char mrole[24]; snprintf(mrole, sizeof mrole, "%s", v_sstr(F, "regions.materials.role")); int mtop = v_role_cap_in(mrect[1], mrect[3], mrole);
   int widths[3], total = 0; char txt[3][16], fl[3];
   for (int i = 0; i < 3; i++) {

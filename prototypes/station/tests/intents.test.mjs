@@ -32,7 +32,7 @@ setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => J
 const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame"), homeSpec = J("home"), cargoSpec = J("cargo"), createSpec = J("create"), vivariumSpec = J("vivarium"), benchSpec = J("bench"), incubatorSpec = J("incubator"), habitatSpec = J("habitat"), namerSpec = J("namer");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", rooms: 2 }, T0 = 1_000_000;
 
-const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, pods: { view: "inventory", cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null) }, create: null, inc: {}, cross: null, lib: { l1: null, pending: null }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, bench: { f: null, arm: 0, install: false }, meet: null, idle: false, report: null });
+const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", open: false, sum: null, portrait: null, arrival: null }, pods: { view: "inventory", cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null) }, create: null, inc: {}, cross: null, lib: { l1: null, pending: null }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, bench: { f: null, arm: 0, install: false }, meet: null, idle: false, report: null });
 // A recording host: the effects are lists to read afterwards.
 function host(st, sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, ui = newUI()) {
   if (S.docked(st)) S.crossCrates(st, sv);   // the dock rule: a Station that is already seated has had its crates cross
@@ -87,48 +87,34 @@ test("a place holds a mibi: everyone in a room stands on a place of their own, a
   assert.ok(here.length >= 2 && here.every((x) => st.mibis.includes(x) && !("podId" in x) && x.genome), "the room holds mibis only");
   assert.equal(new Set(here.map((x) => x.slot)).size, here.length, "one mibi to a place"); assert.ok(st.tray.length >= 1 && !here.some((x) => st.tray.includes(x)), "the pod stays in the rack");
 });
-test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key plays the arrival over Home (the show: one arrival event of 3500 ms held and skippable), Later returns to Home", () => {
+test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key crosses the crates and shows the Bay over Home (no plate), ← from the Bay is Home", () => {
   const st = world(); st.dock = { docked: false, at: T0 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [{ id: "c1", n: 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }, { id: "c2", n: 2, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }], mibis: [], carried: [], tier: 1, shield: 3 };
   const h = host(st, sv);
-  INTENTS.frame.dock(h); assert.equal(st.dock.docked, true); assert.deepEqual(h.said, [], "no message plate"); assert.equal(h.ui.screen, "cargo", "the arrival rises over Home"); assert.equal(h.ui.cargo.state, "arrival");
-  assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [{ kind: "arrival", target: "show", ms: 3500, hold: 3500, skip: true }]);
-  INTENTS.cargo.intent(h, "room", "confirm"); INTENTS.cargo.intent(h, "room", "back"); assert.deepEqual([h.ui.screen, h.ui.cargo.state], ["home", "bay"], "Later is the screen it came over"); INTENTS.home.intent(h, "room", "confirm"); assert.equal(h.went.at(-1), "cargo");
+  INTENTS.frame.dock(h); assert.equal(st.dock.docked, true); assert.deepEqual(h.said, [], "no message plate"); assert.equal(h.ui.screen, "cargo", "the Bay rises over Home"); assert.equal(h.ui.cargo.state, "bay");
+  assert.equal(S.bayCrates(st).length, 2, "both crates crossed at the dock"); assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [], "no show to hold: the Bay stands");
+  INTENTS.cargo.intent(h, "room", "back"); assert.deepEqual([h.ui.screen, h.ui.cargo.state], ["home", "bay"], "← from the Bay is Home"); INTENTS.home.intent(h, "room", "confirm"); assert.equal(h.went.at(-1), "cargo");
 });
 // ---- the Dock from the play page (frame.json navigation.dock) ----
 const dockWorld = () => { const st = world(); st.dock = { docked: false, at: T0 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [{ id: "c1", n: 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }], mibis: [], with: null, tier: 1, shield: 3 }; return { st, sv }; };
-test("the Dock plays the arrival over the screen the player is on (Pods, the Incubator, the Vivarium, one mibi up close with the namer shut, the Library, the bench, Home, Cargo); no plate; Later returns to that screen as it was", () => {
+test("the Dock shows the Bay over the screen the player is on (Pods, the Incubator, the Vivarium, one mibi up close with the namer shut, the Library, the bench, Home, Cargo); no plate; ← is Home, never the screen it came over", () => {
   for (const screen of ["pods", "incubator", "vivarium", "habitat", "library", "bench", "home", "cargo"]) {
     const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = screen; h.ui.home.f = "pods"; if (screen === "habitat") h.ui.hab = { ...(h.ui.hab || {}), namer: null };
     const r = INTENTS.frame.dock(h, false, true); assert.equal(r.ok, true, screen); assert.equal(h.ui.screen, "cargo", screen); assert.equal(h.ui.cargo.arrival.from, screen, screen); assert.equal(h.ui.home.f, "pods", screen + ": nothing moves under it"); assert.deepEqual(h.said, [], screen + ": no plate");
     assert.equal(h.went.at(-1), screen === "cargo" ? undefined : "cargo", screen + ": the dither to Cargo, none on Cargo itself");
-    INTENTS.cargo.intent(h, "room", "confirm"); INTENTS.cargo.intent(h, "room", "back"); assert.equal(h.ui.screen, screen, screen + ": Later returns to it"); assert.equal(h.ui.cargo.state, "bay", screen);
+    INTENTS.cargo.intent(h, "room", "back"); assert.equal(h.ui.screen, "home", screen + ": ← is Home"); assert.equal(h.ui.cargo.state, "bay", screen);
   }
 });
-test("the Dock mid-decision (Create or Cross open, an open namer, a decision panel) does not interrupt: the plate says The Companion is home for 2000 ms and the arrival plays after the next screen change, over the screen they arrive on; Home and Cargo play it at once", () => {
-  const spec = J("cargo").strings.arrival.ribbon;
+test("the Dock mid-decision (Create or Cross open, an open namer, a decision panel) does not interrupt: the plate says The Companion is home for 2000 ms and the Bay shows after the next screen change, over the screen they arrive on; Home and Cargo show it at once", () => {
+  const spec = J("cargo").strings.ribbon;
   for (const screen of ["create", "cross"]) { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = screen; h.ui[screen] = { podId: "x", choices: {}, f: 0, clash: [], grown: null }; const r = INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, screen, screen); assert.deepEqual(h.said.at(-1), spec, screen + ": the plate"); assert.ok(h.ui.pendingArrival, screen);
-    h.ui[screen] = null; h.ui.screen = "pods"; assert.equal(arrivePending(h), true, screen + ": plays after the next screen change"); assert.deepEqual([h.ui.screen, h.ui.cargo.arrival.from, h.ui.pendingArrival], ["cargo", "pods", null], screen); void r; }
+    h.ui[screen] = null; h.ui.screen = "pods"; assert.equal(arrivePending(h), true, screen + ": shows after the next screen change"); assert.deepEqual([h.ui.screen, h.ui.cargo.arrival.from, h.ui.pendingArrival], ["cargo", "pods", null], screen); void r; }
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "sitting"; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "sitting"); assert.deepEqual(h.said.at(-1), spec); }
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "habitat"; h.ui.hab = { ...(h.ui.hab || {}), namer: { id: 1 } }; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "habitat", "the namer stays"); assert.equal(h.said.at(-1), spec); }
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "pods"; h.ui.panel = { screen: "pods", id: "wildPod", focus: "" }; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "pods", "a decision panel is open"); assert.equal(h.said.at(-1), spec); }
 });
-test("the show in reduced motion is staged by the host: each beat a cut on its time (cargo.json events.show), the choice at 3500; with motion one skippable event and one end timer", () => {
-  const mk = (motion) => { const { st, sv } = dockWorld(); sv.bay = [1, 2, 3].map((n) => ({ ...sv.bay[0], id: "c" + n, n })); const h = host(st, sv); h.ui.screen = "cargo"; h.moving = motion; return h; };
-  { const h = mk(false); INTENTS.frame.dock(h, false, true); const c = h.ui.cargo, run = (ms) => h.timers.filter((t) => t.ms <= ms).sort((a, b) => a.ms - b.ms).forEach((t) => t.fn());
-    assert.equal(c.state, "arrival"); assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [{ kind: "arrival", target: "show", ms: 3500, hold: 0, skip: true }].map((e) => ({ ...e, hold: 0 })).slice(0, 0), "reduced motion plays nothing: no event to hold");
-    run(500); assert.equal(c.at, 500); run(1000); assert.ok(c.at >= 833, "the crates stand at their beats"); run(3499); assert.equal(c.arrival.phase, "show"); run(3500); assert.equal(c.arrival.phase, "choice"); assert.equal(h.ui.panel ?? null, null, "no card on the dock"); }
-  { const h = mk(true); INTENTS.frame.dock(h, false, true); assert.equal(h.timers.length, 1, "motion: the end timer only, the face's clock does the beats"); }
-});
-test("a key in the show cuts to the choice (reduced motion, where no hold stands): ✓, ←, the pad; Open the bay opens the crates and the strip is gone; the skip of a held show runs the end timer at once", () => {
-  const mk = () => { const { st, sv } = dockWorld(); const h = host(st, sv); h.ui.screen = "cargo"; h.moving = false; INTENTS.frame.dock(h, false, true); return h; };
-  for (const verb of ["confirm", "back", "pad"]) { const h = mk(); assert.equal(h.ui.cargo.arrival.phase, "show"); INTENTS.cargo.intent(h, "room", verb); assert.equal(h.ui.cargo.arrival.phase, "choice", verb); assert.equal(h.ui.panel ?? null, null, "no card: " + verb); }
-  { const h = mk(); INTENTS.cargo.intent(h, "room", "confirm"); const e0 = h.st.e; INTENTS.cargo.intent(h, "room", "confirm"); assert.deepEqual([h.ui.panel ?? null, h.ui.cargo.state, h.ui.cargo.arrival], [null, "opening", null], "✓ Open the crate: the opening runs"); assert.equal(h.st.accepted.length, 1); void e0; }
-  { const h = mk(); INTENTS.cargo.intent(h, "room", "confirm"); INTENTS.cargo.intent(h, "room", "back"); assert.deepEqual([h.ui.screen, h.ui.cargo.state, h.ui.panel ?? null], ["cargo", "bay", null], "← is Later: on Cargo itself the bay shows"); assert.equal(h.st.accepted.length, 0, "nothing accepted"); }
-});
-test("an empty trip has no choice: the show closes by itself at 2500, back to the screen it came over; a lift during the arrival ends it, back to where it came over, and the screen never changes by the lift", () => {
-  { const { st, sv } = dockWorld(); sv.bay = []; const h = host(st, sv); h.ui.screen = "pods"; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.cargo.arrival.choice, false); assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [{ kind: "arrival", target: "show", ms: 2500, hold: 2500, skip: true }]);
-    h.timers.filter((t) => t.ms >= 2500).forEach((t) => t.fn()); assert.deepEqual([h.ui.screen, h.ui.cargo.state, h.ui.panel ?? null], ["pods", "bay", null], "closed by itself"); }
-  { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "library"; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "cargo"); INTENTS.frame.dock(h, false, true); assert.equal(st.dock.docked, false, "lifted"); assert.deepEqual([h.ui.screen, h.ui.cargo.state], ["library", "bay"], "back to where it came over"); }
+test("an empty trip shows nothing: the Companion's trip says Nothing came back and the screen never changes; a lift never navigates", () => {
+  { const { st, sv } = dockWorld(); sv.bay = []; const h = host(st, sv); h.ui.screen = "pods"; INTENTS.frame.dock(h, false, true); assert.deepEqual([h.ui.screen, h.ui.cargo.state], ["pods", "bay"]); assert.equal(h.said.at(-1), J("cargo").strings.empty); }
+  { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "library"; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "cargo"); INTENTS.frame.dock(h, false, true); assert.equal(st.dock.docked, false, "lifted"); assert.equal(h.ui.screen, "cargo", "the Bay stays: its crates wait"); assert.equal(S.bayCrates(st).length, 1, "the crate that crossed waits at the Bay"); }
 });
 test("the lift's send-off (R4b): nothing in the living window moves (the carried set is never drawn in a room: no sendoff play, no home.json events.sendoff), the screen never changes; the plate names what went unfinished", () => {
   const mk = (screen) => { const { st, sv } = dockWorld(); st.dock = { docked: true, at: T0 }; st.bayHeld = [7, 8, 9].map((n) => ({ id: "h" + n, n, turn: 0, at: T0, e: 0, d: 0, s: 0, pods: [], met: [], explored: 0, of: 0, lines: [] })); /* the Bay is full, so the sealed crate stays aboard */ S.seedAdults(st, "S01", 5, 3, settings); sv.carried = st.mibis.map((m) => m.id); const h = host(st, sv); h.ui.screen = screen; return h; };
@@ -142,28 +128,29 @@ test("the Dock with the keys (keysElsewhere false) also plays the arrival; a Lif
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, false); assert.equal(h.ui.screen, "cargo"); assert.equal(h.ui.cargo.arrival.from, "pods"); assert.ok(r.ok); }
   for (const els of [true, false]) { const { st, sv } = dockWorld(); st.dock = { docked: true, at: T0 }; const h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, els); assert.equal(st.dock.docked, false, "lifted"); assert.equal(h.went.length, 0, "no goto"); assert.equal(h.ui.screen, "pods"); assert.ok(r.ok); }
 });
-test("Cargo's opening: ✓ Open them all plays the crates one at a time: the arrival (the last start + the last length, the hold 20 longer), each crate's rule at its start, the counters at each material's arrival and the turn at the crate's end, the end after the hold", () => {
-  const st = world(); st.knownIds = ["S01"]; S.seedCrate(st, "S01", 2, 4101, T0); S.seedCrate(st, "S01", 1, 4102, T0); st.dock = { docked: true, at: T0 };
-  const h = host(st); h.ui.screen = "cargo"; h.motion = () => true; const e0 = st.e, before = { e: st.e, d: st.d, s: st.s, turn: st.turn };
-  INTENTS.cargo.intent(h, "room", "confirm");
-  const run = h.ui.cargo.run, ar = h.played.find((e) => e.kind === "arrival"); assert.equal(run.items.length, 2);
-  const L = [600 + 600 + 180 + 300, 600 + 600 + 180 + 300]; assert.deepEqual(run.lens, L); assert.deepEqual(ar, { kind: "arrival", target: "crate", ms: L[0] + L[1], hold: L[0] + L[1] + 20, skip: true }, "two crates: the last start plus the last length, hold 20 longer");
-  assert.equal(h.ui.cargo.state, "opening"); assert.deepEqual(h.ui.cargo.shown, before, "the top bar shows the counters before the crates"); assert.equal(st.accepted.length, 1, "the first crate's rule is applied at its start, the second waits"); assert.ok(h.saved >= 1);
-  const at = (ms) => h.timers.filter((t) => t.ms === ms);
-  assert.equal(at(L[0]).length >= 2, true, "the first crate's end and the second crate's start"); assert.ok(at(L[0] + L[1] + 20).length === 1, "the end after the hold");
-  const ordered = h.timers.slice().sort((a, b) => a.ms - b.ms); for (const t of ordered.slice(0, -1)) t.fn();
-  assert.deepEqual(h.ui.cargo.shown, { e: st.e, d: st.d, s: st.s, turn: st.turn }, "by the last crate's end the top bar shows what the rules hold");
-  ordered.at(-1).fn(); assert.deepEqual([h.ui.cargo.state, h.ui.cargo.shown, st.tray.length, st.accepted.length], ["end", null, 3, 2]);
+// ---- the Bay: three sealed crates unloaded at the dock (bay-build-2; cargo.json keys) ----
+const bayWorld = (n = 3) => { const st = world(); st.knownIds = ["S01"]; st.dock = { docked: true, at: T0 }; for (let i = 0; i < n; i++) S.seedCrate(st, "S01", 2, 4101 + i, T0); const h = host(st); h.ui.screen = "cargo"; return { st, h }; };
+const press = (h, verb) => INTENTS.cargo.intent(h, "room", verb);
+test("the Bay: ✓ opens the crate in hand, ✓ puts it away (its pods join the shelf, its supplies the counters), the next crate comes down; the end says the sum and ✓ goes to the Nursery", () => {
+  const { st, h } = bayWorld(3); assert.equal(S.bayCrates(st).length, 3, "three sealed crates crossed at the dock"); const e0 = [st.e, st.d, st.s];
+  const crates = S.bayCrates(st).map((c) => ({ id: c.id, pods: c.pods.length, e: c.e | 0, d: c.d | 0, s: c.s | 0 })); let pods = 0, [e, d, s] = e0;
+  for (const [k, c] of crates.entries()) {
+    press(h, "confirm"); assert.equal(h.ui.cargo.open, true, "✓ opens crate " + k); assert.equal(st.accepted.length, k, "an open crate is not yet put away");
+    press(h, "confirm"); pods += c.pods; e += c.e; d += c.d; s += c.s;
+    assert.deepEqual([h.ui.cargo.open, st.accepted.length, st.tray.length, st.e, st.d, st.s], [false, k + 1, pods, e, d, s], "✓ puts crate " + k + " away: its pods on the shelf, each counter up by its amount");
+  }
+  assert.deepEqual([S.bayCrates(st).length, h.ui.cargo.sum.crates, h.ui.cargo.sum.pods], [0, 3, pods], "the sum"); press(h, "confirm"); assert.equal(h.went.at(-1), "pods", "To the Nursery"); assert.equal(h.ui.cargo.sum, null);
 });
-
-test("Cargo's opening with reduced motion (the host stages each step as props at its time): per crate from its start: 0, 600 (the inside view ends: every step at once), the crate's end; the arrival and its hold are the same as with motion", () => {
-  const st = world(); st.knownIds = ["S01"]; S.seedCrate(st, "S01", 3, 4101, T0); S.seedCrate(st, "S01", 2, 4102, T0); st.dock = { docked: true, at: T0 };
-  const h = host(st); h.ui.screen = "cargo"; h.motion = () => false; INTENTS.cargo.intent(h, "room", "confirm"); const run = h.ui.cargo.run, L = run.lens;
-  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: L[0] + L[1], hold: L[0] + L[1] + 20, skip: true }, "ms and hold unchanged");
-  const seen = []; for (const t of h.timers.slice().sort((a, b) => a.ms - b.ms)) { const before = [h.ui.cargo.crate, h.ui.cargo.at, h.ui.cargo.state]; t.fn(); const c = h.ui.cargo; if (c.crate !== before[0] || c.at !== before[1] || c.state !== before[2]) seen.push([t.ms, c.crate, c.at, c.state]); }
-  const steps = (k, base, pods, L) => [600, L].map((at) => [base + at, k, at, "opening"]);
-  assert.deepEqual(seen.filter((x) => x[3] === "opening").map((x) => x.join()), [...steps(0, 0, 3, L[0]), [L[0], 1, 0, "opening"], ...steps(1, L[0], 2, L[1])].map((x) => x.join()), "the host's stage by time");
-  assert.equal(seen.at(-1)[3], "end"); assert.equal(h.played.some((e) => e.kind === "flash"), false);
+test("the Bay: ▼ All at once from the first crate ends in the same state as ✓ and ✓ for each crate", () => {
+  const a = bayWorld(3), b = bayWorld(3);
+  for (let i = 0; i < 6; i++) press(a.h, "confirm"); press(b.h, "all");
+  const key = ({ st, h }) => JSON.stringify([st.tray.map((p) => p.id), st.e, st.d, st.s, st.accepted, S.bayCrates(st).length, h.ui.cargo.open, h.ui.cargo.sum.crates, h.ui.cargo.sum.pods]); assert.equal(key(b), key(a)); assert.equal(b.st.accepted.length, 3);
+  const c = bayWorld(3); press(c.h, "confirm"); press(c.h, "all"); assert.equal(key(c), key(a), "from an open crate too");
+});
+test("the Bay: a fourth crate while three wait stays aboard and the Companion says the Bay is full; ← with a crate open puts it away at once and goes Home; the crates not opened stay sealed", () => {
+  const { st, h } = bayWorld(4); assert.equal(S.bayCrates(st).length, 3); assert.equal(S.aboardCrates(st, h.sv).length, 1, "the fourth stays aboard");
+  press(h, "confirm"); press(h, "back"); assert.equal(h.ui.screen, "home", "← is Home"); assert.equal(st.accepted.length, 1, "the open crate was put away at once"); assert.equal(S.bayCrates(st).length, 2, "the others stay sealed"); assert.equal(h.ui.cargo.open, false);
+  const { st: s2, h: h2 } = bayWorld(2); press(h2, "back"); assert.equal(s2.accepted.length, 0, "← with no crate open puts nothing away");
 });
 
 test("the Library's Level 1: the ring's species is kept; ✓ on a met or found cell opens that species' Level 2, on an unmet cell or anything else does nothing; ← is Home with the ring on the Library bezel; the card's species word opens Level 2 of its species", () => {
@@ -488,13 +475,13 @@ test("the Dock key on the bench: lifted, the ring on the plates moves to the swi
   h.ui.bench.f = "slot"; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, true); assert.equal(h.ui.bench.f, "slot", "away to docked: the ring stays");
 });
 
-test("T-50 cuts 1 and 2: Home's room ✓ opens the bay in one press (Cargo, then the opening) and opens the ready bud in one press (the Incubator, then the hatch); a growing bud only looks", () => {
+test("T-50 cuts 1 and 2: Home's room ✓ opens the Bay on the crate in hand in one press and opens the ready bud in one press (the Incubator, then the hatch); a growing bud only looks", () => {
   const st = world(); st.knownIds = ["S01"]; S.seedCrate(st, "S01", 1, 4101, T0); st.dock = { docked: true, at: T0 };
   const h = host(st); h.motion = () => true;
   assert.equal(S.needKey(st, h.sv, settings, h.ui).key, "crates");
   INTENTS.home.intent(h, "room", "confirm");
-  assert.deepEqual([h.went.at(-1), h.ui.cargo.state], ["cargo", "opening"], "one ✓ on Home: the bay is opening");
-  assert.ok(h.played.some((e) => e.kind === "arrival" && e.target === "crate") && st.tray.length === 1, "the rule opened the crate");
+  assert.deepEqual([h.went.at(-1), h.ui.cargo.state, h.ui.cargo.open], ["cargo", "bay", true], "one ✓ on Home: the Bay, the crate in hand open");
+  assert.ok(st.tray.length === 0 && st.accepted.length === 0, "nothing is put away until ✓ again"); INTENTS.cargo.intent(h, "room", "confirm"); assert.equal(st.tray.length, 1, "✓ Put away: the rule opened the crate");
   const h2 = host(world()); h2.motion = () => true; h2.specs.incubator = incubatorSpec; const st2 = h2.st, q = pod(st2, "S01", chapters("S01")), now = Date.now();
   assert.ok(S.grow(st2, q, {}, settings, now).ok); assert.ok(!S.budReady(st2, settings, now));
   assert.equal(S.needKey(st2, h2.sv, settings, h2.ui), null, "amber only for real needs: a growing bud is no need"); INTENTS.home.intent(h2, "room", "confirm"); assert.deepEqual(h2.went, [], "a growing bud is not a need: at rest ✓ does nothing");

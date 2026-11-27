@@ -592,65 +592,34 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   assert.ok(!("knob" in R) && !("glass" in R) && !("bed" in R) && !("cargo" in R) && !("probe" in R), "the knob, the glass, the bed and the old column are gone"); assert.deepEqual(paletteBad(home.colours), []);
 });
 
-test("the Cargo spec file is the build spec's sections 1 to 6 (T-20261016-197): the bay window, the hatch with its wells and strip, the mat, the display row, the berths (three of 256, four of 188), the opening's steps, the keys and the strings; Cargo is under Home with Home's mark", () => {
-  const cg = rd("../specs/station/cargo.json"), R = cg.regions, stage = frame.regions.stage.rect; lintRegions(cg);
-  assert.deepEqual(cg.states, ["bay", "opening", "end", "arrival"]); assert.equal(cg.title.word, "Bay");
-  // 1. the regions, in screen pixels at 1x
-  assert.deepEqual(R.bay.rect, [16, 46, 992, 506]); assert.equal(R.bay.slice, "cargo-bay-992x506"); assert.equal(R.bay.radius, 6); assert.ok(inside(R.bay.rect, stage), "inside the stage");
-  assert.deepEqual(R.hatch.rect, [24, 150, 160, 260]); assert.deepEqual(R.hatch.slices, { shut: "hatch-shut-160x260", open: "pods-hatch-open-160x260" }); assert.deepEqual(R.hatch.ring, { slice: "ring-hatch-80x56", at: [64, 166], size: [80, 56], rule: R.hatch.ring.rule });
-  assert.deepEqual(R.hatch.wells.centres, [[49, 60], [103, 58], [49, 120], [103, 119], [50, 180], [104, 182]]); assert.deepEqual(R.hatch.wells.pod, { class: "list", size: [40, 48], at: [-20, -26] }); assert.deepEqual([R.hatch.wells.lit.slice, R.hatch.wells.lit.size, R.hatch.wells.lit.at], ["well-lit-64x64", [64, 64], [-32, -32]]);
-  for (const [cx, cy] of R.hatch.wells.centres) { assert.ok(inside([R.hatch.rect[0] + cx - 32, R.hatch.rect[1] + cy - 32, 64, 64], R.hatch.rect), "a lit well inside the hatch"); assert.ok(inside([R.hatch.rect[0] + cx - 20, R.hatch.rect[1] + cy - 26, 40, 48], R.hatch.rect)); }
-  assert.deepEqual(R.hatch.strip.rect, [32, 382, 144, 20]); assert.ok(inside(R.hatch.strip.rect, R.hatch.rect)); assert.deepEqual([listPitch(R.hatch.strip.find, R.hatch.strip.find.max, 0), R.hatch.strip.find.forms.row.pitch], [[36, 384, 16, 16], [20, 0]]);
-  assert.deepEqual(R.waiting.rect, [24, 424, 160, 80]); assert.deepEqual([R.waiting.pods.size, R.waiting.pods.top, R.waiting.pods.shadow.at, R.waiting.pods.shadow.slice], [[40, 48], 434, [-4, 40], "cargo-store-shadow-48x14"]);
-  { const B = R.waiting.pods.byCount; assert.deepEqual(B, { 1: [84], 2: [60, 108], 3: [36, 84, 132] }); for (const xs of Object.values(B)) assert.equal(xs[0] + (xs.at(-1) + 40 - xs[0]) / 2, 104, "each row centred on x 104"); assert.deepEqual(R.hatch.frame, { slice: "hatch-frame-166x266", at: [21, 147], size: [166, 266], rule: R.hatch.frame.rule }, "the hatch frame is the hatch grown by 3"); assert.deepEqual(R.waiting.pods.moreX, [32, 80, 128]); assert.deepEqual([R.waiting.pods.more.right, R.waiting.pods.more.centreY], [180, 458]); assert.equal(R.waiting.pods.shadow.at[1] + R.waiting.pods.top, 474, "the shadow at y 474"); assert.ok(inside([R.waiting.pods.moreX[2], 434, 40, 48], R.waiting.rect)); }
-  assert.deepEqual(R.display.rect, [200, 60, 800, 180]); assert.equal(R.display.centre, 600); assert.equal(R.display.feet, 220);
-  assert.deepEqual([R.display.pod.size, R.display.pod.top, R.display.pod.top + R.display.pod.size[1]], [[88, 112], 108, 220]); assert.deepEqual([R.display.find.size, R.display.find.top + R.display.find.size[1]], [[112, 112], 220]);
-  assert.deepEqual([R.display.material.big.size, R.display.material.big.top + 96], [[72, 96], 220]); assert.deepEqual([R.display.material.small.size, R.display.material.small.top + 64], [[48, 64], 220]);
-  assert.deepEqual(R.display.pod.glint.at, [78, -4], "the glint at (x + 78, 104)"); assert.equal(R.display.pod.top + R.display.pod.glint.at[1], 104);
-  assert.deepEqual([R.display.gap.within, R.display.gap.between], [16, 24]); assert.deepEqual([R.display.portrait.frameSize, R.display.portrait.picture, R.display.portrait.pictureAt, R.display.portrait.leaves], [[48, 40], [40, 30], [4, 4], [-200, 40]]);
-  assert.ok(inside([R.display.portrait.at[0], R.display.portrait.at[1], 48, 40], R.display.rect)); assert.equal(R.display.portrait.at[0] + 24, 600, "the pair centred in the display");
-  // 3. the berths
-  assert.deepEqual(R.berths.rect, [200, 252, 800, 292]); const T3 = R.berths.three, T4 = R.berths.four;
-  assert.deepEqual([T3.w, T3.x], [256, [200, 472, 744]]); assert.deepEqual(T3.x.map((x, i, a) => (a[i + 1] ?? x + 256 + 16) - x - 256), [16, 16, 16], "16 apart"); assert.deepEqual([T4.w, T4.x], [188, [200, 404, 608, 812]]); assert.deepEqual(T4.x.map((x, i, a) => (a[i + 1] ?? x + 188 + 16) - x - 188), [16, 16, 16, 16]);
-  assert.equal(T3.x.at(-1) + 256, 1000); assert.equal(T4.x.at(-1) + 188, 1000);
-  assert.deepEqual([T3.sealed, T3.lifting, T3.done, T3.shadow], [{ slice: "crate-sealed-256x176", at: [0, 102] }, { slice: "crate-lifting-256x200", at: [0, 91] }, { slice: "crate-open-done-230x176", at: [13, 102] }, { slice: "crate-shadow-256x24", size: [256, 24], at: [0, 260] }]);
-  assert.equal(102 + 176, 292 - 14, "the feet 14 above the berth's foot"); assert.equal(91 + 200 - 13, 292 - 14, "the lifting crate's foot is 13 above its picture's foot, so the feet line holds");
-  assert.deepEqual([T4.sealed, T4.lifting, T4.done, T4.shadow], [{ slice: "crate-sealed-176x121", at: [6, 157] }, { slice: "crate-lifting-176x138", at: [6, 132] }, { slice: "crate-sealed-176x121-done", at: [6, 157] }, { slice: "crate-shadow-176x16", size: [176, 16], at: [6, 266] }]); assert.equal(157 + 121, 292 - 14);
-  assert.deepEqual(T4.portrait, { sealed: "crate-sitting-176x121", done: "crate-sitting-176x121-done", gilt: { slice: "berth-gilt-198x302", at: [-5, -5] } }); assert.deepEqual([T3.edge, T4.edge], [{ slice: "berth-edge-258x294", at: [-1, -1] }, { slice: "berth-edge-190x294", at: [-1, -1] }]);
-  assert.deepEqual([T3.recess, T3.shut, T4.recess, T4.shut], ["berth-recess-256x292", "berth-shut-256x292", "berth-recess-188x292", "berth-shut-188x292"]);
-  // 4. the opening
-  const O = cg.events.opening, S4 = O.steps; assert.deepEqual([O.kind, O.target, O.skip], ["arrival", "crate", true]); assert.deepEqual(S4, { inside: 600, display: 200, dither: 180, flashMs: 240, hatch: 0, pods: 0, podEach: 0, materialEach: 0, travel: 600, swap: 180, tail: 300, portrait: 700 }); assert.equal(S4.flashMs, frame.regions.materials.flashMs, "the frame's flash");
-  assert.equal(cg.regions.travel.ms, S4.travel); assert.equal(O.byCrates, undefined, "the byCrates table goes"); assert.equal(O.perCrate, undefined, "perCrate goes"); assert.equal(cg.events.crateIn, undefined, "no slide");
-  assert.ok(R.report === undefined && R.rack === undefined && R.ribbon === undefined && R.stores === undefined && R.crate === undefined && R.crates === undefined && R.waitingPods === undefined, "the report, the rack, the ribbon, the old closer and the old waiting pods go");
-  // 6. states, keys, the line, the strings
-  assert.deepEqual(cg.focus.graph, { room: { up: "none", down: "none", left: "none", right: "none" } });
-  assert.deepEqual(frame.navigation.screens.cargo, { parent: "home", back: "Home", states: cg.states, spec: "cargo.json" }); assert.equal(frame.strings.titles.cargo, cg.strings.title); assert.equal(frame.regions.title.marks.cargo, cg.title.mark);
-  assert.ok(frame.navigation.jumps.some((j) => j.from === "cargo" && j.to === "pods" && Object.values(cg.strings.newPods).includes(j.action) && j.state === "end"), "the hand-off to Pods");
-  {   // keys.confirm.end: the portrait first, then Look at the pods; the jump to the sitting's state portrait is present only while sitting.json regions.portrait.offeredFrom lists cargo-end
-    const sit = rd("../specs/station/sitting.json"), ends = frame.navigation.jumps.filter((j) => j.from === "cargo" && j.state === "end"), toPortrait = ends.filter((j) => j.to === "sitting");
-    assert.equal(cg.strings.end.confirm, "See the portrait", "CW-1"); assert.ok(wordsIn(cg.strings.end.confirm) <= 4); assert.match(cg.strings.end.confirm, /^[A-Z]/, "sentence case");
-    assert.equal(toPortrait.length, sit.regions.portrait.offeredFrom.includes("cargo-end") ? 1 : 0, "the Cargo end jump only while offeredFrom lists cargo-end");
-    if (toPortrait.length) { assert.deepEqual([toPortrait[0].action, toPortrait[0].view], [cg.strings.end.confirm, "portrait"]); assert.ok(sit.states.includes("portrait")); assert.equal(ends[0], toPortrait[0], "first, before Look at the pods"); }
-    assert.ok(!("sitting" in cg.regions.dockCrates)); assert.deepEqual(cg.regions.dockCrates.slices, { sealed: "crate-sealed-256x176" }); assert.match(cg.regions.dockCrates.portrait, /never rides the dock arrival/);
+test("the Bay's spec file (bay-build-2; bay-ui-2 spec.md): one state, the two forms' four panels stand on the stage without overlapping, what stands on them stands inside them, the words are bay-words-1's and the pictures are placed masters of exactly the size their names give", () => {
+  const cg = rd("../specs/station/cargo.json"), idx = readIndex(MASTERS).masters, stage = frame.regions.stage.rect;
+  assert.deepEqual(cg.states, ["bay"]); assert.equal(cg.title.word, "Bay"); assert.equal(cg.title.mark, "Home"); assert.equal(cg.initial, "bay");
+  const apart = (a, b) => a[0] + a[2] <= b[0] || b[0] + b[2] <= a[0] || a[1] + a[3] <= b[1] || b[1] + b[3] <= a[1];
+  for (const [form, W] of [["narrow", 530], ["wide", 1024]]) {
+    const F = cg.forms[form], panels = [F.ledge, F.table, F.shelf, F.counters], win = [0, stage[1], W, stage[3]];
+    for (const p of panels) assert.ok(inside(p, win), `${form}: panel ${p} on the stage's part of the ${W} lp screen`);
+    for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) assert.ok(apart(panels[i], panels[j]), `${form}: panels ${i} and ${j} do not overlap`);
+    assert.ok(inside(F.cradle, F.ledge) && inside(F.wood, F.ledge) && inside(F.sealed, F.table) && inside(F.open, F.table), `${form}: the cradle and the wood in the ledge, the sealed crate and the open slot in the table`);
+    for (let i = 0; i < F.crates.x.length; i++) { const y = F.crates.y + (F.crates.vertical ? i * F.crates.pitchY : 0); assert.ok(inside([F.crates.x[i], y, 64, 64], F.ledge), `${form}: ledge crate ${i} in the ledge`); }
+    const sp = F.shelfPods; assert.ok(inside([sp.x, sp.y, 40, 48], F.shelf) && inside([sp.x + (sp.cols - 1) * sp.pitch, sp.y + ((sp.rows ?? 1) - 1) * (sp.rowPitch ?? 0), 40, 48], F.shelf), `${form}: the shelf's first and last pod in the shelf`);
+    assert.equal(F.counterRows.pitch, 34, "the counters 34 lp apart"); assert.ok(F.counterRows.y + 2 * F.counterRows.pitch + 16 <= F.counters[1] + F.counters[3], `${form}: three counter rows in the counters`);
+    assert.deepEqual(F.sealed.slice(2), [256, 176], "the signed sealed crate at 1:1");
   }
-  assert.deepEqual([cg.strings.open, cg.strings.openOne, cg.strings.skip, cg.strings.newPods], ["Open them all", "Open it", "Skip", { one: "Look at the pods", few: "Look at the pods" }]); assert.deepEqual(cg.strings.subjects, { waiting: "The Pods rack is full", waitingOne: "The Pods rack is full" });
-  for (const s of [cg.strings.open, cg.strings.openOne, cg.strings.skip, ...Object.values(cg.strings.newPods)]) assert.ok(wordsIn(s) <= 4, s);
-  for (const s of stringsOf(cg.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
-  assert.ok(!/outing|haul|pocket/.test(JSON.stringify(cg.strings)), "cargo, never haul"); assert.equal(cg.strings.done, undefined); assert.equal(cg.strings.ribbon, undefined);
-  assert.deepEqual(paletteBad(cg.colours), []); assert.ok(!JSON.stringify(cg.colours).includes("amber"), "nothing amber on Cargo's stage");
-  // the dock arrival keeps its own regions under the dock names
-  for (const k of ["dockBay", "dockCrates", "dockRack", "dockRibbon", "arrival"]) assert.ok(R[k], k); assert.deepEqual(R.dockBay.rect, [16, 48, 992, 320]); assert.equal(R.arrival.crates.places, "regions.dockCrates.byCount");
-});
-
-test("the Bay's cuts: every picture the spec names is a placed master of exactly the size its name gives (the cut script and the art director's clean cuts)", () => {
-  const idx = readIndex(MASTERS).masters, cg = rd("../specs/station/cargo.json"), R = cg.regions, ids = new Set();
-  const take = (o) => { if (typeof o === "string") { if (/^(cargo-|berth-|hatch-|pods-hatch|well-lit|crate-|ring-hatch|find-|glint)/.test(o)) ids.add(o); } else if (o && typeof o === "object") for (const [k, v] of Object.entries(o)) if (k !== "rule" && k !== "note") take(v); };
-  for (const k of ["bay", "hatch", "waiting", "display", "berths"]) take(R[k]);
-  for (const kind of ["crystal", "pearl", "shard"]) for (const sz of ["112x112", "16x16"]) ids.add(`find-${kind}-${sz}`);
-  for (const m of ["energy", "data", "essence"]) for (const sz of ["72x96", "48x64"]) ids.add(`cargo-${m}-${sz}`);
-  assert.ok(ids.size >= 30, "ids: " + [...ids].join(" "));
-  for (const id of ids) { const e = idx[id]; assert.ok(e, `${id} is placed`); const m = id.match(/(\d+)x(\d+)(?:-done)?$/); assert.deepEqual([e.w, e.h], [+m[1], +m[2]], `${id} is the size its name gives`); }
-  for (const id of ["crate-lifting-256x200", "crate-lifting-176x138", "pods-hatch-open-160x260"]) { assert.match(idx[id].signed, /art director/, `${id} is signed by the art director`); assert.doesNotMatch(idx[id].signed, /not final/, `${id} carries no not-final flag`); }
+  assert.deepEqual(cg.forms.narrow.crates.x, [306, 410]); assert.deepEqual(cg.forms.narrow.ledge, [16, 48, 498, 76]); assert.deepEqual(cg.forms.wide.table, [256, 48, 552, 506]);
+  assert.equal(frame.regions.materials.narrowCentre, 400, "the narrow form keeps all three counters inside the 530 lp window"); assert.ok(frame.regions.materials.narrowCentre + 128 <= 530);
+  // the pictures: placed masters of the size their names give; the dashed slots name the art not yet placed
+  for (const id of [cg.pictures.crate, cg.pictures.sealed, cg.pictures.cradleMark, "crate-sitting-256x176", "crate-sitting-80x56", ...["energy", "data", "essence"].map((m) => `cargo-${m}-${cg.pictures.mat.size.join("x")}`)]) { const e = idx[id]; assert.ok(e, `${id} is placed`); const m = id.match(/(\d+)x(\d+)$/); assert.deepEqual([e.w, e.h], [+m[1], +m[2]], `${id} is its name's size`); }
+  assert.ok(cg.placeholders.cradle && cg.placeholders.open, "the cradle and the open crate are named slots for art not yet placed (rule 3)");
+  // the screen, the keys and the line
+  assert.deepEqual(cg.focus.graph, { room: { up: "none", down: "none", left: "none", right: "none" } }); assert.equal(cg.focus.roomKey, "room");
+  assert.deepEqual(frame.navigation.screens.cargo, { parent: "home", back: "Home", states: cg.states, spec: "cargo.json" }); assert.equal(frame.strings.titles.cargo, cg.strings.title);
+  assert.ok(frame.navigation.jumps.some((j) => j.from === "cargo" && j.to === "pods" && j.action === cg.strings.toNursery && j.state === "end"), "the hand-off to the Nursery");
+  const S = cg.strings; assert.deepEqual([S.open, S.putAway, S.all, S.toNursery], ["Open the crate", "Put away", "▼ All at once", "To the Nursery"]); assert.equal(S.end.confirm, "See the portrait");
+  assert.deepEqual([S.tag, S.shelf.title, S.shelf.count, S.counters], ["Expedition {n}", "Nursery shelf", "{n} on the shelf", { e: "Energy", d: "Data", s: "Essence" }]);
+  assert.deepEqual([S.companion.empty, S.companion.full], ["Hold empty · ready to go out", "{crates} aboard · the Bay is full"]); assert.deepEqual([S.done.one, S.done.many, S.done.pods.none, S.done.pods.one, S.done.pods.many], ["1 crate unloaded", "{n} crates unloaded", "no pods home", "1 pod home", "{n} pods home"]);
+  assert.ok(!/outing|haul|pocket|cup|hatch/.test(JSON.stringify(S)), "no cups, no hatch, no haul: the shelf"); assert.deepEqual(paletteBad(cg.colours), []);
+  for (const k of ["hatch", "waiting", "berths", "display", "inside", "travel", "dockBay", "dockCrates", "dockRack", "dockRibbon", "arrival", "bay"]) assert.equal(cg.regions?.[k], undefined, `${k} is removed with the old Bay (rule 21)`);
 });
 
 test("Idle is the room's painting without the frame: one painting, the bed (Roots' own, at the room's centre) and its sleepers on the ground band, the line on its strip", () => {
