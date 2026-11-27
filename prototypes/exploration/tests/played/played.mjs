@@ -1916,7 +1916,7 @@ it(`s37 a rim place has no line at its range side (seed 13, reach-build-1): the 
 });
 // OWNER 2026-11-27 22:21 UTC (#179): "the loika is not eating from my hand". Design's ruling (bus 2ae443): while he holds her own food, his walking steps toward a named Loika at ease 0 are not heard, so he can walk up to her grazing and ✓ Offer fruit.
 // His replay.save (saves/179.save: patch 2, tile 14,4, fruit in hand, Nut beside him with her ears up). By presses, each waiting for its effect: ✓ (the dim line), right until he is 5+ tiles off and she has calmed, then tap steps toward her, ✓ "Offer fruit", ✓ again: she eats.
-// State only asserts the case is reached (her ease, the label, the distance); the verdict is the pixels: the screen after the offer against a crop of her eating (saves/s38-hand-fruit.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it).
+// State only asserts the case is reached (her ease, the label, the distance); the verdict is the pixels, two small crops each under 2% of its own size: her tile with the one beside it (saves/s38-eating-tiles.png) and the box line "Nut takes the fruit from your hand" (saves/s38-eating-line.png), cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites them.
 it(`s38 he walks up to Nut with fruit in hand and she eats from it (#179, his save) [412x915]`, async () => {
   const size = { w: 412, h: 915, dpr: 2.625 };
   const g = await open(size, "179");
@@ -1957,19 +1957,26 @@ it(`s38 he walks up to Nut with fruit in hand and she eats from it (#179, his sa
     assert.equal(s.label, "Offer fruit", `the case is reached: beside her, ✓ reads "Offer fruit" (${s.label})`);
     await step("confirm"); s = await st(); trace("offered", s);
     const im = await g.shot("s38-eating"), r = await g.region();
-    const box = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: Math.round(r.h * 0.72) };
-    const f = path.join(savesDir, "s38-hand-fruit.png");
-    if (process.env.PLAYED_WRITE_CROPS) {
-      const d = new Uint8Array(box.w * box.h * 4);
-      for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y), j = (y * box.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
-      writeFileSync(f, encodePNG(box.w, box.h, d));
-    }
-    const ref = decodePNG(readFileSync(f));
-    let bad = 0;
-    for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) { const p = px(im, box.x + x, box.y + y), j = (y * ref.width + x) * 4; if (p[0] !== ref.data[j] || p[1] !== ref.data[j + 1] || p[2] !== ref.data[j + 2]) bad++; }
-    console.log(`# s38: the screen after the offer differs from the accepted crop of her eating (${ref.width}x${ref.height}) by ${bad} pixels`);
-    assert.ok(ref.width === box.w && ref.height === box.h, `the crop is the box's size (${ref.width}x${ref.height} against ${box.w}x${box.h})`);
-    assert.ok(bad < ref.width * ref.height * 0.02, `she is eating, as the crop (${bad} of ${ref.width * ref.height} pixels differ)`);
+    const pos = await mbq((m) => { const n = m.curLive().cr.find((c) => c.ind && c.ind.name === "Nut"), P = m.S.exp.patch; return { dx: n.x - P.x, dy: n.y - P.y, ts: m.RT.ts, pl: m.RT.plScr }; });
+    assert.equal(Math.abs(pos.dx) + Math.abs(pos.dy), 1, `the case is reached: Nut is the tile beside him (${pos.dx},${pos.dy})`);
+    const k = r.w / 450, ts = pos.ts;
+    // her tile with the one beside it (his): the eating frames
+    const gx = (v) => r.x + Math.round(v * k), gy = (v) => r.y + Math.round(v * k);
+    const x0 = Math.min(0, pos.dx), y0 = Math.min(0, pos.dy), x1 = Math.max(0, pos.dx) + 1, y1 = Math.max(0, pos.dy) + 1;
+    const tiles = { x: gx(pos.pl.x + x0 * ts - ts / 2), y: gy(pos.pl.y + y0 * ts - ts / 2) };
+    tiles.w = gx(pos.pl.x + x1 * ts - ts / 2) - tiles.x; tiles.h = gy(pos.pl.y + y1 * ts - ts / 2) - tiles.y;
+    // the box's line "Nut takes the fruit from your hand"
+    const line = { x: r.x + Math.round(r.w * 0.02), y: r.y + Math.round(r.h * 0.80), w: Math.round(r.w * 0.96), h: Math.round(r.h * 0.10) };
+    const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+    const stored = (name, b) => { const f = path.join(savesDir, name); if (process.env.PLAYED_WRITE_CROPS) { const c = crop(b); writeFileSync(f, encodePNG(c.width, c.height, c.data)); } return decodePNG(readFileSync(f)); };
+    const differ = (c, ref) => { let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++; return n; };
+    const tilesRef = stored("s38-eating-tiles.png", tiles), lineRef = stored("s38-eating-line.png", line);
+    assert.ok(tilesRef.width === tiles.w && tilesRef.height === tiles.h, `the tiles crop is the box's size (${tilesRef.width}x${tilesRef.height} against ${tiles.w}x${tiles.h})`);
+    assert.ok(lineRef.width === line.w && lineRef.height === line.h, `the line crop is the box's size (${lineRef.width}x${lineRef.height} against ${line.w}x${line.h})`);
+    const nt = differ(crop(tiles), tilesRef), nl = differ(crop(line), lineRef);
+    console.log(`# s38: her tile and the one beside it differ from the crop of her eating by ${nt} of ${tiles.w * tiles.h} pixels; the box's line from its crop by ${nl} of ${line.w * line.h}`);
+    assert.ok(nt < tiles.w * tiles.h * 0.02, `she is eating, as the crop of her tile and the one beside it (${nt} of ${tiles.w * tiles.h} pixels differ)`);
+    assert.ok(nl < line.w * line.h * 0.02, `the box says "Nut takes the fruit from your hand", as the crop of its line (${nl} of ${line.w * line.h} pixels differ)`);
   } finally { await g.ctx.close(); }
 });
 });
