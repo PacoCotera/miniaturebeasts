@@ -8046,7 +8046,8 @@ function drawMenu(t) {
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr;
   let left = overField && pl && pl.x > SCR_W / 2;
-  const rowH = overField ? 44 : 62, w = overField ? 250 : 330, top0 = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
+  // menu-side-hero-3: in the field the box is as wide as its widest row (the line's own measure + the icon column and right margin), never more than 250
+  const rowH = overField ? 44 : 62, w = overField ? Math.min(250, 64 + 14 + Math.max(0, ...items.map(it => textW(it.label, 2)))) : 330, top0 = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
   let x = overField ? (left ? 8 : SCR_W - w - 8) : 60;
   // over a place, when the message box goes to the top (drawMessage's own test), the card starts 8 px under its foot
   const mg = S.ui.from === 'patch' ? msgGeom() : null, mH = mg ? mg.h : 0,
