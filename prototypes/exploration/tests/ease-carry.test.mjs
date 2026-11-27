@@ -111,6 +111,17 @@ test("the stay: each light within 2 tiles adds one, reset beyond; past 10 less t
   assert.equal(stayAt({ ...env("N", "open") }, { x: 5, y: 5 }, 5, 7, 1), 0, "never below 0 (upwind over sand, wary)");
 });
 
+test("the stay: her own step nearer to a still explorer holds the count; his step to two tiles counts as before", () => {
+  const e = env("E", "plain"), P = { x: 5, y: 9 }, c = { x: 5, y: 5, ease: 0, crowd: 0, wary: 0 };
+  stayTick(e, c, P);                       // far: reset, her tile noted
+  for (const y of [6, 7, 8]) { c.y = y; stayTick(e, c, P); }   // she walks up: 6, 7 (two tiles), 8 (one tile)
+  assert.equal(c.crowd, 0, "every light she closed in adds nothing");
+  stayTick(e, c, P); assert.equal(c.crowd, 1, "once she stands still, the count rises");
+  const d = { x: 5, y: 5, ease: 0, crowd: 0, wary: 0 }, Q = { x: 5, y: 9 };
+  stayTick(e, d, Q); Q.y = 7; stayTick(e, d, Q); stayTick(e, d, Q);
+  assert.equal(d.crowd, 2, "he steps to two tiles and stays: the count rises each light");
+});
+
 test("keeping still as one act stops on each of its four stops", () => {
   const run = (script, easeOf = () => 0) => { let i = 0; return holdRun(() => script[Math.min(i++, script.length - 1)], easeOf); };
   assert.deepEqual(run([{}]), { n: HOLD_MAX, why: "ten" }, "ten light gone");
