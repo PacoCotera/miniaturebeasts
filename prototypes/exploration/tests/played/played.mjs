@@ -465,7 +465,21 @@ for (const size of SIZES) {
       const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, cs = m.curLive().cr.filter((q) => q.ind), c = cs.find((q) => m.curledNow(q) && q.y === P.y) || cs.find((q) => m.curledNow(q)); return { phase: m.S.phase, at: [P.x, P.y], dir: P.dir, herAt: c && [c.x, c.y], curled: !!c && m.curledNow(c), on: !!c && m.onScreen(c.x, c.y), all: cs.map((q) => [q.ind.name, q.x, q.y, m.curledNow(q), m.sleeperOf(q), m.atBedNow(q), q.ease, !!q.hide, !!q.hb]), part: m.dayPart(), spent: m.S.day.spent }; });
       await step("left");   // the d-pad left once: he faces her
       let s = await st();
-      for (let i = 0; i < 14 && !s.curled; i++) { await step("confirm"); s = await st(); }   // her bedtime play runs its beats as the light passes: ✓ Keep still until she has settled curled
+      // sleep-word-fix-4: from her tell ("curling up to sleep", c.hb sleep, not yet curled) the bar already reads asleep. Compared on the name and the word (the left 60% of the crop; the stay figure may differ).
+      const tellNow = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m.curLive().cr.some((q) => q.ind && q.hb && q.hb.k === "sleep" && !m.curledNow(q) && !(q.ease >= 1) && m.onScreen(q.x, q.y)); });
+      let tellBad = null;
+      for (let i = 0; i < 14 && !s.curled; i++) {
+        await step("confirm"); s = await st();
+        if (tellBad === null && !s.curled && await tellNow()) {
+          const r0 = await g.region(), im0 = await g.shot("s31-tell"), ref0 = decodePNG(readFileSync(path.join(savesDir, "s31-asleep-word.png"))), cw = Math.round(ref0.width * 0.6);
+          const x0 = r0.x + Math.round(r0.w * WORD[0]), y0 = r0.y + Math.round(r0.h * WORD[1]); tellBad = 0;
+          for (let y = 0; y < ref0.height; y++) for (let x = 0; x < cw; x++) { const a = ((y0 + y) * im0.width + x0 + x) * 4, b = (y * ref0.width + x) * 4; if (im0.data[a] !== ref0.data[b] || im0.data[a + 1] !== ref0.data[b + 1] || im0.data[a + 2] !== ref0.data[b + 2]) tellBad++; }
+          console.log(`# s31 ${tag}: at her tell the bar's word differs from the crop of "asleep" by ${tellBad} of ${cw * ref0.height} pixels`);
+          assert.ok(tellBad < cw * ref0.height * 0.02, `at her tell the bar reads asleep (${tellBad} pixels differ)`);
+        }
+      }
+      assert.ok(tellBad !== null, "her tell (curling up to sleep) was seen before she curled");
+      // </sleep-word-fix-4> her bedtime play runs its beats as the light passes: ✓ Keep still until she has settled curled
       assert.ok(s.phase === "patch" && s.curled && s.on && s.herAt[1] === s.at[1] && s.herAt[0] < s.at[0], `the case is reached: in the place, she is curled and on the screen, he is facing her (${JSON.stringify(s)})`);
       const r = await g.region(), im = await g.shot("s31-asleep");
       const w = { x: r.x + Math.round(r.w * WORD[0]), y: r.y + Math.round(r.h * WORD[1]), w: Math.round(r.w * WORD[2]), h: Math.round(r.h * WORD[3]) };
