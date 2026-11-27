@@ -467,6 +467,8 @@ for (const size of SIZES) {
       let s = await st();
       for (let i = 0; i < 14 && !s.curled; i++) { await step("confirm"); s = await st(); }   // her bedtime play runs its beats as the light passes: ✓ Keep still until she has settled curled
       assert.ok(s.phase === "patch" && s.curled && s.on && s.herAt[1] === s.at[1] && s.herAt[0] < s.at[0], `the case is reached: in the place, she is curled and on the screen, he is facing her (${JSON.stringify(s)})`);
+      const lc = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, c = m.lineCtx(m.lineFor()); return { r: c.r, word: !!c.word, wind: !!(c.wx && c.wx.wind) }; });
+      if (lc.wind) assert.ok(lc.r.includes("asleep") && !lc.word, `with the wind on, the line keeps "asleep" and the wind mark shows without its word (#173): ${JSON.stringify(lc)}`);   // the wind word yields first
       const r = await g.region(), im = await g.shot("s31-asleep");
       const w = { x: r.x + Math.round(r.w * WORD[0]), y: r.y + Math.round(r.h * WORD[1]), w: Math.round(r.w * WORD[2]), h: Math.round(r.h * WORD[3]) };
       const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
