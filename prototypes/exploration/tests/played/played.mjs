@@ -826,13 +826,16 @@ for (const size of SIZES) {
       for (let i = 0; i < rows && await g.menuRow() !== "wait"; i++) await g.press("down");
       assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
       for (let i = 0; i < 22; i++) await g.press("confirm", 100, i < 21 ? 350 : 350);   // Wait, 22 times; the shot follows the last while its line is up
-      const r = await g.region(), im = await g.shot(`s21-${tag}-wait`);
+      const r = await g.region();
       const ref = decodePNG(readFileSync(path.join(savesDir, "wait-unknown-creatures-wander.png")));
       const lit = ([R, G, B]) => R > 200 && G > 200 && B > 190;   // the line's light letters
       const mask = []; for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) if (lit(px(ref, x, y))) mask.push([x, y]);
       const band = { y0: r.y + Math.round(r.h * 0.70), y1: r.y + Math.round(r.h * 0.95) - ref.height, x0: r.x, x1: r.x + r.w - ref.width };   // where the message box sits, as a fraction of the screen
-      let hit = null;
-      for (let y = band.y0; y <= band.y1 && !hit; y++) for (let x = band.x0; x <= band.x1 && !hit; x++) { let ok = true; for (const [mx, my] of mask) if (!lit(px(im, x + mx, y + my))) { ok = false; break; } if (ok) hit = { x, y }; }
+      const find = (im) => { for (let y = band.y0; y <= band.y1; y++) for (let x = band.x0; x <= band.x1; x++) { let ok = true; for (const [mx, my] of mask) if (!lit(px(im, x + mx, y + my))) { ok = false; break; } if (ok) return { x, y }; } return null; };
+      // The line comes up on its own time on a loaded runner: poll the shot until the words are in the line (cap 12 s), not one shot after a fixed delay.
+      let im = null, hit = null, last = null;
+      for (const t0 = Date.now(); Date.now() - t0 < 12000 && !hit;) { last = await g.page.screenshot(); im = decodePNG(last); hit = find(im); if (!hit) await wait(200); }
+      if (!hit) { const dir = process.env.PLAYED_SHOTS || path.join(tmpdir(), "played-fail"); mkdirSync(dir, { recursive: true }); writeFileSync(path.join(dir, `s21-${tag}-fail.png`), last); console.log(`# s21 ${tag}: still saved to ${path.join(dir, `s21-${tag}-fail.png`)}`); }
       console.log(`# s21 ${tag}: "creatures wander" found at ${JSON.stringify(hit)} (${mask.length} letter pixels in the crop)`);
       assert.ok(hit, `the changes line reads "creatures wander" (the crop's ${mask.length} letter pixels are not all light on the line)`);
       let extra = 0; for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) if (lit(px(im, hit.x + x, hit.y + y)) && !lit(px(ref, x, y))) extra++;
