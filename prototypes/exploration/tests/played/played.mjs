@@ -478,6 +478,25 @@ for (const size of SIZES) {
       assert.ok(bad < ref.width * ref.height * 0.02, `the bottom bar's word reads asleep (${bad} pixels differ from its crop)`);
     } finally { await g.ctx.close(); }
   });
+  // OWNER 2026-11-25 22:00 UTC, #173 (note mwwo3jv9377657): "what does it mean?" about the arrow at the right of the bottom line. His own save (saves/173.save = bug-assets replay.save), loaded and left as it is.
+  // The verdict is the pixels: the conditions end of the bottom line (the wind mark AND its word "wind S") against a crop cut once from this shot (saves/s32-wind-line.png; PLAYED_WRITE_CROPS=1 rewrites it).
+  if (size.w === 412) it(`s32 the wind arrow says what it is (#173): the bottom line's conditions slot shows the mark and its word, whole [${tag}]`, async () => {
+    const WIND = frac(560, 1142, 340, 52);   // the right end of the bar, in the 900x1200 frame
+    const g = await open(size, "173");
+    try {
+      await wait(1500);
+      assert.equal(await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.phase), "patch", "the case is reached: in the place");
+      const r = await g.region(), im = await g.shot("s32-wind");
+      const w = { x: r.x + Math.round(r.w * WIND[0]), y: r.y + Math.round(r.h * WIND[1]), w: Math.round(r.w * WIND[2]), h: Math.round(r.h * WIND[3]) };
+      const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+      const f = path.join(savesDir, "s32-wind-line.png");
+      if (process.env.PLAYED_WRITE_CROPS) { const c = crop(w); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+      const ref = decodePNG(readFileSync(f)), c = crop({ x: w.x, y: w.y, w: ref.width, h: ref.height });
+      let bad = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) bad++;
+      console.log(`# s32 ${tag}: the line's conditions end differs from the crop (mark + "wind S") by ${bad} of ${ref.width * ref.height} pixels`);
+      assert.ok(bad < ref.width * ref.height * 0.02, `the bottom line shows the wind mark and its word (${bad} pixels differ from its crop)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
