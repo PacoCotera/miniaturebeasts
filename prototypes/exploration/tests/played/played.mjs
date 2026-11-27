@@ -1979,4 +1979,69 @@ it(`s37 a rim place has no line at its range side (seed 13, reach-build-1): the 
     assert.match(after.msg, /^The Probe’s reach ends here/, "the line is the range line");
   } finally { await g.ctx.close(); }
 });
+// OWNER 2026-11-27 22:21 UTC (#179): "the loika is not eating from my hand". Design's ruling (bus 2ae443): while he holds her own food, his walking steps toward a named Loika at ease 0 are not heard, so he can walk up to her grazing and ✓ Offer fruit.
+// His replay.save (saves/179.save: patch 2, tile 14,4, fruit in hand, Nut beside him with her ears up). By presses, each waiting for its effect: ✓ (the dim line), right until he is 5+ tiles off and she has calmed, then tap steps toward her, ✓ "Offer fruit", ✓ again: she eats.
+// State only asserts the case is reached (her ease, the label, the distance); the verdict is the pixels, two small crops each under 2% of its own size: her tile with the one beside it (saves/s38-eating-tiles.png) and the box line "Nut takes the fruit from your hand" (saves/s38-eating-line.png), cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites them.
+it(`s38 he walks up to Nut with fruit in hand and she eats from it (#179, his save) [412x915]`, async () => {
+  const size = { w: 412, h: 915, dpr: 2.625 };
+  const g = await open(size, "179");
+  const mbq = (fn, arg) => g.page.evaluate(([src, a]) => (0, eval)("(" + src + ")")(window.__play.frames.companion.contentWindow.__mb, a), [fn.toString(), arg]);
+  const st = () => mbq((m) => { const P = m.S.exp.patch, n = m.curLive().cr.find((c) => c.ind && c.ind.name === "Nut"); let a = null; try { a = m.patchAction(); } catch (e) {} return { key: P.key, x: P.x, y: P.y, spent: m.S.day.spent, carry: m.S.exp.carry, nut: n && { x: n.x, y: n.y, ease: n.ease | 0, st: n.st, hide: n.hide }, label: a && a.label, dim: !!(a && a.dim), msg: String((m.FX && m.FX.msg) || "").replace(/\x01/g, "") }; });
+  const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent].join("|"); });
+  const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };
+  const trace = (tag, s) => { if (process.env.PLAYED_TRACE) console.log(`# s38 ${tag} him ${s.x},${s.y} Nut ${JSON.stringify(s.nut)} "${s.label}"${s.dim ? " dim" : ""} spent ${s.spent}`); };
+  // the next tap toward the tile beside Nut over walkable tiles, never into Nut's own tile; null when there is none
+  const toward = () => mbq((m) => {
+    const P = m.S.exp.patch, n = m.curLive().cr.find((c) => c.ind && c.ind.name === "Nut"), lay = m.layout(P.key), W = lay.w, H = lay.h, D = [["up", 0, -1], ["down", 0, 1], ["left", -1, 0], ["right", 1, 0]];
+    const seen = new Map([[P.y * W + P.x, null]]), q = [P.y * W + P.x];
+    while (q.length) {
+      const c = q.shift(), x = c % W, y = (c - x) / W;
+      if (Math.abs(x - n.x) + Math.abs(y - n.y) === 1) { let k = c, dir = null; while (seen.get(k) !== null) { dir = seen.get(k).dir; k = seen.get(k).from; } return dir || "here"; }
+      for (const [d, dx, dy] of D) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const i = ny * W + nx; if (seen.has(i) || (nx === n.x && ny === n.y) || m.T_BLOCK[lay.tiles[i]]) continue; seen.set(i, { from: c, dir: d }); q.push(i); }
+    }
+    return null;
+  });
+  try {
+    let s = await st(); trace("start", s);
+    assert.equal(s.carry, "fruit", "the case is reached: he holds fruit");
+    assert.ok(s.nut && s.nut.ease === 3, `the case is reached: Nut is up (ease ${s.nut && s.nut.ease})`);
+    assert.equal(s.dim, true, "the case is reached: ✓ shows the dim line");
+    await g.shot("s38-dim-line");
+    // step off, right, until Nut has calmed (ease 0): the bolt ends only after six actions more than four tiles off
+    // (right to five tiles off, then back and forth between five and six tiles off, so he never leaves her place)
+    for (let i = 0; i < 24 && s.nut && s.nut.ease !== 0; i++) { await step(s.nut.x + 6 <= s.x ? "left" : "right"); s = await st(); trace("off", s); }
+    assert.ok(s.nut && s.nut.ease === 0, `the case is reached: Nut has calmed (ease ${s.nut && s.nut.ease})`);
+    // walk back to her with taps; she must stay at ease 0 on the way
+    let n = 0;
+    for (; n < 80; n++) {
+      const dir = await toward(); if (dir === "here") break;
+      assert.ok(dir, "a way to the tile beside her");
+      await step(dir); s = await st(); trace("back", s);
+      assert.equal(s.nut.ease, 0, `she is not heard on the way (ease ${s.nut.ease} at ${s.x},${s.y})`);
+    }
+    assert.equal(s.label, "Offer fruit", `the case is reached: beside her, ✓ reads "Offer fruit" (${s.label})`);
+    await step("confirm"); s = await st(); trace("offered", s);
+    const im = await g.shot("s38-eating"), r = await g.region();
+    const pos = await mbq((m) => { const n = m.curLive().cr.find((c) => c.ind && c.ind.name === "Nut"), P = m.S.exp.patch; return { dx: n.x - P.x, dy: n.y - P.y, ts: m.RT.ts, pl: m.RT.plScr }; });
+    assert.equal(Math.abs(pos.dx) + Math.abs(pos.dy), 1, `the case is reached: Nut is the tile beside him (${pos.dx},${pos.dy})`);
+    const k = r.w / 450, ts = pos.ts;
+    // her tile with the one beside it (his): the eating frames
+    const gx = (v) => r.x + Math.round(v * k), gy = (v) => r.y + Math.round(v * k);
+    const x0 = Math.min(0, pos.dx), y0 = Math.min(0, pos.dy), x1 = Math.max(0, pos.dx) + 1, y1 = Math.max(0, pos.dy) + 1;
+    const tiles = { x: gx(pos.pl.x + x0 * ts - ts / 2), y: gy(pos.pl.y + y0 * ts - ts / 2) };
+    tiles.w = gx(pos.pl.x + x1 * ts - ts / 2) - tiles.x; tiles.h = gy(pos.pl.y + y1 * ts - ts / 2) - tiles.y;
+    // the box's line "Nut takes the fruit from your hand"
+    const line = { x: r.x + Math.round(r.w * 0.02), y: r.y + Math.round(r.h * 0.80), w: Math.round(r.w * 0.96), h: Math.round(r.h * 0.10) };
+    const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+    const stored = (name, b) => { const f = path.join(savesDir, name); if (process.env.PLAYED_WRITE_CROPS) { const c = crop(b); writeFileSync(f, encodePNG(c.width, c.height, c.data)); } return decodePNG(readFileSync(f)); };
+    const differ = (c, ref) => { let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++; return n; };
+    const tilesRef = stored("s38-eating-tiles.png", tiles), lineRef = stored("s38-eating-line.png", line);
+    assert.ok(tilesRef.width === tiles.w && tilesRef.height === tiles.h, `the tiles crop is the box's size (${tilesRef.width}x${tilesRef.height} against ${tiles.w}x${tiles.h})`);
+    assert.ok(lineRef.width === line.w && lineRef.height === line.h, `the line crop is the box's size (${lineRef.width}x${lineRef.height} against ${line.w}x${line.h})`);
+    const nt = differ(crop(tiles), tilesRef), nl = differ(crop(line), lineRef);
+    console.log(`# s38: her tile and the one beside it differ from the crop of her eating by ${nt} of ${tiles.w * tiles.h} pixels; the box's line from its crop by ${nl} of ${line.w * line.h}`);
+    assert.ok(nt < tiles.w * tiles.h * 0.02, `she is eating, as the crop of her tile and the one beside it (${nt} of ${tiles.w * tiles.h} pixels differ)`);
+    assert.ok(nl < line.w * line.h * 0.02, `the box says "Nut takes the fruit from your hand", as the crop of its line (${nl} of ${line.w * line.h} pixels differ)`);
+  } finally { await g.ctx.close(); }
+});
 });
