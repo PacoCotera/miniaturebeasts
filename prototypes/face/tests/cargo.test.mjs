@@ -1,4 +1,4 @@
-// The Bay on the face (lvgl-switch.md §4 L2.2; bay-design-1 design.md 2; bay-ui-2 spec.md): the words and the binding table (screens/cargo.c) on the props views/cargo-props.mjs gives, in Node on the WebAssembly face: every state of
+// The Bay on the face (lvgl-switch.md §4 L2.2; the Bay design, section 2; the Bay UI spec): the words and the binding table (screens/cargo.c) on the props views/cargo-props.mjs gives, in Node on the WebAssembly face: every state of
 // the Bay in both forms (the phone's 530 x 600 lp window and the 1024 x 600 device) draws without an error or a refusal inside the picture and object budgets with no region departing from cargo.json (tools/cargo-regions.mjs, proved
 // here to fail on a moved panel); the words are 16 px and up; the keys (✓ and ← and the room keys on "room", the pad down is "all" while a crate waits, the rest of the pad nothing); the beat ring is round and on a crate that holds a pod.
 // Skipped when the face has not been built (build.sh).

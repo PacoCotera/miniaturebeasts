@@ -31,7 +31,7 @@ void v_faceHolder(const char *id, const char *spec, int x, int y, int w, int h, 
   v_layer(LAYER_ART); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, width, c);
   v_composed(id, x, y, w, h, b);
 }
-/* Where the counters centre in the top bar: the frame's 512, or on the Bay's narrow form (the phone's 530 lp window) the spec's narrowCentre, so all three stay inside the window (bay-design-1 design.md 2.1) */
+/* Where the counters centre in the top bar: the frame's 512, or on the Bay's narrow form (the phone's 530 lp window) the spec's narrowCentre, so all three stay inside the window the Bay design, section 2.1 */
 static int bar_centre(void) {
   char sc[32] = ""; spec_str(P, "screen", sc, sizeof sc);
   if (spec_bool(P, "narrow", 0) && strcmp(sc, "cargo") == 0) return v_si(F, "regions.materials.narrowCentre", v_si(F, "regions.materials.centre", 0));

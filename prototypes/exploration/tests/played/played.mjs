@@ -231,10 +231,10 @@ for (const size of SCALE_SIZES) {
       assert.ok(edge(reg.x) <= 3 && edge(reg.x + reg.w - 3) <= 3, `no light word-pixels touch the window's edges (left ${edge(reg.x)}, right ${edge(reg.x + reg.w - 3)})`);
     } finally { await g.ctx.close(); }
   });
-  // bay-build-2 (owner 2026-11-25 09:2x, "a played test of a three-crate dock at 412"): his #166 save with THREE sealed crates aboard the Companion (saves/bay-three.save: 5 pods, 54 Energy, 60 Data, 39 Essence in all). Played by presses as a player does: Dock;
+  // the Bay build (owner 2026-11-25 09:2x, "a played test of a three-crate dock at 412"): his #166 save with THREE sealed crates aboard the Companion (saves/bay-three.save: 5 pods, 54 Energy, 60 Data, 39 Essence in all). Played by presses as a player does: Dock;
   // the Bay shows the crates the dock crossed (the first on the table, two on the ledge) and the Companion's hold reads empty; ✓ opens the crate in hand, ✓ puts it away: its pods stand on the Nursery's shelf and the counters rise. The verdicts are read off the screen:
   // the shelf's and the counters' panels change with each put away, the ledge empties, the Bay's words are whole in the window. State is read only to say the case is reached and the figures the screen must agree with.
-  it(`s20 the Bay (bay-build-2): a three-crate dock, ✓ and ✓ for each crate, ▼ All at once, a fourth crate stays aboard, ← is Home [${tag}]`, async () => {
+  it(`s20 the Bay (the Bay build): a three-crate dock, ✓ and ✓ for each crate, ▼ All at once, a fourth crate stays aboard, ← is Home [${tag}]`, async () => {
     const lp = (plan, pan, r) => { const d = size.dpr, s = plan.scale * d, sc = plan.screen; return { x: Math.round(sc.x * d + (r[0] - pan.x) * s), y: Math.round(sc.y * d + (r[1] - pan.y) * s), w: Math.round(r[2] * s), h: Math.round(r[3] * s) }; };
     const diff = (a, b, box) => { let n = 0; for (let y = box.y; y < box.y + box.h; y++) for (let x = box.x; x < box.x + box.w; x++) { const p = px(a, x, y), q = px(b, x, y); if (p[0] !== q[0] || p[1] !== q[1] || p[2] !== q[2]) n++; } return n; };
     const run = async (all) => {
@@ -278,7 +278,7 @@ for (const size of SCALE_SIZES) {
     };
     await run(false); await run(true);
   });
-  it(`s20b the Bay full (bay-build-2): a fourth crate while three wait stays aboard and the Companion says the Bay is full; ← from the Bay is Home, uncut [${tag}]`, async () => {
+  it(`s20b the Bay full (the Bay build): a fourth crate while three wait stays aboard and the Companion says the Bay is full; ← from the Bay is Home, uncut [${tag}]`, async () => {
     const g = await open(size, "bay-four");
     try {
       // saves/bay-four.save: the same Companion with a fourth sealed crate aboard

@@ -1,4 +1,4 @@
-// What the dock brings to the Bay (arrival.mjs arrivalOf; bay-build-2): read from the rules, never from the strings: the crates the dock crossed, the ones holding a species new to the player, the Probe plates and the mend, who came home and who leaves. The Bay itself is cargo-props.test.mjs and intents.test.mjs.
+// What the dock brings to the Bay (arrival.mjs arrivalOf; the Bay build): read from the rules, never from the strings: the crates the dock crossed, the ones holding a species new to the player, the Probe plates and the mend, who came home and who leaves. The Bay itself is cargo-props.test.mjs and intents.test.mjs.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";

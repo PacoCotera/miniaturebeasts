@@ -1,4 +1,4 @@
-/* Cargo's binding table (lvgl-switch.md §2.2, §4 L2.2; cargo.json; bay-design-1 design.md 2, bay-ui-2 spec.md): the Bay, one sorting table in three parts, in two forms of one screen (the narrow form 530 x 600 lp for the phone's window, the wide form 1024 x 600).
+/* Cargo's binding table (lvgl-switch.md §2.2, §4 L2.2; cargo.json; the Bay design, section 2, the Bay UI spec): the Bay, one sorting table in three parts, in two forms of one screen (the narrow form 530 x 600 lp for the phone's window, the wide form 1024 x 600).
    ledge    the dock ledge: the Companion's cradle (a dashed slot with today's signed Companion mark: art piece 2 is not placed), its state in two lines, and the crates that wait sealed (two at most), each with its tag.
    table    the crate in hand: sealed and big with its tag and, when it holds a pod, the beat ring (two soft concentric ellipses, never a frame); or open: a dashed slot (art piece 1 is not placed) holding what it brings, the pods and each supply with its amount.
             With nothing on the table and a visit's sum, the sum.
@@ -37,7 +37,7 @@ static void slot_box(const char *id, const int r[4]) {   /* the region is the sl
     n, c, n, c, w - n, n, c, w - 1, n, c, h - 1, n, c, h - n, n, c, w - n, h - 1, n, c, w - 1, h - n, n, c);
   v_region(id, LAYER_CHROME); v_composed(id, r[0], r[1], r[2], r[3], ops);
 }
-/* the beat ring (bay-ui-2 spec round 2): on a crate that holds a pod, two concentric ellipses in wood, 2 px, the inner the brighter (the spec's 70% and 30% as two palette colours: a blend would leave the palette), inside the crate's own outline;
+/* the beat ring (the Bay UI spec spec round 2): on a crate that holds a pod, two concentric ellipses in wood, 2 px, the inner the brighter (the spec's 70% and 30% as two palette colours: a blend would leave the palette), inside the crate's own outline;
    round, never a rectangle with corners, never orange. One beat is drawn. */
 static void beat_ring(const char *region, const char *id, int cx, int cy, const int s0[2], const int s1[2]) {
   const int *s[2] = { s0, s1 }; const char *col[2] = { v_scol(C, "colours.beat"), v_scol(C, "colours.beat2") };

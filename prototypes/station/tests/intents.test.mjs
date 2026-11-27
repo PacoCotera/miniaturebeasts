@@ -128,7 +128,7 @@ test("the Dock with the keys (keysElsewhere false) also plays the arrival; a Lif
   { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, false); assert.equal(h.ui.screen, "cargo"); assert.equal(h.ui.cargo.arrival.from, "pods"); assert.ok(r.ok); }
   for (const els of [true, false]) { const { st, sv } = dockWorld(); st.dock = { docked: true, at: T0 }; const h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, els); assert.equal(st.dock.docked, false, "lifted"); assert.equal(h.went.length, 0, "no goto"); assert.equal(h.ui.screen, "pods"); assert.ok(r.ok); }
 });
-// ---- the Bay: three sealed crates unloaded at the dock (bay-build-2; cargo.json keys) ----
+// ---- the Bay: three sealed crates unloaded at the dock (the Bay build; cargo.json keys) ----
 const bayWorld = (n = 3) => { const st = world(); st.knownIds = ["S01"]; st.dock = { docked: true, at: T0 }; for (let i = 0; i < n; i++) S.seedCrate(st, "S01", 2, 4101 + i, T0); const h = host(st); h.ui.screen = "cargo"; return { st, h }; };
 const press = (h, verb) => INTENTS.cargo.intent(h, "room", verb);
 test("the Bay: ✓ opens the crate in hand, ✓ puts it away (its pods join the shelf, its supplies the counters), the next crate comes down; the end says the sum and ✓ goes to the Nursery", () => {

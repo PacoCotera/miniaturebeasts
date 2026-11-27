@@ -1,5 +1,5 @@
-// The Bay's props (cargo.json; bay-design-1 design.md 2; views/cargo-props.mjs), in Node: plain JSON that names what and never where, validated against cargo.props.json, in every state of the Bay (empty, one to three crates
-// waiting, a crate open, the end, away, the Bay full with a fourth aboard, a portrait crate behind them); the words are cargo.json's strings (bay-words-1); the line says ✓ Open the crate, ✓ Put away, ✓ To the Nursery.
+// The Bay's props (cargo.json; the Bay design, section 2; views/cargo-props.mjs), in Node: plain JSON that names what and never where, validated against cargo.props.json, in every state of the Bay (empty, one to three crates
+// waiting, a crate open, the end, away, the Bay full with a fourth aboard, a portrait crate behind them); the words are cargo.json's strings (the Bay words); the line says ✓ Open the crate, ✓ Put away, ✓ To the Nursery.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";

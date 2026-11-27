@@ -1,10 +1,10 @@
 {
  "screen": "cargo",
- "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "movers": [], "painted": [], "note": "the Bay's one sorting table (bay-design-1 design.md 2; bay-ui-2 spec.md): a code-drawn ledge, table and stores on the stage's field ground; the pictures are the signed crate, pod and supply masters placed 1:1" },
+ "layout": { "stage": "field", "opening": [0, 40, 1024, 522], "movers": [], "painted": [], "note": "the Bay's one sorting table the Bay design, section 2; the Bay UI spec): a code-drawn ledge, table and stores on the stage's field ground; the pictures are the signed crate, pod and supply masters placed 1:1" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#cargo",
  "frame": "frame.json",
- "status": "The Bay (bay-build-2): the dock ledge (the Companion in its cradle, its state, the crates that crossed and wait), the table (the crate in hand, sealed then open), the stores (the Nursery's shelf and the three counters). Two forms of one screen: the narrow form (530 x 600 lp, the phone's window) and the wide form (1024 x 600, the device). Every number is a starting value of bay-ui-2's spec; every word is bay-words-1's.",
+ "status": "The Bay (the Bay build): the dock ledge (the Companion in its cradle, its state, the crates that crossed and wait), the table (the crate in hand, sealed then open), the stores (the Nursery's shelf and the three counters). Two forms of one screen: the narrow form (530 x 600 lp, the phone's window) and the wide form (1024 x 600, the device). Every number is a starting value of the Bay UI spec's spec; every word is the Bay words's.",
  "note": "Rectangles are [x, y, w, h] in screen lp. The top bar (0..40) and the bottom line (562..600) are the frame's. Pictures are placed 1:1; a dashed outline is a named slot for art not yet placed (rule 3): the cradle with the Companion (art piece 2) and the open crate (art piece 1), listed under [art] in the job's report.",
  "title": {"word": "Bay", "mark": "Home"},
  "states": ["bay"],
@@ -61,7 +61,7 @@
   "firstPod": {"title": "Your first pod", "line": "It goes on the Nursery shelf."},
   "empty": "Nothing came back",
   "ribbon": "The Companion is home",
-  "rule": "every word is bay-words-1's (final.md); \"▼\" stands for the ▾ of bay-words-1, which the face's Inter does not hold (U+25BE); \"Your first pod. It goes on the Nursery shelf.\" is bay-words-1's first-pod line, the card is not built yet"
+  "rule": "every word is the Bay words's (final.md); \"▼\" stands for the ▾ of the Bay words, which the face's Inter does not hold (U+25BE); \"Your first pod. It goes on the Nursery shelf.\" is the Bay words's first-pod line, the card is not built yet"
  },
  "forms": {
   "narrow": {
@@ -119,8 +119,8 @@
   "mat": {"size": [48, 64]}
  },
  "placeholders": {
-  "cradle": "art piece 2 (the AD's signed cradle and hold, bay-art-6) is not placed until the lead has shown it to the owner (rule 3): a dashed slot with today's signed Companion mark",
-  "open": "art piece 1 (the open crate, bay-art-3) is signed and not placed: a dashed slot holds the crate's contents",
-  "herPicture": "who came home (her picture) is a dashed slot in bay-ui-2 and is not built here"
+  "cradle": "art piece 2 (the AD's signed cradle and hold, the art desk) is not placed until the lead has shown it to the owner (rule 3): a dashed slot with today's signed Companion mark",
+  "open": "art piece 1 (the open crate, the art desk) is signed and not placed: a dashed slot holds the crate's contents",
+  "herPicture": "who came home (her picture) is a dashed slot in the Bay UI spec and is not built here"
  }
 }

@@ -1,4 +1,4 @@
-// The Companion's dock at the Station (cargo.json; bay-design-1 design.md 2.2): the crates cross (the rule, state.mjs dockKey) and the Bay shows them, the first on the table and up to two on the ledge, over the screen the player is on.
+// The Companion's dock at the Station (cargo.json; the Bay design, section 2.2: the crates cross (the rule, state.mjs dockKey) and the Bay shows them, the first on the table and up to two on the ledge, over the screen the player is on.
 //   h.ui.cargo.arrival: { crates, shown, newCrates, plates, broke, back, leaving, habits } (arrival.mjs arrivalOf); h.ui.cargo.state stays "bay".
 // An empty trip says "Nothing came back" and stays where it is. Docked mid-decision (a decision panel, the namer, Create or Cross open) the Bay waits for the player's next screen change: the plate says so for 2000 ms.
 import * as S from "../state.mjs";

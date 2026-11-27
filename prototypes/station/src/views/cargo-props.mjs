@@ -1,4 +1,4 @@
-// The Cargo props (lvgl-switch.md §2.1; cargo.json; bay-design-1 design.md 2): pure selectors from the state, the screen's UI state and the presentation to the props of the face's Bay. Props name *what*, never *where*: words, counts,
+// The Cargo props (lvgl-switch.md §2.1; cargo.json; the Bay design, section 2: pure selectors from the state, the screen's UI state and the presentation to the props of the face's Bay. Props name *what*, never *where*: words, counts,
 // asset ids and flags; no rectangle, no measure, no layout rule, no colour (the face places everything from cargo.json). The output is plain JSON:
 // { props (state, bay), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props), need }.
 // Runs in Node, tested there (tests/cargo-props.test.mjs).

@@ -1,4 +1,4 @@
-// The Bay's crates (cargo.json; bay-design-1 design.md 2.3 to 2.5): which crates wait at the Bay and in what order they come to the table. Pure functions of the state and the spec; no clock, no DOM.
+// The Bay's crates (cargo.json; the Bay design, section 2.3 to 2.5): which crates wait at the Bay and in what order they come to the table. Pure functions of the state and the spec; no clock, no DOM.
 //   ready list   the crates that wait, in the order they come to the table: the walk crates the dock crossed (st.bayHeld), then the portrait crate (the oldest ready sitting crate)
 //   the first of the list is the crate in hand (on the table); the next two are on the ledge; a third walk crate and a ready portrait crate wait behind
 import * as S from "./state.mjs";

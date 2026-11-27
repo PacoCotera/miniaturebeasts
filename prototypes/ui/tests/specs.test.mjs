@@ -592,7 +592,7 @@ test("the Home spec file is the build spec's frame: the top bar and its line, th
   assert.ok(!("knob" in R) && !("glass" in R) && !("bed" in R) && !("cargo" in R) && !("probe" in R), "the knob, the glass, the bed and the old column are gone"); assert.deepEqual(paletteBad(home.colours), []);
 });
 
-test("the Bay's spec file (bay-build-2; bay-ui-2 spec.md): one state, the two forms' four panels stand on the stage without overlapping, what stands on them stands inside them, the words are bay-words-1's and the pictures are placed masters of exactly the size their names give", () => {
+test("the Bay's spec file (the Bay build; the Bay UI spec): one state, the two forms' four panels stand on the stage without overlapping, what stands on them stands inside them, the words are the Bay words's and the pictures are placed masters of exactly the size their names give", () => {
   const cg = rd("../specs/station/cargo.json"), idx = readIndex(MASTERS).masters, stage = frame.regions.stage.rect;
   assert.deepEqual(cg.states, ["bay"]); assert.equal(cg.title.word, "Bay"); assert.equal(cg.title.mark, "Home"); assert.equal(cg.initial, "bay");
   const apart = (a, b) => a[0] + a[2] <= b[0] || b[0] + b[2] <= a[0] || a[1] + a[3] <= b[1] || b[1] + b[3] <= a[1];

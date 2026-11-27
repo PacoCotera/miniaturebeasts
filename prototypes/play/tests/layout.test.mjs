@@ -171,7 +171,7 @@ test("the dock's sheet: a bottom sheet on a phone, centred on a laptop, the e-pa
   const l = dockSheet(1440, 900, false); assert.ok(l.y > 0 && l.y + l.h < 900 && l.x > 0);
 });
 
-// bay-build-2: the Bay has Home's narrow form (530 x 600 lp), so PR 616's whole-screen flag is gone: on the upright phone the Bay is the same x0.6 window as Home, never the 1024 lp screen at the width's fit (QA verify-live-144: the Dock screen was cut off at 412 wide)
+// the Bay build: the Bay has Home's narrow form (530 x 600 lp), so PR 616's whole-screen flag is gone: on the upright phone the Bay is the same x0.6 window as Home, never the 1024 lp screen at the width's fit (QA verify-live-144: the Dock screen was cut off at 412 wide)
 test("the Station's Bay on an upright phone is the narrow window, whole inside the panel (412, 390, 522 wide)", () => {
   for (const [W, H, dpr] of [[412, 915, 2], [390, 844, 3], [522, 935, 3]]) {
     const p = plan({ W, H, dpr, coarse: true, dev: "station" }), tag = W + "x" + H;
