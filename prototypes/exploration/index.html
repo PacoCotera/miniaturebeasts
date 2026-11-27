@@ -6075,7 +6075,7 @@ const R = (x, y, w, h, c) => { g.fillStyle = HEX[c]; g.fillRect(Math.floor(x), M
 const blit = (pb, x, y, rm, flip, chk) => g.drawImage(pb.canvas(rm, flip, chk), Math.round(x) + (pb.dx || 0), Math.round(y) + (pb.dy || 0));
 // a standing glint is always drawn: full for its 400 ms pulse, the same picture dimmer between pulses (bug 160)
 const GLINT_DIM = .4;
-const glintBlit = (pb, x, y, bright) => { if (bright) { blit(pb, x, y); return; } g.save(); g.globalAlpha = GLINT_DIM; blit(pb, x, y); g.restore(); };
+const glintBlit = (pb, x, y, bright) => { if (bright || !motion()) { blit(pb, x, y); return; } g.save(); g.globalAlpha = GLINT_DIM; blit(pb, x, y); g.restore(); };
 function text(str, x, y, col, s, align, tight) {
   s = s || 2; x = Math.round(x); y = Math.round(y);
   const w = tight ? textWT(str, s) : textW(str, s);
@@ -7219,9 +7219,9 @@ function drawPatchBody(t) {
       const x = f.x * ts, y = f.y * ts; if (!vis2(x, y) || !see(f.x, f.y)) continue;
       // the mark itself is a ground decal (drawn with the ground marks, below anything standing); the Probe's glint on an unread one is drawn here
       const read = strikeIsRead(P.key, f);
-      if (!read && motion()) { const a = sparkArt(false); glintBlit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400); } }
-    // once the place is explored, every takeable still in view glints: the sparkle always showing, bright for 400 ms every 1.6 s (staggered by position) and dim between; none under reduced motion
-    if ((walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell])) && motion()) {   // (or a place a tab pointed at: its finds glint on arrival, owner-notes-fix-160)
+      if (!read) { const a = sparkArt(false); glintBlit(a, W(x + (ts >> 1)) - Math.floor(a.w / 2), H(y + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(f.x, f.y, 5) % 1600) % 1600 < 400); } }
+    // once the place is explored, every takeable still in view glints: the sparkle always showing, bright for 400 ms every 1.6 s (staggered by position) and dim between; under reduced motion it stands steady, bright (a find marker, not decoration)
+    if ((walkedCell(lay.cell) || (RT.pointed && RT.pointed[lay.cell]))) {   // (or a place a tab pointed at: its finds glint on arrival, owner-notes-fix-160)
       for (const it of leftItems(lay.cell)) { if (it.cave || it.k === 'strike' || !vis2(it.x * ts, it.y * ts)) continue;
         const a = sparkArt(false); glintBlit(a, W(it.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(it.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2), (NOW + hash(it.x, it.y, 7) % 1600) % 1600 < 400); } } }
   // what Confirm will act on
