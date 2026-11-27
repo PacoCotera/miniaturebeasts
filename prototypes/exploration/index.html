@@ -6912,14 +6912,14 @@ function drawPatch(t) {
 }
 function drawPatchBody(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
-  if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
+  if (RT.key !== P.key) { RT.key = P.key; MENUSHIFT.cur = MENUSHIFT.from = MENUSHIFT.to = 0; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
   else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), ts = v.ts, o = sprOff(ts);
   if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
-  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0, { x: (ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - c0.x, y: (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - c0.y }), cam = { x: c0.x + sx + po.x, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
+  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0, { x: (ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - c0.x, y: (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - c0.y }), ms = menuShiftNow((ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - (c0.x + sx + po.x), (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - (c0.y + sy + po.y) + VIEW_Y, c0.x + sx + po.x, lay, ts), cam = { x: c0.x + sx + po.x + ms, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
@@ -8101,26 +8101,52 @@ function menuIcon(id, x, y) {
     pb.rect(14, 10, 7, 1, C.sand); pb.rect(14, 16, 7, 1, C.sand); pb.outline(() => C.stone); return pb; }), x, y);
   else blit(art('m-world', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.grass, { sh: [C.sprout, C.leaf] }); pb.ell(18, 18, 7, 6, C.river, { clip: (x2, y2) => Math.hypot(x2 + .5 - 14, y2 + .5 - 14) < 13 }); pb.outline(); return pb; }), x, y);
 }
+// menu-side-hero-5: the field menu's box and the view beside it. The box takes the side away from the hero; when no spot of the four (side, other side, each at the top and the bottom of the view)
+// clears him, the view shifts sideways while the menu is open so he stands in the free part beside the box, MENU_CLEAR px clear of it, and shifts back on close (the pan's own ease; a snap with motion off).
+const MENU_CLEAR = 8;
+const MENUSHIFT = { cur: 0, from: 0, to: 0, at: 0, side: null };   // cur: px the camera is shifted now; side: true = box on the left, false = right, null = today's rule
+const menuFieldW = items => Math.min(250, 64 + 14 + Math.max(0, ...items.map(it => textW(it.label, 2))));
+function menuFieldSpots(items, pl, side) {   // side: the side the view shifted for (true = box left), or null; returns { x, top, ok }
+  const rowH = 44, w = menuFieldW(items), bh = items.length * rowH + 20, left = side == null ? pl.x > SCR_W / 2 : side;
+  const mg = S.ui.from === 'patch' && S.exp && S.exp.patch ? msgGeom() : null, mH = mg ? mg.h : 0, mLow = SCR_H - LINE_H - mH - 8;
+  const top = mH && pl.y + 20 > mLow ? VIEW_Y + 8 + mH + 8 : VIEW_Y + 8;
+  const hit = (bx, by) => bx < pl.x + 16 && bx + w > pl.x - 16 && by < pl.y + 16 && by + bh > pl.y - 16;
+  const xs = left ? [8, SCR_W - w - 8] : [SCR_W - w - 8, 8], tb = VIEW_Y + VIEW_H - bh - 8;
+  if (side != null) return { x: xs[0], top, ok: true };
+  const spots = [[xs[0], top], [xs[1], top], [xs[0], tb], [xs[1], tb]], ok = spots.find(([bx, by]) => !hit(bx, by));
+  return ok ? { x: ok[0], top: ok[1], ok: true } : { x: xs[0], top, ok: false };
+}
+// where the camera should sit while the menu is open, given the hero's unshifted x, y on the screen and the camera's x: { s, side }. No shift when a spot clears him as he stands, or when the view cannot shift enough (a map edge).
+function menuShiftFor(hx, hy, camX, lay, ts) {
+  const items = menuItems(), f = menuFieldSpots(items, { x: hx, y: hy }, null);
+  if (f.ok) return { s: 0, side: null };
+  const w = menuFieldW(items), lo = Math.min(0, -camX), hi = Math.max(0, lay.w * ts - SCR_W - camX);
+  const sL = Math.min(hx - w - 8 - MENU_CLEAR - 16, hi), sR = Math.max(hx - (SCR_W - w - 8 - MENU_CLEAR - 16), lo);   // his rect (+-16) MENU_CLEAR px beyond the box, which sits 8 px in from the view's edge
+  const okL = sL >= lo, okR = sR <= hi;
+  if (okL && (!okR || Math.abs(sL) < Math.abs(sR) || (Math.abs(sL) === Math.abs(sR) && hx > SCR_W / 2))) return { s: sL, side: true };
+  if (okR) return { s: sR, side: false };
+  return { s: 0, side: null };
+}
+function menuShiftNow(hx, hy, camX, lay, ts) {   // each frame of the walk view: the shift to add to the camera (whole pixels)
+  const open = S.phase === 'menu' && S.ui && S.ui.from === 'patch' && !S.ui.waiting, t = open ? menuShiftFor(hx, hy, camX, lay, ts) : { s: 0, side: null }, to = Math.round(t.s);
+  if (MENUSHIFT.to !== to) { MENUSHIFT.from = MENUSHIFT.cur; MENUSHIFT.to = to; MENUSHIFT.at = NOW; }
+  MENUSHIFT.side = open ? t.side : null;
+  MENUSHIFT.cur = Math.round(MENUSHIFT.from + (MENUSHIFT.to - MENUSHIFT.from) * (motion() ? panEase(clamp((NOW - MENUSHIFT.at) / PANPEEK_MS, 0, 1)) : 1));
+  return MENUSHIFT.cur;
+}
 function drawMenu(t) {
   const items = menuItems(), overField = S.exp && (S.ui.from === 'patch' && S.exp.patch || S.ui.from === 'map');
   if (S.ui.from === 'patch' && S.exp && S.exp.patch) { drawPatch(t); drawHeroLater(); } else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'sealed') drawSealed(t); else if (S.ui.from === 'riding') drawRiding(t); else drawSetup(t);
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr;
-  let left = overField && pl && pl.x > SCR_W / 2;
   // menu-side-hero-3: in the field the box is as wide as its widest row (the line's own measure + the icon column and right margin), never more than 250
-  const rowH = overField ? 44 : 62, w = overField ? Math.min(250, 64 + 14 + Math.max(0, ...items.map(it => textW(it.label, 2)))) : 330, top0 = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
-  let x = overField ? (left ? 8 : SCR_W - w - 8) : 60;
-  // over a place, when the message box goes to the top (drawMessage's own test), the card starts 8 px under its foot
-  const mg = S.ui.from === 'patch' ? msgGeom() : null, mH = mg ? mg.h : 0,
-    mLow = SCR_H - LINE_H - mH - 8;
-  let top = overField && mH && pl && pl.y + 20 > mLow ? VIEW_Y + 8 + mH + 8 : top0;
-  if (overField && pl) {   // menu-side-hero-1: the first place whose rect clears the pawn's drawn rect: the side away from him, the other side, then both sides at the bottom of the view
-    const bh = items.length * rowH + 20, hit = (bx, by) => bx < pl.x + 16 && bx + w > pl.x - 16 && by < pl.y + 16 && by + bh > pl.y - 16;
-    const xs = left ? [8, SCR_W - w - 8] : [SCR_W - w - 8, 8], tb = VIEW_Y + VIEW_H - bh - 8;
-    const spots = [[xs[0], top], [xs[1], top], [xs[0], tb], [xs[1], tb]], ok = spots.find(([bx, by]) => !hit(bx, by));
-    if (ok) { x = ok[0]; top = ok[1]; left = x < SCR_W / 2; }
-  }
+  const rowH = overField ? 44 : 62, sc = overField ? 2 : 3, w = overField ? menuFieldW(items) : 330;
+  let x = overField ? SCR_W - w - 8 : 60, top = overField ? VIEW_Y + 8 : 116;
+  if (overField && S.ui.from === 'patch' && S.exp && S.exp.patch && pl) {   // menu-side-hero-1: the first place whose rect clears the pawn's drawn rect; menu-side-hero-5: or, when the view shifted for it, the side it shifted for
+    const f = menuFieldSpots(items, pl, MENUSHIFT.side);
+    x = f.x; top = f.top;
+  } else if (overField && pl && pl.x > SCR_W / 2) x = 8;
   if (!overField) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10); else if (S.ui.from === 'map') ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 5);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);
   panel(x, top, w, items.length * rowH + 20, C.paper, C.ink);

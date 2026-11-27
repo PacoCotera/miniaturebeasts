@@ -231,6 +231,51 @@ for (const size of SCALE_SIZES) {
     } finally { await g.ctx.close(); }
   });
 }
+// s19b (menu-side-hero-5; QA verify-live-663, bus bcddcf6641): "at col 20 rows 8, 16, 24 the box's right edge cuts off his left side." His #166 save, walked by presses as s19 walks it, then to col 20 and down to rows 8, 16 and 24: ← opens the menu and his orange pixels are as many as before it.
+// UI's ruling (bus 5eabf248f7): while the field menu is open the view shifts sideways so he stands clear beside the box. State is read only to say the case is reached and to find where he stands (the window to count his pixels in); the verdict is the pixels.
+for (const size of SCALE_SIZES) {
+  const tag = `${size.w}x${size.h}`;
+  it(`s19b the field menu never covers the hero mid-view (QA verify-live-663, his #166 save, col 20 rows 8, 16, 24): his pixels are whole with the menu open [${tag}]`, async () => {
+    const g = await open(size, "166");
+    try {
+      const at = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, p = m.RT.plScr; return { phase: m.S.phase, key: P && P.key, x: P && P.x, y: P && P.y, px: p && p.x, py: p && p.y }; });
+      const steady = async (dir) => { let same = 0, last = JSON.stringify(await at()); for (let i = 0; i < 40 && same < 2; i++) { await g.press(dir, 100, 500); const now = JSON.stringify(await at()); same = now === last ? same + 1 : 0; last = now; } };
+      for (const dir of ["up", "right", "down", "left"]) await steady(dir);   // s19's walk
+      const card = () => g.page.evaluate(() => !!window.__play.frames.companion.contentWindow.__mb.FX.card);
+      const HERO_T = ([r, gg, b]) => r > 110 && r > gg * 1.5 && gg > b * 1.6 && b < 110;   // the jacket's orange, also as the dusk light tints it
+      const goTo = async (col, row) => {
+        let stuck = 0;
+        for (let i = 0; i < 80 && stuck < 3; i++) {
+          const s = await at(); if (s.x === col && (row == null || s.y === row)) return s;
+          const dir = s.x < col ? "right" : s.x > col ? "left" : s.y < row ? "down" : "up";
+          await g.press(dir, 100, 450); for (let k = 0; k < 4 && await card(); k++) await g.press("confirm", 100, 700);   // the day's light runs out on the way: the dusk or night card is passed with ✓ as a player does
+          const n = await at(); stuck = n.x === s.x && n.y === s.y ? stuck + 1 : 0;
+        }
+        return at();
+      };
+      for (const row of [8, 16, 24]) {
+        const spot = await goTo(20, row);
+        console.log(`# s19b ${tag}: row ${row}: he stands at ${JSON.stringify(spot)}`);
+        assert.equal(spot.phase, "patch", "the case is reached: he is walking the place");
+        assert.ok(spot.x === 20 && spot.y === row, `the case is reached: col 20 row ${row} (he is at ${spot.x}, ${spot.y})`);
+        const r = await g.region(), k = r.w / 450, win = (p) => ({ x: Math.round(r.x + (p.px - 28) * k), y: Math.round(r.y + (p.py - 28) * k), w: Math.round(56 * k), h: Math.round(56 * k) });
+        const base = await g.shot(`s19b-${tag}-r${row}-before`), hero = blobs(base, win(spot), HERO_T)[0];
+        assert.ok(hero && hero.n > 60, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
+        await g.press("back", 100, 900);                       // ← opens the menu; the view shifts (the ease is 250 ms)
+        const open1 = await at();
+        assert.equal(open1.phase, "menu", "the case is reached: the menu is open");
+        const menu = blobs(await g.shot(`s19b-${tag}-r${row}-menu`), win(open1), HERO_T)[0] || { n: 0, box: null };
+        console.log(`# s19b ${tag}: row ${row}: hero ${hero.n} px before, ${menu.n} with the menu open, he stands at x ${Math.round(spot.px)} then ${Math.round(open1.px)}`);
+        assert.ok(menu.n >= hero.n * 0.95, `the hero's pixels are whole with the menu open, the box is not over him (${menu.n} of ${hero.n} pixels)`);
+        assert.ok(menu.box && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange at his place is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+        await g.press("back", 100, 900);                       // ← closes it; the view shifts back
+        const back = await at();
+        assert.equal(back.phase, "patch", "the menu closed");
+        assert.ok(Math.abs(back.px - spot.px) <= 1, `the view shifted back on close (he stands at x ${Math.round(back.px)}, was ${Math.round(spot.px)})`);
+      }
+    } finally { await g.ctx.close(); }
+  });
+}
    // each test has its own browser context; the machine has the cores, and the land next door takes a while to draw
 for (const size of SIZES) {
   const tag = `${size.w}x${size.h}`;
