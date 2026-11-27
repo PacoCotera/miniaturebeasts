@@ -1,20 +1,20 @@
 // The baked package: one region's baked places kept as ONE unit in the browser's IndexedDB, in its own database
 // (never the place store's LRU, PLACE_KEEP never touches it). The Station makes it (station/src/package-baker.mjs); a later step has the Companion read it.
 //   header   { format, id, seed, slot, v, realmRev, placeRev, tag, order: [cells in bake order], floor: n, done, whole, sha: { cell: sha256 hex }, ms: { floor, whole } }
-//   a cell   { ir, place }: exactly what the Companion's layout() reads from a baked place today (world7.mjs bakedCell), the same object place-store.mjs keeps
+//   a cell   the .mbplace bytes DEFLATED (baked-package-9, a zlib stream; deflateCell / inflateCell below; the header's sha is of the inflated bytes) (a Uint8Array, place format 2: the place and the bake's hold outputs, places/src/format/baked.mjs). The Station writes them; the Companion reads them through readBaked into the
+//            { ir, place } object that layout() (adapt7.mjs) reads (place-store.mjs packageRead), the one read path. The header's sha256 of a cell is the bytes' own.
 //   region   { sites, banks }: the Hollow Tree sites and earth banks the worker sends with its cells
-// Why the cell is the object and not .mbplace bytes: writePlace/readPlace (places/src/format) lose `rimSteps` (a bake output the format does not carry; measured on seed 36, cell 89: every other key is equal),
-// and `ir` is no part of the format. So the record is today's object and the header's sha256 covers the .mbplace bytes of the place followed by its rimSteps bytes.
 // The unit is the REGION: the cells are written in bake order as they land (a package is usable while it grows: `done` of `order`), and a package of another rev or tile set is another id, removed once the new one is whole.
 import { REALM_REV } from './gen7/region.mjs';
 import { PLACE_REV } from './place-store.mjs';
 import { MW, MH, DIRS, cxy, cheb, passableIn, canStepIn } from './world.mjs';
 import { reachCellsIn, tierOf } from './map-rules.mjs';
-import { writePlace } from '../../places/src/format/write.mjs';
+import { writeBaked, readBaked } from '../../places/src/format/baked.mjs';
+export const cellOfBytes = readBaked;   // the one read path: the bytes to the { ir, place } layout() reads
 
 import { PACKAGE_FORMAT, PKG, heldOf, packageSummary, offerOf, takePackage } from './package-dock.mjs';
 export { PACKAGE_FORMAT };
-export const packageId = ({ seed, slot, v, tag = '' }) => `${PKG}${REALM_REV}.${PLACE_REV}${tag ? '.' + tag : ''}:${seed}:${slot[0]},${slot[1]}:${v}`;
+export const packageId = ({ seed, slot, v, tag = '' }) => `${PKG}f${PACKAGE_FORMAT}.${REALM_REV}.${PLACE_REV}${tag ? '.' + tag : ''}:${seed}:${slot[0]},${slot[1]}:${v}`;   // the format is in the id: a package of another format is another package
 const headKey = id => id + '#head', regionKey = id => id + '#region', cellKey = (id, c) => id + '#c' + c;
 const regionPrefix = ({ seed, slot }) => `:${seed}:${slot[0]},${slot[1]}:`;   // the part of an id that names the region, whatever its revs
 
@@ -37,13 +37,18 @@ export function bakeOrder(G, from) {
   return { cells: [head, ...reach, ...ringL, ...rest], floor: 1 + reach.length + ringL.length, head, reach, ring: ringL, rest };
 }
 
-// sha256 (hex) of a baked place: its .mbplace bytes, then its rimSteps (the one part the format does not carry)
-export async function shaOfPlace(place) {
-  const a = writePlace(place), b = place.rimSteps ? new Uint8Array(place.rimSteps.buffer, place.rimSteps.byteOffset, place.rimSteps.byteLength) : new Uint8Array(0), all = new Uint8Array(a.length + b.length);
-  all.set(a, 0); all.set(b, a.length);
-  const h = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', all));
+// A cell the worker made ({ seed, cell, ir, place }) as the bytes the package keeps, and their sha256 (hex): the bytes' own
+export const bytesOfCell = (seed, cell, ir, place) => writeBaked(ir, place, { seed, cell });
+export async function shaOfBytes(bytes) {
+  const h = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));
   return Array.from(h, x => x.toString(16).padStart(2, '0')).join('');
 }
+
+// baked-package-9: each cell is KEPT deflated (a zlib stream, RFC 1950: zlib on the Station, miniz's tinfl on the Companion). The sha is of the INFLATED .mbplace bytes, so it does not depend on the deflater.
+// deflateCell(bytes) -> the record the package stores; inflateCell(record) -> the .mbplace bytes cellOfBytes reads.
+const pipe = async (bytes, stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
+export const deflateCell = (bytes) => pipe(bytes, new CompressionStream('deflate'));
+export const inflateCell = (record) => pipe(record, new DecompressionStream('deflate'));
 
 // The browser's store: its own IndexedDB database, so nothing of the place store's list can evict it. kv: { get, set, del, keys }; tests give a Map-backed one.
 export async function idbKv() {
@@ -71,8 +76,8 @@ export async function openPackage(kv, meta, order, now = () => performance.now()
   return { kv, id, header, t0: now(), now, todo: order.cells.filter(c => !(c in header.sha)) };
 }
 // A cell landed: written whole, then the header names it (a cell is never named before it is there).
-export async function putCell(h, cell, baked, sha) {
-  await h.kv.set(cellKey(h.id, cell), baked);
+export async function putCell(h, cell, bytes, sha) {
+  await h.kv.set(cellKey(h.id, cell), bytes);
   if (!(cell in h.header.sha)) h.header.done++;
   h.header.sha[cell] = sha;
   const ms = Math.round(h.now() - h.t0);
