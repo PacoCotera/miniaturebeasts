@@ -1618,6 +1618,58 @@ it(`s33 a glint stays on its find while he walks to it (#160, his save): dim bet
   } finally { await g.ctx.close(); }
 });
 
+// OWNER 2026-11-25 16:3x: "watching mibis in the wild is fun too, but they don't do much." (OWNER 11-27 08:5x "ok both"); lead ruling 11-27 12:02: one played case of the bolt-then-beat route. wild-beats-fix-2 (PR 693, rule 16a).
+// Seed 33, a fresh game, 390x844, presses only: ✓ to set out, the route that names Osier, then he walks toward her until she bolts (gone), walks off until he is more than 4 tiles from her, and keeps still (✓) until her beat is on the screen.
+// State only asserts the reach (she is named, she bolted, he is more than 4 tiles off, her beat is running). The verdict is the pixels: her act line in the message box, above the target line, against a crop of that box (saves/wild-beat-line.png;
+// PLAYED_WRITE_CROPS=1 rewrites it), and the box differs from the one just before the beat. Every press waits for its effect (state changed, then still for 400 ms).
+it(`s34 a wild Loika that bolted plays her beat once he keeps off (wild-beats-fix-2, seed 33): her act line shows above the target line [390x844]`, async () => {
+  const size = { w: 390, h: 844, dpr: 3 };
+  const g = await open(size, { seed: 33 });
+  const MSGBOX = [0.08, 0.865, 0.84, 0.07];   // the message box in this frame (wild-beats-fix-5: the shared 0.80-0.90 box caught only its top edge)
+  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; const c = P && m.curLive().cr.find((q) => q.ind && q.ind.name === "Osier"); return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, spent: S.day && S.day.spent, named: !!(c && S.named && S.named[c.id]), cx: c && c.x, cy: c && c.y, gone: !!(c && c.gone), ease: c && c.ease, beat: !!(c && m.FX.beats && m.FX.beats[c.id]), hx: c && c.ind.go && c.ind.go.t.x, hy: c && c.ind.go && c.ind.go.t.y, st: c && c.st, sight: !!(c && m.onScreen(c.x, c.y)), act: !!(m.FX.beatOver && m.FX.msg === m.FX.beatOver.text) }; });
+  const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+  const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };
+  const dist = (s) => Math.max(Math.abs(s.cx - s.x), Math.abs(s.cy - s.y));
+  try {
+    let s = await st();
+    for (let i = 0; i < 12 && !s.key; i++) { await step("confirm"); s = await st(); }
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }
+    assert.ok(s.key, `set out: he is in the first place (${JSON.stringify(s)})`);
+    for (const [d, n] of [["right", 24], ["up", 12], ["right", 12], ["down", 12]]) for (let i = 0; i < n && !s.named; i++) { await step(d); s = await st(); }
+    const toward = async () => { const dx = s.cx - s.x, dy = s.cy - s.y, h = dx > 0 ? "right" : "left", v = dy > 0 ? "down" : "up", pri = Math.abs(dx) >= Math.abs(dy) ? [h, v] : [v, h], at = s.x + "," + s.y; for (const d of pri.concat(["up", "down", "left", "right"])) { await step(d); s = await st(); if (s.x + "," + s.y !== at || s.named) return; } };
+    for (let i = 0; i < 90 && !s.named && s.key === "31"; i++) { await toward(); }
+    assert.ok(s.named, `the case is reached: Osier is named (${JSON.stringify(s)})`);
+    // he walks toward her until she bolts
+    // a press that does not move him (a bush, a stone) is followed by a sidestep across the line to her
+    const walk = async (away) => { const dx = s.cx - s.x, dy = s.cy - s.y, sg = away ? -1 : 1, h = dx * sg > 0 ? "right" : "left", v = dy * sg > 0 ? "down" : "up", pri = away ? [v, h] : Math.abs(dx) >= Math.abs(dy) ? [h, v] : [v, h]; const at = s.x + "," + s.y;
+      for (const d of pri.concat(["up", "down", "left", "right"])) { await step(d); s = await st(); if (s.x + "," + s.y !== at || (!away && s.gone)) return; } };
+    for (let i = 0; i < 40 && !s.gone; i++) { await walk(false); }
+    assert.ok(s.gone && s.ease === 3, `the case is reached: walking toward her bolted her (${JSON.stringify(s)})`);
+    // he walks off, away from her, to more than 4 tiles, and keeps still
+    for (let i = 0; i < 30 && dist(s) <= 4; i++) await walk(true);
+    // then to the tile 6 below her haunt (in sight of it, more than 4 off, not beside her way there), a press at a time, with a sidestep where a bush blocks
+    const goto = async (tx, ty) => { const at = s.x + "," + s.y, dx = tx - s.x, dy = ty - s.y, pri = Math.abs(dx) >= Math.abs(dy) ? [dx > 0 ? "right" : "left", dy > 0 ? "down" : "up"] : [dy > 0 ? "down" : "up", dx > 0 ? "right" : "left"];
+      for (const d of pri.concat(["up", "down", "left", "right"])) { await step(d); s = await st(); if (s.x + "," + s.y !== at) return; } };
+    assert.ok(dist(s) > 4, `the case is reached: he is more than 4 tiles off (${JSON.stringify(s)})`);
+    let before = await g.shot("s34-before"), im = null;
+    // she walks to her haunt on her own; he comes within sight of her (more than 4 off she is out of the fog's sight), then keeps still; the beat's line takes the box only when it is free, so each press is shot and the one where the box changes with the beat running is the verdict
+    for (let i = 0; i < 120 && !(s.beat && im); i++) { before = await g.shot(); im = null; if (!s.gone && s.hx != null && Math.max(Math.abs(s.cx - s.hx), Math.abs(s.cy - s.hy)) <= 1 && !s.sight) await goto(s.cx, s.cy + 4); else await step("confirm"); s = await st(); const sh = await g.shot("s34-beat"); const mv = changed(before, sh, await g.region(), MSGBOX).n; if (s.beat && s.act && mv > 400) im = sh; }
+    assert.ok(s.beat && !s.gone && im, `the case is reached: she is at ease again, her beat is running and its line is in the box (${JSON.stringify(s)})`);
+
+    const r = await g.region(), k = r.w / 450;
+    const box = { x: r.x + Math.round(r.w * MSGBOX[0]), y: r.y + Math.round(r.h * MSGBOX[1]), w: Math.round(r.w * MSGBOX[2]), h: Math.round(r.h * MSGBOX[3]) };
+    const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+    const f = path.join(savesDir, "wild-beat-line.png");
+    if (process.env.PLAYED_WRITE_CROPS) { const c = crop(box); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+    const ref = decodePNG(readFileSync(f)), c = crop(box);
+    let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++;
+    const moved = changed(before, im, r, MSGBOX);
+    console.log(`# s34: the box differs from her act line's crop by ${n} pixels, from the box before the beat by ${moved.n} (of ${moved.of}); state ${JSON.stringify(s)}`);
+    assert.ok(moved.n > 400, `the box shows a line it did not before the beat (${moved.n} pixels differ)`);
+    assert.ok(n < 5000, `the box shows her act line, as in the crop (${n} pixels differ)`);
+  } finally { await g.ctx.close(); }
+});
+
 // OWNER #137 (11-24): "is the field guide selectable? how? or what does it mean?" The pad never reaches the Field guide, so its entries must not wear the framed box the pad-selected sign tiles wear.
 // His replay.save (saves/137.save): the Probe page, one species identified (Untuva). The verdict is the screenshot: along the entry's top edge no frame pixels differ from the background just above it;
 // the same test on the first sign tile above shows its frame.

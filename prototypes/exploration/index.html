@@ -1076,7 +1076,7 @@ function composeMsg() {
   // A sign (one picture, one line) stands alone: it never joins another sign or a note. The best sign shows when no plain note
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
   // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
-  const keep = firstWalk() ? n.filter(x => !x.once || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
+  const keep = firstWalk() ? n.filter(x => !x.once || x.beat || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
   // slab-full-1: a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
   // steering (design, 11-26): a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
   const ownHold = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
@@ -1111,7 +1111,9 @@ function settleOnce() {
     else fxOnce(h.key, h.text, h.pri); }   // too long for the bottom line's middle: a plain note until the copy has a short form
   const covered = S.phase === 'patch' && S.ui.swap;   // the swap chooser has the box's place: nothing is drawn, so nothing is spent
   const bl = FX.beatLine; FX.beatLine = null;
-  if (bl && !covered && (!FX.msg || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && !FX.notes.length) {   // wild-life-build-3: a free box takes the act's line; wild-life-build-6: so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
+  const wanderOnly = FX.notes.length > 0 && FX.notes.every(n => n.wander);   // wild-beats-fix-5: a wander note ("The creature wanders") gives the box to the act's line for the 2.5 s hold
+  if (bl && !covered && (!FX.msg || wanderOnly || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && (!FX.notes.length || wanderOnly)) {   // wild-life-build-3: a free box takes the act's line; wild-life-build-6: so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
+    if (wanderOnly) FX.notes = [];
     FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); FX.beatOver = FX.msg === bl.text ? { text: bl.text, until: NOW + BEAT_HOLD_MS } : null; }
   for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // wild-life-build-3: an act's line is spent for the day only once it showed
   for (const n of covered ? [] : FX.notes) if (n.once && !n.beat && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
@@ -2627,7 +2629,7 @@ function findSlotFor(lay, key, pod, ent) {
 // ---------- Haunts and routines of the wild Loika (walk W2; src/gen7/haunts.mjs) ----------
 // An overlay read from a mounted place, never part of the land: the view of the place's own props and ground, the sites it offers, and for each Loika its doings, three haunts and a bed.
 // The haunt walk (hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField) is src/gen7/haunt-walk.mjs; the page's runtime state is handed in here, read each time, never copied.
-const { hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField } = makeHauntWalk({
+const { hauntView, placeReach, hauntStandable, hauntSitesOf, hauntSitesWalkable, staticShut, pathField } = makeHauntWalk({
   get PL() { return PL; }, featAt: (lay, key, x, y) => featAt(lay, key, x, y), openingKind: (lay, o) => openingKind(lay, o), rimRefuses: (lay, fx, fy, tx, ty) => rimRefuses(lay, fx, fy, tx, ty),
   bankTile: (lay, x, y) => bankTile(lay, x, y), get NOSTAND() { return NOSTAND; }, get SMALL_FEAT() { return SMALL_FEAT; } });
 const OPEN_FROM = { N: 'down', S: 'up', W: 'right', E: 'left' };
@@ -2636,7 +2638,7 @@ const hauntFree = (lay, key, who) => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1
 // A kind with a routine base is an individual of its land: { doings, hs (water, grass, third, bed), name }. The haunts after S.turn nights are a pure walk from the seed and the id.
 function individualOf(w, lay) {
   if (!routineBase(w.sp)) return null;
-  const sites = hauntSitesOf(lay); if (!sites.length) return null;
+  const sites = hauntSitesWalkable(lay); if (!sites.length) return null;
   const doings = doingsOf(S.seed, w.id), hs = hauntsOn(S.seed, w.id, sites, doings, S.turn);
   return hs ? { doings, hs, name: loikaName(S.seed, S.cr.filter(q => q.sp === w.sp && q.id < w.id).length) } : null;
 }
@@ -3010,7 +3012,10 @@ function noteHabit(c) {
 function hauntStep(X, c) {   // true when the routine has the creature's action
   if (c.gone && c.gone.night != null && c.gone.night !== S.turn) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; }   // night step 5: gone from her bed at night, she is at her dawn haunt next morning and the day is not lost
   if (c.gone && c.gone.night == null) { if (c.gone.part == null || c.gone.part !== dayPart()) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; } }   // bug #145: a day-time gone lasts to the next part of day, then her routine has her again (it kept her on one tile for the whole day)
-  if (c.gone) { const t = c.gone.t; if (!t) return false; if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; } return true; }   // gone: its next haunt for the rest of the day
+  if (c.gone) { const t = c.gone.t; if (!t) return false;
+    if (c.gone.night == null) { c.gone.rest = cheb(c, X.P) > GONE_SAFE ? (c.gone.rest | 0) + 1 : 0; if (c.gone.rest >= GONE_REST) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; return true; } }   // wild-beats-cause-1: a daytime bolt ends once he has stayed more than 4 tiles off for 6 actions: she is at ease again, back on her routine (a bolt held her at ease 3, never acting, for the whole part of day)
+    if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }   // gone: its next haunt for the rest of the day
+    return true; }
   const part = hpart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
   const t = c.ind.go.t; if (!t) return false;
   if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }
@@ -3020,7 +3025,7 @@ function hauntStep(X, c) {   // true when the routine has the creature's action
 function keepHaunts(live, key) {
   for (const c of live.cr) { if (!c.ind || !c.ind.hs || hauntsApart(c.ind.hs) || c.ind.hsTried === S.turn) continue;
     c.ind.hsTried = S.turn; // one try a night per creature, kept or not (a small place may not fit 3 apart)
-    const sites = hauntSitesOf(layout(key)), hs = sites.length ? hauntsKept(S.seed, c.id, sites, c.ind.doings, S.turn, c.ind.hs) : c.ind.hs;
+    const sites = hauntSitesWalkable(layout(key)), hs = sites.length ? hauntsKept(S.seed, c.id, sites, c.ind.doings, S.turn, c.ind.hs) : c.ind.hs;
     if (hs !== c.ind.hs) { c.ind.hs = hs; delete c.ind.go; } }
 }
 function ensureLive(key) {
@@ -4117,7 +4122,7 @@ function waitTick(scope, noRipple) {   // noRipple: a read of prints spends the 
   if (!S.exp || S.exp.ending) return;
   if (scope === 'patch' && ex.patch) routineStep(a);
   const ch = waitChanges(a, waitSnap(scope), scope);
-  if (ch.length) fxMsg(cap(ch.join(' · ')), 1);
+  if (ch.length) { fxMsg(cap(ch.join(' · ')), 1); if (ch.every(t => / wanders?$/.test(t))) FX.notes[FX.notes.length - 1].wander = 1; }
   else if (FX.notes.length === notes) fxMsg('Nothing is moving here · ← ' + (scope === 'patch' ? 'Leave' : 'End expedition'), 1);
   ex.stats.waits = (ex.stats.waits || 0) + 1; if (!ch.length) ex.stats.idleWaits = (ex.stats.idleWaits || 0) + 1;
 }
@@ -4251,6 +4256,7 @@ function stirStep(c, X, bx, by) {
 // of his actions, then she goes back; she rests at least 5 actions before the next. When the act starts and the message box is free, one short line says it, once per act per Loika per day, never over another line.
 // No prompt, no counter, no light, no rule: the act is picture and line only (FX.beats, read by the draw); her own tile, her routine, her habits and every state are untouched, so the world plays as before, and an act
 // is lost the moment she moves, hears him or leaves sight. Nothing here draws a pixel or rolls the world's random: every pick is a pure hash of the seed, her id and the action.
+const GONE_SAFE = 4, GONE_REST = 6;   // wild-beats-cause-1: a daytime bolt ends once he is more than GONE_SAFE tiles off for GONE_REST actions
 const BEAT_HOLD_MS = 2500, BEAT_HOLD_ACTS = 3, BEAT_HOLD_CAP_MS = 8000, BEAT_REST = 5, BEAT_NEAR = 3, BEAT_STEP_MS = 360;
 const PLANT_DECAL = /^sc-(flowers|tufts|clump|shrub|bush)/;
 // the plants of a place: the scatter's flower, tuft, clump, shrub and bush decals (by the tile their foot is on, as printMark reads them) and the bush features; cached once the tileset is in
