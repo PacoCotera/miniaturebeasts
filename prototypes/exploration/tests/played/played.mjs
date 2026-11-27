@@ -814,28 +814,29 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
   // OWNER 2026-11-24 12:1x ("stop breaking things or telling me that you fixed or shipped something just to find at the first interaction that the game is still utterly broken."; PR 674, wait-changes-group-1/2): a Wait's changes line counts creatures of species he has not met together, once: "Three creatures wander", not one clause per species.
-  // His fresh-game save 14 (seed 14, S.known empty): in the place with two unknown species in view (a storm over it first, which passes). Played by ← (the menu), Down to Wait, ✓ 22 times: the 22nd Wait is the first the day has turned and they wander.
-  // State only asserts the case is reached (the place, nothing met, two unknown species in view); the verdict is the pixels of the changes line against a crop of "creatures wander" (saves/wait-unknown-creatures-wander.png), read once: the words are in the line, one clause only.
-  if (size.w === 412) it(`s21 a wait's changes line (PR 674, save 14): two unknown species in view are counted as one group, "creatures wander" [${tag}]`, async () => {
-    const g = await open(size, "14");
+  // The short case (lead, bus b04084353f): saves/wait-one-kind-11.save, made by presses from a fresh game of seed 11 (✓ three times to set out): in the place, nothing met, five creatures of ONE unknown kind in view. ← (the menu), Down to Wait, ✓ ONCE.
+  // State only asserts the case is reached (the place, nothing met, one unknown kind of several in view); the verdict is the pixels of the changes line against a crop of "creatures wander" (saves/wait-unknown-creatures-wander.png), read once: the words are in the line, one clause only.
+  if (size.w === 412) it(`s21 a wait's changes line (PR 674, seed 11): several unknown creatures of one kind in view are counted once, "creatures wander" after ONE Wait [${tag}]`, async () => {
+    const g = await open(size, "wait-one-kind-11");
     try {
-      const view = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, L = m.curLive(), sp = {}; if (L) for (const c of L.cr) if (!c.hide && m.inSight(c.x, c.y)) sp[c.sp] = (sp[c.sp] || 0) + 1; return { phase: S.phase, met: S.known.length, unknown: Object.keys(sp).filter((k) => !S.known.includes(+k)).length }; });
-      assert.deepEqual(view, { phase: "patch", met: 0, unknown: 2 }, "the case is reached: in the place, nothing met, two unknown species in view");
+      const view = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, L = m.curLive(), sp = {}; if (L) for (const c of L.cr) if (!c.hide && m.inSight(c.x, c.y)) sp[c.sp] = (sp[c.sp] || 0) + 1; return { phase: S.phase, met: S.known.length, kinds: Object.keys(sp).filter((k) => !S.known.includes(+k)).length, most: Math.max(0, ...Object.values(sp)) }; });
+      assert.deepEqual([view.phase, view.met, view.kinds], ["patch", 0, 1], "the case is reached: in the place, nothing met, one unknown kind in view");
+      assert.ok(view.most >= 2, `the case is reached: at least two creatures of that kind in view (${view.most})`);
       await g.press("back");                                  // ← opens the menu
       const rows = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.menuItems().length);
       for (let i = 0; i < rows && await g.menuRow() !== "wait"; i++) await g.press("down");
       assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
-      for (let i = 0; i < 22; i++) await g.press("confirm", 100, i < 21 ? 350 : 350);   // Wait, 22 times; the shot follows the last while its line is up
-      const r = await g.region();
-      const ref = decodePNG(readFileSync(path.join(savesDir, "wait-unknown-creatures-wander.png")));
+      const r0 = await g.region(), r = { x: Math.round(r0.x / size.dpr), y: Math.round(r0.y / size.dpr), w: Math.round(r0.w / size.dpr), h: Math.round(r0.h / size.dpr) };   // the screencast's frames are at CSS size
+      const frames = await g.record(() => g.press("confirm", 100, 0), 2500);   // Wait, once, with every frame the browser paints from before it to 2.5 s after
+      const ref = decodePNG(readFileSync(path.join(savesDir, "wait-unknown-creatures-wander-css.png")));   // "creatures wander", cut from a frame of the screencast (saves/wait-unknown-creatures-wander.png is the same words at device size)
       const lit = ([R, G, B]) => R > 200 && G > 200 && B > 190;   // the line's light letters
       const mask = []; for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) if (lit(px(ref, x, y))) mask.push([x, y]);
       const band = { y0: r.y + Math.round(r.h * 0.70), y1: r.y + Math.round(r.h * 0.95) - ref.height, x0: r.x, x1: r.x + r.w - ref.width };   // where the message box sits, as a fraction of the screen
       const find = (im) => { for (let y = band.y0; y <= band.y1; y++) for (let x = band.x0; x <= band.x1; x++) { let ok = true; for (const [mx, my] of mask) if (!lit(px(im, x + mx, y + my))) { ok = false; break; } if (ok) return { x, y }; } return null; };
-      // The line comes up on its own time on a loaded runner: poll the shot until the words are in the line (cap 12 s), not one shot after a fixed delay.
-      let im = null, hit = null, last = null;
-      for (const t0 = Date.now(); Date.now() - t0 < 12000 && !hit;) { last = await g.page.screenshot(); im = decodePNG(last); hit = find(im); if (!hit) await wait(200); }
-      if (!hit) { const dir = process.env.PLAYED_SHOTS || path.join(tmpdir(), "played-fail"); mkdirSync(dir, { recursive: true }); writeFileSync(path.join(dir, `s21-${tag}-fail.png`), last); console.log(`# s21 ${tag}: still saved to ${path.join(dir, `s21-${tag}-fail.png`)}`); }
+      // The changes line is up for a moment and the weather's line follows it: every frame the browser paints is read for the words (the screencast, as the Call case reads its ring).
+      let im = null, hit = null;
+      for (const f of frames) { hit = find(f); if (hit) { im = f; break; } }
+      if (!hit) { const dir = process.env.PLAYED_SHOTS || path.join(tmpdir(), "played-fail"); mkdirSync(dir, { recursive: true }); const f = frames[frames.length - 1]; if (f) writeFileSync(path.join(dir, `s21-${tag}-fail.png`), encodePNG(f.width, f.height, f.data)); console.log(`# s21 ${tag}: ${frames.length} frames read; the last saved to ${path.join(dir, `s21-${tag}-fail.png`)}`); }
       console.log(`# s21 ${tag}: "creatures wander" found at ${JSON.stringify(hit)} (${mask.length} letter pixels in the crop)`);
       assert.ok(hit, `the changes line reads "creatures wander" (the crop's ${mask.length} letter pixels are not all light on the line)`);
       let extra = 0; for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) if (lit(px(im, hit.x + x, hit.y + y)) && !lit(px(ref, x, y))) extra++;
