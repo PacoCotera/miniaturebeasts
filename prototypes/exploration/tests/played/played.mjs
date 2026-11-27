@@ -1115,4 +1115,32 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
     assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
   } finally { await g.ctx.close(); }
 });
+
+// OWNER #137 (11-24): "is the field guide selectable? how? or what does it mean?" The pad never reaches the Field guide, so its entries must not wear the framed box the pad-selected sign tiles wear.
+// His replay.save (saves/137.save): the Probe page, one species identified (Untuva). The verdict is the screenshot: along the entry's top edge no frame pixels differ from the background just above it;
+// the same test on the first sign tile above shows its frame.
+for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
+  const tag = `${size.w}x${size.h}`;
+  it(`s32 the Field guide entry has no frame round it, the sign tiles keep theirs (#137, his save, the Probe page) [${tag}]`, async () => {
+    const g = await open(size, "137");
+    try {
+      assert.equal((await g.where()).phase, "probe", "the case is reached: the Probe page is open");
+      const r = await g.region(), im = await g.shot(`s32-${tag}`), k = r.w / 450;
+      // the frame's colour is read off the first sign tile's top edge; the verdict is how much of each run is that colour
+      const fc = px(im, r.x + Math.round(41 * k), r.y + Math.round(230.5 * k));
+      const edge = (gx, gy, gw) => {   // the fraction of a game-space run (3 game px tall) drawn in the frame's colour
+        let n = 0, tot = 0;
+        for (let y = Math.round(gy * k); y < Math.round((gy + 3) * k); y++) for (let x = Math.round(gx * k); x < Math.round((gx + gw) * k); x++) {
+          const a = px(im, r.x + x, r.y + y); tot++;
+          if (a[0] === fc[0] && a[1] === fc[1] && a[2] === fc[2]) n++;
+        }
+        return n / tot;
+      };
+      const tile = edge(21 + 6, 229, 28), guide = edge(24 + 50, 439, 70);
+      console.log(`# s32 ${tag}: frame colour ${fc}, tile top edge ${tile.toFixed(2)}, guide entry top edge ${guide.toFixed(2)} in it`);
+      assert.ok(tile > 0.2, `the sign tile keeps its frame (${tile.toFixed(2)})`);
+      assert.ok(guide < 0.02, `the Field guide entry has no frame round it (${guide.toFixed(2)})`);
+    } finally { await g.ctx.close(); }
+  });
+}
 });
