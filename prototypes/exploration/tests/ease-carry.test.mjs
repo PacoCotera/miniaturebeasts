@@ -122,28 +122,6 @@ test("the stay: her own step nearer to a still explorer holds the count; his ste
   assert.equal(d.crowd, 2, "he steps to two tiles and stays: the count rises each light");
 });
 
-const page33 = () => makePage({ gen: 7, console: "collect", els: true, canvas: true, raf: "count" });
-const find33 = `(() => { for (const c of [...new Set(S.cr.filter(q => q.sp === 0).map(q => q.c))]) { if (!G.comp[c] || G.land[c] === L.WATER) continue; const key = String(c), lay = layout(key), live = ensureLive(key);
-  for (const q of live.cr) if (q.sp === 0 && q.ind) return JSON.stringify({ key, id: q.id }); delete S.exp.live[key]; } return 'null'; })()`;
-// stay-her-step-fix-1 (owner 11-25 06:4x, fix 6): she closes in on a still explorer, so the stay holds; his own step to two tiles still counts.
-test("on the page, seed 33: a still explorer is not charged for her walk up to him; his own step to two tiles still counts", () => {
-  const p = page33(); p.run(`newWorld(33); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
-  const pick = JSON.parse(p.run(find33)); assert.ok(pick, "a Loika in a mounted place");
-  const out = JSON.parse(p.run(`(() => { const key = ${JSON.stringify(pick.key)}; S.exp.pos = key; enterPatch(key); const lay = curLay(), c = curLive().cr.find(q => q.id === ${pick.id}), P = S.exp.patch;
-    S.exp.storm = null; lay.easeG = { cov: new Set(), blk: new Set() }; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.gone = null; c.hide = 0; delete c.wary;
-    c.x = 8; c.y = 8; P.x = 8; P.y = 13; for (let y = 8; y <= 13; y++) { lay.tiles[y * lay.w + 8] = T.GRASS; lay.reach[y * lay.w + 8] = 1; }
-    const light = () => { c.ind.go = { part: dayPart(), t: { x: c.x, y: c.y } }; advance('patch', { noise: 'creep', moved: false }); };
-    light();
-    const walk = []; for (const y of [9, 10, 11, 12]) { c.y = y; light(); walk.push([c.y, c.crowd, c.ease]); }
-    const held = { crowd: c.crowd, ease: c.ease }; light(); const after = c.crowd;
-    c.ease = 0; c.crowd = 0; c.y = 8; P.y = 13; light(); P.y = 10; c.ind.go = { part: dayPart(), t: { x: c.x, y: c.y } }; advance('patch', { noise: 'creep', moved: true, prevP: { x: 8, y: 11 } }); const a = c.crowd; light(); const b = c.crowd;
-    return JSON.stringify({ walk, held, after, a, b }); })()`));
-  for (const [, crowd, ease] of out.walk) { assert.equal(crowd, 0, "no light charged while she closed in"); assert.equal(ease, 0, "never 'stayed too long' while he kept still"); }
-  assert.equal(out.held.crowd, 0); assert.equal(out.held.ease, 0);
-  assert.equal(out.after, 1, "once she stands still the count rises");
-  assert.ok(out.b > out.a, "he steps to two tiles and stays: the count rises");
-});
-
 test("keeping still as one act stops on each of its four stops", () => {
   const run = (script, easeOf = () => 0) => { let i = 0; return holdRun(() => script[Math.min(i++, script.length - 1)], easeOf); };
   assert.deepEqual(run([{}]), { n: HOLD_MAX, why: "ten" }, "ten light gone");
