@@ -20,7 +20,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-# THE LEAN WORKFLOW (owner 2026-11-27 11:3x, rules.md 12): a pull request and a push to main run `build` only, a few minutes:
+# THE LEAN WORKFLOW (owner 2026-11-27 11:3x): a pull request and a push to main run `build` only, a few minutes:
 #   `build`    the Station's face, the site assembly, the art check, the pages parse and every page opens in a browser (.github/smoke.mjs); on main it deploys. The public guard is its own workflow.
 #   `browser`  the play-throughs and the played-game tests run ONLY at night (schedule) or by hand; on a pull request or a push it is skipped (a skipped required check counts as passed).
 # The gate is QA playing the change on live; the nightly run is a safety net whose failures become bugs. Builders run only the played case for what they changed.
