@@ -173,6 +173,7 @@ function drawnX(im, r, y0, y1) {
   return { lo, hi, w: hi - lo + 1 };
 }
 
+const EXPECT_147 = "Juniper · last seen south-west";   // s32: his 147.save's band in editorial's words: the full 'Juniper · last seen south-west, in the meadow' does not fit the band, so the short form shows
 const frac = (x, y, w, h) => [x / 900, y / 1200, w / 900, h / 1200];   // s15: a box in pixels of the 412x915 game screen (900x1200), as fractions of it
 const F_CARD = frac(9, 9, 350, 50), F_CRATE = frac(49, 367, 60, 40), F_TOP = frac(9, 9, 240, 50);   // the card's "Expedition 1 ended", the crate's E1, the set-out's "Expedition 2"
 describe("the played game", { concurrency: 6 }, () => {
@@ -700,21 +701,30 @@ for (const size of SIZES) {
 
   // OWNER #147 (11-24, note mwv210fs19ae9d): 'What does it mean "Sorrell - Meadow - W"?' His replay.save: the goal band reads words with the full direction ('last seen west, in the meadow'), whole.
   it(`s32 the target line reads as words (#147, his save): 'last seen <full direction>', whole in the goal band [${tag}]`, async () => {
+    // the verdict is the pixels: the band's text box on the screenshot against the words drawn on a bare canvas (the game's own glyphs), and nothing drawn past the box's right end
+    const judge = async (g, name) => {
+      const ref = await g.page.evaluate((s) => window.__play.frames.companion.contentWindow.__mb.refWords(s), EXPECT_147);
+      const im = await g.shot(name), r = await g.region(), kx = r.w / 450, ky = r.h / 600;
+      const rgb = [1, 3, 5].map((i) => parseInt(ref.rgb.slice(i, i + 2), 16)), isBone = (p) => Math.abs(p[0] - rgb[0]) + Math.abs(p[1] - rgb[1]) + Math.abs(p[2] - rgb[2]) < 60;
+      const at = (lx, ly) => px(im, Math.round(r.x + (lx + 0.5) * kx), Math.round(r.y + (ly + 0.5) * ky));
+      let wrong = 0, lit = 0;
+      for (let y = 0; y < ref.h; y++) for (let x = 0; x < ref.w; x++) { const want = ref.a[y * ref.w + x] > 0; if (want) lit++; if (isBone(at(ref.box.x + x, ref.box.y + y)) !== want) wrong++; }
+      let past = 0;   // bone pixels in the band's text rows from the box's right end to the arrow's column: the clip zone
+      for (let y = 0; y < ref.h; y++) for (let x = ref.box.x + ref.box.w; x < 450 - 17; x++) if (isBone(at(x, ref.box.y + y))) past++;
+      assert.ok(lit > 100, `the reference words are drawn (${lit} pixels)`);
+      assert.ok(ref.w <= ref.box.w, `the words fit the band's text box (${ref.w} of ${ref.box.w})`);
+      assert.ok(wrong <= lit * 0.02, `the band's line is "${EXPECT_147}" on the screen, pixel for pixel (${wrong} of ${lit} differ)`);
+      assert.equal(past, 0, `the line's right end is clear of the band's edge: nothing drawn past the text box (${past} pixels)`);
+    };
     const g = await open(size, "147");
     try {
-      const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, band: m.S.phase }; });
-      await g.shot(`s32-${tag}-0-band`);                    // read by eye: the whole screen, the band under the top bar
-      assert.ok(top.text, `the case is reached: the target line shows on his save (${JSON.stringify(top)})`);
-      assert.match(top.text, / · last seen (here|(north|south)(-(east|west))?|east|west)(, in the [a-z ]+)?$/, `the line reads as words with the full direction, not 'place · W' (${top.text})`);
-      assert.ok(!top.text.includes("…"), "the line is whole, not clipped");
+      const top = await g.page.evaluate(() => { const t = window.__play.frames.companion.contentWindow.__mb.targetLine(); return t && t.text; });
+      assert.ok(top, "the case is reached: the target line shows on his save");   // state says only that the case is reached
+      await judge(g, `s32-${tag}-0-band`);
     } finally { await g.ctx.close(); }
     if (size.w !== 412) return;
     const g2 = await open({ w: 390, h: 844, dpr: 3 }, "147");   // the second size of the stills
-    try {
-      const t2 = await g2.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.targetLine());
-      await g2.shot("s32-390x844-0-band");
-      assert.ok(t2 && /last seen/.test(t2.text) && !t2.text.includes("…"), `the line reads as words, whole, at 390x844 (${t2 && t2.text})`);
-    } finally { await g2.ctx.close(); }
+    try { await judge(g2, "s32-390x844-0-band"); } finally { await g2.ctx.close(); }
   });
 
   // OWNER #156 (11-24), his own save (note mwv7x4xtaf3d27): Drizzle stands beside him; ← then offers her page as the first row, and ✓ opens it.
