@@ -2031,14 +2031,6 @@ function unveil(key, cx, cy, r) {
   const bits = (x1 >= 30 ? -1 : (1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
   for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
 }
-// A named Loika he has met starts her tell within ten tiles: the veil lifts on her tile and on the tiles in a line between them, as the Call lifts it (tell-seen-fix-1).
-// Nothing else changes: not the range, the wind, the stay, nor a free note.
-function unveilTellLine(key, c, P) {
-  if (key[0] === 'c' || !c.ind || !S.known.includes(c.sp) || Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
-  const lay = layout(key), v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0)), n = Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y));
-  for (let i = 0; i <= n; i++) { const x = Math.round(P.x + (c.x - P.x) * i / (n || 1)), y = Math.round(P.y + (c.y - P.y) * i / (n || 1)); if (x >= 0 && y >= 0 && x < lay.w && y < lay.h) v[y] = (v[y] | (1 << x)) >>> 0; }
-  return true;
-}
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted, and nothing puts it back.
 function walkLift() {
@@ -2745,8 +2737,7 @@ function habitTick(c, X) {   // true when the habit has her action
   if (c.gone || (c.ease | 0) >= 2 || ['flee', 'alert', 'approach', 'watch'].includes(c.st)) return false;
   const due = habitDue(c, X); if (!due) return false;
   c.hb = { k: due.k, n: due.n, tell: tellOf(c.ind.doings), v: due.v, notes: {}, pose: 'alert' }; c.st = 'hab';
-  const told = !!S.exp.patch && !c.hide && unveilTellLine(S.exp.patch.key, c, S.exp.patch);   // within ten tiles: lifted, and her line outranks a find's (pri 4)
-  if (told || hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), told ? 4 : 2);
+  if (hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), 2);
   return true;
 }
 // the calm window of the day: a wary one (another wild creature of the place) is drawn toward her haunt for twelve light; at the window's first light the nearest idle one is chosen
