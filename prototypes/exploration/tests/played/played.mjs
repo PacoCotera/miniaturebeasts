@@ -340,8 +340,16 @@ for (const size of SIZES) {
   it(`s3 the hero under the menu (#166, his save, tile 21,0): his pixels are on screen after ← opens the menu and after one Wait [${tag}]`, async () => {
     const g = await open(size, "166");
     try {
+      // PLACE_REV 5 made the place again: his #166 save loads at 20,4 (the 11-27 land rule), not on the old edge tile. By presses (✓ for the day's cards) to col 20 row 8, where he stands mid-view
+      const pos = () => g.page.evaluate(() => { const P = window.__play.frames.companion.contentWindow.__mb.S.exp.patch; return { x: P && P.x, y: P && P.y }; });
+      const card = () => g.page.evaluate(() => !!window.__play.frames.companion.contentWindow.__mb.FX.card);
+      for (let i = 0; i < 40; i++) {
+        const s = await pos(); if (s.x === 20 && s.y === 8) break;
+        for (let k = 0; k < 4 && await card(); k++) await g.press("confirm", 100, 700);
+        await g.press(s.x < 20 ? "right" : s.x > 20 ? "left" : s.y < 8 ? "down" : "up", 100, 450);
+      }
       const at = await g.where();
-      assert.deepEqual([at.phase, at.x, at.y], ["patch", 21, 0], "the case is reached: he stands at the top edge");
+      assert.deepEqual([at.phase, at.x, at.y], ["patch", 20, 8], "the case is reached: he stands mid-view");
       const r = await g.region(), base = await g.shot();
       // the hero is the biggest orange blob of the play field (below the HUD strip); the menu's orange selection bar and the HUD icons are other blobs and are never counted
       const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
@@ -349,11 +357,14 @@ for (const size of SIZES) {
       assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
       const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
       await g.press("back");                                // ← opens the menu
-      const menuBlobs = blobs(await g.shot(`s3-${tag}-menu`), hb, HERO), menu = menuBlobs[0] || { n: 0, box: null };
+      // the view shifts sideways while the menu is open (UI's ruling, bus 5eabf248f7), so the window to count in follows him: his pawn's place on the view, as s19b finds it
+      const k = r.w / 450, ps = await g.page.evaluate(() => { const p = window.__play.frames.companion.contentWindow.__mb.RT.plScr; return { px: p && p.x, py: p && p.y }; });
+      const mw = { x: Math.round(r.x + (ps.px - 28) * k), y: Math.round(r.y + (ps.py - 28) * k), w: Math.round(56 * k), h: Math.round(56 * k) };
+      const menuBlobs = blobs(await g.shot(`s3-${tag}-menu`), mw, HERO), menu = menuBlobs[0] || { n: 0, box: null };
       console.log(`# s3 ${tag}: hero ${hero.n} px, menu ${menu.n} (${menuBlobs.length} blob(s) at his place)`);
       assert.ok(menu.n >= hero.n * 0.6, `the hero is on screen with the menu open (${menu.n} of ${hero.n} pixels)`);
       assert.ok(menu.n <= hero.n * 1.2, `the orange counted with the menu open is the hero's, not the menu's selection bar (${menu.n} of ${hero.n} pixels)`);
-      assert.ok(menu.box && Math.abs(menu.box.x - hero.box.x) <= 4 && Math.abs(menu.box.y - hero.box.y) <= 4 && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange blob with the menu open sits where the hero stands (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+      assert.ok(menu.box && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange blob with the menu open is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
       const rows = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.menuItems().length);
       for (let i = 0; i < rows && await g.menuRow() !== "wait"; i++) await g.press("down");   // the rows differ by save ('Her page' only when a Loika is named): press Down until the row is Wait
       assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
@@ -608,9 +619,12 @@ for (const size of SIZES) {
     const g = await open(size, "166");
     try {
       const at = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, p = m.RT.plScr; return { phase: m.S.phase, key: P && P.key, x: P && P.x, y: P && P.y, px: p && p.x, py: p && p.y }; });
-      for (const dir of ["up", "right", "down", "left"]) {
-        let same = 0, last = JSON.stringify(await at());
-        for (let i = 0; i < 40 && same < 2; i++) { await g.press(dir, 100, 500); const now = JSON.stringify(await at()); same = now === last ? same + 1 : 0; last = now; }
+      // PLACE_REV 5 made the place again and his #166 save loads at the top of it (the rock field's old left edge is not there): by presses (down, left or right; ✓ for the day's cards) to col 20 row 8, where he stands mid-view and the box would cover him
+      const card = () => g.page.evaluate(() => !!window.__play.frames.companion.contentWindow.__mb.FX.card);
+      for (let i = 0; i < 80; i++) {
+        const s = await at(); if (s.x === 20 && s.y === 8) break;
+        for (let k = 0; k < 4 && await card(); k++) await g.press("confirm", 100, 700);
+        await g.press(s.x < 20 ? "right" : s.x > 20 ? "left" : s.y < 8 ? "down" : "up", 100, 450);
       }
       const spot = await at();
       console.log(`# s19 ${tag}: he stands at ${JSON.stringify(spot)}`);
@@ -622,11 +636,14 @@ for (const size of SIZES) {
       assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
       const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
       await g.press("back");                                // ← opens the menu
-      assert.equal((await at()).phase, "menu", "the case is reached: the menu is open");
-      const menu = blobs(await g.shot(`s19-${tag}-menu`), hb, HERO)[0] || { n: 0, box: null };
+      const open1 = await at();
+      assert.equal(open1.phase, "menu", "the case is reached: the menu is open");
+      // the view shifts sideways while the menu is open (bus 5eabf248f7): the window follows his pawn, as in s19b
+      const k = r.w / 450, mw = { x: Math.round(r.x + (open1.px - 28) * k), y: Math.round(r.y + (open1.py - 28) * k), w: Math.round(56 * k), h: Math.round(56 * k) };
+      const menu = blobs(await g.shot(`s19-${tag}-menu`), mw, HERO)[0] || { n: 0, box: null };
       console.log(`# s19 ${tag}: hero ${hero.n} px before the menu, ${menu.n} with it open`);
       assert.ok(menu.n >= hero.n * 0.95, `the hero's pixels are whole with the menu open, the box is not over him (${menu.n} of ${hero.n} pixels)`);
-      assert.ok(menu.box && Math.abs(menu.box.x - hero.box.x) <= 4 && Math.abs(menu.box.y - hero.box.y) <= 4 && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange at his place is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+      assert.ok(menu.box && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange at his place is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
     } finally { await g.ctx.close(); }
   });
 
