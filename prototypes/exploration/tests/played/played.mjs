@@ -772,6 +772,56 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 
+  // OWNER 2026-11-25 16:3x: "watching mibis in the wild is fun too, but they don't do much." + the lead's ruling (11-26 23:54): the line names the Loika the tag sits on.
+  // wild-life-build-7 (design bus a07f75, build bus a7f085): played on a save PAST the first walk (his #172); the verdict is pixels. State is read only to reach the case (who is named, in sight, acting).
+  const TOKEN = (r, t) => { const u = r.w / 450, H = r.h / u; return [(t.x - 22) / 450, (t.y - 4) / H, 44 / 450, 40 / H]; };   // her token: a window of game px about the tag's place (tagW.x, tagW.y), as fractions of the frame
+  const readW = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, her = m.herInSight(); return { phase: m.S.phase, home: !m.FX.teachMsg, her, name: her != null ? m.S.named[her] : null, beats: Object.keys(m.FX.beats || {}), tagW: m.RT.tagW ? { x: m.RT.tagW.x, y: m.RT.tagW.y } : null, unmet: m.curLive().cr.filter((x) => x.sp === 0 && !m.S.named[x.id] && m.onScreen(x.x, x.y)).map((x) => x.id) }; });
+  if (size.w === 412) it(`wl5 a wild Loika's act (wild-life-build-5, save 156): the act's line takes the box and her token acts, then the box is as it was [${tag}]`, { todo: "not reached (wild-life-build-7): past the first walk no saved game has a calm named Loika acting (saves 145 and 156: 0 acts in 60 presses; 172 opens on the end-of-walk Case, no patch); needs a save made by presses past the first walk. The pixel verdicts below are written" }, async () => {
+    const g = await open(size, "145");
+    try {
+      const at = await readW(g);
+      assert.deepEqual([at.phase, at.home, at.her != null, at.name != null], ["patch", true, true, true], `the case is reached: past the first walk, a named Loika in sight (${JSON.stringify(at)})`);
+      const r = await g.region(); let prev = await g.shot(), idle = null, act = null, before = null, state = null; const way = ["down", "down", "down", "left", "left", "up", "up", "up", "right", "right"];
+      for (let i = 0; i < 60 && !act; i++) {
+        await g.press(way[i % 10], 100, 900);
+        const s = await readW(g), im = await g.shot();
+        if (s.her != null && s.tagW && s.beats.includes(s.her)) { act = im; before = prev; state = s; } else prev = im;
+        if (s.tagW && !idle) idle = { im, t: s.tagW };
+      }
+      console.log(`# wl5 ${tag}: act ${!!act} state ${JSON.stringify(state)}`);
+      assert.ok(act, "the case is reached: a named Loika in sight did an act (FX.beats)");
+      await g.shot(`wl5-${tag}-act`);
+      const boxAct = changed(before, act, r, MSGBOX), tok = changed(idle.im, act, r, TOKEN(r, state.tagW));
+      console.log(`# wl5 ${tag}: box pixels changed at the act ${boxAct.n} (of ${boxAct.of}); token pixels changed from idle ${tok.n} (of ${tok.of})`);
+      assert.ok(boxAct.n > 400, `the box at the act differs from the box before it (${boxAct.n} pixels)`);
+      await g.page.waitForTimeout(3200);
+      const later = await g.shot(`wl5-${tag}-after`), back = changed(before, later, r, MSGBOX);
+      console.log(`# wl5 ${tag}: box after the hold, from before the act ${back.n}`);
+      assert.ok(back.n < 5000 && back.n < boxAct.n, `after the hold the box matches the one before the act (${back.n} pixels differ, ${boxAct.n} at the act)`);
+      assert.ok(tok.n > 50, `her token's frames differ from idle at the act (${tok.n} pixels)`);
+    } finally { await g.ctx.close(); }
+  });
+  // wild-life-build-7: an unmet Loika on screen (state asserts only that she is there): 20 presses; the box never changes from an act and nothing acts on her
+  if (size.w === 412) it(`wl6 an unmet Loika on screen (save 145): no act picture on her, no act line in the box [${tag}]`, { todo: "not reached (wild-life-build-7): no saved game shows an unmet Loika on screen (145 and 156 name theirs; 14 has four unmet, all off screen); needs a save made by presses. The pixel verdicts below are written" }, async () => {
+    const g = await open(size, "156");
+    try {
+      const way = ["down", "down", "left", "up", "up", "right"]; let s = await readW(g);
+      for (let i = 0; i < 40 && !s.unmet.length; i++) { await g.press(way[i % 6], 100, 700); s = await readW(g); }
+      assert.ok(s.unmet.length, `the case is reached: an unmet Loika is on screen (${JSON.stringify(s)})`);
+      const r = await g.region(); let base = await g.shot(), worst = 0, beats = 0;
+      for (let i = 0; i < 20; i++) {
+        await g.press(way[i % 6], 100, 700);
+        const t = await readW(g), im = await g.shot();
+        beats = Math.max(beats, t.beats.filter((id) => s.unmet.includes(id)).length);
+        if (!t.tagW) worst = Math.max(worst, changed(base, im, r, MSGBOX).n);
+        base = im;
+      }
+      console.log(`# wl6 ${tag}: unmet ${JSON.stringify(s.unmet)} acts on them ${beats}, largest box change between presses ${worst}`);
+      await g.shot(`wl6-${tag}-unmet`);
+      assert.equal(beats, 0, "no act picture on an unmet Loika");
+      assert.ok(worst < 400, `the box never changes from an act (${worst} pixels at most between presses)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 2026-11-24 15:5x on #156: "in the wild you should be able to see the name". QA verify-live-649, seed 14 (saves/14.save, made from a fresh seed-14 game by QA's presses C-01..C-13: ✓ x3 to set out, ← twice, right x3):
   // Burr stands under a tree crown and her bone name tag was clipped to "r" (412x915-C-13-right). The verdict is the tag's pixels on the shot: the bone frame whole, all four sides, with the name inside.
   it(`s12 a wild name tag over a crown (#156, seed 14): Burr's bone tag is whole on the screen, a crown never hides part of it [${tag}]`, async () => {

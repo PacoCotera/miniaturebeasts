@@ -6,7 +6,7 @@ import { ALT_CODE, applyOpenEdges, cliffInfo, rimSteps } from '../../places/src/
 import { cliffDecals } from '../../places/src/bake/southruns.mjs';
 
 export const FIND_KINDS = ['pod', 'fruit', 'dew', 'stone', 'material'];
-const FORMAT_VERSION = 1;
+import { FORMAT_VERSION } from '../../places/src/format/write.mjs';   // the place format (2: the cell carries the bake's hold outputs, baked-package-8): the one place it is set
 
 const spriteFor = (ts, group, kind) => { const i = ts.sprites.findIndex(s => s.group === group && s.kind === kind); return i < 0 ? null : { index: i, sprite: ts.sprites[i] }; };
 function footprintCells(ir, ts) {
