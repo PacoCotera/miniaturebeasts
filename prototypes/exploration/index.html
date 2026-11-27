@@ -2031,6 +2031,14 @@ function unveil(key, cx, cy, r) {
   const bits = (x1 >= 30 ? -1 : (1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
   for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
 }
+// A named Loika he has met starts her tell within ten tiles: the veil lifts on her tile and on the tiles in a line between them, as the Call lifts it (tell-seen-fix-1).
+// Nothing else changes: not the range, the wind, the stay, nor a free note. The gate is S.named alone (the top line only ever names a met Loika); never an unmet stranger.
+function unveilTellLine(key, c, P) {
+  if (key[0] === 'c' || !c.ind || !(S.named && S.named[c.id]) ||Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
+  const lay = layout(key), v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0)), n = Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y));
+  for (let i = 0; i <= n; i++) { const x = Math.round(P.x + (c.x - P.x) * i / (n || 1)), y = Math.round(P.y + (c.y - P.y) * i / (n || 1)); if (x >= 0 && y >= 0 && x < lay.w && y < lay.h) v[y] = (v[y] | (1 << x)) >>> 0; }
+  return true;
+}
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted, and nothing puts it back.
 function walkLift() {
@@ -2737,7 +2745,8 @@ function habitTick(c, X) {   // true when the habit has her action
   if (c.gone || (c.ease | 0) >= 2 || ['flee', 'alert', 'approach', 'watch'].includes(c.st)) return false;
   const due = habitDue(c, X); if (!due) return false;
   c.hb = { k: due.k, n: due.n, tell: tellOf(c.ind.doings), v: due.v, notes: {}, pose: 'alert' }; c.st = 'hab';
-  if (hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), 2);
+  const told = !!S.exp.patch && !c.hide && unveilTellLine(S.exp.patch.key, c, S.exp.patch);   // within ten tiles: lifted, and her line outranks a find's (pri 4)
+  if (told || hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), told ? 4 : 2);
   return true;
 }
 // the calm window of the day: a wary one (another wild creature of the place) is drawn toward her haunt for twelve light; at the window's first light the nearest idle one is chosen
@@ -3438,19 +3447,35 @@ function screeOpen(dir) {   // true: stepping dir over a scree edge from a tile 
   const lay = layout(P.key), q = lay && crossingAt(lay, P.x, P.y);
   return !(q && !q.bank && q.dir === dir);
 }
-function crossEdge(dir) {
+// What a step off the place's edge would do, asked and never acted on (crossEdge acts on it; the bottom line reads it before the step, edge-cost-line-fix-1):
+// { sw } a step into another region, { why, full } a refusal (full: the cell is revealed and the soft-tile pin added), { land } a crossing (land undefined: the tiles do not decide it).
+function crossVerdict(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
-  { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
+  { const sw = seamCross(ex.pos, dir); if (sw) return { sw }; }
   const scr = screeOpen(dir);   // #159: on a scree edge, off its two crossing tiles, the tiles decide: open ground both sides crosses
   let why = crossReason(ex.pos, dir, true, scr);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
   const land = why ? undefined : crossLanding(dir, scr);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
   if (land === null) why = crossBlockWords(dir);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
+  if (why) return { why, full: true };
   if (land === undefined && !scr && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
-    if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!q || (k !== q.s && k !== q.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
-    if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!st || (k !== st.s && k !== st.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
+  return { land };
+}
+// True while the pawn stands on the place's edge tile facing out and the step would cross into the next place (patchStepRun's own tests, never acted on).
+function edgeStepCrosses() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch') return false;
+  const lay = layout(P.key), f = frontOf(P); if (f.x >= 0 && f.y >= 0 && f.x < lay.w && f.y < lay.h) return false;
+  if (lay.cave || (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[P.dir]))) return false;
+  const v = crossVerdict(P.dir); return !!(v.sw || !v.why);
+}
+function crossEdge(dir) {
+  const ex = S.exp, c =stepCell(ex.pos, dir), v = crossVerdict(dir);
+  if (v.sw) { crossRegion(dir, v.sw); return; }
+  if (v.why) { FX.bumpAt = NOW; if (v.full) { if (c >= 0 && v.why !== RANGE_TEXT()) revealCell(c); fxMsg(v.why + softPin(ex.pos, dir)); save(); } else fxMsg(v.why); return; }
+  const land = v.land;
   if (G.gen === 7 && c >= 0 && !placeHave(String(c)) && motion() && !FX.crossRetry) {   // the next place is not built yet: the old place stays on the screen, nothing has moved; the crossing is made when it is here
     if (FX.crossWait) return;
     const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
@@ -3553,7 +3578,7 @@ function patchAction() {
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
-    return { label: 'Veiled · Call to see', run: null };
+    return { label: edgeStepCrosses() ? '' : 'Veiled · Call to see', run: null };   // edge-cost-line-fix-3: facing the edge, the front is the next place the edge line already names; this ✓ does nothing, so its label yields to the line (UI 04:28: 'Call to see' alone still left no room at 390)
   if (o && o.type === 'cr') {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp) && !o.c.ind) return !fruit && inSight(f.x, f.y) && (o.c.ease | 0) < 3 ? { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) } : { label: 'Unknown creature', run: null };   // ui-dead-check-156-4: beside one he has not met and that is no individual, ✓ keeps still as beside a Loika (keepStill reads no ind), never a ✓ that does nothing
@@ -3969,7 +3994,7 @@ function waitChanges(a, b, scope) {
   else if (b.fogNear && scope === 'map') { const dw = dirWord(ex.fog.dx, ex.fog.dy, Math.hypot(ex.fog.dx, ex.fog.dy) || 1); out.push('the fog bank drifts' + (dw ? ' ' + dw : '')); }
   if (b.cups > a.cups) out.push('dew gathers in a cup');
   // creatures in view: what each did, grouped ("two Loikas wander"), the more telling changes first
-  const ev = new Map(), add = (sp, v) => { const k = sp + '|' + v; ev.set(k, (ev.get(k) || 0) + 1); };
+  const ev = new Map(), add = (sp, v) => { const k = (S.known.includes(+sp) ? sp : 'u') + '|' + v, e = ev.get(k); if (e) e.n++; else ev.set(k, { n: 1, sp: +sp }); };   // unknown species group under one key per verb: "Five creatures wander"
   for (const [id, n] of b.cr) { const o = a.cr.get(id);
     if (!o) add(n.sp, 'view');
     else if (o.st === 'eat' && n.st !== 'eat') add(n.sp, 'ate');
@@ -3981,7 +4006,7 @@ function waitChanges(a, b, scope) {
     else if (n.calm > o.calm && n.calm >= 2) add(n.sp, 'settle');
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
-  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? (ROUTINE[s] || ROUTINE_ANY) : VERB[v];
+  const crs = [...ev.entries()].map(([k, { n, sp: s }]) => { const v = k.split('|')[1], known = S.known.includes(s), vb = v === 'routine' ? ((known && ROUTINE[s]) || ROUTINE_ANY) : VERB[v];
     const who = n > 1 ? numWord(n) + ' ' + (known ? spOf(s).plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
@@ -9015,6 +9040,7 @@ function lineBase() {
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
+      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first (edge-cost-line-fix-1)
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
       return lv; }
