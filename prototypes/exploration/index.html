@@ -2032,11 +2032,9 @@ function unveil(key, cx, cy, r) {
   for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
 }
 // A named Loika he has met starts her tell within ten tiles: the veil lifts on her tile and on the tiles in a line between them, as the Call lifts it (tell-seen-fix-1).
-// Nothing else changes: not the range, the wind, the stay, nor a free note.
-// The gate (design 11-27): the top line's Loika (met or not) or one he has met (S.named); never an unmet stranger.
-const tellTop = c => { const t = targetLine(); return !!t && String(t.id) === String(c.id); };
+// Nothing else changes: not the range, the wind, the stay, nor a free note. The gate is S.named alone (the top line only ever names a met Loika); never an unmet stranger.
 function unveilTellLine(key, c, P) {
-  if (key[0] === 'c' || !c.ind || !(S.named && S.named[c.id]) && !tellTop(c) || Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
+  if (key[0] === 'c' || !c.ind || !(S.named && S.named[c.id]) ||Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
   const lay = layout(key), v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0)), n = Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y));
   for (let i = 0; i <= n; i++) { const x = Math.round(P.x + (c.x - P.x) * i / (n || 1)), y = Math.round(P.y + (c.y - P.y) * i / (n || 1)); if (x >= 0 && y >= 0 && x < lay.w && y < lay.h) v[y] = (v[y] | (1 << x)) >>> 0; }
   return true;
