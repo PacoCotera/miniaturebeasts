@@ -231,7 +231,6 @@ export const DAY_TEXT = {
 };
 // the night pod's words (editorial's lines; none is the builder's)
 WORDS.pod = {
-  slot: 'Loika asleep in her pod: picture to come',   // [art] NIGHT_POD_LOIKA: a named empty slot until the signed picture is in the art set
   take: 'Take her up', second: 'One sleeper only', line: n => n + ' · asleep in her pod', lineShort: n => n + ' · asleep',
   secondMsg: n => 'The Case holds one sleeper · ' + n + ' is in it',   // editorial's line: the walk's end brings her home
   head: n => 'Take ' + n + ' up?', leave: 'Leave her asleep',

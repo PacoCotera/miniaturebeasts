@@ -4791,6 +4791,27 @@
   },
   {
    "class": "pixel",
+   "date": "2026-11-27",
+   "id": "1e40a024fb",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-groom-right-plain",
+   "sha256": "bc6c7571394a91f9298a48d0b9eef8dd098cafa89783fd3077939dad8dd8f751"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "76b4ec9eb8",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-groom-right-plain-between",
+   "sha256": "559570d7da675267865c5d881d9212a5788da46956070c2c4178e5815ecf109d"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "ec5e186975",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-groom-right-saddled",
+   "sha256": "f9f6f1e82d270cdf15ec2f02cc0ae1e494074678d3bc61cb382a550b500c6099"
+  },
+  {
+   "class": "pixel",
    "date": "2026-11-22",
    "id": "7cd3958278",
    "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-idle-left-saddled",
@@ -4802,6 +4823,118 @@
    "id": "1de971750a",
    "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-idle-right-saddled",
    "sha256": "44b4a1e4f6c9d6bfefb180d87bc631dc22226b15d18a3b1da4416c3de656fbbb"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "f81b9b080c",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f0",
+   "sha256": "9b93320af089a6b07ebb9d27017d839093fbf7b9fb801c40c6fcc4ce88253ae0"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "f67df63538",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f1",
+   "sha256": "8ded834b4cafa1068cc5885e93caa94225e0f89571c632c534d122c380dd7bcc"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "1fca84bb91",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f2",
+   "sha256": "81315002d0c8d3ebccefe1c4dbb6c8fe0f51b2c0cdc0786c760e28dc208794ef"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "3a3fcca271",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f3",
+   "sha256": "de6519e3dab1a237a245a14e0ce8b7b20d6c6a535d707b19c26f4f7aed0244ae"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "6917cf8f94",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f4",
+   "sha256": "f1f0ddbf464ba8311ef67f3104464e9e3b04394008c3a1839d1509fdfc865957"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "4534732e3d",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f5",
+   "sha256": "20a13761323f716b85c2ce784985f82440929ab787bdb2b066f3af3152fbc340"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "4ef8c738ae",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f6",
+   "sha256": "d6ba00cf9042d6e1150b121c90ec0e460d0292fee7ef8413dfbf2a61eb4df6f9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "035d54669e",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-plain-f7",
+   "sha256": "6f6844229d62907226df5c3c030e66dc699bad98b07a162a685a35e9d520f9ba"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "c93d315998",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f0",
+   "sha256": "4ff76e148a6c4094abc17b8c42d11fd09856028aa3eaa0a384f6ed89f88d733d"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "de4dfc5d7d",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f1",
+   "sha256": "11a8ec3dcd866db881cfa3eb6e6e5a9899cbf35feaa0f8bd51f4f81b7e183c16"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "ff76790dac",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f2",
+   "sha256": "ab3687472b6b1009272e64f51eb48b7be51aa7360ed16ea152998d5447dc16ec"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "9a3d5269fe",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f3",
+   "sha256": "c4be43b4d10879c63543edef333dd117f710aa0b97979b3a318c590da638ebf9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "93a6d22581",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f4",
+   "sha256": "4501ce6be05c3f39faab47bc7ddf9421e918e0150d2eacf9ef3ff3d280532cd5"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "d7518a2ba4",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f5",
+   "sha256": "dafe06e001b2a9d07c05a79019a91bffe319628f38315d533fc059f7f3a10cfc"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "6918a438ff",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f6",
+   "sha256": "ef2db3c61628fd9de892e156d110c0db6aeab67b4576fb159f8a3783f39ccac3"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "e6fde42bde",
+   "path": "prototypes/exploration/index.html#STEP_ART/loika-s01-lookup-right-saddled-f7",
+   "sha256": "d70a88f673fbf1a2fc13e50dbce131e64ce14b3283bbfe937fd4ccc2e0685323"
   },
   {
    "class": "pixel",

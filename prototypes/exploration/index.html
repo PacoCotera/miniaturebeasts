@@ -633,6 +633,8 @@ function stonePut(name, f, look, dy) {   // f: { width, height, data (RGBA) }; l
 // the Rupar's fresh hole (frame 0, frame 1, bare), the slab and the exit. Their colours are off the core palette, so each file is kept as a picture the page blits, as the stones are. Each is drawn in its own
 // cell as the code-drawn piece was, its foot row where that piece's was (PROP_DY, the old foot row less the file's); the fresh hole keeps HOLE_DX. Until the files are in, a named empty slot draws nothing.
 const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 0, 'way-through-mark-stake': 0, 'strike-mark-read': 0, 'strike-mark-unread-1': 0, 'strike-mark-unread-2': 0, 'storm-glass-shard': 0, 'pearl-in-shallows': 0, 'landmark-windstep-tree': 0, 'landmark-reedpool-island-stone': 0, 'bush-full': 0, 'bush-full-m': 0, 'bush-bare': 0, 'bush-bare-m': 0,'prop-fruit': 0, 'crate-sealed-lid': 0, 'crate-sealed-icon': 0, 'prop-nest': 0, 'prop-crack': -2, 'prop-hole0': -3, 'prop-hole1': -3, 'prop-hole-fresh': 5, 'prop-hole-fresh-f2': 5, 'prop-hole-fresh-bare': 5, 'prop-slab': -2, 'prop-exit': -2,
+  // her night pod (signed, mibi-art ledger; pod-sleep-pixel-3): the 24 x 14 piece, the 32 x 32 land tile (foot on row 31; the pawn's foot is row 30, so -1) and the 32 x 18 Case cut
+  'night-pod-loika-24x14': 0, 'NIGHT_POD_LOIKA-tile-32x32': -1, 'night-pod-loika-case-32x18': 0,
   // the walk cups (surface and cave, empty and full), the cave crystals (dim, lit), the mushroom ring and the burrow (open, closed; deep-shadow #141b1b): art/desk f66de6a16, 32 x 32; foot row as the code-drawn ones were
   'cup-surface-empty': 0, 'cup-surface-full': 0, 'cup-cave-empty': 0, 'cup-cave-full': 0, 'crystals-dim': 1, 'crystals-lit': 1, 'mushroom-ring': -1, 'burrow-open-dark': 0, 'burrow-closed-dark': 0,
   // the depot and beacon (32 x 32, the crop box of the code-drawn ones: foot row as it was), their 20 x 22 and 12 x 22 map icons, the six walk pods (12 x 14, signed 1x, mibi-art 75f1ff195) and the legacy path's crown and roof: art/desk e48cee90a and 1158b9710
@@ -641,7 +643,7 @@ const PROP_DY = { 'find-glint-1': 0, 'find-tuft-1': 0,'way-through-mark-stone': 
     // the explorer: nine 32 x 32 frames, feet on row 30 (mibi-art 9c1bf9ece), blitted at the cell's top-left as the code-drawn one was
     ...['down-0', 'down-1', 'up-0', 'up-1', 'left-0', 'left-1', 'creep-down', 'creep-up', 'creep-left'].map(n => 'pawn-' + n)].map(n => [n, 0])) };
 const PROP_FILES = Object.keys(PROP_DY);const LM_PIECE = { windstep: 'landmark-windstep-tree', reedpool: 'landmark-reedpool-island-stone' };   // the landmarks that have a picture (the Hollow Tree is a baked prop; the Split Stone's picture is not placed yet)
-const PROP_SIZE = { 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'crate-sealed-lid': [48, 36], 'crate-sealed-icon': [16, 14], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
+const PROP_SIZE = { 'night-pod-loika-24x14': [24, 14], 'NIGHT_POD_LOIKA-tile-32x32': [32, 32], 'night-pod-loika-case-32x18': [32, 18], 'heart-slab': [32, 20], 'strike-mark-read': [16, 16], 'strike-mark-unread-1': [16, 16], 'strike-mark-unread-2': [16, 16], 'prop-fruit': [12, 12], 'crate-sealed-lid': [48, 36], 'crate-sealed-icon': [16, 14], 'prop-fruitx2': [24, 24], 'prop-hole-fresh': [40, 32], 'prop-hole-fresh-f2': [40, 32], 'prop-hole-fresh-bare': [40, 32],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['icon-depot-' + s, [20, 22]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['icon-beacon-' + s, [12, 22]])),
   ...Object.fromEntries(['bone', 'lime', 'ice', 'sand', 'sprout', 'lavender'].map(s => ['pod-walk-' + s, [12, 14]])), 'pod-walk-bone': [15, 16],
   ...Object.fromEntries(['dark', 'ember', 'half', 'full'].map(s => ['walk-depot-' + s, [43, 47]])), ...Object.fromEntries(['unlit', 'lit'].map(s => ['walk-beacon-' + s, [20, 44]])) };
@@ -5243,6 +5245,9 @@ function flipPB(pb) { const o = new PB(pb.w, pb.h); for (let y = 0; y < pb.h; y+
 // ---------- Small items and features ----------
 // Pods: shell colour from the ground and a dark outline so they read on grass and in shade. An unread pod shows nothing of its kind.
 // The pod is the art desk's painted walk pod, one file per shell (art/props/pod-walk-<shell>, signed in mibi-art e48cee90a); s = 2 or 3 is the same picture, each pixel a whole block. No pod is drawn in code.
+// her pod (isNightPod) draws the signed night piece for its place: 'tile' the 32 x 32 on the land, 'case' the 32 x 18 cut in the cradle, else the 24 x 14; every other pod is podArt as before
+const NIGHT_POD_PIECE = { tile: 'NIGHT_POD_LOIKA-tile-32x32', case: 'night-pod-loika-case-32x18', small: 'night-pod-loika-24x14' };
+function podPic(p, s, where) { return isNightPod(p) ? propPiece(NIGHT_POD_PIECE[where || 'small']) : podArt(POD_SHELL[p && p.g] || 'bone', s); }
 function podArt(shell, s) { const n = 'pod-walk-' + shell; return propPiece((s || 1) > 1 ? n + 'x' + s : n); }
 // The walk props are the art desk's painted files (art/props/, see PROP_FILES): no prop is drawn in code.
 const FRUIT = () => propPiece('prop-fruit'), FRUIT2 = () => propPiece('prop-fruitx2');
@@ -7176,7 +7181,8 @@ function drawPatchBody(t) {
   for (const p of S.pods) if (p.k === P.key && !p.h && p.x >= 0) { const x = p.x * ts, y = p.y * ts; if (!vis2(x, y) || !see(p.x, p.y)) continue;
     // a find your Call or partner turned up stays outlined until you take it
     if (p.out) { const o2 = fr ? 0 : 1; for (let k = 2; k < ts - 2; k += 4) { R(W(x + k), H(y + 1 + o2), 2, 2, C.cream); R(W(x + k), H(y + ts - 3 - o2), 2, 2, C.cream); R(W(x + 1 + o2), H(y + k), 2, 2, C.cream); R(W(x + ts - 3 - o2), H(y + k), 2, 2, C.cream); } }
-    blit(podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), findRm(p.x, p.y)); }
+    const nt = isNightPod(p), bob = fr && (p.x + p.y) % 2 ? 1 : 0;   // her night pod is the 32 x 32 tile at the cell's top-left; the others sit in their box
+    blit(nt ? podPic(p, 1, 'tile') : podArt(POD_SHELL[p.g] || 'bone', 1), SX(x) + (nt ? 0 : 8), SY(y) + (nt ? 0 : 8) + bob, findRm(p.x, p.y)); }
   // the take marks: a charged storm stone keeps its bolt for as long as it holds a charge; a strike mark stands in the art desk's slot with the Probe's glint on it while unread (kit light)
   if (!lay.cave) {
     for (const f of lay.feats) { if (f.kind !== 'k' || stormCharge(P.key, f) <= 0) continue;
@@ -7693,9 +7699,10 @@ function drawLine(o) {
 // the one to leave framed; Ground: the pod you face.
 function drawSwap() {
   const sw = swapState(); if (!sw) return;
-  if (sw.night) {   // pod-sleep-build-1: the confirm on the chooser's frame (wild-pod-route-ui-1 p-3): her head and one sentence; the picture slot NIGHT_POD_LOIKA stays empty until it is signed
+  if (sw.night) {   // pod-sleep-build-1: the confirm on the chooser's frame (wild-pod-route-ui-1 p-3): her head, her signed night pod picture and one sentence
     const ls = wrapText(WORDS.pod.c1, 398, 2).slice(0, 4), h = 66 + ls.length * 22, y0 = VIEW_Y + 64;
     panel(6, y0, SCR_W - 12, h, C.ink, C.amber); text(WORDS.pod.head(sw.p.nm), 22, y0 + 14, C.bone, 2);
+    blitScaled(podPic(sw.p, 1, 'small'), SCR_W - 6 - 16 - 48, y0 + 10, 2);
     ls.forEach((l, i) => text(l, 22, y0 + 50 + i * 22, C.fog, 2)); return; }
   // picture first: the pods in your bag on the left (the framed one is the one that stays), the found pod large on the right
   const T = SWAP_TEXT, n = sw.held.length, y0 = VIEW_Y + 64, cy = y0 + 70, ch = 218, cw = 204, lx = 16, rx = 230;
@@ -7840,7 +7847,7 @@ function warnPicPlace(x0, y0, a) {
     g.drawImage(pb.canvas(rm, false, false, rm !== 3 && !unveiled(a.key, tx, ty)), Math.round(X(sx)), Math.round(Y(sy))); };
   for (let k = 0; k < lay.w * lay.h; k++) if (lay.tiles[k] === T.TRUNK) { const tx = k % lay.w, ty = (k / lay.w) | 0, under = tokens.some(q => cheb(q, { x: tx, y: ty }) <= 1);
     const crown = ts === 48 && treeCanopy(lay, k, under ? 1 : 0, light(tx, ty) === 3); if (crown) over(crown, tx * ts + o.x + 16 - 44, ty * ts + o.y + 16 - 58, tx, ty); }
-  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) blit(podArt(POD_SHELL[q.g] || 'bone', 1), x0 + 8, y0 + 8);
+  for (const q of S.pods) if (q.k === a.key && !q.h && q.x >= 0 && here(q.x, q.y) && see(q.x, q.y)) { const nt = isNightPod(q); blit(nt ? podPic(q, 1, 'tile') : podArt(POD_SHELL[q.g] || 'bone', 1), x0 + (nt ? 0 : 8), y0 + (nt ? 0 : 8)); }
   RT.remap = keepRm;
   g.restore();
   R(x0, y0, 32, 2, C.yellow); R(x0, y0 + 30, 32, 2, C.yellow); R(x0, y0, 2, 32, C.yellow); R(x0 + 30, y0, 2, 32, C.yellow);
@@ -7858,7 +7865,7 @@ const PIC = {
   warm: (x, y) => onGrass(x, y, () => blit(stoneArt(0, false, -1, 1, 1), x, y)),
   charged: (x, y) => onGrass(x, y, () => blit(stoneArt(1, false, 0, 0, 1), x, y)),
   shelter: (x, y) => cen(SHELTER(), x, y),
-  pod: (x, y, p) => cen(podArt(POD_SHELL[p && p.g] || 'bone', 1), x, y),
+  pod: (x, y, p) => cen(podPic(p, 1, 'small'), x, y),
   full: (x, y, ps) => { podSlot(x, y + 6, (ps && ps[0]) || { g: 'meadow' }); podSlot(x + 16, y + 6, (ps && ps[1]) || { g: 'pond' }); },
   bank: (x, y) => cen2('crate', crateArt(), x, y),
   fog: (x, y) => ditherFill(x, y, 32, 32, 'fog', 8),
@@ -8631,7 +8638,7 @@ function drawCargo(t) {
   caseBrass(209, 542, 32, 12); R(221, 546, 8, 4, C.soil);
   // the pod cradles (a pod in each that holds one, its signed picture at 2x), the three supplies (the top bar's own counter pictures at 2x), the satchel's 8 places
   for (const c of cells) {
-    if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); }
+    if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) { if (isNightPod(p)) blit(podPic(p, 1, 'case'), cx - 16, cy - 9); else blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); } }
     else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
     else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); else if (st) { text(W.slotWord[st.item], c.x + c.w / 2, c.y + 8, C.soil, 2, 'center'); blitScaled(ICON.paw('soil'), c.x + 14, c.y + 32, 2); } if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
   }

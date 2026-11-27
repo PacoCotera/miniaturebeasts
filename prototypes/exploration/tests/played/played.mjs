@@ -447,6 +447,50 @@ for (const size of SIZES) {
       assert.ok(s.cased === 1 && s.pods === 0, "the case is reached: her pod is in the Case " + JSON.stringify(s));
     } finally { await g.ctx.close(); }
   });
+  // night-pod-place-1 (OWNER 11-24 18:5x "turns into a pod for the night"; LEAD 11-27 06:05, the signed picture is the gate): her pod on the land is the signed 32x32 tile, and the Case cradle shows the signed 32x18 cut.
+  // The verdict is a shot against the signed file: the file's opaque pixels, sampled at the screen's scale (the game canvas is 450 wide), against the shot in a window around where the piece is drawn; the best luminance correlation (night tints the colours, not the shape).
+  const lum = ([R, G, B]) => 0.299 * R + 0.587 * G + 0.114 * B;
+  const propPng = (n) => decodePNG(readFileSync(path.join(repo, "prototypes/exploration/art/props", n + ".png")));
+  const matchPiece = (im, r, pic, ox, oy, span, step) => {   // best Pearson r of the file's opaque pixels against the shot, the piece's top-left at (ox..ox+span, oy..oy+span) device px
+    const k = r.w / 450, pts = [];
+    for (let j = 0; j < pic.height; j++) for (let i = 0; i < pic.width; i++) { const o = (j * pic.width + i) * 4; if (pic.data[o + 3] > 200) pts.push([i, j, lum([pic.data[o], pic.data[o + 1], pic.data[o + 2]])]); }
+    let best = { r: -2, x: 0, y: 0 };
+    for (let dy = -span; dy <= span; dy += step) for (let dx = -span; dx <= span; dx += step) {
+      const a = [], b = [];
+      for (const [i, j, L] of pts) { const x = Math.round(ox + dx + (i + 0.5) * k), y = Math.round(oy + dy + (j + 0.5) * k); a.push(L); b.push(lum(px(im, x, y))); }
+      const ma = a.reduce((s, v) => s + v, 0) / a.length, mb = b.reduce((s, v) => s + v, 0) / b.length;
+      let sab = 0, saa = 0, sbb = 0; for (let n = 0; n < a.length; n++) { sab += (a[n] - ma) * (b[n] - mb); saa += (a[n] - ma) ** 2; sbb += (b[n] - mb) ** 2; }
+      const c = saa && sbb ? sab / Math.sqrt(saa * sbb) : 0; if (c > best.r) best = { r: c, x: dx, y: dy };
+    }
+    return { ...best, n: pts.length };
+  };
+  it(`s22b her night pod is the signed picture: the land tile at nightfall, the Case's cut once she is taken up [${tag}]`, async () => {
+    const g = await open(size, "pod-sleep-dusk-13");
+    try {
+      let s = await holdUntil(g, (q) => q.spent >= 551);
+      assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
+      await walkToPod(g);
+      const r = await g.region(), k = r.w / 450, at = await g.shot(`s22b-${tag}-night-land`);
+      const tile = propPng("NIGHT_POD_LOIKA-tile-32x32"), cut = propPng("night-pod-loika-case-32x18");
+      const m = matchPiece(at, r, tile, r.x + r.w * (0.43 + 0.0335) - 16 * k, r.y + r.h * (0.328 + 0.02625) - 16 * k, Math.round(k * 20), 2);   // PODTILE's centre, the 32x32 piece's top-left from it
+      console.log(`# s22b ${tag}: her tile against the signed 32x32 file: r ${m.r.toFixed(3)} over ${m.n} pixels, at offset ${m.x},${m.y}`);
+      if (size.w === 412) assert.ok(m.r >= 0.8, `her pod's tile on the land shows the signed night pod (correlation ${m.r.toFixed(3)})`);
+      await g.press("confirm", 100, 0);
+      await wait(1500); await g.shot(`s22b-${tag}-confirm`);
+      await g.press("confirm", 100, 0);
+      for (let t = 0; t < 30 && (await podState(g)).cased < 1; t++) await wait(100);
+      await wait(1000);
+      await g.press("back", 100, 800);                       // ← opens the menu
+      for (let i = 0; i < 10 && await g.menuRow() !== "cargo"; i++) await g.press("down", 100, 300);
+      assert.equal(await g.menuRow(), "cargo", "the case is reached: the selected row is the Case");
+      await g.press("confirm", 100, 1800);
+      const cell = await g.page.evaluate(() => { const c = window.__play.frames.companion.contentWindow.__mb.caseCells().find((q) => q.k === "pod" && q.i === 0); return { x: c.x, y: c.y, r: c.r }; });
+      const cs = await g.shot(`s22b-${tag}-case`), cx = cell.x + cell.r, cy = cell.y + cell.r;
+      const m2 = matchPiece(cs, r, cut, r.x + (cx - 16) * k, r.y + (cy - 9) * k, Math.round(k * 4), 1);
+      console.log(`# s22b ${tag}: the Case cut against the signed 32x18 file: r ${m2.r.toFixed(3)} over ${m2.n} pixels, at offset ${m2.x},${m2.y}`);
+      assert.ok(m2.r >= 0.8, `the Case's cradle shows the signed 32x18 cut (correlation ${m2.r.toFixed(3)})`);
+    } finally { await g.ctx.close(); }
+  });
   if (size.w === 412) it(`s23 first light with her pod on the ground (OWNER 11-24): she wakes up on her bed, her pod gone from its tile [${tag}]`, async () => {
     const g = await open(size, "pod-sleep-dusk-13");
     try {
