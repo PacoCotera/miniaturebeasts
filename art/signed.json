@@ -3719,6 +3719,62 @@
    "sha256": "99e822d009de714c84dafab0f6fb28ceadef17e2d0d9763e4b8a39ee8f18eaf0"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "e85b88d471",
+   "path": "prototypes/exploration/art/props/fog-edge-inner-map.png",
+   "sha256": "1f03460b15f4ad6b6b44eff8742d0cae8381b8f7ef9b4086b18b6408dd6a905b"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "8a4e69b156",
+   "path": "prototypes/exploration/art/props/fog-edge-outer-map.png",
+   "sha256": "0968aa98e5741d2175c6e43828dc034db17e225723e30827644a3b00f9cb85e9"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "f253bb2cb1",
+   "path": "prototypes/exploration/art/props/fog-edge-run-a-map.png",
+   "sha256": "dcfaf9149e8c405addc23d42f25f17f4bed20adb3d906c042bced9232df3ff09"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "6d10913642",
+   "path": "prototypes/exploration/art/props/fog-edge-run-a-peek.png",
+   "sha256": "961f21a0c65cf3f6af2dab413492e72ef55c86eee72a063c17176aef948c9706"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "70951e0b78",
+   "path": "prototypes/exploration/art/props/fog-edge-run-b-map.png",
+   "sha256": "f528a7534ad22a00f4f3a52835356640295ada9848ec3bf643950a604a4d40c8"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "4ebf3642a2",
+   "path": "prototypes/exploration/art/props/fog-edge-run-b-peek.png",
+   "sha256": "90b699291eef9b60d3b1c320497cdc45feff9414fa5d99d3c15431009f362748"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "f513ef4721",
+   "path": "prototypes/exploration/art/props/fog-edge-run-c-map.png",
+   "sha256": "4508cccebf56c04fa0db1085c8d3b38c25ca044c33ea533165405324ebc4e570"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "67963830ff",
+   "path": "prototypes/exploration/art/props/fog-edge-run-c-peek.png",
+   "sha256": "fe2d188c3692a5d2ca6649f193b8a66decf373bcb01205cee8b91acd4b1ce1ef"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "72d64d319e",
@@ -24955,62 +25011,6 @@
    "id": "a9f298a731",
    "path": "website/assets/site-top-felted-6-2400.webp",
    "sha256": "a49a5ee7b074e428f6cc3b63ed27ac1e0a68e3d01eeee34143ee9c8141970d44"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "f253bb2cb1",
-   "path": "prototypes/exploration/art/props/fog-edge-run-a-map.png",
-   "sha256": "dcfaf9149e8c405addc23d42f25f17f4bed20adb3d906c042bced9232df3ff09"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "70951e0b78",
-   "path": "prototypes/exploration/art/props/fog-edge-run-b-map.png",
-   "sha256": "f528a7534ad22a00f4f3a52835356640295ada9848ec3bf643950a604a4d40c8"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "f513ef4721",
-   "path": "prototypes/exploration/art/props/fog-edge-run-c-map.png",
-   "sha256": "4508cccebf56c04fa0db1085c8d3b38c25ca044c33ea533165405324ebc4e570"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "8a4e69b156",
-   "path": "prototypes/exploration/art/props/fog-edge-outer-map.png",
-   "sha256": "0968aa98e5741d2175c6e43828dc034db17e225723e30827644a3b00f9cb85e9"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "e85b88d471",
-   "path": "prototypes/exploration/art/props/fog-edge-inner-map.png",
-   "sha256": "1f03460b15f4ad6b6b44eff8742d0cae8381b8f7ef9b4086b18b6408dd6a905b"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "6d10913642",
-   "path": "prototypes/exploration/art/props/fog-edge-run-a-peek.png",
-   "sha256": "961f21a0c65cf3f6af2dab413492e72ef55c86eee72a063c17176aef948c9706"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "4ebf3642a2",
-   "path": "prototypes/exploration/art/props/fog-edge-run-b-peek.png",
-   "sha256": "90b699291eef9b60d3b1c320497cdc45feff9414fa5d99d3c15431009f362748"
-  },
-  {
-   "class": "pixel",
-   "date": "2026-11-27",
-   "id": "67963830ff",
-   "path": "prototypes/exploration/art/props/fog-edge-run-c-peek.png",
-   "sha256": "fe2d188c3692a5d2ca6649f193b8a66decf373bcb01205cee8b91acd4b1ce1ef"
   }
  ]
 }
