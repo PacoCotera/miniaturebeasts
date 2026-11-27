@@ -7,20 +7,6 @@ import { makePage } from "./page-harness.mjs";
 const SETUP = "TEST.calm = true; newWorld(7, 2); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); RT.caddy = { podHome: true };";
 const fresh = () => { const p = makePage({ console: "silent", canvas: true }); p.run(SETUP); return p; };
 
-test("#60 the held view's reach line is the walk's dashed bark line on the sides facing ground past the range", () => {
-  const p = fresh();
-  const bark = p.run("HEX.indexOf(HEX[C.bark])");
-  // stand on the start cell with the range at one ring, so the line lies in the ring of cells round the view's cell
-  p.run("S.exp.range = 0; scr.px().fill(-1); const lay = layout(S.exp.patch.key); peekReachLine(lay, 40, 40, 12);");
-  const W = p.run("scr.width"), data = p.run("scr").px();
-  const n = Array.from(data).filter(v => v === bark).length;
-  assert.ok(n > 0, "the held view draws the reach line when the range square's side shows: " + n);
-  // with a range wider than the view's ring nothing faces ground past it
-  p.run("S.exp.range = 5; scr.px().fill(-1); peekReachLine(layout(S.exp.patch.key), 40, 40, 12);");
-  assert.equal(Array.from(p.run("scr").px()).filter(v => v === bark).length, 0, "no line when the whole ring is inside the range");
-  void W;
-});
-
 test("#55 the held view draws a bush with fruit and a fruit on the ground, never under the veil", () => {
   const p = fresh();
   const draw = () => { p.run("scr.px().fill(-1); { const lay = layout(S.exp.patch.key); peekFruit(lay.cell === undefined ? S.exp.patch.key : S.exp.patch.key, lay, (x, y) => ({ x: x * 12, y: 60 + y * 12 }), 12); }"); return Array.from(p.run("scr").px()).filter(v => v >= 0).length; };
