@@ -78,6 +78,14 @@ WORDS.ease = {
   ctx: 'keep still, and see what it does',
   wildKind: kind => 'a wild ' + kind,   // owner note #111: a named wild one, her kind not yet identified: the bar says what the name is
 };
+// [copy] wild-life-build-3: the one line when a wild Loika's act starts (graze, sniff, groom, look up); the plant is what she is at. Working words for editorial; no prompt, no counter.
+const PLANT_THE = { flowers: 'the flowers', tufts: 'the clover', clump: 'the tall grass', shrub: 'the shrub', bush: 'the bush' };
+WORDS.beat = {
+  graze: (n, cls) => n + ' nibbles ' + (PLANT_THE[cls] || 'the clover'),
+  sniff: (n, cls) => n + ' sniffs ' + (cls === 'flowers' ? 'the daisies' : PLANT_THE[cls] || 'the clover'),
+  groom: n => n + ' grooms her tail',
+  look: n => n + ' looks up at you',
+};
 // [copy] W4, habits that play and the notes they give (walk-design-1 W4; the range rule 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
 WORDS.habit = {
   name: { shake: 'shaking dry', calm: 'calming a wary one', sleep: 'curling up to sleep', still: 'keeping still' },   // still [copy]: a note of her with no habit in play (habits-out-build-1); editorial's wording to confirm

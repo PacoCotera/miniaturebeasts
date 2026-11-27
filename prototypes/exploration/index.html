@@ -1105,7 +1105,10 @@ function settleOnce() {
   if (h && !S.found.includes(h.key)) { if (lineCtx(lineFor()).r === h.text) S.found.push(h.key);   // the bottom line shows it: spent
     else fxOnce(h.key, h.text, h.pri); }   // too long for the bottom line's middle: a plain note until the copy has a short form
   const covered = S.phase === 'patch' && S.ui.swap;   // the swap chooser has the box's place: nothing is drawn, so nothing is spent
-  for (const n of covered ? [] : FX.notes) if (n.once && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
+  const bl = FX.beatLine; FX.beatLine = null;
+  if (bl && !covered && !FX.msg && !FX.sign && !FX.notes.length) { FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); }   // wild-life-build-3: a free box takes the act's line
+  for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // wild-life-build-3: an act's line is spent for the day only once it showed
+  for (const n of covered ? [] : FX.notes) if (n.once && !n.beat && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
     if (n.sign) { const k = 'met:' + SIGN[n.sign].tile; if (!S.found.includes(k)) S.found.push(k); } }
 }
@@ -4000,7 +4003,7 @@ function routineStep(a) {
   const ex = S.exp, P = ex.patch, live = curLive(); if (!live) return;
   const vis = live.cr.filter(c => !c.hide && inSight(c.x, c.y) && a.cr.has(c.id));
   if (!vis.length || vis.some(c => { const o = a.cr.get(c.id); return o.x !== c.x || o.y !== c.y || (FX.beats && FX.beats[c.id] && FX.beats[c.id].act === ex.actions); })) return;   // wild-life-build-1: a Loika playing her beat this action is something moving: no routine step over it
-  const idle = vis.filter(c => c.st === 'idle' && !((spOf(c.sp).settle && c.calm >= 1) || c.warm >= 1)); if (!idle.length) return;
+  const idle = vis.filter(c => c.st === 'idle' && !((spOf(c.sp).settle && c.calm >= 1) || c.warm >= 1) && !(FX.beats && FX.beats[c.id] && FX.beats[c.id].st)); if (!idle.length) return;
   const c = idle[ex.actions % idle.length], { w: lw, h: lh } = layout(P.key), opts = Object.values(DIRS).map(([dx, dy]) => ({ x: c.x + dx, y: c.y + dy })).filter(q => q.x >= 0 && q.y >= 0 && q.x < lw && q.y < lh && !occupant(P.key, q.x, q.y) && !(q.x === P.x && q.y === P.y));
   if (!opts.length) return; opts.sort((p, q) => man(p, P) - man(q, P)); const q = man(opts[0], P) > 1 ? opts[0] : opts[opts.length - 1];
   if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
@@ -4095,7 +4098,7 @@ function patchTick(info) {
 // A place in sight is alive while you walk (issue #138): an idle wild one may take one small step, at most one tile from its stand, never toward you while you walk,
 // about one action in three (seeded). Not a habit, tell or beat; a Wait or Keep still leaves routineStep as built.
 function stirStep(c, X, bx, by) {
-  if (X.noise === 'wait' || c.hide > 0 || c.st !== 'idle' || c.x !== bx || c.y !== by || c.home || c.visit || c.warm >= 1 || (spOf(c.sp).settle && c.calm >= 1)) return;
+  if (X.noise === 'wait' || c.hide > 0 || c.st !== 'idle' || c.x !== bx || c.y !== by || c.home || c.visit || c.warm >= 1 || (spOf(c.sp).settle && c.calm >= 1) || (FX.beats && FX.beats[c.id] && FX.beats[c.id].st)) return;   // (a Loika in her act stays put)
   if (X.away(c) || !inSight(c.x, c.y)) return;
   if ((c.ease | 0) >= 1 || c.crowd > 0) return;   // round 3: once she has heard you (ease up) or the stay counts, she holds her tile
   const hr = easeCarryAt(X.ease, c, X.P.x, X.P.y, X.noise === 'walk' ? 'walk' : 'creep', c.wary || 0).v + 3;   // round 4: within three tiles outside the hearing ring it holds its tile (dx2+dy2 > (carry+3)2 to stir)
@@ -4113,38 +4116,95 @@ function stirStep(c, X, bx, by) {
   const q = opts[Math.floor(rnd(S.seed, c.id, ex.actions, 'stirdir') * opts.length)];
   if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
 }
-// wild-life-build-1: the idle beat. A Loika at ease at her haunt, in sight and standing still, plays one of groom, sniff, look up (only when he is within 6 tiles) or graze,
-// picked by her seed, every 3 to 5 of his actions. No prompt, no counter, no light, no rule: it only sets a short-lived picture state (FX.beats); habits and every state play over it.
-// Sniff and graze have no signed picture and stay her idle. Nothing here draws a pixel or rolls the world's random: the picks are pure hashes of the seed, her id and the action.
+// wild-life-build-1/-3: the idle beat. A named Loika at ease at her haunt, in sight and standing still, plays one of groom, sniff, graze (each at a plant, flower or bush within 3 tiles: she walks there first, one tile an action,
+// and does it facing it) or look up (no target: she turns to him, only when he is within 6 tiles), picked by her seed, every while. The picture then holds about 2.5 s of real time and at least 3 of his actions; she rests at
+// least 5 actions after it. When the act starts and the message box is free, one short line says it, once per act per Loika per day, never over another line. No prompt, no counter, no light, no rule: the act is picture and
+// footing only (FX.beats; her own steps are the routine's); habits and every state play over it. Nothing here draws a pixel or rolls the world's random: every pick is a pure hash of the seed, her id and the action.
+const BEAT_HOLD_MS = 2500, BEAT_HOLD_ACTS = 3, BEAT_HOLD_CAP_MS = 8000, BEAT_REST = 5, BEAT_NEAR = 3;
+const PLANT_DECAL = /^sc-(flowers|tufts|clump|shrub|bush)/;
+// the plants of a place: the scatter's flower, tuft, clump, shrub and bush decals (by the tile their foot is on, as printMark reads them) and the bush features; cached once the tileset is in
+function plantTiles(lay) {
+  if (lay.plantTs) return lay.plantTs;
+  const sp = PL.ts && PL.ts.sprites, ds = lay.baked && lay.baked.place && lay.baked.place.decals, out = [];
+  if (sp && ds) for (const d of ds) { const s = sp[d.kind], m = s && PLANT_DECAL.exec(s.kind); if (m) out.push({ x: Math.floor(d.x / 48) - 1, y: Math.floor(d.y / 48) - 1, cls: m[1], kind: s.kind }); }
+  for (const f of lay.feats) if (f.kind === 'b' && !f.tree) out.push({ x: f.x, y: f.y, cls: 'bush', kind: 'bush' });
+  if (sp) lay.plantTs = out;
+  return out;
+}
+// a plant within 3 tiles that she can stand beside (a free, reachable tile next to it, in sight, not his), and the tile she stands on: { tgt, stand } or null. One she has to walk to is picked first (by her seed), so
+// she is seen to go there; one she is already beside only when no other is in reach.
+function beatTarget(c, X) {
+  const lay = X.lay, lw = lay.w, P = X.P, opts = [];
+  for (const t of plantTiles(lay)) {
+    if (cheb(t, c) > BEAT_NEAR) continue;
+    for (const [dx, dy] of Object.values(DIRS)) {
+      const q = { x: t.x + dx, y: t.y + dy };
+      if (q.x < 0 || q.y < 0 || q.x >= lw || q.y >= lay.h || !lay.reach[q.y * lw + q.x] || !inSight(q.x, q.y) || (q.x === P.x && q.y === P.y)) continue;
+      if (!(q.x === c.x && q.y === c.y) && (!canStand(X, q.x, q.y, c) || plantTiles(lay).some(p => p.x === q.x && p.y === q.y))) continue;
+      opts.push({ tgt: t, stand: q, w: man(q, c), r: rnd(S.seed, c.id, t.x, t.y, q.x, q.y, 'beattgt') }); }
+  }
+  const go = opts.filter(o => o.w >= 1 && o.w <= BEAT_NEAR), pool = go.length ? go : opts; let best = null;
+  for (const o of pool) if (!best || o.r < best.r) best = o;
+  return best && { tgt: best.tgt, stand: best.stand };
+}
+const beatCalm = (c, X) => !(RT.readOnly || c.sp !== 0 || c.hide > 0 || c.st !== 'idle' || c.home || c.visit || c.gone || c.hb || c.warm >= 1 || c.crowd > 0 || (c.ease | 0) >= 1 || curledNow(c) || X.away(c) || !inSight(c.x, c.y));
+const beatHeld = b => !!b && b.st === 'hold';
+const beatOver = b => { const age = NOW - b.at; return age >= BEAT_HOLD_MS && (S.exp.actions - b.act0 >= BEAT_HOLD_ACTS || age >= BEAT_HOLD_CAP_MS); };
+function beatEnd(c, X) {   // the act is over (or lost): she rests at least 5 of his actions, then walks home by her routine
+  if (FX.beats) delete FX.beats[c.id];
+  const live = X.live, bt = live.bt || (live.bt = {}), n = S.exp.actions; bt[c.id] = n + BEAT_REST + Math.floor(rnd(S.seed, c.id, n, 'beatrest') * 3);
+}
+function beatSay(c, b, X) {   // the line: only when the box is free; spent only when it shows (settleOnce)
+  const sd = S.beatSaid || (S.beatSaid = {}), key = c.id + '.' + b.k;
+  if (sd[key] === S.turn || !c.ind) return;
+  FX.beatLine = { text: WORDS.beat[b.k](c.ind.name, b.tgt && b.tgt.cls), key };   // queued: the action's own lines come first; settleOnce puts this one in only if the box is still free at the action's end
+}
+function beatHold(c, b, X) {   // she is at her thing: the picture starts, facing it (look up: facing him)
+  b.st = 'hold'; b.at = NOW; b.x = c.x; b.y = c.y; b.act0 = S.exp.actions;
+  const f = b.tgt || X.P; if (f.x !== c.x) c.face = Math.sign(f.x - c.x);
+  beatSay(c, b, X);
+}
+// the routine's own walk, in creatureTick's idle branch before her haunt step: true while she walks to her thing or holds there
+function beatWalk(X, c) {
+  const b = FX.beats && FX.beats[c.id]; if (!b || !b.st) return false;
+  if (!beatCalm(c, X)) { beatEnd(c, X); return false; }
+  if (b.st === 'hold') { if (c.x !== b.x || c.y !== b.y || beatOver(b)) { beatEnd(c, X); return false; } return true; }
+  if (++b.n > 6) { beatEnd(c, X); return false; }
+  const x0 = c.x, y0 = c.y; pathStepToward(X, c, b.stand, 1);
+  if (c.x === x0 && c.y === y0 && !(c.x === b.stand.x && c.y === b.stand.y) && ++b.stuck > 1) { beatEnd(c, X); return false; }
+  if (c.x === b.stand.x && c.y === b.stand.y) beatHold(c, b, X);
+  return true;
+}
 function idleBeat(c, X, bx, by) {
-  if (RT.readOnly || c.sp !== 0 || c.hide > 0 || c.st !== 'idle' || c.x !== bx || c.y !== by || c.home || c.visit || c.gone || c.hb || c.warm >= 1 || c.crowd > 0 || (c.ease | 0) >= 1 || curledNow(c)) return;
-  if (X.away(c) || !inSight(c.x, c.y)) return;
+  if (!beatCalm(c, X) || c.x !== bx || c.y !== by) return;
+  const cur = FX.beats && FX.beats[c.id]; if (cur && cur.st) return;
   if (c.ind) { const hs = routineSpot(c, X.lay, X.key); if (!hs || man(hs, c) > 1) return; }   // at her haunt
   const ex = S.exp, live = X.live, bt = live.bt || (live.bt = {}), n = ex.actions;
   if (bt[c.id] == null) { bt[c.id] = n + 3 + Math.floor(rnd(S.seed, c.id, 'beat0') * 3); return; }
   if (n < bt[c.id]) return;
-  bt[c.id] = n + 3 + Math.floor(rnd(S.seed, c.id, n, 'beatgap') * 3);   // the next one, 3 to 5 actions on
-  const kinds = ['groom', 'sniff', 'look', 'graze'].filter(k => k !== 'look' || cheb(c, X.P) <= 6);
+  bt[c.id] = n + 3 + Math.floor(rnd(S.seed, c.id, n, 'beatgap') * 3);   // the next try, 3 to 5 actions on (an act's end sets its rest instead)
+  const near = cheb(c, X.P) <= 6, tg = beatTarget(c, X);
+  const kinds = (tg ? ['groom', 'sniff', 'graze'] : []).concat(near ? ['look'] : []); if (!kinds.length) return;
   const k = kinds[Math.floor(rnd(S.seed, c.id, n, 'beatkind') * kinds.length)];
-  (FX.beats || (FX.beats = {}))[c.id] = { k, at: NOW, x: c.x, y: c.y, act: n };
+  const b = (FX.beats || (FX.beats = {}))[c.id] = { k, at: NOW, x: c.x, y: c.y, act: n, n: 0, stuck: 0, tgt: k === 'look' ? null : tg.tgt, stand: k === 'look' ? null : tg.stand };
+  if (k === 'look' || (c.x === tg.stand.x && c.y === tg.stand.y)) beatHold(c, b, X); else b.st = 'walk';
 }
-const BEAT_LOOK_MS = 140, BEAT_GROOM = [250, 200, 1200, 200];   // look up: nine frames idle to idle; groom: idle, half-turn, groom held, half-turn, idle (saddled: idle, groom held, idle)
-// The picture a beat gives her now (a token row), or null for her idle: after the beat's length, if she has moved, or for the beats with no picture.
+const BEAT_LOOK_MS = 140, BEAT_GROOM = [250, 200, 1200, 200], BEAT_GROOM_SAD = [250, 1200, 200];   // look up: nine frames idle to idle; groom: idle, half-turn, groom held, half-turn, idle (saddled: idle, groom held, idle); both looped for the whole hold
+// The picture a beat gives her now (a token row), or null for her idle: before and after the hold, if she has moved, or for the beats with no picture.
 function beatTok(c, sad) {
-  const b = FX.beats && FX.beats[c.id]; if (!b || b.x !== c.x || b.y !== c.y) return null;
+  const b = FX.beats && FX.beats[c.id]; if (!beatHeld(b) || b.x !== c.x || b.y !== c.y || beatOver(b)) return null;
   const age = NOW - b.at, W = WILD_BEAT, co = sad ? 'saddled' : 'plain';
-  if (b.k === 'look') { const i = Math.floor(age / BEAT_LOOK_MS); return i >= 1 && i <= 7 ? { key: 'l' + co + i, row: W.look[co][i - 1] } : null; }
+  if (b.k === 'look') { const i = Math.floor(age / BEAT_LOOK_MS) % 9; return i >= 1 && i <= 7 ? { key: 'l' + co + i, row: W.look[co][i - 1] } : null; }
   if (b.k !== 'groom') return null;
-  const g = W.groom[co], tl = sad ? [250, 1200] : BEAT_GROOM; let e = 0;
-  for (let i = 0; i < tl.length; i++) { e += tl[i]; if (age < e) return i === 0 ? null : sad ? { key: 'gsaddled', row: g[0] } : i === 2 ? { key: 'gplain', row: g[1] } : { key: 'gbetween', row: g[0] }; }
+  const g = W.groom[co], tl = sad ? BEAT_GROOM_SAD : BEAT_GROOM, tot = tl.reduce((a, v) => a + v, 0); let a = age % tot, e = 0;
+  for (let i = 0; i < tl.length; i++) { e += tl[i]; if (a < e) return i === 0 ? null : sad ? (i === 1 ? { key: 'gsaddled', row: g[0] } : null) : i === 2 ? { key: 'gplain', row: g[1] } : { key: 'gbetween', row: g[0] }; }
   return null;
 }
-// Sniff and graze have no picture: her signed idle sinks 2 px (the nose to the ground), twice for a sniff, once and held for a graze. Movement of the signed token only; no pixel is drawn. BEAT_DIP 0 turns it off.
+// Sniff and graze have no picture: her signed idle sinks 2 px (the nose to the plant) and holds still, for the whole hold. Movement of the signed token only; no pixel is drawn. BEAT_DIP 0 turns it off.
 const BEAT_DIP = 2;
 function beatDip(c) {
-  const b = FX.beats && FX.beats[c.id]; if (!b || b.x !== c.x || b.y !== c.y || (b.k !== 'sniff' && b.k !== 'graze')) return 0;
-  const age = NOW - b.at;
-  return b.k === 'sniff' ? ((age >= 200 && age < 450) || (age >= 650 && age < 900) ? BEAT_DIP : 0) : age >= 250 && age < 1500 ? BEAT_DIP : 0;
+  const b = FX.beats && FX.beats[c.id]; if (!beatHeld(b) || b.x !== c.x || b.y !== c.y || (b.k !== 'sniff' && b.k !== 'graze') || beatOver(b)) return 0;
+  return BEAT_DIP;
 }
 // Lightning prefers stones; otherwise a random open tile near you, never the one you stand on.
 function pickStrike(X) {
@@ -4424,6 +4484,7 @@ function creatureTick(c, X) {
       if (sp.settle && c.calm >= 2) break;   // settling: stays put
       if (sp.shed === 'warm' && c.warm >= 1) break;   // a Tepor settling by a warm stone stays on it
       if (c.home) { if (c.x !== c.home.x || c.y !== c.home.y) stepToward(X, c, c.home, 1); }   // a moment heart's creature stays at its spot
+      else if (c.ind && beatWalk(X, c)) { /* wild-life-build-3: she walks to her thing and does her act there; the routine has her again when it is over */ }
       else if (c.ind && hauntStep(X, c)) { /* its routine: it goes to the haunt it keeps at this part of day and stays there (walk W2) */ }
       else if (rnd(S.seed, c.id, S.exp.actions, 'w') < sp.wander) stepRandom(X, c);
     }
@@ -7230,7 +7291,7 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   const cu = c.sp === 0 && curledNow(c) ? art('curl' + (sad ? 's' : 'p') + fr, () => tokenPB(CURLED_LOIKA[sad ? 'saddled' : 'plain'][fr], 32)) : null;   // asleep on her bed: the signed curled token
   const bt = c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle' ? beatTok(c, sad) : null;   // wild-life-build-1: the idle beat's picture, held still (no bob)
   const ba = bt ? art('wb' + bt.key, () => tokenPB(bt.row, 32)) : null; if (ba) dy = 0;
-  else if (c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle') dy += beatDip(c);   // sniff and graze: the idle sinks
+  else if (c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle') { const bd = beatDip(c); if (bd) dy = bd; }   // sniff and graze: the idle sinks to the plant and holds still
   blit(cu || ba || a, x + dx, y + dy, rm, (c.face || 1) < 0);
   if (rm === 2 || rm === 5) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
@@ -9751,7 +9812,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { routineSpot, beatTok, beatDip,onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { routineSpot, beatTok, beatDip, settleOnce, beatTarget, plantTiles,onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
