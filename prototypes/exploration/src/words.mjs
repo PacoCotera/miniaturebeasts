@@ -196,8 +196,8 @@ WORDS.case = {
   pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
   place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
   podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
-  forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'reads ' + w + ' at the Station',
-  podFor: 'the nursery', crateFree: 'A free place', crateFreeHow: 'End expedition seals a crate here', crateName: n => 'Crate ' + n, crateWhen: n => 'sealed · day ' + n,
+  forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'reads ' + w + ' at home', podAt: 'goes to the nursery',
+  crateFree: 'A free place', crateFreeHow: 'End expedition seals a crate here', crateName: n => 'Crate ' + n, crateWhen: n => 'sealed · day ' + n,
   crateHas: b => { const p = (b.pods || []).length, bits = [p ? p + ' pod' + (p === 1 ? '' : 's') : '', b.e ? b.e + ' Energy' : '', b.d ? b.d + ' Data' : '', b.s ? b.s + ' Essence' : ''].filter(Boolean); return bits.join(' · '); },
   // [copy] editorial 11-26 (PR 668): a slot with no picture shows the kind's short word; a stack's line is 'Shed claws · 9' and 'from Old, Elm and 7 more'
   slotWord: { tuft: 'tuft', whisker: 'whisker', claw: 'claw' }, stackName: { tuft: 'Tufts', whisker: 'Whiskers', claw: 'Shed claws' },
