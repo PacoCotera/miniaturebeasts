@@ -17,7 +17,7 @@ const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, 
 const repo = path.resolve(import.meta.dirname, "../../../..");
 const savesDir = path.join(import.meta.dirname, "saves");
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const SIZES = [{ w: 412, h: 915, dpr: 2.625 }, { w: 522, h: 935, dpr: 3 }];   // as QA's lib.mjs opens them
+const SIZES = [{ w: 412, h: 915, dpr: 2.625 }, { w: 522, h: 935, dpr: 3 }].filter((s) => !process.env.PLAYED_W || s.w === Number(process.env.PLAYED_W));   // as QA's lib.mjs opens them; PLAYED_W=412: that size only (test-harness only; CI on a pull request)
 
 // ---- the shipped site: the workflow's "Assemble the site", then ops/sandbox/bundle-pages.sh over it
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".wasm": "application/wasm", ".ttf": "font/ttf", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".webp": "image/webp" };
@@ -164,7 +164,7 @@ const HERO =([r, g, b]) => r > 130 && r > g * 1.8 && g > b * 2 && b < 100;   // 
 const RING =([r, g, b]) => b > 200 && g > 190 && r < 190 && b - r > 50;   // the Call's ring, light blue
 
 // ONE SCALE (code-audit step 6; owner #27 "resize the companion to fill the mobile screen, its tiny and there's space", #134 "ridiculously small, can't see shit", #135 "screen is tiny"): layout.mjs decides the size of both devices; the frames do not scale again.
-const SCALE_SIZES = [{ w: 412, h: 915, dpr: 2.625 }, { w: 522, h: 935, dpr: 3 }, { w: 390, h: 844, dpr: 3 }];
+const SCALE_SIZES = [{ w: 412, h: 915, dpr: 2.625 }, { w: 522, h: 935, dpr: 3 }, { w: 390, h: 844, dpr: 3 }].filter((s) => !process.env.PLAYED_W || s.w === Number(process.env.PLAYED_W));
 // the extent in x (device px) of the pixels in a horizontal band that differ from the colour just outside the box on its left: what the screen draws, read off the screenshot
 function drawnX(im, r, y0, y1) {
   const bg = px(im, Math.max(0, r.x - 2), Math.round((y0 + y1) / 2)), far = (p) => Math.abs(p[0] - bg[0]) + Math.abs(p[1] - bg[1]) + Math.abs(p[2] - bg[2]) > 24;

@@ -325,4 +325,10 @@ jobs:
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
         timeout-minutes: 8   # measured under 5 minutes
         # prototypes/exploration/tests/played/played.mjs (owner 2026-11-25, code-audit step 1). It builds the bundle with ops/sandbox/bundle-pages.sh itself and serves it. The glob is quoted: Node 22 takes a directory argument as a file.
-        run: node --test "prototypes/exploration/tests/played/*.mjs"
+        # A pull request plays only the played test files it adds or changes, at 412 only (owner 2026-11-26: "we test only what we change"); none changed, the step does nothing.
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" != pull_request ]; then node --test "prototypes/exploration/tests/played/*.mjs"; exit 0; fi
+          files=$(git diff --name-only --diff-filter=AM HEAD^1 HEAD -- 'prototypes/exploration/tests/played/*.mjs')
+          if [ -z "$files" ]; then echo "No played test file changed: step skipped" >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          PLAYED_W=412 node --test $files
