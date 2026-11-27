@@ -2631,9 +2631,9 @@ function nameKind(nm, sp) { return nm + ' · ' + WORDS.ease.wildKind(spOf(sp).na
 // the candidates for the bottom line under a wild one in sight, longest first (the line takes the first that fits): its ease, whether this step would be heard creeping and walking, how long it lets you stay
 function wildCtx(c, nm) {
   const hl = hearLineOf(c); if (!hl) return null;
-  const E = WORDS.ease, who = nm || spName(c.sp), es = curledNow(c) ? WORDS.habit.asleep : (c.ease | 0) < 1 && habDay()['fed:' + c.id] ? E.fed : E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c);   // W4: the card line, what is still to learn
-  if (HUD.ok) return [...(st ? [j(who, es, st), j(who, st)] : []), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, es), who];   // W6a: the carry ring says whether a step would be heard (rule 21); the stay stays, and the stand-in "creep heard · walk unheard" goes
-  return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, es, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
+  const E = WORDS.ease, who = nm || spName(c.sp), curled = curledNow(c), es = curled ? E.asleepShort : (c.ease | 0) < 1 && habDay()['fed:' + c.id] ? E.fed : E.stage[c.ease | 0], full = E.hear(hl.c, hl.w), cr = E.hearCreep(hl.c), st = hl.left == null ? "" : E.stayShort(hl.left), j = (...p) => p.filter(Boolean).join(" · "), cd = habCardNext(c), cde = curled ? "" : es;   // W4: the card line, what is still to learn
+  if (HUD.ok) return [...(st ? [j(who, es, st), j(who, st)] : []), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, es), who];   // W6a: the carry ring says whether a step would be heard (rule 21); the stay stays, and the stand-in "creep heard · walk unheard" goes
+  return [j(who, es, full, st), j(who, full, st), j(who, full), ...(cd ? [j(who, cde, cd), j(who, cd)] : []), j(who, cr, st), j(who, cr), cr, j(who, es), ...(st ? [j(who, st)] : []), who];
 }
 // the nearest named Loika (an individual) in sight within 10 tiles that has not gone, or null
 function indInSight(anyKind) {   // anyKind: skip the known-kind and the settled check: any one standing in view (herNamed asks whether any one is in sight)
