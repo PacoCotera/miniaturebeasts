@@ -40,7 +40,11 @@ test("his save (patch 8,3 tile 2,22): the left glint's find is there after the c
   p.run(`S.exp.patch.x = ${dew.x}; S.exp.patch.y = ${dew.y + 1}; RT.pl = null; RT.key = null; RM.matches = false;`);   // moving (the harness says reduced motion otherwise)
   const h = js(p, `hash(${dew.x}, ${dew.y}, 7) % 1600`), on = 1600 * 400 - h + 100, off = on + 800;
   const A = frame(p, on), B = frame(p, off);
-  assert.ok(A.some((v, i) => v !== B[i]), "close by, the sparkle is drawn on it");
+  // the sparkle stands in both phases (bright on its pulse, dim between: bug 160); the fake canvas ignores alpha, so each phase is judged against the place with nothing glinting
+  p.run("globalThis.__was = [S.called[55], RT.pointed]; delete S.called[55]; RT.pointed = {};");
+  const N = frame(p, on); p.run("S.called[55] = __was[0]; RT.pointed = __was[1];");
+  assert.ok(A.some((v, i) => v !== N[i]), "close by, the sparkle is drawn on its pulse");
+  assert.ok(B.some((v, i) => v !== N[i]), "close by, the sparkle is still drawn between pulses");
   // a place that was never explored: only the mark makes its finds glint
   p.run("delete S.called[55];");
   const C1 = frame(p, on); p.run("RT.pointed = {};"); const C2 = frame(p, on);

@@ -732,7 +732,7 @@ for (const size of SIZES) {
   // OWNER 11-25 ("didn't we have stone slabs that you could move?"; "ok" to core-loop-walkthrough-1); QA verify-live 0fc2b4e; design bus 0e4483 ("a lasting mark: the glint stays on the tile while anything is left under the slab and goes when it is taken").
   // Arranged saves: slab-mark-hold and slab-mark-room are slab-full-hold and slab-full-room with the place marked explored (S.called; the glints show only in an explored place, 60% of it seen: the walk here does not reach that). Played by presses: push with the hold full, walk away and back; the old tile glints like every takeable (find-glint-1's pixels within 1.6 s); the hold has room, ✓ takes it, and over the next 1.6 s no glint there.
   // State only asserts the reach (what is left under the slab: > 0, then 0) and gives the old tile's position; the verdict is the pixels of the tile on the shots.
-  // The light tints the glint's colours, so the verdict is the blink itself: pixels of the old tile that are warm (find-glint-1 is tan, orange and yellow; the rain is blue, the slab's dashes brown) in some shots of 1.6 s and not warm in others. The glint is on for 400 ms of every 1.6 s.
+  // The light tints the glint's colours, so the verdict is the blink itself: pixels of the old tile that are warm (find-glint-1 is tan, orange and yellow; the rain is blue, the slab's dashes brown) in some shots of 1.6 s and not warm in others. The glint is on for 400 ms of every 1.6 s. Since PR 688 (#160) the glint stands dim between pulses (alpha 0.4), so fewer pixels read warm only on the pulse: the bar is 40 pixels, not 100.
   const blink = (crops) => { let n = 0; const m = crops[0].length / 4, warm = (c, i) => c[i * 4] > 110 && c[i * 4] - c[i * 4 + 2] > 45; for (let i = 0; i < m; i++) { let on = 0; for (const c of crops) if (warm(c, i)) on++; if (on > 0 && on < crops.length) n++; } return n; };
   const cropOf = (im, b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; } return d; };
   if (size.w === 412) it(`s19 what stays under a pushed slab glints until it is taken (QA verify-live 0fc2b4e) [${tag}]`, async () => {
@@ -758,7 +758,7 @@ for (const size of SIZES) {
       assert.ok(s.hy - s.sy === 2 && s.hx === s.sx, `the case is reached: the hero stands two tiles below the old tile (${JSON.stringify(s)})`);
       const on = await probe("s19-glint");
       console.log(`# s19 ${tag}: glint pixels on the old tile over 1.6 s, with ${s.left} left under it: ${on}`);
-      assert.ok(on >= 100, `the old tile glints while something lies under the slab (${on} pixels of find-glint-1)`);
+      assert.ok(on >= 40, `the old tile glints while something lies under the slab (${on} pixels of find-glint-1)`);
     } finally { await g.ctx.close(); }
   });
   if (size.w === 412) it(`s20 taking what lay under the slab takes the glint away (QA verify-live 0fc2b4e) [${tag}]`, async () => {
@@ -784,7 +784,7 @@ for (const size of SIZES) {
       s = after;
       const off = await probe("s20-after");
       console.log(`# s20 ${tag}: glint pixels on the old tile over 1.6 s: before the take ${on}, after ${off}`);
-      assert.ok(on >= 100, `the old tile glints before the take (${on} pixels)`);
+      assert.ok(on >= 40, `the old tile glints before the take (${on} pixels)`);
       assert.ok(off < 20, `no glint on the old tile over 1.6 s after the take (${off} pixels)`);
     } finally { await g.ctx.close(); }
   });
@@ -1343,6 +1343,54 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
     console.log(`# s21: the box differs from her tell line's crop by ${nb} pixels, her tile from its crop by ${nt} of ${area}`);
     assert.ok(nb < 5000, `the box shows her tell line, not the stone's (${nb} pixels differ)`);
     assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
+  } finally { await g.ctx.close(); }
+});
+
+// OWNER 2026-11-25 00:37 UTC (#160): "I swear a glint to the left, I cross to the left, the glint dissappear, can't find anything. do the glints even work?" Build desk, PR 688 (rule 16a).
+// His save (saves/160.save: patch 56 tile 2,22; the glint on the left is a full cup in patch 55). By presses, each waiting for its effect: the Call, ← across the edge, up toward the cup until it is two tiles above him.
+// State only asserts the reach (he is next door, the cup is full, he stands two tiles below it); ✓ then takes it, so the tile is bare ground for the reference.
+// The verdict is the screen: the cup's tile on 11 shots over 1.6 s. The glint's own pixels are the ones that change between its pulse and the rest of the 1.6 s; against the bare tile (after the take) the glint shows on every shot (dim between pulses, bright on the pulse), and the pulse is clearly the brighter.
+it(`s33 a glint stays on its find while he walks to it (#160, his save): dim between pulses, bright on the pulse [412x915]`, async () => {
+  const size = { w: 412, h: 915, dpr: 2.625 };
+  const g = await open(size, "160");
+  try {
+    const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp.patch, f = m.layout(String(p.key)).feats.find((q) => q.kind === "u"); return { key: String(p.key), x: p.x, y: p.y, cx: f.x, cy: f.y, full: ((S.cells[p.key] || {})[f.id] || {}).full !== false, cup: S.exp.cargo.s }; });
+    const step = async (l) => { const b = await st(); await g.press(l, 100, 0); let n = b; for (let t = 0; t < 40 && n.x === b.x && n.y === b.y && n.key === b.key; t++) { await wait(100); n = await st(); } await wait(500); return n; };
+    const r = await g.region(), tile = 48 * r.w / 450;
+    const cropOf = (im, b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; } return d; };
+    await g.press("call", 100, 2500);
+    let s = await st();
+    for (let i = 0; i < 6 && s.key !== "55"; i++) s = await step("left");
+    assert.equal(s.key, "55", "the case is reached: he crossed to the left, next door");
+    for (let i = 0; i < 20 && s.x !== s.cx; i++) s = await step(s.x > s.cx ? "left" : "right");
+    for (let i = 0; i < 20 && s.y - s.cy > 2; i++) s = await step("up");
+    s = await st();
+    assert.ok(s.full && s.x === s.cx && s.y - s.cy === 2, `the case is reached: the cup is full and he stands two tiles below it (${JSON.stringify(s)})`);
+    const hero = async (im) => blobs(im, { x: r.x, y: r.y + Math.round(r.h * 0.06), w: r.w, h: Math.round(r.h * 0.88) }, HERO)[0];
+    const series = async (name) => {   // the cup's tile on 11 shots, ~150 ms apart
+      const crops = [];
+      for (let i = 0; i < 11; i++) { const im = await g.shot(name + "-" + i), h = await hero(im); assert.ok(h && h.n > 100, "the hero is on the shot");
+        const cx = h.box.x + h.box.w / 2 + (s.cx - s.x) * tile, cy = h.box.y + h.box.h / 2 + (s.cy - s.y) * tile;
+        crops.push(cropOf(im, { x: Math.round(cx - tile / 2), y: Math.round(cy - tile / 2), w: Math.round(tile), h: Math.round(tile) })); await wait(150); }
+      return crops;
+    };
+    const before = await series("s33-glint");
+    await step("up"); await g.press("confirm", 100, 0);
+    for (let t = 0; t < 40 && (await st()).full; t++) await wait(100);
+    s = await st();
+    assert.ok(!s.full && s.cup > 0, `the case is reached: ✓ took the cup (${JSON.stringify(s)})`);
+    await step("down"); await wait(1500);
+    s = await st();
+    const bare = (await series("s33-bare"))[5];
+    const n = bare.length / 4, d = (c, i) => Math.abs(c[i * 4] - bare[i * 4]) + Math.abs(c[i * 4 + 1] - bare[i * 4 + 1]) + Math.abs(c[i * 4 + 2] - bare[i * 4 + 2]);
+    // the glint's pixels: those that differ from the bare tile in the brightest shot, and are not the cup (the cup is in every shot, so it differs from bare in every shot by the same amount: the pulse is what changes)
+    const score = (c, mask) => { let t = 0; for (const i of mask) t += d(c, i); return t; };
+    const range = []; for (let i = 0; i < n; i++) { let lo = 1e9, hi = -1; for (const c of before) { const v = d(c, i); lo = Math.min(lo, v); hi = Math.max(hi, v); } if (hi - lo > 60) range.push(i); }
+    assert.ok(range.length >= 8, `the glint pulses on the tile: ${range.length} pixels change between its pulse and the rest`);
+    const sc = before.map((c) => score(c, range) / range.length), hi = Math.max(...sc), lo = Math.min(...sc);
+    console.log(`# s33: glint pixels ${range.length}; mean distance from the bare tile per shot ${sc.map((v) => v.toFixed(0)).join(" ")}`);
+    assert.ok(lo > 25, `the glint is on the tile in every shot, dim ones included (the dimmest shot is ${lo.toFixed(0)} from the bare tile)`);
+    assert.ok(hi > lo * 1.6, `the pulse is clearly brighter than the rest (${hi.toFixed(0)} against ${lo.toFixed(0)})`);
   } finally { await g.ctx.close(); }
 });
 
