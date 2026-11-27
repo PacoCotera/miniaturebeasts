@@ -2349,7 +2349,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
     pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0, mk: pm.sp === 0 && WILD.partner(pm.id) ? 1 : 0 } : null,   // mk: the Station's drawn marking (shown and read) handed over for her token
     rider: rd ? { id: rd.id, name: rd.name, sp: rd.sp } : null,   // shown in the HUD and named at set-out; never the partner, no field token, no ability
     stats: { flee: 0, sheds: 0, rev: 0, lit: 0, hits: 0, putFeeds: 0, handFeeds: 0, feedTries: 0, maxLvl: 0, stormActs: 0, openStormActs: 0 },
-    supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [] };
+    supAt: {}, hitAt: -99, met: [], newMet: [], moments: [], momented: {}, reach: [], pg0: pageCount() };
   const ex = S.exp; ex.hadStorm = !!storm; S.hold = null;   // unsealed finds ride along in the hold
   if (dry) return;   // only the carrier of the night's end (see the top)
   revealAround(cell, 1); S.visited[cell] = 1;
@@ -4679,13 +4679,21 @@ function bayLine() { const n = S.bay.length; return !n ? '' : isDocked() ? DOCK_
 // What a hold seals, in words, from its contents: "two pods" + `join` + "supplies", or `alone` ("supplies") when no pod is in it. Every crate carries the walk's Data, so the pods-only form is never shown.
 function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0; return n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + join + 'supplies' : alone; }
 // The Cargo screen's preview of what End expedition will do.
+// What End does with the hold, decided in one place (rule 16b): 'nothing' (nothing explored), 'empty', 'full' (bay full), 'night' (seals, naming her) or 'seal' (seals a crate). The tally draws only on 'night' and 'seal'.
+function sealBranch(ex) {
+  if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) return 'nothing';
+  if (holdEmpty(ex.cargo)) return 'empty';
+  if (S.bay.length >= BAY) return 'full';
+  return (ex.cargo.pods || []).some(isNightPod) ? 'night' : 'seal';
+}
+function sealsCrate(ex) { const b = sealBranch(ex); return b === 'night' || b === 'seal'; }
 function sealPreview() {
-  const ex = S.exp, out = [];
-  if (!exploredAny(ex) && !(ex.dug && ex.dug.length)) { out.push(WORDS.waits); out.push('your finds stay in the hold'); return out; }
+  const ex = S.exp, out = [], br = sealBranch(ex);
+  if (br === 'nothing') { out.push(WORDS.waits); out.push('your finds stay in the hold'); return out; }
   const h = Object.assign({}, ex.cargo);   // what End will seal: the hold as it is (Data comes only from readings and creature acts)
-  if (holdEmpty(h)) { /* nothing to seal (only a save from before places had a tier): no line */ }
-  else if (S.bay.length >= BAY) { const np = (h.pods || []).find(isNightPod); if (np) out.push(WORDS.pod.bayFull(np.nm)); else { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); } }
-  else if ((h.pods || []).some(isNightPod)) { const np = h.pods.find(isNightPod), n = h.pods.length - 1;   // pod-sleep-build-1: the preview names her (editorial's join for the rest of the hold)
+  if (br === 'empty') { /* nothing to seal (only a save from before places had a tier): no line */ }
+  else if (br === 'full') { const np = (h.pods || []).find(isNightPod); if (np) out.push(WORDS.pod.bayFull(np.nm)); else { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); } }
+  else if (br === 'night') { const np = h.pods.find(isNightPod), n = h.pods.length - 1;   // pod-sleep-build-1: the preview names her (editorial's join for the rest of the hold)
     out.push(WORDS.pod.seal(np.nm, (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + ' : '') + 'supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY); out.push(WORDS.pod.sealTail); }
   else { out.push('Seals ' + sealedWords(h, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
     out.push('The Station takes it when you dock'); }
@@ -8683,7 +8691,20 @@ function crateIcon(x, y, c, w) {
 // A field case lying open: in the lid the crates sealed for home, in the tray the pod cradles, the three supplies and the satchel's 8 places; a corner bracket over one thing and its label under the tray.
 // It reads the hold and the bay and writes nothing: opening it spends no light and the world does not move. Wood rim, brass, cradles, dotted places and the label are UI by code (rule 18);
 // every picture is a signed file (the pod and the tuft; a whisker and a claw have none yet: their places stay empty, named [art]).
-function openCase(end) { S.ui.caseEnd = end ? 1 : 0; S.ui.caseSel = null; S.phase = 'cargo'; transition(); }
+// ---- The end tally (end-tally-build-1): "Brought home" counts pods, finds and pages up from 0 in about 2 s. Only what the walk records: the hold's pods and samples, and the page entries written since the walk began (S.pages, counted at set-out as ex.pg0). ----
+function pageCount() { let n = 0; for (const id in (S.pages || {})) n += Object.keys(S.pages[id] || {}).length; return n; }
+const TALLY_SEG = [[0, 600], [600, 1200], [1200, 1700]], TALLY_MS = 2000;   // pods, finds, pages count in their own stretch; the settle lands at 2 s
+function tallyTotals() { const ex = S.exp, h = caseHold(); return [(h.pods || []).length, (h.samples || []).length, Math.max(0, pageCount() - (ex && ex.pg0 != null ? ex.pg0 : pageCount()))]; }
+// what each count shows at e ms into the tally (a stretch counts 0..N evenly)
+function tallyShown(tot, e) { return tot.map((n, i) => { const [a, b] = TALLY_SEG[i]; return e >= b ? n : e <= a ? 0 : Math.min(n, Math.floor((e - a) / (b - a) * (n + 1))); }); }
+function tallyElapsed() { const T = S.ui.tally; if (!T) return TALLY_MS; return motion() ? NOW - T.at : TALLY_MS; }
+function tallyDone() { return tallyElapsed() >= TALLY_MS; }
+function tallySounds(shown, e) {   // a tick as each count rises (the pod's with a knock), the settle at the end; once each
+  const T = S.ui.tally; if (!T || !motion()) return;
+  shown.forEach((v, i) => { if (v > T.seen[i]) { T.seen[i] = v; juiceSound(i === 0 ? [[110, 70], [82, 90]] : [[520 + i * 120 + v * 40, 40]]); } });
+  if (e >= TALLY_MS && !T.settled) { T.settled = 1; juiceSound([[392, 90], [523, 90], [659, 150]]); }
+}
+function openCase(end) { S.ui.tally = end ? { at: NOW, seen: [0, 0, 0], settled: 0 } : null; S.ui.caseEnd = end ? 1 : 0; S.ui.caseSel = null; S.phase = 'cargo'; transition(); }
 function caseHold() { return S.exp ? S.exp.cargo : (S.hold || { e: 0, d: 0, s: 0, pods: [], samples: [] }); }
 function caseCells() {
   const h = caseHold(), np = S.exp ? S.exp.hold : Math.max(tierOf().hold, (h.pods || []).length), cells = [], r = np > 2 ? 22 : 30;
@@ -8733,7 +8754,8 @@ function caseKey(k) {
   if (k === 'back') { if (end || !S.ui.from) S.phase = end ? 'menu' : 'setup'; else S.phase = S.ui.from; transition(); }
   else if (k === 'up' || k === 'down' || k === 'left' || k === 'right') caseMove(k);
   else if (k === 'confirm') {
-    if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
+    if (end && canSend() && sealsCrate(S.exp) && !tallyDone()) { S.ui.tally.at = NOW - TALLY_MS; S.ui.tally.seen = tallyTotals(); }   // the settle chord sounds on the next frame   // ✓ while it counts: skip to the end of the tally; the next ✓ ends the expedition
+    else if (end) { if (canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); } else { fxMsg('End it only at the start or a lit ' + DEPOT_NAME + ': ' + sendHint(), 3); FX.bumpAt = NOW; } }
     else { const t = caseThing(caseSel(caseCells())), en = caseEntry(t.thing); if (en) { S.ui.logDay = en.di; S.ui.logTop = en.ri; S.ui.logMark = null; S.phase = 'log'; transition(); } }   // its page in the Log, opened on that entry
   }
 }
@@ -8775,7 +8797,17 @@ function drawCargo(t) {
   }
   brackets(cur.x - 4, cur.y - 4, cur.w + 8, cur.h + 8, C.orange);
   // the label of the thing under the brackets, tied to it by its string; from End expedition the seal preview takes its place
-  if (end) { const ls = canSend() ? sealPreview() : [sendHint()]; panel(36, 412, 378, 88, C.bone, C.clay); wrapText(ls.slice(0, 2).join(' · '), 350, 2).slice(0, 3).forEach((l, i) => text(l, 50, 424 + i * 22, C.soil)); return; }
+  if (end) {
+    panel(36, 412, 378, 88, C.bone, C.clay);
+    if (!canSend() || !sealsCrate(S.exp)) { const ls = canSend() ? sealPreview() : [sendHint()]; wrapText(ls.slice(0, 2).join(' · '), 350, 2).slice(0, 3).forEach((l, i) => text(l, 50, 424 + i * 22, C.soil)); return; }   // the old preview lines unless End seals a crate
+    // "Brought home": pods, finds, pages count up; the walk's seal line stays small beneath
+    const TW = W.tally, tot = tallyTotals(), e = tallyElapsed(), shown = tallyShown(tot, e); tallySounds(shown, e);
+    text(TW.title, 50, 415, C.bark);
+    [[TW.pods, 0], [TW.finds, 1], [TW.pages, 2]].forEach(([lab, i]) => { const x = 50 + i * 120, rose = tot[i] > 0 && e > TALLY_SEG[i][0] && e < TALLY_SEG[i][1] + 200;
+      text(String(shown[i]), x, 438, C.soil, 3); text(lab, x + textW(String(shown[i]), 3) + 8, 446, C.bark);
+      if (rose) brackets(x - 4, 434, textW(String(shown[i]), 3) + 8, 28, C.orange); });
+    text(clipText(sealPreview()[0] || '', 350, 2), 50, 478, C.bark);
+    return; }
   const th = caseThing(cur); if (cur.k !== 'crate') caseString(30, cur.y + cur.h / 2, 30, 432, C.soil);
   caseString(30, 432, 50, 432, C.soil);
   panel(36, 412, 378, 88, C.bone, C.clay); R(46, 428, 8, 8, C.clay); R(48, 430, 4, 4, C.sand);

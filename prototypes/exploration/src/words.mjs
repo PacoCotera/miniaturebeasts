@@ -210,7 +210,7 @@ WORDS.book = {
 // The Case (companion-case-build-1): the Companion's second face. [copy] WORKING WORDS: the copywriter's job replaces every string here.
 // A label tells only what the player was shown: a pod's species when known, never a trait value; "at the Station" names only the chapter the sample is for.
 WORDS.case = {
-  title: 'Case', sealed: 'Sealed for home', goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: ['◀ Log, her pages · ▶ Riding', '◀ Log · ▶ Riding'], end: 'End expedition',
+  title: 'Case', sealed: 'Sealed for home', tally: { title: 'Brought home', pods: 'pods', finds: 'finds', pages: 'pages' }, goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: ['◀ Log, her pages · ▶ Riding', '◀ Log · ▶ Riding'], end: 'End expedition',
   pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
   place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
   podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
