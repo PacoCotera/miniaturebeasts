@@ -100,6 +100,17 @@ test("never public: nothing is read from the public route, and the studio path n
   });
 });
 
+test("the studio page says when the list was read, in Mexico City time", async () => {
+  const dir = fresh(); let t = Date.UTC(2026, 10, 26, 15, 5, 0);   // 09:05 in Mexico City (UTC-6)
+  const app = createApp({ dataDir: dir, now: () => t });
+  await withServer(app, async (base) => {
+    await post(base, form({ text: "a note", source: "owner" }));
+    t = Date.UTC(2026, 10, 26, 15, 42, 0);
+    const html = await (await fetch(base + "/admin/notes", { headers: { "x-studio-user": "paco" } })).text();
+    assert.match(html, /updated 09:42 Mexico City/);
+  });
+});
+
 test("the studio page lists newest first, filters by source, escapes the line, and serves files (with ranges)", async () => {
   const dir = fresh(); let t = Date.UTC(2026, 10, 12, 20, 0, 0);
   const app = createApp({ dataDir: dir, now: () => (t += 60000) });
