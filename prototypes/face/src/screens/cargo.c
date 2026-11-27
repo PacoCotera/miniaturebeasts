@@ -87,8 +87,9 @@ static void build_table(void) {
     v_region("tableCrate", LAYER_ART); v_name("tableCrate"); v_sprite("table.crate", pic, s[0], s[1], s[2], s[3]);
     say("table.tag", v_pstr("bay.table.tag"), fk("tagAt", 0), fk("tagAt", 1), "heading", V_ALIGN_LEFT);
     selection(s);
-    if (*v_pstr("bay.came.tag")) {   /* who came home: her picture's slot (a named empty slot: not built) and her name under it, from the arrival until his first press */
-      int h[4]; frect("her.slot", h); slot_box("herSlot", h);
+    if (*v_pstr("bay.came.tag")) {   /* who came home: her picture (the arrival's mibi picture, at her slot's size) and her name under it, from the arrival until his first press */
+      int h[4]; frect("her.slot", h); const char *hp = v_pstr("bay.came.picture");
+      if (*hp) { v_region("herPicture", LAYER_ART); v_name("herPicture"); v_sprite("table.her", hp, h[0], h[1], h[2], h[3]); } else slot_box("herSlot", h);
       say("table.came", v_pstr("bay.came.tag"), fk("her.tagAt", 0), fk("her.tagAt", 1), "heading", V_ALIGN_CENTRE);
     }
     return;

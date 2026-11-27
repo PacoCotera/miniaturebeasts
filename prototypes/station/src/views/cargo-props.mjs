@@ -10,6 +10,7 @@ import { shellSpecies } from "./pods-props.mjs";
 import { readyList, MATS } from "../cargo-run.mjs";
 import { fill, plural } from "./words.mjs";
 import { portraitOffered } from "./sitting-props.mjs";
+import { mibiReq } from "./home-props.mjs";
 import { req as reqOf, slot as slotOf } from "./requests.mjs";
 
 // The crates that wait at the Bay: the walk crates the dock crossed (cargo-run.mjs readyList has the portrait crate after them).
@@ -51,7 +52,7 @@ export function cargoBuild(m, spec, home, frame) {
   const end = !ready.length && sum ? [fill(sum.crates === 1 ? Sg.done.one : Sg.done.many, { n: sum.crates }), sum.pods === 0 ? Sg.done.pods.none : sum.pods === 1 ? Sg.done.pods.one : fill(Sg.done.pods.many, { n: sum.pods })].join(" · ") : "";
 
   // ---- who came home (the Bay UI spec, section 4): her picture's slot and her name right of the crate, from the arrival until his first press; the picture is a dashed stand-in, not built ----
-  const cameId = !c.pressed && c.arrival && (c.arrival.back || [])[0], cm = cameId != null ? S.mibiById(st, cameId) : null, came = cm && table ? { tag: fill(Sg.came, { name: S.cap(cm.name) }) } : null;
+  const cameId = !c.pressed && c.arrival && (c.arrival.back || [])[0], cm = cameId != null ? S.mibiById(st, cameId) : null, came = cm && table ? { tag: fill(Sg.came, { name: S.cap(cm.name) }), picture: mibiReq(req, st, cm, [150, 164], settings, m.light) } : null;   // her picture is the one the arrival showed (mibiReq), at her slot's size
   const props = { state: "bay", berths: 0, regions: {}, focus: { cur: "room", targets: [] }, bay: { companion, table, ledge, behind: Math.max(0, ready.length - 3), all: ready.length ? Sg.all : "", shelf, counters, end, came } };
 
   // ---- the line: the action, the middle (▼ All at once while a crate waits), the way back ----

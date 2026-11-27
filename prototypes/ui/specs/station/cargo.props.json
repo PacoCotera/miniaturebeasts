@@ -15,7 +15,7 @@
    "required": ["companion", "table", "ledge", "behind", "all", "shelf", "counters", "end"],
    "additionalProperties": false,
    "properties": {
-    "came": {"type": ["object", "null"], "required": ["tag"], "additionalProperties": false, "properties": {"tag": {"type": "string"}}},
+    "came": {"type": ["object", "null"], "required": ["tag", "picture"], "additionalProperties": false, "properties": {"tag": {"type": "string"}, "picture": {"type": "string"}}},
     "companion": {"type": "object", "required": ["docked", "mark", "l1", "l2"], "additionalProperties": false, "properties": {"docked": {"type": "boolean"}, "mark": {"type": "string"}, "l1": {"type": "string"}, "l2": {"type": "string"}}},
     "table": {"type": ["object", "null"], "required": ["parcel", "picture", "tag", "tagShort", "ring", "open"], "properties": {"parcel": {"type": "boolean"}, "picture": {"type": "string"}, "tag": {"type": "string"}, "tagShort": {"type": "string"}, "ring": {"type": "boolean"}, "open": {"type": "boolean"}, "pods": {"type": "array", "items": {"type": "object", "required": ["pic", "side"], "properties": {"pic": {"type": "string"}, "side": {"type": "boolean"}}}}, "mats": {"type": "array", "items": {"type": "object", "required": ["name", "amount", "pic"], "properties": {"name": {"type": "string"}, "amount": {"type": "string"}, "pic": {"type": "string"}}}}}},
     "ledge": {"type": "array", "items": {"$ref": "crate"}},

@@ -126,6 +126,6 @@
  "placeholders": {
   "cradle": "art piece 2 (the AD's signed cradle and hold, the art desk) is not placed until the lead has shown it to the owner (rule 3): a dashed slot with today's signed Companion mark",
   "open": "art piece 1 (the open crate, the art desk) is signed and not placed: a dashed slot holds the crate's contents",
-  "herPicture": "who came home (her picture) is a dashed slot in the Bay UI spec and is not built here"
+  "herPicture": "who came home: her picture is the mibi picture the arrival showed, drawn at her slot's size (her.slot); the tag stands under it"
  }
 }
