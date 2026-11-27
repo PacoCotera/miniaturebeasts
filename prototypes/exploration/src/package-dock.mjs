@@ -3,7 +3,8 @@
 //   summary  { id, seed, slot, v, realmRev, placeRev, tag, done, total, whole, sha }: sha is the sha256 (hex) of the header's cell list (cell:sha pairs in cell order), so equal headers, equal sha.
 // The Station offers its package's summary at a seat; the Caddy's dock decides (caddy/dock.mjs decideTake); `takePackage` is the Companion's side: on the web the transfer is a no-op copy (one
 // IndexedDB), so taking is writing the marker the Companion plays from (place-store packageUse); the hardware desk's flash write slots in at the same step.
-export const PACKAGE_FORMAT = 1, PKG = 'pkg7:';
+// PACKAGE_FORMAT 2 (baked-package-8): a package cell is the .mbplace bytes (place format 2). Format 1 (the object record { ir, place }) is another id, never read as bytes: it is rebaked at the Station and taken at the next seat.
+export const PACKAGE_FORMAT = 2, PKG = 'pkg7:';
 
 // The browser's store: its own IndexedDB database ('mb-packages', store 'kv', the one idb-keyval's createStore made before), so nothing of the place store's list can evict it. { get, set, del, keys }
 export async function idbKv() {

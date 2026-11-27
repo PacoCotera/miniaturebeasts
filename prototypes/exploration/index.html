@@ -1106,7 +1106,11 @@ function settleOnce() {
   if (h && !S.found.includes(h.key)) { if (lineCtx(lineFor()).r === h.text) S.found.push(h.key);   // the bottom line shows it: spent
     else fxOnce(h.key, h.text, h.pri); }   // too long for the bottom line's middle: a plain note until the copy has a short form
   const covered = S.phase === 'patch' && S.ui.swap;   // the swap chooser has the box's place: nothing is drawn, so nothing is spent
-  for (const n of covered ? [] : FX.notes) if (n.once && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
+  const bl = FX.beatLine; FX.beatLine = null;
+  if (bl && !covered && (!FX.msg || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && !FX.notes.length) {   // wild-life-build-3: a free box takes the act's line; wild-life-build-6: so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
+    FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); FX.beatOver = FX.msg === bl.text ? { text: bl.text, until: NOW + BEAT_HOLD_MS } : null; }
+  for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // wild-life-build-3: an act's line is spent for the day only once it showed
+  for (const n of covered ? [] : FX.notes) if (n.once && !n.beat && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
     if (n.sign) { const k = 'met:' + SIGN[n.sign].tile; if (!S.found.includes(k)) S.found.push(k); } }
 }
@@ -1226,6 +1230,8 @@ function approachTeach(c) {
 }
 // The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
 function teachFill() {
+  const bo = FX.beatOver;   // wild-life-build-6: her line over the standing target line ends after its hold, or when another line has the box; the target line comes back as it was
+  if (bo) { if (FX.msg !== bo.text || NOW >= bo.until) { FX.beatOver = null; if (FX.msg === bo.text && firstWalk()) { FX.notes = FX.notes.filter(x => x.text !== bo.text); FX.msg = ''; FX.sign = null; } } }
   if (FX.msg && FX.msg !== FX.teachMsg) return;
   const prevUp = RT.approachUp; RT.approachUp = null;
   const t = firstWalk() && !(S.phase === 'setup' && !S.exp && openAlone()) ? teachStep() : '';
@@ -4100,7 +4106,7 @@ function patchTick(info) {
     away: o => awayFrom(o, P) }, pc);
   habitWorld(X);
   for (const c of live.cr) { const was = c.st, bx = c.x, by = c.y; creatureTick(c, X); if (c.st === 'flee' && was !== 'flee') ex.stats.flee++;
-    stirStep(c, X, bx, by);
+    stirStep(c, X, bx, by); idleBeat(c, X, bx, by);
     nameSeen(c, X.away);   // a name on first note: the one the realm gives it, kept once it has been met
     if (c.ind && !c.hide && !X.away(c) && inSight(c.x, c.y)) (S.seenAt || (S.seenAt = {}))[String(c.id)] = { k: key, x: c.x, y: c.y, sp: c.sp, t: S.turn };   // W6a: where she was last seen, and on which day: the target line's arrow points here, never at her live place
     if (!c.hide && !X.away(c) && inSight(c.x, c.y) && !ex.met.includes(c.sp)) { ex.met.push(c.sp); if (!S.met.includes(c.sp)) { S.met.push(c.sp); ex.newMet.push(c.sp); } } }
@@ -4139,6 +4145,94 @@ function stirStep(c, X, bx, by) {
   if (!opts.length) return;
   const q = opts[Math.floor(rnd(S.seed, c.id, ex.actions, 'stirdir') * opts.length)];
   if (q.x !== c.x) c.face = Math.sign(q.x - c.x); c.x = q.x; c.y = q.y;
+}
+// wild-life-build-1/-3: the idle beat. A named Loika at ease at her haunt, in sight and standing still, does one act, picked by her seed, every while: groom, sniff or graze, each at a plant, flower or bush within 3 tiles
+// (she is drawn going there, one step picture after another, and does it facing it), or look up (no target: she turns to him, only when he is within 6 tiles). The picture holds about 2.5 s of real time and at least 3
+// of his actions, then she goes back; she rests at least 5 actions before the next. When the act starts and the message box is free, one short line says it, once per act per Loika per day, never over another line.
+// No prompt, no counter, no light, no rule: the act is picture and line only (FX.beats, read by the draw); her own tile, her routine, her habits and every state are untouched, so the world plays as before, and an act
+// is lost the moment she moves, hears him or leaves sight. Nothing here draws a pixel or rolls the world's random: every pick is a pure hash of the seed, her id and the action.
+const BEAT_HOLD_MS = 2500, BEAT_HOLD_ACTS = 3, BEAT_HOLD_CAP_MS = 8000, BEAT_REST = 5, BEAT_NEAR = 3, BEAT_STEP_MS = 360;
+const PLANT_DECAL = /^sc-(flowers|tufts|clump|shrub|bush)/;
+// the plants of a place: the scatter's flower, tuft, clump, shrub and bush decals (by the tile their foot is on, as printMark reads them) and the bush features; cached once the tileset is in
+function plantTiles(lay) {
+  if (lay.plantTs) return lay.plantTs;
+  const sp = PL.ts && PL.ts.sprites, ds = lay.baked && lay.baked.place && lay.baked.place.decals, out = [];
+  if (sp && ds) for (const d of ds) { const s = sp[d.kind], m = s && PLANT_DECAL.exec(s.kind); if (m) out.push({ x: Math.floor(d.x / 48) - 1, y: Math.floor(d.y / 48) - 1, cls: m[1], kind: s.kind }); }
+  for (const f of lay.feats) if (f.kind === 'b' && !f.tree) out.push({ x: f.x, y: f.y, cls: 'bush', kind: 'bush' });
+  if (sp) lay.plantTs = out;
+  return out;
+}
+// a plant within 3 tiles that she can stand beside (a free, reachable tile next to it, in sight, not his), and the tile she is drawn on: { tgt, stand } or null. One she has to go to is picked first (by her seed), so she
+// is seen to go there; one she is already beside only when no other is in reach.
+function beatTarget(c, X) {
+  const lay = X.lay, lw = lay.w, P = X.P, opts = [], pl = plantTiles(lay);
+  for (const t of pl) {
+    if (cheb(t, c) > BEAT_NEAR) continue;
+    for (const [dx, dy] of Object.values(DIRS)) {
+      const q = { x: t.x + dx, y: t.y + dy };
+      if (q.x < 0 || q.y < 0 || q.x >= lw || q.y >= lay.h || !lay.reach[q.y * lw + q.x] || !inSight(q.x, q.y) || (q.x === P.x && q.y === P.y)) continue;
+      if (!(q.x === c.x && q.y === c.y) && (!canStand(X, q.x, q.y, c) || pl.some(p => p.x === q.x && p.y === q.y))) continue;
+      opts.push({ tgt: t, stand: q, w: man(q, c), r: rnd(S.seed, c.id, t.x, t.y, q.x, q.y, 'beattgt') }); }
+  }
+  const go = opts.filter(o => o.w >= 1 && o.w <= BEAT_NEAR), pool = go.length ? go : opts; let best = null;
+  for (const o of pool) if (!best || o.r < best.r) best = o;
+  return best && { tgt: best.tgt, stand: best.stand };
+}
+const beatCalm = (c, X) => !(RT.readOnly || c.sp !== 0 || c.hide > 0 || c.st !== 'idle' || c.home || c.visit || c.gone || c.hb || c.warm >= 1 || c.crowd > 0 || (c.ease | 0) >= 1 || curledNow(c) || X.away(c) || !inSight(c.x, c.y) || !onScreen(c.x, c.y));
+// where her act is now, by the clock: { b, ph: 'go' | 'hold' | 'back', f: how far along the way to her plant (0 at her tile, 1 at the plant) } or null (no act, over, or she has moved). The hold ends once it has run
+// 2.5 s and 3 of his actions have passed (or 8 s, whatever he did); she is then drawn back the way she went.
+function beatPhase(c) {
+  const b = FX.beats && FX.beats[c.id]; if (!b || b.x !== c.x || b.y !== c.y) return null;
+  const age = NOW - b.at, G = b.G;
+  if (b.endAt == null && age >= G + BEAT_HOLD_MS && (S.exp.actions - b.act >= BEAT_HOLD_ACTS || age >= G + BEAT_HOLD_CAP_MS)) b.endAt = NOW;
+  if (b.endAt != null) { const q = G ? (NOW - b.endAt) / G : 1; return q >= 1 ? null : { b, ph: 'back', f: 1 - q }; }
+  return age < G ? { b, ph: 'go', f: age / G } : { b, ph: 'hold', f: 1 };
+}
+// how the draw shifts her while she goes to her plant and back: px from her own tile, the step picture, which way she faces (or null)
+function beatShift(c, ts) {
+  const p = beatPhase(c); if (!p) return null;
+  const b = p.b; if (!b.stand) return p.ph === 'hold' && b.faceP ? { dx: 0, dy: 0, step: -1, face: b.faceP } : null;   // look up: she turns to him
+  const sx = b.stand.x - c.x, face = p.ph === 'go' ? Math.sign(sx) : p.ph === 'back' ? -Math.sign(sx) : Math.sign(b.tgt.x - b.stand.x);   // going: the way she goes; at it: toward the plant; back: the way home
+  return { dx: Math.round(sx * ts * p.f), dy: Math.round((b.stand.y - c.y) * ts * p.f), step: p.ph === 'hold' ? -1 : Math.floor(NOW / 170) % 2, face };
+}
+function beatSay(c, b) {   // the line: queued; settleOnce puts it in only when the box is free at the end of the action, and spends it only when it shows
+  const sd = S.beatSaid || (S.beatSaid = {}), key = c.id + '.' + b.k;
+  if (sd[key] === S.turn || !S.named[c.id]) return;
+  FX.beatLine = { text: WORDS.beat[b.k](S.named[c.id], b.tgt && b.tgt.cls), key };
+}
+function idleBeat(c, X, bx, by) {
+  const ex = S.exp, live = X.live, bt = live.bt || (live.bt = {}), n = ex.actions, cur = FX.beats && FX.beats[c.id];
+  if (cur) {   // an act in hand: she keeps it while she is at ease where she is; over, or lost, she rests at least 5 of his actions
+    if (beatCalm(c, X) && c.x === cur.x && c.y === cur.y && beatPhase(c)) return;
+    delete FX.beats[c.id]; bt[c.id] = n + BEAT_REST + Math.floor(rnd(S.seed, c.id, n, 'beatrest') * 3);
+  }
+  if (!beatCalm(c, X) || c.x !== bx || c.y !== by || !S.named[c.id]) return;   // only a Loika he has named acts: the box names the one the tag sits on
+  if (c.ind) { const hs = routineSpot(c, X.lay, X.key); if (!hs || man(hs, c) > 1) return; }   // at her haunt
+  if (bt[c.id] == null) { bt[c.id] = n + 3 + Math.floor(rnd(S.seed, c.id, 'beat0') * 3); return; }
+  if (n < bt[c.id]) return;
+  bt[c.id] = n + 3 + Math.floor(rnd(S.seed, c.id, n, 'beatgap') * 3);   // the next try, 3 to 5 actions on (an act's end sets its rest instead)
+  const near = cheb(c, X.P) <= 6, tg = beatTarget(c, X);
+  const kinds = (tg ? ['groom', 'sniff', 'graze'] : []).concat(near ? ['look'] : []); if (!kinds.length) return;
+  const k = kinds[Math.floor(rnd(S.seed, c.id, n, 'beatkind') * kinds.length)], at = k !== 'look';
+  const b = (FX.beats || (FX.beats = {}))[c.id] = { k, at: NOW, x: c.x, y: c.y, act: n, G: at ? BEAT_STEP_MS * man(tg.stand, c) : 0, tgt: at ? tg.tgt : null, stand: at ? tg.stand : null, endAt: null };
+  if (!at && X.P.x !== c.x) b.faceP = Math.sign(X.P.x - c.x);
+  beatSay(c, b);
+}
+const BEAT_LOOK_MS = 140, BEAT_GROOM = [250, 200, 1200, 200], BEAT_GROOM_SAD = [250, 1200, 200];   // look up: nine frames idle to idle; groom: idle, half-turn, groom held, half-turn, idle (saddled: idle, groom held, idle); both looped for the whole hold
+// The picture a beat gives her now (a token row), or null for her idle: while she goes and comes back, before and after the hold, if she has moved, or for the beats with no picture.
+function beatTok(c, sad) {
+  const p = beatPhase(c); if (!p || p.ph !== 'hold') return null;
+  const b = p.b, age = NOW - b.at - b.G, W = WILD_BEAT, co = sad ? 'saddled' : 'plain';
+  if (b.k === 'look') { const i = Math.floor(age / BEAT_LOOK_MS) % 9; return i >= 1 && i <= 7 ? { key: 'l' + co + i, row: W.look[co][i - 1] } : null; }
+  if (b.k !== 'groom') return null;
+  const g = W.groom[co], tl = sad ? BEAT_GROOM_SAD : BEAT_GROOM, tot = tl.reduce((a, v) => a + v, 0); let a = age % tot, e = 0;
+  for (let i = 0; i < tl.length; i++) { e += tl[i]; if (a < e) return i === 0 ? null : sad ? (i === 1 ? { key: 'gsaddled', row: g[0] } : null) : i === 2 ? { key: 'gplain', row: g[1] } : { key: 'gbetween', row: g[0] }; }
+  return null;
+}
+// Sniff and graze have no picture: her signed idle sinks 2 px (the nose to the plant) and holds still, for the whole hold. Movement of the signed token only; no pixel is drawn. BEAT_DIP 0 turns it off.
+const BEAT_DIP = 2;
+function beatDip(c) {
+  const p = beatPhase(c); return p && p.ph === 'hold' && (p.b.k === 'sniff' || p.b.k === 'graze') ? BEAT_DIP : 0;
 }
 // Lightning prefers stones; otherwise a random open tile near you, never the one you stand on.
 function pickStrike(X) {
@@ -5136,6 +5230,9 @@ const STEP_ART = []; Object.assign(STEP_ART, {
 // walk-look-carry-3: the Loika's signed saddled walk token (signed by the art director, walk-token-saddle-3): the right-facing idle and step frames (the step's first frame is the idle);
 // the left frames are these flipped at draw time, as every token is. Shown when her marking draws: a wild named Loika who shows it and whose coat a mid note has read, or a partner whose marking the Station draws.
 const SADDLED_ART = ['.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3K2C3LD4C3KA2LA.9A2K7CL2IAD2C2DK2L2A.7AK9CL2A2D2CD3L3A.6AK10CL5DC3DK3A.6AK10CL4D2L3K4A.5AK11C5L5K3A.6AL2K9C4L8A.7AC2L2K7C2P2L7A.8AC4L2K5C2P2L6A.8ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.17A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3K2C3LD4C3KA2LA.9A2K7CL2IAD2C2DK2L2A.7AK9CL2A2D2CD3L3A.6AK10CL5DC3DK3A.6AK10CL4D2L3K4A.5AK11C5L5K3A.6AL2K9C4L8A.7AC2L2K7C2P2L7A.8AC4L2K5C2P2L6A.8ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5A2C5D4A3C3D3A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.78'];
+// wild-life-build-1: the wild Loika's idle beat, the signed set (AD, ledger 2026-11-27): look up (frames 1 to 7 between the idle and the idle, plain and saddled: f81b9b080c, c93d315998 and the ledger's f1 to f7),
+// groom (plain: the half-turn 76b4ec9eb8 either side of the groom 1e40a024fb; saddled: the groom ec5e186975 alone, the AD's snap: no half-turn). Sniff and graze have no picture and stay her idle. Row text = the signed 32 px PNGs, snapped, byte-for-byte.
+const WILD_BEAT = { look: { plain: ['.48A2.29AL2A2.26AQ5A4.19A4Q5AQ2LA.17AQ13A2.16AP6Q7LA.16AP2QP5Q3PQA2.16A2P8QP3D2A.17AP4D3P3D3L.18AD11L2A.16AD4L4C2DKIALA.14AC4LD4C3KA2LA.11A3DC4L2IAD2C2DK2L2A.8A2D3C5L2A2D2CD3L3A.7AD2C3DC4L5DC3DK3A.6AD2C9L5DL3K4A.6ADC11L3D2L3K3A.6AC16L7A.7AC15L7A.8AC13P2L6A.9AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.46A5.3A.22ALQ4A3LA.21AQ8L2A.19AQ10LA.17AP5Q7LA.16AP2QP5Q3PQA2.15AP10QP3D2A.15AP6D3P3D3LA.15A2P3D9L3A.16AD4L3D4KLALA.14ADC3LD4C3KA2LA.11A3DC3L3IADC3DK2L2A.8A2D4C3L3A2D2CD3L3A.7AD2C3DC4L2A2IDC3DK3A.6AD2C9L5DL3K4A.6ADC11L3D2L3K3A.6AC16L7A.7AC15L7A.8AC13P2L6A.9AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3D3A.5AC5A.ACD6A.3AC2LD2A.6AC3A.3AD5LA.4ACL2A.8A3.5AD3L2A.5A3.18A5.14', '.45A5.2A2.22ALQ4A2L2A.21AQ9LA.19AQ10L2A.17AP4Q7LA2.16APQP5Q3PQD3A.15AP7DQP3D3LA.13AP6D9L3.14AP4D9KLALA.13A3D4L4C3KA2KLA.13AD2C2L2D3C3DK3LA.11A2D3C2L3IADCD3L3A.9A2D2C5L3A2D2C2D2K2A.8AD2C3DC4L5DL2K4A.7AD2C9L4D2L2K4A.7ADC11L2CL7A.7AC16L6A.8AC15L7A.8AC13P2L6A.9AC13P2L6D.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3D3A.5AC5A.ACD6A.3AC2LD2A.6AC3A.3AD5LA.4ACL2A.8A3.5AD3L2A.5A3.18A5.14', '.45A5.A2.23ALQ4A2LA2.20ALQ8LA.20AQ10LA.18AP4Q7D2A.17AQP5Q3PQD2LA.15AP7DQPD2L4A.14AP5D7KIAKLA.12AP5D3L2D3CA2KL2A.11PA3D4LD3C3D2L2KA.12A2D2C2LA3DC2D3K3A.10A2D3C3L2IAD2C3DK3A.9AD5C4LA2DKDL2K3A.9AD2C8L4D2L5A.8AD2C10L3DL5A.8ACDC14L6A.8AC15L6A.9AC14PL6A.9AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7CD2A.6ADC12DL6C3DA.6AC13D2L4C4DA.6AC12D4L2C4D2A.6AC6AC3D6A3C3D3A.5AC5A.ACD6A.2AC3D3A.5AC5A.ACD6A.3AC2LD2A.6AC3A.3AD5LA.4ACL2A.8A3.5AD3L2A.5A3.18A5.14', '.45A5.2A2.22ALQ4A3LA2.20AQ9LA.19AQ10LA.18AP4Q7D2A.16APQP5Q3PQD2LA.15AP7DQP2D3L2A.13AP6D8LIALA.13AP4D4L2D3KA2KLA.13A2D4L2D3C3K2L2A.12A2D2C2L2D4C2D3L2KA.9A2DCDC3L3IAD2C3DK3A.8AD5C4L2A2D2CL2K4A.7AD2C8L5DL3K3A.7AD2C10L3D2L5A.7ACDC14L6A.8AC15L7A.8AC14PL7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7CD2A.6ADC12DL6C3DA.6AC13D2L4C4DA.6AC12D4L2C4D2A.6AC5A2C3D7A2C3D3A.5AC5A3CD6A2.AC3D3A.5AC5A.ACD6A.3AC2LD2A.6AC3A.3AD5LA.4ACL2A.8A3.5AD3L2A.5A3.18A5.14', '.46A5.26ALQ4A5.21AQ8L2A.19AQ10LA.17AP5Q7LA.16AP2QP5Q3PQA2.16AP9QP3D2A.15AP6D3P3D3LA.15A2P3D9L3A.16AD11K2ALA.14ADC3L5C3KA2LA.11A3DC4LD4C3DK2L2A.8A2D4C4L2IAD2CD3LK2A.7AD2C3DC2DCL2A2D2C3DK3A.6AD2C7DCL5DL3K4A.6ADC11L3D2L3K3A.6AC16L7A.7AC15L7A.8AC13P2L6A.9AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3D3A.5AC5A.ACD6A.2AC3LD2A.6AC3A.3AD5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.48A2.29AL2A2.26AQ5A.2A2.17A5Q6A2L2A.15AQ14LA.15AP7Q7LA.15AP3QP5Q3PQLA.16A2P8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3D2C3LD4C3KA2LA.9A2D4C4L2IAD2C2DK2L2A.7AD2C3DC4L2A2D2CD3L3A.6AD2C9L5DC3DK3A.6ADC10L4D2L3K4A.5AC16L5K3A.6AC15L8A.7AC13P2L7A.8AC13P2L6A.8ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14'], saddled: ['.48A2.29AQ2A3.25AQ5A2.A.18A5Q7ALA.16AQ13LA.16AP6Q8LA.15AP2QP5Q3PQPA.17AP8QP4DA2.16AP5D3P3D3A.18AD11L2A.16AD3L5C2DKIALA.14ADC3LD4C3KA2LA.11A3K2C3L2IAD2C2DK2L2A.8A2K6C2L2A2D2CD3L3A.7AK9CL2A2LDC3DK3A.6AK10CL4D2CL2K4A.6AK10C2L3D2L3K3A.6AK11C5L7A.7AL2K9C4L7A.8AC2L2K7C2P2L6A.9AC4L2K5C2P2L6A.8ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.15A.30AQA3.3A.22AQ5A3LA.20A2Q7ALA.18A2Q11LA.16AP6Q7LA.15AP3QP5Q3PQA2.15AP10QP3D2A.15AP6D9LA.15A2P2D10LALA.16AD3L4C2DKIALA.15ADC2LD4C3KA2L2A.11A3DC3L3ID2C2DK2L2A.9A2K4C3L2A2D2CD3L2KA.8AK7C3L2A2LDC2DK3A.7AK9C2L4D2L2K4A.7AK9C3L2CL5K2A.7AK11C5L6A.8AK11C4L7A.8ALK10C2P2L6A.8ADCL2K8C2P2L6A.8ADC3L2K5C3L8DA.7ADC5L2K2C4L7D2A.7ADC7LC5L7CD2A.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3D3A.6AC4A.ACD6A.3AC2LD2A.7AC2A.3AD5LA.4ACL2A.9A2.5AD3L2A.6A2.18A5.14', '.14A2.29AQ2A3.3A.22Q6A3LA.20AQ8L2A.18A2Q10L2A.16AP5Q7LA.16AP2QP5Q3PQA3.15P9DQP3D3A.15AP5D9L2A.14CA2PD10KIALA.15AD3L5C3KA2LA.14ADC3LD4C3DK2L2A.10A3D2C3L2IAD2CD3L3A.9AK5C3L2A2D2C3DK3A.8AK7C2L6DL2K4A.7AK9C2L4D2L2K3A.7AK10C6L6A.8AK11C4L7A.8ALK10C4L6A.9ACK10C2P2L6A.8ADCL2K8C2P2L6D.8ADC3L2K4LC3L8DA.7ADC5L4C4L7D2A.7AC14L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3D3A.6AC4A.ACD6A.3AC2LD2A.7AC2A.3AD5LA.4ACL2A.9A2.5AD3L2A.6A2.18A5.14', '.13A2.30Q2A4.2A.22AQ6A2LA.20A2Q8LA2.18AQ11LA.17AP5Q7A2.16AP2QP5Q3PQD2A.14AP8D2QP2D2L2A.14AP6D8KILA.14A2P2D3L4C3KA2LA.15AD3LD4C3DK2L2A.13ADC3L2IAD2CD3K3A.10A3D2C3L2A2D2C3DK3A.9AK5C3L6DL2K3A.9AK7C3L4D2L2K3A.8AK9C3L2CL6A.8AK10C5L7A.8AK11C4L6A.9ALK10C2P2L6A.8ADCK10C2P2L6A.8ADCL2K8C2PL7DA.7ADC3L2K4LC3L7D2A.7ADC6L3C4L7CD2A.6AC13DL7C2DA.6AC13DL6C3DA.6AC12D4L3C3D2A.6AC5AC5D6A2C3D3A.5AC5A2C3D5A2.2AC2D3A.6AC4A.ACD6A.4ACLD2A.7AC2A.3AD5LA.5AL2A.9A2.5AD3L2A.6A2.18A5.14', '.14A2.30Q2A3.3A.22AQ5A3LA.20A2Q8LA.18A2Q11LA.16AP6Q7A2.15AP3QP5Q3PQA2.15AP8D2QP3D2A.15AP6D8L2A.15A2P2D9KIALA.15AD4L4C3KA2LA.14ADC3LD4C3DK2L2A.10A3D2C3L2IAD2CD3L3A.9AK5C3L2A2D2C3DK3A.8AK7C3L5DCLK4A.7AK9C3L3D2L2K3A.7AK10C6L6A.8AK11C4L7A.8ALK10C3PL6A.8ADCK10C2P2L6A.8ADCL2K8C2PL7A.8ADC3L2K4LC3L7D2A.7ADC6L3C4L7D2A.7AC13DL7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3D3A.6AC4A.ACD6A.3AC2LD2A.7AC2A.3AD5LA.4A2L2A.9A2.5AD3L2A.6A2.18A5.14', '.15A2.30Q2A2.27AQ5A2.A.21A2Q7ALA.18A2Q11A.17AP6Q7LA.15AP3QP5Q3PQA.16AP10QP3DA.16AP6D3P4D2A.16A2P2D10L2A.16AD11KLALA.14ADC3L5C2DKDALA.13AD2C3LD4C3KAKL2A.9A3K3C3L2IAD2C2DK3LA.7A2K7C2L2A2D2CD3K3A.6AK10CL5DC3DK3A.6AK10C2L3D2L3K3A.6AK11C5L5K2A.7ALK10C4L8.8ALK10C2P2L7A.8ACL2K8C2P2L6A.8ADC3L2K6C2PL7DA.7ADC5L2K2LC3L8DA.7ADC7L2C4L7D3A.6ADC12DL7C2DA.6AC13D2L5C3DA.6AC12D4L3C3D2A.6AC5AC5D6A2C3D3A.5AC5A3C2D5A2.AC3LD2A.6AC3A.3AD5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.49A2.29AL2A2.26AQ4LA.2A.17A6Q5A3LA.17Q13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18AP4D3P4D2A.18AD12LA.16AD12L2A.15ADC3L5C2DKIALA.11A3K2C3LD4C3KA2LA.9A2K7CL2IAD2C2DK2L2A.7AK9CL2A2D2CD3L3A.6AK10CL5DC3DK3A.6AK10CL4D2L3K4A.5AK11C5L5K3A.6AL2K9C4L8A.7AC2L2K7C2P2L7A.8AC4L2K5C2P2L6A.8ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14'] }, groom: { plain: ['.48A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18A2P3D3P3D3A.18AD12A.17ALDC2DL3D6A.15ADAC3L5DCD3A.12A3LD2C2DLA3LD2AD3A.9A2D2ALC3KD2L3D4AD2A.8AD2C3AK5D8AD2A.8ADC4ADK5L4DCAD3A.7ADC6A2K4L5CD4A.7AC9A2L8D4A.7AC13L7D2A.8AC11P3L6D2A.8AC12P2L6D2A.7ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L2AC4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14', '.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18A2P3D3P3D3A.18AD12A.17ALDC2DL3D6A.15ADAC3L5DCD3A.12A3LD2C2DLA3LD2AD3A.9A2D2ALC3KD2L3D4AD2A.8AD2C2A2K5D8AD2A.7AD2C4ADK5L4DCAD3A.7ADC6A2K4L5CD4A.6AC10A2L8D4A.6AC14L7D2A.7AC12P3L6D2A.7AC13P2L6D2A.6ADC13L8DA.7ADC13L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14'], saddled: ['.49A2.29AL2A2.26AQ4LA.2A.18A5Q5A3LA.16AQ13LA.16AP6Q7L2A.15AP2QP5Q3PQLA.17AP8QP3A2.18A2P3D3P3D3A.18AD12A.17ALDC2DL3D6A.15ADAC3L5DCD3A.12A3LD2C2DLA3LD2AD3A.9A2K2ALC3KD2L3D4AD2A.8AK4A2K5D8AD2A.7AK6ADK5L4DCAD3A.7AK7A2K4L5CD4A.6AK10A2L8D4A.6AL2K9C3L7D2A.7AC2L2K7CP3L6D2A.7AC4L2K5C2P2L6D2A.6ADC6L2K2LC2L8DA.7ADC8L2C3L7D2A.7ADC13L7C2DA.6AC13DL6C3DA.6AC13D3L3C4DA.6AC5AC6D5A2C3D3A.5AC5A2C3D5A2.AC3LD2A.6AC3A.2A2D5LA.3A2CL2A.8A3.4AD4L2A.5A3.17A6.14'] } };
 // What the walk knows of a wild Loika's look: her genome is drawn here by the Station's one code (wildGenome) from the realm seed and her id, kept only as whether the marking shows (S.looks[id] = 0|1, never her copies).
 // If the shared code or the frame does not load, WILD stays not ok and every token is the plain one.
 const WILD = { ok: false, shows: () => false, partner: () => false };
@@ -7061,13 +7158,14 @@ function drawPatchBody(t) {
   for (const c of live.cr) {
     const r = RT.cr.get(c.id) || null, nr = tween(r, c.x * ts, c.y * ts, 170); if (!r) RT.cr.set(c.id, nr);
     if (c.hide) continue; if (!vis2(nr.x, nr.y) || !inS(c.x, c.y)) continue;   // creatures show under the veil too (not beyond fog sight)
-    if (herTag && String(c.id) === herTag) RT.tagW = { x: SX(PX(nr)) + 16, y: SY(PY(nr)), name: S.named[c.id], sp: c.sp, wild: true, id: c.id };
+    const bs = c.sp === 0 ? beatShift(c, ts) : null, bdx = bs ? bs.dx : 0, bdy = bs ? bs.dy : 0;   // wild-life-build-3: her act's picture goes to her plant and back (the draw only)
+    if (herTag && String(c.id) === herTag) RT.tagW = { x: SX(PX(nr)) + 16 + bdx, y: SY(PY(nr)) + bdy, name: S.named[c.id], sp: c.sp, wild: true, id: c.id };
     const pose = c.sp === 1 && c.st === 'curl' ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 6 ? 'curl' : c.sp === 1 && POSE[c.st] === 'idle' && c.calm >= 3 ? 'settle'
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : c.st === 'hab' ? (c.hb && c.hb.pose) || 'idle' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
     const half = CR_MOVING.includes(c.st) ? stepHalf(nr) : -1;
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue, half) });
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)) + bdx, SY(PY(nr)) + bdy, pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue, bs && bs.step >= 0 ? bs.step : half, bs && bs.face ? bs.face : 0) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * ts, live.pt.y * ts, ex.pt.elder ? 220 : 150); const rp = RT.pt;
     const phalf = stepHalf(rp);
@@ -7165,7 +7263,7 @@ function drawPatchBody(t) {
 // Which half of its tween a thing is in while it moves (0 or 1), or -1 when it is not moving: motion on, now inside the tween's duration, the target differing from the start.
 function stepHalf(o) { return o && motion() && NOW - o.at < o.dur && (o.tx !== o.fx || o.ty !== o.fy) ? ((NOW - o.at) * 2 >= o.dur ? 1 : 0) : -1; }
 const CR_MOVING = ['idle', 'seek', 'approach', 'flee', 'watch'];   // the states a creature steps in
-function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
+function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1, faceOv = 0) {
   const m = motion(), fr = m ? Math.floor(t * 2.4 + c.id * .37) % 2 : 0;
   const stepping = stepFr >= 0 && !!stepFrames(STEP_ART[c.sp], false);
   let dx = 0, dy = 0;
@@ -7175,7 +7273,10 @@ function drawCreature(c, x, y, pose, t, rm, cue, stepFr = -1) {
   const sad = c.sp === 0 && wildSaddled(c);   // her marking shows and her coat is read
   const a = stepping ? creatureArt(c.sp, 'step', stepFr, 1, false, sad) : creatureArt(c.sp, pose === 'shake' && spOf(c.sp).shed === 'air' ? 'idle' : pose, pose === 'shake' || pose === 'eat' || pose === 'glow' || pose === 'nest' ? fr : 0, 1, false, sad);   // the Tuliko airing its scales is its idle with the shake's jiggle
   const cu = c.sp === 0 && curledNow(c) ? art('curl' + (sad ? 's' : 'p') + fr, () => tokenPB(CURLED_LOIKA[sad ? 'saddled' : 'plain'][fr], 32)) : null;   // asleep on her bed: the signed curled token
-  blit(cu || a, x + dx, y + dy, rm, (c.face || 1) < 0);
+  const bt = c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle' ? beatTok(c, sad) : null;   // wild-life-build-1: the idle beat's picture, held still (no bob)
+  const ba = bt ? art('wb' + bt.key, () => tokenPB(bt.row, 32)) : null; if (ba) dy = 0;
+  else if (c.sp === 0 && !cu && !stepping && pose === 'idle' && c.st === 'idle') { const bd = beatDip(c); if (bd) dy = bd; }   // sniff and graze: the idle sinks to the plant and holds still
+  blit(cu || ba || a, x + dx, y + dy, rm, (faceOv || c.face || 1) < 0);
   if (rm === 2 || rm === 5) return;
   const b = bubbleOf(c, S.exp && S.exp.carry);
   if (b) blit(bubbleArt(b === 'fs' ? 'f' : b), x + 11, y - 9); else if (cue) blit(bubbleArt('~'), x + 11, y - 9);

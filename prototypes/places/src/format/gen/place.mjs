@@ -759,6 +759,67 @@ var Builder = class _Builder {
   }
 };
 
+// mb/places/bank.ts
+var Bank = class _Bank {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsBank(bb, obj) {
+    return (obj || new _Bank()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsBank(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Bank()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  w() {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  h() {
+    const offset = this.bb.__offset(this.bb_pos, 10);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  static startBank(builder) {
+    builder.startObject(4);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(0, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(1, y, 0);
+  }
+  static addW(builder, w) {
+    builder.addFieldInt16(2, w, 0);
+  }
+  static addH(builder, h) {
+    builder.addFieldInt16(3, h, 0);
+  }
+  static endBank(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createBank(builder, x, y, w, h) {
+    _Bank.startBank(builder);
+    _Bank.addX(builder, x);
+    _Bank.addY(builder, y);
+    _Bank.addW(builder, w);
+    _Bank.addH(builder, h);
+    return _Bank.endBank(builder);
+  }
+};
+
 // mb/places/point.ts
 var Point = class {
   bb = null;
@@ -940,8 +1001,28 @@ var Find = class _Find {
     const offset = this.bb.__offset(this.bb_pos, 10);
     return offset ? this.bb.readFloat32(this.bb_pos + offset) : 0;
   }
+  what(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  herd() {
+    const offset = this.bb.__offset(this.bb_pos, 14);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : -1;
+  }
+  hollow() {
+    const offset = this.bb.__offset(this.bb_pos, 16);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : -1;
+  }
+  forced() {
+    const offset = this.bb.__offset(this.bb_pos, 18);
+    return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+  }
+  spot(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 20);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
   static startFind(builder) {
-    builder.startObject(4);
+    builder.startObject(9);
   }
   static addX(builder, x) {
     builder.addFieldInt16(0, x, 0);
@@ -965,16 +1046,36 @@ var Find = class _Find {
   static addChance(builder, chance) {
     builder.addFieldFloat32(3, chance, 0);
   }
+  static addWhat(builder, whatOffset) {
+    builder.addFieldOffset(4, whatOffset, 0);
+  }
+  static addHerd(builder, herd) {
+    builder.addFieldInt16(5, herd, -1);
+  }
+  static addHollow(builder, hollow) {
+    builder.addFieldInt16(6, hollow, -1);
+  }
+  static addForced(builder, forced) {
+    builder.addFieldInt8(7, +forced, 0);
+  }
+  static addSpot(builder, spotOffset) {
+    builder.addFieldOffset(8, spotOffset, 0);
+  }
   static endFind(builder) {
     const offset = builder.endObject();
     return offset;
   }
-  static createFind(builder, x, y, kindsOffset, chance) {
+  static createFind(builder, x, y, kindsOffset, chance, whatOffset, herd, hollow, forced, spotOffset) {
     _Find.startFind(builder);
     _Find.addX(builder, x);
     _Find.addY(builder, y);
     _Find.addKinds(builder, kindsOffset);
     _Find.addChance(builder, chance);
+    _Find.addWhat(builder, whatOffset);
+    _Find.addHerd(builder, herd);
+    _Find.addHollow(builder, hollow);
+    _Find.addForced(builder, forced);
+    _Find.addSpot(builder, spotOffset);
     return _Find.endFind(builder);
   }
 };
@@ -1104,6 +1205,75 @@ var HeartKind = /* @__PURE__ */ ((HeartKind2) => {
   HeartKind2[HeartKind2["stone"] = 3] = "stone";
   return HeartKind2;
 })(HeartKind || {});
+
+// mb/places/hold-landmark.ts
+var HoldLandmark = class _HoldLandmark {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsHoldLandmark(bb, obj) {
+    return (obj || new _HoldLandmark()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsHoldLandmark(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _HoldLandmark()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  kind(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  name(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  slot(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 10);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  static startHoldLandmark(builder) {
+    builder.startObject(5);
+  }
+  static addKind(builder, kindOffset) {
+    builder.addFieldOffset(0, kindOffset, 0);
+  }
+  static addName(builder, nameOffset) {
+    builder.addFieldOffset(1, nameOffset, 0);
+  }
+  static addSlot(builder, slotOffset) {
+    builder.addFieldOffset(2, slotOffset, 0);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(3, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(4, y, 0);
+  }
+  static endHoldLandmark(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createHoldLandmark(builder, kindOffset, nameOffset, slotOffset, x, y) {
+    _HoldLandmark.startHoldLandmark(builder);
+    _HoldLandmark.addKind(builder, kindOffset);
+    _HoldLandmark.addName(builder, nameOffset);
+    _HoldLandmark.addSlot(builder, slotOffset);
+    _HoldLandmark.addX(builder, x);
+    _HoldLandmark.addY(builder, y);
+    return _HoldLandmark.endHoldLandmark(builder);
+  }
+};
 
 // mb/places/landmark.ts
 var Landmark = class _Landmark {
@@ -1482,6 +1652,75 @@ var Pair = class _Pair {
   }
 };
 
+// mb/places/piece.ts
+var Piece = class _Piece {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsPiece(bb, obj) {
+    return (obj || new _Piece()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsPiece(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Piece()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  piece(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  w() {
+    const offset = this.bb.__offset(this.bb_pos, 10);
+    return offset ? this.bb.readUint8(this.bb_pos + offset) : 0;
+  }
+  spot(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  static startPiece(builder) {
+    builder.startObject(5);
+  }
+  static addPiece(builder, pieceOffset) {
+    builder.addFieldOffset(0, pieceOffset, 0);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(1, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(2, y, 0);
+  }
+  static addW(builder, w) {
+    builder.addFieldInt8(3, w, 0);
+  }
+  static addSpot(builder, spotOffset) {
+    builder.addFieldOffset(4, spotOffset, 0);
+  }
+  static endPiece(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createPiece(builder, pieceOffset, x, y, w, spotOffset) {
+    _Piece.startPiece(builder);
+    _Piece.addPiece(builder, pieceOffset);
+    _Piece.addX(builder, x);
+    _Piece.addY(builder, y);
+    _Piece.addW(builder, w);
+    _Piece.addSpot(builder, spotOffset);
+    return _Piece.endPiece(builder);
+  }
+};
+
 // mb/places/place-type.ts
 var PlaceType = /* @__PURE__ */ ((PlaceType2) => {
   PlaceType2[PlaceType2["pond"] = 0] = "pond";
@@ -1549,6 +1788,225 @@ var Placed = class _Placed {
     _Placed.addY(builder, y);
     _Placed.addSortY(builder, sortY);
     return _Placed.endPlaced(builder);
+  }
+};
+
+// mb/places/scree.ts
+var Scree = class _Scree {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsScree(bb, obj) {
+    return (obj || new _Scree()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsScree(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Scree()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  side() {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.readUint8(this.bb_pos + offset) : 0 /* N */;
+  }
+  s() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readUint8(this.bb_pos + offset) : 0;
+  }
+  ei() {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.readInt32(this.bb_pos + offset) : 0;
+  }
+  static startScree(builder) {
+    builder.startObject(3);
+  }
+  static addSide(builder, side) {
+    builder.addFieldInt8(0, side, 0 /* N */);
+  }
+  static addS(builder, s) {
+    builder.addFieldInt8(1, s, 0);
+  }
+  static addEi(builder, ei) {
+    builder.addFieldInt32(2, ei, 0);
+  }
+  static endScree(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createScree(builder, side, s, ei) {
+    _Scree.startScree(builder);
+    _Scree.addSide(builder, side);
+    _Scree.addS(builder, s);
+    _Scree.addEi(builder, ei);
+    return _Scree.endScree(builder);
+  }
+};
+
+// mb/places/sign.ts
+var Sign = class _Sign {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsSign(bb, obj) {
+    return (obj || new _Sign()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsSign(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Sign()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  kind(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  r() {
+    const offset = this.bb.__offset(this.bb_pos, 10);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  finds(index) {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? this.bb.readInt16(this.bb.__vector(this.bb_pos + offset) + index * 2) : 0;
+  }
+  findsLength() {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  findsArray() {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? new Int16Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+  }
+  banks(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 14);
+    return offset ? (obj || new Bank()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  banksLength() {
+    const offset = this.bb.__offset(this.bb_pos, 14);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  pearl() {
+    const offset = this.bb.__offset(this.bb_pos, 16);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  species(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 18);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  path(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 20);
+    return offset ? (obj || new Point()).__init(this.bb.__vector(this.bb_pos + offset) + index * 4, this.bb) : null;
+  }
+  pathLength() {
+    const offset = this.bb.__offset(this.bb_pos, 20);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  to(index) {
+    const offset = this.bb.__offset(this.bb_pos, 22);
+    return offset ? this.bb.readInt16(this.bb.__vector(this.bb_pos + offset) + index * 2) : 0;
+  }
+  toLength() {
+    const offset = this.bb.__offset(this.bb_pos, 22);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  toArray() {
+    const offset = this.bb.__offset(this.bb_pos, 22);
+    return offset ? new Int16Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+  }
+  static startSign(builder) {
+    builder.startObject(10);
+  }
+  static addKind(builder, kindOffset) {
+    builder.addFieldOffset(0, kindOffset, 0);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(1, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(2, y, 0);
+  }
+  static addR(builder, r) {
+    builder.addFieldInt16(3, r, 0);
+  }
+  static addFinds(builder, findsOffset) {
+    builder.addFieldOffset(4, findsOffset, 0);
+  }
+  static createFindsVector(builder, data) {
+    builder.startVector(2, data.length, 2);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addInt16(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startFindsVector(builder, numElems) {
+    builder.startVector(2, numElems, 2);
+  }
+  static addBanks(builder, banksOffset) {
+    builder.addFieldOffset(5, banksOffset, 0);
+  }
+  static createBanksVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startBanksVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addPearl(builder, pearl) {
+    builder.addFieldInt16(6, pearl, 0);
+  }
+  static addSpecies(builder, speciesOffset) {
+    builder.addFieldOffset(7, speciesOffset, 0);
+  }
+  static addPath(builder, pathOffset) {
+    builder.addFieldOffset(8, pathOffset, 0);
+  }
+  static startPathVector(builder, numElems) {
+    builder.startVector(4, numElems, 2);
+  }
+  static addTo(builder, toOffset) {
+    builder.addFieldOffset(9, toOffset, 0);
+  }
+  static createToVector(builder, data) {
+    builder.startVector(2, data.length, 2);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addInt16(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startToVector(builder, numElems) {
+    builder.startVector(2, numElems, 2);
+  }
+  static endSign(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createSign(builder, kindOffset, x, y, r, findsOffset, banksOffset, pearl, speciesOffset, pathOffset, toOffset) {
+    _Sign.startSign(builder);
+    _Sign.addKind(builder, kindOffset);
+    _Sign.addX(builder, x);
+    _Sign.addY(builder, y);
+    _Sign.addR(builder, r);
+    _Sign.addFinds(builder, findsOffset);
+    _Sign.addBanks(builder, banksOffset);
+    _Sign.addPearl(builder, pearl);
+    _Sign.addSpecies(builder, speciesOffset);
+    _Sign.addPath(builder, pathOffset);
+    _Sign.addTo(builder, toOffset);
+    return _Sign.endSign(builder);
   }
 };
 
@@ -1640,6 +2098,346 @@ var Spawn = class _Spawn {
     _Spawn.addSpecies(builder, speciesOffset);
     _Spawn.addCount(builder, count);
     return _Spawn.endSpawn(builder);
+  }
+};
+
+// mb/places/stamp-cell.ts
+var StampCell = class _StampCell {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsStampCell(bb, obj) {
+    return (obj || new _StampCell()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsStampCell(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _StampCell()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  k(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  static startStampCell(builder) {
+    builder.startObject(3);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(0, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(1, y, 0);
+  }
+  static addK(builder, kOffset) {
+    builder.addFieldOffset(2, kOffset, 0);
+  }
+  static endStampCell(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createStampCell(builder, x, y, kOffset) {
+    _StampCell.startStampCell(builder);
+    _StampCell.addX(builder, x);
+    _StampCell.addY(builder, y);
+    _StampCell.addK(builder, kOffset);
+    return _StampCell.endStampCell(builder);
+  }
+};
+
+// mb/places/stamp.ts
+var Stamp = class _Stamp {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsStamp(bb, obj) {
+    return (obj || new _Stamp()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsStamp(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Stamp()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  id(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  kind(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  role(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 10);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  w() {
+    const offset = this.bb.__offset(this.bb_pos, 14);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  h() {
+    const offset = this.bb.__offset(this.bb_pos, 16);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  tier() {
+    const offset = this.bb.__offset(this.bb_pos, 18);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : -1;
+  }
+  entryDist() {
+    const offset = this.bb.__offset(this.bb_pos, 20);
+    return offset ? this.bb.readFloat64(this.bb_pos + offset) : 0;
+  }
+  spineDist() {
+    const offset = this.bb.__offset(this.bb_pos, 22);
+    return offset ? this.bb.readFloat64(this.bb_pos + offset) : 0;
+  }
+  seeFrom(index) {
+    const offset = this.bb.__offset(this.bb_pos, 24);
+    return offset ? this.bb.readInt16(this.bb.__vector(this.bb_pos + offset) + index * 2) : 0;
+  }
+  seeFromLength() {
+    const offset = this.bb.__offset(this.bb_pos, 24);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  seeFromArray() {
+    const offset = this.bb.__offset(this.bb_pos, 24);
+    return offset ? new Int16Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+  }
+  hasSeeFrom() {
+    const offset = this.bb.__offset(this.bb_pos, 26);
+    return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+  }
+  cells(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 28);
+    return offset ? (obj || new StampCell()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  cellsLength() {
+    const offset = this.bb.__offset(this.bb_pos, 28);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  static startStamp(builder) {
+    builder.startObject(13);
+  }
+  static addId(builder, idOffset) {
+    builder.addFieldOffset(0, idOffset, 0);
+  }
+  static addKind(builder, kindOffset) {
+    builder.addFieldOffset(1, kindOffset, 0);
+  }
+  static addRole(builder, roleOffset) {
+    builder.addFieldOffset(2, roleOffset, 0);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(3, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(4, y, 0);
+  }
+  static addW(builder, w) {
+    builder.addFieldInt16(5, w, 0);
+  }
+  static addH(builder, h) {
+    builder.addFieldInt16(6, h, 0);
+  }
+  static addTier(builder, tier) {
+    builder.addFieldInt16(7, tier, -1);
+  }
+  static addEntryDist(builder, entryDist) {
+    builder.addFieldFloat64(8, entryDist, 0);
+  }
+  static addSpineDist(builder, spineDist) {
+    builder.addFieldFloat64(9, spineDist, 0);
+  }
+  static addSeeFrom(builder, seeFromOffset) {
+    builder.addFieldOffset(10, seeFromOffset, 0);
+  }
+  static createSeeFromVector(builder, data) {
+    builder.startVector(2, data.length, 2);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addInt16(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startSeeFromVector(builder, numElems) {
+    builder.startVector(2, numElems, 2);
+  }
+  static addHasSeeFrom(builder, hasSeeFrom) {
+    builder.addFieldInt8(11, +hasSeeFrom, 0);
+  }
+  static addCells(builder, cellsOffset) {
+    builder.addFieldOffset(12, cellsOffset, 0);
+  }
+  static createCellsVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startCellsVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static endStamp(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createStamp(builder, idOffset, kindOffset, roleOffset, x, y, w, h, tier, entryDist, spineDist, seeFromOffset, hasSeeFrom, cellsOffset) {
+    _Stamp.startStamp(builder);
+    _Stamp.addId(builder, idOffset);
+    _Stamp.addKind(builder, kindOffset);
+    _Stamp.addRole(builder, roleOffset);
+    _Stamp.addX(builder, x);
+    _Stamp.addY(builder, y);
+    _Stamp.addW(builder, w);
+    _Stamp.addH(builder, h);
+    _Stamp.addTier(builder, tier);
+    _Stamp.addEntryDist(builder, entryDist);
+    _Stamp.addSpineDist(builder, spineDist);
+    _Stamp.addSeeFrom(builder, seeFromOffset);
+    _Stamp.addHasSeeFrom(builder, hasSeeFrom);
+    _Stamp.addCells(builder, cellsOffset);
+    return _Stamp.endStamp(builder);
+  }
+};
+
+// mb/places/strike.ts
+var Strike = class _Strike {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsStrike(bb, obj) {
+    return (obj || new _Strike()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsStrike(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Strike()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  age() {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  glass() {
+    const offset = this.bb.__offset(this.bb_pos, 10);
+    return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+  }
+  read() {
+    const offset = this.bb.__offset(this.bb_pos, 12);
+    return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+  }
+  static startStrike(builder) {
+    builder.startObject(5);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(0, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(1, y, 0);
+  }
+  static addAge(builder, age) {
+    builder.addFieldInt16(2, age, 0);
+  }
+  static addGlass(builder, glass) {
+    builder.addFieldInt8(3, +glass, 0);
+  }
+  static addRead(builder, read) {
+    builder.addFieldInt8(4, +read, 0);
+  }
+  static endStrike(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createStrike(builder, x, y, age, glass, read) {
+    _Strike.startStrike(builder);
+    _Strike.addX(builder, x);
+    _Strike.addY(builder, y);
+    _Strike.addAge(builder, age);
+    _Strike.addGlass(builder, glass);
+    _Strike.addRead(builder, read);
+    return _Strike.endStrike(builder);
+  }
+};
+
+// mb/places/trace.ts
+var Trace = class _Trace {
+  bb = null;
+  bb_pos = 0;
+  __init(i, bb) {
+    this.bb_pos = i;
+    this.bb = bb;
+    return this;
+  }
+  static getRootAsTrace(bb, obj) {
+    return (obj || new _Trace()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  static getSizePrefixedRootAsTrace(bb, obj) {
+    bb.setPosition(bb.position() + SIZE_PREFIX_LENGTH);
+    return (obj || new _Trace()).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+  }
+  kind(optionalEncoding) {
+    const offset = this.bb.__offset(this.bb_pos, 4);
+    return offset ? this.bb.__string(this.bb_pos + offset, optionalEncoding) : null;
+  }
+  x() {
+    const offset = this.bb.__offset(this.bb_pos, 6);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  y() {
+    const offset = this.bb.__offset(this.bb_pos, 8);
+    return offset ? this.bb.readInt16(this.bb_pos + offset) : 0;
+  }
+  static startTrace(builder) {
+    builder.startObject(3);
+  }
+  static addKind(builder, kindOffset) {
+    builder.addFieldOffset(0, kindOffset, 0);
+  }
+  static addX(builder, x) {
+    builder.addFieldInt16(1, x, 0);
+  }
+  static addY(builder, y) {
+    builder.addFieldInt16(2, y, 0);
+  }
+  static endTrace(builder) {
+    const offset = builder.endObject();
+    return offset;
+  }
+  static createTrace(builder, kindOffset, x, y) {
+    _Trace.startTrace(builder);
+    _Trace.addKind(builder, kindOffset);
+    _Trace.addX(builder, x);
+    _Trace.addY(builder, y);
+    return _Trace.endTrace(builder);
   }
 };
 
@@ -1807,8 +2605,112 @@ var Place = class _Place {
     const offset = this.bb.__offset(this.bb_pos, 44);
     return offset ? new Uint8Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
   }
+  seed() {
+    const offset = this.bb.__offset(this.bb_pos, 46);
+    return offset ? this.bb.readUint32(this.bb_pos + offset) : 0;
+  }
+  cell() {
+    const offset = this.bb.__offset(this.bb_pos, 48);
+    return offset ? this.bb.readUint16(this.bb_pos + offset) : 0;
+  }
+  rimSteps(index) {
+    const offset = this.bb.__offset(this.bb_pos, 50);
+    return offset ? this.bb.readUint8(this.bb.__vector(this.bb_pos + offset) + index) : 0;
+  }
+  rimStepsLength() {
+    const offset = this.bb.__offset(this.bb_pos, 50);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  rimStepsArray() {
+    const offset = this.bb.__offset(this.bb_pos, 50);
+    return offset ? new Uint8Array(this.bb.bytes().buffer, this.bb.bytes().byteOffset + this.bb.__vector(this.bb_pos + offset), this.bb.__vector_len(this.bb_pos + offset)) : null;
+  }
+  groundAt(obj) {
+    const offset = this.bb.__offset(this.bb_pos, 52);
+    return offset ? (obj || new Point()).__init(this.bb_pos + offset, this.bb) : null;
+  }
+  hasGroundAt() {
+    const offset = this.bb.__offset(this.bb_pos, 54);
+    return offset ? !!this.bb.readInt8(this.bb_pos + offset) : false;
+  }
+  softWade(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 56);
+    return offset ? (obj || new Point()).__init(this.bb.__vector(this.bb_pos + offset) + index * 4, this.bb) : null;
+  }
+  softWadeLength() {
+    const offset = this.bb.__offset(this.bb_pos, 56);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  softScree(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 58);
+    return offset ? (obj || new Scree()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  softScreeLength() {
+    const offset = this.bb.__offset(this.bb_pos, 58);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  pieces(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 60);
+    return offset ? (obj || new Piece()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  piecesLength() {
+    const offset = this.bb.__offset(this.bb_pos, 60);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  shelter(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 62);
+    return offset ? (obj || new Point()).__init(this.bb.__vector(this.bb_pos + offset) + index * 4, this.bb) : null;
+  }
+  shelterLength() {
+    const offset = this.bb.__offset(this.bb_pos, 62);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  strikes(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 64);
+    return offset ? (obj || new Strike()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  strikesLength() {
+    const offset = this.bb.__offset(this.bb_pos, 64);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  signs(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 66);
+    return offset ? (obj || new Sign()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  signsLength() {
+    const offset = this.bb.__offset(this.bb_pos, 66);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  traces(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 68);
+    return offset ? (obj || new Trace()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  tracesLength() {
+    const offset = this.bb.__offset(this.bb_pos, 68);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  stamps(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 70);
+    return offset ? (obj || new Stamp()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  stampsLength() {
+    const offset = this.bb.__offset(this.bb_pos, 70);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  banks(index, obj) {
+    const offset = this.bb.__offset(this.bb_pos, 72);
+    return offset ? (obj || new Bank()).__init(this.bb.__indirect(this.bb.__vector(this.bb_pos + offset) + index * 4), this.bb) : null;
+  }
+  banksLength() {
+    const offset = this.bb.__offset(this.bb_pos, 72);
+    return offset ? this.bb.__vector_len(this.bb_pos + offset) : 0;
+  }
+  holdLandmark(obj) {
+    const offset = this.bb.__offset(this.bb_pos, 74);
+    return offset ? (obj || new HoldLandmark()).__init(this.bb.__indirect(this.bb_pos + offset), this.bb) : null;
+  }
   static startPlace(builder) {
-    builder.startObject(21);
+    builder.startObject(36);
   }
   static addId(builder, idOffset) {
     builder.addFieldOffset(0, idOffset, 0);
@@ -2002,6 +2904,137 @@ var Place = class _Place {
   }
   static startTopVector(builder, numElems) {
     builder.startVector(1, numElems, 1);
+  }
+  static addSeed(builder, seed) {
+    builder.addFieldInt32(21, seed, 0);
+  }
+  static addCell(builder, cell) {
+    builder.addFieldInt16(22, cell, 0);
+  }
+  static addRimSteps(builder, rimStepsOffset) {
+    builder.addFieldOffset(23, rimStepsOffset, 0);
+  }
+  static createRimStepsVector(builder, data) {
+    builder.startVector(1, data.length, 1);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addInt8(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startRimStepsVector(builder, numElems) {
+    builder.startVector(1, numElems, 1);
+  }
+  static addGroundAt(builder, groundAtOffset) {
+    builder.addFieldStruct(24, groundAtOffset, 0);
+  }
+  static addHasGroundAt(builder, hasGroundAt) {
+    builder.addFieldInt8(25, +hasGroundAt, 0);
+  }
+  static addSoftWade(builder, softWadeOffset) {
+    builder.addFieldOffset(26, softWadeOffset, 0);
+  }
+  static startSoftWadeVector(builder, numElems) {
+    builder.startVector(4, numElems, 2);
+  }
+  static addSoftScree(builder, softScreeOffset) {
+    builder.addFieldOffset(27, softScreeOffset, 0);
+  }
+  static createSoftScreeVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startSoftScreeVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addPieces(builder, piecesOffset) {
+    builder.addFieldOffset(28, piecesOffset, 0);
+  }
+  static createPiecesVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startPiecesVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addShelter(builder, shelterOffset) {
+    builder.addFieldOffset(29, shelterOffset, 0);
+  }
+  static startShelterVector(builder, numElems) {
+    builder.startVector(4, numElems, 2);
+  }
+  static addStrikes(builder, strikesOffset) {
+    builder.addFieldOffset(30, strikesOffset, 0);
+  }
+  static createStrikesVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startStrikesVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addSigns(builder, signsOffset) {
+    builder.addFieldOffset(31, signsOffset, 0);
+  }
+  static createSignsVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startSignsVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addTraces(builder, tracesOffset) {
+    builder.addFieldOffset(32, tracesOffset, 0);
+  }
+  static createTracesVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startTracesVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addStamps(builder, stampsOffset) {
+    builder.addFieldOffset(33, stampsOffset, 0);
+  }
+  static createStampsVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startStampsVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addBanks(builder, banksOffset) {
+    builder.addFieldOffset(34, banksOffset, 0);
+  }
+  static createBanksVector(builder, data) {
+    builder.startVector(4, data.length, 4);
+    for (let i = data.length - 1; i >= 0; i--) {
+      builder.addOffset(data[i]);
+    }
+    return builder.endVector();
+  }
+  static startBanksVector(builder, numElems) {
+    builder.startVector(4, numElems, 4);
+  }
+  static addHoldLandmark(builder, holdLandmarkOffset) {
+    builder.addFieldOffset(35, holdLandmarkOffset, 0);
   }
   static endPlace(builder) {
     const offset = builder.endObject();
@@ -2654,6 +3687,7 @@ var TileSet = class _TileSet {
   }
 };
 export {
+  Bank,
   Builder,
   ByteBuffer,
   Clue,
@@ -2661,12 +3695,14 @@ export {
   Find,
   Heart,
   HeartKind,
+  HoldLandmark,
   Landmark,
   Layer,
   Licence,
   Opening,
   Pair,
   PairMode,
+  Piece,
   Place,
   PlaceType,
   Placed,
@@ -2674,11 +3710,17 @@ export {
   ReachBy,
   Remap,
   RemapName,
+  Scree,
   Side,
+  Sign,
   Spawn,
   Sprite,
   SpriteGroup,
+  Stamp,
+  StampCell,
+  Strike,
   TellKind,
   Tile,
-  TileSet
+  TileSet,
+  Trace
 };
