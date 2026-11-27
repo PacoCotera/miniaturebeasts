@@ -227,6 +227,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, mb-dev]
     timeout-minutes: 20   # the limit only catches a hung run
+    concurrency: {group: browser-all-prs, cancel-in-progress: false}   # one browser run at a time across all PRs, queued not cancelled
     steps:
       - uses: actions/checkout@v4
         with:
@@ -323,6 +324,6 @@ jobs:
         run: sh .github/release-check.sh
       - name: The played-game tests (the shipped page at his two phone sizes, his saves, buttons only, judged by the screen)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
-        timeout-minutes: 8   # measured under 5 minutes
+        timeout-minutes: 12   # measured 5 to 8 minutes under load
         # prototypes/exploration/tests/played/played.mjs (owner 2026-11-25, code-audit step 1). It builds the bundle with ops/sandbox/bundle-pages.sh itself and serves it. The glob is quoted: Node 22 takes a directory argument as a file.
         run: node --test "prototypes/exploration/tests/played/*.mjs"
