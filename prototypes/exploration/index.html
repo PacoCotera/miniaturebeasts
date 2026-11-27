@@ -8449,7 +8449,7 @@ function drawProbe(t) {
     const nm = met[f] && met[f].name; if (nm) text(nm, 432, 208, C.bone, 2, 'right'); }   // the ringed sign names itself where the eye is (the heading's line), as well as on the bottom line; "?" means not known yet and a sign never draws one (art desk)
   text('Field guide', 24, 420, C.mist);
   if (!S.known.length) text('No species identified yet', 24, 442, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 440, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 444); text(spOf(sp).name, x + 42, 452, C.bone); });
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; blit(creatureArt(sp, 'idle', 0), x + 6, 444); text(spOf(sp).name, x + 42, 452, C.bone); });
 }
 // The focused tile on the Probe (the pad moves it over the signs met, in reading order).
 function probeFocus() { const n = metTiles().length; return clamp(S.ui.pf | 0, 0, Math.max(0, n - 1)); }
