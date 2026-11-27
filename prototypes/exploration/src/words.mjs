@@ -102,7 +102,7 @@ WORDS.habit = {
   noted: (name, habit, range, said) => name + ' · ' + habit + ' · ' + range + ' · ' + said,
   first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
   dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
-  fed: 'fed · tonight she sleeps in her pod',   // editorial's line, said when he feeds a named Loika (habits-out-build-1)
+  fed: n => n + ' takes the fruit from your hand. Tonight she sleeps in her pod, if she is left in peace.',   // editorial's line, said when he feeds a named Loika
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
   asleep: 'asleep, curled up', asleepStirred: ' · she is stirring · no keepsake until she settles',   // [copy] night step 5: a sleeper's note (name, and the tail while she is stirred)
   curledSlot: 'Loika asleep: picture to come',   // [art] night step 5: the named empty slot of her curled token (night-camp piece 11), not signed yet
@@ -169,6 +169,8 @@ WORDS.target = { line: (name, where, dir, fits) => {
 } };
 // [copy] WORKING WORDS (edge-cost-line-fix-1, owner 2026-11-25 "ok"): the bottom line while the next step crosses into the next place; n is DAY.mapStep. The editor's final string replaces it.
 WORDS.edgeStep = n => n + ' light to the next place';
+// [copy] WORKING WORDS (reveal-build-1): the line when a map step's new ring ends on a find; editorial's reveal.find. The editor's final string replaces it.
+WORDS.reveal = { find: 'the ring ends on a find' };
 
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
 // Pure: the page and the bots read the same table.
@@ -210,7 +212,7 @@ WORDS.book = {
 // The Case (companion-case-build-1): the Companion's second face. [copy] WORKING WORDS: the copywriter's job replaces every string here.
 // A label tells only what the player was shown: a pod's species when known, never a trait value; "at the Station" names only the chapter the sample is for.
 WORDS.case = {
-  title: 'Case', sealed: 'Sealed for home', goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: ['◀ Log, her pages · ▶ Riding', '◀ Log · ▶ Riding'], end: 'End expedition',
+  title: 'Case', sealed: 'Sealed for home', tally: { title: 'Brought home', pods: 'pods', finds: 'finds', pages: 'pages' }, goesHome: ['It all goes home', 'when you dock'], page: 'Its page in the Log', field: 'field', pages: ['◀ Log, her pages · ▶ Riding', '◀ Log · ▶ Riding'], end: 'End expedition',
   pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
   place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
   podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
@@ -237,7 +239,25 @@ export const DAY_TEXT = {
   line: (part, n) => part + ' · ' + (part === 'night' ? 'dawn in ' : 'night in ') + n,   // [copy] the bottom line: the part of day and how far the night (or dawn) is
   nightPassed: part => 'Night passed. A new day: ' + part + '.',   // [copy] the walk goes on where you stand
   duskNews: n => 'Dusk. Night in ' + n + '.',   // [copy] once a day, in the message box
+  duskFed: names => names.length === 1 ? 'Dusk. ' + names[0] + ' ate from your hand today. She will sleep in her pod if you do not wake her.' : 'Dusk. ' + names[0] + ' and ' + (names.length - 1) + ' other Loika' + (names.length > 2 ? 's' : '') + ' ate from your hand today. They will sleep in their pods if you do not wake them.',   // editorial's line
+  nightFed: name => 'Night. ' + name + ' sleeps in her pod',   // no clock: the day bar alone counts to dawn
+  nightFedMore: (name, n) => 'Night. ' + name + ' and ' + n + ' other Loika' + (n > 1 ? 's' : '') + ' sleep in their pods',   // bus 9bdb54 (GD note): two or more fed
+  nightWoken: name => 'Night. ' + name + ' was woken · no pod tonight',
   nightNews: n => 'Night. Dawn in ' + n + '.',   // [copy]
   newDay: 'A new day · you set out at dawn',   // a set-out in the night's light: the night's end runs first, at the Station
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
+};
+// the night pod's words (editorial's lines; none is the builder's)
+WORDS.pod = {
+  take: 'Take her up', second: 'One sleeper only', line: n => n + ' · asleep in her pod', lineShort: n => n + ' · asleep',
+  secondMsg: n => 'The Case holds one sleeper · ' + n + ' is in it',   // editorial's line: the walk's end brings her home
+  head: n => 'Take ' + n + ' up?', leave: 'Leave her asleep',
+  c1: 'She sleeps till first light. End the expedition and she wakes in the nursery.',   // editorial's line
+  cradle: n => n + ' · asleep', cradleMsg: 'She wakes at first light',
+  seal: (n, rest) => 'Seals ' + n + ', asleep' + (rest ? ' + ' + rest : ''), sealTail: 'She wakes at the Station',
+  bayFull: n => 'Bay full · ' + n + ' wakes here at first light · dock to empty the bay',
+  wokeSet: n => n + ' woke where her pod lay',   // the dawn message where she lay; none at her bed
+  wokeNursery: n => n + ' woke in the nursery',
+  eatsTeach: n => n + ' eats fruit · creep beside her while she grazes', podTeach: n => n + ' · asleep in her pod · ✓ takes her up',   // [copy] put together from canon's strings
+  fed: 'Fed today', asleepPage: 'asleep in her pod', inCase: 'in the Case', goneHome: d => 'Gone home · day ' + d, goneBack: d => 'Gone back · day ' + d,
 };

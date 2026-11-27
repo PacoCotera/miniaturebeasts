@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, forgetLevels, regionBanks, madeRegionBanks, presetRegionBanks, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { coastSide, levelsOf, forgetLevels, regionBanks, madeRegionBanks, presetRegionBanks, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { streamPieces, drawStream, bridgeList, layBridge, fallsSite, edgeId } from './streams.mjs';
 import { RULES } from './rules.mjs';
@@ -23,6 +23,7 @@ import { holdOf } from './hold.mjs';
 import { touchesRaised, partAt, PART, FACE_ROWS } from '../../../places/src/bake/relief.mjs';
 import { landmarksOf, forgetLandmarks } from './landmarks.mjs';
 import { maskFn } from './places.mjs';
+import { shoreValue, sandWidth, SHORE_SHALLOW } from '../shore7.mjs';
 
 export const TV = { DEEP: 1, WATER: 2, SAND: 3, MUD: 4, PATH: 5, GRASS: 6, EARTH: 7, CLIFF: 8, THICKET: 9, SCRUB: 10, LITTER: 11, DRY: 12, TURF: 13, SCREE: 14, PATHTOP: 19, FORD: 20, BRIDGE: 21 };   // FORD and BRIDGE: walkable ground over a stream and over a river (streams.mjs; drawn as the path until painted). PATHTOP: the path on a raised top (a value of `top`, never of the terrain: the tile stays cliff; drawn as the path)
 // the pairs the set draws (art/places/terrain.json values): a terrain meets another only as one of these (the set's `lowers`); every 2 x 2 block of logic tiles holds at most three terrains (terrain layers),
@@ -71,6 +72,10 @@ function ctxOf(seed) {
   let S = CTX.get(seed); if (S) return S;
   const R = realm7(seed), re = R.realm, N = RW * RH;
   S = { seed, R, re, at: fieldsAt(seed), forestC: new Float32Array(N), wetC: new Float32Array(N), rockC: new Float32Array(N), lvC: new Int8Array(N), landC: new Uint8Array(N), fordC: new Uint8Array(N), chunks: new Map(), secC: new Map(), cells: new Map(), stairs: null, trails: null };
+  S.wideC = new Uint8Array(N); S.nearC = new Uint8Array(N); S.wetL = null;   // owner #141: wide water (a map cell of water that is no ford), the cells within one of it, the wet field with the wide cells given their land neighbours' value (shore7.mjs)
+  S.wideAt = (cx, cy) => S.wideC[clamp(cy, 0, RH - 1) * RW + clamp(cx, 0, RW - 1)] === 1;
+  S.waterAt = (cx, cy) => S.landC[clamp(cy, 0, RH - 1) * RW + clamp(cx, 0, RW - 1)] === L.WATER;   // any water cell, ford or not: the shore stands where water meets land (shore7.mjs)
+  S.shoreCells = { wide: S.wideAt, water: S.waterAt };
   for (const G of R.regions) {
     const [ax, ay] = G.slot;
     for (let c = 0; c < NC; c++) {
@@ -82,6 +87,15 @@ function ctxOf(seed) {
       S.rockC[w] = land === L.ROCK ? 1.05 : Math.min(K, 0.4) * 0.6;
     }
   }
+  for (let i = 0; i < N; i++) S.wideC[i] = S.landC[i] === L.WATER && !S.fordC[i] ? 1 : 0;
+  { let any = false; S.wetL = Float32Array.from(S.wetC);
+    for (let cy = 0; cy < RH; cy++) for (let cx = 0; cx < RW; cx++) {
+      const i = cy * RW + cx; let sum = 0, n = 0, near = S.wideC[i] === 1;
+      for (let j = -1; j <= 1; j++) for (let k = -1; k <= 1; k++) { const x = cx + k, y = cy + j; if (x < 0 || y < 0 || x >= RW || y >= RH) continue; const o = y * RW + x; if (S.wideC[o]) near = true; else if (S.wideC[i] && S.landC[o] !== L.WATER && S.landC[o] !== L.POND) { sum += S.wetC[o]; n++; } }   // a water cell takes the dry land beside it (a pond or a ford is no land to extend)
+      if (near) { S.nearC[i] = 1; any = true; }
+      if (S.wideC[i] && n) S.wetL[i] = sum / n;
+    }
+    S.anyNear = any; if (!any) S.wetL = S.wetC; }
   S.nF = noiseField(seed, 't-forest', 1 / 10, 'FBm', 2); S.nW = noiseField(seed, 't-wet', 1 / 12, 'FBm', 2); S.nR = noiseField(seed, 't-rock', 1 / 9, 'FBm', 2);
   S.nS = noiseField(seed, 't-scrub', 1 / 5, 'FBm', 1); S.nP = noiseField(seed, 'trail-wobble', 1 / 6, 'FBm', 2); S.nE = noiseField(seed, 't-floor', 1 / 8, 'FBm', 2); S.nD = noiseField(seed, 't-dry', 1 / 9, 'FBm', 2); S.nC = noiseField(seed, 't-chan', 1 / 14, 'FBm', 1); S.nM = noiseField(seed, 't-chan-gap', 1 / 11, 'FBm', 2); S.nG = noiseField(seed, 'ground-mix', RULES.tone.noise.scale, 'FBm', RULES.tone.noise.octaves);
   if (CTX.size > 3) CTX.clear();
@@ -117,6 +131,11 @@ function tileField(S, land, X, Y, tx, ty, wild, rockiness) {
   const bil = (A) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
   const fr = Math.fround;   // each field is the single-precision value chunk() has always stored
   let forest = fr(0.55 * wild + 0.45 * bil(S.forestC) + 0.12 * S.nF(gx, gy)), rock = fr(0.3 * rockiness + 0.7 * bil(S.rockC) + 0.12 * S.nR(gx, gy)), wet = fr(bil(S.wetC) + 0.22 * S.nW(gx, gy)), push = 0;
+  if (S.nearC[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))] && !S.fordC[cellIdx(Math.floor(gx / CW), Math.floor(gy / CH))]) {   // owner #141: beside wide water the shore is the wandering line of shore7.mjs, never the bilinear blend of the cell labels along the seam
+    const sv = shoreValue(S.seed, S.shoreCells, gx, gy), bl = (A) => A[i00] * (1 - a) * (1 - b) + A[i10] * a * (1 - b) + A[i01] * (1 - a) * b + A[i11] * a * b;
+    wet = fr((sv !== null && sv > 0 ? 1.05 : bl(S.wetL)) + 0.22 * S.nW(gx, gy));
+    // design's seam rule (#141): a pond cell's wet field is the larger of its own pond's field (the pond's body at its centre, a bump that falls to nothing before the cell's edge) and the wide water's field fading in from the seam (the shape above)
+    if (land === L.POND) wet = Math.max(wet, fr(bl(S.wetL) + 0.22 * S.nW(gx, gy) + 0.3 * Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10)))); }
   const scrub = fr(S.nS(gx, gy));
   // the map's land kind shows at the cell's middle whatever its neighbours are: a rock cell is stony and a wood cell has its floor there (a bump that falls to nothing before the cell's edge, so no seam)
   const bump = Math.max(0, 1 - Math.hypot((tx - (CW - 1) / 2) / 9, (ty - (CH - 1) / 2) / 10));
@@ -193,11 +212,10 @@ function portOff(S, p, q) {
 // row pair, so the ground passes keep the edge as made. A tile near a corner of the realm reads the side it is nearest to.
 const EDGE_RUN = 3, EDGE_SLOW = 2;
 function coastEdges(S, gx, gy) {
-  const dW = gx - BORDER_X, dE = WTW - 1 - BORDER_X - gx, dN = gy - BORDER_Y, dS = WTH - 1 - BORDER_Y - gy, m = Math.min(dW, dE, dN, dS);
-  const side = m === dW ? 0 : m === dE ? 1 : m === dN ? 2 : 3, s = side < 2 ? gy : gx, blk = Math.floor(s / EDGE_RUN);
+  const side = coastSide(gx, gy)[1], s = side < 2 ? gy : gx, blk = Math.floor(s / EDGE_RUN);
   const cache = S.coastEdgeAt || (S.coastEdgeAt = [new Map(), new Map(), new Map(), new Map()]), hit = cache[side].get(blk); if (hit) return hit;
   const u = (blk * EDGE_RUN + EDGE_RUN / 2) / EDGE_SLOW;
-  const wl = 4 + Math.floor(3 * clamp(0.5 + 0.5 * S.nC(u, 311 * side + 17), 0, 0.999)), deep = S.nM(u, 211 * side + 5) > 0 ? 2 : 1, beach = S.nD(u, 97 * side + 3) > 0 ? 3 : 2, out = [deep, wl, wl + beach];
+  const wl = SHORE_SHALLOW, deep = S.nM(u, 211 * side + 5) > 0 ? 2 : 1, beach = S.nD(u, 97 * side + 3) > 0 ? 3 : 2, out = [deep, wl, wl + beach];
   cache[side].set(blk, out); return out;
 }
 
@@ -262,6 +280,34 @@ function minFeature(a, W, H, skip = () => false, never = () => false, passes = 8
     }
     }
     if (!changed) break;
+  }
+}
+// owner #141 (rule 47a): no bank of the sea runs straight for more than 3 tiles. Where the ground passes leave one (two stretches of the line merged, or a corner where two seams meet), the run is cut into stretches of
+// 2 or 3 tiles and every second stretch stands one tile further out into the land: water only ever takes plain ground. `sea(i)` says the tile at index i is of the wandering line's sea (shore7.mjs), so a stream or a pond is no bank of it.
+function breakBanks(t, W, H, sea) {
+  const conv = v => v === TV.GRASS || v === TV.SAND || v === TV.LITTER || v === TV.DRY || v === TV.TURF || v === TV.SCRUB || v === TV.SCREE, wat = v => v === TV.WATER || v === TV.DEEP;
+  for (let round = 0, changed = true; changed && round < 4; round++) {   // a stretch moved out across one axis can join a run of the other, so the two passes go round again until none is left
+    changed = false;
+    for (const vert of [true, false]) {
+      const nA = vert ? W - 1 : H - 1, nB = vert ? H : W, idx = (a, b) => vert ? b * W + a : a * W + b;
+      for (let a = 0; a < nA; a++) for (const east of [true, false]) {
+        const here = b => { const i = idx(a, b), j = idx(a + 1, b); return (east ? wat(t[i]) && !wat(t[j]) : !wat(t[i]) && wat(t[j])) && (sea(i) || sea(j)); };
+        for (let b = 0; b < nB; ) {
+          if (!here(b)) { b++; continue; }
+          let e = b; while (e + 1 < nB && here(e + 1)) e++;
+          const L = e - b + 1;
+          if (L > 3) {
+            const m = Math.ceil(L / 3), base = Math.floor(L / m), extra = L % m; let pos = b;
+            for (let k = 0; k < m; k++) {
+              const len = base + (k < extra ? 1 : 0);
+              if (k % 2 === 1) for (let q = pos; q < pos + len; q++) { const c = east ? idx(a + 1, q) : idx(a, q); if (conv(t[c])) { t[c] = TV.WATER; changed = true; } }
+              pos += len;
+            }
+          }
+          b = e + 1;
+        }
+      }
+    }
   }
 }
 // pools smaller than 3 x 3 are dropped (the art director): a body of water with no 3 x 3 block of water in it becomes grass; a body that reaches the window's edge is kept
@@ -345,6 +391,7 @@ function openGates(S, t, W, H, gx0, gy0, X, Y, fordMask = null) {   // fordMask:
     for (const [dx, dy] of [[1, 0], [0, 1]]) {
       const nx = cx + dx, ny = cy + dy, G = cellRegion(cx, cy);
       if (!G || G !== cellRegion(nx, ny)) continue;
+      if (S.wideAt(cx, cy) || S.wideAt(nx, ny)) continue;   // owner #141: wide water (no ford) is no ground to walk: its shore wanders (shore7.mjs), so no gate is cut across it
       const a = (cy % MH) * MW + (cx % MW), b = (ny % MH) * MW + (nx % MW);
       G.soft = G.soft || softGround(G, S.seed); G.banks = G.banks || bankEdges(G, S.seed);
       const goes = k => k === 'open' || k === 'stair';   // a stair's border is crossed on the low ground like an open one
@@ -391,7 +438,7 @@ function pondCauseways(S, t, W, H, gx0, gy0, X, Y, walkAt, put, cellRegion) {
     const c = (cy % MH) * MW + (cx % MW); if (G.land[c] !== L.POND) continue;
     const sides = [];   // the cell's open edges: the neighbour's step
     for (const [dir, opp, ex, ey] of [['right', 'left', 1, 0], ['left', 'right', -1, 0], ['down', 'up', 0, 1], ['up', 'down', 0, -1]]) {
-      const mx = cx + ex, my = cy + ey; if (cellRegion(mx, my) !== G) continue;
+      const mx = cx + ex, my = cy + ey; if (cellRegion(mx, my) !== G || S.wideAt(mx, my)) continue;   // wide water (no ford) is no edge to cross (owner #141)
       const m = (my % MH) * MW + (mx % MW), goes = k => k === 'open' || k === 'stair';
       if (goes(sideKind(G, c, dir)) || goes(sideKind(G, m, opp))) sides.push([ex, ey]);
     }
@@ -580,33 +627,30 @@ function windowOf(S, X, Y) {
       const wide = Math.max(1, Math.min(3, Math.round(shoreOf[i] * (0.45 + 0.55 * (0.5 + 0.5 * S.nS(gx0 + (i % W), gy0 + ((i / W) | 0)))))));
       if (dist[i] <= wide && (t[i] === TV.GRASS || t[i] === TV.LITTER || t[i] === TV.DRY || t[i] === TV.TURF || t[i] === TV.SCREE)) t[i] = TV.SAND; } }
   if (stg) stg('shore');
+  // owner #141 (rule 47a): beside wide water (a map cell of water that is no ford) the shore is the wandering line of shore7.mjs, laid in the fields (tileField): water reaches into the place in bays, land into the water cell
+  // in points. The sand strip follows that line, 2 or 3 tiles of plain land (what walks stays what walks: sand walks as grass does). A function of the world tile alone, so every view lays the same land;
+  // a place with no wide-water cell near it is untouched.
+  { const PLAIN = new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCRUB, TV.SCREE]);
+    for (let i = 0; i < N; i++) {
+      if (!PLAIN.has(t[i])) continue;
+      const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0);
+      const ci = cellIdx(Math.floor(gx / CW), Math.floor(gy / CH));
+      if (!S.nearC[ci] || S.fordC[ci] || inlandOf(gx, gy) < COAST_REACH) continue;   // the coast band is its own; a ford cell keeps its shallows
+      const v = shoreValue(seed, S.shoreCells, gx, gy);
+      if (v !== null && v <= 0 && v > -sandWidth(seed, gx, gy)) t[i] = TV.SAND;
+    }
+  }
+  if (stg) stg('wide-water shore');
   majority(t, W, H, 2); minFeature(t, W, H);
   if (stg) stg('majority+minFeature');
+  if (S.anyNear) breakBanks(t, W, H, i => { const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), v = shoreValue(seed, S.shoreCells, gx, gy); return v !== null && v > 0 && v !== Infinity; });   // a window with no wide water near it is left as it was
   for (let i = 0; i < N; i++) {   // the coast band (see COAST_REACH): a function of the world tile alone, so a place and its neighbour lay the same shore; its edges are the smoothed lines of coastEdges
     const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), d = inlandOf(gx, gy); if (d >= COAST_REACH) continue;
     const [deepEnd, wl, sandEnd] = coastEdges(S, gx, gy);
     t[i] = d < deepEnd ? TV.DEEP : d < wl ? TV.WATER : d < sandEnd ? TV.SAND : d < sandEnd + 4 ? TV.GRASS : t[i];
   }
   if (stg) stg('coast');
-  // owner #141: a place beside wide water (a map cell of water that is no ford) meets it with a shore: the place's own edge band on that side, 1 or 2 tiles by the seeded noise (in runs of 3 along the edge), is sand,
-  // where the ground is plain land (what walks stays what walks: sand walks as grass does). A function of the world tile alone, so every view lays the same land; a place with no wide-water neighbour is untouched.
-  { const wideAt = (cx, cy) => cx >= 0 && cy >= 0 && cx < RW && cy < RH && S.landC[cy * RW + cx] === L.WATER && !S.fordC[cy * RW + cx];
-    const PLAIN = new Set([TV.GRASS, TV.LITTER, TV.DRY, TV.TURF, TV.SCRUB, TV.SCREE]);
-    for (let i = 0; i < N; i++) {
-      if (!PLAIN.has(t[i])) continue;
-      const gx = gx0 + (i % W), gy = gy0 + ((i / W) | 0), cx = Math.floor(gx / CW), cy = Math.floor(gy / CH), tx = gx - cx * CW, ty = gy - cy * CH;
-      if (inlandOf(gx, gy) < COAST_REACH) continue;   // the coast band is its own
-      const own = S.landC[clamp(cy, 0, RH - 1) * RW + clamp(cx, 0, RW - 1)] === L.WATER;   // a tile of a water cell: only its edge tile touching a land place is shore (AD on #141: no grass verge between the sea and the sand)
-      const sides = [[tx, -1, 0, ty], [CW - 1 - tx, 1, 0, ty], [ty, 0, -1, tx], [CH - 1 - ty, 0, 1, tx]];   // [tiles from the edge, the neighbour's step, along]
-      for (const [d, sx, sy, along] of sides) {
-        if (own) { const nx = cx + sx, ny = cy + sy; if (d === 0 && wideAt(cx, cy) && nx >= 0 && ny >= 0 && nx < RW && ny < RH && S.landC[ny * RW + nx] !== L.WATER) { t[i] = TV.SAND; break; } continue; }
-        if (d > 2 || !wideAt(cx + sx, cy + sy)) continue;
-        const band = 2 + (S.nS(Math.floor(along / 3) * 3 + 0.5, (sx + 2 * sy + 5) * 37 + cx * 11 + cy * 7) > 0.2 ? 1 : 0);   // 2 tiles, or 3 where the noise rises (a strip under 2 wide is taken back by the ground passes)
-        if (d < band) { t[i] = TV.SAND; break; }
-      }
-    }
-  }
-  if (stg) stg('wide-water shore');  const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
+  const recipe = t.slice();   // the biome's ground at every tile, low or not: what a raised tile's top takes (topsOf)
   // raised land from the levels: every tile on a level above the lowest; water lies only on the low ground
   const raised = new Uint8Array(N);
   const LVL = levelsOf(S.re);
@@ -949,6 +993,7 @@ function windowOf(S, X, Y) {
         if (order.some(u => tryTidy([k], v, u))) { n++; continue; }
         for (const j of [k - 1, k + 1, k - W, k + W]) if (t[j] === v && band[j] && order.some(u => tryTidy([k, j], v, u))) { n++; break; } }
       if (!n) { if (!guardOn) break; pass = 5; } } };
+  const seaNear = k => { const x = gx0 + (k % W), y = gy0 + ((k / W) | 0); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const v = shoreValue(seed, S.shoreCells, x + dx, y + dy); if (v !== null && v > 0) return true; } return false; };   // the tile is within 2 of the wandering line's sea (shore7.mjs)
   for (const { p, tiles } of streamRuns) {
     if (!(p.in && p.out) || tiles.length < 6) continue;
     const m = tiles.length >> 1, fordTiles = [];
@@ -969,7 +1014,7 @@ function windowOf(S, X, Y) {
         for (let h = 0; h < q.length; h++) { const i = q[h], ix = i % W, iy = (i / W) | 0; for (const d of DIRS) { const j = i + d, jx = ix + (d === 1 ? 1 : d === -1 ? -1 : 0), jy = iy + (d === W ? 1 : d === -W ? -1 : 0); if (!own(jx, jy) || lab[j] >= 0 || !WALKV.has(t[j])) continue; lab[j] = id; q.push(j); } }
         sizes.push(q.length); }
       return { lab, sizes }; };
-    const wetStream = k => t[k] === TV.WATER && streamMask[k];
+    const wetStream = k => t[k] === TV.WATER && streamMask[k] && !(S.anyNear && seaNear(k));   // owner #141: the stream water that runs into wide water is no ford's to cut (the same rule as the strip above)
     const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]], bad = new Set();
     for (let round = 0; round < 6; round++) {
       const { lab, sizes } = comps(); const big = sizes.map((n, id) => [n, id]).filter(([n, id]) => n >= 10 && !bad.has(id)).sort((a, b) => a[0] - b[0]);
