@@ -2306,10 +2306,14 @@ function sweep() {
   const ex = S.exp, p = cxy(ex.pos);
   revealCell(ex.pos);
   if (inFog(ex.pos)) return;   // inside a fog bank the sweep stops
-  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+  const fresh = [];
+  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {   // a step lifts the 5x5 ring (reveal-build-1)
     const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-    revealCell(y * MW + x);
+    const c = y * MW + x, was = S.revealed[c]; revealCell(c);
+    if (!was && Math.max(Math.abs(dx), Math.abs(dy)) === 2) fresh.push(c);
   }
+  const hits = fresh.filter(c => { if (S.signs[c]) return true; if (!passable(c) || !placeHave(String(c))) return false; return !!layout(String(c)).landmark; });
+  if (hits.length) { FX.edge = { cs: hits, at: NOW }; fxMsg('the ring ends on a find', 2); }   // the ring ends on something: bracketed about 1 s, editorial's reveal.find
 }
 function revealAround(c, r) { const p = cxy(c); r = r || 1; for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) revealCell(y * MW + x); } }
 
@@ -6493,6 +6497,8 @@ function drawReachView(t) {
     const L = q.big ? 9 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
     R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
+  if (FX.edge && NOW - FX.edge.at < 1000) for (const c of FX.edge.cs) { const e = cxy(c), ex0 = q.dx + (e.x - (q.s0.x - q.r)) * q.cs, ey0 = q.dy + (e.y - (q.s0.y - q.r)) * q.cs;   // the ring's finds that are in view: brackets about 1 s
+    if (ex0 >= q.dx && ey0 >= q.dy && ex0 + q.cs <= q.dx + q.size && ey0 + q.cs <= q.dy + q.size) { brackets(Math.round(ex0), Math.round(ey0), q.cs, q.cs, C.orange); break; } }   // one find is bracketed
   if (peek.on) for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
   // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
