@@ -260,10 +260,11 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
+import { GLYPHS, GLYPH_ALIAS, FONT, glyphOf, textW, wrapText, clipText, cutLine } from "./src/font.mjs";
 import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
-import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
+import { HABITS, BEATS, SAMPLE, SATCHEL, STACK, stacks as sampleStacks, stackRoom, capStacks,rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
@@ -1060,7 +1061,7 @@ function headBack() { if (canSend()) return '← End expedition'; const w = send
 
 // ===================== 5. State, persistence, effects hooks =====================
 // FX holds presentation-only events the renderer reads; rules write to it but never read it.
-const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
+const FX = { msg: '', sign: null, hintNote: null, notes: [], floats: [], bursts: [], pops: {}, rings: [], strikes: [], bolts: [], lockUntil: 0, transAt: -1e9, bumpAt: -1e9, hitAt: -1e9, dig: null, pulse: null };
 let NOW = 0;
 const RIPE_PENDING = [];   // bloom centres whose fruit trees still wait to ripen (set at an expedition's end, done at the next save or set-out)
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
@@ -1361,6 +1362,40 @@ const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // spe
 const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
+// ===== JUICE (juice-build-1): every act that takes or gives something answers at once, from this one table, through fxJuice. =====
+// A row says: snd, the sound (WebAudio blips: [Hz, ms] notes, no files); line, what it moved him toward (the canon strings, core-loop-canon-1; null = the act's own line
+// stays); the burst at the thing (about 4 frames of 80 ms, palette only, off under reduced motion). The +N rising over the thing and the HUD counter's bracket belong to
+// a counter changing, so addMat does them (a counter changes the same way whatever act changed it).
+const JUICE = {
+  stone:   { snd: [[330, 60], [660, 90]],  line: n => '+' + n + ' Energy · it goes home in the crate' },   // a stone's charge
+  cup:     { snd: [[520, 60], [660, 70]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // a cup of dew
+  tuft:    { snd: [[440, 60], [550, 70]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // a tuft on the ground
+  press:   { snd: [[392, 60], [588, 90]],  line: n => '+' + n + ' Essence · it feeds the Station' },       // fruit pressed at a stone
+  fruit:   { snd: [[500, 70]],             line: () => '+1 fruit · in your hand for her' },               // fruit picked up
+  pod:     { snd: [[262, 80], [392, 80], [523, 110]], line: () => 'A pod · it goes home in the crate' },
+  slab:    { snd: [[130, 110], [98, 90]],  line: null },    // the push's own lines say what lay under it
+  prints:  { snd: [[600, 50], [450, 70]],  line: null },    // her prints line stays
+  note:    { snd: [[600, 60], [800, 90]],  line: null },    // the note's own line stays
+  feed:    { snd: [[500, 70], [700, 70]],  line: null },    // the feeding's own line stays
+  strike:  { snd: [[700, 50], [900, 80]],  line: null }     // a strike mark's own line stays
+};
+const JUICE_BURST_MS = 320;   // 4 frames of 80 ms
+let AC = null;
+function juiceSound(notes) {
+  if (OPT.mute || typeof AudioContext === 'undefined') return;
+  try {
+    AC = AC || new AudioContext(); if (AC.state === 'suspended') AC.resume();
+    let t = AC.currentTime;
+    for (const [hz, ms] of notes) { const o = AC.createOscillator(), g = AC.createGain(); o.type = 'square'; o.frequency.value = hz; g.gain.setValueAtTime(0.04, t); g.gain.linearRampToValueAtTime(0, t + ms / 1000); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + ms / 1000); t += ms / 1000 * 0.8; }
+  } catch (e) { /* no audio here: the act still answers on the screen */ }
+}
+// x, y: the tile of the thing (patch coordinates); n: how much it moved, for the line.
+function fxJuice(act, x, y, n) {
+  const row = JUICE[act]; if (!row) return;
+  if (x != null && motion()) FX.bursts.push({ x, y, at: NOW });
+  juiceSound(row.snd);
+  if (row.line && n !== 0) fxMsg(row.line(n), 2);
+}
 const LOCK_MAX = 2500;   // no hold on the keys lasts longer than this, whatever asked for it: input never locks for good
 function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, NOW + Math.min(ms, LOCK_MAX)); }
 // A crossing is a camera slide of one screen in the walking direction (owner walk note 18): the last picture of the place left slides out, the new place slides in, input is locked for its length.
@@ -1887,7 +1922,7 @@ function strikeGain(ex, lay = curLay(), f = null) { const left = strikeWorth(lay
 function readStrike(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, put = strikeGain(ex, curLay(), f);
   if (!put) { FX.bumpAt = NOW; fxMsg(WORDS.strike.holdFull, 2); return; }   // not offered with the hold full; a press that gets here spends nothing and the mark stays unread
-  const got = addMat('d', put, f.x, f.y); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
+  const got = addMat('d', put, f.x, f.y); fxJuice('strike', f.x, f.y, got); ex.dField = (ex.dField || 0) + got; ex.stats.readings = (ex.stats.readings || 0) + 1;   // dField only counts, for the end report
   const took = (fs(key, f.id).took || 0) + got;
   setFS(key, f.id, took >= strikeWorth() ? { took, read: S.turn } : { took });   // read only once all its worth is taken
   fxSign('strike'); fxMsg(WORDS.strike.press(got), 2); logEv('Read a strike mark · +' + got + ' Data (' + ex.cargo.d + ' of ' + CAP + ' in the hold)');
@@ -1995,6 +2030,14 @@ function unveil(key, cx, cy, r) {
   const lay = layout(key), lw = lay.w, lh = lay.h, v = S.veil[key] || (S.veil[key] = new Array(lh).fill(0)), x0 = Math.max(0, cx - r), x1 = Math.min(lw - 1, cx + r);
   const bits = (x1 >= 30 ? -1 : (1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
   for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
+}
+// A named Loika he has met starts her tell within ten tiles: the veil lifts on her tile and on the tiles in a line between them, as the Call lifts it (tell-seen-fix-1).
+// Nothing else changes: not the range, the wind, the stay, nor a free note. The gate is S.named alone (the top line only ever names a met Loika); never an unmet stranger.
+function unveilTellLine(key, c, P) {
+  if (key[0] === 'c' || !c.ind || !(S.named && S.named[c.id]) ||Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
+  const lay = layout(key), v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0)), n = Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y));
+  for (let i = 0; i <= n; i++) { const x = Math.round(P.x + (c.x - P.x) * i / (n || 1)), y = Math.round(P.y + (c.y - P.y) * i / (n || 1)); if (x >= 0 && y >= 0 && x < lay.w && y < lay.h) v[y] = (v[y] | (1 << x)) >>> 0; }
+  return true;
 }
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted, and nothing puts it back.
@@ -2289,7 +2332,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
   const pm = type === 'deep' ? digger() : partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // Deep ground: the grown digger with you goes (S.lead is left alone). No partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormAt() : null;   // the one storm the opening showed, the first one two columns later (so a new player can drain a stone first)
   S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range + (pm && spOf(pm.sp).ab === 'sure' ? 1 : 0), dug: [], hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
-    cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold), samples: (S.hold.samples || []).slice(0, SATCHEL) } : { e: 0, d: 0, s: 0, pods: [], samples: [] }, carry: null, storm,
+    cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold), samples: capStacks(S.hold.samples) } : { e: 0, d: 0, s: 0, pods: [], samples: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
     pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0, mk: pm.sp === 0 && WILD.partner(pm.id) ? 1 : 0 } : null,   // mk: the Station's drawn marking (shown and read) handed over for her token
@@ -2703,7 +2746,8 @@ function habitTick(c, X) {   // true when the habit has her action
   if (c.gone || (c.ease | 0) >= 2 || ['flee', 'alert', 'approach', 'watch'].includes(c.st)) return false;
   const due = habitDue(c, X); if (!due) return false;
   c.hb = { k: due.k, n: due.n, tell: tellOf(c.ind.doings), v: due.v, notes: {}, pose: 'alert' }; c.st = 'hab';
-  if (hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), 2);
+  const told = !!S.exp.patch && !c.hide && unveilTellLine(S.exp.patch.key, c, S.exp.patch);   // within ten tiles: lifted, and her line outranks a find's (pri 4)
+  if (told || hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), told ? 4 : 2);
   return true;
 }
 // the calm window of the day: a wary one (another wild creature of the place) is drawn toward her haunt for twelve light; at the window's first light the nearest idle one is chosen
@@ -2799,9 +2843,9 @@ function readPrints(p) {
   bookEv('prints', c, WORDS.book.prints(name, (p.yday ? W.whenYday : W.when)[p.part]));   // the prints first, then the tuft she left
   // habits-out-build-1: the prints say when she was here (and where she went) and that her page has it; no tuft, no keepsake, no learned tail (the dew line already says where and when)
   if (p.to && sleepPart(p.part) && !p.gone) { const sr = habRecord(S.habits || (S.habits = {}), c.id, 'sleep'); if (!sr.got.place) sr.got.place = 1; }   // night step 4: read at her bed in the dew, her prints give where she goes for sleep-curled
-  fxMsg(printsLine(p) + W.page, 3);
+  fxMsg(printsLine(p) + W.page, 3); fxJuice('prints', (p.mark || p.stand || p.h).x, (p.mark || p.stand || p.h).y, 0);
   (ex.stats.prints || (ex.stats.prints = [])).push({ id: c.id, part: p.part, yday: p.yday, gone: p.gone, light: S.day.spent });
-  waitTick('patch');   // a read spends one light, as a note does
+  waitTick('patch', true);   // a read spends one light, as a note does
 }
 // Her coat is read once a mid note (or a nearer one) has given it on any of her habits (the range rule: from mid her coat). Kept on S.habits, which the lift carries home and back.
 const coatRead = id => Object.values((S.habits || {})[id] || {}).some(r => r && r.got && r.got.coat);
@@ -2878,9 +2922,10 @@ function noteHabit(c) {
   const sk = k === 'still' ? HABITS.find(q => SAMPLE[q] && !habRecord(S.habits, c.id, q).sample) : k, srec = sk && SAMPLE[sk] && habRecord(S.habits, c.id, sk);   // a keepsake of a plain sight is the first she has not yet given (the shake gives none)
   if (keepsake && srec && !srec.sample) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
-    if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
+    if (!stackRoom(sm, SAMPLE[sk].item)) tail += ' · ' + W.noRoom;   // the kind's stack is at 9 (or all 8 slots are other kinds): it stays in the world
     else { const s = SAMPLE[sk], id = sampleId(S.seed, c.id, sk); sm.push({ id, lo: c.id, name, sp: c.sp, habit: sk, item: s.item, chapter: s.chapter, turn: S.turn, ...gotNow() }); srec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); }
   }
+  fxJuice('note', c.x, c.y, 0);
   const filled = want ? rec.got[want] : 0, said1 = name + ' · ' + (sl ? W.asleep : W.name[k]) + ' · ' + W.range[range] + ' · ' + said + tail;
   ex.stats.notes = (ex.stats.notes || 0) + 1; (ex.stats.noted || (ex.stats.noted = [])).push({ id: c.id, k, range, gives: r.gives, first: r.first, filled: !!filled, light: S.day.spent, asleep: sl, stirred, part: dayPart(), keepsake: !!(keepsake && srec && srec.sample) });
   waitTick('patch');   // a note spends one light, as a Wait does
@@ -3403,19 +3448,35 @@ function screeOpen(dir) {   // true: stepping dir over a scree edge from a tile 
   const lay = layout(P.key), q = lay && crossingAt(lay, P.x, P.y);
   return !(q && !q.bank && q.dir === dir);
 }
-function crossEdge(dir) {
+// What a step off the place's edge would do, asked and never acted on (crossEdge acts on it; the bottom line reads it before the step, edge-cost-line-fix-1):
+// { sw } a step into another region, { why, full } a refusal (full: the cell is revealed and the soft-tile pin added), { land } a crossing (land undefined: the tiles do not decide it).
+function crossVerdict(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
-  { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
+  { const sw = seamCross(ex.pos, dir); if (sw) return { sw }; }
   const scr = screeOpen(dir);   // #159: on a scree edge, off its two crossing tiles, the tiles decide: open ground both sides crosses
   let why = crossReason(ex.pos, dir, true, scr);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
   const land = why ? undefined : crossLanding(dir, scr);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
   if (land === null) why = crossBlockWords(dir);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
+  if (why) return { why, full: true };
   if (land === undefined && !scr && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
-    if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!q || (k !== q.s && k !== q.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
-    if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!st || (k !== st.s && k !== st.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
+  return { land };
+}
+// True while the pawn stands on the place's edge tile facing out and the step would cross into the next place (patchStepRun's own tests, never acted on).
+function edgeStepCrosses() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch') return false;
+  const lay = layout(P.key), f = frontOf(P); if (f.x >= 0 && f.y >= 0 && f.x < lay.w && f.y < lay.h) return false;
+  if (lay.cave || (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[P.dir]))) return false;
+  const v = crossVerdict(P.dir); return !!(v.sw || !v.why);
+}
+function crossEdge(dir) {
+  const ex = S.exp, c =stepCell(ex.pos, dir), v = crossVerdict(dir);
+  if (v.sw) { crossRegion(dir, v.sw); return; }
+  if (v.why) { FX.bumpAt = NOW; if (v.full) { if (c >= 0 && v.why !== RANGE_TEXT()) revealCell(c); fxMsg(v.why + softPin(ex.pos, dir)); save(); } else fxMsg(v.why); return; }
+  const land = v.land;
   if (G.gen === 7 && c >= 0 && !placeHave(String(c)) && motion() && !FX.crossRetry) {   // the next place is not built yet: the old place stays on the screen, nothing has moved; the crossing is made when it is here
     if (FX.crossWait) return;
     const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
@@ -3518,12 +3579,14 @@ function patchAction() {
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
-    return { label: 'Veiled · Call to see', run: null };
+    return { label: edgeStepCrosses() ? '' : 'Veiled · Call to see', run: null };   // edge-cost-line-fix-3: facing the edge, the front is the next place the edge line already names; this ✓ does nothing, so its label yields to the line (UI 04:28: 'Call to see' alone still left no room at 390)
   if (o && o.type === 'cr') {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp) && !o.c.ind) return !fruit && inSight(f.x, f.y) && (o.c.ease | 0) < 3 ? { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) } : { label: 'Unknown creature', run: null };   // ui-dead-check-156-4: beside one he has not met and that is no individual, ✓ keeps still as beside a Loika (keepStill reads no ind), never a ✓ that does nothing
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
     if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
+    // her-fruit-build-1: fruit for a named Loika does not wait for her kind to be identified; she takes it grazing, with the stay left, and never with her ears up or in her habit
+    if (fruit && o.c.ind && !o.c.hide && inSight(f.x, f.y) && (o.c.ease | 0) < 3 && spOf(o.c.sp).eats) return herFruitAction(o.c);
     if (!S.known.includes(o.c.sp)) { const nmd = S.named && S.named[o.c.id]; return { label: nmd ? nameKind(nmd, o.c.sp) : 'Unknown creature', run: null }; }   // owner note 156: a named one is never "Unknown creature"; a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
@@ -3608,6 +3671,7 @@ function addMat(k, n, x, y, keeps, ownLine) {   // keeps: what the source keeps 
   const ex = S.exp, got = ex.dark ? 0 : Math.max(0, Math.min(n, CAP - ex.cargo[k]));   // a dark Probe takes nothing: no Data, no sample
   ex.cargo[k] += got; ex.supAt[k] = ex.actions + 1;
   if (x != null) fxFloat(x, y, '+' + got, { e: 'energy', d: 'data', s: 'essence' }[k]);
+  if (got) FX.pops[k] = NOW;   // the HUD counter's bracket, about 1 s (drawCounter)
   if (got < n && !ownLine) fxMsg(WORDS.full(MAT[k], CAP, keeps), 2);
   return got;
 }
@@ -3657,7 +3721,7 @@ function shakeBush(f) { if (darkRefuse()) return;
 }
 function pickUp(fr) { if (darkRefuse()) return;
   const live = curLive(); live.fr = live.fr.filter(q => q !== fr); S.exp.carry = 'fruit';
-  fxSign('fruit');
+  fxJuice('fruit', fr.x, fr.y, 1); fxSign('fruit');
   advance('patch', { noise: 'act' });
 }
 function putDown(p) { const live = curLive(); live.fr.push({ id: live.fid++, x: p.x, y: p.y, put: 1 }); S.exp.carry = null; fxSign('putdown'); advance('patch', { noise: 'act' }); }
@@ -3666,23 +3730,23 @@ function pressFruit(at) { if (darkRefuse()) return;   // at: the stone or tree p
   if (ex.cargo.s >= CAP) { fxMsg(WORDS.pressNoRoom(ex.cargo.s, CAP), 2); return; }   // refused only at the cap (owner note #15)
   const part = CAP - ex.cargo.s < 2;   // room for 1: fills to the cap, the extra is lost, and the line says so
   ex.carry = null;
-  const got = addMat('s', 2, P.x, P.y, null, part); fxSign('press');
+  const got = addMat('s', 2, P.x, P.y, null, part); fxJuice('press', P.x, P.y, got); fxSign('press');
   if (part) fxMsg(WORDS.pressLost(CAP), 2);
   advance('patch', { noise: 'act' });
 }
 function takeTuft(tf) { if (darkRefuse()) return;
   if (S.exp.cargo.s >= CAP) { fxMsg(WORDS.refuse.tuft(CAP), 2); return; }   // a full hold takes nothing and no turn passes
-  const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxSign('tuft'); advance('patch', { noise: 'act' }); }
+  const live = curLive(); live.tf = live.tf.filter(q => q !== tf); fxJuice('tuft', tf.x, tf.y, addMat('s', 1, tf.x, tf.y)); fxSign('tuft'); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, { w: lw, h: lh } = layout(key), pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
   if (tx < 1 || ty < 1 || tx >= lw - 1 || ty >= lh - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(layout(key).tiles[ty * lw + tx])) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
   const first = !fs(key, f.id).moved;
-  setFS(key, f.id, { moved: 1, x: tx, y: ty });
+  setFS(key, f.id, { moved: 1, x: tx, y: ty }); fxJuice('slab', tx, ty, 0);
   if (first && f.under === 'pod') { // something was hiding under it
     const lay = layout(key), here = S.cr.filter(w => w.c === lay.cell && !!w.cv === lay.cave);
     const sp = here.length ? here[hash(S.seed, 'slab', key, f.id) % here.length].sp : (k => k[hash(S.seed, 'slab', key) % k.length].sp)(hereKinds());
     S.pods.push({ id: 's:' + key + ':' + f.id, k: key, x: f.x, y: f.y, sp, h: 0, g: groundName(lay.land, lay.cave), how: 'slab' });
-    fxGlint(f.x, f.y); logEv('A pod was under the slab');
+    fxGlint(f.x, f.y); fxMsg('Pushed · a pod lay under it', 2); logEv('A pod was under the slab');
   } else if (first && (f.under === 'mat' || f.under === 'find')) { // a material or a find lay under it (slabs-gen7-build-1; the words are editorial's slot)
     const k = f.under === 'mat' ? 's' : 'd', n = f.under === 'mat' ? 2 : 1, fits = !ex.dark && CAP - ex.cargo[k] >= n;
     const got = addMat(k, n, ex.dark || ex.cargo[k] >= CAP ? null : f.x, f.y, null, fits);   // nothing fits: no "+0" floats up   // what fits goes in through the one take path; with the hold full addMat says so itself (its own full line)
@@ -3709,11 +3773,11 @@ function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), 
 function takeDew(f) { if (darkRefuse()) return;
   const ex = S.exp;
   if (ex.cargo.s >= CAP) { fxMsg(WORDS.refuse.dew(CAP), 2); return; }   // a full hold takes nothing: the cup stays full and no turn passes
-  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
+  setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); fxJuice('cup', f.x, f.y, addMat('s', 1, f.x, f.y)); fieldHabit('dew-find'); advance('patch', { noise: 'act' }); }
 function takeCharge(f) { if (darkRefuse()) return;
   const ex = S.exp, key = ex.patch.key, storm = stormCharge(key, f), ch = stoneCharge(key, f);
   if (ex.cargo.e >= CAP) { fxMsg(WORDS.refuse.charge(CAP), 2); return; }   // a full hold takes nothing: the stone is not drawn and no turn passes
-  const got = addMat('e', ch, f.x, f.y, WORDS.stoneKeeps);
+  const got = addMat('e', ch, f.x, f.y, WORDS.stoneKeeps); fxJuice('stone', f.x, f.y, got);
   if (storm > 0) setFS(key, f.id, { ch: ch - got, wt: S.turn }); else { setFS(key, f.id, { wt: S.turn }); ex.stats.warm = (ex.stats.warm || 0) + got; fxSign('warm'); }
   advance('patch', { noise: 'act' });
 }
@@ -3765,7 +3829,7 @@ function takePod(p, leave) { if (darkRefuse()) return;
   ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), dv: 2, k: key, ...gotNow(), ...shedOf(p), ...whyOf(p) });
   if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs, ...(out.dv ? { dv: out.dv } : {}), ...shedOf(out), ...whyOf(out) }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 4); }   // alone: a held line or a sign comes on a later action, never joined to it
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
-  fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
+  fxFloat(p.x, p.y, out ? 'swap' : '', 'pod'); if (!out) fxJuice('pod', p.x, p.y, 1); else fxJuice('pod', p.x, p.y, 0);
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
   if (!out && ex.cargo.pods.length >= ex.hold) fxSign('full');   // ("Pods open at the Station" is gone: the goal line says it)
   advance('patch', { noise: 'act' });
@@ -3782,6 +3846,7 @@ const actDone = (ex, c, kind) => !!(ex.momented && ex.momented[c.id + ':' + kind
 function awardMoment(c, kind, X) {
   const ex = S.exp; if (actDone(ex, c, kind)) return; ex.momented[c.id + ':' + kind] = 1;
   if (kind === 'eat' && c.ind) {   // habits-out-build-1: feeding a named Loika sets "fed" for the day and gives no Data; she is fed once a day and tonight she sleeps in her pod
+    if (!habDay()['fed:' + c.id]) bookEv('fed', c, WORDS.fruit.log(habName(c)));   // the Log keeps one line a day, under her name
     habDay()['fed:' + c.id] = 1; ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + habName(c) + ' fed'); fxMsg(WORDS.habit.fed, 3); return; }
   const got = ex.cargo.d < CAP ? addMat('d', ACT_DATA, c.x, c.y) : 0;   // a full hold takes nothing; the line below says so
   ex.dAct = (ex.dAct || 0) + got;   // counts, for the end report
@@ -3791,15 +3856,31 @@ function awardMoment(c, kind, X) {
   const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
   fxMsg(got ? '+' + got + ' Data · ' + what : cap(what) + ' · ' + WORDS.creature.holdFull, 2);
 }
+// her-fruit-build-1: a named wild Loika takes fruit from the hand while she grazes (ease 0), is not in a habit or asleep, and the stay has light left. Her ease, quiet, crowd and habits never move for it. (The partner's calm on her, once w7-build-1 is on main, is not built here.)
+// her-fruit-build-2 (design): in her habit or asleep ✓ stays "Keep still" (the note) with fruit in hand; the fruit is neither offered nor shown. Ears up and watching: dimmed with its reason.
+const herTakes = c => !!c.ind && (c.ease | 0) === 0 && !c.hb && !sleeperOf(c) && (hearLineOf(c) || {}).left > 0;
+function herFruitAction(c) {
+  if (c.hb || sleeperOf(c)) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) };
+  if (herTakes(c)) return { label: WORDS.fruit.offer, run: () => offer(c) };
+  return { label: WORDS.fruit.refuse, dim: true, run: () => { FX.bumpAt = NOW; } };   // nothing is spent: no light, no fruit
+}
 function offer(c) { if (darkRefuse()) return;
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
   ex.stats.feedTries++;
   if (!spOf(c.sp).eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
+  if (herTakes(c)) {   // her-fruit-build-1: a named Loika grazing with the stay left takes it; no heard step and no crowding, so her ease, quiet count and stay are as they were
+    const e = c.ease, q = c.quiet, w = c.crowd;
+    ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
+    awardMoment(c, 'eat', X);
+    advance('patch', { noise: 'act' });
+    c.ease = e; c.quiet = q; c.crowd = w;
+    return;
+  }
   const fog = !lay.cave && inFog(lay.cell);
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
     if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch when the expedition ends
     ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
-    awardMoment(c, 'eat', X);
+    awardMoment(c, 'eat', X); fxJuice('feed', c.x, c.y, 0);
   } else { c.st = 'alert'; c.t = 1; c.go = 1; fxSign('bubbleNotice'); }
   advance('patch', { noise: 'act' });
 }
@@ -3914,7 +3995,7 @@ function waitChanges(a, b, scope) {
   else if (b.fogNear && scope === 'map') { const dw = dirWord(ex.fog.dx, ex.fog.dy, Math.hypot(ex.fog.dx, ex.fog.dy) || 1); out.push('the fog bank drifts' + (dw ? ' ' + dw : '')); }
   if (b.cups > a.cups) out.push('dew gathers in a cup');
   // creatures in view: what each did, grouped ("two Loikas wander"), the more telling changes first
-  const ev = new Map(), add = (sp, v) => { const k = sp + '|' + v; ev.set(k, (ev.get(k) || 0) + 1); };
+  const ev = new Map(), add = (sp, v) => { const k = (S.known.includes(+sp) ? sp : 'u') + '|' + v, e = ev.get(k); if (e) e.n++; else ev.set(k, { n: 1, sp: +sp }); };   // unknown species group under one key per verb: "Five creatures wander"
   for (const [id, n] of b.cr) { const o = a.cr.get(id);
     if (!o) add(n.sp, 'view');
     else if (o.st === 'eat' && n.st !== 'eat') add(n.sp, 'ate');
@@ -3926,13 +4007,13 @@ function waitChanges(a, b, scope) {
     else if (n.calm > o.calm && n.calm >= 2) add(n.sp, 'settle');
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
-  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? (ROUTINE[s] || ROUTINE_ANY) : VERB[v];
+  const crs = [...ev.entries()].map(([k, { n, sp: s }]) => { const v = k.split('|')[1], known = S.known.includes(s), vb = v === 'routine' ? ((known && ROUTINE[s]) || ROUTINE_ANY) : VERB[v];
     const who = n > 1 ? numWord(n) + ' ' + (known ? spOf(s).plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
 }
-function waitTick(scope) {
-  const ex = S.exp, a = waitSnap(scope), notes = FX.notes.length; FX.waitAt = NOW; DB.wait = 1;   // the day bar glides a Wait over 450 ms   // a light ripple passes over the view: time went by
+function waitTick(scope, noRipple) {   // noRipple: a read of prints spends the light without the Wait's sweep over the view (juice-build-2)
+  const ex = S.exp, a = waitSnap(scope), notes = FX.notes.length; if (!noRipple) FX.waitAt = NOW; DB.wait = 1;   // the day bar glides a Wait over 450 ms   // a light ripple passes over the view: time went by
   if (scope === 'patch') advance('patch', { noise: 'wait' }); else advance('map');
   if (!S.exp || S.exp.ending) return;
   if (scope === 'patch' && ex.patch) routineStep(a);
@@ -4487,6 +4568,7 @@ function endExpedition(reason) {
   if (!explored && !(ex.dug && ex.dug.length) && !night && !ex.nights) {   // nothing explored (and no night passed: a night turned the world): nothing sealed, and the finds stay in the hold (a break loses them); only the night's end turns the world
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; FX.msg = ''; FX.sign = null; transition(); save(); return; }
+  S.expN++;   // the number counts expeditions (an outing that explored or dug, at a camp or at night), not world turns: the next set-out is one more
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   if (explored || (ex.dug && ex.dug.length)) S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // this expedition is a trip for the Station
   RIPE_LATER = []; let turned, ripeLater;
@@ -4700,7 +4782,7 @@ function surfaceMissing(R, t, farFromPlayer) {
 // The turn of the realm: the counters, the mibi clock, the outposts and the lines a player cares about. It runs with the region the Companion is in mounted.
 function realmTurn(turned, pending) {
   const { mv, charged, bushes, bloom, newPods, young } = turned;
-  S.turn++; S.expN++;
+  S.turn++;
   const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: elder from grownTurn when it has one
   // Two or three plain lines a player would care about, each beside the record of what happened (specs/world-events.md): [kind, place, who, n]. The Companion decides which; the Station draws them.
   const lines = [], ev = [], say = (line, e) => { lines.push(line); ev.push(e); };
@@ -4761,9 +4843,8 @@ FOGLUT[C.sprout] = C.fog; FOGLUT[C.lime] = C.fog;   // the lightest grass fogs t
 const SHADE_WASH = [];
 function buildShadeWash() {
   const [tr, tg, tb] = RGB[C.bone], cool = [C.sky, C.ice, C.river, C.aqua, C.mint]; SHADE_WASH.length = 0;
-  RGB.forEach(([r, g, b], k) => { const q = nearestCore(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48, k < FIRST_N ? FIRST_N : PALETTE.length); SHADE_WASH.push(cool.includes(q) ? C.mist : q); });
+  RGB.forEach(([r, g, b], k) => { const q = nearestPal(r + (tr - r) * .48, g + (tg - g) * .48, b + (tb - b) * .48, k < FIRST_N ? FIRST_N : PALETTE.length); SHADE_WASH.push(cool.includes(q) ? C.mist : q); });
 }
-function nearestCore(r, g, b, n = PALETTE.length) { let best = 0, bd = 1e9; for (let i = 0; i < n; i++) { const [R, G2, B] = RGB[i], d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } } return best; }
 buildShadeWash();
 // Lookup tables a frame may use: 0 none, 1 dark (storm, dim cave), 2 darker (dark cave), 3 fog, 4 faded sign.
 const NIGHT = [];   // the night table (owner bug #113), over every colour in play: rebuilt with them (buildNight)
@@ -4856,41 +4937,6 @@ const ART = new Map();
 function art(key, build) { let pb = ART.get(key); if (!pb) { pb = build(); ART.set(key, pb); } return pb; }
 
 // ---------- Bitmap font: 5×7 caps, 2-row descenders. Drawn at 2× minimum (14 px caps) so it stays readable on a phone. ----------
-const GLYPHS = {
-  A: '.###.|#...#|#...#|#####|#...#|#...#|#...#', B: '####.|#...#|#...#|####.|#...#|#...#|####.', C: '.###.|#...#|#....|#....|#....|#...#|.###.',
-  D: '####.|#...#|#...#|#...#|#...#|#...#|####.', E: '#####|#....|#....|####.|#....|#....|#####', F: '#####|#....|#....|####.|#....|#....|#....',
-  G: '.###.|#...#|#....|#.###|#...#|#...#|.####', H: '#...#|#...#|#...#|#####|#...#|#...#|#...#', I: '###|.#.|.#.|.#.|.#.|.#.|###',
-  J: '..##|...#|...#|...#|#..#|#..#|.##.', K: '#...#|#..#.|#.#..|##...|#.#..|#..#.|#...#', L: '#...|#...|#...|#...|#...|#...|####',
-  M: '#...#|##.##|#.#.#|#.#.#|#...#|#...#|#...#', N: '#...#|##..#|#.#.#|#..##|#...#|#...#|#...#', O: '.###.|#...#|#...#|#...#|#...#|#...#|.###.',
-  P: '####.|#...#|#...#|####.|#....|#....|#....', Q: '.###.|#...#|#...#|#...#|#.#.#|#..#.|.##.#', R: '####.|#...#|#...#|####.|#.#..|#..#.|#...#',
-  S: '.###.|#...#|#....|.###.|....#|#...#|.###.', T: '#####|..#..|..#..|..#..|..#..|..#..|..#..', U: '#...#|#...#|#...#|#...#|#...#|#...#|.###.',
-  V: '#...#|#...#|#...#|#...#|.#.#.|.#.#.|..#..', W: '#...#|#...#|#...#|#.#.#|#.#.#|##.##|#...#', X: '#...#|#...#|.#.#.|..#..|.#.#.|#...#|#...#',
-  Y: '#...#|#...#|.#.#.|..#..|..#..|..#..|..#..', Z: '#####|....#|...#.|..#..|.#...|#....|#####',
-  a: '....|....|.##.|...#|.###|#..#|.###', b: '#...|#...|###.|#..#|#..#|#..#|###.', c: '....|....|.###|#...|#...|#...|.###',
-  d: '...#|...#|.###|#..#|#..#|#..#|.###', e: '....|....|.##.|#..#|####|#...|.###', f: '.##|#..|###|#..|#..|#..|#..',
-  g: '....|....|.###|#..#|#..#|#..#|.###|...#|.##.', h: '#...|#...|###.|#..#|#..#|#..#|#..#', i: '#|.|#|#|#|#|#',
-  j: '..#|...|..#|..#|..#|..#|..#|#.#|.#.', k: '#...|#...|#..#|#.#.|##..|#.#.|#..#', l: '#.|#.|#.|#.|#.|#.|.#',
-  m: '.....|.....|##.#.|#.#.#|#.#.#|#.#.#|#.#.#', n: '....|....|###.|#..#|#..#|#..#|#..#', o: '....|....|.##.|#..#|#..#|#..#|.##.',
-  p: '....|....|###.|#..#|#..#|#..#|###.|#...|#...', q: '....|....|.###|#..#|#..#|#..#|.###|...#|...#', r: '....|....|#.##|##..|#...|#...|#...',
-  s: '....|....|.###|#...|.##.|...#|###.', t: '.#..|.#..|###.|.#..|.#..|.#..|..##', u: '....|....|#..#|#..#|#..#|#..#|.###',
-  v: '.....|.....|#...#|#...#|.#.#.|.#.#.|..#..', w: '.....|.....|#...#|#.#.#|#.#.#|#.#.#|.#.#.', x: '....|....|#..#|#..#|.##.|#..#|#..#',
-  y: '....|....|#..#|#..#|#..#|#..#|.###|...#|.##.', z: '....|....|####|...#|.##.|#...|####',
-  0: '.##.|#..#|#..#|#..#|#..#|#..#|.##.', 1: '.#.|##.|.#.|.#.|.#.|.#.|###', 2: '.##.|#..#|...#|..#.|.#..|#...|####',
-  3: '###.|...#|...#|.##.|...#|...#|###.', 4: '#..#|#..#|#..#|####|...#|...#|...#', 5: '####|#...|###.|...#|...#|#..#|.##.',
-  6: '.##.|#...|#...|###.|#..#|#..#|.##.', 7: '####|...#|..#.|.#..|.#..|.#..|.#..', 8: '.##.|#..#|#..#|.##.|#..#|#..#|.##.',
-  9: '.##.|#..#|#..#|.###|...#|...#|.##.',
-  ' ': '...|...|...|...|...|...|...', '.': '.|.|.|.|.|.|#', ',': '.|.|.|.|.|#|#|#', '!': '#|#|#|#|#|.|#', '?': '.##.|#..#|...#|..#.|.#..|....|.#..',
-  ':': '.|.|.|#|.|.|#', ';': '.|.|.|#|.|.|#|#', '·': '.|.|.|.|#|.|.', '-': '...|...|...|...|###|...|...', '−': '....|....|....|....|####|....|....', '+': '...|...|.#.|.#.|###|.#.|.#.',
-  "'": '#|#|.|.|.|.|.', '"': '#.#|#.#|...|...|...|...|...', '(': '.#|#.|#.|#.|#.|#.|.#', ')': '#.|.#|.#|.#|.#|.#|#.', '/': '..#|..#|.#.|.#.|.#.|#..|#..',
-  '…': '.....|.....|.....|.....|.....|.....|#.#.#', '→': '......|......|...#..|....#.|######|....#.|...#..', '←': '......|......|..#...|.#....|######|.#....|..#...',
-  '▶': '#....|##...|###..|####.|###..|##...|#....', '◀': '....#|...##|..###|.####|..###|...##|....#',
-  '▲': '.......|...#...|..###..|.#####.|#######|.......|.......', '▼': '.......|#######|.#####.|..###..|...#...|.......|.......',   // the Log's arrows: the two glyphs of the accepted companion-device-2 mock's type
-  '×': '.....|.....|#...#|.#.#.|..#..|.#.#.|#...#', '✓': '......#|.....##|....##.|##.##..|.###...|..#....|.......', '%': '##..#|##.#.|...#.|..#..|.#...|.#.##|#..##', '#': '.#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.',
-};
-const GLYPH_ALIAS = { '’': "'", '‘': "'", '“': '"', '”': '"', '–': '-', '—': '-' };
-const FONT = {};
-for (const ch in GLYPHS) { const rows = GLYPHS[ch].split('|'); FONT[ch] = { w: rows[0].length, rows }; }
-function glyphOf(ch) { return FONT[ch] || FONT[GLYPH_ALIAS[ch]] || FONT['?']; }
 function glyphCanvas(ch, col, s) {
   return art('gl' + ch + ':' + col + ':' + s, () => {
     const gl = glyphOf(ch), pb = new PB(gl.w * s, 9 * s);
@@ -4898,15 +4944,6 @@ function glyphCanvas(ch, col, s) {
     return pb;
   }).canvas();
 }
-function textW(str, s) { s = s || 2; let w = 0; for (const ch of str) w += (glyphOf(ch).w + 1) * s; return Math.max(0, w - s); }
-function wrapText(str, maxW, s) {
-  const words = str.split(' '), lines = []; let cur = '';
-  for (const w of words) { const t = cur ? cur + ' ' + w : w; if (textW(t, s) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } }
-  if (cur) lines.push(cur); return lines;
-}
-function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
-// A line of " · " segments that drops its trailing segments until it fits (never an ellipsis mid-word); a first segment that alone is too wide is clipped.
-function cutLine(str, maxW, s) { while (textW(str, s) > maxW && str.includes(' · ')) str = str.slice(0, str.lastIndexOf(' · ')); return clipText(str, maxW, s); }
 
 // ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
 // Release 21c: the twenty kinds' signed tokens from the art desk (field-tokens work/tokens.mjs, round 2; page species in sp order S01, S03, S02, S04 to S20), one
@@ -6858,14 +6895,14 @@ function drawPatch(t) {
 }
 function drawPatchBody(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
-  if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
+  if (RT.key !== P.key) { RT.key = P.key; MENUSHIFT.cur = MENUSHIFT.from = MENUSHIFT.to = 0; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
   else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), ts = v.ts, o = sprOff(ts);
   if (ts === 48) RT.remap = lay.shade ? REMAP_SHADE : REMAP_PLACE;   // the place's own storm, fog and fade tables, for drawPatch's drawing only (restored at its end)
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
   const [sx, sy] = shakeOff();
-  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0, { x: (ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - c0.x, y: (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - c0.y }), cam = { x: c0.x + sx + po.x, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
+  const c0 = camPos(v, RT.pl.rx, RT.pl.ry, true), po = panOffset(lay, c0, { x: (ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - c0.x, y: (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - c0.y }), ms = menuShiftNow((ts === 48 ? RT.pl.rx : RT.pl.x) + (ts >> 1) - (c0.x + sx + po.x), (ts === 48 ? RT.pl.ry : RT.pl.y) + (ts >> 1) - (c0.y + sy + po.y) + VIEW_Y, c0.x + sx + po.x, lay, ts), cam = { x: c0.x + sx + po.x + ms, y: c0.y + sy + po.y }, camX = cam.x, camY = cam.y;   // half-screen steps (centred at 32 px), clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
   const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
@@ -7105,9 +7142,14 @@ function drawPatchBody(t) {
   }   // no final contour and no view-edge dashes after the Call (#140: the owner said remove the call range and the probe view range)
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * ts + (ts >> 1)), y = H(FX.dig.y * ts + ts - 6);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
+  for (const b of FX.bursts) { const age = NOW - b.at; if (age < 0 || age >= JUICE_BURST_MS) continue;   // the burst: 4 frames, a cream ring, then a dashed amber one, with eight ticks
+    const fr = Math.floor(age / 80), x = W(b.x * ts + (ts >> 1)), y = H(b.y * ts + (ts >> 1)), r = 8 + fr * 7;
+    circ(x, y, r, fr < 2 ? C.cream : C.amber, fr >= 2);
+    for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; R(Math.round(x + Math.cos(a) * (r + 4)) - 1, Math.round(y + Math.sin(a) * (r + 4)) - 1, 2, 2, fr < 2 ? C.white : C.amber); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
+    if (motion() && age > 960 && Math.floor(age / 80) % 2) continue;   // juice-build-2: it fades out (palette only, so it blinks out) after rising about 12 px (720 ms)
     const ic = f.icon === 'pod' ? podArt('bone') : ICON[f.icon](), tw = f.text ? textW(f.text, 2) + 6 : 0, w = ic.w + tw + 14;
-    const x = W(f.x * ts + (ts >> 1)), y = H(f.y * ts) - 6 - (motion() ? Math.floor(age / 60) : 8);
+    const x = W(f.x * ts + (ts >> 1)), y = Math.max(VIEW_Y + 14, H(f.y * ts) - 6 - (motion() ? Math.min(12, Math.floor(age / 60)) : 8));   // never above the view's top edge
     panel(x - w / 2, y - 12, w, 24, C.ink, C.slate);
     blit(ic, x - w / 2 + 7, y - Math.floor(ic.h / 2));
     if (f.text) text(f.text, x - w / 2 + 7 + ic.w + 6, y - 7, C.bone, 2); }
@@ -7455,6 +7497,8 @@ function drawCounter(x, key, icon, value) {
   else if (value > st.v && NOW - st.last >= 90) { st.v++; st.last = NOW; st.fl = NOW; }
   const shown = String(st.v), fl = NOW - st.fl < 260;
   blit(ICON[icon](), x, 9);
+  { const pk = FX.pops[key.slice(1)], pa = pk == null ? 1e9 : NOW - pk;   // the bracket round the counter that just rose: about 1 s, steady
+    if (pa >= 0 && pa < 1000) { const bw = counterW(st.v) + 2; R(x - 3, 5, 3, 2, C.cream); R(x - 3, 5, 2, 22, C.cream); R(x - 3, 25, 3, 2, C.cream); R(x + bw - 2, 5, 3, 2, C.cream); R(x + bw - 1, 5, 2, 22, C.cream); R(x + bw - 2, 25, 3, 2, C.cream); } }
   if (fl) panel(x + 15, 7, textW(shown, 2) + 6, 18, C.amber);
   text(shown, x + 18, 9, fl ? C.ink : C.bone);
   return x + counterW(st.v);
@@ -8040,16 +8084,52 @@ function menuIcon(id, x, y) {
     pb.rect(14, 10, 7, 1, C.sand); pb.rect(14, 16, 7, 1, C.sand); pb.outline(() => C.stone); return pb; }), x, y);
   else blit(art('m-world', () => { const pb = new PB(28, 28); pb.ell(14, 14, 13, 13, C.grass, { sh: [C.sprout, C.leaf] }); pb.ell(18, 18, 7, 6, C.river, { clip: (x2, y2) => Math.hypot(x2 + .5 - 14, y2 + .5 - 14) < 13 }); pb.outline(); return pb; }), x, y);
 }
+// menu-side-hero-5: the field menu's box and the view beside it. The box takes the side away from the hero; when no spot of the four (side, other side, each at the top and the bottom of the view)
+// clears him, the view shifts sideways while the menu is open so he stands in the free part beside the box, MENU_CLEAR px clear of it, and shifts back on close (the pan's own ease; a snap with motion off).
+const MENU_CLEAR = 8;
+const MENUSHIFT = { cur: 0, from: 0, to: 0, at: 0, side: null };   // cur: px the camera is shifted now; side: true = box on the left, false = right, null = today's rule
+const menuFieldW = items => Math.min(250, 64 + 14 + Math.max(0, ...items.map(it => textW(it.label, 2))));
+function menuFieldSpots(items, pl, side) {   // side: the side the view shifted for (true = box left), or null; returns { x, top, ok }
+  const rowH = 44, w = menuFieldW(items), bh = items.length * rowH + 20, left = side == null ? pl.x > SCR_W / 2 : side;
+  const mg = S.ui.from === 'patch' && S.exp && S.exp.patch ? msgGeom() : null, mH = mg ? mg.h : 0, mLow = SCR_H - LINE_H - mH - 8;
+  const top = mH && pl.y + 20 > mLow ? VIEW_Y + 8 + mH + 8 : VIEW_Y + 8;
+  const hit = (bx, by) => bx < pl.x + 16 && bx + w > pl.x - 16 && by < pl.y + 16 && by + bh > pl.y - 16;
+  const xs = left ? [8, SCR_W - w - 8] : [SCR_W - w - 8, 8], tb = VIEW_Y + VIEW_H - bh - 8;
+  if (side != null) return { x: xs[0], top, ok: true };
+  const spots = [[xs[0], top], [xs[1], top], [xs[0], tb], [xs[1], tb]], ok = spots.find(([bx, by]) => !hit(bx, by));
+  return ok ? { x: ok[0], top: ok[1], ok: true } : { x: xs[0], top, ok: false };
+}
+// where the camera should sit while the menu is open, given the hero's unshifted x, y on the screen and the camera's x: { s, side }. No shift when a spot clears him as he stands, or when the view cannot shift enough (a map edge).
+function menuShiftFor(hx, hy, camX, lay, ts) {
+  const items = menuItems(), f = menuFieldSpots(items, { x: hx, y: hy }, null);
+  if (f.ok) return { s: 0, side: null };
+  const w = menuFieldW(items), lo = Math.min(0, -camX), hi = Math.max(0, lay.w * ts - SCR_W - camX);
+  const sL = Math.min(hx - w - 8 - MENU_CLEAR - 16, hi), sR = Math.max(hx - (SCR_W - w - 8 - MENU_CLEAR - 16), lo);   // his rect (+-16) MENU_CLEAR px beyond the box, which sits 8 px in from the view's edge
+  const okL = sL >= lo, okR = sR <= hi;
+  if (okL && (!okR || Math.abs(sL) < Math.abs(sR) || (Math.abs(sL) === Math.abs(sR) && hx > SCR_W / 2))) return { s: sL, side: true };
+  if (okR) return { s: sR, side: false };
+  return { s: 0, side: null };
+}
+function menuShiftNow(hx, hy, camX, lay, ts) {   // each frame of the walk view: the shift to add to the camera (whole pixels)
+  const open = S.phase === 'menu' && S.ui && S.ui.from === 'patch' && !S.ui.waiting, t = open ? menuShiftFor(hx, hy, camX, lay, ts) : { s: 0, side: null }, to = Math.round(t.s);
+  if (MENUSHIFT.to !== to) { MENUSHIFT.from = MENUSHIFT.cur; MENUSHIFT.to = to; MENUSHIFT.at = NOW; }
+  MENUSHIFT.side = open ? t.side : null;
+  MENUSHIFT.cur = Math.round(MENUSHIFT.from + (MENUSHIFT.to - MENUSHIFT.from) * (motion() ? panEase(clamp((NOW - MENUSHIFT.at) / PANPEEK_MS, 0, 1)) : 1));
+  return MENUSHIFT.cur;
+}
 function drawMenu(t) {
   const items = menuItems(), overField = S.exp && (S.ui.from === 'patch' && S.exp.patch || S.ui.from === 'map');
   if (S.ui.from === 'patch' && S.exp && S.exp.patch) { drawPatch(t); drawHeroLater(); } else if (S.ui.from === 'map') drawReachView(t); else if (S.ui.from === 'sealed') drawSealed(t); else if (S.ui.from === 'riding') drawRiding(t); else drawSetup(t);
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
-  const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
-  const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top0 = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
-  // over a place, when the message box goes to the top (drawMessage's own test), the card starts 8 px under its foot
-  const mg = S.ui.from === 'patch' ? msgGeom() : null, mH = mg ? mg.h : 0,
-    mLow = SCR_H - LINE_H - mH - 8, top = overField && mH && pl && pl.y + 20 > mLow ? VIEW_Y + 8 + mH + 8 : top0;
+  const pl = RT.plScr;
+  // menu-side-hero-3: in the field the box is as wide as its widest row (the line's own measure + the icon column and right margin), never more than 250
+  const rowH = overField ? 44 : 62, sc = overField ? 2 : 3, w = overField ? menuFieldW(items) : 330;
+  let x = overField ? SCR_W - w - 8 : 60, top = overField ? VIEW_Y + 8 : 116;
+  if (overField && S.ui.from === 'patch' && S.exp && S.exp.patch && pl) {   // menu-side-hero-1: the first place whose rect clears the pawn's drawn rect; menu-side-hero-5: or, when the view shifted for it, the side it shifted for
+    const f = menuFieldSpots(items, pl, MENUSHIFT.side);
+    x = f.x; top = f.top;
+  } else if (overField && pl && pl.x > SCR_W / 2) x = 8;
   if (!overField) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10); else if (S.ui.from === 'map') ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 5);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);
   panel(x, top, w, items.length * rowH + 20, C.paper, C.ink);
@@ -8421,9 +8501,10 @@ function caseThing(c) {   // what is under the bracket: { name, how, took, forS,
     if (!b) return { name: W.crateFree, how: W.crateFreeHow };
     return { name: W.crateName(b.n), how: W.crateWhen(b.n), forS: b.none ? W.crateNone : W.crateHas(b) }; }
   if (c.k === 'pod') { const p = (h.pods || [])[c.i]; if (!p) return { name: W.cradleFree, how: W.cradleFreeHow };
-    return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.atStation(W.podFor), thing: p }; }
+    return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.podAt, thing: p }; }
   if (c.k === 'sup') return { name: W.supply[c.s], how: W.supplyLine(h[c.s] | 0) };
-  const s = (h.samples || [])[c.i]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };
+  const st = sampleStacks(h.samples)[c.i], s = st && st.list[st.list.length - 1]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };   // a stack shows its latest find
+  if (st.list.length > 1) return { name: W.stackName[s.item] + ' · ' + st.list.length, how: W.stackFrom([...new Set(st.list.map(q => q.name))]), forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };   // a stack: the kind, the count, who they are from
   return { name: s.name + '’s ' + WORDS.habit.sampleName[s.item], how: W.sampleHow[s.habit] || '', took: s.got, forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };
 }
 function caseMove(k) {
@@ -8479,7 +8560,7 @@ function drawCargo(t) {
   for (const c of cells) {
     if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); }
     else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
-    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const s = (h.samples || [])[c.i]; if (s && s.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
+    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); else if (st) { text(W.slotWord[st.item], c.x + c.w / 2, c.y + 8, C.soil, 2, 'center'); blitScaled(ICON.paw('soil'), c.x + 14, c.y + 32, 2); } if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
   }
   brackets(cur.x - 4, cur.y - 4, cur.w + 8, cur.h + 8, C.orange);
   // the label of the thing under the brackets, tied to it by its string; from End expedition the seal preview takes its place
@@ -8960,6 +9041,7 @@ function lineBase() {
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
+      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first (edge-cost-line-fix-1)
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
       return lv; }
@@ -9032,7 +9114,7 @@ function frame(t) {
   try { render(t / 1000); } catch (e) { if (RT.err++ < 3) console.error(e); }
   try { wantPlaces(); warmPay(); warmTick(); resumeHeld(); panTick(); placeNameExpire(); } catch (e) { if (RT.err++ < 3) console.error(e); }
   if (FX.floats.length > 20) FX.floats.splice(0, FX.floats.length - 20);
-  FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
+  FX.bursts = FX.bursts.filter(b => NOW - b.at < JUICE_BURST_MS); FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
   if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
   if (FX.dig && NOW - FX.dig.at > 900) FX.dig = null;
