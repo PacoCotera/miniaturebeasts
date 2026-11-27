@@ -2312,8 +2312,14 @@ function sweep() {
     const c = y * MW + x, was = S.revealed[c]; revealCell(c);
     if (!was && Math.max(Math.abs(dx), Math.abs(dy)) === 2) fresh.push(c);
   }
-  const hits = fresh.filter(c => { if (S.signs[c]) return true; if (!passable(c) || !placeHave(String(c))) return false; return !!layout(String(c)).landmark; });
-  if (hits.length) { FX.edge = { cs: hits, at: NOW }; fxMsg(WORDS.reveal.find, 2); }   // the ring ends on something: bracketed about 1 s, editorial's reveal.find
+  const rg = reachGeom(), shown = !(S.exp.beaconView || S.ui.mapFull);   // the reach view is what shows the bracket
+  const inView = c => { const e = cxy(c); return shown && Math.abs(e.x - rg.s0.x) <= rg.r && Math.abs(e.y - rg.s0.y) <= rg.r; };
+  const hits = fresh.filter(c => inView(c) && (S.signs[c] || (passable(c) && placeHave(String(c)) && !!layout(String(c)).landmark)));
+  if (hits.length) {   // the ring ends on a find that is on screen: bracketed and said, both gone after about 1 s; a find off view says nothing
+    FX.edge = { cs: hits, at: NOW }; fxMsg(WORDS.reveal.find, 2);
+    const seq = FX.careSeq || 0;
+    setTimeout(() => { if ((FX.careSeq || 0) !== seq || !S) return; FX.notes = FX.notes.filter(n => n.text !== WORDS.reveal.find); NOW = performance.now(); composeMsg(); }, 1000);
+  }
 }
 function revealAround(c, r) { const p = cxy(c); r = r || 1; for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) revealCell(y * MW + x); } }
 
