@@ -4,6 +4,8 @@
 // before any place is built); until the sector is here, the land of the cell under it after a soft displacement of value noise (±11 px at 72 px cells and ±2.5 px fine), so cell borders become coastlines, wood edges
 // and field edges and no grid lines are drawn. Fog keeps its three states on the same borders. Pure: no page state.
 import { hash, L, MW, MH } from './world.mjs';
+import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from './shore7.mjs';
+import { CW as CWT, CH as CHT } from './gen7/world.mjs';   // the tiles of a cell
 
 const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
 const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0 || s > 15) return (hash(9, s, a, b) % 1000) / 1000; const k = ((s * 8192 + a) * 8192) + b; let v = VN_LAT.get(k); if (v === undefined) { v = (hash(9, s, a, b) % 1000) / 1000; VN_LAT.set(k, v); } return v; };
@@ -19,10 +21,19 @@ export function landCellOf(cs, straight) {
 }
 // inp: { X0, Y0, N, NH (pixels), cs, sec ({ cls, lv: Uint8Array(cells * 16) } | null), land (Uint8Array a cell), seen, fog (0 none, 1 been, 2 dark: Uint8Array a cell), stormCol (Uint8Array a column), stormOn,
 //        mist (Uint32Array of the opening's tile | null), mistTile, tiles { name: { p, w, h } | null }, tcs, pal (Uint32Array palette index -> ABGR), DARK, LIGHT, WOOD_DARK,
-//        K { ink, night, void, deep, stone, slate }, FOGV { n, b }, BAYER }
+//        K { ink, night, void, deep, stone, slate }, FOGV { n, b }, BAYER, shore ({ seed, slot, ford: Uint8Array a cell } | null) }
 // Returns the ABGR pixels, N x NH.
 export function paintLand(inp) {
   const { X0, Y0, N, NH, cs, sec, land, seen, fog, stormCol, stormOn, mist, mistTile, tiles, tcs, pal, DARK, LIGHT, WOOD_DARK, K, FOGV, BAYER } = inp, k = cs / 72;
+  // owner #141, #178 (water is not a box): the sector's blocks are 6 x 7 tiles, so a sea cell beside land met it on a ruler line a cell long. Where a wide-water cell (no ford) has a land cell beside it, the coast is the one line
+  // the places lay (shore7.mjs shoreValue, read at the pixel's tile): sea one side, beach the other, shallows along it; away from land the block's own ground and deep sea stand.
+  const sh = sec && inp.shore ? inp.shore : null; let shoreCells = null, seamC = null;
+  if (sh) {
+    const rx = sh.slot[0] * MW, ry = sh.slot[1] * MH, cl = (cx, cy) => Math.min(MH - 1, Math.max(0, cy - ry)) * MW + Math.min(MW - 1, Math.max(0, cx - rx));
+    shoreCells = { wide: (cx, cy) => { const c = cl(cx, cy); return land[c] === L.WATER && !sh.ford[c]; }, water: (cx, cy) => land[cl(cx, cy)] === L.WATER };
+    seamC = new Uint8Array(MW * MH);
+    for (let Y = 0; Y < MH; Y++) for (let X = 0; X < MW; X++) { const w0 = shoreCells.wide(rx + X, ry + Y); for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (shoreCells.wide(rx + X + i, ry + Y + j) !== w0) seamC[Y * MW + X] = 1; }
+  }
   const u = new Uint32Array(N * NH), cellOf = landCellOf(cs, !!sec);
   const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : K.ink; };   // no art yet: a named empty slot (ink)
   const landOf = c => c < 0 ? -1 : land[c];
@@ -40,8 +51,14 @@ export function paintLand(inp) {
       if (sec) {   // the block under the pixel: its ground class (0 grass, 1 wood floor, 2 thicket or scrub, 3 rock, 4 sand, 5 water; +8 the deep sea), lighter where its level bit says raised. The deep sea is the desk's signed map-tex-deep (26 px); the raised tone is the signed layered-ground ruling (the next palette step up)
         const b = c * 16 + Math.min(3, Math.floor(ly * 4)) * 4 + Math.min(3, Math.floor(lx * 4)), v = sec.cls[b], k8 = v & 7;
         col = k8 === 5 ? (v & 8 ? DARK[tile('water', wx, wy)] : tile('water', wx, wy)) : k8 === 4 ? tile('beach', wx, wy) : k8 === 1 || k8 === 2 ? tile('wood', wx, wy) : k8 === 3 ? tile('rock', wx, wy) : tile('meadow', wx, wy);
-        wood = k8 === 1 || k8 === 2; if (sec.lv[b]) col = LIGHT[col];
-        if ((v & 8) && tcs === 26) col = K.deep;   // NAMED EMPTY SLOT map-tex-deep-26 (the deep-sea tile, art desk to paint after a palette add): one flat fill of the darkest palette blue
+        wood = k8 === 1 || k8 === 2;
+        let sv = null; if (sh && seamC[c]) sv = shoreValue(sh.seed, shoreCells, sh.slot[0] * MW * CWT + Math.floor(wx / cs * CWT), sh.slot[1] * MH * CHT + Math.floor(wy / cs * CHT));
+        if (sv !== null && sv > 0) { wood = false; col = sv >= SHORE_SHALLOW && (v & 8) ? (tcs === 26 ? K.deep : DARK[tile('water', wx, wy)]) : tile('water', wx, wy); }   // the sea: shallows along the line
+        else {
+          if (sv !== null && (k8 === 5 || k8 === 0 || k8 === 4)) { wood = false; col = sv > -SHORE_BEACH ? tile('beach', wx, wy) : tile('meadow', wx, wy); }   // the land the line leaves: beach beside the water, then the meadow
+          if (sec.lv[b]) col = LIGHT[col];
+          if ((v & 8) && tcs === 26 && sv === null) col = K.deep;
+        }   // NAMED EMPTY SLOT map-tex-deep-26 (the deep-sea tile, art desk to paint after a palette add): one flat fill of the darkest palette blue
       }
       if (col == null) {
         if (ld === L.WATER) col = nearW(3 * k) ? tile('foam', wx, wy) : tile('water', wx, wy);

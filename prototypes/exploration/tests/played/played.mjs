@@ -1645,6 +1645,55 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
     } finally { await g.ctx.close(); }
   });
 }
+
+// OWNER #178 (11-27 17:54 UTC): "I dont like that the water is so blocky, very long straight shores, and deep water is just full map cells. needs to be more naturally shaped". His replay.save (saves/178.save, seed 20, cell 186 with the sea cell
+// east of it), at his size 412x915, by presses: walk east to the place's coast, then hold Call for the look-around. The verdict is the pixels: the coast is a line that wanders, never a ruler line a cell long (28 tiles).
+// In the place the sand's edge, in the look-around the deep water's edge, row by row: how many different columns it stands on, and how long it keeps one (within a pixel or two). Each strip is also set against a crop of it
+// (refs/s36-*.png, cut from the shipped build by PLAYED_MAKE_REFS=1); two shots of the look-around a moment apart must match first, so the crop is not asked to hold a moving picture.
+{
+  const size = { w: 412, h: 915, dpr: 2.625 };
+  const SAND = ([r, gg, b]) => r > 215 && gg > 185 && b < 150 && r - b > 80;   // the beach tile (231,205,134)
+  const DEEP = ([r, gg, b]) => Math.abs(r - 36) < 14 && Math.abs(gg - 56) < 14 && Math.abs(b - 99) < 14;   // the sea beyond the shallows (36,56,99)
+  // for each row of the box the first column (from the left) where `is` holds three pixels in a row; then how many different columns, and the longest run of rows whose column is within `tol` of the row above
+  const edgeRuns = (im, b, is, tol) => {
+    const e = [];
+    for (let y = b.y; y < b.y + b.h; y++) { let c = -1; for (let x = b.x; x < b.x + b.w - 6; x++) if (is(px(im, x, y)) && is(px(im, x + 3, y)) && is(px(im, x + 6, y))) { c = x; break; } e.push(c); }
+    let best = 1, run = 1;
+    for (let i = 1; i < e.length; i++) { if (e[i] >= 0 && e[i - 1] >= 0 && Math.abs(e[i] - e[i - 1]) <= tol) { run++; if (run > best) best = run; } else run = 1; }
+    return { rows: e.length, found: e.filter((c) => c >= 0).length, distinct: new Set(e.filter((c) => c >= 0)).size, longest: best };
+  };
+  it("s36 the coast wanders, in the place and in the look-around (#178, his save: no ruler line a cell long) [412x915]", async () => {
+    const g = await open(size, "178");
+    try {
+      assert.deepEqual(await g.where(), { phase: "patch", x: 18, y: 18, key: "186" }, "the case is reached: his save stands in the coastal place");
+      for (let i = 0; i < 5; i++) await g.press("right", 100, 900);
+      assert.equal((await g.where()).x, 23, "the case is reached: he stands on the place's east column, the coast");
+      const r = await g.region(), tileP = r.w / 26, tileL = r.w / 52;   // device px of a tile in the place, and in the look-around (half the size)
+      const placeBox = { x: r.x + 509, y: r.y + 114, w: 390, h: 415 };   // the place's top-right: the sand along the coast (rows of the game screen's view, right of the middle)
+      const place = await g.shot("s36-place");
+      const pr = edgeRuns(place, placeBox, SAND, 2);
+      console.log(`# s36 place: ${pr.found}/${pr.rows} rows have sand, ${pr.distinct} different edge columns, longest straight run ${(pr.longest / tileP).toFixed(1)} tiles`);
+      assert.ok(pr.found > pr.rows / 2, `the case is reached: the coast's sand is in view (${pr.found}/${pr.rows} rows)`);
+      assert.ok(pr.distinct >= 4, `the sand's edge wanders in the place (${pr.distinct} different columns)`);
+      assert.ok(pr.longest < 8 * tileP, `no ruler line in the place: the sand's edge keeps one column for ${(pr.longest / tileP).toFixed(1)} tiles (8 allowed)`);
+      await g.hold("call"); await wait(3000);
+      const peekA = await g.shot("s36-peek"); await wait(700); const peekB = await g.shot("s36-peek-b");
+      await g.release(); await wait(1000);
+      const peekBox = { x: r.x + 644, y: r.y + 64, w: 255, h: 1060 };   // the sea east of the place in the look-around, down the whole view
+      const lr = edgeRuns(peekA, peekBox, DEEP, 1);
+      console.log(`# s36 look-around: ${lr.found}/${lr.rows} rows have deep water, ${lr.distinct} different edge columns, longest straight run ${(lr.longest / tileL).toFixed(1)} tiles`);
+      assert.ok(lr.found > lr.rows * 0.9, `the case is reached: the deep water is in view down the look-around (${lr.found}/${lr.rows} rows)`);
+      assert.ok(lr.distinct >= 8, `the deep water's edge wanders in the look-around (${lr.distinct} different columns)`);
+      assert.ok(lr.longest < 8 * tileL, `no ruler line in the look-around: the deep water's edge keeps one column for ${(lr.longest / tileL).toFixed(1)} tiles (8 allowed; a cell is 28)`);
+      const selfSame = changed(peekA, peekB, peekBox);
+      assert.ok(selfSame.frac < 0.02, `two shots of the look-around alike, so a crop can judge it (${selfSame.frac.toFixed(3)} differ)`);
+      const cp = againstRef(place, placeBox, "s36-place-east"), cl = againstRef(peekA, peekBox, "s36-peek-east");
+      assert.ok(cp.frac < 0.03, `the place's coast strip is as its crop (${cp.frac.toFixed(3)} differ)`);
+      assert.ok(cl.frac < 0.03, `the look-around's coast strip is as its crop (${cl.frac.toFixed(3)} differ)`);
+    } finally { await g.ctx.close(); }
+  });
+}
+
 // OWNER 2025-11-25 16:3x: "revealing the map is cool to, gets tedious, but it's a good entertainment." (reveal-build-1, PR 695; build desk's NO d2cdce, rule 12). A fresh seed 13 at 412x915, played by presses only: ✓ to set out, then the d-pad on the map.
 // A map step lifts the 5x5 ring. State only asserts the case is reached (the map, cells revealed by the first step that moves him, the find on the ring's edge if there is one); the verdict is the pixels:
 // the reach view after that step against a crop of it (saves/s35-reveal-ring.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it). If the step lands a find on the new edge and it is in view, its orange brackets are found too.
