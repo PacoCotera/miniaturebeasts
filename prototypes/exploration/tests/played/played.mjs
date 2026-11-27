@@ -626,6 +626,31 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 
+  // OWNER 2026-11-25 16:3x: "watching mibis in the wild is fun too, but they don't do much." + the lead's ruling (11-26 23:54): the line names the Loika the tag sits on. Saves/14.save (made by presses, Drizzle named, in sight):
+  // he presses the d-pad a few times; a calm named Loika at her haunt does an act, and its line names her (the tag's name). An unmet Loika (saves/145, Hazel, unnamed) acts with no line. Pixels on the shots (kept with PLAYED_SHOTS) are read by eye.
+  if (size.w === 412) it(`wl5 a wild Loika's act (wild-life-build-5, save 14): the line names the tagged Loika [${tag}]`, { todo: "not reached on saves/14 and saves/156 (wild-life-build-5): 14 has Burr acting (FX.beats set) but the standing target line holds the box all walk, so her line never shows; 156 has Drizzle at ease 3; a save made by presses with a calm named Loika and a free box is still to be made" }, async () => {
+    const LINE = /(nibbles|sniffs|grooms her tail|looks up at you)/;
+    const read = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, her = m.herInSight(); return { phase: m.S.phase, her, name: her != null ? m.S.named[her] : null, msg: m.FX.msg || "", beats: Object.keys(m.FX.beats || {}), tag: !!(m.RT.tagW), all: m.curLive().cr.filter(x => x.sp === 0).map(x => [x.id, !!m.S.named[x.id], x.x, x.y, x.st, x.ease, m.onScreen(x.x, x.y)]), c: (() => { const c = her != null ? m.curLive().cr.find(x => String(x.id) === her) : null; return c && { st: c.st, x: c.x, y: c.y, home: c.home, visit: c.visit, hb: !!c.hb, ease: c.ease, warm: c.warm, crowd: c.crowd, scr: m.onScreen(c.x, c.y), sight: m.inSight(c.x, c.y), bt: (m.curLive().bt || {})[c.id], n: m.S.exp.actions, px: m.S.exp.patch.x, py: m.S.exp.patch.y }; })() }; });
+    const g = await open(size, "14");
+    try {
+      const at = await read(g);
+      assert.deepEqual([at.phase, at.name], ["patch", "Burr"], `the case is reached: he walks the patch with Burr in sight (${JSON.stringify(at)})`);
+      let hit = null, bad = null; const way = ["down", "down", "down", "down", "down", "left", "left", "left", "up", "up", "up", "up", "up", "right", "right", "right"];
+      for (let i = 0; i < 60 && !hit; i++) {
+        await g.press(way[i % 16], 100, 900);
+        const s = await read(g);
+        if (LINE.test(s.msg)) hit = Object.assign({ i }, s);
+        if (s.beats.some((id) => id !== s.her)) bad = s.beats;   // an act by anyone but the tagged, named one
+        if (i % 5 === 0) console.log(`# wl5 ${tag} press ${i}: ${JSON.stringify(s)}`);
+      }
+      console.log(`# wl5 ${tag}: ${JSON.stringify(hit)}`);
+      await g.shot(`wl5-${tag}-burr-act`);
+      assert.ok(hit, "the case is reached: a named Loika at her haunt did an act and its line showed");
+      assert.ok(hit.msg.startsWith("Burr "), `the line names the Loika the tag names (${hit.msg})`);
+      assert.ok(hit.tag, "the tag is on the named Loika while her line shows");
+      assert.equal(bad, null, "no Loika he never met acts: no act but the named one's");
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 2026-11-24 15:5x on #156: "in the wild you should be able to see the name". QA verify-live-649, seed 14 (saves/14.save, made from a fresh seed-14 game by QA's presses C-01..C-13: ✓ x3 to set out, ← twice, right x3):
   // Burr stands under a tree crown and her bone name tag was clipped to "r" (412x915-C-13-right). The verdict is the tag's pixels on the shot: the bone frame whole, all four sides, with the name inside.
   it(`s12 a wild name tag over a crown (#156, seed 14): Burr's bone tag is whole on the screen, a crown never hides part of it [${tag}]`, async () => {

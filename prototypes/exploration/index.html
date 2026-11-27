@@ -4148,7 +4148,7 @@ function beatTarget(c, X) {
   for (const o of pool) if (!best || o.r < best.r) best = o;
   return best && { tgt: best.tgt, stand: best.stand };
 }
-const beatCalm = (c, X) => !(RT.readOnly || c.sp !== 0 || c.hide > 0 || c.st !== 'idle' || c.home || c.visit || c.gone || c.hb || c.warm >= 1 || c.crowd > 0 || (c.ease | 0) >= 1 || curledNow(c) || X.away(c) || !inSight(c.x, c.y));
+const beatCalm = (c, X) => !(RT.readOnly || c.sp !== 0 || c.hide > 0 || c.st !== 'idle' || c.home || c.visit || c.gone || c.hb || c.warm >= 1 || c.crowd > 0 || (c.ease | 0) >= 1 || curledNow(c) || X.away(c) || !inSight(c.x, c.y) || !onScreen(c.x, c.y));
 // where her act is now, by the clock: { b, ph: 'go' | 'hold' | 'back', f: how far along the way to her plant (0 at her tile, 1 at the plant) } or null (no act, over, or she has moved). The hold ends once it has run
 // 2.5 s and 3 of his actions have passed (or 8 s, whatever he did); she is then drawn back the way she went.
 function beatPhase(c) {
@@ -4167,8 +4167,8 @@ function beatShift(c, ts) {
 }
 function beatSay(c, b) {   // the line: queued; settleOnce puts it in only when the box is free at the end of the action, and spends it only when it shows
   const sd = S.beatSaid || (S.beatSaid = {}), key = c.id + '.' + b.k;
-  if (sd[key] === S.turn || !c.ind) return;
-  FX.beatLine = { text: WORDS.beat[b.k](c.ind.name, b.tgt && b.tgt.cls), key };
+  if (sd[key] === S.turn || !S.named[c.id]) return;
+  FX.beatLine = { text: WORDS.beat[b.k](S.named[c.id], b.tgt && b.tgt.cls), key };
 }
 function idleBeat(c, X, bx, by) {
   const ex = S.exp, live = X.live, bt = live.bt || (live.bt = {}), n = ex.actions, cur = FX.beats && FX.beats[c.id];
@@ -4176,7 +4176,7 @@ function idleBeat(c, X, bx, by) {
     if (beatCalm(c, X) && c.x === cur.x && c.y === cur.y && beatPhase(c)) return;
     delete FX.beats[c.id]; bt[c.id] = n + BEAT_REST + Math.floor(rnd(S.seed, c.id, n, 'beatrest') * 3);
   }
-  if (!beatCalm(c, X) || c.x !== bx || c.y !== by) return;
+  if (!beatCalm(c, X) || c.x !== bx || c.y !== by || !S.named[c.id]) return;   // only a Loika he has named acts: the box names the one the tag sits on
   if (c.ind) { const hs = routineSpot(c, X.lay, X.key); if (!hs || man(hs, c) > 1) return; }   // at her haunt
   if (bt[c.id] == null) { bt[c.id] = n + 3 + Math.floor(rnd(S.seed, c.id, 'beat0') * 3); return; }
   if (n < bt[c.id]) return;
@@ -9810,7 +9810,7 @@ requestAnimationFrame(frame);
     requestAnimationFrame(showWait);
     readyRealm(seed, RT.makeTimes = {}, waitStep).then(how => { RT.makeHow = how; }, () => { RT.makeHow = 'page'; }).then(yieldTurn).then(() => { RT.making = false; RT.makeMs = performance.now() - RT.makingAt; boot(saved == null ? seed : null); }); RT.makingAt = performance.now(); } }
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { routineSpot, beatTok, beatDip, settleOnce, beatTarget, plantTiles, beatPhase, beatShift,onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { onScreen, openHer,herInSight, herNamed, lineCtx, openLog, openMenu, offer, habRecord, metOrder, printAge, PAWS_AGED, HUD, HUD_ART, carryRing, targetLine, FX, habDay, habKey, hauntStand, hauntFree, DIRS, sleeperOf, curledNow, atBedNow, CURLED_LOIKA, podTagOf, WILD, markedCandidates, individualOf, layout, wildSaddled, coatRead, indexCreatures, curLay, printsHere, printsToRead, readPrints, noteHabit, inSight, wildCtx, watchKey, cardKey, watchHer, habCard, habWant, waitTick, unveil, stormRain, windAt, WORDS, WIND_MARK, lineWx, indInSight, windNowWord, easeEnvNow, hearLineOf, keepStill, easeEnvOf, ensureLive, curLive, dayPart, hauntAt, frontOf, advance, PAN, panFrac, panTick, panOffset, PANPEEK_WAIT, PANPEEK_MS, PLACES, placeHave, press, release, startExpedition, endExpedition, takePod, openCase, caseThing, caseSel, caseCells, newWorld, setFS, strikeIsRead, strikeFaded, walkLift, PEEK_MS, enterPatch, leavePatch, drawSketch, STALL, HELD, SLIDE_MS, applyLines, openingKind, WARM, WHOLE, WARM_WHOLE_MAX, PL, warmReady, warmStep, warmTargets, bakedView, LAND_COMING, WARM_SIGN_MS, get S() { return S; }, get SAVE_KEY() { return SAVE_KEY; }, get COMPANION() { return COMPANION; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   CARD_ART, act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, unveiled, veilable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, dataLadder, awardMoment, STRIKE_DATA, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, heartText, reachLine, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, crossReason, canStep, edgeKind, stepCell, softKind, EDGE, stairsNear, cliffMapWords, tileSide, tileSideKnown, tileSideApplies, crossLanding, patchStep, inRange, TEST,
   placeMark, cellMark, MARK_SIZES, L, C, RGB, landImage, reachGeom, capture: () => scr.toDataURL("image/png"), camNow: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts); }, MAP_X, MAP_Y, CELL, camStep: () => { const lay = curLayOr(), v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H, lay.w, lay.h), P = S.exp.patch; return camPos(v, P.x * v.ts, P.y * v.ts, true); }, startView, endView, FOGV, fogState, get msg() { return FX.msg; }, partnerRow, partnerCtx, rosterList, setLead, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, gatedCell, doneEmpty, shownMibi, ridingAct, ridingRow, openRiding, ownCutName, ridingLead, RIDE, foundEnergy, energyInReach, mapSigns,
