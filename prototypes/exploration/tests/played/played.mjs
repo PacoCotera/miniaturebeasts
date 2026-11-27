@@ -728,7 +728,7 @@ for (const size of SIZES) {
   // OWNER #176 (11-26): "when you leave an active place and go to the overview sector, and enter again the same sector, the hero must be teleported to the last location where it was standing, rather than moved to the spawn point of the place."
   // His replay.save (saves/176.save): patch 178, tile 23,14, facing left. By presses: ← opens the menu, down to Leave this place, ✓ (the map), ✓ (back into 178). The verdict is the screenshot: the hero drawn on the same tile as before the map, facing left.
   it(`s11 back into the place he left (#176, his save, patch 178 tile 23,14): the hero stands on the same tile, facing left; one more place entered lands as today [${tag}]`, async () => {
-    const g = await open(size, "176");
+    const g = await open(size, "14");
     try {
       const at = await g.where();
       assert.deepEqual([at.phase, at.key, at.x, at.y], ["patch", "178", 23, 14], "the case is reached: he stands at the tile of his note, in patch 178");
@@ -811,6 +811,34 @@ for (const size of SIZES) {
       const top2 = same(im2, "exp-number-top-2", F_TOP);
       console.log(`# s15 ${tag}: the top line differs from the shot of "Expedition 2" by ${top2} pixels`);
       assert.equal(top2, 0, "the set-out's top line reads Expedition 2");
+    } finally { await g.ctx.close(); }
+  });
+  // OWNER 2026-11-24 12:1x ("stop breaking things or telling me that you fixed or shipped something just to find at the first interaction that the game is still utterly broken."; PR 674, wait-changes-group-1/2): a Wait's changes line counts creatures of species he has not met together, once: "Three creatures wander", not one clause per species.
+  // His fresh-game save 14 (seed 14, S.known empty): in the place with two unknown species in view (a storm over it first, which passes). Played by ← (the menu), Down to Wait, ✓ 22 times: the 22nd Wait is the first the day has turned and they wander.
+  // State only asserts the case is reached (the place, nothing met, two unknown species in view); the verdict is the pixels of the changes line against a crop of "creatures wander" (saves/wait-unknown-creatures-wander.png), read once: the words are in the line, one clause only.
+  if (size.w === 412) it(`s21 a wait's changes line (PR 674, save 14): two unknown species in view are counted as one group, "creatures wander" [${tag}]`, async () => {
+    const g = await open(size, "14");
+    try {
+      const view = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, L = m.curLive(), sp = {}; if (L) for (const c of L.cr) if (!c.hide && m.inSight(c.x, c.y)) sp[c.sp] = (sp[c.sp] || 0) + 1; return { phase: S.phase, met: S.known.length, unknown: Object.keys(sp).filter((k) => !S.known.includes(+k)).length }; });
+      assert.deepEqual(view, { phase: "patch", met: 0, unknown: 2 }, "the case is reached: in the place, nothing met, two unknown species in view");
+      await g.press("back");                                  // ← opens the menu
+      const rows = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.menuItems().length);
+      for (let i = 0; i < rows && await g.menuRow() !== "wait"; i++) await g.press("down");
+      assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
+      for (let i = 0; i < 22; i++) await g.press("confirm", 100, i < 21 ? 350 : 350);   // Wait, 22 times; the shot follows the last while its line is up
+      const r = await g.region(), im = await g.shot(`s21-${tag}-wait`);
+      const ref = decodePNG(readFileSync(path.join(savesDir, "wait-unknown-creatures-wander.png")));
+      const lit = ([R, G, B]) => R > 200 && G > 200 && B > 190;   // the line's light letters
+      const mask = []; for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) if (lit(px(ref, x, y))) mask.push([x, y]);
+      const band = { y0: r.y + Math.round(r.h * 0.70), y1: r.y + Math.round(r.h * 0.95) - ref.height, x0: r.x, x1: r.x + r.w - ref.width };   // where the message box sits, as a fraction of the screen
+      let hit = null;
+      for (let y = band.y0; y <= band.y1 && !hit; y++) for (let x = band.x0; x <= band.x1 && !hit; x++) { let ok = true; for (const [mx, my] of mask) if (!lit(px(im, x + mx, y + my))) { ok = false; break; } if (ok) hit = { x, y }; }
+      console.log(`# s21 ${tag}: "creatures wander" found at ${JSON.stringify(hit)} (${mask.length} letter pixels in the crop)`);
+      assert.ok(hit, `the changes line reads "creatures wander" (the crop's ${mask.length} letter pixels are not all light on the line)`);
+      let extra = 0; for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) if (lit(px(im, hit.x + x, hit.y + y)) && !lit(px(ref, x, y))) extra++;
+      assert.ok(extra <= 4, `nothing else is lit inside the crop's window (${extra} extra light pixels)`);
+      let more = 0; for (let y = 0; y < ref.height; y++) for (let x = ref.width + 2; x < ref.width + 40; x++) if (lit(px(im, hit.x + x, hit.y + y))) more++;
+      assert.equal(more, 0, "the line ends at 'wander': no second group follows it (" + more + " light pixels to its right)");
     } finally { await g.ctx.close(); }
   });
 }
