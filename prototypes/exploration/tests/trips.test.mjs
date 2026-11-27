@@ -50,7 +50,7 @@ function ending({ explored, trips, ex, world = { lines: [], ev: [], arrived: ARR
     S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], emptyLead: () => null,
     carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ found: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
+    worldTurn: () => { turned.push(S.expN); S.turn++; return { arrived: { pods: [], young: [], bloom: -1, charged: [] }, ...world }; },
     logEv: () => {}, transition: () => {}, save: () => {},
   });
   t.endExpedition(ex.reason || "night");   // the world turns only at the night's end (walk W1); any other end is a camp
@@ -179,7 +179,7 @@ test("End expedition while docked at the start", () => {
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ found: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
+    worldTurn: () => { S.turn++; return { lines: [], ev: [], arrived: ARRIVED }; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
   });
   // start an expedition, undocked
   writeSt(); t.save();

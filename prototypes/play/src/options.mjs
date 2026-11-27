@@ -7,7 +7,7 @@
 export const OPTIONS_KEY = "mb-options";
 //   noteFrom   who a play note says it is from: "owner" unless an agent tester stores its persona here (no Options row; never a name or address)
 //   lab        the Station's frame shows the grey lab bench (Loikas only) instead of the Station (prototypes/lab)
-export const OPTION_DEFAULTS = Object.freeze({ playtest: false, dev: false, lab: false, companion: "A", names: "", place: "", noteFrom: "owner" });
+export const OPTION_DEFAULTS = Object.freeze({ playtest: false, mute: false, dev: false, lab: false, companion: "A", names: "", place: "", noteFrom: "owner" });
 export function readOptions(storage = globalThis.localStorage) {
   try { const o = JSON.parse(storage.getItem(OPTIONS_KEY) || "{}"); return { ...OPTION_DEFAULTS, ...(o && typeof o === "object" ? o : {}) }; } catch { return { ...OPTION_DEFAULTS }; }
 }

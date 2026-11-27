@@ -190,7 +190,7 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 function ending(S, ex, reason = "home") {
   const t = vm.createContext({ console, S, FX: { msg: "", sign: null }, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, RIPE_PENDING: [], JUVENILE_TURNS: 2, ELDER_TURNS: 16,
     reachCounts: () => ({ found: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, canStep: () => true, dropPods: () => {},
-    worldTurn: () => { S.turn++; S.expN++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, spOf: s => ({ ab: ({ 0: "calm", 1: "dig", 2: "nose", 7: "bank", 19: "sure" })[s] }), transition: () => {}, save: () => {}, emptyLead: () => null });
+    worldTurn: () => { S.turn++; return { lines: ["The world turned."], ev: [["quiet", null, null, 0]], arrived: { pods: [], young: [], bloom: -1, charged: [] } }; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, spOf: s => ({ ab: ({ 0: "calm", 1: "dig", 2: "nose", 7: "bank", 19: "sure" })[s] }), transition: () => {}, save: () => {}, emptyLead: () => null });
   const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
   vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }

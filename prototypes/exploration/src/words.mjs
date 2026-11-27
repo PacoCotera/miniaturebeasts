@@ -9,6 +9,7 @@ export const WORDS = {
   reachLine: (n, total, tail) => 'Explored ' + n + ' of ' + total + (tail || ' in reach'), worldLine: (n, all) => 'Explored ' + n + ' of ' + all + ' places',
   // taking things (✓ labels, at most 24 characters)
   takeDew: 'Take the dew',
+  slabTake: { mat: 'Pick up the Essence', find: 'Pick up the find' },   // [copy] editorial (bus b3562f, row slab.take): ✓ on the old tile of a pushed slab, what lay under it; 19 characters max
   // refusals and counts against the cap (the thing stays where it is, nothing is spent)
   refuse: {
     dew: cap => 'Your Essence is full (' + cap + ' of ' + cap + ') · the cup keeps its dew', charge: cap => 'Your Energy is full (' + cap + ' of ' + cap + ') · the stone keeps its charge',   // [copy] owner notes #75 #76: the 20 is his hold, not the stone's
@@ -150,6 +151,8 @@ WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the so
 WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
 // [copy] WORKING WORDS (W6a): the target line in the walk's top row: her name, the place she was last seen in, and the way to it (NE; "here" when it is where the explorer stands). The copywriter's job replaces them.
 WORDS.target = { line: (name, where, dir) => [name, where, dir ? (dir === 'here' ? 'here' : dir.toUpperCase()) : ''].filter(Boolean).join(' · ') };
+// [copy] WORKING WORDS (edge-cost-line-fix-1, owner 2026-11-25 "ok"): the bottom line while the next step crosses into the next place; n is DAY.mapStep. The editor's final string replaces it.
+WORDS.edgeStep = n => n + ' light to the next place';
 
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
 // Pure: the page and the bots read the same table.
@@ -176,6 +179,8 @@ export function clockToNext(spent) {
   return s < nightAt ? nightAt - s : Math.max(0, DAY.light - s);
 }
 // The Log (companion-device-build-1): the Companion's notebook. [copy] WORKING WORDS: the copywriter's job replaces every string here.
+// [copy] her-fruit-build-1 (editorial's canon-her-page strings): the fruit from the hand of a named wild Loika
+WORDS.fruit = { offer: 'Offer fruit', refuse: 'Not while her ears are up', log: name => name + ' took fruit from your hand.' };
 WORDS.book = {
   title: 'Log', day: n => 'Day ' + n, earlier: 'earlier pages', field: 'field', moves: '▲▼', empty: 'Nothing written yet.',
   atFlag: 'at the flag', fromFlag: dir => dir + ' of the flag', place: p => 'the ' + p,
@@ -193,9 +198,12 @@ WORDS.case = {
   pod: 'A pod', podOf: n => n + ' pod', supply: { e: 'Energy', d: 'Data', s: 'Essence' }, supplyLine: n => n + ' in the hold', crate: n => 'Crate · expedition ' + n, crateNone: 'A crate with nothing in it', empty: 'nothing here yet', noPic: 'no picture yet',
   place: p => 'the ' + p, took: (how, place, d) => how + ' · ' + place + ' · day ' + d, noWhere: 'taken on an earlier walk',
   podHow: { ground: 'picked up', dug: 'dug up' }, sampleHow: { shake: 'shaken dry', calm: 'left while calm', sleep: 'left asleep' },
-  forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'reads ' + w + ' at the Station',
-  podFor: 'the nursery', crateFree: 'A free place', crateFreeHow: 'End expedition seals a crate here', crateName: n => 'Crate ' + n, crateWhen: n => 'sealed · day ' + n,
+  forStation: { coat: 'her coat', face: 'her face', 'legs-tail': 'her legs and tail' }, atStation: w => 'reads ' + w + ' at home', podAt: 'goes to the nursery',
+  crateFree: 'A free place', crateFreeHow: 'End expedition seals a crate here', crateName: n => 'Crate ' + n, crateWhen: n => 'sealed · day ' + n,
   crateHas: b => { const p = (b.pods || []).length, bits = [p ? p + ' pod' + (p === 1 ? '' : 's') : '', b.e ? b.e + ' Energy' : '', b.d ? b.d + ' Data' : '', b.s ? b.s + ' Essence' : ''].filter(Boolean); return bits.join(' · '); },
+  // [copy] editorial 11-26 (PR 668): a slot with no picture shows the kind's short word; a stack's line is 'Shed claws · 9' and 'from Old, Elm and 7 more'
+  slotWord: { tuft: 'tuft', whisker: 'whisker', claw: 'claw' }, stackName: { tuft: 'Tufts', whisker: 'Whiskers', claw: 'Shed claws' },
+  stackFrom: names => 'from ' + (names.length <= 3 ? (names.length < 2 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) : names.slice(0, 2).join(', ') + ' and ' + (names.length - 2) + ' more'),
   cradleFree: 'Empty cradle', cradleFreeHow: 'room for a pod', placeFree: 'Empty place', placeFreeHow: 'nothing here yet',
 };
 // Riding (companion-riding-build-2): the Companion's third face, who is with you. [copy] WORKING WORDS: the copywriter's job replaces every string here.

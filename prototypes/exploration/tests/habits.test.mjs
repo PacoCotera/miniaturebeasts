@@ -76,8 +76,9 @@ test("the calm window lies in a part she is not at her bed, ten-odd light long, 
     const w = calmWindow(7, id, day, DAY.parts, ROUTINE.early), w2 = calmWindow(7, id, day, DAY.parts, ROUTINE.early);
     assert.deepEqual(w, w2); assert.ok(w && w.to - w.from === 12 && w.from >= 0 && w.to <= DAY.light - DAY.parts[DAY.parts.length - 1][1], JSON.stringify(w)); }
 });
-test("a sample answers a chapter: tuft Coat, whisker Face, shed claw Legs & Tail", () => {
-  assert.deepEqual(HABITS.map(k => SAMPLE[k].chapter), ["coat", "face", "legs-tail"]);
+test("a sample answers a chapter: whisker Face, shed claw Legs & Tail; a shake gives no tuft", () => {
+  assert.equal(SAMPLE.shake, undefined, "a shake drops no tuft");
+  assert.deepEqual(HABITS.filter(k => SAMPLE[k]).map(k => SAMPLE[k].chapter), ["face", "legs-tail"]);
   for (const k of HABITS) assert.ok(WORDS.habit.name[k] && WORDS.habit.tell[k] && WORDS.habit.beat[k].length === 4, "[copy] words for " + k);
 });
 
@@ -125,7 +126,7 @@ for (const seed of [7, 13, 42]) {
     assert.ok(out.shook, "the shake pose played");
     assert.ok(out.noted && out.noted.range === "near" && out.noted.first, "a near note, the habit's first: " + JSON.stringify(out.noted));
     assert.deepEqual(out.noted.gives, ["face"]);
-    assert.equal(out.samples.length, 1, "the tuft came home with the note"); assert.equal(out.samples[0].item, "tuft"); assert.equal(out.samples[0].chapter, "coat"); assert.equal(out.samples[0].habit, "shake");
+    assert.equal((out.samples || []).length, 0, "a shake gives no tuft: nothing comes home with the note"); assert.ok(!out.hab || !out.hab.sample, "the shake's record holds no sample");
     assert.equal(out.dData, 1, "the first note of a habit pays +1 Data");
     assert.ok(!out.tuft, "no tuft is left on the ground"); assert.ok(!out.prompted, "no Note it prompt during a habit");
     assert.deepEqual(p.errors, []);
