@@ -2,7 +2,8 @@
 // always gives the same bytes. Field names are the schema's, in camelCase. Enums are given by name.
 import * as G from './gen/place.mjs';
 
-export const FORMAT_VERSION = 1;
+export const FORMAT_VERSION = 2;   // a place (.mbplace): format 2 holds the bake's hold outputs, rim steps, seed and cell (baked-package-8). The one place the version is set.
+export const TILESET_VERSION = 1;  // a tile set (.mbtiles) is unchanged
 export const TILESET_ID = 'MBTS';
 export const PLACE_ID = 'MBPL';
 
@@ -38,7 +39,7 @@ export function writeTileSet(ts) {
   const id = b.createString(ts.id);
   G.TileSet.startTileSet(b);
   G.TileSet.addId(b, id);
-  G.TileSet.addFormatVersion(b, ts.formatVersion ?? FORMAT_VERSION);
+  G.TileSet.addFormatVersion(b, ts.formatVersion ?? TILESET_VERSION);
   G.TileSet.addTile(b, ts.tile);
   G.TileSet.addHalf(b, ts.half);
   G.TileSet.addPalette(b, palette);
@@ -57,6 +58,35 @@ export function writeTileSet(ts) {
 }
 
 const placed = (bb, p) => G.Placed.createPlaced(bb, p.kind, p.x, p.y, p.sortY);
+
+// A vector of Point structs (they are written inline, last first)
+const pointVec = (b, arr, start) => { const a = arr || []; start(b, a.length); for (let i = a.length - 1; i >= 0; i--) G.Point.createPoint(b, a[i].x, a[i].y); return b.endVector(); };
+const bankVec = (b, arr, create) => tableVec(b, arr, (bb, k) => G.Bank.createBank(bb, k.x, k.y, k.w, k.h), create);
+
+// The format 2 parts of a place (everything the bake's hold makes), made before the place table starts. Plain objects in the schema's camelCase; each list may be absent.
+function writeHold(b, pl) {
+  const S = (s) => b.createString(s || '');
+  const rimSteps = G.Place.createRimStepsVector(b, pl.rimSteps || new Uint8Array(0));
+  const softWade = pointVec(b, pl.softWade, (bb, n) => G.Place.startSoftWadeVector(bb, n));
+  const softScree = tableVec(b, pl.softScree, (bb, s) => G.Scree.createScree(bb, num(G.Side, s.side, 'scree side'), s.s, s.ei), (bb, v) => G.Place.createSoftScreeVector(bb, v));
+  const pieces = tableVec(b, pl.pieces, (bb, p) => G.Piece.createPiece(bb, bb.createString(p.piece), p.x, p.y, p.w, bb.createString(p.spot || '')), (bb, v) => G.Place.createPiecesVector(bb, v));
+  const shelter = pointVec(b, pl.shelter, (bb, n) => G.Place.startShelterVector(bb, n));
+  const strikes = tableVec(b, pl.strikes, (bb, s) => G.Strike.createStrike(bb, s.x, s.y, s.age, !!s.glass, !!s.read), (bb, v) => G.Place.createStrikesVector(bb, v));
+  const signs = tableVec(b, pl.signs, (bb, s) => {
+    const kind = bb.createString(s.kind), finds = s.finds ? G.Sign.createFindsVector(bb, s.finds) : 0, banks = s.banks ? bankVec(bb, s.banks, (b2, v) => G.Sign.createBanksVector(b2, v)) : 0;
+    const species = bb.createString(s.species || ''), path = s.path ? pointVec(bb, s.path.map(([x, y]) => ({ x, y })), (b2, n) => G.Sign.startPathVector(b2, n)) : 0, to = s.to ? G.Sign.createToVector(bb, s.to) : 0;
+    return G.Sign.createSign(bb, kind, s.x ?? 0, s.y ?? 0, s.r ?? 0, finds, banks, s.pearl ?? 0, species, path, to);
+  }, (bb, v) => G.Place.createSignsVector(bb, v));
+  const traces = tableVec(b, pl.traces, (bb, t) => G.Trace.createTrace(bb, bb.createString(t.kind), t.x, t.y), (bb, v) => G.Place.createTracesVector(bb, v));
+  const stamps = tableVec(b, pl.stamps, (bb, s) => {
+    const cells = tableVec(bb, s.cells, (b2, c) => G.StampCell.createStampCell(b2, c[0], c[1], b2.createString(c[2])), (b2, v) => G.Stamp.createCellsVector(b2, v));
+    const seeFrom = s.seenFrom ? G.Stamp.createSeeFromVector(bb, s.seenFrom) : 0;
+    return G.Stamp.createStamp(bb, bb.createString(s.id), bb.createString(s.kind), bb.createString(s.role), s.x, s.y, s.w, s.h, s.tier ?? -1, s.entryDist, s.spineDist, seeFrom, !!s.seenFrom, cells);
+  }, (bb, v) => G.Place.createStampsVector(bb, v));
+  const banks = bankVec(b, pl.banks, (bb, v) => G.Place.createBanksVector(bb, v));
+  const lm = pl.holdLandmark ? G.HoldLandmark.createHoldLandmark(b, S(pl.holdLandmark.kind), S(pl.holdLandmark.name), S(pl.holdLandmark.slot), pl.holdLandmark.x, pl.holdLandmark.y) : 0;
+  return { rimSteps, softWade, softScree, pieces, shelter, strikes, signs, traces, stamps, banks, landmark: lm };
+}
 
 export function writePlace(pl) {
   const b = new G.Builder(1 << 14);
@@ -77,12 +107,13 @@ export function writePlace(pl) {
     const pts = bb.endVector();
     return G.Clue.createClue(bb, num(G.TellKind, c.tell, 'tell'), pts);
   }, (bb, v) => G.Place.createCluesVector(bb, v));
-  const finds = tableVec(b, pl.finds, (bb, f) => G.Find.createFind(bb, f.x, f.y, G.Find.createKindsVector(bb, f.kinds), f.chance), (bb, v) => G.Place.createFindsVector(bb, v));
+  const finds = tableVec(b, pl.finds, (bb, f) => G.Find.createFind(bb, f.x, f.y, G.Find.createKindsVector(bb, f.kinds), f.chance, bb.createString(f.what || ''), f.herd ?? -1, f.hollow ?? -1, !!f.forced, bb.createString(f.spot || '')), (bb, v) => G.Place.createFindsVector(bb, v));
   const landmarks = tableVec(b, pl.landmarks, (bb, l) => G.Landmark.createLandmark(bb, l.prop, l.x, l.y, bb.createString(l.label || '')), (bb, v) => G.Place.createLandmarksVector(bb, v));
   const openings = tableVec(b, pl.openings, (bb, o) => G.Opening.createOpening(bb, num(G.Side, o.side, 'side'), o.from, o.to), (bb, v) => G.Place.createOpeningsVector(bb, v));
   const spawns = tableVec(b, pl.spawns, (bb, s) => G.Spawn.createSpawn(bb, s.x, s.y, s.w, s.h, strVec(bb, s.species, (b2, v) => G.Spawn.createSpeciesVector(b2, v)), s.count), (bb, v) => G.Place.createSpawnsVector(bb, v));
   const block = G.Place.createBlockMaskVector(b, pl.blockMask);
   const top = pl.top && pl.top.length ? G.Place.createTopVector(b, pl.top) : 0;
+  const hold = (pl.formatVersion ?? FORMAT_VERSION) >= 2 ? writeHold(b, pl) : null;
   const id = b.createString(pl.id);
   const set = b.createString(pl.set);
   G.Place.startPlace(b);
@@ -107,6 +138,22 @@ export function writePlace(pl) {
   G.Place.addSpawns(b, spawns);
   G.Place.addBlockMask(b, block);
   if (top) G.Place.addTop(b, top);
+  if (hold) {
+    G.Place.addSeed(b, pl.seed ?? 0);
+    G.Place.addCell(b, pl.cell ?? 0);
+    G.Place.addRimSteps(b, hold.rimSteps);
+    if (pl.groundAt) { G.Place.addGroundAt(b, G.Point.createPoint(b, pl.groundAt.x, pl.groundAt.y)); G.Place.addHasGroundAt(b, true); }
+    G.Place.addSoftWade(b, hold.softWade);
+    G.Place.addSoftScree(b, hold.softScree);
+    G.Place.addPieces(b, hold.pieces);
+    G.Place.addShelter(b, hold.shelter);
+    G.Place.addStrikes(b, hold.strikes);
+    G.Place.addSigns(b, hold.signs);
+    G.Place.addTraces(b, hold.traces);
+    G.Place.addStamps(b, hold.stamps);
+    G.Place.addBanks(b, hold.banks);
+    if (hold.landmark) G.Place.addHoldLandmark(b, hold.landmark);
+  }
   b.finish(G.Place.endPlace(b), PLACE_ID);
   return b.asUint8Array().slice();
 }
