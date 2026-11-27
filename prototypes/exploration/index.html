@@ -260,10 +260,11 @@ const pixelsOf = url => readPixels(url, { canvas: canvasPx });
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 import { MAP_KEYS, migrate8, mount, unmount, serialize, realmStatus, resetPlan, keepPre10, keepGen, oldGenOf, regionKinds, biomeVersion, KIND_INFO, prefixPods, regionById, REALM_BIOME_V, openHome, regionName, ATLAS } from "./src/regions.mjs";
 import { makeSleeper } from "./src/sleeper.mjs";
+import { GLYPHS, GLYPH_ALIAS, FONT, glyphOf, textW, wrapText, clipText, cutLine } from "./src/font.mjs";
 import { WORDS, DAY, DAY_TEXT, CARD_TEXT, partOfDay, clockToNext, restTarget } from "./src/words.mjs";
 import { heardAt as easeHeardAt, carryAt as easeCarryAt, easeTick, stayTick, stayLeft, windAt, holdRun, los as easeLos, cheb as easeCheb } from "./src/ease.mjs";
 import { mapHooks } from "./src/mapkinds.mjs";
-import { HABITS, BEATS, SAMPLE, SATCHEL, rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
+import { HABITS, BEATS, SAMPLE, SATCHEL, STACK, stacks as sampleStacks, stackRoom, capStacks,rangeOf as habRange, tellOf, clearAir as habClear, rainEndsIn, calmWindow, sleepPart, sleeperGives, isSleeper, record as habRecord, noteIn as habNote, wantOf, sampleId, leftHaunts, readKey } from "./src/habits.mjs";
 import { treeSprites, shadeMossLut } from "./src/trees48.mjs";
 import { WALK_DEFAULT, BUILT, WALK, FIELD, walkRow, settlesAt, noticeRange, creepRange, fleeTiles, stepFrames, CALL_R_PLACE, CALL_R_FOG_PLACE, CALL_R_FOG_GLOW, WALK_R, WALK_R_HIGH, FOG_NOT_BEEN, FOG_BEEN, routineBase, wariness1 } from "./src/walk-data.mjs";
 import { PLAYTEST, playtestOn } from "./src/playtest.mjs";
@@ -2032,6 +2033,14 @@ function unveil(key, cx, cy, r) {
   const bits = (x1 >= 30 ? -1 : (1 << (x1 + 1)) - 1) & ~((1 << x0) - 1);
   for (let y = Math.max(0, cy - r); y <= Math.min(lh - 1, cy + r); y++) v[y] = (v[y] | bits) >>> 0;
 }
+// A named Loika he has met starts her tell within ten tiles: the veil lifts on her tile and on the tiles in a line between them, as the Call lifts it (tell-seen-fix-1).
+// Nothing else changes: not the range, the wind, the stay, nor a free note. The gate is S.named alone (the top line only ever names a met Loika); never an unmet stranger.
+function unveilTellLine(key, c, P) {
+  if (key[0] === 'c' || !c.ind || !(S.named && S.named[c.id]) ||Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y)) > 10) return false;
+  const lay = layout(key), v = S.veil[key] || (S.veil[key] = new Array(lay.h).fill(0)), n = Math.max(Math.abs(c.x - P.x), Math.abs(c.y - P.y));
+  for (let i = 0; i <= n; i++) { const x = Math.round(P.x + (c.x - P.x) * i / (n || 1)), y = Math.round(P.y + (c.y - P.y) * i / (n || 1)); if (x >= 0 && y >= 0 && x < lay.w && y < lay.h) v[y] = (v[y] | (1 << x)) >>> 0; }
+  return true;
+}
 // Walking lifts the veil in a short circle around the pawn (like the cave light); Call still sweeps much further.
 // Whatever is lifted stays lifted, and nothing puts it back.
 function walkLift() {
@@ -2324,7 +2333,7 @@ function startExpeditionNow(type, cell, firstPodList, dry) {   // firstPodList: 
   const pm = type === 'deep' ? digger() : partnerMibi(), rd = pm ? null : carriedMibis()[0] || null;   // Deep ground: the grown digger with you goes (S.lead is left alone). No partner: the first mibi with you rides in the Companion (always a juvenile)
   const storm = stormOn && !TEST.calm ? stormAt() : null;   // the one storm the opening showed, the first one two columns later (so a new player can drain a stone first)
   S.exp = { type, ...rgField(), n: S.expN, actions: 0, shield: S.shield != null ? clamp(S.shield, 1, tier.shield) : tier.shield, smax: tier.shield, range: tier.range + (pm && spOf(pm.sp).ab === 'sure' ? 1 : 0), dug: [], hold: tier.hold, start: cell, pos: cell, lastDir: null, face: 'down', trail: [cell],
-    cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold), samples: (S.hold.samples || []).slice(0, SATCHEL) } : { e: 0, d: 0, s: 0, pods: [], samples: [] }, carry: null, storm,
+    cargo: S.hold ? { e: S.hold.e | 0, d: S.hold.d | 0, s: S.hold.s | 0, pods: (S.hold.pods || []).slice(0, tier.hold), samples: capStacks(S.hold.samples) } : { e: 0, d: 0, s: 0, pods: [], samples: [] }, carry: null, storm,
     fog: fogOn ? { x: 2.5 + R.int(11), y: 3.5 + R.int(13), r: 2.4, dx: (R.f() - .5) * .16, dy: (R.f() - .5) * .16, at: type === 'deep' ? 0 : 14 + R.int(16) } : null,
     stormCells: {}, mstrike: null, stray: null, live: {}, patch: null,
     pt: pm ? { id: pm.id, name: pm.name, sp: pm.sp, elder: mibiStage(pm) === 'elder', n: pm.bonded ? Math.min(3, pm.notches | 0) : 0, mk: pm.sp === 0 && WILD.partner(pm.id) ? 1 : 0 } : null,   // mk: the Station's drawn marking (shown and read) handed over for her token
@@ -2789,7 +2798,8 @@ function habitTick(c, X) {   // true when the habit has her action
   if (c.gone || (c.ease | 0) >= 2 || ['flee', 'alert', 'approach', 'watch'].includes(c.st)) return false;
   const due = habitDue(c, X); if (!due) return false;
   c.hb = { k: due.k, n: due.n, tell: tellOf(c.ind.doings), v: due.v, notes: {}, pose: 'alert' }; c.st = 'hab';
-  if (hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), 2);
+  const told = !!S.exp.patch && !c.hide && unveilTellLine(S.exp.patch.key, c, S.exp.patch);   // within ten tiles: lifted, and her line outranks a find's (pri 4)
+  if (told || hbVisible(c, X)) fxMsg(W.tell[due.k] + ' · ' + habCard(c.id, due.k), told ? 4 : 2);
   return true;
 }
 // the calm window of the day: a wary one (another wild creature of the place) is drawn toward her haunt for twelve light; at the window's first light the nearest idle one is chosen
@@ -2964,7 +2974,7 @@ function noteHabit(c) {
   const sk = k === 'still' ? HABITS.find(q => SAMPLE[q] && !habRecord(S.habits, c.id, q).sample) : k, srec = sk && SAMPLE[sk] && habRecord(S.habits, c.id, sk);   // a keepsake of a plain sight is the first she has not yet given (the shake gives none)
   if (keepsake && srec && !srec.sample) {
     const sm = (ex.cargo.samples || (ex.cargo.samples = []));
-    if (sm.length >= SATCHEL) tail += ' · ' + W.noRoom;
+    if (!stackRoom(sm, SAMPLE[sk].item)) tail += ' · ' + W.noRoom;   // the kind's stack is at 9 (or all 8 slots are other kinds): it stays in the world
     else { const s = SAMPLE[sk], id = sampleId(S.seed, c.id, sk); sm.push({ id, lo: c.id, name, sp: c.sp, habit: sk, item: s.item, chapter: s.chapter, turn: S.turn, ...gotNow() }); srec.sample = id; tail += W.sample(W.sampleName[s.item]); logEv('A ' + W.sampleName[s.item] + ' from ' + name); bookEv('find', c, WORDS.book.find(name, W.sampleName[s.item]), s.item); }
   }
   fxJuice('note', c.x, c.y, 0);
@@ -3490,19 +3500,35 @@ function screeOpen(dir) {   // true: stepping dir over a scree edge from a tile 
   const lay = layout(P.key), q = lay && crossingAt(lay, P.x, P.y);
   return !(q && !q.bank && q.dir === dir);
 }
-function crossEdge(dir) {
+// What a step off the place's edge would do, asked and never acted on (crossEdge acts on it; the bottom line reads it before the step, edge-cost-line-fix-1):
+// { sw } a step into another region, { why, full } a refusal (full: the cell is revealed and the soft-tile pin added), { land } a crossing (land undefined: the tiles do not decide it).
+function crossVerdict(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
-  { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
+  { const sw = seamCross(ex.pos, dir); if (sw) return { sw }; }
   const scr = screeOpen(dir);   // #159: on a scree edge, off its two crossing tiles, the tiles decide: open ground both sides crosses
   let why = crossReason(ex.pos, dir, true, scr);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
   const land = why ? undefined : crossLanding(dir, scr);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
   if (land === null) why = crossBlockWords(dir);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
+  if (why) return { why, full: true };
   if (land === undefined && !scr && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
-    if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!q || (k !== q.s && k !== q.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
-    if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!st || (k !== st.s && k !== st.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
+  return { land };
+}
+// True while the pawn stands on the place's edge tile facing out and the step would cross into the next place (patchStepRun's own tests, never acted on).
+function edgeStepCrosses() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch') return false;
+  const lay = layout(P.key), f = frontOf(P); if (f.x >= 0 && f.y >= 0 && f.x < lay.w && f.y < lay.h) return false;
+  if (lay.cave || (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[P.dir]))) return false;
+  const v = crossVerdict(P.dir); return !!(v.sw || !v.why);
+}
+function crossEdge(dir) {
+  const ex = S.exp, c =stepCell(ex.pos, dir), v = crossVerdict(dir);
+  if (v.sw) { crossRegion(dir, v.sw); return; }
+  if (v.why) { FX.bumpAt = NOW; if (v.full) { if (c >= 0 && v.why !== RANGE_TEXT()) revealCell(c); fxMsg(v.why + softPin(ex.pos, dir)); save(); } else fxMsg(v.why); return; }
+  const land = v.land;
   if (G.gen === 7 && c >= 0 && !placeHave(String(c)) && motion() && !FX.crossRetry) {   // the next place is not built yet: the old place stays on the screen, nothing has moved; the crossing is made when it is here
     if (FX.crossWait) return;
     const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
@@ -3605,7 +3631,7 @@ function patchAction() {
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
-    return { label: 'Veiled · Call to see', run: null };
+    return { label: edgeStepCrosses() ? '' : 'Veiled · Call to see', run: null };   // edge-cost-line-fix-3: facing the edge, the front is the next place the edge line already names; this ✓ does nothing, so its label yields to the line (UI 04:28: 'Call to see' alone still left no room at 390)
   if (o && o.type === 'cr') {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp) && !o.c.ind) return !fruit && inSight(f.x, f.y) && (o.c.ease | 0) < 3 ? { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) } : { label: 'Unknown creature', run: null };   // ui-dead-check-156-4: beside one he has not met and that is no individual, ✓ keeps still as beside a Loika (keepStill reads no ind), never a ✓ that does nothing
@@ -4028,7 +4054,7 @@ function waitChanges(a, b, scope) {
   else if (b.fogNear && scope === 'map') { const dw = dirWord(ex.fog.dx, ex.fog.dy, Math.hypot(ex.fog.dx, ex.fog.dy) || 1); out.push('the fog bank drifts' + (dw ? ' ' + dw : '')); }
   if (b.cups > a.cups) out.push('dew gathers in a cup');
   // creatures in view: what each did, grouped ("two Loikas wander"), the more telling changes first
-  const ev = new Map(), add = (sp, v) => { const k = sp + '|' + v; ev.set(k, (ev.get(k) || 0) + 1); };
+  const ev = new Map(), add = (sp, v) => { const k = (S.known.includes(+sp) ? sp : 'u') + '|' + v, e = ev.get(k); if (e) e.n++; else ev.set(k, { n: 1, sp: +sp }); };   // unknown species group under one key per verb: "Five creatures wander"
   for (const [id, n] of b.cr) { const o = a.cr.get(id);
     if (!o) add(n.sp, 'view');
     else if (o.st === 'eat' && n.st !== 'eat') add(n.sp, 'ate');
@@ -4040,7 +4066,7 @@ function waitChanges(a, b, scope) {
     else if (n.calm > o.calm && n.calm >= 2) add(n.sp, 'settle');
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
-  const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? (ROUTINE[s] || ROUTINE_ANY) : VERB[v];
+  const crs = [...ev.entries()].map(([k, { n, sp: s }]) => { const v = k.split('|')[1], known = S.known.includes(s), vb = v === 'routine' ? ((known && ROUTINE[s]) || ROUTINE_ANY) : VERB[v];
     const who = n > 1 ? numWord(n) + ' ' + (known ? spOf(s).plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
@@ -4979,41 +5005,6 @@ const ART = new Map();
 function art(key, build) { let pb = ART.get(key); if (!pb) { pb = build(); ART.set(key, pb); } return pb; }
 
 // ---------- Bitmap font: 5×7 caps, 2-row descenders. Drawn at 2× minimum (14 px caps) so it stays readable on a phone. ----------
-const GLYPHS = {
-  A: '.###.|#...#|#...#|#####|#...#|#...#|#...#', B: '####.|#...#|#...#|####.|#...#|#...#|####.', C: '.###.|#...#|#....|#....|#....|#...#|.###.',
-  D: '####.|#...#|#...#|#...#|#...#|#...#|####.', E: '#####|#....|#....|####.|#....|#....|#####', F: '#####|#....|#....|####.|#....|#....|#....',
-  G: '.###.|#...#|#....|#.###|#...#|#...#|.####', H: '#...#|#...#|#...#|#####|#...#|#...#|#...#', I: '###|.#.|.#.|.#.|.#.|.#.|###',
-  J: '..##|...#|...#|...#|#..#|#..#|.##.', K: '#...#|#..#.|#.#..|##...|#.#..|#..#.|#...#', L: '#...|#...|#...|#...|#...|#...|####',
-  M: '#...#|##.##|#.#.#|#.#.#|#...#|#...#|#...#', N: '#...#|##..#|#.#.#|#..##|#...#|#...#|#...#', O: '.###.|#...#|#...#|#...#|#...#|#...#|.###.',
-  P: '####.|#...#|#...#|####.|#....|#....|#....', Q: '.###.|#...#|#...#|#...#|#.#.#|#..#.|.##.#', R: '####.|#...#|#...#|####.|#.#..|#..#.|#...#',
-  S: '.###.|#...#|#....|.###.|....#|#...#|.###.', T: '#####|..#..|..#..|..#..|..#..|..#..|..#..', U: '#...#|#...#|#...#|#...#|#...#|#...#|.###.',
-  V: '#...#|#...#|#...#|#...#|.#.#.|.#.#.|..#..', W: '#...#|#...#|#...#|#.#.#|#.#.#|##.##|#...#', X: '#...#|#...#|.#.#.|..#..|.#.#.|#...#|#...#',
-  Y: '#...#|#...#|.#.#.|..#..|..#..|..#..|..#..', Z: '#####|....#|...#.|..#..|.#...|#....|#####',
-  a: '....|....|.##.|...#|.###|#..#|.###', b: '#...|#...|###.|#..#|#..#|#..#|###.', c: '....|....|.###|#...|#...|#...|.###',
-  d: '...#|...#|.###|#..#|#..#|#..#|.###', e: '....|....|.##.|#..#|####|#...|.###', f: '.##|#..|###|#..|#..|#..|#..',
-  g: '....|....|.###|#..#|#..#|#..#|.###|...#|.##.', h: '#...|#...|###.|#..#|#..#|#..#|#..#', i: '#|.|#|#|#|#|#',
-  j: '..#|...|..#|..#|..#|..#|..#|#.#|.#.', k: '#...|#...|#..#|#.#.|##..|#.#.|#..#', l: '#.|#.|#.|#.|#.|#.|.#',
-  m: '.....|.....|##.#.|#.#.#|#.#.#|#.#.#|#.#.#', n: '....|....|###.|#..#|#..#|#..#|#..#', o: '....|....|.##.|#..#|#..#|#..#|.##.',
-  p: '....|....|###.|#..#|#..#|#..#|###.|#...|#...', q: '....|....|.###|#..#|#..#|#..#|.###|...#|...#', r: '....|....|#.##|##..|#...|#...|#...',
-  s: '....|....|.###|#...|.##.|...#|###.', t: '.#..|.#..|###.|.#..|.#..|.#..|..##', u: '....|....|#..#|#..#|#..#|#..#|.###',
-  v: '.....|.....|#...#|#...#|.#.#.|.#.#.|..#..', w: '.....|.....|#...#|#.#.#|#.#.#|#.#.#|.#.#.', x: '....|....|#..#|#..#|.##.|#..#|#..#',
-  y: '....|....|#..#|#..#|#..#|#..#|.###|...#|.##.', z: '....|....|####|...#|.##.|#...|####',
-  0: '.##.|#..#|#..#|#..#|#..#|#..#|.##.', 1: '.#.|##.|.#.|.#.|.#.|.#.|###', 2: '.##.|#..#|...#|..#.|.#..|#...|####',
-  3: '###.|...#|...#|.##.|...#|...#|###.', 4: '#..#|#..#|#..#|####|...#|...#|...#', 5: '####|#...|###.|...#|...#|#..#|.##.',
-  6: '.##.|#...|#...|###.|#..#|#..#|.##.', 7: '####|...#|..#.|.#..|.#..|.#..|.#..', 8: '.##.|#..#|#..#|.##.|#..#|#..#|.##.',
-  9: '.##.|#..#|#..#|.###|...#|...#|.##.',
-  ' ': '...|...|...|...|...|...|...', '.': '.|.|.|.|.|.|#', ',': '.|.|.|.|.|#|#|#', '!': '#|#|#|#|#|.|#', '?': '.##.|#..#|...#|..#.|.#..|....|.#..',
-  ':': '.|.|.|#|.|.|#', ';': '.|.|.|#|.|.|#|#', '·': '.|.|.|.|#|.|.', '-': '...|...|...|...|###|...|...', '−': '....|....|....|....|####|....|....', '+': '...|...|.#.|.#.|###|.#.|.#.',
-  "'": '#|#|.|.|.|.|.', '"': '#.#|#.#|...|...|...|...|...', '(': '.#|#.|#.|#.|#.|#.|.#', ')': '#.|.#|.#|.#|.#|.#|#.', '/': '..#|..#|.#.|.#.|.#.|#..|#..',
-  '…': '.....|.....|.....|.....|.....|.....|#.#.#', '→': '......|......|...#..|....#.|######|....#.|...#..', '←': '......|......|..#...|.#....|######|.#....|..#...',
-  '▶': '#....|##...|###..|####.|###..|##...|#....', '◀': '....#|...##|..###|.####|..###|...##|....#',
-  '▲': '.......|...#...|..###..|.#####.|#######|.......|.......', '▼': '.......|#######|.#####.|..###..|...#...|.......|.......',   // the Log's arrows: the two glyphs of the accepted companion-device-2 mock's type
-  '×': '.....|.....|#...#|.#.#.|..#..|.#.#.|#...#', '✓': '......#|.....##|....##.|##.##..|.###...|..#....|.......', '%': '##..#|##.#.|...#.|..#..|.#...|.#.##|#..##', '#': '.#.#.|#####|.#.#.|.#.#.|.#.#.|#####|.#.#.',
-};
-const GLYPH_ALIAS = { '’': "'", '‘': "'", '“': '"', '”': '"', '–': '-', '—': '-' };
-const FONT = {};
-for (const ch in GLYPHS) { const rows = GLYPHS[ch].split('|'); FONT[ch] = { w: rows[0].length, rows }; }
-function glyphOf(ch) { return FONT[ch] || FONT[GLYPH_ALIAS[ch]] || FONT['?']; }
 function glyphCanvas(ch, col, s) {
   return art('gl' + ch + ':' + col + ':' + s, () => {
     const gl = glyphOf(ch), pb = new PB(gl.w * s, 9 * s);
@@ -5021,15 +5012,6 @@ function glyphCanvas(ch, col, s) {
     return pb;
   }).canvas();
 }
-function textW(str, s) { s = s || 2; let w = 0; for (const ch of str) w += (glyphOf(ch).w + 1) * s; return Math.max(0, w - s); }
-function wrapText(str, maxW, s) {
-  const words = str.split(' '), lines = []; let cur = '';
-  for (const w of words) { const t = cur ? cur + ' ' + w : w; if (textW(t, s) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } }
-  if (cur) lines.push(cur); return lines;
-}
-function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (str.length > 1 && textW(str + '…', s) > maxW) str = str.slice(0, -1); return str + '…'; }
-// A line of " · " segments that drops its trailing segments until it fits (never an ellipsis mid-word); a first segment that alone is too wide is clipped.
-function cutLine(str, maxW, s) { while (textW(str, s) > maxW && str.includes(' · ')) str = str.slice(0, str.lastIndexOf(' · ')); return clipText(str, maxW, s); }
 
 // ---------- Species art: the signed 32 px tokens and 12 px minis, used 1:1 ----------
 // Release 21c: the twenty kinds' signed tokens from the art desk (field-tokens work/tokens.mjs, round 2; page species in sp order S01, S03, S02, S04 to S20), one
@@ -8592,9 +8574,10 @@ function caseThing(c) {   // what is under the bracket: { name, how, took, forS,
     if (!b) return { name: W.crateFree, how: W.crateFreeHow };
     return { name: W.crateName(b.n), how: W.crateWhen(b.n), forS: b.none ? W.crateNone : W.crateHas(b) }; }
   if (c.k === 'pod') { const p = (h.pods || [])[c.i]; if (!p) return { name: W.cradleFree, how: W.cradleFreeHow };
-    return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.atStation(W.podFor), thing: p }; }
+    return { name: podName(p), how: W.podHow[p.bur ? 'dug' : 'ground'], took: p.got, forS: W.podAt, thing: p }; }
   if (c.k === 'sup') return { name: W.supply[c.s], how: W.supplyLine(h[c.s] | 0) };
-  const s = (h.samples || [])[c.i]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };
+  const st = sampleStacks(h.samples)[c.i], s = st && st.list[st.list.length - 1]; if (!s) return { name: W.placeFree, how: W.placeFreeHow };   // a stack shows its latest find
+  if (st.list.length > 1) return { name: W.stackName[s.item] + ' · ' + st.list.length, how: W.stackFrom([...new Set(st.list.map(q => q.name))]), forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };   // a stack: the kind, the count, who they are from
   return { name: s.name + '’s ' + WORDS.habit.sampleName[s.item], how: W.sampleHow[s.habit] || '', took: s.got, forS: W.atStation(W.forStation[s.chapter] || ''), thing: s };
 }
 function caseMove(k) {
@@ -8650,7 +8633,7 @@ function drawCargo(t) {
   for (const c of cells) {
     if (c.k === 'pod') { const cx = c.x + c.r, cy = c.y + c.r, p = (h.pods || [])[c.i]; caseCradle(cx, cy, c.r); if (p) blit(podArt(POD_SHELL[p.g] || 'bone', 2), cx - 15, cy - 16); }
     else if (c.k === 'sup') { caseHollow(c.x, c.y, c.w, c.h); blitScaled(ICON[{ e: 'energy', d: 'data', s: 'essence' }[c.s]](), c.x + 14, c.y + 6, 2); text(String(h[c.s] | 0), c.x + 28, c.y + 40, C.soil, 2, 'center'); }
-    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const s = (h.samples || [])[c.i]; if (s && s.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
+    else if (c.k === 'smp') { caseHollow(c.x, c.y, c.w, c.h); const st = sampleStacks(h.samples)[c.i]; if (st && st.item === 'tuft') blitScaled(ICON.tuft(), c.x + 30, c.y + 20, 2); else if (st) { text(W.slotWord[st.item], c.x + c.w / 2, c.y + 8, C.soil, 2, 'center'); blitScaled(ICON.paw('soil'), c.x + 14, c.y + 32, 2); } if (st) text(String(st.list.length), c.x + c.w - 8, c.y + c.h - 20, C.soil, 2, 'right'); }   // [art] whisker and shed claw: no signed picture yet, the place stays empty
   }
   brackets(cur.x - 4, cur.y - 4, cur.w + 8, cur.h + 8, C.orange);
   // the label of the thing under the brackets, tied to it by its string; from End expedition the seal preview takes its place
@@ -9131,6 +9114,7 @@ function lineBase() {
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
+      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first (edge-cost-line-fix-1)
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
       return lv; }

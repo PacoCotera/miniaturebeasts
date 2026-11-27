@@ -62,14 +62,15 @@ after(async () => { if (browser) await browser.close(); if (site) site.close(); 
 const ready = () => { try { return !!window.__play.frames.companion.contentWindow.__mb.S; } catch { return false; } };
 async function open(size, saveName) {
   const ctx = await browser.newContext({ viewport: { width: size.w, height: size.h }, deviceScaleFactor: size.dpr, hasTouch: true, isMobile: true });
-  const raw = readFileSync(path.join(savesDir, saveName + ".save"), "utf8");
-  const p1 = await ctx.newPage();
-  await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000);
-  const id = await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
-  await p1.close();
-  await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
+  const fresh = typeof saveName === "object" && saveName !== null;   // { seed }: a fresh game on that seed through the page's own ?seed= (a test-harness flag); no save is loaded
+  const raw = fresh ? "" : readFileSync(path.join(savesDir, saveName + ".save"), "utf8");
+  const p1 = fresh ? null : await ctx.newPage();
+  if (!fresh) { await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000); }
+  const id = fresh ? null : await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
+  if (p1) await p1.close();
+  if (!fresh) await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
   const page = await ctx.newPage();
-  await page.goto(site.url); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
+  await page.goto(fresh ? site.url + "?seed=" + saveName.seed : site.url); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
   // the page may open on the Station: press the 'Companion' tab as a player would, then assert the Companion is the device in view and not docked, before any shot is read
   console.log(`# opened on the ${await page.evaluate(() => window.__play.owner)} (${size.w}x${size.h})`);
   await page.getByRole("tab", { name: "Companion" }).click();
@@ -415,9 +416,12 @@ for (const size of SIZES) {
   // State only asserts each case is reached (the light, her pod on the ground, the Case); the verdicts are the shots: her pod's tile and the Case's slot in the top bar, each against a shot from the same test.
   const PODTILE = [0.43, 0.328, 0.067, 0.0525], CTLTILE = [0.2, 0.328, 0.067, 0.0525], CASESLOT = [0.13, 0.015, 0.06, 0.04], ASKBOX = [0.02, 0.1, 0.96, 0.2];   // as fractions of the Companion's frame, hero standing on the tile below her pod (412x915)
   const podState = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S; return { spent: S.day.spent, phase: S.phase, pods: S.pods.filter((p) => p.how === "night").length, cased: S.exp ? S.exp.cargo.pods.filter((p) => p.how === "night").length : 0, slept: S.cr.filter((w) => w.slept).length, up: m.curLive().cr.some((c) => c.id === 35) }; });
-  const holdUntil = async (g, test) => { for (let i = 0; i < 80 && !test(await podState(g)); i++) await g.press("confirm", 1500, 1200); return podState(g); };
-  const walkToPod = async (g) => { for (const d of ["right", "right"]) await g.press(d, 100, 500); for (let i = 0; i < 11; i++) await g.press("up", 100, 500); };
-  if (size.w === 412) it(`s20 night pod (OWNER 11-24): fed at dusk, she is closed into her pod at nightfall; ✓ takes her up (the confirm, then ✓): her pod is off the ground and in the Case [${tag}]`, async () => {
+  // Every press waits for its effect (the light or the hero's tile moves, or 3 s) and then for the screen to hold still for 400 ms, never a fixed pause (a press during a change is swallowed; 674's s21 failed on CI that way).
+  const podSig = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.pods.length, S.exp ? S.exp.cargo.pods.length : 0, S.ui && S.ui.menuSel].join("|"); });
+  const podStep = async (g, l, hold = 100) => { const before = await podSig(g); await g.press(l, hold, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await podSig(g); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await podSig(g); same = n2 === now ? same + 1 : 0; now = n2; } };
+  const holdUntil = async (g, test) => { for (let i = 0; i < 80 && !test(await podState(g)); i++) await podStep(g, "confirm", 1500); return podState(g); };
+  const walkToPod = async (g) => { for (const d of ["right", "right"]) await podStep(g, d); for (let i = 0; i < 11; i++) await podStep(g, "up"); };
+  if (size.w === 412) it(`s22 night pod (OWNER 11-24): fed at dusk, she is closed into her pod at nightfall; ✓ takes her up (the confirm, then ✓): her pod is off the ground and in the Case [${tag}]`, async () => {
     const g = await open(size, "pod-sleep-dusk-13");
     try {
       let s = await podState(g);
@@ -425,43 +429,88 @@ for (const size of SIZES) {
       s = await holdUntil(g, (q) => q.spent >= 551);
       assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
       await walkToPod(g);
-      const r = await g.region(), at = await g.shot("s20-at-pod");
-      await g.press("confirm", 100, 800); const ask = await g.shot("s20-ask");
+      const r = await g.region(), at = await g.shot("s22-at-pod");
+      await g.press("confirm", 100, 0);
+      let ask = await g.shot("s22-ask"), dlg = changed(at, ask, r, ASKBOX);
+      for (let t = 0; t < 30 && dlg.frac <= 0.3; t++) { await wait(100); ask = await g.shot("s22-ask"); dlg = changed(at, ask, r, ASKBOX); }   // the confirm's own effect: the box on the screen
       assert.equal((await podState(g)).cased, 0, "the confirm spends nothing: she is not in the Case yet");
-      const dlg = changed(at, ask, r, ASKBOX);
-      console.log(`# s20 ${tag}: confirm box pixels ${dlg.n} of ${dlg.of}`);
+      console.log(`# s22 ${tag}: confirm box pixels ${dlg.n} of ${dlg.of}`);
       assert.ok(dlg.frac > 0.3, "✓ at her pod opens the confirm over the screen");
-      await g.press("confirm", 100, 1200); const held = await g.shot("s20-held");
+      await g.press("confirm", 100, 0);
+      for (let t = 0; t < 30 && (await podState(g)).cased < 1; t++) await wait(100);   // the take-up's effect: her pod is in the Case
+      await wait(1000); const held = await g.shot("s22-held");   // the slot's own settle, then the shot
       const tile = changed(at, held, r, PODTILE), ctl = changed(at, held, r, CTLTILE), slot = changed(at, held, r, CASESLOT);
-      console.log(`# s20 ${tag}: her pod's tile changed ${tile.n} of ${tile.of} (a tile beside it ${ctl.n}), the Case slot ${slot.n} of ${slot.of}`);
+      console.log(`# s22 ${tag}: her pod's tile changed ${tile.n} of ${tile.of} (a tile beside it ${ctl.n}), the Case slot ${slot.n} of ${slot.of}`);
       assert.ok(tile.n >= 40 && ctl.n < 10, `her pod is off the ground on the shot (${tile.n} pixels changed on its tile, ${ctl.n} beside it)`);
       assert.ok(slot.n >= 200, `the Case's slot in the top bar shows her (${slot.n} pixels changed)`);
       s = await podState(g);
       assert.ok(s.cased === 1 && s.pods === 0, "the case is reached: her pod is in the Case " + JSON.stringify(s));
     } finally { await g.ctx.close(); }
   });
-  if (size.w === 412) it(`s21 first light with her pod on the ground (OWNER 11-24): she wakes up on her bed, her pod gone from its tile [${tag}]`, async () => {
+  if (size.w === 412) it(`s23 first light with her pod on the ground (OWNER 11-24): she wakes up on her bed, her pod gone from its tile [${tag}]`, async () => {
     const g = await open(size, "pod-sleep-dusk-13");
     try {
       let s = await holdUntil(g, (q) => q.spent >= 551);
       assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
-      for (const d of ["right", "right"]) await g.press(d, 100, 500);
-      for (let i = 0; i < 10; i++) await g.press("up", 100, 500);   // two tiles below her pod: ✓ here would be the keep-still, not the take-up
-      const r = await g.region(), night = await g.shot("s21-night");
-      for (let i = 0; i < 80 && (await podState(g)).spent >= 500; i++) await g.press(i % 2 ? "left" : "right", 100, 450);
+      for (const d of ["right", "right"]) await podStep(g, d);
+      for (let i = 0; i < 10; i++) await podStep(g, "up");   // two tiles below her pod: ✓ here would be the keep-still, not the take-up
+      const r = await g.region(), night = await g.shot("s23-night");
+      for (let i = 0; i < 80 && (await podState(g)).spent >= 500; i++) await podStep(g, i % 2 ? "left" : "right");   // each step waits for the light to move
       s = await podState(g);
       assert.ok(s.spent < 100 && s.pods === 0 && s.slept === 0 && s.up, "the case is reached: first light, she is up on the land, no pod left " + JSON.stringify(s));
-      const dawn = await g.shot("s21-dawn"), card = changed(night, dawn, r);
-      console.log(`# s21 ${tag}: the screen changed ${card.n} of ${card.of} between night and first light`);
+      const dawn = await g.shot("s23-dawn"), card = changed(night, dawn, r);
+      console.log(`# s23 ${tag}: the screen changed ${card.n} of ${card.of} between night and first light`);
       assert.ok(card.frac > 0.6, "first light is on the screen (the dawn card)");
-      await g.press("confirm", 100, 1500); const day = await g.shot("s21-day");
+      await podStep(g, "confirm"); const day = await g.shot("s23-day");   // ✓ takes the dawn card away: waits for its effect
       const fur = ([R, G, B]) => R >= 50 && R <= 120 && G >= 30 && G <= 80 && B >= 25 && B <= 75 && R > G + 8, win = { x: r.x + Math.round(r.w * 0.30), y: r.y + Math.round(r.h * 0.18), w: Math.round(r.w * 0.40), h: Math.round(r.h * 0.27) };   // her coat, in the window around her bed
       const before = colour(night, r, fur, win).n, after = colour(day, r, fur, win).n;
-      console.log(`# s21 ${tag}: her coat's pixels around her bed: night ${before}, first light ${after}`);
+      console.log(`# s23 ${tag}: her coat's pixels around her bed: night ${before}, first light ${after}`);
       assert.ok(after >= 300 && after >= before * 4 + 200, `she is up at her bed on the shot (${after} coat pixels, ${before} at night)`);
     } finally { await g.ctx.close(); }
   });
 
+  // OWNER 11-25 16:3x ("collecting materials is cool too, but you fill up too fast your inventory."; satchel-stack-build-1): one satchel slot holds one kind, up to 9; the Case shows the count on the slot, and a 10th keepsake stays with its sleeper.
+  // Arranged save sleep-claws-8: two curled Loikas at their beds (Plover, Marsh) in the place five light into the night, the hero 4 tiles right of Plover, the satchel holding 8 claws.
+  // Played by buttons only: the Case before (8), ✓ Plover's near note, the Case (9); ✓ Marsh's near note, the message box and the Case again (still 9). State only asserts each case is reached (the claws held, the phase, the light, the reach of the notes).
+  const SLOT = [0.06, 0.43, 0.22, 0.12], NOTEBOX = [0.02, 0.80, 0.96, 0.10];   // the first satchel place and the message box, as fractions of the Companion's frame
+  it(`s20the Case after notes: the 9th claw reads 9 on its slot; a 10th sleeper's keepsake stays, the box says the satchel is full, the slot stays 9 [${tag}]`, async () => {
+    const g = await open(size, "sleep-claws-8");
+    try {
+      const claws = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { n: m.S.exp.cargo.samples.filter((q) => q.item === "claw").length, phase: m.S.phase, spent: m.S.day.spent }; });
+      const caseShot = async (name) => {
+        await g.press("back", 100, 800);                       // ← opens the menu
+        for (let i = 0; i < 10 && await g.menuRow() !== "cargo"; i++) await g.press("down", 100, 300);
+        assert.equal(await g.menuRow(), "cargo", "the case is reached: the selected row is the Case");
+        await g.press("confirm", 100, 1800);
+        assert.equal((await claws()).phase, "cargo", "the case is reached: the Case is open");
+        const im = await g.shot(name);
+        await g.press("back", 100, 1200);                      // ← back to the place
+        assert.equal((await claws()).phase, "patch", "the case is reached: back in the place");
+        return im;
+      };
+      assert.deepEqual(await claws(), { n: 8, phase: "patch", spent: 555 }, "the case is reached: in the place at light 555 holding 8 claws");
+      const r = await g.region(), eight = await caseShot(`s20-${tag}-case-8`);
+      await g.press("left", 100, 600); await g.press("left", 100, 600);   // two steps toward her bed, to two tiles from it, facing it
+      await g.press("confirm", 100, 1500);                     // ✓ Plover, two tiles ahead of him: her near note, her keepsake
+      assert.equal((await claws()).n, 9, "the case is reached: the 9th claw is taken by the note");
+      const nine = await caseShot(`s20-${tag}-case-9`);
+      const a = changed(eight, nine, r, SLOT);
+      console.log(`# s20 ${tag}: slot pixels changed 8 -> 9: ${a.n} (of ${a.of})`);
+      assert.ok(a.n > 40, `✓ the 9th: the Case slot reads differently at 9 than at 8 (${a.n} pixels changed)`);
+      await g.press("right", 100, 500); for (let i = 0; i < 3; i++) await g.press("down", 100, 500); await g.press("left", 100, 500);   // round to Marsh's row, two tiles from her bed, facing it
+      const before = await g.shot(`s20-${tag}-before-10`);
+      await g.press("confirm", 100, 1500);                     // ✓ Marsh: a 10th sleeper's near note
+      const full = await g.shot(`s20-${tag}-box-10`);
+      const b = changed(before, full, r, NOTEBOX);
+      console.log(`# s20 ${tag}: message box pixels changed by the 10th note: ${b.n} (of ${b.of})`);
+      assert.ok(b.n > 300, `✓ a 10th sleeper: the box reads the full line (${b.n} pixels changed)`);
+      assert.equal((await claws()).n, 9, "the reach: the 10th claw is not taken");
+      const ten = await caseShot(`s20-${tag}-case-10`);
+      const c = changed(nine, ten, r, SLOT);
+      console.log(`# s20 ${tag}: slot pixels changed 9 -> after the 10th: ${c.n} (of ${c.of})`);
+      assert.ok(c.n < 20, `the slot still reads 9 (${c.n} pixels changed)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
@@ -824,4 +873,107 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 }
+
+// OWNER 2026-11-25 06:4x ("ok", design-loop-review-1 fix 9): walking over a place's border cost 10 light and the day bar jumped with nothing to say why. Seed 33, a fresh game, at 390x844.
+// Played: ✓ x3 to set out and go in, then the right key along the row to the east edge. One tile short of the edge the bottom line is the place's own; on the edge tile, facing out, it says "10 light to the next place" (editorial's edge.step);
+// the step then moves the clock by that much. Every press waits for its effect (state changed, then still for 400 ms), never a fixed pause.
+// State only asserts the case is reached and the clock. The verdict on the words is the pixels: a crop of the line (saves/s30-edge-line.png, cut once from the edge shot) is found in the bottom strip on the edge tile and not found one tile short.
+// PLAYED_WRITE_CROPS=1 rewrites the crop (the box where the edge shot and the one-tile-short shot differ in the bottom strip).
+for (const size of SCALE_SIZES.filter((s) => s.w === 390)) {
+  const tag = `${size.w}x${size.h}`;
+  it(`s30 an edge on foot says its light first (seed 33): the bottom line names the cost before the step, and the clock moves by it after [${tag}]`, async () => {
+    const g = await open(size, { seed: 33 });
+    const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; let l = ""; try { const q = m.lineFor(); l = (Array.isArray(q.ctx) ? q.ctx[0] : q.ctx) || ""; } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, spent: S.day && S.day.spent, line: String(l).replace(/\x01/g, "") }; });
+    const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+    const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes (or 3 s), then holds still for 400 ms
+    try {
+      let s = await st();
+      for (let i = 0; i < 12 && !s.key; i++) { await step("confirm"); s = await st(); }   // ✓ to set out, ✓ into the place: each waits for its effect
+      for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }       // the place is built by a worker: wait until he is in it
+      assert.equal(s.phase, "patch", "the case is reached: he is in the first place");
+      let prev = null, n = 0;
+      const key0 = s.key;
+      while (n++ < 60 && !s.line.startsWith("10 light")) { prev = s; await step("right"); s = await st(); assert.equal(s.key, key0, "the case is reached: he walks the first place's row to its east edge, no step crosses unsaid"); }
+      console.log(`# s30 ${tag}: one tile short ${JSON.stringify(prev)}, on the edge ${JSON.stringify(s)}`);
+      assert.equal(s.line, "10 light to the next place", "the case is reached: the line on the edge tile is editorial's edge.step");
+      assert.ok(prev && !prev.line.startsWith("10 light"), "and not one tile short of it");
+      const r = await g.region(), onEdge = await g.shot(`s30-${tag}-edge`);
+      await step("left"); const short = await g.shot(`s30-${tag}-short`); await step("right");
+      const at = await st(); assert.equal(at.x, s.x, "the case is reached: back on the edge tile");
+      // the strip under the picture where the line is read; its crop is cut once from the edge shot
+      const sy0 = r.y + Math.round(r.h * 0.9), sy1 = r.y + r.h, sx0 = r.x, sx1 = r.x + r.w;
+      let bb = null;
+      for (let y = sy0; y < sy1; y++) for (let x = sx0; x < sx1; x++) { const p = px(onEdge, x, y), q = px(short, x, y); if (p[0] !== q[0] || p[1] !== q[1] || p[2] !== q[2]) bb = bb ? { x0: Math.min(bb.x0, x), y0: Math.min(bb.y0, y), x1: Math.max(bb.x1, x), y1: Math.max(bb.y1, y) } : { x0: x, y0: y, x1: x, y1: y }; }
+      assert.ok(bb, "the bottom strip differs between the edge tile and the one before it");
+      const cropFile = path.join(savesDir, "s30-edge-line.png");
+      if (process.env.PLAYED_WRITE_CROPS) {
+        const w = bb.x1 - bb.x0 + 1, h = bb.y1 - bb.y0 + 1, d = new Uint8Array(w * h * 4);
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = px(onEdge, bb.x0 + x, bb.y0 + y), j = (y * w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+        writeFileSync(cropFile, encodePNG(w, h, d));
+      }
+      const ref = decodePNG(readFileSync(cropFile));
+      // the best match of the crop anywhere in the strip: the fewest differing pixels over all positions (early out past the best)
+      const best = (im) => {
+        let low = Infinity;
+        for (let y = sy0; y + ref.height <= sy1; y++) for (let x = sx0; x + ref.width <= sx1; x++) {
+          let bad = 0;
+          for (let j = 0; j < ref.height && bad < low; j++) for (let i = 0; i < ref.width; i++) { const p = px(im, x + i, y + j), k = (j * ref.width + i) * 4; if (p[0] !== ref.data[k] || p[1] !== ref.data[k + 1] || p[2] !== ref.data[k + 2]) bad++; }
+          if (bad < low) low = bad;
+        }
+        return low;
+      };
+      const area = ref.width * ref.height, onBad = best(onEdge), shortBad = best(short);
+      console.log(`# s30 ${tag}: the line's crop (${ref.width}x${ref.height}) differs by ${onBad} pixels on the edge tile, by ${shortBad} one tile short, of ${area}`);
+      assert.ok(onBad < area * 0.02, "the line's crop is found in the bottom strip on the edge tile");
+      assert.ok(shortBad > area * 0.1, "and is not found one tile short of it");
+      await step("right");
+      const after = await st();
+      assert.notEqual(after.key, key0, "the step crossed into the next place");
+      assert.equal(after.spent - at.spent, 10, "the day moved by the 10 the line said");
+    } finally { await g.ctx.close(); }
+  });
+}
+// OWNER 2026-11-25 06:4x (design-loop-review-1, fix 5): "ok". tell-seen-fix-4. Seed 33 at 390x844, light 52 to 57: Osier's tell and shake-dry ran seven tiles away under the veil while the box kept the stone's line.
+// The rule (design 11-27): the veil lifts when, within ten tiles, a Loika he has met (S.named) starts her tell; her line is then the box's line.
+// Played as the review's game A, on a fresh seed 33 (the page's ?seed=): ✓ to set out, east across the first place and over the border, toward her until she is seen once (named), then ✓ "Keep still" until her tell starts.
+// Every press waits for its effect (state changed, or 3 s) before the next, never a fixed pause.
+// State only asserts the case is reached (she is named, her tile was veiled before, the top line names her, her tell has started, she is within ten tiles). The verdict is the pixels: her tile against a crop of her tile (saves/s21-tell-tile.png)
+// and the box against a crop of her tell line (saves/s21-tell-box.png); the stone's line is a different crop. PLAYED_WRITE_CROPS=1 rewrites the crops.
+it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: her tile is not veiled and the box shows her line, not the stone's [390x844]`, async () => {
+  const size = { w: 390, h: 844, dpr: 3 };
+  const g = await open(size, { seed: 33 });
+  const MSGBOX = [0.02, 0.80, 0.96, 0.10];
+  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; const c = P && m.curLive().cr.find(q => q.ind && q.ind.name === "Osier"); let t = null; try { t = m.targetLine(); } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, hb: !!(c && c.hb), named: !!(c && S.named && S.named[c.id]), open: !!(c && P && S.veil && S.veil[P.key] && (Number(S.veil[P.key][c.y]) & (1 << c.x)) !== 0), top: !!(t && c && String(t.id) === String(c.id)), dx: c && P ? c.x - P.x : null, dy: c && P ? c.y - P.y : null, ts: m.RT.ts, pl: m.RT.plScr }; });
+  try {
+    const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+    const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes, then holds still for 400 ms (a press during a screen's change is swallowed)
+    let s = await st(), im = null;
+    for (let i = 0; i < 12 && !s.key; i++) { await step("confirm"); s = await st(); }   // ✓ to set out, ✓ at "Start here", ✓ into the place: each waits for its effect
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }       // the place is built by a worker: wait until he is in it
+    assert.ok(s.key, `set out: he is in the first place (${JSON.stringify(s)})`);
+    // the route that names her at first sight (east x24, up x12, right x12, down x12), stopping the moment she is named; she is never walked up to
+    for (const [d, n] of [["right", 24], ["up", 12], ["right", 12], ["down", 12]]) for (let i = 0; i < n && !s.named; i++) { await step(d); s = await st(); }
+    assert.ok(s.named && !s.hb, `she is seen first: Osier is named, her tell not yet started (${JSON.stringify(s)})`);
+    let before = s;   // the last state before her tell: her tile is still veiled
+    for (let i = 0; i < 120 && !s.hb; i++) { before = s; await step("confirm"); s = await st(); }   // ✓ "Keep still", as the review did
+    im = await g.shot("s21-tell");
+    assert.ok(!before.open && s.open, `her tile was veiled before her tell and is open when it starts (${JSON.stringify([before, s])})`);
+    assert.ok(s.named && s.top, `the case is reached: Osier is named and the top line points to her (${JSON.stringify(s)})`);
+    assert.ok(s.hb, `the case is reached: her tell has started (${JSON.stringify(s)})`);
+    assert.ok(Math.max(Math.abs(s.dx), Math.abs(s.dy)) <= 10, `the case is reached: she is within ten tiles (${JSON.stringify(s)})`);
+    const r = await g.region(), k = r.w / 450, ts = s.ts;
+    const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+    const box = { x: r.x + Math.round(r.w * MSGBOX[0]), y: r.y + Math.round(r.h * MSGBOX[1]), w: Math.round(r.w * MSGBOX[2]), h: Math.round(r.h * MSGBOX[3]) };
+    // she herself stands 6 tiles east, past the screen's right edge (the view is 9 tiles wide): the verdict tile is the farthest one on the line to her that is on the screen (4 tiles out), which only her tell lifts
+    const n = Math.max(Math.abs(s.dx), Math.abs(s.dy)), f = n > 4 ? 4 / n : 1, cx = s.pl.x + Math.round(s.dx * f) * ts, cy = s.pl.y + Math.round(s.dy * f) * ts, tile = { x: r.x + Math.round((cx - ts / 2) * k), y: r.y + Math.round((cy - ts / 2) * k), w: Math.round(ts * k), h: Math.round(ts * k) };
+    assert.ok(tile.x >= r.x && tile.y >= r.y && tile.x + tile.w <= r.x + r.w && tile.y + tile.h <= r.y + r.h, `the verdict tile is on the screen (${JSON.stringify({ tile, r, s })})`);
+    const stored = (name, b) => { const f = path.join(savesDir, name); if (process.env.PLAYED_WRITE_CROPS) { const c = crop(b); writeFileSync(f, encodePNG(c.width, c.height, c.data)); } return decodePNG(readFileSync(f)); };
+    const differ = (c, ref) => { let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++; return n; };
+    const boxRef = stored("s21-tell-box.png", box), tileRef = stored("s21-tell-tile.png", tile);
+    const nb = differ(crop(box), boxRef), nt = differ(crop(tile), tileRef), area = tile.w * tile.h;
+    console.log(`# s21: the box differs from her tell line's crop by ${nb} pixels, her tile from its crop by ${nt} of ${area}`);
+    assert.ok(nb < 5000, `the box shows her tell line, not the stone's (${nb} pixels differ)`);
+    assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
+  } finally { await g.ctx.close(); }
+});
 });
