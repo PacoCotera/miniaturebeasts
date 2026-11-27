@@ -12,9 +12,9 @@ export function departures(log, spec, frame, state = "bay", opts = {}) {
   for (const r of got("stage")) must(eq(r.rect, stage), `stage ${r.rect} is not ${stage}`);
   must(state === "bay", `the Bay has one state, not ${state}`);
   for (const [id, rect] of [["ledge", F.ledge], ["table", F.table], ["shelf", F.shelf], ["counters", F.counters], ["wood", F.wood], ["cradleSlot", F.cradle], ["openSlot", F.open]]) for (const r of got(id)) must(eq(r.rect, rect), `${id} ${r.rect} is not ${rect}`);
-  for (const [id, rect] of [["ledgeCrate", F.ledge], ["ledgeRing", F.ledge], ["cradle", F.cradle], ["tableCrate", F.table], ["tableRing", F.table], ["contents", F.table], ["shelfPods", F.shelf]]) for (const r of got(id)) must(within(r.rect, rect), `${id} ${r.rect} leaves its place ${rect}`);
+  for (const [id, rect] of [["ledgeCrate", F.ledge], ["ledgeRing", F.ledge], ["cradle", F.cradle], ["tableCrate", F.table], ["tableRing", F.table], ["handFrame", F.table], ["herSlot", F.table], ["contents", F.table], ["shelfPods", F.shelf]]) for (const r of got(id)) must(within(r.rect, rect), `${id} ${r.rect} leaves its place ${rect}`);
   must(got("openSlot").length === 0 || got("tableCrate").length === 0, "a crate is sealed on the table or open (its slot), never both");
-  for (const id of ["ledge", "table", "shelf", "counters", "ledgeCrate", "tableCrate", "ledgeRing", "tableRing", "cradleSlot", "openSlot", "wood"]) for (const r of got(id)) must(within(r.rect, window), `${id} ${r.rect} is outside the form's window ${window}`);
+  for (const id of ["ledge", "table", "shelf", "counters", "ledgeCrate", "tableCrate", "ledgeRing", "tableRing", "cradleSlot", "openSlot", "wood", "handFrame", "herSlot"]) for (const r of got(id)) must(within(r.rect, window), `${id} ${r.rect} is outside the form's window ${window}`);
   for (const t of type) if (![16, 1016, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;
 }

@@ -47,6 +47,12 @@ static void beat_ring(const char *region, const char *id, int cx, int cy, const 
     v_region(region, LAYER_CHROME); v_composed(nid, cx - w / 2, cy - h / 2, w, h, ops);
   }
 }
+/* the selection mark (the Bay UI spec, round 2): the orange frame, 2 px with 8 lp corners, on the crate in hand and on nothing else; round the crate's own box, padded */
+static void selection(const int s[4]) {
+  int pad = fi("hand.pad", 4), rad = fi("hand.radius", 8), w = s[2] + 2 * pad, h = s[3] + 2 * pad; const char *c = v_scol(C, "colours.mark"); char ops[240];
+  snprintf(ops, sizeof ops, "[[\"rrect\",0,0,%d,%d,%d,\"\",\"%s\"],[\"rrect\",1,1,%d,%d,%d,\"\",\"%s\"]]", w, h, rad, c, w - 2, h - 2, rad - 1, c);
+  v_region("handFrame", LAYER_CHROME); v_composed("table.hand", s[0] - pad, s[1] - pad, w, h, ops);
+}
 static void say(const char *id, const char *s, int x, int y, const char *role, int align) { v_region("type", LAYER_TYPE); v_say(id, s, x, y, V_ANCHOR_MID, role, "pane", align); }
 
 /* ---- the dock ledge ---- */
@@ -80,6 +86,11 @@ static void build_table(void) {
     if (v_pbool("bay.table.ring", 0)) beat_ring("tableRing", "table.ring", s[0] + s[2] / 2, s[1] + s[3] / 2, (const int[2]){ fk("ring.size.0", 0), fk("ring.size.0", 1) }, (const int[2]){ fk("ring.size.1", 0), fk("ring.size.1", 1) });
     v_region("tableCrate", LAYER_ART); v_name("tableCrate"); v_sprite("table.crate", pic, s[0], s[1], s[2], s[3]);
     say("table.tag", v_pstr("bay.table.tag"), fk("tagAt", 0), fk("tagAt", 1), "heading", V_ALIGN_LEFT);
+    selection(s);
+    if (*v_pstr("bay.came.tag")) {   /* who came home: her picture's slot (a named empty slot: not built) and her name under it, from the arrival until his first press */
+      int h[4]; frect("her.slot", h); slot_box("herSlot", h);
+      say("table.came", v_pstr("bay.came.tag"), fk("her.tagAt", 0), fk("her.tagAt", 1), "heading", V_ALIGN_CENTRE);
+    }
     return;
   }
   /* open: a dashed slot (the AD's open crate is signed and not placed) holding what the crate brings */

@@ -14,7 +14,8 @@ export const FACE = { companion: [450, 600], station: [1024, 600] };   // the fa
 export const SWITCH_LAPTOP_W = 320;
 // The Station on a phone (ui-station-phone-1; the AD 11-16: a card and its heart shrink to a dot): its 1024 x 600 screen fitted whole is about x0.31 held upright and x0.44 on its side. Where the whole fit is under
 // ZOOM the screen is drawn at ZOOM in a window as wide as the panel allows (out.view: the part of the screen in view, in lp), and the window pans to keep the focused target whole (panFor). Wherever x0.6 fits, the whole screen.
-export const ZOOM = 0.6, PAN_PAD = 12;
+// On a phone's side (and a window like 1024 x 600) the whole screen shows where its fit is at least ZOOM_WHOLE of ZOOM (1024 x 600: the fit x0.566 against x0.6): a window there cut the right 47 lp of every wide screen, the Bay's ledge and the top bar's clock.
+export const ZOOM = 0.6, PAN_PAD = 12, ZOOM_WHOLE = 0.9;
 // The upright phone's window is NARROW_W lp wide at most (530 lp is 318 CSS px at ZOOM: a 390 wide phone's 342 less the panel's own edge): Home draws its narrow form there (home.json "narrow", 530 lp wide), never more of the screen than that form fills.
 export const NARROW_W = 530;
 const PAGE_W_H = [530, 600];   // her page's window of the face (pods.json regions.page.rect), lp
@@ -119,7 +120,7 @@ export function plan({ W, H, dpr = 1, coarse = false, dev, asleep = false, zSet 
     const maxW = W - 2 * M - LW - RW, maxH = bh - 2 * EDGE;
     s = Math.min(maxW / fw, maxH / fh);
     s = st ? snap64(s) : snap64(wholeC(s, dpr));
-    if (st && s < snap64(ZOOM)) { s = snap64(ZOOM); sw = Math.min(fw * s, maxW); sh = Math.min(fh * s, maxH); out.view = { w: sw / s, h: sh / s }; }   // the Station's window at ZOOM, as large as the side allows
+    if (st && s < snap64(ZOOM * ZOOM_WHOLE)) { s = snap64(ZOOM); sw = Math.min(fw * s, maxW); sh = Math.min(fh * s, maxH); out.view = { w: sw / s, h: sh / s }; }   // the Station's window at ZOOM, as large as the side allows
     else { sw = fw * s; sh = fh * s; }
     bw = LW + sw + RW;
     if (st && page) { const ps = snap64(Math.min(maxH / PAGE_W_H[1], sw / PAGE_W_H[0])); s = ps; out.view = { w: PAGE_W_H[0], h: PAGE_W_H[1] }; out.pageForm = { x: (sw - PAGE_W_H[0] * ps) / 2, w: PAGE_W_H[0] * ps, h: PAGE_W_H[1] * ps }; }   // her page (a 530 x 600 window of the face) on a phone's side: the whole page at the height's fit, as wide as the page itself, centred between the key columns (the panel and its keys stay where they are)

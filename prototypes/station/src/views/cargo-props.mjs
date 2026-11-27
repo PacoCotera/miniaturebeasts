@@ -50,7 +50,9 @@ export function cargoBuild(m, spec, home, frame) {
   // ---- the end: nothing waits and this visit unloaded: the sum ----
   const end = !ready.length && sum ? [fill(sum.crates === 1 ? Sg.done.one : Sg.done.many, { n: sum.crates }), sum.pods === 0 ? Sg.done.pods.none : sum.pods === 1 ? Sg.done.pods.one : fill(Sg.done.pods.many, { n: sum.pods })].join(" · ") : "";
 
-  const props = { state: "bay", berths: 0, regions: {}, focus: { cur: "room", targets: [] }, bay: { companion, table, ledge, behind: Math.max(0, ready.length - 3), all: ready.length ? Sg.all : "", shelf, counters, end } };
+  // ---- who came home (the Bay UI spec, section 4): her picture's slot and her name right of the crate, from the arrival until his first press; the picture is a dashed stand-in, not built ----
+  const cameId = !c.pressed && c.arrival && (c.arrival.back || [])[0], cm = cameId != null ? S.mibiById(st, cameId) : null, came = cm && table ? { tag: fill(Sg.came, { name: S.cap(cm.name) }) } : null;
+  const props = { state: "bay", berths: 0, regions: {}, focus: { cur: "room", targets: [] }, bay: { companion, table, ledge, behind: Math.max(0, ready.length - 3), all: ready.length ? Sg.all : "", shelf, counters, end, came } };
 
   // ---- the line: the action, the middle (▼ All at once while a crate waits), the way back ----
   let line, need = null;

@@ -17,7 +17,7 @@ export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, read
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, sort: "use", chips: [], word: null, first: 0, recent: [], focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, carry: null, flight: null, teach: null, answer: false, answerAt: 0, panel: null, arrival: null, cross: null, inc: {}, lib: { l1: null, pending: null, l2: {}, species: null, state: "sheet", lit: null, cur: null, l3: {}, l3last: null }, sit: null, hab: { id: null, f: "resident", namer: null, prev: null, prevRoom: null }, viv: { f: null, prev: null, view: "wall", page: 0, last: null, pin: null, sort: "room", filter: "all", pick: null, row0: 0, first: 0, nudge: null, move: null, moveFirst: 0 }, bench: { f: null, install: false }, settings: { f: null },
-  cargo: { state: "bay", open: false, sum: null, portrait: null, arrival: null }, pendingArrival: null, arrived: [], meet: null, lastInput: 0, idle: false };
+  cargo: { state: "bay", open: false, sum: null, portrait: null, arrival: null, pressed: false }, pendingArrival: null, arrived: [], meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
 // What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.

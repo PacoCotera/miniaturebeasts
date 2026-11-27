@@ -291,7 +291,8 @@ void word_bottomLine(void) {
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {
     int br[4], bcap[2]; v_srect(F, "regions.back.rect", br); bcap[0] = spec_int(F, "regions.back.cap.0", 16); bcap[1] = spec_int(F, "regions.back.cap.1", 16);
-    int right = v_si(F, "regions.back.right", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0) + back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.back.role"));
+    char bsc[32] = ""; spec_str(P, "screen", bsc, sizeof bsc);   /* the Bay's narrow form: the way back stands at the window's right end (the phone's 530 lp window), not at 1008 outside it */
+    int right = spec_bool(P, "narrow", 0) && strcmp(bsc, "cargo") == 0 ? v_si(F, "regions.back.narrowRight", v_si(F, "regions.back.right", 0)) : v_si(F, "regions.back.right", 0), room = br[2] - bcap[0] - v_si(F, "regions.back.capGap", 0) + back_extra; snprintf(c, 24, "%s", v_sstr(F, "regions.back.role"));
     v_inline("line.back"); v_region("back", LAYER_TYPE);
     v_run_t run = v_say_run("line.back", v_role_width(s, c) > room ? "Back" : s, right, v_role_cap_in(br[1], br[3], c), c, lg, V_ALIGN_RIGHT);
     v_region("back", LAYER_ART); int cr[4] = { right - run.width - v_si(F, "regions.back.capGap", 0) - bcap[0], cap[1], bcap[0], bcap[1] };

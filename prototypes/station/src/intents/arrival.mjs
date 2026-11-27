@@ -15,7 +15,7 @@ export function interrupted(h) {
 // Shows the Bay over the screen the player is on (or, from Idle, over Home): the crates and the Probe are the rules' (the dock already ran), this only goes to them.
 export function startShow(h, r, over) {
   const c = h.ui.cargo, a = { ...arrivalOf(h.st, h.sv, r), from: over };
-  c.arrival = a; c.state = "bay"; c.open = false; c.sum = null; c.portrait = null;
+  c.arrival = a; c.state = "bay"; c.open = false; c.pressed = false; c.sum = null; c.portrait = null;
   if (!a.crates) { h.say(h.specs.cargo.strings.empty, 2500); habitPlates(h, a); return true; }   // an empty trip, or the Probe broke: the Companion's line says it, nothing is shown
   if (h.ui.screen !== "cargo") h.goto("cargo");   // the dither, 180 ms; on Cargo itself no transition
   habitPlates(h, a);
