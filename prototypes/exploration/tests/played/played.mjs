@@ -410,6 +410,48 @@ for (const size of SIZES) {
     });
   }
 
+  // OWNER 11-25 16:3x ("collecting materials is cool too, but you fill up too fast your inventory."; satchel-stack-build-1): one satchel slot holds one kind, up to 9; the Case shows the count on the slot, and a 10th keepsake stays with its sleeper.
+  // Arranged save sleep-claws-8: two curled Loikas at their beds (Plover, Marsh) in the place five light into the night, the hero 4 tiles right of Plover, the satchel holding 8 claws.
+  // Played by buttons only: the Case before (8), ✓ Plover's near note, the Case (9); ✓ Marsh's near note, the message box and the Case again (still 9). State only asserts each case is reached (the claws held, the phase, the light, the reach of the notes).
+  const SLOT = [0.06, 0.43, 0.22, 0.12], NOTEBOX = [0.02, 0.80, 0.96, 0.10];   // the first satchel place and the message box, as fractions of the Companion's frame
+  it(`s20the Case after notes: the 9th claw reads 9 on its slot; a 10th sleeper's keepsake stays, the box says the satchel is full, the slot stays 9 [${tag}]`, async () => {
+    const g = await open(size, "sleep-claws-8");
+    try {
+      const claws = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { n: m.S.exp.cargo.samples.filter((q) => q.item === "claw").length, phase: m.S.phase, spent: m.S.day.spent }; });
+      const caseShot = async (name) => {
+        await g.press("back", 100, 800);                       // ← opens the menu
+        for (let i = 0; i < 10 && await g.menuRow() !== "cargo"; i++) await g.press("down", 100, 300);
+        assert.equal(await g.menuRow(), "cargo", "the case is reached: the selected row is the Case");
+        await g.press("confirm", 100, 1800);
+        assert.equal((await claws()).phase, "cargo", "the case is reached: the Case is open");
+        const im = await g.shot(name);
+        await g.press("back", 100, 1200);                      // ← back to the place
+        assert.equal((await claws()).phase, "patch", "the case is reached: back in the place");
+        return im;
+      };
+      assert.deepEqual(await claws(), { n: 8, phase: "patch", spent: 555 }, "the case is reached: in the place at light 555 holding 8 claws");
+      const r = await g.region(), eight = await caseShot(`s20-${tag}-case-8`);
+      await g.press("left", 100, 600); await g.press("left", 100, 600);   // two steps toward her bed, to two tiles from it, facing it
+      await g.press("confirm", 100, 1500);                     // ✓ Plover, two tiles ahead of him: her near note, her keepsake
+      assert.equal((await claws()).n, 9, "the case is reached: the 9th claw is taken by the note");
+      const nine = await caseShot(`s20-${tag}-case-9`);
+      const a = changed(eight, nine, r, SLOT);
+      console.log(`# s20 ${tag}: slot pixels changed 8 -> 9: ${a.n} (of ${a.of})`);
+      assert.ok(a.n > 40, `✓ the 9th: the Case slot reads differently at 9 than at 8 (${a.n} pixels changed)`);
+      await g.press("right", 100, 500); for (let i = 0; i < 3; i++) await g.press("down", 100, 500); await g.press("left", 100, 500);   // round to Marsh's row, two tiles from her bed, facing it
+      const before = await g.shot(`s20-${tag}-before-10`);
+      await g.press("confirm", 100, 1500);                     // ✓ Marsh: a 10th sleeper's near note
+      const full = await g.shot(`s20-${tag}-box-10`);
+      const b = changed(before, full, r, NOTEBOX);
+      console.log(`# s20 ${tag}: message box pixels changed by the 10th note: ${b.n} (of ${b.of})`);
+      assert.ok(b.n > 300, `✓ a 10th sleeper: the box reads the full line (${b.n} pixels changed)`);
+      assert.equal((await claws()).n, 9, "the reach: the 10th claw is not taken");
+      const ten = await caseShot(`s20-${tag}-case-10`);
+      const c = changed(nine, ten, r, SLOT);
+      console.log(`# s20 ${tag}: slot pixels changed 9 -> after the 10th: ${c.n} (of ${c.of})`);
+      assert.ok(c.n < 20, `the slot still reads 9 (${c.n} pixels changed)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
