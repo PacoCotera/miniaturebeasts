@@ -190,6 +190,7 @@ function drawnX(im, r, y0, y1) {
   return { lo, hi, w: hi - lo + 1 };
 }
 
+const EXPECT_147 = "Juniper · last seen south-west";   // s32: his 147.save's band in editorial's words: the full 'Juniper · last seen south-west, in the meadow' does not fit the band, so the short form shows
 const frac = (x, y, w, h) => [x / 900, y / 1200, w / 900, h / 1200];   // s15: a box in pixels of the 412x915 game screen (900x1200), as fractions of it
 const F_CARD = frac(9, 9, 350, 50), F_CRATE = frac(49, 367, 60, 40), F_TOP = frac(9, 9, 240, 50);   // the card's "Expedition 1 ended", the crate's E1, the set-out's "Expedition 2"
 describe("the played game", { concurrency: 6 }, () => {
@@ -898,8 +899,8 @@ for (const size of SIZES) {
       assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
       for (let i = 0; i < 7; i++) await g.press("left", 100, 500);
       const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, dir: t && t.dir, sight: m.herInSight() }; });
-      assert.ok(top.text && top.text.startsWith("Juniper") && top.dir === "e" && top.sight !== null, `the case is reached: the top line is the goal's, Juniper · E, while Hazel stands in sight (${JSON.stringify(top)})`);
-      await g.shot(`s7-${tag}-0-top`);                      // read by eye: top line 'Juniper · E'
+      assert.ok(top.text && top.text.startsWith("Juniper") && top.dir === "e" && top.sight !== null, `the case is reached: the top line is the goal's, Juniper · last seen east, while Hazel stands in sight (${JSON.stringify(top)})`);
+      await g.shot(`s7-${tag}-0-top`);                      // read by eye: top line 'Juniper · last seen east'
       await g.press("back");                                // ← opens the menu
       const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
       const first = await row();
@@ -910,6 +911,37 @@ for (const size of SIZES) {
       assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
       assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
     } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #147 (11-24, note mwv210fs19ae9d): 'What does it mean "Sorrell - Meadow - W"?' His replay.save: the goal band reads words with the full direction ('last seen west, in the meadow'), whole.
+  it(`s32 the target line reads as words (#147, his save): 'last seen <full direction>', whole in the goal band [${tag}]`, async () => {
+    // the verdict is the pixels: the band's text box on the screenshot against the words drawn on a bare canvas (the game's own glyphs), and nothing drawn past the box's right end
+    // The reference is a crop of the band's line (saves/s32-target-words.png), cut once from the 412 shot of his 147.save (PLAYED_WRITE_CROPS=1 rewrites it), one pixel per game pixel (sampled at its centre), so it matches the band at every size.
+    const BOX = { x: 28, y: 36 + 4, w: 450 - 28 - 8 - 9 - 4, h: 16 };   // the band's text box in game pixels: words at x 28, 4 below the view top (HUD 32), the width the game clips to
+    const cropFile = path.join(savesDir, "s32-target-words.png");
+    const judge = async (g, name, cut) => {
+      const im = await g.shot(name), r = await g.region(), kx = r.w / 450, ky = r.h / 600;
+      const at = (lx, ly) => px(im, Math.round(r.x + (lx + 0.5) * kx), Math.round(r.y + (ly + 0.5) * ky));
+      const isBone = (p) => p[0] > 150 && p[1] > 150 && p[2] > 130 && p[0] - p[2] < 90;   // the band's bone-coloured text on its dark ground
+      if (cut && process.env.PLAYED_WRITE_CROPS) { const d = new Uint8Array(BOX.w * BOX.h * 4); for (let y = 0; y < BOX.h; y++) for (let x = 0; x < BOX.w; x++) { const p = at(BOX.x + x, BOX.y + y), j = (y * BOX.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } writeFileSync(cropFile, encodePNG(BOX.w, BOX.h, d)); }
+      const ref = decodePNG(readFileSync(cropFile)), refAt = (x, y) => { const i = (y * ref.width + x) * 4; return [ref.data[i], ref.data[i + 1], ref.data[i + 2]]; };
+      let wrong = 0, lit = 0;
+      for (let y = 0; y < BOX.h; y++) for (let x = 0; x < BOX.w; x++) { const want = isBone(refAt(x, y)); if (want) lit++; if (isBone(at(BOX.x + x, BOX.y + y)) !== want) wrong++; }
+      let past = 0;   // bone pixels in the band's text rows from the box's right end to the arrow's column: the clip zone
+      for (let y = 0; y < BOX.h; y++) for (let x = BOX.x + BOX.w; x < 450 - 17; x++) if (isBone(at(x, BOX.y + y))) past++;
+      assert.ok(lit > 100, `the crop holds the words (${lit} pixels)`);
+      assert.ok(wrong <= lit * 0.02, `the band's line is "${EXPECT_147}" on the screen, as in the crop (${wrong} of ${lit} differ)`);
+      assert.equal(past, 0, `the line's right end is clear of the band's edge: nothing drawn past the text box (${past} pixels)`);
+    };
+    const g = await open(size, "147");
+    try {
+      const top = await g.page.evaluate(() => { const t = window.__play.frames.companion.contentWindow.__mb.targetLine(); return t && t.text; });
+      assert.ok(top, "the case is reached: the target line shows on his save");   // state says only that the case is reached
+      await judge(g, `s32-${tag}-0-band`, size.w === 412);
+    } finally { await g.ctx.close(); }
+    if (size.w !== 412) return;
+    const g2 = await open({ w: 390, h: 844, dpr: 3 }, "147");   // the second size of the stills
+    try { await judge(g2, "s32-390x844-0-band"); } finally { await g2.ctx.close(); }
   });
 
   // OWNER #156 (11-24), his own save (note mwv7x4xtaf3d27): Drizzle stands beside him; ← then offers her page as the first row, and ✓ opens it.
