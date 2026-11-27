@@ -1009,6 +1009,39 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 390)) {
     } finally { await g.ctx.close(); }
   });
 }
+// OWNER 2026-11-25 00:52 UTC (#165, his shot bug-assets/bugs/mwvepr6i2b15e5/shot-1.png): "go out with the companion??? I'm out!"; build desk bus 004cb7 (rule 16a): a played case on his case.
+// His case: the Companion is out in the first place and the Station's goal is a findPod step with no species known. Arranged save 165 (made from his #136 save: no pod and no crate, one mibi, Dot, of a kind the Station has no language frame for: the goal is "pair", its step findPod with no kind to name; his own #165 save, read by the Station, gives "Find a first pod", so it cannot reach the branch).
+// Played: only the open (the Companion tab pressed, as a player would). State only asserts the case is reached (the phase, the Companion out in a place, not docked: open() asserts the rest).
+// The verdict is the pixels: the Companion's header band against a crop of the words "Find a pod" (saves/s32-find-a-pod.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it); "Go out with the Companion" is a different crop and is not what is found.
+it(`s32 the Companion header out on a findPod step with no species (#165, arranged save 165): the header reads "Find a pod" [412x915]`, async () => {
+  const size = SCALE_SIZES[0];
+  const g = await open(size, "165");
+  try {
+    const s = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { phase: m.S.phase, out: !!(m.S.exp && m.S.exp.patch), docked: window.__play.caddy.docked, heard: JSON.stringify(m.RT.caddy) }; });
+    console.log("# s32 dock state " + JSON.stringify(s));
+    assert.ok(s.phase === "patch" && s.out && !s.docked, `the case is reached: the Companion is out in a place (${JSON.stringify(s)})`);
+    assert.ok(/"step":"findPod"/.test(s.heard), `the case is reached: the Station's goal is a findPod step (${s.heard})`);
+    const r = await g.region(), im = await g.shot("s32-header");
+    const band = { x: r.x, y: r.y + Math.round(r.h * 64 / 1200), w: r.w, h: Math.round(r.h * 48 / 1200) };   // the goal band, under the top bar: 24 of the screen's 600 rows
+    const f = path.join(savesDir, "s32-find-a-pod.png");
+    if (process.env.PLAYED_WRITE_CROPS) {   // the words: the box of pixels that differ from the band's own ground, right of the mark's slot
+      const bg = px(im, band.x + 2, band.y + 4); let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+      for (let y = band.y + 2; y < band.y + band.h - 4; y++) for (let x = band.x + Math.round(band.w * 0.05); x < band.x + band.w; x++) { const p = px(im, x, y); if (Math.abs(p[0] - bg[0]) + Math.abs(p[1] - bg[1]) + Math.abs(p[2] - bg[2]) > 60) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } }
+      const w = x1 - x0 + 1, h = y1 - y0 + 1, d = new Uint8Array(w * h * 4);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = px(im, x0 + x, y0 + y), j = (y * w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+      writeFileSync(f, encodePNG(w, h, d));
+    }
+    const ref = decodePNG(readFileSync(f));
+    let low = Infinity;   // the best match of the crop anywhere in the band: the fewest differing pixels over all positions (early out past the best)
+    for (let y = band.y; y + ref.height <= band.y + band.h; y++) for (let x = band.x; x + ref.width <= band.x + band.w; x++) {
+      let bad = 0;
+      for (let j = 0; j < ref.height && bad < low; j++) for (let i = 0; i < ref.width; i++) { const p = px(im, x + i, y + j), k = (j * ref.width + i) * 4; if (p[0] !== ref.data[k] || p[1] !== ref.data[k + 1] || p[2] !== ref.data[k + 2]) bad++; }
+      if (bad < low) low = bad;
+    }
+    console.log(`# s32 ${size.w}x${size.h}: the header band differs from the crop of "Find a pod" (${ref.width}x${ref.height}) by ${low} pixels`);
+    assert.ok(low < ref.width * ref.height * 0.02, `the Companion's header reads "Find a pod" (${low} of ${ref.width * ref.height} pixels differ from its crop)`);
+  } finally { await g.ctx.close(); }
+});
 // OWNER 2026-11-25 06:4x (design-loop-review-1, fix 5): "ok". tell-seen-fix-4. Seed 33 at 390x844, light 52 to 57: Osier's tell and shake-dry ran seven tiles away under the veil while the box kept the stone's line.
 // The rule (design 11-27): the veil lifts when, within ten tiles, a Loika he has met (S.named) starts her tell; her line is then the box's line.
 // Played as the review's game A, on a fresh seed 33 (the page's ?seed=): ✓ to set out, east across the first place and over the border, toward her until she is seen once (named), then ✓ "Keep still" until her tell starts.
