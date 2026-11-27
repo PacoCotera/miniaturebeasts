@@ -771,5 +771,45 @@ for (const size of SIZES) {
       assert.equal(top2, 0, "the set-out's top line reads Expedition 2");
     } finally { await g.ctx.close(); }
   });
+
+  // her-fruit-save-1 (lead 2026-11-26 20:58, bus 8e1158fa33: "650's live check did not reach a fruit or a named Loika"): PR 650 (fruit from the hand) had sandbox tests only. Save her-fruit-13 (seed 13, first expedition,
+  // morning, made by presses: ✓ x3 to set out, the bush shaken and its fruit picked up, Calls to bring Maple within two tiles and keep still, a step beside her, Calls until her ears were down): Maple, named, grazing, stands in front of him
+  // with fruit in his hand; the bottom bar reads "Offer fruit". Played: ✓ takes the fruit from his hand; then ← and the Log (row 9, ← then ↑ then ✓) shows her entry under her name.
+  // State only asserts the reach (carry fruit then null; the named id); the verdict is pixels: the bar's label against a stored crop (saves/her-fruit-offer-bar.png), the fruit over his head (red pixels in a box) before and gone after,
+  // and her Log line against a stored crop (saves/her-fruit-log-line.png). PLAYED_WRITE_CROPS=1 rewrites the two crops from the shot.
+  if (size.w === 412) it(`s21 offer fruit (PR 650, seed 13): the bar reads "Offer fruit" beside Maple; ✓ takes the fruit out of his hand; her Log entry shows under her name [${tag}]`, async () => {
+    const g = await open(size, "her-fruit-13");
+    const m = (f) => g.page.evaluate(f);
+    const crop = (im, f) => { const r = g.r, x0 = r.x + Math.round(r.w * f[0]), y0 = r.y + Math.round(r.h * f[1]), w = Math.round(r.w * f[2]), h = Math.round(r.h * f[3]), d = Buffer.alloc(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = px(im, x0 + x, y0 + y), i = (y * w + x) * 4; d[i] = p[0]; d[i + 1] = p[1]; d[i + 2] = p[2]; d[i + 3] = 255; } return { width: w, height: h, data: d }; };
+    const stored = (name, im, f) => { const file = path.join(savesDir, name), c = crop(im, f); if (process.env.PLAYED_WRITE_CROPS) writeFileSync(file, encodePNG(c.width, c.height, c.data)); return { c, ref: decodePNG(readFileSync(file)) }; };
+    const differ = (a, b) => { assert.deepEqual([a.width, a.height], [b.width, b.height], "the crop is the size of the stored one"); let n = 0; for (let i = 0; i < a.data.length; i += 4) if (a.data[i] !== b.data[i] || a.data[i + 1] !== b.data[i + 1] || a.data[i + 2] !== b.data[i + 2]) n++; return n; };
+    const FRUIT = ([r, gg, b]) => r > 180 && gg < 90 && b < 90;   // the red fruit over his head
+    const F_BAR = frac(50, 1148, 186, 42), F_HAND = frac(598, 630, 52, 42), F_LOG = frac(120, 795, 610, 110);   // the "Offer fruit" label, the box over his head, her Log line (900x1200 game screen)
+    try {
+      assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
+      assert.deepEqual(await m(() => { const mb = window.__play.frames.companion.contentWindow.__mb; return [mb.S.exp.carry, mb.S.named[35]]; }), ["fruit", "Maple"], "the case is reached: fruit in his hand, Maple named");
+      g.r = await g.region();
+      const before = await g.shot(`s21-${tag}-before`), bar = stored("her-fruit-offer-bar.png", before, F_BAR);
+      const labelDiff = differ(bar.c, bar.ref), fruitBefore = colour(before, g.r, FRUIT, { x: g.r.x + Math.round(g.r.w * F_HAND[0]), y: g.r.y + Math.round(g.r.h * F_HAND[1]), w: Math.round(g.r.w * F_HAND[2]), h: Math.round(g.r.h * F_HAND[3]) }).n;
+      console.log(`# s21 ${tag}: the bar's label differs from the stored "Offer fruit" by ${labelDiff} pixels; fruit pixels over his head before: ${fruitBefore}`);
+      assert.equal(labelDiff, 0, "the bottom bar reads Offer fruit");
+      assert.ok(fruitBefore >= 20, `the fruit is in his hand (${fruitBefore} red pixels over his head)`);
+      await g.press("confirm", 100, 1500);                  // ✓: Offer fruit
+      assert.equal(await m(() => window.__play.frames.companion.contentWindow.__mb.S.exp.carry), null, "the case is reached: the fruit left his hand");
+      const after = await g.shot(`s21-${tag}-after`);
+      const fruitAfter = colour(after, g.r, FRUIT, { x: g.r.x + Math.round(g.r.w * F_HAND[0]), y: g.r.y + Math.round(g.r.h * F_HAND[1]), w: Math.round(g.r.w * F_HAND[2]), h: Math.round(g.r.h * F_HAND[3]) }).n;
+      console.log(`# s21 ${tag}: fruit pixels over his head after: ${fruitAfter}`);
+      assert.equal(fruitAfter, 0, "his hand is empty: no fruit over his head");
+      await g.press("back", 100, 1200);                     // ← opens the menu (row 0 is her page)
+      await g.press("up", 100, 500);                        // ↑ wraps to the last row, Log
+      assert.equal(await g.menuRow(), "log", "the case is reached: the menu's selected row is Log");
+      await g.press("confirm", 100, 1500);
+      assert.equal((await g.where()).phase, "log", "the case is reached: the Log is open");
+      const log = await g.shot(`s21-${tag}-log`), line = stored("her-fruit-log-line.png", log, F_LOG);
+      const logDiff = differ(line.c, line.ref);
+      console.log(`# s21 ${tag}: her Log line differs from the stored "Maple took fruit from your hand." by ${logDiff} pixels`);
+      assert.equal(logDiff, 0, "the Log shows Maple took fruit from your hand under her name");
+    } finally { await g.ctx.close(); }
+  });
 }
 });
