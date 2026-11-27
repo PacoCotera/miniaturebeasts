@@ -1348,6 +1348,29 @@ for (const size of SIZES) {
       assert.equal(top2, 0, "the set-out's top line reads Expedition 2");
     } finally { await g.ctx.close(); }
   });
+
+  // OWNER 2026-11-25 16:3x ("revealing the map is cool to, gets tedious, but it's a good entertainment"), 11-27 13:5x "ok" to the end-tally walkthrough: End expedition counts what he brings home (pods, finds, pages) up from 0 in about 2 s.
+  // Save end-tally-172 (his #172 arranged once: at the start, two pods and eight finds in the hold, on the map). Played: ← , End expedition; after the 2 s the Case's bottom panel reads "Brought home" with the hold's counts (a crop of it, refs/end-tally-brought-home-*.png);
+  // then in a second game ← , End expedition and one ✓ during the count: the Case stays open (state only asserts the case is reached: the phase).
+  if (size.w === 412) it(`end-tally: End expedition shows Brought home with the hold's counts after 2 s, and one ✓ during the count leaves the Case open [${tag}]`, async () => {
+    const toCase = async (g) => { await g.press("back", 100, 1500); assert.equal(await g.menuRow(), "send", "the case is reached: the menu's selected row is End expedition"); await g.press("confirm", 100, 300); assert.equal((await g.where()).phase, "cargo", "the case is reached: the Case, End expedition's preview"); };
+    const g = await open(size, "end-tally-172");
+    try {
+      assert.equal((await g.where()).phase, "map", "the case is reached: he stands on the map");
+      await toCase(g); await wait(2800);
+      const r = await g.region(), im = await g.shot(`end-tally-${tag}-done`);
+      const box = { x: r.x + Math.round(r.w * 72 / 900), y: r.y + Math.round(r.h * 824 / 1200), w: Math.round(r.w * 756 / 900), h: Math.round(r.h * 176 / 1200) };
+      const rf = againstRef(im, box, `end-tally-brought-home-${tag}`);
+      console.log(`# end-tally ${tag}: the panel differs from the crop of Brought home 2 pods 8 finds in ${rf.n} of ${rf.of} pixels`);
+      assert.ok(rf.frac < 0.02, `the panel reads Brought home with the hold's counts (${rf.n} of ${rf.of} pixels differ from the crop)`);
+    } finally { await g.ctx.close(); }
+    const g2 = await open(size, "end-tally-172");
+    try {
+      await toCase(g2);
+      await g2.press("confirm", 100, 300);                  // one ✓ while it counts: skips to the end, does not end the expedition
+      assert.equal((await g2.where()).phase, "cargo", "one ✓ during the count leaves the Case open");
+    } finally { await g2.ctx.close(); }
+  });
 }
 
 // OWNER 2026-11-25 06:4x ("ok", design-loop-review-1 fix 9): walking over a place's border cost 10 light and the day bar jumped with nothing to say why. Seed 33, a fresh game, at 390x844.
