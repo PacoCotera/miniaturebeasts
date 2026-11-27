@@ -7089,14 +7089,19 @@ function fogPiece(it) {
   let e = FE_PB.get(it.m); if (!e) { e = { id: feId++ }; FE_PB.set(it.m, e); }
   return art('fe3|' + e.id + ':' + it.cw + 'x' + it.ch, () => { const pb = new PB(it.cw, it.ch); for (let y = 0; y < it.ch; y++) for (let x = 0; x < it.cw; x++) { const q = it.m[y * it.w + x]; if (q) pb.set(x, y, C.night); } return pb; });   // the look-around's dark is flat night: the map corners' ink dots take it too
 }
-function peekFogEdges(v, cx0, cy0, cw, ch, ap) {   // ap: the place picture's apron, in px, beyond its cell on each side (it is lit and drawn over the dark beside it): the place's own sides lie on the picture's edge
+// pr701-fix-1 (the AD's floating scraps): where the dark lies beside the place, the place picture's apron past its cell is not drawn (the dark's edge sits on the cell's side and eats the rim), so no bits of it hang in the dark.
+function peekApronCut(v, ox, oy, W, H, cx0, cy0, cw, ch) {
+  if (!FOGEDGE || !v.dark) return;
+  const d = k => v.dark.has(k);
+  if (d('0,-1') && cy0 > oy) R(ox, oy, W, cy0 - oy, C.night);
+  if (d('0,1') && cy0 + ch < oy + H) R(ox, cy0 + ch, W, oy + H - cy0 - ch, C.night);
+  if (d('-1,0') && cx0 > ox) R(ox, oy, cx0 - ox, H, C.night);
+  if (d('1,0') && cx0 + cw < ox + W) R(cx0 + cw, oy, ox + W - cx0 - cw, H, C.night);
+}
+function peekFogEdges(v, cx0, cy0, cw, ch) {
   if (!FOGEDGE || !v.dark) return;
   for (const it of fogEdges({ dark: (i, j) => i < -1 || i > 1 || j < -1 || j > 1 || v.dark.has(i + ',' + j), I0: -1, I1: 1, J0: -1, J1: 1, csx: cw, csy: ch, runs: FOGEDGE.peek.runs, outer: FOGEDGE.map.outer, inner: FOGEDGE.map.inner })) {
-    let x = it.x, y = it.y;
-    if (it.how !== 'in' && it.x + it.cw / 2 > 0 && it.x + it.cw / 2 < cw && it.y + it.ch / 2 > 0 && it.y + it.ch / 2 < ch) {   // a piece of the place's own cell: out to the picture's edge
-      if (it.how.includes('W')) x -= ap.l; else if (it.how.includes('E')) x += ap.r;
-      if (it.how.includes('N')) y -= ap.t; else if (it.how.includes('S')) y += ap.b; }
-    blit(fogPiece(it), cx0 + x, cy0 + y);
+    blit(fogPiece(it), cx0 + it.x, cy0 + it.y);
   }
 }
 // The whole place at 24 px (RT.view: 'look' as seen so far, 'peek' while Call is held). A find draws no whole view: its spot and card stand over the walking view (drawPatch).
@@ -7115,7 +7120,7 @@ function drawWhole(t) {
   const tp = (x, y) => ({ x: ox + (x - bk.ox) * Tp + Tp / 2, y: oy + (y - bk.oy) * Tp + Tp / 2 });
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   v.cv = v.cv || wholeFor(lay, bk); const cv = v.cv;
-  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); peekFogEdges(v, ox - bk.ox * Tp, oy - bk.oy * Tp, lay.w * Tp, lay.h * Tp, { l: -bk.ox * Tp, t: -bk.oy * Tp, r: (bk.place.w + bk.ox - lay.w) * Tp, b: (bk.place.h + bk.oy - lay.h) * Tp }); if (owed) text(landLine(), SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
+  if (wide) { clipView(); try { const owed = drawPeekNeighbours(v, lay, ox, oy, W, H, Tp); g.imageSmoothingEnabled = false; g.drawImage(cv, ox, oy, W, H); peekApronCut(v, ox, oy, W, H, ox - bk.ox * Tp, oy - bk.oy * Tp, lay.w * Tp, lay.h * Tp); peekFogEdges(v, ox - bk.ox * Tp, oy - bk.oy * Tp, lay.w * Tp, lay.h * Tp); if (owed) text(landLine(), SCR_W / 2, VIEW_Y + (VIEW_H >> 1) - 7, C.bone, 2, 'center'); } finally { g.restore(); } }
   else g.drawImage(cv, ox, oy);
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
