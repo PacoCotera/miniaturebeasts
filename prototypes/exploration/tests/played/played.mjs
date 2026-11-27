@@ -453,6 +453,31 @@ for (const size of SIZES) {
       assert.ok(c.n < 20, `the slot still reads 9 (${c.n} pixels changed)`);
     } finally { await g.ctx.close(); }
   });
+  // OWNER 2026-11-24 18:5x ("you just can pick the pod at night"; 20:2x ok to core-loop-walkthrough-1), PR 673 (sleep-word-fix-2; build desk bus 096fb407f9 + c5d044daad): a curled-up Loika's bar word reads "asleep", not her ease word.
+  // Arranged save sleep-claws-8: Plover curled at her bed, 4 tiles left of him, at night. Played: the d-pad left once (he faces her; she stays curled). State only asserts the case is reached (she is curled, his facing, the phase).
+  // The verdict is the pixels: the bottom bar's word against a crop of that word (saves/s31-asleep-word.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it). Each press waits for its effect, never a fixed pause.
+  if (size.w === 412) it(`s31 a curled-up Loika's bar word reads asleep (PR 673, sleep-claws-8): facing Plover curled at her bed, the bottom bar's word is "asleep" [${tag}]`, async () => {
+    const WORD = frac(380, 1142, 400, 52);   // the bar's whole word "Plover · asleep · stay 8", in the 900x1200 frame
+    const g = await open(size, "sleep-claws-8");
+    try {
+      const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.x, P && P.y, P && P.dir, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+      const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes (or 3 s), then holds still for 400 ms
+      const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, cs = m.curLive().cr.filter((q) => q.ind), c = cs.find((q) => m.curledNow(q) && q.y === P.y) || cs.find((q) => m.curledNow(q)); return { phase: m.S.phase, at: [P.x, P.y], dir: P.dir, herAt: c && [c.x, c.y], curled: !!c && m.curledNow(c), on: !!c && m.onScreen(c.x, c.y), all: cs.map((q) => [q.ind.name, q.x, q.y, m.curledNow(q), m.sleeperOf(q), m.atBedNow(q), q.ease, !!q.hide, !!q.hb]), part: m.dayPart(), spent: m.S.day.spent }; });
+      await step("left");   // the d-pad left once: he faces her
+      let s = await st();
+      for (let i = 0; i < 14 && !s.curled; i++) { await step("confirm"); s = await st(); }   // her bedtime play runs its beats as the light passes: ✓ Keep still until she has settled curled
+      assert.ok(s.phase === "patch" && s.curled && s.on && s.herAt[1] === s.at[1] && s.herAt[0] < s.at[0], `the case is reached: in the place, she is curled and on the screen, he is facing her (${JSON.stringify(s)})`);
+      const r = await g.region(), im = await g.shot("s31-asleep");
+      const w = { x: r.x + Math.round(r.w * WORD[0]), y: r.y + Math.round(r.h * WORD[1]), w: Math.round(r.w * WORD[2]), h: Math.round(r.h * WORD[3]) };
+      const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+      const f = path.join(savesDir, "s31-asleep-word.png");
+      if (process.env.PLAYED_WRITE_CROPS) { const c = crop(w); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+      const ref = decodePNG(readFileSync(f)), c = crop({ x: w.x, y: w.y, w: ref.width, h: ref.height });
+      let bad = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) bad++;
+      console.log(`# s31 ${tag}: the bar's word differs from the crop of "asleep" by ${bad} of ${ref.width * ref.height} pixels`);
+      assert.ok(bad < ref.width * ref.height * 0.02, `the bottom bar's word reads asleep (${bad} pixels differ from its crop)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
