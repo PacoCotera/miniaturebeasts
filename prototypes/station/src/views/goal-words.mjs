@@ -52,7 +52,7 @@ export function companionWords(goal, frame) {
     if (goal.key === "growUp") { return { text: fill(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more, vals), icons: "" }; }
     return null;
   }
-  if (st.key === "findPod") { const sp = speciesWord(st.species ?? goal.species); if (sp && goal.key === "pair" && name && G.step.findPodPair) return { text: fill(G.step.findPodPair, { ...vals, species: sp }), icons: "" }; return { text: sp ? fill(G.step.findPod, { ...vals, species: sp, a: article(sp) }) : G.step.goOut, icons: "" }; }
+  if (st.key === "findPod") { const sp = speciesWord(st.species ?? goal.species); if (sp && goal.key === "pair" && name && G.step.findPodPair) return { text: fill(G.step.findPodPair, { ...vals, species: sp }), icons: "" }; return { text: sp ? fill(G.step.findPod, { ...vals, species: sp, a: article(sp) }) : G.companion.findPodAny, icons: "" }; }
   if (st.key === "short" && ["field", "fieldOrPod", "fieldAndBench"].includes(st.from)) {   // the Companion has no material icons at hand: the supplies by their player names
     const names = (st.icons || "").split(" ").map((i) => ({ "⚡": "Energy", "◆": "Data", "❀": "Essence" })[i]).filter(Boolean);
     return { text: fill(G.companion.shortWords, { words: names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names.at(-1) : names[0] ?? "" }).trim(), icons: "" };
