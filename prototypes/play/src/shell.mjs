@@ -68,7 +68,7 @@ const saveTab = (v) => { try { localStorage.setItem(TAB_KEY, v); } catch { /* no
 const START_OWNER = loadTab() || (OPT.lab ? "station" : !podHome || formOf(innerWidth, innerHeight, window.matchMedia("(pointer: coarse)").matches) === "up" ? "companion" : "station");   // a new player starts on the Companion; later a phone held upright still opens on it, the handheld; a kept tab wins
 let owner = START_OWNER, devOpen = false, keysOpen = false;   // owner: the device in view, which has the keys
 let wokeNews = false;   // the Station woke while it was out of view: the switch's dot, until it comes into view
-let caddy = { canDock: false, docked: false, crates: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
+let caddy = { canDock: false, docked: false, crates: 0, bay: 0, pending: false };   // the Dock control's view of the cradle and the frames' words (derive())
 let pressed = false;
 const frames = { station: $("fStation"), companion: $("fCompanion") };
 const SITE = import.meta.env?.PROD ? "/play/" : "../";   // the built game lives under /play/ (its folders: ui/, station/, exploration/); the source tree has them beside play/
@@ -130,7 +130,7 @@ function layout() {
   document.body.classList.toggle("phone", phone);
   for (const dv of ["station", "companion"]) {
     const st = dv === "station", p = layoutPlan({ W: CW, H: CH, dpr, coarse: coarseNow(), dev: dv, asleep: st && !podHome, zSet, page: st && pageForm, whole: st && wholeForm });
-    PLAN[dv] = p; kOf[dv] = Math.floor(p.scale * dpr * 64 + 1e-6) / 64;
+    PLAN[dv] = p; kOf[dv] = p.scale * dpr;   // layout.mjs floors the scale to 1/64 device px once
   }
   k = kOf[owner]; f = k / dpr;
   document.documentElement.style.setProperty("--f", String(f));
@@ -222,13 +222,12 @@ function setZ(v) {   // v: a z, or null for fit; the choice is kept per browser,
   zSet = v == null ? null : clampZ(v); saveZ(zSet); layout();
 }
 const zStep = (d) => { if (TEST || form !== "laptop") return; const z = Math.round(kOf.companion), n = Math.min(clampZ(z + d), zCap(CW, CH, dpr)); if (n !== z) setZ(n); };
-const DOCK_BAY = 3;   // the sealed bay's three crates: the Companion's `BAY` (exploration/index.html), which the unbundled shell cannot import
 // The Dock / Lift key (first-ten-front A2): quiet until the walk ends with a sealed crate, then lit; docked, it says how to go out. One press asks for the same dock or lift as Shift+D.
 function layoutDock(box) {   // box: the key's [x, y, w, h] in window CSS px, or null when it is not shown
   const c = caddy, d = c.docked, crates = !d && c.canDock && c.crates > 0, touch = window.matchMedia("(pointer: coarse)").matches;
   // [copy] placeholders: the scheme's section 7 item 4; the short words are the long ones cut down ("Dock", "Lift")
-  let full = d ? "Docked · Lift to go out" : crates ? "Dock · " + c.crates + " of " + DOCK_BAY + " crates aboard" : "Dock the Companion", short = d ? "Lift" : "Dock";   // lit: n from the hold, 3 the bay (UI + editorial 11-25); docking is not tied to an expedition
-  const litSteps = crates ? [full, "Dock · " + c.crates + " of " + DOCK_BAY + " crates", "Dock · " + c.crates + "/" + DOCK_BAY] : [full];   // lit, widest first (editorial 70f85b33bb): the count is never cut, only the words round it
+  let full = d ? "Docked · Lift to go out" : crates ? "Dock · " + c.crates + " of " + c.bay + " crates aboard" : "Dock the Companion", short = d ? "Lift" : "Dock";   // lit: n from the hold, 3 the bay (UI + editorial 11-25); docking is not tied to an expedition
+  const litSteps = crates ? [full, "Dock · " + c.crates + " of " + c.bay + " crates", "Dock · " + c.crates + "/" + c.bay] : [full];   // lit, widest first (editorial 70f85b33bb): the count is never cut, only the words round it
   const label = d ? "Lift the Companion" : crates ? "Dock the Companion; cargo waits aboard" : "Dock the Companion", title = dockTitle();
   let mode = box ? dockWords(box[2]) : "full", hint = !touch;   // ⇧D is hidden on a touch screen
   if (box && mode === "full") { const need = dockNeed(full, hint); if (need > box[2]) { hint = false; const fit = litSteps.find((t) => dockNeed(t, false) <= box[2]); if (fit) full = fit; else mode = "short"; } }   // the full words are kept only where they fit: never an ellipsis; lit falls through the middle forms, which keep the count, before "Dock"
@@ -296,7 +295,7 @@ const seatedNow = () => cradles().companion.state === "seated";
 const activeHere = () => !!heard && !!comp && !!heard.companion && heard.companion.id === comp.id;   // the Companion in the frame is the one the Station shows
 function derive() {
   const crates = comp && !activeHere() ? comp.crates | 0 : heard ? heard.crates | 0 : 0;
-  return { canDock: !!(comp && comp.wid) || !!(heard && heard.canDock), docked: seatedNow(), crates, pending: !!(heard && heard.pending), opened: heard?.opened ?? null, partner: heard?.partner ?? null };
+  return { canDock: !!(comp && comp.wid) || !!(heard && heard.canDock), docked: seatedNow(), crates, bay: comp ? comp.bay | 0 : 0, pending: !!(heard && heard.pending), opened: heard?.opened ?? null, partner: heard?.partner ?? null };
 }
 function dockPress() {
   if (!caddy.canDock || pressed) return;
@@ -596,7 +595,7 @@ armDpr(); window.addEventListener("resize", layout);
 fetch("../../build.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("no build"); return r.json(); }).then((j) => { buildInfo = j; fitStamp(); }).catch(() => { stamp.textContent = "build local"; });
 layout();
 // for the play-page journey: read-only views of the shell's state
-window.__play = { get phone() { return phone; }, get form() { return form; }, get plan() { return JSON.parse(JSON.stringify(PLAN[owner])); }, get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get pressed() { return pressed; },
+window.__play = { get phone() { return phone; }, get form() { return form; }, get pan() { return { ...pan }; }, get focus() { return JSON.parse(JSON.stringify(focusNow)); },   /* read only, for the played tests (s5b): the Station window's pan and the focused target */ get plan() { return JSON.parse(JSON.stringify(PLAN[owner])); }, get geom() { return JSON.parse(JSON.stringify(geom)); }, get scroll() { return [stage.scrollTop, stage.clientHeight, stage.scrollHeight]; }, get owner() { return owner; }, get z() { return k; }, get fit() { return zSet == null; }, get caddy() { return { ...caddy }; }, get pressed() { return pressed; },
   get news() { return newsOf(); }, get dockScreenOpen() { return dockScreen.isOpen; }, openDockScreen: () => dockScreen.open(), closeDockScreen: () => dockScreen.close(),
   get caddySheet() { return { up: true, id: drawn ? drawn.id : null, lines: drawn ? { ...drawn.lines } : null, crates: drawn ? drawn.crates : 0, ledger: drawn ? drawn.ledger : null, marks: drawn ? { ...drawn.marks } : null, next: faceNow ? faceNow.id : null, counts: sched.counts, log: drawnLog.slice(), ops: sched.state.log.map((o) => ({ kind: o.kind, id: o.id, at: o.at, regions: o.regions })), busy: now() < sched.state.busyUntil,
     lamp: { companion: lampOf.c, station: faceNow ? faceNow.lamp.station : "off", dot: lampView.c.colour || "off", stationDot: lampView.s.colour || "off" }, pixels: () => Array.from(vctx.getImageData(0, 0, 792, 272).data.filter((_, i) => i % 4 === 0)) }; },

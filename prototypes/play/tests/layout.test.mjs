@@ -69,7 +69,7 @@ test("the size cap: at 1440 × 900 a chosen ×2 stays at ×1 (a ×2 Companion is
 
 test("the first-view numbers of the signed design (390 × 844, 1440 × 900)", () => {
   const c = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" });
-  assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 620]); assert.equal(Math.round(c.screen.w), 330);   // bug 135: the width's fit (330), not the whole ×2 (300, 91% of it)
+  assert.deepEqual([c.panel.w, Math.round(c.panel.h)], [342, 618]); assert.ok(c.screen.w > 328 && c.screen.w <= 330);   // bug 135 ("screen is tiny"), one scale (code-audit step 6): the width's fit (330) floored to 1/64 device px per lp, which is what the shell draws, so the plan says what is drawn; not the whole ×2 (300, 91% of it)
   const l = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "companion" }); assert.deepEqual([l.panel.w, l.panel.h, l.margins.side], [770, 624, 335]);
   const s = plan({ W: 1440, H: 900, dpr: 1, coarse: false, dev: "station" }); assert.deepEqual([s.panel.w, Math.round(s.panel.h), s.margins.side], [1040, 446, 200]);
 });
@@ -90,7 +90,7 @@ test("a short phone upright (Safari with its bars): the Companion is drawn whole
   // where the height is enough nothing changes: the width's fit, the screen at full height, as before
   // (play-scale-1: the width's fit rounded down to a whole number of device pixels per lp, centred in the panel)
   // bug 135: where that multiple is under 95% of the width's fit (inner width W - 60), the screen takes the fit; the height still caps it
-  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }), z = p.scale * 3, fit = (W - 60) / 450 * 3, whole = Math.floor(fit + 1e-6); assert.ok(Math.abs(z - (whole < 0.95 * fit ? fit : whole)) < 1e-6, `${W}×${H}: the whole multiple, or the fit where the multiple is under 95% of it`); }
+  for (const [W, H] of [[390, 844], [393, 852]]) { const p = plan({ W, H, dpr: 3, coarse: true, dev: "companion" }), z = p.scale * 3, fit = (W - 60) / 450 * 3, whole = Math.floor(fit + 1e-6); assert.ok(Math.abs(z - (whole < 0.95 * fit ? fit : whole)) < 1 / 64 + 1e-6 && z <= (whole < 0.95 * fit ? fit : whole) + 1e-6, `${W}×${H}: the whole multiple, or the fit where the multiple is under 95% of it`); }
   { const p = plan({ W: 522, H: 935, dpr: 3, coarse: true, dev: "companion" }); assert.ok(p.screen.w > 405 && p.screen.w < 412 && p.screen.y + p.screen.h <= p.tray.box[1], "522×935: the screen takes the height's fit (410 of 462 CSS px), not 300"); }
   // bug 134: a fit just under a whole multiple (1.98 at 412 wide, dpr 2.625) takes the multiple, not one device pixel per lp
   for (const [W, H, dpr] of [[412, 915, 2.625], [411, 914, 2.625], [393, 851, 2.75]]) { const p = plan({ W, H, dpr, coarse: true, dev: "companion" }); assert.ok(Math.abs(p.scale * dpr - 2) < 1e-9 && Math.abs(p.screen.w - 450 * p.scale) < 1e-6, `${W}×${H} ×${dpr}: two device pixels per lp, the whole screen`); }
@@ -102,7 +102,7 @@ test("a short phone upright (Safari with its bars): the Companion is drawn whole
 test("the Station on a phone: x0.6 in a window (view) where the whole screen would be smaller; the whole screen wherever x0.6 fits; no turn hint", () => {
   for (const [W, H] of [[390, 844], [360, 780], [844, 390], [932, 430]]) for (const asleep of [false, true]) {
     const p = plan({ W, H, dpr: 3, coarse: true, dev: "station", asleep }), tag = `${W}×${H}${asleep ? " asleep" : ""}`;
-    assert.equal(p.scale, ZOOM, tag + ": x0.6"); assert.ok(p.view && p.view.w < 1024 && p.view.h <= 600, tag + ": a window on part of the screen");
+    assert.ok(ZOOM - p.scale >= 0 && ZOOM - p.scale < 1 / 64 / 3 + 1e-9, tag + ": x0.6, floored to 1/64 device px (one scale, code-audit step 6: the plan says what is drawn)"); assert.ok(p.view && p.view.w < 1024 && p.view.h <= 600, tag + ": a window on part of the screen");
     assert.ok(Math.abs(p.screen.w - p.view.w * p.scale) < 1e-6 && Math.abs(p.screen.h - p.view.h * p.scale) < 1e-6, tag + ": the window is the view at x0.6");
     assert.ok(!("hint" in p) || p.hint == null, tag + ": no turn hint");
     if (p.note) assert.ok(p.note.y >= BAR + 16 - 1e-9 && p.note.y + p.note.h + 16 <= p.panel.y + 1e-9, tag + ": the asleep note under the bar, above the panel");
@@ -117,7 +117,7 @@ test("Home's narrow form (the `narrow` the page tells the Station): only the Sta
     assert.equal(p.form, "up"); assert.equal(p.narrow, true, tag + ": narrow upright"); assert.ok(p.view.w <= 530 + 1e-6, tag + ": the window is at most 530 lp wide");
     assert.ok(p.screen.x >= p.panel.x - 1e-9 && p.screen.x + p.screen.w <= p.panel.x + p.panel.w + 1e-9, tag + ": the window stays inside the panel");
   }
-  { const p = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "390×844: the window is 530 lp wide, 1:1 at x0.6"); assert.equal(p.view.h, 600); assert.ok(Math.abs(p.screen.w - 318) < 1e-6, "318 CSS px"); }
+  { const p = plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "390×844: the window is 530 lp wide, 1:1 at x0.6"); assert.equal(p.view.h, 600); assert.ok(Math.abs(p.screen.w - 318) < 0.7, "318 CSS px (530 lp at the 1/64-floored x0.6)"); }
   { const p = plan({ W: 430, H: 932, dpr: 3, coarse: true, dev: "station" }); assert.equal(p.view.w, 530, "a wider phone: still 530 lp, not more of the screen"); assert.ok(Math.abs((p.screen.x - p.panel.x) - (p.panel.x + p.panel.w - p.screen.x - p.screen.w)) < 1e-6, "centred in the panel"); }
   for (const [W, H, dpr, coarse] of [[844, 390, 3, true], [932, 430, 3, true], [1440, 900, 1, false], [1280, 720, 1, false]]) assert.ok(!plan({ W, H, dpr, coarse, dev: "station" }).narrow, `${W}×${H}: not narrow`);
   assert.ok(!plan({ W: 390, H: 844, dpr: 3, coarse: true, dev: "companion" }).narrow, "the Companion is never narrow");

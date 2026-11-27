@@ -14,8 +14,11 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { traitLooks } from "../../species/framework/describe.mjs";
-import { homeBuild as homeBuildUnchecked, homeNeeds, dateWords, clockWords, wordsOf } from "../src/views/home-props.mjs";
-const homeBuild = lineCased(homeBuildUnchecked, "home");   // every body it builds goes through assertLineCase (report mode)
+import { homeBuild as homeBuildUnchecked0, homeNeeds as homeNeeds0, dateWords, clockWords, wordsOf } from "../src/views/home-props.mjs";
+const aboard = (st, sv) => { st.bayHeld = []; if (S.docked(st) && sv) S.crossCrates(st, sv); };   // the dock rule: what the hold has sealed is at the Bay
+const homeNeeds = (st, sv, ...r) => { aboard(st, sv); return homeNeeds0(st, sv, ...r); };
+const homeBuildUnchecked = (m, ...r) => { aboard(m.st, m.sv); return homeBuildUnchecked0(m, ...r); };
+const homeBuild = lineCased(homeBuildUnchecked, "home");
 import { idleBuild } from "../src/views/idle-props.mjs";
 import { goalWords, warnWords, companionWords } from "../src/views/goal-words.mjs";
 

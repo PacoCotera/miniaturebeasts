@@ -44,6 +44,7 @@ export function createBook({ dataDir, now = () => Date.now() }) {
       open: threads ? threads.filter((c) => c.status === "open").length : null,
       proof: proof && Number.isInteger(proof.version) ? proof.version : null,
       published: proof && isoOk(proof.published) ? proof.published : null,
+      comments_as_of: comments && isoOk(comments.generated) ? comments.generated : null,
     };
   }
   // The Book card's live line on the index: read only, the counts and the proof's number and time (null where unreadable).
@@ -72,7 +73,8 @@ export function createBook({ dataDir, now = () => Date.now() }) {
       const meta = (c, bits) => `<p class="meta">${[where(c) ? `<span class="page">${esc(where(c))}</span>` : "", ...bits].filter(Boolean).join(" · ")}</p>`;
       const openRow = (c) => `<li class="bug"><p class="words">${esc(c.first_comment || "(no words)")}</p>${meta(c, [isoOk(c.created) ? esc(ageDays(c.created, t)) : ""])}</li>`;
       const fixedRow = (c) => `<li class="bug"><p class="words">${esc(c.first_comment || "(no words)")}</p>${meta(c, [Number.isInteger(c.fixed_in) ? `<span class="fixed-in">fixed in proof ${c.fixed_in}</span>` : `<span class="fixed-in">fixed</span>`, isoOk(c.updated) ? esc(dayWords(c.updated)) : ""])}</li>`;
-      cSection = `<section><h2>Your comments</h2><div class="tally"><div class="open"><b>${open.length}</b><span>open</span></div><div class="fixed"><b>${fixed.length}</b><span>fixed</span></div></div>`
+      const asOf = comments && isoOk(comments.generated) ? `<p class="meta">Comments as of ${esc(whenMX(comments.generated, t))} Mexico City</p>` : "";
+      cSection = `<section><h2>Your comments</h2>${asOf}<div class="tally"><div class="open"><b>${open.length}</b><span>open</span></div><div class="fixed"><b>${fixed.length}</b><span>fixed</span></div></div>`
         + (open.length ? `<ul class="cards">${open.map(openRow).join("")}</ul>` : `<p class="empty">None open.</p>`)
         + (fixed.length ? `<details class="more"><summary>Fixed (${fixed.length})</summary><ul class="cards">${fixed.map(fixedRow).join("")}</ul></details>` : "") + `</section>`;
     }

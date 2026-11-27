@@ -3,7 +3,7 @@ import { terrainLayers, packDepth, DualGridError, EMPTY, FILL_CODE, splitCode, h
 import { reedClumps } from '../../../exploration/src/gen7/reeds.mjs';
 import { indexedToRgba } from '../indexed.mjs';
 import { renderView } from '../ground.mjs';
-import { FORMAT_VERSION } from '../format/write.mjs';
+const FORMAT_VERSION = 1;   // a hand-set place has no bake hold outputs: format 1, its bytes unchanged (a place of format 2 is a baked package's cell, places/src/format/baked.mjs)
 import { BakeError, FIND_KINDS } from './ldtk.mjs';
 import { footprintCells, spriteFor } from './rules.mjs';
 import { ALT_CODE, applyOpenEdges, cliffInfo } from './openedges.mjs';

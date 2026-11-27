@@ -186,7 +186,7 @@ export function migrate(st, now = Date.now(), sv = null) {
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
   installBud(st);   /* the nursery's capsules (additive, no schema bump): an older save's one bud goes in the first capsule */
-  for (const k of ["tray", "waiting", "samples", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["tray", "waiting", "samples", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed", "sheds", "dried", "bayHeld"]) if (!Array.isArray(st[k])) st[k] = [];
   if (st.waiting.length) { st.tray.push(...st.waiting); st.waiting = []; }   /* no rack: the pods that waited on the mat are at home with the rest, in the order they came (additive, no schema bump) */
   if (st.readingPod === undefined || (st.readingPod != null && !st.tray.some((p) => p.id === st.readingPod))) st.readingPod = null;   /* the pod on the reading-room bench (additive) */
   if (!Array.isArray(st.readHome)) st.readHome = [];   /* chapters read at the last docks, waiting for the Home notice and the reveal (additive, no schema bump) */
@@ -299,7 +299,19 @@ export const reachBand = (c) => { const of = c.of | 0, x = c.explored | 0; retur
 export const hasWorld = (sv) => !!(sv && sv.wid && typeof sv.seed === "number");
 export const docked = (st) => !!(st.dock && st.dock.docked);
 
-export const bayCrates = (st, sv) => (sv && Array.isArray(sv.bay) ? sv.bay : []).concat(st.devBay).filter((c) => !st.accepted.includes(c.id));
+// The Bay's table: the crates that crossed from the Companion's hold at the dock and wait here sealed, three at most (owner 11-25 07:1x: "three sealed crates ... that get unloaded at dock"). Opening takes from this list. Nothing aboard counts here.
+export const BAY_MAX = 3;
+export const bayCrates = (st) => (Array.isArray(st.bayHeld) ? st.bayHeld : []).filter((c) => !st.accepted.includes(c.id));
+// The crates still aboard the Companion (its save's bay and the dev bay), not yet crossed or opened.
+export const aboardCrates = (st, sv) => (sv && Array.isArray(sv.bay) ? sv.bay : []).concat(st.devBay).filter((c) => !st.accepted.includes(c.id) && !(st.bayHeld || []).some((h) => h.id === c.id));
+// The crossing (16b: the one place): the sealed crates leave the Companion's hold into the Station-held list, in their order, while there is room; the rest stay aboard. The Companion reads st.bayHeld and lets go of those it holds.
+export function crossCrates(st, sv) {
+  if (!Array.isArray(st.bayHeld)) st.bayHeld = [];
+  const crossed = [];
+  for (const c of aboardCrates(st, sv)) { if (st.bayHeld.length >= BAY_MAX) break; st.bayHeld.push(JSON.parse(JSON.stringify(c))); crossed.push(c.id); }
+  st.devBay = st.devBay.filter((c) => !crossed.includes(c.id));
+  return { crossed: crossed.length, aboard: aboardCrates(st, sv).length, held: st.bayHeld.length };
+}
 export const mibiById = (st, id) => st.mibis.find((m) => m.id === id) || null;
 export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
 // The carried set lives on the Companion (`sv.carried`); the Station reads it and asks for changes through the request queue `st.carryReqs`.
@@ -429,9 +441,9 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const paid = st.mendFull ? payMend(st, settings) : 0;
   // what came home with the Companion: the care it earned (mergeCare), the habits it did and the places it entered on the way
   const habits = [], home = mergeCare(st, sv, habits);
-  const n = bayCrates(st, sv).length;
-  logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, home, habits, dried, reading, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the shield is mended free" : "Docked · the bay is empty" };
+  const cross = crossCrates(st, sv), n = bayCrates(st).length;
+  logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : "") + (cross.aboard ? " · " + cross.aboard + " aboard, the Bay is full" : ""));
+  return { ok: true, docked: true, home, habits, dried, reading, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, crossed: cross.crossed, aboard: cross.aboard, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the shield is mended free" : "Docked · the bay is empty" };
 }
 // The world's events a crate carries (the Companion's `world.ev`, specs/world-events.md): [kind, place, who, n]. The kinds the Companion says; a kind or a shape this Station does not know is skipped, never an error.
 export const WORLD_EV_KINDS = ["grown", "elder", "lampLow", "lampOut", "shift", "herd", "storm", "fruit", "stirring", "young", "quiet"];
@@ -441,10 +453,10 @@ export function readWorldEv(c) {
     .map(([kind, place, who, n]) => ({ kind, place, who, n }));
 }
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
-export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st, sv)); }
+export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) { return openCrates(st, sv, settings, now, bayCrates(st)); }
 // The same for the crates named (a run opens them one at a time, T-20261016-216: the crates not yet opened stay sealed in the bay when the player leaves).
-export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now(), cs = bayCrates(st, sv)) {
-  if (!docked(st) || !cs.length) return { ok: false, plays: [] };
+export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now(), cs = bayCrates(st)) {
+  if (!cs.length) return { ok: false, plays: [] };   // the crates wait at the Bay, docked or not
   const plays = [];
   for (const c of cs) {
     st.accepted.push(c.id); if (st.accepted.length > 60) st.accepted.splice(0, st.accepted.length - 60);
@@ -468,6 +480,7 @@ export function openCrates(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()
     logEv(st, "Crate " + c.n + " opened · " + plural(ids.length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence" + (skipped.length ? " · not opened, no species: " + skipped.join(", ") : ""));
   }
   st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
+  if (Array.isArray(st.bayHeld)) st.bayHeld = st.bayHeld.filter((c) => !st.accepted.includes(c.id));
   syncKnown(st);
   return { ok: true, plays };
 }
@@ -801,7 +814,7 @@ export function readHomeNeed(st) {
 }
 export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0) {
   const cs = bayCrates(st, sv), N = NEEDS;
-  if (docked(st) && cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
+  if (cs.length) return { text: portraits ? (cs.length === 1 ? needLine(N.crates.withPortrait.noticeOne) : needLine(N.crates.withPortrait.notice, { count: countWord(cs.length, 3) })) : counted(N.crates, cs.length, 3), act: "bay", label: needLine(N.crates.label) };
   { const rh = readHomeNeed(st); if (rh) return { text: rh.n === 1 ? needLine(N.readHome.noticeOne, { Species: rh.Species }) : needLine(N.readHome.notice, { N: countWord(rh.n, 6), Species: rh.Species }), act: "store", label: needLine(N.readHome.label) }; }   // chapters read while the Companion was out: after the crates
   if (waitsForPlace(st, settings)) { const add = !addRoomBlock(st, settings); return { text: needLine(N.full.notice), act: "vivarium", ring: add ? "room.new" : "resident", label: needLine(add ? N.full.labelAdd : N.full.labelMake) }; }
   if (anyBudReady(st, settings)) return { text: needLine(N.budReady.notice), act: "inc", label: needLine(N.budReady.label) };
@@ -831,7 +844,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}, portraits = 0
 // short for it, and the screen its ✓ goes to. The Home view builds the words from home.json's strings; the room's ✓ goes where `act` says. null when nothing needs the player.
 export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrates = false) {
   const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
-  if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  if (!afterCrates && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
   { const rh = readHomeNeed(st); if (rh) return { key: "readHome", n: rh.n, max: 6, species: rh.name, act: "store" }; }   // chapters read while the Companion was out: after the crates, before anything else (Home's line carries the kind's name: views/home-props.mjs homeNeeds)
   if (waitsForPlace(st, settings)) return { key: "full", act: "vivarium", ring: addRoomBlock(st, settings) ? "resident" : "room.new" };   // no place is free and something waits for one: add a room (the ring on the new room) or make room (the ring on a resident)
   if (anyBudReady(st, settings)) return { key: "budReady", act: "incubator" };
@@ -862,7 +875,7 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
 // The one fact Idle's line says (frame.json idle.strings.order: crates, budReady, budGrowing, out; the first that holds), as a key for the view to put in words; null: none. Never a demand, and it is not needKey's order (which would hide a growing bud behind a new pod).
 export function idleKey(st, sv, settings = DEFAULT_SETTINGS) {
   const cs = bayCrates(st, sv);
-  if (docked(st) && cs.length) return { key: "crates", n: cs.length };
+  if (cs.length) return { key: "crates", n: cs.length };
   if (anyBudReady(st, settings)) return { key: "budReady" };
   if (st.bud) return { key: "budGrowing" };
   if (!docked(st)) { const ms = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean); if (ms.length) return { key: "out", n: ms.length, name: ms[0].name }; }
@@ -900,7 +913,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   const budStep = () => ({ key: "bud", ready: budReady(st, settings, Date.now()), minutes: budMinutesLeft(st, settings, Date.now()), species: kn(speciesOf(bud)), cross: bud.kind === "cross" && bud.parents?.length === 2, parents: bud.parents?.map((p) => p.name) ?? [] });
   // the pod chain for one species (or, with none named, for the first pod there is)
   const chain = (species) => {
-    if (docked(st) && cs.length) return { key: "openBay" };
+    if (cs.length) return { key: "openBay" };
     const mine = st.tray.filter((p) => !species || speciesOf(p) === species);
     const idd = mine.find((p) => p.idd);
     if (idd) { if (bud) return budStep(); if (vivFull(st, settings)) return { key: "full" };
@@ -922,7 +935,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
       const c = cand[0], held = c.pod.store ? c.pod.store.d | 0 : 0;
       if (held >= c.cost && onBench(st, c.pod)) return { key: "goOut" };
       return st.d > 0 || held ? { key: "put", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
-    if (docked(st) && cs.length) return { key: "openBay" };
+    if (cs.length) return { key: "openBay" };
     const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
     if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
     return { key: "findPod", species: sp };
@@ -1009,6 +1022,7 @@ export function seedCrate(st, species, count, seed, now = Date.now()) {
   const pods = Array.from({ length: Math.min(6, Math.max(1, count | 0)) }, (_, i) => { const gs = (Math.imul((seed >>> 0) + i * 7919, 2654435761) ^ (i * 40503)) >>> 0; return { id: "p" + i, species, sp: speciesIndex(species), g: places[(seed + i) % 5], how: hows[(seed + 2 * i) % 5], gs, k: null }; });
   const crate = { id, n, turn: st.turn, at: now, e: 3, d: 3, s: 4, pods, met: [species], explored: 0, of: 0, lines: [], dev: true };
   st.devBay.push(crate); st.devWorld = true;
+  if (docked(st)) crossCrates(st, null);   // a dev crate seeded while docked crosses at once (room allowing), as at a dock
   logEv(st, "Developer crate " + n + " · " + plural(pods.length, fr.species.name + " pod") + " · seed " + (seed >>> 0));
   return { ok: true, crate };
 }

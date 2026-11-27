@@ -76,8 +76,9 @@ test("the calm window lies in a part she is not at her bed, ten-odd light long, 
     const w = calmWindow(7, id, day, DAY.parts, ROUTINE.early), w2 = calmWindow(7, id, day, DAY.parts, ROUTINE.early);
     assert.deepEqual(w, w2); assert.ok(w && w.to - w.from === 12 && w.from >= 0 && w.to <= DAY.light - DAY.parts[DAY.parts.length - 1][1], JSON.stringify(w)); }
 });
-test("a sample answers a chapter: tuft Coat, whisker Face, shed claw Legs & Tail", () => {
-  assert.deepEqual(HABITS.map(k => SAMPLE[k].chapter), ["coat", "face", "legs-tail"]);
+test("a sample answers a chapter: whisker Face, shed claw Legs & Tail; a shake gives no tuft", () => {
+  assert.equal(SAMPLE.shake, undefined, "a shake drops no tuft");
+  assert.deepEqual(HABITS.filter(k => SAMPLE[k]).map(k => SAMPLE[k].chapter), ["face", "legs-tail"]);
   for (const k of HABITS) assert.ok(WORDS.habit.name[k] && WORDS.habit.tell[k] && WORDS.habit.beat[k].length === 4, "[copy] words for " + k);
 });
 
@@ -86,7 +87,7 @@ const find = `(() => { for (const c of [...new Set(S.cr.filter(q => q.sp === 0).
   for (const q of live.cr) if (q.sp === 0 && q.ind) return JSON.stringify({ key, id: q.id }); delete S.exp.live[key]; } return 'null'; })()`;
 
 for (const seed of [7, 13, 42]) {
-  test("on the page, seed " + seed + ": her nose lifts before the rain stops, the shake plays, a near note gives the tuft", () => {
+  test("on the page, seed " + seed + ": her nose lifts before the rain stops, the shake plays with no prompt and no tuft, keeping still beside her is the note", () => {
     const p = page(); p.run(`newWorld(${seed}); TEST.calm = true; startExpedition('weather', G.spawns[0]);`);
     const pick = JSON.parse(p.run(find)); assert.ok(pick, "a Loika in a mounted place");
     const out = JSON.parse(p.run(`(() => {
@@ -100,13 +101,14 @@ for (const seed of [7, 13, 42]) {
       for (let d = 1; d <= 4; d++) { const x = c.x + vec[0] * d, y = c.y + vec[1] * d; if (x < 1 || y < 1 || x >= lay.w - 1 || y >= lay.h - 1) { ok = false; break; } lay.tiles[y * lay.w + x] = T.REEDS; lay.reach[y * lay.w + x] = 1; }
       if (!ok) return JSON.stringify({ bad: 1 });
       unveil(key, c.x, c.y, 5); P.x = c.x + vec[0] * 4; P.y = c.y + vec[1] * 4; P.dir = vec[1] > 0 ? 'up' : vec[1] < 0 ? 'down' : vec[0] > 0 ? 'left' : 'right'; S.exp.storm = { x: col + .5 - 1.5 + 1.7 - 1.5, w: 3, dir: -1, v: .25, t: 0 };
-      const log = []; let closed = 0, noted = null, tellRain = null, beatRain = null, shook = false, tuft = false;
+      const log = []; let closed = 0, noted = null, tellRain = null, beatRain = null, shook = false, tuft = false, prompted = false;
       const d0 = S.exp.cargo.d;
       for (let i = 0; i < 40 && S.exp && !S.exp.ending; i++) {
         if (c.hb && !closed) { closed = 1; P.x = c.x + vec[0] * 2; P.y = c.y + vec[1] * 2; }   // the tell is the moment to step in
         live.strike = null; S.exp.stray = null;   // no lightning in the script: a strike near her would startle her
         const a = patchAction();
-        if (a.label === WORDS.habit.note && !noted) { a.run(); if (S.phase === 'watch') { watchKey('confirm'); S.phase = 'patch'; } noted = { range: S.exp.stats.noted[0].range, gives: S.exp.stats.noted[0].gives, first: S.exp.stats.noted[0].first }; }
+        if (c.hb && a.label === 'Note it') prompted = true;
+        if (c.hb && c.hb.n > c.hb.tell && a.label === WORDS.ease.keep && !noted) { a.run(); noted = { range: S.exp.stats.noted[0].range, gives: S.exp.stats.noted[0].gives, first: S.exp.stats.noted[0].first }; }
         else advance('patch', { noise: 'act' });
         const h = c.hb;
         if (h && tellRain == null) tellRain = stormRain(col);
@@ -116,7 +118,7 @@ for (const seed of [7, 13, 42]) {
         log.push(h ? h.k + h.n : c.st);
         if (S.day.hab[c.id + ':shake'] === 'played') break;
       }
-      return JSON.stringify({ log: log.join(' '), noted, tellRain, beatRain, shook, tuft, day: S.day.hab[c.id + ':shake'], samples: S.exp.cargo.samples, dData: S.exp.cargo.d - d0, hab: S.habits[c.id] && S.habits[c.id].shake, tell: c.hb && c.hb.tell, line: wildCtx(c, 'Alder') });
+      return JSON.stringify({ log: log.join(' '), noted, prompted, tellRain, beatRain, shook, tuft, day: S.day.hab[c.id + ':shake'], samples: S.exp.cargo.samples, dData: S.exp.cargo.d - d0, hab: S.habits[c.id] && S.habits[c.id].shake, tell: c.hb && c.hb.tell, line: wildCtx(c, 'Alder') });
     })()`));
     if (out.bad) return;
     assert.equal(out.day, "played", "the shake played to its end: " + out.log);
@@ -124,9 +126,9 @@ for (const seed of [7, 13, 42]) {
     assert.ok(out.shook, "the shake pose played");
     assert.ok(out.noted && out.noted.range === "near" && out.noted.first, "a near note, the habit's first: " + JSON.stringify(out.noted));
     assert.deepEqual(out.noted.gives, ["face"]);
-    assert.equal(out.samples.length, 1, "the tuft came home with the note"); assert.equal(out.samples[0].item, "tuft"); assert.equal(out.samples[0].chapter, "coat"); assert.equal(out.samples[0].habit, "shake");
+    assert.equal((out.samples || []).length, 0, "a shake gives no tuft: nothing comes home with the note"); assert.ok(!out.hab || !out.hab.sample, "the shake's record holds no sample");
     assert.equal(out.dData, 1, "the first note of a habit pays +1 Data");
-    assert.ok(out.tuft, "the tuft is on the ground too (Essence)");
+    assert.ok(!out.tuft, "no tuft is left on the ground"); assert.ok(!out.prompted, "no Note it prompt during a habit");
     assert.deepEqual(p.errors, []);
   });
 }
@@ -145,15 +147,18 @@ for (const seed of [7, 13]) {
       const side = [[1, 0, 'left'], [-1, 0, 'right'], [0, 1, 'up'], [0, -1, 'down']].find(([dx, dy]) => passable(far.x + dx, far.y + dy));
       P.x = side ? far.x + side[0] : far.x; P.y = side ? far.y + side[1] : far.y; P.dir = side ? side[2] : 'up';
       const d0 = S.exp.cargo.d, s0 = S.exp.cargo.samples.length, t0 = curLive().tf.length, n0 = (S.exp.stats.noted || []).length, sp0 = S.day.spent;
-      const a = patchAction(); const label = a.label; if (label === WORDS.prints.read) a.run();
-      const a2 = patchAction();
-      return JSON.stringify({ label, after: a2.label, pages: S.pages[c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dTufts: curLive().tf.length - t0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part });
+      S.named = S.named || {}; S.named[q.c.id] = q.c.ind.name;   // she is met: her page takes the haunt
+      const a = patchAction(); const label = a.label; if (label === WORDS.prints.read) a.run(); const line = FX.msg;
+      const a2 = patchAction(); const spent1 = S.day.spent, n1 = S.exp.stats.prints.length; if (a2.label === WORDS.prints.read) a2.run();   // #122's free re-view keeps the label; otherwise another action is offered and is not run
+      const again = { prints: S.exp.stats.prints.length - n1, light: S.day.spent - spent1 };
+      return JSON.stringify({ label, after: a2.label, again, pages: S.pages[q.c.id], prints: S.exp.stats.prints, dData: S.exp.cargo.d - d0, dSamples: S.exp.cargo.samples.length - s0, dTufts: curLive().tf.length - t0, dNotes: (S.exp.stats.noted || []).length - n0, light: S.day.spent - sp0, part: q.part, line });
     })()`));
     assert.ok(!out.none, "at midday she has left a haunt of the morning");
     assert.equal(out.label, WORDS.prints.read, JSON.stringify(out));
-    assert.notEqual(out.after, WORDS.prints.read, "one read for each haunt each day");
-    assert.equal(out.prints.length, 1); assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
-    assert.equal(out.dData, 0); assert.equal(out.dSamples, 1, "W5: an empty haunt gives a drop, her tuft keepsake, once for her (a sample, no Data, no habit note)"); assert.equal(out.dTufts, 1, "bug #122: one tuft left on the ground, once for her"); assert.equal(out.after, "Pick up the tuft", "bug #122: once read, ✓ picks the tuft up"); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
+    assert.equal(out.prints.length, 1, "one read for each haunt each day: a second run of the action leaves the one read");
+    assert.equal(out.again.prints, 0, "the second run adds no read"); assert.equal(out.again.light, 0, "the second run spends no light: " + JSON.stringify(out));
+    assert.ok(out.pages && Object.keys(out.pages).includes(out.part), "her page gains that haunt at that part of day");
+    assert.equal(out.dData, 0); assert.equal(out.dSamples, 0, "habits-out-build-1: the prints give no keepsake"); assert.equal(out.dTufts, 0, "no tuft is left"); assert.ok(out.line.endsWith(" · her page has it"), out.line); assert.equal(out.dNotes, 0, "not a habit note"); assert.equal(out.light, 1, "one action");
     assert.deepEqual(p.errors, []);
   });
 }

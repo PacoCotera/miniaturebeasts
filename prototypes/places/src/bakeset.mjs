@@ -6,7 +6,7 @@ import { crop } from './png.mjs';
 import { paletteOf, indexImage } from './indexed.mjs';
 import { fillTiles, layerTiles, kindFullTiles, layerRows, sheetTiles } from './setload.mjs';
 import { encodeRle } from './blit.mjs';
-import { FORMAT_VERSION } from './format/write.mjs';
+import { TILESET_VERSION } from './format/write.mjs';
 import { TABLE_NAMES } from './lighttables.mjs';
 
 const lumOf = (rgb) => 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
@@ -131,7 +131,7 @@ export function bakeTileSet(loaded, terrains) {
   const cat = (parts, n) => { const out = new Uint8Array(n); let o = 0; for (const p of parts) { out.set(p, o); o += p.length; } return out; };
 
   return {
-    id: set.id, formatVersion: FORMAT_VERSION, tile: 48, half: 24,
+    id: set.id, formatVersion: TILESET_VERSION, tile: 48, half: 24,
     palette: loaded.palette.colours.map((c) => hex6([parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)])),
     lightTables: TABLE_NAMES.map((name) => ({ name, map: Uint8Array.from(loaded.palette.tables[name]) })),
     atlas48, atlas24, tiles: tileList, pairs, sprites,

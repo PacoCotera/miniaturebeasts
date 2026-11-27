@@ -37,13 +37,19 @@ test("seated: with reduced motion the flashes are steady for their span", () => 
   const { p, st } = world(3); seat(p, st); p.run("RM.matches = true");
   assert.deepEqual([499, 500, 900, 1285, 1286].map((a) => p.run(`crateFlashOn(3, ${a})`)), [false, true, true, true, false]);
 });
-test("seated: the count steps down by one as the Station confirms each crate, and at zero the icon goes", () => {
+test("seated: the Station's dock rule took the crates (st.bayHeld); the Companion only reads, and its docked line says the state", () => {
   const { p, st } = world(3); seat(p, st);
-  // the Station opens all three: they leave the bay at once, the count shows them until each is confirmed (+800, +3800, +6800)
-  p.run("S.bay = []; FX.crateDown = { at: NOW, total: 3 };");
-  const at = (ms) => p.run(`NOW = 10000 + ${ms}; bayShown()`);
-  assert.deepEqual([0, 799, 800, 3799, 3800, 6799, 6800, 9000].map(at), [3, 3, 2, 2, 1, 1, 0, 0]);
-  assert.equal(p.run("FX.crateDown"), null, "spent");
+  assert.equal(st.bayHeld.length, 3, "the dock rule took all three across");
+  p.run("syncStation()"); assert.equal(p.run("S.bay.length"), 0, "the hold reads empty");
+  assert.equal(p.run("FX.crateDown"), undefined, "no stepping count: the line the Companion had for it is gone");
+  const at = (ms) => p.run(`NOW = 10000 + ${ms}; dockState()`);
+  assert.equal(at(100), "Docked · unloading"); assert.equal(at(5000), "Unloaded · ready to go out");
+});
+test("seated with a full Bay: the crate that did not fit stays aboard and the Companion says so", () => {
+  const { p, st } = world(4); seat(p, st);
+  assert.equal(st.bayHeld.length, 3, "three crossed"); p.run("syncStation()"); assert.equal(p.run("S.bay.length"), 1, "one stays aboard");
+  assert.equal(p.run("NOW = 15000; dockState()"), "Docked · 1 crate waits at the Bay");
+  assert.equal(p.run("DOCK_TEXT.bay(1)"), "1 crate aboard · the Bay is full");
 });
 test("seated mid-expedition is unchanged: no frame, no cut", () => {
   const { p, st } = world(1); p.run("S.phase = 'map'; S.exp = { shield: 3, smax: 3, hold: 2, cargo: { pods: [], e: 0, d: 0, s: 0 }, actions: 0 };");
