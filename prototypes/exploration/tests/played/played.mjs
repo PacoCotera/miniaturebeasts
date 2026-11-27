@@ -330,8 +330,26 @@ for (const size of SCALE_SIZES) {
       await until(g.page, () => { const s = window.__play.frames.station.contentWindow.__st; return window.__play.owner === "station" && s.UI.screen === "cargo" && (s.ST.bayHeld || []).length > 0; }, null, "Dock: the Bay shows the crates"); await stable(g.page);
       const came = await g.page.evaluate(() => { const s = window.__play.frames.station.contentWindow.__st; return { back: s.UI.cargo.arrival && s.UI.cargo.arrival.back, pressed: s.UI.cargo.pressed, tag: s.props.bay && s.props.bay.came && s.props.bay.came.tag }; });
       console.log(`# s32c ${tag}: ${JSON.stringify(came)}`);
-      assert.ok(came.tag && !came.pressed, "the case is reached: the Bay carries her name before his first press");
-      await g.shot(`s32c-${tag}-came`);
+      assert.ok(came.tag && !came.pressed, "the case is reached: the Bay carries her name before his first press");   // state: only that the case is reached; the verdict is the pixels below (rule 16a)
+      const imCame = await g.shot(`s32c-${tag}-came`), plan = await g.page.evaluate(() => window.__play.plan), pan = await g.page.evaluate(() => window.__play.pan);
+      const lp = (r) => { const d = size.dpr, s = plan.scale * d, sc = plan.screen; return { x: Math.round(sc.x * d + (r[0] - pan.x) * s), y: Math.round(sc.y * d + (r[1] - pan.y) * s), w: Math.round(r[2] * s), h: Math.round(r[3] * s) }; };
+      const slot = lp([338, 194, 150, 164]), tagBox = lp([338, 364, 150, 30]);   // cargo.json forms.narrow.her: the slot, and the tag under it (tagAt 413,374)
+      // the no-arrival Bay: bay-three's dock shot at the same size, the same crate and no mibi home
+      const h = await open(size, "bay-three"); let imNone;
+      try {
+        const db = await h.page.getByRole("button", { name: /Dock the Companion/ }).first().boundingBox({ timeout: 5000 });
+        await h.page.mouse.click(db.x + db.width / 2, db.y + db.height / 2);
+        await until(h.page, () => { const s = window.__play.frames.station.contentWindow.__st; return window.__play.owner === "station" && s.UI.screen === "cargo" && (s.ST.bayHeld || []).length > 0; }, null, "Dock: the Bay shows the crates"); await stable(h.page);
+        imNone = await h.shot(`s32c-${tag}-none`);
+      } finally { await h.ctx.close(); }
+      const inSlot = changed(imCame, imNone, slot), inTag = changed(imCame, imNone, tagBox);
+      console.log(`# s32c ${tag}: her slot: ${inSlot.n} of ${inSlot.of} pixels differ from the Bay with no arrival; her tag's box: ${inTag.n} of ${inTag.of}`);
+      assert.ok(inSlot.frac > 0.1, `her slot's region changed against the no-arrival Bay (${inSlot.n} of ${inSlot.of} pixels differ)`);
+      assert.ok(inTag.n > 100, `her tag's region changed against the no-arrival Bay (${inTag.n} of ${inTag.of} pixels differ)`);
+      // "{name} came home" against its crop (refs/bay-came-<size>.png)
+      const rf = againstRef(imCame, tagBox, `bay-came-${tag}`);
+      console.log(`# s32c ${tag}: "${came.tag}": ${rf.n} of ${rf.of} pixels differ from its reference crop`);
+      assert.ok(rf.frac <= 0.02, `the Bay reads "${came.tag}": her tag matches its reference crop (${rf.n} of ${rf.of} pixels differ)`);
     } finally { await g.ctx.close(); }
   });
 }
