@@ -4302,8 +4302,8 @@ function beatShift(c, ts) {
   return { dx: Math.round(sx * ts * p.f), dy: Math.round((b.stand.y - c.y) * ts * p.f), step: p.ph === 'hold' ? -1 : Math.floor(NOW / 170) % 2, face };
 }
 function beatSay(c, b) {   // the line: queued; settleOnce puts it in only when the box is free at the end of the action, and spends it only when it shows
-  const sd = S.beatSaid || (S.beatSaid = {}), key = c.id + '.' + b.k;
-  if (sd[key] === S.turn || !S.named[c.id]) return;
+  const key = c.id + '.' + b.k;
+  if (!S.named[c.id]) return;   // wild-beats-line-1: every beat says its line (a kind said earlier today said it again; beats 3 and 4 lost theirs)
   FX.beatLine = { text: WORDS.beat[b.k](S.named[c.id], b.tgt && b.tgt.cls), key };
 }
 function idleBeat(c, X, bx, by) {
