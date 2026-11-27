@@ -69,7 +69,8 @@ WORDS.ease = {
   hearCreep: creep => 'creep ' + (creep ? 'heard' : 'unheard'),   // the short form, for a narrow line
   hearOne: (name, heard) => heard ? name + ' would hear you here' : name + ' would not hear you here',
   stay: n => n > 0 ? 'lets you stay ' + n + ' light' : 'does not let you stay',
-  stayShort: n => 'stay ' + n,   // within 2 tiles: the light it lets you stay
+  asleepShort: 'asleep',   // [copy] ease.asleepShort: the bottom bar's word for a curled-up Loika (the box and card keep 'asleep, curled up')
+  stayShort: n => 'stay ' + n,  // within 2 tiles: the light it lets you stay
   stayHeard: n => n ? n + ' looked up · you stayed too long' : 'It looked up · you stayed too long',
   keep: 'Keep still',   // the ✓ label that holds
   hold: { habit: 'Kept still · one beat', ten: 'Kept still · ten light gone', ease: 'Kept still · its ease changed', tell: 'Kept still · something is starting', weather: 'Kept still · the weather turned', part: 'Kept still · the day turned', over: 'Kept still · the day ends', warn: 'Kept still · lightning is warned', plate: 'Kept still · a plate was lost' },

@@ -564,6 +564,31 @@ for (const size of SIZES) {
       assert.ok(c.n < 20, `the slot still reads 9 (${c.n} pixels changed)`);
     } finally { await g.ctx.close(); }
   });
+  // OWNER 2026-11-24 18:5x ("you just can pick the pod at night"; 20:2x ok to core-loop-walkthrough-1), PR 673 (sleep-word-fix-2; build desk bus 096fb407f9 + c5d044daad): a curled-up Loika's bar word reads "asleep", not her ease word.
+  // Arranged save sleep-claws-8: Plover curled at her bed, 4 tiles left of him, at night. Played: the d-pad left once (he faces her; she stays curled). State only asserts the case is reached (she is curled, his facing, the phase).
+  // The verdict is the pixels: the bottom bar's word against a crop of that word (saves/s31-asleep-word.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it). Each press waits for its effect, never a fixed pause.
+  if (size.w === 412) it(`s31 a curled-up Loika's bar word reads asleep (PR 673, sleep-claws-8): facing Plover curled at her bed, the bottom bar's word is "asleep" [${tag}]`, async () => {
+    const WORD = frac(380, 1142, 400, 52);   // the bar's whole word "Plover · asleep · stay 8", in the 900x1200 frame
+    const g = await open(size, "sleep-claws-8");
+    try {
+      const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.x, P && P.y, P && P.dir, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+      const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes (or 3 s), then holds still for 400 ms
+      const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, cs = m.curLive().cr.filter((q) => q.ind), c = cs.find((q) => m.curledNow(q) && q.y === P.y) || cs.find((q) => m.curledNow(q)); return { phase: m.S.phase, at: [P.x, P.y], dir: P.dir, herAt: c && [c.x, c.y], curled: !!c && m.curledNow(c), on: !!c && m.onScreen(c.x, c.y), all: cs.map((q) => [q.ind.name, q.x, q.y, m.curledNow(q), m.sleeperOf(q), m.atBedNow(q), q.ease, !!q.hide, !!q.hb]), part: m.dayPart(), spent: m.S.day.spent }; });
+      await step("left");   // the d-pad left once: he faces her
+      let s = await st();
+      for (let i = 0; i < 14 && !s.curled; i++) { await step("confirm"); s = await st(); }   // her bedtime play runs its beats as the light passes: ✓ Keep still until she has settled curled
+      assert.ok(s.phase === "patch" && s.curled && s.on && s.herAt[1] === s.at[1] && s.herAt[0] < s.at[0], `the case is reached: in the place, she is curled and on the screen, he is facing her (${JSON.stringify(s)})`);
+      const r = await g.region(), im = await g.shot("s31-asleep");
+      const w = { x: r.x + Math.round(r.w * WORD[0]), y: r.y + Math.round(r.h * WORD[1]), w: Math.round(r.w * WORD[2]), h: Math.round(r.h * WORD[3]) };
+      const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+      const f = path.join(savesDir, "s31-asleep-word.png");
+      if (process.env.PLAYED_WRITE_CROPS) { const c = crop(w); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+      const ref = decodePNG(readFileSync(f)), c = crop({ x: w.x, y: w.y, w: ref.width, h: ref.height });
+      let bad = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) bad++;
+      console.log(`# s31 ${tag}: the bar's word differs from the crop of "asleep" by ${bad} of ${ref.width * ref.height} pixels`);
+      assert.ok(bad < ref.width * ref.height * 0.02, `the bottom bar's word reads asleep (${bad} pixels differ from its crop)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
@@ -626,6 +651,65 @@ for (const size of SIZES) {
       assert.ok(a < 5000 && a2 > 20000, `right after the push the box shows "Lightning strikes here next" (${a} pixels from that line, ${a2} from the push line)`);
       assert.ok(b < 5000, `the box holds the same warning 2 s later (${b} pixels differ)`);
       assert.ok(c < 5000 && c2 > 20000, `after the next press the box shows the push line (${c} pixels from the push line, ${c2} from the warning)`);
+    } finally { await g.ctx.close(); }
+  });
+  // OWNER 11-25 ("didn't we have stone slabs that you could move?"; "ok" to core-loop-walkthrough-1); QA verify-live 0fc2b4e; design bus 0e4483 ("a lasting mark: the glint stays on the tile while anything is left under the slab and goes when it is taken").
+  // Arranged saves: slab-mark-hold and slab-mark-room are slab-full-hold and slab-full-room with the place marked explored (S.called; the glints show only in an explored place, 60% of it seen: the walk here does not reach that). Played by presses: push with the hold full, walk away and back; the old tile glints like every takeable (find-glint-1's pixels within 1.6 s); the hold has room, ✓ takes it, and over the next 1.6 s no glint there.
+  // State only asserts the reach (what is left under the slab: > 0, then 0) and gives the old tile's position; the verdict is the pixels of the tile on the shots.
+  // The light tints the glint's colours, so the verdict is the blink itself: pixels of the old tile that are warm (find-glint-1 is tan, orange and yellow; the rain is blue, the slab's dashes brown) in some shots of 1.6 s and not warm in others. The glint is on for 400 ms of every 1.6 s.
+  const blink = (crops) => { let n = 0; const m = crops[0].length / 4, warm = (c, i) => c[i * 4] > 110 && c[i * 4] - c[i * 4 + 2] > 45; for (let i = 0; i < m; i++) { let on = 0; for (const c of crops) if (warm(c, i)) on++; if (on > 0 && on < crops.length) n++; } return n; };
+  const cropOf = (im, b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; } return d; };
+  if (size.w === 412) it(`s19 what stays under a pushed slab glints until it is taken (QA verify-live 0fc2b4e) [${tag}]`, async () => {
+    const g = await open(size, "slab-mark-hold");
+    try {
+      const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp.patch, f = m.layout(p.key).feats.find((q) => q.kind === "s" && q.under === "mat"); return { s: S.exp.cargo.s, hx: p.x, hy: p.y, sx: f.x, sy: f.y, left: ((S.cells[p.key] || {})[f.id] || {}).left | 0 }; });
+      const r = await g.region(), tile = 48 * r.w / 450;
+      await g.press("confirm", 100, 400);   // push with the hold full
+      let s = await st();
+      assert.ok(s.s === 20 && s.left > 0, `the case is reached: the hold is full and ${s.left} lies under the slab`);
+      // walk away from the old tile and back by presses, ending two tiles below it
+      for (let i = 0; i < 3; i++) await g.press("down", 100, 250);
+      for (let i = 0; i < 12 && (s = await st(), s.hy - s.sy > 2); i++) await g.press("up", 100, 250);
+      s = await st();
+      const hero = async (im) => blobs(im, { x: r.x, y: r.y + Math.round(r.h * 0.06), w: r.w, h: Math.round(r.h * 0.88) }, HERO)[0];
+      const probe = async (name) => {   // the glint pixels in the old tile's box over 1.6 s (shots every ~150 ms)
+        const crops = [];
+        for (let i = 0; i < 11; i++) { const im = await g.shot(name + "-" + i), h = await hero(im); assert.ok(h && h.n > 100, "the hero is on the shot");
+          const cx = h.box.x + h.box.w / 2 + (s.sx - s.hx) * tile, cy = h.box.y + h.box.h / 2 + (s.sy - s.hy) * tile, bx = { x: Math.round(cx - tile / 2), y: Math.round(cy - tile / 2), w: Math.round(tile), h: Math.round(tile) };
+          crops.push(cropOf(im, bx)); await wait(150); }
+        return blink(crops);
+      };
+      assert.ok(s.hy - s.sy === 2 && s.hx === s.sx, `the case is reached: the hero stands two tiles below the old tile (${JSON.stringify(s)})`);
+      const on = await probe("s19-glint");
+      console.log(`# s19 ${tag}: glint pixels on the old tile over 1.6 s, with ${s.left} left under it: ${on}`);
+      assert.ok(on >= 100, `the old tile glints while something lies under the slab (${on} pixels of find-glint-1)`);
+    } finally { await g.ctx.close(); }
+  });
+  if (size.w === 412) it(`s20 taking what lay under the slab takes the glint away (QA verify-live 0fc2b4e) [${tag}]`, async () => {
+    const g = await open(size, "slab-mark-room");   // the slab already pushed, the hold empty, the hero beside the old tile
+    try {
+      const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp.patch, f = m.layout(p.key).feats.find((q) => q.kind === "s" && q.under === "mat"); return { s: S.exp.cargo.s, hx: p.x, hy: p.y, sx: f.x, sy: f.y, left: ((S.cells[p.key] || {})[f.id] || {}).left | 0 }; });
+      const r = await g.region(), tile = 48 * r.w / 450;
+      for (let i = 0; i < 3; i++) await g.press("down", 100, 250);
+      for (let i = 0; i < 3; i++) await g.press("up", 100, 250);   // walk down and back: the Call and the walk explore the place, the hero is beside the old tile again
+      let s = await st();
+      assert.ok(s.s === 0 && s.left > 0, `the case is reached: room in the hold and ${s.left} under the slab`);
+      const probe = async (name) => {
+        const crops = [];
+        for (let i = 0; i < 11; i++) { const im = await g.shot(name + "-" + i), h = blobs(im, { x: r.x, y: r.y + Math.round(r.h * 0.06), w: r.w, h: Math.round(r.h * 0.88) }, HERO)[0]; assert.ok(h && h.n > 100, "the hero is on the shot");
+          const cx = h.box.x + h.box.w / 2 + (s.sx - s.hx) * tile, cy = h.box.y + h.box.h / 2 + (s.sy - s.hy) * tile, bx = { x: Math.round(cx - tile / 2), y: Math.round(cy - tile / 2), w: Math.round(tile), h: Math.round(tile) };
+          crops.push(cropOf(im, bx)); await wait(150); }
+        return blink(crops);
+      };
+      const on = await probe("s20-before");
+      await g.press("confirm", 100, 400);   // ✓ takes it
+      const after = await st();
+      assert.ok(after.s > 0 && after.left === 0, `the case is reached: the hold rose and nothing lies under the slab (${JSON.stringify(after)})`);
+      s = after;
+      const off = await probe("s20-after");
+      console.log(`# s20 ${tag}: glint pixels on the old tile over 1.6 s: before the take ${on}, after ${off}`);
+      assert.ok(on >= 100, `the old tile glints before the take (${on} pixels)`);
+      assert.ok(off < 20, `no glint on the old tile over 1.6 s after the take (${off} pixels)`);
     } finally { await g.ctx.close(); }
   });
 
