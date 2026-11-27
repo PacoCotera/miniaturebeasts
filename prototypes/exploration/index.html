@@ -3384,12 +3384,9 @@ function applyLines(lay) {
   for (const [i, t] of lay.lineSaved || []) lay.tiles[i] = t;   // the last visit's blocks come off
   lay.lineSaved = []; lay.lines = { cells: new Map(), ops: [], patches: [] };
   for (const o of lay.openings || []) {
-    const k = openingKind(lay, o); if (k.kind !== 'range' && k.kind !== 'closed') continue;
-    lay.lines.ops.push({ ...o, ...k }); blockLine(lay, lineCells(lay, o, k.kind === 'range'), k);
+    const k = openingKind(lay, o); if (k.kind !== 'closed') continue;   // (reach-build-1) a range side blocks nothing: a place of the square is open to its own edges; the refusal is the step across
+    lay.lines.ops.push({ ...o, ...k }); blockLine(lay, lineCells(lay, o, false), k);
   }
-  // A side the range square shuts is blocked whether or not the place lists an opening on it: the dashed line (peekReachLine) is drawn on every such side, so the walk must refuse it on every such side (owner note #102; a side with no opening had the line and no blocks).
-  const opened = new Set((lay.openings || []).map(o => o.side));
-  for (const side of Object.keys(SIDE_DIR)) { if (opened.has(side)) continue; const k = openingKind(lay, { side }); if (k.kind === 'range') blockLine(lay, lineCells(lay, { side }, true), k); }
   lay.lines.id = lay.lines.patches.map(p => p.x + ',' + p.y).join(';');
   // Nothing to take, strike or read lies in the wash or past a band (owner walk notes 14, 26-28): such a thing waits out of the place's list while its tile is under a line, and comes back when the line draws back.
   if (lay.lineFeats && lay.lineFeats.length) { lay.feats.push(...lay.lineFeats); lay.lineFeats = []; }
@@ -3409,14 +3406,6 @@ function hazeSync(lay) {
   if (!lay.lines || !lay.baked) return;
   const anim = lay.hazeAnim || (lay.hazeAnim = {});
   for (const [side, a] of Object.entries(anim)) if (NOW - a.t0 >= LINE_DEPTH * HAZE_STEP_MS) { delete anim[side]; if (a.dir < 0) applyLines(lay); }   // the drawn-back side opens
-  let redo = false;
-  for (const o of lay.openings || []) {
-    const range = openingKind(lay, o).kind === 'range', had = lay.lines.ops.some(q => q.side === o.side && q.kind === 'range');
-    if (range === had || anim[o.side]) continue;
-    if (!motion()) { redo = true; continue; }
-    if (had) anim[o.side] = { t0: NOW, dir: -1 }; else { anim[o.side] = { t0: NOW, dir: 1 }; redo = true; }
-  }
-  if (redo) applyLines(lay);
 }
 // The edge veil (places/src/veil.mjs): over the coast's deep water and along each region side past the Probe's reach (drawn back the way the old wash was). The veiled land past a corner decides the
 // corner: both sides veiled, an outer corner; neither, but the land past it veiled, an inner corner; a band that meets open land ends in a taper. Off the map the band runs on.
@@ -3432,8 +3421,7 @@ function veilPlanOf(lay) {
   if (!lay.baked || lay.cave || !PL.veilMod) return null;
   const cell = lay.cell, sides = { N: false, E: false, S: false, W: false };
   if (!lay.veilCoast) lay.veilCoast = Object.fromEntries(['N', 'E', 'S', 'W'].map(side => [side, crossReason(cell, SIDE_DIR[side]) === SHORE_TEXT]));
-  const hz = lay.lines ? lay.lines.ops.filter(o => o.kind === 'range' && hazeDepth(lay, o.side) > 0).map(o => o.side) : [];
-  for (const side of ['N', 'E', 'S', 'W']) sides[side] = lay.veilCoast[side] || hz.includes(side);
+  for (const side of ['N', 'E', 'S', 'W']) sides[side] = lay.veilCoast[side];
   const diag = diagVeiled(cell);
   // water at a place edge that is not veiled above (a lake or a river meeting an inland side): the same veil along each run of water cells, never over land (veil.mjs waterVeilPlan)
   if (!lay.veilWater) {
@@ -6519,6 +6507,12 @@ function drawReachView(t) {
     const L = q.big ? 9 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
     R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
+  { // (reach-build-1) past the square a soft fog, the ordered dither fading outward, in place of the dashed edge; the same all day
+    clipView(); const bw = 3, s = q.size;
+    [4, 8, 12].forEach((lv, i) => { const o = (2 - i) * bw, col = 'night';   // the densest at the very edge, fading inward
+      ditherFill(q.dx + o, q.dy + o, s - 2 * o, bw, col, lv); ditherFill(q.dx + o, q.dy + s - o - bw, s - 2 * o, bw, col, lv);
+      ditherFill(q.dx + o, q.dy + o + bw, bw, s - 2 * o - 2 * bw, col, lv); ditherFill(q.dx + s - o - bw, q.dy + o + bw, bw, s - 2 * o - 2 * bw, col, lv); });
+    g.restore(); }
   if (FX.edge && NOW - FX.edge.at < 1000) for (const c of FX.edge.cs) { const e = cxy(c), ex0 = q.dx + (e.x - (q.s0.x - q.r)) * q.cs, ey0 = q.dy + (e.y - (q.s0.y - q.r)) * q.cs;   // the ring's finds that are in view: brackets about 1 s
     if (ex0 >= q.dx && ey0 >= q.dy && ex0 + q.cs <= q.dx + q.size && ey0 + q.cs <= q.dy + q.size) { brackets(Math.round(ex0), Math.round(ey0), q.cs, q.cs, C.orange); break; } }   // one find is bracketed
   if (peek.on) for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
@@ -7097,7 +7091,7 @@ function drawWhole(t) {
   const found = walkedCell(lay.cell);
   // the marks, drawn in this order: what is still there to take, then the partner as its kind, then you on top (the desk's look-view art)
   const marks = () => {
-    if (v.kind === 'peek') { clipView(); try { peekReachLine(lay, tp(0, 0).x - Tp / 2, tp(0, 0).y - Tp / 2, Tp); peekFruit(lay.cell, lay, (x, y) => { const r = tp(x, y); return { x: r.x - Tp / 2, y: r.y - Tp / 2 }; }, Tp); } finally { g.restore(); } }   // (call-probe-marks-1) the Probe's reach line, then the bushes with fruit and the fruit on the ground the walk shows, at this view's tile
+    if (v.kind === 'peek') { clipView(); try { peekFruit(lay.cell, lay, (x, y) => { const r = tp(x, y); return { x: r.x - Tp / 2, y: r.y - Tp / 2 }; }, Tp); } finally { g.restore(); } }   // (call-probe-marks-1) the Probe's reach line, then the bushes with fruit and the fruit on the ground the walk shows, at this view's tile
     if ((v.kind === 'look' && found) || v.kind === 'peek') for (const it of (v.kind === 'peek' ? leftItemsAll(lay.cell).filter(i => FINDS.includes(i.k) || i.k === 'fruit') : leftItems(lay.cell)).sort((a, b) => a.y - b.y)) { if (it.cave) continue; const r = tp(it.x, it.y), f = motion() ? String(1 + Math.floor(NOW / 300) % 2) : 'still';
       if (it.k === 'strike') { const pc = propPiece('strike-mark-unread-' + (f === '2' ? 2 : 1)); if (pc.w > 1) blit(pc, Math.round(r.x - pc.w / 2), Math.round(r.y - pc.h / 2), 0, hash(it.x, it.y, 9) % 2 === 1); continue; }   // the same piece the walk draws (the desk's look-take-strike picture is a slot)
       lookMark(`look-take-${it.k}-${f}`, 'take', r.x, r.y, Tp); }
@@ -7118,21 +7112,6 @@ function peekFruit(key, lay, at, Tp) {
   const k = Tp / placeTs(lay), live = S.exp.live[key];
   for (const f of lay.feats) { if (f.kind !== 'b' || f.tree || !bushFull(key, f) || !unveiled(key, f.x, f.y)) continue; const a = at(f.x, f.y); blitScaled(bushArt(true, f), a.x, a.y, k); }
   if (live) for (const q of live.fr) { if (!(unveiled(key, q.x, q.y) || q.put)) continue; const a = at(q.x, q.y); blitScaled(FRUIT(), a.x + 10 * k, a.y + 14 * k, k); }
-}
-// (call-probe-marks-1, owner #60) The Probe's reach line in the held view: the walk's dashed line (2 px bark, LINE_DEPTH tiles in from the side), on every side of the range square that faces
-// ground outside it, for the cell you stand in and the ring of cells round it. x0, y0: the standing cell's top-left; the cells round it are the same size.
-function peekReachLine(lay, x0, y0, Tp) {
-  const ex = S.exp; if (!ex) return;
-  const s0 = cxy(ex.start), r = ex.range, cx = lay.cell % MW, cy = (lay.cell / MW) | 0, cw = lay.w * Tp, ch = lay.h * Tp, dep = LINE_DEPTH * Tp;
-  const real = (X, Y) => X >= 0 && Y >= 0 && X < MW && Y < MH, inSq = (X, Y) => real(X, Y) && Math.abs(X - s0.x) <= r && Math.abs(Y - s0.y) <= r;
-  const hl = (x, y, len) => { for (let d = 0; d < len; d += 14) R(x + d, y - 1, Math.min(8, len - d), 2, C.bark); };
-  const vl = (x, y, len) => { for (let d = 0; d < len; d += 14) R(x - 1, y + d, 2, Math.min(8, len - d), C.bark); };
-  for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-    const X = cx + dx, Y = cy + dy; if (!inSq(X, Y)) continue;
-    const ax = x0 + dx * cw, ay = y0 + dy * ch, shut = (a, b) => real(a, b) && !inSq(a, b);
-    if (shut(X, Y - 1)) hl(ax, ay + dep, cw); if (shut(X, Y + 1)) hl(ax, ay + ch - dep, cw);
-    if (shut(X - 1, Y)) vl(ax + dep, ay, ch); if (shut(X + 1, Y)) vl(ax + cw - dep, ay, ch);
-  }
 }
 // The canvas state a frame starts from: no clip, no transform, no pending save, sharp pixels. A frame that threw half way (a save with no restore) can never leave a clip behind.
 function resetCanvas() { while (gDepth > 0) g.restore(); g.setTransform(1, 0, 0, 1, 0, 0); g.imageSmoothingEnabled = false; }
@@ -7504,34 +7483,12 @@ function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
   if (t.side === 'E') r.w += 3; else if (t.side === 'W') { r.x -= 3; r.w += 3; } else if (t.side === 'N') { r.y -= 3; r.h += 3; } else r.h += 3; return r; }
 // After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
 // The edge look on the walk (owner walk notes 4, 13, 14, 16, 26-28; one vocabulary with the map, in the map's ink):
-//   can't go yet (the Probe's reach): a dashed ink line on the haze, along the side's inner face;
 //   a way through: within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
 // [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
 const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land';
-function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
-  const bk = lay.baked; if (!bk || lay.cave || !lay.openings) return [];
-  const out = [];
-  const opened = new Set(lay.openings.map(o => o.side)), bare = Object.keys(SIDE_DIR).filter(side => !opened.has(side)).map(side => ({ side }));   // a side the range square shuts has its line whether or not the place lists an opening on it (owner #157; the walk blocks it the same way, applyLines)
-  for (const o of [...lay.openings, ...bare]) { const k = openingKind(lay, o), whole = k.kind === 'range'; if (k.kind !== 'open' && !whole) continue; if (o.from === undefined && !whole) continue;
-    const a = whole ? 0 : o.from, b = whole ? (o.side === 'N' || o.side === 'S' ? bk.w : bk.h) - 1 : o.to;
-    const ns = o.side === 'N' || o.side === 'S', a0 = a + (ns ? bk.ox : bk.oy), a1 = b + 1 + (ns ? bk.ox : bk.oy);   // along the side, in the place's tiles; the side itself is the place's own edge (the baked apron lies outside it)
-    out.push({ o, k, x0: ns ? a0 : o.side === 'W' ? 0 : lay.w, x1: ns ? a1 : o.side === 'W' ? 0 : lay.w, y0: !ns ? a0 : o.side === 'N' ? 0 : lay.h, y1: !ns ? a1 : o.side === 'N' ? 0 : lay.h }); }
-  return out;
-}
 function drawEdgeLook(t) {
   const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
-  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + tx * ts, sy = ty => pl.y + ty * ts;   // a page tile edge on the screen (pl: the page's tile-0 corner, from the camera)
-  for (const e of edgeSides(lay, P)) {
-    const vertical = e.o.side === 'W' || e.o.side === 'E';
-    if (e.k.kind === 'range') {   // the dashed reach line: LINE_DEPTH tiles in from the edge, along the whole side
-      const bk = lay.baked, face = e.o.side === 'N' ? bk.oy + LINE_DEPTH : e.o.side === 'S' ? bk.oy + bk.h - LINE_DEPTH : e.o.side === 'W' ? bk.ox + LINE_DEPTH : bk.ox + bk.w - LINE_DEPTH;   // the band's inner face
-      const ax = vertical ? sx(face) : sx(e.x0), ay = vertical ? sy(e.y0) : sy(face), bx = vertical ? ax : sx(e.x1), by = vertical ? sy(e.y1) : ay;
-      clipView(); const x0 = Math.round(Math.min(ax, bx)), y0 = Math.round(Math.min(ay, by)), len = Math.round(vertical ? Math.abs(by - ay) : Math.abs(bx - ax));
-      for (let d = 0; d < len; d += 14) { if (vertical) R(x0 - 1, y0 + d, 2, Math.min(8, len - d), C.bark); else R(x0 + d, y0 - 1, Math.min(8, len - d), 2, C.bark); }   // whole pixels only: the screen holds palette colours, nothing blended
-      g.restore();
-    }
-    // a way through: the land shows it; no tab, no mark (owner note #24: the place is named once when you enter it)
-  }
+  // no dashed reach line inside a place; a way through: the land shows it, no tab, no mark (owner note #24: the place is named once when you enter it)
 }
 // The Probe's pulse in the top bar while the neighbours are read ahead (note 19): a small ring in the map's ink that breathes; [art] slot probe-pulse.
 function drawProbePulse(x, y) {
