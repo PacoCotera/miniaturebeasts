@@ -430,6 +430,34 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 
+  // QA verify-live-154 (bus e96853af12), his #166 save: "the menu box can still COVER the hero: 412x915-B-left-edge has him on the rock at x~410 of the view, B-left-menu puts the box on the right half over him, so he reads as gone. The box should take the side he is not on." (menu-side-hero-1)
+  // QA's walk by presses (runB.mjs): up, right, down, left, each until he stops; then ← opens the menu. State only asserts the case is reached (the place, the pawn on the view in the 192-258 band); the verdict is the shot: the hero's orange pixels whole, as many as before the menu, on the same spot.
+  if (size.w === 412) it(`s19 the menu box beside the hero (QA verify-live-154, his #166 save, the left edge of the rock field): ← opens the menu and his pixels are whole on the screen, not under the box [${tag}]`, async () => {
+    const g = await open(size, "166");
+    try {
+      const at = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, p = m.RT.plScr; return { phase: m.S.phase, key: P && P.key, x: P && P.x, y: P && P.y, px: p && p.x, py: p && p.y }; });
+      for (const dir of ["up", "right", "down", "left"]) {
+        let same = 0, last = JSON.stringify(await at());
+        for (let i = 0; i < 40 && same < 2; i++) { await g.press(dir, 100, 500); const now = JSON.stringify(await at()); same = now === last ? same + 1 : 0; last = now; }
+      }
+      const spot = await at();
+      console.log(`# s19 ${tag}: he stands at ${JSON.stringify(spot)}`);
+      assert.equal(spot.phase, "patch", "the case is reached: he is walking the place");
+      assert.ok(spot.px >= 192 && spot.px <= 258, `the case is reached: the pawn stands at x ${spot.px} of the view, in the 192-258 band`);
+      const r = await g.region(), base = await g.shot(`s19-${tag}-edge`);
+      const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
+      const hero = blobs(base, field, HERO)[0];
+      assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
+      const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
+      await g.press("back");                                // ← opens the menu
+      assert.equal((await at()).phase, "menu", "the case is reached: the menu is open");
+      const menu = blobs(await g.shot(`s19-${tag}-menu`), hb, HERO)[0] || { n: 0, box: null };
+      console.log(`# s19 ${tag}: hero ${hero.n} px before the menu, ${menu.n} with it open`);
+      assert.ok(menu.n >= hero.n * 0.95, `the hero's pixels are whole with the menu open, the box is not over him (${menu.n} of ${hero.n} pixels)`);
+      assert.ok(menu.box && Math.abs(menu.box.x - hero.box.x) <= 4 && Math.abs(menu.box.y - hero.box.y) <= 4 && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange at his place is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+    } finally { await g.ctx.close(); }
+  });
+
   // OWNER #156 (11-24 15:5x): "you should be able to select it and see it log if there's anything." QA's case: a habit's beat line and ✓ Keep still only for a Loika on the walk screen (PR 652).
   // Seed 42's dusk save, played twice with the d-pad only. Near: he stands 3 tiles from her curled at her bed (light 549): the bottom bar reads ✓ Keep still. Far: he walked off up the place so she is off the screen: the bar reads something else.
   // State only asserts each case is reached; the verdict is the bar's label pixels: the far label is not the near one, and the near label is the same one a step later.
