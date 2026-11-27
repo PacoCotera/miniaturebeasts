@@ -3593,6 +3593,13 @@
    "sha256": "0d704861752190366358da6590bef1600a73c48bf07e341b3c3bcecfda3de19a"
   },
   {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "1a34ee5bbc",
+   "path": "prototypes/exploration/art/props/NIGHT_POD_LOIKA-tile-32x32.png",
+   "sha256": "53f1e47fcf09657a008ac18c1cff8c07d69e979e5ac0ddd9f06dd0a96d8cb3aa"
+  },
+  {
    "class": "legacy-paint",
    "date": "2026-11-12",
    "id": "fa7dfc1e06",
@@ -3780,6 +3787,20 @@
    "id": "15dc14d739",
    "path": "prototypes/exploration/art/props/mushroom-ring.png",
    "sha256": "b715126807af96996e691f0499a4278348a750b2b4bc64c0854581da3fdb3231"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "eca1641915",
+   "path": "prototypes/exploration/art/props/night-pod-loika-24x14.png",
+   "sha256": "98a07c06a7a97bb3970b7a5a771280dcbba17e1233a3baa6ec860f7cdbcb63b6"
+  },
+  {
+   "class": "pixel",
+   "date": "2026-11-27",
+   "id": "07c858ee28",
+   "path": "prototypes/exploration/art/props/night-pod-loika-case-32x18.png",
+   "sha256": "98f4da6245c3b49abe661f1b81cb3471fb0d6c49180791707ddcf653eb72b606"
   },
   {
    "class": "legacy-paint",
