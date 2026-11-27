@@ -1002,4 +1002,65 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
     assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
   } finally { await g.ctx.close(); }
 });
+
+// OWNER #141 (11-24 18:06 UTC): "adjacent place is 100% water in a rectangle, showing no shores or integrating into the active place. this is a terrain generation problem."
+// OWNER #166 (11-25 00:53 UTC): "water above is deep and doesn't transition smoothly with the adjacent terrain. again, a border between places is blocked by a straight line of deep water."  (PR 609; rule 16a)
+// His two saves, at his phone size (412x915), by presses on the page. Both saves were made standing on water that is wide water now (PLACE_REV 5), so the page loads him on the nearest land tile of the same place (GD 11-27)
+// and the short Call (the ring, the walking view) shows the shore and the water across the seam. State only asserts the case is reached (the place of his note).
+// The verdict is the pixels of the walking view: no straight box edge (a long straight vertical or horizontal line where the colour jumps) anywhere on the game screen.
+// A straight edge is a run of at least 120 device pixels along one column (or row) where the neighbouring pixels differ by more than 60 (sum of channels). The dashed seam marker is short dashes, so it is not a run.
+function longestEdge(im, r, jump = 60) {
+  const d = (x, y, x2, y2) => { const p = px(im, x, y), q = px(im, x2, y2); return Math.abs(p[0] - q[0]) + Math.abs(p[1] - q[1]) + Math.abs(p[2] - q[2]) > jump; };
+  let best = { n: 0, at: null };
+  const y0 = r.y + Math.round(r.h * 0.125), y1 = r.y + Math.round(r.h * 0.84);      // the picture alone: under the HUD and its line, above the toast and the bottom bar
+  for (let x = r.x + 1; x < r.x + r.w; x++) { let run = 0; for (let y = y0; y < y1; y++) { run = d(x, y, x - 1, y) ? run + 1 : 0; if (run > best.n) best = { n: run, at: `column ${x - r.x}, rows to ${y - r.y}`, dir: "vertical" }; } }
+  for (let y = y0 + 1; y < y1; y++) { let run = 0; for (let x = r.x; x < r.x + r.w; x++) { run = d(x, y, x, y - 1) ? run + 1 : 0; if (run > best.n) best = { n: run, at: `row ${y - r.y}, columns to ${x - r.x}`, dir: "horizontal" }; } }
+  return best;
+}
+const WATER = ([R, G, B]) => B > G - 5 && B > R + 25 && G > R;
+const SHORE_CASES = [
+  { save: "141", place: "172", note: "#141" },
+  { save: "166", place: "186", note: "#166" },
+];
+for (const c of SHORE_CASES) it(`s32 water meets the shore across the seam (${c.note}, his save, place ${c.place}): no straight box edge on the walking view after a Call [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const g = await open(SIZES[0], c.save);
+  try {
+    const at = await g.where();
+    assert.deepEqual([at.phase, at.key], ["patch", c.place], "the case is reached: he stands in the place of his note");
+    await g.press("call", 100, 2000);                       // a short Call: the ring, the walking view
+    const r = await g.region(), im = await g.shot(`s32-${c.save}`);
+    const waterSeen = colour(im, r, WATER).n / (r.w * r.h);
+    assert.ok(waterSeen > 0.05, `the case is reached: the water is on the screen (${(waterSeen * 100).toFixed(1)}%)`);
+    const e = longestEdge(im, r);
+    console.log(`# s32 ${c.note}: longest straight edge ${e.n} device px (${e.dir} ${e.at}); water ${(waterSeen * 100).toFixed(1)}%`);
+    assert.ok(e.n < 120, `no straight box edge on the walking view (${e.n} device pixels along ${e.dir} ${e.at})`);
+  } finally { await g.ctx.close(); }
+});
+
+// GD 11-27 (QA verify-609, his #166 save): after PLACE_REV 5 the saved tile is deep water ("Water · no way across", presses do nothing). The rule: a tile that cannot be stood on loads him on the nearest land tile of the same place.
+// His #166 save, by presses: he loads in his place, off the water tile of his note, and a press on the d-pad moves him. State asserts the place and that the tile is not the water tile; the verdict is the pixels:
+// his orange figure stands on the screen, the pixels at his feet are not water, and after a press he has moved on the screen and the bottom line is not "Water · no way across".
+it(`s33 his #166 save loads him on land and he walks (GD 11-27): the d-pad moves him off the water tile [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const g = await open(SIZES[0], "166");
+  try {
+    const at = await g.where();
+    assert.equal(at.phase, "patch"); assert.equal(at.key, "186", "the case is reached: he is in the place of his note");
+    assert.notDeepEqual([at.x, at.y], [21, 0], "the case is reached: he is not on the water tile his save held");
+    const r = await g.region(), field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: Math.round(r.h * 0.72) };
+    const base = await g.shot("s33-start"), hero = blobs(base, field, HERO)[0];
+    assert.ok(hero && hero.n > 150, `his figure is on the screen (${hero ? hero.n : 0} pixels)`);
+    const feet = { x: hero.box.x - 4, y: hero.box.y + hero.box.h, w: hero.box.w + 8, h: 10 };
+    const wet = colour(base, r, WATER, feet).n / (feet.w * feet.h);
+    console.log(`# s33: figure ${JSON.stringify(hero.box)}, water at his feet ${(wet * 100).toFixed(0)}%`);
+    assert.ok(wet < 0.5, `he does not stand in water (${(wet * 100).toFixed(0)}% water pixels at his feet)`);
+    let moved = null;
+    for (const dir of ["up", "left", "right", "down"]) {
+      await g.press(dir, 100, 900);
+      const now = blobs(await g.shot(`s33-${dir}`), field, HERO)[0], after = await g.where();
+      if (after.x !== at.x || after.y !== at.y) { moved = { dir, from: [at.x, at.y], to: [after.x, after.y], figure: now && now.box }; break; }
+    }
+    console.log(`# s33: ${JSON.stringify(moved)}`);
+    assert.ok(moved, "a press of the d-pad moves him (up, left, right or down)");
+  } finally { await g.ctx.close(); }
+});
 });
