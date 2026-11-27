@@ -15,8 +15,35 @@ export { CW, CH };
 export const WTW = RW * CW, WTH = RH * CH;                // the realm in tiles
 export const RAISE_OFF = 12;                               // the coast: raised land begins at least twelve tiles in from the border line (the inner face of the realm's outer ring of cells, which is water)
 export const BORDER_X = CW, BORDER_Y = CH;                 // the border ring is one cell deep: its width in tiles on the west and east, its height on the north and south
-// the tiles from the border line to the tile (gx, gy): 0 on the first walkable tile, negative inside the border ring and beyond the realm
-export const inlandOf = (gx, gy) => Math.min(gx - BORDER_X, WTW - 1 - BORDER_X - gx, gy - BORDER_Y, WTH - 1 - BORDER_Y - gy);
+// The border line WANDERS (owner #141, #178: "water is so blocky, very long straight shores"): along each side it stands off the straight cell line by o(along) tiles, -COAST_IN..COAST_OUT (positive: the sea reaches
+// into the land), laid in stretches of 3 tiles, each differing from the one before by 1 or 2 (a step of 3 would put deep water beside sand in one block, which the ground passes refuse), so no stretch of coast runs straight for more than 3 tiles. One function of the world tile alone (no seed: every realm has the
+// same border), so every place, the map and the sector read the same line. Every coast number (COAST_REACH, RAISE_OFF, WET_REACH, the ramp) is measured from this line.
+export const COAST_IN = 3, COAST_OUT = 8;
+const coastMix = (a, b, s) => { let h = Math.imul(a ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(b + s, 0xc2b2ae35); h ^= h >>> 15; h = Math.imul(h, 0x2c1b3c6d); h ^= h >>> 12; h = Math.imul(h, 0x297a2d39); h ^= h >>> 15; return (h >>> 0) / 4294967296; };
+const COAST_TB = [];
+function coastTable(side, n) {
+  let tb = COAST_TB[side]; if (tb) return tb;
+  tb = COAST_TB[side] = new Int8Array(n); const s = 7001 + side * 7919;
+  let o = Math.floor(coastMix(1, 2, s) * (COAST_IN + COAST_OUT + 1)) - COAST_IN;
+  for (let pos = 0, k = 0; pos < n; k++) {
+    const r = coastMix(k, 13, s), mag = r < 0.5 ? 1 : 2, sg = coastMix(k, 17, s) < Math.max(0.1, Math.min(0.9, 0.5 + (o - 2.5) * 0.06)) ? -1 : 1;
+    let o2 = o + sg * mag; if (o2 > COAST_OUT || o2 < -COAST_IN) o2 = o - sg * mag;
+    if (o2 > COAST_OUT || o2 < -COAST_IN) o2 = o;
+    o = o2; for (let j = 0; j < 3 && pos < n; j++) tb[pos++] = o;
+  }
+  return tb;
+}
+const alongOf = (tb, a) => tb[a < 0 ? 0 : a >= tb.length ? tb.length - 1 : a];
+// the side nearest the tile (0 west, 1 east, 2 north, 3 south) and the tiles to the wandering line from it
+export function coastSide(gx, gy) {
+  const dW = gx - BORDER_X - alongOf(coastTable(0, WTH), gy), dE = WTW - 1 - BORDER_X - gx - alongOf(coastTable(1, WTH), gy), dN = gy - BORDER_Y - alongOf(coastTable(2, WTW), gx), dS = WTH - 1 - BORDER_Y - gy - alongOf(coastTable(3, WTW), gx);
+  const m = Math.min(dW, dE, dN, dS); return [m, m === dW ? 0 : m === dE ? 1 : m === dN ? 2 : 3];
+}
+// the tiles from the border line to the tile (gx, gy): 0 on the first tile past the line, negative in the sea and beyond the realm
+export const inlandOf = (gx, gy) => {
+  const m = Math.min(gx - BORDER_X, WTW - 1 - BORDER_X - gx, gy - BORDER_Y, WTH - 1 - BORDER_Y - gy);
+  return m >= 40 ? m : coastSide(gx, gy)[0];
+};
 const N = CW * CH;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 
@@ -72,10 +99,10 @@ function rimWobbleQ8(seed, side, s) {   // Q8 tiles, -RIM_WOBBLE .. RIM_WOBBLE
   return shr((k(i) * (65536 - sm) + k(i + 1) * sm) * RIM_WOBBLE * 256, 26);   // k / 1024 of the wobble, Q8
 }
 function coastQ16(seed, gx, gy) {
-  const dW = gx - BORDER_X, dE = WTW - 1 - BORDER_X - gx, dN = gy - BORDER_Y, dS = WTH - 1 - BORDER_Y - gy, m = Math.min(dW, dE, dN, dS);
+  const [m, side] = coastSide(gx, gy);
   if (m >= RIM + RIM_WOBBLE) return 0;
   const sd = subSeed(seed, 'rim-wobble');
-  const w = m === dW ? rimWobbleQ8(sd, 0, gy) : m === dE ? rimWobbleQ8(sd, 1, gy) : m === dN ? rimWobbleQ8(sd, 2, gx) : rimWobbleQ8(sd, 3, gx);
+  const w = rimWobbleQ8(sd, side, side < 2 ? gy : gx);
   const d = m * 256 + w; if (d >= RIM * 256) return 0;
   return -div((RIM * 256 - Math.max(d, RAISE_OFF * 256)) * RAMP, (RIM - RAISE_OFF) * 256);
 }

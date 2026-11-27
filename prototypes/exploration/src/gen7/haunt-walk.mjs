@@ -57,5 +57,14 @@ export function makeHauntWalk(env) {
     const roomy = s => { if (s.k !== 'land') return true; const d = pathField(lay, s, null, lay.key); let n = 0; for (let i = 0; i < d.length; i++) if (d[i] >= 0 && lay.reach[i]) n++; return n >= .6 * reachN; };
     return hauntSites(v).filter(s => roomy(s) && (ok(s.x, s.y) || ok(s.x + 1, s.y) || ok(s.x - 1, s.y) || ok(s.x, s.y + 1) || ok(s.x, s.y - 1)) &&(sp => sp.front && sp.side)(hauntSpots(s, ok))); })());
 
-  return { hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField };
+  // The sites a Loika may choose her haunts from: the largest set that are all walkable from each other (wild-beats-fix-4; a path from each to every other, rims respected), so the haunts of her four parts of day are always a walk apart, never across a shut rim.
+  // A site is reached when its own tile or one beside it has a walking distance in the other site's field.
+  const hauntSitesWalkable = lay => lay.hauntsW || (lay.hauntsW = (() => { const all = hauntSitesOf(lay); if (all.length < 2) return all;
+    const near = (d, s) => [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const x = s.x + dx, y = s.y + dy; return x >= 0 && y >= 0 && x < lay.w && y < lay.h && d[y * lay.w + x] >= 0; });
+    const f = all.map(s => pathField(lay, s, null, lay.key));
+    let best = [];
+    all.forEach((a, i) => { const set = all.filter((b, j) => j === i || (near(f[i], b) && near(f[j], a))); if (set.length > best.length) best = set; });
+    return best; })());
+
+  return { hauntView, placeReach, hauntStandable, hauntSitesOf, hauntSitesWalkable, staticShut, pathField };
 }
