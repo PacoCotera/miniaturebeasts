@@ -12,7 +12,7 @@ import { hash, L, EDGE, MW, MH, sideKind, softGround, bankEdges } from '../world
 import { ATLAS } from '../regions.mjs';
 import { RW, RH, CW, CH, noiseField, fieldsAt } from './world.mjs';
 import { realm7, portOffset, portAt, edgeOfStep, route, NC } from './region.mjs';
-import { levelsOf, forgetLevels, regionBanks, madeRegionBanks, presetRegionBanks, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
+import { coastSide, levelsOf, forgetLevels, regionBanks, madeRegionBanks, presetRegionBanks, loweredAt, levelCell, RAISE_OFF, tileLevel, raised as raisedTile, findWayup, pocketWayups, bankWayups, tileFields, inlandOf, WTW, WTH, BORDER_X, BORDER_Y } from './levels.mjs';
 import { createDecor } from './decor.mjs';
 import { streamPieces, drawStream, bridgeList, layBridge, fallsSite, edgeId } from './streams.mjs';
 import { RULES } from './rules.mjs';
@@ -212,11 +212,10 @@ function portOff(S, p, q) {
 // row pair, so the ground passes keep the edge as made. A tile near a corner of the realm reads the side it is nearest to.
 const EDGE_RUN = 3, EDGE_SLOW = 2;
 function coastEdges(S, gx, gy) {
-  const dW = gx - BORDER_X, dE = WTW - 1 - BORDER_X - gx, dN = gy - BORDER_Y, dS = WTH - 1 - BORDER_Y - gy, m = Math.min(dW, dE, dN, dS);
-  const side = m === dW ? 0 : m === dE ? 1 : m === dN ? 2 : 3, s = side < 2 ? gy : gx, blk = Math.floor(s / EDGE_RUN);
+  const side = coastSide(gx, gy)[1], s = side < 2 ? gy : gx, blk = Math.floor(s / EDGE_RUN);
   const cache = S.coastEdgeAt || (S.coastEdgeAt = [new Map(), new Map(), new Map(), new Map()]), hit = cache[side].get(blk); if (hit) return hit;
   const u = (blk * EDGE_RUN + EDGE_RUN / 2) / EDGE_SLOW;
-  const wl = 4 + Math.floor(3 * clamp(0.5 + 0.5 * S.nC(u, 311 * side + 17), 0, 0.999)), deep = S.nM(u, 211 * side + 5) > 0 ? 2 : 1, beach = S.nD(u, 97 * side + 3) > 0 ? 3 : 2, out = [deep, wl, wl + beach];
+  const wl = 5, deep = S.nM(u, 211 * side + 5) > 0 ? 2 : 1, beach = S.nD(u, 97 * side + 3) > 0 ? 3 : 2, out = [deep, wl, wl + beach];
   cache[side].set(blk, out); return out;
 }
 
