@@ -169,6 +169,8 @@ WORDS.target = { line: (name, where, dir, fits) => {
 } };
 // [copy] WORKING WORDS (edge-cost-line-fix-1, owner 2026-11-25 "ok"): the bottom line while the next step crosses into the next place; n is DAY.mapStep. The editor's final string replaces it.
 WORDS.edgeStep = n => n + ' light to the next place';
+// [copy] WORKING WORDS (reveal-build-1): the line when a map step's new ring ends on a find; editorial's reveal.find. The editor's final string replaces it.
+WORDS.reveal = { find: 'the ring ends on a find' };
 
 // The realm's day (walk-design-1 W1, owner 2026-11-19 16:2x): light counted in actions, six parts of day (*greybox* numbers, the owner's to tune). The world turns only at the night's end.
 // Pure: the page and the bots read the same table.

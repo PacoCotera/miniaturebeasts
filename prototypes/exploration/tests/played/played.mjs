@@ -1645,4 +1645,39 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
     } finally { await g.ctx.close(); }
   });
 }
+// OWNER 2025-11-25 16:3x: "revealing the map is cool to, gets tedious, but it's a good entertainment." (reveal-build-1, PR 695; build desk's NO d2cdce, rule 12). A fresh seed 13 at 412x915, played by presses only: ✓ to set out, then the d-pad on the map.
+// A map step lifts the 5x5 ring. State only asserts the case is reached (the map, cells revealed by the first step that moves him, the find on the ring's edge if there is one); the verdict is the pixels:
+// the reach view after that step against a crop of it (saves/s35-reveal-ring.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it). If the step lands a find on the new edge and it is in view, its orange brackets are found too.
+if (SIZES[0].w === 412) it(`s35 a map step lifts the 5x5 ring (reveal-build-1, seed 13): the reach view after the first step is the crop, and a find on the new edge is bracketed [412x915]`, async () => {
+  const size = SIZES[0];
+  const g = await open(size, { seed: 13 });
+  const m = (f) => g.page.evaluate(f);
+  const count = () => m(() => { const S = window.__play.frames.companion.contentWindow.__mb.S; return S.revealed.reduce((n, v) => n + (v ? 1 : 0), 0); });
+  try {
+    for (let i = 0; i < 8 && (await g.where()).phase !== "map"; i++) await g.press("confirm", 100, 2500);   // ✓ to set out
+    assert.equal((await g.where()).phase, "map", "the case is reached: he is on the map");
+    let n0 = await count(), n1 = n0, im = null, edge = null;
+    for (const d of ["right", "down", "left", "up", "right", "down", "right", "down"]) {   // the d-pad: the first step that moves him
+      await g.press(d, 100, 150);
+      edge = await m(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m.FX.edge ? m.FX.edge.cs.length : 0; });   // read at once: the brackets last about 1 s
+      im = await g.shot("s35-ring"); await wait(1500);
+      n1 = await count();
+      if (n1 > n0) break;
+    }
+    console.log(`# s35: ${n1 - n0} cells lifted by the first step; ${edge} finds on the ring's edge`);
+    assert.ok(n1 - n0 > 3, `the case is reached: the step lifted more than main's 3x3 ring (${n1 - n0} cells)`);
+    const r = await g.region(), box = { x: r.x + Math.round(r.w * 0.04), y: r.y + Math.round(r.h * 0.12), w: Math.round(r.w * 0.92), h: Math.round(r.h * 0.5) };
+    const f = path.join(savesDir, "s35-reveal-ring.png");
+    if (process.env.PLAYED_WRITE_CROPS) {
+      const d = new Uint8Array(box.w * box.h * 4);
+      for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y), j = (y * box.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+      writeFileSync(f, encodePNG(box.w, box.h, d));
+    }
+    const ref = decodePNG(readFileSync(f));
+    assert.deepEqual([ref.width, ref.height], [box.w, box.h], "the crop is the size of the reach view's box");
+    let bad = 0; for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y), k = (y * box.w + x) * 4; if (Math.abs(p[0] - ref.data[k]) + Math.abs(p[1] - ref.data[k + 1]) + Math.abs(p[2] - ref.data[k + 2]) > 30) bad++; }
+    console.log(`# s35: the reach view differs from its crop by ${bad} of ${box.w * box.h} pixels`);
+    assert.ok(bad < box.w * box.h * 0.03, `the ring is lifted: the reach view is the crop (${bad} pixels differ)`);
+  } finally { await g.ctx.close(); }
+});
 });
