@@ -6,10 +6,12 @@
 // o is laid in stretches of exactly 3 tiles (the ground passes keep nothing narrower: no bay, notch or strip under 3 wide) and differs from the stretch before it by 1 to 3, so no bank runs straight for more than 3 tiles by construction. Round a corner the line follows the tile's distance
 // to the wide cell, so the corners are round and never square.
 import { hash } from './world.mjs';
+import { CW, CH, RW, RH } from './gen7/world.mjs';
 
 export const SHORE_A = 8;          // tiles the line may stand off the cell seam, each way
 export const SHORE_SAND = 3;       // the widest strip of sand beside the water, in tiles (2 or 3 by the seed's noise)
-const CW = 24, CH = 28, RW = 80, RH = 100;
+export const SHORE_SHALLOW = 5;    // tiles of shallows along the line: the place, the peek and the map all lay this width (once, here)
+export const SHORE_BEACH = 3;      // tiles of beach on the land side of the line
 
 const mix = (a, b, s) => { let h = Math.imul(a ^ 0x9e3779b9, 0x85ebca6b) ^ Math.imul(b + s, 0xc2b2ae35); h ^= h >>> 15; h = Math.imul(h, 0x2c1b3c6d); h ^= h >>> 12; h = Math.imul(h, 0x297a2d39); h ^= h >>> 15; return (h >>> 0) / 4294967296; };
 const SALT = new Map();

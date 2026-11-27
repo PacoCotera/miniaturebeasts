@@ -4,9 +4,8 @@
 // before any place is built); until the sector is here, the land of the cell under it after a soft displacement of value noise (±11 px at 72 px cells and ±2.5 px fine), so cell borders become coastlines, wood edges
 // and field edges and no grid lines are drawn. Fog keeps its three states on the same borders. Pure: no page state.
 import { hash, L, MW, MH } from './world.mjs';
-import { shoreValue } from './shore7.mjs';
-const CWT = 24, CHT = 28;   // the tiles of a cell (shore7.mjs, gen7 CW x CH)
-const SHORE_SHALLOW = 5, SHORE_BEACH = 3;   // tiles from the shore line: the shallows' width, the beach's width (the place lays the same)
+import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from './shore7.mjs';
+import { CW as CWT, CH as CHT } from './gen7/world.mjs';   // the tiles of a cell
 
 const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
 const vnLat = (s, a, b) => { if (a < 0 || b < 0 || a > 8191 || b > 8191 || s < 0 || s > 15) return (hash(9, s, a, b) % 1000) / 1000; const k = ((s * 8192 + a) * 8192) + b; let v = VN_LAT.get(k); if (v === undefined) { v = (hash(9, s, a, b) % 1000) / 1000; VN_LAT.set(k, v); } return v; };

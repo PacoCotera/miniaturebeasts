@@ -250,7 +250,7 @@ import { readyRealm, readySector } from "./src/realm-store.mjs";
 import { waitPips, fracPips, startPlaceWait, placeWaitPips, PIPS } from "./src/waitpips.mjs";
 import { placesTag, placesTagSet, placesOn, placesWorker, warmPlaces, placesReset, placesWatch, readyPlaces, bakedGet, packageUse, packageState, packageOwes, stageOf, bakedPut, bakedWhen, readyBanks, groundAsk, groundPending, groundTake, landAsk, landPending, landTake } from "./src/place-store.mjs";
 import { paintLand } from "./src/landpaint.mjs";
-import { shoreValue } from "./src/shore7.mjs";
+import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from "./src/shore7.mjs";
 import { makeMapPaint } from "./src/map-paint.mjs";
 import { breakLines, buildTag } from "./src/breakline.mjs";
 import { viewOf, camAt, visTiles, sprOff, BAYER4, eighthGrid, coverE, stormStep, stormBandHit, fogBandHit, fogVeilKeep, FOG_BAND_PX, puffSize, puffShare, PUFF_TONE, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
@@ -6882,7 +6882,6 @@ function drawPeekNeighbours(v, lay, ox, oy, W, H, Tp) {
 }
 // owner #141 / #178 ("water is so blocky, very long straight shores"): a wide-water cell seen beside the place is drawn tile by tile from shoreValue (src/shore7.mjs), the same line the places lay: where it says land
 // (a point the land reaches out into the sea cell) a beach strip of 3 tiles then meadow, along the line the place's own shallow tile for SHORE_SHALLOW tiles, and the cell's plain sea beyond. Drawn under the veil of the cell.
-const SHORE_SHALLOW = 5, SHORE_BEACH = 3;
 function peekShore(r, X, Y, Tp, lay, bk) {
   const R0 = hereRegion(), slot = R0 && R0.slot; if (!slot) return;
   const seed = S.regions[0].seed, rx = slot[0] * MW, ry = slot[1] * MH, cl = (cx, cy) => Math.min(MH - 1, Math.max(0, cy - ry)) * MW + Math.min(MW - 1, Math.max(0, cx - rx));
