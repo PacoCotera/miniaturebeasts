@@ -7,40 +7,17 @@
     "said": [],
     "screen": "cargo",
     "focus": "room",
-    "ok": "Skip",
-    "subject": "Two sealed crates",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "show",
-      "verb": "skip"
-     }
-    ],
-    "screen": "cargo",
-    "focus": "room",
     "ok": "Open the crate",
-    "subject": "Open the Bay",
+    "subject": "",
     "idle": false
    },
    {
     "key": "right",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "pad"
-     }
-    ],
+    "said": [],
     "screen": "cargo",
     "focus": "room",
     "ok": "Open the crate",
-    "subject": "Open the Bay",
+    "subject": "",
     "idle": false
    },
    {
@@ -54,9 +31,9 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "room",
-    "ok": "Open Dot",
-    "subject": "Dot · Roots 1 of 8",
+    "focus": "bay",
+    "ok": null,
+    "subject": "Open the Bay",
     "idle": false
    },
    {
@@ -66,17 +43,10 @@
      "withMibi": "loika"
     },
     "line": {
-     "ok": "Open Dot",
-     "subject": "Dot · Roots 1 of 8",
-     "back": "Vivarium",
-     "need": "Two crates wait in the Bay",
-     "keys": [
-      {
-       "key": "library",
-       "room": "library",
-       "word": "Family"
-      }
-     ]
+     "ok": null,
+     "subject": "Open the Bay",
+     "back": "Home",
+     "need": "Two crates wait in the Bay"
     },
     "plate": ""
    }
@@ -88,58 +58,68 @@
      {
       "t": "intent",
       "screen": "vivarium",
-      "target": "cell.1",
-      "verb": "room:home"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "room",
-    "ok": null,
-    "subject": "Open the Bay",
-    "idle": false
-   },
-   {
-    "key": "home",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "vivarium",
       "target": "room.0",
       "verb": "room:home"
      }
     ],
     "screen": "cargo",
-    "focus": "room",
-    "ok": "Skip",
-    "subject": "Open the Bay",
+    "focus": "bay",
+    "ok": "Put away",
+    "subject": "",
     "idle": false
    },
    {
-    "key": "down",
-    "said": [],
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
     "screen": "cargo",
-    "focus": "room",
-    "ok": "Skip",
-    "subject": "Open the Bay",
+    "focus": "bay",
+    "ok": "Open the crate",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": "Put away",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "room",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "bay",
+    "ok": "To the Nursery",
+    "subject": "",
     "idle": false
    },
    {
     "end": true,
-    "wells": [
-     null,
-     null,
-     {
-      "crate": 0,
-      "order": 0
-     },
-     {
-      "crate": 1,
-      "order": 0
-     },
-     null,
-     null
-    ],
-    "ok": "Look at the pods"
+    "end_words": "2 crates unloaded · 2 pods home",
+    "ok": "To the Nursery"
    },
    {
     "key": "confirm",
@@ -152,7 +132,7 @@
      }
     ],
     "screen": "pods",
-    "focus": "room",
+    "focus": "bay",
     "ok": null,
     "subject": null,
     "idle": false
@@ -168,7 +148,7 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "room",
+    "focus": "bay",
     "ok": null,
     "subject": "Identify the Loika pod",
     "idle": false
@@ -197,7 +177,7 @@
      }
     ],
     "screen": "pods",
-    "focus": "room",
+    "focus": "bay",
     "ok": null,
     "subject": null,
     "idle": false
@@ -213,7 +193,7 @@
      }
     ],
     "screen": "vivarium",
-    "focus": "room",
+    "focus": "bay",
     "ok": null,
     "subject": "Identify the Loika pod",
     "idle": false
@@ -231,7 +211,7 @@
      }
     ],
     "screen": "bench",
-    "focus": "room",
+    "focus": "bay",
     "ok": "Switch off",
     "subject": "Two free, the rest ⚡ 1 each",
     "idle": false
@@ -282,40 +262,8 @@
    {
     "key": "dock",
     "said": [],
-    "screen": "cargo",
-    "focus": "room",
-    "ok": null,
-    "subject": "The bay is empty",
-    "idle": false
-   },
-   {
-    "key": "confirm",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "cargo",
-      "target": "room",
-      "verb": "confirm"
-     }
-    ],
     "screen": "vivarium",
     "focus": "room",
-    "ok": "Open Dot",
-    "subject": "Dot · Roots 1 of 8",
-    "idle": false
-   },
-   {
-    "key": "back",
-    "said": [
-     {
-      "t": "intent",
-      "screen": "vivarium",
-      "target": "cell.1",
-      "verb": "back"
-     }
-    ],
-    "screen": "vivarium",
-    "focus": "vivarium",
     "ok": null,
     "subject": "Identify the Loika pod",
     "idle": false
