@@ -365,6 +365,22 @@ for (const size of SIZES) {
     });
   }
 
+  // OWNER 11-25 16:3x ("collecting materials is cool too, but you fill up too fast your inventory."; satchel-stack-build-1): one satchel slot holds one kind, up to 9; the Case shows the count on the slot.
+  // A copy of a save in the place; the satchel is arranged (state is set only to reach the case), the Case is opened and the verdict is the pixels of the slot: 1 claw, then 9 (the 10th staying is in satchel-stack-page.test.mjs).
+  if (size.w === 412) it(`s19 the Case shows one slot per kind with its count: 1 claw reads differently from 9 [${tag}]`, async () => {
+    const g = await open(size, "slab-full-room");
+    try {
+      const mb = (f, a) => g.page.evaluate(([src, arg]) => { const m = window.__play.frames.companion.contentWindow.__mb; return new Function("m", "arg", src)(m, arg); }, [f, a]);
+      const claws = (n) => mb("m.S.exp.cargo.samples = Array.from({ length: arg }, (_, i) => ({ id: 'old' + i, lo: 900 + i, name: 'Old', sp: 0, habit: 'sleep', item: 'claw', chapter: 'legs-tail', turn: 1 })); m.openCase(0); return m.caseCells().filter(c => c.k === 'smp').length;", n);
+      assert.equal(await claws(1), 8, "the case is reached: the Case has the satchel's 8 places");
+      await wait(1500); const r = await g.region(), one = await g.shot("s19-case-1");
+      await claws(9); await wait(1500); const nine = await g.shot("s19-case-9");
+      const SLOT = [0.06, 0.43, 0.22, 0.12];   // the first satchel place, as fractions of the Companion's frame (36,270 88x60 of 450x~832)
+      const a = changed(one, nine, r, SLOT);
+      console.log(`# s19 ${tag}: slot pixels changed 1 -> 9: ${a.n} (of ${a.of})`);
+      assert.ok(a.n > 40, `the count on the slot reads differently at 9 than at 1 (${a.n} pixels changed)`);
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.

@@ -12,6 +12,20 @@ export const BEATS = 4;
 export const SAMPLE = Object.freeze({ calm: Object.freeze({ item: 'whisker', chapter: 'face' }), sleep: Object.freeze({ item: 'claw', chapter: 'legs-tail' }) });
 export const WANTS = Object.freeze(['place', 'coat', 'face']);   // the three things a note can give (the range rule 2): where she goes, her coat, her face
 export const SATCHEL = 8;                                         // satchel slots for samples, drops, packs, materials and food (the walk design, section 8)
+export const STACK = 9;                                           // one slot holds one kind, up to 9 (owner 2026-11-25: you fill up your inventory too fast)
+// the satchel's slots: like kinds share one slot, in the order each kind first came; each stack keeps its things whole (name, find, day)
+export function stacks(samples) {
+  const out = [], by = new Map();
+  for (const s of samples || []) { let st = by.get(s.item); if (!st) { st = { item: s.item, list: [] }; by.set(s.item, st); out.push(st); } st.list.push(s); }
+  return out;
+}
+export function stackRoom(samples, item) {   // true when one more of this kind fits: its stack under 9, or a free slot for a new kind
+  const sts = stacks(samples), st = sts.find(q => q.item === item);
+  return st ? st.list.length < STACK : sts.length < SATCHEL;
+}
+export function capStacks(samples) {   // a save's samples: like kinds merged into stacks, no stack over 9, no more than 8 slots (flat list, grouped order)
+  const out = []; for (const st of stacks(samples).slice(0, SATCHEL)) out.push(...st.list.slice(0, STACK)); return out;
+}
 
 // far: more than 5 tiles; mid: 3 to 5; near: 2 or closer
 export const rangeOf = d => d > 5 ? 'far' : d >= 3 ? 'mid' : 'near';
