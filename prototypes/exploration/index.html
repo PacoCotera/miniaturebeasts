@@ -2670,8 +2670,10 @@ function easeLoika(c, X) {
   const w = wariness1(c.ind.doings.wary), st = S.exp.stats, e5 = st.e5 || (st.e5 = { notes: {}, circles: 0, backsOff: 0, heard: 0, gone: 0, settled: 0, crowded: 0, holds: 0 });
   c.wary = w; c.ease |= 0; if (c.ease >= 3) return [];
   const P = X.P, env = X.ease; let heard = false;
-  if (X.moved && c.st !== 'eat') heard = easeHeardAt(env, c, P.x, P.y, X.noise === 'walk' ? 'walk' : 'creep', w);
-  if (!heard && stayTick(env, c, P)) { heard = true; e5.crowded++; }
+  // bug #179 (design's ruling, bus 2ae443): holding her own food, his walking (creep) steps toward a named Loika at ease 0 are not heard; running (walk gait), a Call and any other noise still count
+  const fruitSteps = S.exp.carry === 'fruit' && c.ease === 0 && X.noise === 'creep' && X.prevP && easeCheb(P, c) <= easeCheb(X.prevP, c);
+  if (X.moved && c.st !== 'eat' && !fruitSteps) heard = easeHeardAt(env, c, P.x, P.y, X.noise === 'walk' ? 'walk' : 'creep', w);
+  if (!heard && !fruitSteps && stayTick(env, c, P)) { heard = true; e5.crowded++; }
   else if (heard && easeCheb(P, c) > 2) c.crowd = 0;
   if (heard) RT.ringHeard = NOW;   // W6a: the carry ring turns to its heard frame for a beat
   // the circle and the back-off of E5: a step made with her in sight within 5 tiles that keeps the distance round her, or lengthens it
@@ -3671,7 +3673,8 @@ function patchAction() {
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
     if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
     // her-fruit-build-1: fruit for a named Loika does not wait for her kind to be identified; she takes it grazing, with the stay left, and never with her ears up or in her habit
-    if (fruit && o.c.ind && !o.c.hide && inSight(f.x, f.y) && (o.c.ease | 0) < 3 && spOf(o.c.sp).eats) return herFruitAction(o.c);
+    // bug #179: a named Loika that has bolted (ease 3) is in sight with fruit in hand: ✓ says why, dimmed, never a ✓ that does nothing
+    if (fruit && o.c.ind && !o.c.hide && inSight(f.x, f.y) && spOf(o.c.sp).eats) return (o.c.ease | 0) < 3 ? herFruitAction(o.c) : { label: WORDS.fruit.refuse, dim: true, run: () => { FX.bumpAt = NOW; } };
     if (!S.known.includes(o.c.sp)) { const nmd = S.named && S.named[o.c.id]; return { label: nmd ? nameKind(nmd, o.c.sp) : 'Unknown creature', run: null }; }   // owner note 156: a named one is never "Unknown creature"; a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
