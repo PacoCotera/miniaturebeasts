@@ -2944,7 +2944,10 @@ function noteHabit(c) {
 function hauntStep(X, c) {   // true when the routine has the creature's action
   if (c.gone && c.gone.night != null && c.gone.night !== S.turn) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; }   // night step 5: gone from her bed at night, she is at her dawn haunt next morning and the day is not lost
   if (c.gone && c.gone.night == null) { if (c.gone.part == null || c.gone.part !== dayPart()) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; } }   // bug #145: a day-time gone lasts to the next part of day, then her routine has her again (it kept her on one tile for the whole day)
-  if (c.gone) { const t = c.gone.t; if (!t) return false; if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; } return true; }   // gone: its next haunt for the rest of the day
+  if (c.gone) { const t = c.gone.t; if (!t) return false;
+    if (c.gone.night == null) { c.gone.rest = cheb(c, X.P) > GONE_SAFE ? (c.gone.rest | 0) + 1 : 0; if (c.gone.rest >= GONE_REST) { c.gone = null; c.ease = 0; c.quiet = 0; c.crowd = 0; c.st = 'idle'; c.t = 0; c.go = 0; c.ind.go = null; return true; } }   // wild-beats-cause-1: a daytime bolt ends once he has stayed more than 4 tiles off for 6 actions: she is at ease again, back on her routine (a bolt held her at ease 3, never acting, for the whole part of day)
+    if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }   // gone: its next haunt for the rest of the day
+    return true; }
   const part = hpart(); if (!c.ind.go || c.ind.go.part !== part) c.ind.go = { part, t: routineSpot(c, X.lay, X.key) };
   const t = c.ind.go.t; if (!t) return false;
   if (c.x !== t.x || c.y !== t.y) { pathStepToward(X, c, t, routineBase(c.sp).pace); if (t.x !== c.x) c.face = Math.sign(t.x - c.x) || c.face; }
@@ -4155,6 +4158,7 @@ function stirStep(c, X, bx, by) {
 // of his actions, then she goes back; she rests at least 5 actions before the next. When the act starts and the message box is free, one short line says it, once per act per Loika per day, never over another line.
 // No prompt, no counter, no light, no rule: the act is picture and line only (FX.beats, read by the draw); her own tile, her routine, her habits and every state are untouched, so the world plays as before, and an act
 // is lost the moment she moves, hears him or leaves sight. Nothing here draws a pixel or rolls the world's random: every pick is a pure hash of the seed, her id and the action.
+const GONE_SAFE = 4, GONE_REST = 6;   // wild-beats-cause-1: a daytime bolt ends once he is more than GONE_SAFE tiles off for GONE_REST actions
 const BEAT_HOLD_MS = 2500, BEAT_HOLD_ACTS = 3, BEAT_HOLD_CAP_MS = 8000, BEAT_REST = 5, BEAT_NEAR = 3, BEAT_STEP_MS = 360;
 const PLANT_DECAL = /^sc-(flowers|tufts|clump|shrub|bush)/;
 // the plants of a place: the scatter's flower, tuft, clump, shrub and bush decals (by the tile their foot is on, as printMark reads them) and the bush features; cached once the tileset is in
