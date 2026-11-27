@@ -7778,7 +7778,7 @@ const PIC = {
   call: (x, y) => cen2('call', ICON.call('aqua'), x, y),
   shield: (x, y) => shieldBars(x + 4, y + 10, 2, 3, 6, 12),
   storm: (x, y, dir) => { blit(ICON.bolt(), x + 1, y + 8); text(dir > 0 ? '▶' : '◀', x + 15, y + 9, C.yellow); },
-  warn: (x, y, a) => { if (a && a.key) { warnPicPlace(x, y, a); return; }
+  warn: (x, y, a) => { if (a && a.key && S.exp && S.exp.patch && S.exp.patch.key === a.key) { warnPicPlace(x, y, a); return; }
     if (a && a.c != null) { const ex = S.exp, c = a.c, X = c % MW; g.drawImage(landPatch(c, 32, !S.visited[c] ? 4 : (ex && ex.storm && stormCovers(X)) ? 1 : 0, 0), x, y); ditherFill(x, y, 32, 32, 'yellow', 6); blit(ICON.bolt(), x + 10, y + 8);   // the map's lit cell: dither and bolt, no outline
       if (S.ui.mapFull) { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); } return; }
     onGrass(x, y, () => { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }); },   // the Probe's tile: flat grass and the outline, no stone
