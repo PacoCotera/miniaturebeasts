@@ -410,6 +410,58 @@ for (const size of SIZES) {
     });
   }
 
+  // OWNER 2026-11-24 18:5x ("you just can pick the pod at night"); 2026-11-26 05:2x: "you're making it too complicated, it's a cozy game": no flag limit, he takes her up wherever she sleeps.
+  // pod-sleep-dusk-13 was made by presses (her-fruit-13: ✓ feeds Maple, then held ✓ keeping still, ~170 presses, to light 528; she walks to her bed on her own). Played by held ✓ (keeping still), the d-pad and ✓ only.
+  // State only asserts each case is reached (the light, her pod on the ground, the Case); the verdicts are the shots: her pod's tile and the Case's slot in the top bar, each against a shot from the same test.
+  const PODTILE = [0.43, 0.328, 0.067, 0.0525], CTLTILE = [0.2, 0.328, 0.067, 0.0525], CASESLOT = [0.13, 0.015, 0.06, 0.04], ASKBOX = [0.02, 0.1, 0.96, 0.2];   // as fractions of the Companion's frame, hero standing on the tile below her pod (412x915)
+  const podState = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S; return { spent: S.day.spent, phase: S.phase, pods: S.pods.filter((p) => p.how === "night").length, cased: S.exp ? S.exp.cargo.pods.filter((p) => p.how === "night").length : 0, slept: S.cr.filter((w) => w.slept).length, up: m.curLive().cr.some((c) => c.id === 35) }; });
+  const holdUntil = async (g, test) => { for (let i = 0; i < 80 && !test(await podState(g)); i++) await g.press("confirm", 1500, 1200); return podState(g); };
+  const walkToPod = async (g) => { for (const d of ["right", "right"]) await g.press(d, 100, 500); for (let i = 0; i < 11; i++) await g.press("up", 100, 500); };
+  if (size.w === 412) it(`s20 night pod (OWNER 11-24): fed at dusk, she is closed into her pod at nightfall; ✓ takes her up (the confirm, then ✓): her pod is off the ground and in the Case [${tag}]`, async () => {
+    const g = await open(size, "pod-sleep-dusk-13");
+    try {
+      let s = await podState(g);
+      assert.ok(s.phase === "patch" && s.spent >= 520 && s.spent < 550 && s.pods === 0 && s.slept === 0, "the case is reached: dusk, fed, nothing asleep yet " + JSON.stringify(s));
+      s = await holdUntil(g, (q) => q.spent >= 551);
+      assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
+      await walkToPod(g);
+      const r = await g.region(), at = await g.shot("s20-at-pod");
+      await g.press("confirm", 100, 800); const ask = await g.shot("s20-ask");
+      assert.equal((await podState(g)).cased, 0, "the confirm spends nothing: she is not in the Case yet");
+      const dlg = changed(at, ask, r, ASKBOX);
+      console.log(`# s20 ${tag}: confirm box pixels ${dlg.n} of ${dlg.of}`);
+      assert.ok(dlg.frac > 0.3, "✓ at her pod opens the confirm over the screen");
+      await g.press("confirm", 100, 1200); const held = await g.shot("s20-held");
+      const tile = changed(at, held, r, PODTILE), ctl = changed(at, held, r, CTLTILE), slot = changed(at, held, r, CASESLOT);
+      console.log(`# s20 ${tag}: her pod's tile changed ${tile.n} of ${tile.of} (a tile beside it ${ctl.n}), the Case slot ${slot.n} of ${slot.of}`);
+      assert.ok(tile.n >= 40 && ctl.n < 10, `her pod is off the ground on the shot (${tile.n} pixels changed on its tile, ${ctl.n} beside it)`);
+      assert.ok(slot.n >= 200, `the Case's slot in the top bar shows her (${slot.n} pixels changed)`);
+      s = await podState(g);
+      assert.ok(s.cased === 1 && s.pods === 0, "the case is reached: her pod is in the Case " + JSON.stringify(s));
+    } finally { await g.ctx.close(); }
+  });
+  if (size.w === 412) it(`s21 first light with her pod on the ground (OWNER 11-24): she wakes up on her bed, her pod gone from its tile [${tag}]`, async () => {
+    const g = await open(size, "pod-sleep-dusk-13");
+    try {
+      let s = await holdUntil(g, (q) => q.spent >= 551);
+      assert.ok(s.pods === 1 && s.slept === 1, "the case is reached: nightfall, her pod on the ground " + JSON.stringify(s));
+      for (const d of ["right", "right"]) await g.press(d, 100, 500);
+      for (let i = 0; i < 10; i++) await g.press("up", 100, 500);   // two tiles below her pod: ✓ here would be the keep-still, not the take-up
+      const r = await g.region(), night = await g.shot("s21-night");
+      for (let i = 0; i < 80 && (await podState(g)).spent >= 500; i++) await g.press(i % 2 ? "left" : "right", 100, 450);
+      s = await podState(g);
+      assert.ok(s.spent < 100 && s.pods === 0 && s.slept === 0 && s.up, "the case is reached: first light, she is up on the land, no pod left " + JSON.stringify(s));
+      const dawn = await g.shot("s21-dawn"), card = changed(night, dawn, r);
+      console.log(`# s21 ${tag}: the screen changed ${card.n} of ${card.of} between night and first light`);
+      assert.ok(card.frac > 0.6, "first light is on the screen (the dawn card)");
+      await g.press("confirm", 100, 1500); const day = await g.shot("s21-day");
+      const fur = ([R, G, B]) => R >= 50 && R <= 120 && G >= 30 && G <= 80 && B >= 25 && B <= 75 && R > G + 8, win = { x: r.x + Math.round(r.w * 0.30), y: r.y + Math.round(r.h * 0.18), w: Math.round(r.w * 0.40), h: Math.round(r.h * 0.27) };   // her coat, in the window around her bed
+      const before = colour(night, r, fur, win).n, after = colour(day, r, fur, win).n;
+      console.log(`# s21 ${tag}: her coat's pixels around her bed: night ${before}, first light ${after}`);
+      assert.ok(after >= 300 && after >= before * 4 + 200, `she is up at her bed on the shot (${after} coat pixels, ${before} at night)`);
+    } finally { await g.ctx.close(); }
+  });
+
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
   // Arranged saves (seed 1, cell 200, the mat slab; the hero one tile below it, facing it): slab-full-hold has 20 Essence; slab-full-room is that save after the push with the hold emptied (the walk has no press that spends Essence: only End expedition empties it); slab-full-warn has a storm over the place.
   // Played by ✓ only. State only asserts each case is reached (the hold, the phase); the verdict is the message box on the shot.
