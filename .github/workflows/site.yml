@@ -225,9 +225,8 @@ jobs:
     # The tools are set up in places the runner's user can read: the Emscripten SDK in the runner's own ~/emsdk (cloned and installed on first use, shared by its runs), Playwright 1.56.1 and its Chromium under $RUNNER_TEMP/pw. Nothing is read from /home/mb.
     # A browser that cannot start fails the step: every step runs with set -e and the journeys throw when chromium.launch fails; no step here turns that into a skip.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 20   # the limit only catches a hung run
-    concurrency: {group: browser-all-prs, cancel-in-progress: false}   # one browser run at a time across all PRs, queued not cancelled
+    runs-on: [self-hosted, mb-dev, mb-browser]   # only runner mb-dev carries this label, so browser jobs queue on it one at a time (GitHub queues on a busy runner, it does not cancel)
+    timeout-minutes: 30   # the limit only catches a hung run
     steps:
       - uses: actions/checkout@v4
         with:
