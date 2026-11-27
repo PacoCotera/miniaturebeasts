@@ -11,6 +11,7 @@ import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { decodePNG, encodePNG } from "../../../ui/png.mjs";
+import { cardFrames, CARD_W, CARD_H } from "../../src/card-motion.mjs";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
@@ -531,6 +532,35 @@ for (const size of SIZES) {
       } finally { await g.ctx.close(); }
     });
   }
+
+  // OWNER 2026-11-25 22:07 UTC (#175): "i'd like the spashes to be animated. minimalistic animation." (PR 690, rule 16a). His #166 save (light 471), played by the d-pad until the dusk card comes up at light 500.
+  // State only asserts the case is reached (the dusk card is up). The verdict is two shots of the screen a beat (500 ms) apart: they differ in the sun's glow and match everywhere else on the card.
+  it(`s32 the dusk card moves (#175, his #166 save): two shots 500 ms apart differ in the sun's glow and match outside it [${tag}]`, async () => {
+    const g = await open(size, "166");
+    try {
+      const card = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return m.FX.card && m.FX.card.k; });
+      assert.ok((await g.where()).phase === "patch" && await g.spent() < 500, "the case is reached: he stands in the place before dusk");
+      for (let i = 0; i < 80 && !(await card()); i++) await g.press(i % 2 ? "left" : "right", 100, 300);
+      assert.equal(await card(), "dusk", "the case is reached: the dusk card is up");
+      // the glow's box, found from the card's own file: where the loop's frames differ from one another (grid 225 x 300), a pixel of margin
+      const rgba = decodePNG(readFileSync(path.join(repo, "prototypes/exploration/art/cards/dusk-card-450x600.png"))).data, fr = cardFrames("dusk", rgba);
+      let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+      for (const f of fr) for (let y = 0; y < CARD_H; y++) for (let x = 0; x < CARD_W; x++) { const i = (y * CARD_W + x) * 3; if (f[i] !== fr[0][i] || f[i + 1] !== fr[0][i + 1] || f[i + 2] !== fr[0][i + 2]) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } }
+      assert.ok(x1 > x0 && y1 > y0, "the loop's frames differ somewhere");
+      const glow = [(x0 - 1) / CARD_W, (y0 - 1) / CARD_H, (x1 - x0 + 3) / CARD_W, (y1 - y0 + 3) / CARD_H];
+      const r = await g.region(), t0 = Date.now(), a = await g.shot("s32-" + tag + "-a");
+      await wait(Math.max(0, 500 - (Date.now() - t0)));
+      const b = await g.shot("s32-" + tag + "-b");
+      let all = changed(a, b, r), inGlow = changed(a, b, r, glow);
+      if (inGlow.n === 0) {   // a loaded machine can stretch the gap to two steps of the 0,1,2,1 loop (frame 1 twice): the next beat is the pair then
+        await wait(450); const c = await g.shot("s32-" + tag + "-c");
+        all = changed(b, c, r); inGlow = changed(b, c, r, glow);
+      }
+      console.log(`# s32 ${tag}: ${inGlow.n} of ${inGlow.of} pixels differ in the glow box, ${all.n - inGlow.n} outside it`);
+      assert.ok(inGlow.n > 50, `the sun's glow moves between the two shots (${inGlow.n} pixels)`);
+      assert.equal(all.n - inGlow.n, 0, "the card matches outside the glow");
+    } finally { await g.ctx.close(); }
+  });
 
   // OWNER 11-25 16:3x ("collecting materials is cool too, but you fill up too fast your inventory."; satchel-stack-build-1): one satchel slot holds one kind, up to 9; the Case shows the count on the slot, and a 10th keepsake stays with its sleeper.
   // Arranged save sleep-claws-8: two curled Loikas at their beds (Plover, Marsh) in the place five light into the night, the hero 4 tiles right of Plover, the satchel holding 8 claws.
