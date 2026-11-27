@@ -626,9 +626,25 @@ for (const size of SIZES) {
     } finally { await g.ctx.close(); }
   });
 
+  // wild-life-build-6: an unmet Loika (saves/145, Hazel, unnamed): 20 presses; no act line anywhere, nothing names her; the last act, if any, is on the shot
+  if (size.w === 412) it(`wl6 an unmet Loika (save 145): no act line names her [${tag}]`, {}, async () => {
+    const LINE = /(nibbles|sniffs|grooms her tail|looks up at you)/;
+    const g = await open(size, "145");
+    try {
+      const way = ["down", "down", "left", "up", "up", "right"]; let line = null, beats = 0;
+      for (let i = 0; i < 20; i++) {
+        await g.press(way[i % 6], 100, 700);
+        const s = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { msg: m.FX.msg || "", beats: Object.keys(m.FX.beats || {}).length }; });
+        beats = Math.max(beats, s.beats); if (LINE.test(s.msg)) line = s.msg;
+      }
+      console.log(`# wl6-145 ${tag}: beats ${beats} line ${line}`);
+      await g.shot(`wl6-${tag}-unmet`);
+      assert.equal(line, null, "no act line shows for a Loika he has not named");
+    } finally { await g.ctx.close(); }
+  });
   // OWNER 2026-11-25 16:3x: "watching mibis in the wild is fun too, but they don't do much." + the lead's ruling (11-26 23:54): the line names the Loika the tag sits on. Saves/14.save (made by presses, Drizzle named, in sight):
   // he presses the d-pad a few times; a calm named Loika at her haunt does an act, and its line names her (the tag's name). An unmet Loika (saves/145, Hazel, unnamed) acts with no line. Pixels on the shots (kept with PLAYED_SHOTS) are read by eye.
-  if (size.w === 412) it(`wl5 a wild Loika's act (wild-life-build-5, save 14): the line names the tagged Loika [${tag}]`, { todo: "not reached on saves/14 and saves/156 (wild-life-build-5): 14 has Burr acting (FX.beats set) but the standing target line holds the box all walk, so her line never shows; 156 has Drizzle at ease 3; a save made by presses with a calm named Loika and a free box is still to be made" }, async () => {
+  if (size.w === 412) it(`wl5 a wild Loika's act (wild-life-build-5, save 14): the line names the tagged Loika [${tag}]`, {}, async () => {
     const LINE = /(nibbles|sniffs|grooms her tail|looks up at you)/;
     const read = (g) => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, her = m.herInSight(); return { phase: m.S.phase, her, name: her != null ? m.S.named[her] : null, msg: m.FX.msg || "", beats: Object.keys(m.FX.beats || {}), tag: !!(m.RT.tagW), all: m.curLive().cr.filter(x => x.sp === 0).map(x => [x.id, !!m.S.named[x.id], x.x, x.y, x.st, x.ease, m.onScreen(x.x, x.y)]), c: (() => { const c = her != null ? m.curLive().cr.find(x => String(x.id) === her) : null; return c && { st: c.st, x: c.x, y: c.y, home: c.home, visit: c.visit, hb: !!c.hb, ease: c.ease, warm: c.warm, crowd: c.crowd, scr: m.onScreen(c.x, c.y), sight: m.inSight(c.x, c.y), bt: (m.curLive().bt || {})[c.id], n: m.S.exp.actions, px: m.S.exp.patch.x, py: m.S.exp.patch.y }; })() }; });
     const g = await open(size, "14");
@@ -641,7 +657,7 @@ for (const size of SIZES) {
         const s = await read(g);
         if (LINE.test(s.msg)) hit = Object.assign({ i }, s);
         if (s.beats.some((id) => id !== s.her)) bad = s.beats;   // an act by anyone but the tagged, named one
-        if (i % 5 === 0) console.log(`# wl5 ${tag} press ${i}: ${JSON.stringify(s)}`);
+        if (i % 5 === 0 || s.beats.length) console.log(`# wl5 ${tag} press ${i}: ${JSON.stringify(s)}`);
       }
       console.log(`# wl5 ${tag}: ${JSON.stringify(hit)}`);
       await g.shot(`wl5-${tag}-burr-act`);
@@ -649,6 +665,14 @@ for (const size of SIZES) {
       assert.ok(hit.msg.startsWith("Burr "), `the line names the Loika the tag names (${hit.msg})`);
       assert.ok(hit.tag, "the tag is on the named Loika while her line shows");
       assert.equal(bad, null, "no Loika he never met acts: no act but the named one's");
+      // wild-life-build-6: her line took the box over the standing target line for its hold only; after the hold the target line is back as it was
+      const stand = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.FX.teachMsg || "");
+      await g.page.waitForTimeout(3000);
+      const after = await read(g);
+      console.log(`# wl6 ${tag}: standing "${stand}" after "${after.msg}"`);
+      await g.shot(`wl6-${tag}-target-back`);
+      assert.ok(!LINE.test(after.msg), `her line is gone after the hold (${after.msg})`);
+      if (stand) assert.equal(after.msg, stand, "the target line is back as it was");
     } finally { await g.ctx.close(); }
   });
   // OWNER 2026-11-24 15:5x on #156: "in the wild you should be able to see the name". QA verify-live-649, seed 14 (saves/14.save, made from a fresh seed-14 game by QA's presses C-01..C-13: ✓ x3 to set out, ← twice, right x3):

@@ -1071,7 +1071,7 @@ function composeMsg() {
   // A sign (one picture, one line) stands alone: it never joins another sign or a note. The best sign shows when no plain note
   // outranks it; the other signs keep their flags unspent and come again at their own next trigger, and plain notes wait one action.
   // (first ten minutes) before the first pod is home no first-sighting sign or one-time line shows or is spent, a hazard sign apart; each comes at its own trigger after
-  const keep = firstWalk() ? n.filter(x => !x.once || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
+  const keep = firstWalk() ? n.filter(x => x.beat || !x.once || (x.sign && FIRST_HAZARD.includes(x.sign))) : n;
   // slab-full-1: a line his own ✓ just caused holds the box about 2 s; a sign that arrives in that time waits, its flag unspent (never dropped), and shows when the time is over or with his next press
   // steering (design, 11-26): a hazard sign (FIRST_HAZARD) is never held: it shows at once, and the line his press caused waits one action (FX.held) and shows after the warning
   const ownHold = (FX.ownUntil || 0) > NOW && keep.some(x => x.own && !x.sign), signs = keep.filter(x => x.sign).sort((a, b) => b.pri - a.pri || signRank(a.sign) - signRank(b.sign));
@@ -1106,7 +1106,8 @@ function settleOnce() {
     else fxOnce(h.key, h.text, h.pri); }   // too long for the bottom line's middle: a plain note until the copy has a short form
   const covered = S.phase === 'patch' && S.ui.swap;   // the swap chooser has the box's place: nothing is drawn, so nothing is spent
   const bl = FX.beatLine; FX.beatLine = null;
-  if (bl && !covered && !FX.msg && !FX.sign && !FX.notes.length) { FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); }   // wild-life-build-3: a free box takes the act's line
+  if (bl && !covered && (!FX.msg || (FX.msg === FX.teachMsg && !FX.beatOver)) && !FX.sign && !FX.notes.length) {   // wild-life-build-3: a free box takes the act's line; wild-life-build-6: so does a box holding only the standing target line, for the 2.5 s hold (teachFill puts it back)
+    FX.notes.push({ text: bl.text, pri: 0, once: 'beat', beat: bl.key }); composeMsg(); FX.beatOver = FX.msg === bl.text ? { text: bl.text, until: NOW + BEAT_HOLD_MS } : null; }
   for (const n of covered ? [] : FX.notes) if (n.beat && FX.msg.includes(n.text)) (S.beatSaid || (S.beatSaid = {}))[n.beat] = S.turn;   // wild-life-build-3: an act's line is spent for the day only once it showed
   for (const n of covered ? [] : FX.notes) if (n.once && !n.beat && (n.sign ? FX.sign === n : FX.msg.includes(n.text)) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once);
@@ -1228,6 +1229,8 @@ function approachTeach(c) {
 }
 // The teaching line takes the message box whenever no real note or sign holds it; an action clears it and the next frame sets the next one.
 function teachFill() {
+  const bo = FX.beatOver;   // wild-life-build-6: her line over the standing target line ends after its hold, or when another line has the box; the target line comes back as it was
+  if (bo) { if (FX.msg !== bo.text || NOW >= bo.until) { FX.beatOver = null; if (FX.msg === bo.text && firstWalk()) { FX.notes = FX.notes.filter(x => x.text !== bo.text); FX.msg = ''; FX.sign = null; } } }
   if (FX.msg && FX.msg !== FX.teachMsg) return;
   const prevUp = RT.approachUp; RT.approachUp = null;
   const t = firstWalk() && !(S.phase === 'setup' && !S.exp && openAlone()) ? teachStep() : '';
