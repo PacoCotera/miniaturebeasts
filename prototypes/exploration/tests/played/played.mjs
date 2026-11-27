@@ -497,6 +497,8 @@ for (const size of SIZES) {
       let s = await st();
       for (let i = 0; i < 14 && !s.curled; i++) { await step("confirm"); s = await st(); }   // her bedtime play runs its beats as the light passes: ✓ Keep still until she has settled curled
       assert.ok(s.phase === "patch" && s.curled && s.on && s.herAt[1] === s.at[1] && s.herAt[0] < s.at[0], `the case is reached: in the place, she is curled and on the screen, he is facing her (${JSON.stringify(s)})`);
+      const lc = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, c = m.lineCtx(m.lineFor()); return { r: c.r, word: !!c.word, wind: !!(c.wx && c.wx.wind) }; });
+      if (lc.wind) assert.ok(lc.r.includes("asleep") && !lc.word, `with the wind on, the line keeps "asleep" and the wind mark shows without its word (#173): ${JSON.stringify(lc)}`);   // the wind word yields first
       const r = await g.region(), im = await g.shot("s31-asleep");
       const w = { x: r.x + Math.round(r.w * WORD[0]), y: r.y + Math.round(r.h * WORD[1]), w: Math.round(r.w * WORD[2]), h: Math.round(r.h * WORD[3]) };
       const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
@@ -506,6 +508,25 @@ for (const size of SIZES) {
       let bad = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) bad++;
       console.log(`# s31 ${tag}: the bar's word differs from the crop of "asleep" by ${bad} of ${ref.width * ref.height} pixels`);
       assert.ok(bad < ref.width * ref.height * 0.02, `the bottom bar's word reads asleep (${bad} pixels differ from its crop)`);
+    } finally { await g.ctx.close(); }
+  });
+  // OWNER 2026-11-25 22:00 UTC, #173 (note mwwo3jv9377657): "what does it mean?" about the arrow at the right of the bottom line. His own save (saves/173.save = bug-assets replay.save), loaded and left as it is.
+  // The verdict is the pixels: the conditions end of the bottom line (the wind mark AND its word "wind S") against a crop cut once from this shot (saves/s32-wind-line.png; PLAYED_WRITE_CROPS=1 rewrites it).
+  if (size.w === 412) it(`s32 the wind arrow says what it is (#173): the bottom line's conditions slot shows the mark and its word, whole [${tag}]`, async () => {
+    const WIND = frac(560, 1142, 340, 52);   // the right end of the bar, in the 900x1200 frame
+    const g = await open(size, "173");
+    try {
+      await wait(1500);
+      assert.equal(await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.S.phase), "patch", "the case is reached: in the place");
+      const r = await g.region(), im = await g.shot("s32-wind");
+      const w = { x: r.x + Math.round(r.w * WIND[0]), y: r.y + Math.round(r.h * WIND[1]), w: Math.round(r.w * WIND[2]), h: Math.round(r.h * WIND[3]) };
+      const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+      const f = path.join(savesDir, "s32-wind-line.png");
+      if (process.env.PLAYED_WRITE_CROPS) { const c = crop(w); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+      const ref = decodePNG(readFileSync(f)), c = crop({ x: w.x, y: w.y, w: ref.width, h: ref.height });
+      let bad = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) bad++;
+      console.log(`# s32 ${tag}: the line's conditions end differs from the crop (mark + "wind S") by ${bad} of ${ref.width * ref.height} pixels`);
+      assert.ok(bad < ref.width * ref.height * 0.02, `the bottom line shows the wind mark and its word (${bad} pixels differ from its crop)`);
     } finally { await g.ctx.close(); }
   });
   // OWNER 11-25 ("ok" to core-loop-walkthrough-1, the slabs; QA verify-live-651; design bus 56ccb3): "with a full hold what was under the slab stays where it lay, takeable once there is room, and the push says the hold is full (the Essence pickup's own line); nothing lost."
@@ -629,6 +650,48 @@ for (const size of SIZES) {
       console.log(`# s20 ${tag}: glint pixels on the old tile over 1.6 s: before the take ${on}, after ${off}`);
       assert.ok(on >= 100, `the old tile glints before the take (${on} pixels)`);
       assert.ok(off < 20, `no glint on the old tile over 1.6 s after the take (${off} pixels)`);
+    } finally { await g.ctx.close(); }
+  });
+  // OWNER 2026-11-24 12:1x (via the lead): "stop breaking things or telling me that you fixed or shipped something just to find at the first interaction that the game is still utterly broken." QA verify-live-664 case D: after taking the pushed slab's Essence, the lightning-warning card threw "Cannot read properties of null (reading 'x')" (PIC.warn drew the place picture with no place under him).
+  // Played on QA's room.save (= slab-mark-room) as QA's D: down x3, up x3, ✓ takes the Essence, then ← and ✓ as QA pressed them; every press waits for its effect. The page's own console errors are the reach: none across the steps.
+  // The verdict on the screen: any shot in which the warning card is up shows its picture slot as the outline form (the Probe's flat grass in a yellow outline); that slot against a crop of it (saves/s32-warn-card-outline.png). PLAYED_WRITE_CROPS=1 rewrites the crop.
+  if (size.w === 412) it(`s32 the warned tile's card has no place picture while he is not in a place (QA verify-live-664 D): no page error after the take, the card shows the outline form [${tag}]`, async () => {
+    const g = await open(size, "slab-mark-room");
+    const errs = [];
+    g.page.on("pageerror", (e) => errs.push(e.message)); g.page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errs.push("console: " + m.text()); });   // a missing file on the test server is no script error
+    try {
+      const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp && S.exp.patch; return [S.phase, p && p.key, p && p.x, p && p.y, S.exp && S.exp.cargo && S.exp.cargo.s, S.ui && S.ui.menuSel, S.ui && S.ui.menu, S.ui && S.ui.mapFull, m.FX.msg].join("|"); });
+      const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } return now; };   // the effect: the state changes, then holds still for 400 ms
+      const r = await g.region(), k = r.w / 450;
+      const card = (im) => {   // the picture slot of the warning card: the 32x32 yellow outline, found by its colour in the lower part of the screen and the top
+        const Y = ([a, b, c]) => a > 200 && b > 195 && c < 130 && a - c > 100;
+        const hits = blobs(im, r, Y).filter((q) => Math.abs(q.box.w - 32 * k) < 4 && Math.abs(q.box.h - 32 * k) < 4);
+        return hits[0] ? hits[0].box : null;
+      };
+      const crop = (im, b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const i = ((b.y + y) * im.width + b.x + x) * 4, j = (y * b.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
+      const log = [];
+      const seen = [];   // the warning card's slot on each shot where it is up
+      const look = async (what) => { const im = await g.shot("s32-" + what), b = card(im), w = await g.where(); log.push(`${what}: ${await sig()} card=${b ? JSON.stringify(b) : "none"}`); if (b) seen.push({ what, im, b, inPlace: !!w.key }); };
+      for (let i = 0; i < 3; i++) await step("down");
+      for (let i = 0; i < 3; i++) await step("up");
+      assert.equal((await g.where()).phase, "patch", "the case is reached: in the place");
+      await look("before-take");
+      await step("confirm");   // ✓ takes the Essence; the strike is warned
+      await look("after-take"); await wait(3000); await look("after-3s");
+      await step("back"); await look("after-menu");
+      await step("confirm"); await look("after-map");
+      await step("back"); await look("after-back");
+      console.log("# s32 " + tag + "\n#   " + log.join("\n#   "));
+      assert.deepEqual(errs, [], "no page error in the console across the steps");
+      assert.ok(seen.length > 0, "the case is reached: the warning card is on the screen in some step");
+      const outsidePlace = seen.filter((s) => !s.inPlace);   // the shots taken while he is in no place: the card there must be the outline form
+      const f = path.join(savesDir, "s32-warn-card-outline.png");
+      if (process.env.PLAYED_WRITE_CROPS && outsidePlace[0]) { const c = crop(outsidePlace[0].im, outsidePlace[0].b); writeFileSync(f, encodePNG(c.width, c.height, c.data)); }
+      assert.ok(outsidePlace.length > 0, "the case is reached: the card is up in a step where he is in no place (the throwing case)");
+      const ref = decodePNG(readFileSync(f));
+      for (const s of outsidePlace) { const c = crop(s.im, { x: s.b.x, y: s.b.y, w: ref.width, h: ref.height }); let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++;
+        console.log(`# s32 ${tag}: ${s.what}: the card's slot differs from the outline crop by ${n} of ${ref.width * ref.height}`);
+        assert.ok(n < ref.width * ref.height * 0.1, `${s.what}: the card shows the outline form (${n} pixels differ from its crop)`); }
     } finally { await g.ctx.close(); }
   });
 
@@ -1039,6 +1102,39 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 390)) {
     } finally { await g.ctx.close(); }
   });
 }
+// OWNER 2026-11-25 00:52 UTC (#165, his shot bug-assets/bugs/mwvepr6i2b15e5/shot-1.png): "go out with the companion??? I'm out!"; build desk bus 004cb7 (rule 16a): a played case on his case.
+// His case: the Companion is out in the first place and the Station's goal is a findPod step with no species known. Arranged save 165 (made from his #136 save: no pod and no crate, one mibi, Dot, of a kind the Station has no language frame for: the goal is "pair", its step findPod with no kind to name; his own #165 save, read by the Station, gives "Find a first pod", so it cannot reach the branch).
+// Played: only the open (the Companion tab pressed, as a player would). State only asserts the case is reached (the phase, the Companion out in a place, not docked: open() asserts the rest).
+// The verdict is the pixels: the Companion's header band against a crop of the words "Find a pod" (saves/s32-find-a-pod.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it); "Go out with the Companion" is a different crop and is not what is found.
+it(`s32 the Companion header out on a findPod step with no species (#165, arranged save 165): the header reads "Find a pod" [412x915]`, async () => {
+  const size = SCALE_SIZES[0];
+  const g = await open(size, "165");
+  try {
+    const s = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb; return { phase: m.S.phase, out: !!(m.S.exp && m.S.exp.patch), docked: window.__play.caddy.docked, heard: JSON.stringify(m.RT.caddy) }; });
+    console.log("# s32 dock state " + JSON.stringify(s));
+    assert.ok(s.phase === "patch" && s.out && !s.docked, `the case is reached: the Companion is out in a place (${JSON.stringify(s)})`);
+    assert.ok(/"step":"findPod"/.test(s.heard), `the case is reached: the Station's goal is a findPod step (${s.heard})`);
+    const r = await g.region(), im = await g.shot("s32-header");
+    const band = { x: r.x, y: r.y + Math.round(r.h * 64 / 1200), w: r.w, h: Math.round(r.h * 48 / 1200) };   // the goal band, under the top bar: 24 of the screen's 600 rows
+    const f = path.join(savesDir, "s32-find-a-pod.png");
+    if (process.env.PLAYED_WRITE_CROPS) {   // the words: the box of pixels that differ from the band's own ground, right of the mark's slot
+      const bg = px(im, band.x + 2, band.y + 4); let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1;
+      for (let y = band.y + 2; y < band.y + band.h - 4; y++) for (let x = band.x + Math.round(band.w * 0.05); x < band.x + band.w; x++) { const p = px(im, x, y); if (Math.abs(p[0] - bg[0]) + Math.abs(p[1] - bg[1]) + Math.abs(p[2] - bg[2]) > 60) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } }
+      const w = x1 - x0 + 1, h = y1 - y0 + 1, d = new Uint8Array(w * h * 4);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = px(im, x0 + x, y0 + y), j = (y * w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+      writeFileSync(f, encodePNG(w, h, d));
+    }
+    const ref = decodePNG(readFileSync(f));
+    let low = Infinity;   // the best match of the crop anywhere in the band: the fewest differing pixels over all positions (early out past the best)
+    for (let y = band.y; y + ref.height <= band.y + band.h; y++) for (let x = band.x; x + ref.width <= band.x + band.w; x++) {
+      let bad = 0;
+      for (let j = 0; j < ref.height && bad < low; j++) for (let i = 0; i < ref.width; i++) { const p = px(im, x + i, y + j), k = (j * ref.width + i) * 4; if (p[0] !== ref.data[k] || p[1] !== ref.data[k + 1] || p[2] !== ref.data[k + 2]) bad++; }
+      if (bad < low) low = bad;
+    }
+    console.log(`# s32 ${size.w}x${size.h}: the header band differs from the crop of "Find a pod" (${ref.width}x${ref.height}) by ${low} pixels`);
+    assert.ok(low < ref.width * ref.height * 0.02, `the Companion's header reads "Find a pod" (${low} of ${ref.width * ref.height} pixels differ from its crop)`);
+  } finally { await g.ctx.close(); }
+});
 // OWNER 2026-11-25 06:4x (design-loop-review-1, fix 5): "ok". tell-seen-fix-4. Seed 33 at 390x844, light 52 to 57: Osier's tell and shake-dry ran seven tiles away under the veil while the box kept the stone's line.
 // The rule (design 11-27): the veil lifts when, within ten tiles, a Loika he has met (S.named) starts her tell; her line is then the box's line.
 // Played as the review's game A, on a fresh seed 33 (the page's ?seed=): ✓ to set out, east across the first place and over the border, toward her until she is seen once (named), then ✓ "Keep still" until her tell starts.
@@ -1082,4 +1178,32 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
     assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
   } finally { await g.ctx.close(); }
 });
+
+// OWNER #137 (11-24): "is the field guide selectable? how? or what does it mean?" The pad never reaches the Field guide, so its entries must not wear the framed box the pad-selected sign tiles wear.
+// His replay.save (saves/137.save): the Probe page, one species identified (Untuva). The verdict is the screenshot: along the entry's top edge no frame pixels differ from the background just above it;
+// the same test on the first sign tile above shows its frame.
+for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
+  const tag = `${size.w}x${size.h}`;
+  it(`s32 the Field guide entry has no frame round it, the sign tiles keep theirs (#137, his save, the Probe page) [${tag}]`, async () => {
+    const g = await open(size, "137");
+    try {
+      assert.equal((await g.where()).phase, "probe", "the case is reached: the Probe page is open");
+      const r = await g.region(), im = await g.shot(`s32-${tag}`), k = r.w / 450;
+      // the frame's colour is read off the first sign tile's top edge; the verdict is how much of each run is that colour
+      const fc = px(im, r.x + Math.round(41 * k), r.y + Math.round(230.5 * k));
+      const edge = (gx, gy, gw) => {   // the fraction of a game-space run (3 game px tall) drawn in the frame's colour
+        let n = 0, tot = 0;
+        for (let y = Math.round(gy * k); y < Math.round((gy + 3) * k); y++) for (let x = Math.round(gx * k); x < Math.round((gx + gw) * k); x++) {
+          const a = px(im, r.x + x, r.y + y); tot++;
+          if (a[0] === fc[0] && a[1] === fc[1] && a[2] === fc[2]) n++;
+        }
+        return n / tot;
+      };
+      const tile = edge(21 + 6, 229, 28), guide = edge(24 + 50, 439, 70);
+      console.log(`# s32 ${tag}: frame colour ${fc}, tile top edge ${tile.toFixed(2)}, guide entry top edge ${guide.toFixed(2)} in it`);
+      assert.ok(tile > 0.2, `the sign tile keeps its frame (${tile.toFixed(2)})`);
+      assert.ok(guide < 0.02, `the Field guide entry has no frame round it (${guide.toFixed(2)})`);
+    } finally { await g.ctx.close(); }
+  });
+}
 });

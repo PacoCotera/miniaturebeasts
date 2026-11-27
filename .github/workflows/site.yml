@@ -9,6 +9,8 @@ on:
     # The release and the gh-pages steps below run on main only.
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * *'   # 03:00 Mexico City: the nightly safety net (the `browser` job only)
 
 permissions:
   contents: write
@@ -18,15 +20,17 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-# THE RELEASE CHECK (owner 2026-11-11 11:00): a pull request into main runs the small check only, about five minutes, and nothing else:
-#   `build`    the Station's face, the site assembly, the pages parse and every page opens in a browser (.github/smoke.mjs); the public guard is its own workflow (public-guard.yml)
-#   `browser`  one play-through per page, one after the other (.github/release-check.sh): the Companion's first expedition, the Station (a crate carried home, Pods, Create, Grow, the hatch) with its layer checks, the play page's dock round trip, the test page's switch and dock
-# Every other test stays in the repository: a builder runs the ones for what they changed (design/proposals/station-build.md §5); no full suite runs here and no nightly run exists.
+# THE LEAN WORKFLOW (owner 2026-11-27 11:3x): a pull request and a push to main run `build` only, a few minutes:
+#   `build`    the Station's face, the site assembly, the art check, the pages parse and every page opens in a browser (.github/smoke.mjs); on main it deploys. The public guard is its own workflow.
+#   `browser`  the play-throughs and the played-game tests run ONLY at night (schedule) or by hand; on a pull request or a push it is skipped (a skipped required check counts as passed).
+# The gate is QA playing the change on live; the nightly run is a safety net whose failures become bugs. Builders run only the played case for what they changed.
+# Guarded: the internal repo's drift check `drift:lean-ci` alarms if a played test or the play-throughs run on a pull request or a push again.
 
 jobs:
   build:
     # The project's own dev server (owner 2026-11-10: the tests run there, not on GitHub's machines). Its system tools (ninja, bc, Chromium's libraries) are installed once on the server, so the install lines below run only on a GitHub machine. Never for a pull request from a fork.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # Never at night: the nightly run is `browser` only (a scheduled `build` on main would publish a release).
+    if: github.event_name != 'schedule' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: [self-hosted, mb-dev]
     timeout-minutes: 30   # the limit only catches a hung run
     steps:
@@ -220,11 +224,11 @@ jobs:
           git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
 
   browser:
-    # One play-through per page, in one job, one after the other (.github/release-check.sh; measured about 4 minutes of journeys on the dev server). Beside `build`, it does not wait for it.
-    # Scope: documents only, or a change no journey reads (.github/ci-filter.sh says all three false: a change under website/ only), skips every step and the job still ends green; a push to main runs none; a manual run runs it.
+    # The nightly safety net (owner 2026-11-27 11:3x): the play-throughs (.github/release-check.sh) and the played-game tests, on main, at night or by hand.
+    # Never on a pull request or a push: the job is skipped there, and a skipped required check counts as passed. drift:lean-ci guards this line.
     # The tools are set up in places the runner's user can read: the Emscripten SDK in the runner's own ~/emsdk (cloned and installed on first use, shared by its runs), Playwright 1.56.1 and its Chromium under $RUNNER_TEMP/pw. Nothing is read from /home/mb.
     # A browser that cannot start fails the step: every step runs with set -e and the journeys throw when chromium.launch fails; no step here turns that into a skip.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: [self-hosted, mb-dev, mb-browser]   # only runner mb-dev carries this label, so browser jobs queue on it one at a time (GitHub queues on a busy runner, it does not cancel)
     timeout-minutes: 30   # the limit only catches a hung run
     steps:
@@ -247,26 +251,11 @@ jobs:
             art/device-buttons
             art/station-masters
             art/retro-diffusion-trial
-      - name: Scope (documents only, or a change no journey reads, skips the job)
+      - name: Scope (the nightly and a manual run play everything)
         id: scope
         run: |
-          set -u
-          result=docs=false
-          filter=run=true
-          case $GITHUB_EVENT_NAME in
-            push) filter=run=false ;;
-            pull_request)
-              if list=$(git diff --name-status --no-renames HEAD^1 HEAD); then
-                result=$(printf '%s\n' "$list" | sh .github/docs-only.sh) || result=docs=false
-              fi
-              if names=$(git diff --name-only --no-renames HEAD^1 HEAD); then
-                all=$(printf '%s\n' "$names" | sh .github/ci-filter.sh) || all=
-                if [ -n "$all" ] && ! printf '%s\n' "$all" | grep -q '=true'; then filter=run=false; fi
-              fi ;;
-          esac
-          echo "$result" >> "$GITHUB_OUTPUT"
-          echo "$filter" >> "$GITHUB_OUTPUT"
-          echo "Browser: docs-only $result; $filter" >> "$GITHUB_STEP_SUMMARY"
+          echo docs=false >> "$GITHUB_OUTPUT"
+          echo run=true >> "$GITHUB_OUTPUT"
       - name: Emscripten SDK (pinned in prototypes/face/emsdk.version)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
         id: emsdk
