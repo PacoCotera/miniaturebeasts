@@ -620,6 +620,65 @@ for (const size of SIZES) {
       assert.ok(c < 5000 && c2 > 20000, `after the next press the box shows the push line (${c} pixels from the push line, ${c2} from the warning)`);
     } finally { await g.ctx.close(); }
   });
+  // OWNER 11-25 ("didn't we have stone slabs that you could move?"; "ok" to core-loop-walkthrough-1); QA verify-live 0fc2b4e; design bus 0e4483 ("a lasting mark: the glint stays on the tile while anything is left under the slab and goes when it is taken").
+  // Arranged saves: slab-mark-hold and slab-mark-room are slab-full-hold and slab-full-room with the place marked explored (S.called; the glints show only in an explored place, 60% of it seen: the walk here does not reach that). Played by presses: push with the hold full, walk away and back; the old tile glints like every takeable (find-glint-1's pixels within 1.6 s); the hold has room, ✓ takes it, and over the next 1.6 s no glint there.
+  // State only asserts the reach (what is left under the slab: > 0, then 0) and gives the old tile's position; the verdict is the pixels of the tile on the shots.
+  // The light tints the glint's colours, so the verdict is the blink itself: pixels of the old tile that are warm (find-glint-1 is tan, orange and yellow; the rain is blue, the slab's dashes brown) in some shots of 1.6 s and not warm in others. The glint is on for 400 ms of every 1.6 s.
+  const blink = (crops) => { let n = 0; const m = crops[0].length / 4, warm = (c, i) => c[i * 4] > 110 && c[i * 4] - c[i * 4 + 2] > 45; for (let i = 0; i < m; i++) { let on = 0; for (const c of crops) if (warm(c, i)) on++; if (on > 0 && on < crops.length) n++; } return n; };
+  const cropOf = (im, b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; } return d; };
+  if (size.w === 412) it(`s19 what stays under a pushed slab glints until it is taken (QA verify-live 0fc2b4e) [${tag}]`, async () => {
+    const g = await open(size, "slab-mark-hold");
+    try {
+      const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp.patch, f = m.layout(p.key).feats.find((q) => q.kind === "s" && q.under === "mat"); return { s: S.exp.cargo.s, hx: p.x, hy: p.y, sx: f.x, sy: f.y, left: ((S.cells[p.key] || {})[f.id] || {}).left | 0 }; });
+      const r = await g.region(), tile = 48 * r.w / 450;
+      await g.press("confirm", 100, 400);   // push with the hold full
+      let s = await st();
+      assert.ok(s.s === 20 && s.left > 0, `the case is reached: the hold is full and ${s.left} lies under the slab`);
+      // walk away from the old tile and back by presses, ending two tiles below it
+      for (let i = 0; i < 3; i++) await g.press("down", 100, 250);
+      for (let i = 0; i < 12 && (s = await st(), s.hy - s.sy > 2); i++) await g.press("up", 100, 250);
+      s = await st();
+      const hero = async (im) => blobs(im, { x: r.x, y: r.y + Math.round(r.h * 0.06), w: r.w, h: Math.round(r.h * 0.88) }, HERO)[0];
+      const probe = async (name) => {   // the glint pixels in the old tile's box over 1.6 s (shots every ~150 ms)
+        const crops = [];
+        for (let i = 0; i < 11; i++) { const im = await g.shot(name + "-" + i), h = await hero(im); assert.ok(h && h.n > 100, "the hero is on the shot");
+          const cx = h.box.x + h.box.w / 2 + (s.sx - s.hx) * tile, cy = h.box.y + h.box.h / 2 + (s.sy - s.hy) * tile, bx = { x: Math.round(cx - tile / 2), y: Math.round(cy - tile / 2), w: Math.round(tile), h: Math.round(tile) };
+          crops.push(cropOf(im, bx)); await wait(150); }
+        return blink(crops);
+      };
+      assert.ok(s.hy - s.sy === 2 && s.hx === s.sx, `the case is reached: the hero stands two tiles below the old tile (${JSON.stringify(s)})`);
+      const on = await probe("s19-glint");
+      console.log(`# s19 ${tag}: glint pixels on the old tile over 1.6 s, with ${s.left} left under it: ${on}`);
+      assert.ok(on >= 100, `the old tile glints while something lies under the slab (${on} pixels of find-glint-1)`);
+    } finally { await g.ctx.close(); }
+  });
+  if (size.w === 412) it(`s20 taking what lay under the slab takes the glint away (QA verify-live 0fc2b4e) [${tag}]`, async () => {
+    const g = await open(size, "slab-mark-room");   // the slab already pushed, the hold empty, the hero beside the old tile
+    try {
+      const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, p = S.exp.patch, f = m.layout(p.key).feats.find((q) => q.kind === "s" && q.under === "mat"); return { s: S.exp.cargo.s, hx: p.x, hy: p.y, sx: f.x, sy: f.y, left: ((S.cells[p.key] || {})[f.id] || {}).left | 0 }; });
+      const r = await g.region(), tile = 48 * r.w / 450;
+      for (let i = 0; i < 3; i++) await g.press("down", 100, 250);
+      for (let i = 0; i < 3; i++) await g.press("up", 100, 250);   // walk down and back: the Call and the walk explore the place, the hero is beside the old tile again
+      let s = await st();
+      assert.ok(s.s === 0 && s.left > 0, `the case is reached: room in the hold and ${s.left} under the slab`);
+      const probe = async (name) => {
+        const crops = [];
+        for (let i = 0; i < 11; i++) { const im = await g.shot(name + "-" + i), h = blobs(im, { x: r.x, y: r.y + Math.round(r.h * 0.06), w: r.w, h: Math.round(r.h * 0.88) }, HERO)[0]; assert.ok(h && h.n > 100, "the hero is on the shot");
+          const cx = h.box.x + h.box.w / 2 + (s.sx - s.hx) * tile, cy = h.box.y + h.box.h / 2 + (s.sy - s.hy) * tile, bx = { x: Math.round(cx - tile / 2), y: Math.round(cy - tile / 2), w: Math.round(tile), h: Math.round(tile) };
+          crops.push(cropOf(im, bx)); await wait(150); }
+        return blink(crops);
+      };
+      const on = await probe("s20-before");
+      await g.press("confirm", 100, 400);   // ✓ takes it
+      const after = await st();
+      assert.ok(after.s > 0 && after.left === 0, `the case is reached: the hold rose and nothing lies under the slab (${JSON.stringify(after)})`);
+      s = after;
+      const off = await probe("s20-after");
+      console.log(`# s20 ${tag}: glint pixels on the old tile over 1.6 s: before the take ${on}, after ${off}`);
+      assert.ok(on >= 100, `the old tile glints before the take (${on} pixels)`);
+      assert.ok(off < 20, `no glint on the old tile over 1.6 s after the take (${off} pixels)`);
+    } finally { await g.ctx.close(); }
+  });
 
   // QA verify-live-154 (bus e96853af12), his #166 save: "the menu box can still COVER the hero: 412x915-B-left-edge has him on the rock at x~410 of the view, B-left-menu puts the box on the right half over him, so he reads as gone. The box should take the side he is not on." (menu-side-hero-1)
   // QA's walk by presses (runB.mjs): up, right, down, left, each until he stops; then ← opens the menu. State only asserts the case is reached (the place, the pawn on the view in the 192-258 band); the verdict is the shot: the hero's orange pixels whole, as many as before the menu, on the same spot.
