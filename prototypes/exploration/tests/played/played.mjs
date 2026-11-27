@@ -1760,6 +1760,71 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
   });
 }
 
+// OWNER #178 / #141 (fog-edge-1): the unexplored dark has a soft, irregular edge, not the cell's straight line ("I dont like that the water is so blocky, very long straight shores, and deep water is just full map cells. needs to be more naturally shaped";
+// 11-27 15:4x "ok, queue water fix then"). The dark is flat night (#29253a, in the reach view ink under night dots); where it meets seen land the edge is the art desk's signed pieces, laid by the build (src/fogedge.mjs).
+// His 178.save (seed 20, cell 186) and his 141.save (seed 64, place 172), at his size 412x915, by presses: hold Call for the look-around; for 178 also ← then Leave this place for the map (the reach view). The verdict is the pixels:
+// along each strip where seen land meets the dark, per row (or column) the first pixel that is not dark: how many different positions, and how long it keeps one (within 2 device px): a straight cell-long cut keeps one for the whole strip (a cell is
+// 384 device px in the look-around). Each strip is also set against a crop of it (refs/s38-*.png, cut from the shipped build by PLAYED_MAKE_REFS=1 PLAYED_WRITE_CROPS=1); two shots a moment apart must match first.
+{
+  const size = { w: 412, h: 915, dpr: 2.625 };
+  const NIGHT = ([r, gg, b]) => Math.abs(r - 41) < 4 && Math.abs(gg - 37) < 4 && Math.abs(b - 58) < 4;   // the look-around's dark: #29253a
+  const INKISH = ([r, gg, b]) => (Math.abs(r - 41) < 8 && Math.abs(gg - 37) < 8 && Math.abs(b - 58) < 8) || (Math.abs(r - 26) < 8 && Math.abs(gg - 23) < 8 && Math.abs(b - 37) < 8);   // the map's dark: ink under night dots
+  // dir x+ / x-: for each row of the box the first column, scanning right / left, where three pixels in a row are not dark; y+ / y-: for each column the first row, scanning down / up
+  const softEdge = (im, b, dark, dir) => {
+    const e = [], horiz = dir[0] === "x", fwd = dir[1] === "+", n = horiz ? b.h : b.w, len = horiz ? b.w : b.h, at = (i, k) => (horiz ? px(im, b.x + k, b.y + i) : px(im, b.x + i, b.y + k));
+    for (let i = 0; i < n; i++) { let c = -1; for (let s = 0; s < len - 3; s++) { const k = fwd ? s : len - 1 - s, d = fwd ? 1 : -1; if (!dark(at(i, k)) && !dark(at(i, k + d)) && !dark(at(i, k + 2 * d))) { c = k; break; } } e.push(c); }
+    let best = 1, run = 1;
+    for (let i = 1; i < e.length; i++) { if (e[i] >= 0 && e[i - 1] >= 0 && Math.abs(e[i] - e[i - 1]) <= 2) { run++; if (run > best) best = run; } else run = 1; }
+    return { rows: e.length, found: e.filter((c) => c >= 0).length, distinct: new Set(e.filter((c) => c >= 0)).size, longest: best };
+  };
+  const leaveToMap = async (g) => {
+    await g.press("back", 100, 2500);
+    if ((await g.where()).phase === "menu") { for (let i = 0; i < 10 && await g.menuRow() !== "leave"; i++) await g.press("down"); assert.equal(await g.menuRow(), "leave", "the case is reached: the selected row is Leave this place"); await g.press("confirm", 100, 3500); }
+    assert.equal((await g.where()).phase, "map", "the case is reached: he left the place for the map"); await wait(2500);
+  };
+  // each strip: its name, the box (device px from the game screen's top-left), the dark's test, the scan direction, and the allowed longest straight run (device px)
+  const STRIPS = {
+    "178": [
+      { name: "ne", box: { x: 600, y: 70, w: 120, h: 270 }, dark: NIGHT, dir: "x+", why: "the sea's west edge against the dark, above the place" },
+      { name: "se", box: { x: 600, y: 850, w: 120, h: 260 }, dark: NIGHT, dir: "x+", why: "the sea's west edge against the dark, below the place" },
+    ],
+    "141": [
+      { name: "top", box: { x: 10, y: 330, w: 140, h: 130 }, dark: NIGHT, dir: "y+", why: "the water's top edge against the dark" },
+      { name: "bottom", box: { x: 10, y: 740, w: 140, h: 130 }, dark: NIGHT, dir: "y-", why: "the water's bottom edge against the dark" },
+    ],
+  };
+  for (const save of ["178", "141"]) it(`s38 the unexplored dark's edge wanders in the look-around (#${save}, his save: no straight cell-long cut) [412x915]`, async () => {
+    const g = await open(size, save);
+    try {
+      assert.ok(await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.fogEdgeReady()), "the case is reached: the signed edge pieces are in");
+      const r = await g.region();
+      await g.hold("call"); await wait(3000);
+      const a = await g.shot(`s38-${save}-look`); await wait(700); const b2 = await g.shot(`s38-${save}-look-b`);
+      await g.release(); await wait(1000);
+      for (const s of STRIPS[save]) {
+        const box = { x: r.x + s.box.x, y: r.y + s.box.y, w: s.box.w, h: s.box.h }, e = softEdge(a, box, s.dark, s.dir);
+        console.log(`# s38 ${save} ${s.name}: ${e.found}/${e.rows} lines have land, ${e.distinct} different edge positions, longest straight run ${e.longest} device px (${s.why})`);
+        assert.ok(e.found > e.rows * 0.9, `the case is reached: ${s.why} is in view (${e.found}/${e.rows})`);
+        assert.ok(e.distinct >= 6, `${s.why} wanders (${e.distinct} different positions)`);
+        assert.ok(e.longest < 120, `no cell-long cut: ${s.why} keeps one position for ${e.longest} device px (120 allowed; a cell is 384)`);
+        assert.ok(changed(a, b2, box).frac < 0.02, `two shots of the strip alike, so a crop can judge it`);
+        const c = againstRef(a, box, `s38-${save}-${s.name}`);
+        assert.ok(c.frac < 0.03, `${s.why} is as its crop (${c.frac.toFixed(3)} differ)`);
+      }
+      if (save === "178") {   // the map: the sea's east edge against the dark beyond the reach view
+        await leaveToMap(g);
+        const m = await g.shot("s38-178-map"), box = { x: r.x + 780, y: r.y + 115, w: 50, h: 670 }, e = softEdge(m, box, INKISH, "x-");
+        console.log(`# s38 178 map: ${e.found}/${e.rows} rows have land, ${e.distinct} different edge positions, longest straight run ${e.longest} device px`);
+        assert.ok(e.found > e.rows * 0.5, `the case is reached: the sea's east edge is in view on the map (${e.found}/${e.rows})`);
+        assert.ok(e.distinct >= 6, `the map's dark edge wanders (${e.distinct} different positions)`);
+        assert.ok(e.longest < 144, `no cell-long cut on the map: one position for ${e.longest} device px (144 allowed; a cell is 144)`);
+        const c = againstRef(m, box, "s38-178-map-east");
+        assert.ok(c.frac < 0.03, `the map's dark edge is as its crop (${c.frac.toFixed(3)} differ)`);
+      }
+    } finally { await g.ctx.close(); }
+  });
+}
+
 // OWNER 2025-11-25 16:3x: "revealing the map is cool to, gets tedious, but it's a good entertainment." (reveal-build-1, PR 695; build desk's NO d2cdce, rule 12). A fresh seed 13 at 412x915, played by presses only: ✓ to set out, then the d-pad on the map.
 // A map step lifts the 5x5 ring. State only asserts the case is reached (the map, cells revealed by the first step that moves him, the find on the ring's edge if there is one); the verdict is the pixels:
 // the reach view after that step against a crop of it (saves/s35-reveal-ring.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it). If the step lands a find on the new edge and it is in view, its orange brackets are found too.

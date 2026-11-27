@@ -5,6 +5,7 @@
 // and field edges and no grid lines are drawn. Fog keeps its three states on the same borders. Pure: no page state.
 import { hash, L, MW, MH } from './world.mjs';
 import { shoreValue, SHORE_SHALLOW, SHORE_BEACH } from './shore7.mjs';
+import { fogEdges } from './fogedge.mjs';
 import { CW as CWT, CH as CHT } from './gen7/world.mjs';   // the tiles of a cell
 
 const VN_LAT = new Map();   // the lattice values of the value noise, by (s, a, b): the same numbers as hash gives, found once (a painting asks for each of them thousands of times)
@@ -35,6 +36,8 @@ export function paintLand(inp) {
     for (let Y = 0; Y < MH; Y++) for (let X = 0; X < MW; X++) { const w0 = shoreCells.wide(rx + X, ry + Y); for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (shoreCells.wide(rx + X + i, ry + Y + j) !== w0) seamC[Y * MW + X] = 1; }
   }
   const u = new Uint32Array(N * NH), cellOf = landCellOf(cs, !!sec);
+  // owner #178 / #141: where the cells are straight (the sector is here) the dark's edge is the art desk's signed soft one, laid on the seen side (src/fogedge.mjs), not the cell's straight line
+  const fe = inp.fogEdge, softEdge = !!(fe && sec && !mist);
   const tile = (n, wx, wy) => { const t = tiles[n]; return t ? t.p[(((wy % t.h) + t.h) % t.h) * t.w + (((wx % t.w) + t.w) % t.w)] : K.ink; };   // no art yet: a named empty slot (ink)
   const landOf = c => c < 0 ? -1 : land[c];
   const put = (i, c) => { u[i] = pal[c]; };
@@ -43,7 +46,7 @@ export function paintLand(inp) {
       const wx = X0 * cs + x, wy = Y0 * cs + y, c = cellOf(wx, wy), b = BAYER[(y & 3) * 4 + (x & 3)];
       if (c < 0) { put(y * N + x, K.void); continue; }
       if (mist && !seen[c]) { u[y * N + x] = mist[(wy % mistTile) * mistTile + (wx % mistTile)]; continue; }
-      if (!seen[c]) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = c2 >= 0 && seen[c2]; put(y * N + x, edge ? (b < 8 ? K.night : K.ink) : (b < 3 ? K.night : K.ink)); continue; }
+      if (!seen[c]) { const c2 = cellOf(wx + 4 * k, wy + 3 * k), edge = !softEdge && c2 >= 0 && seen[c2]; put(y * N + x, edge ? (b < 8 ? K.night : K.ink) : (b < 3 ? K.night : K.ink)); continue; }
       let ld = landOf(c), col, wood = false;
       const lx = (wx - (c % MW) * cs) / cs, ly = (wy - ((c / MW) | 0) * cs) / cs;
       // near water: a beach on the land side, foam on the water side
@@ -73,6 +76,13 @@ export function paintLand(inp) {
       if (fs === 2 || (stormOn && stormCol[c % MW])) col = wood ? WOOD_DARK[col] : DARK[col];   // the wood's ground stays the wood's ground in the dark (one step down on the crowns): never the ink the unseen land is drawn in
       if (fs === 2) { if (b < FOGV.n) col = K.night; } else if (fs === 1 && b < FOGV.b) col = K.night;
       put(y * N + x, col);
+    }
+  }
+  if (softEdge) {
+    const set = cs === 26 ? fe.map.runs : fe.peek.runs, px0 = X0 * cs, py0 = Y0 * cs;   // the map's own cell (26 px) has the map's runs; the reach view's larger cells, the look-around's
+    for (const it of fogEdges({ dark: (i, j) => !seen[j * MW + i], I0: 0, I1: MW - 1, J0: 0, J1: MH - 1, csx: cs, csy: cs, runs: set, outer: fe.map.outer, inner: fe.map.inner })) {
+      for (let yy = 0; yy < it.ch; yy++) { const y = it.y + yy - py0; if (y < 0 || y >= NH) continue;
+        for (let xx = 0; xx < it.cw; xx++) { const x = it.x + xx - px0, v = it.m[yy * it.w + xx]; if (v && x >= 0 && x < N) put(y * N + x, v === 1 ? K.ink : K.night); } }
     }
   }
   return u;
