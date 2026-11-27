@@ -2313,7 +2313,7 @@ function sweep() {
     if (!was && Math.max(Math.abs(dx), Math.abs(dy)) === 2) fresh.push(c);
   }
   const hits = fresh.filter(c => { if (S.signs[c]) return true; if (!passable(c) || !placeHave(String(c))) return false; return !!layout(String(c)).landmark; });
-  if (hits.length) { FX.edge = { cs: hits, at: NOW }; fxMsg('the ring ends on a find', 2); }   // the ring ends on something: bracketed about 1 s, editorial's reveal.find
+  if (hits.length) { FX.edge = { cs: hits, at: NOW }; fxMsg(WORDS.reveal.find, 2); }   // the ring ends on something: bracketed about 1 s, editorial's reveal.find
 }
 function revealAround(c, r) { const p = cxy(c); r = r || 1; for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) { const x = p.x + dx, y = p.y + dy; if (x >= 0 && y >= 0 && x < MW && y < MH) revealCell(y * MW + x); } }
 
