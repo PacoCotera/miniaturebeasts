@@ -44,9 +44,13 @@ export function easeTick(c, heard, asleep = false) {
   return ev;
 }
 // The stay: each light the explorer ends within 2 tiles adds one; reset beyond 2 tiles; past STAY less twice the creeping carry there, it is a heard step. Returns true when the stay runs out.
+// A light on which she stepped nearer to him (her tile now is closer to him than her tile last light) adds nothing: the count holds where it was.
 export function stayTick(env, c, P) {
+  const stepped = c.sx !== undefined && cheb(P, c) < cheb(P, { x: c.sx, y: c.sy });
+  c.sx = c.x; c.sy = c.y;
   if (c.ease >= 3) return false;
   if (cheb(P, c) > STAY_NEAR) { c.crowd = 0; return false; }
+  if (stepped) return false;
   c.crowd = (c.crowd || 0) + 1;
   if (c.crowd > stayAt(env, c, P.x, P.y, c.wary || 0)) { c.crowd = 0; return true; }
   return false;
