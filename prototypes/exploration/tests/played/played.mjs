@@ -1667,6 +1667,20 @@ it(`s34 a wild Loika that bolted plays her beat once he keeps off (wild-beats-fi
     console.log(`# s34: the box differs from her act line's crop by ${n} pixels, from the box before the beat by ${moved.n} (of ${moved.of}); state ${JSON.stringify(s)}`);
     assert.ok(moved.n > 400, `the box shows a line it did not before the beat (${moved.n} pixels differ)`);
     assert.ok(n < 5000, `the box shows her act line, as in the crop (${n} pixels differ)`);
+    // wild-beats-line-1: a LATER beat shows its line too. He keeps still (✓) and she plays on; her fourth beat (a kind she already played: it lost its line to the once-a-day spend) must show its line over the wander note,
+    // by pixels against a crop (saves/wild-beat-line-4.png; PLAYED_WRITE_CROPS=1 rewrites it).
+    const beatAt = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, c = m.curLive().cr.find((q) => q.ind && q.ind.name === "Osier"), b = c && m.FX.beats && m.FX.beats[c.id]; return b ? Math.round(b.at) : null; });
+    const seen = new Set([await beatAt()]); let im4 = null;
+    for (let i = 0; i < 160 && !im4; i++) { await step("confirm"); const at = await beatAt(); if (at != null && !seen.has(at)) { seen.add(at); if (seen.size >= 4) { const sh = await g.shot("s34-beat4"); if ((await st()).act) im4 = sh; } } }
+    assert.ok(im4, `the case is reached: her fourth beat is running and its line is in the box (${seen.size} beats seen)`);
+    const crop4 = { width: box.w, height: box.h, data: new Uint8Array(box.w * box.h * 4) };
+    for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im4, box.x + x, box.y + y), j = (y * box.w + x) * 4; crop4.data[j] = p[0]; crop4.data[j + 1] = p[1]; crop4.data[j + 2] = p[2]; crop4.data[j + 3] = 255; }
+    const f4 = path.join(savesDir, "wild-beat-line-4.png");
+    if (process.env.PLAYED_WRITE_CROPS) writeFileSync(f4, encodePNG(crop4.width, crop4.height, crop4.data));
+    const ref4 = decodePNG(readFileSync(f4)); let n4 = 0;
+    for (let i = 0; i < crop4.data.length; i += 4) if (crop4.data[i] !== ref4.data[i] || crop4.data[i + 1] !== ref4.data[i + 1] || crop4.data[i + 2] !== ref4.data[i + 2]) n4++;
+    console.log(`# s34: the fourth beat's box differs from its line's crop by ${n4} pixels`);
+    assert.ok(n4 < 5000, `the box shows her fourth beat's line, as in the crop (${n4} pixels differ)`);
   } finally { await g.ctx.close(); }
 });
 
