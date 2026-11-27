@@ -225,8 +225,8 @@ jobs:
     # The tools are set up in places the runner's user can read: the Emscripten SDK in the runner's own ~/emsdk (cloned and installed on first use, shared by its runs), Playwright 1.56.1 and its Chromium under $RUNNER_TEMP/pw. Nothing is read from /home/mb.
     # A browser that cannot start fails the step: every step runs with set -e and the journeys throw when chromium.launch fails; no step here turns that into a skip.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, mb-dev]
-    timeout-minutes: 20   # the limit only catches a hung run
+    runs-on: [self-hosted, mb-dev, mb-browser]   # only runner mb-dev carries this label, so browser jobs queue on it one at a time (GitHub queues on a busy runner, it does not cancel)
+    timeout-minutes: 30   # the limit only catches a hung run
     steps:
       - uses: actions/checkout@v4
         with:
@@ -323,6 +323,6 @@ jobs:
         run: sh .github/release-check.sh
       - name: The played-game tests (the shipped page at his two phone sizes, his saves, buttons only, judged by the screen)
         if: steps.scope.outputs.docs != 'true' && steps.scope.outputs.run == 'true'
-        timeout-minutes: 8   # measured under 5 minutes
+        timeout-minutes: 12   # measured 5 to 8 minutes under load
         # prototypes/exploration/tests/played/played.mjs (owner 2026-11-25, code-audit step 1). It builds the bundle with ops/sandbox/bundle-pages.sh itself and serves it. The glob is quoted: Node 22 takes a directory argument as a file.
         run: node --test "prototypes/exploration/tests/played/*.mjs"
