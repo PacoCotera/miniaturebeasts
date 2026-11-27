@@ -102,7 +102,7 @@ WORDS.habit = {
   noted: (name, habit, range, said) => name + ' · ' + habit + ' · ' + range + ' · ' + said,
   first: ' · +1 Data', sighting: ' · a sighting · +1 Data', sample: sample => ' · a ' + sample + ' for the Station', noRoom: 'The satchel is full · the sample stays',
   dup: 'You have noted that from here', lost: 'It heard you · the habit is lost', missed: 'The moment passed',
-  fed: 'fed · tonight she sleeps in her pod',   // editorial's line, said when he feeds a named Loika (habits-out-build-1)
+  fed: n => n + ' takes the fruit from your hand. Tonight she sleeps in her pod, if she is left in peace.',   // editorial's line, said when he feeds a named Loika
   rooms: { place: 'where she goes', coat: 'her coat', face: 'her face' },
   asleep: 'asleep, curled up', asleepStirred: ' · she is stirring · no keepsake until she settles',   // [copy] night step 5: a sleeper's note (name, and the tail while she is stirred)
   curledSlot: 'Loika asleep: picture to come',   // [art] night step 5: the named empty slot of her curled token (night-camp piece 11), not signed yet
@@ -237,7 +237,25 @@ export const DAY_TEXT = {
   line: (part, n) => part + ' · ' + (part === 'night' ? 'dawn in ' : 'night in ') + n,   // [copy] the bottom line: the part of day and how far the night (or dawn) is
   nightPassed: part => 'Night passed. A new day: ' + part + '.',   // [copy] the walk goes on where you stand
   duskNews: n => 'Dusk. Night in ' + n + '.',   // [copy] once a day, in the message box
+  duskFed: names => names.length === 1 ? 'Dusk. ' + names[0] + ' ate from your hand today. She will sleep in her pod if you do not wake her.' : 'Dusk. ' + names[0] + ' and ' + (names.length - 1) + ' other Loika' + (names.length > 2 ? 's' : '') + ' ate from your hand today. They will sleep in their pods if you do not wake them.',   // editorial's line
+  nightFed: name => 'Night. ' + name + ' sleeps in her pod',   // no clock: the day bar alone counts to dawn
+  nightFedMore: (name, n) => 'Night. ' + name + ' and ' + n + ' other Loika' + (n > 1 ? 's' : '') + ' sleep in their pods',   // bus 9bdb54 (GD note): two or more fed
+  nightWoken: name => 'Night. ' + name + ' was woken · no pod tonight',
   nightNews: n => 'Night. Dawn in ' + n + '.',   // [copy]
   newDay: 'A new day · you set out at dawn',   // a set-out in the night's light: the night's end runs first, at the Station
   campHint: ['seals a crate · makes camp', 'seals a crate'],   // End expedition at the flag: the day waits
+};
+// the night pod's words (editorial's lines; none is the builder's)
+WORDS.pod = {
+  take: 'Take her up', second: 'One sleeper only', line: n => n + ' · asleep in her pod', lineShort: n => n + ' · asleep',
+  secondMsg: n => 'The Case holds one sleeper · ' + n + ' is in it',   // editorial's line: the walk's end brings her home
+  head: n => 'Take ' + n + ' up?', leave: 'Leave her asleep',
+  c1: 'She sleeps till first light. End the expedition and she wakes in the nursery.',   // editorial's line
+  cradle: n => n + ' · asleep', cradleMsg: 'She wakes at first light',
+  seal: (n, rest) => 'Seals ' + n + ', asleep' + (rest ? ' + ' + rest : ''), sealTail: 'She wakes at the Station',
+  bayFull: n => 'Bay full · ' + n + ' wakes here at first light · dock to empty the bay',
+  wokeSet: n => n + ' woke where her pod lay',   // the dawn message where she lay; none at her bed
+  wokeNursery: n => n + ' woke in the nursery',
+  eatsTeach: n => n + ' eats fruit · creep beside her while she grazes', podTeach: n => n + ' · asleep in her pod · ✓ takes her up',   // [copy] put together from canon's strings
+  fed: 'Fed today', asleepPage: 'asleep in her pod', inCase: 'in the Case', goneHome: d => 'Gone home · day ' + d, goneBack: d => 'Gone back · day ' + d,
 };
