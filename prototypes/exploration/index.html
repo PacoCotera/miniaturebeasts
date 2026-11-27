@@ -7548,7 +7548,7 @@ const goalBandOn = () => !!S && (S.phase === 'map' || (S.phase === 'patch' && !S
 // The target line (W6a): when the walk's goal names a wild one the player has met (the first walk's "her ways" goal, metBest), the row shows her mini on its slate chip, the words, and an arrow
 // to where the player last saw her: 8-way from the explorer's cell, cream when that sight was today, mist when it was on an earlier day, "here" when that cell is the explorer's. Never her live place.
 // Until the goal names one the player has seen, the row keeps the goal's words and draws no mini and no arrow. null then.
-const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 'se', 'south': 's', 'south-west': 'sw', 'west': 'w', 'north-west': 'nw' };
+const DIR_ABBR = { 'north': 'n', 'north-east': 'ne', 'east': 'e', 'south-east': 'se', 'south': 's', 'south-west': 'sw', 'west': 'w', 'north-west': 'nw' };   // still read: the arrow art keys (target-dir-w-seen)
 function targetLine() {
   if (!HUD.ok || !S || !S.exp || RT.readOnly || !firstWalk()) return null;
   const ex = S.exp; if (ex.cargo.pods.length || ownPodLying()) return null;
@@ -7559,7 +7559,7 @@ function targetLine() {
   else if (numeric(rec.k) && (P ? numeric(P.key) : true)) { const a = cxy(+rec.k), c = cxy(P ? +P.key : ex.pos); dx = a.x - c.x; dy = a.y - c.y; }
   const here = dx === 0 && dy === 0, word = dx == null || here ? null : dirWord(dx, dy, Math.hypot(dx, dy)), dir = here ? 'here' : word ? DIR_ABBR[word] : null;
   const lay = layoutCache.get(String(rec.k)), where = lay && !lay.cave ? placeName(lay) : '';
-  return { sp: rec.sp, dir, seen: rec.t === S.turn, text: WORDS.target.line(b.name, where, dir), id: b.id };
+  return { sp: rec.sp, dir, seen: rec.t === S.turn, text: WORDS.target.line(b.name, where, here ? 'here' : word, s => textW(s, 2) <= SCR_W - 49), id: b.id };
 }
 function drawGoalBand() {
   if (!goalBandOn()) return;

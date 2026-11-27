@@ -684,8 +684,8 @@ for (const size of SIZES) {
       assert.equal((await g.where()).phase, "patch", "the case is reached: he is walking the patch");
       for (let i = 0; i < 7; i++) await g.press("left", 100, 500);
       const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, dir: t && t.dir, sight: m.herInSight() }; });
-      assert.ok(top.text && top.text.startsWith("Juniper") && top.dir === "e" && top.sight !== null, `the case is reached: the top line is the goal's, Juniper · E, while Hazel stands in sight (${JSON.stringify(top)})`);
-      await g.shot(`s7-${tag}-0-top`);                      // read by eye: top line 'Juniper · E'
+      assert.ok(top.text && top.text.startsWith("Juniper") && top.dir === "e" && top.sight !== null, `the case is reached: the top line is the goal's, Juniper · last seen east, while Hazel stands in sight (${JSON.stringify(top)})`);
+      await g.shot(`s7-${tag}-0-top`);                      // read by eye: top line 'Juniper · last seen east'
       await g.press("back");                                // ← opens the menu
       const row = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, it = m.menuItems()[0]; return { phase: m.S.phase, label: it && it.label, sel: m.S.ui.menuSel }; });
       const first = await row();
@@ -696,6 +696,25 @@ for (const size of SIZES) {
       assert.equal((await g.where()).phase, "her", "the case is reached: ✓ left the menu for a page");
       assert.ok(changed(menu, page, r).frac > 0.3, `✓ opened her page: the screen is a different one (${changed(menu, page, r).frac.toFixed(2)} of it moved)`);
     } finally { await g.ctx.close(); }
+  });
+
+  // OWNER #147 (11-24, note mwv210fs19ae9d): 'What does it mean "Sorrell - Meadow - W"?' His replay.save: the goal band reads words with the full direction ('last seen west, in the meadow'), whole.
+  it(`s32 the target line reads as words (#147, his save): 'last seen <full direction>', whole in the goal band [${tag}]`, async () => {
+    const g = await open(size, "147");
+    try {
+      const top = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, t = m.targetLine(); return { text: t && t.text, band: m.S.phase }; });
+      await g.shot(`s32-${tag}-0-band`);                    // read by eye: the whole screen, the band under the top bar
+      assert.ok(top.text, `the case is reached: the target line shows on his save (${JSON.stringify(top)})`);
+      assert.match(top.text, / · last seen (here|(north|south)(-(east|west))?|east|west)(, in the [a-z ]+)?$/, `the line reads as words with the full direction, not 'place · W' (${top.text})`);
+      assert.ok(!top.text.includes("…"), "the line is whole, not clipped");
+    } finally { await g.ctx.close(); }
+    if (size.w !== 412) return;
+    const g2 = await open({ w: 390, h: 844, dpr: 3 }, "147");   // the second size of the stills
+    try {
+      const t2 = await g2.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.targetLine());
+      await g2.shot("s32-390x844-0-band");
+      assert.ok(t2 && /last seen/.test(t2.text) && !t2.text.includes("…"), `the line reads as words, whole, at 390x844 (${t2 && t2.text})`);
+    } finally { await g2.ctx.close(); }
   });
 
   // OWNER #156 (11-24), his own save (note mwv7x4xtaf3d27): Drizzle stands beside him; ← then offers her page as the first row, and ✓ opens it.
