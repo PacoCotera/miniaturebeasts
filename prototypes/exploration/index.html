@@ -2561,7 +2561,7 @@ function findSlotFor(lay, key, pod, ent) {
 // ---------- Haunts and routines of the wild Loika (walk W2; src/gen7/haunts.mjs) ----------
 // An overlay read from a mounted place, never part of the land: the view of the place's own props and ground, the sites it offers, and for each Loika its doings, three haunts and a bed.
 // The haunt walk (hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField) is src/gen7/haunt-walk.mjs; the page's runtime state is handed in here, read each time, never copied.
-const { hauntView, placeReach, hauntStandable, hauntSitesOf, staticShut, pathField } = makeHauntWalk({
+const { hauntView, placeReach, hauntStandable, hauntSitesOf, hauntSitesWalkable, staticShut, pathField } = makeHauntWalk({
   get PL() { return PL; }, featAt: (lay, key, x, y) => featAt(lay, key, x, y), openingKind: (lay, o) => openingKind(lay, o), rimRefuses: (lay, fx, fy, tx, ty) => rimRefuses(lay, fx, fy, tx, ty),
   bankTile: (lay, x, y) => bankTile(lay, x, y), get NOSTAND() { return NOSTAND; }, get SMALL_FEAT() { return SMALL_FEAT; } });
 const OPEN_FROM = { N: 'down', S: 'up', W: 'right', E: 'left' };
@@ -2570,7 +2570,7 @@ const hauntFree = (lay, key, who) => (x, y) => x >= 1 && y >= 1 && x < lay.w - 1
 // A kind with a routine base is an individual of its land: { doings, hs (water, grass, third, bed), name }. The haunts after S.turn nights are a pure walk from the seed and the id.
 function individualOf(w, lay) {
   if (!routineBase(w.sp)) return null;
-  const sites = hauntSitesOf(lay); if (!sites.length) return null;
+  const sites = hauntSitesWalkable(lay); if (!sites.length) return null;
   const doings = doingsOf(S.seed, w.id), hs = hauntsOn(S.seed, w.id, sites, doings, S.turn);
   return hs ? { doings, hs, name: loikaName(S.seed, S.cr.filter(q => q.sp === w.sp && q.id < w.id).length) } : null;
 }
@@ -2957,7 +2957,7 @@ function hauntStep(X, c) {   // true when the routine has the creature's action
 function keepHaunts(live, key) {
   for (const c of live.cr) { if (!c.ind || !c.ind.hs || hauntsApart(c.ind.hs) || c.ind.hsTried === S.turn) continue;
     c.ind.hsTried = S.turn; // one try a night per creature, kept or not (a small place may not fit 3 apart)
-    const sites = hauntSitesOf(layout(key)), hs = sites.length ? hauntsKept(S.seed, c.id, sites, c.ind.doings, S.turn, c.ind.hs) : c.ind.hs;
+    const sites = hauntSitesWalkable(layout(key)), hs = sites.length ? hauntsKept(S.seed, c.id, sites, c.ind.doings, S.turn, c.ind.hs) : c.ind.hs;
     if (hs !== c.ind.hs) { c.ind.hs = hs; delete c.ind.go; } }
 }
 function ensureLive(key) {

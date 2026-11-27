@@ -1398,7 +1398,7 @@ it(`s33 a glint stays on its find while he walks to it (#160, his save): dim bet
 // Seed 33, a fresh game, 390x844, presses only: ✓ to set out, the route that names Osier, then he walks toward her until she bolts (gone), walks off until he is more than 4 tiles from her, and keeps still (✓) until her beat is on the screen.
 // State only asserts the reach (she is named, she bolted, he is more than 4 tiles off, her beat is running). The verdict is the pixels: her act line in the message box, above the target line, against a crop of that box (saves/wild-beat-line.png;
 // PLAYED_WRITE_CROPS=1 rewrites it), and the box differs from the one just before the beat. Every press waits for its effect (state changed, then still for 400 ms).
-it(`s34 a wild Loika that bolted plays her beat once he keeps off (wild-beats-fix-2, seed 33): her act line shows above the target line [390x844]`, { todo: "not reached (wild-beats-fix-2): by presses on seed 33 she bolts and the bolt ends (gone false, ease 0) once he is 6 tiles below her haunt, but she then shuffles between (18,14) and (19,13) and never walks to her haunt (13,7), so no beat starts in 60 actions; the crop saves/wild-beat-line.png is not cut. The pixel verdicts below are written" }, async () => {
+it(`s34 a wild Loika that bolted plays her beat once he keeps off (wild-beats-fix-2, seed 33): her act line shows above the target line [390x844]`, { todo: "not reached (wild-beats-fix-4): by presses on seed 33 she bolts, the bolt ends, she walks to her haunt (17,7) and her beat runs (FX.beats set, 15 beats in 120 actions), but her line never takes the box: a note (\"The creature wanders\", the waitChanges note for an unknown-species creature that moved in view) is in FX.notes after every action, and settleOnce puts the act line in only when FX.notes is empty. The crop saves/wild-beat-line.png is not cut." }, async () => {
   const size = { w: 390, h: 844, dpr: 3 };
   const g = await open(size, { seed: 33 });
   const MSGBOX = [0.02, 0.80, 0.96, 0.10];
@@ -1412,6 +1412,8 @@ it(`s34 a wild Loika that bolted plays her beat once he keeps off (wild-beats-fi
     for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }
     assert.ok(s.key, `set out: he is in the first place (${JSON.stringify(s)})`);
     for (const [d, n] of [["right", 24], ["up", 12], ["right", 12], ["down", 12]]) for (let i = 0; i < n && !s.named; i++) { await step(d); s = await st(); }
+    const toward = async () => { const dx = s.cx - s.x, dy = s.cy - s.y, h = dx > 0 ? "right" : "left", v = dy > 0 ? "down" : "up", pri = Math.abs(dx) >= Math.abs(dy) ? [h, v] : [v, h], at = s.x + "," + s.y; for (const d of pri.concat(["up", "down", "left", "right"])) { await step(d); s = await st(); if (s.x + "," + s.y !== at || s.named) return; } };
+    for (let i = 0; i < 90 && !s.named && s.key === "31"; i++) { await toward(); }
     assert.ok(s.named, `the case is reached: Osier is named (${JSON.stringify(s)})`);
     // he walks toward her until she bolts
     // a press that does not move him (a bush, a stone) is followed by a sidestep across the line to her
@@ -1426,9 +1428,10 @@ it(`s34 a wild Loika that bolted plays her beat once he keeps off (wild-beats-fi
       for (const d of pri.concat(["up", "down", "left", "right"])) { await step(d); s = await st(); if (s.x + "," + s.y !== at) return; } };
     assert.ok(dist(s) > 4, `the case is reached: he is more than 4 tiles off (${JSON.stringify(s)})`);
     let before = await g.shot("s34-before"), im = null;
-    for (let i = 0; i < 60 && !s.beat; i++) { before = await g.shot(); if (s.hx != null && !s.gone && (s.x !== s.hx || s.y !== s.hy + 6)) await goto(s.hx, s.hy + 6); else await step("confirm"); s = await st(); }
-    assert.ok(s.beat && !s.gone, `the case is reached: she is at ease again and her beat is running (${JSON.stringify(s)})`);
-    im = await g.shot("s34-beat");
+    // she walks to her haunt on her own; he comes within sight of her (more than 4 off she is out of the fog's sight), then keeps still; the beat's line takes the box only when it is free, so each press is shot and the one where the box changes with the beat running is the verdict
+    for (let i = 0; i < 120 && !(s.beat && im); i++) { before = await g.shot(); im = null; if (!s.gone && s.hx != null && Math.max(Math.abs(s.cx - s.hx), Math.abs(s.cy - s.hy)) <= 1 && !s.sight) await goto(s.cx, s.cy + 4); else await step("confirm"); s = await st(); const sh = await g.shot("s34-beat"); const mv = changed(before, sh, await g.region(), MSGBOX).n; if (s.beat && mv > 400) im = sh; }
+    assert.ok(s.beat && !s.gone && im, `the case is reached: she is at ease again, her beat is running and its line is in the box (${JSON.stringify(s)})`);
+
     const r = await g.region(), k = r.w / 450;
     const box = { x: r.x + Math.round(r.w * MSGBOX[0]), y: r.y + Math.round(r.h * MSGBOX[1]), w: Math.round(r.w * MSGBOX[2]), h: Math.round(r.h * MSGBOX[3]) };
     const crop = (b) => { const d = new Uint8Array(b.w * b.h * 4); for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const p = px(im, b.x + x, b.y + y), j = (y * b.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } return { width: b.w, height: b.h, data: d }; };
