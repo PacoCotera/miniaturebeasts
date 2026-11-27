@@ -171,13 +171,13 @@ test("the dock's sheet: a bottom sheet on a phone, centred on a laptop, the e-pa
   const l = dockSheet(1440, 900, false); assert.ok(l.y > 0 && l.y + l.h < 900 && l.x > 0);
 });
 
-// QA verify-live-144 (Dock cut off): the Bay screen is 1024 lp across with no narrow form, so on the upright phone it is shown whole at the width fit, never in the x0.6 window; the whole screen is inside the panel and Home is unchanged
-test("the Station's Bay screen on an upright phone: the whole 1024 lp screen inside the panel (412, 390, 522 wide)", () => {
+// the Bay build: the Bay has Home's narrow form (530 x 600 lp), so PR 616's whole-screen flag is gone: on the upright phone the Bay is the same x0.6 window as Home, never the 1024 lp screen at the width's fit (QA verify-live-144: the Dock screen was cut off at 412 wide)
+test("the Station's Bay on an upright phone is the narrow window, whole inside the panel (412, 390, 522 wide)", () => {
   for (const [W, H, dpr] of [[412, 915, 2], [390, 844, 3], [522, 935, 3]]) {
-    const p = plan({ W, H, dpr, coarse: true, dev: "station", whole: true }), h = plan({ W, H, dpr, coarse: true, dev: "station" }), tag = W + "x" + H;
-    assert.equal(p.view, null, tag + ": no window on the Bay screen");
-    assert.ok(Math.abs(p.screen.w - 1024 * p.scale) < 1e-6, tag + ": the screen shows all 1024 lp");
+    const p = plan({ W, H, dpr, coarse: true, dev: "station" }), tag = W + "x" + H;
+    assert.ok(p.view && p.narrow && p.view.w <= 530 + 1e-6, tag + ": the narrow window");
+    assert.ok(p.view.w >= 530 - 1e-6 && p.view.h >= 600 - 1e-6, tag + ": the whole 530 x 600 form is in view, no pan");
     assert.ok(p.screen.x >= p.panel.x - 1e-9 && p.screen.x + p.screen.w <= p.panel.x + p.panel.w + 1e-9, tag + ": the screen right edge is inside the panel");
-    assert.ok(h.view && h.narrow, tag + ": Home keeps its window and narrow form");
+    assert.equal(p.whole, undefined, tag + ": no whole-screen flag");
   }
 });

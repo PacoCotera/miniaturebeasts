@@ -79,6 +79,14 @@ WORDS.ease = {
   ctx: 'keep still, and see what it does',
   wildKind: kind => 'a wild ' + kind,   // owner note #111: a named wild one, her kind not yet identified: the bar says what the name is
 };
+// [copy] wild-life-build-3: the one line when a wild Loika's act starts (graze, sniff, groom, look up); the plant is what she is at. Working words for editorial; no prompt, no counter.
+const PLANT_THE = { flowers: 'the flowers', tufts: 'the clover', clump: 'the tall grass', shrub: 'the shrub', bush: 'the bush' };
+WORDS.beat = {
+  graze: (n, cls) => n + ' nibbles ' + (PLANT_THE[cls] || 'the clover'),
+  sniff: (n, cls) => n + ' sniffs ' + (cls === 'flowers' ? 'the daisies' : PLANT_THE[cls] || 'the clover'),
+  groom: n => n + ' grooms her tail',
+  look: n => n + ' looks up at you',
+};
 // [copy] W4, habits that play and the notes they give (walk-design-1 W4; the range rule 3A and 3B): working words for the copywriter; the voice is a friend on the walk, never a claim past the sight.
 WORDS.habit = {
   name: { shake: 'shaking dry', calm: 'calming a wary one', sleep: 'curling up to sleep', still: 'keeping still' },   // still [copy]: a note of her with no habit in play (habits-out-build-1); editorial's wording to confirm
@@ -150,8 +158,15 @@ WORDS.w5 = {
 // [copy] the wind of the land, said in the bottom line's conditions slot until the art director signs a mark (rule 18): it blows toward the named way
 WORDS.wind = { N: 'wind to the north', E: 'wind to the east', S: 'wind to the south', W: 'wind to the west' };
 WORDS.windShort = { N: 'wind N', E: 'wind E', S: 'wind S', W: 'wind W' };
-// [copy] WORKING WORDS (W6a): the target line in the walk's top row: her name, the place she was last seen in, and the way to it (NE; "here" when it is where the explorer stands). The copywriter's job replaces them.
-WORDS.target = { line: (name, where, dir) => [name, where, dir ? (dir === 'here' ? 'here' : dir.toUpperCase()) : ''].filter(Boolean).join(' · ') };
+// [copy] EDITORIAL (#147, bus 08:35 MX): the target line in the walk's top row. dir is dirWord's full word ('west', 'north-west') or 'here'; fits(str) says whether a string fits the band.
+// Full: 'Sorrel · last seen west, in the meadow'; short (when the full does not fit, or no place): 'Sorrel · last seen west'; 'here': 'Sorrel · last seen here'; no dir: 'Sorrel · last seen in the meadow'.
+WORDS.target = { line: (name, where, dir, fits) => {
+  const seen = name + ' · last seen';
+  if (dir === 'here') return seen + ' here';
+  if (!dir) return where ? seen + ' in the ' + where : name;
+  const short = seen + ' ' + dir, full = where ? short + ', in the ' + where : short;
+  return !where || (fits && !fits(full)) ? short : full;
+} };
 // [copy] WORKING WORDS (edge-cost-line-fix-1, owner 2026-11-25 "ok"): the bottom line while the next step crosses into the next place; n is DAY.mapStep. The editor's final string replaces it.
 WORDS.edgeStep = n => n + ' light to the next place';
 

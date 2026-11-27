@@ -62,17 +62,16 @@ const rig = () => {
   G.st = S.freshSt("w1", 1, 1000); S.normalize(G.st); G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st: G.st }; UI.idle = false; UI.resting = false; UI.caddyOpened = null; UI.skip = null;
   let t = 0; const h = createHost({ send: () => {}, nowMs: () => t, light: () => "day", motion: () => true }); h.save = () => {};
   const crate = (id, n) => ({ id, n, turn: 2, at: 0, e: 3, d: 2, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
-  G.sv.bay = [crate("c1", 1), crate("c2", 2)]; G.st.dock = { docked: true, at: 0 }; S.crossCrates(G.st, G.sv); UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; h.pendingDock = false;
+  G.sv.bay = [crate("c1", 1), crate("c2", 2)]; G.st.dock = { docked: true, at: 0 }; S.crossCrates(G.st, G.sv); UI.screen = "cargo"; UI.cargo.state = "bay"; UI.cargo.run = null; UI.cargo.open = false; UI.cargo.sum = null; UI.cargo.portrait = null; h.pendingDock = false;
   return { h, at: (ms) => { t = ms; h.frame(); } };
 };
-test("the opening's end records what it brought for the Caddy (crates opened, new pods), ✓ Skip included; the next dock or lift clears it", () => {
-  { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); assert.equal(UI.caddyOpened, null, "not before the end");
-    at(3820); assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }); assert.deepEqual(caddyLines({ docked: true, crates: 0, opened: UI.caddyOpened }), { line1: "two crates home", line2: null, crates: 0 });
+test("the Bay's unloading records what it brought for the Caddy (crates put away, new pods), ▼ All at once included; the next dock or lift clears it", () => {
+  const press = (h, verb) => onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb });
+  { const { h, at } = rig(); at(0); press(h, "confirm"); assert.equal(UI.caddyOpened, null, "an open crate is not yet put away"); press(h, "confirm"); assert.deepEqual(UI.caddyOpened, { crates: 1, newPods: 0 });
+    press(h, "confirm"); press(h, "confirm"); assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }); assert.deepEqual(caddyLines({ docked: true, crates: 0, opened: UI.caddyOpened }), { line1: "two crates home", line2: null, crates: 0 });
     at(4000); INTENTS.frame.dock(h); assert.equal(UI.caddyOpened, null, "the lift clears it"); }
-  { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "room", verb: "confirm" }); onFaceMessage(h, { t: "intent", seq: 3, screen: "cargo", target: "room", verb: "confirm" });
-    assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }, "a skip records it too"); }
-  { const { h, at } = rig(); at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "cargo", target: "room", verb: "confirm" }); at(500); onFaceMessage(h, { t: "intent", seq: 2, screen: "cargo", target: "room", verb: "back" });
-    assert.deepEqual(UI.caddyOpened, { crates: 1, newPods: 0 }, "← records the crate that was open, the other waits sealed"); }
+  { const { h, at } = rig(); at(0); press(h, "all"); assert.deepEqual(UI.caddyOpened, { crates: 2, newPods: 0 }, "▼ puts every crate away"); }
+  { const { h, at } = rig(); at(0); press(h, "confirm"); press(h, "back"); assert.deepEqual(UI.caddyOpened, { crates: 1, newPods: 0 }, "← records the crate that was open, the other waits sealed"); }
 });
 test("the partner the lifted line names: the lead if carried and grown, else the first grown mibi with the Companion, else none", () => {
   rig(); const mk = (id, name, grown) => ({ id, name, sp: 0, born: 0, ...(grown ? { grownTurn: 0 } : { bonded: true }) });   // grownTurn: an adult; bonded with no grownTurn: a juvenile (stageAt)

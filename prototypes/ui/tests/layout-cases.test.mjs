@@ -48,10 +48,10 @@ test("the corpus: every ✓m of the spec's validation has a case", () => {
 
 // The owner's review of 2026-10-26: one case a card (card, verdict); the owner's marks are the ground truth.
 const owner = cases.filter((c) => c.card), by = (v) => owner.filter((c) => c.verdict === v);
-test("the owner's review: 95 cards, one case each: a fault expects (its own kind, or the finding that carries it), a fine clears, a not-sure card is as the tune left it", () => {
-  // 98 cards until the dock's choice card went (arrival A, 255a1b7c5): its three fault cards (cargo-L11-1, cargo-L2-1, cargo-L3-11) left with the strip they were marked on; no verdict changed
-  assert.equal(owner.length, 95); assert.equal(new Set(owner.map((c) => c.card)).size, 95, "one case a card");
-  assert.deepEqual([by("fault").length, by("fine").length, by("unsure").length, by("unmarked").length], [50, 22, 21, 2]);
+test("the owner's review: 87 cards, one case each: a fault expects (its own kind, or the finding that carries it), a fine clears, a not-sure card is as the tune left it", () => {
+  // 87 cards: the eight on the old Bay's states (six faults, two fines) went with those states (bay-build-2, rule 21); 98 cards until the dock's choice card went (arrival A, 255a1b7c5): its three fault cards (cargo-L11-1, cargo-L2-1, cargo-L3-11) left with the strip they were marked on; no verdict changed
+  assert.equal(owner.length, 87); assert.equal(new Set(owner.map((c) => c.card)).size, 87, "one case a card");
+  assert.deepEqual([by("fault").length, by("fine").length, by("unsure").length, by("unmarked").length], [44, 20, 21, 2]);
   for (const c of by("fault")) assert.ok(c.expect.length || c.fixed || c.ruled || c.pending.length, `${c.card}: a fault expects a finding, or names the commit that fixed it, or the owner's ruling that replaced it, or is pending`);
   assert.deepEqual(by("fault").filter((c) => c.fixed).map((c) => c.card).sort(), ["bench-L5-8", "create-L5-4", "vivarium-L1-10", "vivarium-L11-1", "vivarium-L7-11"], "five faults are fixed (bench-L5-8 by the signed Companion paintings; create-L5-4 by the price run's 8 px inset; L11-1 by Q1; L1-10 and L7-11 by the collection v2 build: the bed centred)");
   assert.deepEqual(by("fault").filter((c) => c.ruled).map((c) => [c.card, c.ruled]), [["vivarium-L10-1", "2026-10-29 14:38"]], "one fault is ruled (the window edge rule)");
@@ -107,5 +107,5 @@ test("the text fit: no fixture log (the frozen ones too) has a text whose ink li
     if (!existsSync(dir)) continue;
     for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) { const o = overruns(J(path.join(dir, f)).log); n++; assert.deepEqual(o.map((x) => `${x.node} ${x.measured} px past the ${x.side} of ${x.container.id}`), [], `${screen}/${f}`); }
   }
-  assert.ok(n >= 50, n + " logs read");
+  assert.ok(n >= 45, n + " logs read");
 });

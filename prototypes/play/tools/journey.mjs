@@ -64,14 +64,10 @@ async function open(width, height, { dsf = 1, motion = false, query = "?test", o
   return { ctx, page, st, mb };
 }
 // the arrival (the Station takes the keys and behaves as if it had them, and Later returns to the screen it was on): one crate holds input for 3000 + 200 ms, then the choice (no card; the bottom line reads ✓ Open the crate and ← Later, the ring on a crate that holds a pod); ← is Later
-const later = async (page, st, what, back, empty = false) => {
-  if (empty) {   // C docks with an empty bay: the show has no choice, so a key skips it and it closes on the screen the player was on
-    await page.waitForTimeout(1000); await page.keyboard.press("Enter"); await page.waitForTimeout(800); await back(); return;
-  }
-  await page.waitForTimeout(3600);   // one crate: the show holds 3200 ms
-  await st().waitForFunction(() => window.__st.props?.regions?.arrival?.phase === "choice", null, { timeout: 15000 }).catch(() => {});
-  eq(await st().evaluate(() => [window.__st.props?.regions?.arrival?.phase, window.__st.props?.overlay ?? null]), ["choice", null], what + ": after the show the choice stands: no card, ✓ Open the crate and ← Later");
-  await page.keyboard.press("Escape"); await page.waitForTimeout(800);   // ← Later
+const later = async (page, st, what, back, empty = false) => {   // the Bay opens at once on the dock (no show, no choice): the crates wait on the table; ← is Home
+  await page.waitForTimeout(800);
+  if (!empty) eq(await st().evaluate(() => [window.__st.props?.state, !!window.__st.props?.bay?.table, window.__st.props?.overlay ?? null]), ["bay", true, null], what + ": the Bay stands with a crate on the table: no card, ✓ Open the crate and ← Home");
+  await page.keyboard.press("Escape"); await page.waitForTimeout(800);   // ← Home
   await back();
 };
 const box = async (page, sel) => { const b = await page.locator(sel).boundingBox(); return [b.x, b.y, b.width, b.height]; };
@@ -143,7 +139,7 @@ if (!ONLY || ONLY === "DR") {
   await page.click("#dockKey"); await page.waitForFunction(() => window.__play.owner === "station", null, { timeout: 5000 }).catch(() => {}); await page.waitForTimeout(500); s = await state(page);
   eq(await st().evaluate(() => window.__st.ST.dock.docked), true, "DR2: the Companion is seated: the Station took the dock");
   eq([s.owner, s.live], ["station", "Companion docked"], "DR2: a dock that brings a crate turns the page to the Station; the live region says so");
-  eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "arrival"], "DR2: the Station wakes on Cargo's arrival");
+  eq(await st().evaluate(() => [window.__st.UI.screen, window.__st.props?.state]), ["cargo", "bay"], "DR2: the Station wakes on the Bay");
   eq([s.word, s.mark.includes("solid"), s.dot], ["Lift", true, false], "DR2: the key reads Lift (the short word at this width) with the solid mark, not lit");
   await later(page, st, "DR2", async () => {});   // the show, then the choice; ← is Later
   await page.click("#tabCompanion"); await page.waitForTimeout(400);   // the switch back to the Companion
