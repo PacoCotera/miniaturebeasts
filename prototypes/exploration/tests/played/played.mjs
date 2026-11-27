@@ -1005,8 +1005,8 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
 // OWNER 2026-11-25 06:4x (design-loop-review-1, fix 4): "ok". stay-her-step-fix-2. Seed 33 at 390x844, light 63 to 73: he kept still below the strip, she walked up to him, and the box said "Osier looked up · you stayed too long": her own step counted.
 // Played on a fresh seed 33 (the page's ?seed=): ✓ to set out, ✓ "Keep still" until her tell starts, then up the column and right to the strip's foot (the d-pad), then ✓ "Keep still" light by light while she walks up to him.
 // Every press waits for its effect (state changed, then still for 400 ms), never a fixed pause. State only asserts the case is reached (she came within two tiles of him while he kept still). The verdict is the pixels:
-// the box after each of ten lights of keeping still against a crop of that line (saves/s31-stay-box.png): she closed in on the first, and the stay counted it, so the line showed on the ninth; without her step the count needs ten of his own lights, so not one of the ten may show it. PLAYED_WRITE_CROPS=1 rewrites the crop (cut from the light on which the line shows, on the code before the fix).
-it(`s31 stay-her-step-fix-2 (seed 33): he keeps still, Osier walks up to him: the box never says "stayed too long" for her own step [390x844]`, async () => {
+// the box after each of ten lights of keeping still against a crop of that line (saves/s33-stay-box.png): she closed in on the first, and the stay counted it, so the line showed on the ninth; without her step the count needs ten of his own lights, so not one of the ten may show it. PLAYED_WRITE_CROPS=1 rewrites the crop (cut from the light on which the line shows, on the code before the fix).
+it(`s33 stay-her-step-fix-2 (seed 33): he keeps still, Osier walks up to him: the box never says "stayed too long" for her own step [390x844]`, async () => {
   const size = { w: 390, h: 844, dpr: 3 };
   const g = await open(size, { seed: 33 });
   const MSGBOX = [0.108, 0.877, 0.78, 0.042];   // the message pill (inside its border), as fractions of the screen
@@ -1026,15 +1026,15 @@ it(`s31 stay-her-step-fix-2 (seed 33): he keeps still, Osier walks up to him: th
     const box = { x: r.x + Math.round(r.w * MSGBOX[0]), y: r.y + Math.round(r.h * MSGBOX[1]), w: Math.round(r.w * MSGBOX[2]), h: Math.round(r.h * MSGBOX[3]) };
     const crop = (im) => { const d = new Uint8Array(box.w * box.h * 4); for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const i = ((box.y + y) * im.width + box.x + x) * 4, j = (y * box.w + x) * 4; d[j] = im.data[i]; d[j + 1] = im.data[i + 1]; d[j + 2] = im.data[i + 2]; d[j + 3] = 255; } return { width: box.w, height: box.h, data: d }; };
     const differ = (c, ref) => { let n = 0; for (let i = 0; i < c.data.length; i += 4) if (c.data[i] !== ref.data[i] || c.data[i + 1] !== ref.data[i + 1] || c.data[i + 2] !== ref.data[i + 2]) n++; return n; };
-    const refFile = path.join(savesDir, "s31-stay-box.png"), writing = !!process.env.PLAYED_WRITE_CROPS;
+    const refFile = path.join(savesDir, "s33-stay-box.png"), writing = !!process.env.PLAYED_WRITE_CROPS;
     const ref = writing ? null : decodePNG(readFileSync(refFile));
     let near = 0, worst = Infinity, prev = at;
     for (let light = 0; light < 10; light++) {
       await step("confirm"); s = await st();
       assert.ok(s.x === at.x && s.y === at.y, `he kept still (${JSON.stringify([at, s])})`);
       if (s.d <= 2) near++;
-      const c = crop(await g.shot("s31-" + light));
-      if (writing) { console.log(`# s31 w ${light}: ${JSON.stringify(s)}`); if (s.ease > prev.ease) { writeFileSync(refFile, encodePNG(c.width, c.height, c.data)); console.log(`# s31: crop written at light ${light}`); break; } } else { const n = differ(c, ref); worst = Math.min(worst, n); console.log(`# s31 light ${light}: Osier ${s.d} tiles away, the box differs from the line's crop by ${n} pixels`); }
+      const c = crop(await g.shot("s33-" + light));
+      if (writing) { console.log(`# s33 w ${light}: ${JSON.stringify(s)}`); if (s.ease > prev.ease) { writeFileSync(refFile, encodePNG(c.width, c.height, c.data)); console.log(`# s33: crop written at light ${light}`); break; } } else { const n = differ(c, ref); worst = Math.min(worst, n); console.log(`# s33 light ${light}: Osier ${s.d} tiles away, the box differs from the line's crop by ${n} pixels`); }
       prev = s;
     }
     if (writing) return;
