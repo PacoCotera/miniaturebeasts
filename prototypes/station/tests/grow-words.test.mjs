@@ -41,3 +41,9 @@ test("the banner, the card and the library read the time left from growAt, not a
   a.growAt = Date.now() + 40 * MIN - 1000; assert.equal(youngWhen(st, a, settings), "in 40 minutes");
   assert.equal(stageNote(a, st.turn, 2, 16).ms > 39 * MIN, true, "the library's stage row has the milliseconds");
 });
+
+test("owner #165: the Companion header, out, findPod with no species reads 'Find a pod', not 'Go out with the Companion'", () => {
+  const goal = { key: "pair", step: { key: "findPod" } };
+  assert.equal(companionWords(goal, frameSpec).text, "Find a pod");
+  assert.equal(goalWords(goal, true, frameSpec).text, "Go out with the Companion", "the Station's own line stays while docked");
+});
