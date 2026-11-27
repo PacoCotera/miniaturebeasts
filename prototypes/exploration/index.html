@@ -3523,6 +3523,8 @@ function patchAction() {
     if (!S.known.includes(o.c.sp) && !o.c.ind) return !fruit && inSight(f.x, f.y) && (o.c.ease | 0) < 3 ? { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) } : { label: 'Unknown creature', run: null };   // ui-dead-check-156-4: beside one he has not met and that is no individual, ✓ keeps still as beside a Loika (keepStill reads no ind), never a ✓ that does nothing
     // walk W3: facing a named Loika in sight with nothing to offer, ✓ keeps still, one act (Waits run until its ease changes, a tell starts, the weather or the part of day turns, or ten light are gone)
     if (!fruit && o.c.ind && inSight(f.x, f.y) && (o.c.ease | 0) < 3) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) };
+    // her-fruit-build-1: fruit for a named Loika does not wait for her kind to be identified; she takes it grazing, with the stay left, and never with her ears up or in her habit
+    if (fruit && o.c.ind && !o.c.hide && inSight(f.x, f.y) && (o.c.ease | 0) < 3 && spOf(o.c.sp).eats) return herFruitAction(o.c);
     if (!S.known.includes(o.c.sp)) { const nmd = S.named && S.named[o.c.id]; return { label: nmd ? nameKind(nmd, o.c.sp) : 'Unknown creature', run: null }; }   // owner note 156: a named one is never "Unknown creature"; a named one of a kind not yet identified, with no keep still open: still no diet leak
     // never offered to a non-eater: the label says so and pressing spends nothing
     if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
@@ -3781,6 +3783,7 @@ const actDone = (ex, c, kind) => !!(ex.momented && ex.momented[c.id + ':' + kind
 function awardMoment(c, kind, X) {
   const ex = S.exp; if (actDone(ex, c, kind)) return; ex.momented[c.id + ':' + kind] = 1;
   if (kind === 'eat' && c.ind) {   // habits-out-build-1: feeding a named Loika sets "fed" for the day and gives no Data; she is fed once a day and tonight she sleeps in her pod
+    if (!habDay()['fed:' + c.id]) bookEv('fed', c, WORDS.fruit.log(habName(c)));   // the Log keeps one line a day, under her name
     habDay()['fed:' + c.id] = 1; ex.moments.push({ sp: c.sp, kind }); logEv('Moment · ' + habName(c) + ' fed'); fxMsg(WORDS.habit.fed, 3); return; }
   const got = ex.cargo.d < CAP ? addMat('d', ACT_DATA, c.x, c.y) : 0;   // a full hold takes nothing; the line below says so
   ex.dAct = (ex.dAct || 0) + got;   // counts, for the end report
@@ -3790,10 +3793,26 @@ function awardMoment(c, kind, X) {
   const what = kind === 'eat' ? 'the ' + spName(c.sp) + ' ate your fruit' : 'the ' + spName(c.sp) + ' settled';
   fxMsg(got ? '+' + got + ' Data · ' + what : cap(what) + ' · ' + WORDS.creature.holdFull, 2);
 }
+// her-fruit-build-1: a named wild Loika takes fruit from the hand while she grazes (ease 0), is not in a habit or asleep, and the stay has light left. Her ease, quiet, crowd and habits never move for it. (The partner's calm on her, once w7-build-1 is on main, is not built here.)
+// her-fruit-build-2 (design): in her habit or asleep ✓ stays "Keep still" (the note) with fruit in hand; the fruit is neither offered nor shown. Ears up and watching: dimmed with its reason.
+const herTakes = c => !!c.ind && (c.ease | 0) === 0 && !c.hb && !sleeperOf(c) && (hearLineOf(c) || {}).left > 0;
+function herFruitAction(c) {
+  if (c.hb || sleeperOf(c)) return { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(c) };
+  if (herTakes(c)) return { label: WORDS.fruit.offer, run: () => offer(c) };
+  return { label: WORDS.fruit.refuse, dim: true, run: () => { FX.bumpAt = NOW; } };   // nothing is spent: no light, no fruit
+}
 function offer(c) { if (darkRefuse()) return;
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
   ex.stats.feedTries++;
   if (!spOf(c.sp).eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
+  if (herTakes(c)) {   // her-fruit-build-1: a named Loika grazing with the stay left takes it; no heard step and no crowding, so her ease, quiet count and stay are as they were
+    const e = c.ease, q = c.quiet, w = c.crowd;
+    ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
+    awardMoment(c, 'eat', X);
+    advance('patch', { noise: 'act' });
+    c.ease = e; c.quiet = q; c.crowd = w;
+    return;
+  }
   const fog = !lay.cave && inFog(lay.cell);
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
     if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch when the expedition ends
