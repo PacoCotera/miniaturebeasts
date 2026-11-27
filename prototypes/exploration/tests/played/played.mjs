@@ -1622,4 +1622,81 @@ for (const size of SCALE_SIZES.filter((s) => s.w === 412 || s.w === 390)) {
     } finally { await g.ctx.close(); }
   });
 }
+// OWNER 2026-11-26 05:2x ("you're making it too complicated, it's a cozy game"; reach-build-1, the build desk's NO on PR 697, its item 1): a place of the Probe's square draws no dashed line, band or block at a side past the reach; the refusal is only the step across.
+// Seed 13, a fresh game (the page's ?seed=), 412x915. Played: ✓ to set out and go in, then the d-pad south across two places (cells 44, 60) into cell 76, whose south side is past the Probe's reach, to three tiles short of that edge.
+// Every press waits for its effect (state changed, then still for 400 ms). Which way to press is read off the place's tiles; a press that moves nothing marks that tile blocked and the route is planned again.
+// State only asserts the case is reached (the place, the tile, the side's kind) and, after the step across, that he is still in the place; the words are the range line. The verdict on the edge is the pixels: the three tiles south of him, where the band stood,
+// against a crop of them (saves/s36-rim-edge.png, cut once from this shot; PLAYED_WRITE_CROPS=1 rewrites it): plain land, no dashed ink line, no band.
+it(`s36 a rim place has no line at its range side (seed 13, reach-build-1): the edge is plain land, and the step across is refused with the range line, he stays [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const size = SIZES[0];
+  const g = await open(size, { seed: 13 });
+  const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, spent: S.day && S.day.spent, msg: String((m.FX && m.FX.msg) || "").replace(/\x01/g, ""), ts: m.RT.ts, pl: m.RT.plScr }; });
+  const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+  const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };
+  // the next press toward tile (tx, ty) of this place over its walkable tiles, never into a tile this walk found blocked; null when there is none
+  const next = (tx, ty, blocked) => g.page.evaluate(([tx, ty, blocked]) => {
+    const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, lay = m.layout(P.key), W = lay.w, H = lay.h, bad = new Set(blocked);
+    const seen = new Map([[P.y * W + P.x, null]]), q = [P.y * W + P.x], D = [["up", 0, -1], ["down", 0, 1], ["left", -1, 0], ["right", 1, 0]];
+    while (q.length) {
+      const c = q.shift(), x = c % W, y = (c - x) / W;
+      if (y === ty && x >= tx[0] && x <= tx[1]) { let k = c, first = null; while (seen.get(k) !== null) { first = seen.get(k); k = first.from; } return { dir: first.dir, to: first.to, from: first.from }; }
+      for (const [d, dx, dy] of D) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const n = ny * W + nx; if (seen.has(n) || bad.has(c + ">" + n) || m.T_BLOCK[lay.tiles[n]] || (lay.reach && !lay.reach[n])) continue; seen.set(n, { from: c, dir: d, to: n }); q.push(n); }
+    }
+    return null;
+  }, [tx, ty, [...blocked]]);
+  const southCols = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, lay = m.layout(m.S.exp.patch.key), o = lay.openings.find((q) => q.side === "S"); return o ? { h: lay.h, col: [o.from + lay.baked.ox, o.to + lay.baked.ox] } : null; });
+  // walk to a tile of this place; ends on arrival or after a crossing into another place
+  const walk = async (tx, ty) => {
+    const key0 = (await st()).key, blocked = new Set(), fails = new Map();
+    for (let i = 0; i < 400; i++) {
+      const s = await st(); if (s.key !== key0 || (s.y === ty && s.x >= tx[0] && s.x <= tx[1])) return s;
+      const n = await next(tx, ty, blocked); assert.ok(n, `a way to tile ${tx},${ty} in place ${key0} from ${s.x},${s.y}`);
+      await step(n.dir); const a = await st(); if (process.env.PLAYED_TRACE) console.log(`# s36 ${key0} ${s.x},${s.y} ${n.dir} -> ${a.key} ${a.x},${a.y}`); if (a.key === key0 && a.x === s.x && a.y === s.y) { const ek = n.from + ">" + n.to; fails.set(ek, (fails.get(ek) || 0) + 1); if (fails.get(ek) >= 3) blocked.add(ek); } else fails.clear();
+    }
+    throw new Error(`walk to ${tx},${ty} in ${key0}: too many presses`);
+  };
+  try {
+    let s = await st();
+    for (let i = 0; i < 12 && !s.key; i++) { await step("confirm"); s = await st(); }   // ✓ to set out, ✓ at "Start here", ✓ into the place: each waits for its effect
+    for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }       // the place is built by a worker: wait until he is in it
+    assert.equal(s.phase, "patch", "the case is reached: he is in the first place");
+    assert.equal(s.key, "44", `the case is reached: seed 13 starts in place 44 (${s.key})`);
+    for (const key of ["44", "60"]) {   // south across each: to the south edge of the place, then the step across
+      assert.equal(s.key, key, `the case is reached: in place ${key}`);
+      const e = await southCols(); assert.ok(e, `place ${key} has a south way`);
+      s = await walk(e.col, e.h - 1);
+      assert.equal(s.key, key, `the case is reached: on the south edge of place ${key}`);
+      await step("down"); s = await st();
+      assert.notEqual(s.key, key, `the case is reached: the step south crossed out of place ${key}`);
+    }
+    assert.equal(s.key, "76", `the case is reached: in place 76, whose south side is past the Probe's reach (${s.key})`);
+    const kind = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, lay = m.layout(m.S.exp.patch.key), o = lay.openings.find((q) => q.side === "S"); return o && m.openingKind(lay, o).kind; });
+    assert.equal(kind, "range", "the case is reached: place 76 south side is a range side");
+    const e = await southCols(); s = await walk(e.col, e.h - 4);   // three tiles short of the edge: the tiles south of him are where the band stood
+    assert.equal(s.key, "76"); assert.equal(s.y, e.h - 4, "the case is reached: three tiles short of the south edge");
+    const im = await g.shot("s36-rim-edge"), r = await g.region(), k = r.w / 450;
+    // the three tiles south of him and the columns left and right of his: game-space box to device pixels
+    const box = { x: r.x + Math.round((s.pl.x - s.ts * 1.5) * k), y: r.y + Math.round((s.pl.y + s.ts / 2) * k), w: Math.round(3 * s.ts * k), h: Math.round(3 * s.ts * k) };
+    assert.ok(box.x + box.w <= r.x + r.w && box.y >= r.y && box.y + box.h <= r.y + r.h, `the verdict box is on the screen (${JSON.stringify({ box, r })})`);
+    const f = path.join(savesDir, "s36-rim-edge.png");
+    if (process.env.PLAYED_WRITE_CROPS) {
+      const d = new Uint8Array(box.w * box.h * 4);
+      for (let y = 0; y < box.h; y++) for (let x = 0; x < box.w; x++) { const p = px(im, box.x + x, box.y + y), j = (y * box.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+      writeFileSync(f, encodePNG(box.w, box.h, d));
+    }
+    const ref = decodePNG(readFileSync(f));
+    let bad = 0;
+    for (let y = 0; y < ref.height; y++) for (let x = 0; x < ref.width; x++) { const p = px(im, box.x + x, box.y + y), j = (y * ref.width + x) * 4; if (p[0] !== ref.data[j] || p[1] !== ref.data[j + 1] || p[2] !== ref.data[j + 2]) bad++; }
+    console.log(`# s36 ${size.w}x${size.h}: the three tiles south of him differ from the accepted crop (${ref.width}x${ref.height}) by ${bad} pixels`);
+    assert.ok(ref.width === box.w && ref.height === box.h, `the crop is the box's size (${ref.width}x${ref.height} against ${box.w}x${box.h})`);
+    assert.ok(bad < ref.width * ref.height * 0.02, `the edge is plain land, as the crop (${bad} of ${ref.width * ref.height} pixels differ)`);
+    // the step across: three tiles to the edge, then one more
+    for (let i = 0; i < 3; i++) await step("down");
+    s = await st(); assert.equal(s.y, e.h - 1, "the case is reached: on the edge tile");
+    const before = s; await step("down"); const after = await st();
+    assert.deepEqual([after.key, after.x, after.y], [before.key, before.x, before.y], "the step across is refused: he is still in the place, on the same tile");
+    assert.equal(after.spent, before.spent, "and the refused step spends no light");
+    assert.match(after.msg, /^The Probe’s reach ends here/, "the line is the range line");
+  } finally { await g.ctx.close(); }
+});
 });

@@ -3390,14 +3390,6 @@ function hazeSync(lay) {
   if (!lay.lines || !lay.baked) return;
   const anim = lay.hazeAnim || (lay.hazeAnim = {});
   for (const [side, a] of Object.entries(anim)) if (NOW - a.t0 >= LINE_DEPTH * HAZE_STEP_MS) { delete anim[side]; if (a.dir < 0) applyLines(lay); }   // the drawn-back side opens
-  let redo = false;
-  for (const o of lay.openings || []) {
-    const range = false, had = lay.lines.ops.some(q => q.side === o.side && q.kind === 'range');
-    if (range === had || anim[o.side]) continue;
-    if (!motion()) { redo = true; continue; }
-    if (had) anim[o.side] = { t0: NOW, dir: -1 }; else { anim[o.side] = { t0: NOW, dir: 1 }; redo = true; }
-  }
-  if (redo) applyLines(lay);
 }
 // The edge veil (places/src/veil.mjs): over the coast's deep water and along each region side past the Probe's reach (drawn back the way the old wash was). The veiled land past a corner decides the
 // corner: both sides veiled, an outer corner; neither, but the land past it veiled, an inner corner; a band that meets open land ends in a taper. Off the map the band runs on.
@@ -3413,8 +3405,7 @@ function veilPlanOf(lay) {
   if (!lay.baked || lay.cave || !PL.veilMod) return null;
   const cell = lay.cell, sides = { N: false, E: false, S: false, W: false };
   if (!lay.veilCoast) lay.veilCoast = Object.fromEntries(['N', 'E', 'S', 'W'].map(side => [side, crossReason(cell, SIDE_DIR[side]) === SHORE_TEXT]));
-  const hz = lay.lines ? lay.lines.ops.filter(o => o.kind === 'range' && hazeDepth(lay, o.side) > 0).map(o => o.side) : [];
-  for (const side of ['N', 'E', 'S', 'W']) sides[side] = lay.veilCoast[side] || hz.includes(side);
+  for (const side of ['N', 'E', 'S', 'W']) sides[side] = lay.veilCoast[side];
   const diag = diagVeiled(cell);
   // water at a place edge that is not veiled above (a lake or a river meeting an inland side): the same veil along each run of water cells, never over land (veil.mjs waterVeilPlan)
   if (!lay.veilWater) {
@@ -7436,28 +7427,12 @@ function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
   if (t.side === 'E') r.w += 3; else if (t.side === 'W') { r.x -= 3; r.w += 3; } else if (t.side === 'N') { r.y -= 3; r.h += 3; } else r.h += 3; return r; }
 // After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
 // The edge look on the walk (owner walk notes 4, 13, 14, 16, 26-28; one vocabulary with the map, in the map's ink):
-//   can't go yet (the Probe's reach): a dashed ink line on the haze, along the side's inner face;
 //   a way through: within 3 tiles, a paper tab naming the place next door once the Probe has read it (note 19: the hint).
 // [copy] placeholders (the copywriter places them): the tab 'Wood →' form, REACH_LINE_TEXT, PROBE_READING_TEXT.
 const REACH_LINE_TEXT = 'Probe reach', PROBE_READING_TEXT = 'the Probe is reading the land';
-function edgeSides(lay, P) {   // each opening of a baked place with its side in page tiles: [{ o, k, x0, y0, x1, y1 }] (the opening's span on the place's edge, whole side for a range line)
-  const bk = lay.baked; if (!bk || lay.cave || !lay.openings) return [];
-  const out = [];
-  const opened = new Set(lay.openings.map(o => o.side)), bare = Object.keys(SIDE_DIR).filter(side => !opened.has(side)).map(side => ({ side }));   // a side the range square shuts has its line whether or not the place lists an opening on it (owner #157; the walk blocks it the same way, applyLines)
-  for (const o of [...lay.openings, ...bare]) { const k = openingKind(lay, o), whole = k.kind === 'range'; if (k.kind !== 'open' && !whole) continue; if (o.from === undefined && !whole) continue;
-    const a = whole ? 0 : o.from, b = whole ? (o.side === 'N' || o.side === 'S' ? bk.w : bk.h) - 1 : o.to;
-    const ns = o.side === 'N' || o.side === 'S', a0 = a + (ns ? bk.ox : bk.oy), a1 = b + 1 + (ns ? bk.ox : bk.oy);   // along the side, in the place's tiles; the side itself is the place's own edge (the baked apron lies outside it)
-    out.push({ o, k, x0: ns ? a0 : o.side === 'W' ? 0 : lay.w, x1: ns ? a1 : o.side === 'W' ? 0 : lay.w, y0: !ns ? a0 : o.side === 'N' ? 0 : lay.h, y1: !ns ? a1 : o.side === 'N' ? 0 : lay.h }); }
-  return out;
-}
 function drawEdgeLook(t) {
   const ex = S.exp, P = ex && ex.patch, pl = RT.gridScr; if (!P || !pl || !RT.ts) return;
-  const lay = layout(P.key), ts = RT.ts, sx = tx => pl.x + tx * ts, sy = ty => pl.y + ty * ts;   // a page tile edge on the screen (pl: the page's tile-0 corner, from the camera)
-  for (const e of edgeSides(lay, P)) {
-    const vertical = e.o.side === 'W' || e.o.side === 'E';
-    // (reach-build-1) no dashed reach line inside a place
-    // a way through: the land shows it; no tab, no mark (owner note #24: the place is named once when you enter it)
-  }
+  // no dashed reach line inside a place; a way through: the land shows it, no tab, no mark (owner note #24: the place is named once when you enter it)
 }
 // The Probe's pulse in the top bar while the neighbours are read ahead (note 19): a small ring in the map's ink that breathes; [art] slot probe-pulse.
 function drawProbePulse(x, y) {
