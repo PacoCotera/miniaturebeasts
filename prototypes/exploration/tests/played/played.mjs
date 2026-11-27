@@ -60,16 +60,18 @@ after(async () => { if (browser) await browser.close(); if (site) site.close(); 
 
 // ---- one played game: his save loaded as the live page loads it (the companion's id, then mb-save-v8@<id>), buttons only
 const ready = () => { try { return !!window.__play.frames.companion.contentWindow.__mb.S; } catch { return false; } };
-async function open(size, saveName) {
+async function open(size, saveName, seed) {   // saveName null + a seed: a fresh game of that world (the page's own test-harness ?seed=), no save loaded
   const ctx = await browser.newContext({ viewport: { width: size.w, height: size.h }, deviceScaleFactor: size.dpr, hasTouch: true, isMobile: true });
-  const raw = readFileSync(path.join(savesDir, saveName + ".save"), "utf8");
-  const p1 = await ctx.newPage();
-  await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000);
-  const id = await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
-  await p1.close();
-  await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
+  if (saveName) {
+    const raw = readFileSync(path.join(savesDir, saveName + ".save"), "utf8");
+    const p1 = await ctx.newPage();
+    await p1.goto(site.url); await p1.waitForFunction(ready, null, { timeout: 60000 }); await wait(2000);
+    const id = await p1.evaluate(() => JSON.parse(localStorage.getItem("mb-companion-A")).id);
+    await p1.close();
+    await ctx.addInitScript(([i, s, tab]) => { localStorage.setItem("mb-save-v8@" + i, s); if (tab) localStorage.setItem("mb-play-tab", tab); }, [id, raw, process.env.PLAYED_START || ""]);   // PLAYED_START=station: a cold start where the page opens on the Station (test-harness only)
+  }
   const page = await ctx.newPage();
-  await page.goto(site.url); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
+  await page.goto(saveName ? site.url : site.url + "?seed=" + seed); await page.waitForFunction(ready, null, { timeout: 60000 }); await wait(8000);
   // the page may open on the Station: press the 'Companion' tab as a player would, then assert the Companion is the device in view and not docked, before any shot is read
   console.log(`# opened on the ${await page.evaluate(() => window.__play.owner)} (${size.w}x${size.h})`);
   await page.getByRole("tab", { name: "Companion" }).click();
@@ -811,6 +813,37 @@ for (const size of SIZES) {
       const top2 = same(im2, "exp-number-top-2", F_TOP);
       console.log(`# s15 ${tag}: the top line differs from the shot of "Expedition 2" by ${top2} pixels`);
       assert.equal(top2, 0, "the set-out's top line reads Expedition 2");
+    } finally { await g.ctx.close(); }
+  });
+}
+
+// OWNER 2026-11-25 06:4x ("ok", design-loop-review-1 fix 9): walking over a place's border cost 10 light and the day bar jumped with nothing to say why. Seed 33, a fresh game, at 390x844.
+// Played: ✓ x3 to set out and go in, then the right key along the row to the east edge. One tile short of the edge the bottom line is the place's own; on the edge tile, facing out, it says "next place · 10 light";
+// the step then moves the clock by that much. The verdict on the words is the bottom strip of the screenshot (it changes between the two tiles); state is read only for the case reached, the text and the clock.
+for (const size of SCALE_SIZES.filter((s) => s.w === 390)) {
+  const tag = `${size.w}x${size.h}`;
+  it(`s30 an edge on foot says its light first (seed 33): the bottom line names the cost before the step, and the clock moves by it after [${tag}]`, async () => {
+    const g = await open(size, null, 33);
+    const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; let l = ""; try { const q = m.lineFor(); l = (Array.isArray(q.ctx) ? q.ctx[0] : q.ctx) || ""; } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, spent: S.day && S.day.spent, line: String(l).replace(/\x01/g, "") }; });
+    try {
+      for (let i = 0; i < 3; i++) await g.press("confirm", 100, 2500);
+      let s = await st(), prev = null, n = 0;
+      assert.equal(s.phase, "patch", "the case is reached: he is in the first place");
+      const key0 = s.key;
+      while (n++ < 60 && !s.line.startsWith("next place")) { prev = s; await g.press("right", 100, 450); s = await st(); assert.equal(s.key, key0, "the case is reached: he walks the first place's row to its east edge, no step crosses unsaid"); }
+      console.log(`# s30 ${tag}: one tile short ${JSON.stringify(prev)}, on the edge ${JSON.stringify(s)}`);
+      assert.equal(s.line, "next place · 10 light", "the bottom line names the cost on the edge tile");
+      assert.ok(!prev.line.startsWith("next place"), "and not one tile short of it");
+      const r = await g.region(), onEdge = await g.shot(`s30-${tag}-edge`);
+      await g.press("left", 100, 450); const short = await g.shot(`s30-${tag}-short`); await g.press("right", 100, 450);
+      const strip = changed(onEdge, short, r, [0, 0.9, 1, 0.1]);
+      console.log(`# s30 ${tag}: bottom strip pixels changed between the two tiles: ${strip.n} (of ${strip.of})`);
+      assert.ok(strip.n > 200, "the bottom line on screen differs between the edge tile and the one before it");
+      const at = await st(); assert.equal(at.x, s.x, "the case is reached: back on the edge tile");
+      await g.press("right", 100, 1500);
+      const after = await st();
+      assert.notEqual(after.key, key0, "the step crossed into the next place");
+      assert.equal(after.spent - at.spent, 10, "the day moved by the 10 the line said");
     } finally { await g.ctx.close(); }
   });
 }
