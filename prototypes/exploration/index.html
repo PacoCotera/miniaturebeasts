@@ -7692,22 +7692,28 @@ function lineWx() {
   const lvl = stormLevel(), fog = fogNear(), wind = windNowWord(); if (!lvl && !fog && !wind) return null;   // walk W3: the wind of the land joins the conditions slot, in [copy] words until the art director signs a mark (rule 18)
   return { lvl, dir: ex.storm ? ex.storm.dir : 0, fog, fdir: fog ? ex.fog.dx : 0, wind };
 }
-function drawWx(w, x, y) {
+function drawWx(w, x, y, word) {
   const fr = motion() ? Math.floor(NOW / 400) % 2 : 0;
   if (w.lvl) { for (let i = 0; i < w.lvl; i++) blit(ICON.bolt(w.lvl === 3 && fr ? 'cream' : 'yellow'), x + i * 13, y + 1); x += w.lvl * 13; text(w.dir > 0 ? '▶' : '◀', x, y + 2, C.yellow); x += 20; }
   if (w.fog) { blit(ditherArt(12, 12, 'fog', 8), x, y + 3); text(w.fdir > 0 ? '▶' : '◀', x + 14, y + 2, C.fog); x += 14 + textW('◀', 2) + 8; }
-  if (w.wind) { const im = windMarkImg(w.wind); if (im) g.drawImage(im, x + 6, y + 1); else text(WORDS.windShort[w.wind], x, y + 2, C.fog); }   // the signed mark when there is one (rule 18), else the words
+  if (w.wind) { const im = windMarkImg(w.wind); if (im) { g.drawImage(im, x + 6, y + 1); if (word) text(WORDS.windShort[w.wind], x + 26, y + 2, C.fog); } else text(WORDS.windShort[w.wind], x, y + 2, C.fog); }   // the signed mark when there is one (rule 18), then the words so it says what it is (#173)
 }
 // Where the bottom line's parts fall: the end of the actions, the conditions section, and the middle text that fits.
 function lineCtx(o) {
   const PAD = 8; let x = PAD;
   if (o.ok) x += textW('✓', 2) + 5 + textWT(o.ok, 2);
   if (o.back) { if (o.ok) x += 7 + textW('·', 2) + 7; x += textW('←', 2) + 2 + textWT(o.back, 2); }
-  const wx = lineWx(), aw = textW('◀', 2), ww = wx ? (wx.lvl ? wx.lvl * 13 + (wx.fog ? 20 : aw) : 0) + (wx.fog ? 14 + aw : 0) + (wx.wind ? (wx.lvl || wx.fog ? 8 : 0) + (windMarkImg(wx.wind) ? 22 : textW(WORDS.windShort[wx.wind], 2)) : 0) : 0, wsx = wx ? SCR_W - PAD - ww - PAD : SCR_W;   // the conditions section and its divider
-  const mx = x + PAD + 1 + PAD, avail = wsx - PAD - mx, cands0 = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''], cands = isDark() && S.phase !== 'cargo' ? cands0.map(c => DARK_TEXT.line + (c ? ' · ' + c : '')).concat(DARK_TEXT.line) : cands0, tw = c => textWT(c.replace('\x01', ''), 2);
-  let r = cands.find(c => tw(c) <= avail);
-  if (r == null) { r = cands[cands.length - 1]; while (tw(r) > avail && r.includes(' · ')) r = r.slice(0, r.lastIndexOf(' · ')); if (tw(r) > avail) r = ''; }
-  return { x, wx, wsx, mx, avail, r };
+  const wx = lineWx(), aw = textW('◀', 2), mark = wx && wx.wind && windMarkImg(wx.wind), wword = mark ? 4 + textW(WORDS.windShort[wx.wind], 2) : 0;   // the word after the signed mark is the first part of the line to yield (#173)
+  const wwOf = extra => wx ? (wx.lvl ? wx.lvl * 13 + (wx.fog ? 20 : aw) : 0) + (wx.fog ? 14 + aw : 0) + (wx.wind ? (wx.lvl || wx.fog ? 8 : 0) + (mark ? 22 + extra : textW(WORDS.windShort[wx.wind], 2)) : 0) : 0;
+  const fit = ww => {   // the conditions section and its divider, and the middle text that fits beside them
+    const wsx = wx ? SCR_W - PAD - ww - PAD : SCR_W, mx = x + PAD + 1 + PAD, avail = wsx - PAD - mx, cands0 = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''], cands = isDark() && S.phase !== 'cargo' ? cands0.map(c => DARK_TEXT.line + (c ? ' · ' + c : '')).concat(DARK_TEXT.line) : cands0, tw = c => textWT(c.replace('\x01', ''), 2);
+    let r = cands.find(c => tw(c) <= avail);
+    if (r == null) { r = cands[cands.length - 1]; while (tw(r) > avail && r.includes(' · ')) r = r.slice(0, r.lastIndexOf(' · ')); if (tw(r) > avail) r = ''; }
+    return { wsx, mx, avail, r };
+  };
+  let f = fit(wwOf(0)), word = false;
+  if (mark) { const f2 = fit(wwOf(wword)); if (f2.r === f.r) { f = f2; word = true; } }
+  return { x, wx, wsx: f.wsx, mx: f.mx, avail: f.avail, r: f.r, word };
 }
 function drawLine(o) {
   // [✓ action · ← back] | [where you are] | [conditions]: the two actions together on the left, the data in its own
@@ -7717,8 +7723,8 @@ function drawLine(o) {
   let x = PAD;
   if (o.ok) { text('✓', x, ty, C.orange); x += textW('✓', 2) + 5; text(o.ok, x, ty, o.dim ? C.stone : o.hot ? C.amber : C.bone, 2, null, true); x += textWT(o.ok, 2); }   // an empty Confirm part: ← is the only way out
   if (o.back) { if (o.ok) { x += 7; text('·', x, ty, C.slate); x += textW('·', 2) + 7; } text('←', x, ty, C.fog); x += textW('←', 2) + 2; text(o.back, x, ty, C.fog, 2, null, true); x += textWT(o.back, 2); }
-  const { wx, wsx, mx, r } = lineCtx(o);
-  if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 10); }
+  const { wx, wsx, mx, r, word } = lineCtx(o);
+  if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 10, word); }
   if (r) { sep(x + PAD); const k = r.indexOf('\x01'), a = k < 0 ? r : r.slice(0, k), b = k < 0 ? '' : r.slice(k + 1);
     if (a) text(a, mx, ty, C.mist, 2, null, true); if (b) text(b, mx + (a ? textWT(a, 2) + 2 : 0), ty, C.fog, 2, null, true); }
 }
@@ -7880,7 +7886,7 @@ const PIC = {
   call: (x, y) => cen2('call', ICON.call('aqua'), x, y),
   shield: (x, y) => shieldBars(x + 4, y + 10, 2, 3, 6, 12),
   storm: (x, y, dir) => { blit(ICON.bolt(), x + 1, y + 8); text(dir > 0 ? '▶' : '◀', x + 15, y + 9, C.yellow); },
-  warn: (x, y, a) => { if (a && a.key) { warnPicPlace(x, y, a); return; }
+  warn: (x, y, a) => { if (a && a.key && S.exp && S.exp.patch && S.exp.patch.key === a.key) { warnPicPlace(x, y, a); return; }
     if (a && a.c != null) { const ex = S.exp, c = a.c, X = c % MW; g.drawImage(landPatch(c, 32, !S.visited[c] ? 4 : (ex && ex.storm && stormCovers(X)) ? 1 : 0, 0), x, y); ditherFill(x, y, 32, 32, 'yellow', 6); blit(ICON.bolt(), x + 10, y + 8);   // the map's lit cell: dither and bolt, no outline
       if (S.ui.mapFull) { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); } return; }
     onGrass(x, y, () => { R(x, y, 32, 2, C.yellow); R(x, y + 30, 32, 2, C.yellow); R(x, y, 2, 32, C.yellow); R(x + 30, y, 2, 32, C.yellow); }); },   // the Probe's tile: flat grass and the outline, no stone
@@ -8551,7 +8557,7 @@ function drawProbe(t) {
     const nm = met[f] && met[f].name; if (nm) text(nm, 432, 208, C.bone, 2, 'right'); }   // the ringed sign names itself where the eye is (the heading's line), as well as on the bottom line; "?" means not known yet and a sign never draws one (art desk)
   text('Field guide', 24, 420, C.mist);
   if (!S.known.length) text('No species identified yet', 24, 442, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 440, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 444); text(spOf(sp).name, x + 42, 452, C.bone); });
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; blit(creatureArt(sp, 'idle', 0), x + 6, 444); text(spOf(sp).name, x + 42, 452, C.bone); });
 }
 // The focused tile on the Probe (the pad moves it over the signs met, in reading order).
 function probeFocus() { const n = metTiles().length; return clamp(S.ui.pf | 0, 0, Math.max(0, n - 1)); }
