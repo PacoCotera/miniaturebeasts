@@ -1132,7 +1132,7 @@ function firstHome() {
 const firstWalk = () => !!S && !(RT && RT.readOnly) && !firstHome();
 // The one teaching line due now on the first walk, or '' (each line waits for its deed; the Station's goal takes over once the pod is home).
 // A pod this place shows now (a Call lifted it, or the veil does): the glint to go to.
-const podShown = key => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && unveiled(key, p.x, p.y));
+const podShown = (key, night) => S.pods.some(p => p.k === key && !p.h && p.x >= 0 && isNightPod(p) === !!night && unveiled(key, p.x, p.y));   // a pod in view: the built kind's, or (night) her night pod
 // The first walk's pod beat as a way from here: the nearest buried pod, in this place or next door; { dir: 'north-east', vx, vy } or null.
 const DIR_VEC = { 'north': [0, -1], 'south': [0, 1], 'east': [1, 0], 'west': [-1, 0], 'north-east': [1, -1], 'north-west': [-1, -1], 'south-east': [1, 1], 'south-west': [-1, 1] };
 function beatWay(P) {
@@ -1177,8 +1177,8 @@ function teachStep() {
   if (S.phase === 'map') return ex.cargo.pods.length && ex.pos === ex.start ? T.endHere : T.go;
   const P = S.phase === 'patch' ? ex.patch : null; if (!P) return '';
   { const np = S.pods.find(p => isNightPod(p) && p.k === P.key && !p.h && unveiled(P.key, p.x, p.y)); if (np && !ex.cargo.pods.some(isNightPod) && !S.found.includes('teach:nightpod')) return WORDS.pod.podTeach(np.nm); }   // pod-sleep-build-1: her pod in sight: the line names her, never the built line for a pod (once per save: spent when she is taken up)
-  if (!ex.cargo.pods.length) { if (S.pods.some(p => !isNightPod(p) && p.k === P.key && !p.h && p.x >= 0 && unveiled(P.key, p.x, p.y))) return T.pod;   // her own pod, in sight
-    const c0 = ex.carry === 'fruit' ? indInSight() : null; if (c0 && S.named && S.named[c0.id] && !S.found.includes('teach:eats')) return WORDS.pod.eatsTeach(S.named[c0.id]);   // fruit in hand, a named Loika in sight: once per save (spent at the feed)
+  if (!ex.cargo.pods.length) { if (podShown(P.key)) return T.pod;   // her own pod, in sight
+    let c0 = ex.carry === 'fruit' ? indInSight() : null; if (c0 && !onScreen(c0.x, c0.y)) c0 = null; if (c0 && S.named && S.named[c0.id] && !S.found.includes('teach:eats')) return WORDS.pod.eatsTeach(S.named[c0.id]);   // fruit in hand, a named Loika in sight: once per save (spent at the feed)
     const w = loikaTeach(); if (w) return w; }   // W5: the next deed with a named Loika, in the words W4 uses
   if (!ex.cargo.e && layout(P.key).feats.some(f => f.kind === 'k' && stoneCharge(P.key, f) > 0 && stoneSeen(P.key, f))) return T.stone;
   { const wl = whereTeach(P); if (wl) return wl; }   // first-walk-teach-approach-1: where she comes, in a place with none
@@ -2429,15 +2429,16 @@ const fedIds = () => !S.day ? [] : Object.keys(habDay()).filter(k => k.startsWit
 const fedNames = () => fedIds().map(id => S.named && S.named[id]).filter(Boolean);
 // at nightfall: fed today and a sleeper at ease at her bed → her token gives way to her pod on that tile. { closed: names, woken: names (fed, but no pod tonight), fed: how many were fed in this place }
 function closeSleepers() {
-  const ex = S.exp, out = { closed: [], woken: [], fed: 0 }; if (!ex || !ex.patch) return out;
-  const key = ex.patch.key, live = ex.live[key], lay = layout(key); if (!live) return out;
-  for (const c of live.cr.slice()) {
-    if (!c.ind || !fedToday(c) || !S.named || !S.named[c.id]) continue; out.fed++;
-    if (!sleeperOf(c) || (c.ease | 0) >= 1) { out.woken.push(S.named[c.id]); continue; }
-    const w = S.cr.find(q => q.id === c.id); if (!w) continue;
-    let at = { x: c.x, y: c.y }; if (podAt(key, at.x, at.y, true)) at = freeAround(key, c.x, c.y, null) || at;   // her young's pod may lie at her bed: hers goes beside it
-    S.pods.push({ id: 'n' + c.id, k: key, x: at.x, y: at.y, sp: c.sp, h: 0, g: groundName(lay.land, lay.cave), how: 'night', loika: String(c.id), nm: S.named[c.id], bx: at.x, by: at.y });   // bx, by: the tile of her bed, where she is "at her bed" at first light
-    live.cr.splice(live.cr.indexOf(c), 1); w.slept = 1; out.closed.push(S.named[c.id]); logEv(S.named[c.id] + ' closed into her pod for the night'); }
+  const ex = S.exp, out = { closed: [], woken: [], fed: 0 }; if (!ex) return out;
+  for (const id of fedIds()) {   // every Loika fed today, in whatever place she is: her record (S.cr) says where; a place not visited this walk has her at her bed
+    const w = S.cr.find(q => String(q.id) === id); if (!w || w.slept || w.home || !S.named || !S.named[id] || !fedToday({ ind: 1, id, sp: w.sp })) continue;
+    const key = w.cv ? 'c' + w.c : String(w.c), live = ex.live[key], lay = layout(key), c = live && live.cr.find(q => String(q.id) === id); out.fed++;
+    let at;
+    if (c) { if (!sleeperOf(c) || (c.ease | 0) >= 1) { out.woken.push(S.named[id]); continue; } at = { x: c.x, y: c.y }; }
+    else { const ind = individualOf(w, lay), bed = ind && hauntStand(ind.hs.bed, hauntFree(lay, key, null)); if (!bed) continue; at = bed; }
+    if (podAt(key, at.x, at.y, true)) at = freeAround(key, at.x, at.y, null) || at;   // her young's pod may lie at her bed: hers goes beside it
+    S.pods.push({ id: 'n' + id, k: key, x: at.x, y: at.y, sp: w.sp, h: 0, g: groundName(lay.land, lay.cave), how: 'night', loika: String(id), nm: S.named[id], bx: at.x, by: at.y });   // bx, by: the tile of her bed, where she is "at her bed" at first light
+    if (c) live.cr.splice(live.cr.indexOf(c), 1); w.slept = 1; out.closed.push(S.named[id]); logEv(S.named[id] + ' closed into her pod for the night'); }
   return out;
 }
 // her page's state line, by her id ('' when she has none to show)
@@ -4107,7 +4108,7 @@ function freeName(c) {
 function nameSeen(c, away) {
   if (RT.readOnly || !c.ind || c.hide || away(c) || !inSight(c.x, c.y)) return;
   const nm = S.named || (S.named = {});
-  if (!nm[c.id]) { nm[c.id] = freeName(c); (S.metIds || (S.metIds = [])).push(String(c.id)); const mr = bookEv('met', c, WORDS.book.met(c.ind.name)); if (mr) { const pg = (S.pages || (S.pages = {})); (pg[c.id] || (pg[c.id] = {})).met = { d: mr.d, part: mr.part, place: mr.place, from: mr.from, t: wTurn() }; } }   // her page keeps the four fields of the Log's met entry (the Log drops it after three days), and the turn
+  if (!nm[c.id]) { nm[c.id] = freeName(c); (S.metIds || (S.metIds = [])).push(String(c.id)); const mr = bookEv('met', c, WORDS.book.met(nm[c.id])); if (mr) { const pg = (S.pages || (S.pages = {})); (pg[c.id] || (pg[c.id] = {})).met = { d: mr.d, part: mr.part, place: mr.place, from: mr.from, t: wTurn() }; } }   // her page keeps the four fields of the Log's met entry (the Log drops it after three days), and the turn
 }
 function nameInSight() {
   const ex = S && S.exp, P = ex && ex.patch; if (!P) return;

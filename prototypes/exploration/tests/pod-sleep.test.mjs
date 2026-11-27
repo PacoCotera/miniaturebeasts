@@ -70,7 +70,7 @@ for (const seed of [7, 13, 42]) {
     const two = JSON.parse(p.run(`(() => { const ex = S.exp, P = ex.patch; for (const q of curLive().cr) q.hide = 1; S.pods.push({ id: 'n999', k: P.key, x: P.x, y: P.y - 1, sp: 0, h: 0, g: 'grass', how: 'night', loika: '999', nm: 'Fern', bx: P.x, by: P.y - 1 }); unveil(P.key, P.x, P.y - 1, 3); P.dir = 'up';
       const a = patchAction(), spent0 = S.day.spent, acts0 = ex.actions, pods0 = ex.cargo.pods.length; if (a.run) a.run(); return JSON.stringify({ label: a.label, dim: !!a.dim, msg: FX.notes.map(n => n.text), spent: S.day.spent - spent0, acts: ex.actions - acts0, pods: ex.cargo.pods.length - pods0 }); })()`));
     assert.equal(two.label, "One sleeper only"); assert.ok(two.dim); assert.deepEqual([two.spent, two.acts, two.pods], [0, 0, 0]);
-    assert.ok(two.msg.some(t => /The Case holds one sleeper · set Elm down first/.test(t)), JSON.stringify(two.msg));
+    assert.ok(two.msg.some(t => /The Case holds one sleeper · Elm is in it/.test(t)), JSON.stringify(two.msg));
     assert.deepEqual(p.errors, []);
   });
 
@@ -80,12 +80,12 @@ for (const seed of [7, 13, 42]) {
       S.day.spent = ${DAY.light}; const ex = S.exp; nightPasses(); const c = curLive().cr.find(q => q.id === ${pick.id}), w = S.cr.find(q => q.id === ${pick.id});
       return JSON.stringify({ c: !!c, at: c && c.x === at.x && c.y === at.y, slept: !!w.slept, pods: S.pods.filter(q => q.how === 'night').length, msgs: FX.notes.map(n => n.text) }); })()`));
     assert.ok(out.c && out.at && !out.slept && out.pods === 0, "she is up on her pod's tile: " + JSON.stringify(out));
-    assert.ok(!out.msgs.some(t => /woke where you set her down/.test(t)), "at her bed there is no message");
+    assert.ok(!out.msgs.some(t => /woke where her pod lay/.test(t)), "at her bed there is no message");
     // set elsewhere (left by a swap or dropped by a break): she wakes there and the message says so
     const q = page(), pk = start(q); setup(q, pk, true); night(q);
     const o2 = JSON.parse(q.run(`(() => { const pod = S.pods.find(z => z.how === 'night'); const f = freeAround(S.exp.patch.key, pod.x, pod.y, null); pod.x = f.x; pod.y = f.y; S.day.spent = ${DAY.light}; nightPasses();
       const c = curLive().cr.find(z => z.id === ${pk.id}); return JSON.stringify({ c: !!c && c.x === f.x && c.y === f.y, msgs: FX.notes.map(n => n.text) }); })()`));
-    assert.ok(o2.c, "she woke on the tile where her pod lay"); assert.ok(o2.msgs.some(t => /Elm woke where you set her down/.test(t)), JSON.stringify(o2.msgs));
+    assert.ok(o2.c, "she woke on the tile where her pod lay"); assert.ok(o2.msgs.some(t => /Elm woke where her pod lay/.test(t)), JSON.stringify(o2.msgs));
     assert.deepEqual(p.errors, []);
   });
 
