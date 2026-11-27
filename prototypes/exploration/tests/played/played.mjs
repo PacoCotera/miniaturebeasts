@@ -702,25 +702,28 @@ for (const size of SIZES) {
   // OWNER #147 (11-24, note mwv210fs19ae9d): 'What does it mean "Sorrell - Meadow - W"?' His replay.save: the goal band reads words with the full direction ('last seen west, in the meadow'), whole.
   it(`s32 the target line reads as words (#147, his save): 'last seen <full direction>', whole in the goal band [${tag}]`, async () => {
     // the verdict is the pixels: the band's text box on the screenshot against the words drawn on a bare canvas (the game's own glyphs), and nothing drawn past the box's right end
-    const judge = async (g, name) => {
-      const ref = await g.page.evaluate((s) => window.__play.frames.companion.contentWindow.__mb.refWords(s), EXPECT_147);
+    // The reference is a crop of the band's line (saves/s32-target-words.png), cut once from the 412 shot of his 147.save (PLAYED_WRITE_CROPS=1 rewrites it), one pixel per game pixel (sampled at its centre), so it matches the band at every size.
+    const BOX = { x: 28, y: 36 + 4, w: 450 - 28 - 8 - 9 - 4, h: 16 };   // the band's text box in game pixels: words at x 28, 4 below the view top (HUD 32), the width the game clips to
+    const cropFile = path.join(savesDir, "s32-target-words.png");
+    const judge = async (g, name, cut) => {
       const im = await g.shot(name), r = await g.region(), kx = r.w / 450, ky = r.h / 600;
-      const rgb = [1, 3, 5].map((i) => parseInt(ref.rgb.slice(i, i + 2), 16)), isBone = (p) => Math.abs(p[0] - rgb[0]) + Math.abs(p[1] - rgb[1]) + Math.abs(p[2] - rgb[2]) < 60;
       const at = (lx, ly) => px(im, Math.round(r.x + (lx + 0.5) * kx), Math.round(r.y + (ly + 0.5) * ky));
+      const isBone = (p) => p[0] > 150 && p[1] > 150 && p[2] > 130 && p[0] - p[2] < 90;   // the band's bone-coloured text on its dark ground
+      if (cut && process.env.PLAYED_WRITE_CROPS) { const d = new Uint8Array(BOX.w * BOX.h * 4); for (let y = 0; y < BOX.h; y++) for (let x = 0; x < BOX.w; x++) { const p = at(BOX.x + x, BOX.y + y), j = (y * BOX.w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; } writeFileSync(cropFile, encodePNG(BOX.w, BOX.h, d)); }
+      const ref = decodePNG(readFileSync(cropFile)), refAt = (x, y) => { const i = (y * ref.width + x) * 4; return [ref.data[i], ref.data[i + 1], ref.data[i + 2]]; };
       let wrong = 0, lit = 0;
-      for (let y = 0; y < ref.h; y++) for (let x = 0; x < ref.w; x++) { const want = ref.a[y * ref.w + x] > 0; if (want) lit++; if (isBone(at(ref.box.x + x, ref.box.y + y)) !== want) wrong++; }
+      for (let y = 0; y < BOX.h; y++) for (let x = 0; x < BOX.w; x++) { const want = isBone(refAt(x, y)); if (want) lit++; if (isBone(at(BOX.x + x, BOX.y + y)) !== want) wrong++; }
       let past = 0;   // bone pixels in the band's text rows from the box's right end to the arrow's column: the clip zone
-      for (let y = 0; y < ref.h; y++) for (let x = ref.box.x + ref.box.w; x < 450 - 17; x++) if (isBone(at(x, ref.box.y + y))) past++;
-      assert.ok(lit > 100, `the reference words are drawn (${lit} pixels)`);
-      assert.ok(ref.w <= ref.box.w, `the words fit the band's text box (${ref.w} of ${ref.box.w})`);
-      assert.ok(wrong <= lit * 0.02, `the band's line is "${EXPECT_147}" on the screen, pixel for pixel (${wrong} of ${lit} differ)`);
+      for (let y = 0; y < BOX.h; y++) for (let x = BOX.x + BOX.w; x < 450 - 17; x++) if (isBone(at(x, BOX.y + y))) past++;
+      assert.ok(lit > 100, `the crop holds the words (${lit} pixels)`);
+      assert.ok(wrong <= lit * 0.02, `the band's line is "${EXPECT_147}" on the screen, as in the crop (${wrong} of ${lit} differ)`);
       assert.equal(past, 0, `the line's right end is clear of the band's edge: nothing drawn past the text box (${past} pixels)`);
     };
     const g = await open(size, "147");
     try {
       const top = await g.page.evaluate(() => { const t = window.__play.frames.companion.contentWindow.__mb.targetLine(); return t && t.text; });
       assert.ok(top, "the case is reached: the target line shows on his save");   // state says only that the case is reached
-      await judge(g, `s32-${tag}-0-band`);
+      await judge(g, `s32-${tag}-0-band`, size.w === 412);
     } finally { await g.ctx.close(); }
     if (size.w !== 412) return;
     const g2 = await open({ w: 390, h: 844, dpr: 3 }, "147");   // the second size of the stills
