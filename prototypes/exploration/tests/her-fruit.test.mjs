@@ -42,7 +42,7 @@ test("ears up, or watching: ✓ is dimmed with the refusal, and pressing spends 
   for (const ease of [1, 2]) {
     const p = start(); setup(p); p.run(`curLive().cr.find(q => q.id === 36).ease = ${ease}`);
     const a = p.run("(() => { const a = patchAction(); return { label: a.label, dim: !!a.dim }; })()");
-    assert.equal(a.label, "Not while her ears are up"); assert.equal(a.dim, true);
+    assert.equal(a.label, "Back off and keep still"); assert.equal(a.dim, true);
     const spent = p.run("S.day.spent"), before = state(p);
     p.run("patchAction().run()");
     assert.equal(p.run("S.day.spent"), spent); assert.equal(p.run("S.exp.carry"), "fruit"); assert.equal(state(p), before);
@@ -77,6 +77,6 @@ test("asleep with fruit in hand: ✓ stays Keep still; the fruit is not offered"
 
 test("a nameless creature writes no Log entry of its own kind", () => {
   const p = start(); setup(p); p.run("{ const c = curLive().cr.find(q => q.id === 36); c.ind = null; }");
-  assert.ok(p.run("patchAction().label") !== "Not while her ears are up");
+  assert.ok(p.run("patchAction().label") !== "Back off and keep still");
   assert.equal(p.run("S.book.filter(r => r.kind === 'fed').length"), 0);
 });
