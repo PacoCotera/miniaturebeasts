@@ -95,6 +95,7 @@ static void build_table(void) {
   }
   /* open: a dashed slot (the AD's open crate is signed and not placed) holding what the crate brings */
   int o[4]; frect("open", o); slot_box("openSlot", o);
+  selection(o);   /* it is still the crate in hand: the orange frame stays on it until Put away (spec line 8) */
   say("table.tag", v_pstr("bay.table.tag"), fk("openTag", 0), fk("openTag", 1), "heading", V_ALIGN_LEFT);
   int np = v_plen("bay.table.pods"), nm = v_plen("bay.table.mats"), w[16], h[16], kind[16], n = 0;   /* kind: 0 a pod, 1 a supply */
   const char *pic[16];

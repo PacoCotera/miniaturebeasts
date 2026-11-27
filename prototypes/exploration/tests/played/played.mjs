@@ -321,6 +321,19 @@ for (const size of SCALE_SIZES) {
       assert.ok(we.left <= 3 && we.right <= 3, `Home after the Bay: no word touches the window's edges (left ${we.left}, right ${we.right})`);
     } finally { await g.ctx.close(); }
   });
+  // her slot (UI on PR 682, bus e5d250): a save where a mibi came home (saves/bay-home.save: bay-three plus Tita, carried, her "home" asked): at the dock the Bay shows her picture slot and "{name} came home" right of the crate, before his first press. The still is the verdict (UI looks); state only says the case is reached.
+  it(`s32c the Bay, a mibi came home: her slot and her name show beside the crate before his first press [${tag}]`, async () => {
+    const g = await open(size, "bay-home");
+    try {
+      const dock = g.page.getByRole("button", { name: /Dock the Companion/ }).first(), bb = await dock.boundingBox({ timeout: 5000 });
+      await g.page.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2);
+      await until(g.page, () => { const s = window.__play.frames.station.contentWindow.__st; return window.__play.owner === "station" && s.UI.screen === "cargo" && (s.ST.bayHeld || []).length > 0; }, null, "Dock: the Bay shows the crates"); await stable(g.page);
+      const came = await g.page.evaluate(() => { const s = window.__play.frames.station.contentWindow.__st; return { back: s.UI.cargo.arrival && s.UI.cargo.arrival.back, pressed: s.UI.cargo.pressed, tag: s.props.bay && s.props.bay.came && s.props.bay.came.tag }; });
+      console.log(`# s32c ${tag}: ${JSON.stringify(came)}`);
+      assert.ok(came.tag && !came.pressed, "the case is reached: the Bay carries her name before his first press");
+      await g.shot(`s32c-${tag}-came`);
+    } finally { await g.ctx.close(); }
+  });
 }
 // s19b (menu-side-hero-5; QA verify-live-663, bus bcddcf6641): "at col 20 rows 8, 16, 24 the box's right edge cuts off his left side." His #166 save, walked by presses as s19 walks it, then to col 20 and down to rows 8, 16 and 24: ← opens the menu and his orange pixels are as many as before it.
 // UI's ruling (bus 5eabf248f7): while the field menu is open the view shifts sideways so he stands clear beside the box. State is read only to say the case is reached and to find where he stands (the window to count his pixels in); the verdict is the pixels.
