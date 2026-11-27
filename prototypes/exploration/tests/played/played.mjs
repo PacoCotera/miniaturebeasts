@@ -463,8 +463,16 @@ for (const size of SIZES) {
   it(`s3 the hero under the menu (#166, his save, tile 21,0): his pixels are on screen after ← opens the menu and after one Wait [${tag}]`, async () => {
     const g = await open(size, "166");
     try {
+      // PLACE_REV 5 made the place again: his #166 save loads at 20,4 (the 11-27 land rule), not on the old edge tile. By presses (✓ for the day's cards) to col 20 row 8, where he stands mid-view
+      const pos = () => g.page.evaluate(() => { const P = window.__play.frames.companion.contentWindow.__mb.S.exp.patch; return { x: P && P.x, y: P && P.y }; });
+      const card = () => g.page.evaluate(() => !!window.__play.frames.companion.contentWindow.__mb.FX.card);
+      for (let i = 0; i < 40; i++) {
+        const s = await pos(); if (s.x === 20 && s.y === 8) break;
+        for (let k = 0; k < 4 && await card(); k++) await g.press("confirm", 100, 700);
+        await g.press(s.x < 20 ? "right" : s.x > 20 ? "left" : s.y < 8 ? "down" : "up", 100, 450);
+      }
       const at = await g.where();
-      assert.deepEqual([at.phase, at.x, at.y], ["patch", 21, 0], "the case is reached: he stands at the top edge");
+      assert.deepEqual([at.phase, at.x, at.y], ["patch", 20, 8], "the case is reached: he stands mid-view");
       const r = await g.region(), base = await g.shot();
       // the hero is the biggest orange blob of the play field (below the HUD strip); the menu's orange selection bar and the HUD icons are other blobs and are never counted
       const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: r.h - Math.round(r.h * 0.12) };
@@ -472,11 +480,14 @@ for (const size of SIZES) {
       assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
       const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
       await g.press("back");                                // ← opens the menu
-      const menuBlobs = blobs(await g.shot(`s3-${tag}-menu`), hb, HERO), menu = menuBlobs[0] || { n: 0, box: null };
+      // the view shifts sideways while the menu is open (UI's ruling, bus 5eabf248f7), so the window to count in follows him: his pawn's place on the view, as s19b finds it
+      const k = r.w / 450, ps = await g.page.evaluate(() => { const p = window.__play.frames.companion.contentWindow.__mb.RT.plScr; return { px: p && p.x, py: p && p.y }; });
+      const mw = { x: Math.round(r.x + (ps.px - 28) * k), y: Math.round(r.y + (ps.py - 28) * k), w: Math.round(56 * k), h: Math.round(56 * k) };
+      const menuBlobs = blobs(await g.shot(`s3-${tag}-menu`), mw, HERO), menu = menuBlobs[0] || { n: 0, box: null };
       console.log(`# s3 ${tag}: hero ${hero.n} px, menu ${menu.n} (${menuBlobs.length} blob(s) at his place)`);
       assert.ok(menu.n >= hero.n * 0.6, `the hero is on screen with the menu open (${menu.n} of ${hero.n} pixels)`);
       assert.ok(menu.n <= hero.n * 1.2, `the orange counted with the menu open is the hero's, not the menu's selection bar (${menu.n} of ${hero.n} pixels)`);
-      assert.ok(menu.box && Math.abs(menu.box.x - hero.box.x) <= 4 && Math.abs(menu.box.y - hero.box.y) <= 4 && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange blob with the menu open sits where the hero stands (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+      assert.ok(menu.box && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange blob with the menu open is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
       const rows = await g.page.evaluate(() => window.__play.frames.companion.contentWindow.__mb.menuItems().length);
       for (let i = 0; i < rows && await g.menuRow() !== "wait"; i++) await g.press("down");   // the rows differ by save ('Her page' only when a Loika is named): press Down until the row is Wait
       assert.equal(await g.menuRow(), "wait", "the case is reached: the selected row is Wait before confirm");
@@ -947,9 +958,12 @@ for (const size of SIZES) {
     const g = await open(size, "166");
     try {
       const at = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, P = m.S.exp.patch, p = m.RT.plScr; return { phase: m.S.phase, key: P && P.key, x: P && P.x, y: P && P.y, px: p && p.x, py: p && p.y }; });
-      for (const dir of ["up", "right", "down", "left"]) {
-        let same = 0, last = JSON.stringify(await at());
-        for (let i = 0; i < 40 && same < 2; i++) { await g.press(dir, 100, 500); const now = JSON.stringify(await at()); same = now === last ? same + 1 : 0; last = now; }
+      // PLACE_REV 5 made the place again and his #166 save loads at the top of it (the rock field's old left edge is not there): by presses (down, left or right; ✓ for the day's cards) to col 20 row 8, where he stands mid-view and the box would cover him
+      const card = () => g.page.evaluate(() => !!window.__play.frames.companion.contentWindow.__mb.FX.card);
+      for (let i = 0; i < 80; i++) {
+        const s = await at(); if (s.x === 20 && s.y === 8) break;
+        for (let k = 0; k < 4 && await card(); k++) await g.press("confirm", 100, 700);
+        await g.press(s.x < 20 ? "right" : s.x > 20 ? "left" : s.y < 8 ? "down" : "up", 100, 450);
       }
       const spot = await at();
       console.log(`# s19 ${tag}: he stands at ${JSON.stringify(spot)}`);
@@ -961,11 +975,14 @@ for (const size of SIZES) {
       assert.ok(hero && hero.n > 300, `the reference shows the hero (${hero ? hero.n : 0} pixels)`);
       const pad = 6, hb = { x: hero.box.x - pad, y: hero.box.y - pad, w: hero.box.w + 2 * pad, h: hero.box.h + 2 * pad };
       await g.press("back");                                // ← opens the menu
-      assert.equal((await at()).phase, "menu", "the case is reached: the menu is open");
-      const menu = blobs(await g.shot(`s19-${tag}-menu`), hb, HERO)[0] || { n: 0, box: null };
+      const open1 = await at();
+      assert.equal(open1.phase, "menu", "the case is reached: the menu is open");
+      // the view shifts sideways while the menu is open (bus 5eabf248f7): the window follows his pawn, as in s19b
+      const k = r.w / 450, mw = { x: Math.round(r.x + (open1.px - 28) * k), y: Math.round(r.y + (open1.py - 28) * k), w: Math.round(56 * k), h: Math.round(56 * k) };
+      const menu = blobs(await g.shot(`s19-${tag}-menu`), mw, HERO)[0] || { n: 0, box: null };
       console.log(`# s19 ${tag}: hero ${hero.n} px before the menu, ${menu.n} with it open`);
       assert.ok(menu.n >= hero.n * 0.95, `the hero's pixels are whole with the menu open, the box is not over him (${menu.n} of ${hero.n} pixels)`);
-      assert.ok(menu.box && Math.abs(menu.box.x - hero.box.x) <= 4 && Math.abs(menu.box.y - hero.box.y) <= 4 && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange at his place is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
+      assert.ok(menu.box && Math.abs(menu.box.w - hero.box.w) <= 6 && Math.abs(menu.box.h - hero.box.h) <= 6, `the orange at his place is his whole figure (${JSON.stringify(menu.box)} vs ${JSON.stringify(hero.box)})`);
     } finally { await g.ctx.close(); }
   });
 
@@ -1175,11 +1192,24 @@ for (const size of SIZES) {
   });
   // OWNER 2026-11-24 15:5x on #156: "in the wild you should be able to see the name". QA verify-live-649, seed 14 (saves/14.save, made from a fresh seed-14 game by QA's presses C-01..C-13: ✓ x3 to set out, ← twice, right x3):
   // Burr stands under a tree crown and her bone name tag was clipped to "r" (412x915-C-13-right). The verdict is the tag's pixels on the shot: the bone frame whole, all four sides, with the name inside.
-  it(`s12 a wild name tag over a crown (#156, seed 14): Burr's bone tag is whole on the screen, a crown never hides part of it [${tag}]`, async () => {
-    const g = await open(size, "14");
+  // water-build-9: with PLACE_REV 5 no seed-14 place has a crown round Burr's haunt, so the seed and place are chosen from the place data (setup, like an arranged save): a scratch read of the gen-7 places (not committed, seeds 14-60)
+  // found, on seed 56, the start place 122: wild Loika 69 (Linnet) keeps a haunt at tile 22,17 at dawn with a tree standing on 23,17 beside it. The colour check below is the dawn light's (the old seed-14 save was at light 3), so
+  // the case is played at dawn. It plays seed 56 by presses (?seed= via open(size, {seed})): ✓ to set out, right x10, up x6, which stands him on 22,19 of place 122 at light 16 with her tag by the crown. The verdict is the same: the tag whole, a crown round it.
+  it(`s12 a wild name tag over a crown (#156, seed 56, place 122): Linnet's bone tag is whole on the screen, a crown never hides part of it [${tag}]`, async () => {
+    const g = await open(size, { seed: 56 });
     try {
-      const at = await g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp.patch, her = m.herInSight(); return { phase: S.phase, x: P && P.x, y: P && P.y, her, name: her != null ? S.named[her] : null }; });
-      assert.deepEqual([at.phase, at.x, at.y, at.name], ["patch", 15, 25, "Burr"], `the case is reached: he walks the patch with Burr in sight (${JSON.stringify(at)})`);
+      const state = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch, her = P ? m.herInSight() : null; return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, her, name: her != null ? S.named[her] : null }; });
+      let at = await state();
+      for (let i = 0; i < 12 && !at.key; i++) { await g.press("confirm", 100, 1500); at = await state(); }   // ✓ to set out, ✓ into the first place
+      for (let t = 0; t < 300 && !at.key; t++) { await wait(100); at = await state(); }
+      const where = () => g.page.evaluate(() => { const P = window.__play.frames.companion.contentWindow.__mb.S.exp.patch; return P.key + "," + P.x + "," + P.y; });
+      for (const [dir, n] of [["right", 10], ["up", 7]]) for (let i = 0; i < n; i++) {
+        const before = await where(); await g.press(dir, 100, 0);
+        for (let t = 0; t < 30 && (await where()) === before; t++) await wait(100);   // each press waits for its step to land
+        await wait(300);
+      }
+      await wait(1500); at = await state();
+      assert.deepEqual([at.phase, at.key, at.x, at.y, at.her, at.name], ["patch", "122", 22, 18, "69", "Linnet"], `the case is reached: he walks place 101 with Linnet in sight (${JSON.stringify(at)})`);
       const r = await g.region(), im = await g.shot(`s12-${tag}`), u = r.w / 450;   // device px per game px
       const field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: Math.round(r.h * 0.76) };
       // the tag's frame is the one bone-coloured outline in the field about 20 game px high; flowers and stones are other bone blobs and are told apart by their size
@@ -1453,6 +1483,67 @@ it(`s21 tell-seen-fix-4 (seed 33): Osier's tell starts within ten tiles of him: 
     console.log(`# s21: the box differs from her tell line's crop by ${nb} pixels, her tile from its crop by ${nt} of ${area}`);
     assert.ok(nb < 5000, `the box shows her tell line, not the stone's (${nb} pixels differ)`);
     assert.ok(nt < area * 0.05, `her tile is not under the veil (${nt} of ${area} pixels differ from her tile's crop)`);
+  } finally { await g.ctx.close(); }
+});
+
+// OWNER #141 (11-24 18:06 UTC): "adjacent place is 100% water in a rectangle, showing no shores or integrating into the active place. this is a terrain generation problem."
+// OWNER #166 (11-25 00:53 UTC): "water above is deep and doesn't transition smoothly with the adjacent terrain. again, a border between places is blocked by a straight line of deep water."  (PR 609; rule 16a)
+// His two saves, at his phone size (412x915), by presses on the page. Both saves were made standing on water that is wide water now (PLACE_REV 5), so the page loads him on the nearest land tile of the same place (GD 11-27)
+// and the short Call (the ring, the walking view) shows the shore and the water across the seam. State only asserts the case is reached (the place of his note).
+// The verdict is the pixels of the walking view: no straight box edge (a long straight vertical or horizontal line where the colour jumps) anywhere on the game screen.
+// A straight edge is a run of at least 120 device pixels along one column (or row) where the neighbouring pixels differ by more than 60 (sum of channels). The dashed seam marker is short dashes, so it is not a run.
+function longestEdge(im, r, jump = 60) {
+  const d = (x, y, x2, y2) => { const p = px(im, x, y), q = px(im, x2, y2); return Math.abs(p[0] - q[0]) + Math.abs(p[1] - q[1]) + Math.abs(p[2] - q[2]) > jump; };
+  let best = { n: 0, at: null };
+  const y0 = r.y + Math.round(r.h * 0.125), y1 = r.y + Math.round(r.h * 0.84);      // the picture alone: under the HUD and its line, above the toast and the bottom bar
+  for (let x = r.x + 1; x < r.x + r.w; x++) { let run = 0; for (let y = y0; y < y1; y++) { run = d(x, y, x - 1, y) ? run + 1 : 0; if (run > best.n) best = { n: run, at: `column ${x - r.x}, rows to ${y - r.y}`, dir: "vertical" }; } }
+  for (let y = y0 + 1; y < y1; y++) { let run = 0; for (let x = r.x; x < r.x + r.w; x++) { run = d(x, y, x, y - 1) ? run + 1 : 0; if (run > best.n) best = { n: run, at: `row ${y - r.y}, columns to ${x - r.x}`, dir: "horizontal" }; } }
+  return best;
+}
+const WATER = ([R, G, B]) => B > G - 5 && B > R + 25 && G > R;
+const SHORE_CASES = [
+  { save: "141", place: "172", note: "#141" },
+  { save: "166", place: "186", note: "#166" },
+];
+for (const c of SHORE_CASES) it(`s32 water meets the shore across the seam (${c.note}, his save, place ${c.place}): no straight box edge on the walking view after a Call [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const g = await open(SIZES[0], c.save);
+  try {
+    const at = await g.where();
+    assert.deepEqual([at.phase, at.key], ["patch", c.place], "the case is reached: he stands in the place of his note");
+    await g.press("call", 100, 2000);                       // a short Call: the ring, the walking view
+    const r = await g.region(), im = await g.shot(`s32-${c.save}`);
+    const waterSeen = colour(im, r, WATER).n / (r.w * r.h);
+    assert.ok(waterSeen > 0.05, `the case is reached: the water is on the screen (${(waterSeen * 100).toFixed(1)}%)`);
+    const e = longestEdge(im, r);
+    console.log(`# s32 ${c.note}: longest straight edge ${e.n} device px (${e.dir} ${e.at}); water ${(waterSeen * 100).toFixed(1)}%`);
+    assert.ok(e.n < 120, `no straight box edge on the walking view (${e.n} device pixels along ${e.dir} ${e.at})`);
+  } finally { await g.ctx.close(); }
+});
+
+// GD 11-27 (QA verify-609, his #166 save): after PLACE_REV 5 the saved tile is deep water ("Water · no way across", presses do nothing). The rule: a tile that cannot be stood on loads him on the nearest land tile of the same place.
+// His #166 save, by presses: he loads in his place, off the water tile of his note, and a press on the d-pad moves him. State asserts the place and that the tile is not the water tile; the verdict is the pixels:
+// his orange figure stands on the screen, the pixels at his feet are not water, and after a press he has moved on the screen and the bottom line is not "Water · no way across".
+it(`s34 his #166 save loads him on land and he walks (GD 11-27): the d-pad moves him off the water tile [${SIZES[0].w}x${SIZES[0].h}]`, async () => {
+  const g = await open(SIZES[0], "166");
+  try {
+    const at = await g.where();
+    assert.equal(at.phase, "patch"); assert.equal(at.key, "186", "the case is reached: he is in the place of his note");
+    assert.notDeepEqual([at.x, at.y], [21, 0], "the case is reached: he is not on the water tile his save held");
+    const r = await g.region(), field = { x: r.x, y: r.y + Math.round(r.h * 0.12), w: r.w, h: Math.round(r.h * 0.72) };
+    const base = await g.shot("s34-start"), hero = blobs(base, field, HERO)[0];
+    assert.ok(hero && hero.n > 150, `his figure is on the screen (${hero ? hero.n : 0} pixels)`);
+    const feet = { x: hero.box.x - 4, y: hero.box.y + hero.box.h, w: hero.box.w + 8, h: 10 };
+    const wet = colour(base, r, WATER, feet).n / (feet.w * feet.h);
+    console.log(`# s34: figure${JSON.stringify(hero.box)}, water at his feet ${(wet * 100).toFixed(0)}%`);
+    assert.ok(wet < 0.5, `he does not stand in water (${(wet * 100).toFixed(0)}% water pixels at his feet)`);
+    let moved = null;
+    for (const dir of ["up", "left", "right", "down"]) {
+      await g.press(dir, 100, 900);
+      const now = blobs(await g.shot(`s34-${dir}`), field, HERO)[0], after = await g.where();
+      if (after.x !== at.x || after.y !== at.y) { moved = { dir, from: [at.x, at.y], to: [after.x, after.y], figure: now && now.box }; break; }
+    }
+    console.log(`# s34: ${JSON.stringify(moved)}`);
+    assert.ok(moved, "a press of the d-pad moves him (up, left, right or down)");
   } finally { await g.ctx.close(); }
 });
 

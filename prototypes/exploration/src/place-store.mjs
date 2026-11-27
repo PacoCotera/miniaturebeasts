@@ -8,7 +8,7 @@ import { REALM_REV, realm7 } from './gen7/region.mjs';
 import { BAKE_STAGES } from './waitpips.mjs';
 import { decorSites, presetHollowSites, madeBanks, presetBanks } from './gen7/place.mjs';
 
-export const PLACE_REV = 4;   // exported for the baked package's id (package-store.mjs); the number and its rule are the same
+export const PLACE_REV = 5;   // exported for the baked package's id (package-store.mjs); the number and its rule are the same
 const PLACE_KEEP = 240, PLACE_INDEX = 'place7:index';
 // TAG: a hash of the files the tile set and the layers are read from (placesTag, set when the page has loaded them), so a changed tile set never meets a place baked from an older one (owner bugs #127-#129).
 let TAG = '';

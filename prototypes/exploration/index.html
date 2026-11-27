@@ -554,7 +554,7 @@ const artFailed = () => ART_FAIL.length > 0 || (ART_DONE.atlas && !ART48.ready) 
 const setArrived = () => { if (WART.src) walkRead(WART.src); else extendWithSet(); };   // the set's palette is in: the page's colour arrays take its colours, and the walk art read before it is read again
 async function loadPlaces() {
   try {
-    if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; setArrived(); return; }
+    if (window.__places) { Object.assign(PL, window.__places); PL.ready = true; setArrived(); landOnLoad(); return; }
     fileOwe(3);   // the tile set, the terrain table, the layer descriptors (the veil's files are owed when its kit starts)
     const base = new URL('../places/', location.href).href, bytes = async u => { const b = new Uint8Array(await (await fetchOk(vurl(u))).arrayBuffer()); fileGot(); return b; };
     const pm = await import(vurl(base + 'src/page.mjs')), rd = await import(vurl(base + 'src/format/read.mjs'));
@@ -568,7 +568,7 @@ async function loadPlaces() {
     PL.ring = new pm.FrameRing(16);   // the views keep the ground's animation frames in one ring of 16 (about 14 MB at most)
     await loadVeilKit(base);
     if (S && S.regions && S.regions[0] && typeof S.regions[0].seed === 'number' && hereRegion() && hereRegion().gen === 7) await packageUse(S.regions[0].seed, hereRegion().slot, biomeVersion(S));   // the Station's baked package for this region: read before the first frame, so its places are here at once
-    PL.ready = true; layoutCache.clear(); RT.key = null;
+    PL.ready = true; layoutCache.clear(); RT.key = null; landOnLoad();
   } catch (e) { console.warn('the places did not load', e); artWhy('places', e); } finally { ART_DONE.places = true; }
 }
 // The art desk's edge veil (places/veil/, SOURCE.md there): the straight strip, the band end and the two corners, day and night. Built once into canvases and handed to every place view (PL.veil);
@@ -3158,11 +3158,27 @@ function clearSkull(key) { if (!S.skulls) return; for (const c in S.skulls) { co
 // The tile and facing he left a place on for the map (ex.spot, saved with the walk): the same place again lands on it, or on the nearest free tile when something stands there.
 function spotBack(lay, key) {
   const sp = S.exp.spot; if (!sp || sp.key !== key || lay.cave) return null;
+  return nearestStand(lay, key, sp);
+}
+// The one rule for a tile that cannot be stood on (taken, or water after a place was made again): the nearest free tile in the same place that connects to the rest of it, facing as before. No line, no cost. (GD 11-27)
+function nearestStand(lay, key, sp) {
   let best = null, bd = 1e9;
   for (let y = 0; y < lay.h; y++) for (let x = 0; x < lay.w; x++) {
     if (!lay.reach[y * lay.w + x] || T_BLOCK[lay.tiles[y * lay.w + x]] || occupant(key, x, y, 'player')) continue;
     const d = (x - sp.x) ** 2 + (y - sp.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } }
   return best ? { x: best.x, y: best.y, dir: sp.dir } : null;
+}
+// A save whose standing tile is water or unreachable once the place is made (the land under it changed, #166 after PLACE_REV 5) loads him on the nearest land tile of that place. Run once, when the places are in.
+function landOnLoad() {
+  if (RT.landChecked || !S || !S.exp || S.phase !== 'patch' || !S.exp.patch || RT.readOnly) return;
+  RT.landChecked = true;
+  try {
+    const P = S.exp.patch, lay = layout(P.key); if (lay.cave || !lay.reach) return;
+    ensureLive(P.key);
+    const i = P.y * lay.w + P.x; if (lay.reach[i] && !T_BLOCK[lay.tiles[i]]) return;
+    const to = nearestStand(lay, P.key, P); if (!to) return;
+    P.x = to.x; P.y = to.y; RT.key = null;
+  } catch (e) { console.warn('the standing tile was not checked', e); }
 }
 function enterCave() {
   const ex = S.exp, key = 'c' + G.gate; ensureLive(key); clearSkull(key); noteTier(ex, layout(key)); tripPlace(ex, 'cave');
