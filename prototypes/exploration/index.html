@@ -3447,19 +3447,35 @@ function screeOpen(dir) {   // true: stepping dir over a scree edge from a tile 
   const lay = layout(P.key), q = lay && crossingAt(lay, P.x, P.y);
   return !(q && !q.bank && q.dir === dir);
 }
-function crossEdge(dir) {
+// What a step off the place's edge would do, asked and never acted on (crossEdge acts on it; the bottom line reads it before the step, edge-cost-line-fix-1):
+// { sw } a step into another region, { why, full } a refusal (full: the cell is revealed and the soft-tile pin added), { land } a crossing (land undefined: the tiles do not decide it).
+function crossVerdict(dir) {
   const ex = S.exp, c = stepCell(ex.pos, dir);
-  { const sw = seamCross(ex.pos, dir); if (sw) { crossRegion(dir, sw); return; } }
+  { const sw = seamCross(ex.pos, dir); if (sw) return { sw }; }
   const scr = screeOpen(dir);   // #159: on a scree edge, off its two crossing tiles, the tiles decide: open ground both sides crosses
   let why = crossReason(ex.pos, dir, true, scr);   // the side's own kind; between two land cells the tiles are asked next (crossLanding), never the cell summary
   if (why && why.startsWith(CLIFF_TOO_STEEP) && c >= 0 && edgeKind(ex.pos, dir) === EDGE.CLIFF) why = cliffPlaceWords(dir);   // in a place the words count tiles along this edge
   const land = why ? undefined : crossLanding(dir, scr);   // undefined: not a tile-decided side; null: the tile beyond is not walkable on your level
   if (land === null) why = crossBlockWords(dir);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why + softPin(ex.pos, dir)); save(); return; }
+  if (why) return { why, full: true };
   if (land === undefined && !scr && edgeKind(ex.pos, dir) === EDGE.CLIFF) { const P = ex.patch, q = (layout(P.key).cross || []).find(r => r.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;   // scree or a bank: only its two tiles cross
-    if (!q || (k !== q.s && k !== q.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!q || (k !== q.s && k !== q.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
   if (land === undefined && edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
-    if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(cliffPlaceWords(dir)); return; } }
+    if (!st || (k !== st.s && k !== st.s + 1)) return { why: cliffPlaceWords(dir), full: false }; }
+  return { land };
+}
+// True while the pawn stands on the place's edge tile facing out and the step would cross into the next place (patchStepRun's own tests, never acted on).
+function edgeStepCrosses() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || S.phase !== 'patch') return false;
+  const lay = layout(P.key), f = frontOf(P); if (f.x >= 0 && f.y >= 0 && f.x < lay.w && f.y < lay.h) return false;
+  if (lay.cave || (lay.rimSteps && (lay.rimSteps[P.y * lay.w + P.x] & RIM_BIT[P.dir]))) return false;
+  const v = crossVerdict(P.dir); return !!(v.sw || !v.why);
+}
+function crossEdge(dir) {
+  const ex = S.exp, c =stepCell(ex.pos, dir), v = crossVerdict(dir);
+  if (v.sw) { crossRegion(dir, v.sw); return; }
+  if (v.why) { FX.bumpAt = NOW; if (v.full) { if (c >= 0 && v.why !== RANGE_TEXT()) revealCell(c); fxMsg(v.why + softPin(ex.pos, dir)); save(); } else fxMsg(v.why); return; }
+  const land = v.land;
   if (G.gen === 7 && c >= 0 && !placeHave(String(c)) && motion() && !FX.crossRetry) {   // the next place is not built yet: the old place stays on the screen, nothing has moved; the crossing is made when it is here
     if (FX.crossWait) return;
     const key = String(c), seed = S.regions[0].seed, R = hereRegion(), v = biomeVersion(S), at = ex.patch;
@@ -3562,7 +3578,7 @@ function patchAction() {
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
-    return { label: 'Veiled · Call to see', run: null };
+    return { label: edgeStepCrosses() ? '' : 'Veiled · Call to see', run: null };   // edge-cost-line-fix-3: facing the edge, the front is the next place the edge line already names; this ✓ does nothing, so its label yields to the line (UI 04:28: 'Call to see' alone still left no room at 390)
   if (o && o.type === 'cr') {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp) && !o.c.ind) return !fruit && inSight(f.x, f.y) && (o.c.ease | 0) < 3 ? { label: campLabel(WORDS.ease.keep, WORDS.ease.keepTo), run: () => keepStill(o.c) } : { label: 'Unknown creature', run: null };   // ui-dead-check-156-4: beside one he has not met and that is no individual, ✓ keeps still as beside a Loika (keepStill reads no ind), never a ✓ that does nothing
@@ -9024,6 +9040,7 @@ function lineBase() {
       if (!lay.cave && !a.ctx && !(o && o.type === 'cr')) { const sl2 = screenLoika(), w2 = sl2 && sl2.c, n2 = w2 && S.named && S.named[w2.id]; if (w2 && n2 && !S.known.includes(w2.sp)) wild = [nameKind(n2, w2.sp)]; else if (w2) wild = wildCtx(w2, n2); }   // not faced, but in sight: the same line
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
       ctx = dayCtx(ctx); if (wild) ctx = wild.concat(ctx);   // the wild one's line leads, without the part of day
+      if (!lay.cave && !a.ctx && edgeStepCrosses()) ctx = [WORDS.edgeStep(DAY.mapStep)].concat(ctx);   // facing the edge, the next step crosses: it says what it costs first (edge-cost-line-fix-1)
       if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       const lv = L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim);
       return lv; }

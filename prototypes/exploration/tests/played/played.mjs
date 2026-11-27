@@ -816,6 +816,65 @@ for (const size of SIZES) {
   });
 }
 
+// OWNER 2026-11-25 06:4x ("ok", design-loop-review-1 fix 9): walking over a place's border cost 10 light and the day bar jumped with nothing to say why. Seed 33, a fresh game, at 390x844.
+// Played: ✓ x3 to set out and go in, then the right key along the row to the east edge. One tile short of the edge the bottom line is the place's own; on the edge tile, facing out, it says "10 light to the next place" (editorial's edge.step);
+// the step then moves the clock by that much. Every press waits for its effect (state changed, then still for 400 ms), never a fixed pause.
+// State only asserts the case is reached and the clock. The verdict on the words is the pixels: a crop of the line (saves/s30-edge-line.png, cut once from the edge shot) is found in the bottom strip on the edge tile and not found one tile short.
+// PLAYED_WRITE_CROPS=1 rewrites the crop (the box where the edge shot and the one-tile-short shot differ in the bottom strip).
+for (const size of SCALE_SIZES.filter((s) => s.w === 390)) {
+  const tag = `${size.w}x${size.h}`;
+  it(`s30 an edge on foot says its light first (seed 33): the bottom line names the cost before the step, and the clock moves by it after [${tag}]`, async () => {
+    const g = await open(size, { seed: 33 });
+    const st = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; let l = ""; try { const q = m.lineFor(); l = (Array.isArray(q.ctx) ? q.ctx[0] : q.ctx) || ""; } catch {} return { phase: S.phase, key: P && P.key, x: P && P.x, y: P && P.y, spent: S.day && S.day.spent, line: String(l).replace(/\x01/g, "") }; });
+    const sig = () => g.page.evaluate(() => { const m = window.__play.frames.companion.contentWindow.__mb, S = m.S, P = S.exp && S.exp.patch; return [S.phase, P && P.key, P && P.x, P && P.y, S.day && S.day.spent, S.ui && S.ui.menuSel].join("|"); });
+    const step = async (l) => { const before = await sig(); await g.press(l, 100, 0); let now = before; for (let t = 0; t < 30 && now === before; t++) { await wait(100); now = await sig(); } for (let same = 0, t = 0; same < 4 && t < 100; t++) { await wait(100); const n2 = await sig(); same = n2 === now ? same + 1 : 0; now = n2; } };   // the effect: the state changes (or 3 s), then holds still for 400 ms
+    try {
+      let s = await st();
+      for (let i = 0; i < 12 && !s.key; i++) { await step("confirm"); s = await st(); }   // ✓ to set out, ✓ into the place: each waits for its effect
+      for (let t = 0; t < 300 && !s.key; t++) { await wait(100); s = await st(); }       // the place is built by a worker: wait until he is in it
+      assert.equal(s.phase, "patch", "the case is reached: he is in the first place");
+      let prev = null, n = 0;
+      const key0 = s.key;
+      while (n++ < 60 && !s.line.startsWith("10 light")) { prev = s; await step("right"); s = await st(); assert.equal(s.key, key0, "the case is reached: he walks the first place's row to its east edge, no step crosses unsaid"); }
+      console.log(`# s30 ${tag}: one tile short ${JSON.stringify(prev)}, on the edge ${JSON.stringify(s)}`);
+      assert.equal(s.line, "10 light to the next place", "the case is reached: the line on the edge tile is editorial's edge.step");
+      assert.ok(prev && !prev.line.startsWith("10 light"), "and not one tile short of it");
+      const r = await g.region(), onEdge = await g.shot(`s30-${tag}-edge`);
+      await step("left"); const short = await g.shot(`s30-${tag}-short`); await step("right");
+      const at = await st(); assert.equal(at.x, s.x, "the case is reached: back on the edge tile");
+      // the strip under the picture where the line is read; its crop is cut once from the edge shot
+      const sy0 = r.y + Math.round(r.h * 0.9), sy1 = r.y + r.h, sx0 = r.x, sx1 = r.x + r.w;
+      let bb = null;
+      for (let y = sy0; y < sy1; y++) for (let x = sx0; x < sx1; x++) { const p = px(onEdge, x, y), q = px(short, x, y); if (p[0] !== q[0] || p[1] !== q[1] || p[2] !== q[2]) bb = bb ? { x0: Math.min(bb.x0, x), y0: Math.min(bb.y0, y), x1: Math.max(bb.x1, x), y1: Math.max(bb.y1, y) } : { x0: x, y0: y, x1: x, y1: y }; }
+      assert.ok(bb, "the bottom strip differs between the edge tile and the one before it");
+      const cropFile = path.join(savesDir, "s30-edge-line.png");
+      if (process.env.PLAYED_WRITE_CROPS) {
+        const w = bb.x1 - bb.x0 + 1, h = bb.y1 - bb.y0 + 1, d = new Uint8Array(w * h * 4);
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const p = px(onEdge, bb.x0 + x, bb.y0 + y), j = (y * w + x) * 4; d[j] = p[0]; d[j + 1] = p[1]; d[j + 2] = p[2]; d[j + 3] = 255; }
+        writeFileSync(cropFile, encodePNG(w, h, d));
+      }
+      const ref = decodePNG(readFileSync(cropFile));
+      // the best match of the crop anywhere in the strip: the fewest differing pixels over all positions (early out past the best)
+      const best = (im) => {
+        let low = Infinity;
+        for (let y = sy0; y + ref.height <= sy1; y++) for (let x = sx0; x + ref.width <= sx1; x++) {
+          let bad = 0;
+          for (let j = 0; j < ref.height && bad < low; j++) for (let i = 0; i < ref.width; i++) { const p = px(im, x + i, y + j), k = (j * ref.width + i) * 4; if (p[0] !== ref.data[k] || p[1] !== ref.data[k + 1] || p[2] !== ref.data[k + 2]) bad++; }
+          if (bad < low) low = bad;
+        }
+        return low;
+      };
+      const area = ref.width * ref.height, onBad = best(onEdge), shortBad = best(short);
+      console.log(`# s30 ${tag}: the line's crop (${ref.width}x${ref.height}) differs by ${onBad} pixels on the edge tile, by ${shortBad} one tile short, of ${area}`);
+      assert.ok(onBad < area * 0.02, "the line's crop is found in the bottom strip on the edge tile");
+      assert.ok(shortBad > area * 0.1, "and is not found one tile short of it");
+      await step("right");
+      const after = await st();
+      assert.notEqual(after.key, key0, "the step crossed into the next place");
+      assert.equal(after.spent - at.spent, 10, "the day moved by the 10 the line said");
+    } finally { await g.ctx.close(); }
+  });
+}
 // OWNER 2026-11-25 06:4x (design-loop-review-1, fix 5): "ok". tell-seen-fix-4. Seed 33 at 390x844, light 52 to 57: Osier's tell and shake-dry ran seven tiles away under the veil while the box kept the stone's line.
 // The rule (design 11-27): the veil lifts when, within ten tiles, a Loika he has met (S.named) starts her tell; her line is then the box's line.
 // Played as the review's game A, on a fresh seed 33 (the page's ?seed=): ✓ to set out, east across the first place and over the border, toward her until she is seen once (named), then ✓ "Keep still" until her tell starts.
