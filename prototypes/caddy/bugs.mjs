@@ -64,7 +64,7 @@ export function createBugs({ dataDir, now = () => Date.now() }) {
       + `<div class="head"><h1>Bugs</h1><p class="lede">${open.length} open: ${blocks} block play</p></div>`
       + (sections || `<p class="empty">No open bugs.</p>`)
       + `<details class="closed"><summary>Fixed, last 7 days (${fixed.length})</summary>` + (fixed.length ? `<ul class="list">${fixed.map((r) => row(r, r.closed)).join("")}</ul>` : `<p class="empty">None.</p>`) + `</details>`
-      + `<p class="foot">Updated ${esc(hm(t))} Mexico City${generated ? ` (list filed ${esc(hm(Date.parse(generated)))}, ${esc(age(generated, t))} ago)` : " (nothing filed yet)"} · <a href="/admin/notes">Play notes</a> · <a href="https://github.com/PacoCotera/miniaturebeasts-internal/issues" target="_blank" rel="noopener">Bugs on GitHub</a></p></div></body></html>`;
+      + `<p class="foot">${generated ? `List filed ${esc(hm(Date.parse(generated)))} Mexico City (${esc(age(generated, t))} ago)` : "Nothing filed yet"} · <a href="/admin/notes">Play notes</a> · <a href="https://github.com/PacoCotera/miniaturebeasts-internal/issues" target="_blank" rel="noopener">Bugs on GitHub</a></p></div></body></html>`;
   }
   const css = () => readFileSync(new URL("./bugs.css", import.meta.url), "utf8");
   return { page, groups, summary, css };

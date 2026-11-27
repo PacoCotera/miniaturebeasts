@@ -20,7 +20,7 @@ test("bugs page: login only, read only, ordered, a week of fixed, escaped", asyn
     assert.equal((await fetch(base + "/admin/bugs")).status, 403, "no login header, no page");
     assert.equal((await fetch(base + "/admin/bugs", { method: "POST", headers: H })).status, 405);
     const empty = await (await fetch(base + "/admin/bugs", { headers: H })).text();
-    assert.match(empty, /No open bugs/); assert.match(empty, /nothing filed yet/); assert.match(empty, /Updated 06:00 Mexico City/, "the stamp is the time it was served (12:00Z = 06:00)");
+    assert.match(empty, /No open bugs/); assert.match(empty, /Nothing filed yet/); assert.ok(!/Updated \d/.test(empty), "no serve-time stamp");
     writeFileSync(path.join(dir, "bugs.json"), JSON.stringify({ generated: "2026-11-17T11:50:00Z", rows: [
       row(1, { words: "looks <b>odd</b>", severity: "looks-off", desk: "art", shots: ["https://github.com/PacoCotera/miniaturebeasts-internal/blob/bug-assets/bugs/n1/shot-1.png?raw=true"] }),
       row(8, { words: "is this on purpose", kind: "question", created: "2026-11-16T13:00:00Z" }),
@@ -41,7 +41,7 @@ test("bugs page: login only, read only, ordered, a week of fixed, escaped", asyn
     assert.ok(html.includes('href="https://github.com/PacoCotera/miniaturebeasts-internal/blob/bug-assets/bugs/n1/shot-1.png?raw=true">Screenshot</a>'), "the row opens to his screenshot");
     assert.ok(html.includes("<h2>Questions (1)</h2>") && at("<h2>Questions") > at("looks &lt;b&gt;odd"), "questions are their own group, last");
     assert.ok(!html.includes("<b>odd</b>"), "his words are escaped");
-    assert.match(html, /Updated 06:00 Mexico City \(list filed 05:50, 10 min ago\)/, "serve time first, the filer's time beside it");
+    assert.match(html, /List filed 05:50 Mexico City \(10 min ago\)/, "the filer's time is the one stamp"); assert.ok(!/Updated \d/.test(html), "no serve-time stamp");
     assert.ok(html.includes("fixed yesterday") && !html.includes("fixed long ago"), "only the last 7 days of fixed");
     assert.ok(!html.includes("javascript:"), "only issue links are linked");
     // the /admin look: the index's tokens linked at their /admin URL, a same-origin stylesheet, no inline style, a way back
